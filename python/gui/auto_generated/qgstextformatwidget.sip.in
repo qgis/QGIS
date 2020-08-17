@@ -155,6 +155,15 @@ Controls whether data defined alignment buttons are enabled.
     virtual QgsExpressionContext createExpressionContext() const;
 
 
+    QgsWkbTypes::GeometryType labelGeometryType() const;
+%Docstring
+Returns the geometry type which will be used by the labeling engine
+when registering labels for the labeling settings currently defined by the widget.
+
+.. versionadded:: 3.16
+%End
+
+
 
 
 

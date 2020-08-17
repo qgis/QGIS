@@ -4126,9 +4126,9 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>-601</y>
+                       <y>0</y>
                        <width>471</width>
-                       <height>1459</height>
+                       <height>1352</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -4145,254 +4145,21 @@ font-style: italic;</string>
                        <number>0</number>
                       </property>
                       <item>
-                       <widget class="QFrame" name="mPlacementTypeFrame">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
+                       <layout class="QHBoxLayout" name="horizontalLayout_14" stretch="0,1">
+                        <property name="topMargin">
+                         <number>0</number>
                         </property>
-                        <property name="frameShape">
-                         <enum>QFrame::NoFrame</enum>
-                        </property>
-                        <property name="frameShadow">
-                         <enum>QFrame::Sunken</enum>
-                        </property>
-                        <layout class="QVBoxLayout" name="verticalLayout_9">
-                         <property name="leftMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="topMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="rightMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="bottomMargin">
-                          <number>0</number>
-                         </property>
-                         <item>
-                          <widget class="QStackedWidget" name="stackedPlacement">
-                           <property name="frameShape">
-                            <enum>QFrame::NoFrame</enum>
-                           </property>
-                           <property name="frameShadow">
-                            <enum>QFrame::Sunken</enum>
-                           </property>
-                           <property name="currentIndex">
-                            <number>2</number>
-                           </property>
-                           <widget class="QWidget" name="pagePoint">
-                            <layout class="QGridLayout" name="gridLayout_13" columnstretch="0,0,0,0">
-                             <property name="leftMargin">
-                              <number>0</number>
-                             </property>
-                             <property name="topMargin">
-                              <number>0</number>
-                             </property>
-                             <property name="rightMargin">
-                              <number>0</number>
-                             </property>
-                             <property name="bottomMargin">
-                              <number>0</number>
-                             </property>
-                             <item row="0" column="1">
-                              <widget class="QRadioButton" name="radAroundPoint">
-                               <property name="toolTip">
-                                <string>Labels are placed in an equal radius circle around point features.</string>
-                               </property>
-                               <property name="text">
-                                <string>Around point</string>
-                               </property>
-                               <property name="checked">
-                                <bool>true</bool>
-                               </property>
-                              </widget>
-                             </item>
-                             <item row="0" column="2">
-                              <widget class="QRadioButton" name="radOverPoint">
-                               <property name="toolTip">
-                                <string>Labels are placed at a fixed offset from the point.</string>
-                               </property>
-                               <property name="text">
-                                <string>Offset from point</string>
-                               </property>
-                              </widget>
-                             </item>
-                             <item row="0" column="0">
-                              <widget class="QRadioButton" name="radPredefinedOrder">
-                               <property name="toolTip">
-                                <string>Uses 'ideal' cartographic placements, prioritizing label placement with best visual relationship with the point feature</string>
-                               </property>
-                               <property name="text">
-                                <string>Cartographic</string>
-                               </property>
-                              </widget>
-                             </item>
-                             <item row="0" column="3">
-                              <spacer name="horizontalSpacer_25">
-                               <property name="orientation">
-                                <enum>Qt::Horizontal</enum>
-                               </property>
-                               <property name="sizeHint" stdset="0">
-                                <size>
-                                 <width>40</width>
-                                 <height>20</height>
-                                </size>
-                               </property>
-                              </spacer>
-                             </item>
-                            </layout>
-                           </widget>
-                           <widget class="QWidget" name="pageLine">
-                            <layout class="QGridLayout" name="gridLayout_14">
-                             <property name="leftMargin">
-                              <number>0</number>
-                             </property>
-                             <property name="topMargin">
-                              <number>0</number>
-                             </property>
-                             <property name="rightMargin">
-                              <number>0</number>
-                             </property>
-                             <property name="bottomMargin">
-                              <number>0</number>
-                             </property>
-                             <item row="0" column="1">
-                              <widget class="QRadioButton" name="radLineCurved">
-                               <property name="sizePolicy">
-                                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                                 <horstretch>0</horstretch>
-                                 <verstretch>0</verstretch>
-                                </sizepolicy>
-                               </property>
-                               <property name="text">
-                                <string>Curved</string>
-                               </property>
-                              </widget>
-                             </item>
-                             <item row="0" column="0">
-                              <widget class="QRadioButton" name="radLineParallel">
-                               <property name="sizePolicy">
-                                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                                 <horstretch>0</horstretch>
-                                 <verstretch>0</verstretch>
-                                </sizepolicy>
-                               </property>
-                               <property name="text">
-                                <string>Parallel</string>
-                               </property>
-                               <property name="checked">
-                                <bool>true</bool>
-                               </property>
-                              </widget>
-                             </item>
-                             <item row="0" column="2">
-                              <widget class="QRadioButton" name="radLineHorizontal">
-                               <property name="text">
-                                <string>Horizontal</string>
-                               </property>
-                              </widget>
-                             </item>
-                            </layout>
-                           </widget>
-                           <widget class="QWidget" name="pagePolygon">
-                            <layout class="QGridLayout" name="gridLayout_18">
-                             <item row="0" column="0">
-                              <widget class="QRadioButton" name="radOverCentroid">
-                               <property name="sizePolicy">
-                                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                                 <horstretch>0</horstretch>
-                                 <verstretch>0</verstretch>
-                                </sizepolicy>
-                               </property>
-                               <property name="text">
-                                <string>Offset from centroid</string>
-                               </property>
-                               <property name="checked">
-                                <bool>true</bool>
-                               </property>
-                              </widget>
-                             </item>
-                             <item row="0" column="1">
-                              <widget class="QRadioButton" name="radPolygonHorizontal">
-                               <property name="text">
-                                <string>Horizontal</string>
-                               </property>
-                              </widget>
-                             </item>
-                             <item row="1" column="1">
-                              <widget class="QRadioButton" name="radPolygonFree">
-                               <property name="text">
-                                <string>Free (angled)</string>
-                               </property>
-                              </widget>
-                             </item>
-                             <item row="1" column="0">
-                              <widget class="QRadioButton" name="radAroundCentroid">
-                               <property name="sizePolicy">
-                                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                                 <horstretch>0</horstretch>
-                                 <verstretch>0</verstretch>
-                                </sizepolicy>
-                               </property>
-                               <property name="text">
-                                <string>Around centroid</string>
-                               </property>
-                              </widget>
-                             </item>
-                             <item row="2" column="0">
-                              <widget class="QRadioButton" name="radPolygonPerimeter">
-                               <property name="sizePolicy">
-                                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                                 <horstretch>0</horstretch>
-                                 <verstretch>0</verstretch>
-                                </sizepolicy>
-                               </property>
-                               <property name="text">
-                                <string>Using perimeter</string>
-                               </property>
-                              </widget>
-                             </item>
-                             <item row="1" column="3">
-                              <spacer name="horizontalSpacer_26">
-                               <property name="orientation">
-                                <enum>Qt::Horizontal</enum>
-                               </property>
-                               <property name="sizeHint" stdset="0">
-                                <size>
-                                 <width>40</width>
-                                 <height>20</height>
-                                </size>
-                               </property>
-                              </spacer>
-                             </item>
-                             <item row="2" column="1">
-                              <widget class="QRadioButton" name="radPolygonPerimeterCurved">
-                               <property name="sizePolicy">
-                                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                                 <horstretch>0</horstretch>
-                                 <verstretch>0</verstretch>
-                                </sizepolicy>
-                               </property>
-                               <property name="text">
-                                <string>Using perimeter (curved)</string>
-                               </property>
-                              </widget>
-                             </item>
-                             <item row="3" column="0">
-                              <widget class="QRadioButton" name="radPolygonOutside">
-                               <property name="text">
-                                <string>Outside polygons</string>
-                               </property>
-                              </widget>
-                             </item>
-                            </layout>
-                           </widget>
-                          </widget>
-                         </item>
-                        </layout>
-                       </widget>
+                        <item>
+                         <widget class="QLabel" name="label_2">
+                          <property name="text">
+                           <string>Placement</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QComboBox" name="mPlacementModeComboBox"/>
+                        </item>
+                       </layout>
                       </item>
                       <item>
                        <widget class="QFrame" name="mPlacementLineFrame">
@@ -6053,7 +5820,7 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>430</width>
+                       <width>471</width>
                        <height>708</height>
                       </rect>
                      </property>
@@ -7047,19 +6814,7 @@ font-style: italic;</string>
   <tabstop>mShadowBlendCmbBx</tabstop>
   <tabstop>mShadowBlendDDBtn</tabstop>
   <tabstop>scrollArea_3</tabstop>
-  <tabstop>radOverCentroid</tabstop>
-  <tabstop>radPolygonHorizontal</tabstop>
-  <tabstop>radAroundCentroid</tabstop>
-  <tabstop>radPolygonFree</tabstop>
-  <tabstop>radPolygonPerimeter</tabstop>
-  <tabstop>radPolygonPerimeterCurved</tabstop>
-  <tabstop>radPolygonOutside</tabstop>
-  <tabstop>radPredefinedOrder</tabstop>
-  <tabstop>radAroundPoint</tabstop>
-  <tabstop>radOverPoint</tabstop>
-  <tabstop>radLineParallel</tabstop>
-  <tabstop>radLineCurved</tabstop>
-  <tabstop>radLineHorizontal</tabstop>
+  <tabstop>mPlacementModeComboBox</tabstop>
   <tabstop>chkLineAbove</tabstop>
   <tabstop>chkLineOn</tabstop>
   <tabstop>chkLineBelow</tabstop>
@@ -7174,6 +6929,7 @@ font-style: italic;</string>
   <tabstop>mChkNoObstacle</tabstop>
   <tabstop>mIsObstacleDDBtn</tabstop>
   <tabstop>mObstacleSettingsButton</tabstop>
+  <tabstop>mLineAnchorSettingsButton</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
