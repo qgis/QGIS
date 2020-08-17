@@ -154,6 +154,15 @@ class QgsServerLandingPageTest(QgsServerAPITestBase):
             self.compareApi(
                 request, None, 'test_project_{}.json'.format(name.replace('.', '_')), subdir='landingpage')
 
+    def test_landing_page_json_empty(self):
+        """Test landing page in JSON format with no projects"""
+
+        os.environ['QGIS_SERVER_PROJECTS_DIRECTORIES'] = ''
+        os.environ['QGIS_SERVER_PROJECTS_PG_CONNECTIONS'] = ''
+        request = QgsBufferServerRequest('http://server.qgis.org/index.json')
+        self.compareApi(
+            request, None, 'test_landing_page_empty_index.json', subdir='landingpage')
+
 
 if __name__ == '__main__':
     unittest.main()
