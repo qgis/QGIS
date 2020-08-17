@@ -24,6 +24,7 @@
 #include "qgsvectorlayer.h"
 #include "nlohmann/json.hpp"
 
+#include <mutex>
 #include <QCryptographicHash>
 #include <QFileSystemWatcher>
 
