@@ -2614,10 +2614,10 @@ void TestQgsGeometry::circularString()
   QgsAbstractGeometry *boundary = boundary1.boundary();
   QgsMultiPoint *mpBoundary = dynamic_cast< QgsMultiPoint * >( boundary );
   QVERIFY( mpBoundary );
-  QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 0 ) )->x(), 0.0 );
-  QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 0 ) )->y(), 0.0 );
-  QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 1 ) )->x(), 1.0 );
-  QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 1 ) )->y(), 1.0 );
+  QCOMPARE( mpBoundary->pointN( 0 )->x(), 0.0 );
+  QCOMPARE( mpBoundary->pointN( 0 )->y(), 0.0 );
+  QCOMPARE( mpBoundary->pointN( 1 )->x(), 1.0 );
+  QCOMPARE( mpBoundary->pointN( 1 )->y(), 1.0 );
   delete boundary;
 
   // closed string = no boundary
@@ -2629,11 +2629,11 @@ void TestQgsGeometry::circularString()
   boundary = boundary1.boundary();
   mpBoundary = dynamic_cast< QgsMultiPoint * >( boundary );
   QVERIFY( mpBoundary );
-  QCOMPARE( mpBoundary->geometryN( 0 )->wkbType(), QgsWkbTypes::PointZ );
-  QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 0 ) )->x(), 0.0 );
-  QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 0 ) )->y(), 0.0 );
-  QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 0 ) )->z(), 10.0 );
-  QCOMPARE( mpBoundary->geometryN( 1 )->wkbType(), QgsWkbTypes::PointZ );
+  QCOMPARE( mpBoundary->pointN( 0 )->wkbType(), QgsWkbTypes::PointZ );
+  QCOMPARE( mpBoundary->pointN( 0 )->x(), 0.0 );
+  QCOMPARE( mpBoundary->pointN( 0 )->y(), 0.0 );
+  QCOMPARE( mpBoundary->pointN( 0 )->z(), 10.0 );
+  QCOMPARE( mpBoundary->pointN( 1 )->wkbType(), QgsWkbTypes::PointZ );
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 1 ) )->x(), 1.0 );
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 1 ) )->y(), 1.0 );
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 1 ) )->z(), 20.0 );

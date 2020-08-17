@@ -30,6 +30,16 @@ QgsMultiLineString::QgsMultiLineString()
   mWkbType = QgsWkbTypes::MultiLineString;
 }
 
+QgsLineString *QgsMultiLineString::lineStringN( int index )
+{
+  return qgsgeometry_cast< QgsLineString * >( geometryN( index ) );
+}
+
+const QgsLineString *QgsMultiLineString::lineStringN( int index ) const
+{
+  return qgsgeometry_cast< const QgsLineString * >( geometryN( index ) );
+}
+
 QString QgsMultiLineString::geometryType() const
 {
   return QStringLiteral( "MultiLineString" );

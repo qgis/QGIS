@@ -31,6 +31,16 @@ QgsMultiSurface::QgsMultiSurface()
   mWkbType = QgsWkbTypes::MultiSurface;
 }
 
+QgsSurface *QgsMultiSurface::surfaceN( int index )
+{
+  return qgsgeometry_cast< QgsSurface * >( geometryN( index ) );
+}
+
+const QgsSurface *QgsMultiSurface::surfaceN( int index ) const
+{
+  return qgsgeometry_cast< const QgsSurface * >( geometryN( index ) );
+}
+
 QString QgsMultiSurface::geometryType() const
 {
   return QStringLiteral( "MultiSurface" );

@@ -273,7 +273,7 @@ int QgsTinInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueS
               const QgsMultiCurve *mc = qgsgeometry_cast< const QgsMultiCurve * >( g.constGet() );
               for ( int i = 0; i < mc->numGeometries(); ++i )
               {
-                curves.emplace_back( qgsgeometry_cast< const QgsCurve * >( mc->geometryN( i ) ) );
+                curves.emplace_back( mc->curveN( i ) );
               }
             }
             else
