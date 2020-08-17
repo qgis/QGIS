@@ -44,7 +44,7 @@ void QgsLandingPageHandler::handleRequest( const QgsServerApiContext &context ) 
   }
   else
   {
-    const json projects { projectsData( ) };
+    const json projects = projectsData( ) ;
     json data
     {
       { "links", links( context ) },
@@ -64,7 +64,7 @@ const QString QgsLandingPageHandler::templatePath( const QgsServerApiContext &co
 
 json QgsLandingPageHandler::projectsData() const
 {
-  json j { json::array() };
+  json j = json::array();
   const auto availableProjects { QgsLandingPageUtils::projects( ) };
   const auto constProjectKeys { availableProjects.keys() };
   for ( const auto &p : constProjectKeys )
