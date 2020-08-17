@@ -175,9 +175,7 @@ void QgsPolygon3DSymbolHandler::processFeature( QgsFeature &f, const Qgs3DRender
   {
     for ( int i = 0; i < mpoly->numGeometries(); ++i )
     {
-      const QgsAbstractGeometry *g2 = mpoly->geometryN( i );
-      Q_ASSERT( QgsWkbTypes::flatType( g2->wkbType() ) == QgsWkbTypes::Polygon );
-      QgsPolygon *polyClone = static_cast< const QgsPolygon *>( g2 )->clone();
+      QgsPolygon *polyClone = static_cast< const QgsPolygon *>( mpoly->polygonN( i ) )->clone();
       processPolygon( polyClone, f.id(), height, extrusionHeight, context, out );
     }
   }

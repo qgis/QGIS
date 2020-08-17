@@ -130,9 +130,7 @@ void QgsBufferedLine3DSymbolHandler::processFeature( QgsFeature &f, const Qgs3DR
     QgsMultiPolygon *mpolyBuffered = static_cast<QgsMultiPolygon *>( buffered );
     for ( int i = 0; i < mpolyBuffered->numGeometries(); ++i )
     {
-      QgsAbstractGeometry *partBuffered = mpolyBuffered->geometryN( i );
-      Q_ASSERT( QgsWkbTypes::flatType( partBuffered->wkbType() ) == QgsWkbTypes::Polygon );
-      QgsPolygon *polyBuffered = static_cast<QgsPolygon *>( partBuffered )->clone(); // need to clone individual geometry parts
+      QgsPolygon *polyBuffered = static_cast<QgsPolygon *>( mpolyBuffered->polygonN( i ) )->clone(); // need to clone individual geometry parts
       processPolygon( polyBuffered, f.id(), mSymbol.height(), mSymbol.extrusionHeight(), context, out );
     }
     delete buffered;
@@ -259,7 +257,7 @@ void QgsSimpleLine3DSymbolHandler::processFeature( QgsFeature &f, const Qgs3DRen
   {
     for ( int nGeom = 0; nGeom < mls->numGeometries(); ++nGeom )
     {
-      const QgsLineString *ls = qgsgeometry_cast<const QgsLineString *>( mls->geometryN( nGeom ) );
+      const QgsLineString *ls = mls->lineStringN( nGeom );
       out.addLineString( *ls );
     }
   }
@@ -372,7 +370,7 @@ void QgsThickLine3DSymbolHandler::processFeature( QgsFeature &f, const Qgs3DRend
   {
     for ( int nGeom = 0; nGeom < mls->numGeometries(); ++nGeom )
     {
-      const QgsLineString *ls = qgsgeometry_cast<const QgsLineString *>( mls->geometryN( nGeom ) );
+      const QgsLineString *ls = mls->lineStringN( nGeom );
       out.addLineString( *ls );
     }
   }

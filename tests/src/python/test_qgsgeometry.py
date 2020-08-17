@@ -444,12 +444,12 @@ class TestQgsGeometry(unittest.TestCase):
         g = QgsGeometryCollection()
         self.assertTrue(bool(g))
         self.assertEqual(len(g), 0)
-        g = QgsGeometryCollection()
-        g.fromWkt('GeometryCollection( Point(1  2), Point(11 12))')
+        g = QgsMultiPoint()
+        g.fromWkt('MultiPoint( (1  2), (11 12))')
         self.assertTrue(bool(g))
         self.assertEqual(len(g), 2)
 
-        # pointN
+        # geometryN
         with self.assertRaises(IndexError):
             g.geometryN(-1)
         with self.assertRaises(IndexError):
@@ -457,7 +457,16 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(g.geometryN(0), QgsPoint(1, 2))
         self.assertEqual(g.geometryN(1), QgsPoint(11, 12))
 
+        # pointN
+        with self.assertRaises(IndexError):
+            g.pointN(-1)
+        with self.assertRaises(IndexError):
+            g.pointN(2)
+        self.assertEqual(g.pointN(0), QgsPoint(1, 2))
+        self.assertEqual(g.pointN(1), QgsPoint(11, 12))
+
         # removeGeometry
+        g = QgsGeometryCollection()
         g.fromWkt('GeometryCollection( Point(1  2), Point(11 12), Point(33 34))')
         with self.assertRaises(IndexError):
             g.removeGeometry(-1)
@@ -507,6 +516,51 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertFalse([p for p in g])
         g.fromWkt('GeometryCollection( Point(1 2), Point(11 12), LineString(33 34, 44 45))')
         self.assertEqual([p.asWkt() for p in g], ['Point (1 2)', 'Point (11 12)', 'LineString (33 34, 44 45)'])
+
+        g = QgsGeometryCollection()
+        g.fromWkt('GeometryCollection( Point(1  2), Point(11 12))')
+        self.assertTrue(bool(g))
+        self.assertEqual(len(g), 2)
+
+        # lineStringN
+        g = QgsMultiLineString()
+        g.fromWkt('MultiLineString( (1  2, 3 4), (11 12, 13 14))')
+        with self.assertRaises(IndexError):
+            g.lineStringN(-1)
+        with self.assertRaises(IndexError):
+            g.lineStringN(2)
+        self.assertEqual(g.lineStringN(0).asWkt(), 'LineString (1 2, 3 4)')
+        self.assertEqual(g.lineStringN(1).asWkt(), 'LineString (11 12, 13 14)')
+
+        # curveN
+        g = QgsMultiCurve()
+        g.fromWkt('MultiCurve( LineString(1  2, 3 4), LineString(11 12, 13 14))')
+        with self.assertRaises(IndexError):
+            g.curveN(-1)
+        with self.assertRaises(IndexError):
+            g.curveN(2)
+        self.assertEqual(g.curveN(0).asWkt(), 'LineString (1 2, 3 4)')
+        self.assertEqual(g.curveN(1).asWkt(), 'LineString (11 12, 13 14)')
+
+        # polygonN
+        g = QgsMultiPolygon()
+        g.fromWkt('MultiPolygon( ((1  2, 3 4, 3 6, 1 2)), ((11 12, 13 14, 13 16, 11 12)))')
+        with self.assertRaises(IndexError):
+            g.polygonN(-1)
+        with self.assertRaises(IndexError):
+            g.polygonN(2)
+        self.assertEqual(g.polygonN(0).asWkt(), 'Polygon ((1 2, 3 4, 3 6, 1 2))')
+        self.assertEqual(g.polygonN(1).asWkt(), 'Polygon ((11 12, 13 14, 13 16, 11 12))')
+
+        # surfaceN
+        g = QgsMultiSurface()
+        g.fromWkt('MultiSurface( Polygon((1  2, 3 4, 3 6, 1 2)), Polygon((11 12, 13 14, 13 16, 11 12)))')
+        with self.assertRaises(IndexError):
+            g.surfaceN(-1)
+        with self.assertRaises(IndexError):
+            g.surfaceN(2)
+        self.assertEqual(g.surfaceN(0).asWkt(), 'Polygon ((1 2, 3 4, 3 6, 1 2))')
+        self.assertEqual(g.surfaceN(1).asWkt(), 'Polygon ((11 12, 13 14, 13 16, 11 12))')
 
     def testCurvePolygonPythonAdditions(self):
         """
