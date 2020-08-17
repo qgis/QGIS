@@ -1358,6 +1358,57 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   mPlacementMaxCharAngleFrame->setVisible( showMaxCharAngleFrame );
 
   mMultiLinesFrame->setEnabled( enableMultiLinesFrame );
+
+
+  QString helperText;
+  switch ( currentPlacement )
+  {
+    case QgsPalLayerSettings::AroundPoint:
+      if ( currentGeometryType == QgsWkbTypes::PointGeometry )
+        helperText = tr( "Arranges label candidates in a clockwise circle around the feature, preferring placements to the top-right of the feature." );
+      else if ( currentGeometryType == QgsWkbTypes::PolygonGeometry )
+        helperText = tr( "Arranges label candidates in a cluster around the feature's centroid, preferring placements directly over the centroid." );
+      break;
+    case QgsPalLayerSettings::OverPoint:
+      if ( currentGeometryType == QgsWkbTypes::PointGeometry )
+        helperText = tr( "Arranges label candidates directly over the feature or at a preset offset from the feature." );
+      else if ( currentGeometryType == QgsWkbTypes::PolygonGeometry )
+        helperText = tr( "Arranges label candidates directly over the feature's centroid, or at a preset offset from the centroid." );
+      break;
+    case QgsPalLayerSettings::Line:
+      if ( currentGeometryType == QgsWkbTypes::LineGeometry )
+        helperText = tr( "Arranges label candidates parallel to a generalised line representing the feature. Placements which fall over straighter portions of the line are preferred." );
+      else if ( currentGeometryType == QgsWkbTypes::PolygonGeometry )
+        helperText = tr( "Arranges label candidates parallel to a generalised line representing the polygon's perimeter. Placements which fall over straighter portions of the perimeter are preferred." );
+      break;
+    case QgsPalLayerSettings::Curved:
+      if ( currentGeometryType == QgsWkbTypes::LineGeometry )
+        helperText = tr( "Arranges candidates following the curvature of a line feature. Placements which fall over straighter portions of the line are preferred." );
+      break;
+    case QgsPalLayerSettings::Horizontal:
+      if ( currentGeometryType == QgsWkbTypes::PolygonGeometry )
+        helperText = tr( "Arranges label candidates scattered throughout the polygon. Labels will always be placed horizontally, with placements further from the edges of the polygon preferred." );
+      else if ( currentGeometryType == QgsWkbTypes::LineGeometry )
+        helperText = tr( "Label candidates are arranged horizontally along the length of the feature." );
+      break;
+    case QgsPalLayerSettings::Free:
+      if ( currentGeometryType == QgsWkbTypes::PolygonGeometry )
+        helperText = tr( "Arranges label candidates scattered throughout the polygon. Labels are rotated to respect the polygon's orientation, with placements further from the edges of the polygon preferred." );
+      break;
+    case QgsPalLayerSettings::OrderedPositionsAroundPoint:
+      if ( currentGeometryType == QgsWkbTypes::PointGeometry )
+        helperText = tr( "Label candidates are placed in predefined positions around the features. Preference is given to positions with greatest cartographic appeal, e.g., top right and bottom right of the feature." );
+      break;
+    case QgsPalLayerSettings::PerimeterCurved:
+      if ( currentGeometryType == QgsWkbTypes::PolygonGeometry )
+        helperText = tr( "Arranges candidates following the curvature of the feature's perimeter. Placements which fall over straighter portions of the perimeter are preferred." );
+      break;
+    case QgsPalLayerSettings::OutsidePolygons:
+      if ( currentGeometryType == QgsWkbTypes::PolygonGeometry )
+        helperText = tr( "Label candidates are placed outside of the features, preferring placements which give greatest visual association between the label and the feature." );
+      break;
+  }
+  mPlacementModeDescriptionLabel->setText( helperText );
 }
 
 void QgsTextFormatWidget::populateFontCapitalsComboBox()

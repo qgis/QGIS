@@ -4145,21 +4145,50 @@ font-style: italic;</string>
                        <number>0</number>
                       </property>
                       <item>
-                       <layout class="QHBoxLayout" name="horizontalLayout_14" stretch="0,1">
-                        <property name="topMargin">
-                         <number>0</number>
+                       <widget class="QgsCollapsibleGroupBox" name="groupBox">
+                        <property name="title">
+                         <string>General Settings</string>
                         </property>
-                        <item>
-                         <widget class="QLabel" name="label_2">
-                          <property name="text">
-                           <string>Placement</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QComboBox" name="mPlacementModeComboBox"/>
-                        </item>
-                       </layout>
+                        <layout class="QGridLayout" name="gridLayout_13">
+                         <item row="1" column="0">
+                          <layout class="QHBoxLayout" name="horizontalLayout_14" stretch="0,1">
+                           <property name="topMargin">
+                            <number>0</number>
+                           </property>
+                           <item>
+                            <widget class="QLabel" name="label_2">
+                             <property name="text">
+                              <string>Mode</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item>
+                            <widget class="QComboBox" name="mPlacementModeComboBox"/>
+                           </item>
+                          </layout>
+                         </item>
+                         <item row="0" column="0">
+                          <widget class="QLabel" name="label_14">
+                           <property name="text">
+                            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;The Placement Mode option controls the overall placement of labels relative to their corresponding features.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                           </property>
+                           <property name="wordWrap">
+                            <bool>true</bool>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="2" column="0">
+                          <widget class="QLabel" name="mPlacementModeDescriptionLabel">
+                           <property name="text">
+                            <string>TextLabel</string>
+                           </property>
+                           <property name="wordWrap">
+                            <bool>true</bool>
+                           </property>
+                          </widget>
+                         </item>
+                        </layout>
+                       </widget>
                       </item>
                       <item>
                        <widget class="QFrame" name="mPlacementLineFrame">
@@ -4191,16 +4220,10 @@ font-style: italic;</string>
                          <property name="bottomMargin">
                           <number>0</number>
                          </property>
-                         <item row="0" column="0">
-                          <widget class="QLabel" name="label_13">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
+                         <item row="1" column="1">
+                          <widget class="QCheckBox" name="chkLineOrientationDependent">
                            <property name="text">
-                            <string>Allowed positions</string>
+                            <string>Line orientation dependent position</string>
                            </property>
                           </widget>
                          </item>
@@ -4251,10 +4274,16 @@ font-style: italic;</string>
                            </item>
                           </layout>
                          </item>
-                         <item row="1" column="1">
-                          <widget class="QCheckBox" name="chkLineOrientationDependent">
+                         <item row="0" column="0">
+                          <widget class="QLabel" name="label_13">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
                            <property name="text">
-                            <string>Line orientation dependent position</string>
+                            <string>Allowed positions</string>
                            </property>
                           </widget>
                          </item>
