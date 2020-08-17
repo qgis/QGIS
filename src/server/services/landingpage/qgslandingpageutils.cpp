@@ -572,7 +572,7 @@ json QgsLandingPageUtils::layerTree( const QgsProject &project, const QStringLis
     const auto cChildren { node->children() };
     for ( const auto &c : cChildren )
     {
-      const json harvested { harvest( c, treeId ) };
+      const json harvested = harvest( c, treeId );
       if ( ! harvested.is_null() )
       {
         children.push_back( harvested );
