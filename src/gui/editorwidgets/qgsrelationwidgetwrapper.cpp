@@ -155,7 +155,7 @@ void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
 
   QgsAttributeEditorContext myContext( QgsAttributeEditorContext( context(), mRelation, QgsAttributeEditorContext::Multiple, QgsAttributeEditorContext::Embed ) );
 
-  // read the legacy config of force-suppress-popup to support settings made by the API and autoconfigurated forms
+  // read the legacy config of force-suppress-popup to support settings made on autoconfigurated forms
   // it will be overwritten on specific widget configuration
   if ( config( QStringLiteral( "force-suppress-popup" ), false ).toBool() )
   {
@@ -169,7 +169,7 @@ void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
   }
   */
 
-  // read the legacy config of nm-rel to support settings made by the API  and autoconfigurated forms
+  // read the legacy config of nm-rel to support settings made on autoconfigurated forms
   // it will be overwritten on specific widget configuration
   mNmRelation = QgsProject::instance()->relationManager()->relation( config( QStringLiteral( "nm-rel" ) ).toString() );
 
