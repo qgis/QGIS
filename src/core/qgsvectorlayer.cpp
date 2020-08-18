@@ -3345,7 +3345,7 @@ QgsFeatureSource::FeatureAvailability QgsVectorLayer::hasFeatures() const
     return QgsFeatureSource::FeatureAvailability::FeaturesAvailable;
 }
 
-bool QgsVectorLayer::commitChanges()
+bool QgsVectorLayer::commitChanges( bool stopEditing )
 {
   mCommitErrors.clear();
 
@@ -3361,7 +3361,7 @@ bool QgsVectorLayer::commitChanges()
     return false;
   }
 
-  emit beforeCommitChanges();
+  emit beforeCommitChanges( stopEditing );
 
   if ( !mAllowCommit )
     return false;
@@ -3370,11 +3370,15 @@ bool QgsVectorLayer::commitChanges()
 
   if ( success )
   {
-    delete mEditBuffer;
-    mEditBuffer = nullptr;
+    if ( stopEditing )
+    {
+      delete mEditBuffer;
+      mEditBuffer = nullptr;
+    }
     undoStack()->clear();
     emit afterCommitChanges();
-    emit editingStopped();
+    if ( stopEditing )
+      emit editingStopped();
   }
   else
   {
