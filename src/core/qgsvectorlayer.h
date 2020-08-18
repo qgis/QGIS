@@ -1921,11 +1921,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Therefore any error message returned by commitErrors() also includes which stage failed so
      * that the user has some chance of repairing the damage cleanly.
      *
+     * By setting \a stopEditing to FALSE, the layer will stay in editing mode.
+     * Otherwise the layer editing mode will be disabled if the commit is successful.
+     *
      * \see startEditing()
      * \see commitErrors()
      * \see rollBack()
      */
-    Q_INVOKABLE bool commitChanges();
+    Q_INVOKABLE bool commitChanges( bool stopEditing = true );
 
     /**
      * Returns a list containing any error messages generated when attempting
@@ -2500,8 +2503,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Emitted when edited changes have been successfully written to the data provider.
     void editingStopped();
 
-    //! Emitted before changes are committed to the data provider.
-    void beforeCommitChanges();
+    /**
+     * Emitted before changes are committed to the data provider.
+     *
+     * The \a stopEditing flag specifies if the editing mode shall be left after this commit.
+     */
+    void beforeCommitChanges( bool stopEditing );
 
     //! Emitted before changes are rolled back.
     void beforeRollBack();
