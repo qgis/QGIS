@@ -17,7 +17,7 @@
 #include "qgsannotationitemregistry.h"
 #include "qgsannotationitem.h"
 #include "qgsannotationmarkeritem.h"
-#include "qgsannotationlinestringitem.h"
+#include "qgsannotationlineitem.h"
 #include "qgsannotationpolygonitem.h"
 #include "qgsannotationpointtextitem.h"
 #include <QDomElement>
@@ -40,7 +40,7 @@ bool QgsAnnotationItemRegistry::populate()
   mMetadata.insert( QStringLiteral( "marker" ), new QgsAnnotationItemMetadata( QStringLiteral( "marker" ), QObject::tr( "Marker" ), QObject::tr( "Markers" ),
                     QgsAnnotationMarkerItem::create ) );
   mMetadata.insert( QStringLiteral( "linestring" ), new QgsAnnotationItemMetadata( QStringLiteral( "linestring" ), QObject::tr( "Polyline" ), QObject::tr( "Polylines" ),
-                    QgsAnnotationLineStringItem::create ) );
+                    QgsAnnotationLineItem::create ) );
   mMetadata.insert( QStringLiteral( "polygon" ), new QgsAnnotationItemMetadata( QStringLiteral( "polygon" ), QObject::tr( "Polygon" ), QObject::tr( "Polygons" ),
                     QgsAnnotationPolygonItem::create ) );
   mMetadata.insert( QStringLiteral( "pointtext" ), new QgsAnnotationItemMetadata( QStringLiteral( "pointtext" ), QObject::tr( "Text at point" ), QObject::tr( "Text at points" ),

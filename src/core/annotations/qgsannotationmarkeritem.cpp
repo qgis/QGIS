@@ -19,7 +19,7 @@
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 
-QgsAnnotationMarkerItem::QgsAnnotationMarkerItem( QgsPointXY point )
+QgsAnnotationMarkerItem::QgsAnnotationMarkerItem( const QgsPoint &point )
   : QgsAnnotationItem()
   , mPoint( point )
   , mSymbol( qgis::make_unique< QgsMarkerSymbol >() )
@@ -68,14 +68,14 @@ bool QgsAnnotationMarkerItem::writeXml( QDomElement &element, QDomDocument &docu
 
 QgsAnnotationMarkerItem *QgsAnnotationMarkerItem::create()
 {
-  return new QgsAnnotationMarkerItem( QgsPointXY() );
+  return new QgsAnnotationMarkerItem( QgsPoint() );
 }
 
 bool QgsAnnotationMarkerItem::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   const double x = element.attribute( QStringLiteral( "x" ) ).toDouble();
   const double y = element.attribute( QStringLiteral( "y" ) ).toDouble();
-  mPoint = QgsPointXY( x, y );
+  mPoint = QgsPoint( x, y );
 
   setZIndex( element.attribute( QStringLiteral( "zIndex" ) ).toInt() );
 

@@ -18,9 +18,9 @@
 #include "qgsannotationpolygonitem.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
+#include "qgssurface.h"
 
-
-QgsAnnotationPolygonItem::QgsAnnotationPolygonItem( const QgsPolygon &polygon )
+QgsAnnotationPolygonItem::QgsAnnotationPolygonItem( QgsCurvePolygon *polygon )
   : QgsAnnotationItem()
   , mPolygon( polygon )
   , mSymbol( qgis::make_unique< QgsFillSymbol >() )
@@ -67,13 +67,13 @@ void QgsAnnotationPolygonItem::render( QgsRenderContext &context, QgsFeedback * 
     }
   };
 
-  QPolygonF exterior = mPolygon.exteriorRing()->asQPolygonF();
+  QPolygonF exterior = mPolygon->exteriorRing()->asQPolygonF();
   transformRing( exterior );
   QVector<QPolygonF> rings;
-  rings.reserve( mPolygon.numInteriorRings() );
-  for ( int i = 0; i < mPolygon.numInteriorRings(); ++i )
+  rings.reserve( mPolygon->numInteriorRings() );
+  for ( int i = 0; i < mPolygon->numInteriorRings(); ++i )
   {
-    QPolygonF ring = mPolygon.interiorRing( i )->asQPolygonF();
+    QPolygonF ring = mPolygon->interiorRing( i )->asQPolygonF();
     transformRing( ring );
     rings.append( ring );
   }
@@ -85,7 +85,7 @@ void QgsAnnotationPolygonItem::render( QgsRenderContext &context, QgsFeedback * 
 
 bool QgsAnnotationPolygonItem::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
-  element.setAttribute( QStringLiteral( "wkt" ), mPolygon.asWkt() );
+  element.setAttribute( QStringLiteral( "wkt" ), mPolygon->asWkt() );
 
   element.setAttribute( QStringLiteral( "zIndex" ), zIndex() );
   element.appendChild( QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "lineSymbol" ), mSymbol.get(), document, context ) );
@@ -95,13 +95,15 @@ bool QgsAnnotationPolygonItem::writeXml( QDomElement &element, QDomDocument &doc
 
 QgsAnnotationPolygonItem *QgsAnnotationPolygonItem::create()
 {
-  return new QgsAnnotationPolygonItem( QgsPolygon() );
+  return new QgsAnnotationPolygonItem( new QgsPolygon() );
 }
 
 bool QgsAnnotationPolygonItem::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   const QString wkt = element.attribute( QStringLiteral( "wkt" ) );
-  mPolygon.fromWkt( wkt );
+  const QgsGeometry geometry = QgsGeometry::fromWkt( wkt );
+  if ( const QgsCurvePolygon *polygon = qgsgeometry_cast< const QgsCurvePolygon * >( geometry.constGet() ) )
+    mPolygon.reset( polygon->clone() );
 
   setZIndex( element.attribute( QStringLiteral( "zIndex" ) ).toInt() );
 
@@ -114,7 +116,7 @@ bool QgsAnnotationPolygonItem::readXml( const QDomElement &element, const QgsRea
 
 QgsAnnotationPolygonItem *QgsAnnotationPolygonItem::clone()
 {
-  std::unique_ptr< QgsAnnotationPolygonItem > item = qgis::make_unique< QgsAnnotationPolygonItem >( mPolygon );
+  std::unique_ptr< QgsAnnotationPolygonItem > item = qgis::make_unique< QgsAnnotationPolygonItem >( mPolygon->clone() );
   item->setSymbol( mSymbol->clone() );
   item->setZIndex( zIndex() );
   return item.release();
@@ -122,7 +124,7 @@ QgsAnnotationPolygonItem *QgsAnnotationPolygonItem::clone()
 
 QgsRectangle QgsAnnotationPolygonItem::boundingBox() const
 {
-  return mPolygon.boundingBox();
+  return mPolygon->boundingBox();
 }
 
 const QgsFillSymbol *QgsAnnotationPolygonItem::symbol() const

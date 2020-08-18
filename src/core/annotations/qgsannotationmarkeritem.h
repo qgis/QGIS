@@ -36,7 +36,7 @@ class CORE_EXPORT QgsAnnotationMarkerItem : public QgsAnnotationItem
     /**
      * Constructor for QgsAnnotationMarkerItem, at the specified \a point.
      */
-    QgsAnnotationMarkerItem( QgsPointXY point );
+    QgsAnnotationMarkerItem( const QgsPoint &point );
     ~QgsAnnotationMarkerItem() override;
 
     QString type() const override;
@@ -53,22 +53,22 @@ class CORE_EXPORT QgsAnnotationMarkerItem : public QgsAnnotationItem
     QgsRectangle boundingBox() const override;
 
     /**
-     * Returns the point location of the marker.
+     * Returns the point geometry of the marker.
      *
      * The coordinate reference system for the point will be the parent layer's QgsAnnotationLayer::crs().
      *
-     * \see setPoint()
+     * \see setGeometry()
      */
-    QgsPointXY point() const { return mPoint; }
+    QgsPointXY geometry() const { return mPoint; }
 
     /**
-     * Sets the \a point location of the marker.
+     * Sets the point \a geometry location of the marker.
      *
      * The coordinate reference system for the point will be the parent layer's QgsAnnotationLayer::crs().
      *
-     * \see point()
+     * \see geometry()
      */
-    void setPoint( QgsPointXY point ) { mPoint = point; }
+    void setGeometry( const QgsPoint &geometry ) { mPoint = geometry; }
 
     /**
      * Returns the symbol used to render the marker item.
@@ -88,7 +88,7 @@ class CORE_EXPORT QgsAnnotationMarkerItem : public QgsAnnotationItem
 
   private:
 
-    QgsPointXY mPoint;
+    QgsPoint mPoint;
     std::unique_ptr< QgsMarkerSymbol > mSymbol;
 
 #ifdef SIP_RUN
