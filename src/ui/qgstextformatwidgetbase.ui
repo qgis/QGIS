@@ -717,8 +717,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>485</width>
-                       <height>429</height>
+                       <width>323</width>
+                       <height>317</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
@@ -1280,7 +1280,7 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>471</width>
+                       <width>373</width>
                        <height>708</height>
                       </rect>
                      </property>
@@ -2164,8 +2164,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>485</width>
-                       <height>429</height>
+                       <width>299</width>
+                       <height>308</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2510,8 +2510,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>485</width>
-                       <height>429</height>
+                       <width>294</width>
+                       <height>291</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_121">
@@ -2788,7 +2788,7 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>471</width>
+                       <width>440</width>
                        <height>786</height>
                       </rect>
                      </property>
@@ -3549,7 +3549,7 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>471</width>
+                       <width>324</width>
                        <height>457</height>
                       </rect>
                      </property>
@@ -3977,8 +3977,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>485</width>
-                       <height>429</height>
+                       <width>159</width>
+                       <height>211</height>
                       </rect>
                      </property>
                      <layout class="QGridLayout" name="gridLayout_46">
@@ -4126,9 +4126,9 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>0</y>
+                       <y>-515</y>
                        <width>471</width>
-                       <height>1352</height>
+                       <height>1686</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -5107,34 +5107,12 @@ font-style: italic;</string>
                        </widget>
                       </item>
                       <item>
-                       <widget class="QFrame" name="mPlacementRepeatDistanceFrame">
-                        <property name="frameShape">
-                         <enum>QFrame::NoFrame</enum>
+                       <widget class="QgsCollapsibleGroupBox" name="mPlacementRepeatGroupBox">
+                        <property name="title">
+                         <string>Repeating Labels</string>
                         </property>
-                        <property name="frameShadow">
-                         <enum>QFrame::Raised</enum>
-                        </property>
-                        <layout class="QGridLayout" name="gridLayout_24">
-                         <property name="leftMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="topMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="rightMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="bottomMargin">
-                          <number>0</number>
-                         </property>
-                         <item row="0" column="0">
-                          <widget class="QLabel" name="label_7">
-                           <property name="text">
-                            <string>Repeat</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="0" column="1">
+                        <layout class="QGridLayout" name="gridLayout_18">
+                         <item row="1" column="1">
                           <widget class="QgsDoubleSpinBox" name="mRepeatDistanceSpinBox">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -5153,24 +5131,41 @@ font-style: italic;</string>
                            </property>
                           </widget>
                          </item>
-                         <item row="0" column="2">
+                         <item row="1" column="2">
                           <widget class="QgsPropertyOverrideButton" name="mRepeatDistanceDDBtn">
                            <property name="text">
                             <string>…</string>
                            </property>
                           </widget>
                          </item>
-                         <item row="1" column="1">
+                         <item row="1" column="0">
+                          <widget class="QLabel" name="label_7">
+                           <property name="text">
+                            <string>Distance</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="2" column="1">
                           <widget class="QgsUnitSelectionWidget" name="mRepeatDistanceUnitWidget" native="true">
                            <property name="focusPolicy">
                             <enum>Qt::StrongFocus</enum>
                            </property>
                           </widget>
                          </item>
-                         <item row="1" column="2">
+                         <item row="2" column="2">
                           <widget class="QgsPropertyOverrideButton" name="mRepeatDistanceUnitDDBtn">
                            <property name="text">
                             <string>…</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="0" column="0" colspan="3">
+                          <widget class="QLabel" name="label_41">
+                           <property name="text">
+                            <string>Setting a repeat distance allows labels to be repeated multiple times over the length of the feature. This distance is treated as a hint for label placement only, and the exact distance between repeating labels may vary depending on the shape of the feature and arrangement of nearby labels.</string>
+                           </property>
+                           <property name="wordWrap">
+                            <bool>true</bool>
                            </property>
                           </widget>
                          </item>
@@ -5178,34 +5173,26 @@ font-style: italic;</string>
                        </widget>
                       </item>
                       <item>
-                       <widget class="QFrame" name="mPlacementOverrunDistanceFrame">
-                        <property name="frameShape">
-                         <enum>QFrame::NoFrame</enum>
+                       <widget class="QgsCollapsibleGroupBox" name="mPlacementOverrunGroupBox">
+                        <property name="title">
+                         <string>Label Overrun</string>
                         </property>
-                        <property name="frameShadow">
-                         <enum>QFrame::Raised</enum>
-                        </property>
-                        <layout class="QGridLayout" name="gridLayout_44">
-                         <property name="leftMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="topMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="rightMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="bottomMargin">
-                          <number>0</number>
-                         </property>
-                         <item row="0" column="0">
-                          <widget class="QLabel" name="label_46">
-                           <property name="text">
-                            <string>Overrun feature</string>
+                        <layout class="QGridLayout" name="gridLayout_14">
+                         <item row="2" column="1">
+                          <widget class="QgsUnitSelectionWidget" name="mOverrunDistanceUnitWidget" native="true">
+                           <property name="focusPolicy">
+                            <enum>Qt::StrongFocus</enum>
                            </property>
                           </widget>
                          </item>
-                         <item row="0" column="1">
+                         <item row="1" column="0">
+                          <widget class="QLabel" name="label_46">
+                           <property name="text">
+                            <string>Overrun distance</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="1" column="1">
                           <widget class="QgsDoubleSpinBox" name="mOverrunDistanceSpinBox">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -5224,17 +5211,20 @@ font-style: italic;</string>
                            </property>
                           </widget>
                          </item>
-                         <item row="0" column="2">
+                         <item row="1" column="2">
                           <widget class="QgsPropertyOverrideButton" name="mOverrunDistanceDDBtn">
                            <property name="text">
                             <string>…</string>
                            </property>
                           </widget>
                          </item>
-                         <item row="1" column="1">
-                          <widget class="QgsUnitSelectionWidget" name="mOverrunDistanceUnitWidget" native="true">
-                           <property name="focusPolicy">
-                            <enum>Qt::StrongFocus</enum>
+                         <item row="0" column="0" colspan="3">
+                          <widget class="QLabel" name="label_40">
+                           <property name="text">
+                            <string>The overrun distance allows labels which extend past the start or end of line features. Increasing this distance can allow for labels to be shown for shorter line features.</string>
+                           </property>
+                           <property name="wordWrap">
+                            <bool>true</bool>
                            </property>
                           </widget>
                          </item>
@@ -5831,7 +5821,7 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>471</width>
+                       <width>430</width>
                        <height>708</height>
                       </rect>
                      </property>
@@ -6859,10 +6849,6 @@ font-style: italic;</string>
   <tabstop>mPointOffsetUnitWidget</tabstop>
   <tabstop>mPointOffsetUnitsDDBtn</tabstop>
   <tabstop>mPointAngleSpinBox</tabstop>
-  <tabstop>mRepeatDistanceSpinBox</tabstop>
-  <tabstop>mRepeatDistanceDDBtn</tabstop>
-  <tabstop>mRepeatDistanceUnitWidget</tabstop>
-  <tabstop>mRepeatDistanceUnitDDBtn</tabstop>
   <tabstop>mMaxCharAngleInDSpinBox</tabstop>
   <tabstop>mMaxCharAngleOutDSpinBox</tabstop>
   <tabstop>mMaxCharAngleDDBtn</tabstop>
@@ -6934,9 +6920,6 @@ font-style: italic;</string>
   <tabstop>mCalloutsDrawCheckBox</tabstop>
   <tabstop>mCalloutDrawDDBtn</tabstop>
   <tabstop>mCalloutStyleComboBox</tabstop>
-  <tabstop>mOverrunDistanceSpinBox</tabstop>
-  <tabstop>mOverrunDistanceDDBtn</tabstop>
-  <tabstop>mOverrunDistanceUnitWidget</tabstop>
   <tabstop>mChkNoObstacle</tabstop>
   <tabstop>mIsObstacleDDBtn</tabstop>
   <tabstop>mObstacleSettingsButton</tabstop>

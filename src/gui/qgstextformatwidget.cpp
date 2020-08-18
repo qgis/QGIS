@@ -1351,9 +1351,9 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   mPlacementDistanceFrame->setVisible( showDistanceFrame );
   mPlacementOffsetTypeFrame->setVisible( showOffsetTypeFrame );
   mPlacementRotationFrame->setVisible( showRotationFrame );
-  mPlacementRepeatDistanceFrame->setVisible( currentGeometryType == QgsWkbTypes::LineGeometry || ( currentGeometryType == QgsWkbTypes::PolygonGeometry &&
-      ( currentPlacement == QgsPalLayerSettings::Line || currentPlacement == QgsPalLayerSettings::PerimeterCurved ) ) );
-  mPlacementOverrunDistanceFrame->setVisible( currentGeometryType == QgsWkbTypes::LineGeometry && currentPlacement != QgsPalLayerSettings::Horizontal );
+  mPlacementRepeatGroupBox->setVisible( currentGeometryType == QgsWkbTypes::LineGeometry || ( currentGeometryType == QgsWkbTypes::PolygonGeometry &&
+                                        ( currentPlacement == QgsPalLayerSettings::Line || currentPlacement == QgsPalLayerSettings::PerimeterCurved ) ) );
+  mPlacementOverrunGroupBox->setVisible( currentGeometryType == QgsWkbTypes::LineGeometry && currentPlacement != QgsPalLayerSettings::Horizontal );
   mLineAnchorGroupBox->setVisible( currentGeometryType == QgsWkbTypes::LineGeometry );
   mPlacementMaxCharAngleFrame->setVisible( showMaxCharAngleFrame );
 
