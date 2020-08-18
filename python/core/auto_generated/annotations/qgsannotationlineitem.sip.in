@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/annotations/qgsannotationlinestringitem.h                   *
+ * src/core/annotations/qgsannotationlineitem.h                         *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -10,24 +10,24 @@
 
 
 
-class QgsAnnotationLineStringItem : QgsAnnotationItem
+class QgsAnnotationLineItem : QgsAnnotationItem
 {
 %Docstring
-An annotation item which renders a line symbol along a linestring geometry.
+An annotation item which renders a line symbol along a line geometry.
 
 .. versionadded:: 3.16
 %End
 
 %TypeHeaderCode
-#include "qgsannotationlinestringitem.h"
+#include "qgsannotationlineitem.h"
 %End
   public:
 
-    QgsAnnotationLineStringItem( const QgsLineString &linestring );
+    QgsAnnotationLineItem( QgsCurve *curve /Transfer/ );
 %Docstring
-Constructor for QgsAnnotationLineStringItem, with the specified ``linestring``.
+Constructor for QgsAnnotationLineItem, with the specified ``linestring``.
 %End
-    ~QgsAnnotationLineStringItem();
+    ~QgsAnnotationLineItem();
 
     virtual QString type() const;
 
@@ -36,7 +36,7 @@ Constructor for QgsAnnotationLineStringItem, with the specified ``linestring``.
     virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
 
-    static QgsAnnotationLineStringItem *create() /Factory/;
+    static QgsAnnotationLineItem *create() /Factory/;
 %Docstring
 Creates a new linestring annotation item.
 %End
@@ -46,25 +46,25 @@ Creates a new linestring annotation item.
     virtual QgsRectangle boundingBox() const;
 
 
-    virtual QgsAnnotationLineStringItem *clone() /Factory/;
+    virtual QgsAnnotationLineItem *clone() /Factory/;
 
 
-    QgsLineString lineString() const;
+    const QgsCurve *geometry() const;
 %Docstring
-Returns the line string geometry of the item.
+Returns the geometry of the item.
 
 The coordinate reference system for the line will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
 
-.. seealso:: :py:func:`setLineString`
+.. seealso:: :py:func:`setGeometry`
 %End
 
-    void setLineString( const QgsLineString &lineString );
+    void setGeometry( QgsCurve *geometry /Transfer/ );
 %Docstring
-Sets the ``lineString`` geometry of the item.
+Sets the ``geometry`` of the item. Ownership of ``geometry`` is transferred.
 
 The coordinate reference system for the line will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
 
-.. seealso:: :py:func:`lineString`
+.. seealso:: :py:func:`geometry`
 %End
 
     const QgsLineSymbol *symbol() const;
@@ -84,13 +84,13 @@ The item takes ownership of the symbol.
 %End
 
   private:
-    QgsAnnotationLineStringItem( const QgsAnnotationLineStringItem &other );
+    QgsAnnotationLineItem( const QgsAnnotationLineItem &other );
 };
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/annotations/qgsannotationlinestringitem.h                   *
+ * src/core/annotations/qgsannotationlineitem.h                         *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

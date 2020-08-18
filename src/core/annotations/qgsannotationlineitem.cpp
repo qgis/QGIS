@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsannotationlinestringitem.cpp
+    qgsannotationlineitem.cpp
     ----------------
     begin                : July 2020
     copyright            : (C) 2020 by Nyall Dawson
@@ -15,28 +15,28 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsannotationlinestringitem.h"
+#include "qgsannotationlineitem.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 
-QgsAnnotationLineStringItem::QgsAnnotationLineStringItem( const QgsLineString &linestring )
+QgsAnnotationLineItem::QgsAnnotationLineItem( QgsCurve *curve )
   : QgsAnnotationItem()
-  , mLineString( linestring )
+  , mCurve( curve )
   , mSymbol( qgis::make_unique< QgsLineSymbol >() )
 {
 
 }
 
-QgsAnnotationLineStringItem::~QgsAnnotationLineStringItem() = default;
+QgsAnnotationLineItem::~QgsAnnotationLineItem() = default;
 
-QString QgsAnnotationLineStringItem::type() const
+QString QgsAnnotationLineItem::type() const
 {
   return QStringLiteral( "linestring" );
 }
 
-void QgsAnnotationLineStringItem::render( QgsRenderContext &context, QgsFeedback * )
+void QgsAnnotationLineItem::render( QgsRenderContext &context, QgsFeedback * )
 {
-  QPolygonF pts = mLineString.asQPolygonF();
+  QPolygonF pts = mCurve->asQPolygonF();
 
   //transform the QPolygonF to screen coordinates
   if ( context.coordinateTransform().isValid() )
@@ -69,9 +69,9 @@ void QgsAnnotationLineStringItem::render( QgsRenderContext &context, QgsFeedback
   mSymbol->stopRender( context );
 }
 
-bool QgsAnnotationLineStringItem::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
+bool QgsAnnotationLineItem::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
-  element.setAttribute( QStringLiteral( "wkt" ), mLineString.asWkt() );
+  element.setAttribute( QStringLiteral( "wkt" ), mCurve->asWkt() );
   element.setAttribute( QStringLiteral( "zIndex" ), zIndex() );
 
   element.appendChild( QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "lineSymbol" ), mSymbol.get(), document, context ) );
@@ -79,16 +79,17 @@ bool QgsAnnotationLineStringItem::writeXml( QDomElement &element, QDomDocument &
   return true;
 }
 
-QgsAnnotationLineStringItem *QgsAnnotationLineStringItem::create()
+QgsAnnotationLineItem *QgsAnnotationLineItem::create()
 {
-  return new QgsAnnotationLineStringItem( QgsLineString() );
+  return new QgsAnnotationLineItem( new QgsLineString() );
 }
 
-bool QgsAnnotationLineStringItem::readXml( const QDomElement &element, const QgsReadWriteContext &context )
+bool QgsAnnotationLineItem::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   const QString wkt = element.attribute( QStringLiteral( "wkt" ) );
-  QgsLineString ls;
-  mLineString.fromWkt( wkt );
+  const QgsGeometry geometry = QgsGeometry::fromWkt( wkt );
+  if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( geometry.constGet() ) )
+    mCurve.reset( curve->clone() );
 
   setZIndex( element.attribute( QStringLiteral( "zIndex" ) ).toInt() );
 
@@ -99,25 +100,25 @@ bool QgsAnnotationLineStringItem::readXml( const QDomElement &element, const Qgs
   return true;
 }
 
-QgsRectangle QgsAnnotationLineStringItem::boundingBox() const
+QgsRectangle QgsAnnotationLineItem::boundingBox() const
 {
-  return mLineString.boundingBox();
+  return mCurve->boundingBox();
 }
 
-QgsAnnotationLineStringItem *QgsAnnotationLineStringItem::clone()
+QgsAnnotationLineItem *QgsAnnotationLineItem::clone()
 {
-  std::unique_ptr< QgsAnnotationLineStringItem > item = qgis::make_unique< QgsAnnotationLineStringItem >( mLineString );
+  std::unique_ptr< QgsAnnotationLineItem > item = qgis::make_unique< QgsAnnotationLineItem >( mCurve->clone() );
   item->setSymbol( mSymbol->clone() );
   item->setZIndex( zIndex() );
   return item.release();
 }
 
-const QgsLineSymbol *QgsAnnotationLineStringItem::symbol() const
+const QgsLineSymbol *QgsAnnotationLineItem::symbol() const
 {
   return mSymbol.get();
 }
 
-void QgsAnnotationLineStringItem::setSymbol( QgsLineSymbol *symbol )
+void QgsAnnotationLineItem::setSymbol( QgsLineSymbol *symbol )
 {
   mSymbol.reset( symbol );
 }

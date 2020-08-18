@@ -128,7 +128,7 @@ SET(QGIS_CORE_SRCS
   annotations/qgsannotationitemregistry.cpp
   annotations/qgsannotationlayer.cpp
   annotations/qgsannotationlayerrenderer.cpp
-  annotations/qgsannotationlinestringitem.cpp
+  annotations/qgsannotationlineitem.cpp
   annotations/qgsannotationmarkeritem.cpp
   annotations/qgsannotationmanager.cpp
   annotations/qgsannotationpointtextitem.cpp
@@ -1057,7 +1057,7 @@ SET(QGIS_CORE_HDRS
   annotations/qgsannotationitemregistry.h
   annotations/qgsannotationlayer.h
   annotations/qgsannotationlayerrenderer.h
-  annotations/qgsannotationlinestringitem.h
+  annotations/qgsannotationlineitem.h
   annotations/qgsannotationmarkeritem.h
   annotations/qgsannotationmanager.h
   annotations/qgsannotationpointtextitem.h
