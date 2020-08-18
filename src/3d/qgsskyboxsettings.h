@@ -41,11 +41,6 @@ class _3D_EXPORT QgsSkyboxSettings
     //! Writes settings to a DOM \a element
     void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const;
 
-    //! Returns whether the skybox is enabled
-    bool isSkyboxEnabled() const { return mIsSkyboxEnabled; }
-    //! Sets whether the skybox is enabled
-    void setIsSkyboxEnabled( bool enabled ) { mIsSkyboxEnabled = enabled; }
-
     //! Returns the type of the skybox
     QgsSkyboxEntity::SkyboxType skyboxType() const { return mSkyboxType; }
     //! Sets the type of the skybox
@@ -69,7 +64,6 @@ class _3D_EXPORT QgsSkyboxSettings
     void setCubeMapFace( const QString &face, const QString &path ) { mCubeMapFacesPaths[face] = path; }
 
   private:
-    bool mIsSkyboxEnabled = false;
     QgsSkyboxEntity::SkyboxType mSkyboxType;
     //
     QString mPanoramicTexturePath;

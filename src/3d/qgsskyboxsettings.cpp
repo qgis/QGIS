@@ -23,7 +23,6 @@
 void QgsSkyboxSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   const QgsPathResolver &pathResolver = context.pathResolver();
-  mIsSkyboxEnabled = element.attribute( QStringLiteral( "skybox-enabled" ) ).toInt();
   QString skyboxTypeStr = element.attribute( QStringLiteral( "skybox-type" ) );
   if ( skyboxTypeStr == QStringLiteral( "Distinct Faces" ) )
     mSkyboxType = QgsSkyboxEntity::DistinctTexturesSkybox;
@@ -41,7 +40,6 @@ void QgsSkyboxSettings::readXml( const QDomElement &element, const QgsReadWriteC
 
 void QgsSkyboxSettings::writeXml( QDomElement &element, const QgsReadWriteContext &context ) const
 {
-  element.setAttribute( QStringLiteral( "skybox-enabled" ), mIsSkyboxEnabled );
   switch ( mSkyboxType )
   {
     case QgsSkyboxEntity::DistinctTexturesSkybox:

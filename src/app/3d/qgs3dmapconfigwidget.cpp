@@ -127,6 +127,8 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   mSkyboxSettingsWidget = new QgsSkyboxRenderingSettingsWidget( this );
   mSkyboxSettingsWidget->setSkyboxSettings( map->skyboxSettings() );
   groupSkyboxSettings->layout()->addWidget( mSkyboxSettingsWidget );
+  groupSkyboxSettings->setChecked( mMap->isSkyboxEnabled() );
+
 }
 
 void Qgs3DMapConfigWidget::apply()
@@ -239,6 +241,7 @@ void Qgs3DMapConfigWidget::apply()
 
   mMap->setPointLights( widgetLights->pointLights() );
   mMap->setDirectionalLights( widgetLights->directionalLights() );
+  mMap->setIsSkyboxEnabled( groupSkyboxSettings->isChecked() );
   mMap->setSkyboxSettings( mSkyboxSettingsWidget->toSkyboxSettings() );
 }
 

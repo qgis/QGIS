@@ -107,12 +107,7 @@
      </layout>
     </widget>
    </item>
-   <item row="0" column="0">
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0" colspan="2">
-      <widget class="QCheckBox" name="skyboxEnabledCheckBox">
        <property name="text">
-        <string>Enable skybox</string>
        </property>
       </widget>
      </item>

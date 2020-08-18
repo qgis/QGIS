@@ -58,6 +58,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mTransformContext( other.mTransformContext )
   , mPathResolver( other.mPathResolver )
   , mMapThemes( other.mMapThemes )
+  , mIsSkyboxEnabled( other.mIsSkyboxEnabled )
   , mSkyboxSettings()
 {
   Q_FOREACH ( QgsAbstract3DRenderer *renderer, other.mRenderers )
@@ -224,8 +225,8 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   }
 
   QDomElement elemSkybox = elem.firstChildElement( QStringLiteral( "skybox" ) );
+  mIsSkyboxEnabled = elemSkybox.attribute( QStringLiteral( "skybox-enabled" ) ).toInt();
   mSkyboxSettings.readXml( elemSkybox, context );
-
 
   QDomElement elemDebug = elem.firstChildElement( QStringLiteral( "debug" ) );
   mShowTerrainBoundingBoxes = elemDebug.attribute( QStringLiteral( "bounding-boxes" ), QStringLiteral( "0" ) ).toInt();
@@ -325,6 +326,7 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elem.appendChild( elemRenderers );
 
   QDomElement elemSkybox = doc.createElement( QStringLiteral( "skybox" ) );
+  elemSkybox.setAttribute( QStringLiteral( "skybox-enabled" ), mIsSkyboxEnabled );
   mSkyboxSettings.writeXml( elemSkybox, context );
   elem.appendChild( elemSkybox );
 
