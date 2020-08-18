@@ -424,6 +424,20 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void setSkyboxSettings( const QgsSkyboxSettings &skyboxSettings ) SIP_SKIP;
 
+    /**
+     * Returns whether the skybox is enabled.
+     * \see setIsSkyboxEnabled()
+     * \since QGIS 3.16
+     */
+    bool isSkyboxEnabled() const { return mIsSkyboxEnabled; }
+
+    /**
+     * Sets whether the skybox is enabled.
+     * \see isSkyboxEnabled()
+     * \since QGIS 3.16
+     */
+    void setIsSkyboxEnabled( bool enabled ) { mIsSkyboxEnabled = enabled; }
+
   signals:
     //! Emitted when the background color has changed
     void backgroundColorChanged();
@@ -559,7 +573,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     QgsMapThemeCollection *mMapThemes = nullptr;   //!< Pointer to map themes (e.g. from the current project) to resolve map theme content from the name
     double mDpi = 96;  //!< Dot per inch value for the screen / painter
 
-    QgsSkyboxSettings mSkyboxSettings; //!< Skybox realted configuration
+    bool mIsSkyboxEnabled = false;  //!< Whether the skybox is enabled
+    QgsSkyboxSettings mSkyboxSettings; //!< Skybox related configuration
 };
 
 
