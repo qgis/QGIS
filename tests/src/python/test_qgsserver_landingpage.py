@@ -115,7 +115,7 @@ class QgsServerLandingPageTest(QgsServerAPITestBase):
             print("Reference file %s regenerated!" % expected_path.encode('utf8'))
 
         for title in expected_projects.keys():
-            self.assertEqual(actual_projects[title], expected_projects[title])
+            self.assertLinesEqual(json.dumps(actual_projects[title]), json.dumps(expected_projects[title]), expected_path.encode('utf8'))
 
     def test_landing_page_json(self):
         """Test landing page in JSON format"""
