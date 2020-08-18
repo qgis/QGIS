@@ -452,7 +452,7 @@ Creates a new QgsSvgMarkerSymbolLayerWidget.
   protected:
 
     void populateList();
-    void setGuiForSvg( const QgsSvgMarkerSymbolLayer *layer );
+    void setGuiForSvg( const QgsSvgMarkerSymbolLayer *layer, bool skipDefaultColors = false );
 
 
 };
