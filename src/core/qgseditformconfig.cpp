@@ -137,7 +137,7 @@ bool QgsEditFormConfig::setWidgetConfig( const QString &widgetName, const QVaria
   //for legacy use it writes the relation editor configuration into the first instance of the widget
   if ( config.contains( QStringLiteral( "force-suppress-popup" ) ) || config.contains( QStringLiteral( "nm-rel" ) ) )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Relation settings should be done for the specific widget instance like attributeEditorRelation->setNmRelationId() instead." ) );
+    QgsMessageLog::logMessage( QStringLiteral( "Deprecation Warning: Trying to set a relation config directly on the relation %1. Relation settings should be done for the specific widget instance instead. Use attributeEditorRelation->setNmRelationId() or attributeEditorRelation->setForceSuppressFormPopup() instead." ).arg( widgetName ) );
     legacyUpdateRelationWidgetInTabs( d->mInvisibleRootContainer, widgetName, config );
   }
 
