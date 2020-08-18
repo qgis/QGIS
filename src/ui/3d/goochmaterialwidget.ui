@@ -164,17 +164,26 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>btnDiffuse</tabstop>
+  <tabstop>btnWarm</tabstop>
+  <tabstop>btnCool</tabstop>
+  <tabstop>btnSpecular</tabstop>
+  <tabstop>spinShininess</tabstop>
+  <tabstop>spinAlpha</tabstop>
+  <tabstop>spinBeta</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

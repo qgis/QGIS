@@ -370,6 +370,8 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>cboLights</tabstop>
   <tabstop>btnAddLight</tabstop>
   <tabstop>btnRemoveLight</tabstop>
   <tabstop>spinPositionX</tabstop>
@@ -377,6 +379,17 @@
   <tabstop>spinPositionZ</tabstop>
   <tabstop>btnColor</tabstop>
   <tabstop>spinIntensity</tabstop>
+  <tabstop>spinA0</tabstop>
+  <tabstop>spinA1</tabstop>
+  <tabstop>spinA2</tabstop>
+  <tabstop>cboDirectionalLights</tabstop>
+  <tabstop>btnAddDirectionalLight</tabstop>
+  <tabstop>btnRemoveDirectionalLight</tabstop>
+  <tabstop>spinDirectionX</tabstop>
+  <tabstop>spinDirectionY</tabstop>
+  <tabstop>spinDirectionZ</tabstop>
+  <tabstop>btnDirectionalColor</tabstop>
+  <tabstop>spinDirectionalIntensity</tabstop>
  </tabstops>
  <resources/>
  <connections/>
