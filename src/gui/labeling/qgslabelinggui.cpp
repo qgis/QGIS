@@ -320,6 +320,8 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
 
   mGeometryGenerator->setText( mSettings.geometryGenerator );
   mGeometryGeneratorGroupBox->setChecked( mSettings.geometryGeneratorEnabled );
+  if ( !mSettings.geometryGeneratorEnabled )
+    mGeometryGeneratorGroupBox->setCollapsed( true );
   mGeometryGeneratorType->setCurrentIndex( mGeometryGeneratorType->findData( mSettings.geometryGeneratorType ) );
 
   updateWidgetForFormat( mSettings.format() );
