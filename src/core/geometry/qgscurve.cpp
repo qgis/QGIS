@@ -229,14 +229,8 @@ bool QgsCurve::isValid( QString &error, int flags ) const
 
 QPolygonF QgsCurve::asQPolygonF() const
 {
-  const int nb = numPoints();
-  QPolygonF points;
-  points.reserve( nb );
-  for ( int i = 0; i < nb; ++i )
-  {
-    points << QPointF( xAt( i ), yAt( i ) );
-  }
-  return points;
+  std::unique_ptr< QgsLineString > segmentized( curveToLine() );
+  return segmentized->asQPolygonF();
 }
 
 double QgsCurve::straightDistance2d() const
