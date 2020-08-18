@@ -2423,14 +2423,12 @@ void QgsSvgMarkerSymbolLayerWidget::setGuiForSvg( const QgsSvgMarkerSymbolLayer 
   mChangeStrokeColorButton->setAllowOpacity( hasStrokeOpacityParam );
   mStrokeWidthSpinBox->setEnabled( hasStrokeWidthParam );
 
-  qDebug() << ( hasFillParam ? "true" : "false" );
   if ( hasFillParam )
   {
     QColor fill = layer->fillColor();
     double existingOpacity = hasFillOpacityParam ? fill.alphaF() : 1.0;
     if ( hasDefaultFillColor && !skipDefaultColors )
     {
-      qDebug() << ( hasFillParam ? "true" : "false" );
       fill = defaultFill;
     }
     fill.setAlphaF( hasDefaultFillOpacity ? defaultFillOpacity : existingOpacity );
