@@ -4126,8 +4126,8 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>-515</y>
-                       <width>471</width>
+                       <y>-1130</y>
+                       <width>472</width>
                        <height>1686</height>
                       </rect>
                      </property>
@@ -4150,6 +4150,150 @@ font-style: italic;</string>
                          <string>General Settings</string>
                         </property>
                         <layout class="QGridLayout" name="gridLayout_13">
+                         <item row="4" column="0">
+                          <widget class="QFrame" name="mPlacementPolygonFrame">
+                           <property name="minimumSize">
+                            <size>
+                             <width>0</width>
+                             <height>0</height>
+                            </size>
+                           </property>
+                           <property name="toolTip">
+                            <string>Allowed label placement for lines. At least one position must be selected.</string>
+                           </property>
+                           <property name="frameShape">
+                            <enum>QFrame::NoFrame</enum>
+                           </property>
+                           <property name="frameShadow">
+                            <enum>QFrame::Raised</enum>
+                           </property>
+                           <layout class="QGridLayout" name="gridLayout_48">
+                            <property name="leftMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="topMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="rightMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="bottomMargin">
+                             <number>0</number>
+                            </property>
+                            <item row="0" column="0">
+                             <layout class="QHBoxLayout" name="horizontalLayout_11">
+                              <item>
+                               <widget class="QCheckBox" name="mCheckAllowLabelsOutsidePolygons">
+                                <property name="text">
+                                 <string>Allow placing labels outside of polygons</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QgsPropertyOverrideButton" name="mAllowOutsidePolygonsDDBtn">
+                                <property name="text">
+                                 <string>…</string>
+                                </property>
+                               </widget>
+                              </item>
+                             </layout>
+                            </item>
+                           </layout>
+                          </widget>
+                         </item>
+                         <item row="0" column="0">
+                          <widget class="QLabel" name="label_14">
+                           <property name="text">
+                            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;The Placement Mode option controls the overall placement of labels relative to their corresponding features.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                           </property>
+                           <property name="wordWrap">
+                            <bool>true</bool>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="5" column="0">
+                          <widget class="QFrame" name="mPlacementCentroidFrame">
+                           <property name="frameShape">
+                            <enum>QFrame::NoFrame</enum>
+                           </property>
+                           <property name="frameShadow">
+                            <enum>QFrame::Raised</enum>
+                           </property>
+                           <layout class="QGridLayout" name="gridLayout_25">
+                            <property name="leftMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="topMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="rightMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="bottomMargin">
+                             <number>0</number>
+                            </property>
+                            <item row="1" column="1">
+                             <widget class="QRadioButton" name="mCentroidRadioVisible">
+                              <property name="sizePolicy">
+                               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                               </sizepolicy>
+                              </property>
+                              <property name="text">
+                               <string>visible polygon</string>
+                              </property>
+                              <property name="checked">
+                               <bool>true</bool>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="3">
+                             <widget class="QgsPropertyOverrideButton" name="mCentroidDDBtn">
+                              <property name="text">
+                               <string>…</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="2">
+                             <widget class="QRadioButton" name="mCentroidRadioWhole">
+                              <property name="sizePolicy">
+                               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                               </sizepolicy>
+                              </property>
+                              <property name="text">
+                               <string>whole polygon</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="2" column="1" colspan="3">
+                             <widget class="QCheckBox" name="mCentroidInsideCheckBox">
+                              <property name="text">
+                               <string>Force point inside polygon</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="0">
+                             <widget class="QLabel" name="mCentroidLabel">
+                              <property name="sizePolicy">
+                               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                               </sizepolicy>
+                              </property>
+                              <property name="text">
+                               <string>Centroid</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                           </layout>
+                          </widget>
+                         </item>
                          <item row="1" column="0">
                           <layout class="QHBoxLayout" name="horizontalLayout_14" stretch="0,1">
                            <property name="topMargin">
@@ -4167,14 +4311,715 @@ font-style: italic;</string>
                            </item>
                           </layout>
                          </item>
-                         <item row="0" column="0">
-                          <widget class="QLabel" name="label_14">
-                           <property name="text">
-                            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;The Placement Mode option controls the overall placement of labels relative to their corresponding features.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         <item row="8" column="0">
+                          <widget class="QFrame" name="mPlacementQuadrantFrame">
+                           <layout class="QGridLayout" name="gridLayout_19">
+                            <property name="leftMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="topMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="rightMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="bottomMargin">
+                             <number>0</number>
+                            </property>
+                            <item row="0" column="2">
+                             <widget class="QgsPropertyOverrideButton" name="mPointQuadOffsetDDBtn">
+                              <property name="text">
+                               <string>…</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="0" column="1" rowspan="3">
+                             <widget class="QFrame" name="mPlacementFixedQuadrantFrame">
+                              <layout class="QGridLayout" name="gridLayout_3">
+                               <property name="leftMargin">
+                                <number>0</number>
+                               </property>
+                               <property name="topMargin">
+                                <number>0</number>
+                               </property>
+                               <property name="rightMargin">
+                                <number>0</number>
+                               </property>
+                               <property name="bottomMargin">
+                                <number>0</number>
+                               </property>
+                               <property name="spacing">
+                                <number>2</number>
+                               </property>
+                               <item row="1" column="1">
+                                <widget class="QToolButton" name="mPointOffsetOver">
+                                 <property name="text">
+                                  <string>…</string>
+                                 </property>
+                                 <property name="icon">
+                                  <iconset resource="../../images/images.qrc">
+                                   <normaloff>:/images/themes/default/mIconLabelQuadrantCenter.svg</normaloff>:/images/themes/default/mIconLabelQuadrantCenter.svg</iconset>
+                                 </property>
+                                 <property name="iconSize">
+                                  <size>
+                                   <width>32</width>
+                                   <height>18</height>
+                                  </size>
+                                 </property>
+                                 <property name="checkable">
+                                  <bool>true</bool>
+                                 </property>
+                                 <property name="checked">
+                                  <bool>true</bool>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="0" column="2">
+                                <widget class="QToolButton" name="mPointOffsetAboveRight">
+                                 <property name="text">
+                                  <string>abc</string>
+                                 </property>
+                                 <property name="icon">
+                                  <iconset resource="../../images/images.qrc">
+                                   <normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</iconset>
+                                 </property>
+                                 <property name="iconSize">
+                                  <size>
+                                   <width>32</width>
+                                   <height>18</height>
+                                  </size>
+                                 </property>
+                                 <property name="checkable">
+                                  <bool>true</bool>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="2" column="0">
+                                <widget class="QToolButton" name="mPointOffsetBelowLeft">
+                                 <property name="text">
+                                  <string>abc</string>
+                                 </property>
+                                 <property name="icon">
+                                  <iconset resource="../../images/images.qrc">
+                                   <normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</iconset>
+                                 </property>
+                                 <property name="iconSize">
+                                  <size>
+                                   <width>32</width>
+                                   <height>18</height>
+                                  </size>
+                                 </property>
+                                 <property name="checkable">
+                                  <bool>true</bool>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="1" column="0">
+                                <widget class="QToolButton" name="mPointOffsetLeft">
+                                 <property name="text">
+                                  <string>abc</string>
+                                 </property>
+                                 <property name="icon">
+                                  <iconset resource="../../images/images.qrc">
+                                   <normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</iconset>
+                                 </property>
+                                 <property name="iconSize">
+                                  <size>
+                                   <width>32</width>
+                                   <height>18</height>
+                                  </size>
+                                 </property>
+                                 <property name="checkable">
+                                  <bool>true</bool>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="0" column="0">
+                                <widget class="QToolButton" name="mPointOffsetAboveLeft">
+                                 <property name="text">
+                                  <string>abc</string>
+                                 </property>
+                                 <property name="icon">
+                                  <iconset resource="../../images/images.qrc">
+                                   <normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</iconset>
+                                 </property>
+                                 <property name="iconSize">
+                                  <size>
+                                   <width>32</width>
+                                   <height>18</height>
+                                  </size>
+                                 </property>
+                                 <property name="checkable">
+                                  <bool>true</bool>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="1" column="2">
+                                <widget class="QToolButton" name="mPointOffsetRight">
+                                 <property name="text">
+                                  <string>abc</string>
+                                 </property>
+                                 <property name="icon">
+                                  <iconset resource="../../images/images.qrc">
+                                   <normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</iconset>
+                                 </property>
+                                 <property name="iconSize">
+                                  <size>
+                                   <width>32</width>
+                                   <height>18</height>
+                                  </size>
+                                 </property>
+                                 <property name="checkable">
+                                  <bool>true</bool>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="2" column="1">
+                                <widget class="QToolButton" name="mPointOffsetBelow">
+                                 <property name="text">
+                                  <string>abc</string>
+                                 </property>
+                                 <property name="icon">
+                                  <iconset resource="../../images/images.qrc">
+                                   <normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</iconset>
+                                 </property>
+                                 <property name="iconSize">
+                                  <size>
+                                   <width>32</width>
+                                   <height>18</height>
+                                  </size>
+                                 </property>
+                                 <property name="checkable">
+                                  <bool>true</bool>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="2" column="2">
+                                <widget class="QToolButton" name="mPointOffsetBelowRight">
+                                 <property name="text">
+                                  <string>abc</string>
+                                 </property>
+                                 <property name="icon">
+                                  <iconset resource="../../images/images.qrc">
+                                   <normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</iconset>
+                                 </property>
+                                 <property name="iconSize">
+                                  <size>
+                                   <width>32</width>
+                                   <height>18</height>
+                                  </size>
+                                 </property>
+                                 <property name="checkable">
+                                  <bool>true</bool>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="0" column="1">
+                                <widget class="QToolButton" name="mPointOffsetAbove">
+                                 <property name="text">
+                                  <string>abc</string>
+                                 </property>
+                                 <property name="icon">
+                                  <iconset resource="../../images/images.qrc">
+                                   <normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</iconset>
+                                 </property>
+                                 <property name="iconSize">
+                                  <size>
+                                   <width>32</width>
+                                   <height>18</height>
+                                  </size>
+                                 </property>
+                                 <property name="checkable">
+                                  <bool>true</bool>
+                                 </property>
+                                </widget>
+                               </item>
+                              </layout>
+                             </widget>
+                            </item>
+                            <item row="0" column="0">
+                             <widget class="QLabel" name="label_6">
+                              <property name="sizePolicy">
+                               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                               </sizepolicy>
+                              </property>
+                              <property name="text">
+                               <string>Quadrant</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="2" column="0">
+                             <spacer name="horizontalSpacer_18">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeType">
+                               <enum>QSizePolicy::Fixed</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>12</width>
+                                <height>12</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                            <item row="0" column="3">
+                             <spacer name="horizontalSpacer_16">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>0</width>
+                                <height>12</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                            <item row="1" column="0">
+                             <spacer name="horizontalSpacer_17">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeType">
+                               <enum>QSizePolicy::Fixed</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>12</width>
+                                <height>12</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                           </layout>
+                          </widget>
+                         </item>
+                         <item row="3" column="0">
+                          <widget class="QFrame" name="mPlacementLineFrame">
+                           <property name="minimumSize">
+                            <size>
+                             <width>0</width>
+                             <height>0</height>
+                            </size>
                            </property>
-                           <property name="wordWrap">
-                            <bool>true</bool>
+                           <property name="toolTip">
+                            <string>Allowed label placement for lines. At least one position must be selected.</string>
                            </property>
+                           <property name="frameShape">
+                            <enum>QFrame::NoFrame</enum>
+                           </property>
+                           <property name="frameShadow">
+                            <enum>QFrame::Raised</enum>
+                           </property>
+                           <layout class="QGridLayout" name="gridLayout_10">
+                            <property name="leftMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="topMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="rightMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="bottomMargin">
+                             <number>0</number>
+                            </property>
+                            <item row="1" column="1">
+                             <widget class="QCheckBox" name="chkLineOrientationDependent">
+                              <property name="text">
+                               <string>Line orientation dependent position</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="0" column="1">
+                             <layout class="QHBoxLayout" name="horizontalLayout">
+                              <item>
+                               <widget class="QCheckBox" name="chkLineAbove">
+                                <property name="sizePolicy">
+                                 <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                                  <horstretch>0</horstretch>
+                                  <verstretch>0</verstretch>
+                                 </sizepolicy>
+                                </property>
+                                <property name="text">
+                                 <string>Above line</string>
+                                </property>
+                                <property name="checked">
+                                 <bool>true</bool>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QCheckBox" name="chkLineOn">
+                                <property name="sizePolicy">
+                                 <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                                  <horstretch>0</horstretch>
+                                  <verstretch>0</verstretch>
+                                 </sizepolicy>
+                                </property>
+                                <property name="text">
+                                 <string>On line</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QCheckBox" name="chkLineBelow">
+                                <property name="text">
+                                 <string>Below line</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QgsPropertyOverrideButton" name="mLinePlacementFlagsDDBtn">
+                                <property name="text">
+                                 <string>…</string>
+                                </property>
+                               </widget>
+                              </item>
+                             </layout>
+                            </item>
+                            <item row="0" column="0">
+                             <widget class="QLabel" name="label_13">
+                              <property name="sizePolicy">
+                               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                               </sizepolicy>
+                              </property>
+                              <property name="text">
+                               <string>Allowed positions</string>
+                              </property>
+                             </widget>
+                            </item>
+                           </layout>
+                          </widget>
+                         </item>
+                         <item row="7" column="0">
+                          <widget class="QFrame" name="mPlacementOffsetTypeFrame">
+                           <property name="minimumSize">
+                            <size>
+                             <width>0</width>
+                             <height>0</height>
+                            </size>
+                           </property>
+                           <property name="frameShape">
+                            <enum>QFrame::NoFrame</enum>
+                           </property>
+                           <property name="frameShadow">
+                            <enum>QFrame::Raised</enum>
+                           </property>
+                           <layout class="QGridLayout" name="gridLayout_40">
+                            <property name="leftMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="topMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="rightMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="bottomMargin">
+                             <number>0</number>
+                            </property>
+                            <item row="0" column="0">
+                             <widget class="QLabel" name="label_42">
+                              <property name="sizePolicy">
+                               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                               </sizepolicy>
+                              </property>
+                              <property name="text">
+                               <string>Distance offset from</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="0" column="1">
+                             <widget class="QComboBox" name="mOffsetTypeComboBox"/>
+                            </item>
+                           </layout>
+                          </widget>
+                         </item>
+                         <item row="10" column="0">
+                          <widget class="QFrame" name="mPlacementOffsetFrame">
+                           <property name="minimumSize">
+                            <size>
+                             <width>0</width>
+                             <height>0</height>
+                            </size>
+                           </property>
+                           <property name="frameShape">
+                            <enum>QFrame::NoFrame</enum>
+                           </property>
+                           <property name="frameShadow">
+                            <enum>QFrame::Raised</enum>
+                           </property>
+                           <layout class="QGridLayout" name="gridLayout_15">
+                            <property name="leftMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="topMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="rightMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="bottomMargin">
+                             <number>0</number>
+                            </property>
+                            <item row="0" column="2">
+                             <widget class="QgsDoubleSpinBox" name="mPointOffsetYSpinBox">
+                              <property name="sizePolicy">
+                               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                               </sizepolicy>
+                              </property>
+                              <property name="prefix">
+                               <string/>
+                              </property>
+                              <property name="suffix">
+                               <string/>
+                              </property>
+                              <property name="decimals">
+                               <number>4</number>
+                              </property>
+                              <property name="minimum">
+                               <double>-9999999.000000000000000</double>
+                              </property>
+                              <property name="maximum">
+                               <double>9999999.000000000000000</double>
+                              </property>
+                              <property name="singleStep">
+                               <double>0.100000000000000</double>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="0" column="3">
+                             <widget class="QgsPropertyOverrideButton" name="mPointOffsetDDBtn">
+                              <property name="text">
+                               <string>…</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="3">
+                             <widget class="QgsPropertyOverrideButton" name="mPointOffsetUnitsDDBtn">
+                              <property name="text">
+                               <string>…</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="0" column="1">
+                             <widget class="QgsDoubleSpinBox" name="mPointOffsetXSpinBox">
+                              <property name="sizePolicy">
+                               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                               </sizepolicy>
+                              </property>
+                              <property name="prefix">
+                               <string/>
+                              </property>
+                              <property name="suffix">
+                               <string/>
+                              </property>
+                              <property name="decimals">
+                               <number>4</number>
+                              </property>
+                              <property name="minimum">
+                               <double>-9999999.000000000000000</double>
+                              </property>
+                              <property name="maximum">
+                               <double>9999999.000000000000000</double>
+                              </property>
+                              <property name="singleStep">
+                               <double>0.100000000000000</double>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="0" column="0">
+                             <widget class="QLabel" name="label_15">
+                              <property name="sizePolicy">
+                               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                               </sizepolicy>
+                              </property>
+                              <property name="text">
+                               <string>Offset X,Y</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="1" colspan="2">
+                             <widget class="QgsUnitSelectionWidget" name="mPointOffsetUnitWidget" native="true">
+                              <property name="focusPolicy">
+                               <enum>Qt::StrongFocus</enum>
+                              </property>
+                             </widget>
+                            </item>
+                           </layout>
+                          </widget>
+                         </item>
+                         <item row="6" column="0">
+                          <widget class="QFrame" name="mPlacementDistanceFrame">
+                           <property name="minimumSize">
+                            <size>
+                             <width>0</width>
+                             <height>0</height>
+                            </size>
+                           </property>
+                           <property name="frameShape">
+                            <enum>QFrame::NoFrame</enum>
+                           </property>
+                           <property name="frameShadow">
+                            <enum>QFrame::Raised</enum>
+                           </property>
+                           <layout class="QGridLayout" name="gridLayout_27">
+                            <property name="leftMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="topMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="rightMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="bottomMargin">
+                             <number>0</number>
+                            </property>
+                            <item row="0" column="1">
+                             <widget class="QgsDoubleSpinBox" name="mLineDistanceSpnBx">
+                              <property name="decimals">
+                               <number>4</number>
+                              </property>
+                              <property name="minimum">
+                               <double>-999999999.000000000000000</double>
+                              </property>
+                              <property name="maximum">
+                               <double>999999999.000000000000000</double>
+                              </property>
+                              <property name="singleStep">
+                               <double>0.100000000000000</double>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="0" column="0">
+                             <widget class="QLabel" name="label_26">
+                              <property name="sizePolicy">
+                               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                               </sizepolicy>
+                              </property>
+                              <property name="text">
+                               <string>Distance</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="0" column="2">
+                             <widget class="QgsPropertyOverrideButton" name="mLineDistanceDDBtn">
+                              <property name="text">
+                               <string>…</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="2">
+                             <widget class="QgsPropertyOverrideButton" name="mLineDistanceUnitDDBtn">
+                              <property name="text">
+                               <string>…</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="1">
+                             <widget class="QgsUnitSelectionWidget" name="mLineDistanceUnitWidget" native="true">
+                              <property name="focusPolicy">
+                               <enum>Qt::StrongFocus</enum>
+                              </property>
+                             </widget>
+                            </item>
+                           </layout>
+                          </widget>
+                         </item>
+                         <item row="9" column="0">
+                          <widget class="QFrame" name="mPlacementCartographicFrame">
+                           <layout class="QGridLayout" name="gridLayout_39">
+                            <property name="leftMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="topMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="rightMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="bottomMargin">
+                             <number>0</number>
+                            </property>
+                            <item row="0" column="2">
+                             <widget class="QgsPropertyOverrideButton" name="mPointPositionOrderDDBtn">
+                              <property name="text">
+                               <string>…</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="0" column="1" rowspan="2">
+                             <widget class="QFrame" name="mPlacementFixedQuadrantFrame_2">
+                              <layout class="QGridLayout" name="gridLayout_11">
+                               <property name="leftMargin">
+                                <number>0</number>
+                               </property>
+                               <property name="topMargin">
+                                <number>0</number>
+                               </property>
+                               <property name="rightMargin">
+                                <number>0</number>
+                               </property>
+                               <property name="bottomMargin">
+                                <number>0</number>
+                               </property>
+                               <property name="spacing">
+                                <number>2</number>
+                               </property>
+                              </layout>
+                             </widget>
+                            </item>
+                            <item row="0" column="3">
+                             <spacer name="horizontalSpacer_27">
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="sizeHint" stdset="0">
+                               <size>
+                                <width>0</width>
+                                <height>12</height>
+                               </size>
+                              </property>
+                             </spacer>
+                            </item>
+                            <item row="0" column="0">
+                             <widget class="QLabel" name="label_20">
+                              <property name="sizePolicy">
+                               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                               </sizepolicy>
+                              </property>
+                              <property name="text">
+                               <string>Position priority</string>
+                              </property>
+                             </widget>
+                            </item>
+                           </layout>
                           </widget>
                          </item>
                          <item row="2" column="0">
@@ -4187,400 +5032,21 @@ font-style: italic;</string>
                            </property>
                           </widget>
                          </item>
-                        </layout>
-                       </widget>
-                      </item>
-                      <item>
-                       <widget class="QFrame" name="mPlacementLineFrame">
-                        <property name="minimumSize">
-                         <size>
-                          <width>0</width>
-                          <height>0</height>
-                         </size>
-                        </property>
-                        <property name="toolTip">
-                         <string>Allowed label placement for lines. At least one position must be selected.</string>
-                        </property>
-                        <property name="frameShape">
-                         <enum>QFrame::NoFrame</enum>
-                        </property>
-                        <property name="frameShadow">
-                         <enum>QFrame::Raised</enum>
-                        </property>
-                        <layout class="QGridLayout" name="gridLayout_10">
-                         <property name="leftMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="topMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="rightMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="bottomMargin">
-                          <number>0</number>
-                         </property>
-                         <item row="1" column="1">
-                          <widget class="QCheckBox" name="chkLineOrientationDependent">
-                           <property name="text">
-                            <string>Line orientation dependent position</string>
+                         <item row="11" column="0">
+                          <widget class="QFrame" name="mPlacementRotationFrame">
+                           <property name="minimumSize">
+                            <size>
+                             <width>0</width>
+                             <height>0</height>
+                            </size>
                            </property>
-                          </widget>
-                         </item>
-                         <item row="0" column="1">
-                          <layout class="QHBoxLayout" name="horizontalLayout">
-                           <item>
-                            <widget class="QCheckBox" name="chkLineAbove">
-                             <property name="sizePolicy">
-                              <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                               <horstretch>0</horstretch>
-                               <verstretch>0</verstretch>
-                              </sizepolicy>
-                             </property>
-                             <property name="text">
-                              <string>Above line</string>
-                             </property>
-                             <property name="checked">
-                              <bool>true</bool>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QCheckBox" name="chkLineOn">
-                             <property name="sizePolicy">
-                              <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                               <horstretch>0</horstretch>
-                               <verstretch>0</verstretch>
-                              </sizepolicy>
-                             </property>
-                             <property name="text">
-                              <string>On line</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QCheckBox" name="chkLineBelow">
-                             <property name="text">
-                              <string>Below line</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QgsPropertyOverrideButton" name="mLinePlacementFlagsDDBtn">
-                             <property name="text">
-                              <string>…</string>
-                             </property>
-                            </widget>
-                           </item>
-                          </layout>
-                         </item>
-                         <item row="0" column="0">
-                          <widget class="QLabel" name="label_13">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
+                           <property name="frameShape">
+                            <enum>QFrame::NoFrame</enum>
                            </property>
-                           <property name="text">
-                            <string>Allowed positions</string>
+                           <property name="frameShadow">
+                            <enum>QFrame::Raised</enum>
                            </property>
-                          </widget>
-                         </item>
-                        </layout>
-                       </widget>
-                      </item>
-                      <item>
-                       <widget class="QFrame" name="mPlacementPolygonFrame">
-                        <property name="minimumSize">
-                         <size>
-                          <width>0</width>
-                          <height>0</height>
-                         </size>
-                        </property>
-                        <property name="toolTip">
-                         <string>Allowed label placement for lines. At least one position must be selected.</string>
-                        </property>
-                        <property name="frameShape">
-                         <enum>QFrame::NoFrame</enum>
-                        </property>
-                        <property name="frameShadow">
-                         <enum>QFrame::Raised</enum>
-                        </property>
-                        <layout class="QGridLayout" name="gridLayout_48">
-                         <property name="leftMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="topMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="rightMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="bottomMargin">
-                          <number>0</number>
-                         </property>
-                         <item row="0" column="0">
-                          <layout class="QHBoxLayout" name="horizontalLayout_11">
-                           <item>
-                            <widget class="QCheckBox" name="mCheckAllowLabelsOutsidePolygons">
-                             <property name="text">
-                              <string>Allow placing labels outside of polygons</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QgsPropertyOverrideButton" name="mAllowOutsidePolygonsDDBtn">
-                             <property name="text">
-                              <string>…</string>
-                             </property>
-                            </widget>
-                           </item>
-                          </layout>
-                         </item>
-                        </layout>
-                       </widget>
-                      </item>
-                      <item>
-                       <widget class="QFrame" name="mPlacementCentroidFrame">
-                        <property name="frameShape">
-                         <enum>QFrame::NoFrame</enum>
-                        </property>
-                        <property name="frameShadow">
-                         <enum>QFrame::Raised</enum>
-                        </property>
-                        <layout class="QGridLayout" name="gridLayout_25">
-                         <property name="leftMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="topMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="rightMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="bottomMargin">
-                          <number>0</number>
-                         </property>
-                         <item row="1" column="1">
-                          <widget class="QRadioButton" name="mCentroidRadioVisible">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="text">
-                            <string>visible polygon</string>
-                           </property>
-                           <property name="checked">
-                            <bool>true</bool>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="1" column="3">
-                          <widget class="QgsPropertyOverrideButton" name="mCentroidDDBtn">
-                           <property name="text">
-                            <string>…</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="1" column="2">
-                          <widget class="QRadioButton" name="mCentroidRadioWhole">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="text">
-                            <string>whole polygon</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="2" column="1" colspan="3">
-                          <widget class="QCheckBox" name="mCentroidInsideCheckBox">
-                           <property name="text">
-                            <string>Force point inside polygon</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="1" column="0">
-                          <widget class="QLabel" name="mCentroidLabel">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="text">
-                            <string>Centroid</string>
-                           </property>
-                           <property name="alignment">
-                            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                           </property>
-                          </widget>
-                         </item>
-                        </layout>
-                       </widget>
-                      </item>
-                      <item>
-                       <widget class="QFrame" name="mPlacementDistanceFrame">
-                        <property name="minimumSize">
-                         <size>
-                          <width>0</width>
-                          <height>0</height>
-                         </size>
-                        </property>
-                        <property name="frameShape">
-                         <enum>QFrame::NoFrame</enum>
-                        </property>
-                        <property name="frameShadow">
-                         <enum>QFrame::Raised</enum>
-                        </property>
-                        <layout class="QGridLayout" name="gridLayout_27">
-                         <property name="leftMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="topMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="rightMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="bottomMargin">
-                          <number>0</number>
-                         </property>
-                         <item row="0" column="1">
-                          <widget class="QgsDoubleSpinBox" name="mLineDistanceSpnBx">
-                           <property name="decimals">
-                            <number>4</number>
-                           </property>
-                           <property name="minimum">
-                            <double>-999999999.000000000000000</double>
-                           </property>
-                           <property name="maximum">
-                            <double>999999999.000000000000000</double>
-                           </property>
-                           <property name="singleStep">
-                            <double>0.100000000000000</double>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="0" column="0">
-                          <widget class="QLabel" name="label_26">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="text">
-                            <string>Distance</string>
-                           </property>
-                           <property name="alignment">
-                            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="0" column="2">
-                          <widget class="QgsPropertyOverrideButton" name="mLineDistanceDDBtn">
-                           <property name="text">
-                            <string>…</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="1" column="2">
-                          <widget class="QgsPropertyOverrideButton" name="mLineDistanceUnitDDBtn">
-                           <property name="text">
-                            <string>…</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="1" column="1">
-                          <widget class="QgsUnitSelectionWidget" name="mLineDistanceUnitWidget" native="true">
-                           <property name="focusPolicy">
-                            <enum>Qt::StrongFocus</enum>
-                           </property>
-                          </widget>
-                         </item>
-                        </layout>
-                       </widget>
-                      </item>
-                      <item>
-                       <widget class="QFrame" name="mPlacementOffsetTypeFrame">
-                        <property name="minimumSize">
-                         <size>
-                          <width>0</width>
-                          <height>0</height>
-                         </size>
-                        </property>
-                        <property name="frameShape">
-                         <enum>QFrame::NoFrame</enum>
-                        </property>
-                        <property name="frameShadow">
-                         <enum>QFrame::Raised</enum>
-                        </property>
-                        <layout class="QGridLayout" name="gridLayout_40">
-                         <property name="leftMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="topMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="rightMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="bottomMargin">
-                          <number>0</number>
-                         </property>
-                         <item row="0" column="0">
-                          <widget class="QLabel" name="label_42">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="text">
-                            <string>Distance offset from</string>
-                           </property>
-                           <property name="alignment">
-                            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="0" column="1">
-                          <widget class="QComboBox" name="mOffsetTypeComboBox"/>
-                         </item>
-                        </layout>
-                       </widget>
-                      </item>
-                      <item>
-                       <widget class="QFrame" name="mPlacementQuadrantFrame">
-                        <layout class="QGridLayout" name="gridLayout_19">
-                         <property name="leftMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="topMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="rightMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="bottomMargin">
-                          <number>0</number>
-                         </property>
-                         <item row="0" column="2">
-                          <widget class="QgsPropertyOverrideButton" name="mPointQuadOffsetDDBtn">
-                           <property name="text">
-                            <string>…</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="0" column="1" rowspan="3">
-                          <widget class="QFrame" name="mPlacementFixedQuadrantFrame">
-                           <layout class="QGridLayout" name="gridLayout_3">
+                           <layout class="QGridLayout" name="gridLayout_26">
                             <property name="leftMargin">
                              <number>0</number>
                             </property>
@@ -4593,514 +5059,48 @@ font-style: italic;</string>
                             <property name="bottomMargin">
                              <number>0</number>
                             </property>
-                            <property name="spacing">
-                             <number>2</number>
-                            </property>
-                            <item row="1" column="1">
-                             <widget class="QToolButton" name="mPointOffsetOver">
-                              <property name="text">
-                               <string>…</string>
-                              </property>
-                              <property name="icon">
-                               <iconset resource="../../images/images.qrc">
-                                <normaloff>:/images/themes/default/mIconLabelQuadrantCenter.svg</normaloff>:/images/themes/default/mIconLabelQuadrantCenter.svg</iconset>
-                              </property>
-                              <property name="iconSize">
-                               <size>
-                                <width>32</width>
-                                <height>18</height>
-                               </size>
-                              </property>
-                              <property name="checkable">
-                               <bool>true</bool>
-                              </property>
-                              <property name="checked">
-                               <bool>true</bool>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="0" column="2">
-                             <widget class="QToolButton" name="mPointOffsetAboveRight">
-                              <property name="text">
-                               <string>abc</string>
-                              </property>
-                              <property name="icon">
-                               <iconset resource="../../images/images.qrc">
-                                <normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</iconset>
-                              </property>
-                              <property name="iconSize">
-                               <size>
-                                <width>32</width>
-                                <height>18</height>
-                               </size>
-                              </property>
-                              <property name="checkable">
-                               <bool>true</bool>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="2" column="0">
-                             <widget class="QToolButton" name="mPointOffsetBelowLeft">
-                              <property name="text">
-                               <string>abc</string>
-                              </property>
-                              <property name="icon">
-                               <iconset resource="../../images/images.qrc">
-                                <normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</iconset>
-                              </property>
-                              <property name="iconSize">
-                               <size>
-                                <width>32</width>
-                                <height>18</height>
-                               </size>
-                              </property>
-                              <property name="checkable">
-                               <bool>true</bool>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="1" column="0">
-                             <widget class="QToolButton" name="mPointOffsetLeft">
-                              <property name="text">
-                               <string>abc</string>
-                              </property>
-                              <property name="icon">
-                               <iconset resource="../../images/images.qrc">
-                                <normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</iconset>
-                              </property>
-                              <property name="iconSize">
-                               <size>
-                                <width>32</width>
-                                <height>18</height>
-                               </size>
-                              </property>
-                              <property name="checkable">
-                               <bool>true</bool>
-                              </property>
-                             </widget>
-                            </item>
                             <item row="0" column="0">
-                             <widget class="QToolButton" name="mPointOffsetAboveLeft">
+                             <widget class="QLabel" name="label_25">
+                              <property name="sizePolicy">
+                               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                               </sizepolicy>
+                              </property>
                               <property name="text">
-                               <string>abc</string>
+                               <string>Rotation</string>
                               </property>
-                              <property name="icon">
-                               <iconset resource="../../images/images.qrc">
-                                <normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</iconset>
-                              </property>
-                              <property name="iconSize">
-                               <size>
-                                <width>32</width>
-                                <height>18</height>
-                               </size>
-                              </property>
-                              <property name="checkable">
-                               <bool>true</bool>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="1" column="2">
-                             <widget class="QToolButton" name="mPointOffsetRight">
-                              <property name="text">
-                               <string>abc</string>
-                              </property>
-                              <property name="icon">
-                               <iconset resource="../../images/images.qrc">
-                                <normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</iconset>
-                              </property>
-                              <property name="iconSize">
-                               <size>
-                                <width>32</width>
-                                <height>18</height>
-                               </size>
-                              </property>
-                              <property name="checkable">
-                               <bool>true</bool>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="2" column="1">
-                             <widget class="QToolButton" name="mPointOffsetBelow">
-                              <property name="text">
-                               <string>abc</string>
-                              </property>
-                              <property name="icon">
-                               <iconset resource="../../images/images.qrc">
-                                <normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</iconset>
-                              </property>
-                              <property name="iconSize">
-                               <size>
-                                <width>32</width>
-                                <height>18</height>
-                               </size>
-                              </property>
-                              <property name="checkable">
-                               <bool>true</bool>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="2" column="2">
-                             <widget class="QToolButton" name="mPointOffsetBelowRight">
-                              <property name="text">
-                               <string>abc</string>
-                              </property>
-                              <property name="icon">
-                               <iconset resource="../../images/images.qrc">
-                                <normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</iconset>
-                              </property>
-                              <property name="iconSize">
-                               <size>
-                                <width>32</width>
-                                <height>18</height>
-                               </size>
-                              </property>
-                              <property name="checkable">
-                               <bool>true</bool>
+                              <property name="alignment">
+                               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                               </property>
                              </widget>
                             </item>
                             <item row="0" column="1">
-                             <widget class="QToolButton" name="mPointOffsetAbove">
-                              <property name="text">
-                               <string>abc</string>
-                              </property>
-                              <property name="icon">
-                               <iconset resource="../../images/images.qrc">
-                                <normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</normaloff>:/images/themes/default/mIconLabelQuadrantOffset.svg</iconset>
-                              </property>
-                              <property name="iconSize">
-                               <size>
-                                <width>32</width>
-                                <height>18</height>
-                               </size>
-                              </property>
-                              <property name="checkable">
+                             <widget class="QgsDoubleSpinBox" name="mPointAngleSpinBox">
+                              <property name="enabled">
                                <bool>true</bool>
+                              </property>
+                              <property name="sizePolicy">
+                               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                               </sizepolicy>
+                              </property>
+                              <property name="wrapping">
+                               <bool>true</bool>
+                              </property>
+                              <property name="suffix">
+                               <string>˚</string>
+                              </property>
+                              <property name="minimum">
+                               <double>-360.000000000000000</double>
+                              </property>
+                              <property name="maximum">
+                               <double>360.000000000000000</double>
                               </property>
                              </widget>
                             </item>
                            </layout>
-                          </widget>
-                         </item>
-                         <item row="0" column="0">
-                          <widget class="QLabel" name="label_6">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="text">
-                            <string>Quadrant</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="2" column="0">
-                          <spacer name="horizontalSpacer_18">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                           <property name="sizeType">
-                            <enum>QSizePolicy::Fixed</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>12</width>
-                             <height>12</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
-                         <item row="0" column="3">
-                          <spacer name="horizontalSpacer_16">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>0</width>
-                             <height>12</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
-                         <item row="1" column="0">
-                          <spacer name="horizontalSpacer_17">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                           <property name="sizeType">
-                            <enum>QSizePolicy::Fixed</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>12</width>
-                             <height>12</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
-                        </layout>
-                       </widget>
-                      </item>
-                      <item>
-                       <widget class="QFrame" name="mPlacementCartographicFrame">
-                        <layout class="QGridLayout" name="gridLayout_39">
-                         <property name="leftMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="topMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="rightMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="bottomMargin">
-                          <number>0</number>
-                         </property>
-                         <item row="0" column="2">
-                          <widget class="QgsPropertyOverrideButton" name="mPointPositionOrderDDBtn">
-                           <property name="text">
-                            <string>…</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="0" column="1" rowspan="2">
-                          <widget class="QFrame" name="mPlacementFixedQuadrantFrame_2">
-                           <layout class="QGridLayout" name="gridLayout_11">
-                            <property name="leftMargin">
-                             <number>0</number>
-                            </property>
-                            <property name="topMargin">
-                             <number>0</number>
-                            </property>
-                            <property name="rightMargin">
-                             <number>0</number>
-                            </property>
-                            <property name="bottomMargin">
-                             <number>0</number>
-                            </property>
-                            <property name="spacing">
-                             <number>2</number>
-                            </property>
-                           </layout>
-                          </widget>
-                         </item>
-                         <item row="0" column="3">
-                          <spacer name="horizontalSpacer_27">
-                           <property name="orientation">
-                            <enum>Qt::Horizontal</enum>
-                           </property>
-                           <property name="sizeHint" stdset="0">
-                            <size>
-                             <width>0</width>
-                             <height>12</height>
-                            </size>
-                           </property>
-                          </spacer>
-                         </item>
-                         <item row="0" column="0">
-                          <widget class="QLabel" name="label_20">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="text">
-                            <string>Position priority</string>
-                           </property>
-                          </widget>
-                         </item>
-                        </layout>
-                       </widget>
-                      </item>
-                      <item>
-                       <widget class="QFrame" name="mPlacementOffsetFrame">
-                        <property name="minimumSize">
-                         <size>
-                          <width>0</width>
-                          <height>0</height>
-                         </size>
-                        </property>
-                        <property name="frameShape">
-                         <enum>QFrame::NoFrame</enum>
-                        </property>
-                        <property name="frameShadow">
-                         <enum>QFrame::Raised</enum>
-                        </property>
-                        <layout class="QGridLayout" name="gridLayout_15">
-                         <property name="leftMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="topMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="rightMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="bottomMargin">
-                          <number>0</number>
-                         </property>
-                         <item row="0" column="2">
-                          <widget class="QgsDoubleSpinBox" name="mPointOffsetYSpinBox">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="prefix">
-                            <string/>
-                           </property>
-                           <property name="suffix">
-                            <string/>
-                           </property>
-                           <property name="decimals">
-                            <number>4</number>
-                           </property>
-                           <property name="minimum">
-                            <double>-9999999.000000000000000</double>
-                           </property>
-                           <property name="maximum">
-                            <double>9999999.000000000000000</double>
-                           </property>
-                           <property name="singleStep">
-                            <double>0.100000000000000</double>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="0" column="3">
-                          <widget class="QgsPropertyOverrideButton" name="mPointOffsetDDBtn">
-                           <property name="text">
-                            <string>…</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="1" column="3">
-                          <widget class="QgsPropertyOverrideButton" name="mPointOffsetUnitsDDBtn">
-                           <property name="text">
-                            <string>…</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="0" column="1">
-                          <widget class="QgsDoubleSpinBox" name="mPointOffsetXSpinBox">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="prefix">
-                            <string/>
-                           </property>
-                           <property name="suffix">
-                            <string/>
-                           </property>
-                           <property name="decimals">
-                            <number>4</number>
-                           </property>
-                           <property name="minimum">
-                            <double>-9999999.000000000000000</double>
-                           </property>
-                           <property name="maximum">
-                            <double>9999999.000000000000000</double>
-                           </property>
-                           <property name="singleStep">
-                            <double>0.100000000000000</double>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="0" column="0">
-                          <widget class="QLabel" name="label_15">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="text">
-                            <string>Offset X,Y</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="1" column="1" colspan="2">
-                          <widget class="QgsUnitSelectionWidget" name="mPointOffsetUnitWidget" native="true">
-                           <property name="focusPolicy">
-                            <enum>Qt::StrongFocus</enum>
-                           </property>
-                          </widget>
-                         </item>
-                        </layout>
-                       </widget>
-                      </item>
-                      <item>
-                       <widget class="QFrame" name="mPlacementRotationFrame">
-                        <property name="minimumSize">
-                         <size>
-                          <width>0</width>
-                          <height>0</height>
-                         </size>
-                        </property>
-                        <property name="frameShape">
-                         <enum>QFrame::NoFrame</enum>
-                        </property>
-                        <property name="frameShadow">
-                         <enum>QFrame::Raised</enum>
-                        </property>
-                        <layout class="QGridLayout" name="gridLayout_26">
-                         <property name="leftMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="topMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="rightMargin">
-                          <number>0</number>
-                         </property>
-                         <property name="bottomMargin">
-                          <number>0</number>
-                         </property>
-                         <item row="0" column="0">
-                          <widget class="QLabel" name="label_25">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="text">
-                            <string>Rotation</string>
-                           </property>
-                           <property name="alignment">
-                            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="0" column="1">
-                          <widget class="QgsDoubleSpinBox" name="mPointAngleSpinBox">
-                           <property name="enabled">
-                            <bool>true</bool>
-                           </property>
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="wrapping">
-                            <bool>true</bool>
-                           </property>
-                           <property name="suffix">
-                            <string>˚</string>
-                           </property>
-                           <property name="minimum">
-                            <double>-360.000000000000000</double>
-                           </property>
-                           <property name="maximum">
-                            <double>360.000000000000000</double>
-                           </property>
                           </widget>
                          </item>
                         </layout>
@@ -5388,10 +5388,13 @@ font-style: italic;</string>
                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Generates or transforms the geometry to be used for labeling&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;The expression will be applied to each feature while rendering and the label will be placed based on the expression result.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                         </property>
                         <property name="title">
-                         <string>Geometry generator</string>
+                         <string>Geometry Generator</string>
                         </property>
                         <property name="checkable">
                          <bool>true</bool>
+                        </property>
+                        <property name="checked">
+                         <bool>false</bool>
                         </property>
                         <layout class="QGridLayout" name="gridLayout_41">
                          <property name="leftMargin">
