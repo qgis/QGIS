@@ -1679,19 +1679,14 @@ void TestQgsGeometry::circularString()
   QgsCircularString l13;
   l13.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 )
                  << QgsPoint( QgsWkbTypes::PointZM, 11, 2, 11, 14 )
-                 << QgsPoint( QgsWkbTypes::PointZM, 11, 22, 21, 24 )
-                 << QgsPoint( QgsWkbTypes::PointZM, 1, 22, 31, 34 ) );
+                 << QgsPoint( QgsWkbTypes::PointZM, 11, 22, 21, 24 ) );
 
   QPolygonF poly = l13.asQPolygonF();
-  QCOMPARE( poly.count(), 4 );
+  QCOMPARE( poly.count(), 181 );
   QCOMPARE( poly.at( 0 ).x(), 1.0 );
   QCOMPARE( poly.at( 0 ).y(), 2.0 );
-  QCOMPARE( poly.at( 1 ).x(), 11.0 );
-  QCOMPARE( poly.at( 1 ).y(), 2.0 );
-  QCOMPARE( poly.at( 2 ).x(), 11.0 );
-  QCOMPARE( poly.at( 2 ).y(), 22.0 );
-  QCOMPARE( poly.at( 3 ).x(), 1.0 );
-  QCOMPARE( poly.at( 3 ).y(), 22.0 );
+  QCOMPARE( poly.at( 180 ).x(), 11.0 );
+  QCOMPARE( poly.at( 180 ).y(), 22.0 );
 
   // clone tests
   QgsCircularString l14;
@@ -10293,17 +10288,11 @@ void TestQgsGeometry::compoundCurve()
   ls13.setPoints( QgsPointSequence() << QgsPoint( 1, 22 ) << QgsPoint( 23, 22 ) );
   c13.addCurve( ls13.clone() );
   QPolygonF poly = c13.asQPolygonF();
-  QCOMPARE( poly.count(), 5 );
+  QCOMPARE( poly.count(), 183 );
   QCOMPARE( poly.at( 0 ).x(), 1.0 );
   QCOMPARE( poly.at( 0 ).y(), 2.0 );
-  QCOMPARE( poly.at( 1 ).x(), 11.0 );
-  QCOMPARE( poly.at( 1 ).y(), 2.0 );
-  QCOMPARE( poly.at( 2 ).x(), 11.0 );
-  QCOMPARE( poly.at( 2 ).y(), 22.0 );
-  QCOMPARE( poly.at( 3 ).x(), 1.0 );
-  QCOMPARE( poly.at( 3 ).y(), 22.0 );
-  QCOMPARE( poly.at( 4 ).x(), 23.0 );
-  QCOMPARE( poly.at( 4 ).y(), 22.0 );
+  QCOMPARE( poly.at( 182 ).x(), 23.0 );
+  QCOMPARE( poly.at( 182 ).y(), 22.0 );
 
   // clone tests
   QgsCircularString lc14;
@@ -16586,37 +16575,44 @@ void TestQgsGeometry::asQPointF()
 
 void TestQgsGeometry::asQPolygonF()
 {
+  QgsPointXY point1 = QgsPointXY( 20.0, 20.0 );
+  QgsPointXY point2 = QgsPointXY( 80.0, 20.0 );
+  QgsPointXY point3 = QgsPointXY( 80.0, 80.0 );
+  QgsPointXY point4 = QgsPointXY( 20.0, 80.0 );
+
+  QgsGeometry polygonGeometryA = QgsGeometry::fromPolygonXY( QgsPolygonXY() << ( QgsPolylineXY() << point1 << point2 << point3 << point4 << point1 ) );
+
   //test polygon
-  QPolygonF fromPoly = mpPolygonGeometryA.asQPolygonF();
+  QPolygonF fromPoly = polygonGeometryA.asQPolygonF();
   QVERIFY( fromPoly.isClosed() );
   QCOMPARE( fromPoly.size(), 5 );
-  QCOMPARE( fromPoly.at( 0 ).x(), mPoint1.x() );
-  QCOMPARE( fromPoly.at( 0 ).y(), mPoint1.y() );
-  QCOMPARE( fromPoly.at( 1 ).x(), mPoint2.x() );
-  QCOMPARE( fromPoly.at( 1 ).y(), mPoint2.y() );
-  QCOMPARE( fromPoly.at( 2 ).x(), mPoint3.x() );
-  QCOMPARE( fromPoly.at( 2 ).y(), mPoint3.y() );
-  QCOMPARE( fromPoly.at( 3 ).x(), mPoint4.x() );
-  QCOMPARE( fromPoly.at( 3 ).y(), mPoint4.y() );
-  QCOMPARE( fromPoly.at( 4 ).x(), mPoint1.x() );
-  QCOMPARE( fromPoly.at( 4 ).y(), mPoint1.y() );
+  QCOMPARE( fromPoly.at( 0 ).x(), point1.x() );
+  QCOMPARE( fromPoly.at( 0 ).y(), point1.y() );
+  QCOMPARE( fromPoly.at( 1 ).x(), point2.x() );
+  QCOMPARE( fromPoly.at( 1 ).y(), point2.y() );
+  QCOMPARE( fromPoly.at( 2 ).x(), point3.x() );
+  QCOMPARE( fromPoly.at( 2 ).y(), point3.y() );
+  QCOMPARE( fromPoly.at( 3 ).x(), point4.x() );
+  QCOMPARE( fromPoly.at( 3 ).y(), point4.y() );
+  QCOMPARE( fromPoly.at( 4 ).x(), point1.x() );
+  QCOMPARE( fromPoly.at( 4 ).y(), point1.y() );
 
   //test polyline
   QgsPolylineXY testline;
-  testline << mPoint1 << mPoint2 << mPoint3;
+  testline << point1 << point2 << point3;
   QgsGeometry lineGeom( QgsGeometry::fromPolylineXY( testline ) );
   QPolygonF fromLine = lineGeom.asQPolygonF();
   QVERIFY( !fromLine.isClosed() );
   QCOMPARE( fromLine.size(), 3 );
-  QCOMPARE( fromLine.at( 0 ).x(), mPoint1.x() );
-  QCOMPARE( fromLine.at( 0 ).y(), mPoint1.y() );
-  QCOMPARE( fromLine.at( 1 ).x(), mPoint2.x() );
-  QCOMPARE( fromLine.at( 1 ).y(), mPoint2.y() );
-  QCOMPARE( fromLine.at( 2 ).x(), mPoint3.x() );
-  QCOMPARE( fromLine.at( 2 ).y(), mPoint3.y() );
+  QCOMPARE( fromLine.at( 0 ).x(), point1.x() );
+  QCOMPARE( fromLine.at( 0 ).y(), point1.y() );
+  QCOMPARE( fromLine.at( 1 ).x(), point2.x() );
+  QCOMPARE( fromLine.at( 1 ).y(), point2.y() );
+  QCOMPARE( fromLine.at( 2 ).x(), point3.x() );
+  QCOMPARE( fromLine.at( 2 ).y(), point3.y() );
 
   //test a bad geometry
-  QgsGeometry badGeom( QgsGeometry::fromPointXY( mPoint1 ) );
+  QgsGeometry badGeom( QgsGeometry::fromPointXY( point1 ) );
   QPolygonF fromBad = badGeom.asQPolygonF();
   QVERIFY( fromBad.isEmpty() );
 
