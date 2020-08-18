@@ -50,8 +50,6 @@ QgsSkyboxRenderingSettingsWidget::QgsSkyboxRenderingSettingsWidget( QWidget *par
 
 void QgsSkyboxRenderingSettingsWidget::setSkyboxSettings( const QgsSkyboxSettings &skyboxSettings )
 {
-  skyboxEnabledCheckBox->setChecked( skyboxSettings.isSkyboxEnabled() );
-
   switch ( skyboxSettings.skyboxType() )
   {
     case QgsSkyboxEntity::PanoramicSkybox:
@@ -75,7 +73,6 @@ void QgsSkyboxRenderingSettingsWidget::setSkyboxSettings( const QgsSkyboxSetting
 QgsSkyboxSettings QgsSkyboxRenderingSettingsWidget::toSkyboxSettings()
 {
   QgsSkyboxSettings settings;
-  settings.setIsSkyboxEnabled( skyboxEnabledCheckBox->isChecked() );
   settings.setSkyboxType( static_cast< QgsSkyboxEntity::SkyboxType >( skyboxTypeComboBox->currentIndex() ) );
   settings.setPanoramicTexturePath( panoramicTextureImageSource->source() );
   settings.setCubeMapFace( QStringLiteral( "posX" ), posXImageSource->source() );
