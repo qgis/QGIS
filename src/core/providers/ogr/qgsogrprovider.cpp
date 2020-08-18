@@ -2734,7 +2734,7 @@ void QgsOgrProvider::computeCapabilities()
     }
 
     // Whilst the OGR documentation (e.g. at
-    // http://www.gdal.org/ogr/classOGRLayer.html#a17) states "The capability
+    // https://gdal.org/doxygen/classOGRLayer.html#aeedbda1a62f9b89b8e5f24332cf22286) states "The capability
     // codes that can be tested are represented as strings, but #defined
     // constants exists to ensure correct spelling", we always use strings
     // here.  This is because older versions of OGR don't always have all
