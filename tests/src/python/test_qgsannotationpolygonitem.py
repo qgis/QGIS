@@ -29,7 +29,9 @@ from qgis.core import (QgsMapSettings,
                        QgsAnnotationPolygonItem,
                        QgsRectangle,
                        QgsLineString,
-                       QgsPolygon
+                       QgsPolygon,
+                       QgsCurvePolygon,
+                       QgsCircularString
                        )
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -117,6 +119,36 @@ class TestQgsAnnotationPolygonItem(unittest.TestCase):
             painter.end()
 
         self.assertTrue(self.imageCheck('polygon_item', 'polygon_item', image))
+
+    def testRenderCurvePolygon(self):
+        cs = QgsCircularString()
+        cs.setPoints([QgsPoint(12, 13.2), QgsPoint(14, 13.4), QgsPoint(14, 15), QgsPoint(13, 15.1), QgsPoint(12, 13.2)])
+        cp = QgsCurvePolygon()
+        cp.setExteriorRing(cs)
+        item = QgsAnnotationPolygonItem(cp)
+        item.setSymbol(QgsFillSymbol.createSimple({'color': '200,100,100', 'outline_color': 'black', 'outline_width': '2'}))
+
+        settings = QgsMapSettings()
+        settings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        settings.setExtent(QgsRectangle(10, 10, 18, 18))
+        settings.setOutputSize(QSize(300, 300))
+
+        settings.setFlag(QgsMapSettings.Antialiasing, False)
+
+        rc = QgsRenderContext.fromMapSettings(settings)
+        image = QImage(200, 200, QImage.Format_ARGB32)
+        image.setDotsPerMeterX(96 / 25.4 * 1000)
+        image.setDotsPerMeterY(96 / 25.4 * 1000)
+        image.fill(QColor(255, 255, 255))
+        painter = QPainter(image)
+        rc.setPainter(painter)
+
+        try:
+            item.render(rc, None)
+        finally:
+            painter.end()
+
+        self.assertTrue(self.imageCheck('curvepolygon_item', 'curvepolygon_item', image))
 
     def testRenderWithTransform(self):
         item = QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(11.5, 13), QgsPoint(12, 13), QgsPoint(12, 13.5), QgsPoint(11.5, 13)])))

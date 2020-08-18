@@ -28,7 +28,8 @@ from qgis.core import (QgsMapSettings,
                        QgsRenderContext,
                        QgsAnnotationLineItem,
                        QgsRectangle,
-                       QgsLineString
+                       QgsLineString,
+                       QgsCircularString
                        )
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -116,6 +117,32 @@ class TestQgsAnnotationLineItem(unittest.TestCase):
             painter.end()
 
         self.assertTrue(self.imageCheck('linestring_item', 'linestring_item', image))
+
+    def testRenderCurve(self):
+        item = QgsAnnotationLineItem(QgsCircularString(QgsPoint(12, 13.2), QgsPoint(14, 13.4), QgsPoint(14, 15)))
+        item.setSymbol(QgsLineSymbol.createSimple({'color': '#ffff00', 'line_width': '3'}))
+
+        settings = QgsMapSettings()
+        settings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        settings.setExtent(QgsRectangle(10, 10, 18, 18))
+        settings.setOutputSize(QSize(300, 300))
+
+        settings.setFlag(QgsMapSettings.Antialiasing, False)
+
+        rc = QgsRenderContext.fromMapSettings(settings)
+        image = QImage(200, 200, QImage.Format_ARGB32)
+        image.setDotsPerMeterX(96 / 25.4 * 1000)
+        image.setDotsPerMeterY(96 / 25.4 * 1000)
+        image.fill(QColor(255, 255, 255))
+        painter = QPainter(image)
+        rc.setPainter(painter)
+
+        try:
+            item.render(rc, None)
+        finally:
+            painter.end()
+
+        self.assertTrue(self.imageCheck('line_circularstring', 'line_circularstring', image))
 
     def testRenderWithTransform(self):
         item = QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]))
