@@ -179,7 +179,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   const QStringList hiddenPathList = settings.value( QStringLiteral( "/browser/hiddenPaths" ) ).toStringList();
   for ( const QString &path : hiddenPathList )
   {
-    QAction *action = new QAction( path, hiddenMenu );
+    QAction *action = new QAction( QDir::toNativeSeparators( path ), hiddenMenu );
     connect( action, &QAction::triggered, this, [ = ]
     {
       QgsSettings s;
