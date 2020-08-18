@@ -17,6 +17,8 @@
 #include "qgsapplication.h"
 #include "qgsprojectstorageregistry.h"
 #include "qgsprojectstorage.h"
+#include "qgsprojectviewsettings.h"
+#include "qgsreferencedgeometry.h"
 #include "qgslandingpageutils.h"
 #include "qgsserverprojectutils.h"
 #include "qgsmessagelog.h"
@@ -224,37 +226,53 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri )
   info[ "id" ] = QCryptographicHash::hash( projectUri.toUtf8(), QCryptographicHash::Md5 ).toHex();
   QgsProject p;
 
-  // Read initial extent from map canvas
-  QObject::connect( &p, &QgsProject::readProject, qApp, [ & ]( const QDomDocument & projectDoc )
+  // Initial extent for map display, in 4326 CRS.
+  // Check view settings first, read map canvas extent from XML if it's not set
+  QgsProjectViewSettings *viewSettings { p.viewSettings() };
+  if ( viewSettings && ! viewSettings->defaultViewExtent().isEmpty() )
   {
-    const QDomNodeList canvasElements { projectDoc.elementsByTagName( QStringLiteral( "mapcanvas" ) ) };
-    if ( ! canvasElements.isEmpty() )
+    QgsRectangle extent { viewSettings->defaultViewExtent() };
+    // Need conversion?
+    if ( viewSettings->defaultViewExtent().crs().authid() != 4326 )
     {
-      const QDomNode canvasElement { canvasElements.item( 0 ).firstChildElement( QStringLiteral( "extent" ) ) };
-      if ( !canvasElement.isNull() &&
-           !canvasElement.firstChildElement( QStringLiteral( "xmin" ) ).isNull() &&
-           !canvasElement.firstChildElement( QStringLiteral( "ymin" ) ).isNull() &&
-           !canvasElement.firstChildElement( QStringLiteral( "xmax" ) ).isNull() &&
-           !canvasElement.firstChildElement( QStringLiteral( "ymax" ) ).isNull()
-         )
-      {
-        QgsRectangle extent
-        {
-          canvasElement.firstChildElement( QStringLiteral( "xmin" ) ).text().toDouble(),
-          canvasElement.firstChildElement( QStringLiteral( "ymin" ) ).text().toDouble(),
-          canvasElement.firstChildElement( QStringLiteral( "xmax" ) ).text().toDouble(),
-          canvasElement.firstChildElement( QStringLiteral( "ymax" ) ).text().toDouble(),
-        };
-        // Need conversion?
-        if ( p.crs().authid() != 4326 )
-        {
-          QgsCoordinateTransform ct { p.crs(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), p.transformContext() };
-          extent = ct.transform( extent );
-        }
-        info[ "initial_extent" ] = json::array( { extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum() } );
-      }
+      QgsCoordinateTransform ct { p.crs(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), p.transformContext() };
+      extent = ct.transform( extent );
     }
-  } );
+    info[ "initial_extent" ] = json::array( { extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum() } );
+  }
+  else // Read initial extent from map canvas
+  {
+    QObject::connect( &p, &QgsProject::readProject, qApp, [ & ]( const QDomDocument & projectDoc )
+    {
+      const QDomNodeList canvasElements { projectDoc.elementsByTagName( QStringLiteral( "mapcanvas" ) ) };
+      if ( ! canvasElements.isEmpty() )
+      {
+        const QDomNode canvasElement { canvasElements.item( 0 ).firstChildElement( QStringLiteral( "extent" ) ) };
+        if ( !canvasElement.isNull() &&
+             !canvasElement.firstChildElement( QStringLiteral( "xmin" ) ).isNull() &&
+             !canvasElement.firstChildElement( QStringLiteral( "ymin" ) ).isNull() &&
+             !canvasElement.firstChildElement( QStringLiteral( "xmax" ) ).isNull() &&
+             !canvasElement.firstChildElement( QStringLiteral( "ymax" ) ).isNull()
+           )
+        {
+          QgsRectangle extent
+          {
+            canvasElement.firstChildElement( QStringLiteral( "xmin" ) ).text().toDouble(),
+            canvasElement.firstChildElement( QStringLiteral( "ymin" ) ).text().toDouble(),
+            canvasElement.firstChildElement( QStringLiteral( "xmax" ) ).text().toDouble(),
+            canvasElement.firstChildElement( QStringLiteral( "ymax" ) ).text().toDouble(),
+          };
+          // Need conversion?
+          if ( p.crs().authid() != 4326 )
+          {
+            QgsCoordinateTransform ct { p.crs(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), p.transformContext() };
+            extent = ct.transform( extent );
+          }
+          info[ "initial_extent" ] = json::array( { extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum() } );
+        }
+      }
+    } );
+  }
 
   if ( p.read( projectUri ) )
   {
