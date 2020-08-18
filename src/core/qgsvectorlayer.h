@@ -133,6 +133,7 @@ typedef QSet<int> QgsAttributeIds;
  * Since QGIS 3.4 when closing a project, the application shows a warning about potential data
  * loss if there are any non-empty memory layers present. If your memory layer should not
  * trigger such warning, it is possible to suppress that by setting the following custom variable:
+ *
  * \code{.py}
  *   layer.setCustomProperty("skipMemoryLayersCheck", 1)
  * \endcode
@@ -140,7 +141,7 @@ typedef QSet<int> QgsAttributeIds;
  *
  * \subsection ogr OGR data provider (ogr)
  *
- * Accesses data using the OGR drivers (http://www.gdal.org/ogr/ogr_formats.html). The url
+ * Accesses data using the OGR drivers (https://gdal.org/drivers/vector/index.html). The url
  * is the OGR connection string. A wide variety of data formats can be accessed using this
  * driver, including file based formats used by many GIS systems, database formats, and
  * web services. Some of these formats are also supported by custom data providers listed
