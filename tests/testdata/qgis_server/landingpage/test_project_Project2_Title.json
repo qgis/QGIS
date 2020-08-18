@@ -73,7 +73,13 @@ Content-Type: application/json
       38.23087034040887,
       55.95129087846767
     ],
-    "id": "471b5bb5dbe79f72149529f700d948a3",
+    "id": "cbbf3fcb3fc7fbe823cc6c0c5dd744c1",
+    "initial_extent": [
+      -4.550318430316912,
+      41.98773931833632,
+      17.28804680662911,
+      55.95129087846767
+    ],
     "metadata": {
       "abstract": "Metadata abstract lorem ipsum...",
       "author": "Alessandro Pasotti",
