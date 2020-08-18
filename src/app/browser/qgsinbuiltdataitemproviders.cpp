@@ -174,7 +174,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   } );
   menu->addAction( hideAction );
 
-  QMenu *hiddenMenu = new QMenu( tr( "Hidden items" ), menu );
+  QMenu *hiddenMenu = new QMenu( tr( "Hidden Items" ), menu );
   int count = 0;
   const QStringList hiddenPathList = settings.value( QStringLiteral( "/browser/hiddenPaths" ) ).toStringList();
   for ( const QString &path : hiddenPathList )
@@ -182,7 +182,6 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
     QAction *action = new QAction( path, hiddenMenu );
     connect( action, &QAction::triggered, this, [ = ]
     {
-      QString path = qobject_cast<QAction *>( sender() )->text();
       QgsSettings s;
       QStringList pathsList = s.value( QStringLiteral( "/browser/hiddenPaths" ) ).toStringList();
       pathsList.removeAll( path );
@@ -192,8 +191,8 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
       int idx = path.lastIndexOf( QStringLiteral( "/" ) );
       if ( idx != -1 && path.count( QStringLiteral( "/" ) ) > 1 )
       {
-        path = path.left( idx );
-        QgisApp::instance()->browserModel()->refresh( path );
+        QString parentPath = path.left( idx );
+        QgisApp::instance()->browserModel()->refresh( parentPath );
       }
       else
       {
