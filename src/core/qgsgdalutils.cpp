@@ -492,14 +492,17 @@ GDALDatasetH QgsGdalUtils::rpcAwareAutoCreateWarpedVrt(
 
 void *QgsGdalUtils::rpcAwareCreateTransformer( GDALDatasetH hSrcDS, GDALDatasetH hDstDS, char **papszOptions )
 {
+  char **opts = CSLDuplicate( papszOptions );
   if ( GDALGetMetadata( hSrcDS, "RPC" ) )
   {
     // well-behaved RPC should have height offset a good value for RPC_HEIGHT
     const char *heightOffStr = GDALGetMetadataItem( hSrcDS, "HEIGHT_OFF", "RPC" );
     if ( heightOffStr )
-      papszOptions = CSLAddNameValue( papszOptions, "RPC_HEIGHT", heightOffStr );
+      opts = CSLAddNameValue( opts, "RPC_HEIGHT", heightOffStr );
   }
-  return GDALCreateGenImgProjTransformer2( hSrcDS, hDstDS, papszOptions );
+  void *transformer = GDALCreateGenImgProjTransformer2( hSrcDS, hDstDS, opts );
+  CSLDestroy( opts );
+  return transformer;
 }
 
 #ifndef QT_NO_NETWORKPROXY
