@@ -1408,7 +1408,7 @@ void QgsTextFormatWidget::updatePlacementWidgets()
         helperText = tr( "Label candidates are placed outside of the features, preferring placements which give greatest visual association between the label and the feature." );
       break;
   }
-  mPlacementModeDescriptionLabel->setText( helperText );
+  mPlacementModeDescriptionLabel->setText( QStringLiteral( "<i>%1</i>" ).arg( helperText ) );
 }
 
 void QgsTextFormatWidget::populateFontCapitalsComboBox()
