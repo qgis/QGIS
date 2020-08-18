@@ -25,6 +25,7 @@
 #include "qgsapplication.h"
 #include "qgs3dsymbolregistry.h"
 #include "qgsabstractmaterialsettings.h"
+#include "qgsvscrollarea.h"
 
 #include <QBoxLayout>
 #include <QCheckBox>
@@ -82,12 +83,15 @@ QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsMapLayer *lay
   cboRendererType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "rendererNullSymbol.svg" ) ), tr( "No Symbols" ) );
   cboRendererType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "rendererSingleSymbol.svg" ) ), tr( "Single Symbol" ) );
   cboRendererType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "rendererRuleBasedSymbol.svg" ) ), tr( "Rule-based" ) );
-
-  widgetBaseProperties = new QgsVectorLayer3DPropertiesWidget( this );
+  layout->addWidget( cboRendererType );
 
   widgetRendererStack = new QStackedWidget( this );
-  layout->addWidget( cboRendererType );
-  layout->addWidget( widgetRendererStack );
+  QgsVScrollArea *scrollArea = new QgsVScrollArea( this );
+  scrollArea->setFrameShape( QFrame::NoFrame );
+  layout->addWidget( scrollArea );
+  scrollArea->setWidget( widgetRendererStack );
+
+  widgetBaseProperties = new QgsVectorLayer3DPropertiesWidget( this );
   layout->addWidget( widgetBaseProperties );
 
   widgetNoRenderer = new QLabel;
