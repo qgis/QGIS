@@ -443,15 +443,15 @@ opening of the attribute form dialog when digitizing is completed.
 
     QVariant nmRelationId() const;
 %Docstring
-Determines the nmRelationId used for the many-to-many cardinality.
+Determines the relation id of the second relation involved in an N:M relation.
 
 .. versionadded:: 3.16
 %End
 
     void setNmRelationId( const QVariant &nmRelationId = QVariant() );
 %Docstring
-Sets ``nmRelationId`` in a many-to-many cardinality.
-If it's empty, then it's considered as a one-to-many relationship.
+Sets ``nmRelationId`` for the relation id of the second relation involved in an N:M relation.
+If it's empty, then it's considered as a 1:M relationship.
 
 .. versionadded:: 3.16
 %End

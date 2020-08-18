@@ -122,14 +122,14 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
     void setForceSuppressFormPopup( bool forceSuppressFormPopup );
 
     /**
-    * Determines the nmRelationId used for the many-to-many cardinality.
+     * Determines the relation id of the second relation involved in an N:M relation.
     * \since QGIS 3.16
     */
     QVariant nmRelationId() const;
 
     /**
-     * Sets \a nmRelationId in a many-to-many cardinality.
-     * If it's empty, then it's considered as a one-to-many relationship
+     * Sets \a nmRelationId for the relation id of the second relation involved in an N:M relation.
+     * If it's empty, then it's considered as a 1:M relationship.
      * \since QGIS 3.16
      */
     void setNmRelationId( const QVariant &nmRelationId = QVariant() );
