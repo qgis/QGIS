@@ -33,8 +33,9 @@ class QgsSkyboxRenderingSettingsWidget : public QWidget, private Ui::SkyboxRende
     //! Returns the skybox settings from the widget UI
     QgsSkyboxSettings toSkyboxSettings();
 
-  private:
-    QVector<QGroupBox *> layoutGroupBoxes;
+  private slots:
+    //! Shows settings of the enabled skybox type
+    void showSkyboxSettings( int index );
 };
 
 #endif // SKYBOXRENDERINGSETTINGSWIDGET_H
