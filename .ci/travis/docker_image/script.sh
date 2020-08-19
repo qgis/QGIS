@@ -72,6 +72,7 @@ else
   echo "Trigger build of PyQGIS Documentation…"
   if [[ ${TRIGGER_PYQGIS_DOC} =~ ^TRUE$ ]]; then
     body='{
+<<<<<<< HEAD
       "request": {
         "branch":"master",
         "message": "Trigger PyQGIS doc build after release of new Docker image as __DOCKER_TAG__",
@@ -84,11 +85,17 @@ else
           }
         }
       }
+=======
+      "ref": "master",
+      "inputs": {"qgis_branch": "__QGIS_VERSION_BRANCH__"}
+>>>>>>> d775985e3e... move PyQGIS building from Travis to Github workflows (#38363)
     }'
-    body=$(sed "s/__QGIS_VERSION_BRANCH__/${TRAVIS_BRANCH}/; s/__DOCKER_TAG__/${DOCKER_TAG}/" <<< $body)
-    curl -s -X POST -H "Content-Type: application/json" -H "Accept: application/json" \
-      -H "Travis-API-Version: 3" -H "Authorization: token $TRAVIS_TOKEN" -d "$body" \
-      https://api.travis-ci.org/repo/qgis%2Fpyqgis/requests
+    body=$(sed "s/__QGIS_VERSION_BRANCH__/${TRAVIS_BRANCH}/;" <<< $body)
+    curl -X POST \
+      -H "Accept: application/vnd.github.v3+json" \
+      -H "Authorization: token ${GH_TOKEN}" \
+      https://api.github.com/repos/qgis/pyqgis/actions/workflows/2246440/dispatches \
+      -d "${body}"
   else
     echo "skipped from configuration"
   fi
