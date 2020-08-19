@@ -62,6 +62,7 @@ class TestQgsSvgMarkerSymbol : public QObject
     void dynamicSizeWithAspectRatio();
     void dynamicWidthWithAspectRatio();
     void dynamicAspectRatio();
+    void resetDefaultAspectRatio();
 
   private:
     bool mTestHasError =  false ;
@@ -250,6 +251,33 @@ void TestQgsSvgMarkerSymbol::dynamicAspectRatio()
   bool result = imageCheck( QStringLiteral( "svgmarker_dynamic_aspectratio" ) );
   mSvgMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyHeight, QgsProperty() );
   QVERIFY( result );
+}
+
+void TestQgsSvgMarkerSymbol::resetDefaultAspectRatio()
+{
+  // default aspect ratio must be updated as SVG path is changed
+  QString svgPath = QgsSymbolLayerUtils::svgSymbolNameToPath( QStringLiteral( "/amenity/amenity_bench.svg" ), QgsPathResolver() );
+  QgsSvgMarkerSymbolLayer layer( svgPath );
+  QCOMPARE( layer.defaultAspectRatio(), 1.0 );
+  QVERIFY( layer.preservedAspectRatio() );
+
+  // different aspect ratio
+  layer.setPath( mTestDataDir + "test_symbol_svg.svg" );
+  QGSCOMPARENEAR( layer.defaultAspectRatio(), 1.58258242005, 0.0001 );
+  QVERIFY( layer.preservedAspectRatio() );
+  layer.setPath( svgPath );
+  QCOMPARE( layer.defaultAspectRatio(), 1.0 );
+  QVERIFY( layer.preservedAspectRatio() );
+
+  layer.setFixedAspectRatio( 0.5 );
+  QCOMPARE( layer.defaultAspectRatio(), 1.0 );
+  QCOMPARE( layer.fixedAspectRatio(), 0.5 );
+  QVERIFY( !layer.preservedAspectRatio() );
+
+  layer.setPath( mTestDataDir + "test_symbol_svg.svg" );
+  QGSCOMPARENEAR( layer.defaultAspectRatio(), 1.58258242005, 0.0001 );
+  QCOMPARE( layer.fixedAspectRatio(), 0.5 );
+  QVERIFY( !layer.preservedAspectRatio() );
 }
 
 //
