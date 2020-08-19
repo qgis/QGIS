@@ -55,6 +55,7 @@ class TestQgsSvgCache : public QObject
     void base64();
     void replaceParams();
     void aspectRatio();
+    void noViewBox();
 
 };
 
@@ -343,6 +344,22 @@ void TestQgsSvgCache::aspectRatio()
   QImage img = cache.svgAsImage( originalImage, 200, QColor( 0, 0, 0 ), QColor( 0, 0, 0 ), 1.0,
                                  1.0, inCache, 0.5 );
   QVERIFY( imageCheck( QStringLiteral( "svgcache_aspect_ratio" ), img, 30 ) );
+}
+
+void TestQgsSvgCache::noViewBox()
+{
+  // if a source SVG has no viewbox but it does have width/height, use that as a backup so that
+  // we can correctly determine the svg's aspect ratio
+  const QString originalImage = TEST_DATA_DIR + QStringLiteral( "/svg/no_viewbox.svg" );
+  QgsSvgCache cache;
+  double size = 12;
+  const QColor fill = QColor( 0, 0, 0 );
+  const QColor stroke = QColor( 0, 0, 0 );
+  double strokeWidth = 1;
+  double widthScaleFactor = 1;
+  QSizeF viewBoxSize = cache.svgViewboxSize( originalImage, size, fill, stroke, strokeWidth, widthScaleFactor );
+  QGSCOMPARENEAR( viewBoxSize.width(), 1.329267, 0.0001 );
+  QGSCOMPARENEAR( viewBoxSize.height(), 6.358467, 0.0001 );
 }
 
 bool TestQgsSvgCache::imageCheck( const QString &testName, QImage &image, int mismatchCount )

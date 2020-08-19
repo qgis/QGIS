@@ -348,7 +348,31 @@ double QgsSvgCache::calcSizeScaleFactor( QgsSvgCacheEntry *entry, const QDomElem
 
   //could not find valid viewbox attribute
   if ( viewBox.isEmpty() )
+  {
+    // trying looking for width/height and use them as a fallback
+    if ( docElem.tagName() == QLatin1String( "svg" ) && docElem.hasAttribute( QStringLiteral( "width" ) ) )
+    {
+      const QString widthString = docElem.attribute( QStringLiteral( "width" ) );
+      const QRegularExpression measureRegEx( QStringLiteral( "([\\d\\.]+).*?$" ) );
+      const QRegularExpressionMatch widthMatch = measureRegEx.match( widthString );
+      if ( widthMatch.hasMatch() )
+      {
+        double width = widthMatch.captured( 1 ).toDouble();
+        const QString heightString = docElem.attribute( QStringLiteral( "height" ) );
+
+        const QRegularExpressionMatch heightMatch = measureRegEx.match( heightString );
+        if ( heightMatch.hasMatch() )
+        {
+          double height = heightMatch.captured( 1 ).toDouble();
+          viewboxSize = QSizeF( width, height );
+          return width / entry->size;
+        }
+      }
+    }
+
     return 1.0;
+  }
+
 
   //width should be 3rd element in a 4 part space delimited string
   QStringList parts = viewBox.split( ' ' );
