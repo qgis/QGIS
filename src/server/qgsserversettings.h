@@ -70,6 +70,8 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
       QGIS_SERVER_API_WFS3_MAX_LIMIT, //!< Maximum value for "limit" in a features request, defaults to 10000 (since QGIS 3.10).
       QGIS_SERVER_TRUST_LAYER_METADATA, //!< Trust layer metadata. Improves project read time. (since QGIS 3.16).
       QGIS_SERVER_DISABLE_GETPRINT //!< Disabled WMS GetPrint request and don't load layouts. Improves project read time. (since QGIS 3.16).
+      QGIS_SERVER_PROJECTS_DIRECTORIES, //!< Directory used by the landing page service to find .qgs and .qgz projects (since QGIS 3.16)
+      QGIS_SERVER_PROJECTS_PG_CONNECTIONS //!< PostgreSQL connection string used by the landing page service to find projects (since QGIS 3.16)
     };
     Q_ENUM( EnvVar )
 };
@@ -204,6 +206,20 @@ class SERVER_EXPORT QgsServerSettings
      * \since QGIS 3.6.2
      */
     int wmsMaxWidth() const;
+
+    /**
+     * Returns the directory used by the landing page service to find .qgs and
+     * .qgz projects.
+     * \since QGIS 3.16
+     */
+    QString projectsDirectories() const;
+
+    /**
+     * Returns the PostgreSQL connection string used by the landing page
+     * service to find projects.
+     * \since QGIS 3.16
+     */
+    QString projectsPgConnections() const;
 
     /**
      * Returns the server-wide base directory where HTML templates and static assets (e.g. images, js and css files) are searched for.

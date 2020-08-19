@@ -442,6 +442,16 @@ int QgsServerSettings::wmsMaxWidth() const
   return value( QgsServerSettingsEnv::QGIS_SERVER_WMS_MAX_WIDTH ).toInt();
 }
 
+QString QgsServerSettings::projectsDirectories() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_PROJECTS_DIRECTORIES ).toString();
+}
+
+QString QgsServerSettings::projectsPgConnections() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_PROJECTS_PG_CONNECTIONS ).toString();
+}
+
 QString QgsServerSettings::apiResourcesDirectory() const
 {
   return value( QgsServerSettingsEnv::QGIS_SERVER_API_RESOURCES_DIRECTORY ).toString();
