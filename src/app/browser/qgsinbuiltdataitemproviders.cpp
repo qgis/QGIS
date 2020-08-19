@@ -177,6 +177,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   QMenu *hiddenMenu = new QMenu( tr( "Hidden Items" ), menu );
   int count = 0;
   const QStringList hiddenPathList = settings.value( QStringLiteral( "/browser/hiddenPaths" ) ).toStringList();
+  static int MAX_HIDDEN_ENTRIES = 5;
   for ( const QString &path : hiddenPathList )
   {
     QAction *action = new QAction( QDir::toNativeSeparators( path ), hiddenMenu );
@@ -202,17 +203,23 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
     } );
     hiddenMenu->addAction( action );
     count += 1;
-    if ( count == 5 )
+    if ( count == MAX_HIDDEN_ENTRIES )
     {
       break;
     }
   }
-  QAction *moreAction = new QAction( tr( "Show More…" ), hiddenMenu );
-  connect( moreAction, &QAction::triggered, this, [ = ]
+
+  if ( hiddenPathList.size() > MAX_HIDDEN_ENTRIES )
   {
-    QgisApp::instance()->showOptionsDialog( QgisApp::instance(), QStringLiteral( "mOptionsPageDataSources" ) );
-  } );
-  hiddenMenu->addAction( moreAction );
+    hiddenMenu->addSeparator();
+
+    QAction *moreAction = new QAction( tr( "Show More…" ), hiddenMenu );
+    connect( moreAction, &QAction::triggered, this, [ = ]
+    {
+      QgisApp::instance()->showOptionsDialog( QgisApp::instance(), QStringLiteral( "mOptionsPageDataSources" ) );
+    } );
+    hiddenMenu->addAction( moreAction );
+  }
   if ( count > 0 )
   {
     menu->addMenu( hiddenMenu );
