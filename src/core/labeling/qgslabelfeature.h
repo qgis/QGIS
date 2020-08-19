@@ -439,6 +439,7 @@ class CORE_EXPORT QgsLabelFeature
      * the end of the line.
      *
      * \see setLineAnchorPercent()
+     * \see lineAnchorType()
      * \since QGIS 3.16
      */
     double lineAnchorPercent() const { return mLineAnchorPercent; }
@@ -452,9 +453,29 @@ class CORE_EXPORT QgsLabelFeature
      * the end of the line.
      *
      * \see lineAnchorPercent()
+     * \see setLineAnchorType()
      * \since QGIS 3.16
      */
     void setLineAnchorPercent( double percent ) { mLineAnchorPercent = percent; }
+
+
+    /**
+     * Returns the line anchor type, which dictates how the lineAnchorPercent() setting is
+     * handled.
+     *
+     * \see setLineAnchorType()
+     * \see lineAnchorPercent()
+     */
+    QgsLabelLineSettings::AnchorType lineAnchorType() const { return mLineAnchorType; }
+
+    /**
+     * Sets the line anchor \a type, which dictates how the lineAnchorPercent() setting is
+     * handled.
+     *
+     * \see lineAnchorType()
+     * \see setLineAnchorPercent()
+     */
+    void setLineAnchorType( QgsLabelLineSettings::AnchorType type ) { mLineAnchorType = type; }
 
     /**
      * Returns TRUE if all parts of the feature should be labeled.
@@ -571,6 +592,7 @@ class CORE_EXPORT QgsLabelFeature
     QgsPointXY mAnchorPosition;
 
     double mLineAnchorPercent = 0.5;
+    QgsLabelLineSettings::AnchorType mLineAnchorType = QgsLabelLineSettings::AnchorType::HintOnly;
 };
 
 #endif // QGSLABELFEATURE_H

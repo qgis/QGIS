@@ -51,6 +51,15 @@ class CORE_EXPORT QgsLabelLineSettings
     };
 
     /**
+     * Line anchor types
+     */
+    enum class AnchorType : int
+    {
+      HintOnly, //!< Line anchor is a hint for preferred placement only, but other placements close to the hint are permitted
+      Strict, //!< Line anchor is a strict placement, and other placements are not permitted
+    };
+
+    /**
      * Returns the line placement flags, which dictate how line labels can be placed
      * above or below the lines.
      *
@@ -241,6 +250,7 @@ class CORE_EXPORT QgsLabelLineSettings
      * the end of the line.
      *
      * \see setLineAnchorPercent()
+     * \see anchorType()
      */
     double lineAnchorPercent() const { return mLineAnchorPercent; }
 
@@ -253,8 +263,27 @@ class CORE_EXPORT QgsLabelLineSettings
      * the end of the line.
      *
      * \see lineAnchorPercent()
+     * \see setAnchorType()
      */
     void setLineAnchorPercent( double percent ) { mLineAnchorPercent = percent; }
+
+    /**
+     * Returns the line anchor type, which dictates how the lineAnchorPercent() setting is
+     * handled.
+     *
+     * \see setAnchorType()
+     * \see lineAnchorPercent()
+     */
+    AnchorType anchorType() const { return mAnchorType; }
+
+    /**
+     * Sets the line anchor \a type, which dictates how the lineAnchorPercent() setting is
+     * handled.
+     *
+     * \see anchorType()
+     * \see setLineAnchorPercent()
+     */
+    void setAnchorType( AnchorType type ) { mAnchorType = type; }
 
   private:
     QgsLabeling::LinePlacementFlags mPlacementFlags = QgsLabeling::LinePlacementFlag::AboveLine | QgsLabeling::LinePlacementFlag::MapOrientation;
@@ -269,6 +298,7 @@ class CORE_EXPORT QgsLabelLineSettings
     QgsMapUnitScale mOverrunDistanceMapUnitScale;
 
     double mLineAnchorPercent = 0.5;
+    AnchorType mAnchorType = AnchorType::HintOnly;
 };
 
 #endif // QGSLABELLINESETTINGS_H
