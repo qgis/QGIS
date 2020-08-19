@@ -2381,7 +2381,7 @@ void QgsSvgMarkerSymbolLayerWidget::setGuiForSvg( const QgsSvgMarkerSymbolLayer 
   spinHeight->blockSignals( true );
   if ( preservedAspectRatio )
   {
-    spinHeight->setValue( layer->size() );
+    spinHeight->setValue( layer->size() * layer->defaultAspectRatio() );
   }
   else
   {
