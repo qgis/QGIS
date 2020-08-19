@@ -728,7 +728,10 @@ std::size_t FeaturePart::createCandidatesAlongLine( std::vector< std::unique_ptr
   }
 
   //prefer to label along straightish segments:
-  std::size_t candidates = createCandidatesAlongLineNearStraightSegments( lPos, mapShape, pal );
+  std::size_t candidates = 0;
+
+  if ( mLF->lineAnchorType() == QgsLabelLineSettings::AnchorType::HintOnly )
+    candidates = createCandidatesAlongLineNearStraightSegments( lPos, mapShape, pal );
 
   const std::size_t candidateTargetCount = maximumLineCandidates();
   if ( candidates < candidateTargetCount )
@@ -766,14 +769,25 @@ std::size_t FeaturePart::createHorizontalCandidatesAlongLine( std::vector<std::u
   distanceToSegment[line->nbPoints - 1] = totalLineLength;
 
   const std::size_t candidateTargetCount = maximumLineCandidates();
-  const double lineStepDistance = totalLineLength / ( candidateTargetCount + 1 ); // distance to move along line with each candidate
-  double currentDistanceAlongLine = lineStepDistance;
+  double lineStepDistance = 0;
 
   const double lineAnchorPoint = totalLineLength * mLF->lineAnchorPercent();
+  double currentDistanceAlongLine = lineStepDistance;
+  switch ( mLF->lineAnchorType() )
+  {
+    case QgsLabelLineSettings::AnchorType::HintOnly:
+      lineStepDistance = totalLineLength / ( candidateTargetCount + 1 ); // distance to move along line with each candidate
+      break;
+
+    case QgsLabelLineSettings::AnchorType::Strict:
+      currentDistanceAlongLine = lineAnchorPoint;
+      lineStepDistance = -1;
+      break;
+  }
 
   double candidateCenterX, candidateCenterY;
   int i = 0;
-  while ( currentDistanceAlongLine < totalLineLength )
+  while ( currentDistanceAlongLine <= totalLineLength )
   {
     if ( pal->isCanceled() )
     {
@@ -1089,13 +1103,24 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
     currentDistanceAlongLine = std::numeric_limits< double >::max();
   }
 
-  const double lineAnchorPoint = totalLineLength * mLF->lineAnchorPercent();
+  const double lineAnchorPoint = totalLineLength * std::min( 0.99, mLF->lineAnchorPercent() ); // don't actually go **all** the way to end of line, just very close to!
+
+  switch ( mLF->lineAnchorType() )
+  {
+    case QgsLabelLineSettings::AnchorType::HintOnly:
+      break;
+
+    case QgsLabelLineSettings::AnchorType::Strict:
+      currentDistanceAlongLine = std::min( lineAnchorPoint, totalLineLength * 0.99 - labelWidth );
+      lineStepDistance = -1;
+      break;
+  }
 
   double candidateLength;
   double beta;
   double candidateStartX, candidateStartY, candidateEndX, candidateEndY;
   int i = 0;
-  while ( currentDistanceAlongLine < totalLineLength - labelWidth )
+  while ( currentDistanceAlongLine <= totalLineLength - labelWidth || mLF->lineAnchorType() == QgsLabelLineSettings::AnchorType::Strict )
   {
     if ( pal->isCanceled() )
     {
@@ -1197,7 +1222,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
 }
 
 
-std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet *path_positions, double *path_distances, int &orientation, const double offsetAlongLine, bool &reversed, bool &flip )
+std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet *path_positions, double *path_distances, int &orientation, const double offsetAlongLine, bool &reversed, bool &flip, bool applyAngleConstraints )
 {
   double offsetAlongSegment = offsetAlongLine;
   int index = 1;
@@ -1309,10 +1334,10 @@ std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet 
     // normalise between -180 and 180
     while ( angle_delta > M_PI ) angle_delta -= 2 * M_PI;
     while ( angle_delta < -M_PI ) angle_delta += 2 * M_PI;
-    if ( ( li->max_char_angle_inside > 0 && angle_delta > 0
-           && angle_delta > li->max_char_angle_inside * ( M_PI / 180 ) )
-         || ( li->max_char_angle_outside < 0 && angle_delta < 0
-              && angle_delta < li->max_char_angle_outside * ( M_PI / 180 ) ) )
+    if ( applyAngleConstraints && ( ( li->max_char_angle_inside > 0 && angle_delta > 0
+                                      && angle_delta > li->max_char_angle_inside * ( M_PI / 180 ) )
+                                    || ( li->max_char_angle_outside < 0 && angle_delta < 0
+                                         && angle_delta < li->max_char_angle_outside * ( M_PI / 180 ) ) ) )
     {
       return nullptr;
     }
@@ -1450,7 +1475,20 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
     flags = QgsLabeling::LinePlacementFlag::OnLine; // default flag
 
   // generate curved labels
-  for ( double distanceAlongLineToStartCandidate = 0; distanceAlongLineToStartCandidate < total_distance; distanceAlongLineToStartCandidate += delta )
+  double distanceAlongLineToStartCandidate = 0;
+  bool singleCandidateOnly = false;
+  switch ( mLF->lineAnchorType() )
+  {
+    case QgsLabelLineSettings::AnchorType::HintOnly:
+      break;
+
+    case QgsLabelLineSettings::AnchorType::Strict:
+      distanceAlongLineToStartCandidate = std::min( lineAnchorPoint, total_distance * 0.99 - getLabelWidth() );
+      singleCandidateOnly = true;
+      break;
+  }
+
+  for ( ; distanceAlongLineToStartCandidate <= total_distance; distanceAlongLineToStartCandidate += delta )
   {
     bool flip = false;
     // placements may need to be reversed if using map orientation and the line has right-to-left direction
@@ -1468,7 +1506,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
       orientation = 1;
     }
 
-    std::unique_ptr< LabelPosition > slp = curvedPlacementAtOffset( mapShape, path_distances.get(), orientation, distanceAlongLineToStartCandidate, reversed, flip );
+    std::unique_ptr< LabelPosition > slp = curvedPlacementAtOffset( mapShape, path_distances.get(), orientation, distanceAlongLineToStartCandidate, reversed, flip, !singleCandidateOnly );
     if ( !slp )
       continue;
 
@@ -1479,7 +1517,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
       if ( ( showUprightLabels() && !flip ) )
       {
         orientation = -orientation;
-        slp = curvedPlacementAtOffset( mapShape, path_distances.get(), orientation, distanceAlongLineToStartCandidate, reversed, flip );
+        slp = curvedPlacementAtOffset( mapShape, path_distances.get(), orientation, distanceAlongLineToStartCandidate, reversed, flip, !singleCandidateOnly );
       }
     }
     if ( !slp )
@@ -1505,7 +1543,9 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
       tmp = tmp->nextPart();
     }
 
-    const bool anchorIsFlexiblePlacement = mLF->lineAnchorPercent() > 0.1 && mLF->lineAnchorPercent() < 0.9;
+    // if anchor placement is towards start or end of line, we need to slightly tweak the costs to ensure that the
+    // anchor weighting is sufficient to push labels towards start/end
+    const bool anchorIsFlexiblePlacement = !singleCandidateOnly && mLF->lineAnchorPercent() > 0.1 && mLF->lineAnchorPercent() < 0.9;
     double angle_diff_avg = li->char_num > 1 ? ( angle_diff / ( li->char_num - 1 ) ) : 0; // <0, pi> but pi/8 is much already
     double cost = angle_diff_avg / 100; // <0, 0.031 > but usually <0, 0.003 >
     if ( cost < 0.0001 )
@@ -1555,6 +1595,8 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
       if ( p )
         positions.emplace_back( std::move( p ) );
     }
+    if ( singleCandidateOnly )
+      break;
   }
 
   for ( std::unique_ptr< LabelPosition > &pos : positions )

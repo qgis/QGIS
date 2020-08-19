@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>244</width>
-    <height>225</height>
+    <width>271</width>
+    <height>326</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -81,6 +81,28 @@
          <widget class="QComboBox" name="mPercentPlacementComboBox"/>
         </item>
        </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Placement Behavior</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0">
+       <widget class="QComboBox" name="mAnchorTypeComboBox"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="mAnchorTypeHintLabel">
+        <property name="text">
+         <string>Hint</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
