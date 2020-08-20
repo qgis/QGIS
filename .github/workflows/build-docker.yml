@@ -3,9 +3,9 @@ name: Build QGIS Docker images for current branches
 on:
   schedule:
     # runs every day
-    # - cron: '0 0 * * *'
+    - cron: '0 0 * * *'
     # every hour
-    - cron: '*/5 * * * *'
+    - cron: '* */1 * * *'
 
 jobs:
   build-docker:
@@ -18,6 +18,8 @@ jobs:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      CC=/usr/lib/ccache/gcc
+      CXX=/usr/lib/ccache/g++ # Building SIP binding freezes with Clang in Docker, maybe a SIP issue, maybe not
 
     strategy:
       matrix:
@@ -42,8 +44,6 @@ jobs:
         run: |
           DOCKER_TAG=${branch//master/latest}
           DOCKER_BUILD_DEPS_FILE=qgis3-build-deps-focal.dockerfile
-          CC=/usr/lib/ccache/gcc
-          CXX=/usr/lib/ccache/g++ # Building SIP binding freezes with Clang in Docker, maybe a SIP issue, maybe not
 
           echo "branch: ${branch}"
           echo "docker tag: ${DOCKER_TAG}"
