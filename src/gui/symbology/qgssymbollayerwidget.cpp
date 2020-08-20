@@ -2325,7 +2325,7 @@ void QgsSvgMarkerSymbolLayerWidget::populateIcons( const QModelIndex &idx )
   connect( viewImages->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSvgMarkerSymbolLayerWidget::setName );
 }
 
-void QgsSvgMarkerSymbolLayerWidget::setGuiForSvg( const QgsSvgMarkerSymbolLayer *layer )
+void QgsSvgMarkerSymbolLayerWidget::setGuiForSvg( const QgsSvgMarkerSymbolLayer *layer, bool skipDefaultColors )
 {
   if ( !layer )
   {
@@ -2352,7 +2352,7 @@ void QgsSvgMarkerSymbolLayerWidget::setGuiForSvg( const QgsSvgMarkerSymbolLayer 
   {
     QColor fill = layer->fillColor();
     double existingOpacity = hasFillOpacityParam ? fill.alphaF() : 1.0;
-    if ( hasDefaultFillColor )
+    if ( hasDefaultFillColor && !skipDefaultColors )
     {
       fill = defaultFill;
     }
@@ -2363,7 +2363,7 @@ void QgsSvgMarkerSymbolLayerWidget::setGuiForSvg( const QgsSvgMarkerSymbolLayer 
   {
     QColor stroke = layer->strokeColor();
     double existingOpacity = hasStrokeOpacityParam ? stroke.alphaF() : 1.0;
-    if ( hasDefaultStrokeColor )
+    if ( hasDefaultStrokeColor && !skipDefaultColors )
     {
       stroke = defaultStroke;
     }
@@ -2470,7 +2470,7 @@ void QgsSvgMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   mHorizontalAnchorComboBox->blockSignals( false );
   mVerticalAnchorComboBox->blockSignals( false );
 
-  setGuiForSvg( mLayer );
+  setGuiForSvg( mLayer, true );
 
   registerDataDefinedButton( mWidthDDBtn, QgsSymbolLayer::PropertyWidth );
   registerDataDefinedButton( mHeightDDBtn, QgsSymbolLayer::PropertyHeight );

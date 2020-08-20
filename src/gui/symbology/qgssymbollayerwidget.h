@@ -599,8 +599,14 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, pr
   protected:
 
     void populateList();
-    //update gui for svg file (insert new path, update activation of gui elements for svg params)
-    void setGuiForSvg( const QgsSvgMarkerSymbolLayer *layer );
+
+    /**
+     * Updates the GUI to reflect the SVG marker symbol \a layer.
+     * \param layer SVG marker symbol layer
+     * \param skipDefaultColors if TRUE, the default fill and outline colors of the SVG file will not overwrite
+     * the ones from the symbol layer
+     */
+    void setGuiForSvg( const QgsSvgMarkerSymbolLayer *layer, bool skipDefaultColors = false );
 
     QgsSvgMarkerSymbolLayer *mLayer = nullptr;
 
