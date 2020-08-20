@@ -18,6 +18,7 @@
 #ifndef QGS_LANDINGPAGE_HANDLERS_H
 #define QGS_LANDINGPAGE_HANDLERS_H
 
+#include "qgsserversettings.h"
 #include "qgsserverogcapihandler.h"
 #include "qgsfields.h"
 
@@ -32,7 +33,7 @@ class QgsLandingPageHandler: public QgsServerOgcApiHandler
 {
   public:
 
-    QgsLandingPageHandler( );
+    QgsLandingPageHandler( const QgsServerSettings *settings );
 
     void handleRequest( const QgsServerApiContext &context ) const override;
 
@@ -57,7 +58,7 @@ class QgsLandingPageHandler: public QgsServerOgcApiHandler
 
     json projectsData() const;
 
-
+    const QgsServerSettings *mSettings = nullptr;
 };
 
 

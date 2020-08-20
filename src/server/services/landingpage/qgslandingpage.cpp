@@ -109,7 +109,7 @@ class QgsLandingPageModule: public QgsServiceModule
                                                                };
       // Register handlers
       landingPageApi->registerHandler<QgsServerStaticHandler>( QStringLiteral( "/(?<staticFilePath>((css|js)/.*)|favicon.ico)$" ), QStringLiteral( "landingpage" ) );
-      landingPageApi->registerHandler<QgsLandingPageHandler>();
+      landingPageApi->registerHandler<QgsLandingPageHandler>( serverIface->serverSettings() );
       landingPageApi->registerHandler<QgsLandingPageMapHandler>();
 
       // Register API

@@ -28,7 +28,8 @@
 #include <QDir>
 #include <QCryptographicHash>
 
-QgsLandingPageHandler::QgsLandingPageHandler()
+QgsLandingPageHandler::QgsLandingPageHandler( const QgsServerSettings *settings )
+  : mSettings( settings )
 {
   setContentTypes( { QgsServerOgcApi::ContentType::JSON, QgsServerOgcApi::ContentType::HTML } );
 }
