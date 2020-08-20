@@ -376,7 +376,7 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
             l2 = QgsVectorLayer("?layer_ref=%s" % l.id(), "vtab", "virtual", QgsVectorLayer.LayerOptions(False))
             self.assertEqual(l2.isValid(), True)
             self.assertEqual(l2.dataProvider().featureCount(), 1)
-            # we ensure the geom type matches the original (semgentized) type
+            # we ensure the geom type matches the original (segmentized) type
             self.assertEqual(l2.dataProvider().wkbType(), QgsWkbTypes.linearType(wkb_type))
 
             # we ensure the geometry still matches the original (segmentized) geometry
