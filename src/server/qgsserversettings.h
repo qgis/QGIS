@@ -275,7 +275,7 @@ class SERVER_EXPORT QgsServerSettings
 
   private:
     void initSettings();
-    QVariant value( QgsServerSettingsEnv::EnvVar envVar ) const;
+    QVariant value( QgsServerSettingsEnv::EnvVar envVar, bool actual = false ) const;
     QMap<QgsServerSettingsEnv::EnvVar, QString> getEnv() const;
     void loadQSettings( const QString &envOptPath ) const;
     void prioritize( const QMap<QgsServerSettingsEnv::EnvVar, QString> &env );

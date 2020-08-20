@@ -312,8 +312,17 @@ QMap<QgsServerSettingsEnv::EnvVar, QString> QgsServerSettings::getEnv() const
   return env;
 }
 
-QVariant QgsServerSettings::value( QgsServerSettingsEnv::EnvVar envVar ) const
+QVariant QgsServerSettings::value( QgsServerSettingsEnv::EnvVar envVar, bool actual ) const
 {
+  if ( actual )
+  {
+    const QMetaEnum metaEnum( QMetaEnum::fromType<QgsServerSettingsEnv::EnvVar>() );
+    const QString envValue( getenv( metaEnum.valueToKey( envVar ) ) );
+
+    if ( ! envValue.isEmpty() )
+      return envValue;
+  }
+
   if ( mSettings[ envVar ].src == QgsServerSettingsEnv::DEFAULT_VALUE )
   {
     return mSettings[ envVar ].defaultVal;
@@ -468,12 +477,12 @@ int QgsServerSettings::wmsMaxWidth() const
 
 QString QgsServerSettings::projectsDirectories() const
 {
-  return value( QgsServerSettingsEnv::QGIS_SERVER_PROJECTS_DIRECTORIES ).toString();
+  return value( QgsServerSettingsEnv::QGIS_SERVER_PROJECTS_DIRECTORIES, true ).toString();
 }
 
 QString QgsServerSettings::projectsPgConnections() const
 {
-  return value( QgsServerSettingsEnv::QGIS_SERVER_PROJECTS_PG_CONNECTIONS ).toString();
+  return value( QgsServerSettingsEnv::QGIS_SERVER_PROJECTS_PG_CONNECTIONS, true ).toString();
 }
 
 QString QgsServerSettings::apiResourcesDirectory() const
