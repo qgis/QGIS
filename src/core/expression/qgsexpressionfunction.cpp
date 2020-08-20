@@ -6312,7 +6312,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
             << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ), true, QVariant(), true )
             << QgsExpressionFunction::Parameter( QStringLiteral( "filter" ), true, QVariant(), true )
             << QgsExpressionFunction::Parameter( QStringLiteral( "limit" ), true, QVariant( -1 ), true ),
-            i.value(), QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
+            i.value(), QStringLiteral( "GeometryGroup" ), QString(), true, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
 
         // The current feature is accessed for the geometry, so this should not be cached
         fcnGeomOverlayFunc->setIsStatic( false );
@@ -6326,7 +6326,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << QgsExpressionFunction::Parameter( QStringLiteral( "limit" ), true, QVariant( -1 ), true )
         << QgsExpressionFunction::Parameter( QStringLiteral( "neighbors" ), true, 1 )
         << QgsExpressionFunction::Parameter( QStringLiteral( "max_distance" ), true, 0 ),
-        fcnGeomOverlayNearest, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
+        fcnGeomOverlayNearest, QStringLiteral( "GeometryGroup" ), QString(), true, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
     // The current feature is accessed for the geometry, so this should not be cached
     fcnGeomOverlayNearestFunc->setIsStatic( false );
     functions << fcnGeomOverlayNearestFunc;
