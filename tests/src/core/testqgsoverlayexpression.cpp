@@ -148,11 +148,7 @@ void TestQgsOverlayExpression::testOverlayExpression()
   const QVariantList result = exp.evaluate( &context ).value<QVariantList>();
 
   QCOMPARE( result.count(), expectedResult.count() );
-
-  for ( int i = 0; i < expectedResult.count(); i++ )
-  {
-    QCOMPARE( result.at( i ).value<QgsGeometry>().asWkt( 2 ), expectedResult.at( i ).value<QgsGeometry>().asWkt( 2 ) );
-  }
+  QCOMPARE( result, expectedResult );
 }
 
 void TestQgsOverlayExpression::testOverlayExpression_data()
@@ -162,7 +158,7 @@ void TestQgsOverlayExpression::testOverlayExpression_data()
   QTest::addColumn<QString>( "geometry" );
   QTest::addColumn<QVariantList>( "expectedResult" );
 
-  QTest::newRow( "intersects get geometry" ) << "geometry_overlay_intersects('rectangles', $geometry)" << "POLYGON((-120 30, -105 30, -105 20, -120 20, -120 30))" << QVariantList { QgsGeometry::fromWkt( "MultiPolygon (((-130 40, -115 40, -115 25, -130 25, -130 40)))" ) };
+  QTest::newRow( "intersects get geometry" ) << "geometry_overlay_intersects('rectangles', geom_to_wkt($geometry))" << "POLYGON((-120 30, -105 30, -105 20, -120 20, -120 30))" << QVariantList { QVariant( QStringLiteral( "MultiPolygon (((-130 40, -115 40, -115 25, -130 25, -130 40)))" ) ) };
   QTest::newRow( "intersects get ids" ) << "geometry_overlay_intersects('rectangles', $id)" << "LINESTRING(-178 52, -133 33, -64 46)" << QVariantList { 1, 2, 3 };
   QTest::newRow( "intersects get ids limit 2" ) << "geometry_overlay_intersects('rectangles', $id, limit:=2)" << "LINESTRING(-178 52, -133 33, -64 46)" << QVariantList { 1, 2 };
   QTest::newRow( "intersects filtered get ids" ) << "geometry_overlay_intersects('rectangles', $id, $id != 2)" << "LINESTRING(-178 52, -133 33, -64 46)" << QVariantList { 1, 3 };
