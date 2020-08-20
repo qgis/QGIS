@@ -5875,17 +5875,31 @@ static QVariant indexedFilteredOverlay( QgsExpression &subExp, QgsExpressionCont
   }
 }
 
-static QVariantList indexedFilteredNearest( QgsExpression &subExp, QgsExpressionContext &subContext, const QgsSpatialIndex &spatialIndex, std::shared_ptr<QgsVectorLayer> cachedTarget, const QgsGeometry &geometry, bool testOnly, bool invert, QVariant currentFeatId, int neighbors, double max_distance, double bboxGrow = 0 )
+static QVariant indexedFilteredNearest( QgsExpression &subExp, QgsExpressionContext &subContext, const QgsSpatialIndex &spatialIndex, std::shared_ptr<QgsVectorLayer> cachedTarget, const QgsGeometry &geometry, bool testOnly, bool invert, QVariant currentFeatId, int neighbors, double max_distance, double bboxGrow = 0 )
 {
 
+  bool found = false;
   const QList<QgsFeatureId> targetFeatureIds = spatialIndex.nearestNeighbor( geometry, neighbors, max_distance );
   QVariantList results;
   for ( QgsFeatureId id : targetFeatureIds )
   {
+    found = true;
+    // We just want a single boolean result if there is any intersect: finish and return true
+    if ( testOnly )
+      break;
+
     QgsFeature feat = cachedTarget->getFeature( id );
     subContext.setFeature( feat );
     results.append( subExp.evaluate( &subContext ) );
   }
+
+  if ( testOnly )
+  {
+    if ( invert )
+      found = !found;//for disjoint condition
+    return found;
+  }
+
   return results;
 }
 
