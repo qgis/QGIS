@@ -135,7 +135,7 @@ typedef QSet<int> QgsAttributeIds;
  * trigger such warning, it is possible to suppress that by setting the following custom variable:
  *
  * \code{.py}
- *   layer.setCustomProperty("skipMemoryLayersCheck", 1)
+ *     layer.setCustomProperty("skipMemoryLayersCheck", 1)
  * \endcode
  *
  *
