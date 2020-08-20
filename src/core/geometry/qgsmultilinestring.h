@@ -89,7 +89,8 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
 
     /**
      * Returns the geometry converted to the more generic curve type QgsMultiCurve
-    \returns the converted geometry. Caller takes ownership*/
+     * \returns the converted geometry. Caller takes ownership
+    */
     QgsMultiCurve *toCurveType() const override SIP_FACTORY;
 
 #ifndef SIP_RUN

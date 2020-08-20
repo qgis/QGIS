@@ -334,7 +334,8 @@ namespace pal
 
       /**
        * Merge other (connected) part with this one and save the result in this part (other is unchanged).
-       * Returns TRUE on success, FALSE if the feature wasn't modified */
+       * Returns TRUE on success, FALSE if the feature wasn't modified.
+      */
       bool mergeWithFeaturePart( FeaturePart *other );
 
       /**

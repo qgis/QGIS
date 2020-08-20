@@ -93,10 +93,11 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void saveOptions();
 
     /**
-    * Slot to reset any temporarily applied options on dialog close/cancel */
+     * Slot to reset any temporarily applied options on dialog close/cancel
+     */
     void rejectOptions();
-    //! Slot to change the theme this is handled when the user
 
+    //! Slot to change the theme this is handled when the user
     void iconSizeChanged( const QString &iconSize );
 
     void uiThemeChanged( const QString &theme );
@@ -151,48 +152,70 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     //! Slot to filter out current environment variables not specific to QGIS
     void mCurrentVariablesQGISChxBx_toggled( bool qgisSpecific );
 
-    /* Let the user add a path to the list of search paths
-     * used for finding user Plugin libs. */
+    /**
+     * Let the user add a path to the list of search paths
+     * used for finding user Plugin libs.
+    */
     void addPluginPath();
 
-    /* Let the user remove a path from the list of search paths
-     * used for finding Plugin libs. */
+    /**
+     * Let the user remove a path from the list of search paths
+     * used for finding Plugin libs.
+    */
     void removePluginPath();
 
-    /* Let the user add a path to the list of search paths
-     * used for finding QGIS help. */
+    /**
+     * Let the user add a path to the list of search paths
+     * used for finding QGIS help.
+    */
     void addHelpPath();
 
-    /* Let the user remove a path from the list of search paths
-     * used for finding QGIS help. */
+    /**
+     * Let the user remove a path from the list of search paths
+     * used for finding QGIS help.
+    */
     void removeHelpPath();
 
-    /* Let the user move selected path(s) up in the list raising
-     * their priority. */
+    /**
+     * Let the user move selected path(s) up in the list raising
+     * their priority.
+    */
     void moveHelpPathUp();
 
-    /* Let the user move selected path(s) down in the list lowering
-     * their priority. */
+    /**
+     * Let the user move selected path(s) down in the list lowering
+     * their priority.
+    */
     void moveHelpPathDown();
 
-    /* Let the user add a path to the list of search paths
-     * used for finding composer template files. */
+    /**
+     * Let the user add a path to the list of search paths
+     * used for finding composer template files.
+    */
     void addTemplatePath();
 
-    /* Let the user remove a path from the list of search paths
-     * used for finding composer template files. */
+    /**
+     * Let the user remove a path from the list of search paths
+     * used for finding composer template files.
+    */
     void removeTemplatePath();
 
-    /* Let the user add a path to the list of search paths
-     * used for finding SVG files. */
+    /**
+     * Let the user add a path to the list of search paths
+     * used for finding SVG files.
+    */
     void addSVGPath();
 
-    /* Let the user remove a path from the list of search paths
-     * used for finding SVG files. */
+    /**
+     * Let the user remove a path from the list of search paths
+     * used for finding SVG files.
+    */
     void removeSVGPath();
 
-    /* Let the user remove a path from the hidden path list
-     * for the browser */
+    /**
+     * Let the user remove a path from the hidden path list
+     * for the browser.
+    */
     void removeHiddenPath();
 
     void browseCacheDirectory();
@@ -218,7 +241,8 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     /**
      * Let the user restore default scales
-     * used in scale combobox  */
+     * used in scale combobox.
+    */
     void restoreDefaultScaleValues();
 
     //! Let the user load scales from file

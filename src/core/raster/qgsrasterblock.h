@@ -565,7 +565,8 @@ class CORE_EXPORT QgsRasterBlock
      * \brief Print double value with all necessary significant digits.
      *         It is ensured that conversion back to double gives the same number.
      *  \param value the value to be printed
-     *  \returns string representing the value*/
+     *  \returns string representing the value
+     */
     static QString printValue( double value );
 
     /**

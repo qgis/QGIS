@@ -170,9 +170,10 @@ class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache< QgsSvgCacheEntry
 
     /**
      * Tests if an svg file contains parameters for fill, stroke color, stroke width. If yes, possible default values are returned. If there are several
-      default values in the svg file, only the first one is considered. Blocking forces to wait for loading before returning image (optional). WARNING: the
-      blocking parameter must NEVER be TRUE from GUI based applications (like the main QGIS application) or crashes will result. Only for use in external
-      scripts or QGIS server.*/
+     * default values in the svg file, only the first one is considered. Blocking forces to wait for loading before returning image (optional). WARNING: the
+     * blocking parameter must NEVER be TRUE from GUI based applications (like the main QGIS application) or crashes will result. Only for use in external
+     * scripts or QGIS server.
+    */
     void containsParams( const QString &path, bool &hasFillParam, QColor &defaultFillColor, bool &hasStrokeParam, QColor &defaultStrokeColor, bool &hasStrokeWidthParam,
                          double &defaultStrokeWidth, bool blocking = false ) const;
 

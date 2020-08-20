@@ -89,12 +89,14 @@ class ANALYSIS_EXPORT QgsNineCellFilter
 
     /**
      * Opens the output driver and tests if it supports the creation of a new dataset
-      \returns nullptr on error and the driver handle on success*/
+     * \returns nullptr on error and the driver handle on success
+    */
     GDALDriverH openOutputDriver();
 
     /**
      * Opens the output file and sets the same geotransform and CRS as the input data
-      \returns the output dataset or nullptr in case of error*/
+     * \returns the output dataset or nullptr in case of error
+    */
     gdal::dataset_unique_ptr openOutputFile( GDALDatasetH inputDataset, GDALDriverH outputDriver );
 
     /**

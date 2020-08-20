@@ -94,7 +94,7 @@ Emitted when the symbol levels settings have been changed.
     virtual QList<QgsSymbol *> selectedSymbols();
 %Docstring
 Subclasses may provide the capability of changing multiple symbols at once by implementing the following two methods
-and by connecting the slot contextMenuViewCategories(const QPoint&)*
+and by connecting the slot contextMenuViewCategories(const QPoint&).
 %End
     virtual void refreshSymbolView();
 

@@ -96,7 +96,7 @@ Calculates the viewbox size of a (possibly cached) SVG file.
 Tests if an svg file contains parameters for fill, stroke color, stroke width. If yes, possible default values are returned. If there are several
 default values in the svg file, only the first one is considered. Blocking forces to wait for loading before returning image (optional). WARNING: the
 blocking parameter must NEVER be ``True`` from GUI based applications (like the main QGIS application) or crashes will result. Only for use in external
-scripts or QGIS server.*
+scripts or QGIS server.
 %End
 
     void containsParams( const QString &path, bool &hasFillParam, bool &hasDefaultFillParam, QColor &defaultFillColor,

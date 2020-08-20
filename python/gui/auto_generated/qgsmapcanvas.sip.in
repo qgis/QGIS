@@ -260,6 +260,9 @@ Zoom to the next extent (view)
 %End
 
     void clearExtentHistory();
+%Docstring
+Clears the list of extents and sets current extent as first item
+%End
 
 
     void zoomToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids );
@@ -267,7 +270,7 @@ Zoom to the next extent (view)
 Set canvas extent to the bounding box of a set of features
 
 :param layer: the vector layer
-:param ids: the feature ids*
+:param ids: the feature ids
 %End
 
     void panToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids, bool alwaysRecenter = true );
@@ -706,14 +709,14 @@ Creates a new scope which contains default variables and functions relating to t
 %Docstring
 Sets the segmentation tolerance applied when rendering curved geometries
 
-:param tolerance: the segmentation tolerance*
+:param tolerance: the segmentation tolerance
 %End
 
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type );
 %Docstring
 Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
 
-:param type: the segmentation tolerance typename*
+:param type: the segmentation tolerance typename
 %End
 
     QList< QgsMapCanvasAnnotationItem *> annotationItems() const;
@@ -978,7 +981,7 @@ Emits current mouse position
 
 .. note::
 
-   changed in 1.3 *
+   changed in 1.3
 %End
 
     void scaleChanged( double );

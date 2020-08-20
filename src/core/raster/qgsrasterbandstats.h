@@ -82,12 +82,14 @@ class CORE_EXPORT QgsRasterBandStats
 
     /**
      * \brief The maximum cell value in the raster band. NO_DATA values
-     * are ignored. This does not use the gdal GetMaximmum function. */
+     * are ignored. This does not use the gdal GetMaximmum function.
+    */
     double maximumValue;
 
     /**
      * \brief The minimum cell value in the raster band. NO_DATA values
-     * are ignored. This does not use the gdal GetMinimum function. */
+     * are ignored. This does not use the gdal GetMinimum function.
+    */
     double minimumValue;
 
     //! \brief The mean cell value for the band. NO_DATA values are excluded.

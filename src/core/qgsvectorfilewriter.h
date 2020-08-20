@@ -233,7 +233,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     /**
      * Edition capability flags
-      * \since QGIS 3.0 */
+     * \since QGIS 3.0
+    */
     enum EditionCapability
     {
       //! Flag to indicate that a new layer can be added to the dataset
@@ -251,12 +252,13 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     /**
      * Combination of CanAddNewLayer, CanAppendToExistingLayer, CanAddNewFieldsToExistingLayer or CanDeleteLayer
-      * \since QGIS 3.0 */
+     * \since QGIS 3.0.
+    */
     Q_DECLARE_FLAGS( EditionCapabilities, EditionCapability )
 
     /**
      * Enumeration to describe how to handle existing files
-        \since QGIS 3.0
+     * \since QGIS 3.0
      */
     enum ActionOnExistingFile
     {
@@ -462,7 +464,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
         /**
          * Transform to reproject exported geometries with, or invalid transform
-         * for no transformation */
+         * for no transformation
+        */
         QgsCoordinateTransform ct;
 
         //! Write only selected features of layer
@@ -491,7 +494,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
         /**
          * Set to a valid geometry type to override the default geometry type for the layer. This parameter
-         * allows for conversion of geometryless tables to null geometries, etc */
+         * allows for conversion of geometryless tables to null geometries, etc.
+        */
         QgsWkbTypes::Type overrideGeometryType = QgsWkbTypes::Unknown;
 
         //! Sets to TRUE to force creation of multi* geometries

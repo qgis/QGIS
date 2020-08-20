@@ -331,8 +331,6 @@ In a world file, this is normally the first row (without the sign).
 .. seealso:: :py:func:`rasterUnitsPerPixelX`
 %End
 
-
-
     void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
                                  QgsRasterMinMaxOrigin::Limits limits = QgsRasterMinMaxOrigin::MinMax,
                                  const QgsRectangle &extent = QgsRectangle(),
@@ -345,7 +343,7 @@ Set contrast enhancement algorithm
 :param limits: Limits
 :param extent: Extent used to calculate limits, if empty, use full layer extent
 :param sampleSize: Size of data sample to calculate limits, if 0, use full resolution
-:param generateLookupTableFlag: Generate lookup table. *
+:param generateLookupTableFlag: Generate lookup table.
 %End
 
 

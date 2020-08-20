@@ -402,7 +402,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     /**
      * Create ogr feature style string for brush
-     \param fillColr fill color*/
+     * \param fillColr fill color
+    */
     static QString ogrFeatureStyleBrush( const QColor &fillColr );
 
     static void createRotationElement( QDomDocument &doc, QDomElement &element, const QString &rotationFunc );

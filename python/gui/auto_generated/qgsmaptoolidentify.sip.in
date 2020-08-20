@@ -16,6 +16,7 @@ class QgsMapToolIdentify : QgsMapTool
 Map tool for identifying features in layers
 
 after selecting a point, performs the identification:
+
 - for raster layers shows value of underlying pixel
 - for vector layers shows feature attributes within search radius
   (allows editing values when vector layer is in editing mode)
@@ -93,7 +94,7 @@ Performs the identification.
 :param layerList: Performs the identification within the given list of layers. Default value is an empty list, i.e. uses all the layers.
 :param mode: Identification mode. Can use QGIS default settings or a defined mode. Default mode is DefaultQgsSetting.
 
-:return: a list of IdentifyResult*
+:return: a list of IdentifyResult
 %End
 
     QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType = AllLayers );

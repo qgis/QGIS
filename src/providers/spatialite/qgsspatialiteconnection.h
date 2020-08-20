@@ -100,7 +100,8 @@ class QgsSpatiaLiteConnection : public QObject
 
     /**
      * Inserts information about the spatial tables into mTables
-      \returns true if querying of tables was successful, false on error */
+     * \returns true if querying of tables was successful, false on error
+    */
     bool getTableInfo( sqlite3 *handle, bool loadGeometrylessTables );
 
     /**

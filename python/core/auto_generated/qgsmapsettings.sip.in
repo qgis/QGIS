@@ -593,7 +593,7 @@ serialization */
 %Docstring
 Sets the segmentation tolerance applied when rendering curved geometries
 
-:param tolerance: the segmentation tolerance*
+:param tolerance: the segmentation tolerance
 %End
     double segmentationTolerance() const;
 %Docstring
@@ -604,7 +604,7 @@ Gets the segmentation tolerance applied when rendering curved geometries
 %Docstring
 Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
 
-:param type: the segmentation tolerance typename*
+:param type: the segmentation tolerance typename
 %End
     QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const;
 %Docstring

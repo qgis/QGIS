@@ -90,7 +90,8 @@ class GRASS_LIB_EXPORT QgsGrassVector : public QObject
 
     /**
      * Gets numbers of primitives
-     * \returns type/count pairs */
+     * \returns type/count pairs
+    */
     QMap<int, int> typeCounts() const {return mTypeCounts; }
 
     //! Gets total number of primitives of given type. Types may be combined by bitwise or)
@@ -98,7 +99,8 @@ class GRASS_LIB_EXPORT QgsGrassVector : public QObject
 
     /**
      * Maximum layer number (field).
-     * \returns max layer number or 0 if no layer exists */
+     * \returns max layer number or 0 if no layer exists
+    */
     int maxLayerNumber() const;
 
     //! Gets number of nodes

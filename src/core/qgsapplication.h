@@ -187,11 +187,11 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * This method initializes paths etc for QGIS. Called by the ctor or call it manually
-        when your app does not extend the QApplication class.
-        \note you will probably want to call initQgis too to load the providers in
-        the above case.
-        \note not available in Python bindings
-      */
+     * when your app does not extend the QApplication class.
+     * \note you will probably want to call initQgis too to load the providers in
+     * the above case.
+     * \note not available in Python bindings
+    */
     static void init( QString profileFolder = QString() ) SIP_SKIP;
 
     //! Watch for QFileOpenEvent.
@@ -253,14 +253,16 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Returns the path to the contributors file.
      * Contributors are people who have submitted patches
-     * but don't have commit access. */
+     * but don't have commit access.
+    */
     static QString contributorsFilePath();
 
     /**
      * Returns the path to the developers map file.
      * The developers map was created by using leaflet framework,
      * it shows the contributors.json file.
-     * \since QGIS 2.7 */
+     * \since QGIS 2.7
+    */
     static QString developersMapFilePath();
 
     //! Returns the path to the sponsors file.
@@ -501,7 +503,8 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Convenience function to get a summary of the paths used in this
-     * application instance useful for debugging mainly.*/
+     * application instance useful for debugging mainly.
+    */
     static QString showSettings();
 
     /**
@@ -581,13 +584,15 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Gets maximum concurrent thread count
-     * \since QGIS 2.4 */
+     * \since QGIS 2.4
+    */
     static int maxThreads();
 
     /**
      * Set maximum concurrent thread count
      * \note must be between 1 and \#cores, -1 means use all available cores
-     * \since QGIS 2.4 */
+     * \since QGIS 2.4
+    */
     static void setMaxThreads( int maxThreads );
 
     /**
@@ -927,7 +932,8 @@ class CORE_EXPORT QgsApplication : public QApplication
     static bool ABISYM( mRunningFromBuildDir );
 
     /**
-     * \since QGIS 2.4 */
+     * \since QGIS 2.4
+    */
     static int ABISYM( sMaxThreads );
 
     QMap<QString, QIcon> mIconCache;
