@@ -77,7 +77,7 @@ class QgsProjectLoaderFilter: public QgsServerFilter
       const auto handler { serverInterface()->requestHandler() };
       if ( handler->path().startsWith( QStringLiteral( "/project/" ) ) )
       {
-        const QString projectPath { QgsLandingPageUtils::projectUriFromUrl( handler->url() ) };
+        const QString projectPath { QgsLandingPageUtils::projectUriFromUrl( handler->url(), *serverInterface()->serverSettings() ) };
         if ( ! projectPath.isEmpty() )
         {
           qputenv( "QGIS_PROJECT_FILE", projectPath.toUtf8() );
@@ -110,7 +110,7 @@ class QgsLandingPageModule: public QgsServiceModule
       // Register handlers
       landingPageApi->registerHandler<QgsServerStaticHandler>( QStringLiteral( "/(?<staticFilePath>((css|js)/.*)|favicon.ico)$" ), QStringLiteral( "landingpage" ) );
       landingPageApi->registerHandler<QgsLandingPageHandler>( serverIface->serverSettings() );
-      landingPageApi->registerHandler<QgsLandingPageMapHandler>();
+      landingPageApi->registerHandler<QgsLandingPageMapHandler>( serverIface->serverSettings() );
 
       // Register API
       registry.registerApi( landingPageApi );

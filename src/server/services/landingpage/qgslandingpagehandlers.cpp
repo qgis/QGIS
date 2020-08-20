@@ -76,7 +76,8 @@ json QgsLandingPageHandler::projectsData() const
 }
 
 
-QgsLandingPageMapHandler::QgsLandingPageMapHandler()
+QgsLandingPageMapHandler::QgsLandingPageMapHandler( const QgsServerSettings *settings )
+  : mSettings( settings )
 {
   setContentTypes( { QgsServerOgcApi::ContentType::JSON } );
 }
@@ -85,7 +86,7 @@ void QgsLandingPageMapHandler::handleRequest( const QgsServerApiContext &context
 {
   json data;
   data[ "links" ] = json::array();
-  const QString projectPath { QgsLandingPageUtils::projectUriFromUrl( context.request()->url().path() ) };
+  const QString projectPath { QgsLandingPageUtils::projectUriFromUrl( context.request()->url().path(), *mSettings ) };
   if ( projectPath.isEmpty() )
   {
     throw QgsServerApiNotFoundError( QStringLiteral( "Requested project hash not found!" ) );

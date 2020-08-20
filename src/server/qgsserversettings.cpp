@@ -241,6 +241,18 @@ void QgsServerSettings::initSettings()
                                    };
 
   mSettings[ sApiWfs3MaxLimit.envVar ] = sApiWfs3MaxLimit;
+
+  // projects directory for landing page service
+  const Setting sProjectsDirectories = { QgsServerSettingsEnv::QGIS_SERVER_PROJECTS_DIRECTORIES,
+                                         QgsServerSettingsEnv::DEFAULT_VALUE,
+                                         QStringLiteral( "Directories used by the landing page service to find .qgs and .qgz projects" ),
+                                         QStringLiteral( "/qgis/server_projects_directories" ),
+                                         QVariant::String,
+                                         QVariant( "" ),
+                                         QVariant()
+                                       };
+
+  mSettings[ sProjectsDirectories.envVar ] = sProjectsDirectories;
 }
 
 void QgsServerSettings::load()

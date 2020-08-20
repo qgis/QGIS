@@ -77,7 +77,7 @@ struct QgsLandingPageUtils
    * Extracts and returns the (possibly empty) project URI from the \a url path
    * by examining the project hash.
    */
-  static QString projectUriFromUrl( const QString &url );
+  static QString projectUriFromUrl( const QString &url, const QgsServerSettings &settings );
 
 };
 

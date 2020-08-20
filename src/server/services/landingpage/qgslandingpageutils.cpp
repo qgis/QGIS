@@ -55,6 +55,7 @@ QMap<QString, QString> QgsLandingPageUtils::projects( const QgsServerSettings &s
 
 
   const QString projectDir { settings.projectsDirectories() };
+  QgsMessageLog::logMessage( QStringLiteral( "PROJECTS: %1" ).arg( projectDir ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Info );
 
   // Clear cache if QGIS_SERVER_PROJECTS_DIRECTORIES has changed
   if ( projectDir != QGIS_SERVER_PROJECTS_DIRECTORIES )
@@ -639,12 +640,12 @@ json QgsLandingPageUtils::layerTree( const QgsProject &project, const QStringLis
   return harvest( project.layerTreeRoot(), QString() );
 }
 
-QString QgsLandingPageUtils::projectUriFromUrl( const QString &url )
+QString QgsLandingPageUtils::projectUriFromUrl( const QString &url, const QgsServerSettings &settings )
 {
   const auto match { QgsLandingPageUtils::PROJECT_HASH_RE.match( url ) };
   if ( match.hasMatch() )
   {
-    const auto availableProjects { QgsLandingPageUtils::projects() };
+    const auto availableProjects { QgsLandingPageUtils::projects( settings ) };
     return availableProjects.value( match.captured( QStringLiteral( "projectHash" ) ), QString() );
   }
   return QString();
