@@ -79,7 +79,7 @@ bool QgsSpatiaLiteProvider::convertField( QgsField &field )
     case QVariant::Time:
     case QVariant::String:
       fieldType = QStringLiteral( "TEXT" );
-      fieldPrec = -1;
+      fieldPrec = 0;
       break;
 
     case QVariant::Int:
@@ -93,7 +93,7 @@ bool QgsSpatiaLiteProvider::convertField( QgsField &field )
       {
         fieldType = QStringLiteral( "REAL" );
         fieldSize = -1;
-        fieldPrec = -1;
+        fieldPrec = 0;
       }
       else
       {
@@ -117,7 +117,7 @@ bool QgsSpatiaLiteProvider::convertField( QgsField &field )
     case QVariant::ByteArray:
       fieldType = QStringLiteral( "BLOB" );
       fieldSize = -1;
-      fieldPrec = -1;
+      fieldPrec = 0;
       break;
 
     default:

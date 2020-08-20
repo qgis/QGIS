@@ -1583,7 +1583,7 @@ bool QgsPostgresRasterProvider::loadFields()
 
     Oid fldtyp = result.PQftype( i );
     int fldMod = result.PQfmod( i );
-    int fieldPrec = -1;
+    int fieldPrec = 0;
     Oid tableoid = result.PQftable( i );
     int attnum = result.PQftablecol( i );
     Oid atttypid = attTypeIdMap[tableoid][attnum];
@@ -1638,7 +1638,7 @@ bool QgsPostgresRasterProvider::loadFields()
       {
         fieldType = QVariant::Double;
         fieldSize = -1;
-        fieldPrec = -1;
+        fieldPrec = 0;
       }
       else if ( fieldTypeName == QLatin1String( "numeric" ) )
       {
@@ -1647,7 +1647,7 @@ bool QgsPostgresRasterProvider::loadFields()
         if ( formattedFieldType == QLatin1String( "numeric" ) || formattedFieldType.isEmpty() )
         {
           fieldSize = -1;
-          fieldPrec = -1;
+          fieldPrec = 0;
         }
         else
         {
@@ -1664,7 +1664,7 @@ bool QgsPostgresRasterProvider::loadFields()
                                              fieldName ),
                                        tr( "PostGIS" ) );
             fieldSize = -1;
-            fieldPrec = -1;
+            fieldPrec = 0;
           }
         }
       }
@@ -1734,7 +1734,7 @@ bool QgsPostgresRasterProvider::loadFields()
                        .arg( formattedFieldType,
                              fieldName ) );
           fieldSize = -1;
-          fieldPrec = -1;
+          fieldPrec = 0;
         }
       }
       else if ( fieldTypeName == QLatin1String( "char" ) )
@@ -1752,7 +1752,7 @@ bool QgsPostgresRasterProvider::loadFields()
                                      .arg( formattedFieldType,
                                            fieldName ) );
           fieldSize = -1;
-          fieldPrec = -1;
+          fieldPrec = 0;
         }
       }
       else if ( fieldTypeName == QLatin1String( "hstore" ) ||  fieldTypeName == QLatin1String( "json" ) || fieldTypeName == QLatin1String( "jsonb" ) )

@@ -2873,19 +2873,19 @@ bool QgsOracleProvider::convertField( QgsField &field )
 
     case QVariant::DateTime:
       fieldType = "TIMESTAMP";
-      fieldPrec = -1;
+      fieldPrec = 0;
       break;
 
 
     case QVariant::Time:
     case QVariant::String:
       fieldType = "VARCHAR2(2047)";
-      fieldPrec = -1;
+      fieldPrec = 0;
       break;
 
     case QVariant::Date:
       fieldType = "DATE";
-      fieldPrec = -1;
+      fieldPrec = 0;
       break;
 
     case QVariant::Int:
@@ -2899,7 +2899,7 @@ bool QgsOracleProvider::convertField( QgsField &field )
       {
         fieldType = "BINARY_DOUBLE";
         fieldSize = -1;
-        fieldPrec = -1;
+        fieldPrec = 0;
       }
       else
       {
