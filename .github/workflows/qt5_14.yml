@@ -1,14 +1,18 @@
-name: Build QGIS with Qt 5.14
+name: Build with Qt 5.14
 
 on:
   push:
     branches:
       - master
       - release-**
+    paths:
+    - 'src/**'
   pull_request:
     branches:
       - master
       - release-**
+    paths:
+    - 'src/**'
 
 jobs:
   build:
