@@ -50,6 +50,12 @@ class GUI_EXPORT QgsLayoutMapGridWidget: public QgsLayoutItemBaseWidget, private
     void mOffsetYSpinBox_valueChanged( double value );
     void mCrossWidthSpinBox_valueChanged( double val );
     void mFrameWidthSpinBox_valueChanged( double val );
+    void mRotatedTicksCheckBox_toggled( bool checked );
+    void mRotatedTicksLengthModeComboBox_currentIndexChanged( int );
+    void mRotatedTicksThresholdSpinBox_valueChanged( double val );
+    void mRotatedAnnotationsCheckBox_toggled( bool checked );
+    void mRotatedAnnotationsLengthModeComboBox_currentIndexChanged( int );
+    void mRotatedAnnotationsThresholdSpinBox_valueChanged( double val );
     void mGridFrameMarginSpinBox_valueChanged( double val );
     void mFrameStyleComboBox_currentIndexChanged( int );
     void mGridFramePenSizeSpinBox_valueChanged( double d );
@@ -94,9 +100,9 @@ class GUI_EXPORT QgsLayoutMapGridWidget: public QgsLayoutItemBaseWidget, private
     void mAnnotationFormatComboBox_currentIndexChanged( int index );
     void mCoordinatePrecisionSpinBox_valueChanged( int value );
     void mDistanceToMapFrameSpinBox_valueChanged( double d );
-    void mAnnotationFontColorButton_colorChanged( const QColor &color );
 
   protected:
+
 
     //! Sets the current composer map values to the GUI elements
     virtual void updateGuiElements();
@@ -109,13 +115,13 @@ class GUI_EXPORT QgsLayoutMapGridWidget: public QgsLayoutItemBaseWidget, private
 
     //! Sets the GUI elements to the values of mPicture
     void setGuiElementValues();
-    void annotationFontChanged();
     void lineSymbolChanged();
     void markerSymbolChanged();
     void gridEnabledToggled( bool active );
     void intervalUnitChanged( int index );
     void minIntervalChanged( double interval );
     void maxIntervalChanged( double interval );
+    void annotationTextFormatChanged();
 
   private:
     QPointer< QgsLayoutItemMap > mMap;
@@ -139,7 +145,7 @@ class GUI_EXPORT QgsLayoutMapGridWidget: public QgsLayoutItemBaseWidget, private
     void initAnnotationDirectionBox( QComboBox *c, QgsLayoutItemMapGrid::AnnotationDirection dir );
 
     //! Enables/disables grid frame related controls
-    void toggleFrameControls( bool frameEnabled, bool frameFillEnabled, bool frameSizeEnabled );
+    void toggleFrameControls( bool frameEnabled, bool frameFillEnabled, bool frameSizeEnabled, bool ticksRotationEnabled );
 
     //! Is there some predefined scales, globally or as project's options ?
     bool hasPredefinedScales() const;

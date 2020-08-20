@@ -60,6 +60,7 @@ bool QgsPythonUtilsImpl::checkSystemImports()
   // isolating/loading the initial environ without requiring a virt env, e.g. homebrew or MacPorts installs on Mac
   runString( QStringLiteral( "pyqgstart = os.getenv('PYQGIS_STARTUP')\n" ) );
   runString( QStringLiteral( "if pyqgstart is not None and os.path.exists(pyqgstart):\n    with open(pyqgstart) as f:\n        exec(f.read())\n" ) );
+  runString( QStringLiteral( "if pyqgstart is not None and os.path.exists(os.path.join('%1', pyqgstart)):\n    with open(os.path.join('%1', pyqgstart)) as f:\n        exec(f.read())\n" ).arg( pythonPath() ) );
 
 #ifdef Q_OS_WIN
   runString( "oldhome=None" );

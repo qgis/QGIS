@@ -1,6 +1,7 @@
 {
   "name": "to_date",
   "type": "function",
+  "groups": ["Conversions", "Date and Time"],
   "description": "Converts a string into a date object. An optional format string can be provided to parse the string; see <a href='https://doc.qt.io/qt-5/qdate.html#fromString-1'>QDate::fromString</a> for additional documentation on the format.",
   "arguments": [
    {"arg":"string","description":"string representing a date value"},

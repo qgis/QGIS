@@ -44,8 +44,6 @@ QgsLayoutAttributeTableWidget::QgsLayoutAttributeTableWidget( QgsLayoutFrame *fr
   connect( mGridStrokeWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutAttributeTableWidget::mGridStrokeWidthSpinBox_valueChanged );
   connect( mGridColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutAttributeTableWidget::mGridColorButton_colorChanged );
   connect( mBackgroundColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutAttributeTableWidget::mBackgroundColorButton_colorChanged );
-  connect( mHeaderFontColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutAttributeTableWidget::mHeaderFontColorButton_colorChanged );
-  connect( mContentFontColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutAttributeTableWidget::mContentFontColorButton_colorChanged );
   connect( mDrawHorizontalGrid, &QCheckBox::toggled, this, &QgsLayoutAttributeTableWidget::mDrawHorizontalGrid_toggled );
   connect( mDrawVerticalGrid, &QCheckBox::toggled, this, &QgsLayoutAttributeTableWidget::mDrawVerticalGrid_toggled );
   connect( mShowGridGroupCheckBox, &QgsCollapsibleGroupBoxBasic::toggled, this, &QgsLayoutAttributeTableWidget::mShowGridGroupCheckBox_toggled );
@@ -72,8 +70,8 @@ QgsLayoutAttributeTableWidget::QgsLayoutAttributeTableWidget( QgsLayoutFrame *fr
   connect( mUseConditionalStylingCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutAttributeTableWidget::useConditionalStylingChanged );
   setPanelTitle( tr( "Table Properties" ) );
 
-  mContentFontToolButton->setMode( QgsFontButton::ModeQFont );
-  mHeaderFontToolButton->setMode( QgsFontButton::ModeQFont );
+  mContentFontToolButton->setMode( QgsFontButton::ModeTextRenderer );
+  mHeaderFontToolButton->setMode( QgsFontButton::ModeTextRenderer );
 
   blockAllSignals( true );
 
@@ -110,12 +108,6 @@ QgsLayoutAttributeTableWidget::QgsLayoutAttributeTableWidget( QgsLayoutFrame *fr
   mComposerMapComboBox->setItemType( QgsLayoutItemRegistry::LayoutMap );
   connect( mComposerMapComboBox, &QgsLayoutItemComboBox::itemChanged, this, &QgsLayoutAttributeTableWidget::composerMapChanged );
 
-  mHeaderFontColorButton->setColorDialogTitle( tr( "Select Header Font Color" ) );
-  mHeaderFontColorButton->setAllowOpacity( true );
-  mHeaderFontColorButton->setContext( QStringLiteral( "composer" ) );
-  mContentFontColorButton->setColorDialogTitle( tr( "Select Content Font Color" ) );
-  mContentFontColorButton->setAllowOpacity( true );
-  mContentFontColorButton->setContext( QStringLiteral( "composer" ) );
   mGridColorButton->setColorDialogTitle( tr( "Select Grid Color" ) );
   mGridColorButton->setAllowOpacity( true );
   mGridColorButton->setContext( QStringLiteral( "composer" ) );
@@ -300,20 +292,8 @@ void QgsLayoutAttributeTableWidget::headerFontChanged()
   if ( !mTable )
     return;
 
-  mTable->beginCommand( tr( "Change Table Font" ) );
-  mTable->setHeaderFont( mHeaderFontToolButton->currentFont() );
-  mTable->endCommand();
-}
-
-void QgsLayoutAttributeTableWidget::mHeaderFontColorButton_colorChanged( const QColor &newColor )
-{
-  if ( !mTable )
-  {
-    return;
-  }
-
-  mTable->beginCommand( tr( "Change Font Color" ), QgsLayoutMultiFrame::UndoTableHeaderFontColor );
-  mTable->setHeaderFontColor( newColor );
+  mTable->beginCommand( tr( "Change Table Text Format" ) );
+  mTable->setHeaderTextFormat( mHeaderFontToolButton->textFormat() );
   mTable->endCommand();
 }
 
@@ -324,20 +304,8 @@ void QgsLayoutAttributeTableWidget::contentFontChanged()
     return;
   }
 
-  mTable->beginCommand( tr( "Change Table Font" ) );
-  mTable->setContentFont( mContentFontToolButton->currentFont() );
-  mTable->endCommand();
-}
-
-void QgsLayoutAttributeTableWidget::mContentFontColorButton_colorChanged( const QColor &newColor )
-{
-  if ( !mTable )
-  {
-    return;
-  }
-
-  mTable->beginCommand( tr( "Change Font Color" ), QgsLayoutMultiFrame::UndoTableContentFontColor );
-  mTable->setContentFontColor( newColor );
+  mTable->beginCommand( tr( "Change Table Text Format" ) );
+  mTable->setContentTextFormat( mContentFontToolButton->textFormat() );
   mTable->endCommand();
 }
 
@@ -458,10 +426,8 @@ void QgsLayoutAttributeTableWidget::updateGuiElements()
   }
   mBackgroundColorButton->setColor( mTable->backgroundColor() );
 
-  mHeaderFontColorButton->setColor( mTable->headerFontColor() );
-  mContentFontColorButton->setColor( mTable->contentFontColor() );
-  mHeaderFontToolButton->setCurrentFont( mTable->headerFont() );
-  mContentFontToolButton->setCurrentFont( mTable->contentFont() );
+  mHeaderFontToolButton->setTextFormat( mTable->headerTextFormat() );
+  mContentFontToolButton->setTextFormat( mTable->contentTextFormat() );
 
   if ( mTable->displayOnlyVisibleFeatures() && mShowOnlyVisibleFeaturesCheckBox->isEnabled() )
   {
@@ -606,8 +572,6 @@ void QgsLayoutAttributeTableWidget::blockAllSignals( bool b )
   mFeatureFilterCheckBox->blockSignals( b );
   mHeaderHAlignmentComboBox->blockSignals( b );
   mHeaderModeComboBox->blockSignals( b );
-  mHeaderFontColorButton->blockSignals( b );
-  mContentFontColorButton->blockSignals( b );
   mResizeModeComboBox->blockSignals( b );
   mRelationsComboBox->blockSignals( b );
   mEmptyModeComboBox->blockSignals( b );

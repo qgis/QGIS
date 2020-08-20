@@ -130,6 +130,11 @@ bool QgsRemappingProxyFeatureSink::addFeatures( QgsFeatureIterator &iterator, Qg
   return res;
 }
 
+QString QgsRemappingProxyFeatureSink::lastError() const
+{
+  return mSink->lastError();
+}
+
 QVariant QgsRemappingSinkDefinition::toVariant() const
 {
   QVariantMap map;

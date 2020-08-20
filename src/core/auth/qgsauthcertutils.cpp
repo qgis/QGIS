@@ -1201,7 +1201,7 @@ QString QgsAuthCertUtils::sslErrorEnumString( QSslError::SslError errenum )
     case QSslError::UnspecifiedError:
       return QObject::tr( "Unspecified Error" );
     case QSslError::CertificateBlacklisted:
-      return QObject::tr( "Certificate Blocklisted" );
+      return QObject::tr( "Certificate Blacklisted" );
     case QSslError::NoError:
       return QObject::tr( "No Error" );
     case QSslError::NoSslSupport:

@@ -370,6 +370,9 @@ void TestQgsField::displayString()
   QCOMPARE( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator, QLocale::NumberOption::DefaultNumberOptions );
   QCOMPARE( doubleFieldNoPrec.displayString( 599999898999.0 ), QString( "599,999,898,999" ) );
 
+  // no conversion when this is default value expression
+  QCOMPARE( doubleFieldNoPrec.displayString( ( "(1+2)" ) ), QString( "(1+2)" ) );
+
   //test NULL double
   QVariant nullDouble = QVariant( QVariant::Double );
   QCOMPARE( doubleField.displayString( nullDouble ), QString( "TEST NULL" ) );
@@ -478,11 +481,16 @@ void TestQgsField::convertCompatible()
   QgsField doubleField( QStringLiteral( "double" ), QVariant::Double, QStringLiteral( "double" ) );
 
   stringVar = QVariant( "test string" );
-  QVERIFY( !doubleField.convertCompatible( stringVar ) );
+  QString error;
+  QVERIFY( !doubleField.convertCompatible( stringVar, &error ) );
   QCOMPARE( stringVar.type(), QVariant::Double );
+  QCOMPARE( error, QStringLiteral( "Could not convert value \"test string\" to target type" ) );
+  stringVar = QVariant( "test string" );
+  QVERIFY( !doubleField.convertCompatible( stringVar ) );
   QVERIFY( stringVar.isNull() );
   nullString = QVariant( QVariant::String );
-  QVERIFY( doubleField.convertCompatible( nullString ) );
+  QVERIFY( doubleField.convertCompatible( nullString, &error ) );
+  QVERIFY( error.isEmpty() );
   QCOMPARE( nullString.type(), QVariant::Double );
   QVERIFY( nullString.isNull() );
   intVar = QVariant( 5 );
@@ -517,12 +525,18 @@ void TestQgsField::convertCompatible()
   QCOMPARE( negativeSmallDouble, QVariant( -9346 ) );
   //large double, cannot be converted
   QVariant largeDouble( 9999999999.99 );
+  QVERIFY( !intField.convertCompatible( largeDouble, &error ) );
+  QCOMPARE( error, QStringLiteral( "Value \"10000000000\" is too large for integer field" ) );
+  largeDouble = QVariant( 9999999999.99 );
   QVERIFY( !intField.convertCompatible( largeDouble ) );
   QCOMPARE( largeDouble.type(), QVariant::Int );
   QVERIFY( largeDouble.isNull() );
 
   //conversion of string double value to int
   QVariant notNumberString( "notanumber" );
+  QVERIFY( !intField.convertCompatible( notNumberString, &error ) );
+  QCOMPARE( error, QStringLiteral( "Value \"notanumber\" is not a number" ) );
+  notNumberString = QVariant( "notanumber" );
   QVERIFY( !intField.convertCompatible( notNumberString ) );
   QCOMPARE( notNumberString.type(), QVariant::Int );
   QVERIFY( notNumberString.isNull() );
@@ -537,13 +551,17 @@ void TestQgsField::convertCompatible()
   QCOMPARE( negativeSmallDoubleString, QVariant( -9346 ) );
   //large double, cannot be converted
   QVariant largeDoubleString( "9999999999.99" );
+  QVERIFY( !intField.convertCompatible( largeDoubleString, &error ) );
+  QCOMPARE( error, QStringLiteral( "Value \"1e+10\" is too large for integer field" ) );
+  largeDoubleString = QVariant( "9999999999.99" );
   QVERIFY( !intField.convertCompatible( largeDoubleString ) );
   QCOMPARE( largeDoubleString.type(), QVariant::Int );
   QVERIFY( largeDoubleString.isNull() );
 
   //conversion of longlong to int
   QVariant longlong( 99999999999999999LL );
-  QVERIFY( !intField.convertCompatible( longlong ) );
+  QVERIFY( !intField.convertCompatible( longlong, &error ) );
+  QCOMPARE( error, QStringLiteral( "Value \"99999999999999999\" is too large for integer field" ) );
   QCOMPARE( longlong.type(), QVariant::Int );
   QVERIFY( longlong.isNull() );
   QVariant smallLonglong( 99LL );
@@ -552,7 +570,8 @@ void TestQgsField::convertCompatible()
   QCOMPARE( smallLonglong, QVariant( 99 ) );
   // negative longlong to int
   QVariant negativeLonglong( -99999999999999999LL );
-  QVERIFY( !intField.convertCompatible( negativeLonglong ) );
+  QVERIFY( !intField.convertCompatible( negativeLonglong, &error ) );
+  QCOMPARE( error, QStringLiteral( "Value \"-99999999999999999\" is too large for integer field" ) );
   QCOMPARE( negativeLonglong.type(), QVariant::Int );
   QVERIFY( negativeLonglong.isNull() );
   // small negative longlong to int
@@ -592,7 +611,8 @@ void TestQgsField::convertCompatible()
 
   //conversion of string double value to longlong
   notNumberString = QVariant( "notanumber" );
-  QVERIFY( !longlongField.convertCompatible( notNumberString ) );
+  QVERIFY( !longlongField.convertCompatible( notNumberString, &error ) );
+  QCOMPARE( error, QStringLiteral( "Value \"notanumber\" is not a number" ) );
   QCOMPARE( notNumberString.type(), QVariant::LongLong );
   QVERIFY( notNumberString.isNull() );
   //small double, should be rounded
@@ -611,7 +631,8 @@ void TestQgsField::convertCompatible()
   QCOMPARE( largeDoubleString, QVariant( 10000000000LL ) );
   //extra large double, cannot be converted
   largeDoubleString = QVariant( "999999999999999999999.99" );
-  QVERIFY( !longlongField.convertCompatible( largeDoubleString ) );
+  QVERIFY( !longlongField.convertCompatible( largeDoubleString, &error ) );
+  QCOMPARE( error, QStringLiteral( "Value \"1e+21\" is too large for long long field" ) );
   QCOMPARE( largeDoubleString.type(), QVariant::LongLong );
   QVERIFY( largeDoubleString.isNull() );
 
@@ -627,8 +648,8 @@ void TestQgsField::convertCompatible()
   QCOMPARE( stringDouble, QVariant( 1223456.012345 ) );
   // This should not convert
   stringDouble = QVariant( "1.223.456,012345" );
-  QVERIFY( ! doubleField.convertCompatible( stringDouble ) );
-
+  QVERIFY( ! doubleField.convertCompatible( stringDouble, &error ) );
+  QCOMPARE( error, QStringLiteral( "Could not convert value \"1.223.456,012345\" to target type" ) );
 
   //double with precision
   QgsField doubleWithPrecField( QStringLiteral( "double" ), QVariant::Double, QStringLiteral( "double" ), 10, 3 );
@@ -641,7 +662,8 @@ void TestQgsField::convertCompatible()
   //truncating string length
   QgsField stringWithLen( QStringLiteral( "string" ), QVariant::String, QStringLiteral( "string" ), 3 );
   stringVar = QVariant( "longstring" );
-  QVERIFY( !stringWithLen.convertCompatible( stringVar ) );
+  QVERIFY( !stringWithLen.convertCompatible( stringVar, &error ) );
+  QCOMPARE( error, QStringLiteral( "String of length 10 exceeds maximum field length (3)" ) );
   QCOMPARE( stringVar.type(), QVariant::String );
   QCOMPARE( stringVar.toString(), QString( "lon" ) );
 

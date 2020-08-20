@@ -1112,6 +1112,16 @@ will be scaled to maintain their current relative size to the whole symbol size.
 .. seealso:: :py:func:`width`
 %End
 
+    void setWidthUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the width units for the whole symbol (including all symbol layers).
+
+:param unit: size units
+
+.. versionadded:: 3.16
+%End
+
+
     double width() const;
 %Docstring
 Returns the estimated width for the whole symbol, which is the maximum width of

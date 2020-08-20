@@ -83,6 +83,8 @@ segments in a full circle)
 %Docstring
 Adds a curve to a painter path.
 %End
+    virtual QPainterPath asQPainterPath() const;
+
 
     virtual void drawAsPolygon( QPainter &p ) const = 0;
 %Docstring

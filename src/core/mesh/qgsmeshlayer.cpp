@@ -42,7 +42,7 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &providerKey,
                             const QgsMeshLayer::LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::MeshLayer, baseName, meshLayerPath ),
-    mDatasetGroupStore( new QgsMeshDatasetGroupStore ),
+    mDatasetGroupStore( new QgsMeshDatasetGroupStore( this ) ),
     mTemporalProperties( new QgsMeshLayerTemporalProperties( this ) )
 
 {
@@ -201,7 +201,7 @@ bool QgsMeshLayer::addDatasets( const QString &path, const QDateTime &defaultRef
       {
         QDateTime referenceTime = defaultReferenceTime;
         if ( !defaultReferenceTime.isValid() ) // If project reference time is invalid, use current date
-          referenceTime = QDateTime( QDate::currentDate(), QTime( 0, 0, 0, Qt::UTC ) );
+          referenceTime = QDateTime( QDate::currentDate(), QTime( 0, 0, 0, Qt::UTC ), Qt::UTC );
         temporalProperties->setReferenceTime( referenceTime, dataProvider()->temporalCapabilities() );
       }
 
@@ -519,6 +519,20 @@ QgsMeshDatasetIndex QgsMeshLayer::datasetIndexAtTime( const QgsDateTimeRange &ti
   return  mDatasetGroupStore->datasetIndexAtTime( startTime, datasetGroupIndex, mTemporalProperties->matchingMethod() );
 }
 
+QgsMeshDatasetIndex QgsMeshLayer::datasetIndexAtRelativeTime( const QgsInterval &relativeTime, int datasetGroupIndex ) const
+{
+  qint64 usedRelativeTime = relativeTime.seconds() * 1000;
+
+  //adjust relative time if layer reference time is different from provider reference time
+  if ( mTemporalProperties->referenceTime().isValid() &&
+       mDataProvider &&
+       mDataProvider->isValid() &&
+       mTemporalProperties->referenceTime() != mDataProvider->temporalCapabilities()->referenceTime() )
+    usedRelativeTime = usedRelativeTime + mTemporalProperties->referenceTime().msecsTo( mDataProvider->temporalCapabilities()->referenceTime() );
+
+  return  mDatasetGroupStore->datasetIndexAtTime( relativeTime.seconds() * 1000, datasetGroupIndex, mTemporalProperties->matchingMethod() );
+}
+
 void QgsMeshLayer::applyClassificationOnScalarSettings( const QgsMeshDatasetGroupMetadata &meta, QgsMeshRendererScalarSettings &scalarSettings ) const
 {
   if ( meta.extraOptions().contains( QStringLiteral( "classification" ) ) )
@@ -532,11 +546,11 @@ void QgsMeshLayer::applyClassificationOnScalarSettings( const QgsMeshDatasetGrou
       units = meta.extraOptions()[ QStringLiteral( "units" )];
 
     QVector<QVector<double>> bounds;
-    for ( const QString classe : classes )
+    for ( const QString &classe : classes )
     {
       QStringList boundsStr = classe.split( ',' );
       QVector<double> bound;
-      for ( const QString boundStr : boundsStr )
+      for ( const QString &boundStr : boundsStr )
         bound.append( boundStr.toDouble() );
       bounds.append( bound );
     }
@@ -817,6 +831,11 @@ QgsInterval QgsMeshLayer::datasetRelativeTime( const QgsMeshDatasetIndex &index 
     return QgsInterval();
   else
     return QgsInterval( time, QgsUnitTypes::TemporalMilliseconds );
+}
+
+qint64 QgsMeshLayer::datasetRelativeTimeInMilliseconds( const QgsMeshDatasetIndex &index )
+{
+  return mDatasetGroupStore->datasetRelativeTime( index );
 }
 
 void QgsMeshLayer::updateActiveDatasetGroups()
@@ -1144,7 +1163,7 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
     mStaticVectorDatasetIndex = elemStaticDataset.attribute( QStringLiteral( "vector" ) ).toInt();
   }
 
-  return mValid; // should be true if read successfully
+  return isValid(); // should be true if read successfully
 }
 
 bool QgsMeshLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const QgsReadWriteContext &context ) const
@@ -1222,13 +1241,6 @@ QStringList QgsMeshLayer::subLayers() const
     return QStringList();
 }
 
-bool QgsMeshLayer::isTemporary() const
-{
-  if ( mDatasetGroupStore && mDatasetGroupStore->extraDatasetGroupCount() > 0 )
-    return true;
-
-  return false;
-}
 
 bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options )
 {
@@ -1247,8 +1259,8 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
   mDataProvider->setParent( this );
   QgsDebugMsgLevel( QStringLiteral( "Instantiated the mesh data provider plugin" ), 2 );
 
-  mValid = mDataProvider->isValid();
-  if ( !mValid )
+  setValid( mDataProvider->isValid() );
+  if ( !isValid() )
   {
     QgsDebugMsgLevel( QStringLiteral( "Invalid mesh provider plugin %1" ).arg( QString( mDataSource.toUtf8() ) ), 2 );
     return false;

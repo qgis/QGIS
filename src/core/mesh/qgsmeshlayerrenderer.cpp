@@ -39,6 +39,7 @@
 #include "qgssettings.h"
 #include "qgsstyle.h"
 #include "qgsmeshdataprovidertemporalcapabilities.h"
+#include "qgsmapclippingutils.h"
 
 QgsMeshLayerRenderer::QgsMeshLayerRenderer(
   QgsMeshLayer *layer,
@@ -69,6 +70,8 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer(
   copyVectorDatasetValues( layer );
 
   calculateOutputSize();
+
+  mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );
 }
 
 void QgsMeshLayerRenderer::copyTriangularMeshes( QgsMeshLayer *layer, QgsRenderContext &context )
@@ -283,9 +286,19 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
 
 bool QgsMeshLayerRenderer::render()
 {
+  QgsScopedQPainterState painterState( renderContext()->painter() );
+  if ( !mClippingRegions.empty() )
+  {
+    bool needsPainterClipPath = false;
+    const QPainterPath path = QgsMapClippingUtils::calculatePainterClipRegion( mClippingRegions, *renderContext(), QgsMapLayerType::MeshLayer, needsPainterClipPath );
+    if ( needsPainterClipPath )
+      renderContext()->painter()->setClipPath( path, Qt::IntersectClip );
+  }
+
   renderScalarDataset();
   renderMesh();
   renderVectorDataset();
+
   return true;
 }
 
@@ -330,9 +343,9 @@ static QPainter *_painterForMeshFrame( QgsRenderContext &context, const QgsMeshR
 {
   // Set up the render configuration options
   QPainter *painter = context.painter();
+
   painter->save();
-  if ( context.flags() & QgsRenderContext::Antialiasing )
-    painter->setRenderHint( QPainter::Antialiasing, true );
+  context.setPainterFlagsUsingContext( painter );
 
   QPen pen = painter->pen();
   pen.setCapStyle( Qt::FlatCap );

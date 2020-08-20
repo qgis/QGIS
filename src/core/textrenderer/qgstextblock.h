@@ -47,6 +47,13 @@ class CORE_EXPORT QgsTextBlock
     explicit QgsTextBlock( const QgsTextFragment &fragment );
 
     /**
+     * Converts the block to plain text.
+     *
+     * \since QGIS 3.16
+     */
+    QString toPlainText() const;
+
+    /**
      * Appends a \a fragment to the block.
      */
     void append( const QgsTextFragment &fragment );

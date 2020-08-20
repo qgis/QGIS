@@ -482,9 +482,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Relation, relationEditor->relation().id(), relationEditor->relation().name() );
       itemData.setShowLabel( widgetDef->showLabel() );
       RelationEditorConfiguration relEdConfig;
-      relEdConfig.showLinkButton = relationEditor->showLinkButton();
-      relEdConfig.showUnlinkButton = relationEditor->showUnlinkButton();
-      relEdConfig.showSaveChildEditsButton = relationEditor->showSaveChildEditsButton( );
+      relEdConfig.buttons = relationEditor->visibleButtons();
       itemData.setRelationEditorConfiguration( relEdConfig );
       newWidget = tree->addItem( parent, itemData );
       break;
@@ -713,9 +711,7 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
     {
       QgsRelation relation = QgsProject::instance()->relationManager()->relation( itemData.name() );
       QgsAttributeEditorRelation *relDef = new QgsAttributeEditorRelation( relation, parent );
-      relDef->setShowLinkButton( itemData.relationEditorConfiguration().showLinkButton );
-      relDef->setShowUnlinkButton( itemData.relationEditorConfiguration().showUnlinkButton );
-      relDef->setShowSaveChildEditsButton( itemData.relationEditorConfiguration().showSaveChildEditsButton );
+      relDef->setVisibleButtons( itemData.relationEditorConfiguration().buttons );
       widgetDef = relDef;
       break;
     }

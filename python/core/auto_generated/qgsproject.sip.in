@@ -38,6 +38,7 @@ open within the main QGIS application.
     {
       FlagDontResolveLayers,
       FlagDontLoadLayouts,
+      FlagTrustLayerMetadata,
     };
     typedef QFlags<QgsProject::ReadFlag> ReadFlags;
 

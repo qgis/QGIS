@@ -22,6 +22,7 @@
 #include "qgsalgorithmaddxyfields.h"
 #include "qgsalgorithmaffinetransform.h"
 #include "qgsalgorithmaggregate.h"
+#include "qgsalgorithmangletonearest.h"
 #include "qgsalgorithmapplylayerstyle.h"
 #include "qgsalgorithmarraytranslatedfeatures.h"
 #include "qgsalgorithmaspect.h"
@@ -32,6 +33,7 @@
 #include "qgsalgorithmbuffer.h"
 #include "qgsalgorithmcalculateoverlaps.h"
 #include "qgsalgorithmcategorizeusingstyle.h"
+#include "qgsalgorithmcellstatistics.h"
 #include "qgsalgorithmcentroid.h"
 #include "qgsalgorithmclip.h"
 #include "qgsalgorithmconditionalbranch.h"
@@ -72,6 +74,7 @@
 #include "qgsalgorithmfilterbygeometry.h"
 #include "qgsalgorithmfiltervertices.h"
 #include "qgsalgorithmfixgeometries.h"
+#include "qgsalgorithmflattenrelationships.h"
 #include "qgsalgorithmforcerhr.h"
 #include "qgsalgorithmfuzzifyraster.h"
 #include "qgsalgorithmgeometrybyexpression.h"
@@ -85,6 +88,8 @@
 #include "qgsalgorithminterpolatepoint.h"
 #include "qgsalgorithmintersection.h"
 #include "qgsalgorithmkmeansclustering.h"
+#include "qgsalgorithmlayoutatlastoimage.h"
+#include "qgsalgorithmlayoutatlastopdf.h"
 #include "qgsalgorithmlayouttoimage.h"
 #include "qgsalgorithmlayouttopdf.h"
 #include "qgsalgorithmlinedensity.h"
@@ -117,11 +122,15 @@
 #include "qgsalgorithmraiseexception.h"
 #include "qgsalgorithmrandomextract.h"
 #include "qgsalgorithmrandompointsextent.h"
+#include "qgsalgorithmrandompointsinpolygons.h"
 #include "qgsalgorithmrandompointsonlines.h"
 #include "qgsalgorithmrandomraster.h"
+#include "qgsalgorithmrasterfrequencybycomparisonoperator.h"
 #include "qgsalgorithmrasterlayeruniquevalues.h"
 #include "qgsalgorithmrasterlogicalop.h"
 #include "qgsalgorithmrasterize.h"
+#include "qgsalgorithmrastersampling.h"
+#include "qgsalgorithmrasterstackposition.h"
 #include "qgsalgorithmrasterstatistics.h"
 #include "qgsalgorithmrastersurfacevolume.h"
 #include "qgsalgorithmrasterzonalstats.h"
@@ -135,10 +144,12 @@
 #include "qgsalgorithmrenamelayer.h"
 #include "qgsalgorithmrenametablefield.h"
 #include "qgsalgorithmrepairshapefile.h"
+#include "qgsalgorithmrescaleraster.h"
 #include "qgsalgorithmreverselinedirection.h"
 #include "qgsalgorithmrotate.h"
 #include "qgsalgorithmroundrastervalues.h"
 #include "qgsalgorithmruggedness.h"
+#include "qgsalgorithmsavefeatures.h"
 #include "qgsalgorithmsavelog.h"
 #include "qgsalgorithmsaveselectedfeatures.h"
 #include "qgsalgorithmsegmentize.h"
@@ -231,6 +242,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsAddUniqueValueIndexAlgorithm() );
   addAlgorithm( new QgsAffineTransformationAlgorithm() );
   addAlgorithm( new QgsAggregateAlgorithm() );
+  addAlgorithm( new QgsAngleToNearestAlgorithm() );
   addAlgorithm( new QgsApplyLayerStyleAlgorithm() );
   addAlgorithm( new QgsArrayTranslatedFeaturesAlgorithm() );
   addAlgorithm( new QgsAspectAlgorithm() );
@@ -242,6 +254,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsBufferAlgorithm() );
   addAlgorithm( new QgsCalculateVectorOverlapsAlgorithm() );
   addAlgorithm( new QgsCategorizeUsingStyleAlgorithm() );
+  addAlgorithm( new QgsCellStatisticsAlgorithm() );
   addAlgorithm( new QgsCentroidAlgorithm() );
   addAlgorithm( new QgsClipAlgorithm() );
   addAlgorithm( new QgsCollectAlgorithm() );
@@ -285,6 +298,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsFilterVerticesByM() );
   addAlgorithm( new QgsFilterVerticesByZ() );
   addAlgorithm( new QgsFixGeometriesAlgorithm() );
+  addAlgorithm( new QgsFlattenRelationshipsAlgorithm() );
   addAlgorithm( new QgsForceRHRAlgorithm() );
   addAlgorithm( new QgsFuzzifyRasterLinearMembershipAlgorithm() );
   addAlgorithm( new QgsFuzzifyRasterPowerMembershipAlgorithm() );
@@ -305,6 +319,8 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsKMeansClusteringAlgorithm() );
   addAlgorithm( new QgsLayerToBookmarksAlgorithm() );
   addAlgorithm( new QgsLayoutMapExtentToLayerAlgorithm() );
+  addAlgorithm( new QgsLayoutAtlasToImageAlgorithm() );
+  addAlgorithm( new QgsLayoutAtlasToPdfAlgorithm() );
   addAlgorithm( new QgsLayoutToImageAlgorithm() );
   addAlgorithm( new QgsLayoutToPdfAlgorithm() );
   addAlgorithm( new QgsLineDensityAlgorithm() );
@@ -344,9 +360,13 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsRandomNegativeBinomialRasterAlgorithm() );
   addAlgorithm( new QgsRandomNormalRasterAlgorithm() );
   addAlgorithm( new QgsRandomPointsExtentAlgorithm() );
+  addAlgorithm( new QgsRandomPointsInPolygonsAlgorithm() );
   addAlgorithm( new QgsRandomPointsOnLinesAlgorithm() );
   addAlgorithm( new QgsRandomPoissonRasterAlgorithm() );
   addAlgorithm( new QgsRandomUniformRasterAlgorithm() );
+  addAlgorithm( new QgsRasterFrequencyByEqualOperatorAlgorithm() );
+  addAlgorithm( new QgsRasterFrequencyByGreaterThanOperatorAlgorithm() );
+  addAlgorithm( new QgsRasterFrequencyByLessThanOperatorAlgorithm() );
   addAlgorithm( new QgsRasterLayerUniqueValuesReportAlgorithm() );
   addAlgorithm( new QgsRasterLayerZonalStatsAlgorithm() );
   addAlgorithm( new QgsRasterLogicalAndAlgorithm() );
@@ -354,6 +374,9 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsRasterizeAlgorithm() );
   addAlgorithm( new QgsRasterPixelsToPointsAlgorithm() );
   addAlgorithm( new QgsRasterPixelsToPolygonsAlgorithm() );
+  addAlgorithm( new QgsRasterSamplingAlgorithm() );
+  addAlgorithm( new QgsRasterStackHighestPositionAlgorithm() );
+  addAlgorithm( new QgsRasterStackLowestPositionAlgorithm() );
   addAlgorithm( new QgsRasterStatisticsAlgorithm() );
   addAlgorithm( new QgsRasterSurfaceVolumeAlgorithm() );
   addAlgorithm( new QgsAlgorithmRemoveDuplicateVertices() );
@@ -367,10 +390,12 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsRenameLayerAlgorithm() );
   addAlgorithm( new QgsRenameTableFieldAlgorithm() );
   addAlgorithm( new QgsRepairShapefileAlgorithm() );
+  addAlgorithm( new QgsRescaleRasterAlgorithm() );
   addAlgorithm( new QgsReverseLineDirectionAlgorithm() );
   addAlgorithm( new QgsRotateFeaturesAlgorithm() );
   addAlgorithm( new QgsRoundRasterValuesAlgorithm() );
   addAlgorithm( new QgsRuggednessAlgorithm() );
+  addAlgorithm( new QgsSaveFeaturesAlgorithm() );
   addAlgorithm( new QgsSaveLogToFileAlgorithm() );
   addAlgorithm( new QgsSaveSelectedFeatures() );
   addAlgorithm( new QgsSegmentizeByMaximumAngleAlgorithm() );

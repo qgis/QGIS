@@ -635,7 +635,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                                         const QgsVectorFileWriter::SaveVectorOptions &options,
                                         QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(),
                                         QString *newFilename = nullptr,
-                                        QString *newLayer = nullptr );
+                                        QString *newLayer = nullptr ) SIP_FACTORY;
 
     /**
      * Writes a layer out to a vector file.
@@ -762,6 +762,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
+    QString lastError() const override;
 
     /**
      * Adds a \a feature to the currently opened data source, using the style from a specified \a renderer.

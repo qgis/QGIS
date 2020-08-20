@@ -7,13 +7,13 @@ variables:
 trigger:
   branches:
     include:
-    - master
+#    - master
     - $(LR)
     - $(LTR)
     - azure-pipelines
 
 pr:
-- master
+#- master
 - $(LR)
 - $(LTR)
 

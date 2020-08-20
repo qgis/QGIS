@@ -161,6 +161,14 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
 
     QgsExpressionContext createExpressionContext() const override;
 
+    /**
+     * Returns the geometry type which will be used by the labeling engine
+     * when registering labels for the labeling settings currently defined by the widget.
+     *
+     * \since QGIS 3.16
+     */
+    QgsWkbTypes::GeometryType labelGeometryType() const;
+
     //! Text substitution list
     QgsStringReplacementCollection mSubstitutions;
     //! Quadrant button group
@@ -169,12 +177,6 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     QButtonGroup *mDirectSymbBtnGrp = nullptr;
     //! Upside down labels button group
     QButtonGroup *mUpsidedownBtnGrp = nullptr;
-    //! Point placement button group
-    QButtonGroup *mPlacePointBtnGrp = nullptr;
-    //! Line placement button group
-    QButtonGroup *mPlaceLineBtnGrp = nullptr;
-    //! Polygon placement button group
-    QButtonGroup *mPlacePolygonBtnGrp = nullptr;
     //! Pixel size font limit
     int mMinPixelLimit = 0;
 
@@ -191,6 +193,9 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     QgsVectorLayer *mLayer = nullptr;
 
     QgsSymbolLayerReferenceList mMaskedSymbolLayers;
+
+    //! Geometry type for layer, if known
+    QgsWkbTypes::GeometryType mGeomType = QgsWkbTypes::UnknownGeometry;
 
   protected slots:
 
@@ -396,6 +401,13 @@ class GUI_EXPORT QgsTextFormatPanelWidget : public QgsPanelWidgetWrapper
     QgsTextFormat format() const;
 
     /**
+     * Sets the \a format to show in the widget.
+     *
+     * \since QGIS 3.16
+     */
+    void setFormat( const QgsTextFormat &format );
+
+    /**
      * Sets the \a context in which the widget is shown, e.g., the associated map canvas and expression contexts.
      * \since QGIS 3.10
      */
@@ -406,6 +418,7 @@ class GUI_EXPORT QgsTextFormatPanelWidget : public QgsPanelWidgetWrapper
   private:
 
     QgsTextFormatWidget *mFormatWidget = nullptr;
+    bool mBlockSignals = false;
 };
 
 #endif //QGSTEXTFORMATWIDGET_H

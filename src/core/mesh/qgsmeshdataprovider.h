@@ -102,6 +102,12 @@ struct CORE_EXPORT QgsMesh
     */
   void clear();
 
+  /**
+   * Compare two faces, return true if they are equivalent : same indexes and same clock wise
+    * \since QGIS 3.16
+   */
+  static bool compareFaces( const QgsMeshFace &face1, const QgsMeshFace &face2 );
+
   QVector<QgsMeshVertex> vertices SIP_SKIP;
   QVector<QgsMeshEdge> edges SIP_SKIP;
   QVector<QgsMeshFace> faces SIP_SKIP;

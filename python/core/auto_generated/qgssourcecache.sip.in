@@ -1,0 +1,56 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgssourcecache.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsSourceCache : QgsAbstractContentCacheBase
+{
+%Docstring
+A cache for source strings that returns a local file path containing the source content.
+
+QgsSourceCache is not usually directly created, but rather accessed through
+:py:func:`QgsApplication.sourceCache()`.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgssourcecache.h"
+%End
+  public:
+
+    QgsSourceCache( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsSourceCache, with the specified ``parent`` object.
+%End
+
+    QString localFilePath( const QString &path, bool blocking = false );
+%Docstring
+Returns a local file path reflecting the content of a specified source ``path``
+
+``path`` may be a local file, remote (HTTP) url, or a base 64 encoded string (with a "base64:" prefix).
+%End
+
+  signals:
+
+    void remoteSourceFetched( const QString &url );
+%Docstring
+Emitted when the cache has finished retrieving a 3D model from a remote ``url``.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgssourcecache.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

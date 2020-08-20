@@ -894,7 +894,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         """Checks that changing attributes violating a DB-level CHECK constraint returns false
         the provider test case must provide an editable layer with a text field
         "i_will_fail_on_no_name" having a CHECK constraint that will fail when value is "no name".
-        The layer must contain at least 2 features, that will be used to test the attibute change.
+        The layer must contain at least 2 features, that will be used to test the attribute change.
         """
 
         if not getattr(self, 'getEditableLayerWithCheckConstraint', None):

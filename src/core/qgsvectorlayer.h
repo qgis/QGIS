@@ -101,9 +101,9 @@ typedef QSet<int> QgsAttributeIds;
  *
  *  Sample usage of the QgsVectorLayer class:
  *
- * \code
- *     QString uri = "point?crs=epsg:4326&field=id:integer";
- *     QgsVectorLayer *scratchLayer = new QgsVectorLayer(uri, "Scratch point layer",  "memory");
+ * \code{.py}
+ *     uri = "point?crs=epsg:4326&field=id:integer"
+ *     scratchLayer = QgsVectorLayer(uri, "Scratch point layer",  "memory")
  * \endcode
  *
  * The main data providers supported by QGIS are listed below.
@@ -133,6 +133,7 @@ typedef QSet<int> QgsAttributeIds;
  * Since QGIS 3.4 when closing a project, the application shows a warning about potential data
  * loss if there are any non-empty memory layers present. If your memory layer should not
  * trigger such warning, it is possible to suppress that by setting the following custom variable:
+ *
  * \code{.py}
  *   layer.setCustomProperty("skipMemoryLayersCheck", 1)
  * \endcode
@@ -140,7 +141,7 @@ typedef QSet<int> QgsAttributeIds;
  *
  * \subsection ogr OGR data provider (ogr)
  *
- * Accesses data using the OGR drivers (http://www.gdal.org/ogr/ogr_formats.html). The url
+ * Accesses data using the OGR drivers (https://gdal.org/drivers/vector/index.html). The url
  * is the OGR connection string. A wide variety of data formats can be accessed using this
  * driver, including file based formats used by many GIS systems, database formats, and
  * web services. Some of these formats are also supported by custom data providers listed
@@ -1548,6 +1549,29 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     Q_INVOKABLE QgsGeometry::OperationResult splitFeatures( const QgsPointSequence &splitLine, bool topologicalEditing = false );
 
     /**
+     * Splits features cut by the given curve
+     * \param curve curve that splits the layer features
+     * \param preserveCircular whether if circular strings are preserved after splitting
+     * \param topologicalEditing TRUE if topological editing is enabled
+     * \returns QgsGeometry::OperationResult
+     *
+     * - Success
+     * - NothingHappened
+     * - LayerNotEditable
+     * - InvalidInputGeometryType
+     * - InvalidBaseGeometry
+     * - GeometryEngineError
+     * - SplitCannotSplitPoint
+     *
+     * \note Calls to splitFeatures() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
+     * \since QGIS 3.16
+     */
+    Q_INVOKABLE QgsGeometry::OperationResult splitFeatures( const QgsCurve *curve, bool preserveCircular = false, bool topologicalEditing = false );
+
+    /**
      * Adds topological points for every vertex of the geometry.
      * \param geom the geometry where each vertex is added to segments of other features
      * \returns 0 in case of success
@@ -2483,6 +2507,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void beforeRollBack();
 
     /**
+     * Emitted after changes are committed to the data provider.
+     * \since QGIS 3.16
+     */
+    void afterCommitChanges();
+
+    /**
      * Emitted after changes are rolled back.
      * \since QGIS 3.4
      */
@@ -2709,6 +2739,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void onSymbolsCounted();
     void onDirtyTransaction( const QString &sql, const QString &name );
     void emitDataChanged();
+    void onAfterCommitChangesDependency();
 
   private:
     void updateDefaultValues( QgsFeatureId fid, QgsFeature feature = QgsFeature() );

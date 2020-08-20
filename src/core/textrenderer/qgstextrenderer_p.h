@@ -258,6 +258,7 @@ class QgsTextSettingsPrivate : public QSharedData
 
     QgsTextSettingsPrivate( const QgsTextSettingsPrivate &other )
       : QSharedData( other )
+      , isValid( other.isValid )
       , textFont( other.textFont )
       , textNamedStyle( other.textNamedStyle )
       , fontSizeUnits( other.fontSizeUnits )
@@ -274,6 +275,7 @@ class QgsTextSettingsPrivate : public QSharedData
     {
     }
 
+    bool isValid = false;
     QFont textFont;
     QString textNamedStyle;
     QgsUnitTypes::RenderUnit fontSizeUnits = QgsUnitTypes::RenderPoints;

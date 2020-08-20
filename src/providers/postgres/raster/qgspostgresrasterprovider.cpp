@@ -521,7 +521,7 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
     GDALGetRasterStatistics( GDALGetRasterBand( dstDS.get(), 1 ), 0, 1, &pdfMin, &pdfMax, &pdfMean, &pdfStdDev );
     qDebug() << pdfMin << pdfMax << pdfMean << pdfStdDev;
 
-    // Spit it out float data
+    // Spit it out float 32 data
     for ( int i = 0; i < width * height; ++i )
     {
       qDebug() << reinterpret_cast<const float *>( data )[ i * 4 ];
@@ -554,7 +554,7 @@ QVariantMap QgsPostgresRasterProviderMetadata::decodeUri( const QString &uri )
   }
   if ( ! dsUri.port().isEmpty() )
   {
-    decoded[ QStringLiteral( "port" ) ] = dsUri.host();
+    decoded[ QStringLiteral( "port" ) ] = dsUri.port();
   }
   if ( ! dsUri.service().isEmpty() )
   {

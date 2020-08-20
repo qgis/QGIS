@@ -179,7 +179,7 @@ QString QgsWCSLayerItem::createUri()
 // ---------------------------------------------------------------------------
 
 QgsWCSRootItem::QgsWCSRootItem( QgsDataItem *parent, QString name, QString path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "WCS" ) )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "WCS" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconWcs.svg" );

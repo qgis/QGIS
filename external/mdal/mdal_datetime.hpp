@@ -67,6 +67,9 @@ namespace MDAL
       //! Constructor with Julian day or Unix Epoch
       DateTime( double value, Epoch epoch );
 
+      //! Constructor with ISO 8601 string
+      DateTime( const std::string &fromISO8601 );
+
       //! Returns a string with the date/time expressed in Greogrian proleptic calendar with ISO8601 format (local time zone)
       //! Do not support negative year
       std::string toStandardCalendarISO8601() const;

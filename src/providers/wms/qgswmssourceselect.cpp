@@ -152,7 +152,7 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 void QgsWMSSourceSelect::refresh()
 {
   // Reload WMS connections and update the GUI
-  QgsDebugMsg( QStringLiteral( "Refreshing WMS connections ..." ) );
+  QgsDebugMsgLevel( QStringLiteral( "Refreshing WMS connections ..." ), 2 );
   populateConnectionList();
 }
 
@@ -288,8 +288,8 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabiliti
 
   bool first = true;
   QSet<QString> alreadyAddedLabels;
-  const auto constSupportedImageEncodings = capabilities.supportedImageEncodings();
-  for ( const QString &encoding : constSupportedImageEncodings )
+  const auto supportedImageEncodings = capabilities.supportedImageEncodings();
+  for ( const QString &encoding : supportedImageEncodings )
   {
     int id = mMimeMap.value( encoding, -1 );
     if ( id < 0 )
@@ -337,7 +337,7 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabiliti
     // Layer Styles
     for ( const QgsWmsStyleProperty &property : layer.style )
     {
-      QgsDebugMsg( QStringLiteral( "got style name %1 and title '%2'." ).arg( property.name, property.title ) );
+      QgsDebugMsgLevel( QStringLiteral( "got style name %1 and title '%2'." ).arg( property.name, property.title ), 2 );
 
       QgsTreeWidgetItem *lItem2 = new QgsTreeWidgetItem( lItem );
       lItem2->setText( 0, QString::number( ++layerAndStyleCount ) );
@@ -540,8 +540,7 @@ void QgsWMSSourceSelect::addButtonClicked()
 
     const QgsWmtsTileLayer *layer = nullptr;
 
-    const auto constMTileLayers = mTileLayers;
-    for ( const QgsWmtsTileLayer &l : constMTileLayers )
+    for ( const QgsWmtsTileLayer &l : qgis::as_const( mTileLayers ) )
     {
       if ( l.identifier == layers.join( QStringLiteral( "," ) ) )
       {
@@ -586,7 +585,7 @@ void QgsWMSSourceSelect::addButtonClicked()
   uri.setParam( QStringLiteral( "styles" ), styles );
   uri.setParam( QStringLiteral( "format" ), format );
   uri.setParam( QStringLiteral( "crs" ), crs );
-  QgsDebugMsg( QStringLiteral( "crs=%2 " ).arg( crs ) );
+  QgsDebugMsgLevel( QStringLiteral( "crs=%2 " ).arg( crs ), 2 );
 
   if ( mFeatureCount->text().toInt() > 0 )
   {
@@ -902,7 +901,7 @@ void QgsWMSSourceSelect::lstTilesets_itemClicked( QTableWidgetItem *item )
   lstTilesets->clearSelection();
   if ( !wasSelected )
   {
-    QgsDebugMsg( QStringLiteral( "selecting current row %1" ).arg( lstTilesets->currentRow() ) );
+    QgsDebugMsgLevel( QStringLiteral( "selecting current row %1" ).arg( lstTilesets->currentRow() ), 2 );
     lstTilesets->selectRow( lstTilesets->currentRow() );
     mCurrentTileset = rowItem;
   }
@@ -1032,7 +1031,7 @@ void QgsWMSSourceSelect::collectSelectedLayers( QStringList &layers, QStringList
 
 void QgsWMSSourceSelect::collectDimensions( QStringList &layers, QgsDataSourceUri &uri )
 {
-  for ( const QgsWmsLayerProperty layerProperty : mLayerProperties )
+  for ( const QgsWmsLayerProperty &layerProperty : qgis::as_const( mLayerProperties ) )
   {
     if ( layerProperty.name == layers.join( ',' ) )
     {

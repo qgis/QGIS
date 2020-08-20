@@ -119,6 +119,12 @@ Returns ``True`` if the model includes layer's CRS in the display role.
 %Docstring
 layersChecked returns the list of layers which are checked (or unchecked)
 %End
+
+    void setLayersChecked( const QList< QgsMapLayer * > &layers );
+%Docstring
+Sets which layers are checked in the model.
+%End
+
     bool itemsCheckable() const;
 %Docstring
 returns if the items can be checked or not

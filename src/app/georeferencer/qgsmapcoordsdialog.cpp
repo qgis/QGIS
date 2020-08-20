@@ -110,7 +110,9 @@ void QgsMapCoordsDialog::maybeSetXY( const QgsPointXY &xy, Qt::MouseButton butto
     leYCoord->setText( qgsDoubleToString( mapCoordPoint.y() ) );
   }
 
-  parentWidget()->showNormal();
+  // only restore window if it was minimized
+  if ( parentWidget()->windowState().testFlag( Qt::WindowMinimized ) )
+    parentWidget()->showNormal();
   parentWidget()->activateWindow();
   parentWidget()->raise();
 

@@ -58,6 +58,14 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
 
     bool blockCanvasInteraction( Interaction interaction ) const override;
 
+    /**
+     * Sets a GPS \a connection to use within the GPS Panel widget.
+     *
+     * Any existing GPS connection used by the widget will be disconnect and replaced with this connection. The connection
+     * is automatically registered within the QgsApplication::gpsConnectionRegistry().
+     */
+    void setConnection( QgsGpsConnection *connection );
+
   public slots:
     void tapAndHold( const QgsPointXY &mapPoint, QTapAndHoldGesture *gesture );
 

@@ -727,7 +727,7 @@ bool QgsPalettedRendererModel::insertRows( int row, int count, const QModelIndex
   beginInsertRows( QModelIndex(), row, row + count - 1 );
   for ( int i = row; i < row + count; ++i, ++nextValue )
   {
-    mData.insert( i, QgsPalettedRasterRenderer::Class( nextValue, QColor( 200, 200, 200 ), QString::number( nextValue ) ) );
+    mData.insert( i, QgsPalettedRasterRenderer::Class( nextValue, QColor( 200, 200, 200 ), QLocale().toString( nextValue ) ) );
   }
   endInsertRows();
   emit classesChanged();

@@ -78,13 +78,13 @@ class CORE_EXPORT QgsTemporalUtils
      * and size, while animation and export specific settings are specified via the \a settings
      * argument.
      *
-     * An optional \a feedback argument can be used to provide progress reports and cancelation
+     * An optional \a feedback argument can be used to provide progress reports and cancellation
      * support.
      *
      * \param mapSettings settings controlling the map render
      * \param settings animation and export settings
      * \param error will be set to a descriptive error message if the export fails
-     * \param feedback optional feedback object for progress reports and cancelation checks
+     * \param feedback optional feedback object for progress reports and cancellation checks
      *
      * \returns TRUE if the export was successful.
      */

@@ -495,6 +495,26 @@ QgsPointXY QgsMapSettings::layerToMapCoordinates( const QgsMapLayer *layer, QgsP
   return point;
 }
 
+QgsPoint QgsMapSettings::layerToMapCoordinates( const QgsMapLayer *layer, QgsPoint point ) const
+{
+  double x = point.x();
+  double y = point.y();
+  double z = point.z();
+
+  try
+  {
+    QgsCoordinateTransform ct = layerTransform( layer );
+    if ( ct.isValid() )
+      ct.transformInPlace( x, y, z, QgsCoordinateTransform::ForwardTransform );
+  }
+  catch ( QgsCsException &cse )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Transform error caught: %1" ).arg( cse.what() ), QObject::tr( "CRS" ) );
+  }
+
+  return QgsPoint( x, y, z );
+}
+
 
 QgsRectangle QgsMapSettings::layerToMapCoordinates( const QgsMapLayer *layer, QgsRectangle rect ) const
 {
@@ -527,6 +547,26 @@ QgsPointXY QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer *layer, QgsP
   }
 
   return point;
+}
+
+QgsPoint QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer *layer, QgsPoint point ) const
+{
+  double x = point.x();
+  double y = point.y();
+  double z = point.z();
+
+  try
+  {
+    QgsCoordinateTransform ct = layerTransform( layer );
+    if ( ct.isValid() )
+      ct.transformInPlace( x, y, z, QgsCoordinateTransform::ReverseTransform );
+  }
+  catch ( QgsCsException &cse )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Transform error caught: %1" ).arg( cse.what() ), QObject::tr( "CRS" ) );
+  }
+
+  return QgsPoint( x, y, z );
 }
 
 
@@ -680,6 +720,21 @@ QgsGeometry QgsMapSettings::labelBoundaryGeometry() const
 void QgsMapSettings::setLabelBoundaryGeometry( const QgsGeometry &boundary )
 {
   mLabelBoundaryGeometry = boundary;
+}
+
+void QgsMapSettings::addClippingRegion( const QgsMapClippingRegion &region )
+{
+  mClippingRegions.append( region );
+}
+
+void QgsMapSettings::setClippingRegions( const QList<QgsMapClippingRegion> &regions )
+{
+  mClippingRegions = regions;
+}
+
+QList<QgsMapClippingRegion> QgsMapSettings::clippingRegions() const
+{
+  return mClippingRegions;
 }
 
 void QgsMapSettings::addRenderedFeatureHandler( QgsRenderedFeatureHandlerInterface *handler )

@@ -110,8 +110,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
       ( a0 == Py_None || PyFloat_AsDouble( a0 ) != -1.0 || !PyErr_Occurred() ) &&
       ( a1 == Py_None || PyFloat_AsDouble( a1 ) != -1.0 || !PyErr_Occurred() ) &&
       ( a2 == Py_None || PyFloat_AsDouble( a2 ) != -1.0 || !PyErr_Occurred() ) &&
-      ( a3 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) &&
-      ( a4 == Py_None || sipCanConvertToEnum( a4, sipType_QgsWkbTypes_Type ) ) )
+      ( a3 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) )
     {
       double x = a0 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a0 );
       double y = a1 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a1 );
@@ -498,6 +497,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     json asJsonObject( int precision = 17 ) const override SIP_SKIP;
     QString asKml( int precision = 17 ) const override;
     void draw( QPainter &p ) const override;
+    QPainterPath asQPainterPath() const override;
     void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) override SIP_THROW( QgsCsException );
     void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
     QgsCoordinateSequence coordinateSequence() const override;

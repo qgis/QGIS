@@ -4338,12 +4338,14 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   bool simplify = true;
   bool geoPdf = false;
   bool useOgcBestPracticeFormat = false;
+  bool losslessImages = false;
   QStringList exportThemes;
   QStringList geoPdfLayerOrder;
   if ( mLayout )
   {
     settings.flags = mLayout->renderContext().flags();
     forceVector = mLayout->customProperty( QStringLiteral( "forceVector" ), 0 ).toBool();
+    losslessImages = mLayout->customProperty( QStringLiteral( "pdfLosslessImages" ), 0 ).toBool();
     appendGeoreference = mLayout->customProperty( QStringLiteral( "pdfAppendGeoreference" ), 1 ).toBool();
     includeMetadata = mLayout->customProperty( QStringLiteral( "pdfIncludeMetadata" ), 1 ).toBool();
     disableRasterTiles = mLayout->customProperty( QStringLiteral( "pdfDisableRasterTiles" ), 0 ).toBool();
@@ -4400,6 +4402,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   dialog.setExportGeoPdf( geoPdf );
   dialog.setUseOgcBestPracticeFormat( useOgcBestPracticeFormat );
   dialog.setExportThemes( exportThemes );
+  dialog.setLosslessImageExport( losslessImages );
 
   if ( dialog.exec() != QDialog::Accepted )
     return false;
@@ -4414,6 +4417,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   useOgcBestPracticeFormat = dialog.useOgcBestPracticeFormat();
   exportThemes = dialog.exportThemes();
   geoPdfLayerOrder = dialog.geoPdfLayerOrder();
+  losslessImages = dialog.losslessImageExport();
 
   if ( mLayout )
   {
@@ -4428,6 +4432,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
     mLayout->setCustomProperty( QStringLiteral( "pdfOgcBestPracticeFormat" ), useOgcBestPracticeFormat ? 1 : 0 );
     mLayout->setCustomProperty( QStringLiteral( "pdfExportThemes" ), exportThemes.join( QStringLiteral( "~~~" ) ) );
     mLayout->setCustomProperty( QStringLiteral( "pdfLayerOrder" ), geoPdfLayerOrder.join( QStringLiteral( "~~~" ) ) );
+    mLayout->setCustomProperty( QStringLiteral( "pdfLosslessImages" ), losslessImages ? 1 : 0 );
   }
 
   settings.forceVectorOutput = forceVector;
@@ -4445,6 +4450,11 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
     settings.flags = settings.flags | QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
   else
     settings.flags = settings.flags & ~QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
+
+  if ( losslessImages )
+    settings.flags = settings.flags | QgsLayoutRenderContext::FlagLosslessImageRendering;
+  else
+    settings.flags = settings.flags & ~QgsLayoutRenderContext::FlagLosslessImageRendering;
 
   return true;
 }

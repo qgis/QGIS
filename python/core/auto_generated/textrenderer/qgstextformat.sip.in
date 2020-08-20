@@ -35,6 +35,10 @@ Container for all settings relating to text rendering.
     };
 
     QgsTextFormat();
+%Docstring
+Default constructor for QgsTextFormat. Creates a text format initially
+set to an invalid state (see :py:func:`~QgsTextFormat.isValid`).
+%End
 
     QgsTextFormat( const QgsTextFormat &other );
 %Docstring
@@ -45,6 +49,35 @@ Copy constructor.
 
 
     ~QgsTextFormat();
+
+    bool operator==( const QgsTextFormat &other ) const;
+    bool operator!=( const QgsTextFormat &other ) const;
+
+    bool isValid() const;
+%Docstring
+Returns ``True`` if the format is valid.
+
+A default constructed QgsTextFormat is invalid, until at least one or more properties
+have been set on the format. An invalid state can be used as a representation of a "not set"
+text format, e.g. for indicating that a default text format should be used.
+
+.. note::
+
+   Calling any setter on a QgsTextFormat object will automatically set the format as valid.
+
+.. seealso:: :py:func:`setValid`
+
+.. versionadded:: 3.16
+%End
+
+    void setValid();
+%Docstring
+Sets the format to a valid state, without changing any of the default format settings.
+
+.. seealso:: :py:func:`isValid`
+
+.. versionadded:: 3.16
+%End
 
     QgsTextBufferSettings &buffer();
 %Docstring
@@ -132,12 +165,16 @@ of rendered text.
 .. seealso:: :py:func:`toQFont`
 %End
 
-    QFont scaledFont( const QgsRenderContext &context ) const;
+    QFont scaledFont( const QgsRenderContext &context, double scaleFactor = 1.0 ) const;
 %Docstring
 Returns a font with the size scaled to match the format's size settings (including
 units and map unit scale) for a specified render context.
 
 :param context: destination render context
+:param scaleFactor: optional font size scaling factor. It is recommended to set this to
+                    QgsTextRenderer.FONT_WORKAROUND_SCALE and then manually scale painter devices or calculations
+                    based on the resultant font metrics. Failure to do so will result in poor quality text rendering
+                    at small font sizes.
 
 :return: font with scaled size
 
@@ -519,6 +556,7 @@ Returns a pixmap preview for a text ``format``.
 %End
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

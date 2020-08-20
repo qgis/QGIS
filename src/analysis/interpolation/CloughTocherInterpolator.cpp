@@ -42,9 +42,20 @@ double CloughTocherInterpolator::calcBernsteinPoly( int n, int i, int j, int k, 
   return result;
 }
 
-bool CloughTocherInterpolator::calcNormVec( double x, double y, Vector3D *result )
+static void normalize( QgsPoint &point )
 {
-  if ( result )
+  double length = sqrt( pow( point.x(), 2 ) + pow( point.y(), 2 ) + pow( point.z(), 2 ) );
+  if ( length > 0 )
+  {
+    point.setX( point.x() / length );
+    point.setY( point.y() / length );
+    point.setZ( point.z() / length );
+  }
+}
+
+bool CloughTocherInterpolator::calcNormVec( double x, double y, QgsPoint &result )
+{
+  if ( !result.isEmpty() )
   {
     init( x, y );
     QgsPoint barycoord( 0, 0, 0 );//barycentric coordinates of (x,y) with respect to the triangle
@@ -66,10 +77,10 @@ bool CloughTocherInterpolator::calcNormVec( double x, double y, Vector3D *result
       endpointVXY.setZ( 3 * ( zv - zw ) );
       Vector3D v1( endpointUXY.x() - x, endpointUXY.y() - y, endpointUXY.z() );
       Vector3D v2( endpointVXY.x() - x, endpointVXY.y() - y, endpointVXY.z() );
-      result->setX( v1.getY()*v2.getZ() - v1.getZ()*v2.getY() );
-      result->setY( v1.getZ()*v2.getX() - v1.getX()*v2.getZ() );
-      result->setZ( v1.getX()*v2.getY() - v1.getY()*v2.getX() );
-      result->standardise();
+      result.setX( v1.getY()*v2.getZ() - v1.getZ()*v2.getY() );
+      result.setY( v1.getZ()*v2.getX() - v1.getX()*v2.getZ() );
+      result.setZ( v1.getX()*v2.getY() - v1.getY()*v2.getX() );
+      normalize( result );
       return true;
     }
     //is the point in the second subtriangle (point2,point3,cp10)?
@@ -85,10 +96,10 @@ bool CloughTocherInterpolator::calcNormVec( double x, double y, Vector3D *result
       endpointVXY.setZ( 3 * ( zv - zw ) );
       Vector3D v1( endpointUXY.x() - x, endpointUXY.y() - y, endpointUXY.z() );
       Vector3D v2( endpointVXY.x() - x, endpointVXY.y() - y, endpointVXY.z() );
-      result->setX( v1.getY()*v2.getZ() - v1.getZ()*v2.getY() );
-      result->setY( v1.getZ()*v2.getX() - v1.getX()*v2.getZ() );
-      result->setZ( v1.getX()*v2.getY() - v1.getY()*v2.getX() );
-      result->standardise();
+      result.setX( v1.getY()*v2.getZ() - v1.getZ()*v2.getY() );
+      result.setY( v1.getZ()*v2.getX() - v1.getX()*v2.getZ() );
+      result.setZ( v1.getX()*v2.getY() - v1.getY()*v2.getX() );
+      normalize( result );
       return true;
 
     }
@@ -105,42 +116,39 @@ bool CloughTocherInterpolator::calcNormVec( double x, double y, Vector3D *result
       endpointVXY.setZ( 3 * ( zv - zw ) );
       Vector3D v1( endpointUXY.x() - x, endpointUXY.y() - y, endpointUXY.z() );
       Vector3D v2( endpointVXY.x() - x, endpointVXY.y() - y, endpointVXY.z() );
-      result->setX( v1.getY()*v2.getZ() - v1.getZ()*v2.getY() );
-      result->setY( v1.getZ()*v2.getX() - v1.getX()*v2.getZ() );
-      result->setZ( v1.getX()*v2.getY() - v1.getY()*v2.getX() );
-      result->standardise();
+      result.setX( v1.getY()*v2.getZ() - v1.getZ()*v2.getY() );
+      result.setY( v1.getZ()*v2.getX() - v1.getX()*v2.getZ() );
+      result.setZ( v1.getX()*v2.getY() - v1.getY()*v2.getX() );
+      normalize( result );
       return true;
     }
 
     //the point is in none of the subtriangles, test if point has the same position as one of the vertices
     if ( x == point1.x() && y == point1.y() )
     {
-      result->setX( -der1X );
-      result->setY( -der1Y );
-      result->setZ( 1 );
-      result->standardise();
+      result.setX( -der1X );
+      result.setY( -der1Y );
+      result.setZ( 1 ); normalize( result );
       return true;
     }
     else if ( x == point2.x() && y == point2.y() )
     {
-      result->setX( -der2X );
-      result->setY( -der2Y );
-      result->setZ( 1 );
-      result->standardise();
+      result.setX( -der2X );
+      result.setY( -der2Y );
+      result.setZ( 1 ); normalize( result );
       return true;
     }
     else if ( x == point3.x() && y == point3.y() )
     {
-      result->setX( -der3X );
-      result->setY( -der3Y );
-      result->setZ( 1 );
-      result->standardise();
+      result.setX( -der3X );
+      result.setY( -der3Y );
+      result.setZ( 1 ); normalize( result );
       return true;
     }
 
-    result->setX( 0 );//return a vertical normal if failed
-    result->setY( 0 );
-    result->setZ( 1 );
+    result.setX( 0 );//return a vertical normal if failed
+    result.setY( 0 );
+    result.setZ( 1 );
     return false;
 
   }

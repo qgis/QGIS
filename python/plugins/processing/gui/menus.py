@@ -42,7 +42,7 @@ algorithmsToolbar = None
 menusSettingsGroup = 'Menus'
 
 defaultMenuEntries = {}
-vectorMenu = QApplication.translate('MainWindow', 'Vect&or')
+vectorMenu = iface.vectorMenu().title()
 analysisToolsMenu = vectorMenu + "/" + Processing.tr('&Analysis Tools')
 defaultMenuEntries.update({'qgis:distancematrix': analysisToolsMenu,
                            'native:sumlinelengths': analysisToolsMenu,
@@ -58,11 +58,12 @@ defaultMenuEntries.update({'native:creategrid': researchToolsMenu,
                            'qgis:randomselectionwithinsubsets': researchToolsMenu,
                            'native:randompointsinextent': researchToolsMenu,
                            'qgis:randompointsinlayerbounds': researchToolsMenu,
+                           'native:randompointsinpolygons': researchToolsMenu,
                            'qgis:randompointsinsidepolygons': researchToolsMenu,
+                           'native:randompointsonlines': researchToolsMenu,
                            'qgis:regularpoints': researchToolsMenu,
                            'native:selectbylocation': researchToolsMenu,
                            'native:polygonfromlayerextent': researchToolsMenu})
-
 geoprocessingToolsMenu = vectorMenu + "/" + Processing.tr('&Geoprocessing Tools')
 defaultMenuEntries.update({'native:buffer': geoprocessingToolsMenu,
                            'native:convexhull': geoprocessingToolsMenu,
@@ -93,7 +94,7 @@ defaultMenuEntries.update({'native:reprojectlayer': managementToolsMenu,
                            'native:mergevectorlayers': managementToolsMenu,
                            'native:createspatialindex': managementToolsMenu})
 
-rasterMenu = QApplication.translate('MainWindow', '&Raster')
+rasterMenu = iface.rasterMenu().title()
 projectionsMenu = rasterMenu + "/" + Processing.tr('Projections')
 defaultMenuEntries.update({'gdal:warpreproject': projectionsMenu,
                            'gdal:extractprojection': projectionsMenu,
@@ -129,6 +130,8 @@ defaultMenuEntries.update({'gdal:buildvirtualraster': miscMenu,
                            'gdal:gdalinfo': miscMenu,
                            'gdal:overviews': miscMenu,
                            'gdal:tileindex': miscMenu})
+
+toolBarButtons = {'native:selectbylocation': iface.selectionToolBar()}
 
 
 def initializeMenus():
@@ -280,6 +283,46 @@ def getMenu(name, parent):
 
 def findAction(actions, alg):
     for action in actions:
-        if action.data() == alg.id():
+        if (isinstance(alg, str) and action.data() == alg) or (isinstance(alg, QgsProcessingAlgorithm) and action.data() == alg.id()):
             return action
     return None
+
+
+def addToolBarButton(algId, toolbar, icon=None, tooltip=None):
+    alg = QgsApplication.processingRegistry().algorithmById(algId)
+    if alg is None or alg.id() != algId:
+        assert False, algId
+
+    if tooltip is None:
+        if (QgsGui.higFlags() & QgsGui.HigMenuTextIsTitleCase) and not (alg.flags() & QgsProcessingAlgorithm.FlagDisplayNameIsLiteral):
+            tooltip = QgsStringUtils.capitalize(alg.displayName(), QgsStringUtils.TitleCase)
+        else:
+            tooltip = alg.displayName()
+
+    action = QAction(icon or alg.icon(), tooltip, iface.mainWindow())
+    algId = alg.id()
+    action.setData(algId)
+    action.triggered.connect(lambda: _executeAlgorithm(algId))
+    action.setObjectName("mProcessingAlg_%s" % algId)
+
+    if toolbar:
+        toolbar.addAction(action)
+    else:
+        QgsMessageLog.logMessage(Processing.tr('Toolbar "{}" not found').format(toolbar.windowTitle), Processing.tr('Processing'))
+
+
+def removeToolBarButton(algId, toolbar):
+    if toolbar:
+        action = findAction(toolbar.actions(), algId)
+        if action is not None:
+            toolbar.removeAction(action)
+
+
+def createButtons():
+    for algId, toolbar in toolBarButtons.items():
+        addToolBarButton(algId, toolbar)
+
+
+def removeButtons():
+    for algId, toolbar in toolBarButtons.items():
+        removeToolBarButton(algId, toolbar)

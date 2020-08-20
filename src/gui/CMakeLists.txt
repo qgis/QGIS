@@ -189,6 +189,7 @@ SET(QGIS_GUI_SRCS
   labeling/qgslabelengineconfigdialog.cpp
   labeling/qgslabelinggui.cpp
   labeling/qgslabelingwidget.cpp
+  labeling/qgslabellineanchorwidget.cpp
   labeling/qgslabelobstaclesettingswidget.cpp
   labeling/qgslabelsettingswidgetbase.cpp
   labeling/qgsrulebasedlabelingwidget.cpp
@@ -335,6 +336,7 @@ SET(QGIS_GUI_SRCS
   vectortile/qgsvectortilesourceselect.cpp
 
   qgisinterface.cpp
+  qgs3dsymbolwidget.cpp
   qgsactionmenu.cpp
   qgsaddattrdialog.cpp
   qgsaddtaborgroup.cpp
@@ -393,6 +395,7 @@ SET(QGIS_GUI_SRCS
   qgsdetaileditemwidget.cpp
   qgsdial.cpp
   qgsdialog.cpp
+  qgsdoublevalidator.cpp
   qgsdockwidget.cpp
   qgsencodingfiledialog.cpp
   qgserrordialog.cpp
@@ -477,6 +480,7 @@ SET(QGIS_GUI_SRCS
   qgsmaptoolpan.cpp
   qgsmaptoolzoom.cpp
   qgsmaplayerconfigwidget.cpp
+  qgsmaterialsettingswidget.cpp
   qgsmenuheader.cpp
   qgsmessagebar.cpp
   qgsmessagebaritem.cpp
@@ -492,6 +496,7 @@ SET(QGIS_GUI_SRCS
   qgsnewnamedialog.cpp
   qgsnewvectorlayerdialog.cpp
   qgsnewgeopackagelayerdialog.cpp
+  qgsnewvectortabledialog.cpp
   qgsopacitywidget.cpp
   qgsoptionsdialogbase.cpp
   qgsoptionsdialoghighlightwidget.cpp
@@ -565,6 +570,7 @@ SET(QGIS_GUI_SRCS
 SET(QGIS_GUI_HDRS
   qgisinterface.h
 
+  qgs3dsymbolwidget.h
   qgsabstractdatasourcewidget.h
   qgsactionmenu.h
   qgsaddattrdialog.h
@@ -626,6 +632,7 @@ SET(QGIS_GUI_HDRS
   qgsdial.h
   qgsdialog.h
   qgsdockwidget.h
+  qgsdoublevalidator.h
   qgsencodingfiledialog.h
   qgserrordialog.h
   qgsexpressionbuilderdialog.h
@@ -710,6 +717,7 @@ SET(QGIS_GUI_HDRS
   qgsmaptoolpan.h
   qgsmaptoolzoom.h
   qgsmaskingwidget.h
+  qgsmaterialsettingswidget.h
   qgsmenuheader.h
   qgsmessagebar.h
   qgsmessagebaritem.h
@@ -720,10 +728,12 @@ SET(QGIS_GUI_HDRS
   qgsnewauxiliaryfielddialog.h
   qgsnewauxiliarylayerdialog.h
   qgsnewgeopackagelayerdialog.h
+  qgsnewvectortabledialog.h
   qgsnewhttpconnection.h
   qgsnewmemorylayerdialog.h
   qgsnewnamedialog.h
   qgsnewvectorlayerdialog.h
+  qgsnewvectortabledialog.h
   qgsopacitywidget.h
   qgsoptionsdialogbase.h
   qgsoptionsdialoghighlightwidget.h
@@ -917,6 +927,7 @@ SET(QGIS_GUI_HDRS
   labeling/qgslabelengineconfigdialog.h
   labeling/qgslabelinggui.h
   labeling/qgslabelingwidget.h
+  labeling/qgslabellineanchorwidget.h
   labeling/qgslabelobstaclesettingswidget.h
   labeling/qgslabelsettingswidgetbase.h
   labeling/qgsrulebasedlabelingwidget.h
@@ -1138,8 +1149,7 @@ SET(QGIS_GUI_PRIVATE_HDRS
   attributetable/qgsfeaturefilterwidget_p.h
 )
 
-FIND_PACKAGE(Qt5 COMPONENTS Qml REQUIRED)
-FIND_PACKAGE(Qt5 COMPONENTS QuickWidgets REQUIRED)
+FIND_PACKAGE(Qt5 COMPONENTS Qml QuickWidgets REQUIRED)
 
 IF(Qt5Qml_FOUND)
 ADD_DEFINITIONS(-DWITH_QML)
@@ -1195,6 +1205,7 @@ SET(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsgenericprojectionselectorbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessagelogviewer.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessageviewer.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsnewvectortabledialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsowssourceselectbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsarcgisservicesourceselectbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprojectionselectorbase.h
@@ -1247,6 +1258,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/vectortile
   ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
   ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/3d
   ${CMAKE_SOURCE_DIR}/src/core/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/callouts

@@ -18,7 +18,7 @@
 #include "qgstininterpolator.h"
 #include "qgsfeatureiterator.h"
 #include "CloughTocherInterpolator.h"
-#include "DualEdgeTriangulation.h"
+#include "qgsdualedgetriangulation.h"
 #include "NormVecDecorator.h"
 #include "LinTriangleInterpolator.h"
 #include "qgspoint.h"
@@ -69,7 +69,7 @@ int QgsTinInterpolator::interpolatePoint( double x, double y, double &result, Qg
 
 QgsFields QgsTinInterpolator::triangulationFields()
 {
-  return Triangulation::triangulationFields();
+  return QgsTriangulation::triangulationFields();
 }
 
 void QgsTinInterpolator::setTriangulationSink( QgsFeatureSink *sink )
@@ -79,7 +79,7 @@ void QgsTinInterpolator::setTriangulationSink( QgsFeatureSink *sink )
 
 void QgsTinInterpolator::initialize()
 {
-  DualEdgeTriangulation *dualEdgeTriangulation = new DualEdgeTriangulation( 100000, nullptr );
+  QgsDualEdgeTriangulation *dualEdgeTriangulation = new QgsDualEdgeTriangulation( 100000 );
   if ( mInterpolation == CloughTocher )
   {
     NormVecDecorator *dec = new NormVecDecorator();
@@ -273,7 +273,7 @@ int QgsTinInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueS
               const QgsMultiCurve *mc = qgsgeometry_cast< const QgsMultiCurve * >( g.constGet() );
               for ( int i = 0; i < mc->numGeometries(); ++i )
               {
-                curves.emplace_back( qgsgeometry_cast< const QgsCurve * >( mc->geometryN( i ) ) );
+                curves.emplace_back( mc->curveN( i ) );
               }
             }
             else

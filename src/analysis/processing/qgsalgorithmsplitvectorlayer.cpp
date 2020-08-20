@@ -119,7 +119,7 @@ QVariantMap QgsSplitVectorLayerAlgorithm::processAlgorithm( const QVariantMap &p
     if ( feedback->isCanceled() )
       break;
 
-    QString fileName = QStringLiteral( "%1_%2.%3" ).arg( baseName ).arg( current ).arg( outputFormat );
+    QString fileName = QStringLiteral( "%1_%2.%3" ).arg( baseName ).arg( ( *it ).toString() ).arg( outputFormat );
     feedback->pushInfo( QObject::tr( "Creating layer: %1" ).arg( fileName ) );
 
     sink.reset( QgsProcessingUtils::createFeatureSink( fileName, context, fields, geometryType, crs ) );

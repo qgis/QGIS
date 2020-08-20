@@ -500,7 +500,7 @@ void QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
     QDomElement vo =  QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "forceLeftToRight" ), QStringLiteral( "false" ) );
     textSymbolizerElement.appendChild( vo );
   }
-  if ( settings.mergeLines )
+  if ( settings.lineSettings().mergeLines() )
   {
     QDomElement vo =  QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "group" ), QStringLiteral( "yes" ) );
     textSymbolizerElement.appendChild( vo );

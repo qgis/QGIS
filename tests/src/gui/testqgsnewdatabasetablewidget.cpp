@@ -138,6 +138,14 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsPostgres()
 
   QVERIFY( ! w->isValid() );
 
+  /*
+  QDialog d;
+  QVBoxLayout l;
+  l.addWidget( w.get() );
+  d.setLayout( &l );
+  d.exec();
+  //*/
+
   QCOMPARE( providerSpy.count(), 1 );
   QCOMPARE( uriSpy.count(), 0 );
   QCOMPARE( tableSpy.count(), 0 );

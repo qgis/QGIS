@@ -246,6 +246,13 @@ the largest "pretty" number possible.
 .. versionadded:: 3.10
 %End
 
+    static bool itemIsAClippingSource( const QgsLayoutItem *item );
+%Docstring
+Returns ``True`` if an ``item`` is a clipping item for another layout item.
+
+.. versionadded:: 3.16
+%End
+
 };
 
 /************************************************************************

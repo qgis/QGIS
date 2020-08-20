@@ -89,6 +89,11 @@ bool QgsVectorDataProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   return false;
 }
 
+QString QgsVectorDataProvider::lastError() const
+{
+  return mErrors.last();
+}
+
 bool QgsVectorDataProvider::deleteFeatures( const QgsFeatureIds &ids )
 {
   Q_UNUSED( ids )
@@ -634,7 +639,7 @@ QStringList QgsVectorDataProvider::availableEncodings()
   std::call_once( initialized, [ = ]
   {
     const auto codecs { QTextCodec::availableCodecs() };
-    for ( const QString &codec : codecs )
+    for ( const QByteArray &codec : codecs )
     {
       sEncodings << codec;
     }

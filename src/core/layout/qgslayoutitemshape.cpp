@@ -43,6 +43,7 @@ QgsLayoutItemShape::QgsLayoutItemShape( QgsLayout *layout )
   {
     updateBoundingRect();
     update();
+    emit clipPathChanged();
   } );
 }
 
@@ -91,6 +92,13 @@ QString QgsLayoutItemShape::displayName() const
   return tr( "<Shape>" );
 }
 
+QgsLayoutItem::Flags QgsLayoutItemShape::itemFlags() const
+{
+  QgsLayoutItem::Flags flags = QgsLayoutItem::itemFlags();
+  flags |= QgsLayoutItem::FlagProvidesClipPath;
+  return flags;
+}
+
 void QgsLayoutItemShape::setShapeType( QgsLayoutItemShape::Shape type )
 {
   if ( type == mShape )
@@ -105,6 +113,8 @@ void QgsLayoutItemShape::setShapeType( QgsLayoutItemShape::Shape type )
     //notify the model that the display name has changed
     mLayout->itemsModel()->updateItemDisplayName( this );
   }
+
+  emit clipPathChanged();
 }
 
 void QgsLayoutItemShape::refreshSymbol()
@@ -141,6 +151,21 @@ void QgsLayoutItemShape::setSymbol( QgsFillSymbol *symbol )
   refreshSymbol();
 }
 
+void QgsLayoutItemShape::setCornerRadius( QgsLayoutMeasurement radius )
+{
+  mCornerRadius = radius;
+  emit clipPathChanged();
+}
+
+QgsGeometry QgsLayoutItemShape::clipPath() const
+{
+  QPolygonF shapePolygon = mapToScene( calculatePolygon( 1.0 ) );
+  // ensure polygon is closed
+  if ( shapePolygon.at( 0 ) != shapePolygon.constLast() )
+    shapePolygon << shapePolygon.at( 0 );
+  return QgsGeometry::fromQPolygonF( shapePolygon );
+}
+
 QRectF QgsLayoutItemShape::boundingRect() const
 {
   return mCurrentRectangle;
@@ -169,8 +194,17 @@ void QgsLayoutItemShape::draw( QgsLayoutItemRenderContext &context )
   painter->setPen( Qt::NoPen );
   painter->setBrush( Qt::NoBrush );
 
-  double scale = context.renderContext().convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+  const double scale = context.renderContext().convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
 
+  QVector<QPolygonF> rings; //empty list
+
+  symbol()->startRender( context.renderContext() );
+  symbol()->renderPolygon( calculatePolygon( scale ), &rings, nullptr, context.renderContext() );
+  symbol()->stopRender( context.renderContext() );
+}
+
+QPolygonF QgsLayoutItemShape::calculatePolygon( double scale ) const
+{
   QPolygonF shapePolygon;
 
   //shapes with curves must be enlarged before conversion to QPolygonF, or
@@ -216,12 +250,7 @@ void QgsLayoutItemShape::draw( QgsLayoutItemRenderContext &context )
       break;
     }
   }
-
-  QVector<QPolygonF> rings; //empty list
-
-  symbol()->startRender( context.renderContext() );
-  symbol()->renderPolygon( shapePolygon, &rings, nullptr, context.renderContext() );
-  symbol()->stopRender( context.renderContext() );
+  return shapePolygon;
 }
 
 bool QgsLayoutItemShape::writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const

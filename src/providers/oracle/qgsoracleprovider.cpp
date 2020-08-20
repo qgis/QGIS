@@ -939,60 +939,12 @@ bool QgsOracleProvider::determinePrimaryKey()
     }
     else
     {
-      QString primaryKey = mUri.keyColumn();
-      mPrimaryKeyType = PktUnknown;
-
-      if ( !primaryKey.isEmpty() )
-      {
-        int idx = fieldNameIndex( primaryKey );
-
-        if ( idx >= 0 )
-        {
-          QgsField fld = mAttributeFields.at( idx );
-
-          if ( mUseEstimatedMetadata || uniqueData( mQuery, primaryKey ) )
-          {
-            mPrimaryKeyType = ( fld.type() == QVariant::Int || fld.type() == QVariant::LongLong || ( fld.type() == QVariant::Double && fld.precision() == 0 ) ) ? PktInt : PktFidMap;
-            mPrimaryKeyAttrs << idx;
-          }
-          else
-          {
-            QgsMessageLog::logMessage( tr( "Primary key field '%1' for view not unique." ).arg( primaryKey ), tr( "Oracle" ) );
-          }
-        }
-        else
-        {
-          QgsMessageLog::logMessage( tr( "Key field '%1' for view not found." ).arg( primaryKey ), tr( "Oracle" ) );
-        }
-      }
-      else
-      {
-        QgsMessageLog::logMessage( tr( "No key field for view given." ), tr( "Oracle" ) );
-      }
+      determinePrimaryKeyFromUriKeyColumn();
     }
   }
   else
   {
-    QString primaryKey = mUri.keyColumn();
-    int idx = fieldNameIndex( mUri.keyColumn() );
-
-    if ( idx >= 0 && (
-           mAttributeFields.at( idx ).type() == QVariant::Int ||
-           mAttributeFields.at( idx ).type() == QVariant::LongLong ||
-           mAttributeFields.at( idx ).type() == QVariant::Double
-         ) )
-    {
-      if ( mUseEstimatedMetadata || uniqueData( mQuery, primaryKey ) )
-      {
-        mPrimaryKeyType = PktInt;
-        mPrimaryKeyAttrs << idx;
-      }
-    }
-    else
-    {
-      QgsMessageLog::logMessage( tr( "No key field for query given." ), tr( "Oracle" ) );
-      mPrimaryKeyType = PktUnknown;
-    }
+    determinePrimaryKeyFromUriKeyColumn();
   }
 
   qry.finish();
@@ -1010,6 +962,49 @@ bool QgsOracleProvider::determinePrimaryKey()
   }
 
   return mValid;
+}
+
+void QgsOracleProvider::determinePrimaryKeyFromUriKeyColumn()
+{
+  QString primaryKey = mUri.keyColumn();
+  mPrimaryKeyType = PktUnknown;
+
+  if ( !primaryKey.isEmpty() )
+  {
+    int idx = fieldNameIndex( primaryKey );
+
+    if ( idx >= 0 )
+    {
+      QgsField fld = mAttributeFields.at( idx );
+
+      if ( mUseEstimatedMetadata || uniqueData( mQuery, primaryKey ) )
+      {
+        if ( fld.type() == QVariant::Int ||
+             fld.type() == QVariant::LongLong ||
+             ( fld.type() == QVariant::Double && fld.precision() == 0 ) )
+        {
+          mPrimaryKeyType = PktInt;
+        }
+        else
+        {
+          mPrimaryKeyType = PktFidMap;
+        }
+        mPrimaryKeyAttrs << idx;
+      }
+      else
+      {
+        QgsMessageLog::logMessage( tr( "Primary key field '%1' for view/query not unique." ).arg( primaryKey ), tr( "Oracle" ) );
+      }
+    }
+    else
+    {
+      QgsMessageLog::logMessage( tr( "Key field '%1' for view/query not found." ).arg( primaryKey ), tr( "Oracle" ) );
+    }
+  }
+  else
+  {
+    QgsMessageLog::logMessage( tr( "No key field for view/query given." ), tr( "Oracle" ) );
+  }
 }
 
 bool QgsOracleProvider::determineAlwaysGeneratedKeys()
@@ -2990,7 +2985,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
     if ( idx >= 0 )
     {
       QgsField fld = fields.at( idx );
-      if ( convertField( fld ) )
+      if ( ( options && options->value( QStringLiteral( "skipConvertFields" ), false ).toBool() ) || convertField( fld ) )
       {
         primaryKeyType = fld.typeName();
       }
@@ -3243,7 +3238,7 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
         continue;
       }
 
-      if ( !convertField( fld ) )
+      if ( !( options && options->value( QStringLiteral( "skipConvertFields" ), false ).toBool() ) && ! convertField( fld ) )
       {
         errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( fld.name() );
 

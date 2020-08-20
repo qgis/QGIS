@@ -69,9 +69,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
 
     struct RelationEditorConfiguration
     {
-      bool showLinkButton = true;
-      bool showUnlinkButton = true;
-      bool showSaveChildEditsButton = true;
+      QgsAttributeEditorRelation::Buttons buttons = QgsAttributeEditorRelation::Button::AllButtons;
     };
 
     struct QmlElementEditorConfiguration

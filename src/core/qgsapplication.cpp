@@ -19,6 +19,7 @@
 #include "qgsdataitemproviderregistry.h"
 #include "qgsexception.h"
 #include "qgsgeometry.h"
+#include "qgsannotationitemregistry.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
@@ -35,6 +36,7 @@
 #include "qgsscalebarrendererregistry.h"
 #include "qgssvgcache.h"
 #include "qgsimagecache.h"
+#include "qgssourcecache.h"
 #include "qgscolorschemeregistry.h"
 #include "qgspainteffectregistry.h"
 #include "qgsprojectstorageregistry.h"
@@ -53,6 +55,7 @@
 #include "qgsuserprofilemanager.h"
 #include "qgsreferencedgeometry.h"
 #include "qgs3drendererregistry.h"
+#include "qgs3dsymbolregistry.h"
 #include "qgslayoutrendercontext.h"
 #include "qgssqliteutils.h"
 #include "qgsstyle.h"
@@ -63,6 +66,7 @@
 #include "qgsstylemodel.h"
 #include "qgsconnectionregistry.h"
 #include "qgsremappingproxyfeaturesink.h"
+#include "qgsmeshlayer.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -235,7 +239,10 @@ void QgsApplication::init( QString profileFolder )
   qRegisterMetaTypeStreamOperators<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
   qRegisterMetaType<QgsRemappingSinkDefinition>( "QgsRemappingSinkDefinition" );
   qRegisterMetaType<QgsProcessingModelChildDependency>( "QgsProcessingModelChildDependency" );
+  qRegisterMetaType<QgsTextFormat>( "QgsTextFormat" );
   QMetaType::registerComparators<QgsProcessingModelChildDependency>();
+  QMetaType::registerEqualsComparator<QgsProcessingFeatureSourceDefinition>();
+  QMetaType::registerEqualsComparator<QgsProperty>();
 
   ( void ) resolvePkgPath();
 
@@ -2136,6 +2143,11 @@ QgsImageCache *QgsApplication::imageCache()
   return members()->mImageCache;
 }
 
+QgsSourceCache *QgsApplication::sourceCache()
+{
+  return members()->mSourceCache;
+}
+
 QgsNetworkContentFetcherRegistry *QgsApplication::networkContentFetcherRegistry()
 {
   return members()->mNetworkContentFetcherRegistry;
@@ -2159,6 +2171,11 @@ QgsCalloutRegistry *QgsApplication::calloutRegistry()
 QgsLayoutItemRegistry *QgsApplication::layoutItemRegistry()
 {
   return members()->mLayoutItemRegistry;
+}
+
+QgsAnnotationItemRegistry *QgsApplication::annotationItemRegistry()
+{
+  return members()->mAnnotationItemRegistry;
 }
 
 QgsGpsConnectionRegistry *QgsApplication::gpsConnectionRegistry()
@@ -2226,6 +2243,11 @@ Qgs3DRendererRegistry *QgsApplication::renderer3DRegistry()
   return members()->m3DRendererRegistry;
 }
 
+Qgs3DSymbolRegistry *QgsApplication::symbol3DRegistry()
+{
+  return members()->m3DSymbolRegistry;
+}
+
 QgsScaleBarRendererRegistry *QgsApplication::scaleBarRendererRegistry()
 {
   return members()->mScaleBarRendererRegistry;
@@ -2282,6 +2304,11 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   {
     profiler->start( tr( "Setup image cache" ) );
     mImageCache = new QgsImageCache();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup source cache" ) );
+    mSourceCache = new QgsSourceCache();
     profiler->end();
   }
   {
@@ -2342,6 +2369,17 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
     profiler->end();
   }
   {
+    profiler->start( tr( "Setup annotation item registry" ) );
+    mAnnotationItemRegistry = new QgsAnnotationItemRegistry();
+    mAnnotationItemRegistry->populate();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup 3D symbol registry" ) );
+    m3DSymbolRegistry = new Qgs3DSymbolRegistry();
+    profiler->end();
+  }
+  {
     profiler->start( tr( "Setup 3D renderer registry" ) );
     m3DRendererRegistry = new Qgs3DRendererRegistry();
     profiler->end();
@@ -2385,6 +2423,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mValidityCheckRegistry;
   delete mActionScopeRegistry;
   delete m3DRendererRegistry;
+  delete m3DSymbolRegistry;
   delete mAnnotationRegistry;
   delete mColorSchemeRegistry;
   delete mFieldFormatterRegistry;
@@ -2395,11 +2434,13 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mProcessingRegistry;
   delete mProjectStorageRegistry;
   delete mPageSizeRegistry;
+  delete mAnnotationItemRegistry;
   delete mLayoutItemRegistry;
   delete mRasterRendererRegistry;
   delete mRendererRegistry;
   delete mSvgCache;
   delete mImageCache;
+  delete mSourceCache;
   delete mCalloutRegistry;
   delete mSymbolLayerRegistry;
   delete mTaskManager;

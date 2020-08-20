@@ -289,6 +289,10 @@ bool QgsMdalProvider::persistDatasetGroup(
     MDAL_G_setMetadata( g, it.key().toStdString().c_str(), it.value().toStdString().c_str() );
   }
 
+  if ( meta.referenceTime().isValid() )
+  {
+    MDAL_G_setReferenceTime( g, meta.referenceTime().toString( Qt::ISODateWithMs ).toStdString().c_str() );
+  }
 
   for ( int i = 0; i < datasetValues.size(); ++i )
   {
@@ -370,6 +374,11 @@ bool QgsMdalProvider::persistDatasetGroup( const QString &outputFilePath, const 
     MDAL_G_setMetadata( g, it.key().toStdString().c_str(), it.value().toStdString().c_str() );
   }
 
+  if ( meta.referenceTime().isValid() )
+  {
+    MDAL_G_setReferenceTime( g, meta.referenceTime().toString( Qt::ISODateWithMs ).toStdString().c_str() );
+  }
+
   bool fail = false;
   for ( int i = 0; i < datasetCount; ++i )
   {
@@ -434,7 +443,6 @@ void QgsMdalProvider::addGroupToTemporalCapabilities( int indexGroup )
   QgsMeshDataProviderTemporalCapabilities *tempCap = temporalCapabilities();
   QgsMeshDatasetGroupMetadata dsgMetadata = datasetGroupMetadata( indexGroup );
   QDateTime refTime = dsgMetadata.referenceTime();
-  refTime.setTimeSpec( Qt::UTC ); //For now provider doesn't support time zone and return always in local time, force UTC
   tempCap->addGroupReferenceDateTime( indexGroup, refTime );
   int dsCount = datasetCount( indexGroup );
 
@@ -685,6 +693,8 @@ QgsMeshDatasetGroupMetadata QgsMdalProvider::datasetGroupMetadata( int groupInde
   }
 
   QString referenceTimeString( MDAL_G_referenceTime( group ) );
+  if ( !referenceTimeString.isEmpty() )
+    referenceTimeString.append( 'Z' );//For now provider doesn't support time zone and return always in local time, force UTC
   QDateTime referenceTime = QDateTime::fromString( referenceTimeString, Qt::ISODate );
 
   bool isTemporal = MDAL_G_isTemporal( group );

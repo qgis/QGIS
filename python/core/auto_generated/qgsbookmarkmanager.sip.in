@@ -154,7 +154,7 @@ This constructor creates a bookmark manager which stores bookmarks in an XML fil
 
     void initialize( const QString &filePath );
 %Docstring
-initialize
+Initializes the bookmark manager.
 %End
 
     QString addBookmark( const QgsBookmark &bookmark, bool *ok /Out/ = 0 );

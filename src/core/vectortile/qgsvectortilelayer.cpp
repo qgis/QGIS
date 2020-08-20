@@ -32,7 +32,7 @@ QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseN
 {
   mDataSource = uri;
 
-  mValid = loadDataSource();
+  setValid( loadDataSource() );
 
   // set a default renderer
   QgsVectorTileBasicRenderer *renderer = new QgsVectorTileBasicRenderer;
@@ -125,7 +125,7 @@ QgsMapLayerRenderer *QgsVectorTileLayer::createMapRenderer( QgsRenderContext &re
 
 bool QgsVectorTileLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext &context )
 {
-  mValid = loadDataSource();
+  setValid( loadDataSource() );
 
   QString errorMsg;
   if ( !readSymbology( layerNode, errorMsg, context ) )

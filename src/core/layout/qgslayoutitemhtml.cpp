@@ -307,12 +307,11 @@ void QgsLayoutItemHtml::render( QgsLayoutItemRenderContext &context, const QRect
     return;
 
   QPainter *painter = context.renderContext().painter();
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   // painter is scaled to dots, so scale back to layout units
   painter->scale( context.renderContext().scaleFactor() / mHtmlUnitsToLayoutUnits, context.renderContext().scaleFactor() / mHtmlUnitsToLayoutUnits );
   painter->translate( 0.0, -renderExtent.top() * mHtmlUnitsToLayoutUnits );
   mWebPage->mainFrame()->render( painter, QRegion( renderExtent.left(), renderExtent.top() * mHtmlUnitsToLayoutUnits, renderExtent.width() * mHtmlUnitsToLayoutUnits, renderExtent.height() * mHtmlUnitsToLayoutUnits ) );
-  painter->restore();
 }
 
 double QgsLayoutItemHtml::htmlUnitsToLayoutUnits()

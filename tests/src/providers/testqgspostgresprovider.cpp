@@ -252,7 +252,7 @@ void TestQgsPostgresProvider::testQuotedValueBigInt()
   sdata->clear();
   sdata->insertFid( 1LL, vlst );
 
-  QCOMPARE( QgsPostgresUtils::whereClause( 1LL, fields, NULL, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QString( "\"fld_double\"=3.141592741" ) );
+  QCOMPARE( QgsPostgresUtils::whereClause( 1LL, fields, NULL, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QString( "\"fld_double\"='3.141592741'" ) );
 
   // text
   f3.setName( "fld_text" );

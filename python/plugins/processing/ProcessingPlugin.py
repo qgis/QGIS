@@ -51,7 +51,7 @@ from processing.gui.AlgorithmLocatorFilter import (AlgorithmLocatorFilter,
                                                    InPlaceAlgorithmLocatorFilter)
 from processing.modeler.ModelerDialog import ModelerDialog
 from processing.tools.system import tempHelpFolder
-from processing.gui.menus import removeMenus, initializeMenus, createMenus
+from processing.gui.menus import removeMenus, initializeMenus, createMenus, createButtons, removeButtons
 from processing.core.ProcessingResults import resultsList
 
 pluginPath = os.path.dirname(__file__)
@@ -271,6 +271,7 @@ class ProcessingPlugin:
 
         initializeMenus()
         createMenus()
+        createButtons()
 
         # In-place editing button state sync
         self.iface.currentLayerChanged.connect(self.sync_in_place_button_state)
@@ -322,6 +323,7 @@ class ProcessingPlugin:
         self.iface.unregisterCustomDropHandler(self.drop_handler)
         QgsApplication.dataItemProviderRegistry().removeProvider(self.item_provider)
 
+        removeButtons()
         removeMenus()
         Processing.deinitialize()
 

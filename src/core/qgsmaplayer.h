@@ -70,7 +70,8 @@ enum class QgsMapLayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayer, LayerT
   RasterLayer,
   PluginLayer,
   MeshLayer,      //!< Added in 3.2
-  VectorTileLayer //!< Added in 3.14
+  VectorTileLayer, //!< Added in 3.14
+  AnnotationLayer, //!< Contains freeform, georeferenced annotations. Added in QGIS 3.16
 };
 
 /**
@@ -86,6 +87,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
     Q_PROPERTY( int autoRefreshInterval READ autoRefreshInterval WRITE setAutoRefreshInterval NOTIFY autoRefreshIntervalChanged )
     Q_PROPERTY( QgsLayerMetadata metadata READ metadata WRITE setMetadata NOTIFY metadataChanged )
     Q_PROPERTY( QgsCoordinateReferenceSystem crs READ crs WRITE setCrs NOTIFY crsChanged )
+    Q_PROPERTY( QgsMapLayerType type READ type CONSTANT )
+    Q_PROPERTY( bool isValid READ isValid NOTIFY isValidChanged )
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -111,6 +114,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
           break;
         case QgsMapLayerType::VectorTileLayer:
           sipType = sipType_QgsVectorTileLayer;
+          break;
+        case QgsMapLayerType::AnnotationLayer:
+          sipType = sipType_QgsAnnotationLayer;
           break;
         default:
           sipType = nullptr;
@@ -1409,6 +1415,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void styleLoaded( QgsMapLayer::StyleCategories categories );
 
+    /**
+     * Emitted when the validity of this layer changed.
+     *
+     * \since QGIS 3.16
+     */
+    void isValidChanged();
+
 
   private slots:
 
@@ -1426,7 +1439,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Sets the extent
     virtual void setExtent( const QgsRectangle &rect );
 
-    //! Sets whether layer is valid or not - should be used in constructor.
+    //! Sets whether layer is valid or not
     void setValid( bool valid );
 
     /**

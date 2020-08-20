@@ -761,6 +761,13 @@ Returns the stroke width map unit scale.
 Custom stroke
 %End
 
+    virtual bool applyBrushTransformFromContext() const;
+%Docstring
+Returns ``True`` if the image brush should be transformed using the render context's texture origin.
+
+.. versionadded:: 3.16
+%End
+
   private:
     QgsImageFillSymbolLayer( const QgsImageFillSymbolLayer &other );
 };
@@ -1041,6 +1048,7 @@ Returns the map unit scale for the image's width.
 
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context );
 
+    virtual bool applyBrushTransformFromContext() const;
 
 };
 

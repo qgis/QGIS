@@ -25,6 +25,7 @@
 #include "qgsproject.h"
 #include "qgsexception.h"
 #include "qgsrasterlayertemporalproperties.h"
+#include "qgsmapclippingutils.h"
 
 ///@cond PRIVATE
 
@@ -227,7 +228,9 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   mPipe = new QgsRasterPipe( *layer->pipe() );
   QObject::connect( mPipe->provider(), &QgsRasterDataProvider::statusChanged, layer, &QgsRasterLayer::statusChanged );
   QgsRasterRenderer *rasterRenderer = mPipe->renderer();
-  if ( rasterRenderer && !( rendererContext.flags() & QgsRenderContext::RenderPreviewJob ) )
+  if ( rasterRenderer
+       && !( rendererContext.flags() & QgsRenderContext::RenderPreviewJob )
+       && !( rendererContext.flags() & QgsRenderContext::Render3DMap ) )
     layer->refreshRendererIfNeeded( rasterRenderer, rendererContext.extent() );
 
   const QgsRasterLayerTemporalProperties *temporalProperties = qobject_cast< const QgsRasterLayerTemporalProperties * >( layer->temporalProperties() );
@@ -253,6 +256,8 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
     mPipe->provider()->temporalCapabilities()->setRequestedTemporalRange( QgsDateTimeRange() );
     mPipe->provider()->temporalCapabilities()->setIntervalHandlingMethod( temporalProperties->intervalHandlingMethod() );
   }
+
+  mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );
 }
 
 QgsRasterLayerRenderer::~QgsRasterLayerRenderer()
@@ -279,6 +284,15 @@ bool QgsRasterLayerRenderer::render()
   // so that we can maximise performance of the rendering process. So now we check which drawing
   // procedure to use :
   //
+
+  QgsScopedQPainterState painterSate( renderContext()->painter() );
+  if ( !mClippingRegions.empty() )
+  {
+    bool needsPainterClipPath = false;
+    const QPainterPath path = QgsMapClippingUtils::calculatePainterClipRegion( mClippingRegions, *renderContext(), QgsMapLayerType::RasterLayer, needsPainterClipPath );
+    if ( needsPainterClipPath )
+      renderContext()->painter()->setClipPath( path, Qt::IntersectClip );
+  }
 
   QgsRasterProjector *projector = mPipe->projector();
   bool restoreOldResamplingStage = false;

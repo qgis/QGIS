@@ -29,7 +29,10 @@ from qgis.core import (QgsVectorLayer,
                        QgsCoordinateTransform,
                        QgsMultiPolygon,
                        QgsTriangle,
-                       QgsPoint
+                       QgsPoint,
+                       QgsFields,
+                       QgsCoordinateTransformContext,
+                       QgsFeatureSink
                        )
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir, QByteArray
 import os
@@ -1266,6 +1269,23 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertEqual(created_layer.featureCount(), 1)
         f = next(created_layer.getFeatures(QgsFeatureRequest()))
         self.assertEqual(f['int'], 12345)
+
+    def test_regression_37386(self):
+        """Test issue GH #37386"""
+
+        dest_file_name = os.path.join(str(QDir.tempPath()), 'writer_regression_37386.gpkg')
+        fields = QgsFields()
+        fields.append(QgsField("note", QVariant.Double))
+        lyrname = "test1"
+        opts = QgsVectorFileWriter.SaveVectorOptions()
+        opts.driverName = "GPKG"
+        opts.layerName = lyrname
+        opts.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteFile
+        writer = QgsVectorFileWriter.create(dest_file_name, fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateTransformContext(), opts, QgsFeatureSink.SinkFlags(), None, lyrname)
+        self.assertEqual(writer.hasError(), QgsVectorFileWriter.NoError)
+        del writer
+        vl = QgsVectorLayer(dest_file_name)
+        self.assertTrue(vl.isValid())
 
 
 if __name__ == '__main__':

@@ -79,6 +79,8 @@ class CORE_EXPORT QgsProcessingAlgorithm
       FlagCustomException = 1 << 10, //!< Algorithm raises custom exception notices, don't use the standard ones
       FlagPruneModelBranchesBasedOnAlgorithmResults = 1 << 11, //!< Algorithm results will cause remaining model branches to be pruned based on the results of running the algorithm
       FlagSkipGenericModelLogging = 1 << 12, //!< When running as part of a model, the generic algorithm setup and results logging should be skipped
+      FlagNotAvailableInStandaloneTool = 1 << 13, //!< Algorithm should not be available from the standalone "qgis_process" tool. Used to flag algorithms which make no sense outside of the QGIS application, such as "select by..." style algorithms.
+      FlagRequiresProject = 1 << 14, //!< The algorithm requires that a valid QgsProject is available from the processing context in order to execute
       FlagDeprecated = FlagHideFromToolbox | FlagHideFromModeler, //!< Algorithm is deprecated
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -679,12 +681,16 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * The \a destinationIdentifier argument will be set to a string which can be used to retrieve the layer corresponding
      * to the sink, e.g. via calling QgsProcessingUtils::mapLayerFromString().
      *
+     * The \a createOptions argument is used to pass on creation options such as layer name.
+     *
+     * The \a datasourceOptions and \a layerOptions arguments is used to pass on GDAL-specific format driver options.
+     *
      * This function creates a new object and the caller takes responsibility for deleting the returned object.
      *
      * \throws QgsProcessingException
      */
     QgsFeatureSink *parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT,
-                                     const QgsFields &fields, QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() ) const SIP_THROW( QgsProcessingException ) SIP_FACTORY;
+                                     const QgsFields &fields, QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(), const QVariantMap &createOptions = QVariantMap(), const QStringList &datasourceOptions = QStringList(), const QStringList &layerOptions = QStringList() ) const SIP_THROW( QgsProcessingException ) SIP_FACTORY;
 
     /**
      * Evaluates the parameter with matching \a name to a feature source.

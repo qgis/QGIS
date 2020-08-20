@@ -534,6 +534,11 @@ MDAL_EXPORT void MDAL_G_closeEditMode( MDAL_DatasetGroupH group );
 MDAL_EXPORT const char *MDAL_G_referenceTime( MDAL_DatasetGroupH group );
 
 /**
+ * Sets reference time for dataset group expressed in date with ISO8601 format
+ */
+MDAL_EXPORT void MDAL_G_setReferenceTime( MDAL_DatasetGroupH group, const char *referenceTimeISO8601 );
+
+/**
  * Returns whether the dataset group is temporal, i.e. has time-related datasets
  *
  * \since MDAL 0.6.0

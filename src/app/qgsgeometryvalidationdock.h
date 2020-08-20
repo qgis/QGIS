@@ -28,7 +28,7 @@ class QgisApp;
 class QgsVectorLayer;
 
 /**
- * @brief The QgsGeometryValidationDock class
+ * \brief The QgsGeometryValidationDock class
  */
 class QgsGeometryValidationDock : public QgsDockWidget, public Ui_QgsGeometryValidationDockBase
 {

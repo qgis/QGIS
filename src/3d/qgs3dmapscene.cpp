@@ -27,14 +27,21 @@
 #include <Qt3DRender/QSceneLoader>
 #include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DExtras/QPhongMaterial>
-#include <Qt3DExtras/QSkyboxEntity>
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DLogic/QFrameAction>
+#include <Qt3DRender/QEffect>
+#include <Qt3DRender/QTechnique>
+#include <Qt3DRender/QRenderPass>
+#include <Qt3DRender/QRenderState>
+#include <Qt3DRender/QCullFace>
+#include <Qt3DRender/QDepthTest>
+#include <QSurface>
 
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
 #include <QTimer>
 
+#include "qgsapplication.h"
 #include "qgsaabb.h"
 #include "qgsabstract3dengine.h"
 #include "qgs3dmapscenepickhandler.h"
@@ -47,7 +54,9 @@
 #include "qgseventtracing.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayer3drenderer.h"
+#include "qgspoint3dsymbol.h"
 #include "qgsrulebased3drenderer.h"
+#include "qgssourcecache.h"
 #include "qgsterrainentity_p.h"
 #include "qgsterraingenerator.h"
 #include "qgstessellatedpolygongeometry.h"
@@ -57,6 +66,13 @@
 #include "qgsmaplayertemporalproperties.h"
 
 #include "qgslinematerial_p.h"
+#include "qgs3dsceneexporter.h"
+#include "qgsabstract3drenderer.h"
+#include "qgs3dmapexportsettings.h"
+#include "qgsmessageoutput.h"
+
+#include "qgsskyboxentity.h"
+#include "qgsskyboxsettings.h"
 
 Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
   : mMap( map )
@@ -93,6 +109,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   mCameraController->resetView( 1000 );
 
   addCameraViewCenterEntity( mEngine->camera() );
+  updateLights();
 
   // create terrain entity
 
@@ -105,8 +122,45 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   connect( &map, &Qgs3DMapSettings::terrainShadingChanged, this, &Qgs3DMapScene::createTerrain );
   connect( &map, &Qgs3DMapSettings::pointLightsChanged, this, &Qgs3DMapScene::updateLights );
   connect( &map, &Qgs3DMapSettings::directionalLightsChanged, this, &Qgs3DMapScene::updateLights );
+  connect( &map, &Qgs3DMapSettings::showLightSourceOriginsChanged, this, &Qgs3DMapScene::updateLights );
   connect( &map, &Qgs3DMapSettings::fieldOfViewChanged, this, &Qgs3DMapScene::updateCameraLens );
   connect( &map, &Qgs3DMapSettings::renderersChanged, this, &Qgs3DMapScene::onRenderersChanged );
+  connect( &map, &Qgs3DMapSettings::skyboxSettingsChanged, this, &Qgs3DMapScene::onSkyboxSettingsChanged );
+
+  connect( QgsApplication::instance()->sourceCache(), &QgsSourceCache::remoteSourceFetched, this, [ = ]( const QString & url )
+  {
+    const QList<QgsMapLayer *> modelVectorLayers = mModelVectorLayers;
+    for ( QgsMapLayer *layer : modelVectorLayers )
+    {
+      QgsAbstract3DRenderer *renderer = layer->renderer3D();
+      if ( renderer )
+      {
+        if ( renderer->type() == QLatin1String( "vector" ) )
+        {
+          const QgsPoint3DSymbol *pointSymbol = static_cast< const QgsPoint3DSymbol * >( static_cast< QgsVectorLayer3DRenderer *>( renderer )->symbol() );
+          if ( pointSymbol->shapeProperties()[QStringLiteral( "model" )].toString() == url )
+          {
+            removeLayerEntity( layer );
+            addLayerEntity( layer );
+          }
+        }
+        else if ( renderer->type() == QLatin1String( "rulebased" ) )
+        {
+          const QgsRuleBased3DRenderer::RuleList rules = static_cast< QgsRuleBased3DRenderer *>( renderer )->rootRule()->descendants();
+          for ( auto rule : rules )
+          {
+            const QgsPoint3DSymbol *pointSymbol = dynamic_cast< const QgsPoint3DSymbol * >( rule->symbol() );
+            if ( pointSymbol->shapeProperties()[QStringLiteral( "model" )].toString() == url )
+            {
+              removeLayerEntity( layer );
+              addLayerEntity( layer );
+              break;
+            }
+          }
+        }
+      }
+    }
+  } );
 
   // create entities of renderers
 
@@ -115,7 +169,6 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   // listen to changes of layers in order to add/remove 3D renderer entities
   connect( &map, &Qgs3DMapSettings::layersChanged, this, &Qgs3DMapScene::onLayersChanged );
 
-  updateLights();
 
 #if 0
   ChunkedEntity *testChunkEntity = new ChunkedEntity( AABB( -500, 0, -500, 500, 100, 500 ), 2.f, 3.f, 7, new TestChunkLoaderFactory );
@@ -152,23 +205,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   meshEntity->addComponent( meshTransform );
   meshEntity->setParent( this );
 #endif
-
-  if ( map.hasSkyboxEnabled() )
-  {
-    Qt3DExtras::QSkyboxEntity *skybox = new Qt3DExtras::QSkyboxEntity;
-    skybox->setBaseName( map.skyboxFileBase() );
-    skybox->setExtension( map.skyboxFileExtension() );
-    skybox->setParent( this );
-
-    // docs say frustum culling must be disabled for skybox.
-    // it _somehow_ works even when frustum culling is enabled with some camera positions,
-    // but then when zoomed in more it would disappear - so let's keep frustum culling disabled
-    mEngine->setFrustumCullingEnabled( false );
-
-    // cppcheck wrongly believes skyBox will leak
-    // cppcheck-suppress memleak
-  }
-
+  onSkyboxSettingsChanged();
   // force initial update of chunked entities
   onCameraChanged();
 }
@@ -283,7 +320,6 @@ void Qgs3DMapScene::onCameraChanged()
 void Qgs3DMapScene::updateScene()
 {
   QgsEventTracing::addEvent( QgsEventTracing::Instant, QStringLiteral( "3D" ), QStringLiteral( "Update Scene" ) );
-
   for ( QgsChunkedEntity *entity : qgis::as_const( mChunkEntities ) )
   {
     if ( entity->isEnabled() )
@@ -377,7 +413,7 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
   {
     if ( entity->isEnabled() && entity->needsUpdate() )
     {
-      qDebug() << "need for update";
+      QgsDebugMsgLevel( QStringLiteral( "need for update" ), 2 );
       entity->update( _sceneState( mCameraController ) );
     }
   }
@@ -453,6 +489,31 @@ void Qgs3DMapScene::updateLights()
   for ( Qt3DCore::QEntity *entity : qgis::as_const( mLightEntities ) )
     entity->deleteLater();
   mLightEntities.clear();
+  for ( Qt3DCore::QEntity *entity : qgis::as_const( mLightOriginEntities ) )
+    entity->deleteLater();
+  mLightOriginEntities.clear();
+
+  auto createLightOriginEntity = [ = ]( QVector3D translation, const QColor & color )->Qt3DCore::QEntity *
+  {
+    Qt3DCore::QEntity *originEntity = new Qt3DCore::QEntity;
+
+    Qt3DCore::QTransform *trLightOriginCenter = new Qt3DCore::QTransform;
+    trLightOriginCenter->setTranslation( translation );
+    originEntity->addComponent( trLightOriginCenter );
+
+    Qt3DExtras::QPhongMaterial *materialLightOriginCenter = new Qt3DExtras::QPhongMaterial;
+    materialLightOriginCenter->setAmbient( color );
+    originEntity->addComponent( materialLightOriginCenter );
+
+    Qt3DExtras::QSphereMesh *rendererLightOriginCenter = new Qt3DExtras::QSphereMesh;
+    rendererLightOriginCenter->setRadius( 20 );
+    originEntity->addComponent( rendererLightOriginCenter );
+
+    originEntity->setEnabled( true );
+    originEntity->setParent( this );
+
+    return originEntity;
+  };
 
   const auto newPointLights = mMap.pointLights();
   for ( const QgsPointLightSettings &pointLightSettings : newPointLights )
@@ -475,6 +536,9 @@ void Qgs3DMapScene::updateLights()
     lightEntity->addComponent( lightTransform );
     lightEntity->setParent( this );
     mLightEntities << lightEntity;
+
+    if ( mMap.showLightSourceOrigins() )
+      mLightOriginEntities << createLightOriginEntity( lightTransform->translation(), pointLightSettings.color() );
   }
 
   const auto newDirectionalLights = mMap.directionalLights();
@@ -588,6 +652,31 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
          ( renderer->type() == QLatin1String( "vector" ) || renderer->type() == QLatin1String( "rulebased" ) ) )
     {
       static_cast<QgsAbstractVectorLayer3DRenderer *>( renderer )->setLayer( static_cast<QgsVectorLayer *>( layer ) );
+      if ( renderer->type() == QLatin1String( "vector" ) )
+      {
+        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+        if ( vlayer->geometryType() == QgsWkbTypes::PointGeometry )
+        {
+          const QgsPoint3DSymbol *pointSymbol = static_cast< const QgsPoint3DSymbol * >( static_cast< QgsVectorLayer3DRenderer *>( renderer )->symbol() );
+          if ( pointSymbol->shape() == QgsPoint3DSymbol::Model )
+          {
+            mModelVectorLayers.append( layer );
+          }
+        }
+      }
+      else if ( renderer->type() == QLatin1String( "rulebased" ) )
+      {
+        const QgsRuleBased3DRenderer::RuleList rules = static_cast< QgsRuleBased3DRenderer *>( renderer )->rootRule()->descendants();
+        for ( auto rule : rules )
+        {
+          const QgsPoint3DSymbol *pointSymbol = dynamic_cast< const QgsPoint3DSymbol * >( rule->symbol() );
+          if ( pointSymbol && pointSymbol->shape() == QgsPoint3DSymbol::Model )
+          {
+            mModelVectorLayers.append( layer );
+            break;
+          }
+        }
+      }
     }
     else if ( layer->type() == QgsMapLayerType::MeshLayer && renderer->type() == QLatin1String( "mesh" ) )
     {
@@ -596,7 +685,7 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
 
       // Before entity creation, set the maximum texture size
       // Not very clean, but for now, only place found in the workflow to do that simple
-      QgsMesh3DSymbol *sym = new QgsMesh3DSymbol( *meshRenderer->symbol() );
+      QgsMesh3DSymbol *sym = meshRenderer->symbol()->clone();
       sym->setMaximumTextureSize( maximumTextureSize() );
       meshRenderer->setSymbol( sym );
     }
@@ -663,6 +752,7 @@ void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
     disconnect( vlayer, &QgsVectorLayer::selectionChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
+    mModelVectorLayers.removeAll( layer );
   }
 
   if ( layer->type() == QgsMapLayerType::MeshLayer )
@@ -762,4 +852,82 @@ void Qgs3DMapScene::updateSceneState()
   }
 
   setSceneState( Ready );
+}
+
+void Qgs3DMapScene::onSkyboxSettingsChanged()
+{
+  QgsSkyboxSettings skyboxSettings = mMap.skyboxSettings();
+  if ( mSkybox != nullptr )
+  {
+    mSkybox->deleteLater();
+    mSkybox = nullptr;
+  }
+
+  mEngine->setFrustumCullingEnabled( !skyboxSettings.isSkyboxEnabled() );
+
+  if ( skyboxSettings.isSkyboxEnabled() )
+  {
+    QMap<QString, QString> faces;
+    switch ( skyboxSettings.skyboxType() )
+    {
+      case QgsSkyboxEntity::DistinctTexturesSkybox:
+        faces = skyboxSettings.cubeMapFacesPaths();
+        mSkybox = new QgsCubeFacesSkyboxEntity(
+          faces[QStringLiteral( "posX" )], faces[QStringLiteral( "posY" )], faces[QStringLiteral( "posZ" )],
+          faces[QStringLiteral( "negX" )], faces[QStringLiteral( "negY" )], faces[QStringLiteral( "negZ" )],
+          this
+        );
+        break;
+      case QgsSkyboxEntity::PanoramicSkybox:
+        mSkybox = new QgsPanoramicSkyboxEntity( skyboxSettings.panoramicTexturePath(), this );
+        break;
+    }
+  }
+}
+
+void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
+{
+  QVector<QString> notParsedLayers;
+  Qgs3DSceneExporter exporter;
+
+  exporter.setTerrainResolution( exportSettings.terrrainResolution() );
+  exporter.setSmoothEdges( exportSettings.smoothEdges() );
+  exporter.setExportNormals( exportSettings.exportNormals() );
+  exporter.setExportTextures( exportSettings.exportTextures() );
+  exporter.setTerrainTextureResolution( exportSettings.terrainTextureResolution() );
+  exporter.setScale( exportSettings.scale() );
+
+  for ( auto it = mLayerEntities.constBegin(); it != mLayerEntities.constEnd(); ++it )
+  {
+    QgsMapLayer *layer = it.key();
+    Qt3DCore::QEntity *rootEntity = it.value();
+    QgsMapLayerType layerType =  layer->type();
+    switch ( layerType )
+    {
+      case QgsMapLayerType::VectorLayer:
+        if ( !exporter.parseVectorLayerEntity( rootEntity, qobject_cast<QgsVectorLayer *>( layer ) ) )
+          notParsedLayers.push_back( layer->name() );
+        break;
+      case QgsMapLayerType::RasterLayer:
+      case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::MeshLayer:
+      case QgsMapLayerType::VectorTileLayer:
+      case QgsMapLayerType::AnnotationLayer:
+        notParsedLayers.push_back( layer->name() );
+        break;
+    }
+  }
+
+  if ( mTerrain )
+    exporter.parseTerrain( mTerrain, "Terrain" );
+
+  exporter.save( exportSettings.sceneName(), exportSettings.sceneFolderPath() );
+
+  if ( !notParsedLayers.empty() )
+  {
+    QString message = tr( "The following layers were not exported:" ) + "\n";
+    for ( const QString &layerName : notParsedLayers )
+      message += layerName + "\n";
+    QgsMessageOutput::showMessage( tr( "3D exporter warning" ), message, QgsMessageOutput::MessageText );
+  }
 }

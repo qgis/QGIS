@@ -15,7 +15,6 @@
 
 
 
-
 class Qgs3DMapSettings : QObject, QgsTemporalRangeObject
 {
 %Docstring
@@ -162,6 +161,84 @@ Sets color used for selected features
 Returns color used for selected features
 %End
 
+    void setLayers( const QList<QgsMapLayer *> &layers );
+%Docstring
+Sets the list of 3D map ``layers`` to be rendered in the scene.
+
+This setting dictates which layers are to be rendered using their 3D rendering configuration, if available.
+
+.. note::
+
+   Layers which are rendered as part of the map terrain are specified via ``setTerrainLayers``().
+
+.. seealso:: :py:func:`layers`
+
+.. seealso:: :py:func:`layersChanged`
+
+.. seealso:: :py:func:`setTerrainLayers`
+%End
+
+    QList<QgsMapLayer *> layers() const;
+%Docstring
+Returns the list of 3D map layers to be rendered in the scene.
+
+This setting dictates which layers are to be rendered using their 3D rendering configuration, if available.
+
+.. note::
+
+   Layers which are rendered as part of the map terrain are retrieved via ``terrainLayers``().
+
+.. seealso:: :py:func:`setLayers`
+
+.. seealso:: :py:func:`layersChanged`
+
+.. seealso:: :py:func:`terrainLayers`
+%End
+
+
+    void setTerrainLayers( const QList<QgsMapLayer *> &layers );
+%Docstring
+Sets the list of 2d map ``layers`` to be rendered in the terrain.
+
+.. note::
+
+   Layers which are rendered as 3D layers as part of the scene are specified via ``setLayers``().
+
+.. note::
+
+   If :py:func:`~Qgs3DMapSettings.terrainMapTheme` is set, it has a priority over the list of layers specified here.
+
+
+.. seealso:: :py:func:`terrainLayers`
+
+.. seealso:: :py:func:`terrainLayersChanged`
+
+.. seealso:: :py:func:`setLayers`
+
+.. versionadded:: 3.16
+%End
+
+    QList<QgsMapLayer *> terrainLayers() const;
+%Docstring
+Returns the list of map layers to be rendered as a texture of the terrain.
+
+.. note::
+
+   Layers which are rendered as 3D layers as part of the scene are retrieved via ``layers``().
+
+.. note::
+
+   If :py:func:`~Qgs3DMapSettings.terrainMapTheme` is set, it has a priority over the list of layers returned here.
+
+
+.. seealso:: :py:func:`setTerrainLayers`
+
+.. seealso:: :py:func:`terrainLayersChanged`
+
+.. seealso:: :py:func:`layers`
+
+.. versionadded:: 3.16
+%End
 
     void setTerrainVerticalScale( double zScale );
 %Docstring
@@ -171,24 +248,6 @@ Sets vertical scale (exaggeration) of terrain
     double terrainVerticalScale() const;
 %Docstring
 Returns vertical scale (exaggeration) of terrain
-%End
-
-    void setLayers( const QList<QgsMapLayer *> &layers );
-%Docstring
-Sets the list of map layers to be rendered as a texture of the terrain
-
-.. note::
-
-   If terrain map theme is set, it has a priority over the list of layers specified here.
-%End
-
-    QList<QgsMapLayer *> layers() const;
-%Docstring
-Returns the list of map layers to be rendered as a texture of the terrain
-
-.. note::
-
-   If terrain map theme is set, it has a priority over the list of layers specified here.
 %End
 
     void setMapTileResolution( int res );
@@ -302,26 +361,6 @@ Sets list of extra 3D renderers to use in the scene. Takes ownership of the obje
 Returns list of extra 3D renderers
 %End
 
-    void setSkybox( bool enabled, const QString &fileBase = QString(), const QString &fileExtension = QString() );
-%Docstring
-Sets skybox configuration. When enabled, map scene will try to load six texture files
-using the following syntax of filenames: "[base]_[side][extension]" where [side] is one
-of the following: posx/posy/posz/negx/negy/negz and [base] and [extension] are the arguments
-passed this method.
-%End
-    bool hasSkyboxEnabled() const;
-%Docstring
-Returns whether skybox is enabled
-%End
-    QString skyboxFileBase() const;
-%Docstring
-Returns base part of filenames of skybox (see :py:func:`~Qgs3DMapSettings.setSkybox`)
-%End
-    QString skyboxFileExtension() const;
-%Docstring
-Returns extension part of filenames of skybox (see :py:func:`~Qgs3DMapSettings.setSkybox`)
-%End
-
     void setShowTerrainBoundingBoxes( bool enabled );
 %Docstring
 Sets whether to display bounding boxes of terrain tiles (for debugging)
@@ -352,6 +391,21 @@ Returns whether to show camera's view center as a sphere (for debugging)
 
 .. versionadded:: 3.4
 %End
+
+    void setShowLightSourceOrigins( bool enabled );
+%Docstring
+Sets whether to show light source origins as a sphere (for debugging)
+
+.. versionadded:: 3.16
+%End
+
+    bool showLightSourceOrigins() const;
+%Docstring
+Returns whether to show light source origins as a sphere (for debugging)
+
+.. versionadded:: 3.16
+%End
+
     void setShowLabels( bool enabled );
 %Docstring
 Sets whether to display labels on terrain tiles
@@ -421,6 +475,8 @@ Default value is 96
 .. versionadded:: 3.10
 %End
 
+
+
   signals:
     void backgroundColorChanged();
 %Docstring
@@ -430,10 +486,31 @@ Emitted when the background color has changed
 %Docstring
 Emitted when the selection color has changed
 %End
+
     void layersChanged();
 %Docstring
-Emitted when the list of map layers for terrain texture has changed
+Emitted when the list of map layers for 3d rendering has changed.
+
+.. seealso:: :py:func:`setLayers`
+
+.. seealso:: :py:func:`layers`
+
+.. seealso:: :py:func:`terrainLayersChanged`
 %End
+
+    void terrainLayersChanged();
+%Docstring
+Emitted when the list of map layers for terrain texture has changed.
+
+.. seealso:: :py:func:`terrainLayers`
+
+.. seealso:: :py:func:`setTerrainLayers`
+
+.. seealso:: :py:func:`layersChanged`
+
+.. versionadded:: 3.16
+%End
+
     void terrainGeneratorChanged();
 %Docstring
 Emitted when the terrain generator has changed
@@ -491,6 +568,14 @@ Emitted when the flag whether camera's view center is shown has changed
 
 .. versionadded:: 3.4
 %End
+
+    void showLightSourceOriginsChanged();
+%Docstring
+Emitted when the flag whether light source origins are shown has changed.
+
+.. versionadded:: 3.15
+%End
+
     void showLabelsChanged();
 %Docstring
 Emitted when the flag whether labels are displayed on terrain tiles has changed
@@ -515,6 +600,13 @@ Emitted when the list of directional lights changes
 Emitted when the camera lens field of view changes
 
 .. versionadded:: 3.8
+%End
+
+    void skyboxSettingsChanged();
+%Docstring
+Emitted when skybox settings are changed
+
+.. versionadded:: 3.16
 %End
 
   private:

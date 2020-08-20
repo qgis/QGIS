@@ -156,8 +156,13 @@ class CORE_EXPORT QgsTextCharacterFormat
     /**
      * Updates the specified \a font in place, applying character formatting options which
      * are applicable on a font level.
+     *
+     * The optional \a scaleFactor parameter can specify a font size scaling factor. It is recommended to set this to
+     * QgsTextRenderer::FONT_WORKAROUND_SCALE and then manually calculations
+     * based on the resultant font metrics. Failure to do so will result in poor quality text rendering
+     * at small font sizes.
      */
-    void updateFontForFormat( QFont &font ) const;
+    void updateFontForFormat( QFont &font, double scaleFactor = 1.0 ) const;
 
   private:
 

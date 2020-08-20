@@ -1,8 +1,9 @@
 
 {
   "name": "hash",
+  "groups": ["Conversions"],
   "type": "function",
-  "description": "Creates a hash from a string with a given method.",
+  "description": "Creates a hash from a string with a given method. One byte (8 bits) is represented with two hex ''digits'', so md4 (16 bytes) produces a 16 * 2 = 32 character long hex string and keccak_512 (64 bytes) produces a 64 * 2 = 128 character long hex string.",
   "variableLenArguments": false,
   "arguments": [
     {"arg":"string", "description": "the string to hash"}, {"arg":"method",

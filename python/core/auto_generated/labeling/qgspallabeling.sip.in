@@ -155,6 +155,7 @@ class QgsPalLayerSettings
       ShowAll
     };
 
+
     enum DirectionSymbols
     {
       SymbolLeftRight,
@@ -167,7 +168,8 @@ class QgsPalLayerSettings
       MultiLeft,
       MultiCenter,
       MultiRight,
-      MultiFollowPlacement
+      MultiFollowPlacement,
+      MultiJustify,
     };
 
 
@@ -290,6 +292,7 @@ class QgsPalLayerSettings
       OverrunDistance,
       LabelAllParts,
       PolygonLabelOutside,
+      LineAnchorPercent,
 
       // rendering
       ScaleVisibility,
@@ -383,16 +386,6 @@ Returns the QgsExpression for this label settings. May be ``None`` if isExpressi
 
     MultiLineAlign multilineAlign;
 
-    bool addDirectionSymbol;
-
-    QString leftDirectionSymbol;
-
-    QString rightDirectionSymbol;
-
-    DirectionSymbols placeDirectionSymbol;
-
-    bool reverseDirectionSymbol;
-
     bool formatNumbers;
 
     int decimals;
@@ -401,8 +394,6 @@ Returns the QgsExpression for this label settings. May be ``None`` if isExpressi
 
 
     Placement placement;
-
-    unsigned int placementFlags;
 
     QgsLabeling::PolygonPlacementFlags polygonPlacementFlags() const;
 %Docstring
@@ -443,12 +434,6 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
 
     QgsMapUnitScale repeatDistanceMapUnitScale;
 
-    double overrunDistance;
-
-    QgsUnitTypes::RenderUnit overrunDistanceUnit;
-
-    QgsMapUnitScale overrunDistanceMapUnitScale;
-
     QuadrantPosition quadOffset;
 
     double xOffset;
@@ -488,8 +473,6 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
 
     bool labelPerPart;
 
-    bool mergeLines;
-
 
 %Property( name = limitNumLabels, get = _limitNumLabels, set = _setLimitNumLabels )
 %Property( name = maxNumLabels, get = _maxNumLabels, set = _setMaxNumLabels )
@@ -497,6 +480,17 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
 %Property( name = obstacle, get = _getIsObstacle, set = _setIsObstacle )
 %Property( name = obstacleFactor, get = _getObstacleFactor, set = _setObstacleFactor )
 %Property( name = obstacleType, get = _getObstacleType, set = _setObstacleType )
+%Property( name = placementFlags, get = _getLinePlacementFlags, set = _setLinePlacementFlags )
+%Property( name = mergeLines, get = _getMergeLines, set = _setMergeLines )
+%Property( name = addDirectionSymbol, get = _getAddDirectionSymbol, set = _setAddDirectionSymbol )
+%Property( name = leftDirectionSymbol, get = _getLeftDirectionSymbol, set = _setLeftDirectionSymbol )
+%Property( name = rightDirectionSymbol, get = _getRightDirectionSymbol, set = _setRightDirectionSymbol )
+%Property( name = reverseDirectionSymbol, get = _getReverseDirectionSymbol, set = _setReverseDirectionSymbol )
+%Property( name = placeDirectionSymbol, get = _getPlaceDirectionSymbol, set = _setPlaceDirectionSymbol )
+
+%Property( name = overrunDistance, get = _getOverrunDistance, set = _setOverrunDistance )
+%Property( name = overrunDistanceUnit, get = _getOverrunDistanceUnit, set = _setOverrunDistanceUnit )
+%Property( name = overrunDistanceMapUnitScale, get = _getOverrunDistanceMapUnitScale, set = _setOverrunDistanceMapUnitScale )
 
     bool _limitNumLabels() const;
     void _setLimitNumLabels( bool limit );
@@ -510,7 +504,26 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
     void _setObstacleFactor( double factor );
     ObstacleType _getObstacleType() const;
     void _setObstacleType( ObstacleType type );
-
+    unsigned int _getLinePlacementFlags() const;
+    void _setLinePlacementFlags( unsigned int flags );
+    bool _getMergeLines() const;
+    void _setMergeLines( bool merge );
+    bool _getAddDirectionSymbol() const;
+    void _setAddDirectionSymbol( bool add );
+    QString _getLeftDirectionSymbol() const;
+    void _setLeftDirectionSymbol( const QString &symbol );
+    QString _getRightDirectionSymbol() const;
+    void _setRightDirectionSymbol( const QString &symbol );
+    bool _getReverseDirectionSymbol() const;
+    void _setReverseDirectionSymbol( bool reverse );
+    DirectionSymbols _getPlaceDirectionSymbol() const;
+    void _setPlaceDirectionSymbol( DirectionSymbols placement );
+    double _getOverrunDistance() const;
+    void _setOverrunDistance( double distance );
+    QgsUnitTypes::RenderUnit _getOverrunDistanceUnit() const;
+    void _setOverrunDistanceUnit( QgsUnitTypes::RenderUnit unit );
+    QgsMapUnitScale _getOverrunDistanceMapUnitScale() const;
+    void _setOverrunDistanceMapUnitScale( const QgsMapUnitScale &scale );
 
     double zIndex;
 
@@ -620,6 +633,29 @@ Ownership of ``callout`` is transferred to the settings.
 .. seealso:: :py:func:`callout`
 
 .. versionadded:: 3.10
+%End
+
+
+    QgsLabelLineSettings &lineSettings();
+%Docstring
+Returns the label line settings, which contain settings related to how the label
+engine places and formats labels for line features (or polygon features which are labeled in
+a "perimeter" style mode).
+
+.. seealso:: :py:func:`setLineSettings`
+
+.. versionadded:: 3.16
+%End
+
+    void setLineSettings( const QgsLabelLineSettings &settings );
+%Docstring
+Sets the label line ``settings``, which contain settings related to how the label
+engine places and formats labels for line features (or polygon features which are labeled in
+a "perimeter" style mode).
+
+.. seealso:: :py:func:`lineSettings`
+
+.. versionadded:: 3.16
 %End
 
 

@@ -101,6 +101,8 @@
 %Include auto_generated/qgslocaldefaultsettings.sip
 %Include auto_generated/qgslocalizeddatapathregistry.sip
 %Include auto_generated/qgslogger.sip
+%Include auto_generated/qgsmapclippingregion.sip
+%Include auto_generated/qgsmapclippingutils.sip
 %Include auto_generated/qgsmapdecoration.sip
 %Include auto_generated/qgsmaphittest.sip
 %Include auto_generated/qgsmaplayer.sip
@@ -195,6 +197,7 @@
 %Include auto_generated/qgsspatialindex.sip
 %Include auto_generated/qgsspatialindexkdbush.sip
 %Include auto_generated/qgsspatialindexkdbushdata.sip
+%Include auto_generated/qgssourcecache.sip
 %Include auto_generated/qgssqliteutils.sip
 %Include auto_generated/qgssqlstatement.sip
 %Include auto_generated/qgsstatisticalsummary.sip
@@ -248,9 +251,18 @@
 %Include auto_generated/qgsxmlutils.sip
 %Include auto_generated/qgsziputils.sip
 %Include auto_generated/./3d/qgs3drendererregistry.sip
+%Include auto_generated/./3d/qgs3dsymbolregistry.sip
+%Include auto_generated/./3d/qgsabstract3dsymbol.sip
 %Include auto_generated/./3d/qgsabstract3drenderer.sip
 %Include auto_generated/annotations/qgsannotation.sip
+%Include auto_generated/annotations/qgsannotationitem.sip
+%Include auto_generated/annotations/qgsannotationitemregistry.sip
+%Include auto_generated/annotations/qgsannotationlayer.sip
+%Include auto_generated/annotations/qgsannotationlineitem.sip
+%Include auto_generated/annotations/qgsannotationmarkeritem.sip
 %Include auto_generated/annotations/qgsannotationmanager.sip
+%Include auto_generated/annotations/qgsannotationpointtextitem.sip
+%Include auto_generated/annotations/qgsannotationpolygonitem.sip
 %Include auto_generated/annotations/qgshtmlannotation.sip
 %Include auto_generated/annotations/qgssvgannotation.sip
 %Include auto_generated/annotations/qgstextannotation.sip
@@ -335,6 +347,7 @@
 %Include auto_generated/gps/qgsnmeaconnection.sip
 %Include auto_generated/labeling/qgslabeling.sip
 %Include auto_generated/labeling/qgslabelingenginesettings.sip
+%Include auto_generated/labeling/qgslabellinesettings.sip
 %Include auto_generated/labeling/qgslabelobstaclesettings.sip
 %Include auto_generated/labeling/qgslabelsearchtree.sip
 %Include auto_generated/labeling/qgslabelthinningsettings.sip
@@ -423,6 +436,7 @@
 %Include auto_generated/mesh/qgsmeshspatialindex.sip
 %Include auto_generated/mesh/qgsmeshtimesettings.sip
 %Include auto_generated/mesh/qgsmeshtracerenderer.sip
+%Include auto_generated/mesh/qgsmeshcalculator.sip
 %Include auto_generated/metadata/qgsabstractmetadatabase.sip
 %Include auto_generated/metadata/qgslayermetadata.sip
 %Include auto_generated/metadata/qgslayermetadataformatter.sip

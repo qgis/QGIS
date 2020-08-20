@@ -49,6 +49,8 @@ The caller takes responsibility for deleting the returned object.
 
     virtual QString displayName() const;
 
+    virtual QgsLayoutItem::Flags itemFlags() const;
+
 
     QgsLayoutItemShape::Shape shapeType() const;
 %Docstring
@@ -92,6 +94,9 @@ Returns the corner radius for rounded rectangle corners.
 
 .. seealso:: :py:func:`setCornerRadius`
 %End
+
+    virtual QgsGeometry clipPath() const;
+
 
     virtual QRectF boundingRect() const;
 

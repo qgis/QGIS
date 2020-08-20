@@ -416,6 +416,9 @@ class QgsWmsProvider final: public QgsRasterDataProvider
 
     std::unique_ptr<QgsImageFetcher> mLegendGraphicFetcher;
 
+    //! TRUE if an error was encountered while fetching a legend graphic
+    bool mLegendGraphicFetchErrored = false;
+
     /**
      * Visibility status of the given active sublayer
      */

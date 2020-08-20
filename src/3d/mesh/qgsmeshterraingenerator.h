@@ -32,19 +32,20 @@
 //! Chunk loader for mesh terrain implementation
 class QgsMeshTerrainTileLoader: public QgsTerrainTileLoader
 {
+    Q_OBJECT
   public:
     //! Construct the loader for a node
     QgsMeshTerrainTileLoader( QgsTerrainEntity *terrain,
                               QgsChunkNode *node,
                               QgsMeshLayer *layer,
-                              const QgsMesh3DSymbol &symbol );
+                              const QgsMesh3DSymbol *symbol );
 
     //! Create the 3D entity and returns it
     Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
   private:
     QgsMapLayerRef mLayerRef;
-    QgsMesh3DSymbol mSymbol;
+    std::unique_ptr< QgsMesh3DSymbol > mSymbol;
 };
 
 ///@endcond
@@ -58,7 +59,7 @@ class _3D_EXPORT QgsMeshTerrainGenerator: public QgsTerrainGenerator
 {
   public:
     //! Creates mesh terrain generator object
-    QgsMeshTerrainGenerator() = default;
+    QgsMeshTerrainGenerator();
 
     //! Returns the mesh layer to be used for terrain generation
     QgsMeshLayer *meshLayer() const;
@@ -66,10 +67,10 @@ class _3D_EXPORT QgsMeshTerrainGenerator: public QgsTerrainGenerator
     void setLayer( QgsMeshLayer *layer );
 
     //! Returns the symbol used to render the mesh as terrain
-    QgsMesh3DSymbol symbol() const;
+    QgsMesh3DSymbol *symbol() const;
 
     //! Sets the symbol used to render the mesh as terrain
-    void setSymbol( const QgsMesh3DSymbol &symbol );
+    void setSymbol( QgsMesh3DSymbol *symbol SIP_TRANSFER );
 
     //! Sets CRS of the terrain
     void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
@@ -88,7 +89,7 @@ class _3D_EXPORT QgsMeshTerrainGenerator: public QgsTerrainGenerator
     QgsMapLayerRef mLayer;
     QgsCoordinateReferenceSystem mCrs;
     QgsCoordinateTransformContext mTransformContext;
-    QgsMesh3DSymbol mSymbol;
+    std::unique_ptr< QgsMesh3DSymbol > mSymbol;
 
 };
 

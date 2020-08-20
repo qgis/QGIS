@@ -431,7 +431,7 @@ Writes a layer out to a vector file.
                                         const QgsVectorFileWriter::SaveVectorOptions &options,
                                         QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(),
                                         QString *newFilename = 0,
-                                        QString *newLayer = 0 );
+                                        QString *newLayer = 0 ) /Factory/;
 %Docstring
 Create a new vector file writer.
 
@@ -571,6 +571,8 @@ Retrieves error message
     virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 
     virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
+
+    virtual QString lastError() const;
 
 
     bool addFeatureWithStyle( QgsFeature &feature, QgsFeatureRenderer *renderer, QgsUnitTypes::DistanceUnit outputUnit = QgsUnitTypes::DistanceMeters );

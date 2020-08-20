@@ -38,8 +38,6 @@
 #include "qgsaccesscontrol.h"
 #endif
 
-#include <QMimeDatabase>
-
 
 QgsWfs3APIHandler::QgsWfs3APIHandler( const QgsServerOgcApi *api ):
   mApi( api )
@@ -2076,40 +2074,3 @@ json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &contex
   } // end for loop
   return data;
 }
-
-QgsWfs3StaticHandler::QgsWfs3StaticHandler()
-{
-  setContentTypes( { QgsServerOgcApi::ContentType::HTML } );
-}
-
-void QgsWfs3StaticHandler::handleRequest( const QgsServerApiContext &context ) const
-{
-  const QRegularExpressionMatch match { path().match( context.request()->url().path( ) ) };
-  if ( ! match.hasMatch() )
-  {
-    throw QgsServerApiNotFoundError( QStringLiteral( "Static file was not found" ) );
-  }
-
-  const QString staticFilePath { match.captured( QStringLiteral( "staticFilePath" ) ) };
-  // Calculate real path
-  const QString filePath { staticPath( context ) + '/' + staticFilePath };
-  if ( ! QFile::exists( filePath ) )
-  {
-    QgsMessageLog::logMessage( QStringLiteral( "Static file was not found: %1" ).arg( filePath ), QStringLiteral( "Server" ), Qgis::Info );
-    throw QgsServerApiNotFoundError( QStringLiteral( "Static file %1 was not found" ).arg( staticFilePath ) );
-  }
-
-  QFile f( filePath );
-  if ( ! f.open( QIODevice::ReadOnly ) )
-  {
-    throw QgsServerApiInternalServerError( QStringLiteral( "Could not open static file %1" ).arg( staticFilePath ) );
-  }
-
-  const qint64 size { f.size() };
-  const QByteArray content { f.readAll() };
-  const QMimeType mimeType { QMimeDatabase().mimeTypeForFile( filePath )};
-  context.response()->setHeader( QStringLiteral( "Content-Type" ), mimeType.name() );
-  context.response()->setHeader( QStringLiteral( "Content-Length" ), QString::number( size ) );
-  context.response()->write( content );
-}
-

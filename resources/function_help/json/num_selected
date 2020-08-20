@@ -1,6 +1,7 @@
 {
   "name": "num_selected",
   "type": "function",
+  "groups": ["Record and Attributes"],
   "description": "Returns the number of selected features on a given layer. By default works on the layer on which the expression is evaluated.",
   "arguments": [
         {

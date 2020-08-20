@@ -328,15 +328,38 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         if ( !layer->isInScaleRange( mCanvas->scale() ) )
           menu->addAction( tr( "Zoom to &Visible Scale" ), QgisApp::instance(), &QgisApp::zoomToLayerScale );
 
-        QMenu *menuSetCRS = new QMenu( tr( "Set CRS" ), menu );
-        // set layer crs
-        QAction *actionSetLayerCrs = new QAction( tr( "Set Layer CRS…" ), menuSetCRS );
-        connect( actionSetLayerCrs, &QAction::triggered, QgisApp::instance(), &QgisApp::setLayerCrs );
-        menuSetCRS->addAction( actionSetLayerCrs );
+        QMenu *menuSetCRS = new QMenu( tr( "Layer CRS" ), menu );
+        QAction *actionCurrentCrs = new QAction( layer->crs().userFriendlyIdentifier(), menuSetCRS );
+        actionCurrentCrs->setEnabled( false );
+        menuSetCRS->addAction( actionCurrentCrs );
         // assign layer crs to project
         QAction *actionSetProjectCrs = new QAction( tr( "Set &Project CRS from Layer" ), menuSetCRS );
         connect( actionSetProjectCrs, &QAction::triggered, QgisApp::instance(), &QgisApp::setProjectCrsFromLayer );
         menuSetCRS->addAction( actionSetProjectCrs );
+
+        const QList< QgsCoordinateReferenceSystem> recentProjections = QgsCoordinateReferenceSystem::recentCoordinateReferenceSystems();
+        if ( !recentProjections.isEmpty() )
+        {
+          menuSetCRS->addSeparator();
+          int i = 0;
+          for ( const QgsCoordinateReferenceSystem &crs : recentProjections )
+          {
+            QAction *action = menuSetCRS->addAction( tr( "Set to %1" ).arg( crs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ) ) );
+            action->setProperty( "layerId", layer->id() );
+            action->setProperty( "crs", crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
+            i++;
+            if ( i == 2 )
+              break;
+          }
+        }
+        // Connect once for the entire submenu.
+        connect( menuSetCRS, &QMenu::triggered, this, &QgsAppLayerTreeViewMenuProvider::setLayerCrs );
+
+        // set layer crs
+        menuSetCRS->addSeparator();
+        QAction *actionSetLayerCrs = new QAction( tr( "Set Layer CRS…" ), menuSetCRS );
+        connect( actionSetLayerCrs, &QAction::triggered, QgisApp::instance(), &QgisApp::setLayerCrs );
+        menuSetCRS->addAction( actionSetLayerCrs );
 
         menu->addMenu( menuSetCRS );
       }
@@ -996,4 +1019,16 @@ bool QgsAppLayerTreeViewMenuProvider::removeActionEnabled()
       return false;
   }
   return true;
+}
+
+void QgsAppLayerTreeViewMenuProvider::setLayerCrs( QAction *action )
+{
+  QString layerId = action->property( "layerId" ).toString();
+  QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerId );
+  if ( !layer )
+    return;
+
+  QString wkt = action->property( "crs" ).toString();
+  layer->setCrs( QgsCoordinateReferenceSystem( wkt ), true );
+  layer->triggerRepaint();
 }

@@ -26,6 +26,7 @@
 
 class Qgs3DRendererRegistry;
 class QgsActionScopeRegistry;
+class QgsAnnotationItemRegistry;
 class QgsRuntimeProfiler;
 class QgsTaskManager;
 class QgsFieldFormatterRegistry;
@@ -36,6 +37,7 @@ class QgsLocalizedDataPathRegistry;
 class QgsRendererRegistry;
 class QgsSvgCache;
 class QgsImageCache;
+class QgsSourceCache;
 class QgsSymbolLayerRegistry;
 class QgsRasterRendererRegistry;
 class QgsGpsConnectionRegistry;
@@ -59,6 +61,7 @@ class QgsStyleModel;
 class QgsNumericFormatRegistry;
 class QgsConnectionRegistry;
 class QgsScaleBarRendererRegistry;
+class Qgs3DSymbolRegistry;
 
 /**
  * \ingroup core
@@ -644,6 +647,13 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsImageCache *imageCache();
 
     /**
+     * Returns the application's source cache, used for caching embedded and remote source strings as local files
+     *
+     * \since QGIS 3.16
+     */
+    static QgsSourceCache *sourceCache();
+
+    /**
      * Returns the application's network content registry used for fetching temporary files during QGIS session
      * \since QGIS 3.2
      */
@@ -672,6 +682,12 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \since QGIS 3.0
      */
     static QgsLayoutItemRegistry *layoutItemRegistry() SIP_KEEPREFERENCE;
+
+    /**
+     * Returns the application's annotation item registry, used for annotation item types.
+     * \since QGIS 3.16
+     */
+    static QgsAnnotationItemRegistry *annotationItemRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's GPS connection registry, used for managing GPS connections.
@@ -776,6 +792,12 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \since QGIS 3.0
      */
     static Qgs3DRendererRegistry *renderer3DRegistry() SIP_KEEPREFERENCE;
+
+    /**
+     * Returns registry of available 3D symbols.
+     * \since QGIS 3.16
+     */
+    static Qgs3DSymbolRegistry *symbol3DRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Gets the registry of available scalebar renderers.
@@ -920,6 +942,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     struct ApplicationMembers
     {
       Qgs3DRendererRegistry *m3DRendererRegistry = nullptr;
+      Qgs3DSymbolRegistry *m3DSymbolRegistry = nullptr;
       QgsActionScopeRegistry *mActionScopeRegistry = nullptr;
       QgsAnnotationRegistry *mAnnotationRegistry = nullptr;
       QgsColorSchemeRegistry *mColorSchemeRegistry = nullptr;
@@ -942,10 +965,12 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsRendererRegistry *mRendererRegistry = nullptr;
       QgsSvgCache *mSvgCache = nullptr;
       QgsImageCache *mImageCache = nullptr;
+      QgsSourceCache *mSourceCache = nullptr;
       QgsSymbolLayerRegistry *mSymbolLayerRegistry = nullptr;
       QgsCalloutRegistry *mCalloutRegistry = nullptr;
       QgsTaskManager *mTaskManager = nullptr;
       QgsLayoutItemRegistry *mLayoutItemRegistry = nullptr;
+      QgsAnnotationItemRegistry *mAnnotationItemRegistry = nullptr;
       QgsUserProfileManager *mUserConfigManager = nullptr;
       QgsBookmarkManager *mBookmarkManager = nullptr;
       QgsStyleModel *mStyleModel = nullptr;

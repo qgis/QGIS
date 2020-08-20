@@ -1,6 +1,7 @@
 {
   "name": "m_max",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Returns the maximum m (measure) value of a geometry.",
   "arguments": [ {"arg":"geometry","description":"a geometry containing m values"}],
   "examples": [ { "expression":"m_max( make_point_m( 0,0,1 ) )", "returns":"1"},

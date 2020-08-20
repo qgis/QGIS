@@ -20,7 +20,8 @@ enum class QgsMapLayerType
   RasterLayer,
   PluginLayer,
   MeshLayer,
-  VectorTileLayer
+  VectorTileLayer,
+  AnnotationLayer,
 };
 
 class QgsMapLayer : QObject
@@ -56,6 +57,9 @@ This is the base class for all map layer types (vector, raster).
           break;
         case QgsMapLayerType::VectorTileLayer:
           sipType = sipType_QgsVectorTileLayer;
+          break;
+        case QgsMapLayerType::AnnotationLayer:
+          sipType = sipType_QgsAnnotationLayer;
           break;
         default:
           sipType = nullptr;
@@ -1580,6 +1584,13 @@ Emitted when a style has been loaded
 .. versionadded:: 3.12
 %End
 
+    void isValidChanged();
+%Docstring
+Emitted when the validity of this layer changed.
+
+.. versionadded:: 3.16
+%End
+
 
   protected:
 
@@ -1599,7 +1610,7 @@ Sets the extent
 
     void setValid( bool valid );
 %Docstring
-Sets whether layer is valid or not - should be used in constructor.
+Sets whether layer is valid or not
 %End
 
     virtual bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context );

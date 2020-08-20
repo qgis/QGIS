@@ -285,6 +285,19 @@ class CORE_EXPORT QgsField
     //! Formats string for display
     QString displayString( const QVariant &v ) const;
 
+#ifndef SIP_RUN
+
+    /**
+     * Converts the provided variant to a compatible format
+     *
+     * \param v  The value to convert
+     * \param errorMessage if specified, will be set to a descriptive error when a conversion failure occurs
+     *
+     * \returns   TRUE if the conversion was successful
+     */
+    bool convertCompatible( QVariant &v, QString *errorMessage = nullptr ) const;
+#else
+
     /**
      * Converts the provided variant to a compatible format
      *
@@ -293,7 +306,6 @@ class CORE_EXPORT QgsField
      * \returns   TRUE if the conversion was successful
      */
     bool convertCompatible( QVariant &v ) const;
-#ifdef SIP_RUN
     % MethodCode
     PyObject *sipParseErr = NULL;
 
@@ -305,11 +317,12 @@ class CORE_EXPORT QgsField
       if ( sipParseArgs( &sipParseErr, sipArgs, "BJ1", &sipSelf, sipType_QgsField, &sipCpp, sipType_QVariant, &a0, &a0State ) )
       {
         bool sipRes;
+        QString errorMessage;
 
         Py_BEGIN_ALLOW_THREADS
         try
         {
-          sipRes = sipCpp->convertCompatible( *a0 );
+          sipRes = sipCpp->convertCompatible( *a0, &errorMessage );
         }
         catch ( ... )
         {
@@ -322,24 +335,28 @@ class CORE_EXPORT QgsField
 
         Py_END_ALLOW_THREADS
 
-        PyObject *res = sipConvertFromType( a0, sipType_QVariant, NULL );
-        sipReleaseType( a0, sipType_QVariant, a0State );
-
         if ( !sipRes )
         {
           PyErr_SetString( PyExc_ValueError,
-                           QString( "Value %1 (%2) could not be converted to field type %3." ).arg( a0->toString(), a0->typeName() ).arg( sipCpp->type() ).toUtf8().constData() );
-          sipError = sipErrorFail;
+                           QString( "Value could not be converted to field type %1: %2" ).arg( QMetaType::typeName( sipCpp->type() ), errorMessage ).toUtf8().constData() );
+          sipIsErr = 1;
         }
+        else
+        {
+          PyObject *res = sipConvertFromType( a0, sipType_QVariant, NULL );
+          sipReleaseType( a0, sipType_QVariant, a0State );
+          return res;
+        }
+      }
+      else
+      {
+        // Raise an exception if the arguments couldn't be parsed.
+        sipNoMethod( sipParseErr, sipName_QgsField, sipName_convertCompatible, doc_QgsField_convertCompatible );
 
-        return res;
+        return nullptr;
       }
     }
 
-    // Raise an exception if the arguments couldn't be parsed.
-    sipNoMethod( sipParseErr, sipName_QgsField, sipName_convertCompatible, doc_QgsField_convertCompatible );
-
-    return nullptr;
     % End
 #endif
 

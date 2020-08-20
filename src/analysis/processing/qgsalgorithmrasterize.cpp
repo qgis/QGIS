@@ -49,6 +49,11 @@ QStringList QgsRasterizeAlgorithm::tags() const
   return QObject::tr( "layer,raster,convert,file,map themes,tiles,render" ).split( ',' );
 }
 
+QgsProcessingAlgorithm::Flags QgsRasterizeAlgorithm::flags() const
+{
+  return QgsProcessingAlgorithm::flags() | FlagRequiresProject;
+}
+
 QString QgsRasterizeAlgorithm::group() const
 {
   return QObject::tr( "Raster tools" );

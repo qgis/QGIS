@@ -128,6 +128,14 @@ class QgsOracleProvider final: public QgsVectorDataProvider
     bool determinePrimaryKey();
 
     /**
+     * Determine the fields making up the primary key from the uri attribute keyColumn
+     *
+     * Fills mPrimaryKeyType and mPrimaryKeyAttrs
+     * from mUri
+     */
+    void determinePrimaryKeyFromUriKeyColumn();
+
+    /**
      * Determine the always generated identity fields
      */
     bool determineAlwaysGeneratedKeys();

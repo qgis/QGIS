@@ -23,6 +23,8 @@
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshdataset.h"
 
+class QgsMeshLayer;
+
 /**
  * \ingroup core
  *
@@ -35,8 +37,8 @@ class QgsMeshExtraDatasetStore: public QgsMeshDatasetSourceInterface
 {
   public:
 
-    //! Adds a dataset group
-    void addDatasetGroup( QgsMeshDatasetGroup *datasetGroup );
+    //! Adds a dataset group, returns the index of the added dataset group
+    int addDatasetGroup( QgsMeshDatasetGroup *datasetGroup );
 
     //! Removes the dataset group with the local \a index
     void removeDatasetGroup( int index );
@@ -44,8 +46,14 @@ class QgsMeshExtraDatasetStore: public QgsMeshDatasetSourceInterface
     //! Returns whether if the dataset groups have temporal capabilities (a least one dataset group with more than one dataset)
     bool hasTemporalCapabilities() const;
 
-    //! Returns the relative times of the dataset index with \a index, returned value in miliseconds
+    //! Returns the relative times of the dataset index with \a index, returned value in milliseconds
     quint64 datasetRelativeTime( QgsMeshDatasetIndex index );
+
+    //! Returns information related to the dataset group with \a groupIndex
+    QString description( int groupIndex ) const;
+
+    //! Returns a pointer to the dataset group
+    QgsMeshDatasetGroup *datasetGroup( int groupIndex ) const;
 
     int datasetGroupCount() const override;
     int datasetCount( int groupIndex ) const override;
@@ -77,6 +85,11 @@ class QgsMeshExtraDatasetStore: public QgsMeshDatasetSourceInterface
                               QgsMeshDatasetSourceInterface *source,
                               int datasetGroupIndex ) override;
 
+    //! Writes the store's information in a DOM document
+    QDomElement writeXml( int groupIndex, QDomDocument &doc, const QgsReadWriteContext &context );
+
+    //! Updates the temporal capabilities
+    void updateTemporalCapabilities();
 
   private:
     std::vector<std::unique_ptr<QgsMeshDatasetGroup>> mGroups;
@@ -96,10 +109,10 @@ class QgsMeshExtraDatasetStore: public QgsMeshDatasetSourceInterface
  * This storing class has the repsonsability to assign this unique grlobal dataset group index and to link this dataset group index with the dataset group
  *
  * All dataset values or information needed can be retrieved from a QgsMeshDatasetIndex with the group index corresponding to the global group index.
- * The native group index is not exposed and global index can be obtained with datasetGroupIndexes() that returns the list of gloabl index available.
+ * The native group index is not exposed and global index can be obtained with datasetGroupIndexes() that returns the list of global index available.
  * The dataset index is the same than in the native source (data provider or other dataset source)
  *
- * This class as also the responsability to handle the dataset group tree item that contain information to display the available dataset (\see QgsMeshDatasetGroupTreeItem)
+ * This class as also the responsibility to handle the dataset group tree item that contain information to display the available dataset (\see QgsMeshDatasetGroupTreeItem)
  *
  * \since QGIS 3.16
  */
@@ -112,7 +125,7 @@ class QgsMeshDatasetGroupStore: public QObject
 
   public:
     //! Constructor
-    QgsMeshDatasetGroupStore();
+    QgsMeshDatasetGroupStore( QgsMeshLayer *layer );
 
     //! Sets the persistent mesh data provider
     void setPersistentProvider( QgsMeshDataProvider *provider );
@@ -174,14 +187,14 @@ class QgsMeshDatasetGroupStore: public QObject
     bool isFaceActive( const QgsMeshDatasetIndex &index, int faceIndex ) const;
 
     //! Returns the global dataset index of the dataset int the dataset group with \a groupIndex, corresponding to the relative \a time and the check \a method
-    QgsMeshDatasetIndex datasetIndexAtTime( quint64 time,
+    QgsMeshDatasetIndex datasetIndexAtTime( qint64 time,
                                             int groupIndex,
                                             QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod method ) const;
 
     //! Returns the relative time of the dataset from the persistent provider reference time
-    quint64 datasetRelativeTime( const QgsMeshDatasetIndex &index ) const;
+    qint64 datasetRelativeTime( const QgsMeshDatasetIndex &index ) const;
 
-    //! Returns wether at lea&st one of stored dataset group is temporal
+    //! Returns whether at lea&st one of stored dataset group is temporal
     bool hasTemporalCapabilities() const;
 
     //! Writes the store's information in a DOM document
@@ -191,14 +204,14 @@ class QgsMeshDatasetGroupStore: public QObject
     void readXml( const QDomElement &storeElem, const QgsReadWriteContext &context );
 
   signals:
-    //! emited after dataset groups are added
+    //! Emitted after dataset groups are added
     void datasetGroupsAdded( QList<int> indexes );
 
   private slots:
     void onPersistentDatasetAdded( int count );
 
   private:
-
+    QgsMeshLayer *mLayer = nullptr;
     QgsMeshDataProvider *mPersistentProvider = nullptr;
     std::unique_ptr<QgsMeshExtraDatasetStore> mExtraDatasets;
     QMap < int, DatasetGroup> mRegistery;
@@ -213,7 +226,7 @@ class QgsMeshDatasetGroupStore: public QObject
     int nativeIndexToGroupIndex( QgsMeshDatasetSourceInterface *source, int providerIndex );
     void createDatasetGroupTreeItems( const QList<int> &indexes );
 
-    //! Erases from the where this is store, not from the store (registry and tree item), for peristent dataset group, do nothing
+    //! Erases from the where this is store, not from the store (registry and tree item), for persistent dataset group, do nothing
     void eraseDatasetGroup( const DatasetGroup &group );
 
     //! Erases from the extra store but not from the main store (e.g. from egistry and from tree item))
@@ -222,6 +235,8 @@ class QgsMeshDatasetGroupStore: public QObject
     void checkDatasetConsistency( QgsMeshDatasetSourceInterface *source );
     void removeUnregisteredItemFromTree();
     void unregisterGroupNotPresentInTree();
+
+    void syncItemToDatasetGroup( int groupIndex );
 };
 
 #endif // QGSMESHDATASETGROUPSTORE_H

@@ -29,6 +29,7 @@ extern "C"
 QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
 {
+  mProviderKey = QStringLiteral( "postgres" );
   // Remove the sql and table empty parts
   const QRegularExpression removePartsRe { R"raw(\s*sql=\s*|\s*table=""\s*)raw" };
   setUri( QgsPostgresConn::connUri( name ).uri().replace( removePartsRe, QString() ) );
@@ -38,6 +39,7 @@ QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &nam
 QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &uri, const QVariantMap &configuration ):
   QgsAbstractDatabaseProviderConnection( QgsDataSourceUri( uri ).connectionInfo( false ), configuration )
 {
+  mProviderKey = QStringLiteral( "postgres" );
   setDefaultCapabilities();
 }
 
@@ -65,7 +67,17 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
     Capability::TableExists,
     Capability::CreateSpatialIndex,
     Capability::SpatialIndexExists,
-    Capability::DeleteSpatialIndex
+    Capability::DeleteSpatialIndex,
+    Capability::DeleteField,
+    Capability::DeleteFieldCascade,
+    Capability::AddField
+  };
+  mGeometryColumnCapabilities =
+  {
+    GeometryColumnCapability::Z,
+    GeometryColumnCapability::M,
+    GeometryColumnCapability::SinglePart,
+    GeometryColumnCapability::Curves
   };
 }
 
@@ -328,17 +340,34 @@ void QgsPostgresProviderConnection::vacuum( const QString &schema, const QString
 
 void QgsPostgresProviderConnection::createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options ) const
 {
-  if ( options.geometryColumnName.isEmpty() )
-    throw QgsProviderConnectionException( QObject::tr( "Geometry column name not specified while creating spatial index" ) );
-
   checkCapability( Capability::CreateSpatialIndex );
 
-  const QString indexName = QStringLiteral( "sidx_%1_%2" ).arg( name, options.geometryColumnName );
+  QString geometryColumnName { options.geometryColumnName };
+  if ( geometryColumnName.isEmpty() )
+  {
+    // Can we guess it?
+    try
+    {
+      const auto tp { table( schema, name ) };
+      geometryColumnName = tp.geometryColumn();
+    }
+    catch ( QgsProviderConnectionException & )
+    {
+      // pass
+    }
+  }
+
+  if ( geometryColumnName.isEmpty() )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Geometry column name not specified while creating spatial index" ) );
+  }
+
+  const QString indexName = QStringLiteral( "sidx_%1_%2" ).arg( name, geometryColumnName );
   executeSql( QStringLiteral( "CREATE INDEX %1 ON %2.%3 USING GIST (%4);" )
               .arg( indexName,
                     QgsPostgresConn::quotedIdentifier( schema ),
                     QgsPostgresConn::quotedIdentifier( name ),
-                    QgsPostgresConn::quotedIdentifier( options.geometryColumnName ) ) );
+                    QgsPostgresConn::quotedIdentifier( geometryColumnName ) ) );
 }
 
 bool QgsPostgresProviderConnection::spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const
@@ -540,7 +569,7 @@ void QgsPostgresProviderConnection::store( const QString &name ) const
   settings.setValue( "username", dsUri.username() );
   settings.setValue( "password", dsUri.password() );
   settings.setValue( "authcfg", dsUri.authConfigId() );
-  settings.setValue( "sslmode", dsUri.sslMode() );
+  settings.setEnumValue( "sslmode", dsUri.sslMode() );
 
   // From configuration
   static const QStringList configurationParameters
@@ -575,3 +604,19 @@ QIcon QgsPostgresProviderConnection::icon() const
   return QgsApplication::getThemeIcon( QStringLiteral( "mIconPostgis.svg" ) );
 }
 
+
+QList<QgsVectorDataProvider::NativeType> QgsPostgresProviderConnection::nativeTypes() const
+{
+  QList<QgsVectorDataProvider::NativeType> types;
+  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( QgsDataSourceUri{ uri() }.connectionInfo( false ) );
+  if ( conn )
+  {
+    types = conn->nativeTypes();
+    QgsPostgresConnPool::instance()->releaseConnection( conn );
+  }
+  if ( types.isEmpty() )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Error retrieving native types for connection %1" ).arg( uri() ) );
+  }
+  return types;
+}

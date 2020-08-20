@@ -39,19 +39,20 @@ class QgsSingleSymbol3DRendererWidget : public QWidget
 {
     Q_OBJECT
   public:
-    QgsSingleSymbol3DRendererWidget( QWidget *parent = nullptr );
+    QgsSingleSymbol3DRendererWidget( QgsVectorLayer *layer, QWidget *parent = nullptr );
 
     //! no transfer of ownership
     void setLayer( QgsVectorLayer *layer );
 
     //! Returns the cloned symbol or NULLPTR.
-    QgsAbstract3DSymbol *symbol();
+    std::unique_ptr< QgsAbstract3DSymbol > symbol();
 
   signals:
     void widgetChanged();
 
   private:
     QgsSymbol3DWidget *widgetSymbol = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
 
 };
 

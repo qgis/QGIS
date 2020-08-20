@@ -1,6 +1,7 @@
 {
   "name": "geom_to_wkt",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Returns the Well-Known Text (WKT) representation of the geometry without SRID metadata.",
   "arguments": [ {"arg":"geometry","description":"a geometry"},
                  {"arg":"precision","description":"numeric precision", "optional":true}],

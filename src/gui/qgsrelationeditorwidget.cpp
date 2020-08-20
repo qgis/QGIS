@@ -872,6 +872,8 @@ void QgsRelationEditorWidget::toggleEditing( bool state )
     if ( mNmRelation.isValid() )
       mEditorContext.vectorLayerTools()->stopEditing( mNmRelation.referencedLayer() );
   }
+
+  updateButtons();
 }
 
 void QgsRelationEditorWidget::saveEdits()
@@ -950,6 +952,37 @@ void QgsRelationEditorWidget::setShowSaveChildEditsButton( bool showChildEdits )
 bool QgsRelationEditorWidget::showSaveChildEditsButton() const
 {
   return mSaveEditsButton->isVisible();
+}
+
+void QgsRelationEditorWidget::setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons )
+{
+  mLinkFeatureButton->setVisible( buttons.testFlag( QgsAttributeEditorRelation::Button::Link ) );
+  mUnlinkFeatureButton->setVisible( buttons.testFlag( QgsAttributeEditorRelation::Button::Unlink ) );
+  mSaveEditsButton->setVisible( buttons.testFlag( QgsAttributeEditorRelation::Button::SaveChildEdits ) );
+  mAddFeatureButton->setVisible( buttons.testFlag( QgsAttributeEditorRelation::Button::AddChildFeature ) );
+  mDuplicateFeatureButton->setVisible( buttons.testFlag( QgsAttributeEditorRelation::Button::DuplicateChildFeature ) );
+  mDeleteFeatureButton->setVisible( buttons.testFlag( QgsAttributeEditorRelation::Button::DeleteChildFeature ) );
+  mZoomToFeatureButton->setVisible( buttons.testFlag( QgsAttributeEditorRelation::Button::ZoomToChildFeature ) );
+}
+
+QgsAttributeEditorRelation::Buttons QgsRelationEditorWidget::visibleButtons() const
+{
+  QgsAttributeEditorRelation::Buttons buttons;
+  if ( mLinkFeatureButton->isVisible() )
+    buttons |= QgsAttributeEditorRelation::Button::Link;
+  if ( mUnlinkFeatureButton->isVisible() )
+    buttons |= QgsAttributeEditorRelation::Button::Unlink;
+  if ( mSaveEditsButton->isVisible() )
+    buttons |= QgsAttributeEditorRelation::Button::SaveChildEdits;
+  if ( mAddFeatureButton->isVisible() )
+    buttons |= QgsAttributeEditorRelation::Button::AddChildFeature;
+  if ( mDuplicateFeatureButton->isVisible() )
+    buttons |= QgsAttributeEditorRelation::Button::DuplicateChildFeature;
+  if ( mDeleteFeatureButton->isVisible() )
+    buttons |= QgsAttributeEditorRelation::Button::DeleteChildFeature;
+  if ( mZoomToFeatureButton->isVisible() )
+    buttons |= QgsAttributeEditorRelation::Button::ZoomToChildFeature;
+  return buttons;
 }
 
 void QgsRelationEditorWidget::setShowUnlinkButton( bool showUnlinkButton )

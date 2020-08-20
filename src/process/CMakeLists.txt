@@ -15,7 +15,7 @@ ENDIF (UNIX AND NOT ANDROID)
 ########################################################
 # Build
 
-ADD_EXECUTABLE (qgis_process MACOSX_BUNDLE WIN32 ${QGIS_PROCESS_SRCS} )
+ADD_EXECUTABLE (qgis_process MACOSX_BUNDLE ${QGIS_PROCESS_SRCS})
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}

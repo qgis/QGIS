@@ -324,6 +324,24 @@ class TestPyQgsProviderConnectionBase():
             self.assertEqual(ct.crs, QgsCoordinateReferenceSystem.fromEpsgId(4326))
             self.assertEqual(ct.wkbType, QgsWkbTypes.LineString)
 
+            # Check fields
+            fields = conn.fields('myNewSchema', 'myNewTable')
+            for f in ['string_t', 'long_t', 'double_t', 'integer_t', 'date_t', 'datetime_t', 'time_t']:
+                self.assertTrue(f in fields.names())
+
+            if capabilities & QgsAbstractDatabaseProviderConnection.AddField:
+                field = QgsField('short_lived_field', QVariant.Int, 'integer')
+                conn.addField(field, 'myNewSchema', 'myNewTable')
+                fields = conn.fields('myNewSchema', 'myNewTable')
+                self.assertTrue('short_lived_field' in fields.names())
+
+                if capabilities & QgsAbstractDatabaseProviderConnection.DeleteField:
+                    conn.deleteField('short_lived_field', 'myNewSchema', 'myNewTable')
+                    # This fails on Travis for spatialite, for no particular reason
+                    if self.providerKey == 'spatialite' and not os.environ.get('TRAVIS', False):
+                        fields = conn.fields('myNewSchema', 'myNewTable')
+                        self.assertFalse('short_lived_field' in fields.names())
+
             # Drop table
             conn.dropVectorTable(schema, 'myNewTable')
             conn.dropVectorTable(schema, 'myNewAspatialTable')
@@ -383,3 +401,13 @@ class TestPyQgsProviderConnectionBase():
         self.assertEqual(len(changed_spy), 1)
 
         self._test_operations(md, conn)
+
+    def test_native_types(self):
+        """Test native types retrieval"""
+
+        md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
+        conn = md.createConnection(self.uri, {})
+        native_types = conn.nativeTypes()
+        names = [nt.mTypeName.lower() for nt in native_types]
+        self.assertTrue('integer' in names or 'decimal' in names, names)
+        self.assertTrue('string' in names or 'text' in names, names)

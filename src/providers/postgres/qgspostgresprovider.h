@@ -241,7 +241,6 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
      */
     void setListening( bool isListening ) override;
 
-
   private:
     Relkind relkind() const;
 
@@ -522,6 +521,12 @@ class QgsPostgresUtils
     {
       return x <= ( ( INT32PK_OFFSET ) / 2.0 ) ? x : -( INT32PK_OFFSET - x );
     }
+
+    //! Replaces invalid XML chars with UTF-8[<char_code>]
+    static void replaceInvalidXmlChars( QString &xml );
+
+    //! Replaces UTF-8[<char_code>] with the actual unicode char
+    static void restoreInvalidXmlChars( QString &xml );
 };
 
 /**

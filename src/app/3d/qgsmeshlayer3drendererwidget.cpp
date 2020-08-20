@@ -69,9 +69,9 @@ void QgsMeshLayer3DRendererWidget::setRenderer( const QgsMeshLayer3DRenderer *re
 
 QgsMeshLayer3DRenderer *QgsMeshLayer3DRendererWidget::renderer()
 {
-  QgsMesh3DSymbol *sym = new QgsMesh3DSymbol( mWidgetMesh->symbol() );
+  std::unique_ptr< QgsMesh3DSymbol > sym = mWidgetMesh->symbol();
   sym->setEnabled( mChkEnabled->isChecked() );
-  mRenderer.reset( new QgsMeshLayer3DRenderer( sym ) );
+  mRenderer.reset( new QgsMeshLayer3DRenderer( sym.release() ) );
   mRenderer->setLayer( qobject_cast<QgsMeshLayer *>( mLayer ) );
   return mRenderer.get();
 }

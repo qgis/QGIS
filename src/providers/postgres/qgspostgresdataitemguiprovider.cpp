@@ -52,9 +52,10 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
     menu->addSeparator();
 
-    QAction *actionCreateSchema = new QAction( tr( "Create Schema…" ), this );
+    QAction *actionCreateSchema = new QAction( tr( "New Schema…" ), this );
     connect( actionCreateSchema, &QAction::triggered, this, [connItem] { createSchema( connItem ); } );
     menu->addAction( actionCreateSchema );
+
   }
 
   if ( QgsPGSchemaItem *schemaItem = qobject_cast< QgsPGSchemaItem * >( item ) )
@@ -100,7 +101,7 @@ void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 }
 
 
-bool QgsPostgresDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataItemGuiContext )
+bool QgsPostgresDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataItemGuiContext context )
 {
   if ( QgsPGLayerItem *layerItem = qobject_cast< QgsPGLayerItem * >( item ) )
   {
@@ -116,12 +117,12 @@ bool QgsPostgresDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataIte
     bool res = QgsPostgresUtils::deleteLayer( layerItem->uri(), errCause );
     if ( !res )
     {
-      QMessageBox::warning( nullptr, tr( "Delete %1" ).arg( typeName ), errCause );
+      notify( tr( "Delete %1" ).arg( typeName ), errCause, context, Qgis::MessageLevel::Warning );
       return false;
     }
     else
     {
-      QMessageBox::information( nullptr, tr( "Delete %1" ).arg( typeName ), tr( "%1 deleted successfully." ).arg( typeName ) );
+      notify( tr( "Delete %1" ).arg( typeName ), tr( "%1 deleted successfully." ).arg( typeName ), context, Qgis::MessageLevel::Success );
       if ( layerItem->parent() )
         layerItem->parent()->refresh();
       return true;
@@ -225,7 +226,7 @@ void QgsPostgresDataItemGuiProvider::createSchema( QgsDataItem *item )
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), false );
   if ( !conn )
   {
-    QMessageBox::warning( nullptr, tr( "Create Schema" ), tr( "Unable to create schema." ) );
+    QMessageBox::warning( nullptr, tr( "New Schema" ), tr( "Unable to create schema." ) );
     return;
   }
 
@@ -235,7 +236,7 @@ void QgsPostgresDataItemGuiProvider::createSchema( QgsDataItem *item )
   QgsPostgresResult result( conn->PQexec( sql ) );
   if ( result.PQresultStatus() != PGRES_COMMAND_OK )
   {
-    QMessageBox::warning( nullptr, tr( "Create Schema" ), tr( "Unable to create schema %1\n%2" ).arg( schemaName,
+    QMessageBox::warning( nullptr, tr( "New Schema" ), tr( "Unable to create schema %1\n%2" ).arg( schemaName,
                           result.PQresultErrorMessage() ) );
     conn->unref();
     return;

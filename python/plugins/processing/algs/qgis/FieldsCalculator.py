@@ -106,11 +106,11 @@ class FieldsCalculator(QgisAlgorithm):
         expression = QgsExpression(formula)
         da = QgsDistanceArea()
         da.setSourceCrs(source.sourceCrs(), context.transformContext())
-        da.setEllipsoid(context.project().ellipsoid())
+        da.setEllipsoid(context.ellipsoid())
         expression.setGeomCalculator(da)
 
-        expression.setDistanceUnits(context.project().distanceUnits())
-        expression.setAreaUnits(context.project().areaUnits())
+        expression.setDistanceUnits(context.distanceUnit())
+        expression.setAreaUnits(context.areaUnit())
 
         fields = source.fields()
         field_index = fields.lookupField(field_name)

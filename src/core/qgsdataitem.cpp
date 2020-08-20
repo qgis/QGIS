@@ -43,6 +43,7 @@
 #include "qgsanimatedicon.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
+#include "qgsprovidermetadata.h"
 
 // use GDAL VSI mechanism
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
@@ -110,9 +111,128 @@ QIcon QgsDataCollectionItem::iconDir()
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolder.svg" ) );
 }
 
+
+QgsFieldsItem::QgsFieldsItem( QgsDataItem *parent,
+                              const QString &path,
+                              const QString &connectionUri,
+                              const QString &providerKey,
+                              const QString &schema,
+                              const QString &tableName )
+  : QgsDataItem( QgsDataItem::Fields, parent, tr( "Fields" ), path, providerKey )
+  , mSchema( schema )
+  , mTableName( tableName )
+  , mConnectionUri( connectionUri )
+{
+  mCapabilities |= ( Fertile | Collapse );
+}
+
+QgsFieldsItem::~QgsFieldsItem()
+{
+
+}
+
+QVector<QgsDataItem *> QgsFieldsItem::createChildren()
+{
+  QVector<QgsDataItem *> children;
+  try
+  {
+    QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey() ) };
+    if ( md )
+    {
+      std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( mConnectionUri, {} ) ) };
+      if ( conn )
+      {
+        int i = 0;
+        const QgsFields constFields { conn->fields( mSchema, mTableName ) };
+        for ( const auto &f : constFields )
+        {
+          QgsFieldItem *fieldItem { new QgsFieldItem( this, f ) };
+          fieldItem->setSortKey( i++ );
+          children.push_back( fieldItem );
+        }
+      }
+    }
+  }
+  catch ( const QgsProviderConnectionException &ex )
+  {
+    children.push_back( new QgsErrorItem( this, ex.what(), path() + QStringLiteral( "/error" ) ) );
+  }
+  return children;
+}
+
+QIcon QgsFieldsItem::icon()
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mSourceFields.svg" ) );
+}
+
+QString QgsFieldsItem::connectionUri() const
+{
+  return mConnectionUri;
+}
+
+QgsVectorLayer *QgsFieldsItem::layer()
+{
+  std::unique_ptr<QgsVectorLayer> vl;
+  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey() ) };
+  if ( md )
+  {
+    try
+    {
+      std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( mConnectionUri, {} ) ) };
+      if ( conn )
+      {
+        vl.reset( new QgsVectorLayer( conn->tableUri( mSchema, mTableName ), QStringLiteral( "temp_layer" ), providerKey() ) );
+        if ( vl->isValid() )
+        {
+          return vl.release();
+        }
+      }
+    }
+    catch ( const QgsProviderConnectionException &ex )
+    {
+      // This should never happen!
+      QgsDebugMsg( QStringLiteral( "Error getting connection from %1" ).arg( mConnectionUri ) );
+    }
+  }
+  else
+  {
+    // This should never happen!
+    QgsDebugMsg( QStringLiteral( "Error getting metadata for provider %1" ).arg( providerKey() ) );
+  }
+  return nullptr;
+}
+
+QString QgsFieldsItem::tableName() const
+{
+  return mTableName;
+}
+
+QString QgsFieldsItem::schema() const
+{
+  return mSchema;
+}
+
+QgsFieldItem::QgsFieldItem( QgsDataItem *parent, const QgsField &field )
+  : QgsDataItem( QgsDataItem::Type::Field, parent, field.name(), parent->path() + '/' + field.name(), parent->providerKey() )
+  , mField( field )
+{
+  // Precondition
+  Q_ASSERT( static_cast<QgsFieldsItem *>( parent ) );
+  setState( QgsDataItem::State::Populated );
+}
+
+QgsFieldItem::~QgsFieldItem()
+{
+}
+
+QIcon QgsFieldItem::icon()
+{
+  return QgsFields::iconForFieldType( mField.type() );
+}
+
 QIcon QgsFavoritesItem::iconFavorites()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFavourites.svg" ) );
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFavorites.svg" ) );
 }
 
 QVariant QgsFavoritesItem::sortKey() const
@@ -704,6 +824,8 @@ QgsLayerItem::LayerType QgsLayerItem::typeFromMapLayer( QgsMapLayer *layer )
       return Mesh;
     case QgsMapLayerType::VectorTileLayer:
       return VectorTile;
+    case QgsMapLayerType::AnnotationLayer:
+      return Vector; // will never happen!
   }
   return Vector; // no warnings
 }
@@ -804,6 +926,9 @@ QgsMimeDataUtils::Uri QgsLayerItem::mimeUri() const
       break;
     case QgsMapLayerType::PluginLayer:
       u.layerType = QStringLiteral( "plugin" );
+      break;
+    case QgsMapLayerType::AnnotationLayer:
+      u.layerType = QStringLiteral( "annotation" );
       break;
   }
 
@@ -1276,7 +1401,7 @@ QgsFavoritesItem::QgsFavoritesItem( QgsDataItem *parent, const QString &name, co
   Q_UNUSED( path )
   mCapabilities |= Fast;
   mType = Favorites;
-  mIconName = QStringLiteral( "/mIconFavourites.svg" );
+  mIconName = QStringLiteral( "/mIconFavorites.svg" );
   populate();
 }
 
@@ -1285,6 +1410,7 @@ QVector<QgsDataItem *> QgsFavoritesItem::createChildren()
   QVector<QgsDataItem *> children;
 
   QgsSettings settings;
+
   const QStringList favDirs = settings.value( QStringLiteral( "browser/favourites" ), QVariant() ).toStringList();
 
   for ( const QString &favDir : favDirs )
@@ -1620,6 +1746,30 @@ QStringList QgsZipItem::getZipFileList()
 
   return mZipFileList;
 }
+
+
+QgsDatabaseSchemaItem::QgsDatabaseSchemaItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &providerKey )
+  : QgsDataCollectionItem( parent, name, path, providerKey )
+{
+
+}
+
+QgsDatabaseSchemaItem::~QgsDatabaseSchemaItem()
+{
+
+}
+
+QIcon QgsDatabaseSchemaItem::iconDataCollection()
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconDbSchema.svg" ) );
+}
+
+
+QgsConnectionsRootItem::QgsConnectionsRootItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &providerKey )
+  : QgsDataCollectionItem( parent, name, path, providerKey )
+{
+}
+
 
 ///@cond PRIVATE
 

@@ -21,6 +21,7 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrastershader.h"
 #include "qgsrasterminmaxwidget.h"
+#include "qgsdoublevalidator.h"
 #include "qgstreewidgetitem.h"
 #include "qgssettings.h"
 #include "qgsmapcanvas.h"
@@ -67,8 +68,8 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
   }
 
   // Must be before adding items to mBandComboBox (signal)
-  mMinLineEdit->setValidator( new QDoubleValidator( mMinLineEdit ) );
-  mMaxLineEdit->setValidator( new QDoubleValidator( mMaxLineEdit ) );
+  mMinLineEdit->setValidator( new QgsDoubleValidator( mMinLineEdit ) );
+  mMaxLineEdit->setValidator( new QgsDoubleValidator( mMaxLineEdit ) );
 
   mMinMaxWidget = new QgsRasterMinMaxWidget( layer, this );
   mMinMaxWidget->setExtent( extent );
@@ -152,6 +153,12 @@ void QgsSingleBandPseudoColorRendererWidget::setFromRenderer( const QgsRasterRen
     mMinMaxWidget->setBands( QList< int >() << pr->band() );
     mColorRampShaderWidget->setRasterBand( pr->band() );
 
+    // need to set min/max properties here because if we use the raster shader below,
+    // we may set a new color ramp which needs to have min/max values defined.
+    setLineEditValue( mMinLineEdit, pr->classificationMin() );
+    setLineEditValue( mMaxLineEdit, pr->classificationMax() );
+    mMinMaxWidget->setFromMinMaxOrigin( pr->minMaxOrigin() );
+
     const QgsRasterShader *rasterShader = pr->shader();
     if ( rasterShader )
     {
@@ -161,10 +168,6 @@ void QgsSingleBandPseudoColorRendererWidget::setFromRenderer( const QgsRasterRen
         mColorRampShaderWidget->setFromShader( *colorRampShader );
       }
     }
-    setLineEditValue( mMinLineEdit, pr->classificationMin() );
-    setLineEditValue( mMaxLineEdit, pr->classificationMax() );
-
-    mMinMaxWidget->setFromMinMaxOrigin( pr->minMaxOrigin() );
   }
   else
   {
@@ -192,7 +195,7 @@ void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int bandNo, double min,
   }
   else
   {
-    whileBlocking( mMinLineEdit )->setText( QString::number( min ) );
+    whileBlocking( mMinLineEdit )->setText( QLocale().toString( min ) );
   }
 
   if ( std::isnan( max ) )
@@ -201,13 +204,13 @@ void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int bandNo, double min,
   }
   else
   {
-    whileBlocking( mMaxLineEdit )->setText( QString::number( max ) );
+    whileBlocking( mMaxLineEdit )->setText( QLocale().toString( max ) );
   }
 
   // We compare old min and new min as text because QString::number keeps a fixed number of significant
   // digits (default 6) and so loaded min/max will always differ from current one, which triggers a
   // classification, and wipe out every user modification (see https://github.com/qgis/QGIS/issues/36172)
-  if ( mMinLineEdit->text() != QString::number( min ) || mMaxLineEdit->text() != QString::number( max ) )
+  if ( mMinLineEdit->text() != QLocale().toString( min ) || mMaxLineEdit->text() != QLocale().toString( max ) )
   {
     whileBlocking( mColorRampShaderWidget )->setRasterBand( bandNo );
     whileBlocking( mColorRampShaderWidget )->setMinimumMaximumAndClassify( min, max );
@@ -217,8 +220,8 @@ void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int bandNo, double min,
 
 void QgsSingleBandPseudoColorRendererWidget::loadMinMaxFromTree( double min, double max )
 {
-  whileBlocking( mMinLineEdit )->setText( QString::number( min ) );
-  whileBlocking( mMaxLineEdit )->setText( QString::number( max ) );
+  whileBlocking( mMinLineEdit )->setText( QLocale().toString( min ) );
+  whileBlocking( mMaxLineEdit )->setText( QLocale().toString( max ) );
   minMaxModified();
 }
 
@@ -228,7 +231,7 @@ void QgsSingleBandPseudoColorRendererWidget::setLineEditValue( QLineEdit *lineEd
   QString s;
   if ( !std::isnan( value ) )
   {
-    s = QString::number( value );
+    s = QLocale().toString( value );
   }
   lineEdit->setText( s );
 }
@@ -240,7 +243,7 @@ double QgsSingleBandPseudoColorRendererWidget::lineEditValue( const QLineEdit *l
     return std::numeric_limits<double>::quiet_NaN();
   }
 
-  return lineEdit->text().toDouble();
+  return QgsDoubleValidator::toDouble( lineEdit->text() );
 }
 
 void QgsSingleBandPseudoColorRendererWidget::mMinLineEdit_textEdited( const QString & )

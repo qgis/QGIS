@@ -1,6 +1,7 @@
 {
   "name": "count",
   "type": "function",
+  "groups": ["Aggregates"],
   "description": "Returns the count of matching features.",
   "arguments": [
 	{"arg":"expression", "description":"sub expression of field to aggregate"},

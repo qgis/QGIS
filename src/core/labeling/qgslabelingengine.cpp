@@ -404,9 +404,9 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
   t.start();
 
   const QgsLabelingEngineSettings &settings = mMapSettings.labelingEngineSettings();
+
+  context.setPainterFlagsUsingContext();
   QPainter *painter = context.painter();
-  if ( context.flags() & QgsRenderContext::Antialiasing )
-    painter->setRenderHint( QPainter::Antialiasing );
 
   // prepare for rendering
   for ( QgsAbstractLabelProvider *provider : qgis::as_const( mProviders ) )

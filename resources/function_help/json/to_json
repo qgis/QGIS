@@ -1,6 +1,7 @@
 {
   "name": "to_json",
   "type": "function",
+  "groups": ["Maps"],
   "description": "Create a JSON formatted string from a map, array or other value.",
   "arguments": [
     {"arg":"value", "description":"The input value"}],

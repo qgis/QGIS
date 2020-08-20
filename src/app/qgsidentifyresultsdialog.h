@@ -270,7 +270,8 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     enum ItemDataRole
     {
-      GetFeatureInfoUrlRole = Qt::UserRole + 10
+      GetFeatureInfoUrlRole = Qt::UserRole + 10,
+      FeatureRole,
     };
 
     QMenu *mActionPopup = nullptr;
@@ -317,6 +318,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     void setSelectionMode();
 
     void initSelectionModes();
+    QgsIdentifyResultsFeatureItem *createFeatureItem( QgsVectorLayer *vlayer, const QgsFeature &f, const QMap<QString, QString> &derivedAttributes, bool includeRelations, QTreeWidgetItem *parentItem );
 };
 
 class QgsIdentifyResultsDialogMapLayerAction : public QAction

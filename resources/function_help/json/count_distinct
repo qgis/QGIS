@@ -1,6 +1,7 @@
 {
   "name": "count_distinct",
   "type": "function",
+  "groups": ["Aggregates"],
   "description": "Returns the count of distinct values.",
   "arguments": [
 	{"arg":"expression", "description":"sub expression of field to aggregate"},

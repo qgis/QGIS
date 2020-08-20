@@ -18,7 +18,7 @@
 #define LINTRIANGLEINTERPOLATOR_H
 
 #include "TriangleInterpolator.h"
-#include "DualEdgeTriangulation.h"
+#include "qgsdualedgetriangulation.h"
 #include "qgis_analysis.h"
 
 #define SIP_NO_FILE
@@ -34,18 +34,18 @@ class ANALYSIS_EXPORT LinTriangleInterpolator : public TriangleInterpolator
     //! Default constructor
     LinTriangleInterpolator() = default;
     //! Constructor with reference to a DualEdgeTriangulation object
-    LinTriangleInterpolator( DualEdgeTriangulation *tin );
+    LinTriangleInterpolator( QgsDualEdgeTriangulation *tin );
     //! Calculates the normal vector and assigns it to vec
-    bool calcNormVec( double x, double y, Vector3D *result SIP_OUT ) override;
+    bool calcNormVec( double x, double y, QgsPoint &result SIP_OUT ) override;
     bool calcPoint( double x, double y, QgsPoint &result SIP_OUT ) override;
     //! Returns a pointer to the current Triangulation object
-    virtual DualEdgeTriangulation *getTriangulation() const;
+    virtual QgsDualEdgeTriangulation *getTriangulation() const;
     //! Sets a Triangulation
-    virtual void setTriangulation( DualEdgeTriangulation *tin );
+    virtual void setTriangulation( QgsDualEdgeTriangulation *tin );
 
 
   protected:
-    DualEdgeTriangulation *mTIN = nullptr;
+    QgsDualEdgeTriangulation *mTIN = nullptr;
     //! Calculates the first derivative with respect to x for a linear surface and assigns it to vec
     virtual bool calcFirstDerX( double x, double y, Vector3D *result SIP_OUT );
     //! Calculates the first derivative with respect to y for a linear surface and assigns it to vec
@@ -54,17 +54,17 @@ class ANALYSIS_EXPORT LinTriangleInterpolator : public TriangleInterpolator
 
 #ifndef SIP_RUN
 
-inline LinTriangleInterpolator::LinTriangleInterpolator( DualEdgeTriangulation *tin ): mTIN( tin )
+inline LinTriangleInterpolator::LinTriangleInterpolator( QgsDualEdgeTriangulation *tin ): mTIN( tin )
 {
 
 }
 
-inline DualEdgeTriangulation *LinTriangleInterpolator::getTriangulation() const
+inline QgsDualEdgeTriangulation *LinTriangleInterpolator::getTriangulation() const
 {
   return mTIN;
 }
 
-inline void LinTriangleInterpolator::setTriangulation( DualEdgeTriangulation *tin )
+inline void LinTriangleInterpolator::setTriangulation( QgsDualEdgeTriangulation *tin )
 {
   mTIN = tin;
 }

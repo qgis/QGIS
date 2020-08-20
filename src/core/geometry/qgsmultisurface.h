@@ -20,6 +20,9 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgis_sip.h"
 #include "qgsgeometrycollection.h"
 
+
+class QgsSurface;
+
 /**
  * \ingroup core
  * \class QgsMultiSurface
@@ -30,6 +33,51 @@ class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
 {
   public:
     QgsMultiSurface();
+
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns the surface with the specified \a index.
+     *
+     * \since QGIS 3.16
+     */
+    QgsSurface *surfaceN( int index );
+#else
+
+    /**
+     * Returns the surface with the specified \a index.
+     *
+     * An IndexError will be raised if no surface with the specified index exists.
+     *
+     * \since QGIS 3.16
+     */
+    SIP_PYOBJECT surfaceN( int index ) SIP_TYPEHINT( QgsSurface );
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      return sipConvertFromType( sipCpp->surfaceN( a0 ), sipType_QgsSurface, NULL );
+    }
+    % End
+#endif
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns the surface with the specified \a index.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 3.16
+     */
+    const QgsSurface *surfaceN( int index ) const;
+#endif
+
     QString geometryType() const override;
     void clear() override;
     QgsMultiSurface *clone() const override SIP_FACTORY;

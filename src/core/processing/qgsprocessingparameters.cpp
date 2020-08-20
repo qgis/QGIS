@@ -561,7 +561,8 @@ bool QgsProcessingParameters::parameterAsBoolean( const QgsProcessingParameterDe
 
 QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsFields &fields,
     QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
-    QgsProcessingContext &context, QString &destinationIdentifier, QgsFeatureSink::SinkFlags sinkFlags )
+    QgsProcessingContext &context, QString &destinationIdentifier, QgsFeatureSink::SinkFlags sinkFlags,
+    const QVariantMap &createOptions, const QStringList &datasourceOptions, const QStringList &layerOptions )
 {
   QVariant val;
   if ( definition )
@@ -569,16 +570,16 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
     val = parameters.value( definition->name() );
   }
 
-  return parameterAsSink( definition, val, fields, geometryType, crs, context, destinationIdentifier, sinkFlags );
+  return parameterAsSink( definition, val, fields, geometryType, crs, context, destinationIdentifier, sinkFlags, createOptions, datasourceOptions, layerOptions );
 }
 
-QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, QgsProcessingContext &context, QString &destinationIdentifier, QgsFeatureSink::SinkFlags sinkFlags )
+QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, QgsProcessingContext &context, QString &destinationIdentifier, QgsFeatureSink::SinkFlags sinkFlags, const QVariantMap &createOptions, const QStringList &datasourceOptions, const QStringList &layerOptions )
 {
+  QVariantMap options = createOptions;
   QVariant val = value;
 
   QgsProject *destinationProject = nullptr;
   QString destName;
-  QVariantMap createOptions;
   QgsRemappingSinkDefinition remapDefinition;
   bool useRemapDefinition = false;
   if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )
@@ -586,7 +587,7 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
     // input is a QgsProcessingOutputLayerDefinition - get extra properties from it
     QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( val );
     destinationProject = fromVar.destinationProject;
-    createOptions = fromVar.createOptions;
+    options = fromVar.createOptions;
 
     val = fromVar.sink;
     destName = fromVar.destinationName;
@@ -629,7 +630,7 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
   if ( dest.isEmpty() )
     return nullptr;
 
-  std::unique_ptr< QgsFeatureSink > sink( QgsProcessingUtils::createFeatureSink( dest, context, fields, geometryType, crs, createOptions, sinkFlags, useRemapDefinition ? &remapDefinition : nullptr ) );
+  std::unique_ptr< QgsFeatureSink > sink( QgsProcessingUtils::createFeatureSink( dest, context, fields, geometryType, crs, options, datasourceOptions, layerOptions, sinkFlags, useRemapDefinition ? &remapDefinition : nullptr ) );
   destinationIdentifier = dest;
 
   if ( destinationProject )

@@ -26,8 +26,9 @@
 #include "qgsapplication.h"
 #include "qgsprocessingparametertype.h"
 #include "processing/models/qgsprocessingmodelalgorithm.h"
+#include "qgsproject.h"
 
-#if defined(Q_OS_UNIX) and !defined(Q_OS_ANDROID)
+#if defined(Q_OS_UNIX) && !defined(Q_OS_ANDROID)
 #include "sigwatch.h"
 #endif
 
@@ -102,10 +103,10 @@ void ConsoleFeedback::showTerminalProgress( double progress )
 
 
 //! load Python support if possible
-std::unique_ptr< QgsPythonUtils > loadPythonSupport()
+std::unique_ptr< QgsPythonUtils > QgsProcessingExec::loadPythonSupport()
 {
   QString pythonlibName( QStringLiteral( "qgispython" ) );
-#if defined(Q_OS_UNIX) and !defined(Q_OS_ANDROID)
+#if defined(Q_OS_UNIX) && !defined(Q_OS_ANDROID)
   pythonlibName.prepend( QgsApplication::libraryPath() );
 #endif
 #ifdef __MINGW32__
@@ -122,7 +123,7 @@ std::unique_ptr< QgsPythonUtils > loadPythonSupport()
     pythonlib.setFileName( pythonlibName );
     if ( !pythonlib.load() )
     {
-      std::cerr << QStringLiteral( "Couldn't load Python support library: %1" ).arg( pythonlib.errorString() ).toLocal8Bit().constData();
+      std::cerr << QStringLiteral( "Couldn't load Python support library: %1\n" ).arg( pythonlib.errorString() ).toLocal8Bit().constData();
       return nullptr;
     }
   }
@@ -132,7 +133,7 @@ std::unique_ptr< QgsPythonUtils > loadPythonSupport()
   if ( !pythonlib_inst )
   {
     //using stderr on purpose because we want end users to see this [TS]
-    std::cerr << "Couldn't resolve python support library's instance() symbol.";
+    std::cerr << "Couldn't resolve Python support library's instance() symbol.\n";
     return nullptr;
   }
 
@@ -158,7 +159,7 @@ int QgsProcessingExec::run( const QStringList &args )
     if ( level == Qgis::Critical )
     {
       if ( !message.contains( QLatin1String( "DeprecationWarning:" ) ) )
-        std::cerr << message.toLocal8Bit().constData();
+        std::cerr << message.toLocal8Bit().constData() << '\n';
     }
   } );
 
@@ -216,6 +217,10 @@ int QgsProcessingExec::run( const QStringList &args )
     const QString algId = args.at( 2 );
 
     // build parameter map
+    QString ellipsoid;
+    QgsUnitTypes::DistanceUnit distanceUnit = QgsUnitTypes::DistanceUnknownUnit;
+    QgsUnitTypes::AreaUnit areaUnit = QgsUnitTypes::AreaUnknownUnit;
+    QString projectPath;
     QVariantMap params;
     for ( int i = 3; i < args.count(); i++ )
     {
@@ -227,8 +232,28 @@ int QgsProcessingExec::run( const QStringList &args )
       if ( parts.count() >= 2 )
       {
         const QString name = parts.at( 0 );
-        const QString value = parts.mid( 1 ).join( '=' );
-        params.insert( name, value );
+
+        if ( name.compare( QLatin1String( "ellipsoid" ), Qt::CaseInsensitive ) == 0 )
+        {
+          ellipsoid = parts.mid( 1 ).join( '=' );
+        }
+        else if ( name.compare( QLatin1String( "distance_units" ), Qt::CaseInsensitive ) == 0 )
+        {
+          distanceUnit = QgsUnitTypes::decodeDistanceUnit( parts.mid( 1 ).join( '=' ) );
+        }
+        else if ( name.compare( QLatin1String( "area_units" ), Qt::CaseInsensitive ) == 0 )
+        {
+          areaUnit = QgsUnitTypes::decodeAreaUnit( parts.mid( 1 ).join( '=' ) );
+        }
+        else if ( name.compare( QLatin1String( "project_path" ), Qt::CaseInsensitive ) == 0 )
+        {
+          projectPath = parts.mid( 1 ).join( '=' );
+        }
+        else
+        {
+          const QString value = parts.mid( 1 ).join( '=' );
+          params.insert( name, value );
+        }
       }
       else
       {
@@ -237,7 +262,7 @@ int QgsProcessingExec::run( const QStringList &args )
       }
     }
 
-    return execute( algId, params );
+    return execute( algId, params, ellipsoid, distanceUnit, areaUnit, projectPath );
   }
   else
   {
@@ -257,7 +282,9 @@ void QgsProcessingExec::showUsage( const QString &appName )
       << "\tplugins\tlist available and active plugins\n"
       << "\tlist\tlist all available processing algorithms\n"
       << "\thelp\tshow help for an algorithm. The algorithm id or a path to a model file must be specified.\n"
-      << "\trun\truns an algorithm. The algorithm id or a path to a model file and parameter values must be specified. Parameter values are specified via the --PARAMETER=VALUE syntax\n";
+      << "\trun\truns an algorithm. The algorithm id or a path to a model file and parameter values must be specified. Parameter values are specified via the --PARAMETER=VALUE syntax.\n"
+      << "\t\tIf required, the ellipsoid to use for distance and area calculations can be specified via the \"--ELLIPSOID=name\" argument.\n"
+      << "\t\tIf required, an existing QGIS project to use during the algorithm execution can be specified via the \"--PROJECT_PATH=path\" argument.\n";
 
   std::cout << msg.join( QString() ).toLocal8Bit().constData();
 }
@@ -294,6 +321,9 @@ void QgsProcessingExec::listAlgorithms()
     const QList<const QgsProcessingAlgorithm *> algorithms = provider->algorithms();
     for ( const QgsProcessingAlgorithm *algorithm : algorithms )
     {
+      if ( algorithm->flags() & QgsProcessingAlgorithm::FlagDeprecated || algorithm->flags() & QgsProcessingAlgorithm::FlagNotAvailableInStandaloneTool )
+        continue;
+
       std::cout << "\t" << algorithm->id().toLocal8Bit().constData() << "\t" << algorithm->displayName().toLocal8Bit().constData() << "\n";
     }
 
@@ -407,7 +437,7 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &id )
   return 0;
 }
 
-int QgsProcessingExec::execute( const QString &id, const QVariantMap &params )
+int QgsProcessingExec::execute( const QString &id, const QVariantMap &params, const QString &ellipsoid, QgsUnitTypes::DistanceUnit distanceUnit, QgsUnitTypes::AreaUnit areaUnit, const QString &projectPath )
 {
   std::unique_ptr< QgsProcessingModelAlgorithm > model;
   const QgsProcessingAlgorithm *alg = nullptr;
@@ -430,6 +460,43 @@ int QgsProcessingExec::execute( const QString &id, const QVariantMap &params )
       std::cerr << QStringLiteral( "Algorithm %1 not found!\n" ).arg( id ).toLocal8Bit().constData();
       return 1;
     }
+
+    if ( alg->flags() & QgsProcessingAlgorithm::FlagNotAvailableInStandaloneTool )
+    {
+      std::cerr << QStringLiteral( "The \"%1\" algorithm is not available for use outside of the QGIS desktop application\n" ).arg( id ).toLocal8Bit().constData();
+      return 1;
+    }
+
+    if ( alg->flags() & QgsProcessingAlgorithm::FlagKnownIssues )
+    {
+      std::cout << "\n****************\n";
+      std::cout << "Warning: this algorithm contains known issues and the results may be unreliable!\n";
+      std::cout << "****************\n\n";
+    }
+
+    if ( alg->flags() & QgsProcessingAlgorithm::FlagDeprecated )
+    {
+      std::cout << "\n****************\n";
+      std::cout << "Warning: this algorithm is deprecated and may be removed in a future QGIS version!\n";
+      std::cout << "****************\n\n";
+    }
+
+    if ( alg->flags() & QgsProcessingAlgorithm::FlagRequiresProject && projectPath.isEmpty() )
+    {
+      std::cerr << QStringLiteral( "The \"%1\" algorithm requires a QGIS project to execute. Specify a path to an existing project with the \"--PROJECT_PATH=xxx\" argument.\n" ).arg( id ).toLocal8Bit().constData();
+      return 1;
+    }
+  }
+
+  std::unique_ptr< QgsProject > project;
+  if ( !projectPath.isEmpty() )
+  {
+    project = qgis::make_unique< QgsProject >();
+    if ( !project->read( projectPath ) )
+    {
+      std::cerr << QStringLiteral( "Could not load the QGIS project \"%1\"\n" ).arg( projectPath ).toLocal8Bit().constData();
+      return 1;
+    }
   }
 
   std::cout << "\n----------------\n";
@@ -440,13 +507,31 @@ int QgsProcessingExec::execute( const QString &id, const QVariantMap &params )
     std::cout << it.key().toLocal8Bit().constData() << ":\t" << it.value().toString().toLocal8Bit().constData() << '\n';
   }
 
+  std::cout << "\n";
+
+  if ( !ellipsoid.isEmpty() )
+    std::cout << "Using ellipsoid:\t" << ellipsoid.toLocal8Bit().constData() << '\n';
+  if ( distanceUnit != QgsUnitTypes::DistanceUnknownUnit )
+    std::cout << "Using distance unit:\t" << QgsUnitTypes::toString( distanceUnit ).toLocal8Bit().constData() << '\n';
+  if ( areaUnit != QgsUnitTypes::AreaUnknownUnit )
+    std::cout << "Using area unit:\t" << QgsUnitTypes::toString( areaUnit ).toLocal8Bit().constData() << '\n';
+
+  QgsProcessingContext context;
+  context.setEllipsoid( ellipsoid );
+  context.setDistanceUnit( distanceUnit );
+  context.setAreaUnit( areaUnit );
+  context.setProject( project.get() );
+
   const QgsProcessingParameterDefinitions defs = alg->parameterDefinitions();
   QList< const QgsProcessingParameterDefinition * > missingParams;
   for ( const QgsProcessingParameterDefinition *p : defs )
   {
-    if ( !( p->flags() & QgsProcessingParameterDefinition::FlagOptional ) && !params.contains( p->name() ) )
+    if ( !p->checkValueIsAcceptable( params.value( p->name() ), &context ) )
     {
-      missingParams << p;
+      if ( !( p->flags() & QgsProcessingParameterDefinition::FlagOptional ) && !params.contains( p->name() ) )
+      {
+        missingParams << p;
+      }
     }
   }
 
@@ -461,10 +546,17 @@ int QgsProcessingExec::execute( const QString &id, const QVariantMap &params )
     return 1;
   }
 
-  QgsProcessingContext context;
+  QString message;
+  if ( !alg->checkParameterValues( params, context, &message ) )
+  {
+    std::cerr << QStringLiteral( "ERROR:\tAn error was encountered while checking parameter values\n" ).toLocal8Bit().constData();
+    std::cerr << QStringLiteral( "\t%1\n" ).arg( message ).toLocal8Bit().constData();
+    return 1;
+  }
+
   ConsoleFeedback feedback;
 
-#if defined(Q_OS_UNIX) and !defined(Q_OS_ANDROID)
+#if defined(Q_OS_UNIX) && !defined(Q_OS_ANDROID)
   UnixSignalWatcher sigwatch;
   sigwatch.watchForSignal( SIGINT );
 
@@ -497,15 +589,15 @@ int QgsProcessingExec::execute( const QString &id, const QVariantMap &params )
       if ( it.key() == QLatin1String( "CHILD_INPUTS" ) || it.key() == QLatin1String( "CHILD_RESULTS" ) )
         continue;
 
-      QVariant res = it.value();
-      if ( res.type() == QVariant::List || res.type() == QVariant::StringList )
+      QVariant result = it.value();
+      if ( result.type() == QVariant::List || result.type() == QVariant::StringList )
       {
         QStringList list;
-        for ( const QVariant &v : res.toList() )
+        for ( const QVariant &v : result.toList() )
           list << v.toString();
-        res = list.join( ", " );
+        result = list.join( ", " );
       }
-      std::cout << it.key().toLocal8Bit().constData() << ":\t" << res.toString().toLocal8Bit().constData() << '\n';
+      std::cout << it.key().toLocal8Bit().constData() << ":\t" << result.toString().toLocal8Bit().constData() << '\n';
     }
     return 0;
   }

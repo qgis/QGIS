@@ -557,12 +557,24 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
   double widthOffset = 0;
   double heightOffset = 0;
 
+  double maxSymbolSize = settings.maximumSymbolSize();
+  double minSymbolSize = settings.minimumSymbolSize();
+
   if ( QgsMarkerSymbol *markerSymbol = dynamic_cast<QgsMarkerSymbol *>( s ) )
   {
-    // allow marker symbol to occupy bigger area if necessary
     double size = markerSymbol->size( *context ) / context->scaleFactor();
     height = size;
     width = size;
+  }
+
+  std::unique_ptr<QgsSymbol> minMaxSizeSymbol( QgsSymbolLayerUtils::restrictedSizeSymbol( s, minSymbolSize, maxSymbolSize, context, width, height ) );
+  if ( minMaxSizeSymbol )
+  {
+    s = minMaxSizeSymbol.get();
+  }
+
+  if ( s->type() == QgsSymbol::Marker )
+  {
     if ( width < desiredWidth )
     {
       widthOffset = ( desiredWidth - width ) / 2.0;
@@ -572,7 +584,6 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
       heightOffset = ( desiredHeight - height ) / 2.0;
     }
   }
-
   if ( ctx && ctx->painter )
   {
     double currentYCoord = ctx->top + ( itemHeight - desiredHeight ) / 2;
@@ -585,9 +596,8 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
     if ( QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layerNode()->layer() ) )
       opacity = static_cast<int >( std::round( 255 * vectorLayer->opacity() ) );
 
-    p->save();
-    if ( context->flags() & QgsRenderContext::Antialiasing )
-      p->setRenderHint( QPainter::Antialiasing );
+    QgsScopedQPainterState painterState( p );
+    context->setPainterFlagsUsingContext( p );
 
     switch ( settings.symbolAlignment() )
     {
@@ -616,8 +626,8 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
       QImage tempImage = QImage( tempImageSize, QImage::Format_ARGB32 );
       tempImage.fill( Qt::transparent );
       QPainter imagePainter( &tempImage );
-      if ( context->flags() & QgsRenderContext::Antialiasing )
-        imagePainter.setRenderHint( QPainter::Antialiasing );
+      context->setPainterFlagsUsingContext( &imagePainter );
+
       context->setPainter( &imagePainter );
       imagePainter.translate( maxBleed, maxBleed );
       s->drawPreviewIcon( &imagePainter, symbolSize, context, false, nullptr, &patchShape );
@@ -642,8 +652,6 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
       QgsTextRenderer::drawText( QPointF( width * dotsPerMM / 2, yBaselineVCenter ), 0, QgsTextRenderer::AlignCenter,
                                  QStringList() << mTextOnSymbolLabel, *context, mTextOnSymbolTextFormat );
     }
-
-    p->restore();
   }
 
   return QSizeF( std::max( width + 2 * widthOffset, static_cast< double >( desiredWidth ) ),
@@ -667,6 +675,8 @@ QJsonObject QgsSymbolLegendNode::exportSymbolToJson( const QgsLegendSettings &se
   ctx.setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * ctx.scaleFactor() ) ) );
   ctx.setForceVectorOutput( true );
   ctx.setFlag( QgsRenderContext::Antialiasing, context.flags() & QgsRenderContext::Antialiasing );
+  ctx.setFlag( QgsRenderContext::LosslessImageRendering, context.flags() & QgsRenderContext::LosslessImageRendering );
+
   Q_NOWARN_DEPRECATED_POP
 
   // ensure that a minimal expression context is available
@@ -1024,8 +1034,7 @@ QImage QgsWmsLegendNode::getLegendGraphic() const
       connect( mFetcher.get(), &QgsImageFetcher::error, this, &QgsWmsLegendNode::getLegendGraphicErrored );
       connect( mFetcher.get(), &QgsImageFetcher::progress, this, &QgsWmsLegendNode::getLegendGraphicProgress );
       mFetcher->start();
-    } // else QgsDebugMsg("XXX No legend supported?");
-
+    }
   }
 
   return mImage;
@@ -1033,8 +1042,6 @@ QImage QgsWmsLegendNode::getLegendGraphic() const
 
 QVariant QgsWmsLegendNode::data( int role ) const
 {
-  //QgsDebugMsg( QStringLiteral("XXX data called with role %1 -- mImage size is %2x%3").arg(role).arg(mImage.width()).arg(mImage.height()) );
-
   if ( role == Qt::DecorationRole )
   {
     return QPixmap::fromImage( getLegendGraphic() );
@@ -1089,7 +1096,6 @@ QJsonObject QgsWmsLegendNode::exportSymbolToJson( const QgsLegendSettings &, con
   return json;
 }
 
-/* private */
 QImage QgsWmsLegendNode::renderMessage( const QString &msg ) const
 {
   const int fontHeight = 10;
@@ -1113,38 +1119,33 @@ QImage QgsWmsLegendNode::renderMessage( const QString &msg ) const
 void QgsWmsLegendNode::getLegendGraphicProgress( qint64 cur, qint64 tot )
 {
   QString msg = QStringLiteral( "Downloading... %1/%2" ).arg( cur ).arg( tot );
-  //QgsDebugMsg ( QString("XXX %1").arg(msg) );
   mImage = renderMessage( msg );
   emit dataChanged();
 }
 
-void QgsWmsLegendNode::getLegendGraphicErrored( const QString &msg )
+void QgsWmsLegendNode::getLegendGraphicErrored( const QString & )
 {
-  if ( ! mFetcher ) return; // must be coming after finish
+  if ( ! mFetcher )
+    return; // must be coming after finish
 
-  mImage = renderMessage( msg );
-  //QgsDebugMsg( QStringLiteral("XXX emitting dataChanged after writing an image of %1x%2").arg(mImage.width()).arg(mImage.height()) );
-
+  mImage = QImage();
   emit dataChanged();
 
   mFetcher.reset();
 
   mValid = true; // we consider it valid anyway
-  // ... but remove validity after 5 seconds
-  //QTimer::singleShot(5000, this, SLOT(invalidateMapBasedData()));
 }
 
 void QgsWmsLegendNode::getLegendGraphicFinished( const QImage &image )
 {
-  if ( ! mFetcher ) return; // must be coming after error
+  if ( ! mFetcher )
+    return; // must be coming after error
 
-  //QgsDebugMsg( QStringLiteral("XXX legend graphic finished, image is %1x%2").arg(theImage.width()).arg(theImage.height()) );
   if ( ! image.isNull() )
   {
     if ( image != mImage )
     {
       mImage = image;
-      //QgsDebugMsg( QStringLiteral("XXX emitting dataChanged") );
       emit dataChanged();
     }
     mValid = true; // only if not null I guess
@@ -1154,7 +1155,6 @@ void QgsWmsLegendNode::getLegendGraphicFinished( const QImage &image )
 
 void QgsWmsLegendNode::invalidateMapBasedData()
 {
-  //QgsDebugMsg( QStringLiteral("XXX invalidateMapBasedData called") );
   // TODO: do this only if this extent != prev extent ?
   mValid = false;
   emit dataChanged();

@@ -142,7 +142,7 @@ QgsColorRampShader QgsColorRampShaderWidget::shader() const
       continue;
     }
     QgsColorRampShader::ColorRampItem newColorRampItem;
-    newColorRampItem.value = currentItem->text( ValueColumn ).toDouble();
+    newColorRampItem.value = QLocale().toDouble( currentItem->text( ValueColumn ) );
     newColorRampItem.color = currentItem->data( ColorColumn, Qt::EditRole ).value<QColor>();
     newColorRampItem.label = currentItem->text( LabelColumn );
     colorRampItems.append( newColorRampItem );
@@ -181,7 +181,7 @@ void QgsColorRampShaderWidget::autoLabel()
       {
         label = "<= " + currentItem->text( ValueColumn ) + unit;
       }
-      else if ( currentItem->text( ValueColumn ).toDouble() == std::numeric_limits<double>::infinity() )
+      else if ( QLocale().toDouble( currentItem->text( ValueColumn ) ) == std::numeric_limits<double>::infinity() )
       {
         label = "> " + mColormapTreeWidget->topLevelItem( i - 1 )->text( ValueColumn ) + unit;
       }
@@ -330,7 +330,7 @@ void QgsColorRampShaderWidget::classify()
   for ( ; it != colorRampItemList.end(); ++it )
   {
     QgsTreeWidgetItemObject *newItem = new QgsTreeWidgetItemObject( mColormapTreeWidget );
-    newItem->setText( ValueColumn, QString::number( it->value, 'g', 15 ) );
+    newItem->setText( ValueColumn, QLocale().toString( it->value, 'g', 15 ) );
     newItem->setData( ColorColumn, Qt::EditRole, it->color );
     newItem->setText( LabelColumn, QString() ); // Labels will be populated in autoLabel()
     newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
@@ -376,6 +376,18 @@ void QgsColorRampShaderWidget::applyColorRamp()
   int topLevelItemCount = mColormapTreeWidget->topLevelItemCount();
   if ( topLevelItemCount > 0 )
   {
+    // We need to have valid min/max values here. If we haven't, load from colormap
+    double min, max;
+    if ( std::isnan( mMin ) || std::isnan( mMax ) )
+    {
+      colormapMinMax( min, max );
+    }
+    else
+    {
+      min = mMin;
+      max = mMax;
+    }
+
     // if the list values has been customized, maintain pre-existing values
     QTreeWidgetItem *currentItem = nullptr;
     for ( int i = 0; i < topLevelItemCount; ++i )
@@ -386,8 +398,8 @@ void QgsColorRampShaderWidget::applyColorRamp()
         continue;
       }
 
-      double value = currentItem->text( ValueColumn ).toDouble();
-      double position = ( value - mMin ) / ( mMax - mMin );
+      double value = QLocale().toDouble( currentItem->text( ValueColumn ) );
+      double position = ( value - min ) / ( max - min );
       whileBlocking( static_cast<QgsTreeWidgetItemObject *>( currentItem ) )->setData( ColorColumn, Qt::EditRole, ramp->color( position ) );
     }
 
@@ -406,7 +418,7 @@ void QgsColorRampShaderWidget::populateColormapTreeWidget( const QList<QgsColorR
   for ( ; it != colorRampItems.constEnd(); ++it )
   {
     QgsTreeWidgetItemObject *newItem = new QgsTreeWidgetItemObject( mColormapTreeWidget );
-    newItem->setText( ValueColumn, QString::number( it->value, 'g', 15 ) );
+    newItem->setText( ValueColumn, QLocale().toString( it->value, 'g', 15 ) );
     newItem->setData( ColorColumn, Qt::EditRole, it->color );
     newItem->setText( LabelColumn, it->label );
     newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
@@ -492,7 +504,7 @@ void QgsColorRampShaderWidget::mLoadFromFileButton_clicked()
             inputStringComponents = inputLine.split( ',' );
             if ( inputStringComponents.size() == 6 )
             {
-              QgsColorRampShader::ColorRampItem currentItem( inputStringComponents[0].toDouble(),
+              QgsColorRampShader::ColorRampItem currentItem( QLocale().toDouble( inputStringComponents[0] ),
                   QColor::fromRgb( inputStringComponents[1].toInt(), inputStringComponents[2].toInt(),
                                    inputStringComponents[3].toInt(), inputStringComponents[4].toInt() ),
                   inputStringComponents[5] );
@@ -570,7 +582,7 @@ void QgsColorRampShaderWidget::mExportToFileButton_clicked()
           continue;
         }
         color = currentItem->data( ColorColumn, Qt::EditRole ).value<QColor>();
-        outputStream << currentItem->text( ValueColumn ).toDouble() << ',';
+        outputStream << QLocale().toDouble( currentItem->text( ValueColumn ) ) << ',';
         outputStream << color.red() << ',' << color.green() << ',' << color.blue() << ',' << color.alpha() << ',';
         if ( currentItem->text( LabelColumn ).isEmpty() )
         {
@@ -644,8 +656,6 @@ void QgsColorRampShaderWidget::mColormapTreeWidget_itemEdited( QTreeWidgetItem *
 
 void QgsColorRampShaderWidget::setFromShader( const QgsColorRampShader &colorRampShader )
 {
-  populateColormapTreeWidget( colorRampShader.colorRampItemList() );
-
   // Those objects are connected to classify() the color ramp shader if they change, or call widget change
   // need to block them to avoid to classify and to alter the color ramp, or to call duplicate widget change
   whileBlocking( mClipCheckBox )->setChecked( colorRampShader.clip() );
@@ -665,6 +675,8 @@ void QgsColorRampShaderWidget::setFromShader( const QgsColorRampShader &colorRam
     QString defaultPalette = settings.value( QStringLiteral( "/Raster/defaultPalette" ), "Spectral" ).toString();
     btnColorRamp->setColorRampFromName( defaultPalette );
   }
+
+  populateColormapTreeWidget( colorRampShader.colorRampItemList() );
 
   emit widgetChanged();
 }
@@ -727,19 +739,28 @@ double QgsColorRampShaderWidget::maximum() const
   return mMax;
 }
 
-
-
-void QgsColorRampShaderWidget::loadMinimumMaximumFromTree()
+bool QgsColorRampShaderWidget::colormapMinMax( double &min, double &max ) const
 {
   QTreeWidgetItem *item = mColormapTreeWidget->topLevelItem( 0 );
   if ( !item )
   {
-    return;
+    return false;
   }
 
-  double min = item->text( ValueColumn ).toDouble();
+  min = QLocale().toDouble( item->text( ValueColumn ) );
   item = mColormapTreeWidget->topLevelItem( mColormapTreeWidget->topLevelItemCount() - 1 );
-  double max = item->text( ValueColumn ).toDouble();
+  max = QLocale().toDouble( item->text( ValueColumn ) );
+
+  return true;
+}
+
+void QgsColorRampShaderWidget::loadMinimumMaximumFromTree()
+{
+  double min = 0, max = 0;
+  if ( ! colormapMinMax( min, max ) )
+  {
+    return;
+  }
 
   if ( !qgsDoubleNear( mMin, min ) || !qgsDoubleNear( mMax, max ) )
   {

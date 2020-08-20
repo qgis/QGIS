@@ -549,6 +549,46 @@ class TestQgsExpression: public QObject
       QVERIFY( expression4.hasEvalError() );
     }
 
+    void fieldsButNoFeature()
+    {
+      // test evaluating an expression with fields in the context but no feature
+      QgsExpressionContext context;
+      QgsExpressionContextScope *scope = new QgsExpressionContextScope();
+
+      QgsFields fields;
+      fields.append( QgsField( QStringLiteral( "x" ) ) );
+      fields.append( QgsField( QStringLiteral( "y" ) ) );
+      fields.append( QgsField( QStringLiteral( "z" ) ) );
+      scope->setFields( fields );
+      context.appendScope( scope );
+
+      // doesn't exist
+      QgsExpression expression( "\"a\"" );
+      QVERIFY( !expression.hasParserError() );
+      QVERIFY( !expression.evaluate( &context ).isValid() );
+      QVERIFY( expression.hasEvalError() );
+      QCOMPARE( expression.evalErrorString(), QStringLiteral( "Field 'a' not found" ) );
+      expression = QgsExpression( "\"x\"" );
+      QVERIFY( !expression.hasParserError() );
+      QVERIFY( !expression.evaluate( &context ).isValid() );
+      QVERIFY( expression.hasEvalError() );
+      QCOMPARE( expression.evalErrorString(), QStringLiteral( "No feature available for field 'x' evaluation" ) );
+      expression = QgsExpression( "\"y\"" );
+      QVERIFY( !expression.hasParserError() );
+      QVERIFY( !expression.evaluate( &context ).isValid() );
+      QVERIFY( expression.hasEvalError() );
+      QCOMPARE( expression.evalErrorString(), QStringLiteral( "No feature available for field 'y' evaluation" ) );
+
+      QgsFeature f( fields );
+      f.setValid( true );
+      f.setAttributes( QgsAttributes() << 1 << 2 << 3 );
+      scope->setFeature( f );
+      expression = QgsExpression( "\"z\"" );
+      QVERIFY( !expression.hasParserError() );
+      QCOMPARE( expression.evaluate( &context ).toInt(), 3 );
+      QVERIFY( !expression.hasEvalError() );
+    }
+
     void evaluation_data()
     {
       QTest::addColumn<QString>( "string" );
@@ -829,6 +869,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "Y coordinate to degree minute second with suffix" ) << "to_dms(6.3545681,'y',2,'suffix')" << false << QVariant( "6°21′16.45″N" );
       QTest::newRow( "Y coordinate to degree minute second without formatting" ) << "to_dms(6.3545681,'y',2,'')" << false << QVariant( "6°21′16.45″" );
       QTest::newRow( "Y coordinate to degree minute second" ) << "to_dms(6.3545681,'y',2)" << false << QVariant( "6°21′16.45″" );
+      QTest::newRow( "degree minute second string to decimal" ) << "to_decimal('6°21′16.45″N')" << false << QVariant( 6.35456944444 );
+      QTest::newRow( "wrong degree minute second string to decimal" ) << "to_decimal('qgis')" << false << QVariant();
 
       // geometry functions
       QTest::newRow( "geom_to_wkb" ) << "geom_to_wkt(geom_from_wkb(geom_to_wkb(make_point(4,5))))" << false << QVariant( "Point (4 5)" );
@@ -998,6 +1040,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "exterior_ring polygon" ) << "geom_to_wkt(exterior_ring(geom_from_wkt('POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1),( 0.1 0.1, 0.1 0.2, 0.2 0.2, 0.2, 0.1, 0.1 0.1))')))" << false << QVariant( "LineString (-1 -1, 4 0, 4 2, 0 2, -1 -1)" );
       QTest::newRow( "exterior_ring line" ) << "exterior_ring(geom_from_wkt('LINESTRING(0 0, 1 1, 2 2)'))" << false << QVariant();
       QTest::newRow( "centroid polygon" ) << "geom_to_wkt(centroid( geomFromWKT('POLYGON((0 0,0 9,9 0,0 0))')))" << false << QVariant( "Point (3 3)" );
+      QTest::newRow( "centroid named argument geom" ) << "geom_to_wkt(centroid( geom:=geomFromWKT('POLYGON((0 0,0 9,9 0,0 0))')))" << false << QVariant( "Point (3 3)" );
+      QTest::newRow( "centroid named argument geometry" ) << "geom_to_wkt(centroid( geometry:=geomFromWKT('POLYGON((0 0,0 9,9 0,0 0))')))" << false << QVariant( "Point (3 3)" );
       QTest::newRow( "centroid multi polygon" ) << "geom_to_wkt(centroid( geomFromWKT('MULTIPOLYGON(((0 0,0 1,1 1,1 0,0 0)),((2 0,2 1,3 1,3 0,2 0)))') ))" << false << QVariant( "Point (1.5 0.5)" );
       QTest::newRow( "centroid point" ) << "geom_to_wkt(centroid( geomFromWKT('POINT (1.5 0.5)') ))" << false << QVariant( "Point (1.5 0.5)" );
       QTest::newRow( "centroid line" ) << "geom_to_wkt(centroid( geomFromWKT('LINESTRING (-1 2, 9 12)') ))" << false << QVariant( "Point (4 7)" );
@@ -1240,6 +1284,12 @@ class TestQgsExpression: public QObject
       QTest::newRow( "m_min line M NaN" ) << "m_min(make_line(geom_from_wkt('PointZM (0 0 0 nan)'),geom_from_wkt('PointZM (1 1 1 2)')))" << false << QVariant( 2.0 );
       QTest::newRow( "m_min point" ) << "m_min(make_point_m(0,0,1))" << false << QVariant( 1.0 );
       QTest::newRow( "m_min line" ) << "m_min(make_line(make_point_m(0,0,1),make_point_m(-1,-1,2),make_point_m(-2,-2,0)))" << false << QVariant( 0.0 );
+      QTest::newRow( "main angle polygon" ) << "round(main_angle( geom_from_wkt('POLYGON((0 0,2 9,9 2,0 0))')))" << false << QVariant( 77 );
+      QTest::newRow( "main angle multi polygon" ) << "round(main_angle( geom_from_wkt('MULTIPOLYGON(((0 0,3 10,1 10,1 6,0 0)))')))" << false << QVariant( 17 );
+      QTest::newRow( "main angle point" ) << "main_angle( geom_from_wkt('POINT (1.5 0.5)') )" << true << QVariant();
+      QTest::newRow( "main angle line" ) << "round(main_angle( geom_from_wkt('LINESTRING (-1 2, 9 12)') ))" << false << QVariant( 45 );
+      QTest::newRow( "main angle not geom" ) << "main_angle('g')" << true << QVariant();
+      QTest::newRow( "main angle null" ) << "main_angle(NULL)" << false << QVariant();
 
       // string functions
       QTest::newRow( "format_number" ) << "format_number(1999.567,2)" << false << QVariant( "1,999.57" );

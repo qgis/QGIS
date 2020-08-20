@@ -12,7 +12,6 @@
 
 
 
-
 class QgsMeshDatasetIndex
 {
 %Docstring
@@ -449,12 +448,10 @@ Returns whether dataset group has vector data
 Returns whether dataset group has scalar data
 %End
 
-
     bool isTemporal() const;
 %Docstring
 Returns whether the dataset group is temporal (contains time-related dataset)
 %End
-
 
     DataType dataType() const;
 %Docstring
@@ -558,6 +555,216 @@ Returns maximum number of vertical levels for 3d stacked meshes
 };
 
 
+class QgsMeshDataset
+{
+%Docstring
+
+Abstract class that represents a dataset
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsmeshdataset.h"
+%End
+  public:
+    QgsMeshDataset();
+%Docstring
+Constructor
+%End
+
+    virtual ~QgsMeshDataset();
+
+    virtual QgsMeshDatasetValue datasetValue( int valueIndex ) const = 0;
+%Docstring
+Returns the value with index ``valueIndex``
+%End
+
+    virtual QgsMeshDataBlock datasetValues( bool isScalar, int valueIndex, int count ) const = 0;
+%Docstring
+Returns ``count`` values from ``valueIndex``
+%End
+
+    virtual QgsMeshDataBlock areFacesActive( int faceIndex, int count ) const = 0;
+%Docstring
+Returns whether faces are active
+%End
+
+    virtual bool isActive( int faceIndex ) const = 0;
+%Docstring
+Returns whether the face is active
+%End
+
+    virtual QgsMeshDatasetMetadata metadata() const = 0;
+%Docstring
+Returns the metadata of the dataset
+%End
+
+    virtual int valuesCount() const = 0;
+%Docstring
+Returns the values count
+%End
+};
+
+class QgsMeshDatasetGroup
+{
+%Docstring
+
+Abstract class that represents a dataset group
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsmeshdataset.h"
+%End
+  public:
+
+    enum Type
+    {
+      None,
+      Persistent,
+      Memory,
+      Virtual,
+    };
+
+    QgsMeshDatasetGroup();
+%Docstring
+Default constructor
+%End
+    virtual ~QgsMeshDatasetGroup();
+
+    QgsMeshDatasetGroup( const QString &name );
+%Docstring
+Constructor with the ``name`` of the dataset group
+%End
+
+    QgsMeshDatasetGroup( const QString &name, QgsMeshDatasetGroupMetadata::DataType dataType );
+%Docstring
+Constructor with the ``name`` of the dataset group and the ``dataTYpe``
+%End
+
+    virtual void initialize() = 0;
+%Docstring
+Initialize the dataset group
+%End
+
+    QgsMeshDatasetGroupMetadata groupMetadata() const;
+%Docstring
+Returns the metadata of the dataset group
+%End
+
+    virtual QgsMeshDatasetMetadata datasetMetadata( int datasetIndex ) const = 0;
+%Docstring
+Returns the metadata of the dataset with index ``datasetIndex``
+%End
+
+    virtual int datasetCount() const = 0;
+%Docstring
+Returns the count of datasets in the group
+%End
+
+    virtual QgsMeshDataset *dataset( int index ) const = 0;
+%Docstring
+Returns the dataset with ``index``
+%End
+
+    virtual QgsMeshDatasetGroup::Type type() const = 0;
+%Docstring
+Returns the type of dataset group
+%End
+
+    double minimum() const;
+%Docstring
+Returns the minimum value of the whole dataset group
+%End
+
+    double maximum() const;
+%Docstring
+Returns the maximum value of the whole dataset group
+%End
+
+    void setMinimumMaximum( double min, double max );
+%Docstring
+Overrides the minimum and the maximum value of the whole dataset group
+%End
+
+    QString name() const;
+%Docstring
+Returns the name of the dataset group
+%End
+
+    void setName( const QString &name );
+%Docstring
+Sets the name of the dataset group
+%End
+
+    QgsMeshDatasetGroupMetadata::DataType dataType() const;
+%Docstring
+Returns the data type of the dataset group
+%End
+
+    void setDataType( const QgsMeshDatasetGroupMetadata::DataType &dataType );
+%Docstring
+Sets the data type of the dataset group
+%End
+
+    void addExtraMetadata( QString key, QString value );
+%Docstring
+Adds extra metadata to the group
+%End
+    QMap<QString, QString> extraMetadata() const;
+%Docstring
+Returns all the extra metadata of the group
+%End
+
+    bool isScalar() const;
+%Docstring
+Returns whether the group contain scalar values
+%End
+
+    void setIsScalar( bool isScalar );
+%Docstring
+Sets whether the group contain scalar values
+%End
+
+    bool checkValueCountPerDataset( int count ) const;
+%Docstring
+Returns whether all the datasets contain ``count`` values
+%End
+
+    void calculateStatistic();
+%Docstring
+Calculates the statictics (minimum and maximum)
+%End
+
+    virtual QStringList datasetGroupNamesDependentOn() const;
+%Docstring
+Returns the dataset group variable name which this dataset group depends on
+%End
+
+    virtual QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const = 0;
+%Docstring
+Write dataset group information in a DOM element
+%End
+
+    virtual QString description() const;
+%Docstring
+Returns some information about the dataset group
+%End
+
+    void setReferenceTime( const QDateTime &referenceTime );
+%Docstring
+Sets the reference time of the dataset group
+%End
+
+  protected:
+
+
+};
+
+
+
 class QgsMeshDatasetGroupTreeItem
 {
 %Docstring
@@ -578,6 +785,8 @@ Wind speed
 Minimum
 Maximum
 
+Tree items handle also the dependencies between dataset groups represented by these items
+
 .. versionadded:: 3.14
 %End
 
@@ -586,34 +795,27 @@ Maximum
 %End
   public:
 
-    enum StorageType
-    {
-      None,
-      File,
-      Memory,
-      OnTheFly
-    };
-
     QgsMeshDatasetGroupTreeItem();
 %Docstring
 Constructor for an empty dataset group tree item
 %End
 
     QgsMeshDatasetGroupTreeItem( const QString &defaultName,
-                                 const QString &providerName,
+                                 const QString &sourceName,
                                  bool isVector,
                                  int index );
 %Docstring
 Constructor
 
 :param defaultName: the name that will be used to display the item if iot not overrides (:py:func:`setName`)
+:param sourceName: the name used by the source (provider, dataset group store,...)
 :param isVector: whether the dataset group is a vector dataset group
 :param index: index of the dataset group
 %End
 
     QgsMeshDatasetGroupTreeItem( const QDomElement &itemElement, const QgsReadWriteContext &context );
 %Docstring
-Constructor from a DOM element, contruct also the children
+Constructor from a DOM element, constructs also the children
 
 :param itemElement: the DOM element
 :param context: writing context (e.g. for conversion between relative and absolute paths)
@@ -658,7 +860,7 @@ Returns a child
 
 :param row: the position of the child
 
-:return: the item at the positon ``row``
+:return: the item at the position ``row``
 %End
 
     QgsMeshDatasetGroupTreeItem *childFromDatasetGroupIndex( int index );
@@ -702,7 +904,7 @@ Returns the position of the item in the parent
     QString name() const;
 %Docstring
 Returns the name of the item
-This mame is the default name if the name has not been overrided (:py:func:`setName`)
+This name is the default name if the name has not been overridden (:py:func:`setName`)
 
 :return: the name to display
 %End
@@ -711,7 +913,7 @@ This mame is the default name if the name has not been overrided (:py:func:`setN
 %Docstring
 Overrides the default name with the name to display.
 The default name is still stored in the item
-but will not be displayed anymore except if the empty string is setted.
+but will not be displayed anymore except if the empty string is set.
 
 :param name: to display
 %End
@@ -756,26 +958,49 @@ Sets whether the item is enabled, that is if it is displayed in view
 :return: the default name
 %End
 
-    QgsMeshDatasetGroupTreeItem::StorageType storageType() const;
+    QgsMeshDatasetGroup::Type datasetGroupType() const;
 %Docstring
 
-:return: where the dataset group is stored
+:return: the dataset group type
 
 .. versionadded:: 3.16
 %End
 
-    void setStorageType( QgsMeshDatasetGroupTreeItem::StorageType storageType );
+    QList<int> groupIndexDependencies() const;
 %Docstring
-Sets where the dataset is stored
+Returns a list of group index corresponding to dataset group that depends on the dataset group represented by this item
 
-:param storeType: the type of storing
+:return: list of group index
+%End
+
+    QString description() const;
+%Docstring
+Returns description about the dataset group (URI, formula,...)
+
+.. versionadded:: 3.16
+%End
+
+    void setDatasetGroup( QgsMeshDatasetGroup *datasetGroup );
+%Docstring
+Set parameters of the item in accordance with the dataset group
+
+:param datasetGroup: pointer to the dataset group to accord with
+
+.. versionadded:: 3.16
+%End
+
+    void setPersistentDatasetGroup( const QString &uri );
+%Docstring
+Set parameters of the item in accordance with the persistent dataset group with ``uri``
+
+:param uri: uri of the persistant dataset group
 
 .. versionadded:: 3.16
 %End
 
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context );
 %Docstring
-Write the item and its children in a DOM document
+Writes the item and its children in a DOM document
 
 :param doc: the DOM document
 :param context: writing context (e.g. for conversion between relative and absolute paths)
@@ -784,7 +1009,6 @@ Write the item and its children in a DOM document
 %End
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

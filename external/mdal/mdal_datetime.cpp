@@ -49,6 +49,37 @@ MDAL::DateTime::DateTime( double value, Epoch epoch ):  mValid( true )
   }
 }
 
+MDAL::DateTime::DateTime( const std::string &fromISO8601 )
+{
+  std::vector<std::string> splitedDateTime = split( fromISO8601, 'T' );
+
+  if ( splitedDateTime.size() != 2 )
+    return;
+  //parse date
+  std::vector<std::string> splitedDate = split( splitedDateTime.at( 0 ), '-' );
+  if ( splitedDate.size() != 3 )
+    return;
+
+  //parse time
+  splitedDateTime[1] = replace( splitedDateTime.at( 1 ), "Z", "", ContainsBehaviour::CaseInsensitive );
+  std::vector<std::string> splitedTime = split( splitedDateTime.at( 1 ), ':' );
+  if ( splitedTime.size() < 2 || splitedTime.size() > 3 )
+    return;
+
+  DateTimeValues dateTimeValues;
+  dateTimeValues.year = toInt( splitedDate[0] );
+  dateTimeValues.month = toInt( splitedDate[1] );
+  dateTimeValues.day = toInt( splitedDate[2] );
+  dateTimeValues.hours = toInt( splitedTime[0] );
+  dateTimeValues.minutes = toInt( splitedTime[1] );
+  if ( splitedTime.size() == 3 )
+    dateTimeValues.seconds = toDouble( splitedTime[2] );
+  else
+    dateTimeValues.seconds = 0.0;
+
+  setWithGregorianCalendarDate( dateTimeValues );
+}
+
 std::string MDAL::DateTime::toStandardCalendarISO8601() const
 {
   if ( mValid )

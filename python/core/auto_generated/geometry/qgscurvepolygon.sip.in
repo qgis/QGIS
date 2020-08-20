@@ -192,6 +192,8 @@ direction.
 .. versionadded:: 3.6
 %End
 
+    virtual QPainterPath asQPainterPath() const;
+
     virtual void draw( QPainter &p ) const;
 
     virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) throw( QgsCsException );

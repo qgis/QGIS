@@ -64,9 +64,8 @@ class QgsMeshDatasetGroupStore;
  * vertices and faces is comma separated coordinates and connections for mesh.
  * E.g. to create mesh with one quad and one triangle
  *
- * \code
- *  QString uri(
- *      "1.0, 2.0 \n" \
+ * \code{py}
+ *  uri = "1.0, 2.0 \n" \
  *      "2.0, 2.0 \n" \
  *      "3.0, 2.0 \n" \
  *      "2.0, 3.0 \n" \
@@ -74,8 +73,8 @@ class QgsMeshDatasetGroupStore;
  *      "---" \
  *      "0, 1, 3, 4 \n" \
  *      "1, 2, 3 \n"
- *    );
- *    QgsMeshLayer *scratchLayer = new QgsMeshLayer(uri, "My Scratch layer", "mesh_memory");
+ *
+ *  scratchLayer = QgsMeshLayer(uri, "My Scratch layer", "mesh_memory")
  * \endcode
  *
  * \subsection mdal MDAL data provider (mdal)
@@ -83,9 +82,9 @@ class QgsMeshDatasetGroupStore;
  * Accesses data using the MDAL drivers (https://github.com/lutraconsulting/MDAL). The url
  * is the MDAL connection string. QGIS must be built with MDAL support to allow this provider.
 
- * \code
- *     QString uri = "test/land.2dm";
- *     QgsMeshLayer *scratchLayer = new QgsMeshLayer(uri, "My Scratch Layer",  "mdal");
+ * \code{py}
+ *     uri = "test/land.2dm"
+ *     scratchLayer = QgsMeshLayer(uri, "My Scratch Layer",  "mdal")
  * \endcode
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
@@ -170,7 +169,6 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QgsMapLayerTemporalProperties *temporalProperties() override;
     void reload() override;
     QStringList subLayers() const override;
-    bool isTemporary() const override;
 
     //! Returns the provider type for this layer
     QString providerType() const;
@@ -194,7 +192,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      *
      * \since QGIS 3.16
      */
-    bool addDatasets( QgsMeshDatasetGroup *datasetGroup )SIP_SKIP;
+    bool addDatasets( QgsMeshDatasetGroup *datasetGroup ) SIP_SKIP;
 
     /**
      * Saves datasets group on file with the specified \a driver
@@ -497,10 +495,9 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
       */
     QgsMeshDatasetValue dataset1dValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point, double searchRadius ) const;
 
-
     /**
       * Returns dataset index from datasets group depending on the time range.
-      * If the temporal properties is not active, returns invalid dataset index
+      * If the temporal properties is not active, returns invalid dataset index. This method is used for rendering mesh layer.
       *
       * \param timeRange the time range
       * \returns dataset index
@@ -513,6 +510,22 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
       * \since QGIS 3.14
       */
     QgsMeshDatasetIndex datasetIndexAtTime( const QgsDateTimeRange &timeRange, int datasetGroupIndex ) const;
+
+    /**
+      * Returns dataset index from datasets group depending on the relative time from the layer reference time.
+      * Dataset index is valid even the temporal properties is inactive. This method is used for calculation on mesh layer.
+      *
+      * \param relativeTime the relative from the mesh layer reference time
+      * \returns dataset index
+      *
+      * \note the returned dataset index depends on the matching method, see setTemporalMatchingMethod()
+      *
+      * \note indexes are used to distinguish all the dataset groups handled by the layer (from dataprovider, extra dataset group,...)
+      * In the layer scope, those indexes are different from the data provider indexes.
+      *
+      * \since QGIS 3.16
+      */
+    QgsMeshDatasetIndex datasetIndexAtRelativeTime( const QgsInterval &relativeTime, int datasetGroupIndex ) const;
 
     /**
       * Returns dataset index from active scalar group depending on the time range.
@@ -652,11 +665,18 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QgsInterval firstValidTimeStep() const;
 
     /**
-     * Returns the relative time (in milliseconds) of the dataset from the reference time of its group
+     * Returns the relative time of the dataset from the reference time of its group
      *
      * \since QGIS 3.16
      */
     QgsInterval datasetRelativeTime( const QgsMeshDatasetIndex &index );
+
+    /**
+     * Returns the relative time (in milliseconds) of the dataset from the reference time of its group
+     *
+     * \since QGIS 3.16
+     */
+    qint64 datasetRelativeTimeInMilliseconds( const QgsMeshDatasetIndex &index );
 
   public slots:
 

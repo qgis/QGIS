@@ -186,12 +186,36 @@ QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( QgsVectorLayer *
   connect( mOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsSimpleLineSymbolLayerWidget::mOffsetUnitWidget_changed );
   connect( mDashPatternUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsSimpleLineSymbolLayerWidget::mDashPatternUnitWidget_changed );
   connect( mDrawInsideCheckBox, &QCheckBox::stateChanged, this, &QgsSimpleLineSymbolLayerWidget::mDrawInsideCheckBox_stateChanged );
+  connect( mPatternOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsSimpleLineSymbolLayerWidget::patternOffsetUnitChanged );
+  connect( mCheckAlignDash, &QCheckBox::toggled, this, [ = ]
+  {
+    mCheckDashCorners->setEnabled( mCheckAlignDash->isChecked() );
+    if ( !mCheckAlignDash->isChecked() )
+      mCheckDashCorners->setChecked( false );
+
+    if ( mLayer )
+    {
+      mLayer->setAlignDashPattern( mCheckAlignDash->isChecked() );
+      emit changed();
+    }
+  } );
+  connect( mCheckDashCorners, &QCheckBox::toggled, this, [ = ]
+  {
+    if ( mLayer )
+    {
+      mLayer->setTweakDashPatternOnCorners( mCheckDashCorners->isChecked() );
+      emit changed();
+    }
+  } );
+
   mPenWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                  << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mDashPatternUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mPatternOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                      << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
   btnChangeColor->setAllowOpacity( true );
   btnChangeColor->setColorDialogTitle( tr( "Select Line Color" ) );
@@ -212,6 +236,7 @@ QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( QgsVectorLayer *
   } );
 
   spinOffset->setClearValue( 0.0 );
+  spinPatternOffset->setClearValue( 0.0 );
 
   if ( vl && vl->geometryType() != QgsWkbTypes::PolygonGeometry )
   {
@@ -233,6 +258,7 @@ QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( QgsVectorLayer *
   connect( spinOffset, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleLineSymbolLayerWidget::offsetChanged );
   connect( cboCapStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSimpleLineSymbolLayerWidget::penStyleChanged );
   connect( cboJoinStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSimpleLineSymbolLayerWidget::penStyleChanged );
+  connect( spinPatternOffset, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimpleLineSymbolLayerWidget::patternOffsetChanged );
 
   updatePatternIcon();
 
@@ -272,8 +298,10 @@ void QgsSimpleLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   mDashPatternUnitWidget->blockSignals( true );
   mDashPatternUnitWidget->setUnit( mLayer->customDashPatternUnit() );
   mDashPatternUnitWidget->setMapUnitScale( mLayer->customDashPatternMapUnitScale() );
-  mDashPatternUnitWidget->setMapUnitScale( mLayer->customDashPatternMapUnitScale() );
   mDashPatternUnitWidget->blockSignals( false );
+
+  whileBlocking( mPatternOffsetUnitWidget )->setUnit( mLayer->dashPatternOffsetUnit() );
+  whileBlocking( mPatternOffsetUnitWidget )->setMapUnitScale( mLayer->dashPatternOffsetMapUnitScale() );
 
   // set values
   spinWidth->blockSignals( true );
@@ -294,6 +322,7 @@ void QgsSimpleLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   cboPenStyle->blockSignals( false );
   cboJoinStyle->blockSignals( false );
   cboCapStyle->blockSignals( false );
+  whileBlocking( spinPatternOffset )->setValue( mLayer->dashPatternOffset() );
 
   //use a custom dash pattern?
   bool useCustomDashPattern = mLayer->useCustomDashPattern();
@@ -315,6 +344,10 @@ void QgsSimpleLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 
   whileBlocking( mRingFilterComboBox )->setCurrentIndex( mRingFilterComboBox->findData( mLayer->ringFilter() ) );
 
+  whileBlocking( mCheckAlignDash )->setChecked( mLayer->alignDashPattern() );
+  mCheckDashCorners->setEnabled( mLayer->alignDashPattern() );
+  whileBlocking( mCheckDashCorners )->setChecked( mLayer->tweakDashPatternOnCorners() && mLayer->alignDashPattern() );
+
   updatePatternIcon();
 
   registerDataDefinedButton( mColorDDBtn, QgsSymbolLayer::PropertyStrokeColor );
@@ -324,6 +357,7 @@ void QgsSimpleLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   registerDataDefinedButton( mPenStyleDDBtn, QgsSymbolLayer::PropertyStrokeStyle );
   registerDataDefinedButton( mJoinStyleDDBtn, QgsSymbolLayer::PropertyJoinStyle );
   registerDataDefinedButton( mCapStyleDDBtn, QgsSymbolLayer::PropertyCapStyle );
+  registerDataDefinedButton( mPatternOffsetDDBtn, QgsSymbolLayer::PropertyDashPatternOffset );
 
   updateAssistantSymbol();
 }
@@ -358,6 +392,13 @@ void QgsSimpleLineSymbolLayerWidget::penStyleChanged()
 void QgsSimpleLineSymbolLayerWidget::offsetChanged()
 {
   mLayer->setOffset( spinOffset->value() );
+  updatePatternIcon();
+  emit changed();
+}
+
+void QgsSimpleLineSymbolLayerWidget::patternOffsetChanged()
+{
+  mLayer->setDashPatternOffset( spinPatternOffset->value() );
   updatePatternIcon();
   emit changed();
 }
@@ -440,6 +481,16 @@ void QgsSimpleLineSymbolLayerWidget::mDrawInsideCheckBox_stateChanged( int state
   emit changed();
 }
 
+void QgsSimpleLineSymbolLayerWidget::patternOffsetUnitChanged()
+{
+  if ( mLayer )
+  {
+    mLayer->setDashPatternOffsetUnit( mPatternOffsetUnitWidget->unit() );
+    mLayer->setDashPatternOffsetMapUnitScale( mPatternOffsetUnitWidget->getMapUnitScale() );
+    updatePatternIcon();
+    emit changed();
+  }
+}
 
 void QgsSimpleLineSymbolLayerWidget::updatePatternIcon()
 {

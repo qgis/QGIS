@@ -43,6 +43,7 @@
 #include "qgsvectorlayerutils.h"
 #include "qgssymbollayerutils.h"
 #include "qgsmaplayertemporalproperties.h"
+#include "qgsannotationlayer.h"
 
 ///@cond PRIVATE
 
@@ -255,6 +256,9 @@ QPainter *QgsMapRendererJob::allocateImageAndPainter( QString layerId, QImage *&
   {
     painter = new QPainter( image );
     painter->setRenderHint( QPainter::Antialiasing, mSettings.testFlag( QgsMapSettings::Antialiasing ) );
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+    painter->setRenderHint( QPainter::LosslessImageRendering, mSettings.testFlag( QgsMapSettings::LosslessImageRendering ) );
+#endif
   }
   return painter;
 }
@@ -364,6 +368,10 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
     if ( vl )
     {
       job.opacity = vl->opacity();
+    }
+    else if ( QgsAnnotationLayer *al = qobject_cast<QgsAnnotationLayer *>( ml ) )
+    {
+      job.opacity = al->opacity();
     }
 
     // if we can use the cache, let's do it and avoid rendering!
@@ -819,7 +827,7 @@ void QgsMapRendererJob::composeSecondPass( LayerRenderJobs &secondPassJobs, Labe
       painter->setCompositionMode( QPainter::CompositionMode_DestinationIn );
 
       //Create an "alpha binarized" image of the maskImage to :
-      //* Eliminate antialiasing artefact
+      //* Eliminate antialiasing artifact
       //* Avoid applying mask opacity to elements under the mask but not masked
       QImage maskBinAlpha = maskImage->createMaskFromColor( 0 );
       QVector<QRgb> mswTable;
@@ -925,6 +933,19 @@ bool QgsMapRendererJob::needTemporaryImage( QgsMapLayer *ml )
     case QgsMapLayerType::VectorTileLayer:
     case QgsMapLayerType::PluginLayer:
       break;
+
+    case QgsMapLayerType::AnnotationLayer:
+    {
+      QgsAnnotationLayer *al = qobject_cast<QgsAnnotationLayer *>( ml );
+      if ( mSettings.testFlag( QgsMapSettings::UseAdvancedEffects ) &&
+           ( !qgsDoubleNear( al->opacity(), 1.0 ) ) )
+      {
+        //layer properties require rasterization
+        return true;
+      }
+      break;
+    }
+
   }
 
   return false;

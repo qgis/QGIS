@@ -19,12 +19,13 @@
 #include "qgis_3d.h"
 
 #include "qgsabstract3dsymbol.h"
-#include "qgsphongmaterialsettings.h"
 #include "qgs3dtypes.h"
 #include "qgscolorrampshader.h"
 #include "qgsmeshdataprovider.h"
 
 #include <Qt3DRender/QCullFace>
+
+class QgsAbstractMaterialSettings;
 
 #define SIP_NO_FILE
 
@@ -72,10 +73,11 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
     };
 
     //! Constructor for QgsMesh3DSymbol
-    QgsMesh3DSymbol() = default;
+    QgsMesh3DSymbol();
+    ~QgsMesh3DSymbol() override;
 
     QString type() const override { return "mesh"; }
-    QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
+    QgsMesh3DSymbol *clone() const override SIP_FACTORY;
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
@@ -105,9 +107,14 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
     void setHeight( float height ) { mHeight = height; }
 
     //! Returns material used for shading of the symbol
-    QgsPhongMaterialSettings material() const { return mMaterial; }
-    //! Sets material used for shading of the symbol
-    void setMaterial( const QgsPhongMaterialSettings &material ) { mMaterial = material; }
+    QgsAbstractMaterialSettings *material() const;
+
+    /**
+     * Sets the \a material settings used for shading of the symbol.
+     *
+     * Ownership of \a material is transferred to the symbol.
+     */
+    void setMaterial( QgsAbstractMaterialSettings *material SIP_TRANSFER );
 
     /**
      * Returns whether also triangles facing the other side will be created. Useful if input data have inconsistent order of vertices
@@ -324,7 +331,7 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
     //! how to handle altitude of vector features
     Qgs3DTypes::AltitudeClamping mAltClamping = Qgs3DTypes::AltClampRelative;
     float mHeight = 0.0f;           //!< Base height of triangles
-    QgsPhongMaterialSettings mMaterial;  //!< Defines appearance of objects
+    std::unique_ptr< QgsAbstractMaterialSettings > mMaterial;  //!< Defines appearance of objects
     bool mAddBackFaces = false;
 
     bool mEnabled = true;
