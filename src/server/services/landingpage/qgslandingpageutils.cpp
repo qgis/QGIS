@@ -66,7 +66,8 @@ QMap<QString, QString> QgsLandingPageUtils::projects( const QgsServerSettings &s
     dirWatcher.removePaths( cWatchedDirs );
   }
 
-  const QString pgConnections { QString( qgetenv( "QGIS_SERVER_PROJECTS_PG_CONNECTIONS" ) ) };
+  const QString pgConnections { settings.projectsPgConnections() };
+  QgsMessageLog::logMessage( QStringLiteral( "PGONNECTIONS: %1" ).arg( pgConnections ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Info );
 
   // Clear cache if QGIS_SERVER_PROJECTS_PG_CONNECTIONS has changed
   if ( pgConnections != QGIS_SERVER_PROJECTS_PG_CONNECTIONS )

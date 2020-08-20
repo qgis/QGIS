@@ -253,6 +253,18 @@ void QgsServerSettings::initSettings()
                                        };
 
   mSettings[ sProjectsDirectories.envVar ] = sProjectsDirectories;
+
+  // postgresql connection string for landing page service
+  const Setting sProjectsPgConnections = { QgsServerSettingsEnv::QGIS_SERVER_PROJECTS_PG_CONNECTIONS,
+                                           QgsServerSettingsEnv::DEFAULT_VALUE,
+                                           QStringLiteral( "PostgreSQL connection strings used by the landing page service to find projects" ),
+                                           QStringLiteral( "/qgis/server_projects_pg_connections" ),
+                                           QVariant::String,
+                                           QVariant( "" ),
+                                           QVariant()
+                                         };
+
+  mSettings[ sProjectsPgConnections.envVar ] = sProjectsPgConnections;
 }
 
 void QgsServerSettings::load()
