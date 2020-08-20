@@ -5,7 +5,7 @@ on:
     # runs every day
     # - cron: '0 0 * * *'
     # every hour
-    - cron: '* */1 * * *'
+    - cron: '*/5 * * * *'
 
 jobs:
   build-docker:
