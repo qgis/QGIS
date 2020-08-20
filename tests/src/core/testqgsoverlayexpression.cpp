@@ -77,7 +77,7 @@ void TestQgsOverlayExpression::initTestCase()
   QString polygonsFileName = testDataDir + QStringLiteral( "polys_overlapping_with_id.shp" );
   QFileInfo polygonsFileInfo( polygonsFileName );
   mPolyLayer = new QgsVectorLayer( polygonsFileInfo.filePath(),
-                                         QStringLiteral( "polys" ), QStringLiteral( "ogr" ) );
+                                   QStringLiteral( "polys" ), QStringLiteral( "ogr" ) );
   QgsProject::instance()->addMapLayer( mRectanglesLayer );
   QgsProject::instance()->addMapLayer( mPolyLayer );
 }
