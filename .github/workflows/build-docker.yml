@@ -24,6 +24,13 @@ jobs:
         branch: [master, release-3_10, release-3_14]
 
     steps:
+      - name: Cache
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.ccache
+          key: docker-build-${{ matrix.branch }}
+
       - name: checkout ${branch}
         uses: actions/checkout@v2
         with:
@@ -41,6 +48,10 @@ jobs:
           echo "branch: ${branch}"
           echo "docker tag: ${DOCKER_TAG}"
 
+          [[ -d ~/.ccache ]] && echo "cache directory (~/.ccache) exists" || mkdir -p ~/.ccache
+          # copy ccache dir within QGIS source so it can be accessed from docker
+          cp -r ~/.ccache/. ~/QGIS/.ccache_image_build
+
           echo "##[group] QGIS deps Docker pull/rebuild"
           cd .docker
           docker --version
@@ -57,9 +68,11 @@ jobs:
                        --cache-from "qgis/qgis:${DOCKER_TAG}" \
                        -t "qgis/qgis:BUILDER" \
                        -f qgis.dockerfile ..
+          echo "Copy build cache from Docker container to Travis cache directory"
+          rm -rf ~/.ccache/*
+          mkdir -p ~/.ccache
           docker run --name qgis_container qgis/qgis:BUILDER /bin/true
-          # we could copy cache
-          # docker cp qgis_container:/QGIS/.ccache_image_build/. ${CCACHE_DIR}
+          docker cp qgis_container:/QGIS/.ccache_image_build/. ~/.ccache
           echo "##[endgroup]"
 
           echo "##[group] Finalize image"
