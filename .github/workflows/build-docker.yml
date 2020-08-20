@@ -33,7 +33,7 @@ jobs:
         env:
           branch: ${{ matrix.branch }}
         run: |
-          DOCKER_TAG=${branch//master/latest/}
+          DOCKER_TAG=${branch//master/latest}
           DOCKER_BUILD_DEPS_FILE=qgis3-build-deps-focal.dockerfile
           CC=/usr/lib/ccache/gcc
           CXX=/usr/lib/ccache/g++ # Building SIP binding freezes with Clang in Docker, maybe a SIP issue, maybe not
