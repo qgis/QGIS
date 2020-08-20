@@ -169,6 +169,8 @@ void TestQgsOverlayExpression::testOverlayExpression_data()
   QTest::newRow( "disjoint get ids limit 2" ) << "geometry_overlay_disjoint('rectangles',id, limit:=2)" << "LINESTRING(-155 15, -122 55, -84 4)" << QVariantList { 1, 2 };
   QTest::newRow( "nearest" ) << "geometry_overlay_nearest('rectangles',id)" << "POINT(-135 38)" << QVariantList { 2 };
   QTest::newRow( "nearest filtered" ) << "geometry_overlay_nearest('rectangles',id,id!=2)" << "POINT(-135 38)" << QVariantList { 1 };
+  QTest::newRow( "nearest limited" ) << "geometry_overlay_nearest('rectangles',id,limit:=2)" << "POINT(-135 38)" << QVariantList { 2, 1 };
+  QTest::newRow( "nearest limited filtered" ) << "geometry_overlay_nearest('rectangles',id,id!=2,limit:=2)" << "POINT(-135 38)" << QVariantList { 1, 3 };
 }
 QGSTEST_MAIN( TestQgsOverlayExpression )
 
