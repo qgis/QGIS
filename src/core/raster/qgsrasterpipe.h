@@ -83,7 +83,7 @@ class CORE_EXPORT QgsRasterPipe
       // if insertion failed transfer ownership back to python
       PyObject *o = sipGetPyObject( a1, sipType_QgsRasterInterface );
       if ( o )
-        sipTransferBreak( o );
+        sipTransferTo( o, NULL );
     }
     % End
 #endif
