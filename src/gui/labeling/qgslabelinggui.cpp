@@ -353,7 +353,16 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
 
   mCheckAllowLabelsOutsidePolygons->setChecked( mSettings.polygonPlacementFlags() & QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon );
 
-  mPlacementModeComboBox->setCurrentIndex( mPlacementModeComboBox->findData( mSettings.placement ) );
+  const int placementIndex = mPlacementModeComboBox->findData( mSettings.placement );
+  if ( placementIndex >= 0 )
+  {
+    mPlacementModeComboBox->setCurrentIndex( placementIndex );
+  }
+  else
+  {
+    // use default placement for layer type
+    mPlacementModeComboBox->setCurrentIndex( 0 );
+  }
 
   // Label repeat distance
   mRepeatDistanceSpinBox->setValue( mSettings.repeatDistance );
