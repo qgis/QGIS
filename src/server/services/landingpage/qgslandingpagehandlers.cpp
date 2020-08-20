@@ -66,7 +66,7 @@ const QString QgsLandingPageHandler::templatePath( const QgsServerApiContext &co
 json QgsLandingPageHandler::projectsData() const
 {
   json j = json::array();
-  const auto availableProjects { QgsLandingPageUtils::projects( ) };
+  const auto availableProjects { QgsLandingPageUtils::projects( *mSettings ) };
   const auto constProjectKeys { availableProjects.keys() };
   for ( const auto &p : constProjectKeys )
   {

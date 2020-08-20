@@ -36,7 +36,7 @@ QMap<QString, QString> QgsLandingPageUtils::AVAILABLE_PROJECTS;
 
 std::once_flag initDirWatcher;
 
-QMap<QString, QString> QgsLandingPageUtils::projects( )
+QMap<QString, QString> QgsLandingPageUtils::projects( const QgsServerSettings &settings )
 {
 
   static QString QGIS_SERVER_PROJECTS_DIRECTORIES;
@@ -54,7 +54,7 @@ QMap<QString, QString> QgsLandingPageUtils::projects( )
   } );
 
 
-  const QString projectDir { QString( qgetenv( "QGIS_SERVER_PROJECTS_DIRECTORIES" ) ) };
+  const QString projectDir { settings.projectsDirectories() };
 
   // Clear cache if QGIS_SERVER_PROJECTS_DIRECTORIES has changed
   if ( projectDir != QGIS_SERVER_PROJECTS_DIRECTORIES )

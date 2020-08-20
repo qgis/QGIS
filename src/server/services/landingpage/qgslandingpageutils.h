@@ -21,6 +21,7 @@
 #include <QRegularExpression>
 
 #include "nlohmann/json_fwd.hpp"
+#include "qgsserversettings.h"
 
 #ifndef SIP_RUN
 using namespace nlohmann;
@@ -45,7 +46,7 @@ struct QgsLandingPageUtils
    *
    * \returns hash of project paths (or other storage identifiers) with a digest key
    */
-  static QMap<QString, QString> projects();
+  static QMap<QString, QString> projects( const QgsServerSettings &settings );
 
   /**
    * Returns project information for a given \a projectPath
