@@ -210,7 +210,8 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     /**
      * Previous layer style. Used to reset style to previous state if new style
-     * was loaded but dialog is canceled */
+     * was loaded but dialog is canceled.
+    */
     QgsMapLayerStyle mOldStyle;
 
     void initDiagramTab();

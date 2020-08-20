@@ -31,7 +31,7 @@
 #define SIP_NO_FILE
 
 /**
-  \brief Base class for GDAL and WCS providers.
+ * \brief Base class for GDAL and WCS providers.
 */
 class QgsGdalProviderBase
 {

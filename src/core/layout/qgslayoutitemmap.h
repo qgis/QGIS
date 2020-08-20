@@ -979,7 +979,8 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
 
     /**
      * Temporary evaluated map rotation. Data defined rotation may mean this value
-     * differs from mMapRotation*/
+     * differs from mMapRotation
+    */
     double mEvaluatedMapRotation = 0;
 
     //! Flag if layers to be displayed should be read from qgis canvas (TRUE) or from stored list in mLayerSet (FALSE)
@@ -1000,12 +1001,14 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
     /**
      * Whether layers and styles should be used from a preset (preset name is stored
      * in mVisibilityPresetName and may be overridden by data-defined expression).
-     * This flag has higher priority than mKeepLayerSet. */
+     * This flag has higher priority than mKeepLayerSet.
+    */
     bool mFollowVisibilityPreset = false;
 
     /**
      * Map theme name to be used for map's layers and styles in case mFollowVisibilityPreset
-     *  is TRUE. May be overridden by data-defined expression. */
+     * is TRUE. May be overridden by data-defined expression.
+    */
     QString mFollowVisibilityPresetName;
 
     //! Name of the last data-defined evaluated theme name

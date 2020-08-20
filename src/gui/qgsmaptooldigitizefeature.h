@@ -93,17 +93,20 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCapture
 
     /**
      * individual layer per digitizing session
-     * \since QGIS 3.0 */
+     * \since QGIS 3.0
+    */
     QgsMapLayer *mLayer = nullptr;
 
     /**
      * layer used before digitizing session
-     * \since QGIS 3.0 */
+     * \since QGIS 3.0
+    */
     QgsMapLayer *mCurrentLayer = nullptr;
 
     /**
      * Check if CaptureMode matches layer type. Default is true.
-     * \since QGIS 2.12 */
+     * \since QGIS 2.12
+    */
     bool mCheckGeometryType;
 
     friend class TestQgsRelationReferenceWidget;

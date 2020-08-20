@@ -111,7 +111,7 @@ gesture event for overriding. Default implementation does nothing.
 Use this to associate a QAction to this maptool. Then when the setMapTool
 method of mapcanvas is called the action state will be set to on.
 Usually this will cause e.g. a toolbutton to appear pressed in and
-the previously used toolbutton to pop out. *
+the previously used toolbutton to pop out.
 %End
 
     QAction *action();
@@ -129,7 +129,7 @@ Returns if the current map tool active on the map canvas
     void setButton( QAbstractButton *button );
 %Docstring
 Use this to associate a button to this maptool. It has the same meaning
-as :py:func:`~QgsMapTool.setAction` function except it works with a button instead of an QAction. *
+as :py:func:`~QgsMapTool.setAction` function except it works with a button instead of an QAction.
 %End
 
     QAbstractButton *button();

@@ -68,7 +68,7 @@ An IndexError will be raised if no polygon with the specified index exists.
 %Docstring
 Returns the geometry converted to the more generic curve type :py:class:`QgsMultiSurface`
 
-:return: the converted geometry. Caller takes ownership*
+:return: the converted geometry. Caller takes ownership
 %End
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;

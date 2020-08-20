@@ -38,12 +38,12 @@ class QgsPostgresListener;
 #include "qgsdatasourceuri.h"
 
 /**
-  \class QgsPostgresProvider
-  \brief Data provider for PostgreSQL/PostGIS layers.
-
-  This provider implements the
-  interface defined in the QgsDataProvider class to provide access to spatial
-  data residing in a PostgreSQL/PostGIS enabled database.
+ * \class QgsPostgresProvider
+ * \brief Data provider for PostgreSQL/PostGIS layers.
+ *
+ * This provider implements the
+ * interface defined in the QgsDataProvider class to provide access to spatial
+ * data residing in a PostgreSQL/PostGIS enabled database.
   */
 class QgsPostgresProvider final: public QgsVectorDataProvider
 {
@@ -296,9 +296,10 @@ class QgsPostgresProvider final: public QgsVectorDataProvider
 
     /**
      * Parses the enum_range of an attribute and inserts the possible values into a stringlist
-    \param enumValues the stringlist where the values are appended
-    \param attributeName the name of the enum attribute
-    \returns true in case of success and fals in case of error (e.g. if the type is not an enum type)*/
+     * \param enumValues the stringlist where the values are appended
+     * \param attributeName the name of the enum attribute
+     * \returns true in case of success and fals in case of error (e.g. if the type is not an enum type)
+    */
     bool parseEnumRange( QStringList &enumValues, const QString &attributeName ) const;
 
     /**
@@ -532,7 +533,8 @@ class QgsPostgresUtils
 /**
  * Data shared between provider class and its feature sources. Ideally there should
  *  be as few members as possible because there could be simultaneous reads/writes
- *  from different threads and therefore locking has to be involved. */
+ *  from different threads and therefore locking has to be involved.
+*/
 class QgsPostgresSharedData
 {
   public:

@@ -982,7 +982,8 @@ class GUI_EXPORT QgsFontMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, p
 
     /**
      * Set stroke color.
-     * \since QGIS 2.16 */
+     * \since QGIS 2.16
+    */
     void setColorStroke( const QColor &color );
     void setSize( double size );
     void setAngle( double angle );

@@ -83,12 +83,14 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 
     /**
      * Returns optional category label
-     * \since QGIS 2.1 */
+     * \since QGIS 2.1
+    */
     QString label( int idx ) const;
 
     /**
      * Set category label
-     *  \since QGIS 2.1 */
+     * \since QGIS 2.1
+    */
     void setLabel( int idx, const QString &label );
 
     /**

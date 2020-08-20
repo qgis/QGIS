@@ -17,7 +17,7 @@ typedef QList< QgsVectorLayerJoinInfo > QgsVectorJoinList;
 class QgsVectorLayerJoinBuffer : QObject, QgsFeatureSink
 {
 %Docstring
-Manages joined fields for a vector layer*
+Manages joined fields for a vector layer.
 %End
 
 %TypeHeaderCode

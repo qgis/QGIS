@@ -2049,8 +2049,8 @@ class CORE_EXPORT QgsProjectDirtyBlocker
 
 /**
  * Returns the version string found in the given DOM document
-   \returns the version string or an empty string if none found
-   \note not available in Python bindings.
+ * \returns the version string or an empty string if none found
+ * \note not available in Python bindings.
  */
 CORE_EXPORT QgsProjectVersion getVersion( QDomDocument const &doc ) SIP_SKIP;
 

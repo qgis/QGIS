@@ -419,7 +419,7 @@ Angle undefined. Always returns 0.0
 
 :param vertex: the vertex id
 
-:return: 0.0*
+:return: 0.0
 %End
 
     virtual int vertexCount( int /*part*/ = 0, int /*ring*/ = 0 ) const;

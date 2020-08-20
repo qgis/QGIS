@@ -550,7 +550,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     /**
      * Returns the geometry converted to the more generic curve type QgsCompoundCurve
-        \returns the converted geometry. Caller takes ownership*/
+     * \returns the converted geometry. Caller takes ownership
+    */
     QgsCompoundCurve *toCurveType() const override SIP_FACTORY;
 
     /**
@@ -612,7 +613,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * Returns a new line string geometry corresponding to a segmentized approximation
      * of the curve.
      * \param tolerance segmentation tolerance
-     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
+     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve
+    */
     QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override  SIP_FACTORY;
 
     int numPoints() const override;

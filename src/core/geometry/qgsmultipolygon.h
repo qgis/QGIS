@@ -89,7 +89,8 @@ class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
 
     /**
      * Returns the geometry converted to the more generic curve type QgsMultiSurface
-    \returns the converted geometry. Caller takes ownership*/
+     * \returns the converted geometry. Caller takes ownership
+    */
     QgsMultiSurface *toCurveType() const override SIP_FACTORY;
 
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;

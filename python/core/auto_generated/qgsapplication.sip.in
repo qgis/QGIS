@@ -199,7 +199,7 @@ Returns the path to the authors file.
 %Docstring
 Returns the path to the contributors file.
 Contributors are people who have submitted patches
-but don't have commit access. *
+but don't have commit access.
 %End
 
     static QString developersMapFilePath();
@@ -531,7 +531,7 @@ the CSS into a head -> script tag instead.
     static QString showSettings();
 %Docstring
 Convenience function to get a summary of the paths used in this
-application instance useful for debugging mainly.*
+application instance useful for debugging mainly.
 %End
 
     static void registerOgrDrivers();

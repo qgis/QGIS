@@ -84,7 +84,7 @@ Returns flags indicating the types of layer the renderer is compatible with.
     virtual QgsFeatureRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) = 0 /Factory/;
 %Docstring
 Returns new instance of the renderer given the DOM element. Returns ``None`` on error.
-Pure virtual function: must be implemented in derived classes.  *
+Pure virtual function: must be implemented in derived classes.
 %End
 
     virtual QgsRendererWidget *createRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *oldRenderer ) /Factory/;

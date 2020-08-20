@@ -59,7 +59,8 @@ class SERVER_EXPORT QgsServerFilter
 
     /**
      * Method called when the QgsRequestHandler is ready and populated with
-    * parameters, just before entering the main switch for core services.*/
+    * parameters, just before entering the main switch for core services.
+    */
     virtual void requestReady();
 
     /**

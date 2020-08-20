@@ -388,7 +388,7 @@ Closes the line string by appending the first point to the end of the line, if i
 %Docstring
 Returns the geometry converted to the more generic curve type :py:class:`QgsCompoundCurve`
 
-:return: the converted geometry. Caller takes ownership*
+:return: the converted geometry. Caller takes ownership
 %End
 
     void extend( double startDistance, double endDistance );
@@ -459,7 +459,7 @@ Returns a new line string geometry corresponding to a segmentized approximation
 of the curve.
 
 :param tolerance: segmentation tolerance
-:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve*
+:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve
 %End
 
     virtual int numPoints() const;

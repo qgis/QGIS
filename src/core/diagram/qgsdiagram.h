@@ -34,7 +34,8 @@ class QgsAttributes;
 
 /**
  * \ingroup core
- * Base class for all diagram types*/
+ * Base class for all diagram types.
+*/
 class CORE_EXPORT QgsDiagram SIP_NODEFAULTCTORS
 {
   public:
@@ -58,7 +59,8 @@ class CORE_EXPORT QgsDiagram SIP_NODEFAULTCTORS
 
     /**
      * Returns an instance that is equivalent to this one
-     * \since QGIS 2.4 */
+     * \since QGIS 2.4
+    */
     virtual QgsDiagram *clone() const = 0 SIP_FACTORY;
 
     void clearCache();

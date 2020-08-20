@@ -92,8 +92,8 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     /**
      * Registers label and diagram layer
-      \param layer diagram layer
-      \param attributeNames attributes needed for labeling and diagrams will be added to the list
+     * \param layer diagram layer
+     * \param attributeNames attributes needed for labeling and diagrams will be added to the list
      */
     void prepareLabeling( QgsVectorLayer *layer, QSet<QString> &attributeNames );
     void prepareDiagrams( QgsVectorLayer *layer, QSet<QString> &attributeNames );
