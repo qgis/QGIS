@@ -24,7 +24,7 @@
     },
     {
       "arg": "max_distance",
-      "description": "TODO",
+      "description": "an optional maximum distance to limit the number of matching features (if not set, only the nearest feature will be returned)",
       "optional": true
     }
   ],
