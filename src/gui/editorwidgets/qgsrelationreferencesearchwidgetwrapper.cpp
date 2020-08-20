@@ -72,6 +72,11 @@ QgsSearchWidgetWrapper::FilterFlags QgsRelationReferenceSearchWidgetWrapper::sup
   return EqualTo | NotEqualTo | IsNull | IsNotNull;
 }
 
+QgsSearchWidgetWrapper::FilterFlags QgsRelationReferenceSearchWidgetWrapper::defaultFlags() const
+{
+  return EqualTo;
+}
+
 QString QgsRelationReferenceSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const
 {
   QString fieldName = createFieldIdentifier();
