@@ -54,7 +54,7 @@ if connection would fail, the interface is not inserted and ``False`` is returne
       // if insertion failed transfer ownership back to python
       PyObject *o = sipGetPyObject( a1, sipType_QgsRasterInterface );
       if ( o )
-        sipTransferBreak( o );
+        sipTransferTo( o, NULL );
     }
 %End
 
