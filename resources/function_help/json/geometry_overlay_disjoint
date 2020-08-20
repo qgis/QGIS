@@ -1,7 +1,8 @@
 {
-  "name": "geometry_overlay_contains",
+  "name": "geometry_overlay_disjoint",
   "type": "function",
-  "description": "Performs a spatial join of type CONTAINS. This returns an array of results of an expression evaluated on features from an other layer that CONTAINS the current feature, or, if no expression if provided, simply returns whether at least one feature from the other layer CONTAINS the current feature.",  "arguments": [
+    "description": "Performs a spatial join of type DISJOINT. This returns an array of results of an expression evaluated on features from an other layer that DISJOINT the current feature, or, if no expression if provided, simply returns whether at least one feature from the other layer DISJOINT the current feature.",
+    "arguments": [
     {
       "arg": "layer",
       "description": "the other layer"
@@ -24,19 +25,19 @@
   ],
   "examples": [
     {
-      "expression": "geometry_overlay_contains('regions')",
+      "expression": "geometry_overlay_disjoint('regions')",
       "returns": "True"
     },
     {
-      "expression": "geometry_overlay_contains('regions', name)",
+      "expression": "geometry_overlay_disjoint('regions', name)",
       "returns": "['South Africa', 'Africa', 'World']"
     },
     {
-      "expression": "geometry_overlay_contains('regions', name, name != 'World')",
+      "expression": "geometry_overlay_disjoint('regions', name, name != 'World')",
       "returns": "['South Africa', 'Africa']"
     },
     {
-      "expression": "geometry_overlay_contains('regions', name, limit:=1)",
+      "expression": "geometry_overlay_disjoint('regions', name, limit:=1)",
       "returns": "['South Africa']"
     }
   ]
