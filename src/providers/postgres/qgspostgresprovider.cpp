@@ -935,7 +935,7 @@ bool QgsPostgresProvider::loadFields()
 
     Oid fldtyp = result.PQftype( i );
     int fldMod = result.PQfmod( i );
-    int fieldPrec = -1;
+    int fieldPrec = 0;
     Oid tableoid = result.PQftable( i );
     int attnum = result.PQftablecol( i );
     Oid atttypid = attTypeIdMap[tableoid][attnum];
@@ -990,7 +990,7 @@ bool QgsPostgresProvider::loadFields()
       {
         fieldType = QVariant::Double;
         fieldSize = -1;
-        fieldPrec = -1;
+        fieldPrec = 0;
       }
       else if ( fieldTypeName == QLatin1String( "numeric" ) )
       {
@@ -999,7 +999,7 @@ bool QgsPostgresProvider::loadFields()
         if ( formattedFieldType == QLatin1String( "numeric" ) || formattedFieldType.isEmpty() )
         {
           fieldSize = -1;
-          fieldPrec = -1;
+          fieldPrec = 0;
         }
         else
         {
@@ -1016,7 +1016,7 @@ bool QgsPostgresProvider::loadFields()
                                              fieldName ),
                                        tr( "PostGIS" ) );
             fieldSize = -1;
-            fieldPrec = -1;
+            fieldPrec = 0;
           }
         }
       }
@@ -1086,7 +1086,7 @@ bool QgsPostgresProvider::loadFields()
                        .arg( formattedFieldType,
                              fieldName ) );
           fieldSize = -1;
-          fieldPrec = -1;
+          fieldPrec = 0;
         }
       }
       else if ( fieldTypeName == QLatin1String( "char" ) )
@@ -1104,7 +1104,7 @@ bool QgsPostgresProvider::loadFields()
                                      .arg( formattedFieldType,
                                            fieldName ) );
           fieldSize = -1;
-          fieldPrec = -1;
+          fieldPrec = 0;
         }
       }
       else if ( fieldTypeName == QLatin1String( "hstore" ) ||  fieldTypeName == QLatin1String( "json" ) || fieldTypeName == QLatin1String( "jsonb" ) )
@@ -2752,7 +2752,7 @@ bool QgsPostgresProvider::addAttributes( const QList<QgsField> &attributes )
       }
       else if ( type == QLatin1String( "numeric" ) || type == QLatin1String( "decimal" ) )
       {
-        if ( iter->length() > 0 && iter->precision() >= 0 )
+        if ( iter->length() > 0 && iter->precision() > 0 )
           type = QStringLiteral( "%1(%2,%3)" ).arg( type ).arg( iter->length() ).arg( iter->precision() );
       }
       sql.append( QStringLiteral( "%1ADD COLUMN %2 %3" ).arg( delim, quotedIdentifier( iter->name() ), type ) );
@@ -4097,7 +4097,7 @@ bool QgsPostgresProvider::convertField( QgsField &field, const QMap<QString, QVa
 
     case QVariant::String:
       fieldType = stringFieldType;
-      fieldPrec = -1;
+      fieldPrec = 0;
       break;
 
     case QVariant::Int:
@@ -4114,12 +4114,12 @@ bool QgsPostgresProvider::convertField( QgsField &field, const QMap<QString, QVa
       fieldType = field.typeName();
       if ( fieldType.isEmpty() )
         fieldType = QStringLiteral( "hstore" );
-      fieldPrec = -1;
+      fieldPrec = 0;
       break;
 
     case QVariant::StringList:
       fieldType = QStringLiteral( "_text" );
-      fieldPrec = -1;
+      fieldPrec = 0;
       break;
 
     case QVariant::List:
@@ -4127,7 +4127,7 @@ bool QgsPostgresProvider::convertField( QgsField &field, const QMap<QString, QVa
       QgsField sub( QString(), field.subType(), QString(), fieldSize, fieldPrec );
       if ( !convertField( sub, nullptr ) ) return false;
       fieldType = "_" + sub.typeName();
-      fieldPrec = -1;
+      fieldPrec = 0;
       break;
     }
 
@@ -4141,18 +4141,18 @@ bool QgsPostgresProvider::convertField( QgsField &field, const QMap<QString, QVa
       {
         fieldType = QStringLiteral( "float8" );
       }
-      fieldPrec = -1;
+      fieldPrec = 0;
       break;
 
     case QVariant::Bool:
       fieldType = QStringLiteral( "bool" );
-      fieldPrec = -1;
-      fieldSize = -1;
+      fieldPrec = 0;
+      fieldSize = 0;
       break;
 
     case QVariant::ByteArray:
       fieldType = QStringLiteral( "bytea" );
-      fieldPrec = -1;
+      fieldPrec = 0;
       break;
 
     default:
