@@ -159,16 +159,16 @@ void TestQgsOverlayExpression::testOverlayExpression_data()
   QTest::addColumn<QVariantList>( "expectedResult" );
 
   QTest::newRow( "intersects get geometry" ) << "geometry_overlay_intersects('rectangles', geom_to_wkt($geometry))" << "POLYGON((-120 30, -105 30, -105 20, -120 20, -120 30))" << QVariantList { QVariant( QStringLiteral( "MultiPolygon (((-130 40, -115 40, -115 25, -130 25, -130 40)))" ) ) };
-  QTest::newRow( "intersects get ids" ) << "geometry_overlay_intersects('rectangles', $id)" << "LINESTRING(-178 52, -133 33, -64 46)" << QVariantList { 1, 2, 3 };
-  QTest::newRow( "intersects get ids limit 2" ) << "geometry_overlay_intersects('rectangles', $id, limit:=2)" << "LINESTRING(-178 52, -133 33, -64 46)" << QVariantList { 1, 2 };
-  QTest::newRow( "intersects filtered get ids" ) << "geometry_overlay_intersects('rectangles', $id, $id != 2)" << "LINESTRING(-178 52, -133 33, -64 46)" << QVariantList { 1, 3 };
-  QTest::newRow( "intersects filtered get ids limit 1" ) << "geometry_overlay_intersects('rectangles', $id, $id != 2, 1)" << "LINESTRING(-178 52, -133 33, -64 46)" << QVariantList { 1 };
-  QTest::newRow( "touches get ids" ) << "geometry_overlay_touches('rectangles',$id)" << "POLYGON((-86 54, -95 50, -81 50, -86 54))" << QVariantList { 3 };
-  QTest::newRow( "equals get ids" ) << "geometry_overlay_equals('rectangles',$id)" << "MULTIPOLYGON(((-160 50, -145 50, -145 35, -160 35, -160 50)))" << QVariantList { 1 };
-  QTest::newRow( "disjoint get ids" ) << "geometry_overlay_disjoint('rectangles',$id)" << "LINESTRING(-155 15, -122 55, -84 4)" << QVariantList { 1, 2, 3 };
-  QTest::newRow( "disjoint get ids limit 2" ) << "geometry_overlay_disjoint('rectangles',$id, limit:=2)" << "LINESTRING(-155 15, -122 55, -84 4)" << QVariantList { 1, 2 };
-  QTest::newRow( "nearest" ) << "geometry_overlay_nearest('rectangles',$id)" << "POINT(-135 38)" << QVariantList { 2 };
-  QTest::newRow( "nearest filtered" ) << "geometry_overlay_nearest('rectangles',$id,$id != 2)" << "POINT(-135 38)" << QVariantList { 1 };
+  QTest::newRow( "intersects get ids" ) << "geometry_overlay_intersects('rectangles', id)" << "LINESTRING(-178 52, -133 33, -64 46)" << QVariantList { 1, 2, 3 };
+  QTest::newRow( "intersects get ids limit 2" ) << "geometry_overlay_intersects('rectangles', id, limit:=2)" << "LINESTRING(-178 52, -133 33, -64 46)" << QVariantList { 1, 2 };
+  QTest::newRow( "intersects filtered get ids" ) << "geometry_overlay_intersects('rectangles', id, id!=2)" << "LINESTRING(-178 52, -133 33, -64 46)" << QVariantList { 1, 3 };
+  QTest::newRow( "intersects filtered get ids limit 1" ) << "geometry_overlay_intersects('rectangles', id, id!=1, 1)" << "LINESTRING(-178 52, -133 33, -64 46)" << QVariantList { 2 };
+  QTest::newRow( "touches get ids" ) << "geometry_overlay_touches('rectangles',id)" << "POLYGON((-86 54, -95 50, -81 50, -86 54))" << QVariantList { 3 };
+  QTest::newRow( "equals get ids" ) << "geometry_overlay_equals('rectangles',id)" << "MULTIPOLYGON(((-160 50, -145 50, -145 35, -160 35, -160 50)))" << QVariantList { 1 };
+  QTest::newRow( "disjoint get ids" ) << "geometry_overlay_disjoint('rectangles',id)" << "LINESTRING(-155 15, -122 55, -84 4)" << QVariantList { 1, 2, 3 };
+  QTest::newRow( "disjoint get ids limit 2" ) << "geometry_overlay_disjoint('rectangles',id, limit:=2)" << "LINESTRING(-155 15, -122 55, -84 4)" << QVariantList { 1, 2 };
+  QTest::newRow( "nearest" ) << "geometry_overlay_nearest('rectangles',id)" << "POINT(-135 38)" << QVariantList { 2 };
+  QTest::newRow( "nearest filtered" ) << "geometry_overlay_nearest('rectangles',id,id!=2)" << "POINT(-135 38)" << QVariantList { 1 };
 }
 QGSTEST_MAIN( TestQgsOverlayExpression )
 
