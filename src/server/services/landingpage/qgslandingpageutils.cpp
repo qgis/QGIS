@@ -55,7 +55,6 @@ QMap<QString, QString> QgsLandingPageUtils::projects( const QgsServerSettings &s
 
 
   const QString projectDir { settings.projectsDirectories() };
-  QgsMessageLog::logMessage( QStringLiteral( "PROJECTS: %1" ).arg( projectDir ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Info );
 
   // Clear cache if QGIS_SERVER_PROJECTS_DIRECTORIES has changed
   if ( projectDir != QGIS_SERVER_PROJECTS_DIRECTORIES )
@@ -67,7 +66,6 @@ QMap<QString, QString> QgsLandingPageUtils::projects( const QgsServerSettings &s
   }
 
   const QString pgConnections { settings.projectsPgConnections() };
-  QgsMessageLog::logMessage( QStringLiteral( "PGONNECTIONS: %1" ).arg( pgConnections ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Info );
 
   // Clear cache if QGIS_SERVER_PROJECTS_PG_CONNECTIONS has changed
   if ( pgConnections != QGIS_SERVER_PROJECTS_PG_CONNECTIONS )
