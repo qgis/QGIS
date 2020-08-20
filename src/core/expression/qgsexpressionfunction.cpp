@@ -5683,7 +5683,7 @@ static QVariant fcnFromBase64( const QVariantList &values, const QgsExpressionCo
 
 typedef std::function < QVariant( QgsExpression &subExp, QgsExpressionContext &subContext, const QgsSpatialIndex &spatialIndex, std::shared_ptr<QgsVectorLayer> cachedTarget, const QgsGeometry &geometry, bool testOnly, bool invert, QVariant currentFeatId, int neighbors, double max_distance, double bboxGrow ) > overlayFunc;
 
-static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const overlayFunc &overlayFunction, bool invert = false, double bboxGrow = 0 )
+static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const overlayFunc &overlayFunction, bool invert = false, double bboxGrow = 0, bool limitsRequest = true )
 {
 
   const QVariant sourceLayerRef = context->variable( QStringLiteral( "layer" ) ); //used to detect if sorceLayer and targetLayer are the same
@@ -5736,19 +5736,17 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   QVariant limitValue = node->eval( parent, context );
   ENSURE_NO_EVAL_ERROR
   qlonglong limit = QgsExpressionUtils::getIntValue( limitValue, parent );
-  request.setLimit( limit );
-
-  int neighbors = 1;
-  if ( values.length() > 4 ) { //neighbors param handling
-      node = QgsExpressionUtils::getNode( values.at( 4 ), parent );
-      QVariant neighborsValue = node->eval( parent, context );
-      ENSURE_NO_EVAL_ERROR
-      neighbors = QgsExpressionUtils::getIntValue( neighborsValue, parent );
+  if ( limitsRequest )
+  {
+    // for all functions but nearest_neighbour, the limit parameters limits queryset.
+    // (for nearest_neighbour, it will be passed to the overlayFunction, which will limit
+    // but taking distance into account)
+    request.setLimit( limit );
   }
 
   double max_distance = 0;
-  if ( values.length() > 5 ) { //maxdistance param handling
-      node = QgsExpressionUtils::getNode( values.at( 5 ), parent );
+  if ( values.length() > 4 ) { //maxdistance param handling
+      node = QgsExpressionUtils::getNode( values.at( 4 ), parent );
       QVariant distanceValue = node->eval( parent, context );
       ENSURE_NO_EVAL_ERROR
       max_distance = QgsExpressionUtils::getDoubleValue( distanceValue, parent );
@@ -5797,7 +5795,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
     currentFeatId = feat.id(); //if sourceLayer and targetLayer are the same, current feature have to be excluded from spatial check
   }
 
-  return overlayFunction( subExpression, subContext, spatialIndex, cachedTarget, geometry, testOnly, invert, currentFeatId, neighbors, max_distance, bboxGrow );
+  return overlayFunction( subExpression, subContext, spatialIndex, cachedTarget, geometry, testOnly, invert, currentFeatId, limit, max_distance, bboxGrow );
 }
 
 // Intersect functions:
@@ -5940,7 +5938,7 @@ static QVariant fcnGeomOverlayDisjoint( const QVariantList &values, const QgsExp
 
 static QVariant fcnGeomOverlayNearest( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  return executeGeomOverlay( values, context, parent, indexedFilteredNearest, false );
+  return executeGeomOverlay( values, context, parent, indexedFilteredNearest, false, 0, false );
 }
 
 const QList<QgsExpressionFunction *> &QgsExpression::Functions()
@@ -6337,8 +6335,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
         << QgsExpressionFunction::Parameter( QStringLiteral( "expression" ), true, QVariant(), true )
         << QgsExpressionFunction::Parameter( QStringLiteral( "filter" ), true, QVariant(), true )
-        << QgsExpressionFunction::Parameter( QStringLiteral( "limit" ), true, QVariant( -1 ), true )
-        << QgsExpressionFunction::Parameter( QStringLiteral( "neighbors" ), true, 1 )
+        << QgsExpressionFunction::Parameter( QStringLiteral( "limit" ), true, QVariant( 1 ), true )
         << QgsExpressionFunction::Parameter( QStringLiteral( "max_distance" ), true, 0 ),
         fcnGeomOverlayNearest, QStringLiteral( "GeometryGroup" ), QString(), true, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
     // The current feature is accessed for the geometry, so this should not be cached
