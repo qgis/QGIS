@@ -50,7 +50,7 @@ jobs:
 
           [[ -d ~/.ccache ]] && echo "cache directory (~/.ccache) exists" || mkdir -p ~/.ccache
           # copy ccache dir within QGIS source so it can be accessed from docker
-          cp -r ~/.ccache/. ~/QGIS/.ccache_image_build
+          cp -r ~/.ccache/. ./.ccache_image_build
 
           echo "##[group] QGIS deps Docker pull/rebuild"
           cd .docker
