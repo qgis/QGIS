@@ -5739,20 +5739,20 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   request.setLimit( limit );
 
   int neighbors = 1;
-  /*
-  if ( values.length() > 3 ) { //neighbors param handling
-      neighbors = QgsExpressionUtils::getNativeIntValue( values.at( 3 ), parent );
+  if ( values.length() > 4 ) { //neighbors param handling
+      node = QgsExpressionUtils::getNode( values.at( 4 ), parent );
+      QVariant neighborsValue = node->eval( parent, context );
       ENSURE_NO_EVAL_ERROR
+      neighbors = QgsExpressionUtils::getIntValue( neighborsValue, parent );
   }
-  */
 
   double max_distance = 0;
-  /*
-  if ( values.length() > 4 ) { //maxdistance param handling
-      max_distance = QgsExpressionUtils::getDoubleValue( values.at( 4 ), parent );
+  if ( values.length() > 5 ) { //maxdistance param handling
+      node = QgsExpressionUtils::getNode( values.at( 5 ), parent );
+      QVariant distanceValue = node->eval( parent, context );
       ENSURE_NO_EVAL_ERROR
+      max_distance = QgsExpressionUtils::getDoubleValue( distanceValue, parent );
   }
-  */
 
   const QString cacheBase { QStringLiteral( "%1:%2" ).arg( targetLayer->id(), subExpression ) };
   const QString cacheLayer { QStringLiteral( "ovrlaylyr:%1" ).arg( cacheBase ) };
@@ -6326,7 +6326,6 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << QgsExpressionFunction::Parameter( QStringLiteral( "limit" ), true, QVariant( -1 ), true )
         << QgsExpressionFunction::Parameter( QStringLiteral( "neighbors" ), true, 1 )
         << QgsExpressionFunction::Parameter( QStringLiteral( "max_distance" ), true, 0 ),
-        //<< QgsExpressionFunction::Parameter( QStringLiteral( "limit" ), true ),
         fcnGeomOverlayNearest, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES, true );
     // The current feature is accessed for the geometry, so this should not be cached
     fcnGeomOverlayNearestFunc->setIsStatic( false );
