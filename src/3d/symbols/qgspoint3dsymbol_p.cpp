@@ -454,6 +454,9 @@ void QgsModelPoint3DSymbolHandler::addSceneEntities( const Qgs3DMapSettings &map
 
 void QgsModelPoint3DSymbolHandler::addMeshEntities( const Qgs3DMapSettings &map, const QVector<QVector3D> &positions, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent, bool are_selected )
 {
+  if ( positions.empty() )
+    return;
+
   // build the default material
   QgsMaterialContext materialContext;
   materialContext.setIsSelected( are_selected );
