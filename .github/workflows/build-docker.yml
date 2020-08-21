@@ -4,8 +4,8 @@ on:
   schedule:
     # runs every day
     - cron: '0 0 * * *'
-    # every hour
-    - cron: '* */1 * * *'
+  workflow_dispatch:
+    # POST https://api.github.com/repos/qgis/QGIS/actions/workflows/2264135/dispatches:
 
 jobs:
   build-docker:
