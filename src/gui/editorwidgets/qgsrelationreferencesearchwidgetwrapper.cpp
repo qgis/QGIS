@@ -143,7 +143,7 @@ void QgsRelationReferenceSearchWidgetWrapper::onValueChanged( const QVariant &va
 
 void QgsRelationReferenceSearchWidgetWrapper::onValuesChanged( const QVariantList &values )
 {
-  if ( !values.isEmpty() )
+  if ( values.isEmpty() )
   {
     clearExpression();
     emit valueCleared();
