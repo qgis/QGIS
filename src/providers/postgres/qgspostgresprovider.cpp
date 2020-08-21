@@ -4147,7 +4147,7 @@ bool QgsPostgresProvider::convertField( QgsField &field, const QMap<QString, QVa
     case QVariant::Bool:
       fieldType = QStringLiteral( "bool" );
       fieldPrec = 0;
-      fieldSize = 0;
+      fieldSize = -1;
       break;
 
     case QVariant::ByteArray:
