@@ -39,8 +39,8 @@ jobs:
         env:
           branch: ${{ matrix.branch }}
         run: |
-          DOCKER_TAG=${branch//master/latest}
-          DOCKER_BUILD_DEPS_FILE=qgis3-build-deps-focal.dockerfile
+          export DOCKER_TAG=${branch//master/latest}
+          export DOCKER_BUILD_DEPS_FILE=qgis3-build-deps-focal.dockerfile
 
           echo "branch: ${branch}"
           echo "docker tag: ${DOCKER_TAG}"
