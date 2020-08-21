@@ -236,6 +236,34 @@ class TestQgsServerSettings(unittest.TestCase):
         # clear environment
         os.environ.pop(env)
 
+    def test_env_actual(self):
+        env = "QGIS_SERVER_PROJECTS_DIRECTORIES"
+        env2 = "QGIS_SERVER_PROJECTS_PG_CONNECTIONS"
+
+        os.environ[env] = "/tmp/initial"
+        os.environ[env2] = "pg:initial"
+
+        # test intial value
+        self.settings.load()
+        self.assertEqual(self.settings.projectsDirectories(), "/tmp/initial")
+        self.assertEqual(self.settings.projectsPgConnections(), "pg:initial")
+
+        # set new environment variable
+        os.environ[env] = "/tmp/new"
+        os.environ[env2] = "pg:new"
+
+        # test new environment variable
+        self.assertEqual(self.settings.projectsDirectories(), "/tmp/new")
+        self.assertEqual(self.settings.projectsPgConnections(), "pg:new")
+
+        # current environment variable are popped
+        os.environ.pop(env)
+        os.environ.pop(env2)
+
+        # fallback to initial values
+        self.assertEqual(self.settings.projectsDirectories(), "/tmp/initial")
+        self.assertEqual(self.settings.projectsPgConnections(), "pg:initial")
+
 
 if __name__ == '__main__':
     unittest.main()
