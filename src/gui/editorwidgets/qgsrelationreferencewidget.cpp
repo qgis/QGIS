@@ -196,6 +196,7 @@ void QgsRelationReferenceWidget::setRelation( const QgsRelation &relation, bool 
     }
     if ( mComboBox )
     {
+      mComboBox->setAllowNull( mAllowNull );
       mComboBox->setSourceLayer( mReferencedLayer );
       mComboBox->setIdentifierFields( mReferencedFields );
     }
