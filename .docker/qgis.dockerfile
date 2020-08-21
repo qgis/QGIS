@@ -60,9 +60,6 @@ RUN cmake \
 RUN pip3 install jinja2 pygments
 
 ################################################################################
-ARG DELETE_CACHE=FALSE
-RUN if [[ ${DELETE_CACHE} == TRUE ]]; then rm /QGIS; fi
-
 # Python testing environment setup
 
 # Add QGIS test runner
