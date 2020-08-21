@@ -15,8 +15,8 @@ jobs:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      CC=/usr/lib/ccache/gcc
-      CXX=/usr/lib/ccache/g++ # Building SIP binding freezes with Clang in Docker, maybe a SIP issue, maybe not
+      CC: /usr/lib/ccache/gcc
+      CXX: /usr/lib/ccache/g++ # Building SIP binding freezes with Clang in Docker, maybe a SIP issue, maybe not
 
     strategy:
       matrix:
