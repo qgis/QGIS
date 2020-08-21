@@ -7,12 +7,16 @@ on:
       - release-**
     paths:
     - 'src/**'
+    - 'tests/**'
+    - 'CMakeLists.txt'
   pull_request:
     branches:
       - master
       - release-**
     paths:
     - 'src/**'
+    - 'tests/**'
+    - 'CMakeLists.txt'
 
 jobs:
   build:
