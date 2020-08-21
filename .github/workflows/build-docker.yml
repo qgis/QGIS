@@ -62,7 +62,7 @@ jobs:
           echo "##[group] Docker QGIS build"
           DOCKER_BUILD_ARGS="--build-arg DOCKER_TAG="${DOCKER_TAG}_focal" --build-arg CC --build-arg CXX"
           docker build ${DOCKER_BUILD_ARGS} \
-                       --cache-from "qgis/qgis:${DOCKER_TAG}" \
+                       --cache-from "qgis/qgis:${DOCKER_TAG}_focal" \
                        -t "qgis/qgis:BUILDER" \
                        -f qgis.dockerfile ..
           echo "Copy build cache from Docker container to Travis cache directory"
