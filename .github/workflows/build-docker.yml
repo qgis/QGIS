@@ -53,14 +53,14 @@ jobs:
           cd .docker
           docker --version
           docker pull "qgis/qgis3-build-deps:${DOCKER_TAG}" || true
-          docker build --cache-from "qgis/qgis3-build-deps:${DOCKER_TAG}" -t "qgis/qgis3-build-deps:${DOCKER_TAG}" -f ${DOCKER_BUILD_DEPS_FILE} .
-          echo "push to qgis/qgis3-build-deps:${DOCKER_TAG}"
+          docker build --cache-from "qgis/qgis3-build-deps:${DOCKER_TAG}_focal" -t "qgis/qgis3-build-deps:${DOCKER_TAG}_focal" -f ${DOCKER_BUILD_DEPS_FILE} .
+          echo "push to qgis/qgis3-build-deps:${DOCKER_TAG}_focal"
           docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-          docker push "qgis/qgis3-build-deps:${DOCKER_TAG}"
+          docker push "qgis/qgis3-build-deps:${DOCKER_TAG}_focal"
           echo "##[endgroup]"
 
           echo "##[group] Docker QGIS build"
-          DOCKER_BUILD_ARGS="--build-arg DOCKER_TAG --build-arg CC --build-arg CXX"
+          DOCKER_BUILD_ARGS="--build-arg DOCKER_TAG="${DOCKER_TAG}_focal" --build-arg CC --build-arg CXX"
           docker build ${DOCKER_BUILD_ARGS} \
                        --cache-from "qgis/qgis:${DOCKER_TAG}" \
                        -t "qgis/qgis:BUILDER" \
