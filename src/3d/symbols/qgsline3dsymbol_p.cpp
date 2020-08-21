@@ -78,7 +78,7 @@ class QgsBufferedLine3DSymbolHandler : public QgsFeature3DHandler
     void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, LineData &out, bool selected );
 
     // input specific for this class
-    const QgsLine3DSymbol &mSymbol;
+    QgsLine3DSymbol mSymbol;
     // inputs - generic
     QgsFeatureIds mSelectedIds;
 
@@ -223,7 +223,7 @@ class QgsSimpleLine3DSymbolHandler : public QgsFeature3DHandler
     Qt3DExtras::QPhongMaterial *material( const QgsLine3DSymbol &symbol ) const;
 
     // input specific for this class
-    const QgsLine3DSymbol &mSymbol;
+    QgsLine3DSymbol mSymbol;
     // inputs - generic
     QgsFeatureIds mSelectedIds;
 
@@ -336,7 +336,7 @@ class QgsThickLine3DSymbolHandler : public QgsFeature3DHandler
     Qt3DExtras::QPhongMaterial *material( const QgsLine3DSymbol &symbol ) const;
 
     // input specific for this class
-    const QgsLine3DSymbol &mSymbol;
+    QgsLine3DSymbol mSymbol;
     // inputs - generic
     QgsFeatureIds mSelectedIds;
 

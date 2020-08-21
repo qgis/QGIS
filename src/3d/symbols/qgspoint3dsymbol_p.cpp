@@ -85,7 +85,7 @@ class QgsInstancedPoint3DSymbolHandler : public QgsFeature3DHandler
     void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected );
 
     // input specific for this class
-    const QgsPoint3DSymbol &mSymbol;
+    QgsPoint3DSymbol mSymbol;
     // inputs - generic
     QgsFeatureIds mSelectedIds;
 
@@ -373,7 +373,7 @@ class QgsModelPoint3DSymbolHandler : public QgsFeature3DHandler
     void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected );
 
     // input specific for this class
-    const QgsPoint3DSymbol &mSymbol;
+    QgsPoint3DSymbol mSymbol;
     // inputs - generic
     QgsFeatureIds mSelectedIds;
 
@@ -519,7 +519,7 @@ class QgsPoint3DBillboardSymbolHandler : public QgsFeature3DHandler
     void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected );
 
     // input specific for this class
-    const QgsPoint3DSymbol &mSymbol;
+    QgsPoint3DSymbol mSymbol;
     // inputs - generic
     QgsFeatureIds mSelectedIds;
 
