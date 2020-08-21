@@ -60,7 +60,7 @@ jobs:
           echo "##[endgroup]"
 
           echo "##[group] Docker QGIS build"
-          DOCKER_BUILD_ARGS="--build-arg DOCKER_TAG="${DOCKER_TAG}_focal" --build-arg CC --build-arg CXX"
+          DOCKER_BUILD_ARGS="--build-arg 'DOCKER_TAG=${DOCKER_TAG}_focal' --build-arg CC --build-arg CXX"
           docker build ${DOCKER_BUILD_ARGS} \
                        --cache-from "qgis/qgis:${DOCKER_TAG}_focal" \
                        -t "qgis/qgis:BUILDER" \
