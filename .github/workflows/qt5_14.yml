@@ -1,14 +1,22 @@
-name: Build QGIS with Qt 5.14
+name: Build with Qt 5.14
 
 on:
   push:
     branches:
       - master
       - release-**
+    paths:
+    - 'src/**'
+    - 'tests/**'
+    - 'CMakeLists.txt'
   pull_request:
     branches:
       - master
       - release-**
+    paths:
+    - 'src/**'
+    - 'tests/**'
+    - 'CMakeLists.txt'
 
 jobs:
   build:
