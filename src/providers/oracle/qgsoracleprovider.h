@@ -52,12 +52,12 @@ enum QgsOraclePrimaryKeyType
 };
 
 /**
-  \class QgsOracleProvider
-  \brief Data provider for oracle layers.
-
-  This provider implements the
-  interface defined in the QgsDataProvider class to provide access to spatial
-  data residing in a oracle enabled database.
+  * \class QgsOracleProvider
+  * \brief Data provider for oracle layers.
+  *
+  * This provider implements the
+  * interface defined in the QgsDataProvider class to provide access to spatial
+  * data residing in a oracle enabled database.
   */
 class QgsOracleProvider final: public QgsVectorDataProvider
 {
@@ -126,6 +126,14 @@ class QgsOracleProvider final: public QgsVectorDataProvider
      * Determine the fields making up the primary key
      */
     bool determinePrimaryKey();
+
+    /**
+     * Determine the fields making up the primary key from the uri attribute keyColumn
+     *
+     * Fills mPrimaryKeyType and mPrimaryKeyAttrs
+     * from mUri
+     */
+    void determinePrimaryKeyFromUriKeyColumn();
 
     /**
      * Determine the always generated identity fields
@@ -369,7 +377,8 @@ class QgsOracleUtils
 /**
  * Data shared between provider class and its feature sources. Ideally there should
  *  be as few members as possible because there could be simultaneous reads/writes
- *  from different threads and therefore locking has to be involved. */
+ *  from different threads and therefore locking has to be involved.
+*/
 class QgsOracleSharedData
 {
   public:

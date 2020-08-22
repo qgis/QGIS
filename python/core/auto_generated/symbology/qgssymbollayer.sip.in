@@ -344,7 +344,7 @@ Returns the estimated maximum distance which the layer style will bleed outside
 the drawn shape when drawn in the specified /a context. For example, polygons
 drawn with an stroke will draw half the width
 of the stroke outside of the polygon. This amount is estimated, since it may
-be affected by data defined symbology rules.*
+be affected by data defined symbology rules.
 %End
 
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );

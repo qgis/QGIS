@@ -125,7 +125,14 @@ SET(QGIS_CORE_SRCS
   auth/qgsauthmethodregistry.cpp
 
   annotations/qgsannotation.cpp
+  annotations/qgsannotationitemregistry.cpp
+  annotations/qgsannotationlayer.cpp
+  annotations/qgsannotationlayerrenderer.cpp
+  annotations/qgsannotationlineitem.cpp
+  annotations/qgsannotationmarkeritem.cpp
   annotations/qgsannotationmanager.cpp
+  annotations/qgsannotationpointtextitem.cpp
+  annotations/qgsannotationpolygonitem.cpp
   annotations/qgshtmlannotation.cpp
   annotations/qgssvgannotation.cpp
   annotations/qgstextannotation.cpp
@@ -613,6 +620,7 @@ SET(QGIS_CORE_SRCS
   labeling/qgslabelfeature.cpp
   labeling/qgslabelingengine.cpp
   labeling/qgslabelingenginesettings.cpp
+  labeling/qgslabellinesettings.cpp
   labeling/qgslabelobstaclesettings.cpp
   labeling/qgslabelsearchtree.cpp
   labeling/qgslabelsink.cpp
@@ -701,9 +709,9 @@ SET(QGIS_CORE_SRCS
 )
 
 FILE(GLOB JSON_HELP_FILES "${CMAKE_SOURCE_DIR}/resources/function_help/json/*")
-IF(NOT USING_NINJA)
+IF(CMAKE_VERSION VERSION_LESS "3.18" AND NOT USING_NINJA)
   STRING(REPLACE "$" "$$" JSON_HELP_FILES "${JSON_HELP_FILES}")
-ENDIF(NOT USING_NINJA)
+ENDIF(CMAKE_VERSION VERSION_LESS "3.18" AND NOT USING_NINJA)
 STRING(REPLACE "\(" "\\(" JSON_HELP_FILES "${JSON_HELP_FILES}")
 STRING(REPLACE "\)" "\\)" JSON_HELP_FILES "${JSON_HELP_FILES}")
 ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
@@ -1045,7 +1053,15 @@ SET(QGIS_CORE_HDRS
   3d/qgsabstract3drenderer.h
 
   annotations/qgsannotation.h
+  annotations/qgsannotationitem.h
+  annotations/qgsannotationitemregistry.h
+  annotations/qgsannotationlayer.h
+  annotations/qgsannotationlayerrenderer.h
+  annotations/qgsannotationlineitem.h
+  annotations/qgsannotationmarkeritem.h
   annotations/qgsannotationmanager.h
+  annotations/qgsannotationpointtextitem.h
+  annotations/qgsannotationpolygonitem.h
   annotations/qgsannotationregistry.h
   annotations/qgshtmlannotation.h
   annotations/qgssvgannotation.h
@@ -1152,6 +1168,7 @@ SET(QGIS_CORE_HDRS
   labeling/qgslabeling.h
   labeling/qgslabelingengine.h
   labeling/qgslabelingenginesettings.h
+  labeling/qgslabellinesettings.h
   labeling/qgslabelobstaclesettings.h
   labeling/qgslabelsearchtree.h
   labeling/qgslabelthinningsettings.h

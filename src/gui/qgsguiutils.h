@@ -69,26 +69,26 @@ namespace QgsGuiUtils
   constexpr double CANVAS_MAGNIFICATION_MAX = 16.0;
 
   /**
-    Open files, preferring to have the default file selector be the
-    last one used, if any; also, prefer to start in the last directory
-    associated with filterName.
-
-    \param filterName the name of the filter; used for persistent store key
-    \param filters    the file filters used for QFileDialog
-    \param selectedFiles string list of selected files; will be empty if none selected
-    \param enc        encoding?
-    \param title      the title for the dialog
-    \param cancelAll  add button to cancel further requests
-    \note
-
-    Stores persistent settings under /UI/.  The sub-keys will be
-    filterName and filterName + "Dir".
-
-    Opens dialog on last directory associated with the filter name, or
-    the current working directory if this is the first time invoked
-    with the current filter name.
-
-    This method returns true if cancel all was clicked, otherwise false
+   * Open files, preferring to have the default file selector be the
+   * last one used, if any; also, prefer to start in the last directory
+   * associated with filterName.
+   *
+   * \param filterName the name of the filter; used for persistent store key
+   * \param filters    the file filters used for QFileDialog
+   * \param selectedFiles string list of selected files; will be empty if none selected
+   * \param enc        encoding?
+   * \param title      the title for the dialog
+   * \param cancelAll  add button to cancel further requests
+   * \note
+   *
+   * Stores persistent settings under /UI/.  The sub-keys will be
+   * filterName and filterName + "Dir".
+   *
+   * Opens dialog on last directory associated with the filter name, or
+   * the current working directory if this is the first time invoked
+   * with the current filter name.
+   *
+   * This method returns true if cancel all was clicked, otherwise false
   */
 
   bool GUI_EXPORT openFilesRememberingFilter( QString const &filterName,

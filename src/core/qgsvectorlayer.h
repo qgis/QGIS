@@ -133,14 +133,15 @@ typedef QSet<int> QgsAttributeIds;
  * Since QGIS 3.4 when closing a project, the application shows a warning about potential data
  * loss if there are any non-empty memory layers present. If your memory layer should not
  * trigger such warning, it is possible to suppress that by setting the following custom variable:
+ *
  * \code{.py}
- *   layer.setCustomProperty("skipMemoryLayersCheck", 1)
+ *     layer.setCustomProperty("skipMemoryLayersCheck", 1)
  * \endcode
  *
  *
  * \subsection ogr OGR data provider (ogr)
  *
- * Accesses data using the OGR drivers (http://www.gdal.org/ogr/ogr_formats.html). The url
+ * Accesses data using the OGR drivers (https://gdal.org/drivers/vector/index.html). The url
  * is the OGR connection string. A wide variety of data formats can be accessed using this
  * driver, including file based formats used by many GIS systems, database formats, and
  * web services. Some of these formats are also supported by custom data providers listed
@@ -623,8 +624,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Joins another vector layer to this layer
-      \param joinInfo join object containing join layer id, target and source field
-      \note since 2.6 returns bool indicating whether the join can be added
+     * \param joinInfo join object containing join layer id, target and source field
+     * \note since 2.6 returns bool indicating whether the join can be added
     */
     bool addJoin( const QgsVectorLayerJoinInfo &joinInfo );
 
@@ -1548,6 +1549,29 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     Q_INVOKABLE QgsGeometry::OperationResult splitFeatures( const QgsPointSequence &splitLine, bool topologicalEditing = false );
 
     /**
+     * Splits features cut by the given curve
+     * \param curve curve that splits the layer features
+     * \param preserveCircular whether if circular strings are preserved after splitting
+     * \param topologicalEditing TRUE if topological editing is enabled
+     * \returns QgsGeometry::OperationResult
+     *
+     * - Success
+     * - NothingHappened
+     * - LayerNotEditable
+     * - InvalidInputGeometryType
+     * - InvalidBaseGeometry
+     * - GeometryEngineError
+     * - SplitCannotSplitPoint
+     *
+     * \note Calls to splitFeatures() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
+     * \since QGIS 3.16
+     */
+    Q_INVOKABLE QgsGeometry::OperationResult splitFeatures( const QgsCurve *curve, bool preserveCircular = false, bool topologicalEditing = false );
+
+    /**
      * Adds topological points for every vertex of the geometry.
      * \param geom the geometry where each vertex is added to segments of other features
      * \returns 0 in case of success
@@ -1897,11 +1921,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Therefore any error message returned by commitErrors() also includes which stage failed so
      * that the user has some chance of repairing the damage cleanly.
      *
+     * By setting \a stopEditing to FALSE, the layer will stay in editing mode.
+     * Otherwise the layer editing mode will be disabled if the commit is successful.
+     *
      * \see startEditing()
      * \see commitErrors()
      * \see rollBack()
      */
-    Q_INVOKABLE bool commitChanges();
+    Q_INVOKABLE bool commitChanges( bool stopEditing = true );
 
     /**
      * Returns a list containing any error messages generated when attempting
@@ -2476,8 +2503,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Emitted when edited changes have been successfully written to the data provider.
     void editingStopped();
 
-    //! Emitted before changes are committed to the data provider.
-    void beforeCommitChanges();
+    /**
+     * Emitted before changes are committed to the data provider.
+     *
+     * The \a stopEditing flag specifies if the editing mode shall be left after this commit.
+     */
+    void beforeCommitChanges( bool stopEditing );
 
     //! Emitted before changes are rolled back.
     void beforeRollBack();

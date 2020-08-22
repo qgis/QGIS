@@ -137,6 +137,18 @@ class QgsServerTestBase(unittest.TestCase):
                 pass
         self.server = QgsServer()
 
+        # Disable landing page API to test standard legacy XML responses in case of errors
+        os.environ["QGIS_SERVER_DISABLED_APIS"] = "Landing Page"
+
+    def tearDown(self):
+        """"Cleanup env"""
+
+        super().tearDown()
+        try:
+            del os.environ["QGIS_SERVER_DISABLED_APIS"]
+        except KeyError:
+            pass
+
     def strip_version_xmlns(self, text):
         """Order of attributes is random, strip version and xmlns"""
         return text.replace(b'version="1.3.0"', b'').replace(b'xmlns="http://www.opengis.net/ogc"', b'')

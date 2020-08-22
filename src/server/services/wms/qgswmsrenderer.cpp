@@ -1684,10 +1684,10 @@ namespace QgsWms
       return false;
     }
 
-    const QgsRaster::IdentifyFormat identifyFormat { static_cast<bool>( layer->dataProvider()->capabilities() &
-        QgsRasterDataProvider::IdentifyFeature ) ?
-        QgsRaster::IdentifyFormat::IdentifyFormatFeature :
-        QgsRaster::IdentifyFormat::IdentifyFormatValue };
+    const QgsRaster::IdentifyFormat identifyFormat(
+      static_cast<bool>( layer->dataProvider()->capabilities() & QgsRasterDataProvider::IdentifyFeature )
+      ? QgsRaster::IdentifyFormat::IdentifyFormatFeature
+      : QgsRaster::IdentifyFormat::IdentifyFormatValue );
 
     QgsRasterIdentifyResult identifyResult;
     if ( layer->crs() != mapSettings.destinationCrs() )
@@ -2581,7 +2581,7 @@ namespace QgsWms
           {
             placement = QgsPalLayerSettings::AroundPoint;
             palSettings.dist = 2; // in mm
-            palSettings.placementFlags = 0;
+            palSettings.lineSettings().setPlacementFlags( 0 );
             break;
           }
           case QgsWkbTypes::PolygonGeometry:
@@ -2611,7 +2611,7 @@ namespace QgsWms
           {
             placement = QgsPalLayerSettings::Line;
             palSettings.dist = 2;
-            palSettings.placementFlags = 10;
+            palSettings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine | QgsLabeling::LinePlacementFlag::MapOrientation );
             break;
           }
         }
@@ -2753,6 +2753,7 @@ namespace QgsWms
         case QgsMapLayerType::MeshLayer:
         case QgsMapLayerType::VectorTileLayer:
         case QgsMapLayerType::PluginLayer:
+        case QgsMapLayerType::AnnotationLayer:
           break;
       }
     }

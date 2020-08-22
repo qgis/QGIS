@@ -425,8 +425,21 @@ void QgsHandleBadLayers::apply()
       QgsMapLayer *mapLayer = QgsProject::instance()->mapLayer( layerId );
       if ( mapLayer )
       {
+        QString subsetString;
+        QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer *>( mapLayer );
+        if ( vlayer )
+        {
+          // store the previous layer subset string, so we can restore after fixing the data source
+          subsetString = vlayer->subsetString();
+        }
+
         mapLayer->setDataSource( datasource, name, provider, options );
         dataSourceChanged = mapLayer->isValid();
+
+        if ( dataSourceChanged && vlayer && !subsetString.isEmpty() )
+        {
+          vlayer->setSubsetString( subsetString );
+        }
       }
     }
 

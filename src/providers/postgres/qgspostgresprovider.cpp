@@ -789,40 +789,21 @@ bool QgsPostgresProvider::loadFields()
   // Clear cached information about enum values support
   mShared->clearSupportsEnumValuesCache();
 
+  QString sql;
+  QString attroidsFilter;
+
   if ( !mIsQuery )
   {
     QgsDebugMsgLevel( QStringLiteral( "Loading fields for table %1" ).arg( mTableName ), 2 );
 
-    // Get the relation oid for use in later queries
-    QString sql = QStringLiteral( "SELECT regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
-    QgsPostgresResult tresult( connectionRO()->PQexec( sql ) );
-    QString tableoid = tresult.PQgetvalue( 0, 0 );
-
     // Get the table description
-    sql = QStringLiteral( "SELECT description FROM pg_description WHERE objoid=%1 AND objsubid=0" ).arg( tableoid );
-    tresult = connectionRO()->PQexec( sql );
+    sql = QStringLiteral( "SELECT description FROM pg_description WHERE objoid=regclass(%1)::oid AND objsubid=0" ).arg( quotedValue( mQuery ) );
+    QgsPostgresResult tresult( connectionRO()->PQexec( sql ) );
     if ( tresult.PQntuples() > 0 )
     {
       mDataComment = tresult.PQgetvalue( 0, 0 );
       mLayerMetadata.setAbstract( mDataComment );
     }
-  }
-
-  // Collect type info
-  QString sql = QStringLiteral( "SELECT oid,typname,typtype,typelem,typlen FROM pg_type" );
-  QgsPostgresResult typeResult( connectionRO()->PQexec( sql ) );
-
-  QMap<Oid, PGTypeInfo> typeMap;
-  for ( int i = 0; i < typeResult.PQntuples(); ++i )
-  {
-    PGTypeInfo typeInfo =
-    {
-      /* typeName = */ typeResult.PQgetvalue( i, 1 ),
-      /* typeType = */ typeResult.PQgetvalue( i, 2 ),
-      /* typeElem = */ typeResult.PQgetvalue( i, 3 ),
-      /* typeLen = */ typeResult.PQgetvalue( i, 4 ).toInt()
-    };
-    typeMap.insert( typeResult.PQgetvalue( i, 0 ).toUInt(), typeInfo );
   }
 
   // Populate the field vector for this layer. The field vector contains
@@ -836,6 +817,14 @@ bool QgsPostgresProvider::loadFields()
   QMap<Oid, QMap<int, bool> > notNullMap, uniqueMap;
   if ( result.PQnfields() > 0 )
   {
+    // Collect attribiute oids
+    QSet<Oid> attroids;
+    for ( int i = 0; i < result.PQnfields(); i++ )
+    {
+      Oid attroid = result.PQftype( i );
+      attroids.insert( attroid );
+    }
+
     // Collect table oids
     QSet<Oid> tableoids;
     for ( int i = 0; i < result.PQnfields(); i++ )
@@ -900,8 +889,39 @@ bool QgsPostgresProvider::loadFields()
         uniqueMap[attrelid][attnum] = uniqueConstraint;
         identityMap[attrelid][attnum] = attIdentity.isEmpty() ? " " : attIdentity;
         generatedMap[attrelid][attnum] = attGenerated.isEmpty() ? "" : defVal;
+
+        // Also include atttype oid from pg_attribute, because PQnfields only returns basic type for for domains
+        attroids.insert( attType );
       }
     }
+
+    // Prepare filter for fetching pg_type info
+    if ( !attroids.isEmpty() )
+    {
+      QStringList attroidsList;
+      for ( Oid attroid : qgis::as_const( attroids ) )
+      {
+        attroidsList.append( QString::number( attroid ) );
+      }
+      attroidsFilter = QStringLiteral( "WHERE oid in (%1)" ).arg( attroidsList.join( ',' ) );
+    }
+  }
+
+  // Collect type info
+  sql = QStringLiteral( "SELECT oid,typname,typtype,typelem,typlen FROM pg_type %1" ).arg( attroidsFilter );
+  QgsPostgresResult typeResult( connectionRO()->PQexec( sql ) );
+
+  QMap<Oid, PGTypeInfo> typeMap;
+  for ( int i = 0; i < typeResult.PQntuples(); ++i )
+  {
+    PGTypeInfo typeInfo =
+    {
+      /* typeName = */ typeResult.PQgetvalue( i, 1 ),
+      /* typeType = */ typeResult.PQgetvalue( i, 2 ),
+      /* typeElem = */ typeResult.PQgetvalue( i, 3 ),
+      /* typeLen = */ typeResult.PQgetvalue( i, 4 ).toInt()
+    };
+    typeMap.insert( typeResult.PQgetvalue( i, 0 ).toUInt(), typeInfo );
   }
 
   QSet<QString> fields;
@@ -4801,17 +4821,39 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer 
     return result;
   }
   QString sql(
-    "SELECT RC.CONSTRAINT_NAME, KCU1.COLUMN_NAME, KCU2.CONSTRAINT_SCHEMA, KCU2.TABLE_NAME, KCU2.COLUMN_NAME, KCU1.ORDINAL_POSITION "
-    "FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS AS RC "
-    "INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS KCU1 "
-    "ON KCU1.CONSTRAINT_CATALOG = RC.CONSTRAINT_CATALOG AND KCU1.CONSTRAINT_SCHEMA = RC.CONSTRAINT_SCHEMA AND KCU1.CONSTRAINT_NAME = RC.CONSTRAINT_NAME "
-    "INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS KCU2 "
-    "ON KCU2.CONSTRAINT_CATALOG = RC.UNIQUE_CONSTRAINT_CATALOG AND KCU2.CONSTRAINT_SCHEMA = RC.UNIQUE_CONSTRAINT_SCHEMA AND KCU2.CONSTRAINT_NAME = RC.UNIQUE_CONSTRAINT_NAME "
-    "AND KCU2.ORDINAL_POSITION = KCU1.ORDINAL_POSITION "
-    "WHERE KCU1.CONSTRAINT_SCHEMA=" + QgsPostgresConn::quotedValue( mSchemaName ) + " AND KCU1.TABLE_NAME=" + QgsPostgresConn::quotedValue( mTableName ) +
-    "GROUP BY RC.CONSTRAINT_NAME, KCU1.COLUMN_NAME, KCU2.CONSTRAINT_SCHEMA, KCU2.TABLE_NAME, KCU2.COLUMN_NAME, KCU1.ORDINAL_POSITION " +
-    "ORDER BY KCU1.ORDINAL_POSITION"
+    "WITH foreign_keys AS "
+    "  ( SELECT c.conname, "
+    "           c.conrelid, "
+    "           c.confrelid, "
+    "           unnest(c.conkey) AS conkey, "
+    "           unnest(c.confkey) AS confkey, "
+    "     (SELECT relname "
+    "      FROM pg_catalog.pg_class "
+    "      WHERE oid = c.conrelid) as referencing_table, "
+    "     (SELECT relname "
+    "      FROM pg_catalog.pg_class "
+    "      WHERE oid = c.confrelid) as referenced_table, "
+    "     (SELECT relnamespace::regnamespace::text "
+    "      FROM pg_catalog.pg_class "
+    "      WHERE oid = c.confrelid) as constraint_schema "
+    "   FROM pg_constraint c "
+    "   WHERE contype = 'f' "
+    "     AND c.conrelid::regclass = " + QgsPostgresConn::quotedValue( QString( mSchemaName + "." +  mTableName ) ) + "::regclass ) "
+    "SELECT fk.conname as constraint_name, "
+    "       a.attname as column_name, "
+    "       fk.constraint_schema, "
+    "       referenced_table as table_name, "
+    "       af.attname as column_name, "
+    "       fk.confkey as ordinal_position "
+    "FROM foreign_keys fk "
+    "JOIN pg_attribute af ON af.attnum = fk.confkey "
+    "AND af.attrelid = fk.confrelid "
+    "JOIN pg_attribute a ON a.attnum = conkey "
+    "AND a.attrelid = fk.conrelid "
+    "ORDER BY fk.confrelid, "
+    "         fk.conname ;"
   );
+
   QgsPostgresResult sqlResult( connectionRO()->PQexec( sql ) );
   if ( sqlResult.PQresultStatus() != PGRES_TUPLES_OK )
   {
@@ -4828,7 +4870,7 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer 
     const QString refTable = sqlResult.PQgetvalue( row, 3 );
     const QString refColumn = sqlResult.PQgetvalue( row, 4 );
     const QString position = sqlResult.PQgetvalue( row, 5 );
-    if ( position == QLatin1String( "1" ) )
+    if ( ( position == QLatin1String( "1" ) ) || ( nbFound == 0 ) )
     {
       // first reference field => try to find if we have layers for the referenced table
       const QList<QgsVectorLayer *> foundLayers = searchLayers( layers, mUri.connectionInfo( false ), refSchema, refTable );

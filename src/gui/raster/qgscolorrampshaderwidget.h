@@ -119,6 +119,9 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
      */
     void autoLabel();
 
+    //! Extracts the minimal and maximal value from the colormapTreeWidget
+    bool colormapMinMax( double &min, double &max ) const;
+
     //! Extract the unit out of the current labels and set the unit field.
     void setUnitFromLabels();
 

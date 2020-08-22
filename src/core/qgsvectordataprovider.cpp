@@ -639,7 +639,7 @@ QStringList QgsVectorDataProvider::availableEncodings()
   std::call_once( initialized, [ = ]
   {
     const auto codecs { QTextCodec::availableCodecs() };
-    for ( const QString &codec : codecs )
+    for ( const QByteArray &codec : codecs )
     {
       sEncodings << codec;
     }

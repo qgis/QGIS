@@ -31,7 +31,7 @@ class QgsCoordinateTransform;
 class QgsCoordinateReferenceSystem;
 
 /**
-  \brief Data provider for MDAL layers.
+ * \brief Data provider for MDAL layers.
 */
 class QgsMdalProvider : public QgsMeshDataProvider
 {

@@ -349,7 +349,6 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
   }
 
   const bool applyPatternTweaks = mAlignDashPattern
-                                  && pen.widthF() > 1.0
                                   && ( pen.style() != Qt::SolidLine || !pen.dashPattern().empty() )
                                   && pen.dashOffset() == 0;
 
@@ -639,10 +638,13 @@ void QgsSimpleLineSymbolLayer::drawPathWithDashPatternTweaks( QPainter *painter,
     return;
 
   QVector< qreal > sourcePattern = pen.dashPattern();
-  const double dashWidthDiv = std::max( 1.0, pen.widthF() );
+  const double dashWidthDiv = std::max( 1.0001, pen.widthF() );
   // back to painter units
   for ( int i = 0; i < sourcePattern.size(); ++ i )
-    sourcePattern[i] *= dashWidthDiv;
+    sourcePattern[i] *= pen.widthF();
+
+  if ( pen.widthF() <= 1.0 )
+    pen.setWidthF( 1.0001 );
 
   QVector< qreal > buffer;
   QPolygonF bufferedPoints;

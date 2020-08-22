@@ -62,6 +62,7 @@
 #include "qgsprojecttimesettings.h"
 #include "qgsvectortilelayer.h"
 #include "qgsruntimeprofiler.h"
+#include "qgsannotationlayer.h"
 
 #include <algorithm>
 #include <QApplication>
@@ -1120,7 +1121,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
     // apply specific settings to vector layer
     if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mapLayer.get() ) )
     {
-      vl->setReadExtentFromXml( mTrustLayerMetadata );
+      vl->setReadExtentFromXml( mTrustLayerMetadata || ( flags & QgsProject::ReadFlag::FlagTrustLayerMetadata ) );
     }
   }
   else if ( type == QLatin1String( "raster" ) )
@@ -1140,7 +1141,11 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
     QString typeName = layerElem.attribute( QStringLiteral( "name" ) );
     mapLayer.reset( QgsApplication::pluginLayerRegistry()->createLayer( typeName ) );
   }
-
+  else if ( type == QLatin1String( "annotation" ) )
+  {
+    QgsAnnotationLayer::LayerOptions options( mTransformContext );
+    mapLayer = qgis::make_unique<QgsAnnotationLayer>( QString(), options );
+  }
   if ( !mapLayer )
   {
     QgsDebugMsg( QStringLiteral( "Unable to create layer" ) );
@@ -1492,6 +1497,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
       mEvaluateDefaultValues = true;
   }
 
+  // Read trust layer metadata config in the project
   nl = doc->elementsByTagName( QStringLiteral( "trust" ) );
   if ( nl.count() )
   {

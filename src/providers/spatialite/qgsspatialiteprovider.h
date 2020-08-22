@@ -49,12 +49,12 @@ class QgsTransaction;
 #include "qgsdatasourceuri.h"
 
 /**
-  \class QgsSpatiaLiteProvider
-  \brief Data provider for SQLite/SpatiaLite layers.
-
-  This provider implements the
-  interface defined in the QgsDataProvider class to provide access to spatial
-  data residing in a SQLite/SpatiaLite enabled database.
+ * \class QgsSpatiaLiteProvider
+ * \brief Data provider for SQLite/SpatiaLite layers.
+ *
+ * This provider implements the
+ * interface defined in the QgsDataProvider class to provide access to spatial
+ * data residing in a SQLite/SpatiaLite enabled database.
   */
 class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
 {

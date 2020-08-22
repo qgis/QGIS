@@ -16,6 +16,7 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSABSTRACTGEOMETRYV2
 #define QGSABSTRACTGEOMETRYV2
 
+#include <array>
 #include <functional>
 #include <QString>
 
@@ -115,12 +116,14 @@ class CORE_EXPORT QgsAbstractGeometry
 
       /**
        * Maximum angle between generating radii (lines from arc center
-       * to output vertices) */
+       * to output vertices)
+      */
       MaximumAngle = 0,
 
       /**
        * Maximum distance between an arbitrary point on the original
-       * curve and closest point on its approximation. */
+       * curve and closest point on its approximation.
+      */
       MaximumDifference
     };
     Q_ENUM( SegmentationToleranceType )
@@ -853,10 +856,12 @@ class CORE_EXPORT QgsAbstractGeometry
         {
           const QgsAbstractGeometry *g = nullptr;  //!< Current geometry
           int index = 0;               //!< Ptr in the current geometry
+
+          bool operator==( const Level &other ) const;
         };
 
-        Level levels[3];  //!< Stack of levels - three levels should be sufficient (e.g. part index, ring index, vertex index)
-        int depth = -1;        //!< At what depth level are we right now
+        std::array<Level, 3> levels;  //!< Stack of levels - three levels should be sufficient (e.g. part index, ring index, vertex index)
+        int depth = -1;               //!< At what depth level are we right now
 
         void digDown();   //!< Prepare the stack of levels so that it points to a leaf child geometry
 

@@ -11,8 +11,8 @@ LABEL Description="Docker container with QGIS" Vendor="QGIS.org" Version="1.1"
 # build timeout in seconds, so no timeout by default
 ARG BUILD_TIMEOUT=360000
 
-ARG CC=/usr/lib/ccache/clang
-ARG CXX=/usr/lib/ccache/clazy
+ARG CC=/usr/lib/ccache/gcc
+ARG CXX=/usr/lib/ccache/g++
 ENV LANG=C.UTF-8
 
 COPY . /QGIS
@@ -55,14 +55,11 @@ RUN cmake \
  && SUCCESS=OK \
  && timeout ${BUILD_TIMEOUT}s ninja install || SUCCESS=TIMEOUT \
  && echo "$SUCCESS" > /QGIS/build_exit_value
- 
+
 # Additional run-time dependencies
 RUN pip3 install jinja2 pygments
 
 ################################################################################
-ARG DELETE_CACHE=FALSE
-RUN if [[ ${DELETE_CACHE} == TRUE ]]; then rm /QGIS; fi
-
 # Python testing environment setup
 
 # Add QGIS test runner

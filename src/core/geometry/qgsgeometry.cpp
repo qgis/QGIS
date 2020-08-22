@@ -881,6 +881,26 @@ QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QgsPointSequence 
   return QgsGeometry::NothingHappened;
 }
 
+QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QgsCurve *curve, QVector<QgsGeometry> &newGeometries, bool preserveCircular, bool topological, QgsPointSequence &topologyTestPoints, bool splitFeature )
+{
+  std::unique_ptr<QgsLineString> segmentizedLine( curve->curveToLine() );
+  QgsPointSequence points;
+  segmentizedLine->points( points );
+  QgsGeometry::OperationResult result = splitGeometry( points, newGeometries, topological, topologyTestPoints, splitFeature );
+
+  if ( result == QgsGeometry::Success )
+  {
+    if ( preserveCircular )
+    {
+      for ( int i = 0; i < newGeometries.count(); ++i )
+        newGeometries[i] = newGeometries[i].convertToCurves();
+      *this = convertToCurves();
+    }
+  }
+
+  return result;
+}
+
 QgsGeometry::OperationResult QgsGeometry::reshapeGeometry( const QgsLineString &reshapeLineString )
 {
   if ( !d->geometry )
@@ -1622,7 +1642,7 @@ QgsMultiPointXY QgsGeometry::asMultiPoint() const
   QgsMultiPointXY multiPoint( nPoints );
   for ( int i = 0; i < nPoints; ++i )
   {
-    const QgsPoint *pt = static_cast<const QgsPoint *>( mp->geometryN( i ) );
+    const QgsPoint *pt = mp->pointN( i );
     multiPoint[i].setX( pt->x() );
     multiPoint[i].setY( pt->y() );
   }
@@ -3138,7 +3158,7 @@ QgsGeometry QgsGeometry::smooth( const unsigned int iterations, const double off
       resultMultiline->reserve( multiLine->numGeometries() );
       for ( int i = 0; i < multiLine->numGeometries(); ++i )
       {
-        resultMultiline->addGeometry( smoothLine( *( qgsgeometry_cast< const QgsLineString * >( multiLine->geometryN( i ) ) ), iterations, offset, minimumDistance, maxAngle ).release() );
+        resultMultiline->addGeometry( smoothLine( *( multiLine->lineStringN( i ) ), iterations, offset, minimumDistance, maxAngle ).release() );
       }
       return QgsGeometry( std::move( resultMultiline ) );
     }
@@ -3157,7 +3177,7 @@ QgsGeometry QgsGeometry::smooth( const unsigned int iterations, const double off
       resultMultiPoly->reserve( multiPoly->numGeometries() );
       for ( int i = 0; i < multiPoly->numGeometries(); ++i )
       {
-        resultMultiPoly->addGeometry( smoothPolygon( *( qgsgeometry_cast< const QgsPolygon * >( multiPoly->geometryN( i ) ) ), iterations, offset, minimumDistance, maxAngle ).release() );
+        resultMultiPoly->addGeometry( smoothPolygon( *( multiPoly->polygonN( i ) ), iterations, offset, minimumDistance, maxAngle ).release() );
       }
       return QgsGeometry( std::move( resultMultiPoly ) );
     }

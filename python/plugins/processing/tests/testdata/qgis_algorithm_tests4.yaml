@@ -866,7 +866,7 @@ tests:
   - algorithm: qgis:rastersampling
     name: Single band raster
     params:
-      COLUMN_PREFIX: rvalue
+      COLUMN_PREFIX: SAMPLE_
       INPUT:
         name: custom/sampling_points.gml
         type: vector

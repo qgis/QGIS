@@ -59,8 +59,8 @@ struct QgsOgrLayerReleaser
 using QgsOgrLayerUniquePtr = std::unique_ptr< QgsOgrLayer, QgsOgrLayerReleaser>;
 
 /**
-  \class QgsOgrProvider
-  \brief Data provider for OGR datasources
+ * \class QgsOgrProvider
+ * \brief Data provider for OGR datasources
   */
 class QgsOgrProvider final: public QgsVectorDataProvider
 {
@@ -230,7 +230,8 @@ class QgsOgrProvider final: public QgsVectorDataProvider
 
     /**
      * This member variable receives the same value as extent_
-     in the method QgsOgrProvider::extent(). The purpose is to prevent a memory leak*/
+     * in the method QgsOgrProvider::extent(). The purpose is to prevent a memory leak.
+    */
     mutable QgsRectangle mExtentRect;
 
     /**
@@ -261,8 +262,9 @@ class QgsOgrProvider final: public QgsVectorDataProvider
 
     /**
      * Optional geometry type for layers with multiple geometries,
-     *  otherwise wkbUnknown. This type is always flatten (2D) and single, it means
-     *  that 2D, 25D, single and multi types are mixed in one sublayer */
+     * otherwise wkbUnknown. This type is always flatten (2D) and single, it means
+     * that 2D, 25D, single and multi types are mixed in one sublayer.
+    */
     OGRwkbGeometryType mOgrGeometryTypeFilter = wkbUnknown;
 
     //! current spatial filter
@@ -343,8 +345,8 @@ using QgsOgrDatasetSharedPtr = std::shared_ptr< QgsOgrDataset>;
 
 
 /**
-  \class QgsOgrProviderUtils
-  \brief Utility class with static methods
+ * \class QgsOgrProviderUtils
+ * \brief Utility class with static methods
   */
 class CORE_EXPORT QgsOgrProviderUtils
 {
@@ -519,8 +521,8 @@ class CORE_EXPORT QgsOgrProviderUtils
 
 
 /**
-  \class QgsOgrDataset
-  \brief Wrap a GDALDatasetH object in a thread-safe way
+ * \class QgsOgrDataset
+ * \brief Wrap a GDALDatasetH object in a thread-safe way
   */
 class QgsOgrDataset
 {
@@ -547,9 +549,9 @@ class QgsOgrDataset
 
 
 /**
-  \class QgsOgrFeatureDefn
-  \brief Wrap a OGRFieldDefnH object in a thread-safe way
-  */
+ * \class QgsOgrFeatureDefn
+ * \brief Wrap a OGRFieldDefnH object in a thread-safe way
+ */
 class QgsOgrFeatureDefn
 {
     friend class QgsOgrLayer;
@@ -589,8 +591,8 @@ class QgsOgrFeatureDefn
 
 
 /**
-  \class QgsOgrLayer
-  \brief Wrap a OGRLayerH object in a thread-safe way
+ * \class QgsOgrLayer
+ * \brief Wrap a OGRLayerH object in a thread-safe way
   */
 class QgsOgrLayer
 {

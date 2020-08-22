@@ -677,7 +677,7 @@ Returns the units used for the offset of the shapeburst fill.
 class QgsImageFillSymbolLayer: QgsFillSymbolLayer
 {
 %Docstring
-Base class for polygon renderers generating texture images*
+Base class for polygon renderers generating texture images
 %End
 
 %TypeHeaderCode

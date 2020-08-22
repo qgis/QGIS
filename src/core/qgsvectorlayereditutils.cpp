@@ -296,10 +296,15 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QVect
 
 QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsPointSequence &splitLine, bool topologicalEditing )
 {
+  QgsLineString lineString( splitLine );
+  return splitFeatures( &lineString, false, topologicalEditing );
+}
+
+QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsCurve *curve, bool preserveCircular, bool topologicalEditing )
+{
   if ( !mLayer->isSpatial() )
     return QgsGeometry::InvalidBaseGeometry;
 
-  double xMin, yMin, xMax, yMax;
   QgsRectangle bBox; //bounding box of the split line
   QgsGeometry::OperationResult returnCode = QgsGeometry::OperationResult::Success;
   QgsGeometry::OperationResult splitFunctionReturn; //return code of QgsGeometry::splitGeometry
@@ -314,17 +319,8 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsPo
   }
   else //else consider all the feature that intersect the bounding box of the split line
   {
-    if ( boundingBoxFromPointList( splitLine, xMin, yMin, xMax, yMax ) )
-    {
-      bBox.setXMinimum( xMin );
-      bBox.setYMinimum( yMin );
-      bBox.setXMaximum( xMax );
-      bBox.setYMaximum( yMax );
-    }
-    else
-    {
-      return QgsGeometry::OperationResult::InvalidInputGeometryType;
-    }
+
+    bBox = curve->boundingBox();
 
     if ( bBox.isEmpty() )
     {
@@ -365,7 +361,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsPo
     QVector<QgsGeometry> newGeometries;
     QgsPointSequence topologyTestPoints;
     QgsGeometry featureGeom = feat.geometry();
-    splitFunctionReturn = featureGeom.splitGeometry( splitLine, newGeometries, topologicalEditing, topologyTestPoints );
+    splitFunctionReturn = featureGeom.splitGeometry( curve, newGeometries, preserveCircular, topologicalEditing, topologyTestPoints );
     if ( splitFunctionReturn == QgsGeometry::OperationResult::Success )
     {
       //change this geometry
@@ -395,10 +391,8 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsPo
     }
   }
 
-  if ( numberOfSplitFeatures == 0 && !selectedIds.isEmpty() )
+  if ( numberOfSplitFeatures == 0 )
   {
-    //There is a selection but no feature has been split.
-    //Maybe user forgot that only the selected features are split
     returnCode = QgsGeometry::OperationResult::NothingHappened;
   }
 

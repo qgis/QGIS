@@ -452,7 +452,15 @@ Creates a new QgsSvgMarkerSymbolLayerWidget.
   protected:
 
     void populateList();
-    void setGuiForSvg( const QgsSvgMarkerSymbolLayer *layer );
+
+    void setGuiForSvg( const QgsSvgMarkerSymbolLayer *layer, bool skipDefaultColors = false );
+%Docstring
+Updates the GUI to reflect the SVG marker symbol ``layer``.
+
+:param layer: SVG marker symbol layer
+:param skipDefaultColors: if ``True``, the default fill and outline colors of the SVG file will not overwrite
+                          the ones from the symbol layer
+%End
 
 
 };

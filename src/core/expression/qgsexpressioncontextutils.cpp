@@ -510,6 +510,15 @@ QgsExpressionContextScope *QgsExpressionContextUtils::layoutScope( const QgsLayo
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_pageheight" ), s.height(), true ) );
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_pagewidth" ), s.width(), true ) );
   }
+
+  QVariantList offsets;
+  for ( int i = 0; i < layout->pageCollection()->pageCount(); i++ )
+  {
+    QPointF p = layout->pageCollection()->pagePositionToLayoutPosition( i, QgsLayoutPoint( 0, 0 ) );
+    offsets << p.y();
+  }
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_pageoffsets" ), offsets, true ) );
+
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_dpi" ), layout->renderContext().dpi(), true ) );
 
   scope->addFunction( QStringLiteral( "item_variables" ), new GetLayoutItemVariables( layout ) );

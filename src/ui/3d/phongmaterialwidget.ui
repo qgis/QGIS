@@ -112,6 +112,12 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>btnDiffuse</tabstop>
+  <tabstop>btnAmbient</tabstop>
+  <tabstop>btnSpecular</tabstop>
+  <tabstop>spinShininess</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

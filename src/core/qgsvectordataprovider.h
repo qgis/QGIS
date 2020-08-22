@@ -86,9 +86,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
       SimplifyGeometriesWithTopologicalValidation = 1 << 15, //!< Supports topological simplification of geometries on provider side according to a distance tolerance
       TransactionSupport = 1 << 16, //!< Supports transactions
       CircularGeometries = 1 << 17, //!< Supports circular geometry types (circularstring, compoundcurve, curvepolygon)
-      ChangeFeatures = 1 << 18, /**  Supports joint updates for attributes and geometry
-                                                               *  Providers supporting this should still define
-                                                               *  ChangeGeometries | ChangeAttributeValues */
+      ChangeFeatures = 1 << 18, //!< Supports joint updates for attributes and geometry. Providers supporting this should still define ChangeGeometries | ChangeAttributeValues.
       RenameAttributes = 1 << 19, //!< Supports renaming attributes (fields). Since QGIS 2.16
       FastTruncate = 1 << 20, //!< Supports fast truncation of the layer (removing all features). Since QGIS 3.0
       ReadLayerMetadata = 1 << 21, //!< Provider can read layer metadata from data store. Since QGIS 3.0. See QgsDataProvider::layerMetadata()
@@ -396,9 +394,9 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
 
     /**
      * Returns flags containing the supported capabilities
-        \note, some capabilities may change depending on whether
-        a spatial filter is active on this provider, so it may
-        be prudent to check this value per intended operation.
+     * \note, some capabilities may change depending on whether
+     * a spatial filter is active on this provider, so it may
+     * be prudent to check this value per intended operation.
      */
     virtual QgsVectorDataProvider::Capabilities capabilities() const;
 

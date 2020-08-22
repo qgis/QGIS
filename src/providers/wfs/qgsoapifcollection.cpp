@@ -385,7 +385,7 @@ void QgsOapifCollectionsRequest::processReply()
       const auto collections = j["collections"];
       if ( collections.is_array() )
       {
-        for ( const auto jCollection : collections )
+        for ( const auto &jCollection : collections )
         {
           QgsOapifCollection collection;
           if ( collection.deserialize( jCollection ) )

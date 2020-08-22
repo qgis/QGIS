@@ -53,8 +53,8 @@ void QgsRasterFrequencyByComparisonOperatorBase::initAlgorithm( const QVariantMa
 
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ),
                 QObject::tr( "Output layer" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "OCCURRENCE_COUNT" ), QObject::tr( "Count of value occurrances" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "FOUND_LOCATIONS_COUNT" ), QObject::tr( "Count of cells with equal value occurrances" ) ) );
+  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "OCCURRENCE_COUNT" ), QObject::tr( "Count of value occurrences" ) ) );
+  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "FOUND_LOCATIONS_COUNT" ), QObject::tr( "Count of cells with equal value occurrences" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "MEAN_FREQUENCY_PER_LOCATION" ), QObject::tr( "Mean frequency at valid cell locations" ) ) );
   addOutput( new QgsProcessingOutputString( QStringLiteral( "EXTENT" ), QObject::tr( "Extent" ) ) );
   addOutput( new QgsProcessingOutputString( QStringLiteral( "CRS_AUTHID" ), QObject::tr( "CRS authority identifier" ) ) );

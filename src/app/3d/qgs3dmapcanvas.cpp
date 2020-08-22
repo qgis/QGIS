@@ -34,7 +34,7 @@ Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
   : QWidget( parent )
 {
   QgsSettings setting;
-  mEngine = new QgsWindow3DEngine;
+  mEngine = new QgsWindow3DEngine( this );
 
   connect( mEngine, &QgsAbstract3DEngine::imageCaptured, this, [ = ]( const QImage & image )
   {

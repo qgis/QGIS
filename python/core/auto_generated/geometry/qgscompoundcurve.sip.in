@@ -71,7 +71,7 @@ Returns a new line string geometry corresponding to a segmentized approximation
 of the curve.
 
 :param tolerance: segmentation tolerance
-:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve*
+:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve
 %End
 
     virtual QgsCompoundCurve *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;

@@ -1,6 +1,6 @@
 #############################################################
 # CMake settings
-CMAKE_MINIMUM_REQUIRED(VERSION 3.1.0)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.10.0)
 SET(CMAKE_COLOR_MAKEFILE ON)
 SET(CMAKE_AUTORCC ON)
 # set path to additional CMake modules
@@ -410,7 +410,8 @@ IF(WITH_CORE)
 
   # get the Qt plugins directory
   GET_TARGET_PROPERTY(QMAKE_EXECUTABLE Qt5::qmake LOCATION)
-  EXEC_PROGRAM(${QMAKE_EXECUTABLE} ARGS "-query QT_INSTALL_PLUGINS" RETURN_VALUE return_code OUTPUT_VARIABLE QT_PLUGINS_DIR )
+  EXEC_PROGRAM(${QMAKE_EXECUTABLE} ARGS "-query QT_INSTALL_PLUGINS" RETURN_VALUE return_code OUTPUT_VARIABLE DEFAULT_QT_PLUGINS_DIR )
+  SET (QT_PLUGINS_DIR ${DEFAULT_QT_PLUGINS_DIR} CACHE PATH "Path to installation directory for Qt Plugins. Defaults to Qt native plugin directory")
 
   MESSAGE(STATUS "Found Qt version: ${Qt5Core_VERSION_STRING}")
   IF (WITH_QUICK)

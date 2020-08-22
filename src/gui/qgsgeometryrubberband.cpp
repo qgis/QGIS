@@ -30,7 +30,6 @@ QgsGeometryRubberBand::QgsGeometryRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTyp
 
 QgsGeometryRubberBand::~QgsGeometryRubberBand()
 {
-  delete mGeometry;
 }
 
 void QgsGeometryRubberBand::paint( QPainter *painter )
@@ -59,6 +58,9 @@ void QgsGeometryRubberBand::paint( QPainter *painter )
   paintGeom->transform( mMapCanvas->getCoordinateTransform()->transform() );
   paintGeom->draw( *painter );
 
+  if ( !mDrawVertices )
+    return;
+
   //draw vertices
   QgsVertexId vertexId;
   QgsPoint vertex;
@@ -66,6 +68,16 @@ void QgsGeometryRubberBand::paint( QPainter *painter )
   {
     drawVertex( painter, vertex.x(), vertex.y() );
   }
+}
+
+QgsWkbTypes::GeometryType QgsGeometryRubberBand::geometryType() const
+{
+  return mGeometryType;
+}
+
+void QgsGeometryRubberBand::setGeometryType( const QgsWkbTypes::GeometryType &geometryType )
+{
+  mGeometryType = geometryType;
 }
 
 void QgsGeometryRubberBand::drawVertex( QPainter *p, double x, double y )
@@ -106,8 +118,7 @@ void QgsGeometryRubberBand::drawVertex( QPainter *p, double x, double y )
 
 void QgsGeometryRubberBand::setGeometry( QgsAbstractGeometry *geom )
 {
-  delete mGeometry;
-  mGeometry = geom;
+  mGeometry.reset( geom );
 
   if ( mGeometry )
   {
@@ -147,6 +158,11 @@ void QgsGeometryRubberBand::setLineStyle( Qt::PenStyle penStyle )
 void QgsGeometryRubberBand::setBrushStyle( Qt::BrushStyle brushStyle )
 {
   mBrush.setStyle( brushStyle );
+}
+
+void QgsGeometryRubberBand::setVertexDrawingEnabled( bool isVerticesDrawn )
+{
+  mDrawVertices = isVerticesDrawn;
 }
 
 QgsRectangle QgsGeometryRubberBand::rubberBandRectangle() const

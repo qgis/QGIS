@@ -65,6 +65,9 @@ QgsTextFormatWidget::QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *pare
 void QgsTextFormatWidget::initWidget()
 {
   setupUi( this );
+
+  mGeometryGeneratorGroupBox->setCollapsed( true );
+
   connect( mShapeSVGPathLineEdit, &QLineEdit::textChanged, this, &QgsTextFormatWidget::mShapeSVGPathLineEdit_textChanged );
   connect( mFontSizeSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsTextFormatWidget::mFontSizeSpinBox_valueChanged );
   connect( mFontCapitalsComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsTextFormatWidget::mFontCapitalsComboBox_currentIndexChanged );
@@ -248,9 +251,9 @@ void QgsTextFormatWidget::initWidget()
 
   // setup direction symbol(s) button group
   mDirectSymbBtnGrp = new QButtonGroup( this );
-  mDirectSymbBtnGrp->addButton( mDirectSymbRadioBtnLR, static_cast<int>( QgsPalLayerSettings::SymbolLeftRight ) );
-  mDirectSymbBtnGrp->addButton( mDirectSymbRadioBtnAbove, static_cast<int>( QgsPalLayerSettings::SymbolAbove ) );
-  mDirectSymbBtnGrp->addButton( mDirectSymbRadioBtnBelow, static_cast<int>( QgsPalLayerSettings::SymbolBelow ) );
+  mDirectSymbBtnGrp->addButton( mDirectSymbRadioBtnLR, static_cast<int>( QgsLabelLineSettings::DirectionSymbolPlacement::SymbolLeftRight ) );
+  mDirectSymbBtnGrp->addButton( mDirectSymbRadioBtnAbove, static_cast<int>( QgsLabelLineSettings::DirectionSymbolPlacement::SymbolAbove ) );
+  mDirectSymbBtnGrp->addButton( mDirectSymbRadioBtnBelow, static_cast<int>( QgsLabelLineSettings::DirectionSymbolPlacement::SymbolBelow ) );
   mDirectSymbBtnGrp->setExclusive( true );
 
   // upside-down labels button group
@@ -268,33 +271,7 @@ void QgsTextFormatWidget::initWidget()
   connect( mCheckAllowLabelsOutsidePolygons, &QAbstractButton::toggled, this, &QgsTextFormatWidget::updatePlacementWidgets );
   connect( mAllowOutsidePolygonsDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsTextFormatWidget::updatePlacementWidgets );
 
-  // setup point placement button group
-  mPlacePointBtnGrp = new QButtonGroup( this );
-  mPlacePointBtnGrp->addButton( radPredefinedOrder, static_cast<int>( QgsPalLayerSettings::OrderedPositionsAroundPoint ) );
-  mPlacePointBtnGrp->addButton( radAroundPoint, static_cast<int>( QgsPalLayerSettings::AroundPoint ) );
-  mPlacePointBtnGrp->addButton( radOverPoint, static_cast<int>( QgsPalLayerSettings::OverPoint ) );
-  mPlacePointBtnGrp->setExclusive( true );
-  connect( mPlacePointBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsTextFormatWidget::updatePlacementWidgets );
-
-  // setup line placement button group (assigned enum id currently unused)
-  mPlaceLineBtnGrp = new QButtonGroup( this );
-  mPlaceLineBtnGrp->addButton( radLineParallel, static_cast<int>( QgsPalLayerSettings::Line ) );
-  mPlaceLineBtnGrp->addButton( radLineCurved, static_cast<int>( QgsPalLayerSettings::Curved ) );
-  mPlaceLineBtnGrp->addButton( radLineHorizontal, static_cast<int>( QgsPalLayerSettings::Horizontal ) );
-  mPlaceLineBtnGrp->setExclusive( true );
-  connect( mPlaceLineBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsTextFormatWidget::updatePlacementWidgets );
-
-  // setup polygon placement button group (assigned enum id currently unused)
-  mPlacePolygonBtnGrp = new QButtonGroup( this );
-  mPlacePolygonBtnGrp->addButton( radOverCentroid, static_cast<int>( QgsPalLayerSettings::OverPoint ) );
-  mPlacePolygonBtnGrp->addButton( radAroundCentroid, static_cast<int>( QgsPalLayerSettings::AroundPoint ) );
-  mPlacePolygonBtnGrp->addButton( radPolygonHorizontal, static_cast<int>( QgsPalLayerSettings::Horizontal ) );
-  mPlacePolygonBtnGrp->addButton( radPolygonFree, static_cast<int>( QgsPalLayerSettings::Free ) );
-  mPlacePolygonBtnGrp->addButton( radPolygonPerimeter, static_cast<int>( QgsPalLayerSettings::Line ) );
-  mPlacePolygonBtnGrp->addButton( radPolygonPerimeterCurved, static_cast<int>( QgsPalLayerSettings::PerimeterCurved ) );
-  mPlacePolygonBtnGrp->addButton( radPolygonOutside, static_cast<int>( QgsPalLayerSettings::OutsidePolygons ) );
-  mPlacePolygonBtnGrp->setExclusive( true );
-  connect( mPlacePolygonBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsTextFormatWidget::updatePlacementWidgets );
+  connect( mPlacementModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsTextFormatWidget::updatePlacementWidgets );
 
   // Global settings group for groupboxes' saved/restored collapsed state
   // maintains state across different dialogs
@@ -455,19 +432,7 @@ void QgsTextFormatWidget::initWidget()
           << mUpsidedownRadioAll
           << mUpsidedownRadioDefined
           << mUpsidedownRadioOff
-          << radAroundCentroid
-          << radAroundPoint
-          << radLineCurved
-          << radLineHorizontal
-          << radLineParallel
-          << radOverCentroid
-          << radOverPoint
-          << radPolygonFree
-          << radPolygonHorizontal
-          << radPolygonPerimeter
-          << radPolygonPerimeterCurved
-          << radPolygonOutside
-          << radPredefinedOrder
+          << mPlacementModeComboBox
           << mFieldExpressionWidget
           << mCheckBoxSubstituteText
           << mGeometryGeneratorGroupBox
@@ -1314,8 +1279,7 @@ void QgsTextFormatWidget::changeBufferColor( const QColor &color )
 
 void QgsTextFormatWidget::updatePlacementWidgets()
 {
-  QWidget *curWdgt = stackedPlacement->currentWidget();
-
+  const QgsWkbTypes::GeometryType currentGeometryType = labelGeometryType();
   bool showLineFrame = false;
   bool showCentroidFrame = false;
   bool showQuadrantFrame = false;
@@ -1326,40 +1290,39 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   bool showDistanceFrame = false;
   bool showRotationFrame = false;
   bool showMaxCharAngleFrame = false;
-  bool showPolygonPlacementOptions = ( curWdgt == pagePolygon && !radPolygonPerimeter->isChecked() && !radPolygonPerimeterCurved->isChecked() && !radPolygonOutside->isChecked() );
+
+  const QgsPalLayerSettings::Placement currentPlacement = static_cast< QgsPalLayerSettings::Placement >( mPlacementModeComboBox->currentData().toInt() );
+  bool showPolygonPlacementOptions = ( currentGeometryType == QgsWkbTypes::PolygonGeometry && currentPlacement != QgsPalLayerSettings::Line && currentPlacement != QgsPalLayerSettings::PerimeterCurved && currentPlacement != QgsPalLayerSettings::OutsidePolygons );
 
   bool enableMultiLinesFrame = true;
 
-  if ( ( curWdgt == pagePoint && radAroundPoint->isChecked() )
-       || ( curWdgt == pagePolygon && radAroundCentroid->isChecked() ) )
+  if ( currentPlacement == QgsPalLayerSettings::AroundPoint
+       && ( currentGeometryType == QgsWkbTypes::PointGeometry || currentGeometryType == QgsWkbTypes::PolygonGeometry ) )
   {
-    showCentroidFrame = ( curWdgt == pagePolygon && radAroundCentroid->isChecked() );
+    showCentroidFrame = currentGeometryType == QgsWkbTypes::PolygonGeometry;
     showDistanceFrame = true;
     //showRotationFrame = true; // TODO: uncomment when supported
-    if ( curWdgt == pagePoint )
-    {
-      showQuadrantFrame = true;
-    }
+    showQuadrantFrame = currentGeometryType == QgsWkbTypes::PointGeometry;
   }
-  else if ( ( curWdgt == pagePoint && radOverPoint->isChecked() )
-            || ( curWdgt == pagePolygon && radOverCentroid->isChecked() ) )
+  else if ( currentPlacement == QgsPalLayerSettings::OverPoint
+            && ( currentGeometryType == QgsWkbTypes::PointGeometry || currentGeometryType == QgsWkbTypes::PolygonGeometry ) )
   {
-    showCentroidFrame = ( curWdgt == pagePolygon && radOverCentroid->isChecked() );
+    showCentroidFrame = currentGeometryType == QgsWkbTypes::PolygonGeometry;
     showQuadrantFrame = true;
     showFixedQuadrantFrame = true;
     showOffsetFrame = true;
     showRotationFrame = true;
   }
-  else if ( curWdgt == pagePoint && radPredefinedOrder->isChecked() )
+  else if ( currentGeometryType == QgsWkbTypes::PointGeometry && currentPlacement == QgsPalLayerSettings::OrderedPositionsAroundPoint )
   {
     showDistanceFrame = true;
     showPlacementPriorityFrame = true;
     showOffsetTypeFrame  = true;
   }
-  else if ( ( curWdgt == pageLine && radLineParallel->isChecked() )
-            || ( curWdgt == pagePolygon && radPolygonPerimeter->isChecked() )
-            || ( curWdgt == pageLine && radLineCurved->isChecked() )
-            || ( curWdgt == pagePolygon && radPolygonPerimeterCurved->isChecked() ) )
+  else if ( ( currentGeometryType == QgsWkbTypes::LineGeometry && currentPlacement == QgsPalLayerSettings::Line )
+            || ( currentGeometryType == QgsWkbTypes::PolygonGeometry && currentPlacement == QgsPalLayerSettings::Line )
+            || ( currentGeometryType == QgsWkbTypes::LineGeometry && currentPlacement == QgsPalLayerSettings::Curved )
+            || ( currentGeometryType == QgsWkbTypes::PolygonGeometry && currentPlacement == QgsPalLayerSettings::PerimeterCurved ) )
   {
     showLineFrame = true;
     showDistanceFrame = true;
@@ -1369,13 +1332,14 @@ void QgsTextFormatWidget::updatePlacementWidgets()
     chkLineOrientationDependent->setEnabled( offline );
     mPlacementDistanceFrame->setEnabled( offline );
 
-    bool isCurved = ( curWdgt == pageLine && radLineCurved->isChecked() )
-                    || ( curWdgt == pagePolygon && radPolygonPerimeterCurved->isChecked() );
+    bool isCurved = ( currentGeometryType == QgsWkbTypes::LineGeometry && currentPlacement == QgsPalLayerSettings::Curved )
+                    || ( currentGeometryType == QgsWkbTypes::PolygonGeometry && currentPlacement == QgsPalLayerSettings::PerimeterCurved );
     showMaxCharAngleFrame = isCurved;
     // TODO: enable mMultiLinesFrame when supported for curved labels
     enableMultiLinesFrame = !isCurved;
   }
-  else if ( curWdgt == pagePolygon && ( radPolygonOutside->isChecked() || mCheckAllowLabelsOutsidePolygons->isChecked() || mAllowOutsidePolygonsDDBtn->isActive() ) )
+  else if ( currentGeometryType == QgsWkbTypes::PolygonGeometry
+            && ( currentPlacement == QgsPalLayerSettings::OutsidePolygons || mCheckAllowLabelsOutsidePolygons->isChecked() || mAllowOutsidePolygonsDDBtn->isActive() ) )
   {
     showDistanceFrame = true;
   }
@@ -1390,12 +1354,64 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   mPlacementDistanceFrame->setVisible( showDistanceFrame );
   mPlacementOffsetTypeFrame->setVisible( showOffsetTypeFrame );
   mPlacementRotationFrame->setVisible( showRotationFrame );
-  mPlacementRepeatDistanceFrame->setVisible( curWdgt == pageLine || ( curWdgt == pagePolygon &&
-      ( radPolygonPerimeter->isChecked() || radPolygonPerimeterCurved->isChecked() ) ) );
-  mPlacementOverrunDistanceFrame->setVisible( curWdgt == pageLine );
+  mPlacementRepeatGroupBox->setVisible( currentGeometryType == QgsWkbTypes::LineGeometry || ( currentGeometryType == QgsWkbTypes::PolygonGeometry &&
+                                        ( currentPlacement == QgsPalLayerSettings::Line || currentPlacement == QgsPalLayerSettings::PerimeterCurved ) ) );
+  mPlacementOverrunGroupBox->setVisible( currentGeometryType == QgsWkbTypes::LineGeometry && currentPlacement != QgsPalLayerSettings::Horizontal );
+  mLineAnchorGroupBox->setVisible( currentGeometryType == QgsWkbTypes::LineGeometry );
   mPlacementMaxCharAngleFrame->setVisible( showMaxCharAngleFrame );
 
   mMultiLinesFrame->setEnabled( enableMultiLinesFrame );
+
+
+  QString helperText;
+  switch ( currentPlacement )
+  {
+    case QgsPalLayerSettings::AroundPoint:
+      if ( currentGeometryType == QgsWkbTypes::PointGeometry )
+        helperText = tr( "Arranges label candidates in a clockwise circle around the feature, preferring placements to the top-right of the feature." );
+      else if ( currentGeometryType == QgsWkbTypes::PolygonGeometry )
+        helperText = tr( "Arranges label candidates in a cluster around the feature's centroid, preferring placements directly over the centroid." );
+      break;
+    case QgsPalLayerSettings::OverPoint:
+      if ( currentGeometryType == QgsWkbTypes::PointGeometry )
+        helperText = tr( "Arranges label candidates directly over the feature or at a preset offset from the feature." );
+      else if ( currentGeometryType == QgsWkbTypes::PolygonGeometry )
+        helperText = tr( "Arranges label candidates directly over the feature's centroid, or at a preset offset from the centroid." );
+      break;
+    case QgsPalLayerSettings::Line:
+      if ( currentGeometryType == QgsWkbTypes::LineGeometry )
+        helperText = tr( "Arranges label candidates parallel to a generalised line representing the feature. Placements which fall over straighter portions of the line are preferred." );
+      else if ( currentGeometryType == QgsWkbTypes::PolygonGeometry )
+        helperText = tr( "Arranges label candidates parallel to a generalised line representing the polygon's perimeter. Placements which fall over straighter portions of the perimeter are preferred." );
+      break;
+    case QgsPalLayerSettings::Curved:
+      if ( currentGeometryType == QgsWkbTypes::LineGeometry )
+        helperText = tr( "Arranges candidates following the curvature of a line feature. Placements which fall over straighter portions of the line are preferred." );
+      break;
+    case QgsPalLayerSettings::Horizontal:
+      if ( currentGeometryType == QgsWkbTypes::PolygonGeometry )
+        helperText = tr( "Arranges label candidates scattered throughout the polygon. Labels will always be placed horizontally, with placements further from the edges of the polygon preferred." );
+      else if ( currentGeometryType == QgsWkbTypes::LineGeometry )
+        helperText = tr( "Label candidates are arranged horizontally along the length of the feature." );
+      break;
+    case QgsPalLayerSettings::Free:
+      if ( currentGeometryType == QgsWkbTypes::PolygonGeometry )
+        helperText = tr( "Arranges label candidates scattered throughout the polygon. Labels are rotated to respect the polygon's orientation, with placements further from the edges of the polygon preferred." );
+      break;
+    case QgsPalLayerSettings::OrderedPositionsAroundPoint:
+      if ( currentGeometryType == QgsWkbTypes::PointGeometry )
+        helperText = tr( "Label candidates are placed in predefined positions around the features. Preference is given to positions with greatest cartographic appeal, e.g., top right and bottom right of the feature." );
+      break;
+    case QgsPalLayerSettings::PerimeterCurved:
+      if ( currentGeometryType == QgsWkbTypes::PolygonGeometry )
+        helperText = tr( "Arranges candidates following the curvature of the feature's perimeter. Placements which fall over straighter portions of the perimeter are preferred." );
+      break;
+    case QgsPalLayerSettings::OutsidePolygons:
+      if ( currentGeometryType == QgsWkbTypes::PolygonGeometry )
+        helperText = tr( "Label candidates are placed outside of the features, preferring placements which give greatest visual association between the label and the feature." );
+      break;
+  }
+  mPlacementModeDescriptionLabel->setText( QStringLiteral( "<i>%1</i>" ).arg( helperText ) );
 }
 
 void QgsTextFormatWidget::populateFontCapitalsComboBox()
@@ -2032,6 +2048,16 @@ QgsExpressionContext QgsTextFormatWidget::createExpressionContext() const
   expContext.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_ORIGINAL_VALUE );
 
   return expContext;
+}
+
+QgsWkbTypes::GeometryType QgsTextFormatWidget::labelGeometryType() const
+{
+  if ( mGeometryGeneratorGroupBox->isChecked() )
+    return mGeometryGeneratorType->currentData().value<QgsWkbTypes::GeometryType>();
+  else if ( mLayer )
+    return mLayer->geometryType();
+  else
+    return mGeomType;
 }
 
 

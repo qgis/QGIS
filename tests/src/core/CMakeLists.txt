@@ -87,6 +87,7 @@ ENDMACRO (ADD_QGIS_TEST)
 
 SET(TESTS
  testqgs25drenderer.cpp
+ testqgsannotationitemregistry.cpp
  testqgsapplication.cpp
  testqgsauthcrypto.cpp
  testqgsauthcertutils.cpp

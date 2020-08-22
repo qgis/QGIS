@@ -517,8 +517,9 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 
     /**
      * Angle undefined. Always returns 0.0
-        \param vertex the vertex id
-        \returns 0.0*/
+     * \param vertex the vertex id
+     * \returns 0.0
+    */
     double vertexAngle( QgsVertexId vertex ) const override;
 
     int vertexCount( int /*part*/ = 0, int /*ring*/ = 0 ) const override;

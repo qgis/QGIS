@@ -94,8 +94,15 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     //bring up dialog if a split was not possible (polygon) or only done once (line)
     int topologicalEditing = QgsProject::instance()->topologicalEditing();
     vlayer->beginEditCommand( tr( "Features split" ) );
-    QgsGeometry::OperationResult returnCode = vlayer->splitFeatures( pointsZM(), topologicalEditing );
-    vlayer->endEditCommand();
+    QgsGeometry::OperationResult returnCode = vlayer->splitFeatures( captureCurve(), true, topologicalEditing );
+    if ( returnCode == QgsGeometry::OperationResult::Success )
+    {
+      vlayer->endEditCommand();
+    }
+    else
+    {
+      vlayer->destroyEditCommand();
+    }
     if ( returnCode == QgsGeometry::OperationResult::NothingHappened )
     {
       QgisApp::instance()->messageBar()->pushMessage(

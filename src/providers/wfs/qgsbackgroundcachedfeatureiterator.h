@@ -126,7 +126,8 @@ class QgsFeatureDownloaderImpl
 
     /**
      * If the progress dialog should be shown immediately, or if it should be
-        let to QProgressDialog logic to decide when to show it */
+     * let to QProgressDialog logic to decide when to show it.
+    */
     bool mProgressDialogShowImmediately = false;
 
     QTimer *mTimer = nullptr;
@@ -259,9 +260,10 @@ class QgsBackgroundCachedFeatureSource;
 
 /**
  * Feature iterator. The iterator will internally both subscribe to a live
-    downloader to receive 'fresh' features, and to a iterator on the features
-    already cached. It will actually start by consuming cache features for
-    initial feedback, and then process the live downloaded features. */
+ * downloader to receive 'fresh' features, and to a iterator on the features
+ * already cached. It will actually start by consuming cache features for
+ * initial feedback, and then process the live downloaded features.
+*/
 class QgsBackgroundCachedFeatureIterator final: public QObject,
   public QgsAbstractFeatureIteratorFromSource<QgsBackgroundCachedFeatureSource>
 {

@@ -51,7 +51,7 @@ Ownership of ``exterior`` and ``rings`` is transferred to the polygon.
 %Docstring
 Returns the geometry converted to the more generic curve type :py:class:`QgsCurvePolygon`
 
-:return: the converted geometry. Caller takes ownership*
+:return: the converted geometry. Caller takes ownership
 %End
 
     virtual void addInteriorRing( QgsCurve *ring /Transfer/ );

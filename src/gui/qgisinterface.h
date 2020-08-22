@@ -64,6 +64,7 @@ class QgsStatusBar;
 class QgsMeshLayer;
 class QgsBrowserGuiModel;
 class QgsDevToolWidgetFactory;
+class QgsGpsConnection;
 
 
 /**
@@ -1156,6 +1157,16 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.4
      */
     virtual QgsBrowserGuiModel *browserModel() = 0;
+
+    /**
+     * Sets a GPS \a connection to use within the GPS Panel widget.
+     *
+     * Any existing GPS connection used by the widget will be disconnect and replaced with this connection. The connection
+     * is automatically registered within the QgsApplication::gpsConnectionRegistry().
+     *
+     * \since QGIS 3.16
+     */
+    virtual void setGpsPanelConnection( QgsGpsConnection *connection ) = 0;
 
   signals:
 

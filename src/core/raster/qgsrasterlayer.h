@@ -376,9 +376,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      *  \param limits Limits
      *  \param extent Extent used to calculate limits, if empty, use full layer extent
      *  \param sampleSize Size of data sample to calculate limits, if 0, use full resolution
-     *  \param generateLookupTableFlag Generate lookup table. */
-
-
+     *  \param generateLookupTableFlag Generate lookup table.
+    */
     void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
                                  QgsRasterMinMaxOrigin::Limits limits = QgsRasterMinMaxOrigin::MinMax,
                                  const QgsRectangle &extent = QgsRectangle(),
@@ -429,7 +428,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /**
      * \brief Draws a preview of the rasterlayer into a QImage
-     \since QGIS 2.4 */
+     * \since QGIS 2.4
+    */
     QImage previewAsImage( QSize size, const QColor &bgColor = Qt::white,
                            QImage::Format format = QImage::Format_ARGB32_Premultiplied );
 

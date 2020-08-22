@@ -63,7 +63,7 @@ try:
     class MyUrl:
 
         def __init__(self, url):
-            self.url = QUrl(url)
+            self.url = url
             self.query = QUrlQuery()
 
         @classmethod
@@ -127,29 +127,6 @@ class MessageLogger(QObject):
 
     def messages(self):
         return self.log
-
-
-class TestQgsDelimitedTextProviderLoading(unittest.TestCase):
-
-    def test_open_filepath_with_file_prefix(self):
-        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
-        basetestfile = os.path.join(srcpath, 'delimited_xy.csv')
-
-        url = MyUrl.fromLocalFile(basetestfile)
-        url.addQueryItem("type", "csv")
-
-        vl = QgsVectorLayer(url.toString(), 'test', 'delimitedtext')
-        assert vl.isValid(), "{} is invalid".format(basetestfile)
-
-    def test_treat_open_filepath_without_file_prefix(self):
-        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
-        basetestfile = os.path.join(srcpath, 'delimited_xy.csv')
-
-        url = MyUrl(basetestfile)
-        url.addQueryItem("type", "csv")
-
-        vl = QgsVectorLayer(url.toString(), 'test', 'delimitedtext')
-        assert vl.isValid(), "{} is invalid".format(basetestfile)
 
 
 class TestQgsDelimitedTextProviderXY(unittest.TestCase, ProviderTestCase):

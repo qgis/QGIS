@@ -76,6 +76,8 @@ QgsVirtualLayerProvider::QgsVirtualLayerProvider( QString const &uri, const QgsD
   {
     mDefinition = QgsVirtualLayerDefinition::fromUrl( url );
 
+    mSubset = mDefinition.subsetString();
+
     if ( !mDefinition.isLazy() )
     {
       reloadData();
@@ -205,6 +207,8 @@ bool QgsVirtualLayerProvider::openIt()
     mTableName = VIRTUAL_LAYER_QUERY_VIEW;
   }
 
+  mSubset = mDefinition.subsetString();
+
   return true;
 }
 
@@ -317,10 +321,7 @@ bool QgsVirtualLayerProvider::createIt()
       provider.replace( QLatin1String( "'" ), QLatin1String( "''" ) );
       QString source = mLayers.at( i ).source;
       source.replace( QLatin1String( "'" ), QLatin1String( "''" ) );
-      // the encoding might be an empty string, which breaks the SQL query below
-      QString encoding = mLayers.at( i ).encoding.isEmpty()
-                         ? QStringLiteral( "System" )
-                         : mLayers.at( i ).encoding;
+      QString encoding = mLayers.at( i ).encoding;
       QString createStr = QStringLiteral( "DROP TABLE IF EXISTS \"%1\"; CREATE VIRTUAL TABLE \"%1\" USING QgsVLayer('%2','%4',%3)" )
                           .arg( vname,
                                 provider,
@@ -526,6 +527,10 @@ bool QgsVirtualLayerProvider::setSubsetString( const QString &subset, bool updat
   if ( updateFeatureCount )
     updateStatistics();
 
+  mDefinition.setSubsetString( subset );
+
+  setDataSourceUri( mDefinition.toString() );
+
   emit dataChanged();
 
   return true;
@@ -558,17 +563,11 @@ QgsRectangle QgsVirtualLayerProvider::extent() const
 void QgsVirtualLayerProvider::updateStatistics() const
 {
   bool hasGeometry = mDefinition.geometryWkbType() != QgsWkbTypes::NoGeometry;
-  QString subset = mSubset.isEmpty() ? QString() : QStringLiteral( " WHERE %1" ).arg( mSubset );
-
-  // `mTableName` might be a null string if the layer creation failed. Assert such situations at least during development.
-  Q_ASSERT( ! mTableName.isNull() );
-
+  QString subset = mSubset.isEmpty() ? QString() : " WHERE " + mSubset;
   QString sql = QStringLiteral( "SELECT Count(*)%1 FROM %2%3" )
-                .arg(
-                  hasGeometry ? QStringLiteral( ",Min(MbrMinX(%1)),Min(MbrMinY(%1)),Max(MbrMaxX(%1)),Max(MbrMaxY(%1))" ).arg( quotedColumn( mDefinition.geometryField() ) ) : QString(),
-                  mTableName,
-                  subset
-                );
+                .arg( hasGeometry ? QStringLiteral( ",Min(MbrMinX(%1)),Min(MbrMinY(%1)),Max(MbrMaxX(%1)),Max(MbrMaxY(%1))" ).arg( quotedColumn( mDefinition.geometryField() ) ) : QString(),
+                      mTableName,
+                      subset );
   Sqlite::Query q( mSqlite.get(), sql );
   if ( q.step() == SQLITE_ROW )
   {

@@ -464,6 +464,13 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     QgsPointXY layerToMapCoordinates( const QgsMapLayer *layer, QgsPointXY point ) const;
 
     /**
+     * \brief transform point coordinates from layer's CRS to output CRS
+     * \returns the transformed point
+     * \since QGIS 3.16
+     */
+    QgsPoint layerToMapCoordinates( const QgsMapLayer *layer, QgsPoint point ) const;
+
+    /**
      * \brief transform rectangle from layer's CRS to output CRS
      * \see layerExtentToOutputExtent() if you want to transform a bounding box
      * \returns the transformed rectangle
@@ -475,6 +482,13 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * \returns the transformed point
      */
     QgsPointXY mapToLayerCoordinates( const QgsMapLayer *layer, QgsPointXY point ) const;
+
+    /**
+     * \brief transform point coordinates from output CRS to layer's CRS
+     * \returns the transformed point
+     * \since QGIS 3.16
+     */
+    QgsPoint mapToLayerCoordinates( const QgsMapLayer *layer, QgsPoint point ) const;
 
     /**
      * \brief transform rectangle from output CRS to layer's CRS
@@ -500,14 +514,16 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
 
     /**
      * Sets the segmentation tolerance applied when rendering curved geometries
-    \param tolerance the segmentation tolerance*/
+     * \param tolerance the segmentation tolerance
+    */
     void setSegmentationTolerance( double tolerance ) { mSegmentationTolerance = tolerance; }
     //! Gets the segmentation tolerance applied when rendering curved geometries
     double segmentationTolerance() const { return mSegmentationTolerance; }
 
     /**
      * Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
-    \param type the segmentation tolerance typename*/
+     * \param type the segmentation tolerance typename
+    */
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type ) { mSegmentationToleranceType = type; }
     //! Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
     QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const { return mSegmentationToleranceType; }

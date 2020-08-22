@@ -23,7 +23,9 @@
 class Qgs3DMapSettings;
 class QgsMapCanvas;
 class QgsMesh3dSymbolWidget;
-
+class QgsSkyboxRenderingSettingsWidget;
+class Qgs3DMapCanvas;
+class QgsSkyboxSettings;
 
 class Qgs3DMapConfigWidget : public QWidget, private Ui::Map3DConfigWidget
 {
@@ -44,7 +46,9 @@ class Qgs3DMapConfigWidget : public QWidget, private Ui::Map3DConfigWidget
   private:
     Qgs3DMapSettings *mMap = nullptr;
     QgsMapCanvas *mMainCanvas = nullptr;
-    QgsMesh3dSymbolWidget *mMeshSymbolWidget;
+    Qgs3DMapCanvas *m3DMapCanvas = nullptr;
+    QgsMesh3dSymbolWidget *mMeshSymbolWidget = nullptr;
+    QgsSkyboxRenderingSettingsWidget *mSkyboxSettingsWidget = nullptr;
 };
 
 #endif // QGS3DMAPCONFIGWIDGET_H

@@ -122,7 +122,7 @@ class QgsOapifProviderMetadata final: public QgsProviderMetadata
     QgsOapifProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
 };
 
-// !Class shared between provider and feature source
+//! Class shared between provider and feature source
 class QgsOapifSharedData final: public QObject, public QgsBackgroundCachedSharedData
 {
     Q_OBJECT

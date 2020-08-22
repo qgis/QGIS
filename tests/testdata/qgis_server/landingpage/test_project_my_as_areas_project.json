@@ -1,0 +1,463 @@
+Content-Type: application/json
+
+{
+  "links": [],
+  "project": {
+    "capabilities": {
+      "owsServiceAbstract": "",
+      "owsServiceAccessConstraints": "",
+      "owsServiceCapabilities": false,
+      "owsServiceContactMail": "",
+      "owsServiceContactOrganization": "",
+      "owsServiceContactPerson": "",
+      "owsServiceContactPhone": "",
+      "owsServiceContactPosition": "",
+      "owsServiceFees": "",
+      "owsServiceKeywords": [],
+      "owsServiceOnlineResource": "",
+      "owsServiceTitle": "",
+      "wcsLayerIds": [],
+      "wcsServiceUrl": "",
+      "wfsLayerIds": [],
+      "wfsServiceUrl": "",
+      "wfstDeleteLayerIds": [],
+      "wfstInsertLayerIds": [],
+      "wfstUpdateLayerIds": [],
+      "wmsDefaultMapUnitsPerMm": 1.0,
+      "wmsFeatureInfoAddWktGeometry": false,
+      "wmsFeatureInfoDocumentElement": "",
+      "wmsFeatureInfoDocumentElementNs": "",
+      "wmsFeatureInfoLayerAliasMap": {},
+      "wmsFeatureInfoPrecision": 6,
+      "wmsFeatureInfoSchema": "",
+      "wmsFeatureInfoSegmentizeWktGeometry": false,
+      "wmsImageQuality": -1,
+      "wmsInfoFormatSia2045": false,
+      "wmsInspireActivate": false,
+      "wmsInspireLanguage": "",
+      "wmsInspireMetadataDate": "",
+      "wmsInspireMetadataUrl": "",
+      "wmsInspireMetadataUrlType": "",
+      "wmsInspireTemporalReference": "",
+      "wmsMaxAtlasFeatures": 1,
+      "wmsMaxHeight": -1,
+      "wmsMaxWidth": -1,
+      "wmsOutputCrsList": [
+        "EPSG:25832",
+        "EPSG:4326",
+        "EPSG:3857"
+      ],
+      "wmsRestrictedComposers": [],
+      "wmsRestrictedLayers": [],
+      "wmsRootName": "",
+      "wmsServiceUrl": "",
+      "wmsTileBuffer": 0,
+      "wmsUseLayerIds": false,
+      "wmtsServiceUrl": ""
+    },
+    "crs": "EPSG:4326",
+    "description": "",
+    "extent": [
+      10.682695075272484,
+      52.41569942835746,
+      10.749673136845889,
+      52.454136178135975
+    ],
+    "geographic_extent": [
+      10.682695075272484,
+      52.41569942835746,
+      10.749673136845889,
+      52.454136178135975
+    ],
+    "id": "e152c153073a7e6d3ad669448f85e552",
+    "initial_extent": [
+      10.681022115616315,
+      52.41473800787212,
+      10.751349081354135,
+      52.45509659444044
+    ],
+    "metadata": {
+      "abstract": "",
+      "author": "Alessandro Pasotti",
+      "categories": [],
+      "contacts": [],
+      "creationDateTime": "2020-05-11T14:21:53",
+      "history": [],
+      "identifier": "",
+      "language": "",
+      "links": [],
+      "parentIdentifier": "",
+      "title": "",
+      "type": ""
+    },
+    "title": "my as areas project",
+    "toc": {
+      "children": [
+        {
+          "children": [],
+          "expanded": true,
+          "has_scale_based_visibility": false,
+          "id": "as_areas_d4c38ded_421b_4011_b324_21a6f65034b9",
+          "is_layer": true,
+          "layer_type": "vector",
+          "name": "as_areas",
+          "queryable": true,
+          "searchable": true,
+          "title": "as_areas",
+          "tree_id": "root.as_areas_d4c38ded_421b_4011_b324_21a6f65034b9",
+          "tree_id_hash": "4524ba7ab7e5e53edbcfee945f471e5e",
+          "typename": "as_areas",
+          "visible": true,
+          "wfs_enabled": false
+        }
+      ],
+      "expanded": true,
+      "is_layer": false,
+      "name": "root",
+      "title": "root",
+      "tree_id": "root",
+      "tree_id_hash": "63a9f0ea7bb98050796b649e85481845",
+      "visible": true
+    },
+    "wms_layers": {
+      "as_areas_d4c38ded_421b_4011_b324_21a6f65034b9": {
+        "crs": "EPSG:25832",
+        "extent": [
+          614440.663,
+          5808607.0,
+          618892.0,
+          5812990.0
+        ],
+        "fields": {
+          "bearbeiter": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "bearbeiter",
+            "length": 254,
+            "not_null": false,
+            "precision": -1,
+            "type": "varchar",
+            "unique": false
+          },
+          "bemerkung": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "bemerkung",
+            "length": 255,
+            "not_null": false,
+            "precision": -1,
+            "type": "varchar",
+            "unique": false
+          },
+          "beschriftung": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "beschriftung",
+            "length": 254,
+            "not_null": false,
+            "precision": -1,
+            "type": "varchar",
+            "unique": false
+          },
+          "datum": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "datum",
+            "length": 254,
+            "not_null": false,
+            "precision": -1,
+            "type": "varchar",
+            "unique": false
+          },
+          "farbe": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "farbe",
+            "length": 254,
+            "not_null": false,
+            "precision": -1,
+            "type": "varchar",
+            "unique": false
+          },
+          "fid": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "fid",
+            "length": -1,
+            "not_null": false,
+            "precision": 0,
+            "type": "int8",
+            "unique": false
+          },
+          "flaeche": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "flaeche",
+            "length": -1,
+            "not_null": false,
+            "precision": -1,
+            "type": "float8",
+            "unique": false
+          },
+          "flaechentyp": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "flaechentyp",
+            "length": 254,
+            "not_null": false,
+            "precision": -1,
+            "type": "varchar",
+            "unique": false
+          },
+          "gid": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "gid",
+            "length": -1,
+            "not_null": false,
+            "precision": 0,
+            "type": "int4",
+            "unique": false
+          },
+          "id": {
+            "default": "nextval('as_areas_id_seq'::regclass)",
+            "editable": false,
+            "expression": "",
+            "has_expression": false,
+            "label": "id",
+            "length": -1,
+            "not_null": true,
+            "precision": 0,
+            "type": "int4",
+            "unique": true
+          },
+          "last_change": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "last_change",
+            "length": 254,
+            "not_null": false,
+            "precision": -1,
+            "type": "varchar",
+            "unique": false
+          },
+          "name": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "name",
+            "length": 254,
+            "not_null": false,
+            "precision": -1,
+            "type": "varchar",
+            "unique": false
+          },
+          "schraff_size": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "schraff_size",
+            "length": 254,
+            "not_null": false,
+            "precision": -1,
+            "type": "varchar",
+            "unique": false
+          },
+          "schraff_size_prt": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "schraff_size_prt",
+            "length": 254,
+            "not_null": false,
+            "precision": -1,
+            "type": "varchar",
+            "unique": false
+          },
+          "schraff_width": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "schraff_width",
+            "length": 254,
+            "not_null": false,
+            "precision": -1,
+            "type": "varchar",
+            "unique": false
+          },
+          "schraff_width_prt": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "schraff_width_prt",
+            "length": 254,
+            "not_null": false,
+            "precision": -1,
+            "type": "varchar",
+            "unique": false
+          },
+          "schraff_winkel": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "schraff_winkel",
+            "length": 254,
+            "not_null": false,
+            "precision": -1,
+            "type": "varchar",
+            "unique": false
+          },
+          "umfang": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "umfang",
+            "length": -1,
+            "not_null": false,
+            "precision": -1,
+            "type": "float8",
+            "unique": false
+          },
+          "umrissfarbe": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "umrissfarbe",
+            "length": 254,
+            "not_null": false,
+            "precision": -1,
+            "type": "varchar",
+            "unique": false
+          },
+          "umrissstaerke": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "umrissstaerke",
+            "length": 254,
+            "not_null": false,
+            "precision": -1,
+            "type": "varchar",
+            "unique": false
+          },
+          "umrissstaerke_prt": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "umrissstaerke_prt",
+            "length": 254,
+            "not_null": false,
+            "precision": -1,
+            "type": "varchar",
+            "unique": false
+          },
+          "umrisstyp": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "umrisstyp",
+            "length": 254,
+            "not_null": false,
+            "precision": -1,
+            "type": "varchar",
+            "unique": false
+          },
+          "veranstaltung": {
+            "default": "",
+            "editable": true,
+            "expression": "",
+            "has_expression": false,
+            "label": "veranstaltung",
+            "length": 254,
+            "not_null": false,
+            "precision": -1,
+            "type": "varchar",
+            "unique": false
+          }
+        },
+        "id": "as_areas_d4c38ded_421b_4011_b324_21a6f65034b9",
+        "metadata": {
+          "abstract": "",
+          "categories": [],
+          "constraints": [],
+          "contacts": [
+            {
+              "addresses": [],
+              "email": "",
+              "fax": "",
+              "name": "",
+              "organization": "",
+              "position": "",
+              "role": "",
+              "voice": ""
+            }
+          ],
+          "crs": "EPSG:25832",
+          "encoding": "",
+          "fees": "",
+          "history": [],
+          "identifier": "",
+          "keywordVocabularies": [],
+          "keywords": {},
+          "language": "",
+          "licenses": [],
+          "links": [],
+          "parentIdentifier": "",
+          "rights": [],
+          "title": "",
+          "type": "dataset"
+        },
+        "name": "as_areas",
+        "pk": [
+          0
+        ],
+        "type": "vector"
+      }
+    },
+    "wms_layers_map": {
+      "as_areas": "as_areas"
+    },
+    "wms_layers_queryable": [
+      "as_areas_d4c38ded_421b_4011_b324_21a6f65034b9"
+    ],
+    "wms_layers_searchable": [
+      "as_areas_d4c38ded_421b_4011_b324_21a6f65034b9"
+    ],
+    "wms_layers_typename_id_map": {
+      "as_areas": "as_areas_d4c38ded_421b_4011_b324_21a6f65034b9"
+    },
+    "wms_root_name": ""
+  },
+  "timeStamp": "2019-07-05T12:27:07Z"
+}

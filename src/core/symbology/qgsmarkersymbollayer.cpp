@@ -1906,6 +1906,7 @@ void QgsSvgMarkerSymbolLayer::resolvePaths( QgsStringMap &properties, const QgsP
 
 void QgsSvgMarkerSymbolLayer::setPath( const QString &path )
 {
+  mDefaultAspectRatio = 0;
   mPath = path;
   QColor defaultFillColor, defaultStrokeColor;
   double strokeWidth, fillOpacity, strokeOpacity;

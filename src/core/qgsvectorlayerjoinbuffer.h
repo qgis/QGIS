@@ -32,7 +32,8 @@ typedef QList< QgsVectorLayerJoinInfo > QgsVectorJoinList;
 
 /**
  * \ingroup core
- * Manages joined fields for a vector layer*/
+ * Manages joined fields for a vector layer.
+*/
 class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSink
 {
     Q_OBJECT
@@ -41,20 +42,20 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
 
     /**
      * Joins another vector layer to this layer
-      \param joinInfo join object containing join layer id, target and source field
-      \returns (since 2.6) whether the join was successfully added
+     * \param joinInfo join object containing join layer id, target and source field
+     * \returns (since 2.6) whether the join was successfully added
     */
     bool addJoin( const QgsVectorLayerJoinInfo &joinInfo );
 
     /**
      * Removes a vector layer join
-      \returns true if join was found and successfully removed
+     * \returns true if join was found and successfully removed
     */
     bool removeJoin( const QString &joinLayerId );
 
     /**
      * Updates field map with joined attributes
-      \param fields map to append joined attributes
+     * \param fields map to append joined attributes
      */
     void updateFields( QgsFields &fields );
 

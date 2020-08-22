@@ -55,12 +55,11 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mLayers( other.mLayers )
   , mTerrainLayers( other.mTerrainLayers )
   , mRenderers() // initialized in body
-  , mSkyboxEnabled( other.mSkyboxEnabled )
-  , mSkyboxFileBase( other.mSkyboxFileBase )
-  , mSkyboxFileExtension( other.mSkyboxFileExtension )
   , mTransformContext( other.mTransformContext )
   , mPathResolver( other.mPathResolver )
   , mMapThemes( other.mMapThemes )
+  , mIsSkyboxEnabled( other.mIsSkyboxEnabled )
+  , mSkyboxSettings()
 {
   Q_FOREACH ( QgsAbstract3DRenderer *renderer, other.mRenderers )
   {
@@ -226,9 +225,8 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   }
 
   QDomElement elemSkybox = elem.firstChildElement( QStringLiteral( "skybox" ) );
-  mSkyboxEnabled = elemSkybox.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt();
-  mSkyboxFileBase = elemSkybox.attribute( QStringLiteral( "file-base" ) );
-  mSkyboxFileExtension = elemSkybox.attribute( QStringLiteral( "file-ext" ) );
+  mIsSkyboxEnabled = elemSkybox.attribute( QStringLiteral( "skybox-enabled" ) ).toInt();
+  mSkyboxSettings.readXml( elemSkybox, context );
 
   QDomElement elemDebug = elem.firstChildElement( QStringLiteral( "debug" ) );
   mShowTerrainBoundingBoxes = elemDebug.attribute( QStringLiteral( "bounding-boxes" ), QStringLiteral( "0" ) ).toInt();
@@ -328,10 +326,8 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elem.appendChild( elemRenderers );
 
   QDomElement elemSkybox = doc.createElement( QStringLiteral( "skybox" ) );
-  elemSkybox.setAttribute( QStringLiteral( "enabled" ), mSkyboxEnabled ? 1 : 0 );
-  // TODO: use context for relative paths, maybe explicitly list all files(?)
-  elemSkybox.setAttribute( QStringLiteral( "file-base" ), mSkyboxFileBase );
-  elemSkybox.setAttribute( QStringLiteral( "file-ext" ), mSkyboxFileExtension );
+  elemSkybox.setAttribute( QStringLiteral( "skybox-enabled" ), mIsSkyboxEnabled );
+  mSkyboxSettings.writeXml( elemSkybox, context );
   elem.appendChild( elemSkybox );
 
   QDomElement elemDebug = doc.createElement( QStringLiteral( "debug" ) );
@@ -649,9 +645,8 @@ void Qgs3DMapSettings::setFieldOfView( const float fieldOfView )
   emit fieldOfViewChanged();
 }
 
-void Qgs3DMapSettings::setSkybox( bool enabled, const QString &fileBase, const QString &fileExtension )
+void Qgs3DMapSettings::setSkyboxSettings( const QgsSkyboxSettings &skyboxSettings )
 {
-  mSkyboxEnabled = enabled;
-  mSkyboxFileBase = fileBase;
-  mSkyboxFileExtension = fileExtension;
+  mSkyboxSettings = skyboxSettings;
+  emit skyboxSettingsChanged();
 }

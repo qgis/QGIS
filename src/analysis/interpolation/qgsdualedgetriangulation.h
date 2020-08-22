@@ -1,5 +1,5 @@
-/***************************************************************************
-                          DualEdgeTriangulation.h  -  description
+/**************************************************************************
+                          QgsDualEdgeTriangulation.h  -  description
                              -------------------
     copyright            : (C) 2004 by Marco Hugentobler
     email                : mhugent@geo.unizh.ch
@@ -97,7 +97,7 @@ class ANALYSIS_EXPORT QgsDualEdgeTriangulation: public QgsTriangulation
 
     virtual QgsMesh triangulationToMesh() const override;
 
-  protected:
+  private:
     //! X-coordinate of the upper right corner of the bounding box
     double mXMax = 0;
     //! X-coordinate of the lower left corner of the bounding box
@@ -122,24 +122,31 @@ class ANALYSIS_EXPORT QgsDualEdgeTriangulation: public QgsTriangulation
     unsigned int insertEdge( int dual, int next, int point, bool mbreak, bool forced );
     //! Inserts a forced segment between the points with the numbers p1 and p2 into the triangulation and returns the number of a HalfEdge belonging to this forced edge or -100 in case of failure
     int insertForcedSegment( int p1, int p2, QgsInterpolator::SourceType segmentType );
-    //! Threshold for the leftOfTest to handle numerical instabilities
-    //const static double leftOfTresh=0.00001;
     //! Security to prevent endless loops in 'baseEdgeOfTriangle'. It there are more iteration then this number, the point will not be inserted
     static const int MAX_BASE_ITERATIONS = 300000;
     //! Returns the number of an edge which points to the point with number 'point' or -1 if there is an error
     int baseEdgeOfPoint( int point );
-    //! Returns the number of a HalfEdge from a triangle in which 'point' is in. If the number -10 is returned, this means, that 'point' is outside the convex hull. If -5 is returned, then numerical problems with the leftOfTest occurred (and the value of the possible edge is stored in the variable 'mUnstableEdge'. -20 means, that the inserted point is exactly on an edge (the number is stored in the variable 'mEdgeWithPoint'). -25 means, that the point is already in the triangulation (the number of the point is stored in the member 'mTwiceInsPoint'. If -100 is returned, this means that something else went wrong
+
+    /**
+     * Returns the number of a HalfEdge from a triangle in which 'point' is in. If the number -10 is returned, this means, that 'point' is outside the convex hull.
+     * If -5 is returned, then numerical problems with the leftOfTest occurred (and the value of the possible edge is stored in the variable 'mUnstableEdge'.
+     * -20 means, that the inserted point is exactly on an edge (the number is stored in the variable 'mEdgeWithPoint').
+     * -25 means, that the point is already in the triangulation (the number of the point is stored in the member 'mTwiceInsPoint'.
+     * If -100 is returned, this means that something else went wrong
+     */
     int baseEdgeOfTriangle( const QgsPoint &point );
     //! Checks, if 'edge' has to be swapped because of the empty circle criterion. If so, doSwap(...) is called.
-    bool checkSwap( unsigned int edge, unsigned int recursiveDeep );
+    bool checkSwapRecursivly( unsigned int edge, unsigned int recursiveDeep );
+    //! Return true if edge need to be swapped after Delaunay criteria control
+    bool isEdgeNeedSwap( unsigned int edge );
     //! Swaps 'edge' and test recursively for other swaps (delaunay criterion)
-    void doSwap( unsigned int edge, unsigned int recursiveDeep );
+    void doSwapRecursivly( unsigned int edge, unsigned int recursiveDeep );
     //! Swaps 'edge' and does no recursiv testing
     void doOnlySwap( unsigned int edge );
     //! Number of an edge which does not point to the virtual point. It continuously updated for a fast search
     unsigned int mEdgeInside = 0;
     //! Number of an edge on the outside of the convex hull. It is updated in method 'baseEdgeOfTriangle' to enable insertion of points outside the convex hull
-    unsigned int mEdgeOutside = 0;
+    int mEdgeOutside = -1;
     //! If an inserted point is exactly on an existing edge, 'baseEdgeOfTriangle' returns -20 and sets the variable 'mEdgeWithPoint'
     unsigned int mEdgeWithPoint = 0;
     //! If an instability occurs in 'baseEdgeOfTriangle', mUnstableEdge is set to the value of the current edge
@@ -160,6 +167,11 @@ class ANALYSIS_EXPORT QgsDualEdgeTriangulation: public QgsTriangulation
     bool edgeOnConvexHull( int edge );
     //! Function needed for the ruppert algorithm. Tests, if point is in the circle through both endpoints of edge and the endpoint of edge->dual->next->point. If so, the function calls itself recursively for edge->next and edge->next->next. Stops, if it finds a forced edge or a convex hull edge
     void evaluateInfluenceRegion( QgsPoint *point, int edge, QSet<int> &set );
+    //! Dimension of the triangulation, -1 : no point, 0 : 1 point, 1 : 2 point or only colinear edges, 2 : 3 or more points and at least 2 non colinear edges
+    int mDimension = -1;
+
+    int firstEdgeOutSide();
+
 
     friend class TestQgsInterpolator;
 };

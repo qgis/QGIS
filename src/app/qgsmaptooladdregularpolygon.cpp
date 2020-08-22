@@ -115,7 +115,7 @@ void QgsMapToolAddRegularPolygon::deactivate()
 
   // keep z value from the first snapped point
   std::unique_ptr<QgsLineString> ls( mRegularPolygon.toLineString() );
-  for ( const QgsPoint point : qgis::as_const( mPoints ) )
+  for ( const QgsPoint &point : qgis::as_const( mPoints ) )
   {
     if ( QgsWkbTypes::hasZ( point.wkbType() ) &&
          point.z() != defaultZValue() )

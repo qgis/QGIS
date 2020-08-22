@@ -376,6 +376,18 @@ void QgsColorRampShaderWidget::applyColorRamp()
   int topLevelItemCount = mColormapTreeWidget->topLevelItemCount();
   if ( topLevelItemCount > 0 )
   {
+    // We need to have valid min/max values here. If we haven't, load from colormap
+    double min, max;
+    if ( std::isnan( mMin ) || std::isnan( mMax ) )
+    {
+      colormapMinMax( min, max );
+    }
+    else
+    {
+      min = mMin;
+      max = mMax;
+    }
+
     // if the list values has been customized, maintain pre-existing values
     QTreeWidgetItem *currentItem = nullptr;
     for ( int i = 0; i < topLevelItemCount; ++i )
@@ -387,7 +399,7 @@ void QgsColorRampShaderWidget::applyColorRamp()
       }
 
       double value = QLocale().toDouble( currentItem->text( ValueColumn ) );
-      double position = ( value - mMin ) / ( mMax - mMin );
+      double position = ( value - min ) / ( max - min );
       whileBlocking( static_cast<QgsTreeWidgetItemObject *>( currentItem ) )->setData( ColorColumn, Qt::EditRole, ramp->color( position ) );
     }
 
@@ -644,8 +656,6 @@ void QgsColorRampShaderWidget::mColormapTreeWidget_itemEdited( QTreeWidgetItem *
 
 void QgsColorRampShaderWidget::setFromShader( const QgsColorRampShader &colorRampShader )
 {
-  populateColormapTreeWidget( colorRampShader.colorRampItemList() );
-
   // Those objects are connected to classify() the color ramp shader if they change, or call widget change
   // need to block them to avoid to classify and to alter the color ramp, or to call duplicate widget change
   whileBlocking( mClipCheckBox )->setChecked( colorRampShader.clip() );
@@ -665,6 +675,8 @@ void QgsColorRampShaderWidget::setFromShader( const QgsColorRampShader &colorRam
     QString defaultPalette = settings.value( QStringLiteral( "/Raster/defaultPalette" ), "Spectral" ).toString();
     btnColorRamp->setColorRampFromName( defaultPalette );
   }
+
+  populateColormapTreeWidget( colorRampShader.colorRampItemList() );
 
   emit widgetChanged();
 }
@@ -727,19 +739,28 @@ double QgsColorRampShaderWidget::maximum() const
   return mMax;
 }
 
-
-
-void QgsColorRampShaderWidget::loadMinimumMaximumFromTree()
+bool QgsColorRampShaderWidget::colormapMinMax( double &min, double &max ) const
 {
   QTreeWidgetItem *item = mColormapTreeWidget->topLevelItem( 0 );
   if ( !item )
   {
-    return;
+    return false;
   }
 
-  double min = QLocale().toDouble( item->text( ValueColumn ) );
+  min = QLocale().toDouble( item->text( ValueColumn ) );
   item = mColormapTreeWidget->topLevelItem( mColormapTreeWidget->topLevelItemCount() - 1 );
-  double max = QLocale().toDouble( item->text( ValueColumn ) );
+  max = QLocale().toDouble( item->text( ValueColumn ) );
+
+  return true;
+}
+
+void QgsColorRampShaderWidget::loadMinimumMaximumFromTree()
+{
+  double min = 0, max = 0;
+  if ( ! colormapMinMax( min, max ) )
+  {
+    return;
+  }
 
   if ( !qgsDoubleNear( mMin, min ) || !qgsDoubleNear( mMax, max ) )
   {

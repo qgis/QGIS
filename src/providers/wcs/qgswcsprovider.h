@@ -97,13 +97,13 @@ struct QgsWcsAuthorization
 };
 
 /**
-
-  \brief Data provider for OGC WCS layers.
-
-  This provider implements the
-  interface defined in the QgsDataProvider class to provide access to spatial
-  data residing in a OGC Web Map Service.
-
+ *
+ * \brief Data provider for OGC WCS layers.
+ *
+ * This provider implements the
+ * interface defined in the QgsDataProvider class to provide access to spatial
+ * data residing in a OGC Web Map Service.
+ *
 */
 class QgsWcsProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
 {
@@ -296,8 +296,9 @@ class QgsWcsProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
 
     /**
      * \brief Gdal data types used to represent data in in QGIS,
-               may be longer than source data type to keep nulls
-               indexed from 0 */
+     *          may be longer than source data type to keep nulls
+     *          indexed from 0.
+     */
     QList<GDALDataType> mGdalDataType;
 
     //! GDAL source data types, indexed from 0

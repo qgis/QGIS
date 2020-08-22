@@ -399,9 +399,9 @@ void MDAL::SelafinFile::populateDataset( MDAL::Mesh *mesh, std::shared_ptr<MDAL:
   }
 
   // now calculate statistics
-  for ( const std::shared_ptr<DatasetGroup> group : groupsInOrder )
+  for ( const std::shared_ptr<DatasetGroup> &group : groupsInOrder )
   {
-    for ( const std::shared_ptr<Dataset> dataset : group->datasets )
+    for ( const std::shared_ptr<Dataset> &dataset : group->datasets )
     {
       MDAL::Statistics stats = MDAL::calculateStatistics( dataset );
       dataset->setStatistics( stats );
@@ -412,7 +412,7 @@ void MDAL::SelafinFile::populateDataset( MDAL::Mesh *mesh, std::shared_ptr<MDAL:
   }
 
   // As everything seems to be ok (no exception thrown), push the groups in the mesh
-  for ( const std::shared_ptr<DatasetGroup> group : groupsInOrder )
+  for ( const std::shared_ptr<DatasetGroup> &group : groupsInOrder )
     mesh->datasetGroups.push_back( group );
 }
 

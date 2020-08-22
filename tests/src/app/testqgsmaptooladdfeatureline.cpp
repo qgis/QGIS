@@ -282,6 +282,30 @@ void TestQgsMapToolAddFeatureLine::testNoTracing()
 
   mLayerLine->undoStack()->undo();
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
+
+  mCaptureTool->setCircularDigitizingEnabled( true );
+
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 3, 2, Qt::LeftButton );
+  utils.mouseClick( 3, 2, Qt::RightButton );
+
+  // Cirular string need 3 points, so no feature created
+  QCOMPARE( mLayerLine->undoStack()->index(), 1 );
+  QCOMPARE( utils.existingFeatureIds().count(), 1 );
+
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 3, 2, Qt::LeftButton );
+  utils.mouseClick( 4, 2, Qt::LeftButton );
+  utils.mouseClick( 4, 2, Qt::RightButton );
+
+  newFid = utils.newFeatureId( oldFids );
+
+  QCOMPARE( mLayerLine->undoStack()->index(), 2 );
+  QCOMPARE( mLayerLine->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( "CIRCULARSTRING(1 1, 3 2, 4 2)" ) );
+
+  mLayerLine->undoStack()->undo();
+  QCOMPARE( mLayerLine->undoStack()->index(), 1 );
+  mCaptureTool->setCircularDigitizingEnabled( false );
 }
 
 void TestQgsMapToolAddFeatureLine::testTracing()
