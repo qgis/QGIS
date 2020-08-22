@@ -1,9 +1,9 @@
 
 # see https://docs.docker.com/docker-cloud/builds/advanced/
 # using ARG in FROM requires min v17.05.0-ce
-ARG DOCKER_TAG=latest
+ARG DOCKER_DEPS_TAG=latest
 
-FROM  qgis/qgis3-build-deps:${DOCKER_TAG} AS BUILDER
+FROM  qgis/qgis3-build-deps:${DOCKER_DEPS_TAG} AS BUILDER
 MAINTAINER Denis Rouzaud <denis@opengis.ch>
 
 LABEL Description="Docker container with QGIS" Vendor="QGIS.org" Version="1.1"

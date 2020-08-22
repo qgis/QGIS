@@ -41,6 +41,7 @@ jobs:
         run: |
           export DOCKER_TAG=${branch//master/latest}
           export DOCKER_BUILD_DEPS_FILE=qgis3-build-deps-focal.dockerfile
+          export DOCKER_DEPS_TAG=${DOCKER_TAG}_focal
 
           echo "branch: ${branch}"
           echo "docker tag: ${DOCKER_TAG}"
@@ -52,17 +53,17 @@ jobs:
           echo "##[group] QGIS deps Docker pull/rebuild"
           cd .docker
           docker --version
-          docker pull "qgis/qgis3-build-deps:${DOCKER_TAG}_focal" || true
-          docker build --cache-from "qgis/qgis3-build-deps:${DOCKER_TAG}_focal" -t "qgis/qgis3-build-deps:${DOCKER_TAG}_focal" -f ${DOCKER_BUILD_DEPS_FILE} .
-          echo "push to qgis/qgis3-build-deps:${DOCKER_TAG}_focal"
+          docker pull "qgis/qgis3-build-deps:${DOCKER_DEPS_TAG}" || true
+          docker build --cache-from "qgis/qgis3-build-deps:${DOCKER_DEPS_TAG}" -t "qgis/qgis3-build-deps:${DOCKER_DEPS_TAG}" -f ${DOCKER_BUILD_DEPS_FILE} .
+          echo "push to qgis/qgis3-build-deps:${DOCKER_DEPS_TAG}"
           docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-          docker push "qgis/qgis3-build-deps:${DOCKER_TAG}_focal"
+          docker push "qgis/qgis3-build-deps:${DOCKER_DEPS_TAG}"
           echo "##[endgroup]"
 
           echo "##[group] Docker QGIS build"
-          DOCKER_BUILD_ARGS="--build-arg 'DOCKER_TAG=${DOCKER_TAG}_focal' --build-arg CC --build-arg CXX"
+          DOCKER_BUILD_ARGS="--build-arg DOCKER_DEPS_TAG --build-arg CC --build-arg CXX"
           docker build ${DOCKER_BUILD_ARGS} \
-                       --cache-from "qgis/qgis:${DOCKER_TAG}_focal" \
+                       --cache-from "qgis/qgis:${DOCKER_TAG}" \
                        -t "qgis/qgis:BUILDER" \
                        -f qgis.dockerfile ..
           echo "Copy build cache from Docker container to Travis cache directory"
