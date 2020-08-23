@@ -10,6 +10,6 @@
     {"arg":"elevation","description":"angle of inclination in radians", "optional":true}
   ],
   "examples": [
-	{ "expression":"geom_to_wkt(project(make_point(1, 2), 3, radians(270)))", "returns":"Point(-2, 2)"}
+	{ "expression":"geom_to_wkt(project(make_point(1, 2), 3, radians(270)))", "returns":"'Point(-2, 2)'"}
   ]
 }
