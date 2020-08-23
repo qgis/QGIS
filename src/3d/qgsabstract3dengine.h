@@ -35,6 +35,7 @@ namespace Qt3DRender
 {
   class QRenderSettings;
   class QCamera;
+  class QFrameGraphNode;
 }
 
 /**

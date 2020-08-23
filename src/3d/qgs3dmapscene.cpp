@@ -74,6 +74,8 @@
 #include "qgsskyboxentity.h"
 #include "qgsskyboxsettings.h"
 
+#include "qgswindow3dengine.h"
+
 Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
   : mMap( map )
   , mEngine( engine )
@@ -208,6 +210,28 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   onSkyboxSettingsChanged();
   // force initial update of chunked entities
   onCameraChanged();
+
+  QgsWindow3DEngine *windowEngine = dynamic_cast<QgsWindow3DEngine *>( mEngine );
+  if ( windowEngine != nullptr )
+  {
+    mShadowRenderingFrameGraph = windowEngine->shadowRenderingFrameGraph();
+    mPostprocessingEntity = windowEngine->postprocessingEntity();
+//    QObject::connect(&mMap, &Qgs3DMapSettings::directionalLightsChanged, [&]() {
+//      if (!mMap.directionalLights().empty())
+//        mShadowRenderingFrameGraph->setupDirectionalLights(mMap.directionalLights()[0]);
+//    });
+    QObject::connect( &mMap, &Qgs3DMapSettings::pointLightsChanged, [&]()
+    {
+//      if (!mMap.pointLights().empty()) {
+//        mShadowRenderingFrameGraph->setupPointLight(mMap.pointLights()[0]);
+//      }
+      if ( !mMap.directionalLights().empty() )
+      {
+        QgsRectangle extent = mMap.terrainGenerator()->extent();
+        mShadowRenderingFrameGraph->setupDirectionalLight( mMap.directionalLights()[0], extent );
+      }
+    } );
+  }
 }
 
 void Qgs3DMapScene::viewZoomFull()
@@ -276,7 +300,6 @@ void Qgs3DMapScene::onLayerEntityPickedObject( Qt3DRender::QPickEvent *pickEvent
   }
 }
 
-
 float Qgs3DMapScene::worldSpaceError( float epsilon, float distance )
 {
   Qt3DRender::QCamera *camera = mCameraController->camera();
@@ -314,6 +337,14 @@ void Qgs3DMapScene::onCameraChanged()
     // the active nodes may have changed as well
     updateScene();
     updateCameraNearFarPlanes();
+  }
+  if ( mShadowRenderingFrameGraph != nullptr )
+  {
+    QgsRectangle extent = mMap.terrainGenerator()->extent();
+//    mShadowRenderingFrameGraph->updateDirectionalLightParameters(extent);
+//    if (!mMap.pointLights().empty()) mShadowRenderingFrameGraph->setupPointLight(mMap.pointLights()[0]);
+    if ( !mMap.directionalLights().empty() )
+      mShadowRenderingFrameGraph->setupDirectionalLight( mMap.directionalLights()[0], extent );
   }
 }
 
@@ -483,7 +514,6 @@ void Qgs3DMapScene::onBackgroundColorChanged()
   mEngine->setClearColor( mMap.backgroundColor() );
 }
 
-
 void Qgs3DMapScene::updateLights()
 {
   for ( Qt3DCore::QEntity *entity : qgis::as_const( mLightEntities ) )
@@ -511,6 +541,10 @@ void Qgs3DMapScene::updateLights()
 
     originEntity->setEnabled( true );
     originEntity->setParent( this );
+
+    if ( mShadowRenderingFrameGraph != nullptr )
+      originEntity->addComponent( mShadowRenderingFrameGraph->doNotCastShadowsLayerLayer() );
+
 
     return originEntity;
   };

@@ -20,29 +20,35 @@
 #include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DRender/QRenderSettings>
 
+#include "qgspreviewquad.h"
+
 QgsWindow3DEngine::QgsWindow3DEngine( QObject *parent )
   : QgsAbstract3DEngine( parent )
 {
   mWindow3D = new Qt3DExtras::Qt3DWindow;
 
-  mShadowRenderingFrameGraph = new QgsShadowRenderingFrameGraph(mWindow3D, mWindow3D->camera());
+  mShadowRenderingFrameGraph = new QgsShadowRenderingFrameGraph( mWindow3D, mWindow3D->camera() );
 
 //  mCapture = new Qt3DRender::QRenderCapture;
 //  mWindow3D->activeFrameGraph()->setParent( mCapture );
 //  mWindow3D->setActiveFrameGraph( mCapture );
 
   mCapture = new Qt3DRender::QRenderCapture;
-  mShadowRenderingFrameGraph->getFrameGraphRoot()->setParent(mCapture);
+  mShadowRenderingFrameGraph->getFrameGraphRoot()->setParent( mCapture );
   mWindow3D->setActiveFrameGraph( mCapture );
 
   mRoot = new Qt3DCore::QEntity;
 //  mRoot->addComponent(mShadowRenderingFrameGraph->postprocessingPassLayer());
 
-  QString vertexShaderPath = QStringLiteral( "qrc:/shaders/postprocess.vert" );
-  QString fragmentShaderPath = QStringLiteral( "qrc:/shaders/postprocess.frag" );
-  mPostprocessingEntity = new QgsPostprocessingEntity(mShadowRenderingFrameGraph, vertexShaderPath, fragmentShaderPath, mRoot);
+//  QString vertexShaderPath = QStringLiteral( "qrc:/shaders/postprocess.vert" );
+//  QString fragmentShaderPath = QStringLiteral( "qrc:/shaders/postprocess.frag" );
+//  mPostprocessingEntity = new QgsPostprocessingEntity( mShadowRenderingFrameGraph, vertexShaderPath, fragmentShaderPath, mRoot );
+  mShadowRenderingFrameGraph->postprocessingEntity()->setParent( mRoot );
+  mPreviewQuad = new PreviewQuad( mShadowRenderingFrameGraph->shadowMapTexture() );
+  mPreviewQuad->addComponent( mShadowRenderingFrameGraph->previewLayer() );
+  mPreviewQuad->setParent( mRoot );
 
-  mWindow3D->setRootEntity(mRoot);
+  mWindow3D->setRootEntity( mRoot );
 }
 
 QWindow *QgsWindow3DEngine::window()
@@ -75,7 +81,7 @@ void QgsWindow3DEngine::setRootEntity( Qt3DCore::QEntity *root )
 {
 //  mWindow3D->setRootEntity( root );
   mSceneRoot = root;
-  mSceneRoot->setParent(mRoot);
+  mSceneRoot->setParent( mRoot );
 }
 
 Qt3DRender::QRenderSettings *QgsWindow3DEngine::renderSettings()

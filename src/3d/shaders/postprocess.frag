@@ -2,11 +2,22 @@
 
 uniform sampler2D colorTexture;
 uniform sampler2D depthTexture;
+//uniform sampler2DShadow shadowTexture;
 uniform sampler2D shadowTexture;
 
 // light camera uniforms
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
+uniform float lightFarPlane;
+uniform float lightNearPlane;
+
+uniform float shadowMinX;
+uniform float shadowMaxX;
+uniform float shadowMinZ;
+uniform float shadowMaxZ;
+
+uniform vec3 lightPosition;
+uniform vec3 lightDirection;
 
 // view camera uniforms
 uniform mat4 cameraView;
@@ -38,20 +49,35 @@ vec3 WorldPosFromDepth(float depth) {
 
 float LinearizeDepth(float depth)
 {
+  float nearPlane = lightNearPlane;
+  float farPlane = lightFarPlane;
     float z = depth * 2.0 - 1.0; // back to NDC
-    return (2.0 * nearPlane * farPlane) / (farPlane + nearPlane - z * (farPlane - nearPlane));
+    float d = (2.0 * nearPlane * farPlane) / (farPlane + nearPlane - z * (farPlane - nearPlane));
+//    return d / 10.0f;
+    return d / farPlane;
 }
 
 
 float CalcShadowFactor(vec4 LightSpacePos)
 {
-  float bias = 0.00005f;
+  float bias = 0.001f;
   vec2 texelSize = 1.0 / textureSize(shadowTexture, 0);
   vec3 ProjCoords = LightSpacePos.xyz / LightSpacePos.w;
   vec2 UVCoords;
   UVCoords.x = 0.5 * ProjCoords.x + 0.5;
   UVCoords.y = 0.5 * ProjCoords.y + 0.5;
   float z = 0.5 * ProjCoords.z + 0.5;
+
+  const mat4 shadowMatrix = mat4(0.5, 0.0, 0.0, 0.0,
+                                   0.0, 0.5, 0.0, 0.0,
+                                   0.0, 0.0, 0.5, 0.0,
+                                   0.5, 0.5, 0.5, 1.0);
+//  LightSpacePos = shadowMatrix * LightSpacePos;
+
+//  float depth = texture(shadowTexture, UVCoords).r;
+//  float depth = textureProj(shadowTexture, LightSpacePos);
+//  return depth > 0 ? 1.0f : 0.5f;
+//  return z - bias > depth ? 0.5 : 1.0;
 
   // percentage close filtering of the shadow map
   float shadow = 0.0;
@@ -113,15 +139,24 @@ vec3 applyKernel(mat3 kernel) {
 
 void main()
 {
+
   vec3 worldPosition = WorldPosFromDepth(texture(depthTexture, texCoord).r);
-//  vec4 positionInLightSpace = projectionMatrix * viewMatrix * vec4(worldPosition, 1.0f);
-//  float shadowFactor = CalcShadowFactor(positionInLightSpace);
-//  fragColor = vec4(shadowFactor * texture(colorTexture, texCoord).rgb, 1.0f);
+  vec4 positionInLightSpace = projectionMatrix * viewMatrix * vec4(worldPosition, 1.0f);
+  positionInLightSpace /= positionInLightSpace.w;
+//  vec3 lightToPixel = normalize(worldPosition - lightPosition);
+//  float d = acos( dot(lightToPixel, lightDirection) );
+  float shadowFactor = CalcShadowFactor(positionInLightSpace);
+//  shadowFactor *= d >= radians(5.0f) ? 1.0f : 0.0f;
+//  float shadowFactor = LinearizeDepth( CalcShadowFactor(positionInLightSpace) );
+//  fragColor = vec4(vec3(shadowFactor), 1.0f);
+  fragColor = vec4(worldPosition, 1.0f);
+//  fragColor = vec4(positionInLightSpace.xy, 0.0f, 1.0f);
+//  fragColor = vec4(vec3(LinearizeDepth( texture(shadowTexture, texCoord).r) ), 1.0f);
+
   vec3 color = texture(colorTexture, texCoord).rgb;
-//  fragColor = vec4(vec3(LinearizeDepth(texture(depthTexture, texCoord).r) / farPlane), 1.0f);
-  fragColor = vec4(to_color(worldPosition), 1.0f);
-//  fragColor = vec4(edgeDetectionFilter(), 1.0f);
-  mat3 edgeDetectionKernel = mat3(-1, -1, -1,-1,  8, -1,-1, -1, -1);
-  mat3 sharpenKernel = mat3(-1, -1, -1, -1, 9, -1, -1, -1, -1);
-  fragColor = vec4(applyKernel(edgeDetectionKernel), 1.0f);
+  fragColor = vec4(shadowFactor * color, 1.0f);
+  if (worldPosition.x > shadowMaxX || worldPosition.x < shadowMinX || worldPosition.z > shadowMaxZ || worldPosition.z < shadowMinZ) {
+    fragColor = vec4(mix(fragColor.rgb, vec3(0.0f, 0.0f, 1.0f), 0.5), 1.0f);
+  }
+//  fragColor = vec4(texture(colorTexture, texCoord).rgb, 1.0f);
 }

@@ -19,6 +19,7 @@
 #include "qgsabstract3dengine.h"
 #include "qgsshadowrenderingframegraph.h"
 #include "qgspostprocessingentity.h"
+#include "qgspreviewquad.h"
 
 namespace Qt3DRender
 {
@@ -58,6 +59,7 @@ class _3D_EXPORT QgsWindow3DEngine : public QgsAbstract3DEngine
     QWindow *window();
 
     QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph() { return mShadowRenderingFrameGraph; }
+    QgsPostprocessingEntity *postprocessingEntity() { return mPostprocessingEntity; }
 
     void requestCaptureImage() override;
 
@@ -77,8 +79,10 @@ class _3D_EXPORT QgsWindow3DEngine : public QgsAbstract3DEngine
     Qt3DRender::QRenderCapture *mCapture = nullptr;
     QgsShadowRenderingFrameGraph *mShadowRenderingFrameGraph = nullptr;
     QgsPostprocessingEntity *mPostprocessingEntity = nullptr;
-    Qt3DCore::QEntity* mRoot = nullptr;
-    Qt3DCore::QEntity* mSceneRoot = nullptr;
+    Qt3DCore::QEntity *mRoot = nullptr;
+    Qt3DCore::QEntity *mSceneRoot = nullptr;
+
+    PreviewQuad *mPreviewQuad = nullptr;
 };
 
 
