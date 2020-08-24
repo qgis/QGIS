@@ -97,8 +97,8 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructShadowRender
   sceneEntitiesFilter->setFilterMode( Qt3DRender::QLayerFilter::FilterMode::DiscardAnyMatchingLayers );
 
   mShadowMapTexture = new Qt3DRender::QTexture2D;
-  mShadowMapTexture->setWidth( 1024 * 2 );
-  mShadowMapTexture->setHeight( 1024 * 2 );
+  mShadowMapTexture->setWidth( 2048 );
+  mShadowMapTexture->setHeight( 2048 );
   mShadowMapTexture->setFormat( Qt3DRender::QTexture2D::TextureFormat::D32F );
   mShadowMapTexture->setGenerateMipMaps( false );
   mShadowMapTexture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
@@ -121,10 +121,10 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructShadowRender
   mShadowClearBuffers ->setBuffers( Qt3DRender::QClearBuffers::BufferType::ColorDepthBuffer );
 
   Qt3DRender::QRenderStateSet *renderStateSet = new Qt3DRender::QRenderStateSet( mShadowClearBuffers );
-  Qt3DRender::QPolygonOffset *polygonOffset = new Qt3DRender::QPolygonOffset;
-  polygonOffset->setDepthSteps( 2.0f );
-  polygonOffset->setScaleFactor( 2.0f );
-  renderStateSet->addRenderState( polygonOffset );
+//  Qt3DRender::QPolygonOffset *polygonOffset = new Qt3DRender::QPolygonOffset;
+//  polygonOffset->setDepthSteps( 4.0f );
+//  polygonOffset->setScaleFactor( 4.0f );
+//  renderStateSet->addRenderState( polygonOffset );
   Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest;
   depthTest->setDepthFunction( Qt3DRender::QDepthTest::LessOrEqual );
   renderStateSet->addRenderState( depthTest );

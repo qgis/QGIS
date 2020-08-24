@@ -60,7 +60,7 @@ float LinearizeDepth(float depth)
 
 float CalcShadowFactor(vec4 LightSpacePos)
 {
-  float bias = 0.00000f;
+  float bias = 0.000005f;
   vec2 texelSize = 1.0 / textureSize(shadowTexture, 0);
   vec3 ProjCoords = LightSpacePos.xyz / LightSpacePos.w;
   vec2 UVCoords;
