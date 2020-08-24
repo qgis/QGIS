@@ -515,6 +515,6 @@ void QgsPostgresDataItemGuiProvider::loadConnections( QgsDataItem *item )
   }
 
   QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::PostGIS, fileName );
-  dlg.exec();
-  item->refreshConnections();
+  if ( dlg.exec() == QDialog::Accepted )
+    item->refreshConnections();
 }

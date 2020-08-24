@@ -139,6 +139,6 @@ void QgsDb2DataItemGuiProvider::loadConnections( QgsDataItem *item )
   }
 
   QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::DB2, fileName );
-  dlg.exec();
-  item->refreshConnections();
+  if ( dlg.exec() == QDialog::Accepted )
+    item->refreshConnections();
 }

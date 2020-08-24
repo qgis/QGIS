@@ -133,8 +133,8 @@ void QgsWmsDataItemGuiProvider::loadConnections( QgsDataItem *item )
   }
 
   QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::WMS, fileName );
-  dlg.exec();
-  item->refreshConnections();
+  if ( dlg.exec() == QDialog::Accepted )
+    item->refreshConnections();
 }
 
 // -----------
@@ -224,6 +224,6 @@ void QgsXyzDataItemGuiProvider::loadXyzTilesServers( QgsDataItem *item )
   }
 
   QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::XyzTiles, fileName );
-  dlg.exec();
-  item->refreshConnections();
+  if ( dlg.exec() == QDialog::Accepted )
+    item->refreshConnections();
 }

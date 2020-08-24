@@ -115,6 +115,6 @@ void QgsWcsDataItemGuiProvider::loadConnections( QgsDataItem *item )
   }
 
   QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::WCS, fileName );
-  dlg.exec();
-  item->refreshConnections();
+  if ( dlg.exec() == QDialog::Accepted )
+    item->refreshConnections();
 }

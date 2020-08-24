@@ -97,6 +97,6 @@ void QgsGeoNodeDataItemGuiProvider::loadConnections( QgsDataItem *item )
   }
 
   QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::GeoNode, fileName );
-  dlg.exec();
-  item->refreshConnections();
+  if ( dlg.exec() == QDialog::Accepted )
+    item->refreshConnections();
 }

@@ -108,8 +108,8 @@ void QgsVectorTileDataItemGuiProvider::loadXyzTilesServers( QgsDataItem *item )
   }
 
   QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::VectorTile, fileName );
-  dlg.exec();
-  item->refreshConnections();
+  if ( dlg.exec() == QDialog::Accepted )
+    item->refreshConnections();
 }
 
 ///@endcond
