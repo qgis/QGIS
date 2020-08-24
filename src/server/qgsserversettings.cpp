@@ -243,7 +243,7 @@ void QgsServerSettings::initSettings()
   mSettings[ sApiWfs3MaxLimit.envVar ] = sApiWfs3MaxLimit;
 
   // projects directory for landing page service
-  const Setting sProjectsDirectories = { QgsServerSettingsEnv::QGIS_SERVER_PROJECTS_DIRECTORIES,
+  const Setting sProjectsDirectories = { QgsServerSettingsEnv::QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES,
                                          QgsServerSettingsEnv::DEFAULT_VALUE,
                                          QStringLiteral( "Directories used by the landing page service to find .qgs and .qgz projects" ),
                                          QStringLiteral( "/qgis/server_projects_directories" ),
@@ -255,7 +255,7 @@ void QgsServerSettings::initSettings()
   mSettings[ sProjectsDirectories.envVar ] = sProjectsDirectories;
 
   // postgresql connection string for landing page service
-  const Setting sProjectsPgConnections = { QgsServerSettingsEnv::QGIS_SERVER_PROJECTS_PG_CONNECTIONS,
+  const Setting sProjectsPgConnections = { QgsServerSettingsEnv::QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS,
                                            QgsServerSettingsEnv::DEFAULT_VALUE,
                                            QStringLiteral( "PostgreSQL connection strings used by the landing page service to find projects" ),
                                            QStringLiteral( "/qgis/server_projects_pg_connections" ),
@@ -477,12 +477,12 @@ int QgsServerSettings::wmsMaxWidth() const
 
 QString QgsServerSettings::projectsDirectories() const
 {
-  return value( QgsServerSettingsEnv::QGIS_SERVER_PROJECTS_DIRECTORIES, true ).toString();
+  return value( QgsServerSettingsEnv::QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES, true ).toString();
 }
 
 QString QgsServerSettings::projectsPgConnections() const
 {
-  return value( QgsServerSettingsEnv::QGIS_SERVER_PROJECTS_PG_CONNECTIONS, true ).toString();
+  return value( QgsServerSettingsEnv::QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS, true ).toString();
 }
 
 QString QgsServerSettings::apiResourcesDirectory() const
