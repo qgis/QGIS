@@ -275,6 +275,12 @@ class SERVER_EXPORT QgsServerSettings
      */
     bool getPrintDisabled() const;
 
+    /* 
+     * Returns the string representation of a setting.
+     * \since QGIS 3.16
+     */
+    static QString name( QgsServerSettingsEnv::EnvVar env );
+
   private:
     void initSettings();
     QVariant value( QgsServerSettingsEnv::EnvVar envVar, bool actual = false ) const;

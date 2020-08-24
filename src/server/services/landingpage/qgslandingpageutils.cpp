@@ -75,6 +75,7 @@ QMap<QString, QString> QgsLandingPageUtils::projects( const QgsServerSettings &s
   }
 
   // Scan QGIS_SERVER_PROJECTS_DIRECTORIES
+  const QString envDirName = QgsServerSettings::name( QgsServerSettingsEnv::QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES );
   if ( AVAILABLE_PROJECTS.isEmpty() )
   {
     const auto cProjectDirs { projectDir.split( QStringLiteral( "||" ) ) };
@@ -101,17 +102,18 @@ QMap<QString, QString> QgsLandingPageUtils::projects( const QgsServerSettings &s
         }
         else
         {
-          QgsMessageLog::logMessage( QStringLiteral( "QGIS_SERVER_PROJECTS_DIRECTORIES entry '%1' was not found: skipping." ).arg( path ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
+          QgsMessageLog::logMessage( QStringLiteral( "%1 entry '%2' was not found: skipping." ).arg( envDirName ).arg( path ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
         }
       }
       else
       {
-        QgsMessageLog::logMessage( QStringLiteral( "QGIS_SERVER_PROJECTS_DIRECTORIES empty path: skipping." ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
+        QgsMessageLog::logMessage( QStringLiteral( "%1 empty path: skipping." ).arg( envDirName ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
       }
     }
   }
 
   // PG projects (there is no watcher for PG: scan every time)
+  const QString envPgName = QgsServerSettings::name( QgsServerSettingsEnv::QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS );
   const auto storage { QgsApplication::instance()->projectStorageRegistry()->projectStorageFromType( QStringLiteral( "postgresql" ) ) };
   Q_ASSERT( storage );
   const auto cPgConnections { pgConnections.split( QStringLiteral( "||" ) ) };
@@ -132,12 +134,12 @@ QMap<QString, QString> QgsLandingPageUtils::projects( const QgsServerSettings &s
       }
       else
       {
-        QgsMessageLog::logMessage( QStringLiteral( "QGIS_SERVER_PROJECTS_PG_CONNECTIONS entry '%1' was not found or has not projects: skipping." ).arg( connectionString ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
+        QgsMessageLog::logMessage( QStringLiteral( "%1 entry '%2' was not found or has not projects: skipping." ).arg( envPgName ).arg( connectionString ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
       }
     }
     else
     {
-      QgsMessageLog::logMessage( QStringLiteral( "QGIS_SERVER_PROJECTS_PG_CONNECTIONS empty connection: skipping." ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
+      QgsMessageLog::logMessage( QStringLiteral( "%1 empty connection: skipping." ).arg( envPgName ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
     }
   }
 

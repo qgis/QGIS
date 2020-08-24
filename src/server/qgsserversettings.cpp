@@ -316,8 +316,7 @@ QVariant QgsServerSettings::value( QgsServerSettingsEnv::EnvVar envVar, bool act
 {
   if ( actual )
   {
-    const QMetaEnum metaEnum( QMetaEnum::fromType<QgsServerSettingsEnv::EnvVar>() );
-    const QString envValue( getenv( metaEnum.valueToKey( envVar ) ) );
+    const QString envValue( getenv( name( envVar ).toStdString().c_str() ) );
 
     if ( ! envValue.isEmpty() )
       return envValue;
@@ -382,16 +381,21 @@ void QgsServerSettings::prioritize( const QMap<QgsServerSettingsEnv::EnvVar, QSt
   }
 }
 
+QString QgsServerSettings::name( QgsServerSettingsEnv::EnvVar env )
+{
+  const QMetaEnum metaEnumEnv( QMetaEnum::fromType<QgsServerSettingsEnv::EnvVar>() );
+  return metaEnumEnv.valueToKey( env );
+}
+
 void QgsServerSettings::logSummary() const
 {
   const QMetaEnum metaEnumSrc( QMetaEnum::fromType<QgsServerSettingsEnv::Source>() );
-  const QMetaEnum metaEnumEnv( QMetaEnum::fromType<QgsServerSettingsEnv::EnvVar>() );
 
   QgsMessageLog::logMessage( "QGIS Server Settings: ", "Server", Qgis::Info );
   for ( Setting s : mSettings )
   {
     const QString src = metaEnumSrc.valueToKey( s.src );
-    const QString var = metaEnumEnv.valueToKey( s.envVar );
+    const QString var = name( s.envVar );
 
     const QString msg = "  - " + var + " / '" + s.iniKey + "' (" + s.descr + "): '" + value( s.envVar ).toString() + "' (read from " + src + ")";
     QgsMessageLog::logMessage( msg, "Server", Qgis::Info );
