@@ -53,6 +53,8 @@ class QgsLightsWidget : public QWidget, private Ui::QgsLightsWidget
     void onAddDirectionalLight();
     void onRemoveDirectionalLight();
 
+    void onRenderShadowsCheckboxChanged( int newState );
+
   private:
     void updateLightsList();
     void updateDirectionalLightsList();

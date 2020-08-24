@@ -53,6 +53,9 @@ Returns intensity of the light
 Sets intensity of the light
 %End
 
+    bool renderShadows() const;
+    void setRenderShadows( bool enabled );
+
     QDomElement writeXml( QDomDocument &doc ) const;
 %Docstring
 Writes configuration to a new DOM element and returns it

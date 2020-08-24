@@ -178,8 +178,6 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     QList<Qt3DCore::QEntity *> mLightOriginEntities;
     QList<QgsMapLayer *> mModelVectorLayers;
     QgsSkyboxEntity *mSkybox = nullptr;
-    QgsShadowRenderingFrameGraph *mShadowRenderingFrameGraph = nullptr;
-    QgsPostprocessingEntity *mPostprocessingEntity = nullptr;
 };
 
 #endif // QGS3DMAPSCENE_H

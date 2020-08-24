@@ -29,6 +29,7 @@ namespace Qt3DRender
 namespace Qt3DExtras
 {
   class Qt3DWindow;
+  class QForwardRenderer;
 }
 
 class QWindow;
@@ -59,9 +60,11 @@ class _3D_EXPORT QgsWindow3DEngine : public QgsAbstract3DEngine
     QWindow *window();
 
     QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph() { return mShadowRenderingFrameGraph; }
-    QgsPostprocessingEntity *postprocessingEntity() { return mPostprocessingEntity; }
 
     void requestCaptureImage() override;
+
+    void setShadowRenderingEnabled( bool enabled );
+    bool shadowRenderingEnabled() { return mShadowRenderingEnabled; }
 
     void setClearColor( const QColor &color ) override;
     void setFrustumCullingEnabled( bool enabled ) override;
@@ -77,13 +80,13 @@ class _3D_EXPORT QgsWindow3DEngine : public QgsAbstract3DEngine
     Qt3DExtras::Qt3DWindow *mWindow3D = nullptr;
     //! Frame graph node for render capture
     Qt3DRender::QRenderCapture *mCapture = nullptr;
+    bool mShadowRenderingEnabled = false;
     QgsShadowRenderingFrameGraph *mShadowRenderingFrameGraph = nullptr;
-    QgsPostprocessingEntity *mPostprocessingEntity = nullptr;
+    Qt3DExtras::QForwardRenderer *mDefaultForwardRenderer = nullptr;
     Qt3DCore::QEntity *mRoot = nullptr;
     Qt3DCore::QEntity *mSceneRoot = nullptr;
 
-    PreviewQuad *mPreviewQuad = nullptr;
+    QgsPreviewQuad *mPreviewQuad = nullptr;
 };
-
 
 #endif // QGSWINDOW3DENGINE_H

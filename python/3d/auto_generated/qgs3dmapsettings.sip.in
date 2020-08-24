@@ -429,6 +429,13 @@ Returns list of directional lights defined in the scene
 .. versionadded:: 3.16
 %End
 
+    float maximumShadowRenderingDistance() const;
+%Docstring
+Returns the maximum shadows rendering distance
+
+.. versionadded:: 3.16
+%End
+
     void setPointLights( const QList<QgsPointLightSettings> &pointLights );
 %Docstring
 Sets list of point lights defined in the scene
@@ -439,6 +446,15 @@ Sets list of point lights defined in the scene
     void setDirectionalLights( const QList<QgsDirectionalLightSettings> &directionalLights );
 %Docstring
 Sets list of directional lights defined in the scene
+
+.. versionadded:: 3.16
+%End
+
+    void setMaximumShadowRenderingDistance( float distance );
+%Docstring
+setMaximumShadowRenderingDistance
+Sets the maximum shadow rendering distance accounted for when rendering shadows
+Tweak this to reduce artifacts while looking up to the sky with the camera
 
 .. versionadded:: 3.16
 %End

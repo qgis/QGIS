@@ -50,6 +50,9 @@ class _3D_EXPORT QgsDirectionalLightSettings
     //! Sets intensity of the light
     void setIntensity( float intensity ) { mIntensity = intensity; }
 
+    bool renderShadows() const { return mRenderShadows; }
+    void setRenderShadows( bool enabled ) { mRenderShadows = enabled; }
+
     //! Writes configuration to a new DOM element and returns it
     QDomElement writeXml( QDomDocument &doc ) const;
     //! Reads configuration from a DOM element previously written using writeXml()
@@ -61,6 +64,7 @@ class _3D_EXPORT QgsDirectionalLightSettings
     QgsVector3D mDirection = QgsVector3D( 0.0, -1.0, 0.0 );
     QColor mColor = Qt::white;
     float mIntensity = 0.5;
+    bool mRenderShadows = false;
 };
 
 #endif // QGSDIRECTIONALLIGHTSETTINGS_H

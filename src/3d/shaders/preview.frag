@@ -20,15 +20,7 @@ float LinearizeDepth(float depth)
 
 void main()
 {
-//  fragColor = vec4(texture(previewTexture, texCoord).rgb, 1.0f);
   float depthValue = texture(previewTexture, texCoord).r;
-//  depthValue = depthValue * 30.0f;
-//  if (isDepth) {
-//    fragColor = vec4(vec3(LinearizeDepth(depthValue) / far_plane), 1.0); // perspective
-  fragColor = vec4(vec3(depthValue), 1.0);
-//  } else {
-//    fragColor = vec4(vec3(((depthValue + 15.0f) * 30.0f)), 1.0f);
-//fragColor = vec4(texture(previewTexture, texCoord).rgb, 1.0f);
-//    fragColor = vec4(1.0f, 0.0f, 0.0f, 1.0f);//vec4(vec3(depthValue), 1.0f);
-//  }
+//  fragColor = vec4(texture(previewTexture, texCoord).rgb, 1.0);
+  fragColor = vec4(vec3(depthValue), 1.0f);
 }

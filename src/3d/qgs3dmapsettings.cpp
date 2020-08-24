@@ -108,6 +108,8 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   mTerrainMapTheme = elemTerrain.attribute( QStringLiteral( "map-theme" ) );
   mShowLabels = elemTerrain.attribute( QStringLiteral( "show-labels" ), QStringLiteral( "0" ) ).toInt();
 
+  mMaximumShadowRenderingDistance = elemTerrain.attribute( QStringLiteral( "max-shadow-rendering-distance" ), QStringLiteral( "500" ) ).toInt();
+
   mPointLights.clear();
   QDomElement elemPointLights = elem.firstChildElement( QStringLiteral( "point-lights" ) );
   if ( !elemPointLights.isNull() )
@@ -274,6 +276,9 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemTerrain.appendChild( elemTerrainShadingMaterial );
   elemTerrain.setAttribute( QStringLiteral( "map-theme" ), mTerrainMapTheme );
   elemTerrain.setAttribute( QStringLiteral( "show-labels" ), mShowLabels ? 1 : 0 );
+
+  elemTerrain.setAttribute( QStringLiteral( "max-shadow-rendering-distance" ), mMaximumShadowRenderingDistance );
+
 
   QDomElement elemPointLights = doc.createElement( QStringLiteral( "point-lights" ) );
   for ( const QgsPointLightSettings &pointLight : qgis::as_const( mPointLights ) )
@@ -633,6 +638,12 @@ void Qgs3DMapSettings::setDirectionalLights( const QList<QgsDirectionalLightSett
     return;
 
   mDirectionalLights = directionalLights;
+  emit directionalLightsChanged();
+}
+
+void Qgs3DMapSettings::setMaximumShadowRenderingDistance( float distance )
+{
+  mMaximumShadowRenderingDistance = distance;
   emit directionalLightsChanged();
 }
 

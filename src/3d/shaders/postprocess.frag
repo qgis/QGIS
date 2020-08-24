@@ -25,6 +25,8 @@ uniform mat4 cameraProj;
 uniform float farPlane;
 uniform float nearPlane;
 
+uniform int renderShadows;
+
 in vec2 texCoord;
 
 out vec4 fragColor;
@@ -53,14 +55,12 @@ float LinearizeDepth(float depth)
   float farPlane = lightFarPlane;
     float z = depth * 2.0 - 1.0; // back to NDC
     float d = (2.0 * nearPlane * farPlane) / (farPlane + nearPlane - z * (farPlane - nearPlane));
-//    return d / 10.0f;
     return d / farPlane;
 }
 
-
 float CalcShadowFactor(vec4 LightSpacePos)
 {
-  float bias = 0.001f;
+  float bias = 0.00000f;
   vec2 texelSize = 1.0 / textureSize(shadowTexture, 0);
   vec3 ProjCoords = LightSpacePos.xyz / LightSpacePos.w;
   vec2 UVCoords;
@@ -68,28 +68,19 @@ float CalcShadowFactor(vec4 LightSpacePos)
   UVCoords.y = 0.5 * ProjCoords.y + 0.5;
   float z = 0.5 * ProjCoords.z + 0.5;
 
-  const mat4 shadowMatrix = mat4(0.5, 0.0, 0.0, 0.0,
-                                   0.0, 0.5, 0.0, 0.0,
-                                   0.0, 0.0, 0.5, 0.0,
-                                   0.5, 0.5, 0.5, 1.0);
-//  LightSpacePos = shadowMatrix * LightSpacePos;
-
-//  float depth = texture(shadowTexture, UVCoords).r;
-//  float depth = textureProj(shadowTexture, LightSpacePos);
-//  return depth > 0 ? 1.0f : 0.5f;
-//  return z - bias > depth ? 0.5 : 1.0;
-
   // percentage close filtering of the shadow map
   float shadow = 0.0;
-  for(int x = -1; x <= 1; ++x)
+  int k = 2;
+  for(int x = -k; x <= k; ++x)
   {
-    for(int y = -1; y <= 1; ++y)
+    for(int y = -k; y <= k; ++y)
     {
       float pcfDepth = texture(shadowTexture, UVCoords + vec2(x, y) * texelSize).r;
       shadow += z - bias > pcfDepth ? 0.5 : 1.0;
     }
   }
-  return shadow / 9.0f;
+
+  return shadow / (2 * k + 1) / (2 * k + 1);
 }
 
 vec3 to_color(vec3 v)
@@ -139,24 +130,15 @@ vec3 applyKernel(mat3 kernel) {
 
 void main()
 {
-
   vec3 worldPosition = WorldPosFromDepth(texture(depthTexture, texCoord).r);
   vec4 positionInLightSpace = projectionMatrix * viewMatrix * vec4(worldPosition, 1.0f);
   positionInLightSpace /= positionInLightSpace.w;
-//  vec3 lightToPixel = normalize(worldPosition - lightPosition);
-//  float d = acos( dot(lightToPixel, lightDirection) );
-  float shadowFactor = CalcShadowFactor(positionInLightSpace);
-//  shadowFactor *= d >= radians(5.0f) ? 1.0f : 0.0f;
-//  float shadowFactor = LinearizeDepth( CalcShadowFactor(positionInLightSpace) );
-//  fragColor = vec4(vec3(shadowFactor), 1.0f);
-  fragColor = vec4(worldPosition, 1.0f);
-//  fragColor = vec4(positionInLightSpace.xy, 0.0f, 1.0f);
-//  fragColor = vec4(vec3(LinearizeDepth( texture(shadowTexture, texCoord).r) ), 1.0f);
-
   vec3 color = texture(colorTexture, texCoord).rgb;
-  fragColor = vec4(shadowFactor * color, 1.0f);
-  if (worldPosition.x > shadowMaxX || worldPosition.x < shadowMinX || worldPosition.z > shadowMaxZ || worldPosition.z < shadowMinZ) {
-    fragColor = vec4(mix(fragColor.rgb, vec3(0.0f, 0.0f, 1.0f), 0.5), 1.0f);
+  // if shadow rendering is disabled or the pixel is outside the shadow rendering distance don't render shadows
+  if (renderShadows == 0 || worldPosition.x > shadowMaxX || worldPosition.x < shadowMinX || worldPosition.z > shadowMaxZ || worldPosition.z < shadowMinZ) {
+    fragColor = vec4(color.rgb, 1.0f);
+  } else {
+    float visibilityFactor = CalcShadowFactor(positionInLightSpace);
+    fragColor = vec4(visibilityFactor * color, 1.0f);
   }
-//  fragColor = vec4(texture(colorTexture, texCoord).rgb, 1.0f);
 }

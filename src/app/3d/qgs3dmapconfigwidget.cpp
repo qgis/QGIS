@@ -106,6 +106,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   chkShowBoundingBoxes->setChecked( mMap->showTerrainBoundingBoxes() );
   chkShowCameraViewCenter->setChecked( mMap->showCameraViewCenter() );
   chkShowLightSourceOrigins->setChecked( mMap->showLightSourceOrigins() );
+  shadowsMaximuRenderingDistance->setValue( mMap->maximumShadowRenderingDistance() );
 
   groupTerrainShading->setChecked( mMap->isTerrainShadingEnabled() );
   widgetTerrainMaterial->setTechnique( QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture );
@@ -119,6 +120,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   connect( cboTerrainLayer, static_cast<void ( QComboBox::* )( int )>( &QgsMapLayerComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::onTerrainLayerChanged );
   connect( spinMapResolution, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &Qgs3DMapConfigWidget::updateMaxZoomLevel );
   connect( spinGroundError, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DMapConfigWidget::updateMaxZoomLevel );
+  connect( shadowsMaximuRenderingDistance, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DMapConfigWidget::updateMaximumShadowRenderingDistance );
 
   groupMeshTerrainShading->layout()->addWidget( mMeshSymbolWidget );
 
@@ -321,4 +323,9 @@ void Qgs3DMapConfigWidget::updateMaxZoomLevel()
   double tile0width = std::max( te.width(), te.height() );
   int zoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, spinMapResolution->value(), spinGroundError->value() );
   labelZoomLevels->setText( QStringLiteral( "0 - %1" ).arg( zoomLevel ) );
+}
+
+void Qgs3DMapConfigWidget::updateMaximumShadowRenderingDistance( double distance )
+{
+  mMap->setMaximumShadowRenderingDistance( distance );
 }

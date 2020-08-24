@@ -13,9 +13,9 @@ class QgsPostprocessingEntity : public Qt3DCore::QEntity
 {
   public:
     QgsPostprocessingEntity( QgsShadowRenderingFrameGraph *frameGraph, const QString &vertexShaderPath, const QString &fragmentShaderPath, QNode *parent = nullptr );
-    void setupDirectionalLights() {  }
     void setupShadowRenderingExtent( float minX, float maxX, float minZ, float maxZ );
     void setupDirectionalLight( QVector3D position, QVector3D direction );
+    void setShadowRenderingEnabled( bool enabled );
   private:
     Qt3DRender::QMaterial *mMaterial = nullptr;
     Qt3DRender::QEffect *mEffect = nullptr;
@@ -39,6 +39,8 @@ class QgsPostprocessingEntity : public Qt3DCore::QEntity
     Qt3DRender::QParameter *mShadowMaxX = nullptr;
     Qt3DRender::QParameter *mShadowMinZ = nullptr;
     Qt3DRender::QParameter *mShadowMaxZ = nullptr;
+
+    Qt3DRender::QParameter *mRenderShadowsParameter = nullptr;
 };
 
 #endif // QGSPOSTPROCESSINGENTITY_H

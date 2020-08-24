@@ -28,6 +28,7 @@ QDomElement QgsDirectionalLightSettings::writeXml( QDomDocument &doc ) const
   elemLight.setAttribute( QStringLiteral( "z" ), mDirection.z() );
   elemLight.setAttribute( QStringLiteral( "color" ), QgsSymbolLayerUtils::encodeColor( mColor ) );
   elemLight.setAttribute( QStringLiteral( "intensity" ), mIntensity );
+  elemLight.setAttribute( QStringLiteral( "render-shadows" ), mRenderShadows );
   return elemLight;
 }
 
@@ -38,9 +39,10 @@ void QgsDirectionalLightSettings::readXml( const QDomElement &elem )
                   elem.attribute( QStringLiteral( "z" ) ).toFloat() );
   mColor = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "color" ) ) );
   mIntensity = elem.attribute( QStringLiteral( "intensity" ) ).toFloat();
+  mRenderShadows = elem.attribute( QStringLiteral( "render-shadows" ) ).toInt();
 }
 
 bool QgsDirectionalLightSettings::operator==( const QgsDirectionalLightSettings &other )
 {
-  return mDirection == other.mDirection && mColor == other.mColor && mIntensity == other.mIntensity;
+  return mDirection == other.mDirection && mColor == other.mColor && mIntensity == other.mIntensity && mRenderShadows == other.mRenderShadows;
 }

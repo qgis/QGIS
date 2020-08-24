@@ -1,23 +1,20 @@
 #include "qgspreviewquad.h"
 
 
-PreviewQuad::PreviewQuad( Qt3DRender::QAbstractTexture *texture, QVector<Qt3DRender::QParameter *> additionalShaderParameters, Qt3DCore::QEntity *parent )
+QgsPreviewQuad::QgsPreviewQuad( Qt3DRender::QAbstractTexture *texture, const QPointF &centerNDC, const QSizeF &size, QVector<Qt3DRender::QParameter *> additionalShaderParameters, Qt3DCore::QEntity *parent )
   : Qt3DCore::QEntity( parent )
 {
-  mMaterial = new PreviewQuadMaterial( texture, additionalShaderParameters );
-
   setObjectName( "Preview Quad" );
   Qt3DRender::QGeometry *geom = new Qt3DRender::QGeometry;
   Qt3DRender::QAttribute *positionAttribute = new Qt3DRender::QAttribute;
-  float d = 1.0f;
   QVector<float> vert =
   {
-    -d, -d, 0.0f,
-      d, -d, 0.0f,
-      -d,  d, 0.0f,
-      -d,  d, 0.0f,
-      d, -d, 0.0f,
-      d,  d, 0.0f
+    -1.0f, -1.0f, 1.0f, // bottom left
+      1.0f, -1.0f, 1.0f, // top left
+      -1.0f,  1.0f, 1.0f, // bottom right
+      -1.0f,  1.0f, 1.0f, // bottom right
+      1.0f, -1.0f, 1.0f, // top right
+      1.0f,  1.0f, 1.0f  // bottom right
     };
 
   QByteArray vertexArr( ( const char * ) vert.constData(), vert.size() * sizeof( float ) );
@@ -40,14 +37,23 @@ PreviewQuad::PreviewQuad( Qt3DRender::QAbstractTexture *texture, QVector<Qt3DRen
   renderer->setGeometry( geom );
 
   addComponent( renderer );
+
+  QMatrix4x4 modelMatrix;
+  modelMatrix.setToIdentity();
+  modelMatrix.translate( centerNDC.x(), centerNDC.y() );
+  modelMatrix.scale( size.width(), size.height() );
+  mMaterial = new QgsPreviewQuadMaterial( texture, modelMatrix, additionalShaderParameters );
+
   addComponent( mMaterial );
 }
 
-PreviewQuadMaterial::PreviewQuadMaterial( Qt3DRender::QAbstractTexture *texture, QVector<Qt3DRender::QParameter *> additionalShaderParameters, QNode *parent )
+QgsPreviewQuadMaterial::QgsPreviewQuadMaterial( Qt3DRender::QAbstractTexture *texture, const QMatrix4x4 &modelMatrix, QVector<Qt3DRender::QParameter *> additionalShaderParameters, QNode *parent )
   : Qt3DRender::QMaterial( parent )
 {
   mTextureParameter = new Qt3DRender::QParameter( "previewTexture", texture );
+  mTextureTransformParameter = new Qt3DRender::QParameter( "modelMatrix", QVariant::fromValue( modelMatrix ) );
   addParameter( mTextureParameter );
+  addParameter( mTextureTransformParameter );
   for ( Qt3DRender::QParameter *parameter : additionalShaderParameters ) addParameter( parameter );
 
   mEffect = new Qt3DRender::QEffect;

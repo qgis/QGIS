@@ -374,6 +374,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     QList<QgsDirectionalLightSettings> directionalLights() const { return mDirectionalLights; }
 
     /**
+     * Returns the maximum shadows rendering distance
+     * \since QGIS 3.16
+     */
+    float maximumShadowRenderingDistance() const { return mMaximumShadowRenderingDistance; }
+
+    /**
      * Sets list of point lights defined in the scene
      * \since QGIS 3.6
      */
@@ -384,6 +390,14 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * \since QGIS 3.16
      */
     void setDirectionalLights( const QList<QgsDirectionalLightSettings> &directionalLights );
+
+    /**
+     * @brief setMaximumShadowRenderingDistance
+     * Sets the maximum shadow rendering distance accounted for when rendering shadows
+     * Tweak this to reduce artifacts while looking up to the sky with the camera
+     * \since QGIS 3.16
+     */
+    void setMaximumShadowRenderingDistance( float distance );
 
     /**
      * Returns the camera lens' field of view
@@ -563,7 +577,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     bool mShowLabels = false; //!< Whether to display labels on terrain tiles
     QList<QgsPointLightSettings> mPointLights;  //!< List of point lights defined for the scene
     QList<QgsDirectionalLightSettings> mDirectionalLights;  //!< List of directional lights defined for the scene
-    float mFieldOfView = 45.0f; //!< Camera lens field of view value
+    float mMaximumShadowRenderingDistance = 500.0f;
+    float mFieldOfView = 45.0f; //<! Camera lens field of view value
     QList<QgsMapLayerRef> mLayers;   //!< Layers to be rendered
     QList<QgsMapLayerRef> mTerrainLayers;   //!< Terrain layers to be rendered
     QList<QgsAbstract3DRenderer *> mRenderers;  //!< Extra stuff to render as 3D object

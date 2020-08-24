@@ -12,6 +12,8 @@
 #include <Qt3DRender/QRenderTarget>
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QClearBuffers>
+#include <Qt3DRender/QParameter>
+#include <Qt3DRender/QFrustumCulling>
 
 #include "qgspointlightsettings.h"
 
@@ -19,11 +21,12 @@ class QgsDirectionalLightSettings;
 class QgsCameraController;
 class QgsRectangle;
 class QgsPostprocessingEntity;
+class QgsPreviewQuad;
 
 class QgsShadowRenderingFrameGraph
 {
   public:
-    QgsShadowRenderingFrameGraph( QWindow *window, Qt3DRender::QCamera *mainCamera );
+    QgsShadowRenderingFrameGraph( QWindow *window, Qt3DRender::QCamera *mainCamera, Qt3DCore::QEntity *root );
 
     Qt3DRender::QFrameGraphNode *getFrameGraphRoot() { return mRenderSurfaceSelector; }
     Qt3DRender::QTexture2D *forwardRenderColorTexture() { return mForwardColorTexture; }
@@ -35,13 +38,16 @@ class QgsShadowRenderingFrameGraph
     Qt3DRender::QLayer *previewLayer() { return mPreviewLayer; }
     Qt3DRender::QLayer *doNotCastShadowsLayerLayer() { return mDoNotCastShadowsLayer; }
     QgsPostprocessingEntity *postprocessingEntity() { return mPostprocessingEntity; }
+    Qt3DCore::QEntity *rootEntity() { return mRootEntity; }
 
-    void updateDirectionalLightParameters( QgsRectangle extent );
-    void setupDirectionalLights( const QgsDirectionalLightSettings &light );
+    bool frustumCullingEnabled() { return mFrustumCullingEnabled; }
+    void setFrustumCullingEnabled( bool enabled );
+    void setShadowRenderingEnabled( bool enabled );
+    bool shadowRenderingEnabled() { return mShadowRenderingEnabled; }
 
-    void setupDirectionalLight( const QgsDirectionalLightSettings &light, QgsRectangle extent );
-    void setupPointLight( const QgsPointLightSettings &light );
-
+    void setClearColor( const QColor &clearColor );
+    void addTexturePreviewOverlay( Qt3DRender::QTexture2D *texture, const QPointF &centerNDC, const QSizeF &size, QVector<Qt3DRender::QParameter *> additionalShaderParameters = QVector<Qt3DRender::QParameter *>() );
+    void setupDirectionalLight( const QgsDirectionalLightSettings &light, float maximumShadowRenderingDistance );
   private:
     Qt3DRender::QRenderSurfaceSelector *mRenderSurfaceSelector = nullptr;
     Qt3DRender::QViewport *mMainViewPort = nullptr;
@@ -67,19 +73,24 @@ class QgsShadowRenderingFrameGraph
     Qt3DRender::QClearBuffers *mShadowClearBuffers = nullptr;
     Qt3DRender::QCamera *mLightCamera = nullptr;
     Qt3DRender::QCameraSelector *mLightCameraSelector = nullptr;
+    Qt3DRender::QFrustumCulling *mFrustumCulling = nullptr;
+    bool mFrustumCullingEnabled = true;
+    bool mShadowRenderingEnabled = false;
+
     QVector3D mLightDirection = QVector3D( 0.0, -1.0f, 0.0f );
 
+    Qt3DCore::QEntity *mRootEntity = nullptr;
+
     Qt3DRender::QLayer *mPreviewLayer = nullptr;
+    Qt3DRender::QLayer *mDoNotCastShadowsLayer = nullptr;
     QgsPostprocessingEntity *mPostprocessingEntity = nullptr;
 
-    Qt3DRender::QLayer *mDoNotCastShadowsLayer = nullptr;
+    QVector<QgsPreviewQuad *> mPreviewQuads;
 
     Qt3DRender::QFrameGraphNode *constructShadowRenderPass();
-    Qt3DRender::QFrameGraphNode *constructPreviewSubTree();
-
-    float mShadowMinX, mShadowMinZ;
-    float mShadowMaxX, mShadowMaxZ;
-
+    Qt3DRender::QFrameGraphNode *constructForwardRenderPass();
+    Qt3DRender::QFrameGraphNode *constructTexturesPreviewPass();
+    Qt3DRender::QFrameGraphNode *constructPostprocessingPass();
 };
 
 #endif // QGSSHADOWRENDERINGFRAMEGRAPH_H

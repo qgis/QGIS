@@ -27,28 +27,19 @@ QgsWindow3DEngine::QgsWindow3DEngine( QObject *parent )
 {
   mWindow3D = new Qt3DExtras::Qt3DWindow;
 
-  mShadowRenderingFrameGraph = new QgsShadowRenderingFrameGraph( mWindow3D, mWindow3D->camera() );
+  mRoot = new Qt3DCore::QEntity;
+  mWindow3D->setRootEntity( mRoot );
 
-//  mCapture = new Qt3DRender::QRenderCapture;
-//  mWindow3D->activeFrameGraph()->setParent( mCapture );
-//  mWindow3D->setActiveFrameGraph( mCapture );
+  mShadowRenderingFrameGraph = new QgsShadowRenderingFrameGraph( mWindow3D, mWindow3D->camera(), mRoot );
 
   mCapture = new Qt3DRender::QRenderCapture;
   mShadowRenderingFrameGraph->getFrameGraphRoot()->setParent( mCapture );
   mWindow3D->setActiveFrameGraph( mCapture );
 
-  mRoot = new Qt3DCore::QEntity;
-//  mRoot->addComponent(mShadowRenderingFrameGraph->postprocessingPassLayer());
+  mShadowRenderingFrameGraph->addTexturePreviewOverlay( mShadowRenderingFrameGraph->shadowMapTexture(), QPointF( 0.9f, 0.9 ), QSizeF( 0.2f, 0.2f ) );
 
-//  QString vertexShaderPath = QStringLiteral( "qrc:/shaders/postprocess.vert" );
-//  QString fragmentShaderPath = QStringLiteral( "qrc:/shaders/postprocess.frag" );
-//  mPostprocessingEntity = new QgsPostprocessingEntity( mShadowRenderingFrameGraph, vertexShaderPath, fragmentShaderPath, mRoot );
-  mShadowRenderingFrameGraph->postprocessingEntity()->setParent( mRoot );
-  mPreviewQuad = new PreviewQuad( mShadowRenderingFrameGraph->shadowMapTexture() );
-  mPreviewQuad->addComponent( mShadowRenderingFrameGraph->previewLayer() );
-  mPreviewQuad->setParent( mRoot );
-
-  mWindow3D->setRootEntity( mRoot );
+  // force switching to no shadow rendering
+  setShadowRenderingEnabled( true );
 }
 
 QWindow *QgsWindow3DEngine::window()
@@ -67,19 +58,25 @@ void QgsWindow3DEngine::requestCaptureImage()
   } );
 }
 
+void QgsWindow3DEngine::setShadowRenderingEnabled( bool enabled )
+{
+  mShadowRenderingEnabled = enabled;
+  mShadowRenderingFrameGraph->setShadowRenderingEnabled( mShadowRenderingEnabled );
+}
+
 void QgsWindow3DEngine::setClearColor( const QColor &color )
 {
-//  mWindow3D->defaultFrameGraph()->setClearColor( color );
+  mShadowRenderingFrameGraph->setClearColor( color );
 }
 
 void QgsWindow3DEngine::setFrustumCullingEnabled( bool enabled )
 {
-//  mWindow3D->defaultFrameGraph()->setFrustumCullingEnabled( enabled );
+  // Not sure if this works properly
+  mShadowRenderingFrameGraph->setFrustumCullingEnabled( enabled );
 }
 
 void QgsWindow3DEngine::setRootEntity( Qt3DCore::QEntity *root )
 {
-//  mWindow3D->setRootEntity( root );
   mSceneRoot = root;
   mSceneRoot->setParent( mRoot );
 }
