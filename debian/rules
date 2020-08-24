@@ -38,7 +38,7 @@ ifneq (,$(findstring -oracle,$(DISTRIBUTION)))
 	WITH_ORACLE=1
 endif
 
-QT_PLUGINS_DIR = usr/lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins
+QT_PLUGINS_DIR = lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins
 
 ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"buster bionic eoan focal"))
 	DISTRIBUTION := sid

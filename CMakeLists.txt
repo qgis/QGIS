@@ -411,7 +411,7 @@ IF(WITH_CORE)
   # get the Qt plugins directory
   GET_TARGET_PROPERTY(QMAKE_EXECUTABLE Qt5::qmake LOCATION)
   EXEC_PROGRAM(${QMAKE_EXECUTABLE} ARGS "-query QT_INSTALL_PLUGINS" RETURN_VALUE return_code OUTPUT_VARIABLE DEFAULT_QT_PLUGINS_DIR )
-  SET (QT_PLUGINS_DIR ${DEFAULT_QT_PLUGINS_DIR} CACHE PATH "Path to installation directory for Qt Plugins. Defaults to Qt native plugin directory")
+  SET (QT_PLUGINS_DIR ${DEFAULT_QT_PLUGINS_DIR} CACHE STRING "Path to installation directory for Qt Plugins. Defaults to Qt native plugin directory")
 
   MESSAGE(STATUS "Found Qt version: ${Qt5Core_VERSION_STRING}")
   IF (WITH_QUICK)
