@@ -174,6 +174,17 @@ void QgsServerSettings::initSettings()
                                       };
   mSettings[ sTrustLayerMetadata.envVar ] = sTrustLayerMetadata;
 
+  // don't load layouts
+  const Setting sDontLoadLayouts = { QgsServerSettingsEnv::QGIS_SERVER_DISABLE_GETPRINT,
+                                     QgsServerSettingsEnv::DEFAULT_VALUE,
+                                     QStringLiteral( "Don't load layouts" ),
+                                     QString(),
+                                     QVariant::Bool,
+                                     QVariant( false ),
+                                     QVariant()
+                                   };
+  mSettings[ sDontLoadLayouts.envVar ] = sDontLoadLayouts;
+
   // show group separator
   const Setting sShowGroupSeparator = { QgsServerSettingsEnv::QGIS_SERVER_SHOW_GROUP_SEPARATOR,
                                         QgsServerSettingsEnv::DEFAULT_VALUE,
@@ -449,4 +460,9 @@ bool QgsServerSettings::ignoreBadLayers() const
 bool QgsServerSettings::trustLayerMetadata() const
 {
   return value( QgsServerSettingsEnv::QGIS_SERVER_TRUST_LAYER_METADATA ).toBool();
+}
+
+bool QgsServerSettings::getPrintDisabled() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_DISABLE_GETPRINT ).toBool();
 }

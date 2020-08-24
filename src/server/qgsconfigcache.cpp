@@ -49,9 +49,18 @@ const QgsProject *QgsConfigCache::project( const QString &path, QgsServerSetting
     prj->setBadLayerHandler( badLayerHandler );
 
     QgsProject::ReadFlags readFlags = QgsProject::ReadFlag();
-    if ( ! settings || ! settings->trustLayerMetadata() )
+    if ( settings )
     {
-      readFlags |= QgsProject::ReadFlag::FlagTrustLayerMetadata;
+      // Activate trust layer metadata flag
+      if ( settings->trustLayerMetadata() )
+      {
+        readFlags |= QgsProject::ReadFlag::FlagTrustLayerMetadata;
+      }
+      // Activate don't load layouts flag
+      if ( settings->getPrintDisabled() )
+      {
+        readFlags |= QgsProject::ReadFlag::FlagDontLoadLayouts;
+      }
     }
 
     if ( prj->read( path, readFlags ) )
