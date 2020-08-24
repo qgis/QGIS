@@ -157,16 +157,18 @@ Returns the server-wide max width of a WMS GetMap request. The lower one of this
 
     QString projectsDirectories() const;
 %Docstring
-Returns the directory used by the landing page service to find .qgs and
-.qgz projects.
+Returns the directories used by the landing page service to find .qgs
+and .qgz projects. Multiple directories can be specified by separating
+them with '||'.
 
 .. versionadded:: 3.16
 %End
 
     QString projectsPgConnections() const;
 %Docstring
-Returns the PostgreSQL connection string used by the landing page
-service to find projects.
+Returns the PostgreSQL connection strings used by the landing page
+service to find projects. Multiple connections can be specified by
+separating them with '||'.
 
 .. versionadded:: 3.16
 %End

@@ -208,15 +208,17 @@ class SERVER_EXPORT QgsServerSettings
     int wmsMaxWidth() const;
 
     /**
-     * Returns the directory used by the landing page service to find .qgs and
-     * .qgz projects.
+     * Returns the directories used by the landing page service to find .qgs
+     * and .qgz projects. Multiple directories can be specified by separating
+     * them with '||'.
      * \since QGIS 3.16
      */
     QString projectsDirectories() const;
 
     /**
-     * Returns the PostgreSQL connection string used by the landing page
-     * service to find projects.
+     * Returns the PostgreSQL connection strings used by the landing page
+     * service to find projects. Multiple connections can be specified by
+     * separating them with '||'.
      * \since QGIS 3.16
      */
     QString projectsPgConnections() const;
