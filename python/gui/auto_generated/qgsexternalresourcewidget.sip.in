@@ -135,12 +135,6 @@ Configures the base path which should be used if the relativeStorage property
 is set to QgsFileWidget.RelativeDefaultPath.
 %End
 
-    void reloadDocument();
-%Docstring
-Reloads the document from the path of the filewidget
-/since QGIS 3.16
-%End
-
   signals:
     void valueChanged( const QString & );
 %Docstring

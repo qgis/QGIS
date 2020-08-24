@@ -112,7 +112,6 @@ void QgsExternalResourceWidgetWrapper::updateProperties( const QgsFeature &featu
           dvc = QgsExternalResourceWidget::NoContent;
         }
         mQgsWidget->setDocumentViewerContent( dvc );
-        mQgsWidget->reloadDocument();
       }
     }
   }

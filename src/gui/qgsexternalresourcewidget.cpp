@@ -99,7 +99,9 @@ QgsExternalResourceWidget::DocumentViewerContent QgsExternalResourceWidget::docu
 void QgsExternalResourceWidget::setDocumentViewerContent( QgsExternalResourceWidget::DocumentViewerContent content )
 {
   mDocumentViewerContent = content;
-  updateDocumentViewer();
+  if ( mDocumentViewerContent != Image )
+    updateDocumentViewer();
+  loadDocument( mFileWidget->filePath() );
 }
 
 int QgsExternalResourceWidget::documentViewerHeight() const
@@ -192,11 +194,6 @@ void QgsExternalResourceWidget::setDefaultRoot( const QString &defaultRoot )
 {
   mFileWidget->setDefaultRoot( defaultRoot );
   mDefaultRoot = defaultRoot;
-}
-
-void QgsExternalResourceWidget::reloadDocument()
-{
-  loadDocument( mFileWidget->filePath() );
 }
 
 QgsFileWidget::RelativeStorage QgsExternalResourceWidget::relativeStorage() const
