@@ -21,33 +21,21 @@
 #include "qgspostprocessingentity.h"
 #include "qgspreviewquad.h"
 
-#include <Qt3DRender/QRenderStateSet>
-#include <Qt3DRender/QDepthTest>
-#include <Qt3DRender>
-
 Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructTexturesPreviewPass()
 {
-  Qt3DRender::QLayerFilter *filter = new Qt3DRender::QLayerFilter;
-  filter->addLayer( mPreviewLayer );
-  filter->setFilterMode( Qt3DRender::QLayerFilter::FilterMode::AcceptAnyMatchingLayers );
+  mPreviewLayerFilter = new Qt3DRender::QLayerFilter;
+  mPreviewLayerFilter->addLayer( mPreviewLayer );
+  mPreviewLayerFilter->setFilterMode( Qt3DRender::QLayerFilter::FilterMode::AcceptAnyMatchingLayers );
 
-  Qt3DRender::QViewport *viewport = new Qt3DRender::QViewport( filter );
-  viewport->setNormalizedRect( QRectF( 0.0f, 0.0f, 1.0f, 1.0f ) );
+  mPreviewRenderStateSet = new Qt3DRender::QRenderStateSet( mPreviewLayerFilter );
+  mPreviewDepthTest = new Qt3DRender::QDepthTest;
+  mPreviewDepthTest->setDepthFunction( Qt3DRender::QDepthTest::Always );
+  mPreviewRenderStateSet->addRenderState( mPreviewDepthTest );
+  mPreviewCullFace = new Qt3DRender::QCullFace;
+  mPreviewCullFace->setMode( Qt3DRender::QCullFace::NoCulling );
+  mPreviewRenderStateSet->addRenderState( mPreviewCullFace );
 
-  Qt3DRender::QLayerFilter *layerFilter = new Qt3DRender::QLayerFilter( viewport );
-  layerFilter->setObjectName( "preview" );
-  layerFilter->addLayer( mPreviewLayer );
-  layerFilter->setFilterMode( Qt3DRender::QLayerFilter::FilterMode::AcceptAnyMatchingLayers );
-
-  Qt3DRender::QRenderStateSet *renderStateSet = new Qt3DRender::QRenderStateSet( layerFilter );
-  Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest;
-  depthTest->setDepthFunction( Qt3DRender::QDepthTest::Always );
-  renderStateSet->addRenderState( depthTest );
-  Qt3DRender::QCullFace *cullFace = new Qt3DRender::QCullFace;
-  cullFace->setMode( Qt3DRender::QCullFace::NoCulling );
-  renderStateSet->addRenderState( cullFace );
-
-  return filter;
+  return mPreviewLayerFilter;
 }
 
 Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRenderPass()
@@ -105,11 +93,11 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRende
 
 Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructShadowRenderPass()
 {
-  Qt3DRender::QLayerFilter *sceneEntitiesFilter = new Qt3DRender::QLayerFilter;
-  sceneEntitiesFilter->addLayer( mPostprocessPassLayer );
-  sceneEntitiesFilter->addLayer( mPreviewLayer );
-  sceneEntitiesFilter->addLayer( mDoNotCastShadowsLayer );
-  sceneEntitiesFilter->setFilterMode( Qt3DRender::QLayerFilter::FilterMode::DiscardAnyMatchingLayers );
+  mShadowSceneEntitiesFilter = new Qt3DRender::QLayerFilter;
+  mShadowSceneEntitiesFilter->addLayer( mPostprocessPassLayer );
+  mShadowSceneEntitiesFilter->addLayer( mPreviewLayer );
+  mShadowSceneEntitiesFilter->addLayer( mDoNotCastShadowsLayer );
+  mShadowSceneEntitiesFilter->setFilterMode( Qt3DRender::QLayerFilter::FilterMode::DiscardAnyMatchingLayers );
 
   mShadowMapTexture = new Qt3DRender::QTexture2D;
   mShadowMapTexture->setWidth( 2048 * 2 );
@@ -129,25 +117,25 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructShadowRender
   mShadowRenderTargetOutput->setTexture( mShadowMapTexture );
   mShadowRenderTarget->addOutput( mShadowRenderTargetOutput );
 
-  mShadowRenderTargetSelector = new Qt3DRender::QRenderTargetSelector( sceneEntitiesFilter );
+  mShadowRenderTargetSelector = new Qt3DRender::QRenderTargetSelector( mShadowSceneEntitiesFilter );
   mShadowRenderTargetSelector->setTarget( mShadowRenderTarget );
 
   mShadowClearBuffers = new Qt3DRender::QClearBuffers( mShadowRenderTargetSelector );
   mShadowClearBuffers ->setBuffers( Qt3DRender::QClearBuffers::BufferType::ColorDepthBuffer );
 
-  Qt3DRender::QRenderStateSet *renderStateSet = new Qt3DRender::QRenderStateSet( mShadowClearBuffers );
-  Qt3DRender::QPolygonOffset *polygonOffset = new Qt3DRender::QPolygonOffset;
-  polygonOffset->setDepthSteps( 1.0f );
-  polygonOffset->setScaleFactor( 2.0f );
-  renderStateSet->addRenderState( polygonOffset );
-  Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest;
-  depthTest->setDepthFunction( Qt3DRender::QDepthTest::LessOrEqual );
-  renderStateSet->addRenderState( depthTest );
-  Qt3DRender::QCullFace *cullFace = new Qt3DRender::QCullFace;
-  cullFace->setMode( Qt3DRender::QCullFace::NoCulling );
-  renderStateSet->addRenderState( cullFace );
+  mShadowRenderStateSet = new Qt3DRender::QRenderStateSet( mShadowClearBuffers );
+  mShadowPolygonOffset = new Qt3DRender::QPolygonOffset;
+  mShadowPolygonOffset->setDepthSteps( 1.0f );
+  mShadowPolygonOffset->setScaleFactor( 2.0f );
+  mShadowRenderStateSet->addRenderState( mShadowPolygonOffset );
+  mShadowDepthTest = new Qt3DRender::QDepthTest;
+  mShadowDepthTest->setDepthFunction( Qt3DRender::QDepthTest::Less );
+  mShadowRenderStateSet->addRenderState( mShadowDepthTest );
+  mShadowCullFace = new Qt3DRender::QCullFace;
+  mShadowCullFace->setMode( Qt3DRender::QCullFace::NoCulling );
+  mShadowRenderStateSet->addRenderState( mShadowCullFace );
 
-  return sceneEntitiesFilter;
+  return mShadowSceneEntitiesFilter;
 }
 
 Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructPostprocessingPass()

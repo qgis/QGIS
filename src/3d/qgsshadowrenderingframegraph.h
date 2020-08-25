@@ -29,6 +29,10 @@
 #include <Qt3DRender/QClearBuffers>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QFrustumCulling>
+#include <Qt3DRender/QRenderStateSet>
+#include <Qt3DRender/QDepthTest>
+#include <Qt3DRender/QCullFace>
+#include <Qt3DRender/QPolygonOffset>
 
 #include "qgspointlightsettings.h"
 
@@ -75,12 +79,21 @@ class QgsShadowRenderingFrameGraph
     Qt3DRender::QTexture2D *mForwardColorTexture = nullptr;
     Qt3DRender::QTexture2D *mForwardDepthTexture = nullptr;
     Qt3DRender::QClearBuffers *mForwardClearBuffers = nullptr;
+    Qt3DRender::QFrustumCulling *mFrustumCulling = nullptr;
+    bool mFrustumCullingEnabled = true;
 
     Qt3DRender::QCamera *mMainCamera = nullptr;
     Qt3DRender::QLayer *mPostprocessPassLayer = nullptr;
     Qt3DRender::QLayerFilter *mPostprocessPassLayerFilter = nullptr;
     Qt3DRender::QClearBuffers *mPostprocessClearBuffers = nullptr;
 
+    // texture preview
+    Qt3DRender::QLayerFilter *mPreviewLayerFilter = nullptr;
+    Qt3DRender::QRenderStateSet *mPreviewRenderStateSet = nullptr;
+    Qt3DRender::QDepthTest *mPreviewDepthTest = nullptr;
+    Qt3DRender::QCullFace *mPreviewCullFace = nullptr;
+
+    // shadow rendering pass
     Qt3DRender::QRenderTargetSelector *mShadowRenderTargetSelector = nullptr;
     Qt3DRender::QRenderTarget *mShadowRenderTarget = nullptr;
     Qt3DRender::QRenderTargetOutput *mShadowRenderTargetOutput = nullptr;
@@ -88,9 +101,12 @@ class QgsShadowRenderingFrameGraph
     Qt3DRender::QClearBuffers *mShadowClearBuffers = nullptr;
     Qt3DRender::QCamera *mLightCamera = nullptr;
     Qt3DRender::QCameraSelector *mLightCameraSelector = nullptr;
-    Qt3DRender::QFrustumCulling *mFrustumCulling = nullptr;
-    bool mFrustumCullingEnabled = true;
     bool mShadowRenderingEnabled = false;
+    Qt3DRender::QLayerFilter *mShadowSceneEntitiesFilter = nullptr;
+    Qt3DRender::QRenderStateSet *mShadowRenderStateSet = nullptr;
+    Qt3DRender::QPolygonOffset *mShadowPolygonOffset = nullptr;
+    Qt3DRender::QCullFace *mShadowCullFace = nullptr;
+    Qt3DRender::QDepthTest *mShadowDepthTest = nullptr;
 
     QVector3D mLightDirection = QVector3D( 0.0, -1.0f, 0.0f );
 
