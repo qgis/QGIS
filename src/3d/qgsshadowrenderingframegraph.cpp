@@ -25,7 +25,6 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructTexturesPrev
 {
   mPreviewLayerFilter = new Qt3DRender::QLayerFilter;
   mPreviewLayerFilter->addLayer( mPreviewLayer );
-  mPreviewLayerFilter->setFilterMode( Qt3DRender::QLayerFilter::FilterMode::AcceptAnyMatchingLayers );
 
   mPreviewRenderStateSet = new Qt3DRender::QRenderStateSet( mPreviewLayerFilter );
   mPreviewDepthTest = new Qt3DRender::QDepthTest;
@@ -40,11 +39,8 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructTexturesPrev
 
 Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRenderPass()
 {
-  mSceneEntitiesFilter = new Qt3DRender::QLayerFilter( mMainCameraSelector );
-
-  mSceneEntitiesFilter->addLayer( mPostprocessPassLayer );
-  mSceneEntitiesFilter->addLayer( mPreviewLayer );
-  mSceneEntitiesFilter->setFilterMode( Qt3DRender::QLayerFilter::FilterMode::DiscardAnyMatchingLayers );
+  mForwardRenderLayerFilter = new Qt3DRender::QLayerFilter( mMainCameraSelector );
+  mForwardRenderLayerFilter->addLayer( mForwardRenderLayer );
 
   mForwardColorTexture = new Qt3DRender::QTexture2D;
   mForwardColorTexture->setWidth( 1024 );
@@ -78,7 +74,7 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRende
   mForwardRenderTargetColorOutput->setTexture( mForwardColorTexture );
   mForwardRenderTarget->addOutput( mForwardRenderTargetColorOutput );
 
-  mForwardRenderTargetSelector = new Qt3DRender::QRenderTargetSelector( mSceneEntitiesFilter );
+  mForwardRenderTargetSelector = new Qt3DRender::QRenderTargetSelector( mForwardRenderLayerFilter );
   mForwardRenderTargetSelector->setTarget( mForwardRenderTarget );
 
   mForwardClearBuffers = new Qt3DRender::QClearBuffers( mForwardRenderTargetSelector );
@@ -88,16 +84,13 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRende
   mFrustumCulling = new Qt3DRender::QFrustumCulling;
   mFrustumCulling->setParent( mForwardClearBuffers );
 
-  return mSceneEntitiesFilter;
+  return mForwardRenderLayerFilter;
 }
 
 Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructShadowRenderPass()
 {
   mShadowSceneEntitiesFilter = new Qt3DRender::QLayerFilter;
-  mShadowSceneEntitiesFilter->addLayer( mPostprocessPassLayer );
-  mShadowSceneEntitiesFilter->addLayer( mPreviewLayer );
-  mShadowSceneEntitiesFilter->addLayer( mDoNotCastShadowsLayer );
-  mShadowSceneEntitiesFilter->setFilterMode( Qt3DRender::QLayerFilter::FilterMode::DiscardAnyMatchingLayers );
+  mShadowSceneEntitiesFilter->addLayer( mCastShadowsLayer );
 
   mShadowMapTexture = new Qt3DRender::QTexture2D;
   mShadowMapTexture->setWidth( 2048 * 2 );
@@ -142,7 +135,6 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructPostprocessi
 {
   mPostprocessPassLayerFilter = new Qt3DRender::QLayerFilter;
   mPostprocessPassLayerFilter->addLayer( mPostprocessPassLayer );
-  mPostprocessPassLayerFilter->setFilterMode( Qt3DRender::QLayerFilter::FilterMode::AcceptAnyMatchingLayers );
 
   mPostprocessClearBuffers = new Qt3DRender::QClearBuffers( mPostprocessPassLayerFilter );
   mPostprocessClearBuffers->setClearColor( QColor::fromRgbF( 1.0f, 0.0f, 0.0f ) );
@@ -155,12 +147,16 @@ QgsShadowRenderingFrameGraph::QgsShadowRenderingFrameGraph( QWindow *window, Qt3
   mRootEntity = root;
   mMainCamera = mainCamera;
   mLightCamera = new Qt3DRender::QCamera;
-  mDoNotCastShadowsLayer = new Qt3DRender::QLayer;
-  mDoNotCastShadowsLayer->setRecursive( true );
+
   mPostprocessPassLayer = new Qt3DRender::QLayer;
-  mPostprocessPassLayer->setRecursive( true );
   mPreviewLayer = new Qt3DRender::QLayer;
+  mCastShadowsLayer = new Qt3DRender::QLayer;
+  mForwardRenderLayer = new Qt3DRender::QLayer;
+
+  mPostprocessPassLayer->setRecursive( true );
   mPreviewLayer->setRecursive( true );
+  mCastShadowsLayer->setRecursive( true );
+  mForwardRenderLayer->setRecursive( true );
 
   // FrameGraph tree:
   // mRenderSurfaceSelector

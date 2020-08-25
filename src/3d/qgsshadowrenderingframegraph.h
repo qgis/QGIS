@@ -54,18 +54,22 @@ class QgsShadowRenderingFrameGraph
 
     //! Returns the root of the frame graph object
     Qt3DRender::QFrameGraphNode *getFrameGraphRoot() { return mRenderSurfaceSelector; }
+
     //! Returns the color texture of the forward rendering pass
     Qt3DRender::QTexture2D *forwardRenderColorTexture() { return mForwardColorTexture; }
     //! Returns the depth texture of the forward rendering pass
     Qt3DRender::QTexture2D *forwardRenderDepthTexture() { return mForwardDepthTexture; }
     //! Returns the shadow map (a depth texture for the shadow rendering pass)
     Qt3DRender::QTexture2D *shadowMapTexture() { return mShadowMapTexture; }
+
     //! Returns a layer object used to indicate that an entity is to be rendered during the post processing rendering pass
     Qt3DRender::QLayer *postprocessingPassLayer() { return mPostprocessPassLayer; }
     //! Returns a layer object used to indicate that an entity is to be rendered during the preview textures rendering pass
     Qt3DRender::QLayer *previewLayer() { return mPreviewLayer; }
-    //! Returns a layer object used to indicate that an entity won't be rendered during the shadow rendering pass and therefore won't cast shadows
-    Qt3DRender::QLayer *doNotCastShadowsLayerLayer() { return mDoNotCastShadowsLayer; }
+    //! Returns a layer object used to indicate that an entity will cast shadows
+    Qt3DRender::QLayer *castShadowsLayer() { return mCastShadowsLayer; }
+    //! Returns a layer object used to indicate that an entity will be rendered during the forward rendering pass
+    Qt3DRender::QLayer *forwardRenderLayer() { return mForwardRenderLayer; }
 
     //! Returns the main camera
     Qt3DRender::QCamera *mainCamera() { return mMainCamera; }
@@ -96,7 +100,7 @@ class QgsShadowRenderingFrameGraph
     Qt3DRender::QRenderSurfaceSelector *mRenderSurfaceSelector = nullptr;
     Qt3DRender::QViewport *mMainViewPort = nullptr;
     Qt3DRender::QCameraSelector *mMainCameraSelector = nullptr;
-    Qt3DRender::QLayerFilter *mSceneEntitiesFilter = nullptr;
+    Qt3DRender::QLayerFilter *mForwardRenderLayerFilter = nullptr;
     Qt3DRender::QRenderTargetSelector *mForwardRenderTargetSelector = nullptr;
     Qt3DRender::QRenderTarget *mForwardRenderTarget = nullptr;
     Qt3DRender::QRenderTargetOutput *mForwardRenderTargetColorOutput = nullptr;
@@ -108,7 +112,6 @@ class QgsShadowRenderingFrameGraph
     bool mFrustumCullingEnabled = true;
 
     Qt3DRender::QCamera *mMainCamera = nullptr;
-    Qt3DRender::QLayer *mPostprocessPassLayer = nullptr;
     Qt3DRender::QLayerFilter *mPostprocessPassLayerFilter = nullptr;
     Qt3DRender::QClearBuffers *mPostprocessClearBuffers = nullptr;
 
@@ -137,8 +140,11 @@ class QgsShadowRenderingFrameGraph
 
     Qt3DCore::QEntity *mRootEntity = nullptr;
 
+    Qt3DRender::QLayer *mPostprocessPassLayer = nullptr;
     Qt3DRender::QLayer *mPreviewLayer = nullptr;
-    Qt3DRender::QLayer *mDoNotCastShadowsLayer = nullptr;
+    Qt3DRender::QLayer *mForwardRenderLayer = nullptr;
+    Qt3DRender::QLayer *mCastShadowsLayer = nullptr;
+
     QgsPostprocessingEntity *mPostprocessingEntity = nullptr;
 
     QVector<QgsPreviewQuad *> mPreviewQuads;
