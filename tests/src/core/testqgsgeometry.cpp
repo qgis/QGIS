@@ -18240,6 +18240,9 @@ void TestQgsGeometry::wktParser()
   QCOMPARE( c.asWkt(), QStringLiteral( "CircularString (0 1, 2 3, 3 4)" ) );
   QVERIFY( c.fromWkt( "CircularString(0 1e3, -2 3, +3 4)" ) );
   QCOMPARE( c.asWkt(), QStringLiteral( "CircularString (0 1000, -2 3, 3 4)" ) );
+  
+  QVERIFY( c.fromWkt( "CircularString ((0 0,1 1,2 0))" ) ); // Added from an old test with an invalid wkt, but allowed in QGIS https://github.com/qgis/QGIS/pull/38439/files/59aab9dc9cc58bdc98e6d8091840bc129564ed2f#diff-fe3aa1328ee04f0eb00a1b1d59c0ea71L4247
+  QCOMPARE( c.asWkt(), QStringLiteral( "CircularString (0 0, 1 1, 2 0)" ) );
 
   // multipoint
   QgsMultiPoint mp;
@@ -18259,6 +18262,10 @@ void TestQgsGeometry::wktParser()
   QCOMPARE( mp.asWkt(), QStringLiteral( "MultiPoint EMPTY" ) );
   QVERIFY( mp.fromWkt( "MULTIPOINT EMPTY" ) );
   QCOMPARE( mp.asWkt(), QStringLiteral( "MultiPoint EMPTY" ) );
+  // Added from an old test with an invalid wkt, but allowed in QGIS https://github.com/qgis/QGIS/pull/38439/files/59aab9dc9cc58bdc98e6d8091840bc129564ed2f#diff-4444b5a772b35be43721b71a4b95d785R50
+  QVERIFY( mp.fromWkt( "MULTIPOINT(0 20,20 20))" ) );
+  QCOMPARE( mp.asWkt(), QStringLiteral( "MultiPoint ((0 20),(20 20))" ) );
+
   // compoundcurve
   QgsCompoundCurve cc;
   QVERIFY( ! cc.fromWkt( "COMPOUNDCURVE((CIRCULARSTRING( 0 0, 1 1, 2 2))" ) );
