@@ -45,6 +45,7 @@ jobs:
 
           echo "branch: ${branch}"
           echo "docker tag: ${DOCKER_TAG}"
+          echo "docker deps tag: ${DOCKER_DEPS_TAG}"
 
           [[ -d ~/.ccache ]] && echo "cache directory (~/.ccache) exists" || mkdir -p ~/.ccache
           # copy ccache dir within QGIS source so it can be accessed from docker
@@ -66,6 +67,14 @@ jobs:
                        --cache-from "qgis/qgis:${DOCKER_TAG}" \
                        -t "qgis/qgis:BUILDER" \
                        -f qgis.dockerfile ..
+
+          docker cp qgis_container:/QGIS/build_exit_value ${HOME}/build_exit_value
+
+          if [[ $(cat ${HOME}/build_exit_value) ne "OK" ]]; then
+            echo "Build failed, not pushing image"
+            exit 1
+          fi
+
           echo "Copy build cache from Docker container to Travis cache directory"
           rm -rf ~/.ccache/*
           mkdir -p ~/.ccache
@@ -89,6 +98,11 @@ jobs:
           docker push "qgis/qgis:${DOCKER_TAG}"
           echo "##[endgroup]"
 
+      - name: Trigger PyQGIS API docs build for ${{ matrix.branch }}
+        if: success()
+        env:
+          branch: ${{ matrix.branch }}
+        run: |
           echo "##[group] Trigger build of PyQGIS Documentation"
           body='{
             "ref": "master",

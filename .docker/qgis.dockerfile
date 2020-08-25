@@ -28,7 +28,8 @@ RUN echo "ccache_dir: "$(du -h --max-depth=0 ${CCACHE_DIR})
 
 WORKDIR /QGIS/build
 
-RUN cmake \
+RUN SUCCESS=OK \
+  && cmake \
   -GNinja \
   -DUSE_CCACHE=OFF \
   -DCMAKE_BUILD_TYPE=Release \
@@ -48,13 +49,11 @@ RUN cmake \
   -DWITH_APIDOC=OFF \
   -DWITH_ASTYLE=OFF \
   -DQT5_3DEXTRA_LIBRARY="/usr/lib/x86_64-linux-gnu/libQt53DExtras.so" \
-  -DQT5_3DEXTRA_INCLUDE_DIR="/QGIS/external/qt3dextra-headers" \
+  -DQt53DExtras_DIR="/QGIS/external/qt3dextra-headers/cmake/Qt53DExtras" \
   -DCMAKE_PREFIX_PATH="/QGIS/external/qt3dextra-headers/cmake" \
- .. \
- && echo "Timeout: ${BUILD_TIMEOUT}s" \
- && SUCCESS=OK \
- && timeout ${BUILD_TIMEOUT}s ninja install || SUCCESS=TIMEOUT \
- && echo "$SUCCESS" > /QGIS/build_exit_value
+  .. \
+  && ninja install || SUCCESS=FAILED \
+  && echo "$SUCCESS" > /QGIS/build_exit_value
 
 # Additional run-time dependencies
 RUN pip3 install jinja2 pygments
