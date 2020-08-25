@@ -18240,7 +18240,7 @@ void TestQgsGeometry::wktParser()
   QCOMPARE( c.asWkt(), QStringLiteral( "CircularString (0 1, 2 3, 3 4)" ) );
   QVERIFY( c.fromWkt( "CircularString(0 1e3, -2 3, +3 4)" ) );
   QCOMPARE( c.asWkt(), QStringLiteral( "CircularString (0 1000, -2 3, 3 4)" ) );
-  
+
   QVERIFY( c.fromWkt( "CircularString ((0 0,1 1,2 0))" ) ); // Added from an old test with an invalid wkt, but allowed in QGIS https://github.com/qgis/QGIS/pull/38439/files/59aab9dc9cc58bdc98e6d8091840bc129564ed2f#diff-fe3aa1328ee04f0eb00a1b1d59c0ea71L4247
   QCOMPARE( c.asWkt(), QStringLiteral( "CircularString (0 0, 1 1, 2 0)" ) );
 
@@ -18345,7 +18345,7 @@ void TestQgsGeometry::wktParser()
   QCOMPARE( mpoly.asWkt(), QStringLiteral( "MultiPolygon EMPTY" ) );
   QVERIFY( mpoly.fromWkt( "MultiPolygon EMPTY" ) );
   QCOMPARE( mpoly.asWkt(), QStringLiteral( "MultiPolygon EMPTY" ) );
-  
+
   // multilinestring
   QgsMultiLineString mline;
   QVERIFY( ! mline.fromWkt( "MultiLineString((LineString( 0 0, 1 1, 2 2))" ) );
