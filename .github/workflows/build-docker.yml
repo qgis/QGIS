@@ -69,9 +69,9 @@ jobs:
                        -f qgis.dockerfile ..
 
           docker run --name qgis_container qgis/qgis:BUILDER /bin/true
-          docker cp qgis_container:/QGIS/build_exit_value ${HOME}/build_exit_value
+          docker cp qgis_container:/QGIS/build_exit_value ./build_exit_value
 
-          if [[ $(cat ${HOME}/build_exit_value) ne "OK" ]]; then
+          if [[ $(cat ./build_exit_value) -ne "OK" ]]; then
             echo "Build failed, not pushing image"
             exit 1
           fi
