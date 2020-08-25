@@ -33,7 +33,6 @@
  * \brief Provides some enum describing the environment currently supported for configuration.
  * \since QGIS 3.0
  */
-// #ifndef SIP_RUN
 class SERVER_EXPORT QgsServerSettingsEnv : public QObject
 {
     Q_OBJECT
@@ -75,7 +74,6 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
     };
     Q_ENUM( EnvVar )
 };
-// #endif
 
 /**
  * \ingroup server
