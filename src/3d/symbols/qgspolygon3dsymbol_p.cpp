@@ -62,7 +62,7 @@ class QgsPolygon3DSymbolHandler : public QgsFeature3DHandler
     Qt3DExtras::QPhongMaterial *material( const QgsPolygon3DSymbol &symbol ) const;
 
     // input specific for this class
-    const QgsPolygon3DSymbol &mSymbol;
+    QgsPolygon3DSymbol mSymbol;
     // inputs - generic
     QgsFeatureIds mSelectedIds;
 
