@@ -1107,12 +1107,12 @@ QgsPointSequence QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateLi
   bool foundZ = false;
   bool foundM = false;
   QRegularExpression rx( QStringLiteral( "\\s" ) );
+  QRegularExpression rxIsNumber( QStringLiteral( "^[+-]?(\\d\\.?\\d*[Ee][+\\-]?\\d+|(\\d+\\.\\d*|\\d*\\.\\d+)|\\d+)$" ) );
   for ( const QString &pointCoordinates : coordList )
   {
     QStringList coordinates = pointCoordinates.split( rx, QString::SkipEmptyParts );
 
     // exit with an empty set if one list contains invalid value.
-    QRegularExpression rxIsNumber( QStringLiteral( "^[+-]?(\\d\\.?\\d*[Ee][+\\-]?\\d+|(\\d+\\.\\d*|\\d*\\.\\d+)|\\d+)$" ) );
     if ( coordinates.filter( rxIsNumber ).size() != coordinates.size() )
       return points;
 
