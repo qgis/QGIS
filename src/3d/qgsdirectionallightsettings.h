@@ -50,7 +50,9 @@ class _3D_EXPORT QgsDirectionalLightSettings
     //! Sets intensity of the light
     void setIntensity( float intensity ) { mIntensity = intensity; }
 
+    //! Returns whether shadow rendering is enabled for this light
     bool renderShadows() const { return mRenderShadows; }
+    //! Sets whether shadow rendering is enabled for this light
     void setRenderShadows( bool enabled ) { mRenderShadows = enabled; }
 
     //! Writes configuration to a new DOM element and returns it

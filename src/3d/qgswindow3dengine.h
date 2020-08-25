@@ -63,7 +63,9 @@ class _3D_EXPORT QgsWindow3DEngine : public QgsAbstract3DEngine
 
     void requestCaptureImage() override;
 
+    //! Sets whether shadow rendering is enabled
     void setShadowRenderingEnabled( bool enabled );
+    //! Returns whether shadow rendering is enabled
     bool shadowRenderingEnabled() { return mShadowRenderingEnabled; }
 
     void setClearColor( const QColor &color ) override;

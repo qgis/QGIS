@@ -50,6 +50,7 @@ class QgsPreviewQuad;
 class QgsShadowRenderingFrameGraph
 {
   public:
+    //! Constructor
     QgsShadowRenderingFrameGraph( QWindow *window, Qt3DRender::QCamera *mainCamera, Qt3DCore::QEntity *root );
 
     //! Returns the root of the frame graph object

@@ -25,6 +25,7 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructTexturesPrev
 {
   mPreviewLayerFilter = new Qt3DRender::QLayerFilter;
   mPreviewLayerFilter->addLayer( mPreviewLayer );
+//  mPreviewLayerFilter->setFilterMode( Qt3DRender::QLayerFilter::FilterMode::AcceptAnyMatchingLayers );
 
   mPreviewRenderStateSet = new Qt3DRender::QRenderStateSet( mPreviewLayerFilter );
   mPreviewDepthTest = new Qt3DRender::QDepthTest;
