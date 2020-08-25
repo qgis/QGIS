@@ -16,9 +16,10 @@
 #ifndef QGSPREVIEWQUAD_H
 #define QGSPREVIEWQUAD_H
 
-#include <Qt3DCore>
-#include <Qt3DRender>
-#include <Qt3DExtras>
+#include <Qt3DCore/QEntity>
+#include <Qt3DRender/QMaterial>
+#include <Qt3DRender/QParameter>
+#include <Qt3DRender/QEffect>
 
 class QgsPreviewQuadMaterial : public Qt3DRender::QMaterial
 {

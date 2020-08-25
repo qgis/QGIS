@@ -15,6 +15,16 @@
 
 #include "qgspreviewquad.h"
 
+#include <Qt3DRender/QGeometry>
+#include <Qt3DRender/QAttribute>
+#include <Qt3DRender/QBuffer>
+#include <Qt3DRender/QGeometryRenderer>
+#include <Qt3DRender/QTechnique>
+#include <Qt3DRender/QGraphicsApiFilter>
+#include <Qt3DRender/QShaderProgram>
+#include <QMatrix4x4>
+#include <QUrl>
+
 QgsPreviewQuad::QgsPreviewQuad( Qt3DRender::QAbstractTexture *texture, const QPointF &centerNDC, const QSizeF &size, QVector<Qt3DRender::QParameter *> additionalShaderParameters, Qt3DCore::QEntity *parent )
   : Qt3DCore::QEntity( parent )
 {
@@ -32,7 +42,12 @@ QgsPreviewQuad::QgsPreviewQuad( Qt3DRender::QAbstractTexture *texture, const QPo
     };
 
   QByteArray vertexArr( ( const char * ) vert.constData(), vert.size() * sizeof( float ) );
-  Qt3DRender::QBuffer *vertexBuffer = new Qt3DRender::QBuffer;
+  Qt3DRender::QBuffer *vertexBuffer = nullptr;
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
+  vertexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer, this );
+#else
+  vertexBuffer = new Qt3DRender::QBuffer( this );
+#endif
   vertexBuffer->setData( vertexArr );
 
   positionAttribute->setName( Qt3DRender::QAttribute::defaultPositionAttributeName() );
