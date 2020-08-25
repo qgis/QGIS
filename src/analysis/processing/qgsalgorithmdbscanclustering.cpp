@@ -139,12 +139,12 @@ QVariantMap QgsDbscanClusteringAlgorithm::processAlgorithm( const QVariantMap &p
   feedback->pushInfo( QObject::tr( "Analysing clusters" ) );
   std::unordered_map< QgsFeatureId, int> idToCluster;
   idToCluster.reserve( index.size() );
-  std::unordered_map< int, int> clusterSize;
   QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setNoAttributes() );
   const long featureCount = source->featureCount();
-  dbscan( minSize, eps, borderPointsAreNoise, featureCount, features, index, idToCluster, clusterSize, feedback );
+  dbscan( minSize, eps, borderPointsAreNoise, featureCount, features, index, idToCluster, feedback );
 
   // cluster size
+  std::unordered_map< int, int> clusterSize;
   std::for_each( idToCluster.begin(), idToCluster.end(), [ &clusterSize ]( std::pair< QgsFeatureId, int > idCluster ) { clusterSize[ idCluster.second ]++; } );
 
   // write clusters
@@ -189,7 +189,6 @@ void QgsDbscanClusteringAlgorithm::dbscan( const std::size_t minSize,
     QgsFeatureIterator features,
     QgsSpatialIndexKDBush &index,
     std::unordered_map< QgsFeatureId, int> &idToCluster,
-    std::unordered_map< int, int> &clusterSize,
     QgsProcessingFeedback *feedback )
 {
   const double step = featureCount > 0 ? 90.0 / featureCount : 1;
@@ -252,7 +251,6 @@ void QgsDbscanClusteringAlgorithm::dbscan( const std::size_t minSize,
 
     // start new cluster
     clusterCount++;
-    clusterSize[ clusterCount ] = 0;
     idToCluster[ feat.id() ] = clusterCount;
     feedback->setProgress( ++i * step );
 
