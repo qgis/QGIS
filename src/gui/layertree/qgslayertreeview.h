@@ -30,6 +30,30 @@ class QgsLayerTreeViewIndicator;
 class QgsLayerTreeViewMenuProvider;
 class QgsMapLayer;
 class QgsMessageBar;
+class QgsLayerTreeFilterProxyModel;
+
+
+#include <QSortFilterProxyModel>
+
+class GUI_EXPORT QgsLayerTreeProxyModel : public QSortFilterProxyModel
+{
+  public:
+
+    QgsLayerTreeProxyModel( QgsLayerTreeModel *treeModel, QObject *parent );
+
+    void setFilterText( const QString &filterText = QString() );
+
+  protected:
+
+    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+
+  private:
+
+    bool nodeShown( QgsLayerTreeNode *node ) const;
+
+    QgsLayerTreeModel *mLayerTreeModel = nullptr;
+    QString mFilterText;
+};
 
 
 /**
@@ -73,6 +97,57 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 
     //! Gets access to the model casted to QgsLayerTreeModel
     QgsLayerTreeModel *layerTreeModel() const;
+
+    /**
+     * Returns the proxy model used by the view.
+     *
+     * This can be used to set filters controlling which layers are shown in the view.
+     *
+     * \since QGIS 3.16
+     */
+    QgsLayerTreeProxyModel *proxyModel() const;
+
+    /**
+     * Returns layer tree node for given tree index. Returns root node for invalid index.
+     * Returns NULLPTR if index does not refer to a layer tree node (e.g. it is a legend node)
+     *
+     * Unlike QgsLayerTreeModel::index2Node(), calling this method correctly accounts
+     * for mapping the view indexes through the view's proxy model to the source model.
+     *
+     * \since QGIS 3.16
+     */
+    QgsLayerTreeNode *index2node( const QModelIndex &index ) const;
+
+    /**
+     * Returns index for a given node. If the node does not belong to the layer tree, the result is undefined
+     *
+     * Unlike QgsLayerTreeModel::node2index(), calling this method correctly accounts
+     * for mapping the view indexes through the view's proxy model to the source model.
+     *
+     * \since QGIS 3.16
+     */
+    QModelIndex node2index( QgsLayerTreeNode *node ) const;
+
+    /**
+     * Returns legend node for given index. Returns NULLPTR for invalid index
+     *
+     * Unlike QgsLayerTreeModel::index2legendNode(), calling this method correctly accounts
+     * for mapping the view indexes through the view's proxy model to the source model.
+     *
+     * \since QGIS 3.16
+     */
+    QgsLayerTreeModelLegendNode *index2legendNode( const QModelIndex &index ) const;
+
+    /**
+     * Returns index for a given legend node. If the legend node does not belong to the layer tree, the result is undefined.
+     * If the legend node is belongs to the tree but it is filtered out, invalid model index is returned.
+     *
+     * Unlike QgsLayerTreeModel::legendNode2index(), calling this method correctly accounts
+     * for mapping the view indexes through the view's proxy model to the source model.
+     *
+     * \since QGIS 3.16
+     */
+    QModelIndex legendNode2index( QgsLayerTreeModelLegendNode *legendNode );
 
     //! Gets access to the default actions that may be used with the tree view
     QgsLayerTreeViewDefaultActions *defaultActions();
@@ -266,6 +341,8 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     int mLayerMarkWidth;
 
   private:
+    QgsLayerTreeProxyModel *mProxyModel = nullptr;
+
     QgsMessageBar *mMessageBar = nullptr;
 
     // friend so it can access viewOptions() method and mLastReleaseMousePos without making them public

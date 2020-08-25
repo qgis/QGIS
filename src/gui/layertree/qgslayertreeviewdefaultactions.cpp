@@ -239,7 +239,7 @@ void QgsLayerTreeViewDefaultActions::addGroup()
     group = mView->layerTreeModel()->rootGroup();
 
   QgsLayerTreeGroup *newGroup = group->addGroup( uniqueGroupName( group ) );
-  mView->edit( mView->layerTreeModel()->node2index( newGroup ) );
+  mView->edit( mView->node2index( newGroup ) );
 }
 
 void QgsLayerTreeViewDefaultActions::removeGroupOrLayer()
@@ -493,8 +493,8 @@ void QgsLayerTreeViewDefaultActions::groupSelected()
       group->removeChildNode( node );
   }
 
-  mView->setCurrentIndex( mView->layerTreeModel()->node2index( newGroup ) );
-  mView->edit( mView->layerTreeModel()->node2index( newGroup ) );
+  mView->setCurrentIndex( mView->node2index( newGroup ) );
+  mView->edit( mView->node2index( newGroup ) );
 }
 
 void QgsLayerTreeViewDefaultActions::mutuallyExclusiveGroup()

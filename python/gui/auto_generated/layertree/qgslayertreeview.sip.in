@@ -10,6 +10,43 @@
 
 
 
+
+class QgsLayerTreeProxyModel : QSortFilterProxyModel
+{
+%Docstring
+*************************************************************************
+qgslayertreeview.h
+--------------------------------------
+  Date                 : May 2014
+  Copyright            : (C) 2014 by Martin Dobias
+  Email                : wonder dot sk at gmail dot com
+  **************************************************************************
+
+This program is free software; you can redistribute it and/or modify  *
+it under the terms of the GNU General Public License as published by  *
+the Free Software Foundation; either version 2 of the License, or     *
+(at your option) any later version.                                   *
+
+**************************************************************************
+%End
+
+%TypeHeaderCode
+#include "qgslayertreeview.h"
+%End
+  public:
+
+    QgsLayerTreeProxyModel( QgsLayerTreeModel *treeModel, QObject *parent );
+
+    void setFilterText( const QString &filterText = QString() );
+
+  protected:
+
+    virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
+
+
+};
+
+
 class QgsLayerTreeView : QTreeView
 {
 %Docstring
@@ -55,6 +92,57 @@ Overridden :py:func:`~QgsLayerTreeView.setModel` from base class. Only QgsLayerT
     QgsLayerTreeModel *layerTreeModel() const;
 %Docstring
 Gets access to the model casted to :py:class:`QgsLayerTreeModel`
+%End
+
+    QgsLayerTreeProxyModel *proxyModel() const;
+%Docstring
+Returns the proxy model used by the view.
+
+This can be used to set filters controlling which layers are shown in the view.
+
+.. versionadded:: 3.16
+%End
+
+    QgsLayerTreeNode *index2node( const QModelIndex &index ) const;
+%Docstring
+Returns layer tree node for given tree index. Returns root node for invalid index.
+Returns ``None`` if index does not refer to a layer tree node (e.g. it is a legend node)
+
+Unlike :py:func:`QgsLayerTreeModel.index2Node()`, calling this method correctly accounts
+for mapping the view indexes through the view's proxy model to the source model.
+
+.. versionadded:: 3.16
+%End
+
+    QModelIndex node2index( QgsLayerTreeNode *node ) const;
+%Docstring
+Returns index for a given node. If the node does not belong to the layer tree, the result is undefined
+
+Unlike :py:func:`QgsLayerTreeModel.node2index()`, calling this method correctly accounts
+for mapping the view indexes through the view's proxy model to the source model.
+
+.. versionadded:: 3.16
+%End
+
+    QgsLayerTreeModelLegendNode *index2legendNode( const QModelIndex &index ) const;
+%Docstring
+Returns legend node for given index. Returns ``None`` for invalid index
+
+Unlike :py:func:`QgsLayerTreeModel.index2legendNode()`, calling this method correctly accounts
+for mapping the view indexes through the view's proxy model to the source model.
+
+.. versionadded:: 3.16
+%End
+
+    QModelIndex legendNode2index( QgsLayerTreeModelLegendNode *legendNode );
+%Docstring
+Returns index for a given legend node. If the legend node does not belong to the layer tree, the result is undefined.
+If the legend node is belongs to the tree but it is filtered out, invalid model index is returned.
+
+Unlike :py:func:`QgsLayerTreeModel.legendNode2index()`, calling this method correctly accounts
+for mapping the view indexes through the view's proxy model to the source model.
+
+.. versionadded:: 3.16
 %End
 
     QgsLayerTreeViewDefaultActions *defaultActions();

@@ -41,6 +41,7 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgslegendpatchshapewidget.h"
+#include "qgslayertreefilterproxymodel.h"
 
 #include <QMenu>
 #include <QMessageBox>
@@ -714,8 +715,8 @@ void QgsLayoutLegendWidget::mMoveDownToolButton_clicked()
   if ( !index.isValid() || index.row() == mItemTreeView->model()->rowCount( parentIndex ) - 1 )
     return;
 
-  QgsLayerTreeNode *node = mItemTreeView->layerTreeModel()->index2node( index );
-  QgsLayerTreeModelLegendNode *legendNode = mItemTreeView->layerTreeModel()->index2legendNode( index );
+  QgsLayerTreeNode *node = mItemTreeView->index2node( index );
+  QgsLayerTreeModelLegendNode *legendNode = mItemTreeView->index2legendNode( index );
   if ( !node && !legendNode )
     return;
 
@@ -733,7 +734,7 @@ void QgsLayoutLegendWidget::mMoveDownToolButton_clicked()
     mItemTreeView->layerTreeModel()->refreshLayerLegend( legendNode->layerNode() );
   }
 
-  mItemTreeView->setCurrentIndex( mItemTreeView->layerTreeModel()->index( index.row() + 1, 0, parentIndex ) );
+  mItemTreeView->setCurrentIndex( mItemTreeView->proxyModel()->mapFromSource( mItemTreeView->layerTreeModel()->index( index.row() + 1, 0, parentIndex ) ) );
 
   mLegend->update();
   mLegend->endCommand();
@@ -751,8 +752,8 @@ void QgsLayoutLegendWidget::mMoveUpToolButton_clicked()
   if ( !index.isValid() || index.row() == 0 )
     return;
 
-  QgsLayerTreeNode *node = mItemTreeView->layerTreeModel()->index2node( index );
-  QgsLayerTreeModelLegendNode *legendNode = mItemTreeView->layerTreeModel()->index2legendNode( index );
+  QgsLayerTreeNode *node = mItemTreeView->index2node( index );
+  QgsLayerTreeModelLegendNode *legendNode = mItemTreeView->index2legendNode( index );
   if ( !node && !legendNode )
     return;
 
@@ -770,7 +771,7 @@ void QgsLayoutLegendWidget::mMoveUpToolButton_clicked()
     mItemTreeView->layerTreeModel()->refreshLayerLegend( legendNode->layerNode() );
   }
 
-  mItemTreeView->setCurrentIndex( mItemTreeView->layerTreeModel()->index( index.row() - 1, 0, parentIndex ) );
+  mItemTreeView->setCurrentIndex( mItemTreeView->proxyModel()->mapFromSource( mItemTreeView->layerTreeModel()->index( index.row() - 1, 0, parentIndex ) ) );
 
   mLegend->update();
   mLegend->endCommand();
@@ -945,7 +946,7 @@ void QgsLayoutLegendWidget::mRemoveToolButton_clicked()
   QHash<QgsLayerTreeLayer *, QList<int> > nodesWithRemoval;
   for ( const QPersistentModelIndex &index : qgis::as_const( indexes ) )
   {
-    if ( QgsLayerTreeModelLegendNode *legendNode = mItemTreeView->layerTreeModel()->index2legendNode( index ) )
+    if ( QgsLayerTreeModelLegendNode *legendNode = mItemTreeView->index2legendNode( index ) )
     {
       QgsLayerTreeLayer *nodeLayer = legendNode->layerNode();
       nodesWithRemoval[nodeLayer].append( _unfilteredLegendNodeIndex( legendNode ) );
@@ -971,7 +972,7 @@ void QgsLayoutLegendWidget::mRemoveToolButton_clicked()
   // then remove layer tree nodes
   for ( const QPersistentModelIndex &index : qgis::as_const( indexes ) )
   {
-    if ( index.isValid() && mItemTreeView->layerTreeModel()->index2node( index ) )
+    if ( index.isValid() && mItemTreeView->index2node( index ) )
       mLegend->model()->removeRow( index.row(), index.parent() );
   }
 
@@ -1006,12 +1007,12 @@ void QgsLayoutLegendWidget::resetLayerNodeToDefaults()
   }
 
   QgsLayerTreeLayer *nodeLayer = nullptr;
-  if ( QgsLayerTreeNode *node = mItemTreeView->layerTreeModel()->index2node( currentIndex ) )
+  if ( QgsLayerTreeNode *node = mItemTreeView->index2node( currentIndex ) )
   {
     if ( QgsLayerTree::isLayer( node ) )
       nodeLayer = QgsLayerTree::toLayer( node );
   }
-  if ( QgsLayerTreeModelLegendNode *legendNode = mItemTreeView->layerTreeModel()->index2legendNode( currentIndex ) )
+  if ( QgsLayerTreeModelLegendNode *legendNode = mItemTreeView->index2legendNode( currentIndex ) )
   {
     nodeLayer = legendNode->layerNode();
   }
@@ -1052,7 +1053,7 @@ void QgsLayoutLegendWidget::mCountToolButton_clicked( bool checked )
   mLegend->beginCommand( tr( "Update Legend" ) );
   for ( const QModelIndex &index : selectedIndexes )
   {
-    QgsLayerTreeNode *currentNode = mItemTreeView->layerTreeModel()->index2node( index );
+    QgsLayerTreeNode *currentNode = mItemTreeView->index2node( index );
     if ( !QgsLayerTree::isLayer( currentNode ) )
       continue;
 
@@ -1376,9 +1377,8 @@ void QgsLayoutLegendWidget::mItemTreeView_doubleClicked( const QModelIndex &idx 
   if ( mLegend->autoUpdateModel() )
     return;
 
-  QgsLayerTreeModel *model = mItemTreeView->layerTreeModel();
-  QgsLayerTreeNode *currentNode = model->index2node( idx );
-  QgsLayerTreeModelLegendNode *legendNode = model->index2legendNode( idx );
+  QgsLayerTreeNode *currentNode = mItemTreeView->index2node( idx );
+  QgsLayerTreeModelLegendNode *legendNode = mItemTreeView->index2legendNode( idx );
 
   int originalIndex = -1;
   if ( legendNode )
