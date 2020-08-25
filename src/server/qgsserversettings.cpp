@@ -479,12 +479,12 @@ int QgsServerSettings::wmsMaxWidth() const
   return value( QgsServerSettingsEnv::QGIS_SERVER_WMS_MAX_WIDTH ).toInt();
 }
 
-QString QgsServerSettings::projectsDirectories() const
+QString QgsServerSettings::landingPageProjectsDirectories() const
 {
   return value( QgsServerSettingsEnv::QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES, true ).toString();
 }
 
-QString QgsServerSettings::projectsPgConnections() const
+QString QgsServerSettings::landingPageProjectsPgConnections() const
 {
   return value( QgsServerSettingsEnv::QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS, true ).toString();
 }

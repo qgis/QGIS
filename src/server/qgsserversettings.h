@@ -33,7 +33,7 @@
  * \brief Provides some enum describing the environment currently supported for configuration.
  * \since QGIS 3.0
  */
-#ifndef SIP_RUN
+// #ifndef SIP_RUN
 class SERVER_EXPORT QgsServerSettingsEnv : public QObject
 {
     Q_OBJECT
@@ -75,7 +75,7 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
     };
     Q_ENUM( EnvVar )
 };
-#endif
+// #endif
 
 /**
  * \ingroup server
@@ -213,7 +213,7 @@ class SERVER_EXPORT QgsServerSettings
      * them with '||'.
      * \since QGIS 3.16
      */
-    QString projectsDirectories() const;
+    QString landingPageProjectsDirectories() const;
 
     /**
      * Returns the PostgreSQL connection strings used by the landing page
@@ -221,7 +221,7 @@ class SERVER_EXPORT QgsServerSettings
      * separating them with '||'.
      * \since QGIS 3.16
      */
-    QString projectsPgConnections() const;
+    QString landingPageProjectsPgConnections() const;
 
     /**
      * Returns the server-wide base directory where HTML templates and static assets (e.g. images, js and css files) are searched for.

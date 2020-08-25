@@ -11,6 +11,44 @@
 
 
 
+class QgsServerSettingsEnv : QObject
+{
+
+%TypeHeaderCode
+#include "qgsserversettings.h"
+%End
+  public:
+    enum Source
+    {
+      DEFAULT_VALUE,
+      ENVIRONMENT_VARIABLE,
+      INI_FILE
+    };
+
+    enum EnvVar
+    {
+      QGIS_OPTIONS_PATH,
+      QGIS_SERVER_PARALLEL_RENDERING,
+      QGIS_SERVER_MAX_THREADS,
+      QGIS_SERVER_LOG_LEVEL,
+      QGIS_SERVER_LOG_FILE,
+      QGIS_SERVER_LOG_STDERR,
+      QGIS_PROJECT_FILE,
+      MAX_CACHE_LAYERS,
+      QGIS_SERVER_IGNORE_BAD_LAYERS,
+      QGIS_SERVER_CACHE_DIRECTORY,
+      QGIS_SERVER_CACHE_SIZE,
+      QGIS_SERVER_SHOW_GROUP_SEPARATOR,
+      QGIS_SERVER_OVERRIDE_SYSTEM_LOCALE,
+      QGIS_SERVER_WMS_MAX_HEIGHT,
+      QGIS_SERVER_WMS_MAX_WIDTH,
+      QGIS_SERVER_API_RESOURCES_DIRECTORY,
+      QGIS_SERVER_API_WFS3_MAX_LIMIT,
+      QGIS_SERVER_TRUST_LAYER_METADATA,
+      QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES,
+      QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS
+    };
+};
 
 class QgsServerSettings
 {
@@ -155,7 +193,7 @@ Returns the server-wide max width of a WMS GetMap request. The lower one of this
 .. versionadded:: 3.6.2
 %End
 
-    QString projectsDirectories() const;
+    QString landingPageProjectsDirectories() const;
 %Docstring
 Returns the directories used by the landing page service to find .qgs
 and .qgz projects. Multiple directories can be specified by separating
@@ -164,7 +202,7 @@ them with '||'.
 .. versionadded:: 3.16
 %End
 
-    QString projectsPgConnections() const;
+    QString landingPageProjectsPgConnections() const;
 %Docstring
 Returns the PostgreSQL connection strings used by the landing page
 service to find projects. Multiple connections can be specified by
