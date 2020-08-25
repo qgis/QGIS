@@ -50,7 +50,7 @@ RUN SUCCESS=OK \
   -DWITH_ASTYLE=OFF \
   -DQT5_3DEXTRA_LIBRARY="/usr/lib/x86_64-linux-gnu/libQt53DExtras.so" \
   -DQt53DExtras_DIR="/QGIS/external/qt3dextra-headers/cmake/Qt53DExtras" \
-  -DCMAKE_PREFIX_PATH="/QGIS/external/qt3dextra-headers/cmake" \
+  -DCMAKE_PREFIX_PATH="/QGIS/external/qt3dextra-headers" \
   .. \
   && ninja install || SUCCESS=FAILED \
   && echo "$SUCCESS" > /QGIS/build_exit_value
