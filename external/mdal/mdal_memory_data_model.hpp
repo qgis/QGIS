@@ -199,6 +199,10 @@ namespace MDAL
       size_t edgesCount() const override {return mEdges.size();}
       size_t facesCount() const override {return mFaces.size();}
       BBox extent() const override;
+      void addVertices( size_t vertexCount, double *coordinates ) override;
+      void addFaces( size_t faceCount, size_t driverMaxVerticesPerFace, int *faceSizes, int *vertexIndices ) override;
+
+      bool isEditable() const override {return true;}
 
     private:
       BBox mExtent;

@@ -262,6 +262,8 @@ namespace MDAL
       size_t facesCount() const override {return mReader->facesCount();}
       BBox extent() const override;
 
+      void closeSource() override;
+
     private:
       mutable bool mIsExtentUpToDate = false;
       mutable BBox mExtent;

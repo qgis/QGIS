@@ -42,7 +42,7 @@ IF (WITH_INTERNAL_MDAL)
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_selafin.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_esri_tin.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_xms_tin.cpp
-    ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_xms_tin.hpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ply.cpp
   )
 
   SET(MDAL_LIB_HDRS
@@ -58,6 +58,8 @@ IF (WITH_INTERNAL_MDAL)
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_binary_dat.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_selafin.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_esri_tin.hpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_xms_tin.hpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ply.hpp
   )
 
   IF(HDF5_FOUND)

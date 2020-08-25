@@ -634,7 +634,6 @@ bool MDAL::isNativeLittleEndian()
 
 std::string MDAL::coordinateToString( double coordinate, int precision )
 {
-
   std::ostringstream oss;
   oss.setf( std::ios::fixed );
   if ( fabs( coordinate ) > 180 )
