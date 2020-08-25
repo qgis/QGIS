@@ -24,12 +24,22 @@
 
 class QgsShadowRenderingFrameGraph;
 
+/**
+ * \ingroup 3d
+ * An entity that is responsible for applying post processing.effect
+ * Now it is used to make shadows
+ * \since QGIS 3.16
+ */
 class QgsPostprocessingEntity : public Qt3DCore::QEntity
 {
   public:
+    //! Constructor
     QgsPostprocessingEntity( QgsShadowRenderingFrameGraph *frameGraph, const QString &vertexShaderPath, const QString &fragmentShaderPath, QNode *parent = nullptr );
+    //! Sets the parts of the scene where objects cast shadows
     void setupShadowRenderingExtent( float minX, float maxX, float minZ, float maxZ );
+    //! Sets up a directional light that is used to render shadows
     void setupDirectionalLight( QVector3D position, QVector3D direction );
+    //! Sets whether shadow rendering is enabled
     void setShadowRenderingEnabled( bool enabled );
   private:
     Qt3DRender::QMaterial *mMaterial = nullptr;

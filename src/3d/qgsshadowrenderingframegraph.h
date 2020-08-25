@@ -42,30 +42,55 @@ class QgsRectangle;
 class QgsPostprocessingEntity;
 class QgsPreviewQuad;
 
+/**
+ * \ingroup 3d
+ * Container class that holds different objects related to shadow rendering
+ * \since QGIS 3.16
+ */
 class QgsShadowRenderingFrameGraph
 {
   public:
     QgsShadowRenderingFrameGraph( QWindow *window, Qt3DRender::QCamera *mainCamera, Qt3DCore::QEntity *root );
 
+    //! Returns the root of the frame graph object
     Qt3DRender::QFrameGraphNode *getFrameGraphRoot() { return mRenderSurfaceSelector; }
+    //! Returns the color texture of the forward rendering pass
     Qt3DRender::QTexture2D *forwardRenderColorTexture() { return mForwardColorTexture; }
+    //! Returns the depth texture of the forward rendering pass
     Qt3DRender::QTexture2D *forwardRenderDepthTexture() { return mForwardDepthTexture; }
+    //! Returns the shadow map (a depth texture for the shadow rendering pass)
     Qt3DRender::QTexture2D *shadowMapTexture() { return mShadowMapTexture; }
+    //! Returns a layer object used to indicate that an entity is to be rendered during the post processing rendering pass
     Qt3DRender::QLayer *postprocessingPassLayer() { return mPostprocessPassLayer; }
-    Qt3DRender::QCamera *mainCamera() { return mMainCamera; }
-    Qt3DRender::QCamera *lightCamera() { return mLightCamera; }
+    //! Returns a layer object used to indicate that an entity is to be rendered during the preview textures rendering pass
     Qt3DRender::QLayer *previewLayer() { return mPreviewLayer; }
+    //! Returns a layer object used to indicate that an entity won't be rendered during the shadow rendering pass and therefore won't cast shadows
     Qt3DRender::QLayer *doNotCastShadowsLayerLayer() { return mDoNotCastShadowsLayer; }
+
+    //! Returns the main camera
+    Qt3DRender::QCamera *mainCamera() { return mMainCamera; }
+    //! Returns the light camera
+    Qt3DRender::QCamera *lightCamera() { return mLightCamera; }
+    //! Returns the postprocessing entity
     QgsPostprocessingEntity *postprocessingEntity() { return mPostprocessingEntity; }
+    //! Returns the root entity of the entites of the frame graph passes (like the post processing entity and preview entity)
     Qt3DCore::QEntity *rootEntity() { return mRootEntity; }
 
+    //! Returns whether frustum culling is enabled
     bool frustumCullingEnabled() { return mFrustumCullingEnabled; }
+    //! Sets whether frustum culling is enabled
     void setFrustumCullingEnabled( bool enabled );
-    void setShadowRenderingEnabled( bool enabled );
-    bool shadowRenderingEnabled() { return mShadowRenderingEnabled; }
 
+    //! Returns whether shadow rendering is enabled
+    bool shadowRenderingEnabled() { return mShadowRenderingEnabled; }
+    //! Sets whether the shadow rendering is enabled
+    void setShadowRenderingEnabled( bool enabled );
+
+    //! Sets the clear color of the scene (background color)
     void setClearColor( const QColor &clearColor );
+    //! Adds an preview entity that shows a texture in real time for debugging purposes
     void addTexturePreviewOverlay( Qt3DRender::QTexture2D *texture, const QPointF &centerNDC, const QSizeF &size, QVector<Qt3DRender::QParameter *> additionalShaderParameters = QVector<Qt3DRender::QParameter *>() );
+    //! Sets shadow rendering to use a directional light
     void setupDirectionalLight( const QgsDirectionalLightSettings &light, float maximumShadowRenderingDistance );
   private:
     Qt3DRender::QRenderSurfaceSelector *mRenderSurfaceSelector = nullptr;
