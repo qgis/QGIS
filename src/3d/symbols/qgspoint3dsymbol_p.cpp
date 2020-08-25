@@ -85,7 +85,7 @@ class QgsInstancedPoint3DSymbolHandler : public QgsFeature3DHandler
     void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected );
 
     // input specific for this class
-    const QgsPoint3DSymbol &mSymbol;
+    QgsPoint3DSymbol mSymbol;
     // inputs - generic
     QgsFeatureIds mSelectedIds;
 
@@ -373,7 +373,7 @@ class QgsModelPoint3DSymbolHandler : public QgsFeature3DHandler
     void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected );
 
     // input specific for this class
-    const QgsPoint3DSymbol &mSymbol;
+    QgsPoint3DSymbol mSymbol;
     // inputs - generic
     QgsFeatureIds mSelectedIds;
 
@@ -457,6 +457,9 @@ void QgsModelPoint3DSymbolHandler::addSceneEntities( const Qgs3DMapSettings &map
 
 void QgsModelPoint3DSymbolHandler::addMeshEntities( const Qgs3DMapSettings &map, const QVector<QVector3D> &positions, const QgsPoint3DSymbol &symbol, Qt3DCore::QEntity *parent, bool are_selected )
 {
+  if ( positions.empty() )
+    return;
+
   // build the default material
   Qt3DExtras::QPhongMaterial *mat = Qgs3DUtils::phongMaterial( symbol.material() );
 
@@ -519,7 +522,7 @@ class QgsPoint3DBillboardSymbolHandler : public QgsFeature3DHandler
     void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected );
 
     // input specific for this class
-    const QgsPoint3DSymbol &mSymbol;
+    QgsPoint3DSymbol mSymbol;
     // inputs - generic
     QgsFeatureIds mSelectedIds;
 
