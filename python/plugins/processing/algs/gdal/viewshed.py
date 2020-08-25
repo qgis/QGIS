@@ -50,6 +50,7 @@ class viewshed(GdalAlgorithm):
     OBSERVER_HEIGHT = 'OBSERVER_HEIGHT'
     TARGET_HEIGHT = 'TARGET_HEIGHT'
     MAX_DISTANCE = 'MAX_DISTANCE'
+    VISIBLE = 'VISIBLE'
     OPTIONS = 'OPTIONS'
     EXTRA = 'EXTRA'
     OUTPUT = 'OUTPUT'
@@ -81,6 +82,11 @@ class viewshed(GdalAlgorithm):
                                                          parentParameterName=self.INPUT,
                                                          minValue=0.0,
                                                          defaultValue=100.0))
+        self.addParameter(QgsProcessingParameterNumber(self.VISIBLE,
+                                                       self.tr('Pixel value to set for visible areas'),
+                                                       minValue=1,
+                                                       maxValue=255,
+                                                       defaultValue=1))
 
         options_param = QgsProcessingParameterString(self.OPTIONS,
                                                      self.tr('Additional creation options'),
@@ -140,6 +146,8 @@ class viewshed(GdalAlgorithm):
         arguments.append('{}'.format(self.parameterAsDouble(parameters, self.TARGET_HEIGHT, context)))
         arguments.append('-md')
         arguments.append('{}'.format(self.parameterAsDouble(parameters, self.MAX_DISTANCE, context)))
+        arguments.append('-vv')
+        arguments.append('{}'.format(self.parameterAsInt(parameters, self.VISIBLE, context)))
 
         arguments.append('-f')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
