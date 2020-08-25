@@ -1,3 +1,18 @@
+/***************************************************************************
+  qgsshadowrenderingframegraph.cpp
+  --------------------------------------
+  Date                 : August 2020
+  Copyright            : (C) 2020 by Belgacem Nedjima
+  Email                : gb underscore nedjima at esi dot dz
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #include "qgsshadowrenderingframegraph.h"
 
 #include "qgsdirectionallightsettings.h"
@@ -97,16 +112,16 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructShadowRender
   sceneEntitiesFilter->setFilterMode( Qt3DRender::QLayerFilter::FilterMode::DiscardAnyMatchingLayers );
 
   mShadowMapTexture = new Qt3DRender::QTexture2D;
-  mShadowMapTexture->setWidth( 2048 );
-  mShadowMapTexture->setHeight( 2048 );
+  mShadowMapTexture->setWidth( 2048 * 2 );
+  mShadowMapTexture->setHeight( 2048 * 2 );
   mShadowMapTexture->setFormat( Qt3DRender::QTexture2D::TextureFormat::D32F );
   mShadowMapTexture->setGenerateMipMaps( false );
   mShadowMapTexture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
   mShadowMapTexture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
   mShadowMapTexture->wrapMode()->setX( Qt3DRender::QTextureWrapMode::ClampToEdge );
   mShadowMapTexture->wrapMode()->setY( Qt3DRender::QTextureWrapMode::ClampToEdge );
-//  mShadowMapTexture->setComparisonFunction( Qt3DRender::QTexture2D::ComparisonFunction::CompareLessEqual );
-//  mShadowMapTexture->setComparisonMode( Qt3DRender::QTexture2D::ComparisonMode::CompareRefToTexture );
+  mShadowMapTexture->setComparisonFunction( Qt3DRender::QTexture2D::ComparisonFunction::CompareGreaterEqual );
+  mShadowMapTexture->setComparisonMode( Qt3DRender::QTexture2D::ComparisonMode::CompareRefToTexture );
 
   mShadowRenderTarget = new Qt3DRender::QRenderTarget;
   mShadowRenderTargetOutput = new Qt3DRender::QRenderTargetOutput;
@@ -121,15 +136,15 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructShadowRender
   mShadowClearBuffers ->setBuffers( Qt3DRender::QClearBuffers::BufferType::ColorDepthBuffer );
 
   Qt3DRender::QRenderStateSet *renderStateSet = new Qt3DRender::QRenderStateSet( mShadowClearBuffers );
-//  Qt3DRender::QPolygonOffset *polygonOffset = new Qt3DRender::QPolygonOffset;
-//  polygonOffset->setDepthSteps( 4.0f );
-//  polygonOffset->setScaleFactor( 4.0f );
-//  renderStateSet->addRenderState( polygonOffset );
+  Qt3DRender::QPolygonOffset *polygonOffset = new Qt3DRender::QPolygonOffset;
+  polygonOffset->setDepthSteps( 1.0f );
+  polygonOffset->setScaleFactor( 2.0f );
+  renderStateSet->addRenderState( polygonOffset );
   Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest;
   depthTest->setDepthFunction( Qt3DRender::QDepthTest::LessOrEqual );
   renderStateSet->addRenderState( depthTest );
   Qt3DRender::QCullFace *cullFace = new Qt3DRender::QCullFace;
-  cullFace->setMode( Qt3DRender::QCullFace::Front );
+  cullFace->setMode( Qt3DRender::QCullFace::NoCulling );
   renderStateSet->addRenderState( cullFace );
 
   return sceneEntitiesFilter;
@@ -278,14 +293,15 @@ void calculateViewExtent( Qt3DRender::QCamera *camera, float shadowRenderingDist
 void QgsShadowRenderingFrameGraph::setupDirectionalLight( const QgsDirectionalLightSettings &light, float maximumShadowRenderingDistance )
 {
   float minX, maxX, minZ, maxZ;
-  QVector3D lookingAt = mMainCamera->viewCenter();//(0.5 * (minX + maxX), mMainCamera->viewCenter().y(), 0.5 * (minZ + maxZ));
-  float d = 1.5f * ( mMainCamera->position() - mMainCamera->viewCenter() ).length();
+  QVector3D lookingAt = mMainCamera->viewCenter();
+  float d = maximumShadowRenderingDistance;//0.5 * ( mMainCamera->position() - mMainCamera->viewCenter() ).length();
 
   QVector3D vertical = QVector3D( 0.0f, d, 0.0f );
-  QVector3D lightPosition = lookingAt + vertical;
   QVector3D lightDirection = QVector3D( light.direction().x(), light.direction().y(), light.direction().z() ).normalized();
   calculateViewExtent( mMainCamera, maximumShadowRenderingDistance, lookingAt.y(), minX, maxX, minZ, maxZ );
 
+  lookingAt = QVector3D(0.5 * (minX + maxX), mMainCamera->viewCenter().y(), 0.5 * (minZ + maxZ));
+  QVector3D lightPosition = lookingAt + vertical;
   mLightCamera->setPosition( lightPosition );
   mLightCamera->setViewCenter( lookingAt );
   mLightCamera->setUpVector( QVector3D( 0.0f, 1.0f, 0.0f ) );
@@ -293,8 +309,8 @@ void QgsShadowRenderingFrameGraph::setupDirectionalLight( const QgsDirectionalLi
 
   mLightCamera->setProjectionType( Qt3DRender::QCameraLens::ProjectionType::OrthographicProjection );
   mLightCamera->lens()->setOrthographicProjection(
-    - 0.75 * ( maxX - minX ), 0.75 * ( maxX - minX ),
-    - 0.75 * ( maxZ - minZ ), 0.75 * ( maxZ - minZ ),
+    - 0.6 * ( maxX - minX ), 0.6 * ( maxX - minX ),
+    - 0.6 * ( maxZ - minZ ), 0.6 * ( maxZ - minZ ),
     1.0f, 2 * ( lookingAt - lightPosition ).length() );
 
   mPostprocessingEntity->setupShadowRenderingExtent( minX, maxX, minZ, maxZ );
