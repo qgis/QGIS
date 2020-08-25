@@ -452,7 +452,6 @@ Sets list of directional lights defined in the scene
 
     void setMaximumShadowRenderingDistance( float distance );
 %Docstring
-setMaximumShadowRenderingDistance
 Sets the maximum shadow rendering distance accounted for when rendering shadows
 Tweak this to reduce artifacts while looking up to the sky with the camera
 

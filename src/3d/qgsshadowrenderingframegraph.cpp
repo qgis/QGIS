@@ -281,12 +281,13 @@ void calculateViewExtent( Qt3DRender::QCamera *camera, float shadowRenderingDist
     float t = ( y - pt.y() ) / vect.y();
     if ( t < 0 )
       t = shadowRenderingDistance;
-    else t = qMin( t, shadowRenderingDistance );
+    else
+      t = std::min( t, shadowRenderingDistance );
     viewFrustumPoints[i] = pt + t * vect;
-    minX = qMin( minX, viewFrustumPoints[i].x() );
-    maxX = qMax( maxX, viewFrustumPoints[i].x() );
-    minZ = qMin( minZ, viewFrustumPoints[i].z() );
-    maxZ = qMax( maxZ, viewFrustumPoints[i].z() );
+    minX = std::min( minX, viewFrustumPoints[i].x() );
+    maxX = std::max( maxX, viewFrustumPoints[i].x() );
+    minZ = std::min( minZ, viewFrustumPoints[i].z() );
+    maxZ = std::max( maxZ, viewFrustumPoints[i].z() );
   }
 }
 
@@ -300,7 +301,7 @@ void QgsShadowRenderingFrameGraph::setupDirectionalLight( const QgsDirectionalLi
   QVector3D lightDirection = QVector3D( light.direction().x(), light.direction().y(), light.direction().z() ).normalized();
   calculateViewExtent( mMainCamera, maximumShadowRenderingDistance, lookingAt.y(), minX, maxX, minZ, maxZ );
 
-  lookingAt = QVector3D(0.5 * (minX + maxX), mMainCamera->viewCenter().y(), 0.5 * (minZ + maxZ));
+  lookingAt = QVector3D( 0.5 * ( minX + maxX ), mMainCamera->viewCenter().y(), 0.5 * ( minZ + maxZ ) );
   QVector3D lightPosition = lookingAt + vertical;
   mLightCamera->setPosition( lightPosition );
   mLightCamera->setViewCenter( lookingAt );

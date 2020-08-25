@@ -392,7 +392,6 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void setDirectionalLights( const QList<QgsDirectionalLightSettings> &directionalLights );
 
     /**
-     * @brief setMaximumShadowRenderingDistance
      * Sets the maximum shadow rendering distance accounted for when rendering shadows
      * Tweak this to reduce artifacts while looking up to the sky with the camera
      * \since QGIS 3.16
