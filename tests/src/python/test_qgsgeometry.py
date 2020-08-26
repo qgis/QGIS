@@ -842,7 +842,7 @@ class TestQgsGeometry(unittest.TestCase):
                                        "Perimeter {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result))
 
     def testCollection(self):
-        g = QgsGeometry.fromWkt('MultiLineString()')
+        g = QgsGeometry.fromWkt('MultiLineString EMPTY')
         self.assertEqual(len(g.get()), 0)
         self.assertTrue(g.get())
         g = QgsGeometry.fromWkt('MultiLineString((0 0, 1 1),(13 2, 14 1))')
@@ -4244,42 +4244,42 @@ class TestQgsGeometry(unittest.TestCase):
 
     def testDeleteVertexCircularString(self):
 
-        wkt = "CircularString ((0 0,1 1,2 0))"
+        wkt = "CircularString (0 0,1 1,2 0)"
         geom = QgsGeometry.fromWkt(wkt)
         assert geom.deleteVertex(0)
         self.assertEqual(geom.asWkt(), QgsCircularString().asWkt())
 
-        wkt = "CircularString ((0 0,1 1,2 0,3 -1,4 0))"
+        wkt = "CircularString (0 0,1 1,2 0,3 -1,4 0)"
         geom = QgsGeometry.fromWkt(wkt)
         assert geom.deleteVertex(0)
         expected_wkt = "CircularString (2 0, 3 -1, 4 0)"
         self.assertEqual(geom.asWkt(), QgsGeometry.fromWkt(expected_wkt).asWkt())
 
-        wkt = "CircularString ((0 0,1 1,2 0,3 -1,4 0))"
+        wkt = "CircularString (0 0,1 1,2 0,3 -1,4 0)"
         geom = QgsGeometry.fromWkt(wkt)
         assert geom.deleteVertex(1)
         expected_wkt = "CircularString (0 0, 3 -1, 4 0)"
         self.assertEqual(geom.asWkt(), QgsGeometry.fromWkt(expected_wkt).asWkt())
 
-        wkt = "CircularString ((0 0,1 1,2 0,3 -1,4 0))"
+        wkt = "CircularString (0 0,1 1,2 0,3 -1,4 0)"
         geom = QgsGeometry.fromWkt(wkt)
         assert geom.deleteVertex(2)
         expected_wkt = "CircularString (0 0, 1 1, 4 0)"
         self.assertEqual(geom.asWkt(), QgsGeometry.fromWkt(expected_wkt).asWkt())
 
-        wkt = "CircularString ((0 0,1 1,2 0,3 -1,4 0))"
+        wkt = "CircularString (0 0,1 1,2 0,3 -1,4 0)"
         geom = QgsGeometry.fromWkt(wkt)
         assert geom.deleteVertex(3)
         expected_wkt = "CircularString (0 0, 1 1, 4 0)"
         self.assertEqual(geom.asWkt(), QgsGeometry.fromWkt(expected_wkt).asWkt())
 
-        wkt = "CircularString ((0 0,1 1,2 0,3 -1,4 0))"
+        wkt = "CircularString (0 0,1 1,2 0,3 -1,4 0)"
         geom = QgsGeometry.fromWkt(wkt)
         assert geom.deleteVertex(4)
         expected_wkt = "CircularString (0 0,1 1,2 0)"
         self.assertEqual(geom.asWkt(), QgsGeometry.fromWkt(expected_wkt).asWkt())
 
-        wkt = "CircularString ((0 0,1 1,2 0,3 -1,4 0))"
+        wkt = "CircularString (0 0,1 1,2 0,3 -1,4 0)"
         geom = QgsGeometry.fromWkt(wkt)
         assert not geom.deleteVertex(-1)
         assert not geom.deleteVertex(5)
@@ -4528,7 +4528,7 @@ class TestQgsGeometry(unittest.TestCase):
         """
         Test curve straightDistance2d() and sinuosity()
         """
-        linestring = QgsGeometry.fromWkt('LineString()')
+        linestring = QgsGeometry.fromWkt('LineString EMPTY')
         self.assertTrue(math.isnan(linestring.constGet().straightDistance2d()))
         self.assertTrue(math.isnan(linestring.constGet().sinuosity()))
         linestring = QgsGeometry.fromWkt('LineString(0 0, 10 0)')
@@ -4844,7 +4844,7 @@ class TestQgsGeometry(unittest.TestCase):
         empty = QgsGeometry()
         o = QgsGeometry.polygonize([empty])
         self.assertFalse(o)
-        line = QgsGeometry.fromWkt('LineString()')
+        line = QgsGeometry.fromWkt('LineString EMPTY')
         o = QgsGeometry.polygonize([line])
         self.assertFalse(o)
 
@@ -4873,7 +4873,7 @@ class TestQgsGeometry(unittest.TestCase):
         empty = QgsGeometry()
         o = empty.delaunayTriangulation()
         self.assertFalse(o)
-        line = QgsGeometry.fromWkt('LineString()')
+        line = QgsGeometry.fromWkt('LineString EMPTY')
         o = line.delaunayTriangulation()
         self.assertFalse(o)
 
@@ -4952,7 +4952,7 @@ class TestQgsGeometry(unittest.TestCase):
         empty = QgsGeometry()
         o = empty.voronoiDiagram()
         self.assertFalse(o)
-        line = QgsGeometry.fromWkt('LineString()')
+        line = QgsGeometry.fromWkt('LineString EMPTY')
         o = line.voronoiDiagram()
         self.assertFalse(o)
 
@@ -5195,7 +5195,7 @@ class TestQgsGeometry(unittest.TestCase):
                  ["LINESTRING (10 10, 10 10)", "POINT (10 10)"],  # zero length line
                  ["MULTILINESTRING ((10 10, 10 10), (20 20, 20 20))", "POINT (15 15)"],  # zero length multiline
                  ["LINESTRING (60 180, 120 100, 180 180)", "POINT (120 140)"],
-                 ["LINESTRING (80 0, 80 120, 120 120, 120 0))", "POINT (100 68.57142857142857)"],
+                 ["LINESTRING (80 0, 80 120, 120 120, 120 0)", "POINT (100 68.57142857142857)"],
                  ["MULTILINESTRING ((0 0, 0 100), (100 0, 100 100))", "POINT (50 50)"],
                  [" MULTILINESTRING ((0 0, 0 200, 200 200, 200 0, 0 0),(60 180, 20 180, 20 140, 60 140, 60 180))",
                   "POINT (90 110)"],
@@ -5786,24 +5786,24 @@ class TestQgsGeometry(unittest.TestCase):
             coerce_to_wkt('MultiPolygon(((1 1, 2 2, 3 3, 1 1)), ((1 1, 2 2, 3 3, 1 1)))', QgsWkbTypes.MultiPolygon),
             ['MultiPolygon (((1 1, 2 2, 3 3, 1 1)),((1 1, 2 2, 3 3, 1 1)))'])
 
-        self.assertEqual(coerce_to_wkt('LineString((1 1, 2 2, 3 3, 1 1))', QgsWkbTypes.LineString),
-                         ['LineString (0 1, 2 2, 3 3, 1 0)'])
-        self.assertEqual(coerce_to_wkt('LineString z ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', QgsWkbTypes.LineString),
-                         ['LineString (0 1, 2 2, 3 3, 1 1)'])
-        self.assertEqual(coerce_to_wkt('LineString z ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', QgsWkbTypes.LineStringZ),
-                         ['LineStringZ (0 1 1, 2 2 2, 3 3 3, 1 1 0)'])
-        self.assertEqual(coerce_to_wkt('LineString m ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', QgsWkbTypes.LineString),
-                         ['LineString (0 1, 2 2, 3 3, 1 1)'])
-        self.assertEqual(coerce_to_wkt('LineString m ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', QgsWkbTypes.LineStringM),
-                         ['LineStringM (0 1 1, 2 2 2, 3 3 3, 1 1 0)'])
+        self.assertEqual(coerce_to_wkt('LineString(1 1, 2 2, 3 3, 1 1)', QgsWkbTypes.LineString),
+                         ['LineString (1 1, 2 2, 3 3, 1 1)'])
+        self.assertEqual(coerce_to_wkt('LineString z (1 1 1, 2 2 2, 3 3 3, 1 1 1)', QgsWkbTypes.LineString),
+                         ['LineString (1 1, 2 2, 3 3, 1 1)'])
+        self.assertEqual(coerce_to_wkt('LineString z (1 1 1, 2 2 2, 3 3 3, 1 1 1)', QgsWkbTypes.LineStringZ),
+                         ['LineStringZ (1 1 1, 2 2 2, 3 3 3, 1 1 1)'])
+        self.assertEqual(coerce_to_wkt('LineString m (1 1 1, 2 2 2, 3 3 3, 1 1 1)', QgsWkbTypes.LineString),
+                         ['LineString (1 1, 2 2, 3 3, 1 1)'])
+        self.assertEqual(coerce_to_wkt('LineString m (1 1 1, 2 2 2, 3 3 3, 1 1 1)', QgsWkbTypes.LineStringM),
+                         ['LineStringM (1 1 1, 2 2 2, 3 3 3, 1 1 1)'])
 
         # Adding Z back
-        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3, 1 1))', QgsWkbTypes.LineStringZ),
-                         ['LineStringZ (1 1 0, 2 2 0, 3 3 0, 1 0 0)'])
+        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3, 1 1)', QgsWkbTypes.LineStringZ),
+                         ['LineStringZ (1 1 0, 2 2 0, 3 3 0, 1 1 0)'])
 
         # Adding M back
-        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3, 1 1))', QgsWkbTypes.LineStringM),
-                         ['LineStringM (1 1 0, 2 2 0, 3 3 0, 1 0 0)'])
+        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3, 1 1)', QgsWkbTypes.LineStringM),
+                         ['LineStringM (1 1 0, 2 2 0, 3 3 0, 1 1 0)'])
 
         self.assertEqual(coerce_to_wkt('LineString(1 1, 2 2, 3 3, 1 1)', QgsWkbTypes.MultiLineString),
                          ['MultiLineString ((1 1, 2 2, 3 3, 1 1))'])
