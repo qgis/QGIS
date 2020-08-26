@@ -109,7 +109,7 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
      * and 1.0 (fully opaque).
      * \see opacity()
      */
-    void setOpacity( double opacity ) { mOpacity = opacity; }
+    void setOpacity( double opacity );
 
     /**
      * Returns the opacity for the annotation layer, where opacity is a value between 0 (totally transparent)
