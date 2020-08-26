@@ -81,6 +81,10 @@ QgsOracleProvider::QgsOracleProvider( QString const &uri, const ProviderOptions 
   mSrid = mUri.srid().toInt();
   mRequestedGeomType = mUri.wkbType();
   mUseEstimatedMetadata = mUri.useEstimatedMetadata();
+  if ( mReadFlags & QgsDataProvider::FlagTrustDataSource )
+  {
+    mUseEstimatedMetadata = true;
+  }
   mIncludeGeoAttributes = mUri.hasParam( "includegeoattributes" ) ? mUri.param( "includegeoattributes" ) == "true" : false;
 
   QgsOracleConn *conn = connectionRO();
@@ -2563,6 +2567,13 @@ bool QgsOracleProvider::getGeometryDetails()
   {
     mDetectedGeomType = QgsWkbTypes::NoGeometry;
     mValid = true;
+    return true;
+  }
+
+  // Trust the datasource config means that we used requested geometry type and srid
+  if ( mReadFlags & QgsDataProvider::FlagTrustDataSource )
+  {
+    mDetectedGeomType = mRequestedGeomType;
     return true;
   }
 

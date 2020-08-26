@@ -122,16 +122,21 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
   mRequestedSrid = mUri.srid();
   mRequestedGeomType = mUri.wkbType();
 
-  if ( mUri.hasParam( QStringLiteral( "checkPrimaryKeyUnicity" ) ) )
+  const QString checkUnicityKey { QStringLiteral( "checkPrimaryKeyUnicity" ) };
+  if ( mUri.hasParam( checkUnicityKey ) )
   {
 
-    if ( mUri.param( QStringLiteral( "checkPrimaryKeyUnicity" ) ).compare( QLatin1String( "0" ) )  == 0 )
+    if ( mUri.param( checkUnicityKey ).compare( QLatin1String( "0" ) )  == 0 )
     {
       mCheckPrimaryKeyUnicity = false;
     }
     else
     {
       mCheckPrimaryKeyUnicity = true;
+    }
+    if ( mReadFlags & QgsDataProvider::FlagTrustDataSource )
+    {
+      mCheckPrimaryKeyUnicity = false;
     }
   }
 
@@ -157,6 +162,10 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
   }
 
   mUseEstimatedMetadata = mUri.useEstimatedMetadata();
+  if ( mReadFlags & QgsDataProvider::FlagTrustDataSource )
+  {
+    mUseEstimatedMetadata = true;
+  }
   mSelectAtIdDisabled = mUri.selectAtIdDisabled();
 
   QgsDebugMsgLevel( QStringLiteral( "Connection info is %1" ).arg( mUri.connectionInfo( false ) ), 2 );
@@ -3734,6 +3743,58 @@ bool QgsPostgresProvider::getGeometryDetails()
   QString tableName = mTableName;
   QString geomCol = mGeometryColumn;
   QString geomColType;
+
+  // Trust the datasource config means that we used requested geometry type and srid
+  // We only need to get the spatial column type
+  if ( ( mReadFlags & QgsDataProvider::FlagTrustDataSource ) &&
+       mRequestedGeomType != QgsWkbTypes::Unknown &&
+       !mRequestedSrid.isEmpty() )
+  {
+    if ( mIsQuery )
+    {
+      sql = QStringLiteral(
+              "SELECT t.typname FROM pg_type t inner join (SELECT pg_typeof(%1) typeof FROM %2 LIMIT 1) g ON oid = g.typeof"
+            ).arg( quotedIdentifier( geomCol ), mQuery );
+    }
+    else
+    {
+      sql = QStringLiteral(
+              "SELECT t.typname FROM pg_type t inner join (SELECT pg_typeof(%1) typeof FROM %2.%3 LIMIT 1) g ON oid = g.typeof"
+            ).arg( quotedIdentifier( geomCol ),
+                   quotedValue( schemaName ),
+                   quotedValue( tableName ) );
+    }
+    QgsDebugMsgLevel( QStringLiteral( "Getting the spatial column type: %1" ).arg( sql ), 2 );
+
+    result = connectionRO()->PQexec( sql );
+    if ( PGRES_TUPLES_OK == result.PQresultStatus() )
+    {
+      geomColType = result.PQgetvalue( 0, 0 );
+
+      // Get spatial col type
+      if ( geomColType == QLatin1String( "geometry" ) )
+        mSpatialColType = SctGeometry;
+      else if ( geomColType == QLatin1String( "geography" ) )
+        mSpatialColType = SctGeography;
+      else if ( geomColType == QLatin1String( "topogeometry" ) )
+        mSpatialColType = SctTopoGeometry;
+      else if ( geomColType == QLatin1String( "pcpatch" ) )
+        mSpatialColType = SctPcPatch;
+      else
+        mSpatialColType = SctNone;
+
+      // Use requested geometry type and srid
+      mDetectedGeomType = mRequestedGeomType;
+      mDetectedSrid     = mRequestedSrid;
+      mValid = true;
+      return true;
+    }
+    else
+    {
+      mValid = false;
+      return false;
+    }
+  }
 
   if ( mIsQuery )
   {
