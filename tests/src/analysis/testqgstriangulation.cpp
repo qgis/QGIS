@@ -185,7 +185,12 @@ void TestQgsTriangulation::meshTriangulation()
   mLayerPointZ->dataProvider()->addFeatures( flist );
 
   QgsCoordinateTransformContext transformContext;
-  meshTri.addVertices( mLayerPointZ, -1, transformContext );
+  QgsCoordinateTransform transform( mLayerPointZ->crs(),
+                                    QgsCoordinateReferenceSystem( "EPSG:32620" ),
+                                    transformContext );
+
+  QgsFeatureIterator fIt = mLayerPointZ->getFeatures();
+  meshTri.addVertices( fIt, -1, transform );
 
   QgsMesh mesh = meshTri.triangulatedMesh();
 
@@ -208,7 +213,12 @@ void TestQgsTriangulation::meshTriangulation()
   QgsFeature f5;
   f5.setGeometry( QgsGeometry::fromWkt( wkt5 ) );
   mLayerBreakLine->dataProvider()->addFeature( f5 );
-  meshTri.addBreakLines( mLayerBreakLine, -1, transformContext );
+
+  transform = QgsCoordinateTransform( mLayerBreakLine->crs(),
+                                      QgsCoordinateReferenceSystem( "EPSG:32620" ),
+                                      transformContext );
+  fIt = mLayerBreakLine->getFeatures();
+  meshTri.addBreakLines( fIt, -1, transform );
 
   mesh = meshTri.triangulatedMesh();
 

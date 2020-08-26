@@ -22,6 +22,7 @@
 #include "qgsprocessingfieldmapwidgetwrapper.h"
 #include "qgsprocessingaggregatewidgetwrapper.h"
 #include "qgsprocessingwidgetwrapperimpl.h"
+#include "qgsprocessingtininputlayerswidget.h"
 #include "qgsprocessingparameters.h"
 #include "qgis.h"
 #include "qgslogger.h"
@@ -70,6 +71,7 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingFolderDestinationWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingFieldMapWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingAggregateWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingTinInputLayersWidgetWrapper() );
 }
 
 QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()

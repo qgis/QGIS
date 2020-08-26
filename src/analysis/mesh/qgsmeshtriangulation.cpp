@@ -24,6 +24,7 @@
 #include "qgsmultisurface.h"
 #include "qgsmulticurve.h"
 #include "qgsfeedback.h"
+#include "qgslogger.h"
 
 QgsMeshTriangulation::QgsMeshTriangulation(): QObject()
 {
@@ -33,29 +34,17 @@ QgsMeshTriangulation::QgsMeshTriangulation(): QObject()
 
 QgsMeshTriangulation::~QgsMeshTriangulation() = default;
 
-
-bool QgsMeshTriangulation::addVertices( QgsVectorLayer *vectorLayer,
-                                        int valueAttribute,
-                                        const QgsCoordinateTransformContext &transformContext,
-                                        QgsFeedback *feedback )
+bool QgsMeshTriangulation::addVertices( QgsFeatureIterator &vertexFeatureIterator, int valueAttribute, const QgsCoordinateTransform &transform, QgsFeedback *feedback, int featureCount )
 {
-  if ( !vectorLayer )
-    return false;
-
-  if ( !vectorLayer->isValid() )
+  if ( !vertexFeatureIterator.isValid() || vertexFeatureIterator.isClosed() )
     return false;
 
   if ( feedback )
     feedback->setProgress( 0 );
 
-  QgsCoordinateTransform transform( vectorLayer->crs(), mCrs, transformContext );
-
-  QgsFeatureIterator fIt = vectorLayer->getFeatures();
   QgsFeature feat;
-  bool isZValueGeom = valueAttribute < 0;
   int i = 0;
-  int featureCount = vectorLayer->featureCount();
-  while ( fIt.nextFeature( feat ) )
+  while ( vertexFeatureIterator.nextFeature( feat ) )
   {
     if ( feedback )
     {
@@ -66,63 +55,49 @@ bool QgsMeshTriangulation::addVertices( QgsVectorLayer *vectorLayer,
       i++;
     }
 
-    QgsGeometry geom = feat.geometry();
-    geom.transform( transform, QgsCoordinateTransform::ForwardTransform, true );
-    QgsAbstractGeometry::vertex_iterator vit = geom.vertices_begin();
-
-    double value = 0;
-    if ( !isZValueGeom )
-      value = feat.attribute( valueAttribute ).toDouble();
-
-    while ( vit != geom.vertices_end() )
-    {
-      if ( feedback && feedback->isCanceled() )
-        break;
-      if ( isZValueGeom )
-        mTriangulation->addPoint( *vit );
-      else
-      {
-        ;
-        mTriangulation->addPoint( QgsPoint( QgsWkbTypes::PointZ, ( *vit ).x(), ( *vit ).y(), value ) );
-      }
-      ++vit;
-    }
+    addVerticesFromFeature( feat, valueAttribute, transform, feedback );
   }
 
   return true;
 }
 
-bool QgsMeshTriangulation::addBreakLines( QgsVectorLayer *vectorLayer, int valueAttribute, const QgsCoordinateTransformContext &transformContext, QgsFeedback *feedback )
+bool QgsMeshTriangulation::addBreakLines( QgsFeatureIterator &lineFeatureIterator, int valueAttribute, const QgsCoordinateTransform &transform, QgsFeedback *feedback, int featureCount )
 {
-  if ( !vectorLayer )
+  if ( !lineFeatureIterator.isValid() || lineFeatureIterator.isClosed() )
     return false;
 
-  QgsCoordinateTransform transform( vectorLayer->crs(), mCrs, transformContext );
+  if ( feedback )
+    feedback->setProgress( 0 );
 
-  QgsWkbTypes::GeometryType geomType = vectorLayer->geometryType();
-
-  switch ( geomType )
+  QgsFeature feat;
+  int i = 0;
+  while ( lineFeatureIterator.nextFeature( feat ) )
   {
-    case QgsWkbTypes::PointGeometry:
-      return addVertices( vectorLayer, valueAttribute, transformContext, feedback );
-      break;
-    case QgsWkbTypes::LineGeometry:
-    case QgsWkbTypes::PolygonGeometry:
+    if ( feedback )
     {
-      QgsFeatureIterator fIt = vectorLayer->getFeatures();
-      QgsFeature feat;
-      while ( fIt.nextFeature( feat ) )
-      {
-        addBreakLinesFromFeature( feat, valueAttribute, transform, feedback );
-      }
-      return true;
+      if ( feedback->isCanceled() )
+        break;
+
+      feedback->setProgress( 100 * i / featureCount );
+      i++;
     }
-    break;
-    default:
-      return false;
+
+    QgsWkbTypes::GeometryType geomType = feat.geometry().type();
+    switch ( geomType )
+    {
+      case QgsWkbTypes::PointGeometry:
+        addVerticesFromFeature( feat, valueAttribute, transform, feedback );
+        break;
+      case QgsWkbTypes::LineGeometry:
+      case QgsWkbTypes::PolygonGeometry:
+        addBreakLinesFromFeature( feat, valueAttribute, transform, feedback );
+        break;
+      default:
+        break;
+    }
   }
 
-  return false;
+  return true;
 }
 
 QgsMesh QgsMeshTriangulation::triangulatedMesh() const
@@ -133,6 +108,40 @@ QgsMesh QgsMeshTriangulation::triangulatedMesh() const
 void QgsMeshTriangulation::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
   mCrs = crs;
+}
+
+void QgsMeshTriangulation::addVerticesFromFeature( const QgsFeature &feature, int valueAttribute, const QgsCoordinateTransform &transform, QgsFeedback *feedback )
+{
+  QgsGeometry geom = feature.geometry();
+  try
+  {
+    geom.transform( transform, QgsCoordinateTransform::ForwardTransform, true );
+  }
+  catch ( QgsCsException &cse )
+  {
+    Q_UNUSED( cse )
+    QgsDebugMsgLevel( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ), 4 );
+    return;
+  }
+
+  QgsAbstractGeometry::vertex_iterator vit = geom.vertices_begin();
+
+  double value = 0;
+  if ( valueAttribute >= 0 )
+    value = feature.attribute( valueAttribute ).toDouble();
+
+  while ( vit != geom.vertices_end() )
+  {
+    if ( feedback && feedback->isCanceled() )
+      break;
+    if ( valueAttribute < 0 )
+      mTriangulation->addPoint( *vit );
+    else
+    {
+      mTriangulation->addPoint( QgsPoint( QgsWkbTypes::PointZ, ( *vit ).x(), ( *vit ).y(), value ) );
+    }
+    ++vit;
+  }
 }
 
 void QgsMeshTriangulation::addBreakLinesFromFeature( const QgsFeature &feature, int valueAttribute, const QgsCoordinateTransform &transform, QgsFeedback *feedback )
@@ -147,7 +156,17 @@ void QgsMeshTriangulation::addBreakLinesFromFeature( const QgsFeature &feature, 
   //from QgsTinInterpolator::insertData()
   std::vector<const QgsCurve *> curves;
   QgsGeometry geom = feature.geometry();
-  geom.transform( transform, QgsCoordinateTransform::ForwardTransform, true );
+  try
+  {
+    geom.transform( transform, QgsCoordinateTransform::ForwardTransform, true );
+  }
+  catch ( QgsCsException &cse )
+  {
+    Q_UNUSED( cse )
+    QgsDebugMsgLevel( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ), 4 );
+    return;
+  }
+
   if ( QgsWkbTypes::geometryType( geom.wkbType() ) == QgsWkbTypes::PolygonGeometry )
   {
     std::vector< const QgsCurvePolygon * > polygons;
@@ -219,7 +238,11 @@ void QgsMeshTriangulation::addBreakLinesFromFeature( const QgsFeature &feature, 
     curve->points( linePoints );
     if ( valueAttribute >= 0 )
       for ( QgsPoint &point : linePoints )
+      {
+        if ( feedback && feedback->isCanceled() )
+          break;
         point.setZ( valueOnVertex );
+      }
 
     mTriangulation->addLine( linePoints, QgsInterpolator::SourceBreakLines );
   }
@@ -228,7 +251,7 @@ void QgsMeshTriangulation::addBreakLinesFromFeature( const QgsFeature &feature, 
 QgsMeshZValueDatasetGroup::QgsMeshZValueDatasetGroup( const QString &datasetGroupName, const QgsMesh &mesh ):
   QgsMeshDatasetGroup( datasetGroupName, QgsMeshDatasetGroupMetadata::DataOnVertices )
 {
-  mDataset.reset( new QgsMeshZValueDataset( mesh ) );
+  mDataset = qgis::make_unique< QgsMeshZValueDataset >( mesh );
 }
 
 void QgsMeshZValueDatasetGroup::initialize()

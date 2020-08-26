@@ -25,6 +25,7 @@
 class QgsVectorLayer;
 class QgsCoordinateTransformContext;
 class QgsFeature;
+class QgsFeatureIterator;
 class QgsTriangulation;
 class QgsFeedback;
 
@@ -41,30 +42,34 @@ class ANALYSIS_EXPORT QgsMeshTriangulation : public QObject
     Q_OBJECT
   public:
 
-    //! Contructor
+    //! Constructor
     QgsMeshTriangulation();
 
     //! Destructor
     ~QgsMeshTriangulation();
 
     /**
-     * Adds vertices to the triangulation from a vector layer, return true if success.
+     * Adds vertices to the triangulation from a feature iterator, return TRUE if successful.
      *
-     * \param vectorLayer the vector layer with vertices to insert
+     * \param vertexFeatureIterator the feature iterator of vertices to insert
      * \param valueAttribute the index of the attribute that represents the value of vertices, if -1 uses Z coordinate of vertices
-     * \param transformContext the transform context used to transform coordinates
+     * \param transform the coordinates transform used to transform coordinates
+     * \param feedback feedback argument may be specified to allow cancellation and progress reports
+     * \param featureCount the count of feature to allow progress report of the feedback
      */
-    bool addVertices( QgsVectorLayer *vectorLayer, int valueAttribute, const QgsCoordinateTransformContext &transformContext, QgsFeedback *feedback = nullptr );
+    bool addVertices( QgsFeatureIterator &vertexFeatureIterator, int valueAttribute, const QgsCoordinateTransform &transform, QgsFeedback *feedback = nullptr, int featureCount = 1 );
 
     /**
-     * Adds break lines from a vector layer, return true if success
-     * \param vectorLayer the vector layer with break lines to insert
+     * Adds break lines from a vector layer, return TRUE if successful.
+     * \param lineFeatureIterator the feature iterator of break lines to insert
      * \param valueAttribute the index of the attribute that represents the value of vertices, if -1 uses Z coordinate of vertices
-     * \param transformContext the transform context used to transform coordinates
+     * \param transform the coordinates transform used to transform coordinates
+     * \param feedback feedback argument may be specified to allow cancellation and progress reports
+     * \param featureCount the count of feature to allow progress report of the feedback
      *
-     * \note if the vector layer contain point, only vertices will be added without breaklines
+     * \warning if the feature iterator contains only point geometries, the vertices will be added only without treating them as breaklines
      */
-    bool addBreakLines( QgsVectorLayer *linesSource, int valueAttribute, const QgsCoordinateTransformContext &transformContext, QgsFeedback *feedback = nullptr );
+    bool addBreakLines( QgsFeatureIterator &lineFeatureIterator, int valueAttribute, const QgsCoordinateTransform &transformContext, QgsFeedback *feedback = nullptr, int featureCount = 1 );
 
     //! Returns the triangulated mesh
     QgsMesh triangulatedMesh() const;
@@ -80,6 +85,7 @@ class ANALYSIS_EXPORT QgsMeshTriangulation : public QObject
     QgsCoordinateReferenceSystem mCrs;
     std::unique_ptr<QgsTriangulation> mTriangulation;
 
+    void addVerticesFromFeature( const QgsFeature &feature, int valueAttribute, const QgsCoordinateTransform &transform, QgsFeedback *feedback = nullptr );
     void addBreakLinesFromFeature( const QgsFeature &feature, int valueAttribute, const QgsCoordinateTransform &transform, QgsFeedback *feedback = nullptr );
 };
 

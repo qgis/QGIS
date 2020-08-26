@@ -283,6 +283,7 @@ SET(QGIS_GUI_SRCS
   processing/qgsprocessingparameterdefinitionwidget.cpp
   processing/qgsprocessingparameterswidget.cpp
   processing/qgsprocessingrecentalgorithmlog.cpp
+  processing/qgsprocessingtininputlayerswidget.cpp
   processing/qgsprocessingtoolboxmodel.cpp
   processing/qgsprocessingtoolboxtreeview.cpp
   processing/qgsprocessingvectortilewriterlayerswidgetwrapper.cpp
@@ -1024,6 +1025,7 @@ SET(QGIS_GUI_HDRS
   processing/qgsprocessingparameterdefinitionwidget.h
   processing/qgsprocessingparameterswidget.h
   processing/qgsprocessingrecentalgorithmlog.h
+  processing/qgsprocessingtininputlayerswidget.h
   processing/qgsprocessingtoolboxmodel.h
   processing/qgsprocessingtoolboxtreeview.h
   processing/qgsprocessingvectortilewriterlayerswidgetwrapper.h

@@ -1,0 +1,165 @@
+/***************************************************************************
+                         qgsalgorithmtinmeshcreation.cpp
+                         ---------------------------
+    begin                : August 2020
+    copyright            : (C) 2020 by Vincent Cloarec
+    email                : vcloarec at gmail dot com
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "qgsalgorithmtinmeshcreation.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgsprocessingparametertininputlayers.h"
+#include "qgsmeshtriangulation.h"
+#include "qgsmeshlayer.h"
+#include "qgis.h"
+
+QString QgsTinMeshCreationAlgorithm::group() const
+{
+  return QObject::tr( "Mesh" );
+}
+
+QString QgsTinMeshCreationAlgorithm::groupId() const
+{
+  return QStringLiteral( "mesh" );
+}
+
+QString QgsTinMeshCreationAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "TIN mesh creation from vector layers" );
+}
+
+QString QgsTinMeshCreationAlgorithm::name() const
+{
+  return QStringLiteral( "tinmeshcreation" );
+}
+
+QString QgsTinMeshCreationAlgorithm::displayName() const
+{
+  return QObject::tr( "TIN Mesh Creation" );
+}
+
+QgsProcessingAlgorithm *QgsTinMeshCreationAlgorithm::createInstance() const
+{
+  return new QgsTinMeshCreationAlgorithm();
+}
+
+void QgsTinMeshCreationAlgorithm::initAlgorithm( const QVariantMap &configuration )
+{
+  Q_UNUSED( configuration );
+  addParameter( new QgsProcessingParameterTinInputLayers( QStringLiteral( "SOURCE_DATA" ), QObject::tr( "Input layers" ) ) );
+
+  const QList<QgsMeshDriverMetadata> &driverList =
+    QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "mdal" ) )->meshDriversMetadata();
+
+  for ( const QgsMeshDriverMetadata &driverMeta : driverList )
+    if ( driverMeta.capabilities() & QgsMeshDriverMetadata::CanWriteMeshData )
+      mAvailableFormat.append( driverMeta.name() );
+
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "MESH_FORMAT" ), QObject::tr( "Output format" ), mAvailableFormat, false, 0 ) );
+  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS_OUTPUT" ), QObject::tr( "Output Coordinate System" ), QVariant(), true ) );
+  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT_MESH" ), QObject::tr( "Output File" ) ) );
+}
+
+bool QgsTinMeshCreationAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  Q_UNUSED( feedback );
+  QVariant layersVariant = parameters.value( parameterDefinition( QStringLiteral( "SOURCE_DATA" ) )->name() );
+  if ( layersVariant.type() != QVariant::List )
+    return false;
+
+  QVariantList layersList = layersVariant.toList();
+
+  QgsCoordinateReferenceSystem destinationCrs = parameterAsCrs( parameters, QStringLiteral( "CRS_OUTPUT" ), context );
+  if ( !destinationCrs.isValid() )
+    destinationCrs = context.project()->crs();
+
+  for ( const QVariant &layer : layersList )
+  {
+    if ( layer.type() != QVariant::Map )
+      continue;
+    QVariantMap layerMap = layer.toMap();
+    QString layerId = layerMap.value( QStringLiteral( "Id" ) ).toString();
+    QgsProcessingParameterTinInputLayers::Type type =
+      static_cast<QgsProcessingParameterTinInputLayers::Type>( layerMap.value( QStringLiteral( "Type" ) ).toInt() );
+    int attributeIndex = layerMap.value( QStringLiteral( "AttributeIndex" ) ).toInt();
+
+    QgsVectorLayer *vectorLayer = context.project()->mapLayer<QgsVectorLayer *>( layerId );
+    if ( !vectorLayer || !vectorLayer->isValid() )
+      continue;
+
+    QgsCoordinateTransform transform( vectorLayer->crs(), destinationCrs, context.transformContext() );
+    int featureCount = vectorLayer->featureCount();
+    switch ( type )
+    {
+      case QgsProcessingParameterTinInputLayers::Vertices:
+        mVerticesLayer.append( {vectorLayer->getFeatures(), transform, attributeIndex, featureCount} );
+        break;
+      case QgsProcessingParameterTinInputLayers::BreakLines:
+        mBreakLinesLayer.append( {vectorLayer->getFeatures(), transform, attributeIndex, featureCount} );
+        break;
+    }
+  }
+
+  if ( mVerticesLayer.isEmpty() && mBreakLinesLayer.isEmpty() )
+    return false;
+  return true;
+}
+
+QVariantMap QgsTinMeshCreationAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  QgsMeshTriangulation triangulation;
+  QgsCoordinateReferenceSystem destinationCrs = parameterAsCrs( parameters, QStringLiteral( "CRS_OUTPUT" ), context );
+  if ( !destinationCrs.isValid() )
+    destinationCrs = context.project()->crs();
+  triangulation.setCrs( destinationCrs );
+
+  for ( Layer &l : mVerticesLayer )
+    triangulation.addVertices( l.fit, l.attributeIndex, l.transform, feedback, l.featureCount );
+
+  for ( Layer &l : mBreakLinesLayer )
+    triangulation.addBreakLines( l.fit, l.attributeIndex, l.transform, feedback, l.featureCount );
+
+  QString fileName = parameterAsFile( parameters, QStringLiteral( "OUTPUT_MESH" ), context );
+  int driverIndex = parameterAsEnum( parameters, QStringLiteral( "MESH_FORMAT" ), context );
+  QString driver = mAvailableFormat.at( driverIndex );
+  QgsMesh mesh = triangulation.triangulatedMesh();
+
+  QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "mdal" ) );
+  if ( providerMetadata )
+    providerMetadata->createMeshData( mesh, fileName, driver, destinationCrs );
+
+  context.addLayerToLoadOnCompletion( fileName, QgsProcessingContext::LayerDetails( "TIN Mesh",
+                                      context.project(),
+                                      "TIN",
+                                      QgsProcessingUtils::LayerHint::Mesh ) );
+
+  //SELAFIN format doesn't support saving Z value on mesh vertices, so create a specific dataset group
+  if ( driver == "SELAFIN" )
+  {
+    addZValueDataset( fileName, mesh, driver );
+  }
+
+  QVariantMap ret;
+  ret[QStringLiteral( "OUTPUT_MESH" )] = fileName;
+
+  return ret;
+}
+
+void QgsTinMeshCreationAlgorithm::addZValueDataset( const QString &fileName, const QgsMesh &mesh, const QString &driver )
+{
+  std::unique_ptr<QgsMeshLayer> tempLayer = qgis::make_unique<QgsMeshLayer>( fileName, "temp", "mdal" );
+  QgsMeshZValueDatasetGroup *zValueDatasetGroup = new QgsMeshZValueDatasetGroup( QObject::tr( "Terrain Elevation" ), mesh );
+  tempLayer->addDatasets( zValueDatasetGroup );
+  int datasetGroupIndex = tempLayer->datasetGroupCount() - 1;
+  tempLayer->saveDataset( fileName, datasetGroupIndex, driver );
+}

@@ -953,7 +953,7 @@ bool QgsMdalProviderMetadata::createMeshData( const QgsMesh &mesh, const QString
     faceIndex += faceCount;
   }
 
-  MDAL_M_setProjection( mdalMesh, crs.toWkt().toStdString().c_str() );
+  MDAL_M_setProjection( mdalMesh, crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ).toStdString().c_str() );
 
   MDAL_SaveMesh( mdalMesh, uri.toStdString().c_str(), driverName.toStdString().c_str() );
 
