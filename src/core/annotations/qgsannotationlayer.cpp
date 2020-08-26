@@ -37,7 +37,7 @@ QgsAnnotationLayer::~QgsAnnotationLayer()
 
 void QgsAnnotationLayer::reset()
 {
-  mOpacity = 100.0;
+  mOpacity = 1.0;
   setCrs( QgsCoordinateReferenceSystem() );
   setTransformContext( QgsCoordinateTransformContext() );
   clear();

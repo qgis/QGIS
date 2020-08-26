@@ -129,7 +129,7 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
 
   private:
     QMap<QString, QgsAnnotationItem *> mItems;
-    double mOpacity = 100;
+    double mOpacity = 1;
     QgsCoordinateTransformContext mTransformContext;
 };
 
