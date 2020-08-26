@@ -226,7 +226,7 @@ QVector3D WorldPosFromDepth( QMatrix4x4 projMatrixInv, QMatrix4x4 viewMatrixInv,
 }
 
 // computes the portion of the Y=y plane the camera is looking at
-void calculateViewExtent( Qt3DRender::QCamera *camera, float shadowRenderingDistance, float y, float &minX, float &maxX, float &minZ, float &maxZ )
+void calculateViewExtent( Qt3DRender::QCamera *camera, float shadowRenderingDistance, float y, float &minX, float &maxX, float &minY, float &maxY, float &minZ, float &maxZ )
 {
   QVector3D cameraPos = camera->position();
   QMatrix4x4 projectionMatrix = camera->projectionMatrix();
@@ -247,16 +247,23 @@ void calculateViewExtent( Qt3DRender::QCamera *camera, float shadowRenderingDist
     QVector3D( 1.0f,  1.0f, depth )
   };
   maxX = std::numeric_limits<float>::lowest();
+  maxY = std::numeric_limits<float>::lowest();
   maxZ = std::numeric_limits<float>::lowest();
   minX = std::numeric_limits<float>::max();
+  minY = std::numeric_limits<float>::max();
   minZ = std::numeric_limits<float>::max();
-//  float shadowRenderingDistance = 1000.0f;
   for ( int i = 0; i < viewFrustumPoints.size(); ++i )
   {
     // convert from view port space to world space
     viewFrustumPoints[i] = WorldPosFromDepth(
                              projectionMatrixInv, viewMatrixInv,
                              viewFrustumPoints[i].x(), viewFrustumPoints[i].y(), viewFrustumPoints[i].z() );
+    minX = std::min( minX, viewFrustumPoints[i].x() );
+    maxX = std::max( maxX, viewFrustumPoints[i].x() );
+    minY = std::min( minY, viewFrustumPoints[i].y() );
+    maxY = std::max( maxY, viewFrustumPoints[i].y() );
+    minZ = std::min( minZ, viewFrustumPoints[i].z() );
+    maxZ = std::max( maxZ, viewFrustumPoints[i].z() );
     // find the intersection between the line going from cameraPos to the frustum quad point
     // and the horizontal plane Y=y
     // if the intersection is on the back side of the viewing panel we get a point that is
@@ -271,6 +278,8 @@ void calculateViewExtent( Qt3DRender::QCamera *camera, float shadowRenderingDist
     viewFrustumPoints[i] = pt + t * vect;
     minX = std::min( minX, viewFrustumPoints[i].x() );
     maxX = std::max( maxX, viewFrustumPoints[i].x() );
+    minY = std::min( minY, viewFrustumPoints[i].y() );
+    maxY = std::max( maxY, viewFrustumPoints[i].y() );
     minZ = std::min( minZ, viewFrustumPoints[i].z() );
     maxZ = std::max( maxZ, viewFrustumPoints[i].z() );
   }
@@ -278,13 +287,13 @@ void calculateViewExtent( Qt3DRender::QCamera *camera, float shadowRenderingDist
 
 void QgsShadowRenderingFrameGraph::setupDirectionalLight( const QgsDirectionalLightSettings &light, float maximumShadowRenderingDistance )
 {
-  float minX, maxX, minZ, maxZ;
+  float minX, maxX, minY, maxY, minZ, maxZ;
   QVector3D lookingAt = mMainCamera->viewCenter();
   float d = maximumShadowRenderingDistance;//0.5 * ( mMainCamera->position() - mMainCamera->viewCenter() ).length();
 
   QVector3D vertical = QVector3D( 0.0f, d, 0.0f );
   QVector3D lightDirection = QVector3D( light.direction().x(), light.direction().y(), light.direction().z() ).normalized();
-  calculateViewExtent( mMainCamera, maximumShadowRenderingDistance, lookingAt.y(), minX, maxX, minZ, maxZ );
+  calculateViewExtent( mMainCamera, maximumShadowRenderingDistance, lookingAt.y(), minX, maxX, minY, maxY, minZ, maxZ );
 
   lookingAt = QVector3D( 0.5 * ( minX + maxX ), mMainCamera->viewCenter().y(), 0.5 * ( minZ + maxZ ) );
   QVector3D lightPosition = lookingAt + vertical;
@@ -295,8 +304,8 @@ void QgsShadowRenderingFrameGraph::setupDirectionalLight( const QgsDirectionalLi
 
   mLightCamera->setProjectionType( Qt3DRender::QCameraLens::ProjectionType::OrthographicProjection );
   mLightCamera->lens()->setOrthographicProjection(
-    - 0.6 * ( maxX - minX ), 0.6 * ( maxX - minX ),
-    - 0.6 * ( maxZ - minZ ), 0.6 * ( maxZ - minZ ),
+    - 0.7 * ( maxX - minX ), 0.7 * ( maxX - minX ),
+    - 0.7 * ( maxZ - minZ ), 0.7 * ( maxZ - minZ ),
     1.0f, 2 * ( lookingAt - lightPosition ).length() );
 
   mPostprocessingEntity->setupShadowRenderingExtent( minX, maxX, minZ, maxZ );
