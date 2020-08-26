@@ -23,7 +23,7 @@
 #include "qgsprocessingalgorithm.h"
 
 ///@cond PRIVATE
-class QgsMesh;
+struct QgsMesh;
 
 class QgsTinMeshCreationAlgorithm: public QgsProcessingAlgorithm
 {
