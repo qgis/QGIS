@@ -105,6 +105,7 @@ class QgsAmsProvider : public QgsRasterDataProvider
     QgsImageFetcher *getLegendGraphicFetcher( const QgsMapSettings *mapSettings ) override;
     QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &extent = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
     QList< double > nativeResolutions() const override;
+    bool ignoreExtents() const override { return true; }
 
     //! Helper struct for tile requests
     struct TileRequest
