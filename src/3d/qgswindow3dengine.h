@@ -59,6 +59,7 @@ class _3D_EXPORT QgsWindow3DEngine : public QgsAbstract3DEngine
     //! Returns the internal 3D window where all the rendered output is displayed
     QWindow *window();
 
+    //! Returns the frame graph object
     QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph() { return mShadowRenderingFrameGraph; }
 
     void requestCaptureImage() override;

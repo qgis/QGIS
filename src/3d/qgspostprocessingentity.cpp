@@ -126,7 +126,7 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsShadowRenderingFrameGraph *
   mMaterial->addParameter( mShadowMinZ );
   mMaterial->addParameter( mShadowMaxZ );
 
-  mRenderShadowsParameter = new Qt3DRender::QParameter( "renderShadows", QVariant::fromValue( 1 ) );
+  mRenderShadowsParameter = new Qt3DRender::QParameter( "renderShadows", QVariant::fromValue( 0 ) );
   mMaterial->addParameter( mRenderShadowsParameter );
 
   mLightPosition = new Qt3DRender::QParameter( "lightPosition", QVariant::fromValue( QVector3D() ) );

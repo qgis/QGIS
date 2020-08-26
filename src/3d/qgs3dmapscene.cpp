@@ -339,10 +339,12 @@ void Qgs3DMapScene::onCameraChanged()
   if ( windowEngine != nullptr )
   {
     QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = windowEngine->shadowRenderingFrameGraph();
+    shadowRenderingFrameGraph->setShadowRenderingEnabled( false );
     for ( QgsDirectionalLightSettings &light : mMap.directionalLights() )
     {
       if ( light.renderShadows() )
       {
+        shadowRenderingFrameGraph->setShadowRenderingEnabled( true );
         shadowRenderingFrameGraph->setupDirectionalLight( light, mMap.maximumShadowRenderingDistance() );
         break;
       }

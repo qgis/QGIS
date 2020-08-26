@@ -31,6 +31,7 @@ QgsWindow3DEngine::QgsWindow3DEngine( QObject *parent )
   mWindow3D->setRootEntity( mRoot );
 
   mShadowRenderingFrameGraph = new QgsShadowRenderingFrameGraph( mWindow3D, mWindow3D->camera(), mRoot );
+  // mWindow3D->renderSettings()->setRenderPolicy(Qt3DRender::QRenderSettings::RenderPolicy::OnDemand);
 
   mCapture = new Qt3DRender::QRenderCapture;
   mShadowRenderingFrameGraph->getFrameGraphRoot()->setParent( mCapture );
@@ -39,7 +40,7 @@ QgsWindow3DEngine::QgsWindow3DEngine( QObject *parent )
   mShadowRenderingFrameGraph->addTexturePreviewOverlay( mShadowRenderingFrameGraph->shadowMapTexture(), QPointF( 0.9f, 0.9 ), QSizeF( 0.2f, 0.2f ) );
 
   // force switching to no shadow rendering
-  setShadowRenderingEnabled( true );
+  setShadowRenderingEnabled( false );
 }
 
 QWindow *QgsWindow3DEngine::window()
