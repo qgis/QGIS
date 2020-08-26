@@ -99,8 +99,9 @@ QgsPostgresProvider::pkType( const QgsField &f ) const
 
 
 
-QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOptions &options )
-  : QgsVectorDataProvider( uri, options )
+QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOptions &options,
+    QgsDataProvider::ReadFlags flags )
+  : QgsVectorDataProvider( uri, options, flags )
   , mShared( new QgsPostgresSharedData )
 {
 
@@ -4433,7 +4434,8 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
   dsUri.setDataSource( schemaName, tableName, geometryColumn, QString(), primaryKey );
 
   QgsDataProvider::ProviderOptions providerOptions;
-  std::unique_ptr< QgsPostgresProvider > provider = qgis::make_unique< QgsPostgresProvider >( dsUri.uri( false ), providerOptions );
+  QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+  std::unique_ptr< QgsPostgresProvider > provider = qgis::make_unique< QgsPostgresProvider >( dsUri.uri( false ), providerOptions, flags );
   if ( !provider->isValid() )
   {
     if ( errorMessage )
@@ -4975,9 +4977,9 @@ bool QgsPostgresProvider::hasMetadata() const
   return hasMetadata;
 }
 
-QgsDataProvider *QgsPostgresProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
+QgsDataProvider *QgsPostgresProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
-  return new QgsPostgresProvider( uri, options );
+  return new QgsPostgresProvider( uri, options, flags );
 }
 
 QList< QgsDataItemProvider * > QgsPostgresProviderMetadata::dataItemProviders() const

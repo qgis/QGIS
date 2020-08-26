@@ -80,11 +80,13 @@ QList<QgsMeshDriverMetadata> QgsProviderMetadata::meshDriversMetadata()
   return QList<QgsMeshDriverMetadata>();
 }
 
-QgsDataProvider *QgsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
+QgsDataProvider *QgsProviderMetadata::createProvider( const QString &uri,
+    const QgsDataProvider::ProviderOptions &options,
+    QgsDataProvider::ReadFlags flags )
 {
   if ( mCreateFunction )
   {
-    return mCreateFunction( uri, options );
+    return mCreateFunction( uri, options, flags );
   }
   return nullptr;
 }

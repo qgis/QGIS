@@ -84,8 +84,10 @@ class QgsOracleProvider final: public QgsVectorDataProvider
      * \param uri String containing the required parameters to connect to the database
      * and query the table.
      * \param options generic data provider options
+     * \param flags generic data provider flags
      */
-    explicit QgsOracleProvider( QString const &uri, const QgsDataProvider::ProviderOptions &options );
+    explicit QgsOracleProvider( QString const &uri, const QgsDataProvider::ProviderOptions &options,
+                                QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     //! Destructor
     ~QgsOracleProvider() override;
@@ -411,7 +413,7 @@ class QgsOracleProviderMetadata final: public QgsProviderMetadata
         QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage,
         const QMap<QString, QVariant> *options ) override;
 
-    QgsOracleProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QgsOracleProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QList<QgsDataItemProvider *> dataItemProviders() const override;
 
     QgsTransaction *createTransaction( const QString &connString ) override;

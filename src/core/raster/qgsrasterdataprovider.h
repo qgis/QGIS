@@ -115,9 +115,11 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * The \a uri argument gives a provider-specific uri indicating the underlying data
      * source and it's parameters.
      *
-     * The \a options argument specifies generic provider options.
+     * The \a options argument specifies generic provider options and since QGIS 3.16 creation flags are specified within the \a flags value.
      */
-    QgsRasterDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions() );
+    QgsRasterDataProvider( const QString &uri,
+                           const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions(),
+                           QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     QgsRasterInterface *clone() const override = 0;
 

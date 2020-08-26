@@ -399,7 +399,9 @@ class CORE_EXPORT QgsMeshDataProvider: public QgsDataProvider, public QgsMeshDat
     Q_OBJECT
   public:
     //! Ctor
-    QgsMeshDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
+    QgsMeshDataProvider( const QString &uri,
+                         const QgsDataProvider::ProviderOptions &providerOptions,
+                         QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     QgsMeshDataProviderTemporalCapabilities *temporalCapabilities() override;
     const QgsMeshDataProviderTemporalCapabilities *temporalCapabilities() const override SIP_SKIP;

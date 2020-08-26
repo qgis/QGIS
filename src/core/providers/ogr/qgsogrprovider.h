@@ -86,7 +86,8 @@ class QgsOgrProvider final: public QgsVectorDataProvider
      * \param options generic data provider options
      */
     explicit QgsOgrProvider( QString const &uri,
-                             const QgsDataProvider::ProviderOptions &providerOptions );
+                             const QgsDataProvider::ProviderOptions &providerOptions,
+                             QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     ~QgsOgrProvider() override;
 
@@ -742,7 +743,7 @@ class QgsOgrProviderMetadata final: public QgsProviderMetadata
     void initProvider() override;
     void cleanupProvider() override;
     QList< QgsDataItemProvider * > dataItemProviders() const override;
-    QgsOgrProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QgsOgrProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QVariantMap decodeUri( const QString &uri ) override;
     QString encodeUri( const QVariantMap &parts ) override;
     QString filters( FilterType type ) override;

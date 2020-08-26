@@ -54,8 +54,10 @@ static QString quotedColumn( QString name )
 #define PROVIDER_ERROR( msg ) do { mError = QgsError( msg, VIRTUAL_LAYER_KEY ); QgsDebugMsg( msg ); } while(0)
 
 
-QgsVirtualLayerProvider::QgsVirtualLayerProvider( QString const &uri, const QgsDataProvider::ProviderOptions &options )
-  : QgsVectorDataProvider( uri, options )
+QgsVirtualLayerProvider::QgsVirtualLayerProvider( QString const &uri,
+    const QgsDataProvider::ProviderOptions &options,
+    QgsDataProvider::ReadFlags flags )
+  : QgsVectorDataProvider( uri, options, flags )
 {
   mError.clear();
 
@@ -654,9 +656,10 @@ QSet<QgsMapLayerDependency> QgsVirtualLayerProvider::dependencies() const
 
 QgsVirtualLayerProvider *QgsVirtualLayerProviderMetadata::createProvider(
   const QString &uri,
-  const QgsDataProvider::ProviderOptions &options )
+  const QgsDataProvider::ProviderOptions &options,
+  QgsDataProvider::ReadFlags flags )
 {
-  return new QgsVirtualLayerProvider( uri, options );
+  return new QgsVirtualLayerProvider( uri, options, flags );
 }
 
 

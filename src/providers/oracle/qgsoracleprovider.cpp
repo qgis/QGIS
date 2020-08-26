@@ -51,8 +51,9 @@
 const QString ORACLE_KEY = "oracle";
 const QString ORACLE_DESCRIPTION = "Oracle data provider";
 
-QgsOracleProvider::QgsOracleProvider( QString const &uri, const ProviderOptions &options )
-  : QgsVectorDataProvider( uri, options )
+QgsOracleProvider::QgsOracleProvider( QString const &uri, const ProviderOptions &options,
+                                      QgsDataProvider::ReadFlags flags )
+  : QgsVectorDataProvider( uri, options, flags )
   , mValid( false )
   , mIsQuery( false )
   , mPrimaryKeyType( PktUnknown )
@@ -3309,9 +3310,10 @@ QString  QgsOracleProvider::description() const
 
 QgsOracleProvider *QgsOracleProviderMetadata::createProvider(
   const QString &uri,
-  const QgsDataProvider::ProviderOptions &options )
+  const QgsDataProvider::ProviderOptions &options,
+  QgsDataProvider::ReadFlags flags )
 {
-  return new QgsOracleProvider( uri, options );
+  return new QgsOracleProvider( uri, options, flags );
 }
 
 QList< QgsDataItemProvider * > QgsOracleProviderMetadata::dataItemProviders() const

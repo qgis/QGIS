@@ -115,13 +115,15 @@ class CORE_EXPORT QgsProviderRegistry
      * \param providerKey identifier of the provider
      * \param dataSource  string containing data source for the provider
      * \param options provider options
+     * \param flags provider flags since QGIS 3.16
      * \returns new instance of provider or NULLPTR on error
      *
      * \see createRasterDataProvider()
      */
     QgsDataProvider *createProvider( const QString &providerKey,
                                      const QString &dataSource,
-                                     const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() ) SIP_FACTORY;
+                                     const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions(),
+                                     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) SIP_FACTORY;
 
     /**
      * Returns the provider capabilities

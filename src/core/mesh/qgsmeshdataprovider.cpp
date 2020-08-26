@@ -20,8 +20,9 @@
 #include "qgsmeshdataprovidertemporalcapabilities.h"
 #include "qgsrectangle.h"
 
-QgsMeshDataProvider::QgsMeshDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
-  : QgsDataProvider( uri, options )
+QgsMeshDataProvider::QgsMeshDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options,
+    QgsDataProvider::ReadFlags flags )
+  : QgsDataProvider( uri, options, flags )
 {
 }
 

@@ -2351,9 +2351,9 @@ QString QgsGdalProviderMetadata::encodeUri( const QVariantMap &parts )
 }
 
 
-QgsGdalProvider *QgsGdalProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
+QgsGdalProvider *QgsGdalProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
-  return new QgsGdalProvider( uri, options );
+  return new QgsGdalProvider( uri, options, flags );
 }
 
 /**

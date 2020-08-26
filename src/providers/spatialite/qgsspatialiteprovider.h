@@ -82,7 +82,7 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
      * \param uri uniform resource locator (URI) for a dataset
      * \param options generic data provider options
      */
-    explicit QgsSpatiaLiteProvider( QString const &uri, const QgsDataProvider::ProviderOptions &providerOptions );
+    explicit QgsSpatiaLiteProvider( QString const &uri, const QgsDataProvider::ProviderOptions &providerOptions, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     ~ QgsSpatiaLiteProvider() override;
 
@@ -430,7 +430,7 @@ class QgsSpatiaLiteProviderMetadata final: public QgsProviderMetadata
                     QStringList &descriptions, QString &errCause ) override;
     QVariantMap decodeUri( const QString &uri ) override;
     QString encodeUri( const QVariantMap &parts ) override;
-    QgsSpatiaLiteProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QgsSpatiaLiteProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
 
     QgsVectorLayerExporter::ExportError createEmptyLayer( const QString &uri, const QgsFields &fields,
         QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs,

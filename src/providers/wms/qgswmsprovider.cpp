@@ -3904,8 +3904,9 @@ bool QgsWmsProvider::isUrlForWMTS( const QString &url )
 }
 
 
-QgsWmsProvider *QgsWmsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
+QgsWmsProvider *QgsWmsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
+  Q_UNUSED( flags );
   return new QgsWmsProvider( uri, options );
 }
 

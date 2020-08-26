@@ -121,7 +121,7 @@ class QgsWcsProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
      *                otherwise we contact the host directly.
      * \param options generic data provider options
      */
-    explicit QgsWcsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
+    explicit QgsWcsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, QgsDataProvider::ReadFlags flags );
 
     //! copy constructor
     explicit QgsWcsProvider( const QgsWcsProvider &other, const QgsDataProvider::ProviderOptions &providerOptions );
@@ -443,7 +443,7 @@ class QgsWcsProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsWcsProviderMetadata();
-    QgsWcsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QgsWcsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QList<QgsDataItemProvider *> dataItemProviders() const override;
 };
 

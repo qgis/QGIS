@@ -180,9 +180,15 @@ Builds the list of available mesh drivers metadata
 .. versionadded:: 3.12
 %End
 
-    virtual QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) /Factory/;
+    virtual QgsDataProvider *createProvider( const QString &uri,
+        const QgsDataProvider::ProviderOptions &options,
+        QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) /Factory/;
 %Docstring
 Class factory to return a pointer to a newly created QgsDataProvider object
+
+:param uri: the datasource uri
+:param options: creation options
+:param flags: creation flags, sing QGIS 3.16
 
 .. versionadded:: 3.10
 %End

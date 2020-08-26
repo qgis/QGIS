@@ -54,8 +54,9 @@ const QString QgsMssqlProvider::MSSQL_PROVIDER_KEY = QStringLiteral( "mssql" );
 const QString QgsMssqlProvider::MSSQL_PROVIDER_DESCRIPTION = QStringLiteral( "MSSQL spatial data provider" );
 int QgsMssqlProvider::sConnectionId = 0;
 
-QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &options )
-  : QgsVectorDataProvider( uri, options )
+QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &options,
+                                    QgsDataProvider::ReadFlags flags )
+  : QgsVectorDataProvider( uri, options, flags )
 {
   QgsDataSourceUri anUri = QgsDataSourceUri( uri );
 
@@ -1983,7 +1984,8 @@ QgsVectorLayerExporter::ExportError QgsMssqlProvider::createEmptyLayer( const QS
   dsUri.setDataSource( schemaName, tableName, geometryColumn, QString(), primaryKey );
 
   QgsDataProvider::ProviderOptions providerOptions;
-  QgsMssqlProvider *provider = new QgsMssqlProvider( dsUri.uri(), providerOptions );
+  QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+  QgsMssqlProvider *provider = new QgsMssqlProvider( dsUri.uri(), providerOptions, flags );
   if ( !provider->isValid() )
   {
     if ( errorMessage )
@@ -2051,9 +2053,9 @@ QgsVectorLayerExporter::ExportError QgsMssqlProvider::createEmptyLayer( const QS
  * Class factory to return a pointer to a newly created
  * QgsMssqlProvider object
  */
-QgsMssqlProvider *QgsMssqlProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
+QgsMssqlProvider *QgsMssqlProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
-  return new QgsMssqlProvider( uri, options );
+  return new QgsMssqlProvider( uri, options, flags );
 }
 
 QList<QgsDataItemProvider *> QgsMssqlProviderMetadata::dataItemProviders() const

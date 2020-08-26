@@ -2760,8 +2760,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Bind layer to a specific data provider
      * \param provider provider key string, must match a valid QgsVectorDataProvider key. E.g. "postgres", "ogr", etc.
      * \param options provider options
+     * \param flags provider flags, since QGIS 3.16
      */
-    bool setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options );
+    bool setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     //! Read labeling from SLD
     void readSldLabeling( const QDomNode &node );

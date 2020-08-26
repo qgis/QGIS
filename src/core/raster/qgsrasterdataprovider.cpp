@@ -214,15 +214,16 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
 }
 
 QgsRasterDataProvider::QgsRasterDataProvider()
-  : QgsDataProvider( QString(), QgsDataProvider::ProviderOptions() )
+  : QgsDataProvider( QString(), QgsDataProvider::ProviderOptions(), QgsDataProvider::ReadFlags() )
   , QgsRasterInterface( nullptr )
   , mTemporalCapabilities( qgis::make_unique< QgsRasterDataProviderTemporalCapabilities >() )
 {
 
 }
 
-QgsRasterDataProvider::QgsRasterDataProvider( const QString &uri, const ProviderOptions &options )
-  : QgsDataProvider( uri, options )
+QgsRasterDataProvider::QgsRasterDataProvider( const QString &uri, const ProviderOptions &options,
+    QgsDataProvider::ReadFlags flags )
+  : QgsDataProvider( uri, options, flags )
   , QgsRasterInterface( nullptr )
   , mTemporalCapabilities( qgis::make_unique< QgsRasterDataProviderTemporalCapabilities >() )
 {

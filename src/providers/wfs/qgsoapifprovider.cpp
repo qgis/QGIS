@@ -29,8 +29,8 @@ const QString QgsOapifProvider::OAPIF_PROVIDER_KEY = QStringLiteral( "OAPIF" );
 const QString QgsOapifProvider::OAPIF_PROVIDER_DESCRIPTION = QStringLiteral( "OGC API - Features data provider" );
 
 
-QgsOapifProvider::QgsOapifProvider( const QString &uri, const ProviderOptions &options )
-  : QgsVectorDataProvider( uri, options ),
+QgsOapifProvider::QgsOapifProvider( const QString &uri, const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+  : QgsVectorDataProvider( uri, options, flags ),
     mShared( new QgsOapifSharedData( uri ) )
 {
 
@@ -782,9 +782,9 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures
 
 // ---------------------------------
 
-QgsOapifProvider *QgsOapifProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
+QgsOapifProvider *QgsOapifProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
-  return new QgsOapifProvider( uri, options );
+  return new QgsOapifProvider( uri, options, flags );
 }
 
 QgsOapifProviderMetadata::QgsOapifProviderMetadata():

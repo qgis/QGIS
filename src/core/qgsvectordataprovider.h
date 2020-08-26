@@ -119,9 +119,11 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      *
      * The \a uri argument specifies the uniform resource locator (URI) for the associated dataset.
      *
-     * Additional creation options are specified within the \a options value.
+     * Additional creation options are specified within the \a options value and since QGIS 3.16 creation flags are specified within the \a flags value.
      */
-    QgsVectorDataProvider( const QString &uri = QString(), const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions() );
+    QgsVectorDataProvider( const QString &uri = QString(),
+                           const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions(),
+                           QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     /**
      * Returns feature source object that can be used for querying provider's data. The returned feature source
