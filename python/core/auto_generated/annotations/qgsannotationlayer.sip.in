@@ -50,6 +50,11 @@ The ``options`` argument specifies load-time layer options.
 %End
     ~QgsAnnotationLayer();
 
+    void reset();
+%Docstring
+Resets the annotation layer to a default state, and clears all items from it.
+%End
+
     QString addItem( QgsAnnotationItem *item /Transfer/ );
 %Docstring
 Adds an ``item`` to the layer.

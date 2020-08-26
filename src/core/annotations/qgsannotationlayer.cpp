@@ -35,6 +35,14 @@ QgsAnnotationLayer::~QgsAnnotationLayer()
   qDeleteAll( mItems );
 }
 
+void QgsAnnotationLayer::reset()
+{
+  mOpacity = 100.0;
+  setCrs( QgsCoordinateReferenceSystem() );
+  setTransformContext( QgsCoordinateTransformContext() );
+  clear();
+}
+
 QString QgsAnnotationLayer::addItem( QgsAnnotationItem *item )
 {
   const QString uuid = QUuid::createUuid().toString();

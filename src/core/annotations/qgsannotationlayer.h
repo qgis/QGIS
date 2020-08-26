@@ -73,6 +73,11 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     ~QgsAnnotationLayer() override;
 
     /**
+     * Resets the annotation layer to a default state, and clears all items from it.
+     */
+    void reset();
+
+    /**
      * Adds an \a item to the layer.
      *
      * Ownership of \a item is transferred to the layer.
