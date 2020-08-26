@@ -1675,7 +1675,7 @@ void QgsApplication::setSkippedGdalDrivers( const QStringList &skippedGdalDriver
   *sDeferredSkippedGdalDrivers() = deferredSkippedGdalDrivers;
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "gdal/skipList" ), skippedGdalDrivers.join( QStringLiteral( " " ) ) );
+  settings.setValue( QStringLiteral( "gdal/skipList" ), skippedGdalDrivers.join( QStringLiteral( "," ) ) );
 
   applyGdalSkippedDrivers();
 }
@@ -1687,7 +1687,7 @@ void QgsApplication::registerGdalDriversFromSettings()
   QStringList myList;
   if ( !joinedList.isEmpty() )
   {
-    myList = joinedList.split( ' ' );
+    myList = joinedList.split( QStringLiteral( "," ) );
   }
   *sGdalSkipList() = myList;
   applyGdalSkippedDrivers();
@@ -1707,7 +1707,7 @@ void QgsApplication::applyGdalSkippedDrivers()
     if ( !sDeferredSkippedGdalDrivers()->contains( driverName ) )
       realDisabledDriverList << driverName;
   }
-  QString myDriverList = realDisabledDriverList.join( ' ' );
+  QString myDriverList = realDisabledDriverList.join( QStringLiteral( "," ) );
   QgsDebugMsgLevel( QStringLiteral( "Gdal Skipped driver list set to:" ), 2 );
   QgsDebugMsgLevel( myDriverList, 2 );
   CPLSetConfigOption( "GDAL_SKIP", myDriverList.toUtf8() );
