@@ -64,6 +64,11 @@ Returns the unique ID assigned to the item.
 Removes (and deletes) the item with matching ``id``.
 %End
 
+    void clear();
+%Docstring
+Removes all items from the layer.
+%End
+
     QMap<QString, QgsAnnotationItem *> items() const;
 %Docstring
 Returns a map of items contained in the layer, by unique item ID.
