@@ -108,7 +108,7 @@ QVariantMap QgsKMeansClusteringAlgorithm::processAlgorithm( const QVariantMap &p
 
   std::vector< Feature > clusterFeatures;
   QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setNoAttributes() );
-  std::unordered_map< QgsFeatureId, int > idToObj;
+  QHash< QgsFeatureId, int > idToObj;
   while ( features.nextFeature( feat ) )
   {
     i++;
@@ -159,7 +159,8 @@ QVariantMap QgsKMeansClusteringAlgorithm::processAlgorithm( const QVariantMap &p
 
   // cluster size
   std::unordered_map< int, int> clusterSize;
-  std::for_each( idToObj.begin(), idToObj.end(), [ &clusterFeatures, &clusterSize ]( std::pair< QgsFeatureId, int > idObj ) { clusterSize[ clusterFeatures[ idObj.second ].cluster ]++; } );
+  for ( int obj : idToObj )
+    clusterSize[ clusterFeatures[ obj ].cluster ]++;
 
   features = source->getFeatures();
   i = 0;
@@ -184,7 +185,8 @@ QVariantMap QgsKMeansClusteringAlgorithm::processAlgorithm( const QVariantMap &p
     }
     else
     {
-      attr << clusterFeatures[ idToObj[ feat.id() ] ].cluster << clusterSize[ clusterFeatures[ idToObj[ feat.id() ] ].cluster ];
+      int cluster = clusterFeatures[ *obj ].cluster;
+      attr << cluster << clusterSize[ cluster ];
     }
     feat.setAttributes( attr );
     sink->addFeature( feat, QgsFeatureSink::FastInsert );
