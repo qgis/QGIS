@@ -279,6 +279,7 @@ namespace MDAL
 
     private:
       const std::string mDriverName;
+      size_t mFaceVerticesMaximumCount = 0; //typically 3 or 4, sometimes up to 9
       const std::string mUri; // file/uri from where it came
       std::string mCrs;
   };
