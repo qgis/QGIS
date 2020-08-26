@@ -67,7 +67,9 @@ jobs:
                        --cache-from "qgis/qgis:${DOCKER_TAG}" \
                        -t "qgis/qgis:BUILDER" \
                        -f qgis.dockerfile ..
+          echo "##[endgroup]"
 
+          echo "##[group] Tag container and copy cache"
           docker run --name qgis_container qgis/qgis:BUILDER /bin/true
           docker cp qgis_container:/QGIS/build_exit_value ./build_exit_value
 
@@ -80,6 +82,7 @@ jobs:
           rm -rf ~/.ccache/*
           mkdir -p ~/.ccache
           docker cp qgis_container:/QGIS/.ccache_image_build/. ~/.ccache
+          echo "Cache size: "$(du -sh ~/.ccache)
           echo "##[endgroup]"
 
           echo "##[group] Finalize image"
