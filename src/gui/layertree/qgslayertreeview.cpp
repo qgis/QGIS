@@ -671,18 +671,11 @@ bool QgsLayerTreeProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex 
 bool QgsLayerTreeProxyModel::nodeShown( QgsLayerTreeNode *node ) const
 {
   if ( !node )
-    return false;
+    return true;
+
   if ( node->nodeType() == QgsLayerTreeNode::NodeGroup )
   {
-    const auto constChildren = node->children();
-    for ( QgsLayerTreeNode *child : constChildren )
-    {
-      if ( nodeShown( child ) )
-      {
-        return true;
-      }
-    }
-    return false;
+    return true;
   }
   else
   {
