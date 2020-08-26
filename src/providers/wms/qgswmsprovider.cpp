@@ -692,9 +692,6 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
     QUrl url = createRequestUrlWMS( viewExtent, pixelWidth, pixelHeight );
 
     // cache some details for if the user wants to do an identifyAsHtml() later
-
-    emit statusChanged( tr( "Getting map via WMS." ) );
-
     QgsWmsImageDownloadHandler handler( dataSourceUri(), url, mSettings.authorization(), image, feedback );
     handler.downloadBlocking();
   }
@@ -829,8 +826,6 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
         QgsDebugMsg( QStringLiteral( "unexpected tile mode %1" ).arg( mTileLayer->tileMode ) );
         return image;
     }
-
-    emit statusChanged( tr( "Getting tiles." ) );
 
     QList<TileImage> tileImages;  // in the correct resolution
     QList<QRectF> missing;  // rectangles (in map coords) of missing tiles for this view
@@ -3458,7 +3453,6 @@ void QgsWmsProvider::identifyReplyFinished()
     if ( !redirect.isNull() )
     {
       QgsDebugMsgLevel( QStringLiteral( "identify request redirected to %1" ).arg( redirect.toString() ), 2 );
-      emit statusChanged( tr( "identify request redirected." ) );
 
       mIdentifyReply->deleteLater();
 
