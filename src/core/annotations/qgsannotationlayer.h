@@ -87,6 +87,11 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     bool removeItem( const QString &id );
 
     /**
+     * Removes all items from the layer.
+     */
+    void clear();
+
+    /**
      * Returns a map of items contained in the layer, by unique item ID.
      *
      * This map contains references to items owned by the layer, and ownership of these remains

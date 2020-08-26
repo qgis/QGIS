@@ -51,6 +51,12 @@ bool QgsAnnotationLayer::removeItem( const QString &id )
   return true;
 }
 
+void QgsAnnotationLayer::clear()
+{
+  qDeleteAll( mItems );
+  mItems.clear();
+}
+
 QgsAnnotationLayer *QgsAnnotationLayer::clone() const
 {
   QgsAnnotationLayer::LayerOptions options( mTransformContext );
