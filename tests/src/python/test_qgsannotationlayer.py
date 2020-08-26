@@ -87,6 +87,28 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         self.assertTrue(layer.removeItem(marker_item_id))
         self.assertEqual(len(layer.items()), 0)
 
+        layer.addItem(QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)]))))
+        layer.addItem(QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)])))
+        layer.addItem(QgsAnnotationMarkerItem(QgsPoint(12, 13)))
+
+        self.assertEqual(len(layer.items()), 3)
+        layer.clear()
+        self.assertEqual(len(layer.items()), 0)
+
+    def testReset(self):
+        layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
+        self.assertTrue(layer.isValid())
+        layer.addItem(QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)]))))
+        layer.addItem(QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)])))
+        layer.addItem(QgsAnnotationMarkerItem(QgsPoint(12, 13)))
+        layer.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        layer.setOpacity(0.5)
+
+        layer.reset()
+        self.assertEqual(len(layer.items()), 0)
+        self.assertEqual(layer.opacity(), 1.0)
+        self.assertFalse(layer.crs().isValid())
+
     def testExtent(self):
         layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
         self.assertTrue(layer.isValid())
