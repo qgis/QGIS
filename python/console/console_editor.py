@@ -92,20 +92,6 @@ class Editor(QgsQsciScintillaBase):
 
         self.settings = QgsSettings()
 
-        # Enable non-ascii chars for editor
-        self.setUtf8(True)
-
-        # Set the default font
-        font = QFontDatabase.systemFont(QFontDatabase.FixedFont)
-        self.setFont(font)
-        self.setMarginsFont(font)
-        # Margin 0 is used for line numbers
-        fontmetrics = QFontMetrics(font)
-        self.setMarginWidth(0, fontmetrics.width("0000") + 5)
-        self.setMarginLineNumbers(0, True)
-        self.setCaretLineVisible(True)
-        self.setCaretWidth(2)
-
         self.markerDefine(QgsApplication.getThemePixmap("console/iconSyntaxErrorConsole.svg"),
                           self.MARKER_NUM)
 

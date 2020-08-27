@@ -58,23 +58,10 @@ class ShellScintilla(QgsQsciScintillaBase, code.InteractiveInterpreter):
 
         self.settings = QgsSettings()
 
-        # Enable non-ascii chars for editor
-        self.setUtf8(True)
-
         self.new_input_line = True
 
-        # Set the default font
-        font = QFontDatabase.systemFont(QFontDatabase.FixedFont)
-        self.setFont(font)
-        self.setMarginsFont(font)
-        # Margin 0 is used for line numbers
-        self.setMarginWidth(0, 0)
-        self.setMarginWidth(1, 0)
-        self.setMarginWidth(2, 0)
-        self.setMarginsFont(font)
-        self.setMarginWidth(1, "00000")
-        self.setMarginType(1, 5)
         self.setCaretLineVisible(False)
+        self.setMarginLineNumbers(0, False)  # NO linenumbers for the input line
 
         self.buffer = []
 
@@ -93,9 +80,6 @@ class ShellScintilla(QgsQsciScintillaBase, code.InteractiveInterpreter):
         # Brace matching: enable for a brace immediately before or after
         # the current position
         self.setBraceMatching(QsciScintilla.SloppyBraceMatch)
-
-        # Current line visible with special background color
-        self.setCaretWidth(2)
 
         self.refreshSettingsShell()
 

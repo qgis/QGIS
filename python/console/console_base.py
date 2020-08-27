@@ -56,6 +56,25 @@ class QgsQsciScintillaBase(QsciScintilla):
     def __init__(self, parent=None):
         super(QgsQsciScintillaBase, self).__init__(parent)
 
+        # Enable non-ascii chars
+        self.setUtf8(True)
+
+        # Set the default font
+        font = QFontDatabase.systemFont(QFontDatabase.FixedFont)
+        self.setFont(font)
+        self.setMarginsFont(font)
+
+        # Margin 0 is used for line numbers (editor and output)
+        self.setMarginWidth(0, "00000")
+        # Margin 1 is used for the '>>>' prompt (console input)
+        self.setMarginWidth(1, "0")
+        self.setMarginType(1, 5) # TextMarginRightJustified=5
+        # Margin 2 is used for the 'folding' (editor)
+        self.setMarginWidth(2, "0")
+
+        self.setCaretLineVisible(True)
+        self.setCaretWidth(2)
+
         self.iconRun = QgsApplication.getThemeIcon("console/mIconRunConsole.svg")
         self.iconRunScript = QgsApplication.getThemeIcon("mActionStart.svg")
         self.iconUndo = QgsApplication.getThemeIcon("mActionUndo.svg")

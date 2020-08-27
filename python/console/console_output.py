@@ -114,9 +114,6 @@ class ShellOutputScintilla(QgsQsciScintillaBase):
         self.infoBar.setSizePolicy(sizePolicy)
         self.layout.addWidget(self.infoBar, 0, 0, 1, 1)
 
-        # Enable non-ascii chars for editor
-        self.setUtf8(True)
-
         sys.stdout = writeOut(self, sys.stdout)
         sys.stderr = writeOut(self, sys.stderr, "_traceback")
 
@@ -124,19 +121,7 @@ class ShellOutputScintilla(QgsQsciScintillaBase):
         self.refreshSettingsOutput()
         self.setReadOnly(True)
 
-        # Set the default font
-        font = QFontDatabase.systemFont(QFontDatabase.FixedFont)
-        self.setFont(font)
-        self.setMarginsFont(font)
-        # Margin 0 is used for line numbers
-        self.setMarginWidth(0, 0)
-        self.setMarginWidth(1, 0)
-        self.setMarginWidth(2, 0)
-        self.setMarginsFont(font)
-        self.setMarginWidth(1, "00000")
-        self.setMarginLineNumbers(1, True)
-        self.setCaretLineVisible(True)
-        self.setCaretWidth(0)
+        self.setCaretWidth(0)  # NO (blinking) caret in the output
 
         self.setMinimumHeight(120)
 
