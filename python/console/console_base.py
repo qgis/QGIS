@@ -69,7 +69,7 @@ class QgsQsciScintillaBase(QsciScintilla):
         self.setMarginWidth(0, "00000")
         # Margin 1 is used for the '>>>' prompt (console input)
         self.setMarginWidth(1, "0")
-        self.setMarginType(1, 5) # TextMarginRightJustified=5
+        self.setMarginType(1, 5)  # TextMarginRightJustified=5
         # Margin 2 is used for the 'folding' (editor)
         self.setMarginWidth(2, "0")
 

@@ -147,34 +147,20 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
 
         fontFamilyText = self.fontComboBox.currentText()
         settings.setValue("pythonConsole/fontfamilytext", fontFamilyText)
-        fontFamilyTextEditor = self.fontComboBoxEditor.currentText()
-        settings.setValue("pythonConsole/fontfamilytextEditor", fontFamilyTextEditor)
 
         fontSize = self.spinBox.value()
-        fontSizeEditor = self.spinBoxEditor.value()
 
         for i in range(0, self.tableWidget.rowCount()):
             text = self.tableWidget.item(i, 1).text()
             self.listPath.append(text)
         settings.setValue("pythonConsole/fontsize", fontSize)
-        settings.setValue("pythonConsole/fontsizeEditor", fontSizeEditor)
         settings.setValue("pythonConsole/userAPI", self.listPath)
 
         settings.setValue("pythonConsole/autoCompThreshold", self.autoCompThreshold.value())
-        settings.setValue("pythonConsole/autoCompThresholdEditor", self.autoCompThresholdEditor.value())
-
-        settings.setValue("pythonConsole/autoCompleteEnabledEditor", self.groupBoxAutoCompletionEditor.isChecked())
         settings.setValue("pythonConsole/autoCompleteEnabled", self.groupBoxAutoCompletion.isChecked())
 
         settings.setValue("pythonConsole/usePreparedAPIFile", self.groupBoxPreparedAPI.isChecked())
         settings.setValue("pythonConsole/preparedAPIFile", self.lineEdit.text())
-
-        if self.autoCompFromAPIEditor.isChecked():
-            settings.setValue("pythonConsole/autoCompleteSourceEditor", 'fromAPI')
-        elif self.autoCompFromDocEditor.isChecked():
-            settings.setValue("pythonConsole/autoCompleteSourceEditor", 'fromDoc')
-        elif self.autoCompFromDocAPIEditor.isChecked():
-            settings.setValue("pythonConsole/autoCompleteSourceEditor", 'fromDocAPI')
 
         if self.autoCompFromAPI.isChecked():
             settings.setValue("pythonConsole/autoCompleteSource", 'fromAPI')
@@ -185,9 +171,7 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
 
         settings.setValue("pythonConsole/enableObjectInsp", self.enableObjectInspector.isChecked())
         settings.setValue("pythonConsole/autoCloseBracket", self.autoCloseBracket.isChecked())
-        settings.setValue("pythonConsole/autoCloseBracketEditor", self.autoCloseBracketEditor.isChecked())
         settings.setValue("pythonConsole/autoInsertionImport", self.autoInsertionImport.isChecked())
-        settings.setValue("pythonConsole/autoInsertionImportEditor", self.autoInsertionImportEditor.isChecked())
 
         settings.setValue("pythonConsole/defaultFontColor", self.defaultFontColor.color())
         settings.setValue("pythonConsole/classFontColor", self.classFontColor.color())
@@ -219,11 +203,8 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         settings = QgsSettings()
         font = QFontDatabase.systemFont(QFontDatabase.FixedFont)
         self.spinBox.setValue(settings.value("pythonConsole/fontsize", font.pointSize(), type=int))
-        self.spinBoxEditor.setValue(settings.value("pythonConsole/fontsizeEditor", font.pointSize(), type=int))
         self.fontComboBox.setCurrentFont(QFont(settings.value("pythonConsole/fontfamilytext",
                                                               font.family())))
-        self.fontComboBoxEditor.setCurrentFont(QFont(settings.value("pythonConsole/fontfamilytextEditor",
-                                                                    font.family())))
         self.preloadAPI.setChecked(settings.value("pythonConsole/preloadAPI", True, type=bool))
         self.lineEdit.setText(settings.value("pythonConsole/preparedAPIFile", "", type=str))
         itemTable = settings.value("pythonConsole/userAPI", [])
@@ -239,16 +220,10 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.autoSaveScript.setChecked(settings.value("pythonConsole/autoSaveScript", False, type=bool))
 
         self.autoCompThreshold.setValue(settings.value("pythonConsole/autoCompThreshold", 2, type=int))
-        self.autoCompThresholdEditor.setValue(settings.value("pythonConsole/autoCompThresholdEditor", 2, type=int))
-        self.groupBoxAutoCompletionEditor.setChecked(
-            settings.value("pythonConsole/autoCompleteEnabledEditor", True, type=bool))
         self.groupBoxAutoCompletion.setChecked(settings.value("pythonConsole/autoCompleteEnabled", True, type=bool))
 
         self.enableObjectInspector.setChecked(settings.value("pythonConsole/enableObjectInsp", False, type=bool))
-        self.autoCloseBracketEditor.setChecked(settings.value("pythonConsole/autoCloseBracketEditor", False, type=bool))
         self.autoCloseBracket.setChecked(settings.value("pythonConsole/autoCloseBracket", False, type=bool))
-        self.autoInsertionImportEditor.setChecked(
-            settings.value("pythonConsole/autoInsertionImportEditor", True, type=bool))
         self.autoInsertionImport.setChecked(settings.value("pythonConsole/autoInsertionImport", True, type=bool))
 
         if settings.value("pythonConsole/autoCompleteSource") == 'fromDoc':
@@ -257,13 +232,6 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
             self.autoCompFromAPI.setChecked(True)
         elif settings.value("pythonConsole/autoCompleteSource") == 'fromDocAPI':
             self.autoCompFromDocAPI.setChecked(True)
-
-        if settings.value("pythonConsole/autoCompleteSourceEditor") == 'fromDoc':
-            self.autoCompFromDocEditor.setChecked(True)
-        elif settings.value("pythonConsole/autoCompleteSourceEditor") == 'fromAPI':
-            self.autoCompFromAPIEditor.setChecked(True)
-        elif settings.value("pythonConsole/autoCompleteSourceEditor") == 'fromDocAPI':
-            self.autoCompFromDocAPIEditor.setChecked(True)
 
         # Setting font lexer color
         self.defaultFontColor.setColor(QColor(settings.value("pythonConsole/defaultFontColor", QColor(QgsQsciScintillaBase.DEFAULT_COLOR))))

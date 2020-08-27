@@ -179,9 +179,9 @@ class Editor(QgsQsciScintillaBase):
 
         # Set Python lexer
         self.setLexers()
-        threshold = self.settings.value("pythonConsole/autoCompThresholdEditor", 2, type=int)
-        radioButtonSource = self.settings.value("pythonConsole/autoCompleteSourceEditor", 'fromAPI')
-        autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabledEditor", True, type=bool)
+        threshold = self.settings.value("pythonConsole/autoCompThreshold", 2, type=int)
+        radioButtonSource = self.settings.value("pythonConsole/autoCompleteSource", 'fromAPI')
+        autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabled", True, type=bool)
         self.setAutoCompletionThreshold(threshold)
         if autoCompEnabled:
             if radioButtonSource == 'fromDoc':
@@ -199,8 +199,8 @@ class Editor(QgsQsciScintillaBase):
         self.setCaretForegroundColor(cursorColor)
 
     def autoCompleteKeyBinding(self):
-        radioButtonSource = self.settings.value("pythonConsole/autoCompleteSourceEditor", 'fromAPI')
-        autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabledEditor", True, type=bool)
+        radioButtonSource = self.settings.value("pythonConsole/autoCompleteSource", 'fromAPI')
+        autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabled", True, type=bool)
         if autoCompEnabled:
             if radioButtonSource == 'fromDoc':
                 self.autoCompleteFromDocument()
@@ -579,7 +579,7 @@ class Editor(QgsQsciScintillaBase):
             if (eline) not in self.bufferMarkerLine:
                 self.bufferMarkerLine.append(eline)
             self.markerAdd(eline, self.MARKER_NUM)
-            loadFont = self.settings.value("pythonConsole/fontfamilytextEditor",
+            loadFont = self.settings.value("pythonConsole/fontfamilytext",
                                            "Monospace")
             styleAnn = QsciStyle(-1, "Annotation",
                                  QColor(255, 0, 0),
@@ -601,8 +601,8 @@ class Editor(QgsQsciScintillaBase):
         t = e.text()
         startLine, _, endLine, endPos = self.getSelection()
         line, pos = self.getCursorPosition()
-        self.autoCloseBracket = self.settings.value("pythonConsole/autoCloseBracketEditor", False, type=bool)
-        self.autoImport = self.settings.value("pythonConsole/autoInsertionImportEditor", True, type=bool)
+        self.autoCloseBracket = self.settings.value("pythonConsole/autoCloseBracket", False, type=bool)
+        self.autoImport = self.settings.value("pythonConsole/autoInsertionImport", True, type=bool)
         txt = self.text(line)[:pos]
         # Close bracket automatically
         if t in self.opening and self.autoCloseBracket:
