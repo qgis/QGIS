@@ -52,6 +52,7 @@ class QgsQsciScintillaBase(QsciScintilla):
     MATCHED_BRACE_FOREGROUND_COLOR = "#303030"
     EDGE_COLOR = "#efefef"
     FOLD_COLOR = "#efefef"
+    ERROR_COLOR = "#e31a1c"
 
     def __init__(self, parent=None):
         super(QgsQsciScintillaBase, self).__init__(parent)

@@ -25,36 +25,12 @@ from qgis.PyQt.QtGui import QIcon, QFont, QColor, QFontDatabase
 
 from qgis.core import QgsSettings
 
+from .console_base import QgsQsciScintillaBase
 from .console_compile_apis import PrepareAPIDialog
 from .ui_console_settings import Ui_SettingsDialogPythonConsole
 
 
 class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
-
-    DEFAULT_COLOR = "#4d4d4c"
-    KEYWORD_COLOR = "#8959a8"
-    CLASS_COLOR = "#4271ae"
-    METHOD_COLOR = "#4271ae"
-    DECORATION_COLOR = "#3e999f"
-    NUMBER_COLOR = "#c82829"
-    COMMENT_COLOR = "#8e908c"
-    COMMENT_BLOCK_COLOR = "#8e908c"
-    BACKGROUND_COLOR = "#ffffff"
-    CURSOR_COLOR = "#636363"
-    CARET_LINE_COLOR = "#efefef"
-    SINGLE_QUOTE_COLOR = "#718c00"
-    DOUBLE_QUOTE_COLOR = "#718c00"
-    TRIPLE_SINGLE_QUOTE_COLOR = "#eab700"
-    TRIPLE_DOUBLE_QUOTE_COLOR = "#eab700"
-    MARGIN_BACKGROUND_COLOR = "#efefef"
-    MARGIN_FOREGROUND_COLOR = "#636363"
-    SELECTION_BACKGROUND_COLOR = "#d7d7d7"
-    SELECTION_FOREGROUND_COLOR = "#303030"
-    MATCHED_BRACE_BACKGROUND_COLOR = "#b7f907"
-    MATCHED_BRACE_FOREGROUND_COLOR = "#303030"
-    EDGE_COLOR = "#efefef"
-    FOLD_COLOR = "#efefef"
-    ERROR_COLOR = "#e31a1c"
 
     def __init__(self, parent):
         QDialog.__init__(self, parent)
@@ -290,58 +266,56 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
             self.autoCompFromDocAPIEditor.setChecked(True)
 
         # Setting font lexer color
-        self.defaultFontColor.setColor(QColor(settings.value("pythonConsole/defaultFontColor", QColor(self.DEFAULT_COLOR))))
-        self.keywordFontColor.setColor(QColor(settings.value("pythonConsole/keywordFontColor", QColor(self.KEYWORD_COLOR))))
-        self.classFontColor.setColor(QColor(settings.value("pythonConsole/classFontColor", QColor(self.CLASS_COLOR))))
-        self.methodFontColor.setColor(QColor(settings.value("pythonConsole/methodFontColor", QColor(self.METHOD_COLOR))))
-        self.decorFontColor.setColor(QColor(settings.value("pythonConsole/decorFontColor", QColor(self.DECORATION_COLOR))))
-        self.numberFontColor.setColor(QColor(settings.value("pythonConsole/numberFontColor", QColor(self.NUMBER_COLOR))))
-        self.commentFontColor.setColor(QColor(settings.value("pythonConsole/commentFontColor", QColor(self.COMMENT_COLOR))))
-        self.commentBlockFontColor.setColor(
-            QColor(settings.value("pythonConsole/commentBlockFontColor", QColor(self.COMMENT_BLOCK_COLOR))))
-        self.paperBackgroundColor.setColor(
-            QColor(settings.value("pythonConsole/paperBackgroundColor", QColor(self.BACKGROUND_COLOR))))
-        self.caretLineColor.setColor(QColor(settings.value("pythonConsole/caretLineColor", QColor(self.CARET_LINE_COLOR))))
-        self.cursorColor.setColor(QColor(settings.value("pythonConsole/cursorColor", QColor(self.CURSOR_COLOR))))
-        self.singleQuoteFontColor.setColor(settings.value("pythonConsole/singleQuoteFontColor", QColor(self.SINGLE_QUOTE_COLOR)))
-        self.doubleQuoteFontColor.setColor(settings.value("pythonConsole/doubleQuoteFontColor", QColor(self.DOUBLE_QUOTE_COLOR)))
-        self.tripleSingleQuoteFontColor.setColor(
-            settings.value("pythonConsole/tripleSingleQuoteFontColor", QColor(self.TRIPLE_SINGLE_QUOTE_COLOR)))
-        self.tripleDoubleQuoteFontColor.setColor(
-            settings.value("pythonConsole/tripleDoubleQuoteFontColor", QColor(self.TRIPLE_DOUBLE_QUOTE_COLOR)))
-        self.marginBackgroundColor.setColor(settings.value("pythonConsole/marginBackgroundColor", QColor(self.MARGIN_BACKGROUND_COLOR)))
-        self.marginForegroundColor.setColor(settings.value("pythonConsole/marginForegroundColor", QColor(self.MARGIN_FOREGROUND_COLOR)))
-        self.selectionForegroundColor.setColor(settings.value("pythonConsole/selectionForegroundColor", QColor(self.SELECTION_FOREGROUND_COLOR)))
-        self.selectionBackgroundColor.setColor(settings.value("pythonConsole/selectionBackgroundColor", QColor(self.SELECTION_BACKGROUND_COLOR)))
-        self.matchedBraceForegroundColor.setColor(settings.value("pythonConsole/matchedBraceForegroundColor", QColor(self.MATCHED_BRACE_FOREGROUND_COLOR)))
-        self.matchedBraceBackgroundColor.setColor(settings.value("pythonConsole/matchedBraceBackgroundColor", QColor(self.MATCHED_BRACE_BACKGROUND_COLOR)))
-        self.stderrFontColor.setColor(QColor(settings.value("pythonConsole/stderrFontColor", QColor(self.ERROR_COLOR))))
-        self.edgeColor.setColor(settings.value("pythonConsole/edgeColor", QColor(self.EDGE_COLOR)))
-        self.foldColor.setColor(settings.value("pythonConsole/foldColor", QColor(self.FOLD_COLOR)))
+        self.defaultFontColor.setColor(QColor(settings.value("pythonConsole/defaultFontColor", QColor(QgsQsciScintillaBase.DEFAULT_COLOR))))
+        self.keywordFontColor.setColor(QColor(settings.value("pythonConsole/keywordFontColor", QColor(QgsQsciScintillaBase.KEYWORD_COLOR))))
+        self.classFontColor.setColor(QColor(settings.value("pythonConsole/classFontColor", QColor(QgsQsciScintillaBase.CLASS_COLOR))))
+        self.methodFontColor.setColor(QColor(settings.value("pythonConsole/methodFontColor", QColor(QgsQsciScintillaBase.METHOD_COLOR))))
+        self.decorFontColor.setColor(QColor(settings.value("pythonConsole/decorFontColor", QColor(QgsQsciScintillaBase.DECORATION_COLOR))))
+        self.numberFontColor.setColor(QColor(settings.value("pythonConsole/numberFontColor", QColor(QgsQsciScintillaBase.NUMBER_COLOR))))
+        self.commentFontColor.setColor(QColor(settings.value("pythonConsole/commentFontColor", QColor(QgsQsciScintillaBase.COMMENT_COLOR))))
+        self.commentBlockFontColor.setColor(QColor(settings.value("pythonConsole/commentBlockFontColor", QColor(QgsQsciScintillaBase.COMMENT_BLOCK_COLOR))))
+        self.paperBackgroundColor.setColor(QColor(settings.value("pythonConsole/paperBackgroundColor", QColor(QgsQsciScintillaBase.BACKGROUND_COLOR))))
+        self.caretLineColor.setColor(QColor(settings.value("pythonConsole/caretLineColor", QColor(QgsQsciScintillaBase.CARET_LINE_COLOR))))
+        self.cursorColor.setColor(QColor(settings.value("pythonConsole/cursorColor", QColor(QgsQsciScintillaBase.CURSOR_COLOR))))
+        self.singleQuoteFontColor.setColor(settings.value("pythonConsole/singleQuoteFontColor", QColor(QgsQsciScintillaBase.SINGLE_QUOTE_COLOR)))
+        self.doubleQuoteFontColor.setColor(settings.value("pythonConsole/doubleQuoteFontColor", QColor(QgsQsciScintillaBase.DOUBLE_QUOTE_COLOR)))
+        self.tripleSingleQuoteFontColor.setColor(settings.value("pythonConsole/tripleSingleQuoteFontColor", QColor(QgsQsciScintillaBase.TRIPLE_SINGLE_QUOTE_COLOR)))
+        self.tripleDoubleQuoteFontColor.setColor(settings.value("pythonConsole/tripleDoubleQuoteFontColor", QColor(QgsQsciScintillaBase.TRIPLE_DOUBLE_QUOTE_COLOR)))
+        self.marginBackgroundColor.setColor(settings.value("pythonConsole/marginBackgroundColor", QColor(QgsQsciScintillaBase.MARGIN_BACKGROUND_COLOR)))
+        self.marginForegroundColor.setColor(settings.value("pythonConsole/marginForegroundColor", QColor(QgsQsciScintillaBase.MARGIN_FOREGROUND_COLOR)))
+        self.selectionForegroundColor.setColor(settings.value("pythonConsole/selectionForegroundColor", QColor(QgsQsciScintillaBase.SELECTION_FOREGROUND_COLOR)))
+        self.selectionBackgroundColor.setColor(settings.value("pythonConsole/selectionBackgroundColor", QColor(QgsQsciScintillaBase.SELECTION_BACKGROUND_COLOR)))
+        self.matchedBraceForegroundColor.setColor(settings.value("pythonConsole/matchedBraceForegroundColor", QColor(QgsQsciScintillaBase.MATCHED_BRACE_FOREGROUND_COLOR)))
+        self.matchedBraceBackgroundColor.setColor(settings.value("pythonConsole/matchedBraceBackgroundColor", QColor(QgsQsciScintillaBase.MATCHED_BRACE_BACKGROUND_COLOR)))
+        self.stderrFontColor.setColor(QColor(settings.value("pythonConsole/stderrFontColor", QColor(QgsQsciScintillaBase.ERROR_COLOR))))
+        self.edgeColor.setColor(settings.value("pythonConsole/edgeColor", QColor(QgsQsciScintillaBase.EDGE_COLOR)))
+        self.foldColor.setColor(settings.value("pythonConsole/foldColor", QColor(QgsQsciScintillaBase.FOLD_COLOR)))
 
     def _resetFontColor(self):
-        self.defaultFontColor.setColor(QColor(self.DEFAULT_COLOR))
-        self.keywordFontColor.setColor(QColor(self.KEYWORD_COLOR))
-        self.classFontColor.setColor(QColor(self.CLASS_COLOR))
-        self.methodFontColor.setColor(QColor(self.METHOD_COLOR))
-        self.decorFontColor.setColor(QColor(self.DECORATION_COLOR))
-        self.numberFontColor.setColor(QColor(self.NUMBER_COLOR))
-        self.commentFontColor.setColor(QColor(self.COMMENT_COLOR))
-        self.commentBlockFontColor.setColor(QColor(self.COMMENT_BLOCK_COLOR))
-        self.paperBackgroundColor.setColor(QColor(self.BACKGROUND_COLOR))
-        self.cursorColor.setColor(QColor(self.CURSOR_COLOR))
-        self.caretLineColor.setColor(QColor(self.CARET_LINE_COLOR))
-        self.singleQuoteFontColor.setColor(QColor(self.SINGLE_QUOTE_COLOR))
-        self.doubleQuoteFontColor.setColor(QColor(self.DOUBLE_QUOTE_COLOR))
-        self.tripleSingleQuoteFontColor.setColor(QColor(self.TRIPLE_SINGLE_QUOTE_COLOR))
-        self.tripleDoubleQuoteFontColor.setColor(QColor(self.TRIPLE_DOUBLE_QUOTE_COLOR))
-        self.marginBackgroundColor.setColor(QColor(self.MARGIN_BACKGROUND_COLOR))
-        self.marginForegroundColor.setColor(QColor(self.MARGIN_FOREGROUND_COLOR))
-        self.selectionBackgroundColor.setColor(QColor(self.SELECTION_BACKGROUND_COLOR))
-        self.selectionForegroundColor.setColor(QColor(self.SELECTION_FOREGROUND_COLOR))
-        self.matchedBraceBackgroundColor.setColor(QColor(self.MATCHED_BRACE_BACKGROUND_COLOR))
-        self.matchedBraceForegroundColor.setColor(QColor(self.MATCHED_BRACE_FOREGROUND_COLOR))
-        self.stderrFontColor.setColor(QColor(self.ERROR_COLOR))
+        self.defaultFontColor.setColor(QColor(QgsQsciScintillaBase.DEFAULT_COLOR))
+        self.keywordFontColor.setColor(QColor(QgsQsciScintillaBase.KEYWORD_COLOR))
+        self.classFontColor.setColor(QColor(QgsQsciScintillaBase.CLASS_COLOR))
+        self.methodFontColor.setColor(QColor(QgsQsciScintillaBase.METHOD_COLOR))
+        self.decorFontColor.setColor(QColor(QgsQsciScintillaBase.DECORATION_COLOR))
+        self.numberFontColor.setColor(QColor(QgsQsciScintillaBase.NUMBER_COLOR))
+        self.commentFontColor.setColor(QColor(QgsQsciScintillaBase.COMMENT_COLOR))
+        self.commentBlockFontColor.setColor(QColor(QgsQsciScintillaBase.COMMENT_BLOCK_COLOR))
+        self.paperBackgroundColor.setColor(QColor(QgsQsciScintillaBase.BACKGROUND_COLOR))
+        self.cursorColor.setColor(QColor(QgsQsciScintillaBase.CURSOR_COLOR))
+        self.caretLineColor.setColor(QColor(QgsQsciScintillaBase.CARET_LINE_COLOR))
+        self.singleQuoteFontColor.setColor(QColor(QgsQsciScintillaBase.SINGLE_QUOTE_COLOR))
+        self.doubleQuoteFontColor.setColor(QColor(QgsQsciScintillaBase.DOUBLE_QUOTE_COLOR))
+        self.tripleSingleQuoteFontColor.setColor(QColor(QgsQsciScintillaBase.TRIPLE_SINGLE_QUOTE_COLOR))
+        self.tripleDoubleQuoteFontColor.setColor(QColor(QgsQsciScintillaBase.TRIPLE_DOUBLE_QUOTE_COLOR))
+        self.marginBackgroundColor.setColor(QColor(QgsQsciScintillaBase.MARGIN_BACKGROUND_COLOR))
+        self.marginForegroundColor.setColor(QColor(QgsQsciScintillaBase.MARGIN_FOREGROUND_COLOR))
+        self.selectionBackgroundColor.setColor(QColor(QgsQsciScintillaBase.SELECTION_BACKGROUND_COLOR))
+        self.selectionForegroundColor.setColor(QColor(QgsQsciScintillaBase.SELECTION_FOREGROUND_COLOR))
+        self.matchedBraceBackgroundColor.setColor(QColor(QgsQsciScintillaBase.MATCHED_BRACE_BACKGROUND_COLOR))
+        self.matchedBraceForegroundColor.setColor(QColor(QgsQsciScintillaBase.MATCHED_BRACE_FOREGROUND_COLOR))
+        self.stderrFontColor.setColor(QColor(QgsQsciScintillaBase.ERROR_COLOR))
+        self.edgeColor.setColor(QColor(QgsQsciScintillaBase.EDGE_COLOR))
+        self.foldColor.setColor(QColor(QgsQsciScintillaBase.FOLD_COLOR))
 
     def reject(self):
         self.restoreSettings()
