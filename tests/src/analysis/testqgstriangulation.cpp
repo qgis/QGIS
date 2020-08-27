@@ -19,6 +19,9 @@ Email                : vcloarec at gmail dot com
 #include "qgsmeshtriangulation.h"
 #include "qgsvectorlayer.h"
 
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+
 class TestQgsTriangulation : public QObject
 {
     Q_OBJECT
@@ -38,7 +41,10 @@ class TestQgsTriangulation : public QObject
 };
 
 void  TestQgsTriangulation::initTestCase()
-{}
+{
+  QgsApplication::init();
+  QgsApplication::initQgis();
+}
 
 void TestQgsTriangulation::cleanupTestCase()
 {}
@@ -162,7 +168,7 @@ void TestQgsTriangulation::meshTriangulation()
 
   meshTri.setCrs( QgsCoordinateReferenceSystem( "EPSG:32620" ) );
 
-  QgsVectorLayer *mLayerPointZ = new QgsVectorLayer( QStringLiteral( "PointZ?crs=IGNF:GUAD48UTM20" ),
+  QgsVectorLayer *mLayerPointZ = new QgsVectorLayer( QStringLiteral( "PointZ?crs=EPSG:32620" ),
       QStringLiteral( "point Z" ),
       QStringLiteral( "memory" ) );
 
@@ -197,14 +203,14 @@ void TestQgsTriangulation::meshTriangulation()
   QCOMPARE( mesh.vertexCount(), 4 );
   QCOMPARE( mesh.faceCount(), 2 );
 
-  QCOMPARE( mesh.vertex( 0 ), QgsMeshVertex( 684063.6227548943, 1760993.6560628675, 1 ) );
-  QCOMPARE( mesh.vertex( 1 ), QgsMeshVertex( 683853.6219030637, 1761005.6564316382, 2 ) );
-  QCOMPARE( mesh.vertex( 2 ), QgsMeshVertex( 683675.6212958666, 1761097.6571173898, 3 ) );
-  QCOMPARE( mesh.vertex( 3 ), QgsMeshVertex( 683869.6222287047, 1761102.6569346827, 4 ) );
+  QCOMPARE( mesh.vertex( 0 ), QgsMeshVertex( 684486.0, 1761297.0, 1 ) );
+  QCOMPARE( mesh.vertex( 1 ), QgsMeshVertex( 684276.0, 1761309.0, 2 ) );
+  QCOMPARE( mesh.vertex( 2 ), QgsMeshVertex( 684098.0, 1761401.0, 3 ) );
+  QCOMPARE( mesh.vertex( 3 ), QgsMeshVertex( 684292.0, 1761406.0, 4 ) );
   QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {0, 3, 1} ) ) );
   QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( {1, 3, 2} ) ) );
 
-  QString wkt5 = "LineStringZ (683675.6212958666 1761097.6571173898 3,683787.86359334166627377 1761044.579075972083956 7,683921.42213789699599147 1761070.09025864000432193 8,684063.6227548943 1760993.6560628675 1)";
+  QString wkt5 = "LineStringZ (684098.0 1761401.0 3,684210.24 1761347.92 7,684343.8 1761373.4 8,684486.0 1761297.0 1)";
 
   QgsVectorLayer *mLayerBreakLine = new QgsVectorLayer( QStringLiteral( "LineStringZ?crs=EPSG:32620" ),
       QStringLiteral( "line" ),

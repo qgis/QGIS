@@ -73,11 +73,11 @@ void QgsTinMeshCreationAlgorithm::initAlgorithm( const QVariantMap &configuratio
 bool QgsTinMeshCreationAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback );
-  QVariant layersVariant = parameters.value( parameterDefinition( QStringLiteral( "SOURCE_DATA" ) )->name() );
+  const QVariant layersVariant = parameters.value( parameterDefinition( QStringLiteral( "SOURCE_DATA" ) )->name() );
   if ( layersVariant.type() != QVariant::List )
     return false;
 
-  QVariantList layersList = layersVariant.toList();
+  const QVariantList layersList = layersVariant.toList();
 
   QgsCoordinateReferenceSystem destinationCrs = parameterAsCrs( parameters, QStringLiteral( "CRS_OUTPUT" ), context );
   if ( !destinationCrs.isValid() )
@@ -87,9 +87,9 @@ bool QgsTinMeshCreationAlgorithm::prepareAlgorithm( const QVariantMap &parameter
   {
     if ( layer.type() != QVariant::Map )
       continue;
-    QVariantMap layerMap = layer.toMap();
-    QString layerId = layerMap.value( QStringLiteral( "Id" ) ).toString();
-    QgsProcessingParameterTinInputLayers::Type type =
+    const QVariantMap layerMap = layer.toMap();
+    const QString layerId = layerMap.value( QStringLiteral( "Id" ) ).toString();
+    const QgsProcessingParameterTinInputLayers::Type type =
       static_cast<QgsProcessingParameterTinInputLayers::Type>( layerMap.value( QStringLiteral( "Type" ) ).toInt() );
     int attributeIndex = layerMap.value( QStringLiteral( "AttributeIndex" ) ).toInt();
 
@@ -97,7 +97,7 @@ bool QgsTinMeshCreationAlgorithm::prepareAlgorithm( const QVariantMap &parameter
     if ( !vectorLayer || !vectorLayer->isValid() )
       continue;
 
-    QgsCoordinateTransform transform( vectorLayer->crs(), destinationCrs, context.transformContext() );
+    const QgsCoordinateTransform transform( vectorLayer->crs(), destinationCrs, context.transformContext() );
     int featureCount = vectorLayer->featureCount();
     switch ( type )
     {
@@ -129,12 +129,12 @@ QVariantMap QgsTinMeshCreationAlgorithm::processAlgorithm( const QVariantMap &pa
   for ( Layer &l : mBreakLinesLayer )
     triangulation.addBreakLines( l.fit, l.attributeIndex, l.transform, feedback, l.featureCount );
 
-  QString fileName = parameterAsFile( parameters, QStringLiteral( "OUTPUT_MESH" ), context );
+  const QString fileName = parameterAsFile( parameters, QStringLiteral( "OUTPUT_MESH" ), context );
   int driverIndex = parameterAsEnum( parameters, QStringLiteral( "MESH_FORMAT" ), context );
-  QString driver = mAvailableFormat.at( driverIndex );
-  QgsMesh mesh = triangulation.triangulatedMesh();
+  const QString driver = mAvailableFormat.at( driverIndex );
+  const QgsMesh mesh = triangulation.triangulatedMesh();
 
-  QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "mdal" ) );
+  const QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "mdal" ) );
   if ( providerMetadata )
     providerMetadata->createMeshData( mesh, fileName, driver, destinationCrs );
 
