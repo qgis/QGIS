@@ -2282,17 +2282,16 @@ void QgsOptions::loadGdalDriverList()
     }
 
     // in GDAL 2.0 both vector and raster drivers are returned by GDALGetDriver
-    if ( QString( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_RASTER, nullptr ) ) != QLatin1String( "YES" ) )
-    {
-      driversType[myGdalDriverDescription] = QgsMapLayerType::VectorLayer;
-    }
-    else
+    myGdalDriverDescription = GDALGetDescription( myGdalDriver );
+    myDrivers << myGdalDriverDescription;
+    if ( QString( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_RASTER, nullptr ) ) == QLatin1String( "YES" ) )
     {
       driversType[myGdalDriverDescription] = QgsMapLayerType::RasterLayer;
     }
-
-    myGdalDriverDescription = GDALGetDescription( myGdalDriver );
-    myDrivers << myGdalDriverDescription;
+    else if ( QString( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_VECTOR, nullptr ) ) == QLatin1String( "YES" ) )
+    {
+      driversType[myGdalDriverDescription] = QgsMapLayerType::VectorLayer;
+    }
 
     QgsDebugMsg( QStringLiteral( "driver #%1 - %2" ).arg( i ).arg( myGdalDriverDescription ) );
 
