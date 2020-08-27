@@ -16,7 +16,6 @@ __author__ = 'Maxim Rylov'
 __date__ = '2019-11-21'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
-import base64
 import os
 
 from test_hana_utils import QgsHanaProviderUtils
@@ -32,7 +31,6 @@ from qgis.core import (
     QgsFeature,
     QgsProviderRegistry,
     QgsSettings)
-from qgis.gui import QgsGui
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 
@@ -46,12 +44,12 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         cls.uri = 'driver=\'/usr/sap/hdbclient/libodbcHDB.so\' host=localhost port=30015 user=SYSTEM ' \
-                  'password=mypassword'
+                  'password=mypassword sslEnabled=true sslValidateCertificate=False'
         if 'QGIS_HANA_TEST_DB' in os.environ:
             cls.uri = os.environ['QGIS_HANA_TEST_DB']
         ds_uri = QgsDataSourceUri(cls.uri)
         cls.conn = dbapi.connect(address=ds_uri.host(), port=ds_uri.port(), user=ds_uri.username(),
-                                 password=ds_uri.password())
+                                 password=ds_uri.password(), ENCRYPT=True, sslValidateCertificate=False)
 
         QgsHanaProviderUtils.createAndFillDefaultTables(cls.conn)
 
