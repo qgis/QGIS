@@ -2406,12 +2406,11 @@ void QgsOptions::saveGdalDriverList()
   const auto oldSkippedGdalDrivers = QgsApplication::skippedGdalDrivers();
   auto deferredSkippedGdalDrivers = QgsApplication::deferredSkippedGdalDrivers();
   QStringList skippedGdalDrivers;
-  // raster drivers
-  for ( int i = 0; i < lstRasterDrivers->topLevelItemCount(); i++ )
+
+  auto checkDriver = [ & ]( QTreeWidgetItem * item )
   {
-    QTreeWidgetItem *mypItem = lstRasterDrivers->topLevelItem( i );
-    const auto &driverName( mypItem->text( 0 ) );
-    if ( mypItem->checkState( 0 ) == Qt::Unchecked )
+    const auto &driverName( item->text( 0 ) );
+    if ( item->checkState( 0 ) == Qt::Unchecked )
     {
       skippedGdalDrivers << driverName;
       if ( !deferredSkippedGdalDrivers.contains( driverName ) &&
@@ -2428,30 +2427,18 @@ void QgsOptions::saveGdalDriverList()
         deferredSkippedGdalDrivers.removeAll( driverName );
       }
     }
+  };
+
+  // raster drivers
+  for ( int i = 0; i < lstRasterDrivers->topLevelItemCount(); i++ )
+  {
+    checkDriver( lstRasterDrivers->topLevelItem( i ) );
   }
 
   // vector drivers
   for ( int i = 0; i < lstVectorDrivers->topLevelItemCount(); i++ )
   {
-    QTreeWidgetItem *mypItem = lstVectorDrivers->topLevelItem( i );
-    const auto &driverName( mypItem->text( 0 ) );
-    if ( mypItem->checkState( 0 ) == Qt::Unchecked )
-    {
-      skippedGdalDrivers << driverName;
-      if ( !deferredSkippedGdalDrivers.contains( driverName ) &&
-           !oldSkippedGdalDrivers.contains( driverName ) )
-      {
-        deferredSkippedGdalDrivers << driverName;
-        driverUnregisterNeeded = true;
-      }
-    }
-    else
-    {
-      if ( deferredSkippedGdalDrivers.contains( driverName ) )
-      {
-        deferredSkippedGdalDrivers.removeAll( driverName );
-      }
-    }
+    checkDriver( lstVectorDrivers->topLevelItem( i ) );
   }
 
   if ( driverUnregisterNeeded )
