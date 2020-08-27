@@ -85,6 +85,9 @@ bool QgsTinMeshCreationAlgorithm::prepareAlgorithm( const QVariantMap &parameter
 
   for ( const QVariant &layer : layersList )
   {
+    if ( feedback && feedback->isCanceled() )
+      return false;
+
     if ( layer.type() != QVariant::Map )
       continue;
     const QVariantMap layerMap = layer.toMap();
@@ -112,6 +115,7 @@ bool QgsTinMeshCreationAlgorithm::prepareAlgorithm( const QVariantMap &parameter
 
   if ( mVerticesLayer.isEmpty() && mBreakLinesLayer.isEmpty() )
     return false;
+
   return true;
 }
 
@@ -124,10 +128,21 @@ QVariantMap QgsTinMeshCreationAlgorithm::processAlgorithm( const QVariantMap &pa
   triangulation.setCrs( destinationCrs );
 
   for ( Layer &l : mVerticesLayer )
+  {
+    if ( feedback && feedback->isCanceled() )
+      break;
     triangulation.addVertices( l.fit, l.attributeIndex, l.transform, feedback, l.featureCount );
+  }
 
   for ( Layer &l : mBreakLinesLayer )
+  {
+    if ( feedback && feedback->isCanceled() )
+      break;
     triangulation.addBreakLines( l.fit, l.attributeIndex, l.transform, feedback, l.featureCount );
+  }
+
+  if ( feedback && feedback->isCanceled() )
+    return QVariantMap();
 
   const QString fileName = parameterAsFile( parameters, QStringLiteral( "OUTPUT_MESH" ), context );
   int driverIndex = parameterAsEnum( parameters, QStringLiteral( "MESH_FORMAT" ), context );
