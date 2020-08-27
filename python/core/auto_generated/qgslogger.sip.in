@@ -56,17 +56,17 @@ Similar to the previous method, but prints a variable int-value pair
 
     static void warning( const QString &msg );
 %Docstring
-Goes to qWarning
+Goes to qWarning.
 %End
 
     static void critical( const QString &msg );
 %Docstring
-Goes to qCritical
+Goes to qCritical.
 %End
 
     static void fatal( const QString &msg );
 %Docstring
-Goes to qFatal
+Goes to qFatal.
 %End
 
     static int debugLevel();
@@ -77,7 +77,7 @@ the function returns 1 if QGISDEBUG is defined and 0 if not.
 
     static void logMessageToFile( const QString &message );
 %Docstring
-Logs the message passed in to the logfile defined in QGIS_LOG_FILE if any. *
+Logs the message passed in to the logfile defined in QGIS_LOG_FILE if any.
 %End
 
     static QString logFile();

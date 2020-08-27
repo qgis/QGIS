@@ -91,13 +91,13 @@ class CORE_EXPORT QgsLogger
       debug( var, os.str().c_str(), file, function, line, debuglevel );
     }
 
-    //! Goes to qWarning
+    //! Goes to qWarning.
     static void warning( const QString &msg );
 
-    //! Goes to qCritical
+    //! Goes to qCritical.
     static void critical( const QString &msg );
 
-    //! Goes to qFatal
+    //! Goes to qFatal.
     static void fatal( const QString &msg );
 
     /**
@@ -111,7 +111,7 @@ class CORE_EXPORT QgsLogger
       return sDebugLevel;
     }
 
-    //! Logs the message passed in to the logfile defined in QGIS_LOG_FILE if any. *
+    //! Logs the message passed in to the logfile defined in QGIS_LOG_FILE if any.
     static void logMessageToFile( const QString &message );
 
     /**

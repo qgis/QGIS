@@ -70,7 +70,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     //! Axis orientation logic.
     typedef enum
     {
-      //! Honour EPSG axis order only if srsName is of the form urn:ogc:def:crs:EPSG: *
+      //! Honour EPSG axis order only if srsName is of the form urn:ogc:def:crs:EPSG:
       Honour_EPSG_if_urn,
       //! Honour EPSG axis order
       Honour_EPSG,

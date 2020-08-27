@@ -314,7 +314,7 @@ namespace pal
        */
       int connectedFeatureId( QgsFeatureId featureId ) const;
 
-      //! Chop layer features at the repeat distance *
+      //! Chop layer features at the repeat distance
       void chopFeaturesAtRepeatDistance();
 
     protected:

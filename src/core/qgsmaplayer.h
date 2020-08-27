@@ -1637,7 +1637,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! A flag that tells us whether to use the above vars to restrict layer visibility
     bool mScaleBasedVisibility = false;
 
-    //! Collection of undoable operations for this layer. *
+    //! Collection of undoable operations for this layer.
     QUndoStack *mUndoStack = nullptr;
 
     QUndoStack *mUndoStackStyles = nullptr;

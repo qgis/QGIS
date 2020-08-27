@@ -128,7 +128,7 @@ void QgsNewOgrConnection::updateOkButtonState()
 }
 
 
-//! Autoconnected SLOTS *
+//! Autoconnected SLOTS
 void QgsNewOgrConnection::accept()
 {
   QgsSettings settings;
@@ -170,4 +170,4 @@ void QgsNewOgrConnection::btnConnect_clicked()
   testConnection();
 }
 
-//! End  Autoconnected SLOTS *
+//! End  Autoconnected SLOTS
