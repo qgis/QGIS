@@ -80,7 +80,7 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &co
   txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]+" ), txtName ) );
   cb_trustedConnection_clicked();
 }
-//! Autoconnected SLOTS *
+//! Autoconnected SLOTS
 void QgsMssqlNewConnection::accept()
 {
   QgsSettings settings;
@@ -156,7 +156,7 @@ void QgsMssqlNewConnection::cb_trustedConnection_clicked()
   }
 }
 
-//! End  Autoconnected SLOTS *
+//! End  Autoconnected SLOTS
 
 bool QgsMssqlNewConnection::testConnection( const QString &testDatabase )
 {
