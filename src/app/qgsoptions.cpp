@@ -2259,7 +2259,7 @@ void QgsOptions::loadGdalDriverList()
   QStringList myDrivers;
   QStringList myGdalWriteDrivers;
   QMap<QString, QString> myDriversFlags, myDriversExt, myDriversLongName;
-  QMap<QString, bool> driversType; // true for raster, false for vector
+  QMap<QString, QgsMapLayerType> driversType;
 
   // make sure we save list when accept()
   mLoadedGdalDriverList = true;
@@ -2284,11 +2284,11 @@ void QgsOptions::loadGdalDriverList()
     // in GDAL 2.0 both vector and raster drivers are returned by GDALGetDriver
     if ( QString( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_RASTER, nullptr ) ) != QLatin1String( "YES" ) )
     {
-      driversType[myGdalDriverDescription] = false;
+      driversType[myGdalDriverDescription] = QgsMapLayerType::VectorLayer;
     }
     else
     {
-      driversType[myGdalDriverDescription] = true;
+      driversType[myGdalDriverDescription] = QgsMapLayerType::RasterLayer;
     }
 
     myGdalDriverDescription = GDALGetDescription( myGdalDriver );
@@ -2298,7 +2298,7 @@ void QgsOptions::loadGdalDriverList()
 
     // get driver R/W flags, adopted from GDALGeneralCmdLineProcessor()
     QString driverFlags = "";
-    if ( driversType[myGdalDriverDescription] )
+    if ( driversType[myGdalDriverDescription] == QgsMapLayerType::RasterLayer )
     {
       if ( QgsGdalUtils::supportsRasterCreate( myGdalDriver ) )
       {
@@ -2365,7 +2365,7 @@ void QgsOptions::loadGdalDriverList()
     QString myFlags = myDriversFlags[myName];
     mypItem->setText( 2, myFlags );
     mypItem->setText( 3, myDriversLongName[myName] );
-    if ( driversType[myName] )
+    if ( driversType[myName] == QgsMapLayerType::RasterLayer )
     {
       lstRasterDrivers->addTopLevelItem( mypItem );
     }
