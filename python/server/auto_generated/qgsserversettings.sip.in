@@ -50,6 +50,7 @@ Provides some enum describing the environment currently supported for configurat
       QGIS_SERVER_API_RESOURCES_DIRECTORY,
       QGIS_SERVER_API_WFS3_MAX_LIMIT,
       QGIS_SERVER_TRUST_LAYER_METADATA,
+      QGIS_SERVER_DISABLE_GETPRINT,
       QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES,
       QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS
     };
@@ -257,7 +258,6 @@ variable QGIS_SERVER_TRUST_LAYER_METADATA.
 .. versionadded:: 3.16
 %End
 
-<<<<<<< HEAD
     bool getPrintDisabled() const;
 %Docstring
 Returns ``True`` if WMS GetPrint request is disabled and the project's
@@ -265,11 +265,13 @@ reading flag DONT_LOAD_LAYOUTS is activated.
 
 The default value is ``False``, this value can be changed by setting the environment
 variable QGIS_SERVER_DISABLE_GETPRINT.
-=======
+
+.. versionadded:: 3.16
+%End
+
     static QString name( QgsServerSettingsEnv::EnvVar env );
 %Docstring
 Returns the string representation of a setting.
->>>>>>> 63c64d45a6... Add name method
 
 .. versionadded:: 3.16
 %End

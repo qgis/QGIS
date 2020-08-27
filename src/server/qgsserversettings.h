@@ -273,7 +273,7 @@ class SERVER_EXPORT QgsServerSettings
      */
     bool getPrintDisabled() const;
 
-    /* 
+    /**
      * Returns the string representation of a setting.
      * \since QGIS 3.16
      */
