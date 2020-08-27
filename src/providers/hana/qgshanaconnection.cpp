@@ -79,17 +79,7 @@ QgsHanaConnection *QgsHanaConnection::createConnection( const QgsDataSourceUri &
 
 QgsHanaConnection *QgsHanaConnection::createConnection( const QgsDataSourceUri &uri, bool *canceled )
 {
-  QString errorMessage;
-  QgsHanaConnection *conn = createConnection( uri, canceled, &errorMessage );
-
-  if ( !errorMessage.isEmpty() )
-  {
-    QString logMessage = QObject::tr( "Connection to database failed" ) + '\n' + errorMessage;
-    QgsDebugMsg( logMessage );
-    QgsMessageLog::logMessage( logMessage, tr( "HANA" ) );
-  }
-
-  return conn;
+  return createConnection( uri, canceled, nullptr );
 }
 
 QgsHanaConnection *QgsHanaConnection::createConnection( const QgsDataSourceUri &uri, bool *canceled, QString *errorMessage )
@@ -115,8 +105,9 @@ QgsHanaConnection *QgsHanaConnection::createConnection( const QgsDataSourceUri &
       }
       catch ( const Exception &ex )
       {
-        errorMessage = QgsHanaUtils::formatErrorMessage( ex.what() );
+        errorMessage = QObject::tr( "Connection to database failed" ) + '\n' + QgsHanaUtils::formatErrorMessage( ex.what() );
         QgsDebugMsg( errorMessage );
+        QgsMessageLog::logMessage( errorMessage, tr( "HANA" ) );
       }
 
       return conn->connected();

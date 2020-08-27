@@ -1,22 +1,5 @@
 version: '3'
 services:
-  hana:
-    image: saphanaspatial/hana-express-for-qgis-tests:2.00.045.00.20200121.1
-    container_name: hana
-    hostname: hana
-    sysctls:
-      - net.ipv4.ip_local_port_range=40000 60999
-    entrypoint:
-      - sh
-      - -c
-      - echo "{\"master_password\":\"HXEHana1\"}" > /tmp/hana_password.json; cat /tmp/hana_password.json;/run_hana --agree-to-sap-license --passwords-url file:///tmp/hana_password.json
-    ports:
-      - 39013:39013 
-      - 39017:39017
-      - 39041-39045:39041-39045
-    ulimits:
-      nofile: 1048576
-
   postgres:
     build:
       dockerfile: Dockerfile-postgis
@@ -51,7 +34,6 @@ services:
     volumes:
       - ${TRAVIS_BUILD_DIR}:/root/QGIS
     links:
-      - hana
       - postgres
       - oracle
     #  - mssql
