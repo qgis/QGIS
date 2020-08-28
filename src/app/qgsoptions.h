@@ -86,7 +86,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void resetTemplateFolder();
     //! Slot called when user chooses to change the default 'on the fly' projection.
     void leLayerGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem &crs );
-    void lstGdalDrivers_itemDoubleClicked( QTreeWidgetItem *item, int column );
+    void lstRasterDrivers_itemDoubleClicked( QTreeWidgetItem *item, int column );
     void editCreateOptions();
     void editPyramidsOptions();
     void editGdalDriver( const QString &driverName );
