@@ -8109,6 +8109,8 @@ void QgisApp::changeDataSource( QgsMapLayer *layer )
   QgsMapLayerType layerType( layer->type() );
 
   QgsDataSourceSelectDialog dlg( mBrowserModel, true, layerType );
+  if ( !layer->isValid() )
+    dlg.setWindowTitle( tr( "Repair Data Source" ) );
 
   const QVariantMap sourceParts = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->publicSource() );
   QString source = layer->publicSource();
