@@ -274,7 +274,9 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       if ( vlayer || rlayer )
       {
 
-        QAction *a = new QAction( tr( "Change Data Source…" ), menu );
+        QAction *a = new QAction( layer->isValid() ? tr( "Change Data Source…" ) : tr( "Repair Data Source…" ), menu );
+        if ( !layer->isValid() )
+          a->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconWarning.svg" ) ) );
         // Disable when layer is editable
         if ( layer->isEditable() )
         {
