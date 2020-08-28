@@ -4881,6 +4881,10 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer 
     "GROUP BY RC.CONSTRAINT_NAME, KCU1.COLUMN_NAME, KCU2.CONSTRAINT_SCHEMA, KCU2.TABLE_NAME, KCU2.COLUMN_NAME, KCU1.ORDINAL_POSITION " +
     "ORDER BY KCU1.ORDINAL_POSITION"
   );
+<<<<<<< HEAD
+=======
+
+>>>>>>> d8397b1379... style
   QgsPostgresResult sqlResult( connectionRO()->PQexec( sql ) );
   if ( sqlResult.PQresultStatus() != PGRES_TUPLES_OK )
   {
