@@ -2475,6 +2475,18 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                  '-co COMPRESS=DEFLATE -co PREDICTOR=2 -co ZLEVEL=9 ' + dem + ' ' + outsource
                  ])
 
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': dem,
+                                        'BAND': 1,
+                                        'OBSERVER': '18.67274,45.80599',
+                                        'VISIBLE': 1,
+                                        'OPTIONS': 'COMPRESS=DEFLATE|PREDICTOR=2|ZLEVEL=9',
+                                        'OUTPUT': outsource}, context, feedback),
+                ['gdal_viewshed',
+                 '-b 1 -ox 18.67274 -oy 45.80599 -oz 1.0 -tz 1.0 -md 100.0 -vv 1 -f GTiff ' +
+                 '-co COMPRESS=DEFLATE -co PREDICTOR=2 -co ZLEVEL=9 ' + dem + ' ' + outsource
+                 ])
+
     def testBuildVrt(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
