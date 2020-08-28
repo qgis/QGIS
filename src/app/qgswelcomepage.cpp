@@ -438,8 +438,11 @@ void QgsWelcomePage::updateNewsFeedVisibility()
   else
   {
     mSplitter2->restoreState( QgsSettings().value( QStringLiteral( "Windows/WelcomePage/SplitState2" ), QVariant(), QgsSettings::App ).toByteArray() );
-    int splitSize = mSplitter2->height() / 2;
-    mSplitter2->setSizes( QList< int > { splitSize, splitSize} );
+    if ( mSplitter2->sizes().first() == 0 )
+    {
+      int splitSize = mSplitter2->height() / 2;
+      mSplitter2->setSizes( QList< int > { splitSize, splitSize} );
+    }
   }
 }
 
