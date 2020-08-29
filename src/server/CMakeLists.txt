@@ -29,6 +29,7 @@ SET(QGIS_SERVER_SRCS
   qgsserverapi.cpp
   qgsserverogcapi.cpp
   qgsserverogcapihandler.cpp
+  qgsserverstatichandler.cpp
   qgsserverapiutils.cpp
   qgsserverapicontext.cpp
   qgsserverparameters.cpp
@@ -59,6 +60,7 @@ SET (QGIS_SERVER_HDRS
   qgsserverlogger.h
   qgsserverogcapi.h
   qgsserverogcapihandler.h
+  qgsserverstatichandler.h
   qgsserverparameters.h
   qgsserverquerystringparameter.h
   qgsserversettings.h
@@ -207,5 +209,5 @@ INSTALL(FILES
   DESTINATION ${QGIS_CGIBIN_DIR}
 )
 ADD_CUSTOM_TARGET(qgis_server_full
-  DEPENDS qgis_mapserv.fcgi wms wfs wcs wfs3 wmts qgis_server
+  DEPENDS qgis_mapserv.fcgi wms wfs wcs wfs3 wmts qgis_server landingpage
 )

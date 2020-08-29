@@ -46,7 +46,7 @@ class CORE_EXPORT QgsAnnotationItem
     }
     else if ( sipCpp->type() == QLatin1String( "linestring" ) )
     {
-      sipType = sipType_QgsAnnotationLineStringItem;
+      sipType = sipType_QgsAnnotationLineItem;
     }
     else if ( sipCpp->type() == QLatin1String( "polygon" ) )
     {

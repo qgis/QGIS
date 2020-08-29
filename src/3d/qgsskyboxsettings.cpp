@@ -23,11 +23,10 @@
 void QgsSkyboxSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   const QgsPathResolver &pathResolver = context.pathResolver();
-  mIsSkyboxEnabled = element.attribute( QStringLiteral( "skybox-enabled" ) ).toInt();
   QString skyboxTypeStr = element.attribute( QStringLiteral( "skybox-type" ) );
   if ( skyboxTypeStr == QStringLiteral( "Distinct Faces" ) )
     mSkyboxType = QgsSkyboxEntity::DistinctTexturesSkybox;
-  else if ( skyboxTypeStr == QStringLiteral( "Panoramic texture" ) )
+  else if ( skyboxTypeStr == QStringLiteral( "Panoramic Texture" ) )
     mSkyboxType = QgsSkyboxEntity::PanoramicSkybox;
   mPanoramicTexturePath = pathResolver.readPath( element.attribute( QStringLiteral( "panoramic-texture-path" ) ) );
   mCubeMapFacesPaths.clear();
@@ -41,14 +40,13 @@ void QgsSkyboxSettings::readXml( const QDomElement &element, const QgsReadWriteC
 
 void QgsSkyboxSettings::writeXml( QDomElement &element, const QgsReadWriteContext &context ) const
 {
-  element.setAttribute( QStringLiteral( "skybox-enabled" ), mIsSkyboxEnabled );
   switch ( mSkyboxType )
   {
     case QgsSkyboxEntity::DistinctTexturesSkybox:
       element.setAttribute( QStringLiteral( "skybox-type" ), QStringLiteral( "Distinct Faces" ) );
       break;
     case QgsSkyboxEntity::PanoramicSkybox:
-      element.setAttribute( QStringLiteral( "skybox-type" ), QStringLiteral( "Panoramic texture" ) );
+      element.setAttribute( QStringLiteral( "skybox-type" ), QStringLiteral( "Panoramic Texture" ) );
       break;
   }
 

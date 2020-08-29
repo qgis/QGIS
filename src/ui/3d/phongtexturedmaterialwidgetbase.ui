@@ -137,9 +137,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
+   <class>QgsImageSourceLineEdit</class>
+   <extends>QWidget</extends>
+   <header>qgsfilecontentsourcelineedit.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -148,12 +148,19 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsImageSourceLineEdit</class>
-   <extends>QWidget</extends>
-   <header>qgsfilecontentsourcelineedit.h</header>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>btnAmbient</tabstop>
+  <tabstop>btnSpecular</tabstop>
+  <tabstop>spinShininess</tabstop>
+  <tabstop>textureScaleSpinBox</tabstop>
+  <tabstop>textureRotationSpinBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

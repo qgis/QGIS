@@ -31,6 +31,50 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
   public:
     QgsMultiPoint();
 
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns the point with the specified \a index.
+     *
+     * \since QGIS 3.16
+     */
+    QgsPoint *pointN( int index );
+#else
+
+    /**
+     * Returns the point with the specified \a index.
+     *
+     * An IndexError will be raised if no point with the specified index exists.
+     *
+     * \since QGIS 3.16
+     */
+    SIP_PYOBJECT pointN( int index ) SIP_TYPEHINT( QgsPoint );
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      return sipConvertFromType( sipCpp->pointN( a0 ), sipType_QgsPoint, NULL );
+    }
+    % End
+#endif
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns the point with the specified \a index.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 3.16
+     */
+    const QgsPoint *pointN( int index ) const;
+#endif
+
     QString geometryType() const override;
     QgsMultiPoint *clone() const override SIP_FACTORY;
     QgsMultiPoint *toCurveType() const override SIP_FACTORY;

@@ -13,7 +13,7 @@
 class QgsRelief
 {
 %Docstring
-Produces colored relief rasters from DEM*
+Produces colored relief rasters from DEM.
 %End
 
 %TypeHeaderCode
@@ -38,7 +38,7 @@ Starts the calculation, reads from mInputFile and stores the result in mOutputFi
 
 :param feedback: feedback object that receives update and that is checked for cancellation.
 
-:return: 0 in case of success*
+:return: 0 in case of success
 %End
 
     double zFactor() const;
@@ -53,7 +53,7 @@ Starts the calculation, reads from mInputFile and stores the result in mOutputFi
 %Docstring
 Calculates class breaks according with the method of Buenzli (2011) using an iterative algorithm for segmented regression
 
-:return: true in case of success*
+:return: true in case of success
 %End
 
     bool exportFrequencyDistributionToCsv( const QString &file );

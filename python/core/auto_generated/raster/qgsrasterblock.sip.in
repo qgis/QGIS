@@ -365,7 +365,7 @@ It is ensured that conversion back to double gives the same number.
 
 :param value: the value to be printed
 
-:return: string representing the value*
+:return: string representing the value
 %End
 
 

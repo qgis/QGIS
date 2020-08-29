@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsannotationlinestringitem.h
+    qgsannotationlineitem.h
     ----------------
     begin                : July 2020
     copyright            : (C) 2020 by Nyall Dawson
@@ -15,29 +15,30 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSANNOTATIONLINESTRINGITEM_H
-#define QGSANNOTATIONLINESTRINGITEM_H
+#ifndef QGSANNOTATIONLINEITEM_H
+#define QGSANNOTATIONLINEITEM_H
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsannotationitem.h"
 
+class QgsCurve;
 
 /**
  * \ingroup core
- * An annotation item which renders a line symbol along a linestring geometry.
+ * An annotation item which renders a line symbol along a line geometry.
  *
  * \since QGIS 3.16
  */
-class CORE_EXPORT QgsAnnotationLineStringItem : public QgsAnnotationItem
+class CORE_EXPORT QgsAnnotationLineItem : public QgsAnnotationItem
 {
   public:
 
     /**
-     * Constructor for QgsAnnotationLineStringItem, with the specified \a linestring.
+     * Constructor for QgsAnnotationLineItem, with the specified \a linestring.
      */
-    QgsAnnotationLineStringItem( const QgsLineString &linestring );
-    ~QgsAnnotationLineStringItem() override;
+    QgsAnnotationLineItem( QgsCurve *curve SIP_TRANSFER );
+    ~QgsAnnotationLineItem() override;
 
     QString type() const override;
     void render( QgsRenderContext &context, QgsFeedback *feedback ) override;
@@ -46,30 +47,30 @@ class CORE_EXPORT QgsAnnotationLineStringItem : public QgsAnnotationItem
     /**
      * Creates a new linestring annotation item.
      */
-    static QgsAnnotationLineStringItem *create() SIP_FACTORY;
+    static QgsAnnotationLineItem *create() SIP_FACTORY;
 
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
     QgsRectangle boundingBox() const override;
 
-    QgsAnnotationLineStringItem *clone() override SIP_FACTORY;
+    QgsAnnotationLineItem *clone() override SIP_FACTORY;
 
     /**
-     * Returns the line string geometry of the item.
+     * Returns the geometry of the item.
      *
      * The coordinate reference system for the line will be the parent layer's QgsAnnotationLayer::crs().
      *
-     * \see setLineString()
+     * \see setGeometry()
      */
-    QgsLineString lineString() const { return mLineString; }
+    const QgsCurve *geometry() const { return mCurve.get(); }
 
     /**
-     * Sets the \a lineString geometry of the item.
+     * Sets the \a geometry of the item. Ownership of \a geometry is transferred.
      *
      * The coordinate reference system for the line will be the parent layer's QgsAnnotationLayer::crs().
      *
-     * \see lineString()
+     * \see geometry()
      */
-    void setLineString( const QgsLineString &lineString ) { mLineString = lineString; }
+    void setGeometry( QgsCurve *geometry SIP_TRANSFER ) { mCurve.reset( geometry ); }
 
     /**
      * Returns the symbol used to render the item.
@@ -89,13 +90,13 @@ class CORE_EXPORT QgsAnnotationLineStringItem : public QgsAnnotationItem
 
   private:
 
-    QgsLineString mLineString;
+    std::unique_ptr< QgsCurve > mCurve;
     std::unique_ptr< QgsLineSymbol > mSymbol;
 
 #ifdef SIP_RUN
-    QgsAnnotationLineStringItem( const QgsAnnotationLineStringItem &other );
+    QgsAnnotationLineItem( const QgsAnnotationLineItem &other );
 #endif
 
 };
 
-#endif // QGSANNOTATIONLINESTRINGITEM_H
+#endif // QGSANNOTATIONLINEITEM_H

@@ -35,10 +35,21 @@ QgsAnnotationLayer::~QgsAnnotationLayer()
   qDeleteAll( mItems );
 }
 
+void QgsAnnotationLayer::reset()
+{
+  mOpacity = 1.0;
+  setCrs( QgsCoordinateReferenceSystem() );
+  setTransformContext( QgsCoordinateTransformContext() );
+  clear();
+}
+
 QString QgsAnnotationLayer::addItem( QgsAnnotationItem *item )
 {
   const QString uuid = QUuid::createUuid().toString();
   mItems.insert( uuid, item );
+
+  triggerRepaint();
+
   return uuid;
 }
 
@@ -48,7 +59,24 @@ bool QgsAnnotationLayer::removeItem( const QString &id )
     return false;
 
   delete mItems.take( id );
+
+  triggerRepaint();
+
   return true;
+}
+
+void QgsAnnotationLayer::clear()
+{
+  qDeleteAll( mItems );
+  mItems.clear();
+
+  triggerRepaint();
+}
+
+void QgsAnnotationLayer::setOpacity( double opacity )
+{
+  mOpacity = opacity;
+  triggerRepaint();
 }
 
 QgsAnnotationLayer *QgsAnnotationLayer::clone() const
@@ -124,6 +152,8 @@ bool QgsAnnotationLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
 
   QString errorMsg;
   readSymbology( layerNode, errorMsg, context );
+
+  triggerRepaint();
 
   return mValid;
 }

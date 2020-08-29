@@ -462,7 +462,7 @@ void QgsGeometryCheckerResultTab::openAttributeTable()
 void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
 {
 
-  //! Collect errors to fix *
+  //! Collect errors to fix
   QModelIndexList rows = ui.tableWidgetErrors->selectionModel()->selectedRows();
   if ( rows.isEmpty() )
   {
@@ -490,13 +490,13 @@ void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
   // Disable sorting while fixing errors
   ui.tableWidgetErrors->setSortingEnabled( false );
 
-  //! Reset statistics, clear rubberbands *
+  //! Reset statistics, clear rubberbands
   mStatistics = QgsGeometryCheckerFixSummaryDialog::Statistics();
   qDeleteAll( mCurrentRubberBands );
   mCurrentRubberBands.clear();
 
 
-  //! Fix errors *
+  //! Fix errors
   mCloseable = false;
   if ( prompt )
   {

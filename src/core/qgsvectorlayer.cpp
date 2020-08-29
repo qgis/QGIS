@@ -1966,8 +1966,20 @@ QString QgsVectorLayer::encodedSource( const QString &source, const QgsReadWrite
         // syntax: provider:url_encoded_source_URI(:name(:encoding)?)?
         theURIParts = value.split( ':' );
         theURIParts[1] = QUrl::fromPercentEncoding( theURIParts[1].toUtf8() );
-        theURIParts[1] = context.pathResolver().writePath( theURIParts[1] );
-        theURIParts[1] = QUrl::toPercentEncoding( theURIParts[1] );
+
+        if ( theURIParts[0] == QLatin1String( "delimitedtext" ) )
+        {
+          QUrl urlSource = QUrl( theURIParts[1] );
+          QUrl urlDest = QUrl::fromLocalFile( context.pathResolver().writePath( urlSource.toLocalFile() ) );
+          urlDest.setQuery( urlSource.query() );
+          theURIParts[1] = QUrl::toPercentEncoding( urlDest.toString(), QByteArray( "" ), QByteArray( ":" ) );
+        }
+        else
+        {
+          theURIParts[1] = context.pathResolver().writePath( theURIParts[1] );
+          theURIParts[1] = QUrl::toPercentEncoding( theURIParts[1] );
+        }
+
         queryItems[i].second =  theURIParts.join( QStringLiteral( ":" ) ) ;
       }
     }
@@ -2040,7 +2052,28 @@ QString QgsVectorLayer::decodedSource( const QString &source, const QString &pro
         // syntax: provider:url_encoded_source_URI(:name(:encoding)?)?
         theURIParts = value.split( ':' );
         theURIParts[1] = QUrl::fromPercentEncoding( theURIParts[1].toUtf8() );
-        theURIParts[1] = context.pathResolver().readPath( theURIParts[1] );
+
+        if ( theURIParts[0] == QStringLiteral( "delimitedtext" ) )
+        {
+          QUrl urlSource = QUrl( theURIParts[1] );
+
+          if ( !theURIParts[1].startsWith( QLatin1String( "file:" ) ) )
+          {
+            QUrl file = QUrl::fromLocalFile( theURIParts[1].left( theURIParts[1].indexOf( '?' ) ) );
+            urlSource.setScheme( QStringLiteral( "file" ) );
+            urlSource.setPath( file.path() );
+          }
+
+          QUrl urlDest = QUrl::fromLocalFile( context.pathResolver().readPath( urlSource.toLocalFile() ) );
+          urlDest.setQuery( urlSource.query() );
+
+          theURIParts[1] = urlDest.toString();
+        }
+        else
+        {
+          theURIParts[1] = context.pathResolver().readPath( theURIParts[1] );
+        }
+
         theURIParts[1] = QUrl::toPercentEncoding( theURIParts[1] );
         queryItems[i].second =  theURIParts.join( QStringLiteral( ":" ) ) ;
       }
@@ -3345,7 +3378,7 @@ QgsFeatureSource::FeatureAvailability QgsVectorLayer::hasFeatures() const
     return QgsFeatureSource::FeatureAvailability::FeaturesAvailable;
 }
 
-bool QgsVectorLayer::commitChanges()
+bool QgsVectorLayer::commitChanges( bool stopEditing )
 {
   mCommitErrors.clear();
 
@@ -3361,7 +3394,7 @@ bool QgsVectorLayer::commitChanges()
     return false;
   }
 
-  emit beforeCommitChanges();
+  emit beforeCommitChanges( stopEditing );
 
   if ( !mAllowCommit )
     return false;
@@ -3370,11 +3403,15 @@ bool QgsVectorLayer::commitChanges()
 
   if ( success )
   {
-    delete mEditBuffer;
-    mEditBuffer = nullptr;
+    if ( stopEditing )
+    {
+      delete mEditBuffer;
+      mEditBuffer = nullptr;
+    }
     undoStack()->clear();
     emit afterCommitChanges();
-    emit editingStopped();
+    if ( stopEditing )
+      emit editingStopped();
   }
   else
   {
@@ -4888,11 +4925,11 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
       }
       else if ( it.key() == QLatin1String( "group" ) && it.value() == QLatin1String( "yes" ) )
       {
-        settings.mergeLines = true;
+        settings.lineSettings().setMergeLines( true );
       }
       else if ( it.key() == QLatin1String( "labelAllGroup" ) && it.value() == QLatin1String( "true" ) )
       {
-        settings.mergeLines = true;
+        settings.lineSettings().setMergeLines( true );
       }
     }
   }

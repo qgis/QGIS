@@ -110,7 +110,7 @@ struct QgsWcsCapabilitiesProperty
 };
 
 /**
-  \brief WCS Capabilities.
+ * \brief WCS Capabilities.
 */
 class QgsWcsCapabilities : public QObject
 {
@@ -164,7 +164,8 @@ class QgsWcsCapabilities : public QObject
 
     /**
      * \brief Returns the GetCoverage full url
-     *  \param version optional version, e.g. 1.0.0 or 1.1.0 */
+     *  \param version optional version, e.g. 1.0.0 or 1.1.0
+    */
     QString getCapabilitiesUrl( const QString &version ) const;
 
     //! \brief Returns the GetCoverage full url using current version
@@ -233,12 +234,14 @@ class QgsWcsCapabilities : public QObject
 
     /**
      * Find sub elements by path which is string of dot separated tag names.
-     *  NS is ignored. Example path: domainSet.spatialDomain.RectifiedGrid */
+     *  NS is ignored. Example path: domainSet.spatialDomain.RectifiedGrid
+    */
     static QList<QDomElement> domElements( const QDomElement &element, const QString &path );
 
     /**
      * Find first sub element by path which is string of dot separated tag names.
-     *  NS is ignored. Example path: domainSet.spatialDomain.RectifiedGrid */
+     *  NS is ignored. Example path: domainSet.spatialDomain.RectifiedGrid
+    */
     static QDomElement domElement( const QDomElement &element, const QString &path );
 
     //! Gets text of element specified by path
@@ -269,7 +272,7 @@ class QgsWcsCapabilities : public QObject
     //! Gets coverage summary for identifier
     QgsWcsCoverageSummary *coverageSummary( QString const &identifier, QgsWcsCoverageSummary *parent = nullptr );
 
-    // ! Get list of all sub coverages
+    //! Get list of all sub coverages
     QList<QgsWcsCoverageSummary> coverageSummaries( QgsWcsCoverageSummary *parent = nullptr );
 
     void initCoverageSummary( QgsWcsCoverageSummary &coverageSummary );

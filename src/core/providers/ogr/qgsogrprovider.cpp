@@ -1125,7 +1125,7 @@ void QgsOgrProvider::loadFields()
       uniqueFieldNames = QgsSqliteUtils::uniqueFields( dsPtr.get(), mOgrLayer->name(), errMsg );
       if ( ! errMsg.isEmpty() )
       {
-        QgsMessageLog::logMessage( tr( "GPKG error searching for unique constraints on fields for table %1" ).arg( QString( mOgrLayer->name() ) ), tr( "OGR" ) );
+        QgsMessageLog::logMessage( tr( "GPKG error searching for unique constraints on fields for table %1. (%2)" ).arg( QString( mOgrLayer->name() ), errMsg ), tr( "OGR" ) );
       }
     }
   }
@@ -2734,7 +2734,7 @@ void QgsOgrProvider::computeCapabilities()
     }
 
     // Whilst the OGR documentation (e.g. at
-    // http://www.gdal.org/ogr/classOGRLayer.html#a17) states "The capability
+    // https://gdal.org/doxygen/classOGRLayer.html#aeedbda1a62f9b89b8e5f24332cf22286) states "The capability
     // codes that can be tested are represented as strings, but #defined
     // constants exists to ensure correct spelling", we always use strings
     // here.  This is because older versions of OGR don't always have all
@@ -3422,23 +3422,55 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri )
 {
   QString path = uri;
   QString layerName;
+  QString subset;
+  QString geometryType;
+
   int layerId = -1;
 
-  int pipeIndex = path.indexOf( '|' );
-  if ( pipeIndex != -1 )
+  if ( path.contains( '|' ) )
   {
-    if ( path.indexOf( QLatin1String( "|layername=" ) ) != -1 )
+    const QRegularExpression geometryTypeRegex( QStringLiteral( "\\|geometrytype=([a-zA-Z0-9]*)" ) );
+    const QRegularExpression layerNameRegex( QStringLiteral( "\\|layername=([^|]*)" ) );
+    const QRegularExpression layerIdRegex( QStringLiteral( "\\|layerid=([^|]*)" ) );
+    const QRegularExpression subsetRegex( QStringLiteral( "\\|subset=(.*)$" ) );
+
+
+    // we first try to split off the geometry type component, if that's present. That's a known quantity which
+    // will never be more than a-z characters
+    QRegularExpressionMatch match = geometryTypeRegex.match( path );
+    if ( match.hasMatch() )
     {
-      QRegularExpression regex( QStringLiteral( "\\|layername=([^|]*)" ) );
-      layerName = regex.match( path ).captured( 1 );
-    }
-    else if ( path.indexOf( QLatin1String( "|layerid=" ) ) )
-    {
-      QRegularExpression regex( QStringLiteral( "\\|layerid=([^|]*)" ) );
-      layerId = regex.match( path ).captured( 1 ).toInt();
+      geometryType = match.captured( 1 );
+      path = path.remove( match.capturedStart( 0 ), match.capturedLength( 0 ) );
     }
 
-    path = path.left( pipeIndex );
+    // next, we try to find and strip out the layerid/layername component. (This logic is based on the assumption
+    // that a layer name doesn't contain a | character!)
+    // we prefer layer names over layer ids, since they are persistent..
+    match = layerNameRegex.match( path );
+    if ( match.hasMatch() )
+    {
+      layerName = match.captured( 1 );
+      path = path.remove( match.capturedStart( 0 ), match.capturedLength( 0 ) );
+    }
+
+    match = layerIdRegex.match( path );
+    if ( match.hasMatch() )
+    {
+      layerId = match.captured( 1 ).toInt();
+      path = path.remove( match.capturedStart( 0 ), match.capturedLength( 0 ) );
+    }
+
+    // lastly, try to parse out the subset component. This is the biggest unknown, because it's
+    // quite possible that a subset string will contain a | character. If we've already parsed
+    // out all the other known |xxx=yyy tags, then we can safely assume that everything from "|subset=" to the
+    // end of the path is part of the subset filter
+    match = subsetRegex.match( path );
+    if ( match.hasMatch() )
+    {
+      subset = match.captured( 1 );
+      path = path.remove( match.capturedStart( 0 ), match.capturedLength( 0 ) );
+    }
   }
 
   // Handles DB connections extracting database name if possible
@@ -3470,16 +3502,25 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri )
   QVariantMap uriComponents;
   uriComponents.insert( QStringLiteral( "path" ), path );
   uriComponents.insert( QStringLiteral( "layerName" ), layerName );
-  uriComponents.insert( QStringLiteral( "layerId" ), layerId > -1 ? layerId : QVariant() ) ;
+  uriComponents.insert( QStringLiteral( "layerId" ), layerId > -1 && layerName.isEmpty() ? layerId : QVariant() ) ;
+  if ( !subset.isEmpty() )
+    uriComponents.insert( QStringLiteral( "subset" ), subset );
+  if ( !geometryType.isEmpty() )
+    uriComponents.insert( QStringLiteral( "geometryType" ), geometryType );
   return uriComponents;
 }
 
 QString QgsOgrProviderMetadata::encodeUri( const QVariantMap &parts )
 {
-  QString path = parts.value( QStringLiteral( "path" ) ).toString();
-  QString layerName = parts.value( QStringLiteral( "layerName" ) ).toString();
-  QString layerId = parts.value( QStringLiteral( "layerId" ) ).toString();
-  return path + ( !layerName.isEmpty() ? QStringLiteral( "|layername=%1" ).arg( layerName ) : !layerId.isEmpty() ? QStringLiteral( "|layerid=%1" ).arg( layerId ) : QString() );
+  const QString path = parts.value( QStringLiteral( "path" ) ).toString();
+  const QString layerName = parts.value( QStringLiteral( "layerName" ) ).toString();
+  const QString layerId = parts.value( QStringLiteral( "layerId" ) ).toString();
+  const QString subset = parts.value( QStringLiteral( "subset" ) ).toString();
+  const QString geometryType = parts.value( QStringLiteral( "geometryType" ) ).toString();
+  return path
+         + ( !layerName.isEmpty() ? QStringLiteral( "|layername=%1" ).arg( layerName ) : !layerId.isEmpty() ? QStringLiteral( "|layerid=%1" ).arg( layerId ) : QString() )
+         + ( !geometryType.isEmpty() ? QStringLiteral( "|geometrytype=%1" ).arg( geometryType ) : QString() )
+         + ( !subset.isEmpty() ? QStringLiteral( "|subset=%1" ).arg( subset ) : QString() );
 }
 
 QString QgsOgrProviderUtils::fileVectorFilters()

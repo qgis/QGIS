@@ -37,12 +37,13 @@ class QgsIdentifyMenu;
 
 /**
  * \ingroup gui
-  \brief Map tool for identifying features in layers
-
-  after selecting a point, performs the identification:
-  - for raster layers shows value of underlying pixel
-  - for vector layers shows feature attributes within search radius
-    (allows editing values when vector layer is in editing mode)
+ * \brief Map tool for identifying features in layers
+ *
+ * after selecting a point, performs the identification:
+ *
+ * - for raster layers shows value of underlying pixel
+ * - for vector layers shows feature attributes within search radius
+ *   (allows editing values when vector layer is in editing mode)
 */
 class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 {
@@ -108,11 +109,12 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
     /**
      * Performs the identification.
-    \param x x coordinates of mouseEvent
-    \param y y coordinates of mouseEvent
-    \param layerList Performs the identification within the given list of layers. Default value is an empty list, i.e. uses all the layers.
-    \param mode Identification mode. Can use QGIS default settings or a defined mode. Default mode is DefaultQgsSetting.
-    \returns a list of IdentifyResult*/
+     * \param x x coordinates of mouseEvent
+     * \param y y coordinates of mouseEvent
+     * \param layerList Performs the identification within the given list of layers. Default value is an empty list, i.e. uses all the layers.
+     * \param mode Identification mode. Can use QGIS default settings or a defined mode. Default mode is DefaultQgsSetting.
+     * \returns a list of IdentifyResult
+    */
     QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, const QList<QgsMapLayer *> &layerList = QList<QgsMapLayer *>(), IdentifyMode mode = DefaultQgsSetting );
 
     /**

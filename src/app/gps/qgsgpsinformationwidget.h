@@ -48,7 +48,8 @@ class QColor;
 /**
  * A dock widget that displays information from a GPS device and
  * allows the user to capture features using gps readings to
- * specify the geometry.*/
+ * specify the geometry.
+*/
 class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCanvasInteractionBlocker, private Ui::QgsGpsInformationWidgetBase
 {
     Q_OBJECT

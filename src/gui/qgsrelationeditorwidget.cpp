@@ -960,6 +960,7 @@ void QgsRelationEditorWidget::setVisibleButtons( const QgsAttributeEditorRelatio
   mUnlinkFeatureButton->setVisible( buttons.testFlag( QgsAttributeEditorRelation::Button::Unlink ) );
   mSaveEditsButton->setVisible( buttons.testFlag( QgsAttributeEditorRelation::Button::SaveChildEdits ) );
   mAddFeatureButton->setVisible( buttons.testFlag( QgsAttributeEditorRelation::Button::AddChildFeature ) );
+  mAddFeatureGeometryButton->setVisible( buttons.testFlag( QgsAttributeEditorRelation::Button::AddChildFeature ) );
   mDuplicateFeatureButton->setVisible( buttons.testFlag( QgsAttributeEditorRelation::Button::DuplicateChildFeature ) );
   mDeleteFeatureButton->setVisible( buttons.testFlag( QgsAttributeEditorRelation::Button::DeleteChildFeature ) );
   mZoomToFeatureButton->setVisible( buttons.testFlag( QgsAttributeEditorRelation::Button::ZoomToChildFeature ) );

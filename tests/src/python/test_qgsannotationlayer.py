@@ -31,7 +31,7 @@ from qgis.core import (QgsMapSettings,
                        QgsLineString,
                        QgsPolygon,
                        QgsAnnotationLayer,
-                       QgsAnnotationLineStringItem,
+                       QgsAnnotationLineItem,
                        QgsAnnotationMarkerItem,
                        QgsPointXY,
                        QgsLineSymbol,
@@ -63,13 +63,13 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         self.assertTrue(layer.isValid())
 
         polygon_item_id = layer.addItem(QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)]))))
-        linestring_item_id = layer.addItem(QgsAnnotationLineStringItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)])))
-        marker_item_id = layer.addItem(QgsAnnotationMarkerItem(QgsPointXY(12, 13)))
+        linestring_item_id = layer.addItem(QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)])))
+        marker_item_id = layer.addItem(QgsAnnotationMarkerItem(QgsPoint(12, 13)))
 
         self.assertEqual(len(layer.items()), 3)
 
         self.assertIsInstance(layer.items()[polygon_item_id], QgsAnnotationPolygonItem)
-        self.assertIsInstance(layer.items()[linestring_item_id], QgsAnnotationLineStringItem)
+        self.assertIsInstance(layer.items()[linestring_item_id], QgsAnnotationLineItem)
         self.assertIsInstance(layer.items()[marker_item_id], QgsAnnotationMarkerItem)
 
         self.assertFalse(layer.removeItem('xxxx'))
@@ -87,13 +87,35 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         self.assertTrue(layer.removeItem(marker_item_id))
         self.assertEqual(len(layer.items()), 0)
 
+        layer.addItem(QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)]))))
+        layer.addItem(QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)])))
+        layer.addItem(QgsAnnotationMarkerItem(QgsPoint(12, 13)))
+
+        self.assertEqual(len(layer.items()), 3)
+        layer.clear()
+        self.assertEqual(len(layer.items()), 0)
+
+    def testReset(self):
+        layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
+        self.assertTrue(layer.isValid())
+        layer.addItem(QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)]))))
+        layer.addItem(QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)])))
+        layer.addItem(QgsAnnotationMarkerItem(QgsPoint(12, 13)))
+        layer.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        layer.setOpacity(0.5)
+
+        layer.reset()
+        self.assertEqual(len(layer.items()), 0)
+        self.assertEqual(layer.opacity(), 1.0)
+        self.assertFalse(layer.crs().isValid())
+
     def testExtent(self):
         layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
         self.assertTrue(layer.isValid())
 
         layer.addItem(QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)]))))
-        layer.addItem(QgsAnnotationLineStringItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)])))
-        layer.addItem(QgsAnnotationMarkerItem(QgsPointXY(12, 13)))
+        layer.addItem(QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)])))
+        layer.addItem(QgsAnnotationMarkerItem(QgsPoint(12, 13)))
 
         extent = layer.extent()
         self.assertEqual(extent.xMinimum(), 11.0)
@@ -117,8 +139,8 @@ class TestQgsAnnotationLayer(unittest.TestCase):
 
         layer.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         polygon_item_id = layer.addItem(QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)]))))
-        linestring_item_id = layer.addItem(QgsAnnotationLineStringItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)])))
-        marker_item_id = layer.addItem(QgsAnnotationMarkerItem(QgsPointXY(12, 13)))
+        linestring_item_id = layer.addItem(QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)])))
+        marker_item_id = layer.addItem(QgsAnnotationMarkerItem(QgsPoint(12, 13)))
 
         elem = doc.createElement("maplayer")
         self.assertTrue(layer.writeLayerXml(elem, doc, QgsReadWriteContext()))
@@ -129,7 +151,7 @@ class TestQgsAnnotationLayer(unittest.TestCase):
 
         self.assertEqual(len(layer2.items()), 3)
         self.assertIsInstance(layer2.items()[polygon_item_id], QgsAnnotationPolygonItem)
-        self.assertIsInstance(layer2.items()[linestring_item_id], QgsAnnotationLineStringItem)
+        self.assertIsInstance(layer2.items()[linestring_item_id], QgsAnnotationLineItem)
         self.assertIsInstance(layer2.items()[marker_item_id], QgsAnnotationMarkerItem)
 
     def testClone(self):
@@ -137,8 +159,8 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         self.assertTrue(layer.isValid())
 
         polygon_item_id = layer.addItem(QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)]))))
-        linestring_item_id = layer.addItem(QgsAnnotationLineStringItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)])))
-        marker_item_id = layer.addItem(QgsAnnotationMarkerItem(QgsPointXY(12, 13)))
+        linestring_item_id = layer.addItem(QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)])))
+        marker_item_id = layer.addItem(QgsAnnotationMarkerItem(QgsPoint(12, 13)))
 
         layer2 = layer.clone()
 
@@ -146,7 +168,7 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         self.assertIsInstance(layer2.items()[polygon_item_id], QgsAnnotationPolygonItem)
         # should not be the SAME instance of the item -- the item must have been cloned for the cloned layer!
         self.assertNotEqual(layer.items()[polygon_item_id], layer2.items()[polygon_item_id])
-        self.assertIsInstance(layer2.items()[linestring_item_id], QgsAnnotationLineStringItem)
+        self.assertIsInstance(layer2.items()[linestring_item_id], QgsAnnotationLineItem)
         self.assertIsInstance(layer2.items()[marker_item_id], QgsAnnotationMarkerItem)
 
     def testRenderLayer(self):
@@ -160,12 +182,12 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         item.setZIndex(3)
         layer.addItem(item)
 
-        item = QgsAnnotationLineStringItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]))
+        item = QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]))
         item.setSymbol(QgsLineSymbol.createSimple({'color': '#ffff00', 'line_width': '3'}))
         item.setZIndex(2)
         layer.addItem(item)
 
-        item = QgsAnnotationMarkerItem(QgsPointXY(12, 13))
+        item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
         item.setSymbol(QgsMarkerSymbol.createSimple({'color': '100,200,200', 'size': '6', 'outline_color': 'black'}))
         item.setZIndex(1)
         layer.addItem(item)
@@ -203,12 +225,12 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         item.setZIndex(1)
         layer.addItem(item)
 
-        item = QgsAnnotationLineStringItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]))
+        item = QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]))
         item.setSymbol(QgsLineSymbol.createSimple({'color': '#ffff00', 'line_width': '3'}))
         item.setZIndex(2)
         layer.addItem(item)
 
-        item = QgsAnnotationMarkerItem(QgsPointXY(12, 13))
+        item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
         item.setSymbol(QgsMarkerSymbol.createSimple({'color': '100,200,200', 'size': '6', 'outline_color': 'black'}))
         item.setZIndex(3)
         layer.addItem(item)

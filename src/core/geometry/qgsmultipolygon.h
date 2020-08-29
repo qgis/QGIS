@@ -20,6 +20,8 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgis_sip.h"
 #include "qgsmultisurface.h"
 
+class QgsPolygon;
+
 /**
  * \ingroup core
  * \class QgsMultiPolygon
@@ -30,6 +32,51 @@ class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
 {
   public:
     QgsMultiPolygon();
+
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns the polygon with the specified \a index.
+     *
+     * \since QGIS 3.16
+     */
+    QgsPolygon *polygonN( int index );
+#else
+
+    /**
+     * Returns the polygon with the specified \a index.
+     *
+     * An IndexError will be raised if no polygon with the specified index exists.
+     *
+     * \since QGIS 3.16
+     */
+    SIP_PYOBJECT polygonN( int index ) SIP_TYPEHINT( QgsPolygon );
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      return sipConvertFromType( sipCpp->polygonN( a0 ), sipType_QgsPolygon, NULL );
+    }
+    % End
+#endif
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns the polygon with the specified \a index.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 3.16
+     */
+    const QgsPolygon *polygonN( int index ) const;
+#endif
+
     QString geometryType() const override;
     void clear() override;
     QgsMultiPolygon *clone() const override SIP_FACTORY;
@@ -42,7 +89,8 @@ class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
 
     /**
      * Returns the geometry converted to the more generic curve type QgsMultiSurface
-    \returns the converted geometry. Caller takes ownership*/
+     * \returns the converted geometry. Caller takes ownership
+    */
     QgsMultiSurface *toCurveType() const override SIP_FACTORY;
 
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;

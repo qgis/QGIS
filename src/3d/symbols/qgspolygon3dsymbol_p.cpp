@@ -50,8 +50,9 @@
 class QgsPolygon3DSymbolHandler : public QgsFeature3DHandler
 {
   public:
-    QgsPolygon3DSymbolHandler( const QgsPolygon3DSymbol &symbol, const QgsFeatureIds &selectedIds )
-      : mSymbol( symbol ), mSelectedIds( selectedIds ) {}
+    QgsPolygon3DSymbolHandler( const QgsPolygon3DSymbol *symbol, const QgsFeatureIds &selectedIds )
+      : mSymbol( static_cast< QgsPolygon3DSymbol *>( symbol->clone() ) )
+      , mSelectedIds( selectedIds ) {}
 
     bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames ) override;
     void processFeature( QgsFeature &feature, const Qgs3DRenderContext &context ) override;
@@ -69,10 +70,10 @@ class QgsPolygon3DSymbolHandler : public QgsFeature3DHandler
 
     void processPolygon( QgsPolygon *polyClone, QgsFeatureId fid, float height, float extrusionHeight, const Qgs3DRenderContext &context, PolygonData &out );
     void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PolygonData &out, bool selected );
-    Qt3DRender::QMaterial *material( const QgsPolygon3DSymbol &symbol, bool isSelected, const Qgs3DRenderContext &context ) const;
+    Qt3DRender::QMaterial *material( const QgsPolygon3DSymbol *symbol, bool isSelected, const Qgs3DRenderContext &context ) const;
 
     // input specific for this class
-    const QgsPolygon3DSymbol &mSymbol;
+    std::unique_ptr< QgsPolygon3DSymbol > mSymbol;
     // inputs - generic
     QgsFeatureIds mSelectedIds;
 
@@ -87,28 +88,28 @@ class QgsPolygon3DSymbolHandler : public QgsFeature3DHandler
 bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames )
 {
   outEdges.withAdjacency = true;
-  outEdges.init( mSymbol.altitudeClamping(), mSymbol.altitudeBinding(), 0, &context.map() );
+  outEdges.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), 0, &context.map() );
 
-  const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( mSymbol.material() );
+  const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( mSymbol->material() );
 
-  outNormal.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true, mSymbol.invertNormals(), mSymbol.addBackFaces(), false,
+  outNormal.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true, mSymbol->invertNormals(), mSymbol->addBackFaces(), false,
                                texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates(),
-                               mSymbol.renderedFacade(),
+                               mSymbol->renderedFacade(),
                                texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 ) );
-  outSelected.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true, mSymbol.invertNormals(),
-                                 mSymbol.addBackFaces(), false,
+  outSelected.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true, mSymbol->invertNormals(),
+                                 mSymbol->addBackFaces(), false,
                                  texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates(),
-                                 mSymbol.renderedFacade(),
+                                 mSymbol->renderedFacade(),
                                  texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 ) );
 
-  QSet<QString> attrs = mSymbol.dataDefinedProperties().referencedFields( context.expressionContext() );
+  QSet<QString> attrs = mSymbol->dataDefinedProperties().referencedFields( context.expressionContext() );
   attributeNames.unite( attrs );
   return true;
 }
 
 void QgsPolygon3DSymbolHandler::processPolygon( QgsPolygon *polyClone, QgsFeatureId fid, float height, float extrusionHeight, const Qgs3DRenderContext &context, PolygonData &out )
 {
-  if ( mSymbol.edgesEnabled() )
+  if ( mSymbol->edgesEnabled() )
   {
     // add edges before the polygon gets the Z values modified because addLineString() does its own altitude handling
     outEdges.addLineString( *static_cast<const QgsLineString *>( polyClone->exteriorRing() ), height );
@@ -130,7 +131,7 @@ void QgsPolygon3DSymbolHandler::processPolygon( QgsPolygon *polyClone, QgsFeatur
     }
   }
 
-  Qgs3DUtils::clampAltitudes( polyClone, mSymbol.altitudeClamping(), mSymbol.altitudeBinding(), height, context.map() );
+  Qgs3DUtils::clampAltitudes( polyClone, mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), height, context.map() );
 
   Q_ASSERT( out.tessellator->dataVerticesCount() % 3 == 0 );
   uint startingTriangleIndex = static_cast<uint>( out.tessellator->dataVerticesCount() / 3 );
@@ -155,12 +156,12 @@ void QgsPolygon3DSymbolHandler::processFeature( QgsFeature &f, const Qgs3DRender
 
   const QgsAbstractGeometry *g = geom.constGet();
 
-  const QgsPropertyCollection &ddp = mSymbol.dataDefinedProperties();
+  const QgsPropertyCollection &ddp = mSymbol->dataDefinedProperties();
   bool hasDDHeight = ddp.isActive( QgsAbstract3DSymbol::PropertyHeight );
   bool hasDDExtrusion = ddp.isActive( QgsAbstract3DSymbol::PropertyExtrusionHeight );
 
-  float height = mSymbol.height();
-  float extrusionHeight = mSymbol.extrusionHeight();
+  float height = mSymbol->height();
+  float extrusionHeight = mSymbol->extrusionHeight();
   if ( hasDDHeight )
     height = ddp.valueAsDouble( QgsAbstract3DSymbol::PropertyHeight, context.expressionContext(), height );
   if ( hasDDExtrusion )
@@ -175,9 +176,7 @@ void QgsPolygon3DSymbolHandler::processFeature( QgsFeature &f, const Qgs3DRender
   {
     for ( int i = 0; i < mpoly->numGeometries(); ++i )
     {
-      const QgsAbstractGeometry *g2 = mpoly->geometryN( i );
-      Q_ASSERT( QgsWkbTypes::flatType( g2->wkbType() ) == QgsWkbTypes::Polygon );
-      QgsPolygon *polyClone = static_cast< const QgsPolygon *>( g2 )->clone();
+      QgsPolygon *polyClone = static_cast< const QgsPolygon *>( mpoly->polygonN( i ) )->clone();
       processPolygon( polyClone, f.id(), height, extrusionHeight, context, out );
     }
   }
@@ -208,11 +207,11 @@ void QgsPolygon3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3D
   mZMax = std::max( outNormal.tessellator->zMaximum(), outSelected.tessellator->zMaximum() );
 
   // add entity for edges
-  if ( mSymbol.edgesEnabled() && !outEdges.indexes.isEmpty() )
+  if ( mSymbol->edgesEnabled() && !outEdges.indexes.isEmpty() )
   {
     QgsLineMaterial *mat = new QgsLineMaterial;
-    mat->setLineColor( mSymbol.edgeColor() );
-    mat->setLineWidth( mSymbol.edgeWidth() );
+    mat->setLineColor( mSymbol->edgeColor() );
+    mat->setLineWidth( mSymbol->edgeWidth() );
 
     Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
 
@@ -237,15 +236,15 @@ void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs
   if ( out.tessellator->dataVerticesCount() == 0 )
     return;  // nothing to show - no need to create the entity
 
-  Qt3DRender::QMaterial *mat = material( mSymbol, selected, context );
+  Qt3DRender::QMaterial *mat = material( mSymbol.get(), selected, context );
 
   // extract vertex buffer data from tessellator
   QByteArray data( ( const char * )out.tessellator->data().constData(), out.tessellator->data().count() * sizeof( float ) );
   int nVerts = data.count() / out.tessellator->stride();
 
-  const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( mSymbol.material() );
+  const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( mSymbol->material() );
 
-  QgsTessellatedPolygonGeometry *geometry = new QgsTessellatedPolygonGeometry( true, mSymbol.invertNormals(), mSymbol.addBackFaces(),
+  QgsTessellatedPolygonGeometry *geometry = new QgsTessellatedPolygonGeometry( true, mSymbol->invertNormals(), mSymbol->addBackFaces(),
       texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates() );
   geometry->setData( data, nVerts, out.triangleIndexFids, out.triangleIndexStartingIndices );
 
@@ -293,14 +292,14 @@ static void applyCullingMode( Qgs3DTypes::CullingMode cullingMode, Qt3DRender::Q
   }
 }
 
-Qt3DRender::QMaterial *QgsPolygon3DSymbolHandler::material( const QgsPolygon3DSymbol &symbol, bool isSelected, const Qgs3DRenderContext &context ) const
+Qt3DRender::QMaterial *QgsPolygon3DSymbolHandler::material( const QgsPolygon3DSymbol *symbol, bool isSelected, const Qgs3DRenderContext &context ) const
 {
   QgsMaterialContext materialContext;
   materialContext.setIsSelected( isSelected );
   materialContext.setSelectionColor( context.map().selectionColor() );
 
-  Qt3DRender::QMaterial *material = symbol.material()->toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, materialContext );
-  applyCullingMode( symbol.cullingMode(), material );
+  Qt3DRender::QMaterial *material = symbol->material()->toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, materialContext );
+  applyCullingMode( symbol->cullingMode(), material );
   return material;
 }
 
@@ -318,7 +317,7 @@ namespace Qgs3DSymbolImpl
     if ( !polygonSymbol )
       return nullptr;
 
-    return new QgsPolygon3DSymbolHandler( *polygonSymbol, layer->selectedFeatureIds() );
+    return new QgsPolygon3DSymbolHandler( polygonSymbol, layer->selectedFeatureIds() );
   }
 
   Qt3DCore::QEntity *entityForPolygon3DSymbol( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsPolygon3DSymbol &symbol )

@@ -155,7 +155,8 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
     /**
      * Returns a geometry without curves. Caller takes ownership
      * \param tolerance segmentation tolerance
-     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
+     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve
+    */
     QgsCurve *segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
 
     int vertexCount( int part = 0, int ring = 0 ) const override;

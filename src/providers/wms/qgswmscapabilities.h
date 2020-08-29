@@ -204,6 +204,15 @@ struct QgsWmsDimensionProperty
 
     return QgsDateTimeRange();
   }
+
+  bool operator== ( const QgsWmsDimensionProperty &other ) const
+  {
+    return name == other.name && units == other.units &&
+           unitSymbol == other.unitSymbol && defaultValue == other.defaultValue &&
+           extent == other.extent && multipleValues == other.multipleValues &&
+           nearestValue == other.nearestValue && current == other.current;
+  }
+
 };
 
 //! Logo URL Property structure
@@ -346,6 +355,8 @@ struct QgsWmsLayerProperty
     if ( !( title == layerProperty.title ) )
       return false;
     if ( !( abstract == layerProperty.abstract ) )
+      return false;
+    if ( !( dimensions == layerProperty.dimensions ) )
       return false;
 
     return true;

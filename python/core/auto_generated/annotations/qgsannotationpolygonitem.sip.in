@@ -23,7 +23,7 @@ An annotation item which renders a fill symbol for a polygon geometry.
 %End
   public:
 
-    QgsAnnotationPolygonItem( const QgsPolygon &polygon );
+    QgsAnnotationPolygonItem( QgsCurvePolygon *polygon /Transfer/ );
 %Docstring
 Constructor for QgsAnnotationPolygonItem, with the specified ``polygon`` geometry.
 %End
@@ -48,22 +48,22 @@ Creates a new polygon annotation item.
     virtual QgsRectangle boundingBox() const;
 
 
-    QgsPolygon polygon() const;
+    const QgsCurvePolygon *geometry() const;
 %Docstring
-Returns the polygon geometry of the item.
+Returns the geometry of the item.
 
 The coordinate reference system for the polygon will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
 
-.. seealso:: :py:func:`setPolygon`
+.. seealso:: :py:func:`setGeometry`
 %End
 
-    void setPolygon( const QgsPolygon &polygon );
+    void setGeometry( QgsCurvePolygon *geometry /Transfer/ );
 %Docstring
-Sets the ``polygon`` geometry of the item.
+Sets the ``geometry`` of the item.
 
 The coordinate reference system for the polygon will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
 
-.. seealso:: :py:func:`polygon`
+.. seealso:: :py:func:`geometry`
 %End
 
     const QgsFillSymbol *symbol() const;

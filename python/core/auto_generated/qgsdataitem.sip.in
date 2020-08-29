@@ -84,7 +84,10 @@ The default implementation returns ``False``, subclasses must implement this met
     virtual QVector<QgsDataItem *> createChildren() /Factory/;
 %Docstring
 Create children. Children are not expected to have parent set.
-This method MUST BE THREAD SAFE. *
+
+.. warning::
+
+   This method MUST BE THREAD SAFE.
 %End
 
     enum State
@@ -292,13 +295,13 @@ Sets the capabilities for the data item.
     QgsDataItem *parent() const;
 %Docstring
 Gets item parent. QgsDataItem maintains its own items hierarchy, it does not use
-QObject hierarchy. *
+QObject hierarchy.
 %End
 
     void setParent( QgsDataItem *parent );
 %Docstring
 Set item parent and connect / disconnect parent to / from item signals.
-It does not add itself to parents children (mChildren) *
+It does not add itself to parents children (mChildren)
 %End
     QVector<QgsDataItem *> children() const;
     virtual QIcon icon();
@@ -396,7 +399,7 @@ item is in Populating state (:py:func:`~QgsDataItem.createChildren` running in a
 the :py:func:`~QgsDataItem.deferredDelete` returns ``True`` and item will be deleted once Populating finished.
 Items with slow :py:func:`~QgsDataItem.reateChildren` (for example network or database based) may
 check during :py:func:`~QgsDataItem.createChildren` if :py:func:`~QgsDataItem.deferredDelete` returns ``True`` and return from
-:py:func:`~QgsDataItem.createChildren` immediately because result will be useless. *
+:py:func:`~QgsDataItem.createChildren` immediately because result will be useless.
 %End
 
 

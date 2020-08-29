@@ -477,6 +477,24 @@ Default value is 96
 
 
 
+    bool isSkyboxEnabled() const;
+%Docstring
+Returns whether the skybox is enabled.
+
+.. seealso:: :py:func:`setIsSkyboxEnabled`
+
+.. versionadded:: 3.16
+%End
+
+    void setIsSkyboxEnabled( bool enabled );
+%Docstring
+Sets whether the skybox is enabled.
+
+.. seealso:: :py:func:`isSkyboxEnabled`
+
+.. versionadded:: 3.16
+%End
+
   signals:
     void backgroundColorChanged();
 %Docstring

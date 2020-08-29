@@ -134,6 +134,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrasterlayeruniquevalues.cpp
   processing/qgsalgorithmrasterlogicalop.cpp
   processing/qgsalgorithmrasterize.cpp
+  processing/qgsalgorithmrastersampling.cpp
   processing/qgsalgorithmrasterstackposition.cpp
   processing/qgsalgorithmrasterstatistics.cpp
   processing/qgsalgorithmrastersurfacevolume.cpp

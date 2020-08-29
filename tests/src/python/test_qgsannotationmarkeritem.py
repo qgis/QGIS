@@ -20,7 +20,7 @@ from qgis.PyQt.QtGui import (QImage,
 from qgis.core import (QgsMapSettings,
                        QgsCoordinateTransform,
                        QgsProject,
-                       QgsPointXY,
+                       QgsPoint,
                        QgsCoordinateReferenceSystem,
                        QgsMarkerSymbol,
                        QgsRenderChecker,
@@ -51,15 +51,15 @@ class TestQgsAnnotationMarkerItem(unittest.TestCase):
             report_file.write(cls.report)
 
     def testBasic(self):
-        item = QgsAnnotationMarkerItem(QgsPointXY(12, 13))
+        item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
 
-        self.assertEqual(item.point().x(), 12.0)
-        self.assertEqual(item.point().y(), 13.0)
+        self.assertEqual(item.geometry().x(), 12.0)
+        self.assertEqual(item.geometry().y(), 13.0)
 
-        item.setPoint(QgsPointXY(1000, 2000))
+        item.setGeometry(QgsPoint(1000, 2000))
         item.setZIndex(11)
-        self.assertEqual(item.point().x(), 1000.0)
-        self.assertEqual(item.point().y(), 2000.0)
+        self.assertEqual(item.geometry().x(), 1000.0)
+        self.assertEqual(item.geometry().y(), 2000.0)
         self.assertEqual(item.zIndex(), 11)
 
         item.setSymbol(QgsMarkerSymbol.createSimple({'color': '100,200,200', 'size': '3', 'outline_color': 'black'}))
@@ -69,7 +69,7 @@ class TestQgsAnnotationMarkerItem(unittest.TestCase):
         doc = QDomDocument("testdoc")
         elem = doc.createElement('test')
 
-        item = QgsAnnotationMarkerItem(QgsPointXY(12, 13))
+        item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
         item.setSymbol(QgsMarkerSymbol.createSimple({'color': '100,200,200', 'size': '3', 'outline_color': 'black'}))
         item.setZIndex(11)
 
@@ -78,24 +78,24 @@ class TestQgsAnnotationMarkerItem(unittest.TestCase):
         s2 = QgsAnnotationMarkerItem.create()
         self.assertTrue(s2.readXml(elem, QgsReadWriteContext()))
 
-        self.assertEqual(s2.point().x(), 12.0)
-        self.assertEqual(s2.point().y(), 13.0)
+        self.assertEqual(s2.geometry().x(), 12.0)
+        self.assertEqual(s2.geometry().y(), 13.0)
         self.assertEqual(s2.symbol()[0].color(), QColor(100, 200, 200))
         self.assertEqual(s2.zIndex(), 11)
 
     def testClone(self):
-        item = QgsAnnotationMarkerItem(QgsPointXY(12, 13))
+        item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
         item.setSymbol(QgsMarkerSymbol.createSimple({'color': '100,200,200', 'size': '3', 'outline_color': 'black'}))
         item.setZIndex(11)
 
         item2 = item.clone()
-        self.assertEqual(item2.point().x(), 12.0)
-        self.assertEqual(item2.point().y(), 13.0)
+        self.assertEqual(item2.geometry().x(), 12.0)
+        self.assertEqual(item2.geometry().y(), 13.0)
         self.assertEqual(item2.symbol()[0].color(), QColor(100, 200, 200))
         self.assertEqual(item2.zIndex(), 11)
 
     def testRenderMarker(self):
-        item = QgsAnnotationMarkerItem(QgsPointXY(12, 13))
+        item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
         item.setSymbol(QgsMarkerSymbol.createSimple({'color': '100,200,200', 'size': '3', 'outline_color': 'black'}))
 
         settings = QgsMapSettings()
@@ -121,7 +121,7 @@ class TestQgsAnnotationMarkerItem(unittest.TestCase):
         self.assertTrue(self.imageCheck('marker_item', 'marker_item', image))
 
     def testRenderWithTransform(self):
-        item = QgsAnnotationMarkerItem(QgsPointXY(12, 13))
+        item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
         item.setSymbol(QgsMarkerSymbol.createSimple({'color': '100,200,200', 'size': '3', 'outline_color': 'black'}))
 
         settings = QgsMapSettings()

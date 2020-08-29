@@ -99,7 +99,7 @@ class QgsGrassModuleOptions
     virtual bool inputRegion( struct Cell_head *window, QgsCoordinateReferenceSystem &crs, bool all )
     { Q_UNUSED( window ) Q_UNUSED( crs ); Q_UNUSED( all ); return false; }
 
-    // ! Flag names
+    //! Flag names
     virtual QStringList flagNames() { return QStringList() ; }
 
     QStringList errors() { return mErrors; }
@@ -153,10 +153,10 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
     //! Gets module options as list of arguments for QProcess
     QStringList arguments() override;
 
-    // ! Get item by ID
+    //! Get item by ID
     QgsGrassModuleParam *item( QString id );
 
-    // ! Get item by key
+    //! Get item by key
     QgsGrassModuleParam *itemByKey( QString key );
 
     // Reimplemented methods from QgsGrassModuleOptions
@@ -173,7 +173,7 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
     QStringList flagNames() override { return mFlagNames; }
 
   public slots:
-    // ! Show/hide advanced options
+    //! Show/hide advanced options
     void switchAdvanced();
 
   private:
@@ -206,10 +206,10 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
     //! List of all flags. Necessary for scripts.
     QStringList mFlagNames;
 
-    // ! Advanced options switch button
+    //! Advanced options switch button
     QPushButton mAdvancedPushButton;
 
-    // ! Advanced options frame
+    //! Advanced options frame
     QFrame mAdvancedFrame;
 };
 

@@ -391,10 +391,8 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsCu
     }
   }
 
-  if ( numberOfSplitFeatures == 0 && !selectedIds.isEmpty() )
+  if ( numberOfSplitFeatures == 0 )
   {
-    //There is a selection but no feature has been split.
-    //Maybe user forgot that only the selected features are split
     returnCode = QgsGeometry::OperationResult::NothingHappened;
   }
 

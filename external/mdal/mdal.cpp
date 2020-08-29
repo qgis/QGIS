@@ -21,7 +21,7 @@ static const char *EMPTY_STR = "";
 
 const char *MDAL_Version()
 {
-  return "0.6.92";
+  return "0.6.93";
 }
 
 MDAL_Status MDAL_LastStatus()
@@ -1213,4 +1213,75 @@ const char *MDAL_DR_writeDatasetsSuffix( MDAL_DriverH driver )
 
   MDAL::Driver *d = static_cast< MDAL::Driver * >( driver );
   return _return_str( d->writeDatasetOnFileSuffix() );
+}
+
+MDAL_MeshH MDAL_CreateMesh( MDAL_DriverH driver )
+{
+  if ( !driver )
+  {
+    MDAL::Log::error( MDAL_Status::Err_MissingDriver, "Driver is not valid (null)" );
+    return nullptr;
+  }
+
+  MDAL::Driver *d =  static_cast<MDAL::Driver *>( driver );
+  return new MDAL::MemoryMesh( d->name(),
+                               0, // empty mesh, so faceVerticesMaximumCount=0, this attribute will be updated if faces are added
+                               "" );
+}
+
+void MDAL_M_addVertices( MDAL_MeshH mesh, int vertexCount, double *coordinates )
+{
+  MDAL::Log::resetLastStatus();
+  if ( !mesh )
+  {
+    MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, "Mesh is not valid (null)" );
+    return;
+  }
+
+  MDAL::Mesh *m = static_cast<MDAL::Mesh *>( mesh );
+
+  if ( ! m->isEditable() )
+  {
+    MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, "Mesh is not editable" );
+  }
+
+  m->datasetGroups.clear();
+  m->addVertices( vertexCount, coordinates );
+}
+
+void MDAL_M_addFaces( MDAL_MeshH mesh, int faceCount, int *faceSizes, int *vertexIndices )
+{
+  MDAL::Log::resetLastStatus();
+  if ( !mesh )
+  {
+    MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, "Mesh is not valid (null)" );
+    return;
+  }
+
+  MDAL::Mesh *m = static_cast<MDAL::Mesh *>( mesh );
+
+  if ( ! m->isEditable() )
+  {
+    MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, "Mesh is not editable" );
+  }
+
+  m->datasetGroups.clear();
+  std::shared_ptr<MDAL::Driver> driver = MDAL::DriverManager::instance().driver( m->driverName() );
+  int maxVerticesPerFace = std::numeric_limits<int>::max();
+  if ( driver )
+    maxVerticesPerFace = driver->faceVerticesMaximumCount();
+
+  m->addFaces( faceCount, maxVerticesPerFace, faceSizes, vertexIndices );
+}
+
+void MDAL_M_setProjection( MDAL_MeshH mesh, const char *projection )
+{
+  MDAL::Log::resetLastStatus();
+  if ( !mesh )
+  {
+    MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, "Mesh is not valid (null)" );
+    return;
+  }
+
+  static_cast<MDAL::Mesh *>( mesh )->setSourceCrsFromWKT( std::string( projection ) );
 }

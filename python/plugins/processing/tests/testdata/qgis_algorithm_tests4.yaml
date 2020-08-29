@@ -768,6 +768,7 @@ tests:
     params:
       CLUSTERS: 5
       FIELD_NAME: CLUSTER_ID5
+      SIZE_FIELD_NAME: CLUSTER_SIZE5
       INPUT:
         name: points.gml
         type: vector
@@ -866,7 +867,7 @@ tests:
   - algorithm: qgis:rastersampling
     name: Single band raster
     params:
-      COLUMN_PREFIX: rvalue
+      COLUMN_PREFIX: SAMPLE_
       INPUT:
         name: custom/sampling_points.gml
         type: vector

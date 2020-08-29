@@ -20,6 +20,8 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgis_sip.h"
 #include "qgsmulticurve.h"
 
+class QgsLineString;
+
 /**
  * \ingroup core
  * \class QgsMultiLineString
@@ -30,6 +32,50 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
 {
   public:
     QgsMultiLineString();
+
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns the line string with the specified \a index.
+     *
+     * \since QGIS 3.16
+     */
+    QgsLineString *lineStringN( int index );
+#else
+
+    /**
+     * Returns the line string with the specified \a index.
+     *
+     * An IndexError will be raised if no line string with the specified index exists.
+     *
+     * \since QGIS 3.16
+     */
+    SIP_PYOBJECT lineStringN( int index ) SIP_TYPEHINT( QgsLineString );
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      return sipConvertFromType( sipCpp->lineStringN( a0 ), sipType_QgsLineString, NULL );
+    }
+    % End
+#endif
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns the line string with the specified \a index.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 3.16
+     */
+    const QgsLineString *lineStringN( int index ) const;
+#endif
 
     QString geometryType() const override;
     QgsMultiLineString *clone() const override SIP_FACTORY;
@@ -43,7 +89,8 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
 
     /**
      * Returns the geometry converted to the more generic curve type QgsMultiCurve
-    \returns the converted geometry. Caller takes ownership*/
+     * \returns the converted geometry. Caller takes ownership
+    */
     QgsMultiCurve *toCurveType() const override SIP_FACTORY;
 
 #ifndef SIP_RUN

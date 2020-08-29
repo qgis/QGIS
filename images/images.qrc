@@ -885,6 +885,10 @@
         <file>themes/default/mIconGoochMaterial.svg</file>
         <file>themes/default/mIconSimpleLineMaterial.svg</file>
         <file>themes/default/mIconPhongTexturedMaterial.svg</file>
+        <file>themes/default/mActionLabelAnchorCenter.svg</file>
+        <file>themes/default/mActionLabelAnchorCustom.svg</file>
+        <file>themes/default/mActionLabelAnchorEnd.svg</file>
+        <file>themes/default/mActionLabelAnchorStart.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

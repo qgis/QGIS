@@ -288,14 +288,15 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Zoom to the next extent (view)
     void zoomToNextExtent();
 
-    // ! Clears the list of extents and sets current extent as first item
+    //! Clears the list of extents and sets current extent as first item
     void clearExtentHistory();
 
 
     /**
      * Set canvas extent to the bounding box of a set of features
-        \param layer the vector layer
-        \param ids the feature ids*/
+     * \param layer the vector layer
+     * \param ids the feature ids
+    */
     void zoomToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids );
 
     /**
@@ -566,7 +567,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * Enables a preview mode for the map canvas
      * \param previewEnabled set to TRUE to enable a preview mode
      * \see setPreviewMode
-     * \since QGIS 2.3 */
+     * \since QGIS 2.3
+    */
     void setPreviewModeEnabled( bool previewEnabled );
 
     /**
@@ -574,7 +576,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * \returns TRUE if a preview mode is currently enabled
      * \see setPreviewModeEnabled
      * \see previewMode
-     * \since QGIS 2.3 */
+     * \since QGIS 2.3
+    */
     bool previewModeEnabled() const;
 
     /**
@@ -584,7 +587,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * \see previewMode
      * \see setPreviewModeEnabled
      * \see previewModeEnabled
-     * \since QGIS 2.3 */
+     * \since QGIS 2.3
+    */
     void setPreviewMode( QgsPreviewEffect::PreviewMode mode );
 
     /**
@@ -593,7 +597,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * \returns preview mode for map canvas
      * \see setPreviewMode
      * \see previewModeEnabled
-     * \since QGIS 2.3 */
+     * \since QGIS 2.3
+    */
     QgsPreviewEffect::PreviewMode previewMode() const;
 
     /**
@@ -657,12 +662,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /**
      * Sets the segmentation tolerance applied when rendering curved geometries
-    \param tolerance the segmentation tolerance*/
+     * \param tolerance the segmentation tolerance
+    */
     void setSegmentationTolerance( double tolerance );
 
     /**
      * Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
-    \param type the segmentation tolerance typename*/
+     * \param type the segmentation tolerance typename
+    */
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type );
 
     /**
@@ -894,7 +901,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /**
      * Emits current mouse position
-        \note changed in 1.3 */
+     * \note changed in 1.3
+    */
     void xyCoordinates( const QgsPointXY &p );
 
     //! Emitted when the scale of the map changes
@@ -1249,11 +1257,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /**
      * Returns bounding box of feature list (in canvas coordinates)
-        \param ids feature id list
-        \param layer the layer
-        \param bbox out: bounding box
-        \param errorMsg error message in case of error
-        \returns true in case of success*/
+     * \param ids feature id list
+     * \param layer the layer
+     * \param bbox out: bounding box
+     * \param errorMsg error message in case of error
+     * \returns true in case of success
+    */
     bool boundingBoxOfFeatureIds( const QgsFeatureIds &ids, QgsVectorLayer *layer, QgsRectangle &bbox, QString &errorMsg ) const;
 
     void setLayersPrivate( const QList<QgsMapLayer *> &layers );

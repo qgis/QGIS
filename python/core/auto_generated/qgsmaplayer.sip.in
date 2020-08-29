@@ -1659,7 +1659,7 @@ passwords or drivers prefixes ("HDF5:")
 Read custom properties from project file.
 
 :param layerNode: note to read from
-:param keyStartsWith: reads only properties starting with the specified string (or all if the string is empty)*
+:param keyStartsWith: reads only properties starting with the specified string (or all if the string is empty)
 %End
 
     void writeCustomProperties( QDomNode &layerNode, QDomDocument &doc ) const;

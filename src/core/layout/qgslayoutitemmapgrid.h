@@ -1175,12 +1175,14 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
 
     /**
      * Computes the grid lines with associated coordinate value
-        \returns 0 in case of success*/
+     * \returns 0 in case of success
+    */
     int xGridLines() const;
 
     /**
      * Computes the grid lines for the y-coordinates. Not vertical in case of rotation
-        \returns 0 in case of success*/
+     * \returns 0 in case of success
+    */
     int yGridLines() const;
 
     int xGridLinesCrsTransform( const QgsRectangle &bbox, const QgsCoordinateTransform &t ) const;

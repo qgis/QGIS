@@ -40,7 +40,7 @@
         <x>0</x>
         <y>0</y>
         <width>541</width>
-        <height>753</height>
+        <height>730</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_4">
@@ -368,6 +368,12 @@
          <property name="title">
           <string>Skybox rendering</string>
          </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
          <layout class="QGridLayout" name="gridLayout_3"/>
         </widget>
        </item>
@@ -379,17 +385,6 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsPhongMaterialWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsphongmaterialwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
@@ -399,6 +394,17 @@
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPhongMaterialWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsphongmaterialwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -427,6 +433,7 @@
   <tabstop>spinTerrainResolution</tabstop>
   <tabstop>spinTerrainSkirtHeight</tabstop>
   <tabstop>groupTerrainShading</tabstop>
+  <tabstop>groupSkyboxSettings</tabstop>
   <tabstop>spinMapResolution</tabstop>
   <tabstop>spinScreenError</tabstop>
   <tabstop>spinGroundError</tabstop>
@@ -434,6 +441,7 @@
   <tabstop>chkShowTileInfo</tabstop>
   <tabstop>chkShowBoundingBoxes</tabstop>
   <tabstop>chkShowCameraViewCenter</tabstop>
+  <tabstop>chkShowLightSourceOrigins</tabstop>
  </tabstops>
  <resources/>
  <connections/>

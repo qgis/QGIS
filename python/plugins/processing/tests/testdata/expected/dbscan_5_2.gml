@@ -16,6 +16,7 @@
       <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>-0.426063829787234,2.19255319148936</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:id>5</ogr:id>
       <ogr:CLUSTER_ID>1</ogr:CLUSTER_ID>
+      <ogr:CLUSTER_SIZE>7</ogr:CLUSTER_SIZE>
     </ogr:dbscan_5_2>
   </gml:featureMember>
   <gml:featureMember>
@@ -23,6 +24,7 @@
       <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>1.45053191489362,1.96914893617021</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:id>5</ogr:id>
       <ogr:CLUSTER_ID>1</ogr:CLUSTER_ID>
+      <ogr:CLUSTER_SIZE>7</ogr:CLUSTER_SIZE>
     </ogr:dbscan_5_2>
   </gml:featureMember>
   <gml:featureMember>
@@ -30,6 +32,7 @@
       <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>1.40585106382979,0.807446808510639</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:id>5</ogr:id>
       <ogr:CLUSTER_ID>1</ogr:CLUSTER_ID>
+      <ogr:CLUSTER_SIZE>7</ogr:CLUSTER_SIZE>
     </ogr:dbscan_5_2>
   </gml:featureMember>
   <gml:featureMember>
@@ -37,6 +40,7 @@
       <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>0.199468085106383,-0.443617021276596</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:id>5</ogr:id>
       <ogr:CLUSTER_ID>1</ogr:CLUSTER_ID>
+      <ogr:CLUSTER_SIZE>7</ogr:CLUSTER_SIZE>
     </ogr:dbscan_5_2>
   </gml:featureMember>
   <gml:featureMember>
@@ -44,6 +48,7 @@
       <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>3.63989361702128,0.315957446808511</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:id>4</ogr:id>
       <ogr:CLUSTER_ID>1</ogr:CLUSTER_ID>
+      <ogr:CLUSTER_SIZE>7</ogr:CLUSTER_SIZE>
     </ogr:dbscan_5_2>
   </gml:featureMember>
   <gml:featureMember>
@@ -51,6 +56,7 @@
       <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>4.28776595744681,-0.823404255319149</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:id>1</ogr:id>
       <ogr:CLUSTER_ID>1</ogr:CLUSTER_ID>
+      <ogr:CLUSTER_SIZE>7</ogr:CLUSTER_SIZE>
     </ogr:dbscan_5_2>
   </gml:featureMember>
   <gml:featureMember>
@@ -58,6 +64,7 @@
       <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>5.04734042553191,0.070212765957447</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:id>4</ogr:id>
       <ogr:CLUSTER_ID>1</ogr:CLUSTER_ID>
+      <ogr:CLUSTER_SIZE>7</ogr:CLUSTER_SIZE>
     </ogr:dbscan_5_2>
   </gml:featureMember>
   <gml:featureMember>
@@ -65,6 +72,7 @@
       <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>6.90159574468085,0.40531914893617</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:id>5</ogr:id>
       <ogr:CLUSTER_ID xsi:nil="true"/>
+      <ogr:CLUSTER_SIZE xsi:nil="true"/>
     </ogr:dbscan_5_2>
   </gml:featureMember>
   <gml:featureMember>
@@ -72,6 +80,7 @@
       <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>9.09095744680851,-2.61063829787234</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:id>6</ogr:id>
       <ogr:CLUSTER_ID xsi:nil="true"/>
+      <ogr:CLUSTER_SIZE xsi:nil="true"/>
     </ogr:dbscan_5_2>
   </gml:featureMember>
   <gml:featureMember>
@@ -79,6 +88,7 @@
       <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>5.04734042553191,4.22553191489362</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:id>8</ogr:id>
       <ogr:CLUSTER_ID xsi:nil="true"/>
+      <ogr:CLUSTER_SIZE xsi:nil="true"/>
     </ogr:dbscan_5_2>
   </gml:featureMember>
 </ogr:FeatureCollection>

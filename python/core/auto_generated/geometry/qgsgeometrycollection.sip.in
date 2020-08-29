@@ -203,7 +203,7 @@ An IndexError will be raised if no geometry with the specified index exists.
 Returns a geometry without curves. Caller takes ownership
 
 :param tolerance: segmentation tolerance
-:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve*
+:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve
 %End
 
     virtual double vertexAngle( QgsVertexId vertex ) const;

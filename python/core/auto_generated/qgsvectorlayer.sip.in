@@ -68,14 +68,15 @@ An example url is "Point?crs=epsg:4326&field=id:integer&field=name:string(20)&in
 Since QGIS 3.4 when closing a project, the application shows a warning about potential data
 loss if there are any non-empty memory layers present. If your memory layer should not
 trigger such warning, it is possible to suppress that by setting the following custom variable:
+
 .. code-block:: python
 
-       layer.setCustomProperty("skipMemoryLayersCheck", 1)
+         layer.setCustomProperty("skipMemoryLayersCheck", 1)
 
 OGR data provider (ogr)
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Accesses data using the OGR drivers (http://www.gdal.org/ogr/ogr_formats.html). The url
+Accesses data using the OGR drivers (https://gdal.org/drivers/vector/index.html). The url
 is the OGR connection string. A wide variety of data formats can be accessed using this
 driver, including file based formats used by many GIS systems, database formats, and
 web services. Some of these formats are also supported by custom data providers listed
@@ -2044,7 +2045,7 @@ Deletes a set of features from the layer (but does not commit it)
    changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 %End
 
-    bool commitChanges();
+    bool commitChanges( bool stopEditing = true );
 %Docstring
 Attempts to commit to the underlying data provider any buffered changes made since the
 last to call to :py:func:`~QgsVectorLayer.startEditing`.
@@ -2060,6 +2061,9 @@ geometries, delete features, delete attributes)
 so if a stage fails, it can be difficult to roll back cleanly.
 Therefore any error message returned by :py:func:`~QgsVectorLayer.commitErrors` also includes which stage failed so
 that the user has some chance of repairing the damage cleanly.
+
+By setting ``stopEditing`` to ``False``, the layer will stay in editing mode.
+Otherwise the layer editing mode will be disabled if the commit is successful.
 
 .. seealso:: :py:func:`startEditing`
 
@@ -2692,9 +2696,11 @@ Emitted when editing on this layer has started.
 Emitted when edited changes have been successfully written to the data provider.
 %End
 
-    void beforeCommitChanges();
+    void beforeCommitChanges( bool stopEditing );
 %Docstring
 Emitted before changes are committed to the data provider.
+
+The ``stopEditing`` flag specifies if the editing mode shall be left after this commit.
 %End
 
     void beforeRollBack();

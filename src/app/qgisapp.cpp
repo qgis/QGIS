@@ -1285,7 +1285,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   mLogDock = new QgsDockWidget( tr( "Log Messages" ), this );
   mLogDock->setObjectName( QStringLiteral( "MessageLog" ) );
-  mLogDock->setAllowedAreas( Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea );
+  mLogDock->setAllowedAreas( Qt::AllDockWidgetAreas );
   addDockWidget( Qt::BottomDockWidgetArea, mLogDock );
   mLogDock->setWidget( mLogViewer );
   mLogDock->hide();
@@ -10853,16 +10853,12 @@ void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRep
   if ( vlayer == activeLayer() )
     mSaveRollbackInProgress = true;
 
-  if ( !vlayer->commitChanges() )
+  if ( !vlayer->commitChanges( !leaveEditable ) )
   {
     mSaveRollbackInProgress = false;
     commitError( vlayer );
   }
 
-  if ( leaveEditable )
-  {
-    vlayer->startEditing();
-  }
   if ( triggerRepaint )
   {
     vlayer->triggerRepaint();

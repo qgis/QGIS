@@ -26,7 +26,8 @@
 
 /**
  * Utility class to deal with the management of the temporary directory
-    that holds the on-disk cache. */
+ * that holds the on-disk cache.
+*/
 class QgsCacheDirectoryManager
 {
   public:

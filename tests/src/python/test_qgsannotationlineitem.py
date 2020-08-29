@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""QGIS Unit tests for QgsAnnotationLineStringItem.
+"""QGIS Unit tests for QgsAnnotationLineItem.
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -26,9 +26,10 @@ from qgis.core import (QgsMapSettings,
                        QgsRenderChecker,
                        QgsReadWriteContext,
                        QgsRenderContext,
-                       QgsAnnotationLineStringItem,
+                       QgsAnnotationLineItem,
                        QgsRectangle,
-                       QgsLineString
+                       QgsLineString,
+                       QgsCircularString
                        )
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -39,11 +40,11 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsAnnotationLineStringItem(unittest.TestCase):
+class TestQgsAnnotationLineItem(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.report = "<h1>Python QgsAnnotationLineStringItem Tests</h1>\n"
+        cls.report = "<h1>Python QgsAnnotationLineItem Tests</h1>\n"
 
     @classmethod
     def tearDownClass(cls):
@@ -52,13 +53,13 @@ class TestQgsAnnotationLineStringItem(unittest.TestCase):
             report_file.write(cls.report)
 
     def testBasic(self):
-        item = QgsAnnotationLineStringItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15)]))
+        item = QgsAnnotationLineItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15)]))
 
-        self.assertEqual(item.lineString().asWkt(), 'LineString (12 13, 14 13, 14 15)')
+        self.assertEqual(item.geometry().asWkt(), 'LineString (12 13, 14 13, 14 15)')
 
-        item.setLineString(QgsLineString([QgsPoint(22, 23), QgsPoint(24, 23), QgsPoint(24, 25)]))
+        item.setGeometry(QgsLineString([QgsPoint(22, 23), QgsPoint(24, 23), QgsPoint(24, 25)]))
         item.setZIndex(11)
-        self.assertEqual(item.lineString().asWkt(), 'LineString (22 23, 24 23, 24 25)')
+        self.assertEqual(item.geometry().asWkt(), 'LineString (22 23, 24 23, 24 25)')
         self.assertEqual(item.zIndex(), 11)
 
         item.setSymbol(QgsLineSymbol.createSimple({'color': '#ffff00', 'line_width': '3'}))
@@ -68,31 +69,31 @@ class TestQgsAnnotationLineStringItem(unittest.TestCase):
         doc = QDomDocument("testdoc")
         elem = doc.createElement('test')
 
-        item = QgsAnnotationLineStringItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15)]))
+        item = QgsAnnotationLineItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15)]))
         item.setSymbol(QgsLineSymbol.createSimple({'color': '#ffff00', 'line_width': '3'}))
         item.setZIndex(11)
 
         self.assertTrue(item.writeXml(elem, doc, QgsReadWriteContext()))
 
-        s2 = QgsAnnotationLineStringItem.create()
+        s2 = QgsAnnotationLineItem.create()
         self.assertTrue(s2.readXml(elem, QgsReadWriteContext()))
 
-        self.assertEqual(s2.lineString().asWkt(), 'LineString (12 13, 14 13, 14 15)')
+        self.assertEqual(s2.geometry().asWkt(), 'LineString (12 13, 14 13, 14 15)')
         self.assertEqual(s2.symbol()[0].color(), QColor(255, 255, 0))
         self.assertEqual(s2.zIndex(), 11)
 
     def testClone(self):
-        item = QgsAnnotationLineStringItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15)]))
+        item = QgsAnnotationLineItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15)]))
         item.setSymbol(QgsLineSymbol.createSimple({'color': '#ffff00', 'line_width': '3'}))
         item.setZIndex(11)
 
         item2 = item.clone()
-        self.assertEqual(item2.lineString().asWkt(), 'LineString (12 13, 14 13, 14 15)')
+        self.assertEqual(item2.geometry().asWkt(), 'LineString (12 13, 14 13, 14 15)')
         self.assertEqual(item2.symbol()[0].color(), QColor(255, 255, 0))
         self.assertEqual(item2.zIndex(), 11)
 
     def testRenderLineString(self):
-        item = QgsAnnotationLineStringItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15)]))
+        item = QgsAnnotationLineItem(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15)]))
         item.setSymbol(QgsLineSymbol.createSimple({'color': '#ffff00', 'line_width': '3'}))
 
         settings = QgsMapSettings()
@@ -117,8 +118,34 @@ class TestQgsAnnotationLineStringItem(unittest.TestCase):
 
         self.assertTrue(self.imageCheck('linestring_item', 'linestring_item', image))
 
+    def testRenderCurve(self):
+        item = QgsAnnotationLineItem(QgsCircularString(QgsPoint(12, 13.2), QgsPoint(14, 13.4), QgsPoint(14, 15)))
+        item.setSymbol(QgsLineSymbol.createSimple({'color': '#ffff00', 'line_width': '3'}))
+
+        settings = QgsMapSettings()
+        settings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        settings.setExtent(QgsRectangle(10, 10, 18, 18))
+        settings.setOutputSize(QSize(300, 300))
+
+        settings.setFlag(QgsMapSettings.Antialiasing, False)
+
+        rc = QgsRenderContext.fromMapSettings(settings)
+        image = QImage(200, 200, QImage.Format_ARGB32)
+        image.setDotsPerMeterX(96 / 25.4 * 1000)
+        image.setDotsPerMeterY(96 / 25.4 * 1000)
+        image.fill(QColor(255, 255, 255))
+        painter = QPainter(image)
+        rc.setPainter(painter)
+
+        try:
+            item.render(rc, None)
+        finally:
+            painter.end()
+
+        self.assertTrue(self.imageCheck('line_circularstring', 'line_circularstring', image))
+
     def testRenderWithTransform(self):
-        item = QgsAnnotationLineStringItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]))
+        item = QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)]))
         item.setSymbol(QgsLineSymbol.createSimple({'color': '#ffff00', 'line_width': '3'}))
 
         settings = QgsMapSettings()
@@ -145,7 +172,7 @@ class TestQgsAnnotationLineStringItem(unittest.TestCase):
         self.assertTrue(self.imageCheck('linestring_item_transform', 'linestring_item_transform', image))
 
     def imageCheck(self, name, reference_image, image):
-        TestQgsAnnotationLineStringItem.report += "<h2>Render {}</h2>\n".format(name)
+        TestQgsAnnotationLineItem.report += "<h2>Render {}</h2>\n".format(name)
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'patch_' + name + ".png"
         image.save(file_name, "PNG")
@@ -155,7 +182,7 @@ class TestQgsAnnotationLineStringItem(unittest.TestCase):
         checker.setRenderedImage(file_name)
         checker.setColorTolerance(2)
         result = checker.compareImages(name, 20)
-        TestQgsAnnotationLineStringItem.report += checker.report()
+        TestQgsAnnotationLineItem.report += checker.report()
         return result
 
 

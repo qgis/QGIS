@@ -23,7 +23,7 @@ An annotation item which renders a marker symbol at a point location.
 %End
   public:
 
-    QgsAnnotationMarkerItem( QgsPointXY point );
+    QgsAnnotationMarkerItem( const QgsPoint &point );
 %Docstring
 Constructor for QgsAnnotationMarkerItem, at the specified ``point``.
 %End
@@ -48,22 +48,22 @@ Creates a new marker annotation item.
     virtual QgsRectangle boundingBox() const;
 
 
-    QgsPointXY point() const;
+    QgsPointXY geometry() const;
 %Docstring
-Returns the point location of the marker.
+Returns the point geometry of the marker.
 
 The coordinate reference system for the point will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
 
-.. seealso:: :py:func:`setPoint`
+.. seealso:: :py:func:`setGeometry`
 %End
 
-    void setPoint( QgsPointXY point );
+    void setGeometry( const QgsPoint &geometry );
 %Docstring
-Sets the ``point`` location of the marker.
+Sets the point ``geometry`` location of the marker.
 
 The coordinate reference system for the point will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
 
-.. seealso:: :py:func:`point`
+.. seealso:: :py:func:`geometry`
 %End
 
     const QgsMarkerSymbol *symbol() const;

@@ -2271,40 +2271,45 @@ void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context,
   QString wrapchr = tmpLyr.wrapChar.isEmpty() ? QStringLiteral( "\n" ) : tmpLyr.wrapChar;
 
   //add the direction symbol if needed
-  if ( !txt.isEmpty() && tmpLyr.placement == QgsPalLayerSettings::Line && tmpLyr.addDirectionSymbol )
+  if ( !txt.isEmpty() && tmpLyr.placement == QgsPalLayerSettings::Line && tmpLyr.lineSettings().addDirectionSymbol() )
   {
     bool prependSymb = false;
-    QString symb = tmpLyr.rightDirectionSymbol;
+    QString symb = tmpLyr.lineSettings().rightDirectionSymbol();
 
     if ( label->getReversed() )
     {
       prependSymb = true;
-      symb = tmpLyr.leftDirectionSymbol;
+      symb = tmpLyr.lineSettings().leftDirectionSymbol();
     }
 
-    if ( tmpLyr.reverseDirectionSymbol )
+    if ( tmpLyr.lineSettings().reverseDirectionSymbol() )
     {
-      if ( symb == tmpLyr.rightDirectionSymbol )
+      if ( symb == tmpLyr.lineSettings().rightDirectionSymbol() )
       {
         prependSymb = true;
-        symb = tmpLyr.leftDirectionSymbol;
+        symb = tmpLyr.lineSettings().leftDirectionSymbol();
       }
       else
       {
         prependSymb = false;
-        symb = tmpLyr.rightDirectionSymbol;
+        symb = tmpLyr.lineSettings().rightDirectionSymbol();
       }
     }
 
-    if ( tmpLyr.placeDirectionSymbol == QgsPalLayerSettings::SymbolAbove )
+    switch ( tmpLyr.lineSettings().directionSymbolPlacement() )
     {
-      prependSymb = true;
-      symb = symb + wrapchr;
-    }
-    else if ( tmpLyr.placeDirectionSymbol == QgsPalLayerSettings::SymbolBelow )
-    {
-      prependSymb = false;
-      symb = wrapchr + symb;
+      case QgsLabelLineSettings::DirectionSymbolPlacement::SymbolAbove:
+        prependSymb = true;
+        symb = symb + wrapchr;
+        break;
+
+      case QgsLabelLineSettings::DirectionSymbolPlacement::SymbolBelow:
+        prependSymb = false;
+        symb = wrapchr + symb;
+        break;
+
+      case QgsLabelLineSettings::DirectionSymbolPlacement::SymbolLeftRight:
+        break;
     }
 
     if ( prependSymb )

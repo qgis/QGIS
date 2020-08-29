@@ -44,9 +44,26 @@ const QgsProject *QgsConfigCache::project( const QString &path, QgsServerSetting
   if ( ! mProjectCache[ path ] )
   {
     std::unique_ptr<QgsProject> prj( new QgsProject() );
+
     QgsStoreBadLayerInfo *badLayerHandler = new QgsStoreBadLayerInfo();
     prj->setBadLayerHandler( badLayerHandler );
-    if ( prj->read( path ) )
+
+    QgsProject::ReadFlags readFlags = QgsProject::ReadFlag();
+    if ( settings )
+    {
+      // Activate trust layer metadata flag
+      if ( settings->trustLayerMetadata() )
+      {
+        readFlags |= QgsProject::ReadFlag::FlagTrustLayerMetadata;
+      }
+      // Activate don't load layouts flag
+      if ( settings->getPrintDisabled() )
+      {
+        readFlags |= QgsProject::ReadFlag::FlagDontLoadLayouts;
+      }
+    }
+
+    if ( prj->read( path, readFlags ) )
     {
       if ( !badLayerHandler->badLayers().isEmpty() )
       {

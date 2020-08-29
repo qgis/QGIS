@@ -36,7 +36,7 @@ class CORE_EXPORT QgsAnnotationPolygonItem : public QgsAnnotationItem
     /**
      * Constructor for QgsAnnotationPolygonItem, with the specified \a polygon geometry.
      */
-    QgsAnnotationPolygonItem( const QgsPolygon &polygon );
+    QgsAnnotationPolygonItem( QgsCurvePolygon *polygon SIP_TRANSFER );
     ~QgsAnnotationPolygonItem() override;
 
     QString type() const override;
@@ -53,22 +53,22 @@ class CORE_EXPORT QgsAnnotationPolygonItem : public QgsAnnotationItem
     QgsRectangle boundingBox() const override;
 
     /**
-     * Returns the polygon geometry of the item.
+     * Returns the geometry of the item.
      *
      * The coordinate reference system for the polygon will be the parent layer's QgsAnnotationLayer::crs().
      *
-     * \see setPolygon()
+     * \see setGeometry()
      */
-    QgsPolygon polygon() const { return mPolygon; }
+    const QgsCurvePolygon *geometry() const { return mPolygon.get(); }
 
     /**
-     * Sets the \a polygon geometry of the item.
+     * Sets the \a geometry of the item.
      *
      * The coordinate reference system for the polygon will be the parent layer's QgsAnnotationLayer::crs().
      *
-     * \see polygon()
+     * \see geometry()
      */
-    void setPolygon( const QgsPolygon &polygon ) { mPolygon = polygon; }
+    void setGeometry( QgsCurvePolygon *geometry SIP_TRANSFER ) { mPolygon.reset( geometry ); }
 
     /**
      * Returns the symbol used to render the item.
@@ -88,7 +88,7 @@ class CORE_EXPORT QgsAnnotationPolygonItem : public QgsAnnotationItem
 
   private:
 
-    QgsPolygon mPolygon;
+    std::unique_ptr< QgsCurvePolygon > mPolygon;
     std::unique_ptr< QgsFillSymbol > mSymbol;
 
 #ifdef SIP_RUN

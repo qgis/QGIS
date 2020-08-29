@@ -49,6 +49,8 @@ class QgsPostgresDataItemGuiProvider : public QObject, public QgsDataItemGuiProv
     static void renameLayer( QgsPGLayerItem *layerItem );
     static void truncateTable( QgsPGLayerItem *layerItem );
     static void refreshMaterializedView( QgsPGLayerItem *layerItem );
+    static void saveConnections();
+    static void loadConnections( QgsDataItem *item );
 
 };
 

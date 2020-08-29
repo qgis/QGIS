@@ -159,14 +159,16 @@ class QgsWFSProvider final: public QgsVectorDataProvider
 
     /**
      * Collects information about the field types. Is called internally from QgsWFSProvider ctor.
-       The method gives back the name of
-       the geometry attribute and the thematic attributes with their types*/
+     * The method gives back the name of
+     * the geometry attribute and the thematic attributes with their types.
+    */
     bool describeFeatureType( QString &geometryAttribute,
                               QgsFields &fields, QgsWkbTypes::Type &geomType );
 
     /**
      * For a given typename, reads the name of the geometry attribute, the
-        thematic attributes and their types from a dom document. Returns true in case of success*/
+     * thematic attributes and their types from a dom document. Returns true in case of success.
+    */
     bool readAttributesFromSchema( QDomDocument &schemaDoc,
                                    const QString &prefixedTypename,
                                    QString &geometryAttribute,
@@ -176,8 +178,9 @@ class QgsWFSProvider final: public QgsVectorDataProvider
 
     /**
      * Sends the transaction document to the server using HTTP POST
-      \returns true if transmission to the server succeeded, otherwise false
-        note: true does not automatically mean that the transaction succeeded*/
+     * \returns true if transmission to the server succeeded, otherwise false
+     * \note true does not automatically mean that the transaction succeeded
+    */
     bool sendTransactionDocument( const QDomDocument &doc, QDomDocument &serverResponse );
 
     //! Creates a transaction element and adds it (normally as first element) to the document

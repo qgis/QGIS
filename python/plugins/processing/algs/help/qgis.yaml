@@ -300,11 +300,6 @@ qgis:rasterlayerhistogram: >
 
   The raster layer must have a single band.
 
-qgis:rastersampling: >
-  This algorithm creates a new vector layer with the same attributes of the input layer and the raster values corresponding on the point location.
-
-  If the raster layer has more than one band, all the band values are sampled.
-
 qgis:regularpoints: >
   This algorithm creates a point layer with a given number of regular points, all of them within a given extent.
 

@@ -128,7 +128,8 @@ namespace QgsWms
 
       /**
        * Returns printed page as binary
-        \returns printed page as binary or 0 in case of error*/
+       * \returns printed page as binary or 0 in case of error
+      */
       QByteArray getPrint();
 
       /**
@@ -238,7 +239,8 @@ namespace QgsWms
 
       /**
        * Tests if a filter sql string is allowed (safe)
-        \returns true in case of success, false if string seems unsafe*/
+       * \returns true in case of success, false if string seems unsafe
+      */
       bool testFilterStringSafety( const QString &filter ) const;
       //! Helper function for filter safety test. Groups stringlist to merge entries starting/ending with quotes
       static void groupStringList( QStringList &list, const QString &groupString );

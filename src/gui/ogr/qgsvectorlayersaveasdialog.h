@@ -136,9 +136,10 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
 
     /**
      * Returns type of symbology export.
-        0: No symbology
-        1: Feature symbology
-        2: Symbol level symbology*/
+     * 0: No symbology
+     * 1: Feature symbology
+     * 2: Symbol level symbology
+     */
     int symbologyExport() const;
 
     /**

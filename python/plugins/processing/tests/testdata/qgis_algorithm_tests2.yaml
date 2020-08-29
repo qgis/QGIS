@@ -1600,6 +1600,19 @@ tests:
           - expected/points_to_path_grouped2.gml
         type: vector
 
+  - algorithm: qgis:pointstopath
+    name: Points to path (close path)
+    params:
+      ORDER_FIELD: id
+      CLOSE_PATH: true
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/points_to_path_close_path.gml
+        type: vector
+
   - algorithm: native:joinattributestable
     name: join the attribute table by common field (one-to-one)
     params:

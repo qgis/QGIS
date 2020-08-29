@@ -163,9 +163,12 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     // gdal script
     void showGDALScript( const QStringList &commands );
     QString generateGDALtranslateCommand( bool generateTFW = true );
-    /* Generate command-line for gdalwarp based on current GCPs and given parameters.
+
+    /**
+     * Generate command-line for gdalwarp based on current GCPs and given parameters.
      * For values in the range 1 to 3, the parameter "order" prescribes the degree of the interpolating polynomials to use,
-     * a value of -1 indicates that thin plate spline interpolation should be used for warping.*/
+     * a value of -1 indicates that thin plate spline interpolation should be used for warping.
+    */
     QString generateGDALwarpCommand( const QString &resampling, const QString &compress, bool useZeroForTrans, int order,
                                      double targetResX, double targetResY );
 

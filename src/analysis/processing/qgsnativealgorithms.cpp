@@ -129,6 +129,7 @@
 #include "qgsalgorithmrasterlayeruniquevalues.h"
 #include "qgsalgorithmrasterlogicalop.h"
 #include "qgsalgorithmrasterize.h"
+#include "qgsalgorithmrastersampling.h"
 #include "qgsalgorithmrasterstackposition.h"
 #include "qgsalgorithmrasterstatistics.h"
 #include "qgsalgorithmrastersurfacevolume.h"
@@ -373,6 +374,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsRasterizeAlgorithm() );
   addAlgorithm( new QgsRasterPixelsToPointsAlgorithm() );
   addAlgorithm( new QgsRasterPixelsToPolygonsAlgorithm() );
+  addAlgorithm( new QgsRasterSamplingAlgorithm() );
   addAlgorithm( new QgsRasterStackHighestPositionAlgorithm() );
   addAlgorithm( new QgsRasterStackLowestPositionAlgorithm() );
   addAlgorithm( new QgsRasterStatisticsAlgorithm() );

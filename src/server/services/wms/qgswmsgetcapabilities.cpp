@@ -230,7 +230,7 @@ namespace QgsWms
     wmsCapabilitiesElement.appendChild( getServiceElement( doc, project, version, request ) );
 
     //wms:Capability element
-    QDomElement capabilityElement = getCapabilityElement( doc, project, version, request, projectSettings );
+    QDomElement capabilityElement = getCapabilityElement( doc, project, version, request, projectSettings, serverIface );
     wmsCapabilitiesElement.appendChild( capabilityElement );
 
     if ( projectSettings )
@@ -431,7 +431,7 @@ namespace QgsWms
 
   QDomElement getCapabilityElement( QDomDocument &doc, const QgsProject *project,
                                     const QString &version, const QgsServerRequest &request,
-                                    bool projectSettings )
+                                    bool projectSettings, QgsServerInterface *serverIface )
   {
     QgsServerRequest::Parameters parameters = request.parameters();
 
@@ -534,7 +534,8 @@ namespace QgsWms
     elem.appendChild( dcpTypeElem.cloneNode().toElement() ); //this is the same as for 'GetCapabilities'
     requestElem.appendChild( elem );
 
-    if ( projectSettings ) //remove composer templates from GetCapabilities in the long term
+    if ( ( !serverIface->serverSettings() || !serverIface->serverSettings()->getPrintDisabled() ) &&
+         projectSettings ) //remove composer templates from GetCapabilities in the long term
     {
       //wms:GetPrint
       elem = doc.createElement( QStringLiteral( "GetPrint" ) /*wms:GetPrint*/ );
@@ -913,6 +914,7 @@ namespace QgsWms
         if ( projectSettings )
         {
           layerElem.setAttribute( QStringLiteral( "visible" ), treeNode->isVisible() );
+          layerElem.setAttribute( QStringLiteral( "visibilityChecked" ), treeNode->itemVisibilityChecked() );
           layerElem.setAttribute( QStringLiteral( "expanded" ), treeNode->isExpanded() );
         }
 

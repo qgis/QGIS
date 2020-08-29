@@ -220,7 +220,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Returns the flags for this layer.
-      \note Flags are options specified by the user used for the UI but are not preventing any API call.
+     * \note Flags are options specified by the user used for the UI but are not preventing any API call.
      * For instance, even if the Removable flag is not set, the layer can still be removed with the API
      * but the action will not be listed in the legend menu.
      * \since QGIS 3.4
@@ -648,7 +648,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Returns the layer's spatial reference system.
-    \since QGIS 1.4
+     * \since QGIS 1.4
      */
     QgsCoordinateReferenceSystem crs() const;
 
@@ -1483,8 +1483,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Read custom properties from project file.
-      \param layerNode note to read from
-      \param keyStartsWith reads only properties starting with the specified string (or all if the string is empty)*/
+     * \param layerNode note to read from
+     * \param keyStartsWith reads only properties starting with the specified string (or all if the string is empty)
+    */
     void readCustomProperties( const QDomNode &layerNode, const QString &keyStartsWith = QString() );
 
     //! Write custom properties to project file.
@@ -1609,7 +1610,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Layer's spatial reference system.
-        private to make sure setCrs must be used and crsChanged() is emitted */
+     * private to make sure setCrs must be used and crsChanged() is emitted.
+    */
     QgsCoordinateReferenceSystem mCRS;
 
     //! Unique ID of this layer - used to refer to this layer in map layer registry
@@ -1635,7 +1637,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! A flag that tells us whether to use the above vars to restrict layer visibility
     bool mScaleBasedVisibility = false;
 
-    //! Collection of undoable operations for this layer. *
+    //! Collection of undoable operations for this layer.
     QUndoStack *mUndoStack = nullptr;
 
     QUndoStack *mUndoStackStyles = nullptr;

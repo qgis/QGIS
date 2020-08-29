@@ -36,7 +36,7 @@ class QgsImageTexture;
 
 /**
  * \brief base class for all skybox types
- * It holds the commun member data between different skybox entity types
+ * It holds the common member data between different skybox entity types
  * \ingroup 3d
  * \since QGIS 3.16
  */
