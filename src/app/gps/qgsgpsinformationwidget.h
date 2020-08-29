@@ -137,8 +137,6 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
 
     void updateGpsDistanceStatusMessage();
 
-    void qualityDescription( int qualityIndicator );
-
     QgsCoordinateReferenceSystem mWgs84CRS;
     QgsCoordinateTransform mCanvasToWgs84Transform;
     QgsDistanceArea mDistanceCalculator;

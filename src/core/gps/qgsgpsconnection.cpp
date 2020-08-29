@@ -67,6 +67,41 @@ QgsGpsInformation::FixStatus QgsGpsInformation::fixStatus() const
   return fixStatus;
 }
 
+QString QgsGpsInformationWidget::qualityDescription() const
+{
+  switch ( quality )
+  {
+    case 8:
+      return tr( "Simulation mode" );
+
+    case 7:
+      return tr( "Manual input mode" );
+
+    case 6:
+      return tr( "Estimated" );
+
+    case 5:
+      return tr( "Float RTK" );
+
+    case 4:
+      return tr( "Fixed RTK" );
+
+    case 3:
+      return tr( "PPS" );
+
+    case 2:
+      return tr( "DGPS" );
+
+    case 1:
+      return tr( "Autonomous" );
+
+    case 0:
+      return tr( "Invalid" );
+
+    default:
+      return tr( "Unknown (%1)" ).arg( QString::number( quality ) );
+  }
+}
 
 QgsGpsConnection::QgsGpsConnection( QIODevice *dev )
   : QObject( nullptr )

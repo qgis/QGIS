@@ -945,8 +945,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
 
     mTxtFixMode->setText( info.fixMode == 'A' ? tr( "Automatic" ) : info.fixMode == 'M' ? tr( "Manual" ) : QString() ); // A=automatic 2d/3d, M=manual; allowing for anything else
     mTxtFixType->setText( info.fixType == 3 ? tr( "3D" ) : info.fixType == 2 ? tr( "2D" ) : info.fixType == 1 ? tr( "No fix" ) : QString::number( info.fixType ) ); // 1=no fix, 2=2D, 3=3D; allowing for anything else
-    // set mTxtQuality in method
-    this->qualityDescription( info.quality );
+    mTxtQuality->setText( info.qualityDescription() );
     mTxtSatellitesUsed->setText( QString::number( info.satellitesUsed ) );
     mTxtStatus->setText( info.status == 'A' ? tr( "Valid" ) : info.status == 'V' ? tr( "Invalid" ) : QString() );
   } //position
@@ -1626,56 +1625,6 @@ void QgsGpsInformationWidget::updateGpsDistanceStatusMessage()
   const QString distanceString = QgsDistanceArea::formatDistance( distance, distanceDecimalPlaces, QgsProject::instance()->distanceUnits() );
   const QString bearingString = mBearingNumericFormat->formatDouble( bearing, QgsNumericFormatContext() );
   QgisApp::instance()->statusBarIface()->showMessage( tr( "%1 (%2) from GPS location" ).arg( distanceString, bearingString ), 2000 );
-}
-
-void QgsGpsInformationWidget::qualityDescription( int qualityIndicator )
-{
-  QString tmpQualityDescription;
-
-  switch ( qualityIndicator )
-  {
-    case 8:
-      tmpQualityDescription = "Simulation mode";
-      break;
-
-    case 7:
-      tmpQualityDescription = "Manual input mode";
-      break;
-
-    case 6:
-      tmpQualityDescription = "Estimated";
-      break;
-
-    case 5:
-      tmpQualityDescription = tr( "Float RTK" );
-      break;
-
-    case 4:
-      tmpQualityDescription = tr( "Fixed RTK" );
-      break;
-
-    case 3:
-      tmpQualityDescription = tr( "PPS" );
-      break;
-
-    case 2:
-      tmpQualityDescription = tr( "DGPS" );
-      break;
-
-    case 1:
-      tmpQualityDescription = tr( "Autonomous" );
-      break;
-
-    case 0:
-      tmpQualityDescription = tr( "Invalid" );
-      break;
-
-    default:
-      tmpQualityDescription = QString( "Unknown(%1)" ).arg( QString::number( qualityIndicator ) );
-      break;
-  }
-
-  mTxtQuality->setText( tmpQualityDescription );
 }
 
 void QgsGpsInformationWidget::updateTimestampDestinationFields( QgsMapLayer *mapLayer )
