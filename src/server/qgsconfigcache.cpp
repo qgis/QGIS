@@ -112,7 +112,6 @@ const QgsProject *QgsConfigCache::project( const QString &path, QgsServerSetting
         QStringLiteral( "Server" ), Qgis::Critical );
     }
   }
-  QgsProject::setInstance( mProjectCache[ path ] );
   return mProjectCache[ path ];
 
 }
