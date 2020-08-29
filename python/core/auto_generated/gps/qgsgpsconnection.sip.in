@@ -114,7 +114,7 @@ Returns the fix status
 
     QString qualityDescription() const;
 %Docstring
-Return a descriptive string for the signal quality.
+Returns a descriptive string for the signal quality.
 
 .. versionadded:: 3.16
 %End

@@ -232,7 +232,7 @@ class CORE_EXPORT QgsGpsInformation
     FixStatus fixStatus() const;
 
     /**
-     * Return a descriptive string for the signal quality.
+     * Returns a descriptive string for the signal quality.
      *
      * \since QGIS 3.16
      */
