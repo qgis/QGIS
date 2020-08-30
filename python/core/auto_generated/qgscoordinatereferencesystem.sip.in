@@ -707,7 +707,7 @@ Returns the projection acronym for the projection used by the CRS.
 %Docstring
 Returns the ellipsoid acronym for the ellipsoid used by the CRS.
 
-:return: the official authority:code identifier for the ellipoid, or PARAMETER:MAJOR:MINOR for custom ellipsoids
+:return: the official authority:code identifier for the ellipsoid, or PARAMETER:MAJOR:MINOR for custom ellipsoids
 
 .. note::
 
