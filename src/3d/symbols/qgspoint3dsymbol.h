@@ -116,7 +116,7 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTOR
     QMatrix4x4 billboardTransform() const;
 
     /**
-     * Exports the geometries contained withing the hierarchy of entity.
+     * Exports the geometries contained within the hierarchy of entity.
      * Returns whether any objects were exported
      */
     bool exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore::QEntity *entity, const QString &objectNamePrefix ) const override SIP_SKIP;

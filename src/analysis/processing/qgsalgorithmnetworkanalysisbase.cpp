@@ -39,7 +39,7 @@ QString QgsNetworkAnalysisAlgorithmBase::groupId() const
 
 QgsProcessingAlgorithm::Flags QgsNetworkAnalysisAlgorithmBase::flags() const
 {
-  // TODO -- remove the dependancy on the project from these algorithms, it shouldn't be required
+  // TODO -- remove the dependency on the project from these algorithms, it shouldn't be required
   return QgsProcessingAlgorithm::flags() | FlagRequiresProject;
 }
 

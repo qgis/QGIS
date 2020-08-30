@@ -18189,7 +18189,7 @@ void TestQgsGeometry::wktParser()
   // incorrect number of points
   QVERIFY( ! QgsTriangle().fromWkt( "Triangle (( 0 0, 1 1))" ) );
   QVERIFY( ! QgsTriangle().fromWkt( "Triangle (( 0 0, 1 1, 1 0, 2 3, 4 5))" ) );
-  QVERIFY( ! QgsTriangle().fromWkt( "Triangle (( 0 1, 2 3, 3 4, 1 0))" ) ); // four points but start and last points are differents
+  QVERIFY( ! QgsTriangle().fromWkt( "Triangle (( 0 1, 2 3, 3 4, 1 0))" ) ); // four points but start and last points are different
   // valid
   QgsTriangle t;
   QVERIFY( t.fromWkt( "TRIANGLE(( 0 1, 2 3, 3 4))" ) );

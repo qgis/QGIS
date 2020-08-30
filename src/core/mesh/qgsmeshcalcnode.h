@@ -146,7 +146,7 @@ class CORE_EXPORT QgsMeshCalcNode
     static QgsMeshCalcNode *parseMeshCalcString( const QString &str, QString &parserErrorMsg );
 
     /**
-     * Returns whether the calculation wil leads to a non temporal dataset group result
+     * Returns whether the calculation will leads to a non temporal dataset group result
      * \returns true if the result will be non temporal
      */
     bool isNonTemporal() const;

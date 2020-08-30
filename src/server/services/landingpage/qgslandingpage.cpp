@@ -50,7 +50,7 @@ class QgsLandingPageApi: public QgsServerOgcApi
              || url.path() == '/'
              || url.path().startsWith( QStringLiteral( "/map/" ) )
              || url.path().startsWith( QStringLiteral( "/index" ) )
-             // Statics:
+             // Static
              || url.path().startsWith( QStringLiteral( "/css/" ) )
              || url.path().startsWith( QStringLiteral( "/js/" ) )
              || url.path() == QStringLiteral( "/favicon.ico" ) );

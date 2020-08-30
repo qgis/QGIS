@@ -704,7 +704,7 @@ class CORE_EXPORT QgsMeshMemoryDataset: public QgsMeshDataset
     bool isActive( int faceIndex ) const override;
     int valuesCount() const override;
 
-    //! Calulates the minimum and the maximum of this group
+    //! Calculates the minimum and the maximum of this group
     void calculateMinMax();
 
     QVector<QgsMeshDatasetValue> values;
@@ -966,7 +966,7 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
     /**
      * Set parameters of the item in accordance with the persistent dataset group with \a uri
      *
-     * \param uri uri of the persistant dataset group
+     * \param uri uri of the persistent dataset group
      *
      * \since QGIS 3.16
      */

@@ -50,7 +50,7 @@ class _3D_EXPORT QgsGoochMaterialSettings : public QgsAbstractMaterialSettings
     static QgsAbstractMaterialSettings *create() SIP_FACTORY;
 
     /**
-     * Returns TRUE if the specified \a technique is suppored by the Gooch material.
+     * Returns TRUE if the specified \a technique is supported by the Gooch material.
      */
     static bool supportsTechnique( QgsMaterialSettingsRenderingTechnique technique );
 

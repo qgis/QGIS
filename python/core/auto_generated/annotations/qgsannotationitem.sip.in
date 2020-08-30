@@ -72,7 +72,7 @@ Returns the bounding box of the item's geographic location, in the parent layer'
 %Docstring
 Renders the item to the specified render ``context``.
 
-The ``feedback`` argument can be used to detect render cancelations during expensive
+The ``feedback`` argument can be used to detect render cancellations during expensive
 render operations.
 %End
 

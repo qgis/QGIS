@@ -556,7 +556,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
     positionData = getAttributeData<float>( positionAttribute, vertexBytes );
   }
 
-//   For tesselated polygons that don't have index attributes
+//   For tessellated polygons that don't have index attributes
   if ( positionAttribute != nullptr && indexAttribute == nullptr )
   {
     for ( int i = 0; i < positionData.size() / 3; ++i )

@@ -146,7 +146,7 @@ class TestQgsServerSettings(unittest.TestCase):
         self.assertFalse(self.settings.trustLayerMetadata())
         os.environ.pop(env)
 
-    def test_env_dont_load_layouts(self):
+    def test_env_load_layouts_disabled(self):
         env = "QGIS_SERVER_DISABLE_GETPRINT"
 
         self.assertFalse(self.settings.getPrintDisabled())
@@ -243,7 +243,7 @@ class TestQgsServerSettings(unittest.TestCase):
         os.environ[env] = "/tmp/initial"
         os.environ[env2] = "pg:initial"
 
-        # test intial value
+        # test initial value
         self.settings.load()
         self.assertEqual(self.settings.landingPageProjectsDirectories(), "/tmp/initial")
         self.assertEqual(self.settings.landingPageProjectsPgConnections(), "pg:initial")

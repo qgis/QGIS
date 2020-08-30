@@ -382,7 +382,7 @@ struct QgsWmsLayerProperty
   /**
    * Attempts to return a preferred CRS from the list of available CRS definitions.
    *
-   * Prioritises the first listed CRS, unless it's a block listed value.
+   * Prioritizes the first listed CRS, unless it's a block listed value.
    */
   QString preferredAvailableCrs() const
   {

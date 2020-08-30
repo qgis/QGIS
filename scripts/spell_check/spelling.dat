@@ -967,7 +967,7 @@ begginings:beginnings
 beggins:begins
 begining:beginning
 beginnig:beginning
-behaviour:behavior
+behaviour:behavior:%
 behavoir:behavior
 behavoirs:behaviors
 behavour:behavior
@@ -3129,7 +3129,7 @@ foreing:foreign
 foreward:forward
 forfiet:forfeit
 forground:foreground
-forhead:forehead
+forhead:forehead:*
 foriegn:foreign
 Formalhaut:Fomalhaut
 formallize:formalize
@@ -3181,7 +3181,7 @@ frequentily:frequently
 frequncies:frequencies
 frequncy:frequency
 frist:first
-frome:from
+frome:from:*
 fromed:formed:*
 fron:from
 froniter:frontier

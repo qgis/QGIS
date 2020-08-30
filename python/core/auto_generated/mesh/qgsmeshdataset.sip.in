@@ -993,7 +993,7 @@ Set parameters of the item in accordance with the dataset group
 %Docstring
 Set parameters of the item in accordance with the persistent dataset group with ``uri``
 
-:param uri: uri of the persistant dataset group
+:param uri: uri of the persistent dataset group
 
 .. versionadded:: 3.16
 %End
