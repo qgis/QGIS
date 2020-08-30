@@ -67,39 +67,39 @@ QgsGpsInformation::FixStatus QgsGpsInformation::fixStatus() const
   return fixStatus;
 }
 
-QString QgsGpsInformationWidget::qualityDescription() const
+QString QgsGpsInformation::qualityDescription() const
 {
   switch ( quality )
   {
     case 8:
-      return tr( "Simulation mode" );
+      return QCoreApplication::translate( "QgsGpsInformation", "Simulation mode" );
 
     case 7:
-      return tr( "Manual input mode" );
+      return QCoreApplication::translate( "QgsGpsInformation", "Manual input mode" );
 
     case 6:
-      return tr( "Estimated" );
+      return QCoreApplication::translate( "QgsGpsInformation", "Estimated" );
 
     case 5:
-      return tr( "Float RTK" );
+      return QCoreApplication::translate( "QgsGpsInformation", "Float RTK" );
 
     case 4:
-      return tr( "Fixed RTK" );
+      return QCoreApplication::translate( "QgsGpsInformation", "Fixed RTK" );
 
     case 3:
-      return tr( "PPS" );
+      return QCoreApplication::translate( "QgsGpsInformation", "PPS" );
 
     case 2:
-      return tr( "DGPS" );
+      return QCoreApplication::translate( "QgsGpsInformation", "DGPS" );
 
     case 1:
-      return tr( "Autonomous" );
+      return QCoreApplication::translate( "QgsGpsInformation", "Autonomous" );
 
     case 0:
-      return tr( "Invalid" );
+      return QCoreApplication::translate( "QgsGpsInformation", "Invalid" );
 
     default:
-      return tr( "Unknown (%1)" ).arg( QString::number( quality ) );
+      return QCoreApplication::translate( "QgsGpsInformation", "Unknown (%1)" ).arg( QString::number( quality ) );
   }
 }
 
