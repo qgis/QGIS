@@ -264,7 +264,7 @@ class SERVER_EXPORT QgsServerSettings
 
     /**
      * Returns TRUE if WMS GetPrint request is disabled and the project's
-     * reading flag DONT_LOAD_LAYOUTS is activated.
+     * reading flag QgsProject::ReadFlag::FlagDontLoadLayouts is activated.
      *
      * The default value is FALSE, this value can be changed by setting the environment
      * variable QGIS_SERVER_DISABLE_GETPRINT.
