@@ -34,7 +34,7 @@ class QgsNewVectorTableFieldModel;
  * The QgsNewVectorTableDialog class is a provider-agnostic database vector
  * and aspatial table designer dialog based on the connections API.
  *
- * It allows to design a new vector or aspatial database table by defining the schema
+ * It allows designing a new vector or aspatial database table by defining the schema
  * (if supported by the provider) and table name, the list of QgsFields,
  * the optional geometry type and SRID.
  *

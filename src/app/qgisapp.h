@@ -1891,7 +1891,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void enableDigitizeWithCurve( bool enable );
 
     /**
-     * Enables the action that allows to enable or disable digitizing with curve
+     * Enables the action that toggles digitizing with curve
      * \since QGIS 3.16
      */
     void enableDigitizeWithCurveAction( bool enable );
