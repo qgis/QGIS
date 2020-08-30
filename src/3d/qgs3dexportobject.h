@@ -53,7 +53,7 @@ class _3D_EXPORT Qgs3DExportObject
      * \brief Qgs3DExportObject
      * Constructs an export object that will be filled with coordinates later
      * \param parentName
-     * The name of the parent (Will be useful to define scene hierarchie)
+     * The name of the parent (Will be useful to define scene hierarchy)
      * \param parent
      * The parent QObject (we use this to delete the Qgs3DExportObject instance once the exporter instance is deallocated)
      */
@@ -105,7 +105,7 @@ class _3D_EXPORT Qgs3DExportObject
 
     //! Saves the current object to the output stream while scaling the object and centering it to be visible in exported scene
     void saveTo( QTextStream &out, float scale, const QVector3D &center );
-    //! saves the texture of the object and material informations
+    //! saves the texture of the object and material information
     QString saveMaterial( QTextStream &mtlOut, const QString &folder );
 
   private:

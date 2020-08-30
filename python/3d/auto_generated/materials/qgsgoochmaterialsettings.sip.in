@@ -44,7 +44,7 @@ Returns a new instance of QgsGoochMaterialSettings.
 
     static bool supportsTechnique( QgsMaterialSettingsRenderingTechnique technique );
 %Docstring
-Returns ``True`` if the specified ``technique`` is suppored by the Gooch material.
+Returns ``True`` if the specified ``technique`` is supported by the Gooch material.
 %End
 
     virtual QgsGoochMaterialSettings *clone() const /Factory/;

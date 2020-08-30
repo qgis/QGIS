@@ -84,7 +84,7 @@ class CORE_EXPORT QgsAbstract3DSymbol
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
 
     /**
-     * Exports the geometries contained withing the hierarchy of entity.
+     * Exports the geometries contained within the hierarchy of entity.
      * Returns whether any objects were exported
      * If this function is not overloaded we don't try to export anything
      */

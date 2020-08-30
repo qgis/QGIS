@@ -45,7 +45,7 @@ class _3D_EXPORT QgsSimpleLineMaterialSettings : public QgsAbstractMaterialSetti
     QString type() const override;
 
     /**
-     * Returns TRUE if the specified \a technique is suppored by the material.
+     * Returns TRUE if the specified \a technique is supported by the material.
      */
     static bool supportsTechnique( QgsMaterialSettingsRenderingTechnique technique );
 

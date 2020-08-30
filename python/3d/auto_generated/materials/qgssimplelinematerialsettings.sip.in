@@ -39,7 +39,7 @@ Constructor for QgsSimpleLineMaterialSettings.
 
     static bool supportsTechnique( QgsMaterialSettingsRenderingTechnique technique );
 %Docstring
-Returns ``True`` if the specified ``technique`` is suppored by the material.
+Returns ``True`` if the specified ``technique`` is supported by the material.
 %End
 
     static QgsAbstractMaterialSettings *create() /Factory/;

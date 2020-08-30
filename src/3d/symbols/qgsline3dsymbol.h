@@ -94,7 +94,7 @@ class _3D_EXPORT QgsLine3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTORS
     void setMaterial( QgsAbstractMaterialSettings *material SIP_TRANSFER );
 
     /**
-     * Exports the geometries contained withing the hierarchy of entity.
+     * Exports the geometries contained within the hierarchy of entity.
      * Returns whether any objects were exported
      */
     bool exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore::QEntity *entity, const QString &objectNamePrefix ) const override SIP_SKIP;

@@ -136,11 +136,11 @@ class ANALYSIS_EXPORT QgsDualEdgeTriangulation: public QgsTriangulation
      */
     int baseEdgeOfTriangle( const QgsPoint &point );
     //! Checks, if 'edge' has to be swapped because of the empty circle criterion. If so, doSwap(...) is called.
-    bool checkSwapRecursivly( unsigned int edge, unsigned int recursiveDeep );
+    bool checkSwapRecursively( unsigned int edge, unsigned int recursiveDeep );
     //! Return true if edge need to be swapped after Delaunay criteria control
     bool isEdgeNeedSwap( unsigned int edge );
     //! Swaps 'edge' and test recursively for other swaps (delaunay criterion)
-    void doSwapRecursivly( unsigned int edge, unsigned int recursiveDeep );
+    void doSwapRecursively( unsigned int edge, unsigned int recursiveDeep );
     //! Swaps 'edge' and does no recursiv testing
     void doOnlySwap( unsigned int edge );
     //! Number of an edge which does not point to the virtual point. It continuously updated for a fast search

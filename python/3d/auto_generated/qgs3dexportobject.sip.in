@@ -41,7 +41,7 @@ Qgs3DExportObject
 Constructs an export object that will be filled with coordinates later
 
 :param parentName:
-                   The name of the parent (Will be useful to define scene hierarchie)
+                   The name of the parent (Will be useful to define scene hierarchy)
 :param parent:
                The parent QObject (we use this to delete the Qgs3DExportObject instance once the exporter instance is deallocated)
 %End
@@ -123,7 +123,7 @@ Saves the current object to the output stream while scaling the object and cente
 %End
     QString saveMaterial( QTextStream &mtlOut, const QString &folder );
 %Docstring
-saves the texture of the object and material informations
+saves the texture of the object and material information
 %End
 
 };
