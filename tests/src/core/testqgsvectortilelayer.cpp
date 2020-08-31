@@ -99,10 +99,21 @@ void TestQgsVectorTileLayer::initTestCase()
                      lineStrokeColor, lineStrokeWidth,
                      pointFillColor, pointStrokeColor, pointSize ) );
   mLayer->setRenderer( rend );  // takes ownership
+
+  mReport += QLatin1String( "<h1>Vector Tile Layer Tests</h1>\n" );
 }
 
 void TestQgsVectorTileLayer::cleanupTestCase()
 {
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  QFile myFile( myReportFile );
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
+  {
+    QTextStream myQTextStream( &myFile );
+    myQTextStream << mReport;
+    myFile.close();
+  }
+
   QgsApplication::exitQgis();
 }
 
