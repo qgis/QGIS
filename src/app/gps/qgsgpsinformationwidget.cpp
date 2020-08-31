@@ -884,7 +884,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
   {
     mTxtLatitude->setText( QString::number( info.latitude, 'f', 8 ) );
     mTxtLongitude->setText( QString::number( info.longitude, 'f', 8 ) );
-    mTxtAltitude->setText( tr( "%1 m" ).arg( info.elevation, 0, 'f', 3 ) ); // don't know of any GPS receivers that output better than 0.1 m precision
+    mTxtAltitude->setText( tr( "%1 m" ).arg( info.elevation, 0, 'f', 3 ) );
 
     if ( mDateTimeFormat.isEmpty() )
     {
@@ -909,7 +909,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     if ( std::isfinite( info.direction ) )
     {
       mTxtDirection->setEnabled( true );
-      mTxtDirection->setText( QString::number( info.direction, 'f', 1 ) + QStringLiteral( "deg" ) );
+      mTxtDirection->setText( QString::number( info.direction, 'f', 1 ) + QStringLiteral( "°" ) );
     }
     else
     {
