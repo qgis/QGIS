@@ -73,6 +73,11 @@ void QgsAnnotationLayer::clear()
   triggerRepaint();
 }
 
+bool QgsAnnotationLayer::isEmpty() const
+{
+  return mItems.empty();
+}
+
 void QgsAnnotationLayer::setOpacity( double opacity )
 {
   mOpacity = opacity;
