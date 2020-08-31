@@ -120,8 +120,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Indentation Test
-        run: ./scripts/spell_check/spell_test.sh
+      - name: Install Requirements
+        run: |
+          sudo apt install -y \
+              expect \
+              silversearcher-ag
+      - uses: jitterbit/get-changed-files@v1
+        id: changed_files
+        with:
+          format: space-delimited
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Spell Test
+        run: ./scripts/spell_check/check_spelling.sh -r ${{ steps.changed_files.outputs.added_modified }}
     
   sip_check:
     runs-on: ubuntu-latest
