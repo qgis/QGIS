@@ -13,13 +13,12 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from hdbcli import dbapi
 import os
 from qgis.core import (
     QgsAbstractDatabaseProviderConnection,
     QgsDataSourceUri,
     QgsProviderRegistry)
-from qgis.testing import start_app, unittest
+from qgis.testing import unittest
 from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
 from test_hana_utils import QgsHanaProviderUtils
 
@@ -29,6 +28,8 @@ class TestPyQgsProviderConnectionHana(unittest.TestCase, TestPyQgsProviderConnec
     uri = ''
     # Provider test cases must define the provider name (e.g. "hana" or "ogr")
     providerKey = 'hana'
+    # HANA connection object
+    conn = None
 
     @classmethod
     def setUpClass(cls):
@@ -40,9 +41,7 @@ class TestPyQgsProviderConnectionHana(unittest.TestCase, TestPyQgsProviderConnec
                   'user=SYSTEM password=mypassword sslEnabled=true sslValidateCertificate=False'
         if 'QGIS_HANA_TEST_DB' in os.environ:
             cls.uri = os.environ['QGIS_HANA_TEST_DB']
-        ds_uri = QgsDataSourceUri(cls.uri)
-        cls.conn = dbapi.connect(address=ds_uri.host(), port=ds_uri.port(), user=ds_uri.username(),
-                                 password=ds_uri.password(), ENCRYPT=True, sslValidateCertificate=False)
+        cls.conn = QgsHanaProviderUtils.createConnection(cls.uri)
 
         QgsHanaProviderUtils.createAndFillDefaultTables(cls.conn)
         # Create test layers
@@ -53,7 +52,9 @@ class TestPyQgsProviderConnectionHana(unittest.TestCase, TestPyQgsProviderConnec
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
+
         QgsHanaProviderUtils.cleanUp(cls.conn)
+        cls.conn.close()
 
     def createProviderMetadata(self):
         return QgsProviderRegistry.instance().providerMetadata(self.providerKey)

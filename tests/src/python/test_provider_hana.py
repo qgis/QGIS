@@ -18,20 +18,18 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 
 import os
 
-from test_hana_utils import QgsHanaProviderUtils
-from hdbcli import dbapi
 from providertestbase import ProviderTestCase
 from PyQt5.QtCore import QVariant, QDate, QTime, QDateTime, QByteArray
 from qgis.core import (
     NULL,
     QgsCoordinateReferenceSystem,
     QgsDataProvider,
-    QgsDataSourceUri,
     QgsFeatureRequest,
     QgsFeature,
     QgsProviderRegistry,
     QgsSettings)
 from qgis.testing import start_app, unittest
+from test_hana_utils import QgsHanaProviderUtils
 from utilities import unitTestDataPath
 
 QGISAPP = start_app()
@@ -39,6 +37,8 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
+    # HANA connection object
+    conn = None
 
     @classmethod
     def setUpClass(cls):
@@ -47,9 +47,7 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
                   'password=mypassword sslEnabled=true sslValidateCertificate=False'
         if 'QGIS_HANA_TEST_DB' in os.environ:
             cls.uri = os.environ['QGIS_HANA_TEST_DB']
-        ds_uri = QgsDataSourceUri(cls.uri)
-        cls.conn = dbapi.connect(address=ds_uri.host(), port=ds_uri.port(), user=ds_uri.username(),
-                                 password=ds_uri.password(), ENCRYPT=True, sslValidateCertificate=False)
+        cls.conn = QgsHanaProviderUtils.createConnection(cls.uri)
 
         QgsHanaProviderUtils.createAndFillDefaultTables(cls.conn)
 
@@ -66,7 +64,9 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
+
         QgsHanaProviderUtils.cleanUp(cls.conn)
+        cls.conn.close()
 
     def createVectorLayer(self, conn_parameters, layer_name):
         return QgsHanaProviderUtils.createVectorLayer(self.uri + ' ' + conn_parameters, layer_name)

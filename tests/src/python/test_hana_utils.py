@@ -12,11 +12,18 @@ __author__ = 'Maxim Rylov'
 __date__ = '2019-11-21'
 __copyright__ = 'Copyright 2019, The QGIS Project'
 
+from hdbcli import dbapi
 from qgis.core import (
-    QgsVectorLayer)
+    QgsVectorLayer, QgsDataSourceUri)
 
 
 class QgsHanaProviderUtils:
+
+    @staticmethod
+    def createConnection(uri):
+        ds_uri = QgsDataSourceUri(uri)
+        return dbapi.connect(address=ds_uri.host(), port=ds_uri.port(), user=ds_uri.username(),
+                             password=ds_uri.password(), ENCRYPT=True, sslValidateCertificate=False, CHAR_AS_UTF8=1)
 
     @staticmethod
     def createVectorLayer(conn_parameters, layer_name):
@@ -27,6 +34,7 @@ class QgsHanaProviderUtils:
         assert conn
         cursor = conn.cursor()
         assert cursor
+        res = None
         if parameters is not None:
             cursor.executemany(statement, parameters)
         else:
