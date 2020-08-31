@@ -22,7 +22,10 @@ from qgis.core import (QgsMapSettings,
                        QgsFillSymbol,
                        QgsSingleSymbolRenderer,
                        QgsMapThemeCollection,
-                       QgsProject,
+                       QgsProject, QgsAnnotationPolygonItem,
+                       QgsPolygon,
+                       QgsLineString,
+                       QgsPoint,
                        QgsApplication)
 from qgis.gui import (QgsMapCanvas)
 
@@ -348,6 +351,57 @@ class TestQgsMapCanvas(unittest.TestCase):
         theme5Layers = theme5.layerRecords()
         self.assertEqual(themeLayers, theme5Layers, 'themes are different')
         # self.assertTrue(self.canvasImageCheck('theme5', 'theme5', canvas))
+
+    def testMainAnnotationLayerRendered(self):
+        """ test that main annotation layer is rendered above all other layers """
+        canvas = QgsMapCanvas()
+        canvas.setDestinationCrs(QgsCoordinateReferenceSystem(4326))
+        canvas.setFrameStyle(0)
+        canvas.resize(600, 400)
+        self.assertEqual(canvas.width(), 600)
+        self.assertEqual(canvas.height(), 400)
+
+        layer = QgsVectorLayer("Polygon?crs=epsg:4326&field=fldtxt:string",
+                               "layer", "memory")
+        sym3 = QgsFillSymbol.createSimple({'color': '#b200b2'})
+        layer.renderer().setSymbol(sym3)
+
+        canvas.setLayers([layer])
+        canvas.setExtent(QgsRectangle(10, 30, 20, 35))
+        canvas.show()
+        # need to wait until first redraw can occur (note that we first need to wait till drawing starts!)
+        while not canvas.isDrawing():
+            app.processEvents()
+        canvas.waitWhileRendering()
+        self.assertTrue(self.canvasImageCheck('empty_canvas', 'empty_canvas', canvas))
+
+        # add polygon to layer
+        f = QgsFeature()
+        f.setGeometry(QgsGeometry.fromRect(QgsRectangle(5, 25, 25, 45)))
+        self.assertTrue(layer.dataProvider().addFeatures([f]))
+
+        # refresh canvas
+        canvas.refresh()
+        canvas.waitWhileRendering()
+
+        # no annotation yet...
+        self.assertFalse(self.canvasImageCheck('main_annotation_layer', 'main_annotation_layer', canvas))
+
+        annotation_layer = QgsProject.instance().mainAnnotationLayer()
+        annotation_layer.setCrs(QgsCoordinateReferenceSystem(4326))
+        annotation_geom = QgsGeometry.fromRect(QgsRectangle(12, 30, 18, 33))
+        annotation = QgsAnnotationPolygonItem(annotation_geom.constGet().clone())
+        sym3 = QgsFillSymbol.createSimple({'color': '#ff0000', 'outline_style': 'no'})
+        annotation.setSymbol(sym3)
+        annotation_layer.addItem(annotation)
+
+        # refresh canvas
+        canvas.refresh()
+        canvas.waitWhileRendering()
+
+        # annotation must be rendered over other layers
+        self.assertTrue(self.canvasImageCheck('main_annotation_layer', 'main_annotation_layer', canvas))
+        annotation_layer.clear()
 
     def canvasImageCheck(self, name, reference_image, canvas):
         self.report += "<h2>Render {}</h2>\n".format(name)
