@@ -847,6 +847,18 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     double rotatedTicksMinimumAngle() const { return mRotatedTicksMinimumAngle; }
 
     /**
+     * Sets the \a margin to corners (in canvas units) below which outwards facing ticks are not drawn.
+     * \see rotatedTicksMarginToCorner()
+     */
+    void setRotatedTicksMarginToCorner( const double margin ) { mRotatedTicksMarginToCorner = margin; }
+
+    /**
+     * Gets the \a margin to corners (in canvas units) below which outwards facing ticks are not drawn.
+     * \see setRotatedTicksMarginToCorner()
+     */
+    double rotatedTicksMarginToCorner() const { return mRotatedTicksMarginToCorner; }
+
+    /**
      * Enable/disable annotations rotation for rotated or reprojected grids.
      * \see rotatedAnnotationsEnabled()
      */
@@ -881,6 +893,18 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * \see setRotatedAnnotationsMinimumAngle()
      */
     double rotatedAnnotationsMinimumAngle() const { return mRotatedAnnotationsMinimumAngle; }
+
+    /**
+     * Sets the \a margin to corners (in canvas units) below which outwards facing ticks are not drawn.
+     * \see rotatedAnnotationsMarginToCorner()
+     */
+    void setRotatedAnnotationsMarginToCorner( const double margin ) { mRotatedAnnotationsMarginToCorner = margin; }
+
+    /**
+     * Gets the \a margin to corners (in canvas units) below which outwards facing ticks are not drawn.
+     * \see setRotatedAnnotationsMarginToCorner()
+     */
+    double rotatedAnnotationsMarginToCorner() const { return mRotatedAnnotationsMarginToCorner; }
 
     /**
      * Sets the grid frame margin (in layout units).
@@ -1103,9 +1127,11 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     bool mRotatedTicksEnabled = false;
     TickLengthMode mRotatedTicksLengthMode = QgsLayoutItemMapGrid::OrthogonalTicks;
     double mRotatedTicksMinimumAngle = 0.0;
+    double mRotatedTicksMarginToCorner = 0.0;
     bool mRotatedAnnotationsEnabled = false;
     TickLengthMode mRotatedAnnotationsLengthMode = QgsLayoutItemMapGrid::OrthogonalTicks;
     double mRotatedAnnotationsMinimumAngle = 0.0;
+    double mRotatedAnnotationsMarginToCorner = 0.0;
 
     double mMinimumIntervalWidth = 50;
     double mMaximumIntervalWidth = 100;
