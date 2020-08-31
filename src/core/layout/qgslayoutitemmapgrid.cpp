@@ -1040,16 +1040,16 @@ void QgsLayoutItemMapGrid::drawGridFrameTicks( QPainter *p, GridExtension *exten
       }
 
       if ( annot.border == BorderSide::Top && ( ( facingLeft && annot.position.x() < mRotatedTicksMarginToCorner ) ||
-                                                ( facingRight && annot.position.x() > mMap->rect().width() - mRotatedTicksMarginToCorner ) ) )
+           ( facingRight && annot.position.x() > mMap->rect().width() - mRotatedTicksMarginToCorner ) ) )
         continue;
       if ( annot.border == BorderSide::Bottom && ( ( facingLeft && annot.position.x() > mMap->rect().width() - mRotatedTicksMarginToCorner ) ||
-                                                 ( facingRight && annot.position.x() < mRotatedTicksMarginToCorner ) ) )
+           ( facingRight && annot.position.x() < mRotatedTicksMarginToCorner ) ) )
         continue;
       if ( annot.border == BorderSide::Left && ( ( facingLeft && annot.position.y() > mMap->rect().height() - mRotatedTicksMarginToCorner ) ||
-                                                 ( facingRight && annot.position.y() < mRotatedTicksMarginToCorner ) ) )
+           ( facingRight && annot.position.y() < mRotatedTicksMarginToCorner ) ) )
         continue;
       if ( annot.border == BorderSide::Right && ( ( facingLeft && annot.position.y() < mRotatedTicksMarginToCorner ) ||
-                                                  ( facingRight && annot.position.y() > mMap->rect().height() - mRotatedTicksMarginToCorner ) ) )
+           ( facingRight && annot.position.y() > mMap->rect().height() - mRotatedTicksMarginToCorner ) ) )
         continue;
 
       QVector2D normalVector = borderToNormal2D( annot.border );
@@ -1349,16 +1349,16 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QgsRenderContext &context, 
     facingRight = !facingRight;
   }
   if ( annot.border == BorderSide::Top && ( ( facingLeft && xpos < mRotatedAnnotationsMarginToCorner ) ||
-                                            ( facingRight && xpos > mMap->rect().width() - mRotatedAnnotationsMarginToCorner ) ) )
+       ( facingRight && xpos > mMap->rect().width() - mRotatedAnnotationsMarginToCorner ) ) )
     return;
   if ( annot.border == BorderSide::Bottom && ( ( facingLeft && xpos > mMap->rect().width() - mRotatedAnnotationsMarginToCorner ) ||
-                                               ( facingRight && xpos < mRotatedAnnotationsMarginToCorner ) ) )
+       ( facingRight && xpos < mRotatedAnnotationsMarginToCorner ) ) )
     return;
   if ( annot.border == BorderSide::Left && ( ( facingLeft && ypos > mMap->rect().height() - mRotatedAnnotationsMarginToCorner ) ||
-                                             ( facingRight && ypos < mRotatedAnnotationsMarginToCorner ) ) )
+       ( facingRight && ypos < mRotatedAnnotationsMarginToCorner ) ) )
     return;
   if ( annot.border == BorderSide::Right && ( ( facingLeft && ypos < mRotatedAnnotationsMarginToCorner ) ||
-                                              ( facingRight && ypos > mMap->rect().height() - mRotatedAnnotationsMarginToCorner ) ) )
+       ( facingRight && ypos > mMap->rect().height() - mRotatedAnnotationsMarginToCorner ) ) )
     return;
 
   QgsScopedQPainterState painterState( context.painter() );
