@@ -24,7 +24,6 @@
 #include "qgssymbollayerutils.h"
 #include "qgsvectortileutils.h"
 
-
 QgsVectorTileBasicRendererStyle::QgsVectorTileBasicRendererStyle( const QString &stName, const QString &laName, QgsWkbTypes::GeometryType geomType )
   : mStyleName( stName )
   , mLayerName( laName )
@@ -171,8 +170,19 @@ void QgsVectorTileBasicRenderer::renderTile( const QgsVectorTileRendererData &ti
           if ( filterExpression.isValid() && !filterExpression.evaluate( &context.expressionContext() ).toBool() )
             continue;
 
-          if ( QgsWkbTypes::geometryType( f.geometry().wkbType() ) == layerStyle.geometryType() )
+          const QgsWkbTypes::GeometryType featureType = QgsWkbTypes::geometryType( f.geometry().wkbType() );
+          if ( featureType == layerStyle.geometryType() )
+          {
             sym->renderFeature( f, context );
+          }
+          else if ( featureType == QgsWkbTypes::PolygonGeometry && layerStyle.geometryType() == QgsWkbTypes::LineGeometry )
+          {
+            // be tolerant and permit rendering polygons with a line layer style, as some style definitions use this approach
+            // to render the polygon borders only
+            QgsFeature exterior = f;
+            exterior.setGeometry( QgsGeometry( f.geometry().constGet()->boundary() ) );
+            sym->renderFeature( exterior, context );
+          }
         }
       }
     }
@@ -185,8 +195,19 @@ void QgsVectorTileBasicRenderer::renderTile( const QgsVectorTileRendererData &ti
         if ( filterExpression.isValid() && !filterExpression.evaluate( &context.expressionContext() ).toBool() )
           continue;
 
-        if ( QgsWkbTypes::geometryType( f.geometry().wkbType() ) == layerStyle.geometryType() )
+        const QgsWkbTypes::GeometryType featureType = QgsWkbTypes::geometryType( f.geometry().wkbType() );
+        if ( featureType == layerStyle.geometryType() )
+        {
           sym->renderFeature( f, context );
+        }
+        else if ( featureType == QgsWkbTypes::PolygonGeometry && layerStyle.geometryType() == QgsWkbTypes::LineGeometry )
+        {
+          // be tolerant and permit rendering polygons with a line layer style, as some style definitions use this approach
+          // to render the polygon borders only
+          QgsFeature exterior = f;
+          exterior.setGeometry( QgsGeometry( f.geometry().constGet()->boundary() ) );
+          sym->renderFeature( exterior, context );
+        }
       }
     }
     sym->stopRender( context );
