@@ -46,7 +46,8 @@ from qgis.core import (QgsLayoutItemMap,
                        QgsGeometry,
                        QgsLayoutItemShape,
                        QgsMapClippingRegion,
-                       QgsLayoutItemMapOverview)
+                       QgsLayoutItemMapOverview,
+                       QgsAnnotationPolygonItem)
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -764,6 +765,58 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         map.itemClippingSettings().setFeatureClippingType(QgsMapClippingRegion.FeatureClippingType.ClipPainterOnly)
 
         checker = QgsLayoutChecker('composermap_itemclip_background', layout)
+        checker.setControlPathPrefix("composer_map")
+        result, message = checker.testLayout()
+        TestQgsLayoutMap.report += checker.report()
+        self.assertTrue(result, message)
+
+    def testMainAnnotationLayer(self):
+        """
+        Make sure main annotation layer is rendered in maps above all other layers
+        """
+        p = QgsProject()
+
+        vl = QgsVectorLayer("Polygon?crs=epsg:4326&field=fldtxt:string",
+                            "layer", "memory")
+        sym3 = QgsFillSymbol.createSimple({'color': '#b200b2'})
+        vl.renderer().setSymbol(sym3)
+
+        p.addMapLayer(vl)
+        layout = QgsLayout(p)
+        layout.initializeDefaults()
+        p.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+        map.setFrameEnabled(True)
+        map.setFrameStrokeWidth(QgsLayoutMeasurement(2, QgsUnitTypes.LayoutMillimeters))
+        map.setBackgroundEnabled(True)
+        map.setBackgroundColor(QColor(200, 255, 200))
+        map.zoomToExtent(QgsRectangle(10, 30, 20, 35))
+        map.setLayers([vl])
+        layout.addLayoutItem(map)
+
+        # add polygon to layer
+        f = QgsFeature()
+        f.setGeometry(QgsGeometry.fromRect(QgsRectangle(5, 25, 25, 45)))
+        self.assertTrue(vl.dataProvider().addFeatures([f]))
+
+        # no annotation yet...
+        checker = QgsLayoutChecker('composermap_annotation_empty', layout)
+        checker.setControlPathPrefix("composer_map")
+        result, message = checker.testLayout()
+        TestQgsLayoutMap.report += checker.report()
+        self.assertTrue(result, message)
+
+        annotation_layer = p.mainAnnotationLayer()
+        annotation_layer.setCrs(QgsCoordinateReferenceSystem(4326))
+        annotation_geom = QgsGeometry.fromRect(QgsRectangle(12, 30, 18, 33))
+        annotation = QgsAnnotationPolygonItem(annotation_geom.constGet().clone())
+        sym3 = QgsFillSymbol.createSimple({'color': '#ff0000', 'outline_style': 'no'})
+        annotation.setSymbol(sym3)
+        annotation_layer.addItem(annotation)
+
+        # annotation must be drawn above map layers
+        checker = QgsLayoutChecker('composermap_annotation_item', layout)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testLayout()
         TestQgsLayoutMap.report += checker.report()

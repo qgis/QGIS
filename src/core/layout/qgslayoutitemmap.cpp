@@ -33,6 +33,7 @@
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgsannotationlayer.h"
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -1467,6 +1468,10 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   {
     //set layers to render
     QList<QgsMapLayer *> layers = layersToRender( &expressionContext );
+
+    // render main annotation layer above all other layers
+    layers.insert( 0, mLayout->project()->mainAnnotationLayer() );
+
     jobMapSettings.setLayers( layers );
     jobMapSettings.setLayerStyleOverrides( layerStyleOverridesToRender( expressionContext ) );
   }
