@@ -907,6 +907,7 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
 
     // ensure user is sent to 'Text style' section to see notice
     mLabelingOptionsListWidget->setCurrentRow( 0 );
+    whileBlocking( mOptionsTab )->setCurrentIndex( 0 );
   }
   mFontLineHeightSpinBox->setValue( format.lineHeight() );
 
