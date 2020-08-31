@@ -1976,7 +1976,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     friend class QgsProviderRegistry;
 
     // Required by QGIS Server for switching the current project instance
-    friend class QgsConfigCache;
+    friend class QgsServer;
 
     friend class TestQgsProject;
 };
