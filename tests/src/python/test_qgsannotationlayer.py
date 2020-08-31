@@ -13,7 +13,8 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 import qgis  # NOQA
 
 from qgis.PyQt.QtCore import (QSize,
-                              QDir)
+                              QDir,
+                              QTemporaryDir)
 from qgis.PyQt.QtGui import (QImage,
                              QPainter,
                              QColor)
@@ -33,9 +34,8 @@ from qgis.core import (QgsMapSettings,
                        QgsAnnotationLayer,
                        QgsAnnotationLineItem,
                        QgsAnnotationMarkerItem,
-                       QgsPointXY,
                        QgsLineSymbol,
-                       QgsMarkerSymbol
+                       QgsMarkerSymbol,
                        )
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -170,6 +170,32 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         self.assertNotEqual(layer.items()[polygon_item_id], layer2.items()[polygon_item_id])
         self.assertIsInstance(layer2.items()[linestring_item_id], QgsAnnotationLineItem)
         self.assertIsInstance(layer2.items()[marker_item_id], QgsAnnotationMarkerItem)
+
+    def testProjectMainAnnotationLayer(self):
+        p = QgsProject()
+        self.assertIsNotNone(p.mainAnnotationLayer())
+
+        # add some items to project annotation layer
+        polygon_item_id = p.mainAnnotationLayer().addItem(QgsAnnotationPolygonItem(QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)]))))
+        linestring_item_id = p.mainAnnotationLayer().addItem(QgsAnnotationLineItem(QgsLineString([QgsPoint(11, 13), QgsPoint(12, 13), QgsPoint(12, 15)])))
+        marker_item_id = p.mainAnnotationLayer().addItem(QgsAnnotationMarkerItem(QgsPoint(12, 13)))
+
+        # save project to xml
+        tmpDir = QTemporaryDir()
+        tmpFile = "{}/project.qgs".format(tmpDir.path())
+        self.assertTrue(p.write(tmpFile))
+
+        # test that annotation layer is cleared with project
+        p.clear()
+        self.assertEqual(len(p.mainAnnotationLayer().items()), 0)
+
+        # check that main annotation layer is restored on project read
+        p2 = QgsProject()
+        self.assertTrue(p2.read(tmpFile))
+        self.assertEqual(len(p2.mainAnnotationLayer().items()), 3)
+        self.assertIsInstance(p2.mainAnnotationLayer().items()[polygon_item_id], QgsAnnotationPolygonItem)
+        self.assertIsInstance(p2.mainAnnotationLayer().items()[linestring_item_id], QgsAnnotationLineItem)
+        self.assertIsInstance(p2.mainAnnotationLayer().items()[marker_item_id], QgsAnnotationMarkerItem)
 
     def testRenderLayer(self):
         layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))

@@ -433,6 +433,8 @@ QgsProject::QgsProject( QObject *parent )
   Q_NOWARN_DEPRECATED_PUSH
   connect( mViewSettings, &QgsProjectViewSettings::mapScalesChanged, this, &QgsProject::mapScalesChanged );
   Q_NOWARN_DEPRECATED_POP
+
+  mMainAnnotationLayer = new QgsAnnotationLayer( QObject::tr( "Annotations" ), QgsAnnotationLayer::LayerOptions( mTransformContext ) );
 }
 
 
@@ -761,6 +763,7 @@ void QgsProject::setTransformContext( const QgsCoordinateTransformContext &conte
   mTransformContext = context;
   mProjectScope.reset();
 
+  mMainAnnotationLayer->setTransformContext( context );
   for ( auto &layer : mLayerStore.get()->mapLayers() )
   {
     layer->setTransformContext( context );
@@ -850,6 +853,8 @@ void QgsProject::clear()
 
   removeAllMapLayers();
   mRootGroup->clear();
+  if ( mMainAnnotationLayer )
+    mMainAnnotationLayer->reset();
 
   setDirty( false );
   emit homePathChanged();
@@ -1543,6 +1548,9 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
     mBadLayerHandler->handleBadLayers( brokenNodes );
   }
 
+  mMainAnnotationLayer->readLayerXml( doc->documentElement().firstChildElement( QStringLiteral( "main-annotation-layer" ) ), context );
+  mMainAnnotationLayer->setTransformContext( mTransformContext );
+
   // Resolve references to other layers
   // Needs to be done here once all dependent layers are loaded
   profile.switchTask( tr( "Resolving layer references" ) );
@@ -2209,6 +2217,10 @@ bool QgsProject::writeProjectFile( const QString &filename )
 
   // within top level node save list of layers
   const QMap<QString, QgsMapLayer *> &layers = mapLayers();
+
+  QDomElement annotationLayerNode = doc->createElement( QStringLiteral( "main-annotation-layer" ) );
+  mMainAnnotationLayer->writeLayerXml( annotationLayerNode, *doc, context );
+  qgisNode.appendChild( annotationLayerNode );
 
   // Iterate over layers in zOrder
   // Call writeXml() on each
@@ -3376,6 +3388,11 @@ QgsMapLayer *QgsProject::takeMapLayer( QgsMapLayer *layer )
 {
   mProjectScope.reset();
   return mLayerStore->takeMapLayer( layer );
+}
+
+QgsAnnotationLayer *QgsProject::mainAnnotationLayer()
+{
+  return mMainAnnotationLayer;
 }
 
 void QgsProject::removeAllMapLayers()
