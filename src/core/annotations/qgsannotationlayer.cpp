@@ -163,9 +163,9 @@ bool QgsAnnotationLayer::writeXml( QDomNode &layer_node, QDomDocument &doc, cons
   // first get the layer element so that we can append the type attribute
   QDomElement mapLayerNode = layer_node.toElement();
 
-  if ( mapLayerNode.isNull() || ( QLatin1String( "maplayer" ) != mapLayerNode.nodeName() ) )
+  if ( mapLayerNode.isNull() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "can't find <maplayer>" ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "can't find maplayer node" ), 2 );
     return false;
   }
 
