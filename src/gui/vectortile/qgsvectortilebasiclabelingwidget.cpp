@@ -371,7 +371,14 @@ void QgsVectorTileBasicLabelingWidget::editStyleAtIndex( const QModelIndex &inde
   }
   else
   {
-    // TODO: implement when adding support for vector tile layer properties dialog
+    QgsLabelSettingsDialog dlg( labelSettings, vectorLayer, mMapCanvas, this, labelSettings.layerType );
+    if ( dlg.exec() )
+    {
+      QgsVectorTileBasicLabelingStyle style = mLabeling->style( index.row() );
+      style.setLabelSettings( dlg.settings() );
+      mLabeling->setStyle( index.row(), style );
+      emit widgetChanged();
+    }
   }
 }
 
