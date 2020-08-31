@@ -860,7 +860,7 @@ class TestQgsProject(unittest.TestCase):
             zip_content = BytesIO(codecs.decode(f.GetFieldAsBinary(2), 'hex'))
             z = ZipFile(zip_content)
             qgs = z.read(z.filelist[0])
-            self.assertEqual(re.findall(b'<datasource>(.*)?</datasource>', qgs)[0],
+            self.assertEqual(re.findall(b'<datasource>(.*)?</datasource>', qgs)[1],
                              b'./relative_paths_gh30387.gpkg|layername=some_data')
 
         with TemporaryDirectory() as d:
