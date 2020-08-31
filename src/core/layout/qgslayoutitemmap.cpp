@@ -1219,6 +1219,14 @@ QgsLayoutItem::ExportLayerDetail QgsLayoutItemMap::exportLayerDetails() const
               else
                 detail.name = QStringLiteral( "%1: %2" ).arg( displayName(), layer->name() );
             }
+            else if ( mLayout->project()->mainAnnotationLayer()->id() == detail.mapLayerId )
+            {
+              // master annotation layer
+              if ( !detail.mapTheme.isEmpty() )
+                detail.name = QStringLiteral( "%1 (%2): %3" ).arg( displayName(), detail.mapTheme, tr( "Annotations" ) );
+              else
+                detail.name = QStringLiteral( "%1: %2" ).arg( displayName(), tr( "Annotations" ) );
+            }
             else
             {
               // might be an item based layer

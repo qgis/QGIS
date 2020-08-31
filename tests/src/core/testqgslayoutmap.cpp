@@ -35,6 +35,8 @@
 #include "qgsvectorlayerlabeling.h"
 #include "qgstemporalrangeobject.h"
 #include "qgsfontutils.h"
+#include "qgsannotationlayer.h"
+#include "qgsannotationmarkeritem.h"
 
 #include <QObject>
 #include "qgstest.h"
@@ -1842,6 +1844,63 @@ void TestQgsLayoutMap::testLayeredExportLabelsByLayer()
   QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
   QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
   QVERIFY( map->nextExportPart() );
+  // labels
+  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1: points (Labels)" ) );
+  QCOMPARE( map->exportLayerDetails().mapLayerId, pointsLayer->id() );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  QVERIFY( map->nextExportPart() );
+  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1: lines (Labels)" ) );
+  QCOMPARE( map->exportLayerDetails().mapLayerId, linesLayer->id() );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  QVERIFY( map->nextExportPart() );
+  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1: Frame" ) );
+  QVERIFY( map->exportLayerDetails().mapLayerId.isEmpty() );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+
+  // main annotation layer for project has content, so should be included too
+  p.mainAnnotationLayer()->addItem( new QgsAnnotationMarkerItem( QgsPoint( 1, 2 ) ) );
+
+  map->startLayeredExport();
+  QVERIFY( map->nextExportPart() );
+  map->createStagedRenderJob( map->extent(), QSize( 512, 512 ), 72 );
+  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1: points" ) );
+  QCOMPARE( map->exportLayerDetails().mapLayerId, pointsLayer->id() );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  QVERIFY( map->nextExportPart() );
+  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1: lines" ) );
+  QCOMPARE( map->exportLayerDetails().mapLayerId, linesLayer->id() );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  QVERIFY( map->nextExportPart() );
+  // annotations
+  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1: Annotations" ) );
+  QCOMPARE( map->exportLayerDetails().mapLayerId, p.mainAnnotationLayer()->id() );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  QVERIFY( map->nextExportPart() );
+
   // labels
   QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1: points (Labels)" ) );
   QCOMPARE( map->exportLayerDetails().mapLayerId, pointsLayer->id() );
