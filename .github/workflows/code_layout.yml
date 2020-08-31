@@ -125,13 +125,13 @@ jobs:
           sudo apt install -y \
               expect \
               silversearcher-ag
-      - uses: jitterbit/get-changed-files@v1
+      - uses: trilom/file-changes-action@v1.2.4
         id: changed_files
         with:
-          format: space-delimited
-          token: ${{ secrets.GITHUB_TOKEN }}
+          output: ' '
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
       - name: Spell Test
-        run: ./scripts/spell_check/check_spelling.sh -r ${{ steps.changed_files.outputs.added_modified }}
+        run: ./scripts/spell_check/check_spelling.sh -r ${{ steps.changed_files.outputs.files_modified }} ${{ steps.changed_files.outputs.files_added }}
     
   sip_check:
     runs-on: ubuntu-latest
