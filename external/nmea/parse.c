@@ -282,6 +282,7 @@ int nmea_parse_GPGST( const char *buff, int buff_sz, nmeaGPGST *pack )
   memset( pack, 0, sizeof( nmeaGPGST ) );
 
   nmea_trace_buff( buff, buff_sz );
+
   char type;
 
   if ( 9 != nmea_scanf( buff, buff_sz,

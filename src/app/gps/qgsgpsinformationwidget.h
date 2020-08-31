@@ -78,7 +78,7 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     void logNmeaSentence( const QString &nmeaString ); // added to handle 'raw' data
     void updateCloseFeatureButton( QgsMapLayer *lyr );
     void layerEditStateChanged();
-    //   void setTrackColor(); // no longer used
+//   void setTrackColor(); // no longer used
     void trackColorChanged( const QColor &color );
     void mSpinTrackWidth_valueChanged( int value );
     void mBtnPosition_clicked();
@@ -90,7 +90,7 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     void mBtnAddVertex_clicked();
     void mBtnCloseFeature_clicked();
     void mBtnResetFeature_clicked();
-    // not needed    void on_mCbxAutoAddVertices_toggled( bool flag );
+// not needed    void on_mCbxAutoAddVertices_toggled( bool flag );
     void mBtnLogFile_clicked();
 
     void connected( QgsGpsConnection * );
@@ -142,7 +142,7 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     QgsCoordinateTransform mCanvasToWgs84Transform;
     QgsDistanceArea mDistanceCalculator;
 
-    // not used    QPointF gpsToPixelPosition( const QgsPoint& point );
+// not used    QPointF gpsToPixelPosition( const QgsPoint& point );
     QgsRubberBand *mRubberBand = nullptr;
     QgsPointXY mLastGpsPosition;
     QgsPointXY mSecondLastGpsPosition;
