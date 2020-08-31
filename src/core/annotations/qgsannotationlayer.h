@@ -97,6 +97,11 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     void clear();
 
     /**
+     * Returns TRUE if the annotation layer is empty and contains no annotations.
+     */
+    bool isEmpty() const;
+
+    /**
      * Returns a map of items contained in the layer, by unique item ID.
      *
      * This map contains references to items owned by the layer, and ownership of these remains

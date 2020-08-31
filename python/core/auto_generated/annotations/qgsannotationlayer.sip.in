@@ -74,6 +74,11 @@ Removes (and deletes) the item with matching ``id``.
 Removes all items from the layer.
 %End
 
+    bool isEmpty() const;
+%Docstring
+Returns ``True`` if the annotation layer is empty and contains no annotations.
+%End
+
     QMap<QString, QgsAnnotationItem *> items() const;
 %Docstring
 Returns a map of items contained in the layer, by unique item ID.
