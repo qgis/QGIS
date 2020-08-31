@@ -563,7 +563,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     bool mShowLabels = false; //!< Whether to display labels on terrain tiles
     QList<QgsPointLightSettings> mPointLights;  //!< List of point lights defined for the scene
     QList<QgsDirectionalLightSettings> mDirectionalLights;  //!< List of directional lights defined for the scene
-    float mFieldOfView = 45.0f; //<! Camera lens field of view value
+    float mFieldOfView = 45.0f; //!< Camera lens field of view value
     QList<QgsMapLayerRef> mLayers;   //!< Layers to be rendered
     QList<QgsMapLayerRef> mTerrainLayers;   //!< Terrain layers to be rendered
     QList<QgsAbstract3DRenderer *> mRenderers;  //!< Extra stuff to render as 3D object
