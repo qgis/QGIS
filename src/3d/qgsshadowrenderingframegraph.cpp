@@ -25,7 +25,6 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructTexturesPrev
 {
   mPreviewLayerFilter = new Qt3DRender::QLayerFilter;
   mPreviewLayerFilter->addLayer( mPreviewLayer );
-//  mPreviewLayerFilter->setFilterMode( Qt3DRender::QLayerFilter::FilterMode::AcceptAnyMatchingLayers );
 
   mPreviewRenderStateSet = new Qt3DRender::QRenderStateSet( mPreviewLayerFilter );
   mPreviewDepthTest = new Qt3DRender::QDepthTest;
@@ -102,8 +101,6 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructShadowRender
   mShadowMapTexture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
   mShadowMapTexture->wrapMode()->setX( Qt3DRender::QTextureWrapMode::ClampToEdge );
   mShadowMapTexture->wrapMode()->setY( Qt3DRender::QTextureWrapMode::ClampToEdge );
-  mShadowMapTexture->setComparisonFunction( Qt3DRender::QTexture2D::ComparisonFunction::CompareGreaterEqual );
-  mShadowMapTexture->setComparisonMode( Qt3DRender::QTexture2D::ComparisonMode::CompareRefToTexture );
 
   mShadowRenderTarget = new Qt3DRender::QRenderTarget;
   mShadowRenderTargetOutput = new Qt3DRender::QRenderTargetOutput;
@@ -118,15 +115,11 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructShadowRender
   mShadowClearBuffers ->setBuffers( Qt3DRender::QClearBuffers::BufferType::ColorDepthBuffer );
 
   mShadowRenderStateSet = new Qt3DRender::QRenderStateSet( mShadowClearBuffers );
-  mShadowPolygonOffset = new Qt3DRender::QPolygonOffset;
-  mShadowPolygonOffset->setDepthSteps( 1.0f );
-  mShadowPolygonOffset->setScaleFactor( 2.0f );
-  mShadowRenderStateSet->addRenderState( mShadowPolygonOffset );
   mShadowDepthTest = new Qt3DRender::QDepthTest;
   mShadowDepthTest->setDepthFunction( Qt3DRender::QDepthTest::Less );
   mShadowRenderStateSet->addRenderState( mShadowDepthTest );
   mShadowCullFace = new Qt3DRender::QCullFace;
-  mShadowCullFace->setMode( Qt3DRender::QCullFace::NoCulling );
+  mShadowCullFace->setMode( Qt3DRender::QCullFace::Front );
   mShadowRenderStateSet->addRenderState( mShadowCullFace );
 
   return mShadowSceneEntitiesFilter;
@@ -321,6 +314,12 @@ void QgsShadowRenderingFrameGraph::setShadowRenderingEnabled( bool enabled )
 {
   mShadowRenderingEnabled = enabled;
   mPostprocessingEntity->setShadowRenderingEnabled( mShadowRenderingEnabled );
+}
+
+void QgsShadowRenderingFrameGraph::setShadowBias( float shadowBias )
+{
+  mShadowBias = shadowBias;
+  mPostprocessingEntity->setShadowBias( mShadowBias );
 }
 
 void QgsShadowRenderingFrameGraph::setFrustumCullingEnabled( bool enabled )

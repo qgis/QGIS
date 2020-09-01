@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
   qgspostprocessingentity.h
   --------------------------------------
   Date                 : August 2020
@@ -42,7 +42,7 @@ class QgsPostprocessingEntity : public Qt3DCore::QEntity
     //! Sets whether shadow rendering is enabled
     void setShadowRenderingEnabled( bool enabled );
     //! Sets the shadow bias value
-    void setShadowBias( float shadowBias );
+    void setShadowBias(float shadowBias);
   private:
     Qt3DRender::QMaterial *mMaterial = nullptr;
     Qt3DRender::QEffect *mEffect = nullptr;

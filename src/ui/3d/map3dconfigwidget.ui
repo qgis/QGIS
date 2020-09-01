@@ -40,7 +40,7 @@
         <x>0</x>
         <y>0</y>
         <width>541</width>
-        <height>762</height>
+        <height>794</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_4">
@@ -266,10 +266,24 @@
        </item>
        <item row="7" column="0">
         <layout class="QGridLayout" name="gridLayout_2">
+         <item row="3" column="1">
+          <widget class="QLabel" name="labelZoomLevels">
+           <property name="text">
+            <string>0</string>
+           </property>
+          </widget>
+         </item>
          <item row="1" column="0">
           <widget class="QLabel" name="label_5">
            <property name="text">
             <string>Max. screen error</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>Map tile resolution</string>
            </property>
           </widget>
          </item>
@@ -280,13 +294,6 @@
            </property>
            <property name="maximum">
             <number>4096</number>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_4">
-           <property name="text">
-            <string>Map tile resolution</string>
            </property>
           </widget>
          </item>
@@ -306,6 +313,16 @@
            </property>
            <property name="value">
             <double>1.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QDoubleSpinBox" name="shadowsMaximuRenderingDistance">
+           <property name="minimum">
+            <double>10.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>9999999999.000000000000000</double>
            </property>
           </widget>
          </item>
@@ -333,13 +350,6 @@
            </property>
           </widget>
          </item>
-         <item row="3" column="1">
-          <widget class="QLabel" name="labelZoomLevels">
-           <property name="text">
-            <string>0</string>
-           </property>
-          </widget>
-         </item>
          <item row="4" column="0">
           <widget class="QLabel" name="label">
            <property name="text">
@@ -347,13 +357,26 @@
            </property>
           </widget>
          </item>
-         <item row="4" column="1">
-          <widget class="QDoubleSpinBox" name="shadowsMaximuRenderingDistance">
-           <property name="minimum">
-            <double>10.000000000000000</double>
+         <item row="5" column="0">
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>Shadow bias</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1">
+          <widget class="QDoubleSpinBox" name="shadowBiasSpinBox">
+           <property name="decimals">
+            <number>10</number>
            </property>
            <property name="maximum">
-            <double>9999999999.000000000000000</double>
+            <double>1.000000000000000</double>
+           </property>
+           <property name="stepType">
+            <enum>QAbstractSpinBox::AdaptiveDecimalStepType</enum>
+           </property>
+           <property name="value">
+            <double>0.000010000000000</double>
            </property>
           </widget>
          </item>

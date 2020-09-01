@@ -129,6 +129,9 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsShadowRenderingFrameGraph *
   mRenderShadowsParameter = new Qt3DRender::QParameter( "renderShadows", QVariant::fromValue( 0 ) );
   mMaterial->addParameter( mRenderShadowsParameter );
 
+  mShadowBiasParameter = new Qt3DRender::QParameter( "shadowBias", QVariant::fromValue( 0.00001f ) );
+  mMaterial->addParameter( mShadowBiasParameter );
+
   mLightPosition = new Qt3DRender::QParameter( "lightPosition", QVariant::fromValue( QVector3D() ) );
   mLightDirection = new Qt3DRender::QParameter( "lightDirection", QVariant::fromValue( QVector3D() ) );
 
@@ -176,4 +179,9 @@ void QgsPostprocessingEntity::setupDirectionalLight( QVector3D position, QVector
 void QgsPostprocessingEntity::setShadowRenderingEnabled( bool enabled )
 {
   mRenderShadowsParameter->setValue( QVariant::fromValue( enabled ? 1 : 0 ) );
+}
+
+void QgsPostprocessingEntity::setShadowBias( float shadowBias )
+{
+  mShadowBiasParameter->setValue( QVariant::fromValue( shadowBias ) );
 }

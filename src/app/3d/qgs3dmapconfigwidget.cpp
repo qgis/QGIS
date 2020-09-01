@@ -107,6 +107,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   chkShowCameraViewCenter->setChecked( mMap->showCameraViewCenter() );
   chkShowLightSourceOrigins->setChecked( mMap->showLightSourceOrigins() );
   shadowsMaximuRenderingDistance->setValue( mMap->maximumShadowRenderingDistance() );
+  shadowBiasSpinBox->setValue( mMap->shadowBias() );
 
   groupTerrainShading->setChecked( mMap->isTerrainShadingEnabled() );
   widgetTerrainMaterial->setTechnique( QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture );
@@ -121,6 +122,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   connect( spinMapResolution, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &Qgs3DMapConfigWidget::updateMaxZoomLevel );
   connect( spinGroundError, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DMapConfigWidget::updateMaxZoomLevel );
   connect( shadowsMaximuRenderingDistance, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DMapConfigWidget::updateMaximumShadowRenderingDistance );
+  connect( shadowBiasSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DMapConfigWidget::updateShadowBias );
 
   groupMeshTerrainShading->layout()->addWidget( mMeshSymbolWidget );
 
@@ -328,4 +330,9 @@ void Qgs3DMapConfigWidget::updateMaxZoomLevel()
 void Qgs3DMapConfigWidget::updateMaximumShadowRenderingDistance( double distance )
 {
   mMap->setMaximumShadowRenderingDistance( distance );
+}
+
+void Qgs3DMapConfigWidget::updateShadowBias( double shadowBias )
+{
+  mMap->setShadowBias( shadowBias );
 }

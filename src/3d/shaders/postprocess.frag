@@ -26,6 +26,7 @@ uniform float farPlane;
 uniform float nearPlane;
 
 uniform int renderShadows;
+uniform float shadowBias;
 
 in vec2 texCoord;
 
@@ -60,7 +61,6 @@ float LinearizeDepth(float depth)
 
 float CalcShadowFactor(vec4 LightSpacePos)
 {
-  float bias = 0.000005f;
   vec2 texelSize = 1.0 / textureSize(shadowTexture, 0);
   vec3 ProjCoords = LightSpacePos.xyz / LightSpacePos.w;
   vec2 UVCoords;
@@ -76,7 +76,7 @@ float CalcShadowFactor(vec4 LightSpacePos)
     for(int y = -k; y <= k; ++y)
     {
       float pcfDepth = texture(shadowTexture, UVCoords + vec2(x, y) * texelSize).r;
-      shadow += z - bias > pcfDepth ? 0.5 : 1.0;
+      shadow += z - shadowBias >= pcfDepth ? 0.5 : 1.0;
     }
   }
 

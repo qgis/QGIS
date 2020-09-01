@@ -82,14 +82,19 @@ class QgsShadowRenderingFrameGraph
     Qt3DCore::QEntity *rootEntity() { return mRootEntity; }
 
     //! Returns whether frustum culling is enabled
-    bool frustumCullingEnabled() { return mFrustumCullingEnabled; }
+    bool frustumCullingEnabled() const { return mFrustumCullingEnabled; }
     //! Sets whether frustum culling is enabled
     void setFrustumCullingEnabled( bool enabled );
 
     //! Returns whether shadow rendering is enabled
-    bool shadowRenderingEnabled() { return mShadowRenderingEnabled; }
+    bool shadowRenderingEnabled() const { return mShadowRenderingEnabled; }
     //! Sets whether the shadow rendering is enabled
     void setShadowRenderingEnabled( bool enabled );
+
+    //! Returns the shadow bias value
+    float shadowBias() const { return mShadowBias; }
+    //! Sets the shadow bias value
+    void setShadowBias( float shadowBias );
 
     //! Sets the clear color of the scene (background color)
     void setClearColor( const QColor &clearColor );
@@ -131,6 +136,7 @@ class QgsShadowRenderingFrameGraph
     Qt3DRender::QCamera *mLightCamera = nullptr;
     Qt3DRender::QCameraSelector *mLightCameraSelector = nullptr;
     bool mShadowRenderingEnabled = false;
+    float mShadowBias = 0.00001;
     Qt3DRender::QLayerFilter *mShadowSceneEntitiesFilter = nullptr;
     Qt3DRender::QRenderStateSet *mShadowRenderStateSet = nullptr;
     Qt3DRender::QPolygonOffset *mShadowPolygonOffset = nullptr;

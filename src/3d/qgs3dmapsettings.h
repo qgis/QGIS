@@ -380,6 +380,13 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     float maximumShadowRenderingDistance() const { return mMaximumShadowRenderingDistance; }
 
     /**
+     * Returns the shadow bias used to correct the numerical imprecision of shadows (for the depth test)
+     * This helps with reducing the self shadowing artifact
+     * \since QGIS 3.16
+     */
+    float shadowBias() const { return mShadowBias; }
+
+    /**
      * Sets list of point lights defined in the scene
      * \since QGIS 3.6
      */
@@ -397,6 +404,13 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * \since QGIS 3.16
      */
     void setMaximumShadowRenderingDistance( float distance );
+
+    /**
+     * Sets the shadow bias value
+     * Tweak this to reduce artifacts like self shadowing
+     * \since QGIS 3.16
+     */
+    void setShadowBias( float shadowBias );
 
     /**
      * Returns the camera lens' field of view
@@ -576,7 +590,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     bool mShowLabels = false; //!< Whether to display labels on terrain tiles
     QList<QgsPointLightSettings> mPointLights;  //!< List of point lights defined for the scene
     QList<QgsDirectionalLightSettings> mDirectionalLights;  //!< List of directional lights defined for the scene
-    float mMaximumShadowRenderingDistance = 500.0f;
+    float mMaximumShadowRenderingDistance = 500.0f; //!< Maximum shadow rendering distance
+    float mShadowBias = 0.00001f; //!< Shadow bias value
     float mFieldOfView = 45.0f; //<! Camera lens field of view value
     QList<QgsMapLayerRef> mLayers;   //!< Layers to be rendered
     QList<QgsMapLayerRef> mTerrainLayers;   //!< Terrain layers to be rendered

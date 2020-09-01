@@ -43,6 +43,7 @@ class Qgs3DMapConfigWidget : public QWidget, private Ui::Map3DConfigWidget
     void onTerrainLayerChanged();
     void updateMaxZoomLevel();
     void updateMaximumShadowRenderingDistance( double distance );
+    void updateShadowBias( double shadowBias );
 
   private:
     Qgs3DMapSettings *mMap = nullptr;

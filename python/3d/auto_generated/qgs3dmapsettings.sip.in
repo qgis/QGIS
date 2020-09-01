@@ -436,6 +436,14 @@ Returns the maximum shadows rendering distance
 .. versionadded:: 3.16
 %End
 
+    float shadowBias() const;
+%Docstring
+Returns the shadow bias used to correct the numerical imprecision of shadows (for the depth test)
+This helps with reducing the self shadowing artifact
+
+.. versionadded:: 3.16
+%End
+
     void setPointLights( const QList<QgsPointLightSettings> &pointLights );
 %Docstring
 Sets list of point lights defined in the scene
@@ -454,6 +462,14 @@ Sets list of directional lights defined in the scene
 %Docstring
 Sets the maximum shadow rendering distance accounted for when rendering shadows
 Tweak this to reduce artifacts while looking up to the sky with the camera
+
+.. versionadded:: 3.16
+%End
+
+    void setShadowBias( float shadowBias );
+%Docstring
+Sets the shadow bias value
+Tweak this to reduce artifacts like self shadowing
 
 .. versionadded:: 3.16
 %End
