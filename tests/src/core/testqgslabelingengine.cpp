@@ -80,6 +80,7 @@ class TestQgsLabelingEngine : public QObject
     void testMapUnitLetterSpacing();
     void testMapUnitWordSpacing();
     void testReferencedFields();
+    void testShowAllLabelsWhenALabelHasNoCandidates();
 
   private:
     QgsVectorLayer *vl = nullptr;
@@ -2688,6 +2689,68 @@ void TestQgsLabelingEngine::testReferencedFields()
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Size, QgsProperty::fromField( QStringLiteral( "my_dd_size" ) ) );
 
   QCOMPARE( settings.referencedFields( QgsRenderContext() ), QSet<QString>() << QStringLiteral( "hello" ) << QStringLiteral( "world" ) << QStringLiteral( "my_dd_size" ) );
+}
+
+void TestQgsLabelingEngine::testShowAllLabelsWhenALabelHasNoCandidates()
+{
+  // test that showing all labels when a label has no candidate placements doesn't
+  // result in a crash
+  // refs https://github.com/qgis/QGIS/issues/38093
+
+  QgsPalLayerSettings settings;
+  setDefaultLabelParams( settings );
+
+  QgsTextFormat format = settings.format();
+  format.setSize( 20 );
+  format.setColor( QColor( 0, 0, 0 ) );
+  settings.setFormat( format );
+
+  settings.fieldName = QStringLiteral( "'xxxxxxxxxxxxxx'" );
+  settings.isExpression = true;
+  settings.placement = QgsPalLayerSettings::Line;
+  settings.placementFlags = QgsPalLayerSettings::OnLine;
+  settings.obstacleSettings().setFactor( 10 );
+  settings.overrunDistance = 50;
+
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:23700&field=l:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  vl2->setRenderer( new QgsNullSymbolRenderer() );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << QVariant() );
+
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString (-2446233 -5204828, -2342845 -5203825)" ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString (-2439207 -5198806, -2331302 -5197802)" ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  // make a fake render context
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  mapSettings.setDestinationCrs( vl2->crs() );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( QgsRectangle( -3328044.9, -5963176., -1127782.7, -4276844.3 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
+  engineSettings.setFlag( QgsLabelingEngineSettings::DrawLabelRectOnly, true );
+  engineSettings.setFlag( QgsLabelingEngineSettings::UseAllLabels, true );
+  engineSettings.setFlag( QgsLabelingEngineSettings::DrawUnplacedLabels, true );
+  // engineSettings.setFlag( QgsLabelingEngineSettings::DrawCandidates, true );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "show_all_labels_when_no_candidates" ), img, 20 ) );
 }
 
 QGSTEST_MAIN( TestQgsLabelingEngine )
