@@ -67,6 +67,8 @@
 #include "qgsgeometrycollection.h"
 #include "callouts/qgscallout.h"
 #include "callouts/qgscalloutsregistry.h"
+#include "qgsvectortilelayer.h"
+#include "qgsvectortilebasiclabeling.h"
 #include <QMessageBox>
 
 using namespace pal;
@@ -3533,9 +3535,34 @@ void QgsPalLayerSettings::parseDropShadow( QgsRenderContext &context )
 // -------------
 
 
-bool QgsPalLabeling::staticWillUseLayer( QgsVectorLayer *layer )
+bool QgsPalLabeling::staticWillUseLayer( const QgsMapLayer *layer )
 {
-  return layer->labelsEnabled() || layer->diagramsEnabled();
+  switch ( layer->type() )
+  {
+    case QgsMapLayerType::VectorLayer:
+    {
+      const QgsVectorLayer *vl = qobject_cast< const QgsVectorLayer * >( layer );
+      return vl->labelsEnabled() || vl->diagramsEnabled();
+    }
+
+    case QgsMapLayerType::VectorTileLayer:
+    {
+      const QgsVectorTileLayer *vl = qobject_cast< const QgsVectorTileLayer * >( layer );
+      if ( !vl->labeling() )
+        return false;
+
+      if ( const QgsVectorTileBasicLabeling *labeling = dynamic_cast< const QgsVectorTileBasicLabeling *>( vl->labeling() ) )
+        return !labeling->styles().empty();
+
+      return false;
+    }
+
+    case QgsMapLayerType::RasterLayer:
+    case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::MeshLayer:
+      return false;
+  }
+  return false;
 }
 
 

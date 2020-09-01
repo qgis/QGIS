@@ -31,6 +31,7 @@
 #include "qgspallabeling.h"
 #include "qgsvectorlayerrenderer.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectortilelayer.h"
 #include "qgsexception.h"
 #include "qgslabelingengine.h"
 #include "qgsmaplayerlistutils.h"
@@ -94,16 +95,38 @@ bool QgsMapRendererJob::prepareLabelCache() const
   // calculate which layers will be labeled
   QSet< QgsMapLayer * > labeledLayers;
   const QList<QgsMapLayer *> layers = mSettings.layers();
-  for ( const QgsMapLayer *ml : layers )
+  for ( QgsMapLayer *ml : layers )
   {
-    QgsVectorLayer *vl = const_cast< QgsVectorLayer * >( qobject_cast<const QgsVectorLayer *>( ml ) );
-    if ( vl && QgsPalLabeling::staticWillUseLayer( vl ) )
-      labeledLayers << vl;
-    if ( vl && vl->labelsEnabled() && vl->labeling()->requiresAdvancedEffects() )
+    if ( QgsPalLabeling::staticWillUseLayer( ml ) )
+      labeledLayers << ml;
+
+    switch ( ml->type() )
     {
-      canCache = false;
-      break;
+      case QgsMapLayerType::VectorLayer:
+      {
+        QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( ml );
+        if ( vl->labelsEnabled() && vl->labeling()->requiresAdvancedEffects() )
+        {
+          canCache = false;
+        }
+        break;
+      }
+
+      case QgsMapLayerType::VectorTileLayer:
+      {
+        // TODO -- add detection of advanced labeling effects for vector tile layers
+        break;
+      }
+
+      case QgsMapLayerType::RasterLayer:
+      case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::MeshLayer:
+        break;
     }
+
+    if ( !canCache )
+      break;
+
   }
 
   if ( mCache && mCache->hasCacheImage( LABEL_CACHE_ID ) )
@@ -327,11 +350,10 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
 
     // Force render of layers that are being edited
     // or if there's a labeling engine that needs the layer to register features
-    if ( mCache && vl )
+    if ( mCache )
     {
-      bool requiresLabeling = false;
-      requiresLabeling = ( labelingEngine2 && QgsPalLabeling::staticWillUseLayer( vl ) ) && requiresLabelRedraw;
-      if ( vl->isEditable() || requiresLabeling )
+      const bool requiresLabeling = ( labelingEngine2 && QgsPalLabeling::staticWillUseLayer( ml ) ) && requiresLabelRedraw;
+      if ( ( vl && vl->isEditable() ) || requiresLabeling )
       {
         mCache->clearCacheImage( ml->id() );
       }
