@@ -813,96 +813,112 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     /**
      * Enable/disable ticks rotation for rotated or reprojected grids.
      * \see rotatedTicksEnabled()
+     * \since QGIS 3.16
      */
     void setRotatedTicksEnabled( const bool state ) { mRotatedTicksEnabled = state; }
 
     /**
      * Gets whether ticks rotation for rotated or reprojected grids is enabled.
      * \see setRotatedTicksEnabled()
+     * \since QGIS 3.16
      */
     double rotatedTicksEnabled() const { return mRotatedTicksEnabled; }
 
     /**
-    * Sets the tick length calculation mode.
-    * \see rotatedTicksLengthMode()
-    */
+     * Sets the tick length calculation mode.
+     * \see rotatedTicksLengthMode()
+     * \since QGIS 3.16
+     */
     void setRotatedTicksLengthMode( const TickLengthMode mode ) { mRotatedTicksLengthMode = mode; }
 
     /**
      * Returns the grid frame style.
      * \see setRotatedTicksLengthMode()
+     * \since QGIS 3.16
      */
     TickLengthMode rotatedTicksLengthMode() const { return mRotatedTicksLengthMode; }
 
     /**
      * Sets the \a minimum angle (in degrees) below which ticks are not drawn.
      * \see rotatedTicksMinimumAngle()
+     * \since QGIS 3.16
      */
     void setRotatedTicksMinimumAngle( const double angle ) { mRotatedTicksMinimumAngle = angle; }
 
     /**
      * Gets the \a minimum angle (in degrees) below which ticks are not drawn.
      * \see setRotatedTicksMinimumAngle()
+     * \since QGIS 3.16
      */
     double rotatedTicksMinimumAngle() const { return mRotatedTicksMinimumAngle; }
 
     /**
      * Sets the \a margin to corners (in canvas units) below which outwards facing ticks are not drawn.
      * \see rotatedTicksMarginToCorner()
+     * \since QGIS 3.16
      */
     void setRotatedTicksMarginToCorner( const double margin ) { mRotatedTicksMarginToCorner = margin; }
 
     /**
      * Gets the \a margin to corners (in canvas units) below which outwards facing ticks are not drawn.
      * \see setRotatedTicksMarginToCorner()
+     * \since QGIS 3.16
      */
     double rotatedTicksMarginToCorner() const { return mRotatedTicksMarginToCorner; }
 
     /**
      * Enable/disable annotations rotation for rotated or reprojected grids.
      * \see rotatedAnnotationsEnabled()
+     * \since QGIS 3.16
      */
     void setRotatedAnnotationsEnabled( const bool state ) { mRotatedAnnotationsEnabled = state; }
 
     /**
      * Gets whether annotations rotation for rotated or reprojected grids is enabled.
      * \see setRotatedAnnotationsEnabled()
+     * \since QGIS 3.16
      */
     double rotatedAnnotationsEnabled() const { return mRotatedAnnotationsEnabled; }
 
     /**
-    * Sets the annotation length calculation mode.
-    * \see rotatedAnnotationsLengthMode()
+     * Sets the annotation length calculation mode.
+     * \see rotatedAnnotationsLengthMode()
+     * \since QGIS 3.16
     */
     void setRotatedAnnotationsLengthMode( const TickLengthMode mode ) { mRotatedAnnotationsLengthMode = mode; }
 
     /**
      * Returns the grid frame style.
      * \see setRotatedAnnotationsLengthMode()
+     * \since QGIS 3.16
      */
     TickLengthMode rotatedAnnotationsLengthMode() const { return mRotatedAnnotationsLengthMode; }
 
     /**
      * Sets the \a minimum angle (in degrees) below which annotated are not drawn.
      * \see rotatedAnnotationsMinimumAngle()
+     * \since QGIS 3.16
      */
     void setRotatedAnnotationsMinimumAngle( const double angle ) { mRotatedAnnotationsMinimumAngle = angle; }
 
     /**
      * Gets the \a minimum angle (in degrees) below which annotated are not drawn.
      * \see setRotatedAnnotationsMinimumAngle()
+     * \since QGIS 3.16
      */
     double rotatedAnnotationsMinimumAngle() const { return mRotatedAnnotationsMinimumAngle; }
 
     /**
      * Sets the \a margin to corners (in canvas units) below which outwards facing ticks are not drawn.
      * \see rotatedAnnotationsMarginToCorner()
+     * \since QGIS 3.16
      */
     void setRotatedAnnotationsMarginToCorner( const double margin ) { mRotatedAnnotationsMarginToCorner = margin; }
 
     /**
      * Gets the \a margin to corners (in canvas units) below which outwards facing ticks are not drawn.
      * \see setRotatedAnnotationsMarginToCorner()
+     * \since QGIS 3.16
      */
     double rotatedAnnotationsMarginToCorner() const { return mRotatedAnnotationsMarginToCorner; }
 
