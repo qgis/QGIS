@@ -1205,7 +1205,10 @@ In a Terminal cd to the qgis source folder previously downloaded, then:
     cd ..
     mkdir build
     cd build
+```
 
+Create a bash file in build directory. Lets name it cmaker.bash
+```
     QGIS_DEPS_VERSION=0.3.0;\
     QT_VERSION=5.14.1;\
     PATH=/opt/QGIS/qgis-deps-${QGIS_DEPS_VERSION}/stage/bin:$PATH;\
@@ -1216,6 +1219,7 @@ In a Terminal cd to the qgis source folder previously downloaded, then:
       -DCMAKE_PREFIX_PATH=/opt/Qt/${QT_VERSION}/clang_64 \
       ../QGIS
 ```
+Now run cmaker.bash with sudo `sudo sh cmaker.bash`
 
 Note: Don't forget the `../QGIS` on the last line, which tells CMake to look for the source files.
 
@@ -1225,9 +1229,8 @@ Especially check Proj, GDAL, sqlite3 and Python paths.
 
 After the initial Terminal configure, you can use ccmake to make further changes:
 
-```bash
-    cd build
-    ccmake ..
+```bash    
+    sudo ccmake ../QGIS
 ```
 
 ## 5.6. Building
