@@ -1839,7 +1839,7 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap &at
       }
 
       if ( params.isEmpty() )
-        // Don't try to UPDATE an empty set of values (might happen if only GENERATED fields has changed
+        // Don't try to UPDATE an empty set of values (might happen if only GENERATED fields have changed
         continue;
 
       QVariantList args;
