@@ -45,6 +45,7 @@
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfileutils.h"
+#include "qgsannotationlayer.h"
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 
@@ -334,7 +335,13 @@ void QgsMapSaveDialog::applyMapSettings( QgsMapSettings &mapSettings )
   mapSettings.setBackgroundColor( mMapCanvas->canvasColor() );
   mapSettings.setRotation( mMapCanvas->rotation() );
   mapSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
-  mapSettings.setLayers( mMapCanvas->layers() );
+
+  QList< QgsMapLayer * > layers = mMapCanvas->layers();
+  if ( !QgsProject::instance()->mainAnnotationLayer()->isEmpty() )
+  {
+    layers.insert( 0, QgsProject::instance()->mainAnnotationLayer() );
+  }
+  mapSettings.setLayers( layers );
   mapSettings.setLabelingEngineSettings( mMapCanvas->mapSettings().labelingEngineSettings() );
   mapSettings.setTransformContext( QgsProject::instance()->transformContext() );
   mapSettings.setPathResolver( QgsProject::instance()->pathResolver() );
