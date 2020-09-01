@@ -746,9 +746,9 @@ class QgsPalLabeling
 %End
   public:
 
-    static bool staticWillUseLayer( QgsVectorLayer *layer );
+    static bool staticWillUseLayer( const QgsMapLayer *layer );
 %Docstring
-called to find out whether the layer is used for labeling
+Called to find out whether a specified ``layer`` is used for labeling.
 
 .. versionadded:: 2.4
 %End
