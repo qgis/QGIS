@@ -25,11 +25,11 @@ amount of time.
 
 Common use case:
 
-# prepare QgsMapSettings with rendering configuration (extent, layer, map size, ...)
-# create QgsMapRendererJob subclass with QgsMapSettings instance
-# connect to job's :py:func:`~finished` signal
-# call :py:func:`~start`. Map rendering will start in background, the function immediately returns
-# at some point, slot connected to :py:func:`~finished` signal is called, map rendering is done
+1. Prepare QgsMapSettings with rendering configuration (extent, layer, map size, ...)
+2. Create QgsMapRendererJob subclass with QgsMapSettings instance
+3. Connect to job's :py:func:`~finished` signal
+4. Call :py:func:`~start`. Map rendering will start in background, the function immediately returns
+5. At some point, slot connected to :py:func:`~finished` signal is called, map rendering is done
 
 It is possible to cancel the rendering job while it is active by calling :py:func:`~cancel` function.
 
