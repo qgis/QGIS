@@ -72,7 +72,6 @@ void QgsTinMeshCreationAlgorithm::initAlgorithm( const QVariantMap &configuratio
 
 bool QgsTinMeshCreationAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  Q_UNUSED( feedback );
   const QVariant layersVariant = parameters.value( parameterDefinition( QStringLiteral( "SOURCE_DATA" ) )->name() );
   if ( layersVariant.type() != QVariant::List )
     return false;
@@ -91,24 +90,27 @@ bool QgsTinMeshCreationAlgorithm::prepareAlgorithm( const QVariantMap &parameter
     if ( layer.type() != QVariant::Map )
       continue;
     const QVariantMap layerMap = layer.toMap();
-    const QString layerId = layerMap.value( QStringLiteral( "Id" ) ).toString();
+    const QString layerSource = layerMap.value( QStringLiteral( "source" ) ).toString();
     const QgsProcessingParameterTinInputLayers::Type type =
-      static_cast<QgsProcessingParameterTinInputLayers::Type>( layerMap.value( QStringLiteral( "Type" ) ).toInt() );
-    int attributeIndex = layerMap.value( QStringLiteral( "AttributeIndex" ) ).toInt();
+      static_cast<QgsProcessingParameterTinInputLayers::Type>( layerMap.value( QStringLiteral( "type" ) ).toInt() );
+    int attributeIndex = layerMap.value( QStringLiteral( "attributeIndex" ) ).toInt();
 
-    QgsVectorLayer *vectorLayer = context.project()->mapLayer<QgsVectorLayer *>( layerId );
-    if ( !vectorLayer || !vectorLayer->isValid() )
+    QgsProcessingFeatureSource *featureSource = QgsProcessingUtils::variantToSource( layerSource, context );
+
+    if ( !featureSource )
       continue;
 
-    const QgsCoordinateTransform transform( vectorLayer->crs(), destinationCrs, context.transformContext() );
-    int featureCount = vectorLayer->featureCount();
+    const QgsCoordinateTransform transform( featureSource->sourceCrs(), destinationCrs, context.transformContext() );
+    int featureCount = featureSource->featureCount();
     switch ( type )
     {
       case QgsProcessingParameterTinInputLayers::Vertices:
-        mVerticesLayer.append( {vectorLayer->getFeatures(), transform, attributeIndex, featureCount} );
+        mVerticesLayer.append( {featureSource->getFeatures(), transform, attributeIndex, featureCount} );
         break;
       case QgsProcessingParameterTinInputLayers::BreakLines:
-        mBreakLinesLayer.append( {vectorLayer->getFeatures(), transform, attributeIndex, featureCount} );
+        mBreakLinesLayer.append( {featureSource->getFeatures(), transform, attributeIndex, featureCount} );
+        break;
+      default:
         break;
     }
   }
@@ -123,7 +125,7 @@ QVariantMap QgsTinMeshCreationAlgorithm::processAlgorithm( const QVariantMap &pa
 {
   QgsMeshTriangulation triangulation;
   QgsCoordinateReferenceSystem destinationCrs = parameterAsCrs( parameters, QStringLiteral( "CRS_OUTPUT" ), context );
-  if ( !destinationCrs.isValid() )
+  if ( !destinationCrs.isValid() && context.project() )
     destinationCrs = context.project()->crs();
   triangulation.setCrs( destinationCrs );
 

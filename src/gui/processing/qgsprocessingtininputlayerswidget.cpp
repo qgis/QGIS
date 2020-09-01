@@ -42,9 +42,9 @@ QVariant QgsProcessingTinInputLayersWidget::value() const
   for ( const QgsProcessingParameterTinInputLayers::InputLayer &layer : layers )
   {
     QVariantMap layerMap;
-    layerMap[QStringLiteral( "Id" )] = layer.layerId;
-    layerMap[QStringLiteral( "Type" )] = layer.type;
-    layerMap[QStringLiteral( "AttributeIndex" )] = layer.attributeIndex;
+    layerMap[QStringLiteral( "source" )] = layer.source;
+    layerMap[QStringLiteral( "type" )] = layer.type;
+    layerMap[QStringLiteral( "attributeIndex" )] = layer.attributeIndex;
     list.append( layerMap );
   }
 
@@ -65,9 +65,9 @@ void QgsProcessingTinInputLayersWidget::setValue( const QVariant &value )
       continue;
     const QVariantMap layerMap = layerValue.toMap();
     QgsProcessingParameterTinInputLayers::InputLayer layer;
-    layer.layerId = layerMap.value( QStringLiteral( "Id" ) ).toString();
-    layer.type = static_cast<QgsProcessingParameterTinInputLayers::Type>( layerMap.value( QStringLiteral( "Type" ) ).toInt() );
-    layer.attributeIndex = layerMap.value( QStringLiteral( "AttributeIndex" ) ).toInt();
+    layer.source = layerMap.value( QStringLiteral( "source" ) ).toString();
+    layer.type = static_cast<QgsProcessingParameterTinInputLayers::Type>( layerMap.value( QStringLiteral( "type" ) ).toInt() );
+    layer.attributeIndex = layerMap.value( QStringLiteral( "attributeIndex" ) ).toInt();
     mInputLayersModel.addLayer( layer );
   }
 }
@@ -100,7 +100,7 @@ void QgsProcessingTinInputLayersWidget::onCurrentLayerAdded()
   if ( !currentLayer )
     return;
   QgsProcessingParameterTinInputLayers::InputLayer layer;
-  layer.layerId = mComboLayers->currentLayer()->id();
+  layer.source = mComboLayers->currentLayer()->id();
 
   switch ( currentLayer->geometryType() )
   {
@@ -161,7 +161,7 @@ QVariant QgsProcessingTinInputLayersWidget::QgsProcessingTinInputLayersModel::da
   {
     case Qt::DisplayRole:
     {
-      QgsVectorLayer *layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( mInputLayers.at( index.row() ).layerId );
+      QgsVectorLayer *layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( mInputLayers.at( index.row() ).source );
       switch ( index.column() )
       {
         case 0:
@@ -178,6 +178,9 @@ QVariant QgsProcessingTinInputLayersWidget::QgsProcessingTinInputLayersModel::da
               break;
             case QgsProcessingParameterTinInputLayers::BreakLines:
               return tr( "Break Lines" );
+              break;
+            default:
+              return QString();
               break;
           }
           break;
@@ -343,7 +346,7 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingTinInputLayersWidgetWr
   return new QgsProcessingTinInputLayersWidgetWrapper( parameter, type );
 }
 
-QWidget *QgsProcessingTinInputLayersWidgetWrapper::createWidget() SIP_FACTORY
+QWidget *QgsProcessingTinInputLayersWidgetWrapper::createWidget()
 {
   mWidget = new QgsProcessingTinInputLayersWidget( widgetContext().project() );
   connect( mWidget, &QgsProcessingTinInputLayersWidget::changed, this, [ = ]

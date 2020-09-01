@@ -106,7 +106,7 @@ class QgsProcessingTinInputLayersWidgetWrapper  : public QgsAbstractProcessingPa
   protected:
     QStringList compatibleParameterTypes() const override {return QStringList();}
     QStringList compatibleOutputTypes() const override {return QStringList();}
-    QWidget *createWidget() override;
+    QWidget *createWidget() override SIP_FACTORY;
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 

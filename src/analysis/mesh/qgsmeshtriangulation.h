@@ -57,7 +57,7 @@ class ANALYSIS_EXPORT QgsMeshTriangulation : public QObject
      * \param feedback feedback argument may be specified to allow cancellation and progress reports
      * \param featureCount the count of feature to allow progress report of the feedback
      */
-    bool addVertices( QgsFeatureIterator &vertexFeatureIterator, int valueAttribute, const QgsCoordinateTransform &transform, QgsFeedback *feedback = nullptr, int featureCount = 1 );
+    bool addVertices( QgsFeatureIterator &vertexFeatureIterator, int valueAttribute, const QgsCoordinateTransform &transform, QgsFeedback *feedback = nullptr, long featureCount = 1 );
 
     /**
      * Adds break lines from a vector layer, return TRUE if successful.
@@ -69,7 +69,7 @@ class ANALYSIS_EXPORT QgsMeshTriangulation : public QObject
      *
      * \warning if the feature iterator contains only point geometries, the vertices will be added only without treating them as breaklines
      */
-    bool addBreakLines( QgsFeatureIterator &lineFeatureIterator, int valueAttribute, const QgsCoordinateTransform &transformContext, QgsFeedback *feedback = nullptr, int featureCount = 1 );
+    bool addBreakLines( QgsFeatureIterator &lineFeatureIterator, int valueAttribute, const QgsCoordinateTransform &transformContext, QgsFeedback *feedback = nullptr, long featureCount = 1 );
 
     //! Returns the triangulated mesh
     QgsMesh triangulatedMesh() const;

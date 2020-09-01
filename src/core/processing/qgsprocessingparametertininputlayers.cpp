@@ -43,21 +43,21 @@ bool QgsProcessingParameterTinInputLayers::checkValueIsAcceptable( const QVarian
       return false;
     const QVariantMap layerMap = variantLayer.toMap();
 
-    if ( !layerMap.contains( QStringLiteral( "Id" ) ) ||
-         !layerMap.contains( QStringLiteral( "Type" ) ) ||
-         !layerMap.contains( QStringLiteral( "AttributeIndex" ) ) )
+    if ( !layerMap.contains( QStringLiteral( "source" ) ) ||
+         !layerMap.contains( QStringLiteral( "type" ) ) ||
+         !layerMap.contains( QStringLiteral( "attributeIndex" ) ) )
       return false;
 
     if ( !context )
       continue;  // when called without context, we will skip checking whether the layer can be resolved
 
-    QgsMapLayer *mapLayer = QgsProcessingUtils::mapLayerFromString( layerMap.value( QStringLiteral( "Id" ) ).toString(), *context );
+    QgsMapLayer *mapLayer = QgsProcessingUtils::mapLayerFromString( layerMap.value( QStringLiteral( "source" ) ).toString(), *context );
     if ( !mapLayer || mapLayer->type() != QgsMapLayerType::VectorLayer )
       return false;
 
     QgsVectorLayer *vectorLayer = static_cast<QgsVectorLayer *>( mapLayer );
 
-    if ( layerMap.value( QStringLiteral( "AttributeIndex" ) ).toInt() >= vectorLayer->fields().count() )
+    if ( layerMap.value( QStringLiteral( "attributeIndex" ) ).toInt() >= vectorLayer->fields().count() )
       return false;
   }
 
@@ -73,9 +73,9 @@ QString QgsProcessingParameterTinInputLayers::valueAsPythonString( const QVarian
   {
     const QVariantMap layerMap = variantLayer.toMap();
     QStringList layerDefParts;
-    layerDefParts << QStringLiteral( "'Id': " ) + QgsProcessingUtils::variantToPythonLiteral( layerMap.value( QStringLiteral( "Id" ) ) );
-    layerDefParts << QStringLiteral( "'Type': " ) + QgsProcessingUtils::variantToPythonLiteral( layerMap.value( QStringLiteral( "Type" ) ) );
-    layerDefParts << QStringLiteral( "'AttributeIndex': " ) + QgsProcessingUtils::variantToPythonLiteral( layerMap.value( QStringLiteral( "AttributeIndex" ) ) );
+    layerDefParts << QStringLiteral( "'source': " ) + QgsProcessingUtils::variantToPythonLiteral( layerMap.value( QStringLiteral( "source" ) ) );
+    layerDefParts << QStringLiteral( "'type': " ) + QgsProcessingUtils::variantToPythonLiteral( layerMap.value( QStringLiteral( "type" ) ) );
+    layerDefParts << QStringLiteral( "'attributeIndex': " ) + QgsProcessingUtils::variantToPythonLiteral( layerMap.value( QStringLiteral( "attributeIndex" ) ) );
     QString layerDef = QStringLiteral( "{ %1 }" ).arg( layerDefParts.join( ',' ) );
     parts.append( layerDef );
   }

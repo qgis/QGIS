@@ -23,9 +23,9 @@
  * A parameter for processing algorithms that need a list of input vector layers to construct a TIN
  * A valid value for this parameter is a list (QVariantList), where each item is a map (QVariantMap) in this form:
  * {
- *   'Id':  string hat represents the unique Id of the vector layer,
- *   'Type': how the vector layer is used : as vertices or as break lines
- *   'AttributeIndex' : the index of the attribute of the vector layer used to defined the Z value of vertices,
+ *   'source':  string that represents identification of the vector layer,
+ *   'type': how the vector layer is used : as vertices, structure lines or break lines
+ *   'attributeIndex' : the index of the attribute of the vector layer used to defined the Z value of vertices,
  *    if -1, the Z coordinates of features are used
  * }
  *
@@ -39,15 +39,16 @@ class CORE_EXPORT QgsProcessingParameterTinInputLayers: public QgsProcessingPara
     //! Defines the type of input layer
     enum Type
     {
-      Vertices, //! Input that adds only vertices
-      BreakLines //! Input that adds vertices and break lines
+      Vertices, //!< Input that adds only vertices
+      StructureLines, //!< Input that adds add structure lines
+      BreakLines //!< Input that adds vertices and break lines
     };
 
     //! Used to store input layer Id and other associated parameters
     struct InputLayer
     {
-      QString layerId; //!The Id of the input layer
-      Type type; //!The sype of the input lyer (see Type)
+      QString source; //!The source of the input layer
+      Type type; //!The type of the input layer (see Type)
       int attributeIndex; //! The attribute index used for Z value of vertices
     };
 

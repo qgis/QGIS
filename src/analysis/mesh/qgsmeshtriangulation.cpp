@@ -34,7 +34,7 @@ QgsMeshTriangulation::QgsMeshTriangulation(): QObject()
 
 QgsMeshTriangulation::~QgsMeshTriangulation() = default;
 
-bool QgsMeshTriangulation::addVertices( QgsFeatureIterator &vertexFeatureIterator, int valueAttribute, const QgsCoordinateTransform &transform, QgsFeedback *feedback, int featureCount )
+bool QgsMeshTriangulation::addVertices( QgsFeatureIterator &vertexFeatureIterator, int valueAttribute, const QgsCoordinateTransform &transform, QgsFeedback *feedback, long featureCount )
 {
   if ( !vertexFeatureIterator.isValid() || vertexFeatureIterator.isClosed() )
     return false;
@@ -43,7 +43,7 @@ bool QgsMeshTriangulation::addVertices( QgsFeatureIterator &vertexFeatureIterato
     feedback->setProgress( 0 );
 
   QgsFeature feat;
-  int i = 0;
+  long i = 0;
   while ( vertexFeatureIterator.nextFeature( feat ) )
   {
     if ( feedback )
@@ -61,7 +61,7 @@ bool QgsMeshTriangulation::addVertices( QgsFeatureIterator &vertexFeatureIterato
   return true;
 }
 
-bool QgsMeshTriangulation::addBreakLines( QgsFeatureIterator &lineFeatureIterator, int valueAttribute, const QgsCoordinateTransform &transform, QgsFeedback *feedback, int featureCount )
+bool QgsMeshTriangulation::addBreakLines( QgsFeatureIterator &lineFeatureIterator, int valueAttribute, const QgsCoordinateTransform &transform, QgsFeedback *feedback, long featureCount )
 {
   if ( !lineFeatureIterator.isValid() || lineFeatureIterator.isClosed() )
     return false;
@@ -70,7 +70,7 @@ bool QgsMeshTriangulation::addBreakLines( QgsFeatureIterator &lineFeatureIterato
     feedback->setProgress( 0 );
 
   QgsFeature feat;
-  int i = 0;
+  long i = 0;
   while ( lineFeatureIterator.nextFeature( feat ) )
   {
     if ( feedback )
@@ -219,29 +219,29 @@ void QgsMeshTriangulation::addBreakLinesFromFeature( const QgsFeature &feature, 
     }
   }
 
-  int i = 0;
   for ( const QgsCurve *curve : curves )
   {
     if ( !curve )
       continue;
 
-    if ( feedback )
-    {
-      if ( feedback->isCanceled() )
-        break;
-
-      feedback->setProgress( 100 * i / curves.size() );
-      i++;
-    }
+    if ( feedback && feedback->isCanceled() )
+      break;
 
     QgsPointSequence linePoints;
     curve->points( linePoints );
+    bool hasZ = curve->is3D();
     if ( valueAttribute >= 0 )
-      for ( QgsPoint &point : linePoints )
+      for ( int i = 0; i < linePoints.count(); ++i )
       {
         if ( feedback && feedback->isCanceled() )
           break;
-        point.setZ( valueOnVertex );
+        if ( hasZ )
+          linePoints[i].setZ( valueOnVertex );
+        else
+        {
+          const QgsPoint &point = linePoints.at( i );
+          linePoints[i] = QgsPoint( point.x(), point.y(), valueOnVertex );
+        }
       }
 
     mTriangulation->addLine( linePoints, QgsInterpolator::SourceBreakLines );
