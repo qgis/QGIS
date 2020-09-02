@@ -1643,7 +1643,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "REQUEST": "GetMap",
-            "LAYERS": "EXTERNAL_WMS:landsat",
+            "LAYERS": "EXTERNAL_WMS:landsat,Country",
             "landsat:layers": "GEBCO_LATEST",
             "landsat:dpiMode": "7",
             "landsat:url": "https://www.gebco.net/data_and_products/gebco_web_services/web_map_service/mapserv",
