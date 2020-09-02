@@ -36,7 +36,8 @@ QgsWindow3DEngine::QgsWindow3DEngine( QObject *parent )
   mShadowRenderingFrameGraph->getFrameGraphRoot()->setParent( mCapture );
   mWindow3D->setActiveFrameGraph( mCapture );
 
-  mShadowRenderingFrameGraph->addTexturePreviewOverlay( mShadowRenderingFrameGraph->shadowMapTexture(), QPointF( 0.9f, 0.9 ), QSizeF( 0.2f, 0.2f ) );
+// Uncomment this to see the depth texture in realtime
+//  mShadowRenderingFrameGraph->addTexturePreviewOverlay( mShadowRenderingFrameGraph->shadowMapTexture(), QPointF( 0.9f, 0.9 ), QSizeF( 0.2f, 0.2f ) );
 
   // force switching to no shadow rendering
   setShadowRenderingEnabled( false );
