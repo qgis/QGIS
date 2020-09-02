@@ -823,6 +823,7 @@ bool Problem::compareLabelArea( pal::LabelPosition *l1, pal::LabelPosition *l2 )
 
 QList<LabelPosition *> Problem::getSolution( bool returnInactive, QList<LabelPosition *> *unlabeled )
 {
+<<<<<<< HEAD
   int i;
   QList<LabelPosition *> solList;
 
@@ -841,6 +842,34 @@ QList<LabelPosition *> Problem::getSolution( bool returnInactive, QList<LabelPos
     else if ( unlabeled )
     {
       unlabeled->push_back( mLabelPositions.at( featStartId[i] ) );
+=======
+  QList<LabelPosition *> finalLabelPlacements;
+
+  // loop through all features to be labeled
+  for ( std::size_t i = 0; i < mFeatureCount; i++ )
+  {
+    const int labelId = mSol.activeLabelIds[i];
+    const bool foundNonOverlappingPlacement = labelId != -1;
+    const int startIndexForLabelPlacements = mFeatStartId[i];
+    const bool foundCandidatesForFeature = startIndexForLabelPlacements < static_cast< int >( mLabelPositions.size() );
+
+    if ( foundNonOverlappingPlacement )
+    {
+      finalLabelPlacements.push_back( mLabelPositions[ labelId ].get() ); // active labels
+    }
+    else if ( foundCandidatesForFeature &&
+              ( returnInactive // allowing any overlapping labels regardless of where they are from
+                || mLabelPositions.at( startIndexForLabelPlacements )->getFeaturePart()->layer()->displayAll() // allowing overlapping labels for the layer
+                || mLabelPositions.at( startIndexForLabelPlacements )->getFeaturePart()->alwaysShow() ) ) // allowing overlapping labels for the feature
+    {
+      finalLabelPlacements.push_back( mLabelPositions[ startIndexForLabelPlacements ].get() ); // unplaced label
+    }
+    else if ( unlabeled )
+    {
+      // need to be careful here -- if the next feature's start id is the same as this one, then this feature had no candidates!
+      if ( foundCandidatesForFeature && ( i == mFeatureCount - 1 || startIndexForLabelPlacements != mFeatStartId[i + 1] ) )
+        unlabeled->push_back( mLabelPositions[ startIndexForLabelPlacements ].get() );
+>>>>>>> 3afe74b8c2... [labeling] Fix crash when labeling features and showing unplaced
     }
   }
 
@@ -854,7 +883,7 @@ QList<LabelPosition *> Problem::getSolution( bool returnInactive, QList<LabelPos
     std::sort( solList.begin(), solList.end(), compareLabelArea );
   }
 
-  return solList;
+  return finalLabelPlacements;
 }
 
 PalStat *Problem::getStats()
