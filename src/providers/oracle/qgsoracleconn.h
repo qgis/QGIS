@@ -180,7 +180,7 @@ class QgsOracleConn : public QObject
     bool hasSpatial();
 
     /**
-     * \returns Oracle database major version, -1 if an error occured
+     * \returns Oracle database major version, -1 if an error occurred
      */
     int version();
 
