@@ -146,7 +146,6 @@ class QgsShadowRenderingFrameGraph
 
     Qt3DRender::QLayerFilter *mShadowSceneEntitiesFilter = nullptr;
     Qt3DRender::QRenderStateSet *mShadowRenderStateSet = nullptr;
-    Qt3DRender::QPolygonOffset *mShadowPolygonOffset = nullptr;
     Qt3DRender::QCullFace *mShadowCullFace = nullptr;
     Qt3DRender::QDepthTest *mShadowDepthTest = nullptr;
 
