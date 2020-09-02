@@ -138,6 +138,21 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
     def partiallyCompiledFilters(self):
         return set([])
 
+    def getGeneratedColumnsData(self):
+        """
+        return a tuple with the generated column test layer and the expected generated value
+        """
+        cur = self.con.cursor()
+        cur.execute("SHOW server_version_num")
+        pgversion = int(cur.fetchone()[0])
+
+        # don't trigger this test when PostgreSQL versions earlier than 12.
+        if pgversion < 120000:
+            return (None, None)
+        else:
+            return (QgsVectorLayer(self.dbconn + ' sslmode=disable table="qgis_test"."generated_columns"', 'test', 'postgres'),
+                    """('test:'::text || ((pk)::character varying)::text)""")
+
     # HERE GO THE PROVIDER SPECIFIC TESTS
     def testDefaultValue(self):
         self.source.setProviderProperty(
