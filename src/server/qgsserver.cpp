@@ -373,6 +373,9 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
         project = mConfigCache->project( configFilePath, sServerInterface->serverSettings() );
       }
 
+      // Set the current project instance
+      QgsProject::setInstance( const_cast<QgsProject *>( project ) );
+
       if ( project )
       {
         sServerInterface->setConfigFilePath( project->fileName() );
