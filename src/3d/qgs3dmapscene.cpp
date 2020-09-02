@@ -347,6 +347,8 @@ void Qgs3DMapScene::onCameraChanged()
       if ( light.renderShadows() )
       {
         shadowRenderingFrameGraph->setShadowRenderingEnabled( true );
+        shadowRenderingFrameGraph->setShadowBias( mMap.shadowBias() );
+        shadowRenderingFrameGraph->setShadowMapResolution( mMap.shadowMapResolution() );
         shadowRenderingFrameGraph->setupDirectionalLight( light, mMap.maximumShadowRenderingDistance() );
         break;
       }
