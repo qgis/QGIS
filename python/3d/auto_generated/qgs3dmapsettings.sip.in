@@ -444,6 +444,13 @@ This helps with reducing the self shadowing artifact
 .. versionadded:: 3.16
 %End
 
+    int shadowMapResolution() const;
+%Docstring
+Returns the resolution of the shadow map texture used to generate the shadows
+
+.. versionadded:: 3.16
+%End
+
     void setPointLights( const QList<QgsPointLightSettings> &pointLights );
 %Docstring
 Sets list of point lights defined in the scene
@@ -470,6 +477,13 @@ Tweak this to reduce artifacts while looking up to the sky with the camera
 %Docstring
 Sets the shadow bias value
 Tweak this to reduce artifacts like self shadowing
+
+.. versionadded:: 3.16
+%End
+
+    void setShadowMapResolution( int resolution );
+%Docstring
+Sets the resolution of the shadow map texture (this can be used to generate higher quality shadows)
 
 .. versionadded:: 3.16
 %End

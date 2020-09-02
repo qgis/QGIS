@@ -42,9 +42,13 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRende
   mForwardRenderLayerFilter = new Qt3DRender::QLayerFilter( mMainCameraSelector );
   mForwardRenderLayerFilter->addLayer( mForwardRenderLayer );
 
+  // TODO: make the width and height change dynamically as the 3D viewer is resized
+  int width = 1024;
+  int height = 768;
+
   mForwardColorTexture = new Qt3DRender::QTexture2D;
-  mForwardColorTexture->setWidth( 1024 );
-  mForwardColorTexture->setHeight( 1024 );
+  mForwardColorTexture->setWidth( width );
+  mForwardColorTexture->setHeight( height );
   mForwardColorTexture->setFormat( Qt3DRender::QTexture2D::TextureFormat::RGBA16F );
   mForwardColorTexture->setGenerateMipMaps( false );
   mForwardColorTexture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
@@ -53,8 +57,8 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRende
   mForwardColorTexture->wrapMode()->setY( Qt3DRender::QTextureWrapMode::ClampToEdge );
 
   mForwardDepthTexture = new Qt3DRender::QTexture2D;
-  mForwardDepthTexture->setWidth( 1024 );
-  mForwardDepthTexture->setHeight( 1024 );
+  mForwardDepthTexture->setWidth( width );
+  mForwardDepthTexture->setHeight( height );
   mForwardDepthTexture->setFormat( Qt3DRender::QTexture2D::TextureFormat::DepthFormat );
   mForwardDepthTexture->setGenerateMipMaps( false );
   mForwardDepthTexture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
@@ -93,8 +97,8 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructShadowRender
   mShadowSceneEntitiesFilter->addLayer( mCastShadowsLayer );
 
   mShadowMapTexture = new Qt3DRender::QTexture2D;
-  mShadowMapTexture->setWidth( 2048 * 2 );
-  mShadowMapTexture->setHeight( 2048 * 2 );
+  mShadowMapTexture->setWidth( mShadowMapResolution );
+  mShadowMapTexture->setHeight( mShadowMapResolution );
   mShadowMapTexture->setFormat( Qt3DRender::QTexture2D::TextureFormat::D32F );
   mShadowMapTexture->setGenerateMipMaps( false );
   mShadowMapTexture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
@@ -320,6 +324,13 @@ void QgsShadowRenderingFrameGraph::setShadowBias( float shadowBias )
 {
   mShadowBias = shadowBias;
   mPostprocessingEntity->setShadowBias( mShadowBias );
+}
+
+void QgsShadowRenderingFrameGraph::setShadowMapResolution( int resolution )
+{
+  mShadowMapResolution = resolution;
+  mShadowMapTexture->setWidth( mShadowMapResolution );
+  mShadowMapTexture->setHeight( mShadowMapResolution );
 }
 
 void QgsShadowRenderingFrameGraph::setFrustumCullingEnabled( bool enabled )

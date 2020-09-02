@@ -220,6 +220,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
         if ( light.renderShadows() )
         {
           shadowRenderingFrameGraph->setShadowBias( mMap.shadowBias() );
+          shadowRenderingFrameGraph->setShadowMapResolution( mMap.shadowMapResolution() );
           shadowRenderingFrameGraph->setupDirectionalLight( light, mMap.maximumShadowRenderingDistance() );
           break;
         }

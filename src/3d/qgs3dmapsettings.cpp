@@ -110,6 +110,7 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
 
   mMaximumShadowRenderingDistance = elemTerrain.attribute( QStringLiteral( "max-shadow-rendering-distance" ), QStringLiteral( "500" ) ).toInt();
   mShadowBias = elemTerrain.attribute( QStringLiteral( "shadow-bias" ), QStringLiteral( "0.00001" ) ).toFloat();
+  mShadowMapResolution = elemTerrain.attribute( QStringLiteral( "shadow-map-resolution" ), QStringLiteral( "2048" ) ).toInt();
 
   mPointLights.clear();
   QDomElement elemPointLights = elem.firstChildElement( QStringLiteral( "point-lights" ) );
@@ -280,6 +281,7 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
 
   elemTerrain.setAttribute( QStringLiteral( "max-shadow-rendering-distance" ), mMaximumShadowRenderingDistance );
   elemTerrain.setAttribute( QStringLiteral( "shadow-bias" ), mShadowBias );
+  elemTerrain.setAttribute( QStringLiteral( "shadow-map-resolution" ), mShadowMapResolution );
 
   QDomElement elemPointLights = doc.createElement( QStringLiteral( "point-lights" ) );
   for ( const QgsPointLightSettings &pointLight : qgis::as_const( mPointLights ) )
@@ -651,6 +653,12 @@ void Qgs3DMapSettings::setMaximumShadowRenderingDistance( float distance )
 void Qgs3DMapSettings::setShadowBias( float shadowBias )
 {
   mShadowBias = shadowBias;
+  emit directionalLightsChanged();
+}
+
+void Qgs3DMapSettings::setShadowMapResolution( int resolution )
+{
+  mShadowMapResolution = resolution;
   emit directionalLightsChanged();
 }
 

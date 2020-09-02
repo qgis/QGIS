@@ -96,6 +96,11 @@ class QgsShadowRenderingFrameGraph
     //! Sets the shadow bias value
     void setShadowBias( float shadowBias );
 
+    //! Returns the shadow map resolution
+    int shadowMapResolution() const { return mShadowMapResolution; }
+    //! Sets the resolution of the shadow map
+    void setShadowMapResolution( int resolution );
+
     //! Sets the clear color of the scene (background color)
     void setClearColor( const QColor &clearColor );
     //! Adds an preview entity that shows a texture in real time for debugging purposes
@@ -137,6 +142,8 @@ class QgsShadowRenderingFrameGraph
     Qt3DRender::QCameraSelector *mLightCameraSelector = nullptr;
     bool mShadowRenderingEnabled = false;
     float mShadowBias = 0.00001;
+    int mShadowMapResolution = 2048;
+
     Qt3DRender::QLayerFilter *mShadowSceneEntitiesFilter = nullptr;
     Qt3DRender::QRenderStateSet *mShadowRenderStateSet = nullptr;
     Qt3DRender::QPolygonOffset *mShadowPolygonOffset = nullptr;

@@ -387,6 +387,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     float shadowBias() const { return mShadowBias; }
 
     /**
+     * Returns the resolution of the shadow map texture used to generate the shadows
+     * \since QGIS 3.16
+     */
+    int shadowMapResolution() const { return mShadowMapResolution; }
+
+    /**
      * Sets list of point lights defined in the scene
      * \since QGIS 3.6
      */
@@ -411,6 +417,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * \since QGIS 3.16
      */
     void setShadowBias( float shadowBias );
+
+    /**
+     * Sets the resolution of the shadow map texture (this can be used to generate higher quality shadows)
+     * \since QGIS 3.16
+     */
+    void setShadowMapResolution( int resolution );
 
     /**
      * Returns the camera lens' field of view
@@ -592,6 +604,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     QList<QgsDirectionalLightSettings> mDirectionalLights;  //!< List of directional lights defined for the scene
     float mMaximumShadowRenderingDistance = 500.0f; //!< Maximum shadow rendering distance
     float mShadowBias = 0.00001f; //!< Shadow bias value
+    int mShadowMapResolution = 2048; //!< The resolution of the shadow map (used for shadow rendering)
     float mFieldOfView = 45.0f; //<! Camera lens field of view value
     QList<QgsMapLayerRef> mLayers;   //!< Layers to be rendered
     QList<QgsMapLayerRef> mTerrainLayers;   //!< Terrain layers to be rendered

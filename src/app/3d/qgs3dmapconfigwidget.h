@@ -44,6 +44,7 @@ class Qgs3DMapConfigWidget : public QWidget, private Ui::Map3DConfigWidget
     void updateMaxZoomLevel();
     void updateMaximumShadowRenderingDistance( double distance );
     void updateShadowBias( double shadowBias );
+    void updateShadowMapResolution( int resolution );
 
   private:
     Qgs3DMapSettings *mMap = nullptr;
