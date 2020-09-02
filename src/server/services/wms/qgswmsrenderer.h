@@ -149,9 +149,6 @@ namespace QgsWms
       // Build and returns highlight layers
       QList<QgsMapLayer *> highlightLayers( QList<QgsWmsParametersHighlightLayer> params );
 
-      // Build and returns external layers
-      QList<QgsMapLayer *> externalLayers( const QList<QgsWmsParametersExternalLayer> &params );
-
       // Rendering step for layers
       QPainter *layersRendering( const QgsMapSettings &mapSettings, QImage &image ) const;
 
@@ -296,7 +293,7 @@ namespace QgsWms
 
       const QgsProject *mProject = nullptr;
       QList<QgsMapLayer *> mTemporaryLayers;
-      QgsWmsRenderContext mContext;
+      const QgsWmsRenderContext &mContext;
   };
 
 } // namespace QgsWms
