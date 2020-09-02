@@ -53,9 +53,9 @@ namespace QgsWms
       Q_DECLARE_FLAGS( Flags, Flag )
 
       /**
-       * Default constructor for QgsWmsRenderContext.
+       * Destructor for QgsWmsRenderContext.
        */
-      QgsWmsRenderContext() = default;
+      ~QgsWmsRenderContext();
 
       /**
        * Constructor for QgsWmsRenderContext.
@@ -258,6 +258,8 @@ namespace QgsWms
 
       bool layerScaleVisibility( const QString &name ) const;
 
+      bool isExternalLayer( const QString &name ) const;
+
       const QgsProject *mProject = nullptr;
       QgsServerInterface *mInterface = nullptr;
       QgsWmsParameters mParameters;
@@ -277,6 +279,9 @@ namespace QgsWms
 
       QMap<QString, QDomElement> mSlds;
       QMap<QString, QString> mStyles;
+
+      // list for external layers
+      QList<QgsMapLayer *> mExternalLayers;
   };
 };
 
