@@ -1,4 +1,4 @@
-language: python # This lets us use newer python versions from virtualenv
+language: python
 python: "3.7"
 compiler: clang
 dist: bionic
@@ -8,8 +8,6 @@ cache:
   pip: true
   directories:
     - ${HOME}/.ccache_testing
-    - ${HOME}/.ccache_docker_build_focal
-    - ${HOME}/.ccache_docker_build_bionic
   timeout: 1000
 if: NOT branch =~ /^(cherry-pick-)?backport-\d+-/ AND NOT branch =~ /-patch-\d+$/
 
@@ -49,6 +47,7 @@ matrix:
         # Label ID can be found here https://api.github.com/repos/qgis/QGIS/labels
         - RUN_FLAKY_TESTS=$(.ci/travis/scripts/pr_has_label.py $TRAVIS_PULL_REQUEST 1271248184)
 
+<<<<<<< HEAD
       ##########################################################
       # CODE LAYOUT
       ##########################################################
@@ -148,6 +147,8 @@ matrix:
 #  allow_failures:
 #    - os: osx
 
+=======
+>>>>>>> 440491d69f... remove Travis builds for Docker images (#38397)
 git:
   depth: 120
 
