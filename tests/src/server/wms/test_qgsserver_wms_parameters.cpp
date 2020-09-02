@@ -1,9 +1,9 @@
 /***************************************************************************
-     test_qgsserver_wms_exceptions.cpp
+     test_qgsserver_wms_parameters.cpp
      ---------------------------------
-    Date                 : 27 Mar 2019
-    Copyright            : (C) 2019 by Paul Blottiere
-    Email                : paul dot blottiere @ oslandia.com
+    Date                 : 02 Sept 2020
+    Copyright            : (C) 2020 by Paul Blottiere
+    Email                : paul dot blottiere @ gmail.com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
