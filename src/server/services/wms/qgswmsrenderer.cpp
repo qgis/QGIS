@@ -3098,6 +3098,11 @@ namespace QgsWms
         continue;
       }
 
+      if ( mContext.isExternalLayer( param.mNickname ) )
+      {
+        continue;
+      }
+
       if ( useSld )
       {
         setLayerSld( layer, mContext.sld( *layer ) );
