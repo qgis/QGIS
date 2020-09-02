@@ -1264,6 +1264,8 @@ bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute, QgsFields 
 
   QByteArray response = describeFeatureType.response();
 
+  QgsDebugMsgLevel( response, 4 );
+
   QDomDocument describeFeatureDocument;
   QString errorMsg;
   if ( !describeFeatureDocument.setContent( response, true, &errorMsg ) )
@@ -1580,6 +1582,8 @@ bool QgsWFSProvider::sendTransactionDocument( const QDomDocument &doc, QDomDocum
     return false;
   }
 
+  QgsDebugMsgLevel( doc.toString(), 4 );
+
   QgsWFSTransactionRequest request( mShared->mURI );
   return request.send( doc, serverResponse );
 }
@@ -1587,10 +1591,16 @@ bool QgsWFSProvider::sendTransactionDocument( const QDomDocument &doc, QDomDocum
 QDomElement QgsWFSProvider::createTransactionElement( QDomDocument &doc ) const
 {
   QDomElement transactionElem = doc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Transaction" ) );
-  // QString WfsVersion = mShared->mWFSVersion;
-  // For now: hardcoded to 1.0.0
-  QString WfsVersion = QStringLiteral( "1.0.0" );
-  transactionElem.setAttribute( QStringLiteral( "version" ), WfsVersion );
+  const QString WfsVersion = mShared->mWFSVersion;
+  // only 1.1.0 and 1.0.0 are supported
+  if ( WfsVersion == QStringLiteral( "1.1.0" ) )
+  {
+    transactionElem.setAttribute( QStringLiteral( "version" ), WfsVersion );
+  }
+  else
+  {
+    transactionElem.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0.0" ) );
+  }
   transactionElem.setAttribute( QStringLiteral( "service" ), QStringLiteral( "WFS" ) );
   transactionElem.setAttribute( QStringLiteral( "xmlns:xsi" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema-instance" ) );
 
@@ -1634,19 +1644,70 @@ bool QgsWFSProvider::transactionSuccess( const QDomDocument &serverResponse ) co
     return false;
   }
 
-  QDomNodeList transactionResultList = documentElem.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "TransactionResult" ) );
-  if ( transactionResultList.size() < 1 )
+  const QString WfsVersion = mShared->mWFSVersion;
+
+  if ( WfsVersion == QStringLiteral( "1.1.0" ) )
   {
+    const QDomNodeList transactionSummaryList = documentElem.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "TransactionSummary" ) );
+    if ( transactionSummaryList.size() < 1 )
+    {
+      return false;
+    }
+
+    QDomElement transactionElement { transactionSummaryList.at( 0 ).toElement() };
+    QDomNodeList totalInserted = transactionElement.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "totalInserted" ) );
+    QDomNodeList totalUpdated = transactionElement.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "totalUpdated" ) );
+    QDomNodeList totalDeleted = transactionElement.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "totalDeleted" ) );
+    if ( totalInserted.size() > 0 && totalInserted.at( 0 ).toElement().text().toInt() > 0 )
+    {
+      return true;
+    }
+    if ( totalUpdated.size() > 0 && totalUpdated.at( 0 ).toElement().text().toInt() > 0 )
+    {
+      return true;
+    }
+    if ( totalDeleted.size() > 0 && totalDeleted.at( 0 ).toElement().text().toInt() > 0 )
+    {
+      return true;
+    }
+
+    // Handle wrong QGIS server response (capital initial letter)
+    totalInserted = transactionElement.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "TotalInserted" ) );
+    totalUpdated = transactionElement.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "TotalUpdated" ) );
+    totalDeleted = transactionElement.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "TotalDeleted" ) );
+    if ( totalInserted.size() > 0 && totalInserted.at( 0 ).toElement().text().toInt() > 0 )
+    {
+      return true;
+    }
+    if ( totalUpdated.size() > 0 && totalUpdated.at( 0 ).toElement().text().toInt() > 0 )
+    {
+      return true;
+    }
+    if ( totalDeleted.size() > 0 && totalDeleted.at( 0 ).toElement().text().toInt() > 0 )
+    {
+      return true;
+    }
+
     return false;
+
+  }
+  else
+  {
+    const QDomNodeList transactionResultList = documentElem.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "TransactionResult" ) );
+    if ( transactionResultList.size() < 1 )
+    {
+      return false;
+    }
+
+    const QDomNodeList statusList = transactionResultList.at( 0 ).toElement().elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Status" ) );
+    if ( statusList.size() < 1 )
+    {
+      return false;
+    }
+
+    return statusList.at( 0 ).firstChildElement().localName() == QLatin1String( "SUCCESS" );
   }
 
-  QDomNodeList statusList = transactionResultList.at( 0 ).toElement().elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Status" ) );
-  if ( statusList.size() < 1 )
-  {
-    return false;
-  }
-
-  return statusList.at( 0 ).firstChildElement().localName() == QLatin1String( "SUCCESS" );
 }
 
 QStringList QgsWFSProvider::insertedFeatureIds( const QDomDocument &serverResponse ) const
@@ -1663,7 +1724,17 @@ QStringList QgsWFSProvider::insertedFeatureIds( const QDomDocument &serverRespon
     return ids;
   }
 
-  QDomNodeList insertResultList = rootElem.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "InsertResult" ) );
+  // Handles WFS 1.1.0
+  QString insertResultTagName;
+  if ( mShared->mWFSVersion == QStringLiteral( "1.1.0" ) )
+  {
+    insertResultTagName = QStringLiteral( "InsertResults" );
+  }
+  else
+  {
+    insertResultTagName = QStringLiteral( "InsertResult" );
+  }
+  QDomNodeList insertResultList = rootElem.elementsByTagNameNS( QgsWFSConstants::WFS_NAMESPACE, insertResultTagName );
   for ( int i = 0; i < insertResultList.size(); ++i )
   {
     QDomNodeList featureIdList = insertResultList.at( i ).toElement().elementsByTagNameNS( QgsWFSConstants::OGC_NAMESPACE, QStringLiteral( "FeatureId" ) );
@@ -1849,6 +1920,14 @@ void QgsWFSProvider::handleException( const QDomDocument &serverResponse )
     pushError( tr( "Unsuccessful service response: %1" ).arg( exceptionElem.firstChildElement( QStringLiteral( "TransactionResult" ) ).firstChildElement( QStringLiteral( "Message" ) ).text() ) );
     return;
   }
+
+  // WFS 1.1.0
+  if ( exceptionElem.tagName() == QLatin1String( "TransactionResponse" ) )
+  {
+    pushError( tr( "Unsuccessful service response: no features were added, deleted or changed." ) );
+    return;
+  }
+
 
   if ( exceptionElem.tagName() == QLatin1String( "ExceptionReport" ) )
   {
