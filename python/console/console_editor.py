@@ -1094,6 +1094,7 @@ class EditorTabWidget(QTabWidget):
         color = Qt.darkGray if modified else Qt.black
         self.tabBar().setTabTextColor(index, color)
         self.parent.saveFileButton.setEnabled(modified)
+        QgsApplication.setConsoleDirty(modified)
 
     def closeTab(self, tab):
         if self.count() < 2:

@@ -6301,7 +6301,7 @@ void QgisApp::fileExit()
   }
 
   QgsCanvasRefreshBlocker refreshBlocker;
-  if ( checkUnsavedLayerEdits() && checkMemoryLayers() && saveDirty() )
+  if ( checkUnsavedLayerEdits() && checkMemoryLayers() && checkConsoleDirty() && saveDirty() )
   {
     closeProject();
     userProfileManager()->setDefaultFromActive();
@@ -7338,7 +7338,7 @@ void QgisApp::openProject( QAction *action )
   if ( checkTasksDependOnProject() )
     return;
 
-  if ( checkUnsavedLayerEdits() && checkMemoryLayers() && saveDirty() )
+  if ( checkUnsavedLayerEdits() && checkMemoryLayers() && checkConsoleDirty() && saveDirty() )
     addProject( project );
 }
 
@@ -7383,7 +7383,7 @@ void QgisApp::openProject( const QString &fileName )
     return;
 
   // possibly save any pending work before opening a different project
-  if ( checkUnsavedLayerEdits() && checkMemoryLayers() && saveDirty() )
+  if ( checkUnsavedLayerEdits() && checkMemoryLayers() && checkConsoleDirty() && saveDirty() )
   {
     // error handling and reporting is in addProject() function
     addProject( fileName );
@@ -13014,6 +13014,18 @@ bool QgisApp::checkMemoryLayers()
     close &= QMessageBox::warning( this,
                                    tr( "Close Project" ),
                                    tr( "This project includes one or more temporary scratch layers. These layers are not saved to disk and their contents will be permanently lost. Are you sure you want to proceed?" ),
+                                   QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel ) == QMessageBox::Yes;
+
+  return close;
+}
+
+bool QgisApp::checkConsoleDirty()
+{
+  bool close = true;
+  if ( QgsApplication::isConsoleDirty() )
+    close &= QMessageBox::warning( this,
+                                   tr( "Close Project" ),
+                                   tr( "The Python Console has some change not saved. Are you sure you want to proceed?" ),
                                    QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel ) == QMessageBox::Yes;
 
   return close;

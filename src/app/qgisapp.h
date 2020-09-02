@@ -2087,6 +2087,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Checks for running tasks dependent on the open project
     bool checkTasksDependOnProject();
 
+    //! Checks if python console is dirty
+    bool checkConsoleDirty();
+
     /**
      * Helper function to union several geometries together (used in function mergeSelectedFeatures)
      * \returns empty geometry in case of error or if canceled

@@ -488,6 +488,16 @@ initialize qgis.db
 Create the users theme folder
 %End
 
+    static void setConsoleDirty( bool isConsoleDirty );
+%Docstring
+Set dirty the python console.
+%End
+
+    static bool isConsoleDirty();
+%Docstring
+Returns ``True`` if python console is dirty.
+%End
+
     static void exitQgis();
 %Docstring
 deletes provider registry and map layer registry

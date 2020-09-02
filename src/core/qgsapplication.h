@@ -469,6 +469,12 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Create the users theme folder
     static bool createThemeFolder();
 
+    //! Set dirty the python console.
+    static void setConsoleDirty( bool isConsoleDirty ) { ABISYM( mConsoleDirty ) = isConsoleDirty; }
+
+    //! Returns TRUE if python console is dirty.
+    static bool isConsoleDirty() { return ABISYM( mConsoleDirty ); }
+
     //! deletes provider registry and map layer registry
     static void exitQgis();
 
@@ -925,6 +931,8 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     static void copyPath( const QString &src, const QString &dst );
     static QObject *ABISYM( mFileOpenEventReceiver );
+
+    static bool ABISYM( mConsoleDirty );
 
     static bool ABISYM( mInitialized );
 
