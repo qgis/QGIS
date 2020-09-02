@@ -78,7 +78,7 @@ class QgsShadowRenderingFrameGraph
     Qt3DRender::QCamera *lightCamera() { return mLightCamera; }
     //! Returns the postprocessing entity
     QgsPostprocessingEntity *postprocessingEntity() { return mPostprocessingEntity; }
-    //! Returns the root entity of the entites of the frame graph passes (like the post processing entity and preview entity)
+    //! Returns the root entity of the entities related to the frame graph (like the post processing entity and preview entity)
     Qt3DCore::QEntity *rootEntity() { return mRootEntity; }
 
     //! Returns whether frustum culling is enabled
