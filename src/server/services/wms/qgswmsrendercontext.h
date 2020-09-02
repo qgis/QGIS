@@ -244,6 +244,12 @@ namespace QgsWms
        */
       int mapHeight() const;
 
+      /**
+       * Returns true if the layer is an external layer, false otherwise.
+       * \since QGIS 3.16
+       */
+      bool isExternalLayer( const QString &name ) const;
+
     private:
       void initNicknameLayers();
       void initRestrictedLayers();
@@ -257,8 +263,6 @@ namespace QgsWms
       void checkLayerReadPermissions();
 
       bool layerScaleVisibility( const QString &name ) const;
-
-      bool isExternalLayer( const QString &name ) const;
 
       const QgsProject *mProject = nullptr;
       QgsServerInterface *mInterface = nullptr;
