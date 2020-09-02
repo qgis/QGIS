@@ -31,7 +31,6 @@ QgsWindow3DEngine::QgsWindow3DEngine( QObject *parent )
   mWindow3D->setRootEntity( mRoot );
 
   mShadowRenderingFrameGraph = new QgsShadowRenderingFrameGraph( mWindow3D, mWindow3D->camera(), mRoot );
-  // mWindow3D->renderSettings()->setRenderPolicy(Qt3DRender::QRenderSettings::RenderPolicy::OnDemand);
 
   mCapture = new Qt3DRender::QRenderCapture;
   mShadowRenderingFrameGraph->getFrameGraphRoot()->setParent( mCapture );

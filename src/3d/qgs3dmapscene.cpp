@@ -548,10 +548,6 @@ void Qgs3DMapScene::updateLights()
     originEntity->setEnabled( true );
     originEntity->setParent( this );
 
-//    if ( mShadowRenderingFrameGraph != nullptr )
-//      originEntity->addComponent( mShadowRenderingFrameGraph->doNotCastShadowsLayerLayer() );
-
-
     return originEntity;
   };
 

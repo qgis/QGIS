@@ -48,17 +48,12 @@ class QgsPreviewQuad : public Qt3DCore::QEntity
 
     /**
      * \brief Construct an object that displays a texture for debugging purposes (example: depth buffer)
-     * \param texture
-     * The texture to be rendered
-     * \param centerNDC
-     * The center of the texture in opnegl normalized device coordinates
-     * ie. Bottom left of the viewport is (-1, -1), the top right of the viewport is (1, 1)
-     * \param size
-     * The size of the displayed rectangle
-     * \param additionalShaderParameters
-     * More parameters to pass to the shader
-     * \param parent
-     * The parent of the quad
+     * \param texture The texture to be rendered
+     * \param centerNDC The center of the texture in opnegl normalized device coordinates
+     *                  ie. Bottom left of the viewport is (-1, -1), the top right of the viewport is (1, 1)
+     * \param size The size of the displayed rectangle
+     * \param additionalShaderParameters More parameters to pass to the shader
+     * \param parent The parent of the quad
      */
     QgsPreviewQuad( Qt3DRender::QAbstractTexture *texture, const QPointF &centerNDC, const QSizeF &size, QVector<Qt3DRender::QParameter *> additionalShaderParameters = QVector<Qt3DRender::QParameter *>(), Qt3DCore::QEntity *parent = nullptr );
   private:

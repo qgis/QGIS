@@ -40,11 +40,8 @@ vec3 WorldPosFromDepth(float depth) {
     vec4 clipSpacePosition = vec4(texCoord * 2.0 - 1.0, z, 1.0);
     vec4 viewSpacePosition = projMatrixInv * clipSpacePosition;
 
-    // Perspective division
     viewSpacePosition /= viewSpacePosition.w;
-//    return viewSpacePosition.xyz;
     vec4 worldSpacePosition =  viewMatrixInv * viewSpacePosition;
-//    worldSpacePosition = inverseModelMatrix * worldSpacePosition;
     worldSpacePosition /= worldSpacePosition.w;
 
     return worldSpacePosition.xyz;
@@ -70,7 +67,7 @@ float CalcShadowFactor(vec4 LightSpacePos)
 
   // percentage close filtering of the shadow map
   float shadow = 0.0;
-  int k = 2;
+  int k = 1;
   for(int x = -k; x <= k; ++x)
   {
     for(int y = -k; y <= k; ++y)

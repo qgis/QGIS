@@ -123,7 +123,7 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructShadowRender
   mShadowDepthTest->setDepthFunction( Qt3DRender::QDepthTest::Less );
   mShadowRenderStateSet->addRenderState( mShadowDepthTest );
   mShadowCullFace = new Qt3DRender::QCullFace;
-  mShadowCullFace->setMode( Qt3DRender::QCullFace::Front );
+  mShadowCullFace->setMode( Qt3DRender::QCullFace::NoCulling );
   mShadowRenderStateSet->addRenderState( mShadowCullFace );
 
   return mShadowSceneEntitiesFilter;
@@ -155,15 +155,6 @@ QgsShadowRenderingFrameGraph::QgsShadowRenderingFrameGraph( QWindow *window, Qt3
   mPreviewLayer->setRecursive( true );
   mCastShadowsLayer->setRecursive( true );
   mForwardRenderLayer->setRecursive( true );
-
-  // FrameGraph tree:
-  // mRenderSurfaceSelector
-  //   mMainViewPort
-  //     mMainCameraSelector
-  //       forwardRenderPass
-  //     mLightCameraSelector
-  //       shadowRenderPass
-  //       postProcessingPass
 
   mRenderSurfaceSelector = new Qt3DRender::QRenderSurfaceSelector;
   mRenderSurfaceSelector->setSurface( window );
@@ -286,7 +277,7 @@ void QgsShadowRenderingFrameGraph::setupDirectionalLight( const QgsDirectionalLi
 {
   float minX, maxX, minY, maxY, minZ, maxZ;
   QVector3D lookingAt = mMainCamera->viewCenter();
-  float d = maximumShadowRenderingDistance;//0.5 * ( mMainCamera->position() - mMainCamera->viewCenter() ).length();
+  float d = 2 * ( mMainCamera->position() - mMainCamera->viewCenter() ).length();
 
   QVector3D vertical = QVector3D( 0.0f, d, 0.0f );
   QVector3D lightDirection = QVector3D( light.direction().x(), light.direction().y(), light.direction().z() ).normalized();

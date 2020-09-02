@@ -25,21 +25,16 @@
 #include <QMatrix4x4>
 #include <QUrl>
 
-QgsPreviewQuad::QgsPreviewQuad( Qt3DRender::QAbstractTexture *texture, const QPointF &centerNDC, const QSizeF &size, QVector<Qt3DRender::QParameter *> additionalShaderParameters, Qt3DCore::QEntity *parent )
+QgsPreviewQuad::QgsPreviewQuad( Qt3DRender::QAbstractTexture *texture,
+                                const QPointF &centerNDC, const QSizeF &size,
+                                QVector<Qt3DRender::QParameter *> additionalShaderParameters,
+                                Qt3DCore::QEntity *parent )
   : Qt3DCore::QEntity( parent )
 {
   setObjectName( "Preview Quad" );
   Qt3DRender::QGeometry *geom = new Qt3DRender::QGeometry;
   Qt3DRender::QAttribute *positionAttribute = new Qt3DRender::QAttribute;
-  QVector<float> vert =
-  {
-    -1.0f, -1.0f, 1.0f, // bottom left
-      1.0f, -1.0f, 1.0f, // top left
-      -1.0f,  1.0f, 1.0f, // bottom right
-      -1.0f,  1.0f, 1.0f, // bottom right
-      1.0f, -1.0f, 1.0f, // top right
-      1.0f,  1.0f, 1.0f  // bottom right
-    };
+  QVector<float> vert = { -1.0f, -1.0f, 1.0f, /**/ 1.0f, -1.0f, 1.0f, /**/ -1.0f,  1.0f, 1.0f, /**/ -1.0f,  1.0f, 1.0f, /**/ 1.0f, -1.0f, 1.0f, /**/ 1.0f,  1.0f, 1.0f };
 
   QByteArray vertexArr( ( const char * ) vert.constData(), vert.size() * sizeof( float ) );
   Qt3DRender::QBuffer *vertexBuffer = nullptr;

@@ -26,20 +26,14 @@
 
 #include "qgsshadowrenderingframegraph.h"
 
-QgsPostprocessingEntity::QgsPostprocessingEntity( QgsShadowRenderingFrameGraph *frameGraph, const QString &vertexShaderPath, const QString &fragmentShaderPath, QNode *parent )
+QgsPostprocessingEntity::QgsPostprocessingEntity( QgsShadowRenderingFrameGraph *frameGraph,
+    const QString &vertexShaderPath, const QString &fragmentShaderPath,
+    QNode *parent )
   : Qt3DCore::QEntity( parent )
 {
   Qt3DRender::QGeometry *geom = new Qt3DRender::QGeometry( this );
   Qt3DRender::QAttribute *positionAttribute = new Qt3DRender::QAttribute( this );
-  QVector<float> vert =
-  {
-    -1.0f, -1.0f, 0.0f,
-      1.0f, -1.0f, 0.0f,
-      -1.0f,  1.0f, 0.0f,
-      -1.0f,  1.0f, 0.0f,
-      1.0f, -1.0f, 0.0f,
-      1.0f,  1.0f, 0.0f
-    };
+  QVector<float> vert = { -1.0f, -1.0f, 0.0f, /**/ 1.0f, -1.0f, 0.0f, /**/ -1.0f,  1.0f, 0.0f, /**/ -1.0f,  1.0f, 0.0f, /**/ 1.0f, -1.0f, 0.0f, /**/ 1.0f,  1.0f, 0.0f };
 
   QByteArray vertexArr( ( const char * ) vert.constData(), vert.size() * sizeof( float ) );
   Qt3DRender::QBuffer *vertexBuffer = nullptr;
