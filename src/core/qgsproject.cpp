@@ -435,6 +435,7 @@ QgsProject::QgsProject( QObject *parent )
   Q_NOWARN_DEPRECATED_POP
 
   mMainAnnotationLayer = new QgsAnnotationLayer( QObject::tr( "Annotations" ), QgsAnnotationLayer::LayerOptions( mTransformContext ) );
+  mMainAnnotationLayer->setParent( this );
 }
 
 
