@@ -1644,6 +1644,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
             "SERVICE": "WMS",
             "REQUEST": "GetMap",
             "LAYERS": "EXTERNAL_WMS:landsat,Country",
+            "OPACITIES": "255,150",
             "landsat:layers": "GEBCO_LATEST",
             "landsat:dpiMode": "7",
             "landsat:url": "https://www.gebco.net/data_and_products/gebco_web_services/web_map_service/mapserv",
