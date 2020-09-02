@@ -356,6 +356,35 @@ void Qgs3DMapScene::onCameraChanged()
   }
 }
 
+void removeQLayerComponentsFromHierarchy( Qt3DCore::QEntity *entity )
+{
+  QVector<Qt3DCore::QComponent *> toBeRemovedComponents;
+  for ( Qt3DCore::QComponent *component : entity->components() )
+  {
+    Qt3DRender::QLayer *layer = qobject_cast<Qt3DRender::QLayer *>( component );
+    if ( layer != nullptr )
+      toBeRemovedComponents.push_back( layer );
+  }
+  for ( Qt3DCore::QComponent *component : toBeRemovedComponents )
+    entity->removeComponent( component );
+  for ( Qt3DCore::QEntity *obj : entity->findChildren<Qt3DCore::QEntity *>() )
+  {
+    if ( obj != nullptr )
+      removeQLayerComponentsFromHierarchy( obj );
+  }
+}
+
+void addQLayerComponentsToHierarchy( Qt3DCore::QEntity *entity, const QVector<Qt3DRender::QLayer *> layers )
+{
+  for ( Qt3DRender::QLayer *layer : layers )
+    entity->addComponent( layer );
+  for ( Qt3DCore::QEntity *child : entity->findChildren<Qt3DCore::QEntity *>() )
+  {
+    if ( child != nullptr )
+      addQLayerComponentsToHierarchy( child, layers );
+  }
+}
+
 void Qgs3DMapScene::updateScene()
 {
   QgsEventTracing::addEvent( QgsEventTracing::Instant, QStringLiteral( "3D" ), QStringLiteral( "Update Scene" ) );
@@ -364,7 +393,17 @@ void Qgs3DMapScene::updateScene()
     if ( entity->isEnabled() )
       entity->update( _sceneState( mCameraController ) );
   }
-
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
+  QgsWindow3DEngine *windowEngine = qobject_cast<QgsWindow3DEngine *>( mEngine );
+  if ( windowEngine != nullptr )
+  {
+    QVector<Qt3DRender::QLayer *> layers;
+    layers.push_back( windowEngine->shadowRenderingFrameGraph()->castShadowsLayer() );
+    layers.push_back( windowEngine->shadowRenderingFrameGraph()->forwardRenderLayer() );
+    removeQLayerComponentsFromHierarchy( this );
+    addQLayerComponentsToHierarchy( this, layers );
+  }
+#endif
   updateSceneState();
 }
 
