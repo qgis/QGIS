@@ -763,7 +763,11 @@ void QgsProject::setTransformContext( const QgsCoordinateTransformContext &conte
   mTransformContext = context;
   mProjectScope.reset();
 
-  mMainAnnotationLayer->setTransformContext( context );
+  if ( mMainAnnotationLayer )
+  {
+    mMainAnnotationLayer->setTransformContext( context );
+  }
+
   for ( auto &layer : mLayerStore.get()->mapLayers() )
   {
     layer->setTransformContext( context );
