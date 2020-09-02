@@ -59,21 +59,11 @@ QgsLabelLineAnchorWidget::QgsLabelLineAnchorWidget( QWidget *parent, QgsVectorLa
     if ( !mBlockSignals )
       emit changed();
 
-    QString hint;
-    switch ( static_cast< QgsLabelLineSettings::AnchorType >( mAnchorTypeComboBox->currentData().toInt() ) )
-    {
-      case QgsLabelLineSettings::AnchorType::Strict:
-        hint = tr( "Labels are placed exactly on the label anchor only, and no other fallback placements are permitted." );
-        break;
-
-      case QgsLabelLineSettings::AnchorType::HintOnly:
-        hint = tr( "The label anchor is treated as a hint for the preferred label placement, but other placements close to the anchor point are permitted." );
-        break;
-    }
-    mAnchorTypeHintLabel->setText( hint );
+    updateAnchorTypeHint();
   } );
 
   registerDataDefinedButton( mLinePlacementDDBtn, QgsPalLayerSettings::LineAnchorPercent );
+  updateAnchorTypeHint();
 }
 
 void QgsLabelLineAnchorWidget::setSettings( const QgsLabelLineSettings &settings )
@@ -116,4 +106,20 @@ QgsLabelLineSettings QgsLabelLineAnchorWidget::settings() const
 void QgsLabelLineAnchorWidget::updateDataDefinedProperties( QgsPropertyCollection &properties )
 {
   properties.setProperty( QgsPalLayerSettings::LineAnchorPercent, mDataDefinedProperties.property( QgsPalLayerSettings::LineAnchorPercent ) );
+}
+
+void QgsLabelLineAnchorWidget::updateAnchorTypeHint()
+{
+  QString hint;
+  switch ( static_cast< QgsLabelLineSettings::AnchorType >( mAnchorTypeComboBox->currentData().toInt() ) )
+  {
+    case QgsLabelLineSettings::AnchorType::Strict:
+      hint = tr( "Labels are placed exactly on the label anchor only, and no other fallback placements are permitted." );
+      break;
+
+    case QgsLabelLineSettings::AnchorType::HintOnly:
+      hint = tr( "The label anchor is treated as a hint for the preferred label placement, but other placements close to the anchor point are permitted." );
+      break;
+  }
+  mAnchorTypeHintLabel->setText( hint );
 }
