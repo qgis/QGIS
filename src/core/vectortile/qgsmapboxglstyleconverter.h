@@ -42,6 +42,8 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      */
     QgsMapBoxGlStyleConverter( const QVariantMap &style );
 
+    ~QgsMapBoxGlStyleConverter();
+
     /**
      * Returns a new instance of a vector tile renderer representing the converted style,
      * or NULLPTR if the style could not be converted successfully.

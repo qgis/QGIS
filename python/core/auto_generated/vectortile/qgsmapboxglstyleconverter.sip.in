@@ -30,6 +30,8 @@ Constructor for QgsMapBoxGlStyleConverter.
 The specified MapBox GL ``style`` configuration will be converted.
 %End
 
+    ~QgsMapBoxGlStyleConverter();
+
     QgsVectorTileRenderer *renderer() const /Factory/;
 %Docstring
 Returns a new instance of a vector tile renderer representing the converted style,
