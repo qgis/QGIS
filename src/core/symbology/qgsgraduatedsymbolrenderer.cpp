@@ -1250,7 +1250,8 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::convertFromRenderer( con
     if ( categorizedSymbolRenderer )
     {
       r = qgis::make_unique< QgsGraduatedSymbolRenderer >( QString(), QgsRangeList() );
-      r->setSourceSymbol( categorizedSymbolRenderer->sourceSymbol()->clone() );
+      if ( categorizedSymbolRenderer->sourceSymbol() )
+        r->setSourceSymbol( categorizedSymbolRenderer->sourceSymbol()->clone() );
       if ( categorizedSymbolRenderer->sourceColorRamp() )
       {
         bool isRandom = dynamic_cast<const QgsRandomColorRamp *>( categorizedSymbolRenderer->sourceColorRamp() ) ||
