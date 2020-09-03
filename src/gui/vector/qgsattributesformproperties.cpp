@@ -543,11 +543,11 @@ void QgsAttributesFormProperties::loadAttributeSpecificEditor( QgsAttributesDnDT
       {
         if ( layout != QgsEditFormConfig::EditorLayout::TabLayout )
         {
-          loadInfoWidget( tr( "This configuration is available with double click in the Drag and Drop Designer" ) );
+          loadInfoWidget( tr( "This configuration is available with double-click in the Drag and Drop Designer" ) );
         }
         else
         {
-          loadInfoWidget( tr( "This configuration is available with double click" ) );
+          loadInfoWidget( tr( "This configuration is available with double-click" ) );
         }
         receiver->clearSelection();
         break;
