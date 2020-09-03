@@ -1065,13 +1065,13 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
 
   bool returnStatus = true;
 
-  emit layerLoaded( 0, nl.count() );
-
   // order layers based on their dependencies
   QgsScopedRuntimeProfile profile( tr( "Sorting layers" ), QStringLiteral( "projectload" ) );
   QgsLayerDefinition::DependencySorter depSorter( doc );
   if ( depSorter.hasCycle() || depSorter.hasMissingDependency() )
     return false;
+
+  emit layerLoaded( 0, nl.count() );
 
   const QVector<QDomNode> sortedLayerNodes = depSorter.sortedLayerNodes();
   const int totalLayerCount = sortedLayerNodes.count();
