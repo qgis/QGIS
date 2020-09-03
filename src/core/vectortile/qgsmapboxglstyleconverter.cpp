@@ -23,6 +23,8 @@ QgsMapBoxGlStyleConverter::QgsMapBoxGlStyleConverter( const QVariantMap &style )
 
 }
 
+QgsMapBoxGlStyleConverter::~QgsMapBoxGlStyleConverter() = default;
+
 QgsVectorTileRenderer *QgsMapBoxGlStyleConverter::renderer() const
 {
   return mRenderer ? mRenderer->clone() : nullptr;
