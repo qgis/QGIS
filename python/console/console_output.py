@@ -25,7 +25,7 @@ from qgis.PyQt.QtWidgets import QGridLayout, QSpacerItem, QSizePolicy, QShortcut
 from qgis.PyQt.Qsci import QsciScintilla
 from qgis.core import Qgis, QgsApplication, QgsSettings
 from qgis.gui import QgsMessageBar
-from .console_base import QgsQsciScintillaBase
+from .console_base import QgsPythonConsoleBase
 import sys
 
 
@@ -94,7 +94,7 @@ class writeOut(QObject):
         return False
 
 
-class ShellOutputScintilla(QgsQsciScintillaBase):
+class ShellOutputScintilla(QgsPythonConsoleBase):
 
     def __init__(self, parent=None):
         super(ShellOutputScintilla, self).__init__(parent)

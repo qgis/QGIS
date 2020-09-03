@@ -26,7 +26,7 @@ from qgis.core import QgsApplication, Qgis
 import os
 
 
-class QgsQsciScintillaBase(QsciScintilla):
+class QgsPythonConsoleBase(QsciScintilla):
 
     MARKER_NUM = 6
     DEFAULT_COLOR = "#4d4d4c"
@@ -55,7 +55,7 @@ class QgsQsciScintillaBase(QsciScintilla):
     ERROR_COLOR = "#e31a1c"
 
     def __init__(self, parent=None):
-        super(QgsQsciScintillaBase, self).__init__(parent)
+        super(QgsPythonConsoleBase, self).__init__(parent)
 
         # Enable non-ascii chars
         self.setUtf8(True)

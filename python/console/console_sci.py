@@ -34,7 +34,7 @@ import traceback
 
 from qgis.core import QgsApplication, QgsSettings, Qgis
 from .ui_console_history_dlg import Ui_HistoryDialogPythonConsole
-from .console_base import QgsQsciScintillaBase
+from .console_base import QgsPythonConsoleBase
 
 _init_commands = ["import sys", "import os", "import re", "import math", "from qgis.core import *",
                   "from qgis.gui import *", "from qgis.analysis import *", "from qgis._3d import *",
@@ -45,7 +45,7 @@ _init_commands = ["import sys", "import os", "import re", "import math", "from q
 _historyFile = os.path.join(QgsApplication.qgisSettingsDirPath(), "console_history.txt")
 
 
-class ShellScintilla(QgsQsciScintillaBase, code.InteractiveInterpreter):
+class ShellScintilla(QgsPythonConsoleBase, code.InteractiveInterpreter):
 
     def __init__(self, parent=None):
         super(ShellScintilla, self).__init__(parent)

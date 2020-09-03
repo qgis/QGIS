@@ -25,7 +25,7 @@ from qgis.PyQt.Qsci import QsciScintilla, QsciAPIs, QsciStyle
 from qgis.core import Qgis, QgsApplication, QgsSettings
 from qgis.gui import QgsMessageBar
 from qgis.utils import OverrideCursor
-from .console_base import QgsQsciScintillaBase
+from .console_base import QgsPythonConsoleBase
 import sys
 import os
 import subprocess
@@ -77,7 +77,7 @@ class KeyFilter(QObject):
         return QObject.eventFilter(self, obj, event)
 
 
-class Editor(QgsQsciScintillaBase):
+class Editor(QgsPythonConsoleBase):
 
     def __init__(self, parent=None):
         super(Editor, self).__init__(parent)
