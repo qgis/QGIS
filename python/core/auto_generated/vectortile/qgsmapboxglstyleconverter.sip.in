@@ -1,0 +1,53 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vectortile/qgsmapboxglstyleconverter.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsMapBoxGlStyleConverter
+{
+%Docstring
+Handles conversion of MapBox GL styles to QGIS vector tile renderers and labeling
+settings.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsmapboxglstyleconverter.h"
+%End
+  public:
+
+    QgsMapBoxGlStyleConverter( const QVariantMap &style );
+%Docstring
+Constructor for QgsMapBoxGlStyleConverter.
+
+The specified MapBox GL ``style`` configuration will be converted.
+%End
+
+    QgsVectorTileRenderer *renderer() const /Factory/;
+%Docstring
+Returns a new instance of a vector tile renderer representing the converted style,
+or ``None`` if the style could not be converted successfully.
+%End
+
+    QgsVectorTileLabeling *labeling() const /Factory/;
+%Docstring
+Returns a new instance of a vector tile labeling representing the converted style,
+or ``None`` if the style could not be converted successfully.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vectortile/qgsmapboxglstyleconverter.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
