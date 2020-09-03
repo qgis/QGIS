@@ -1955,11 +1955,14 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       // below directly alter the widget and check for it.
       rww->setVisibleButtons( relDef->visibleButtons() );
       rww->setShowLabel( relDef->showLabel() );
+      rww->setNmRelationId( relDef->nmRelationId() );
+      rww->setForceSuppressFormPopup( relDef->forceSuppressFormPopup() );
 
       mWidgets.append( rww );
       mFormWidgets.append( formWidget );
 
       newWidgetInfo.widget = formWidget;
+      newWidgetInfo.showLabel = relDef->showLabel();
       newWidgetInfo.labelText = QString();
       newWidgetInfo.labelOnTop = true;
       break;
@@ -2090,7 +2093,6 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
       QgsQmlWidgetWrapper *qmlWrapper = new QgsQmlWidgetWrapper( mLayer, nullptr, this );
       qmlWrapper->setQmlCode( elementDef->qmlCode() );
-      qmlWrapper->setConfig( mLayer->editFormConfig().widgetConfig( elementDef->name() ) );
       context.setAttributeFormMode( mMode );
       qmlWrapper->setContext( context );
 
@@ -2111,8 +2113,6 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       context.setAttributeFormMode( mMode );
       htmlWrapper->setHtmlCode( elementDef->htmlCode() );
       htmlWrapper->reinitWidget();
-      htmlWrapper->setConfig( mLayer->editFormConfig().widgetConfig( elementDef->name() ) );
-
       mWidgets.append( htmlWrapper );
 
       newWidgetInfo.widget = htmlWrapper->widget();

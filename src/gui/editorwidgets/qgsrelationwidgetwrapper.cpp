@@ -125,9 +125,10 @@ void QgsRelationWidgetWrapper::setShowSaveChildEditsButton( bool showSaveChildEd
 bool QgsRelationWidgetWrapper::showLabel() const
 {
   if ( mWidget )
+  {
     return mWidget->showLabel();
-  else
-    return false;
+  }
+  return false;
 }
 
 void QgsRelationWidgetWrapper::setShowLabel( bool showLabel )
@@ -154,6 +155,8 @@ void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
 
   QgsAttributeEditorContext myContext( QgsAttributeEditorContext( context(), mRelation, QgsAttributeEditorContext::Multiple, QgsAttributeEditorContext::Embed ) );
 
+  // read the legacy config of force-suppress-popup to support settings made on autoconfigurated forms
+  // it will be overwritten on specific widget configuration
   if ( config( QStringLiteral( "force-suppress-popup" ), false ).toBool() )
   {
     const_cast<QgsVectorLayerTools *>( myContext.vectorLayerTools() )->setForceSuppressFormPopup( true );
@@ -166,8 +169,8 @@ void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
   }
   */
 
-  w->setEditorContext( myContext );
-
+  // read the legacy config of nm-rel to support settings made on autoconfigurated forms
+  // it will be overwritten on specific widget configuration
   mNmRelation = QgsProject::instance()->relationManager()->relation( config( QStringLiteral( "nm-rel" ) ).toString() );
 
   // If this widget is already embedded by the same relation, reduce functionality
@@ -185,6 +188,8 @@ void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
   while ( ctx );
 
   w->setRelations( mRelation, mNmRelation );
+
+  w->setEditorContext( myContext );
 
   mWidget = w;
 }
@@ -221,4 +226,57 @@ void QgsRelationWidgetWrapper::setVisibleButtons( const QgsAttributeEditorRelati
 QgsAttributeEditorRelation::Buttons QgsRelationWidgetWrapper::visibleButtons() const
 {
   return mWidget->visibleButtons();
+}
+
+void QgsRelationWidgetWrapper::setForceSuppressFormPopup( bool forceSuppressFormPopup )
+{
+  if ( mWidget )
+  {
+    mWidget->setForceSuppressFormPopup( forceSuppressFormPopup );
+    //it's set to true if one widget is configured like this but the setting is done generally (influencing all widgets).
+    if ( forceSuppressFormPopup )
+    {
+      const_cast<QgsVectorLayerTools *>( mWidget->editorContext().vectorLayerTools() )->setForceSuppressFormPopup( true );
+    }
+  }
+}
+
+bool QgsRelationWidgetWrapper::forceSuppressFormPopup() const
+{
+  if ( mWidget )
+    return mWidget->forceSuppressFormPopup();
+  return false;
+}
+
+void QgsRelationWidgetWrapper::setNmRelationId( const QVariant &nmRelationId )
+{
+  if ( mWidget )
+  {
+    mWidget->setNmRelationId( nmRelationId );
+
+    mNmRelation = QgsProject::instance()->relationManager()->relation( nmRelationId.toString() );
+
+    // If this widget is already embedded by the same relation, reduce functionality
+    const QgsAttributeEditorContext *ctx = &context();
+    do
+    {
+      if ( ( ctx->relation().name() == mRelation.name() && ctx->formMode() == QgsAttributeEditorContext::Embed )
+           || ( mNmRelation.isValid() && ctx->relation().name() == mNmRelation.name() ) )
+      {
+        mWidget->setVisible( false );
+        break;
+      }
+      ctx = ctx->parentContext();
+    }
+    while ( ctx );
+
+    mWidget->setRelations( mRelation, mNmRelation );
+  }
+}
+
+QVariant QgsRelationWidgetWrapper::nmRelationId() const
+{
+  if ( mWidget )
+    return mWidget->nmRelationId();
+  return QVariant();
 }

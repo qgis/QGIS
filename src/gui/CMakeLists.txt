@@ -74,7 +74,6 @@ SET(QGIS_GUI_SRCS
   callouts/qgscalloutwidget.cpp
 
   attributeformconfig/qgsattributeformcontaineredit.cpp
-  attributeformconfig/qgsattributerelationedit.cpp
   attributeformconfig/qgsattributetypedialog.cpp
   attributeformconfig/qgsattributewidgetedit.cpp
 
@@ -804,7 +803,6 @@ SET(QGIS_GUI_HDRS
   qgswindowmanagerinterface.h
 
   attributeformconfig/qgsattributeformcontaineredit.h
-  attributeformconfig/qgsattributerelationedit.h
   attributeformconfig/qgsattributetypedialog.h
   attributeformconfig/qgsattributewidgetedit.h
 

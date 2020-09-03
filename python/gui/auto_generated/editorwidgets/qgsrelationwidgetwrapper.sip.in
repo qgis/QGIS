@@ -113,6 +113,39 @@ Returns the buttons which are shown
 .. versionadded:: 3.16
 %End
 
+    bool forceSuppressFormPopup() const;
+%Docstring
+Determines the force suppress form popup status that is configured for this widget
+
+.. versionadded:: 3.16
+%End
+
+    void setForceSuppressFormPopup( bool forceSuppressFormPopup );
+%Docstring
+Sets force suppress form popup status to ``forceSuppressFormPopup`` for this widget
+and for the vectorLayerTools (if true).
+This flag will override the layer and general settings regarding the automatic
+opening of the attribute form dialog when digitizing is completed.
+
+.. versionadded:: 3.16
+%End
+
+    QVariant nmRelationId() const;
+%Docstring
+Determines the relation id of the second relation involved in an N:M relation.
+
+.. versionadded:: 3.16
+%End
+
+    void setNmRelationId( const QVariant &nmRelationId = QVariant() );
+%Docstring
+Sets ``nmRelationId`` for the relation id of the second relation involved in an N:M relation.
+If it's empty, then it's considered as a 1:M relationship.
+
+.. versionadded:: 3.16
+%End
+
+
     QgsRelation relation() const;
 %Docstring
 The relation for which this wrapper is created.
