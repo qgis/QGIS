@@ -86,6 +86,7 @@ QgsAttributeForm::QgsAttributeForm( QgsVectorLayer *vl, const QgsFeature &featur
   connect( this, &QgsAttributeForm::modeChanged, this, &QgsAttributeForm::updateContainersVisibility );
 
   updateContainersVisibility();
+  updateLabels();
 
 }
 
@@ -2047,6 +2048,27 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         else
         {
           QLabel *mypLabel = new QLabel( widgetInfo.labelText );
+
+          // Alias DD overrides
+          if ( childDef->type() == QgsAttributeEditorElement::AeTypeField )
+          {
+            const QgsAttributeEditorField *fieldDef { static_cast<QgsAttributeEditorField *>( childDef ) };
+            const QgsFields fields = vl->fields();
+            const int fldIdx = fieldDef->idx();
+            if ( fldIdx < fields.count() && fldIdx >= 0 )
+            {
+              const QString fieldName { fields.at( fldIdx ).name() };
+              if ( mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).hasProperty( QgsEditFormConfig::DataDefinedProperty::Alias ) )
+              {
+                const QgsProperty property { mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).property( QgsEditFormConfig::DataDefinedProperty::Alias ) };
+                if ( property.isActive() && ! property.expressionString().isEmpty() )
+                {
+                  mLabelDataDefinedProperties[ mypLabel ] = property;
+                }
+              }
+            }
+          }
+
           mypLabel->setToolTip( widgetInfo.toolTip );
           if ( columnCount > 1 && !widgetInfo.labelOnTop )
           {
