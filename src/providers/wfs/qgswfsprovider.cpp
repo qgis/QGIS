@@ -877,7 +877,16 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       {
         the_geom.convertToMultiType();
       }
-      QDomElement gmlElem = QgsOgcUtils::geometryToGML( the_geom, transactionDoc );
+      QDomElement gmlElem;
+      // WFS 1.1.0 uses GML 3
+      if ( mShared->mWFSVersion == QStringLiteral( "1.1.0" ) )
+      {
+        gmlElem = QgsOgcUtils::geometryToGML( the_geom, transactionDoc, QLatin1String( "GML3" ) );
+      }
+      else
+      {
+        gmlElem = QgsOgcUtils::geometryToGML( the_geom, transactionDoc, QLatin1String( "GML2" ) );
+      }
       if ( !gmlElem.isNull() )
       {
         gmlElem.setAttribute( QStringLiteral( "srsName" ), crs().authid() );
@@ -1045,7 +1054,16 @@ bool QgsWFSProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
     nameElem.appendChild( nameText );
     propertyElem.appendChild( nameElem );
     QDomElement valueElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Value" ) );
-    QDomElement gmlElem = QgsOgcUtils::geometryToGML( geomIt.value(), transactionDoc );
+    QDomElement gmlElem;
+    // WFS 1.1.0 uses GML 3
+    if ( mShared->mWFSVersion == QStringLiteral( "1.1.0" ) )
+    {
+      gmlElem = QgsOgcUtils::geometryToGML( geomIt.value(), transactionDoc, QLatin1String( "GML3" ) );
+    }
+    else
+    {
+      gmlElem = QgsOgcUtils::geometryToGML( geomIt.value(), transactionDoc,  QLatin1String( "GML2" ) );
+    }
     gmlElem.setAttribute( QStringLiteral( "srsName" ), crs().authid() );
     valueElem.appendChild( gmlElem );
     propertyElem.appendChild( valueElem );
