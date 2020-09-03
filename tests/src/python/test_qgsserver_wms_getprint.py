@@ -339,7 +339,7 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
             "REQUEST": "GetPrint",
             "TEMPLATE": "layoutA4",
             "map0:EXTENT": "-90,-180,90,180",
-            "map0:LAYERS": "EXTERNAL_WMS:landsat",
+            "map0:LAYERS": "EXTERNAL_WMS:landsat,Country",
             "landsat:layers": "GEBCO_LATEST",
             "landsat:dpiMode": "7",
             "landsat:url": "https://www.gebco.net/data_and_products/gebco_web_services/web_map_service/mapserv",
