@@ -1068,8 +1068,12 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
   // order layers based on their dependencies
   QgsScopedRuntimeProfile profile( tr( "Sorting layers" ), QStringLiteral( "projectload" ) );
   QgsLayerDefinition::DependencySorter depSorter( doc );
-  if ( depSorter.hasCycle() || depSorter.hasMissingDependency() )
+  if ( depSorter.hasCycle() )
     return false;
+
+  // Missing a dependency? We still load all the layers, otherwise the project is completely broken!
+  if ( depSorter.hasMissingDependency() )
+    returnStatus = false;
 
   emit layerLoaded( 0, nl.count() );
 
