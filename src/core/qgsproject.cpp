@@ -376,6 +376,10 @@ QgsProject::QgsProject( QObject *parent )
   , mAuxiliaryStorage( new QgsAuxiliaryStorage() )
 {
   mProperties.setName( QStringLiteral( "properties" ) );
+
+  mMainAnnotationLayer = new QgsAnnotationLayer( QObject::tr( "Annotations" ), QgsAnnotationLayer::LayerOptions( mTransformContext ) );
+  mMainAnnotationLayer->setParent( this );
+
   clear();
 
   // bind the layer tree to the map layer registry.
@@ -433,9 +437,6 @@ QgsProject::QgsProject( QObject *parent )
   Q_NOWARN_DEPRECATED_PUSH
   connect( mViewSettings, &QgsProjectViewSettings::mapScalesChanged, this, &QgsProject::mapScalesChanged );
   Q_NOWARN_DEPRECATED_POP
-
-  mMainAnnotationLayer = new QgsAnnotationLayer( QObject::tr( "Annotations" ), QgsAnnotationLayer::LayerOptions( mTransformContext ) );
-  mMainAnnotationLayer->setParent( this );
 }
 
 
