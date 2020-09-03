@@ -1227,7 +1227,7 @@ After the initial Terminal configure, you can use ccmake to make further changes
 
 ```bash
     cd build
-    ccmake ..
+    ccmake ../QGIS
 ```
 
 ## 5.6. Building
