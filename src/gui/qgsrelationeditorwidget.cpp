@@ -34,60 +34,6 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMessageBox>
-<<<<<<< HEAD
-=======
-#include <QPushButton>
-
-/// @cond PRIVATE
-///
-QgsFilteredSelectionManager::QgsFilteredSelectionManager( QgsVectorLayer *layer, const QgsFeatureRequest &request, QObject *parent )
-  : QgsVectorLayerSelectionManager( layer, parent )
-  , mRequest( request )
-{
-  if ( ! layer )
-    return;
-
-  for ( auto fid : layer->selectedFeatureIds() )
-    if ( mRequest.acceptFeature( layer->getFeature( fid ) ) )
-      mSelectedFeatureIds << fid;
-
-  connect( layer, &QgsVectorLayer::selectionChanged, this, &QgsFilteredSelectionManager::onSelectionChanged );
-}
-
-const QgsFeatureIds &QgsFilteredSelectionManager::selectedFeatureIds() const
-{
-  return mSelectedFeatureIds;
-}
-
-int QgsFilteredSelectionManager::selectedFeatureCount()
-{
-  return mSelectedFeatureIds.count();
-}
-
-void QgsFilteredSelectionManager::onSelectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect )
-{
-  QgsFeatureIds lselected = selected;
-  if ( clearAndSelect )
-  {
-    mSelectedFeatureIds.clear();
-  }
-  else
-  {
-    for ( auto fid : deselected )
-      mSelectedFeatureIds.remove( fid );
-  }
-
-  for ( auto fid : selected )
-    if ( mRequest.acceptFeature( layer()->getFeature( fid ) ) )
-      mSelectedFeatureIds << fid;
-    else
-      lselected.remove( fid );
-
-  emit selectionChanged( lselected, deselected, clearAndSelect );
-}
-
-/// @endcond
->>>>>>> f7a93d3a41... fix crash with missing layer of a  relation (#38550)
 
 QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget *parent )
   : QgsCollapsibleGroupBox( parent )
@@ -249,7 +195,7 @@ void QgsRelationEditorWidget::setRelationFeature( const QgsRelation &relation, c
   // If it is already initialized, it has been set visible before and the currently shown feature is changing
   // and the widget needs updating
 
-  if ( mVisible )
+  if ( mVisible && mRelation.isValid() )
   {
     QgsFeatureRequest myRequest = mRelation.getRelatedFeaturesRequest( mFeature );
     mDualView->init( mRelation.referencingLayer(), mEditorContext.mapCanvas(), myRequest, mEditorContext );
