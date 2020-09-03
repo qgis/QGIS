@@ -1256,7 +1256,13 @@ void QgsOgrProvider::loadFields()
                         );
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,2,0)
-    const QString alias = textEncoding()->toUnicode( OGR_Fld_GetAlternativeNameRef( fldDef ) );
+    const char *fldName = OGR_Fld_GetNameRef(fldDef);
+    QTextCodec::ConverterState *state = nullptr;
+    const QString aliasName = textEncoding()->toUnicode(fldName, (int) sizeof(fldName), state);
+    // FIXME
+    // function OGR_Fld_GetAlternativeNameRef yet to be implemented, Temporary fix : fldName will be used as alias
+    const QString alias = aliasName;//textEncoding()->toUnicode( OGR_Fld_GetAlternativeNameRef( fldDef ) );    
+    //const QString alias = textEncoding()->toUnicode( OGR_Fld_GetAlternativeNameRef( fldDef ) );
     if ( !alias.isEmpty() )
     {
       newField.setAlias( alias );
