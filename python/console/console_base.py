@@ -111,14 +111,6 @@ class QgsQsciScintillaBase(QsciScintilla):
         if fontSize:
             font.setPointSize(fontSize)
 
-        # TODO: editor has it's own font and size...
-#        loadFont = self.settings.value("pythonConsole/fontfamilytextEditor")
-#        if loadFont:
-#            font.setFamily(loadFont)
-#        fontSize = self.settings.value("pythonConsole/fontsizeEditor", type=int)
-#        if fontSize:
-#            font.setPointSize(fontSize)
-
         self.lexer.setDefaultFont(font)
         self.lexer.setDefaultColor(QColor(self.settings.value("pythonConsole/defaultFontColor", QColor(self.DEFAULT_COLOR))))
         self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentFontColor", QColor(self.COMMENT_COLOR))), 1)
