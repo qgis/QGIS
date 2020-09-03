@@ -195,7 +195,7 @@ void QgsRelationEditorWidget::setRelationFeature( const QgsRelation &relation, c
   // If it is already initialized, it has been set visible before and the currently shown feature is changing
   // and the widget needs updating
 
-  if ( mVisible )
+  if ( mVisible && mRelation.isValid() )
   {
     QgsFeatureRequest myRequest = mRelation.getRelatedFeaturesRequest( mFeature );
     mDualView->init( mRelation.referencingLayer(), mEditorContext.mapCanvas(), myRequest, mEditorContext );
@@ -732,7 +732,7 @@ void QgsRelationEditorWidget::updateUi()
 
       mDualView->init( mNmRelation.referencedLayer(), mEditorContext.mapCanvas(), nmRequest, mEditorContext );
     }
-    else
+    else if ( mRelation.referencingLayer() )
     {
       mDualView->init( mRelation.referencingLayer(), mEditorContext.mapCanvas(), myRequest, mEditorContext );
     }
