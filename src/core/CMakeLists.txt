@@ -56,6 +56,7 @@ set(QGIS_CORE_SRCS
   symbology/qgslinesymbollayer.cpp
   symbology/qgsmarkersymbollayer.cpp
   symbology/qgsmasksymbollayer.cpp
+  symbology/qgsmergedfeaturerenderer.cpp
   symbology/qgspainterswapper.cpp
   symbology/qgsnullsymbolrenderer.cpp
   symbology/qgspointclusterrenderer.cpp
@@ -1487,6 +1488,7 @@ set(QGIS_CORE_HDRS
   symbology/qgslegendsymbolitem.h
   symbology/qgslinesymbollayer.h
   symbology/qgsmarkersymbollayer.h
+  symbology/qgsmergedfeaturerenderer.h
   symbology/qgsnullsymbolrenderer.h
   symbology/qgspointclusterrenderer.h
   symbology/qgspointdisplacementrenderer.h
