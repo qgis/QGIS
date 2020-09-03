@@ -47,6 +47,9 @@ QgsFilteredSelectionManager::QgsFilteredSelectionManager( QgsVectorLayer *layer,
   : QgsVectorLayerSelectionManager( layer, parent )
   , mRequest( request )
 {
+  if ( ! layer )
+    return;
+
   for ( auto fid : layer->selectedFeatureIds() )
     if ( mRequest.acceptFeature( layer->getFeature( fid ) ) )
       mSelectedFeatureIds << fid;
@@ -922,7 +925,7 @@ void QgsRelationEditorWidget::updateUi()
 
       initDualView( mNmRelation.referencedLayer(), nmRequest );
     }
-    else
+    else if ( mRelation.referencingLayer() )
     {
       initDualView( mRelation.referencingLayer(), myRequest );
     }
