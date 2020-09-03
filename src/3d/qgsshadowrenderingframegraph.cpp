@@ -311,6 +311,10 @@ void QgsShadowRenderingFrameGraph::setShadowRenderingEnabled( bool enabled )
 {
   mShadowRenderingEnabled = enabled;
   mPostprocessingEntity->setShadowRenderingEnabled( mShadowRenderingEnabled );
+  if ( mShadowRenderingEnabled )
+    mShadowSceneEntitiesFilter->setEnabled( true );
+  else
+    mShadowSceneEntitiesFilter->setEnabled( false );
 }
 
 void QgsShadowRenderingFrameGraph::setShadowBias( float shadowBias )
