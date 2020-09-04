@@ -74,17 +74,35 @@ void QgsHanaProviderConnection::setCapabilities()
 
   const QgsDataSourceUri dsUri { uri() };
   QgsHanaConnectionRef conn( dsUri );
-  const QString sql = QStringLiteral( "SELECT PRIVILEGE FROM PUBLIC.EFFECTIVE_PRIVILEGES "
-                                      "WHERE USER_NAME = CURRENT_USER AND IS_VALID = 'TRUE' AND OBJECT_TYPE = 'SYSTEMPRIVILEGE'" );
+  const QString sql = QStringLiteral( "SELECT OBJECT_TYPE, PRIVILEGE, SCHEMA_NAME, OBJECT_NAME FROM PUBLIC.EFFECTIVE_PRIVILEGES "
+                                      "WHERE USER_NAME = CURRENT_USER AND IS_VALID = 'TRUE'" );
   QgsHanaResultSetRef rsPrivileges = conn->executeQuery( sql );
   while ( rsPrivileges->next() )
   {
-    QString privType = rsPrivileges->getString( 1 );
-    if ( privType == QLatin1String( "CREATE SCHEMA" ) )
-      mCapabilities |= Capability::CreateSchema | Capability::DropSchema | Capability::RenameSchema;
-    else if ( privType == QLatin1String( "CATALOG READ" ) || privType == QLatin1String( "DATA ADMIN" ) )
-      mCapabilities |= Capability::Schemas | Capability::Tables | Capability::TableExists;
+    QString objType = rsPrivileges->getString( 1 );
+    QString privType = rsPrivileges->getString( 2 );
+    if ( objType == QLatin1String( "SYSTEMPRIVILEGE" ) )
+    {
+      if ( privType == QLatin1String( "CREATE SCHEMA" ) )
+        mCapabilities |= Capability::CreateSchema | Capability::DropSchema | Capability::RenameSchema;
+      else if ( privType == QLatin1String( "CATALOG READ" ) || privType == QLatin1String( "DATA ADMIN" ) )
+        mCapabilities |= Capability::Schemas | Capability::Tables | Capability::TableExists;
+    }
+    else if ( objType == QLatin1String( "TABLE" ) || objType == QLatin1String( "VIEW" ) )
+    {
+      if ( privType == QLatin1String( "SELECT" ) )
+      {
+        QString schemaName = rsPrivileges->getString( 3 );
+        QString objName = rsPrivileges->getString( 4 );
+
+        if ( schemaName == QLatin1String( "SYS" ) && objName == QLatin1String( "SCHEMAS" ) )
+          mCapabilities |= Capability::Schemas;
+        else if ( objName == QLatin1String( "TABLE_COLUMNS" ) )
+          mCapabilities |= Capability::Tables | Capability::TableExists;
+      }
+    }
   }
+
   rsPrivileges->close();
 }
 
