@@ -19,7 +19,7 @@
 #include "qgssymbollayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgslogger.h"
-
+#include "qgsfillsymbollayer.h"
 
 QgsMapBoxGlStyleConverter::QgsMapBoxGlStyleConverter( const QVariantMap &style, const QString &styleName )
   : mStyle( style )
@@ -119,7 +119,7 @@ void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers, const Q
   labeling->setStyles( labelingStyles );
 }
 
-bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, const QString &styleName, QgsVectorTileBasicRendererStyle &style )
+bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, const QString &, QgsVectorTileBasicRendererStyle &style )
 {
   if ( !jsonLayer.contains( QStringLiteral( "paint" ) ) )
   {
@@ -155,10 +155,149 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, co
         QgsDebugMsg( "Skipping non-implemented color expression" );
         break;
     }
-
   }
 
+  QColor fillOutlineColor;
+  if ( !jsonLayer.contains( QStringLiteral( "fill-outline-color" ) ) )
+  {
+    // fill-outline-color
+    if ( fillColor.isValid() )
+      fillOutlineColor = fillColor;
+    else
+    {
+      // use fill color data defined property
+      if ( ddProperties.isActive( QgsSymbolLayer::PropertyFillColor ) )
+        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor,  ddProperties.property( QgsSymbolLayer::PropertyFillColor ) );
+    }
+  }
+  else
+  {
+    const QVariant jsonFillOutlineColor = jsonPaint.value( QStringLiteral( "fill-outline-color" ) );
+    switch ( jsonFillOutlineColor.type() )
+    {
+      case QVariant::Map:
+        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, parseInterpolateColorByZoom( jsonFillOutlineColor.toMap() ) );
+        break;
 
+      case QVariant::List:
+      case QVariant::StringList:
+        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, parseInterpolateListByZoom( jsonFillOutlineColor.toList(), PropertyType::Color ) );
+        break;
+
+      case QVariant::String:
+        fillOutlineColor = parseColor( jsonFillOutlineColor.toString() );
+        break;
+
+      default:
+        QgsDebugMsg( "Skipping non-implemented color expression" );
+        break;
+    }
+  }
+
+  double fillOpacity = -1.0;
+  if ( jsonPaint.contains( QStringLiteral( "fill-opacity" ) ) )
+  {
+    const QVariant jsonFillOpacity = jsonPaint.value( QStringLiteral( "fill-opacity" ) );
+    switch ( jsonFillOpacity.type() )
+    {
+      case QVariant::Int:
+      case QVariant::Double:
+        fillOpacity = jsonFillOpacity.toDouble();
+        break;
+
+      case QVariant::Map:
+        if ( ddProperties.isActive( QgsSymbolLayer::PropertyFillColor ) )
+        {
+          QgsDebugMsg( QStringLiteral( "Could not set opacity of layer %1, opacity already defined in fill color" ).arg( jsonLayer.value( QStringLiteral( "id" ) ).toString() ) );
+        }
+        else
+        {
+          ddProperties.setProperty( QgsSymbolLayer::PropertyFillColor, parseInterpolateOpacityByZoom( jsonFillOpacity.toMap() ) );
+          ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, parseInterpolateOpacityByZoom( jsonFillOpacity.toMap() ) );
+        }
+        break;
+
+      case QVariant::List:
+      case QVariant::StringList:
+        if ( ddProperties.isActive( QgsSymbolLayer::PropertyFillColor ) )
+        {
+          QgsDebugMsg( QStringLiteral( "Could not set opacity of layer %1, opacity already defined in fill color" ).arg( jsonLayer.value( QStringLiteral( "id" ) ).toString() ) );
+        }
+        else
+        {
+          ddProperties.setProperty( QgsSymbolLayer::PropertyFillColor, parseInterpolateListByZoom( jsonFillOpacity.toList(), PropertyType::Opacity ) );
+          ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, parseInterpolateListByZoom( jsonFillOpacity.toList(), PropertyType::Opacity ) );
+        }
+        break;
+
+      default:
+        QgsDebugMsg( "Skipping non-implemented opacity expression" );
+        break;
+    }
+  }
+
+  // TODO: fill-translate
+  std::unique_ptr< QgsSymbol > symbol( QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry ) );
+  QgsSimpleFillSymbolLayer *fillSymbol = dynamic_cast< QgsSimpleFillSymbolLayer * >( symbol->symbolLayer( 0 ) );
+
+  // set render units
+  symbol->setOutputUnit( QgsUnitTypes::RenderPixels );
+  fillSymbol->setOutputUnit( QgsUnitTypes::RenderPixels );
+
+#if 0 // todo
+  // get fill-pattern to set sprite
+  // sprite imgs will already have been downloaded in converter.py
+  fill_pattern = json_paint.get( "fill-pattern" )
+
+                 // fill-pattern can be String or Object
+                 // String: {"fill-pattern": "dash-t"}
+                 // Object: {"fill-pattern":{"stops":[[11,"wetland8"],[12,"wetland16"]]}}
+
+                 // if Object, simpify into one sprite.
+                 // TODO:
+                 if isinstance( fill_pattern, dict )
+  {
+    pattern_stops = fill_pattern.get( "stops", [None] )
+                    fill_pattern = pattern_stops[-1][-1]
+  }
+
+  // when fill-pattern exists, set and insert RasterFillSymbolLayer
+  if fill_pattern
+{
+  SPRITES_PATH = os.path.join( os.path.dirname( os.path.realpath( __file__ ) ), "sprites" )
+    raster_fill_symbol = QgsRasterFillSymbolLayer( os.path.join( SPRITES_PATH, fill_pattern + ".png" ) )
+    sym.appendSymbolLayer( raster_fill_symbol )
+  }
+#endif
+
+  fillSymbol->setDataDefinedProperties( ddProperties );
+
+  if ( fillOpacity != -1 )
+  {
+    symbol->setOpacity( fillOpacity );
+  }
+
+  if ( fillOutlineColor.isValid() )
+  {
+    fillSymbol->setStrokeColor( fillOutlineColor );
+  }
+  else
+  {
+    fillSymbol->setStrokeStyle( Qt::NoPen );
+  }
+
+  if ( fillColor.isValid() )
+  {
+    fillSymbol->setFillColor( fillColor );
+  }
+  else
+  {
+    fillSymbol->setBrushStyle( Qt::NoBrush );
+  }
+
+  style.setGeometryType( QgsWkbTypes::PolygonGeometry );
+  style.setSymbol( symbol.release() );
+  return true;
 }
 
 QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateColorByZoom( const QVariantMap &json )
