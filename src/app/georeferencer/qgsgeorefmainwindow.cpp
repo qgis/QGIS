@@ -519,7 +519,7 @@ void QgsGeoreferencerMainWindow::deleteDataPoint( QPoint coords )
   // This is the manhattan length from mouse cursor point to GCP
   // We will use this distance to pick the closest GCP to the cursor
   // GCPs farther than the initial minDistance are too far and are ignored
-  qreal minDistance = 10;
+  qreal minDistance = mCanvas->physicalDpiX() / 10;
   for ( QgsGCPList::iterator it = mPoints.begin(); it != mPoints.end(); ++it )
   {
     qreal distance = ( *it )->distance( coords, true );
@@ -555,7 +555,7 @@ void QgsGeoreferencerMainWindow::selectPoint( QPoint p )
   // This is the manhattan length from mouse cursor point to GCP
   // We will use this distance to pick the closest GCP to the cursor
   // GCPs farther than the initial minDistance are too far and are ignored
-  qreal minDistance = 10;
+  qreal minDistance = mCanvas->physicalDpiX() / 10;
   for ( QgsGCPList::const_iterator it = mPoints.constBegin(); it != mPoints.constEnd(); ++it )
   {
     qreal distance = ( *it )->distance( p, isMapPlugin );
