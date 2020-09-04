@@ -293,7 +293,7 @@ editing.
 
 :return: 1 in case of error
 
-:return: 2 in case vertex allready exists or point does not intersect segment
+:return: 2 in case vertex already exists or point does not intersect segment
 
 .. versionadded:: 3.16
 %End

@@ -252,7 +252,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * editing.
      * \return 0 in case of success
      * \return 1 in case of error
-     * \return 2 in case vertex allready exists or point does not intersect segment
+     * \return 2 in case vertex already exists or point does not intersect segment
      * \since QGIS 3.16
      */
     int addTopologicalPoints( const QgsPointSequence &ps );
