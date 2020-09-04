@@ -532,6 +532,27 @@
     <string>Organize Columns</string>
    </property>
   </action>
+  <action name="mActionAddFeatureViaAttributeTable">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionNewTableRow.svg</normaloff>:/images/themes/default/mActionNewTableRow.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add feature via attribute table</string>
+   </property>
+  </action>
+  <action name="mActionAddFeatureViaAttributeForm">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mIconFormSelect.svg</normaloff>:/images/themes/default/mIconFormSelect.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add feature via attribute form</string>
+   </property>
+   <property name="toolTip">
+    <string>Add feature via attribute form</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
