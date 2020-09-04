@@ -67,6 +67,16 @@ After conversion, the resultant labeling and style rules can be retrieved by cal
 %Docstring
 Returns a descriptive error message if an error was encountered during the style conversion,
 or an empty string if no error was encountered.
+
+.. seealso:: :py:func:`warnings`
+%End
+
+    QStringList warnings() const;
+%Docstring
+Returns a list of user-friendly warnings generated during the conversion, e.g. as a result
+of MapBox GL style settings which cannot be translated to QGIS styles.
+
+.. seealso:: :py:func:`errorMessage`
 %End
 
     QgsVectorTileRenderer *renderer() const /Factory/;
@@ -86,31 +96,78 @@ or ``None`` if the style could not be converted successfully.
     enum PropertyType
     {
       Color,
-      Line,
+      Numeric,
       Opacity,
-      Text
+    };
+
+    class ConversionContext
+{
+%Docstring
+Context for a MapBox GL style conversion operation.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsmapboxglstyleconverter.h"
+%End
+      public:
+
+        void pushWarning( const QString &warning );
+%Docstring
+Pushes a ``warning`` message generated during the conversion.
+%End
+
+        QStringList warnings() const;
+%Docstring
+Returns a list of warning messages generated during the conversion.
+%End
+
+        void clearWarnings();
+%Docstring
+Clears the list of warning messages.
+%End
+
     };
 
     void parseLayers( const QVariantList &layers );
 %Docstring
-Parse list of ``layers`` from JSON
+Parse list of ``layers`` from JSON.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
 %End
 
-    static bool parseFillLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style /Out/ );
+    static bool parseFillLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style /Out/, ConversionContext &context );
 %Docstring
 Parses a fill layer.
 
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+
 :param jsonLayer: fill layer to parse
+:param context: conversion context
 
 :return: - ``True`` if the layer was successfully parsed.
          - style: generated QGIS vector tile style
 %End
 
-    static bool parseLineLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style /Out/ );
+    static bool parseLineLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style /Out/, ConversionContext &context );
 %Docstring
 Parses a line layer.
 
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+
 :param jsonLayer: fill layer to parse
+:param context: conversion context
 
 :return: - ``True`` if the layer was successfully parsed.
          - style: generated QGIS vector tile style
@@ -120,41 +177,81 @@ Parses a line layer.
                                   QgsVectorTileBasicRendererStyle &rendererStyle /Out/,
                                   bool &hasRenderer /Out/,
                                   QgsVectorTileBasicLabelingStyle &labelingStyle /Out/,
-                                  bool &hasLabeling /Out/ );
+                                  bool &hasLabeling /Out/, ConversionContext &context );
 %Docstring
 Parses a symbol layer.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
 
 :param jsonLayer: fill layer to parse
 :param rendererStyle: generated QGIS vector tile style
 :param hasRenderer: will be set to ``True`` if symbol layer generated a renderer style
 :param labelingStyle: generated QGIS vector tile labeling
+:param context: conversion context
 %End
 
 
-    static QgsProperty parseInterpolateColorByZoom( const QVariantMap &json, QColor *defaultColor = 0 );
-    static QgsProperty parseInterpolateByZoom( const QVariantMap &json, double multiplier = 1 );
+    static QgsProperty parseInterpolateColorByZoom( const QVariantMap &json, ConversionContext &context, QColor *defaultColor = 0 );
+%Docstring
+Parses a color value which is interpolated by zoom range.
+
+:param json: definition of color interpolation
+:param context: conversion context
+:param defaultColor: optional storage for a reasonable "default" color representing the overall property.
+%End
+
+    static QgsProperty parseInterpolateByZoom( const QVariantMap &json, ConversionContext &context, double multiplier = 1 );
+%Docstring
+Parses a numeric value which is interpolated by zoom range.
+
+:param json: definition of interpolation
+:param context: conversion context
+:param multiplier: optional multiplication factor
+%End
 
     static QgsProperty parseInterpolateOpacityByZoom( const QVariantMap &json );
 %Docstring
 Interpolates opacity with either :py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or :py:func:`~QgsMapBoxGlStyleConverter.scale_exp` (depending on base value).
 For ``json`` with intermediate stops it uses :py:func:`~QgsMapBoxGlStyleConverter.parseOpacityStops` function.
 It uses QGIS :py:func:`~QgsMapBoxGlStyleConverter.set_color_part` function to set alpha component of color.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
 %End
 
     static QString parseOpacityStops( double base, const QVariantList &stops );
 %Docstring
 Takes values from stops and uses either :py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or :py:func:`~QgsMapBoxGlStyleConverter.scale_exp` functions
 to interpolate alpha component of color.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
 %End
 
-    static QString parseStops( double base, const QVariantList &stops, double multiplier );
+    static QString parseStops( double base, const QVariantList &stops, double multiplier, ConversionContext &context );
+%Docstring
+Parses a list of interpolation stops
 
-    static QgsProperty parseInterpolateListByZoom( const QVariantList &json, PropertyType type, double multiplier = 1, QColor *defaultColor = 0 );
+:param base: interpolation exponent base
+:param stops: definition of interpolation stops
+:param multiplier: optional multiplication factor
+:param context: conversion context
+%End
+
+    static QgsProperty parseInterpolateListByZoom( const QVariantList &json, PropertyType type, ConversionContext &context, double multiplier = 1, QColor *defaultColor = 0 );
 %Docstring
 Interpolates a list which starts with the interpolate function.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
 %End
 
-    static QColor parseColor( const QVariant &color );
+    static QColor parseColor( const QVariant &color, ConversionContext &context );
 %Docstring
 Parses a ``color`` in one of these supported formats:
 
@@ -163,6 +260,10 @@ Parses a ``color`` in one of these supported formats:
 - rgb(10, 20, 30) or rgba(10, 20, 30, 0.5)
 
 Returns an invalid color if the color could not be parsed.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
 %End
 
     static void colorAsHslaComponents( const QColor &color, int &hue, int &saturation, int &lightness, int &alpha );
@@ -174,27 +275,47 @@ Takes a QColor object and returns HSLA components in required format for QGIS :p
 :param saturation: an integer value from 0 to 100
 :param lightness: an integer value from 0 to 100
 :param alpha: an integer value from 0 (completely transparent) to 255 (opaque).
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
 %End
 
     static QString interpolateExpression( int zoomMin, int zoomMax, double valueMin, double valueMax, double base );
 %Docstring
 Generates an interpolation for values between ``valueMin`` and ``valueMax``, scaled between the
 ranges ``zoomMin`` to ``zoomMax``.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
 %End
 
     static Qt::PenCapStyle parseCapStyle( const QString &style );
 %Docstring
 Converts a value to Qt.PenCapStyle enum from JSON value.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
 %End
 
     static Qt::PenJoinStyle parseJoinStyle( const QString &style );
 %Docstring
 Converts a value to Qt.PenJoinStyle enum from JSON value.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
 %End
 
-    static QString parseExpression( const QVariantList &expression );
+    static QString parseExpression( const QVariantList &expression, ConversionContext &context );
 %Docstring
 Converts a MapBox GL expression to a QGIS expression.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
 %End
 
   private:
