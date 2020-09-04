@@ -28,6 +28,36 @@ class QgsVectorTileBasicRendererStyle;
 class QgsVectorTileBasicLabelingStyle;
 
 /**
+ * Context for a MapBox GL style conversion operation.
+ * \warning This is private API only, and may change in future QGIS versions
+ * \ingroup core
+ * \since QGIS 3.16
+ */
+class CORE_EXPORT QgsMapBoxGlStyleConversionContext
+{
+  public:
+
+    /**
+     * Pushes a \a warning message generated during the conversion.
+     */
+    void pushWarning( const QString &warning );
+
+    /**
+     * Returns a list of warning messages generated during the conversion.
+     */
+    QStringList warnings() const { return mWarnings; }
+
+    /**
+     * Clears the list of warning messages.
+     */
+    void clearWarnings() { mWarnings.clear(); }
+
+  private:
+
+    QStringList mWarnings;
+};
+
+/**
  * \ingroup core
  * Handles conversion of MapBox GL styles to QGIS vector tile renderers and labeling
  * settings.
@@ -125,36 +155,6 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
     };
 
     /**
-     * Context for a MapBox GL style conversion operation.
-     * \warning This is private API only, and may change in future QGIS versions
-     * \ingroup core
-     * \since QGIS 3.16
-     */
-    class ConversionContext
-    {
-      public:
-
-        /**
-         * Pushes a \a warning message generated during the conversion.
-         */
-        void pushWarning( const QString &warning );
-
-        /**
-         * Returns a list of warning messages generated during the conversion.
-         */
-        QStringList warnings() const { return mWarnings; }
-
-        /**
-         * Clears the list of warning messages.
-         */
-        void clearWarnings() { mWarnings.clear(); }
-
-      private:
-
-        QStringList mWarnings;
-    };
-
-    /**
      * Parse list of \a layers from JSON.
      * \warning This is private API only, and may change in future QGIS versions
      */
@@ -170,7 +170,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * \param context conversion context
      * \returns TRUE if the layer was successfully parsed.
      */
-    static bool parseFillLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style SIP_OUT, ConversionContext &context );
+    static bool parseFillLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style SIP_OUT, QgsMapBoxGlStyleConversionContext &context );
 
     /**
      * Parses a line layer.
@@ -182,7 +182,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * \param context conversion context
      * \returns TRUE if the layer was successfully parsed.
      */
-    static bool parseLineLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style SIP_OUT, ConversionContext &context );
+    static bool parseLineLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style SIP_OUT, QgsMapBoxGlStyleConversionContext &context );
 
     /**
      * Parses a symbol layer.
@@ -200,7 +200,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
                                   QgsVectorTileBasicRendererStyle &rendererStyle SIP_OUT,
                                   bool &hasRenderer SIP_OUT,
                                   QgsVectorTileBasicLabelingStyle &labelingStyle SIP_OUT,
-                                  bool &hasLabeling SIP_OUT, ConversionContext &context );
+                                  bool &hasLabeling SIP_OUT, QgsMapBoxGlStyleConversionContext &context );
 
 
     /**
@@ -210,7 +210,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * \param context conversion context
      * \param defaultColor optional storage for a reasonable "default" color representing the overall property.
      */
-    static QgsProperty parseInterpolateColorByZoom( const QVariantMap &json, ConversionContext &context, QColor *defaultColor = nullptr );
+    static QgsProperty parseInterpolateColorByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, QColor *defaultColor = nullptr );
 
     /**
      * Parses a numeric value which is interpolated by zoom range.
@@ -219,7 +219,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * \param context conversion context
      * \param multiplier optional multiplication factor
      */
-    static QgsProperty parseInterpolateByZoom( const QVariantMap &json, ConversionContext &context, double multiplier = 1 );
+    static QgsProperty parseInterpolateByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1 );
 
     /**
      * Interpolates opacity with either scale_linear() or scale_exp() (depending on base value).
@@ -246,14 +246,14 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * \param multiplier optional multiplication factor
      * \param context conversion context
      */
-    static QString parseStops( double base, const QVariantList &stops, double multiplier, ConversionContext &context );
+    static QString parseStops( double base, const QVariantList &stops, double multiplier, QgsMapBoxGlStyleConversionContext &context );
 
     /**
      * Interpolates a list which starts with the interpolate function.
      *
      * \warning This is private API only, and may change in future QGIS versions
      */
-    static QgsProperty parseInterpolateListByZoom( const QVariantList &json, PropertyType type, ConversionContext &context, double multiplier = 1, QColor *defaultColor = nullptr );
+    static QgsProperty parseInterpolateListByZoom( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, QColor *defaultColor = nullptr );
 
     /**
      * Parses a \a color in one of these supported formats:
@@ -266,7 +266,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \warning This is private API only, and may change in future QGIS versions
      */
-    static QColor parseColor( const QVariant &color, ConversionContext &context );
+    static QColor parseColor( const QVariant &color, QgsMapBoxGlStyleConversionContext &context );
 
     /**
      * Takes a QColor object and returns HSLA components in required format for QGIS color_hsla() expression function.
@@ -307,7 +307,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \warning This is private API only, and may change in future QGIS versions
      */
-    static QString parseExpression( const QVariantList &expression, ConversionContext &context );
+    static QString parseExpression( const QVariantList &expression, QgsMapBoxGlStyleConversionContext &context );
 
   private:
 
@@ -315,7 +315,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
     QgsMapBoxGlStyleConverter( const QgsMapBoxGlStyleConverter &other );
 #endif
 
-    static QString parseValue( const QVariant &value, ConversionContext &context );
+    static QString parseValue( const QVariant &value, QgsMapBoxGlStyleConversionContext &context );
     static QString parseKey( const QVariant &value );
 
 

@@ -62,7 +62,7 @@ QgsMapBoxGlStyleConverter::~QgsMapBoxGlStyleConverter() = default;
 
 void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers )
 {
-  ConversionContext context;
+  QgsMapBoxGlStyleConversionContext context;
 
   QList<QgsVectorTileBasicRendererStyle> rendererStyles;
   QList<QgsVectorTileBasicLabelingStyle> labelingStyles;
@@ -148,7 +148,7 @@ void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers )
   labeling->setStyles( labelingStyles );
 }
 
-bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style, ConversionContext &context )
+bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style, QgsMapBoxGlStyleConversionContext &context )
 {
   if ( !jsonLayer.contains( QStringLiteral( "paint" ) ) )
   {
@@ -332,7 +332,7 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
   return true;
 }
 
-bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style, ConversionContext &context )
+bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style, QgsMapBoxGlStyleConversionContext &context )
 {
   if ( !jsonLayer.contains( QStringLiteral( "paint" ) ) )
   {
@@ -524,7 +524,7 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
   return true;
 }
 
-void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &, bool &hasRenderer, QgsVectorTileBasicLabelingStyle &labelingStyle, bool &hasLabeling, ConversionContext &context )
+void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &, bool &hasRenderer, QgsVectorTileBasicLabelingStyle &labelingStyle, bool &hasLabeling, QgsMapBoxGlStyleConversionContext &context )
 {
   hasLabeling = false;
   hasRenderer = false;
@@ -809,7 +809,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
   hasLabeling = true;
 }
 
-QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateColorByZoom( const QVariantMap &json, ConversionContext &context, QColor *defaultColor )
+QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateColorByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, QColor *defaultColor )
 {
   const double base = json.value( QStringLiteral( "base" ), QStringLiteral( "1" ) ).toDouble();
   const QVariantList stops = json.value( QStringLiteral( "stops" ) ).toList();
@@ -911,7 +911,7 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateColorByZoom( const QVaria
   return QgsProperty::fromExpression( caseString );
 }
 
-QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateByZoom( const QVariantMap &json, ConversionContext &context, double multiplier )
+QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, double multiplier )
 {
   const double base = json.value( QStringLiteral( "base" ), QStringLiteral( "1" ) ).toDouble();
   const QVariantList stops = json.value( QStringLiteral( "stops" ) ).toList();
@@ -1021,7 +1021,7 @@ QString QgsMapBoxGlStyleConverter::parseOpacityStops( double base, const QVarian
   return caseString;
 }
 
-QString QgsMapBoxGlStyleConverter::parseStops( double base, const QVariantList &stops, double multiplier, ConversionContext &context )
+QString QgsMapBoxGlStyleConverter::parseStops( double base, const QVariantList &stops, double multiplier, QgsMapBoxGlStyleConversionContext &context )
 {
   QString caseString = QStringLiteral( "CASE " );
 
@@ -1068,7 +1068,7 @@ QString QgsMapBoxGlStyleConverter::parseStops( double base, const QVariantList &
   return caseString;
 }
 
-QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateListByZoom( const QVariantList &json, PropertyType type, ConversionContext &context, double multiplier, QColor *defaultColor )
+QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateListByZoom( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier, QColor *defaultColor )
 {
   if ( json.value( 0 ).toString() != QLatin1String( "interpolate" ) )
   {
@@ -1123,7 +1123,7 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateListByZoom( const QVarian
   return QgsProperty();
 }
 
-QColor QgsMapBoxGlStyleConverter::parseColor( const QVariant &color, ConversionContext &context )
+QColor QgsMapBoxGlStyleConverter::parseColor( const QVariant &color, QgsMapBoxGlStyleConversionContext &context )
 {
   if ( color.type() != QVariant::String )
   {
@@ -1171,7 +1171,7 @@ Qt::PenJoinStyle QgsMapBoxGlStyleConverter::parseJoinStyle( const QString &style
     return Qt::MiterJoin; // "miter" is default
 }
 
-QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expression, ConversionContext &context )
+QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expression, QgsMapBoxGlStyleConversionContext &context )
 {
   QString op = expression.value( 0 ).toString();
   if ( op == QLatin1String( "all" ) )
@@ -1307,7 +1307,7 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
   }
 }
 
-QString QgsMapBoxGlStyleConverter::parseValue( const QVariant &value, ConversionContext &context )
+QString QgsMapBoxGlStyleConverter::parseValue( const QVariant &value, QgsMapBoxGlStyleConversionContext &context )
 {
   switch ( value.type() )
   {
@@ -1354,9 +1354,9 @@ QgsVectorTileLabeling *QgsMapBoxGlStyleConverter::labeling() const
 }
 
 //
-// ConversionContext
+// QgsMapBoxGlStyleConversionContext
 //
-void QgsMapBoxGlStyleConverter::ConversionContext::pushWarning( const QString &warning )
+void QgsMapBoxGlStyleConversionContext::pushWarning( const QString &warning )
 {
   QgsDebugMsg( warning );
   mWarnings << warning;
