@@ -27,7 +27,14 @@ settings.
 %Docstring
 Constructor for QgsMapBoxGlStyleConverter.
 
-The specified MapBox GL ``style`` configuration will be converted.
+The specified MapBox GL ``style`` JSON will be converted.
+%End
+
+    QgsMapBoxGlStyleConverter( const QString &style, const QString &styleName = QString() );
+%Docstring
+Constructor for QgsMapBoxGlStyleConverter.
+
+The specified MapBox GL ``style`` string configuration will be converted.
 %End
 
 
@@ -104,7 +111,7 @@ Parses a symbol layer.
 %End
 
 
-    static QgsProperty parseInterpolateColorByZoom( const QVariantMap &json );
+    static QgsProperty parseInterpolateColorByZoom( const QVariantMap &json, QColor *defaultColor = 0 );
     static QgsProperty parseInterpolateByZoom( const QVariantMap &json, double multiplier = 1 );
 
     static QgsProperty parseInterpolateOpacityByZoom( const QVariantMap &json );
@@ -122,7 +129,7 @@ to interpolate alpha component of color.
 
     static QString parseStops( double base, const QVariantList &stops, double multiplier );
 
-    static QgsProperty parseInterpolateListByZoom( const QVariantList &json, PropertyType type, double multiplier = 1 );
+    static QgsProperty parseInterpolateListByZoom( const QVariantList &json, PropertyType type, double multiplier = 1, QColor *defaultColor = 0 );
 %Docstring
 Interpolates a list which starts with the interpolate function.
 %End
