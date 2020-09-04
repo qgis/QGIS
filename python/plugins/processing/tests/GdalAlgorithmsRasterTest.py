@@ -2436,7 +2436,7 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                                         'OBSERVER': '18.67274,45.80599',
                                         'OUTPUT': outsource}, context, feedback),
                 ['gdal_viewshed',
-                 '-b 1 -ox 18.67274 -oy 45.80599 -oz 1.0 -tz 1.0 -md 100.0 -f GTiff ' +
+                 '-b 1 -ox 18.67274 -oy 45.80599 -oz 1.0 -tz 1.0 -md 100.0 -vv 1 -f GTiff ' +
                  dem + ' ' + outsource
                  ])
 
