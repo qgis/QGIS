@@ -172,6 +172,8 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      * add feature
      */
     void mActionAddFeature_triggered();
+    void mActionAddFeatureViaAttributeTable_triggered();
+    void mActionAddFeatureViaAttributeForm_triggered();
 
     void mActionExpressionSelect_triggered();
     void filterColumnChanged( QObject *filterAction );

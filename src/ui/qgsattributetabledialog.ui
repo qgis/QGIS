@@ -672,6 +672,7 @@
     <string>Organize Columns</string>
    </property>
   </action>
+<<<<<<< HEAD
   <action name="mActionStoredFilterExpressions">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -721,6 +722,27 @@
    </property>
    <property name="toolTip">
     <string>Edit the stored expression (change name or content)</string>
+=======
+  <action name="mActionAddFeatureViaAttributeTable">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionNewTableRow.svg</normaloff>:/images/themes/default/mActionNewTableRow.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add feature via attribute table</string>
+   </property>
+  </action>
+  <action name="mActionAddFeatureViaAttributeForm">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mIconFormSelect.svg</normaloff>:/images/themes/default/mIconFormSelect.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add feature via attribute form</string>
+   </property>
+   <property name="toolTip">
+    <string>Add feature via attribute form</string>
+>>>>>>> a51c20136c... Merge pull request #38383 from suricactus/new_feat_constraint
    </property>
   </action>
  </widget>
