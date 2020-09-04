@@ -151,9 +151,7 @@ void TestQgsMapToolSplitFeatures::testNoFeaturesSplit()
 
 
   QVERIFY( mMultiLineStringLayer->featureCount() == 2 );
-//  This is not working as expected: count is always 1, see https://github.com/qgis/QGIS/issues/38287
-//  QCOMPARE( mMultiLineStringLayer->undoStack()->count(), 0 );
-  mMultiLineStringLayer->undoStack()->undo();
+  QVERIFY( mMultiLineStringLayer->undoStack()->index() == 2 );
 }
 
 void TestQgsMapToolSplitFeatures::testSplitPolygon()
