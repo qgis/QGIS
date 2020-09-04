@@ -53,6 +53,14 @@ or ``None`` if the style could not be converted successfully.
 
   protected:
 
+    enum PropertyType
+    {
+      Color,
+      Line,
+      Opacity,
+      Text
+    };
+
     void parseLayers( const QVariantList &layers, const QString &styleName );
 %Docstring
 Parse list of ``layers`` from JSON
@@ -70,6 +78,27 @@ Parses a fill layer.
 %End
 
     static QgsProperty parseInterpolateColorByZoom( const QVariantMap &json );
+    static QgsProperty parseInterpolateByZoom( const QVariantMap &json, double multiplier = 1 );
+
+    static QgsProperty parseInterpolateOpacityByZoom( const QVariantMap &json );
+%Docstring
+Interpolates opacity with either :py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or :py:func:`~QgsMapBoxGlStyleConverter.scale_exp` (depending on base value).
+For ``json`` with intermediate stops it uses :py:func:`~QgsMapBoxGlStyleConverter.parseOpacityStops` function.
+It uses QGIS :py:func:`~QgsMapBoxGlStyleConverter.set_color_part` function to set alpha component of color.
+%End
+
+    static QString parseOpacityStops( double base, const QVariantList &stops );
+%Docstring
+Takes values from stops and uses either :py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or :py:func:`~QgsMapBoxGlStyleConverter.scale_exp` functions
+to interpolate alpha component of color.
+%End
+
+    static QString parseStops( double base, const QVariantList &stops, double multiplier );
+
+    static QgsProperty parseInterpolateListByZoom( const QVariantList &json, PropertyType type, double multiplier = 1 );
+%Docstring
+Interpolates a list which starts with the interpolate function.
+%End
 
     static QColor parseColor( const QVariant &color );
 %Docstring

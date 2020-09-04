@@ -144,14 +144,15 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, co
 
       case QVariant::List:
       case QVariant::StringList:
-
+        ddProperties.setProperty( QgsSymbolLayer::PropertyFillColor, parseInterpolateListByZoom( jsonFillColor.toList(), PropertyType::Color ) );
         break;
 
       case QVariant::String:
-
+        fillColor = parseColor( jsonFillColor.toString() );
         break;
 
       default:
+        QgsDebugMsg( "Skipping non-implemented color expression" );
         break;
     }
 
@@ -256,6 +257,219 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateColorByZoom( const QVaria
                 .arg( tcHue ).arg( tcSat ).arg( tcLight ).arg( tcAlpha );
 
   return QgsProperty::fromExpression( caseString );
+}
+
+QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateByZoom( const QVariantMap &json, double multiplier )
+{
+  const double base = json.value( QStringLiteral( "base" ), QStringLiteral( "1" ) ).toDouble();
+  const QVariantList stops = json.value( QStringLiteral( "stops" ) ).toList();
+  if ( stops.empty() )
+    return QgsProperty();
+
+  QString scaleExpression;
+  if ( stops.size() <= 2 )
+  {
+    if ( base == 1 )
+    {
+      scaleExpression = QStringLiteral( "scale_linear(@zoom_level, %1, %2, %3, %4) * %5" ).arg( stops.value( 0 ).toList().value( 0 ).toString(),
+                        stops.last().toList().value( 0 ).toString(),
+                        stops.value( 0 ).toList().value( 1 ).toString(),
+                        stops.last().toList().value( 1 ).toString() ).arg( multiplier );
+    }
+    else
+    {
+      scaleExpression = interpolateExpression( stops.value( 0 ).toList().value( 0 ).toInt(),
+                        stops.last().toList().value( 0 ).toInt(),
+                        stops.value( 0 ).toList().value( 1 ).toInt(),
+                        stops.last().toList().value( 1 ).toInt(), base ) + QStringLiteral( "* %1" ).arg( multiplier );
+    }
+  }
+  else
+  {
+    scaleExpression = parseStops( base, stops, multiplier );
+  }
+  return QgsProperty::fromExpression( scaleExpression );
+}
+
+QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateOpacityByZoom( const QVariantMap &json )
+{
+  const double base = json.value( QStringLiteral( "base" ), QStringLiteral( "1" ) ).toDouble();
+  const QVariantList stops = json.value( QStringLiteral( "stops" ) ).toList();
+  if ( stops.empty() )
+    return QgsProperty();
+
+  QString scaleExpression;
+  if ( stops.length() <= 2 )
+  {
+    if ( base == 1 )
+    {
+      scaleExpression = QStringLiteral( "set_color_part(@symbol_color, 'alpha', scale_linear(@zoom_level, %1, %2, %3, %4))" )
+                        .arg( stops.value( 0 ).toList().value( 0 ).toString(),
+                              stops.last().toList().value( 0 ).toString() )
+                        .arg( stops.value( 0 ).toList().value( 1 ).toDouble() * 255 )
+                        .arg( stops.last().toList().value( 1 ).toDouble() * 255 );
+    }
+    else
+    {
+      scaleExpression = QStringLiteral( "set_color_part(@symbol_color, 'alpha', %1)" )
+                        .arg( interpolateExpression( stops.value( 0 ).toList().value( 0 ).toInt(),
+                              stops.last().toList().value( 0 ).toInt(),
+                              stops.value( 0 ).toList().value( 1 ).toDouble() * 255,
+                              stops.value( 0 ).toList().value( 1 ).toDouble() * 255, base ) );
+    }
+  }
+  else
+  {
+    scaleExpression = parseOpacityStops( base, stops );
+  }
+  return QgsProperty::fromExpression( scaleExpression );
+}
+
+QString QgsMapBoxGlStyleConverter::parseOpacityStops( double base, const QVariantList &stops )
+{
+  QString caseString = QStringLiteral( "CASE WHEN @zoom_level < %1 THEN set_color_part(@symbol_color, 'alpha', %2 * 255)" )
+                       .arg( stops.value( 0 ).toList().value( 0 ).toString(),
+                             stops.value( 0 ).toList().value( 1 ).toString() );
+
+  if ( base == 1 )
+  {
+    // base = 1 -> scale_linear
+    for ( int i = 0; i < stops.size() - 1; ++i )
+    {
+      caseString += QStringLiteral( " WHEN @zoom_level >= %1 AND @zoom_level < %2 "
+                                    "THEN set_color_part(@symbol_color, 'alpha', "
+                                    "scale_linear(@zoom_level, %1, %2, "
+                                    "%3 * 255, %4 * 255)) " )
+                    .arg( stops.value( i ).toList().value( 0 ).toString(),
+                          stops.value( i + 1 ).toList().value( 0 ).toString(),
+                          stops.value( i ).toList().value( 1 ).toString(),
+                          stops.value( i + 1 ).toList().value( 1 ).toString() );
+    }
+  }
+  else
+  {
+    // base != 1 -> scale_expr
+    for ( int i = 0; i < stops.size() - 1; ++i )
+    {
+      caseString += QStringLiteral( " WHEN @zoom_level >= %1 AND @zoom_level < %2 "
+                                    "THEN set_color_part(@symbol_color, 'alpha', %3)" )
+                    .arg( stops.value( i ).toList().value( 0 ).toString(),
+                          stops.value( i + 1 ).toList().value( 0 ).toString(),
+                          interpolateExpression( stops.value( i ).toList().value( 0 ).toInt(),
+                              stops.value( i + 1 ).toList().value( 0 ).toInt(),
+                              stops.value( i ).toList().value( 1 ).toDouble() * 255,
+                              stops.value( i + 1 ).toList().value( 1 ).toDouble() * 255, base ) );
+    }
+  }
+
+  caseString += QStringLiteral( "WHEN @zoom_level >= %1 "
+                                "THEN set_color_part(@symbol_color, 'alpha', %2) END" )
+                .arg( stops.last().toList().value( 0 ).toString(),
+                      stops.last().toList().value( 1 ).toString() );
+  return caseString;
+}
+
+QString QgsMapBoxGlStyleConverter::parseStops( double base, const QVariantList &stops, double multiplier )
+{
+  QString caseString = QStringLiteral( "CASE " );
+
+  for ( int i = 0; i < stops.length() - 1; ++i )
+  {
+    // bottom zoom and value
+    const QVariant bz = stops.value( i ).toList().value( 0 );
+    const QVariant bv = stops.value( i ).toList().value( 1 );
+    if ( bz.type() == QVariant::List || bz.type() == QVariant::StringList )
+    {
+      QgsDebugMsg( "QGIS does not support expressions in interpolation function, skipping." );
+      return QString();
+    }
+
+    // top zoom and value
+    const QVariant tz = stops.value( i + 1 ).toList().value( 0 );
+    const QVariant tv = stops.value( i + 1 ).toList().value( 1 );
+    if ( tz.type() == QVariant::List || tz.type() == QVariant::StringList )
+    {
+      QgsDebugMsg( "QGIS does not support expressions in interpolation function, skipping." );
+      return QString();
+    }
+
+    if ( base == 1 )
+    {
+      // base = 1 -> scale_linear
+      caseString += QStringLiteral( "WHEN @zoom_level > %1 AND @zoom_level <= %2 "
+                                    "THEN scale_linear(@zoom_level, %1, %2, %3, %4) "
+                                    "* %5 " ).arg( bz.toString(),
+                                        tz.toString(),
+                                        bv.toString(),
+                                        tv.toString() ).arg( multiplier );
+    }
+    else
+    {
+      // base != 1 -> scale_exp
+      caseString += QStringLiteral( "WHEN @zoom_level > %1 AND @zoom_level <= %2 "
+                                    "THEN %3 * %4 " ).arg( bz.toString(),
+                                        tz.toString(),
+                                        interpolateExpression( bz.toInt(), tz.toInt(), bv.toDouble(), tv.toDouble(), base ) ).arg( multiplier );
+    }
+  }
+  caseString += QStringLiteral( "END" );
+  return caseString;
+}
+
+QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateListByZoom( const QVariantList &json, PropertyType type, double multiplier )
+{
+  if ( json.value( 0 ).toString() != QLatin1String( "interpolate" ) )
+  {
+    QgsDebugMsg( QStringLiteral( "Could not interpret value list" ) );
+    return QgsProperty();
+  }
+
+  double base = 1;
+  const QString technique = json.value( 1 ).toList().value( 0 ).toString();
+  if ( technique == QLatin1String( "linear" ) )
+    base = 1;
+  else if ( technique == QLatin1String( "exponential" ) )
+    base = json.value( 1 ).toList(). value( 1 ).toDouble();
+  else if ( technique == QLatin1String( "cubic-bezier" ) )
+  {
+    QgsDebugMsg( QStringLiteral( "QGIS does not support cubic-bezier interpolation, linear used instead." ) );
+    base = 1;
+  }
+  else
+  {
+    QgsDebugMsg( QStringLiteral( "Skipping not implemented interpolation method %1" ).arg( technique ) );
+    return QgsProperty();
+  }
+
+  if ( json.value( 2 ).toList().value( 0 ).toString() != QLatin1String( "zoom" ) )
+  {
+    QgsDebugMsg( QStringLiteral( "Skipping not implemented interpolation input %1" ).arg( json.value( 2 ).toString() ) );
+    return QgsProperty();
+  }
+
+  //  Convert stops into list of lists
+  QVariantList stops;
+  for ( int i = 3; i < json.length(); i += 2 )
+  {
+    stops.push_back( QVariantList() << json.value( i ).toString() << json.value( i + 1 ).toString() );
+  }
+
+  QVariantMap props;
+  props.insert( QStringLiteral( "stops" ), stops );
+  props.insert( QStringLiteral( "base" ), base );
+  switch ( type )
+  {
+    case PropertyType::Color:
+      return parseInterpolateColorByZoom( props );
+
+    case PropertyType::Line:
+    case PropertyType::Text:
+      return parseInterpolateByZoom( props, multiplier );
+
+    case PropertyType::Opacity:
+      return parseInterpolateOpacityByZoom( props );
+  }
+  return QgsProperty();
 }
 
 QColor QgsMapBoxGlStyleConverter::parseColor( const QVariant &color )

@@ -71,6 +71,14 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
 
   protected:
 
+    enum PropertyType
+    {
+      Color,
+      Line,
+      Opacity,
+      Text
+    };
+
     /**
      * Parse list of \a layers from JSON
      */
@@ -87,6 +95,27 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
     static bool parseFillLayer( const QVariantMap &jsonLayer, const QString &styleName, QgsVectorTileBasicRendererStyle &style SIP_OUT );
 
     static QgsProperty parseInterpolateColorByZoom( const QVariantMap &json );
+    static QgsProperty parseInterpolateByZoom( const QVariantMap &json, double multiplier = 1 );
+
+    /**
+     * Interpolates opacity with either scale_linear() or scale_exp() (depending on base value).
+     * For \a json with intermediate stops it uses parseOpacityStops() function.
+     * It uses QGIS set_color_part() function to set alpha component of color.
+     */
+    static QgsProperty parseInterpolateOpacityByZoom( const QVariantMap &json );
+
+    /**
+     * Takes values from stops and uses either scale_linear() or scale_exp() functions
+     * to interpolate alpha component of color.
+     */
+    static QString parseOpacityStops( double base, const QVariantList &stops );
+
+    static QString parseStops( double base, const QVariantList &stops, double multiplier );
+
+    /**
+     * Interpolates a list which starts with the interpolate function.
+     */
+    static QgsProperty parseInterpolateListByZoom( const QVariantList &json, PropertyType type, double multiplier = 1 );
 
     /**
      * Parses a \a color in one of these supported formats:
