@@ -23,7 +23,7 @@ settings.
 %End
   public:
 
-    QgsMapBoxGlStyleConverter( const QVariantMap &style );
+    QgsMapBoxGlStyleConverter( const QVariantMap &style, const QString &styleName = QString() );
 %Docstring
 Constructor for QgsMapBoxGlStyleConverter.
 
@@ -53,7 +53,51 @@ or ``None`` if the style could not be converted successfully.
 
   protected:
 
-    void parseLayers( const QVariantList &layers );
+    void parseLayers( const QVariantList &layers, const QString &styleName );
+%Docstring
+Parse list of ``layers`` from JSON
+%End
+
+    static bool parseFillLayer( const QVariantMap &jsonLayer, const QString &styleName, QgsVectorTileBasicRendererStyle &style /Out/ );
+%Docstring
+Parses a fill layer.
+
+:param jsonLayer: fill layer to parse
+:param styleName: style name
+
+:return: - ``True`` if the layer was successfully parsed.
+         - style: generated QGIS vector tile style
+%End
+
+    static QgsProperty parseInterpolateColorByZoom( const QVariantMap &json );
+
+    static QColor parseColor( const QVariant &color );
+%Docstring
+Parses a ``color`` in one of these supported formats:
+
+- #fff or #ffffff
+- hsl(30, 19%, 90%) or hsla(30, 19%, 90%, 0.4)
+- rgb(10, 20, 30) or rgba(10, 20, 30, 0.5)
+
+Returns an invalid color if the color could not be parsed.
+%End
+
+    static void colorAsHslaComponents( const QColor &color, int &hue, int &saturation, int &lightness, int &alpha );
+%Docstring
+Takes a QColor object and returns HSLA components in required format for QGIS :py:func:`~QgsMapBoxGlStyleConverter.color_hsla` expression function.
+
+:param color: input color
+:param hue: an integer value from 0 to 360
+:param saturation: an integer value from 0 to 100
+:param lightness: an integer value from 0 to 100
+:param alpha: an integer value from 0 (completely transparent) to 255 (opaque).
+%End
+
+    static QString interpolateExpression( int zoomMin, int zoomMax, double valueMin, double valueMax, double base );
+%Docstring
+Generates an interpolation for values between ``valueMin`` and ``valueMax``, scaled between the
+ranges ``zoomMin`` to ``zoomMax``.
+%End
 
   private:
     QgsMapBoxGlStyleConverter( const QgsMapBoxGlStyleConverter &other );
