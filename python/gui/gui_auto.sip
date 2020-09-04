@@ -70,6 +70,7 @@
 %Include auto_generated/qgsfeatureselectiondlg.sip
 %Include auto_generated/qgsfieldcombobox.sip
 %Include auto_generated/qgsfieldexpressionwidget.sip
+%Include auto_generated/qgsfieldformwidget.sip
 %Include auto_generated/qgsfieldmappingwidget.sip
 %Include auto_generated/qgsfieldmappingmodel.sip
 %Include auto_generated/qgsfieldvalidator.sip

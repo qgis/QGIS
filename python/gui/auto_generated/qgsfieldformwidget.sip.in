@@ -1,0 +1,227 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsfieldformwidget.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsFieldFormWidget : QWidget
+{
+%Docstring
+Dialog to set up parameters to create a new field in a vector layer, and on :py:func:`~accept` to create it and add it to the layers
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsfieldformwidget.h"
+%End
+  public:
+
+    enum class AdvancedField
+    {
+      // sip complains if it is called `None`
+      Neither,
+      Comment,
+      Alias,
+      IsNullable,
+      All,
+    };
+
+    typedef QFlags<QgsFieldFormWidget::AdvancedField> AdvancedFields;
+
+
+    QgsFieldFormWidget( AdvancedFields advancedFields = QgsFieldFormWidget::AdvancedField::Neither, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor
+%End
+
+    static void addStringType( QgsFieldFormWidget *fieldForm );
+
+    static void addIntegerType( QgsFieldFormWidget *fieldForm );
+
+    static void addRealType( QgsFieldFormWidget *fieldForm );
+
+    static void addDateType( QgsFieldFormWidget *fieldForm );
+
+    QString name() const;
+%Docstring
+Returns the name of the field.
+%End
+
+    void setName( const QString name );
+%Docstring
+Sets the name of the field.
+%End
+
+    QString type() const;
+%Docstring
+Returns the string name of the field type.
+%End
+
+    bool setType( const QString typeName );
+%Docstring
+Sets the string name of the field type. If no such type is present, does nothing.
+%End
+
+    QString comment() const;
+%Docstring
+Returns the field comment.
+%End
+
+    void setComment( const QString comment );
+%Docstring
+Sets the field comment.
+%End
+
+    bool isNullable();
+%Docstring
+Returns whether the field is marked as nullable.
+%End
+
+    void setIsNullable( bool isNullable );
+%Docstring
+Sets whether the field can be nullable.
+%End
+
+    QString alias() const;
+%Docstring
+Returns the field alias.
+%End
+
+    void setAlias( const QString alias );
+%Docstring
+Sets the field alias.
+%End
+
+    int length() const;
+%Docstring
+Returns the field length.
+%End
+
+    void setLength( const int length );
+%Docstring
+Sets the field length
+%End
+
+    int precision() const;
+%Docstring
+Returns the field precision.
+%End
+
+    void setPrecision( const int precision );
+%Docstring
+Returns the field precision.
+%End
+
+    QStringList types() const;
+%Docstring
+Returns a list of string type names.
+%End
+
+    bool addType( const QString typeName, const QString typeDisplay, const QIcon = QIcon(), int length = -1, int precision = -1 );
+%Docstring
+Adds a new type ``typeName`` in the end of the types combobox. If ``length`` or ``precision`` are given as negative number, their UI fields are disabled for that type.
+%End
+
+    bool insertType( const int position, const QString typeName, const QString typeDisplay, const QIcon = QIcon(), int length = -1, int precision = -1 );
+%Docstring
+Inserts a new type ``typeName`` at given ``position`` in the types combobox. If ``length`` or ``precision`` are given as negative number, their UI fields are disabled for that type.
+%End
+
+    bool removeType( const QString typeName );
+%Docstring
+Removes a type identified by its string ``typename`` from the list of available field data types.
+%End
+
+    bool hasType( const QString typeName );
+%Docstring
+Checks whether the ``typeName`` is present as a field data type.
+%End
+
+    int typeIndex( const QString typeName );
+%Docstring
+Returns the index of the given ``typeName`` in the list of available data types.
+%End
+
+    QRegExp nameRegExp();
+%Docstring
+Returns the current field name validator regular expresiion.
+%End
+
+    void setNameRegExp( QRegExp nameRegExp );
+%Docstring
+Sets field name validator regular expresiion.
+%End
+
+    bool isValidForm() const;
+%Docstring
+Returns whether the field form is valid.
+%End
+
+    QgsField *asField() const;
+%Docstring
+Returns the current state of the form as a :py:class:`QgsField`.
+%End
+
+    void setLayer( QgsVectorLayer *vl );
+%Docstring
+Sets the current layer of the form. The layer is as a source to select existing field.
+%End
+
+    QgsVectorLayer *layer() const;
+%Docstring
+Returns the current layer.
+%End
+
+    void setLayerField( const QString fieldName );
+%Docstring
+Sets the current layer field.
+%End
+
+    QString layerField() const;
+%Docstring
+Returns the current existing layer field name.
+%End
+
+    bool shouldUseExistingField() const;
+%Docstring
+Checks whether the "use existing field" is active.
+%End
+
+    void setShouldUseExistingField( bool shouldUseExistingField );
+%Docstring
+Sets whether the "use exiting field" is active.
+%End
+
+  signals:
+
+    void changed();
+%Docstring
+When any of the field form inputs is changed.
+%End
+
+    void returnPressed();
+%Docstring
+When any of the text form inputs is has return button pressed.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsfieldformwidget.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

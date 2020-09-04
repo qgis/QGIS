@@ -4490,9 +4490,10 @@ QgsProcessingParameterAuthConfig *QgsProcessingParameterAuthConfig::fromScriptCo
 // QgsProcessingParameterExpression
 //
 
-QgsProcessingParameterExpression::QgsProcessingParameterExpression( const QString &name, const QString &description, const QVariant &defaultValue, const QString &parentLayerParameterName, bool optional )
+QgsProcessingParameterExpression::QgsProcessingParameterExpression( const QString &name, const QString &description, const QVariant &defaultValue, const QString &parentLayerParameterName, bool optional, bool useInlineExpressionEditor )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
   , mParentLayerParameterName( parentLayerParameterName )
+  , mUseInlineExpressionEditor( useInlineExpressionEditor )
 {
 
 }
@@ -4550,6 +4551,16 @@ QString QgsProcessingParameterExpression::parentLayerParameterName() const
 void QgsProcessingParameterExpression::setParentLayerParameterName( const QString &parentLayerParameterName )
 {
   mParentLayerParameterName = parentLayerParameterName;
+}
+
+bool QgsProcessingParameterExpression::useInlineExpressionEditor() const
+{
+  return mUseInlineExpressionEditor;
+}
+
+void QgsProcessingParameterExpression::setUseInlineExpressionEditor( bool useInlineExpressionEditor )
+{
+  mUseInlineExpressionEditor = useInlineExpressionEditor;
 }
 
 QVariantMap QgsProcessingParameterExpression::toVariantMap() const

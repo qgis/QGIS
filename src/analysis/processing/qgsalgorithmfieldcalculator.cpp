@@ -17,6 +17,7 @@
 
 
 #include "qgsalgorithmfieldcalculator.h"
+#include "qgsprocessingparameterfieldform.h"
 #include "qgsexpressioncontextutils.h"
 
 ///@cond PRIVATE
@@ -65,22 +66,12 @@ void QgsFieldCalculatorAlgorithm::initParameters( const QVariantMap &configurati
 {
   Q_UNUSED( configuration );
 
-  QStringList fieldTypes = QStringList( {QObject::tr( "Float" ), QObject::tr( "Integer" ), QObject::tr( "String" ), QObject::tr( "Date" ) } );
-
-  std::unique_ptr< QgsProcessingParameterField > existingFieldName = qgis::make_unique< QgsProcessingParameterField > ( QStringLiteral( "EXISTING_FIELD_NAME" ), QObject::tr( "Result in existing field" ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, false, true );
-  std::unique_ptr< QgsProcessingParameterString > newFieldName = qgis::make_unique< QgsProcessingParameterString > ( QStringLiteral( "NEW_FIELD_NAME" ), QObject::tr( "Result in new field" ), QVariant(), false, true );
-  std::unique_ptr< QgsProcessingParameterEnum > fieldType = qgis::make_unique< QgsProcessingParameterEnum > ( QStringLiteral( "FIELD_TYPE" ), QObject::tr( "Result field type" ), fieldTypes, false, 0 );
-  std::unique_ptr< QgsProcessingParameterNumber > fieldLength = qgis::make_unique< QgsProcessingParameterNumber > ( QStringLiteral( "FIELD_LENGTH" ), QObject::tr( "Result field length" ), QgsProcessingParameterNumber::Integer, QVariant( 0 ), false, 0 );
-  std::unique_ptr< QgsProcessingParameterNumber > fieldPrecision = qgis::make_unique< QgsProcessingParameterNumber > ( QStringLiteral( "FIELD_PRECISION" ), QObject::tr( "Result field precision" ), QgsProcessingParameterNumber::Integer, QVariant( 0 ), false, 0 );
-  std::unique_ptr< QgsProcessingParameterExpression > expression = qgis::make_unique< QgsProcessingParameterExpression> ( QStringLiteral( "FORMULA" ), QObject::tr( "Formula" ), QVariant(), QStringLiteral( "INPUT" ), false );
+  std::unique_ptr< QgsProcessingParameterFieldForm > field = qgis::make_unique< QgsProcessingParameterFieldForm> ( QStringLiteral( "FIELD" ), QObject::tr( "Result field" ), QStringLiteral( "INPUT" ) );
+  std::unique_ptr< QgsProcessingParameterExpression > expression = qgis::make_unique< QgsProcessingParameterExpression> ( QStringLiteral( "FORMULA" ), QObject::tr( "Formula" ), QVariant(), QStringLiteral( "INPUT" ), false, true );
 
   expression->setMetadata( QVariantMap( {{"inlineEditor", true}} ) );
 
-  addParameter( existingFieldName.release() );
-  addParameter( newFieldName.release() );
-  addParameter( fieldType.release() );
-  addParameter( fieldLength.release() );
-  addParameter( fieldPrecision.release() );
+  addParameter( field.release() );
   addParameter( expression.release() );
 }
 
@@ -111,48 +102,42 @@ bool QgsFieldCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &parameter
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  QList<QVariant::Type> fieldTypes( {QVariant::Double, QVariant::Int, QVariant::String, QVariant::Date} );
+  QMap<QString, QVariant::Type> fieldTypes(
+  {
+    {"Real", QVariant::Double},
+    {"Integer", QVariant::Int},
+    {"String", QVariant::String},
+    {"Date", QVariant::Date},
+  } );
 
   // prepare fields
-  const int fieldTypeIdx = parameterAsInt( parameters, QStringLiteral( "FIELD_TYPE" ), context );
-  const int fieldLength = parameterAsInt( parameters, QStringLiteral( "FIELD_LENGTH" ), context );
-  const int fieldPrecision = parameterAsInt( parameters, QStringLiteral( "FIELD_PRECISION" ), context );
-  const QString existingFieldName = parameterAsString( parameters, QStringLiteral( "EXISTING_FIELD_NAME" ), context );
-  const QString newFieldName = parameterAsString( parameters, QStringLiteral( "NEW_FIELD_NAME" ), context );
+  QVariantMap fieldDefinitionMap = parameters.value( QStringLiteral( "FIELD" ) ).toMap();
 
-  QVariant::Type fieldType = fieldTypes[fieldTypeIdx];
-
-  // this is to keep backwards compatibility, "NEW_FIELD" flags what how "FIELD_NAME" should be treated
-  // since they are not defined parameters, they should be accessed directly from `parameters`
-  bool isNewField = parameters.value( QStringLiteral( "NEW_FIELD" ) ).toBool();
-  QString fieldName = parameters.value( QStringLiteral( "FIELD_NAME" ) ).toString();
-
-  // In a perfect universe there would be only "EXISTING_FIELD_NAME" and "NEW_FIELD_NAME"
-  if ( !parameters.contains( QStringLiteral( "NEW_FIELD" ) ) )
+  if ( fieldDefinitionMap.isEmpty() )
   {
-    isNewField = existingFieldName.isEmpty();
-    fieldName = isNewField ? newFieldName : existingFieldName;
+    fieldDefinitionMap.insert( QStringLiteral( "name" ), parameters.value( QStringLiteral( "FIELD_NAME" ) ).toString() );
+    fieldDefinitionMap.insert( QStringLiteral( "type" ), parameters.value( QStringLiteral( "FIELD_TYPE" ) ).toString() );
+    fieldDefinitionMap.insert( QStringLiteral( "length" ), parameters.value( QStringLiteral( "FIELD_LENGTH" ) ).toInt() );
+    fieldDefinitionMap.insert( QStringLiteral( "precision" ), parameters.value( QStringLiteral( "FIELD_PRECISION" ) ).toInt() );
   }
 
-  if ( fieldName.isEmpty() )
-    throw QgsProcessingException( QObject::tr( "Field name must not be an empty string" ) );
-
+  const QString fieldType = fieldDefinitionMap.value( QStringLiteral( "type" ) ).toString();
   const QgsField field(
-    fieldName,
+    fieldDefinitionMap.value( QStringLiteral( "name" ) ).toString(),
+    fieldTypes.value( fieldType ),
     fieldType,
-    QString(),
-    fieldLength,
-    fieldPrecision
+    fieldDefinitionMap.value( QStringLiteral( "length" ) ).toInt(),
+    fieldDefinitionMap.value( QStringLiteral( "precision" ) ).toInt()
   );
 
   mFields = source->fields();
-
   int fieldIdx = mFields.lookupField( field.name() );
 
-  if ( isNewField || fieldIdx < 0 )
+  if ( fieldIdx < 0 )
     mFields.append( field );
 
   QString dest;
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, mFields, QgsWkbTypes::multiType( source->wkbType() ), source->sourceCrs() ) );
 
   mFieldIdx = mFields.lookupField( field.name() );
 

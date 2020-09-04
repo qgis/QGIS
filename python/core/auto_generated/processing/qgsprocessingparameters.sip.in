@@ -303,6 +303,8 @@ their acceptable ranges, defaults, etc.
       sipType = sipType_QgsProcessingParameterFieldMapping;
     else if ( sipCpp->type() == QgsProcessingParameterTinInputLayers::typeName() )
       sipType = sipType_QgsProcessingParameterTinInputLayers;
+    else if ( sipCpp->type() == QgsProcessingParameterFieldForm::typeName() )
+      sipType = sipType_QgsProcessingParameterFieldForm;
     else
       sipType = nullptr;
 %End
@@ -2484,7 +2486,8 @@ An expression parameter for processing algorithms.
 
     QgsProcessingParameterExpression( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
                                       const QString &parentLayerParameterName = QString(),
-                                      bool optional = false );
+                                      bool optional = false,
+                                      bool useInlineExpressionEditor = false );
 %Docstring
 Constructor for QgsProcessingParameterExpression.
 %End
@@ -2515,6 +2518,20 @@ Returns the name of the parent layer parameter, or an empty string if this is no
 Sets the name of the parent layer parameter. Use an empty string if this is not required.
 
 .. seealso:: :py:func:`parentLayerParameterName`
+%End
+
+    bool useInlineExpressionEditor() const;
+%Docstring
+Returns whether an inline expression editor is preffered.
+
+.. seealso:: :py:func:`setUseInlineExpressionEditor`
+%End
+
+    void setUseInlineExpressionEditor( bool useInlineExpressionEditor );
+%Docstring
+Sets whether an inline expression editor is preffered.
+
+.. seealso:: :py:func:`useInlineExpressionEditor`
 %End
 
     virtual QVariantMap toVariantMap() const;

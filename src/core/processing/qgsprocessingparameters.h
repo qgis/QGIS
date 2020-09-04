@@ -410,6 +410,8 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterFieldMapping;
     else if ( sipCpp->type() == QgsProcessingParameterTinInputLayers::typeName() )
       sipType = sipType_QgsProcessingParameterTinInputLayers;
+    else if ( sipCpp->type() == QgsProcessingParameterFieldForm::typeName() )
+      sipType = sipType_QgsProcessingParameterFieldForm;
     else
       sipType = nullptr;
     SIP_END
@@ -2421,7 +2423,8 @@ class CORE_EXPORT QgsProcessingParameterExpression : public QgsProcessingParamet
      */
     QgsProcessingParameterExpression( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
                                       const QString &parentLayerParameterName = QString(),
-                                      bool optional = false );
+                                      bool optional = false,
+                                      bool useInlineExpressionEditor = false );
 
     /**
      * Returns the type name for the parameter class.
@@ -2445,6 +2448,18 @@ class CORE_EXPORT QgsProcessingParameterExpression : public QgsProcessingParamet
      */
     void setParentLayerParameterName( const QString &parentLayerParameterName );
 
+    /**
+     * Returns whether an inline expression editor is preffered.
+     * \see setUseInlineExpressionEditor()
+     */
+    bool useInlineExpressionEditor() const;
+
+    /**
+     * Sets whether an inline expression editor is preffered.
+     * \see useInlineExpressionEditor()
+     */
+    void setUseInlineExpressionEditor( bool useInlineExpressionEditor );
+
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
 
@@ -2456,6 +2471,7 @@ class CORE_EXPORT QgsProcessingParameterExpression : public QgsProcessingParamet
   private:
 
     QString mParentLayerParameterName;
+    bool mUseInlineExpressionEditor;
 
 };
 

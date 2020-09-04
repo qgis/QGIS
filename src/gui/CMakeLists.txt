@@ -295,6 +295,7 @@ SET(QGIS_GUI_SRCS
   processing/qgsprocessingenummodelerwidget.cpp
   processing/qgsprocessingfeaturesourceoptionswidget.cpp
   processing/qgsprocessingfieldmapwidgetwrapper.cpp
+  processing/qgsprocessingfieldformwidgetwrapper.cpp
   processing/qgsprocessingguiregistry.cpp
   processing/qgsprocessingmaplayercombobox.cpp
   processing/qgsprocessingmatrixmodelerwidget.cpp
@@ -429,6 +430,7 @@ SET(QGIS_GUI_SRCS
   qgsfeatureselectiondlg.cpp
   qgsfieldcombobox.cpp
   qgsfieldexpressionwidget.cpp
+  qgsfieldformwidget.cpp
   qgsfeaturepickerwidget.cpp
   qgsfieldmappingwidget.cpp
   qgsfieldmappingmodel.cpp
@@ -662,6 +664,7 @@ SET(QGIS_GUI_HDRS
   qgsfeatureselectiondlg.h
   qgsfieldcombobox.h
   qgsfieldexpressionwidget.h
+  qgsfieldformwidget.h
   qgsfieldmappingwidget.h
   qgsfieldmappingmodel.h
   qgsfieldvalidator.h
@@ -1046,6 +1049,7 @@ SET(QGIS_GUI_HDRS
   processing/qgsprocessingenummodelerwidget.h
   processing/qgsprocessingfeaturesourceoptionswidget.h
   processing/qgsprocessingfieldmapwidgetwrapper.h
+  processing/qgsprocessingfieldformwidgetwrapper.h
   processing/qgsprocessinggui.h
   processing/qgsprocessingguiregistry.h
   processing/qgsprocessingmaplayercombobox.h
