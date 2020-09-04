@@ -33,27 +33,33 @@
 
 constexpr double PIXEL_RATIO = 1;
 
-QgsMapBoxGlStyleConverter::QgsMapBoxGlStyleConverter( const QVariantMap &style, const QString &styleName )
-  : mStyle( style )
+QgsMapBoxGlStyleConverter::QgsMapBoxGlStyleConverter()
 {
-  if ( mStyle.contains( QStringLiteral( "layers" ) ) )
+}
+
+QgsMapBoxGlStyleConverter::Result QgsMapBoxGlStyleConverter::convert( const QVariantMap &style )
+{
+  mError.clear();
+  if ( style.contains( QStringLiteral( "layers" ) ) )
   {
-    parseLayers( mStyle.value( QStringLiteral( "layers" ) ).toList(), styleName );
+    parseLayers( mStyle.value( QStringLiteral( "layers" ) ).toList() );
   }
   else
   {
     mError = QObject::tr( "Could not find layers list in JSON" );
+    return NoLayerList;
   }
+  return Success;
 }
 
-QgsMapBoxGlStyleConverter::QgsMapBoxGlStyleConverter( const QString &style, const QString &styleName )
-  : QgsMapBoxGlStyleConverter( QgsJsonUtils::parseJson( style ).toMap(), styleName )
+QgsMapBoxGlStyleConverter::Result QgsMapBoxGlStyleConverter::convert( const QString &style )
 {
+  return convert( QgsJsonUtils::parseJson( style ).toMap() );
 }
 
 QgsMapBoxGlStyleConverter::~QgsMapBoxGlStyleConverter() = default;
 
-void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers, const QString &styleName )
+void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers )
 {
   QList<QgsVectorTileBasicRendererStyle> rendererStyles;
   QList<QgsVectorTileBasicLabelingStyle> labelingStyles;
@@ -87,15 +93,15 @@ void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers, const Q
     bool hasLabelingStyle = false;
     if ( layerType == QLatin1String( "fill" ) )
     {
-      hasRendererStyle = parseFillLayer( jsonLayer, styleName, rendererStyle );
+      hasRendererStyle = parseFillLayer( jsonLayer, rendererStyle );
     }
     else if ( layerType == QLatin1String( "line" ) )
     {
-      hasRendererStyle = parseLineLayer( jsonLayer, styleName, rendererStyle );
+      hasRendererStyle = parseLineLayer( jsonLayer, rendererStyle );
     }
     else if ( layerType == QLatin1String( "symbol" ) )
     {
-      parseSymbolLayer( jsonLayer, styleName, rendererStyle, hasRendererStyle, labelingStyle, hasLabelingStyle );
+      parseSymbolLayer( jsonLayer, rendererStyle, hasRendererStyle, labelingStyle, hasLabelingStyle );
     }
     else
     {
@@ -136,7 +142,7 @@ void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers, const Q
   labeling->setStyles( labelingStyles );
 }
 
-bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, const QString &, QgsVectorTileBasicRendererStyle &style )
+bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style )
 {
   if ( !jsonLayer.contains( QStringLiteral( "paint" ) ) )
   {
@@ -318,7 +324,7 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, co
   return true;
 }
 
-bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, const QString &, QgsVectorTileBasicRendererStyle &style )
+bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style )
 {
   if ( !jsonLayer.contains( QStringLiteral( "paint" ) ) )
   {
@@ -510,7 +516,7 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, co
   return true;
 }
 
-void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, const QString &, QgsVectorTileBasicRendererStyle &, bool &hasRenderer, QgsVectorTileBasicLabelingStyle &labelingStyle, bool &hasLabeling )
+void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &, bool &hasRenderer, QgsVectorTileBasicLabelingStyle &labelingStyle, bool &hasLabeling )
 {
   hasLabeling = false;
   hasRenderer = false;

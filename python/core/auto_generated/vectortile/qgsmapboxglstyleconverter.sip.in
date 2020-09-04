@@ -15,6 +15,10 @@ class QgsMapBoxGlStyleConverter
 Handles conversion of MapBox GL styles to QGIS vector tile renderers and labeling
 settings.
 
+Conversions are performed by calling :py:func:`~convert` with either a JSON map or JSON
+string value, and then retrieving the results by calling :py:func:`~renderer` or :py:func:`~labeling`
+respectively.
+
 .. versionadded:: 3.16
 %End
 
@@ -23,22 +27,41 @@ settings.
 %End
   public:
 
-    QgsMapBoxGlStyleConverter( const QVariantMap &style, const QString &styleName = QString() );
+    QgsMapBoxGlStyleConverter();
 %Docstring
 Constructor for QgsMapBoxGlStyleConverter.
-
-The specified MapBox GL ``style`` JSON will be converted.
-%End
-
-    QgsMapBoxGlStyleConverter( const QString &style, const QString &styleName = QString() );
-%Docstring
-Constructor for QgsMapBoxGlStyleConverter.
-
-The specified MapBox GL ``style`` string configuration will be converted.
 %End
 
 
     ~QgsMapBoxGlStyleConverter();
+
+    enum Result
+    {
+      Success,
+      NoLayerList,
+    };
+
+    Result convert( const QVariantMap &style );
+%Docstring
+Converts a JSON ``style`` map, and returns the resultant status of the conversion.
+
+If an error occurs during conversion then a descriptive error message can be retrieved
+by calling :py:func:`~QgsMapBoxGlStyleConverter.errorMessage`.
+
+After conversion, the resultant labeling and style rules can be retrieved by calling
+:py:func:`~QgsMapBoxGlStyleConverter.renderer` or :py:func:`~QgsMapBoxGlStyleConverter.labeling` respectively.
+%End
+
+    Result convert( const QString &style );
+%Docstring
+Converts a JSON ``style`` string, and returns the resultant status of the conversion.
+
+If an error occurs during conversion then a descriptive error message can be retrieved
+by calling :py:func:`~QgsMapBoxGlStyleConverter.errorMessage`.
+
+After conversion, the resultant labeling and style rules can be retrieved by calling
+:py:func:`~QgsMapBoxGlStyleConverter.renderer` or :py:func:`~QgsMapBoxGlStyleConverter.labeling` respectively.
+%End
 
     QString errorMessage() const;
 %Docstring
@@ -68,34 +91,32 @@ or ``None`` if the style could not be converted successfully.
       Text
     };
 
-    void parseLayers( const QVariantList &layers, const QString &styleName );
+    void parseLayers( const QVariantList &layers );
 %Docstring
 Parse list of ``layers`` from JSON
 %End
 
-    static bool parseFillLayer( const QVariantMap &jsonLayer, const QString &styleName, QgsVectorTileBasicRendererStyle &style /Out/ );
+    static bool parseFillLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style /Out/ );
 %Docstring
 Parses a fill layer.
 
 :param jsonLayer: fill layer to parse
-:param styleName: style name
 
 :return: - ``True`` if the layer was successfully parsed.
          - style: generated QGIS vector tile style
 %End
 
-    static bool parseLineLayer( const QVariantMap &jsonLayer, const QString &styleName, QgsVectorTileBasicRendererStyle &style /Out/ );
+    static bool parseLineLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style /Out/ );
 %Docstring
 Parses a line layer.
 
 :param jsonLayer: fill layer to parse
-:param styleName: style name
 
 :return: - ``True`` if the layer was successfully parsed.
          - style: generated QGIS vector tile style
 %End
 
-    static void parseSymbolLayer( const QVariantMap &jsonLayer, const QString &styleName,
+    static void parseSymbolLayer( const QVariantMap &jsonLayer,
                                   QgsVectorTileBasicRendererStyle &rendererStyle /Out/,
                                   bool &hasRenderer /Out/,
                                   QgsVectorTileBasicLabelingStyle &labelingStyle /Out/,
@@ -104,7 +125,6 @@ Parses a line layer.
 Parses a symbol layer.
 
 :param jsonLayer: fill layer to parse
-:param styleName: style name
 :param rendererStyle: generated QGIS vector tile style
 :param hasRenderer: will be set to ``True`` if symbol layer generated a renderer style
 :param labelingStyle: generated QGIS vector tile labeling

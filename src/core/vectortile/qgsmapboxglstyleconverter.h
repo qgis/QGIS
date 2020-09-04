@@ -32,6 +32,10 @@ class QgsVectorTileBasicLabelingStyle;
  * Handles conversion of MapBox GL styles to QGIS vector tile renderers and labeling
  * settings.
  *
+ * Conversions are performed by calling convert() with either a JSON map or JSON
+ * string value, and then retrieving the results by calling renderer() or labeling()
+ * respectively.
+ *
  * \since QGIS 3.16
  */
 class CORE_EXPORT QgsMapBoxGlStyleConverter
@@ -40,17 +44,8 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
 
     /**
      * Constructor for QgsMapBoxGlStyleConverter.
-     *
-     * The specified MapBox GL \a style JSON will be converted.
      */
-    QgsMapBoxGlStyleConverter( const QVariantMap &style, const QString &styleName = QString() );
-
-    /**
-     * Constructor for QgsMapBoxGlStyleConverter.
-     *
-     * The specified MapBox GL \a style string configuration will be converted.
-     */
-    QgsMapBoxGlStyleConverter( const QString &style, const QString &styleName = QString() );
+    QgsMapBoxGlStyleConverter();
 
     //! QgsMapBoxGlStyleConverter cannot be copied
     QgsMapBoxGlStyleConverter( const QgsMapBoxGlStyleConverter &other ) = delete;
@@ -58,6 +53,35 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
     QgsMapBoxGlStyleConverter &operator=( const QgsMapBoxGlStyleConverter &other ) = delete;
 
     ~QgsMapBoxGlStyleConverter();
+
+    //! Result of conversion
+    enum Result
+    {
+      Success = 0, //!< Conversion was successful
+      NoLayerList = 1, //!< No layer list was found in JSON input
+    };
+
+    /**
+     * Converts a JSON \a style map, and returns the resultant status of the conversion.
+     *
+     * If an error occurs during conversion then a descriptive error message can be retrieved
+     * by calling errorMessage().
+     *
+     * After conversion, the resultant labeling and style rules can be retrieved by calling
+     * renderer() or labeling() respectively.
+     */
+    Result convert( const QVariantMap &style );
+
+    /**
+     * Converts a JSON \a style string, and returns the resultant status of the conversion.
+     *
+     * If an error occurs during conversion then a descriptive error message can be retrieved
+     * by calling errorMessage().
+     *
+     * After conversion, the resultant labeling and style rules can be retrieved by calling
+     * renderer() or labeling() respectively.
+     */
+    Result convert( const QString &style );
 
     /**
      * Returns a descriptive error message if an error was encountered during the style conversion,
@@ -90,39 +114,36 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
     /**
      * Parse list of \a layers from JSON
      */
-    void parseLayers( const QVariantList &layers, const QString &styleName );
+    void parseLayers( const QVariantList &layers );
 
     /**
      * Parses a fill layer.
      *
      * \param jsonLayer fill layer to parse
-     * \param styleName style name
      * \param style generated QGIS vector tile style
      * \returns TRUE if the layer was successfully parsed.
      */
-    static bool parseFillLayer( const QVariantMap &jsonLayer, const QString &styleName, QgsVectorTileBasicRendererStyle &style SIP_OUT );
+    static bool parseFillLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style SIP_OUT );
 
     /**
      * Parses a line layer.
      *
      * \param jsonLayer fill layer to parse
-     * \param styleName style name
      * \param style generated QGIS vector tile style
      * \returns TRUE if the layer was successfully parsed.
      */
-    static bool parseLineLayer( const QVariantMap &jsonLayer, const QString &styleName, QgsVectorTileBasicRendererStyle &style SIP_OUT );
+    static bool parseLineLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style SIP_OUT );
 
     /**
      * Parses a symbol layer.
      *
      * \param jsonLayer fill layer to parse
-     * \param styleName style name
      * \param rendererStyle generated QGIS vector tile style
      * \param hasRenderer will be set to TRUE if symbol layer generated a renderer style
      * \param labelingStyle generated QGIS vector tile labeling
      * \param hasLabeling will be set to TRUE if symbol layer generated a labeling style
     */
-    static void parseSymbolLayer( const QVariantMap &jsonLayer, const QString &styleName,
+    static void parseSymbolLayer( const QVariantMap &jsonLayer,
                                   QgsVectorTileBasicRendererStyle &rendererStyle SIP_OUT,
                                   bool &hasRenderer SIP_OUT,
                                   QgsVectorTileBasicLabelingStyle &labelingStyle SIP_OUT,
