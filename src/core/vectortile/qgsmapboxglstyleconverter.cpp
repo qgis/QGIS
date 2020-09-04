@@ -22,6 +22,7 @@
 #include "qgsfillsymbollayer.h"
 #include "qgslinesymbollayer.h"
 #include "qgsfontutils.h"
+#include "qgsjsonutils.h"
 
 constexpr double PIXEL_RATIO = 1;
 
@@ -36,6 +37,11 @@ QgsMapBoxGlStyleConverter::QgsMapBoxGlStyleConverter( const QVariantMap &style, 
   {
     mError = QObject::tr( "Could not find layers list in JSON" );
   }
+}
+
+QgsMapBoxGlStyleConverter::QgsMapBoxGlStyleConverter( const QString &style, const QString &styleName )
+  : QgsMapBoxGlStyleConverter( QgsJsonUtils::parseJson( style ).toMap(), styleName )
+{
 }
 
 QgsMapBoxGlStyleConverter::~QgsMapBoxGlStyleConverter() = default;
@@ -137,18 +143,18 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, co
 
   // fill color
   QColor fillColor;
-  if ( jsonLayer.contains( QStringLiteral( "fill-color" ) ) )
+  if ( jsonPaint.contains( QStringLiteral( "fill-color" ) ) )
   {
     const QVariant jsonFillColor = jsonPaint.value( QStringLiteral( "fill-color" ) );
     switch ( jsonFillColor.type() )
     {
       case QVariant::Map:
-        ddProperties.setProperty( QgsSymbolLayer::PropertyFillColor, parseInterpolateColorByZoom( jsonFillColor.toMap() ) );
+        ddProperties.setProperty( QgsSymbolLayer::PropertyFillColor, parseInterpolateColorByZoom( jsonFillColor.toMap(), &fillColor ) );
         break;
 
       case QVariant::List:
       case QVariant::StringList:
-        ddProperties.setProperty( QgsSymbolLayer::PropertyFillColor, parseInterpolateListByZoom( jsonFillColor.toList(), PropertyType::Color ) );
+        ddProperties.setProperty( QgsSymbolLayer::PropertyFillColor, parseInterpolateListByZoom( jsonFillColor.toList(), PropertyType::Color, 1, &fillColor ) );
         break;
 
       case QVariant::String:
@@ -162,7 +168,7 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, co
   }
 
   QColor fillOutlineColor;
-  if ( !jsonLayer.contains( QStringLiteral( "fill-outline-color" ) ) )
+  if ( !jsonPaint.contains( QStringLiteral( "fill-outline-color" ) ) )
   {
     // fill-outline-color
     if ( fillColor.isValid() )
@@ -180,12 +186,12 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, co
     switch ( jsonFillOutlineColor.type() )
     {
       case QVariant::Map:
-        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, parseInterpolateColorByZoom( jsonFillOutlineColor.toMap() ) );
+        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, parseInterpolateColorByZoom( jsonFillOutlineColor.toMap(), &fillOutlineColor ) );
         break;
 
       case QVariant::List:
       case QVariant::StringList:
-        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, parseInterpolateListByZoom( jsonFillOutlineColor.toList(), PropertyType::Color ) );
+        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, parseInterpolateListByZoom( jsonFillOutlineColor.toList(), PropertyType::Color, 1, &fillOutlineColor ) );
         break;
 
       case QVariant::String:
@@ -319,19 +325,19 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, co
 
   // line color
   QColor lineColor;
-  if ( jsonLayer.contains( QStringLiteral( "line-color" ) ) )
+  if ( jsonPaint.contains( QStringLiteral( "line-color" ) ) )
   {
     const QVariant jsonLineColor = jsonPaint.value( QStringLiteral( "line-color" ) );
     switch ( jsonLineColor.type() )
     {
       case QVariant::Map:
-        ddProperties.setProperty( QgsSymbolLayer::PropertyFillColor, parseInterpolateColorByZoom( jsonLineColor.toMap() ) );
+        ddProperties.setProperty( QgsSymbolLayer::PropertyFillColor, parseInterpolateColorByZoom( jsonLineColor.toMap(), &lineColor ) );
         ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, ddProperties.property( QgsSymbolLayer::PropertyFillColor ) );
         break;
 
       case QVariant::List:
       case QVariant::StringList:
-        ddProperties.setProperty( QgsSymbolLayer::PropertyFillColor, parseInterpolateListByZoom( jsonLineColor.toList(), PropertyType::Color ) );
+        ddProperties.setProperty( QgsSymbolLayer::PropertyFillColor, parseInterpolateListByZoom( jsonLineColor.toList(), PropertyType::Color, 1, &lineColor ) );
         ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, ddProperties.property( QgsSymbolLayer::PropertyFillColor ) );
         break;
 
@@ -480,7 +486,7 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, co
   }
   if ( lineColor.isValid() )
   {
-    lineSymbol->setStrokeColor( lineColor );
+    lineSymbol->setColor( lineColor );
   }
   if ( lineWidth != -1 )
   {
@@ -605,12 +611,12 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     switch ( jsonTextColor.type() )
     {
       case QVariant::Map:
-        ddLabelProperties.setProperty( QgsPalLayerSettings::Color, parseInterpolateColorByZoom( jsonTextColor.toMap() ) );
+        ddLabelProperties.setProperty( QgsPalLayerSettings::Color, parseInterpolateColorByZoom( jsonTextColor.toMap(), &textColor ) );
         break;
 
       case QVariant::List:
       case QVariant::StringList:
-        ddLabelProperties.setProperty( QgsPalLayerSettings::Color, parseInterpolateListByZoom( jsonTextColor.toList(), PropertyType::Color ) );
+        ddLabelProperties.setProperty( QgsPalLayerSettings::Color, parseInterpolateListByZoom( jsonTextColor.toList(), PropertyType::Color, 1, &textColor ) );
         break;
 
       case QVariant::String:
@@ -631,12 +637,12 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     switch ( jsonBufferColor.type() )
     {
       case QVariant::Map:
-        ddLabelProperties.setProperty( QgsPalLayerSettings::BufferColor, parseInterpolateColorByZoom( jsonBufferColor.toMap() ) );
+        ddLabelProperties.setProperty( QgsPalLayerSettings::BufferColor, parseInterpolateColorByZoom( jsonBufferColor.toMap(), &bufferColor ) );
         break;
 
       case QVariant::List:
       case QVariant::StringList:
-        ddLabelProperties.setProperty( QgsPalLayerSettings::BufferColor, parseInterpolateListByZoom( jsonBufferColor.toList(), PropertyType::Color ) );
+        ddLabelProperties.setProperty( QgsPalLayerSettings::BufferColor, parseInterpolateListByZoom( jsonBufferColor.toList(), PropertyType::Color, 1, &bufferColor ) );
         break;
 
       case QVariant::String:
@@ -782,7 +788,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
   hasLabeling = true;
 }
 
-QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateColorByZoom( const QVariantMap &json )
+QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateColorByZoom( const QVariantMap &json, QColor *defaultColor )
 {
   const double base = json.value( QStringLiteral( "base" ), QStringLiteral( "1" ) ).toDouble();
   const QVariantList stops = json.value( QStringLiteral( "stops" ) ).toList();
@@ -876,6 +882,10 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateColorByZoom( const QVaria
   caseString += QStringLiteral( "WHEN @zoom_level >= %1 THEN color_hsla(%2, %3, %4, %5) "
                                 "ELSE color_hsla(%2, %3, %4, %5) END" ).arg( tz )
                 .arg( tcHue ).arg( tcSat ).arg( tcLight ).arg( tcAlpha );
+
+
+  if ( !stops.empty() && defaultColor )
+    *defaultColor = parseColor( stops.value( 0 ).toList().value( 1 ).toString() );
 
   return QgsProperty::fromExpression( caseString );
 }
@@ -1037,7 +1047,7 @@ QString QgsMapBoxGlStyleConverter::parseStops( double base, const QVariantList &
   return caseString;
 }
 
-QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateListByZoom( const QVariantList &json, PropertyType type, double multiplier )
+QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateListByZoom( const QVariantList &json, PropertyType type, double multiplier, QColor *defaultColor )
 {
   if ( json.value( 0 ).toString() != QLatin1String( "interpolate" ) )
   {
@@ -1081,7 +1091,7 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateListByZoom( const QVarian
   switch ( type )
   {
     case PropertyType::Color:
-      return parseInterpolateColorByZoom( props );
+      return parseInterpolateColorByZoom( props, defaultColor );
 
     case PropertyType::Line:
     case PropertyType::Text:

@@ -41,9 +41,16 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
     /**
      * Constructor for QgsMapBoxGlStyleConverter.
      *
-     * The specified MapBox GL \a style configuration will be converted.
+     * The specified MapBox GL \a style JSON will be converted.
      */
     QgsMapBoxGlStyleConverter( const QVariantMap &style, const QString &styleName = QString() );
+
+    /**
+     * Constructor for QgsMapBoxGlStyleConverter.
+     *
+     * The specified MapBox GL \a style string configuration will be converted.
+     */
+    QgsMapBoxGlStyleConverter( const QString &style, const QString &styleName = QString() );
 
     //! QgsMapBoxGlStyleConverter cannot be copied
     QgsMapBoxGlStyleConverter( const QgsMapBoxGlStyleConverter &other ) = delete;
@@ -122,7 +129,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
                                   bool &hasLabeling SIP_OUT );
 
 
-    static QgsProperty parseInterpolateColorByZoom( const QVariantMap &json );
+    static QgsProperty parseInterpolateColorByZoom( const QVariantMap &json, QColor *defaultColor = nullptr );
     static QgsProperty parseInterpolateByZoom( const QVariantMap &json, double multiplier = 1 );
 
     /**
@@ -143,7 +150,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
     /**
      * Interpolates a list which starts with the interpolate function.
      */
-    static QgsProperty parseInterpolateListByZoom( const QVariantList &json, PropertyType type, double multiplier = 1 );
+    static QgsProperty parseInterpolateListByZoom( const QVariantList &json, PropertyType type, double multiplier = 1, QColor *defaultColor = nullptr );
 
     /**
      * Parses a \a color in one of these supported formats:
