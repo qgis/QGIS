@@ -23,6 +23,7 @@ class QLineEdit;
 
 #include "qgseditorwidgetwrapper.h"
 #include "qgis_gui.h"
+#include "qgsattributeform.h"
 
 SIP_NO_FILE
 
@@ -68,12 +69,26 @@ class GUI_EXPORT QgsExternalResourceWidgetWrapper : public QgsEditorWidgetWrappe
     void setFeature( const QgsFeature &feature ) override;
     void setEnabled( bool enabled ) override;
 
+    /**
+     * Will be called when a value in the current edited form or table row
+     * changes
+     *
+     * \param attribute         The name of the attribute that changed.
+     * \param newValue          The new value of the attribute.
+     * \param attributeChanged  If TRUE, it corresponds to an actual change of the feature attribute
+     * \since QGIS 3.16
+     */
+    void widgetValueChanged( const QString &attribute, const QVariant &newValue, bool attributeChanged );
+
+
   private:
     void updateValues( const QVariant &value, const QVariantList & = QVariantList() ) override;
     void updateConstraintWidgetStatus() override;
+    void updateProperties( const QgsFeature &feature );
 
     QLineEdit *mLineEdit = nullptr;
     QLabel *mLabel = nullptr;
+    QgsAttributeForm *mForm = nullptr;
     QgsExternalResourceWidget *mQgsWidget = nullptr;
 };
 

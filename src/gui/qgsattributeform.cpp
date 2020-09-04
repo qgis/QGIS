@@ -282,6 +282,7 @@ void QgsAttributeForm::setFeature( const QgsFeature &feature )
 {
   mIsSettingFeature = true;
   mFeature = feature;
+  mCurrentFormFeature = feature;
 
   switch ( mMode )
   {
@@ -872,6 +873,8 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QVariant
   if ( mValuesInitialized )
     mDirty = true;
 
+  mCurrentFormFeature.setAttribute( eww->field().name(), value );
+
   switch ( mMode )
   {
     case QgsAttributeEditorContext::SingleEditMode:
@@ -957,7 +960,7 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
 {
   // get the current feature set in the form
   QgsFeature ft;
-  if ( currentFormFeature( ft ) )
+  if ( currentFormValuesFeature( ft ) )
   {
     // if the layer is NOT being edited then we only check layer based constraints, and not
     // any constraints enforced by the provider. Because:
@@ -1039,7 +1042,7 @@ void QgsAttributeForm::updateLabels()
   if ( ! mLabelDataDefinedProperties.isEmpty() )
   {
     QgsFeature currentFeature;
-    if ( currentFormFeature( currentFeature ) )
+    if ( currentFormValuesFeature( currentFeature ) )
     {
       QgsExpressionContext context = createExpressionContext( currentFeature );
 
@@ -1057,7 +1060,7 @@ void QgsAttributeForm::updateLabels()
   }
 }
 
-bool QgsAttributeForm::currentFormFeature( QgsFeature &feature )
+bool QgsAttributeForm::currentFormValuesFeature( QgsFeature &feature )
 {
   bool rc = true;
   feature = QgsFeature( mFeature );
@@ -2460,7 +2463,7 @@ void QgsAttributeForm::updateJoinedFields( const QgsEditorWidgetWrapper &eww )
   QgsField field = eww.layer()->fields().field( eww.fieldIdx() );
   QList<const QgsVectorLayerJoinInfo *> infos = eww.layer()->joinBuffer()->joinsWhereFieldIsId( field );
 
-  if ( infos.count() == 0 || !currentFormFeature( formFeature ) )
+  if ( infos.count() == 0 || !currentFormValuesFeature( formFeature ) )
     return;
 
   const QString hint = tr( "No feature joined" );
