@@ -18,11 +18,13 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsproperty.h"
 #include <QVariantMap>
 #include <memory>
 
 class QgsVectorTileRenderer;
 class QgsVectorTileLabeling;
+class QgsVectorTileBasicRendererStyle;
 
 /**
  * \ingroup core
@@ -40,7 +42,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * The specified MapBox GL \a style configuration will be converted.
      */
-    QgsMapBoxGlStyleConverter( const QVariantMap &style );
+    QgsMapBoxGlStyleConverter( const QVariantMap &style, const QString &styleName = QString() );
 
     //! QgsMapBoxGlStyleConverter cannot be copied
     QgsMapBoxGlStyleConverter( const QgsMapBoxGlStyleConverter &other ) = delete;
@@ -69,14 +71,55 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
 
   protected:
 
-    void parseLayers( const QVariantList &layers );
+    /**
+     * Parse list of \a layers from JSON
+     */
+    void parseLayers( const QVariantList &layers, const QString &styleName );
+
+    /**
+     * Parses a fill layer.
+     *
+     * \param jsonLayer fill layer to parse
+     * \param styleName style name
+     * \param style generated QGIS vector tile style
+     * \returns TRUE if the layer was successfully parsed.
+     */
+    static bool parseFillLayer( const QVariantMap &jsonLayer, const QString &styleName, QgsVectorTileBasicRendererStyle &style SIP_OUT );
+
+    static QgsProperty parseInterpolateColorByZoom( const QVariantMap &json );
+
+    /**
+     * Parses a \a color in one of these supported formats:
+     *
+     * - #fff or #ffffff
+     * - hsl(30, 19%, 90%) or hsla(30, 19%, 90%, 0.4)
+     * - rgb(10, 20, 30) or rgba(10, 20, 30, 0.5)
+     *
+     * Returns an invalid color if the color could not be parsed.
+     */
+    static QColor parseColor( const QVariant &color );
+
+    /**
+     * Takes a QColor object and returns HSLA components in required format for QGIS color_hsla() expression function.
+     * \param color input color
+     * \param hue an integer value from 0 to 360
+     * \param saturation an integer value from 0 to 100
+     * \param lightness an integer value from 0 to 100
+     * \param alpha an integer value from 0 (completely transparent) to 255 (opaque).
+     */
+    static void colorAsHslaComponents( const QColor &color, int &hue, int &saturation, int &lightness, int &alpha );
+
+    /**
+     * Generates an interpolation for values between \a valueMin and \a valueMax, scaled between the
+     * ranges \a zoomMin to \a zoomMax.
+     */
+    static QString interpolateExpression( int zoomMin, int zoomMax, double valueMin, double valueMax, double base );
 
   private:
 
 #ifdef SIP_RUN
     QgsMapBoxGlStyleConverter( const QgsMapBoxGlStyleConverter &other );
 #endif
-
 
 
     QVariantMap mStyle;
