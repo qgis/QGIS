@@ -30,7 +30,14 @@ Constructor for QgsMapBoxGlStyleConverter.
 The specified MapBox GL ``style`` configuration will be converted.
 %End
 
+
     ~QgsMapBoxGlStyleConverter();
+
+    QString errorMessage() const;
+%Docstring
+Returns a descriptive error message if an error was encountered during the style conversion,
+or an empty string if no error was encountered.
+%End
 
     QgsVectorTileRenderer *renderer() const /Factory/;
 %Docstring
@@ -44,6 +51,12 @@ Returns a new instance of a vector tile labeling representing the converted styl
 or ``None`` if the style could not be converted successfully.
 %End
 
+  protected:
+
+    void parseLayers( const QVariantList &layers );
+
+  private:
+    QgsMapBoxGlStyleConverter( const QgsMapBoxGlStyleConverter &other );
 };
 
 /************************************************************************

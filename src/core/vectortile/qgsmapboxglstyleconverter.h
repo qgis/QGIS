@@ -42,7 +42,18 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      */
     QgsMapBoxGlStyleConverter( const QVariantMap &style );
 
+    //! QgsMapBoxGlStyleConverter cannot be copied
+    QgsMapBoxGlStyleConverter( const QgsMapBoxGlStyleConverter &other ) = delete;
+    //! QgsMapBoxGlStyleConverter cannot be copied
+    QgsMapBoxGlStyleConverter &operator=( const QgsMapBoxGlStyleConverter &other ) = delete;
+
     ~QgsMapBoxGlStyleConverter();
+
+    /**
+     * Returns a descriptive error message if an error was encountered during the style conversion,
+     * or an empty string if no error was encountered.
+     */
+    QString errorMessage() const { return mError; }
 
     /**
      * Returns a new instance of a vector tile renderer representing the converted style,
@@ -56,9 +67,20 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      */
     QgsVectorTileLabeling *labeling() const SIP_FACTORY;
 
+  protected:
+
+    void parseLayers( const QVariantList &layers );
+
   private:
 
+#ifdef SIP_RUN
+    QgsMapBoxGlStyleConverter( const QgsMapBoxGlStyleConverter &other );
+#endif
+
+
+
     QVariantMap mStyle;
+    QString mError;
 
     std::unique_ptr< QgsVectorTileRenderer > mRenderer;
     std::unique_ptr< QgsVectorTileLabeling > mLabeling;

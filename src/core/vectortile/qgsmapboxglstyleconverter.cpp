@@ -20,10 +20,22 @@
 QgsMapBoxGlStyleConverter::QgsMapBoxGlStyleConverter( const QVariantMap &style )
   : mStyle( style )
 {
-
+  if ( mStyle.contains( QStringLiteral( "layers" ) ) )
+  {
+    parseLayers( mStyle.value( QStringLiteral( "layers" ) ).toList() );
+  }
+  else
+  {
+    mError = QObject::tr( "Could not find layers list in JSON" );
+  }
 }
 
 QgsMapBoxGlStyleConverter::~QgsMapBoxGlStyleConverter() = default;
+
+void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers )
+{
+
+}
 
 QgsVectorTileRenderer *QgsMapBoxGlStyleConverter::renderer() const
 {
