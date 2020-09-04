@@ -239,13 +239,26 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
 {
   QSet< QString > toExecute;
   QMap< QString, QgsProcessingModelChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
+  QSet< QString > broken;
   for ( ; childIt != mChildAlgorithms.constEnd(); ++childIt )
   {
-    if ( childIt->isActive() && childIt->algorithm() )
-      toExecute.insert( childIt->childId() );
+    if ( childIt->isActive() )
+    {
+      if ( childIt->algorithm() )
+        toExecute.insert( childIt->childId() );
+      else
+        broken.insert( childIt->childId() );
+    }
   }
 
+<<<<<<< HEAD
   QTime totalTime;
+=======
+  if ( !broken.empty() )
+    throw QgsProcessingException( QCoreApplication::translate( "QgsProcessingModelAlgorithm", "Cannot run model, the following algorithms are not available on this system: %1" ).arg( broken.values().join( QStringLiteral( ", " ) ) ) );
+
+  QElapsedTimer totalTime;
+>>>>>>> badbdb363c... Fail model run if an algorithm is not available on the system (#38587)
   totalTime.start();
 
   QgsProcessingMultiStepFeedback modelFeedback( toExecute.count(), feedback );
@@ -1551,4 +1564,3 @@ void QgsProcessingModelAlgorithm::setVariables( const QVariantMap &variables )
 }
 
 ///@endcond
-
