@@ -86,8 +86,18 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
     /**
      * Returns a descriptive error message if an error was encountered during the style conversion,
      * or an empty string if no error was encountered.
+     *
+     * \see warnings()
      */
     QString errorMessage() const { return mError; }
+
+    /**
+     * Returns a list of user-friendly warnings generated during the conversion, e.g. as a result
+     * of MapBox GL style settings which cannot be translated to QGIS styles.
+     *
+     * \see errorMessage()
+     */
+    QStringList warnings() const { return mWarnings; }
 
     /**
      * Returns a new instance of a vector tile renderer representing the converted style,
@@ -103,75 +113,147 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
 
   protected:
 
+    /**
+     * Property types, for interpolated value conversion
+     * \warning This is private API only, and may change in future QGIS versions
+     */
     enum PropertyType
     {
-      Color,
-      Line,
-      Opacity,
-      Text
+      Color, //!< Color property
+      Numeric, //!< Numeric property (e.g. line width, text size)
+      Opacity, //!< Opacity property
     };
 
     /**
-     * Parse list of \a layers from JSON
+     * Context for a MapBox GL style conversion operation.
+     * \warning This is private API only, and may change in future QGIS versions
+     * \ingroup core
+     * \since QGIS 3.16
+     */
+    class ConversionContext
+    {
+      public:
+
+        /**
+         * Pushes a \a warning message generated during the conversion.
+         */
+        void pushWarning( const QString &warning );
+
+        /**
+         * Returns a list of warning messages generated during the conversion.
+         */
+        QStringList warnings() const { return mWarnings; }
+
+        /**
+         * Clears the list of warning messages.
+         */
+        void clearWarnings() { mWarnings.clear(); }
+
+      private:
+
+        QStringList mWarnings;
+    };
+
+    /**
+     * Parse list of \a layers from JSON.
+     * \warning This is private API only, and may change in future QGIS versions
      */
     void parseLayers( const QVariantList &layers );
 
     /**
      * Parses a fill layer.
      *
+     * \warning This is private API only, and may change in future QGIS versions
+     *
      * \param jsonLayer fill layer to parse
      * \param style generated QGIS vector tile style
+     * \param context conversion context
      * \returns TRUE if the layer was successfully parsed.
      */
-    static bool parseFillLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style SIP_OUT );
+    static bool parseFillLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style SIP_OUT, ConversionContext &context );
 
     /**
      * Parses a line layer.
      *
+     * \warning This is private API only, and may change in future QGIS versions
+     *
      * \param jsonLayer fill layer to parse
      * \param style generated QGIS vector tile style
+     * \param context conversion context
      * \returns TRUE if the layer was successfully parsed.
      */
-    static bool parseLineLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style SIP_OUT );
+    static bool parseLineLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style SIP_OUT, ConversionContext &context );
 
     /**
      * Parses a symbol layer.
+     *
+     * \warning This is private API only, and may change in future QGIS versions
      *
      * \param jsonLayer fill layer to parse
      * \param rendererStyle generated QGIS vector tile style
      * \param hasRenderer will be set to TRUE if symbol layer generated a renderer style
      * \param labelingStyle generated QGIS vector tile labeling
      * \param hasLabeling will be set to TRUE if symbol layer generated a labeling style
+     * \param context conversion context
     */
     static void parseSymbolLayer( const QVariantMap &jsonLayer,
                                   QgsVectorTileBasicRendererStyle &rendererStyle SIP_OUT,
                                   bool &hasRenderer SIP_OUT,
                                   QgsVectorTileBasicLabelingStyle &labelingStyle SIP_OUT,
-                                  bool &hasLabeling SIP_OUT );
+                                  bool &hasLabeling SIP_OUT, ConversionContext &context );
 
 
-    static QgsProperty parseInterpolateColorByZoom( const QVariantMap &json, QColor *defaultColor = nullptr );
-    static QgsProperty parseInterpolateByZoom( const QVariantMap &json, double multiplier = 1 );
+    /**
+     * Parses a color value which is interpolated by zoom range.
+     *
+     * \param json definition of color interpolation
+     * \param context conversion context
+     * \param defaultColor optional storage for a reasonable "default" color representing the overall property.
+     */
+    static QgsProperty parseInterpolateColorByZoom( const QVariantMap &json, ConversionContext &context, QColor *defaultColor = nullptr );
+
+    /**
+     * Parses a numeric value which is interpolated by zoom range.
+     *
+     * \param json definition of interpolation
+     * \param context conversion context
+     * \param multiplier optional multiplication factor
+     */
+    static QgsProperty parseInterpolateByZoom( const QVariantMap &json, ConversionContext &context, double multiplier = 1 );
 
     /**
      * Interpolates opacity with either scale_linear() or scale_exp() (depending on base value).
      * For \a json with intermediate stops it uses parseOpacityStops() function.
      * It uses QGIS set_color_part() function to set alpha component of color.
+     *
+     * \warning This is private API only, and may change in future QGIS versions
      */
     static QgsProperty parseInterpolateOpacityByZoom( const QVariantMap &json );
 
     /**
      * Takes values from stops and uses either scale_linear() or scale_exp() functions
      * to interpolate alpha component of color.
+     *
+     * \warning This is private API only, and may change in future QGIS versions
      */
     static QString parseOpacityStops( double base, const QVariantList &stops );
 
-    static QString parseStops( double base, const QVariantList &stops, double multiplier );
+    /**
+     * Parses a list of interpolation stops
+     *
+     * \param base interpolation exponent base
+     * \param stops definition of interpolation stops
+     * \param multiplier optional multiplication factor
+     * \param context conversion context
+     */
+    static QString parseStops( double base, const QVariantList &stops, double multiplier, ConversionContext &context );
 
     /**
      * Interpolates a list which starts with the interpolate function.
+     *
+     * \warning This is private API only, and may change in future QGIS versions
      */
-    static QgsProperty parseInterpolateListByZoom( const QVariantList &json, PropertyType type, double multiplier = 1, QColor *defaultColor = nullptr );
+    static QgsProperty parseInterpolateListByZoom( const QVariantList &json, PropertyType type, ConversionContext &context, double multiplier = 1, QColor *defaultColor = nullptr );
 
     /**
      * Parses a \a color in one of these supported formats:
@@ -181,8 +263,10 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * - rgb(10, 20, 30) or rgba(10, 20, 30, 0.5)
      *
      * Returns an invalid color if the color could not be parsed.
+     *
+     * \warning This is private API only, and may change in future QGIS versions
      */
-    static QColor parseColor( const QVariant &color );
+    static QColor parseColor( const QVariant &color, ConversionContext &context );
 
     /**
      * Takes a QColor object and returns HSLA components in required format for QGIS color_hsla() expression function.
@@ -191,29 +275,39 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * \param saturation an integer value from 0 to 100
      * \param lightness an integer value from 0 to 100
      * \param alpha an integer value from 0 (completely transparent) to 255 (opaque).
+     *
+     * \warning This is private API only, and may change in future QGIS versions
      */
     static void colorAsHslaComponents( const QColor &color, int &hue, int &saturation, int &lightness, int &alpha );
 
     /**
      * Generates an interpolation for values between \a valueMin and \a valueMax, scaled between the
      * ranges \a zoomMin to \a zoomMax.
+     *
+     * \warning This is private API only, and may change in future QGIS versions
      */
     static QString interpolateExpression( int zoomMin, int zoomMax, double valueMin, double valueMax, double base );
 
     /**
      * Converts a value to Qt::PenCapStyle enum from JSON value.
+     *
+     * \warning This is private API only, and may change in future QGIS versions
      */
     static Qt::PenCapStyle parseCapStyle( const QString &style );
 
     /**
      * Converts a value to Qt::PenJoinStyle enum from JSON value.
+     *
+     * \warning This is private API only, and may change in future QGIS versions
      */
     static Qt::PenJoinStyle parseJoinStyle( const QString &style );
 
     /**
      * Converts a MapBox GL expression to a QGIS expression.
+     *
+     * \warning This is private API only, and may change in future QGIS versions
      */
-    static QString parseExpression( const QVariantList &expression );
+    static QString parseExpression( const QVariantList &expression, ConversionContext &context );
 
   private:
 
@@ -221,12 +315,13 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
     QgsMapBoxGlStyleConverter( const QgsMapBoxGlStyleConverter &other );
 #endif
 
-    static QString parseValue( const QVariant &value );
+    static QString parseValue( const QVariant &value, ConversionContext &context );
     static QString parseKey( const QVariant &value );
 
 
     QVariantMap mStyle;
     QString mError;
+    QStringList mWarnings;
 
     std::unique_ptr< QgsVectorTileRenderer > mRenderer;
     std::unique_ptr< QgsVectorTileLabeling > mLabeling;
