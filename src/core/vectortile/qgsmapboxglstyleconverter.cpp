@@ -13,6 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
+
+/*
+ * Ported from original work by Martin Dobias, and extended by the MapTiler team!
+ */
+
 #include "qgsmapboxglstyleconverter.h"
 #include "qgsvectortilebasicrenderer.h"
 #include "qgsvectortilebasiclabeling.h"
@@ -23,6 +28,8 @@
 #include "qgslinesymbollayer.h"
 #include "qgsfontutils.h"
 #include "qgsjsonutils.h"
+
+
 
 constexpr double PIXEL_RATIO = 1;
 
