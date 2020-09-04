@@ -52,6 +52,7 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
 
   setWidgetStateFromNavigationMode( mNavigationObject->navigationMode() );
   connect( mNavigationObject, &QgsTemporalNavigationObject::navigationModeChanged, this, &QgsTemporalControllerWidget::setWidgetStateFromNavigationMode );
+  connect( mNavigationObject, &QgsTemporalNavigationObject::temporalExtentsChanged, this, &QgsTemporalControllerWidget::setDates );
   connect( mNavigationOff, &QPushButton::clicked, this, &QgsTemporalControllerWidget::mNavigationOff_clicked );
   connect( mNavigationFixedRange, &QPushButton::clicked, this, &QgsTemporalControllerWidget::mNavigationFixedRange_clicked );
   connect( mNavigationAnimated, &QPushButton::clicked, this, &QgsTemporalControllerWidget::mNavigationAnimated_clicked );
@@ -574,7 +575,12 @@ void QgsTemporalControllerWidget::setDates( const QgsDateTimeRange &range )
     whileBlocking( mEndDateTime )->setDateTime( range.end() );
     whileBlocking( mFixedRangeStartDateTime )->setDateTime( range.begin() );
     whileBlocking( mFixedRangeEndDateTime )->setDateTime( range.end() );
-    updateTemporalExtent();
+    // only if range is different from mNavigationObject->temporalExtents update
+    // else recursion as updateTemporalExtent itself calls mNavigationObject->setTemporalExtents
+    if ( !(range == mNavigationObject->temporalExtents()) )
+    {
+        updateTemporalExtent();
+    }
   }
 }
 

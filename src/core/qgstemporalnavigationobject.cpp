@@ -148,6 +148,8 @@ void QgsTemporalNavigationObject::setTemporalExtents( const QgsDateTimeRange &te
     case NavigationOff:
       break;
   }
+
+  emit temporalExtentsChanged( mTemporalExtents );
 }
 
 QgsDateTimeRange QgsTemporalNavigationObject::temporalExtents() const
