@@ -592,7 +592,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     /**
      * Attempts to parse a string as a color using a variety of common formats, including hex
-     * codes, rgb and rgba strings.
+     * codes, rgb and rgba, hsl and hsla strings.
      * \param colorStr string representing the color
      * \param containsAlpha if colorStr contains an explicit alpha value then containsAlpha will be set to TRUE
      * \param strictEval set to TRUE for stricter color parsing rules
