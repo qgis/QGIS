@@ -145,6 +145,33 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
         ], QgsMapBoxGlStyleConverter.PropertyType.Line, 2).expressionString(),
             "CASE WHEN @zoom_level > 10 AND @zoom_level <= 15 THEN scale_linear(@zoom_level, 10, 15, 0.1, 0.3) * 2 WHEN @zoom_level > 15 AND @zoom_level <= 18 THEN scale_linear(@zoom_level, 15, 18, 0.3, 0.6) * 2 END")
 
+    def testParseExpression(self):
+        self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression([
+            "all",
+            ["==", ["get", "level"], 0],
+            ["match", ["get", "type"], ["Restricted"], True, False]
+        ]),
+            '''(level IS 0) AND (CASE WHEN ("type" IN ('Restricted')) THEN true  ELSE false END)''')
+        self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression([
+            "all",
+            ["match", ["get", "level"], [1], True, False],
+            ["match", ["get", "type"], ["Local"], True, False]
+        ]),
+            '''(CASE WHEN ("level" IN (1)) THEN true  ELSE false END) AND (CASE WHEN ("type" IN ('Local')) THEN true  ELSE false END)''')
+        self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression([
+            "match",
+            ["get", "type"],
+            ["Primary", "Motorway"],
+            False,
+            True
+        ]),
+            '''CASE WHEN ("type" IN ('Primary', 'Motorway')) THEN false  ELSE true END''')
+        self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression(["==", "_symbol", 0]),
+                         '''"_symbol" IS 0''')
+
+        self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression(["all", ["==", "_symbol", 8], ["!in", "Viz", 3]]),
+                         '''("_symbol" IS 8) AND (("Viz" IS NULL OR "Viz" NOT IN (3)))''')
+
 
 if __name__ == '__main__':
     unittest.main()

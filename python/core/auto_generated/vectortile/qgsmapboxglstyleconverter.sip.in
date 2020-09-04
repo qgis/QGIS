@@ -77,6 +77,33 @@ Parses a fill layer.
          - style: generated QGIS vector tile style
 %End
 
+    static bool parseLineLayer( const QVariantMap &jsonLayer, const QString &styleName, QgsVectorTileBasicRendererStyle &style /Out/ );
+%Docstring
+Parses a line layer.
+
+:param jsonLayer: fill layer to parse
+:param styleName: style name
+
+:return: - ``True`` if the layer was successfully parsed.
+         - style: generated QGIS vector tile style
+%End
+
+    static void parseSymbolLayer( const QVariantMap &jsonLayer, const QString &styleName,
+                                  QgsVectorTileBasicRendererStyle &rendererStyle /Out/,
+                                  bool &hasRenderer /Out/,
+                                  QgsVectorTileBasicLabelingStyle &labelingStyle /Out/,
+                                  bool &hasLabeling /Out/ );
+%Docstring
+Parses a symbol layer.
+
+:param jsonLayer: fill layer to parse
+:param styleName: style name
+:param rendererStyle: generated QGIS vector tile style
+:param hasRenderer: will be set to ``True`` if symbol layer generated a renderer style
+:param labelingStyle: generated QGIS vector tile labeling
+%End
+
+
     static QgsProperty parseInterpolateColorByZoom( const QVariantMap &json );
     static QgsProperty parseInterpolateByZoom( const QVariantMap &json, double multiplier = 1 );
 
@@ -126,6 +153,21 @@ Takes a QColor object and returns HSLA components in required format for QGIS :p
 %Docstring
 Generates an interpolation for values between ``valueMin`` and ``valueMax``, scaled between the
 ranges ``zoomMin`` to ``zoomMax``.
+%End
+
+    static Qt::PenCapStyle parseCapStyle( const QString &style );
+%Docstring
+Converts a value to Qt.PenCapStyle enum from JSON value.
+%End
+
+    static Qt::PenJoinStyle parseJoinStyle( const QString &style );
+%Docstring
+Converts a value to Qt.PenJoinStyle enum from JSON value.
+%End
+
+    static QString parseExpression( const QVariantList &expression );
+%Docstring
+Converts a MapBox GL expression to a QGIS expression.
 %End
 
   private:

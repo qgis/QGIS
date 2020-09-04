@@ -25,6 +25,7 @@
 class QgsVectorTileRenderer;
 class QgsVectorTileLabeling;
 class QgsVectorTileBasicRendererStyle;
+class QgsVectorTileBasicLabelingStyle;
 
 /**
  * \ingroup core
@@ -94,6 +95,33 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      */
     static bool parseFillLayer( const QVariantMap &jsonLayer, const QString &styleName, QgsVectorTileBasicRendererStyle &style SIP_OUT );
 
+    /**
+     * Parses a line layer.
+     *
+     * \param jsonLayer fill layer to parse
+     * \param styleName style name
+     * \param style generated QGIS vector tile style
+     * \returns TRUE if the layer was successfully parsed.
+     */
+    static bool parseLineLayer( const QVariantMap &jsonLayer, const QString &styleName, QgsVectorTileBasicRendererStyle &style SIP_OUT );
+
+    /**
+     * Parses a symbol layer.
+     *
+     * \param jsonLayer fill layer to parse
+     * \param styleName style name
+     * \param rendererStyle generated QGIS vector tile style
+     * \param hasRenderer will be set to TRUE if symbol layer generated a renderer style
+     * \param labelingStyle generated QGIS vector tile labeling
+     * \param hasLabeling will be set to TRUE if symbol layer generated a labeling style
+    */
+    static void parseSymbolLayer( const QVariantMap &jsonLayer, const QString &styleName,
+                                  QgsVectorTileBasicRendererStyle &rendererStyle SIP_OUT,
+                                  bool &hasRenderer SIP_OUT,
+                                  QgsVectorTileBasicLabelingStyle &labelingStyle SIP_OUT,
+                                  bool &hasLabeling SIP_OUT );
+
+
     static QgsProperty parseInterpolateColorByZoom( const QVariantMap &json );
     static QgsProperty parseInterpolateByZoom( const QVariantMap &json, double multiplier = 1 );
 
@@ -144,11 +172,29 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      */
     static QString interpolateExpression( int zoomMin, int zoomMax, double valueMin, double valueMax, double base );
 
+    /**
+     * Converts a value to Qt::PenCapStyle enum from JSON value.
+     */
+    static Qt::PenCapStyle parseCapStyle( const QString &style );
+
+    /**
+     * Converts a value to Qt::PenJoinStyle enum from JSON value.
+     */
+    static Qt::PenJoinStyle parseJoinStyle( const QString &style );
+
+    /**
+     * Converts a MapBox GL expression to a QGIS expression.
+     */
+    static QString parseExpression( const QVariantList &expression );
+
   private:
 
 #ifdef SIP_RUN
     QgsMapBoxGlStyleConverter( const QgsMapBoxGlStyleConverter &other );
 #endif
+
+    static QString parseValue( const QVariant &value );
+    static QString parseKey( const QVariant &value );
 
 
     QVariantMap mStyle;
