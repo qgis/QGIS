@@ -3162,8 +3162,17 @@ namespace QgsWms
   void QgsRenderer::setLayerSld( QgsMapLayer *layer, const QDomElement &sld ) const
   {
     QString err;
+    // Defined sld style name
+    const QStringList styles = layer->styleManager()->styles();
+    QString sldStyleName = "__sld_style";
+    while ( styles.contains( sldStyleName ) )
+    {
+      sldStyleName.append( '@' );
+    }
+    layer->styleManager()->addStyleFromLayer( sldStyleName );
+    layer->styleManager()->setCurrentStyle( sldStyleName );
     layer->readSld( sld, err );
-    layer->setCustomProperty( "readSLD", true );
+    layer->setCustomProperty( "sldStyleName", sldStyleName );
   }
 
   QgsLegendSettings QgsRenderer::legendSettings() const
