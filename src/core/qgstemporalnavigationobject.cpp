@@ -128,11 +128,12 @@ void QgsTemporalNavigationObject::setNavigationMode( const NavigationMode mode )
 
 void QgsTemporalNavigationObject::setTemporalExtents( const QgsDateTimeRange &temporalExtents )
 {
-  if ( !( mTemporalExtents == temporalExtents ) )
+  if ( mTemporalExtents == temporalExtents )
   {
-    mTemporalExtents = temporalExtents;
-    emit temporalExtentsChanged( mTemporalExtents );
+    return;
   }
+  mTemporalExtents = temporalExtents;
+  emit temporalExtentsChanged( mTemporalExtents );
 
   switch ( mNavigationMode )
   {
