@@ -29,7 +29,7 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
 
     def testNoLayer(self):
         c = QgsMapBoxGlStyleConverter()
-        self.assertEqual(c.convert({'x':'y'}), QgsMapBoxGlStyleConverter.NoLayerList)
+        self.assertEqual(c.convert({'x': 'y'}), QgsMapBoxGlStyleConverter.NoLayerList)
         self.assertEqual(c.errorMessage(), 'Could not find layers list in JSON')
         self.assertIsNone(c.renderer())
         self.assertIsNone(c.labeling())
