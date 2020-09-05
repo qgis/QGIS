@@ -318,8 +318,6 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
     static QString parseValue( const QVariant &value, QgsMapBoxGlStyleConversionContext &context );
     static QString parseKey( const QVariant &value );
 
-
-    QVariantMap mStyle;
     QString mError;
     QStringList mWarnings;
 

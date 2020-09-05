@@ -43,7 +43,7 @@ QgsMapBoxGlStyleConverter::Result QgsMapBoxGlStyleConverter::convert( const QVar
   mWarnings.clear();
   if ( style.contains( QStringLiteral( "layers" ) ) )
   {
-    parseLayers( mStyle.value( QStringLiteral( "layers" ) ).toList() );
+    parseLayers( style.value( QStringLiteral( "layers" ) ).toList() );
   }
   else
   {
