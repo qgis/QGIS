@@ -139,13 +139,25 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
             ["==", ["get", "level"], 0],
             ["match", ["get", "type"], ["Restricted"], True, False]
         ], conversion_context),
-            '''(level IS 0) AND (CASE WHEN ("type" IN ('Restricted')) THEN true  ELSE false END)''')
+            '''(level IS 0) AND (CASE WHEN "type" = 'Restricted' THEN true  ELSE false END)''')
         self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression([
             "all",
+            ["==", ["get", "level"], 0],
+            ["match", ["get", "type"], ["Restricted", "Temporary"], True, False]
+        ], conversion_context),
+            '''(level IS 0) AND (CASE WHEN "type" IN ('Restricted', 'Temporary') THEN true  ELSE false END)''')
+        self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression([
+            "any",
             ["match", ["get", "level"], [1], True, False],
             ["match", ["get", "type"], ["Local"], True, False]
         ], conversion_context),
-            '''(CASE WHEN ("level" IN (1)) THEN true  ELSE false END) AND (CASE WHEN ("type" IN ('Local')) THEN true  ELSE false END)''')
+            '''(CASE WHEN "level" = 1 THEN true  ELSE false END) OR (CASE WHEN "type" = 'Local' THEN true  ELSE false END)''')
+        self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression([
+            "none",
+            ["match", ["get", "level"], [1], True, False],
+            ["match", ["get", "type"], ["Local"], True, False]
+        ], conversion_context),
+            '''NOT (CASE WHEN "level" = 1 THEN true  ELSE false END) AND NOT (CASE WHEN "type" = 'Local' THEN true  ELSE false END)''')
         self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression([
             "match",
             ["get", "type"],
@@ -153,7 +165,7 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
             False,
             True
         ], conversion_context),
-            '''CASE WHEN ("type" IN ('Primary', 'Motorway')) THEN false  ELSE true END''')
+            '''CASE WHEN "type" IN ('Primary', 'Motorway') THEN false  ELSE true END''')
         self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression(["==", "_symbol", 0], conversion_context),
                          '''"_symbol" IS 0''')
 
