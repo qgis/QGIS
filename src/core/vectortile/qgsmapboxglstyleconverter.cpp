@@ -1258,8 +1258,9 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
   else if ( op == QLatin1String( "match" ) )
   {
     const QString attribute = expression.value( 1 ).toList().value( 1 ).toString();
+
     QString caseString = QStringLiteral( "CASE " );
-    for ( int i = 2; i < expression.size() - 2; ++i )
+    for ( int i = 2; i < expression.size() - 2; i += 2 )
     {
       if ( expression.at( i ).type() == QVariant::List || expression.at( i ).type() == QVariant::StringList )
       {
@@ -1280,10 +1281,9 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
         caseString += QStringLiteral( "WHEN (%1) " ).arg( QgsExpression::createFieldEqualityExpression( attribute, expression.at( i ) ) );
       }
 
-      caseString += QStringLiteral( "THEN %1 " ).arg( expression.at( i + 1 ).toString() );
-      i += 2;
+      caseString += QStringLiteral( "THEN %1 " ).arg( QgsExpression::quotedValue( expression.at( i + 1 ) ) );
     }
-    caseString += QStringLiteral( " ELSE %1 END" ).arg( expression.last().toString() );
+    caseString += QStringLiteral( "ELSE %1 END" ).arg( QgsExpression::quotedValue( expression.last() ) );
     return caseString;
   }
   else
