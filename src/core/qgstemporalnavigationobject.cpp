@@ -139,11 +139,11 @@ void QgsTemporalNavigationObject::setTemporalExtents( const QgsDateTimeRange &te
   {
     case Animated:
     {
-      int currentFrameNmber = mCurrentFrameNumber;
+      int currentFrameNumber = mCurrentFrameNumber;
       setCurrentFrameNumber( 0 );
 
       //Force to emit signal if the current frame number doesn't change
-      if ( currentFrameNmber == mCurrentFrameNumber )
+      if ( currentFrameNumber == mCurrentFrameNumber )
         emit updateTemporalRange( dateTimeRangeForFrameNumber( 0 ) );
       break;
     }
