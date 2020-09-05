@@ -220,7 +220,7 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
     /**
      * Emitted whenever the temporalExtent \a extent changes.
      */
-    void temporalExtentsChanged( QgsDateTimeRange extent );
+    void temporalExtentsChanged( const QgsDateTimeRange &extent );
 
   public slots:
 
