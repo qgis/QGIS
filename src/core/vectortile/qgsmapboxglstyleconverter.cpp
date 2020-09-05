@@ -1259,32 +1259,64 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
   {
     const QString attribute = expression.value( 1 ).toList().value( 1 ).toString();
 
-    QString caseString = QStringLiteral( "CASE " );
-    for ( int i = 2; i < expression.size() - 2; i += 2 )
+    if ( expression.size() == 5
+         && expression.at( 3 ).type() == QVariant::Bool && expression.at( 3 ).toBool() == true
+         && expression.at( 4 ).type() == QVariant::Bool && expression.at( 4 ).toBool() == false )
     {
-      if ( expression.at( i ).type() == QVariant::List || expression.at( i ).type() == QVariant::StringList )
+      // simple case, make a nice simple expression instead of a CASE statement
+      if ( expression.at( 2 ).type() == QVariant::List || expression.at( 2 ).type() == QVariant::StringList )
       {
         QStringList parts;
-        for ( const QVariant &p : expression.at( i ).toList() )
+        for ( const QVariant &p : expression.at( 2 ).toList() )
         {
           parts << QgsExpression::quotedValue( p );
         }
 
         if ( parts.size() > 1 )
-          caseString += QStringLiteral( "WHEN %1 IN (%2) " ).arg( QgsExpression::quotedColumnRef( attribute ), parts.join( ", " ) );
+          return QStringLiteral( "%1 IN (%2)" ).arg( QgsExpression::quotedColumnRef( attribute ), parts.join( ", " ) );
         else
-          caseString += QStringLiteral( "WHEN %1 " ).arg( QgsExpression::createFieldEqualityExpression( attribute, expression.at( i ).toList().value( 0 ) ) );
+          return QgsExpression::createFieldEqualityExpression( attribute, expression.at( 2 ).toList().value( 0 ) );
       }
-      else if ( expression.at( i ).type() == QVariant::String || expression.at( i ).type() == QVariant::Int
-                || expression.at( i ).type() == QVariant::Double )
+      else if ( expression.at( 2 ).type() == QVariant::String || expression.at( 2 ).type() == QVariant::Int
+                || expression.at( 2 ).type() == QVariant::Double )
       {
-        caseString += QStringLiteral( "WHEN (%1) " ).arg( QgsExpression::createFieldEqualityExpression( attribute, expression.at( i ) ) );
+        return QgsExpression::createFieldEqualityExpression( attribute, expression.at( 2 ) );
       }
-
-      caseString += QStringLiteral( "THEN %1 " ).arg( QgsExpression::quotedValue( expression.at( i + 1 ) ) );
+      else
+      {
+        context.pushWarning( QObject::tr( "Skipping non-supported expression" ) );
+        return QString();
+      }
     }
-    caseString += QStringLiteral( "ELSE %1 END" ).arg( QgsExpression::quotedValue( expression.last() ) );
-    return caseString;
+    else
+    {
+      QString caseString = QStringLiteral( "CASE " );
+      for ( int i = 2; i < expression.size() - 2; i += 2 )
+      {
+        if ( expression.at( i ).type() == QVariant::List || expression.at( i ).type() == QVariant::StringList )
+        {
+          QStringList parts;
+          for ( const QVariant &p : expression.at( i ).toList() )
+          {
+            parts << QgsExpression::quotedValue( p );
+          }
+
+          if ( parts.size() > 1 )
+            caseString += QStringLiteral( "WHEN %1 IN (%2) " ).arg( QgsExpression::quotedColumnRef( attribute ), parts.join( ", " ) );
+          else
+            caseString += QStringLiteral( "WHEN %1 " ).arg( QgsExpression::createFieldEqualityExpression( attribute, expression.at( i ).toList().value( 0 ) ) );
+        }
+        else if ( expression.at( i ).type() == QVariant::String || expression.at( i ).type() == QVariant::Int
+                  || expression.at( i ).type() == QVariant::Double )
+        {
+          caseString += QStringLiteral( "WHEN (%1) " ).arg( QgsExpression::createFieldEqualityExpression( attribute, expression.at( i ) ) );
+        }
+
+        caseString += QStringLiteral( "THEN %1 " ).arg( QgsExpression::quotedValue( expression.at( i + 1 ) ) );
+      }
+      caseString += QStringLiteral( "ELSE %1 END" ).arg( QgsExpression::quotedValue( expression.last() ) );
+      return caseString;
+    }
   }
   else
   {
