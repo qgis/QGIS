@@ -139,12 +139,12 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
             ["==", ["get", "level"], 0],
             ["match", ["get", "type"], ["Restricted"], True, False]
         ], conversion_context),
-            '''(level IS 0) AND (CASE WHEN "type" = 'Restricted' THEN TRUE ELSE FALSE END)''')
+            '''(level IS 0) AND ("type" = 'Restricted')''')
 
         self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression([
             "match", ["get", "type"], ["Restricted"], True, False
         ], conversion_context),
-            '''CASE WHEN "type" = 'Restricted' THEN TRUE ELSE FALSE END''')
+            '''"type" = 'Restricted\'''')
 
         self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression([
             "match", ["get", "type"], ["Restricted"], "r", ["Local"], "l", ["Secondary", "Main"], "m", "n"
@@ -156,19 +156,19 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
             ["==", ["get", "level"], 0],
             ["match", ["get", "type"], ["Restricted", "Temporary"], True, False]
         ], conversion_context),
-            '''(level IS 0) AND (CASE WHEN "type" IN ('Restricted', 'Temporary') THEN TRUE ELSE FALSE END)''')
+            '''(level IS 0) AND ("type" IN ('Restricted', 'Temporary'))''')
         self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression([
             "any",
             ["match", ["get", "level"], [1], True, False],
             ["match", ["get", "type"], ["Local"], True, False]
         ], conversion_context),
-            '''(CASE WHEN "level" = 1 THEN TRUE ELSE FALSE END) OR (CASE WHEN "type" = 'Local' THEN TRUE ELSE FALSE END)''')
+            '''("level" = 1) OR ("type" = 'Local')''')
         self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression([
             "none",
             ["match", ["get", "level"], [1], True, False],
             ["match", ["get", "type"], ["Local"], True, False]
         ], conversion_context),
-            '''NOT (CASE WHEN "level" = 1 THEN TRUE ELSE FALSE END) AND NOT (CASE WHEN "type" = 'Local' THEN TRUE ELSE FALSE END)''')
+            '''NOT ("level" = 1) AND NOT ("type" = 'Local')''')
         self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression([
             "match",
             ["get", "type"],
