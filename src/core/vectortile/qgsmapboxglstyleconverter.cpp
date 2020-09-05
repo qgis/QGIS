@@ -1174,7 +1174,9 @@ Qt::PenJoinStyle QgsMapBoxGlStyleConverter::parseJoinStyle( const QString &style
 QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expression, QgsMapBoxGlStyleConversionContext &context )
 {
   QString op = expression.value( 0 ).toString();
-  if ( op == QLatin1String( "all" ) )
+  if ( op == QLatin1String( "all" )
+       || op == QLatin1String( "any" )
+       || op == QLatin1String( "none" ) )
   {
     QStringList parts;
     for ( int i = 1; i < expression.size(); ++i )
@@ -1187,37 +1189,17 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
       }
       parts << part;
     }
-    return QStringLiteral( "(%1)" ).arg( parts.join( QStringLiteral( ") AND (" ) ) );
-  }
-  else if ( op == QLatin1String( "any" ) )
-  {
-    QStringList parts;
-    for ( int i = 1; i < expression.size(); ++i )
-    {
-      QString part = parseValue( expression.at( i ), context );
-      if ( part.isEmpty() )
-      {
-        context.pushWarning( QObject::tr( "Skipping unsupported expression" ) );
-        return QString();
-      }
-      parts << part;
-    }
-    return QStringLiteral( "(%1)" ).arg( parts.join( QStringLiteral( ") OR (" ) ) );
-  }
-  else if ( op == QLatin1String( "none" ) )
-  {
-    QStringList parts;
-    for ( int i = 1; i < expression.size(); ++i )
-    {
-      QString part = parseValue( expression.at( i ), context );
-      if ( part.isEmpty() )
-      {
-        context.pushWarning( QObject::tr( "Skipping unsupported expression" ) );
-        return QString();
-      }
-      parts << part;
-    }
-    return QStringLiteral( "NOT (%1)" ).arg( parts.join( QStringLiteral( ") AND NOT (" ) ) );
+
+    if ( op == QLatin1String( "none" ) )
+      return QStringLiteral( "NOT (%1)" ).arg( parts.join( QStringLiteral( ") AND NOT (" ) ) );
+
+    QString operatorString;
+    if ( op == QLatin1String( "all" ) )
+      operatorString = QStringLiteral( ") AND (" );
+    else if ( op == QLatin1String( "any" ) )
+      operatorString = QStringLiteral( ") OR (" );
+
+    return QStringLiteral( "(%1)" ).arg( parts.join( operatorString ) );
   }
   else if ( op == '!' )
   {
@@ -1286,7 +1268,11 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
         {
           parts << QgsExpression::quotedValue( p );
         }
-        caseString += QStringLiteral( "WHEN (%1 IN (%2)) " ).arg( QgsExpression::quotedColumnRef( attribute ), parts.join( ", " ) );
+
+        if ( parts.size() > 1 )
+          caseString += QStringLiteral( "WHEN %1 IN (%2) " ).arg( QgsExpression::quotedColumnRef( attribute ), parts.join( ", " ) );
+        else
+          caseString += QStringLiteral( "WHEN %1 " ).arg( QgsExpression::createFieldEqualityExpression( attribute, expression.at( i ).toList().value( 0 ) ) );
       }
       else if ( expression.at( i ).type() == QVariant::String || expression.at( i ).type() == QVariant::Int
                 || expression.at( i ).type() == QVariant::Double )
