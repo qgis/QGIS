@@ -36,9 +36,11 @@ QgsVectorTileLayerProperties::QgsVectorTileLayerProperties( QgsVectorTileLayer *
 
   mRendererWidget = new QgsVectorTileBasicRendererWidget( nullptr, canvas, messageBar, this );
   mOptsPage_Style->layout()->addWidget( mRendererWidget );
+  mOptsPage_Style->layout()->setContentsMargins( 0, 0, 0, 0 );
 
   mLabelingWidget = new QgsVectorTileBasicLabelingWidget( nullptr, canvas, messageBar, this );
   mOptsPage_Labeling->layout()->addWidget( mLabelingWidget );
+  mOptsPage_Labeling->layout()->setContentsMargins( 0, 0, 0, 0 );
 
   connect( this, &QDialog::accepted, this, &QgsVectorTileLayerProperties::apply );
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsVectorTileLayerProperties::apply );
