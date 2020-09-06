@@ -14,7 +14,8 @@ import qgis  # NOQA
 
 from qgis.PyQt.QtGui import (QColor)
 from qgis.core import (QgsMapBoxGlStyleConverter,
-                       QgsMapBoxGlStyleConversionContext
+                       QgsMapBoxGlStyleConversionContext,
+                       QgsEffectStack
                        )
 
 from qgis.testing import start_app, unittest
@@ -234,8 +235,7 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
             "paint": {
                 "text-color": "#666",
                 "text-halo-width": 1.5,
-                "text-halo-color": "rgba(255,255,255,0.95)",
-                "text-halo-blur": 1
+                "text-halo-color": "rgba(255,255,255,0.95)"
             },
             "source-layer": "poi_label"
         }
