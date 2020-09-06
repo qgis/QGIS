@@ -28,7 +28,9 @@
 #include "qgslinesymbollayer.h"
 #include "qgsfontutils.h"
 #include "qgsjsonutils.h"
-
+#include "qgspainteffect.h"
+#include "qgseffectstack.h"
+#include "qgsblureffect.h"
 
 
 constexpr double PIXEL_RATIO = 1;
@@ -704,17 +706,24 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     }
   }
 
-  // TODO implement halo blur
-#if 0
-  if ( 'text-halo-blur' in json_paint )
+  double haloBlurSize = 0;
+  if ( jsonPaint.contains( QStringLiteral( "text-halo-blur" ) ) )
   {
-    json_text_halo_blur = json_paint['text-halo-blur'];
-    if ( isinstance( json_text_halo_blur, ( float, int ) ) )
-      buffer_size = buffer_size - json_text_halo_blur;
-    else
-      print( "skipping non-float text-halo-blur", json_text_halo_blur );
+    const QVariant jsonTextHaloBlur = jsonPaint.value( QStringLiteral( "text-halo-blur" ) );
+    switch ( jsonTextHaloBlur.type() )
+    {
+      case QVariant::Int:
+      case QVariant::Double:
+      {
+        haloBlurSize = jsonTextHaloBlur.toDouble();
+        break;
+      }
+
+      default:
+        context.pushWarning( QObject::tr( "Skipping non-implemented text-halo-width expression" ) );
+        break;
+    }
   }
-#endif
 
   QgsTextFormat format;
   format.setSizeUnit( QgsUnitTypes::RenderPixels );
@@ -731,6 +740,19 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     format.buffer().setSize( bufferSize * PIXEL_RATIO );
     format.buffer().setSizeUnit( QgsUnitTypes::RenderPixels );
     format.buffer().setColor( bufferColor );
+
+    if ( haloBlurSize > 0 )
+    {
+      QgsEffectStack *stack = new QgsEffectStack();
+      QgsBlurEffect *blur = new QgsBlurEffect() ;
+      blur->setEnabled( true );
+      blur->setBlurUnit( QgsUnitTypes::RenderPixels );
+      blur->setBlurLevel( haloBlurSize );
+      blur->setBlurMethod( QgsBlurEffect::StackBlur );
+      stack->appendEffect( blur );
+      stack->setEnabled( true );
+      format.buffer().setPaintEffect( stack );
+    }
   }
 
   QgsPalLayerSettings labelSettings;
