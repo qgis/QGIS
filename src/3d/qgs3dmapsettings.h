@@ -374,7 +374,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     QList<QgsDirectionalLightSettings> directionalLights() const { return mDirectionalLights; }
 
     /**
-     * Returns the maximum shadows rendering distance
+     * Returns the maximum shadow rendering distance accounted for when rendering shadows
+     * Objects further away from the camera than the specified distance won't cast shadows
      * \since QGIS 3.16
      */
     float maximumShadowRenderingDistance() const { return mMaximumShadowRenderingDistance; }
@@ -406,7 +407,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
 
     /**
      * Sets the maximum shadow rendering distance accounted for when rendering shadows
-     * Tweak this to reduce artifacts while looking up to the sky with the camera
+     * Objects further away from the camera than the specified distance won't cast shadows
      * \since QGIS 3.16
      */
     void setMaximumShadowRenderingDistance( float distance );
