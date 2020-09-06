@@ -75,7 +75,7 @@ set to a pixel-to-millimeter value.
 Returns the pixel size conversion factor, used to scale the original pixel sizes
 when converting styles.
 
-.. seealso:: :py:func:`setSizeConversionFactor`
+.. seealso:: :py:func:`setPixelSizeConversionFactor`
 %End
 
     void setPixelSizeConversionFactor( double sizeConversionFactor );

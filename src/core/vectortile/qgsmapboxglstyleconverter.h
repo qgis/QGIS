@@ -85,7 +85,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConversionContext
      * Returns the pixel size conversion factor, used to scale the original pixel sizes
      * when converting styles.
      *
-     * \see setSizeConversionFactor()
+     * \see setPixelSizeConversionFactor()
      */
     double pixelSizeConversionFactor() const;
 
