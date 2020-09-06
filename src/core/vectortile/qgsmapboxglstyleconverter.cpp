@@ -33,19 +33,17 @@
 #include "qgsblureffect.h"
 
 
-constexpr double PIXEL_RATIO = 1;
-
 QgsMapBoxGlStyleConverter::QgsMapBoxGlStyleConverter()
 {
 }
 
-QgsMapBoxGlStyleConverter::Result QgsMapBoxGlStyleConverter::convert( const QVariantMap &style )
+QgsMapBoxGlStyleConverter::Result QgsMapBoxGlStyleConverter::convert( const QVariantMap &style, QgsMapBoxGlStyleConversionContext *context )
 {
   mError.clear();
   mWarnings.clear();
   if ( style.contains( QStringLiteral( "layers" ) ) )
   {
-    parseLayers( style.value( QStringLiteral( "layers" ) ).toList() );
+    parseLayers( style.value( QStringLiteral( "layers" ) ).toList(), context );
   }
   else
   {
@@ -55,16 +53,21 @@ QgsMapBoxGlStyleConverter::Result QgsMapBoxGlStyleConverter::convert( const QVar
   return Success;
 }
 
-QgsMapBoxGlStyleConverter::Result QgsMapBoxGlStyleConverter::convert( const QString &style )
+QgsMapBoxGlStyleConverter::Result QgsMapBoxGlStyleConverter::convert( const QString &style, QgsMapBoxGlStyleConversionContext *context )
 {
-  return convert( QgsJsonUtils::parseJson( style ).toMap() );
+  return convert( QgsJsonUtils::parseJson( style ).toMap(), context );
 }
 
 QgsMapBoxGlStyleConverter::~QgsMapBoxGlStyleConverter() = default;
 
-void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers )
+void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers, QgsMapBoxGlStyleConversionContext *context )
 {
-  QgsMapBoxGlStyleConversionContext context;
+  std::unique_ptr< QgsMapBoxGlStyleConversionContext > tmpContext;
+  if ( !context )
+  {
+    tmpContext = qgis::make_unique< QgsMapBoxGlStyleConversionContext >();
+    context = tmpContext.get();
+  }
 
   QList<QgsVectorTileBasicRendererStyle> rendererStyles;
   QList<QgsVectorTileBasicLabelingStyle> labelingStyles;
@@ -88,7 +91,7 @@ void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers )
     QString filterExpression;
     if ( jsonLayer.contains( QStringLiteral( "filter" ) ) )
     {
-      filterExpression = parseExpression( jsonLayer.value( QStringLiteral( "filter" ) ).toList(), context );
+      filterExpression = parseExpression( jsonLayer.value( QStringLiteral( "filter" ) ).toList(), *context );
     }
 
     QgsVectorTileBasicRendererStyle rendererStyle;
@@ -98,15 +101,15 @@ void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers )
     bool hasLabelingStyle = false;
     if ( layerType == QLatin1String( "fill" ) )
     {
-      hasRendererStyle = parseFillLayer( jsonLayer, rendererStyle, context );
+      hasRendererStyle = parseFillLayer( jsonLayer, rendererStyle, *context );
     }
     else if ( layerType == QLatin1String( "line" ) )
     {
-      hasRendererStyle = parseLineLayer( jsonLayer, rendererStyle, context );
+      hasRendererStyle = parseLineLayer( jsonLayer, rendererStyle, *context );
     }
     else if ( layerType == QLatin1String( "symbol" ) )
     {
-      parseSymbolLayer( jsonLayer, rendererStyle, hasRendererStyle, labelingStyle, hasLabelingStyle, context );
+      parseSymbolLayer( jsonLayer, rendererStyle, hasRendererStyle, labelingStyle, hasLabelingStyle, *context );
     }
     else
     {
@@ -137,8 +140,8 @@ void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers )
       labelingStyles.append( labelingStyle );
     }
 
-    mWarnings.append( context.warnings() );
-    context.clearWarnings();
+    mWarnings.append( context->warnings() );
+    context->clearWarnings();
   }
 
   mRenderer = qgis::make_unique< QgsVectorTileBasicRenderer >();
@@ -275,8 +278,8 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
   QgsSimpleFillSymbolLayer *fillSymbol = dynamic_cast< QgsSimpleFillSymbolLayer * >( symbol->symbolLayer( 0 ) );
 
   // set render units
-  symbol->setOutputUnit( QgsUnitTypes::RenderPixels );
-  fillSymbol->setOutputUnit( QgsUnitTypes::RenderPixels );
+  symbol->setOutputUnit( context.targetUnit() );
+  fillSymbol->setOutputUnit( context.targetUnit() );
 
   if ( jsonPaint.contains( QStringLiteral( "fill-pattern" ) ) )
   {
@@ -387,17 +390,17 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
     {
       case QVariant::Int:
       case QVariant::Double:
-        lineWidth = jsonLineWidth.toDouble();
+        lineWidth = jsonLineWidth.toDouble() * context.pixelSizeConversionFactor();
         break;
 
       case QVariant::Map:
         lineWidth = -1;
-        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeWidth, parseInterpolateByZoom( jsonLineWidth.toMap(), context, PIXEL_RATIO ) );
+        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeWidth, parseInterpolateByZoom( jsonLineWidth.toMap(), context, context.pixelSizeConversionFactor() ) );
         break;
 
       case QVariant::List:
       case QVariant::StringList:
-        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeWidth, parseInterpolateListByZoom( jsonLineWidth.toList(), PropertyType::Numeric, context, PIXEL_RATIO ) );
+        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeWidth, parseInterpolateListByZoom( jsonLineWidth.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor() ) );
         break;
 
       default:
@@ -460,7 +463,7 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
         const QVariantList dashSource = jsonLineDashArray.toMap().value( QStringLiteral( "stops" ) ).toList().last().toList().value( 1 ).toList();
         for ( const QVariant &v : dashSource )
         {
-          dashVector << v.toDouble() * PIXEL_RATIO;
+          dashVector << v.toDouble() * context.pixelSizeConversionFactor();
         }
         break;
       }
@@ -471,7 +474,7 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
         const QVariantList dashSource = jsonLineDashArray.toList();
         for ( const QVariant &v : dashSource )
         {
-          dashVector << v.toDouble() * PIXEL_RATIO;
+          dashVector << v.toDouble() * context.pixelSizeConversionFactor();
         }
         break;
       }
@@ -501,8 +504,8 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
   QgsSimpleLineSymbolLayer *lineSymbol = dynamic_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) );
 
   // set render units
-  symbol->setOutputUnit( QgsUnitTypes::RenderPixels );
-  lineSymbol->setOutputUnit( QgsUnitTypes::RenderPixels );
+  symbol->setOutputUnit( context.targetUnit() );
+  lineSymbol->setOutputUnit( context.targetUnit() );
   lineSymbol->setPenCapStyle( penCapStyle );
   lineSymbol->setPenJoinStyle( penJoinStyle );
   lineSymbol->setDataDefinedProperties( ddProperties );
@@ -517,7 +520,7 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
   }
   if ( lineWidth != -1 )
   {
-    lineSymbol->setWidth( lineWidth * PIXEL_RATIO );
+    lineSymbol->setWidth( lineWidth );
   }
   if ( !dashVector.empty() )
   {
@@ -560,18 +563,18 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     {
       case QVariant::Int:
       case QVariant::Double:
-        textSize = jsonTextSize.toDouble();
+        textSize = jsonTextSize.toDouble() * context.pixelSizeConversionFactor();
         break;
 
       case QVariant::Map:
         textSize = -1;
-        ddLabelProperties.setProperty( QgsPalLayerSettings::Size, parseInterpolateByZoom( jsonTextSize.toMap(), context ) );
+        ddLabelProperties.setProperty( QgsPalLayerSettings::Size, parseInterpolateByZoom( jsonTextSize.toMap(), context, context.pixelSizeConversionFactor() ) );
         break;
 
       case QVariant::List:
       case QVariant::StringList:
         textSize = -1;
-        ddLabelProperties.setProperty( QgsPalLayerSettings::Size, parseInterpolateListByZoom( jsonTextSize.toList(), PropertyType::Numeric, context ) );
+        ddLabelProperties.setProperty( QgsPalLayerSettings::Size, parseInterpolateListByZoom( jsonTextSize.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor() ) );
         break;
 
       default:
@@ -690,18 +693,18 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     {
       case QVariant::Int:
       case QVariant::Double:
-        bufferSize = jsonHaloWidth.toDouble();
+        bufferSize = jsonHaloWidth.toDouble() * context.pixelSizeConversionFactor();
         break;
 
       case QVariant::Map:
         bufferSize = 1;
-        ddLabelProperties.setProperty( QgsPalLayerSettings::BufferSize, parseInterpolateByZoom( jsonHaloWidth.toMap(), context ) );
+        ddLabelProperties.setProperty( QgsPalLayerSettings::BufferSize, parseInterpolateByZoom( jsonHaloWidth.toMap(), context, context.pixelSizeConversionFactor() ) );
         break;
 
       case QVariant::List:
       case QVariant::StringList:
         bufferSize = 1;
-        ddLabelProperties.setProperty( QgsPalLayerSettings::BufferSize, parseInterpolateListByZoom( jsonHaloWidth.toList(), PropertyType::Numeric, context ) );
+        ddLabelProperties.setProperty( QgsPalLayerSettings::BufferSize, parseInterpolateListByZoom( jsonHaloWidth.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor() ) );
         break;
 
       default:
@@ -719,7 +722,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
       case QVariant::Int:
       case QVariant::Double:
       {
-        haloBlurSize = jsonTextHaloBlur.toDouble();
+        haloBlurSize = jsonTextHaloBlur.toDouble() * context.pixelSizeConversionFactor();
         break;
       }
 
@@ -730,7 +733,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
   }
 
   QgsTextFormat format;
-  format.setSizeUnit( QgsUnitTypes::RenderPixels );
+  format.setSizeUnit( context.targetUnit() );
   if ( textColor.isValid() )
     format.setColor( textColor );
   if ( textSize >= 0 )
@@ -741,8 +744,8 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
   if ( bufferSize > 0 )
   {
     format.buffer().setEnabled( true );
-    format.buffer().setSize( bufferSize * PIXEL_RATIO );
-    format.buffer().setSizeUnit( QgsUnitTypes::RenderPixels );
+    format.buffer().setSize( bufferSize );
+    format.buffer().setSizeUnit( context.targetUnit() );
     format.buffer().setColor( bufferColor );
 
     if ( haloBlurSize > 0 )
@@ -750,7 +753,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
       QgsEffectStack *stack = new QgsEffectStack();
       QgsBlurEffect *blur = new QgsBlurEffect() ;
       blur->setEnabled( true );
-      blur->setBlurUnit( QgsUnitTypes::RenderPixels );
+      blur->setBlurUnit( context.targetUnit() );
       blur->setBlurLevel( haloBlurSize );
       blur->setBlurMethod( QgsBlurEffect::StackBlur );
       stack->appendEffect( blur );
@@ -1469,4 +1472,24 @@ void QgsMapBoxGlStyleConversionContext::pushWarning( const QString &warning )
 {
   QgsDebugMsg( warning );
   mWarnings << warning;
+}
+
+QgsUnitTypes::RenderUnit QgsMapBoxGlStyleConversionContext::targetUnit() const
+{
+  return mTargetUnit;
+}
+
+void QgsMapBoxGlStyleConversionContext::setTargetUnit( QgsUnitTypes::RenderUnit targetUnit )
+{
+  mTargetUnit = targetUnit;
+}
+
+double QgsMapBoxGlStyleConversionContext::pixelSizeConversionFactor() const
+{
+  return mSizeConversionFactor;
+}
+
+void QgsMapBoxGlStyleConversionContext::setPixelSizeConversionFactor( double sizeConversionFactor )
+{
+  mSizeConversionFactor = sizeConversionFactor;
 }
