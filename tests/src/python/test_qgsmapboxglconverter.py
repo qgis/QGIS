@@ -335,6 +335,69 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
         self.assertEqual(labeling.labelSettings().fieldName, '''concat(concat("name_en",' - ',"name_fr"),"bar")''')
         self.assertTrue(labeling.labelSettings().isExpression)
 
+        # text-transform
+
+        style = {
+            "layout": {
+                "text-field": "name_en",
+                "text-font": [
+                    "Open Sans Semibold",
+                    "Arial Unicode MS Bold"
+                ],
+                "text-transform": "uppercase",
+                "text-max-width": 8,
+                "text-anchor": "top",
+                "text-size": 11,
+                "icon-size": 1
+            },
+            "type": "symbol",
+            "id": "poi_label",
+            "paint": {
+                "text-color": "#666",
+                "text-halo-width": 1.5,
+                "text-halo-color": "rgba(255,255,255,0.95)",
+                "text-halo-blur": 1
+            },
+            "source-layer": "poi_label"
+        }
+        renderer, has_renderer, labeling, has_labeling = QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        self.assertFalse(has_renderer)
+        self.assertTrue(has_labeling)
+        self.assertEqual(labeling.labelSettings().fieldName, 'upper("name_en")')
+        self.assertTrue(labeling.labelSettings().isExpression)
+
+        style = {
+            "layout": {
+                "text-field": ["format",
+                               "{name_en} - {name_fr}", {"font-scale": 1.2},
+                               "bar", {"font-scale": 0.8}
+                               ],
+                "text-font": [
+                    "Open Sans Semibold",
+                    "Arial Unicode MS Bold"
+                ],
+                "text-transform": "lowercase",
+                "text-max-width": 8,
+                "text-anchor": "top",
+                "text-size": 11,
+                "icon-size": 1
+            },
+            "type": "symbol",
+            "id": "poi_label",
+            "paint": {
+                "text-color": "#666",
+                "text-halo-width": 1.5,
+                "text-halo-color": "rgba(255,255,255,0.95)",
+                "text-halo-blur": 1
+            },
+            "source-layer": "poi_label"
+        }
+        renderer, has_renderer, labeling, has_labeling = QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        self.assertFalse(has_renderer)
+        self.assertTrue(has_labeling)
+        self.assertEqual(labeling.labelSettings().fieldName, '''lower(concat(concat("name_en",' - ',"name_fr"),"bar"))''')
+        self.assertTrue(labeling.labelSettings().isExpression)
+
 
 if __name__ == '__main__':
     unittest.main()

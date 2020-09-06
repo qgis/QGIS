@@ -830,16 +830,16 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
 
   if ( jsonLayout.contains( QStringLiteral( "text-transform" ) ) )
   {
-    labelSettings.isExpression = true;
     const QString textTransform = jsonLayout.value( QStringLiteral( "text-transform" ) ).toString();
     if ( textTransform == QLatin1String( "uppercase" ) )
     {
-      labelSettings.fieldName = QStringLiteral( "upper(%1)" ).arg( labelSettings.fieldName );
+      labelSettings.fieldName = QStringLiteral( "upper(%1)" ).arg( labelSettings.isExpression ? labelSettings.fieldName : QgsExpression::quotedColumnRef( labelSettings.fieldName ) );
     }
     else if ( textTransform == QLatin1String( "lowercase" ) )
     {
-      labelSettings.fieldName = QStringLiteral( "lower(%1)" ).arg( labelSettings.fieldName );
+      labelSettings.fieldName = QStringLiteral( "lower(%1)" ).arg( labelSettings.isExpression ? labelSettings.fieldName : QgsExpression::quotedColumnRef( labelSettings.fieldName ) );
     }
+    labelSettings.isExpression = true;
   }
 
   labelSettings.placement = QgsPalLayerSettings::OverPoint;
