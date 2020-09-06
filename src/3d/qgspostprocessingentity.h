@@ -52,8 +52,8 @@ class QgsPostprocessingEntity : public Qt3DCore::QEntity
     Qt3DRender::QCamera *mMainCamera = nullptr;
     Qt3DRender::QParameter *mFarPlaneParameter = nullptr;
     Qt3DRender::QParameter *mNearPlaneParameter = nullptr;
-    Qt3DRender::QParameter *mMainCameraViewMatrixParameter = nullptr;
-    Qt3DRender::QParameter *mMainCameraProjMatrixParameter = nullptr;
+    Qt3DRender::QParameter *mMainCameraInvViewMatrixParameter = nullptr;
+    Qt3DRender::QParameter *mMainCameraInvProjMatrixParameter = nullptr;
 
     Qt3DRender::QCamera *mLightCamera = nullptr;
     Qt3DRender::QParameter *mLightFarPlaneParameter = nullptr;

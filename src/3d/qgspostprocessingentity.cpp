@@ -98,17 +98,17 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsShadowRenderingFrameGraph *
     mLightNearPlaneParameter->setValue( nearPlane );
   } );
 
-  mMainCameraViewMatrixParameter = new Qt3DRender::QParameter( "cameraView", mMainCamera->viewMatrix() );
-  mMaterial->addParameter( mMainCameraViewMatrixParameter );
-  mMainCameraProjMatrixParameter = new Qt3DRender::QParameter( "cameraProj", mMainCamera->projectionMatrix() );
-  mMaterial->addParameter( mMainCameraProjMatrixParameter );
+  mMainCameraInvViewMatrixParameter = new Qt3DRender::QParameter( "invertedCameraView", mMainCamera->viewMatrix().inverted() );
+  mMaterial->addParameter( mMainCameraInvViewMatrixParameter );
+  mMainCameraInvProjMatrixParameter = new Qt3DRender::QParameter( "invertedCameraProj", mMainCamera->projectionMatrix().inverted() );
+  mMaterial->addParameter( mMainCameraInvProjMatrixParameter );
   connect( mMainCamera, &Qt3DRender::QCamera::projectionMatrixChanged, [&]( const QMatrix4x4 & projectionMatrix )
   {
-    mMainCameraProjMatrixParameter->setValue( projectionMatrix );
+    mMainCameraInvProjMatrixParameter->setValue( projectionMatrix.inverted() );
   } );
   connect( mMainCamera, &Qt3DRender::QCamera::viewMatrixChanged, [&]()
   {
-    mMainCameraViewMatrixParameter->setValue( mMainCamera->viewMatrix() );
+    mMainCameraInvViewMatrixParameter->setValue( mMainCamera->viewMatrix().inverted() );
   } );
 
   mShadowMinX = new Qt3DRender::QParameter( "shadowMinX", QVariant::fromValue( 0.0f ) );

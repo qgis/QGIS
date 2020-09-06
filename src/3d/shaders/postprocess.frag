@@ -20,8 +20,8 @@ uniform vec3 lightPosition;
 uniform vec3 lightDirection;
 
 // view camera uniforms
-uniform mat4 cameraView;
-uniform mat4 cameraProj;
+uniform mat4 invertedCameraView;
+uniform mat4 invertedCameraProj;
 uniform float farPlane;
 uniform float nearPlane;
 
@@ -34,14 +34,12 @@ out vec4 fragColor;
 
 vec3 WorldPosFromDepth(float depth) {
     float z = depth * 2.0 - 1.0;
-    mat4 projMatrixInv = inverse(cameraProj);
-    mat4 viewMatrixInv = inverse(cameraView);
 
     vec4 clipSpacePosition = vec4(texCoord * 2.0 - 1.0, z, 1.0);
-    vec4 viewSpacePosition = projMatrixInv * clipSpacePosition;
+    vec4 viewSpacePosition = invertedCameraProj * clipSpacePosition;
 
     viewSpacePosition /= viewSpacePosition.w;
-    vec4 worldSpacePosition =  viewMatrixInv * viewSpacePosition;
+    vec4 worldSpacePosition =  invertedCameraView * viewSpacePosition;
     worldSpacePosition /= worldSpacePosition.w;
 
     return worldSpacePosition.xyz;
