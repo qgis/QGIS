@@ -415,6 +415,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     /**
      * Sets the shadow bias value
      * Tweak this to reduce artifacts like self shadowing
+     * A reasonable range of values can be beteen something like 0.00000001 and 0.1
      * \since QGIS 3.16
      */
     void setShadowBias( float shadowBias );
