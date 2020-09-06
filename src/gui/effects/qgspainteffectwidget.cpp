@@ -157,6 +157,9 @@ void QgsBlurWidget::initGui()
   mBlendCmbBx->setBlendMode( mEffect->blendMode() );
   mDrawModeComboBox->setDrawMode( mEffect->drawMode() );
 
+  mBlurUnitWidget->setUnit( mEffect->blurUnit() );
+  mBlurUnitWidget->setMapUnitScale( mEffect->blurMapUnitScale() );
+
   blockSignals( false );
 }
 
