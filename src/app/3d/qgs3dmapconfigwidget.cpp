@@ -114,6 +114,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
 
   widgetLights->setPointLights( mMap->pointLights() );
   widgetLights->setDirectionalLights( mMap->directionalLights() );
+  widgetLights->setOpenLightTab( mMap->lightsWidgetTab() );
 
   connect( cboTerrainType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::onTerrainTypeChanged );
   connect( cboTerrainLayer, static_cast<void ( QComboBox::* )( int )>( &QgsMapLayerComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::onTerrainLayerChanged );
@@ -241,6 +242,7 @@ void Qgs3DMapConfigWidget::apply()
 
   mMap->setPointLights( widgetLights->pointLights() );
   mMap->setDirectionalLights( widgetLights->directionalLights() );
+  mMap->setLightsWidgetTab( widgetLights->lastOpenLightTab() );
   mMap->setIsSkyboxEnabled( groupSkyboxSettings->isChecked() );
   mMap->setSkyboxSettings( mSkyboxSettingsWidget->toSkyboxSettings() );
 }

@@ -36,9 +36,11 @@ class QgsLightsWidget : public QWidget, private Ui::QgsLightsWidget
 
     void setPointLights( const QList<QgsPointLightSettings> &pointLights );
     void setDirectionalLights( const QList<QgsDirectionalLightSettings> &directionalLights );
+    void setOpenLightTab( int tabIndex );
 
     QList<QgsPointLightSettings> pointLights();
     QList<QgsDirectionalLightSettings> directionalLights();
+    int lastOpenLightTab() const { return mLastOpenTab; };
 
   signals:
 
@@ -60,6 +62,7 @@ class QgsLightsWidget : public QWidget, private Ui::QgsLightsWidget
   private:
     QList<QgsPointLightSettings> mPointLights;
     QList<QgsDirectionalLightSettings> mDirectionalLights;
+    int mLastOpenTab = 0;
 };
 
 #endif // QGSLIGHTSWIDGET_H

@@ -429,6 +429,10 @@ Returns list of directional lights defined in the scene
 .. versionadded:: 3.16
 %End
 
+    int lightsWidgetTab() const;
+%Docstring
+Returns the light widget tab that is selected by default, 0 is returned for point lights and 1 for directional lights
+%End
     void setPointLights( const QList<QgsPointLightSettings> &pointLights );
 %Docstring
 Sets list of point lights defined in the scene
@@ -441,6 +445,13 @@ Sets list of point lights defined in the scene
 Sets list of directional lights defined in the scene
 
 .. versionadded:: 3.16
+%End
+
+    void setLightsWidgetTab( int tabIndex );
+%Docstring
+Returns the light widget tab that is selected by default
+
+:param tabIndex: 0 for point lights and 1 for directional lights
 %End
 
     float fieldOfView() const;

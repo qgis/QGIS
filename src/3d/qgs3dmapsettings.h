@@ -374,6 +374,11 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     QList<QgsDirectionalLightSettings> directionalLights() const { return mDirectionalLights; }
 
     /**
+     * Returns the light widget tab that is selected by default, 0 is returned for point lights and 1 for directional lights
+     */
+    int lightsWidgetTab() const { return mOpenLightWidgetTab; };
+
+    /**
      * Sets list of point lights defined in the scene
      * \since QGIS 3.6
      */
@@ -384,6 +389,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * \since QGIS 3.16
      */
     void setDirectionalLights( const QList<QgsDirectionalLightSettings> &directionalLights );
+
+    /**
+     * Returns the light widget tab that is selected by default
+     * \param tabIndex 0 for point lights and 1 for directional lights
+     */
+    void setLightsWidgetTab( int tabIndex );
 
     /**
      * Returns the camera lens' field of view
@@ -563,6 +574,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     bool mShowLabels = false; //!< Whether to display labels on terrain tiles
     QList<QgsPointLightSettings> mPointLights;  //!< List of point lights defined for the scene
     QList<QgsDirectionalLightSettings> mDirectionalLights;  //!< List of directional lights defined for the scene
+    int mOpenLightWidgetTab = 0; //!< Stores which light tab was open in the 3D
     float mFieldOfView = 45.0f; //!< Camera lens field of view value
     QList<QgsMapLayerRef> mLayers;   //!< Layers to be rendered
     QList<QgsMapLayerRef> mTerrainLayers;   //!< Terrain layers to be rendered

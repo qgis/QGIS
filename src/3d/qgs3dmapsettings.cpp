@@ -143,6 +143,10 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
     }
   }
 
+  QDomElement lightWidgetSavedParameters = elem.firstChildElement( QStringLiteral( "lights-widget-saved-paramters" ) );
+  if ( !lightWidgetSavedParameters.isNull() ) mOpenLightWidgetTab = lightWidgetSavedParameters.attribute( QStringLiteral( "last-open-light-tab" ) ).toInt();
+  else mOpenLightWidgetTab = 0;
+
   QDomElement elemMapLayers = elemTerrain.firstChildElement( QStringLiteral( "layers" ) );
   QDomElement elemMapLayer = elemMapLayers.firstChildElement( QStringLiteral( "layer" ) );
   QList<QgsMapLayerRef> mapLayers;
@@ -290,6 +294,10 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
     elemDirectionalLights.appendChild( elemDirectionalLight );
   }
   elem.appendChild( elemDirectionalLights );
+
+  QDomElement elemLightWidgetSavedParameters = doc.createElement( QStringLiteral( "lights-widget-saved-paramters" ) );
+  elemLightWidgetSavedParameters.setAttribute( QStringLiteral( "last-open-light-tab" ), mOpenLightWidgetTab );
+  elem.appendChild( elemLightWidgetSavedParameters );
 
   QDomElement elemMapLayers = doc.createElement( QStringLiteral( "layers" ) );
   Q_FOREACH ( const QgsMapLayerRef &layerRef, mLayers )
@@ -634,6 +642,12 @@ void Qgs3DMapSettings::setDirectionalLights( const QList<QgsDirectionalLightSett
 
   mDirectionalLights = directionalLights;
   emit directionalLightsChanged();
+}
+
+void Qgs3DMapSettings::setLightsWidgetTab( int tabIndex )
+{
+  if ( tabIndex != 0 && tabIndex != 1 ) return;
+  mOpenLightWidgetTab = tabIndex;
 }
 
 void Qgs3DMapSettings::setFieldOfView( const float fieldOfView )

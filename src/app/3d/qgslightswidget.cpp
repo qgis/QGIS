@@ -54,6 +54,11 @@ QgsLightsWidget::QgsLightsWidget( QWidget *parent )
   connect( spinDirectionZ, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::updateCurrentDirectionalLightParameters );
   connect( spinDirectionalIntensity, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::updateCurrentDirectionalLightParameters );
   connect( btnDirectionalColor, &QgsColorButton::colorChanged, this, &QgsLightsWidget::updateCurrentDirectionalLightParameters );
+
+  connect( tabWidget, &QTabWidget::currentChanged, [&]( int index )
+  {
+    mLastOpenTab = index;
+  } );
 }
 
 void QgsLightsWidget::setPointLights( const QList<QgsPointLightSettings> &pointLights )
@@ -70,6 +75,13 @@ void QgsLightsWidget::setDirectionalLights( const QList<QgsDirectionalLightSetti
   updateDirectionalLightsList();
   cboDirectionalLights->setCurrentIndex( 0 );
   onCurrentDirectionalLightChanged( 0 );
+}
+
+void QgsLightsWidget::setOpenLightTab( int tabIndex )
+{
+  if ( tabIndex != 0 && tabIndex != 1 ) return;
+  mLastOpenTab = tabIndex;
+  tabWidget->setCurrentIndex( tabIndex );
 }
 
 QList<QgsPointLightSettings> QgsLightsWidget::pointLights()
