@@ -143,7 +143,7 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
     }
   }
 
-  QDomElement lightWidgetSavedParameters = elem.firstChildElement( QStringLiteral( "lights-widget-saved-paramters" ) );
+  QDomElement lightWidgetSavedParameters = elem.firstChildElement( QStringLiteral( "lights-widget-saved-parameters" ) );
   if ( !lightWidgetSavedParameters.isNull() ) mOpenLightWidgetTab = lightWidgetSavedParameters.attribute( QStringLiteral( "last-open-light-tab" ) ).toInt();
   else mOpenLightWidgetTab = 0;
 
@@ -295,7 +295,7 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   }
   elem.appendChild( elemDirectionalLights );
 
-  QDomElement elemLightWidgetSavedParameters = doc.createElement( QStringLiteral( "lights-widget-saved-paramters" ) );
+  QDomElement elemLightWidgetSavedParameters = doc.createElement( QStringLiteral( "lights-widget-saved-parameters" ) );
   elemLightWidgetSavedParameters.setAttribute( QStringLiteral( "last-open-light-tab" ), mOpenLightWidgetTab );
   elem.appendChild( elemLightWidgetSavedParameters );
 
