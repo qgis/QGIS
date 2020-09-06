@@ -262,8 +262,10 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * \param json definition of color interpolation
      * \param context conversion context
      * \param defaultColor optional storage for a reasonable "default" color representing the overall property.
+     *
+     * \returns QgsProperty representing interpolation settings
      */
-    static QgsProperty parseInterpolateColorByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, QColor *defaultColor = nullptr );
+    static QgsProperty parseInterpolateColorByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, QColor *defaultColor SIP_OUT = nullptr );
 
     /**
      * Parses a numeric value which is interpolated by zoom range.
@@ -272,8 +274,10 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * \param context conversion context
      * \param multiplier optional multiplication factor
      * \param defaultNumber optional storage for a reasonable "default" number representing the overall property.
+     *
+     * \returns QgsProperty representing interpolation settings
      */
-    static QgsProperty parseInterpolateByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, double *defaultNumber = nullptr );
+    static QgsProperty parseInterpolateByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, double *defaultNumber SIP_OUT = nullptr );
 
     /**
      * Interpolates opacity with either scale_linear() or scale_exp() (depending on base value).
@@ -308,8 +312,8 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * \warning This is private API only, and may change in future QGIS versions
      */
     static QgsProperty parseInterpolateListByZoom( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1,
-        QColor *defaultColor = nullptr,
-        double *defaultNumber = nullptr );
+        QColor *defaultColor SIP_OUT = nullptr,
+        double *defaultNumber SIP_OUT = nullptr );
 
     /**
      * Parses a \a color in one of these supported formats:
