@@ -106,10 +106,10 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
 
     QStandardItem *sqlItem = new QStandardItem( layerProperty.sql );
 
-    QStandardItem *trustLayerMetadata = new QStandardItem( QString() );
-    trustLayerMetadata->setFlags( trustLayerMetadata->flags() | Qt::ItemIsUserCheckable );
-    trustLayerMetadata->setCheckState( QgsProject::instance()->trustLayerMetadata() ? Qt::CheckState::Unchecked : Qt::CheckState::Checked );
-    trustLayerMetadata->setToolTip( headerData( Columns::DbtmTrustLayerMetadata, Qt::Orientation::Horizontal, Qt::ToolTipRole ).toString() );
+    QStandardItem *trustMetadata = new QStandardItem( QString() );
+    trustMetadata->setFlags( trustMetadata->flags() | Qt::ItemIsUserCheckable );
+    trustMetadata->setCheckState( QgsProject::instance()->trustLayerMetadata() ? Qt::CheckState::Unchecked : Qt::CheckState::Checked );
+    trustMetadata->setToolTip( headerData( Columns::DbtmTrustLayerMetadata, Qt::Orientation::Horizontal, Qt::ToolTipRole ).toString() );
 
     QList<QStandardItem *> childItemList;
     childItemList << ownerNameItem;
@@ -119,6 +119,7 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
     childItemList << sridItem;
     childItemList << pkItem;
     childItemList << selItem;
+    childItemList << trustMetadata;
     childItemList << sqlItem;
 
     const auto constChildItemList = childItemList;
