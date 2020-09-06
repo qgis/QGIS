@@ -26,9 +26,7 @@
 
 #include "qgsshadowrenderingframegraph.h"
 
-QgsPostprocessingEntity::QgsPostprocessingEntity( QgsShadowRenderingFrameGraph *frameGraph,
-    const QString &vertexShaderPath, const QString &fragmentShaderPath,
-    QNode *parent )
+QgsPostprocessingEntity::QgsPostprocessingEntity( QgsShadowRenderingFrameGraph *frameGraph, QNode *parent )
   : Qt3DCore::QEntity( parent )
 {
   Qt3DRender::QGeometry *geom = new Qt3DRender::QGeometry( this );
@@ -138,6 +136,9 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsShadowRenderingFrameGraph *
   graphicsApiFilter->setMinorVersion( 5 );
   Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass( this );
   Qt3DRender::QShaderProgram *shader = new Qt3DRender::QShaderProgram( this );
+
+  QString vertexShaderPath = QStringLiteral( "qrc:/shaders/postprocess.vert" );
+  QString fragmentShaderPath = QStringLiteral( "qrc:/shaders/postprocess.frag" );
 
   shader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( vertexShaderPath ) ) );
   shader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( fragmentShaderPath ) ) );

@@ -182,10 +182,8 @@ QgsShadowRenderingFrameGraph::QgsShadowRenderingFrameGraph( QWindow *window, Qt3
   Qt3DRender::QFrameGraphNode *postprocessingPass = constructPostprocessingPass();
   postprocessingPass->setParent( mLightCameraSelector );
 
-  QString vertexShaderPath = QStringLiteral( "qrc:/shaders/postprocess.vert" );
-  QString fragmentShaderPath = QStringLiteral( "qrc:/shaders/postprocess.frag" );
-  mPostprocessingEntity = new QgsPostprocessingEntity( this, vertexShaderPath, fragmentShaderPath );
-  mPostprocessingEntity->setParent( mRootEntity );
+
+  mPostprocessingEntity = new QgsPostprocessingEntity( this, mRootEntity );
   mPostprocessingEntity->addComponent( mPostprocessPassLayer );
 
   // textures preview pass
