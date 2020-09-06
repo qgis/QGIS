@@ -209,25 +209,6 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
 #endif
   onSkyboxSettingsChanged();
 
-  QObject::connect( &mMap, &Qgs3DMapSettings::directionalLightsChanged, [&]()
-  {
-    QgsWindow3DEngine *windowEngine = dynamic_cast<QgsWindow3DEngine *>( mEngine );
-    if ( windowEngine != nullptr )
-    {
-      QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = windowEngine->shadowRenderingFrameGraph();
-      for ( QgsDirectionalLightSettings &light : mMap.directionalLights() )
-      {
-        if ( light.renderShadows() )
-        {
-          shadowRenderingFrameGraph->setShadowBias( mMap.shadowBias() );
-          shadowRenderingFrameGraph->setShadowMapResolution( mMap.shadowMapResolution() );
-          shadowRenderingFrameGraph->setupDirectionalLight( light, mMap.maximumShadowRenderingDistance() );
-          break;
-        }
-      }
-    }
-  } );
-
   // force initial update of chunked entities
   onCameraChanged();
 }
@@ -337,23 +318,7 @@ void Qgs3DMapScene::onCameraChanged()
     updateCameraNearFarPlanes();
   }
 
-  QgsWindow3DEngine *windowEngine = dynamic_cast<QgsWindow3DEngine *>( mEngine );
-  if ( windowEngine != nullptr )
-  {
-    QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = windowEngine->shadowRenderingFrameGraph();
-    shadowRenderingFrameGraph->setShadowRenderingEnabled( false );
-    for ( QgsDirectionalLightSettings &light : mMap.directionalLights() )
-    {
-      if ( light.renderShadows() )
-      {
-        shadowRenderingFrameGraph->setShadowRenderingEnabled( true );
-        shadowRenderingFrameGraph->setShadowBias( mMap.shadowBias() );
-        shadowRenderingFrameGraph->setShadowMapResolution( mMap.shadowMapResolution() );
-        shadowRenderingFrameGraph->setupDirectionalLight( light, mMap.maximumShadowRenderingDistance() );
-        break;
-      }
-    }
-  }
+  updateShadowRendering();
 }
 
 void removeQLayerComponentsFromHierarchy( Qt3DCore::QEntity *entity )
@@ -635,6 +600,8 @@ void Qgs3DMapScene::updateLights()
     lightEntity->setParent( this );
     mLightEntities << lightEntity;
   }
+
+  updateShadowRendering();
 }
 
 void Qgs3DMapScene::updateCameraLens()
@@ -1006,5 +973,26 @@ void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
     for ( const QString &layerName : notParsedLayers )
       message += layerName + "\n";
     QgsMessageOutput::showMessage( tr( "3D exporter warning" ), message, QgsMessageOutput::MessageText );
+  }
+}
+
+void Qgs3DMapScene::updateShadowRendering()
+{
+  QgsWindow3DEngine *windowEngine = dynamic_cast<QgsWindow3DEngine *>( mEngine );
+  if ( windowEngine != nullptr )
+  {
+    QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = windowEngine->shadowRenderingFrameGraph();
+    shadowRenderingFrameGraph->setShadowRenderingEnabled( false );
+    for ( QgsDirectionalLightSettings &light : mMap.directionalLights() )
+    {
+      if ( light.renderShadows() )
+      {
+        shadowRenderingFrameGraph->setShadowRenderingEnabled( true );
+        shadowRenderingFrameGraph->setShadowBias( mMap.shadowBias() );
+        shadowRenderingFrameGraph->setShadowMapResolution( mMap.shadowMapResolution() );
+        shadowRenderingFrameGraph->setupDirectionalLight( light, mMap.maximumShadowRenderingDistance() );
+        break;
+      }
+    }
   }
 }
