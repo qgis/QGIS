@@ -278,31 +278,35 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
   symbol->setOutputUnit( QgsUnitTypes::RenderPixels );
   fillSymbol->setOutputUnit( QgsUnitTypes::RenderPixels );
 
-#if 0 // todo
-  // get fill-pattern to set sprite
-  // sprite imgs will already have been downloaded in converter.py
-  fill_pattern = json_paint.get( "fill-pattern" )
-
-                 // fill-pattern can be String or Object
-                 // String: {"fill-pattern": "dash-t"}
-                 // Object: {"fill-pattern":{"stops":[[11,"wetland8"],[12,"wetland16"]]}}
-
-                 // if Object, simpify into one sprite.
-                 // TODO:
-                 if isinstance( fill_pattern, dict )
+  if ( jsonPaint.contains( QStringLiteral( "fill-pattern" ) ) )
   {
-    pattern_stops = fill_pattern.get( "stops", [None] )
-                    fill_pattern = pattern_stops[-1][-1]
-  }
+    context.pushWarning( QObject::tr( "fill-pattern is not yet supported" ) );
+#if 0 // todo
+    // get fill-pattern to set sprite
+    // sprite imgs will already have been downloaded in converter.py
+    fill_pattern = json_paint.get( "fill-pattern" )
 
-  // when fill-pattern exists, set and insert RasterFillSymbolLayer
-  if fill_pattern
-{
-  SPRITES_PATH = os.path.join( os.path.dirname( os.path.realpath( __file__ ) ), "sprites" )
-    raster_fill_symbol = QgsRasterFillSymbolLayer( os.path.join( SPRITES_PATH, fill_pattern + ".png" ) )
-    sym.appendSymbolLayer( raster_fill_symbol )
-  }
+                   // fill-pattern can be String or Object
+                   // String: {"fill-pattern": "dash-t"}
+                   // Object: {"fill-pattern":{"stops":[[11,"wetland8"],[12,"wetland16"]]}}
+
+                   // if Object, simpify into one sprite.
+                   // TODO:
+                   if isinstance( fill_pattern, dict )
+    {
+      pattern_stops = fill_pattern.get( "stops", [None] )
+                      fill_pattern = pattern_stops[-1][-1]
+    }
+
+    // when fill-pattern exists, set and insert RasterFillSymbolLayer
+    if fill_pattern
+  {
+    SPRITES_PATH = os.path.join( os.path.dirname( os.path.realpath( __file__ ) ), "sprites" )
+      raster_fill_symbol = QgsRasterFillSymbolLayer( os.path.join( SPRITES_PATH, fill_pattern + ".png" ) )
+      sym.appendSymbolLayer( raster_fill_symbol )
+    }
 #endif
+  }
 
   fillSymbol->setDataDefinedProperties( ddProperties );
 
