@@ -45,18 +45,21 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
 
     def testParseInterpolateColorByZoom(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
-        self.assertEqual(QgsMapBoxGlStyleConverter.parseInterpolateColorByZoom({}, conversion_context).isActive(), False)
+        self.assertEqual(QgsMapBoxGlStyleConverter.parseInterpolateColorByZoom({}, conversion_context).isActive(),
+                         False)
         self.assertEqual(QgsMapBoxGlStyleConverter.parseInterpolateColorByZoom({'base': 1,
                                                                                 'stops': [[0, '#f1f075'],
                                                                                           [150, '#b52e3e'],
                                                                                           [250, '#e55e5e']]
-                                                                                }, conversion_context).expressionString(),
+                                                                                },
+                                                                               conversion_context).expressionString(),
                          'CASE WHEN @zoom_level >= 0 AND @zoom_level < 150 THEN color_hsla(scale_linear(@zoom_level, 0, 150, 59, 352), scale_linear(@zoom_level, 0, 150, 81, 59), scale_linear(@zoom_level, 0, 150, 70, 44), scale_linear(@zoom_level, 0, 150, 255, 255)) WHEN @zoom_level >= 150 AND @zoom_level < 250 THEN color_hsla(scale_linear(@zoom_level, 150, 250, 352, 0), scale_linear(@zoom_level, 150, 250, 59, 72), scale_linear(@zoom_level, 150, 250, 44, 63), scale_linear(@zoom_level, 150, 250, 255, 255)) WHEN @zoom_level >= 250 THEN color_hsla(0, 72, 63, 255) ELSE color_hsla(0, 72, 63, 255) END')
         self.assertEqual(QgsMapBoxGlStyleConverter.parseInterpolateColorByZoom({'base': 2,
                                                                                 'stops': [[0, '#f1f075'],
                                                                                           [150, '#b52e3e'],
                                                                                           [250, '#e55e5e']]
-                                                                                }, conversion_context).expressionString(),
+                                                                                },
+                                                                               conversion_context).expressionString(),
                          'CASE WHEN @zoom_level >= 0 AND @zoom_level < 150 THEN color_hsla(59 + 293 * (2^(@zoom_level-0)-1)/(2^(150-0)-1), 81 + -22 * (2^(@zoom_level-0)-1)/(2^(150-0)-1), 70 + -26 * (2^(@zoom_level-0)-1)/(2^(150-0)-1), 255 + 0 * (2^(@zoom_level-0)-1)/(2^(150-0)-1)) WHEN @zoom_level >= 150 AND @zoom_level < 250 THEN color_hsla(352 + -352 * (2^(@zoom_level-150)-1)/(2^(250-150)-1), 59 + 13 * (2^(@zoom_level-150)-1)/(2^(250-150)-1), 44 + 19 * (2^(@zoom_level-150)-1)/(2^(250-150)-1), 255 + 0 * (2^(@zoom_level-150)-1)/(2^(250-150)-1)) WHEN @zoom_level >= 250 THEN color_hsla(0, 72, 63, 255) ELSE color_hsla(0, 72, 63, 255) END')
 
     def testParseStops(self):
@@ -180,8 +183,157 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
         self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression(["==", "_symbol", 0], conversion_context),
                          '''"_symbol" IS 0''')
 
-        self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression(["all", ["==", "_symbol", 8], ["!in", "Viz", 3]], conversion_context),
+        self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression(["all", ["==", "_symbol", 8], ["!in", "Viz", 3]],
+                                                                   conversion_context),
                          '''("_symbol" IS 8) AND (("Viz" IS NULL OR "Viz" NOT IN (3)))''')
+
+    def testConvertLabels(self):
+        context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "layout": {
+                "text-field": "{name_en}",
+                "text-font": [
+                    "Open Sans Semibold",
+                    "Arial Unicode MS Bold"
+                ],
+                "text-max-width": 8,
+                "text-anchor": "top",
+                "text-size": 11,
+                "icon-size": 1
+            },
+            "type": "symbol",
+            "id": "poi_label",
+            "paint": {
+                "text-color": "#666",
+                "text-halo-width": 1.5,
+                "text-halo-color": "rgba(255,255,255,0.95)",
+                "text-halo-blur": 1
+            },
+            "source-layer": "poi_label"
+        }
+        renderer, has_renderer, labeling, has_labeling = QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        self.assertFalse(has_renderer)
+        self.assertTrue(has_labeling)
+        self.assertEqual(labeling.labelSettings().fieldName, 'name_en')
+        self.assertFalse(labeling.labelSettings().isExpression)
+
+        style = {
+            "layout": {
+                "text-field": "name_en",
+                "text-font": [
+                    "Open Sans Semibold",
+                    "Arial Unicode MS Bold"
+                ],
+                "text-max-width": 8,
+                "text-anchor": "top",
+                "text-size": 11,
+                "icon-size": 1
+            },
+            "type": "symbol",
+            "id": "poi_label",
+            "paint": {
+                "text-color": "#666",
+                "text-halo-width": 1.5,
+                "text-halo-color": "rgba(255,255,255,0.95)",
+                "text-halo-blur": 1
+            },
+            "source-layer": "poi_label"
+        }
+        renderer, has_renderer, labeling, has_labeling = QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        self.assertFalse(has_renderer)
+        self.assertTrue(has_labeling)
+        self.assertEqual(labeling.labelSettings().fieldName, 'name_en')
+        self.assertFalse(labeling.labelSettings().isExpression)
+
+        style = {
+            "layout": {
+                "text-field": ["format",
+                               "foo", {"font-scale": 1.2},
+                               "bar", {"font-scale": 0.8}
+                               ],
+                "text-font": [
+                    "Open Sans Semibold",
+                    "Arial Unicode MS Bold"
+                ],
+                "text-max-width": 8,
+                "text-anchor": "top",
+                "text-size": 11,
+                "icon-size": 1
+            },
+            "type": "symbol",
+            "id": "poi_label",
+            "paint": {
+                "text-color": "#666",
+                "text-halo-width": 1.5,
+                "text-halo-color": "rgba(255,255,255,0.95)",
+                "text-halo-blur": 1
+            },
+            "source-layer": "poi_label"
+        }
+        renderer, has_renderer, labeling, has_labeling = QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        self.assertFalse(has_renderer)
+        self.assertTrue(has_labeling)
+        self.assertEqual(labeling.labelSettings().fieldName, 'concat("foo","bar")')
+        self.assertTrue(labeling.labelSettings().isExpression)
+
+        style = {
+            "layout": {
+                "text-field": "{name_en} - {name_fr}",
+                "text-font": [
+                    "Open Sans Semibold",
+                    "Arial Unicode MS Bold"
+                ],
+                "text-max-width": 8,
+                "text-anchor": "top",
+                "text-size": 11,
+                "icon-size": 1
+            },
+            "type": "symbol",
+            "id": "poi_label",
+            "paint": {
+                "text-color": "#666",
+                "text-halo-width": 1.5,
+                "text-halo-color": "rgba(255,255,255,0.95)",
+                "text-halo-blur": 1
+            },
+            "source-layer": "poi_label"
+        }
+        renderer, has_renderer, labeling, has_labeling = QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        self.assertFalse(has_renderer)
+        self.assertTrue(has_labeling)
+        self.assertEqual(labeling.labelSettings().fieldName, '''concat("name_en",' - ',"name_fr")''')
+        self.assertTrue(labeling.labelSettings().isExpression)
+
+        style = {
+            "layout": {
+                "text-field": ["format",
+                               "{name_en} - {name_fr}", {"font-scale": 1.2},
+                               "bar", {"font-scale": 0.8}
+                               ],
+                "text-font": [
+                    "Open Sans Semibold",
+                    "Arial Unicode MS Bold"
+                ],
+                "text-max-width": 8,
+                "text-anchor": "top",
+                "text-size": 11,
+                "icon-size": 1
+            },
+            "type": "symbol",
+            "id": "poi_label",
+            "paint": {
+                "text-color": "#666",
+                "text-halo-width": 1.5,
+                "text-halo-color": "rgba(255,255,255,0.95)",
+                "text-halo-blur": 1
+            },
+            "source-layer": "poi_label"
+        }
+        renderer, has_renderer, labeling, has_labeling = QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        self.assertFalse(has_renderer)
+        self.assertTrue(has_labeling)
+        self.assertEqual(labeling.labelSettings().fieldName, '''concat(concat("name_en",' - ',"name_fr"),"bar")''')
+        self.assertTrue(labeling.labelSettings().isExpression)
 
 
 if __name__ == '__main__':

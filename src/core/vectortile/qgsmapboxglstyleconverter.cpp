@@ -735,32 +735,97 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
 
   QgsPalLayerSettings labelSettings;
 
-  // TODO - likely improvements required here
-  labelSettings.fieldName = QStringLiteral( "name:latin" );
+  // convert field name
+
+  auto processLabelField = []( const QString & string, bool & isExpression )->QString
+  {
+    // {field_name} is permitted in string -- if multiple fields are present, convert them to an expression
+    // but if single field is covered in {}, return it directly
+    const QRegularExpression singleFieldRx( QStringLiteral( "^{([^}]+)}$" ) );
+    QRegularExpressionMatch match = singleFieldRx.match( string );
+    if ( match.hasMatch() )
+    {
+      isExpression = false;
+      return match.captured( 1 );
+    }
+
+    const QRegularExpression multiFieldRx( QStringLiteral( "(?={[^}]+})" ) );
+    const QStringList parts = string.split( multiFieldRx );
+    if ( parts.size() > 1 )
+    {
+      isExpression = true;
+
+      QStringList res;
+      for ( const QString &part : parts )
+      {
+        if ( part.isEmpty() )
+          continue;
+
+        // part will start at a {field} reference
+        const QStringList split = part.split( '}' );
+        res << QgsExpression::quotedColumnRef( split.at( 0 ).mid( 1 ) );
+        if ( !split.at( 1 ).isEmpty() )
+          res << QgsExpression::quotedValue( split.at( 1 ) );
+      }
+      return QStringLiteral( "concat(%1)" ).arg( res.join( ',' ) );
+    }
+    else
+    {
+      isExpression = false;
+      return string;
+    }
+  };
+
   if ( jsonLayout.contains( QStringLiteral( "text-field" ) ) )
   {
     const QVariant jsonTextField = jsonLayout.value( QStringLiteral( "text-field" ) );
     switch ( jsonTextField.type() )
     {
       case QVariant::String:
-        labelSettings.fieldName = jsonTextField.toString();
+      {
+        labelSettings.fieldName = processLabelField( jsonTextField.toString(), labelSettings.isExpression );
         break;
+      }
 
       case QVariant::List:
       case QVariant::StringList:
-        labelSettings.fieldName = jsonTextField.toList().value( 1 ).toList().value( 1 ).toString();
+      {
+        const QVariantList textFieldList = jsonTextField.toList();
+        /*
+         * e.g.
+         *     "text-field": ["format",
+         *                    "foo", { "font-scale": 1.2 },
+         *                    "bar", { "font-scale": 0.8 }
+         * ]
+         */
+        if ( textFieldList.size() > 2 )
+        {
+          QStringList parts;
+          for ( int i = 1; i < textFieldList.size(); ++i )
+          {
+            bool isExpression = false;
+            const QString part = processLabelField( textFieldList.at( i ).toString(), isExpression );
+            if ( !isExpression )
+              parts << QgsExpression::quotedColumnRef( part );
+            else
+              parts << part;
+            // TODO -- we could also translate font color, underline, overline, strikethrough to HTML tags!
+            i += 1;
+          }
+          labelSettings.fieldName = QStringLiteral( "concat(%1)" ).arg( parts.join( ',' ) );
+          labelSettings.isExpression = true;
+        }
+        else
+        {
+          labelSettings.fieldName = processLabelField( textFieldList.value( 1 ).toList().value( 0 ).toString(), labelSettings.isExpression );
+        }
         break;
+      }
 
       default:
         context.pushWarning( QObject::tr( "Skipping non-implemented text-field expression" ) );
         break;
     }
-
-    // handle ESRI specific field name constants
-    if ( labelSettings.fieldName == QLatin1String( "{_name_global}" ) )
-      labelSettings.fieldName = QStringLiteral( "_name_global" );
-    else if ( labelSettings.fieldName == QLatin1String( "{_name}" ) )
-      labelSettings.fieldName = QStringLiteral( "_name" );
   }
 
   if ( jsonLayout.contains( QStringLiteral( "text-transform" ) ) )
