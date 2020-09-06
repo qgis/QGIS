@@ -8,19 +8,13 @@ in vec2 texCoord;
 
 out vec4 fragColor;
 
-const float near_plane = 0.1f;
-const float far_plane = 100.0f;
-
-// required when using a perspective projection matrix
-float LinearizeDepth(float depth)
-{
-    float z = depth * 2.0 - 1.0; // Back to NDC
-    return (2.0 * near_plane * far_plane) / (far_plane + near_plane - z * (far_plane - near_plane));
-}
-
 void main()
 {
-  float depthValue = texture(previewTexture, texCoord).r;
-//  fragColor = vec4(texture(previewTexture, texCoord).rgb, 1.0);
-  fragColor = vec4(vec3(depthValue), 1.0f);
+  // Warning:
+  // When trying to display a depth texture make sure to linearize the depth value
+  // if you are using a perspective projection
+  if (isDepth)
+    fragColor = vec4(vec3(texture(previewTexture, texCoord).r), 1.0f);
+  else
+    fragColor = vec4(texture(previewTexture, texCoord).rgb, 1.0f);
 }
