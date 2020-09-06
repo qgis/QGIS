@@ -348,6 +348,9 @@ void QgsVectorTileBasicLabelingWidget::editStyle()
 
 void QgsVectorTileBasicLabelingWidget::editStyleAtIndex( const QModelIndex &index )
 {
+  if ( index.row() < 0 || index.row() >= mLabeling->styles().count() )
+    return;
+
   QgsVectorTileBasicLabelingStyle style = mLabeling->style( index.row() );
 
   QgsPalLayerSettings labelSettings = style.labelSettings();
@@ -385,6 +388,9 @@ void QgsVectorTileBasicLabelingWidget::editStyleAtIndex( const QModelIndex &inde
 void QgsVectorTileBasicLabelingWidget::updateLabelingFromWidget()
 {
   int index = viewStyles->selectionModel()->currentIndex().row();
+  if ( index < 0 )
+    return;
+
   QgsVectorTileBasicLabelingStyle style = mLabeling->style( index );
 
   QgsLabelingPanelWidget *widget = qobject_cast<QgsLabelingPanelWidget *>( sender() );

@@ -361,6 +361,9 @@ void QgsVectorTileBasicRendererWidget::editStyle()
 
 void QgsVectorTileBasicRendererWidget::editStyleAtIndex( const QModelIndex &index )
 {
+  if ( index.row() < 0 || index.row() >= mRenderer->styles().count() )
+    return;
+
   QgsVectorTileBasicRendererStyle style = mRenderer->style( index.row() );
 
   if ( !style.symbol() )
@@ -402,6 +405,9 @@ void QgsVectorTileBasicRendererWidget::editStyleAtIndex( const QModelIndex &inde
 void QgsVectorTileBasicRendererWidget::updateSymbolsFromWidget()
 {
   int index = viewStyles->selectionModel()->currentIndex().row();
+  if ( index < 0 )
+    return;
+
   QgsVectorTileBasicRendererStyle style = mRenderer->style( index );
 
   QgsSymbolSelectorWidget *dlg = qobject_cast<QgsSymbolSelectorWidget *>( sender() );
