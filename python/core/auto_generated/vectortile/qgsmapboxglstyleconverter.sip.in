@@ -251,13 +251,14 @@ Parses a color value which is interpolated by zoom range.
 :param defaultColor: optional storage for a reasonable "default" color representing the overall property.
 %End
 
-    static QgsProperty parseInterpolateByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1 );
+    static QgsProperty parseInterpolateByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, double *defaultNumber = 0 );
 %Docstring
 Parses a numeric value which is interpolated by zoom range.
 
 :param json: definition of interpolation
 :param context: conversion context
 :param multiplier: optional multiplication factor
+:param defaultNumber: optional storage for a reasonable "default" number representing the overall property.
 %End
 
     static QgsProperty parseInterpolateOpacityByZoom( const QVariantMap &json );
@@ -291,7 +292,9 @@ Parses a list of interpolation stops
 :param context: conversion context
 %End
 
-    static QgsProperty parseInterpolateListByZoom( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, QColor *defaultColor = 0 );
+    static QgsProperty parseInterpolateListByZoom( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1,
+        QColor *defaultColor = 0,
+        double *defaultNumber = 0 );
 %Docstring
 Interpolates a list which starts with the interpolate function.
 

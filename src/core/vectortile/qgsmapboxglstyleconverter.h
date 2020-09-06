@@ -271,8 +271,9 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * \param json definition of interpolation
      * \param context conversion context
      * \param multiplier optional multiplication factor
+     * \param defaultNumber optional storage for a reasonable "default" number representing the overall property.
      */
-    static QgsProperty parseInterpolateByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1 );
+    static QgsProperty parseInterpolateByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, double *defaultNumber = nullptr );
 
     /**
      * Interpolates opacity with either scale_linear() or scale_exp() (depending on base value).
@@ -306,7 +307,9 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \warning This is private API only, and may change in future QGIS versions
      */
-    static QgsProperty parseInterpolateListByZoom( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, QColor *defaultColor = nullptr );
+    static QgsProperty parseInterpolateListByZoom( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1,
+        QColor *defaultColor = nullptr,
+        double *defaultNumber = nullptr );
 
     /**
      * Parses a \a color in one of these supported formats:
