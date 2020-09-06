@@ -52,9 +52,58 @@ class CORE_EXPORT QgsMapBoxGlStyleConversionContext
      */
     void clearWarnings() { mWarnings.clear(); }
 
+    /**
+     * Returns the target unit type.
+     *
+     * By default this is QgsUnitTypes::RenderPixels in order to exactly match the original
+     * style rendering. But rendering in pixels can cause issues on hidpi displays or with print
+     * layouts, so setting a target unit of QgsUnitTypes::Millimeters or another real-world unit
+     * type is often more appropriate.
+     *
+     * \see setTargetUnit()
+     */
+    QgsUnitTypes::RenderUnit targetUnit() const;
+
+    /**
+     * Sets the target unit type.
+     *
+     * By default this is QgsUnitTypes::RenderPixels in order to exactly match the original
+     * style rendering. But rendering in pixels can cause issues on hidpi displays or with print
+     * layouts, so setting a target unit of QgsUnitTypes::Millimeters or another real-world unit
+     * type is often more appropriate.
+     *
+     * If setting to a non-pixel unit, be sure to call setPixelSizeConversionFactor() in order
+     * to setup an appropriate pixel-to-unit conversion factor to scale converted sizes
+     * using. E.g. if the target unit is millimeters, the size conversion factor should be
+     * set to a pixel-to-millimeter value.
+     *
+     * \see targetUnit()
+     */
+    void setTargetUnit( QgsUnitTypes::RenderUnit targetUnit );
+
+    /**
+     * Returns the pixel size conversion factor, used to scale the original pixel sizes
+     * when converting styles.
+     *
+     * \see setSizeConversionFactor()
+     */
+    double pixelSizeConversionFactor() const;
+
+    /**
+     * Sets the pixel size conversion factor, used to scale the original pixel sizes
+     * when converting styles.
+     *
+     * \see pixelSizeConversionFactor()
+     */
+    void setPixelSizeConversionFactor( double sizeConversionFactor );
+
   private:
 
     QStringList mWarnings;
+
+    QgsUnitTypes::RenderUnit mTargetUnit = QgsUnitTypes::RenderPixels;
+
+    double mSizeConversionFactor = 1.0;
 };
 
 /**
@@ -99,8 +148,10 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * After conversion, the resultant labeling and style rules can be retrieved by calling
      * renderer() or labeling() respectively.
+     *
+     * The optional \a context argument can be set to use a specific context during the conversion.
      */
-    Result convert( const QVariantMap &style );
+    Result convert( const QVariantMap &style, QgsMapBoxGlStyleConversionContext *context = nullptr );
 
     /**
      * Converts a JSON \a style string, and returns the resultant status of the conversion.
@@ -110,8 +161,10 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * After conversion, the resultant labeling and style rules can be retrieved by calling
      * renderer() or labeling() respectively.
+     *
+     * The optional \a context argument can be set to use a specific context during the conversion.
      */
-    Result convert( const QString &style );
+    Result convert( const QString &style, QgsMapBoxGlStyleConversionContext *context = nullptr );
 
     /**
      * Returns a descriptive error message if an error was encountered during the style conversion,
@@ -158,7 +211,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * Parse list of \a layers from JSON.
      * \warning This is private API only, and may change in future QGIS versions
      */
-    void parseLayers( const QVariantList &layers );
+    void parseLayers( const QVariantList &layers, QgsMapBoxGlStyleConversionContext *context = nullptr );
 
     /**
      * Parses a fill layer.

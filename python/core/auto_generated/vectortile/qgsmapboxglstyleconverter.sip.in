@@ -41,6 +41,51 @@ Returns a list of warning messages generated during the conversion.
 Clears the list of warning messages.
 %End
 
+    QgsUnitTypes::RenderUnit targetUnit() const;
+%Docstring
+Returns the target unit type.
+
+By default this is QgsUnitTypes.RenderPixels in order to exactly match the original
+style rendering. But rendering in pixels can cause issues on hidpi displays or with print
+layouts, so setting a target unit of QgsUnitTypes.Millimeters or another real-world unit
+type is often more appropriate.
+
+.. seealso:: :py:func:`setTargetUnit`
+%End
+
+    void setTargetUnit( QgsUnitTypes::RenderUnit targetUnit );
+%Docstring
+Sets the target unit type.
+
+By default this is QgsUnitTypes.RenderPixels in order to exactly match the original
+style rendering. But rendering in pixels can cause issues on hidpi displays or with print
+layouts, so setting a target unit of QgsUnitTypes.Millimeters or another real-world unit
+type is often more appropriate.
+
+If setting to a non-pixel unit, be sure to call :py:func:`~QgsMapBoxGlStyleConversionContext.setPixelSizeConversionFactor` in order
+to setup an appropriate pixel-to-unit conversion factor to scale converted sizes
+using. E.g. if the target unit is millimeters, the size conversion factor should be
+set to a pixel-to-millimeter value.
+
+.. seealso:: :py:func:`targetUnit`
+%End
+
+    double pixelSizeConversionFactor() const;
+%Docstring
+Returns the pixel size conversion factor, used to scale the original pixel sizes
+when converting styles.
+
+.. seealso:: :py:func:`setSizeConversionFactor`
+%End
+
+    void setPixelSizeConversionFactor( double sizeConversionFactor );
+%Docstring
+Sets the pixel size conversion factor, used to scale the original pixel sizes
+when converting styles.
+
+.. seealso:: :py:func:`pixelSizeConversionFactor`
+%End
+
 };
 
 class QgsMapBoxGlStyleConverter
@@ -75,7 +120,7 @@ Constructor for QgsMapBoxGlStyleConverter.
       NoLayerList,
     };
 
-    Result convert( const QVariantMap &style );
+    Result convert( const QVariantMap &style, QgsMapBoxGlStyleConversionContext *context = 0 );
 %Docstring
 Converts a JSON ``style`` map, and returns the resultant status of the conversion.
 
@@ -84,9 +129,11 @@ by calling :py:func:`~QgsMapBoxGlStyleConverter.errorMessage`.
 
 After conversion, the resultant labeling and style rules can be retrieved by calling
 :py:func:`~QgsMapBoxGlStyleConverter.renderer` or :py:func:`~QgsMapBoxGlStyleConverter.labeling` respectively.
+
+The optional ``context`` argument can be set to use a specific context during the conversion.
 %End
 
-    Result convert( const QString &style );
+    Result convert( const QString &style, QgsMapBoxGlStyleConversionContext *context = 0 );
 %Docstring
 Converts a JSON ``style`` string, and returns the resultant status of the conversion.
 
@@ -95,6 +142,8 @@ by calling :py:func:`~QgsMapBoxGlStyleConverter.errorMessage`.
 
 After conversion, the resultant labeling and style rules can be retrieved by calling
 :py:func:`~QgsMapBoxGlStyleConverter.renderer` or :py:func:`~QgsMapBoxGlStyleConverter.labeling` respectively.
+
+The optional ``context`` argument can be set to use a specific context during the conversion.
 %End
 
     QString errorMessage() const;
@@ -134,7 +183,7 @@ or ``None`` if the style could not be converted successfully.
       Opacity,
     };
 
-    void parseLayers( const QVariantList &layers );
+    void parseLayers( const QVariantList &layers, QgsMapBoxGlStyleConversionContext *context = 0 );
 %Docstring
 Parse list of ``layers`` from JSON.
 
