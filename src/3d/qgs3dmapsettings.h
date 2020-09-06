@@ -376,6 +376,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     /**
      * Returns the maximum shadow rendering distance accounted for when rendering shadows
      * Objects further away from the camera than the specified distance won't cast shadows
+     * This helps with producing a reasonable shadow resolution when looking at a large area or up to the sky
      * \since QGIS 3.16
      */
     float maximumShadowRenderingDistance() const { return mMaximumShadowRenderingDistance; }
@@ -408,6 +409,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     /**
      * Sets the maximum shadow rendering distance accounted for when rendering shadows
      * Objects further away from the camera than the specified distance won't cast shadows
+     * This helps with producing a reasonable shadow resolution when looking at a large area or up to the sky
      * \since QGIS 3.16
      */
     void setMaximumShadowRenderingDistance( float distance );
