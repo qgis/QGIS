@@ -43,6 +43,7 @@ class QgsVectorTileLayerProperties : public QgsOptionsDialogBase, private Ui::Qg
     void saveStyleAs();
     void aboutToShowStyleMenu();
     void showHelp();
+    void urlClicked( const QUrl &url );
 
   private:
     void syncToLayer();

@@ -109,6 +109,7 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
 
     QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const FINAL;
     QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const FINAL;
+    QString htmlMetadata() const override;
 
     // new methods
 

@@ -25,6 +25,7 @@
 #include "qgsvectortileutils.h"
 
 #include "qgsdatasourceuri.h"
+#include "qgslayermetadataformatter.h"
 
 
 QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseName )
@@ -284,6 +285,66 @@ QString QgsVectorTileLayer::decodedSource( const QString &source, const QString 
   }
 
   return source;
+}
+
+QString QgsVectorTileLayer::htmlMetadata() const
+{
+  QgsLayerMetadataFormatter htmlFormatter( metadata() );
+
+  QString info = QStringLiteral( "<html><head></head>\n<body>\n" );
+
+  info += QStringLiteral( "<h1>" ) + tr( "Information from provider" ) + QStringLiteral( "</h1>\n<hr>\n" ) %
+          QStringLiteral( "<table class=\"list-view\">\n" ) %
+
+          // name
+          QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Name" ) % QStringLiteral( "</td><td>" ) % name() % QStringLiteral( "</td></tr>\n" );
+
+  info += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "URI" ) % QStringLiteral( "</td><td>" ) % source() % QStringLiteral( "</td></tr>\n" );
+  info += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Source type" ) % QStringLiteral( "</td><td>" ) % sourceType() % QStringLiteral( "</td></tr>\n" );
+
+  const QString url = sourcePath();
+  info += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Source path" ) % QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl( url ).toString(), sourcePath() ) ) + QStringLiteral( "</td></tr>\n" );
+
+  info += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Zoom levels" ) % QStringLiteral( "</td><td>" ) % QStringLiteral( "%1 - %2" ).arg( sourceMinZoom() ).arg( sourceMaxZoom() ) % QStringLiteral( "</td></tr>\n" );
+  info += QStringLiteral( "</table>" );
+
+  // End Provider section
+  info += QStringLiteral( "</table>\n<br><br>" );
+
+  // Identification section
+  info += QStringLiteral( "<h1>" ) % tr( "Identification" ) % QStringLiteral( "</h1>\n<hr>\n" ) %
+          htmlFormatter.identificationSectionHtml() %
+          QStringLiteral( "<br><br>\n" ) %
+
+          // extent section
+          QStringLiteral( "<h1>" ) % tr( "Extent" ) % QStringLiteral( "</h1>\n<hr>\n" ) %
+          htmlFormatter.extentSectionHtml( ) %
+          QStringLiteral( "<br><br>\n" ) %
+
+          // Start the Access section
+          QStringLiteral( "<h1>" ) % tr( "Access" ) % QStringLiteral( "</h1>\n<hr>\n" ) %
+          htmlFormatter.accessSectionHtml( ) %
+          QStringLiteral( "<br><br>\n" ) %
+
+
+          // Start the contacts section
+          QStringLiteral( "<h1>" ) % tr( "Contacts" ) % QStringLiteral( "</h1>\n<hr>\n" ) %
+          htmlFormatter.contactsSectionHtml( ) %
+          QStringLiteral( "<br><br>\n" ) %
+
+          // Start the links section
+          QStringLiteral( "<h1>" ) % tr( "References" ) % QStringLiteral( "</h1>\n<hr>\n" ) %
+          htmlFormatter.linksSectionHtml( ) %
+          QStringLiteral( "<br><br>\n" ) %
+
+          // Start the history section
+          QStringLiteral( "<h1>" ) % tr( "History" ) % QStringLiteral( "</h1>\n<hr>\n" ) %
+          htmlFormatter.historySectionHtml( ) %
+          QStringLiteral( "<br><br>\n" ) %
+
+          QStringLiteral( "\n</body>\n</html>\n" );
+
+  return info;
 }
 
 QByteArray QgsVectorTileLayer::getRawTile( QgsTileXYZ tileID )
