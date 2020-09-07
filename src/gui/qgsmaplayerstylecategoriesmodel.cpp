@@ -16,10 +16,27 @@
 #include "qgsmaplayerstylecategoriesmodel.h"
 #include "qgsapplication.h"
 
-QgsMapLayerStyleCategoriesModel::QgsMapLayerStyleCategoriesModel( QObject *parent )
+QgsMapLayerStyleCategoriesModel::QgsMapLayerStyleCategoriesModel( QgsMapLayerType type, QObject *parent )
   : QAbstractListModel( parent )
 {
-  mCategoryList = qgsEnumMap<QgsMapLayer::StyleCategory>().keys();
+  switch ( type )
+  {
+    case QgsMapLayerType::VectorLayer:
+      mCategoryList = qgsEnumMap<QgsMapLayer::StyleCategory>().keys();
+      break;
+
+    case QgsMapLayerType::VectorTileLayer:
+      mCategoryList << QgsMapLayer::StyleCategory::Symbology << QgsMapLayer::StyleCategory::Labeling;
+      break;
+
+    case QgsMapLayerType::RasterLayer:
+    case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::MeshLayer:
+      // not yet handled by the model
+      break;
+  }
+
   // move All categories to top
   mCategoryList.move( mCategoryList.indexOf( QgsMapLayer::AllStyleCategories ), 0 );
 }
