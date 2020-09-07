@@ -568,6 +568,7 @@ class TestQgsProcessing: public QObject
     void parameterMapLayer();
     void parameterExtent();
     void parameterPoint();
+    void parameterGeometry();
     void parameterFile();
     void parameterMatrix();
     void parameterLayerList();
@@ -3378,6 +3379,87 @@ void TestQgsProcessing::parameterPoint()
   QCOMPARE( fromCode->flags(), def->flags() );
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
 }
+
+void TestQgsProcessing::parameterGeometry()
+{
+  QgsProcessingContext context;
+
+  // not optional!
+  std::unique_ptr< QgsProcessingParameterGeometry > def( new QgsProcessingParameterGeometry( "non_optional", QString(), QString( "Point(1 2)" ), false ) );
+  QVERIFY( !def->checkValueIsAcceptable( false ) );
+  QVERIFY( !def->checkValueIsAcceptable( true ) );
+  QVERIFY( !def->checkValueIsAcceptable( 5 ) );
+  QVERIFY( !def->checkValueIsAcceptable( "Nonsense string" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+  QVERIFY( !def->checkValueIsAcceptable( QString( "LineString(10 10, 20 a)" ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QString( "LineString(10 10, 20 20)" ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsGeometry::fromPointXY( QgsPointXY( 1, 2 ) ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsGeometry::fromWkt( QStringLiteral( "LineString(10 10, 20 20)" ) ) ) );
+
+  // string representing a geometry
+  QVariantMap params;
+  params.insert( "non_optional", QString( "LineString(10 10, 20 20)" ) );
+  QVERIFY( def->checkValueIsAcceptable( "LineString(10 10, 20 20)" ) );
+  QgsGeometry geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context );
+  QCOMPARE( geometry.asWkt(), QStringLiteral( "LineString (10 10, 20 20)" ) );
+
+  // nonsense string
+  params.insert( "non_optional", QString( "i'm not a geometry, and nothing you can do will make me one" ) );
+  geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context );
+  QVERIFY( geometry.isNull() );
+
+  QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
+  QCOMPARE( def->valueAsPythonString( "LineString( 10 10, 20 20)", context ), QStringLiteral( "'LineString( 10 10, 20 20)'" ) );
+  QCOMPARE( def->valueAsPythonString( QgsGeometry::fromWkt( QStringLiteral( "LineString( 10 10, 20 20)" ) ), context ), QStringLiteral( "QgsGeometry.fromWkt('LineString (10 10, 20 20)')" ) );
+
+  QString pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterGeometry('non_optional', '', defaultValue='Point(1 2)')" ) );
+
+  QString code = def->asScriptCode();
+  QCOMPARE( code, QStringLiteral( "##non_optional=geometry Point(1 2)" ) );
+  std::unique_ptr< QgsProcessingParameterGeometry > fromCode( dynamic_cast< QgsProcessingParameterGeometry * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+
+  QVariantMap map = def->toVariantMap();
+  QgsProcessingParameterGeometry fromMap( "x" );
+  QVERIFY( fromMap.fromVariantMap( map ) );
+  QCOMPARE( fromMap.name(), def->name() );
+  QCOMPARE( fromMap.description(), def->description() );
+  QCOMPARE( fromMap.flags(), def->flags() );
+  QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
+  def.reset( dynamic_cast< QgsProcessingParameterGeometry *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
+  QVERIFY( dynamic_cast< QgsProcessingParameterGeometry *>( def.get() ) );
+
+  // optional
+  def.reset( new QgsProcessingParameterGeometry( "optional", QString(), QString( "Point(-1 3)" ), true ) );
+  QVERIFY( def->checkValueIsAcceptable( "LineString(10 10, 20 20)" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "Point(-1 a)" ) );
+  QVERIFY( def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
+
+  params.insert( "optional",  QVariant() );
+  geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context );
+  QCOMPARE( geometry.asWkt(), QStringLiteral( "Point (-1 3)" ) );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterGeometry('optional', '', optional=True, defaultValue='Point(-1 3)')" ) );
+
+  code = def->asScriptCode();
+  QCOMPARE( code, QStringLiteral( "##optional=optional geometry Point(-1 3)" ) );
+  fromCode.reset( dynamic_cast< QgsProcessingParameterGeometry * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+}
+
+
 
 void TestQgsProcessing::parameterFile()
 {

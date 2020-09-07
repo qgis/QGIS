@@ -851,6 +851,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
       << QgsProcessingParameterCrs::typeName()
       << QgsProcessingParameterRange::typeName()
       << QgsProcessingParameterPoint::typeName()
+      << QgsProcessingParameterGeometry::typeName()
       << QgsProcessingParameterFile::typeName()
       << QgsProcessingParameterFolderDestination::typeName()
       << QgsProcessingParameterBand::typeName()

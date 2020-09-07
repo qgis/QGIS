@@ -235,6 +235,8 @@ their acceptable ranges, defaults, etc.
       sipType = sipType_QgsProcessingParameterExtent;
     else if ( sipCpp->type() == QgsProcessingParameterPoint::typeName() )
       sipType = sipType_QgsProcessingParameterPoint;
+    else if ( sipCpp->type() == QgsProcessingParameterGeometry::typeName() )
+      sipType = sipType_QgsProcessingParameterGeometry;
     else if ( sipCpp->type() == QgsProcessingParameterFile::typeName() )
       sipType = sipType_QgsProcessingParameterFile;
     else if ( sipCpp->type() == QgsProcessingParameterMatrix::typeName() )
@@ -1172,6 +1174,20 @@ Returns the coordinate reference system associated with an point parameter value
 .. versionadded:: 3.8
 %End
 
+    static QgsGeometry parameterAsGeometry( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` to a geometry.
+
+.. versionadded:: 3.16
+%End
+
+    static QgsGeometry parameterAsGeometry( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a geometry.
+
+.. versionadded:: 3.16
+%End
+
     static QString parameterAsFile( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a file/folder name.
@@ -1521,6 +1537,43 @@ Returns the type name for the parameter class.
 
 
     static QgsProcessingParameterPoint *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+%Docstring
+Creates a new parameter using the definition from a script code.
+%End
+
+};
+
+class QgsProcessingParameterGeometry : QgsProcessingParameterDefinition
+{
+%Docstring
+A geometry parameter for processing algorithms.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterGeometry( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), bool optional = false );
+%Docstring
+Constructor for QgsProcessingParameterGeometry.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
+    virtual QString type() const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+
+    static QgsProcessingParameterGeometry *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
 %End
