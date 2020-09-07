@@ -851,7 +851,7 @@ void QgsRasterLayerProperties::sync()
   pixmapPalette->repaint();
 #endif
 
-  QgsDebugMsg( QStringLiteral( "populate metadata tab" ) );
+  QgsDebugMsgLevel( QStringLiteral( "populate metadata tab" ), 2 );
   /*
    * Metadata Tab
    */

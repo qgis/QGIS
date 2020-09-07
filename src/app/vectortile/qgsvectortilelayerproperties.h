@@ -26,6 +26,7 @@ class QgsMessageBar;
 class QgsVectorTileBasicLabelingWidget;
 class QgsVectorTileBasicRendererWidget;
 class QgsVectorTileLayer;
+class QgsMetadataWidget;
 
 
 class QgsVectorTileLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVectorTileLayerPropertiesBase
@@ -42,8 +43,13 @@ class QgsVectorTileLayerProperties : public QgsOptionsDialogBase, private Ui::Qg
     void loadStyle();
     void saveStyleAs();
     void aboutToShowStyleMenu();
+    void loadMetadata();
+    void saveMetadataAs();
     void showHelp();
     void urlClicked( const QUrl &url );
+
+  protected slots:
+    void optionsStackedWidget_CurrentChanged( int index ) override SIP_SKIP ;
 
   private:
     void syncToLayer();
@@ -53,6 +59,15 @@ class QgsVectorTileLayerProperties : public QgsOptionsDialogBase, private Ui::Qg
 
     QgsVectorTileBasicRendererWidget *mRendererWidget = nullptr;
     QgsVectorTileBasicLabelingWidget *mLabelingWidget = nullptr;
+
+    QPushButton *mBtnStyle = nullptr;
+    QPushButton *mBtnMetadata = nullptr;
+    QAction *mActionLoadMetadata = nullptr;
+    QAction *mActionSaveMetadataAs = nullptr;
+
+    QgsMapCanvas *mMapCanvas = nullptr;
+    QgsMetadataWidget *mMetadataWidget = nullptr;
+
 };
 
 #endif // QGSVECTORTILELAYERPROPERTIES_H
