@@ -99,6 +99,8 @@ Constructs a new vector tile layer
 
     virtual QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const ${SIP_FINAL};
 
+    virtual QString htmlMetadata() const;
+
 
 
     QString sourceType() const;

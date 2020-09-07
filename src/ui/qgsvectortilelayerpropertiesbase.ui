@@ -48,7 +48,16 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -137,7 +146,16 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -152,21 +170,39 @@
           <enum>QFrame::Plain</enum>
          </property>
          <property name="currentIndex">
-          <number>2</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_20">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
-            <widget class="QTextBrowser" name="mInformationTextBrowser"/>
+            <widget class="QgsWebView" name="mMetadataViewer" native="true"/>
            </item>
           </layout>
          </widget>
          <widget class="QWidget" name="mOptsPage_Style">
           <layout class="QVBoxLayout" name="verticalLayout_14">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
           </layout>
@@ -195,7 +231,16 @@
       <enum>QFrame::Raised</enum>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <property name="margin">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
        <number>0</number>
       </property>
       <item row="0" column="0" colspan="2">
@@ -219,11 +264,16 @@
    <extends>QLineEdit</extends>
    <header>qgsfilterlineedit.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsWebView</class>
+   <extends>QWidget</extends>
+   <header>qgswebview.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mSearchLineEdit</tabstop>
   <tabstop>mOptionsListWidget</tabstop>
-  <tabstop>mInformationTextBrowser</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

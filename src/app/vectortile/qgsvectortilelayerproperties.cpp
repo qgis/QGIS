@@ -22,11 +22,14 @@
 #include "qgsvectortilebasicrendererwidget.h"
 #include "qgsvectortilebasiclabelingwidget.h"
 #include "qgsvectortilelayer.h"
+#include "qgsgui.h"
+#include "qgsnative.h"
+#include "qgsapplication.h"
 
 #include <QFileDialog>
 #include <QMenu>
 #include <QMessageBox>
-
+#include <QDesktopServices>
 
 QgsVectorTileLayerProperties::QgsVectorTileLayerProperties( QgsVectorTileLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent, Qt::WindowFlags flags )
   : QgsOptionsDialogBase( QStringLiteral( "VectorTileLayerProperties" ), parent, flags )
@@ -50,6 +53,27 @@ QgsVectorTileLayerProperties::QgsVectorTileLayerProperties( QgsVectorTileLayer *
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
   // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
   initOptionsBase( false );
+
+#ifdef WITH_QTWEBKIT
+  // Setup information tab
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
+  const int horizontalDpi = qApp->desktop()->screen()->logicalDpiX();
+#else
+  const int horizontalDpi = logicalDpiX();
+#endif
+
+  // Adjust zoom: text is ok, but HTML seems rather big at least on Linux/KDE
+  if ( horizontalDpi > 96 )
+  {
+    mMetadataViewer->setZoomFactor( mMetadataViewer->zoomFactor() * 0.9 );
+  }
+  mMetadataViewer->page()->setLinkDelegationPolicy( QWebPage::LinkDelegationPolicy::DelegateAllLinks );
+  connect( mMetadataViewer->page(), &QWebPage::linkClicked, this, &QgsVectorTileLayerProperties::urlClicked );
+  mMetadataViewer->page()->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
+  mMetadataViewer->page()->settings()->setAttribute( QWebSettings::JavascriptEnabled, true );
+
+#endif
 
   // update based on lyr's current state
   syncToLayer();
@@ -93,14 +117,10 @@ void QgsVectorTileLayerProperties::syncToLayer()
   /*
    * Information Tab
    */
-  QString info;
-  info += QStringLiteral( "<table>" );
-  info += QStringLiteral( "<tr><td>%1: </td><td>%2</td><tr>" ).arg( tr( "Uri" ) ).arg( mLayer->source() );
-  info += QStringLiteral( "<tr><td>%1: </td><td>%2</td><tr>" ).arg( tr( "Source Type" ) ).arg( mLayer->sourceType() );
-  info += QStringLiteral( "<tr><td>%1: </td><td>%2</td><tr>" ).arg( tr( "Source Path" ) ).arg( mLayer->sourcePath() );
-  info += QStringLiteral( "<tr><td>%1: </td><td>%2 - %3</td><tr>" ).arg( tr( "Zoom Levels" ) ).arg( mLayer->sourceMinZoom() ).arg( mLayer->sourceMaxZoom() );
-  info += QStringLiteral( "</table>" );
-  mInformationTextBrowser->setText( info );
+  const QString myStyle = QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType::WebBrowser );
+  // Inject the stylesheet
+  const QString html { mLayer->htmlMetadata().replace( QStringLiteral( "<head>" ), QStringLiteral( R"raw(<head><style type="text/css">%1</style>)raw" ) ).arg( myStyle ) };
+  mMetadataViewer->setHtml( html );
 
   /*
    * Symbology Tab
@@ -235,4 +255,13 @@ void QgsVectorTileLayerProperties::showHelp()
   {
     QgsHelp::openHelp( QStringLiteral( "working_with_vector_tiles/vector_tiles_properties.html" ) );
   }
+}
+
+void QgsVectorTileLayerProperties::urlClicked( const QUrl &url )
+{
+  QFileInfo file( url.toLocalFile() );
+  if ( file.exists() && !file.isDir() )
+    QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
+  else
+    QDesktopServices::openUrl( url );
 }
