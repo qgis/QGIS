@@ -105,7 +105,8 @@ QgsDataSourceUri QgsHanaSettings::toDataSourceUri() const
   if ( mSslEnabled )
   {
     uri.setParam( QStringLiteral( "sslEnabled" ), QStringLiteral( "true" ) );
-    uri.setParam( QStringLiteral( "sslCryptoProvider" ), mSslCryptoProvider );
+    if ( !mSslCryptoProvider.isEmpty() )
+      uri.setParam( QStringLiteral( "sslCryptoProvider" ), mSslCryptoProvider );
     uri.setParam( QStringLiteral( "sslValidateCertificate" ), mSslValidateCertificate ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
     if ( !mSslHostNameInCertificate.isEmpty() )
       uri.setParam( QStringLiteral( "sslHostNameInCertificate" ), mSslHostNameInCertificate );

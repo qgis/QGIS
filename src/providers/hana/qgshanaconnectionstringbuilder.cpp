@@ -49,10 +49,11 @@ QString QgsHanaConnectionStringBuilder::toString() const
   if ( mSslEnabled )
   {
     ret += QStringLiteral( ";encrypt=true" );
-    ret += QStringLiteral( ";sslCryptoProvider=" ) + mSslCryptoProvider;
+    if ( !mSslCryptoProvider.isEmpty() )
+      ret += QStringLiteral( ";sslCryptoProvider=" ) + mSslCryptoProvider;
     ret += QStringLiteral( ";sslValidateCertificate=" ) + QString( mSslValidateCertificate ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
-    if ( mSslValidateCertificate )
-      ret += QStringLiteral( ";sslHostNameInCertificate=" ) + mSslValidateCertificate;
+    if ( !mSslHostNameInCertificate.isEmpty() )
+      ret += QStringLiteral( ";sslHostNameInCertificate=" ) + mSslHostNameInCertificate;
     if ( !mSslKeyStore.isEmpty() )
       ret += QStringLiteral( ";sslKeyStore=" ) + mSslKeyStore;
     if ( !mSslKeyStore.isEmpty() )
