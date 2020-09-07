@@ -3438,6 +3438,13 @@ void QgsProject::setTrustLayerMetadata( bool trust )
     if ( vl )
     {
       vl->setReadExtentFromXml( trust );
+      if ( vl->dataProvider()->storageType() == "Oracle database with locator/spatial extension" ) {
+          // copy the value of this project level setting to layer uri
+          QgsDataSourceUri uri = vl->dataProvider()->dataSourceUri();
+          uri.removeParam( QStringLiteral( "trustLayerMetadata" ) );
+          uri.setParam( QStringLiteral( "trustLayerMetadata" ), trust ? QLatin1String( "1" ) : QLatin1String( "0" ) );
+          vl->dataProvider()->setUri( uri ); // ??? this does not actually set/change the uri
+      }
     }
   }
 }
