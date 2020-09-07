@@ -35,12 +35,25 @@ class CORE_EXPORT QgsVectorTileProviderConnection : public QgsAbstractProviderCo
     virtual void store( const QString &name ) const override;
     virtual void remove( const QString &name ) const override;
 
+    /**
+     * Vector tile service type.
+     *
+     * \since QGIS 3.16
+     */
+    enum ServiceType
+    {
+      Generic, //!< Generic (XYZ) connection
+      ArcgisVectorTileService, //!< ArcGIS VectorTileServer connection
+    };
+
     //! Represents decoded data of a connection
     struct Data
     {
       QString url;
       int zMin = -1;
       int zMax = -1;
+
+      ServiceType serviceType = Generic;
     };
 
     //! Returns connection data encoded as a string

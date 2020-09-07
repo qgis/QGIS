@@ -23,10 +23,12 @@
 #include "qgsvectortilelabeling.h"
 #include "qgsvectortileloader.h"
 #include "qgsvectortileutils.h"
+#include "qgsnetworkaccessmanager.h"
 
 #include "qgsdatasourceuri.h"
 #include "qgslayermetadataformatter.h"
-
+#include "qgsblockingnetworkrequest.h"
+#include "qgsmapboxglstyleconverter.h"
 
 QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseName )
   : QgsMapLayer( QgsMapLayerType::VectorTileLayer, baseName )
@@ -48,7 +50,12 @@ bool QgsVectorTileLayer::loadDataSource()
 
   mSourceType = dsUri.param( QStringLiteral( "type" ) );
   mSourcePath = dsUri.param( QStringLiteral( "url" ) );
-  if ( mSourceType == QStringLiteral( "xyz" ) )
+  if ( mSourceType == QStringLiteral( "xyz" ) && dsUri.param( QStringLiteral( "serviceType" ) ) == QLatin1String( "arcgis" ) )
+  {
+    if ( !setupArcgisVectorTileServiceConnection( mSourcePath ) )
+      return false;
+  }
+  else if ( mSourceType == QStringLiteral( "xyz" ) )
   {
     if ( !QgsVectorTileUtils::checkXYZUrlTemplate( mSourcePath ) )
     {
@@ -106,6 +113,55 @@ bool QgsVectorTileLayer::loadDataSource()
   }
 
   setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+  return true;
+}
+
+bool QgsVectorTileLayer::setupArcgisVectorTileServiceConnection( const QString &uri )
+{
+  QNetworkRequest request = QNetworkRequest( QUrl( uri ) );
+
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) );
+
+  QgsBlockingNetworkRequest networkRequest;
+  switch ( networkRequest.get( request ) )
+  {
+    case QgsBlockingNetworkRequest::NoError:
+      break;
+
+    case QgsBlockingNetworkRequest::NetworkError:
+    case QgsBlockingNetworkRequest::TimeoutError:
+    case QgsBlockingNetworkRequest::ServerExceptionError:
+      return false;
+  }
+
+  const QgsNetworkReplyContent content = networkRequest.reply();
+  const QByteArray raw = content.content();
+
+  // Parse data
+  QJsonParseError err;
+  QJsonDocument doc = QJsonDocument::fromJson( raw, &err );
+  if ( doc.isNull() )
+  {
+    return false;
+  }
+  mArcgisLayerConfiguration = doc.object().toVariantMap();
+  if ( mArcgisLayerConfiguration.contains( QStringLiteral( "error" ) ) )
+  {
+    return false;
+  }
+
+  mArcgisLayerConfiguration.insert( QStringLiteral( "serviceUri" ), uri );
+  mSourcePath = uri + '/' + mArcgisLayerConfiguration.value( QStringLiteral( "tiles" ) ).toList().value( 0 ).toString();
+  if ( !QgsVectorTileUtils::checkXYZUrlTemplate( mSourcePath ) )
+  {
+    QgsDebugMsg( QStringLiteral( "Invalid format of URL for XYZ source: " ) + mSourcePath );
+    return false;
+  }
+
+  mSourceMinZoom = 0;
+  mSourceMaxZoom = mArcgisLayerConfiguration.value( QStringLiteral( "maxzoom" ) ).toInt();
+  setExtent( QgsRectangle( -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 ) );
+
   return true;
 }
 

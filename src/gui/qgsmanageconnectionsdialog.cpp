@@ -771,6 +771,7 @@ QDomDocument QgsManageConnectionsDialog::saveVectorTileConnections( const QStrin
     el.setAttribute( QStringLiteral( "url" ), settings.value( path + "/url" ).toString() );
     el.setAttribute( QStringLiteral( "zmin" ), settings.value( path + "/zmin", -1 ).toInt() );
     el.setAttribute( QStringLiteral( "zmax" ), settings.value( path + "/zmax", -1 ).toInt() );
+    el.setAttribute( QStringLiteral( "serviceType" ), settings.value( path + "/serviceType", -1 ).toInt() );
 
     root.appendChild( el );
   }
@@ -1616,6 +1617,7 @@ void QgsManageConnectionsDialog::loadVectorTileConnections( const QDomDocument &
     settings.setValue( QStringLiteral( "url" ), child.attribute( QStringLiteral( "url" ) ) );
     settings.setValue( QStringLiteral( "zmin" ), child.attribute( QStringLiteral( "zmin" ) ) );
     settings.setValue( QStringLiteral( "zmax" ), child.attribute( QStringLiteral( "zmax" ) ) );
+    settings.setValue( QStringLiteral( "serviceType" ), child.attribute( QStringLiteral( "serviceType" ) ) );
     settings.endGroup();
 
     child = child.nextSiblingElement();
