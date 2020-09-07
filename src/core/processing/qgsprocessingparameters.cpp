@@ -1417,6 +1417,34 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsPointCrs( const
     return QgsCoordinateReferenceSystem();
 }
 
+QgsGeometry QgsProcessingParameters::parameterAsGeometry( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
+{
+  if ( !definition )
+    return QgsGeometry();
+
+  return parameterAsGeometry( definition, parameters.value( definition->name() ), context );
+}
+
+QgsGeometry QgsProcessingParameters::parameterAsGeometry( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context )
+{
+  if ( !definition )
+    return QgsGeometry();
+
+  QVariant val = value;
+  if ( val.canConvert< QgsGeometry >() )
+  {
+    return val.value<QgsGeometry>();
+  }
+
+  QString valueAsString = parameterAsString( definition, value, context );
+  if ( !valueAsString.isEmpty() )
+  {
+    return QgsGeometry::fromWkt( valueAsString );
+  }
+
+  return QgsGeometry();
+}
+
 QString QgsProcessingParameters::parameterAsFile( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
   if ( !definition )
@@ -2002,6 +2030,8 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromScriptCo
     return QgsProcessingParameterExtent::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QStringLiteral( "point" ) )
     return QgsProcessingParameterPoint::fromScriptCode( name, description, isOptional, definition );
+  else if ( type == QStringLiteral( "geometry" ) )
+    return QgsProcessingParameterGeometry::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QStringLiteral( "file" ) )
     return QgsProcessingParameterFile::fromScriptCode( name, description, isOptional, definition, QgsProcessingParameterFile::File );
   else if ( type == QStringLiteral( "folder" ) )
@@ -2768,6 +2798,78 @@ QString QgsProcessingParameterPoint::valueAsPythonString( const QVariant &value,
 QgsProcessingParameterPoint *QgsProcessingParameterPoint::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   return new QgsProcessingParameterPoint( name, description, definition, isOptional );
+}
+
+QgsProcessingParameterGeometry::QgsProcessingParameterGeometry( const QString &name, const QString &description,
+    const QVariant &defaultValue, bool optional )
+  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+{
+
+}
+
+QgsProcessingParameterDefinition *QgsProcessingParameterGeometry::clone() const
+{
+  return new QgsProcessingParameterGeometry( *this );
+}
+
+bool QgsProcessingParameterGeometry::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  if ( !input.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( input.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  if ( input.canConvert< QgsGeometry >() )
+  {
+    return true;
+  }
+
+  if ( input.type() == QVariant::String )
+  {
+    if ( input.toString().isEmpty() )
+      return mFlags & FlagOptional;
+  }
+
+  QgsGeometry g = QgsGeometry::fromWkt( input.toString() );
+  if ( ! g.isNull() )
+  {
+    return true;
+  }
+  else
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Error creating geometry: \"%1\"" ).arg( g.lastError() ), QObject::tr( "Processing" ) );
+    return false;
+  }
+
+}
+
+QString QgsProcessingParameterGeometry::valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const
+{
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
+  if ( value.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  if ( value.canConvert< QgsGeometry >() )
+  {
+    const QgsGeometry g = value.value<QgsGeometry>();
+    if ( !g.isNull() )
+    {
+      const QString wkt = g.asWkt();
+      return QStringLiteral( "QgsGeometry.fromWkt('%1')" ).arg( wkt );
+    }
+  }
+
+  return QgsProcessingParameterDefinition::valueAsPythonString( value, context );
+}
+
+QgsProcessingParameterGeometry *QgsProcessingParameterGeometry::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+{
+  return new QgsProcessingParameterGeometry( name, description, definition, isOptional );
 }
 
 QgsProcessingParameterFile::QgsProcessingParameterFile( const QString &name, const QString &description, Behavior behavior, const QString &extension, const QVariant &defaultValue, bool optional, const QString &fileFilter )
