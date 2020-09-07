@@ -575,12 +575,7 @@ void QgsTemporalControllerWidget::setDates( const QgsDateTimeRange &range )
     whileBlocking( mEndDateTime )->setDateTime( range.end() );
     whileBlocking( mFixedRangeStartDateTime )->setDateTime( range.begin() );
     whileBlocking( mFixedRangeEndDateTime )->setDateTime( range.end() );
-    // only if range is different from mNavigationObject->temporalExtents update
-    // else recursion as updateTemporalExtent itself calls mNavigationObject->setTemporalExtents
-    if ( range != mNavigationObject->temporalExtents() )
-    {
-      updateTemporalExtent();
-    }
+    updateTemporalExtent();
   }
 }
 
