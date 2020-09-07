@@ -77,10 +77,10 @@ QgsHanaConnection *QgsHanaConnection::createConnection( const QgsDataSourceUri &
   return createConnection( uri, nullptr, nullptr );
 }
 
-QgsHanaConnection *QgsHanaConnection::createConnection( const QgsDataSourceUri &uri, bool *cancelled )
+QgsHanaConnection *QgsHanaConnection::createConnection( const QgsDataSourceUri &uri, bool *canceled )
 {
   QString errorMessage;
-  QgsHanaConnection *conn = createConnection( uri, cancelled, &errorMessage );
+  QgsHanaConnection *conn = createConnection( uri, canceled, &errorMessage );
 
   if ( !errorMessage.isEmpty() )
   {
@@ -92,10 +92,10 @@ QgsHanaConnection *QgsHanaConnection::createConnection( const QgsDataSourceUri &
   return conn;
 }
 
-QgsHanaConnection *QgsHanaConnection::createConnection( const QgsDataSourceUri &uri, bool *cancelled, QString *errorMessage )
+QgsHanaConnection *QgsHanaConnection::createConnection( const QgsDataSourceUri &uri, bool *canceled, QString *errorMessage )
 {
-  if ( cancelled != nullptr )
-    *cancelled = false;
+  if ( canceled != nullptr )
+    *canceled = false;
 
   try
   {
@@ -138,8 +138,8 @@ QgsHanaConnection *QgsHanaConnection::createConnection( const QgsDataSourceUri &
         bool ok = QgsCredentials::instance()->get( conninfo, username, password, message );
         if ( !ok )
         {
-          if ( cancelled != nullptr )
-            *cancelled = true;
+          if ( canceled != nullptr )
+            *canceled = true;
           break;
         }
 

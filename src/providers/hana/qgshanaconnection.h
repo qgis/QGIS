@@ -70,8 +70,8 @@ class QgsHanaConnection : public QObject
     QgsHanaResultSetRef getColumns( const QString &schemaName, const QString &tableName, const QString &fieldName );
 
     static QgsHanaConnection *createConnection( const QgsDataSourceUri &uri );
-    static QgsHanaConnection *createConnection( const QgsDataSourceUri &uri, bool *cancelled );
-    static QgsHanaConnection *createConnection( const QgsDataSourceUri &uri, bool *cancelled, QString *errorMessage );
+    static QgsHanaConnection *createConnection( const QgsDataSourceUri &uri, bool *canceled );
+    static QgsHanaConnection *createConnection( const QgsDataSourceUri &uri, bool *canceled, QString *errorMessage );
 
     static QStringList connectionList();
 
