@@ -124,7 +124,7 @@ void QgsLocator::registerFilter( QgsLocatorFilter *filter )
 
 void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c, QgsFeedback *feedback )
 {
-  mAutocompleList.clear();
+  mAutocompletionList.clear();
   emit searchBegan();
 
   QgsLocatorContext context( c );
@@ -193,7 +193,7 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
         autoCompleteList[i].prepend( QStringLiteral( "%1 " ).arg( prefix ) );
       }
     }
-    mAutocompleList.append( autoCompleteList );
+    mAutocompletionList.append( autoCompleteList );
 
     if ( clone->flags() & QgsLocatorFilter::FlagFast )
     {

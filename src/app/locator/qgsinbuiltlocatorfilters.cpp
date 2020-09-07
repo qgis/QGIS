@@ -605,18 +605,18 @@ void QgsAllLayersFeaturesLocatorFilter::openConfigWidget( QWidget *parent )
   globalLimitSpinBox->setMinimum( 1 );
   globalLimitSpinBox->setMaximum( 200 );
   formLayout->addRow( tr( "&Maximum number of results:" ), globalLimitSpinBox );
-  QSpinBox *parLayerLimitSpinBox = new QSpinBox( dlg.get() );
-  parLayerLimitSpinBox->setValue( settings.value( QStringLiteral( "%1/limit_per_layer" ).arg( key ), 8, QgsSettings::App ).toInt() );
-  parLayerLimitSpinBox->setMinimum( 1 );
-  parLayerLimitSpinBox->setMaximum( 200 );
-  formLayout->addRow( tr( "&Maximum number of results per layer:" ), parLayerLimitSpinBox );
+  QSpinBox *perLayerLimitSpinBox = new QSpinBox( dlg.get() );
+  perLayerLimitSpinBox->setValue( settings.value( QStringLiteral( "%1/limit_per_layer" ).arg( key ), 8, QgsSettings::App ).toInt() );
+  perLayerLimitSpinBox->setMinimum( 1 );
+  perLayerLimitSpinBox->setMaximum( 200 );
+  formLayout->addRow( tr( "&Maximum number of results per layer:" ), perLayerLimitSpinBox );
   QDialogButtonBox *buttonbBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, dlg.get() );
   formLayout->addRow( buttonbBox );
   dlg->setLayout( formLayout );
   connect( buttonbBox, &QDialogButtonBox::accepted, [&]()
   {
     settings.setValue( QStringLiteral( "%1/limit_global" ).arg( key ), globalLimitSpinBox->value(), QgsSettings::App );
-    settings.setValue( QStringLiteral( "%1/limit_per_layer" ).arg( key ), parLayerLimitSpinBox->value(), QgsSettings::App );
+    settings.setValue( QStringLiteral( "%1/limit_per_layer" ).arg( key ), perLayerLimitSpinBox->value(), QgsSettings::App );
     dlg->accept();
   } );
   connect( buttonbBox, &QDialogButtonBox::rejected, dlg.get(), &QDialog::reject );

@@ -150,7 +150,7 @@ class CORE_EXPORT QgsLocator : public QObject
      * This list is updated when preparing the search
      * \since QGIS 3.16
      */
-    QStringList completionList() const {return mAutocompleList;}
+    QStringList completionList() const {return mAutocompletionList;}
 
   signals:
 
@@ -191,7 +191,7 @@ class CORE_EXPORT QgsLocator : public QObject
     QList< QgsLocatorFilter * > mFilters;
     QList< QThread * > mActiveThreads;
 
-    QStringList mAutocompleList;
+    QStringList mAutocompletionList;
 
     void cancelRunningQuery();
 
