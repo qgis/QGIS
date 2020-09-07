@@ -739,7 +739,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \returns a QString with any status messages
      * \since QGIS 3.0
      */
-    QString loadDefaultMetadata( bool &resultFlag );
+    virtual QString loadDefaultMetadata( bool &resultFlag );
 
     /**
      * Retrieve a named metadata for this layer from a sqlite database.

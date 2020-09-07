@@ -292,6 +292,94 @@ void QgsVectorTileLayer::setTransformContext( const QgsCoordinateTransformContex
   Q_UNUSED( transformContext )
 }
 
+QString QgsVectorTileLayer::loadDefaultStyle( bool &resultFlag )
+{
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( mDataSource );
+  if ( mSourceType == QStringLiteral( "xyz" ) && dsUri.param( QStringLiteral( "serviceType" ) ) == QLatin1String( "arcgis" ) )
+  {
+    QNetworkRequest request = QNetworkRequest( QUrl( mArcgisLayerConfiguration.value( QStringLiteral( "serviceUri" ) ).toString()
+                              + '/' + mArcgisLayerConfiguration.value( QStringLiteral( "defaultStyles" ) ).toString() ) );
+
+    QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) );
+
+    QgsBlockingNetworkRequest networkRequest;
+    switch ( networkRequest.get( request ) )
+    {
+      case QgsBlockingNetworkRequest::NoError:
+        break;
+
+      case QgsBlockingNetworkRequest::NetworkError:
+      case QgsBlockingNetworkRequest::TimeoutError:
+      case QgsBlockingNetworkRequest::ServerExceptionError:
+        resultFlag = false;
+        return QObject::tr( "Error retrieving default style" );
+    }
+
+    const QgsNetworkReplyContent content = networkRequest.reply();
+    const QByteArray raw = content.content();
+
+    QgsMapBoxGlStyleConversionContext context;
+    // convert automatically from pixel sizes to millimeters, because pixel sizes
+    // are a VERY edge case in QGIS and don't play nice with hidpi map renders or print layouts
+    context.setTargetUnit( QgsUnitTypes::RenderMillimeters );
+    //assume source uses 96 dpi
+    context.setPixelSizeConversionFactor( 25.4 / 96.0 );
+
+    QgsMapBoxGlStyleConverter converter;
+    if ( converter.convert( raw, &context ) != QgsMapBoxGlStyleConverter::Success )
+    {
+      resultFlag = false;
+      return converter.errorMessage();
+    }
+
+    setRenderer( converter.renderer() );
+    setLabeling( converter.labeling() );
+    resultFlag = true;
+    return QString();
+  }
+  else
+  {
+    QgsMapLayer::loadDefaultStyle( resultFlag );
+    resultFlag = true;
+    return QString();
+  }
+}
+
+QString QgsVectorTileLayer::loadDefaultMetadata( bool &resultFlag )
+{
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( mDataSource );
+  if ( mSourceType == QStringLiteral( "xyz" ) && dsUri.param( QStringLiteral( "serviceType" ) ) == QLatin1String( "arcgis" ) )
+  {
+    // populate default metadata
+    QgsLayerMetadata metadata;
+    metadata.setIdentifier( mArcgisLayerConfiguration.value( QStringLiteral( "serviceUri" ) ).toString() );
+    const QString parentIdentifier = mArcgisLayerConfiguration.value( QStringLiteral( "serviceItemId" ) ).toString();
+    if ( !parentIdentifier.isEmpty() )
+    {
+      metadata.setParentIdentifier( parentIdentifier );
+    }
+    metadata.setType( QStringLiteral( "dataset" ) );
+    metadata.setTitle( mArcgisLayerConfiguration.value( QStringLiteral( "name" ) ).toString() );
+    QString copyright = mArcgisLayerConfiguration.value( QStringLiteral( "copyrightText" ) ).toString();
+    if ( !copyright.isEmpty() )
+      metadata.setRights( QStringList() << copyright );
+    metadata.addLink( QgsAbstractMetadataBase::Link( tr( "Source" ), QStringLiteral( "WWW:LINK" ), mArcgisLayerConfiguration.value( QStringLiteral( "serviceUri" ) ).toString() ) );
+
+    setMetadata( metadata );
+
+    resultFlag = true;
+    return QString();
+  }
+  else
+  {
+    QgsMapLayer::loadDefaultMetadata( resultFlag );
+    resultFlag = true;
+    return QString();
+  }
+}
+
 QString QgsVectorTileLayer::encodedSource( const QString &source, const QgsReadWriteContext &context ) const
 {
   QgsDataSourceUri dsUri;

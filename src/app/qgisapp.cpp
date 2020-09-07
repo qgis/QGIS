@@ -2057,6 +2057,9 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
     else if ( u.layerType == QLatin1String( "vector-tile" ) )
     {
       QgsVectorTileLayer *layer = new QgsVectorTileLayer( uri, u.name );
+      bool ok = false;
+      layer->loadDefaultStyle( ok );
+      layer->loadDefaultMetadata( ok );
       addMapLayer( layer );
     }
     else if ( u.layerType == QLatin1String( "plugin" ) )
@@ -5653,6 +5656,13 @@ QgsVectorTileLayer *QgisApp::addVectorTileLayerPrivate( const QString &url, cons
     // since the layer is bad, stomp on it
     return nullptr;
   }
+  bool ok = false;
+  QString error = layer->loadDefaultStyle( ok );
+  if ( !ok )
+    visibleMessageBar()->pushMessage( tr( "Error loading style" ), error, Qgis::Warning, messageTimeout() );
+  error = layer->loadDefaultMetadata( ok );
+  if ( !ok )
+    visibleMessageBar()->pushMessage( tr( "Error loading layer metadata" ), error, Qgis::Warning, messageTimeout() );
 
   QgsProject::instance()->addMapLayer( layer.get() );
   activateDeactivateLayerRelatedActions( activeLayer() );
