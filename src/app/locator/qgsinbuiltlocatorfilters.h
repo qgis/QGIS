@@ -102,13 +102,19 @@ class APP_EXPORT QgsActiveLayerFeaturesLocatorFilter : public QgsLocatorFilter
     Priority priority() const override { return Medium; }
     QString prefix() const override { return QStringLiteral( "f" ); }
 
-    void prepare( const QString &string, const QgsLocatorContext &context ) override;
+    QStringList prepare( const QString &string, const QgsLocatorContext &context ) override;
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
     bool hasConfigWidget() const override {return true;}
     void openConfigWidget( QWidget *parent ) override;
 
   private:
+
+    /**
+     * Returns the field restriction if defined (starting with @)
+     * The \a searchString is modified acccordingly by removing the field restriction
+     */
+    QString fieldRestriction( QString &searchString ) const;
 
     QgsExpression mDispExpression;
     QgsExpressionContext mContext;
@@ -150,7 +156,7 @@ class APP_EXPORT QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
     Priority priority() const override { return Medium; }
     QString prefix() const override { return QStringLiteral( "af" ); }
 
-    void prepare( const QString &string, const QgsLocatorContext &context ) override;
+    QStringList prepare( const QString &string, const QgsLocatorContext &context ) override;
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
     void triggerResultFromAction( const QgsLocatorResult &result, const int actionId ) override;
