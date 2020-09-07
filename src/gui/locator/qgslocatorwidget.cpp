@@ -479,6 +479,7 @@ void QgsLocatorLineEdit::paintEvent( QPaintEvent *event )
 
   const QStringList completionList = mLocatorWidget->locator()->completionList();
 
+  mCompletionText.clear();
   QString completion;
   for ( const QString &candidate : completionList )
   {
