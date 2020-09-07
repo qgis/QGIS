@@ -30,6 +30,17 @@ QString QgsVectorTileProviderConnection::encodedUri( const QgsVectorTileProvider
     uri.setParam( QStringLiteral( "zmin" ), QString::number( conn.zMin ) );
   if ( conn.zMax != -1 )
     uri.setParam( QStringLiteral( "zmax" ), QString::number( conn.zMax ) );
+
+  switch ( conn.serviceType )
+  {
+    case Generic:
+      break;
+
+    case ArcgisVectorTileService:
+      uri.setParam( QStringLiteral( "serviceType" ), QStringLiteral( "arcgis" ) );
+      break;
+  }
+
   return uri.encodedUri();
 }
 
@@ -42,6 +53,12 @@ QgsVectorTileProviderConnection::Data QgsVectorTileProviderConnection::decodedUr
   conn.url = dsUri.param( QStringLiteral( "url" ) );
   conn.zMin = dsUri.hasParam( QStringLiteral( "zmin" ) ) ? dsUri.param( QStringLiteral( "zmin" ) ).toInt() : -1;
   conn.zMax = dsUri.hasParam( QStringLiteral( "zmax" ) ) ? dsUri.param( QStringLiteral( "zmax" ) ).toInt() : -1;
+
+  if ( dsUri.hasParam( QStringLiteral( "serviceType" ) ) )
+  {
+    if ( dsUri.param( QStringLiteral( "serviceType" ) ) == QLatin1String( "arcgis" ) )
+      conn.serviceType = ArcgisVectorTileService;
+  }
   return conn;
 }
 
@@ -55,6 +72,17 @@ QString QgsVectorTileProviderConnection::encodedLayerUri( const QgsVectorTilePro
     uri.setParam( QStringLiteral( "zmin" ), QString::number( conn.zMin ) );
   if ( conn.zMax != -1 )
     uri.setParam( QStringLiteral( "zmax" ), QString::number( conn.zMax ) );
+
+  switch ( conn.serviceType )
+  {
+    case Generic:
+      break;
+
+    case ArcgisVectorTileService:
+      uri.setParam( QStringLiteral( "serviceType" ), QStringLiteral( "arcgis" ) );
+      break;
+  }
+
   return uri.encodedUri();
 }
 
@@ -79,6 +107,13 @@ QgsVectorTileProviderConnection::Data QgsVectorTileProviderConnection::connectio
   conn.url = settings.value( QStringLiteral( "url" ) ).toString();
   conn.zMin = settings.value( QStringLiteral( "zmin" ), -1 ).toInt();
   conn.zMax = settings.value( QStringLiteral( "zmax" ), -1 ).toInt();
+
+  if ( settings.contains( QStringLiteral( "serviceType" ) ) )
+  {
+    if ( settings.value( QStringLiteral( "serviceType" ) ) == QLatin1String( "arcgis" ) )
+      conn.serviceType = ArcgisVectorTileService;
+  }
+
   return conn;
 }
 
@@ -96,6 +131,16 @@ void QgsVectorTileProviderConnection::addConnection( const QString &name, QgsVec
   settings.setValue( QStringLiteral( "url" ), conn.url );
   settings.setValue( QStringLiteral( "zmin" ), conn.zMin );
   settings.setValue( QStringLiteral( "zmax" ), conn.zMax );
+
+  switch ( conn.serviceType )
+  {
+    case Generic:
+      break;
+
+    case ArcgisVectorTileService:
+      settings.setValue( QStringLiteral( "serviceType" ), QStringLiteral( "arcgis" ) );
+      break;
+  }
 }
 
 QString QgsVectorTileProviderConnection::selectedConnection()

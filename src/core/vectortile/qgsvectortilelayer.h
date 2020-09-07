@@ -172,6 +172,10 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
     std::unique_ptr<QgsVectorTileLabeling> mLabeling;
     //! Whether we draw borders of tiles
     bool mTileBorderRendering = false;
+
+    QVariantMap mArcgisLayerConfiguration;
+
+    bool setupArcgisVectorTileServiceConnection( const QString &uri );
 };
 
 

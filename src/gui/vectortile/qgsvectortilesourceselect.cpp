@@ -21,9 +21,13 @@
 #include "qgsvectortilesourceselect.h"
 #include "qgsvectortileconnection.h"
 #include "qgsvectortileconnectiondialog.h"
+#include "qgsarcgisvectortileconnectiondialog.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QPushButton>
+#include <QMenu>
+#include <QAction>
 
 ///@cond PRIVATE
 
@@ -37,11 +41,23 @@ QgsVectorTileSourceSelect::QgsVectorTileSourceSelect( QWidget *parent, Qt::Windo
 
   QgsGui::enableAutoGeometryRestore( this );
 
-  connect( btnNew, &QPushButton::clicked, this, &QgsVectorTileSourceSelect::btnNew_clicked );
-  connect( btnEdit, &QPushButton::clicked, this, &QgsVectorTileSourceSelect::btnEdit_clicked );
-  connect( btnDelete, &QPushButton::clicked, this, &QgsVectorTileSourceSelect::btnDelete_clicked );
-  connect( btnSave, &QPushButton::clicked, this, &QgsVectorTileSourceSelect::btnSave_clicked );
-  connect( btnLoad, &QPushButton::clicked, this, &QgsVectorTileSourceSelect::btnLoad_clicked );
+  btnNew->setPopupMode( QToolButton::InstantPopup );
+  QMenu *newMenu = new QMenu( btnNew );
+
+  QAction *actionNew = new QAction( tr( "New Generic Connection…" ), this );
+  connect( actionNew, &QAction::triggered, this, &QgsVectorTileSourceSelect::btnNew_clicked );
+  newMenu->addAction( actionNew );
+
+  QAction *actionNewArcGISConnection = new QAction( tr( "New ArcGIS Vector Tile Service Connection…" ), this );
+  connect( actionNewArcGISConnection, &QAction::triggered, this, &QgsVectorTileSourceSelect::newArcgisVectorTileServerConnection );
+  newMenu->addAction( actionNewArcGISConnection );
+
+  btnNew->setMenu( newMenu );
+
+  connect( btnEdit, &QToolButton::clicked, this, &QgsVectorTileSourceSelect::btnEdit_clicked );
+  connect( btnDelete, &QToolButton::clicked, this, &QgsVectorTileSourceSelect::btnDelete_clicked );
+  connect( btnSave, &QToolButton::clicked, this, &QgsVectorTileSourceSelect::btnSave_clicked );
+  connect( btnLoad, &QToolButton::clicked, this, &QgsVectorTileSourceSelect::btnLoad_clicked );
   connect( cmbConnections, &QComboBox::currentTextChanged, this, &QgsVectorTileSourceSelect::cmbConnections_currentTextChanged );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsVectorTileSourceSelect::showHelp );
   setupButtons( buttonBox );
@@ -63,16 +79,50 @@ void QgsVectorTileSourceSelect::btnNew_clicked()
   }
 }
 
-void QgsVectorTileSourceSelect::btnEdit_clicked()
+void QgsVectorTileSourceSelect::newArcgisVectorTileServerConnection()
 {
-  QgsVectorTileConnectionDialog nc( this );
-  QString uri = QgsVectorTileProviderConnection::encodedUri( QgsVectorTileProviderConnection::connection( cmbConnections->currentText() ) );
-  nc.setConnection( cmbConnections->currentText(), uri );
+  QgsArcgisVectorTileConnectionDialog nc( this );
   if ( nc.exec() )
   {
     QgsVectorTileProviderConnection::addConnection( nc.connectionName(), QgsVectorTileProviderConnection::decodedUri( nc.connectionUri() ) );
     populateConnectionList();
     emit connectionsChanged();
+  }
+}
+
+void QgsVectorTileSourceSelect::btnEdit_clicked()
+{
+  const QgsVectorTileProviderConnection::Data connection = QgsVectorTileProviderConnection::connection( cmbConnections->currentText() );
+  QString uri = QgsVectorTileProviderConnection::encodedUri( connection );
+
+  switch ( connection.serviceType )
+  {
+    case QgsVectorTileProviderConnection::Generic:
+    {
+      QgsVectorTileConnectionDialog nc( this );
+      nc.setConnection( cmbConnections->currentText(), uri );
+      if ( nc.exec() )
+      {
+        QgsVectorTileProviderConnection::addConnection( nc.connectionName(), QgsVectorTileProviderConnection::decodedUri( nc.connectionUri() ) );
+        populateConnectionList();
+        emit connectionsChanged();
+      }
+      break;
+    }
+
+    case QgsVectorTileProviderConnection::ArcgisVectorTileService:
+    {
+      QgsArcgisVectorTileConnectionDialog nc( this );
+
+      nc.setConnection( cmbConnections->currentText(), uri );
+      if ( nc.exec() )
+      {
+        QgsVectorTileProviderConnection::addConnection( nc.connectionName(), QgsVectorTileProviderConnection::decodedUri( nc.connectionUri() ) );
+        populateConnectionList();
+        emit connectionsChanged();
+      }
+      break;
+    }
   }
 }
 
