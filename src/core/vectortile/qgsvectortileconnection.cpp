@@ -30,6 +30,14 @@ QString QgsVectorTileProviderConnection::encodedUri( const QgsVectorTileProvider
     uri.setParam( QStringLiteral( "zmin" ), QString::number( conn.zMin ) );
   if ( conn.zMax != -1 )
     uri.setParam( QStringLiteral( "zmax" ), QString::number( conn.zMax ) );
+  if ( !conn.authCfg.isEmpty() )
+    uri.setAuthConfigId( conn.authCfg );
+  if ( !conn.username.isEmpty() )
+    uri.setUsername( conn.username );
+  if ( !conn.password.isEmpty() )
+    uri.setPassword( conn.password );
+  if ( !conn.referer.isEmpty() )
+    uri.setParam( QStringLiteral( "referer" ),  conn.referer );
 
   switch ( conn.serviceType )
   {
@@ -53,6 +61,10 @@ QgsVectorTileProviderConnection::Data QgsVectorTileProviderConnection::decodedUr
   conn.url = dsUri.param( QStringLiteral( "url" ) );
   conn.zMin = dsUri.hasParam( QStringLiteral( "zmin" ) ) ? dsUri.param( QStringLiteral( "zmin" ) ).toInt() : -1;
   conn.zMax = dsUri.hasParam( QStringLiteral( "zmax" ) ) ? dsUri.param( QStringLiteral( "zmax" ) ).toInt() : -1;
+  conn.authCfg = dsUri.authConfigId();
+  conn.username = dsUri.username();
+  conn.password = dsUri.password();
+  conn.referer = dsUri.param( QStringLiteral( "referer" ) );
 
   if ( dsUri.hasParam( QStringLiteral( "serviceType" ) ) )
   {
@@ -72,6 +84,14 @@ QString QgsVectorTileProviderConnection::encodedLayerUri( const QgsVectorTilePro
     uri.setParam( QStringLiteral( "zmin" ), QString::number( conn.zMin ) );
   if ( conn.zMax != -1 )
     uri.setParam( QStringLiteral( "zmax" ), QString::number( conn.zMax ) );
+  if ( !conn.authCfg.isEmpty() )
+    uri.setAuthConfigId( conn.authCfg );
+  if ( !conn.username.isEmpty() )
+    uri.setUsername( conn.username );
+  if ( !conn.password.isEmpty() )
+    uri.setPassword( conn.password );
+  if ( !conn.referer.isEmpty() )
+    uri.setParam( QStringLiteral( "referer" ),  conn.referer );
 
   switch ( conn.serviceType )
   {
@@ -107,6 +127,10 @@ QgsVectorTileProviderConnection::Data QgsVectorTileProviderConnection::connectio
   conn.url = settings.value( QStringLiteral( "url" ) ).toString();
   conn.zMin = settings.value( QStringLiteral( "zmin" ), -1 ).toInt();
   conn.zMax = settings.value( QStringLiteral( "zmax" ), -1 ).toInt();
+  conn.authCfg = settings.value( QStringLiteral( "authcfg" ) ).toString();
+  conn.username = settings.value( QStringLiteral( "username" ) ).toString();
+  conn.password = settings.value( QStringLiteral( "password" ) ).toString();
+  conn.referer = settings.value( QStringLiteral( "referer" ) ).toString();
 
   if ( settings.contains( QStringLiteral( "serviceType" ) ) )
   {
@@ -131,6 +155,10 @@ void QgsVectorTileProviderConnection::addConnection( const QString &name, QgsVec
   settings.setValue( QStringLiteral( "url" ), conn.url );
   settings.setValue( QStringLiteral( "zmin" ), conn.zMin );
   settings.setValue( QStringLiteral( "zmax" ), conn.zMax );
+  settings.setValue( QStringLiteral( "authcfg" ), conn.authCfg );
+  settings.setValue( QStringLiteral( "username" ), conn.username );
+  settings.setValue( QStringLiteral( "password" ), conn.password );
+  settings.setValue( QStringLiteral( "referer" ), conn.referer );
 
   switch ( conn.serviceType )
   {

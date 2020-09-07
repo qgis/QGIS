@@ -505,7 +505,13 @@ QByteArray QgsVectorTileLayer::getRawTile( QgsTileXYZ tileID )
 {
   QgsTileMatrix tileMatrix = QgsTileMatrix::fromWebMercator( tileID.zoomLevel() );
   QgsTileRange tileRange( tileID.column(), tileID.column(), tileID.row(), tileID.row() );
-  QList<QgsVectorTileRawData> rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( mSourceType, mSourcePath, tileMatrix, QPointF(), tileRange );
+
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( mDataSource );
+  const QString authcfg = dsUri.authConfigId();
+  const QString referer = dsUri.param( QStringLiteral( "referer" ) );
+
+  QList<QgsVectorTileRawData> rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( mSourceType, mSourcePath, tileMatrix, QPointF(), tileRange, authcfg, referer );
   if ( rawTiles.isEmpty() )
     return QByteArray();
   return rawTiles.first().data;

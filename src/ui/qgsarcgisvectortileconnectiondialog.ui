@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>659</width>
-    <height>184</height>
+    <height>336</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -34,6 +34,16 @@
         </property>
        </widget>
       </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="lblReferer">
+        <property name="text">
+         <string>Referer</string>
+        </property>
+        <property name="buddy">
+         <cstring>mEditReferer</cstring>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">
@@ -51,18 +61,36 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="2">
-       <spacer name="verticalSpacer">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
+      <item row="3" column="2">
+       <widget class="QLineEdit" name="mEditReferer">
+        <property name="toolTip">
+         <string>Optional custom referer</string>
         </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="3">
+       <widget class="QGroupBox" name="mAuthGroupBox">
+        <property name="title">
+         <string>Authentication</string>
         </property>
-       </spacer>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <property name="leftMargin">
+          <number>6</number>
+         </property>
+         <property name="topMargin">
+          <number>6</number>
+         </property>
+         <property name="rightMargin">
+          <number>6</number>
+         </property>
+         <property name="bottomMargin">
+          <number>6</number>
+         </property>
+         <item>
+          <widget class="QgsAuthSettingsWidget" name="mAuthSettings" native="true"/>
+         </item>
+        </layout>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -79,6 +107,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsAuthSettingsWidget</class>
+   <extends>QWidget</extends>
+   <header>auth/qgsauthsettingswidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>mEditName</tabstop>
   <tabstop>mEditUrl</tabstop>

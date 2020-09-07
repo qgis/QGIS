@@ -39,6 +39,11 @@ void QgsArcgisVectorTileConnectionDialog::setConnection( const QString &name, co
 
   QgsVectorTileProviderConnection::Data conn = QgsVectorTileProviderConnection::decodedUri( uri );
   mEditUrl->setText( conn.url );
+
+  mAuthSettings->setUsername( conn.username );
+  mAuthSettings->setPassword( conn.password );
+  mEditReferer->setText( conn.referer );
+  mAuthSettings->setConfigId( conn.authCfg );
 }
 
 QString QgsArcgisVectorTileConnectionDialog::connectionUri() const
@@ -46,6 +51,10 @@ QString QgsArcgisVectorTileConnectionDialog::connectionUri() const
   QgsVectorTileProviderConnection::Data conn;
   conn.url = mEditUrl->text();
   conn.serviceType = QgsVectorTileProviderConnection::ArcgisVectorTileService;
+  conn.username = mAuthSettings->username();
+  conn.password = mAuthSettings->password();
+  conn.referer = mEditReferer->text();
+  conn.authCfg = mAuthSettings->configId( );
   return QgsVectorTileProviderConnection::encodedUri( conn );
 }
 

@@ -47,6 +47,11 @@ void QgsVectorTileConnectionDialog::setConnection( const QString &name, const QS
   mSpinZMin->setValue( conn.zMin != -1 ? conn.zMin : 0 );
   mCheckBoxZMax->setChecked( conn.zMax != -1 );
   mSpinZMax->setValue( conn.zMax != -1 ? conn.zMax : 14 );
+
+  mAuthSettings->setUsername( conn.username );
+  mAuthSettings->setPassword( conn.password );
+  mEditReferer->setText( conn.referer );
+  mAuthSettings->setConfigId( conn.authCfg );
 }
 
 QString QgsVectorTileConnectionDialog::connectionUri() const
@@ -57,6 +62,10 @@ QString QgsVectorTileConnectionDialog::connectionUri() const
     conn.zMin = mSpinZMin->value();
   if ( mCheckBoxZMax->isChecked() )
     conn.zMax = mSpinZMax->value();
+  conn.username = mAuthSettings->username();
+  conn.password = mAuthSettings->password();
+  conn.referer = mEditReferer->text();
+  conn.authCfg = mAuthSettings->configId( );
   return QgsVectorTileProviderConnection::encodedUri( conn );
 }
 
