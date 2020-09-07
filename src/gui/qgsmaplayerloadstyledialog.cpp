@@ -58,8 +58,9 @@ QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWid
   connect( mStyleTypeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]( int )
   {
     QgsVectorLayerProperties::StyleType type = currentStyleType();
-    mFromFileWidget->setVisible( type != QgsVectorLayerProperties::StyleType::DB );
-    if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( mLayer ) )
+    QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( mLayer );
+    mFromFileWidget->setVisible( !vl || type != QgsVectorLayerProperties::StyleType::DB );
+    if ( vl )
     {
       mFromDbWidget->setVisible( type == QgsVectorLayerProperties::StyleType::DB );
       mDeleteButton->setVisible( type == QgsVectorLayerProperties::StyleType::DB && vl->dataProvider()->isDeleteStyleFromDatabaseSupported() );
@@ -70,7 +71,7 @@ QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWid
       mDeleteButton->setVisible( false );
     }
 
-    mStyleCategoriesListView->setEnabled( currentStyleType() != QgsVectorLayerProperties::StyleType::SLD );
+    mStyleCategoriesListView->setEnabled( !vl || currentStyleType() != QgsVectorLayerProperties::StyleType::SLD );
     updateLoadButtonState();
   } );
   mStyleTypeComboBox->addItem( tr( "From File" ), QgsVectorLayerProperties::QML ); // QML is used as entry, but works for SLD too, see currentStyleType()
@@ -94,12 +95,32 @@ QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWid
   mStyleCategoriesListView->setModel( mModel );
 
   // load from file setup
-  mFileWidget->setFilter( tr( "QGIS Layer Style File, SLD File" ) + QStringLiteral( " (*.qml *.sld)" ) );
+  switch ( mLayer->type() )
+  {
+    case QgsMapLayerType::VectorLayer:
+      mFileWidget->setFilter( tr( "QGIS Layer Style File, SLD File" ) + QStringLiteral( " (*.qml *.sld)" ) );
+      break;
+
+    case QgsMapLayerType::VectorTileLayer:
+      mFileWidget->setFilter( tr( "All Styles" ) + QStringLiteral( " (*.qml *.json);;" )
+                              + tr( "QGIS Layer Style File" ) + QStringLiteral( " (*.qml);;" )
+                              + tr( "MapBox GL Style JSON File" ) + QStringLiteral( " (*.json)" ) );
+      break;
+
+    case QgsMapLayerType::RasterLayer:
+    case QgsMapLayerType::MeshLayer:
+    case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::PluginLayer:
+      break;
+
+  }
+
   mFileWidget->setStorageMode( QgsFileWidget::GetFile );
   mFileWidget->setDefaultRoot( myLastUsedDir );
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
   {
-    mStyleCategoriesListView->setEnabled( currentStyleType() != QgsVectorLayerProperties::SLD );
+    QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( mLayer );
+    mStyleCategoriesListView->setEnabled( !vl || currentStyleType() != QgsVectorLayerProperties::SLD );
     QgsSettings settings;
     QFileInfo tmplFileInfo( path );
     settings.setValue( QStringLiteral( "style/lastStyleDir" ), tmplFileInfo.absolutePath() );
@@ -317,10 +338,17 @@ void QgsMapLayerLoadStyleDialog::deleteStyleFromDB()
 void QgsMapLayerLoadStyleDialog::updateLoadButtonState()
 {
   QgsVectorLayerProperties::StyleType type = currentStyleType();
-  mLoadButton->setEnabled( ( type == QgsVectorLayerProperties::DB
-                             && ( mRelatedTable->selectionModel()->hasSelection() || mOthersTable->selectionModel()->hasSelection()
-                                ) ) ||
-                           ( type != QgsVectorLayerProperties::DB && !mFileWidget->filePath().isEmpty() ) );
+  if ( mLayer->type() == QgsMapLayerType::VectorLayer )
+  {
+    mLoadButton->setEnabled( ( type == QgsVectorLayerProperties::DB
+                               && ( mRelatedTable->selectionModel()->hasSelection() || mOthersTable->selectionModel()->hasSelection()
+                                  ) ) ||
+                             ( type != QgsVectorLayerProperties::DB && !mFileWidget->filePath().isEmpty() ) );
+  }
+  else
+  {
+    mLoadButton->setEnabled( !mFileWidget->filePath().isEmpty() );
+  }
 }
 
 void QgsMapLayerLoadStyleDialog::showHelp()
