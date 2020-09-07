@@ -480,7 +480,7 @@ This helps with producing a reasonable shadow resolution when looking at a large
 %Docstring
 Sets the shadow bias value
 Tweak this to reduce artifacts like self shadowing
-A reasonable range of values can be beteen something like 0.00000001 and 0.1
+A reasonable range of values can be between a very small positive value like 0.00000001 and 0.1
 
 .. versionadded:: 3.16
 %End
