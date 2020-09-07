@@ -71,11 +71,13 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
     def testParseStops(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
         self.assertEqual(QgsMapBoxGlStyleConverter.parseStops(1, [[1, 10], [2, 20], [5, 100]], 1, conversion_context),
-                         'CASE WHEN @zoom_level > 1 AND @zoom_level <= 2 THEN scale_linear(@zoom_level, 1, 2, 10, 20) * 1 WHEN @zoom_level > 2 AND @zoom_level <= 5 THEN scale_linear(@zoom_level, 2, 5, 20, 100) * 1 END')
+                         'CASE WHEN @zoom_level > 1 AND @zoom_level <= 2 THEN scale_linear(@zoom_level, 1, 2, 10, 20) WHEN @zoom_level > 2 AND @zoom_level <= 5 THEN scale_linear(@zoom_level, 2, 5, 20, 100) END')
         self.assertEqual(QgsMapBoxGlStyleConverter.parseStops(1.5, [[1, 10], [2, 20], [5, 100]], 1, conversion_context),
-                         'CASE WHEN @zoom_level > 1 AND @zoom_level <= 2 THEN 10 + 10 * (1.5^(@zoom_level-1)-1)/(1.5^(2-1)-1) * 1 WHEN @zoom_level > 2 AND @zoom_level <= 5 THEN 20 + 80 * (1.5^(@zoom_level-2)-1)/(1.5^(5-2)-1) * 1 END')
+                         'CASE WHEN @zoom_level > 1 AND @zoom_level <= 2 THEN 10 + 10 * (1.5^(@zoom_level-1)-1)/(1.5^(2-1)-1) WHEN @zoom_level > 2 AND @zoom_level <= 5 THEN 20 + 80 * (1.5^(@zoom_level-2)-1)/(1.5^(5-2)-1) END')
         self.assertEqual(QgsMapBoxGlStyleConverter.parseStops(1, [[1, 10], [2, 20], [5, 100]], 8, conversion_context),
                          'CASE WHEN @zoom_level > 1 AND @zoom_level <= 2 THEN scale_linear(@zoom_level, 1, 2, 10, 20) * 8 WHEN @zoom_level > 2 AND @zoom_level <= 5 THEN scale_linear(@zoom_level, 2, 5, 20, 100) * 8 END')
+        self.assertEqual(QgsMapBoxGlStyleConverter.parseStops(1.5, [[1, 10], [2, 20], [5, 100]], 8, conversion_context),
+                         'CASE WHEN @zoom_level > 1 AND @zoom_level <= 2 THEN (10 + 10 * (1.5^(@zoom_level-1)-1)/(1.5^(2-1)-1)) * 8 WHEN @zoom_level > 2 AND @zoom_level <= 5 THEN (20 + 80 * (1.5^(@zoom_level-2)-1)/(1.5^(5-2)-1)) * 8 END')
 
     def testInterpolateByZoom(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
@@ -85,22 +87,30 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
                                                                                         [250, 22]]
                                                                               }, conversion_context)
         self.assertEqual(prop.expressionString(),
-                         'CASE WHEN @zoom_level > 0 AND @zoom_level <= 150 THEN scale_linear(@zoom_level, 0, 150, 11, 15) * 1 WHEN @zoom_level > 150 AND @zoom_level <= 250 THEN scale_linear(@zoom_level, 150, 250, 15, 22) * 1 END')
+                         'CASE WHEN @zoom_level > 0 AND @zoom_level <= 150 THEN scale_linear(@zoom_level, 0, 150, 11, 15) WHEN @zoom_level > 150 AND @zoom_level <= 250 THEN scale_linear(@zoom_level, 150, 250, 15, 22) END')
         self.assertEqual(default_val, 11.0)
         prop, default_val = QgsMapBoxGlStyleConverter.parseInterpolateByZoom({'base': 1,
                                                                               'stops': [[0, 11],
                                                                                         [150, 15]]
                                                                               }, conversion_context)
         self.assertEqual(prop.expressionString(),
-                         'scale_linear(@zoom_level, 0, 150, 11, 15) * 1')
+                         'scale_linear(@zoom_level, 0, 150, 11, 15)')
         self.assertEqual(default_val, 11.0)
         prop, default_val = QgsMapBoxGlStyleConverter.parseInterpolateByZoom({'base': 2,
                                                                               'stops': [[0, 11],
                                                                                         [150, 15]]
                                                                               }, conversion_context)
         self.assertEqual(prop.expressionString(),
-                         '11 + 4 * (2^(@zoom_level-0)-1)/(2^(150-0)-1)* 1')
+                         '11 + 4 * (2^(@zoom_level-0)-1)/(2^(150-0)-1)')
         self.assertEqual(default_val, 11.0)
+
+        prop, default_val = QgsMapBoxGlStyleConverter.parseInterpolateByZoom({'base': 2,
+                                                                              'stops': [[0, 11],
+                                                                                        [150, 15]]
+                                                                              }, conversion_context, multiplier=5)
+        self.assertEqual(prop.expressionString(),
+                         '(11 + 4 * (2^(@zoom_level-0)-1)/(2^(150-0)-1)) * 5')
+        self.assertEqual(default_val, 55.0)
 
     def testInterpolateOpacityByZoom(self):
         self.assertEqual(QgsMapBoxGlStyleConverter.parseInterpolateOpacityByZoom({'base': 1,

@@ -346,7 +346,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \warning This is private API only, and may change in future QGIS versions
      */
-    static QString interpolateExpression( int zoomMin, int zoomMax, double valueMin, double valueMax, double base );
+    static QString interpolateExpression( int zoomMin, int zoomMax, double valueMin, double valueMax, double base, double multiplier = 1 );
 
     /**
      * Converts a value to Qt::PenCapStyle enum from JSON value.

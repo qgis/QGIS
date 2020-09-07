@@ -337,7 +337,7 @@ Takes a QColor object and returns HSLA components in required format for QGIS :p
    This is private API only, and may change in future QGIS versions
 %End
 
-    static QString interpolateExpression( int zoomMin, int zoomMax, double valueMin, double valueMax, double base );
+    static QString interpolateExpression( int zoomMin, int zoomMax, double valueMin, double valueMax, double base, double multiplier = 1 );
 %Docstring
 Generates an interpolation for values between ``valueMin`` and ``valueMax``, scaled between the
 ranges ``zoomMin`` to ``zoomMax``.
