@@ -827,7 +827,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
          *                    "bar", { "font-scale": 0.8 }
          * ]
          */
-        if ( textFieldList.size() > 2 )
+        if ( textFieldList.size() > 2 && textFieldList.at( 0 ).toString() == QLatin1String( "format" ) )
         {
           QStringList parts;
           for ( int i = 1; i < textFieldList.size(); ++i )
@@ -846,7 +846,12 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
         }
         else
         {
-          labelSettings.fieldName = processLabelField( textFieldList.value( 1 ).toList().value( 0 ).toString(), labelSettings.isExpression );
+          /*
+           * e.g.
+           *     "text-field": ["to-string", ["get", "name"]]
+           */
+          labelSettings.fieldName = parseExpression( textFieldList, context );
+          labelSettings.isExpression = true;
         }
         break;
       }
@@ -1361,7 +1366,7 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
   }
   else if ( op == QLatin1String( "get" ) )
   {
-    return parseKey( expression.value( 1 ).toList().value( 1 ) );
+    return parseKey( expression.value( 1 ) );
   }
   else if ( op == QLatin1String( "match" ) )
   {
@@ -1425,6 +1430,10 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
       caseString += QStringLiteral( "ELSE %1 END" ).arg( QgsExpression::quotedValue( expression.last() ) );
       return caseString;
     }
+  }
+  else if ( op == QLatin1String( "to-string" ) )
+  {
+    return QStringLiteral( "to_string(%1)" ).arg( parseExpression( expression.value( 1 ).toList(), context ) );
   }
   else
   {
