@@ -27,7 +27,7 @@
 #include "qgsapplication.h"
 #include "qgsmetadatawidget.h"
 #include "qgsmaplayerloadstyledialog.h"
-
+#include "qgsmapboxglstyleconverter.h"
 #include <QFileDialog>
 #include <QMenu>
 #include <QMessageBox>
@@ -239,6 +239,45 @@ void QgsVectorTileLayerProperties::loadStyle()
       {
         //let the user know what went wrong
         QMessageBox::warning( this, tr( "Load Style" ), message );
+      }
+    }
+    else if ( type.compare( QLatin1String( "json" ), Qt::CaseInsensitive ) == 0 )
+    {
+      QFile file( dlg.filePath() );
+      if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+      {
+        QMessageBox::warning( this, tr( "Load Style" ), tr( "Could not read %1" ).arg( QDir::toNativeSeparators( dlg.filePath() ) ) );
+      }
+      else
+      {
+        QTextStream in( &file );
+        const QString content = in.readAll();
+
+        QgsMapBoxGlStyleConversionContext context;
+        // convert automatically from pixel sizes to millimeters, because pixel sizes
+        // are a VERY edge case in QGIS and don't play nice with hidpi map renders or print layouts
+        context.setTargetUnit( QgsUnitTypes::RenderMillimeters );
+        //assume source uses 96 dpi
+        context.setPixelSizeConversionFactor( 25.4 / 96.0 );
+
+        QgsMapBoxGlStyleConverter converter;
+
+        if ( converter.convert( content, &context ) != QgsMapBoxGlStyleConverter::Success )
+        {
+          QMessageBox::warning( this, tr( "Load Style" ), converter.errorMessage() );
+        }
+        else
+        {
+          if ( dlg.styleCategories().testFlag( QgsMapLayer::StyleCategory::Symbology ) )
+          {
+            mLayer->setRenderer( converter.renderer() );
+          }
+          if ( dlg.styleCategories().testFlag( QgsMapLayer::StyleCategory::Labeling ) )
+          {
+            mLayer->setLabeling( converter.labeling() );
+          }
+          syncToLayer();
+        }
       }
     }
     activateWindow(); // set focus back to properties dialog
