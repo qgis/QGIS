@@ -151,7 +151,7 @@ is called.
 
     void searchBegan();
 %Docstring
-Emitted when locator has begun a search, before actualy preparing it.
+Emitted when locator has begun a search, before actually preparing it.
 
 .. versionadded:: 3.16
 %End
