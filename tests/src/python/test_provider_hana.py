@@ -49,35 +49,34 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
             cls.uri = os.environ['QGIS_HANA_TEST_DB']
         cls.conn = QgsHanaProviderUtils.createConnection(cls.uri)
 
-        QgsHanaProviderUtils.createAndFillDefaultTables(cls.conn)
+        QgsHanaProviderUtils.createAndFillDefaultTables(cls.conn, 'qgis_test')
 
         # Create test layers
         cls.vl = QgsHanaProviderUtils.createVectorLayer(
             cls.uri + ' key=\'pk\' srid=4326 type=POINT table="qgis_test"."some_data" (geom) sql=', 'test')
-        assert cls.vl.isValid()
         cls.source = cls.vl.dataProvider()
         cls.poly_vl = QgsHanaProviderUtils.createVectorLayer(
             cls.uri + ' key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=', 'test')
-        assert cls.poly_vl.isValid()
         cls.poly_provider = cls.poly_vl.dataProvider()
 
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
 
-        QgsHanaProviderUtils.cleanUp(cls.conn)
+        QgsHanaProviderUtils.cleanUp(cls.conn, 'qgis_test')
         cls.conn.close()
 
     def createVectorLayer(self, conn_parameters, layer_name):
-        return QgsHanaProviderUtils.createVectorLayer(self.uri + ' ' + conn_parameters, layer_name)
+        layer = QgsHanaProviderUtils.createVectorLayer(self.uri + ' ' + conn_parameters, layer_name)
+        self.assertTrue(layer.isValid())
+        return layer
 
     def prepareTestTable(self, table_name, create_sql, insert_sql, insert_args):
         res = QgsHanaProviderUtils.executeSQLFetchOne(self.conn,
-                                                      "SELECT COUNT(*) FROM SYS.TABLES WHERE SCHEMA_NAME='qgis_test' "
-                                                      "AND TABLE_NAME='{}'".
-                                                      format(table_name))
+                                                      f"SELECT COUNT(*) FROM SYS.TABLES WHERE SCHEMA_NAME='qgis_test' "
+                                                      f"AND TABLE_NAME='{table_name}'")
         if res != 0:
-            QgsHanaProviderUtils.executeSQL(self.conn, 'DROP TABLE "qgis_test"."{}" CASCADE'.format(table_name))
+            QgsHanaProviderUtils.executeSQL(self.conn, f'DROP TABLE "qgis_test"."{table_name}" CASCADE')
         QgsHanaProviderUtils.createAndFillTable(self.conn, create_sql, insert_sql, insert_args)
 
     def getSource(self):
@@ -205,7 +204,6 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         self.prepareTestTable('boolean_type', create_sql, insert_sql, insert_args)
 
         vl = self.createVectorLayer('table="qgis_test"."boolean_type" sql=', 'testbool')
-        self.assertTrue(vl.isValid())
 
         fields = vl.dataProvider().fields()
         self.assertEqual(fields.at(fields.indexFromName('fld1')).type(), QVariant.Bool)
@@ -226,7 +224,6 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         self.prepareTestTable('date_time_type', create_sql, insert_sql, insert_args)
 
         vl = self.createVectorLayer('table="qgis_test"."date_time_type" sql=', 'testdatetimes')
-        self.assertTrue(vl.isValid())
 
         fields = vl.dataProvider().fields()
         self.assertEqual(fields.at(fields.indexFromName('date_field')).type(), QVariant.Date)
@@ -254,7 +251,6 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         self.prepareTestTable('binary_type', create_sql, insert_sql, insert_args)
 
         vl = self.createVectorLayer('table="qgis_test"."binary_type" sql=', 'testbinary')
-        self.assertTrue(vl.isValid())
 
         fields = vl.dataProvider().fields()
         self.assertEqual(fields.at(fields.indexFromName('blob')).type(), QVariant.ByteArray)
@@ -273,7 +269,6 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         self.prepareTestTable('binary_type_edit', create_sql, insert_sql, insert_args)
 
         vl = self.createVectorLayer('key=\'id\' table="qgis_test"."binary_type_edit" sql=', 'testbinaryedit')
-        self.assertTrue(vl.isValid())
         values = {feat['id']: feat['blob'] for feat in vl.getFeatures()}
         expected = {1: QByteArray(b'YmJi')}
         self.assertEqual(values, expected)
