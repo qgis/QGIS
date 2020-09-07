@@ -887,7 +887,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
   if ( textSize >= 0 )
   {
     // TODO -- this probably needs revisiting -- it was copied from the MapTiler code, but may be wrong...
-    labelSettings.priority = std::min( textSize / 3, 10.0 );
+    labelSettings.priority = std::min( textSize / ( context.pixelSizeConversionFactor() * 3 ), 10.0 );
   }
 
   labelSettings.setFormat( format );
