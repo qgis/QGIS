@@ -203,6 +203,14 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
                                                                    conversion_context),
                          '''("_symbol" IS 8) AND (("Viz" IS NULL OR "Viz" NOT IN (3)))''')
 
+        self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression(["get", "name"],
+                                                                   conversion_context),
+                         '''"name"''')
+
+        self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression(["to-string", ["get", "name"]],
+                                                                   conversion_context),
+                         '''to_string("name")''')
+
     def testConvertLabels(self):
         context = QgsMapBoxGlStyleConversionContext()
         style = {
@@ -348,6 +356,34 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
         self.assertFalse(has_renderer)
         self.assertTrue(has_labeling)
         self.assertEqual(labeling.labelSettings().fieldName, '''concat(concat("name_en",' - ',"name_fr"),"bar")''')
+        self.assertTrue(labeling.labelSettings().isExpression)
+
+        style = {
+            "layout": {
+                "text-field": ["to-string", ["get", "name"]],
+                "text-font": [
+                    "Open Sans Semibold",
+                    "Arial Unicode MS Bold"
+                ],
+                "text-max-width": 8,
+                "text-anchor": "top",
+                "text-size": 11,
+                "icon-size": 1
+            },
+            "type": "symbol",
+            "id": "poi_label",
+            "paint": {
+                "text-color": "#666",
+                "text-halo-width": 1.5,
+                "text-halo-color": "rgba(255,255,255,0.95)",
+                "text-halo-blur": 1
+            },
+            "source-layer": "poi_label"
+        }
+        renderer, has_renderer, labeling, has_labeling = QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        self.assertFalse(has_renderer)
+        self.assertTrue(has_labeling)
+        self.assertEqual(labeling.labelSettings().fieldName, '''to_string("name")''')
         self.assertTrue(labeling.labelSettings().isExpression)
 
         # text-transform
