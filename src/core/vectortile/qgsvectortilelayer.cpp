@@ -153,42 +153,49 @@ bool QgsVectorTileLayer::readSymbology( const QDomNode &node, QString &errorMess
 
   readCommonStyle( elem, context, categories );
 
-  QDomElement elemRenderer = elem.firstChildElement( QStringLiteral( "renderer" ) );
+  const QDomElement elemRenderer = elem.firstChildElement( QStringLiteral( "renderer" ) );
   if ( elemRenderer.isNull() )
   {
     errorMessage = tr( "Missing <renderer> tag" );
     return false;
   }
-  QString rendererType = elemRenderer.attribute( QStringLiteral( "type" ) );
-  QgsVectorTileRenderer *r = nullptr;
-  if ( rendererType == QStringLiteral( "basic" ) )
-    r = new QgsVectorTileBasicRenderer;
-  else
-  {
-    errorMessage = tr( "Unknown renderer type: " ) + rendererType;
-    return false;
-  }
+  const QString rendererType = elemRenderer.attribute( QStringLiteral( "type" ) );
 
-  r->readXml( elemRenderer, context );
-  setRenderer( r );
-
-  setLabeling( nullptr );
-  QDomElement elemLabeling = elem.firstChildElement( QStringLiteral( "labeling" ) );
-  if ( !elemLabeling.isNull() )
+  if ( categories.testFlag( Symbology ) )
   {
-    QString labelingType = elemLabeling.attribute( QStringLiteral( "type" ) );
-    QgsVectorTileLabeling *labeling = nullptr;
-    if ( labelingType == QStringLiteral( "basic" ) )
-      labeling = new QgsVectorTileBasicLabeling;
+    QgsVectorTileRenderer *r = nullptr;
+    if ( rendererType == QStringLiteral( "basic" ) )
+      r = new QgsVectorTileBasicRenderer;
     else
     {
-      errorMessage = tr( "Unknown labeling type: " ) + rendererType;
+      errorMessage = tr( "Unknown renderer type: " ) + rendererType;
+      return false;
     }
 
-    if ( labeling )
+    r->readXml( elemRenderer, context );
+    setRenderer( r );
+  }
+
+  if ( categories.testFlag( Labeling ) )
+  {
+    setLabeling( nullptr );
+    const QDomElement elemLabeling = elem.firstChildElement( QStringLiteral( "labeling" ) );
+    if ( !elemLabeling.isNull() )
     {
-      labeling->readXml( elemLabeling, context );
-      setLabeling( labeling );
+      const QString labelingType = elemLabeling.attribute( QStringLiteral( "type" ) );
+      QgsVectorTileLabeling *labeling = nullptr;
+      if ( labelingType == QStringLiteral( "basic" ) )
+        labeling = new QgsVectorTileBasicLabeling;
+      else
+      {
+        errorMessage = tr( "Unknown labeling type: " ) + rendererType;
+      }
+
+      if ( labeling )
+      {
+        labeling->readXml( elemLabeling, context );
+        setLabeling( labeling );
+      }
     }
   }
 
@@ -206,11 +213,14 @@ bool QgsVectorTileLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
   {
     QDomElement elemRenderer = doc.createElement( QStringLiteral( "renderer" ) );
     elemRenderer.setAttribute( QStringLiteral( "type" ), mRenderer->type() );
-    mRenderer->writeXml( elemRenderer, context );
+    if ( categories.testFlag( Symbology ) )
+    {
+      mRenderer->writeXml( elemRenderer, context );
+    }
     elem.appendChild( elemRenderer );
   }
 
-  if ( mLabeling )
+  if ( mLabeling && categories.testFlag( Labeling ) )
   {
     QDomElement elemLabeling = doc.createElement( QStringLiteral( "labeling" ) );
     elemLabeling.setAttribute( QStringLiteral( "type" ), mLabeling->type() );
