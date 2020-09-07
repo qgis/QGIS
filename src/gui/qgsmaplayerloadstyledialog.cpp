@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsloadstylefromdbdialog.cpp
+    qgsmaplayerloadstyledialog.cpp
     ---------------------
     begin                : April 2013
     copyright            : (C) 2013 by Emilio Loi
@@ -16,7 +16,7 @@
 #include <QMessageBox>
 #include <QVector>
 
-#include "qgsvectorlayerloadstyledialog.h"
+#include "qgsmaplayerloadstyledialog.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsvectorlayerproperties.h"

@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsvectorlayerloadstyle.h
+    qgsmaplayerloadstyledialog.h
     ---------------------
     begin                : April 2013
     copyright            : (C) 2013 by Emilio Loi
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSLOADFILEFROMDBDIALOG_H
-#define QGSLOADFILEFROMDBDIALOG_H
+#ifndef QGSMAPLAYERLOADSTYLEDIALOG_H
+#define QGSMAPLAYERLOADSTYLEDIALOG_H
 
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
@@ -66,4 +66,4 @@ class GUI_EXPORT QgsMapLayerLoadStyleDialog : public QDialog, private Ui::QgsVec
     QPushButton *mCancelButton = nullptr;
 };
 
-#endif //QGSLOADFILEFROMDBDIALOG_H
+#endif //QGSMAPLAYERLOADSTYLEDIALOG_H
