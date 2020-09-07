@@ -27,15 +27,17 @@
 
 class QgsMapLayerStyleCategoriesModel;
 
-class GUI_EXPORT QgsVectorLayerLoadStyleDialog : public QDialog, private Ui::QgsVectorLayerLoadStyleDialog
+class GUI_EXPORT QgsMapLayerLoadStyleDialog : public QDialog, private Ui::QgsVectorLayerLoadStyleDialog
 {
     Q_OBJECT
   public:
-    explicit QgsVectorLayerLoadStyleDialog( QgsVectorLayer *layer, QWidget *parent = nullptr );
+    explicit QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWidget *parent = nullptr );
 
     QgsMapLayer::StyleCategories styleCategories() const;
 
     QgsVectorLayerProperties::StyleType currentStyleType() const;
+
+    QString fileExtension() const;
 
     QString filePath() const;
 
@@ -54,7 +56,7 @@ class GUI_EXPORT QgsVectorLayerLoadStyleDialog : public QDialog, private Ui::Qgs
     void showHelp();
 
   private:
-    QgsVectorLayer *mLayer = nullptr;
+    QgsMapLayer *mLayer = nullptr;
     QgsMapLayerStyleCategoriesModel *mModel;
     QString mSelectedStyleId;
     QString mSelectedStyleName;

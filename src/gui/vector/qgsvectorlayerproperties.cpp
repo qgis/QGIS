@@ -1290,7 +1290,7 @@ void QgsVectorLayerProperties::loadStyle()
 
   //get the list of styles in the db
   int sectionLimit = mLayer->listStylesInDatabase( ids, names, descriptions, errorMsg );
-  QgsVectorLayerLoadStyleDialog dlg( mLayer );
+  QgsMapLayerLoadStyleDialog dlg( mLayer );
   dlg.initializeLists( ids, names, descriptions, sectionLimit );
 
   if ( dlg.exec() )
