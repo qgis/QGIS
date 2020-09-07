@@ -59,7 +59,8 @@ QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWid
   {
     QgsVectorLayerProperties::StyleType type = currentStyleType();
     QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( mLayer );
-    mFromFileWidget->setVisible( !vl || type != QgsVectorLayerProperties::StyleType::DB );
+    mFileLabel->setVisible( !vl || type != QgsVectorLayerProperties::StyleType::DB );
+    mFileWidget->setVisible( !vl || type != QgsVectorLayerProperties::StyleType::DB );
     if ( vl )
     {
       mFromDbWidget->setVisible( type == QgsVectorLayerProperties::StyleType::DB );
