@@ -26,7 +26,7 @@ QgsMapLayerStyleCategoriesModel::QgsMapLayerStyleCategoriesModel( QgsMapLayerTyp
       break;
 
     case QgsMapLayerType::VectorTileLayer:
-      mCategoryList << QgsMapLayer::StyleCategory::Symbology << QgsMapLayer::StyleCategory::Labeling;
+      mCategoryList << QgsMapLayer::StyleCategory::Symbology << QgsMapLayer::StyleCategory::Labeling << QgsMapLayer::StyleCategory::AllStyleCategories;
       break;
 
     case QgsMapLayerType::RasterLayer:
