@@ -60,7 +60,7 @@
 #include "qgssymbollayer.h"
 #include "qgsgeometryoptions.h"
 #include "qgsvectorlayersavestyledialog.h"
-#include "qgsvectorlayerloadstyledialog.h"
+#include "qgsmaplayerloadstyledialog.h"
 #include "qgsmessagebar.h"
 #include "qgssymbolwidgetcontext.h"
 #include "qgsexpressioncontextutils.h"
