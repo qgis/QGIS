@@ -60,8 +60,22 @@ class CORE_EXPORT QgsField
     Q_PROPERTY( QString alias READ alias WRITE setAlias )
     Q_PROPERTY( QgsDefaultValue defaultValueDefinition READ defaultValueDefinition WRITE setDefaultValueDefinition )
     Q_PROPERTY( QgsFieldConstraints constraints READ constraints WRITE setConstraints )
+    Q_PROPERTY( Flags flags READ flags WRITE setFlags )
+
 
   public:
+
+    /**
+       * Flags for fields
+       * \since QGIS 3.16
+       */
+    enum class Flag : int
+    {
+      Searchable = 0x1, //!< Defines if the field is searchable (used in the locator search for instance)
+      DefaultFlags = Searchable, //!< Default set of flags for a field
+    };
+    Q_ENUM( Flag )
+    Q_DECLARE_FLAGS( Flags, Flag )
 
     /**
      * Constructor. Constructs a new QgsField object.
@@ -281,6 +295,18 @@ class CORE_EXPORT QgsField
      * \since QGIS 3.0
      */
     void setAlias( const QString &alias );
+
+    /**
+     * Returns the Flags for the field (searchable, …)
+     * \since QGIS 3.16
+     */
+    QgsField::Flags flags() const;
+
+    /**
+     * Sets the Flags for the field (searchable, …)
+     * \since QGIS 3.16
+     */
+    void setFlags( QgsField::Flags flags );
 
     //! Formats string for display
     QString displayString( const QVariant &v ) const;

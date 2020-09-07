@@ -33,6 +33,14 @@ length, and if applicable, precision.
 
   public:
 
+    enum class Flag
+    {
+      Searchable,
+      DefaultFlags,
+    };
+    typedef QFlags<QgsField::Flag> Flags;
+
+
     QgsField( const QString &name = QString(),
               QVariant::Type type = QVariant::Invalid,
               const QString &typeName = QString(),
@@ -281,6 +289,20 @@ Sets the alias for the field (the friendly displayed name of the field ).
 .. seealso:: :py:func:`alias`
 
 .. versionadded:: 3.0
+%End
+
+    QgsField::Flags flags() const;
+%Docstring
+Returns the Flags for the field (searchable, …)
+
+.. versionadded:: 3.16
+%End
+
+    void setFlags( QgsField::Flags flags );
+%Docstring
+Sets the Flags for the field (searchable, …)
+
+.. versionadded:: 3.16
 %End
 
     QString displayString( const QVariant &v ) const;
