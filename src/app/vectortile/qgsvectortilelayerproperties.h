@@ -20,6 +20,8 @@
 
 #include "ui_qgsvectortilelayerpropertiesbase.h"
 
+#include "qgsmaplayerstylemanager.h"
+
 class QgsMapLayer;
 class QgsMapCanvas;
 class QgsMessageBar;
@@ -37,6 +39,7 @@ class QgsVectorTileLayerProperties : public QgsOptionsDialogBase, private Ui::Qg
 
   private slots:
     void apply();
+    void onCancel();
 
     void loadDefaultStyle();
     void saveDefaultStyle();
@@ -68,6 +71,11 @@ class QgsVectorTileLayerProperties : public QgsOptionsDialogBase, private Ui::Qg
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsMetadataWidget *mMetadataWidget = nullptr;
 
+    /**
+     * Previous layer style. Used to reset style to previous state if new style
+     * was loaded but dialog is canceled.
+    */
+    QgsMapLayerStyle mOldStyle;
 };
 
 #endif // QGSVECTORTILELAYERPROPERTIES_H
