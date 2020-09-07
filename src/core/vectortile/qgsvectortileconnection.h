@@ -54,6 +54,15 @@ class CORE_EXPORT QgsVectorTileProviderConnection : public QgsAbstractProviderCo
       int zMax = -1;
 
       ServiceType serviceType = Generic;
+
+      // Authentication configuration id
+      QString authCfg;
+      // HTTP Basic username
+      QString username;
+      // HTTP Basic password
+      QString password;
+      // Referer
+      QString referer;
     };
 
     //! Returns connection data encoded as a string
