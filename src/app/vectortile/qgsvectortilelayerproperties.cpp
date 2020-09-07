@@ -26,6 +26,7 @@
 #include "qgsnative.h"
 #include "qgsapplication.h"
 #include "qgsmetadatawidget.h"
+#include "qgsmaplayerloadstyledialog.h"
 
 #include <QFileDialog>
 #include <QMenu>
@@ -48,6 +49,7 @@ QgsVectorTileLayerProperties::QgsVectorTileLayerProperties( QgsVectorTileLayer *
   mOptsPage_Labeling->layout()->setContentsMargins( 0, 0, 0, 0 );
 
   connect( this, &QDialog::accepted, this, &QgsVectorTileLayerProperties::apply );
+  connect( this, &QDialog::rejected, this, &QgsVectorTileLayerProperties::onCancel );
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsVectorTileLayerProperties::apply );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsVectorTileLayerProperties::showHelp );
 
@@ -133,6 +135,20 @@ void QgsVectorTileLayerProperties::apply()
   mMetadataWidget->acceptMetadata();
 }
 
+void QgsVectorTileLayerProperties::onCancel()
+{
+  if ( mOldStyle.xmlData() != mLayer->styleManager()->style( mLayer->styleManager()->currentStyle() ).xmlData() )
+  {
+    // need to reset style to previous - style applied directly to the layer (not in apply())
+    QString myMessage;
+    QDomDocument doc( QStringLiteral( "qgis" ) );
+    int errorLine, errorColumn;
+    doc.setContent( mOldStyle.xmlData(), false, &myMessage, &errorLine, &errorColumn );
+    mLayer->importNamedStyle( doc, myMessage );
+    syncToLayer();
+  }
+}
+
 void QgsVectorTileLayerProperties::syncToLayer()
 {
   /*
@@ -195,31 +211,37 @@ void QgsVectorTileLayerProperties::saveDefaultStyle()
 
 void QgsVectorTileLayerProperties::loadStyle()
 {
-  QgsSettings settings;
-  QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
+  QgsSettings settings;  // where we keep last used filter in persistent state
 
-  QString fileName = QFileDialog::getOpenFileName(
-                       this,
-                       tr( "Load rendering setting from style file" ),
-                       lastUsedDir,
-                       tr( "QGIS Layer Style File" ) + " (*.qml)" );
-  if ( fileName.isEmpty() )
-    return;
+  QString errorMsg;
+  QStringList ids, names, descriptions;
 
-  // ensure the user never omits the extension from the file name
-  if ( !fileName.endsWith( QLatin1String( ".qml" ), Qt::CaseInsensitive ) )
-    fileName += QLatin1String( ".qml" );
+  QgsMapLayerLoadStyleDialog dlg( mLayer );
 
-  bool defaultLoadedFlag = false;
-  QString message = mLayer->loadNamedStyle( fileName, defaultLoadedFlag );
-  if ( defaultLoadedFlag )
+  if ( dlg.exec() )
   {
-    settings.setValue( QStringLiteral( "style/lastStyleDir" ), QFileInfo( fileName ).absolutePath() );
-    syncToLayer();
-  }
-  else
-  {
-    QMessageBox::information( this, tr( "Load Style" ), message );
+    mOldStyle = mLayer->styleManager()->style( mLayer->styleManager()->currentStyle() );
+    QgsMapLayer::StyleCategories categories = dlg.styleCategories();
+    const QString type = dlg.fileExtension();
+    if ( type.compare( QLatin1String( "qml" ), Qt::CaseInsensitive ) == 0 )
+    {
+      QString message;
+      bool defaultLoadedFlag = false;
+      QString filePath = dlg.filePath();
+      message = mLayer->loadNamedStyle( filePath, defaultLoadedFlag, categories );
+
+      //reset if the default style was loaded OK only
+      if ( defaultLoadedFlag )
+      {
+        syncToLayer();
+      }
+      else
+      {
+        //let the user know what went wrong
+        QMessageBox::warning( this, tr( "Load Style" ), message );
+      }
+    }
+    activateWindow(); // set focus back to properties dialog
   }
 }
 
