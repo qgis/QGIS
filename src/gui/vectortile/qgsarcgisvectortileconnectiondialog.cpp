@@ -50,6 +50,9 @@ QString QgsArcgisVectorTileConnectionDialog::connectionUri() const
 {
   QgsVectorTileProviderConnection::Data conn;
   conn.url = mEditUrl->text();
+  if ( conn.url.endsWith( '/' ) )
+    conn.url = conn.url.left( conn.url.length() - 1 );
+
   conn.serviceType = QgsVectorTileProviderConnection::ArcgisVectorTileService;
   conn.username = mAuthSettings->username();
   conn.password = mAuthSettings->password();
