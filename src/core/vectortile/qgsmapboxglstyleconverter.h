@@ -273,7 +273,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
     static bool parseLineLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style SIP_OUT, QgsMapBoxGlStyleConversionContext &context );
 
     /**
-     * Parses a symbol layer.
+     * Parses a symbol layer as renderer or labeling.
      *
      * \warning This is private API only, and may change in future QGIS versions
      *
@@ -290,6 +290,19 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
                                   QgsVectorTileBasicLabelingStyle &labelingStyle SIP_OUT,
                                   bool &hasLabeling SIP_OUT, QgsMapBoxGlStyleConversionContext &context );
 
+    /**
+     * Parses a symbol layer as a renderer
+     *
+     * \warning This is private API only, and may change in future QGIS versions
+     *
+     * \param jsonLayer fill layer to parse
+     * \param rendererStyle generated QGIS vector tile style
+     * \param context conversion context
+     *
+     * \returns TRUE if symbol layer was converted to renderer
+    */
+    static bool parseSymbolLayerAsRenderer( const QVariantMap &jsonLayer,
+                                            QgsVectorTileBasicRendererStyle &rendererStyle SIP_OUT, QgsMapBoxGlStyleConversionContext &context );
 
     /**
      * Parses a color value which is interpolated by zoom range.

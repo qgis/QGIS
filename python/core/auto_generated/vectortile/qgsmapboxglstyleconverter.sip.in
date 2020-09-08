@@ -264,7 +264,7 @@ Parses a line layer.
                                   QgsVectorTileBasicLabelingStyle &labelingStyle /Out/,
                                   bool &hasLabeling /Out/, QgsMapBoxGlStyleConversionContext &context );
 %Docstring
-Parses a symbol layer.
+Parses a symbol layer as renderer or labeling.
 
 .. warning::
 
@@ -277,6 +277,22 @@ Parses a symbol layer.
 :param context: conversion context
 %End
 
+    static bool parseSymbolLayerAsRenderer( const QVariantMap &jsonLayer,
+                                            QgsVectorTileBasicRendererStyle &rendererStyle /Out/, QgsMapBoxGlStyleConversionContext &context );
+%Docstring
+Parses a symbol layer as a renderer
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+
+:param jsonLayer: fill layer to parse
+:param context: conversion context
+
+
+:return: - ``True`` if symbol layer was converted to renderer
+         - rendererStyle: generated QGIS vector tile style
+%End
 
     static QgsProperty parseInterpolateColorByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, QColor *defaultColor /Out/ = 0 );
 %Docstring
