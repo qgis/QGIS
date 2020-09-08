@@ -478,7 +478,44 @@ QString QgsMssqlProvider::quotedIdentifier( const QString &value )
 
 QString QgsMssqlProvider::defaultValueClause( int fieldId ) const
 {
-  return mDefaultValues.value( fieldId, QString() );
+  QString defVal = mDefaultValues.value( fieldId, QString() );
+
+  // NOTE: If EvaluateDefaultValues is activated it is impossible to get the defaultValueClause.
+  //       This also apply to QgsPostgresProvider::defaultValueClause.
+  if ( !providerProperty( EvaluateDefaultValues, false ).toBool() && !defVal.isEmpty() )
+  {
+    return defVal;
+  }
+
+  return QString();
+}
+
+QVariant QgsMssqlProvider::defaultValue( int fieldId ) const
+{
+  QString defVal = mDefaultValues.value( fieldId, QString() );
+
+  if ( providerProperty( EvaluateDefaultValues, false ).toBool() && !defVal.isEmpty() )
+  {
+    QString sql = QStringLiteral( "select %1" )
+                  .arg( defVal );
+
+    QSqlQuery query = createQuery();
+    query.setForwardOnly( true );
+
+    if ( !query.exec( sql ) )
+    {
+      QgsDebugMsg( query.lastError().text() );
+      pushError( tr( "Could not execute query" ) );
+      return QVariant();
+    }
+
+    if ( !query.next() )
+      return QVariant();
+
+    return query.value( 0 );
+  }
+
+  return QVariant();
 }
 
 QString QgsMssqlProvider::storageType() const
