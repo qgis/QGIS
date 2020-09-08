@@ -427,7 +427,7 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      * Constructor for QgsProcessingParameterDefinition.
      */
     QgsProcessingParameterDefinition( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
-                                      bool optional = false );
+                                      bool optional = false, const QString &help = QString() );
 
     virtual ~QgsProcessingParameterDefinition() = default;
 
@@ -475,6 +475,20 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      * \see description()
      */
     void setDescription( const QString &description ) { mDescription = description; }
+
+    /**
+     * Returns the help for the parameter.
+     * \see setHelp()
+     * \since QGIS 3.16
+     */
+    QString help() const { return mHelp; }
+
+    /**
+     * Sets the \a help for the parameter.
+     * \see help()
+     * \since QGIS 3.16
+     */
+    void setHelp( const QString &help ) { mHelp = help; }
 
     /**
      * Returns the default value for the parameter.
@@ -696,6 +710,9 @@ class CORE_EXPORT QgsProcessingParameterDefinition
 
     //! Parameter description
     QString mDescription;
+
+    //! Parameter help
+    QString mHelp;
 
     //! Default value for parameter
     QVariant mDefault;

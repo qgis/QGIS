@@ -2110,9 +2110,10 @@ bool QgsProcessingParameters::parseScriptCodeParameterOptions( const QString &co
 // QgsProcessingParameterDefinition
 //
 
-QgsProcessingParameterDefinition::QgsProcessingParameterDefinition( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
+QgsProcessingParameterDefinition::QgsProcessingParameterDefinition( const QString &name, const QString &description, const QVariant &defaultValue, bool optional, const QString &help )
   : mName( name )
   , mDescription( description )
+  , mHelp( help )
   , mDefault( defaultValue )
   , mFlags( optional ? FlagOptional : 0 )
 {}
@@ -2208,9 +2209,13 @@ QgsProcessingProvider *QgsProcessingParameterDefinition::provider() const
 
 QString QgsProcessingParameterDefinition::toolTip() const
 {
-  return QStringLiteral( "<p><b>%1</b></p><p>%2</p>" ).arg(
-           description(),
-           QObject::tr( "Python identifier: ‘%1’" ).arg( QStringLiteral( "<i>%1</i>" ).arg( name() ) ) );
+  QString text = QStringLiteral( "<p><b>%1</b></p>" ).arg( description() );
+  if ( !help().isEmpty() )
+  {
+    text += QStringLiteral( "<p>%1</p>" ).arg( help() );
+  }
+  text += QStringLiteral( "<p>%1</p>" ).arg( QObject::tr( "Python identifier: ‘%1’" ).arg( QStringLiteral( "<i>%1</i>" ).arg( name() ) ) );
+  return text;
 }
 
 QgsProcessingParameterBoolean::QgsProcessingParameterBoolean( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )

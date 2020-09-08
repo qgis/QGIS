@@ -315,7 +315,7 @@ their acceptable ranges, defaults, etc.
 
 
     QgsProcessingParameterDefinition( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
-                                      bool optional = false );
+                                      bool optional = false, const QString &help = QString() );
 %Docstring
 Constructor for QgsProcessingParameterDefinition.
 %End
@@ -369,6 +369,24 @@ Sets the ``description`` for the parameter. This is the user-visible string
 used to identify this parameter.
 
 .. seealso:: :py:func:`description`
+%End
+
+    QString help() const;
+%Docstring
+Returns the help for the parameter.
+
+.. seealso:: :py:func:`setHelp`
+
+.. versionadded:: 3.16
+%End
+
+    void setHelp( const QString &help );
+%Docstring
+Sets the ``help`` for the parameter.
+
+.. seealso:: :py:func:`help`
+
+.. versionadded:: 3.16
 %End
 
     QVariant defaultValue() const;
@@ -608,6 +626,7 @@ The ``variables`` list should contain the variable names only, without the usual
 %End
 
   protected:
+
 
 
 

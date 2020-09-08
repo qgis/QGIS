@@ -6352,11 +6352,13 @@ void TestProcessingGui::paramConfigWidget()
 
   // using a parameter definition as initial values
   def->setDescription( QStringLiteral( "test desc" ) );
+  def->setHelp( QStringLiteral( "test help" ) );
   def->setFlags( QgsProcessingParameterDefinition::FlagOptional );
   widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "string" ), context, widgetContext, def.get() );
   def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
   QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
   QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QCOMPARE( def->help(), QStringLiteral( "test help" ) );
   QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagOptional );
   QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
   def->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
