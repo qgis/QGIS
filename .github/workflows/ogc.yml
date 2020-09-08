@@ -1,0 +1,39 @@
+name: Run OGC tests for QGIS Server
+
+on:
+  push:
+    branches:
+      - master
+      - release-**
+  pull_request:
+    branches:
+      - master
+      - release-**
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Setup build dependencies
+        run: |
+          docker build -t qgis_server_deps -f .ci/ogc/Dockerfile .ci/ogc/
+
+      - name: Cache
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.ccache
+          key: ogc
+
+      - name: Run build
+        run: |
+          docker run -v ~/.ccache:/root/ccache -v $(pwd):/usr/src/qgis qgis_server_deps /usr/src/qgis/.ci/ogc/build.sh
+
+      - name: Install pyogctest
+        run: |
+          sudo apt-get install python3-virtualenv virtualenv git
+          git clone https://github.com/pblottiere/pyogctest
+          virtualenv -p /usr/bin/python3 venv && source venv/bin/activate && pip install -e pyogctest/
