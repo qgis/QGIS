@@ -116,7 +116,7 @@ class QgsFieldPrivate : public QSharedData
     QString alias;
 
     //! Flags for the field (searchable, …)
-    QgsField::Flags flags = QgsField::Flag::DefaultFlags;
+    QgsField::Flags flags = QgsField::ConfigurationFlag::DefaultFlags;
 
     //! Default value
     QgsDefaultValue defaultValueDefinition;
