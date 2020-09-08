@@ -66,6 +66,7 @@ class TestQgsRelationReferenceWidget : public QObject
     void testAddEntry();
     void testAddEntryNoGeom();
     void testDependencies(); // Test relation datasource, id etc. config storage
+    void testSetFilterExpression();
 
   private:
     std::unique_ptr<QgsVectorLayer> mLayer1;
@@ -707,6 +708,31 @@ void TestQgsRelationReferenceWidget::testDependencies()
   QCOMPARE( w.referencedLayerDataSource(), mLayer2.publicSource() );
   QCOMPARE( w.referencedLayerProviderKey(), mLayer2.providerType() );
 
+}
+
+void TestQgsRelationReferenceWidget::testSetFilterExpression()
+{
+
+  // init a relation reference widget
+  QStringList filterFields = { "material", "diameter", "raccord" };
+
+  QWidget parentWidget;
+  QgsRelationReferenceWidget w( &parentWidget );
+
+  QEventLoop loop;
+  connect( qobject_cast<QgsFeatureFilterModel *>( w.mComboBox->model() ), &QgsFeatureFilterModel::filterJobCompleted, &loop, &QEventLoop::quit );
+
+  w.setChainFilters( true );
+  w.setFilterFields( filterFields );
+  w.setRelation( *mRelation, true );
+  w.setFilterExpression( QStringLiteral( " \"material\" = 'iron' " ) );
+  w.init();
+
+  loop.exec();
+  QStringList items = getComboBoxItems( w.mComboBox );
+  QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "NULL" ) );
+  // in case there is no filter, the number of filtered features will be 4
+  QCOMPARE( w.mComboBox->count(), 3 );
 }
 
 QGSTEST_MAIN( TestQgsRelationReferenceWidget )

@@ -204,6 +204,7 @@ void QgsRelationReferenceSearchWidgetWrapper::initWidget( QWidget *editor )
   {
     mWidget->setFilterFields( config( QStringLiteral( "FilterFields" ) ).toStringList() );
     mWidget->setChainFilters( config( QStringLiteral( "ChainFilters" ) ).toBool() );
+    mWidget->setFilterExpression( config( QStringLiteral( "FilterExpression" ) ).toString() );
   }
 
   QgsRelation relation = QgsProject::instance()->relationManager()->relation( config( QStringLiteral( "Relation" ) ).toString() );

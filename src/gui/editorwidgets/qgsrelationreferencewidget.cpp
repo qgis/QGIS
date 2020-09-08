@@ -189,6 +189,7 @@ void QgsRelationReferenceWidget::setRelation( const QgsRelation &relation, bool 
     mRelation = relation;
     mReferencingLayer = relation.referencingLayer();
     mReferencedLayer = relation.referencedLayer();
+
     const QList<QgsRelation::FieldPair> fieldPairs = relation.fieldPairs();
     for ( const QgsRelation::FieldPair &fieldPair : fieldPairs )
     {
@@ -198,6 +199,7 @@ void QgsRelationReferenceWidget::setRelation( const QgsRelation &relation, bool 
     {
       mComboBox->setSourceLayer( mReferencedLayer );
       mComboBox->setIdentifierFields( mReferencedFields );
+      mComboBox->setFilterExpression( mFilterExpression );
     }
     mAttributeEditorFrame->setObjectName( QStringLiteral( "referencing/" ) + relation.name() );
 
@@ -486,6 +488,11 @@ void QgsRelationReferenceWidget::setChainFilters( bool chainFilters )
   mChainFilters = chainFilters;
 }
 
+void QgsRelationReferenceWidget::setFilterExpression( const QString &expression )
+{
+  mFilterExpression = expression;
+}
+
 void QgsRelationReferenceWidget::showEvent( QShowEvent *e )
 {
   Q_UNUSED( e )
@@ -541,7 +548,9 @@ void QgsRelationReferenceWidget::init()
         QVariant nullValue = QgsApplication::nullRepresentation();
 
         QgsFeature ft;
-        QgsFeatureIterator fit = mReferencedLayer->getFeatures();
+        QgsFeatureIterator fit = mFilterExpression.isEmpty()
+                                 ? mReferencedLayer->getFeatures()
+                                 : mReferencedLayer->getFeatures( mFilterExpression );
         while ( fit.nextFeature( ft ) )
         {
           const int count = std::min( mFilterComboBoxes.count(), mFilterFields.count() );
@@ -572,6 +581,9 @@ void QgsRelationReferenceWidget::init()
     mComboBox->setDisplayExpression( mReferencedLayer->displayExpression() );
     mComboBox->setAllowNull( mAllowNull );
     mComboBox->setIdentifierFields( mReferencedFields );
+
+    if ( ! mFilterExpression.isEmpty() )
+      mComboBox->setFilterExpression( mFilterExpression );
 
     QVariant nullValue = QgsApplication::nullRepresentation();
 
@@ -850,7 +862,7 @@ void QgsRelationReferenceWidget::filterChanged()
 
   QgsFeature f;
   QgsFeatureIds featureIds;
-  QString filterExpression;
+  QString filterExpression = mFilterExpression;
 
   // comboboxes have to be disabled before building filters
   if ( mChainFilters )
@@ -906,9 +918,13 @@ void QgsRelationReferenceWidget::filterChanged()
         {
           QMap<QString, QString> filtersAttrs = filters;
           filtersAttrs[fieldName] = QgsExpression::createFieldEqualityExpression( fieldName, txt );
-          QString expression = filtersAttrs.values().join( QStringLiteral( " AND " ) );
-
           QgsAttributeList subset = attrs;
+
+          QString expression = filterExpression;
+          if ( ! filterExpression.isEmpty() && ! filtersAttrs.values().isEmpty() )
+            filterExpression = QStringLiteral( " AND " );
+          expression += filtersAttrs.values().join( QStringLiteral( " AND " ) );
+
           subset << mReferencedLayer->fields().lookupField( fieldName );
 
           QgsFeatureIterator it( mReferencedLayer->getFeatures( QgsFeatureRequest().setFilterExpression( expression ).setSubsetOfAttributes( subset ) ) );
@@ -937,7 +953,12 @@ void QgsRelationReferenceWidget::filterChanged()
       }
     }
   }
-  filterExpression = filters.values().join( QStringLiteral( " AND " ) );
+
+  if ( ! filterExpression.isEmpty() && ! filters.values().isEmpty() )
+    filterExpression += QStringLiteral( " AND " );
+
+  filterExpression += filters.values().join( QStringLiteral( " AND " ) );
+
   mComboBox->setFilterExpression( filterExpression );
 }
 
