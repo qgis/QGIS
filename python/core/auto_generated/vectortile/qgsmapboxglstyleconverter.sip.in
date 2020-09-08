@@ -217,6 +217,7 @@ or ``None`` if the style could not be converted successfully.
       Color,
       Numeric,
       Opacity,
+      Point,
     };
 
     void parseLayers( const QVariantList &layers, QgsMapBoxGlStyleConversionContext *context = 0 );
@@ -332,6 +333,26 @@ It uses QGIS :py:func:`~QgsMapBoxGlStyleConverter.set_color_part` function to se
 %Docstring
 Takes values from stops and uses either :py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or :py:func:`~QgsMapBoxGlStyleConverter.scale_exp` functions
 to interpolate alpha component of color.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+%End
+
+    static QgsProperty parseInterpolatePointByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, QPointF *defaultPoint /Out/ = 0 );
+%Docstring
+Interpolates a point/offset with either :py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or :py:func:`~QgsMapBoxGlStyleConverter.scale_exp` (depending on base value).
+For ``json`` with intermediate stops it uses :py:func:`~QgsMapBoxGlStyleConverter.parsePointStops` function.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+%End
+
+    static QString parsePointStops( double base, const QVariantList &stops, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1 );
+%Docstring
+Takes values from stops and uses either :py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or :py:func:`~QgsMapBoxGlStyleConverter.scale_exp` functions
+to interpolate point/offset values.
 
 .. warning::
 

@@ -240,6 +240,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
       Color, //!< Color property
       Numeric, //!< Numeric property (e.g. line width, text size)
       Opacity, //!< Opacity property
+      Point, //!< Point/offset property
     };
 
     /**
@@ -343,6 +344,22 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * \warning This is private API only, and may change in future QGIS versions
      */
     static QString parseOpacityStops( double base, const QVariantList &stops );
+
+    /**
+     * Interpolates a point/offset with either scale_linear() or scale_exp() (depending on base value).
+     * For \a json with intermediate stops it uses parsePointStops() function.
+     *
+     * \warning This is private API only, and may change in future QGIS versions
+     */
+    static QgsProperty parseInterpolatePointByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, QPointF *defaultPoint SIP_OUT = nullptr );
+
+    /**
+     * Takes values from stops and uses either scale_linear() or scale_exp() functions
+     * to interpolate point/offset values.
+     *
+     * \warning This is private API only, and may change in future QGIS versions
+     */
+    static QString parsePointStops( double base, const QVariantList &stops, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1 );
 
     /**
      * Parses a list of interpolation stops
