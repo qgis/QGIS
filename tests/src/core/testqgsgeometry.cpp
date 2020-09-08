@@ -53,6 +53,7 @@
 #include "qgsproject.h"
 #include "qgslinesegment.h"
 #include "qgsgeos.h"
+#include "qgsreferencedgeometry.h"
 
 //qgs unit test utility class
 #include "qgsrenderchecker.h"
@@ -80,6 +81,7 @@ class TestQgsGeometry : public QObject
     void copy();
     void assignment();
     void asVariant(); //test conversion to and from a QVariant
+    void referenced();
     void isEmpty();
     void equality();
     void vertexIterator();
@@ -409,6 +411,7 @@ void TestQgsGeometry::asVariant()
   //convert to and from a QVariant
   QVariant var = QVariant::fromValue( original );
   QVERIFY( var.isValid() );
+  QVERIFY( !var.canConvert< QgsReferencedGeometry >() );
 
   QgsGeometry fromVar = qvariant_cast<QgsGeometry>( var );
   QCOMPARE( fromVar.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
@@ -427,6 +430,26 @@ void TestQgsGeometry::asVariant()
   QCOMPARE( fromVar3.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
   QCOMPARE( fromVar3.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
 }
+
+
+void TestQgsGeometry::referenced()
+{
+  QgsReferencedGeometry geom1 = QgsReferencedGeometry( QgsGeometry::fromPointXY( QgsPointXY( 1, 2 ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) );
+  QCOMPARE( geom1.crs().authid(), QStringLiteral( "EPSG:3111" ) );
+  geom1.setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ) );
+  QCOMPARE( geom1.crs().authid(), QStringLiteral( "EPSG:28356" ) );
+
+  //convert to and from a QVariant
+  QVariant var = QVariant::fromValue( geom1 );
+  QVERIFY( var.isValid() );
+
+  QVERIFY( var.canConvert< QgsReferencedGeometry >() );
+
+  QgsReferencedGeometry geom2 = qvariant_cast<QgsReferencedGeometry>( var );
+  QCOMPARE( geom2.asWkt(), geom1.asWkt() );
+  QCOMPARE( geom2.crs().authid(), QStringLiteral( "EPSG:28356" ) );
+}
+
 
 void TestQgsGeometry::isEmpty()
 {
