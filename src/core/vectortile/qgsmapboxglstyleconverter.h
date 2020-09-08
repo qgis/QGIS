@@ -97,6 +97,38 @@ class CORE_EXPORT QgsMapBoxGlStyleConversionContext
      */
     void setPixelSizeConversionFactor( double sizeConversionFactor );
 
+    /**
+     * Returns the sprite image to use during conversion, or an invalid image if this is not set.
+     *
+     * \see spriteDefinitions()
+     * \see setSprites()
+     */
+    QImage spriteImage() const;
+
+    /**
+     * Returns the sprite definitions to use during conversion.
+     *
+     * \see spriteImage()
+     * \see setSprites()
+     */
+    QVariantMap spriteDefinitions() const;
+
+    /**
+     * Sets the sprite \a image and \a definitions JSON to use during conversion.
+     *
+     * \see spriteImage()
+     * \see spriteDefinitions()
+     */
+    void setSprites( const QImage &image, const QVariantMap &definitions );
+
+    /**
+     * Sets the sprite \a image and \a definitions JSON string to use during conversion.
+     *
+     * \see spriteImage()
+     * \see spriteDefinitions()
+     */
+    void setSprites( const QImage &image, const QString &definitions );
+
   private:
 
     QStringList mWarnings;
@@ -104,6 +136,9 @@ class CORE_EXPORT QgsMapBoxGlStyleConversionContext
     QgsUnitTypes::RenderUnit mTargetUnit = QgsUnitTypes::RenderPixels;
 
     double mSizeConversionFactor = 1.0;
+
+    QImage mSpriteImage;
+    QVariantMap mSpriteDefinitions;
 };
 
 /**
@@ -368,6 +403,14 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * \warning This is private API only, and may change in future QGIS versions
      */
     static QString parseExpression( const QVariantList &expression, QgsMapBoxGlStyleConversionContext &context );
+
+    /**
+     * Retrieves the sprite image with the specified \a name, taken from the specified \a context.
+     *
+     * The \a context must have valid sprite definitions and images set via QgsMapBoxGlStyleConversionContext::setSprites()
+     * prior to conversion.
+     */
+    static QImage retrieveSprite( const QString &name, QgsMapBoxGlStyleConversionContext &context );
 
   private:
 
