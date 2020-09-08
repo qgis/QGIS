@@ -50,3 +50,10 @@ bool QgsReferencedPointXY::operator!=( const QgsReferencedPointXY &other )
 {
   return !( *this == other );
 }
+
+QgsReferencedGeometry::QgsReferencedGeometry( const QgsGeometry &geom, const QgsCoordinateReferenceSystem &crs )
+  : QgsGeometry( geom )
+  , QgsReferencedGeometryBase( crs )
+{}
+
+
