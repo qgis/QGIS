@@ -55,6 +55,7 @@ QVariant QgsVectorTileBasicLabelingListModel::data( const QModelIndex &index, in
   switch ( role )
   {
     case Qt::DisplayRole:
+    case Qt::ToolTipRole:
     {
       if ( index.column() == 0 )
         return style.styleName();
