@@ -856,6 +856,26 @@ class CORE_EXPORT QgsProcessingAlgorithm
     QgsCoordinateReferenceSystem parameterAsPointCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
 
     /**
+     * Evaluates the parameter with matching \a name to a geometry.
+     *
+     * If \a crs is set then the geometry will be automatically
+     * reprojected so that it is in the specified \a crs.
+     *
+     * \see parameterAsGeometryCrs()
+     */
+    QgsGeometry parameterAsGeometry( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context,
+                                     const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() ) const;
+
+    /**
+     * Returns the coordinate reference system associated with a geometry parameter value.
+     *
+     * \see parameterAsGeometry()
+     */
+    QgsCoordinateReferenceSystem parameterAsGeometryCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+
+
+
+    /**
      * Evaluates the parameter with matching \a name to a file/folder name.
      */
     QString parameterAsFile( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;

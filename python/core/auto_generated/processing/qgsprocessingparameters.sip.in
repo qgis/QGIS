@@ -1174,16 +1174,34 @@ Returns the coordinate reference system associated with an point parameter value
 .. versionadded:: 3.8
 %End
 
-    static QgsGeometry parameterAsGeometry( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+    static QgsGeometry parameterAsGeometry( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a geometry.
 
 .. versionadded:: 3.16
 %End
 
-    static QgsGeometry parameterAsGeometry( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+    static QgsGeometry parameterAsGeometry( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 %Docstring
 Evaluates the parameter with matching ``definition`` and ``value`` to a geometry.
+
+.. versionadded:: 3.16
+%End
+
+    static QgsCoordinateReferenceSystem parameterAsGeometryCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+%Docstring
+Returns the coordinate reference system associated with a geometry parameter value.
+
+.. seealso:: :py:func:`parameterAsGeometry`
+
+.. versionadded:: 3.16
+%End
+
+    static QgsCoordinateReferenceSystem parameterAsGeometryCrs( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+%Docstring
+Returns the coordinate reference system associated with an point parameter value.
+
+.. seealso:: :py:func:`parameterAsGeometry`
 
 .. versionadded:: 3.16
 %End
