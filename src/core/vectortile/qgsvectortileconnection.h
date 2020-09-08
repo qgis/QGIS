@@ -55,14 +55,18 @@ class CORE_EXPORT QgsVectorTileProviderConnection : public QgsAbstractProviderCo
 
       ServiceType serviceType = Generic;
 
-      // Authentication configuration id
+      //! Authentication configuration id
       QString authCfg;
-      // HTTP Basic username
+      //! HTTP Basic username
       QString username;
-      // HTTP Basic password
+      //! HTTP Basic password
       QString password;
-      // Referer
+      //! Referer
       QString referer;
+
+      //! Optional style URL (will override any default styles)
+      QString styleUrl;
+
     };
 
     //! Returns connection data encoded as a string

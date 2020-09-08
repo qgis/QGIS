@@ -20,46 +20,6 @@
       <string>Connection Details</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>URL</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QLineEdit" name="mEditUrl">
-        <property name="toolTip">
-         <string>URL of the connection, {x}, {y}, and {z} will be replaced with actual values. Use {-y} for inverted y axis.</string>
-        </property>
-        <property name="placeholderText">
-         <string>http://example.com/{z}/{x}/{y}.pbf</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="2">
-       <widget class="QSpinBox" name="mSpinZMax">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="value">
-         <number>14</number>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="2">
-       <widget class="QSpinBox" name="mSpinZMin">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="2">
        <widget class="QLineEdit" name="mEditName">
         <property name="toolTip">
@@ -67,17 +27,14 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0" colspan="2">
-       <widget class="QCheckBox" name="mCheckBoxZMin">
+      <item row="0" column="0" colspan="2">
+       <widget class="QLabel" name="label">
         <property name="text">
-         <string>Min. Zoom Level</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
+         <string>Name</string>
         </property>
        </widget>
       </item>
-      <item row="7" column="0" colspan="3">
+      <item row="8" column="0" colspan="3">
        <widget class="QGroupBox" name="mAuthGroupBox">
         <property name="title">
          <string>Authentication</string>
@@ -101,7 +58,24 @@
         </layout>
        </widget>
       </item>
-      <item row="8" column="0">
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>URL</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QSpinBox" name="mSpinZMin">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="0">
        <widget class="QLabel" name="lblReferer">
         <property name="text">
          <string>Referer</string>
@@ -111,10 +85,16 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="0" colspan="2">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Name</string>
+      <item row="6" column="2">
+       <widget class="QSpinBox" name="mSpinZMax">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="value">
+         <number>14</number>
         </property>
        </widget>
       </item>
@@ -128,10 +108,50 @@
         </property>
        </widget>
       </item>
-      <item row="8" column="2">
+      <item row="1" column="2">
+       <widget class="QLineEdit" name="mEditUrl">
+        <property name="toolTip">
+         <string>URL of the connection, {x}, {y}, and {z} will be replaced with actual values. Use {-y} for inverted y axis.</string>
+        </property>
+        <property name="placeholderText">
+         <string>http://example.com/{z}/{x}/{y}.pbf</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="2">
+       <widget class="QCheckBox" name="mCheckBoxZMin">
+        <property name="text">
+         <string>Min. Zoom Level</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="2">
        <widget class="QLineEdit" name="mEditReferer">
         <property name="toolTip">
          <string>Optional custom referer</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Style URL</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="2">
+       <widget class="QLineEdit" name="mEditStyleUrl">
+        <property name="toolTip">
+         <string>If specified, the layer will be automatically styled using styling JSON from the entered URL.</string>
+        </property>
+        <property name="placeholderText">
+         <string>Optional</string>
+        </property>
+        <property name="clearButtonEnabled">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -165,6 +185,8 @@
   <tabstop>mSpinZMin</tabstop>
   <tabstop>mCheckBoxZMax</tabstop>
   <tabstop>mSpinZMax</tabstop>
+  <tabstop>mEditStyleUrl</tabstop>
+  <tabstop>mEditReferer</tabstop>
  </tabstops>
  <resources/>
  <connections>

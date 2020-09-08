@@ -296,10 +296,22 @@ QString QgsVectorTileLayer::loadDefaultStyle( bool &resultFlag )
 {
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( mDataSource );
-  if ( mSourceType == QStringLiteral( "xyz" ) && dsUri.param( QStringLiteral( "serviceType" ) ) == QLatin1String( "arcgis" ) )
+
+  QString styleUrl;
+  if ( !dsUri.param( QStringLiteral( "styleUrl" ) ).isEmpty() )
   {
-    QNetworkRequest request = QNetworkRequest( QUrl( mArcgisLayerConfiguration.value( QStringLiteral( "serviceUri" ) ).toString()
-                              + '/' + mArcgisLayerConfiguration.value( QStringLiteral( "defaultStyles" ) ).toString() ) );
+    styleUrl = dsUri.param( QStringLiteral( "styleUrl" ) );
+  }
+  else if ( mSourceType == QStringLiteral( "xyz" ) && dsUri.param( QStringLiteral( "serviceType" ) ) == QLatin1String( "arcgis" ) )
+  {
+    // for ArcMap VectorTileServices we default to the defaultStyles URL from the layer configuration
+    styleUrl = mArcgisLayerConfiguration.value( QStringLiteral( "serviceUri" ) ).toString()
+               + '/' + mArcgisLayerConfiguration.value( QStringLiteral( "defaultStyles" ) ).toString();
+  }
+
+  if ( !styleUrl.isEmpty() )
+  {
+    QNetworkRequest request = QNetworkRequest( QUrl( styleUrl ) );
 
     QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) );
 
