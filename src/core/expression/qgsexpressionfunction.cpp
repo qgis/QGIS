@@ -5680,9 +5680,9 @@ static QVariant fcnFromBase64( const QVariantList &values, const QgsExpressionCo
   return QVariant( decoded );
 }
 
-typedef std::function < QVariant( QgsExpression &subExp, QgsExpressionContext &subContext, QgsVectorLayer *cachedTarget, QList<QgsFeature> features, const QgsGeometry &geometry, bool testOnly, bool invert, QVariant currentFeatId, int neighbors, double max_distance, double bboxGrow ) > overlayFunc;
+typedef bool ( QgsGeometry::*RelationFunction )( const QgsGeometry &geometry ) const;
 
-static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const overlayFunc &overlayFunction, bool invert = false, double bboxGrow = 0, bool isNearestFunc = false )
+static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const RelationFunction &relationFunction, bool invert = false, double bboxGrow = 0, bool isNearestFunc = false )
 {
 
   const QVariant sourceLayerRef = context->variable( QStringLiteral( "layer" ) ); //used to detect if sourceLayer and targetLayer are the same
@@ -5728,7 +5728,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   if ( ! isNearestFunc )
   {
     // for all functions but nearest_neighbour, the limit parameters limits queryset.
-    // (for nearest_neighbour, it will be passed to the overlayFunction, which will limit
+    // (for nearest_neighbour, it will be used by the spatial index below, which will limit
     // but taking distance into account)
     request.setLimit( limit );
   }
@@ -5812,6 +5812,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
     QList<QgsFeatureId> fidsList;
     if ( isNearestFunc )
     {
+      // TODO : add 1 to limit if target and source layers are the same and ignore this feature
       fidsList = spatialIndex.nearestNeighbor( geometry, limit, max_distance );
     }
     else
@@ -5822,11 +5823,9 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
     QListIterator<QgsFeatureId> i(fidsList);
     while ( i.hasNext() )
     {
+      // TODO : ignore feature if same as this (and remove logic below)
       features.append( cachedTarget->getFeature( i.next() ) );
     }
-
-    // We use the cached layer as target layer !!
-    targetLayer = cachedTarget;
 
   }
   else
@@ -5838,6 +5837,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
     QgsFeature feat;
     while ( fit.nextFeature( feat ) )
     {
+      // TODO : ignore feature if same as this (and remove logic below)
       features.append( feat );
     }
   }
@@ -5851,16 +5851,6 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
     subExpression.prepare( &subContext );
   }
 
-  return overlayFunction( subExpression, subContext, targetLayer, features, geometry, testOnly, invert, currentFeatId, limit, max_distance, bboxGrow );
-}
-
-// Intersect functions:
-
-typedef bool ( QgsGeometry::*t_relationFunction )( const QgsGeometry &geometry ) const;
-
-template <t_relationFunction T>
-static QVariant indexedFilteredOverlay( QgsExpression &subExp, QgsExpressionContext &subContext, QgsVectorLayer *targetLayer, QList<QgsFeature> features, const QgsGeometry &geometry, bool testOnly, bool invert, QVariant currentFeatId, int neighbors, double max_distance, double bboxGrow = 0 )
-{
 
   bool found = false;
   QVariantList results;
@@ -5870,12 +5860,15 @@ static QVariant indexedFilteredOverlay( QgsExpression &subExp, QgsExpressionCont
   {
     QgsFeature feat = i.next();
 
+    // TODO : remove this, and implement above
+    // currentFeatId is only set if sourceLayer and targetLayer are the same,
+    // in which case current feature have to be excluded from spatial check
     if ( !currentFeatId.isNull() && currentFeatId.toLongLong() == feat.id() )
     {
-      continue; //if sourceLayer and targetLayer are the same, current feature have to be excluded from spatial check
+      continue;
     }
 
-    if ( ( feat.geometry().*T )( geometry ) ) // Calls the method provided as template argument for the function (e.g. QgsGeometry::intersects)
+    if ( ! relationFunction || ( feat.geometry().*relationFunction )( geometry ) ) // Calls the method provided as template argument for the function (e.g. QgsGeometry::intersects)
     {
       found = true;
 
@@ -5883,114 +5876,88 @@ static QVariant indexedFilteredOverlay( QgsExpression &subExp, QgsExpressionCont
       if ( testOnly )
         break;
 
-      // We want a list of attributes / geometries / other expression values, evaluate now
       if ( !invert )
       {
+        // We want a list of attributes / geometries / other expression values, evaluate now
         subContext.setFeature( feat );
-        results.append( subExp.evaluate( &subContext ) );
+        results.append( subExpression.evaluate( &subContext ) );
       }
       else
       {
+        // If not, results is a list of found ids, which we'll inverse and evaluate below
         results.append( feat.id() );
       }
     }
   }
+
   if ( testOnly )
   {
     if ( invert )
       found = !found;//for disjoint condition
     return found;
   }
-  else
+
+  if ( !invert )
+    return results;
+
+  // for disjoint condition returns the results for cached layers not intersected feats
+  QVariantList disjoint_results;
+  QgsFeature feat2;
+  QgsFeatureIterator fi = targetLayer->getFeatures();
+  while ( fi.nextFeature( feat2 ) )
   {
-    if ( !invert )
-      return results;
-    else
+    if ( !results.contains( feat2.id() ) )
     {
-      // for disjoint condition returns the results for cached layers not intersected feats
-      QVariantList disjoint_results;
-      QgsFeature feat;
-      QgsFeatureIterator fi = targetLayer->getFeatures();
-      while ( fi.nextFeature( feat ) )
-      {
-        if ( !results.contains( feat.id() ) )
-        {
-          subContext.setFeature( feat );
-          disjoint_results.append( subExp.evaluate( &subContext ) );
-        }
-      }
-      return disjoint_results;
+      subContext.setFeature( feat2 );
+      disjoint_results.append( subExpression.evaluate( &subContext ) );
     }
   }
+  return disjoint_results;
+
 }
 
-static QVariant indexedFilteredNearest( QgsExpression &subExp, QgsExpressionContext &subContext, QgsVectorLayer *targetLayer, QList<QgsFeature> features, const QgsGeometry &geometry, bool testOnly, bool invert, QVariant currentFeatId, int neighbors, double max_distance, double bboxGrow = 0 )
-{
+// Intersect functions:
 
-  bool found = false;
-  QVariantList results;
-  QListIterator<QgsFeature> i(features);
-  while ( i.hasNext() )
-  {
-    QgsFeature feat = i.next();
-
-    found = true;
-    // We just want a single boolean result if there is any intersect: finish and return true
-    if ( testOnly )
-      break;
-
-    subContext.setFeature( feat );
-    results.append( subExp.evaluate( &subContext ) );
-  }
-
-  if ( testOnly )
-  {
-    if ( invert )
-      found = !found;//for disjoint condition
-    return found;
-  }
-
-  return results;
-}
+typedef bool ( QgsGeometry::*t_relationFunction )( const QgsGeometry &geometry ) const;
 
 static QVariant fcnGeomOverlayIntersects( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  return executeGeomOverlay( values, context, parent, indexedFilteredOverlay<&QgsGeometry::intersects> );
+  return executeGeomOverlay( values, context, parent, &QgsGeometry::intersects );
 }
 
 static QVariant fcnGeomOverlayContains( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  return executeGeomOverlay( values, context, parent, indexedFilteredOverlay<&QgsGeometry::contains> );
+  return executeGeomOverlay( values, context, parent, &QgsGeometry::contains );
 }
 
 static QVariant fcnGeomOverlayCrosses( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  return executeGeomOverlay( values, context, parent, indexedFilteredOverlay<&QgsGeometry::crosses> );
+  return executeGeomOverlay( values, context, parent, &QgsGeometry::crosses );
 }
 
 static QVariant fcnGeomOverlayEquals( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  return executeGeomOverlay( values, context, parent, indexedFilteredOverlay<&QgsGeometry::equals>, false, 0.01 );  //grow amount should adapt to current units
+  return executeGeomOverlay( values, context, parent, &QgsGeometry::equals, false, 0.01 );  //grow amount should adapt to current units
 }
 
 static QVariant fcnGeomOverlayTouches( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  return executeGeomOverlay( values, context, parent, indexedFilteredOverlay<&QgsGeometry::touches>, false, 0.01 ); //grow amount should adapt to current units
+  return executeGeomOverlay( values, context, parent, &QgsGeometry::touches, false, 0.01 ); //grow amount should adapt to current units
 }
 
 static QVariant fcnGeomOverlayWithin( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  return executeGeomOverlay( values, context, parent, indexedFilteredOverlay<&QgsGeometry::within> );
+  return executeGeomOverlay( values, context, parent, &QgsGeometry::within );
 }
 
 static QVariant fcnGeomOverlayDisjoint( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  return executeGeomOverlay( values, context, parent, indexedFilteredOverlay<&QgsGeometry::intersects>, true );
+  return executeGeomOverlay( values, context, parent, &QgsGeometry::intersects, true );
 }
 
 static QVariant fcnGeomOverlayNearest( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  return executeGeomOverlay( values, context, parent, indexedFilteredNearest, false, 0, true );
+  return executeGeomOverlay( values, context, parent, nullptr, false, 0, true );
 }
 
 const QList<QgsExpressionFunction *> &QgsExpression::Functions()
