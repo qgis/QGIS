@@ -26,6 +26,12 @@
       "arg": "max_distance",
       "description": "an optional maximum distance to limit the number of matching features (if not set, only the nearest feature will be returned)",
       "optional": true
+    },
+    {
+      "arg": "cache",
+      "description": "set this to true to build a local spatial index (most of the time, this is unwanted, unless you are working with a particularly slow data provider)",
+      "optional": true,
+      "default": false
     }
   ],
   "examples": [

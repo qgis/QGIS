@@ -20,6 +20,12 @@
       "arg": "limit",
       "description": "an optional integer to limit the number of matching features (if not set, all features will be returned)",
       "optional": true
+    },
+    {
+      "arg": "cache",
+      "description": "set this to true to build a local spatial index (most of the time, this is unwanted, unless you are working with a particularly slow data provider)",
+      "optional": true,
+      "default": false
     }
   ],
   "examples": [

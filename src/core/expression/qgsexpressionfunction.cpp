@@ -5795,7 +5795,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
     }
     else
     {
-      cachedTarget = context->cachedValue( cacheLayer ).value<QgsVectorLayer*>();
+      cachedTarget = context->cachedValue( cacheLayer ).value<QgsVectorLayer *>();
     }
 
     if ( !context->hasCachedValue( cacheIndex ) )
@@ -5820,7 +5820,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
       fidsList = spatialIndex.intersects( intDomain );
     }
 
-    QListIterator<QgsFeatureId> i(fidsList);
+    QListIterator<QgsFeatureId> i( fidsList );
     while ( i.hasNext() )
     {
       // TODO : ignore feature if same as this (and remove logic below)
@@ -5832,8 +5832,8 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   {
     // If the cache (local spatial index) is not enabled, we directly
     // get the features from the target layer
-    request.setFilterRect(intDomain);
-    QgsFeatureIterator fit = targetLayer->getFeatures(request);
+    request.setFilterRect( intDomain );
+    QgsFeatureIterator fit = targetLayer->getFeatures( request );
     QgsFeature feat;
     while ( fit.nextFeature( feat ) )
     {
@@ -5855,7 +5855,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   bool found = false;
   QVariantList results;
 
-  QListIterator<QgsFeature> i(features);
+  QListIterator<QgsFeature> i( features );
   while ( i.hasNext() )
   {
     QgsFeature feat = i.next();
@@ -5919,8 +5919,6 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
 }
 
 // Intersect functions:
-
-typedef bool ( QgsGeometry::*t_relationFunction )( const QgsGeometry &geometry ) const;
 
 static QVariant fcnGeomOverlayIntersects( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
@@ -6329,7 +6327,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     yFunc->setIsStatic( false );
     functions << yFunc;
 
-    QMap< QString, QgsExpressionFunction::FcnEval > geometry_overlay_definitions {
+    QMap< QString, QgsExpressionFunction::FcnEval > geometry_overlay_definitions
+    {
       { QStringLiteral( "geometry_overlay_intersects" ), fcnGeomOverlayIntersects },
       { QStringLiteral( "geometry_overlay_contains" ), fcnGeomOverlayContains },
       { QStringLiteral( "geometry_overlay_crosses" ), fcnGeomOverlayCrosses },
