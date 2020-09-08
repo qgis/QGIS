@@ -1,4 +1,4 @@
-name: Run OGC tests for QGIS Server
+name: OGC tests for QGIS Server
 
 on:
   push:
@@ -37,3 +37,8 @@ jobs:
           sudo apt-get install python3-virtualenv virtualenv git
           git clone https://github.com/pblottiere/pyogctest
           virtualenv -p /usr/bin/python3 venv && source venv/bin/activate && pip install -e pyogctest/
+
+      - name: Run WMS 1.3.0 OGC tests
+        run: |
+          docker-compose -f .ci/ogc/docker-compose.yml up -d
+          source venv/bin/activate && ./pyogctest/pyogctest.py -s wms130 -v http://$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' qgis_server_deps)/qgisserver
