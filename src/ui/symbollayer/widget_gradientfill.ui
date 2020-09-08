@@ -522,6 +522,13 @@
      </property>
     </widget>
    </item>
+   <item row="15" column="3">
+    <widget class="QgsPropertyOverrideButton" name="mOffsetDDBtn">
+     <property name="text">
+      <string>…</string>
+     </property>
+    </widget>
+   </item>
   </layout>
   <zorder>btnChangeColor2</zorder>
   <zorder>btnColorRamp</zorder>
@@ -554,6 +561,7 @@
   <zorder>mRefPoint2XDDBtn</zorder>
   <zorder>spinRefPoint2Y</zorder>
   <zorder>mRefPoint2YDDBtn</zorder>
+  <zorder>mOffsetDDBtn</zorder>
  </widget>
  <customwidgets>
   <customwidget>

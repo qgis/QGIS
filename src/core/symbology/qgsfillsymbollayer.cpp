@@ -279,11 +279,22 @@ void QgsSimpleFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVe
 
   applyDataDefinedSymbology( context, mBrush, mPen, mSelPen );
 
-  QPointF offset;
-  if ( !mOffset.isNull() )
+  QPointF offset = mOffset;
+
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOffset ) )
   {
-    offset.setX( context.renderContext().convertToPainterUnits( mOffset.x(), mOffsetUnit, mOffsetMapUnitScale ) );
-    offset.setY( context.renderContext().convertToPainterUnits( mOffset.y(), mOffsetUnit, mOffsetMapUnitScale ) );
+    context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePoint( mOffset ) );
+    const QVariant val = mDataDefinedProperties.value( QgsSymbolLayer::PropertyOffset, context.renderContext().expressionContext(), QString() );
+    bool ok = false;
+    const QPointF res = QgsSymbolLayerUtils::toPoint( val, &ok );
+    if ( ok )
+      offset = res;
+  }
+
+  if ( !offset.isNull() )
+  {
+    offset.setX( context.renderContext().convertToPainterUnits( offset.x(), mOffsetUnit, mOffsetMapUnitScale ) );
+    offset.setY( context.renderContext().convertToPainterUnits( offset.y(), mOffsetUnit, mOffsetMapUnitScale ) );
     p->translate( offset );
   }
 
@@ -311,7 +322,7 @@ void QgsSimpleFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVe
   }
 #endif
 
-  if ( !mOffset.isNull() )
+  if ( !offset.isNull() )
   {
     p->translate( -offset );
   }
@@ -880,17 +891,27 @@ void QgsGradientFillSymbolLayer::renderPolygon( const QPolygonF &points, const Q
   p->setBrush( context.selected() ? mSelBrush : mBrush );
   p->setPen( Qt::NoPen );
 
-  QPointF offset;
-  if ( !mOffset.isNull() )
+  QPointF offset = mOffset;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOffset ) )
   {
-    offset.setX( context.renderContext().convertToPainterUnits( mOffset.x(), mOffsetUnit, mOffsetMapUnitScale ) );
-    offset.setY( context.renderContext().convertToPainterUnits( mOffset.y(), mOffsetUnit, mOffsetMapUnitScale ) );
+    context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePoint( mOffset ) );
+    const QVariant val = mDataDefinedProperties.value( QgsSymbolLayer::PropertyOffset, context.renderContext().expressionContext(), QString() );
+    bool ok = false;
+    const QPointF res = QgsSymbolLayerUtils::toPoint( val, &ok );
+    if ( ok )
+      offset = res;
+  }
+
+  if ( !offset.isNull() )
+  {
+    offset.setX( context.renderContext().convertToPainterUnits( offset.x(), mOffsetUnit, mOffsetMapUnitScale ) );
+    offset.setY( context.renderContext().convertToPainterUnits( offset.y(), mOffsetUnit, mOffsetMapUnitScale ) );
     p->translate( offset );
   }
 
   _renderPolygon( p, points, rings, context );
 
-  if ( !mOffset.isNull() )
+  if ( !offset.isNull() )
   {
     p->translate( -offset );
   }
@@ -1166,15 +1187,26 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, const
   {
     //feature is selected, draw using selection style
     p->setBrush( mSelBrush );
-    QPointF offset;
-    if ( !mOffset.isNull() )
+    QPointF offset = mOffset;
+
+    if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOffset ) )
     {
-      offset.setX( context.renderContext().convertToPainterUnits( mOffset.x(), mOffsetUnit, mOffsetMapUnitScale ) );
-      offset.setY( context.renderContext().convertToPainterUnits( mOffset.y(), mOffsetUnit, mOffsetMapUnitScale ) );
+      context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePoint( mOffset ) );
+      const QVariant val = mDataDefinedProperties.value( QgsSymbolLayer::PropertyOffset, context.renderContext().expressionContext(), QString() );
+      bool ok = false;
+      const QPointF res = QgsSymbolLayerUtils::toPoint( val, &ok );
+      if ( ok )
+        offset = res;
+    }
+
+    if ( !offset.isNull() )
+    {
+      offset.setX( context.renderContext().convertToPainterUnits( offset.x(), mOffsetUnit, mOffsetMapUnitScale ) );
+      offset.setY( context.renderContext().convertToPainterUnits( offset.y(), mOffsetUnit, mOffsetMapUnitScale ) );
       p->translate( offset );
     }
     _renderPolygon( p, points, rings, context );
-    if ( !mOffset.isNull() )
+    if ( !offset.isNull() )
     {
       p->translate( -offset );
     }
@@ -1298,17 +1330,26 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, const
   //draw shapeburst image in correct place in the destination painter
 
   QgsScopedQPainterState painterState( p );
-  QPointF offset;
-  if ( !mOffset.isNull() )
+  QPointF offset = mOffset;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOffset ) )
   {
-    offset.setX( context.renderContext().convertToPainterUnits( mOffset.x(), mOffsetUnit, mOffsetMapUnitScale ) );
-    offset.setY( context.renderContext().convertToPainterUnits( mOffset.y(), mOffsetUnit, mOffsetMapUnitScale ) );
+    context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePoint( mOffset ) );
+    const QVariant val = mDataDefinedProperties.value( QgsSymbolLayer::PropertyOffset, context.renderContext().expressionContext(), QString() );
+    bool ok = false;
+    const QPointF res = QgsSymbolLayerUtils::toPoint( val, &ok );
+    if ( ok )
+      offset = res;
+  }
+  if ( !offset.isNull() )
+  {
+    offset.setX( context.renderContext().convertToPainterUnits( offset.x(), mOffsetUnit, mOffsetMapUnitScale ) );
+    offset.setY( context.renderContext().convertToPainterUnits( offset.y(), mOffsetUnit, mOffsetMapUnitScale ) );
     p->translate( offset );
   }
 
   p->drawImage( points.boundingRect().left() - sideBuffer, points.boundingRect().top() - sideBuffer, *fillImage );
 
-  if ( !mOffset.isNull() )
+  if ( !offset.isNull() )
   {
     p->translate( -offset );
   }
@@ -4042,11 +4083,20 @@ void QgsRasterFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVe
     return;
   }
 
-  QPointF offset;
-  if ( !mOffset.isNull() )
+  QPointF offset = mOffset;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOffset ) )
   {
-    offset.setX( context.renderContext().convertToPainterUnits( mOffset.x(), mOffsetUnit, mOffsetMapUnitScale ) );
-    offset.setY( context.renderContext().convertToPainterUnits( mOffset.y(), mOffsetUnit, mOffsetMapUnitScale ) );
+    context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePoint( mOffset ) );
+    const QVariant val = mDataDefinedProperties.value( QgsSymbolLayer::PropertyOffset, context.renderContext().expressionContext(), QString() );
+    bool ok = false;
+    const QPointF res = QgsSymbolLayerUtils::toPoint( val, &ok );
+    if ( ok )
+      offset = res;
+  }
+  if ( !offset.isNull() )
+  {
+    offset.setX( context.renderContext().convertToPainterUnits( offset.x(), mOffsetUnit, mOffsetMapUnitScale ) );
+    offset.setY( context.renderContext().convertToPainterUnits( offset.y(), mOffsetUnit, mOffsetMapUnitScale ) );
     p->translate( offset );
   }
   if ( mCoordinateMode == Feature )
@@ -4057,7 +4107,7 @@ void QgsRasterFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVe
   }
 
   QgsImageFillSymbolLayer::renderPolygon( points, rings, context );
-  if ( !mOffset.isNull() )
+  if ( !offset.isNull() )
   {
     p->translate( -offset );
   }

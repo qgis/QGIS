@@ -337,6 +337,13 @@
      </item>
     </layout>
    </item>
+   <item row="7" column="5">
+    <widget class="QgsPropertyOverrideButton" name="mOffsetDDBtn">
+     <property name="text">
+      <string>…</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>

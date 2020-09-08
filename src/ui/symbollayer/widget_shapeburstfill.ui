@@ -411,6 +411,13 @@
      </item>
     </layout>
    </item>
+   <item row="10" column="4">
+    <widget class="QgsPropertyOverrideButton" name="mOffsetDDBtn">
+     <property name="text">
+      <string>…</string>
+     </property>
+    </widget>
+   </item>
   </layout>
   <zorder>btnColorRamp</zorder>
   <zorder>label</zorder>
@@ -426,6 +433,7 @@
   <zorder>mShadeDistanceDDBtn</zorder>
   <zorder>mIgnoreRingsDDBtn</zorder>
   <zorder>mBlurRadiusDDBtn</zorder>
+  <zorder>mOffsetDDBtn</zorder>
  </widget>
  <customwidgets>
   <customwidget>
