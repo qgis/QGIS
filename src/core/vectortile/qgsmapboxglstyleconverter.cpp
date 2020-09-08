@@ -615,6 +615,61 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     }
   }
 
+  // em to character tends to underestimate, so scale up by ~40%
+  constexpr double EM_TO_CHARS = 1.4;
+
+  double textMaxWidth = -1;
+  if ( jsonLayout.contains( QStringLiteral( "text-max-width" ) ) )
+  {
+    const QVariant jsonTextMaxWidth = jsonLayout.value( QStringLiteral( "text-max-width" ) );
+    switch ( jsonTextMaxWidth.type() )
+    {
+      case QVariant::Int:
+      case QVariant::Double:
+        textMaxWidth = jsonTextMaxWidth.toDouble() * EM_TO_CHARS;
+        break;
+
+      case QVariant::Map:
+        ddLabelProperties.setProperty( QgsPalLayerSettings::AutoWrapLength, parseInterpolateByZoom( jsonTextMaxWidth.toMap(), context, EM_TO_CHARS, &textMaxWidth ) );
+        break;
+
+      case QVariant::List:
+      case QVariant::StringList:
+        ddLabelProperties.setProperty( QgsPalLayerSettings::AutoWrapLength, parseInterpolateListByZoom( jsonTextMaxWidth.toList(), PropertyType::Numeric, context, EM_TO_CHARS, nullptr, &textMaxWidth ) );
+        break;
+
+      default:
+        context.pushWarning( QObject::tr( "Skipping non-implemented text-max-width expression" ) );
+        break;
+    }
+  }
+
+  double textLetterSpacing = -1;
+  if ( jsonLayout.contains( QStringLiteral( "text-letter-spacing" ) ) )
+  {
+    const QVariant jsonTextLetterSpacing = jsonLayout.value( QStringLiteral( "text-letter-spacing" ) );
+    switch ( jsonTextLetterSpacing.type() )
+    {
+      case QVariant::Int:
+      case QVariant::Double:
+        textLetterSpacing = jsonTextLetterSpacing.toDouble();
+        break;
+
+      case QVariant::Map:
+        ddLabelProperties.setProperty( QgsPalLayerSettings::FontLetterSpacing, parseInterpolateByZoom( jsonTextLetterSpacing.toMap(), context, 1, &textLetterSpacing ) );
+        break;
+
+      case QVariant::List:
+      case QVariant::StringList:
+        ddLabelProperties.setProperty( QgsPalLayerSettings::FontLetterSpacing, parseInterpolateListByZoom( jsonTextLetterSpacing.toList(), PropertyType::Numeric, context, 1, nullptr, &textLetterSpacing ) );
+        break;
+
+      default:
+        context.pushWarning( QObject::tr( "Skipping non-implemented text-letter-spacing expression" ) );
+        break;
+    }
+  }
+
   QFont textFont;
   bool foundFont = false;
   if ( jsonLayout.contains( QStringLiteral( "text-font" ) ) )
@@ -772,6 +827,12 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     format.setSize( textSize );
   if ( foundFont )
     format.setFont( textFont );
+  if ( textLetterSpacing > 0 )
+  {
+    QFont f = format.font();
+    f.setLetterSpacing( QFont::AbsoluteSpacing, textLetterSpacing );
+    format.setFont( f );
+  }
 
   if ( bufferSize > 0 )
   {
@@ -795,6 +856,11 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
   }
 
   QgsPalLayerSettings labelSettings;
+
+  if ( textMaxWidth > 0 )
+  {
+    labelSettings.autoWrapLength = textMaxWidth;
+  }
 
   // convert field name
 
