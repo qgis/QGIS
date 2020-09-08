@@ -3226,8 +3226,11 @@ void QgsProcessingGeometryWidgetWrapper::setWidgetValue( const QVariant &value, 
 {
   if ( mLineEdit )
   {
-    QString v = QgsProcessingParameters::parameterAsString( parameterDefinition(), value, context );
-    mLineEdit->setText( v );
+    QgsGeometry g = QgsProcessingParameters::parameterAsGeometry( parameterDefinition(), value, context );
+    if ( !g.isNull() )
+      mLineEdit->setText( g.asWkt() );
+    else
+      mLineEdit->clear();
   }
 }
 
@@ -3243,7 +3246,9 @@ QStringList QgsProcessingGeometryWidgetWrapper::compatibleParameterTypes() const
 {
   return QStringList()
          << QgsProcessingParameterGeometry::typeName()
-         << QgsProcessingParameterString::typeName();
+         << QgsProcessingParameterString::typeName()
+         << QgsProcessingParameterPoint::typeName()
+         << QgsProcessingParameterExtent::typeName();
 }
 
 QStringList QgsProcessingGeometryWidgetWrapper::compatibleOutputTypes() const

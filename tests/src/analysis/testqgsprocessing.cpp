@@ -3396,6 +3396,10 @@ void TestQgsProcessing::parameterGeometry()
   QVERIFY( def->checkValueIsAcceptable( QString( "LineString(10 10, 20 20)" ) ) );
   QVERIFY( def->checkValueIsAcceptable( QgsGeometry::fromPointXY( QgsPointXY( 1, 2 ) ) ) );
   QVERIFY( def->checkValueIsAcceptable( QgsGeometry::fromWkt( QStringLiteral( "LineString(10 10, 20 20)" ) ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsPointXY( 1, 2 ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsReferencedPointXY( QgsPointXY( 1, 2 ), QgsCoordinateReferenceSystem( "EPSG:4326" ) ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsRectangle( 10, 10, 20, 20 ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsReferencedRectangle( QgsRectangle( 10, 10, 20, 20 ), QgsCoordinateReferenceSystem( "EPSG:4326" ) ) ) );
 
   // string representing a geometry
   QVariantMap params;
@@ -3403,6 +3407,86 @@ void TestQgsProcessing::parameterGeometry()
   QVERIFY( def->checkValueIsAcceptable( "LineString(10 10, 20 20)" ) );
   QgsGeometry geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context );
   QCOMPARE( geometry.asWkt(), QStringLiteral( "LineString (10 10, 20 20)" ) );
+
+  // with target CRS - should make no difference, because source CRS is unknown
+  geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:3785" ) );
+  QCOMPARE( geometry.asWkt(), QStringLiteral( "LineString (10 10, 20 20)" ) );
+
+  // with CRS as string
+  params.insert( "non_optional", QString( "SRID=4326;Point ( 1.1 2.2 )" ) );
+  geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context );
+  QPointF point = geometry.asQPointF();
+  QGSCOMPARENEAR( point.x(), 1.1, 0.001 );
+  QGSCOMPARENEAR( point.y(), 2.2, 0.001 );
+  QCOMPARE( QgsProcessingParameters::parameterAsGeometryCrs( def.get(), params, context ).authid(), QStringLiteral( "EPSG:4326" ) );
+  geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:3785" ) );
+  point = geometry.asQPointF();
+  QGSCOMPARENEAR( point.x(), 122451, 100 );
+  QGSCOMPARENEAR( point.y(), 244963, 100 );
+
+  // QgsReferencedGeometry
+  params.insert( "non_optional", QgsReferencedGeometry( QgsGeometry::fromPointXY( QgsPointXY( 1.1, 2.2 ) ), QgsCoordinateReferenceSystem( "EPSG:4326" ) ) );
+  geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context );
+  point = geometry.asQPointF();
+  QGSCOMPARENEAR( point.x(), 1.1, 0.001 );
+  QGSCOMPARENEAR( point.y(), 2.2, 0.001 );
+  QCOMPARE( QgsProcessingParameters::parameterAsGeometryCrs( def.get(), params, context ).authid(), QStringLiteral( "EPSG:4326" ) );
+  geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:3785" ) );
+  point = geometry.asQPointF();
+  QGSCOMPARENEAR( point.x(), 122451, 100 );
+  QGSCOMPARENEAR( point.y(), 244963, 100 );
+
+  // QgsPointXY
+  params.insert( "non_optional", QgsPointXY( 11.1, 12.2 ) );
+  geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context );
+  point = geometry.asQPointF();
+  QGSCOMPARENEAR( point.x(), 11.1, 0.001 );
+  QGSCOMPARENEAR( point.y(), 12.2, 0.001 );
+
+  // with target CRS - should make no difference, because source CRS is unknown
+  geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:3785" ) );
+  point = geometry.asQPointF();
+  QGSCOMPARENEAR( point.x(), 11.1, 0.001 );
+  QGSCOMPARENEAR( point.y(), 12.2, 0.001 );
+
+  // QgsReferencedPointXY
+  params.insert( "non_optional", QgsReferencedPointXY( QgsPointXY( 1.1, 2.2 ), QgsCoordinateReferenceSystem( "EPSG:4326" ) ) );
+  geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context );
+  point = geometry.asQPointF();
+  QGSCOMPARENEAR( point.x(), 1.1, 0.001 );
+  QGSCOMPARENEAR( point.y(), 2.2, 0.001 );
+  QCOMPARE( QgsProcessingParameters::parameterAsGeometryCrs( def.get(), params, context ).authid(), QStringLiteral( "EPSG:4326" ) );
+
+  // with target CRS
+  params.insert( "non_optional", QgsReferencedPointXY( QgsPointXY( 1.1, 2.2 ), QgsCoordinateReferenceSystem( "EPSG:4326" ) ) );
+  geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:3785" ) );
+  point = geometry.asQPointF();
+  QGSCOMPARENEAR( point.x(), 122451, 100 );
+  QGSCOMPARENEAR( point.y(), 244963, 100 );
+
+  // QgsRectangle
+  params.insert( "non_optional", QgsRectangle( 11.1, 12.2, 13.3, 14.4 ) );
+  geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context );
+  QCOMPARE( geometry.asWkt( 1 ), QStringLiteral( "Polygon ((11.1 12.2, 13.3 12.2, 13.3 14.4, 11.1 14.4, 11.1 12.2))" ) );
+
+  // with target CRS - should make no difference, because source CRS is unknown
+  geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:3785" ) );
+  QCOMPARE( geometry.asWkt( 1 ), QStringLiteral( "Polygon ((11.1 12.2, 13.3 12.2, 13.3 14.4, 11.1 14.4, 11.1 12.2))" ) );
+
+  // QgsReferenced Rectangle
+  params.insert( "non_optional", QgsReferencedRectangle( QgsRectangle( 11.1, 12.2, 13.3, 14.4 ), QgsCoordinateReferenceSystem( "EPSG:4326" ) ) );
+  geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context );
+  QCOMPARE( geometry.asWkt( 1 ), QStringLiteral( "Polygon ((11.1 12.2, 13.3 12.2, 13.3 14.4, 11.1 14.4, 11.1 12.2))" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsGeometryCrs( def.get(), params, context ).authid(), QStringLiteral( "EPSG:4326" ) );
+
+  // with target CRS
+  geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:3785" ) );
+  QCOMPARE( geometry.constGet()->vertexCount(), 85 );
+  QgsRectangle ext = geometry.boundingBox();
+  QGSCOMPARENEAR( ext.xMinimum(), 1235646, 100 );
+  QGSCOMPARENEAR( ext.xMaximum(), 1480549, 100 );
+  QGSCOMPARENEAR( ext.yMinimum(), 1368478, 100 );
+  QGSCOMPARENEAR( ext.yMaximum(), 1620147, 100 );
 
   // nonsense string
   params.insert( "non_optional", QString( "i'm not a geometry, and nothing you can do will make me one" ) );

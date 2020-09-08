@@ -4760,13 +4760,6 @@ void TestProcessingGui::testGeometryWrapper()
     QVERIFY( !wrapper2.widgetValue().isValid() );
     QVERIFY( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text().isEmpty() );
 
-
-    // check signals
-    wrapper2.setWidgetValue( "1,3", context );
-    QCOMPARE( spy2.count(), 5 );
-    static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->clear();
-    QCOMPARE( spy2.count(), 6 );
-
     delete w;
   };
 

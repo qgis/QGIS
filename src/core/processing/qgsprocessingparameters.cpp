@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsprocessingparameters.cpp
+                         q+gsprocessingparameters.cpp
                          ---------------------------
     begin                : April 2017
     copyright            : (C) 2017 by Nyall Dawson
@@ -1417,15 +1417,15 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsPointCrs( const
     return QgsCoordinateReferenceSystem();
 }
 
-QgsGeometry QgsProcessingParameters::parameterAsGeometry( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
+QgsGeometry QgsProcessingParameters::parameterAsGeometry( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, const QgsCoordinateReferenceSystem &crs )
 {
   if ( !definition )
     return QgsGeometry();
 
-  return parameterAsGeometry( definition, parameters.value( definition->name() ), context );
+  return parameterAsGeometry( definition, parameters.value( definition->name() ), context, crs );
 }
 
-QgsGeometry QgsProcessingParameters::parameterAsGeometry( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context )
+QgsGeometry QgsProcessingParameters::parameterAsGeometry( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, const QgsCoordinateReferenceSystem &crs )
 {
   if ( !definition )
     return QgsGeometry();
@@ -1436,14 +1436,164 @@ QgsGeometry QgsProcessingParameters::parameterAsGeometry( const QgsProcessingPar
     return val.value<QgsGeometry>();
   }
 
-  QString valueAsString = parameterAsString( definition, value, context );
-  if ( !valueAsString.isEmpty() )
+  if ( val.canConvert< QgsPointXY >() )
   {
-    return QgsGeometry::fromWkt( valueAsString );
+    return QgsGeometry::fromPointXY( val.value<QgsPointXY>() );
+  }
+
+  if ( val.canConvert< QgsRectangle >() )
+  {
+    return QgsGeometry::fromRect( val.value<QgsRectangle>() );
+  }
+
+  if ( val.canConvert< QgsReferencedPointXY >() )
+  {
+    QgsReferencedPointXY rp = val.value<QgsReferencedPointXY>();
+    if ( crs.isValid() && rp.crs().isValid() && crs != rp.crs() )
+    {
+      QgsCoordinateTransform ct( rp.crs(), crs, context.project() );
+      try
+      {
+        return QgsGeometry::fromPointXY( ct.transform( rp ) );
+      }
+      catch ( QgsCsException & )
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Error transforming point geometry" ) );
+      }
+    }
+    return QgsGeometry::fromPointXY( rp );
+  }
+
+  if ( val.canConvert< QgsReferencedRectangle >() )
+  {
+    QgsReferencedRectangle rr = val.value<QgsReferencedRectangle>();
+    QgsGeometry g = QgsGeometry::fromRect( rr );
+    if ( crs.isValid() && rr.crs().isValid() && crs != rr.crs() )
+    {
+      g = g.densifyByCount( 20 );
+      QgsCoordinateTransform ct( rr.crs(), crs, context.project() );
+      try
+      {
+        g.transform( ct );
+      }
+      catch ( QgsCsException & )
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Error transforming rectangle geometry" ) );
+      }
+    }
+    return g;
+  }
+
+  if ( val.canConvert< QgsReferencedGeometry >() )
+  {
+    QgsReferencedGeometry rg = val.value<QgsReferencedGeometry>();
+    if ( crs.isValid() && rg.crs().isValid() && crs != rg.crs() )
+    {
+      QgsCoordinateTransform ct( rg.crs(), crs, context.project() );
+      try
+      {
+        rg.transform( ct );
+      }
+      catch ( QgsCsException & )
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Error transforming geometry" ) );
+      }
+    }
+    return rg;
+  }
+
+  QString valueAsString = parameterAsString( definition, value, context );
+  if ( valueAsString.isEmpty() )
+    valueAsString = definition->defaultValue().toString();
+
+  if ( valueAsString.isEmpty() )
+    return QgsGeometry();
+
+  // Match against EWKT
+  QRegularExpression rx( QStringLiteral( "^\\s*(?:SRID=(.*);)?(.*)$" ) );
+
+  QRegularExpressionMatch match = rx.match( valueAsString );
+  if ( match.hasMatch() )
+  {
+    QgsGeometry g =  QgsGeometry::fromWkt( match.captured( 2 ) );
+    if ( !g.isNull() )
+    {
+      QgsCoordinateReferenceSystem geomCrs( QStringLiteral( "EPSG:%1" ).arg( match.captured( 1 ) ) );
+      if ( crs.isValid() && geomCrs.isValid() && crs != geomCrs )
+      {
+        QgsCoordinateTransform ct( geomCrs, crs, context.project() );
+        try
+        {
+          g.transform( ct );
+        }
+        catch ( QgsCsException & )
+        {
+          QgsMessageLog::logMessage( QObject::tr( "Error transforming geometry" ) );
+        }
+      }
+      return g;
+    }
   }
 
   return QgsGeometry();
 }
+
+
+QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsGeometryCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
+{
+  QVariant val = parameters.value( definition->name() );
+  return parameterAsGeometryCrs( definition, val, context );
+}
+
+QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsGeometryCrs( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context )
+{
+  if ( value.canConvert< QgsReferencedGeometry >() )
+  {
+    QgsReferencedGeometry rg = value.value<QgsReferencedGeometry>();
+    if ( rg.crs().isValid() )
+    {
+      return rg.crs();
+    }
+  }
+
+  if ( value.canConvert< QgsReferencedPointXY >() )
+  {
+    QgsReferencedPointXY rp = value.value<QgsReferencedPointXY>();
+    if ( rp.crs().isValid() )
+    {
+      return rp.crs();
+    }
+  }
+
+  if ( value.canConvert< QgsReferencedRectangle >() )
+  {
+    QgsReferencedRectangle rr = value.value<QgsReferencedRectangle>();
+    if ( rr.crs().isValid() )
+    {
+      return rr.crs();
+    }
+  }
+
+  // Match against EWKT
+  QRegularExpression rx( QStringLiteral( "^\\s*(?:SRID=(.*);)?(.*)$" ) );
+
+  QString valueAsString = parameterAsString( definition, value, context );
+  QRegularExpressionMatch match = rx.match( valueAsString );
+  if ( match.hasMatch() )
+  {
+    QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:%1" ).arg( match.captured( 1 ) ) );
+    if ( crs.isValid() )
+      return crs;
+  }
+
+  if ( context.project() )
+    return context.project()->crs();
+  else
+    return QgsCoordinateReferenceSystem();
+}
+
+
+
 
 QString QgsProcessingParameters::parameterAsFile( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
@@ -2827,23 +2977,54 @@ bool QgsProcessingParameterGeometry::checkValueIsAcceptable( const QVariant &inp
     return true;
   }
 
+  if ( input.canConvert< QgsReferencedGeometry >() )
+  {
+    return true;
+  }
+
+  if ( input.canConvert< QgsPointXY >() )
+  {
+    return true;
+  }
+
+  if ( input.canConvert< QgsRectangle >() )
+  {
+    return true;
+  }
+
+  if ( input.canConvert< QgsReferencedPointXY >() )
+  {
+    return true;
+  }
+
+  if ( input.canConvert< QgsReferencedRectangle >() )
+  {
+    return true;
+  }
+
   if ( input.type() == QVariant::String )
   {
     if ( input.toString().isEmpty() )
       return mFlags & FlagOptional;
   }
 
-  QgsGeometry g = QgsGeometry::fromWkt( input.toString() );
-  if ( ! g.isNull() )
-  {
-    return true;
-  }
-  else
-  {
-    QgsMessageLog::logMessage( QObject::tr( "Error creating geometry: \"%1\"" ).arg( g.lastError() ), QObject::tr( "Processing" ) );
-    return false;
-  }
+  // Match against EWKT
+  QRegularExpression rx( QStringLiteral( "^\\s*(?:SRID=(.*);)?(.*)$" ) );
 
+  QRegularExpressionMatch match = rx.match( input.toString() );
+  if ( match.hasMatch() )
+  {
+    QgsGeometry g = QgsGeometry::fromWkt( match.captured( 2 ) );
+    if ( ! g.isNull() )
+    {
+      return true;
+    }
+    else
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Error creating geometry: \"%1\"" ).arg( g.lastError() ), QObject::tr( "Processing" ) );
+    }
+  }
+  return false;
 }
 
 QString QgsProcessingParameterGeometry::valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const

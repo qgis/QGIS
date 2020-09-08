@@ -267,6 +267,20 @@ bool QgsProcessingAlgorithm::validateInputCrs( const QVariantMap &parameters, Qg
         crs = pointCrs;
       }
     }
+    else if ( def->type() == QgsProcessingParameterGeometry::typeName() )
+    {
+      QgsCoordinateReferenceSystem geomCrs = QgsProcessingParameters::parameterAsGeometryCrs( def, parameters, context );
+      if ( foundCrs && geomCrs.isValid() && crs != geomCrs )
+      {
+        return false;
+      }
+      else if ( !foundCrs && geomCrs.isValid() )
+      {
+        foundCrs = true;
+        crs = geomCrs;
+      }
+    }
+
   }
   return true;
 }
@@ -691,6 +705,16 @@ QgsPointXY QgsProcessingAlgorithm::parameterAsPoint( const QVariantMap &paramete
 QgsCoordinateReferenceSystem QgsProcessingAlgorithm::parameterAsPointCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
 {
   return QgsProcessingParameters::parameterAsPointCrs( parameterDefinition( name ), parameters, context );
+}
+
+QgsGeometry QgsProcessingAlgorithm::parameterAsGeometry( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, const QgsCoordinateReferenceSystem &crs ) const
+{
+  return QgsProcessingParameters::parameterAsGeometry( parameterDefinition( name ), parameters, context, crs );
+}
+
+QgsCoordinateReferenceSystem QgsProcessingAlgorithm::parameterAsGeometryCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
+{
+  return QgsProcessingParameters::parameterAsGeometryCrs( parameterDefinition( name ), parameters, context );
 }
 
 QString QgsProcessingAlgorithm::parameterAsFile( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const

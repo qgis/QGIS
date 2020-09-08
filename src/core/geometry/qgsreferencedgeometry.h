@@ -103,8 +103,6 @@ class CORE_EXPORT QgsReferencedGeometry : public QgsGeometry, public QgsReferenc
 
 Q_DECLARE_METATYPE( QgsReferencedGeometry )
 
-
-
 /**
  * \ingroup core
  * A QgsRectangle with associated coordinate reference system.

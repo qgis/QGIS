@@ -139,7 +139,7 @@ class TestPython__repr__(unittest.TestCase):
         self.assertEqual(r.__repr__(), '<QgsReferencedRectangle: 1 2, 3 4 (EPSG:4326)>')
 
     def testQgsReferencedGeometryRepr(self):
-        g = QgsReferencedGeometry(QgsGeometry.fromPoint(QgsPointXY(1, 2)), QgsCoordinateReferenceSystem('EPSG:4326'))
+        g = QgsReferencedGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)), QgsCoordinateReferenceSystem('EPSG:4326'))
         self.assertEqual(g.__repr__(), '<QgsReferencedGeometry: Point (1 2) (EPSG:4326)>')
 
     def testQgsCoordinateReferenceSystem(self):

@@ -1254,14 +1254,30 @@ class CORE_EXPORT QgsProcessingParameters
      *
      * \since QGIS 3.16
      */
-    static QgsGeometry parameterAsGeometry( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+    static QgsGeometry parameterAsGeometry( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 
     /**
      * Evaluates the parameter with matching \a definition and \a value to a geometry.
      *
      * \since QGIS 3.16
      */
-    static QgsGeometry parameterAsGeometry( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+    static QgsGeometry parameterAsGeometry( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+
+    /**
+     * Returns the coordinate reference system associated with a geometry parameter value.
+     *
+     * \see parameterAsGeometry()
+     * \since QGIS 3.16
+     */
+    static QgsCoordinateReferenceSystem parameterAsGeometryCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+
+    /**
+     * Returns the coordinate reference system associated with an point parameter value.
+     *
+     * \see parameterAsGeometry()
+     * \since QGIS 3.16
+     */
+    static QgsCoordinateReferenceSystem parameterAsGeometryCrs( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
 
     /**
      * Evaluates the parameter with matching \a definition to a file/folder name.
