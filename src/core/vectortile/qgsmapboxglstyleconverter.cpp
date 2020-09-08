@@ -31,6 +31,7 @@
 #include "qgspainteffect.h"
 #include "qgseffectstack.h"
 #include "qgsblureffect.h"
+#include "qgsmarkersymbollayer.h"
 
 
 QgsMapBoxGlStyleConverter::QgsMapBoxGlStyleConverter()
@@ -560,25 +561,29 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
   return true;
 }
 
-void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &, bool &hasRenderer, QgsVectorTileBasicLabelingStyle &labelingStyle, bool &hasLabeling, QgsMapBoxGlStyleConversionContext &context )
+void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &renderer, bool &hasRenderer, QgsVectorTileBasicLabelingStyle &labelingStyle, bool &hasLabeling, QgsMapBoxGlStyleConversionContext &context )
 {
   hasLabeling = false;
   hasRenderer = false;
-  if ( !jsonLayer.contains( QStringLiteral( "paint" ) ) )
-  {
-    context.pushWarning( QObject::tr( "Style layer %1 has no paint property, skipping" ).arg( jsonLayer.value( QStringLiteral( "id" ) ).toString() ) );
-    return;
-  }
-
-  const QVariantMap jsonPaint = jsonLayer.value( QStringLiteral( "paint" ) ).toMap();
 
   if ( !jsonLayer.contains( QStringLiteral( "layout" ) ) )
   {
     context.pushWarning( QObject::tr( "Style layer %1 has no layout property, skipping" ).arg( jsonLayer.value( QStringLiteral( "id" ) ).toString() ) );
     return;
   }
-
   const QVariantMap jsonLayout = jsonLayer.value( QStringLiteral( "layout" ) ).toMap();
+  if ( !jsonLayout.contains( QStringLiteral( "text-field" ) ) )
+  {
+    hasRenderer = parseSymbolLayerAsRenderer( jsonLayer, renderer, context );
+    return;
+  }
+
+  if ( !jsonLayer.contains( QStringLiteral( "paint" ) ) )
+  {
+    context.pushWarning( QObject::tr( "Style layer %1 has no paint property, skipping" ).arg( jsonLayer.value( QStringLiteral( "id" ) ).toString() ) );
+    return;
+  }
+  const QVariantMap jsonPaint = jsonLayer.value( QStringLiteral( "paint" ) ).toMap();
 
   QgsPropertyCollection ddLabelProperties;
 
@@ -933,6 +938,126 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
   labelingStyle.setLabelSettings( labelSettings );
 
   hasLabeling = true;
+}
+
+bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &rendererStyle, QgsMapBoxGlStyleConversionContext &context )
+{
+  if ( !jsonLayer.contains( QStringLiteral( "layout" ) ) )
+  {
+    context.pushWarning( QObject::tr( "Style layer %1 has no layout property, skipping" ).arg( jsonLayer.value( QStringLiteral( "id" ) ).toString() ) );
+    return false;
+  }
+  const QVariantMap jsonLayout = jsonLayer.value( QStringLiteral( "layout" ) ).toMap();
+
+  if ( jsonLayout.value( QStringLiteral( "symbol-placement" ) ).toString() == QLatin1String( "line" ) )
+  {
+    QgsPropertyCollection ddProperties;
+
+    double spacing = 1.0;
+    if ( jsonLayout.contains( QStringLiteral( "symbol-spacing" ) ) )
+    {
+      const QVariant jsonSpacing = jsonLayout.value( QStringLiteral( "symbol-spacing" ) );
+      switch ( jsonSpacing.type() )
+      {
+        case QVariant::Int:
+        case QVariant::Double:
+          spacing = jsonSpacing.toDouble() * context.pixelSizeConversionFactor();
+          break;
+
+        case QVariant::Map:
+          ddProperties.setProperty( QgsSymbolLayer::PropertyInterval, parseInterpolateByZoom( jsonSpacing.toMap(), context, context.pixelSizeConversionFactor(), &spacing ) );
+          break;
+
+        case QVariant::List:
+        case QVariant::StringList:
+          ddProperties.setProperty( QgsSymbolLayer::PropertyInterval, parseInterpolateListByZoom( jsonSpacing.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), nullptr, &spacing ) );
+          break;
+
+        default:
+          context.pushWarning( QObject::tr( "Skipping non-implemented symbol-spacing expression" ) );
+          break;
+      }
+    }
+
+    bool rotateMarkers = true;
+    if ( jsonLayout.contains( QStringLiteral( "icon-rotation-alignment" ) ) )
+    {
+      const QString alignment = jsonLayout.value( QStringLiteral( "icon-rotation-alignment" ) ).toString();
+      if ( alignment == QLatin1String( "map" ) || alignment == QLatin1String( "auto" ) )
+      {
+        rotateMarkers = true;
+      }
+      else if ( alignment == QLatin1String( "viewport" ) )
+      {
+        rotateMarkers = false;
+      }
+    }
+
+    QgsPropertyCollection markerDdProperties;
+    double rotation = 0.0;
+    if ( jsonLayout.contains( QStringLiteral( "icon-rotate" ) ) )
+    {
+      const QVariant jsonIconRotate = jsonLayout.value( QStringLiteral( "icon-rotate" ) );
+      switch ( jsonIconRotate.type() )
+      {
+        case QVariant::Int:
+        case QVariant::Double:
+          rotation = jsonIconRotate.toDouble();
+          break;
+
+        case QVariant::Map:
+          markerDdProperties.setProperty( QgsSymbolLayer::PropertyAngle, parseInterpolateByZoom( jsonIconRotate.toMap(), context, context.pixelSizeConversionFactor(), &rotation ) );
+          break;
+
+        case QVariant::List:
+        case QVariant::StringList:
+          markerDdProperties.setProperty( QgsSymbolLayer::PropertyAngle, parseInterpolateListByZoom( jsonIconRotate.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), nullptr, &rotation ) );
+          break;
+
+        default:
+          context.pushWarning( QObject::tr( "Skipping non-implemented icon-rotate expression" ) );
+          break;
+      }
+    }
+
+    QgsMarkerLineSymbolLayer *lineSymbol = new QgsMarkerLineSymbolLayer( rotateMarkers, spacing );
+    lineSymbol->setOutputUnit( context.targetUnit() );
+    lineSymbol->setDataDefinedProperties( ddProperties );
+
+    QgsRasterMarkerSymbolLayer *markerLayer = new QgsRasterMarkerSymbolLayer( );
+    const QImage sprite = retrieveSprite( jsonLayout.value( QStringLiteral( "icon-image" ) ).toString(), context );
+    if ( !sprite.isNull() )
+    {
+      QByteArray blob;
+      QBuffer buffer( &blob );
+      buffer.open( QIODevice::WriteOnly );
+      sprite.save( &buffer, "PNG" );
+      buffer.close();
+      QByteArray encoded = blob.toBase64();
+
+      QString path( encoded );
+      path.prepend( QLatin1String( "base64:" ) );
+      markerLayer->setPath( path );
+      markerLayer->setSize( context.pixelSizeConversionFactor() * sprite.width() );
+      markerLayer->setSizeUnit( context.targetUnit() );
+    }
+
+    markerLayer->setDataDefinedProperties( markerDdProperties );
+    markerLayer->setAngle( rotation );
+    lineSymbol->setSubSymbol( new QgsMarkerSymbol( QgsSymbolLayerList() << markerLayer ) );
+
+    std::unique_ptr< QgsSymbol > symbol = qgis::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << lineSymbol );
+
+    // set render units
+    symbol->setOutputUnit( context.targetUnit() );
+    lineSymbol->setOutputUnit( context.targetUnit() );
+
+    rendererStyle.setGeometryType( QgsWkbTypes::LineGeometry );
+    rendererStyle.setSymbol( symbol.release() );
+    return true;
+  }
+
+  return false;
 }
 
 QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateColorByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, QColor *defaultColor )
