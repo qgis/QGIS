@@ -217,6 +217,11 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
      */
     void navigationModeChanged( NavigationMode mode );
 
+    /**
+     * Emitted whenever the temporalExtent \a extent changes.
+     */
+    void temporalExtentsChanged( const QgsDateTimeRange &extent );
+
   public slots:
 
     /**

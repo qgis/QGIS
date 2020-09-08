@@ -203,6 +203,11 @@ Emitted whenever the animation ``state`` changes.
 Emitted whenever the navigation ``mode`` changes.
 %End
 
+    void temporalExtentsChanged( const QgsDateTimeRange &extent );
+%Docstring
+Emitted whenever the temporalExtent ``extent`` changes.
+%End
+
   public slots:
 
     void play();
