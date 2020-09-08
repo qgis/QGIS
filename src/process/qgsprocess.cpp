@@ -395,6 +395,10 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &id )
       continue;
 
     std::cout << QStringLiteral( "%1: %2\n" ).arg( p->name(), p->description() ).toLocal8Bit().constData();
+    if ( ! p->help().isEmpty() )
+    {
+      std::cout << QStringLiteral( "\t%1\n" ).arg( p->help() ).toLocal8Bit().constData();
+    }
     std::cout << QStringLiteral( "\tArgument type:\t%1\n" ).arg( p->type() ).toLocal8Bit().constData();
 
     if ( p->type() == QgsProcessingParameterEnum::typeName() )
