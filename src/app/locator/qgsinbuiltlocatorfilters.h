@@ -112,7 +112,7 @@ class APP_EXPORT QgsActiveLayerFeaturesLocatorFilter : public QgsLocatorFilter
 
     /**
      * Returns the field restriction if defined (starting with @)
-     * The \a searchString is modified acccordingly by removing the field restriction
+     * The \a searchString is modified accordingly by removing the field restriction
      */
     QString fieldRestriction( QString &searchString ) const;
 

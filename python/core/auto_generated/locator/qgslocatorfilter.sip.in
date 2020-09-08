@@ -169,7 +169,7 @@ Prepares the filter instance for an upcoming search for the specified ``string``
 from the main thread, and individual filter subclasses should perform whatever
 tasks are required in order to allow a subsequent search to safely execute
 on a background thread.
-The method return an autocompletion list
+The method returns an autocompletion list
 %End
 
     virtual void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) = 0;

@@ -187,7 +187,7 @@ class QgsLocatorLineEdit : public QgsFilterLineEdit
   public:
     explicit QgsLocatorLineEdit( QgsLocatorWidget *locator, QWidget *parent = nullptr );
 
-    //! Perform completion and returns true if successful
+    //! Performs completion and returns true if successful
     bool performCompletion();
 
   protected:
