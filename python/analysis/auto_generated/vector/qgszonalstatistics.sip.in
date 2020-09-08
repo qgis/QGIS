@@ -42,6 +42,17 @@ A class that calculates raster statistics (count, sum, mean) for a polygon or mu
     typedef QFlags<QgsZonalStatistics::Statistic> Statistics;
 
 
+    enum Result
+    {
+      Success,
+      LayerTypeWrong,
+      LayerInvalid,
+      RasterInvalid,
+      RasterBandInvalid,
+      FailedToCreateField,
+      Cancelled
+    };
+
     QgsZonalStatistics( QgsVectorLayer *polygonLayer,
                         QgsRasterLayer *rasterLayer,
                         const QString &attributePrefix = QString(),
@@ -95,11 +106,27 @@ added to ``polygonLayer`` for each statistic calculated.
 .. versionadded:: 3.2
 %End
 
-    int calculateStatistics( QgsFeedback *feedback );
-%Docstring
-Starts the calculation
 
-:return: 0 in case of success
+    QgsZonalStatistics( QgsFeatureSource *source,
+                        QgsFeatureSink *sink,
+                        QgsRasterInterface *rasterInterface,
+                        const QgsCoordinateReferenceSystem &rasterCrs,
+                        const QMap<QgsZonalStatistics::Statistic, int> &statFieldIndexes,
+                        const QgsFields &fields,
+                        double rasterUnitsPerPixelX,
+                        double rasterUnitsPerPixelY,
+                        int rasterBand = 1,
+                        QgsZonalStatistics::Statistics stats = QgsZonalStatistics::Statistic::All );
+%Docstring
+
+
+.. versionadded:: 3.16
+%End
+
+
+    QgsZonalStatistics::Result calculateStatistics( QgsFeedback *feedback );
+%Docstring
+Runs the calculation.
 %End
 
     static QString displayName( QgsZonalStatistics::Statistic statistic );

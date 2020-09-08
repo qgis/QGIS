@@ -55,27 +55,33 @@ QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterI
 {
 }
 
-int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
+QgsZonalStatistics::QgsZonalStatistics( QgsFeatureSource *source, QgsFeatureSink *sink, QgsRasterInterface *rasterInterface, const QgsCoordinateReferenceSystem &rasterCrs, const QMap<QgsZonalStatistics::Statistic, int> &statFieldIndexes, const QgsFields &fields, double rasterUnitsPerPixelX, double rasterUnitsPerPixelY, int rasterBand, QgsZonalStatistics::Statistics stats )
+  : mRasterInterface( rasterInterface )
+  , mRasterCrs( rasterCrs )
+  , mCellSizeX( std::fabs( rasterUnitsPerPixelX ) )
+  , mCellSizeY( std::fabs( rasterUnitsPerPixelY ) )
+  , mRasterBand( rasterBand )
+  , mStatistics( stats )
+  , mSource( source )
+  , mSink( sink )
+  , mStatFieldIndexes( statFieldIndexes )
+  , mFields( fields )
 {
-  if ( !mPolygonLayer || mPolygonLayer->geometryType() != QgsWkbTypes::PolygonGeometry )
-  {
-    return 1;
-  }
+}
 
-  QgsVectorDataProvider *vectorProvider = mPolygonLayer->dataProvider();
-  if ( !vectorProvider )
-  {
-    return 2;
-  }
+QgsZonalStatistics::Result QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
+{
+  QgsFeatureSource *source = nullptr;
+  QgsVectorDataProvider *vectorProvider = nullptr;
 
   if ( !mRasterInterface )
   {
-    return 3;
+    return RasterInvalid;
   }
 
   if ( mRasterInterface->bandCount() < mRasterBand )
   {
-    return 4;
+    return RasterBandInvalid;
   }
 
   //get geometry info about raster layer
@@ -84,135 +90,67 @@ int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
 
   QgsRectangle rasterBBox = mRasterInterface->extent();
 
-  //add the new fields to the provider
-  QList<QgsField> newFieldList;
-  QString countFieldName;
-  if ( mStatistics & QgsZonalStatistics::Count )
+  if ( mSource )
   {
-    countFieldName = getUniqueFieldName( mAttributePrefix + QgsZonalStatistics::shortName( QgsZonalStatistics::Count ), newFieldList );
-    QgsField countField( countFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
-    newFieldList.push_back( countField );
+    if ( QgsWkbTypes::geometryType( mSource->wkbType() ) != QgsWkbTypes::PolygonGeometry )
+      return LayerTypeWrong;
+    source = mSource;
   }
-  QString sumFieldName;
-  if ( mStatistics & QgsZonalStatistics::Sum )
+  else
   {
-    sumFieldName = getUniqueFieldName( mAttributePrefix + QgsZonalStatistics::shortName( QgsZonalStatistics::Sum ), newFieldList );
-    QgsField sumField( sumFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
-    newFieldList.push_back( sumField );
-  }
-  QString meanFieldName;
-  if ( mStatistics & QgsZonalStatistics::Mean )
-  {
-    meanFieldName = getUniqueFieldName( mAttributePrefix + QgsZonalStatistics::shortName( QgsZonalStatistics::Mean ), newFieldList );
-    QgsField meanField( meanFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
-    newFieldList.push_back( meanField );
-  }
-  QString medianFieldName;
-  if ( mStatistics & QgsZonalStatistics::Median )
-  {
-    medianFieldName = getUniqueFieldName( mAttributePrefix + QgsZonalStatistics::shortName( QgsZonalStatistics::Median ), newFieldList );
-    QgsField medianField( medianFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
-    newFieldList.push_back( medianField );
-  }
-  QString stdevFieldName;
-  if ( mStatistics & QgsZonalStatistics::StDev )
-  {
-    stdevFieldName = getUniqueFieldName( mAttributePrefix + QgsZonalStatistics::shortName( QgsZonalStatistics::StDev ), newFieldList );
-    QgsField stdField( stdevFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
-    newFieldList.push_back( stdField );
-  }
-  QString minFieldName;
-  if ( mStatistics & QgsZonalStatistics::Min )
-  {
-    minFieldName = getUniqueFieldName( mAttributePrefix + QgsZonalStatistics::shortName( QgsZonalStatistics::Min ), newFieldList );
-    QgsField minField( minFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
-    newFieldList.push_back( minField );
-  }
-  QString maxFieldName;
-  if ( mStatistics & QgsZonalStatistics::Max )
-  {
-    maxFieldName = getUniqueFieldName( mAttributePrefix + QgsZonalStatistics::shortName( QgsZonalStatistics::Max ), newFieldList );
-    QgsField maxField( maxFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
-    newFieldList.push_back( maxField );
-  }
-  QString rangeFieldName;
-  if ( mStatistics & QgsZonalStatistics::Range )
-  {
-    rangeFieldName = getUniqueFieldName( mAttributePrefix + QgsZonalStatistics::shortName( QgsZonalStatistics::Range ), newFieldList );
-    QgsField rangeField( rangeFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
-    newFieldList.push_back( rangeField );
-  }
-  QString minorityFieldName;
-  if ( mStatistics & QgsZonalStatistics::Minority )
-  {
-    minorityFieldName = getUniqueFieldName( mAttributePrefix + QgsZonalStatistics::shortName( QgsZonalStatistics::Minority ), newFieldList );
-    QgsField minorityField( minorityFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
-    newFieldList.push_back( minorityField );
-  }
-  QString majorityFieldName;
-  if ( mStatistics & QgsZonalStatistics::Majority )
-  {
-    majorityFieldName = getUniqueFieldName( mAttributePrefix + QgsZonalStatistics::shortName( QgsZonalStatistics::Majority ), newFieldList );
-    QgsField majField( majorityFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
-    newFieldList.push_back( majField );
-  }
-  QString varietyFieldName;
-  if ( mStatistics & QgsZonalStatistics::Variety )
-  {
-    varietyFieldName = getUniqueFieldName( mAttributePrefix + QgsZonalStatistics::shortName( QgsZonalStatistics::Variety ), newFieldList );
-    QgsField varietyField( varietyFieldName, QVariant::Int, QStringLiteral( "int" ) );
-    newFieldList.push_back( varietyField );
-  }
-  QString varianceFieldName;
-  if ( mStatistics & QgsZonalStatistics::Variance )
-  {
-    varianceFieldName = getUniqueFieldName( mAttributePrefix + QgsZonalStatistics::shortName( QgsZonalStatistics::Variance ), newFieldList );
-    QgsField varianceField( varianceFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
-    newFieldList.push_back( varianceField );
-  }
-  vectorProvider->addAttributes( newFieldList );
+    if ( !mPolygonLayer || QgsWkbTypes::geometryType( mSource->wkbType() ) != QgsWkbTypes::PolygonGeometry )
+    {
+      return LayerTypeWrong;
+    }
 
-  //index of the new fields
-  int countIndex = ( mStatistics & QgsZonalStatistics::Count ) ? vectorProvider->fieldNameIndex( countFieldName ) : -1;
-  int sumIndex = ( mStatistics & QgsZonalStatistics::Sum ) ? vectorProvider->fieldNameIndex( sumFieldName ) : -1;
-  int meanIndex = ( mStatistics & QgsZonalStatistics::Mean ) ? vectorProvider->fieldNameIndex( meanFieldName ) : -1;
-  int medianIndex = ( mStatistics & QgsZonalStatistics::Median ) ? vectorProvider->fieldNameIndex( medianFieldName ) : -1;
-  int stdevIndex = ( mStatistics & QgsZonalStatistics::StDev ) ? vectorProvider->fieldNameIndex( stdevFieldName ) : -1;
-  int minIndex = ( mStatistics & QgsZonalStatistics::Min ) ? vectorProvider->fieldNameIndex( minFieldName ) : -1;
-  int maxIndex = ( mStatistics & QgsZonalStatistics::Max ) ? vectorProvider->fieldNameIndex( maxFieldName ) : -1;
-  int rangeIndex = ( mStatistics & QgsZonalStatistics::Range ) ? vectorProvider->fieldNameIndex( rangeFieldName ) : -1;
-  int minorityIndex = ( mStatistics & QgsZonalStatistics::Minority ) ? vectorProvider->fieldNameIndex( minorityFieldName ) : -1;
-  int majorityIndex = ( mStatistics & QgsZonalStatistics::Majority ) ? vectorProvider->fieldNameIndex( majorityFieldName ) : -1;
-  int varietyIndex = ( mStatistics & QgsZonalStatistics::Variety ) ? vectorProvider->fieldNameIndex( varietyFieldName ) : -1;
-  int varianceIndex = ( mStatistics & QgsZonalStatistics::Variance ) ? vectorProvider->fieldNameIndex( varianceFieldName ) : -1;
+    vectorProvider = mPolygonLayer->dataProvider();
+    if ( !vectorProvider )
+    {
+      return LayerInvalid;
+    }
+    source = vectorProvider;
 
-  if ( ( ( mStatistics & QgsZonalStatistics::Count ) && countIndex == -1 )
-       || ( ( mStatistics & QgsZonalStatistics::Sum ) && sumIndex == -1 )
-       || ( ( mStatistics & QgsZonalStatistics::Mean ) && meanIndex == -1 )
-       || ( ( mStatistics & QgsZonalStatistics::Median ) && medianIndex == -1 )
-       || ( ( mStatistics & QgsZonalStatistics::StDev ) && stdevIndex == -1 )
-       || ( ( mStatistics & QgsZonalStatistics::Min ) && minIndex == -1 )
-       || ( ( mStatistics & QgsZonalStatistics::Max ) && maxIndex == -1 )
-       || ( ( mStatistics & QgsZonalStatistics::Range ) && rangeIndex == -1 )
-       || ( ( mStatistics & QgsZonalStatistics::Minority ) && minorityIndex == -1 )
-       || ( ( mStatistics & QgsZonalStatistics::Majority ) && majorityIndex == -1 )
-       || ( ( mStatistics & QgsZonalStatistics::Variety ) && varietyIndex == -1 )
-       || ( ( mStatistics & QgsZonalStatistics::Variance ) && varianceIndex == -1 )
-     )
-  {
-    //failed to create a required field
-    return 8;
+    //add the new fields to the provider
+    QList<QgsField> newFieldList;
+    for ( QgsZonalStatistics::Statistic stat :
+          {
+            QgsZonalStatistics::Count,
+            QgsZonalStatistics::Sum,
+            QgsZonalStatistics::Mean,
+            QgsZonalStatistics::Median,
+            QgsZonalStatistics::StDev,
+            QgsZonalStatistics::Min,
+            QgsZonalStatistics::Max,
+            QgsZonalStatistics::Range,
+            QgsZonalStatistics::Minority,
+            QgsZonalStatistics::Majority,
+            QgsZonalStatistics::Variety,
+            QgsZonalStatistics::Variance
+          } )
+    {
+      if ( mStatistics & stat )
+      {
+        QString fieldName = getUniqueFieldName( mAttributePrefix + QgsZonalStatistics::shortName( stat ), newFieldList );
+        QgsField field( fieldName, QVariant::Double, QStringLiteral( "double precision" ) );
+        newFieldList.push_back( field );
+        mStatFieldIndexes.insert( stat, newFieldList.count() - 1 );
+      }
+    }
+
+    vectorProvider->addAttributes( newFieldList );
   }
 
-  //progress dialog
-  long featureCount = vectorProvider->featureCount();
+  long featureCount = source->featureCount();
 
-  //iterate over each polygon
   QgsFeatureRequest request;
-  request.setNoAttributes();
+
+  // If we edit in place, we don't need the other attributes
+  if ( vectorProvider )
+    request.setNoAttributes();
+
   request.setDestinationCrs( mRasterCrs, QgsProject::instance()->transformContext() );
-  QgsFeatureIterator fi = vectorProvider->getFeatures( request );
-  QgsFeature f;
+  QgsFeatureIterator fi = source->getFeatures( request );
+  QgsFeature feature;
 
   bool statsStoreValues = ( mStatistics & QgsZonalStatistics::Median ) ||
                           ( mStatistics & QgsZonalStatistics::StDev ) ||
@@ -224,7 +162,7 @@ int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
   int featureCounter = 0;
 
   QgsChangedAttributesMap changeMap;
-  while ( fi.nextFeature( f ) )
+  while ( fi.nextFeature( feature ) )
   {
     if ( feedback && feedback->isCanceled() )
     {
@@ -236,16 +174,22 @@ int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
       feedback->setProgress( 100.0 * static_cast< double >( featureCounter ) / featureCount );
     }
 
-    if ( !f.hasGeometry() )
+    if ( !feature.hasGeometry() )
     {
+      if ( mSink )
+        mSink->addFeature( feature );
       ++featureCounter;
       continue;
     }
-    QgsGeometry featureGeometry = f.geometry();
+
+    QgsGeometry featureGeometry = feature.geometry();
 
     QgsRectangle featureRect = featureGeometry.boundingBox().intersect( rasterBBox );
     if ( featureRect.isEmpty() )
     {
+      if ( mSink )
+        mSink->addFeature( feature );
+
       ++featureCounter;
       continue;
     }
@@ -266,17 +210,17 @@ int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
       rasterBlockExtent, [ &featureStats ]( double value, double weight ) { featureStats.addValue( value, weight ); } );
     }
 
-    //write the statistics value to the vector data provider
+    // calculate the statistics
     QgsAttributeMap changeAttributeMap;
     if ( mStatistics & QgsZonalStatistics::Count )
-      changeAttributeMap.insert( countIndex, QVariant( featureStats.count ) );
+      changeAttributeMap.insert( mStatFieldIndexes.value( QgsZonalStatistics::Count ), QVariant( featureStats.count ) );
     if ( mStatistics & QgsZonalStatistics::Sum )
-      changeAttributeMap.insert( sumIndex, QVariant( featureStats.sum ) );
+      changeAttributeMap.insert( mStatFieldIndexes.value( QgsZonalStatistics::Sum ), QVariant( featureStats.sum ) );
     if ( featureStats.count > 0 )
     {
       double mean = featureStats.sum / featureStats.count;
       if ( mStatistics & QgsZonalStatistics::Mean )
-        changeAttributeMap.insert( meanIndex, QVariant( mean ) );
+        changeAttributeMap.insert( mStatFieldIndexes.value( QgsZonalStatistics::Mean ), QVariant( mean ) );
       if ( mStatistics & QgsZonalStatistics::Median )
       {
         std::sort( featureStats.values.begin(), featureStats.values.end() );
@@ -291,7 +235,7 @@ int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
         {
           medianValue = featureStats.values.at( ( size + 1 ) / 2 - 1 );
         }
-        changeAttributeMap.insert( medianIndex, QVariant( medianValue ) );
+        changeAttributeMap.insert( mStatFieldIndexes.value( QgsZonalStatistics::Median ), QVariant( medianValue ) );
       }
       if ( mStatistics & QgsZonalStatistics::StDev || mStatistics & QgsZonalStatistics::Variance )
       {
@@ -305,17 +249,17 @@ int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
         if ( mStatistics & QgsZonalStatistics::StDev )
         {
           double stdev = std::pow( variance, 0.5 );
-          changeAttributeMap.insert( stdevIndex, QVariant( stdev ) );
+          changeAttributeMap.insert( mStatFieldIndexes.value( QgsZonalStatistics::StDev ), QVariant( stdev ) );
         }
         if ( mStatistics & QgsZonalStatistics::Variance )
-          changeAttributeMap.insert( varianceIndex, QVariant( variance ) );
+          changeAttributeMap.insert( mStatFieldIndexes.value( QgsZonalStatistics::Variance ), QVariant( variance ) );
       }
       if ( mStatistics & QgsZonalStatistics::Min )
-        changeAttributeMap.insert( minIndex, QVariant( featureStats.min ) );
+        changeAttributeMap.insert( mStatFieldIndexes.value( QgsZonalStatistics::Min ), QVariant( featureStats.min ) );
       if ( mStatistics & QgsZonalStatistics::Max )
-        changeAttributeMap.insert( maxIndex, QVariant( featureStats.max ) );
+        changeAttributeMap.insert( mStatFieldIndexes.value( QgsZonalStatistics::Max ), QVariant( featureStats.max ) );
       if ( mStatistics & QgsZonalStatistics::Range )
-        changeAttributeMap.insert( rangeIndex, QVariant( featureStats.max - featureStats.min ) );
+        changeAttributeMap.insert( mStatFieldIndexes.value( QgsZonalStatistics::Range ), QVariant( featureStats.max - featureStats.min ) );
       if ( mStatistics & QgsZonalStatistics::Minority || mStatistics & QgsZonalStatistics::Majority )
       {
         QList<int> vals = featureStats.valueCount.values();
@@ -323,37 +267,48 @@ int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
         if ( mStatistics & QgsZonalStatistics::Minority )
         {
           double minorityKey = featureStats.valueCount.key( vals.first() );
-          changeAttributeMap.insert( minorityIndex, QVariant( minorityKey ) );
+          changeAttributeMap.insert( mStatFieldIndexes.value( QgsZonalStatistics::Minority ), QVariant( minorityKey ) );
         }
         if ( mStatistics & QgsZonalStatistics::Majority )
         {
           double majKey = featureStats.valueCount.key( vals.last() );
-          changeAttributeMap.insert( majorityIndex, QVariant( majKey ) );
+          changeAttributeMap.insert( mStatFieldIndexes.value( QgsZonalStatistics::Majority ), QVariant( majKey ) );
         }
       }
       if ( mStatistics & QgsZonalStatistics::Variety )
-        changeAttributeMap.insert( varietyIndex, QVariant( featureStats.valueCount.count() ) );
+        changeAttributeMap.insert( mStatFieldIndexes.value( QgsZonalStatistics::Variety ), QVariant( featureStats.valueCount.count() ) );
     }
 
-    changeMap.insert( f.id(), changeAttributeMap );
+    if ( mSink )
+    {
+      QgsFeature newFeature = feature;
+      newFeature.setFields( mFields );
+      for ( const auto &attr : changeAttributeMap.toStdMap() )
+      {
+        newFeature.setAttribute( attr.first, attr.second );
+      }
+      mSink->addFeature( newFeature );
+    }
+    else
+    {
+      changeMap.insert( feature.id(), changeAttributeMap );
+    }
     ++featureCounter;
   }
 
-  vectorProvider->changeAttributeValues( changeMap );
+  if ( vectorProvider )
+    vectorProvider->changeAttributeValues( changeMap );
+  mPolygonLayer->updateFields();
 
   if ( feedback )
   {
+    if ( feedback->isCanceled() )
+      return Cancelled;
+
     feedback->setProgress( 100 );
   }
 
-  mPolygonLayer->updateFields();
-
-  if ( feedback && feedback->isCanceled() )
-  {
-    return 9;
-  }
-
-  return 0;
+  return Success;
 }
 
 QString QgsZonalStatistics::getUniqueFieldName( const QString &fieldName, const QList<QgsField> &newFields )
@@ -370,9 +325,9 @@ QString QgsZonalStatistics::getUniqueFieldName( const QString &fieldName, const 
   QString shortName = fieldName.mid( 0, 10 );
 
   bool found = false;
-  for ( int idx = 0; idx < allFields.count(); ++idx )
+  for ( const QgsField &field : qgis::as_const( allFields ) )
   {
-    if ( shortName == allFields.at( idx ).name() )
+    if ( shortName == field.name() )
     {
       found = true;
       break;
@@ -390,9 +345,9 @@ QString QgsZonalStatistics::getUniqueFieldName( const QString &fieldName, const 
   while ( found )
   {
     found = false;
-    for ( int idx = 0; idx < allFields.count(); ++idx )
+    for ( const QgsField &field : qgis::as_const( allFields ) )
     {
-      if ( shortName == allFields.at( idx ).name() )
+      if ( shortName == field.name() )
       {
         n += 1;
         if ( n < 9 )

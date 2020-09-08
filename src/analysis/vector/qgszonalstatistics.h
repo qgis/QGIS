@@ -27,6 +27,7 @@
 #include "qgis_analysis.h"
 #include "qgsfeedback.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsfields.h"
 
 class QgsGeometry;
 class QgsVectorLayer;
@@ -35,6 +36,8 @@ class QgsRasterInterface;
 class QgsRasterDataProvider;
 class QgsRectangle;
 class QgsField;
+class QgsFeatureSink;
+class QgsFeatureSource;
 
 /**
  * \ingroup analysis
@@ -62,6 +65,17 @@ class ANALYSIS_EXPORT QgsZonalStatistics
       All = Count | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | Variance
     };
     Q_DECLARE_FLAGS( Statistics, Statistic )
+
+    enum Result
+    {
+      Success = 0,
+      LayerTypeWrong = 1,
+      LayerInvalid,
+      RasterInvalid,
+      RasterBandInvalid,
+      FailedToCreateField = 8,
+      Cancelled = 9
+    };
 
     /**
      * Convenience constructor for QgsZonalStatistics, using an input raster layer.
@@ -112,11 +126,28 @@ class ANALYSIS_EXPORT QgsZonalStatistics
                         int rasterBand = 1,
                         QgsZonalStatistics::Statistics stats = QgsZonalStatistics::Statistics( QgsZonalStatistics::Count | QgsZonalStatistics::Sum | QgsZonalStatistics::Mean ) );
 
+
     /**
-     * Starts the calculation
-     * \returns 0 in case of success
-    */
-    int calculateStatistics( QgsFeedback *feedback );
+     *
+     *
+     * \since QGIS 3.16
+     */
+    QgsZonalStatistics( QgsFeatureSource *source,
+                        QgsFeatureSink *sink,
+                        QgsRasterInterface *rasterInterface,
+                        const QgsCoordinateReferenceSystem &rasterCrs,
+                        const QMap<QgsZonalStatistics::Statistic, int> &statFieldIndexes,
+                        const QgsFields &fields,
+                        double rasterUnitsPerPixelX,
+                        double rasterUnitsPerPixelY,
+                        int rasterBand = 1,
+                        QgsZonalStatistics::Statistics stats = QgsZonalStatistics::Statistic::All );
+
+
+    /**
+     * Runs the calculation.
+     */
+    QgsZonalStatistics::Result calculateStatistics( QgsFeedback *feedback );
 
     /**
      * Returns the friendly display name for a \a statistic.
@@ -198,6 +229,10 @@ class ANALYSIS_EXPORT QgsZonalStatistics
     QgsVectorLayer *mPolygonLayer = nullptr;
     QString mAttributePrefix;
     Statistics mStatistics = QgsZonalStatistics::All;
+    QgsFeatureSource *mSource = nullptr ;
+    QgsFeatureSink *mSink = nullptr ;
+    QMap<QgsZonalStatistics::Statistic, int> mStatFieldIndexes;
+    QgsFields mFields;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsZonalStatistics::Statistics )
