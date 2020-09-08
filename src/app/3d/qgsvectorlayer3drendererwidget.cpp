@@ -76,22 +76,32 @@ QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsMapLayer *lay
 {
   setPanelTitle( tr( "3D View" ) );
 
-  QVBoxLayout *layout = new QVBoxLayout( this );
+  QWidget *wdgt = new QWidget( this );
+  QVBoxLayout *layout = new QVBoxLayout( wdgt );
+  wdgt->setLayout( layout );
   layout->setContentsMargins( 0, 0, 0, 0 );
+
+  QScrollArea *scrollArea = new QScrollArea( this );
+  scrollArea->setWidget( wdgt );
+  scrollArea->setWidgetResizable( true );
+  scrollArea->setFrameShape( QFrame::NoFrame );
+  scrollArea->setFrameShadow( QFrame::Plain );
+
+  QVBoxLayout *layout2 = new QVBoxLayout();
+  layout2->setContentsMargins( 0, 0, 0, 0 );
+  layout2->addWidget( scrollArea );
+  setLayout( layout2 );
 
   cboRendererType = new QComboBox( this );
   cboRendererType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "rendererNullSymbol.svg" ) ), tr( "No Symbols" ) );
   cboRendererType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "rendererSingleSymbol.svg" ) ), tr( "Single Symbol" ) );
   cboRendererType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "rendererRuleBasedSymbol.svg" ) ), tr( "Rule-based" ) );
-  layout->addWidget( cboRendererType );
-
-  widgetRendererStack = new QStackedWidget( this );
-  QgsVScrollArea *scrollArea = new QgsVScrollArea( this );
-  scrollArea->setFrameShape( QFrame::NoFrame );
-  layout->addWidget( scrollArea );
-  scrollArea->setWidget( widgetRendererStack );
 
   widgetBaseProperties = new QgsVectorLayer3DPropertiesWidget( this );
+
+  widgetRendererStack = new QStackedWidget( this );
+  layout->addWidget( cboRendererType );
+  layout->addWidget( widgetRendererStack );
   layout->addWidget( widgetBaseProperties );
 
   widgetNoRenderer = new QLabel;
