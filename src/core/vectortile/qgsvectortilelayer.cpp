@@ -29,6 +29,7 @@
 #include "qgslayermetadataformatter.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgsmapboxglstyleconverter.h"
+#include "qgsjsonutils.h"
 
 QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseName )
   : QgsMapLayer( QgsMapLayerType::VectorTileLayer, baseName )
@@ -329,7 +330,7 @@ QString QgsVectorTileLayer::loadDefaultStyle( bool &resultFlag )
     }
 
     const QgsNetworkReplyContent content = networkRequest.reply();
-    const QByteArray raw = content.content();
+    const QVariantMap styleDefinition = QgsJsonUtils::parseJson( content.content() ).toMap();
 
     QgsMapBoxGlStyleConversionContext context;
     // convert automatically from pixel sizes to millimeters, because pixel sizes
@@ -338,8 +339,58 @@ QString QgsVectorTileLayer::loadDefaultStyle( bool &resultFlag )
     //assume source uses 96 dpi
     context.setPixelSizeConversionFactor( 25.4 / 96.0 );
 
+    if ( styleDefinition.contains( QStringLiteral( "sprite" ) ) )
+    {
+      // retrieve sprite definition
+      const QString spriteUriBase = mArcgisLayerConfiguration.value( QStringLiteral( "serviceUri" ) ).toString()
+                                    + '/' + mArcgisLayerConfiguration.value( QStringLiteral( "defaultStyles" ) ).toString()
+                                    + '/' + styleDefinition.value( QStringLiteral( "sprite" ) ).toString();
+      QNetworkRequest request = QNetworkRequest( QUrl( spriteUriBase + QStringLiteral( ".json" ) ) );
+
+      QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) );
+
+      QgsBlockingNetworkRequest networkRequest;
+      switch ( networkRequest.get( request ) )
+      {
+        case QgsBlockingNetworkRequest::NoError:
+        {
+          const QgsNetworkReplyContent content = networkRequest.reply();
+          const QVariantMap spriteDefinition = QgsJsonUtils::parseJson( content.content() ).toMap();
+
+          // retrieve sprite images
+          QNetworkRequest request = QNetworkRequest( QUrl( spriteUriBase + QStringLiteral( ".png" ) ) );
+
+          QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) );
+
+          QgsBlockingNetworkRequest networkRequest;
+          switch ( networkRequest.get( request ) )
+          {
+            case QgsBlockingNetworkRequest::NoError:
+            {
+              const QgsNetworkReplyContent imageContent = networkRequest.reply();
+              QImage spriteImage( QImage::fromData( imageContent.content() ) );
+              context.setSprites( spriteImage, spriteDefinition );
+              break;
+            }
+
+            case QgsBlockingNetworkRequest::NetworkError:
+            case QgsBlockingNetworkRequest::TimeoutError:
+            case QgsBlockingNetworkRequest::ServerExceptionError:
+              break;
+          }
+
+          break;
+        }
+
+        case QgsBlockingNetworkRequest::NetworkError:
+        case QgsBlockingNetworkRequest::TimeoutError:
+        case QgsBlockingNetworkRequest::ServerExceptionError:
+          break;
+      }
+    }
+
     QgsMapBoxGlStyleConverter converter;
-    if ( converter.convert( raw, &context ) != QgsMapBoxGlStyleConverter::Success )
+    if ( converter.convert( styleDefinition, &context ) != QgsMapBoxGlStyleConverter::Success )
     {
       resultFlag = false;
       return converter.errorMessage();

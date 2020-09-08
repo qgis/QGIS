@@ -283,32 +283,59 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
 
   if ( jsonPaint.contains( QStringLiteral( "fill-pattern" ) ) )
   {
-    context.pushWarning( QObject::tr( "fill-pattern is not yet supported" ) );
-#if 0 // todo
     // get fill-pattern to set sprite
-    // sprite imgs will already have been downloaded in converter.py
-    fill_pattern = json_paint.get( "fill-pattern" )
 
-                   // fill-pattern can be String or Object
-                   // String: {"fill-pattern": "dash-t"}
-                   // Object: {"fill-pattern":{"stops":[[11,"wetland8"],[12,"wetland16"]]}}
+    const QVariant fillPatternJson = jsonPaint.value( QStringLiteral( "fill-pattern" ) );
 
-                   // if Object, simpify into one sprite.
-                   // TODO:
-                   if isinstance( fill_pattern, dict )
+    // fill-pattern can be String or Object
+    // String: {"fill-pattern": "dash-t"}
+    // Object: {"fill-pattern":{"stops":[[11,"wetland8"],[12,"wetland16"]]}}
+
+    switch ( fillPatternJson.type() )
     {
-      pattern_stops = fill_pattern.get( "stops", [None] )
-                      fill_pattern = pattern_stops[-1][-1]
-    }
+      case QVariant::String:
+      {
+        const QImage sprite = retrieveSprite( fillPatternJson.toString(), context );
 
-    // when fill-pattern exists, set and insert RasterFillSymbolLayer
-    if fill_pattern
-  {
-    SPRITES_PATH = os.path.join( os.path.dirname( os.path.realpath( __file__ ) ), "sprites" )
-      raster_fill_symbol = QgsRasterFillSymbolLayer( os.path.join( SPRITES_PATH, fill_pattern + ".png" ) )
-      sym.appendSymbolLayer( raster_fill_symbol )
-    }
+        if ( !sprite.isNull() )
+        {
+          // when fill-pattern exists, set and insert QgsRasterFillSymbolLayer
+          QgsRasterFillSymbolLayer *rasterFill = new QgsRasterFillSymbolLayer();
+
+          QByteArray blob;
+          QBuffer buffer( &blob );
+          buffer.open( QIODevice::WriteOnly );
+          sprite.save( &buffer, "PNG" );
+          buffer.close();
+          QByteArray encoded = blob.toBase64();
+
+          QString path( encoded );
+          path.prepend( QLatin1String( "base64:" ) );
+          rasterFill->setImageFilePath( path );
+
+          symbol->appendSymbolLayer( rasterFill );
+        }
+        break;
+      }
+
+      case QVariant::Map:
+      {
+#if 0
+        // if Object, simpify into one sprite.
+        // TODO:
+        if isinstance( fill_pattern, dict )
+        {
+          pattern_stops = fill_pattern.get( "stops", [None] )
+                          fill_pattern = pattern_stops[-1][-1]
+        }
 #endif
+        FALLTHROUGH
+      }
+
+      default:
+
+        break;
+    }
   }
 
   fillSymbol->setDataDefinedProperties( ddProperties );
@@ -1442,6 +1469,34 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
   }
 }
 
+QImage QgsMapBoxGlStyleConverter::retrieveSprite( const QString &name, QgsMapBoxGlStyleConversionContext &context )
+{
+  if ( context.spriteImage().isNull() )
+  {
+    context.pushWarning( QObject::tr( "Could not retrieve sprite '%1'" ).arg( name ) );
+    return QImage();
+  }
+
+  const QVariantMap spriteDefinition = context.spriteDefinitions().value( name ).toMap();
+  if ( spriteDefinition.size() == 0 )
+  {
+    context.pushWarning( QObject::tr( "Could not retrieve sprite '%1'" ).arg( name ) );
+    return QImage();
+  }
+
+  const QImage sprite = context.spriteImage().copy( spriteDefinition.value( QStringLiteral( "x" ) ).toInt(),
+                        spriteDefinition.value( QStringLiteral( "y" ) ).toInt(),
+                        spriteDefinition.value( QStringLiteral( "width" ) ).toInt(),
+                        spriteDefinition.value( QStringLiteral( "height" ) ).toInt() );
+  if ( sprite.isNull() )
+  {
+    context.pushWarning( QObject::tr( "Could not retrieve sprite '%1'" ).arg( name ) );
+    return QImage();
+  }
+
+  return sprite;
+}
+
 QString QgsMapBoxGlStyleConverter::parseValue( const QVariant &value, QgsMapBoxGlStyleConversionContext &context )
 {
   switch ( value.type() )
@@ -1515,4 +1570,25 @@ double QgsMapBoxGlStyleConversionContext::pixelSizeConversionFactor() const
 void QgsMapBoxGlStyleConversionContext::setPixelSizeConversionFactor( double sizeConversionFactor )
 {
   mSizeConversionFactor = sizeConversionFactor;
+}
+
+QImage QgsMapBoxGlStyleConversionContext::spriteImage() const
+{
+  return mSpriteImage;
+}
+
+QVariantMap QgsMapBoxGlStyleConversionContext::spriteDefinitions() const
+{
+  return mSpriteDefinitions;
+}
+
+void QgsMapBoxGlStyleConversionContext::setSprites( const QImage &image, const QVariantMap &definitions )
+{
+  mSpriteImage = image;
+  mSpriteDefinitions = definitions;
+}
+
+void QgsMapBoxGlStyleConversionContext::setSprites( const QImage &image, const QString &definitions )
+{
+  setSprites( image, QgsJsonUtils::parseJson( definitions ).toMap() );
 }

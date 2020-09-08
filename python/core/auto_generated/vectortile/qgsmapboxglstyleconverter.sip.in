@@ -86,6 +86,42 @@ when converting styles.
 .. seealso:: :py:func:`pixelSizeConversionFactor`
 %End
 
+    QImage spriteImage() const;
+%Docstring
+Returns the sprite image to use during conversion, or an invalid image if this is not set.
+
+.. seealso:: :py:func:`spriteDefinitions`
+
+.. seealso:: :py:func:`setSprites`
+%End
+
+    QVariantMap spriteDefinitions() const;
+%Docstring
+Returns the sprite definitions to use during conversion.
+
+.. seealso:: :py:func:`spriteImage`
+
+.. seealso:: :py:func:`setSprites`
+%End
+
+    void setSprites( const QImage &image, const QVariantMap &definitions );
+%Docstring
+Sets the sprite ``image`` and ``definitions`` JSON to use during conversion.
+
+.. seealso:: :py:func:`spriteImage`
+
+.. seealso:: :py:func:`spriteDefinitions`
+%End
+
+    void setSprites( const QImage &image, const QString &definitions );
+%Docstring
+Sets the sprite ``image`` and ``definitions`` JSON string to use during conversion.
+
+.. seealso:: :py:func:`spriteImage`
+
+.. seealso:: :py:func:`spriteDefinitions`
+%End
+
 };
 
 class QgsMapBoxGlStyleConverter
@@ -372,6 +408,14 @@ Converts a MapBox GL expression to a QGIS expression.
 .. warning::
 
    This is private API only, and may change in future QGIS versions
+%End
+
+    static QImage retrieveSprite( const QString &name, QgsMapBoxGlStyleConversionContext &context );
+%Docstring
+Retrieves the sprite image with the specified ``name``, taken from the specified ``context``.
+
+The ``context`` must have valid sprite definitions and images set via :py:func:`QgsMapBoxGlStyleConversionContext.setSprites()`
+prior to conversion.
 %End
 
   private:
