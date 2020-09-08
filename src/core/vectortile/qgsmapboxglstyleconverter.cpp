@@ -273,7 +273,29 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
     }
   }
 
-  // TODO: fill-translate
+  // fill-translate
+  QPointF fillTranslate;
+  if ( jsonPaint.contains( QStringLiteral( "fill-translate" ) ) )
+  {
+    const QVariant jsonFillTranslate = jsonPaint.value( QStringLiteral( "fill-translate" ) );
+    switch ( jsonFillTranslate.type() )
+    {
+
+      case QVariant::Map:
+        ddProperties.setProperty( QgsSymbolLayer::PropertyOffset, parseInterpolatePointByZoom( jsonFillTranslate.toMap(), context, context.pixelSizeConversionFactor(), &fillTranslate ) );
+        break;
+
+      case QVariant::List:
+      case QVariant::StringList:
+        fillTranslate = QPointF( jsonFillTranslate.toList().value( 0 ).toDouble() * context.pixelSizeConversionFactor(),
+                                 jsonFillTranslate.toList().value( 1 ).toDouble() * context.pixelSizeConversionFactor() );
+        break;
+
+      default:
+        context.pushWarning( QObject::tr( "Skipping non-implemented fill-translate expression" ) );
+        break;
+    }
+  }
 
   std::unique_ptr< QgsSymbol > symbol( QgsSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry ) );
   QgsSimpleFillSymbolLayer *fillSymbol = dynamic_cast< QgsSimpleFillSymbolLayer * >( symbol->symbolLayer( 0 ) );
@@ -281,6 +303,12 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
   // set render units
   symbol->setOutputUnit( context.targetUnit() );
   fillSymbol->setOutputUnit( context.targetUnit() );
+
+  if ( !fillTranslate.isNull() )
+  {
+    fillSymbol->setOffset( fillTranslate );
+  }
+  fillSymbol->setOffsetUnit( context.targetUnit() );
 
   if ( jsonPaint.contains( QStringLiteral( "fill-pattern" ) ) )
   {
@@ -1344,6 +1372,118 @@ QString QgsMapBoxGlStyleConverter::parseOpacityStops( double base, const QVarian
   return caseString;
 }
 
+QgsProperty QgsMapBoxGlStyleConverter::parseInterpolatePointByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, double multiplier, QPointF *defaultPoint )
+{
+  const double base = json.value( QStringLiteral( "base" ), QStringLiteral( "1" ) ).toDouble();
+  const QVariantList stops = json.value( QStringLiteral( "stops" ) ).toList();
+  if ( stops.empty() )
+    return QgsProperty();
+
+  QString scaleExpression;
+  if ( stops.size() <= 2 )
+  {
+    if ( base == 1 )
+    {
+      scaleExpression = QStringLiteral( "array(scale_linear(@zoom_level, %1, %2, %3, %4)" ).arg( stops.value( 0 ).toList().value( 0 ).toString(),
+                        stops.last().toList().value( 0 ).toString(),
+                        stops.value( 0 ).toList().value( 1 ).toList().value( 0 ).toString(),
+                        stops.last().toList().value( 1 ).toList().value( 0 ).toString() );
+      if ( multiplier != 1.0 )
+        scaleExpression += QStringLiteral( " * %2" ).arg( multiplier );
+
+      scaleExpression += QStringLiteral( ",scale_linear(@zoom_level, %1, %2, %3, %4)" ).arg( stops.value( 0 ).toList().value( 0 ).toString(),
+                         stops.last().toList().value( 0 ).toString(),
+                         stops.value( 0 ).toList().value( 1 ).toList().value( 1 ).toString(),
+                         stops.last().toList().value( 1 ).toList().value( 1 ).toString() );
+      if ( multiplier != 1.0 )
+        scaleExpression += QStringLiteral( " * %2" ).arg( multiplier );
+      scaleExpression += ')';
+    }
+    else
+    {
+      scaleExpression = QStringLiteral( "array(%1,%2)" ).arg( interpolateExpression( stops.value( 0 ).toList().value( 0 ).toInt(),
+                        stops.last().toList().value( 0 ).toInt(),
+                        stops.value( 0 ).toList().value( 1 ).toList().value( 0 ).toInt(),
+                        stops.last().toList().value( 1 ).toList().value( 0 ).toInt(), base, multiplier ),
+                        interpolateExpression( stops.value( 0 ).toList().value( 0 ).toInt(),
+                            stops.last().toList().value( 0 ).toInt(),
+                            stops.value( 0 ).toList().value( 1 ).toList().value( 1 ).toInt(),
+                            stops.last().toList().value( 1 ).toList().value( 1 ).toInt(), base, multiplier )
+                                                            );
+    }
+  }
+  else
+  {
+    scaleExpression = parsePointStops( base, stops, context, multiplier );
+  }
+
+  if ( !stops.empty() && defaultPoint )
+    *defaultPoint = QPointF( stops.value( 0 ).toList().value( 1 ).toList().value( 0 ).toDouble() * multiplier,
+                             stops.value( 0 ).toList().value( 1 ).toList().value( 1 ).toDouble() * multiplier );
+
+  return QgsProperty::fromExpression( scaleExpression );
+}
+
+QString QgsMapBoxGlStyleConverter::parsePointStops( double base, const QVariantList &stops, QgsMapBoxGlStyleConversionContext &context, double multiplier )
+{
+  QString caseString = QStringLiteral( "CASE " );
+
+  for ( int i = 0; i < stops.length() - 1; ++i )
+  {
+    // bottom zoom and value
+    const QVariant bz = stops.value( i ).toList().value( 0 );
+    const QVariant bv = stops.value( i ).toList().value( 1 );
+    if ( bz.type() != QVariant::List && bz.type() != QVariant::StringList )
+    {
+      context.pushWarning( QObject::tr( "Could not convert offset interpolation, skipping." ) );
+      return QString();
+    }
+
+    // top zoom and value
+    const QVariant tz = stops.value( i + 1 ).toList().value( 0 );
+    const QVariant tv = stops.value( i + 1 ).toList().value( 1 );
+    if ( tz.type() != QVariant::List && tz.type() != QVariant::StringList )
+    {
+      context.pushWarning( QObject::tr( "Could not convert offset interpolation, skipping." ) );
+      return QString();
+    }
+
+    if ( base == 1 )
+    {
+      // base = 1 -> scale_linear
+      caseString += QStringLiteral( "WHEN @zoom_level > %1 AND @zoom_level <= %2 "
+                                    "THEN array(scale_linear(@zoom_level, %1, %2, %3, %4)" ).arg( bz.toString(),
+                                        tz.toString(),
+                                        bv.toList().value( 0 ).toString(),
+                                        tv.toList().value( 0 ).toString() );
+      if ( multiplier != 1.0 )
+      {
+        caseString += QStringLiteral( "* %1 " ).arg( multiplier );
+      }
+      caseString += QStringLiteral( ",scale_linear(@zoom_level, %1, %2, %3, %4)" ).arg( bz.toString(),
+                    tz.toString(),
+                    bv.toList().value( 1 ).toString(),
+                    tv.toList().value( 1 ).toString() );
+      if ( multiplier != 1.0 )
+      {
+        caseString += QStringLiteral( "* %1 " ).arg( multiplier );
+      }
+      caseString += ')';
+    }
+    else
+    {
+      // base != 1 -> scale_exp
+      caseString += QStringLiteral( "WHEN @zoom_level > %1 AND @zoom_level <= %2 "
+                                    "THEN array(%3,%4)" ).arg( bz.toString(),
+                                        tz.toString(),
+                                        interpolateExpression( bz.toInt(), tz.toInt(), bv.toList().value( 0 ).toDouble(), tv.toList().value( 0 ).toDouble(), base, multiplier ),
+                                        interpolateExpression( bz.toInt(), tz.toInt(), bv.toList().value( 1 ).toDouble(), tv.toList().value( 1 ).toDouble(), base, multiplier ) );
+    }
+  }
+  caseString += QStringLiteral( "END" );
+  return caseString;
+}
+
 QString QgsMapBoxGlStyleConverter::parseStops( double base, const QVariantList &stops, double multiplier, QgsMapBoxGlStyleConversionContext &context )
 {
   QString caseString = QStringLiteral( "CASE " );
@@ -1445,6 +1585,9 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateListByZoom( const QVarian
 
     case PropertyType::Opacity:
       return parseInterpolateOpacityByZoom( props );
+
+    case PropertyType::Point:
+      return parseInterpolatePointByZoom( props, context, multiplier );
   }
   return QgsProperty();
 }
