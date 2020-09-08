@@ -18,6 +18,7 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.1
 import QtQuick.Controls 1.4 as Controls1
 import QtGraphicalEffects 1.0
+import QtQuick.Window 2.0
 import QgsQuick 0.1 as QgsQuick
 
 /**
@@ -167,11 +168,16 @@ Item {
           parent: ApplicationWindow.overlay
           anchors.centerIn: parent
 
-          ColumnLayout {
-              Rectangle {
+            ScrollView {
+              clip: true
+              width: parent.width
+              height: parent.height
+
+              ColumnLayout {
+                Rectangle {
                   id: calendarOverlay
                   color: "transparent"
-                  implicitWidth: ApplicationWindow.window.width * 0.8
+                  implicitWidth: Math.min(Screen.width, Screen.height) * 0.8
                   implicitHeight: implicitWidth
                   visible: main.typeFromFieldFormat === "Date" || main.typeFromFieldFormat === "Date Time"
 
@@ -185,7 +191,6 @@ Item {
                       id: calendarGrid
                       anchors.left: parent.left
                       anchors.right: parent.right
-                      //Layout.alignment: Qt.AlignHCenter
                       columns: 1
                       implicitWidth: calendarOverlay.width
                       implicitHeight: calendarOverlay.height
@@ -302,7 +307,8 @@ Item {
                           popup.close()
                       }
                   }
-              }
+                }
+             }
           }
         }
 
