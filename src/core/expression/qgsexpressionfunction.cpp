@@ -5680,7 +5680,7 @@ static QVariant fcnFromBase64( const QVariantList &values, const QgsExpressionCo
   return QVariant( decoded );
 }
 
-typedef std::function < QVariant( QgsExpression &subExp, QgsExpressionContext &subContext, QgsVectorLayer *cachedTarget, QgsFeatureIterator fit, const QgsGeometry &geometry, bool testOnly, bool invert, QVariant currentFeatId, int neighbors, double max_distance, double bboxGrow ) > overlayFunc;
+typedef std::function < QVariant( QgsExpression &subExp, QgsExpressionContext &subContext, QgsVectorLayer *cachedTarget, QList<QgsFeature> features, const QgsGeometry &geometry, bool testOnly, bool invert, QVariant currentFeatId, int neighbors, double max_distance, double bboxGrow ) > overlayFunc;
 
 static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const overlayFunc &overlayFunction, bool invert = false, double bboxGrow = 0, bool isNearestFunc = false )
 {
@@ -5777,7 +5777,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   // Otherwise, it can be toggled by the user
   QgsSpatialIndex spatialIndex;
   QgsVectorLayer *cachedTarget;
-  QgsFeatureIterator fit;
+  QList<QgsFeature> features;
   if ( isNearestFunc || ( layerCanBeCached && cacheEnabled ) )
   {
     // If the cache (local spatial index) is enabled, we materialize the whole
@@ -5809,8 +5809,6 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
       spatialIndex = context->cachedValue( cacheIndex ).value<QgsSpatialIndex>();
     }
 
-    targetLayer = cachedTarget;
-    request = QgsFeatureRequest();
     QList<QgsFeatureId> fidsList;
     if ( isNearestFunc )
     {
@@ -5820,8 +5818,15 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
     {
       fidsList = spatialIndex.intersects( intDomain );
     }
-    QgsFeatureIds fids = fidsList.toSet();
-    request.setFilterFids(fids);
+
+    QListIterator<QgsFeatureId> i(fidsList);
+    while ( i.hasNext() )
+    {
+      features.append( cachedTarget->getFeature( i.next() ) );
+    }
+
+    // We use the cached layer as target layer !!
+    targetLayer = cachedTarget;
 
   }
   else
@@ -5829,9 +5834,13 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
     // If the cache (local spatial index) is not enabled, we directly
     // get the features from the target layer
     request.setFilterRect(intDomain);
+    QgsFeatureIterator fit = targetLayer->getFeatures(request);
+    QgsFeature feat;
+    while ( fit.nextFeature( feat ) )
+    {
+      features.append( feat );
+    }
   }
-
-  fit = targetLayer->getFeatures(request);
 
   QgsExpression subExpression;
   QgsExpressionContext subContext;
@@ -5842,7 +5851,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
     subExpression.prepare( &subContext );
   }
 
-  return overlayFunction( subExpression, subContext, targetLayer, fit, geometry, testOnly, invert, currentFeatId, limit, max_distance, bboxGrow );
+  return overlayFunction( subExpression, subContext, targetLayer, features, geometry, testOnly, invert, currentFeatId, limit, max_distance, bboxGrow );
 }
 
 // Intersect functions:
@@ -5850,14 +5859,17 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
 typedef bool ( QgsGeometry::*t_relationFunction )( const QgsGeometry &geometry ) const;
 
 template <t_relationFunction T>
-static QVariant indexedFilteredOverlay( QgsExpression &subExp, QgsExpressionContext &subContext, QgsVectorLayer *targetLayer, QgsFeatureIterator fit, const QgsGeometry &geometry, bool testOnly, bool invert, QVariant currentFeatId, int neighbors, double max_distance, double bboxGrow = 0 )
+static QVariant indexedFilteredOverlay( QgsExpression &subExp, QgsExpressionContext &subContext, QgsVectorLayer *targetLayer, QList<QgsFeature> features, const QgsGeometry &geometry, bool testOnly, bool invert, QVariant currentFeatId, int neighbors, double max_distance, double bboxGrow = 0 )
 {
 
   bool found = false;
   QVariantList results;
-  QgsFeature feat;
-  while ( fit.nextFeature( feat ) )
+
+  QListIterator<QgsFeature> i(features);
+  while ( i.hasNext() )
   {
+    QgsFeature feat = i.next();
+
     if ( !currentFeatId.isNull() && currentFeatId.toLongLong() == feat.id() )
     {
       continue; //if sourceLayer and targetLayer are the same, current feature have to be excluded from spatial check
@@ -5912,14 +5924,16 @@ static QVariant indexedFilteredOverlay( QgsExpression &subExp, QgsExpressionCont
   }
 }
 
-static QVariant indexedFilteredNearest( QgsExpression &subExp, QgsExpressionContext &subContext, QgsVectorLayer *targetLayer, QgsFeatureIterator fit, const QgsGeometry &geometry, bool testOnly, bool invert, QVariant currentFeatId, int neighbors, double max_distance, double bboxGrow = 0 )
+static QVariant indexedFilteredNearest( QgsExpression &subExp, QgsExpressionContext &subContext, QgsVectorLayer *targetLayer, QList<QgsFeature> features, const QgsGeometry &geometry, bool testOnly, bool invert, QVariant currentFeatId, int neighbors, double max_distance, double bboxGrow = 0 )
 {
 
   bool found = false;
   QVariantList results;
-  QgsFeature feat;
-  while ( fit.nextFeature( feat ) )
+  QListIterator<QgsFeature> i(features);
+  while ( i.hasNext() )
   {
+    QgsFeature feat = i.next();
+
     found = true;
     // We just want a single boolean result if there is any intersect: finish and return true
     if ( testOnly )
@@ -6354,7 +6368,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
       { QStringLiteral( "geometry_overlay_touches" ), fcnGeomOverlayTouches },
       { QStringLiteral( "geometry_overlay_disjoint" ), fcnGeomOverlayDisjoint },
       { QStringLiteral( "geometry_overlay_within" ), fcnGeomOverlayWithin },
-    }
+    };
     QMapIterator< QString, QgsExpressionFunction::FcnEval > i( geometry_overlay_definitions );
     while ( i.hasNext() )
     {
