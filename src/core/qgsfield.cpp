@@ -235,12 +235,12 @@ void QgsField::setAlias( const QString &alias )
   d->alias = alias;
 }
 
-QgsField::ConfigurationFlag QgsField::flags() const
+QgsField::ConfigurationFlags QgsField::configurationFlags() const
 {
   return d->flags;
 }
 
-void QgsField::setFlags( QgsField::ConfigurationFlag flags )
+void QgsField::setConfigurationFlags( QgsField::ConfigurationFlags flags )
 {
   d->flags = flags;
 }

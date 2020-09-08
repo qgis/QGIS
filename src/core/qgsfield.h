@@ -60,7 +60,7 @@ class CORE_EXPORT QgsField
     Q_PROPERTY( QString alias READ alias WRITE setAlias )
     Q_PROPERTY( QgsDefaultValue defaultValueDefinition READ defaultValueDefinition WRITE setDefaultValueDefinition )
     Q_PROPERTY( QgsFieldConstraints constraints READ constraints WRITE setConstraints )
-    Q_PROPERTY( ConfigurationFlags flags READ flags WRITE setFlags )
+    Q_PROPERTY( ConfigurationFlags configurationFlags READ configurationFlags WRITE setConfigurationFlags )
 
 
   public:
@@ -305,13 +305,13 @@ class CORE_EXPORT QgsField
      * Returns the Flags for the field (searchable, …)
      * \since QGIS 3.16
      */
-    QgsField::ConfigurationFlag flags() const SIP_SKIP;
+    QgsField::ConfigurationFlags configurationFlags() const SIP_SKIP;
 
     /**
      * Sets the Flags for the field (searchable, …)
      * \since QGIS 3.16
      */
-    void setFlags( QgsField::ConfigurationFlag flags ) SIP_SKIP;
+    void setConfigurationFlags( QgsField::ConfigurationFlags configurationFlags ) SIP_SKIP;
 
     //! Formats string for display
     QString displayString( const QVariant &v ) const;
