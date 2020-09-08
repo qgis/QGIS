@@ -5903,7 +5903,9 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   // for disjoint condition returns the results for cached layers not intersected feats
   QVariantList disjoint_results;
   QgsFeature feat2;
-  QgsFeatureIterator fi = targetLayer->getFeatures();
+  QgsFeatureRequest request2;
+  request2.setLimit( limit );
+  QgsFeatureIterator fi = targetLayer->getFeatures( request2 );
   while ( fi.nextFeature( feat2 ) )
   {
     if ( !results.contains( feat2.id() ) )
