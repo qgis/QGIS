@@ -393,19 +393,19 @@ QString QgsQuickUtils::dateTimeFieldFormat( const QString &fieldFormat )
 {
   if ( QgsDateTimeFieldFormatter::DATE_FORMAT == fieldFormat )
   {
-    return QStringLiteral( "Date" );
+    return QString( "Date" );
   }
   else if ( QgsDateTimeFieldFormatter::TIME_FORMAT == fieldFormat )
   {
-    return QStringLiteral( "Time" );
+    return QString( "Time" );
   }
   else if ( QgsDateTimeFieldFormatter::DATETIME_FORMAT == fieldFormat )
   {
-    return QStringLiteral( "Date Time" );
+    return QString( "Date Time" );
   }
   else
   {
-    return QStringLiteral();
+    return QString();
   }
 }
 
