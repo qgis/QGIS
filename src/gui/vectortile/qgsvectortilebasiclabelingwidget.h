@@ -65,6 +65,7 @@ class GUI_EXPORT QgsVectorTileBasicLabelingWidget : public QgsMapLayerConfigWidg
     QgsVectorTileLayer *mVTLayer = nullptr;
     std::unique_ptr<QgsVectorTileBasicLabeling> mLabeling;
     QgsVectorTileBasicLabelingListModel *mModel = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
 };
 
