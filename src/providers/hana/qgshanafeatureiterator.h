@@ -36,6 +36,7 @@ class QgsHanaFeatureSource : public QgsAbstractFeatureSource
     bool isSpatial() const { return !mGeometryColumn.isEmpty() && mGeometryType != QgsWkbTypes::Unknown; }
 
   private:
+    QVersionNumber mDatabaseVersion;
     QgsDataSourceUri mUri;
     QString mSchemaName;
     QString mTableName;
@@ -74,16 +75,18 @@ class QgsHanaFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsHa
     bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
 
     QString buildSqlQuery( const QgsFeatureRequest &request );
-    QString getBBOXFilter( const QVersionNumber &dbVersion ) const;
+    QString getBBOXFilter() const;
+    QgsRectangle getFilterRect() const;
 
   private:
+    const QVersionNumber mDatabaseVersion;
     QgsHanaConnectionRef mConnection;
     QgsHanaResultSetRef mResultSet;
     QString mSqlQuery = QString( "" );
     QgsRectangle mFilterRect;
-    QgsRectangle mSrsExtent;
+    const QgsRectangle mSrsExtent;
     QgsAttributeList mAttributesToFetch;
-    QString mFidColumn;
+    const QString mFidColumn;
     QgsCoordinateTransform mTransform;
     bool mHasAttributes = false;
     bool mHasGeometryColumn = false;

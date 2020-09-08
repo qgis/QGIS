@@ -27,6 +27,7 @@ from qgis.core import (
     QgsFeatureRequest,
     QgsFeature,
     QgsProviderRegistry,
+    QgsRectangle,
     QgsSettings)
 from qgis.testing import start_app, unittest
 from test_hana_utils import QgsHanaProviderUtils
@@ -292,6 +293,14 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         values = {feat['id']: feat['blob'] for feat in vl.getFeatures()}
         expected = {1: QByteArray(b'bbbvx'), 2: QByteArray(b'dddd')}
         self.assertEqual(values, expected)
+
+    def testFilterRectOutsideSrsExtent(self):
+        """Test filterRect which partially lies outside of the srs extent"""
+        self.source.setSubsetString(None)
+        extent = QgsRectangle(-103, 46, -25, 97)
+        result = set([f[self.pk_name] for f in self.source.getFeatures(QgsFeatureRequest().setFilterRect(extent))])
+        expected = set([1, 2, 4, 5])
+        assert set(expected) == result, f'Expected {expected} and got {result} when testing setFilterRect {extent}'
 
     def testEncodeDecodeUri(self):
         """Test HANA encode/decode URI"""

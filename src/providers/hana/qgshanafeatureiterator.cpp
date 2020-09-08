@@ -27,19 +27,68 @@
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
 
+#include "ogr_srs_api.h"
+
+namespace
+{
+  double getAngularUnits( const QgsCoordinateReferenceSystem &crs )
+  {
+    OGRSpatialReferenceH hCRS = OSRNewSpatialReference( nullptr );
+    int errcode = OSRImportFromProj4( hCRS, crs.toProj().toUtf8() );
+    if ( errcode != OGRERR_NONE )
+    {
+      if ( hCRS )
+        OSRRelease( hCRS );
+      throw QgsHanaException( "Unable to parse a spatial reference system" );
+    }
+
+    char *angularUnits = nullptr;
+    double factor = OSRGetAngularUnits( hCRS, &angularUnits );
+    OSRRelease( hCRS );
+    return factor;
+  }
+
+  QgsRectangle clampBBOX( QgsRectangle bbox, const QgsCoordinateReferenceSystem &crs, double allowedExcessFactor )
+  {
+    // In geographic CRS', HANA will reject any points outside the "normalized"
+    // range, which is (in radian) [-PI;PI] for longitude and [-PI/2;PI/2] for
+    // latitude. As QGIS seems to expect that larger bounding boxes should
+    // be allowed and should not wrap-around, we clamp the bounding boxes for
+    // geographic CRS' here.
+    if ( !crs.isGeographic() )
+      return bbox;
+
+    double factor = getAngularUnits( crs );
+
+    double minx = -M_PI / factor;
+    double maxx = M_PI / factor;
+    double spanx = maxx - minx;
+    minx -= allowedExcessFactor * spanx;
+    maxx += allowedExcessFactor * spanx;
+
+    double miny = -0.5 * M_PI / factor;
+    double maxy = 0.5 * M_PI / factor;
+    double spany = maxy - miny;
+    miny -= allowedExcessFactor * spany;
+    maxy += allowedExcessFactor * spany;
+
+    return bbox.intersect( QgsRectangle( minx, miny, maxx, maxy ) );
+  }
+}
+
 QgsHanaFeatureIterator::QgsHanaFeatureIterator(
   QgsHanaFeatureSource *source,
   bool ownSource,
   const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsHanaFeatureSource>( source, ownSource, request )
+  , mDatabaseVersion( source->mDatabaseVersion )
   , mConnection( source->mUri )
   , mSrsExtent( source->mSrsExtent )
   , mFidColumn( source->mFidColumn )
 {
-  mClosed = true;
-
   if ( mConnection.isNull() )
   {
+    mClosed = true;
     iteratorClosed();
     return;
   }
@@ -53,20 +102,19 @@ QgsHanaFeatureIterator::QgsHanaFeatureIterator(
   }
   catch ( QgsCsException & )
   {
-    iteratorClosed();
+    close();
     return;
   }
 
   try
   {
     mSqlQuery = buildSqlQuery( request );
-    mClosed = false;
 
     rewind();
   }
   catch ( const QgsHanaException & )
   {
-    iteratorClosed();
+    close();
   }
 }
 
@@ -83,8 +131,9 @@ bool QgsHanaFeatureIterator::rewind()
   mResultSet.reset();
   if ( !( mFilterRect.isNull() || mFilterRect.isEmpty() ) && mSource->isSpatial() && mHasGeometryColumn )
   {
-    QString ll = QStringLiteral( "POINT(%1 %2)" ).arg( QString::number( mFilterRect.xMinimum() ),  QString::number( mFilterRect.yMinimum() ) );
-    QString ur = QStringLiteral( "POINT(%1 %2)" ).arg( QString::number( mFilterRect.xMaximum() ),  QString::number( mFilterRect.yMaximum() ) );
+    QgsRectangle filterRect = getFilterRect();
+    QString ll = QStringLiteral( "POINT(%1 %2)" ).arg( QString::number( filterRect.xMinimum() ),  QString::number( filterRect.yMinimum() ) );
+    QString ur = QStringLiteral( "POINT(%1 %2)" ).arg( QString::number( filterRect.xMaximum() ),  QString::number( filterRect.yMaximum() ) );
     mResultSet = mConnection->executeQuery( mSqlQuery, { ll, mSource->mSrid, ur, mSource->mSrid } );
   }
   else
@@ -95,6 +144,7 @@ bool QgsHanaFeatureIterator::rewind()
 
 bool QgsHanaFeatureIterator::close()
 {
+
   if ( mClosed )
     return false;
 
@@ -114,7 +164,7 @@ bool QgsHanaFeatureIterator::fetchFeature( QgsFeature &feature )
 {
   feature.setValid( false );
 
-  if ( mClosed )
+  if ( mClosed || !mResultSet )
     return false;
 
   if ( !mResultSet->next() )
@@ -164,7 +214,6 @@ bool QgsHanaFeatureIterator::fetchFeature( QgsFeature &feature )
   feature.setFields( mSource->mFields ); // allow name-based attribute lookups
   geometryToDestinationCrs( feature, mTransform );
 
-
   return true;
 }
 
@@ -176,14 +225,29 @@ bool QgsHanaFeatureIterator::nextFeatureFilterExpression( QgsFeature &feature )
     return fetchFeature( feature );
 }
 
-QString QgsHanaFeatureIterator::getBBOXFilter( const QVersionNumber &dbVersion ) const
+QString QgsHanaFeatureIterator::getBBOXFilter( ) const
 {
-  if ( dbVersion.majorVersion() == 1 )
+  if ( mDatabaseVersion.majorVersion() == 1 )
     return QStringLiteral( "%1.ST_SRID(%2).ST_IntersectsRect(ST_GeomFromText(?, ?), ST_GeomFromText(?, ?)) = 1" )
            .arg( QgsHanaUtils::quotedIdentifier( mSource->mGeometryColumn ), QString::number( mSource->mSrid ) );
   else
     return QStringLiteral( "%1.ST_IntersectsRectPlanar(ST_GeomFromText(?, ?), ST_GeomFromText(?, ?)) = 1" )
            .arg( QgsHanaUtils::quotedIdentifier( mSource->mGeometryColumn ) );
+}
+
+QgsRectangle QgsHanaFeatureIterator::getFilterRect() const
+{
+  const QgsCoordinateReferenceSystem &crs = mSource->mCrs;
+  if ( !crs.isGeographic() )
+    return mFilterRect;
+
+  if ( mDatabaseVersion.majorVersion() > 1 )
+    return clampBBOX( mFilterRect, crs, 0.0 );
+
+  int srid = QgsHanaUtils::toPlanarSRID( mSource->mSrid );
+  if ( srid == mSource->mSrid )
+    return mFilterRect;
+  return clampBBOX( mFilterRect, crs, 0.5 );
 }
 
 bool QgsHanaFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys )
@@ -295,7 +359,7 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
   QStringList sqlFilter;
   // Set spatial filter
   if ( mSource->isSpatial() && mHasGeometryColumn && !( filterRect.isNull() || filterRect.isEmpty() ) )
-    sqlFilter.push_back( getBBOXFilter( QgsHanaUtils::toHANAVersion( mConnection->getDatabaseVersion() ) ) );
+    sqlFilter.push_back( getBBOXFilter() );
 
   if ( !mSource->mQueryWhereClause.isEmpty() )
     sqlFilter.push_back( mSource->mQueryWhereClause );
@@ -385,7 +449,8 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
 }
 
 QgsHanaFeatureSource::QgsHanaFeatureSource( const QgsHanaProvider *p )
-  : mUri( p->mUri )
+  : mDatabaseVersion( p->mDatabaseVersion )
+  , mUri( p->mUri )
   , mSchemaName( p->mSchemaName )
   , mTableName( p->mTableName )
   , mFidColumn( p->mFidColumn )

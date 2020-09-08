@@ -65,12 +65,14 @@ namespace
 
   void createCoordinateSystem( QgsHanaConnectionRef &conn, const QgsCoordinateReferenceSystem &srs )
   {
-    OGRSpatialReferenceH hCRS = nullptr;
-    hCRS = OSRNewSpatialReference( nullptr );
+    OGRSpatialReferenceH hCRS = OSRNewSpatialReference( nullptr );
     int errcode = OSRImportFromProj4( hCRS, srs.toProj().toUtf8() );
-
     if ( errcode != OGRERR_NONE )
+    {
+      if ( hCRS )
+        OSRRelease( hCRS );
       throw QgsHanaException( "Unable to parse a spatial reference system" );
+    }
 
     QgsCoordinateReferenceSystem srsWGS84;
     srsWGS84.createFromString( "EPSG:4326" );
@@ -110,6 +112,8 @@ namespace
                         xRange, yRange,
                         QgsHanaUtils::quotedString( srs.toWkt() ),
                         QgsHanaUtils::quotedString( srs.toProj() ) );
+
+    OSRRelease( hCRS );
 
     QString errorMessage;
     conn->execute( sql, &errorMessage );
