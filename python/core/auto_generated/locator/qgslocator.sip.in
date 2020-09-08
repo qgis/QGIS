@@ -149,13 +149,6 @@ Emitted whenever a filter encounters a matching ``result`` after the :py:func:`~
 is called.
 %End
 
-    void searchBegan();
-%Docstring
-Emitted when locator has begun a search, before actually preparing it.
-
-.. versionadded:: 3.16
-%End
-
     void searchPrepared();
 %Docstring
 Emitted when locator has prepared the search (:py:func:`QgsLocatorFilter.prepare`)

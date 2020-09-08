@@ -161,12 +161,6 @@ class CORE_EXPORT QgsLocator : public QObject
     void foundResult( const QgsLocatorResult &result );
 
     /**
-     * Emitted when locator has begun a search, before actually preparing it.
-     * \since QGIS 3.16
-     */
-    void searchBegan();
-
-    /**
      * Emitted when locator has prepared the search (\see QgsLocatorFilter::prepare)
      * before the search is actually performed
      * \since QGIS 3.16

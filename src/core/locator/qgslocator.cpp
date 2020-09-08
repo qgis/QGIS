@@ -125,7 +125,6 @@ void QgsLocator::registerFilter( QgsLocatorFilter *filter )
 void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c, QgsFeedback *feedback )
 {
   mAutocompletionList.clear();
-  emit searchBegan();
 
   QgsLocatorContext context( c );
   // ideally this should not be required, as well behaved callers
