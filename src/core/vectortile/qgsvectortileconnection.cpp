@@ -38,6 +38,8 @@ QString QgsVectorTileProviderConnection::encodedUri( const QgsVectorTileProvider
     uri.setPassword( conn.password );
   if ( !conn.referer.isEmpty() )
     uri.setParam( QStringLiteral( "referer" ),  conn.referer );
+  if ( !conn.styleUrl.isEmpty() )
+    uri.setParam( QStringLiteral( "styleUrl" ),  conn.styleUrl );
 
   switch ( conn.serviceType )
   {
@@ -65,6 +67,7 @@ QgsVectorTileProviderConnection::Data QgsVectorTileProviderConnection::decodedUr
   conn.username = dsUri.username();
   conn.password = dsUri.password();
   conn.referer = dsUri.param( QStringLiteral( "referer" ) );
+  conn.styleUrl = dsUri.param( QStringLiteral( "styleUrl" ) );
 
   if ( dsUri.hasParam( QStringLiteral( "serviceType" ) ) )
   {
@@ -92,6 +95,8 @@ QString QgsVectorTileProviderConnection::encodedLayerUri( const QgsVectorTilePro
     uri.setPassword( conn.password );
   if ( !conn.referer.isEmpty() )
     uri.setParam( QStringLiteral( "referer" ),  conn.referer );
+  if ( !conn.styleUrl.isEmpty() )
+    uri.setParam( QStringLiteral( "styleUrl" ),  conn.styleUrl );
 
   switch ( conn.serviceType )
   {
@@ -131,6 +136,7 @@ QgsVectorTileProviderConnection::Data QgsVectorTileProviderConnection::connectio
   conn.username = settings.value( QStringLiteral( "username" ) ).toString();
   conn.password = settings.value( QStringLiteral( "password" ) ).toString();
   conn.referer = settings.value( QStringLiteral( "referer" ) ).toString();
+  conn.styleUrl = settings.value( QStringLiteral( "styleUrl" ) ).toString();
 
   if ( settings.contains( QStringLiteral( "serviceType" ) ) )
   {
@@ -159,6 +165,7 @@ void QgsVectorTileProviderConnection::addConnection( const QString &name, QgsVec
   settings.setValue( QStringLiteral( "username" ), conn.username );
   settings.setValue( QStringLiteral( "password" ), conn.password );
   settings.setValue( QStringLiteral( "referer" ), conn.referer );
+  settings.setValue( QStringLiteral( "styleUrl" ), conn.styleUrl );
 
   switch ( conn.serviceType )
   {

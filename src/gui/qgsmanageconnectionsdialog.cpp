@@ -776,6 +776,7 @@ QDomDocument QgsManageConnectionsDialog::saveVectorTileConnections( const QStrin
     el.setAttribute( QStringLiteral( "username" ), settings.value( path + "/username" ).toString() );
     el.setAttribute( QStringLiteral( "password" ), settings.value( path + "/password" ).toString() );
     el.setAttribute( QStringLiteral( "referer" ), settings.value( path + "/referer" ).toString() );
+    el.setAttribute( QStringLiteral( "styleUrl" ), settings.value( path + "/styleUrl" ).toString() );
 
     root.appendChild( el );
   }
@@ -1626,6 +1627,7 @@ void QgsManageConnectionsDialog::loadVectorTileConnections( const QDomDocument &
     settings.setValue( QStringLiteral( "username" ), child.attribute( QStringLiteral( "username" ) ) );
     settings.setValue( QStringLiteral( "password" ), child.attribute( QStringLiteral( "password" ) ) );
     settings.setValue( QStringLiteral( "referer" ), child.attribute( QStringLiteral( "referer" ) ) );
+    settings.setValue( QStringLiteral( "styleUrl" ), child.attribute( QStringLiteral( "styleUrl" ) ) );
 
     settings.endGroup();
 

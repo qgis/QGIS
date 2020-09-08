@@ -52,6 +52,8 @@ void QgsVectorTileConnectionDialog::setConnection( const QString &name, const QS
   mAuthSettings->setPassword( conn.password );
   mEditReferer->setText( conn.referer );
   mAuthSettings->setConfigId( conn.authCfg );
+
+  mEditStyleUrl->setText( conn.styleUrl );
 }
 
 QString QgsVectorTileConnectionDialog::connectionUri() const
@@ -66,6 +68,7 @@ QString QgsVectorTileConnectionDialog::connectionUri() const
   conn.password = mAuthSettings->password();
   conn.referer = mEditReferer->text();
   conn.authCfg = mAuthSettings->configId( );
+  conn.styleUrl = mEditStyleUrl->text();
   return QgsVectorTileProviderConnection::encodedUri( conn );
 }
 
