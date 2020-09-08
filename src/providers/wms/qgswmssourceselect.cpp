@@ -270,6 +270,9 @@ void QgsWMSSourceSelect::clear()
   lstLayers->clear();
   lstTilesets->clearContents();
 
+  mTreeInitialExpand.clear();
+  mLayersFilterLineEdit->clearValue();
+
   mCRSs.clear();
 
   const auto constButtons = mImageFormatGroup->buttons();
