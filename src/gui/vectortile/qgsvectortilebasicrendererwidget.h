@@ -65,6 +65,7 @@ class GUI_EXPORT QgsVectorTileBasicRendererWidget : public QgsMapLayerConfigWidg
     QgsVectorTileLayer *mVTLayer = nullptr;
     std::unique_ptr<QgsVectorTileBasicRenderer> mRenderer;
     QgsVectorTileBasicRendererListModel *mModel = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
 };
 

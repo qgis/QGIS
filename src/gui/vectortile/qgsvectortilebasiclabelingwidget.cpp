@@ -19,6 +19,8 @@
 #include "qgsvectortilelayer.h"
 
 #include "qgslabelinggui.h"
+#include "qgsmapcanvas.h"
+#include "qgsvectortileutils.h"
 
 #include <QMenu>
 
@@ -283,6 +285,7 @@ bool QgsVectorTileBasicLabelingListModel::dropMimeData( const QMimeData *data,
 
 QgsVectorTileBasicLabelingWidget::QgsVectorTileBasicLabelingWidget( QgsVectorTileLayer *layer, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
+  , mMapCanvas( canvas )
   , mMessageBar( messageBar )
 {
 
@@ -300,6 +303,15 @@ QgsVectorTileBasicLabelingWidget::QgsVectorTileBasicLabelingWidget( QgsVectorTil
   connect( btnRemoveRule, &QAbstractButton::clicked, this, &QgsVectorTileBasicLabelingWidget::removeStyle );
 
   connect( viewStyles, &QAbstractItemView::doubleClicked, this, &QgsVectorTileBasicLabelingWidget::editStyleAtIndex );
+
+  if ( mMapCanvas )
+  {
+    connect( mMapCanvas, &QgsMapCanvas::scaleChanged, this, [ = ]( double scale )
+    {
+      mLabelCurrentZoom->setText( tr( "Current zoom: %1" ).arg( QgsVectorTileUtils::scaleToZoomLevel( scale, 0, 99 ) ) );
+    } );
+    mLabelCurrentZoom->setText( tr( "Current zoom: %1" ).arg( QgsVectorTileUtils::scaleToZoomLevel( mMapCanvas->scale(), 0, 99 ) ) );
+  }
 
   setLayer( layer );
 }
