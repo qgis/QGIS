@@ -44,6 +44,14 @@ class QgsAttributeForm : QWidget
 
     const QgsFeature &feature();
 
+    QgsFeature currentFormFeature() const;
+%Docstring
+Returns the feature that is currently displayed in the form with all
+the changes received on editing the values in the widgets.
+
+.. versionadded:: 3.16
+%End
+
     void displayWarning( const QString &message );
 %Docstring
 Displays a warning message in the form message bar

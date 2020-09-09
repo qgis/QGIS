@@ -770,6 +770,13 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
 
         self.assertEqual(vl.dataProvider().pkAttributeIndexes(), [0, 2])
 
+    def getGeneratedColumnsData(self):
+        """
+        return a tuple with the generated column test layer and the expected generated value
+        """
+        return (QgsVectorLayer(self.dbconn + ' sslmode=disable table="QGIS"."GENERATED_COLUMNS"', 'test', 'oracle'),
+                """'test:'||TO_CHAR("pk")""")
+
 
 if __name__ == '__main__':
     unittest.main()

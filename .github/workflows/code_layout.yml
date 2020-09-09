@@ -69,7 +69,7 @@ jobs:
 
       - name: Run Shellcheck
         run: ./tests/code_layout/test_shellcheck.sh
-    
+
   banned_keywords_check:
     runs-on: ubuntu-latest
     steps:
@@ -77,7 +77,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Run Banned Keywords Test
         run: ./tests/code_layout/test_banned_keywords.sh
-    
+
   def_window_title_check:
     runs-on: ubuntu-latest
     steps:
@@ -85,7 +85,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Def Window Title Test
         run: ./tests/code_layout/test_defwindowtitle.sh
-    
+
   doxygen_layout_check:
     runs-on: ubuntu-latest
     steps:
@@ -97,7 +97,7 @@ jobs:
               expect
       - name: Doxygen Layout Test
         run: ./tests/code_layout/test_doxygen_layout.sh
-    
+
   indentation_check:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
@@ -114,15 +114,25 @@ jobs:
               flip
       - name: Indentation Test
         run: ./scripts/verify_indentation.sh HEAD~1
-    
+
   spell_check:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Indentation Test
-        run: ./scripts/spell_check/spell_test.sh
-    
+      - name: Install Requirements
+        run: |
+          sudo apt install -y \
+              expect \
+              silversearcher-ag
+      - uses: trilom/file-changes-action@v1.2.4
+        id: changed_files
+        with:
+          output: ' '
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+      - name: Spell Test
+        run: ./scripts/spell_check/check_spelling.sh -r ${{ steps.changed_files.outputs.files_modified }} ${{ steps.changed_files.outputs.files_added }}
+
   sip_check:
     runs-on: ubuntu-latest
     steps:
@@ -157,7 +167,7 @@ jobs:
       - name: Sip Include Test
         run: ./tests/code_layout/test_sip_include.sh
       - name: Sip Files Up To Date
-        run: ./tests/code_layout/test_sipfiles_uptodate.sh
+        run: ./tests/code_layout/test_sipfiles.sh
 
   cppcheck_16_04:
     runs-on: ubuntu-16.04

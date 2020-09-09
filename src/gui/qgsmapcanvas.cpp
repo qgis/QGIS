@@ -83,6 +83,7 @@ email                : sherman at mrcc.com
 #include "qgstemporalcontroller.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsprojectionselectiondialog.h"
+#include "qgsannotationlayer.h"
 
 /**
  * \ingroup gui
@@ -585,13 +586,19 @@ void QgsMapCanvas::refreshMap()
     mSettings.setLayerStyleOverrides( QgsProject::instance()->mapThemeCollection()->mapThemeStyleOverrides( mTheme ) );
   }
 
+  // render main annotation layer above all other layers
+  QgsMapSettings renderSettings = mSettings;
+  QList<QgsMapLayer *> allLayers = renderSettings.layers();
+  allLayers.insert( 0, QgsProject::instance()->mainAnnotationLayer() );
+  renderSettings.setLayers( allLayers );
+
   // create the renderer job
   Q_ASSERT( !mJob );
   mJobCanceled = false;
   if ( mUseParallelRendering )
-    mJob = new QgsMapRendererParallelJob( mSettings );
+    mJob = new QgsMapRendererParallelJob( renderSettings );
   else
-    mJob = new QgsMapRendererSequentialJob( mSettings );
+    mJob = new QgsMapRendererSequentialJob( renderSettings );
   connect( mJob, &QgsMapRendererJob::finished, this, &QgsMapCanvas::rendererJobFinished );
   mJob->setCache( mCache );
 

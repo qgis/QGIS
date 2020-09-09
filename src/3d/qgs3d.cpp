@@ -77,7 +77,7 @@ void Qgs3D::initialize()
   instance()->materialRegistry()->addMaterialSettingsType( new QgsMaterialSettingsMetadata( QStringLiteral( "gooch" ), QObject::tr( "CAD (Gooch)" ),
       QgsGoochMaterialSettings::create, QgsGoochMaterialSettings::supportsTechnique, nullptr, QgsApplication::getThemeIcon( QStringLiteral( "/mIconGoochMaterial.svg" ) ) ) );
 
-  // because we are usually populating the 3d registry AFTER QgsApplication initialisation, we need to defer creation
+  // because we are usually populating the 3d registry AFTER QgsApplication initialization, we need to defer creation
   // of 3d symbols in the default style until now
   QgsStyle::defaultStyle()->handleDeferred3DSymbolCreation();
 }

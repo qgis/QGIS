@@ -1667,22 +1667,22 @@ bool QgsMssqlProvider::convertField( QgsField &field )
 
     case QVariant::DateTime:
       fieldType = QStringLiteral( "datetime" );
-      fieldPrec = -1;
+      fieldPrec = 0;
       break;
 
     case QVariant::Date:
       fieldType = QStringLiteral( "date" );
-      fieldPrec = -1;
+      fieldPrec = 0;
       break;
 
     case QVariant::Time:
       fieldType = QStringLiteral( "time" );
-      fieldPrec = -1;
+      fieldPrec = 0;
       break;
 
     case QVariant::String:
       fieldType = QStringLiteral( "nvarchar(max)" );
-      fieldPrec = -1;
+      fieldPrec = 0;
       break;
 
     case QVariant::Int:
@@ -1696,7 +1696,7 @@ bool QgsMssqlProvider::convertField( QgsField &field )
       {
         fieldType = QStringLiteral( "float" );
         fieldSize = -1;
-        fieldPrec = -1;
+        fieldPrec = 0;
       }
       else
       {

@@ -93,22 +93,25 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
 
     QgsVectorTileLayer *clone() const override SIP_FACTORY;
 
-    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
+    QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
 
-    virtual bool readXml( const QDomNode &layerNode, QgsReadWriteContext &context ) override;
+    bool readXml( const QDomNode &layerNode, QgsReadWriteContext &context ) override;
 
-    virtual bool writeXml( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
+    bool writeXml( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
 
-    virtual bool readSymbology( const QDomNode &node, QString &errorMessage,
-                                QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) override;
+    bool readSymbology( const QDomNode &node, QString &errorMessage,
+                        QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) override;
 
-    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
-                                 StyleCategories categories = AllStyleCategories ) const override;
+    bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
+                         StyleCategories categories = AllStyleCategories ) const override;
 
-    virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
+    void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
+    QString loadDefaultStyle( bool &resultFlag SIP_OUT ) override;
+    QString loadDefaultMetadata( bool &resultFlag SIP_OUT ) override;
 
     QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const FINAL;
     QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const FINAL;
+    QString htmlMetadata() const override;
 
     // new methods
 
@@ -171,6 +174,10 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
     std::unique_ptr<QgsVectorTileLabeling> mLabeling;
     //! Whether we draw borders of tiles
     bool mTileBorderRendering = false;
+
+    QVariantMap mArcgisLayerConfiguration;
+
+    bool setupArcgisVectorTileServiceConnection( const QString &uri );
 };
 
 

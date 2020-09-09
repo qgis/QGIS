@@ -10,6 +10,8 @@
 #include <algorithm>
 #include <iterator>
 #include "mdal_utils.hpp"
+#include "mdal_logger.hpp"
+#include "mdal.h"
 
 MDAL::MemoryDataset2D::MemoryDataset2D( MDAL::DatasetGroup *grp, bool hasActiveFlag )
   : Dataset2D( grp )
@@ -160,6 +162,64 @@ void MDAL::MemoryMesh::setEdges( MDAL::Edges edges )
 MDAL::BBox MDAL::MemoryMesh::extent() const
 {
   return mExtent;
+}
+
+void MDAL::MemoryMesh::addVertices( size_t vertexCount, double *coordinates )
+{
+  size_t coordinateIndex = 0;
+  size_t vertexIndex = mVertices.size();
+  size_t totalVertexCount = vertexIndex + vertexCount;
+  mVertices.resize( totalVertexCount );
+  for ( ; vertexIndex < totalVertexCount; ++vertexIndex )
+  {
+    Vertex vertex;
+    vertex.x = coordinates[coordinateIndex];
+    ++coordinateIndex;
+    vertex.y = coordinates[coordinateIndex];
+    ++coordinateIndex;
+    vertex.z = coordinates[coordinateIndex];
+    ++coordinateIndex;
+
+    mVertices[vertexIndex] = std::move( vertex );
+  }
+
+  mExtent = computeExtent( mVertices );
+}
+
+void MDAL::MemoryMesh::addFaces( size_t faceCount, size_t driverMaxVerticesPerFace, int *faceSizes, int *vertexIndices )
+{
+  size_t indicesIndex = 0;
+  Faces newFaces( faceCount );
+  for ( size_t faceIndex = 0; faceIndex < faceCount; ++faceIndex )
+  {
+    size_t faceSize = faceSizes[faceIndex];
+    if ( faceSize > driverMaxVerticesPerFace )
+    {
+      MDAL::Log::error( Err_InvalidData, "Incompatible faces count" );
+      return;
+    }
+
+    if ( faceSize > faceVerticesMaximumCount() )
+      setFaceVerticesMaximumCount( faceSize );
+
+    Face face( faceSize );
+    for ( size_t i = 0; i < faceSize; ++i )
+    {
+      size_t indice =  vertexIndices[indicesIndex + i];
+      if ( indice >= 0 && indice < mVertices.size() )
+        face[i] = indice;
+      else
+      {
+        MDAL::Log::error( Err_InvalidData, "Invalid vertex index when adding faces" );
+        return;
+      }
+    }
+    indicesIndex = indicesIndex + faceSize;
+    newFaces[faceIndex] = std::move( face );
+  }
+
+  // if everything is ok
+  std::move( newFaces.begin(), newFaces.end(), std::back_inserter( mFaces ) );
 }
 
 MDAL::MemoryMesh::~MemoryMesh() = default;

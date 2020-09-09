@@ -48,8 +48,8 @@ class CORE_EXPORT QgsRegularPolygon
      */
     enum ConstructionOption
     {
-      InscribedCircle, //<! Inscribed in a circle (the radius is the distance between the center and vertices)
-      CircumscribedCircle //<! Circumscribed about a circle (the radius is the distance from the center to the midpoints of the sides)
+      InscribedCircle, //!< Inscribed in a circle (the radius is the distance between the center and vertices)
+      CircumscribedCircle //!< Circumscribed about a circle (the radius is the distance from the center to the midpoints of the sides)
     };
 
     /**

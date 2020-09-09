@@ -61,7 +61,6 @@ class ANALYSIS_EXPORT QgsDbscanClusteringAlgorithm : public QgsProcessingAlgorit
                         QgsFeatureIterator features,
                         QgsSpatialIndexKDBush &index,
                         std::unordered_map< QgsFeatureId, int> &idToCluster,
-                        int &clusterCount,
                         QgsProcessingFeedback *feedback );
 };
 

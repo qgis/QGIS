@@ -18,6 +18,7 @@
       <ogr:intval>33</ogr:intval>
       <ogr:floatval>44.123456</ogr:floatval>
       <ogr:CLUSTER_ID>1</ogr:CLUSTER_ID>
+      <ogr:CLUSTER_SIZE>4</ogr:CLUSTER_SIZE>
     </ogr:kmeans_polys>
   </gml:featureMember>
   <gml:featureMember>
@@ -27,6 +28,7 @@
       <ogr:intval>-33</ogr:intval>
       <ogr:floatval>0</ogr:floatval>
       <ogr:CLUSTER_ID>1</ogr:CLUSTER_ID>
+      <ogr:CLUSTER_SIZE>4</ogr:CLUSTER_SIZE>
     </ogr:kmeans_polys>
   </gml:featureMember>
   <gml:featureMember>
@@ -36,6 +38,7 @@
       <ogr:intval xsi:nil="true"/>
       <ogr:floatval>0.123</ogr:floatval>
       <ogr:CLUSTER_ID>1</ogr:CLUSTER_ID>
+      <ogr:CLUSTER_SIZE>4</ogr:CLUSTER_SIZE>
     </ogr:kmeans_polys>
   </gml:featureMember>
   <gml:featureMember>
@@ -45,6 +48,7 @@
       <ogr:intval>0</ogr:intval>
       <ogr:floatval xsi:nil="true"/>
       <ogr:CLUSTER_ID>0</ogr:CLUSTER_ID>
+      <ogr:CLUSTER_SIZE>1</ogr:CLUSTER_SIZE>
     </ogr:kmeans_polys>
   </gml:featureMember>
   <gml:featureMember>
@@ -53,6 +57,7 @@
       <ogr:intval>120</ogr:intval>
       <ogr:floatval>-100291.43213</ogr:floatval>
       <ogr:CLUSTER_ID xsi:nil="true"/>
+      <ogr:CLUSTER_SIZE xsi:nil="true"/>
     </ogr:kmeans_polys>
   </gml:featureMember>
   <gml:featureMember>
@@ -62,6 +67,7 @@
       <ogr:intval>2</ogr:intval>
       <ogr:floatval>3.33</ogr:floatval>
       <ogr:CLUSTER_ID>1</ogr:CLUSTER_ID>
+      <ogr:CLUSTER_SIZE>4</ogr:CLUSTER_SIZE>
     </ogr:kmeans_polys>
   </gml:featureMember>
 </ogr:FeatureCollection>

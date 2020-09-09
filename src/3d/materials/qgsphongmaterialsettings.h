@@ -45,7 +45,7 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
     QString type() const override;
 
     /**
-     * Returns TRUE if the specified \a technique is suppored by the Phong material.
+     * Returns TRUE if the specified \a technique is supported by the Phong material.
      */
     static bool supportsTechnique( QgsMaterialSettingsRenderingTechnique technique );
 

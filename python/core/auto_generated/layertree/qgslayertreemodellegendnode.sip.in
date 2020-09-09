@@ -119,7 +119,7 @@ Returns whether a forced column break should occur before the node.
     virtual void invalidateMapBasedData();
 %Docstring
 Notification from model that information from associated map view has changed.
-Default implementation does nothing. *
+Default implementation does nothing.
 %End
 
     struct ItemContext

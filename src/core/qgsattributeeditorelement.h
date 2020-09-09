@@ -467,6 +467,32 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      */
     QgsAttributeEditorRelation::Buttons visibleButtons() const {return mButtons;}
 
+    /**
+     * Determines the force suppress form popup status.
+     * \since QGIS 3.16
+     */
+    bool forceSuppressFormPopup() const;
+
+    /**
+     * Sets force suppress form popup status to \a forceSuppressFormPopup.
+     * This flag is to override the layer and general settings regarding the automatic
+     * opening of the attribute form dialog when digitizing is completed.
+     * \since QGIS 3.16
+     */
+    void setForceSuppressFormPopup( bool forceSuppressFormPopup );
+
+    /**
+     * Determines the relation id of the second relation involved in an N:M relation.
+     * \since QGIS 3.16
+     */
+    QVariant nmRelationId() const;
+
+    /**
+     * Sets \a nmRelationId for the relation id of the second relation involved in an N:M relation.
+     * If it's empty, then it's considered as a 1:M relationship.
+     * \since QGIS 3.16
+     */
+    void setNmRelationId( const QVariant &nmRelationId = QVariant() );
 
   private:
     void saveConfiguration( QDomElement &elem ) const override;
@@ -474,6 +500,8 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     QString mRelationId;
     QgsRelation mRelation;
     Buttons mButtons = Buttons( Button::AllButtons );
+    bool mForceSuppressFormPopup = false;
+    QVariant mNmRelationId;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAttributeEditorRelation::Buttons )

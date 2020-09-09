@@ -161,7 +161,7 @@ Returns a reversed copy of the curve, where the direction of the curve has been 
 Returns a geometry without curves. Caller takes ownership
 
 :param tolerance: segmentation tolerance
-:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve*
+:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve
 %End
 
     virtual int vertexCount( int part = 0, int ring = 0 ) const;

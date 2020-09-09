@@ -434,10 +434,20 @@ bool QgsLineString::fromWkt( const QString &wkt )
     return false;
   mWkbType = parts.first;
 
-  if ( parts.second == "EMPTY" )
+  QString secondWithoutParentheses = parts.second;
+  secondWithoutParentheses = secondWithoutParentheses.remove( '(' ).remove( ')' ).simplified().remove( ' ' );
+  parts.second = parts.second.remove( '(' ).remove( ')' );
+  if ( ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 ) ||
+       secondWithoutParentheses.isEmpty() )
     return true;
 
-  setPoints( QgsGeometryUtils::pointsFromWKT( parts.second, is3D(), isMeasure() ) );
+  QgsPointSequence points = QgsGeometryUtils::pointsFromWKT( parts.second, is3D(), isMeasure() );
+  // There is a non number in the coordinates sequence
+  // LineString ( A b, 1 2)
+  if ( points.isEmpty() )
+    return false;
+
+  setPoints( points );
   return true;
 }
 

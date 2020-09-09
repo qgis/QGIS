@@ -102,11 +102,19 @@ class APP_EXPORT QgsActiveLayerFeaturesLocatorFilter : public QgsLocatorFilter
     Priority priority() const override { return Medium; }
     QString prefix() const override { return QStringLiteral( "f" ); }
 
-    void prepare( const QString &string, const QgsLocatorContext &context ) override;
+    QStringList prepare( const QString &string, const QgsLocatorContext &context ) override;
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
+    bool hasConfigWidget() const override {return true;}
+    void openConfigWidget( QWidget *parent ) override;
 
   private:
+
+    /**
+     * Returns the field restriction if defined (starting with @)
+     * The \a searchString is modified accordingly by removing the field restriction
+     */
+    QString fieldRestriction( QString &searchString ) const;
 
     QgsExpression mDispExpression;
     QgsExpressionContext mContext;
@@ -114,6 +122,7 @@ class APP_EXPORT QgsActiveLayerFeaturesLocatorFilter : public QgsLocatorFilter
     QString mLayerId;
     QIcon mLayerIcon;
     QStringList mAttributeAliases;
+    int mMaxTotalResults = 30;
 };
 
 class APP_EXPORT QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
@@ -147,17 +156,17 @@ class APP_EXPORT QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
     Priority priority() const override { return Medium; }
     QString prefix() const override { return QStringLiteral( "af" ); }
 
-    void prepare( const QString &string, const QgsLocatorContext &context ) override;
+    QStringList prepare( const QString &string, const QgsLocatorContext &context ) override;
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
     void triggerResultFromAction( const QgsLocatorResult &result, const int actionId ) override;
+    bool hasConfigWidget() const override {return true;}
+    void openConfigWidget( QWidget *parent ) override;
 
   private:
-    int mMaxResultsPerLayer = 6;
-    int mMaxTotalResults = 12;
+    int mMaxResultsPerLayer = 8;
+    int mMaxTotalResults = 15;
     QList<std::shared_ptr<PreparedLayer>> mPreparedLayers;
-
-
 };
 
 class APP_EXPORT QgsExpressionCalculatorLocatorFilter : public QgsLocatorFilter

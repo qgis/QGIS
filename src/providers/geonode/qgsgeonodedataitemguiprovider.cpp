@@ -16,7 +16,9 @@
 #include "qgsgeonodedataitemguiprovider.h"
 #include "qgsgeonodedataitems.h"
 #include "qgsgeonodenewconnection.h"
+#include "qgsmanageconnectionsdialog.h"
 
+#include <QFileDialog>
 #include <QMessageBox>
 
 void QgsGeoNodeDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
@@ -26,6 +28,14 @@ void QgsGeoNodeDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
     QAction *actionNew = new QAction( tr( "New Connection…" ), menu );
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
     menu->addAction( actionNew );
+
+    QAction *actionSaveServers = new QAction( tr( "Save Connections…" ), this );
+    connect( actionSaveServers, &QAction::triggered, this, [] { saveConnections(); } );
+    menu->addAction( actionSaveServers );
+
+    QAction *actionLoadServers = new QAction( tr( "Load Connections…" ), this );
+    connect( actionLoadServers, &QAction::triggered, this, [rootItem] { loadConnections( rootItem ); } );
+    menu->addAction( actionLoadServers );
   }
   else if ( QgsGeoNodeConnectionItem *connItem = qobject_cast< QgsGeoNodeConnectionItem * >( item ) )
   {
@@ -69,4 +79,24 @@ void QgsGeoNodeDataItemGuiProvider::deleteConnection( QgsDataItem *item )
 
   QgsGeoNodeConnectionUtils::deleteConnection( item->name() );
   item->parent()->refresh();
+}
+
+void QgsGeoNodeDataItemGuiProvider::saveConnections()
+{
+  QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Export, QgsManageConnectionsDialog::GeoNode );
+  dlg.exec();
+}
+
+void QgsGeoNodeDataItemGuiProvider::loadConnections( QgsDataItem *item )
+{
+  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
+                     tr( "XML files (*.xml *.XML)" ) );
+  if ( fileName.isEmpty() )
+  {
+    return;
+  }
+
+  QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::GeoNode, fileName );
+  if ( dlg.exec() == QDialog::Accepted )
+    item->refreshConnections();
 }

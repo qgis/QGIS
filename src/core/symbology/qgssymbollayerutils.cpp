@@ -3623,6 +3623,22 @@ QColor QgsSymbolLayerUtils::parseColorWithAlpha( const QString &colorStr, bool &
     }
   }
 
+  //color in hsl(h,s,l) format, brackets optional
+  const QRegularExpression hslFormatRx( "^\\s*hsl\\(?\\s*(\\d+)\\s*,\\s*(\\d+)\\s*%\\s*,\\s*(\\d+)\\s*%\\s*\\)?\\s*;?\\s*$" );
+  QRegularExpressionMatch match = hslFormatRx.match( colorStr );
+  if ( match.hasMatch() )
+  {
+    int h = match.captured( 1 ).toInt();
+    int s = match.captured( 2 ).toInt();
+    int l = match.captured( 3 ).toInt();
+    parsedColor.setHsl( h, s / 100.0 * 255.0, l / 100.0 * 255.0 );
+    if ( parsedColor.isValid() )
+    {
+      containsAlpha = false;
+      return parsedColor;
+    }
+  }
+
   //color in (r%,g%,b%) format, brackets and rgb prefix optional
   QRegExp rgbPercentFormatRx( "^\\s*(?:rgb)?\\(?\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(100|0*\\d{1,2})\\s*%\\s*\\)?\\s*;?\\s*$" );
   if ( rgbPercentFormatRx.indexIn( colorStr ) != -1 )
@@ -3663,6 +3679,23 @@ QColor QgsSymbolLayerUtils::parseColorWithAlpha( const QString &colorStr, bool &
     int b = std::round( rgbaPercentFormatRx.cap( 3 ).toDouble() * 2.55 );
     int a = std::round( rgbaPercentFormatRx.cap( 4 ).toDouble() * 255.0 );
     parsedColor.setRgb( r, g, b, a );
+    if ( parsedColor.isValid() )
+    {
+      containsAlpha = true;
+      return parsedColor;
+    }
+  }
+
+  //color in hsla(h,s%,l%,a) format, brackets optional
+  const QRegularExpression hslaPercentFormatRx( "^\\s*hsla\\(?\\s*(\\d+)\\s*,\\s*(\\d+)\\s*%\\s*,\\s*(\\d+)\\s*%\\s*,\\s*([\\d\\.]+)\\s*\\)?\\s*;?\\s*$" );
+  match = hslaPercentFormatRx.match( colorStr );
+  if ( match.hasMatch() )
+  {
+    int h = match.captured( 1 ).toInt();
+    int s = match.captured( 2 ).toInt();
+    int l = match.captured( 3 ).toInt();
+    int a = std::round( match.captured( 4 ).toDouble() * 255.0 );
+    parsedColor.setHsl( h, s / 100.0 * 255.0, l / 100.0 * 255.0, a );
     if ( parsedColor.isValid() )
     {
       containsAlpha = true;

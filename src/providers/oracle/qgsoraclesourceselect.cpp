@@ -246,7 +246,7 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags f
 
   populateConnectionList();
 }
-//! Autoconnected SLOTS *
+//! Autoconnected SLOTS
 // Slot for adding a new connection
 void QgsOracleSourceSelect::on_btnNew_clicked()
 {
@@ -309,7 +309,7 @@ void QgsOracleSourceSelect::on_btnEdit_clicked()
   delete nc;
 }
 
-//! End Autoconnected SLOTS *
+//! End Autoconnected SLOTS
 
 // Remember which database is selected
 void QgsOracleSourceSelect::on_cmbConnections_currentIndexChanged( const QString &text )

@@ -101,13 +101,13 @@ class QgsCachedImageFetcher: public QgsImageFetcher
 
 
 /**
-
-  \brief Data provider for OGC WMS layers.
-
-  This provider implements the
-  interface defined in the QgsDataProvider class to provide access to spatial
-  data residing in a OGC Web Map Service.
-
+ *
+ * \brief Data provider for OGC WMS layers.
+ *
+ * This provider implements the
+ * interface defined in the QgsDataProvider class to provide access to spatial
+ * data residing in a OGC Web Map Service.
+ *
 */
 class QgsWmsProvider final: public QgsRasterDataProvider
 {

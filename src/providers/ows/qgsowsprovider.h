@@ -28,12 +28,12 @@
 #include "qgsprovidermetadata.h"
 
 /**
-
-  \brief Data provider for OWS layers.
-
-  This provider implements the interface defined in the QgsDataProvider class
-  to provide access to spatial data residing in a OWS layers.
-
+ *
+ * \brief Data provider for OWS layers.
+ *
+ * This provider implements the interface defined in the QgsDataProvider class
+ * to provide access to spatial data residing in a OWS layers.
+ *
 */
 class QgsOwsProvider : public QgsDataProvider
 {

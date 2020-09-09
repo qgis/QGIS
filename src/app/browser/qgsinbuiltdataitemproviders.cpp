@@ -174,6 +174,57 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   } );
   menu->addAction( hideAction );
 
+  QMenu *hiddenMenu = new QMenu( tr( "Hidden Items" ), menu );
+  int count = 0;
+  const QStringList hiddenPathList = settings.value( QStringLiteral( "/browser/hiddenPaths" ) ).toStringList();
+  static int MAX_HIDDEN_ENTRIES = 5;
+  for ( const QString &path : hiddenPathList )
+  {
+    QAction *action = new QAction( QDir::toNativeSeparators( path ), hiddenMenu );
+    connect( action, &QAction::triggered, this, [ = ]
+    {
+      QgsSettings s;
+      QStringList pathsList = s.value( QStringLiteral( "/browser/hiddenPaths" ) ).toStringList();
+      pathsList.removeAll( path );
+      s.setValue( QStringLiteral( "/browser/hiddenPaths" ), pathsList );
+
+      // get parent path and refresh corresponding node
+      int idx = path.lastIndexOf( QStringLiteral( "/" ) );
+      if ( idx != -1 && path.count( QStringLiteral( "/" ) ) > 1 )
+      {
+        QString parentPath = path.left( idx );
+        QgisApp::instance()->browserModel()->refresh( parentPath );
+      }
+      else
+      {
+        // top-level (drive or root) node
+        QgisApp::instance()->browserModel()->refreshDrives();
+      }
+    } );
+    hiddenMenu->addAction( action );
+    count += 1;
+    if ( count == MAX_HIDDEN_ENTRIES )
+    {
+      break;
+    }
+  }
+
+  if ( hiddenPathList.size() > MAX_HIDDEN_ENTRIES )
+  {
+    hiddenMenu->addSeparator();
+
+    QAction *moreAction = new QAction( tr( "Show More…" ), hiddenMenu );
+    connect( moreAction, &QAction::triggered, this, [ = ]
+    {
+      QgisApp::instance()->showOptionsDialog( QgisApp::instance(), QStringLiteral( "mOptionsPageDataSources" ) );
+    } );
+    hiddenMenu->addAction( moreAction );
+  }
+  if ( count > 0 )
+  {
+    menu->addMenu( hiddenMenu );
+  }
+
   QAction *fastScanAction = new QAction( tr( "Fast Scan this Directory" ), menu );
   connect( fastScanAction, &QAction::triggered, this, [ = ]
   {

@@ -99,7 +99,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   setupUi( this );
   connect( cbxProjectDefaultNew, &QCheckBox::toggled, this, &QgsOptions::cbxProjectDefaultNew_toggled );
   connect( leLayerGlobalCrs, &QgsProjectionSelectionWidget::crsChanged, this, &QgsOptions::leLayerGlobalCrs_crsChanged );
-  connect( lstGdalDrivers, &QTreeWidget::itemDoubleClicked, this, &QgsOptions::lstGdalDrivers_itemDoubleClicked );
+  connect( lstRasterDrivers, &QTreeWidget::itemDoubleClicked, this, &QgsOptions::lstRasterDrivers_itemDoubleClicked );
   connect( mProjectOnLaunchCmbBx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsOptions::mProjectOnLaunchCmbBx_currentIndexChanged );
   connect( spinFontSize, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsOptions::spinFontSize_valueChanged );
   connect( mFontFamilyRadioQt, &QRadioButton::released, this, &QgsOptions::mFontFamilyRadioQt_released );
@@ -678,7 +678,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mSimplifyAlgorithmComboBox->addItem( tr( "Visvalingam" ), static_cast<int>( QgsVectorSimplifyMethod::Visvalingam ) );
   mSimplifyAlgorithmComboBox->setCurrentIndex( mSimplifyAlgorithmComboBox->findData( mSettings->enumValue( QStringLiteral( "/qgis/simplifyAlgorithm" ), QgsVectorSimplifyMethod::NoSimplification ) ) );
 
-  // Slightly awkard here at the settings value is true to use QImage,
+  // Slightly awkward here at the settings value is true to use QImage,
   // but the checkbox is true to use QPixmap
   chkAddedVisibility->setChecked( mSettings->value( QStringLiteral( "/qgis/new_layers_visible" ), true ).toBool() );
   cbxLegendClassifiers->setChecked( mSettings->value( QStringLiteral( "/qgis/showLegendClassifiers" ), false ).toBool() );
@@ -1890,7 +1890,7 @@ void QgsOptions::leLayerGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem
   mLayerDefaultCrs = crs;
 }
 
-void QgsOptions::lstGdalDrivers_itemDoubleClicked( QTreeWidgetItem *item, int column )
+void QgsOptions::lstRasterDrivers_itemDoubleClicked( QTreeWidgetItem *item, int column )
 {
   Q_UNUSED( column )
   // edit driver if driver supports write
@@ -2259,6 +2259,7 @@ void QgsOptions::loadGdalDriverList()
   QStringList myDrivers;
   QStringList myGdalWriteDrivers;
   QMap<QString, QString> myDriversFlags, myDriversExt, myDriversLongName;
+  QMap<QString, QgsMapLayerType> driversType;
 
   // make sure we save list when accept()
   mLoadedGdalDriverList = true;
@@ -2280,33 +2281,52 @@ void QgsOptions::loadGdalDriverList()
       continue;
     }
 
-    // in GDAL 2.0 vector and mixed drivers are returned by GDALGetDriver, so filter out non-raster drivers
-    // TODO add same UI for vector drivers
-    if ( QString( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_RASTER, nullptr ) ) != QLatin1String( "YES" ) )
-      continue;
-
+    // in GDAL 2.0 both vector and raster drivers are returned by GDALGetDriver
     myGdalDriverDescription = GDALGetDescription( myGdalDriver );
     myDrivers << myGdalDriverDescription;
+    if ( QString( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_RASTER, nullptr ) ) == QLatin1String( "YES" ) )
+    {
+      driversType[myGdalDriverDescription] = QgsMapLayerType::RasterLayer;
+    }
+    else if ( QString( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_VECTOR, nullptr ) ) == QLatin1String( "YES" ) )
+    {
+      driversType[myGdalDriverDescription] = QgsMapLayerType::VectorLayer;
+    }
 
     QgsDebugMsg( QStringLiteral( "driver #%1 - %2" ).arg( i ).arg( myGdalDriverDescription ) );
 
-    // get driver R/W flags, taken from GDALGeneralCmdLineProcessor()
-    const char *pszRWFlag, *pszVirtualIO;
-    if ( QgsGdalUtils::supportsRasterCreate( myGdalDriver ) )
+    // get driver R/W flags, adopted from GDALGeneralCmdLineProcessor()
+    QString driverFlags = "";
+    if ( driversType[myGdalDriverDescription] == QgsMapLayerType::RasterLayer )
     {
-      myGdalWriteDrivers << myGdalDriverDescription;
-      pszRWFlag = "rw+";
+      if ( QgsGdalUtils::supportsRasterCreate( myGdalDriver ) )
+      {
+        myGdalWriteDrivers << myGdalDriverDescription;
+        driverFlags = "rw+";
+      }
+      else if ( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_CREATECOPY,
+                                     nullptr ) )
+        driverFlags = "rw";
+      else
+        driverFlags = "ro";
     }
-    else if ( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_CREATECOPY,
-                                   nullptr ) )
-      pszRWFlag = "rw";
     else
-      pszRWFlag = "ro";
+    {
+      if ( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_OPEN, nullptr ) )
+        driverFlags = "r";
+
+      if ( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_CREATE, nullptr ) )
+        driverFlags += "w+";
+      else if ( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_CREATECOPY, nullptr ) )
+        driverFlags += "w";
+      else
+        driverFlags += "o";
+    }
+
     if ( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_VIRTUALIO, nullptr ) )
-      pszVirtualIO = "v";
-    else
-      pszVirtualIO = "";
-    myDriversFlags[myGdalDriverDescription] = QStringLiteral( "%1%2" ).arg( pszRWFlag, pszVirtualIO );
+      driverFlags += "v";
+
+    myDriversFlags[myGdalDriverDescription] = driverFlags;
 
     // get driver extensions and long name
     // the gdal provider can override/add extensions but there is no interface to query this
@@ -2344,13 +2364,24 @@ void QgsOptions::loadGdalDriverList()
     QString myFlags = myDriversFlags[myName];
     mypItem->setText( 2, myFlags );
     mypItem->setText( 3, myDriversLongName[myName] );
-    lstGdalDrivers->addTopLevelItem( mypItem );
+    if ( driversType[myName] == QgsMapLayerType::RasterLayer )
+    {
+      lstRasterDrivers->addTopLevelItem( mypItem );
+    }
+    else
+    {
+      lstVectorDrivers->addTopLevelItem( mypItem );
+    }
   }
+
   // adjust column width
   for ( int i = 0; i < 4; i++ )
   {
-    lstGdalDrivers->resizeColumnToContents( i );
-    lstGdalDrivers->setColumnWidth( i, lstGdalDrivers->columnWidth( i ) + 5 );
+    lstRasterDrivers->resizeColumnToContents( i );
+    lstRasterDrivers->setColumnWidth( i, lstRasterDrivers->columnWidth( i ) + 5 );
+
+    lstVectorDrivers->resizeColumnToContents( i );
+    lstVectorDrivers->setColumnWidth( i, lstVectorDrivers->columnWidth( i ) + 5 );
   }
 
   // populate cmbEditCreateOptions with gdal write drivers - sorted, GTiff first
@@ -2374,11 +2405,11 @@ void QgsOptions::saveGdalDriverList()
   const auto oldSkippedGdalDrivers = QgsApplication::skippedGdalDrivers();
   auto deferredSkippedGdalDrivers = QgsApplication::deferredSkippedGdalDrivers();
   QStringList skippedGdalDrivers;
-  for ( int i = 0; i < lstGdalDrivers->topLevelItemCount(); i++ )
+
+  auto checkDriver = [ & ]( QTreeWidgetItem * item )
   {
-    QTreeWidgetItem *mypItem = lstGdalDrivers->topLevelItem( i );
-    const auto &driverName( mypItem->text( 0 ) );
-    if ( mypItem->checkState( 0 ) == Qt::Unchecked )
+    const auto &driverName( item->text( 0 ) );
+    if ( item->checkState( 0 ) == Qt::Unchecked )
     {
       skippedGdalDrivers << driverName;
       if ( !deferredSkippedGdalDrivers.contains( driverName ) &&
@@ -2395,7 +2426,20 @@ void QgsOptions::saveGdalDriverList()
         deferredSkippedGdalDrivers.removeAll( driverName );
       }
     }
+  };
+
+  // raster drivers
+  for ( int i = 0; i < lstRasterDrivers->topLevelItemCount(); i++ )
+  {
+    checkDriver( lstRasterDrivers->topLevelItem( i ) );
   }
+
+  // vector drivers
+  for ( int i = 0; i < lstVectorDrivers->topLevelItemCount(); i++ )
+  {
+    checkDriver( lstVectorDrivers->topLevelItem( i ) );
+  }
+
   if ( driverUnregisterNeeded )
   {
     QMessageBox::information( this, tr( "Drivers Disabled" ),

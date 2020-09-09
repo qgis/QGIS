@@ -116,7 +116,8 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     /**
      * Create children. Children are not expected to have parent set.
-     * This method MUST BE THREAD SAFE. */
+     * \warning This method MUST BE THREAD SAFE.
+    */
     virtual QVector<QgsDataItem *> createChildren() SIP_FACTORY;
 
     enum State
@@ -302,12 +303,14 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     /**
      * Gets item parent. QgsDataItem maintains its own items hierarchy, it does not use
-     *  QObject hierarchy. */
+     * QObject hierarchy.
+    */
     QgsDataItem *parent() const { return mParent; }
 
     /**
      * Set item parent and connect / disconnect parent to / from item signals.
-     *  It does not add itself to parents children (mChildren) */
+     * It does not add itself to parents children (mChildren)
+    */
     void setParent( QgsDataItem *parent );
     QVector<QgsDataItem *> children() const { return mChildren; }
     virtual QIcon icon();
@@ -401,7 +404,8 @@ class CORE_EXPORT QgsDataItem : public QObject
      * the deferredDelete() returns TRUE and item will be deleted once Populating finished.
      * Items with slow reateChildren() (for example network or database based) may
      * check during createChildren() if deferredDelete() returns TRUE and return from
-     * createChildren() immediately because result will be useless. */
+     * createChildren() immediately because result will be useless.
+    */
     bool deferredDelete() { return mDeferredDelete; }
 
     Type mType;

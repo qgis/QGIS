@@ -129,7 +129,8 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 
     /**
      * Notification from model that information from associated map view has changed.
-     *  Default implementation does nothing. */
+     *  Default implementation does nothing.
+    */
     virtual void invalidateMapBasedData() {}
 
     struct ItemContext

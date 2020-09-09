@@ -50,6 +50,11 @@ The ``options`` argument specifies load-time layer options.
 %End
     ~QgsAnnotationLayer();
 
+    void reset();
+%Docstring
+Resets the annotation layer to a default state, and clears all items from it.
+%End
+
     QString addItem( QgsAnnotationItem *item /Transfer/ );
 %Docstring
 Adds an ``item`` to the layer.
@@ -62,6 +67,16 @@ Returns the unique ID assigned to the item.
     bool removeItem( const QString &id );
 %Docstring
 Removes (and deletes) the item with matching ``id``.
+%End
+
+    void clear();
+%Docstring
+Removes all items from the layer.
+%End
+
+    bool isEmpty() const;
+%Docstring
+Returns ``True`` if the annotation layer is empty and contains no annotations.
 %End
 
     QMap<QString, QgsAnnotationItem *> items() const;

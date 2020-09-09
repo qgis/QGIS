@@ -313,6 +313,9 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsCu
   QgsFeatureIterator features;
   const QgsFeatureIds selectedIds = mLayer->selectedFeatureIds();
 
+  // deactivate preserving circular if the curve contains only straight segments to avoid transforming Polygon to CurvePolygon
+  preserveCircular &= curve->hasCurvedSegments();
+
   if ( !selectedIds.isEmpty() ) //consider only the selected features if there is a selection
   {
     features = mLayer->getSelectedFeatures();
@@ -391,10 +394,8 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsCu
     }
   }
 
-  if ( numberOfSplitFeatures == 0 && !selectedIds.isEmpty() )
+  if ( numberOfSplitFeatures == 0 )
   {
-    //There is a selection but no feature has been split.
-    //Maybe user forgot that only the selected features are split
     returnCode = QgsGeometry::OperationResult::NothingHappened;
   }
 

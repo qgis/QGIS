@@ -73,6 +73,11 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     ~QgsAnnotationLayer() override;
 
     /**
+     * Resets the annotation layer to a default state, and clears all items from it.
+     */
+    void reset();
+
+    /**
      * Adds an \a item to the layer.
      *
      * Ownership of \a item is transferred to the layer.
@@ -87,6 +92,16 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     bool removeItem( const QString &id );
 
     /**
+     * Removes all items from the layer.
+     */
+    void clear();
+
+    /**
+     * Returns TRUE if the annotation layer is empty and contains no annotations.
+     */
+    bool isEmpty() const;
+
+    /**
      * Returns a map of items contained in the layer, by unique item ID.
      *
      * This map contains references to items owned by the layer, and ownership of these remains
@@ -99,7 +114,7 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
      * and 1.0 (fully opaque).
      * \see opacity()
      */
-    void setOpacity( double opacity ) { mOpacity = opacity; }
+    void setOpacity( double opacity );
 
     /**
      * Returns the opacity for the annotation layer, where opacity is a value between 0 (totally transparent)
@@ -119,7 +134,7 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
 
   private:
     QMap<QString, QgsAnnotationItem *> mItems;
-    double mOpacity = 100;
+    double mOpacity = 1;
     QgsCoordinateTransformContext mTransformContext;
 };
 

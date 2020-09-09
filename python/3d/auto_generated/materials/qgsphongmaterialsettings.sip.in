@@ -39,7 +39,7 @@ Constructor for QgsPhongMaterialSettings.
 
     static bool supportsTechnique( QgsMaterialSettingsRenderingTechnique technique );
 %Docstring
-Returns ``True`` if the specified ``technique`` is suppored by the Phong material.
+Returns ``True`` if the specified ``technique`` is supported by the Phong material.
 %End
 
     static QgsAbstractMaterialSettings *create() /Factory/;

@@ -32,6 +32,12 @@ a "perimeter" style mode).
       SymbolBelow
     };
 
+    enum class AnchorType
+    {
+      HintOnly,
+      Strict,
+    };
+
     QgsLabeling::LinePlacementFlags placementFlags() const;
 %Docstring
 Returns the line placement flags, which dictate how line labels can be placed
@@ -260,6 +266,8 @@ as close to the start of the line as possible, while a value of 1.0 pushes label
 the end of the line.
 
 .. seealso:: :py:func:`setLineAnchorPercent`
+
+.. seealso:: :py:func:`anchorType`
 %End
 
     void setLineAnchorPercent( double percent );
@@ -272,6 +280,28 @@ as close to the start of the line as possible, while a value of 1.0 pushes label
 the end of the line.
 
 .. seealso:: :py:func:`lineAnchorPercent`
+
+.. seealso:: :py:func:`setAnchorType`
+%End
+
+    AnchorType anchorType() const;
+%Docstring
+Returns the line anchor type, which dictates how the :py:func:`~QgsLabelLineSettings.lineAnchorPercent` setting is
+handled.
+
+.. seealso:: :py:func:`setAnchorType`
+
+.. seealso:: :py:func:`lineAnchorPercent`
+%End
+
+    void setAnchorType( AnchorType type );
+%Docstring
+Sets the line anchor ``type``, which dictates how the :py:func:`~QgsLabelLineSettings.lineAnchorPercent` setting is
+handled.
+
+.. seealso:: :py:func:`anchorType`
+
+.. seealso:: :py:func:`setLineAnchorPercent`
 %End
 
 };

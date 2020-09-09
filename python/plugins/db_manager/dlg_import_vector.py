@@ -86,7 +86,6 @@ class DlgImportVector(QDialog, Ui_Dialog):
         if mode == self.ASK_FOR_INPUT_MODE:
             self.btnChooseInputFile.clicked.connect(self.chooseInputFile)
             self.cboInputLayer.currentTextChanged.connect(self.updateInputLayer)
-            self.btnUpdateInputLayer.clicked.connect(self.updateInputLayer)
 
             self.editPrimaryKey.setText(self.default_pk)
             self.editGeomColumn.setText(self.default_geom)

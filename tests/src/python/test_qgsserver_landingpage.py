@@ -66,10 +66,10 @@ class QgsServerLandingPageTest(QgsServerAPITestBase):
 
         super().setUp()
         os.environ["QGIS_SERVER_DISABLED_APIS"] = ''
-        os.environ['QGIS_SERVER_PROJECTS_DIRECTORIES'] = '||'.join(self.directories)
+        os.environ['QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES'] = '||'.join(self.directories)
 
         if not os.environ.get('TRAVIS', False):
-            os.environ['QGIS_SERVER_PROJECTS_PG_CONNECTIONS'] = "postgresql://localhost:5432?sslmode=disable&dbname=landing_page_test&schema=public"
+            os.environ['QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS'] = "postgresql://localhost:5432?sslmode=disable&dbname=landing_page_test&schema=public"
 
     def test_landing_page_redirects(self):
         """Test landing page redirects"""
@@ -156,8 +156,8 @@ class QgsServerLandingPageTest(QgsServerAPITestBase):
     def test_landing_page_json_empty(self):
         """Test landing page in JSON format with no projects"""
 
-        os.environ['QGIS_SERVER_PROJECTS_DIRECTORIES'] = ''
-        os.environ['QGIS_SERVER_PROJECTS_PG_CONNECTIONS'] = ''
+        os.environ['QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES'] = ''
+        os.environ['QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS'] = ''
         request = QgsBufferServerRequest('http://server.qgis.org/index.json')
         self.compareApi(
             request, None, 'test_landing_page_empty_index.json', subdir='landingpage')

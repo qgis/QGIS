@@ -27,13 +27,12 @@
 
 /**
  * \ingroup core
-  \brief Multipart QNetworkReply parser.
-
-  It seams that Qt does not have currently support for multipart reply
-  and it is not even possible to create QNetworkReply from raw data
-  so we need a class for multipart QNetworkReply parsing.
-  \note not available in Python bindings
-
+ * \brief Multipart QNetworkReply parser.
+ *
+ * It seams that Qt does not have currently support for multipart reply
+ * and it is not even possible to create QNetworkReply from raw data
+ * so we need a class for multipart QNetworkReply parsing.
+ * \note not available in Python bindings
 */
 
 class CORE_EXPORT QgsNetworkReplyParser : public QObject
@@ -45,24 +44,28 @@ class CORE_EXPORT QgsNetworkReplyParser : public QObject
 
     /**
      * Constructor
-      * \param reply */
+      * \param reply
+    */
     QgsNetworkReplyParser( QNetworkReply *reply );
 
     /**
      * Indicates if successfully parsed
-      * \returns TRUE if successfully parsed */
+     * \returns TRUE if successfully parsed
+    */
     bool isValid() const { return mValid; }
 
     /**
      * Gets number of parts
-      * \returns number of parts */
+     * \returns number of parts
+    */
     int parts() const { return mHeaders.size(); }
 
     /**
      * Gets part header
-      * \param part part index
-      * \param headerName header name
-      * \returns raw header */
+     * \param part part index
+     * \param headerName header name
+     * \returns raw header
+    */
     QByteArray rawHeader( int part, const QByteArray &headerName ) const { return mHeaders.value( part ).value( headerName ); }
 
     //! Gets headers
@@ -70,8 +73,9 @@ class CORE_EXPORT QgsNetworkReplyParser : public QObject
 
     /**
      * Gets part part body
-      * \param part part index
-      * \returns part body */
+     * \param part part index
+     * \returns part body
+    */
     QByteArray body( int part ) const { return mBodies.value( part ); }
 
     //! Gets bodies
@@ -82,7 +86,8 @@ class CORE_EXPORT QgsNetworkReplyParser : public QObject
 
     /**
      * Test if reply is multipart.
-      * \returns TRUE if reply is multipart */
+     * \returns TRUE if reply is multipart
+    */
     static bool isMultipart( QNetworkReply *reply );
 
   private:

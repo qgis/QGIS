@@ -1060,7 +1060,7 @@ std::unique_ptr< MDAL::Mesh > MDAL::DriverFlo2D::load( const std::string &result
   std::string mesh2DTopologyFile( fileNameFromDir( resultsFile, "FPLAIN.DAT" ) );
   std::string mesh1DTopologyFile( fileNameFromDir( resultsFile, "CHAN.DAT" ) );
 
-  if ( meshName == "mesh2d" || fileExists( mesh2DTopologyFile ) )
+  if ( meshName == "mesh2d" || ( meshName.empty() && fileExists( mesh2DTopologyFile ) ) )
     return loadMesh2d();
 
   if ( meshName == "mesh1d" || fileExists( mesh1DTopologyFile ) )

@@ -656,7 +656,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /**
      * Returns the ellipsoid acronym for the ellipsoid used by the CRS.
-     * \returns the official authority:code identifier for the ellipoid, or PARAMETER:MAJOR:MINOR for custom ellipsoids
+     * \returns the official authority:code identifier for the ellipsoid, or PARAMETER:MAJOR:MINOR for custom ellipsoids
      * \note an empty string will be returned if the ellipsoidAcronym is not available for the CRS
      * \see projectionAcronym()
      */

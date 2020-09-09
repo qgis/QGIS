@@ -86,6 +86,7 @@ QgsAttributeForm::QgsAttributeForm( QgsVectorLayer *vl, const QgsFeature &featur
   connect( this, &QgsAttributeForm::modeChanged, this, &QgsAttributeForm::updateContainersVisibility );
 
   updateContainersVisibility();
+  updateLabels();
 
 }
 
@@ -281,6 +282,7 @@ void QgsAttributeForm::setFeature( const QgsFeature &feature )
 {
   mIsSettingFeature = true;
   mFeature = feature;
+  mCurrentFormFeature = feature;
 
   switch ( mMode )
   {
@@ -871,6 +873,8 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QVariant
   if ( mValuesInitialized )
     mDirty = true;
 
+  mCurrentFormFeature.setAttribute( eww->field().name(), value );
+
   switch ( mMode )
   {
     case QgsAttributeEditorContext::SingleEditMode:
@@ -956,7 +960,7 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
 {
   // get the current feature set in the form
   QgsFeature ft;
-  if ( currentFormFeature( ft ) )
+  if ( currentFormValuesFeature( ft ) )
   {
     // if the layer is NOT being edited then we only check layer based constraints, and not
     // any constraints enforced by the provider. Because:
@@ -1038,7 +1042,7 @@ void QgsAttributeForm::updateLabels()
   if ( ! mLabelDataDefinedProperties.isEmpty() )
   {
     QgsFeature currentFeature;
-    if ( currentFormFeature( currentFeature ) )
+    if ( currentFormValuesFeature( currentFeature ) )
     {
       QgsExpressionContext context = createExpressionContext( currentFeature );
 
@@ -1056,7 +1060,7 @@ void QgsAttributeForm::updateLabels()
   }
 }
 
-bool QgsAttributeForm::currentFormFeature( QgsFeature &feature )
+bool QgsAttributeForm::currentFormValuesFeature( QgsFeature &feature )
 {
   bool rc = true;
   feature = QgsFeature( mFeature );
@@ -1955,11 +1959,14 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       // below directly alter the widget and check for it.
       rww->setVisibleButtons( relDef->visibleButtons() );
       rww->setShowLabel( relDef->showLabel() );
+      rww->setNmRelationId( relDef->nmRelationId() );
+      rww->setForceSuppressFormPopup( relDef->forceSuppressFormPopup() );
 
       mWidgets.append( rww );
       mFormWidgets.append( formWidget );
 
       newWidgetInfo.widget = formWidget;
+      newWidgetInfo.showLabel = relDef->showLabel();
       newWidgetInfo.labelText = QString();
       newWidgetInfo.labelOnTop = true;
       break;
@@ -2044,6 +2051,27 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         else
         {
           QLabel *mypLabel = new QLabel( widgetInfo.labelText );
+
+          // Alias DD overrides
+          if ( childDef->type() == QgsAttributeEditorElement::AeTypeField )
+          {
+            const QgsAttributeEditorField *fieldDef { static_cast<QgsAttributeEditorField *>( childDef ) };
+            const QgsFields fields = vl->fields();
+            const int fldIdx = fieldDef->idx();
+            if ( fldIdx < fields.count() && fldIdx >= 0 )
+            {
+              const QString fieldName { fields.at( fldIdx ).name() };
+              if ( mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).hasProperty( QgsEditFormConfig::DataDefinedProperty::Alias ) )
+              {
+                const QgsProperty property { mLayer->editFormConfig().dataDefinedFieldProperties( fieldName ).property( QgsEditFormConfig::DataDefinedProperty::Alias ) };
+                if ( property.isActive() && ! property.expressionString().isEmpty() )
+                {
+                  mLabelDataDefinedProperties[ mypLabel ] = property;
+                }
+              }
+            }
+          }
+
           mypLabel->setToolTip( widgetInfo.toolTip );
           if ( columnCount > 1 && !widgetInfo.labelOnTop )
           {
@@ -2090,7 +2118,6 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
       QgsQmlWidgetWrapper *qmlWrapper = new QgsQmlWidgetWrapper( mLayer, nullptr, this );
       qmlWrapper->setQmlCode( elementDef->qmlCode() );
-      qmlWrapper->setConfig( mLayer->editFormConfig().widgetConfig( elementDef->name() ) );
       context.setAttributeFormMode( mMode );
       qmlWrapper->setContext( context );
 
@@ -2111,8 +2138,6 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       context.setAttributeFormMode( mMode );
       htmlWrapper->setHtmlCode( elementDef->htmlCode() );
       htmlWrapper->reinitWidget();
-      htmlWrapper->setConfig( mLayer->editFormConfig().widgetConfig( elementDef->name() ) );
-
       mWidgets.append( htmlWrapper );
 
       newWidgetInfo.widget = htmlWrapper->widget();
@@ -2438,7 +2463,7 @@ void QgsAttributeForm::updateJoinedFields( const QgsEditorWidgetWrapper &eww )
   QgsField field = eww.layer()->fields().field( eww.fieldIdx() );
   QList<const QgsVectorLayerJoinInfo *> infos = eww.layer()->joinBuffer()->joinsWhereFieldIsId( field );
 
-  if ( infos.count() == 0 || !currentFormFeature( formFeature ) )
+  if ( infos.count() == 0 || !currentFormValuesFeature( formFeature ) )
     return;
 
   const QString hint = tr( "No feature joined" );

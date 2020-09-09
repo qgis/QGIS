@@ -127,7 +127,7 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
     //! Convert a QgsField to work with MSSQL
     static bool convertField( QgsField &field );
 
-    //! Convert values to quoted values for database work *
+    //! Convert values to quoted values for database work
     static QString quotedValue( const QVariant &value );
     static QString quotedIdentifier( const QString &value );
 

@@ -28,7 +28,8 @@
 #include <QDir>
 #include <QCryptographicHash>
 
-QgsLandingPageHandler::QgsLandingPageHandler()
+QgsLandingPageHandler::QgsLandingPageHandler( const QgsServerSettings *settings )
+  : mSettings( settings )
 {
   setContentTypes( { QgsServerOgcApi::ContentType::JSON, QgsServerOgcApi::ContentType::HTML } );
 }
@@ -65,7 +66,7 @@ const QString QgsLandingPageHandler::templatePath( const QgsServerApiContext &co
 json QgsLandingPageHandler::projectsData() const
 {
   json j = json::array();
-  const auto availableProjects { QgsLandingPageUtils::projects( ) };
+  const auto availableProjects { QgsLandingPageUtils::projects( *mSettings ) };
   const auto constProjectKeys { availableProjects.keys() };
   for ( const auto &p : constProjectKeys )
   {
@@ -75,7 +76,8 @@ json QgsLandingPageHandler::projectsData() const
 }
 
 
-QgsLandingPageMapHandler::QgsLandingPageMapHandler()
+QgsLandingPageMapHandler::QgsLandingPageMapHandler( const QgsServerSettings *settings )
+  : mSettings( settings )
 {
   setContentTypes( { QgsServerOgcApi::ContentType::JSON } );
 }
@@ -84,7 +86,7 @@ void QgsLandingPageMapHandler::handleRequest( const QgsServerApiContext &context
 {
   json data;
   data[ "links" ] = json::array();
-  const QString projectPath { QgsLandingPageUtils::projectUriFromUrl( context.request()->url().path() ) };
+  const QString projectPath { QgsLandingPageUtils::projectUriFromUrl( context.request()->url().path(), *mSettings ) };
   if ( projectPath.isEmpty() )
   {
     throw QgsServerApiNotFoundError( QStringLiteral( "Requested project hash not found!" ) );

@@ -1536,36 +1536,42 @@ namespace QgsWms
     {
       QString layer = layers[i];
 
-      if ( isExternalLayer( layer ) )
-        continue;
-
       QgsWmsParametersLayer param;
       param.mNickname = layer;
 
-      if ( i < styles.count() )
-        param.mStyle = styles[i];
-
-      if ( i < opacities.count() )
-        param.mOpacity = opacities[i];
-
-      if ( filters.contains( layer ) )
+      if ( isExternalLayer( layer ) )
       {
-        auto it = filters.find( layer );
-        while ( it != filters.end() && it.key() == layer )
-        {
-          param.mFilter.append( it.value() );
-          ++it;
-        }
+        const QgsWmsParametersExternalLayer extParam = externalLayerParameter( layer );
+        param.mNickname = extParam.mName;
+        param.mExternalUri = extParam.mUri;
       }
-
-      if ( layerSelections.contains( layer ) )
+      else
       {
-        QMultiMap<QString, QString>::const_iterator it;
-        it = layerSelections.constFind( layer );
-        while ( it != layerSelections.constEnd() && it.key() == layer )
+        if ( i < styles.count() )
+          param.mStyle = styles[i];
+
+        if ( i < opacities.count() )
+          param.mOpacity = opacities[i];
+
+        if ( filters.contains( layer ) )
         {
-          param.mSelection << it.value().split( ',' );
-          ++it;
+          auto it = filters.find( layer );
+          while ( it != filters.end() && it.key() == layer )
+          {
+            param.mFilter.append( it.value() );
+            ++it;
+          }
+        }
+
+        if ( layerSelections.contains( layer ) )
+        {
+          QMultiMap<QString, QString>::const_iterator it;
+          it = layerSelections.constFind( layer );
+          while ( it != layerSelections.constEnd() && it.key() == layer )
+          {
+            param.mSelection << it.value().split( ',' );
+            ++it;
+          }
         }
       }
 
@@ -1740,14 +1746,14 @@ namespace QgsWms
     {
       if ( isExternalLayer( layer ) )
       {
-        eParams << externalLayerParameter( layer );
+        const QgsWmsParametersExternalLayer extParam = externalLayerParameter( layer );
+        layers << extParam.mName;
       }
       else
       {
         layers << layer;
       }
     }
-    param.mExternalLayers = eParams;
 
     QStringList styles;
     wmsParam = idParameter( QgsWmsParameter::STYLES, mapId );

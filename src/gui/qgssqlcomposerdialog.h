@@ -143,13 +143,15 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
 
     /**
      * Set a callback that will be called when a new table is selected, so
-        that new column names can be added typically.
-        Ownership of the callback remains to the caller */
+     * that new column names can be added typically.
+     * Ownership of the callback remains to the caller.
+    */
     void setTableSelectedCallback( TableSelectedCallback *tableSelectedCallback );
 
     /**
      * Set a callback that will be called when the OK button is pushed.
-        Ownership of the callback remains to the caller */
+     * Ownership of the callback remains to the caller.
+    */
     void setSQLValidatorCallback( SQLValidatorCallback *sqlValidatorCallback );
 
   protected:

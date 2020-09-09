@@ -25,7 +25,6 @@ SET(QGIS_GUI_SRCS
   vector/qgsjoindialog.cpp
   vector/qgssourcefieldsproperties.cpp
   vector/qgsvectorlayerlegendwidget.cpp
-  vector/qgsvectorlayerloadstyledialog.cpp
   vector/qgsvectorlayerproperties.cpp
   vector/qgsvectorlayersavestyledialog.cpp
   vector/qgswmsdimensiondialog.cpp
@@ -74,7 +73,6 @@ SET(QGIS_GUI_SRCS
   callouts/qgscalloutwidget.cpp
 
   attributeformconfig/qgsattributeformcontaineredit.cpp
-  attributeformconfig/qgsattributerelationedit.cpp
   attributeformconfig/qgsattributetypedialog.cpp
   attributeformconfig/qgsattributewidgetedit.cpp
 
@@ -328,6 +326,7 @@ SET(QGIS_GUI_SRCS
   tableeditor/qgstableeditorformattingwidget.cpp
   tableeditor/qgstableeditorwidget.cpp
 
+  vectortile/qgsarcgisvectortileconnectiondialog.cpp
   vectortile/qgsvectortilebasiclabelingwidget.cpp
   vectortile/qgsvectortilebasicrendererwidget.cpp
   vectortile/qgsvectortileconnectiondialog.cpp
@@ -461,6 +460,7 @@ SET(QGIS_GUI_SRCS
   qgsmaplayeractionregistry.cpp
   qgsmaplayercombobox.cpp
   qgsmaplayerconfigwidgetfactory.cpp
+  qgsmaplayerloadstyledialog.cpp
   qgsmaplayerstylecategoriesmodel.cpp
   qgsmaplayerstyleguiutils.cpp
   qgsmaplayerstylemanagerwidget.cpp
@@ -699,6 +699,7 @@ SET(QGIS_GUI_HDRS
   qgsmaplayercombobox.h
   qgsmaplayerconfigwidget.h
   qgsmaplayerconfigwidgetfactory.h
+  qgsmaplayerloadstyledialog.h
   qgsmaplayerstylecategoriesmodel.h
   qgsmaplayerstyleguiutils.h
   qgsmaplayerstylemanagerwidget.h
@@ -804,7 +805,6 @@ SET(QGIS_GUI_HDRS
   qgswindowmanagerinterface.h
 
   attributeformconfig/qgsattributeformcontaineredit.h
-  attributeformconfig/qgsattributerelationedit.h
   attributeformconfig/qgsattributetypedialog.h
   attributeformconfig/qgsattributewidgetedit.h
 
@@ -1088,7 +1088,6 @@ SET(QGIS_GUI_HDRS
   vector/qgsjoindialog.h
   vector/qgssourcefieldsproperties.h
   vector/qgsvectorlayerlegendwidget.h
-  vector/qgsvectorlayerloadstyledialog.h
   vector/qgsvectorlayerproperties.h
   vector/qgsvectorlayersavestyledialog.h
   vector/qgswmsdimensiondialog.h
@@ -1133,6 +1132,7 @@ SET(QGIS_GUI_HDRS
   tableeditor/qgstableeditorformattingwidget.h
   tableeditor/qgstableeditorwidget.h
 
+  vectortile/qgsarcgisvectortileconnectiondialog.h
   vectortile/qgsvectortilebasiclabelingwidget.h
   vectortile/qgsvectortilebasicrendererwidget.h
   vectortile/qgsvectortileconnectiondialog.h

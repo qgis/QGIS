@@ -35,10 +35,21 @@ QgsAnnotationLayer::~QgsAnnotationLayer()
   qDeleteAll( mItems );
 }
 
+void QgsAnnotationLayer::reset()
+{
+  mOpacity = 1.0;
+  setCrs( QgsCoordinateReferenceSystem() );
+  setTransformContext( QgsCoordinateTransformContext() );
+  clear();
+}
+
 QString QgsAnnotationLayer::addItem( QgsAnnotationItem *item )
 {
   const QString uuid = QUuid::createUuid().toString();
   mItems.insert( uuid, item );
+
+  triggerRepaint();
+
   return uuid;
 }
 
@@ -48,7 +59,29 @@ bool QgsAnnotationLayer::removeItem( const QString &id )
     return false;
 
   delete mItems.take( id );
+
+  triggerRepaint();
+
   return true;
+}
+
+void QgsAnnotationLayer::clear()
+{
+  qDeleteAll( mItems );
+  mItems.clear();
+
+  triggerRepaint();
+}
+
+bool QgsAnnotationLayer::isEmpty() const
+{
+  return mItems.empty();
+}
+
+void QgsAnnotationLayer::setOpacity( double opacity )
+{
+  mOpacity = opacity;
+  triggerRepaint();
 }
 
 QgsAnnotationLayer *QgsAnnotationLayer::clone() const
@@ -125,6 +158,8 @@ bool QgsAnnotationLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
   QString errorMsg;
   readSymbology( layerNode, errorMsg, context );
 
+  triggerRepaint();
+
   return mValid;
 }
 
@@ -133,9 +168,9 @@ bool QgsAnnotationLayer::writeXml( QDomNode &layer_node, QDomDocument &doc, cons
   // first get the layer element so that we can append the type attribute
   QDomElement mapLayerNode = layer_node.toElement();
 
-  if ( mapLayerNode.isNull() || ( QLatin1String( "maplayer" ) != mapLayerNode.nodeName() ) )
+  if ( mapLayerNode.isNull() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "can't find <maplayer>" ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "can't find maplayer node" ), 2 );
     return false;
   }
 

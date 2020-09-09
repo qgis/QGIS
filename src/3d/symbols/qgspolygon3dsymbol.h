@@ -156,7 +156,7 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCT
     int renderedFacade() const { return mRenderedFacade; }
 
     /**
-     * Exports the geometries contained withing the hierarchy of entity.
+     * Exports the geometries contained within the hierarchy of entity.
      * Returns whether any objects were exported
      * \since QGIS 3.16
      */

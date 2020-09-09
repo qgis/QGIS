@@ -239,12 +239,15 @@ int main( int argc, char *argv[] )
     std::cout << QObject::tr( "CTRL+C to exit" ).toStdString() << std::endl;
 #endif
 
+
     // Starts HTTP loop with a poor man's HTTP parser
     tcpServer.connect( &tcpServer, &QTcpServer::newConnection, [ & ]
     {
       QTcpSocket *clientConnection = tcpServer.nextPendingConnection();
 
       connCounter++;
+
+      QString *incomingData = new QString();
 
       //qDebug() << "Active connections: " << connCounter;
 
@@ -256,6 +259,7 @@ int main( int argc, char *argv[] )
       {
         clientConnection->deleteLater();
         connCounter--;
+        delete incomingData;
       };
 
       // This will delete the connection when disconnected before ready read is called
@@ -264,26 +268,22 @@ int main( int argc, char *argv[] )
       // Incoming connection parser
       clientConnection->connect( clientConnection, &QIODevice::readyRead, context, [ =, &server, &connCounter ] {
 
-        // Disconnect the lambdas
-        delete context;
-
         // Read all incoming data
-        QString incomingData;
         while ( clientConnection->bytesAvailable() > 0 )
         {
-          incomingData += clientConnection->readAll();
+          incomingData->append( clientConnection->readAll() );
         }
 
         try
         {
           // Parse protocol and URL GET /path HTTP/1.1
-          int firstLinePos { incomingData.indexOf( "\r\n" ) };
+          int firstLinePos { incomingData->indexOf( "\r\n" ) };
           if ( firstLinePos == -1 )
           {
             throw HttpException( QStringLiteral( "HTTP error finding protocol header" ) );
           }
 
-          const QString firstLine { incomingData.left( firstLinePos ) };
+          const QString firstLine { incomingData->left( firstLinePos ) };
           const QStringList firstLinePieces { firstLine.split( ' ' ) };
           if ( firstLinePieces.size() != 3 )
           {
@@ -330,14 +330,14 @@ int main( int argc, char *argv[] )
 
           // Headers
           QgsBufferServerRequest::Headers headers;
-          int endHeadersPos { incomingData.indexOf( "\r\n\r\n" ) };
+          int endHeadersPos { incomingData->indexOf( "\r\n\r\n" ) };
 
           if ( endHeadersPos == -1 )
           {
             throw HttpException( QStringLiteral( "HTTP error finding headers" ) );
           }
 
-          const QStringList httpHeaders { incomingData.mid( firstLinePos + 2, endHeadersPos - firstLinePos ).split( "\r\n" ) };
+          const QStringList httpHeaders { incomingData->mid( firstLinePos + 2, endHeadersPos - firstLinePos ).split( "\r\n" ) };
 
           for ( const auto &headerLine : httpHeaders )
           {
@@ -347,6 +347,23 @@ int main( int argc, char *argv[] )
               headers.insert( headerLine.left( headerColonPos ), headerLine.mid( headerColonPos + 2 ) );
             }
           }
+
+          const int headersSize { endHeadersPos + 4 };
+
+          // Check for content length and if we have got all data
+          if ( headers.contains( QStringLiteral( "Content-Length" ) ) )
+          {
+            bool ok;
+            const int contentLength { headers.value( QStringLiteral( "Content-Length" ) ).toInt( &ok ) };
+            if ( ok && contentLength > incomingData->length() - headersSize )
+            {
+              return;
+            }
+          }
+
+          // At this point we should have read all data:
+          // disconnect the lambdas
+          delete context;
 
           // Build URL from env ...
           QString url { qgetenv( "REQUEST_URI" ) };
@@ -366,7 +383,7 @@ int main( int argc, char *argv[] )
           }
 
           // Inefficient copy :(
-          QByteArray data { incomingData.mid( endHeadersPos + 4 ).toUtf8() };
+          QByteArray data { incomingData->mid( headersSize ).toUtf8() };
 
           auto start = std::chrono::steady_clock::now();
 
@@ -386,6 +403,7 @@ int main( int argc, char *argv[] )
           {
             connCounter --;
             clientConnection->deleteLater();
+            delete incomingData;
             return;
           }
 
@@ -433,6 +451,7 @@ int main( int argc, char *argv[] )
           {
             connCounter --;
             clientConnection->deleteLater();
+            delete incomingData;
             return;
           }
 

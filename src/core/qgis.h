@@ -629,23 +629,23 @@ CORE_EXPORT QString qgsVsiPrefix( const QString &path );
 
 /**
  * Allocates size bytes and returns a pointer to the allocated  memory.
-    Works like C malloc() but prints debug message by QgsLogger if allocation fails.
-    \param size size in bytes
+ * Works like C malloc() but prints debug message by QgsLogger if allocation fails.
+ * \param size size in bytes
  */
 void CORE_EXPORT *qgsMalloc( size_t size ) SIP_SKIP;
 
 /**
  * Allocates  memory for an array of nmemb elements of size bytes each and returns
-    a pointer to the allocated memory. Works like C calloc() but prints debug message
-    by QgsLogger if allocation fails.
-    \param nmemb number of elements
-    \param size size of element in bytes
+ * a pointer to the allocated memory. Works like C calloc() but prints debug message
+ * by QgsLogger if allocation fails.
+ * \param nmemb number of elements
+ * \param size size of element in bytes
  */
 void CORE_EXPORT *qgsCalloc( size_t nmemb, size_t size ) SIP_SKIP;
 
 /**
  * Frees the memory space  pointed  to  by  ptr. Works like C free().
-    \param ptr pointer to memory space
+ * \param ptr pointer to memory space
  */
 void CORE_EXPORT qgsFree( void *ptr ) SIP_SKIP;
 
@@ -725,7 +725,8 @@ const long GEO_EPSG_CRS_ID = 4326;
 
 /**
  * Magick number that determines whether a projection crsid is a system (srs.db)
- *  or user (~/.qgis.qgis.db) defined projection. */
+ * or user (~/.qgis.qgis.db) defined projection.
+*/
 const int USER_CRS_START_ID = 100000;
 
 //
@@ -747,7 +748,8 @@ typedef QMap<QString, QString> QgsStringMap SIP_SKIP;
  *  Currently used "unsigned long long" was introduced in C++11 (2011)
  *  but it was supported already before C++11 on common platforms.
  *  "unsigned long long int" gives syntax error in SIP.
- *  KEEP IN SYNC WITH qgssize defined in SIP! */
+ *  KEEP IN SYNC WITH qgssize defined in SIP!
+*/
 typedef unsigned long long qgssize;
 
 #ifndef SIP_RUN

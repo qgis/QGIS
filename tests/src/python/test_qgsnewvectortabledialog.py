@@ -61,7 +61,7 @@ class TestPyQgsNewVectorTableDialog(unittest.TestCase):
         conn = md.createConnection(self.uri, {})
         dialog = QgsNewVectorTableDialog(conn)
         dialog.setFields(conn.fields('', 'cdb_lines'))
-        dialog.setTableName('dont_lock_me_down_again')
+        dialog.setTableName('no_lock_me_down_again')
 
         # dialog.exec_()
 

@@ -26,6 +26,7 @@
 #include "qgsvectortilelayer.h"
 #include "qgsvectortilebasiclabeling.h"
 #include "qgsfontutils.h"
+#include "qgslinesymbollayer.h"
 
 /**
  * \ingroup UnitTests
@@ -57,6 +58,7 @@ class TestQgsVectorTileLayer : public QObject
     void test_render_withClip();
     void test_labeling();
     void test_relativePaths();
+    void test_polygonWithLineStyle();
 };
 
 
@@ -99,10 +101,21 @@ void TestQgsVectorTileLayer::initTestCase()
                      lineStrokeColor, lineStrokeWidth,
                      pointFillColor, pointStrokeColor, pointSize ) );
   mLayer->setRenderer( rend );  // takes ownership
+
+  mReport += QLatin1String( "<h1>Vector Tile Layer Tests</h1>\n" );
 }
 
 void TestQgsVectorTileLayer::cleanupTestCase()
 {
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  QFile myFile( myReportFile );
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
+  {
+    QTextStream myQTextStream( &myFile );
+    myQTextStream << mReport;
+    myFile.close();
+  }
+
   QgsApplication::exitQgis();
 }
 
@@ -229,6 +242,36 @@ void TestQgsVectorTileLayer::test_relativePaths()
   QCOMPARE( layer.decodedSource( srcXyzLocal, QString(), contextAbs ), srcXyzLocal );
   QCOMPARE( layer.decodedSource( srcXyzRemote, QString(), contextAbs ), srcXyzRemote );
   QCOMPARE( layer.decodedSource( srcMbtiles, QString(), contextAbs ), srcMbtiles );
+}
+
+void TestQgsVectorTileLayer::test_polygonWithLineStyle()
+{
+  QgsDataSourceUri ds;
+  ds.setParam( "type", "xyz" );
+  ds.setParam( "url", QString( "file://%1/{z}-{x}-{y}.pbf" ).arg( mDataDir ) );
+  ds.setParam( "zmax", "1" );
+  std::unique_ptr< QgsVectorTileLayer > layer = qgis::make_unique< QgsVectorTileLayer >( ds.encodedUri(), "Vector Tiles Test" );
+  QVERIFY( layer->isValid() );
+
+  mMapSettings->setLayers( QList<QgsMapLayer *>() << layer.get() );
+
+  QColor lineStrokeColor = Qt::blue;
+  double lineStrokeWidth = DEFAULT_LINE_WIDTH * 2;
+
+  QgsVectorTileBasicRenderer *rend = new QgsVectorTileBasicRenderer;
+
+  QgsSimpleLineSymbolLayer *lineSymbolLayer = new QgsSimpleLineSymbolLayer;
+  lineSymbolLayer->setColor( lineStrokeColor );
+  lineSymbolLayer->setWidth( lineStrokeWidth );
+  QgsLineSymbol *lineSymbol = new QgsLineSymbol( QgsSymbolLayerList() << lineSymbolLayer );
+
+  QgsVectorTileBasicRendererStyle st( QStringLiteral( "Polygons" ), QString(), QgsWkbTypes::LineGeometry );
+  st.setSymbol( lineSymbol );
+
+  rend->setStyles( QList<QgsVectorTileBasicRendererStyle>() << st );
+  layer->setRenderer( rend );  // takes ownership
+
+  QVERIFY( imageCheck( "render_test_polygon_with_line_style", layer.get(), layer->extent() ) );
 }
 
 

@@ -114,7 +114,7 @@ Returns a new polygon geometry corresponding to a segmentized approximation
 of the curve.
 
 :param tolerance: segmentation tolerance
-:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve*
+:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve
 %End
 
     virtual void setExteriorRing( QgsCurve *ring /Transfer/ );
@@ -232,7 +232,7 @@ direction.
 Returns a geometry without curves. Caller takes ownership
 
 :param tolerance: segmentation tolerance
-:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve*
+:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve
 %End
 
     virtual double vertexAngle( QgsVertexId vertex ) const;

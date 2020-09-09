@@ -2057,6 +2057,9 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
     else if ( u.layerType == QLatin1String( "vector-tile" ) )
     {
       QgsVectorTileLayer *layer = new QgsVectorTileLayer( uri, u.name );
+      bool ok = false;
+      layer->loadDefaultStyle( ok );
+      layer->loadDefaultMetadata( ok );
       addMapLayer( layer );
     }
     else if ( u.layerType == QLatin1String( "plugin" ) )
@@ -5653,6 +5656,13 @@ QgsVectorTileLayer *QgisApp::addVectorTileLayerPrivate( const QString &url, cons
     // since the layer is bad, stomp on it
     return nullptr;
   }
+  bool ok = false;
+  QString error = layer->loadDefaultStyle( ok );
+  if ( !ok )
+    visibleMessageBar()->pushMessage( tr( "Error loading style" ), error, Qgis::Warning, messageTimeout() );
+  error = layer->loadDefaultMetadata( ok );
+  if ( !ok )
+    visibleMessageBar()->pushMessage( tr( "Error loading layer metadata" ), error, Qgis::Warning, messageTimeout() );
 
   QgsProject::instance()->addMapLayer( layer.get() );
   activateDeactivateLayerRelatedActions( activeLayer() );
@@ -6023,6 +6033,8 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer, con
   if ( !chooseSublayersDialog.exec() )
     return result;
 
+  const bool addToGroup = chooseSublayersDialog.addToGroupCheckbox();
+
   QString name = layer->name();
 
   auto uriParts = QgsProviderRegistry::instance()->decodeUri(
@@ -6052,10 +6064,17 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer, con
       composedURI += "|geometrytype=" + layerGeometryType;
     }
 
-    QgsDebugMsg( "Creating new vector layer using " + composedURI );
+    QgsDebugMsgLevel( "Creating new vector layer using " + composedURI, 2 );
+
+    // if user has opted to add sublayers to a group, then we don't need to include the
+    // filename in the layer's name, because the group is already titled with the filename.
+    // But otherwise, we DO include the file name so that users can differentiate the source
+    // when multiple layers are loaded from a GPX file or similar (refs https://github.com/qgis/QGIS/issues/37551)
+    const QString name = addToGroup ? def.layerName : fileName + " " + def.layerName;
+
     QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
     options.loadDefaultStyle = false;
-    QgsVectorLayer *layer = new QgsVectorLayer( composedURI, def.layerName, QStringLiteral( "ogr" ), options );
+    QgsVectorLayer *layer = new QgsVectorLayer( composedURI, name, QStringLiteral( "ogr" ), options );
     if ( layer && layer->isValid() )
     {
       result << layer;
@@ -6071,7 +6090,6 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer, con
   if ( !result.isEmpty() )
   {
     QgsSettings settings;
-    bool addToGroup = settings.value( QStringLiteral( "/qgis/openSublayersInGroup" ), true ).toBool();
     bool newLayersVisible = settings.value( QStringLiteral( "/qgis/new_layers_visible" ), true ).toBool();
     QgsLayerTreeGroup *group = nullptr;
     if ( addToGroup )
@@ -8109,6 +8127,8 @@ void QgisApp::changeDataSource( QgsMapLayer *layer )
   QgsMapLayerType layerType( layer->type() );
 
   QgsDataSourceSelectDialog dlg( mBrowserModel, true, layerType );
+  if ( !layer->isValid() )
+    dlg.setWindowTitle( tr( "Repair Data Source" ) );
 
   const QVariantMap sourceParts = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->publicSource() );
   QString source = layer->publicSource();
@@ -10853,16 +10873,12 @@ void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRep
   if ( vlayer == activeLayer() )
     mSaveRollbackInProgress = true;
 
-  if ( !vlayer->commitChanges() )
+  if ( !vlayer->commitChanges( !leaveEditable ) )
   {
     mSaveRollbackInProgress = false;
     commitError( vlayer );
   }
 
-  if ( leaveEditable )
-  {
-    vlayer->startEditing();
-  }
   if ( triggerRepaint )
   {
     vlayer->triggerRepaint();
@@ -12164,6 +12180,8 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage, in
     double factor = mySettings.value( QStringLiteral( "qgis/magnifier_factor_default" ), 1.0 ).toDouble();
     mMagnifierWidget->setDefaultFactor( factor );
     mMagnifierWidget->updateMagnification( factor );
+
+    mWelcomePage->updateNewsFeedVisibility();
   }
 }
 

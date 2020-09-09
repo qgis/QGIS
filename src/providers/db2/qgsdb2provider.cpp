@@ -1646,22 +1646,22 @@ bool QgsDb2Provider::convertField( QgsField &field )
 
     case QVariant::DateTime:
       fieldType = QStringLiteral( "TIMESTAMP" );
-      fieldPrec = -1;
+      fieldPrec = 0;
       break;
 
     case QVariant::Date:
       fieldType = QStringLiteral( "DATE" );
-      fieldPrec = -1;
+      fieldPrec = 0;
       break;
 
     case QVariant::Time:
       fieldType = QStringLiteral( "TIME" );
-      fieldPrec = -1;
+      fieldPrec = 0;
       break;
 
     case QVariant::String:
       fieldType = QStringLiteral( "VARCHAR" );
-      fieldPrec = -1;
+      fieldPrec = 0;
       break;
 
     case QVariant::Int:
@@ -1675,7 +1675,7 @@ bool QgsDb2Provider::convertField( QgsField &field )
       {
         fieldType = QStringLiteral( "DOUBLE" );
         fieldSize = -1;
-        fieldPrec = -1;
+        fieldPrec = 0;
       }
       else
       {

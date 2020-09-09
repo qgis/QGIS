@@ -13,6 +13,7 @@
 
 
 
+
 class QgsProject : QObject, QgsExpressionContextGenerator, QgsExpressionContextScopeGenerator, QgsProjectTranslator
 {
 %Docstring
@@ -1077,6 +1078,19 @@ the layer and is responsible for deleting it.
 .. seealso:: :py:func:`removeMapLayer`
 
 .. versionadded:: 3.0
+%End
+
+    QgsAnnotationLayer *mainAnnotationLayer();
+%Docstring
+Returns the main annotation layer associated with the project.
+
+This layer is always present in projects, and will always be rendered
+above any other map layers during map render jobs.
+
+It forms the default location to place new annotation items which
+should appear above all map layers.
+
+.. versionadded:: 3.16
 %End
 
     void removeAllMapLayers();

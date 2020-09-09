@@ -53,9 +53,9 @@ namespace QgsWms
       Q_DECLARE_FLAGS( Flags, Flag )
 
       /**
-       * Default constructor for QgsWmsRenderContext.
+       * Destructor for QgsWmsRenderContext.
        */
-      QgsWmsRenderContext() = default;
+      ~QgsWmsRenderContext();
 
       /**
        * Constructor for QgsWmsRenderContext.
@@ -244,6 +244,12 @@ namespace QgsWms
        */
       int mapHeight() const;
 
+      /**
+       * Returns true if the layer is an external layer, false otherwise.
+       * \since QGIS 3.16
+       */
+      bool isExternalLayer( const QString &name ) const;
+
     private:
       void initNicknameLayers();
       void initRestrictedLayers();
@@ -277,6 +283,9 @@ namespace QgsWms
 
       QMap<QString, QDomElement> mSlds;
       QMap<QString, QString> mStyles;
+
+      // list for external layers
+      QList<QgsMapLayer *> mExternalLayers;
   };
 };
 

@@ -66,7 +66,7 @@ class QgsGeometryValidationService : public QObject
 
     void fixError( QgsGeometryCheckError *error, int method );
 
-    void triggerTopologyChecks( QgsVectorLayer *layer );
+    void triggerTopologyChecks( QgsVectorLayer *layer, bool stopEditing );
 
     void setMessageBar( QgsMessageBar *messageBar );
 
@@ -92,7 +92,7 @@ class QgsGeometryValidationService : public QObject
     void onFeatureAdded( QgsVectorLayer *layer, QgsFeatureId fid );
     void onGeometryChanged( QgsVectorLayer *layer, QgsFeatureId fid, const QgsGeometry &geometry );
     void onFeatureDeleted( QgsVectorLayer *layer, QgsFeatureId fid );
-    void onBeforeCommitChanges( QgsVectorLayer *layer );
+    void onBeforeCommitChanges( QgsVectorLayer *layer, bool stopEditing );
     void onEditingStopped( QgsVectorLayer *layer );
 
   private:

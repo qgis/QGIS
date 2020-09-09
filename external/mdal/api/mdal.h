@@ -232,6 +232,16 @@ MDAL_EXPORT const char *MDAL_MeshNames( const char *uri );
 MDAL_EXPORT void MDAL_CloseMesh( MDAL_MeshH mesh );
 
 /**
+ * Creates a empty mesh in memory
+ *
+ * \since MDAL 0.7
+ *
+ * \note the mesh is editable (vertices and faces can be added, see MDAL_M_addVertices() and MDAL_M_addFaces()),
+ * and can be saved with MDAL_SaveMesh()
+ */
+MDAL_EXPORT MDAL_MeshH MDAL_CreateMesh( MDAL_DriverH driver );
+
+/**
  * Saves mesh (only mesh structure) on a file with the specified driver. On error see MDAL_LastStatus for error type.
  */
 MDAL_EXPORT void MDAL_SaveMesh( MDAL_MeshH mesh, const char *meshFile, const char *driver );
@@ -243,10 +253,46 @@ MDAL_EXPORT void MDAL_SaveMesh( MDAL_MeshH mesh, const char *meshFile, const cha
 MDAL_EXPORT const char *MDAL_M_projection( MDAL_MeshH mesh );
 
 /**
+ * Sets mesh projection
+ * not thread-safe and valid only till next call
+ *
+ * \since MDAL 0.7
+ */
+MDAL_EXPORT void MDAL_M_setProjection( MDAL_MeshH mesh, const char *projection );
+
+/**
  * Returns mesh extent in native projection
  * Returns NaN on error
  */
 MDAL_EXPORT void MDAL_M_extent( MDAL_MeshH mesh, double *minX, double *maxX, double *minY, double *maxY );
+
+/**
+ * Adds vertices to the mesh
+ * \param mesh the mesh which the vertices are added
+ * \param vertexCount the count of vertices
+ * \param coordinates coordinates of vertices (x0,y0,z0,x1,y1,z1,...,xn,yn,zn)
+ *
+ * \note to avoid incompatible datasets, adding faces removes all the existing dataset group
+ *
+ * \since MDAL 0.7
+ */
+MDAL_EXPORT void MDAL_M_addVertices( MDAL_MeshH mesh, int vertexCount, double *coordinates );
+
+/**
+ * Adds faces to the mesh
+ * \param mesh the mesh which the faces are added
+ * \param faceCount the count of faces
+ * \param faceSizes a pointer to an array of integer containing the number of vertices per each faces
+ * \param vertexIndices a pointer to an array of integer containing the indices of vertices of each faces
+ *
+ * \note to avoid incompatible datasets, adding faces removes all the existing dataset group
+ *
+ * \since MDAL 0.7
+ */
+MDAL_EXPORT void MDAL_M_addFaces( MDAL_MeshH mesh,
+                                  int faceCount,
+                                  int *faceSizes,
+                                  int *vertexIndices );
 
 /**
  * Returns vertex count for the mesh

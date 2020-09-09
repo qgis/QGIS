@@ -17,6 +17,7 @@
 
 #include <QClipboard>
 #include <QMap>
+#include <QSpinBox>
 #include <QString>
 #include <QToolButton>
 #include <QUrl>
@@ -36,6 +37,7 @@
 #include "qgsfeatureaction.h"
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgssettings.h"
 
 
 QgsLayerTreeLocatorFilter::QgsLayerTreeLocatorFilter( QObject *parent )
@@ -242,32 +244,58 @@ QgsActiveLayerFeaturesLocatorFilter *QgsActiveLayerFeaturesLocatorFilter::clone(
   return new QgsActiveLayerFeaturesLocatorFilter();
 }
 
-void QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string, const QgsLocatorContext &context )
+QString QgsActiveLayerFeaturesLocatorFilter::fieldRestriction( QString &searchString ) const
+{
+  QString _fieldRestriction;
+  if ( searchString.startsWith( '@' ) )
+  {
+    _fieldRestriction = searchString.left( std::max( searchString.indexOf( ' ' ), 0 ) ).remove( 0, 1 );
+    searchString = searchString.mid( _fieldRestriction.length() + 2 );
+  }
+  return _fieldRestriction;
+}
+
+QStringList QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string, const QgsLocatorContext &context )
 {
   // Normally skip very short search strings, unless when specifically searching using this filter
   if ( string.length() < 3 && !context.usingPrefix )
-    return;
+    return QStringList();
 
-  bool allowNumeric = false;
-  double numericalValue = string.toDouble( &allowNumeric );
+  QgsSettings settings;
+  mMaxTotalResults = settings.value( QStringLiteral( "locator_filters/active_layer_features/limit_global" ), 30, QgsSettings::App ).toInt();
 
   QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( QgisApp::instance()->activeLayer() );
   if ( !layer )
-    return;
+    return QStringList();
 
   mDispExpression = QgsExpression( layer->displayExpression() );
   mContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
   mDispExpression.prepare( &mContext );
 
+  // determine if search is restricted to a specific field
+  QString searchString = string;
+  QString _fieldRestriction = fieldRestriction( searchString );
+  bool allowNumeric = false;
+  double numericalValue = searchString.toDouble( &allowNumeric );
+
   // build up request expression
   QStringList expressionParts;
+  QStringList completionList;
   const QgsFields fields = layer->fields();
+  QgsAttributeList subsetOfAttributes;
   for ( const QgsField &field : fields )
   {
+    if ( !_fieldRestriction.isEmpty() && !field.name().startsWith( _fieldRestriction ) )
+      continue;
+
+    if ( !_fieldRestriction.isEmpty() )
+      subsetOfAttributes << layer->fields().indexFromName( field.name() );
+
+    completionList.append( QStringLiteral( "@%1 " ).arg( field.name() ) );
     if ( field.type() == QVariant::String )
     {
       expressionParts << QStringLiteral( "%1 ILIKE '%%2%'" ).arg( QgsExpression::quotedColumnRef( field.name() ),
-                      string );
+                      searchString );
     }
     else if ( allowNumeric && field.isNumeric() )
     {
@@ -280,6 +308,9 @@ void QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string, const 
   QgsFeatureRequest req;
   req.setFlags( QgsFeatureRequest::NoGeometry );
   req.setFilterExpression( expression );
+  if ( !_fieldRestriction.isEmpty() )
+    req.setSubsetOfAttributes( subsetOfAttributes );
+
   req.setLimit( 30 );
   mIterator = layer->getFeatures( req );
 
@@ -290,12 +321,16 @@ void QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string, const 
   {
     mAttributeAliases.append( layer->attributeDisplayName( idx ) );
   }
+
+  return completionList;
 }
 
 void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback *feedback )
 {
   int found = 0;
   QgsFeature f;
+  QString searchString = string;
+  fieldRestriction( searchString );
 
   while ( mIterator.nextFeature( f ) )
   {
@@ -312,7 +347,7 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
     for ( const QVariant &var : attributes )
     {
       QString attrString = var.toString();
-      if ( attrString.contains( string, Qt::CaseInsensitive ) )
+      if ( attrString.contains( searchString, Qt::CaseInsensitive ) )
       {
         if ( idx < mAttributeAliases.count() )
           result.displayString = QStringLiteral( "%1 (%2)" ).arg( attrString, mAttributeAliases[idx] );
@@ -329,11 +364,11 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
 
     result.userData = QVariantList() << f.id() << mLayerId;
     result.icon = mLayerIcon;
-    result.score = static_cast< double >( string.length() ) / result.displayString.size();
+    result.score = static_cast< double >( searchString.length() ) / result.displayString.size();
     emit resultFetched( result );
 
     found++;
-    if ( found >= 30 )
+    if ( found >= mMaxTotalResults )
       break;
   }
 }
@@ -348,6 +383,31 @@ void QgsActiveLayerFeaturesLocatorFilter::triggerResult( const QgsLocatorResult 
     return;
 
   QgisApp::instance()->mapCanvas()->zoomToFeatureIds( layer, QgsFeatureIds() << id );
+}
+
+void QgsActiveLayerFeaturesLocatorFilter::openConfigWidget( QWidget *parent )
+{
+  QString key = "locator_filters/active_layer_features";
+  QgsSettings settings;
+  std::unique_ptr<QDialog> dlg( new QDialog( parent ) );
+  dlg->restoreGeometry( settings.value( QStringLiteral( "Windows/%1/geometry" ).arg( key ) ).toByteArray() );
+  dlg->setWindowTitle( "All layers features locator filter" );
+  QFormLayout *formLayout = new QFormLayout;
+  QSpinBox *globalLimitSpinBox = new QSpinBox( dlg.get() );
+  globalLimitSpinBox->setValue( settings.value( QStringLiteral( "%1/limit_global" ).arg( key ), 30, QgsSettings::App ).toInt() );
+  globalLimitSpinBox->setMinimum( 1 );
+  globalLimitSpinBox->setMaximum( 200 );
+  formLayout->addRow( tr( "&Maximum number of results:" ), globalLimitSpinBox );
+  QDialogButtonBox *buttonbBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, dlg.get() );
+  formLayout->addRow( buttonbBox );
+  dlg->setLayout( formLayout );
+  connect( buttonbBox, &QDialogButtonBox::accepted, [&]()
+  {
+    settings.setValue( QStringLiteral( "%1/limit_global" ).arg( key ), globalLimitSpinBox->value(), QgsSettings::App );
+    dlg->accept();
+  } );
+  connect( buttonbBox, &QDialogButtonBox::rejected, dlg.get(), &QDialog::reject );
+  dlg->exec();
 }
 
 //
@@ -365,11 +425,15 @@ QgsAllLayersFeaturesLocatorFilter *QgsAllLayersFeaturesLocatorFilter::clone() co
   return new QgsAllLayersFeaturesLocatorFilter();
 }
 
-void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const QgsLocatorContext &context )
+QStringList QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const QgsLocatorContext &context )
 {
   // Normally skip very short search strings, unless when specifically searching using this filter
   if ( string.length() < 3 && !context.usingPrefix )
-    return;
+    return QStringList();
+
+  QgsSettings settings;
+  mMaxTotalResults = settings.value( "locator_filters/all_layers_features/limit_global", 15, QgsSettings::App ).toInt();
+  mMaxResultsPerLayer = settings.value( "locator_filters/all_layers_features/limit_per_layer", 8, QgsSettings::App ).toInt();
 
   mPreparedLayers.clear();
   const QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
@@ -411,6 +475,8 @@ void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const Qg
 
     mPreparedLayers.append( preparedLayer );
   }
+
+  return QStringList();
 }
 
 void QgsAllLayersFeaturesLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback *feedback )
@@ -525,6 +591,38 @@ void QgsAllLayersFeaturesLocatorFilter::triggerResultFromAction( const QgsLocato
     QgisApp::instance()->mapCanvas()->zoomToFeatureIds( layer, QgsFeatureIds() << fid );
   }
 }
+
+void QgsAllLayersFeaturesLocatorFilter::openConfigWidget( QWidget *parent )
+{
+  QString key = "locator_filters/all_layers_features";
+  QgsSettings settings;
+  std::unique_ptr<QDialog> dlg( new QDialog( parent ) );
+  dlg->restoreGeometry( settings.value( QStringLiteral( "Windows/%1/geometry" ).arg( key ) ).toByteArray() );
+  dlg->setWindowTitle( "All layers features locator filter" );
+  QFormLayout *formLayout = new QFormLayout;
+  QSpinBox *globalLimitSpinBox = new QSpinBox( dlg.get() );
+  globalLimitSpinBox->setValue( settings.value( QStringLiteral( "%1/limit_global" ).arg( key ), 15, QgsSettings::App ).toInt() );
+  globalLimitSpinBox->setMinimum( 1 );
+  globalLimitSpinBox->setMaximum( 200 );
+  formLayout->addRow( tr( "&Maximum number of results:" ), globalLimitSpinBox );
+  QSpinBox *perLayerLimitSpinBox = new QSpinBox( dlg.get() );
+  perLayerLimitSpinBox->setValue( settings.value( QStringLiteral( "%1/limit_per_layer" ).arg( key ), 8, QgsSettings::App ).toInt() );
+  perLayerLimitSpinBox->setMinimum( 1 );
+  perLayerLimitSpinBox->setMaximum( 200 );
+  formLayout->addRow( tr( "&Maximum number of results per layer:" ), perLayerLimitSpinBox );
+  QDialogButtonBox *buttonbBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, dlg.get() );
+  formLayout->addRow( buttonbBox );
+  dlg->setLayout( formLayout );
+  connect( buttonbBox, &QDialogButtonBox::accepted, [&]()
+  {
+    settings.setValue( QStringLiteral( "%1/limit_global" ).arg( key ), globalLimitSpinBox->value(), QgsSettings::App );
+    settings.setValue( QStringLiteral( "%1/limit_per_layer" ).arg( key ), perLayerLimitSpinBox->value(), QgsSettings::App );
+    dlg->accept();
+  } );
+  connect( buttonbBox, &QDialogButtonBox::rejected, dlg.get(), &QDialog::reject );
+  dlg->exec();
+}
+
 
 //
 // QgsExpressionCalculatorLocatorFilter
@@ -942,3 +1040,4 @@ void QgsGotoLocatorFilter::triggerResult( const QgsLocatorResult &result )
 
   mapCanvas->flashGeometries( QList< QgsGeometry >() << QgsGeometry::fromPointXY( point ) );
 }
+

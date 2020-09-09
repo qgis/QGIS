@@ -151,7 +151,7 @@ QVariantMap QgsRasterSamplingAlgorithm::processAlgorithm( const QVariantMap &par
     {
       point = ct.transform( point );
     }
-    catch ( const QgsException &e )
+    catch ( const QgsException & )
     {
       attributes += emptySampleAttributes;
       outputFeature.setAttributes( attributes );

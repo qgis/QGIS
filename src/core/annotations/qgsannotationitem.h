@@ -97,7 +97,7 @@ class CORE_EXPORT QgsAnnotationItem
     /**
      * Renders the item to the specified render \a context.
      *
-     * The \a feedback argument can be used to detect render cancelations during expensive
+     * The \a feedback argument can be used to detect render cancellations during expensive
      * render operations.
      */
     virtual void render( QgsRenderContext &context, QgsFeedback *feedback ) = 0;

@@ -295,7 +295,7 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsPr
   mSearchModeLabel->setVisible( false );
   mSearchTableEdit->setVisible( false );
 }
-//! Autoconnected SLOTS *
+//! Autoconnected SLOTS
 // Slot for adding a new connection
 void QgsPgSourceSelect::btnNew_clicked()
 {
@@ -354,7 +354,7 @@ void QgsPgSourceSelect::btnEdit_clicked()
   delete nc;
 }
 
-//! End Autoconnected SLOTS *
+//! End Autoconnected SLOTS
 
 // Remember which database is selected
 void QgsPgSourceSelect::cmbConnections_currentIndexChanged( const QString &text )

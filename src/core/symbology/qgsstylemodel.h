@@ -35,7 +35,7 @@ class QgsSymbol;
  *
  * An abstract base class for icon generators for a QgsStyleModel.
  *
- * This base class allows for creation of specialised icon generators for
+ * This base class allows for creation of specialized icon generators for
  * entities in a style database, and allows for deferred icon generation.
  *
  * \note Not available in Python bindings

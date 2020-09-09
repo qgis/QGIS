@@ -47,6 +47,9 @@ QgsFilteredSelectionManager::QgsFilteredSelectionManager( QgsVectorLayer *layer,
   : QgsVectorLayerSelectionManager( layer, parent )
   , mRequest( request )
 {
+  if ( ! layer )
+    return;
+
   for ( auto fid : layer->selectedFeatureIds() )
     if ( mRequest.acceptFeature( layer->getFeature( fid ) ) )
       mSelectedFeatureIds << fid;
@@ -922,7 +925,7 @@ void QgsRelationEditorWidget::updateUi()
 
       initDualView( mNmRelation.referencedLayer(), nmRequest );
     }
-    else
+    else if ( mRelation.referencingLayer() )
     {
       initDualView( mRelation.referencingLayer(), myRequest );
     }
@@ -960,6 +963,7 @@ void QgsRelationEditorWidget::setVisibleButtons( const QgsAttributeEditorRelatio
   mUnlinkFeatureButton->setVisible( buttons.testFlag( QgsAttributeEditorRelation::Button::Unlink ) );
   mSaveEditsButton->setVisible( buttons.testFlag( QgsAttributeEditorRelation::Button::SaveChildEdits ) );
   mAddFeatureButton->setVisible( buttons.testFlag( QgsAttributeEditorRelation::Button::AddChildFeature ) );
+  mAddFeatureGeometryButton->setVisible( buttons.testFlag( QgsAttributeEditorRelation::Button::AddChildFeature ) );
   mDuplicateFeatureButton->setVisible( buttons.testFlag( QgsAttributeEditorRelation::Button::DuplicateChildFeature ) );
   mDeleteFeatureButton->setVisible( buttons.testFlag( QgsAttributeEditorRelation::Button::DeleteChildFeature ) );
   mZoomToFeatureButton->setVisible( buttons.testFlag( QgsAttributeEditorRelation::Button::ZoomToChildFeature ) );
@@ -983,6 +987,26 @@ QgsAttributeEditorRelation::Buttons QgsRelationEditorWidget::visibleButtons() co
   if ( mZoomToFeatureButton->isVisible() )
     buttons |= QgsAttributeEditorRelation::Button::ZoomToChildFeature;
   return buttons;
+}
+
+void QgsRelationEditorWidget::setForceSuppressFormPopup( bool forceSuppressFormPopup )
+{
+  mForceSuppressFormPopup = forceSuppressFormPopup;
+}
+
+bool QgsRelationEditorWidget::forceSuppressFormPopup() const
+{
+  return mForceSuppressFormPopup;
+}
+
+void QgsRelationEditorWidget::setNmRelationId( const QVariant &nmRelationId )
+{
+  mNmRelationId = nmRelationId;
+}
+
+QVariant QgsRelationEditorWidget::nmRelationId() const
+{
+  return mNmRelationId;
 }
 
 void QgsRelationEditorWidget::setShowUnlinkButton( bool showUnlinkButton )

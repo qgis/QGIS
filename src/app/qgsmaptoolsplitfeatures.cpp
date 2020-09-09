@@ -95,7 +95,14 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     int topologicalEditing = QgsProject::instance()->topologicalEditing();
     vlayer->beginEditCommand( tr( "Features split" ) );
     QgsGeometry::OperationResult returnCode = vlayer->splitFeatures( captureCurve(), true, topologicalEditing );
-    vlayer->endEditCommand();
+    if ( returnCode == QgsGeometry::OperationResult::Success )
+    {
+      vlayer->endEditCommand();
+    }
+    else
+    {
+      vlayer->destroyEditCommand();
+    }
     if ( returnCode == QgsGeometry::OperationResult::NothingHappened )
     {
       QgisApp::instance()->messageBar()->pushMessage(

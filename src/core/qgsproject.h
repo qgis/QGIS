@@ -75,6 +75,8 @@ class QgsBookmarkManager;
 class QgsProjectViewSettings;
 class QgsProjectDisplaySettings;
 class QgsProjectTimeSettings;
+class QgsAnnotationLayer;
+
 
 /**
  * \ingroup core
@@ -1155,6 +1157,19 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsMapLayer *takeMapLayer( QgsMapLayer *layer ) SIP_TRANSFERBACK;
 
     /**
+     * Returns the main annotation layer associated with the project.
+     *
+     * This layer is always present in projects, and will always be rendered
+     * above any other map layers during map render jobs.
+     *
+     * It forms the default location to place new annotation items which
+     * should appear above all map layers.
+     *
+     * \since QGIS 3.16
+     */
+    QgsAnnotationLayer *mainAnnotationLayer();
+
+    /**
      * Removes all registered layers. If the registry has ownership
      * of any layers these layers will also be deleted.
      *
@@ -1927,6 +1942,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QgsLayerTreeRegistryBridge *mLayerTreeRegistryBridge = nullptr;
 
+    QgsAnnotationLayer *mMainAnnotationLayer = nullptr;
+
     //! map of transaction group: QPair( providerKey, connString ) -> transactionGroup
     QMap< QPair< QString, QString>, QgsTransactionGroup *> mTransactionGroups;
 
@@ -1985,7 +2002,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     friend class QgsProviderRegistry;
 
     // Required by QGIS Server for switching the current project instance
-    friend class QgsConfigCache;
+    friend class QgsServer;
 
     friend class TestQgsProject;
 };
@@ -2049,8 +2066,8 @@ class CORE_EXPORT QgsProjectDirtyBlocker
 
 /**
  * Returns the version string found in the given DOM document
-   \returns the version string or an empty string if none found
-   \note not available in Python bindings.
+ * \returns the version string or an empty string if none found
+ * \note not available in Python bindings.
  */
 CORE_EXPORT QgsProjectVersion getVersion( QDomDocument const &doc ) SIP_SKIP;
 

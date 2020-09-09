@@ -773,6 +773,15 @@ MDAL::BBox MDAL::MeshSelafin::extent() const
   return mExtent;
 }
 
+void MDAL::MeshSelafin::closeSource()
+{
+  if ( mReader )
+  {
+    mReader->mIn.close();
+    mReader->mParsed = false;
+  }
+}
+
 void MDAL::MeshSelafin::calculateExtent() const
 {
   size_t bufferSize = 1000;
@@ -1274,6 +1283,10 @@ bool MDAL::SelafinFile::addDatasetGroup( MDAL::DatasetGroup *datasetGroup )
 
   out.close();
   mIn.close();
+
+  // if the uri of the dataset group is the same than the file name, be sure to close it before replace it
+  if ( datasetGroup->uri() == mFileName )
+    datasetGroup->mesh()->closeSource();
 
   if ( std::remove( mFileName.c_str() ) != 0 )
   {

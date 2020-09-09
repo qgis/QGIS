@@ -222,6 +222,32 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     QgsAttributeEditorRelation::Buttons visibleButtons() const;
 
     /**
+       * Determines the force suppress form popup status that is configured for this widget
+       * \since QGIS 3.16
+       */
+    bool forceSuppressFormPopup() const;
+
+    /**
+     * Sets force suppress form popup status with \a forceSuppressFormPopup
+     * configured for this widget
+     * \since QGIS 3.16
+     */
+    void setForceSuppressFormPopup( bool forceSuppressFormPopup );
+
+    /**
+    * Determines the relation id of the second relation involved in an N:M relation.
+    * \since QGIS 3.16
+    */
+    QVariant nmRelationId() const;
+
+    /**
+     * Sets \a nmRelationId for the relation id of the second relation involved in an N:M relation.
+     * If it's empty, then it's considered as a 1:M relationship.
+     * \since QGIS 3.16
+     */
+    void setNmRelationId( const QVariant &nmRelationId = QVariant() );
+
+    /**
      * Returns the widget's current feature
      *
      * \since QGIS 3.14
@@ -292,6 +318,9 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
 
     bool mShowLabel = true;
     bool mVisible = false;
+
+    bool mForceSuppressFormPopup = false;
+    QVariant mNmRelationId;
 
     /**
      * Deletes the features

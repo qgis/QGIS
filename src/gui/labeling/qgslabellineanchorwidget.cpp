@@ -30,12 +30,23 @@ QgsLabelLineAnchorWidget::QgsLabelLineAnchorWidget( QWidget *parent, QgsVectorLa
   mPercentPlacementComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mActionLabelAnchorEnd.svg" ) ), tr( "End of Line" ), 1.0 );
   mPercentPlacementComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mActionLabelAnchorCustom.svg" ) ), tr( "Custom…" ), -1.0 );
 
+  mAnchorTypeComboBox->addItem( tr( "Preferred Placement Hint" ), static_cast< int >( QgsLabelLineSettings::AnchorType::HintOnly ) );
+  mAnchorTypeComboBox->addItem( tr( "Strict" ), static_cast< int >( QgsLabelLineSettings::AnchorType::Strict ) );
+
   connect( mPercentPlacementComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]( int )
   {
     if ( !mBlockSignals )
       emit changed();
 
-    mCustomPlacementSpinBox->setEnabled( mPercentPlacementComboBox->currentData().toDouble() < 0 );
+    if ( mPercentPlacementComboBox->currentData().toDouble() < 0 )
+      mCustomPlacementSpinBox->setEnabled( true );
+    else
+    {
+      mCustomPlacementSpinBox->setEnabled( false );
+      mBlockSignals = true;
+      mCustomPlacementSpinBox->setValue( mPercentPlacementComboBox->currentData().toDouble() * 100 );
+      mBlockSignals = false;
+    }
   } );
   connect( mCustomPlacementSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, [ = ]( double )
   {
@@ -43,8 +54,16 @@ QgsLabelLineAnchorWidget::QgsLabelLineAnchorWidget( QWidget *parent, QgsVectorLa
       emit changed();
   } );
 
-  registerDataDefinedButton( mLinePlacementDDBtn, QgsPalLayerSettings::LineAnchorPercent );
+  connect( mAnchorTypeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+  {
+    if ( !mBlockSignals )
+      emit changed();
 
+    updateAnchorTypeHint();
+  } );
+
+  registerDataDefinedButton( mLinePlacementDDBtn, QgsPalLayerSettings::LineAnchorPercent );
+  updateAnchorTypeHint();
 }
 
 void QgsLabelLineAnchorWidget::setSettings( const QgsLabelLineSettings &settings )
@@ -62,6 +81,8 @@ void QgsLabelLineAnchorWidget::setSettings( const QgsLabelLineSettings &settings
     mCustomPlacementSpinBox->setValue( settings.lineAnchorPercent() * 100.0 );
   }
   mCustomPlacementSpinBox->setEnabled( mPercentPlacementComboBox->currentData().toDouble() < 0 );
+
+  mAnchorTypeComboBox->setCurrentIndex( mAnchorTypeComboBox->findData( static_cast< int >( settings.anchorType() ) ) );
   mBlockSignals = false;
 }
 
@@ -77,10 +98,28 @@ QgsLabelLineSettings QgsLabelLineAnchorWidget::settings() const
   {
     settings.setLineAnchorPercent( mCustomPlacementSpinBox->value() / 100.0 );
   }
+
+  settings.setAnchorType( static_cast< QgsLabelLineSettings::AnchorType >( mAnchorTypeComboBox->currentData().toInt() ) );
   return settings;
 }
 
 void QgsLabelLineAnchorWidget::updateDataDefinedProperties( QgsPropertyCollection &properties )
 {
   properties.setProperty( QgsPalLayerSettings::LineAnchorPercent, mDataDefinedProperties.property( QgsPalLayerSettings::LineAnchorPercent ) );
+}
+
+void QgsLabelLineAnchorWidget::updateAnchorTypeHint()
+{
+  QString hint;
+  switch ( static_cast< QgsLabelLineSettings::AnchorType >( mAnchorTypeComboBox->currentData().toInt() ) )
+  {
+    case QgsLabelLineSettings::AnchorType::Strict:
+      hint = tr( "Labels are placed exactly on the label anchor only, and no other fallback placements are permitted." );
+      break;
+
+    case QgsLabelLineSettings::AnchorType::HintOnly:
+      hint = tr( "The label anchor is treated as a hint for the preferred label placement, but other placements close to the anchor point are permitted." );
+      break;
+  }
+  mAnchorTypeHintLabel->setText( hint );
 }

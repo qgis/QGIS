@@ -18,6 +18,7 @@
 #ifndef QGS_LANDINGPAGE_HANDLERS_H
 #define QGS_LANDINGPAGE_HANDLERS_H
 
+#include "qgsserversettings.h"
 #include "qgsserverogcapihandler.h"
 #include "qgsfields.h"
 
@@ -32,7 +33,7 @@ class QgsLandingPageHandler: public QgsServerOgcApiHandler
 {
   public:
 
-    QgsLandingPageHandler( );
+    QgsLandingPageHandler( const QgsServerSettings *settings );
 
     void handleRequest( const QgsServerApiContext &context ) const override;
 
@@ -57,7 +58,7 @@ class QgsLandingPageHandler: public QgsServerOgcApiHandler
 
     json projectsData() const;
 
-
+    const QgsServerSettings *mSettings = nullptr;
 };
 
 
@@ -68,7 +69,7 @@ class QgsLandingPageMapHandler: public QgsServerOgcApiHandler
 {
   public:
 
-    QgsLandingPageMapHandler( );
+    QgsLandingPageMapHandler( const QgsServerSettings *settings );
 
     void handleRequest( const QgsServerApiContext &context ) const override;
 
@@ -86,6 +87,10 @@ class QgsLandingPageMapHandler: public QgsServerOgcApiHandler
     }
     std::string linkTitle() const override { return "Map Viewer"; }
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::self; }
+
+  private:
+
+    const QgsServerSettings *mSettings = nullptr;
 };
 
 #endif // QGS_LANDINGPAGE_HANDLERS_H

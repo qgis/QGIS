@@ -20,12 +20,15 @@
 
 #include "ui_qgsvectortilelayerpropertiesbase.h"
 
+#include "qgsmaplayerstylemanager.h"
+
 class QgsMapLayer;
 class QgsMapCanvas;
 class QgsMessageBar;
 class QgsVectorTileBasicLabelingWidget;
 class QgsVectorTileBasicRendererWidget;
 class QgsVectorTileLayer;
+class QgsMetadataWidget;
 
 
 class QgsVectorTileLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVectorTileLayerPropertiesBase
@@ -36,13 +39,20 @@ class QgsVectorTileLayerProperties : public QgsOptionsDialogBase, private Ui::Qg
 
   private slots:
     void apply();
+    void onCancel();
 
     void loadDefaultStyle();
     void saveDefaultStyle();
     void loadStyle();
     void saveStyleAs();
     void aboutToShowStyleMenu();
+    void loadMetadata();
+    void saveMetadataAs();
     void showHelp();
+    void urlClicked( const QUrl &url );
+
+  protected slots:
+    void optionsStackedWidget_CurrentChanged( int index ) override SIP_SKIP ;
 
   private:
     void syncToLayer();
@@ -52,6 +62,20 @@ class QgsVectorTileLayerProperties : public QgsOptionsDialogBase, private Ui::Qg
 
     QgsVectorTileBasicRendererWidget *mRendererWidget = nullptr;
     QgsVectorTileBasicLabelingWidget *mLabelingWidget = nullptr;
+
+    QPushButton *mBtnStyle = nullptr;
+    QPushButton *mBtnMetadata = nullptr;
+    QAction *mActionLoadMetadata = nullptr;
+    QAction *mActionSaveMetadataAs = nullptr;
+
+    QgsMapCanvas *mMapCanvas = nullptr;
+    QgsMetadataWidget *mMetadataWidget = nullptr;
+
+    /**
+     * Previous layer style. Used to reset style to previous state if new style
+     * was loaded but dialog is canceled.
+    */
+    QgsMapLayerStyle mOldStyle;
 };
 
 #endif // QGSVECTORTILELAYERPROPERTIES_H

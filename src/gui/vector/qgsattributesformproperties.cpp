@@ -17,7 +17,6 @@
 #include "qgsattributesformproperties.h"
 #include "qgsattributetypedialog.h"
 #include "qgsattributeformcontaineredit.h"
-#include "qgsattributerelationedit.h"
 #include "qgsattributewidgetedit.h"
 #include "qgsattributesforminitcode.h"
 #include "qgsfieldcombobox.h"
@@ -127,11 +126,7 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
   {
     DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Relation, QStringLiteral( "%1" ).arg( relation.id() ), QStringLiteral( "%1" ).arg( relation.name() ) );
     itemData.setShowLabel( true );
-
-    RelationConfig cfg( mLayer, relation.id() );
-
     QTreeWidgetItem *item = mAvailableWidgetsTree->addItem( catitem, itemData );
-    item->setData( 0, RelationConfigRole, cfg );
     item->setData( 0, FieldNameRole, relation.id() );
   }
   catitem->setExpanded( true );
@@ -349,62 +344,6 @@ void QgsAttributesFormProperties::storeAttributeTypeDialog()
   }
 }
 
-
-void QgsAttributesFormProperties::loadAttributeRelationEdit()
-{
-  if ( mAvailableWidgetsTree->selectedItems().count() != 1 )
-    return;
-
-  QTreeWidgetItem *currentItem = mAvailableWidgetsTree->selectedItems().at( 0 );
-
-  RelationConfig cfg = currentItem->data( 0, RelationConfigRole ).value<RelationConfig>();
-
-  mAttributeRelationEdit = new QgsAttributeRelationEdit( currentItem->data( 0, FieldNameRole ).toString(), mAttributeTypeFrame );
-  mAttributeRelationEdit->setCardinalityCombo( tr( "Many to one relation" ) );
-
-  QgsRelation relation = QgsProject::instance()->relationManager()->relation( currentItem->data( 0, FieldNameRole ).toString() );
-
-  const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencingRelations( relation.referencingLayer() );
-  for ( const QgsRelation &nmrel : relations )
-  {
-    if ( nmrel.fieldPairs().at( 0 ).referencingField() != relation.fieldPairs().at( 0 ).referencingField() )
-      mAttributeRelationEdit->setCardinalityCombo( QStringLiteral( "%1 (%2)" ).arg( nmrel.referencedLayer()->name(), nmrel.fieldPairs().at( 0 ).referencedField() ), nmrel.id() );
-  }
-
-  mAttributeRelationEdit->setCardinality( cfg.mCardinality );
-  mAttributeRelationEdit->setForceSuppressFormPopup( cfg.mForceSuppressFormPopup );
-
-  mAttributeRelationEdit->layout()->setMargin( 0 );
-  mAttributeTypeFrame->layout()->setMargin( 0 );
-
-  mAttributeTypeFrame->layout()->addWidget( mAttributeRelationEdit );
-}
-
-
-void QgsAttributesFormProperties::storeAttributeRelationEdit()
-{
-  if ( !mAttributeRelationEdit )
-    return;
-
-  RelationConfig cfg;
-
-  cfg.mCardinality = mAttributeRelationEdit->cardinality();
-  cfg.mForceSuppressFormPopup = mAttributeRelationEdit->forceSuppressFormPopup();
-
-  QTreeWidgetItem *relationContainer = mAvailableWidgetsTree->invisibleRootItem()->child( 1 );
-
-  for ( int i = 0; i < relationContainer->childCount(); i++ )
-  {
-    QTreeWidgetItem *relationItem = relationContainer->child( i );
-    DnDTreeItemData itemData = relationItem->data( 0, DnDTreeRole ).value<DnDTreeItemData>();
-
-    if ( itemData.name() == mAttributeRelationEdit->mRelationId )
-    {
-      relationItem->setData( 0, RelationConfigRole, QVariant::fromValue<RelationConfig>( cfg ) );
-    }
-  }
-}
-
 void QgsAttributesFormProperties::storeAttributeWidgetEdit()
 {
   if ( !mAttributeWidgetEdit )
@@ -422,6 +361,13 @@ void QgsAttributesFormProperties::loadAttributeWidgetEdit()
   mAttributeWidgetEdit = new QgsAttributeWidgetEdit( currentItem, this );
   mAttributeTypeFrame->layout()->setMargin( 0 );
   mAttributeTypeFrame->layout()->addWidget( mAttributeWidgetEdit );
+}
+
+void QgsAttributesFormProperties::loadInfoWidget( const QString &infoText )
+{
+  mInfoTextWidget = new QLabel( infoText );
+  mAttributeTypeFrame->layout()->setMargin( 0 );
+  mAttributeTypeFrame->layout()->addWidget( mInfoTextWidget );
 }
 
 void QgsAttributesFormProperties::storeAttributeContainerEdit()
@@ -445,24 +391,6 @@ void QgsAttributesFormProperties::loadAttributeContainerEdit()
   mAttributeTypeFrame->layout()->addWidget( mAttributeContainerEdit );
 }
 
-QgsAttributesFormProperties::RelationConfig QgsAttributesFormProperties::configForRelation( const QString &relationId )
-{
-  QTreeWidgetItemIterator itemIt( mAvailableWidgetsTree );
-  while ( *itemIt )
-  {
-    QTreeWidgetItem *item = *itemIt;
-
-    if ( item->data( 0, FieldNameRole ).toString() == relationId )
-      return item->data( 0, RelationConfigRole ).value<RelationConfig>();
-    ++itemIt;
-  }
-
-  // Should never get here
-  Q_ASSERT( false );
-  return RelationConfig();
-}
-
-
 QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAttributeEditorElement *const widgetDef, QTreeWidgetItem *parent, QgsAttributesDnDTree *tree )
 {
   QTreeWidgetItem *newWidget = nullptr;
@@ -483,6 +411,8 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       itemData.setShowLabel( widgetDef->showLabel() );
       RelationEditorConfiguration relEdConfig;
       relEdConfig.buttons = relationEditor->visibleButtons();
+      relEdConfig.nmRelationId = relationEditor->nmRelationId();
+      relEdConfig.forceSuppressFormPopup = relationEditor->forceSuppressFormPopup();
       itemData.setRelationEditorConfiguration( relEdConfig );
       newWidget = tree->addItem( parent, itemData );
       break;
@@ -568,7 +498,6 @@ void QgsAttributesFormProperties::loadAttributeSpecificEditor( QgsAttributesDnDT
   if ( layout == QgsEditFormConfig::EditorLayout::TabLayout )
     storeAttributeWidgetEdit();
   storeAttributeTypeDialog();
-  storeAttributeRelationEdit();
   storeAttributeContainerEdit();
 
   clearAttributeTypeFrame();
@@ -586,8 +515,13 @@ void QgsAttributesFormProperties::loadAttributeSpecificEditor( QgsAttributesDnDT
       {
         receiver->selectFirstMatchingItem( itemData );
         if ( layout == QgsEditFormConfig::EditorLayout::TabLayout )
+        {
           loadAttributeWidgetEdit();
-        loadAttributeRelationEdit();
+        }
+        else
+        {
+          loadInfoWidget( tr( "This configuration is available in the Drag and Drop Designer" ) );
+        }
         break;
       }
       case DnDTreeItemData::Field:
@@ -604,10 +538,21 @@ void QgsAttributesFormProperties::loadAttributeSpecificEditor( QgsAttributesDnDT
         loadAttributeContainerEdit();
         break;
       }
-
-      case DnDTreeItemData::WidgetType:
       case DnDTreeItemData::QmlWidget:
       case DnDTreeItemData::HtmlWidget:
+      {
+        if ( layout != QgsEditFormConfig::EditorLayout::TabLayout )
+        {
+          loadInfoWidget( tr( "This configuration is available with double-click in the Drag and Drop Designer" ) );
+        }
+        else
+        {
+          loadInfoWidget( tr( "This configuration is available with double-click" ) );
+        }
+        receiver->clearSelection();
+        break;
+      }
+      case DnDTreeItemData::WidgetType:
       {
         receiver->clearSelection();
         break;
@@ -630,17 +575,17 @@ void QgsAttributesFormProperties::clearAttributeTypeFrame()
     mAttributeTypeDialog->deleteLater();
     mAttributeTypeDialog = nullptr;
   }
-  if ( mAttributeRelationEdit )
-  {
-    mAttributeTypeFrame->layout()->removeWidget( mAttributeRelationEdit );
-    mAttributeRelationEdit->deleteLater();
-    mAttributeRelationEdit = nullptr;
-  }
   if ( mAttributeContainerEdit )
   {
     mAttributeTypeFrame->layout()->removeWidget( mAttributeContainerEdit );
     mAttributeContainerEdit->deleteLater();
     mAttributeContainerEdit = nullptr;
+  }
+  if ( mInfoTextWidget )
+  {
+    mAttributeTypeFrame->layout()->removeWidget( mInfoTextWidget );
+    mInfoTextWidget->deleteLater();
+    mInfoTextWidget = nullptr;
   }
 }
 
@@ -712,6 +657,8 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
       QgsRelation relation = QgsProject::instance()->relationManager()->relation( itemData.name() );
       QgsAttributeEditorRelation *relDef = new QgsAttributeEditorRelation( relation, parent );
       relDef->setVisibleButtons( itemData.relationEditorConfiguration().buttons );
+      relDef->setNmRelationId( itemData.relationEditorConfiguration().nmRelationId );
+      relDef->setForceSuppressFormPopup( itemData.relationEditorConfiguration().forceSuppressFormPopup );
       widgetDef = relDef;
       break;
     }
@@ -833,7 +780,6 @@ void QgsAttributesFormProperties::apply()
   storeAttributeWidgetEdit();
   storeAttributeContainerEdit();
   storeAttributeTypeDialog();
-  storeAttributeRelationEdit();
 
   QgsEditFormConfig editFormConfig = mLayer->editFormConfig();
 
@@ -911,7 +857,7 @@ void QgsAttributesFormProperties::apply()
 
   editFormConfig.setSuppress( static_cast<QgsEditFormConfig::FeatureFormSuppress>( mFormSuppressCmbBx->currentIndex() ) );
 
-  // relations
+  // write the legacy config of relation widgets to support settings read by the API
   QTreeWidgetItem *relationContainer = mAvailableWidgetsTree->invisibleRootItem()->child( 1 );
 
   for ( int i = 0; i < relationContainer->childCount(); i++ )
@@ -919,13 +865,22 @@ void QgsAttributesFormProperties::apply()
     QTreeWidgetItem *relationItem = relationContainer->child( i );
     DnDTreeItemData itemData = relationItem->data( 0, DnDTreeRole ).value<DnDTreeItemData>();
 
-    RelationConfig relCfg = configForRelation( itemData.name() );
+    for ( int t = 0; t < mFormLayoutTree->invisibleRootItem()->childCount(); t++ )
+    {
+      QTreeWidgetItem *tabItem = mFormLayoutTree->invisibleRootItem()->child( t );
+      const DnDTreeItemData tabItemData = tabItem->data( 0, DnDTreeRole ).value<DnDTreeItemData>();
 
-    QVariantMap cfg;
-    cfg[QStringLiteral( "nm-rel" )] = relCfg.mCardinality.toString();
-    cfg[QStringLiteral( "force-suppress-popup" )] = relCfg.mForceSuppressFormPopup;
+      if ( tabItemData.type() == itemData.type() && tabItemData.name() == itemData.name() )
+      {
+        QVariantMap cfg;
 
-    editFormConfig.setWidgetConfig( itemData.name(), cfg );
+        cfg[QStringLiteral( "nm-rel" )] = tabItemData.relationEditorConfiguration().nmRelationId;
+        cfg[QStringLiteral( "force-suppress-popup" )] = tabItemData.relationEditorConfiguration().forceSuppressFormPopup;
+
+        editFormConfig.setWidgetConfig( tabItemData.name(), cfg );
+        break;
+      }
+    }
   }
 
   mLayer->setEditFormConfig( editFormConfig );
@@ -954,25 +909,6 @@ QgsAttributesFormProperties::FieldConfig::FieldConfig( QgsVectorLayer *layer, in
 QgsAttributesFormProperties::FieldConfig::operator QVariant()
 {
   return QVariant::fromValue<QgsAttributesFormProperties::FieldConfig>( *this );
-}
-
-/*
- * RelationConfig implementation
- */
-QgsAttributesFormProperties::RelationConfig::RelationConfig() = default;
-
-QgsAttributesFormProperties::RelationConfig::RelationConfig( QgsVectorLayer *layer, const QString &relationId )
-{
-  const QVariant nmrelcfg = layer->editFormConfig().widgetConfig( relationId ).value( QStringLiteral( "nm-rel" ) );
-  const QVariant forceSuppressFormPopup = layer->editFormConfig().widgetConfig( relationId ).value( QStringLiteral( "force-suppress-popup" ), false );
-
-  mForceSuppressFormPopup = forceSuppressFormPopup.toBool();
-  mCardinality = nmrelcfg;
-}
-
-QgsAttributesFormProperties::RelationConfig::operator QVariant()
-{
-  return QVariant::fromValue<QgsAttributesFormProperties::RelationConfig>( *this );
 }
 
 /*
@@ -1104,6 +1040,8 @@ bool QgsAttributesDnDTree::dropMimeData( QTreeWidgetItem *parent, int index, con
       {
         onItemDoubleClicked( newItem, 0 );
       }
+      clearSelection();
+      newItem->setSelected( true );
     }
   }
 
@@ -1162,6 +1100,7 @@ QMimeData *QgsAttributesDnDTree::mimeData( const QList<QTreeWidgetItem *> items 
 void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
 {
   Q_UNUSED( column )
+
   QgsAttributesFormProperties::DnDTreeItemData itemData = item->data( 0, QgsAttributesFormProperties::DnDTreeRole ).value<QgsAttributesFormProperties::DnDTreeItemData>();
 
   QGroupBox *baseData = new QGroupBox( tr( "Base configuration" ) );
@@ -1178,11 +1117,15 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
   {
     case QgsAttributesFormProperties::DnDTreeItemData::Container:
     case QgsAttributesFormProperties::DnDTreeItemData::WidgetType:
-    case  QgsAttributesFormProperties::DnDTreeItemData::Relation:
+    case QgsAttributesFormProperties::DnDTreeItemData::Relation:
+    case QgsAttributesFormProperties::DnDTreeItemData::Field:
       break;
 
     case QgsAttributesFormProperties::DnDTreeItemData::QmlWidget:
     {
+      if ( mType == QgsAttributesDnDTree::Type::Drag )
+        return;
+
       QDialog dlg;
       dlg.setWindowTitle( tr( "Configure QML Widget" ) );
 
@@ -1344,6 +1287,8 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
 
     case QgsAttributesFormProperties::DnDTreeItemData::HtmlWidget:
     {
+      if ( mType == QgsAttributesDnDTree::Type::Drag )
+        return;
       QDialog dlg;
       dlg.setWindowTitle( tr( "Configure HTML Widget" ) );
 
@@ -1417,30 +1362,6 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
 
         item->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData );
         item->setText( 0, title->text() );
-      }
-    }
-    break;
-
-    case QgsAttributesFormProperties::DnDTreeItemData::Field:
-    {
-      QDialog dlg;
-      dlg.setWindowTitle( tr( "Configure Field" ) );
-      dlg.setLayout( new QGridLayout() );
-      dlg.layout()->addWidget( baseWidget );
-
-      QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok
-          | QDialogButtonBox::Cancel );
-
-      connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
-      connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
-
-      dlg.layout()->addWidget( buttonBox );
-
-      if ( dlg.exec() )
-      {
-        itemData.setShowLabel( showLabelCheckbox->isChecked() );
-
-        item->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData );
       }
     }
     break;

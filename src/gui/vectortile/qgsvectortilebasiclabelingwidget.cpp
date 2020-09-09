@@ -19,6 +19,8 @@
 #include "qgsvectortilelayer.h"
 
 #include "qgslabelinggui.h"
+#include "qgsmapcanvas.h"
+#include "qgsvectortileutils.h"
 
 #include <QMenu>
 
@@ -55,6 +57,7 @@ QVariant QgsVectorTileBasicLabelingListModel::data( const QModelIndex &index, in
   switch ( role )
   {
     case Qt::DisplayRole:
+    case Qt::ToolTipRole:
     {
       if ( index.column() == 0 )
         return style.styleName();
@@ -92,6 +95,12 @@ QVariant QgsVectorTileBasicLabelingListModel::data( const QModelIndex &index, in
         return QVariant();
       return style.isEnabled() ? Qt::Checked : Qt::Unchecked;
     }
+
+    case MinZoom:
+      return style.minZoomLevel();
+
+    case MaxZoom:
+      return style.maxZoomLevel();
 
   }
   return QVariant();
@@ -282,6 +291,7 @@ bool QgsVectorTileBasicLabelingListModel::dropMimeData( const QMimeData *data,
 
 QgsVectorTileBasicLabelingWidget::QgsVectorTileBasicLabelingWidget( QgsVectorTileLayer *layer, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
+  , mMapCanvas( canvas )
   , mMessageBar( messageBar )
 {
 
@@ -300,6 +310,23 @@ QgsVectorTileBasicLabelingWidget::QgsVectorTileBasicLabelingWidget( QgsVectorTil
 
   connect( viewStyles, &QAbstractItemView::doubleClicked, this, &QgsVectorTileBasicLabelingWidget::editStyleAtIndex );
 
+  if ( mMapCanvas )
+  {
+    connect( mMapCanvas, &QgsMapCanvas::scaleChanged, this, [ = ]( double scale )
+    {
+      const int zoom = QgsVectorTileUtils::scaleToZoomLevel( scale, 0, 99 );
+      mLabelCurrentZoom->setText( tr( "Current zoom: %1" ).arg( zoom ) );
+      if ( mProxyModel )
+        mProxyModel->setCurrentZoom( zoom );
+    } );
+    mLabelCurrentZoom->setText( tr( "Current zoom: %1" ).arg( QgsVectorTileUtils::scaleToZoomLevel( mMapCanvas->scale(), 0, 99 ) ) );
+  }
+
+  connect( mCheckVisibleOnly, &QCheckBox::toggled, this, [ = ]( bool filter )
+  {
+    mProxyModel->setFilterVisible( filter );
+  } );
+
   setLayer( layer );
 }
 
@@ -317,7 +344,14 @@ void QgsVectorTileBasicLabelingWidget::setLayer( QgsVectorTileLayer *layer )
   }
 
   mModel = new QgsVectorTileBasicLabelingListModel( mLabeling.get(), viewStyles );
-  viewStyles->setModel( mModel );
+  mProxyModel = new QgsVectorTileBasicLabelingProxyModel( mModel, viewStyles );
+  viewStyles->setModel( mProxyModel );
+
+  if ( mMapCanvas )
+  {
+    const int zoom = QgsVectorTileUtils::scaleToZoomLevel( mMapCanvas->scale(), 0, 99 );
+    mProxyModel->setCurrentZoom( zoom );
+  }
 
   connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsPanelWidget::widgetChanged );
   connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsPanelWidget::widgetChanged );
@@ -338,7 +372,7 @@ void QgsVectorTileBasicLabelingWidget::addStyle( QgsWkbTypes::GeometryType geomT
 
   int rows = mModel->rowCount();
   mModel->insertStyle( rows, style );
-  viewStyles->selectionModel()->setCurrentIndex( mModel->index( rows, 0 ), QItemSelectionModel::ClearAndSelect );
+  viewStyles->selectionModel()->setCurrentIndex( mProxyModel->mapFromSource( mModel->index( rows, 0 ) ), QItemSelectionModel::ClearAndSelect );
 }
 
 void QgsVectorTileBasicLabelingWidget::editStyle()
@@ -346,8 +380,12 @@ void QgsVectorTileBasicLabelingWidget::editStyle()
   editStyleAtIndex( viewStyles->selectionModel()->currentIndex() );
 }
 
-void QgsVectorTileBasicLabelingWidget::editStyleAtIndex( const QModelIndex &index )
+void QgsVectorTileBasicLabelingWidget::editStyleAtIndex( const QModelIndex &proxyIndex )
 {
+  const QModelIndex index = mProxyModel->mapToSource( proxyIndex );
+  if ( index.row() < 0 || index.row() >= mLabeling->styles().count() )
+    return;
+
   QgsVectorTileBasicLabelingStyle style = mLabeling->style( index.row() );
 
   QgsPalLayerSettings labelSettings = style.labelSettings();
@@ -357,6 +395,16 @@ void QgsVectorTileBasicLabelingWidget::editStyleAtIndex( const QModelIndex &inde
   QgsSymbolWidgetContext context;
   context.setMapCanvas( mMapCanvas );
   context.setMessageBar( mMessageBar );
+
+  if ( mMapCanvas )
+  {
+    const int zoom = QgsVectorTileUtils::scaleToZoomLevel( mMapCanvas->scale(), 0, 99 );
+    QList<QgsExpressionContextScope> scopes = context.additionalExpressionContextScopes();
+    QgsExpressionContextScope tileScope;
+    tileScope.setVariable( "zoom_level", zoom, true );
+    scopes << tileScope;
+    context.setAdditionalExpressionContextScopes( scopes );
+  }
 
   QgsVectorLayer *vectorLayer = nullptr;  // TODO: have a temporary vector layer with sub-layer's fields?
 
@@ -371,13 +419,23 @@ void QgsVectorTileBasicLabelingWidget::editStyleAtIndex( const QModelIndex &inde
   }
   else
   {
-    // TODO: implement when adding support for vector tile layer properties dialog
+    QgsLabelSettingsDialog dlg( labelSettings, vectorLayer, mMapCanvas, this, labelSettings.layerType );
+    if ( dlg.exec() )
+    {
+      QgsVectorTileBasicLabelingStyle style = mLabeling->style( index.row() );
+      style.setLabelSettings( dlg.settings() );
+      mLabeling->setStyle( index.row(), style );
+      emit widgetChanged();
+    }
   }
 }
 
 void QgsVectorTileBasicLabelingWidget::updateLabelingFromWidget()
 {
-  int index = viewStyles->selectionModel()->currentIndex().row();
+  int index = mProxyModel->mapToSource( viewStyles->selectionModel()->currentIndex() ).row();
+  if ( index < 0 )
+    return;
+
   QgsVectorTileBasicLabelingStyle style = mLabeling->style( index );
 
   QgsLabelingPanelWidget *widget = qobject_cast<QgsLabelingPanelWidget *>( sender() );
@@ -389,12 +447,12 @@ void QgsVectorTileBasicLabelingWidget::updateLabelingFromWidget()
 
 void QgsVectorTileBasicLabelingWidget::removeStyle()
 {
-  QItemSelection sel = viewStyles->selectionModel()->selection();
-  const auto constSel = sel;
-  for ( const QItemSelectionRange &range : constSel )
+  const QModelIndexList sel = viewStyles->selectionModel()->selectedIndexes();
+  for ( const QModelIndex &proxyIndex : sel )
   {
-    if ( range.isValid() )
-      mModel->removeRows( range.top(), range.bottom() - range.top() + 1, range.parent() );
+    const QModelIndex sourceIndex = mProxyModel->mapToSource( proxyIndex );
+    if ( sourceIndex.isValid() )
+      mModel->removeRow( sourceIndex.row() );
   }
   // make sure that the selection is gone
   viewStyles->selectionModel()->clear();
@@ -432,6 +490,43 @@ void QgsLabelingPanelWidget::setContext( const QgsSymbolWidgetContext &context )
 QgsPalLayerSettings QgsLabelingPanelWidget::labelSettings()
 {
   return mLabelingGui->layerSettings();
+}
+
+
+QgsVectorTileBasicLabelingProxyModel::QgsVectorTileBasicLabelingProxyModel( QgsVectorTileBasicLabelingListModel *source, QObject *parent )
+  : QSortFilterProxyModel( parent )
+{
+  setSourceModel( source );
+  setDynamicSortFilter( true );
+}
+
+void QgsVectorTileBasicLabelingProxyModel::setCurrentZoom( int zoom )
+{
+  mCurrentZoom = zoom;
+  invalidateFilter();
+}
+
+void QgsVectorTileBasicLabelingProxyModel::setFilterVisible( bool enabled )
+{
+  mFilterVisible = enabled;
+  invalidateFilter();
+}
+
+bool QgsVectorTileBasicLabelingProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
+{
+  if ( mCurrentZoom < 0 || !mFilterVisible )
+    return true;
+
+  const int rowMinZoom = sourceModel()->data( sourceModel()->index( source_row, 0, source_parent ), QgsVectorTileBasicLabelingListModel::MinZoom ).toInt();
+  const int rowMaxZoom = sourceModel()->data( sourceModel()->index( source_row, 0, source_parent ), QgsVectorTileBasicLabelingListModel::MaxZoom ).toInt();
+
+  if ( rowMinZoom >= 0 && rowMinZoom > mCurrentZoom )
+    return false;
+
+  if ( rowMaxZoom >= 0 && rowMaxZoom < mCurrentZoom )
+    return false;
+
+  return true;
 }
 
 ///@endcond

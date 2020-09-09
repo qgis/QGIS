@@ -24,14 +24,17 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsguiutils.h"
+
 #include <QLayout>
 #include <QCompleter>
 #include <QMenu>
+#include <QTextLayout>
+#include <QTextLine>
 
 QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
   : QWidget( parent )
   , mModelBridge( new QgsLocatorModelBridge( this ) )
-  , mLineEdit( new QgsFilterLineEdit() )
+  , mLineEdit( new QgsLocatorLineEdit( this ) )
   , mResultsView( new QgsLocatorResultsView() )
 {
   mLineEdit->setShowClearButton( true );
@@ -85,7 +88,7 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
 
   connect( mModelBridge, &QgsLocatorModelBridge::resultAdded, this, &QgsLocatorWidget::resultAdded );
   connect( mModelBridge, &QgsLocatorModelBridge::isRunningChanged, this, [ = ]() {mLineEdit->setShowSpinner( mModelBridge->isRunning() );} );
-  connect( mModelBridge, & QgsLocatorModelBridge::resultsCleared, this, [ = ]() {mHasSelectedResult = false;} );
+  connect( mModelBridge, &QgsLocatorModelBridge::resultsCleared, this, [ = ]() {mHasSelectedResult = false;} );
 
   // have a tiny delay between typing text in line edit and showing the window
   mPopupTimer.setInterval( 100 );
@@ -260,8 +263,11 @@ bool QgsLocatorWidget::eventFilter( QObject *obj, QEvent *event )
         mResultsContainer->hide();
         return true;
       case Qt::Key_Tab:
-        mHasSelectedResult = true;
-        mResultsView->selectNextResult();
+        if ( !mLineEdit->performCompletion() )
+        {
+          mHasSelectedResult = true;
+          mResultsView->selectNextResult();
+        }
         return true;
       case Qt::Key_Backtab:
         mHasSelectedResult = true;
@@ -330,7 +336,6 @@ void QgsLocatorWidget::configMenuAboutToShow()
 }
 
 
-
 void QgsLocatorWidget::acceptCurrentEntry()
 {
   if ( mModelBridge->hasQueueRequested() )
@@ -351,8 +356,6 @@ void QgsLocatorWidget::acceptCurrentEntry()
     mModelBridge->triggerResult( index );
   }
 }
-
-
 
 ///@cond PRIVATE
 
@@ -447,6 +450,77 @@ void QgsLocatorFilterFilter::fetchResults( const QString &string, const QgsLocat
 void QgsLocatorFilterFilter::triggerResult( const QgsLocatorResult &result )
 {
   mLocator->search( result.userData.toString() );
+}
+
+QgsLocatorLineEdit::QgsLocatorLineEdit( QgsLocatorWidget *locator, QWidget *parent )
+  : QgsFilterLineEdit( parent )
+  , mLocatorWidget( locator )
+{
+  connect( mLocatorWidget->locator(), &QgsLocator::searchPrepared, this, [&] { update(); } );
+}
+
+void QgsLocatorLineEdit::paintEvent( QPaintEvent *event )
+{
+  // this adds the completion as grey text at the right of the cursor
+  // see https://stackoverflow.com/a/50425331/1548052
+  // this is possible that the completion might be badly rendered if the cursor is larger than the line edit
+  // this sounds acceptable as it is not very likely to use completion for super long texts
+  // for more details see https://stackoverflow.com/a/54218192/1548052
+
+  QLineEdit::paintEvent( event );
+
+  if ( !hasFocus() )
+    return;
+
+  QString currentText = text();
+
+  if ( currentText.length() == 0 || cursorPosition() < currentText.length() )
+    return;
+
+  const QStringList completionList = mLocatorWidget->locator()->completionList();
+
+  mCompletionText.clear();
+  QString completion;
+  for ( const QString &candidate : completionList )
+  {
+    if ( candidate.startsWith( currentText ) )
+    {
+      completion = candidate.right( candidate.length() - currentText.length() );
+      mCompletionText = candidate;
+      break;
+    }
+  }
+
+  if ( completion.isEmpty() )
+    return;
+
+  ensurePolished(); // ensure font() is up to date
+
+  QRect cr = cursorRect();
+  QPoint pos = cr.topRight() - QPoint( cr.width() / 2, 0 );
+
+  QTextLayout l( completion, font() );
+  l.beginLayout();
+  QTextLine line = l.createLine();
+  line.setLineWidth( width() - pos.x() );
+  line.setPosition( pos );
+  l.endLayout();
+
+  QPainter p( this );
+  p.setPen( QPen( Qt::gray, 1 ) );
+  l.draw( &p, QPoint( 0, 0 ) );
+}
+
+bool QgsLocatorLineEdit::performCompletion()
+{
+  if ( !mCompletionText.isEmpty() )
+  {
+    setText( mCompletionText );
+    mCompletionText.clear();
+    return true;
+  }
+  else
+    return false;
 }
 
 

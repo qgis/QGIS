@@ -357,7 +357,11 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
                (3, "POLYGON", "((0 0,1 0,1 1,0 0))"),
                (4, "MULTIPOINT", "((1 1))"),
                (5, "MULTILINESTRING", "((0 0,1 0),(0 1,1 1))"),
-               (6, "MULTIPOLYGON", "(((0 0,1 0,1 1,0 0)),((2 2,3 0,3 3,2 2)))")]
+               (6, "MULTIPOLYGON", "(((0 0,1 0,1 1,0 0)),((2 2,3 0,3 3,2 2)))"),
+               (9, "COMPOUNDCURVE", "(CIRCULARSTRING(0 0, 1 0, 1 1))"),
+               (10, "CURVEPOLYGON", "(COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 0, 1 1)))"),
+               (11, "MULTICURVE", "(COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 0, 1 1)),COMPOUNDCURVE(CIRCULARSTRING(2 2, 3 2, 3 3)))"),
+               (12, "MULTISURFACE", "(CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 0, 1 1))),CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(2 2, 3 2, 3 3))))")]
         for wkb_type, wkt_type, wkt in geo:
             l = QgsVectorLayer("%s?crs=epsg:4326" % wkt_type, "m1", "memory", QgsVectorLayer.LayerOptions(False))
             self.assertEqual(l.isValid(), True)
@@ -372,7 +376,13 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
             l2 = QgsVectorLayer("?layer_ref=%s" % l.id(), "vtab", "virtual", QgsVectorLayer.LayerOptions(False))
             self.assertEqual(l2.isValid(), True)
             self.assertEqual(l2.dataProvider().featureCount(), 1)
-            self.assertEqual(l2.dataProvider().wkbType(), wkb_type)
+            # we ensure the geom type matches the original (segmentized) type
+            self.assertEqual(l2.dataProvider().wkbType(), QgsWkbTypes.linearType(wkb_type))
+
+            # we ensure the geometry still matches the original (segmentized) geometry
+            f2 = QgsFeature()
+            l2.getFeatures().nextFeature(f2)
+            self.assertEqual(f2.geometry().asWkt(), f1.geometry().constGet().segmentize().asWkt())
 
             QgsProject.instance().removeMapLayer(l.id())
 

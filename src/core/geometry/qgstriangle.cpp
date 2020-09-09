@@ -159,7 +159,6 @@ bool QgsTriangle::fromWkb( QgsConstWkbPtr &wkbPtr )
 
 bool QgsTriangle::fromWkt( const QString &wkt )
 {
-
   clear();
 
   QPair<QgsWkbTypes::Type, QString> parts = QgsGeometryUtils::wktReadBlock( wkt );
@@ -169,7 +168,10 @@ bool QgsTriangle::fromWkt( const QString &wkt )
 
   mWkbType = parts.first;
 
-  if ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 )
+  QString secondWithoutParentheses = parts.second;
+  secondWithoutParentheses = secondWithoutParentheses.simplified().remove( ' ' );
+  if ( ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 ) ||
+       secondWithoutParentheses.isEmpty() )
     return true;
 
   QString defaultChildWkbType = QStringLiteral( "LineString%1%2" ).arg( is3D() ? QStringLiteral( "Z" ) : QString(), isMeasure() ? QStringLiteral( "M" ) : QString() );
@@ -200,6 +202,11 @@ bool QgsTriangle::fromWkt( const QString &wkt )
     return false;
   }
   mExteriorRing.reset( mInteriorRings.takeFirst() );
+  if ( ( mExteriorRing->numPoints() < 3 ) || ( mExteriorRing->numPoints() > 4 ) || ( mExteriorRing->numPoints() == 4 && mExteriorRing->startPoint() != mExteriorRing->endPoint() ) )
+  {
+    clear();
+    return false;
+  }
 
   //scan through rings and check if dimensionality of rings is different to CurvePolygon.
   //if so, update the type dimensionality of the CurvePolygon to match

@@ -25,40 +25,23 @@ QgsSkyboxRenderingSettingsWidget::QgsSkyboxRenderingSettingsWidget( QWidget *par
 {
   setupUi( this );
 
-  layoutGroupBoxes.push_back( panoramicTextureGroupBox );
-  layoutGroupBoxes.push_back( faceTexturesGroupBox );
-
   // To future maintainers: make sure the order of added items is the same as the order at QgsSkyboxEntity::SkyboxType
-  skyboxTypeComboBox->addItem( tr( "Panoramic texture" ) );
+  skyboxTypeComboBox->addItem( tr( "Panoramic Texture" ) );
   skyboxTypeComboBox->addItem( tr( "Distinct Faces" ) );
-  connect( skyboxTypeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), [&]( int index )
-  {
-    for ( QGroupBox *groupBox : layoutGroupBoxes )
-      groupBox->setVisible( false );
-    switch ( index )
-    {
-      case 0: // Panoramic texture
-        panoramicTextureGroupBox->setVisible( true );
-        break;
-      case 1: // Distinct Faces
-        faceTexturesGroupBox->setVisible( true );
-        break;
-    }
-  } );
-  skyboxTypeComboBox->setCurrentIndex( 0 );
+  connect( skyboxTypeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsSkyboxRenderingSettingsWidget::showSkyboxSettings );
+
+  showSkyboxSettings( 0 );
 }
 
 void QgsSkyboxRenderingSettingsWidget::setSkyboxSettings( const QgsSkyboxSettings &skyboxSettings )
 {
-  skyboxEnabledCheckBox->setChecked( skyboxSettings.isSkyboxEnabled() );
-
   switch ( skyboxSettings.skyboxType() )
   {
     case QgsSkyboxEntity::PanoramicSkybox:
-      skyboxTypeComboBox->setCurrentText( tr( "Panoramic texture" ) );
+      skyboxTypeComboBox->setCurrentIndex( 0 ); // "Panoramic Texture"
       break;
     case QgsSkyboxEntity::DistinctTexturesSkybox:
-      skyboxTypeComboBox->setCurrentText( tr( "Distinct Faces" ) );
+      skyboxTypeComboBox->setCurrentIndex( 1 ); // "Distinct Faces"
       break;
   }
 
@@ -75,7 +58,6 @@ void QgsSkyboxRenderingSettingsWidget::setSkyboxSettings( const QgsSkyboxSetting
 QgsSkyboxSettings QgsSkyboxRenderingSettingsWidget::toSkyboxSettings()
 {
   QgsSkyboxSettings settings;
-  settings.setIsSkyboxEnabled( skyboxEnabledCheckBox->isChecked() );
   settings.setSkyboxType( static_cast< QgsSkyboxEntity::SkyboxType >( skyboxTypeComboBox->currentIndex() ) );
   settings.setPanoramicTexturePath( panoramicTextureImageSource->source() );
   settings.setCubeMapFace( QStringLiteral( "posX" ), posXImageSource->source() );
@@ -85,4 +67,28 @@ QgsSkyboxSettings QgsSkyboxRenderingSettingsWidget::toSkyboxSettings()
   settings.setCubeMapFace( QStringLiteral( "negY" ), negYImageSource->source() );
   settings.setCubeMapFace( QStringLiteral( "negZ" ), negZImageSource->source() );
   return settings;
+}
+
+void QgsSkyboxRenderingSettingsWidget::showSkyboxSettings( int )
+{
+  QgsSkyboxEntity::SkyboxType type = static_cast< QgsSkyboxEntity::SkyboxType >( skyboxTypeComboBox->currentIndex() );
+  const bool isPanoramic = type == QgsSkyboxEntity::PanoramicSkybox;
+  const bool isDistinctFaces = type == QgsSkyboxEntity::DistinctTexturesSkybox;
+
+  panoramicTextureLabel->setVisible( isPanoramic );
+  panoramicTextureImageSource->setVisible( isPanoramic );
+
+  negXImageSourceLabel->setVisible( isDistinctFaces );
+  negXImageSource->setVisible( isDistinctFaces );
+  negYImageSourceLabel->setVisible( isDistinctFaces );
+  negYImageSource->setVisible( isDistinctFaces );
+  negZImageSourceLabel->setVisible( isDistinctFaces );
+  negZImageSource->setVisible( isDistinctFaces );
+  posXImageSourceLabel->setVisible( isDistinctFaces );
+  posXImageSource->setVisible( isDistinctFaces );
+  posYImageSourceLabel->setVisible( isDistinctFaces );
+  posYImageSource->setVisible( isDistinctFaces );
+  posZImageSourceLabel->setVisible( isDistinctFaces );
+  posZImageSource->setVisible( isDistinctFaces );
+
 }

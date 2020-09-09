@@ -470,7 +470,7 @@ gray = no data
              <item row="17" column="1">
               <widget class="QLineEdit" name="mTxtQuality">
                <property name="toolTip">
-                <string>quality of the position fix: Differential, Non-differential or No position</string>
+                <string>Positioning quality indicator (NMEA GGA or comparable sentence)</string>
                </property>
                <property name="readOnly">
                 <bool>true</bool>

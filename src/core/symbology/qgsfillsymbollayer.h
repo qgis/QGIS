@@ -93,7 +93,24 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
     Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
     void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
 
+    /**
+     * Sets an \a offset by which polygons will be translated during rendering.
+     *
+     * Units are specified by offsetUnit().
+     *
+     * \see offset()
+     * \see setOffsetUnit()
+     */
     void setOffset( QPointF offset ) { mOffset = offset; }
+
+    /**
+     * Returns the offset by which polygons will be translated during rendering.
+     *
+     * Units are specified by offsetUnit().
+     *
+     * \see setOffset()
+     * \see offsetUnit()
+     */
     QPointF offset() { return mOffset; }
 
     /**
@@ -113,8 +130,8 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
     const QgsMapUnitScale &strokeWidthMapUnitScale() const { return mStrokeWidthMapUnitScale; }
 
     /**
-     * Sets the units for the fill's offset.
-     * \param unit offset units
+     * Sets the \a unit for the fill's offset.
+     * \see offset()
      * \see offsetUnit()
     */
     void setOffsetUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
@@ -122,10 +139,22 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
     /**
      * Returns the units for the fill's offset.
      * \see setOffsetUnit()
+     * \see offset()
     */
     QgsUnitTypes::RenderUnit offsetUnit() const { return mOffsetUnit; }
 
+    /**
+     * Sets the map unit \a scale for the fill's offset.
+     * \see setOffset()
+     * \see offsetMapUnitScale()
+    */
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetMapUnitScale = scale; }
+
+    /**
+     * Returns the map unit scale for the fill's offset.
+     * \see offset()
+     * \see setOffsetMapUnitScale()
+    */
     const QgsMapUnitScale &offsetMapUnitScale() const { return mOffsetMapUnitScale; }
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
@@ -290,15 +319,52 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
     void setReferencePoint2IsCentroid( bool isCentroid ) { mReferencePoint2IsCentroid = isCentroid; }
     bool referencePoint2IsCentroid() const { return mReferencePoint2IsCentroid; }
 
-    //! Offset for gradient fill
+    /**
+     * Sets an \a offset by which polygons will be translated during rendering.
+     *
+     * Units are specified by offsetUnit().
+     *
+     * \see offset()
+     * \see setOffsetUnit()
+     */
     void setOffset( QPointF offset ) { mOffset = offset; }
+
+    /**
+     * Returns the offset by which polygons will be translated during rendering.
+     *
+     * Units are specified by offsetUnit().
+     *
+     * \see setOffset()
+     * \see offsetUnit()
+     */
     QPointF offset() const { return mOffset; }
 
-    //! Units for gradient fill offset
+    /**
+     * Sets the \a unit for the fill's offset.
+     * \see offset()
+     * \see offsetUnit()
+    */
     void setOffsetUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
+
+    /**
+     * Returns the units for the fill's offset.
+     * \see setOffsetUnit()
+     * \see offset()
+    */
     QgsUnitTypes::RenderUnit offsetUnit() const { return mOffsetUnit; }
 
+    /**
+     * Sets the map unit \a scale for the fill's offset.
+     * \see setOffset()
+     * \see offsetMapUnitScale()
+    */
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetMapUnitScale = scale; }
+
+    /**
+     * Returns the map unit scale for the fill's offset.
+     * \see offset()
+     * \see setOffsetMapUnitScale()
+    */
     const QgsMapUnitScale &offsetMapUnitScale() const { return mOffsetMapUnitScale; }
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
@@ -642,7 +708,8 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
 /**
  * \ingroup core
- * Base class for polygon renderers generating texture images*/
+ * Base class for polygon renderers generating texture images
+*/
 class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
 {
   public:
@@ -1981,13 +2048,15 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
     /**
      * Sets whether a point is drawn for all parts or only on the biggest part of multi-part features.
      * \see pointOnAllParts()
-     * \since QGIS 2.16 */
+     * \since QGIS 2.16
+    */
     void setPointOnAllParts( bool pointOnAllParts ) { mPointOnAllParts = pointOnAllParts; }
 
     /**
      * Returns whether a point is drawn for all parts or only on the biggest part of multi-part features.
      * \see setPointOnAllParts()
-     * \since QGIS 2.16 */
+     * \since QGIS 2.16
+    */
     bool pointOnAllParts() const { return mPointOnAllParts; }
 
     /**

@@ -1165,7 +1165,8 @@ class CORE_EXPORT QgsPalLayerSettings
 
     /**
      * Checks if a feature is larger than a minimum size (in mm)
-    \returns true if above size, false if below*/
+     * \returns true if above size, false if below
+    */
     bool checkMinimumSizeMM( const QgsRenderContext &ct, const QgsGeometry &geom, double minSize ) const;
 
     /**
@@ -1262,10 +1263,10 @@ class CORE_EXPORT QgsPalLabeling
   public:
 
     /**
-     * called to find out whether the layer is used for labeling
+     * Called to find out whether a specified \a layer is used for labeling.
      * \since QGIS 2.4
      */
-    static bool staticWillUseLayer( QgsVectorLayer *layer );
+    static bool staticWillUseLayer( const QgsMapLayer *layer );
 
     //! \note not available in Python bindings
     static void drawLabelCandidateRect( pal::LabelPosition *lp, QPainter *painter, const QgsMapToPixel *xform, QList<QgsLabelCandidate> *candidates = nullptr ) SIP_SKIP;

@@ -390,7 +390,7 @@ int QgsDualEdgeTriangulation::addPoint( const QgsPoint &p )
       {
         toswap = index;
         index = mHalfEdge[mHalfEdge[mHalfEdge[index]->getNext()]->getDual()]->getNext();
-        checkSwapRecursivly( toswap, 0 );
+        checkSwapRecursively( toswap, 0 );
         if ( toswap == cwEdge )
         {
           break;
@@ -420,9 +420,9 @@ int QgsDualEdgeTriangulation::addPoint( const QgsPoint &p )
       mHalfEdge.at( nextnextnumber )->setNext( static_cast<int>( edge6 ) );
 
       //check, if there are swaps necessary
-      checkSwapRecursivly( number, 0 );
-      checkSwapRecursivly( nextnumber, 0 );
-      checkSwapRecursivly( nextnextnumber, 0 );
+      checkSwapRecursively( number, 0 );
+      checkSwapRecursively( nextnumber, 0 );
+      checkSwapRecursively( nextnextnumber, 0 );
     }
     //the point is exactly on an existing edge (the number of the edge is stored in the variable 'mEdgeWithPoint'---------------
     else if ( number == -20 )
@@ -456,10 +456,10 @@ int QgsDualEdgeTriangulation::addPoint( const QgsPoint &p )
       mHalfEdge[edgef]->setNext( nedge2 );
 
       //swap edges if necessary
-      checkSwapRecursivly( edgec, 0 );
-      checkSwapRecursivly( edged, 0 );
-      checkSwapRecursivly( edgee, 0 );
-      checkSwapRecursivly( edgef, 0 );
+      checkSwapRecursively( edgec, 0 );
+      checkSwapRecursively( edged, 0 );
+      checkSwapRecursively( edgee, 0 );
+      checkSwapRecursively( edgef, 0 );
     }
 
     else if ( number == -100 || number == -5 )//this means unknown problems or a numerical error occurred in 'baseEdgeOfTriangle'
@@ -746,7 +746,7 @@ bool QgsDualEdgeTriangulation::calcPoint( double x, double y, QgsPoint &result )
   }
 }
 
-bool QgsDualEdgeTriangulation::checkSwapRecursivly( unsigned int edge, unsigned int recursiveDeep )
+bool QgsDualEdgeTriangulation::checkSwapRecursively( unsigned int edge, unsigned int recursiveDeep )
 {
   if ( swapPossible( edge ) )
   {
@@ -756,7 +756,7 @@ bool QgsDualEdgeTriangulation::checkSwapRecursivly( unsigned int edge, unsigned 
     QgsPoint *ptd = mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[edge]->getDual()]->getNext()]->getPoint()];
     if ( inCircle( *ptd, *pta, *ptb, *ptc ) /*&& recursiveDeep < 100*/ ) //empty circle criterion violated
     {
-      doSwapRecursivly( edge, recursiveDeep );//swap the edge (recursive)
+      doSwapRecursively( edge, recursiveDeep );//swap the edge (recursive)
       return true;
     }
   }
@@ -796,7 +796,7 @@ void QgsDualEdgeTriangulation::doOnlySwap( unsigned int edge )
   mHalfEdge[edge2]->setPoint( mHalfEdge[edge5]->getPoint() );
 }
 
-void QgsDualEdgeTriangulation::doSwapRecursivly( unsigned int edge, unsigned int recursiveDeep )
+void QgsDualEdgeTriangulation::doSwapRecursively( unsigned int edge, unsigned int recursiveDeep )
 {
   unsigned int edge1 = edge;
   unsigned int edge2 = mHalfEdge[edge]->getDual();
@@ -816,10 +816,10 @@ void QgsDualEdgeTriangulation::doSwapRecursivly( unsigned int edge, unsigned int
 
   if ( recursiveDeep < 100 )
   {
-    checkSwapRecursivly( edge3, recursiveDeep );
-    checkSwapRecursivly( edge6, recursiveDeep );
-    checkSwapRecursivly( edge4, recursiveDeep );
-    checkSwapRecursivly( edge5, recursiveDeep );
+    checkSwapRecursively( edge3, recursiveDeep );
+    checkSwapRecursively( edge6, recursiveDeep );
+    checkSwapRecursively( edge4, recursiveDeep );
+    checkSwapRecursively( edge5, recursiveDeep );
   }
   else
   {
@@ -1658,7 +1658,7 @@ int QgsDualEdgeTriangulation::insertForcedSegment( int p1, int p2, QgsInterpolat
   //optimisation of the new edges
   for ( iter = crossedEdges.constBegin(); iter != crossedEdges.constEnd(); ++iter )
   {
-    checkSwapRecursivly( ( *( iter ) ), 0 );
+    checkSwapRecursively( ( *( iter ) ), 0 );
   }
 
   return leftPolygon.first();
@@ -3293,10 +3293,10 @@ int QgsDualEdgeTriangulation::splitHalfEdge( int edge, float position )
   mHalfEdge[mHalfEdge[edge3]->getNext()]->setNext( edge6 );
 
   //test four times recursively for swapping
-  checkSwapRecursivly( mHalfEdge[edge5]->getNext(), 0 );
-  checkSwapRecursivly( mHalfEdge[edge2]->getNext(), 0 );
-  checkSwapRecursivly( mHalfEdge[dualedge]->getNext(), 0 );
-  checkSwapRecursivly( mHalfEdge[edge3]->getNext(), 0 );
+  checkSwapRecursively( mHalfEdge[edge5]->getNext(), 0 );
+  checkSwapRecursively( mHalfEdge[edge2]->getNext(), 0 );
+  checkSwapRecursively( mHalfEdge[dualedge]->getNext(), 0 );
+  checkSwapRecursively( mHalfEdge[edge3]->getNext(), 0 );
 
   addPoint( QgsPoint( p->x(), p->y(), 0 ) );//dirty hack to enforce update of decorators
 

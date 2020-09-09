@@ -604,7 +604,7 @@ namespace QgsWms
 
       if ( !map->keepLayerSet() )
       {
-        if ( cMapParams.mLayers.isEmpty() && cMapParams.mExternalLayers.isEmpty() )
+        if ( cMapParams.mLayers.isEmpty() )
         {
           map->setLayers( mapSettings.layers() );
         }
@@ -648,7 +648,6 @@ namespace QgsWms
             }
           }
 
-          layerSet << externalLayers( cMapParams.mExternalLayers );
           layerSet << highlightLayers( cMapParams.mHighlightLayers );
           std::reverse( layerSet.begin(), layerSet.end() );
           map->setLayers( layerSet );
@@ -2674,25 +2673,6 @@ namespace QgsWms
     return highlightLayers;
   }
 
-  QList<QgsMapLayer *> QgsRenderer::externalLayers( const QList<QgsWmsParametersExternalLayer> &params )
-  {
-    QList<QgsMapLayer *> layers;
-
-    for ( const QgsWmsParametersExternalLayer &param : params )
-    {
-      std::unique_ptr<QgsMapLayer> layer = qgis::make_unique< QgsRasterLayer >( param.mUri, param.mName, QStringLiteral( "wms" ) );
-
-      if ( layer->isValid() )
-      {
-        // to delete later
-        mTemporaryLayers.append( layer.release() );
-        layers << mTemporaryLayers.last();
-      }
-    }
-
-    return layers;
-  }
-
   void QgsRenderer::removeTemporaryLayers()
   {
     qDeleteAll( mTemporaryLayers );
@@ -3118,6 +3098,11 @@ namespace QgsWms
         continue;
       }
 
+      if ( mContext.isExternalLayer( param.mNickname ) )
+      {
+        continue;
+      }
+
       if ( useSld )
       {
         setLayerSld( layer, mContext.sld( *layer ) );
@@ -3157,11 +3142,6 @@ namespace QgsWms
     {
       layers = highlightLayers( mWmsParameters.highlightLayersParameters() ) << layers;
     }
-
-    if ( mContext.testFlag( QgsWmsRenderContext::AddExternalLayers ) )
-    {
-      layers = externalLayers( mWmsParameters.externalLayersParameters() ) << layers;
-    }
   }
 
   void QgsRenderer::setLayerStyle( QgsMapLayer *layer, const QString &style ) const
@@ -3182,8 +3162,17 @@ namespace QgsWms
   void QgsRenderer::setLayerSld( QgsMapLayer *layer, const QDomElement &sld ) const
   {
     QString err;
+    // Defined sld style name
+    const QStringList styles = layer->styleManager()->styles();
+    QString sldStyleName = "__sld_style";
+    while ( styles.contains( sldStyleName ) )
+    {
+      sldStyleName.append( '@' );
+    }
+    layer->styleManager()->addStyleFromLayer( sldStyleName );
+    layer->styleManager()->setCurrentStyle( sldStyleName );
     layer->readSld( sld, err );
-    layer->setCustomProperty( "readSLD", true );
+    layer->setCustomProperty( "sldStyleName", sldStyleName );
   }
 
   QgsLegendSettings QgsRenderer::legendSettings() const

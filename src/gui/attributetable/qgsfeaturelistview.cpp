@@ -231,18 +231,25 @@ void QgsFeatureListView::repaintRequested()
 
 void QgsFeatureListView::mouseMoveEvent( QMouseEvent *event )
 {
-  QPoint pos = event->pos();
-
-  QModelIndex index = indexAt( pos );
-
-  if ( mEditSelectionDrag )
+  if ( mModel )
   {
-    if ( index.isValid() )
-      setEditSelection( mModel->mapToMaster( index ), QItemSelectionModel::ClearAndSelect );
+    QPoint pos = event->pos();
+
+    QModelIndex index = indexAt( pos );
+
+    if ( mEditSelectionDrag )
+    {
+      if ( index.isValid() )
+        setEditSelection( mModel->mapToMaster( index ), QItemSelectionModel::ClearAndSelect );
+    }
+    else
+    {
+      selectRow( index, false );
+    }
   }
   else
   {
-    selectRow( index, false );
+    QgsDebugMsg( QStringLiteral( "No model assigned to this view" ) );
   }
 }
 

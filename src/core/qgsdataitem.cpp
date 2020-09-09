@@ -188,7 +188,7 @@ QgsVectorLayer *QgsFieldsItem::layer()
         }
       }
     }
-    catch ( const QgsProviderConnectionException &ex )
+    catch ( const QgsProviderConnectionException & )
     {
       // This should never happen!
       QgsDebugMsg( QStringLiteral( "Error getting connection from %1" ).arg( mConnectionUri ) );

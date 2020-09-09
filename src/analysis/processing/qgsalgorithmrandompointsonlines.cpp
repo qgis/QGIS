@@ -120,7 +120,7 @@ QString QgsRandomPointsOnLinesAlgorithm::shortHelpString() const
                       "this (Euclidean) distance from the generated location. "
                       "With <i>Minimum distance between points</i>, only points on the same "
                       "line feature are considered, while for <i>Global minimum distance "
-                      "between points</i> all previously generated points are considered."
+                      "between points</i> all previously generated points are considered. "
                       "If the <i>Global minimum distance between points</i> is set larger "
                       "than the (local) <i>Minimum distance between points</i>, the latter "
                       "has no effect.<br> "

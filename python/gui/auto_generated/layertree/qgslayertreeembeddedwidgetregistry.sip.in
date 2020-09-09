@@ -94,13 +94,13 @@ Gets provider object from the provider's ID
     bool addProvider( QgsLayerTreeEmbeddedWidgetProvider *provider /Transfer/ );
 %Docstring
 Register a provider, takes ownership of the object.
-Returns ``True`` on success, ``False`` if the provider is already registered. *
+Returns ``True`` on success, ``False`` if the provider is already registered.
 %End
 
     bool removeProvider( const QString &providerId );
 %Docstring
 Unregister a provider, the provider object is deleted.
-Returns ``True`` on success, ``False`` if the provider was not registered. *
+Returns ``True`` on success, ``False`` if the provider was not registered.
 %End
 
   protected:

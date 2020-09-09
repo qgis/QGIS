@@ -972,6 +972,24 @@ bool QgsOracleConn::hasSpatial()
   return mHasSpatial;
 }
 
+int QgsOracleConn::version()
+{
+  QSqlQuery qry( mDatabase );
+  QString sql = QStringLiteral( "SELECT VERSION FROM PRODUCT_COMPONENT_VERSION" );
+  if ( exec( qry, sql, QVariantList() ) && qry.next() )
+  {
+    return qry.value( 0 ).toString().split( '.' ).at( 0 ).toInt();
+  }
+  else
+  {
+    QgsMessageLog::logMessage( tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" )
+                               .arg( qry.lastError().text() )
+                               .arg( qry.lastQuery() ), tr( "Oracle" ) );
+    return -1;
+  }
+}
+
+
 QString QgsOracleConn::currentUser()
 {
   QMutexLocker locker( &mLock );

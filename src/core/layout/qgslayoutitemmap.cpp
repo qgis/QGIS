@@ -33,6 +33,7 @@
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgsannotationlayer.h"
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -1218,6 +1219,14 @@ QgsLayoutItem::ExportLayerDetail QgsLayoutItemMap::exportLayerDetails() const
               else
                 detail.name = QStringLiteral( "%1: %2" ).arg( displayName(), layer->name() );
             }
+            else if ( mLayout->project()->mainAnnotationLayer()->id() == detail.mapLayerId )
+            {
+              // master annotation layer
+              if ( !detail.mapTheme.isEmpty() )
+                detail.name = QStringLiteral( "%1 (%2): %3" ).arg( displayName(), detail.mapTheme, tr( "Annotations" ) );
+              else
+                detail.name = QStringLiteral( "%1: %2" ).arg( displayName(), tr( "Annotations" ) );
+            }
             else
             {
               // might be an item based layer
@@ -1467,6 +1476,13 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   {
     //set layers to render
     QList<QgsMapLayer *> layers = layersToRender( &expressionContext );
+
+    if ( !mLayout->project()->mainAnnotationLayer()->isEmpty() )
+    {
+      // render main annotation layer above all other layers
+      layers.insert( 0, mLayout->project()->mainAnnotationLayer() );
+    }
+
     jobMapSettings.setLayers( layers );
     jobMapSettings.setLayerStyleOverrides( layerStyleOverridesToRender( expressionContext ) );
   }

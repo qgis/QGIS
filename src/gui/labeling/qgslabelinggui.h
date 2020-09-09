@@ -65,6 +65,7 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
   protected:
     void blockInitSignals( bool block );
     void syncDefinedCheckboxFrame( QgsPropertyOverrideButton *ddBtn, QCheckBox *chkBx, QFrame *f );
+    bool eventFilter( QObject *object, QEvent *event ) override;
 
   private slots:
 

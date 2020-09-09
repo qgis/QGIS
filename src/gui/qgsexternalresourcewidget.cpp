@@ -99,7 +99,9 @@ QgsExternalResourceWidget::DocumentViewerContent QgsExternalResourceWidget::docu
 void QgsExternalResourceWidget::setDocumentViewerContent( QgsExternalResourceWidget::DocumentViewerContent content )
 {
   mDocumentViewerContent = content;
-  updateDocumentViewer();
+  if ( mDocumentViewerContent != Image )
+    updateDocumentViewer();
+  loadDocument( mFileWidget->filePath() );
 }
 
 int QgsExternalResourceWidget::documentViewerHeight() const

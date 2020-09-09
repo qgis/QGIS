@@ -195,6 +195,7 @@ void QgsLabelingGui::showLineAnchorSettings()
   {
     const QgsLabelLineSettings widgetSettings = widget->settings();
     mLineSettings.setLineAnchorPercent( widgetSettings.lineAnchorPercent() );
+    mLineSettings.setAnchorType( widgetSettings.anchorType() );
     const QgsPropertyCollection obstacleDataDefinedProperties = widget->dataDefinedProperties();
     widget->updateDataDefinedProperties( mDataDefinedProperties );
     emit widgetChanged();
@@ -282,6 +283,8 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
 
   connect( mCalloutStyleComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLabelingGui::calloutTypeChanged );
 
+  mLblNoObstacle1->installEventFilter( this );
+
   setLayer( layer );
 }
 
@@ -352,7 +355,16 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
 
   mCheckAllowLabelsOutsidePolygons->setChecked( mSettings.polygonPlacementFlags() & QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon );
 
-  mPlacementModeComboBox->setCurrentIndex( mPlacementModeComboBox->findData( mSettings.placement ) );
+  const int placementIndex = mPlacementModeComboBox->findData( mSettings.placement );
+  if ( placementIndex >= 0 )
+  {
+    mPlacementModeComboBox->setCurrentIndex( placementIndex );
+  }
+  else
+  {
+    // use default placement for layer type
+    mPlacementModeComboBox->setCurrentIndex( 0 );
+  }
 
   // Label repeat distance
   mRepeatDistanceSpinBox->setValue( mSettings.repeatDistance );
@@ -536,6 +548,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.setObstacleSettings( mObstacleSettings );
 
   lyr.lineSettings().setLineAnchorPercent( mLineSettings.lineAnchorPercent() );
+  lyr.lineSettings().setAnchorType( mLineSettings.anchorType() );
 
   lyr.labelPerPart = chkLabelPerFeaturePart->isChecked();
   lyr.displayAll = mPalShowAllLabelsForLayerChkBx->isChecked();
@@ -617,6 +630,21 @@ void QgsLabelingGui::syncDefinedCheckboxFrame( QgsPropertyOverrideButton *ddBtn,
     chkBx->setChecked( true );
   }
   f->setEnabled( chkBx->isChecked() );
+}
+
+bool QgsLabelingGui::eventFilter( QObject *object, QEvent *event )
+{
+  if ( object == mLblNoObstacle1 )
+  {
+    if ( event->type() == QEvent::MouseButtonPress && dynamic_cast< QMouseEvent * >( event )->button() == Qt::LeftButton )
+    {
+      // clicking the obstacle label toggles the checkbox, just like a "normal" checkbox label...
+      mChkNoObstacle->setChecked( !mChkNoObstacle->isChecked() );
+      return true;
+    }
+    return false;
+  }
+  return QgsTextFormatWidget::eventFilter( object, event );
 }
 
 void QgsLabelingGui::updateUi()

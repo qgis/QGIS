@@ -376,6 +376,10 @@ QgsProject::QgsProject( QObject *parent )
   , mAuxiliaryStorage( new QgsAuxiliaryStorage() )
 {
   mProperties.setName( QStringLiteral( "properties" ) );
+
+  mMainAnnotationLayer = new QgsAnnotationLayer( QObject::tr( "Annotations" ), QgsAnnotationLayer::LayerOptions( mTransformContext ) );
+  mMainAnnotationLayer->setParent( this );
+
   clear();
 
   // bind the layer tree to the map layer registry.
@@ -761,6 +765,7 @@ void QgsProject::setTransformContext( const QgsCoordinateTransformContext &conte
   mTransformContext = context;
   mProjectScope.reset();
 
+  mMainAnnotationLayer->setTransformContext( context );
   for ( auto &layer : mLayerStore.get()->mapLayers() )
   {
     layer->setTransformContext( context );
@@ -850,6 +855,8 @@ void QgsProject::clear()
 
   removeAllMapLayers();
   mRootGroup->clear();
+  if ( mMainAnnotationLayer )
+    mMainAnnotationLayer->reset();
 
   setDirty( false );
   emit homePathChanged();
@@ -1058,13 +1065,17 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
 
   bool returnStatus = true;
 
-  emit layerLoaded( 0, nl.count() );
-
   // order layers based on their dependencies
   QgsScopedRuntimeProfile profile( tr( "Sorting layers" ), QStringLiteral( "projectload" ) );
   QgsLayerDefinition::DependencySorter depSorter( doc );
-  if ( depSorter.hasCycle() || depSorter.hasMissingDependency() )
+  if ( depSorter.hasCycle() )
     return false;
+
+  // Missing a dependency? We still load all the layers, otherwise the project is completely broken!
+  if ( depSorter.hasMissingDependency() )
+    returnStatus = false;
+
+  emit layerLoaded( 0, nl.count() );
 
   const QVector<QDomNode> sortedLayerNodes = depSorter.sortedLayerNodes();
   const int totalLayerCount = sortedLayerNodes.count();
@@ -1542,6 +1553,9 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
     // (default implementation ignores them, there's also a GUI handler that lets user choose correct path)
     mBadLayerHandler->handleBadLayers( brokenNodes );
   }
+
+  mMainAnnotationLayer->readLayerXml( doc->documentElement().firstChildElement( QStringLiteral( "main-annotation-layer" ) ), context );
+  mMainAnnotationLayer->setTransformContext( mTransformContext );
 
   // Resolve references to other layers
   // Needs to be done here once all dependent layers are loaded
@@ -2209,6 +2223,10 @@ bool QgsProject::writeProjectFile( const QString &filename )
 
   // within top level node save list of layers
   const QMap<QString, QgsMapLayer *> &layers = mapLayers();
+
+  QDomElement annotationLayerNode = doc->createElement( QStringLiteral( "main-annotation-layer" ) );
+  mMainAnnotationLayer->writeLayerXml( annotationLayerNode, *doc, context );
+  qgisNode.appendChild( annotationLayerNode );
 
   // Iterate over layers in zOrder
   // Call writeXml() on each
@@ -3376,6 +3394,11 @@ QgsMapLayer *QgsProject::takeMapLayer( QgsMapLayer *layer )
 {
   mProjectScope.reset();
   return mLayerStore->takeMapLayer( layer );
+}
+
+QgsAnnotationLayer *QgsProject::mainAnnotationLayer()
+{
+  return mMainAnnotationLayer;
 }
 
 void QgsProject::removeAllMapLayers()

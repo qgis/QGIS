@@ -245,7 +245,8 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
 
     /**
      * Information about joins used in the current select() statement.
-      Allows faster mapping of attribute ids compared to mVectorJoins */
+     * Allows faster mapping of attribute ids compared to mVectorJoins.
+    */
     QMap<const QgsVectorLayerJoinInfo *, QgsVectorLayerFeatureIterator::FetchJoinInfo> mFetchJoinInfo;
 
     QMap<int, QgsExpression *> mExpressionFieldInfo;

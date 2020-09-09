@@ -2920,6 +2920,7 @@ void QgsGdalProvider::initBaseDataset()
       mGdalDataset =
         QgsGdalUtils::rpcAwareAutoCreateWarpedVrt( mGdalBaseDataset, nullptr, nullptr,
             GRA_NearestNeighbour, 0.2, nullptr );
+      mGdalTransformerArg = QgsGdalUtils::rpcAwareCreateTransformer( mGdalBaseDataset );
     }
     else
     {
@@ -2943,7 +2944,10 @@ void QgsGdalProvider::initBaseDataset()
     mGdalDataset = mGdalBaseDataset;
   }
 
-  mGdalTransformerArg = GDALCreateGenImgProjTransformer( mGdalBaseDataset, nullptr, nullptr, nullptr, TRUE, 1.0, 0 );
+  if ( !mGdalTransformerArg )
+  {
+    mGdalTransformerArg = GDALCreateGenImgProjTransformer( mGdalBaseDataset, nullptr, nullptr, nullptr, TRUE, 1.0, 0 );
+  }
 
   if ( !hasGeoTransform )
   {

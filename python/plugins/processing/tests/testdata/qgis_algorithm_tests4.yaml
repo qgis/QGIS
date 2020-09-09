@@ -768,6 +768,7 @@ tests:
     params:
       CLUSTERS: 5
       FIELD_NAME: CLUSTER_ID5
+      SIZE_FIELD_NAME: CLUSTER_SIZE5
       INPUT:
         name: points.gml
         type: vector

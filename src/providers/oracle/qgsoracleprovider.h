@@ -52,12 +52,12 @@ enum QgsOraclePrimaryKeyType
 };
 
 /**
-  \class QgsOracleProvider
-  \brief Data provider for oracle layers.
-
-  This provider implements the
-  interface defined in the QgsDataProvider class to provide access to spatial
-  data residing in a oracle enabled database.
+  * \class QgsOracleProvider
+  * \brief Data provider for oracle layers.
+  *
+  * This provider implements the
+  * interface defined in the QgsDataProvider class to provide access to spatial
+  * data residing in a oracle enabled database.
   */
 class QgsOracleProvider final: public QgsVectorDataProvider
 {
@@ -134,11 +134,6 @@ class QgsOracleProvider final: public QgsVectorDataProvider
      * from mUri
      */
     void determinePrimaryKeyFromUriKeyColumn();
-
-    /**
-     * Determine the always generated identity fields
-     */
-    bool determineAlwaysGeneratedKeys();
 
     QgsFields fields() const override;
     QString dataComment() const override;
@@ -265,9 +260,10 @@ class QgsOracleProvider final: public QgsVectorDataProvider
     QString mPrimaryKeyDefault;
 
     /**
-     * List of always generated key attributes
+     * For each attributes, true if the attribute is always generated (virtual column
+     * and identity always generated columns)
      */
-    QList<int> mAlwaysGeneratedKeyAttrs;
+    QList<bool> mAlwaysGenerated;
 
     QString mGeometryColumn;           //!< Name of the geometry column
     mutable QgsRectangle mLayerExtent; //!< Rectangle that contains the extent (bounding box) of the layer
@@ -339,6 +335,7 @@ class QgsOracleProvider final: public QgsVectorDataProvider
 
     bool mHasSpatialIndex;                   //!< Geometry column is indexed
     QString mSpatialIndexName;               //!< Name of spatial index of geometry column
+    int mOracleVersion;                      //!< Oracle database version
 
     std::shared_ptr<QgsOracleSharedData> mShared;
 
@@ -375,7 +372,8 @@ class QgsOracleUtils
 /**
  * Data shared between provider class and its feature sources. Ideally there should
  *  be as few members as possible because there could be simultaneous reads/writes
- *  from different threads and therefore locking has to be involved. */
+ *  from different threads and therefore locking has to be involved.
+*/
 class QgsOracleSharedData
 {
   public:
@@ -397,6 +395,8 @@ class QgsOracleSharedData
 
 class QgsOracleProviderMetadata final: public QgsProviderMetadata
 {
+    Q_OBJECT
+
   public:
     QgsOracleProviderMetadata();
     QString getStyleById( const QString &uri, QString styleId, QString &errCause ) override;
