@@ -441,6 +441,14 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      */
     static QImage retrieveSprite( const QString &name, QgsMapBoxGlStyleConversionContext &context );
 
+    /**
+     * Retrieves the sprite image with the specified \a name, taken from the specified \a context as a base64 encoded value
+     *
+     * The \a context must have valid sprite definitions and images set via QgsMapBoxGlStyleConversionContext::setSprites()
+     * prior to conversion.
+     */
+    static QString retrieveSpriteAsBase64( const QString &name, QgsMapBoxGlStyleConversionContext &context, QSize &size );
+
   private:
 
 #ifdef SIP_RUN
