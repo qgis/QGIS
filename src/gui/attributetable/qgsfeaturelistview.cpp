@@ -189,18 +189,27 @@ void QgsFeatureListView::selectAll()
 void QgsFeatureListView::setEditSelection( const QgsFeatureIds &fids )
 {
   QItemSelection selection;
+  QModelIndex firstModelIdx;
 
   const auto constFids = fids;
   for ( QgsFeatureId fid : constFids )
   {
-    selection.append( QItemSelectionRange( mModel->mapToMaster( mModel->fidToIdx( fid ) ) ) );
+    QModelIndex modelIdx = mModel->fidToIdx( fid );
+
+    if ( ! firstModelIdx.isValid() )
+      firstModelIdx = modelIdx;
+
+    selection.append( QItemSelectionRange( mModel->mapToMaster( firstModelIdx ) ) );
   }
 
   bool ok = true;
   emit aboutToChangeEditSelection( ok );
 
   if ( ok )
+  {
     mCurrentEditSelectionModel->select( selection, QItemSelectionModel::ClearAndSelect );
+    scrollTo( firstModelIdx );
+  }
 }
 
 void QgsFeatureListView::setEditSelection( const QModelIndex &index, QItemSelectionModel::SelectionFlags command )
@@ -212,7 +221,10 @@ void QgsFeatureListView::setEditSelection( const QModelIndex &index, QItemSelect
   Q_ASSERT( index.model() == mModel->masterModel() || !index.isValid() );
 
   if ( ok )
+  {
     mCurrentEditSelectionModel->select( index, command );
+    scrollTo( index );
+  }
 }
 
 void QgsFeatureListView::repaintRequested( const QModelIndexList &indexes )
