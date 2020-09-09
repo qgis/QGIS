@@ -26,6 +26,14 @@ import QgsQuick 0.1 as QgsQuick
 Item {
   signal valueChanged(var value, bool isNull)
 
+  function itemSelected( index ) {
+    combobox.itemClicked( index )
+  }
+
+  function openCombobox() {
+    combobox.popup.open()
+  }
+
   id: fieldItem
   enabled: !readOnly
   height: customStyle.fields.height
@@ -36,31 +44,45 @@ Item {
   }
 
   QgsQuick.EditorWidgetComboBox {
-
+    id: combobox
     property var currentEditorValue: value
 
     comboStyle: customStyle.fields
     textRole: 'display'
     height: parent.height
 
-    model: QgsQuick.ValueRelationListModel {
-        id: vrModel
+    model: QgsQuick.FeaturesListModel {
+      id: vrModel
+      modelType: QgsQuick.FeaturesListModel.ValueRelation
+
+      // recalculate index when model changes
+      onModelReset: {
+        combobox.currentIndex = vrModel.rowIndexFromKeyModel( value )
+      }
     }
 
     Component.onCompleted: {
         vrModel.populate(config)
-        currentIndex = vrModel.rowForKey(value);
+        currentIndex = vrModel.rowIndexFromKeyModel( value )
+    }
+
+    onPressedChanged: {
+      if( pressed )
+      {
+        customWidget.valueRelationOpened( fieldItem, vrModel )
+        pressed = false // we close combobox and let custom handler react, it can open combobox via openCombobox()
+      }
     }
 
     // Called when user makes selection in the combo box
-    onCurrentIndexChanged: {
-      valueChanged(vrModel.keyForRow(currentIndex), false)
+    onItemClicked: {
+        currentIndex = vrModel.rowIndexFromKeyModel( index )
+        valueChanged( index, false )
     }
 
     // Called when the same form is used for a different feature
     onCurrentEditorValueChanged: {
-        currentIndex = vrModel.rowForKey(value);
+        currentIndex = vrModel.rowIndexFromKeyModel( value );
     }
-
   }
 }

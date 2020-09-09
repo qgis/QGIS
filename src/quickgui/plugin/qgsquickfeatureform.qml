@@ -36,6 +36,16 @@ Item {
    */
   signal canceled
 
+  /**
+    */
+  property var customWidgetCallback: QtObject {
+
+    property var valueRelationOpened: function valueRelationOpened( widget, valueRelationModel ) {
+      // by default just open combobox
+      widget.openCombobox()
+    }
+  }
+
    /**
     * A handler for extra events in externalSourceWidget.
     */
@@ -396,6 +406,7 @@ Item {
           property bool readOnly: form.state == "ReadOnly" || !AttributeEditable
           property var featurePair: form.model.attributeModel.featureLayerPair
           property var activeProject: form.project
+          property var customWidget: form.customWidgetCallback
 
           active: widget !== 'Hidden'
 
