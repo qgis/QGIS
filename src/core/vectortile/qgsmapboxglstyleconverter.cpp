@@ -329,23 +329,13 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
     {
       case QVariant::String:
       {
-        const QImage sprite = retrieveSprite( fillPatternJson.toString(), context );
-
-        if ( !sprite.isNull() )
+        QSize spriteSize;
+        const QString sprite = retrieveSpriteAsBase64( fillPatternJson.toString(), context, spriteSize );
+        if ( !sprite.isEmpty() )
         {
           // when fill-pattern exists, set and insert QgsRasterFillSymbolLayer
           QgsRasterFillSymbolLayer *rasterFill = new QgsRasterFillSymbolLayer();
-
-          QByteArray blob;
-          QBuffer buffer( &blob );
-          buffer.open( QIODevice::WriteOnly );
-          sprite.save( &buffer, "PNG" );
-          buffer.close();
-          QByteArray encoded = blob.toBase64();
-
-          QString path( encoded );
-          path.prepend( QLatin1String( "base64:" ) );
-          rasterFill->setImageFilePath( path );
+          rasterFill->setImageFilePath( sprite );
           rasterFill->setCoordinateMode( QgsRasterFillSymbolLayer::Viewport );
 
           if ( rasterOpacity >= 0 )
@@ -1187,20 +1177,12 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
     }
 
     QgsRasterMarkerSymbolLayer *markerLayer = new QgsRasterMarkerSymbolLayer( );
-    const QImage sprite = retrieveSprite( jsonLayout.value( QStringLiteral( "icon-image" ) ).toString(), context );
+    QSize spriteSize;
+    const QString sprite = retrieveSpriteAsBase64( jsonLayout.value( QStringLiteral( "icon-image" ) ).toString(), context, spriteSize );
     if ( !sprite.isNull() )
     {
-      QByteArray blob;
-      QBuffer buffer( &blob );
-      buffer.open( QIODevice::WriteOnly );
-      sprite.save( &buffer, "PNG" );
-      buffer.close();
-      QByteArray encoded = blob.toBase64();
-
-      QString path( encoded );
-      path.prepend( QLatin1String( "base64:" ) );
-      markerLayer->setPath( path );
-      markerLayer->setSize( context.pixelSizeConversionFactor() * sprite.width() );
+      markerLayer->setPath( sprite );
+      markerLayer->setSize( context.pixelSizeConversionFactor() * spriteSize.width() );
       markerLayer->setSizeUnit( context.targetUnit() );
     }
 
@@ -1897,6 +1879,26 @@ QImage QgsMapBoxGlStyleConverter::retrieveSprite( const QString &name, QgsMapBox
   }
 
   return sprite;
+}
+
+QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64( const QString &name, QgsMapBoxGlStyleConversionContext &context, QSize &size )
+{
+  const QImage sprite = retrieveSprite( name, context );
+  if ( !sprite.isNull() )
+  {
+    size = sprite.size();
+    QByteArray blob;
+    QBuffer buffer( &blob );
+    buffer.open( QIODevice::WriteOnly );
+    sprite.save( &buffer, "PNG" );
+    buffer.close();
+    QByteArray encoded = blob.toBase64();
+
+    QString path( encoded );
+    path.prepend( QLatin1String( "base64:" ) );
+    return path;
+  }
+  return QString();
 }
 
 QString QgsMapBoxGlStyleConverter::parseValue( const QVariant &value, QgsMapBoxGlStyleConversionContext &context )
