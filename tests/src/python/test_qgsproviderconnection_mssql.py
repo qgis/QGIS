@@ -16,18 +16,11 @@ __revision__ = '$Format:%H$'
 import os
 from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
 from qgis.core import (
-    QgsWkbTypes,
-    QgsAbstractDatabaseProviderConnection,
-    QgsProviderConnectionException,
     QgsVectorLayer,
     QgsProviderRegistry,
-    QgsCoordinateReferenceSystem,
-    QgsRasterLayer,
     QgsDataSourceUri,
 )
 from qgis.testing import unittest
-from osgeo import gdal
-from qgis.PyQt.QtCore import QTemporaryDir
 
 
 class TestPyQgsProviderConnectionMssql(unittest.TestCase, TestPyQgsProviderConnectionBase):
@@ -57,7 +50,7 @@ class TestPyQgsProviderConnectionMssql(unittest.TestCase, TestPyQgsProviderConne
         except:
             pass
 
-    def test_confguration(self):
+    def test_configuration(self):
         """Test storage and retrieval for configuration parameters"""
 
         uri = 'dbname=\'qgis_test\' service=\'driver={SQL Server};server=localhost;port=1433;database=qgis_test\' user=\'sa\' password=\'<YourStrong!Passw0rd>\' srid=4326 type=Point estimatedMetadata=\'true\' disableInvalidGeometryHandling=\'1\' table="qgis_test"."someData" (geom)'
@@ -107,7 +100,10 @@ class TestPyQgsProviderConnectionMssql(unittest.TestCase, TestPyQgsProviderConne
         md = QgsProviderRegistry.instance().providerMetadata('mssql')
         conn = md.createConnection(self.uri, {})
         fields = conn.fields('qgis_test', 'someData')
-        self.assertEqual(fields.names(), ['pk', 'cnt', 'name', 'name2', 'num_char'])
+        self.assertEqual(fields.names(), ['pk', 'cnt', 'name', 'name2', 'num_char', 'dt', 'date', 'time'])
+
+    def treat_date_as_string(self):
+        return True
 
 
 if __name__ == '__main__':

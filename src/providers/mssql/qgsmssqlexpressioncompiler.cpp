@@ -18,9 +18,10 @@
 
 QgsMssqlExpressionCompiler::QgsMssqlExpressionCompiler( QgsMssqlFeatureSource *source )
   : QgsSqlExpressionCompiler( source->mFields,
-                              QgsSqlExpressionCompiler::LikeIsCaseInsensitive | QgsSqlExpressionCompiler::CaseInsensitiveStringMatch | QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger )
+                              QgsSqlExpressionCompiler::LikeIsCaseInsensitive |
+                              QgsSqlExpressionCompiler::CaseInsensitiveStringMatch |
+                              QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger )
 {
-
 }
 
 QgsSqlExpressionCompiler::Result QgsMssqlExpressionCompiler::compileNode( const QgsExpressionNode *node, QString &result )
@@ -40,7 +41,7 @@ QgsSqlExpressionCompiler::Result QgsMssqlExpressionCompiler::compileNode( const 
 
         default:
           // fallback to default handling
-          return QgsSqlExpressionCompiler::compileNode( node, result );;
+          return QgsSqlExpressionCompiler::compileNode( node, result );
       }
 
       QString op1, op2;
