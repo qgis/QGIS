@@ -354,6 +354,17 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
     static QgsProperty parseInterpolatePointByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, QPointF *defaultPoint SIP_OUT = nullptr );
 
     /**
+     * Interpolates a string by zoom.
+     * For \a json with intermediate stops it uses parseStringStops() function.
+     *
+     * \warning This is private API only, and may change in future QGIS versions
+     */
+    static QgsProperty parseInterpolateStringByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context,
+        const QVariantMap &conversionMap,
+        QString *defaultString SIP_OUT = nullptr );
+
+
+    /**
      * Takes values from stops and uses either scale_linear() or scale_exp() functions
      * to interpolate point/offset values.
      *
@@ -370,6 +381,21 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * \param context conversion context
      */
     static QString parseStops( double base, const QVariantList &stops, double multiplier, QgsMapBoxGlStyleConversionContext &context );
+
+    /**
+     * Parses a list of interpolation stops containing string values.
+     *
+     * \param stops definition of interpolation stops
+     * \param context conversion context
+     * \param conversionMap map of input string to output expression value
+     * \param defaultString reasonable default value taken from stops
+     *
+     * \returns converted expression
+     */
+    static QString parseStringStops( const QVariantList &stops, QgsMapBoxGlStyleConversionContext &context,
+                                     const QVariantMap &conversionMap,
+                                     QString *defaultString SIP_OUT = nullptr );
+
 
     /**
      * Interpolates a list which starts with the interpolate function.

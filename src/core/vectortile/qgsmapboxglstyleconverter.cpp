@@ -1046,7 +1046,41 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
   {
     if ( jsonLayout.contains( QStringLiteral( "text-anchor" ) ) )
     {
-      const QString textAnchor = jsonLayout.value( QStringLiteral( "text-anchor" ) ).toString();
+      const QVariant jsonTextAnchor = jsonLayout.value( QStringLiteral( "text-anchor" ) );
+      QString textAnchor;
+
+      const QVariantMap conversionMap
+      {
+        { QStringLiteral( "center" ), 4 },
+        { QStringLiteral( "left" ), 5 },
+        { QStringLiteral( "right" ), 3 },
+        { QStringLiteral( "top" ), 7 },
+        { QStringLiteral( "bottom" ), 1 },
+        { QStringLiteral( "top-left" ), 8 },
+        { QStringLiteral( "top-right" ), 6 },
+        { QStringLiteral( "bottom-left" ), 2 },
+        { QStringLiteral( "bottom-right" ), 0 },
+      };
+
+      switch ( jsonTextAnchor.type() )
+      {
+        case QVariant::String:
+          textAnchor = jsonTextAnchor.toString();
+          break;
+
+        case QVariant::List:
+          ddLabelProperties.setProperty( QgsPalLayerSettings::OffsetQuad, QgsProperty::fromExpression( parseStringStops( jsonTextAnchor.toList(), context, conversionMap, &textAnchor ) ) );
+          break;
+
+        case QVariant::Map:
+          ddLabelProperties.setProperty( QgsPalLayerSettings::OffsetQuad, parseInterpolateStringByZoom( jsonTextAnchor.toMap(), context, conversionMap, &textAnchor ) );
+          break;
+
+        default:
+          context.pushWarning( QObject::tr( "Skipping non-implemented text-anchor expression" ) );
+          break;
+      }
+
       if ( textAnchor == QLatin1String( "center" ) )
         labelSettings.quadOffset = QgsPalLayerSettings::QuadrantOver;
       else if ( textAnchor == QLatin1String( "left" ) )
@@ -1065,6 +1099,37 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
         labelSettings.quadOffset = QgsPalLayerSettings::QuadrantAboveRight;
       else if ( textAnchor == QLatin1String( "bottom-right" ) )
         labelSettings.quadOffset = QgsPalLayerSettings::QuadrantAboveLeft;
+    }
+
+    QPointF textOffset;
+    if ( jsonLayout.contains( QStringLiteral( "text-offset" ) ) )
+    {
+      const QVariant jsonTextOffset = jsonLayout.value( QStringLiteral( "text-offset" ) );
+
+      // units are ems!
+      switch ( jsonTextOffset.type() )
+      {
+        case QVariant::Map:
+          ddLabelProperties.setProperty( QgsPalLayerSettings::OffsetXY, parseInterpolatePointByZoom( jsonTextOffset.toMap(), context, textSize, &textOffset ) );
+          break;
+
+        case QVariant::List:
+        case QVariant::StringList:
+          textOffset = QPointF( jsonTextOffset.toList().value( 0 ).toDouble() * textSize,
+                                jsonTextOffset.toList().value( 1 ).toDouble() * textSize );
+          break;
+
+        default:
+          context.pushWarning( QObject::tr( "Skipping non-implemented fill-translate expression" ) );
+          break;
+      }
+
+      if ( !textOffset.isNull() )
+      {
+        labelSettings.offsetUnits = context.targetUnit();
+        labelSettings.xOffset = textOffset.x();
+        labelSettings.yOffset = textOffset.y();
+      }
     }
   }
 
@@ -1364,6 +1429,18 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolatePointByZoom( const QVaria
   if ( !stops.empty() && defaultPoint )
     *defaultPoint = QPointF( stops.value( 0 ).toList().value( 1 ).toList().value( 0 ).toDouble() * multiplier,
                              stops.value( 0 ).toList().value( 1 ).toList().value( 1 ).toDouble() * multiplier );
+
+  return QgsProperty::fromExpression( scaleExpression );
+}
+
+QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateStringByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context,
+    const QVariantMap &conversionMap, QString *defaultString )
+{
+  const QVariantList stops = json.value( QStringLiteral( "stops" ) ).toList();
+  if ( stops.empty() )
+    return QgsProperty();
+
+  QString scaleExpression = parseStringStops( stops, context, conversionMap, defaultString );
 
   return QgsProperty::fromExpression( scaleExpression );
 }
