@@ -68,6 +68,7 @@ Q_GLOBAL_STATIC( QStringList, sBuiltinFunctions )
 Q_GLOBAL_STATIC( ExpressionFunctionList, sFunctions )
 
 Q_DECLARE_METATYPE( QgsSpatialIndex )
+Q_DECLARE_METATYPE( QgsExpressionContext )
 Q_DECLARE_METATYPE( std::shared_ptr<QgsVectorLayer> )
 
 const QString QgsExpressionFunction::helpText() const
@@ -5769,6 +5770,8 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
     intDomain.grow( bboxGrow ); //optional parameter to enlarge boundary context for touches and equals methods
   }
 
+  const QString cacheBase { QStringLiteral( "%1:%2" ).arg( targetLayer->id(), subExpString ) };
+
   // Cache (a local spatial index) is always enabled for nearest function (as we need QgsSpatialIndex::nearestNeighbor)
   // Otherwise, it can be toggled by the user
   QgsSpatialIndex spatialIndex;
@@ -5778,8 +5781,6 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   {
     // If the cache (local spatial index) is enabled, we materialize the whole
     // layer, then do the request on that layer instead.
-
-    const QString cacheBase { QStringLiteral( "%1:%2" ).arg( targetLayer->id(), subExpString ) };
     const QString cacheLayer { QStringLiteral( "ovrlaylyr:%1" ).arg( cacheBase ) };
     const QString cacheIndex { QStringLiteral( "ovrlayidx:%1" ).arg( cacheBase ) };
 
@@ -5844,9 +5845,20 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   QgsExpressionContext subContext;
   if ( !testOnly )
   {
-    subExpression = QgsExpression( subExpString ); // TODO: Cache
-    subContext = QgsExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( targetLayer ) ); // TODO Cache
-    subExpression.prepare( &subContext );
+    const QString expCacheKey { QStringLiteral( "exp:%1" ).arg( cacheBase ) };
+    const QString ctxCacheKey { QStringLiteral( "ctx:%1" ).arg( cacheBase ) };
+
+    if ( !context->hasCachedValue( expCacheKey ) || !context->hasCachedValue( ctxCacheKey ) )
+    {
+      subExpression = QgsExpression( subExpString );
+      subContext = QgsExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( targetLayer ) );
+      subExpression.prepare( &subContext );
+    }
+    else
+    {
+      subExpression = context->cachedValue( expCacheKey ).value<QgsExpression>();
+      subContext = context->cachedValue( ctxCacheKey ).value<QgsExpressionContext>();
+    }
   }
 
 
