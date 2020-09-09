@@ -41,6 +41,12 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
         self.assertEqual(QgsMapBoxGlStyleConverter.interpolateExpression(5, 13, 27, 29, 1.5),
                          'scale_exp(@zoom_level,5,13,27,29,1.5)')
 
+        # same values, return nice and simple expression!
+        self.assertEqual(QgsMapBoxGlStyleConverter.interpolateExpression(5, 13, 27, 27, 1.5),
+                         '27')
+        self.assertEqual(QgsMapBoxGlStyleConverter.interpolateExpression(5, 13, 27, 27, 1.5, 2),
+                         '54')
+
     def testColorAsHslaComponents(self):
         self.assertEqual(QgsMapBoxGlStyleConverter.colorAsHslaComponents(QColor.fromHsl(30, 50, 70)), (30, 19, 27, 255))
 
@@ -65,7 +71,7 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
                                                                                     },
                                                                                    conversion_context)
         self.assertEqual(props.expressionString(),
-                         'CASE WHEN @zoom_level >= 0 AND @zoom_level < 150 THEN color_hsla(scale_exp(@zoom_level,0,150,59,352,2), scale_exp(@zoom_level,0,150,81,59,2), scale_exp(@zoom_level,0,150,70,44,2), scale_exp(@zoom_level,0,150,255,255,2)) WHEN @zoom_level >= 150 AND @zoom_level < 250 THEN color_hsla(scale_exp(@zoom_level,150,250,352,0,2), scale_exp(@zoom_level,150,250,59,72,2), scale_exp(@zoom_level,150,250,44,63,2), scale_exp(@zoom_level,150,250,255,255,2)) WHEN @zoom_level >= 250 THEN color_hsla(0, 72, 63, 255) ELSE color_hsla(0, 72, 63, 255) END')
+                         'CASE WHEN @zoom_level >= 0 AND @zoom_level < 150 THEN color_hsla(scale_exp(@zoom_level,0,150,59,352,2), scale_exp(@zoom_level,0,150,81,59,2), scale_exp(@zoom_level,0,150,70,44,2), 255) WHEN @zoom_level >= 150 AND @zoom_level < 250 THEN color_hsla(scale_exp(@zoom_level,150,250,352,0,2), scale_exp(@zoom_level,150,250,59,72,2), scale_exp(@zoom_level,150,250,44,63,2), 255) WHEN @zoom_level >= 250 THEN color_hsla(0, 72, 63, 255) ELSE color_hsla(0, 72, 63, 255) END')
         self.assertEqual(default_col.name(), '#f1f075')
 
     def testParseStops(self):
@@ -134,7 +140,12 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
                                                                                   'stops': [[0, 0.1],
                                                                                             [150, 0.15]]
                                                                                   }, 255).expressionString(),
-                         "set_color_part(@symbol_color, 'alpha', scale_exp(@zoom_level,0,150,25.5,25.5,2))")
+                         "set_color_part(@symbol_color, 'alpha', scale_exp(@zoom_level,0,150,25.5,38.25,2))")
+        self.assertEqual(QgsMapBoxGlStyleConverter.parseInterpolateOpacityByZoom({'base': 2,
+                                                                                  'stops': [[0, 0.1],
+                                                                                            [150, 0.1]]
+                                                                                  }, 255).expressionString(),
+                         "set_color_part(@symbol_color, 'alpha', 25.5)")
 
     def testInterpolateListByZoom(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
