@@ -2163,4 +2163,33 @@ tests:
           - '<SrcDataSource>.*\/multilines\.gml</SrcDataSource>'
           - '<SrcLayer>multilines</SrcLayer>'
 
+  - algorithm: native:zonalstatisticsfb
+    name: Test (native:zonalstatisticsfb)
+    params:
+      COLUMN_PREFIX: stats_
+      INPUT:
+        name: custom/zonal_stats.shp
+        type: vector
+      INPUT_RASTER:
+        name: custom/dem_zones.tif
+        type: raster
+      RASTER_BAND: 1
+      STATISTICS:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+    results:
+      OUTPUT:
+        name: expected/stats.geojson
+        type: vector
+
 # See ../README.md for a description of the file format
