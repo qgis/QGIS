@@ -1052,6 +1052,32 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     }
   }
 
+  if ( labelSettings.placement == QgsPalLayerSettings::OverPoint )
+  {
+    if ( jsonLayout.contains( QStringLiteral( "text-anchor" ) ) )
+    {
+      const QString textAnchor = jsonLayout.value( QStringLiteral( "text-anchor" ) ).toString();
+      if ( textAnchor == QLatin1String( "center" ) )
+        labelSettings.quadOffset = QgsPalLayerSettings::QuadrantOver;
+      else if ( textAnchor == QLatin1String( "left" ) )
+        labelSettings.quadOffset = QgsPalLayerSettings::QuadrantRight;
+      else if ( textAnchor == QLatin1String( "right" ) )
+        labelSettings.quadOffset = QgsPalLayerSettings::QuadrantLeft;
+      else if ( textAnchor == QLatin1String( "top" ) )
+        labelSettings.quadOffset = QgsPalLayerSettings::QuadrantBelow;
+      else if ( textAnchor == QLatin1String( "bottom" ) )
+        labelSettings.quadOffset = QgsPalLayerSettings::QuadrantAbove;
+      else if ( textAnchor == QLatin1String( "top-left" ) )
+        labelSettings.quadOffset = QgsPalLayerSettings::QuadrantBelowRight;
+      else if ( textAnchor == QLatin1String( "top-right" ) )
+        labelSettings.quadOffset = QgsPalLayerSettings::QuadrantBelowLeft;
+      else if ( textAnchor == QLatin1String( "bottom-left" ) )
+        labelSettings.quadOffset = QgsPalLayerSettings::QuadrantAboveRight;
+      else if ( textAnchor == QLatin1String( "bottom-right" ) )
+        labelSettings.quadOffset = QgsPalLayerSettings::QuadrantAboveLeft;
+    }
+  }
+
   if ( textSize >= 0 )
   {
     // TODO -- this probably needs revisiting -- it was copied from the MapTiler code, but may be wrong...
