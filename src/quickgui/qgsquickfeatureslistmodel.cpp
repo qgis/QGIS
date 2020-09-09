@@ -60,13 +60,15 @@ QVariant QgsQuickFeaturesListModel::data( const QModelIndex &index, int role ) c
     case FeatureId: return QVariant( pair.feature().id() );
     case Feature: return QVariant::fromValue<QgsFeature>( pair.feature() );
     case Description: return QVariant( QString( "Feature ID %1" ).arg( pair.feature().id() ) );
-    case EmitableIndex: {
+    case EmitableIndex:
+    {
       if ( mModelType == modelTypes::ValueRelation )
         return pair.feature().attribute( mKeyFieldName );
       return pair.feature().id();
     }
     case FoundPair: return foundPair( pair );
-    case Qt::DisplayRole: {
+    case Qt::DisplayRole:
+    {
       if ( row >= 0 && row < mCache.count() )
       {
         int r = rowIndexFromKey( pair.feature().attribute( mKeyFieldName ) );
@@ -244,10 +246,10 @@ int QgsQuickFeaturesListModel::rowIndexFromKey( const QVariant &key ) const
 
 int QgsQuickFeaturesListModel::rowIndexFromKeyModel( const QVariant &key ) const
 {
-  for ( int i = 0; i< mFeatures.count(); ++i )
+  for ( int i = 0; i < mFeatures.count(); ++i )
   {
-        if ( mFeatures[i].feature().attribute( mKeyFieldName ) == key )
-          return i;
+    if ( mFeatures[i].feature().attribute( mKeyFieldName ) == key )
+      return i;
   }
   QgsDebugMsg( "Could not find index in features model, index: " + key.toString() );
   return -1;
