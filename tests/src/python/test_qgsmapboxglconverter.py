@@ -37,9 +37,9 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
 
     def testInterpolateExpression(self):
         self.assertEqual(QgsMapBoxGlStyleConverter.interpolateExpression(5, 13, 27, 29, 1),
-                         '27 + 2 * (1^(@zoom_level-5)-1)/(1^(13-5)-1)')
+                         'scale_exp(@zoom_level,5,13,27,29,1)')
         self.assertEqual(QgsMapBoxGlStyleConverter.interpolateExpression(5, 13, 27, 29, 1.5),
-                         '27 + 2 * (1.5^(@zoom_level-5)-1)/(1.5^(13-5)-1)')
+                         'scale_exp(@zoom_level,5,13,27,29,1.5)')
 
     def testColorAsHslaComponents(self):
         self.assertEqual(QgsMapBoxGlStyleConverter.colorAsHslaComponents(QColor.fromHsl(30, 50, 70)), (30, 19, 27, 255))
@@ -65,7 +65,7 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
                                                                                     },
                                                                                    conversion_context)
         self.assertEqual(props.expressionString(),
-                         'CASE WHEN @zoom_level >= 0 AND @zoom_level < 150 THEN color_hsla(59 + 293 * (2^(@zoom_level-0)-1)/(2^(150-0)-1), 81 + -22 * (2^(@zoom_level-0)-1)/(2^(150-0)-1), 70 + -26 * (2^(@zoom_level-0)-1)/(2^(150-0)-1), 255 + 0 * (2^(@zoom_level-0)-1)/(2^(150-0)-1)) WHEN @zoom_level >= 150 AND @zoom_level < 250 THEN color_hsla(352 + -352 * (2^(@zoom_level-150)-1)/(2^(250-150)-1), 59 + 13 * (2^(@zoom_level-150)-1)/(2^(250-150)-1), 44 + 19 * (2^(@zoom_level-150)-1)/(2^(250-150)-1), 255 + 0 * (2^(@zoom_level-150)-1)/(2^(250-150)-1)) WHEN @zoom_level >= 250 THEN color_hsla(0, 72, 63, 255) ELSE color_hsla(0, 72, 63, 255) END')
+                         'CASE WHEN @zoom_level >= 0 AND @zoom_level < 150 THEN color_hsla(scale_exp(@zoom_level,0,150,59,352,2), scale_exp(@zoom_level,0,150,81,59,2), scale_exp(@zoom_level,0,150,70,44,2), scale_exp(@zoom_level,0,150,255,255,2)) WHEN @zoom_level >= 150 AND @zoom_level < 250 THEN color_hsla(scale_exp(@zoom_level,150,250,352,0,2), scale_exp(@zoom_level,150,250,59,72,2), scale_exp(@zoom_level,150,250,44,63,2), scale_exp(@zoom_level,150,250,255,255,2)) WHEN @zoom_level >= 250 THEN color_hsla(0, 72, 63, 255) ELSE color_hsla(0, 72, 63, 255) END')
         self.assertEqual(default_col.name(), '#f1f075')
 
     def testParseStops(self):
@@ -73,11 +73,11 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
         self.assertEqual(QgsMapBoxGlStyleConverter.parseStops(1, [[1, 10], [2, 20], [5, 100]], 1, conversion_context),
                          'CASE WHEN @zoom_level > 1 AND @zoom_level <= 2 THEN scale_linear(@zoom_level, 1, 2, 10, 20) WHEN @zoom_level > 2 AND @zoom_level <= 5 THEN scale_linear(@zoom_level, 2, 5, 20, 100) END')
         self.assertEqual(QgsMapBoxGlStyleConverter.parseStops(1.5, [[1, 10], [2, 20], [5, 100]], 1, conversion_context),
-                         'CASE WHEN @zoom_level > 1 AND @zoom_level <= 2 THEN 10 + 10 * (1.5^(@zoom_level-1)-1)/(1.5^(2-1)-1) WHEN @zoom_level > 2 AND @zoom_level <= 5 THEN 20 + 80 * (1.5^(@zoom_level-2)-1)/(1.5^(5-2)-1) END')
+                         'CASE WHEN @zoom_level > 1 AND @zoom_level <= 2 THEN scale_exp(@zoom_level,1,2,10,20,1.5) WHEN @zoom_level > 2 AND @zoom_level <= 5 THEN scale_exp(@zoom_level,2,5,20,100,1.5) END')
         self.assertEqual(QgsMapBoxGlStyleConverter.parseStops(1, [[1, 10], [2, 20], [5, 100]], 8, conversion_context),
                          'CASE WHEN @zoom_level > 1 AND @zoom_level <= 2 THEN scale_linear(@zoom_level, 1, 2, 10, 20) * 8 WHEN @zoom_level > 2 AND @zoom_level <= 5 THEN scale_linear(@zoom_level, 2, 5, 20, 100) * 8 END')
         self.assertEqual(QgsMapBoxGlStyleConverter.parseStops(1.5, [[1, 10], [2, 20], [5, 100]], 8, conversion_context),
-                         'CASE WHEN @zoom_level > 1 AND @zoom_level <= 2 THEN (10 + 10 * (1.5^(@zoom_level-1)-1)/(1.5^(2-1)-1)) * 8 WHEN @zoom_level > 2 AND @zoom_level <= 5 THEN (20 + 80 * (1.5^(@zoom_level-2)-1)/(1.5^(5-2)-1)) * 8 END')
+                         'CASE WHEN @zoom_level > 1 AND @zoom_level <= 2 THEN (scale_exp(@zoom_level,1,2,10,20,1.5)) * 8 WHEN @zoom_level > 2 AND @zoom_level <= 5 THEN (scale_exp(@zoom_level,2,5,20,100,1.5)) * 8 END')
 
     def testInterpolateByZoom(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
@@ -101,7 +101,7 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
                                                                                         [150, 15]]
                                                                               }, conversion_context)
         self.assertEqual(prop.expressionString(),
-                         '11 + 4 * (2^(@zoom_level-0)-1)/(2^(150-0)-1)')
+                         'scale_exp(@zoom_level,0,150,11,15,2)')
         self.assertEqual(default_val, 11.0)
 
         prop, default_val = QgsMapBoxGlStyleConverter.parseInterpolateByZoom({'base': 2,
@@ -109,7 +109,7 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
                                                                                         [150, 15]]
                                                                               }, conversion_context, multiplier=5)
         self.assertEqual(prop.expressionString(),
-                         '(11 + 4 * (2^(@zoom_level-0)-1)/(2^(150-0)-1)) * 5')
+                         '(scale_exp(@zoom_level,0,150,11,15,2)) * 5')
         self.assertEqual(default_val, 55.0)
 
     def testInterpolateOpacityByZoom(self):
@@ -134,7 +134,7 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
                                                                                   'stops': [[0, 0.1],
                                                                                             [150, 0.15]]
                                                                                   }, 255).expressionString(),
-                         "set_color_part(@symbol_color, 'alpha', 25.5 + 0 * (2^(@zoom_level-0)-1)/(2^(150-0)-1))")
+                         "set_color_part(@symbol_color, 'alpha', scale_exp(@zoom_level,0,150,25.5,25.5,2))")
 
     def testInterpolateListByZoom(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
