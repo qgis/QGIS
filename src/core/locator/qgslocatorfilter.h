@@ -219,8 +219,9 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      * from the main thread, and individual filter subclasses should perform whatever
      * tasks are required in order to allow a subsequent search to safely execute
      * on a background thread.
+     * The method returns an autocompletion list
      */
-    virtual void prepare( const QString &string, const QgsLocatorContext &context ) { Q_UNUSED( string ) Q_UNUSED( context ); }
+    virtual QStringList prepare( const QString &string, const QgsLocatorContext &context ) { Q_UNUSED( string ) Q_UNUSED( context ); return QStringList();}
 
     /**
      * Retrieves the filter results for a specified search \a string. The \a context

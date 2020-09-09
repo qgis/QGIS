@@ -163,12 +163,13 @@ results from this filter.
 .. seealso:: :py:func:`activePrefix`
 %End
 
-    virtual void prepare( const QString &string, const QgsLocatorContext &context );
+    virtual QStringList prepare( const QString &string, const QgsLocatorContext &context );
 %Docstring
 Prepares the filter instance for an upcoming search for the specified ``string``. This method is always called
 from the main thread, and individual filter subclasses should perform whatever
 tasks are required in order to allow a subsequent search to safely execute
 on a background thread.
+The method returns an autocompletion list
 %End
 
     virtual void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) = 0;
