@@ -33,6 +33,7 @@
 #include <Qt3DRender/QDepthTest>
 #include <Qt3DRender/QCullFace>
 #include <Qt3DRender/QPolygonOffset>
+#include <Qt3DRender/QRenderCapture>
 
 #include "qgspointlightsettings.h"
 
@@ -80,6 +81,9 @@ class QgsShadowRenderingFrameGraph
     QgsPostprocessingEntity *postprocessingEntity() { return mPostprocessingEntity; }
     //! Returns the root entity of the entities related to the frame graph (like the post processing entity and preview entity)
     Qt3DCore::QEntity *rootEntity() { return mRootEntity; }
+
+    //! Returns the render capture object used to take an image of the scene
+    Qt3DRender::QRenderCapture *renderCapture() { return mRenderCapture; }
 
     //! Returns whether frustum culling is enabled
     bool frustumCullingEnabled() const { return mFrustumCullingEnabled; }
@@ -148,6 +152,8 @@ class QgsShadowRenderingFrameGraph
     Qt3DRender::QRenderStateSet *mShadowRenderStateSet = nullptr;
     Qt3DRender::QCullFace *mShadowCullFace = nullptr;
     Qt3DRender::QDepthTest *mShadowDepthTest = nullptr;
+
+    Qt3DRender::QRenderCapture *mRenderCapture = nullptr;
 
     QVector3D mLightDirection = QVector3D( 0.0, -1.0f, 0.0f );
 

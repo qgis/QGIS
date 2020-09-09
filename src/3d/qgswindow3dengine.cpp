@@ -32,9 +32,7 @@ QgsWindow3DEngine::QgsWindow3DEngine( QObject *parent )
 
   mShadowRenderingFrameGraph = new QgsShadowRenderingFrameGraph( mWindow3D, mWindow3D->camera(), mRoot );
 
-  mCapture = new Qt3DRender::QRenderCapture;
-  mShadowRenderingFrameGraph->getFrameGraphRoot()->setParent( mCapture );
-  mWindow3D->setActiveFrameGraph( mCapture );
+  mWindow3D->setActiveFrameGraph( mShadowRenderingFrameGraph->getFrameGraphRoot() );
 
   // force switching to no shadow rendering
   setShadowRenderingEnabled( false );
@@ -48,7 +46,7 @@ QWindow *QgsWindow3DEngine::window()
 void QgsWindow3DEngine::requestCaptureImage()
 {
   Qt3DRender::QRenderCaptureReply *captureReply;
-  captureReply = mCapture->requestCapture();
+  captureReply = mShadowRenderingFrameGraph->renderCapture()->requestCapture();
   connect( captureReply, &Qt3DRender::QRenderCaptureReply::completed, this, [ = ]
   {
     emit imageCaptured( captureReply->image() );

@@ -82,7 +82,6 @@ class _3D_EXPORT QgsWindow3DEngine : public QgsAbstract3DEngine
     //! 3D window with all the 3D magic inside
     Qt3DExtras::Qt3DWindow *mWindow3D = nullptr;
     //! Frame graph node for render capture
-    Qt3DRender::QRenderCapture *mCapture = nullptr;
     bool mShadowRenderingEnabled = false;
     QgsShadowRenderingFrameGraph *mShadowRenderingFrameGraph = nullptr;
     Qt3DExtras::QForwardRenderer *mDefaultForwardRenderer = nullptr;

@@ -42,6 +42,8 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRende
   mForwardRenderLayerFilter = new Qt3DRender::QLayerFilter( mMainCameraSelector );
   mForwardRenderLayerFilter->addLayer( mForwardRenderLayer );
 
+  mRenderCapture = new Qt3DRender::QRenderCapture( mForwardRenderLayerFilter );
+
   // TODO: make the width and height change dynamically as the 3D viewer is resized
   int width = 1024;
   int height = 768;
@@ -135,7 +137,8 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructPostprocessi
   mPostprocessPassLayerFilter->addLayer( mPostprocessPassLayer );
 
   mPostprocessClearBuffers = new Qt3DRender::QClearBuffers( mPostprocessPassLayerFilter );
-  mPostprocessClearBuffers->setClearColor( QColor::fromRgbF( 1.0f, 0.0f, 0.0f ) );
+  mPostprocessClearBuffers->setClearColor( QColor::fromRgbF( 0.0f, 0.0f, 0.0f ) );
+
 
   return mPostprocessPassLayerFilter;
 }
