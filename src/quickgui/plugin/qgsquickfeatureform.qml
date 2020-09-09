@@ -36,16 +36,6 @@ Item {
    */
   signal canceled
 
-  /**
-    */
-  property var customWidgetCallback: QtObject {
-
-    property var valueRelationOpened: function valueRelationOpened( widget, valueRelationModel ) {
-      // by default just open combobox
-      widget.openCombobox()
-    }
-  }
-
    /**
     * A handler for extra events in externalSourceWidget.
     */
@@ -91,6 +81,21 @@ Item {
           itemWidget.valueChanged(value, value === "" || value === null)
         }
     }
+
+  /**
+   * Support for custom callback on events happening in widgets
+   */
+  property var customWidgetCallback: QtObject {
+
+    /**
+     * Called when user clicks on valuerelation widget and combobox shall open
+     * \param widget valuerelation widget for specific field to send valueChanged signal.
+     * \param valueRelationModel model of type FeaturesListModel bears features of related layer.
+     */
+    property var valueRelationOpened: function valueRelationOpened( widget, valueRelationModel ) {
+      widget.openCombobox() // by default just open combobox
+    }
+  }
 
   /**
    * AttributeFormModel binded on a feature supporting auto-generated editor layouts and "tab" layout.
