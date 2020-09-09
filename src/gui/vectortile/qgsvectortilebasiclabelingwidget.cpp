@@ -396,6 +396,16 @@ void QgsVectorTileBasicLabelingWidget::editStyleAtIndex( const QModelIndex &prox
   context.setMapCanvas( mMapCanvas );
   context.setMessageBar( mMessageBar );
 
+  if ( mMapCanvas )
+  {
+    const int zoom = QgsVectorTileUtils::scaleToZoomLevel( mMapCanvas->scale(), 0, 99 );
+    QList<QgsExpressionContextScope> scopes = context.additionalExpressionContextScopes();
+    QgsExpressionContextScope tileScope;
+    tileScope.setVariable( "zoom_level", zoom, true );
+    scopes << tileScope;
+    context.setAdditionalExpressionContextScopes( scopes );
+  }
+
   QgsVectorLayer *vectorLayer = nullptr;  // TODO: have a temporary vector layer with sub-layer's fields?
 
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
