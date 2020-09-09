@@ -1429,6 +1429,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   }
 
   // Update recent project list (as possible custom project storages are now registered by plugins)
+  mSplash->showMessage( tr( "Updating recent project paths" ), Qt::AlignHCenter | Qt::AlignBottom );
+  qApp->processEvents();
   startProfile( tr( "Update recent project paths" ) );
   updateRecentProjectPaths();
   mWelcomePage->setRecentProjects( mRecentProjects );
