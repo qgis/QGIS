@@ -342,9 +342,15 @@ QString QgsVectorTileLayer::loadDefaultStyle( bool &resultFlag )
     if ( styleDefinition.contains( QStringLiteral( "sprite" ) ) )
     {
       // retrieve sprite definition
-      const QString spriteUriBase = mArcgisLayerConfiguration.value( QStringLiteral( "serviceUri" ) ).toString()
-                                    + '/' + mArcgisLayerConfiguration.value( QStringLiteral( "defaultStyles" ) ).toString()
-                                    + '/' + styleDefinition.value( QStringLiteral( "sprite" ) ).toString();
+      QString spriteUriBase;
+      if ( styleDefinition.value( QStringLiteral( "sprite" ) ).toString().startsWith( QStringLiteral( "http" ) ) )
+      {
+        spriteUriBase = styleDefinition.value( QStringLiteral( "sprite" ) ).toString();
+      }
+      else
+      {
+        spriteUriBase = styleUrl + '/' + styleDefinition.value( QStringLiteral( "sprite" ) ).toString();
+      }
       QNetworkRequest request = QNetworkRequest( QUrl( spriteUriBase + QStringLiteral( ".json" ) ) );
 
       QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) );
