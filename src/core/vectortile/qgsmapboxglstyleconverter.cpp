@@ -489,7 +489,7 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
   Qt::PenJoinStyle penJoinStyle = Qt::MiterJoin;
   if ( jsonLayer.contains( QStringLiteral( "layout" ) ) )
   {
-    const QVariantMap jsonLayout = jsonPaint.value( QStringLiteral( "layout" ) ).toMap();
+    const QVariantMap jsonLayout = jsonLayer.value( QStringLiteral( "layout" ) ).toMap();
     if ( jsonLayout.contains( QStringLiteral( "line-cap" ) ) )
     {
       penCapStyle = parseCapStyle( jsonLayout.value( QStringLiteral( "line-cap" ) ).toString() );
