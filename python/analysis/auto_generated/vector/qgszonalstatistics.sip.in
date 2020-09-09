@@ -107,23 +107,6 @@ added to ``polygonLayer`` for each statistic calculated.
 %End
 
 
-    QgsZonalStatistics( QgsFeatureSource *source,
-                        QgsFeatureSink *sink,
-                        QgsRasterInterface *rasterInterface,
-                        const QgsCoordinateReferenceSystem &rasterCrs,
-                        const QMap<QgsZonalStatistics::Statistic, int> &statFieldIndexes,
-                        const QgsFields &fields,
-                        double rasterUnitsPerPixelX,
-                        double rasterUnitsPerPixelY,
-                        int rasterBand = 1,
-                        QgsZonalStatistics::Statistics stats = QgsZonalStatistics::Statistic::All );
-%Docstring
-
-
-.. versionadded:: 3.16
-%End
-
-
     QgsZonalStatistics::Result calculateStatistics( QgsFeedback *feedback );
 %Docstring
 Runs the calculation.
@@ -145,6 +128,16 @@ Returns a short, friendly display name for a ``statistic``, suitable for use in 
 .. seealso:: :py:func:`displayName`
 
 .. versionadded:: 3.12
+%End
+
+    static QMap<QgsZonalStatistics::Statistic, QVariant> calculateStatistics( QgsRasterInterface *rasterInterface, const QgsGeometry &geometry, int cellSizeX, int cellSizeY, int rasterBand, QgsZonalStatistics::Statistics statistics );
+%Docstring
+Calculates the specified ``statistics`` for the pixels of ``rasterBand``
+in ``rasterInterface`` (a raster layer :py:func:`~QgsZonalStatistics.dataProvider` ) within polygon ``geometry``.
+
+Returns a map of statistic to result value.
+
+.. versionadded:: 3.16
 %End
 
       public:

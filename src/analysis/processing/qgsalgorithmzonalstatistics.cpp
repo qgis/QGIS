@@ -64,7 +64,7 @@ QString QgsZonalStatisticsAlgorithm::groupId() const
 QString QgsZonalStatisticsAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm calculates statistics of a raster layer for each feature "
-                      "of an overlapping polygon vector layer." );
+                      "of an overlapping polygon vector layer. The reults will be written in place." );
 }
 
 QgsProcessingAlgorithm::Flags QgsZonalStatisticsAlgorithm::flags() const
@@ -89,14 +89,14 @@ void QgsZonalStatisticsAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT_RASTER" ), QObject::tr( "Raster layer" ) ) );
   addParameter( new QgsProcessingParameterBand( QStringLiteral( "RASTER_BAND" ),
                 QObject::tr( "Raster band" ), 1, QStringLiteral( "INPUT_RASTER" ) ) );
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT_VECTOR" ), QObject::tr( "Feature source containing zones" ),
+  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT_VECTOR" ), QObject::tr( "Vector layer containing zones" ),
                 QList< int >() << QgsProcessing::TypeVectorPolygon ) );
   addParameter( new QgsProcessingParameterString( QStringLiteral( "COLUMN_PREFIX" ), QObject::tr( "Output column prefix" ), QStringLiteral( "_" ) ) );
 
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "STATISTICS" ), QObject::tr( "Statistics to calculate" ),
                 statChoices, true, QVariantList() << 0 << 1 << 2 ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Zonal statistics" ), QgsProcessing::TypeVectorPolygon, QVariant(), false, true, true ) );
+  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "INPUT_VECTOR" ), QObject::tr( "Zonal statistics" ), QgsProcessing::TypeVectorPolygon ) );
 }
 
 bool QgsZonalStatisticsAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
@@ -129,62 +129,24 @@ bool QgsZonalStatisticsAlgorithm::prepareAlgorithm( const QVariantMap &parameter
 
 QVariantMap QgsZonalStatisticsAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr<QgsFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT_VECTOR" ), context ) );
-  if ( !source )
+  QgsVectorLayer *layer = parameterAsVectorLayer( parameters, QStringLiteral( "INPUT_VECTOR" ), context );
+  if ( !layer )
     throw QgsProcessingException( QObject::tr( "Invalid zones layer" ) );
 
-  QgsFields fields = source->fields();
-  QMap<QgsZonalStatistics::Statistic, int> statFieldIndexes;
-
-  for ( QgsZonalStatistics::Statistic stat :
-        {
-          QgsZonalStatistics::Count,
-          QgsZonalStatistics::Sum,
-          QgsZonalStatistics::Mean,
-          QgsZonalStatistics::Median,
-          QgsZonalStatistics::StDev,
-          QgsZonalStatistics::Min,
-          QgsZonalStatistics::Max,
-          QgsZonalStatistics::Range,
-          QgsZonalStatistics::Minority,
-          QgsZonalStatistics::Majority,
-          QgsZonalStatistics::Variety,
-          QgsZonalStatistics::Variance
-        } )
-  {
-    if ( mStats & stat )
-    {
-      QgsField field = QgsField( mPrefix + QgsZonalStatistics::shortName( stat ), QVariant::Double, QStringLiteral( "double precision" ) );
-      if ( fields.names().contains( field.name() ) )
-      {
-        throw QgsProcessingException( QObject::tr( "Field %1 already exists" ).arg( field.name() ) );
-      }
-      fields.append( field );
-      statFieldIndexes.insert( stat, fields.count() - 1 );
-    }
-  }
-
-  QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, QgsWkbTypes::MultiPolygon, source->sourceCrs() ) );
-  if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
-
-  QgsZonalStatistics zs( source.get(),
-                         sink.get(),
+  QgsZonalStatistics zs( layer,
                          mInterface.get(),
                          mCrs,
-                         statFieldIndexes,
-                         fields,
                          mPixelSizeX,
                          mPixelSizeY,
+                         mPrefix,
                          mBand,
-                         mStats
+                         QgsZonalStatistics::Statistics( mStats )
                        );
 
   zs.calculateStatistics( feedback );
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  outputs.insert( QStringLiteral( "INPUT_VECTOR" ), layer->id() );
   return outputs;
 }
 

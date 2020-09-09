@@ -128,23 +128,6 @@ class ANALYSIS_EXPORT QgsZonalStatistics
 
 
     /**
-     *
-     *
-     * \since QGIS 3.16
-     */
-    QgsZonalStatistics( QgsFeatureSource *source,
-                        QgsFeatureSink *sink,
-                        QgsRasterInterface *rasterInterface,
-                        const QgsCoordinateReferenceSystem &rasterCrs,
-                        const QMap<QgsZonalStatistics::Statistic, int> &statFieldIndexes,
-                        const QgsFields &fields,
-                        double rasterUnitsPerPixelX,
-                        double rasterUnitsPerPixelY,
-                        int rasterBand = 1,
-                        QgsZonalStatistics::Statistics stats = QgsZonalStatistics::Statistic::All );
-
-
-    /**
      * Runs the calculation.
      */
     QgsZonalStatistics::Result calculateStatistics( QgsFeedback *feedback );
@@ -162,6 +145,16 @@ class ANALYSIS_EXPORT QgsZonalStatistics
      * \since QGIS 3.12
      */
     static QString shortName( QgsZonalStatistics::Statistic statistic );
+
+    /**
+     * Calculates the specified \a statistics for the pixels of \a rasterBand
+     * in \a rasterInterface (a raster layer dataProvider() ) within polygon \a geometry.
+     *
+     * Returns a map of statistic to result value.
+     *
+     * \since QGIS 3.16
+     */
+    static QMap<QgsZonalStatistics::Statistic, QVariant> calculateStatistics( QgsRasterInterface *rasterInterface, const QgsGeometry &geometry, int cellSizeX, int cellSizeY, int rasterBand, QgsZonalStatistics::Statistics statistics );
 
   private:
     QgsZonalStatistics() = default;
@@ -229,10 +222,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
     QgsVectorLayer *mPolygonLayer = nullptr;
     QString mAttributePrefix;
     Statistics mStatistics = QgsZonalStatistics::All;
-    QgsFeatureSource *mSource = nullptr ;
-    QgsFeatureSink *mSink = nullptr ;
     QMap<QgsZonalStatistics::Statistic, int> mStatFieldIndexes;
-    QgsFields mFields;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsZonalStatistics::Statistics )
