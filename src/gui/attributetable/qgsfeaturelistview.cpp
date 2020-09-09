@@ -199,7 +199,7 @@ void QgsFeatureListView::setEditSelection( const QgsFeatureIds &fids )
     if ( ! firstModelIdx.isValid() )
       firstModelIdx = modelIdx;
 
-    selection.append( QItemSelectionRange( mModel->mapToMaster( firstModelIdx ) ) );
+    selection.append( QItemSelectionRange( mModel->mapToMaster( modelIdx ) ) );
   }
 
   bool ok = true;
