@@ -9,31 +9,31 @@
 
 class QUICK_EXPORT QgsQuickFeaturesListModel : public QAbstractListModel
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  Q_PROPERTY( int featuresCount READ featuresCount NOTIFY featuresCountChanged )
-  Q_PROPERTY( QString filterExpression READ filterExpression WRITE setFilterExpression NOTIFY filterExpressionChanged )
-  Q_PROPERTY( int featuresLimit READ featuresLimit NOTIFY featuresLimitChanged )
-  Q_PROPERTY( modelTypes modelType READ modelType WRITE setModelType )
+    Q_PROPERTY( int featuresCount READ featuresCount NOTIFY featuresCountChanged )
+    Q_PROPERTY( QString filterExpression READ filterExpression WRITE setFilterExpression NOTIFY filterExpressionChanged )
+    Q_PROPERTY( int featuresLimit READ featuresLimit NOTIFY featuresLimitChanged )
+    Q_PROPERTY( modelTypes modelType READ modelType WRITE setModelType )
 
-  enum roleNames
-  {
-    FeatureTitle = Qt::UserRole + 1,
-    FeatureId,
-    Feature,
-    Description, // secondary text in list view
-    EmitableIndex, // key in value relation
-    FoundPair // pair of attribute and its value by which the feature was found, empty if mFilterExpression is empty
-  };
+    enum roleNames
+    {
+      FeatureTitle = Qt::UserRole + 1,
+      FeatureId,
+      Feature,
+      Description, // secondary text in list view
+      EmitableIndex, // key in value relation
+      FoundPair // pair of attribute and its value by which the feature was found, empty if mFilterExpression is empty
+    };
 
-public:
+  public:
 
-  enum modelTypes
-  {
-    FeatureListing,
-    ValueRelation
-  };
-  Q_ENUM( modelTypes );
+    enum modelTypes
+    {
+      FeatureListing,
+      ValueRelation
+    };
+    Q_ENUM( modelTypes );
 
     explicit QgsQuickFeaturesListModel( QObject *parent = nullptr );
     ~QgsQuickFeaturesListModel() override {};
@@ -66,10 +66,10 @@ public:
 
     modelTypes modelType() const;
 
-public slots:
+  public slots:
     void setModelType( modelTypes modelType );
 
-signals:
+  signals:
     void featuresCountChanged( int featuresCount );
     void featuresLimitChanged( int featuresLimit );
     void filterExpressionChanged( QString filterExpression );
@@ -87,9 +87,11 @@ signals:
     //! Returns found attribute and its value from mFilterExpression
     QString foundPair( const QgsQuickFeatureLayerPair &feat ) const;
 
-    //! QList of loaded features from layer
-    //! Hold maximum of FEATURES_LIMIT features
-    //! \note mFeatures.size() is not always the same as mFeaturesCount
+    /**
+     * QList of loaded features from layer
+     * Hold maximum of FEATURES_LIMIT features
+     * \note mFeatures.size() is not always the same as mFeaturesCount
+     */
     QList<QgsQuickFeatureLayerPair> mFeatures;
 
     //! Number of maximum features loaded from layer
