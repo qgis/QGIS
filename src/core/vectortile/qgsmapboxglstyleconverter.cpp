@@ -465,6 +465,33 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
     }
   }
 
+  double lineOffset = 0.0;
+  if ( jsonPaint.contains( QStringLiteral( "line-offset" ) ) )
+  {
+    const QVariant jsonLineOffset = jsonPaint.value( QStringLiteral( "line-offset" ) );
+    switch ( jsonLineOffset.type() )
+    {
+      case QVariant::Int:
+      case QVariant::Double:
+        lineOffset = -jsonLineOffset.toDouble() * context.pixelSizeConversionFactor();
+        break;
+
+      case QVariant::Map:
+        lineWidth = -1;
+        ddProperties.setProperty( QgsSymbolLayer::PropertyOffset, parseInterpolateByZoom( jsonLineOffset.toMap(), context, context.pixelSizeConversionFactor() * -1, &lineOffset ) );
+        break;
+
+      case QVariant::List:
+      case QVariant::StringList:
+        ddProperties.setProperty( QgsSymbolLayer::PropertyOffset, parseInterpolateListByZoom( jsonLineOffset.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor() * -1, 255, nullptr, &lineOffset ) );
+        break;
+
+      default:
+        context.pushWarning( QObject::tr( "Skipping non-implemented line-offset expression" ) );
+        break;
+    }
+  }
+
   double lineOpacity = -1.0;
   if ( jsonPaint.contains( QStringLiteral( "line-opacity" ) ) )
   {
@@ -563,6 +590,8 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
   lineSymbol->setPenCapStyle( penCapStyle );
   lineSymbol->setPenJoinStyle( penJoinStyle );
   lineSymbol->setDataDefinedProperties( ddProperties );
+  lineSymbol->setOffset( lineOffset );
+  lineSymbol->setOffsetUnit( context.targetUnit() );
 
   if ( lineOpacity != -1 )
   {
