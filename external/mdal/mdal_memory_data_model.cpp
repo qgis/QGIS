@@ -205,9 +205,15 @@ void MDAL::MemoryMesh::addFaces( size_t faceCount, size_t driverMaxVerticesPerFa
     Face face( faceSize );
     for ( size_t i = 0; i < faceSize; ++i )
     {
-      size_t indice =  vertexIndices[indicesIndex + i];
-      if ( indice >= 0 && indice < mVertices.size() )
-        face[i] = indice;
+      const int indice = vertexIndices[indicesIndex + i];
+      if ( indice < 0 )
+      {
+        MDAL::Log::error( Err_InvalidData, "Invalid vertex index when adding faces" );
+        return;
+      }
+      size_t indiceU = static_cast< size_t >( indice );
+      if ( indiceU < mVertices.size() )
+        face[i] = indiceU;
       else
       {
         MDAL::Log::error( Err_InvalidData, "Invalid vertex index when adding faces" );
