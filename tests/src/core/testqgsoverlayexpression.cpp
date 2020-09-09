@@ -131,17 +131,17 @@ void TestQgsOverlayExpression::testOverlay_data()
   QTest::newRow( "touches intersects no match" ) << "geometry_overlay_touches('rectangles')" << "POLYGON((-86 54, -95 49, -81 49, -86 54))" << false;
   QTest::newRow( "touches intersects no match [cached]" ) << "geometry_overlay_touches('rectangles',cache:=true)" << "POLYGON((-86 54, -95 49, -81 49, -86 54))" << false;
 
-  QTest::newRow( "within" ) << "geometry_overlay_within('rectangles')" << "POLYGON((-166 15, -166 58, -107 58, -107 15, -166 15))" << true;
-  QTest::newRow( "within [cached]" ) << "geometry_overlay_within('rectangles',cache:=true)" << "POLYGON((-166 15, -166 58, -107 58, -107 15, -166 15))" << true;
+  QTest::newRow( "within" ) << "geometry_overlay_within('rectangles')" << "POINT(-83 47)" << true;
+  QTest::newRow( "within [cached]" ) << "geometry_overlay_within('rectangles',cache:=true)" << "POINT(-83 47)" << true;
 
-  QTest::newRow( "within no match" ) << "geometry_overlay_within('rectangles')" << "POLYGON((-156 46, -149 46, -148 37, -156 46))" << false;
-  QTest::newRow( "within no match [cached]" ) << "geometry_overlay_within('rectangles',cache:=true)" << "POLYGON((-156 46, -149 46, -148 37, -156 46))" << false;
+  QTest::newRow( "within no match" ) << "geometry_overlay_within('rectangles')" << "POINT(-122 43)" << false;
+  QTest::newRow( "within no match [cached]" ) << "geometry_overlay_within('rectangles',cache:=true)" << "POINT(-122 43)" << false;
 
-  QTest::newRow( "contains" ) << "geometry_overlay_contains('rectangles')" << "POINT(-83 47)" << true;
-  QTest::newRow( "contains [cached]" ) << "geometry_overlay_contains('rectangles',cache:=true)" << "POINT(-83 47)" << true;
+  QTest::newRow( "contains" ) << "geometry_overlay_contains('rectangles')" << "POLYGON((-166 15, -166 58, -107 58, -107 15, -166 15))" << true;
+  QTest::newRow( "contains [cached]" ) << "geometry_overlay_contains('rectangles',cache:=true)" << "POLYGON((-166 15, -166 58, -107 58, -107 15, -166 15))" << true;
 
-  QTest::newRow( "contains no match" ) << "geometry_overlay_contains('rectangles')" << "POINT(-122 43)" << false;
-  QTest::newRow( "contains no match [cached]" ) << "geometry_overlay_contains('rectangles',cache:=true)" << "POINT(-122 43)" << false;
+  QTest::newRow( "contains no match" ) << "geometry_overlay_contains('rectangles')" << "POLYGON((-156 46, -149 46, -148 37, -156 46))" << false;
+  QTest::newRow( "contains no match [cached]" ) << "geometry_overlay_contains('rectangles',cache:=true)" << "POLYGON((-156 46, -149 46, -148 37, -156 46))" << false;
 
   QTest::newRow( "equals" ) << "geometry_overlay_equals('rectangles')" << "MULTIPOLYGON(((-160 50, -145 50, -145 35, -160 35, -160 50)))" << true;
   QTest::newRow( "equals [cached]" ) << "geometry_overlay_equals('rectangles',cache:=true)" << "MULTIPOLYGON(((-160 50, -145 50, -145 35, -160 35, -160 50)))" << true;

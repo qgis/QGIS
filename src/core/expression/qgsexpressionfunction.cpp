@@ -5870,7 +5870,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   {
     QgsFeature feat2 = i.next();
 
-    if ( ! relationFunction || ( feat2.geometry().*relationFunction )( geometry ) ) // Calls the method provided as template argument for the function (e.g. QgsGeometry::intersects)
+    if ( ! relationFunction || ( geometry.*relationFunction )( feat2.geometry() ) ) // Calls the method provided as template argument for the function (e.g. QgsGeometry::intersects)
     {
       found = true;
 
