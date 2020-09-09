@@ -57,13 +57,13 @@ Item {
 
       // recalculate index when model changes
       onModelReset: {
-        combobox.currentIndex = vrModel.rowIndexFromKeyModel( value )
+        combobox.currentIndex = vrModel.rowModelIndexFromKey( value )
       }
     }
 
     Component.onCompleted: {
         vrModel.populate(config)
-        currentIndex = vrModel.rowIndexFromKeyModel( value )
+        currentIndex = vrModel.rowModelIndexFromKey( value )
     }
 
     onPressedChanged: {
@@ -76,13 +76,13 @@ Item {
 
     // Called when user makes selection in the combo box
     onItemClicked: {
-        currentIndex = vrModel.rowIndexFromKeyModel( index )
+        currentIndex = vrModel.rowModelIndexFromKey( index )
         valueChanged( index, false )
     }
 
     // Called when the same form is used for a different feature
     onCurrentEditorValueChanged: {
-        currentIndex = vrModel.rowIndexFromKeyModel( value );
+        currentIndex = vrModel.rowModelIndexFromKey( value );
     }
   }
 }

@@ -1,7 +1,21 @@
+/***************************************************************************
+  qgsquickfeatureslistmodel.cpp
+ ---------------------------
+  Date                 : Sep 2020
+  Copyright            : (C) 2020 by Tomas Mizera
+  Email                : tomas.mizera2 at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #include "qgsquickfeatureslistmodel.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgslogger.h"
-#include "qvariant.h"
 
 QgsQuickFeaturesListModel::QgsQuickFeaturesListModel( QObject *parent )
   : QAbstractListModel( parent ),
@@ -177,6 +191,11 @@ void QgsQuickFeaturesListModel::populateFromLayer( QgsVectorLayer *layer )
   endResetModel();
 }
 
+void QgsQuickFeaturesListModel::reloadFeatures()
+{
+  loadFeaturesFromLayer();
+}
+
 void QgsQuickFeaturesListModel::emptyData()
 {
   mFeatures.clear();
@@ -240,17 +259,17 @@ int QgsQuickFeaturesListModel::rowIndexFromKey( const QVariant &key ) const
     if ( mCache[i].key == key )
       return i;
   }
-  QgsDebugMsg( "rowForKey: key not found: " + key.toString() );
+  QgsDebugMsg( "rowIndexFromKey: key not found: " + key.toString() );
   return -1;
 }
 
-int QgsQuickFeaturesListModel::rowIndexFromKeyModel( const QVariant &key ) const
+int QgsQuickFeaturesListModel::rowModelIndexFromKey( const QVariant &key ) const
 {
   for ( int i = 0; i < mFeatures.count(); ++i )
   {
     if ( mFeatures[i].feature().attribute( mKeyFieldName ) == key )
       return i;
   }
-  QgsDebugMsg( "Could not find index in features model, index: " + key.toString() );
+  QgsDebugMsg( "rowModelIndexFromKey: Could not find index in features model, index: " + key.toString() );
   return -1;
 }
