@@ -155,7 +155,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
      *
      * \since QGIS 3.16
      */
-    static QMap<QgsZonalStatistics::Statistic, QVariant> calculateStatistics( QgsRasterInterface *rasterInterface, const QgsGeometry &geometry, int cellSizeX, int cellSizeY, int rasterBand, QgsZonalStatistics::Statistics statistics );
+    static QMap<QgsZonalStatistics::Statistic, QVariant> calculateStatistics(QgsRasterInterface *rasterInterface, const QgsGeometry &geometry, double cellSizeX, double cellSizeY, int rasterBand, QgsZonalStatistics::Statistics statistics );
 
   private:
     QgsZonalStatistics() = default;

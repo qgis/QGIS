@@ -57,8 +57,6 @@ QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterI
 
 QgsZonalStatistics::Result QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
 {
-  QgsVectorDataProvider *vectorProvider = nullptr;
-
   if ( !mRasterInterface )
   {
     return RasterInvalid;
@@ -74,7 +72,7 @@ QgsZonalStatistics::Result QgsZonalStatistics::calculateStatistics( QgsFeedback 
     return LayerTypeWrong;
   }
 
-  vectorProvider = mPolygonLayer->dataProvider();
+  QgsVectorDataProvider *vectorProvider = mPolygonLayer->dataProvider();
   if ( !vectorProvider )
   {
     return LayerInvalid;
@@ -83,6 +81,7 @@ QgsZonalStatistics::Result QgsZonalStatistics::calculateStatistics( QgsFeedback 
   QMap<QgsZonalStatistics::Statistic, int> statFieldIndexes;
 
   //add the new fields to the provider
+  int oldFieldCount = vectorProvider->fields().count();
   QList<QgsField> newFieldList;
   for ( QgsZonalStatistics::Statistic stat :
         {
@@ -105,7 +104,7 @@ QgsZonalStatistics::Result QgsZonalStatistics::calculateStatistics( QgsFeedback 
       QString fieldName = getUniqueFieldName( mAttributePrefix + QgsZonalStatistics::shortName( stat ), newFieldList );
       QgsField field( fieldName, QVariant::Double, QStringLiteral( "double precision" ) );
       newFieldList.push_back( field );
-      statFieldIndexes.insert( stat, newFieldList.count() - 1 );
+      statFieldIndexes.insert( stat, oldFieldCount + newFieldList.count() - 1 );
     }
   }
 
@@ -288,7 +287,7 @@ QString QgsZonalStatistics::shortName( QgsZonalStatistics::Statistic statistic )
   return QString();
 }
 
-QMap<QgsZonalStatistics::Statistic, QVariant> QgsZonalStatistics::calculateStatistics( QgsRasterInterface *rasterInterface, const QgsGeometry &geometry, int cellSizeX, int cellSizeY, int rasterBand, QgsZonalStatistics::Statistics statistics )
+QMap<QgsZonalStatistics::Statistic, QVariant> QgsZonalStatistics::calculateStatistics( QgsRasterInterface *rasterInterface, const QgsGeometry &geometry, double cellSizeX, double cellSizeY, int rasterBand, QgsZonalStatistics::Statistics statistics )
 {
   QMap<QgsZonalStatistics::Statistic, QVariant> results;
 
