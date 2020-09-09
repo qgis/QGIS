@@ -1655,11 +1655,11 @@ void QgsMapBoxGlStyleConverter::colorAsHslaComponents( const QColor &color, int 
 
 QString QgsMapBoxGlStyleConverter::interpolateExpression( int zoomMin, int zoomMax, double valueMin, double valueMax, double base, double multiplier )
 {
-  const QString expression = QStringLiteral( "%1 + %2 * (%3^(@zoom_level-%4)-1)/(%3^(%5-%4)-1)" ).arg( valueMin )
-                             .arg( valueMax - valueMin )
-                             .arg( base )
-                             .arg( zoomMin )
-                             .arg( zoomMax );
+  const QString expression = QStringLiteral( "scale_exp(@zoom_level,%1,%2,%3,%4,%5)" ).arg( zoomMin )
+                             .arg( zoomMax )
+                             .arg( valueMin )
+                             .arg( valueMax )
+                             .arg( base );
 
   if ( multiplier != 1 )
     return QStringLiteral( "(%1) * %2" ).arg( expression ).arg( multiplier );
