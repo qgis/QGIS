@@ -1045,7 +1045,7 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
   {
     QgsPropertyCollection ddProperties;
 
-    double spacing = 1.0;
+    double spacing = -1.0;
     if ( jsonLayout.contains( QStringLiteral( "symbol-spacing" ) ) )
     {
       const QVariant jsonSpacing = jsonLayout.value( QStringLiteral( "symbol-spacing" ) );
@@ -1112,9 +1112,14 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
       }
     }
 
-    QgsMarkerLineSymbolLayer *lineSymbol = new QgsMarkerLineSymbolLayer( rotateMarkers, spacing );
+    QgsMarkerLineSymbolLayer *lineSymbol = new QgsMarkerLineSymbolLayer( rotateMarkers, spacing > 0 ? spacing : 1 );
     lineSymbol->setOutputUnit( context.targetUnit() );
     lineSymbol->setDataDefinedProperties( ddProperties );
+    if ( spacing <= 0 )
+    {
+      // if spacing isn't specified, it's a central point marker only
+      lineSymbol->setPlacement( QgsTemplatedLineSymbolLayerBase::CentralPoint );
+    }
 
     QgsRasterMarkerSymbolLayer *markerLayer = new QgsRasterMarkerSymbolLayer( );
     const QImage sprite = retrieveSprite( jsonLayout.value( QStringLiteral( "icon-image" ) ).toString(), context );
