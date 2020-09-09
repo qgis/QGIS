@@ -349,6 +349,19 @@ For ``json`` with intermediate stops it uses :py:func:`~QgsMapBoxGlStyleConverte
    This is private API only, and may change in future QGIS versions
 %End
 
+    static QgsProperty parseInterpolateStringByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context,
+        const QVariantMap &conversionMap,
+        QString *defaultString /Out/ = 0 );
+%Docstring
+Interpolates a string by zoom.
+For ``json`` with intermediate stops it uses :py:func:`~QgsMapBoxGlStyleConverter.parseStringStops` function.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+%End
+
+
     static QString parsePointStops( double base, const QVariantList &stops, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1 );
 %Docstring
 Takes values from stops and uses either :py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or :py:func:`~QgsMapBoxGlStyleConverter.scale_exp` functions
@@ -368,6 +381,21 @@ Parses a list of interpolation stops
 :param multiplier: optional multiplication factor
 :param context: conversion context
 %End
+
+    static QString parseStringStops( const QVariantList &stops, QgsMapBoxGlStyleConversionContext &context,
+                                     const QVariantMap &conversionMap,
+                                     QString *defaultString /Out/ = 0 );
+%Docstring
+Parses a list of interpolation stops containing string values.
+
+:param stops: definition of interpolation stops
+:param context: conversion context
+:param conversionMap: map of input string to output expression value
+
+:return: - converted expression
+         - defaultString: reasonable default value taken from stops
+%End
+
 
     static QgsProperty parseInterpolateListByZoom( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1,
         int maxOpacity = 255, QColor *defaultColor /Out/ = 0, double *defaultNumber /Out/ = 0 );
@@ -449,6 +477,14 @@ Converts a MapBox GL expression to a QGIS expression.
     static QImage retrieveSprite( const QString &name, QgsMapBoxGlStyleConversionContext &context );
 %Docstring
 Retrieves the sprite image with the specified ``name``, taken from the specified ``context``.
+
+The ``context`` must have valid sprite definitions and images set via :py:func:`QgsMapBoxGlStyleConversionContext.setSprites()`
+prior to conversion.
+%End
+
+    static QString retrieveSpriteAsBase64( const QString &name, QgsMapBoxGlStyleConversionContext &context, QSize &size );
+%Docstring
+Retrieves the sprite image with the specified ``name``, taken from the specified ``context`` as a base64 encoded value
 
 The ``context`` must have valid sprite definitions and images set via :py:func:`QgsMapBoxGlStyleConversionContext.setSprites()`
 prior to conversion.
