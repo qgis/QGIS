@@ -10,6 +10,7 @@ services:
       - qgis
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./../../data/metadata:/var/www/html/wms13/metadata
     depends_on:
       - qgis-server
 
