@@ -922,8 +922,11 @@ void QgsRelationReferenceWidget::filterChanged()
 
           QString expression = filterExpression;
           if ( ! filterExpression.isEmpty() && ! filtersAttrs.values().isEmpty() )
-            filterExpression = QStringLiteral( " AND " );
+            expression += QStringLiteral( " AND " );
+
+          expression += filtersAttrs.isEmpty() ? QString() : QStringLiteral( " ( " );
           expression += filtersAttrs.values().join( QStringLiteral( " AND " ) );
+          expression += filtersAttrs.isEmpty() ? QString() : QStringLiteral( " ) " );
 
           subset << mReferencedLayer->fields().lookupField( fieldName );
 
@@ -957,7 +960,9 @@ void QgsRelationReferenceWidget::filterChanged()
   if ( ! filterExpression.isEmpty() && ! filters.values().isEmpty() )
     filterExpression += QStringLiteral( " AND " );
 
+  filterExpression += filters.isEmpty() ? QString() : QStringLiteral( " ( " );
   filterExpression += filters.values().join( QStringLiteral( " AND " ) );
+  filterExpression += filters.isEmpty() ? QString() : QStringLiteral( " ) " );
 
   mComboBox->setFilterExpression( filterExpression );
 }
