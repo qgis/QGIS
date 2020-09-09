@@ -179,7 +179,7 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
 
       case QVariant::List:
       case QVariant::StringList:
-        ddProperties.setProperty( QgsSymbolLayer::PropertyFillColor, parseInterpolateListByZoom( jsonFillColor.toList(), PropertyType::Color, context, 1, &fillColor ) );
+        ddProperties.setProperty( QgsSymbolLayer::PropertyFillColor, parseInterpolateListByZoom( jsonFillColor.toList(), PropertyType::Color, context, 1, 255, &fillColor ) );
         break;
 
       case QVariant::String:
@@ -218,7 +218,7 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
 
       case QVariant::List:
       case QVariant::StringList:
-        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, parseInterpolateListByZoom( jsonFillOutlineColor.toList(), PropertyType::Color, context, 1, &fillOutlineColor ) );
+        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, parseInterpolateListByZoom( jsonFillOutlineColor.toList(), PropertyType::Color, context, 1, 255, &fillOutlineColor ) );
         break;
 
       case QVariant::String:
@@ -249,8 +249,8 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
         }
         else
         {
-          ddProperties.setProperty( QgsSymbolLayer::PropertyFillColor, parseInterpolateOpacityByZoom( jsonFillOpacity.toMap() ) );
-          ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, parseInterpolateOpacityByZoom( jsonFillOpacity.toMap() ) );
+          ddProperties.setProperty( QgsSymbolLayer::PropertyFillColor, parseInterpolateOpacityByZoom( jsonFillOpacity.toMap(), fillColor.isValid() ? fillColor.alpha() : 255 ) );
+          ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, parseInterpolateOpacityByZoom( jsonFillOpacity.toMap(), fillOutlineColor.isValid() ? fillOutlineColor.alpha() : 255 ) );
         }
         break;
 
@@ -262,8 +262,8 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
         }
         else
         {
-          ddProperties.setProperty( QgsSymbolLayer::PropertyFillColor, parseInterpolateListByZoom( jsonFillOpacity.toList(), PropertyType::Opacity, context ) );
-          ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, parseInterpolateListByZoom( jsonFillOpacity.toList(), PropertyType::Opacity, context ) );
+          ddProperties.setProperty( QgsSymbolLayer::PropertyFillColor, parseInterpolateListByZoom( jsonFillOpacity.toList(), PropertyType::Opacity, context, 1, fillColor.isValid() ? fillColor.alpha() : 255 ) );
+          ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, parseInterpolateListByZoom( jsonFillOpacity.toList(), PropertyType::Opacity, context, 1, fillOutlineColor.isValid() ? fillOutlineColor.alpha() : 255 ) );
         }
         break;
 
@@ -423,7 +423,7 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
 
       case QVariant::List:
       case QVariant::StringList:
-        ddProperties.setProperty( QgsSymbolLayer::PropertyFillColor, parseInterpolateListByZoom( jsonLineColor.toList(), PropertyType::Color, context, 1, &lineColor ) );
+        ddProperties.setProperty( QgsSymbolLayer::PropertyFillColor, parseInterpolateListByZoom( jsonLineColor.toList(), PropertyType::Color, context, 1, 255, &lineColor ) );
         ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, ddProperties.property( QgsSymbolLayer::PropertyFillColor ) );
         break;
 
@@ -456,7 +456,7 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
 
       case QVariant::List:
       case QVariant::StringList:
-        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeWidth, parseInterpolateListByZoom( jsonLineWidth.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), nullptr, &lineWidth ) );
+        ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeWidth, parseInterpolateListByZoom( jsonLineWidth.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), 255, nullptr, &lineWidth ) );
         break;
 
       default:
@@ -483,8 +483,7 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
         }
         else
         {
-          ddProperties.setProperty( QgsSymbolLayer::PropertyFillColor, parseInterpolateOpacityByZoom( jsonLineOpacity.toMap() ) );
-          ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, parseInterpolateOpacityByZoom( jsonLineOpacity.toMap() ) );
+          ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, parseInterpolateOpacityByZoom( jsonLineOpacity.toMap(), lineColor.isValid() ? lineColor.alpha() : 255 ) );
         }
         break;
 
@@ -496,8 +495,7 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
         }
         else
         {
-          ddProperties.setProperty( QgsSymbolLayer::PropertyFillColor, parseInterpolateListByZoom( jsonLineOpacity.toList(), PropertyType::Opacity, context ) );
-          ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, parseInterpolateListByZoom( jsonLineOpacity.toList(), PropertyType::Opacity, context ) );
+          ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, parseInterpolateListByZoom( jsonLineOpacity.toList(), PropertyType::Opacity, context, 1, lineColor.isValid() ? lineColor.alpha() : 255 ) );
         }
         break;
 
@@ -634,7 +632,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
       case QVariant::List:
       case QVariant::StringList:
         textSize = -1;
-        ddLabelProperties.setProperty( QgsPalLayerSettings::Size, parseInterpolateListByZoom( jsonTextSize.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), nullptr, &textSize ) );
+        ddLabelProperties.setProperty( QgsPalLayerSettings::Size, parseInterpolateListByZoom( jsonTextSize.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), 255, nullptr, &textSize ) );
         break;
 
       default:
@@ -663,7 +661,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
 
       case QVariant::List:
       case QVariant::StringList:
-        ddLabelProperties.setProperty( QgsPalLayerSettings::AutoWrapLength, parseInterpolateListByZoom( jsonTextMaxWidth.toList(), PropertyType::Numeric, context, EM_TO_CHARS, nullptr, &textMaxWidth ) );
+        ddLabelProperties.setProperty( QgsPalLayerSettings::AutoWrapLength, parseInterpolateListByZoom( jsonTextMaxWidth.toList(), PropertyType::Numeric, context, EM_TO_CHARS, 255, nullptr, &textMaxWidth ) );
         break;
 
       default:
@@ -689,7 +687,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
 
       case QVariant::List:
       case QVariant::StringList:
-        ddLabelProperties.setProperty( QgsPalLayerSettings::FontLetterSpacing, parseInterpolateListByZoom( jsonTextLetterSpacing.toList(), PropertyType::Numeric, context, 1, nullptr, &textLetterSpacing ) );
+        ddLabelProperties.setProperty( QgsPalLayerSettings::FontLetterSpacing, parseInterpolateListByZoom( jsonTextLetterSpacing.toList(), PropertyType::Numeric, context, 1, 255, nullptr, &textLetterSpacing ) );
         break;
 
       default:
@@ -761,7 +759,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
 
       case QVariant::List:
       case QVariant::StringList:
-        ddLabelProperties.setProperty( QgsPalLayerSettings::Color, parseInterpolateListByZoom( jsonTextColor.toList(), PropertyType::Color, context, 1, &textColor ) );
+        ddLabelProperties.setProperty( QgsPalLayerSettings::Color, parseInterpolateListByZoom( jsonTextColor.toList(), PropertyType::Color, context, 1, 255, &textColor ) );
         break;
 
       case QVariant::String:
@@ -787,7 +785,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
 
       case QVariant::List:
       case QVariant::StringList:
-        ddLabelProperties.setProperty( QgsPalLayerSettings::BufferColor, parseInterpolateListByZoom( jsonBufferColor.toList(), PropertyType::Color, context, 1, &bufferColor ) );
+        ddLabelProperties.setProperty( QgsPalLayerSettings::BufferColor, parseInterpolateListByZoom( jsonBufferColor.toList(), PropertyType::Color, context, 1, 255, &bufferColor ) );
         break;
 
       case QVariant::String:
@@ -819,7 +817,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
       case QVariant::List:
       case QVariant::StringList:
         bufferSize = 1;
-        ddLabelProperties.setProperty( QgsPalLayerSettings::BufferSize, parseInterpolateListByZoom( jsonHaloWidth.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), nullptr, &bufferSize ) );
+        ddLabelProperties.setProperty( QgsPalLayerSettings::BufferSize, parseInterpolateListByZoom( jsonHaloWidth.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), 255, nullptr, &bufferSize ) );
         break;
 
       default:
@@ -1064,7 +1062,7 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
 
         case QVariant::List:
         case QVariant::StringList:
-          ddProperties.setProperty( QgsSymbolLayer::PropertyInterval, parseInterpolateListByZoom( jsonSpacing.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), nullptr, &spacing ) );
+          ddProperties.setProperty( QgsSymbolLayer::PropertyInterval, parseInterpolateListByZoom( jsonSpacing.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), 255, nullptr, &spacing ) );
           break;
 
         default:
@@ -1105,7 +1103,7 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
 
         case QVariant::List:
         case QVariant::StringList:
-          markerDdProperties.setProperty( QgsSymbolLayer::PropertyAngle, parseInterpolateListByZoom( jsonIconRotate.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), nullptr, &rotation ) );
+          markerDdProperties.setProperty( QgsSymbolLayer::PropertyAngle, parseInterpolateListByZoom( jsonIconRotate.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), 255, nullptr, &rotation ) );
           break;
 
         default:
@@ -1294,7 +1292,7 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateByZoom( const QVariantMap
   return QgsProperty::fromExpression( scaleExpression );
 }
 
-QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateOpacityByZoom( const QVariantMap &json )
+QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateOpacityByZoom( const QVariantMap &json, int maxOpacity )
 {
   const double base = json.value( QStringLiteral( "base" ), QStringLiteral( "1" ) ).toDouble();
   const QVariantList stops = json.value( QStringLiteral( "stops" ) ).toList();
@@ -1309,30 +1307,30 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateOpacityByZoom( const QVar
       scaleExpression = QStringLiteral( "set_color_part(@symbol_color, 'alpha', scale_linear(@zoom_level, %1, %2, %3, %4))" )
                         .arg( stops.value( 0 ).toList().value( 0 ).toString(),
                               stops.last().toList().value( 0 ).toString() )
-                        .arg( stops.value( 0 ).toList().value( 1 ).toDouble() * 255 )
-                        .arg( stops.last().toList().value( 1 ).toDouble() * 255 );
+                        .arg( stops.value( 0 ).toList().value( 1 ).toDouble() * maxOpacity )
+                        .arg( stops.last().toList().value( 1 ).toDouble() * maxOpacity );
     }
     else
     {
       scaleExpression = QStringLiteral( "set_color_part(@symbol_color, 'alpha', %1)" )
                         .arg( interpolateExpression( stops.value( 0 ).toList().value( 0 ).toInt(),
                               stops.last().toList().value( 0 ).toInt(),
-                              stops.value( 0 ).toList().value( 1 ).toDouble() * 255,
-                              stops.value( 0 ).toList().value( 1 ).toDouble() * 255, base ) );
+                              stops.value( 0 ).toList().value( 1 ).toDouble() * maxOpacity,
+                              stops.value( 0 ).toList().value( 1 ).toDouble() * maxOpacity, base ) );
     }
   }
   else
   {
-    scaleExpression = parseOpacityStops( base, stops );
+    scaleExpression = parseOpacityStops( base, stops, maxOpacity );
   }
   return QgsProperty::fromExpression( scaleExpression );
 }
 
-QString QgsMapBoxGlStyleConverter::parseOpacityStops( double base, const QVariantList &stops )
+QString QgsMapBoxGlStyleConverter::parseOpacityStops( double base, const QVariantList &stops, int maxOpacity )
 {
-  QString caseString = QStringLiteral( "CASE WHEN @zoom_level < %1 THEN set_color_part(@symbol_color, 'alpha', %2 * 255)" )
-                       .arg( stops.value( 0 ).toList().value( 0 ).toString(),
-                             stops.value( 0 ).toList().value( 1 ).toString() );
+  QString caseString = QStringLiteral( "CASE WHEN @zoom_level < %1 THEN set_color_part(@symbol_color, 'alpha', %2)" )
+                       .arg( stops.value( 0 ).toList().value( 0 ).toString() )
+                       .arg( stops.value( 0 ).toList().value( 1 ).toDouble() * maxOpacity );
 
   if ( base == 1 )
   {
@@ -1342,11 +1340,11 @@ QString QgsMapBoxGlStyleConverter::parseOpacityStops( double base, const QVarian
       caseString += QStringLiteral( " WHEN @zoom_level >= %1 AND @zoom_level < %2 "
                                     "THEN set_color_part(@symbol_color, 'alpha', "
                                     "scale_linear(@zoom_level, %1, %2, "
-                                    "%3 * 255, %4 * 255)) " )
+                                    "%3, %4)) " )
                     .arg( stops.value( i ).toList().value( 0 ).toString(),
-                          stops.value( i + 1 ).toList().value( 0 ).toString(),
-                          stops.value( i ).toList().value( 1 ).toString(),
-                          stops.value( i + 1 ).toList().value( 1 ).toString() );
+                          stops.value( i + 1 ).toList().value( 0 ).toString() )
+                    .arg( stops.value( i ).toList().value( 1 ).toDouble() * maxOpacity )
+                    .arg( stops.value( i + 1 ).toList().value( 1 ).toDouble() * maxOpacity );
     }
   }
   else
@@ -1360,15 +1358,15 @@ QString QgsMapBoxGlStyleConverter::parseOpacityStops( double base, const QVarian
                           stops.value( i + 1 ).toList().value( 0 ).toString(),
                           interpolateExpression( stops.value( i ).toList().value( 0 ).toInt(),
                               stops.value( i + 1 ).toList().value( 0 ).toInt(),
-                              stops.value( i ).toList().value( 1 ).toDouble() * 255,
-                              stops.value( i + 1 ).toList().value( 1 ).toDouble() * 255, base ) );
+                              stops.value( i ).toList().value( 1 ).toDouble() * maxOpacity,
+                              stops.value( i + 1 ).toList().value( 1 ).toDouble() * maxOpacity, base ) );
     }
   }
 
   caseString += QStringLiteral( "WHEN @zoom_level >= %1 "
                                 "THEN set_color_part(@symbol_color, 'alpha', %2) END" )
-                .arg( stops.last().toList().value( 0 ).toString(),
-                      stops.last().toList().value( 1 ).toString() );
+                .arg( stops.last().toList().value( 0 ).toString() )
+                .arg( stops.last().toList().value( 1 ).toDouble() * maxOpacity );
   return caseString;
 }
 
@@ -1534,7 +1532,7 @@ QString QgsMapBoxGlStyleConverter::parseStops( double base, const QVariantList &
   return caseString;
 }
 
-QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateListByZoom( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier, QColor *defaultColor, double *defaultNumber )
+QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateListByZoom( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier, int maxOpacity, QColor *defaultColor, double *defaultNumber )
 {
   if ( json.value( 0 ).toString() != QLatin1String( "interpolate" ) )
   {
@@ -1584,7 +1582,7 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateListByZoom( const QVarian
       return parseInterpolateByZoom( props, context, multiplier, defaultNumber );
 
     case PropertyType::Opacity:
-      return parseInterpolateOpacityByZoom( props );
+      return parseInterpolateOpacityByZoom( props, maxOpacity );
 
     case PropertyType::Point:
       return parseInterpolatePointByZoom( props, context, multiplier );

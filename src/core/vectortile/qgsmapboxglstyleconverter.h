@@ -335,7 +335,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \warning This is private API only, and may change in future QGIS versions
      */
-    static QgsProperty parseInterpolateOpacityByZoom( const QVariantMap &json );
+    static QgsProperty parseInterpolateOpacityByZoom( const QVariantMap &json, int maxOpacity );
 
     /**
      * Takes values from stops and uses either scale_linear() or scale_exp() functions
@@ -343,7 +343,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \warning This is private API only, and may change in future QGIS versions
      */
-    static QString parseOpacityStops( double base, const QVariantList &stops );
+    static QString parseOpacityStops( double base, const QVariantList &stops, int maxOpacity );
 
     /**
      * Interpolates a point/offset with either scale_linear() or scale_exp() (depending on base value).
@@ -377,8 +377,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * \warning This is private API only, and may change in future QGIS versions
      */
     static QgsProperty parseInterpolateListByZoom( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1,
-        QColor *defaultColor SIP_OUT = nullptr,
-        double *defaultNumber SIP_OUT = nullptr );
+        int maxOpacity = 255, QColor *defaultColor SIP_OUT = nullptr, double *defaultNumber SIP_OUT = nullptr );
 
     /**
      * Parses a \a color in one of these supported formats:
