@@ -229,6 +229,7 @@ void TestQgsOverlayExpression::testOverlaySelf()
 {
   QgsExpressionContext context;
   context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
+  context.appendScope( QgsExpressionContextUtils::layerScope( mPolyLayer ) );
 
   QgsExpression exp( "geometry_overlay_intersects('polys')" );
   QVERIFY2( exp.prepare( &context ), exp.parserErrorString().toUtf8().constData() );

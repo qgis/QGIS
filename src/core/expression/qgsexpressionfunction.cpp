@@ -5761,11 +5761,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
     request.setDestinationCrs( sourceLayer->crs(), TransformContext ); //if crs are not the same, cached target will be reprojected to source crs
   }
 
-  QVariant currentFeatId;
-  if ( sourceLayer && sourceLayer->id() == targetLayerValue )
-  {
-    currentFeatId = feat.id(); //if sourceLayer and targetLayer are the same, current feature have to be excluded from spatial check
-  }
+  bool sameLayers = ( sourceLayer && sourceLayer->id() == targetLayer->id() );
 
   QgsRectangle intDomain = geometry.boundingBox();
   if ( bboxGrow != 0 )
@@ -5812,8 +5808,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
     QList<QgsFeatureId> fidsList;
     if ( isNearestFunc )
     {
-      // TODO : add 1 to limit if target and source layers are the same and ignore this feature
-      fidsList = spatialIndex.nearestNeighbor( geometry, limit, max_distance );
+      fidsList = spatialIndex.nearestNeighbor( geometry, sameLayers ? limit + 1 : limit, max_distance );
     }
     else
     {
@@ -5823,8 +5818,10 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
     QListIterator<QgsFeatureId> i( fidsList );
     while ( i.hasNext() )
     {
-      // TODO : ignore feature if same as this (and remove logic below)
-      features.append( cachedTarget->getFeature( i.next() ) );
+      QgsFeatureId fId2 = i.next();
+      if ( sameLayers && feat.id() == fId2 )
+        continue;
+      features.append( cachedTarget->getFeature( fId2 ) );
     }
 
   }
@@ -5834,11 +5831,12 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
     // get the features from the target layer
     request.setFilterRect( intDomain );
     QgsFeatureIterator fit = targetLayer->getFeatures( request );
-    QgsFeature feat;
-    while ( fit.nextFeature( feat ) )
+    QgsFeature feat2;
+    while ( fit.nextFeature( feat2 ) )
     {
-      // TODO : ignore feature if same as this (and remove logic below)
-      features.append( feat );
+      if ( sameLayers && feat.id() == feat2.id() )
+        continue;
+      features.append( feat2 );
     }
   }
 
@@ -5858,17 +5856,9 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   QListIterator<QgsFeature> i( features );
   while ( i.hasNext() )
   {
-    QgsFeature feat = i.next();
+    QgsFeature feat2 = i.next();
 
-    // TODO : remove this, and implement above
-    // currentFeatId is only set if sourceLayer and targetLayer are the same,
-    // in which case current feature have to be excluded from spatial check
-    if ( !currentFeatId.isNull() && currentFeatId.toLongLong() == feat.id() )
-    {
-      continue;
-    }
-
-    if ( ! relationFunction || ( feat.geometry().*relationFunction )( geometry ) ) // Calls the method provided as template argument for the function (e.g. QgsGeometry::intersects)
+    if ( ! relationFunction || ( feat2.geometry().*relationFunction )( geometry ) ) // Calls the method provided as template argument for the function (e.g. QgsGeometry::intersects)
     {
       found = true;
 
@@ -5879,13 +5869,13 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
       if ( !invert )
       {
         // We want a list of attributes / geometries / other expression values, evaluate now
-        subContext.setFeature( feat );
+        subContext.setFeature( feat2 );
         results.append( subExpression.evaluate( &subContext ) );
       }
       else
       {
         // If not, results is a list of found ids, which we'll inverse and evaluate below
-        results.append( feat.id() );
+        results.append( feat2.id() );
       }
     }
   }
