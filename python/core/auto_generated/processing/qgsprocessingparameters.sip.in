@@ -1574,9 +1574,12 @@ A geometry parameter for processing algorithms.
 %End
   public:
 
-    QgsProcessingParameterGeometry( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), bool optional = false );
+    QgsProcessingParameterGeometry( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), bool optional = false, const QList<QgsWkbTypes::GeometryType> &geometryTypes = QList<QgsWkbTypes::GeometryType>() );
 %Docstring
 Constructor for QgsProcessingParameterGeometry.
+
+The ``geometryTypes`` argument allows for specifying a list of geometry types acceptable for this
+parameter. Passing a empty list will allow for any type of geometry.
 %End
 
     static QString typeName();
@@ -1590,6 +1593,28 @@ Returns the type name for the parameter class.
 
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
+    virtual QString asScriptCode() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+
+    QList<QgsWkbTypes::GeometryType>  geometryTypes() const;
+%Docstring
+Returns the parameter allowed geometries.
+
+.. seealso:: :py:func:`setGeometryTypes`
+%End
+
+    void setGeometryTypes( QList<QgsWkbTypes::GeometryType> geometryTypes );
+%Docstring
+Sets the allowed  ``geometryTypes``.
+
+.. seealso:: :py:func:`geometryTypes`
+%End
 
     static QgsProcessingParameterGeometry *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring

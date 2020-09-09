@@ -3495,7 +3495,12 @@ void TestQgsProcessing::parameterGeometry()
 
   QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
   QCOMPARE( def->valueAsPythonString( "LineString( 10 10, 20 20)", context ), QStringLiteral( "'LineString( 10 10, 20 20)'" ) );
-  QCOMPARE( def->valueAsPythonString( QgsGeometry::fromWkt( QStringLiteral( "LineString( 10 10, 20 20)" ) ), context ), QStringLiteral( "QgsGeometry.fromWkt('LineString (10 10, 20 20)')" ) );
+  QCOMPARE( def->valueAsPythonString( QgsGeometry::fromWkt( QStringLiteral( "LineString( 10 10, 20 20)" ) ), context ), QStringLiteral( "'LineString (10 10, 20 20)'" ) );
+
+  // With Srid as string
+  QCOMPARE( def->valueAsPythonString( QgsReferencedGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString( 10 10, 20 20)" ) ),
+                                      QgsCoordinateReferenceSystem( "EPSG:4326" ) ), context ),
+            QStringLiteral( "'SRID=4326;LineString (10 10, 20 20)'" ) );
 
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterGeometry('non_optional', '', defaultValue='Point(1 2)')" ) );
@@ -3541,6 +3546,31 @@ void TestQgsProcessing::parameterGeometry()
   QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
   QCOMPARE( fromCode->flags(), def->flags() );
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+
+  // non optional with filter
+  def.reset( new QgsProcessingParameterGeometry( "filtered", QString(), QString( "Point(-1 3)" ), false,
+  { QgsWkbTypes::LineGeometry } ) );
+  QVERIFY( def->geometryTypes().contains( QgsWkbTypes::LineGeometry ) );
+  QVERIFY( def->checkValueIsAcceptable( "LineString(10 10, 20 20)" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "Point(1 2)" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterGeometry('filtered', '', geometryTypes=[ QgsWkbTypes.LineGeometry ], defaultValue='Point(-1 3)')" ) );
+
+  QVariantMap map2 = def->toVariantMap();
+  QgsProcessingParameterGeometry fromMap2( "x" );
+  QVERIFY( fromMap2.fromVariantMap( map2 ) );
+  QCOMPARE( fromMap2.name(), def->name() );
+  QCOMPARE( fromMap2.description(), def->description() );
+  QCOMPARE( fromMap2.flags(), def->flags() );
+  QCOMPARE( fromMap2.defaultValue(), def->defaultValue() );
+  QCOMPARE( fromMap2.geometryTypes(), def->geometryTypes() );
+  def.reset( dynamic_cast< QgsProcessingParameterGeometry *>( QgsProcessingParameters::parameterFromVariantMap( map2 ) ) );
+  QVERIFY( dynamic_cast< QgsProcessingParameterGeometry *>( def.get() ) );
+
+
 }
 
 
