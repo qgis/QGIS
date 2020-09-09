@@ -38,10 +38,18 @@ class QFile;
 class QTextStream;
 
 class QgsMssqlFeatureIterator;
+class QgsMssqlSharedData;
 
 #include "qgsdatasourceuri.h"
 #include "qgsgeometry.h"
 #include "qgsmssqlgeometryparser.h"
+
+enum QgsMssqlPrimaryKeyType
+{
+  PktUnknown,
+  PktInt,
+  PktFidMap
+};
 
 /**
 \class QgsMssqlProvider
@@ -134,6 +142,10 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
 
     QString defaultValueClause( int fieldId ) const override;
 
+    //! Convert time value
+    static QVariant convertTimeValue( const QVariant &value );
+
+
     //! Import a vector layer into the database
     static QgsVectorLayerExporter::ExportError createEmptyLayer(
       const QString &uri,
@@ -173,8 +185,18 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
     bool mSkipFailures;
 
     long mNumberFeatures = 0;
-    QString mFidColName;
-    int mFidColIdx = -1;
+
+    /**
+      *
+      * Data type for the primary key
+      */
+    QgsMssqlPrimaryKeyType mPrimaryKeyType = PktUnknown;
+
+    /**
+     * List of primary key attributes for fetching features.
+     */
+    QList<int> mPrimaryKeyAttrs;
+
     mutable long mSRId;
     QString mGeometryColName;
     QString mGeometryColType;
@@ -225,9 +247,39 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
     static void mssqlWkbTypeAndDimension( QgsWkbTypes::Type wkbType, QString &geometryType, int &dim );
     static QgsWkbTypes::Type getWkbType( const QString &wkbType );
 
+    QString whereClauseFid( QgsFeatureId fid );
+
+    static QStringList parseUriKey( const QString &key );
+
+    std::shared_ptr<QgsMssqlSharedData> mShared;
+
     friend class QgsMssqlFeatureSource;
 
     static int sConnectionId;
+};
+
+/**
+ * Data shared between provider class and its feature sources. Ideally there should
+ * be as few members as possible because there could be simultaneous reads/writes
+ * from different threads and therefore locking has to be involved.
+*/
+class QgsMssqlSharedData
+{
+  public:
+    QgsMssqlSharedData() = default;
+
+    // FID lookups
+    QgsFeatureId lookupFid( const QVariantList &v ); // lookup existing mapping or add a new one
+    QVariant removeFid( QgsFeatureId fid );
+    void insertFid( QgsFeatureId fid, const QVariantList &k );
+    QVariantList lookupKey( QgsFeatureId featureId );
+
+  protected:
+    QMutex mMutex; //!< Access to all data members is guarded by the mutex
+
+    QgsFeatureId mFidCounter = 0;                    // next feature id if map is used
+    QMap<QVariantList, QgsFeatureId> mKeyToFid;      // map key values to feature id
+    QMap<QgsFeatureId, QVariantList> mFidToKey;      // map feature back to fea
 };
 
 class QgsMssqlProviderMetadata final: public QgsProviderMetadata
@@ -265,7 +317,5 @@ class QgsMssqlProviderMetadata final: public QgsProviderMetadata
     QString encodeUri( const QVariantMap &parts ) override;
 
 };
-
-
 
 #endif // QGSMSSQLPROVIDER_H
