@@ -109,8 +109,8 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void pbnUpdateExtents_clicked();
 
     void pbnDcUnlock_clicked();
-    void pbnDcCancel_clicked();
-    void pbnDcApply_clicked();
+    void pbnDcReset_clicked();
+    void pbnDcUpdate_clicked();
 
     void mButtonAddJoin_clicked();
     void mButtonEditJoin_clicked();

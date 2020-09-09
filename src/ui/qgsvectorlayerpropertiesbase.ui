@@ -731,19 +731,19 @@ border-radius: 2px;</string>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QPushButton" name="pbnDcCancel">
+                     <widget class="QPushButton" name="pbnDcReset">
                       <property name="text">
-                       <string>Cancel</string>
+                       <string>Reset</string>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QPushButton" name="pbnDcApply">
+                     <widget class="QPushButton" name="pbnDcUpdate">
                       <property name="enabled">
                        <bool>true</bool>
                       </property>
                       <property name="text">
-                       <string>Apply</string>
+                       <string>Update datasource</string>
                       </property>
                      </widget>
                     </item>
