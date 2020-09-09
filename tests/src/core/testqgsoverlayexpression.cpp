@@ -59,6 +59,8 @@ class TestQgsOverlayExpression: public QObject
 
     void testOverlayExpression();
     void testOverlayExpression_data();
+
+    void testOverlaySelf();
 };
 
 
@@ -154,7 +156,6 @@ void TestQgsOverlayExpression::testOverlay_data()
   QTest::newRow( "disjoint no match [cached]" ) << "geometry_overlay_disjoint('rectangles',cache:=true)" << "LINESTRING(-155 15, -122 32, -84 4)" << false;
 }
 
-
 void TestQgsOverlayExpression::testOverlayExpression()
 {
   QFETCH( QString, expression );
@@ -182,7 +183,6 @@ void TestQgsOverlayExpression::testOverlayExpression_data()
   QTest::addColumn<QString>( "expression" );
   QTest::addColumn<QString>( "geometry" );
   QTest::addColumn<QVariantList>( "expectedResult" );
-
 
   QTest::newRow( "intersects get geometry" ) << "geometry_overlay_intersects('rectangles', geom_to_wkt($geometry))" << "POLYGON((-120 30, -105 30, -105 20, -120 20, -120 30))" << QVariantList { QVariant( QStringLiteral( "MultiPolygon (((-130 40, -115 40, -115 25, -130 25, -130 40)))" ) ) };
   QTest::newRow( "intersects get geometry [cached]" ) << "geometry_overlay_intersects('rectangles', geom_to_wkt($geometry),cache:=true)" << "POLYGON((-120 30, -105 30, -105 20, -120 20, -120 30))" << QVariantList { QVariant( QStringLiteral( "MultiPolygon (((-130 40, -115 40, -115 25, -130 25, -130 40)))" ) ) };
@@ -223,6 +223,35 @@ void TestQgsOverlayExpression::testOverlayExpression_data()
   QTest::newRow( "nearest limited filtered" ) << "geometry_overlay_nearest('rectangles',id,id!=2,limit:=2)" << "POINT(-135 38)" << QVariantList { 1, 3 };
   QTest::newRow( "nearest limited filtered [cached]" ) << "geometry_overlay_nearest('rectangles',id,id!=2,limit:=2,cache:=true)" << "POINT(-135 38)" << QVariantList { 1, 3 };
 }
+
+
+void TestQgsOverlayExpression::testOverlaySelf()
+{
+  QgsExpressionContext context;
+  context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
+
+  QgsExpression exp( "geometry_overlay_intersects('polys')" );
+  QVERIFY2( exp.prepare( &context ), exp.parserErrorString().toUtf8().constData() );
+
+  QgsFeature feat;
+  QVariant result;
+
+  // Feature 0 does not self-intersect
+  feat = mPolyLayer->getFeature( 0 );
+  context.setFeature( feat );
+  result = exp.evaluate( &context );
+  QCOMPARE( result.toBool(), false );
+
+  // Feature 10 self-intersects
+  feat = mPolyLayer->getFeature( 10 );
+  context.setFeature( feat );
+  result = exp.evaluate( &context );
+  QCOMPARE( result.toBool(), true );
+
+}
+
+
+
 QGSTEST_MAIN( TestQgsOverlayExpression )
 
 #include "testqgsoverlayexpression.moc"
