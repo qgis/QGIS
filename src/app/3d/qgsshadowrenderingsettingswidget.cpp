@@ -47,11 +47,11 @@ QgsShadowSettings QgsShadowRenderingSettingsWidget::toShadowSettings()
 void QgsShadowRenderingSettingsWidget::onDirectionalLightsCountChanged( int newCount )
 {
   int previousItemIndex = usedDirectionalLightComboBox->currentIndex();
-  while (usedDirectionalLightComboBox->count() < newCount)
+  while ( usedDirectionalLightComboBox->count() < newCount )
     usedDirectionalLightComboBox->addItem( tr( "Directional light %1" ).arg( usedDirectionalLightComboBox->count() + 1 ) );
-  while (usedDirectionalLightComboBox->count() > newCount)
-    usedDirectionalLightComboBox->removeItem(usedDirectionalLightComboBox->count() - 1);
-  if (previousItemIndex < 0 || previousItemIndex >= usedDirectionalLightComboBox->count())
+  while ( usedDirectionalLightComboBox->count() > newCount )
+    usedDirectionalLightComboBox->removeItem( usedDirectionalLightComboBox->count() - 1 );
+  if ( previousItemIndex < 0 || previousItemIndex >= usedDirectionalLightComboBox->count() )
     usedDirectionalLightComboBox->setCurrentIndex( -1 );
   else
     usedDirectionalLightComboBox->setCurrentIndex( previousItemIndex );
