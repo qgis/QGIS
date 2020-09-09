@@ -39,13 +39,6 @@ class GUI_EXPORT QgsRelationReferenceConfigDlg : public QgsEditorConfigWidget, p
     QVariantMap config() override;
     void setConfig( const QVariantMap &config ) override;
 
-  public slots:
-
-    /**
-     * Opens an expression dialog and sets its value as filter expression for the relation reference.
-     */
-    void editExpression();
-
   private:
     void loadFields();
     void addFilterField( const QString &field );
@@ -58,6 +51,11 @@ class GUI_EXPORT QgsRelationReferenceConfigDlg : public QgsEditorConfigWidget, p
     void relationChanged( int idx );
     void mAddFilterButton_clicked();
     void mRemoveFilterButton_clicked();
+
+    /**
+     * Opens an expression dialog and sets its value as filter expression for the relation reference.
+     */
+    void mEditExpression_clicked();
 };
 
 #endif // QGSRELATIONREFERENCECONFIGDLGBASE_H

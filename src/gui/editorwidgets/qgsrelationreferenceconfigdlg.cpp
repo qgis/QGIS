@@ -60,11 +60,11 @@ QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer *vl
   connect( mFilterFieldsList, &QListWidget::itemChanged, this, &QgsEditorConfigWidget::changed );
   connect( mCbxChainFilters, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
   connect( mExpressionWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsEditorConfigWidget::changed );
-  connect( mEditExpression, &QAbstractButton::clicked, this, &QgsRelationReferenceConfigDlg::editExpression );
+  connect( mEditExpression, &QAbstractButton::clicked, this, &QgsRelationReferenceConfigDlg::mEditExpression_clicked );
   connect( mFilterExpression, &QTextEdit::textChanged, this, &QgsEditorConfigWidget::changed );
 }
 
-void QgsRelationReferenceConfigDlg::editExpression()
+void QgsRelationReferenceConfigDlg::mEditExpression_clicked()
 {
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer() );
   if ( !vl )
