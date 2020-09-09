@@ -140,10 +140,10 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void onBackgroundColorChanged();
     void onLayerEntityPickedObject( Qt3DRender::QPickEvent *pickEvent, QgsFeatureId fid );
     void updateLights();
-    void updateShadowRendering();
     void updateCameraLens();
     void onRenderersChanged();
     void onSkyboxSettingsChanged();
+    void onShadowSettingsChanged();
 
   private:
     void addLayerEntity( QgsMapLayer *layer );

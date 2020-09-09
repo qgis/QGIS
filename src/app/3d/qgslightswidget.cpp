@@ -54,7 +54,6 @@ QgsLightsWidget::QgsLightsWidget( QWidget *parent )
   connect( spinDirectionZ, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::updateCurrentDirectionalLightParameters );
   connect( spinDirectionalIntensity, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::updateCurrentDirectionalLightParameters );
   connect( btnDirectionalColor, &QgsColorButton::colorChanged, this, &QgsLightsWidget::updateCurrentDirectionalLightParameters );
-  connect( renderShadowsCheckBox, &QCheckBox::stateChanged, this, &QgsLightsWidget::onRenderShadowsCheckboxChanged );
 }
 
 void QgsLightsWidget::setPointLights( const QList<QgsPointLightSettings> &pointLights )
@@ -110,7 +109,6 @@ void QgsLightsWidget::onCurrentDirectionalLightChanged( int index )
   whileBlocking( spinDirectionZ )->setValue( light.direction().z() );
   whileBlocking( btnDirectionalColor )->setColor( light.color() );
   whileBlocking( spinDirectionalIntensity )->setValue( light.intensity() );
-  whileBlocking( renderShadowsCheckBox )->setCheckState( light.renderShadows() ? Qt::Checked : Qt::Unchecked );
 }
 
 
@@ -140,7 +138,6 @@ void QgsLightsWidget::updateCurrentDirectionalLightParameters()
   light.setDirection( QgsVector3D( spinDirectionX->value(), spinDirectionY->value(), spinDirectionZ->value() ) );
   light.setColor( btnDirectionalColor->color() );
   light.setIntensity( spinDirectionalIntensity->value() );
-  light.setRenderShadows( renderShadowsCheckBox->checkState() == Qt::CheckState::Checked );
   mDirectionalLights[index] = light;
 }
 
@@ -172,6 +169,8 @@ void QgsLightsWidget::onAddDirectionalLight()
   cboDirectionalLights->setCurrentIndex( cboDirectionalLights->count() - 1 );
   // To set default parameters of the light
   onCurrentDirectionalLightChanged( 0 );
+
+  emit directionalLightsCountChanged( cboDirectionalLights->count() );
 }
 
 void QgsLightsWidget::onRemoveLight()
@@ -200,6 +199,8 @@ void QgsLightsWidget::onRemoveDirectionalLight()
     --index;  // in case we removed the last light
   cboDirectionalLights->setCurrentIndex( index );
   onCurrentDirectionalLightChanged( index );
+
+  emit directionalLightsCountChanged( cboDirectionalLights->count() );
 }
 
 void QgsLightsWidget::updateLightsList()
@@ -222,14 +223,4 @@ void QgsLightsWidget::updateDirectionalLightsList()
     cboDirectionalLights->addItem( tr( "Directional light %1" ).arg( i + 1 ) );
   }
   cboDirectionalLights->blockSignals( false );
-}
-
-void QgsLightsWidget::onRenderShadowsCheckboxChanged( int newState )
-{
-  int index = cboDirectionalLights->currentIndex();
-  if ( index < 0 || index >= cboDirectionalLights->count() )
-    return;
-  for ( QgsDirectionalLightSettings &light : mDirectionalLights )
-    light.setRenderShadows( false );
-  mDirectionalLights[index].setRenderShadows( newState == Qt::CheckState::Checked );
 }

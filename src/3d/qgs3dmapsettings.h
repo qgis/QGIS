@@ -31,6 +31,7 @@
 #include "qgsterraingenerator.h"
 #include "qgsvector3d.h"
 #include "qgsskyboxsettings.h"
+#include "qgsshadowsettings.h"
 
 class QgsMapLayer;
 class QgsRasterLayer;
@@ -374,27 +375,6 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     QList<QgsDirectionalLightSettings> directionalLights() const { return mDirectionalLights; }
 
     /**
-     * Returns the maximum shadow rendering distance accounted for when rendering shadows
-     * Objects further away from the camera than the specified distance won't cast shadows
-     * This helps with producing a reasonable shadow resolution when looking at a large area or up to the sky
-     * \since QGIS 3.16
-     */
-    float maximumShadowRenderingDistance() const { return mMaximumShadowRenderingDistance; }
-
-    /**
-     * Returns the shadow bias used to correct the numerical imprecision of shadows (for the depth test)
-     * This helps with reducing the self shadowing artifact
-     * \since QGIS 3.16
-     */
-    float shadowBias() const { return mShadowBias; }
-
-    /**
-     * Returns the resolution of the shadow map texture used to generate the shadows
-     * \since QGIS 3.16
-     */
-    int shadowMapResolution() const { return mShadowMapResolution; }
-
-    /**
      * Sets list of point lights defined in the scene
      * \since QGIS 3.6
      */
@@ -405,28 +385,6 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * \since QGIS 3.16
      */
     void setDirectionalLights( const QList<QgsDirectionalLightSettings> &directionalLights );
-
-    /**
-     * Sets the maximum shadow rendering distance accounted for when rendering shadows
-     * Objects further away from the camera than the specified distance won't cast shadows
-     * This helps with producing a reasonable shadow resolution when looking at a large area or up to the sky
-     * \since QGIS 3.16
-     */
-    void setMaximumShadowRenderingDistance( float distance );
-
-    /**
-     * Sets the shadow bias value
-     * Tweak this to reduce artifacts like self shadowing
-     * A reasonable range of values can be between a very small positive value like 0.00000001 and 0.1
-     * \since QGIS 3.16
-     */
-    void setShadowBias( float shadowBias );
-
-    /**
-     * Sets the resolution of the shadow map texture (this can be used to generate higher quality shadows)
-     * \since QGIS 3.16
-     */
-    void setShadowMapResolution( int resolution );
 
     /**
      * Returns the camera lens' field of view
@@ -462,10 +420,22 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     QgsSkyboxSettings skyboxSettings() const SIP_SKIP { return mSkyboxSettings; }
 
     /**
+     * Returns the current configuration of shadows
+     * \return QGIS 3.16
+     */
+    QgsShadowSettings shadowSettings() const SIP_SKIP { return mShadowSettings; }
+
+    /**
      * Sets the current configuration of the skybox
      * \since QGIS 3.16
      */
     void setSkyboxSettings( const QgsSkyboxSettings &skyboxSettings ) SIP_SKIP;
+
+    /**
+     * Sets the current configuration of shadow rendering
+     * \since QGIS 3.16
+     */
+    void setShadowSettings( const QgsShadowSettings &shadowSettings ) SIP_SKIP;
 
     /**
      * Returns whether the skybox is enabled.
@@ -580,6 +550,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void skyboxSettingsChanged();
 
+    /**
+     * Emitted when shadow rendering settings are changed
+     * \since QGIS 3.16
+     */
+    void shadowSettingsChanged();
+
   private:
 #ifdef SIP_RUN
     Qgs3DMapSettings &operator=( const Qgs3DMapSettings & );
@@ -606,9 +582,6 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     bool mShowLabels = false; //!< Whether to display labels on terrain tiles
     QList<QgsPointLightSettings> mPointLights;  //!< List of point lights defined for the scene
     QList<QgsDirectionalLightSettings> mDirectionalLights;  //!< List of directional lights defined for the scene
-    float mMaximumShadowRenderingDistance = 500.0f; //!< Maximum shadow rendering distance
-    float mShadowBias = 0.00001f; //!< Shadow bias value
-    int mShadowMapResolution = 2048; //!< The resolution of the shadow map (used for shadow rendering)
     float mFieldOfView = 45.0f; //<! Camera lens field of view value
     QList<QgsMapLayerRef> mLayers;   //!< Layers to be rendered
     QList<QgsMapLayerRef> mTerrainLayers;   //!< Terrain layers to be rendered
@@ -621,6 +594,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
 
     bool mIsSkyboxEnabled = false;  //!< Whether the skybox is enabled
     QgsSkyboxSettings mSkyboxSettings; //!< Skybox related configuration
+    QgsShadowSettings mShadowSettings; //!< Shadow rendering related settings
 };
 
 

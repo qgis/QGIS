@@ -29,6 +29,7 @@
 #include "qgsproject.h"
 #include "qgsmesh3dsymbolwidget.h"
 #include "qgsskyboxrenderingsettingswidget.h"
+#include "qgsshadowrenderingsettingswidget.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapscene.h"
 
@@ -106,9 +107,6 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   chkShowBoundingBoxes->setChecked( mMap->showTerrainBoundingBoxes() );
   chkShowCameraViewCenter->setChecked( mMap->showCameraViewCenter() );
   chkShowLightSourceOrigins->setChecked( mMap->showLightSourceOrigins() );
-  shadowsMaximuRenderingDistance->setValue( mMap->maximumShadowRenderingDistance() );
-  shadowBiasSpinBox->setValue( mMap->shadowBias() );
-  shadowMapResolutionSpinBox->setValue( mMap->shadowMapResolution() );
 
   groupTerrainShading->setChecked( mMap->isTerrainShadingEnabled() );
   widgetTerrainMaterial->setTechnique( QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture );
@@ -122,9 +120,6 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   connect( cboTerrainLayer, static_cast<void ( QComboBox::* )( int )>( &QgsMapLayerComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::onTerrainLayerChanged );
   connect( spinMapResolution, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &Qgs3DMapConfigWidget::updateMaxZoomLevel );
   connect( spinGroundError, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DMapConfigWidget::updateMaxZoomLevel );
-  connect( shadowsMaximuRenderingDistance, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DMapConfigWidget::updateMaximumShadowRenderingDistance );
-  connect( shadowBiasSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DMapConfigWidget::updateShadowBias );
-  connect( shadowMapResolutionSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &Qgs3DMapConfigWidget::updateShadowMapResolution );
 
   groupMeshTerrainShading->layout()->addWidget( mMeshSymbolWidget );
 
@@ -135,6 +130,12 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   groupSkyboxSettings->layout()->addWidget( mSkyboxSettingsWidget );
   groupSkyboxSettings->setChecked( mMap->isSkyboxEnabled() );
 
+  mShadowSetiingsWidget = new QgsShadowRenderingSettingsWidget( this );
+  mShadowSetiingsWidget->onDirectionalLightsCountChanged( widgetLights->directionalLights().count() );
+  mShadowSetiingsWidget->setShadowSettings( map->shadowSettings() );
+  groupShadowRendering->layout()->addWidget( mShadowSetiingsWidget );
+  QObject::connect( widgetLights, &QgsLightsWidget::directionalLightsCountChanged, mShadowSetiingsWidget, &QgsShadowRenderingSettingsWidget::onDirectionalLightsCountChanged );
+  groupShadowRendering->setChecked( map->shadowSettings().renderShadows() );
 }
 
 void Qgs3DMapConfigWidget::apply()
@@ -249,6 +250,9 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setDirectionalLights( widgetLights->directionalLights() );
   mMap->setIsSkyboxEnabled( groupSkyboxSettings->isChecked() );
   mMap->setSkyboxSettings( mSkyboxSettingsWidget->toSkyboxSettings() );
+  QgsShadowSettings shadowSettings = mShadowSetiingsWidget->toShadowSettings();
+  shadowSettings.setRenderShadows( groupShadowRendering->isChecked() );
+  mMap->setShadowSettings( shadowSettings );
 }
 
 void Qgs3DMapConfigWidget::onTerrainTypeChanged()
@@ -329,17 +333,3 @@ void Qgs3DMapConfigWidget::updateMaxZoomLevel()
   labelZoomLevels->setText( QStringLiteral( "0 - %1" ).arg( zoomLevel ) );
 }
 
-void Qgs3DMapConfigWidget::updateMaximumShadowRenderingDistance( double distance )
-{
-  mMap->setMaximumShadowRenderingDistance( distance );
-}
-
-void Qgs3DMapConfigWidget::updateShadowBias( double shadowBias )
-{
-  mMap->setShadowBias( shadowBias );
-}
-
-void Qgs3DMapConfigWidget::updateShadowMapResolution( int resolution )
-{
-  mMap->setShadowMapResolution( resolution );
-}

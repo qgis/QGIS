@@ -429,30 +429,6 @@ Returns list of directional lights defined in the scene
 .. versionadded:: 3.16
 %End
 
-    float maximumShadowRenderingDistance() const;
-%Docstring
-Returns the maximum shadow rendering distance accounted for when rendering shadows
-Objects further away from the camera than the specified distance won't cast shadows
-This helps with producing a reasonable shadow resolution when looking at a large area or up to the sky
-
-.. versionadded:: 3.16
-%End
-
-    float shadowBias() const;
-%Docstring
-Returns the shadow bias used to correct the numerical imprecision of shadows (for the depth test)
-This helps with reducing the self shadowing artifact
-
-.. versionadded:: 3.16
-%End
-
-    int shadowMapResolution() const;
-%Docstring
-Returns the resolution of the shadow map texture used to generate the shadows
-
-.. versionadded:: 3.16
-%End
-
     void setPointLights( const QList<QgsPointLightSettings> &pointLights );
 %Docstring
 Sets list of point lights defined in the scene
@@ -463,31 +439,6 @@ Sets list of point lights defined in the scene
     void setDirectionalLights( const QList<QgsDirectionalLightSettings> &directionalLights );
 %Docstring
 Sets list of directional lights defined in the scene
-
-.. versionadded:: 3.16
-%End
-
-    void setMaximumShadowRenderingDistance( float distance );
-%Docstring
-Sets the maximum shadow rendering distance accounted for when rendering shadows
-Objects further away from the camera than the specified distance won't cast shadows
-This helps with producing a reasonable shadow resolution when looking at a large area or up to the sky
-
-.. versionadded:: 3.16
-%End
-
-    void setShadowBias( float shadowBias );
-%Docstring
-Sets the shadow bias value
-Tweak this to reduce artifacts like self shadowing
-A reasonable range of values can be between a very small positive value like 0.00000001 and 0.1
-
-.. versionadded:: 3.16
-%End
-
-    void setShadowMapResolution( int resolution );
-%Docstring
-Sets the resolution of the shadow map texture (this can be used to generate higher quality shadows)
 
 .. versionadded:: 3.16
 %End
@@ -523,6 +474,8 @@ Default value is 96
 
 .. versionadded:: 3.10
 %End
+
+
 
 
 
@@ -672,6 +625,13 @@ Emitted when the camera lens field of view changes
     void skyboxSettingsChanged();
 %Docstring
 Emitted when skybox settings are changed
+
+.. versionadded:: 3.16
+%End
+
+    void shadowSettingsChanged();
+%Docstring
+Emitted when shadow rendering settings are changed
 
 .. versionadded:: 3.16
 %End
