@@ -112,10 +112,7 @@ QgsZonalStatistics::Result QgsZonalStatistics::calculateStatistics( QgsFeedback 
   long featureCount = vectorProvider->featureCount();
 
   QgsFeatureRequest request;
-
-  // If we edit in place, we don't need the other attributes
-  if ( vectorProvider )
-    request.setNoAttributes();
+  request.setNoAttributes();
 
   request.setDestinationCrs( mRasterCrs, QgsProject::instance()->transformContext() );
   QgsFeatureIterator fi = vectorProvider->getFeatures( request );
@@ -153,8 +150,7 @@ QgsZonalStatistics::Result QgsZonalStatistics::calculateStatistics( QgsFeedback 
     changeMap.insert( feature.id(), changeAttributeMap );
   }
 
-  if ( vectorProvider )
-    vectorProvider->changeAttributeValues( changeMap );
+  vectorProvider->changeAttributeValues( changeMap );
   mPolygonLayer->updateFields();
 
   if ( feedback )
