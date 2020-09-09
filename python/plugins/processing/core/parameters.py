@@ -30,6 +30,7 @@ from qgis.core import (QgsRasterLayer,
                        QgsExpression,
                        QgsProject,
                        QgsRectangle,
+                       QgsWkbTypes,
                        QgsVectorFileWriter,
                        QgsProcessing,
                        QgsProcessingUtils,
@@ -134,6 +135,11 @@ def getParameterFromString(s, context=''):
             elif clazz == QgsProcessingParameterGeometry:
                 if len(params) > 3:
                     params[3] = True if params[3].lower() == 'true' else False
+                if len(params) > 4:
+                    try:
+                        params[4] = [int(p) for p in params[4].split(';')]
+                    except:
+                        params[4] = [getattr(QgsWkbTypes, p.split(".")[1]) for p in params[4].split(';')]
             elif clazz == QgsProcessingParameterCrs:
                 if len(params) > 3:
                     params[3] = True if params[3].lower() == 'true' else False

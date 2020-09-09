@@ -1,5 +1,5 @@
 /***************************************************************************
-                         q+gsprocessingparameters.cpp
+                         qgsprocessingparameters.cpp
                          ---------------------------
     begin                : April 2017
     copyright            : (C) 2017 by Nyall Dawson
@@ -2951,8 +2951,9 @@ QgsProcessingParameterPoint *QgsProcessingParameterPoint::fromScriptCode( const 
 }
 
 QgsProcessingParameterGeometry::QgsProcessingParameterGeometry( const QString &name, const QString &description,
-    const QVariant &defaultValue, bool optional )
-  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+    const QVariant &defaultValue, bool optional, const QList<QgsWkbTypes::GeometryType> &geometryTypes )
+  : QgsProcessingParameterDefinition( name, description, defaultValue, optional ),
+    mGeomTypes( geometryTypes )
 {
 
 }
@@ -2972,34 +2973,36 @@ bool QgsProcessingParameterGeometry::checkValueIsAcceptable( const QVariant &inp
     return true;
   }
 
+  bool anyTypeAllowed = mGeomTypes.isEmpty() || mGeomTypes.contains( QgsWkbTypes::UnknownGeometry );
+
   if ( input.canConvert< QgsGeometry >() )
   {
-    return true;
+    return anyTypeAllowed || mGeomTypes.contains( input.value<QgsGeometry>().type() );
   }
 
   if ( input.canConvert< QgsReferencedGeometry >() )
   {
-    return true;
+    return anyTypeAllowed || mGeomTypes.contains( input.value<QgsReferencedGeometry>().type() );
   }
 
   if ( input.canConvert< QgsPointXY >() )
   {
-    return true;
+    return anyTypeAllowed || mGeomTypes.contains( QgsWkbTypes::PointGeometry );
   }
 
   if ( input.canConvert< QgsRectangle >() )
   {
-    return true;
+    return anyTypeAllowed || mGeomTypes.contains( QgsWkbTypes::PolygonGeometry );
   }
 
   if ( input.canConvert< QgsReferencedPointXY >() )
   {
-    return true;
+    return anyTypeAllowed || mGeomTypes.contains( QgsWkbTypes::PointGeometry );
   }
 
   if ( input.canConvert< QgsReferencedRectangle >() )
   {
-    return true;
+    return anyTypeAllowed || mGeomTypes.contains( QgsWkbTypes::PolygonGeometry );
   }
 
   if ( input.type() == QVariant::String )
@@ -3017,7 +3020,7 @@ bool QgsProcessingParameterGeometry::checkValueIsAcceptable( const QVariant &inp
     QgsGeometry g = QgsGeometry::fromWkt( match.captured( 2 ) );
     if ( ! g.isNull() )
     {
-      return true;
+      return anyTypeAllowed || mGeomTypes.contains( g.type() );
     }
     else
     {
@@ -3029,6 +3032,15 @@ bool QgsProcessingParameterGeometry::checkValueIsAcceptable( const QVariant &inp
 
 QString QgsProcessingParameterGeometry::valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const
 {
+  auto asPythonString = []( const QgsGeometry & g, QString authid = QString() )
+  {
+    if ( authid.isEmpty() )
+      return QStringLiteral( "'%1'" ).arg( g.asWkt() );
+    else
+      // Output as EWKT
+      return QStringLiteral( "'%2;%1'" ).arg( g.asWkt(), authid.replace( "EPSG:", "SRID=" ) );
+  };
+
   if ( !value.isValid() )
     return QStringLiteral( "None" );
 
@@ -3039,13 +3051,157 @@ QString QgsProcessingParameterGeometry::valueAsPythonString( const QVariant &val
   {
     const QgsGeometry g = value.value<QgsGeometry>();
     if ( !g.isNull() )
-    {
-      const QString wkt = g.asWkt();
-      return QStringLiteral( "QgsGeometry.fromWkt('%1')" ).arg( wkt );
-    }
+      return asPythonString( g );
+  }
+
+  if ( value.canConvert< QgsReferencedGeometry >() )
+  {
+    const QgsReferencedGeometry g = value.value<QgsReferencedGeometry>();
+    if ( !g.isNull() )
+      return asPythonString( g, g.crs().authid() );
+  }
+
+  if ( value.canConvert< QgsPointXY >() )
+  {
+    const QgsGeometry g = QgsGeometry::fromPointXY( value.value<QgsPointXY>() );
+    if ( !g.isNull() )
+      return asPythonString( g );
+  }
+
+  if ( value.canConvert< QgsReferencedPointXY >() )
+  {
+    const QgsReferencedGeometry g = QgsReferencedGeometry::fromReferencedPointXY( value.value<QgsReferencedPointXY>() );
+    if ( !g.isNull() )
+      return asPythonString( g, g.crs().authid() );
+  }
+
+  if ( value.canConvert< QgsRectangle >() )
+  {
+    const QgsGeometry g = QgsGeometry::fromRect( value.value<QgsRectangle>() );
+    if ( !g.isNull() )
+      return asPythonString( g );
+  }
+
+  if ( value.canConvert< QgsReferencedRectangle >() )
+  {
+    const QgsReferencedGeometry g = QgsReferencedGeometry::fromReferencedRect( value.value<QgsReferencedRectangle>() );
+    if ( !g.isNull() )
+      return asPythonString( g, g.crs().authid() );
   }
 
   return QgsProcessingParameterDefinition::valueAsPythonString( value, context );
+}
+
+QString QgsProcessingParameterGeometry::asScriptCode() const
+{
+  QString code = QStringLiteral( "##%1=" ).arg( mName );
+  if ( mFlags & FlagOptional )
+    code += QStringLiteral( "optional " );
+  code += type() + ' ';
+
+  for ( QgsWkbTypes::GeometryType type : mGeomTypes )
+  {
+    switch ( type )
+    {
+      case QgsWkbTypes::PointGeometry:
+        code += QStringLiteral( "point " );
+        break;
+
+      case QgsWkbTypes::LineGeometry:
+        code += QStringLiteral( "line " );
+        break;
+
+      case QgsWkbTypes::PolygonGeometry:
+        code += QStringLiteral( "polygon " );
+        break;
+
+      default:
+        code += QStringLiteral( "unknown" );
+        break;
+    }
+  }
+
+  code += mDefault.toString();
+  return code.trimmed();
+}
+
+QString QgsProcessingParameterGeometry::asPythonString( const QgsProcessing::PythonOutputType outputType ) const
+{
+  switch ( outputType )
+  {
+    case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
+    {
+      QString code = QStringLiteral( "QgsProcessingParameterGeometry('%1', '%2'" ).arg( name(), description() );
+      if ( mFlags & FlagOptional )
+        code += QStringLiteral( ", optional=True" );
+
+      if ( !mGeomTypes.empty() )
+      {
+        auto geomTypeToString = []( QgsWkbTypes::GeometryType t )
+        {
+          switch ( t )
+          {
+            case QgsWkbTypes::PointGeometry:
+              return QStringLiteral( "PointGeometry" );
+              break;
+
+            case QgsWkbTypes::LineGeometry:
+              return QStringLiteral( "LineGeometry" );
+              break;
+
+            case QgsWkbTypes::PolygonGeometry:
+              return QStringLiteral( "PolygonGeometry" );
+              break;
+
+            case QgsWkbTypes::UnknownGeometry:
+              return QStringLiteral( "UnknownGeometry" );
+              break;
+
+            case QgsWkbTypes::NullGeometry:
+              return QStringLiteral( "NullGeometry" );
+              break;
+          }
+        };
+
+        QStringList options;
+        options.reserve( mGeomTypes.size() );
+        for ( QgsWkbTypes::GeometryType type : mGeomTypes )
+        {
+          options << QStringLiteral( " QgsWkbTypes.%1" ).arg( geomTypeToString( type ) );
+        }
+        code += QStringLiteral( ", geometryTypes=[%1 ]" ).arg( options.join( ',' ) );
+      }
+
+      QgsProcessingContext c;
+      code += QStringLiteral( ", defaultValue=%1)" ).arg( valueAsPythonString( mDefault, c ) );
+      return code;
+    }
+  }
+  return QString();
+}
+
+QVariantMap QgsProcessingParameterGeometry::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  QVariantList types;
+  for ( QgsWkbTypes::GeometryType type : mGeomTypes )
+  {
+    types << type;
+  }
+  map.insert( QStringLiteral( "geometrytypes" ), types );
+  return map;
+}
+
+bool QgsProcessingParameterGeometry::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mGeomTypes.clear();
+  const QVariantList values = map.value( QStringLiteral( "geometrytypes" ) ).toList();
+  for ( const QVariant &val : values )
+  {
+    mGeomTypes << static_cast<QgsWkbTypes::GeometryType>( val.toInt() );
+  }
+  return true;
 }
 
 QgsProcessingParameterGeometry *QgsProcessingParameterGeometry::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )

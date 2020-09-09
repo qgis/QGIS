@@ -51,41 +51,6 @@ no reference system is required.
 
 };
 
-class QgsReferencedGeometry : QgsGeometry, QgsReferencedGeometryBase
-{
-%Docstring
-A QgsGeometry with associated coordinate reference system.
-
-.. versionadded:: 3.16
-%End
-
-%TypeHeaderCode
-#include "qgsreferencedgeometry.h"
-%End
-  public:
-
-    QgsReferencedGeometry( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs );
-%Docstring
-Constructor for QgsReferencedGeometry, with the specified initial ``geometry``
-and ``crs``.
-%End
-
-    QgsReferencedGeometry();
-%Docstring
-Constructor for QgsReferencedGeometry.
-%End
-
-    operator QVariant() const;
-
-    SIP_PYOBJECT __repr__();
-%MethodCode
-    QString str = QStringLiteral( "<QgsReferencedGeometry: %1 (%2)>" ).arg( sipCpp->asWkt(), sipCpp->crs().authid() );
-    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-%End
-
-};
-
-
 class QgsReferencedRectangle : QgsRectangle, QgsReferencedGeometryBase
 {
 %Docstring
@@ -161,6 +126,51 @@ Constructor for QgsReferencedPointXY.
 
 };
 
+
+class QgsReferencedGeometry : QgsGeometry, QgsReferencedGeometryBase
+{
+%Docstring
+A QgsGeometry with associated coordinate reference system.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsreferencedgeometry.h"
+%End
+  public:
+
+    QgsReferencedGeometry( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Constructor for QgsReferencedGeometry, with the specified initial ``geometry``
+and ``crs``.
+%End
+
+    QgsReferencedGeometry();
+%Docstring
+Constructor for QgsReferencedGeometry.
+%End
+
+    operator QVariant() const;
+
+    static QgsReferencedGeometry fromReferencedPointXY( const QgsReferencedPointXY &point );
+%Docstring
+Construct a new QgsReferencedGeometry from referenced ``point``
+%End
+
+    static QgsReferencedGeometry fromReferencedRect( const QgsReferencedRectangle &rectangle );
+%Docstring
+Construct a new QgsReferencedGeometry from ``referenced`` point
+%End
+
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsReferencedGeometry: %1 (%2)>" ).arg( sipCpp->asWkt(), sipCpp->crs().authid() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+};
 
 
 /************************************************************************

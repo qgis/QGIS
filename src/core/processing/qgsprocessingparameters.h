@@ -1612,8 +1612,11 @@ class CORE_EXPORT QgsProcessingParameterGeometry : public QgsProcessingParameter
 
     /**
      * Constructor for QgsProcessingParameterGeometry.
+     *
+     * The \a geometryTypes argument allows for specifying a list of geometry types acceptable for this
+     * parameter. Passing a empty list will allow for any type of geometry.
      */
-    QgsProcessingParameterGeometry( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), bool optional = false );
+    QgsProcessingParameterGeometry( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), bool optional = false, const QList<QgsWkbTypes::GeometryType> &geometryTypes = QList<QgsWkbTypes::GeometryType>() );
 
     /**
      * Returns the type name for the parameter class.
@@ -1623,11 +1626,31 @@ class CORE_EXPORT QgsProcessingParameterGeometry : public QgsProcessingParameter
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString asScriptCode() const override;
+    QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+    /**
+     * Returns the parameter allowed geometries.
+     * \see setGeometryTypes()
+     */
+    QList<QgsWkbTypes::GeometryType>  geometryTypes() const { return mGeomTypes; }
+
+    /**
+     * Sets the allowed  \a geometryTypes.
+     * \see geometryTypes()
+     */
+    void setGeometryTypes( QList<QgsWkbTypes::GeometryType> geometryTypes ) { mGeomTypes = geometryTypes; }
 
     /**
      * Creates a new parameter using the definition from a script code.
      */
     static QgsProcessingParameterGeometry *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
+  private:
+
+    QList<QgsWkbTypes::GeometryType> mGeomTypes;
 
 };
 
