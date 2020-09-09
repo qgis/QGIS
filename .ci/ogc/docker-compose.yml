@@ -18,6 +18,7 @@ services:
     container_name: qgis_server_deps
     volumes:
       - ./../../:/usr/src/qgis/
+      - ./../../data:/data
     networks:
       - qgis
     privileged: true
