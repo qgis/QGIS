@@ -1329,12 +1329,11 @@ void QgsTextFormatWidget::updatePlacementWidgets()
     showDistanceFrame = true;
     //showRotationFrame = true; // TODO: uncomment when supported
 
-    bool offline = chkLineAbove->isChecked() || chkLineBelow->isChecked();
+    const bool offline = chkLineAbove->isChecked() || chkLineBelow->isChecked();
     chkLineOrientationDependent->setEnabled( offline );
-    mPlacementDistanceFrame->setEnabled( offline );
 
-    bool isCurved = ( currentGeometryType == QgsWkbTypes::LineGeometry && currentPlacement == QgsPalLayerSettings::Curved )
-                    || ( currentGeometryType == QgsWkbTypes::PolygonGeometry && currentPlacement == QgsPalLayerSettings::PerimeterCurved );
+    const bool isCurved = ( currentGeometryType == QgsWkbTypes::LineGeometry && currentPlacement == QgsPalLayerSettings::Curved )
+                          || ( currentGeometryType == QgsWkbTypes::PolygonGeometry && currentPlacement == QgsPalLayerSettings::PerimeterCurved );
     showMaxCharAngleFrame = isCurved;
     // TODO: enable mMultiLinesFrame when supported for curved labels
     enableMultiLinesFrame = !isCurved;

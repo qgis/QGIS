@@ -1024,10 +1024,10 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
         }
         if ( flags & QgsLabeling::LinePlacementFlag::OnLine )
         {
-          if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX - labelHeight * std::cos( beta ) / 2, candidateStartY - labelHeight * std::sin( beta ) / 2, labelWidth, labelHeight, angle ) )
+          if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX - ( distanceLineToLabel + labelHeight ) * std::cos( beta ) / 2, candidateStartY - ( distanceLineToLabel + labelHeight ) * std::sin( beta ) / 2, labelWidth, labelHeight, angle ) )
           {
             const double candidateCost = cost + 0.002;
-            lPos.emplace_back( qgis::make_unique< LabelPosition >( i, candidateStartX - labelHeight * std::cos( beta ) / 2, candidateStartY - labelHeight * std::sin( beta ) / 2, labelWidth, labelHeight, angle, candidateCost, this, isRightToLeft, LabelPosition::QuadrantOver ) ); // Line
+            lPos.emplace_back( qgis::make_unique< LabelPosition >( i, candidateStartX - ( distanceLineToLabel + labelHeight ) * std::cos( beta ) / 2, candidateStartY - ( distanceLineToLabel + labelHeight ) * std::sin( beta ) / 2, labelWidth, labelHeight, angle, candidateCost, this, isRightToLeft, LabelPosition::QuadrantOver ) ); // Line
           }
         }
       }
@@ -1194,10 +1194,10 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
       }
       if ( flags & QgsLabeling::LinePlacementFlag::OnLine )
       {
-        if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX - labelHeight * std::cos( beta ) / 2, candidateStartY - labelHeight * std::sin( beta ) / 2, labelWidth, labelHeight, angle ) )
+        if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX - ( distanceLineToLabel + labelHeight ) * std::cos( beta ) / 2, candidateStartY - ( distanceLineToLabel + labelHeight ) * std::sin( beta ) / 2, labelWidth, labelHeight, angle ) )
         {
           const double candidateCost = cost + 0.002;
-          lPos.emplace_back( qgis::make_unique< LabelPosition >( i, candidateStartX - labelHeight * std::cos( beta ) / 2, candidateStartY - labelHeight * std::sin( beta ) / 2, labelWidth, labelHeight, angle, candidateCost, this, isRightToLeft, LabelPosition::QuadrantOver ) ); // Line
+          lPos.emplace_back( qgis::make_unique< LabelPosition >( i, candidateStartX - ( distanceLineToLabel + labelHeight ) * std::cos( beta ) / 2, candidateStartY - ( distanceLineToLabel + labelHeight ) * std::sin( beta ) / 2, labelWidth, labelHeight, angle, candidateCost, this, isRightToLeft, LabelPosition::QuadrantOver ) ); // Line
         }
       }
     }
@@ -1568,7 +1568,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
         p = _createCurvedCandidate( slp.get(), angle_avg, mLF->distLabel() + li->label_height / 2 );
       if ( i == 1 && flags & QgsLabeling::LinePlacementFlag::OnLine )
       {
-        p = _createCurvedCandidate( slp.get(), angle_avg, 0 );
+        p = _createCurvedCandidate( slp.get(), angle_avg, mLF->distLabel() );
         p->setCost( p->cost() + 0.002 );
       }
       if ( i == 2 && ( ( !localreversed && ( flags & QgsLabeling::LinePlacementFlag::BelowLine ) ) || ( localreversed && ( flags & QgsLabeling::LinePlacementFlag::AboveLine ) ) ) )
