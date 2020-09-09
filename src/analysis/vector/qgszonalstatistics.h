@@ -66,15 +66,16 @@ class ANALYSIS_EXPORT QgsZonalStatistics
     };
     Q_DECLARE_FLAGS( Statistics, Statistic )
 
+    //! Error codes for calculation
     enum Result
     {
-      Success = 0,
-      LayerTypeWrong = 1,
-      LayerInvalid,
-      RasterInvalid,
-      RasterBandInvalid,
-      FailedToCreateField = 8,
-      Cancelled = 9
+      Success = 0, //!< Success
+      LayerTypeWrong = 1, //!< Layer is not a polygon layer
+      LayerInvalid, //!< Layer is invalid
+      RasterInvalid, //!< Raster layer is invalid
+      RasterBandInvalid, //!< The raster band does not exist on the raster layer
+      FailedToCreateField = 8, //!< Output fields could not be created
+      Canceled = 9 //!< Algorithm was canceled
     };
 
     /**

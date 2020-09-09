@@ -160,7 +160,7 @@ QgsZonalStatistics::Result QgsZonalStatistics::calculateStatistics( QgsFeedback 
   if ( feedback )
   {
     if ( feedback->isCanceled() )
-      return Cancelled;
+      return Canceled;
 
     feedback->setProgress( 100 );
   }
