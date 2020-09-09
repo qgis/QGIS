@@ -93,11 +93,20 @@ QgsExpressionContext QgsSymbolLayerWidget::createExpressionContext() const
   //TODO - show actual value
   expContext.setOriginalValueVariable( QVariant() );
 
-  expContext.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_ORIGINAL_VALUE << QgsExpressionContext::EXPR_SYMBOL_COLOR
-                                      << QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT << QgsExpressionContext::EXPR_GEOMETRY_PART_NUM
-                                      << QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT << QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM
-                                      << QgsExpressionContext::EXPR_CLUSTER_COLOR << QgsExpressionContext::EXPR_CLUSTER_SIZE
-                                      << QStringLiteral( "symbol_layer_count" ) << QStringLiteral( "symbol_layer_index" ) );
+  QStringList highlights;
+  highlights << QgsExpressionContext::EXPR_ORIGINAL_VALUE << QgsExpressionContext::EXPR_SYMBOL_COLOR
+             << QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT << QgsExpressionContext::EXPR_GEOMETRY_PART_NUM
+             << QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT << QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM
+             << QgsExpressionContext::EXPR_CLUSTER_COLOR << QgsExpressionContext::EXPR_CLUSTER_SIZE
+             << QStringLiteral( "symbol_layer_count" ) << QStringLiteral( "symbol_layer_index" );
+
+
+  if ( expContext.hasVariable( QStringLiteral( "zoom_level" ) ) )
+  {
+    highlights << QStringLiteral( "zoom_level" );
+  }
+
+  expContext.setHighlightedVariables( highlights );
 
   return expContext;
 }
