@@ -1321,8 +1321,8 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateByZoom( const QVariantMap
     {
       scaleExpression = interpolateExpression( stops.value( 0 ).toList().value( 0 ).toInt(),
                         stops.last().toList().value( 0 ).toInt(),
-                        stops.value( 0 ).toList().value( 1 ).toInt(),
-                        stops.last().toList().value( 1 ).toInt(), base, multiplier );
+                        stops.value( 0 ).toList().value( 1 ).toDouble(),
+                        stops.last().toList().value( 1 ).toDouble(), base, multiplier );
     }
   }
   else
