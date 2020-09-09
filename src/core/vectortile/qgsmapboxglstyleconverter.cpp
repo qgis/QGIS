@@ -1368,7 +1368,7 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateOpacityByZoom( const QVar
                         .arg( interpolateExpression( stops.value( 0 ).toList().value( 0 ).toInt(),
                               stops.last().toList().value( 0 ).toInt(),
                               stops.value( 0 ).toList().value( 1 ).toDouble() * maxOpacity,
-                              stops.value( 0 ).toList().value( 1 ).toDouble() * maxOpacity, base ) );
+                              stops.last().toList().value( 1 ).toDouble() * maxOpacity, base ) );
     }
   }
   else
@@ -1663,6 +1663,10 @@ void QgsMapBoxGlStyleConverter::colorAsHslaComponents( const QColor &color, int 
 
 QString QgsMapBoxGlStyleConverter::interpolateExpression( int zoomMin, int zoomMax, double valueMin, double valueMax, double base, double multiplier )
 {
+  // special case!
+  if ( qgsDoubleNear( valueMin, valueMax ) )
+    return QString::number( valueMin * multiplier );
+
   const QString expression = QStringLiteral( "scale_exp(@zoom_level,%1,%2,%3,%4,%5)" ).arg( zoomMin )
                              .arg( zoomMax )
                              .arg( valueMin )
