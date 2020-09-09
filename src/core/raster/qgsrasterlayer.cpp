@@ -55,6 +55,7 @@ email                : tim at linfiniti.com
 #include "qgscubicrasterresampler.h"
 #include "qgsrasterlayertemporalproperties.h"
 #include "qgsruntimeprofiler.h"
+#include "qgsxmlutils.h"
 
 #include <cmath>
 #include <cstdio>
@@ -119,6 +120,7 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
   , QSTRING_NOT_SET( QStringLiteral( "Not Set" ) )
   , TRSTRING_NOT_SET( tr( "Not Set" ) )
   , mTemporalProperties( new QgsRasterLayerTemporalProperties( this ) )
+  , mReadExtentFromXml( options.readExtentFromXml )
 {
   mShouldValidateCrs = !options.skipCrsValidation;
 
@@ -153,6 +155,8 @@ QgsRasterLayer *QgsRasterLayer::clone() const
   }
   QgsRasterLayer *layer = new QgsRasterLayer( source(), name(), mProviderKey, options );
   QgsMapLayer::clone( layer );
+
+  layer->setReadExtentFromXml( readExtentFromXml() );
 
   // do not clone data provider which is the first element in pipe
   for ( int i = 1; i < mPipe.size(); i++ )
@@ -1001,6 +1005,25 @@ void QgsRasterLayer::computeMinMax( int band,
 bool QgsRasterLayer::ignoreExtents() const
 {
   return mDataProvider ? mDataProvider->ignoreExtents() : false;
+}
+
+QgsRectangle QgsRasterLayer::extent() const
+{
+  if ( mReadExtentFromXml &&  !mXmlExtent.isNull() )
+  {
+    return mXmlExtent;
+  }
+  return QgsMapLayer::extent();
+}
+
+void QgsRasterLayer::setReadExtentFromXml( bool readExtentFromXml )
+{
+  mReadExtentFromXml = readExtentFromXml;
+}
+
+bool QgsRasterLayer::readExtentFromXml() const
+{
+  return mReadExtentFromXml;
 }
 
 QgsMapLayerTemporalProperties *QgsRasterLayer::temporalProperties()
@@ -2002,6 +2025,16 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     }
   }
 #endif
+
+  // read extent
+  if ( mReadExtentFromXml )
+  {
+    QDomNode extentNode = layer_node.namedItem( QStringLiteral( "extent" ) );
+    if ( !extentNode.isNull() )
+    {
+      mXmlExtent = QgsXmlUtils::readRectangle( extentNode.toElement() );
+    }
+  }
 
   // Load user no data value
   QDomElement noDataElement = layer_node.firstChildElement( QStringLiteral( "noData" ) );

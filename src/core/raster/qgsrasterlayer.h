@@ -107,9 +107,11 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
        * Constructor for LayerOptions.
        */
       explicit LayerOptions( bool loadDefaultStyle = true,
-                             const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() )
+                             const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext(),
+                             bool readExtentFromXml = false )
         : loadDefaultStyle( loadDefaultStyle )
         , transformContext( transformContext )
+        , readExtentFromXml( readExtentFromXml )
       {}
 
       //! Sets to TRUE if the default layer style should be loaded
@@ -120,6 +122,14 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
        * \since QGIS 3.8
        */
       QgsCoordinateTransformContext transformContext = QgsCoordinateTransformContext();
+
+
+      /**
+       * If TRUE, the layer extent will be read from XML (i.e. stored in the
+       * project file). If FALSE, the extent will be determined by the provider on layer load.
+       * \since QGIS 3.16
+       */
+      bool readExtentFromXml = false;
 
       /**
        * Controls whether the layer is allowed to have an invalid/unknown CRS.
@@ -331,6 +341,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     void reload() override;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
 
+    QgsRectangle extent() const override;
+
     //! \brief This is an overloaded version of the draw() function that is called by both draw() and thumbnailAsPixmap
     void draw( QPainter *theQPainter,
                QgsRasterViewPort *myRasterViewPort,
@@ -460,6 +472,24 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      */
     bool ignoreExtents() const;
 
+    /**
+     * Flag allowing to indicate if the extent has to be read from the XML
+     * document when data source has no metadata or if the data provider has
+     * to determine it.
+     *
+     * \since QGIS 3.16
+     */
+    void setReadExtentFromXml( bool readExtentFromXml );
+
+    /**
+     * Returns TRUE if the extent is read from the XML document when data
+     * source has no metadata, FALSE if it's the data provider which determines
+     * it.
+     *
+     * \since QGIS 3.16
+     */
+    bool readExtentFromXml() const;
+
     QgsMapLayerTemporalProperties *temporalProperties() override;
 
   public slots:
@@ -541,6 +571,10 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     LayerType mRasterType;
 
     QgsRasterPipe mPipe;
+
+    //! read xml extent
+    bool mReadExtentFromXml;
+    QgsRectangle mXmlExtent;
 
     //! To save computations and possible infinite cycle of notifications
     QgsRectangle mLastRectangleUsedByRefreshContrastEnhancementIfNeeded;
