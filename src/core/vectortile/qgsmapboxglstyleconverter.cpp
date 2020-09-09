@@ -165,6 +165,7 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
   const QVariantMap jsonPaint = jsonLayer.value( QStringLiteral( "paint" ) ).toMap();
 
   QgsPropertyCollection ddProperties;
+  QgsPropertyCollection ddRasterProperties;
 
   // fill color
   QColor fillColor;
@@ -232,6 +233,7 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
   }
 
   double fillOpacity = -1.0;
+  double rasterOpacity = -1.0;
   if ( jsonPaint.contains( QStringLiteral( "fill-opacity" ) ) )
   {
     const QVariant jsonFillOpacity = jsonPaint.value( QStringLiteral( "fill-opacity" ) );
@@ -240,6 +242,7 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
       case QVariant::Int:
       case QVariant::Double:
         fillOpacity = jsonFillOpacity.toDouble();
+        rasterOpacity = fillOpacity;
         break;
 
       case QVariant::Map:
@@ -251,6 +254,7 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
         {
           ddProperties.setProperty( QgsSymbolLayer::PropertyFillColor, parseInterpolateOpacityByZoom( jsonFillOpacity.toMap(), fillColor.isValid() ? fillColor.alpha() : 255 ) );
           ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, parseInterpolateOpacityByZoom( jsonFillOpacity.toMap(), fillOutlineColor.isValid() ? fillOutlineColor.alpha() : 255 ) );
+          ddRasterProperties.setProperty( QgsSymbolLayer::PropertyOpacity, parseInterpolateByZoom( jsonFillOpacity.toMap(), context, 100, &rasterOpacity ) );
         }
         break;
 
@@ -264,6 +268,7 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
         {
           ddProperties.setProperty( QgsSymbolLayer::PropertyFillColor, parseInterpolateListByZoom( jsonFillOpacity.toList(), PropertyType::Opacity, context, 1, fillColor.isValid() ? fillColor.alpha() : 255 ) );
           ddProperties.setProperty( QgsSymbolLayer::PropertyStrokeColor, parseInterpolateListByZoom( jsonFillOpacity.toList(), PropertyType::Opacity, context, 1, fillOutlineColor.isValid() ? fillOutlineColor.alpha() : 255 ) );
+          ddRasterProperties.setProperty( QgsSymbolLayer::PropertyOpacity, parseInterpolateListByZoom( jsonFillOpacity.toList(), PropertyType::Numeric, context, 100, 255, nullptr, &rasterOpacity ) );
         }
         break;
 
@@ -341,6 +346,11 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
           QString path( encoded );
           path.prepend( QLatin1String( "base64:" ) );
           rasterFill->setImageFilePath( path );
+          rasterFill->setCoordinateMode( QgsRasterFillSymbolLayer::Viewport );
+
+          if ( rasterOpacity >= 0 )
+            rasterFill->setOpacity( rasterOpacity );
+          rasterFill->setDataDefinedProperties( ddRasterProperties );
 
           symbol->appendSymbolLayer( rasterFill );
         }
