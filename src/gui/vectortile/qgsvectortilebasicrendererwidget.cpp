@@ -111,6 +111,12 @@ QVariant QgsVectorTileBasicRendererListModel::data( const QModelIndex &index, in
       return style.isEnabled() ? Qt::Checked : Qt::Unchecked;
     }
 
+    case MinZoom:
+      return style.minZoomLevel();
+
+    case MaxZoom:
+      return style.maxZoomLevel();
+
   }
   return QVariant();
 }
@@ -321,10 +327,18 @@ QgsVectorTileBasicRendererWidget::QgsVectorTileBasicRendererWidget( QgsVectorTil
   {
     connect( mMapCanvas, &QgsMapCanvas::scaleChanged, this, [ = ]( double scale )
     {
-      mLabelCurrentZoom->setText( tr( "Current zoom: %1" ).arg( QgsVectorTileUtils::scaleToZoomLevel( scale, 0, 99 ) ) );
+      const int zoom = QgsVectorTileUtils::scaleToZoomLevel( scale, 0, 99 );
+      mLabelCurrentZoom->setText( tr( "Current zoom: %1" ).arg( zoom ) );
+      if ( mProxyModel )
+        mProxyModel->setCurrentZoom( zoom );
     } );
     mLabelCurrentZoom->setText( tr( "Current zoom: %1" ).arg( QgsVectorTileUtils::scaleToZoomLevel( mMapCanvas->scale(), 0, 99 ) ) );
   }
+
+  connect( mCheckVisibleOnly, &QCheckBox::toggled, this, [ = ]( bool filter )
+  {
+    mProxyModel->setFilterVisible( filter );
+  } );
 
   setLayer( layer );
 }
@@ -343,7 +357,14 @@ void QgsVectorTileBasicRendererWidget::setLayer( QgsVectorTileLayer *layer )
   }
 
   mModel = new QgsVectorTileBasicRendererListModel( mRenderer.get(), viewStyles );
-  viewStyles->setModel( mModel );
+  mProxyModel = new QgsVectorTileBasicRendererProxyModel( mModel, viewStyles );
+  viewStyles->setModel( mProxyModel );
+
+  if ( mMapCanvas )
+  {
+    const int zoom = QgsVectorTileUtils::scaleToZoomLevel( mMapCanvas->scale(), 0, 99 );
+    mProxyModel->setCurrentZoom( zoom );
+  }
 
   connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsPanelWidget::widgetChanged );
   connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsPanelWidget::widgetChanged );
@@ -364,7 +385,7 @@ void QgsVectorTileBasicRendererWidget::addStyle( QgsWkbTypes::GeometryType geomT
 
   int rows = mModel->rowCount();
   mModel->insertStyle( rows, style );
-  viewStyles->selectionModel()->setCurrentIndex( mModel->index( rows, 0 ), QItemSelectionModel::ClearAndSelect );
+  viewStyles->selectionModel()->setCurrentIndex( mProxyModel->mapFromSource( mModel->index( rows, 0 ) ), QItemSelectionModel::ClearAndSelect );
 }
 
 void QgsVectorTileBasicRendererWidget::editStyle()
@@ -372,8 +393,9 @@ void QgsVectorTileBasicRendererWidget::editStyle()
   editStyleAtIndex( viewStyles->selectionModel()->currentIndex() );
 }
 
-void QgsVectorTileBasicRendererWidget::editStyleAtIndex( const QModelIndex &index )
+void QgsVectorTileBasicRendererWidget::editStyleAtIndex( const QModelIndex &proxyIndex )
 {
+  const QModelIndex index = mProxyModel->mapToSource( proxyIndex );
   if ( index.row() < 0 || index.row() >= mRenderer->styles().count() )
     return;
 
@@ -417,7 +439,7 @@ void QgsVectorTileBasicRendererWidget::editStyleAtIndex( const QModelIndex &inde
 
 void QgsVectorTileBasicRendererWidget::updateSymbolsFromWidget()
 {
-  int index = viewStyles->selectionModel()->currentIndex().row();
+  int index = mProxyModel->mapToSource( viewStyles->selectionModel()->currentIndex() ).row();
   if ( index < 0 )
     return;
 
@@ -441,15 +463,53 @@ void QgsVectorTileBasicRendererWidget::cleanUpSymbolSelector( QgsPanelWidget *co
 
 void QgsVectorTileBasicRendererWidget::removeStyle()
 {
-  QItemSelection sel = viewStyles->selectionModel()->selection();
-  const auto constSel = sel;
-  for ( const QItemSelectionRange &range : constSel )
+  const QModelIndexList sel = viewStyles->selectionModel()->selectedIndexes();
+  for ( const QModelIndex &proxyIndex : sel )
   {
-    if ( range.isValid() )
-      mModel->removeRows( range.top(), range.bottom() - range.top() + 1, range.parent() );
+    const QModelIndex sourceIndex = mProxyModel->mapToSource( proxyIndex );
+    if ( sourceIndex.isValid() )
+      mModel->removeRow( sourceIndex.row() );
   }
   // make sure that the selection is gone
   viewStyles->selectionModel()->clear();
 }
+
+QgsVectorTileBasicRendererProxyModel::QgsVectorTileBasicRendererProxyModel( QgsVectorTileBasicRendererListModel *source, QObject *parent )
+  : QSortFilterProxyModel( parent )
+{
+  setSourceModel( source );
+  setDynamicSortFilter( true );
+}
+
+void QgsVectorTileBasicRendererProxyModel::setCurrentZoom( int zoom )
+{
+  mCurrentZoom = zoom;
+  invalidateFilter();
+}
+
+void QgsVectorTileBasicRendererProxyModel::setFilterVisible( bool enabled )
+{
+  mFilterVisible = enabled;
+  invalidateFilter();
+}
+
+bool QgsVectorTileBasicRendererProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
+{
+  if ( mCurrentZoom < 0 || !mFilterVisible )
+    return true;
+
+  const int rowMinZoom = sourceModel()->data( sourceModel()->index( source_row, 0, source_parent ), QgsVectorTileBasicRendererListModel::MinZoom ).toInt();
+  const int rowMaxZoom = sourceModel()->data( sourceModel()->index( source_row, 0, source_parent ), QgsVectorTileBasicRendererListModel::MaxZoom ).toInt();
+
+  if ( rowMinZoom >= 0 && rowMinZoom > mCurrentZoom )
+    return false;
+
+  if ( rowMaxZoom >= 0 && rowMaxZoom < mCurrentZoom )
+    return false;
+
+  return true;
+}
+
+
 
 ///@endcond
