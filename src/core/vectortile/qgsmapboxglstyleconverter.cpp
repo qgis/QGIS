@@ -1213,77 +1213,33 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateColorByZoom( const QVaria
 
   QString caseString = QStringLiteral( "CASE " );
 
-  if ( base == 1 )
+  for ( int i = 0; i < stops.length() - 1; ++i )
   {
-    // base = 1 -> scale linear
-    for ( int i = 0; i < stops.length() - 1; ++i )
-    {
-      // step bottom zoom
-      const QString bz = stops.at( i ).toList().value( 0 ).toString();
-      // step top zoom
-      const QString tz = stops.at( i + 1 ).toList().value( 0 ).toString();
+    // step bottom zoom
+    const QString bz = stops.at( i ).toList().value( 0 ).toString();
+    // step top zoom
+    const QString tz = stops.at( i + 1 ).toList().value( 0 ).toString();
 
-      const QColor bottomColor = parseColor( stops.at( i ).toList().value( 1 ), context );
-      const QColor topColor = parseColor( stops.at( i + 1 ).toList().value( 1 ), context );
+    const QColor bottomColor = parseColor( stops.at( i ).toList().value( 1 ), context );
+    const QColor topColor = parseColor( stops.at( i + 1 ).toList().value( 1 ), context );
 
-      int bcHue;
-      int bcSat;
-      int bcLight;
-      int bcAlpha;
-      colorAsHslaComponents( bottomColor, bcHue, bcSat, bcLight, bcAlpha );
-      int tcHue;
-      int tcSat;
-      int tcLight;
-      int tcAlpha;
-      colorAsHslaComponents( topColor, tcHue, tcSat, tcLight, tcAlpha );
+    int bcHue;
+    int bcSat;
+    int bcLight;
+    int bcAlpha;
+    colorAsHslaComponents( bottomColor, bcHue, bcSat, bcLight, bcAlpha );
+    int tcHue;
+    int tcSat;
+    int tcLight;
+    int tcAlpha;
+    colorAsHslaComponents( topColor, tcHue, tcSat, tcLight, tcAlpha );
 
-      caseString += QStringLiteral( "WHEN @zoom_level >= %1 AND @zoom_level < %2 THEN color_hsla("
-                                    "scale_linear(@zoom_level, %1, %2, %3, %4), "
-                                    "scale_linear(@zoom_level, %1, %2, %5, %6), "
-                                    "scale_linear(@zoom_level, %1, %2, %7, %8), "
-                                    "scale_linear(@zoom_level, %1, %2, %9, %10)) "
-                                  ).arg( bz, tz )
-                    .arg( bcHue )
-                    .arg( tcHue )
-                    .arg( bcSat )
-                    .arg( tcSat )
-                    .arg( bcLight )
-                    .arg( tcLight )
-                    .arg( bcAlpha )
-                    .arg( tcAlpha );
-    }
-  }
-  else
-  {
-    // Base != 1 -> scale_exp()
-    for ( int i = 0; i < stops.length() - 1; ++i )
-    {
-      // step bottom zoom
-      const QString bz = stops.at( i ).toList().value( 0 ).toString();
-      // step top zoom
-      const QString tz = stops.at( i + 1 ).toList().value( 0 ).toString();
-
-      const QColor bottomColor = parseColor( stops.at( i ).toList().value( 1 ), context );
-      const QColor topColor = parseColor( stops.at( i + 1 ).toList().value( 1 ), context );
-
-      int bcHue;
-      int bcSat;
-      int bcLight;
-      int bcAlpha;
-      colorAsHslaComponents( bottomColor, bcHue, bcSat, bcLight, bcAlpha );
-      int tcHue;
-      int tcSat;
-      int tcLight;
-      int tcAlpha;
-      colorAsHslaComponents( topColor, tcHue, tcSat, tcLight, tcAlpha );
-
-      caseString += QStringLiteral( "WHEN @zoom_level >= %1 AND @zoom_level < %2 THEN color_hsla("
-                                    "%3, %4, %5, %6) " ).arg( bz, tz,
-                                        interpolateExpression( bz.toInt(), tz.toInt(), bcHue, tcHue, base ),
-                                        interpolateExpression( bz.toInt(), tz.toInt(), bcSat, tcSat, base ),
-                                        interpolateExpression( bz.toInt(), tz.toInt(), bcLight, tcLight, base ),
-                                        interpolateExpression( bz.toInt(), tz.toInt(), bcAlpha, tcAlpha, base ) );
-    }
+    caseString += QStringLiteral( "WHEN @zoom_level >= %1 AND @zoom_level < %2 THEN color_hsla("
+                                  "%3, %4, %5, %6) " ).arg( bz, tz,
+                                      interpolateExpression( bz.toInt(), tz.toInt(), bcHue, tcHue, base ),
+                                      interpolateExpression( bz.toInt(), tz.toInt(), bcSat, tcSat, base ),
+                                      interpolateExpression( bz.toInt(), tz.toInt(), bcLight, tcLight, base ),
+                                      interpolateExpression( bz.toInt(), tz.toInt(), bcAlpha, tcAlpha, base ) );
   }
 
   // top color
@@ -1316,22 +1272,10 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateByZoom( const QVariantMap
   QString scaleExpression;
   if ( stops.size() <= 2 )
   {
-    if ( base == 1 )
-    {
-      scaleExpression = QStringLiteral( "scale_linear(@zoom_level, %1, %2, %3, %4)" ).arg( stops.value( 0 ).toList().value( 0 ).toString(),
-                        stops.last().toList().value( 0 ).toString(),
-                        stops.value( 0 ).toList().value( 1 ).toString(),
-                        stops.last().toList().value( 1 ).toString() );
-      if ( multiplier != 1.0 )
-        scaleExpression = QStringLiteral( "%1 * %2" ).arg( scaleExpression ).arg( multiplier );
-    }
-    else
-    {
-      scaleExpression = interpolateExpression( stops.value( 0 ).toList().value( 0 ).toInt(),
-                        stops.last().toList().value( 0 ).toInt(),
-                        stops.value( 0 ).toList().value( 1 ).toDouble(),
-                        stops.last().toList().value( 1 ).toDouble(), base, multiplier );
-    }
+    scaleExpression = interpolateExpression( stops.value( 0 ).toList().value( 0 ).toInt(),
+                      stops.last().toList().value( 0 ).toInt(),
+                      stops.value( 0 ).toList().value( 1 ).toDouble(),
+                      stops.last().toList().value( 1 ).toDouble(), base, multiplier );
   }
   else
   {
@@ -1354,22 +1298,11 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateOpacityByZoom( const QVar
   QString scaleExpression;
   if ( stops.length() <= 2 )
   {
-    if ( base == 1 )
-    {
-      scaleExpression = QStringLiteral( "set_color_part(@symbol_color, 'alpha', scale_linear(@zoom_level, %1, %2, %3, %4))" )
-                        .arg( stops.value( 0 ).toList().value( 0 ).toString(),
-                              stops.last().toList().value( 0 ).toString() )
-                        .arg( stops.value( 0 ).toList().value( 1 ).toDouble() * maxOpacity )
-                        .arg( stops.last().toList().value( 1 ).toDouble() * maxOpacity );
-    }
-    else
-    {
-      scaleExpression = QStringLiteral( "set_color_part(@symbol_color, 'alpha', %1)" )
-                        .arg( interpolateExpression( stops.value( 0 ).toList().value( 0 ).toInt(),
-                              stops.last().toList().value( 0 ).toInt(),
-                              stops.value( 0 ).toList().value( 1 ).toDouble() * maxOpacity,
-                              stops.last().toList().value( 1 ).toDouble() * maxOpacity, base ) );
-    }
+    scaleExpression = QStringLiteral( "set_color_part(@symbol_color, 'alpha', %1)" )
+                      .arg( interpolateExpression( stops.value( 0 ).toList().value( 0 ).toInt(),
+                            stops.last().toList().value( 0 ).toInt(),
+                            stops.value( 0 ).toList().value( 1 ).toDouble() * maxOpacity,
+                            stops.last().toList().value( 1 ).toDouble() * maxOpacity, base ) );
   }
   else
   {
@@ -1384,38 +1317,19 @@ QString QgsMapBoxGlStyleConverter::parseOpacityStops( double base, const QVarian
                        .arg( stops.value( 0 ).toList().value( 0 ).toString() )
                        .arg( stops.value( 0 ).toList().value( 1 ).toDouble() * maxOpacity );
 
-  if ( base == 1 )
+  for ( int i = 0; i < stops.size() - 1; ++i )
   {
-    // base = 1 -> scale_linear
-    for ( int i = 0; i < stops.size() - 1; ++i )
-    {
-      caseString += QStringLiteral( " WHEN @zoom_level >= %1 AND @zoom_level < %2 "
-                                    "THEN set_color_part(@symbol_color, 'alpha', "
-                                    "scale_linear(@zoom_level, %1, %2, "
-                                    "%3, %4)) " )
-                    .arg( stops.value( i ).toList().value( 0 ).toString(),
-                          stops.value( i + 1 ).toList().value( 0 ).toString() )
-                    .arg( stops.value( i ).toList().value( 1 ).toDouble() * maxOpacity )
-                    .arg( stops.value( i + 1 ).toList().value( 1 ).toDouble() * maxOpacity );
-    }
-  }
-  else
-  {
-    // base != 1 -> scale_expr
-    for ( int i = 0; i < stops.size() - 1; ++i )
-    {
-      caseString += QStringLiteral( " WHEN @zoom_level >= %1 AND @zoom_level < %2 "
-                                    "THEN set_color_part(@symbol_color, 'alpha', %3)" )
-                    .arg( stops.value( i ).toList().value( 0 ).toString(),
-                          stops.value( i + 1 ).toList().value( 0 ).toString(),
-                          interpolateExpression( stops.value( i ).toList().value( 0 ).toInt(),
-                              stops.value( i + 1 ).toList().value( 0 ).toInt(),
-                              stops.value( i ).toList().value( 1 ).toDouble() * maxOpacity,
-                              stops.value( i + 1 ).toList().value( 1 ).toDouble() * maxOpacity, base ) );
-    }
+    caseString += QStringLiteral( " WHEN @zoom_level >= %1 AND @zoom_level < %2 "
+                                  "THEN set_color_part(@symbol_color, 'alpha', %3)" )
+                  .arg( stops.value( i ).toList().value( 0 ).toString(),
+                        stops.value( i + 1 ).toList().value( 0 ).toString(),
+                        interpolateExpression( stops.value( i ).toList().value( 0 ).toInt(),
+                            stops.value( i + 1 ).toList().value( 0 ).toInt(),
+                            stops.value( i ).toList().value( 1 ).toDouble() * maxOpacity,
+                            stops.value( i + 1 ).toList().value( 1 ).toDouble() * maxOpacity, base ) );
   }
 
-  caseString += QStringLiteral( "WHEN @zoom_level >= %1 "
+  caseString += QStringLiteral( " WHEN @zoom_level >= %1 "
                                 "THEN set_color_part(@symbol_color, 'alpha', %2) END" )
                 .arg( stops.last().toList().value( 0 ).toString() )
                 .arg( stops.last().toList().value( 1 ).toDouble() * maxOpacity );
@@ -1432,35 +1346,15 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolatePointByZoom( const QVaria
   QString scaleExpression;
   if ( stops.size() <= 2 )
   {
-    if ( base == 1 )
-    {
-      scaleExpression = QStringLiteral( "array(scale_linear(@zoom_level, %1, %2, %3, %4)" ).arg( stops.value( 0 ).toList().value( 0 ).toString(),
-                        stops.last().toList().value( 0 ).toString(),
-                        stops.value( 0 ).toList().value( 1 ).toList().value( 0 ).toString(),
-                        stops.last().toList().value( 1 ).toList().value( 0 ).toString() );
-      if ( multiplier != 1.0 )
-        scaleExpression += QStringLiteral( " * %2" ).arg( multiplier );
-
-      scaleExpression += QStringLiteral( ",scale_linear(@zoom_level, %1, %2, %3, %4)" ).arg( stops.value( 0 ).toList().value( 0 ).toString(),
-                         stops.last().toList().value( 0 ).toString(),
-                         stops.value( 0 ).toList().value( 1 ).toList().value( 1 ).toString(),
-                         stops.last().toList().value( 1 ).toList().value( 1 ).toString() );
-      if ( multiplier != 1.0 )
-        scaleExpression += QStringLiteral( " * %2" ).arg( multiplier );
-      scaleExpression += ')';
-    }
-    else
-    {
-      scaleExpression = QStringLiteral( "array(%1,%2)" ).arg( interpolateExpression( stops.value( 0 ).toList().value( 0 ).toInt(),
-                        stops.last().toList().value( 0 ).toInt(),
-                        stops.value( 0 ).toList().value( 1 ).toList().value( 0 ).toInt(),
-                        stops.last().toList().value( 1 ).toList().value( 0 ).toInt(), base, multiplier ),
-                        interpolateExpression( stops.value( 0 ).toList().value( 0 ).toInt(),
-                            stops.last().toList().value( 0 ).toInt(),
-                            stops.value( 0 ).toList().value( 1 ).toList().value( 1 ).toInt(),
-                            stops.last().toList().value( 1 ).toList().value( 1 ).toInt(), base, multiplier )
-                                                            );
-    }
+    scaleExpression = QStringLiteral( "array(%1,%2)" ).arg( interpolateExpression( stops.value( 0 ).toList().value( 0 ).toInt(),
+                      stops.last().toList().value( 0 ).toInt(),
+                      stops.value( 0 ).toList().value( 1 ).toList().value( 0 ).toInt(),
+                      stops.last().toList().value( 1 ).toList().value( 0 ).toInt(), base, multiplier ),
+                      interpolateExpression( stops.value( 0 ).toList().value( 0 ).toInt(),
+                          stops.last().toList().value( 0 ).toInt(),
+                          stops.value( 0 ).toList().value( 1 ).toList().value( 1 ).toInt(),
+                          stops.last().toList().value( 1 ).toList().value( 1 ).toInt(), base, multiplier )
+                                                          );
   }
   else
   {
@@ -1498,37 +1392,11 @@ QString QgsMapBoxGlStyleConverter::parsePointStops( double base, const QVariantL
       return QString();
     }
 
-    if ( base == 1 )
-    {
-      // base = 1 -> scale_linear
-      caseString += QStringLiteral( "WHEN @zoom_level > %1 AND @zoom_level <= %2 "
-                                    "THEN array(scale_linear(@zoom_level, %1, %2, %3, %4)" ).arg( bz.toString(),
-                                        tz.toString(),
-                                        bv.toList().value( 0 ).toString(),
-                                        tv.toList().value( 0 ).toString() );
-      if ( multiplier != 1.0 )
-      {
-        caseString += QStringLiteral( "* %1 " ).arg( multiplier );
-      }
-      caseString += QStringLiteral( ",scale_linear(@zoom_level, %1, %2, %3, %4)" ).arg( bz.toString(),
-                    tz.toString(),
-                    bv.toList().value( 1 ).toString(),
-                    tv.toList().value( 1 ).toString() );
-      if ( multiplier != 1.0 )
-      {
-        caseString += QStringLiteral( "* %1 " ).arg( multiplier );
-      }
-      caseString += ')';
-    }
-    else
-    {
-      // base != 1 -> scale_exp
-      caseString += QStringLiteral( "WHEN @zoom_level > %1 AND @zoom_level <= %2 "
-                                    "THEN array(%3,%4)" ).arg( bz.toString(),
-                                        tz.toString(),
-                                        interpolateExpression( bz.toInt(), tz.toInt(), bv.toList().value( 0 ).toDouble(), tv.toList().value( 0 ).toDouble(), base, multiplier ),
-                                        interpolateExpression( bz.toInt(), tz.toInt(), bv.toList().value( 1 ).toDouble(), tv.toList().value( 1 ).toDouble(), base, multiplier ) );
-    }
+    caseString += QStringLiteral( "WHEN @zoom_level > %1 AND @zoom_level <= %2 "
+                                  "THEN array(%3,%4)" ).arg( bz.toString(),
+                                      tz.toString(),
+                                      interpolateExpression( bz.toInt(), tz.toInt(), bv.toList().value( 0 ).toDouble(), tv.toList().value( 0 ).toDouble(), base, multiplier ),
+                                      interpolateExpression( bz.toInt(), tz.toInt(), bv.toList().value( 1 ).toDouble(), tv.toList().value( 1 ).toDouble(), base, multiplier ) );
   }
   caseString += QStringLiteral( "END" );
   return caseString;
@@ -1558,29 +1426,47 @@ QString QgsMapBoxGlStyleConverter::parseStops( double base, const QVariantList &
       return QString();
     }
 
-    if ( base == 1 )
-    {
-      // base = 1 -> scale_linear
-      caseString += QStringLiteral( "WHEN @zoom_level > %1 AND @zoom_level <= %2 "
-                                    "THEN scale_linear(@zoom_level, %1, %2, %3, %4) " ).arg( bz.toString(),
-                                        tz.toString(),
-                                        bv.toString(),
-                                        tv.toString() );
-      if ( multiplier != 1.0 )
-      {
-        caseString += QStringLiteral( "* %1 " ).arg( multiplier );
-      }
-    }
-    else
-    {
-      // base != 1 -> scale_exp
-      caseString += QStringLiteral( "WHEN @zoom_level > %1 AND @zoom_level <= %2 "
-                                    "THEN %3 " ).arg( bz.toString(),
-                                        tz.toString(),
-                                        interpolateExpression( bz.toInt(), tz.toInt(), bv.toDouble(), tv.toDouble(), base, multiplier ) );
-    }
+    caseString += QStringLiteral( "WHEN @zoom_level > %1 AND @zoom_level <= %2 "
+                                  "THEN %3 " ).arg( bz.toString(),
+                                      tz.toString(),
+                                      interpolateExpression( bz.toInt(), tz.toInt(), bv.toDouble(), tv.toDouble(), base, multiplier ) );
   }
   caseString += QStringLiteral( "END" );
+  return caseString;
+}
+
+QString QgsMapBoxGlStyleConverter::parseStringStops( const QVariantList &stops, QgsMapBoxGlStyleConversionContext &context, const QVariantMap &conversionMap, QString *defaultString )
+{
+  QString caseString = QStringLiteral( "CASE " );
+
+  for ( int i = 0; i < stops.length() - 1; ++i )
+  {
+    // bottom zoom and value
+    const QVariant bz = stops.value( i ).toList().value( 0 );
+    const QString bv = stops.value( i ).toList().value( 1 ).toString();
+    if ( bz.type() == QVariant::List || bz.type() == QVariant::StringList )
+    {
+      context.pushWarning( QObject::tr( "QGIS does not support expressions in interpolation function, skipping." ) );
+      return QString();
+    }
+
+    // top zoom
+    const QVariant tz = stops.value( i + 1 ).toList().value( 0 );
+    if ( tz.type() == QVariant::List || tz.type() == QVariant::StringList )
+    {
+      context.pushWarning( QObject::tr( "QGIS does not support expressions in interpolation function, skipping." ) );
+      return QString();
+    }
+
+    caseString += QStringLiteral( "WHEN @zoom_level > %1 AND @zoom_level <= %2 "
+                                  "THEN %3 " ).arg( bz.toString(),
+                                      tz.toString(),
+                                      QgsExpression::quotedValue( conversionMap.value( bv, bv ) ) );
+  }
+  caseString += QStringLiteral( "ELSE %1 END" ).arg( QgsExpression::quotedValue( conversionMap.value( stops.constLast().toList().value( 1 ).toString(),
+                stops.constLast().toList().value( 1 ) ) ) );
+  if ( defaultString )
+    *defaultString = stops.constLast().toList().value( 1 ).toString();
   return caseString;
 }
 
@@ -1667,14 +1553,25 @@ QString QgsMapBoxGlStyleConverter::interpolateExpression( int zoomMin, int zoomM
   if ( qgsDoubleNear( valueMin, valueMax ) )
     return QString::number( valueMin * multiplier );
 
-  const QString expression = QStringLiteral( "scale_exp(@zoom_level,%1,%2,%3,%4,%5)" ).arg( zoomMin )
-                             .arg( zoomMax )
-                             .arg( valueMin )
-                             .arg( valueMax )
-                             .arg( base );
+  QString expression;
+  if ( base == 1 )
+  {
+    expression = QStringLiteral( "scale_linear(@zoom_level,%1,%2,%3,%4)" ).arg( zoomMin )
+                 .arg( zoomMax )
+                 .arg( valueMin )
+                 .arg( valueMax );
+  }
+  else
+  {
+    expression = QStringLiteral( "scale_exp(@zoom_level,%1,%2,%3,%4,%5)" ).arg( zoomMin )
+                 .arg( zoomMax )
+                 .arg( valueMin )
+                 .arg( valueMax )
+                 .arg( base );
+  }
 
   if ( multiplier != 1 )
-    return QStringLiteral( "(%1) * %2" ).arg( expression ).arg( multiplier );
+    return QStringLiteral( "%1 * %2" ).arg( expression ).arg( multiplier );
   else
     return expression;
 }
