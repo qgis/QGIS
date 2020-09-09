@@ -80,6 +80,8 @@ QgsZonalStatistics::Result QgsZonalStatistics::calculateStatistics( QgsFeedback 
     return LayerInvalid;
   }
 
+  QMap<QgsZonalStatistics::Statistic, int> statFieldIndexes;
+
   //add the new fields to the provider
   QList<QgsField> newFieldList;
   for ( QgsZonalStatistics::Statistic stat :
@@ -103,7 +105,7 @@ QgsZonalStatistics::Result QgsZonalStatistics::calculateStatistics( QgsFeedback 
       QString fieldName = getUniqueFieldName( mAttributePrefix + QgsZonalStatistics::shortName( stat ), newFieldList );
       QgsField field( fieldName, QVariant::Double, QStringLiteral( "double precision" ) );
       newFieldList.push_back( field );
-      mStatFieldIndexes.insert( stat, newFieldList.count() - 1 );
+      statFieldIndexes.insert( stat, newFieldList.count() - 1 );
     }
   }
 
@@ -144,7 +146,7 @@ QgsZonalStatistics::Result QgsZonalStatistics::calculateStatistics( QgsFeedback 
     QgsAttributeMap changeAttributeMap;
     for ( const auto &result : results.toStdMap() )
     {
-      changeAttributeMap.insert( result.first, result.second );
+      changeAttributeMap.insert( statFieldIndexes.value( result.first ), result.second );
     }
 
     changeMap.insert( feature.id(), changeAttributeMap );

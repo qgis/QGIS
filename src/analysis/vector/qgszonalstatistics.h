@@ -223,7 +223,6 @@ class ANALYSIS_EXPORT QgsZonalStatistics
     QgsVectorLayer *mPolygonLayer = nullptr;
     QString mAttributePrefix;
     Statistics mStatistics = QgsZonalStatistics::All;
-    QMap<QgsZonalStatistics::Statistic, int> mStatFieldIndexes;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsZonalStatistics::Statistics )
