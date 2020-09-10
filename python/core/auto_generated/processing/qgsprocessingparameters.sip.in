@@ -2522,14 +2522,14 @@ Sets the name of the parent layer parameter. Use an empty string if this is not 
 
     bool useInlineExpressionEditor() const;
 %Docstring
-Returns whether an inline expression editor is preffered.
+Returns whether an inline expression editor is preferred.
 
 .. seealso:: :py:func:`setUseInlineExpressionEditor`
 %End
 
     void setUseInlineExpressionEditor( bool useInlineExpressionEditor );
 %Docstring
-Sets whether an inline expression editor is preffered.
+Sets whether an inline expression editor is preferred.
 
 .. seealso:: :py:func:`useInlineExpressionEditor`
 %End

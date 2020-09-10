@@ -2449,13 +2449,13 @@ class CORE_EXPORT QgsProcessingParameterExpression : public QgsProcessingParamet
     void setParentLayerParameterName( const QString &parentLayerParameterName );
 
     /**
-     * Returns whether an inline expression editor is preffered.
+     * Returns whether an inline expression editor is preferred.
      * \see setUseInlineExpressionEditor()
      */
     bool useInlineExpressionEditor() const;
 
     /**
-     * Sets whether an inline expression editor is preffered.
+     * Sets whether an inline expression editor is preferred.
      * \see useInlineExpressionEditor()
      */
     void setUseInlineExpressionEditor( bool useInlineExpressionEditor );

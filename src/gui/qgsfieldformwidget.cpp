@@ -26,8 +26,8 @@ QgsFieldFormWidget::QgsFieldFormWidget( AdvancedFields advancedFields, QWidget *
 {
   setupUi( this );
   connect( mTypeCmb, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsFieldFormWidget::mTypeCmb_currentIndexChanged );
-  connect( mLengthSpinBox, QOverload<int>::of( &QSpinBox::valueChanged ), this, &QgsFieldFormWidget::mLengthSpinBox_valueChanged );
-  connect( mPrecisionSpinBox, QOverload<int>::of( &QSpinBox::valueChanged ), this, &QgsFieldFormWidget::changed );
+  connect( mLengthSpinBox, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, &QgsFieldFormWidget::mLengthSpinBox_valueChanged );
+  connect( mPrecisionSpinBox, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, &QgsFieldFormWidget::changed );
   connect( mFieldNameLineEdit, &QLineEdit::textChanged, this, &QgsFieldFormWidget::changed );
   connect( mFieldNameLineEdit, &QLineEdit::returnPressed, this, &QgsFieldFormWidget::returnPressed );
   connect( mAliasLineEdit, &QLineEdit::textChanged, this, &QgsFieldFormWidget::changed );

@@ -47,12 +47,24 @@ Constructor
 %End
 
     static void addStringType( QgsFieldFormWidget *fieldForm );
+%Docstring
+Adds string field type to given field form with default settings
+%End
 
     static void addIntegerType( QgsFieldFormWidget *fieldForm );
+%Docstring
+Adds integer field type to given field form with default settings
+%End
 
     static void addRealType( QgsFieldFormWidget *fieldForm );
+%Docstring
+Adds real field type to given field form with default settings
+%End
 
     static void addDateType( QgsFieldFormWidget *fieldForm );
+%Docstring
+Adds date field type to given field form with default settings
+%End
 
     QString name() const;
 %Docstring

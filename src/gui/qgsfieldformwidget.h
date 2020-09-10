@@ -59,21 +59,25 @@ class GUI_EXPORT QgsFieldFormWidget : public QWidget, private Ui::QgsFieldFormWi
     //! Constructor
     QgsFieldFormWidget( AdvancedFields advancedFields = QgsFieldFormWidget::AdvancedField::Neither, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
+    //! Adds string field type to given field form with default settings
     static void addStringType( QgsFieldFormWidget *fieldForm )
     {
       fieldForm->addType( QStringLiteral( "String" ), tr( "Text data" ), QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) ) );
     }
 
+    //! Adds integer field type to given field form with default settings
     static void addIntegerType( QgsFieldFormWidget *fieldForm )
     {
       fieldForm->addType( QStringLiteral( "Integer" ), tr( "Whole number (integer)" ), QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ) );
     }
 
+    //! Adds real field type to given field form with default settings
     static void addRealType( QgsFieldFormWidget *fieldForm )
     {
       fieldForm->addType( QStringLiteral( "Real" ), tr( "Decimal number (real)" ), QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldFloat.svg" ) ), 15, 15 );
     }
 
+    //! Adds date field type to given field form with default settings
     static void addDateType( QgsFieldFormWidget *fieldForm )
     {
       fieldForm->addType( QStringLiteral( "Date" ), tr( "Date" ), QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDate.svg" ) ) );

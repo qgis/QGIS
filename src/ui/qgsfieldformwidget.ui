@@ -16,9 +16,6 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <property name="windowTitle">
-   <string>Form</string>
-  </property>
   <property name="styleSheet">
    <string notr="true">QToolBox::tab:selected {
     font-weight: bold;
@@ -217,7 +214,7 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>287</width>
+           <width>266</width>
            <height>44</height>
           </rect>
          </property>
