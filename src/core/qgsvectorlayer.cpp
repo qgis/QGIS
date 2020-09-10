@@ -2129,29 +2129,8 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
       for ( int i = 0; i < relationNodes.length(); ++i )
       {
         const QDomElement relationElement = relationNodes.at( i ).toElement();
-        QList<QgsRelation::FieldPair> fieldPairs;
-        const QDomNodeList fieldPairNodes { relationElement.elementsByTagName( QStringLiteral( "fieldPair" ) ) };
-        for ( int j = 0; j < fieldPairNodes.length(); ++j )
-        {
-          const QDomElement fieldPairElement = fieldPairNodes.at( j ).toElement();
-          fieldPairs.push_back( { fieldPairElement.attribute( QStringLiteral( "referencing" ) ),
-                                  fieldPairElement.attribute( QStringLiteral( "referenced" ) ) } );
-        }
-        mWeakRelations.push_back( QgsWeakRelation { relationElement.attribute( QStringLiteral( "id" ) ),
-                                  relationElement.attribute( QStringLiteral( "name" ) ),
-                                  static_cast<QgsRelation::RelationStrength>( relationElement.attribute( QStringLiteral( "strength" ) ).toInt() ),
-                                  // Referencing
-                                  id(),
-                                  name(),
-                                  resolver.writePath( publicSource() ),
-                                  providerType(),
-                                  // Referenced
-                                  relationElement.attribute( QStringLiteral( "layerId" ) ),
-                                  relationElement.attribute( QStringLiteral( "layerName" ) ),
-                                  relationElement.attribute( QStringLiteral( "dataSource" ) ),
-                                  relationElement.attribute( QStringLiteral( "providerKey" ) ),
-                                  fieldPairs
-                                                  } );
+
+        mWeakRelations.push_back( QgsWeakRelation::readXml( this, QgsWeakRelation::Referencing, relationElement, resolver ) );
       }
     }
 
@@ -2163,29 +2142,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
       for ( int i = 0; i < relationNodes.length(); ++i )
       {
         const QDomElement relationElement = relationNodes.at( i ).toElement();
-        QList<QgsRelation::FieldPair> fieldPairs;
-        const QDomNodeList fieldPairNodes { relationElement.elementsByTagName( QStringLiteral( "fieldPair" ) ) };
-        for ( int j = 0; j < fieldPairNodes.length(); ++j )
-        {
-          const QDomElement fieldPairElement = fieldPairNodes.at( j ).toElement();
-          fieldPairs.push_back( { fieldPairElement.attribute( QStringLiteral( "referencing" ) ),
-                                  fieldPairElement.attribute( QStringLiteral( "referenced" ) ) } );
-        }
-        mWeakRelations.push_back( QgsWeakRelation { relationElement.attribute( QStringLiteral( "id" ) ),
-                                  relationElement.attribute( QStringLiteral( "name" ) ),
-                                  static_cast<QgsRelation::RelationStrength>( relationElement.attribute( QStringLiteral( "strength" ) ).toInt() ),
-                                  // Referencing
-                                  relationElement.attribute( QStringLiteral( "layerId" ) ),
-                                  relationElement.attribute( QStringLiteral( "layerName" ) ),
-                                  relationElement.attribute( QStringLiteral( "dataSource" ) ),
-                                  relationElement.attribute( QStringLiteral( "providerKey" ) ),
-                                  // Referenced
-                                  id(),
-                                  name(),
-                                  resolver.writePath( publicSource() ),
-                                  providerType(),
-                                  fieldPairs
-                                                  } );
+        mWeakRelations.push_back( QgsWeakRelation::readXml( this, QgsWeakRelation::Referenced, relationElement, resolver ) );
       }
     }
   }
