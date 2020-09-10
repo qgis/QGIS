@@ -477,6 +477,8 @@ Default value is 96
 
 
 
+
+
     bool isSkyboxEnabled() const;
 %Docstring
 Returns whether the skybox is enabled.
@@ -623,6 +625,13 @@ Emitted when the camera lens field of view changes
     void skyboxSettingsChanged();
 %Docstring
 Emitted when skybox settings are changed
+
+.. versionadded:: 3.16
+%End
+
+    void shadowSettingsChanged();
+%Docstring
+Emitted when shadow rendering settings are changed
 
 .. versionadded:: 3.16
 %End
