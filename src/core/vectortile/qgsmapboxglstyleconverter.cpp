@@ -1150,6 +1150,82 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
   labelingStyle.setLabelSettings( labelSettings );
 
   hasLabeling = true;
+
+  if ( jsonLayout.contains( QStringLiteral( "icon-image" ) ) )
+  {
+    QSize spriteSize;
+    const QString sprite = retrieveSpriteAsBase64( jsonLayout.value( QStringLiteral( "icon-image" ) ).toString(), context, spriteSize );
+    if ( !sprite.isEmpty() )
+    {
+      hasRenderer = true;
+      QgsRasterMarkerSymbolLayer *rasterMarker = new QgsRasterMarkerSymbolLayer( );
+      rasterMarker->setPath( sprite );
+      rasterMarker->setSize( context.pixelSizeConversionFactor() * spriteSize.width() );
+      rasterMarker->setSizeUnit( context.targetUnit() );
+
+      QgsPropertyCollection markerDdProperties;
+      double rotation = 0.0;
+      if ( jsonLayout.contains( QStringLiteral( "icon-rotate" ) ) )
+      {
+        const QVariant jsonIconRotate = jsonLayout.value( QStringLiteral( "icon-rotate" ) );
+        switch ( jsonIconRotate.type() )
+        {
+          case QVariant::Int:
+          case QVariant::Double:
+            rotation = jsonIconRotate.toDouble();
+            break;
+
+          case QVariant::Map:
+            markerDdProperties.setProperty( QgsSymbolLayer::PropertyAngle, parseInterpolateByZoom( jsonIconRotate.toMap(), context, context.pixelSizeConversionFactor(), &rotation ) );
+            break;
+
+          case QVariant::List:
+          case QVariant::StringList:
+            markerDdProperties.setProperty( QgsSymbolLayer::PropertyAngle, parseInterpolateListByZoom( jsonIconRotate.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), 255, nullptr, &rotation ) );
+            break;
+
+          default:
+            context.pushWarning( QObject::tr( "Skipping non-implemented icon-rotate expression" ) );
+            break;
+        }
+      }
+
+      double iconOpacity = -1.0;
+      if ( jsonPaint.contains( QStringLiteral( "icon-opacity" ) ) )
+      {
+        const QVariant jsonIconOpacity = jsonPaint.value( QStringLiteral( "icon-opacity" ) );
+        switch ( jsonIconOpacity.type() )
+        {
+          case QVariant::Int:
+          case QVariant::Double:
+            iconOpacity = jsonIconOpacity.toDouble();
+            break;
+
+          case QVariant::Map:
+            markerDdProperties.setProperty( QgsSymbolLayer::PropertyOpacity, parseInterpolateByZoom( jsonIconOpacity.toMap(), context, 100, &iconOpacity ) );
+            break;
+
+          case QVariant::List:
+          case QVariant::StringList:
+            markerDdProperties.setProperty( QgsSymbolLayer::PropertyOpacity, parseInterpolateListByZoom( jsonIconOpacity.toList(), PropertyType::Numeric, context, 100, 255, nullptr, &iconOpacity ) );
+            break;
+
+          default:
+            context.pushWarning( QObject::tr( "Skipping non-implemented icon-opacity expression" ) );
+            break;
+        }
+      }
+
+      rasterMarker->setDataDefinedProperties( markerDdProperties );
+      rasterMarker->setAngle( rotation );
+      if ( iconOpacity >= 0 )
+        rasterMarker->setOpacity( iconOpacity );
+
+      QgsMarkerSymbol *markerSymbol = new QgsMarkerSymbol( QgsSymbolLayerList() << rasterMarker );
+      renderer.setSymbol( markerSymbol );
+      renderer.setGeometryType( QgsWkbTypes::PointGeometry );
+    }
+  }
 }
 
 bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &rendererStyle, QgsMapBoxGlStyleConversionContext &context )
