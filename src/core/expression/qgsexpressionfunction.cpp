@@ -5689,6 +5689,10 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   const QVariant sourceLayerRef = context->variable( QStringLiteral( "layer" ) ); //used to detect if sourceLayer and targetLayer are the same
   QgsVectorLayer *sourceLayer = QgsExpressionUtils::getVectorLayer( sourceLayerRef, parent );
 
+  QgsFeatureRequest request;
+  request.setTimeout( 10000 );
+  request.setRequestMayBeNested( true );
+
   // First parameter is the overlay layer
   QgsExpressionNode *node = QgsExpressionUtils::getNode( values.at( 0 ), parent );
   ENSURE_NO_EVAL_ERROR
@@ -5711,7 +5715,6 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   }
 
   // Third parameter is the filtering expression
-  QgsFeatureRequest request; // TODO only required attributes
   node = QgsExpressionUtils::getNode( values.at( 2 ), parent );
   ENSURE_NO_EVAL_ERROR
   QString filterString = node->dump();
