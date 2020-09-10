@@ -13,7 +13,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+#include <QApplication>
 #include "qgsweakrelation.h"
+#include "qgslogger.h"
 
 
 QgsWeakRelation::QgsWeakRelation( const QString &relationId, const QString &relationName, const QgsRelation::RelationStrength strength,
@@ -72,6 +75,61 @@ QgsRelation::RelationStrength QgsWeakRelation::strength() const
 QList<QgsRelation::FieldPair> QgsWeakRelation::fieldPairs() const
 {
   return mFieldPairs;
+}
+
+QgsWeakRelation QgsWeakRelation::readXml( const QgsVectorLayer *layer, WeakRelationType type, const QDomNode &node,  const QgsPathResolver resolver )
+{
+  QDomElement relationElement = node.toElement();
+
+  if ( relationElement.tagName() != QLatin1String( "relation" ) )
+  {
+    QgsLogger::warning( QApplication::translate( "QgsRelation", "Cannot create relation. Unexpected tag '%1'" ).arg( relationElement.tagName() ) );
+  }
+
+  QList<QgsRelation::FieldPair> fieldPairs;
+  const QDomNodeList fieldPairNodes { relationElement.elementsByTagName( QStringLiteral( "fieldPair" ) ) };
+  for ( int j = 0; j < fieldPairNodes.length(); ++j )
+  {
+    const QDomElement fieldPairElement = fieldPairNodes.at( j ).toElement();
+    fieldPairs.push_back( { fieldPairElement.attribute( QStringLiteral( "referencing" ) ),
+                            fieldPairElement.attribute( QStringLiteral( "referenced" ) ) } );
+  }
+
+  switch ( type )
+  {
+    case Referencing:
+      return    QgsWeakRelation { relationElement.attribute( QStringLiteral( "id" ) ),
+                                  relationElement.attribute( QStringLiteral( "name" ) ),
+                                  static_cast<QgsRelation::RelationStrength>( relationElement.attribute( QStringLiteral( "strength" ) ).toInt() ),
+                                  // Referencing
+                                  layer->id(),
+                                  layer->name(),
+                                  resolver.writePath( layer->publicSource() ),
+                                  layer->providerType(),
+                                  // Referenced
+                                  relationElement.attribute( QStringLiteral( "layerId" ) ),
+                                  relationElement.attribute( QStringLiteral( "layerName" ) ),
+                                  relationElement.attribute( QStringLiteral( "dataSource" ) ),
+                                  relationElement.attribute( QStringLiteral( "providerKey" ) ),
+                                  fieldPairs
+                              };
+    case Referenced:
+      return QgsWeakRelation { relationElement.attribute( QStringLiteral( "id" ) ),
+                               relationElement.attribute( QStringLiteral( "name" ) ),
+                               static_cast<QgsRelation::RelationStrength>( relationElement.attribute( QStringLiteral( "strength" ) ).toInt() ),
+                               // Referencing
+                               relationElement.attribute( QStringLiteral( "layerId" ) ),
+                               relationElement.attribute( QStringLiteral( "layerName" ) ),
+                               relationElement.attribute( QStringLiteral( "dataSource" ) ),
+                               relationElement.attribute( QStringLiteral( "providerKey" ) ),
+                               // Referenced
+                               layer->id(),
+                               layer->name(),
+                               resolver.writePath( layer->publicSource() ),
+                               layer->providerType(),
+                               fieldPairs
+                           };
+  }
 }
 
 void QgsWeakRelation::writeXml( const QgsVectorLayer *layer, const QgsRelation &relation, QDomNode &node, QDomDocument &doc )
