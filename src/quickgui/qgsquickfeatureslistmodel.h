@@ -138,9 +138,13 @@ class QUICK_EXPORT QgsQuickFeaturesListModel : public QAbstractListModel
     int featuresCount() const;
     //! Returns type of this model
     modelTypes modelType() const;
-    //! Getter for filter expression, empty string represents no filter
+    //! Returns filter expression, empty string represents no filter
     QString filterExpression() const;
-    //! Setter for filter expression, upon setting also reloads features from current layer with new filter
+
+    /**
+     * \brief setFilterExpression Sets filter expression, upon setting also reloads features from current layer with new filter
+     * \param filterExpression QString to set, empty string represents no filter
+     */
     void setFilterExpression( const QString &filterExpression );
 
   public slots:
@@ -148,6 +152,7 @@ class QUICK_EXPORT QgsQuickFeaturesListModel : public QAbstractListModel
     void setModelType( modelTypes modelType );
 
   signals:
+
     /**
      * \brief featuresCountChanged Signal emitted when features are reloaded or layer is changed
      * \param featuresCount number of features in layer, not number of loaded features
@@ -196,9 +201,11 @@ class QUICK_EXPORT QgsQuickFeaturesListModel : public QAbstractListModel
     //! Pointer to layer that is currently loaded
     QgsVectorLayer *mCurrentLayer = nullptr;
 
-    //! Data from config for value relations
-    //! mCache is not affected by reloading features when filter expression is changed and
-    //! is kept until next call of emptyData.
+    /**
+     * Data from config for value relations
+     * mCache is not affected by reloading features when filter expression is changed and
+     * is kept until next call of emptyData.
+     */
     QgsValueRelationFieldFormatter::ValueRelationCache mCache;
 
     //! Type of a model - Listing (browsing) features or use in value relation widget
