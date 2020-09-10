@@ -53,9 +53,11 @@ class GUI_EXPORT QgsLayoutMapGridWidget: public QgsLayoutItemBaseWidget, private
     void mRotatedTicksCheckBox_toggled( bool checked );
     void mRotatedTicksLengthModeComboBox_currentIndexChanged( int );
     void mRotatedTicksThresholdSpinBox_valueChanged( double val );
+    void mRotatedTicksMarginToCornerSpinBox_valueChanged( double val );
     void mRotatedAnnotationsCheckBox_toggled( bool checked );
     void mRotatedAnnotationsLengthModeComboBox_currentIndexChanged( int );
     void mRotatedAnnotationsThresholdSpinBox_valueChanged( double val );
+    void mRotatedAnnotationsMarginToCornerSpinBox_valueChanged( double val );
     void mGridFrameMarginSpinBox_valueChanged( double val );
     void mFrameStyleComboBox_currentIndexChanged( int );
     void mGridFramePenSizeSpinBox_valueChanged( double d );
