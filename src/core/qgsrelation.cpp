@@ -126,14 +126,7 @@ void QgsRelation::writeXml( QDomNode &node, QDomDocument &doc ) const
   elem.setAttribute( QStringLiteral( "name" ), d->mRelationName );
   elem.setAttribute( QStringLiteral( "referencingLayer" ), d->mReferencingLayerId );
   elem.setAttribute( QStringLiteral( "referencedLayer" ), d->mReferencedLayerId );
-  if ( d->mRelationStrength == RelationStrength::Composition )
-  {
-    elem.setAttribute( QStringLiteral( "strength" ), QStringLiteral( "Composition" ) );
-  }
-  else
-  {
-    elem.setAttribute( QStringLiteral( "strength" ), QStringLiteral( "Association" ) );
-  }
+  elem.setAttribute( QStringLiteral( "strength" ), qgsEnumValueToKey<RelationStrength>( d->mRelationStrength ) );
 
   for ( const FieldPair &pair : qgis::as_const( d->mFieldPairs ) )
   {
