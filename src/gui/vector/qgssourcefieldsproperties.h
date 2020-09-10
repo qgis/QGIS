@@ -82,6 +82,7 @@ class GUI_EXPORT QgsSourceFieldsProperties : public QWidget, private Ui_QgsSourc
       AttrCommentCol,
       AttrWMSCol,
       AttrWFSCol,
+      AttrSearchableCol,
       AttrColCount,
     };
 
