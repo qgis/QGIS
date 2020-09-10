@@ -94,14 +94,7 @@ QgsRelation QgsRelation::createFromXml( const QDomNode &node, QgsReadWriteContex
   relation.d->mReferencedLayer = qobject_cast<QgsVectorLayer *>( referencedLayer );
   relation.d->mRelationId = id;
   relation.d->mRelationName = name;
-  if ( strength == QLatin1String( "Composition" ) )
-  {
-    relation.d->mRelationStrength = RelationStrength::Composition;
-  }
-  else
-  {
-    relation.d->mRelationStrength = RelationStrength::Association;
-  }
+  relation.d->mRelationStrength = qgsEnumKeyToValue<QgsRelation::RelationStrength>( strength, RelationStrength::Association );
 
   QDomNodeList references = elem.elementsByTagName( QStringLiteral( "fieldRef" ) );
   for ( int i = 0; i < references.size(); ++i )
@@ -126,14 +119,7 @@ void QgsRelation::writeXml( QDomNode &node, QDomDocument &doc ) const
   elem.setAttribute( QStringLiteral( "name" ), d->mRelationName );
   elem.setAttribute( QStringLiteral( "referencingLayer" ), d->mReferencingLayerId );
   elem.setAttribute( QStringLiteral( "referencedLayer" ), d->mReferencedLayerId );
-  if ( d->mRelationStrength == RelationStrength::Composition )
-  {
-    elem.setAttribute( QStringLiteral( "strength" ), QStringLiteral( "Composition" ) );
-  }
-  else
-  {
-    elem.setAttribute( QStringLiteral( "strength" ), QStringLiteral( "Association" ) );
-  }
+  elem.setAttribute( QStringLiteral( "strength" ), qgsEnumValueToKey<RelationStrength>( d->mRelationStrength ) );
 
   for ( const FieldPair &pair : qgis::as_const( d->mFieldPairs ) )
   {
