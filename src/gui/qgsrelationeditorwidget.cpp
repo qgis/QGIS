@@ -322,7 +322,6 @@ void QgsRelationEditorWidget::setRelations( const QgsRelation &relation, const Q
     if ( it.value()->layers().contains( mRelation.referencingLayer() ) )
     {
       mToggleEditingButton->setVisible( false );
-      mSaveEditsButton->setVisible( false );
     }
   }
 
@@ -343,7 +342,6 @@ void QgsRelationEditorWidget::setRelations( const QgsRelation &relation, const Q
   if ( canChangeAttributes && !lyr->readOnly() )
   {
     mToggleEditingButton->setEnabled( true );
-    updateButtons();
   }
   else
   {
@@ -429,7 +427,7 @@ void QgsRelationEditorWidget::updateButtons()
   mLinkFeatureButton->setVisible( mButtons.testFlag( QgsAttributeEditorRelation::Button::Link ) );
   mUnlinkFeatureButton->setVisible( mButtons.testFlag( QgsAttributeEditorRelation::Button::Unlink ) );
   mSaveEditsButton->setVisible( mButtons.testFlag( QgsAttributeEditorRelation::Button::SaveChildEdits ) );
-  mAddFeatureButton->setVisible( mButtons.testFlag( QgsAttributeEditorRelation::Button::AddChildFeature ) );
+  mAddFeatureButton->setVisible( mButtons.testFlag( QgsAttributeEditorRelation::Button::AddChildFeature ) && mToggleEditingButton->isVisible() );
   mAddFeatureGeometryButton->setVisible( mButtons.testFlag( QgsAttributeEditorRelation::Button::AddChildFeature ) && mEditorContext.mapCanvas() && mEditorContext.cadDockWidget() && spatial );
   mDuplicateFeatureButton->setVisible( mButtons.testFlag( QgsAttributeEditorRelation::Button::DuplicateChildFeature ) );
   mDeleteFeatureButton->setVisible( mButtons.testFlag( QgsAttributeEditorRelation::Button::DeleteChildFeature ) );
