@@ -1,7 +1,7 @@
 {
   "name": "geometry_overlay_nearest",
   "type": "function",
-  "description": "This returns an array of results of an expression evaluated on features from an other layer ordered BY DISTANCE to the current feature, or, if no expression if provided, simply returns whether at least one feature from the other layer was found. Note : this function can be slow and consume a lot of memory for large layers.",
+  "description": "This returns an array of results of an expression evaluated on features from a different layer ordered BY DISTANCE to the current feature, or, if no expression if provided, simply returns whether at least one feature from the other layer was found. Note : this function can be slow and consume a lot of memory for large layers.",
   "arguments": [
     {
       "arg": "layer",

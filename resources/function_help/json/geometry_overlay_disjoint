@@ -1,7 +1,7 @@
 {
   "name": "geometry_overlay_disjoint",
   "type": "function",
-    "description": "Performs a spatial join of type DISJOINT. This returns an array of results of an expression evaluated on features from an other layer that DISJOINT the current feature, or, if no expression if provided, simply returns whether at least one feature from the other layer DISJOINT the current feature.",
+    "description": "Performs a spatial join of type DISJOINT. This returns an array of results of an expression evaluated on features from a different layer that DISJOINT the current feature, or, if no expression if provided, simply returns whether at least one feature from the other layer DISJOINT the current feature.",
     "arguments": [
     {
       "arg": "layer",
