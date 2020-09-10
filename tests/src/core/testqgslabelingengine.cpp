@@ -1286,6 +1286,18 @@ void TestQgsLabelingEngine::testCurvedLabelCorrectLinePlacement()
 
   img = job3.renderedImage();
   QVERIFY( imageCheck( QStringLiteral( "label_curved_label_online_distance_1" ), img, 20 ) );
+
+  // and on line with negative distance value...
+  settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::OnLine | QgsLabeling::LinePlacementFlag::MapOrientation );
+  settings.dist = -5.0;
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+
+  QgsMapRendererSequentialJob job4( mapSettings );
+  job4.start();
+  job4.waitForFinished();
+
+  img = job4.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "label_curved_label_online_negative_distance_1" ), img, 20 ) );
 }
 
 void TestQgsLabelingEngine::testCurvedLabelNegativeDistance()
