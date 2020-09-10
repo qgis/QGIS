@@ -329,8 +329,10 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     QObjectUniquePtr<QgsMapToolDigitizeFeature> mMapToolDigitize;
     QButtonGroup *mViewModeButtonGroup = nullptr;
 
+    QgsAttributeEditorRelation::Buttons mButtons;
     bool mShowLabel = true;
     bool mVisible = false;
+    bool mChildIsSpatial = false;
 
     bool mForceSuppressFormPopup = false;
     QVariant mNmRelationId;
