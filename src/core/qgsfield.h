@@ -60,8 +60,27 @@ class CORE_EXPORT QgsField
     Q_PROPERTY( QString alias READ alias WRITE setAlias )
     Q_PROPERTY( QgsDefaultValue defaultValueDefinition READ defaultValueDefinition WRITE setDefaultValueDefinition )
     Q_PROPERTY( QgsFieldConstraints constraints READ constraints WRITE setConstraints )
+    Q_PROPERTY( ConfigurationFlags configurationFlags READ configurationFlags WRITE setConfigurationFlags )
+
 
   public:
+
+#ifndef SIP_RUN
+
+    /**
+       * Configuration flags for fields
+       * These flags are meant to be user-configurable
+       * and are not describing any information from the data provider.
+       * \since QGIS 3.16
+       */
+    enum class ConfigurationFlag : int
+    {
+      Searchable = 0x1, //!< Defines if the field is searchable (used in the locator search for instance)
+      DefaultFlags = Searchable, //!< Default set of flags for a field
+    };
+    Q_ENUM( ConfigurationFlag )
+    Q_DECLARE_FLAGS( ConfigurationFlags, ConfigurationFlag )
+#endif
 
     /**
      * Constructor. Constructs a new QgsField object.
@@ -281,6 +300,18 @@ class CORE_EXPORT QgsField
      * \since QGIS 3.0
      */
     void setAlias( const QString &alias );
+
+    /**
+     * Returns the Flags for the field (searchable, …)
+     * \since QGIS 3.16
+     */
+    QgsField::ConfigurationFlags configurationFlags() const SIP_SKIP;
+
+    /**
+     * Sets the Flags for the field (searchable, …)
+     * \since QGIS 3.16
+     */
+    void setConfigurationFlags( QgsField::ConfigurationFlags configurationFlags ) SIP_SKIP;
 
     //! Formats string for display
     QString displayString( const QVariant &v ) const;
