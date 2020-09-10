@@ -313,6 +313,7 @@ QgsVectorLayer *QgsVectorLayer::clone() const
   for ( int i = 0; i < fields().count(); i++ )
   {
     layer->setFieldAlias( i, attributeAlias( i ) );
+    layer->setFieldConfigurationFlags( i, fieldConfigurationFlags( i ) );
     layer->setEditorWidgetSetup( i, editorWidgetSetup( i ) );
     layer->setConstraintExpression( i, constraintExpression( i ), constraintDescription( i ) );
     layer->setDefaultValueDefinition( i, defaultValueDefinition( i ) );
@@ -2337,6 +2338,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
       const QDomElement fieldWidgetElement = fieldConfigElement.elementsByTagName( QStringLiteral( "editWidget" ) ).at( 0 ).toElement();
 
       QString fieldName = fieldConfigElement.attribute( QStringLiteral( "name" ) );
+      mFieldConfigurationFlags[fieldName] = qgsFlagKeysToValue( fieldConfigElement.attribute( QStringLiteral( "configurationFlags" ) ), QgsField::ConfigurationFlag::DefaultFlags );
 
       const QString widgetType = fieldWidgetElement.attribute( QStringLiteral( "type" ) );
       const QDomElement cfgElem = fieldConfigElement.elementsByTagName( QStringLiteral( "config" ) ).at( 0 ).toElement();
@@ -2627,6 +2629,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
     {
       QDomElement fieldElement = doc.createElement( QStringLiteral( "field" ) );
       fieldElement.setAttribute( QStringLiteral( "name" ), field.name() );
+      fieldElement.setAttribute( QStringLiteral( "configurationFlags" ), qgsFlagValueToKeys( field.configurationFlags() ) );
 
       fieldConfigurationElement.appendChild( fieldElement );
 
@@ -3772,6 +3775,17 @@ void QgsVectorLayer::updateFields()
       continue;
 
     mFields[ index ].setAlias( aliasIt.value() );
+  }
+
+  // Update configuration flags
+  QMap< QString, QgsField::ConfigurationFlags >::const_iterator flagsIt = mFieldConfigurationFlags.constBegin();
+  for ( ; flagsIt != mFieldConfigurationFlags.constEnd(); ++flagsIt )
+  {
+    int index = mFields.lookupField( flagsIt.key() );
+    if ( index < 0 )
+      continue;
+
+    mFields[index].setConfigurationFlags( flagsIt.value() );
   }
 
   // Update default values
@@ -5466,6 +5480,26 @@ void QgsVectorLayer::setConstraintExpression( int index, const QString &expressi
     mFieldConstraintExpressions.insert( mFields.at( index ).name(), qMakePair( expression, description ) );
   }
   updateFields();
+}
+
+void QgsVectorLayer::setFieldConfigurationFlags( int index, QgsField::ConfigurationFlags flags )
+{
+  if ( index < 0 || index >= mFields.count() )
+    return;
+
+  mFields.at( index ).setConfigurationFlags( flags );
+
+  mFieldConfigurationFlags.insert( mFields.at( index ).name(), flags );
+  updateFields();
+}
+
+QgsField::ConfigurationFlags QgsVectorLayer::fieldConfigurationFlags( int index ) const
+{
+
+  if ( index < 0 || index >= mFields.count() )
+    return QgsField::ConfigurationFlag::DefaultFlags;
+
+  return mFields.at( index ).configurationFlags();
 }
 
 void QgsVectorLayer::setEditorWidgetSetup( int index, const QgsEditorWidgetSetup &setup )

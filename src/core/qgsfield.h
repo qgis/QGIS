@@ -75,11 +75,13 @@ class CORE_EXPORT QgsField
        */
     enum class ConfigurationFlag : int
     {
+      None = 0, //!< No flag is defined
       Searchable = 0x1, //!< Defines if the field is searchable (used in the locator search for instance)
       DefaultFlags = Searchable, //!< Default set of flags for a field
     };
     Q_ENUM( ConfigurationFlag )
     Q_DECLARE_FLAGS( ConfigurationFlags, ConfigurationFlag )
+    Q_FLAG( ConfigurationFlags )
 #endif
 
     /**
@@ -430,6 +432,8 @@ class CORE_EXPORT QgsField
 }; // class QgsField
 
 Q_DECLARE_METATYPE( QgsField )
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsField::ConfigurationFlags ) SIP_SKIP
 
 //! Writes the field to stream out. QGIS version compatibility is not guaranteed.
 CORE_EXPORT QDataStream &operator<<( QDataStream &out, const QgsField &field );

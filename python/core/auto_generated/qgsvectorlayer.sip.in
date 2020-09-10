@@ -2292,6 +2292,8 @@ can also be set. Setting an empty expression will clear any existing expression 
 .. versionadded:: 3.0
 %End
 
+
+
     void setEditorWidgetSetup( int index, const QgsEditorWidgetSetup &setup );
 %Docstring
 \copydoc editorWidgetSetup

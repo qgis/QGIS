@@ -2116,6 +2116,20 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void setConstraintExpression( int index, const QString &expression, const QString &description = QString() );
 
     /**
+     * Sets the configuration flags of the field at given index
+     * \see QgsField::ConfigurationFlags
+     * \since QGIS 3.16
+     */
+    void setFieldConfigurationFlags( int index, QgsField::ConfigurationFlags flags ) SIP_SKIP;
+
+    /**
+     * Returns the configuration flags of the field at given index
+     * \see QgsField::ConfigurationFlags
+     * \since QGIS 3.16
+     */
+    QgsField::ConfigurationFlags fieldConfigurationFlags( int index ) const SIP_SKIP;
+
+    /**
      * \copydoc editorWidgetSetup
      */
     void setEditorWidgetSetup( int index, const QgsEditorWidgetSetup &setup );
@@ -2834,6 +2848,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Map which stores expression constraints for fields. Value is a pair of expression/description.
     QMap< QString, QPair< QString, QString > > mFieldConstraintExpressions;
 
+    QMap< QString, QgsField::ConfigurationFlags > mFieldConfigurationFlags;
     QMap< QString, QgsEditorWidgetSetup > mFieldWidgetSetups;
 
     //! Holds the configuration for the edit form
