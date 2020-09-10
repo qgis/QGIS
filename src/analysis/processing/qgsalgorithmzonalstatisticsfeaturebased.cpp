@@ -164,9 +164,9 @@ QgsFeatureList QgsZonalStatisticsFeatureBasedAlgorithm::processFeature( const Qg
   attributes.resize( mOutputFields.size() );
 
   QMap<QgsZonalStatistics::Statistic, QVariant> results = QgsZonalStatistics::calculateStatistics( mRaster.get(), feature.geometry(), mPixelSizeX, mPixelSizeY, mBand, mStats );
-  for ( const auto &result : results.toStdMap() )
+  for ( auto result = results.constBegin(); result != results.constEnd(); ++result )
   {
-    attributes.replace( mStatFieldsMapping.value( result.first ), result.second );
+    attributes.replace( mStatFieldsMapping.value( result.key() ), result.value() );
   }
 
   QgsFeature resultFeature = feature;
