@@ -7,13 +7,37 @@
     <x>0</x>
     <y>0</y>
     <width>340</width>
-    <height>293</height>
+    <height>361</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Attribute Widget Relation Edit Widget</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetDefaultConstraint</enum>
+     </property>
+     <item>
+      <widget class="QLabel" name="labelLabel">
+       <property name="text">
+        <string>Label</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="mRelationLabelEdit">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
    <item>
     <widget class="QCheckBox" name="mRelationShowLinkCheckBox">
      <property name="text">

@@ -99,6 +99,7 @@ QgsAttributeEditorElement *QgsAttributeEditorRelation::clone( QgsAttributeEditor
   element->mButtons = mButtons;
   element->mForceSuppressFormPopup = mForceSuppressFormPopup;
   element->mNmRelationId = mNmRelationId;
+  element->mLabel = mLabel;
 
   return element;
 }
@@ -137,6 +138,7 @@ void QgsAttributeEditorRelation::saveConfiguration( QDomElement &elem ) const
   elem.setAttribute( QStringLiteral( "buttons" ), qgsFlagValueToKeys( mButtons ) );
   elem.setAttribute( QStringLiteral( "forceSuppressFormPopup" ), mForceSuppressFormPopup );
   elem.setAttribute( QStringLiteral( "nmRelationId" ), mNmRelationId.toString() );
+  elem.setAttribute( QStringLiteral( "label" ), mLabel );
 }
 
 QString QgsAttributeEditorRelation::typeIdentifier() const
@@ -197,6 +199,16 @@ void QgsAttributeEditorRelation::setNmRelationId( const QVariant &nmRelationId )
 QVariant QgsAttributeEditorRelation::nmRelationId() const
 {
   return mNmRelationId;
+}
+
+void QgsAttributeEditorRelation::setLabel( const QString &label )
+{
+  mLabel = label;
+}
+
+QString QgsAttributeEditorRelation::label() const
+{
+  return mLabel;
 }
 
 QgsAttributeEditorElement *QgsAttributeEditorQmlElement::clone( QgsAttributeEditorElement *parent ) const

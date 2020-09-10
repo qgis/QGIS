@@ -134,6 +134,18 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
      */
     void setNmRelationId( const QVariant &nmRelationId = QVariant() );
 
+    /**
+     * Determines the label of this element
+     * \since QGIS 3.16
+     */
+    QString label() const;
+
+    /**
+     * Sets \a label for this element
+     * If it's empty it takes the relation id as label
+     * \since QGIS 3.16
+     */
+    void setLabel( const QString &label = QString() );
 
     /**
      * The relation for which this wrapper is created.

@@ -145,6 +145,20 @@ If it's empty, then it's considered as a 1:M relationship.
 .. versionadded:: 3.16
 %End
 
+    QString label() const;
+%Docstring
+Determines the label of this element
+
+.. versionadded:: 3.16
+%End
+
+    void setLabel( const QString &label = QString() );
+%Docstring
+Sets ``label`` for this element
+If it's empty it takes the relation id as label
+
+.. versionadded:: 3.16
+%End
 
     QgsRelation relation() const;
 %Docstring

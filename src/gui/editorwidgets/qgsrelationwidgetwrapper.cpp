@@ -280,3 +280,17 @@ QVariant QgsRelationWidgetWrapper::nmRelationId() const
     return mWidget->nmRelationId();
   return QVariant();
 }
+
+
+void QgsRelationWidgetWrapper::setLabel( const QString &label )
+{
+  if ( mWidget )
+    mWidget->setLabel( label );
+}
+
+QString QgsRelationWidgetWrapper::label() const
+{
+  if ( mWidget )
+    return mWidget->label();
+  return QString();
+}

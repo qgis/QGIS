@@ -70,6 +70,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
       QgsAttributeEditorRelation::Buttons buttons = QgsAttributeEditorRelation::Button::AllButtons;
       QVariant nmRelationId;
       bool forceSuppressFormPopup = false;
+      QString label;
     };
 
     struct QmlElementEditorConfiguration

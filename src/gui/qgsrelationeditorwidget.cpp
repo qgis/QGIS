@@ -1009,6 +1009,18 @@ QVariant QgsRelationEditorWidget::nmRelationId() const
   return mNmRelationId;
 }
 
+QString QgsRelationEditorWidget::label() const
+{
+  return mLabel;
+}
+
+void QgsRelationEditorWidget::setLabel( const QString &label )
+{
+  mLabel = label;
+
+  updateTitle();
+}
+
 void QgsRelationEditorWidget::setShowUnlinkButton( bool showUnlinkButton )
 {
   mUnlinkFeatureButton->setVisible( showUnlinkButton );
@@ -1069,10 +1081,18 @@ void QgsRelationEditorWidget::unsetMapTool()
 
 void QgsRelationEditorWidget::updateTitle()
 {
-  if ( mShowLabel && mRelation.isValid() )
+  if ( mShowLabel && !mLabel.isEmpty() )
+  {
+    setTitle( mLabel );
+  }
+  else if ( mShowLabel && mRelation.isValid() )
+  {
     setTitle( mRelation.name() );
+  }
   else
+  {
     setTitle( QString() );
+  }
 }
 
 QgsFeature QgsRelationEditorWidget::feature() const

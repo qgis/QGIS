@@ -118,6 +118,8 @@ void QgsAttributeWidgetRelationEditWidget::setRelationEditorConfiguration( const
   mRelationCardinalityCombo->setToolTip( tr( "For a many to many (N:M) relation, the direct link has to be selected. The in-between table will be hidden." ) );
   setNmRelationId( config.nmRelationId );
 
+  mRelationLabelEdit->setText( config.label );
+
   mRelationForceSuppressFormPopupCheckBox->setChecked( config.forceSuppressFormPopup );
 }
 
@@ -135,6 +137,7 @@ QgsAttributesFormProperties::RelationEditorConfiguration QgsAttributeWidgetRelat
   relEdCfg.buttons = buttons;
   relEdCfg.nmRelationId = mRelationCardinalityCombo->currentData();
   relEdCfg.forceSuppressFormPopup = mRelationForceSuppressFormPopupCheckBox->isChecked();
+  relEdCfg.label = mRelationLabelEdit->text();
   return relEdCfg;
 }
 
