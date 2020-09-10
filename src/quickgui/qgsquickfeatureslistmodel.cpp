@@ -120,12 +120,13 @@ QString QgsQuickFeaturesListModel::buildFilterExpression()
   QStringList expressionParts;
 
   bool filterExpressionIsNumeric;
-  mFilterExpression.toInt( &filterExpressionIsNumeric );
+  int filterInt = mFilterExpression.toInt( &filterExpressionIsNumeric );
+  Q_UNUSED( filterInt ); // we only need to know if expression is numeric, int value is not used
 
   for ( const QgsField &field : fields )
   {
     if ( field.isNumeric() && filterExpressionIsNumeric )
-      expressionParts << QStringLiteral( "%1 ~ '%2.*'" ).arg( QgsExpression::quotedColumnRef( field.name() ), QString::number( mFilterExpression.toInt() ) );
+      expressionParts << QStringLiteral( "%1 ~ '%2.*'" ).arg( QgsExpression::quotedColumnRef( field.name() ), mFilterExpression );
     else if ( field.type() == QVariant::String )
       expressionParts << QStringLiteral( "%1 ILIKE '%%2%'" ).arg( QgsExpression::quotedColumnRef( field.name() ), mFilterExpression );
   }
