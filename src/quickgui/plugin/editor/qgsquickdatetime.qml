@@ -116,7 +116,7 @@ Item {
                   onClicked: {
                     var usedDate = new Date();
                     if (value !== undefined && value !== '') {
-                      usedDate = value;
+                      usedDate = main.isDateOrTime ? value : Date.fromLocaleString(Qt.locale(), value, config['field_format'])
                     }
 
                     calendar.selectedDate = usedDate
@@ -147,7 +147,8 @@ Item {
                     anchors.fill: parent
                     onClicked: {
                       var newDate = new Date()
-                      valueChanged(newDate, false)
+                      var newValue = field.isDateOrTime ? newDate : Qt.formatDateTime(newDate, config['field_format'])
+                      valueChanged(newValue, false)
                     }
                 }
             }
@@ -197,7 +198,10 @@ Item {
 
                         Controls1.Calendar {
                           id: calendar
-                          selectedDate: main.currentValue || new Date()
+                          selectedDate: {
+                            var date = field.isDateOrTime ? main.currentValue : Date.fromLocaleString(Qt.locale(), value, config['field_format'])
+                            date || new Date()
+                          }
                           weekNumbersVisible: true
                           focus: false
                           implicitWidth: calendarOverlay.width
@@ -302,8 +306,8 @@ Item {
                             newDate.setSeconds(secondsSpinBox.value);
                           }
 
-                          label.text = timeToString(newDate)
-                          valueChanged(newDate, newDate === undefined)
+                          var newValue = field.isDateOrTime ? newDate : Qt.formatDateTime(newDate, config['field_format'])
+                          valueChanged(newValue, newValue === undefined)
                           popup.close()
                       }
                   }
@@ -313,7 +317,7 @@ Item {
         }
 
         onCurrentValueChanged: {
-            label.text = timeToString(main.currentValue)
+            label.text = field.isDateOrTime ? timeToString(main.currentValue) : main.currentValue
         }
     }
 
