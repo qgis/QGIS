@@ -432,19 +432,8 @@ void QgsRelationEditorWidget::updateButtons()
 
   mZoomToFeatureButton->setVisible(
     mButtons.testFlag( QgsAttributeEditorRelation::Button::ZoomToChildFeature ) &&
-    mEditorContext.mapCanvas() && (
-      (
-        mNmRelation.isValid() &&
-        mNmRelation.referencedLayer()->geometryType() != QgsWkbTypes::NullGeometry &&
-        mNmRelation.referencedLayer()->geometryType() != QgsWkbTypes::UnknownGeometry
-      )
-      ||
-      (
-        mRelation.isValid() &&
-        mRelation.referencingLayer()->geometryType() != QgsWkbTypes::NullGeometry &&
-        mRelation.referencingLayer()->geometryType() != QgsWkbTypes::UnknownGeometry
-      )
-    )
+    mEditorContext.mapCanvas() &&
+    mChildIsSpatial
   );
 
   mZoomToFeatureButton->setEnabled( selectionNotEmpty );
