@@ -410,8 +410,16 @@ void TestQgis::testQgsEnumValueToKey()
 }
 void TestQgis::testQgsEnumKeyToValue()
 {
-  QCOMPARE( qgsEnumKeyToValue<QgsMapLayerModel::ItemDataRole>( QStringLiteral( "LayerRole" ), QgsMapLayerModel::LayerIdRole ), QgsMapLayerModel::LayerRole );
+  QCOMPARE( qgsEnumKeyToValue<QgsMapLayerModel::ItemDataRole>( QStringLiteral( "AdditionalRole" ), QgsMapLayerModel::LayerIdRole ), QgsMapLayerModel::AdditionalRole );
   QCOMPARE( qgsEnumKeyToValue<QgsMapLayerModel::ItemDataRole>( QStringLiteral( "UnknownKey" ), QgsMapLayerModel::LayerIdRole ), QgsMapLayerModel::LayerIdRole );
+  // try with int values as string keys
+  QCOMPARE( qgsEnumKeyToValue<QgsMapLayerModel::ItemDataRole>( QString::number( QgsMapLayerModel::AdditionalRole ), QgsMapLayerModel::LayerIdRole, true ), QgsMapLayerModel::AdditionalRole );
+  QCOMPARE( qgsEnumKeyToValue<QgsMapLayerModel::ItemDataRole>( QString::number( QgsMapLayerModel::AdditionalRole ), QgsMapLayerModel::LayerIdRole, false ), QgsMapLayerModel::LayerIdRole );
+  // also try with an invalid int value
+  QMetaEnum metaEnum = QMetaEnum::fromType<QgsMapLayerModel::ItemDataRole>();
+  int invalidValue = QgsMapLayerModel::LayerIdRole + 100;
+  QVERIFY( !metaEnum.valueToKey( invalidValue ) );
+  QCOMPARE( qgsEnumKeyToValue<QgsMapLayerModel::ItemDataRole>( QString::number( invalidValue ), QgsMapLayerModel::LayerIdRole ), QgsMapLayerModel::LayerIdRole );
 }
 
 void TestQgis::testQgsFlagValueToKeys()
