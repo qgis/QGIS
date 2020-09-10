@@ -160,7 +160,7 @@ Construct a new QgsReferencedGeometry from referenced ``point``
 
     static QgsReferencedGeometry fromReferencedRect( const QgsReferencedRectangle &rectangle );
 %Docstring
-Construct a new QgsReferencedGeometry from ``referenced`` point
+Construct a new QgsReferencedGeometry from referenced ``rectangle``
 %End
 
 

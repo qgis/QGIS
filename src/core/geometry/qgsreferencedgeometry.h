@@ -179,7 +179,7 @@ class CORE_EXPORT QgsReferencedGeometry : public QgsGeometry, public QgsReferenc
     static QgsReferencedGeometry fromReferencedPointXY( const QgsReferencedPointXY &point );
 
     /**
-     * Construct a new QgsReferencedGeometry from \a referenced point
+     * Construct a new QgsReferencedGeometry from referenced \a rectangle
      */
     static QgsReferencedGeometry fromReferencedRect( const QgsReferencedRectangle &rectangle );
 
