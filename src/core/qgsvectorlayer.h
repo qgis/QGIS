@@ -2117,14 +2117,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Sets the configuration flags of the field at given index
-     * \see QgsField::ConfigurationFlags
+     * \see QgsField::ConfigurationFlag
      * \since QGIS 3.16
      */
     void setFieldConfigurationFlags( int index, QgsField::ConfigurationFlags flags ) SIP_SKIP;
 
     /**
      * Returns the configuration flags of the field at given index
-     * \see QgsField::ConfigurationFlags
+     * \see QgsField::ConfigurationFlag
      * \since QGIS 3.16
      */
     QgsField::ConfigurationFlags fieldConfigurationFlags( int index ) const SIP_SKIP;
