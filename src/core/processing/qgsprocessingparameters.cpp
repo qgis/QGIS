@@ -2951,7 +2951,7 @@ QgsProcessingParameterPoint *QgsProcessingParameterPoint::fromScriptCode( const 
 }
 
 QgsProcessingParameterGeometry::QgsProcessingParameterGeometry( const QString &name, const QString &description,
-    const QVariant &defaultValue, bool optional, const QList<QgsWkbTypes::GeometryType> &geometryTypes )
+    const QVariant &defaultValue, bool optional, const QList<int> &geometryTypes )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional ),
     mGeomTypes( geometryTypes )
 {
@@ -3099,9 +3099,9 @@ QString QgsProcessingParameterGeometry::asScriptCode() const
     code += QStringLiteral( "optional " );
   code += type() + ' ';
 
-  for ( QgsWkbTypes::GeometryType type : mGeomTypes )
+  for ( int type : mGeomTypes )
   {
-    switch ( type )
+    switch ( static_cast<QgsWkbTypes::GeometryType>( type ) )
     {
       case QgsWkbTypes::PointGeometry:
         code += QStringLiteral( "point " );
@@ -3165,9 +3165,9 @@ QString QgsProcessingParameterGeometry::asPythonString( const QgsProcessing::Pyt
 
         QStringList options;
         options.reserve( mGeomTypes.size() );
-        for ( QgsWkbTypes::GeometryType type : mGeomTypes )
+        for ( int type : mGeomTypes )
         {
-          options << QStringLiteral( " QgsWkbTypes.%1" ).arg( geomTypeToString( type ) );
+          options << QStringLiteral( " QgsWkbTypes.%1" ).arg( geomTypeToString( static_cast<QgsWkbTypes::GeometryType>( type ) ) );
         }
         code += QStringLiteral( ", geometryTypes=[%1 ]" ).arg( options.join( ',' ) );
       }
@@ -3184,7 +3184,7 @@ QVariantMap QgsProcessingParameterGeometry::toVariantMap() const
 {
   QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
   QVariantList types;
-  for ( QgsWkbTypes::GeometryType type : mGeomTypes )
+  for ( int type : mGeomTypes )
   {
     types << type;
   }
@@ -3199,7 +3199,7 @@ bool QgsProcessingParameterGeometry::fromVariantMap( const QVariantMap &map )
   const QVariantList values = map.value( QStringLiteral( "geometrytypes" ) ).toList();
   for ( const QVariant &val : values )
   {
-    mGeomTypes << static_cast<QgsWkbTypes::GeometryType>( val.toInt() );
+    mGeomTypes << val.toInt();
   }
   return true;
 }

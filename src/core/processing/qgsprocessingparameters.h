@@ -1616,7 +1616,7 @@ class CORE_EXPORT QgsProcessingParameterGeometry : public QgsProcessingParameter
      * The \a geometryTypes argument allows for specifying a list of geometry types acceptable for this
      * parameter. Passing a empty list will allow for any type of geometry.
      */
-    QgsProcessingParameterGeometry( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), bool optional = false, const QList<QgsWkbTypes::GeometryType> &geometryTypes = QList<QgsWkbTypes::GeometryType>() );
+    QgsProcessingParameterGeometry( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), bool optional = false, const QList< int > &geometryTypes = QList< int >() );
 
     /**
      * Returns the type name for the parameter class.
@@ -1635,13 +1635,13 @@ class CORE_EXPORT QgsProcessingParameterGeometry : public QgsProcessingParameter
      * Returns the parameter allowed geometries.
      * \see setGeometryTypes()
      */
-    QList<QgsWkbTypes::GeometryType>  geometryTypes() const { return mGeomTypes; }
+    QList<int>  geometryTypes() const { return mGeomTypes; }
 
     /**
      * Sets the allowed  \a geometryTypes.
      * \see geometryTypes()
      */
-    void setGeometryTypes( QList<QgsWkbTypes::GeometryType> geometryTypes ) { mGeomTypes = geometryTypes; }
+    void setGeometryTypes( const QList<int> &geometryTypes ) { mGeomTypes = geometryTypes; }
 
     /**
      * Creates a new parameter using the definition from a script code.
@@ -1650,7 +1650,7 @@ class CORE_EXPORT QgsProcessingParameterGeometry : public QgsProcessingParameter
 
   private:
 
-    QList<QgsWkbTypes::GeometryType> mGeomTypes;
+    QList<int> mGeomTypes;
 
 };
 

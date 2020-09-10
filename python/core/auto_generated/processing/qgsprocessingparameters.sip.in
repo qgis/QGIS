@@ -1574,7 +1574,7 @@ A geometry parameter for processing algorithms.
 %End
   public:
 
-    QgsProcessingParameterGeometry( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), bool optional = false, const QList<QgsWkbTypes::GeometryType> &geometryTypes = QList<QgsWkbTypes::GeometryType>() );
+    QgsProcessingParameterGeometry( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), bool optional = false, const QList< int > &geometryTypes = QList< int >() );
 %Docstring
 Constructor for QgsProcessingParameterGeometry.
 
@@ -1602,14 +1602,14 @@ Returns the type name for the parameter class.
     virtual bool fromVariantMap( const QVariantMap &map );
 
 
-    QList<QgsWkbTypes::GeometryType>  geometryTypes() const;
+    QList<int>  geometryTypes() const;
 %Docstring
 Returns the parameter allowed geometries.
 
 .. seealso:: :py:func:`setGeometryTypes`
 %End
 
-    void setGeometryTypes( QList<QgsWkbTypes::GeometryType> geometryTypes );
+    void setGeometryTypes( const QList<int> &geometryTypes );
 %Docstring
 Sets the allowed  ``geometryTypes``.
 
