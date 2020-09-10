@@ -71,7 +71,7 @@ Adds date field type to given field form with default settings
 Returns the name of the field.
 %End
 
-    void setName( const QString name );
+    void setName( const QString &name );
 %Docstring
 Sets the name of the field.
 %End
@@ -81,7 +81,7 @@ Sets the name of the field.
 Returns the string name of the field type.
 %End
 
-    bool setType( const QString typeName );
+    bool setType( const QString &typeName );
 %Docstring
 Sets the string name of the field type. If no such type is present, does nothing.
 %End
@@ -91,7 +91,7 @@ Sets the string name of the field type. If no such type is present, does nothing
 Returns the field comment.
 %End
 
-    void setComment( const QString comment );
+    void setComment( const QString &comment );
 %Docstring
 Sets the field comment.
 %End
@@ -111,7 +111,7 @@ Sets whether the field can be nullable.
 Returns the field alias.
 %End
 
-    void setAlias( const QString alias );
+    void setAlias( const QString &alias );
 %Docstring
 Sets the field alias.
 %End
@@ -141,37 +141,37 @@ Returns the field precision.
 Returns a list of string type names.
 %End
 
-    bool addType( const QString typeName, const QString typeDisplay, const QIcon = QIcon(), int length = -1, int precision = -1 );
+    bool addType( const QString &typeName, const QString &typeDisplay, const QIcon &icon = QIcon(), int length = -1, int precision = -1 );
 %Docstring
 Adds a new type ``typeName`` in the end of the types combobox. If ``length`` or ``precision`` are given as negative number, their UI fields are disabled for that type.
 %End
 
-    bool insertType( const int position, const QString typeName, const QString typeDisplay, const QIcon = QIcon(), int length = -1, int precision = -1 );
+    bool insertType( const int position, const QString &typeName, const QString &typeDisplay, const QIcon &icon = QIcon(), int length = -1, int precision = -1 );
 %Docstring
 Inserts a new type ``typeName`` at given ``position`` in the types combobox. If ``length`` or ``precision`` are given as negative number, their UI fields are disabled for that type.
 %End
 
-    bool removeType( const QString typeName );
+    bool removeType( const QString &typeName );
 %Docstring
 Removes a type identified by its string ``typename`` from the list of available field data types.
 %End
 
-    bool hasType( const QString typeName );
+    bool hasType( const QString &typeName ) const;
 %Docstring
 Checks whether the ``typeName`` is present as a field data type.
 %End
 
-    int typeIndex( const QString typeName );
+    int typeIndex( const QString &typeName ) const;
 %Docstring
 Returns the index of the given ``typeName`` in the list of available data types.
 %End
 
-    QRegExp nameRegExp();
+    QRegExp nameRegExp() const;
 %Docstring
 Returns the current field name validator regular expresiion.
 %End
 
-    void setNameRegExp( QRegExp nameRegExp );
+    void setNameRegExp( QRegExp &nameRegExp );
 %Docstring
 Sets field name validator regular expresiion.
 %End
@@ -196,7 +196,7 @@ Sets the current layer of the form. The layer is as a source to select existing 
 Returns the current layer.
 %End
 
-    void setLayerField( const QString fieldName );
+    void setLayerField( const QString &fieldName );
 %Docstring
 Sets the current layer field.
 %End

@@ -91,7 +91,7 @@ class GUI_EXPORT QgsFieldFormWidget : public QWidget, private Ui::QgsFieldFormWi
     /**
      * Sets the name of the field.
      */
-    void setName( const QString name );
+    void setName( const QString &name );
 
     /**
      * Returns the string name of the field type.
@@ -101,7 +101,7 @@ class GUI_EXPORT QgsFieldFormWidget : public QWidget, private Ui::QgsFieldFormWi
     /**
      * Sets the string name of the field type. If no such type is present, does nothing.
      */
-    bool setType( const QString typeName );
+    bool setType( const QString &typeName );
 
     /**
      * Returns the field comment.
@@ -111,7 +111,7 @@ class GUI_EXPORT QgsFieldFormWidget : public QWidget, private Ui::QgsFieldFormWi
     /**
      * Sets the field comment.
      */
-    void setComment( const QString comment );
+    void setComment( const QString &comment );
 
     /**
      * Returns whether the field is marked as nullable.
@@ -131,7 +131,7 @@ class GUI_EXPORT QgsFieldFormWidget : public QWidget, private Ui::QgsFieldFormWi
     /**
      * Sets the field alias.
      */
-    void setAlias( const QString alias );
+    void setAlias( const QString &alias );
 
     /**
      * Returns the field length.
@@ -161,37 +161,37 @@ class GUI_EXPORT QgsFieldFormWidget : public QWidget, private Ui::QgsFieldFormWi
     /**
      * Adds a new type \a typeName in the end of the types combobox. If \a length or \a precision are given as negative number, their UI fields are disabled for that type.
      */
-    bool addType( const QString typeName, const QString typeDisplay, const QIcon = QIcon(), int length = -1, int precision = -1 );
+    bool addType( const QString &typeName, const QString &typeDisplay, const QIcon &icon = QIcon(), int length = -1, int precision = -1 );
 
     /**
      * Inserts a new type \a typeName at given \a position in the types combobox. If \a length or \a precision are given as negative number, their UI fields are disabled for that type.
      */
-    bool insertType( const int position, const QString typeName, const QString typeDisplay, const QIcon = QIcon(), int length = -1, int precision = -1 );
+    bool insertType( const int position, const QString &typeName, const QString &typeDisplay, const QIcon &icon = QIcon(), int length = -1, int precision = -1 );
 
     /**
      * Removes a type identified by its string \a typename from the list of available field data types.
      */
-    bool removeType( const QString typeName );
+    bool removeType( const QString &typeName );
 
     /**
      * Checks whether the \a typeName is present as a field data type.
      */
-    bool hasType( const QString typeName );
+    bool hasType( const QString &typeName ) const;
 
     /**
      * Returns the index of the given \a typeName in the list of available data types.
      */
-    int typeIndex( const QString typeName );
+    int typeIndex( const QString &typeName ) const;
 
     /**
      * Returns the current field name validator regular expresiion.
      */
-    QRegExp nameRegExp();
+    QRegExp nameRegExp() const;
 
     /**
      * Sets field name validator regular expresiion.
      */
-    void setNameRegExp( QRegExp nameRegExp );
+    void setNameRegExp( QRegExp &nameRegExp );
 
     /**
      * Returns whether the field form is valid.
@@ -216,7 +216,7 @@ class GUI_EXPORT QgsFieldFormWidget : public QWidget, private Ui::QgsFieldFormWi
     /**
      * Sets the current layer field.
      */
-    void setLayerField( const QString fieldName );
+    void setLayerField( const QString &fieldName );
 
     /**
      * Returns the current existing layer field name.

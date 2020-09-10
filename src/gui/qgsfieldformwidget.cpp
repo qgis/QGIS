@@ -58,7 +58,7 @@ QString QgsFieldFormWidget::name() const
   return mFieldNameLineEdit->text();
 }
 
-void QgsFieldFormWidget::setName( QString name )
+void QgsFieldFormWidget::setName( const QString &name )
 {
   return mFieldNameLineEdit->setText( name );
 }
@@ -68,7 +68,7 @@ QString QgsFieldFormWidget::comment() const
   return mCommentLineEdit->text();
 }
 
-void QgsFieldFormWidget::setComment( QString comment )
+void QgsFieldFormWidget::setComment( const QString &comment )
 {
   return mCommentLineEdit->setText( comment );
 }
@@ -88,7 +88,7 @@ QString QgsFieldFormWidget::alias() const
   return mAliasLineEdit->text();
 }
 
-void QgsFieldFormWidget::setAlias( QString alias )
+void QgsFieldFormWidget::setAlias( const QString &alias )
 {
   return mAliasLineEdit->setText( alias );
 }
@@ -119,7 +119,7 @@ QString QgsFieldFormWidget::type() const
   return data.toMap().value( "type" ).toString();
 }
 
-bool QgsFieldFormWidget::setType( const QString typeName )
+bool QgsFieldFormWidget::setType( const QString &typeName )
 {
   if ( ! hasType( typeName ) )
     return false;
@@ -129,12 +129,12 @@ bool QgsFieldFormWidget::setType( const QString typeName )
   return true;
 }
 
-bool QgsFieldFormWidget::addType( const QString typeName, const QString typeDisplay, const QIcon icon, int length, int precision )
+bool QgsFieldFormWidget::addType( const QString &typeName, const QString &typeDisplay, const QIcon &icon, int length, int precision )
 {
   return insertType( -1, typeName, typeDisplay, icon, length, precision );
 }
 
-bool QgsFieldFormWidget::insertType( const int position, const QString typeName, const QString typeDisplay, const QIcon icon, int length, int precision )
+bool QgsFieldFormWidget::insertType( const int position, const QString &typeName, const QString &typeDisplay, const QIcon &icon, int length, int precision )
 {
   if ( typeName.isEmpty() || typeDisplay.isEmpty() )
     return false;
@@ -161,12 +161,12 @@ bool QgsFieldFormWidget::insertType( const int position, const QString typeName,
   return true;
 }
 
-bool QgsFieldFormWidget::hasType( const QString typeName )
+bool QgsFieldFormWidget::hasType( const QString &typeName ) const
 {
   return typeIndex( typeName ) >= 0;
 }
 
-int QgsFieldFormWidget::typeIndex( const QString typeName )
+int QgsFieldFormWidget::typeIndex( const QString &typeName ) const
 {
   for ( int i = 0; i < mTypeCmb->count(); i++ )
   {
@@ -179,7 +179,7 @@ int QgsFieldFormWidget::typeIndex( const QString typeName )
   return -1;
 }
 
-bool QgsFieldFormWidget::removeType( const QString typeName )
+bool QgsFieldFormWidget::removeType( const QString &typeName )
 {
   if ( hasType( typeName ) )
     return false;
@@ -241,12 +241,12 @@ bool QgsFieldFormWidget::isValidForm() const
   return mFieldNameLineEdit->hasAcceptableInput();
 }
 
-QRegExp QgsFieldFormWidget::nameRegExp()
+QRegExp QgsFieldFormWidget::nameRegExp() const
 {
   return mRegExpValidator->regExp();
 }
 
-void QgsFieldFormWidget::setNameRegExp( QRegExp nameRegExp )
+void QgsFieldFormWidget::setNameRegExp( QRegExp &nameRegExp )
 {
   mRegExpValidator->setRegExp( nameRegExp );
 }
@@ -282,7 +282,7 @@ QgsVectorLayer *QgsFieldFormWidget::layer() const
   return mExistingLayerFieldCmb->layer();
 }
 
-void QgsFieldFormWidget::setLayerField( const QString fieldName )
+void QgsFieldFormWidget::setLayerField( const QString &fieldName )
 {
   mExistingLayerFieldCmb->setField( fieldName );
 }
