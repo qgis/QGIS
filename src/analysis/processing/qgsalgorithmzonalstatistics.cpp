@@ -69,7 +69,7 @@ QString QgsZonalStatisticsAlgorithm::shortHelpString() const
 
 QgsProcessingAlgorithm::Flags QgsZonalStatisticsAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagNoThreading;
+  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagNoThreading | QgsProcessingAlgorithm::FlagDeprecated;
 }
 
 QgsZonalStatisticsAlgorithm *QgsZonalStatisticsAlgorithm::createInstance() const

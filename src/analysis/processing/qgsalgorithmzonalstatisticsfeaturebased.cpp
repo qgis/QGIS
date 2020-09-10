@@ -42,7 +42,7 @@ QString QgsZonalStatisticsFeatureBasedAlgorithm::name() const
 
 QString QgsZonalStatisticsFeatureBasedAlgorithm::displayName() const
 {
-  return QObject::tr( "Zonal statistics (feature based)" );
+  return QObject::tr( "Zonal statistics" );
 }
 
 QStringList QgsZonalStatisticsFeatureBasedAlgorithm::tags() const
