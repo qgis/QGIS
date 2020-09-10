@@ -430,12 +430,6 @@ void QgsRelationEditorWidget::updateButtons()
   mDeleteFeatureButton->setEnabled( editable && selectionNotEmpty );
   mUnlinkFeatureButton->setEnabled( linkable && selectionNotEmpty );
 
-  mZoomToFeatureButton->setVisible(
-    mButtons.testFlag( QgsAttributeEditorRelation::Button::ZoomToChildFeature ) &&
-    mEditorContext.mapCanvas() &&
-    mChildIsSpatial
-  );
-
   mZoomToFeatureButton->setEnabled( selectionNotEmpty );
 
   mToggleEditingButton->setChecked( editable );
