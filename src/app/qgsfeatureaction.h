@@ -62,10 +62,9 @@ class APP_EXPORT QgsFeatureAction : public QAction
     void setForceSuppressFormPopup( bool force );
 
     /**
-     * Returns the current feature. It might be nullptr feature, so it's safe to use this method only
-     * right after`addFeature()` returned true.
+     * Returns the added feature or invalid feature in case addFeature() was not successful.
      */
-    QgsFeature *feature() const { return mFeature; }
+    QgsFeature feature() const;
 
   signals:
 
