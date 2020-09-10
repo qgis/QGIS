@@ -862,7 +862,7 @@ void QgsRelationReferenceWidget::filterChanged()
 
   QgsFeature f;
   QgsFeatureIds featureIds;
-  QString filterExpression = mFilterExpression;
+  QString filterExpression = mFilterExpression.isEmpty() ? mFilterExpression : QStringLiteral( " ( %1 ) " ).arg( mFilterExpression );
 
   // comboboxes have to be disabled before building filters
   if ( mChainFilters )

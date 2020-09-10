@@ -67,6 +67,7 @@ class TestQgsRelationReferenceWidget : public QObject
     void testAddEntryNoGeom();
     void testDependencies(); // Test relation datasource, id etc. config storage
     void testSetFilterExpression();
+    void testSetFilterExpressionWithOrClause();
 
   private:
     std::unique_ptr<QgsVectorLayer> mLayer1;
@@ -733,6 +734,43 @@ void TestQgsRelationReferenceWidget::testSetFilterExpression()
   QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "NULL" ) );
   // in case there is no filter, the number of filtered features will be 4
   QCOMPARE( w.mComboBox->count(), 3 );
+}
+
+
+
+void TestQgsRelationReferenceWidget::testSetFilterExpressionWithOrClause()
+{
+
+  // init a relation reference widget
+  QStringList filterFields = { "material", "diameter", "raccord" };
+
+  QWidget parentWidget;
+  QgsRelationReferenceWidget w( &parentWidget );
+
+  QEventLoop loop;
+  connect( qobject_cast<QgsFeatureFilterModel *>( w.mComboBox->model() ), &QgsFeatureFilterModel::filterJobCompleted, &loop, &QEventLoop::quit );
+
+  w.setChainFilters( true );
+  w.setFilterFields( filterFields );
+  w.setRelation( *mRelation, true );
+  w.setFilterExpression( QStringLiteral( " \"raccord\" = 'sleeve' OR FALSE " ) );
+  w.init();
+
+  QStringList items = getComboBoxItems( w.mComboBox );
+
+  loop.exec();
+
+  // in case there is no filter, the number of filtered features will be 4
+  QCOMPARE( w.mComboBox->count(), 2 );
+
+  QList<QComboBox *> cbs = w.mFilterComboBoxes;
+  cbs[0]->setCurrentIndex( cbs[0]->findText( "steel" ) );
+
+  loop.exec();
+
+  QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "NULL" ) );
+  // in case there is no field filter, the number of filtered features will be 2
+  QCOMPARE( w.mComboBox->count(), 1 );
 }
 
 QGSTEST_MAIN( TestQgsRelationReferenceWidget )
