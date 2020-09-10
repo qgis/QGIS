@@ -275,6 +275,18 @@ class CORE_EXPORT QgsLabelFeature
     void setDistLabel( double dist ) { mDistLabel = dist; }
 
     /**
+     * Applies to on-line "curved" placement strategy for linestring features.
+     * Distance of the label from the feature (in map units)
+     */
+    double originalDistLabel() const { return mOriginalDistLabel; }
+
+    /**
+     * Applies to on-line "curved" placement strategy for linestring features.
+     * Set distance of the label from the feature (in map units)
+     */
+    void setOriginalDistLabel( double dist ) { mOriginalDistLabel = dist; }
+
+    /**
      * Returns the priority ordered list of predefined positions for label candidates. This property
      * is only used for OrderedPositionsAroundPoint placements.
      * \see setPredefinedPositionOrder()
@@ -552,6 +564,8 @@ class CORE_EXPORT QgsLabelFeature
     QgsPointXY mPositionOffset;
     //! distance of label from the feature (only for "around point" placement or linestrings)
     double mDistLabel = 0;
+    //! distance of label from the feature (only for on-line "curved" placement)
+    double mOriginalDistLabel = 0;
     //! Offset type for certain placement modes
     QgsPalLayerSettings::OffsetType mOffsetType = QgsPalLayerSettings::FromPoint;
     //! Ordered list of predefined positions for label (only for OrderedPositionsAroundPoint placement)

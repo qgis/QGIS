@@ -2533,6 +2533,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
     }
   }
   distance = context.convertToPainterUnits( distance, distUnit, distMapUnitScale );
+  double originalDistance = distance;
 
   // when using certain placement modes, we force a tiny minimum distance. This ensures that
   // candidates are created just offset from a border and avoids candidates being incorrectly flagged as colliding with neighbours
@@ -2555,6 +2556,8 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   {
     double d = ptOne.distance( ptZero ) * distance;
     ( *labelFeature )->setDistLabel( d );
+    d = ptOne.distance( ptZero ) * originalDistance;
+    ( *labelFeature )->setOriginalDistLabel( d );
   }
 
   if ( ddFixedQuad )
