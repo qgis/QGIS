@@ -834,9 +834,35 @@ void QgsAttributeTableDialog::mActionAddFeature_triggered()
   if ( action.addFeature() )
   {
     masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
+    mMainView->setCurrentEditSelection( QgsFeatureIds() << action.feature().id() );
   }
 }
 
+<<<<<<< HEAD
+=======
+void QgsAttributeTableDialog::mActionAddFeatureViaAttributeForm_triggered()
+{
+  if ( !mLayer->isEditable() )
+    return;
+
+  QgsSettings s;
+  s.setValue( QStringLiteral( "/qgis/attributeTableLastAddFeatureMethod" ), QStringLiteral( "attributeForm" ) );
+  mActionAddFeature->setIcon( mActionAddFeatureViaAttributeForm->icon() );
+
+  QgsFeature f;
+
+  QgsFeatureAction action( tr( "Feature Added" ), f, mLayer, QString(), -1, this );
+  QgsAttributeTableModel *masterModel = mMainView->masterModel();
+
+  if ( action.addFeature() )
+  {
+    masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
+    mMainView->setCurrentEditSelection( QgsFeatureIds() << action.feature().id() );
+  }
+}
+
+
+>>>>>>> b5178d9853... Merge pull request #38658 from suricactus/37847_scroll_to_f
 void QgsAttributeTableDialog::mActionExpressionSelect_triggered()
 {
   QgsExpressionSelectionDialog *dlg = new QgsExpressionSelectionDialog( mLayer );
