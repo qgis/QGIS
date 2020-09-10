@@ -405,7 +405,7 @@ QString QgsQuickUtils::dateTimeFieldFormat( const QString &fieldFormat )
   }
   else
   {
-    return QString();
+    return QString( "Date Time" );
   }
 }
 
