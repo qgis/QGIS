@@ -135,7 +135,7 @@ bool QgsZonalStatisticsFeatureBasedAlgorithm::prepareAlgorithm( const QVariantMa
   mCrs = rasterLayer->crs();
   mPixelSizeX = rasterLayer->rasterUnitsPerPixelX();
   mPixelSizeY = rasterLayer->rasterUnitsPerPixelY();
-  QgsFeatureSource *source = parameterAsSource( parameters, inputParameterName(), context );
+  std::unique_ptr<QgsFeatureSource> source( parameterAsSource( parameters, inputParameterName(), context ) );
 
   mOutputFields = source->fields();
 
