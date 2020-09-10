@@ -224,6 +224,7 @@ void QgsApplication::init( QString profileFolder )
   qRegisterMetaType<Qgis::MessageLevel>( "Qgis::MessageLevel" );
   qRegisterMetaType<QgsReferencedRectangle>( "QgsReferencedRectangle" );
   qRegisterMetaType<QgsReferencedPointXY>( "QgsReferencedPointXY" );
+  qRegisterMetaType<QgsReferencedGeometry>( "QgsReferencedGeometry" );
   qRegisterMetaType<QgsLayoutRenderContext::Flags>( "QgsLayoutRenderContext::Flags" );
   qRegisterMetaType<QgsStyle::StyleEntity>( "QgsStyle::StyleEntity" );
   qRegisterMetaType<QgsCoordinateReferenceSystem>( "QgsCoordinateReferenceSystem" );
