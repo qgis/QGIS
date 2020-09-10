@@ -197,6 +197,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmwritevectortiles.cpp
   processing/qgsalgorithmzonalhistogram.cpp
   processing/qgsalgorithmzonalstatistics.cpp
+  processing/qgsalgorithmzonalstatisticsfeaturebased.cpp
   processing/qgsbookmarkalgorithms.cpp
   processing/qgsprojectstylealgorithms.cpp
   processing/qgsstylealgorithms.cpp
