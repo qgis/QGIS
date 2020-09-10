@@ -61,6 +61,11 @@ class APP_EXPORT QgsFeatureAction : public QAction
      */
     void setForceSuppressFormPopup( bool force );
 
+    /**
+     * Returns the added feature or invalid feature in case addFeature() was not successful.
+     */
+    QgsFeature feature() const;
+
   signals:
 
     /**
