@@ -70,6 +70,8 @@ void QgsProcessingTinInputLayersWidget::setValue( const QVariant &value )
     layer.attributeIndex = layerMap.value( QStringLiteral( "attributeIndex" ) ).toInt();
     mInputLayersModel.addLayer( layer );
   }
+
+  emit changed();
 }
 
 void QgsProcessingTinInputLayersWidget::setProject( QgsProject *project )
@@ -336,6 +338,10 @@ void QgsProcessingTinInputLayersWidget::Delegate::setModelData( QWidget *editor,
   model->setData( index, comboType->currentData(), Qt::EditRole );
 }
 
+QgsProcessingTinInputLayersWidgetWrapper::QgsProcessingTinInputLayersWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent ):
+  QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{}
+
 QString QgsProcessingTinInputLayersWidgetWrapper::parameterType() const
 {
   return QStringLiteral( "tininputlayers" );
@@ -345,6 +351,10 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingTinInputLayersWidgetWr
 {
   return new QgsProcessingTinInputLayersWidgetWrapper( parameter, type );
 }
+
+QStringList QgsProcessingTinInputLayersWidgetWrapper::compatibleParameterTypes() const {return QStringList();}
+
+QStringList QgsProcessingTinInputLayersWidgetWrapper::compatibleOutputTypes() const {return QStringList();}
 
 QWidget *QgsProcessingTinInputLayersWidgetWrapper::createWidget()
 {

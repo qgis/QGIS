@@ -79,7 +79,7 @@ bool QgsTinMeshCreationAlgorithm::prepareAlgorithm( const QVariantMap &parameter
   const QVariantList layersList = layersVariant.toList();
 
   QgsCoordinateReferenceSystem destinationCrs = parameterAsCrs( parameters, QStringLiteral( "CRS_OUTPUT" ), context );
-  if ( !destinationCrs.isValid() )
+  if ( !destinationCrs.isValid() && context.project() )
     destinationCrs = context.project()->crs();
 
   for ( const QVariant &layer : layersList )
@@ -95,7 +95,7 @@ bool QgsTinMeshCreationAlgorithm::prepareAlgorithm( const QVariantMap &parameter
       static_cast<QgsProcessingParameterTinInputLayers::Type>( layerMap.value( QStringLiteral( "type" ) ).toInt() );
     int attributeIndex = layerMap.value( QStringLiteral( "attributeIndex" ) ).toInt();
 
-    QgsProcessingFeatureSource *featureSource = QgsProcessingUtils::variantToSource( layerSource, context );
+    std::unique_ptr<QgsProcessingFeatureSource> featureSource( QgsProcessingUtils::variantToSource( layerSource, context ) );
 
     if ( !featureSource )
       continue;

@@ -37,6 +37,9 @@ bool QgsProcessingParameterTinInputLayers::checkValueIsAcceptable( const QVarian
 
   const QVariantList variantLayers = input.toList();
 
+  if ( variantLayers.isEmpty() )
+    return false;
+
   for ( const QVariant &variantLayer : variantLayers )
   {
     if ( variantLayer.type() != QVariant::Map )
@@ -76,7 +79,7 @@ QString QgsProcessingParameterTinInputLayers::valueAsPythonString( const QVarian
     layerDefParts << QStringLiteral( "'source': " ) + QgsProcessingUtils::variantToPythonLiteral( layerMap.value( QStringLiteral( "source" ) ) );
     layerDefParts << QStringLiteral( "'type': " ) + QgsProcessingUtils::variantToPythonLiteral( layerMap.value( QStringLiteral( "type" ) ) );
     layerDefParts << QStringLiteral( "'attributeIndex': " ) + QgsProcessingUtils::variantToPythonLiteral( layerMap.value( QStringLiteral( "attributeIndex" ) ) );
-    QString layerDef = QStringLiteral( "{ %1 }" ).arg( layerDefParts.join( ',' ) );
+    QString layerDef = QStringLiteral( "{%1}" ).arg( layerDefParts.join( ',' ) );
     parts.append( layerDef );
   }
   return parts.join( ',' ).prepend( '[' ).append( ']' );

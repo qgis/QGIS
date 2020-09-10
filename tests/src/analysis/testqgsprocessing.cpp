@@ -50,6 +50,7 @@
 #include "qgsrasterfilewriter.h"
 #include "qgsprocessingparameterfieldmap.h"
 #include "qgsprocessingparameteraggregate.h"
+#include "qgsprocessingparametertininputlayers.h"
 
 class DummyAlgorithm : public QgsProcessingAlgorithm
 {
@@ -600,6 +601,7 @@ class TestQgsProcessing: public QObject
     void parameterDatabaseTable();
     void parameterFieldMapping();
     void parameterAggregate();
+    void parameterTinInputLayers();
     void checkParamValues();
     void combineLayerExtent();
     void processingFeatureSource();
@@ -7759,6 +7761,47 @@ void TestQgsProcessing::parameterAggregate()
 
   pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterAggregate('non_optional', '', parentLayerParameterName='parent', optional=True)" ) );
+}
+
+void TestQgsProcessing::parameterTinInputLayers()
+{
+  QgsProcessingContext context;
+  QgsProject project;
+  context.setProject( &project );
+  QgsVectorLayer *vectorLayer = new QgsVectorLayer( QStringLiteral( "Point" ),
+      QStringLiteral( "PointLayerForTin" ),
+      QStringLiteral( "memory" ) );
+  project.addMapLayer( vectorLayer );
+
+  std::unique_ptr< QgsProcessingParameterTinInputLayers > def( new QgsProcessingParameterTinInputLayers( "tin input layer" ) );
+  QVERIFY( !def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( !def->checkValueIsAcceptable( "test" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVariantList layerList;
+  QVERIFY( !def->checkValueIsAcceptable( layerList ) );
+  QVariantMap layerMap;
+  layerList.append( layerMap );
+  QVERIFY( !def->checkValueIsAcceptable( layerList ) );
+  layerMap["source"] = "layerName";
+  layerMap["type"] = 0;
+  layerMap["attributeIndex"] = -1;
+  layerList[0] = layerMap;
+  QVERIFY( def->checkValueIsAcceptable( layerList ) );
+  QVERIFY( !def->checkValueIsAcceptable( layerList, &context ) ); //no corresponding layer in the context's project
+  layerMap["source"] = "PointLayerForTin";
+  layerMap["attributeIndex"] = 1; //change for invalid attribute index
+  layerList[0] = layerMap;
+  QVERIFY( !def->checkValueIsAcceptable( layerList, &context ) );
+
+  layerMap["attributeIndex"] = -1; //valid attribute index (-1 is for Z coordinate of features)
+  layerList[0] = layerMap;
+  QVERIFY( def->checkValueIsAcceptable( layerList, &context ) );
+
+  QString valueAsPythonString = def->valueAsPythonString( layerList, context );
+  QCOMPARE( valueAsPythonString, QStringLiteral( "[{'source': 'PointLayerForTin','type': 0,'attributeIndex': -1}]" ) );
+
+  QString pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterTinInputLayers('tin input layer', '')" ) );
 }
 
 void TestQgsProcessing::parameterDateTime()

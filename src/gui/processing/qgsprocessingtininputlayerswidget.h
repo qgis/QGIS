@@ -25,9 +25,9 @@
 #include "qgsprocessingparametertininputlayers.h"
 #include "ui_qgsprocessingtinmeshdatawidgetbase.h"
 
-/// @cond private
+/// @cond PRIVATE
 
-class QgsProcessingTinInputLayersWidget: public QWidget, private Ui::QgsProcessingTinInputLayersWidgetBase
+class GUI_EXPORT QgsProcessingTinInputLayersWidget: public QWidget, private Ui::QgsProcessingTinInputLayersWidgetBase
 {
     Q_OBJECT
   public:
@@ -90,30 +90,30 @@ class QgsProcessingTinInputLayersWidget: public QWidget, private Ui::QgsProcessi
 };
 
 
-class QgsProcessingTinInputLayersWidgetWrapper  : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
+class GUI_EXPORT QgsProcessingTinInputLayersWidgetWrapper  : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
 {
     Q_OBJECT
 
   public:
     QgsProcessingTinInputLayersWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
-        QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr ):
-      QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
-    {}
+        QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
 
     QString parameterType() const override;
     QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override;
 
   protected:
-    QStringList compatibleParameterTypes() const override {return QStringList();}
-    QStringList compatibleOutputTypes() const override {return QStringList();}
+    QStringList compatibleParameterTypes() const override;
+    QStringList compatibleOutputTypes() const override;
     QWidget *createWidget() override SIP_FACTORY;
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
   private:
     QgsProcessingTinInputLayersWidget *mWidget = nullptr;
+
+    friend class TestProcessingGui;
 };
 
-/// @endcond
+///@endcond
 
 #endif // QGSPROCESSINGTININPUTLAYERSWIDGET_H
