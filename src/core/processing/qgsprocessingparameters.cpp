@@ -1509,8 +1509,7 @@ QgsGeometry QgsProcessingParameters::parameterAsGeometry( const QgsProcessingPar
   if ( valueAsString.isEmpty() )
     return QgsGeometry();
 
-  // Match against EWKT
-  QRegularExpression rx( QStringLiteral( "^\\s*(?:SRID=(.*);)?(.*)$" ) );
+  QRegularExpression rx( QStringLiteral( "^\\s*(?:CRS=(.*);)?(.*)$" ) );
 
   QRegularExpressionMatch match = rx.match( valueAsString );
   if ( match.hasMatch() )
@@ -1518,7 +1517,7 @@ QgsGeometry QgsProcessingParameters::parameterAsGeometry( const QgsProcessingPar
     QgsGeometry g =  QgsGeometry::fromWkt( match.captured( 2 ) );
     if ( !g.isNull() )
     {
-      QgsCoordinateReferenceSystem geomCrs( QStringLiteral( "EPSG:%1" ).arg( match.captured( 1 ) ) );
+      QgsCoordinateReferenceSystem geomCrs( QStringLiteral( "%1" ).arg( match.captured( 1 ) ) );
       if ( crs.isValid() && geomCrs.isValid() && crs != geomCrs )
       {
         QgsCoordinateTransform ct( geomCrs, crs, context.project() );
@@ -1575,13 +1574,13 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsGeometryCrs( co
   }
 
   // Match against EWKT
-  QRegularExpression rx( QStringLiteral( "^\\s*(?:SRID=(.*);)?(.*)$" ) );
+  QRegularExpression rx( QStringLiteral( "^\\s*(?:CRS=(.*);)?(.*)$" ) );
 
   QString valueAsString = parameterAsString( definition, value, context );
   QRegularExpressionMatch match = rx.match( valueAsString );
   if ( match.hasMatch() )
   {
-    QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:%1" ).arg( match.captured( 1 ) ) );
+    QgsCoordinateReferenceSystem crs( QStringLiteral( "%1" ).arg( match.captured( 1 ) ) );
     if ( crs.isValid() )
       return crs;
   }
@@ -3012,7 +3011,7 @@ bool QgsProcessingParameterGeometry::checkValueIsAcceptable( const QVariant &inp
   }
 
   // Match against EWKT
-  QRegularExpression rx( QStringLiteral( "^\\s*(?:SRID=(.*);)?(.*)$" ) );
+  QRegularExpression rx( QStringLiteral( "^\\s*(?:CRS=(.*);)?(.*)$" ) );
 
   QRegularExpressionMatch match = rx.match( input.toString() );
   if ( match.hasMatch() )
@@ -3037,8 +3036,7 @@ QString QgsProcessingParameterGeometry::valueAsPythonString( const QVariant &val
     if ( authid.isEmpty() )
       return QStringLiteral( "'%1'" ).arg( g.asWkt() );
     else
-      // Output as EWKT
-      return QStringLiteral( "'%2;%1'" ).arg( g.asWkt(), authid.replace( "EPSG:", "SRID=" ) );
+      return QStringLiteral( "'CRS=%2;%1'" ).arg( g.asWkt(), authid );
   };
 
   if ( !value.isValid() )

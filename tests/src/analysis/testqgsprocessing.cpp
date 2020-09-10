@@ -3413,7 +3413,7 @@ void TestQgsProcessing::parameterGeometry()
   QCOMPARE( geometry.asWkt(), QStringLiteral( "LineString (10 10, 20 20)" ) );
 
   // with CRS as string
-  params.insert( "non_optional", QString( "SRID=4326;Point ( 1.1 2.2 )" ) );
+  params.insert( "non_optional", QString( "CRS=EPSG:4326;Point ( 1.1 2.2 )" ) );
   geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context );
   QPointF point = geometry.asQPointF();
   QGSCOMPARENEAR( point.x(), 1.1, 0.001 );
@@ -3500,7 +3500,7 @@ void TestQgsProcessing::parameterGeometry()
   // With Srid as string
   QCOMPARE( def->valueAsPythonString( QgsReferencedGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString( 10 10, 20 20)" ) ),
                                       QgsCoordinateReferenceSystem( "EPSG:4326" ) ), context ),
-            QStringLiteral( "'SRID=4326;LineString (10 10, 20 20)'" ) );
+            QStringLiteral( "'CRS=EPSG:4326;LineString (10 10, 20 20)'" ) );
 
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterGeometry('non_optional', '', defaultValue='Point(1 2)')" ) );

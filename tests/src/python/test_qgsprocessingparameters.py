@@ -33,7 +33,6 @@ from qgis.core import (
 start_app()
 
 
-
 class TestQgsProcessingParameters(unittest.TestCase):
 
     @classmethod
@@ -48,15 +47,13 @@ class TestQgsProcessingParameters(unittest.TestCase):
         cls.registry = QgsApplication.instance().processingRegistry()
 
     def test_qgsprocessinggometry(self):  # spellok
-        """ Test QgsProcessingParameterGeometry initialisation
-        """
+        """ Test QgsProcessingParameterGeometry initialization """
         geomtypes = [QgsWkbTypes.PointGeometry, QgsWkbTypes.PolygonGeometry]
-        param = QgsProcessingParameterGeometry( name='test', geometryTypes=geomtypes)
+        param = QgsProcessingParameterGeometry(name='test', geometryTypes=geomtypes)
 
         types = param.geometryTypes()
 
-        self.assertEqual( param.geometryTypes(), geomtypes) 
-
+        self.assertEqual(param.geometryTypes(), geomtypes)
 
 
 if __name__ == '__main__':
