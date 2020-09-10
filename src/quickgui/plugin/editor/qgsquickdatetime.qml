@@ -18,7 +18,6 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.1
 import QtQuick.Controls 1.4 as Controls1
 import QtGraphicalEffects 1.0
-import QtQuick.Window 2.0
 import QgsQuick 0.1 as QgsQuick
 
 /**
@@ -116,7 +115,7 @@ Item {
                   onClicked: {
                     var usedDate = new Date();
                     if (value !== undefined && value !== '') {
-                      usedDate = main.isDateOrTime ? value : Date.fromLocaleString(Qt.locale(), value, config['field_format'])
+                      usedDate = field.isDateOrTime ? value : Date.fromLocaleString(Qt.locale(), value, config['field_format'])
                     }
 
                     calendar.selectedDate = usedDate
@@ -178,7 +177,7 @@ Item {
                 Rectangle {
                   id: calendarOverlay
                   color: "transparent"
-                  implicitWidth: Math.min(Screen.width, Screen.height) * 0.8
+                  implicitWidth: Math.min(popup.parent.width, popup.parent.height) * 0.8
                   implicitHeight: implicitWidth
                   visible: main.typeFromFieldFormat === "Date" || main.typeFromFieldFormat === "Date Time"
 
@@ -233,6 +232,7 @@ Item {
                       SpinBox {
                           id: hoursSpinBox
                           Layout.preferredHeight: main.rowHeight
+                          Layout.minimumWidth: main.rowHeight * 3
                           Layout.fillWidth: true
                           Layout.row: 0
                           Layout.column: 1
@@ -255,6 +255,7 @@ Item {
                       SpinBox {
                           id: minutesSpinBox
                           Layout.preferredHeight: main.rowHeight
+                          Layout.minimumWidth: main.rowHeight * 3
                           Layout.fillWidth: true
                           Layout.row: 1
                           Layout.column: 1
@@ -277,6 +278,7 @@ Item {
                       SpinBox {
                           id: secondsSpinBox
                           Layout.preferredHeight: main.rowHeight
+                          Layout.minimumWidth: main.rowHeight * 3
                           Layout.fillWidth: true
                           Layout.row: 2
                           Layout.column: 1
