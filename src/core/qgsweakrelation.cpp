@@ -73,3 +73,34 @@ QList<QgsRelation::FieldPair> QgsWeakRelation::fieldPairs() const
 {
   return mFieldPairs;
 }
+
+void QgsWeakRelation::writeXml( const QgsVectorLayer *layer, const QgsRelation &relation, QDomNode &node, QDomDocument &doc )
+{
+  if ( !layer )
+    return;
+
+  if ( layer != relation.referencingLayer() && layer != relation.referencedLayer() )
+    return;
+
+  const QgsPathResolver resolver { QgsProject::instance()->pathResolver() };
+
+  relation.writeXml( node, doc );
+  QDomElement relationElement = node.firstChildElement( QStringLiteral( "relation" ) );
+  Q_ASSERT( !relationElement.isNull() );
+  if ( layer == relation.referencingLayer() )
+  {
+    // if the layer is the referencing one, we save the referenced layer info
+    relationElement.setAttribute( QStringLiteral( "layerId" ), relation.referencedLayer()->id() );
+    relationElement.setAttribute( QStringLiteral( "layerName" ), relation.referencedLayer()->name() );
+    relationElement.setAttribute( QStringLiteral( "dataSource" ), resolver.writePath( relation.referencedLayer()->publicSource() ) );
+    relationElement.setAttribute( QStringLiteral( "providerKey" ), relation.referencedLayer()->providerType() );
+  }
+  else
+  {
+    // if the layer is the referenced one, we save the referencing layer info
+    relationElement.setAttribute( QStringLiteral( "layerId" ), relation.referencingLayer()->id() );
+    relationElement.setAttribute( QStringLiteral( "layerName" ), relation.referencingLayer()->name() );
+    relationElement.setAttribute( QStringLiteral( "dataSource" ), resolver.writePath( relation.referencingLayer()->publicSource() ) );
+    relationElement.setAttribute( QStringLiteral( "providerKey" ), relation.referencingLayer()->providerType() );
+  }
+}

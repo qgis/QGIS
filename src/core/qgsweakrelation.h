@@ -85,6 +85,17 @@ class CORE_EXPORT QgsWeakRelation
      */
     QList<QgsRelation::FieldPair> fieldPairs() const;
 
+    /**
+     * Writes a weak relation infoto an XML structure. Used for saving .qgs projects
+     *
+     * \param layer the layer which we save the weak relation for
+     * \param relation the relation to save as a weak relation
+     * \param node The parent node in which the relation will be created
+     * \param doc  The document in which the relation will be saved
+     * \since QGIS 3.16
+     */
+    static void writeXml( const QgsVectorLayer *layer, const QgsRelation &relation, QDomNode &node, QDomDocument &doc );
+
   private:
 
     QgsVectorLayerRef mReferencingLayer;
