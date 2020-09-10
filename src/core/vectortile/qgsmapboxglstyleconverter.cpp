@@ -1040,6 +1040,36 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
       labelSettings.lineSettings().setPlacementFlags( QgsLabeling::OnLine );
       geometryType = QgsWkbTypes::LineGeometry;
     }
+
+    QPointF textOffset;
+    if ( jsonLayout.contains( QStringLiteral( "text-offset" ) ) )
+    {
+      const QVariant jsonTextOffset = jsonLayout.value( QStringLiteral( "text-offset" ) );
+
+      // units are ems!
+      switch ( jsonTextOffset.type() )
+      {
+        case QVariant::Map:
+          ddLabelProperties.setProperty( QgsPalLayerSettings::LabelDistance, QStringLiteral( "array_get(%1,1)" ).arg( parseInterpolatePointByZoom( jsonTextOffset.toMap(), context, textSize, &textOffset ) ) );
+          break;
+
+        case QVariant::List:
+        case QVariant::StringList:
+          textOffset = QPointF( jsonTextOffset.toList().value( 0 ).toDouble() * textSize,
+                                jsonTextOffset.toList().value( 1 ).toDouble() * textSize );
+          break;
+
+        default:
+          context.pushWarning( QObject::tr( "Skipping non-implemented text-offset for line placement expression" ) );
+          break;
+      }
+
+      if ( !textOffset.isNull() )
+      {
+        labelSettings.distUnits = context.targetUnit();
+        labelSettings.dist = -textOffset.y();
+      }
+    }
   }
 
   if ( labelSettings.placement == QgsPalLayerSettings::OverPoint )
