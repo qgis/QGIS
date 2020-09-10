@@ -424,14 +424,14 @@ void QgsRelationEditorWidget::updateButtons()
   mToggleEditingButton->setChecked( editable );
   mSaveEditsButton->setEnabled( editable );
 
-  mLinkFeatureButton->setVisible( mButtons.testFlag( QgsAttributeEditorRelation::Button::Link ) );
-  mUnlinkFeatureButton->setVisible( mButtons.testFlag( QgsAttributeEditorRelation::Button::Unlink ) );
-  mSaveEditsButton->setVisible( mButtons.testFlag( QgsAttributeEditorRelation::Button::SaveChildEdits ) );
-  mAddFeatureButton->setVisible( mButtons.testFlag( QgsAttributeEditorRelation::Button::AddChildFeature ) && mToggleEditingButton->isVisible() );
-  mAddFeatureGeometryButton->setVisible( mButtons.testFlag( QgsAttributeEditorRelation::Button::AddChildFeature ) && mEditorContext.mapCanvas() && mEditorContext.cadDockWidget() && spatial );
-  mDuplicateFeatureButton->setVisible( mButtons.testFlag( QgsAttributeEditorRelation::Button::DuplicateChildFeature ) );
-  mDeleteFeatureButton->setVisible( mButtons.testFlag( QgsAttributeEditorRelation::Button::DeleteChildFeature ) );
-  mZoomToFeatureButton->setVisible( mButtons.testFlag( QgsAttributeEditorRelation::Button::ZoomToChildFeature ) && mEditorContext.mapCanvas() && spatial );
+  mLinkFeatureButton->setVisible( mButtonsVisibility.testFlag( QgsAttributeEditorRelation::Button::Link ) );
+  mUnlinkFeatureButton->setVisible( mButtonsVisibility.testFlag( QgsAttributeEditorRelation::Button::Unlink ) );
+  mSaveEditsButton->setVisible( mButtonsVisibility.testFlag( QgsAttributeEditorRelation::Button::SaveChildEdits ) && mToggleEditingButton->isVisible() );
+  mAddFeatureButton->setVisible( mButtonsVisibility.testFlag( QgsAttributeEditorRelation::Button::AddChildFeature ) );
+  mAddFeatureGeometryButton->setVisible( mButtonsVisibility.testFlag( QgsAttributeEditorRelation::Button::AddChildFeature ) && mEditorContext.mapCanvas() && mEditorContext.cadDockWidget() && spatial );
+  mDuplicateFeatureButton->setVisible( mButtonsVisibility.testFlag( QgsAttributeEditorRelation::Button::DuplicateChildFeature ) );
+  mDeleteFeatureButton->setVisible( mButtonsVisibility.testFlag( QgsAttributeEditorRelation::Button::DeleteChildFeature ) );
+  mZoomToFeatureButton->setVisible( mButtonsVisibility.testFlag( QgsAttributeEditorRelation::Button::ZoomToChildFeature ) && mEditorContext.mapCanvas() && spatial );
 }
 
 void QgsRelationEditorWidget::addFeatureGeometry()
@@ -943,7 +943,7 @@ bool QgsRelationEditorWidget::showSaveChildEditsButton() const
 
 void QgsRelationEditorWidget::setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons )
 {
-  mButtons = buttons;
+  mButtonsVisibility = buttons;
   updateButtons();
 }
 
