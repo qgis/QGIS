@@ -66,6 +66,7 @@ class TestQgsLabelingEngine : public QObject
     void testCurvedLabelOnSmallLineNearCenter();
     void testRepeatDistanceWithSmallLine();
     void testParallelPlacementPreferAbove();
+    void testParallelPlacementDistanceOnLine();
     void testLabelBoundary();
     void testLabelBlockingRegion();
     void testLabelRotationWithReprojection();
@@ -1512,6 +1513,59 @@ void TestQgsLabelingEngine::testParallelPlacementPreferAbove()
 
   QImage img = job.renderedImage();
   QVERIFY( imageCheck( QStringLiteral( "parallel_prefer_above" ), img, 20 ) );
+}
+
+void TestQgsLabelingEngine::testParallelPlacementDistanceOnLine()
+{
+  QgsPalLayerSettings settings;
+  setDefaultLabelParams( settings );
+
+  QgsTextFormat format = settings.format();
+  format.setSize( 20 );
+  format.setColor( QColor( 0, 0, 0 ) );
+  settings.setFormat( format );
+
+  settings.fieldName = QStringLiteral( "'XXXXXXXX'" );
+  settings.isExpression = true;
+  settings.placement = QgsPalLayerSettings::Line;
+  settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::OnLine | QgsLabeling::LinePlacementFlag::MapOrientation );
+  settings.dist = 5.0;
+  settings.labelPerPart = false;
+
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  vl2->setRenderer( new QgsNullSymbolRenderer() );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString (190000 5000010, 190200 5000000)" ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  // make a fake render context
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  mapSettings.setDestinationCrs( vl2->crs() );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( f.geometry().boundingBox() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
+  engineSettings.setFlag( QgsLabelingEngineSettings::UsePartialCandidates, false );
+  engineSettings.setFlag( QgsLabelingEngineSettings::DrawLabelRectOnly, true );
+  //engineSettings.setFlag( QgsLabelingEngineSettings::DrawCandidates, true );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "parallel_distance_online" ), img, 20 ) );
 }
 
 void TestQgsLabelingEngine::testLabelBoundary()
