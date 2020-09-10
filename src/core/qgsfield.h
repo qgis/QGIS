@@ -81,7 +81,12 @@ class CORE_EXPORT QgsField
     };
     Q_ENUM( ConfigurationFlag )
     Q_DECLARE_FLAGS( ConfigurationFlags, ConfigurationFlag )
+#if QT_VERSION < QT_VERSION_CHECK(5, 12, 0)
     Q_FLAG( ConfigurationFlags )
+#else
+    // https://bugreports.qt.io/browse/QTBUG-47652
+    Q_ENUM( ConfigurationFlags )
+#endif
 #endif
 
     /**
