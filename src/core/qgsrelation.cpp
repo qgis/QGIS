@@ -94,14 +94,7 @@ QgsRelation QgsRelation::createFromXml( const QDomNode &node, QgsReadWriteContex
   relation.d->mReferencedLayer = qobject_cast<QgsVectorLayer *>( referencedLayer );
   relation.d->mRelationId = id;
   relation.d->mRelationName = name;
-  if ( strength == QLatin1String( "Composition" ) )
-  {
-    relation.d->mRelationStrength = RelationStrength::Composition;
-  }
-  else
-  {
-    relation.d->mRelationStrength = RelationStrength::Association;
-  }
+  relation.d->mRelationStrength = qgsEnumKeyToValue<QgsRelation::RelationStrength>( strength, RelationStrength::Association );
 
   QDomNodeList references = elem.elementsByTagName( QStringLiteral( "fieldRef" ) );
   for ( int i = 0; i < references.size(); ++i )
