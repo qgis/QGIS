@@ -45,8 +45,8 @@ class CORE_EXPORT QgsWeakRelation
      */
     enum WeakRelationType
     {
-      Referencing, //!<
-      Referenced //!<
+      Referencing, //!< The layer is referencing
+      Referenced //!< The layer is referenced
     };
 
 
