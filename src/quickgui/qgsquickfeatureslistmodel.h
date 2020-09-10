@@ -34,7 +34,7 @@
  *
  * \note QML Type: FeaturesListModel
  *
- * \since QGIS 3.14
+ * \since QGIS 3.16
  */
 class QUICK_EXPORT QgsQuickFeaturesListModel : public QAbstractListModel
 {
@@ -59,7 +59,7 @@ class QUICK_EXPORT QgsQuickFeaturesListModel : public QAbstractListModel
     Q_PROPERTY( int featuresLimit READ featuresLimit NOTIFY featuresLimitChanged )
 
     /**
-     * Property determining behaviour of Feature Model.
+     * Property determining type of Feature Model.
      *
      * \note ValueRelation type provides different attribute when opting for data with EmitableIndex role, it returns "key" attribute
      */
@@ -77,6 +77,12 @@ class QUICK_EXPORT QgsQuickFeaturesListModel : public QAbstractListModel
 
   public:
 
+    /**
+     * \brief The modelTypes enum
+     * ValueRelation type provides different attribute when opting for data with EmitableIndex role, it returns "key" attribute.
+     *
+     * Default type is FeatureListing
+     */
     enum modelTypes
     {
       FeatureListing,
@@ -96,45 +102,69 @@ class QUICK_EXPORT QgsQuickFeaturesListModel : public QAbstractListModel
     QHash<int, QByteArray> roleNames() const override;
 
     /**
-     * @brief populate populates model with value relation data from config
-     * @param config to be used
+     * \brief populate populates model with value relation data from config
+     * \param config to be used
      */
     Q_INVOKABLE void populate( const QVariantMap &config );
 
     /**
-     * @brief populateFromLayer populates model with features from layer
-     * @param layer to be used
+     * \brief populateFromLayer populates model with features from layer
+     * \param layer to be used
      */
     Q_INVOKABLE void populateFromLayer( QgsVectorLayer *layer );
 
     /**
-     * @brief reloadFeatures reloads features from current layer
+     * \brief reloadFeatures reloads features from current layer
      */
     Q_INVOKABLE void reloadFeatures();
 
-    //! Methods to translate value relation key into model index
+    /**
+     * \brief rowIndexFromKey translates value relation key into index from cache
+     * \param key value relation key
+     * \return index from cache (loaded from config)
+     */
     Q_INVOKABLE int rowIndexFromKey( const QVariant &key ) const;
+
+    /**
+     * \brief rowModelIndexFromKey translates value relation key into model index
+     * \param key value relation key
+     * \return model index (row) for corresponding feature (from mFeatures)
+     */
     Q_INVOKABLE int rowModelIndexFromKey( const QVariant &key ) const;
 
+    //! Returns maximum amount of features that can be queried from layer
     int featuresLimit() const;
+    //! Returns number of features in layer, not number of loaded features
     int featuresCount() const;
+    //! Returns type of this model
     modelTypes modelType() const;
+    //! Getter for filter expression, empty string represents no filter
     QString filterExpression() const;
+    //! Setter for filter expression, upon setting also reloads features from current layer with new filter
     void setFilterExpression( const QString &filterExpression );
 
   public slots:
+    //! Sets corresponding type of model from modelTypes enum
     void setModelType( modelTypes modelType );
 
   signals:
+    /**
+     * \brief featuresCountChanged Signal emitted when features are reloaded or layer is changed
+     * \param featuresCount number of features in layer, not number of loaded features
+     */
     void featuresCountChanged( int featuresCount );
+
+    //! Signal emitted when maximum number of features that can be loaded changes
     void featuresLimitChanged( int featuresLimit );
+
+    //! Signal emitted when filter expression has changed
     void filterExpressionChanged( QString filterExpression );
 
   private:
 
     /**
-     * @brief loadFeaturesFromLayer
-     * @param layer
+     * \brief loadFeaturesFromLayer
+     * \param layer
      */
     void loadFeaturesFromLayer( QgsVectorLayer *layer = nullptr );
 
@@ -167,6 +197,8 @@ class QUICK_EXPORT QgsQuickFeaturesListModel : public QAbstractListModel
     QgsVectorLayer *mCurrentLayer = nullptr;
 
     //! Data from config for value relations
+    //! mCache is not affected by reloading features when filter expression is changed and
+    //! is kept until next call of emptyData.
     QgsValueRelationFieldFormatter::ValueRelationCache mCache;
 
     //! Type of a model - Listing (browsing) features or use in value relation widget
