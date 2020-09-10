@@ -108,11 +108,6 @@ QgsFields QgsZonalStatisticsFeatureBasedAlgorithm::outputFields( const QgsFields
   return mOutputFields;
 }
 
-QgsProcessingFeatureSource::Flag QgsZonalStatisticsFeatureBasedAlgorithm::sourceFlags() const
-{
-  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
-}
-
 bool QgsZonalStatisticsFeatureBasedAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   mPrefix = parameterAsString( parameters, QStringLiteral( "COLUMN_PREFIX" ), context );
