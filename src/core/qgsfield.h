@@ -73,7 +73,11 @@ class CORE_EXPORT QgsField
        * and are not describing any information from the data provider.
        * \since QGIS 3.16
        */
+#if QT_VERSION < QT_VERSION_CHECK(5, 12, 0)
+    enum ConfigurationFlag
+#else
     enum class ConfigurationFlag : int
+#endif
     {
       None = 0, //!< No flag is defined
       Searchable = 0x1, //!< Defines if the field is searchable (used in the locator search for instance)
@@ -81,7 +85,12 @@ class CORE_EXPORT QgsField
     };
     Q_ENUM( ConfigurationFlag )
     Q_DECLARE_FLAGS( ConfigurationFlags, ConfigurationFlag )
+#if QT_VERSION < QT_VERSION_CHECK(5, 12, 0)
+    // https://bugreports.qt.io/browse/QTBUG-47652
+    Q_ENUM( ConfigurationFlags )
+#else
     Q_FLAG( ConfigurationFlags )
+#endif
 #endif
 
     /**
