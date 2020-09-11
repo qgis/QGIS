@@ -37,6 +37,7 @@ from qgis.core import (
     QgsRasterBandStats,
     QgsDataSourceUri,
 )
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath, compareWkt
 
@@ -205,6 +206,44 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         self.assertTrue(rl.isValid())
         data = rl.dataProvider().block(1, rl.extent(), 3, 3)
         self.assertEqual(int(data.value(0, 0)), 142)
+
+    def testReadExtentFromXml(self):
+        """Read raster extent from XML"""
+
+        rl0 = QgsRasterLayer(
+                self.dbconn + ' sslmode=disable key=\'rid\' srid=3035  table="public"."raster_tiled_3035" sql=',
+                'test', 'postgresraster')
+        self.assertTrue(rl0.isValid())
+
+        # set a custom extent
+        originalExtent = rl0.extent()
+
+        self.assertEqual(originalExtent, QgsRectangle(
+            4080050, 2430625, 4080200, 2430750))
+
+        customExtent = QgsRectangle(4080025, 2430600, 4080225, 2430775)
+        rl0.setExtent(customExtent)
+
+        # write xml
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("maplayer")
+        self.assertTrue(rl0.writeLayerXml(elem, doc, QgsReadWriteContext()))
+
+        # read xml with the custom extent. It should not be used by default
+        rl1 = QgsRasterLayer()
+        rl1.readLayerXml(elem, QgsReadWriteContext())
+        self.assertTrue(rl1.isValid())
+
+        self.assertEqual(rl1.extent(), originalExtent)
+
+        # read xml with custom extent with readExtent option. Extent read from
+        # xml document should be used because we have a view
+        rl2 = QgsRasterLayer()
+        rl2.setReadExtentFromXml(True)
+        rl2.readLayerXml(elem, QgsReadWriteContext())
+        self.assertTrue(rl2.isValid())
+
+        self.assertEqual(rl2.extent(), customExtent)
 
     @unittest.skip('Performance test is disabled in Travis environment')
     def testSpeed(self):
