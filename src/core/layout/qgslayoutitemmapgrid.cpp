@@ -1017,7 +1017,7 @@ void QgsLayoutItemMapGrid::drawGridFrameTicks( QPainter *p, GridExtension *exten
         continue;
 
       // If the angle is below the threshold, we don't draw the annotation
-      if ( abs( annot.angle ) / M_PI * 180.0 > 90.0 - mRotatedTicksMinimumAngle )
+      if ( abs( annot.angle ) / M_PI * 180.0 > 90.0 - mRotatedTicksMinimumAngle + 0.0001 )
         continue;
 
       // Skip outwards facing annotations that are below mRotatedTicksMarginToCorner
@@ -1216,7 +1216,7 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QgsRenderContext &context, 
   AnnotationDirection anotDir = annotationDirection( frameBorder );
 
   // If the angle is below the threshold, we don't draw the annotation
-  if ( abs( annot.angle ) / M_PI * 180.0 > 90.0 - mRotatedAnnotationsMinimumAngle )
+  if ( abs( annot.angle ) / M_PI * 180.0 > 90.0 - mRotatedAnnotationsMinimumAngle + 0.0001 )
     return;
 
   QVector2D normalVector = borderToNormal2D( annot.border );
