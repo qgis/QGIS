@@ -287,16 +287,9 @@ void QgsRelationEditorWidget::initDualView( QgsVectorLayer *layer, const QgsFeat
     text = tr( "Add Polygon Feature" );
   }
 
-  if ( text.isEmpty() || !mEditorContext.mapCanvas() || !mEditorContext.cadDockWidget() )
-  {
-    mAddFeatureGeometryButton->setVisible( false );
-  }
-  else
-  {
-    mAddFeatureGeometryButton->setIcon( icon );
-    mAddFeatureGeometryButton->setText( text );
-    mAddFeatureGeometryButton->setToolTip( text );
-  }
+  mAddFeatureGeometryButton->setIcon( icon );
+  mAddFeatureGeometryButton->setText( text );
+  mAddFeatureGeometryButton->setToolTip( text );
 
   updateButtons();
 }
@@ -321,15 +314,23 @@ void QgsRelationEditorWidget::setRelations( const QgsRelation &relation, const Q
   if ( !mRelation.isValid() )
     return;
 
-  mToggleEditingButton->setVisible( true );
+  mLayerInSameTransactionGroup = false;
 
   const auto transactionGroups = QgsProject::instance()->transactionGroups();
   for ( auto it = transactionGroups.constBegin(); it != transactionGroups.constEnd(); ++it )
   {
-    if ( it.value()->layers().contains( mRelation.referencingLayer() ) )
+    if ( mNmRelation.isValid() )
     {
-      mToggleEditingButton->setVisible( false );
-      mSaveEditsButton->setVisible( false );
+      if ( it.value()->layers().contains( mRelation.referencedLayer() ) &&
+           it.value()->layers().contains( mRelation.referencingLayer() ) &&
+           it.value()->layers().contains( mNmRelation.referencedLayer() ) )
+        mLayerInSameTransactionGroup = true;
+    }
+    else
+    {
+      if ( it.value()->layers().contains( mRelation.referencedLayer() ) &&
+           it.value()->layers().contains( mRelation.referencingLayer() ) )
+        mLayerInSameTransactionGroup = true;
     }
   }
 
@@ -350,17 +351,13 @@ void QgsRelationEditorWidget::setRelations( const QgsRelation &relation, const Q
   if ( canChangeAttributes && !lyr->readOnly() )
   {
     mToggleEditingButton->setEnabled( true );
-    updateButtons();
   }
   else
   {
     mToggleEditingButton->setEnabled( false );
   }
 
-  if ( mNmRelation.isValid() )
-    mZoomToFeatureButton->setVisible( mNmRelation.referencedLayer()->isSpatial() );
-  else
-    mZoomToFeatureButton->setVisible( mRelation.referencingLayer()->isSpatial() );
+  updateButtons();
 
   setObjectName( QStringLiteral( "referenced/" ) + mRelation.name() );
 
@@ -376,6 +373,8 @@ void QgsRelationEditorWidget::setEditorContext( const QgsAttributeEditorContext 
     mMapToolDigitize.reset( new QgsMapToolDigitizeFeature( context.mapCanvas(), context.cadDockWidget() ) );
     mMapToolDigitize->setButton( mAddFeatureGeometryButton );
   }
+
+  updateButtons();
 }
 
 QgsAttributeEditorContext QgsRelationEditorWidget::editorContext() const
@@ -408,17 +407,20 @@ void QgsRelationEditorWidget::updateButtons()
 {
   bool editable = false;
   bool linkable = false;
+  bool spatial = false;
   bool selectionNotEmpty = mFeatureSelectionMgr ? mFeatureSelectionMgr->selectedFeatureCount() : false;
 
   if ( mRelation.isValid() )
   {
     editable = mRelation.referencingLayer()->isEditable();
     linkable = mRelation.referencingLayer()->isEditable();
+    spatial = mRelation.referencingLayer()->isSpatial();
   }
 
   if ( mNmRelation.isValid() )
   {
     editable = mNmRelation.referencedLayer()->isEditable();
+    spatial = mNmRelation.referencedLayer()->isSpatial();
   }
 
   mAddFeatureButton->setEnabled( editable );
@@ -427,27 +429,19 @@ void QgsRelationEditorWidget::updateButtons()
   mLinkFeatureButton->setEnabled( linkable );
   mDeleteFeatureButton->setEnabled( editable && selectionNotEmpty );
   mUnlinkFeatureButton->setEnabled( linkable && selectionNotEmpty );
-
-  mZoomToFeatureButton->setVisible(
-    mEditorContext.mapCanvas() && (
-      (
-        mNmRelation.isValid() &&
-        mNmRelation.referencedLayer()->geometryType() != QgsWkbTypes::NullGeometry &&
-        mNmRelation.referencedLayer()->geometryType() != QgsWkbTypes::UnknownGeometry
-      )
-      ||
-      (
-        mRelation.isValid() &&
-        mRelation.referencedLayer()->geometryType() != QgsWkbTypes::NullGeometry &&
-        mRelation.referencedLayer()->geometryType() != QgsWkbTypes::UnknownGeometry
-      )
-    )
-  );
-
   mZoomToFeatureButton->setEnabled( selectionNotEmpty );
-
   mToggleEditingButton->setChecked( editable );
   mSaveEditsButton->setEnabled( editable );
+
+  mToggleEditingButton->setVisible( !mLayerInSameTransactionGroup );
+  mLinkFeatureButton->setVisible( mButtonsVisibility.testFlag( QgsAttributeEditorRelation::Button::Link ) );
+  mUnlinkFeatureButton->setVisible( mButtonsVisibility.testFlag( QgsAttributeEditorRelation::Button::Unlink ) );
+  mSaveEditsButton->setVisible( mButtonsVisibility.testFlag( QgsAttributeEditorRelation::Button::SaveChildEdits ) && !mLayerInSameTransactionGroup );
+  mAddFeatureButton->setVisible( mButtonsVisibility.testFlag( QgsAttributeEditorRelation::Button::AddChildFeature ) );
+  mAddFeatureGeometryButton->setVisible( mButtonsVisibility.testFlag( QgsAttributeEditorRelation::Button::AddChildFeature ) && mEditorContext.mapCanvas() && mEditorContext.cadDockWidget() && spatial );
+  mDuplicateFeatureButton->setVisible( mButtonsVisibility.testFlag( QgsAttributeEditorRelation::Button::DuplicateChildFeature ) );
+  mDeleteFeatureButton->setVisible( mButtonsVisibility.testFlag( QgsAttributeEditorRelation::Button::DeleteChildFeature ) );
+  mZoomToFeatureButton->setVisible( mButtonsVisibility.testFlag( QgsAttributeEditorRelation::Button::ZoomToChildFeature ) && mEditorContext.mapCanvas() && spatial );
 }
 
 void QgsRelationEditorWidget::addFeatureGeometry()
@@ -959,14 +953,8 @@ bool QgsRelationEditorWidget::showSaveChildEditsButton() const
 
 void QgsRelationEditorWidget::setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons )
 {
-  mLinkFeatureButton->setVisible( buttons.testFlag( QgsAttributeEditorRelation::Button::Link ) );
-  mUnlinkFeatureButton->setVisible( buttons.testFlag( QgsAttributeEditorRelation::Button::Unlink ) );
-  mSaveEditsButton->setVisible( buttons.testFlag( QgsAttributeEditorRelation::Button::SaveChildEdits ) );
-  mAddFeatureButton->setVisible( buttons.testFlag( QgsAttributeEditorRelation::Button::AddChildFeature ) );
-  mAddFeatureGeometryButton->setVisible( buttons.testFlag( QgsAttributeEditorRelation::Button::AddChildFeature ) );
-  mDuplicateFeatureButton->setVisible( buttons.testFlag( QgsAttributeEditorRelation::Button::DuplicateChildFeature ) );
-  mDeleteFeatureButton->setVisible( buttons.testFlag( QgsAttributeEditorRelation::Button::DeleteChildFeature ) );
-  mZoomToFeatureButton->setVisible( buttons.testFlag( QgsAttributeEditorRelation::Button::ZoomToChildFeature ) );
+  mButtonsVisibility = buttons;
+  updateButtons();
 }
 
 QgsAttributeEditorRelation::Buttons QgsRelationEditorWidget::visibleButtons() const
