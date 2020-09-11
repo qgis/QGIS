@@ -1,8 +1,9 @@
 {
   "name": "geometry_overlay_within",
   "type": "function",
-    "description": "Performs a spatial join of type WITHIN. This returns an array of results of an expression evaluated on features from a different layer that are WITHIN the current feature, or, if no expression if provided, simply returns whether at least one feature from the other layer is WITHIN the current feature.",
-    "arguments": [
+  "groups": ["GeometryGroup"],
+  "description": "Performs a spatial join of type WITHIN. This returns an array of results of an expression evaluated on features from a different layer that are WITHIN the current feature, or, if no expression if provided, simply returns whether at least one feature from the other layer is WITHIN the current feature.",
+  "arguments": [
     {
       "arg": "layer",
       "description": "the other layer"
