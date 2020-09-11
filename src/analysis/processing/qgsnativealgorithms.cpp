@@ -68,6 +68,7 @@
 #include "qgsalgorithmextractvertices.h"
 #include "qgsalgorithmextractspecificvertices.h"
 #include "qgsalgorithmextractzmvalues.h"
+#include "qgsalgorithmfieldcalculator.h"
 #include "qgsalgorithmfiledownloader.h"
 #include "qgsalgorithmfillnodata.h"
 #include "qgsalgorithmfilter.h"
@@ -292,6 +293,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsExtractVerticesAlgorithm() );
   addAlgorithm( new QgsExtractSpecificVerticesAlgorithm() );
   addAlgorithm( new QgsExtractZValuesAlgorithm() );
+  addAlgorithm( new QgsFieldCalculatorAlgorithm() );
   addAlgorithm( new QgsFileDownloaderAlgorithm() );
   addAlgorithm( new QgsFillNoDataAlgorithm() );
   addAlgorithm( new QgsFilterAlgorithm() );

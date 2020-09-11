@@ -114,9 +114,6 @@ qgis:extractbyexpression: >
 
   For more information about expressions see the <a href ="{qgisdocs}/user_manual/working_with_vector/expression.html">user manual</a>
 
-qgis:fieldcalculator: >
-  This algorithm computes a new vector layer with the same features of the input layer, but with an additional attribute. The values of this new attribute are computed from each feature using a mathematical formula, based on the properties and attributes of the feature.
-
 qgis:findprojection: >
   This algorithm allows creation of a shortlist of possible candidate coordinate reference systems for a layer with an unknown projection.
 
