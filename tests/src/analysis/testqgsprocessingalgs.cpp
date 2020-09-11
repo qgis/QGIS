@@ -55,6 +55,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsrenderchecker.h"
 #include "qgsrelationmanager.h"
+#include "qgsmeshlayer.h"
 
 class TestQgsProcessingAlgs: public QObject
 {
@@ -146,6 +147,8 @@ class TestQgsProcessingAlgs: public QObject
     void exportLayoutPng();
     void exportAtlasLayoutPdf();
     void exportAtlasLayoutPng();
+
+    void tinMeshCreation();
 
   private:
 
@@ -4715,6 +4718,52 @@ void TestQgsProcessingAlgs::exportAtlasLayoutPng()
   QVERIFY( QFile::exists( QDir::tempPath() + "/my_atlas/custom_1.png" ) );
   QVERIFY( QFile::exists( QDir::tempPath() + "/my_atlas/custom_10.png" ) );
   QVERIFY( imageCheck( "export_atlas_custom_layers", QDir::tempPath() + "/my_atlas/custom_1.png" ) );
+}
+
+void TestQgsProcessingAlgs::tinMeshCreation()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:tinmeshcreation" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantList inputLayers;
+
+  QVariantMap pointLayer;
+  pointLayer[QStringLiteral( "source" )] = "points";
+  pointLayer[QStringLiteral( "type" )] = 0;
+  pointLayer[QStringLiteral( "attributeIndex" )] = mPointsLayer->fields().indexOf( "Importance" );
+
+  inputLayers.append( pointLayer );
+
+  QVariantMap polyLayer;
+  polyLayer[QStringLiteral( "source" )] = "polygons";
+  polyLayer[QStringLiteral( "type" )] = 2;
+  polyLayer[QStringLiteral( "attributeIndex" )] = mPolygonLayer->fields().indexOf( "Value" );
+
+  inputLayers.append( polyLayer );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "SOURCE_DATA" ), inputLayers );
+  parameters.insert( QStringLiteral( "OUTPUT_MESH" ), QDir::tempPath() + "/meshLayer.2dm" );
+  parameters.insert( QStringLiteral( "MESH_FORMAT" ), 0 );
+
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( QgsProject::instance() );
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  bool ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QgsMeshLayer meshLayer( QDir::tempPath() + "/meshLayer.2dm", "mesh", "mdal" );
+  QVERIFY( meshLayer.isValid() );
+
+  QgsMeshDataProvider *provider = meshLayer.dataProvider();
+  QCOMPARE( provider->vertexCount(), 627 );
+  QCOMPARE( provider->faceCount(), 1218 );
+
+  meshLayer.updateTriangularMesh();
+  QVERIFY( qgsDoubleNear( meshLayer.datasetValue( QgsMeshDatasetIndex( 0, 0 ), QgsPointXY( -103.0, 39.0 ) ).scalar(), 20.0, 0.001 ) );
+  QVERIFY( qgsDoubleNear( meshLayer.datasetValue( QgsMeshDatasetIndex( 0, 0 ), QgsPointXY( -86.0, 35.0 ) ).scalar(), 1.855, 0.001 ) ) ;
 }
 
 bool TestQgsProcessingAlgs::imageCheck( const QString &testName, const QString &renderedImage )

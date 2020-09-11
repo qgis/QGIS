@@ -183,7 +183,7 @@ class ANALYSIS_EXPORT QgsTriangulation
      *
      * \since QGIS 3.16
      */
-    virtual QgsMesh triangulationToMesh() const = 0;
+    virtual QgsMesh triangulationToMesh( QgsFeedback *feedback = nullptr ) const = 0;
 };
 
 #endif

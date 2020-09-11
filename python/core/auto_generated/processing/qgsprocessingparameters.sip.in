@@ -299,6 +299,8 @@ their acceptable ranges, defaults, etc.
       sipType = sipType_QgsProcessingParameterDatabaseTable;
     else if ( sipCpp->type() == QgsProcessingParameterFieldMapping::typeName() )
       sipType = sipType_QgsProcessingParameterFieldMapping;
+    else if ( sipCpp->type() == QgsProcessingParameterTinInputLayers::typeName() )
+      sipType = sipType_QgsProcessingParameterTinInputLayers;
     else
       sipType = nullptr;
 %End

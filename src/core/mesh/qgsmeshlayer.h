@@ -192,7 +192,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      *
      * \since QGIS 3.16
      */
-    bool addDatasets( QgsMeshDatasetGroup *datasetGroup ) SIP_SKIP;
+    bool addDatasets( QgsMeshDatasetGroup *datasetGroup SIP_TRANSFER );
 
     /**
      * Saves datasets group on file with the specified \a driver

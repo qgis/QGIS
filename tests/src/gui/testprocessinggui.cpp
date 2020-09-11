@@ -87,6 +87,8 @@
 #include "qgsprocessingparameterfieldmap.h"
 #include "qgsprocessingaggregatewidgetwrapper.h"
 #include "qgsprocessingparameteraggregate.h"
+#include "qgsprocessingparametertininputlayers.h"
+#include "qgsprocessingtininputlayerswidget.h"
 
 
 class TestParamType : public QgsProcessingParameterDefinition
@@ -247,6 +249,7 @@ class TestProcessingGui : public QObject
     void testRasterOutWrapper();
     void testFileOutWrapper();
     void testFolderOutWrapper();
+    void testTinInputLayerWrapper();
     void testModelGraphicsView();
 
   private:
@@ -8707,6 +8710,42 @@ void TestProcessingGui::testFolderOutWrapper()
 
   // modeler wrapper
   testWrapper( QgsProcessingGui::Modeler );
+}
+
+void TestProcessingGui::testTinInputLayerWrapper()
+{
+  QgsProcessingParameterTinInputLayers definition( QStringLiteral( "TIN input layers" ) ) ;
+  QgsProcessingTinInputLayersWidgetWrapper wrapper;
+
+  std::unique_ptr<QWidget> w( wrapper.createWidget() );
+  QVERIFY( w );
+
+  QSignalSpy spy( &wrapper, &QgsProcessingTinInputLayersWidgetWrapper::widgetValueHasChanged );
+
+  QgsProcessingContext context;
+  QgsProject project;
+  context.setProject( &project );
+  QgsVectorLayer *vectorLayer = new QgsVectorLayer( QStringLiteral( "Point" ),
+      QStringLiteral( "PointLayerForTin" ),
+      QStringLiteral( "memory" ) );
+  project.addMapLayer( vectorLayer );
+
+  QVariantList layerList;
+  QVariantMap layerMap;
+  layerMap["source"] = "PointLayerForTin";
+  layerMap["type"] = 0;
+  layerMap["attributeIndex"] = -1;
+  layerList.append( layerMap );
+
+  QVERIFY( definition.checkValueIsAcceptable( layerList, &context ) );
+  wrapper.setWidgetValue( layerList, context );
+  QCOMPARE( spy.count(), 1 );
+
+  QVariant value = wrapper.widgetValue();
+
+  QVERIFY( definition.checkValueIsAcceptable( value, &context ) );
+  QString valueAsPythonString = definition.valueAsPythonString( value, context );
+  QCOMPARE( valueAsPythonString, QStringLiteral( "[{'source': 'PointLayerForTin','type': 0,'attributeIndex': -1}]" ) );
 }
 
 void TestProcessingGui::testModelGraphicsView()

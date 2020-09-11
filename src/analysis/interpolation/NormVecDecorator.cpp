@@ -577,12 +577,12 @@ bool NormVecDecorator::saveTriangulation( QgsFeatureSink *sink, QgsFeedback *fee
   return mTIN->saveTriangulation( sink, feedback );
 }
 
-QgsMesh NormVecDecorator::triangulationToMesh() const
+QgsMesh NormVecDecorator::triangulationToMesh( QgsFeedback *feedback ) const
 {
   if ( !mTIN )
   {
     return QgsMesh();
   }
-  return mTIN->triangulationToMesh();
+  return mTIN->triangulationToMesh( feedback );
 }
 

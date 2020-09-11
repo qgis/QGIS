@@ -186,6 +186,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmsumlinelength.cpp
   processing/qgsalgorithmsymmetricaldifference.cpp
   processing/qgsalgorithmtaperedbuffer.cpp
+  processing/qgsalgorithmtinmeshcreation.cpp
   processing/qgsalgorithmtransect.cpp
   processing/qgsalgorithmtransform.cpp
   processing/qgsalgorithmtranslate.cpp
@@ -228,6 +229,7 @@ SET(QGIS_ANALYSIS_SRCS
   vector/qgszonalstatistics.cpp
 
   mesh/qgsmeshcontours.cpp
+  mesh/qgsmeshtriangulation.cpp
 
   network/qgsgraph.cpp
   network/qgsgraphbuilder.cpp
@@ -295,6 +297,7 @@ SET(QGIS_ANALYSIS_HDRS
   interpolation/qgstininterpolator.h
 
   mesh/qgsmeshcontours.h
+  mesh/qgsmeshtriangulation.h
 
   network/qgsgraph.h
   network/qgsgraphanalyzer.h
