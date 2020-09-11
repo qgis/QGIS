@@ -73,7 +73,11 @@ class CORE_EXPORT QgsField
        * and are not describing any information from the data provider.
        * \since QGIS 3.16
        */
+#if QT_VERSION < QT_VERSION_CHECK(5, 12, 0)
+    enum ConfigurationFlag
+#else
     enum class ConfigurationFlag : int
+#endif
     {
       None = 0, //!< No flag is defined
       Searchable = 0x1, //!< Defines if the field is searchable (used in the locator search for instance)
