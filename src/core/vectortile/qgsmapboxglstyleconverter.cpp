@@ -325,46 +325,28 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
     // String: {"fill-pattern": "dash-t"}
     // Object: {"fill-pattern":{"stops":[[11,"wetland8"],[12,"wetland16"]]}}
 
-    switch ( fillPatternJson.type() )
+    QSize spriteSize;
+    QString spriteProperty, spriteSizeProperty;
+    const QString sprite = retrieveSpriteAsBase64( fillPatternJson, context, spriteSize, spriteProperty, spriteSizeProperty );
+    if ( !sprite.isEmpty() )
     {
-      case QVariant::String:
+      // when fill-pattern exists, set and insert QgsRasterFillSymbolLayer
+      QgsRasterFillSymbolLayer *rasterFill = new QgsRasterFillSymbolLayer();
+      rasterFill->setImageFilePath( sprite );
+      rasterFill->setCoordinateMode( QgsRasterFillSymbolLayer::Viewport );
+
+      if ( rasterOpacity >= 0 )
       {
-        QSize spriteSize;
-        QString spriteProperty, spriteSizeProperty;
-        const QString sprite = retrieveSpriteAsBase64( fillPatternJson, context, spriteSize, spriteProperty, spriteSizeProperty );
-        if ( !sprite.isEmpty() )
-        {
-          // when fill-pattern exists, set and insert QgsRasterFillSymbolLayer
-          QgsRasterFillSymbolLayer *rasterFill = new QgsRasterFillSymbolLayer();
-          rasterFill->setImageFilePath( sprite );
-          rasterFill->setCoordinateMode( QgsRasterFillSymbolLayer::Viewport );
-
-          if ( rasterOpacity >= 0 )
-            rasterFill->setOpacity( rasterOpacity );
-          rasterFill->setDataDefinedProperties( ddRasterProperties );
-
-          symbol->appendSymbolLayer( rasterFill );
-        }
-        break;
+        rasterFill->setOpacity( rasterOpacity );
       }
 
-      case QVariant::Map:
+      if ( !spriteProperty.isEmpty() )
       {
-#if 0
-        // if Object, simpify into one sprite.
-        // TODO:
-        if isinstance( fill_pattern, dict )
-        {
-          pattern_stops = fill_pattern.get( "stops", [None] )
-                          fill_pattern = pattern_stops[-1][-1]
-        }
-#endif
-        FALLTHROUGH
+        ddRasterProperties.setProperty( QgsSymbolLayer::PropertyFile, QgsProperty::fromExpression( spriteProperty ) );
       }
 
-      default:
-
-        break;
+      rasterFill->setDataDefinedProperties( ddRasterProperties );
+      symbol->appendSymbolLayer( rasterFill );
     }
   }
 
