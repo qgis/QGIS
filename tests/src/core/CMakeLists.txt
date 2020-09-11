@@ -119,6 +119,7 @@ SET(TESTS
  testqgsexpressioncontext.cpp
  testqgssqliteexpressioncompiler.cpp
  testqgsexpression.cpp
+ testqgsoverlayexpression.cpp
  testqgsfeature.cpp
  testqgsfields.cpp
  testqgsfield.cpp
