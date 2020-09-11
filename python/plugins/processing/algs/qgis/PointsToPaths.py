@@ -218,7 +218,7 @@ class PointsToPaths(QgisAlgorithm):
     def natural_sort_key(self, value, _nsre=re.compile('([0-9]+)')):
         if not value[0]:
             retVal = (False, None)
-        elif type(value[0]) in (str, unicode):
+        elif type(value[0]) == str:
             retVal = (True, [int(text) if text.isdecimal() else text.lower() for text in _nsre.split(value[0])])
         else:
             retVal = (True, value[0])
