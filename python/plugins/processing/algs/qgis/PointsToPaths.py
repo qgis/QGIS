@@ -22,6 +22,7 @@ __date__ = 'April 2014'
 __copyright__ = '(C) 2014, Alexander Bruy'
 
 import os
+import re
 from datetime import datetime
 
 from qgis.core import (QgsFeature,
@@ -52,6 +53,7 @@ class PointsToPaths(QgisAlgorithm):
     CLOSE_PATH = 'CLOSE_PATH'
     GROUP_FIELD = 'GROUP_FIELD'
     ORDER_FIELD = 'ORDER_FIELD'
+    NATURAL_SORT = 'NATURAL_SORT'
     DATE_FORMAT = 'DATE_FORMAT'
     OUTPUT = 'OUTPUT'
     OUTPUT_TEXT_DIR = 'OUTPUT_TEXT_DIR'
@@ -75,6 +77,8 @@ class PointsToPaths(QgisAlgorithm):
                                                         self.tr('Close path'), defaultValue=False))
         self.addParameter(QgsProcessingParameterField(self.ORDER_FIELD,
                                                       self.tr('Order field'), parentLayerParameterName=self.INPUT))
+        self.addParameter(QgsProcessingParameterBoolean(self.NATURAL_SORT,
+                                                        self.tr('Sort text naturally'), defaultValue=False))
         self.addParameter(QgsProcessingParameterField(self.GROUP_FIELD,
                                                       self.tr('Group field'), parentLayerParameterName=self.INPUT, optional=True))
         self.addParameter(QgsProcessingParameterString(self.DATE_FORMAT,
@@ -99,6 +103,7 @@ class PointsToPaths(QgisAlgorithm):
         close_path = self.parameterAsBool(parameters, self.CLOSE_PATH, context)
         group_field_name = self.parameterAsString(parameters, self.GROUP_FIELD, context)
         order_field_name = self.parameterAsString(parameters, self.ORDER_FIELD, context)
+        natural_sort = self.parameterAsBool(parameters, self.NATURAL_SORT, context)
         date_format = self.parameterAsString(parameters, self.DATE_FORMAT, context)
         text_dir = self.parameterAsString(parameters, self.OUTPUT_TEXT_DIR, context)
 
@@ -169,7 +174,10 @@ class PointsToPaths(QgisAlgorithm):
             if feedback.isCanceled():
                 break
 
-            vertices.sort(key=lambda x: (x[0] is None, x[0]))
+            if not date_format and natural_sort:
+                vertices.sort(key=self.natural_sort_key)
+            else:
+                vertices.sort(key=lambda x: (x[0] is None, x[0]))
             f = QgsFeature()
             attributes = []
             if group_field_index >= 0:
@@ -206,3 +214,12 @@ class PointsToPaths(QgisAlgorithm):
             feedback.setProgress(int(current * total))
 
         return {self.OUTPUT: dest_id}
+
+    def natural_sort_key(self, value, _nsre=re.compile('([0-9]+)')):
+        if not value[0]:
+            retVal = (False, None)
+        elif type(value[0]) in (str, unicode):
+            retVal = (True, [int(text) if text.isdecimal() else text.lower() for text in _nsre.split(value[0])])
+        else:
+            retVal = (True, value[0])
+        return retVal

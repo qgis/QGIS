@@ -1613,6 +1613,20 @@ tests:
         name: expected/points_to_path_close_path.gml
         type: vector
 
+  - algorithm: qgis:pointstopath
+    name: Points to path (natural sort)
+    params:
+      INPUT:
+        name: points_to_path.gml
+        type: vector
+      ORDER_FIELD: char_id
+      NATURAL_SORT: true
+      GROUP_FIELD: id2
+    results:
+      OUTPUT:
+        name: expected/points_to_path_natural_sort.gml
+        type: vector
+
   - algorithm: native:joinattributestable
     name: join the attribute table by common field (one-to-one)
     params:
