@@ -24,10 +24,15 @@
 
 class QgsShadowRenderingFrameGraph;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup 3d
  * An entity that is responsible for applying post processing effect
  * Now it is used to make shadows
+ *
+ * \note Not available in Python bindings
+ *
  * \since QGIS 3.16
  */
 class QgsPostprocessingEntity : public Qt3DCore::QEntity

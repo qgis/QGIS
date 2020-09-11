@@ -43,9 +43,13 @@ class QgsRectangle;
 class QgsPostprocessingEntity;
 class QgsPreviewQuad;
 
+#define SIP_NO_FILE
 /**
  * \ingroup 3d
  * Container class that holds different objects related to shadow rendering
+ *
+ * \note Not available in Python bindings
+ *
  * \since QGIS 3.16
  */
 class QgsShadowRenderingFrameGraph
