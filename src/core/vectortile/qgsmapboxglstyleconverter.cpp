@@ -643,6 +643,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
   QgsPropertyCollection ddLabelProperties;
 
   double textSize = 16.0;
+  QString textSizeProperty;
   if ( jsonLayout.contains( QStringLiteral( "text-size" ) ) )
   {
     const QVariant jsonTextSize = jsonLayout.value( QStringLiteral( "text-size" ) );
@@ -655,18 +656,24 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
 
       case QVariant::Map:
         textSize = -1;
-        ddLabelProperties.setProperty( QgsPalLayerSettings::Size, parseInterpolateByZoom( jsonTextSize.toMap(), context, context.pixelSizeConversionFactor(), &textSize ) );
+        textSizeProperty = parseInterpolateByZoom( jsonTextSize.toMap(), context, context.pixelSizeConversionFactor(), &textSize );
+
         break;
 
       case QVariant::List:
       case QVariant::StringList:
         textSize = -1;
-        ddLabelProperties.setProperty( QgsPalLayerSettings::Size, parseInterpolateListByZoom( jsonTextSize.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), 255, nullptr, &textSize ) );
+        textSizeProperty = parseInterpolateListByZoom( jsonTextSize.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), 255, nullptr, &textSize );
         break;
 
       default:
         context.pushWarning( QObject::tr( "Skipping non-implemented text-size expression" ) );
         break;
+    }
+
+    if ( !textSizeProperty.isEmpty() )
+    {
+      ddLabelProperties.setProperty( QgsPalLayerSettings::Size, textSizeProperty );
     }
   }
 
@@ -1039,6 +1046,56 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
       labelSettings.placement = QgsPalLayerSettings::Curved;
       labelSettings.lineSettings().setPlacementFlags( QgsLabeling::OnLine );
       geometryType = QgsWkbTypes::LineGeometry;
+
+      QPointF textOffset;
+      QString textOffsetProperty;
+      if ( jsonLayout.contains( QStringLiteral( "text-offset" ) ) )
+      {
+        const QVariant jsonTextOffset = jsonLayout.value( QStringLiteral( "text-offset" ) );
+
+        // units are ems!
+        switch ( jsonTextOffset.type() )
+        {
+          case QVariant::Map:
+            textOffsetProperty = parseInterpolatePointByZoom( jsonTextOffset.toMap(), context, textSizeProperty.isEmpty() ? textSize : 1.0, &textOffset );
+            if ( textSizeProperty.isEmpty() )
+            {
+              ddLabelProperties.setProperty( QgsPalLayerSettings::LabelDistance, QStringLiteral( "abs(array_get(%1,1))-%2" ).arg( textOffsetProperty ).arg( textSize ) );
+            }
+            else
+            {
+              ddLabelProperties.setProperty( QgsPalLayerSettings::LabelDistance, QStringLiteral( "with_variable('text_size',%2,abs(array_get(%1,1))*@text_size-@text_size)" ).arg( textOffsetProperty ).arg( textSizeProperty ) );
+            }
+            ddLabelProperties.setProperty( QgsPalLayerSettings::LinePlacementOptions, QStringLiteral( "if(array_get(%1,1)>0,'BL','AL')" ).arg( textOffsetProperty ) );
+            break;
+
+          case QVariant::List:
+          case QVariant::StringList:
+            textOffset = QPointF( jsonTextOffset.toList().value( 0 ).toDouble() * textSize,
+                                  jsonTextOffset.toList().value( 1 ).toDouble() * textSize );
+            break;
+
+          default:
+            context.pushWarning( QObject::tr( "Skipping non-implemented text-offset expression" ) );
+            break;
+        }
+
+        if ( !textOffset.isNull() )
+        {
+          labelSettings.distUnits = context.targetUnit();
+          labelSettings.dist = std::abs( textOffset.y() ) - textSize;
+          labelSettings.lineSettings().setPlacementFlags( textOffset.y() > 0.0 ? QgsLabeling::BelowLine : QgsLabeling::AboveLine );
+          if ( !textSizeProperty.isEmpty() && textOffsetProperty.isEmpty() )
+          {
+            ddLabelProperties.setProperty( QgsPalLayerSettings::LabelDistance, QStringLiteral( "with_variable('text_size',%2,%1*@text_size-@text_size)" ).arg( std::abs( textOffset.y() / textSize ) ).arg( ( textSizeProperty ) ) );
+          }
+        }
+      }
+
+      if ( textOffset.isNull() )
+      {
+        labelSettings.lineSettings().setPlacementFlags( QgsLabeling::OnLine );
+      }
     }
   }
 
