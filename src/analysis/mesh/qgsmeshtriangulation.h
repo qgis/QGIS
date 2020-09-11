@@ -22,7 +22,6 @@
 
 #include "qgis_analysis.h"
 
-SIP_NO_FILE
 
 class QgsVectorLayer;
 class QgsCoordinateTransformContext;
