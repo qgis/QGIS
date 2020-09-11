@@ -70,8 +70,8 @@ void QgsFieldCalculatorAlgorithm::initParameters( const QVariantMap &configurati
   std::unique_ptr< QgsProcessingParameterField > existingFieldName = qgis::make_unique< QgsProcessingParameterField > ( QStringLiteral( "EXISTING_FIELD_NAME" ), QObject::tr( "Result in existing field" ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, false, true );
   std::unique_ptr< QgsProcessingParameterString > newFieldName = qgis::make_unique< QgsProcessingParameterString > ( QStringLiteral( "NEW_FIELD_NAME" ), QObject::tr( "Result in new field" ), QVariant(), false, true );
   std::unique_ptr< QgsProcessingParameterEnum > fieldType = qgis::make_unique< QgsProcessingParameterEnum > ( QStringLiteral( "FIELD_TYPE" ), QObject::tr( "Result field type" ), fieldTypes, false, 0 );
-  std::unique_ptr< QgsProcessingParameterNumber > fieldLength = qgis::make_unique< QgsProcessingParameterNumber > ( QStringLiteral( "FIELD_LENGTH" ), QObject::tr( "Result field length" ), QgsProcessingParameterNumber::Integer, QVariant(0), false, 0 );
-  std::unique_ptr< QgsProcessingParameterNumber > fieldPrecision = qgis::make_unique< QgsProcessingParameterNumber > ( QStringLiteral( "FIELD_PRECISION" ), QObject::tr( "Result field precision" ), QgsProcessingParameterNumber::Integer, QVariant(0), false, 0 );
+  std::unique_ptr< QgsProcessingParameterNumber > fieldLength = qgis::make_unique< QgsProcessingParameterNumber > ( QStringLiteral( "FIELD_LENGTH" ), QObject::tr( "Result field length" ), QgsProcessingParameterNumber::Integer, QVariant( 0 ), false, 0 );
+  std::unique_ptr< QgsProcessingParameterNumber > fieldPrecision = qgis::make_unique< QgsProcessingParameterNumber > ( QStringLiteral( "FIELD_PRECISION" ), QObject::tr( "Result field precision" ), QgsProcessingParameterNumber::Integer, QVariant( 0 ), false, 0 );
   std::unique_ptr< QgsProcessingParameterExpression > expression = qgis::make_unique< QgsProcessingParameterExpression> ( QStringLiteral( "FORMULA" ), QObject::tr( "Formula" ), QVariant(), QStringLiteral( "INPUT" ), false );
 
   expression->setMetadata( QVariantMap( {{"inlineEditor", true}} ) );
