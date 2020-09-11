@@ -332,6 +332,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     QgsAttributeEditorRelation::Buttons mButtonsVisibility;
     bool mShowLabel = true;
     bool mVisible = false;
+    bool mLayerInSameTransactionGroup = false;
 
     bool mForceSuppressFormPopup = false;
     QVariant mNmRelationId;

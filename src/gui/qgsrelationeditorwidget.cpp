@@ -314,14 +314,23 @@ void QgsRelationEditorWidget::setRelations( const QgsRelation &relation, const Q
   if ( !mRelation.isValid() )
     return;
 
-  mToggleEditingButton->setVisible( true );
+  mLayerInSameTransactionGroup = false;
 
   const auto transactionGroups = QgsProject::instance()->transactionGroups();
   for ( auto it = transactionGroups.constBegin(); it != transactionGroups.constEnd(); ++it )
   {
-    if ( it.value()->layers().contains( mRelation.referencingLayer() ) )
+    if ( mNmRelation.isValid() )
     {
-      mToggleEditingButton->setVisible( false );
+      if ( it.value()->layers().contains( mRelation.referencedLayer() ) &&
+           it.value()->layers().contains( mRelation.referencingLayer() ) &&
+           it.value()->layers().contains( mNmRelation.referencedLayer() ) )
+        mLayerInSameTransactionGroup = true;
+    }
+    else
+    {
+      if ( it.value()->layers().contains( mRelation.referencedLayer() ) &&
+           it.value()->layers().contains( mRelation.referencingLayer() ) )
+        mLayerInSameTransactionGroup = true;
     }
   }
 
@@ -424,9 +433,10 @@ void QgsRelationEditorWidget::updateButtons()
   mToggleEditingButton->setChecked( editable );
   mSaveEditsButton->setEnabled( editable );
 
+  mToggleEditingButton->setVisible( !mLayerInSameTransactionGroup );
   mLinkFeatureButton->setVisible( mButtonsVisibility.testFlag( QgsAttributeEditorRelation::Button::Link ) );
   mUnlinkFeatureButton->setVisible( mButtonsVisibility.testFlag( QgsAttributeEditorRelation::Button::Unlink ) );
-  mSaveEditsButton->setVisible( mButtonsVisibility.testFlag( QgsAttributeEditorRelation::Button::SaveChildEdits ) && mToggleEditingButton->isVisible() );
+  mSaveEditsButton->setVisible( mButtonsVisibility.testFlag( QgsAttributeEditorRelation::Button::SaveChildEdits ) && !mLayerInSameTransactionGroup );
   mAddFeatureButton->setVisible( mButtonsVisibility.testFlag( QgsAttributeEditorRelation::Button::AddChildFeature ) );
   mAddFeatureGeometryButton->setVisible( mButtonsVisibility.testFlag( QgsAttributeEditorRelation::Button::AddChildFeature ) && mEditorContext.mapCanvas() && mEditorContext.cadDockWidget() && spatial );
   mDuplicateFeatureButton->setVisible( mButtonsVisibility.testFlag( QgsAttributeEditorRelation::Button::DuplicateChildFeature ) );
