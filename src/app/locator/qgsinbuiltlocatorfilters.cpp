@@ -383,6 +383,7 @@ void QgsActiveLayerFeaturesLocatorFilter::triggerResult( const QgsLocatorResult 
     return;
 
   QgisApp::instance()->mapCanvas()->zoomToFeatureIds( layer, QgsFeatureIds() << id );
+  QgisApp::instance()->mapCanvas()->flashFeatureIds( layer, QgsFeatureIds() << id );
 }
 
 void QgsActiveLayerFeaturesLocatorFilter::openConfigWidget( QWidget *parent )
@@ -589,6 +590,8 @@ void QgsAllLayersFeaturesLocatorFilter::triggerResultFromAction( const QgsLocato
   else
   {
     QgisApp::instance()->mapCanvas()->zoomToFeatureIds( layer, QgsFeatureIds() << fid );
+    QgisApp::instance()->mapCanvas()->flashFeatureIds( layer, QgsFeatureIds() << fid );
+
   }
 }
 
