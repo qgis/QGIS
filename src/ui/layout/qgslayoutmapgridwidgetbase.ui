@@ -590,7 +590,7 @@
              <string> °</string>
             </property>
             <property name="decimals">
-             <number>0</number>
+             <number>2</number>
             </property>
             <property name="maximum">
              <double>90.000000000000000</double>
@@ -774,7 +774,7 @@
              <string> °</string>
             </property>
             <property name="decimals">
-             <number>0</number>
+             <number>2</number>
             </property>
             <property name="maximum">
              <double>90.000000000000000</double>
