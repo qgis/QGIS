@@ -48,22 +48,21 @@ Item {
     property var currentEditorValue: value
 
     comboStyle: customStyle.fields
-    textRole: 'display'
+    textRole: 'FeatureTitle'
     height: parent.height
 
     model: QgsQuick.FeaturesListModel {
       id: vrModel
-      modelType: QgsQuick.FeaturesListModel.ValueRelation
 
       // recalculate index when model changes
       onModelReset: {
-        combobox.currentIndex = vrModel.rowModelIndexFromKey( value )
+        combobox.currentIndex = vrModel.rowFromAttribute( QgsQuick.FeaturesListModel.KeyColumn, value )
       }
     }
 
     Component.onCompleted: {
-        vrModel.populate(config)
-        currentIndex = vrModel.rowModelIndexFromKey( value )
+        vrModel.setupValueRelation( config )
+        currentIndex = vrModel.rowFromAttribute( QgsQuick.FeaturesListModel.KeyColumn, value )
     }
 
     onPressedChanged: {
@@ -76,13 +75,13 @@ Item {
 
     // Called when user makes selection in the combo box
     onItemClicked: {
-        currentIndex = vrModel.rowModelIndexFromKey( index )
-        valueChanged( index, false )
+        currentIndex = vrModel.rowFromAttribute( QgsQuick.FeaturesListModel.FeatureId, index )
+        valueChanged( vrModel.keyFromAttribute( QgsQuick.FeaturesListModel.FeatureId, index ), false )
     }
 
     // Called when the same form is used for a different feature
     onCurrentEditorValueChanged: {
-        currentIndex = vrModel.rowModelIndexFromKey( value );
+        currentIndex = vrModel.rowFromAttribute( QgsQuick.FeaturesListModel.KeyColumn, value );
     }
   }
 }
