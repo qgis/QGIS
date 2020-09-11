@@ -71,7 +71,7 @@ QgsSourceFieldsProperties::QgsSourceFieldsProperties( QgsVectorLayer *layer, QWi
   wfsWi->setToolTip( tr( "Defines if this field is available in QGIS Server WFS (and OAPIF) service" ) );
   mFieldsList->setHorizontalHeaderItem( AttrWFSCol, wfsWi );
   const auto searchableWi = new QTableWidgetItem( QStringLiteral( "Searchable" ) );
-  searchableWi->setToolTip( tr( "Defines if this field is searchable (active layer locator filter))" ) );
+  searchableWi->setToolTip( tr( "Defines if this field is searchable (active layer locator filter)" ) );
   mFieldsList->setHorizontalHeaderItem( AttrSearchableCol, searchableWi );
   mFieldsList->setHorizontalHeaderItem( AttrAliasCol, new QTableWidgetItem( tr( "Alias" ) ) );
 
