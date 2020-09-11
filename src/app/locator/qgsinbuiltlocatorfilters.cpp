@@ -591,7 +591,6 @@ void QgsAllLayersFeaturesLocatorFilter::triggerResultFromAction( const QgsLocato
   {
     QgisApp::instance()->mapCanvas()->zoomToFeatureIds( layer, QgsFeatureIds() << fid );
     QgisApp::instance()->mapCanvas()->flashFeatureIds( layer, QgsFeatureIds() << fid );
-
   }
 }
 
