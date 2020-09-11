@@ -124,7 +124,7 @@ bool QgsFieldCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &parameter
 
   QVariant::Type fieldType = fieldTypes[fieldTypeIdx];
 
-  // this is to keep backwards compatibility.
+  // this is to keep backwards compatibility, "NEW_FIELD" flags what how "FIELD_NAME" should be treated
   // In a perfect universe there would be only "EXISTING_FIELD_NAME" and "NEW_FIELD_NAME"
   if ( !parameters.contains( QStringLiteral( "NEW_FIELD" ) ) )
   {
@@ -147,7 +147,7 @@ bool QgsFieldCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &parameter
 
   int fieldIdx = mFields.lookupField( field.name() );
 
-  if ( fieldIdx < 0 )
+  if ( isNewField || fieldIdx < 0 )
     mFields.append( field );
 
   QString dest;
