@@ -41,6 +41,7 @@ class QgsAuthConfigSelect;
 class QgsProcessingMatrixParameterPanel;
 class QgsFileWidget;
 class QgsFieldExpressionWidget;
+class QgsExpressionBuilderWidget;
 class QgsExpressionLineEdit;
 class QgsProcessingParameterEnum;
 class QgsLayoutComboBox;
@@ -677,6 +678,7 @@ class GUI_EXPORT QgsProcessingExpressionWidgetWrapper : public QgsAbstractProces
   private:
 
     QgsFieldExpressionWidget *mFieldExpWidget = nullptr;
+    QgsExpressionBuilderWidget *mExpBuilderWidget = nullptr;
     QgsExpressionLineEdit *mExpLineEdit = nullptr;
     std::unique_ptr< QgsVectorLayer > mParentLayer;
 

@@ -30,6 +30,7 @@
 #include "qgssettings.h"
 #include "qgsexpressionlineedit.h"
 #include "qgsfieldexpressionwidget.h"
+#include "qgsexpressionbuilderwidget.h"
 #include "qgsprocessingmultipleselectiondialog.h"
 #include "qgslayoutmanager.h"
 #include "qgsproject.h"
@@ -1943,15 +1944,30 @@ QWidget *QgsProcessingExpressionWidgetWrapper::createWidget()
       }
       else
       {
-        mFieldExpWidget = new QgsFieldExpressionWidget();
-        mFieldExpWidget->setToolTip( parameterDefinition()->toolTip() );
-        mFieldExpWidget->setExpressionDialogTitle( parameterDefinition()->description() );
-        mFieldExpWidget->registerExpressionContextGenerator( this );
-        connect( mFieldExpWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged ), this, [ = ]( const QString & )
+        if ( expParam->metadata().value( QStringLiteral( "inlineEditor" ) ).toBool() )
         {
-          emit widgetValueHasChanged( this );
-        } );
-        return mFieldExpWidget;
+          mExpBuilderWidget = new QgsExpressionBuilderWidget();
+          mExpBuilderWidget->setToolTip( parameterDefinition()->toolTip() );
+          mExpBuilderWidget->init( createExpressionContext() );
+          connect( mExpBuilderWidget, &QgsExpressionBuilderWidget::expressionParsed, this, [ = ]( bool changed )
+          {
+            Q_UNUSED( changed );
+            emit widgetValueHasChanged( this );
+          } );
+          return mExpBuilderWidget;
+        }
+        else
+        {
+          mFieldExpWidget = new QgsFieldExpressionWidget();
+          mFieldExpWidget->setToolTip( parameterDefinition()->toolTip() );
+          mFieldExpWidget->setExpressionDialogTitle( parameterDefinition()->description() );
+          mFieldExpWidget->registerExpressionContextGenerator( this );
+          connect( mFieldExpWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged ), this, [ = ]( const QString & )
+          {
+            emit widgetValueHasChanged( this );
+          } );
+          return mFieldExpWidget;
+        }
       }
     }
   }
@@ -2005,6 +2021,8 @@ void QgsProcessingExpressionWidgetWrapper::setParentLayerWrapperValue( const Qgs
   {
     if ( mFieldExpWidget )
       mFieldExpWidget->setLayer( nullptr );
+    else if ( mExpBuilderWidget )
+      mExpBuilderWidget->setLayer( nullptr );
     else if ( mExpLineEdit )
       mExpLineEdit->setLayer( nullptr );
     return;
@@ -2025,6 +2043,8 @@ void QgsProcessingExpressionWidgetWrapper::setParentLayerWrapperValue( const Qgs
 
   if ( mFieldExpWidget )
     mFieldExpWidget->setLayer( layer );
+  if ( mExpBuilderWidget )
+    mExpBuilderWidget->setLayer( layer );
   else if ( mExpLineEdit )
     mExpLineEdit->setLayer( layer );
 }
@@ -2034,6 +2054,8 @@ void QgsProcessingExpressionWidgetWrapper::setWidgetValue( const QVariant &value
   const QString v = QgsProcessingParameters::parameterAsString( parameterDefinition(), value, context );
   if ( mFieldExpWidget )
     mFieldExpWidget->setExpression( v );
+  else if ( mExpBuilderWidget )
+    mExpBuilderWidget->setExpressionText( v );
   else if ( mExpLineEdit )
     mExpLineEdit->setExpression( v );
 }
@@ -2042,6 +2064,8 @@ QVariant QgsProcessingExpressionWidgetWrapper::widgetValue() const
 {
   if ( mFieldExpWidget )
     return mFieldExpWidget->expression();
+  if ( mExpBuilderWidget )
+    return mExpBuilderWidget->expressionText();
   else if ( mExpLineEdit )
     return mExpLineEdit->expression();
   else
@@ -2075,6 +2099,9 @@ const QgsVectorLayer *QgsProcessingExpressionWidgetWrapper::linkedVectorLayer() 
 {
   if ( mFieldExpWidget && mFieldExpWidget->layer() )
     return mFieldExpWidget->layer();
+
+  if ( mExpBuilderWidget && mExpBuilderWidget->layer() )
+    return mExpBuilderWidget->layer();
 
   return QgsAbstractProcessingParameterWidgetWrapper::linkedVectorLayer();
 }
