@@ -92,7 +92,7 @@ QgsFields QgsFieldCalculatorAlgorithm::outputFields( const QgsFields & ) const
 QString QgsFieldCalculatorAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm computes a new vector layer with the same features of the input layer, "
-                      "but either overwriting an existing attribute or adding additional attribute. The values of this "
+                      "but either overwriting an existing attribute or adding an additional attribute. The values of this field"
                       "are computed from each feature using an expression, based on the properties and attributes of the feature."
                       "Note that selecting a value in \"Result in existing field\" will ignore all the rest of the "
                       "field settings." );
@@ -119,12 +119,14 @@ bool QgsFieldCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &parameter
   const int fieldPrecision = parameterAsInt( parameters, QStringLiteral( "FIELD_PRECISION" ), context );
   const QString existingFieldName = parameterAsString( parameters, QStringLiteral( "EXISTING_FIELD_NAME" ), context );
   const QString newFieldName = parameterAsString( parameters, QStringLiteral( "NEW_FIELD_NAME" ), context );
-  bool isNewField = parameterAsBool( parameters, QStringLiteral( "NEW_FIELD_NAME" ), context );
-  QString fieldName = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
 
   QVariant::Type fieldType = fieldTypes[fieldTypeIdx];
 
   // this is to keep backwards compatibility, "NEW_FIELD" flags what how "FIELD_NAME" should be treated
+  // since they are not defined parameters, they should be accessed directly from `parameters`
+  bool isNewField = parameters.value( QStringLiteral( "NEW_FIELD" ) ).toBool();
+  QString fieldName = parameters.value( QStringLiteral( "FIELD_NAME" ) ).toString();
+
   // In a perfect universe there would be only "EXISTING_FIELD_NAME" and "NEW_FIELD_NAME"
   if ( !parameters.contains( QStringLiteral( "NEW_FIELD" ) ) )
   {
