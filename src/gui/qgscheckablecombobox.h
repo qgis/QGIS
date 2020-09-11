@@ -164,6 +164,14 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
     void setDefaultText( const QString &text );
 
     /**
+     * Adds an item to the combobox with the given \a text, check \a state
+     * and containing the specified \a userData (stored in the Qt::UserRole).
+     * The item is appended to the list of existing items.
+     * \since QGIS 3.16
+     */
+    void addItemWithCheckState( const QString &text, Qt::CheckState state, const QVariant &userData = QVariant() );
+
+    /**
      * Returns currently checked items.
      * \see setCheckedItems()
      */

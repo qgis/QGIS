@@ -64,6 +64,15 @@ no items selected.
 .. seealso:: :py:func:`defaultText`
 %End
 
+    void addItemWithCheckState( const QString &text, Qt::CheckState state, const QVariant &userData = QVariant() );
+%Docstring
+Adds an item to the combobox with the given ``text``, check ``state``
+and containing the specified ``userData`` (stored in the Qt.UserRole).
+The item is appended to the list of existing items.
+
+.. versionadded:: 3.16
+%End
+
     QStringList checkedItems() const;
 %Docstring
 Returns currently checked items.
