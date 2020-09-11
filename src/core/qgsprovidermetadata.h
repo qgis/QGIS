@@ -140,7 +140,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * Typedef for data provider creation function.
      * \since QGIS 3.0
      */
-    SIP_SKIP typedef std::function < QgsDataProvider*( const QString &, const QgsDataProvider::ProviderOptions & ) > CreateDataProviderFunction;
+    SIP_SKIP typedef std::function < QgsDataProvider*( const QString &, const QgsDataProvider::ProviderOptions &, QgsDataProvider::ReadFlags & ) > CreateDataProviderFunction;
 
     /**
      * Constructor for provider metadata
@@ -235,9 +235,16 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
 
     /**
      * Class factory to return a pointer to a newly created QgsDataProvider object
+     *
+     * \param uri the datasource uri
+     * \param options creation options
+     * \param flags creation flags, sing QGIS 3.16
+     *
      * \since QGIS 3.10
      */
-    virtual QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) SIP_FACTORY;
+    virtual QgsDataProvider *createProvider( const QString &uri,
+        const QgsDataProvider::ProviderOptions &options,
+        QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) SIP_FACTORY;
 
     /**
      * Sets the \a value into the \a uri \a parameter as a bool.

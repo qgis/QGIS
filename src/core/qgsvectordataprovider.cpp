@@ -35,8 +35,9 @@
 #include "qgssettings.h"
 #include <mutex>
 
-QgsVectorDataProvider::QgsVectorDataProvider( const QString &uri, const ProviderOptions &options )
-  : QgsDataProvider( uri, options )
+QgsVectorDataProvider::QgsVectorDataProvider( const QString &uri, const ProviderOptions &options,
+    QgsDataProvider::ReadFlags flags )
+  : QgsDataProvider( uri, options, flags )
   , mTemporalCapabilities( qgis::make_unique< QgsVectorDataProviderTemporalCapabilities >() )
 {
 }

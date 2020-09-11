@@ -53,8 +53,8 @@ QStringList QgsMdalProvider::subLayers() const
   return mSubLayersUris;
 }
 
-QgsMdalProvider::QgsMdalProvider( const QString &uri, const ProviderOptions &options )
-  : QgsMeshDataProvider( uri, options )
+QgsMdalProvider::QgsMdalProvider( const QString &uri, const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+  : QgsMeshDataProvider( uri, options, flags )
 {
   temporalCapabilities()->setTemporalUnit( QgsUnitTypes::TemporalHours );
   QByteArray curi = dataSourceUri().toUtf8();
@@ -888,9 +888,9 @@ QgsMeshDataBlock QgsMdalProvider::areFacesActive( QgsMeshDatasetIndex index, int
 
 /*----------------------------------------------------------------------------------------------*/
 
-QgsMdalProvider *QgsMdalProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
+QgsMdalProvider *QgsMdalProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
-  return new QgsMdalProvider( uri, options );
+  return new QgsMdalProvider( uri, options, flags );
 }
 
 QList<QgsDataItemProvider *> QgsMdalProviderMetadata::dataItemProviders() const

@@ -537,6 +537,7 @@ or layer with temporary data (as temporary mesh layer dataset)
     enum ReadFlag
     {
       FlagDontResolveLayers,
+      FlagTrustLayerMetadata,
     };
     typedef QFlags<QgsMapLayer::ReadFlag> ReadFlags;
 

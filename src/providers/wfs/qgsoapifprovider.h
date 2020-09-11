@@ -38,7 +38,7 @@ class QgsOapifProvider final: public QgsVectorDataProvider
     static const QString OAPIF_PROVIDER_KEY;
     static const QString OAPIF_PROVIDER_DESCRIPTION;
 
-    explicit QgsOapifProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
+    explicit QgsOapifProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
     ~QgsOapifProvider() override;
 
     /* Inherited from QgsVectorDataProvider */
@@ -119,7 +119,7 @@ class QgsOapifProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsOapifProviderMetadata();
-    QgsOapifProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QgsOapifProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
 };
 
 //! Class shared between provider and feature source

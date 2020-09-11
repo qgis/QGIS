@@ -83,7 +83,8 @@ class CORE_EXPORT QgsMeshMemoryDataProvider final: public QgsMeshDataProvider
      *    );
      * \endcode
      */
-    QgsMeshMemoryDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
+    QgsMeshMemoryDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions,
+                               QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     bool isValid() const override;
     QString name() const override;
@@ -157,7 +158,9 @@ class CORE_EXPORT QgsMeshMemoryDataProvider final: public QgsMeshDataProvider
     //! Returns the memory provider description
     static QString providerDescription();
     //! Provider factory
-    static QgsMeshMemoryDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
+    static QgsMeshMemoryDataProvider *createProvider( const QString &uri,
+        const QgsDataProvider::ProviderOptions &providerOptions,
+        QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
   private:
     QgsRectangle calculateExtent( ) const;

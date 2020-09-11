@@ -49,7 +49,7 @@ class QgsOwsProvider : public QgsDataProvider
      * \param options generic data provider options
      *
      */
-    explicit QgsOwsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
+    explicit QgsOwsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     /* Pure virtuals */
 
@@ -68,7 +68,7 @@ class QgsOwsProviderMetadata: public QgsProviderMetadata
 {
   public:
     QgsOwsProviderMetadata();
-    QgsOwsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QgsOwsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QList< QgsDataItemProvider * > dataItemProviders() const override;
 };
 

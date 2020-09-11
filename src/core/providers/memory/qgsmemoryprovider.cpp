@@ -32,8 +32,8 @@
 #define TEXT_PROVIDER_KEY QStringLiteral( "memory" )
 #define TEXT_PROVIDER_DESCRIPTION QStringLiteral( "Memory provider" )
 
-QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions &options )
-  : QgsVectorDataProvider( uri, options )
+QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+  : QgsVectorDataProvider( uri, options, flags )
 {
   // Initialize the geometry with the uri to support old style uri's
   // (ie, just 'point', 'line', 'polygon')
@@ -227,9 +227,11 @@ QString QgsMemoryProvider::providerDescription()
   return TEXT_PROVIDER_DESCRIPTION;
 }
 
-QgsMemoryProvider *QgsMemoryProvider::createProvider( const QString &uri, const ProviderOptions &options )
+QgsMemoryProvider *QgsMemoryProvider::createProvider( const QString &uri,
+    const ProviderOptions &options,
+    QgsDataProvider::ReadFlags flags )
 {
-  return new QgsMemoryProvider( uri, options );
+  return new QgsMemoryProvider( uri, options, flags );
 }
 
 QgsAbstractFeatureSource *QgsMemoryProvider::featureSource() const

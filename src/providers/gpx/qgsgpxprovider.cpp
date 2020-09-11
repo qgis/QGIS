@@ -67,8 +67,8 @@ const QString GPX_KEY = QStringLiteral( "gpx" );
 const QString GPX_DESCRIPTION = QObject::tr( "GPS eXchange format provider" );
 
 
-QgsGPXProvider::QgsGPXProvider( const QString &uri, const ProviderOptions &options )
-  : QgsVectorDataProvider( uri, options )
+QgsGPXProvider::QgsGPXProvider( const QString &uri, const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+  : QgsVectorDataProvider( uri, options, flags )
 {
   // we always use UTF-8
   setEncoding( QStringLiteral( "utf8" ) );
@@ -537,9 +537,9 @@ QgsCoordinateReferenceSystem QgsGPXProvider::crs() const
   return QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
 }
 
-QgsDataProvider *QgsGpxProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
+QgsDataProvider *QgsGpxProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
-  return new QgsGPXProvider( uri, options );
+  return new QgsGPXProvider( uri, options, flags );
 }
 
 
