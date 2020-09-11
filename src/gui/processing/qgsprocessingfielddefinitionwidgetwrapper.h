@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsprocessingfieldformwidgetwrapper.h
+                         qgsprocessingfielddefinitionwidgetwrapper.h
                          ----------------------
     begin                : September 2020
     copyright            : (C) 2020 by Ivan Ivanov
@@ -15,25 +15,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSPROCESSINGFIELDFORMWIDGETWRAPPER_H
-#define QGSPROCESSINGFIELDFORMWIDGETWRAPPER_H
+#ifndef QGSPROCESSINGFIELDDEFINITIONWIDGETWRAPPER_H
+#define QGSPROCESSINGFIELDDEFINITIONWIDGETWRAPPER_H
 
 #define SIP_NO_FILE
 
 #include "qgsprocessingwidgetwrapper.h"
 #include "qgsprocessingparameterdefinitionwidget.h"
 
-#include "qgsfieldformwidget.h"
+#include "qgsfielddefinitionwidget.h"
 
 /// @cond PRIVATE
 
 
-class GUI_EXPORT QgsProcessingFieldFormParameterDefinitionWidget : public QgsProcessingAbstractParameterDefinitionWidget
+class GUI_EXPORT QgsProcessingFieldDefinitionParameterDefinitionWidget : public QgsProcessingAbstractParameterDefinitionWidget
 {
     Q_OBJECT
   public:
 
-    QgsProcessingFieldFormParameterDefinitionWidget( QgsProcessingContext &context,
+    QgsProcessingFieldDefinitionParameterDefinitionWidget( QgsProcessingContext &context,
         const QgsProcessingParameterWidgetContext &widgetContext,
         const QgsProcessingParameterDefinition *definition = nullptr,
         const QgsProcessingAlgorithm *algorithm = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
@@ -46,13 +46,13 @@ class GUI_EXPORT QgsProcessingFieldFormParameterDefinitionWidget : public QgsPro
 };
 
 
-class GUI_EXPORT QgsProcessingFieldFormWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
+class GUI_EXPORT QgsProcessingFieldDefinitionWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
 {
     Q_OBJECT
 
   public:
 
-    QgsProcessingFieldFormWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
+    QgsProcessingFieldDefinitionWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
                                          QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
 
     QString parameterType() const override;
@@ -82,7 +82,7 @@ class GUI_EXPORT QgsProcessingFieldFormWidgetWrapper : public QgsAbstractProcess
     const QgsVectorLayer *linkedVectorLayer() const override;
   private:
 
-    QgsFieldFormWidget *mPanel = nullptr;
+    QgsFieldDefinitionWidget *mPanel = nullptr;
     std::unique_ptr< QgsVectorLayer > mParentLayer;
 
     friend class TestProcessingGui;
@@ -91,4 +91,4 @@ class GUI_EXPORT QgsProcessingFieldFormWidgetWrapper : public QgsAbstractProcess
 
 /// @endcond
 
-#endif // QGSPROCESSINGFIELDFORMWIDGETWRAPPER_H
+#endif // QGSPROCESSINGFIELDDEFINITIONWIDGETWRAPPER_H

@@ -2486,8 +2486,7 @@ An expression parameter for processing algorithms.
 
     QgsProcessingParameterExpression( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
                                       const QString &parentLayerParameterName = QString(),
-                                      bool optional = false,
-                                      bool useInlineExpressionEditor = false );
+                                      bool optional = false );
 %Docstring
 Constructor for QgsProcessingParameterExpression.
 %End
@@ -2518,20 +2517,6 @@ Returns the name of the parent layer parameter, or an empty string if this is no
 Sets the name of the parent layer parameter. Use an empty string if this is not required.
 
 .. seealso:: :py:func:`parentLayerParameterName`
-%End
-
-    bool useInlineExpressionEditor() const;
-%Docstring
-Returns whether an inline expression editor is preferred.
-
-.. seealso:: :py:func:`setUseInlineExpressionEditor`
-%End
-
-    void setUseInlineExpressionEditor( bool useInlineExpressionEditor );
-%Docstring
-Sets whether an inline expression editor is preferred.
-
-.. seealso:: :py:func:`useInlineExpressionEditor`
 %End
 
     virtual QVariantMap toVariantMap() const;

@@ -1,5 +1,5 @@
 /***************************************************************************
-   qgsfieldformwidget.cpp
+   qgsfielddefinitionwidget.cpp
     --------------------------------------
     begin                : September 2020
     copyright            : (C) 2020 by Ivan Ivanov
@@ -13,29 +13,31 @@
 *                                                                         *
 ***************************************************************************/
 
+#define SIP_NO_FILE
+
 #include "qgis.h"
-#include "qgsfieldformwidget.h"
+#include "qgsfielddefinitionwidget.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 
 #include <QMap>
 
-QgsFieldFormWidget::QgsFieldFormWidget( AdvancedFields advancedFields, QWidget *parent )
+QgsFieldDefinitionWidget::QgsFieldDefinitionWidget( AdvancedFields advancedFields, QWidget *parent )
   : QWidget( parent )
 {
   setupUi( this );
-  connect( mTypeCmb, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsFieldFormWidget::mTypeCmb_currentIndexChanged );
-  connect( mLengthSpinBox, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, &QgsFieldFormWidget::mLengthSpinBox_valueChanged );
-  connect( mPrecisionSpinBox, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, &QgsFieldFormWidget::changed );
-  connect( mFieldNameLineEdit, &QLineEdit::textChanged, this, &QgsFieldFormWidget::changed );
-  connect( mFieldNameLineEdit, &QLineEdit::returnPressed, this, &QgsFieldFormWidget::returnPressed );
-  connect( mAliasLineEdit, &QLineEdit::textChanged, this, &QgsFieldFormWidget::changed );
-  connect( mAliasLineEdit, &QLineEdit::returnPressed, this, &QgsFieldFormWidget::returnPressed );
-  connect( mCommentLineEdit, &QLineEdit::textChanged, this, &QgsFieldFormWidget::changed );
-  connect( mCommentLineEdit, &QLineEdit::returnPressed, this, &QgsFieldFormWidget::returnPressed );
+  connect( mTypeCmb, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsFieldDefinitionWidget::mTypeCmb_currentIndexChanged );
+  connect( mLengthSpinBox, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, &QgsFieldDefinitionWidget::mLengthSpinBox_valueChanged );
+  connect( mPrecisionSpinBox, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, &QgsFieldDefinitionWidget::changed );
+  connect( mFieldNameLineEdit, &QLineEdit::textChanged, this, &QgsFieldDefinitionWidget::changed );
+  connect( mFieldNameLineEdit, &QLineEdit::returnPressed, this, &QgsFieldDefinitionWidget::returnPressed );
+  connect( mAliasLineEdit, &QLineEdit::textChanged, this, &QgsFieldDefinitionWidget::changed );
+  connect( mAliasLineEdit, &QLineEdit::returnPressed, this, &QgsFieldDefinitionWidget::returnPressed );
+  connect( mCommentLineEdit, &QLineEdit::textChanged, this, &QgsFieldDefinitionWidget::changed );
+  connect( mCommentLineEdit, &QLineEdit::returnPressed, this, &QgsFieldDefinitionWidget::returnPressed );
 
-  if ( advancedFields == static_cast<AdvancedFields>( AdvancedField::Neither ) )
+  if ( advancedFields == AdvancedFields() )
   {
     mAdvancedGroup->setVisible( false );
   }
@@ -53,73 +55,73 @@ QgsFieldFormWidget::QgsFieldFormWidget( AdvancedFields advancedFields, QWidget *
   mFieldNameLineEdit->setValidator( mRegExpValidator );
 }
 
-QString QgsFieldFormWidget::name() const
+QString QgsFieldDefinitionWidget::name() const
 {
   return mFieldNameLineEdit->text();
 }
 
-void QgsFieldFormWidget::setName( const QString &name )
+void QgsFieldDefinitionWidget::setName( const QString &name )
 {
   return mFieldNameLineEdit->setText( name );
 }
 
-QString QgsFieldFormWidget::comment() const
+QString QgsFieldDefinitionWidget::comment() const
 {
   return mCommentLineEdit->text();
 }
 
-void QgsFieldFormWidget::setComment( const QString &comment )
+void QgsFieldDefinitionWidget::setComment( const QString &comment )
 {
   return mCommentLineEdit->setText( comment );
 }
 
-void QgsFieldFormWidget::setIsNullable( bool isNullable )
+void QgsFieldDefinitionWidget::setIsNullable( bool isNullable )
 {
   mIsNullableCheckBox->setChecked( isNullable );
 }
 
-bool QgsFieldFormWidget::isNullable()
+bool QgsFieldDefinitionWidget::isNullable()
 {
   return mIsNullableCheckBox->isChecked();
 }
 
-QString QgsFieldFormWidget::alias() const
+QString QgsFieldDefinitionWidget::alias() const
 {
   return mAliasLineEdit->text();
 }
 
-void QgsFieldFormWidget::setAlias( const QString &alias )
+void QgsFieldDefinitionWidget::setAlias( const QString &alias )
 {
   return mAliasLineEdit->setText( alias );
 }
 
-int QgsFieldFormWidget::length() const
+int QgsFieldDefinitionWidget::length() const
 {
   return mLengthSpinBox->value();
 }
 
-void QgsFieldFormWidget::setLength( int length )
+void QgsFieldDefinitionWidget::setLength( int length )
 {
   return mLengthSpinBox->setValue( length );
 }
 
-int QgsFieldFormWidget::precision() const
+int QgsFieldDefinitionWidget::precision() const
 {
   return mPrecisionSpinBox->value();
 }
 
-void QgsFieldFormWidget::setPrecision( int precision )
+void QgsFieldDefinitionWidget::setPrecision( int precision )
 {
   return mPrecisionSpinBox->setValue( precision );
 }
 
-QString QgsFieldFormWidget::type() const
+QString QgsFieldDefinitionWidget::type() const
 {
   QVariant data = mTypeCmb->currentData();
   return data.toMap().value( "type" ).toString();
 }
 
-bool QgsFieldFormWidget::setType( const QString &typeName )
+bool QgsFieldDefinitionWidget::setType( const QString &typeName )
 {
   if ( ! hasType( typeName ) )
     return false;
@@ -129,12 +131,12 @@ bool QgsFieldFormWidget::setType( const QString &typeName )
   return true;
 }
 
-bool QgsFieldFormWidget::addType( const QString &typeName, const QString &typeDisplay, const QIcon &icon, int length, int precision )
+bool QgsFieldDefinitionWidget::addType( const QString &typeName, const QString &typeDisplay, const QIcon &icon, int length, int precision )
 {
   return insertType( -1, typeName, typeDisplay, icon, length, precision );
 }
 
-bool QgsFieldFormWidget::insertType( const int position, const QString &typeName, const QString &typeDisplay, const QIcon &icon, int length, int precision )
+bool QgsFieldDefinitionWidget::insertType( const int position, const QString &typeName, const QString &typeDisplay, const QIcon &icon, int length, int precision )
 {
   if ( typeName.isEmpty() || typeDisplay.isEmpty() )
     return false;
@@ -161,12 +163,12 @@ bool QgsFieldFormWidget::insertType( const int position, const QString &typeName
   return true;
 }
 
-bool QgsFieldFormWidget::hasType( const QString &typeName ) const
+bool QgsFieldDefinitionWidget::hasType( const QString &typeName ) const
 {
   return typeIndex( typeName ) >= 0;
 }
 
-int QgsFieldFormWidget::typeIndex( const QString &typeName ) const
+int QgsFieldDefinitionWidget::typeIndex( const QString &typeName ) const
 {
   for ( int i = 0; i < mTypeCmb->count(); i++ )
   {
@@ -179,7 +181,7 @@ int QgsFieldFormWidget::typeIndex( const QString &typeName ) const
   return -1;
 }
 
-bool QgsFieldFormWidget::removeType( const QString &typeName )
+bool QgsFieldDefinitionWidget::removeType( const QString &typeName )
 {
   if ( hasType( typeName ) )
     return false;
@@ -189,7 +191,7 @@ bool QgsFieldFormWidget::removeType( const QString &typeName )
   return false;
 }
 
-QStringList QgsFieldFormWidget::types() const
+QStringList QgsFieldDefinitionWidget::types() const
 {
   QStringList result;
 
@@ -199,14 +201,14 @@ QStringList QgsFieldFormWidget::types() const
   return result;
 }
 
-void QgsFieldFormWidget::mLengthSpinBox_valueChanged( const int value )
+void QgsFieldDefinitionWidget::mLengthSpinBox_valueChanged( const int value )
 {
   mPrecisionSpinBox->setMaximum( value );
 
   emit changed();
 }
 
-void QgsFieldFormWidget::mTypeCmb_currentIndexChanged( const int index )
+void QgsFieldDefinitionWidget::mTypeCmb_currentIndexChanged( const int index )
 {
   Q_UNUSED( index );
 
@@ -236,22 +238,22 @@ void QgsFieldFormWidget::mTypeCmb_currentIndexChanged( const int index )
   emit changed();
 }
 
-bool QgsFieldFormWidget::isValidForm() const
+bool QgsFieldDefinitionWidget::isValidForm() const
 {
   return mFieldNameLineEdit->hasAcceptableInput();
 }
 
-QRegExp QgsFieldFormWidget::nameRegExp() const
+QRegExp QgsFieldDefinitionWidget::nameRegExp() const
 {
   return mRegExpValidator->regExp();
 }
 
-void QgsFieldFormWidget::setNameRegExp( QRegExp &nameRegExp )
+void QgsFieldDefinitionWidget::setNameRegExp( QRegExp &nameRegExp )
 {
   mRegExpValidator->setRegExp( nameRegExp );
 }
 
-QgsField *QgsFieldFormWidget::asField() const
+QgsField *QgsFieldDefinitionWidget::asField() const
 {
   if ( shouldUseExistingField() )
   {
@@ -268,7 +270,7 @@ QgsField *QgsFieldFormWidget::asField() const
   return field;
 }
 
-void QgsFieldFormWidget::setLayer( QgsVectorLayer *vl )
+void QgsFieldDefinitionWidget::setLayer( QgsVectorLayer *vl )
 {
   if ( ! vl )
     mChooseFieldToolBox->setCurrentIndex( 0 );
@@ -277,27 +279,27 @@ void QgsFieldFormWidget::setLayer( QgsVectorLayer *vl )
   mExistingLayerFieldCmb->setLayer( vl );
 }
 
-QgsVectorLayer *QgsFieldFormWidget::layer() const
+QgsVectorLayer *QgsFieldDefinitionWidget::layer() const
 {
   return mExistingLayerFieldCmb->layer();
 }
 
-void QgsFieldFormWidget::setLayerField( const QString &fieldName )
+void QgsFieldDefinitionWidget::setLayerField( const QString &fieldName )
 {
   mExistingLayerFieldCmb->setField( fieldName );
 }
 
-QString QgsFieldFormWidget::layerField() const
+QString QgsFieldDefinitionWidget::layerField() const
 {
   return mExistingLayerFieldCmb->currentField();
 }
 
-bool QgsFieldFormWidget::shouldUseExistingField() const
+bool QgsFieldDefinitionWidget::shouldUseExistingField() const
 {
   return mChooseFieldToolBox->currentWidget() == mExistingFieldPage;
 }
 
-void QgsFieldFormWidget::setShouldUseExistingField( bool shouldUseExistingField )
+void QgsFieldDefinitionWidget::setShouldUseExistingField( bool shouldUseExistingField )
 {
   if ( mExistingLayerFieldCmb->layer() && shouldUseExistingField )
     mChooseFieldToolBox->setCurrentWidget( mExistingFieldPage );

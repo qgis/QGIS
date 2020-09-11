@@ -17,7 +17,7 @@
 
 
 #include "qgsalgorithmfieldcalculator.h"
-#include "qgsprocessingparameterfieldform.h"
+#include "qgsprocessingparameterfielddefinition.h"
 #include "qgsexpressioncontextutils.h"
 
 ///@cond PRIVATE
@@ -66,8 +66,10 @@ void QgsFieldCalculatorAlgorithm::initParameters( const QVariantMap &configurati
 {
   Q_UNUSED( configuration );
 
-  std::unique_ptr< QgsProcessingParameterFieldForm > field = qgis::make_unique< QgsProcessingParameterFieldForm> ( QStringLiteral( "FIELD" ), QObject::tr( "Result field" ), QStringLiteral( "INPUT" ) );
-  std::unique_ptr< QgsProcessingParameterExpression > expression = qgis::make_unique< QgsProcessingParameterExpression> ( QStringLiteral( "FORMULA" ), QObject::tr( "Formula" ), QVariant(), QStringLiteral( "INPUT" ), false, true );
+  std::unique_ptr< QgsProcessingParameterFieldDefinition > field = qgis::make_unique< QgsProcessingParameterFieldDefinition> ( QStringLiteral( "FIELD" ), QObject::tr( "Result field" ), QStringLiteral( "INPUT" ) );
+  std::unique_ptr< QgsProcessingParameterExpression > expression = qgis::make_unique< QgsProcessingParameterExpression> ( QStringLiteral( "FORMULA" ), QObject::tr( "Formula" ), QVariant(), QStringLiteral( "INPUT" ), false );
+
+  expression->setMetadata( QVariantMap( {{"inlineEditor", true}} ) );
 
   expression->setMetadata( QVariantMap( {{"inlineEditor", true}} ) );
 
@@ -137,7 +139,6 @@ bool QgsFieldCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &parameter
     mFields.append( field );
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, mFields, QgsWkbTypes::multiType( source->wkbType() ), source->sourceCrs() ) );
 
   mFieldIdx = mFields.lookupField( field.name() );
 

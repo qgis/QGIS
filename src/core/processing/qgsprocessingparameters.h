@@ -2423,8 +2423,7 @@ class CORE_EXPORT QgsProcessingParameterExpression : public QgsProcessingParamet
      */
     QgsProcessingParameterExpression( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
                                       const QString &parentLayerParameterName = QString(),
-                                      bool optional = false,
-                                      bool useInlineExpressionEditor = false );
+                                      bool optional = false );
 
     /**
      * Returns the type name for the parameter class.
@@ -2448,18 +2447,6 @@ class CORE_EXPORT QgsProcessingParameterExpression : public QgsProcessingParamet
      */
     void setParentLayerParameterName( const QString &parentLayerParameterName );
 
-    /**
-     * Returns whether an inline expression editor is preferred.
-     * \see setUseInlineExpressionEditor()
-     */
-    bool useInlineExpressionEditor() const;
-
-    /**
-     * Sets whether an inline expression editor is preferred.
-     * \see useInlineExpressionEditor()
-     */
-    void setUseInlineExpressionEditor( bool useInlineExpressionEditor );
-
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
 
@@ -2471,7 +2458,6 @@ class CORE_EXPORT QgsProcessingParameterExpression : public QgsProcessingParamet
   private:
 
     QString mParentLayerParameterName;
-    bool mUseInlineExpressionEditor;
 
 };
 

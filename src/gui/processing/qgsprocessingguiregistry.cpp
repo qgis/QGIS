@@ -20,7 +20,7 @@
 #include "qgsprocessingconfigurationwidgets.h"
 #include "qgsprocessingvectortilewriterlayerswidgetwrapper.h"
 #include "qgsprocessingfieldmapwidgetwrapper.h"
-#include "qgsprocessingfieldformwidgetwrapper.h"
+#include "qgsprocessingfielddefinitionwidgetwrapper.h"
 #include "qgsprocessingaggregatewidgetwrapper.h"
 #include "qgsprocessingwidgetwrapperimpl.h"
 #include "qgsprocessingtininputlayerswidget.h"
@@ -72,7 +72,7 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingFileDestinationWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingFolderDestinationWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingFieldMapWidgetWrapper() );
-  addParameterWidgetFactory( new QgsProcessingFieldFormWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingFieldDefinitionWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingAggregateWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingTinInputLayersWidgetWrapper() );
 }

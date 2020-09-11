@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsprocessingfieldformwidgetwrapper.h
+                         qgsprocessingfielddefinitionwidgetwrapper.h
                          ----------------------
     begin                : September 2020
     copyright            : (C) 2020 by Ivan Ivanov
@@ -15,18 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsprocessingfieldformwidgetwrapper.h"
-#include "qgsprocessingparameterfieldform.h"
+#include "qgsprocessingfielddefinitionwidgetwrapper.h"
+#include "qgsprocessingparameterfielddefinition.h"
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingmodelparameter.h"
 #include "qgsprocessingmodelalgorithm.h"
 
 
 ////
-//// QgsProcessingFieldFormParameterDefinitionWidget
+//// QgsProcessingFieldDefinitionParameterDefinitionWidget
 ////
 
-QgsProcessingFieldFormParameterDefinitionWidget::QgsProcessingFieldFormParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+QgsProcessingFieldDefinitionParameterDefinitionWidget::QgsProcessingFieldDefinitionParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
@@ -39,7 +39,7 @@ QgsProcessingFieldFormParameterDefinitionWidget::QgsProcessingFieldFormParameter
   mParentLayerComboBox->addItem( tr( "None" ), QVariant() );
 
   QString initialParent;
-  if ( const QgsProcessingParameterFieldForm *formParam = dynamic_cast<const QgsProcessingParameterFieldForm *>( definition ) )
+  if ( const QgsProcessingParameterFieldDefinition *formParam = dynamic_cast<const QgsProcessingParameterFieldDefinition *>( definition ) )
     initialParent = formParam->parentLayerParameterName();
 
   if ( widgetContext.model() )
@@ -78,9 +78,9 @@ QgsProcessingFieldFormParameterDefinitionWidget::QgsProcessingFieldFormParameter
   setLayout( vlayout );
 }
 
-QgsProcessingParameterDefinition *QgsProcessingFieldFormParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+QgsProcessingParameterDefinition *QgsProcessingFieldDefinitionParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
 {
-  auto param = qgis::make_unique< QgsProcessingParameterFieldForm >( name, description, mParentLayerComboBox->currentData().toString() );
+  auto param = qgis::make_unique< QgsProcessingParameterFieldDefinition >( name, description, mParentLayerComboBox->currentData().toString() );
   param->setFlags( flags );
   return param.release();
 }
@@ -88,35 +88,35 @@ QgsProcessingParameterDefinition *QgsProcessingFieldFormParameterDefinitionWidge
 
 
 //
-// QgsProcessingFieldFormWidgetWrapper
+// QgsProcessingFieldDefinitionWidgetWrapper
 //
 
-QgsProcessingFieldFormWidgetWrapper::QgsProcessingFieldFormWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+QgsProcessingFieldDefinitionWidgetWrapper::QgsProcessingFieldDefinitionWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
 {
 }
 
-QString QgsProcessingFieldFormWidgetWrapper::parameterType() const
+QString QgsProcessingFieldDefinitionWidgetWrapper::parameterType() const
 {
-  return QgsProcessingParameterFieldForm::typeName();
+  return QgsProcessingParameterFieldDefinition::typeName();
 }
 
-QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingFieldFormWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingFieldDefinitionWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
 {
-  return new QgsProcessingFieldFormWidgetWrapper( parameter, type );
+  return new QgsProcessingFieldDefinitionWidgetWrapper( parameter, type );
 }
 
-QWidget *QgsProcessingFieldFormWidgetWrapper::createWidget()
+QWidget *QgsProcessingFieldDefinitionWidgetWrapper::createWidget()
 {
-  mPanel = new QgsFieldFormWidget();
+  mPanel = new QgsFieldDefinitionWidget();
   mPanel->setToolTip( parameterDefinition()->toolTip() );
 
-  QgsFieldFormWidget::addStringType( mPanel );
-  QgsFieldFormWidget::addIntegerType( mPanel );
-  QgsFieldFormWidget::addRealType( mPanel );
-  QgsFieldFormWidget::addDateType( mPanel );
+  QgsFieldDefinitionWidget::addStringType( mPanel );
+  QgsFieldDefinitionWidget::addIntegerType( mPanel );
+  QgsFieldDefinitionWidget::addRealType( mPanel );
+  QgsFieldDefinitionWidget::addDateType( mPanel );
 
-  connect( mPanel, &QgsFieldFormWidget::changed, this, [ = ]
+  connect( mPanel, &QgsFieldDefinitionWidget::changed, this, [ = ]
   {
     emit widgetValueHasChanged( this );
   } );
@@ -124,12 +124,12 @@ QWidget *QgsProcessingFieldFormWidgetWrapper::createWidget()
   return mPanel;
 }
 
-QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingFieldFormWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingFieldDefinitionWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
 {
-  return new QgsProcessingFieldFormParameterDefinitionWidget( context, widgetContext, definition, algorithm );
+  return new QgsProcessingFieldDefinitionParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
 
-void QgsProcessingFieldFormWidgetWrapper::postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers )
+void QgsProcessingFieldDefinitionWidgetWrapper::postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers )
 {
   QgsAbstractProcessingParameterWidgetWrapper::postInitialize( wrappers );
   switch ( type() )
@@ -139,7 +139,7 @@ void QgsProcessingFieldFormWidgetWrapper::postInitialize( const QList<QgsAbstrac
     {
       for ( const QgsAbstractProcessingParameterWidgetWrapper *wrapper : wrappers )
       {
-        if ( wrapper->parameterDefinition()->name() == static_cast< const QgsProcessingParameterFieldForm * >( parameterDefinition() )->parentLayerParameterName() )
+        if ( wrapper->parameterDefinition()->name() == static_cast< const QgsProcessingParameterFieldDefinition * >( parameterDefinition() )->parentLayerParameterName() )
         {
           setParentLayerWrapperValue( wrapper );
           connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [ = ]
@@ -157,12 +157,12 @@ void QgsProcessingFieldFormWidgetWrapper::postInitialize( const QList<QgsAbstrac
   }
 }
 
-int QgsProcessingFieldFormWidgetWrapper::stretch() const
+int QgsProcessingFieldDefinitionWidgetWrapper::stretch() const
 {
   return 1;
 }
 
-void QgsProcessingFieldFormWidgetWrapper::setParentLayerWrapperValue( const QgsAbstractProcessingParameterWidgetWrapper *parentWrapper )
+void QgsProcessingFieldDefinitionWidgetWrapper::setParentLayerWrapperValue( const QgsAbstractProcessingParameterWidgetWrapper *parentWrapper )
 {
   // evaluate value to layer
   QgsProcessingContext *context = nullptr;
@@ -201,7 +201,7 @@ void QgsProcessingFieldFormWidgetWrapper::setParentLayerWrapperValue( const QgsA
     mPanel->setLayer( layer );
 }
 
-void QgsProcessingFieldFormWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext & )
+void QgsProcessingFieldDefinitionWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext & )
 {
   if ( !mPanel )
     return;
@@ -220,7 +220,7 @@ void QgsProcessingFieldFormWidgetWrapper::setWidgetValue( const QVariant &value,
   mPanel->setPrecision( fieldSettingsMap.value( QStringLiteral( "precision" ) ).toDouble() );
 }
 
-QVariant QgsProcessingFieldFormWidgetWrapper::widgetValue() const
+QVariant QgsProcessingFieldDefinitionWidgetWrapper::widgetValue() const
 {
   if ( !mPanel )
     return QVariantMap();
@@ -240,23 +240,23 @@ QVariant QgsProcessingFieldFormWidgetWrapper::widgetValue() const
   } );
 }
 
-QStringList QgsProcessingFieldFormWidgetWrapper::compatibleParameterTypes() const
+QStringList QgsProcessingFieldDefinitionWidgetWrapper::compatibleParameterTypes() const
 {
   return QStringList()
-         << QgsProcessingParameterFieldForm::typeName();
+         << QgsProcessingParameterFieldDefinition::typeName();
 }
 
-QStringList QgsProcessingFieldFormWidgetWrapper::compatibleOutputTypes() const
+QStringList QgsProcessingFieldDefinitionWidgetWrapper::compatibleOutputTypes() const
 {
   return QStringList();
 }
 
-QString QgsProcessingFieldFormWidgetWrapper::modelerExpressionFormatString() const
+QString QgsProcessingFieldDefinitionWidgetWrapper::modelerExpressionFormatString() const
 {
   return tr( "map with 'name', 'type', 'comment' (and optional 'alias', length' and 'precision' values)." );
 }
 
-const QgsVectorLayer *QgsProcessingFieldFormWidgetWrapper::linkedVectorLayer() const
+const QgsVectorLayer *QgsProcessingFieldDefinitionWidgetWrapper::linkedVectorLayer() const
 {
   if ( mPanel && mPanel->layer() )
     return mPanel->layer();

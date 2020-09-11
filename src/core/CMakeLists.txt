@@ -157,7 +157,7 @@ SET(QGIS_CORE_SRCS
   processing/qgsprocessingoutputs.cpp
   processing/qgsprocessingparameteraggregate.cpp
   processing/qgsprocessingparameterfieldmap.cpp
-  processing/qgsprocessingparameterfieldform.cpp
+  processing/qgsprocessingparameterfielddefinition.cpp
   processing/qgsprocessingparameters.cpp
   processing/qgsprocessingparametertininputlayers.cpp
   processing/qgsprocessingparametertype.cpp
@@ -1321,7 +1321,7 @@ SET(QGIS_CORE_HDRS
   processing/qgsprocessingoutputs.h
   processing/qgsprocessingparameteraggregate.h
   processing/qgsprocessingparameterfieldmap.h
-  processing/qgsprocessingparameterfieldform.h
+  processing/qgsprocessingparameterfielddefinition.h
   processing/qgsprocessingparameters.h
   processing/qgsprocessingparametertininputlayers.h
   processing/qgsprocessingparametertype.h

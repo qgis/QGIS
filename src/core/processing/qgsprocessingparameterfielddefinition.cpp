@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsprocessingparameterfieldform.cpp
+                         qgsprocessingparameterfielddefinition.cpp
                          ----------------------
     begin                : September 2020
     copyright            : (C) 2020 by Ivan Ivanov
@@ -15,27 +15,27 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsprocessingparameterfieldform.h"
+#include "qgsprocessingparameterfielddefinition.h"
 
 
-QgsProcessingParameterFieldForm::QgsProcessingParameterFieldForm( const QString &name, const QString &description, const QString &parentLayerParameterName, bool optional )
+QgsProcessingParameterFieldDefinition::QgsProcessingParameterFieldDefinition( const QString &name, const QString &description, const QString &parentLayerParameterName, bool optional )
   : QgsProcessingParameterDefinition( name, description, QVariant(), optional )
   , mParentLayerParameterName( parentLayerParameterName )
 {
 }
 
-QgsProcessingParameterDefinition *QgsProcessingParameterFieldForm::clone() const
+QgsProcessingParameterDefinition *QgsProcessingParameterFieldDefinition::clone() const
 {
-  return new QgsProcessingParameterFieldForm( *this );
+  return new QgsProcessingParameterFieldDefinition( *this );
 }
 
-QString QgsProcessingParameterFieldForm::type() const
+QString QgsProcessingParameterFieldDefinition::type() const
 {
   return typeName();
 }
 
 
-bool QgsProcessingParameterFieldForm::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+bool QgsProcessingParameterFieldDefinition::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
 {
   if ( !input.isValid() )
     return mFlags & FlagOptional;
@@ -57,19 +57,19 @@ bool QgsProcessingParameterFieldForm::checkValueIsAcceptable( const QVariant &in
   return true;
 }
 
-QString QgsProcessingParameterFieldForm::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
+QString QgsProcessingParameterFieldDefinition::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
 {
   return QgsProcessingUtils::variantToPythonLiteral( value );
 }
 
 // TODO finish this
-QString QgsProcessingParameterFieldForm::asPythonString( QgsProcessing::PythonOutputType outputType ) const
+QString QgsProcessingParameterFieldDefinition::asPythonString( QgsProcessing::PythonOutputType outputType ) const
 {
   switch ( outputType )
   {
     case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
     {
-      QString code = QStringLiteral( "QgsProcessingParameterFieldForm('%1', '%2'" ).arg( name(), description() );
+      QString code = QStringLiteral( "QgsProcessingParameterFieldDefinition('%1', '%2'" ).arg( name(), description() );
       if ( !mParentLayerParameterName.isEmpty() )
         code += QStringLiteral( ", parentLayerParameterName=%1" ).arg( QgsProcessingUtils::stringToPythonLiteral( mParentLayerParameterName ) );
 
@@ -82,21 +82,21 @@ QString QgsProcessingParameterFieldForm::asPythonString( QgsProcessing::PythonOu
   return QString();
 }
 
-QVariantMap QgsProcessingParameterFieldForm::toVariantMap() const
+QVariantMap QgsProcessingParameterFieldDefinition::toVariantMap() const
 {
   QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
   map.insert( QStringLiteral( "parent_layer" ), mParentLayerParameterName );
   return map;
 }
 
-bool QgsProcessingParameterFieldForm::fromVariantMap( const QVariantMap &map )
+bool QgsProcessingParameterFieldDefinition::fromVariantMap( const QVariantMap &map )
 {
   QgsProcessingParameterDefinition::fromVariantMap( map );
   mParentLayerParameterName = map.value( QStringLiteral( "parent_layer" ) ).toString();
   return true;
 }
 
-QStringList QgsProcessingParameterFieldForm::dependsOnOtherParameters() const
+QStringList QgsProcessingParameterFieldDefinition::dependsOnOtherParameters() const
 {
   QStringList depends;
   if ( !mParentLayerParameterName.isEmpty() )
@@ -104,12 +104,12 @@ QStringList QgsProcessingParameterFieldForm::dependsOnOtherParameters() const
   return depends;
 }
 
-QString QgsProcessingParameterFieldForm::parentLayerParameterName() const
+QString QgsProcessingParameterFieldDefinition::parentLayerParameterName() const
 {
   return mParentLayerParameterName;
 }
 
-void QgsProcessingParameterFieldForm::setParentLayerParameterName( const QString &name )
+void QgsProcessingParameterFieldDefinition::setParentLayerParameterName( const QString &name )
 {
   mParentLayerParameterName = name;
 }

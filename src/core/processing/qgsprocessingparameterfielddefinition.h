@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsprocessingparameterfieldform.h
+                         qgsprocessingparameterfielddefinition.h
                          ----------------------
     begin                : September 2020
     copyright            : (C) 2020 by Ivan Ivanov
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSPROCESSINGPARAMETERFIELDFORM_H
-#define QGSPROCESSINGPARAMETERFIELDFORM_H
+#ifndef QGSPROCESSINGPARAMETERFIELDDEFINITION_H
+#define QGSPROCESSINGPARAMETERFIELDDEFINITION_H
 
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingparametertype.h"
@@ -27,11 +27,11 @@
  *
  * \since QGIS 3.16
  */
-class CORE_EXPORT QgsProcessingParameterFieldForm : public QgsProcessingParameterDefinition
+class CORE_EXPORT QgsProcessingParameterFieldDefinition : public QgsProcessingParameterDefinition
 {
   public:
-    //! Constructor for QgsProcessingParameterFieldForm.
-    QgsProcessingParameterFieldForm( const QString &name, const QString &description = QString(), const QString &parentLayerParameterName = QString(), bool optional = false );
+    //! Constructor for QgsProcessingParameterFieldDefinition.
+    QgsProcessingParameterFieldDefinition( const QString &name, const QString &description = QString(), const QString &parentLayerParameterName = QString(), bool optional = false );
 
     //! Returns the type name for the parameter class.
     static QString typeName() { return QStringLiteral( "fields_form" ); }
@@ -63,20 +63,20 @@ class CORE_EXPORT QgsProcessingParameterFieldForm : public QgsProcessingParamete
 };
 
 ///@cond PRIVATE
-
+#ifndef SIP_RUN
 /**
- * Parameter type definition for QgsProcessingParameterFieldForm.
+ * Parameter type definition for QgsProcessingParameterFieldDefinition.
  *
  * \ingroup core
  * \note This class is not a part of public API.
  * \since QGIS 3.16
  */
-class CORE_EXPORT QgsProcessingParameterTypeFieldForm : public QgsProcessingParameterType
+class CORE_EXPORT QgsProcessingParameterTypeFieldDefinition : public QgsProcessingParameterType
 {
   public:
     QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
     {
-      return new QgsProcessingParameterFieldForm( name );
+      return new QgsProcessingParameterFieldDefinition( name );
     }
 
     QString description() const override
@@ -91,17 +91,17 @@ class CORE_EXPORT QgsProcessingParameterTypeFieldForm : public QgsProcessingPara
 
     QString id() const override
     {
-      return QgsProcessingParameterFieldForm::typeName();
+      return QgsProcessingParameterFieldDefinition::typeName();
     }
 
     QString pythonImportString() const override
     {
-      return QStringLiteral( "from qgis.core import QgsProcessingParameterFieldForm" );
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterFieldDefinition" );
     }
 
     QString className() const override
     {
-      return QStringLiteral( "QgsProcessingParameterFieldForm" );
+      return QStringLiteral( "QgsProcessingParameterFieldDefinition" );
     }
 
     QStringList acceptedPythonTypes() const override
@@ -109,7 +109,8 @@ class CORE_EXPORT QgsProcessingParameterTypeFieldForm : public QgsProcessingPara
       return QStringList() << QObject::tr( "dict: field definitions as dictionary" );
     }
 };
+#endif // SIP_RUN
 
 ///@endcond
 
-#endif // QGSPROCESSINGPARAMETERFIELDFORM_H
+#endif // QGSPROCESSINGPARAMETERFIELDDEFINITION_H

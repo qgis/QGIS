@@ -1,5 +1,5 @@
 /***************************************************************************
-   qgsfieldformwidget.h
+   qgsfielddefinitionwidget.h
     --------------------------------------
     begin                : September 2020
     copyright            : (C) 2020 by Ivan Ivanov
@@ -13,10 +13,12 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef QGSFIELDFORMWIDGET_H
-#define QGSFIELDFORMWIDGET_H
+#ifndef QGSFIELDDEFINITIONWIDGET_H
+#define QGSFIELDDEFINITIONWIDGET_H
 
-#include "ui_qgsfieldformwidget.h"
+#define SIP_NO_FILE
+
+#include "ui_qgsfielddefinitionwidget.h"
 #include "qgsguiutils.h"
 #include "qgsapplication.h"
 
@@ -30,11 +32,11 @@ class QgsVectorLayer;
 
 /**
 * \ingroup gui
-* Dialog to set up parameters to create a new field in a vector layer, and on accept() to create it and add it to the layers
+* A widget for setting up the definition of a new field in a vector layer. 
 * \note unstable API (will likely change)
 * \since QGIS 3.16
 */
-class GUI_EXPORT QgsFieldFormWidget : public QWidget, private Ui::QgsFieldFormWidgetBase
+class GUI_EXPORT QgsFieldDefinitionWidget : public QWidget, private Ui::QgsFieldDefinitionWidgetBase
 {
     Q_OBJECT
 
@@ -45,8 +47,6 @@ class GUI_EXPORT QgsFieldFormWidget : public QWidget, private Ui::QgsFieldFormWi
      */
     enum class AdvancedField
     {
-      // sip complains if it is called `None`
-      Neither = 1 << 0,
       Comment = 1 << 1,
       Alias = 1 << 2,
       IsNullable = 1 << 3,
@@ -57,30 +57,30 @@ class GUI_EXPORT QgsFieldFormWidget : public QWidget, private Ui::QgsFieldFormWi
     Q_FLAG( AdvancedFields )
 
     //! Constructor
-    QgsFieldFormWidget( AdvancedFields advancedFields = QgsFieldFormWidget::AdvancedField::Neither, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsFieldDefinitionWidget( AdvancedFields advancedFields = AdvancedFields(), QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! Adds string field type to given field form with default settings
-    static void addStringType( QgsFieldFormWidget *fieldForm )
+    static void addStringType( QgsFieldDefinitionWidget *fieldDefinitionWidget )
     {
-      fieldForm->addType( QStringLiteral( "String" ), tr( "Text data" ), QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) ) );
+      fieldDefinitionWidget->addType( QStringLiteral( "String" ), tr( "Text data" ), QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) ) );
     }
 
     //! Adds integer field type to given field form with default settings
-    static void addIntegerType( QgsFieldFormWidget *fieldForm )
+    static void addIntegerType( QgsFieldDefinitionWidget *fieldDefinitionWidget )
     {
-      fieldForm->addType( QStringLiteral( "Integer" ), tr( "Whole number (integer)" ), QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ) );
+      fieldDefinitionWidget->addType( QStringLiteral( "Integer" ), tr( "Whole number (integer)" ), QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ) );
     }
 
     //! Adds real field type to given field form with default settings
-    static void addRealType( QgsFieldFormWidget *fieldForm )
+    static void addRealType( QgsFieldDefinitionWidget *fieldDefinitionWidget )
     {
-      fieldForm->addType( QStringLiteral( "Real" ), tr( "Decimal number (real)" ), QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldFloat.svg" ) ), 15, 15 );
+      fieldDefinitionWidget->addType( QStringLiteral( "Real" ), tr( "Decimal number (real)" ), QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldFloat.svg" ) ), 15, 15 );
     }
 
     //! Adds date field type to given field form with default settings
-    static void addDateType( QgsFieldFormWidget *fieldForm )
+    static void addDateType( QgsFieldDefinitionWidget *fieldDefinitionWidget )
     {
-      fieldForm->addType( QStringLiteral( "Date" ), tr( "Date" ), QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDate.svg" ) ) );
+      fieldDefinitionWidget->addType( QStringLiteral( "Date" ), tr( "Date" ), QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDate.svg" ) ) );
     }
 
     /**
@@ -253,4 +253,4 @@ class GUI_EXPORT QgsFieldFormWidget : public QWidget, private Ui::QgsFieldFormWi
     QRegExpValidator *mRegExpValidator = new QRegExpValidator( QRegExp( QStringLiteral( "^(?!(test|def)$)[a-zA-Z_][a-zA-Z0-9_]{0,32}$" ) ), this );
 };
 
-#endif // QGSFIELDFORMWIDGET_H
+#endif // QGSFIELDDEFINITIONWIDGET_H

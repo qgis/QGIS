@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/processing/qgsprocessingparameterfieldform.h                *
+ * src/core/processing/qgsprocessingparameterfielddefinition.h          *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -9,7 +9,7 @@
 
 
 
-class QgsProcessingParameterFieldForm : QgsProcessingParameterDefinition
+class QgsProcessingParameterFieldDefinition : QgsProcessingParameterDefinition
 {
 %Docstring
 A parameter for creating or reusing existing layer fields.
@@ -18,12 +18,12 @@ A parameter for creating or reusing existing layer fields.
 %End
 
 %TypeHeaderCode
-#include "qgsprocessingparameterfieldform.h"
+#include "qgsprocessingparameterfielddefinition.h"
 %End
   public:
-    QgsProcessingParameterFieldForm( const QString &name, const QString &description = QString(), const QString &parentLayerParameterName = QString(), bool optional = false );
+    QgsProcessingParameterFieldDefinition( const QString &name, const QString &description = QString(), const QString &parentLayerParameterName = QString(), bool optional = false );
 %Docstring
-Constructor for QgsProcessingParameterFieldForm.
+Constructor for QgsProcessingParameterFieldDefinition.
 %End
 
     static QString typeName();
@@ -65,42 +65,11 @@ Sets the ``name`` of the parent layer parameter. Use an empty string if this is 
 };
 
 
-class QgsProcessingParameterTypeFieldForm : QgsProcessingParameterType
-{
-%Docstring
-Parameter type definition for QgsProcessingParameterFieldForm.
-
-.. note::
-
-   This class is not a part of public API.
-
-.. versionadded:: 3.16
-%End
-
-%TypeHeaderCode
-#include "qgsprocessingparameterfieldform.h"
-%End
-  public:
-    virtual QgsProcessingParameterDefinition *create( const QString &name ) const /Factory/;
-
-    virtual QString description() const;
-
-    virtual QString name() const;
-
-    virtual QString id() const;
-
-    virtual QString pythonImportString() const;
-
-    virtual QString className() const;
-
-    virtual QStringList acceptedPythonTypes() const;
-};
-
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/processing/qgsprocessingparameterfieldform.h                *
+ * src/core/processing/qgsprocessingparameterfielddefinition.h          *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
