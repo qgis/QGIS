@@ -25,6 +25,7 @@ import QgsQuick 0.1 as QgsQuick
  */
 Item {
   signal valueChanged(var value, bool isNull)
+  property var fieldName: field.name
 
   function itemSelected( index ) {
     combobox.itemClicked( index )
