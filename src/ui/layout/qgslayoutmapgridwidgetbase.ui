@@ -727,7 +727,7 @@
           <item row="17" column="1" colspan="4">
            <widget class="QDoubleSpinBox" name="mRotatedTicksMarginToCornerSpinBox">
             <property name="toolTip">
-             <string>Outwards facing ticks closer to the corners that this margin will be ignored. This only makes sense for rotated grids.</string>
+             <string>Outwards facing ticks closer to the corners than this margin will be ignored. This only makes sense for rotated grids.</string>
             </property>
             <property name="decimals">
              <number>0</number>
@@ -974,7 +974,7 @@
           <item row="20" column="1" colspan="2">
            <widget class="QDoubleSpinBox" name="mRotatedAnnotationsMarginToCornerSpinBox">
             <property name="toolTip">
-             <string>Outwards facing annotations closer to the corners that this margin will be ignored. This only makes sense for rotated grids.</string>
+             <string>Outwards facing annotations closer to the corners than this margin will be ignored. This only makes sense for rotated grids.</string>
             </property>
             <property name="decimals">
              <number>0</number>
