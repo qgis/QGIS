@@ -1138,6 +1138,11 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   else if ( type == QLatin1String( "raster" ) )
   {
     mapLayer =  qgis::make_unique<QgsRasterLayer>();
+    // apply specific settings to raster layer
+    if ( QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( mapLayer.get() ) )
+    {
+      rl->setReadExtentFromXml( mTrustLayerMetadata || ( flags & QgsProject::ReadFlag::FlagTrustLayerMetadata ) );
+    }
   }
   else if ( type == QLatin1String( "mesh" ) )
   {
