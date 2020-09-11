@@ -92,27 +92,28 @@ QgsWeakRelation QgsWeakRelation::readXml( const QgsVectorLayer *layer, WeakRelat
   {
     const QDomElement fieldPairElement = fieldPairNodes.at( j ).toElement();
     fieldPairs.push_back( { fieldPairElement.attribute( QStringLiteral( "referencing" ) ),
-                            fieldPairElement.attribute( QStringLiteral( "referenced" ) ) } );
+                            fieldPairElement.attribute( QStringLiteral( "referenced" ) )
+                          } );
   }
 
   switch ( type )
   {
     case Referencing:
-      return    QgsWeakRelation { relationElement.attribute( QStringLiteral( "id" ) ),
-                                  relationElement.attribute( QStringLiteral( "name" ) ),
-                                  static_cast<QgsRelation::RelationStrength>( relationElement.attribute( QStringLiteral( "strength" ) ).toInt() ),
-                                  // Referencing
-                                  layer->id(),
-                                  layer->name(),
-                                  resolver.writePath( layer->publicSource() ),
-                                  layer->providerType(),
-                                  // Referenced
-                                  relationElement.attribute( QStringLiteral( "layerId" ) ),
-                                  relationElement.attribute( QStringLiteral( "layerName" ) ),
-                                  relationElement.attribute( QStringLiteral( "dataSource" ) ),
-                                  relationElement.attribute( QStringLiteral( "providerKey" ) ),
-                                  fieldPairs
-                              };
+      return QgsWeakRelation { relationElement.attribute( QStringLiteral( "id" ) ),
+                               relationElement.attribute( QStringLiteral( "name" ) ),
+                               static_cast<QgsRelation::RelationStrength>( relationElement.attribute( QStringLiteral( "strength" ) ).toInt() ),
+                               // Referencing
+                               layer->id(),
+                               layer->name(),
+                               resolver.writePath( layer->publicSource() ),
+                               layer->providerType(),
+                               // Referenced
+                               relationElement.attribute( QStringLiteral( "layerId" ) ),
+                               relationElement.attribute( QStringLiteral( "layerName" ) ),
+                               relationElement.attribute( QStringLiteral( "dataSource" ) ),
+                               relationElement.attribute( QStringLiteral( "providerKey" ) ),
+                               fieldPairs
+                           };
     case Referenced:
       return QgsWeakRelation { relationElement.attribute( QStringLiteral( "id" ) ),
                                relationElement.attribute( QStringLiteral( "name" ) ),
@@ -130,6 +131,9 @@ QgsWeakRelation QgsWeakRelation::readXml( const QgsVectorLayer *layer, WeakRelat
                                fieldPairs
                            };
   }
+  // avoid build warnings
+  return QgsWeakRelation( QString(), QString(), QgsRelation::RelationStrength::Association, QString(), QString(), QString(),
+                          QString(), QString(), QString(), QString(), QString(), QList< QgsRelation::FieldPair >() );
 }
 
 void QgsWeakRelation::writeXml( const QgsVectorLayer *layer, const QgsRelation &relation, QDomNode &node, QDomDocument &doc )
