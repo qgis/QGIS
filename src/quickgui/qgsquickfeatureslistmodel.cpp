@@ -19,19 +19,8 @@
 
 QgsQuickFeaturesListModel::QgsQuickFeaturesListModel( QObject *parent )
   : QAbstractListModel( parent ),
-    mCurrentLayer( nullptr ),
-    mModelType( modelTypes::FeatureListing )
+    mCurrentLayer( nullptr )
 {
-}
-
-QgsQuickFeatureLayerPair QgsQuickFeaturesListModel::featureLayerPair( const int &featureId )
-{
-  for ( const QgsQuickFeatureLayerPair &i : mFeatures )
-  {
-    if ( i.feature().id() == featureId )
-      return i;
-  }
-  return QgsQuickFeatureLayerPair();
 }
 
 int QgsQuickFeaturesListModel::rowCount( const QModelIndex &parent ) const
@@ -46,15 +35,24 @@ int QgsQuickFeaturesListModel::rowCount( const QModelIndex &parent ) const
 
 QVariant QgsQuickFeaturesListModel::featureTitle( const QgsQuickFeatureLayerPair &featurePair ) const
 {
+  QString title;
+
+  if ( !mFeatureTitleField.isEmpty() )
+  {
+    title = featurePair.feature().attribute( mFeatureTitleField ).toString();
+    if ( !title.isEmpty() )
+      return title;
+  }
+
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( featurePair.layer() ) );
   context.setFeature( featurePair.feature() );
   QgsExpression expr( featurePair.layer()->displayExpression() );
-  const QString title = expr.evaluate( &context ).toString();
+  title = expr.evaluate( &context ).toString();
 
   if ( title.isEmpty() )
-    return QVariant( featurePair.feature().id() );
+    return featurePair.feature().id();
 
-  return QVariant( title );
+  return title;
 }
 
 QVariant QgsQuickFeaturesListModel::data( const QModelIndex &index, int role ) const
@@ -74,21 +72,9 @@ QVariant QgsQuickFeaturesListModel::data( const QModelIndex &index, int role ) c
     case FeatureId: return QVariant( pair.feature().id() );
     case Feature: return QVariant::fromValue<QgsFeature>( pair.feature() );
     case Description: return QVariant( QString( "Feature ID %1" ).arg( pair.feature().id() ) );
-    case EmitableIndex:
-    {
-      if ( mModelType == modelTypes::ValueRelation )
-        return pair.feature().attribute( mKeyFieldName );
-      return pair.feature().id();
-    }
+    case KeyColumn: return mKeyField.isEmpty() ? QVariant() : pair.feature().attribute( mKeyField );
     case FoundPair: return foundPair( pair );
-    case Qt::DisplayRole:
-    {
-      if ( row >= 0 && row < mCache.count() )
-      {
-        int r = rowIndexFromKey( pair.feature().attribute( mKeyFieldName ) );
-        return mCache[r].value;
-      }
-    }
+    case Qt::DisplayRole: return featureTitle( pair );
   }
 
   return QVariant();
@@ -163,19 +149,20 @@ void QgsQuickFeaturesListModel::loadFeaturesFromLayer( QgsVectorLayer *layer )
   }
 }
 
-void QgsQuickFeaturesListModel::populate( const QVariantMap &config )
+void QgsQuickFeaturesListModel::setupValueRelation( const QVariantMap &config )
 {
   beginResetModel();
   emptyData();
 
-  mCache = QgsValueRelationFieldFormatter::createCache( config );
   QgsVectorLayer *layer = QgsValueRelationFieldFormatter::resolveLayer( config, QgsProject::instance() );
 
   if ( layer )
   {
-    // save key field
+    // save key and value field
     QgsFields fields = layer->fields();
-    mKeyFieldName = fields.field( config.value( QStringLiteral( "Key" ) ).toString() ).name();
+
+    setKeyField( fields.field( config.value( QStringLiteral( "Key" ) ).toString() ).name() );
+    setFeatureTitleField( fields.field( config.value( QStringLiteral( "Value" ) ).toString() ).name() );
 
     loadFeaturesFromLayer( layer );
   }
@@ -201,8 +188,8 @@ void QgsQuickFeaturesListModel::emptyData()
 {
   mFeatures.clear();
   mCurrentLayer = nullptr;
-  mCache.clear();
-  mKeyFieldName.clear();
+  mKeyField.clear();
+  mFeatureTitleField.clear();
   mFilterExpression.clear();
 }
 
@@ -214,7 +201,7 @@ QHash<int, QByteArray> QgsQuickFeaturesListModel::roleNames() const
   roleNames[Feature] = QStringLiteral( "Feature" ).toLatin1();
   roleNames[Description] = QStringLiteral( "Description" ).toLatin1();
   roleNames[FoundPair] = QStringLiteral( "FoundPair" ).toLatin1();
-  roleNames[EmitableIndex] = QStringLiteral( "EmitableIndex" ).toLatin1();
+  roleNames[KeyColumn] = QStringLiteral( "KeyColumn" ).toLatin1();
   return roleNames;
 }
 
@@ -238,39 +225,54 @@ void QgsQuickFeaturesListModel::setFilterExpression( const QString &filterExpres
   loadFeaturesFromLayer();
 }
 
+void QgsQuickFeaturesListModel::setFeatureTitleField( const QString &attribute )
+{
+  mFeatureTitleField = attribute;
+}
+
+void QgsQuickFeaturesListModel::setKeyField( const QString &attribute )
+{
+  mKeyField = attribute;
+}
+
 int QgsQuickFeaturesListModel::featuresLimit() const
 {
   return FEATURES_LIMIT;
 }
 
-QgsQuickFeaturesListModel::modelTypes QgsQuickFeaturesListModel::modelType() const
-{
-  return mModelType;
-}
-
-void QgsQuickFeaturesListModel::setModelType( modelTypes modelType )
-{
-  mModelType = modelType;
-}
-
-int QgsQuickFeaturesListModel::rowIndexFromKey( const QVariant &key ) const
-{
-  for ( int i = 0; i < mCache.count(); ++i )
-  {
-    if ( mCache[i].key == key )
-      return i;
-  }
-  QgsDebugMsg( "rowIndexFromKey: key not found: " + key.toString() );
-  return -1;
-}
-
-int QgsQuickFeaturesListModel::rowModelIndexFromKey( const QVariant &key ) const
+int QgsQuickFeaturesListModel::rowFromAttribute( const int role, const QVariant &value ) const
 {
   for ( int i = 0; i < mFeatures.count(); ++i )
   {
-    if ( mFeatures[i].feature().attribute( mKeyFieldName ) == key )
+    QVariant d = data( index( i, 0 ), role );
+    if ( d == value )
+    {
+      return i;
+    }
+  }
+  return -1;
+}
+
+int QgsQuickFeaturesListModel::keyFromAttribute( const int role, const QVariant &value ) const
+{
+  for ( int i = 0; i < mFeatures.count(); ++i )
+  {
+    QVariant d = data( index( i, 0 ), role );
+    if ( d == value )
+    {
+      QVariant key = data( index( i, 0 ), KeyColumn );
+      return key.toInt();
+    }
+  }
+  return -1;
+}
+
+QgsQuickFeatureLayerPair QgsQuickFeaturesListModel::featureLayerPair( const int &featureId )
+{
+  for ( const QgsQuickFeatureLayerPair &i : mFeatures )
+  {
+    if ( i.feature().id() == featureId )
       return i;
   }
-  QgsDebugMsg( "rowModelIndexFromKey: Could not find index in features model, index: " + key.toString() );
-  return -1;
+  return QgsQuickFeatureLayerPair();
 }

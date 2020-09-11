@@ -28,10 +28,6 @@
  *
  * Model allows searching by any string or number attribute.
  *
- * Note that the model can run in several modes:
- *  (1) as a features list - usable in listing features from specifig layer
- *  (2) as a value relation model - filling value-relation widget with data from config
- *
  * \note QML Type: FeaturesListModel
  *
  * \since QGIS 3.16
@@ -58,37 +54,19 @@ class QUICK_EXPORT QgsQuickFeaturesListModel : public QAbstractListModel
      */
     Q_PROPERTY( int featuresLimit READ featuresLimit NOTIFY featuresLimitChanged )
 
-    /**
-     * Property determining type of Feature Model.
-     *
-     * \note ValueRelation type provides different attribute when opting for data with EmitableIndex role, it returns "key" attribute
-     */
-    Q_PROPERTY( modelTypes modelType READ modelType WRITE setModelType )
+  public:
 
-    enum roleNames
+    //! Roles for FeaturesListModel
+    enum modelRoles
     {
       FeatureTitle = Qt::UserRole + 1,
       FeatureId,
       Feature,
       Description, //! secondary text in list view
-      EmitableIndex, //! key in value relation
+      KeyColumn, //! key in value relation
       FoundPair //! pair of attribute and its value by which the feature was found, empty if mFilterExpression is empty
     };
-
-  public:
-
-    /**
-     * \brief The modelTypes enum
-     * ValueRelation type provides different attribute when opting for data with EmitableIndex role, it returns "key" attribute.
-     *
-     * Default type is FeatureListing
-     */
-    enum modelTypes
-    {
-      FeatureListing,
-      ValueRelation
-    };
-    Q_ENUM( modelTypes );
+    Q_ENUM( modelRoles );
 
     //! Create features list model
     explicit QgsQuickFeaturesListModel( QObject *parent = nullptr );
@@ -102,10 +80,10 @@ class QUICK_EXPORT QgsQuickFeaturesListModel : public QAbstractListModel
     QHash<int, QByteArray> roleNames() const override;
 
     /**
-     * \brief populate populates model with value relation data from config
+     * \brief setupValueRelation populates model with value relation data from config
      * \param config to be used
      */
-    Q_INVOKABLE void populate( const QVariantMap &config );
+    Q_INVOKABLE void setupValueRelation( const QVariantMap &config );
 
     /**
      * \brief populateFromLayer populates model with features from layer
@@ -119,25 +97,27 @@ class QUICK_EXPORT QgsQuickFeaturesListModel : public QAbstractListModel
     Q_INVOKABLE void reloadFeatures();
 
     /**
-     * \brief rowIndexFromKey translates value relation key into index from cache
-     * \param key value relation key
-     * \return index from cache (loaded from config)
+     * \brief rowFromAttribute finds feature with requested role and value, returns its row
+     * \param role to find from modelRoles
+     * \param value to find
+     * \return Row index for found feature, returns -1 if no feature is found. If more features
+     * match requested role and value, index of first is returned.
      */
-    Q_INVOKABLE int rowIndexFromKey( const QVariant &key ) const;
+    Q_INVOKABLE int rowFromAttribute( const int role, const QVariant &value ) const;
 
     /**
-     * \brief rowModelIndexFromKey translates value relation key into model index
-     * \param key value relation key
-     * \return model index (row) for corresponding feature (from mFeatures)
+     * \brief keyFromAttribute finds feature with requested role and value, returns keycolumn
+     * \param role role to find from modelRoles
+     * \param value value to find
+     * \return KeyColumn role for found feature, returns -1 if no feature is found. If more features
+     * match requested role and value, KeyColumn for first is returned.
      */
-    Q_INVOKABLE int rowModelIndexFromKey( const QVariant &key ) const;
+    Q_INVOKABLE int keyFromAttribute( const int role, const QVariant &value ) const;
 
     //! Returns maximum amount of features that can be queried from layer
     int featuresLimit() const;
     //! Returns number of features in layer, not number of loaded features
     int featuresCount() const;
-    //! Returns type of this model
-    modelTypes modelType() const;
     //! Returns filter expression, empty string represents no filter
     QString filterExpression() const;
 
@@ -147,9 +127,14 @@ class QUICK_EXPORT QgsQuickFeaturesListModel : public QAbstractListModel
      */
     void setFilterExpression( const QString &filterExpression );
 
-  public slots:
-    //! Sets corresponding type of model from modelTypes enum
-    void setModelType( modelTypes modelType );
+    /**
+     * \brief setFeatureTitleField Sets name of attribute that will be used for FeatureTitle and Qt::DisplayRole
+     * \param attribute Name of attribute to use. If empty, displayExpression will be used.
+     */
+    void setFeatureTitleField( const QString &attribute );
+
+    //! Sets name of attribute used as "key" in value relation
+    void setKeyField( const QString &attribute );
 
   signals:
 
@@ -167,10 +152,7 @@ class QUICK_EXPORT QgsQuickFeaturesListModel : public QAbstractListModel
 
   private:
 
-    /**
-     * \brief loadFeaturesFromLayer
-     * \param layer
-     */
+    //! Reloads features from layer, if layer is not provided, uses current layer, If layer is provided, saves it as current.
     void loadFeaturesFromLayer( QgsVectorLayer *layer = nullptr );
 
     //! Empty data when resetting model
@@ -190,7 +172,7 @@ class QUICK_EXPORT QgsQuickFeaturesListModel : public QAbstractListModel
      * Hold maximum of FEATURES_LIMIT features
      * \note mFeatures.size() is not always the same as mFeaturesCount
      */
-    QList<QgsQuickFeatureLayerPair> mFeatures;
+    QgsQuickFeatureLayerPairs mFeatures;
 
     //! Number of maximum features loaded from layer
     const int FEATURES_LIMIT = 10000;
@@ -201,18 +183,11 @@ class QUICK_EXPORT QgsQuickFeaturesListModel : public QAbstractListModel
     //! Pointer to layer that is currently loaded
     QgsVectorLayer *mCurrentLayer = nullptr;
 
-    /**
-     * Data from config for value relations
-     * mCache is not affected by reloading features when filter expression is changed and
-     * is kept until next call of emptyData.
-     */
-    QgsValueRelationFieldFormatter::ValueRelationCache mCache;
-
-    //! Type of a model - Listing (browsing) features or use in value relation widget
-    modelTypes mModelType;
-
     //! Field that is used as a "key" in value relation
-    QString mKeyFieldName;
+    QString mKeyField;
+
+    //! Field that represents field used as a feature title, if not set, display expression is used
+    QString mFeatureTitleField;
 };
 
 #endif // QGSQUICKFEATURESMODEL_H
