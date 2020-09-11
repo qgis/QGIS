@@ -180,6 +180,15 @@ void TestQgsAppLocatorFilters::testSearchActiveLayer()
   results = gatherResults( &filter, QStringLiteral( "nice" ), context );
   QCOMPARE( results.count(), 1 );
 
+  results = gatherResults( &filter, QStringLiteral( "@my_text nice" ), context );
+  QCOMPARE( results.count(), 1 );
+
+  results = gatherResults( &filter, QStringLiteral( "@my_integer nice" ), context );
+  QCOMPARE( results.count(), 0 );
+
+  results = gatherResults( &filter, QStringLiteral( "@unknown_field nice" ), context );
+  QCOMPARE( results.count(), 0 );
+
   QgsProject::instance()->removeAllMapLayers();
 }
 
