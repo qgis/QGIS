@@ -1587,7 +1587,11 @@ QString QgsMapBoxGlStyleConverter::parseStops( double base, const QVariantList &
                                       tz.toString(),
                                       interpolateExpression( bz.toDouble(), tz.toDouble(), bv.toDouble(), tv.toDouble(), base, multiplier ) );
   }
-  caseString += QStringLiteral( "END" );
+
+  const QVariant z = stops.last().toList().value( 0 );
+  const QVariant v = stops.last().toList().value( 1 );
+  caseString += QStringLiteral( "WHEN @zoom_level > %1 "
+                                "THEN %2 END" ).arg( z.toString() ).arg( v.toDouble() * multiplier );
   return caseString;
 }
 
