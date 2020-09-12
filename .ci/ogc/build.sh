@@ -3,8 +3,6 @@
 mkdir /usr/src/qgis/build
 cd /usr/src/qgis/build || exit -1
 
-ccache -s
-
 cmake -GNinja \
  -DWITH_QUICK=OFF \
  -DWITH_3D=OFF \
@@ -26,11 +24,9 @@ cmake -GNinja \
  -DWITH_ORACLE=OFF \
  -DDISABLE_DEPRECATED=ON \
  -DCXX_EXTRA_FLAGS="${CLANG_WARNINGS}" \
- -DCMAKE_C_COMPILER=/usr/lib/ccache/clang \
- -DCMAKE_CXX_COMPILER=/usr/lib/ccache/clang++ \
+ -DCMAKE_C_COMPILER=/bin/clang \
+ -DCMAKE_CXX_COMPILER=/bin/clang++ \
  -DADD_CLAZY_CHECKS=OFF \
  ..
 
 ninja
-
-ccache -s
