@@ -473,7 +473,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      * The \a context must have valid sprite definitions and images set via QgsMapBoxGlStyleConversionContext::setSprites()
      * prior to conversion.
      */
-    static QString retrieveSpriteAsBase64( const QVariant &value, QgsMapBoxGlStyleConversionContext &context, QSize &size, QString &spriteProperty, QString &spriteSizeProperty );
+    static QString retrieveSpriteAsBase64( const QVariant &value, QgsMapBoxGlStyleConversionContext &context, QSize &spriteSize, QString &spriteProperty, QString &spriteSizeProperty );
 
   private:
 

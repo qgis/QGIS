@@ -482,7 +482,7 @@ The ``context`` must have valid sprite definitions and images set via :py:func:`
 prior to conversion.
 %End
 
-    static QString retrieveSpriteAsBase64( const QVariant &value, QgsMapBoxGlStyleConversionContext &context, QSize &size, QString &spriteProperty, QString &spriteSizeProperty );
+    static QString retrieveSpriteAsBase64( const QVariant &value, QgsMapBoxGlStyleConversionContext &context, QSize &spriteSize, QString &spriteProperty, QString &spriteSizeProperty );
 %Docstring
 Retrieves the sprite image with the specified ``name``, taken from the specified ``context`` as a base64 encoded value
 
