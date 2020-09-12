@@ -207,7 +207,7 @@ def execute_in_place_run(alg, parameters, context=None, feedback=None, raise_exc
 
                 feedback.setProgress(int((current + 1) * step))
 
-            results, ok = {}, True
+            results, ok = {'count': current + 1}, True
 
         else:  # Traditional 'run' with delete and add features cycle
 
