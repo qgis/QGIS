@@ -324,8 +324,8 @@ void QgsRelationEditorWidget::updateButtons()
       ||
       (
         mRelation.isValid() &&
-        mRelation.referencedLayer()->geometryType() != QgsWkbTypes::NullGeometry &&
-        mRelation.referencedLayer()->geometryType() != QgsWkbTypes::UnknownGeometry
+        mRelation.referencingLayer()->geometryType() != QgsWkbTypes::NullGeometry &&
+        mRelation.referencingLayer()->geometryType() != QgsWkbTypes::UnknownGeometry
       )
     )
   );
