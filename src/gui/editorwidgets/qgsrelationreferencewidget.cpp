@@ -999,7 +999,7 @@ void QgsRelationReferenceWidget::entryAdded( const QgsFeature &feat )
     for ( const QString &fieldName : qgis::as_const( mReferencedFields ) )
       attrs << f.attribute( fieldName );
 
-    mComboBox->setIdentifierValues( attrs );
+    setForeignKeys( attrs );
 
     mAddEntryButton->setEnabled( false );
   }
