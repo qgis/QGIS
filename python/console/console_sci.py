@@ -606,6 +606,13 @@ class HistoryDialog(QDialog, Ui_HistoryDialogPythonConsole):
         self.listView.doubleClicked.connect(self._runHistory)
         self.reloadHistory.clicked.connect(self._reloadHistory)
         self.saveHistory.clicked.connect(self._saveHistory)
+        self.pasteHistory.clicked.connect(self._pasteHistory)
+
+    def _pasteHistory(self):
+        items = self.listView.selectionModel().selectedIndexes()
+        items.sort()
+        for item in items:
+            self.parent.runCommand(item.data(Qt.DisplayRole))
 
     def _runHistory(self, item):
         cmd = item.data(Qt.DisplayRole)
