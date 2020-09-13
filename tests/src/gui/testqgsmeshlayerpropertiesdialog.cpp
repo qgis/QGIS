@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstest.h"
-#include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshdataprovider.h"
@@ -46,7 +45,6 @@ class TestQgsMeshLayerPropertiesDialog : public QObject
     void testDatasetGroupTree();
 
   private:
-    QgisApp *mQgisApp = nullptr;
     QgsMeshLayer *mpMeshLayer = nullptr;
 };
 
@@ -59,7 +57,6 @@ void TestQgsMeshLayerPropertiesDialog::initTestCase()
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();
-  mQgisApp = new QgisApp();
 
   QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/mesh/" );
   QString uri( testDataDir + "/quad_and_triangle.2dm" );
@@ -78,17 +75,18 @@ void TestQgsMeshLayerPropertiesDialog::cleanupTestCase()
 void TestQgsMeshLayerPropertiesDialog::testInvalidLayer()
 {
   QgsMeshLayer invalidLayer;
-  std::unique_ptr< QgsMeshLayerProperties > dialog = qgis::make_unique< QgsMeshLayerProperties> ( &invalidLayer,
-      mQgisApp->mapCanvas() );
+  QgsMapCanvas mapCanvas;
+  std::unique_ptr< QgsMeshLayerProperties > dialog = qgis::make_unique< QgsMeshLayerProperties > ( &invalidLayer,
+      &mapCanvas );
 
   QVERIFY( dialog );
 }
 
 void TestQgsMeshLayerPropertiesDialog::testCrs()
 {
-  std::unique_ptr< QgsMeshLayerProperties > dialog = qgis::make_unique< QgsMeshLayerProperties> ( mpMeshLayer,
-      mQgisApp->mapCanvas()
-                                                                                                );
+  QgsMapCanvas mapCanvas;
+  std::unique_ptr< QgsMeshLayerProperties > dialog = qgis::make_unique< QgsMeshLayerProperties > ( mpMeshLayer,
+      &mapCanvas );
   QCOMPARE( dialog->mCrsSelector->crs(), mpMeshLayer->crs() );
   QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromEpsgId( 27700 );
   dialog->mCrsSelector->setCrs( crs );

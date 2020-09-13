@@ -16,7 +16,7 @@
 #ifndef QGSMESHDATASETGROUPTREE_H
 #define QGSMESHDATASETGROUPTREE_H
 
-#include "qgis_app.h"
+#include "qgis_gui.h"
 
 #include <QObject>
 #include <QTreeView>
@@ -30,6 +30,8 @@
 #include <QSortFilterProxyModel>
 #include <memory>
 #include "qgsmeshdataset.h"
+
+SIP_NO_FILE
 
 class QgsMeshLayer;
 
@@ -54,7 +56,7 @@ class QgsMeshDatasetGroupSaveMenu: public QObject
 /**
  * Item Model for QgsMeshDatasetGroupTreeItem
  */
-class APP_NO_EXPORT QgsMeshDatasetGroupTreeModel : public QAbstractItemModel
+class QgsMeshDatasetGroupTreeModel : public QAbstractItemModel
 {
     Q_OBJECT
   public:
@@ -111,7 +113,7 @@ class APP_NO_EXPORT QgsMeshDatasetGroupTreeModel : public QAbstractItemModel
 
 };
 
-class APP_NO_EXPORT QgsMeshAvailableDatasetGroupTreeModel: public QgsMeshDatasetGroupTreeModel
+class QgsMeshAvailableDatasetGroupTreeModel: public QgsMeshDatasetGroupTreeModel
 {
   public:
     QgsMeshAvailableDatasetGroupTreeModel( QObject *parent = nullptr );
@@ -127,7 +129,7 @@ class APP_NO_EXPORT QgsMeshAvailableDatasetGroupTreeModel: public QgsMeshDataset
     QColor backGroundColor( const QModelIndex &index ) const;
 };
 
-class APP_NO_EXPORT QgsMeshDatasetGroupProxyModel: public QSortFilterProxyModel
+class  QgsMeshDatasetGroupProxyModel: public QSortFilterProxyModel
 {
   public:
     QgsMeshDatasetGroupProxyModel( QAbstractItemModel *sourceModel );
@@ -161,7 +163,7 @@ class APP_NO_EXPORT QgsMeshDatasetGroupProxyModel: public QSortFilterProxyModel
 /**
  * Delegate to display tree item with a contours and vector selector
  */
-class APP_EXPORT QgsMeshDatasetGroupTreeItemDelagate: public QStyledItemDelegate
+class GUI_EXPORT QgsMeshDatasetGroupTreeItemDelagate: public QStyledItemDelegate
 {
     Q_OBJECT
   public:
@@ -185,7 +187,7 @@ class APP_EXPORT QgsMeshDatasetGroupTreeItemDelagate: public QStyledItemDelegate
     QRect iconRect( const QRect &rect, int pos ) const;
 };
 
-class APP_EXPORT QgsMeshDatasetGroupTreeView: public QTreeView
+class GUI_EXPORT QgsMeshDatasetGroupTreeView: public QTreeView
 {
     Q_OBJECT
   public:
@@ -223,7 +225,7 @@ class APP_EXPORT QgsMeshDatasetGroupTreeView: public QTreeView
  *
  * One dataset group is selected (active)
  */
-class APP_EXPORT QgsMeshActiveDatasetGroupTreeView : public QTreeView
+class GUI_EXPORT QgsMeshActiveDatasetGroupTreeView : public QTreeView
 {
     Q_OBJECT
 
@@ -266,7 +268,7 @@ class APP_EXPORT QgsMeshActiveDatasetGroupTreeView : public QTreeView
     QgsMeshLayer *mMeshLayer = nullptr; // not owned
 };
 
-class APP_EXPORT QgsMeshDatasetGroupListModel: public QAbstractListModel
+class GUI_EXPORT QgsMeshDatasetGroupListModel: public QAbstractListModel
 {
   public:
     explicit QgsMeshDatasetGroupListModel( QObject *parent ): QAbstractListModel( parent )

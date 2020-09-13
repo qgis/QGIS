@@ -16,16 +16,17 @@
 #ifndef QGSMESHVARIABLESTROKEWIDTHWIDGET_H
 #define QGSMESHVARIABLESTROKEWIDTHWIDGET_H
 
-#include "qgis_app.h"
+#include "qgis_gui.h"
 #include "ui_qgsmeshvariablestrokewidthwidgetbase.h"
 #include "qgspanelwidget.h"
 #include "qgsmeshlayerrenderer.h"
 
+SIP_NO_FILE
 
 /**
  * A widget push button that store variable stroke width and call a widget to set parameters
  */
-class APP_NO_EXPORT QgsMeshVariableStrokeWidthButton: public QPushButton
+class QgsMeshVariableStrokeWidthButton: public QPushButton
 {
     Q_OBJECT
   public:
@@ -58,7 +59,7 @@ class APP_NO_EXPORT QgsMeshVariableStrokeWidthButton: public QPushButton
 /**
  * A widget to set parameters of variable stroke width
  */
-class APP_NO_EXPORT QgsMeshVariableStrokeWidthWidget: public QgsPanelWidget, public Ui::QgsMeshVariableStrokeWidthWidget
+class QgsMeshVariableStrokeWidthWidget: public QgsPanelWidget, public Ui::QgsMeshVariableStrokeWidthWidget
 {
     Q_OBJECT
   public:

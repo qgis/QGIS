@@ -17,11 +17,13 @@
 #define QGSMESHRENDERERACTIVEDATASETWIDGET_H
 
 #include "ui_qgsmeshrendereractivedatasetwidgetbase.h"
-#include "qgis_app.h"
+#include "qgis_gui.h"
 #include "qgsmeshdataprovider.h"
 
 #include <QWidget>
 #include <QIcon>
+
+SIP_NO_FILE
 
 class QgsMeshLayer;
 
@@ -33,7 +35,7 @@ class QgsMeshLayer;
  * Time slider is deactivated when no dataset is selected or
  * when all selected datasets are non-temporal.
  */
-class APP_EXPORT QgsMeshRendererActiveDatasetWidget : public QWidget, private Ui::QgsMeshRendererActiveDatasetWidgetBase
+class GUI_EXPORT QgsMeshRendererActiveDatasetWidget : public QWidget, private Ui::QgsMeshRendererActiveDatasetWidgetBase
 {
     Q_OBJECT
 

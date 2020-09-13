@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsmeshrendererscalarsettingswidget.h
+    qgsmeshrenderervectorsettingswidget.h
     -------------------------------------
     begin                : June 2018
     copyright            : (C) 2018 by Peter Petrik
@@ -13,43 +13,47 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSMESHRENDERERSCALARSETTINGSWIDGET_H
-#define QGSMESHRENDERERSCALARSETTINGSWIDGET_H
+#ifndef QGSMESHRENDERERVECTORSETTINGSWIDGET_H
+#define QGSMESHRENDERERVECTORSETTINGSWIDGET_H
 
-#include "ui_qgsmeshrendererscalarsettingswidgetbase.h"
-#include "qgis_app.h"
+#include "ui_qgsmeshrenderervectorsettingswidgetbase.h"
+#include "qgis_gui.h"
 #include "qgsmeshrenderersettings.h"
 #include "qgsmeshdataprovider.h"
+#include "qgsmeshdatasetgrouptreeview.h"
 
+#include <memory>
 #include <QWidget>
+
+SIP_NO_FILE
 
 class QgsMeshLayer;
 
-/*!
- * A widget for setup of the scalar dataset renderer settings of
+/**
+ * A widget for setup of the vector dataset renderer settings of
  * a mesh layer. The layer must be connected and an active dataset
  * must be selected.
  */
-class APP_EXPORT QgsMeshRendererScalarSettingsWidget : public QWidget, private Ui::QgsMeshRendererScalarSettingsWidgetBase
+class QgsMeshRendererVectorSettingsWidget : public QWidget, private Ui::QgsMeshRendererVectorSettingsWidgetBase
 {
     Q_OBJECT
 
   public:
 
     /**
-     * A widget to hold the renderer scalar settings for a mesh layer.
+     * A widget to hold the renderer Vector settings for a mesh layer.
      * \param parent Parent object
      */
-    QgsMeshRendererScalarSettingsWidget( QWidget *parent = nullptr );
+    QgsMeshRendererVectorSettingsWidget( QWidget *parent = nullptr );
 
     //! Associates mesh layer with the widget
     void setLayer( QgsMeshLayer *layer );
 
     //! Associates a dataset group with the widget (should be set before syncToLayer())
-    void setActiveDatasetGroup( int groupIndex );
+    void setActiveDatasetGroup( int groupIndex ) { mActiveDatasetGroup = groupIndex; }
 
-    //! Returns scalar settings
-    QgsMeshRendererScalarSettings settings() const;
+    //! Returns vector settings
+    QgsMeshRendererVectorSettings settings() const;
 
     //! Synchronizes widgets state with associated mesh layer
     void syncToLayer();
@@ -59,20 +63,22 @@ class APP_EXPORT QgsMeshRendererScalarSettingsWidget : public QWidget, private U
     void widgetChanged();
 
   private slots:
-    void minMaxChanged();
-    void minMaxEdited();
-    void recalculateMinMaxButtonClicked();
-    void onEdgeStrokeWidthMethodChanged();
+    void onSymbologyChanged( int currentIndex );
+    void onStreamLineSeedingMethodChanged( int currentIndex );
+    void onColoringMethodChanged();
+    void onColorRampMinMaxChanged();
+    void loadColorRampShader();
 
   private:
-    double lineEditValue( const QLineEdit *lineEdit ) const;
-    QgsMeshRendererScalarSettings::DataResamplingMethod dataIntepolationMethod() const;
 
-    bool dataIsDefinedOnFaces() const;
-    bool dataIsDefinedOnEdges() const;
+    /**
+     * convert text to double, return err_val if
+     * text is not possible to convert or the value is negative
+     */
+    double filterValue( const QString &text, double errVal ) const;
 
-    QgsMeshLayer *mMeshLayer = nullptr; // not owned
+    QgsMeshLayer *mMeshLayer = nullptr; //not owned
     int mActiveDatasetGroup = -1;
 };
 
-#endif // QGSMESHRENDERERSCALARSETTINGSWIDGET_H
+#endif // QGSMESHRENDERERVECTORSETTINGSWIDGET_H

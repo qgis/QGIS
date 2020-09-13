@@ -17,9 +17,11 @@
 
 #include <QAbstractListModel>
 
-#include "qgis_app.h"
+#include "qgis_gui.h"
 #include "ui_qgsmeshstaticdatasetwidgetbase.h"
 #include "qgsmeshdataset.h"
+
+SIP_NO_FILE
 
 class QgsMeshLayer;
 class QgsMeshDataProvider;
@@ -29,7 +31,7 @@ class QgsMeshDataProvider;
  * List model for dataset contained in dataset group,
  * used to display by time dataset in widget
  */
-class APP_NO_EXPORT QgsMeshDatasetListModel: public QAbstractListModel
+class QgsMeshDatasetListModel: public QAbstractListModel
 {
   public:
     //! Constructor
@@ -51,7 +53,7 @@ class APP_NO_EXPORT QgsMeshDatasetListModel: public QAbstractListModel
 /**
  * A widget for setup of the static dataset of a mesh layer.
  */
-class APP_NO_EXPORT QgsMeshStaticDatasetWidget  : public QWidget, private Ui::QgsMeshStaticDatasetWidget
+class QgsMeshStaticDatasetWidget  : public QWidget, private Ui::QgsMeshStaticDatasetWidget
 {
     Q_OBJECT
   public:

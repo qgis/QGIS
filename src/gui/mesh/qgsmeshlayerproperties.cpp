@@ -18,7 +18,6 @@
 #include <limits>
 #include <typeinfo>
 
-#include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgscoordinatetransform.h"
 #include "qgsfileutils.h"
@@ -37,21 +36,23 @@
 #include "qgssettings.h"
 #include "qgsprojecttimesettings.h"
 #include "qgsproviderregistry.h"
-#ifdef HAVE_3D
-#include "qgsmeshlayer3drendererwidget.h"
-#endif
+#include "qgsdatumtransformdialog.h"
+#include "qgsmaplayerconfigwidgetfactory.h"
+
 
 #include <QFileDialog>
 #include <QMessageBox>
 
 QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags fl )
   : QgsOptionsDialogBase( QStringLiteral( "MeshLayerProperties" ), parent, fl )
-  , mMeshLayer( qobject_cast<QgsMeshLayer *>( lyr ) )
+  , mMeshLayer( qobject_cast<QgsMeshLayer *>( lyr ) ),
+    mCanvas( canvas )
 {
   Q_ASSERT( mMeshLayer );
 
   setupUi( this );
   mRendererMeshPropertiesWidget = new QgsRendererMeshPropertiesWidget( mMeshLayer, canvas, this );
+  mConfigWidgets << mRendererMeshPropertiesWidget;
   mOptsPage_StyleContent->layout()->addWidget( mRendererMeshPropertiesWidget );
 
   mStaticDatasetWidget->setLayer( mMeshLayer );
@@ -84,17 +85,6 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   connect( mTemporalDateTimeReference, &QDateTimeEdit::dateTimeChanged, this, &QgsMeshLayerProperties::onTimeReferenceChange );
   connect( mMeshLayer, &QgsMeshLayer::activeScalarDatasetGroupChanged, mStaticDatasetWidget, &QgsMeshStaticDatasetWidget::setScalarDatasetGroup );
   connect( mMeshLayer, &QgsMeshLayer::activeVectorDatasetGroupChanged, mStaticDatasetWidget, &QgsMeshStaticDatasetWidget::setVectorDatasetGroup );
-
-#ifdef HAVE_3D
-  mMesh3DWidget = new QgsMeshLayer3DRendererWidget( mMeshLayer, canvas, mOptsPage_3DView );
-
-  mOptsPage_3DView->setLayout( new QVBoxLayout( mOptsPage_3DView ) );
-  mOptsPage_3DView->layout()->addWidget( mMesh3DWidget );
-  mOptsPage_3DView->layout()->setContentsMargins( 0, 0, 0, 0 );
-  mOptsPage_3DView->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#d-view-properties" ) );
-#else
-  delete mOptsPage_3DView;  // removes both the "3d view" list item and its page
-#endif
 
   mComboBoxTemporalDatasetMatchingMethod->addItem( tr( "Find Closest Dataset Before Requested Time" ),
       QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetBeforeStartRangeTime );
@@ -139,14 +129,36 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   buttonBox->addButton( btnStyle, QDialogButtonBox::ResetRole );
 }
 
+void QgsMeshLayerProperties::addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory *factory )
+{
+  if ( !factory->supportsLayer( mMeshLayer ) || !factory->supportLayerPropertiesDialog() )
+  {
+    return;
+  }
+
+  QgsMapLayerConfigWidget *page = factory->createWidget( mMeshLayer, mCanvas, false, this );
+  mConfigWidgets << page;
+
+  page->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#d-view-properties" ) );
+
+  const QString beforePage = factory->layerPropertiesPagePositionHint();
+  if ( beforePage.isEmpty() )
+    addPage( factory->title(), factory->title(), factory->icon(), page );
+  else
+    insertPage( factory->title(), factory->title(), factory->icon(), page, beforePage );
+
+  page->syncToLayer( mMeshLayer );
+
+}
+
 void QgsMeshLayerProperties::syncToLayer()
 {
   Q_ASSERT( mRendererMeshPropertiesWidget );
 
   QgsDebugMsgLevel( QStringLiteral( "populate general information tab" ), 4 );
   /*
-   * Information Tab
-   */
+  * Information Tab
+  */
   QString info;
   if ( mMeshLayer->dataProvider() )
   {
@@ -184,18 +196,9 @@ void QgsMeshLayerProperties::syncToLayer()
   if ( mMeshLayer )
     mDatasetGroupTreeWidget->syncToLayer( mMeshLayer );
 
-  QgsDebugMsgLevel( QStringLiteral( "populate styling tab" ), 4 );
-  /*
-   * Styling Tab
-   */
-  mRendererMeshPropertiesWidget->syncToLayer();
-
-  /*
-   * 3D View Tab
-   */
-#ifdef HAVE_3D
-  mMesh3DWidget->setLayer( mMeshLayer );
-#endif
+  QgsDebugMsgLevel( QStringLiteral( "populate config tab" ), 4 );
+  for ( QgsMapLayerConfigWidget *w : mConfigWidgets )
+    w->syncToLayer( mMeshLayer );
 
   QgsDebugMsgLevel( QStringLiteral( "populate rendering tab" ), 4 );
   QgsMeshSimplificationSettings simplifySettings = mMeshLayer->meshSimplificationSettings();
@@ -340,18 +343,10 @@ void QgsMeshLayerProperties::apply()
    */
   mDatasetGroupTreeWidget->apply();
 
-  QgsDebugMsgLevel( QStringLiteral( "processing style tab" ), 4 );
-  /*
-   * Style Tab
-   */
-  mRendererMeshPropertiesWidget->apply();
+  QgsDebugMsgLevel( QStringLiteral( "processing config tabs" ), 4 );
 
-  /*
-   * 3D View Tab
-   */
-#ifdef HAVE_3D
-  mMesh3DWidget->apply();
-#endif
+  for ( QgsMapLayerConfigWidget *w : mConfigWidgets )
+    w->apply();
 
   QgsDebugMsgLevel( QStringLiteral( "processing rendering tab" ), 4 );
   /*
@@ -401,7 +396,7 @@ void QgsMeshLayerProperties::apply()
 
 void QgsMeshLayerProperties::changeCrs( const QgsCoordinateReferenceSystem &crs )
 {
-  QgisApp::instance()->askUserForDatumTransform( crs, QgsProject::instance()->crs() );
+  QgsDatumTransformDialog::run( crs, QgsProject::instance()->crs(), this, mCanvas, tr( "Select Transformation" ) );
   mMeshLayer->setCrs( crs );
 }
 
