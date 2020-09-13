@@ -32,6 +32,7 @@
 #include "qgseffectstack.h"
 #include "qgsblureffect.h"
 #include "qgsmarkersymbollayer.h"
+#include "qgstextbackgroundsettings.h"
 
 
 QgsMapBoxGlStyleConverter::QgsMapBoxGlStyleConverter()
@@ -1185,6 +1186,39 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     }
   }
 
+  if ( jsonLayout.contains( QStringLiteral( "icon-image" ) ) &&
+       ( labelSettings.placement == QgsPalLayerSettings::Horizontal || labelSettings.placement == QgsPalLayerSettings::Curved ) )
+  {
+    QSize spriteSize;
+    QString spriteProperty, spriteSizeProperty;
+    const QString sprite = retrieveSpriteAsBase64( jsonLayout.value( QStringLiteral( "icon-image" ) ), context, spriteSize, spriteProperty, spriteSizeProperty );
+    if ( !sprite.isEmpty() )
+    {
+      QgsRasterMarkerSymbolLayer *markerLayer = new QgsRasterMarkerSymbolLayer( );
+      markerLayer->setPath( sprite );
+      markerLayer->setSize( spriteSize.width() );
+      markerLayer->setSizeUnit( context.targetUnit() );
+
+      if ( !spriteProperty.isEmpty() )
+      {
+        QgsPropertyCollection markerDdProperties;
+        markerDdProperties.setProperty( QgsSymbolLayer::PropertyName, QgsProperty::fromExpression( spriteProperty ) );
+        markerLayer->setDataDefinedProperties( markerDdProperties );
+
+        ddLabelProperties.setProperty( QgsPalLayerSettings::ShapeSizeX, QgsProperty::fromExpression( spriteSizeProperty ) );
+      }
+
+      QgsTextBackgroundSettings backgroundSettings;
+      backgroundSettings.setEnabled( true );
+      backgroundSettings.setType( QgsTextBackgroundSettings::ShapeMarkerSymbol );
+      backgroundSettings.setSize( spriteSize );
+      backgroundSettings.setSizeUnit( context.targetUnit() );
+      backgroundSettings.setSizeType( QgsTextBackgroundSettings::SizeFixed );
+      backgroundSettings.setMarkerSymbol( new QgsMarkerSymbol( QgsSymbolLayerList() << markerLayer ) );
+      format.setBackground( backgroundSettings );
+    }
+  }
+
   if ( textSize >= 0 )
   {
     // TODO -- this probably needs revisiting -- it was copied from the MapTiler code, but may be wrong...
@@ -1215,7 +1249,7 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
   }
   const QVariantMap jsonLayout = jsonLayer.value( QStringLiteral( "layout" ) ).toMap();
 
-  if ( jsonLayout.value( QStringLiteral( "symbol-placement" ) ).toString() == QLatin1String( "line" ) )
+  if ( jsonLayout.value( QStringLiteral( "symbol-placement" ) ).toString() == QLatin1String( "line" ) && !jsonLayout.contains( QStringLiteral( "text-field" ) ) )
   {
     QgsPropertyCollection ddProperties;
 
@@ -2033,10 +2067,53 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64( const QVariant &value
   {
     case QVariant::String:
     {
-      spriteProperty.clear();
-      spriteSizeProperty.clear();
-      const QImage sprite = retrieveSprite( value.toString(), context );
-      prepareSprite( sprite, spritePath, spriteSize );
+      QString spriteName = value.toString();
+      QRegularExpression fieldNameMatch( QStringLiteral( "{([^}]+)}" ) );
+      QRegularExpressionMatch match = fieldNameMatch.match( spriteName );
+      if ( match.hasMatch() )
+      {
+        const QString fieldName = match.captured( 1 );
+        spriteProperty = QStringLiteral( "CASE" );
+        spriteSizeProperty = QStringLiteral( "CASE" );
+
+        spriteName.replace( "(", QStringLiteral( "\\(" ) );
+        spriteName.replace( ")", QStringLiteral( "\\)" ) );
+        spriteName.replace( fieldNameMatch, QStringLiteral( "([^\\/\\\\]+)" ) );
+        QRegularExpression fieldValueMatch( spriteName );
+        const QStringList spriteNames = context.spriteDefinitions().keys();
+        for ( const QString name : spriteNames )
+        {
+          match = fieldValueMatch.match( name );
+          if ( match.hasMatch() )
+          {
+            QSize size;
+            QString path;
+            const QString fieldValue = match.captured( 1 );
+            const QImage sprite = retrieveSprite( name, context );
+            prepareSprite( sprite, path, size );
+            if ( spritePath.isEmpty() && !path.isEmpty() )
+            {
+              spritePath = path;
+              spriteSize = size;
+            }
+
+            spriteProperty += QStringLiteral( " WHEN \"%1\" = '%2' THEN '%3'" )
+                              .arg( fieldName, fieldValue, path );
+            spriteSizeProperty += QStringLiteral( " WHEN \"%1\" = '%2' THEN %3" )
+                                  .arg( fieldName ).arg( fieldValue ).arg( size.width() );
+          }
+        }
+
+        spriteProperty += QStringLiteral( " END" );
+        spriteSizeProperty += QStringLiteral( " END" );
+      }
+      else
+      {
+        spriteProperty.clear();
+        spriteSizeProperty.clear();
+        const QImage sprite = retrieveSprite( spriteName, context );
+        prepareSprite( sprite, spritePath, spriteSize );
+      }
       break;
     }
 
