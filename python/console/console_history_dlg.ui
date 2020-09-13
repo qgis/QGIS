@@ -59,7 +59,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="pasteHistory">
        <property name="text">
         <string>Paste</string>
        </property>
