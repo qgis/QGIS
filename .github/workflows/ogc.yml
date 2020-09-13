@@ -21,16 +21,9 @@ jobs:
         run: |
           docker build -t qgis_server_deps -f .ci/ogc/Dockerfile .ci/ogc/
 
-      - name: Cache
-        id: cache
-        uses: actions/cache@v2
-        with:
-          path: ~/.ccache
-          key: ogc
-
       - name: Run build
         run: |
-          docker run -v ~/.ccache:/root/ccache -v $(pwd):/usr/src/qgis qgis_server_deps /usr/src/qgis/.ci/ogc/build.sh
+          docker run -v $(pwd):/usr/src/qgis qgis_server_deps /usr/src/qgis/.ci/ogc/build.sh
 
       - name: Install pyogctest
         run: |

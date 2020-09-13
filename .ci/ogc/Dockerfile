@@ -8,7 +8,6 @@ RUN apt-get update \
     && apt-get install -y \
   cmake \
   ninja-build \
-  ccache \
   clang \
   flex \
   bison \
