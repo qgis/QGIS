@@ -1030,54 +1030,66 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
       labelSettings.lineSettings().setPlacementFlags( QgsLabeling::OnLine );
       geometryType = QgsWkbTypes::LineGeometry;
 
-      QPointF textOffset;
-      QString textOffsetProperty;
-      if ( jsonLayout.contains( QStringLiteral( "text-offset" ) ) )
+      if ( jsonLayout.contains( QStringLiteral( "text-rotation-alignment" ) ) )
       {
-        const QVariant jsonTextOffset = jsonLayout.value( QStringLiteral( "text-offset" ) );
-
-        // units are ems!
-        switch ( jsonTextOffset.type() )
+        const QString textRotationAlignment = jsonLayout.value( QStringLiteral( "text-rotation-alignment" ) ).toString();
+        if ( textRotationAlignment == QLatin1String( "viewport" ) )
         {
-          case QVariant::Map:
-            textOffsetProperty = parseInterpolatePointByZoom( jsonTextOffset.toMap(), context, textSizeProperty.isEmpty() ? textSize : 1.0, &textOffset );
-            if ( textSizeProperty.isEmpty() )
-            {
-              ddLabelProperties.setProperty( QgsPalLayerSettings::LabelDistance, QStringLiteral( "abs(array_get(%1,1))-%2" ).arg( textOffsetProperty ).arg( textSize ) );
-            }
-            else
-            {
-              ddLabelProperties.setProperty( QgsPalLayerSettings::LabelDistance, QStringLiteral( "with_variable('text_size',%2,abs(array_get(%1,1))*@text_size-@text_size)" ).arg( textOffsetProperty ).arg( textSizeProperty ) );
-            }
-            ddLabelProperties.setProperty( QgsPalLayerSettings::LinePlacementOptions, QStringLiteral( "if(array_get(%1,1)>0,'BL','AL')" ).arg( textOffsetProperty ) );
-            break;
-
-          case QVariant::List:
-          case QVariant::StringList:
-            textOffset = QPointF( jsonTextOffset.toList().value( 0 ).toDouble() * textSize,
-                                  jsonTextOffset.toList().value( 1 ).toDouble() * textSize );
-            break;
-
-          default:
-            context.pushWarning( QObject::tr( "Skipping non-implemented text-offset expression" ) );
-            break;
-        }
-
-        if ( !textOffset.isNull() )
-        {
-          labelSettings.distUnits = context.targetUnit();
-          labelSettings.dist = std::abs( textOffset.y() ) - textSize;
-          labelSettings.lineSettings().setPlacementFlags( textOffset.y() > 0.0 ? QgsLabeling::BelowLine : QgsLabeling::AboveLine );
-          if ( !textSizeProperty.isEmpty() && textOffsetProperty.isEmpty() )
-          {
-            ddLabelProperties.setProperty( QgsPalLayerSettings::LabelDistance, QStringLiteral( "with_variable('text_size',%2,%1*@text_size-@text_size)" ).arg( std::abs( textOffset.y() / textSize ) ).arg( ( textSizeProperty ) ) );
-          }
+          labelSettings.placement = QgsPalLayerSettings::Horizontal;
         }
       }
 
-      if ( textOffset.isNull() )
+      if ( labelSettings.placement == QgsPalLayerSettings::Curved )
       {
-        labelSettings.lineSettings().setPlacementFlags( QgsLabeling::OnLine );
+        QPointF textOffset;
+        QString textOffsetProperty;
+        if ( jsonLayout.contains( QStringLiteral( "text-offset" ) ) )
+        {
+          const QVariant jsonTextOffset = jsonLayout.value( QStringLiteral( "text-offset" ) );
+
+          // units are ems!
+          switch ( jsonTextOffset.type() )
+          {
+            case QVariant::Map:
+              textOffsetProperty = parseInterpolatePointByZoom( jsonTextOffset.toMap(), context, textSizeProperty.isEmpty() ? textSize : 1.0, &textOffset );
+              if ( textSizeProperty.isEmpty() )
+              {
+                ddLabelProperties.setProperty( QgsPalLayerSettings::LabelDistance, QStringLiteral( "abs(array_get(%1,1))-%2" ).arg( textOffsetProperty ).arg( textSize ) );
+              }
+              else
+              {
+                ddLabelProperties.setProperty( QgsPalLayerSettings::LabelDistance, QStringLiteral( "with_variable('text_size',%2,abs(array_get(%1,1))*@text_size-@text_size)" ).arg( textOffsetProperty ).arg( textSizeProperty ) );
+              }
+              ddLabelProperties.setProperty( QgsPalLayerSettings::LinePlacementOptions, QStringLiteral( "if(array_get(%1,1)>0,'BL','AL')" ).arg( textOffsetProperty ) );
+              break;
+
+            case QVariant::List:
+            case QVariant::StringList:
+              textOffset = QPointF( jsonTextOffset.toList().value( 0 ).toDouble() * textSize,
+                                    jsonTextOffset.toList().value( 1 ).toDouble() * textSize );
+              break;
+
+            default:
+              context.pushWarning( QObject::tr( "Skipping non-implemented text-offset expression" ) );
+              break;
+          }
+
+          if ( !textOffset.isNull() )
+          {
+            labelSettings.distUnits = context.targetUnit();
+            labelSettings.dist = std::abs( textOffset.y() ) - textSize;
+            labelSettings.lineSettings().setPlacementFlags( textOffset.y() > 0.0 ? QgsLabeling::BelowLine : QgsLabeling::AboveLine );
+            if ( !textSizeProperty.isEmpty() && textOffsetProperty.isEmpty() )
+            {
+              ddLabelProperties.setProperty( QgsPalLayerSettings::LabelDistance, QStringLiteral( "with_variable('text_size',%2,%1*@text_size-@text_size)" ).arg( std::abs( textOffset.y() / textSize ) ).arg( ( textSizeProperty ) ) );
+            }
+          }
+        }
+
+        if ( textOffset.isNull() )
+        {
+          labelSettings.lineSettings().setPlacementFlags( QgsLabeling::OnLine );
+        }
       }
     }
   }
