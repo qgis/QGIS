@@ -2085,7 +2085,7 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64( const QVariant &value
         spriteName.replace( fieldNameMatch, QStringLiteral( "([^\\/\\\\]+)" ) );
         QRegularExpression fieldValueMatch( spriteName );
         const QStringList spriteNames = context.spriteDefinitions().keys();
-        for ( const QString name : spriteNames )
+        for ( const QString &name : spriteNames )
         {
           match = fieldValueMatch.match( name );
           if ( match.hasMatch() )
