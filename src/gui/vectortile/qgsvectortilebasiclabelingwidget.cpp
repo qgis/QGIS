@@ -26,6 +26,7 @@
 
 ///@cond PRIVATE
 
+const double ICON_PADDING_FACTOR = 0.16;
 
 QgsVectorTileBasicLabelingListModel::QgsVectorTileBasicLabelingListModel( QgsVectorTileBasicLabeling *l, QObject *parent )
   : QAbstractListModel( parent )
@@ -94,6 +95,16 @@ QVariant QgsVectorTileBasicLabelingListModel::data( const QModelIndex &index, in
       if ( index.column() != 0 )
         return QVariant();
       return style.isEnabled() ? Qt::Checked : Qt::Unchecked;
+    }
+
+    case Qt::DecorationRole:
+    {
+      if ( index.column() == 0 )
+      {
+        const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
+        return QgsPalLayerSettings::labelSettingsPreviewPixmap( style.labelSettings(), QSize( iconSize, iconSize ), QString(),  static_cast< int >( iconSize * ICON_PADDING_FACTOR ) );
+      }
+      break;
     }
 
     case MinZoom:
