@@ -130,15 +130,6 @@
          </item>
          <item>
           <property name="text">
-           <string>3D View</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../../images/images.qrc">
-            <normaloff>:/images/themes/default/3d.svg</normaloff>:/images/themes/default/3d.svg</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
            <string>Rendering</string>
           </property>
           <property name="icon">
@@ -200,7 +191,7 @@
           <enum>QFrame::Plain</enum>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>3</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -248,8 +239,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>661</width>
-                <height>508</height>
+                <width>662</width>
+                <height>512</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -439,7 +430,6 @@ border-radius: 2px;</string>
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mOptsPage_3DView"/>
          <widget class="QWidget" name="mOptsPage_Rendering">
           <layout class="QVBoxLayout" name="verticalLayout_5">
            <property name="leftMargin">

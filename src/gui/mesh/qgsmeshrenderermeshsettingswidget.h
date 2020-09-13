@@ -18,9 +18,11 @@
 
 #include "ui_qgsmeshrenderermeshsettingswidgetbase.h"
 #include "qgsmeshrenderersettings.h"
-#include "qgis_app.h"
+#include "qgis_gui.h"
 
 #include <QWidget>
+
+SIP_NO_FILE
 
 class QgsMeshLayer;
 
@@ -29,7 +31,7 @@ class QgsMeshLayer;
  * the mesh layer. Can be used for native,
  * triangular and edge mesh renderer settings.
  */
-class APP_EXPORT QgsMeshRendererMeshSettingsWidget : public QWidget, private Ui::QgsMeshRendererMeshSettingsWidgetBase
+class QgsMeshRendererMeshSettingsWidget : public QWidget, private Ui::QgsMeshRendererMeshSettingsWidgetBase
 {
     Q_OBJECT
 

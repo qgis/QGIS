@@ -257,6 +257,18 @@ SET(QGIS_GUI_SRCS
 
   locator/qgslocatorwidget.cpp
 
+  mesh/qgsmeshlayerproperties.cpp
+  mesh/qgsrenderermeshpropertieswidget.cpp
+  mesh/qgsmeshdatasetgrouptreewidget.cpp
+  mesh/qgsmeshrenderer3daveragingwidget.cpp
+  mesh/qgsmeshrenderermeshsettingswidget.cpp
+  mesh/qgsmeshrendererscalarsettingswidget.cpp
+  mesh/qgsmeshrenderervectorsettingswidget.cpp
+  mesh/qgsmeshrendereractivedatasetwidget.cpp
+  mesh/qgsmeshdatasetgrouptreeview.cpp
+  mesh/qgsmeshstaticdatasetwidget.cpp
+  mesh/qgsmeshvariablestrokewidthwidget.cpp
+
   numericformats/qgsnumericformatselectorwidget.cpp
   numericformats/qgsnumericformatwidget.cpp
   numericformats/qgsnumericformatguiregistry.cpp
@@ -998,6 +1010,18 @@ SET(QGIS_GUI_HDRS
 
   locator/qgslocatorwidget.h
 
+  mesh/qgsmeshlayerproperties.h
+  mesh/qgsrenderermeshpropertieswidget.h
+  mesh/qgsmeshdatasetgrouptreeview.h
+  mesh/qgsmeshdatasetgrouptreewidget.h
+  mesh/qgsmeshrenderer3daveragingwidget.h
+  mesh/qgsmeshrenderermeshsettingswidget.h
+  mesh/qgsmeshrendererscalarsettingswidget.h
+  mesh/qgsmeshrenderervectorsettingswidget.h
+  mesh/qgsmeshrendereractivedatasetwidget.h
+  mesh/qgsmeshstaticdatasetwidget.h
+  mesh/qgsmeshvariablestrokewidthwidget.h
+
   numericformats/qgsnumericformatselectorwidget.h
   numericformats/qgsnumericformatwidget.h
   numericformats/qgsnumericformatguiregistry.h
@@ -1250,6 +1274,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/labeling
   ${CMAKE_SOURCE_DIR}/src/gui/layertree
   ${CMAKE_SOURCE_DIR}/src/gui/layout
+  ${CMAKE_SOURCE_DIR}/src/gui/mesh
   ${CMAKE_SOURCE_DIR}/src/gui/numericformats
   ${CMAKE_SOURCE_DIR}/src/gui/ogr
   ${CMAKE_SOURCE_DIR}/src/gui/processing

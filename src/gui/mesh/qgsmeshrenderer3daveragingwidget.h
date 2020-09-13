@@ -17,12 +17,14 @@
 #define QGSMESHRENDERER3DAVERAGINGWIDGET_H
 
 #include "ui_qgsmeshrenderer3daveragingwidgetbase.h"
-#include "qgis_app.h"
+#include "qgis_gui.h"
 #include "qgsmeshrenderersettings.h"
 #include "qgsmeshdataprovider.h"
 
 #include <memory>
 #include <QWidget>
+
+SIP_NO_FILE
 
 class QgsMeshLayer;
 class QgsMesh3dAveragingMethod;
@@ -31,7 +33,7 @@ class QgsMesh3dAveragingMethod;
  * A widget for setup of the averaging method from 3d to 2d datasets on 3d stacked mesh.
  * The mesh layer must be connected
  */
-class APP_EXPORT QgsMeshRenderer3dAveragingWidget : public QWidget, private Ui::QgsMeshRenderer3dAveragingWidgetBase
+class QgsMeshRenderer3dAveragingWidget : public QWidget, private Ui::QgsMeshRenderer3dAveragingWidgetBase
 {
     Q_OBJECT
 

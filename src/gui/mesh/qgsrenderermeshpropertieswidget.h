@@ -21,8 +21,10 @@
 #include "ui_qgsrenderermeshpropswidgetbase.h"
 
 #include "qgsmaplayerconfigwidget.h"
-#include "qgis_app.h"
+#include "qgis_gui.h"
 #include <memory>
+
+SIP_NO_FILE
 
 class QgsMeshLayer;
 class QgsMapCanvas;
@@ -31,7 +33,7 @@ class QgsMapCanvas;
  * Widget for renderer properties of the mesh, contours (scalars)
  * and vectors data associated with the mesh layer
  */
-class APP_EXPORT QgsRendererMeshPropertiesWidget : public QgsMapLayerConfigWidget, private Ui::QgsRendererMeshPropsWidgetBase
+class GUI_EXPORT QgsRendererMeshPropertiesWidget : public QgsMapLayerConfigWidget, private Ui::QgsRendererMeshPropsWidgetBase
 {
     Q_OBJECT
 

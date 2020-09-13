@@ -22,20 +22,24 @@
 #include "qgsmaplayerstylemanager.h"
 #include "qgsoptionsdialogbase.h"
 #include "qgsguiutils.h"
-#include "qgis_app.h"
+#include "qgis_gui.h"
 
 class QgsMapLayer;
 class QgsMapCanvas;
 class QgsMeshLayer;
 class QgsRendererMeshPropertiesWidget;
+class QgsMapLayerConfigWidget;
 class QgsMeshLayer3DRendererWidget;
 class QgsMeshStaticDatasetWidget;
+class QgsMapLayerConfigWidgetFactory;
 
 /**
  * Property sheet for a mesh map layer.
  * Contains information, source and style tabs
+ *
+ * \since QGIS 3.18 in the GUI API
  */
-class APP_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private Ui::QgsMeshLayerPropertiesBase
+class GUI_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private Ui::QgsMeshLayerPropertiesBase
 {
     Q_OBJECT
 
@@ -46,6 +50,13 @@ class APP_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
      * \param lyr Mesh map layer for which properties will be displayed
      */
     QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
+
+    /**
+     * Adds properties page from a factory
+     *
+     * \since QGIS 3.18
+     */
+    void addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory *factory );
 
   private slots:
     //! Synchronizes widgets state with associated mesh layer
@@ -79,6 +90,8 @@ class APP_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
     //! Pointer to the mesh styling widget
     QgsRendererMeshPropertiesWidget *mRendererMeshPropertiesWidget = nullptr;
 
+    QList<QgsMapLayerConfigWidget *> mConfigWidgets;
+
     //! Pointer to the mesh layer that this property dialog changes the behavior of.
     QgsMeshLayer *mMeshLayer = nullptr;
 
@@ -90,6 +103,8 @@ class APP_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
      * was loaded but dialog is canceled.
     */
     QgsMapLayerStyle mOldStyle;
+
+    QgsMapCanvas *mCanvas;
 
     bool mIsMapSettingsTemporal = false;
 

@@ -16,14 +16,16 @@
 #ifndef QGSMESHDATASETGROUPTREEWIDGET_H
 #define QGSMESHDATASETGROUPTREEWIDGET_H
 
-#include "qgis_app.h"
+#include "qgis_gui.h"
 #include "ui_qgsmeshdatasetgrouptreewidgetbase.h"
 
 #include "qgsmeshdataset.h"
 
+SIP_NO_FILE
+
 class QgsMeshLayer;
 
-class APP_EXPORT QgsMeshDatasetGroupTreeWidget: public QWidget, private Ui::QgsMeshDatasetGroupTreeWidgetBase
+class GUI_EXPORT QgsMeshDatasetGroupTreeWidget: public QWidget, private Ui::QgsMeshDatasetGroupTreeWidgetBase
 {
     Q_OBJECT
   public:
