@@ -88,7 +88,7 @@ void QgsBufferServerResponse::finish()
   {
     if ( ! mHeaders.contains( "Content-Length" ) )
     {
-      mHeaders.insert( QStringLiteral( "Content-Length" ), QStringLiteral( "%1" ).arg( mBuffer.pos() ) );
+      mHeaders.insert( QStringLiteral( "Content-Length" ), QString::number( mBuffer.pos() ) );
     }
   }
   flush();

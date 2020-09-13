@@ -1518,7 +1518,7 @@ QVariant QgsProcessingRangeWidgetWrapper::widgetValue() const
     if ( qgsDoubleNear( mMinSpinBox->value(), mMinSpinBox->minimum() ) )
       value = QStringLiteral( "None" );
     else
-      value = QStringLiteral( "%1" ).arg( mMinSpinBox->value() );
+      value = QString::number( mMinSpinBox->value() );
 
     if ( qgsDoubleNear( mMaxSpinBox->value(), mMaxSpinBox->minimum() ) )
       value += QStringLiteral( ",None" );

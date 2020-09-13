@@ -164,7 +164,7 @@ bool QgsRasterPipe::set( QgsRasterInterface *interface )
 {
   if ( !interface ) return false;
 
-  QgsDebugMsgLevel( QStringLiteral( "%1" ).arg( typeid( *interface ).name() ), 4 );
+  QgsDebugMsgLevel( typeid( *interface ).name(), 4 );
   Role role = interfaceRole( interface );
 
   // We don't know where to place unknown interface

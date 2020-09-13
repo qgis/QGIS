@@ -545,16 +545,16 @@ QString QgsMeshLayerUtils::formatTime( double hours, const QDateTime &referenceT
     else if ( format == QStringLiteral( "d" ) )
     {
       int d = totalHours / 24;
-      ret = QStringLiteral( "%1" ).arg( d );
+      ret = QString::number( d );
     }
     else if ( format == QStringLiteral( "ss" ) )
     {
       int seconds = static_cast<int>( hours * 3600.0 );
-      ret = QStringLiteral( "%1" ).arg( seconds );
+      ret = QString::number( seconds );
     }
     else     // "hh"
     {
-      ret = QStringLiteral( "%1" ).arg( hours );
+      ret = QString::number( hours );
     }
   }
   return ret;

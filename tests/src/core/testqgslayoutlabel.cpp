@@ -133,7 +133,7 @@ void TestQgsLayoutLabel::evaluation()
     QDate now = QDate::currentDate();
     int dd = now.day();
 
-    QString expected = "__" + QStringLiteral( "%1" ).arg( dd + 1 ) + "(ok)__";
+    QString expected = "__" + QString::number( dd + 1 ) + "(ok)__";
     label->setText( QStringLiteral( "__[%$CURRENT_DATE(dd) + 1%](ok)__" ) );
     QString evaluated = label->currentText();
     QCOMPARE( evaluated, expected );

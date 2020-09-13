@@ -149,7 +149,7 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
       return QStringLiteral( "%1/%2" ).arg( negativeIndex ).arg( negativeIndex );
     if ( hasNormals && hasTextures )
       return QStringLiteral( "%1/%2/%3" ).arg( negativeIndex ).arg( negativeIndex ).arg( negativeIndex );
-    return QStringLiteral( "%1" ).arg( negativeIndex );
+    return QString::number( negativeIndex );
   };
 
   if ( mType == TriangularFaces )
