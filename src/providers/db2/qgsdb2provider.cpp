@@ -1014,8 +1014,8 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList &flist, Flags flags )
     else
       first = false;
 
-    statement += QStringLiteral( "%1" ).arg( fld.name() );
-    values += QStringLiteral( "?" );
+    statement += fld.name();
+    values += '?';
   }
 
   // append geometry column name
@@ -1027,7 +1027,7 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList &flist, Flags flags )
       values += ',';
     }
 
-    statement += QStringLiteral( "%1" ).arg( mGeometryColName );
+    statement += mGeometryColName;
 
     values += QStringLiteral( "db2gse.%1(CAST (%2 AS BLOB(2M)),%3)" )
               .arg( mGeometryColType,
