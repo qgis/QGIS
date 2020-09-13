@@ -81,7 +81,9 @@ class CORE_EXPORT QgsField
     {
       None = 0, //!< No flag is defined
       Searchable = 0x1, //!< Defines if the field is searchable (used in the locator search for instance)
-      DefaultFlags = Searchable, //!< Default set of flags for a field
+      Wms = 0x2, //!< Fields is available if layer is served as WMS
+      Wfs = 0x3, //!< Fields is available if layer is served as WFS
+      DefaultFlags = Searchable | Wms | Wfs, //!< Default set of flags for a field
     };
     Q_ENUM( ConfigurationFlag )
     Q_DECLARE_FLAGS( ConfigurationFlags, ConfigurationFlag )
