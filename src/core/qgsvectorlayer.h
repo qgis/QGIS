@@ -1839,21 +1839,25 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * A set of attributes that are not advertised in WMS requests with QGIS server.
+     * \deprecated since QGIS 3.16
      */
     Q_DECL_DEPRECATED QSet<QString> excludeAttributesWms() SIP_DEPRECATED const { return mExcludeAttributesWMS; }
 
     /**
      * A set of attributes that are not advertised in WMS requests with QGIS server.
+     * \deprecated since QGIS 3.16
      */
     Q_DECL_DEPRECATED void setExcludeAttributesWms( const QSet<QString> &att ) SIP_DEPRECATED { mExcludeAttributesWMS = att; }
 
     /**
      * A set of attributes that are not advertised in WFS requests with QGIS server.
+     * \deprecated since QGIS 3.16
      */
     Q_DECL_DEPRECATED QSet<QString> excludeAttributesWfs() SIP_DEPRECATED const { return mExcludeAttributesWFS; }
 
     /**
      * A set of attributes that are not advertised in WFS requests with QGIS server.
+     * \deprecated since QGIS 3.16
      */
     Q_DECL_DEPRECATED void setExcludeAttributesWfs( const QSet<QString> &att ) SIP_DEPRECATED { mExcludeAttributesWFS = att; }
 

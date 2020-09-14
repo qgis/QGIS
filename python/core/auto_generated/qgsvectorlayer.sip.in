@@ -1971,21 +1971,29 @@ Returns a map of field name to attribute alias
  QSet<QString> excludeAttributesWms() /Deprecated/ const;
 %Docstring
 A set of attributes that are not advertised in WMS requests with QGIS server.
+
+.. deprecated:: QGIS 3.16
 %End
 
  void setExcludeAttributesWms( const QSet<QString> &att ) /Deprecated/;
 %Docstring
 A set of attributes that are not advertised in WMS requests with QGIS server.
+
+.. deprecated:: QGIS 3.16
 %End
 
  QSet<QString> excludeAttributesWfs() /Deprecated/ const;
 %Docstring
 A set of attributes that are not advertised in WFS requests with QGIS server.
+
+.. deprecated:: QGIS 3.16
 %End
 
  void setExcludeAttributesWfs( const QSet<QString> &att ) /Deprecated/;
 %Docstring
 A set of attributes that are not advertised in WFS requests with QGIS server.
+
+.. deprecated:: QGIS 3.16
 %End
 
     virtual bool deleteAttribute( int attr );
