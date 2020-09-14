@@ -193,6 +193,12 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
             QgsDebugMsg( QStringLiteral( "Malformed geometry: invalid cmdCount" ) );
             break;
           }
+
+          if ( feature.type() == vector_tile::Tile_GeomType_POINT )
+            outputPoints.reserve( outputPoints.size() + cmdCount );
+          else
+            tmpPoints.reserve( tmpPoints.size() + cmdCount );
+
           for ( unsigned j = 0; j < cmdCount; j++ )
           {
             unsigned v = feature.geometry( i + 1 );
@@ -231,6 +237,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
             QgsDebugMsg( QStringLiteral( "Malformed geometry: invalid cmdCount" ) );
             break;
           }
+          tmpPoints.reserve( tmpPoints.size() + cmdCount );
           for ( unsigned j = 0; j < cmdCount; j++ )
           {
             unsigned v = feature.geometry( i + 1 );
@@ -288,10 +295,11 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
       {
         geomType = QStringLiteral( "Point" );
         if ( outputPoints.count() == 1 )
-          f.setGeometry( QgsGeometry( outputPoints[0] ) );
+          f.setGeometry( QgsGeometry( outputPoints.at( 0 ) ) );
         else
         {
           QgsMultiPoint *mp = new QgsMultiPoint;
+          mp->reserve( outputPoints.count() );
           for ( int k = 0; k < outputPoints.count(); ++k )
             mp->addGeometry( outputPoints[k] );
           f.setGeometry( QgsGeometry( mp ) );
@@ -305,10 +313,11 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
         outputLinestrings.append( new QgsLineString( tmpPoints ) );
 
         if ( outputLinestrings.count() == 1 )
-          f.setGeometry( QgsGeometry( outputLinestrings[0] ) );
+          f.setGeometry( QgsGeometry( outputLinestrings.at( 0 ) ) );
         else
         {
           QgsMultiLineString *mls = new QgsMultiLineString;
+          mls->reserve( outputLinestrings.size() );
           for ( int k = 0; k < outputLinestrings.count(); ++k )
             mls->addGeometry( outputLinestrings[k] );
           f.setGeometry( QgsGeometry( mls ) );
@@ -319,10 +328,11 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
         geomType = QStringLiteral( "Polygon" );
 
         if ( outputPolygons.count() == 1 )
-          f.setGeometry( QgsGeometry( outputPolygons[0] ) );
+          f.setGeometry( QgsGeometry( outputPolygons.at( 0 ) ) );
         else
         {
           QgsMultiPolygon *mpl = new QgsMultiPolygon;
+          mpl->reserve( outputPolygons.size() );
           for ( int k = 0; k < outputPolygons.count(); ++k )
             mpl->addGeometry( outputPolygons[k] );
           f.setGeometry( QgsGeometry( mpl ) );
