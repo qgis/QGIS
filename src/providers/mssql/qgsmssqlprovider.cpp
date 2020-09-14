@@ -478,44 +478,52 @@ QString QgsMssqlProvider::quotedIdentifier( const QString &value )
 
 QString QgsMssqlProvider::defaultValueClause( int fieldId ) const
 {
-  QString defVal = mDefaultValues.value( fieldId, QString() );
+  const QString defVal = mDefaultValues.value( fieldId, QString() );
+
+  if ( defVal.isEmpty() )
+    return QString();
 
   // NOTE: If EvaluateDefaultValues is activated it is impossible to get the defaultValueClause.
   //       This also apply to QgsPostgresProvider::defaultValueClause.
-  if ( !providerProperty( EvaluateDefaultValues, false ).toBool() && !defVal.isEmpty() )
-  {
+  if ( !providerProperty( EvaluateDefaultValues, false ).toBool() )
     return defVal;
-  }
 
   return QString();
 }
 
 QVariant QgsMssqlProvider::defaultValue( int fieldId ) const
 {
-  QString defVal = mDefaultValues.value( fieldId, QString() );
+  const QString defVal = mDefaultValues.value( fieldId, QString() );
 
-  if ( providerProperty( EvaluateDefaultValues, false ).toBool() && !defVal.isEmpty() )
+  if ( defVal.isEmpty() )
+    return QVariant();
+
+  if ( !providerProperty( EvaluateDefaultValues, false ).toBool() )
+    return QVariant();
+
+  QString sql = QStringLiteral( "select %1" )
+                .arg( defVal );
+
+  QSqlQuery query = createQuery();
+  query.setForwardOnly( true );
+
+  if ( !query.exec( sql ) )
   {
-    QString sql = QStringLiteral( "select %1" )
-                  .arg( defVal );
-
-    QSqlQuery query = createQuery();
-    query.setForwardOnly( true );
-
-    if ( !query.exec( sql ) )
-    {
-      QgsDebugMsg( query.lastError().text() );
-      pushError( tr( "Could not execute query" ) );
-      return QVariant();
-    }
-
-    if ( !query.next() )
-      return QVariant();
-
-    return query.value( 0 );
+    const QString errorMessage( tr( "Could not execute query: %1" ).arg( query.lastError().text() ) );
+    QgsDebugMsg( errorMessage );
+    pushError( errorMessage );
+    return QVariant();
   }
 
-  return QVariant();
+  if ( !query.next() )
+  {
+    const QString errorMessage( tr( "Could not fetch next query value: %1" ).arg( query.lastError().text() ) );
+    QgsDebugMsg( errorMessage );
+    pushError( errorMessage );
+    return QVariant();
+  }
+
+  return query.value( 0 );
 }
 
 QString QgsMssqlProvider::storageType() const

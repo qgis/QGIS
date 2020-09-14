@@ -26,7 +26,8 @@ from qgis.core import (QgsSettings,
                        QgsProviderRegistry,
                        NULL,
                        QgsVectorLayerExporter,
-                       QgsCoordinateReferenceSystem)
+                       QgsCoordinateReferenceSystem,
+                       QgsDataProvider)
 
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant
 from utilities import unitTestDataPath
@@ -513,6 +514,19 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
             (self.dbconn), "testinvalid", "mssql")
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.dataProvider().extent().toString(1), 'Empty')
+
+    def testEvaluateDefaultValueClause(self):
+
+        vl = QgsVectorLayer(
+            '%s table="qgis_test"."someData" sql=' %
+            (self.dbconn), "testdatetimes", "mssql")
+
+        # Activate EvaluateDefaultValues
+        vl.dataProvider().setProviderProperty(QgsDataProvider.EvaluateDefaultValues, True)
+
+        name_index = vl.fields().lookupField('name')
+        defaultValue = vl.dataProvider().defaultValue(name_index)
+        self.assertEqual(defaultValue, 'qgis')
 
 
 if __name__ == '__main__':
