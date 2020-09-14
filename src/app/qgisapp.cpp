@@ -2038,6 +2038,24 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
 
   QgsScopedProxyProgressTask task( tr( "Loading layers" ) );
 
+
+  auto showLayerLoadWarnings = [ = ]( const QString & title, const QString & shortMessage, const QString & longMessage, Qgis::MessageLevel level )
+  {
+    QgsMessageBarItem *messageWidget = visibleMessageBar()->createMessage( title, shortMessage );
+    QPushButton *detailsButton = new QPushButton( tr( "Details" ) );
+    connect( detailsButton, &QPushButton::clicked, this, [ = ]
+    {
+      if ( QgsMessageViewer *dialog = dynamic_cast< QgsMessageViewer * >( QgsMessageOutput::createMessageOutput() ) )
+      {
+        dialog->setTitle( title );
+        dialog->setMessage( longMessage, QgsMessageOutput::MessageHtml );
+        dialog->showMessage();
+      }
+    } );
+    messageWidget->layout()->addWidget( detailsButton );
+    return visibleMessageBar()->pushWidget( messageWidget, level, 0 );
+  };
+
   // insert items in reverse order as each one is inserted on top of previous one
   int count = 0;
   for ( int i = lst.size() - 1 ; i >= 0 ; i--, count++ )
@@ -2062,8 +2080,27 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
     {
       QgsVectorTileLayer *layer = new QgsVectorTileLayer( uri, u.name );
       bool ok = false;
-      layer->loadDefaultStyle( ok );
       layer->loadDefaultMetadata( ok );
+
+      QString error;
+      QStringList warnings;
+      bool res = layer->loadDefaultStyle( error, warnings );
+      if ( res && !warnings.empty() )
+      {
+        QString message = QStringLiteral( "<p>%1</p>" ).arg( tr( "The following warnings were generated while converting the LYR file:" ) );
+        message += QStringLiteral( "<ul>" );
+
+        std::sort( warnings.begin(), warnings.end() );
+        warnings.erase( std::unique( warnings.begin(), warnings.end() ), warnings.end() );
+
+        for ( const QString &w : qgis::as_const( warnings ) )
+        {
+          message += QStringLiteral( "<li>%1</li>" ).arg( w.toHtmlEscaped().replace( '\n', QStringLiteral( "<br>" ) ) );
+        }
+        message += QStringLiteral( "</ul>" );
+        showLayerLoadWarnings( tr( "Vector tiles" ), tr( "Style could not be completely converted" ),
+                               message, Qgis::Warning );
+      }
       addMapLayer( layer );
     }
     else if ( u.layerType == QLatin1String( "plugin" ) )
