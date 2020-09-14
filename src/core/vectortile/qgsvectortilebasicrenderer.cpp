@@ -122,10 +122,17 @@ void QgsVectorTileBasicRenderer::startRender( QgsRenderContext &context, int til
   // figure out required fields for different layers
   for ( const QgsVectorTileBasicRendererStyle &layerStyle : qgis::as_const( mStyles ) )
   {
-    if ( layerStyle.isActive( tileZoom ) && !layerStyle.filterExpression().isEmpty() )
+    if ( layerStyle.isActive( tileZoom ) )
     {
-      QgsExpression expr( layerStyle.filterExpression() );
-      mRequiredFields[layerStyle.layerName()].unite( expr.referencedColumns() );
+      if ( !layerStyle.filterExpression().isEmpty() )
+      {
+        QgsExpression expr( layerStyle.filterExpression() );
+        mRequiredFields[layerStyle.layerName()].unite( expr.referencedColumns() );
+      }
+      if ( layerStyle.symbol() )
+      {
+        mRequiredFields[layerStyle.layerName()].unite( layerStyle.symbol()->usedAttributes( context ) );
+      }
     }
   }
 }
