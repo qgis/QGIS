@@ -1541,6 +1541,51 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
       }
     }
 
+    if ( jsonLayout.contains( QStringLiteral( "icon-size" ) ) )
+    {
+      const QVariant jsonIconSize = jsonLayout.value( QStringLiteral( "icon-size" ) );
+      double size = 1.0;
+      QgsProperty property;
+      switch ( jsonIconSize.type() )
+      {
+        case QVariant::Int:
+        case QVariant::Double:
+        {
+          size = jsonIconSize.toDouble();
+          if ( !spriteSizeProperty.isEmpty() )
+          {
+            markerDdProperties.setProperty( QgsSymbolLayer::PropertyWidth,
+                                            QgsProperty::fromExpression( QStringLiteral( "with_variable('marker_size',%1,%2*@marker_size)" ).arg( spriteSizeProperty ).arg( size ) ) );
+          }
+          break;
+        }
+
+        case QVariant::Map:
+          property = parseInterpolateByZoom( jsonIconSize.toMap(), context, 1, &size );
+          break;
+
+        case QVariant::List:
+        case QVariant::StringList:
+        default:
+          context.pushWarning( QObject::tr( "%1: Skipping non-implemented icon-size type (%2)" ).arg( context.layerId(), QMetaType::typeName( jsonIconSize.type() ) ) );
+          break;
+      }
+      markerLayer->setSize( size * spriteSize.width() );
+      if ( !property.expressionString().isEmpty() )
+      {
+        if ( !spriteSizeProperty.isEmpty() )
+        {
+          markerDdProperties.setProperty( QgsSymbolLayer::PropertyWidth,
+                                          QgsProperty::fromExpression( QStringLiteral( "with_variable('marker_size',%1,(%2)*@marker_size)" ).arg( spriteSizeProperty ).arg( property.expressionString() ) ) );
+        }
+        else
+        {
+          markerDdProperties.setProperty( QgsSymbolLayer::PropertyWidth,
+                                          QgsProperty::fromExpression( QStringLiteral( "(%2)*%1" ).arg( spriteSize.width() ).arg( property.expressionString() ) ) );
+        }
+      }
+    }
+
     markerLayer->setDataDefinedProperties( markerDdProperties );
     markerLayer->setAngle( rotation );
     lineSymbol->setSubSymbol( new QgsMarkerSymbol( QgsSymbolLayerList() << markerLayer ) );
@@ -1574,6 +1619,51 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
       {
         markerDdProperties.setProperty( QgsSymbolLayer::PropertyName, QgsProperty::fromExpression( spriteProperty ) );
         markerDdProperties.setProperty( QgsSymbolLayer::PropertyWidth, QgsProperty::fromExpression( spriteSizeProperty ) );
+      }
+
+      if ( jsonLayout.contains( QStringLiteral( "icon-size" ) ) )
+      {
+        const QVariant jsonIconSize = jsonLayout.value( QStringLiteral( "icon-size" ) );
+        double size = 1.0;
+        QgsProperty property;
+        switch ( jsonIconSize.type() )
+        {
+          case QVariant::Int:
+          case QVariant::Double:
+          {
+            size = jsonIconSize.toDouble();
+            if ( !spriteSizeProperty.isEmpty() )
+            {
+              markerDdProperties.setProperty( QgsSymbolLayer::PropertyWidth,
+                                              QgsProperty::fromExpression( QStringLiteral( "with_variable('marker_size',%1,%2*@marker_size)" ).arg( spriteSizeProperty ).arg( size ) ) );
+            }
+            break;
+          }
+
+          case QVariant::Map:
+            property = parseInterpolateByZoom( jsonIconSize.toMap(), context, 1, &size );
+            break;
+
+          case QVariant::List:
+          case QVariant::StringList:
+          default:
+            context.pushWarning( QObject::tr( "%1: Skipping non-implemented icon-size type (%2)" ).arg( context.layerId(), QMetaType::typeName( jsonIconSize.type() ) ) );
+            break;
+        }
+        rasterMarker->setSize( size * spriteSize.width() );
+        if ( !property.expressionString().isEmpty() )
+        {
+          if ( !spriteSizeProperty.isEmpty() )
+          {
+            markerDdProperties.setProperty( QgsSymbolLayer::PropertyWidth,
+                                            QgsProperty::fromExpression( QStringLiteral( "with_variable('marker_size',%1,(%2)*@marker_size)" ).arg( spriteSizeProperty ).arg( property.expressionString() ) ) );
+          }
+          else
+          {
+            markerDdProperties.setProperty( QgsSymbolLayer::PropertyWidth,
+                                            QgsProperty::fromExpression( QStringLiteral( "(%2)*%1" ).arg( spriteSize.width() ).arg( property.expressionString() ) ) );
+          }
+        }
       }
 
       double rotation = 0.0;
