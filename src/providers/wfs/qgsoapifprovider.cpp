@@ -21,6 +21,7 @@
 #include "qgsoapifapirequest.h"
 #include "qgsoapifcollection.h"
 #include "qgsoapifitemsrequest.h"
+#include "qgswfsconstants.h"
 #include "qgswfsutils.h" // for isCompatibleType()
 
 #include <algorithm>
@@ -71,13 +72,20 @@ bool QgsOapifProvider::init()
   const bool synchronous = true;
   const bool forceRefresh = false;
 
+  const QString url = QgsDataSourceUri( mShared->mURI.uri() ).param( QgsWFSConstants::URI_PARAM_URL );
+  int pos = url.indexOf( '?' );
+  if ( pos >= 0 )
+  {
+    mShared->mExtraQueryParameters = url.mid( pos + 1 );
+  }
+
   QgsOapifLandingPageRequest landingPageRequest( mShared->mURI.uri() );
   if ( !landingPageRequest.request( synchronous, forceRefresh ) )
     return false;
   if ( landingPageRequest.errorCode() != QgsBaseNetworkRequest::NoError )
     return false;
 
-  QgsOapifApiRequest apiRequest( mShared->mURI.uri(), landingPageRequest.apiUrl() );
+  QgsOapifApiRequest apiRequest( mShared->mURI.uri(), mShared->appendExtraQueryParameters( landingPageRequest.apiUrl() ) );
   if ( !apiRequest.request( synchronous, forceRefresh ) )
     return false;
   if ( apiRequest.errorCode() != QgsBaseNetworkRequest::NoError )
@@ -127,7 +135,7 @@ bool QgsOapifProvider::init()
 
   mShared->mCollectionUrl =
     landingPageRequest.collectionsUrl() + QStringLiteral( "/" ) + mShared->mURI.typeName();
-  QgsOapifCollectionRequest collectionRequest( mShared->mURI.uri(), mShared->mCollectionUrl );
+  QgsOapifCollectionRequest collectionRequest( mShared->mURI.uri(), mShared->appendExtraQueryParameters( mShared->mCollectionUrl ) );
   if ( !collectionRequest.request( synchronous, forceRefresh ) )
     return false;
   if ( collectionRequest.errorCode() != QgsBaseNetworkRequest::NoError )
@@ -141,7 +149,7 @@ bool QgsOapifProvider::init()
 
   mShared->mItemsUrl = mShared->mCollectionUrl +  QStringLiteral( "/items" );
 
-  QgsOapifItemsRequest itemsRequest( mShared->mURI.uri(), mShared->mItemsUrl + QStringLiteral( "?limit=10" ) );
+  QgsOapifItemsRequest itemsRequest( mShared->mURI.uri(), mShared->appendExtraQueryParameters( mShared->mItemsUrl + QStringLiteral( "?limit=10" ) ) );
   if ( mShared->mCapabilityExtent.isNull() )
   {
     itemsRequest.setComputeBbox();
@@ -351,6 +359,16 @@ QgsOapifSharedData::~QgsOapifSharedData()
   QgsDebugMsgLevel( QStringLiteral( "~QgsOapifSharedData()" ), 4 );
 
   cleanup();
+}
+
+QString QgsOapifSharedData::appendExtraQueryParameters( const QString &url ) const
+{
+  if ( mExtraQueryParameters.isEmpty() || url.indexOf( mExtraQueryParameters ) > 0 )
+    return url;
+  int nPos = url.indexOf( '?' );
+  if ( nPos < 0 )
+    return url + '?' + mExtraQueryParameters;
+  return url + '&' + mExtraQueryParameters;
 }
 
 bool QgsOapifSharedData::isRestrictedToRequestBBOX() const
@@ -671,6 +689,8 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures
     }
   }
 
+  url = mShared->appendExtraQueryParameters( url );
+
   while ( !url.isEmpty() )
   {
 
@@ -700,6 +720,7 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures
       break;
     }
     url = itemsRequest.nextUrl();
+    url = mShared->appendExtraQueryParameters( url );
 
     // Consider if we should display a progress dialog
     // We can only do that if we know how many features will be downloaded
