@@ -48,6 +48,7 @@ from qgis.core import (
     QgsProviderRegistry,
     QgsVectorDataProvider,
     QgsDataSourceUri,
+    QgsProviderConnectionException,
 )
 from qgis.gui import QgsGui, QgsAttributeForm
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir, QObject, QByteArray
@@ -2918,6 +2919,58 @@ class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCas
         # and the query internally rewritten
         # feature = next(vl.getFeatures())
         # self.assertTrue(vl.isValid())
+
+    def testUnrestrictedGeometryType(self):
+        """Test geometry column with no explicit geometry type, regression GH #38565"""
+
+        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        conn = md.createConnection(self.dbconn, {})
+
+        # Cleanup if needed
+        try:
+            conn.dropVectorTable('qgis_test', 'test_unrestricted_geometry')
+        except QgsProviderConnectionException:
+            pass
+
+        conn.executeSql('''
+        CREATE TABLE "qgis_test"."test_unrestricted_geometry" (
+            gid serial primary key,
+            geom geometry(Geometry, 4326)
+        );''')
+
+        points = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'gid\' srid=4326 type=POINT table="qgis_test"."test_unrestricted_geometry" (geom) sql=', 'test_points', 'postgres')
+        lines = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'gid\' srid=4326 type=LINESTRING table="qgis_test"."test_unrestricted_geometry" (geom) sql=', 'test_lines', 'postgres')
+        polygons = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'gid\' srid=4326 type=POLYGON table="qgis_test"."test_unrestricted_geometry" (geom) sql=', 'test_polygons', 'postgres')
+
+        self.assertTrue(points.isValid())
+        self.assertTrue(lines.isValid())
+        self.assertTrue(polygons.isValid())
+
+        f = QgsFeature(points.fields())
+        f.setGeometry(QgsGeometry.fromWkt('point(9 45)'))
+        self.assertTrue(points.dataProvider().addFeatures([f]))
+        self.assertEqual(points.featureCount(), 1)
+        self.assertEqual(lines.featureCount(), 0)
+        self.assertEqual(polygons.featureCount(), 0)
+
+        # Fetch from iterator
+        self.assertTrue(compareWkt(next(points.getFeatures()).geometry().asWkt(), 'point(9 45)'))
+        with self.assertRaises(StopIteration):
+            next(lines.getFeatures())
+        with self.assertRaises(StopIteration):
+            next(polygons.getFeatures())
+
+        f.setGeometry(QgsGeometry.fromWkt('linestring(9 45, 10 46)'))
+        self.assertTrue(lines.dataProvider().addFeatures([f]))
+        self.assertEqual(points.featureCount(), 1)
+        self.assertEqual(lines.featureCount(), 1)
+        self.assertEqual(polygons.featureCount(), 0)
+
+        # Fetch from iterator
+        self.assertTrue(compareWkt(next(points.getFeatures()).geometry().asWkt(), 'point(9 45)'))
+        self.assertTrue(compareWkt(next(lines.getFeatures()).geometry().asWkt(), 'linestring(9 45, 10 46)'))
+        with self.assertRaises(StopIteration):
+            next(polygons.getFeatures())
 
 
 if __name__ == '__main__':
