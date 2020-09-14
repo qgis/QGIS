@@ -164,7 +164,7 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
     void setDefaultText( const QString &text );
 
     /**
-     * Adds an item to the combobox with the given \a text, check \a state
+     * Adds an item to the combobox with the given \a text, check \a state (stored in the Qt::CheckStateRole)
      * and containing the specified \a userData (stored in the Qt::UserRole).
      * The item is appended to the list of existing items.
      * \since QGIS 3.16
@@ -208,6 +208,13 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
      * \see setItemCheckState()
      */
     void toggleItemCheckState( int index );
+
+    /**
+     * Returns the custom item model which handles checking the items
+     * \see QgsCheckableItemModel
+     * \since QGIS 3.16
+     */
+    QgsCheckableItemModel *model() const {return mModel;}
 
     /**
      * Hides the list of items in the combobox if it is currently
@@ -267,6 +274,8 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
 
     QString mSeparator;
     QString mDefaultText;
+
+    QgsCheckableItemModel *mModel = nullptr;
 
     bool mSkipHide = false;
 

@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsaddattrdialog.h"
+#include "qgscheckablecombobox.h"
 #include "qgssourcefieldsproperties.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
@@ -272,20 +273,20 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
   else
     mFieldsList->item( row, AttrNameCol )->setFlags( mFieldsList->item( row, AttrNameCol )->flags() & ~Qt::ItemIsEditable );
 
-  //published WMS/WFS attributes
-  QTableWidgetItem *wmsAttrItem = new QTableWidgetItem();
-  wmsAttrItem->setCheckState( mLayer->excludeAttributesWms().contains( field.name() ) ? Qt::Unchecked : Qt::Checked );
-  wmsAttrItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
-  mFieldsList->setItem( row, AttrWMSCol, wmsAttrItem );
-  QTableWidgetItem *wfsAttrItem = new QTableWidgetItem();
-  wfsAttrItem->setCheckState( mLayer->excludeAttributesWfs().contains( field.name() ) ? Qt::Unchecked : Qt::Checked );
-  wfsAttrItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
-  mFieldsList->setItem( row, AttrWFSCol, wfsAttrItem );
-  QTableWidgetItem *searchableAttrItem = new QTableWidgetItem();
-  searchableAttrItem->setCheckState( mLayer->fieldConfigurationFlags( idx ).testFlag( QgsField::ConfigurationFlag::Searchable ) ? Qt::Checked : Qt::Unchecked );
-  searchableAttrItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
-  mFieldsList->setItem( row, AttrSearchableCol, searchableAttrItem );
+  // Flags
+  QgsCheckableComboBox *cb = new QgsCheckableComboBox( mFieldsList );
+  const QMap<QgsField::ConfigurationFlag, QString> flagList = qgsEnumMap<QgsField::ConfigurationFlag>();
+  QMap<QgsField::ConfigurationFlag, QString>::const_iterator flagIt;
+  for ( flagIt = flagList.constBegin(); flagIt != flagList.constEnd(); ++flagIt )
+  {
+    if ( flagIt.key() == QgsField::ConfigurationFlag::None || flagIt.key() == QgsField::ConfigurationFlag::DefaultFlags )
+      continue;
 
+    cb->addItemWithCheckState( flagIt.value(),
+                               mLayer->fieldConfigurationFlags( idx ).testFlag( flagIt.key() ) ? Qt::Unchecked : Qt::Checked,
+                               QVariant::fromValue( flagIt.key() ) );
+  }
+  mFieldsList->setCellWidget( row, AttrSearchableCol, cb );
 }
 
 bool QgsSourceFieldsProperties::addAttribute( const QgsField &field )
@@ -307,34 +308,25 @@ bool QgsSourceFieldsProperties::addAttribute( const QgsField &field )
 
 void QgsSourceFieldsProperties::apply()
 {
-  QSet<QString> excludeAttributesWMS, excludeAttributesWFS;
-
   for ( int i = 0; i < mFieldsList->rowCount(); i++ )
   {
-    if ( mFieldsList->item( i, AttrWMSCol )->checkState() == Qt::Unchecked )
-    {
-      excludeAttributesWMS.insert( mFieldsList->item( i, AttrNameCol )->text() );
-    }
-    if ( mFieldsList->item( i, AttrWFSCol )->checkState() == Qt::Unchecked )
-    {
-      excludeAttributesWFS.insert( mFieldsList->item( i, AttrNameCol )->text() );
-    }
-
     int idx = mFieldsList->item( i, AttrIdCol )->data( Qt::DisplayRole ).toInt();
     QgsField::ConfigurationFlags flags = mLayer->fieldConfigurationFlags( idx );
-    if ( mFieldsList->item( i, AttrSearchableCol )->checkState() == Qt::Checked )
-    {
-      flags.setFlag( QgsField::ConfigurationFlag::Searchable, true );
-    }
-    else
-    {
-      flags.setFlag( QgsField::ConfigurationFlag::Searchable, false );
-    }
-    mLayer->setFieldConfigurationFlags( idx, flags );
-  }
 
-  mLayer->setExcludeAttributesWms( excludeAttributesWMS );
-  mLayer->setExcludeAttributesWfs( excludeAttributesWFS );
+    QgsCheckableComboBox *cb = qobject_cast<QgsCheckableComboBox *>( mFieldsList->cellWidget( i, AttrSearchableCol ) );
+    if ( cb )
+    {
+      QgsCheckableItemModel *model = cb->model();
+      for ( int r = 0; r < model->rowCount(); ++r )
+      {
+        QModelIndex index = model->index( r, 0 );
+        QgsField::ConfigurationFlag flag = model->data( index, Qt::UserRole ).value<QgsField::ConfigurationFlag>();
+        bool active = model->data( index, Qt::CheckStateRole ).value<Qt::CheckState>() == Qt::Checked ? true : false;
+        flags.setFlag( flag, active );
+      }
+      mLayer->setFieldConfigurationFlags( idx, flags );
+    }
+  }
 }
 
 //SLOTS
