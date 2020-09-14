@@ -472,24 +472,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      */
     bool ignoreExtents() const;
 
-    /**
-     * Flag allowing to indicate if the extent has to be read from the XML
-     * document when data source has no metadata or if the data provider has
-     * to determine it.
-     *
-     * \since QGIS 3.16
-     */
-    void setReadExtentFromXml( bool readExtentFromXml );
-
-    /**
-     * Returns TRUE if the extent is read from the XML document when data
-     * source has no metadata, FALSE if it's the data provider which determines
-     * it.
-     *
-     * \since QGIS 3.16
-     */
-    bool readExtentFromXml() const;
-
     QgsMapLayerTemporalProperties *temporalProperties() override;
 
   public slots:
@@ -571,10 +553,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     LayerType mRasterType;
 
     QgsRasterPipe mPipe;
-
-    //! read xml extent
-    bool mReadExtentFromXml;
-    QgsRectangle mXmlExtent;
 
     //! To save computations and possible infinite cycle of notifications
     QgsRectangle mLastRectangleUsedByRefreshContrastEnhancementIfNeeded;

@@ -2516,24 +2516,6 @@ Sets the ``editFormConfig`` (configuration) of the form used to represent this v
 .. versionadded:: 3.0
 %End
 
-    void setReadExtentFromXml( bool readExtentFromXml );
-%Docstring
-Flag allowing to indicate if the extent has to be read from the XML
-document when data source has no metadata or if the data provider has
-to determine it.
-
-.. versionadded:: 3.0
-%End
-
-    bool readExtentFromXml() const;
-%Docstring
-Returns ``True`` if the extent is read from the XML document when data
-source has no metadata, ``False`` if it's the data provider which determines
-it.
-
-.. versionadded:: 3.0
-%End
-
     bool isEditCommandActive() const;
 %Docstring
 Tests if an edit command is active

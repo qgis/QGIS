@@ -153,8 +153,8 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   , mServerProperties( new QgsVectorLayerServerProperties( this ) )
   , mAuxiliaryLayer( nullptr )
   , mAuxiliaryLayerKey( QString() )
-  , mReadExtentFromXml( options.readExtentFromXml )
 {
+  mReadExtentFromXml = options.readExtentFromXml;
   mShouldValidateCrs = !options.skipCrsValidation;
 
   if ( options.fallbackCrs.isValid() )
@@ -5566,16 +5566,6 @@ void QgsVectorLayer::setAllowCommit( bool allowCommit )
 QgsGeometryOptions *QgsVectorLayer::geometryOptions() const
 {
   return mGeometryOptions.get();
-}
-
-void QgsVectorLayer::setReadExtentFromXml( bool readExtentFromXml )
-{
-  mReadExtentFromXml = readExtentFromXml;
-}
-
-bool QgsVectorLayer::readExtentFromXml() const
-{
-  return mReadExtentFromXml;
 }
 
 void QgsVectorLayer::onDirtyTransaction( const QString &sql, const QString &name )

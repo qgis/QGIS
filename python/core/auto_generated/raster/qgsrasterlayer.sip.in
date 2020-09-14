@@ -428,24 +428,6 @@ to be drawn outside the data extent.
 .. versionadded:: 3.10
 %End
 
-    void setReadExtentFromXml( bool readExtentFromXml );
-%Docstring
-Flag allowing to indicate if the extent has to be read from the XML
-document when data source has no metadata or if the data provider has
-to determine it.
-
-.. versionadded:: 3.16
-%End
-
-    bool readExtentFromXml() const;
-%Docstring
-Returns ``True`` if the extent is read from the XML document when data
-source has no metadata, ``False`` if it's the data provider which determines
-it.
-
-.. versionadded:: 3.16
-%End
-
     virtual QgsMapLayerTemporalProperties *temporalProperties();
 
 

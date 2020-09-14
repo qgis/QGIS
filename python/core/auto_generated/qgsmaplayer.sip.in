@@ -542,6 +542,24 @@ or layer with temporary data (as temporary mesh layer dataset)
     typedef QFlags<QgsMapLayer::ReadFlag> ReadFlags;
 
 
+    void setReadExtentFromXml( bool readExtentFromXml );
+%Docstring
+Flag allowing to indicate if the extent has to be read from the XML
+document when data source has no metadata or if the data provider has
+to determine it.
+
+.. versionadded:: 3.16
+%End
+
+    bool readExtentFromXml() const;
+%Docstring
+Returns ``True`` if the extent is read from the XML document when data
+source has no metadata, ``False`` if it's the data provider which determines
+it.
+
+.. versionadded:: 3.16
+%End
+
     bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context, QgsMapLayer::ReadFlags flags = QgsMapLayer::ReadFlags() );
 %Docstring
 Sets state from DOM document
@@ -1708,6 +1726,7 @@ Add error message
 %Docstring
 Sets error message
 %End
+
 
 
 

@@ -120,8 +120,8 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
   , QSTRING_NOT_SET( QStringLiteral( "Not Set" ) )
   , TRSTRING_NOT_SET( tr( "Not Set" ) )
   , mTemporalProperties( new QgsRasterLayerTemporalProperties( this ) )
-  , mReadExtentFromXml( options.readExtentFromXml )
 {
+  mReadExtentFromXml = options.readExtentFromXml;
   mShouldValidateCrs = !options.skipCrsValidation;
 
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
@@ -1014,16 +1014,6 @@ QgsRectangle QgsRasterLayer::extent() const
     return mXmlExtent;
   }
   return QgsMapLayer::extent();
-}
-
-void QgsRasterLayer::setReadExtentFromXml( bool readExtentFromXml )
-{
-  mReadExtentFromXml = readExtentFromXml;
-}
-
-bool QgsRasterLayer::readExtentFromXml() const
-{
-  return mReadExtentFromXml;
 }
 
 QgsMapLayerTemporalProperties *QgsRasterLayer::temporalProperties()

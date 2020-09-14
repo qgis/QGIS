@@ -558,6 +558,24 @@ class CORE_EXPORT QgsMapLayer : public QObject
     Q_DECLARE_FLAGS( ReadFlags, ReadFlag )
 
     /**
+     * Flag allowing to indicate if the extent has to be read from the XML
+     * document when data source has no metadata or if the data provider has
+     * to determine it.
+     *
+     * \since QGIS 3.16
+     */
+    void setReadExtentFromXml( bool readExtentFromXml );
+
+    /**
+     * Returns TRUE if the extent is read from the XML document when data
+     * source has no metadata, FALSE if it's the data provider which determines
+     * it.
+     *
+     * \since QGIS 3.16
+     */
+    bool readExtentFromXml() const;
+
+    /**
      * Sets state from DOM document
      * \param layerElement The DOM element corresponding to ``maplayer'' tag
      * \param context writing context (e.g. for conversion between relative and absolute paths)
@@ -1529,6 +1547,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! Extent of the layer
     mutable QgsRectangle mExtent;
+
+    //! read xml extent
+    bool mReadExtentFromXml;
+    QgsRectangle mXmlExtent;
 
     //! Indicates if the layer is valid and can be drawn
     bool mValid = false;

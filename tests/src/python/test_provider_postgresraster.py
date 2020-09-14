@@ -211,8 +211,8 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         """Read raster extent from XML"""
 
         rl0 = QgsRasterLayer(
-                self.dbconn + ' sslmode=disable key=\'rid\' srid=3035  table="public"."raster_tiled_3035" sql=',
-                'test', 'postgresraster')
+            self.dbconn + ' sslmode=disable key=\'rid\' srid=3035  table="public"."raster_tiled_3035" sql=',
+            'test', 'postgresraster')
         self.assertTrue(rl0.isValid())
 
         # set a custom extent

@@ -2315,24 +2315,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void setEditFormConfig( const QgsEditFormConfig &editFormConfig );
 
     /**
-     * Flag allowing to indicate if the extent has to be read from the XML
-     * document when data source has no metadata or if the data provider has
-     * to determine it.
-     *
-     * \since QGIS 3.0
-     */
-    void setReadExtentFromXml( bool readExtentFromXml );
-
-    /**
-     * Returns TRUE if the extent is read from the XML document when data
-     * source has no metadata, FALSE if it's the data provider which determines
-     * it.
-     *
-     * \since QGIS 3.0
-     */
-    bool readExtentFromXml() const;
-
-    /**
      * Tests if an edit command is active
      *
      * \since QGIS 3.0

@@ -214,6 +214,16 @@ QPainter::CompositionMode QgsMapLayer::blendMode() const
   return mBlendMode;
 }
 
+void QgsMapLayer::setReadExtentFromXml( bool readExtentFromXml )
+{
+  mReadExtentFromXml = readExtentFromXml;
+}
+
+bool QgsMapLayer::readExtentFromXml() const
+{
+  return mReadExtentFromXml;
+}
+
 
 bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context, QgsMapLayer::ReadFlags flags )
 {
