@@ -195,6 +195,11 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
       }
     }
   }
+  else
+  {
+    // defaults to #000000
+    fillColor = QColor( 0, 0, 0 );
+  }
 
   QColor fillOutlineColor;
   if ( !jsonPaint.contains( QStringLiteral( "fill-outline-color" ) ) )
@@ -322,6 +327,10 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
 
     const QVariant fillPatternJson = jsonPaint.value( QStringLiteral( "fill-pattern" ) );
 
+    // fill-pattern disabled dillcolor
+    fillColor = QColor();
+    fillOutlineColor = QColor();
+
     // fill-pattern can be String or Object
     // String: {"fill-pattern": "dash-t"}
     // Object: {"fill-pattern":{"stops":[[11,"wetland8"],[12,"wetland16"]]}}
@@ -419,6 +428,11 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
         context.pushWarning( QObject::tr( "Skipping non-implemented color expression" ) );
         break;
     }
+  }
+  else
+  {
+    // defaults to #000000
+    lineColor = QColor( 0, 0, 0 );
   }
 
 
@@ -626,7 +640,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
 
   QgsPropertyCollection ddLabelProperties;
 
-  double textSize = 16.0;
+  double textSize = 16.0 * context.pixelSizeConversionFactor();
   QString textSizeProperty;
   if ( jsonLayout.contains( QStringLiteral( "text-size" ) ) )
   {
@@ -688,6 +702,11 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
         context.pushWarning( QObject::tr( "Skipping non-implemented text-max-width expression" ) );
         break;
     }
+  }
+  else
+  {
+    // defaults to 10
+    textMaxWidth = 10 * EM_TO_CHARS;
   }
 
   double textLetterSpacing = -1;
@@ -765,6 +784,22 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
       }
     }
   }
+  else
+  {
+    // Defaults to ["Open Sans Regular","Arial Unicode MS Regular"].
+    if ( QgsFontUtils::fontFamilyHasStyle( QStringLiteral( "Open Sans" ), QStringLiteral( "Regular" ) ) )
+    {
+      textFont = QFont( QStringLiteral( "Open Sans" ) );
+      textFont.setStyleName( QStringLiteral( "Regular" ) );
+      foundFont = true;
+    }
+    else if ( QgsFontUtils::fontFamilyHasStyle( QStringLiteral( "Arial Unicode MS" ), QStringLiteral( "Regular" ) ) )
+    {
+      textFont = QFont( QStringLiteral( "Arial Unicode MS" ) );
+      textFont.setStyleName( QStringLiteral( "Regular" ) );
+      foundFont = true;
+    }
+  }
 
   // text color
   QColor textColor;
@@ -790,6 +825,11 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
         context.pushWarning( QObject::tr( "Skipping non-implemented text-color expression" ) );
         break;
     }
+  }
+  else
+  {
+    // defaults to #000000
+    textColor = QColor( 0, 0, 0 );
   }
 
   // buffer color
@@ -1278,6 +1318,11 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
           break;
       }
     }
+    else
+    {
+      // defaults to 250
+      spacing = 250 * context.pixelSizeConversionFactor();
+    }
 
     bool rotateMarkers = true;
     if ( jsonLayout.contains( QStringLiteral( "icon-rotation-alignment" ) ) )
@@ -1323,7 +1368,7 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
     QgsMarkerLineSymbolLayer *lineSymbol = new QgsMarkerLineSymbolLayer( rotateMarkers, spacing > 0 ? spacing : 1 );
     lineSymbol->setOutputUnit( context.targetUnit() );
     lineSymbol->setDataDefinedProperties( ddProperties );
-    if ( spacing <= 0 )
+    if ( spacing < 1 )
     {
       // if spacing isn't specified, it's a central point marker only
       lineSymbol->setPlacement( QgsTemplatedLineSymbolLayerBase::CentralPoint );
