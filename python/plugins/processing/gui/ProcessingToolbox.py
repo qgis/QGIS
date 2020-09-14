@@ -253,7 +253,7 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
                 feedback = MessageBarProgress(algname=alg.displayName())
                 ok, results = execute_in_place(alg, parameters, feedback=feedback)
                 if ok:
-                    iface.messageBar().pushSuccess('', self.tr('{algname} completed. %n feature(s) processed.', n=results['count']).format(algname=alg.displayName()))
+                    iface.messageBar().pushSuccess('', self.tr('{algname} completed. %n feature(s) processed.', n=results['__count']).format(algname=alg.displayName()))
                 feedback.close()
                 # MessageBarProgress handles errors
                 return
