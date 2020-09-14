@@ -1509,7 +1509,7 @@ QgsGeometry QgsProcessingParameters::parameterAsGeometry( const QgsProcessingPar
   if ( valueAsString.isEmpty() )
     return QgsGeometry();
 
-  QRegularExpression rx( QStringLiteral( "^\\s*(?:CRS=(.*);)?(.*)$" ) );
+  QRegularExpression rx( QStringLiteral( "^\\s*(?:CRS=(.*);)?(.*?)$" ) );
 
   QRegularExpressionMatch match = rx.match( valueAsString );
   if ( match.hasMatch() )
@@ -1517,7 +1517,7 @@ QgsGeometry QgsProcessingParameters::parameterAsGeometry( const QgsProcessingPar
     QgsGeometry g =  QgsGeometry::fromWkt( match.captured( 2 ) );
     if ( !g.isNull() )
     {
-      QgsCoordinateReferenceSystem geomCrs( QStringLiteral( "%1" ).arg( match.captured( 1 ) ) );
+      QgsCoordinateReferenceSystem geomCrs( match.captured( 1 ) );
       if ( crs.isValid() && geomCrs.isValid() && crs != geomCrs )
       {
         QgsCoordinateTransform ct( geomCrs, crs, context.project() );
@@ -1574,13 +1574,13 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsGeometryCrs( co
   }
 
   // Match against EWKT
-  QRegularExpression rx( QStringLiteral( "^\\s*(?:CRS=(.*);)?(.*)$" ) );
+  QRegularExpression rx( QStringLiteral( "^\\s*(?:CRS=(.*);)?(.*?)$" ) );
 
   QString valueAsString = parameterAsString( definition, value, context );
   QRegularExpressionMatch match = rx.match( valueAsString );
   if ( match.hasMatch() )
   {
-    QgsCoordinateReferenceSystem crs( QStringLiteral( "%1" ).arg( match.captured( 1 ) ) );
+    QgsCoordinateReferenceSystem crs( match.captured( 1 ) );
     if ( crs.isValid() )
       return crs;
   }
@@ -3011,7 +3011,7 @@ bool QgsProcessingParameterGeometry::checkValueIsAcceptable( const QVariant &inp
   }
 
   // Match against EWKT
-  QRegularExpression rx( QStringLiteral( "^\\s*(?:CRS=(.*);)?(.*)$" ) );
+  QRegularExpression rx( QStringLiteral( "^\\s*(?:CRS=(.*);)?(.*?)$" ) );
 
   QRegularExpressionMatch match = rx.match( input.toString() );
   if ( match.hasMatch() )
@@ -3031,19 +3031,19 @@ bool QgsProcessingParameterGeometry::checkValueIsAcceptable( const QVariant &inp
 
 QString QgsProcessingParameterGeometry::valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const
 {
-  auto asPythonString = []( const QgsGeometry & g, QString authid = QString() )
+  auto asPythonString = []( const QgsGeometry & g, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() )
   {
-    if ( authid.isEmpty() )
-      return QStringLiteral( "'%1'" ).arg( g.asWkt() );
+    if ( !crs.isValid() )
+      return QgsProcessingUtils::stringToPythonLiteral( g.asWkt() );
     else
-      return QStringLiteral( "'CRS=%2;%1'" ).arg( g.asWkt(), authid );
+      return QgsProcessingUtils::stringToPythonLiteral( QStringLiteral( "CRS=%1;%2" ).arg( crs.authid().isEmpty() ? crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) : crs.authid(), g.asWkt() ) );
   };
 
   if ( !value.isValid() )
     return QStringLiteral( "None" );
 
   if ( value.canConvert<QgsProperty>() )
-    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+    return QStringLiteral( "QgsProperty.fromExpression(%1)" ).arg( QgsProcessingUtils::stringToPythonLiteral( value.value< QgsProperty >().asExpression() ) );
 
   if ( value.canConvert< QgsGeometry >() )
   {
@@ -3056,7 +3056,7 @@ QString QgsProcessingParameterGeometry::valueAsPythonString( const QVariant &val
   {
     const QgsReferencedGeometry g = value.value<QgsReferencedGeometry>();
     if ( !g.isNull() )
-      return asPythonString( g, g.crs().authid() );
+      return asPythonString( g, g.crs() );
   }
 
   if ( value.canConvert< QgsPointXY >() )
@@ -3070,7 +3070,7 @@ QString QgsProcessingParameterGeometry::valueAsPythonString( const QVariant &val
   {
     const QgsReferencedGeometry g = QgsReferencedGeometry::fromReferencedPointXY( value.value<QgsReferencedPointXY>() );
     if ( !g.isNull() )
-      return asPythonString( g, g.crs().authid() );
+      return asPythonString( g, g.crs() );
   }
 
   if ( value.canConvert< QgsRectangle >() )
@@ -3084,7 +3084,7 @@ QString QgsProcessingParameterGeometry::valueAsPythonString( const QVariant &val
   {
     const QgsReferencedGeometry g = QgsReferencedGeometry::fromReferencedRect( value.value<QgsReferencedRectangle>() );
     if ( !g.isNull() )
-      return asPythonString( g, g.crs().authid() );
+      return asPythonString( g, g.crs() );
   }
 
   return QgsProcessingParameterDefinition::valueAsPythonString( value, context );
