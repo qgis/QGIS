@@ -448,11 +448,19 @@ void QgsVectorTileBasicLabelingWidget::updateLabelingFromWidget()
 void QgsVectorTileBasicLabelingWidget::removeStyle()
 {
   const QModelIndexList sel = viewStyles->selectionModel()->selectedIndexes();
+
+  QList<int > res;
   for ( const QModelIndex &proxyIndex : sel )
   {
     const QModelIndex sourceIndex = mProxyModel->mapToSource( proxyIndex );
-    if ( sourceIndex.isValid() )
-      mModel->removeRow( sourceIndex.row() );
+    if ( !res.contains( sourceIndex.row() ) )
+      res << sourceIndex.row();
+  }
+  std::sort( res.begin(), res.end() );
+
+  for ( int i = res.size() - 1; i >= 0; --i )
+  {
+    mModel->removeRow( res[ i ] );
   }
   // make sure that the selection is gone
   viewStyles->selectionModel()->clear();
