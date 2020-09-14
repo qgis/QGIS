@@ -116,7 +116,7 @@ void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers, QgsMapB
     }
     else
     {
-      mWarnings << QObject::tr( "Skipping unknown layer type: %1" ).arg( layerType );
+      mWarnings << QObject::tr( "%1: Skipping unknown layer type %2" ).arg( context->layerId(), layerType );
       QgsDebugMsg( mWarnings.constLast() );
       continue;
     }
@@ -810,7 +810,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
       fontName = QStringLiteral( "Open Sans, Arial Unicode MS" );
     }
   }
-  if ( !foundFont )
+  if ( !foundFont && !fontName.isEmpty() )
   {
     context.pushWarning( QObject::tr( "%1: Referenced font %2 is not available on system" ).arg( context.layerId(), fontName ) );
   }
@@ -1760,7 +1760,7 @@ QString QgsMapBoxGlStyleConverter::parsePointStops( double base, const QVariantL
     }
 
     caseString += QStringLiteral( "WHEN @zoom_level > %1 AND @zoom_level <= %2 "
-                                  "THEN array(%3,%4)" ).arg( bz.toString(),
+                                  "THEN array(%3,%4) " ).arg( bz.toString(),
                                       tz.toString(),
                                       interpolateExpression( bz.toDouble(), tz.toDouble(), bv.toList().value( 0 ).toDouble(), tv.toList().value( 0 ).toDouble(), base, multiplier ),
                                       interpolateExpression( bz.toDouble(), tz.toDouble(), bv.toList().value( 1 ).toDouble(), tv.toList().value( 1 ).toDouble(), base, multiplier ) );
@@ -2403,8 +2403,61 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64( const QVariant &value
       break;
     }
 
+    case QVariant::List:
+    {
+      const QVariantList json = value.toList();
+      const QString method = json.value( 0 ).toString();
+      if ( method != QLatin1String( "match" ) )
+      {
+        context.pushWarning( QObject::tr( "%1: Could not interpret sprite value list with method %2" ).arg( context.layerId(), method ) );
+        break;
+      }
+
+      const QString attribute = parseExpression( json.value( 1 ).toList(), context );
+      if ( attribute.isEmpty() )
+      {
+        context.pushWarning( QObject::tr( "%1: Could not interpret match list" ).arg( context.layerId() ) );
+        break;
+      }
+
+      spriteProperty = QStringLiteral( "CASE " );
+      spriteSizeProperty = QStringLiteral( "CASE " );
+
+      for ( int i = 2; i < json.length() - 1; i += 2 )
+      {
+        const QVariantList keys = json.value( i ).toList();
+
+        QStringList matchString;
+        for ( const QVariant &key : keys )
+        {
+          matchString << QgsExpression::quotedValue( key );
+        }
+
+        const QVariant value = json.value( i + 1 );
+
+        const QImage sprite = retrieveSprite( value.toString(), context, spriteSize );
+        spritePath = prepareBase64( sprite );
+
+        spriteProperty += QStringLiteral( " WHEN %1 IN (%2) "
+                                          "THEN '%3' " ).arg( attribute,
+                                              matchString.join( ',' ),
+                                              spritePath );
+
+        spriteSizeProperty += QStringLiteral( " WHEN %1 IN (%2) "
+                                              "THEN %3 " ).arg( attribute,
+                                                  matchString.join( ',' ) ).arg( spriteSize.width() );
+      }
+
+      const QImage sprite = retrieveSprite( json.constLast().toString(), context, spriteSize );
+      spritePath = prepareBase64( sprite );
+
+      spriteProperty += QStringLiteral( "ELSE %1 END" ).arg( spritePath );
+      spriteSizeProperty += QStringLiteral( "ELSE %3 END" ).arg( spriteSize.width() );
+      break;
+    }
+
     default:
-      context.pushWarning( QObject::tr( "%1: Skipping unsupported sprite part" ).arg( context.layerId() ) );
+      context.pushWarning( QObject::tr( "%1: Skipping unsupported sprite type (%2)." ).arg( context.layerId(), QMetaType::typeName( value.type() ) ) );
       break;
   }
 
