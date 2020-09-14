@@ -221,7 +221,7 @@ class GdalUtils:
         for s in strList:
             if not isinstance(s, str):
                 s = str(s)
-            if s and s[0] != '-' and ' ' in s:
+            if s and s[0] != '-' and (' ' in s or '&' in s):
                 escaped = '"' + s.replace('\\', '\\\\').replace('"', '\\"') \
                           + '"'
             else:
