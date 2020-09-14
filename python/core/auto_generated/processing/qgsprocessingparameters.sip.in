@@ -1578,7 +1578,7 @@ A geometry parameter for processing algorithms.
 %Docstring
 Constructor for QgsProcessingParameterGeometry.
 
-The ``geometryTypes`` argument allows for specifying a list of geometry types acceptable for this
+The ``geometryTypes`` argument allows for specifying a list of geometry types (see QgsWkbTypes.GeometryType) acceptable for this
 parameter. Passing a empty list will allow for any type of geometry.
 %End
 
@@ -1604,14 +1604,14 @@ Returns the type name for the parameter class.
 
     QList<int>  geometryTypes() const;
 %Docstring
-Returns the parameter allowed geometries.
+Returns the parameter allowed geometries, as a list of QgsWkbTypes.GeometryType values.
 
 .. seealso:: :py:func:`setGeometryTypes`
 %End
 
     void setGeometryTypes( const QList<int> &geometryTypes );
 %Docstring
-Sets the allowed  ``geometryTypes``.
+Sets the allowed  ``geometryTypes``, as a list of QgsWkbTypes.GeometryType values.
 
 .. seealso:: :py:func:`geometryTypes`
 %End
