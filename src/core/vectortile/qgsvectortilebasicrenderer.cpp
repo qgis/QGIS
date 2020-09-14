@@ -142,6 +142,19 @@ QMap<QString, QSet<QString> > QgsVectorTileBasicRenderer::usedAttributes( const 
   return mRequiredFields;
 }
 
+QSet<QString> QgsVectorTileBasicRenderer::requiredLayers( QgsRenderContext &, int tileZoom ) const
+{
+  QSet< QString > res;
+  for ( const QgsVectorTileBasicRendererStyle &layerStyle : qgis::as_const( mStyles ) )
+  {
+    if ( layerStyle.isActive( tileZoom ) )
+    {
+      res.insert( layerStyle.layerName() );
+    }
+  }
+  return res;
+}
+
 void QgsVectorTileBasicRenderer::stopRender( QgsRenderContext &context )
 {
   Q_UNUSED( context )
