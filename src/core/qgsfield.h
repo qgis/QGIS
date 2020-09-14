@@ -80,9 +80,9 @@ class CORE_EXPORT QgsField
 #endif
     {
       None = 0, //!< No flag is defined
-      Searchable = 0x1, //!< Defines if the field is searchable (used in the locator search for instance)
-      Wms = 0x2, //!< Fields is available if layer is served as WMS
-      Wfs = 0x3, //!< Fields is available if layer is served as WFS
+      Searchable = 1 << 1, //!< Defines if the field is searchable (used in the locator search for instance)
+      Wms = 1 << 2, //!< Fields is available if layer is served as WMS
+      Wfs = 1 << 3, //!< Fields is available if layer is served as WFS
       DefaultFlags = Searchable | Wms | Wfs, //!< Default set of flags for a field
     };
     Q_ENUM( ConfigurationFlag )
@@ -328,6 +328,12 @@ class CORE_EXPORT QgsField
 
     //! Formats string for display
     QString displayString( const QVariant &v ) const;
+
+    /**
+     * Returns the reabable and translated value of the configuration flag
+     * \since QGIS 3.16
+     */
+    static QString readableConfigurationFlag( ConfigurationFlag flag );
 
 #ifndef SIP_RUN
 

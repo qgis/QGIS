@@ -65,15 +65,9 @@ QgsSourceFieldsProperties::QgsSourceFieldsProperties( QgsVectorLayer *layer, QWi
   mFieldsList->setHorizontalHeaderItem( AttrLengthCol, new QTableWidgetItem( tr( "Length" ) ) );
   mFieldsList->setHorizontalHeaderItem( AttrPrecCol, new QTableWidgetItem( tr( "Precision" ) ) );
   mFieldsList->setHorizontalHeaderItem( AttrCommentCol, new QTableWidgetItem( tr( "Comment" ) ) );
-  const auto wmsWi = new QTableWidgetItem( QStringLiteral( "WMS" ) );
-  wmsWi->setToolTip( tr( "Defines if this field is available in QGIS Server WMS service" ) );
-  mFieldsList->setHorizontalHeaderItem( AttrWMSCol, wmsWi );
-  const auto wfsWi = new QTableWidgetItem( QStringLiteral( "WFS" ) );
-  wfsWi->setToolTip( tr( "Defines if this field is available in QGIS Server WFS (and OAPIF) service" ) );
-  mFieldsList->setHorizontalHeaderItem( AttrWFSCol, wfsWi );
-  const auto searchableWi = new QTableWidgetItem( QStringLiteral( "Searchable" ) );
-  searchableWi->setToolTip( tr( "Defines if this field is searchable (active layer locator filter)" ) );
-  mFieldsList->setHorizontalHeaderItem( AttrSearchableCol, searchableWi );
+  const auto configurationFlagsWi = new QTableWidgetItem( QStringLiteral( "Configuration" ) );
+  configurationFlagsWi->setToolTip( tr( "Configures the field" ) );
+  mFieldsList->setHorizontalHeaderItem( AttrConfigurationFlagsCol, configurationFlagsWi );
   mFieldsList->setHorizontalHeaderItem( AttrAliasCol, new QTableWidgetItem( tr( "Alias" ) ) );
 
   mFieldsList->setSortingEnabled( true );
@@ -164,6 +158,9 @@ void QgsSourceFieldsProperties::attributeAdded( int idx )
 
   for ( int i = 0; i < mFieldsList->columnCount(); i++ )
   {
+    if ( i == AttrConfigurationFlagsCol )
+      continue;
+
     switch ( mLayer->fields().fieldOrigin( idx ) )
     {
       case QgsFields::OriginExpression:
@@ -275,18 +272,17 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
 
   // Flags
   QgsCheckableComboBox *cb = new QgsCheckableComboBox( mFieldsList );
-  const QMap<QgsField::ConfigurationFlag, QString> flagList = qgsEnumMap<QgsField::ConfigurationFlag>();
-  QMap<QgsField::ConfigurationFlag, QString>::const_iterator flagIt;
-  for ( flagIt = flagList.constBegin(); flagIt != flagList.constEnd(); ++flagIt )
+  const QList<QgsField::ConfigurationFlag> flagList = qgsEnumMap<QgsField::ConfigurationFlag>().keys();
+  for ( const QgsField::ConfigurationFlag flag : flagList )
   {
-    if ( flagIt.key() == QgsField::ConfigurationFlag::None || flagIt.key() == QgsField::ConfigurationFlag::DefaultFlags )
+    if ( flag == QgsField::ConfigurationFlag::None || flag == QgsField::ConfigurationFlag::DefaultFlags )
       continue;
 
-    cb->addItemWithCheckState( flagIt.value(),
-                               mLayer->fieldConfigurationFlags( idx ).testFlag( flagIt.key() ) ? Qt::Unchecked : Qt::Checked,
-                               QVariant::fromValue( flagIt.key() ) );
+    cb->addItemWithCheckState( QgsField::readableConfigurationFlag( flag ),
+                               mLayer->fieldConfigurationFlags( idx ).testFlag( flag ) ? Qt::Checked : Qt::Unchecked,
+                               QVariant::fromValue( flag ) );
   }
-  mFieldsList->setCellWidget( row, AttrSearchableCol, cb );
+  mFieldsList->setCellWidget( row, AttrConfigurationFlagsCol, cb );
 }
 
 bool QgsSourceFieldsProperties::addAttribute( const QgsField &field )
@@ -313,7 +309,7 @@ void QgsSourceFieldsProperties::apply()
     int idx = mFieldsList->item( i, AttrIdCol )->data( Qt::DisplayRole ).toInt();
     QgsField::ConfigurationFlags flags = mLayer->fieldConfigurationFlags( idx );
 
-    QgsCheckableComboBox *cb = qobject_cast<QgsCheckableComboBox *>( mFieldsList->cellWidget( i, AttrSearchableCol ) );
+    QgsCheckableComboBox *cb = qobject_cast<QgsCheckableComboBox *>( mFieldsList->cellWidget( i, AttrConfigurationFlagsCol ) );
     if ( cb )
     {
       QgsCheckableItemModel *model = cb->model();

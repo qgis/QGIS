@@ -138,7 +138,7 @@ void QgsCheckableComboBox::setDefaultText( const QString &text )
 void QgsCheckableComboBox::addItemWithCheckState( const QString &text, Qt::CheckState state, const QVariant &userData )
 {
   QComboBox::addItem( text, userData );
-  setItemCheckState( count(), state );
+  setItemCheckState( count() - 1, state );
 }
 
 QStringList QgsCheckableComboBox::checkedItems() const

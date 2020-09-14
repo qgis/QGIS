@@ -2304,28 +2304,6 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
 
     updateFields();
 
-    // Legacy reading for QGIS 3.14 and older projects
-    //Attributes excluded from WMS and WFS
-    const QList<QPair<QString, QgsField::ConfigurationFlag>> legacyConfig
-    {
-      qMakePair( QStringLiteral( "excludeAttributesWMS" ), QgsField::ConfigurationFlag::Wms ),
-      qMakePair( QStringLiteral( "excludeAttributesWFS" ), QgsField::ConfigurationFlag::Wfs )
-    };
-    for ( const auto &config : legacyConfig )
-    {
-      QDomNode excludeNode = layerNode.namedItem( config.first );
-      if ( !excludeNode.isNull() )
-      {
-        QDomNodeList attributeNodeList = excludeNode.toElement().elementsByTagName( QStringLiteral( "attribute" ) );
-        for ( int i = 0; i < attributeNodeList.size(); ++i )
-        {
-          QString fieldName = attributeNodeList.at( i ).toElement().text();
-          int index = mFields.indexFromName( fieldName );
-          setFieldConfigurationFlag( index, config.second, false );
-        }
-      }
-    }
-
     // Load editor widget configuration
     QDomElement widgetsElem = layerNode.namedItem( QStringLiteral( "fieldConfiguration" ) ).toElement();
     QDomNodeList fieldConfigurationElementList = widgetsElem.elementsByTagName( QStringLiteral( "field" ) );
@@ -2347,6 +2325,28 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
       }
       QgsEditorWidgetSetup setup = QgsEditorWidgetSetup( widgetType, optionsMap );
       mFieldWidgetSetups[fieldName] = setup;
+    }
+
+    // Legacy reading for QGIS 3.14 and older projects
+    // Attributes excluded from WMS and WFS
+    const QList<QPair<QString, QgsField::ConfigurationFlag>> legacyConfig
+    {
+      qMakePair( QStringLiteral( "excludeAttributesWMS" ), QgsField::ConfigurationFlag::Wms ),
+      qMakePair( QStringLiteral( "excludeAttributesWFS" ), QgsField::ConfigurationFlag::Wfs )
+    };
+    for ( const auto &config : legacyConfig )
+    {
+      QDomNode excludeNode = layerNode.namedItem( config.first );
+      if ( !excludeNode.isNull() )
+      {
+        QDomNodeList attributeNodeList = excludeNode.toElement().elementsByTagName( QStringLiteral( "attribute" ) );
+        for ( int i = 0; i < attributeNodeList.size(); ++i )
+        {
+          QString fieldName = attributeNodeList.at( i ).toElement().text();
+          int index = mFields.indexFromName( fieldName );
+          setFieldConfigurationFlag( index, config.second, false );
+        }
+      }
     }
   }
 
@@ -5459,8 +5459,6 @@ void QgsVectorLayer::setFieldConfigurationFlags( int index, QgsField::Configurat
 {
   if ( index < 0 || index >= mFields.count() )
     return;
-
-  mFields.at( index ).setConfigurationFlags( flags );
 
   mFieldConfigurationFlags.insert( mFields.at( index ).name(), flags );
   updateFields();
