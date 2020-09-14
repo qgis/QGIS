@@ -14288,6 +14288,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
 
   if ( !layer )
   {
+    menuSelect->setEnabled( false );
     mActionSelectFeatures->setEnabled( false );
     mActionSelectPolygon->setEnabled( false );
     mActionSelectFreehand->setEnabled( false );
@@ -14313,19 +14314,23 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionAddFeature->setEnabled( false );
     mActionCircularStringCurvePoint->setEnabled( false );
     mActionCircularStringRadius->setEnabled( false );
+    mMenuCircle->setEnabled( false );
     mActionCircle2Points->setEnabled( false );
     mActionCircle3Points->setEnabled( false );
     mActionCircle3Tangents->setEnabled( false );
     mActionCircle2TangentsPoint->setEnabled( false );
     mActionCircleCenterPoint->setEnabled( false );
+    mMenuEllipse->setEnabled( false );
     mActionEllipseCenter2Points->setEnabled( false );
     mActionEllipseCenterPoint->setEnabled( false );
     mActionEllipseExtent->setEnabled( false );
     mActionEllipseFoci->setEnabled( false );
+    mMenuRectangle->setEnabled( false );
     mActionRectangleCenterPoint->setEnabled( false );
     mActionRectangleExtent->setEnabled( false );
     mActionRectangle3PointsDistance->setEnabled( false );
     mActionRectangle3PointsProjected->setEnabled( false );
+    mMenuRegularPolygon->setEnabled( false );
     mActionRegularPolygon2Points->setEnabled( false );
     mActionRegularPolygonCenterPoint->setEnabled( false );
     mActionRegularPolygonCenterCorner->setEnabled( false );
@@ -14390,6 +14395,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
 
     return;
   }
+
+  menuSelect->setEnabled( true );
 
   mActionLayerProperties->setEnabled( QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() );
   mActionAddToOverview->setEnabled( true );
@@ -14487,19 +14494,23 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
         enableShapeTools = enableCircularTools;
         mActionCircularStringCurvePoint->setEnabled( enableCircularTools );
         mActionCircularStringRadius->setEnabled( enableCircularTools );
+        mMenuCircle->setEnabled( enableShapeTools );
         mActionCircle2Points->setEnabled( enableShapeTools );
         mActionCircle3Points->setEnabled( enableShapeTools );
         mActionCircle3Tangents->setEnabled( enableShapeTools );
         mActionCircle2TangentsPoint->setEnabled( enableShapeTools );
         mActionCircleCenterPoint->setEnabled( enableShapeTools );
+        mMenuEllipse->setEnabled( enableShapeTools );
         mActionEllipseCenter2Points->setEnabled( enableShapeTools );
         mActionEllipseCenterPoint->setEnabled( enableShapeTools );
         mActionEllipseExtent->setEnabled( enableShapeTools );
         mActionEllipseFoci->setEnabled( enableShapeTools );
+        mMenuRectangle->setEnabled( enableShapeTools );
         mActionRectangleCenterPoint->setEnabled( enableShapeTools );
         mActionRectangleExtent->setEnabled( enableShapeTools );
         mActionRectangle3PointsDistance->setEnabled( enableShapeTools );
         mActionRectangle3PointsProjected->setEnabled( enableShapeTools );
+        mMenuRegularPolygon->setEnabled( enableShapeTools );
         mActionRegularPolygon2Points->setEnabled( enableShapeTools );
         mActionRegularPolygonCenterPoint->setEnabled( enableShapeTools );
         mActionRegularPolygonCenterCorner->setEnabled( enableShapeTools );
@@ -14694,19 +14705,23 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionAddFeature->setEnabled( false );
       mActionCircularStringCurvePoint->setEnabled( false );
       mActionCircularStringRadius->setEnabled( false );
+      mMenuCircle->setEnabled( false );
       mActionCircle2Points->setEnabled( false );
       mActionCircle3Points->setEnabled( false );
       mActionCircle3Tangents->setEnabled( false );
       mActionCircle2TangentsPoint->setEnabled( false );
       mActionCircleCenterPoint->setEnabled( false );
+      mMenuEllipse->setEnabled( false );
       mActionEllipseCenter2Points->setEnabled( false );
       mActionEllipseCenterPoint->setEnabled( false );
       mActionEllipseExtent->setEnabled( false );
       mActionEllipseFoci->setEnabled( false );
+      mMenuRectangle->setEnabled( false );
       mActionRectangleCenterPoint->setEnabled( false );
       mActionRectangleExtent->setEnabled( false );
       mActionRectangle3PointsDistance->setEnabled( false );
       mActionRectangle3PointsProjected->setEnabled( false );
+      mMenuRegularPolygon->setEnabled( false );
       mActionRegularPolygon2Points->setEnabled( false );
       mActionRegularPolygonCenterPoint->setEnabled( false );
       mActionRegularPolygonCenterCorner->setEnabled( false );
