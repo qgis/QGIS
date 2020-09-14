@@ -820,11 +820,11 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
 
             if ( splitFontFamily( bv, fontFamily, fontStyle ) )
             {
-              familyCaseString += QStringLiteral( "WHEN @zoom_level > %1 AND @zoom_level <= %2 "
+              familyCaseString += QStringLiteral( "WHEN @vector_tile_zoom > %1 AND @vector_tile_zoom <= %2 "
                                                   "THEN %3 " ).arg( bz.toString(),
                                                       tz.toString(),
                                                       QgsExpression::quotedValue( fontFamily ) );
-              styleCaseString += QStringLiteral( "WHEN @zoom_level > %1 AND @zoom_level <= %2 "
+              styleCaseString += QStringLiteral( "WHEN @vector_tile_zoom > %1 AND @vector_tile_zoom <= %2 "
                                                  "THEN %3 " ).arg( bz.toString(),
                                                      tz.toString(),
                                                      QgsExpression::quotedValue( fontStyle ) );
@@ -1763,7 +1763,7 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateColorByZoom( const QVaria
     int tcAlpha;
     colorAsHslaComponents( topColor, tcHue, tcSat, tcLight, tcAlpha );
 
-    caseString += QStringLiteral( "WHEN @zoom_level >= %1 AND @zoom_level < %2 THEN color_hsla("
+    caseString += QStringLiteral( "WHEN @vector_tile_zoom >= %1 AND @vector_tile_zoom < %2 THEN color_hsla("
                                   "%3, %4, %5, %6) " ).arg( bz, tz,
                                       interpolateExpression( bz.toDouble(), tz.toDouble(), bcHue, tcHue, base ),
                                       interpolateExpression( bz.toDouble(), tz.toDouble(), bcSat, tcSat, base ),
@@ -1780,7 +1780,7 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateColorByZoom( const QVaria
   int tcAlpha;
   colorAsHslaComponents( topColor, tcHue, tcSat, tcLight, tcAlpha );
 
-  caseString += QStringLiteral( "WHEN @zoom_level >= %1 THEN color_hsla(%2, %3, %4, %5) "
+  caseString += QStringLiteral( "WHEN @vector_tile_zoom >= %1 THEN color_hsla(%2, %3, %4, %5) "
                                 "ELSE color_hsla(%2, %3, %4, %5) END" ).arg( tz )
                 .arg( tcHue ).arg( tcSat ).arg( tcLight ).arg( tcAlpha );
 
@@ -1842,13 +1842,13 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateOpacityByZoom( const QVar
 
 QString QgsMapBoxGlStyleConverter::parseOpacityStops( double base, const QVariantList &stops, int maxOpacity )
 {
-  QString caseString = QStringLiteral( "CASE WHEN @zoom_level < %1 THEN set_color_part(@symbol_color, 'alpha', %2)" )
+  QString caseString = QStringLiteral( "CASE WHEN @vector_tile_zoom < %1 THEN set_color_part(@symbol_color, 'alpha', %2)" )
                        .arg( stops.value( 0 ).toList().value( 0 ).toString() )
                        .arg( stops.value( 0 ).toList().value( 1 ).toDouble() * maxOpacity );
 
   for ( int i = 0; i < stops.size() - 1; ++i )
   {
-    caseString += QStringLiteral( " WHEN @zoom_level >= %1 AND @zoom_level < %2 "
+    caseString += QStringLiteral( " WHEN @vector_tile_zoom >= %1 AND @vector_tile_zoom < %2 "
                                   "THEN set_color_part(@symbol_color, 'alpha', %3)" )
                   .arg( stops.value( i ).toList().value( 0 ).toString(),
                         stops.value( i + 1 ).toList().value( 0 ).toString(),
@@ -1858,7 +1858,7 @@ QString QgsMapBoxGlStyleConverter::parseOpacityStops( double base, const QVarian
                             stops.value( i + 1 ).toList().value( 1 ).toDouble() * maxOpacity, base ) );
   }
 
-  caseString += QStringLiteral( " WHEN @zoom_level >= %1 "
+  caseString += QStringLiteral( " WHEN @vector_tile_zoom >= %1 "
                                 "THEN set_color_part(@symbol_color, 'alpha', %2) END" )
                 .arg( stops.last().toList().value( 0 ).toString() )
                 .arg( stops.last().toList().value( 1 ).toDouble() * maxOpacity );
@@ -1933,8 +1933,8 @@ QString QgsMapBoxGlStyleConverter::parsePointStops( double base, const QVariantL
       return QString();
     }
 
-    caseString += QStringLiteral( "WHEN @zoom_level > %1 AND @zoom_level <= %2 "
-                                  "THEN array(%3,%4) " ).arg( bz.toString(),
+    caseString += QStringLiteral( "WHEN @vector_tile_zoom > %1 AND @vector_tile_zoom <= %2 "
+                                  "THEN array(%3,%4)" ).arg( bz.toString(),
                                       tz.toString(),
                                       interpolateExpression( bz.toDouble(), tz.toDouble(), bv.toList().value( 0 ).toDouble(), tv.toList().value( 0 ).toDouble(), base, multiplier ),
                                       interpolateExpression( bz.toDouble(), tz.toDouble(), bv.toList().value( 1 ).toDouble(), tv.toList().value( 1 ).toDouble(), base, multiplier ) );
@@ -1967,7 +1967,7 @@ QString QgsMapBoxGlStyleConverter::parseStops( double base, const QVariantList &
       return QString();
     }
 
-    caseString += QStringLiteral( "WHEN @zoom_level > %1 AND @zoom_level <= %2 "
+    caseString += QStringLiteral( "WHEN @vector_tile_zoom > %1 AND @vector_tile_zoom <= %2 "
                                   "THEN %3 " ).arg( bz.toString(),
                                       tz.toString(),
                                       interpolateExpression( bz.toDouble(), tz.toDouble(), bv.toDouble(), tv.toDouble(), base, multiplier ) );
@@ -1975,7 +1975,7 @@ QString QgsMapBoxGlStyleConverter::parseStops( double base, const QVariantList &
 
   const QVariant z = stops.last().toList().value( 0 );
   const QVariant v = stops.last().toList().value( 1 );
-  caseString += QStringLiteral( "WHEN @zoom_level > %1 "
+  caseString += QStringLiteral( "WHEN @vector_tile_zoom > %1 "
                                 "THEN %2 END" ).arg( z.toString() ).arg( v.toDouble() * multiplier );
   return caseString;
 }
@@ -2003,7 +2003,7 @@ QString QgsMapBoxGlStyleConverter::parseStringStops( const QVariantList &stops, 
       return QString();
     }
 
-    caseString += QStringLiteral( "WHEN @zoom_level > %1 AND @zoom_level <= %2 "
+    caseString += QStringLiteral( "WHEN @vector_tile_zoom > %1 AND @vector_tile_zoom <= %2 "
                                   "THEN %3 " ).arg( bz.toString(),
                                       tz.toString(),
                                       QgsExpression::quotedValue( conversionMap.value( bv, bv ) ) );
@@ -2224,14 +2224,14 @@ QString QgsMapBoxGlStyleConverter::interpolateExpression( double zoomMin, double
   QString expression;
   if ( base == 1 )
   {
-    expression = QStringLiteral( "scale_linear(@zoom_level,%1,%2,%3,%4)" ).arg( zoomMin )
+    expression = QStringLiteral( "scale_linear(@vector_tile_zoom,%1,%2,%3,%4)" ).arg( zoomMin )
                  .arg( zoomMax )
                  .arg( valueMin )
                  .arg( valueMax );
   }
   else
   {
-    expression = QStringLiteral( "scale_exp(@zoom_level,%1,%2,%3,%4,%5)" ).arg( zoomMin )
+    expression = QStringLiteral( "scale_exp(@vector_tile_zoom,%1,%2,%3,%4,%5)" ).arg( zoomMin )
                  .arg( zoomMax )
                  .arg( valueMin )
                  .arg( valueMax )
@@ -2539,10 +2539,10 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64( const QVariant &value
       sprite = retrieveSprite( stops.value( 0 ).toList().value( 1 ).toString(), context, spriteSize );
       spritePath = prepareBase64( sprite );
 
-      spriteProperty = QStringLiteral( "CASE WHEN @zoom_level < %1 THEN '%2'" )
+      spriteProperty = QStringLiteral( "CASE WHEN @vector_tile_zoom < %1 THEN '%2'" )
                        .arg( stops.value( 0 ).toList().value( 0 ).toString() )
                        .arg( spritePath );
-      spriteSizeProperty = QStringLiteral( "CASE WHEN @zoom_level < %1 THEN %2" )
+      spriteSizeProperty = QStringLiteral( "CASE WHEN @vector_tile_zoom < %1 THEN %2" )
                            .arg( stops.value( 0 ).toList().value( 0 ).toString() )
                            .arg( spriteSize.width() );
 
@@ -2552,12 +2552,12 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64( const QVariant &value
         sprite = retrieveSprite( stops.value( 0 ).toList().value( 1 ).toString(), context, size );
         path = prepareBase64( sprite );
 
-        spriteProperty += QStringLiteral( " WHEN @zoom_level >= %1 AND @zoom_level < %2 "
+        spriteProperty += QStringLiteral( " WHEN @vector_tile_zoom >= %1 AND @vector_tile_zoom < %2 "
                                           "THEN '%3'" )
                           .arg( stops.value( i ).toList().value( 0 ).toString(),
                                 stops.value( i + 1 ).toList().value( 0 ).toString(),
                                 path );
-        spriteSizeProperty += QStringLiteral( " WHEN @zoom_level >= %1 AND @zoom_level < %2 "
+        spriteSizeProperty += QStringLiteral( " WHEN @vector_tile_zoom >= %1 AND @vector_tile_zoom < %2 "
                                               "THEN %3" )
                               .arg( stops.value( i ).toList().value( 0 ).toString(),
                                     stops.value( i + 1 ).toList().value( 0 ).toString() )
@@ -2566,11 +2566,11 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64( const QVariant &value
       sprite = retrieveSprite( stops.last().toList().value( 1 ).toString(), context, size );
       path = prepareBase64( sprite );
 
-      spriteProperty += QStringLiteral( " WHEN @zoom_level >= %1 "
+      spriteProperty += QStringLiteral( " WHEN @vector_tile_zoom >= %1 "
                                         "THEN '%2' END" )
                         .arg( stops.last().toList().value( 0 ).toString() )
                         .arg( path );
-      spriteSizeProperty += QStringLiteral( " WHEN @zoom_level >= %1 "
+      spriteSizeProperty += QStringLiteral( " WHEN @vector_tile_zoom >= %1 "
                                             "THEN %2 END" )
                             .arg( stops.last().toList().value( 0 ).toString() )
                             .arg( size.width() );

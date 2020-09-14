@@ -105,6 +105,10 @@ QgsExpressionContext QgsSymbolLayerWidget::createExpressionContext() const
   {
     highlights << QStringLiteral( "zoom_level" );
   }
+  if ( expContext.hasVariable( QStringLiteral( "vector_tile_zoom" ) ) )
+  {
+    highlights << QStringLiteral( "vector_tile_zoom" );
+  }
 
   expContext.setHighlightedVariables( highlights );
 

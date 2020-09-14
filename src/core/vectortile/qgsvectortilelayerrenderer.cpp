@@ -132,6 +132,7 @@ bool QgsVectorTileLayerRenderer::render()
   // add @zoom_level variable which can be used in styling
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Tiles" ) ); // will be deleted by popper
   scope->setVariable( "zoom_level", mTileZoom, true );
+  scope->setVariable( "vector_tile_zoom", QgsVectorTileUtils::scaleToZoom( ctx.rendererScale() ), true );
   QgsExpressionContextScopePopper popper( ctx.expressionContext(), scope );
 
   mRenderer->startRender( *renderContext(), mTileZoom, mTileRange );
