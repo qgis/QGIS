@@ -1934,6 +1934,13 @@ class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCas
             self.assertFalse(l.dataProvider().addFeatures([f1, f2]),
                              'Provider reported no AddFeatures capability, but returned true to addFeatures')
 
+    def test_postgis_geometry_filter(self):
+        """Make sure the postgres provider only returns one matching geometry record and no polygons etc."""
+        vl = QgsVectorLayer(self.dbconn + ' srid=4326 type=POINT table="qgis_test"."geometries_table" (geom) sql=', 'test', 'postgres')
+
+        ids = [f.id() for f in vl.getFeatures()]
+        self.assertEqual(ids, [2])
+
 
 if __name__ == '__main__':
     unittest.main()
