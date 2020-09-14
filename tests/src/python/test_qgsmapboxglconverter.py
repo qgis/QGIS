@@ -87,6 +87,76 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
         self.assertEqual(QgsMapBoxGlStyleConverter.parseStops(1.5, [[1, 10], [2, 20], [5, 100]], 8, conversion_context),
                          'CASE WHEN @zoom_level > 1 AND @zoom_level <= 2 THEN scale_exp(@zoom_level,1,2,10,20,1.5) * 8 WHEN @zoom_level > 2 AND @zoom_level <= 5 THEN scale_exp(@zoom_level,2,5,20,100,1.5) * 8 WHEN @zoom_level > 5 THEN 800 END')
 
+    def testParseMatchList(self):
+        conversion_context = QgsMapBoxGlStyleConversionContext()
+        res, default_color, default_number = QgsMapBoxGlStyleConverter.parseMatchList([
+            "match",
+            ["get", "type"],
+            ["Air Transport", "Airport"],
+            "#e6e6e6",
+            ["Education"],
+            "#f7eaca",
+            ["Medical Care"],
+            "#f3d8e7",
+            ["Road Transport"],
+            "#f7f3ca",
+            ["Water Transport"],
+            "#d8e6f3",
+            "#e7e7e7"
+        ], QgsMapBoxGlStyleConverter.Color, conversion_context, 2.5, 200)
+        self.assertEqual(res.asExpression(),
+                         'CASE WHEN "type" IN (\'Air Transport\',\'Airport\') THEN \'#e6e6e6\' WHEN "type" IN (\'Education\') THEN \'#f7eaca\' WHEN "type" IN (\'Medical Care\') THEN \'#f3d8e7\' WHEN "type" IN (\'Road Transport\') THEN \'#f7f3ca\' WHEN "type" IN (\'Water Transport\') THEN \'#d8e6f3\' ELSE \'#e7e7e7\' END')
+        self.assertEqual(default_color.name(), '#e7e7e7')
+
+        res, default_color, default_number = QgsMapBoxGlStyleConverter.parseMatchList([
+            "match",
+            ["get", "type"],
+            ["Normal"],
+            0.25,
+            ["Index"],
+            0.5,
+            0.2
+        ], QgsMapBoxGlStyleConverter.Numeric, conversion_context, 2.5, 200)
+        self.assertEqual(res.asExpression(),
+                         'CASE WHEN "type" IN (\'Normal\') THEN 0.625 WHEN "type" IN (\'Index\') THEN 1.25 ELSE 0.5 END')
+        self.assertEqual(default_number, 0.5)
+
+    def testParseValueList(self):
+        conversion_context = QgsMapBoxGlStyleConversionContext()
+        res, default_color, default_number = QgsMapBoxGlStyleConverter.parseValueList([
+            "match",
+            ["get", "type"],
+            ["Air Transport", "Airport"],
+            "#e6e6e6",
+            ["Education"],
+            "#f7eaca",
+            ["Medical Care"],
+            "#f3d8e7",
+            ["Road Transport"],
+            "#f7f3ca",
+            ["Water Transport"],
+            "#d8e6f3",
+            "#e7e7e7"
+        ], QgsMapBoxGlStyleConverter.Color, conversion_context, 2.5, 200)
+        self.assertEqual(res.asExpression(),
+                         'CASE WHEN "type" IN (\'Air Transport\',\'Airport\') THEN \'#e6e6e6\' WHEN "type" IN (\'Education\') THEN \'#f7eaca\' WHEN "type" IN (\'Medical Care\') THEN \'#f3d8e7\' WHEN "type" IN (\'Road Transport\') THEN \'#f7f3ca\' WHEN "type" IN (\'Water Transport\') THEN \'#d8e6f3\' ELSE \'#e7e7e7\' END')
+        self.assertEqual(default_color.name(), '#e7e7e7')
+
+        res, default_color, default_number = QgsMapBoxGlStyleConverter.parseValueList([
+            "interpolate",
+            ["linear"],
+            ["zoom"],
+            10,
+            0.1,
+            15,
+            0.3,
+            18,
+            0.6
+        ], QgsMapBoxGlStyleConverter.Numeric, conversion_context, 2.5, 200)
+        self.assertEqual(res.asExpression(),
+                         'CASE WHEN @zoom_level > 10 AND @zoom_level <= 15 THEN scale_linear(@zoom_level,10,15,0.1,0.3) * 2.5 WHEN @zoom_level > 15 AND @zoom_level <= 18 THEN scale_linear(@zoom_level,15,18,0.3,0.6) * 2.5 WHEN @zoom_level > 18 THEN 1.5 END')
+        self.assertEqual(default_number, 0.25)
+
     def testInterpolateByZoom(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
         prop, default_val = QgsMapBoxGlStyleConverter.parseInterpolateByZoom({'base': 1,
