@@ -129,9 +129,25 @@ class CORE_EXPORT QgsMapBoxGlStyleConversionContext
      */
     void setSprites( const QImage &image, const QString &definitions );
 
+    /**
+     * Returns the layer ID of the layer currently being converted.
+     *
+     * \see setLayerId()
+     */
+    QString layerId() const;
+
+    /**
+     * Sets the layer ID of the layer currently being converted.
+     *
+     * \see layerId()
+     */
+    void setLayerId( const QString &value );
+
   private:
 
     QStringList mWarnings;
+
+    QString mLayerId;
 
     QgsUnitTypes::RenderUnit mTargetUnit = QgsUnitTypes::RenderPixels;
 

@@ -122,6 +122,20 @@ Sets the sprite ``image`` and ``definitions`` JSON string to use during conversi
 .. seealso:: :py:func:`spriteDefinitions`
 %End
 
+    QString layerId() const;
+%Docstring
+Returns the layer ID of the layer currently being converted.
+
+.. seealso:: :py:func:`setLayerId`
+%End
+
+    void setLayerId( const QString &value );
+%Docstring
+Sets the layer ID of the layer currently being converted.
+
+.. seealso:: :py:func:`layerId`
+%End
+
 };
 
 class QgsMapBoxGlStyleConverter
