@@ -18,6 +18,7 @@
 
 #include "qgsquickattributeformmodelbase.h"
 #include "qgsquickattributeformmodel.h"
+#include <qgsvectorlayerutils.h>
 
 /// @cond PRIVATE
 
@@ -40,7 +41,8 @@ QHash<int, QByteArray> QgsQuickAttributeFormModelBase::roleNames() const
   roles[QgsQuickAttributeFormModel::RememberValue] = QByteArray( "RememberValue" );
   roles[QgsQuickAttributeFormModel::Field] = QByteArray( "Field" );
   roles[QgsQuickAttributeFormModel::Group] = QByteArray( "Group" );
-  roles[QgsQuickAttributeFormModel::ConstraintValid] = QByteArray( "ConstraintValid" );
+  roles[QgsQuickAttributeFormModel::ConstraintHardValid] = "ConstraintHardValid";
+  roles[QgsQuickAttributeFormModel::ConstraintSoftValid] = "ConstraintSoftValid";
   roles[QgsQuickAttributeFormModel::ConstraintDescription] = QByteArray( "ConstraintDescription" );
 
   return roles;
@@ -261,13 +263,31 @@ void QgsQuickAttributeFormModelBase::flatten( QgsAttributeEditorContainer *conta
         item->setData( fieldIndex, QgsQuickAttributeFormModel::FieldIndex );
         item->setData( container->isGroupBox() ? container->name() : QString(), QgsQuickAttributeFormModel::Group );
         item->setData( true, QgsQuickAttributeFormModel::CurrentlyVisible );
-        item->setData( true, QgsQuickAttributeFormModel::ConstraintValid );
+        item->setData( true, QgsQuickAttributeFormModel::ConstraintHardValid );
+        item->setData( true, QgsQuickAttributeFormModel::ConstraintSoftValid );
         item->setData( field.constraints().constraintDescription(), QgsQuickAttributeFormModel::ConstraintDescription );
 
-        if ( !field.constraints().constraintExpression().isEmpty() )
+        QStringList expressions;
+        QStringList descriptions;
+        QString expression = field.constraints().constraintExpression();
+
+        if ( !expression.isEmpty() )
         {
-          mConstraints.insert( item, field.constraints().constraintExpression() );
+          descriptions << field.constraints().constraintDescription();
+          expressions << field.constraints().constraintExpression();
         }
+
+        if ( field.constraints().constraints() & QgsFieldConstraints::ConstraintNotNull )
+        {
+          descriptions << tr( "Not NULL" );
+        }
+
+        if ( field.constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
+        {
+          descriptions << tr( "Unique" );
+        }
+
+        mConstraints.insert( item, field.constraints() );
 
         items.append( item );
 
@@ -318,32 +338,50 @@ void QgsQuickAttributeFormModelBase::updateVisibility( int fieldIndex )
     }
   }
 
-  bool allConstraintsValid = true;
-  QMap<QStandardItem *, QgsExpression>::ConstIterator constraintIterator( mConstraints.constBegin() );
+  bool allConstraintsHardValid = true;
+  bool allConstraintsSoftValid = true;
+
+  QMap<QStandardItem *, QgsFieldConstraints>::ConstIterator constraintIterator( mConstraints.constBegin() );
   for ( ; constraintIterator != mConstraints.constEnd(); ++constraintIterator )
   {
     QStandardItem *item = constraintIterator.key();
-    QgsExpression exp = constraintIterator.value();
-    exp.prepare( &mExpressionContext );
-    bool constraintSatisfied = exp.evaluate( &mExpressionContext ).toBool();
+    int fidx = item->data( QgsQuickAttributeFormModel::FieldIndex ).toInt();
 
-    if ( constraintSatisfied != item->data( QgsQuickAttributeFormModel::ConstraintValid ).toBool() )
+    QStringList errors;
+    bool hardConstraintSatisfied = QgsVectorLayerUtils::validateAttribute( mLayer,  mAttributeModel->featureLayerPair().feature(), fidx, errors, QgsFieldConstraints::ConstraintStrengthHard );
+    if ( hardConstraintSatisfied != item->data( QgsQuickAttributeFormModel::ConstraintHardValid ).toBool() )
     {
-      item->setData( constraintSatisfied, QgsQuickAttributeFormModel::ConstraintValid );
+      item->setData( hardConstraintSatisfied, QgsQuickAttributeFormModel::ConstraintHardValid );
+    }
+    if ( !item->data( QgsQuickAttributeFormModel::ConstraintHardValid ).toBool() )
+    {
+      allConstraintsHardValid = false;
     }
 
-    if ( !item->data( QgsQuickAttributeFormModel::ConstraintValid ).toBool() )
+    QStringList softErrors;
+    bool softConstraintSatisfied = QgsVectorLayerUtils::validateAttribute( mLayer, mAttributeModel->featureLayerPair().feature(), fidx, softErrors, QgsFieldConstraints::ConstraintStrengthSoft );
+    if ( softConstraintSatisfied != item->data( QgsQuickAttributeFormModel::ConstraintSoftValid ).toBool() )
     {
-      allConstraintsValid = false;
+      item->setData( softConstraintSatisfied, QgsQuickAttributeFormModel::ConstraintSoftValid );
+    }
+    if ( !item->data( QgsQuickAttributeFormModel::ConstraintSoftValid ).toBool() )
+    {
+      allConstraintsSoftValid = false;
     }
   }
 
-  setConstraintsValid( allConstraintsValid );
+  setConstraintsHardValid( allConstraintsHardValid );
+  setConstraintsSoftValid( allConstraintsSoftValid );
 }
 
-bool QgsQuickAttributeFormModelBase::constraintsValid() const
+bool QgsQuickAttributeFormModelBase::constraintsHardValid() const
 {
-  return mConstraintsValid;
+    return mConstraintsHardValid;
+}
+
+bool QgsQuickAttributeFormModelBase::constraintsSoftValid() const
+{
+    return mConstraintsSoftValid;
 }
 
 QVariant QgsQuickAttributeFormModelBase::attribute( const QString &name ) const
@@ -355,13 +393,22 @@ QVariant QgsQuickAttributeFormModelBase::attribute( const QString &name ) const
   return mAttributeModel->featureLayerPair().feature().attribute( idx );
 }
 
-void QgsQuickAttributeFormModelBase::setConstraintsValid( bool constraintsValid )
+void QgsQuickAttributeFormModelBase::setConstraintsHardValid( bool constraintsHardValid )
 {
-  if ( constraintsValid == mConstraintsValid )
-    return;
+    if ( constraintsHardValid == mConstraintsHardValid )
+      return;
 
-  mConstraintsValid = constraintsValid;
-  emit constraintsValidChanged();
+    mConstraintsHardValid = constraintsHardValid;
+    emit constraintsHardValidChanged();
+}
+
+void QgsQuickAttributeFormModelBase::setConstraintsSoftValid( bool constraintsSoftValid )
+{
+    if ( constraintsSoftValid == mConstraintsSoftValid )
+      return;
+
+    mConstraintsSoftValid = constraintsSoftValid;
+    emit constraintsSoftValidChanged();
 }
 
 bool QgsQuickAttributeFormModelBase::hasTabs() const

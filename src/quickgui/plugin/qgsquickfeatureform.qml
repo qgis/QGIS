@@ -144,6 +144,16 @@ Item {
   }
 
   function save() {
+    if ( !model.constraintsHardValid )
+    {
+      console.log( qsTr( 'Constraints not valid') )
+      return
+    }
+    else if ( !model.constraintsSoftValid )
+    {
+      console.log( qsTr( 'Note: soft constraints were not met') )
+    }
+
     parent.focus = true
     if ( form.state === "Add" ) {
       model.create()
@@ -356,7 +366,7 @@ Item {
 
         text: qsTr(Name) || ''
         font.bold: true
-        color: ConstraintValid ? form.style.constraint.validColor : form.style.constraint.invalidColor
+        color: ConstraintSoftValid && ConstraintHardValid ? form.style.constraint.validColor : form.style.constraint.invalidColor
       }
 
       Label {
@@ -368,8 +378,8 @@ Item {
         }
 
         text: qsTr(ConstraintDescription)
-        height: ConstraintValid ? 0 : undefined
-        visible: !ConstraintValid
+        visible: !ConstraintHardValid || !ConstraintSoftValid
+        height:  visible ? 0 : undefined
 
         color: form.style.constraint.descriptionColor
       }
@@ -389,7 +399,10 @@ Item {
           property var config: EditorWidgetConfig
           property var widget: EditorWidget
           property var field: Field
-          property var constraintValid: ConstraintValid
+          property var constraintHardValid: ConstraintHardValid
+          property var constraintSoftValid: ConstraintSoftValid
+          property bool constraintsHardValid: form.model.constraintsHardValid
+          property bool constraintsSoftValid: form.model.constraintsSoftValid
           property var homePath: form.project ? form.project.homePath : ""
           property var customStyle: form.style
           property var externalResourceHandler: form.externalResourceHandler
@@ -481,10 +494,10 @@ Item {
         }
 
         background: Rectangle {
-          color: model.constraintsValid ? form.style.toolbutton.backgroundColor : form.style.toolbutton.backgroundColorInvalid
+          color: model.constraintsSoftValid && model.constraintsHardValid ? form.style.toolbutton.backgroundColor : form.style.toolbutton.backgroundColorInvalid
         }
 
-        enabled: model.constraintsValid
+        enabled: model.constraintsHardValid
 
         onClicked: {
           form.save()
