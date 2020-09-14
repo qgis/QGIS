@@ -1746,7 +1746,7 @@ QString QgsMapBoxGlStyleConverter::parsePointStops( double base, const QVariantL
     const QVariant bv = stops.value( i ).toList().value( 1 );
     if ( bz.type() != QVariant::List && bz.type() != QVariant::StringList )
     {
-      context.pushWarning( QObject::tr( "%1: Could not convert offset interpolation, skipping." ).arg( context.layerId() ) );
+      context.pushWarning( QObject::tr( "%1: Skipping unsupported offset interpolation type (%2)." ).arg( context.layerId(), QMetaType::typeName( bz.type() ) ) );
       return QString();
     }
 
@@ -1755,7 +1755,7 @@ QString QgsMapBoxGlStyleConverter::parsePointStops( double base, const QVariantL
     const QVariant tv = stops.value( i + 1 ).toList().value( 1 );
     if ( tz.type() != QVariant::List && tz.type() != QVariant::StringList )
     {
-      context.pushWarning( QObject::tr( "%1: Could not convert offset interpolation, skipping." ).arg( context.layerId() ) );
+      context.pushWarning( QObject::tr( "%1: Skipping unsupported offset interpolation type (%2)." ).arg( context.layerId(), QMetaType::typeName( tz.type() ) ) );
       return QString();
     }
 
