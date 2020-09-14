@@ -16,7 +16,7 @@ class QgsMeshLayerProperties : QgsOptionsDialogBase
 Property sheet for a mesh map layer.
 Contains information, source and style tabs
 
-.. versionadded:: 3.18
+.. versionadded:: 3.16
 %End
 
 %TypeHeaderCode
@@ -35,7 +35,7 @@ Constructor
 %Docstring
 Adds properties page from a factory
 
-.. versionadded:: 3.18
+.. versionadded:: 3.16
 %End
 
 };

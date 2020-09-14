@@ -37,7 +37,7 @@ class QgsMapLayerConfigWidgetFactory;
  * Property sheet for a mesh map layer.
  * Contains information, source and style tabs
  *
- * \since QGIS 3.18 in the GUI API
+ * \since QGIS 3.16 in the GUI API
  */
 class GUI_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private Ui::QgsMeshLayerPropertiesBase
 {
@@ -54,7 +54,7 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
     /**
      * Adds properties page from a factory
      *
-     * \since QGIS 3.18
+     * \since QGIS 3.16
      */
     void addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory *factory );
 
