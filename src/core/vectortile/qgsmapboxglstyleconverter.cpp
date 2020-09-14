@@ -343,6 +343,8 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
       // when fill-pattern exists, set and insert QgsRasterFillSymbolLayer
       QgsRasterFillSymbolLayer *rasterFill = new QgsRasterFillSymbolLayer();
       rasterFill->setImageFilePath( sprite );
+      rasterFill->setWidth( spriteSize.width() );
+      rasterFill->setWidthUnit( context.targetUnit() );
       rasterFill->setCoordinateMode( QgsRasterFillSymbolLayer::Viewport );
 
       if ( rasterOpacity >= 0 )
@@ -353,6 +355,7 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
       if ( !spriteProperty.isEmpty() )
       {
         ddRasterProperties.setProperty( QgsSymbolLayer::PropertyFile, QgsProperty::fromExpression( spriteProperty ) );
+        ddRasterProperties.setProperty( QgsSymbolLayer::PropertyWidth, QgsProperty::fromExpression( spriteSizeProperty ) );
       }
 
       rasterFill->setDataDefinedProperties( ddRasterProperties );
