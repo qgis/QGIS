@@ -56,6 +56,10 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
     QString mSourceType;
     //! Path/URL of the source. Format depends on source type
     QString mSourcePath;
+
+    QString mAuthCfg;
+    QString mReferer;
+
     //! Minimum zoom level at which source has any valid tiles (negative = unconstrained)
     int mSourceMinZoom = -1;
     //! Maximum zoom level at which source has any valid tiles (negative = unconstrained)

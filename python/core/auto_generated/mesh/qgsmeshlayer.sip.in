@@ -164,6 +164,16 @@ Adds datasets to the mesh from file with ``path``. Use the the time ``defaultRef
 .. versionadded:: 3.14
 %End
 
+    bool addDatasets( QgsMeshDatasetGroup *datasetGroup /Transfer/ );
+%Docstring
+Adds extra datasets to the mesh. Take ownership.
+
+:param datasetGroup: the extra dataset group
+
+:return: whether the dataset is effectively added
+
+.. versionadded:: 3.16
+%End
 
     bool saveDataset( const QString &path, int datasetGroupIndex, QString driver );
 %Docstring

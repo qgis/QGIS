@@ -68,6 +68,7 @@
 #include "qgsalgorithmextractvertices.h"
 #include "qgsalgorithmextractspecificvertices.h"
 #include "qgsalgorithmextractzmvalues.h"
+#include "qgsalgorithmfieldcalculator.h"
 #include "qgsalgorithmfiledownloader.h"
 #include "qgsalgorithmfillnodata.h"
 #include "qgsalgorithmfilter.h"
@@ -181,6 +182,7 @@
 #include "qgsalgorithmswapxy.h"
 #include "qgsalgorithmsymmetricaldifference.h"
 #include "qgsalgorithmtaperedbuffer.h"
+#include "qgsalgorithmtinmeshcreation.h"
 #include "qgsalgorithmtransect.h"
 #include "qgsalgorithmtransform.h"
 #include "qgsalgorithmtranslate.h"
@@ -192,6 +194,7 @@
 #include "qgsalgorithmwritevectortiles.h"
 #include "qgsalgorithmzonalhistogram.h"
 #include "qgsalgorithmzonalstatistics.h"
+#include "qgsalgorithmzonalstatisticsfeaturebased.h"
 #include "qgsalgorithmpolygonstolines.h"
 #include "qgsbookmarkalgorithms.h"
 #include "qgsprojectstylealgorithms.h"
@@ -290,6 +293,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsExtractVerticesAlgorithm() );
   addAlgorithm( new QgsExtractSpecificVerticesAlgorithm() );
   addAlgorithm( new QgsExtractZValuesAlgorithm() );
+  addAlgorithm( new QgsFieldCalculatorAlgorithm() );
   addAlgorithm( new QgsFileDownloaderAlgorithm() );
   addAlgorithm( new QgsFillNoDataAlgorithm() );
   addAlgorithm( new QgsFilterAlgorithm() );
@@ -430,6 +434,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsSwapXYAlgorithm() );
   addAlgorithm( new QgsSymmetricalDifferenceAlgorithm() );
   addAlgorithm( new QgsTaperedBufferAlgorithm() );
+  addAlgorithm( new QgsTinMeshCreationAlgorithm() );
   addAlgorithm( new QgsTransectAlgorithm() );
   addAlgorithm( new QgsTransformAlgorithm() );
   addAlgorithm( new QgsTranslateAlgorithm() );
@@ -441,6 +446,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsWriteVectorTilesMbtilesAlgorithm() );
   addAlgorithm( new QgsZonalHistogramAlgorithm() );
   addAlgorithm( new QgsZonalStatisticsAlgorithm() );
+  addAlgorithm( new QgsZonalStatisticsFeatureBasedAlgorithm() );
   addAlgorithm( new QgsPolygonsToLinesAlgorithm() );
   addAlgorithm( new QgsDensifyGeometriesByIntervalAlgorithm() );
   addAlgorithm( new QgsDensifyGeometriesByCountAlgorithm() );

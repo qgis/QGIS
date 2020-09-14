@@ -15,5 +15,9 @@
         <file>shaders/skybox.frag</file>
         <file>shaders/skybox.vert</file>
         <file>shaders/hdr_skybox.frag</file>
+        <file>shaders/postprocess.frag</file>
+        <file>shaders/postprocess.vert</file>
+        <file>shaders/preview.vert</file>
+        <file>shaders/preview.frag</file>
     </qresource>
 </RCC>

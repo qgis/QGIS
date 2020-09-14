@@ -70,6 +70,9 @@ QgsSourceFieldsProperties::QgsSourceFieldsProperties( QgsVectorLayer *layer, QWi
   const auto wfsWi = new QTableWidgetItem( QStringLiteral( "WFS" ) );
   wfsWi->setToolTip( tr( "Defines if this field is available in QGIS Server WFS (and OAPIF) service" ) );
   mFieldsList->setHorizontalHeaderItem( AttrWFSCol, wfsWi );
+  const auto searchableWi = new QTableWidgetItem( QStringLiteral( "Searchable" ) );
+  searchableWi->setToolTip( tr( "Defines if this field is searchable (active layer locator filter)" ) );
+  mFieldsList->setHorizontalHeaderItem( AttrSearchableCol, searchableWi );
   mFieldsList->setHorizontalHeaderItem( AttrAliasCol, new QTableWidgetItem( tr( "Alias" ) ) );
 
   mFieldsList->setSortingEnabled( true );
@@ -278,6 +281,10 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
   wfsAttrItem->setCheckState( mLayer->excludeAttributesWfs().contains( field.name() ) ? Qt::Unchecked : Qt::Checked );
   wfsAttrItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
   mFieldsList->setItem( row, AttrWFSCol, wfsAttrItem );
+  QTableWidgetItem *searchableAttrItem = new QTableWidgetItem();
+  searchableAttrItem->setCheckState( mLayer->fieldConfigurationFlags( idx ).testFlag( QgsField::ConfigurationFlag::Searchable ) ? Qt::Checked : Qt::Unchecked );
+  searchableAttrItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
+  mFieldsList->setItem( row, AttrSearchableCol, searchableAttrItem );
 
 }
 
@@ -312,6 +319,18 @@ void QgsSourceFieldsProperties::apply()
     {
       excludeAttributesWFS.insert( mFieldsList->item( i, AttrNameCol )->text() );
     }
+
+    int idx = mFieldsList->item( i, AttrIdCol )->data( Qt::DisplayRole ).toInt();
+    QgsField::ConfigurationFlags flags = mLayer->fieldConfigurationFlags( idx );
+    if ( mFieldsList->item( i, AttrSearchableCol )->checkState() == Qt::Checked )
+    {
+      flags.setFlag( QgsField::ConfigurationFlag::Searchable, true );
+    }
+    else
+    {
+      flags.setFlag( QgsField::ConfigurationFlag::Searchable, false );
+    }
+    mLayer->setFieldConfigurationFlags( idx, flags );
   }
 
   mLayer->setExcludeAttributesWms( excludeAttributesWMS );

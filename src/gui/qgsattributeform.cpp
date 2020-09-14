@@ -1961,6 +1961,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       rww->setShowLabel( relDef->showLabel() );
       rww->setNmRelationId( relDef->nmRelationId() );
       rww->setForceSuppressFormPopup( relDef->forceSuppressFormPopup() );
+      rww->setLabel( relDef->label() );
 
       mWidgets.append( rww );
       mFormWidgets.append( formWidget );

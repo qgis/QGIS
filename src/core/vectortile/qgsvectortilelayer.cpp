@@ -23,10 +23,13 @@
 #include "qgsvectortilelabeling.h"
 #include "qgsvectortileloader.h"
 #include "qgsvectortileutils.h"
+#include "qgsnetworkaccessmanager.h"
 
 #include "qgsdatasourceuri.h"
 #include "qgslayermetadataformatter.h"
-
+#include "qgsblockingnetworkrequest.h"
+#include "qgsmapboxglstyleconverter.h"
+#include "qgsjsonutils.h"
 
 QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseName )
   : QgsMapLayer( QgsMapLayerType::VectorTileLayer, baseName )
@@ -48,7 +51,12 @@ bool QgsVectorTileLayer::loadDataSource()
 
   mSourceType = dsUri.param( QStringLiteral( "type" ) );
   mSourcePath = dsUri.param( QStringLiteral( "url" ) );
-  if ( mSourceType == QStringLiteral( "xyz" ) )
+  if ( mSourceType == QStringLiteral( "xyz" ) && dsUri.param( QStringLiteral( "serviceType" ) ) == QLatin1String( "arcgis" ) )
+  {
+    if ( !setupArcgisVectorTileServiceConnection( mSourcePath ) )
+      return false;
+  }
+  else if ( mSourceType == QStringLiteral( "xyz" ) )
   {
     if ( !QgsVectorTileUtils::checkXYZUrlTemplate( mSourcePath ) )
     {
@@ -106,6 +114,55 @@ bool QgsVectorTileLayer::loadDataSource()
   }
 
   setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+  return true;
+}
+
+bool QgsVectorTileLayer::setupArcgisVectorTileServiceConnection( const QString &uri )
+{
+  QNetworkRequest request = QNetworkRequest( QUrl( uri ) );
+
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) );
+
+  QgsBlockingNetworkRequest networkRequest;
+  switch ( networkRequest.get( request ) )
+  {
+    case QgsBlockingNetworkRequest::NoError:
+      break;
+
+    case QgsBlockingNetworkRequest::NetworkError:
+    case QgsBlockingNetworkRequest::TimeoutError:
+    case QgsBlockingNetworkRequest::ServerExceptionError:
+      return false;
+  }
+
+  const QgsNetworkReplyContent content = networkRequest.reply();
+  const QByteArray raw = content.content();
+
+  // Parse data
+  QJsonParseError err;
+  QJsonDocument doc = QJsonDocument::fromJson( raw, &err );
+  if ( doc.isNull() )
+  {
+    return false;
+  }
+  mArcgisLayerConfiguration = doc.object().toVariantMap();
+  if ( mArcgisLayerConfiguration.contains( QStringLiteral( "error" ) ) )
+  {
+    return false;
+  }
+
+  mArcgisLayerConfiguration.insert( QStringLiteral( "serviceUri" ), uri );
+  mSourcePath = uri + '/' + mArcgisLayerConfiguration.value( QStringLiteral( "tiles" ) ).toList().value( 0 ).toString();
+  if ( !QgsVectorTileUtils::checkXYZUrlTemplate( mSourcePath ) )
+  {
+    QgsDebugMsg( QStringLiteral( "Invalid format of URL for XYZ source: " ) + mSourcePath );
+    return false;
+  }
+
+  mSourceMinZoom = 0;
+  mSourceMaxZoom = mArcgisLayerConfiguration.value( QStringLiteral( "maxzoom" ) ).toInt();
+  setExtent( QgsRectangle( -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 ) );
+
   return true;
 }
 
@@ -236,6 +293,167 @@ void QgsVectorTileLayer::setTransformContext( const QgsCoordinateTransformContex
   Q_UNUSED( transformContext )
 }
 
+QString QgsVectorTileLayer::loadDefaultStyle( bool &resultFlag )
+{
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( mDataSource );
+
+  QString styleUrl;
+  if ( !dsUri.param( QStringLiteral( "styleUrl" ) ).isEmpty() )
+  {
+    styleUrl = dsUri.param( QStringLiteral( "styleUrl" ) );
+  }
+  else if ( mSourceType == QStringLiteral( "xyz" ) && dsUri.param( QStringLiteral( "serviceType" ) ) == QLatin1String( "arcgis" ) )
+  {
+    // for ArcMap VectorTileServices we default to the defaultStyles URL from the layer configuration
+    styleUrl = mArcgisLayerConfiguration.value( QStringLiteral( "serviceUri" ) ).toString()
+               + '/' + mArcgisLayerConfiguration.value( QStringLiteral( "defaultStyles" ) ).toString();
+  }
+
+  if ( !styleUrl.isEmpty() )
+  {
+    QNetworkRequest request = QNetworkRequest( QUrl( styleUrl ) );
+
+    QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) );
+
+    QgsBlockingNetworkRequest networkRequest;
+    switch ( networkRequest.get( request ) )
+    {
+      case QgsBlockingNetworkRequest::NoError:
+        break;
+
+      case QgsBlockingNetworkRequest::NetworkError:
+      case QgsBlockingNetworkRequest::TimeoutError:
+      case QgsBlockingNetworkRequest::ServerExceptionError:
+        resultFlag = false;
+        return QObject::tr( "Error retrieving default style" );
+    }
+
+    const QgsNetworkReplyContent content = networkRequest.reply();
+    const QVariantMap styleDefinition = QgsJsonUtils::parseJson( content.content() ).toMap();
+
+    QgsMapBoxGlStyleConversionContext context;
+    // convert automatically from pixel sizes to millimeters, because pixel sizes
+    // are a VERY edge case in QGIS and don't play nice with hidpi map renders or print layouts
+    context.setTargetUnit( QgsUnitTypes::RenderMillimeters );
+    //assume source uses 96 dpi
+    context.setPixelSizeConversionFactor( 25.4 / 96.0 );
+
+    if ( styleDefinition.contains( QStringLiteral( "sprite" ) ) )
+    {
+      // retrieve sprite definition
+      QString spriteUriBase;
+      if ( styleDefinition.value( QStringLiteral( "sprite" ) ).toString().startsWith( QStringLiteral( "http" ) ) )
+      {
+        spriteUriBase = styleDefinition.value( QStringLiteral( "sprite" ) ).toString();
+      }
+      else
+      {
+        spriteUriBase = styleUrl + '/' + styleDefinition.value( QStringLiteral( "sprite" ) ).toString();
+      }
+
+      for ( int resolution = 2; resolution > 0; resolution-- )
+      {
+        QNetworkRequest request = QNetworkRequest( QUrl( spriteUriBase + QStringLiteral( "%1.json" ).arg( resolution > 1 ? QStringLiteral( "@%1x" ).arg( resolution ) : QString() ) ) );
+        QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) );
+        QgsBlockingNetworkRequest networkRequest;
+        switch ( networkRequest.get( request ) )
+        {
+          case QgsBlockingNetworkRequest::NoError:
+          {
+            const QgsNetworkReplyContent content = networkRequest.reply();
+            const QVariantMap spriteDefinition = QgsJsonUtils::parseJson( content.content() ).toMap();
+
+            // retrieve sprite images
+            QNetworkRequest request = QNetworkRequest( QUrl( spriteUriBase + QStringLiteral( "%1.png" ).arg( resolution > 1 ? QStringLiteral( "@%1x" ).arg( resolution ) : QString() ) ) );
+
+            QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) );
+
+            QgsBlockingNetworkRequest networkRequest;
+            switch ( networkRequest.get( request ) )
+            {
+              case QgsBlockingNetworkRequest::NoError:
+              {
+                const QgsNetworkReplyContent imageContent = networkRequest.reply();
+                QImage spriteImage( QImage::fromData( imageContent.content() ) );
+                context.setSprites( spriteImage, spriteDefinition );
+                break;
+              }
+
+              case QgsBlockingNetworkRequest::NetworkError:
+              case QgsBlockingNetworkRequest::TimeoutError:
+              case QgsBlockingNetworkRequest::ServerExceptionError:
+                break;
+            }
+
+            break;
+          }
+
+          case QgsBlockingNetworkRequest::NetworkError:
+          case QgsBlockingNetworkRequest::TimeoutError:
+          case QgsBlockingNetworkRequest::ServerExceptionError:
+            break;
+        }
+
+        if ( !context.spriteDefinitions().isEmpty() )
+          break;
+      }
+    }
+
+    QgsMapBoxGlStyleConverter converter;
+    if ( converter.convert( styleDefinition, &context ) != QgsMapBoxGlStyleConverter::Success )
+    {
+      resultFlag = false;
+      return converter.errorMessage();
+    }
+
+    setRenderer( converter.renderer() );
+    setLabeling( converter.labeling() );
+    resultFlag = true;
+    return QString();
+  }
+  else
+  {
+    QgsMapLayer::loadDefaultStyle( resultFlag );
+    resultFlag = true;
+    return QString();
+  }
+}
+
+QString QgsVectorTileLayer::loadDefaultMetadata( bool &resultFlag )
+{
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( mDataSource );
+  if ( mSourceType == QStringLiteral( "xyz" ) && dsUri.param( QStringLiteral( "serviceType" ) ) == QLatin1String( "arcgis" ) )
+  {
+    // populate default metadata
+    QgsLayerMetadata metadata;
+    metadata.setIdentifier( mArcgisLayerConfiguration.value( QStringLiteral( "serviceUri" ) ).toString() );
+    const QString parentIdentifier = mArcgisLayerConfiguration.value( QStringLiteral( "serviceItemId" ) ).toString();
+    if ( !parentIdentifier.isEmpty() )
+    {
+      metadata.setParentIdentifier( parentIdentifier );
+    }
+    metadata.setType( QStringLiteral( "dataset" ) );
+    metadata.setTitle( mArcgisLayerConfiguration.value( QStringLiteral( "name" ) ).toString() );
+    QString copyright = mArcgisLayerConfiguration.value( QStringLiteral( "copyrightText" ) ).toString();
+    if ( !copyright.isEmpty() )
+      metadata.setRights( QStringList() << copyright );
+    metadata.addLink( QgsAbstractMetadataBase::Link( tr( "Source" ), QStringLiteral( "WWW:LINK" ), mArcgisLayerConfiguration.value( QStringLiteral( "serviceUri" ) ).toString() ) );
+
+    setMetadata( metadata );
+
+    resultFlag = true;
+    return QString();
+  }
+  else
+  {
+    QgsMapLayer::loadDefaultMetadata( resultFlag );
+    resultFlag = true;
+    return QString();
+  }
+}
+
 QString QgsVectorTileLayer::encodedSource( const QString &source, const QgsReadWriteContext &context ) const
 {
   QgsDataSourceUri dsUri;
@@ -361,7 +579,13 @@ QByteArray QgsVectorTileLayer::getRawTile( QgsTileXYZ tileID )
 {
   QgsTileMatrix tileMatrix = QgsTileMatrix::fromWebMercator( tileID.zoomLevel() );
   QgsTileRange tileRange( tileID.column(), tileID.column(), tileID.row(), tileID.row() );
-  QList<QgsVectorTileRawData> rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( mSourceType, mSourcePath, tileMatrix, QPointF(), tileRange );
+
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( mDataSource );
+  const QString authcfg = dsUri.authConfigId();
+  const QString referer = dsUri.param( QStringLiteral( "referer" ) );
+
+  QList<QgsVectorTileRawData> rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( mSourceType, mSourcePath, tileMatrix, QPointF(), tileRange, authcfg, referer );
   if ( rawTiles.isEmpty() )
     return QByteArray();
   return rawTiles.first().data;

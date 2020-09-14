@@ -41,7 +41,8 @@ class QgsDb2Provider final: public QgsVectorDataProvider
     static const QString DB2_PROVIDER_KEY;
     static const QString DB2_PROVIDER_DESCRIPTION;
 
-    explicit QgsDb2Provider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
+    explicit QgsDb2Provider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions,
+                             QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     ~QgsDb2Provider() override;
 
@@ -179,7 +180,7 @@ class QgsDb2ProviderMetadata final: public QgsProviderMetadata
       QMap<int, int> &oldToNewAttrIdxMap,
       QString &errorMessage,
       const QMap<QString, QVariant> *options ) override;
-    QgsDb2Provider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QgsDb2Provider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
 };
 
 #endif

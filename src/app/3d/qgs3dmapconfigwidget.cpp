@@ -29,6 +29,7 @@
 #include "qgsproject.h"
 #include "qgsmesh3dsymbolwidget.h"
 #include "qgsskyboxrenderingsettingswidget.h"
+#include "qgsshadowrenderingsettingswidget.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapscene.h"
 
@@ -129,6 +130,12 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   groupSkyboxSettings->layout()->addWidget( mSkyboxSettingsWidget );
   groupSkyboxSettings->setChecked( mMap->isSkyboxEnabled() );
 
+  mShadowSetiingsWidget = new QgsShadowRenderingSettingsWidget( this );
+  mShadowSetiingsWidget->onDirectionalLightsCountChanged( widgetLights->directionalLights().count() );
+  mShadowSetiingsWidget->setShadowSettings( map->shadowSettings() );
+  groupShadowRendering->layout()->addWidget( mShadowSetiingsWidget );
+  QObject::connect( widgetLights, &QgsLightsWidget::directionalLightsCountChanged, mShadowSetiingsWidget, &QgsShadowRenderingSettingsWidget::onDirectionalLightsCountChanged );
+  groupShadowRendering->setChecked( map->shadowSettings().renderShadows() );
 }
 
 void Qgs3DMapConfigWidget::apply()
@@ -243,6 +250,9 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setDirectionalLights( widgetLights->directionalLights() );
   mMap->setIsSkyboxEnabled( groupSkyboxSettings->isChecked() );
   mMap->setSkyboxSettings( mSkyboxSettingsWidget->toSkyboxSettings() );
+  QgsShadowSettings shadowSettings = mShadowSetiingsWidget->toShadowSettings();
+  shadowSettings.setRenderShadows( groupShadowRendering->isChecked() );
+  mMap->setShadowSettings( shadowSettings );
 }
 
 void Qgs3DMapConfigWidget::onTerrainTypeChanged()
@@ -322,3 +332,4 @@ void Qgs3DMapConfigWidget::updateMaxZoomLevel()
   int zoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, spinMapResolution->value(), spinGroundError->value() );
   labelZoomLevels->setText( QStringLiteral( "0 - %1" ).arg( zoomLevel ) );
 }
+

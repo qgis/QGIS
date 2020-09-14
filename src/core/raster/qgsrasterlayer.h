@@ -208,9 +208,10 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * Set the data provider.
      * \param provider provider key string, must match a valid QgsRasterDataProvider key. E.g. "gdal", "wms", etc.
      * \param options provider options
+     * \param flags provider flags since QGIS 3.16
      * \since QGIS 3.2
      */
-    void setDataProvider( const QString &provider, const QgsDataProvider::ProviderOptions &options );
+    void setDataProvider( const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     /**
      * Updates the data source of the layer. The layer's renderer and legend will be preserved only

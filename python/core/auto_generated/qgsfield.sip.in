@@ -33,6 +33,7 @@ length, and if applicable, precision.
 
   public:
 
+
     QgsField( const QString &name = QString(),
               QVariant::Type type = QVariant::Invalid,
               const QString &typeName = QString(),
@@ -282,6 +283,8 @@ Sets the alias for the field (the friendly displayed name of the field ).
 
 .. versionadded:: 3.0
 %End
+
+
 
     QString displayString( const QVariant &v ) const;
 %Docstring

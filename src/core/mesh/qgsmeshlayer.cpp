@@ -54,7 +54,12 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
   if ( !meshLayerPath.isEmpty() && !providerKey.isEmpty() )
   {
     QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
-    ok = setDataProvider( providerKey, providerOptions );
+    QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+    if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
+    {
+      flags |= QgsDataProvider::FlagTrustDataSource;
+    }
+    ok = setDataProvider( providerKey, providerOptions, flags );
   }
 
   if ( ok )
@@ -1111,7 +1116,12 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
   }
 
   QgsDataProvider::ProviderOptions providerOptions;
-  if ( !setDataProvider( mProviderKey, providerOptions ) )
+  QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+  if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
+  {
+    flags |= QgsDataProvider::FlagTrustDataSource;
+  }
+  if ( !setDataProvider( mProviderKey, providerOptions, flags ) )
   {
     return false;
   }
@@ -1242,14 +1252,14 @@ QStringList QgsMeshLayer::subLayers() const
 }
 
 
-bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options )
+bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
   delete mDataProvider;
 
   mProviderKey = provider;
   QString dataSource = mDataSource;
 
-  mDataProvider = qobject_cast<QgsMeshDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, dataSource, options ) );
+  mDataProvider = qobject_cast<QgsMeshDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, dataSource, options, flags ) );
   if ( !mDataProvider )
   {
     QgsDebugMsgLevel( QStringLiteral( "Unable to get mesh data provider" ), 2 );

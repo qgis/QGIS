@@ -469,6 +469,7 @@
 %Include auto_generated/processing/qgsprocessingparameteraggregate.sip
 %Include auto_generated/processing/qgsprocessingparameterfieldmap.sip
 %Include auto_generated/processing/qgsprocessingparameters.sip
+%Include auto_generated/processing/qgsprocessingparametertininputlayers.sip
 %Include auto_generated/processing/qgsprocessingparametertype.sip
 %Include auto_generated/processing/qgsprocessingparametervectortilewriterlayers.sip
 %Include auto_generated/processing/qgsprocessingprovider.sip

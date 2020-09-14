@@ -1175,6 +1175,9 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   QgsMapLayer::ReadFlags layerFlags = QgsMapLayer::ReadFlags();
   if ( flags & QgsProject::ReadFlag::FlagDontResolveLayers )
     layerFlags |= QgsMapLayer::FlagDontResolveLayers;
+  // Propagate trust layer metadata flag
+  if ( mTrustLayerMetadata || ( flags & QgsProject::ReadFlag::FlagTrustLayerMetadata ) )
+    layerFlags |= QgsMapLayer::FlagTrustLayerMetadata;
 
   profile.switchTask( tr( "Load layer source" ) );
   bool layerIsValid = mapLayer->readLayerXml( layerElem, context, layerFlags ) && mapLayer->isValid();

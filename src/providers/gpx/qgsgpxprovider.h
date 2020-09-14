@@ -44,7 +44,7 @@ class QgsGPXProvider final: public QgsVectorDataProvider
     Q_OBJECT
 
   public:
-    explicit QgsGPXProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
+    explicit QgsGPXProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
     ~QgsGPXProvider() override;
 
     /* Functions inherited from QgsVectorDataProvider */
@@ -121,7 +121,7 @@ class QgsGpxProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsGpxProviderMetadata();
-    QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
 };
 
 #endif

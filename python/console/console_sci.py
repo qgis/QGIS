@@ -23,7 +23,7 @@ from qgis.PyQt.QtCore import Qt, QByteArray, QCoreApplication, QFile, QSize
 from qgis.PyQt.QtWidgets import QDialog, QMenu, QShortcut, QApplication
 from qgis.PyQt.QtGui import QColor, QKeySequence, QFont, QFontMetrics, QStandardItemModel, QStandardItem, QClipboard, \
     QFontDatabase
-from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs
+from qgis.PyQt.Qsci import QsciScintilla
 
 import sys
 import os
@@ -34,6 +34,7 @@ import traceback
 
 from qgis.core import QgsApplication, QgsSettings, Qgis
 from .ui_console_history_dlg import Ui_HistoryDialogPythonConsole
+from .console_base import QgsPythonConsoleBase
 
 _init_commands = ["import sys", "import os", "import re", "import math", "from qgis.core import *",
                   "from qgis.gui import *", "from qgis.analysis import *", "from qgis._3d import *",
@@ -44,28 +45,7 @@ _init_commands = ["import sys", "import os", "import re", "import math", "from q
 _historyFile = os.path.join(QgsApplication.qgisSettingsDirPath(), "console_history.txt")
 
 
-class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
-    DEFAULT_COLOR = "#4d4d4c"
-    KEYWORD_COLOR = "#8959a8"
-    CLASS_COLOR = "#4271ae"
-    METHOD_COLOR = "#4271ae"
-    DECORATION_COLOR = "#3e999f"
-    NUMBER_COLOR = "#c82829"
-    COMMENT_COLOR = "#8e908c"
-    COMMENT_BLOCK_COLOR = "#8e908c"
-    BACKGROUND_COLOR = "#ffffff"
-    CURSOR_COLOR = "#636363"
-    CARET_LINE_COLOR = "#efefef"
-    SINGLE_QUOTE_COLOR = "#718c00"
-    DOUBLE_QUOTE_COLOR = "#718c00"
-    TRIPLE_SINGLE_QUOTE_COLOR = "#eab700"
-    TRIPLE_DOUBLE_QUOTE_COLOR = "#eab700"
-    MARGIN_BACKGROUND_COLOR = "#efefef"
-    MARGIN_FOREGROUND_COLOR = "#636363"
-    SELECTION_BACKGROUND_COLOR = "#d7d7d7"
-    SELECTION_FOREGROUND_COLOR = "#303030"
-    MATCHED_BRACE_BACKGROUND_COLOR = "#b7f907"
-    MATCHED_BRACE_FOREGROUND_COLOR = "#303030"
+class ShellScintilla(QgsPythonConsoleBase, code.InteractiveInterpreter):
 
     def __init__(self, parent=None):
         super(ShellScintilla, self).__init__(parent)
@@ -78,23 +58,10 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
 
         self.settings = QgsSettings()
 
-        # Enable non-ascii chars for editor
-        self.setUtf8(True)
-
         self.new_input_line = True
 
-        # Set the default font
-        font = QFontDatabase.systemFont(QFontDatabase.FixedFont)
-        self.setFont(font)
-        self.setMarginsFont(font)
-        # Margin 0 is used for line numbers
-        self.setMarginWidth(0, 0)
-        self.setMarginWidth(1, 0)
-        self.setMarginWidth(2, 0)
-        self.setMarginsFont(font)
-        self.setMarginWidth(1, "00000")
-        self.setMarginType(1, 5)
         self.setCaretLineVisible(False)
+        self.setMarginLineNumbers(0, False)  # NO linenumbers for the input line
 
         self.buffer = []
 
@@ -114,9 +81,6 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         # Brace matching: enable for a brace immediately before or after
         # the current position
         self.setBraceMatching(QsciScintilla.SloppyBraceMatch)
-
-        # Current line visible with special background color
-        self.setCaretWidth(2)
 
         self.refreshSettingsShell()
 
@@ -211,71 +175,6 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             self.entered()
         self.move_cursor_to_end()
         self.setFocus()
-
-    def setLexers(self):
-        self.lexer = QsciLexerPython()
-
-        font = QFontDatabase.systemFont(QFontDatabase.FixedFont)
-
-        loadFont = self.settings.value("pythonConsole/fontfamilytext")
-        if loadFont:
-            font.setFamily(loadFont)
-        fontSize = self.settings.value("pythonConsole/fontsize", type=int)
-        if fontSize:
-            font.setPointSize(fontSize)
-
-        self.lexer.setDefaultFont(font)
-        self.lexer.setDefaultColor(
-            QColor(self.settings.value("pythonConsole/defaultFontColor", QColor(self.DEFAULT_COLOR))))
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentFontColor", QColor(self.COMMENT_COLOR))),
-                            1)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/numberFontColor", QColor(self.NUMBER_COLOR))), 2)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/keywordFontColor", QColor(self.KEYWORD_COLOR))),
-                            5)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/classFontColor", QColor(self.CLASS_COLOR))), 8)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/methodFontColor", QColor(self.METHOD_COLOR))), 9)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/decorFontColor", QColor(self.DECORATION_COLOR))),
-                            15)
-        self.lexer.setColor(
-            QColor(self.settings.value("pythonConsole/commentBlockFontColor", QColor(self.COMMENT_BLOCK_COLOR))), 12)
-        self.lexer.setColor(
-            QColor(self.settings.value("pythonConsole/singleQuoteFontColor", QColor(self.SINGLE_QUOTE_COLOR))), 4)
-        self.lexer.setColor(
-            QColor(self.settings.value("pythonConsole/doubleQuoteFontColor", QColor(self.DOUBLE_QUOTE_COLOR))), 3)
-        self.lexer.setColor(QColor(
-            self.settings.value("pythonConsole/tripleSingleQuoteFontColor", QColor(self.TRIPLE_SINGLE_QUOTE_COLOR))), 6)
-        self.lexer.setColor(QColor(
-            self.settings.value("pythonConsole/tripleDoubleQuoteFontColor", QColor(self.TRIPLE_DOUBLE_QUOTE_COLOR))), 7)
-        self.lexer.setColor(
-            QColor(self.settings.value("pythonConsole/defaultFontColorEditor", QColor(self.DEFAULT_COLOR))), 13)
-        self.lexer.setFont(font, 1)
-        self.lexer.setFont(font, 3)
-        self.lexer.setFont(font, 4)
-        self.lexer.setFont(font, QsciLexerPython.UnclosedString)
-
-        for style in range(0, 33):
-            paperColor = QColor(
-                self.settings.value("pythonConsole/paperBackgroundColor", QColor(self.BACKGROUND_COLOR)))
-            self.lexer.setPaper(paperColor, style)
-
-        self.api = QsciAPIs(self.lexer)
-        checkBoxAPI = self.settings.value("pythonConsole/preloadAPI", True, type=bool)
-        checkBoxPreparedAPI = self.settings.value("pythonConsole/usePreparedAPIFile", False, type=bool)
-        if checkBoxAPI:
-            pap = os.path.join(QgsApplication.pkgDataPath(), "python", "qsci_apis", "pyqgis.pap")
-            self.api.loadPrepared(pap)
-        elif checkBoxPreparedAPI:
-            self.api.loadPrepared(self.settings.value("pythonConsole/preparedAPIFile"))
-        else:
-            apiPath = self.settings.value("pythonConsole/userAPI", [])
-            for i in range(0, len(apiPath)):
-                self.api.load(apiPath[i])
-            self.api.prepare()
-            self.lexer.setAPIs(self.api)
-
-        self.setLexer(self.lexer)
-
-    # TODO: show completion list for file and directory
 
     def getText(self):
         """ Get the text as a unicode string. """
@@ -540,15 +439,22 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         menu.addMenu(subMenu)
         menu.addSeparator()
         copyAction = menu.addAction(
+            self.iconCopy,
             QCoreApplication.translate("PythonConsole", "Copy"),
             self.copy, QKeySequence.Copy)
         pasteAction = menu.addAction(
+            self.iconPaste,
             QCoreApplication.translate("PythonConsole", "Paste"),
             self.paste, QKeySequence.Paste)
+        pyQGISHelpAction = menu.addAction(self.iconPyQGISHelp,
+                                          QCoreApplication.translate("PythonConsole", "Search Selected in PyQGIS docs"),
+                                          self.searchPyQGIS)
         copyAction.setEnabled(False)
         pasteAction.setEnabled(False)
+        pyQGISHelpAction.setEnabled(False)
         if self.hasSelectedText():
             copyAction.setEnabled(True)
+            pyQGISHelpAction.setEnabled(True)
         if QApplication.clipboard().text():
             pasteAction.setEnabled(True)
         menu.exec_(self.mapToGlobal(e.pos()))

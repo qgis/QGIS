@@ -45,8 +45,10 @@ QgsCoordinateReferenceSystem QgsMeshMemoryDataProvider::crs() const
   return QgsCoordinateReferenceSystem();
 }
 
-QgsMeshMemoryDataProvider::QgsMeshMemoryDataProvider( const QString &uri, const ProviderOptions &options )
-  : QgsMeshDataProvider( uri, options )
+QgsMeshMemoryDataProvider::QgsMeshMemoryDataProvider( const QString &uri,
+    const ProviderOptions &options,
+    QgsDataProvider::ReadFlags flags )
+  : QgsMeshDataProvider( uri, options, flags )
 {
   QString data( uri );
   // see QgsMeshLayer::setDataProvider how mDataSource is created for memory layers
@@ -69,9 +71,11 @@ QString QgsMeshMemoryDataProvider::providerDescription()
   return TEXT_PROVIDER_DESCRIPTION;
 }
 
-QgsMeshMemoryDataProvider *QgsMeshMemoryDataProvider::createProvider( const QString &uri, const ProviderOptions &options )
+QgsMeshMemoryDataProvider *QgsMeshMemoryDataProvider::createProvider( const QString &uri,
+    const ProviderOptions &options,
+    QgsDataProvider::ReadFlags flags )
 {
-  return new QgsMeshMemoryDataProvider( uri, options );
+  return new QgsMeshMemoryDataProvider( uri, options, flags );
 }
 
 bool QgsMeshMemoryDataProvider::splitMeshSections( const QString &uri )

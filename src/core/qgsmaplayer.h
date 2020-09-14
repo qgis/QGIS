@@ -553,6 +553,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     enum ReadFlag
     {
       FlagDontResolveLayers = 1 << 0, //!< Don't resolve layer paths or create data providers for layers.
+      FlagTrustLayerMetadata = 1 << 1, //!< Trust layer metadata. Improves layer load time by skipping expensive checks like primary key unicity, geometry type and srid and by using estimated metadata on layer load. Since QGIS 3.16
     };
     Q_DECLARE_FLAGS( ReadFlags, ReadFlag )
 
@@ -739,7 +740,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \returns a QString with any status messages
      * \since QGIS 3.0
      */
-    QString loadDefaultMetadata( bool &resultFlag );
+    virtual QString loadDefaultMetadata( bool &resultFlag );
 
     /**
      * Retrieve a named metadata for this layer from a sqlite database.

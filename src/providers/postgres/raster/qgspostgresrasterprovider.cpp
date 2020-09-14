@@ -28,8 +28,8 @@ const QString QgsPostgresRasterProvider::PG_RASTER_PROVIDER_KEY = QStringLiteral
 const QString QgsPostgresRasterProvider::PG_RASTER_PROVIDER_DESCRIPTION =  QStringLiteral( "Postgres raster provider" );
 
 
-QgsPostgresRasterProvider::QgsPostgresRasterProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions )
-  : QgsRasterDataProvider( uri, providerOptions )
+QgsPostgresRasterProvider::QgsPostgresRasterProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, QgsDataProvider::ReadFlags flags )
+  : QgsRasterDataProvider( uri, providerOptions, flags )
   , mShared( new QgsPostgresRasterSharedData )
 {
 
@@ -120,8 +120,8 @@ QgsPostgresRasterProvider::QgsPostgresRasterProvider( const QString &uri, const 
   mValid = true;
 }
 
-QgsPostgresRasterProvider::QgsPostgresRasterProvider( const QgsPostgresRasterProvider &other, const QgsDataProvider::ProviderOptions &providerOptions )
-  : QgsRasterDataProvider( other.dataSourceUri(), providerOptions )
+QgsPostgresRasterProvider::QgsPostgresRasterProvider( const QgsPostgresRasterProvider &other, const QgsDataProvider::ProviderOptions &providerOptions, QgsDataProvider::ReadFlags flags )
+  : QgsRasterDataProvider( other.dataSourceUri(), providerOptions, flags )
   , mValid( other.mValid )
   , mCrs( other.mCrs )
   , mUri( other.mUri )
@@ -669,9 +669,9 @@ QString QgsPostgresRasterProviderMetadata::encodeUri( const QVariantMap &parts )
   return dsUri.uri( false );
 }
 
-QgsPostgresRasterProvider *QgsPostgresRasterProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
+QgsPostgresRasterProvider *QgsPostgresRasterProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
-  return new QgsPostgresRasterProvider( uri, options );
+  return new QgsPostgresRasterProvider( uri, options, flags );
 }
 
 
@@ -1583,7 +1583,7 @@ bool QgsPostgresRasterProvider::loadFields()
 
     Oid fldtyp = result.PQftype( i );
     int fldMod = result.PQfmod( i );
-    int fieldPrec = -1;
+    int fieldPrec = 0;
     Oid tableoid = result.PQftable( i );
     int attnum = result.PQftablecol( i );
     Oid atttypid = attTypeIdMap[tableoid][attnum];
@@ -1638,7 +1638,7 @@ bool QgsPostgresRasterProvider::loadFields()
       {
         fieldType = QVariant::Double;
         fieldSize = -1;
-        fieldPrec = -1;
+        fieldPrec = 0;
       }
       else if ( fieldTypeName == QLatin1String( "numeric" ) )
       {
@@ -1647,7 +1647,7 @@ bool QgsPostgresRasterProvider::loadFields()
         if ( formattedFieldType == QLatin1String( "numeric" ) || formattedFieldType.isEmpty() )
         {
           fieldSize = -1;
-          fieldPrec = -1;
+          fieldPrec = 0;
         }
         else
         {
@@ -1664,7 +1664,7 @@ bool QgsPostgresRasterProvider::loadFields()
                                              fieldName ),
                                        tr( "PostGIS" ) );
             fieldSize = -1;
-            fieldPrec = -1;
+            fieldPrec = 0;
           }
         }
       }
@@ -1734,7 +1734,7 @@ bool QgsPostgresRasterProvider::loadFields()
                        .arg( formattedFieldType,
                              fieldName ) );
           fieldSize = -1;
-          fieldPrec = -1;
+          fieldPrec = 0;
         }
       }
       else if ( fieldTypeName == QLatin1String( "char" ) )
@@ -1752,7 +1752,7 @@ bool QgsPostgresRasterProvider::loadFields()
                                      .arg( formattedFieldType,
                                            fieldName ) );
           fieldSize = -1;
-          fieldPrec = -1;
+          fieldPrec = 0;
         }
       }
       else if ( fieldTypeName == QLatin1String( "hstore" ) ||  fieldTypeName == QLatin1String( "json" ) || fieldTypeName == QLatin1String( "jsonb" ) )

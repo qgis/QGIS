@@ -33,8 +33,9 @@ const QString QgsDb2Provider::DB2_PROVIDER_DESCRIPTION = QStringLiteral( "DB2 Sp
 int QgsDb2Provider::sConnectionId = 0;
 QMutex QgsDb2Provider::sMutex{ QMutex::Recursive };
 
-QgsDb2Provider::QgsDb2Provider( const QString &uri, const ProviderOptions &options )
-  : QgsVectorDataProvider( uri, options )
+QgsDb2Provider::QgsDb2Provider( const QString &uri, const ProviderOptions &options,
+                                QgsDataProvider::ReadFlags flags )
+  : QgsVectorDataProvider( uri, options, flags )
   , mEnvironment( ENV_LUW )
 {
   QgsDebugMsg( "uri: " + uri );
@@ -62,6 +63,10 @@ QgsDb2Provider::QgsDb2Provider( const QString &uri, const ProviderOptions &optio
   QgsDebugMsg( "mExtents " + mExtents );
 
   mUseEstimatedMetadata = anUri.useEstimatedMetadata();
+  if ( mReadFlags & QgsDataProvider::FlagTrustDataSource )
+  {
+    mUseEstimatedMetadata = true;
+  }
   QgsDebugMsg( QStringLiteral( "mUseEstimatedMetadata: '%1'" ).arg( mUseEstimatedMetadata ) );
   mSqlWhereClause = anUri.sql();
   QString errMsg;
@@ -1646,22 +1651,22 @@ bool QgsDb2Provider::convertField( QgsField &field )
 
     case QVariant::DateTime:
       fieldType = QStringLiteral( "TIMESTAMP" );
-      fieldPrec = -1;
+      fieldPrec = 0;
       break;
 
     case QVariant::Date:
       fieldType = QStringLiteral( "DATE" );
-      fieldPrec = -1;
+      fieldPrec = 0;
       break;
 
     case QVariant::Time:
       fieldType = QStringLiteral( "TIME" );
-      fieldPrec = -1;
+      fieldPrec = 0;
       break;
 
     case QVariant::String:
       fieldType = QStringLiteral( "VARCHAR" );
-      fieldPrec = -1;
+      fieldPrec = 0;
       break;
 
     case QVariant::Int:
@@ -1675,7 +1680,7 @@ bool QgsDb2Provider::convertField( QgsField &field )
       {
         fieldType = QStringLiteral( "DOUBLE" );
         fieldSize = -1;
-        fieldPrec = -1;
+        fieldPrec = 0;
       }
       else
       {
@@ -1712,9 +1717,9 @@ QgsAttributeList QgsDb2Provider::pkAttributeIndexes() const
   return list;
 }
 
-QgsDb2Provider *QgsDb2ProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
+QgsDb2Provider *QgsDb2ProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
-  return new QgsDb2Provider( uri, options );
+  return new QgsDb2Provider( uri, options, flags );
 }
 
 QgsDb2ProviderMetadata::QgsDb2ProviderMetadata()

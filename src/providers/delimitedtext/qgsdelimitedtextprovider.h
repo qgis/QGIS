@@ -80,7 +80,7 @@ class QgsDelimitedTextProvider final: public QgsVectorDataProvider
       GeomAsWkt
     };
 
-    explicit QgsDelimitedTextProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
+    explicit QgsDelimitedTextProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
     ~QgsDelimitedTextProvider() override;
 
     /* Implementation of functions from QgsVectorDataProvider */
@@ -237,7 +237,7 @@ class QgsDelimitedTextProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsDelimitedTextProviderMetadata();
-    QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QVariantMap decodeUri( const QString &uri ) override;
     QString encodeUri( const QVariantMap &parts ) override;
 };

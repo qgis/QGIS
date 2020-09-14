@@ -93,11 +93,20 @@ QgsExpressionContext QgsSymbolLayerWidget::createExpressionContext() const
   //TODO - show actual value
   expContext.setOriginalValueVariable( QVariant() );
 
-  expContext.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_ORIGINAL_VALUE << QgsExpressionContext::EXPR_SYMBOL_COLOR
-                                      << QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT << QgsExpressionContext::EXPR_GEOMETRY_PART_NUM
-                                      << QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT << QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM
-                                      << QgsExpressionContext::EXPR_CLUSTER_COLOR << QgsExpressionContext::EXPR_CLUSTER_SIZE
-                                      << QStringLiteral( "symbol_layer_count" ) << QStringLiteral( "symbol_layer_index" ) );
+  QStringList highlights;
+  highlights << QgsExpressionContext::EXPR_ORIGINAL_VALUE << QgsExpressionContext::EXPR_SYMBOL_COLOR
+             << QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT << QgsExpressionContext::EXPR_GEOMETRY_PART_NUM
+             << QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT << QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM
+             << QgsExpressionContext::EXPR_CLUSTER_COLOR << QgsExpressionContext::EXPR_CLUSTER_SIZE
+             << QStringLiteral( "symbol_layer_count" ) << QStringLiteral( "symbol_layer_index" );
+
+
+  if ( expContext.hasVariable( QStringLiteral( "zoom_level" ) ) )
+  {
+    highlights << QStringLiteral( "zoom_level" );
+  }
+
+  expContext.setHighlightedVariables( highlights );
 
   return expContext;
 }
@@ -943,7 +952,7 @@ void QgsSimpleFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   registerDataDefinedButton( mFillStyleDDBtn, QgsSymbolLayer::PropertyFillStyle );
   registerDataDefinedButton( mStrokeStyleDDBtn, QgsSymbolLayer::PropertyStrokeStyle );
   registerDataDefinedButton( mJoinStyleDDBtn, QgsSymbolLayer::PropertyJoinStyle );
-
+  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
 }
 
 QgsSymbolLayer *QgsSimpleFillSymbolLayerWidget::symbolLayer()
@@ -1382,6 +1391,7 @@ void QgsGradientFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   registerDataDefinedButton( mRefPoint2XDDBtn, QgsSymbolLayer::PropertyGradientReference2X );
   registerDataDefinedButton( mRefPoint2YDDBtn, QgsSymbolLayer::PropertyGradientReference2Y );
   registerDataDefinedButton( mRefPoint2CentroidDDBtn, QgsSymbolLayer::PropertyGradientReference2IsCentroid );
+  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
 }
 
 QgsSymbolLayer *QgsGradientFillSymbolLayerWidget::symbolLayer()
@@ -1675,6 +1685,7 @@ void QgsShapeburstFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   registerDataDefinedButton( mShadeWholeShapeDDBtn, QgsSymbolLayer::PropertyShapeburstUseWholeShape );
   registerDataDefinedButton( mShadeDistanceDDBtn, QgsSymbolLayer::PropertyShapeburstMaxDistance );
   registerDataDefinedButton( mIgnoreRingsDDBtn, QgsSymbolLayer::PropertyShapeburstIgnoreRings );
+  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
 }
 
 QgsSymbolLayer *QgsShapeburstFillSymbolLayerWidget::symbolLayer()
@@ -4099,6 +4110,7 @@ void QgsRasterFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   registerDataDefinedButton( mOpacityDDBtn, QgsSymbolLayer::PropertyOpacity );
   registerDataDefinedButton( mRotationDDBtn, QgsSymbolLayer::PropertyAngle );
   registerDataDefinedButton( mWidthDDBtn, QgsSymbolLayer::PropertyWidth );
+  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
 }
 
 QgsSymbolLayer *QgsRasterFillSymbolLayerWidget::symbolLayer()

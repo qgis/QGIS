@@ -45,8 +45,7 @@ QgsField::QgsField( QString nam, QString typ, int len, int prec, bool num,
 }
 #endif
 QgsField::QgsField( const QString &name, QVariant::Type type,
-                    const QString &typeName, int len, int prec, const QString &comment,
-                    QVariant::Type subType )
+                    const QString &typeName, int len, int prec, const QString &comment, QVariant::Type subType )
 {
   d = new QgsFieldPrivate( name, type, subType, typeName, len, prec, comment );
 }
@@ -234,6 +233,16 @@ QString QgsField::alias() const
 void QgsField::setAlias( const QString &alias )
 {
   d->alias = alias;
+}
+
+QgsField::ConfigurationFlags QgsField::configurationFlags() const
+{
+  return d->flags;
+}
+
+void QgsField::setConfigurationFlags( QgsField::ConfigurationFlags flags )
+{
+  d->flags = flags;
 }
 
 /***************************************************************************

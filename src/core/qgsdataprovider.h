@@ -103,15 +103,32 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     struct ProviderOptions
     {
+
+      /**
+       * Coordinate transform context
+       */
       QgsCoordinateTransformContext transformContext;
+
     };
+
+    /**
+     * Flags which control dataprovider construction.
+     * \since QGIS 3.16
+     */
+    enum ReadFlag
+    {
+      FlagTrustDataSource = 1 << 0, //!< Trust datasource config (primary key unicity, geometry type and srid, etc). Improves provider load time by skipping expensive checks like primary key unicity, geometry type and srid and by using estimated metadata on data load. Since QGIS 3.16
+    };
+    Q_DECLARE_FLAGS( ReadFlags, ReadFlag )
 
     /**
      * Create a new dataprovider with the specified in the \a uri.
      *
-     * Additional creation options are specified within the \a options value.
+     * Additional creation options are specified within the \a options value and since QGIS 3.16 creation flags are specified within the \a flags value.
      */
-    QgsDataProvider( const QString &uri = QString(), const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions() );
+    QgsDataProvider( const QString &uri = QString(),
+                     const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions(),
+                     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     /**
      * Returns the coordinate system for the data source.
@@ -628,6 +645,9 @@ class CORE_EXPORT QgsDataProvider : public QObject
     //! Sets error message
     void setError( const QgsError &error ) { mError = error;}
 
+    //! Read flags. It's up to the subclass to respect these when needed
+    QgsDataProvider::ReadFlags mReadFlags = QgsDataProvider::ReadFlags();
+
   private:
 
     /**
@@ -636,9 +656,9 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     QString mDataSourceURI;
 
-    QMap< int, QVariant > mProviderProperties;
-
     QgsDataProvider::ProviderOptions mOptions;
+
+    QMap< int, QVariant > mProviderProperties;
 
     /**
      * Protects options from being accessed concurrently
@@ -652,5 +672,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
     virtual void reloadProviderData() {}
 };
 
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDataProvider::ReadFlags )
 
 #endif

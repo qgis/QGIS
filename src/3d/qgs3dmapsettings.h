@@ -31,6 +31,7 @@
 #include "qgsterraingenerator.h"
 #include "qgsvector3d.h"
 #include "qgsskyboxsettings.h"
+#include "qgsshadowsettings.h"
 
 class QgsMapLayer;
 class QgsRasterLayer;
@@ -419,10 +420,22 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     QgsSkyboxSettings skyboxSettings() const SIP_SKIP { return mSkyboxSettings; }
 
     /**
+     * Returns the current configuration of shadows
+     * \return QGIS 3.16
+     */
+    QgsShadowSettings shadowSettings() const SIP_SKIP { return mShadowSettings; }
+
+    /**
      * Sets the current configuration of the skybox
      * \since QGIS 3.16
      */
     void setSkyboxSettings( const QgsSkyboxSettings &skyboxSettings ) SIP_SKIP;
+
+    /**
+     * Sets the current configuration of shadow rendering
+     * \since QGIS 3.16
+     */
+    void setShadowSettings( const QgsShadowSettings &shadowSettings ) SIP_SKIP;
 
     /**
      * Returns whether the skybox is enabled.
@@ -537,6 +550,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void skyboxSettingsChanged();
 
+    /**
+     * Emitted when shadow rendering settings are changed
+     * \since QGIS 3.16
+     */
+    void shadowSettingsChanged();
+
   private:
 #ifdef SIP_RUN
     Qgs3DMapSettings &operator=( const Qgs3DMapSettings & );
@@ -563,7 +582,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     bool mShowLabels = false; //!< Whether to display labels on terrain tiles
     QList<QgsPointLightSettings> mPointLights;  //!< List of point lights defined for the scene
     QList<QgsDirectionalLightSettings> mDirectionalLights;  //!< List of directional lights defined for the scene
-    float mFieldOfView = 45.0f; //!< Camera lens field of view value
+    float mFieldOfView = 45.0f; //<! Camera lens field of view value
     QList<QgsMapLayerRef> mLayers;   //!< Layers to be rendered
     QList<QgsMapLayerRef> mTerrainLayers;   //!< Terrain layers to be rendered
     QList<QgsAbstract3DRenderer *> mRenderers;  //!< Extra stuff to render as 3D object
@@ -575,6 +594,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
 
     bool mIsSkyboxEnabled = false;  //!< Whether the skybox is enabled
     QgsSkyboxSettings mSkyboxSettings; //!< Skybox related configuration
+    QgsShadowSettings mShadowSettings; //!< Shadow rendering related settings
 };
 
 

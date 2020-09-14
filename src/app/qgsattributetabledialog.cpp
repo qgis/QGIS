@@ -623,6 +623,7 @@ void QgsAttributeTableDialog::mActionAddFeatureViaAttributeTable_triggered()
   if ( action.addFeature() )
   {
     masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
+    mMainView->setCurrentEditSelection( QgsFeatureIds() << action.feature().id() );
   }
 }
 
@@ -643,6 +644,7 @@ void QgsAttributeTableDialog::mActionAddFeatureViaAttributeForm_triggered()
   if ( action.addFeature() )
   {
     masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
+    mMainView->setCurrentEditSelection( QgsFeatureIds() << action.feature().id() );
   }
 }
 

@@ -192,7 +192,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      *
      * \since QGIS 3.16
      */
-    bool addDatasets( QgsMeshDatasetGroup *datasetGroup ) SIP_SKIP;
+    bool addDatasets( QgsMeshDatasetGroup *datasetGroup SIP_TRANSFER );
 
     /**
      * Saves datasets group on file with the specified \a driver
@@ -721,8 +721,9 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      * Binds layer to a specific data provider
      * \param provider provider key string, must match a valid QgsMeshDataProvider key. E.g. "mesh_memory", etc.
      * \param options generic provider options
+     * \param flags provider flags since QGIS 3.16
      */
-    bool setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options );
+    bool setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
 #ifdef SIP_RUN
     QgsMeshLayer( const QgsMeshLayer &rhs );

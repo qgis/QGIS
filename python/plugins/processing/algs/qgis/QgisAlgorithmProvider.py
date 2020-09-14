@@ -42,7 +42,6 @@ from .EliminateSelection import EliminateSelection
 from .ExecuteSQL import ExecuteSQL
 from .ExportGeometryInfo import ExportGeometryInfo
 from .FieldPyculator import FieldsPyculator
-from .FieldsCalculator import FieldsCalculator
 from .FindProjection import FindProjection
 from .GeometryConvert import GeometryConvert
 from .Heatmap import Heatmap
@@ -112,7 +111,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 EliminateSelection(),
                 ExecuteSQL(),
                 ExportGeometryInfo(),
-                FieldsCalculator(),
                 FieldsPyculator(),
                 FindProjection(),
                 GeometryConvert(),

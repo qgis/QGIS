@@ -248,6 +248,19 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     void setNmRelationId( const QVariant &nmRelationId = QVariant() );
 
     /**
+     * Determines the label of this element
+     * \since QGIS 3.16
+     */
+    QString label() const;
+
+    /**
+     * Sets \a label for this element
+     * If it's empty it takes the relation id as label
+     * \since QGIS 3.16
+     */
+    void setLabel( const QString &label = QString() );
+
+    /**
      * Returns the widget's current feature
      *
      * \since QGIS 3.14
@@ -316,11 +329,14 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     QObjectUniquePtr<QgsMapToolDigitizeFeature> mMapToolDigitize;
     QButtonGroup *mViewModeButtonGroup = nullptr;
 
+    QgsAttributeEditorRelation::Buttons mButtonsVisibility = QgsAttributeEditorRelation::Button::AllButtons;
     bool mShowLabel = true;
     bool mVisible = false;
+    bool mLayerInSameTransactionGroup = false;
 
     bool mForceSuppressFormPopup = false;
     QVariant mNmRelationId;
+    QString mLabel;
 
     /**
      * Deletes the features

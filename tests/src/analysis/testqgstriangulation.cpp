@@ -16,6 +16,11 @@ Email                : vcloarec at gmail dot com
 
 #include "qgsapplication.h"
 #include "qgsdualedgetriangulation.h"
+#include "qgsmeshtriangulation.h"
+#include "qgsvectorlayer.h"
+
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
 
 class TestQgsTriangulation : public QObject
 {
@@ -30,11 +35,16 @@ class TestQgsTriangulation : public QObject
     void cleanup() ;// will be called after every testfunction.
     void dualEdge();
 
+    void meshTriangulation();
+
   private:
 };
 
 void  TestQgsTriangulation::initTestCase()
-{}
+{
+  QgsApplication::init();
+  QgsApplication::initQgis();
+}
 
 void TestQgsTriangulation::cleanupTestCase()
 {}
@@ -150,6 +160,83 @@ void TestQgsTriangulation::dualEdge()
   mesh = triangulation.triangulationToMesh();
   QCOMPARE( mesh.faceCount(), 4 );
   QCOMPARE( mesh.vertexCount(), 5 );
+}
+
+void TestQgsTriangulation::meshTriangulation()
+{
+  QgsMeshTriangulation meshTri;
+
+  meshTri.setCrs( QgsCoordinateReferenceSystem( "EPSG:32620" ) );
+
+  QgsVectorLayer *mLayerPointZ = new QgsVectorLayer( QStringLiteral( "PointZ?crs=EPSG:32620" ),
+      QStringLiteral( "point Z" ),
+      QStringLiteral( "memory" ) );
+
+  QString wkt1 = "PointZ (684486.0 1761297.0 1)";
+  QString wkt2 = "PointZ (684276.0 1761309.0 2)";
+  QString wkt3 = "PointZ (684098.0 1761401.0 3)";
+  QString wkt4 = "PointZ (684292.0 1761406.0 4)";
+
+  QgsFeature f1;
+  f1.setGeometry( QgsGeometry::fromWkt( wkt1 ) );
+  QgsFeature f2;
+  f2.setGeometry( QgsGeometry::fromWkt( wkt2 ) );
+  QgsFeature f3;
+  f3.setGeometry( QgsGeometry::fromWkt( wkt3 ) );
+  QgsFeature f4;
+  f4.setGeometry( QgsGeometry::fromWkt( wkt4 ) );
+
+  QgsFeatureList flist;
+  flist << f1 << f2 << f3 << f4;
+  mLayerPointZ->dataProvider()->addFeatures( flist );
+
+  QgsCoordinateTransformContext transformContext;
+  QgsCoordinateTransform transform( mLayerPointZ->crs(),
+                                    QgsCoordinateReferenceSystem( "EPSG:32620" ),
+                                    transformContext );
+
+  QgsFeatureIterator fIt = mLayerPointZ->getFeatures();
+  meshTri.addVertices( fIt, -1, transform );
+
+  QgsMesh mesh = meshTri.triangulatedMesh();
+
+  QCOMPARE( mesh.vertexCount(), 4 );
+  QCOMPARE( mesh.faceCount(), 2 );
+
+  QCOMPARE( mesh.vertex( 0 ), QgsMeshVertex( 684486.0, 1761297.0, 1 ) );
+  QCOMPARE( mesh.vertex( 1 ), QgsMeshVertex( 684276.0, 1761309.0, 2 ) );
+  QCOMPARE( mesh.vertex( 2 ), QgsMeshVertex( 684098.0, 1761401.0, 3 ) );
+  QCOMPARE( mesh.vertex( 3 ), QgsMeshVertex( 684292.0, 1761406.0, 4 ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {0, 3, 1} ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( {1, 3, 2} ) ) );
+
+  QString wkt5 = "LineStringZ (684098.0 1761401.0 3,684210.24 1761347.92 7,684343.8 1761373.4 8,684486.0 1761297.0 1)";
+
+  QgsVectorLayer *mLayerBreakLine = new QgsVectorLayer( QStringLiteral( "LineStringZ?crs=EPSG:32620" ),
+      QStringLiteral( "line" ),
+      QStringLiteral( "memory" ) );
+
+  QgsFeature f5;
+  f5.setGeometry( QgsGeometry::fromWkt( wkt5 ) );
+  mLayerBreakLine->dataProvider()->addFeature( f5 );
+
+  transform = QgsCoordinateTransform( mLayerBreakLine->crs(),
+                                      QgsCoordinateReferenceSystem( "EPSG:32620" ),
+                                      transformContext );
+  fIt = mLayerBreakLine->getFeatures();
+  meshTri.addBreakLines( fIt, -1, transform );
+
+  mesh = meshTri.triangulatedMesh();
+
+  QCOMPARE( mesh.vertexCount(), 6 );
+  QCOMPARE( mesh.faceCount(), 6 );
+
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {0, 3, 5} ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( {0, 5, 1} ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 2 ), QgsMeshFace( {1, 4, 2} ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 3 ), QgsMeshFace( {3, 4, 5} ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 4 ), QgsMeshFace( {1, 5, 4} ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 5 ), QgsMeshFace( {2, 4, 3} ) ) );
 }
 
 QGSTEST_MAIN( TestQgsTriangulation )

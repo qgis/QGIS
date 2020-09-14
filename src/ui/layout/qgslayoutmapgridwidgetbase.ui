@@ -590,7 +590,7 @@
              <string> °</string>
             </property>
             <property name="decimals">
-             <number>0</number>
+             <number>2</number>
             </property>
             <property name="maximum">
              <double>90.000000000000000</double>
@@ -717,6 +717,26 @@
             </property>
            </widget>
           </item>
+          <item row="17" column="0">
+           <widget class="QLabel" name="label_annot_corner">
+            <property name="text">
+             <string>Margin to map corner</string>
+            </property>
+           </widget>
+          </item>
+          <item row="17" column="1" colspan="4">
+           <widget class="QDoubleSpinBox" name="mRotatedTicksMarginToCornerSpinBox">
+            <property name="toolTip">
+             <string>Outwards facing ticks closer to the corners than this margin will be ignored. This only makes sense for rotated grids.</string>
+            </property>
+            <property name="decimals">
+             <number>0</number>
+            </property>
+            <property name="value">
+             <double>0.000000000000000</double>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -754,7 +774,7 @@
              <string> °</string>
             </property>
             <property name="decimals">
-             <number>0</number>
+             <number>2</number>
             </property>
             <property name="maximum">
              <double>90.000000000000000</double>
@@ -944,6 +964,26 @@
             </property>
            </widget>
           </item>
+          <item row="20" column="0">
+           <widget class="QLabel" name="label_12">
+            <property name="text">
+             <string>Margin to map corner</string>
+            </property>
+           </widget>
+          </item>
+          <item row="20" column="1" colspan="2">
+           <widget class="QDoubleSpinBox" name="mRotatedAnnotationsMarginToCornerSpinBox">
+            <property name="toolTip">
+             <string>Outwards facing annotations closer to the corners than this margin will be ignored. This only makes sense for rotated grids.</string>
+            </property>
+            <property name="decimals">
+             <number>0</number>
+            </property>
+            <property name="value">
+             <double>0.000000000000000</double>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -1048,6 +1088,7 @@
   <tabstop>mRotatedTicksCheckBox</tabstop>
   <tabstop>mRotatedTicksLengthModeComboBox</tabstop>
   <tabstop>mRotatedTicksThresholdSpinBox</tabstop>
+  <tabstop>mRotatedTicksMarginToCornerSpinBox</tabstop>
   <tabstop>mDrawAnnotationGroupBox</tabstop>
   <tabstop>mAnnotationFormatComboBox</tabstop>
   <tabstop>mAnnotationFormatButton</tabstop>
@@ -1070,6 +1111,7 @@
   <tabstop>mRotatedAnnotationsCheckBox</tabstop>
   <tabstop>mRotatedAnnotationsLengthModeComboBox</tabstop>
   <tabstop>mRotatedAnnotationsThresholdSpinBox</tabstop>
+  <tabstop>mRotatedAnnotationsMarginToCornerSpinBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>

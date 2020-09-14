@@ -217,18 +217,7 @@ SET(QGIS_APP_SRCS
   qgsvariantdelegate.cpp
   qgscrashhandler.cpp
 
-  mesh/qgsmeshlayerproperties.cpp
-  mesh/qgsrenderermeshpropertieswidget.cpp
-  mesh/qgsmeshdatasetgrouptreewidget.cpp
-  mesh/qgsmeshrenderer3daveragingwidget.cpp
-  mesh/qgsmeshrenderermeshsettingswidget.cpp
-  mesh/qgsmeshrendererscalarsettingswidget.cpp
-  mesh/qgsmeshrenderervectorsettingswidget.cpp
-  mesh/qgsmeshrendereractivedatasetwidget.cpp
-  mesh/qgsmeshdatasetgrouptreeview.cpp
   mesh/qgsmeshcalculatordialog.cpp
-  mesh/qgsmeshstaticdatasetwidget.cpp
-  mesh/qgsmeshvariablestrokewidthwidget.cpp
 )
 
 IF (WITH_GEOREFERENCER)
@@ -290,6 +279,7 @@ IF (WITH_3D)
     3d/qgsmap3dexportwidget.cpp
     layout/qgslayout3dmapwidget.cpp
     3d/qgsskyboxrenderingsettingswidget.cpp
+    3d/qgsshadowrenderingsettingswidget.cpp
   )
 ENDIF (WITH_3D)
 
@@ -458,6 +448,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/auth
   ${CMAKE_SOURCE_DIR}/src/gui/devtools
   ${CMAKE_SOURCE_DIR}/src/gui/labeling
+  ${CMAKE_SOURCE_DIR}/src/gui/mesh
   ${CMAKE_SOURCE_DIR}/src/gui/numericformats
   ${CMAKE_SOURCE_DIR}/src/gui/ogr
   ${CMAKE_SOURCE_DIR}/src/gui/numericformats

@@ -266,10 +266,10 @@ int QgsDualEdgeTriangulation::addPoint( const QgsPoint &p )
       //edges to modify
       int edgeFromVirtualToExtremeSide1 = mHalfEdge[mHalfEdge[closestEdge]->getNext()]->getDual();
       int edgeFromVirtualToExtremeSide2 = mHalfEdge[mHalfEdge[mHalfEdge[closestEdge]->getDual()]->getNext()]->getNext();
-      int edgeFromeExtremeToVirtualSide2 = mHalfEdge[edgeFromVirtualToExtremeSide2]->getDual();
+      int edgeFromExtremeToVirtualSide2 = mHalfEdge[edgeFromVirtualToExtremeSide2]->getDual();
       //insert new edge
       int edgeFromExtremeToNewPoint = insertEdge( -10, -10, newPoint, false, false );
-      int edgeFromNewPointToExtrem = insertEdge( edgeFromExtremeToNewPoint, edgeFromeExtremeToVirtualSide2, extremPoint, false, false );
+      int edgeFromNewPointToExtrem = insertEdge( edgeFromExtremeToNewPoint, edgeFromExtremeToVirtualSide2, extremPoint, false, false );
       int edgeFromNewPointToVirtualSide1 = insertEdge( -10, edgeFromVirtualToExtremeSide1, -1, false, false );
       int edgeFromVirtualToNewPointSide1 = insertEdge( edgeFromNewPointToVirtualSide1, -10, newPoint, false, false );
       int edgeFromNewPointToVirtualSide2 = insertEdge( -10, edgeFromVirtualToNewPointSide1, -1, false, false );
@@ -282,7 +282,7 @@ int QgsDualEdgeTriangulation::addPoint( const QgsPoint &p )
       //modify existing edges
       mHalfEdge.at( edgeFromVirtualToExtremeSide1 )->setNext( edgeFromExtremeToNewPoint );
       mHalfEdge.at( edgeFromVirtualToExtremeSide2 )->setNext( edgeFromExtremeToOpposite );
-      mHalfEdge.at( edgeFromeExtremeToVirtualSide2 )->setNext( edgeFromVirtualToNewPointSide2 );
+      mHalfEdge.at( edgeFromExtremeToVirtualSide2 )->setNext( edgeFromVirtualToNewPointSide2 );
 
       return newPoint;
     }
@@ -3167,7 +3167,7 @@ bool QgsDualEdgeTriangulation::saveTriangulation( QgsFeatureSink *sink, QgsFeedb
   return !feedback || !feedback->isCanceled();
 }
 
-QgsMesh QgsDualEdgeTriangulation::triangulationToMesh() const
+QgsMesh QgsDualEdgeTriangulation::triangulationToMesh( QgsFeedback *feedBack ) const
 {
   QVector<bool> alreadyVisitedEdges( mHalfEdge.count(), false );
 
@@ -3199,7 +3199,7 @@ QgsMesh QgsDualEdgeTriangulation::triangulationToMesh() const
         containVirtualPoint |= currentEdge->getPoint() == -1;
         currentEdge = mHalfEdge.at( currentEdge->getNext() );
       }
-      while ( currentEdge != firstEdge && !containVirtualPoint );
+      while ( currentEdge != firstEdge && !containVirtualPoint && ( !feedBack || !feedBack->isCanceled() ) );
       if ( !containVirtualPoint )
         mesh.faces.append( face );
     }

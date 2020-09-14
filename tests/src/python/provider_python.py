@@ -195,12 +195,12 @@ class PyProvider(QgsVectorDataProvider):
         return 'Python Test Provider'
 
     @classmethod
-    def createProvider(cls, uri, providerOptions):
-        return PyProvider(uri, providerOptions)
+    def createProvider(cls, uri, providerOptions, flags=QgsDataProvider.ReadFlags()):
+        return PyProvider(uri, providerOptions, flags)
 
     # Implementation of functions from QgsVectorDataProvider
 
-    def __init__(self, uri='', providerOptions=QgsDataProvider.ProviderOptions()):
+    def __init__(self, uri='', providerOptions=QgsDataProvider.ProviderOptions(), flags=QgsDataProvider.ReadFlags()):
         super().__init__(uri)
         # Use the memory layer to parse the uri
         mlayer = QgsVectorLayer(uri, 'ml', 'memory')
@@ -215,6 +215,7 @@ class PyProvider(QgsVectorDataProvider):
         self._crs = mlayer.crs()
         self._spatialindex = None
         self._provider_options = providerOptions
+        self._flags = flags
         if 'index=yes' in self._uri:
             self.createSpatialIndex()
 

@@ -189,8 +189,8 @@ void QgsAmsLegendFetcher::handleFinished()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &options )
-  : QgsRasterDataProvider( uri, options )
+QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+  : QgsRasterDataProvider( uri, options, flags )
 {
   QgsDataSourceUri dataSource( dataSourceUri() );
   const QString referer = dataSource.param( QStringLiteral( "referer" ) );
@@ -1253,9 +1253,9 @@ QList<QgsDataItemProvider *> QgsAmsProviderMetadata::dataItemProviders() const
   return providers;
 }
 
-QgsAmsProvider *QgsAmsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
+QgsAmsProvider *QgsAmsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
-  return new QgsAmsProvider( uri, options );
+  return new QgsAmsProvider( uri, options, flags );
 }
 
 QVariantMap QgsAmsProviderMetadata::decodeUri( const QString &uri )

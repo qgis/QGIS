@@ -83,7 +83,7 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True, parame
                 if style is None:
                     if layer.type() == QgsMapLayerType.RasterLayer:
                         style = ProcessingConfig.getSetting(ProcessingConfig.RASTER_STYLE)
-                    else:
+                    elif layer.type() == QgsMapLayerType.VectorLayer:
                         if layer.geometryType() == QgsWkbTypes.PointGeometry:
                             style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POINT_STYLE)
                         elif layer.geometryType() == QgsWkbTypes.LineGeometry:

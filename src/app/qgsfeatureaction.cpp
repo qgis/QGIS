@@ -314,4 +314,9 @@ void QgsFeatureAction::onFeatureSaved( const QgsFeature &feature )
   }
 }
 
+QgsFeature QgsFeatureAction::feature() const
+{
+  return mFeature ? *mFeature : QgsFeature();
+}
+
 QHash<QgsVectorLayer *, QgsAttributeMap> QgsFeatureAction::sLastUsedValues;

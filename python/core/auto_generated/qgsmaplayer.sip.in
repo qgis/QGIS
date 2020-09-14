@@ -537,6 +537,7 @@ or layer with temporary data (as temporary mesh layer dataset)
     enum ReadFlag
     {
       FlagDontResolveLayers,
+      FlagTrustLayerMetadata,
     };
     typedef QFlags<QgsMapLayer::ReadFlag> ReadFlags;
 
@@ -742,7 +743,7 @@ record in the users style table in their personal qgis.db)
 .. versionadded:: 3.0
 %End
 
-    QString loadDefaultMetadata( bool &resultFlag );
+    virtual QString loadDefaultMetadata( bool &resultFlag );
 %Docstring
 Retrieve the default metadata for this layer if one
 exists (either as a .qmd file on disk or as a

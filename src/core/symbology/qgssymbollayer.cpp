@@ -246,7 +246,10 @@ int QgsSymbolLayer::renderingPass() const
 
 QSet<QString> QgsSymbolLayer::usedAttributes( const QgsRenderContext &context ) const
 {
-  QSet<QString> columns = mDataDefinedProperties.referencedFields( context.expressionContext() );
+  // calling referencedFields() with ignoreContext=true because in our expression context
+  // we do not have valid QgsFields yet - because of that the field names from expressions
+  // wouldn't get reported
+  QSet<QString> columns = mDataDefinedProperties.referencedFields( context.expressionContext(), true );
   return columns;
 }
 

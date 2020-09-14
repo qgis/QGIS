@@ -72,6 +72,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmextractzmvalues.cpp
   processing/qgsalgorithmextractvertices.cpp
   processing/qgsalgorithmextractspecificvertices.cpp
+  processing/qgsalgorithmfieldcalculator.cpp
   processing/qgsalgorithmfiledownloader.cpp
   processing/qgsalgorithmfillnodata.cpp
   processing/qgsalgorithmfilter.cpp
@@ -186,6 +187,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmsumlinelength.cpp
   processing/qgsalgorithmsymmetricaldifference.cpp
   processing/qgsalgorithmtaperedbuffer.cpp
+  processing/qgsalgorithmtinmeshcreation.cpp
   processing/qgsalgorithmtransect.cpp
   processing/qgsalgorithmtransform.cpp
   processing/qgsalgorithmtranslate.cpp
@@ -197,6 +199,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmwritevectortiles.cpp
   processing/qgsalgorithmzonalhistogram.cpp
   processing/qgsalgorithmzonalstatistics.cpp
+  processing/qgsalgorithmzonalstatisticsfeaturebased.cpp
   processing/qgsbookmarkalgorithms.cpp
   processing/qgsprojectstylealgorithms.cpp
   processing/qgsstylealgorithms.cpp
@@ -227,6 +230,7 @@ SET(QGIS_ANALYSIS_SRCS
   vector/qgszonalstatistics.cpp
 
   mesh/qgsmeshcontours.cpp
+  mesh/qgsmeshtriangulation.cpp
 
   network/qgsgraph.cpp
   network/qgsgraphbuilder.cpp
@@ -294,6 +298,7 @@ SET(QGIS_ANALYSIS_HDRS
   interpolation/qgstininterpolator.h
 
   mesh/qgsmeshcontours.h
+  mesh/qgsmeshtriangulation.h
 
   network/qgsgraph.h
   network/qgsgraphanalyzer.h

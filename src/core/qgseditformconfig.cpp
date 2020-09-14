@@ -693,6 +693,11 @@ QgsAttributeEditorElement *QgsEditFormConfig::attributeEditorElementFromDomEleme
       // pre QGIS 3.16 compatibility - the widgets section is read before
       relElement->setNmRelationId( widgetConfig( elem.attribute( QStringLiteral( "relation" ) ) ).value( QStringLiteral( "nm-rel" ) ) );
     }
+    if ( elem.hasAttribute( "label" ) )
+    {
+      QString label = elem.attribute( QStringLiteral( "label" ) );
+      relElement->setLabel( label );
+    }
     newElement = relElement;
   }
   else if ( elem.tagName() == QLatin1String( "attributeEditorQmlElement" ) )

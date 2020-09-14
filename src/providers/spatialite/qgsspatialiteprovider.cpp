@@ -79,7 +79,7 @@ bool QgsSpatiaLiteProvider::convertField( QgsField &field )
     case QVariant::Time:
     case QVariant::String:
       fieldType = QStringLiteral( "TEXT" );
-      fieldPrec = -1;
+      fieldPrec = 0;
       break;
 
     case QVariant::Int:
@@ -93,7 +93,7 @@ bool QgsSpatiaLiteProvider::convertField( QgsField &field )
       {
         fieldType = QStringLiteral( "REAL" );
         fieldSize = -1;
-        fieldPrec = -1;
+        fieldPrec = 0;
       }
       else
       {
@@ -117,7 +117,7 @@ bool QgsSpatiaLiteProvider::convertField( QgsField &field )
     case QVariant::ByteArray:
       fieldType = QStringLiteral( "BLOB" );
       fieldSize = -1;
-      fieldPrec = -1;
+      fieldPrec = 0;
       break;
 
     default:
@@ -458,8 +458,8 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
 }
 
 
-QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri, const ProviderOptions &options )
-  : QgsVectorDataProvider( uri, options )
+QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri, const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+  : QgsVectorDataProvider( uri, options, flags )
 {
   nDims = GAIA_XY;
   QgsDataSourceUri anUri = QgsDataSourceUri( uri );
@@ -5865,9 +5865,10 @@ QVariantMap QgsSpatiaLiteProviderMetadata::decodeUri( const QString &uri )
 
 QgsSpatiaLiteProvider *QgsSpatiaLiteProviderMetadata::createProvider(
   const QString &uri,
-  const QgsDataProvider::ProviderOptions &options )
+  const QgsDataProvider::ProviderOptions &options,
+  QgsDataProvider::ReadFlags flags )
 {
-  return new QgsSpatiaLiteProvider( uri, options );
+  return new QgsSpatiaLiteProvider( uri, options, flags );
 }
 
 QString QgsSpatiaLiteProviderMetadata::encodeUri( const QVariantMap &parts )

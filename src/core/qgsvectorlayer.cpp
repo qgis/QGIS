@@ -313,6 +313,7 @@ QgsVectorLayer *QgsVectorLayer::clone() const
   for ( int i = 0; i < fields().count(); i++ )
   {
     layer->setFieldAlias( i, attributeAlias( i ) );
+    layer->setFieldConfigurationFlags( i, fieldConfigurationFlags( i ) );
     layer->setEditorWidgetSetup( i, editorWidgetSetup( i ) );
     layer->setConstraintExpression( i, constraintExpression( i ), constraintDescription( i ) );
     layer->setDefaultValueDefinition( i, defaultValueDefinition( i ) );
@@ -1534,7 +1535,12 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
   }
 
   QgsDataProvider::ProviderOptions options { context.transformContext() };
-  if ( ( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) || !setDataProvider( mProviderKey, options ) )
+  QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+  if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
+  {
+    flags |= QgsDataProvider::FlagTrustDataSource;
+  }
+  if ( ( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) || !setDataProvider( mProviderKey, options, flags ) )
   {
     if ( !( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) )
     {
@@ -1624,7 +1630,13 @@ void QgsVectorLayer::setDataSource( const QString &dataSource, const QString &ba
 
   mDataSource = dataSource;
   setName( baseName );
-  setDataProvider( provider, options );
+
+  QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+  if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
+  {
+    flags |= QgsDataProvider::FlagTrustDataSource;
+  }
+  setDataProvider( provider, options, flags );
 
   if ( !isValid() )
   {
@@ -1704,7 +1716,7 @@ QString QgsVectorLayer::loadDefaultStyle( bool &resultFlag )
 }
 
 
-bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options )
+bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
   mProviderKey = provider;
   delete mDataProvider;
@@ -1729,7 +1741,7 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
     profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Create %1 provider" ).arg( provider ), QStringLiteral( "projectload" ) );
 
-  mDataProvider = qobject_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, mDataSource, options ) );
+  mDataProvider = qobject_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, mDataSource, options, flags ) );
   if ( !mDataProvider )
   {
     setValid( false );
@@ -2129,29 +2141,8 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
       for ( int i = 0; i < relationNodes.length(); ++i )
       {
         const QDomElement relationElement = relationNodes.at( i ).toElement();
-        QList<QgsRelation::FieldPair> fieldPairs;
-        const QDomNodeList fieldPairNodes { relationElement.elementsByTagName( QStringLiteral( "fieldPair" ) ) };
-        for ( int j = 0; j < fieldPairNodes.length(); ++j )
-        {
-          const QDomElement fieldPairElement = fieldPairNodes.at( j ).toElement();
-          fieldPairs.push_back( { fieldPairElement.attribute( QStringLiteral( "referencing" ) ),
-                                  fieldPairElement.attribute( QStringLiteral( "referenced" ) ) } );
-        }
-        mWeakRelations.push_back( QgsWeakRelation { relationElement.attribute( QStringLiteral( "id" ) ),
-                                  relationElement.attribute( QStringLiteral( "name" ) ),
-                                  static_cast<QgsRelation::RelationStrength>( relationElement.attribute( QStringLiteral( "strength" ) ).toInt() ),
-                                  // Referencing
-                                  id(),
-                                  name(),
-                                  resolver.writePath( publicSource() ),
-                                  providerType(),
-                                  // Referenced
-                                  relationElement.attribute( QStringLiteral( "layerId" ) ),
-                                  relationElement.attribute( QStringLiteral( "layerName" ) ),
-                                  relationElement.attribute( QStringLiteral( "dataSource" ) ),
-                                  relationElement.attribute( QStringLiteral( "providerKey" ) ),
-                                  fieldPairs
-                                                  } );
+
+        mWeakRelations.push_back( QgsWeakRelation::readXml( this, QgsWeakRelation::Referencing, relationElement, resolver ) );
       }
     }
 
@@ -2163,29 +2154,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
       for ( int i = 0; i < relationNodes.length(); ++i )
       {
         const QDomElement relationElement = relationNodes.at( i ).toElement();
-        QList<QgsRelation::FieldPair> fieldPairs;
-        const QDomNodeList fieldPairNodes { relationElement.elementsByTagName( QStringLiteral( "fieldPair" ) ) };
-        for ( int j = 0; j < fieldPairNodes.length(); ++j )
-        {
-          const QDomElement fieldPairElement = fieldPairNodes.at( j ).toElement();
-          fieldPairs.push_back( { fieldPairElement.attribute( QStringLiteral( "referencing" ) ),
-                                  fieldPairElement.attribute( QStringLiteral( "referenced" ) ) } );
-        }
-        mWeakRelations.push_back( QgsWeakRelation { relationElement.attribute( QStringLiteral( "id" ) ),
-                                  relationElement.attribute( QStringLiteral( "name" ) ),
-                                  static_cast<QgsRelation::RelationStrength>( relationElement.attribute( QStringLiteral( "strength" ) ).toInt() ),
-                                  // Referencing
-                                  relationElement.attribute( QStringLiteral( "layerId" ) ),
-                                  relationElement.attribute( QStringLiteral( "layerName" ) ),
-                                  relationElement.attribute( QStringLiteral( "dataSource" ) ),
-                                  relationElement.attribute( QStringLiteral( "providerKey" ) ),
-                                  // Referenced
-                                  id(),
-                                  name(),
-                                  resolver.writePath( publicSource() ),
-                                  providerType(),
-                                  fieldPairs
-                                                  } );
+        mWeakRelations.push_back( QgsWeakRelation::readXml( this, QgsWeakRelation::Referenced, relationElement, resolver ) );
       }
     }
   }
@@ -2369,6 +2338,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
       const QDomElement fieldWidgetElement = fieldConfigElement.elementsByTagName( QStringLiteral( "editWidget" ) ).at( 0 ).toElement();
 
       QString fieldName = fieldConfigElement.attribute( QStringLiteral( "name" ) );
+      mFieldConfigurationFlags[fieldName] = qgsFlagKeysToValue( fieldConfigElement.attribute( QStringLiteral( "configurationFlags" ) ), QgsField::ConfigurationFlag::DefaultFlags );
 
       const QString widgetType = fieldWidgetElement.attribute( QStringLiteral( "type" ) );
       const QDomElement cfgElem = fieldConfigElement.elementsByTagName( QStringLiteral( "config" ) ).at( 0 ).toElement();
@@ -2627,9 +2597,6 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
   // Relation information for both referenced and referencing sides
   if ( categories.testFlag( Relations ) )
   {
-
-    const QgsPathResolver resolver { QgsProject::instance()->pathResolver() };
-
     // Store referenced layers: relations where "this" is the child layer (the referencing part, that holds the FK)
     QDomElement referencedLayersElement = doc.createElement( QStringLiteral( "referencedLayers" ) );
     node.appendChild( referencedLayersElement );
@@ -2637,58 +2604,19 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
     const auto constReferencingRelations { QgsProject::instance()->relationManager()->referencingRelations( this ) };
     for ( const auto &rel : constReferencingRelations )
     {
-
-      QDomElement relationElement = doc.createElement( QStringLiteral( "relation" ) );
-      referencedLayersElement.appendChild( relationElement );
-
-      relationElement.setAttribute( QStringLiteral( "id" ), rel.id() );
-      relationElement.setAttribute( QStringLiteral( "name" ), rel.name() );
-      relationElement.setAttribute( QStringLiteral( "strength" ), rel.strength() );
-      relationElement.setAttribute( QStringLiteral( "layerId" ), rel.referencedLayer()->id() );
-      relationElement.setAttribute( QStringLiteral( "layerName" ), rel.referencedLayer()->name() );
-      relationElement.setAttribute( QStringLiteral( "dataSource" ), resolver.writePath( rel.referencedLayer()->publicSource() ) );
-      relationElement.setAttribute( QStringLiteral( "providerKey" ), rel.referencedLayer()->providerType() );
-
-      const QList<QgsRelation::FieldPair> constFieldPairs { rel.fieldPairs() };
-      for ( const QgsRelation::FieldPair &fp : constFieldPairs )
-      {
-        QDomElement fieldPair = doc.createElement( QStringLiteral( "fieldPair" ) );
-        relationElement.appendChild( fieldPair );
-        fieldPair.setAttribute( QStringLiteral( "referenced" ), fp.referencedField() );
-        fieldPair.setAttribute( QStringLiteral( "referencing" ), fp.referencingField() );
-      }
-
+      QgsWeakRelation::writeXml( this, rel, referencedLayersElement, doc );
     }
 
-    // Store referencing layers: relations where "this" is the parent layer (the referenced part where the FK points to)
+    // Store referencing layers: relations where "this" is the parent layer (the referenced part, that holds the FK)
     QDomElement referencingLayersElement = doc.createElement( QStringLiteral( "referencingLayers" ) );
-    node.appendChild( referencingLayersElement );
+    node.appendChild( referencedLayersElement );
 
-    const auto constReferencedRelations { QgsProject::instance()->relationManager()->referencedRelations( this ) };
+    const auto constReferencedRelations { QgsProject::instance()->relationManager()->referencingRelations( this ) };
     for ( const auto &rel : constReferencedRelations )
     {
-
-      QDomElement relationElement = doc.createElement( QStringLiteral( "relation" ) );
-      referencingLayersElement.appendChild( relationElement );
-
-      relationElement.setAttribute( QStringLiteral( "id" ), rel.id() );
-      relationElement.setAttribute( QStringLiteral( "name" ), rel.name() );
-      relationElement.setAttribute( QStringLiteral( "strength" ), rel.strength() );
-      relationElement.setAttribute( QStringLiteral( "layerId" ), rel.referencingLayer()->id() );
-      relationElement.setAttribute( QStringLiteral( "layerName" ), rel.referencingLayer()->name() );
-      relationElement.setAttribute( QStringLiteral( "dataSource" ), resolver.writePath( rel.referencingLayer()->publicSource() ) );
-      relationElement.setAttribute( QStringLiteral( "providerKey" ), rel.referencingLayer()->providerType() );
-
-      const QList<QgsRelation::FieldPair> constFieldPairs { rel.fieldPairs() };
-      for ( const QgsRelation::FieldPair &fp : constFieldPairs )
-      {
-        QDomElement fieldPair = doc.createElement( QStringLiteral( "fieldPair" ) );
-        relationElement.appendChild( fieldPair );
-        fieldPair.setAttribute( QStringLiteral( "referenced" ), fp.referencedField() );
-        fieldPair.setAttribute( QStringLiteral( "referencing" ), fp.referencingField() );
-      }
-
+      QgsWeakRelation::writeXml( this, rel, referencingLayersElement, doc );
     }
+
   }
 
   if ( categories.testFlag( Fields ) )
@@ -2701,6 +2629,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
     {
       QDomElement fieldElement = doc.createElement( QStringLiteral( "field" ) );
       fieldElement.setAttribute( QStringLiteral( "name" ), field.name() );
+      fieldElement.setAttribute( QStringLiteral( "configurationFlags" ), qgsFlagValueToKeys( field.configurationFlags() ) );
 
       fieldConfigurationElement.appendChild( fieldElement );
 
@@ -3846,6 +3775,17 @@ void QgsVectorLayer::updateFields()
       continue;
 
     mFields[ index ].setAlias( aliasIt.value() );
+  }
+
+  // Update configuration flags
+  QMap< QString, QgsField::ConfigurationFlags >::const_iterator flagsIt = mFieldConfigurationFlags.constBegin();
+  for ( ; flagsIt != mFieldConfigurationFlags.constEnd(); ++flagsIt )
+  {
+    int index = mFields.lookupField( flagsIt.key() );
+    if ( index < 0 )
+      continue;
+
+    mFields[index].setConfigurationFlags( flagsIt.value() );
   }
 
   // Update default values
@@ -5540,6 +5480,26 @@ void QgsVectorLayer::setConstraintExpression( int index, const QString &expressi
     mFieldConstraintExpressions.insert( mFields.at( index ).name(), qMakePair( expression, description ) );
   }
   updateFields();
+}
+
+void QgsVectorLayer::setFieldConfigurationFlags( int index, QgsField::ConfigurationFlags flags )
+{
+  if ( index < 0 || index >= mFields.count() )
+    return;
+
+  mFields.at( index ).setConfigurationFlags( flags );
+
+  mFieldConfigurationFlags.insert( mFields.at( index ).name(), flags );
+  updateFields();
+}
+
+QgsField::ConfigurationFlags QgsVectorLayer::fieldConfigurationFlags( int index ) const
+{
+
+  if ( index < 0 || index >= mFields.count() )
+    return QgsField::ConfigurationFlag::DefaultFlags;
+
+  return mFields.at( index ).configurationFlags();
 }
 
 void QgsVectorLayer::setEditorWidgetSetup( int index, const QgsEditorWidgetSetup &setup )

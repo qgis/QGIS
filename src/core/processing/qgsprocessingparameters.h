@@ -406,6 +406,8 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterDatabaseTable;
     else if ( sipCpp->type() == QgsProcessingParameterFieldMapping::typeName() )
       sipType = sipType_QgsProcessingParameterFieldMapping;
+    else if ( sipCpp->type() == QgsProcessingParameterTinInputLayers::typeName() )
+      sipType = sipType_QgsProcessingParameterTinInputLayers;
     else
       sipType = nullptr;
     SIP_END

@@ -603,7 +603,7 @@ void QgsRasterLayer::init()
   mLastViewPort.mHeight = 0;
 }
 
-void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options )
+void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   setValid( false ); // assume the layer is invalid until we determine otherwise
@@ -627,7 +627,7 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
     profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Create %1 provider" ).arg( provider ), QStringLiteral( "projectload" ) );
 
-  mDataProvider = qobject_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->createProvider( mProviderKey, mDataSource, options ) );
+  mDataProvider = qobject_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->createProvider( mProviderKey, mDataSource, options, flags ) );
   if ( !mDataProvider )
   {
     //QgsMessageLog::logMessage( tr( "Cannot instantiate the data provider" ), tr( "Raster" ) );
@@ -907,7 +907,13 @@ void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &ba
   mDataSource = dataSource;
   mLayerName = baseName;
 
-  setDataProvider( provider, options );
+  QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+  if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
+  {
+    flags |= QgsDataProvider::FlagTrustDataSource;
+  }
+
+  setDataProvider( provider, options, flags );
 
   if ( mDataProvider )
     mDataProvider->setDataSourceUri( mDataSource );
@@ -1944,7 +1950,12 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
   if ( !( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) )
   {
     QgsDataProvider::ProviderOptions providerOptions { context.transformContext() };
-    setDataProvider( mProviderKey, providerOptions );
+    QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+    if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
+    {
+      flags |= QgsDataProvider::FlagTrustDataSource;
+    }
+    setDataProvider( mProviderKey, providerOptions, flags );
   }
 
   mOriginalStyleElement = layer_node.namedItem( QStringLiteral( "originalStyle" ) ).firstChildElement();
@@ -2466,7 +2477,12 @@ bool QgsRasterLayer::update()
     closeDataProvider();
     init();
     QgsDataProvider::ProviderOptions providerOptions;
-    setDataProvider( mProviderKey, providerOptions );
+    QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+    if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
+    {
+      flags |= QgsDataProvider::FlagTrustDataSource;
+    }
+    setDataProvider( mProviderKey, providerOptions, flags );
     emit dataChanged();
   }
   return isValid();

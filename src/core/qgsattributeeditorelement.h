@@ -494,6 +494,19 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      */
     void setNmRelationId( const QVariant &nmRelationId = QVariant() );
 
+    /**
+     * Determines the label of this element
+     * \since QGIS 3.16
+     */
+    QString label() const;
+
+    /**
+     * Sets \a label for this element
+     * If it's empty it takes the relation id as label
+     * \since QGIS 3.16
+     */
+    void setLabel( const QString &label = QString() );
+
   private:
     void saveConfiguration( QDomElement &elem ) const override;
     QString typeIdentifier() const override;
@@ -502,6 +515,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     Buttons mButtons = Buttons( Button::AllButtons );
     bool mForceSuppressFormPopup = false;
     QVariant mNmRelationId;
+    QString mLabel;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAttributeEditorRelation::Buttons )

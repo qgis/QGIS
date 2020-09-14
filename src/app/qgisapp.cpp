@@ -112,6 +112,7 @@
 #include "layout/qgslayout3dmapwidget.h"
 #include "layout/qgslayoutviewrubberband.h"
 #include "qgsvectorlayer3drendererwidget.h"
+#include "qgsmeshlayer3drendererwidget.h"
 #include "qgs3dapputils.h"
 #endif
 
@@ -1314,6 +1315,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   registerMapLayerPropertiesFactory( new QgsVectorLayerDigitizingPropertiesFactory( this ) );
 #ifdef HAVE_3D
   registerMapLayerPropertiesFactory( new QgsVectorLayer3DRendererWidgetFactory( this ) );
+  registerMapLayerPropertiesFactory( new QgsMeshLayer3DRendererWidgetFactory( this ) );
 #endif
 
   activateDeactivateLayerRelatedActions( nullptr ); // after members were created
@@ -1429,6 +1431,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   }
 
   // Update recent project list (as possible custom project storages are now registered by plugins)
+  mSplash->showMessage( tr( "Updating recent project paths" ), Qt::AlignHCenter | Qt::AlignBottom );
+  qApp->processEvents();
   startProfile( tr( "Update recent project paths" ) );
   updateRecentProjectPaths();
   mWelcomePage->setRecentProjects( mRecentProjects );
@@ -2057,6 +2061,9 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
     else if ( u.layerType == QLatin1String( "vector-tile" ) )
     {
       QgsVectorTileLayer *layer = new QgsVectorTileLayer( uri, u.name );
+      bool ok = false;
+      layer->loadDefaultStyle( ok );
+      layer->loadDefaultMetadata( ok );
       addMapLayer( layer );
     }
     else if ( u.layerType == QLatin1String( "plugin" ) )
@@ -5653,6 +5660,13 @@ QgsVectorTileLayer *QgisApp::addVectorTileLayerPrivate( const QString &url, cons
     // since the layer is bad, stomp on it
     return nullptr;
   }
+  bool ok = false;
+  QString error = layer->loadDefaultStyle( ok );
+  if ( !ok )
+    visibleMessageBar()->pushMessage( tr( "Error loading style" ), error, Qgis::Warning, messageTimeout() );
+  error = layer->loadDefaultMetadata( ok );
+  if ( !ok )
+    visibleMessageBar()->pushMessage( tr( "Error loading layer metadata" ), error, Qgis::Warning, messageTimeout() );
 
   QgsProject::instance()->addMapLayer( layer.get() );
   activateDeactivateLayerRelatedActions( activeLayer() );
@@ -15613,8 +15627,11 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
     case QgsMapLayerType::MeshLayer:
     {
       QgsMeshLayerProperties meshLayerPropertiesDialog( mapLayer, mMapCanvas, this );
-      if ( !page.isEmpty() )
-        meshLayerPropertiesDialog.setCurrentPage( page );
+
+      for ( QgsMapLayerConfigWidgetFactory *factory : qgis::as_const( mMapLayerPanelFactories ) )
+      {
+        meshLayerPropertiesDialog.addPropertiesPageFactory( factory );
+      }
 
       mMapStyleWidget->blockUpdates( true );
       if ( meshLayerPropertiesDialog.exec() )

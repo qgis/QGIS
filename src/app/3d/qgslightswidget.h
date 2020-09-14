@@ -41,7 +41,7 @@ class QgsLightsWidget : public QWidget, private Ui::QgsLightsWidget
     QList<QgsDirectionalLightSettings> directionalLights();
 
   signals:
-
+    void directionalLightsCountChanged( int count );
   private slots:
     void onCurrentLightChanged( int index );
     void updateCurrentLightParameters();
@@ -52,7 +52,6 @@ class QgsLightsWidget : public QWidget, private Ui::QgsLightsWidget
     void updateCurrentDirectionalLightParameters();
     void onAddDirectionalLight();
     void onRemoveDirectionalLight();
-
   private:
     void updateLightsList();
     void updateDirectionalLightsList();

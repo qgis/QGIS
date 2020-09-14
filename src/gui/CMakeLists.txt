@@ -257,6 +257,18 @@ SET(QGIS_GUI_SRCS
 
   locator/qgslocatorwidget.cpp
 
+  mesh/qgsmeshlayerproperties.cpp
+  mesh/qgsrenderermeshpropertieswidget.cpp
+  mesh/qgsmeshdatasetgrouptreewidget.cpp
+  mesh/qgsmeshrenderer3daveragingwidget.cpp
+  mesh/qgsmeshrenderermeshsettingswidget.cpp
+  mesh/qgsmeshrendererscalarsettingswidget.cpp
+  mesh/qgsmeshrenderervectorsettingswidget.cpp
+  mesh/qgsmeshrendereractivedatasetwidget.cpp
+  mesh/qgsmeshdatasetgrouptreeview.cpp
+  mesh/qgsmeshstaticdatasetwidget.cpp
+  mesh/qgsmeshvariablestrokewidthwidget.cpp
+
   numericformats/qgsnumericformatselectorwidget.cpp
   numericformats/qgsnumericformatwidget.cpp
   numericformats/qgsnumericformatguiregistry.cpp
@@ -283,6 +295,7 @@ SET(QGIS_GUI_SRCS
   processing/qgsprocessingparameterdefinitionwidget.cpp
   processing/qgsprocessingparameterswidget.cpp
   processing/qgsprocessingrecentalgorithmlog.cpp
+  processing/qgsprocessingtininputlayerswidget.cpp
   processing/qgsprocessingtoolboxmodel.cpp
   processing/qgsprocessingtoolboxtreeview.cpp
   processing/qgsprocessingvectortilewriterlayerswidgetwrapper.cpp
@@ -326,6 +339,7 @@ SET(QGIS_GUI_SRCS
   tableeditor/qgstableeditorformattingwidget.cpp
   tableeditor/qgstableeditorwidget.cpp
 
+  vectortile/qgsarcgisvectortileconnectiondialog.cpp
   vectortile/qgsvectortilebasiclabelingwidget.cpp
   vectortile/qgsvectortilebasicrendererwidget.cpp
   vectortile/qgsvectortileconnectiondialog.cpp
@@ -996,6 +1010,18 @@ SET(QGIS_GUI_HDRS
 
   locator/qgslocatorwidget.h
 
+  mesh/qgsmeshlayerproperties.h
+  mesh/qgsrenderermeshpropertieswidget.h
+  mesh/qgsmeshdatasetgrouptreeview.h
+  mesh/qgsmeshdatasetgrouptreewidget.h
+  mesh/qgsmeshrenderer3daveragingwidget.h
+  mesh/qgsmeshrenderermeshsettingswidget.h
+  mesh/qgsmeshrendererscalarsettingswidget.h
+  mesh/qgsmeshrenderervectorsettingswidget.h
+  mesh/qgsmeshrendereractivedatasetwidget.h
+  mesh/qgsmeshstaticdatasetwidget.h
+  mesh/qgsmeshvariablestrokewidthwidget.h
+
   numericformats/qgsnumericformatselectorwidget.h
   numericformats/qgsnumericformatwidget.h
   numericformats/qgsnumericformatguiregistry.h
@@ -1023,6 +1049,7 @@ SET(QGIS_GUI_HDRS
   processing/qgsprocessingparameterdefinitionwidget.h
   processing/qgsprocessingparameterswidget.h
   processing/qgsprocessingrecentalgorithmlog.h
+  processing/qgsprocessingtininputlayerswidget.h
   processing/qgsprocessingtoolboxmodel.h
   processing/qgsprocessingtoolboxtreeview.h
   processing/qgsprocessingvectortilewriterlayerswidgetwrapper.h
@@ -1131,6 +1158,7 @@ SET(QGIS_GUI_HDRS
   tableeditor/qgstableeditorformattingwidget.h
   tableeditor/qgstableeditorwidget.h
 
+  vectortile/qgsarcgisvectortileconnectiondialog.h
   vectortile/qgsvectortilebasiclabelingwidget.h
   vectortile/qgsvectortilebasicrendererwidget.h
   vectortile/qgsvectortileconnectiondialog.h
@@ -1223,6 +1251,11 @@ SET(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutwidgetbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrenderercontainerbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsvectorlayerpropertiesbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayertreeembeddedconfigwidgetbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmeshlayerpropertiesbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmeshdatasetgrouptreewidgetbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmeshstaticdatasetwidgetbase.h
+
 )
 
 IF(ENABLE_MODELTEST)
@@ -1245,6 +1278,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/labeling
   ${CMAKE_SOURCE_DIR}/src/gui/layertree
   ${CMAKE_SOURCE_DIR}/src/gui/layout
+  ${CMAKE_SOURCE_DIR}/src/gui/mesh
   ${CMAKE_SOURCE_DIR}/src/gui/numericformats
   ${CMAKE_SOURCE_DIR}/src/gui/ogr
   ${CMAKE_SOURCE_DIR}/src/gui/processing

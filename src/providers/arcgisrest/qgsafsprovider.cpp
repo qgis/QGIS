@@ -29,8 +29,8 @@ const QString QgsAfsProvider::AFS_PROVIDER_KEY = QStringLiteral( "arcgisfeatures
 const QString QgsAfsProvider::AFS_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS Feature Service data provider" );
 
 
-QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &options )
-  : QgsVectorDataProvider( uri, options )
+QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+  : QgsVectorDataProvider( uri, options, flags )
 {
   mSharedData.reset( new QgsAfsSharedData() );
   mSharedData->mGeometryType = QgsWkbTypes::Unknown;
@@ -462,9 +462,9 @@ QString QgsAfsProviderMetadata::encodeUri( const QVariantMap &parts )
   return dsUri.uri();
 }
 
-QgsAfsProvider *QgsAfsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
+QgsAfsProvider *QgsAfsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
-  return new QgsAfsProvider( uri, options );
+  return new QgsAfsProvider( uri, options, flags );
 }
 
 

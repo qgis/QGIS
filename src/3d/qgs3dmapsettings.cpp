@@ -60,6 +60,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mMapThemes( other.mMapThemes )
   , mIsSkyboxEnabled( other.mIsSkyboxEnabled )
   , mSkyboxSettings()
+  , mShadowSettings()
 {
   Q_FOREACH ( QgsAbstract3DRenderer *renderer, other.mRenderers )
   {
@@ -228,6 +229,9 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   mIsSkyboxEnabled = elemSkybox.attribute( QStringLiteral( "skybox-enabled" ) ).toInt();
   mSkyboxSettings.readXml( elemSkybox, context );
 
+  QDomElement elemShadows = elem.firstChildElement( QStringLiteral( "shadow-rendering" ) );
+  mShadowSettings.readXml( elemShadows, context );
+
   QDomElement elemDebug = elem.firstChildElement( QStringLiteral( "debug" ) );
   mShowTerrainBoundingBoxes = elemDebug.attribute( QStringLiteral( "bounding-boxes" ), QStringLiteral( "0" ) ).toInt();
   mShowTerrainTileInfo = elemDebug.attribute( QStringLiteral( "terrain-tile-info" ), QStringLiteral( "0" ) ).toInt();
@@ -329,6 +333,10 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemSkybox.setAttribute( QStringLiteral( "skybox-enabled" ), mIsSkyboxEnabled );
   mSkyboxSettings.writeXml( elemSkybox, context );
   elem.appendChild( elemSkybox );
+
+  QDomElement elemShadows = doc.createElement( QStringLiteral( "shadow-rendering" ) );
+  mShadowSettings.writeXml( elemShadows, context );
+  elem.appendChild( elemShadows );
 
   QDomElement elemDebug = doc.createElement( QStringLiteral( "debug" ) );
   elemDebug.setAttribute( QStringLiteral( "bounding-boxes" ), mShowTerrainBoundingBoxes ? 1 : 0 );
@@ -649,4 +657,10 @@ void Qgs3DMapSettings::setSkyboxSettings( const QgsSkyboxSettings &skyboxSetting
 {
   mSkyboxSettings = skyboxSettings;
   emit skyboxSettingsChanged();
+}
+
+void Qgs3DMapSettings::setShadowSettings( const QgsShadowSettings &shadowSettings )
+{
+  mShadowSettings = shadowSettings;
+  emit shadowSettingsChanged();
 }

@@ -169,6 +169,8 @@ void QgsLightsWidget::onAddDirectionalLight()
   cboDirectionalLights->setCurrentIndex( cboDirectionalLights->count() - 1 );
   // To set default parameters of the light
   onCurrentDirectionalLightChanged( 0 );
+
+  emit directionalLightsCountChanged( cboDirectionalLights->count() );
 }
 
 void QgsLightsWidget::onRemoveLight()
@@ -197,6 +199,8 @@ void QgsLightsWidget::onRemoveDirectionalLight()
     --index;  // in case we removed the last light
   cboDirectionalLights->setCurrentIndex( index );
   onCurrentDirectionalLightChanged( index );
+
+  emit directionalLightsCountChanged( cboDirectionalLights->count() );
 }
 
 void QgsLightsWidget::updateLightsList()

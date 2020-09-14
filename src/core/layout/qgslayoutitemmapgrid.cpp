@@ -278,9 +278,11 @@ bool QgsLayoutItemMapGrid::writeXml( QDomElement &elem, QDomDocument &doc, const
   mapGridElem.setAttribute( QStringLiteral( "rotatedTicksLengthMode" ), mRotatedTicksLengthMode );
   mapGridElem.setAttribute( QStringLiteral( "rotatedTicksEnabled" ), mRotatedTicksEnabled );
   mapGridElem.setAttribute( QStringLiteral( "rotatedTicksMinimumAngle" ), QString::number( mRotatedTicksMinimumAngle ) );
+  mapGridElem.setAttribute( QStringLiteral( "rotatedTicksMarginToCorner" ), QString::number( mRotatedTicksMarginToCorner ) );
   mapGridElem.setAttribute( QStringLiteral( "rotatedAnnotationsLengthMode" ), mRotatedAnnotationsLengthMode );
   mapGridElem.setAttribute( QStringLiteral( "rotatedAnnotationsEnabled" ), mRotatedAnnotationsEnabled );
   mapGridElem.setAttribute( QStringLiteral( "rotatedAnnotationsMinimumAngle" ), QString::number( mRotatedAnnotationsMinimumAngle ) );
+  mapGridElem.setAttribute( QStringLiteral( "rotatedAnnotationsMarginToCorner" ), QString::number( mRotatedAnnotationsMarginToCorner ) );
   if ( mCRS.isValid() )
   {
     mCRS.writeXml( mapGridElem, doc );
@@ -346,9 +348,11 @@ bool QgsLayoutItemMapGrid::readXml( const QDomElement &itemElem, const QDomDocum
   mRotatedTicksLengthMode = TickLengthMode( itemElem.attribute( QStringLiteral( "rotatedTicksLengthMode" ), QStringLiteral( "0" ) ).toInt() );
   mRotatedTicksEnabled = itemElem.attribute( QStringLiteral( "rotatedTicksEnabled" ), QStringLiteral( "0" ) ) != QLatin1String( "0" );
   mRotatedTicksMinimumAngle = itemElem.attribute( QStringLiteral( "rotatedTicksMinimumAngle" ), QStringLiteral( "0" ) ).toDouble();
+  mRotatedTicksMarginToCorner = itemElem.attribute( QStringLiteral( "rotatedTicksMarginToCorner" ), QStringLiteral( "0" ) ).toDouble();
   mRotatedAnnotationsLengthMode = TickLengthMode( itemElem.attribute( QStringLiteral( "rotatedAnnotationsLengthMode" ), QStringLiteral( "0" ) ).toInt() );
   mRotatedAnnotationsEnabled = itemElem.attribute( QStringLiteral( "rotatedAnnotationsEnabled" ), QStringLiteral( "0" ) ) != QLatin1String( "0" );
   mRotatedAnnotationsMinimumAngle = itemElem.attribute( QStringLiteral( "rotatedAnnotationsMinimumAngle" ), QStringLiteral( "0" ) ).toDouble();
+  mRotatedAnnotationsMarginToCorner = itemElem.attribute( QStringLiteral( "rotatedAnnotationsMarginToCorner" ), QStringLiteral( "0" ) ).toDouble();
 
   QDomElement lineStyleElem = itemElem.firstChildElement( QStringLiteral( "lineStyle" ) );
   if ( !lineStyleElem.isNull() )
@@ -666,9 +670,9 @@ void QgsLayoutItemMapGrid::updateGridLinesAnnotationsPositions() const
     it->startAnnotation.vector = QVector2D( it->line.at( 1 ) - it->line.first() ).normalized();
     it->endAnnotation.vector = QVector2D( it->line.at( it->line.count() - 2 ) - it->line.last() ).normalized();
     QVector2D normS = borderToNormal2D( it->startAnnotation.border );
-    it->startAnnotation.angle = abs( M_PI / 2.0 - acos( QVector2D::dotProduct( it->startAnnotation.vector, normS ) / ( it->startAnnotation.vector.length() * normS.length() ) ) );
+    it->startAnnotation.angle = atan2( it->startAnnotation.vector.x() * normS.y() - it->startAnnotation.vector.y() * normS.x(), it->startAnnotation.vector.x() * normS.x() + it->startAnnotation.vector.y() * normS.y() );
     QVector2D normE = borderToNormal2D( it->endAnnotation.border );
-    it->endAnnotation.angle = abs( M_PI / 2.0 - acos( QVector2D::dotProduct( it->endAnnotation.vector, normE ) / ( it->endAnnotation.vector.length() * normE.length() ) ) );
+    it->endAnnotation.angle = atan2( it->endAnnotation.vector.x() * normE.y() - it->endAnnotation.vector.y() * normE.x(), it->endAnnotation.vector.x() * normE.x() + it->endAnnotation.vector.y() * normE.y() );
   }
 }
 
@@ -1013,7 +1017,39 @@ void QgsLayoutItemMapGrid::drawGridFrameTicks( QPainter *p, GridExtension *exten
         continue;
 
       // If the angle is below the threshold, we don't draw the annotation
-      if ( annot.angle < mRotatedTicksMinimumAngle * M_PI / 180.0 )
+      if ( abs( annot.angle ) / M_PI * 180.0 > 90.0 - mRotatedTicksMinimumAngle + 0.0001 )
+        continue;
+
+      // Skip outwards facing annotations that are below mRotatedTicksMarginToCorner
+      bool facingLeft;
+      bool facingRight;
+      if ( mGridFrameStyle == QgsLayoutItemMapGrid::InteriorExteriorTicks )
+      {
+        facingLeft = ( annot.angle != 0 );
+        facingRight = ( annot.angle != 0 );
+      }
+      else if ( mGridFrameStyle == QgsLayoutItemMapGrid::ExteriorTicks )
+      {
+        facingLeft = ( annot.angle > 0 );
+        facingRight = ( annot.angle < 0 );
+      }
+      else
+      {
+        facingLeft = ( annot.angle < 0 );
+        facingRight = ( annot.angle > 0 );
+      }
+
+      if ( annot.border == BorderSide::Top && ( ( facingLeft && annot.position.x() < mRotatedTicksMarginToCorner ) ||
+           ( facingRight && annot.position.x() > mMap->rect().width() - mRotatedTicksMarginToCorner ) ) )
+        continue;
+      if ( annot.border == BorderSide::Bottom && ( ( facingLeft && annot.position.x() > mMap->rect().width() - mRotatedTicksMarginToCorner ) ||
+           ( facingRight && annot.position.x() < mRotatedTicksMarginToCorner ) ) )
+        continue;
+      if ( annot.border == BorderSide::Left && ( ( facingLeft && annot.position.y() > mMap->rect().height() - mRotatedTicksMarginToCorner ) ||
+           ( facingRight && annot.position.y() < mRotatedTicksMarginToCorner ) ) )
+        continue;
+      if ( annot.border == BorderSide::Right && ( ( facingLeft && annot.position.y() < mRotatedTicksMarginToCorner ) ||
+           ( facingRight && annot.position.y() > mMap->rect().height() - mRotatedTicksMarginToCorner ) ) )
         continue;
 
       QVector2D normalVector = borderToNormal2D( annot.border );
@@ -1179,9 +1215,8 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QgsRenderContext &context, 
   AnnotationPosition anotPos = annotationPosition( frameBorder );
   AnnotationDirection anotDir = annotationDirection( frameBorder );
 
-
   // If the angle is below the threshold, we don't draw the annotation
-  if ( annot.angle < mRotatedAnnotationsMinimumAngle * M_PI / 180.0 )
+  if ( abs( annot.angle ) / M_PI * 180.0 > 90.0 - mRotatedAnnotationsMinimumAngle + 0.0001 )
     return;
 
   QVector2D normalVector = borderToNormal2D( annot.border );
@@ -1302,8 +1337,28 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QgsRenderContext &context, 
     extension->UpdateAll( textWidth / 2.0 );
   }
 
-
   if ( extension || !context.painter() )
+    return;
+
+  // Skip outwards facing annotations that are below mRotatedAnnotationsMarginToCorner
+  bool facingLeft = ( annot.angle < 0 );
+  bool facingRight = ( annot.angle > 0 );
+  if ( anotPos == QgsLayoutItemMapGrid::OutsideMapFrame )
+  {
+    facingLeft = !facingLeft;
+    facingRight = !facingRight;
+  }
+  if ( annot.border == BorderSide::Top && ( ( facingLeft && xpos < mRotatedAnnotationsMarginToCorner ) ||
+       ( facingRight && xpos > mMap->rect().width() - mRotatedAnnotationsMarginToCorner ) ) )
+    return;
+  if ( annot.border == BorderSide::Bottom && ( ( facingLeft && xpos > mMap->rect().width() - mRotatedAnnotationsMarginToCorner ) ||
+       ( facingRight && xpos < mRotatedAnnotationsMarginToCorner ) ) )
+    return;
+  if ( annot.border == BorderSide::Left && ( ( facingLeft && ypos > mMap->rect().height() - mRotatedAnnotationsMarginToCorner ) ||
+       ( facingRight && ypos < mRotatedAnnotationsMarginToCorner ) ) )
+    return;
+  if ( annot.border == BorderSide::Right && ( ( facingLeft && ypos < mRotatedAnnotationsMarginToCorner ) ||
+       ( facingRight && ypos > mMap->rect().height() - mRotatedAnnotationsMarginToCorner ) ) )
     return;
 
   QgsScopedQPainterState painterState( context.painter() );

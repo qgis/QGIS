@@ -19,6 +19,7 @@
 #include "qgsvectorfilewriter.h"
 #include "qgsprocessingparametertypeimpl.h"
 #include "qgsprocessingparametervectortilewriterlayers.h"
+#include "qgsprocessingparametertininputlayers.h"
 #include "qgsprocessingparameterfieldmap.h"
 #include "qgsprocessingparameteraggregate.h"
 
@@ -66,6 +67,7 @@ QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   addParameterType( new QgsProcessingParameterTypeVectorTileWriterLayers() );
   addParameterType( new QgsProcessingParameterTypeFieldMapping() );
   addParameterType( new QgsProcessingParameterTypeAggregate() );
+  addParameterType( new QgsProcessingParameterTypeTinInputLayers() );
 }
 
 QgsProcessingRegistry::~QgsProcessingRegistry()

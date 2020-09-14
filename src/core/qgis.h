@@ -513,18 +513,33 @@ template<class T> QString qgsEnumValueToKey( const T &value ) SIP_SKIP
 /**
  * Returns the value corresponding to the given \a key of an enum.
  * If the key is invalid, it will return the \a defaultValue.
+ * If \a tryValueAsKey is true, it will try to convert the string key to an enum value
  * \since QGIS 3.6
  */
-template<class T> T qgsEnumKeyToValue( const QString &key, const T &defaultValue ) SIP_SKIP
+template<class T> T qgsEnumKeyToValue( const QString &key, const T &defaultValue, bool tryValueAsKey = true ) SIP_SKIP
 {
   QMetaEnum metaEnum = QMetaEnum::fromType<T>();
   Q_ASSERT( metaEnum.isValid() );
   bool ok = false;
   T v = static_cast<T>( metaEnum.keyToValue( key.toUtf8().data(), &ok ) );
   if ( ok )
+  {
     return v;
+  }
   else
-    return defaultValue;
+  {
+    // if conversion has failed, try with conversion from int value
+    if ( tryValueAsKey )
+    {
+      bool canConvert = false;
+      int intValue = key.toInt( &canConvert );
+      if ( canConvert && metaEnum.valueToKey( intValue ) )
+      {
+        return static_cast<T>( intValue );
+      }
+    }
+  }
+  return defaultValue;
 }
 
 /**

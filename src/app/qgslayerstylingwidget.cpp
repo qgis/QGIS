@@ -612,7 +612,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
               mMesh3DWidget->setDockMode( true );
               connect( mMesh3DWidget, &QgsMeshLayer3DRendererWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
             }
-            mMesh3DWidget->setLayer( meshLayer );
+            mMesh3DWidget->syncToLayer( meshLayer );
             mWidgetStack->setMainPanel( mMesh3DWidget );
             break;
           }

@@ -393,7 +393,9 @@ Responsible for reading native mesh data
 #include "qgsmeshdataprovider.h"
 %End
   public:
-    QgsMeshDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
+    QgsMeshDataProvider( const QString &uri,
+                         const QgsDataProvider::ProviderOptions &providerOptions,
+                         QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 %Docstring
 Ctor
 %End
