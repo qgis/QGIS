@@ -100,6 +100,8 @@ Constructs a new vector tile layer
 
     virtual QString loadDefaultStyle( bool &resultFlag /Out/ );
 
+
+
     virtual QString loadDefaultMetadata( bool &resultFlag /Out/ );
 
 
