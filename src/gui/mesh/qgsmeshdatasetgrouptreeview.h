@@ -163,7 +163,7 @@ class  QgsMeshDatasetGroupProxyModel: public QSortFilterProxyModel
 /**
  * Delegate to display tree item with a contours and vector selector
  */
-class GUI_EXPORT QgsMeshDatasetGroupTreeItemDelagate: public QStyledItemDelegate
+class QgsMeshDatasetGroupTreeItemDelagate: public QStyledItemDelegate
 {
     Q_OBJECT
   public:
@@ -187,6 +187,9 @@ class GUI_EXPORT QgsMeshDatasetGroupTreeItemDelagate: public QStyledItemDelegate
     QRect iconRect( const QRect &rect, int pos ) const;
 };
 
+/**
+ * Tree widget for display of the mesh dataset groups.
+ */
 class GUI_EXPORT QgsMeshDatasetGroupTreeView: public QTreeView
 {
     Q_OBJECT
