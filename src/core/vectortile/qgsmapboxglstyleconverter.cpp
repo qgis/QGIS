@@ -859,6 +859,10 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
   }
 
   double bufferSize = 0.0;
+  // the pixel based text buffers appear larger when rendered on the web - so automatically scale
+  // them up when converting to a QGIS style
+  // (this number is based on trial-and-error comparisons only!)
+  constexpr double BUFFER_SIZE_SCALE = 2.0;
   if ( jsonPaint.contains( QStringLiteral( "text-halo-width" ) ) )
   {
     const QVariant jsonHaloWidth = jsonPaint.value( QStringLiteral( "text-halo-width" ) );
@@ -866,18 +870,18 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     {
       case QVariant::Int:
       case QVariant::Double:
-        bufferSize = jsonHaloWidth.toDouble() * context.pixelSizeConversionFactor();
+        bufferSize = jsonHaloWidth.toDouble() * context.pixelSizeConversionFactor() * BUFFER_SIZE_SCALE;
         break;
 
       case QVariant::Map:
         bufferSize = 1;
-        ddLabelProperties.setProperty( QgsPalLayerSettings::BufferSize, parseInterpolateByZoom( jsonHaloWidth.toMap(), context, context.pixelSizeConversionFactor(), &bufferSize ) );
+        ddLabelProperties.setProperty( QgsPalLayerSettings::BufferSize, parseInterpolateByZoom( jsonHaloWidth.toMap(), context, context.pixelSizeConversionFactor() * BUFFER_SIZE_SCALE, &bufferSize ) );
         break;
 
       case QVariant::List:
       case QVariant::StringList:
         bufferSize = 1;
-        ddLabelProperties.setProperty( QgsPalLayerSettings::BufferSize, parseValueList( jsonHaloWidth.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor(), 255, nullptr, &bufferSize ) );
+        ddLabelProperties.setProperty( QgsPalLayerSettings::BufferSize, parseValueList( jsonHaloWidth.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor() * BUFFER_SIZE_SCALE, 255, nullptr, &bufferSize ) );
         break;
 
       default:
