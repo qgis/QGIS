@@ -678,8 +678,8 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     }
   }
 
-  // em to character tends to underestimate, so scale up by ~40%
-  constexpr double EM_TO_CHARS = 1.4;
+  // a rough average of ems to character count conversion for a variety of fonts
+  constexpr double EM_TO_CHARS = 2.0;
 
   double textMaxWidth = -1;
   if ( jsonLayout.contains( QStringLiteral( "text-max-width" ) ) )
