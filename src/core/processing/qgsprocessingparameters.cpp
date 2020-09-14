@@ -3135,30 +3135,26 @@ QString QgsProcessingParameterGeometry::asPythonString( const QgsProcessing::Pyt
 
       if ( !mGeomTypes.empty() )
       {
-        auto geomTypeToString = []( QgsWkbTypes::GeometryType t )
+        auto geomTypeToString = []( QgsWkbTypes::GeometryType t ) -> QString
         {
           switch ( t )
           {
             case QgsWkbTypes::PointGeometry:
               return QStringLiteral( "PointGeometry" );
-              break;
 
             case QgsWkbTypes::LineGeometry:
               return QStringLiteral( "LineGeometry" );
-              break;
 
             case QgsWkbTypes::PolygonGeometry:
               return QStringLiteral( "PolygonGeometry" );
-              break;
 
             case QgsWkbTypes::UnknownGeometry:
               return QStringLiteral( "UnknownGeometry" );
-              break;
 
             case QgsWkbTypes::NullGeometry:
               return QStringLiteral( "NullGeometry" );
-              break;
           }
+          return QString();
         };
 
         QStringList options;
