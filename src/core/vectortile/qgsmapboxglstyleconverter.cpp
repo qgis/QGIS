@@ -1142,6 +1142,54 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     }
   }
 
+  if ( jsonLayout.contains( QStringLiteral( "text-justify" ) ) )
+  {
+    const QVariant jsonTextJustify = jsonLayout.value( QStringLiteral( "text-justify" ) );
+
+    // default is center
+    QString textAlign = QStringLiteral( "center" );
+
+    const QVariantMap conversionMap
+    {
+      { QStringLiteral( "left" ), QStringLiteral( "left" ) },
+      { QStringLiteral( "center" ), QStringLiteral( "center" ) },
+      { QStringLiteral( "right" ), QStringLiteral( "right" ) },
+      { QStringLiteral( "auto" ), QStringLiteral( "follow" ) }
+    };
+
+    switch ( jsonTextJustify.type() )
+    {
+      case QVariant::String:
+        textAlign = jsonTextJustify.toString();
+        break;
+
+      case QVariant::List:
+        ddLabelProperties.setProperty( QgsPalLayerSettings::OffsetQuad, QgsProperty::fromExpression( parseStringStops( jsonTextJustify.toList(), context, conversionMap, &textAlign ) ) );
+        break;
+
+      case QVariant::Map:
+        ddLabelProperties.setProperty( QgsPalLayerSettings::OffsetQuad, parseInterpolateStringByZoom( jsonTextJustify.toMap(), context, conversionMap, &textAlign ) );
+        break;
+
+      default:
+        context.pushWarning( QObject::tr( "Skipping non-implemented text-anchor expression" ) );
+        break;
+    }
+
+    if ( textAlign == QLatin1String( "left" ) )
+      labelSettings.multilineAlign = QgsPalLayerSettings::MultiLeft;
+    else if ( textAlign == QLatin1String( "right" ) )
+      labelSettings.multilineAlign = QgsPalLayerSettings::MultiRight;
+    else if ( textAlign == QLatin1String( "center" ) )
+      labelSettings.multilineAlign = QgsPalLayerSettings::MultiCenter;
+    else if ( textAlign == QLatin1String( "follow" ) )
+      labelSettings.multilineAlign = QgsPalLayerSettings::MultiFollowPlacement;
+  }
+  else
+  {
+    labelSettings.multilineAlign = QgsPalLayerSettings::MultiCenter;
+  }
+
   if ( labelSettings.placement == QgsPalLayerSettings::OverPoint )
   {
     if ( jsonLayout.contains( QStringLiteral( "text-anchor" ) ) )
