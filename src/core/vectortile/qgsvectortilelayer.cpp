@@ -351,46 +351,51 @@ QString QgsVectorTileLayer::loadDefaultStyle( bool &resultFlag )
       {
         spriteUriBase = styleUrl + '/' + styleDefinition.value( QStringLiteral( "sprite" ) ).toString();
       }
-      QNetworkRequest request = QNetworkRequest( QUrl( spriteUriBase + QStringLiteral( ".json" ) ) );
 
-      QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) );
-
-      QgsBlockingNetworkRequest networkRequest;
-      switch ( networkRequest.get( request ) )
+      for ( int resolution = 2; resolution > 0; resolution-- )
       {
-        case QgsBlockingNetworkRequest::NoError:
+        QNetworkRequest request = QNetworkRequest( QUrl( spriteUriBase + QStringLiteral( "%1.json" ).arg( resolution > 1 ? QStringLiteral( "@%1x" ).arg( resolution ) : QString() ) ) );
+        QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) );
+        QgsBlockingNetworkRequest networkRequest;
+        switch ( networkRequest.get( request ) )
         {
-          const QgsNetworkReplyContent content = networkRequest.reply();
-          const QVariantMap spriteDefinition = QgsJsonUtils::parseJson( content.content() ).toMap();
-
-          // retrieve sprite images
-          QNetworkRequest request = QNetworkRequest( QUrl( spriteUriBase + QStringLiteral( ".png" ) ) );
-
-          QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) );
-
-          QgsBlockingNetworkRequest networkRequest;
-          switch ( networkRequest.get( request ) )
+          case QgsBlockingNetworkRequest::NoError:
           {
-            case QgsBlockingNetworkRequest::NoError:
+            const QgsNetworkReplyContent content = networkRequest.reply();
+            const QVariantMap spriteDefinition = QgsJsonUtils::parseJson( content.content() ).toMap();
+
+            // retrieve sprite images
+            QNetworkRequest request = QNetworkRequest( QUrl( spriteUriBase + QStringLiteral( "%1.png" ).arg( resolution > 1 ? QStringLiteral( "@%1x" ).arg( resolution ) : QString() ) ) );
+
+            QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) );
+
+            QgsBlockingNetworkRequest networkRequest;
+            switch ( networkRequest.get( request ) )
             {
-              const QgsNetworkReplyContent imageContent = networkRequest.reply();
-              QImage spriteImage( QImage::fromData( imageContent.content() ) );
-              context.setSprites( spriteImage, spriteDefinition );
-              break;
+              case QgsBlockingNetworkRequest::NoError:
+              {
+                const QgsNetworkReplyContent imageContent = networkRequest.reply();
+                QImage spriteImage( QImage::fromData( imageContent.content() ) );
+                context.setSprites( spriteImage, spriteDefinition );
+                break;
+              }
+
+              case QgsBlockingNetworkRequest::NetworkError:
+              case QgsBlockingNetworkRequest::TimeoutError:
+              case QgsBlockingNetworkRequest::ServerExceptionError:
+                break;
             }
 
-            case QgsBlockingNetworkRequest::NetworkError:
-            case QgsBlockingNetworkRequest::TimeoutError:
-            case QgsBlockingNetworkRequest::ServerExceptionError:
-              break;
+            break;
           }
 
-          break;
+          case QgsBlockingNetworkRequest::NetworkError:
+          case QgsBlockingNetworkRequest::TimeoutError:
+          case QgsBlockingNetworkRequest::ServerExceptionError:
+            break;
         }
 
-        case QgsBlockingNetworkRequest::NetworkError:
-        case QgsBlockingNetworkRequest::TimeoutError:
-        case QgsBlockingNetworkRequest::ServerExceptionError:
+        if ( !context.spriteDefinitions().isEmpty() )
           break;
       }
     }

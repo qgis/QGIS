@@ -2137,7 +2137,7 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
   }
 }
 
-QImage QgsMapBoxGlStyleConverter::retrieveSprite( const QString &name, QgsMapBoxGlStyleConversionContext &context )
+QImage QgsMapBoxGlStyleConverter::retrieveSprite( const QString &name, QgsMapBoxGlStyleConversionContext &context, QSize &spriteSize )
 {
   if ( context.spriteImage().isNull() )
   {
@@ -2162,6 +2162,7 @@ QImage QgsMapBoxGlStyleConverter::retrieveSprite( const QString &name, QgsMapBox
     return QImage();
   }
 
+  spriteSize = sprite.size() / spriteDefinition.value( QStringLiteral( "pixelRatio" ) ).toDouble() * context.pixelSizeConversionFactor();
   return sprite;
 }
 
@@ -2169,11 +2170,11 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64( const QVariant &value
 {
   QString spritePath;
 
-  auto prepareSprite = [context]( const QImage & sprite, QString & path, QSize & size )
+  auto prepareBase64 = []( const QImage & sprite )
   {
+    QString path;
     if ( !sprite.isNull() )
     {
-      size = sprite.size() * context.pixelSizeConversionFactor();
       QByteArray blob;
       QBuffer buffer( &blob );
       buffer.open( QIODevice::WriteOnly );
@@ -2183,11 +2184,7 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64( const QVariant &value
       path = QString( encoded );
       path.prepend( QLatin1String( "base64:" ) );
     }
-    else
-    {
-      path.clear();
-      size = QSize();
-    }
+    return path;
   };
 
   switch ( value.type() )
@@ -2216,8 +2213,8 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64( const QVariant &value
             QSize size;
             QString path;
             const QString fieldValue = match.captured( 1 );
-            const QImage sprite = retrieveSprite( name, context );
-            prepareSprite( sprite, path, size );
+            const QImage sprite = retrieveSprite( name, context, size );
+            path = prepareBase64( sprite );
             if ( spritePath.isEmpty() && !path.isEmpty() )
             {
               spritePath = path;
@@ -2238,8 +2235,8 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64( const QVariant &value
       {
         spriteProperty.clear();
         spriteSizeProperty.clear();
-        const QImage sprite = retrieveSprite( spriteName, context );
-        prepareSprite( sprite, spritePath, spriteSize );
+        const QImage sprite = retrieveSprite( spriteName, context, spriteSize );
+        spritePath = prepareBase64( sprite );
       }
       break;
     }
@@ -2254,8 +2251,8 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64( const QVariant &value
       QSize size;
       QImage sprite;
 
-      sprite = retrieveSprite( stops.value( 0 ).toList().value( 1 ).toString(), context );
-      prepareSprite( sprite, spritePath, spriteSize );
+      sprite = retrieveSprite( stops.value( 0 ).toList().value( 1 ).toString(), context, spriteSize );
+      spritePath = prepareBase64( sprite );
 
       spriteProperty = QStringLiteral( "CASE WHEN @zoom_level < %1 THEN '%2'" )
                        .arg( stops.value( 0 ).toList().value( 0 ).toString() )
@@ -2267,8 +2264,8 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64( const QVariant &value
       for ( int i = 0; i < stops.size() - 1; ++i )
       {
         ;
-        sprite = retrieveSprite( stops.value( 0 ).toList().value( 1 ).toString(), context );
-        prepareSprite( sprite, path, size );
+        sprite = retrieveSprite( stops.value( 0 ).toList().value( 1 ).toString(), context, size );
+        path = prepareBase64( sprite );
 
         spriteProperty += QStringLiteral( " WHEN @zoom_level >= %1 AND @zoom_level < %2 "
                                           "THEN '%3'" )
@@ -2281,8 +2278,8 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64( const QVariant &value
                                     stops.value( i + 1 ).toList().value( 0 ).toString() )
                               .arg( size.width() );
       }
-      sprite = retrieveSprite( stops.last().toList().value( 1 ).toString(), context );
-      prepareSprite( sprite, path, size );
+      sprite = retrieveSprite( stops.last().toList().value( 1 ).toString(), context, size );
+      path = prepareBase64( sprite );
 
       spriteProperty += QStringLiteral( " WHEN @zoom_level >= %1 "
                                         "THEN '%2' END" )
