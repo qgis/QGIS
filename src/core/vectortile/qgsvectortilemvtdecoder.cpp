@@ -77,7 +77,7 @@ QStringList QgsVectorTileMVTDecoder::layerFieldNames( const QString &layerName )
   return fieldNames;
 }
 
-QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString, QgsFields> &perLayerFields, const QgsCoordinateTransform &ct ) const
+QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString, QgsFields> &perLayerFields, const QgsCoordinateTransform &ct, const QSet<QString> *layerSubset ) const
 {
   QgsVectorTileFeatures features;
 
@@ -93,7 +93,10 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
   {
     const ::vector_tile::Tile_Layer &layer = tile.layers( layerNum );
 
-    QString layerName = layer.name().c_str();
+    const QString layerName = layer.name().c_str();
+    if ( layerSubset && !layerSubset->contains( QString() ) && !layerSubset->contains( layerName ) )
+      continue;
+
     QVector<QgsFeature> layerFeatures;
     QgsFields layerFields = perLayerFields[layerName];
 
