@@ -1840,22 +1840,22 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * A set of attributes that are not advertised in WMS requests with QGIS server.
      */
-    QSet<QString> excludeAttributesWms() const { return mExcludeAttributesWMS; }
+    Q_DECL_DEPRECATED QSet<QString> excludeAttributesWms() SIP_DEPRECATED const { return mExcludeAttributesWMS; }
 
     /**
      * A set of attributes that are not advertised in WMS requests with QGIS server.
      */
-    void setExcludeAttributesWms( const QSet<QString> &att ) { mExcludeAttributesWMS = att; }
+    Q_DECL_DEPRECATED void setExcludeAttributesWms( const QSet<QString> &att ) SIP_DEPRECATED { mExcludeAttributesWMS = att; }
 
     /**
      * A set of attributes that are not advertised in WFS requests with QGIS server.
      */
-    QSet<QString> excludeAttributesWfs() const { return mExcludeAttributesWFS; }
+    Q_DECL_DEPRECATED QSet<QString> excludeAttributesWfs() SIP_DEPRECATED const { return mExcludeAttributesWFS; }
 
     /**
      * A set of attributes that are not advertised in WFS requests with QGIS server.
      */
-    void setExcludeAttributesWfs( const QSet<QString> &att ) { mExcludeAttributesWFS = att; }
+    Q_DECL_DEPRECATED void setExcludeAttributesWfs( const QSet<QString> &att ) SIP_DEPRECATED { mExcludeAttributesWFS = att; }
 
     /**
      * Deletes an attribute field (but does not commit it).
@@ -2121,6 +2121,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \since QGIS 3.16
      */
     void setFieldConfigurationFlags( int index, QgsField::ConfigurationFlags flags ) SIP_SKIP;
+
+    /**
+     * Sets the given configuration \a flag for the field at given \a index to be \a active or not.
+     * \since QGIS 3.16
+     */
+    void setFieldConfigurationFlag( int index, QgsField::ConfigurationFlag flag, bool active ) SIP_SKIP;
 
     /**
      * Returns the configuration flags of the field at given index

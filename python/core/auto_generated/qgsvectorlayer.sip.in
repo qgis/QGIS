@@ -1968,22 +1968,22 @@ Convenience function that returns the attribute alias if defined or the field na
 Returns a map of field name to attribute alias
 %End
 
-    QSet<QString> excludeAttributesWms() const;
+ QSet<QString> excludeAttributesWms() /Deprecated/ const;
 %Docstring
 A set of attributes that are not advertised in WMS requests with QGIS server.
 %End
 
-    void setExcludeAttributesWms( const QSet<QString> &att );
+ void setExcludeAttributesWms( const QSet<QString> &att ) /Deprecated/;
 %Docstring
 A set of attributes that are not advertised in WMS requests with QGIS server.
 %End
 
-    QSet<QString> excludeAttributesWfs() const;
+ QSet<QString> excludeAttributesWfs() /Deprecated/ const;
 %Docstring
 A set of attributes that are not advertised in WFS requests with QGIS server.
 %End
 
-    void setExcludeAttributesWfs( const QSet<QString> &att );
+ void setExcludeAttributesWfs( const QSet<QString> &att ) /Deprecated/;
 %Docstring
 A set of attributes that are not advertised in WFS requests with QGIS server.
 %End
@@ -2291,6 +2291,7 @@ can also be set. Setting an empty expression will clear any existing expression 
 
 .. versionadded:: 3.0
 %End
+
 
 
 
