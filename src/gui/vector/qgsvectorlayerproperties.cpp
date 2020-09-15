@@ -592,7 +592,9 @@ void QgsVectorLayerProperties::syncToLayer()
 
   mTemporalWidget->syncToLayer();
 
-} // syncToLayer()
+  mLegendWidget->setLayer( mLayer );
+
+}
 
 void QgsVectorLayerProperties::apply()
 {

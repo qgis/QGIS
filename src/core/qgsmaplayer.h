@@ -174,8 +174,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
       GeometryOptions    = 1 << 12, //!< Geometry validation configuration
       Relations          = 1 << 13, //!< Relations
       Temporal           = 1 << 14, //!< Temporal properties
+      Legend             = 1 << 15, //!< Legend settings (since QGIS 3.16)
       AllStyleCategories = LayerConfiguration | Symbology | Symbology3D | Labeling | Fields | Forms | Actions |
-                           MapTips | Diagrams | AttributeTable | Rendering | CustomProperties | GeometryOptions | Relations | Temporal,
+                           MapTips | Diagrams | AttributeTable | Rendering | CustomProperties | GeometryOptions | Relations | Temporal | Legend,
     };
     Q_ENUM( StyleCategory )
     Q_DECLARE_FLAGS( StyleCategories, StyleCategory )

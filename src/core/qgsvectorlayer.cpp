@@ -1568,6 +1568,9 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
 
   updateFields();
 
+  // If style doesn't include a legend, we'll need to make a default one later...
+  mSetLegendFromStyle = false;
+
   QString errorMsg;
   if ( !readSymbology( layer_node, errorMsg, context ) )
   {
@@ -1586,11 +1589,8 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
   }
   setDependencies( sources );
 
-  QgsMapLayerLegend *legend = QgsMapLayerLegend::defaultVectorLegend( this );
-  QDomElement legendElem = layer_node.firstChildElement( QStringLiteral( "legend" ) );
-  if ( !legendElem.isNull() )
-    legend->readXml( legendElem, context );
-  setLegend( legend );
+  if ( !mSetLegendFromStyle )
+    setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
 
   // read extent
   if ( mReadExtentFromXml )
@@ -1667,6 +1667,10 @@ void QgsVectorLayer::setDataSource( const QString &dataSource, const QString &ba
       }
     }
 
+    // need to check whether the default style included a legend, and if not, we need to make a default legend
+    // later...
+    mSetLegendFromStyle = false;
+
     // else check if there is a default style / propertysheet defined
     // for this layer and if so apply it
     if ( !defaultLoadedFlag && loadDefaultStyleFlag )
@@ -1681,7 +1685,8 @@ void QgsVectorLayer::setDataSource( const QString &dataSource, const QString &ba
       setRenderer( QgsFeatureRenderer::defaultRenderer( geometryType() ) );
     }
 
-    setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
+    if ( !mSetLegendFromStyle )
+      setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
 
     if ( mDataProvider->capabilities() & QgsVectorDataProvider::CreateLabeling )
     {
@@ -1894,14 +1899,6 @@ bool QgsVectorLayer::writeXml( QDomNode &layer_node,
     dataDependenciesElement.appendChild( depElem );
   }
   layer_node.appendChild( dataDependenciesElement );
-
-  // legend
-  if ( legend() )
-  {
-    QDomElement legendElement = legend()->writeXml( document, context );
-    if ( !legendElement.isNull() )
-      layer_node.appendChild( legendElement );
-  }
 
   // save expression fields
   mExpressionFieldBuffer->writeXml( layer_node, document );
@@ -2376,6 +2373,18 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
 
   updateFields();
 
+  if ( categories.testFlag( Legend ) )
+  {
+    const QDomElement legendElem = layerNode.firstChildElement( QStringLiteral( "legend" ) );
+    if ( !legendElem.isNull() )
+    {
+      std::unique_ptr< QgsMapLayerLegend > legend( QgsMapLayerLegend::defaultVectorLegend( this ) );
+      legend->readXml( legendElem, context );
+      setLegend( legend.release() );
+      mSetLegendFromStyle = true;
+    }
+  }
+
   return true;
 }
 
@@ -2593,6 +2602,12 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
   if ( categories.testFlag( GeometryOptions ) )
     mGeometryOptions->writeXml( node );
 
+  if ( categories.testFlag( Legend ) && legend() )
+  {
+    QDomElement legendElement = legend()->writeXml( doc, context );
+    if ( !legendElement.isNull() )
+      node.appendChild( legendElement );
+  }
 
   // Relation information for both referenced and referencing sides
   if ( categories.testFlag( Relations ) )

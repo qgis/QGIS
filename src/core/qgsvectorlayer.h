@@ -2952,6 +2952,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool mDataChangedFired = false;
 
     QList<QgsWeakRelation> mWeakRelations;
+
+    bool mSetLegendFromStyle = false;
 };
 
 
