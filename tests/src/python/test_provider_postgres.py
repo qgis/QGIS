@@ -2972,6 +2972,18 @@ class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCas
         with self.assertRaises(StopIteration):
             next(polygons.getFeatures())
 
+        # Test regression GH #38567 (no SRID requested in the data source URI)
+        # Cleanup if needed
+        conn.executeSql('DELETE FROM "qgis_test"."test_unrestricted_geometry" WHERE \'t\'')
+
+        points = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'gid\' type=POINT table="qgis_test"."test_unrestricted_geometry" (geom) sql=', 'test_points', 'postgres')
+        lines = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'gid\' type=LINESTRING table="qgis_test"."test_unrestricted_geometry" (geom) sql=', 'test_lines', 'postgres')
+        polygons = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'gid\' type=POLYGON table="qgis_test"."test_unrestricted_geometry" (geom) sql=', 'test_polygons', 'postgres')
+
+        self.assertTrue(points.isValid())
+        self.assertTrue(lines.isValid())
+        self.assertTrue(polygons.isValid())
+
 
 if __name__ == '__main__':
     unittest.main()

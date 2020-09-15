@@ -3874,6 +3874,12 @@ bool QgsPostgresProvider::getGeometryDetails()
     {
       detectedType = result.PQgetvalue( 0, 0 );
 
+      // Do not override the SRID if set in the data source URI
+      if ( detectedSrid.isEmpty() )
+      {
+        detectedSrid = result.PQgetvalue( 0, 1 );
+      }
+
       QString dim = result.PQgetvalue( 0, 2 );
       if ( dim == QLatin1String( "3" ) && !detectedType.endsWith( 'M' ) )
         detectedType += QLatin1String( "Z" );
@@ -4047,7 +4053,6 @@ bool QgsPostgresProvider::getGeometryDetails()
 
   if ( mDetectedGeomType == QgsWkbTypes::Unknown )
   {
-    mDetectedSrid.clear();
 
     QgsPostgresLayerProperty layerProperty;
     if ( !mIsQuery )
@@ -4077,8 +4082,8 @@ bool QgsPostgresProvider::getGeometryDetails()
 
     if ( layerProperty.size() == 0 )
     {
-      // no data - so take what's requested
-      if ( mRequestedGeomType == QgsWkbTypes::Unknown || mRequestedSrid.isEmpty() )
+      // no data - so take what's requested/detected
+      if ( mRequestedGeomType == QgsWkbTypes::Unknown || mDetectedSrid.isEmpty() )
       {
         QgsMessageLog::logMessage( tr( "Geometry type and srid for empty column %1 of %2 undefined." ).arg( mGeometryColumn, mQuery ) );
       }
