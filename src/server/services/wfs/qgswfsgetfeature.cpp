@@ -259,13 +259,10 @@ namespace QgsWfs
         // build corresponding propertyname
         QList<QString> propertynames;
         QList<QString> fieldnames;
-        for ( int idx = 0; idx < fields.count(); ++idx )
+        for ( const QgsField &field : fields )
         {
-          if ( !fields.at( idx ).configurationFlags().testFlag( QgsField::ConfigurationFlag::ExposeViaWfs ) )
-            continue;
-
-          fieldnames.append( fields[idx].name() );
-          propertynames.append( fields.field( idx ).name().replace( ' ', '_' ).replace( cleanTagNameRegExp, QString() ) );
+          fieldnames.append( field.name() );
+          propertynames.append( field.name().replace( ' ', '_' ).replace( cleanTagNameRegExp, QString() ) );
         }
         QString fieldName;
         for ( plstIt = propertyList.constBegin(); plstIt != propertyList.constEnd(); ++plstIt )
@@ -288,6 +285,22 @@ namespace QgsWfs
         if ( !idxList.isEmpty() )
         {
           attrIndexes = idxList;
+        }
+      }
+
+      //excluded attributes for this layer
+      if ( !attrIndexes.isEmpty() )
+      {
+        for ( const QgsField &field : fields )
+        {
+          if ( !field.configurationFlags().testFlag( QgsField::ConfigurationFlag::ExposeViaWfs ) )
+          {
+            int fieldNameIdx = fields.indexOf( field.name() );
+            if ( fieldNameIdx > -1 && attrIndexes.contains( fieldNameIdx ) )
+            {
+              attrIndexes.removeOne( fieldNameIdx );
+            }
+          }
         }
       }
 
