@@ -101,10 +101,9 @@ void QgsMeshLayerRenderer::calculateOutputSize()
   QgsRenderContext &context = *renderContext();
   QgsRectangle extent = context.mapExtent();
   QgsMapToPixel mapToPixel = context.mapToPixel();
-  QgsPointXY topleft = mapToPixel.transform( extent.xMinimum(), extent.yMaximum() );
-  QgsPointXY bottomright = mapToPixel.transform( extent.xMaximum(), extent.yMinimum() );
-  int width = int( bottomright.x() - topleft.x() );
-  int height = int( bottomright.y() - topleft.y() );
+  QgsRectangle screenBBox = QgsMeshLayerUtils::boundingBoxToScreenRectangle( mapToPixel, extent );
+  int width = int( screenBBox.width() );
+  int height = int( screenBBox.height() );
   mOutputSize = QSize( width, height );
 }
 

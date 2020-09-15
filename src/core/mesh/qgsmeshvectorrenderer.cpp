@@ -32,6 +32,10 @@
 
 ///@cond PRIVATE
 
+#ifndef M_DEG2RAD
+#define M_DEG2RAD 0.0174532925
+#endif
+
 inline double mag( double input )
 {
   if ( input < 0.0 )
@@ -146,7 +150,8 @@ bool QgsMeshVectorArrowRenderer::calcVectorLineEnd(
 
   // Determine the angle of the vector, counter-clockwise, from east
   // (and associated trigs)
-  double vectorAngle = -1.0 * atan( ( -1.0 * yVal ) / xVal );
+  double vectorAngle = -1.0 * atan( ( -1.0 * yVal ) / xVal ) - mContext.mapToPixel().mapRotation() * M_DEG2RAD;
+
   cosAlpha = cos( vectorAngle ) * mag( xVal );
   sinAlpha = sin( vectorAngle ) * mag( xVal );
 
@@ -487,7 +492,8 @@ QgsMeshVectorRenderer *QgsMeshVectorRenderer::makeVectorRenderer(
         datasetMagMinimumValue,
         dataType,
         settings,
-        context, size );
+        context,
+        size );
       break;
     case QgsMeshRendererVectorSettings::Streamlines:
       renderer = new QgsMeshVectorStreamlineRenderer(

@@ -197,20 +197,40 @@ QVector<double> QgsMeshLayerUtils::calculateMagnitudes( const QgsMeshDataBlock &
   return ret;
 }
 
-void QgsMeshLayerUtils::boundingBoxToScreenRectangle( const QgsMapToPixel &mtp,
-    const QSize &outputSize,
-    const QgsRectangle &bbox,
-    int &leftLim,
-    int &rightLim,
-    int &topLim,
-    int &bottomLim )
+QgsRectangle QgsMeshLayerUtils::boundingBoxToScreenRectangle(
+  const QgsMapToPixel &mtp,
+  const QgsRectangle &bbox
+)
 {
-  QgsPointXY ll = mtp.transform( bbox.xMinimum(), bbox.yMinimum() );
-  QgsPointXY ur = mtp.transform( bbox.xMaximum(), bbox.yMaximum() );
-  topLim = std::max( int( ur.y() ), 0 );
-  bottomLim = std::min( int( ll.y() ), outputSize.height() - 1 );
-  leftLim = std::max( int( ll.x() ), 0 );
-  rightLim = std::min( int( ur.x() ), outputSize.width() - 1 );
+  QgsPointXY topLeft = mtp.transform( bbox.xMinimum(), bbox.yMaximum() );
+  QgsPointXY topRight = mtp.transform( bbox.xMaximum(), bbox.yMaximum() );
+  QgsPointXY bottomLeft = mtp.transform( bbox.xMinimum(), bbox.yMinimum() );
+  QgsPointXY bottomRight = mtp.transform( bbox.xMaximum(), bbox.yMinimum() );
+
+  double xMin = std::min( {topLeft.x(), topRight.x(), bottomLeft.x(), bottomRight.x()} );
+  double xMax = std::max( {topLeft.x(), topRight.x(), bottomLeft.x(), bottomRight.x()} );
+  double yMin = std::min( {topLeft.y(), topRight.y(), bottomLeft.y(), bottomRight.y()} );
+  double yMax = std::max( {topLeft.y(), topRight.y(), bottomLeft.y(), bottomRight.y()} );
+
+  QgsRectangle ret( xMin, yMin, xMax, yMax );
+  return ret;
+}
+
+void QgsMeshLayerUtils::boundingBoxToScreenRectangle(
+  const QgsMapToPixel &mtp,
+  const QSize &outputSize,
+  const QgsRectangle &bbox,
+  int &leftLim,
+  int &rightLim,
+  int &bottomLim,
+  int &topLim )
+{
+  QgsRectangle screenBBox = boundingBoxToScreenRectangle( mtp, bbox );
+
+  bottomLim = std::max( int( screenBBox.yMinimum() ), 0 );
+  topLim = std::min( int( screenBBox.yMaximum() ), outputSize.height() - 1 );
+  leftLim = std::max( int( screenBBox.xMinimum() ), 0 );
+  rightLim = std::min( int( screenBBox.xMaximum() ), outputSize.width() - 1 );
 }
 
 static void lamTol( double &lam )
