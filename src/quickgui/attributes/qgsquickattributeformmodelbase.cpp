@@ -376,12 +376,12 @@ void QgsQuickAttributeFormModelBase::updateVisibility( int fieldIndex )
 
 bool QgsQuickAttributeFormModelBase::constraintsHardValid() const
 {
-    return mConstraintsHardValid;
+  return mConstraintsHardValid;
 }
 
 bool QgsQuickAttributeFormModelBase::constraintsSoftValid() const
 {
-    return mConstraintsSoftValid;
+  return mConstraintsSoftValid;
 }
 
 QVariant QgsQuickAttributeFormModelBase::attribute( const QString &name ) const
@@ -395,20 +395,20 @@ QVariant QgsQuickAttributeFormModelBase::attribute( const QString &name ) const
 
 void QgsQuickAttributeFormModelBase::setConstraintsHardValid( bool constraintsHardValid )
 {
-    if ( constraintsHardValid == mConstraintsHardValid )
-      return;
+  if ( constraintsHardValid == mConstraintsHardValid )
+    return;
 
-    mConstraintsHardValid = constraintsHardValid;
-    emit constraintsHardValidChanged();
+  mConstraintsHardValid = constraintsHardValid;
+  emit constraintsHardValidChanged();
 }
 
 void QgsQuickAttributeFormModelBase::setConstraintsSoftValid( bool constraintsSoftValid )
 {
-    if ( constraintsSoftValid == mConstraintsSoftValid )
-      return;
+  if ( constraintsSoftValid == mConstraintsSoftValid )
+    return;
 
-    mConstraintsSoftValid = constraintsSoftValid;
-    emit constraintsSoftValidChanged();
+  mConstraintsSoftValid = constraintsSoftValid;
+  emit constraintsSoftValidChanged();
 }
 
 bool QgsQuickAttributeFormModelBase::hasTabs() const
