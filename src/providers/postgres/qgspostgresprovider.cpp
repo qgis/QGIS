@@ -3857,7 +3857,7 @@ bool QgsPostgresProvider::getGeometryDetails()
   }
 
   QString detectedType;
-  QString detectedSrid = mRequestedSrid;
+  QString detectedSrid;
   if ( !schemaName.isEmpty() )
   {
     // check geometry columns
