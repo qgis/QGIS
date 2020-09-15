@@ -470,7 +470,7 @@ namespace QgsWfs
   getFeatureRequest parseGetFeatureParameters( const QgsProject *project )
   {
     getFeatureRequest request;
-    request.maxFeatures = mWfsParameters.maxFeaturesAsInt();;
+    request.maxFeatures = mWfsParameters.maxFeaturesAsInt();
     request.startIndex = mWfsParameters.startIndexAsInt();
     request.outputFormat = mWfsParameters.outputFormat();
 
@@ -857,7 +857,7 @@ namespace QgsWfs
   getFeatureRequest parseGetFeatureRequestBody( QDomElement &docElem, const QgsProject *project )
   {
     getFeatureRequest request;
-    request.maxFeatures = mWfsParameters.maxFeaturesAsInt();;
+    request.maxFeatures = mWfsParameters.maxFeaturesAsInt();
     request.startIndex = mWfsParameters.startIndexAsInt();
     request.outputFormat = mWfsParameters.outputFormat();
 

@@ -673,7 +673,7 @@ class CORE_EXPORT QgsProcessingParameterTypeExtent : public QgsProcessingParamet
              << QStringLiteral( "QgsProperty" )
              << QStringLiteral( "QgsRectangle" )
              << QStringLiteral( "QgsReferencedRectangle" )
-             << QStringLiteral( "QgsGeometry: bounding box of geometry is used" );;
+             << QStringLiteral( "QgsGeometry: bounding box of geometry is used" );
     }
 
     QStringList acceptedStringValues() const override
