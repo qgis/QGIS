@@ -261,6 +261,18 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
       }
       break;
 
+    case QgsMapLayer::StyleCategory::Legend:
+      switch ( role )
+      {
+        case Qt::DisplayRole:
+          return tr( "Legend Settings" );
+        case Qt::ToolTipRole:
+          return tr( "Legend settings" );
+        case Qt::DecorationRole:
+          return QgsApplication::getThemeIcon( QStringLiteral( "/legend.svg" ) );
+      }
+      break;
+
     case QgsMapLayer::StyleCategory::AllStyleCategories:
       switch ( role )
       {

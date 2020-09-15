@@ -1262,14 +1262,14 @@ void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer *nodeL )
     return;
 
   QgsMapLayer *ml = nodeL->layer();
-  QgsMapLayerLegend *layerLegend = ml->legend();
-  if ( !layerLegend )
-    return;
 
   QgsMapLayerStyleOverride styleOverride( ml );
   if ( mLayerStyleOverrides.contains( ml->id() ) )
     styleOverride.setOverrideStyle( mLayerStyleOverrides.value( ml->id() ) );
 
+  QgsMapLayerLegend *layerLegend = ml->legend();
+  if ( !layerLegend )
+    return;
   QList<QgsLayerTreeModelLegendNode *> lstNew = layerLegend->createLayerTreeModelLegendNodes( nodeL );
 
   // apply filtering defined in layer node's custom properties (reordering, filtering, custom labels)
