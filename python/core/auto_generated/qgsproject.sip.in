@@ -48,7 +48,7 @@ Set the current project instance to ``project``
 
 .. seealso:: :py:func:`instance`
 
-.. versionadded:: 3.10
+.. versionadded:: 3.10.11
 %End
 
 
