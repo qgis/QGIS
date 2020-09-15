@@ -101,6 +101,7 @@ RUN  apt-get update \
     qtbase5-private-dev \
     saga \
     spawn-fcgi \
+    supervisor \
     unzip \
     xauth \
     xfonts-100dpi \
