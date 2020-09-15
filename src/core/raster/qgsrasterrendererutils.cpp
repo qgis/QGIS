@@ -19,6 +19,7 @@
 #include "qgis.h"
 #include <QFile>
 #include <QTextStream>
+#include <QRegularExpression>
 
 bool QgsRasterRendererUtils::parseColorMapFile( const QString &path, QList<QgsColorRampShader::ColorRampItem> &items, QgsColorRampShader::Type &type, QStringList &errors )
 {
@@ -32,22 +33,21 @@ bool QgsRasterRendererUtils::parseColorMapFile( const QString &path, QList<QgsCo
   bool res = true;
 
   QTextStream inputStream( &inputFile );
-  QString inputLine;
-  QStringList inputStringComponents;
   int lineCounter = 0;
+  const QRegularExpression itemRegex( QStringLiteral( "^(.+?),(.+?),(.+?),(.+?),(.+?),(.+)$" ) );
 
   //read through the input looking for valid data
   while ( !inputStream.atEnd() )
   {
     lineCounter++;
-    inputLine = inputStream.readLine();
+    const QString inputLine = inputStream.readLine();
     if ( !inputLine.isEmpty() )
     {
       if ( !inputLine.simplified().startsWith( '#' ) )
       {
         if ( inputLine.contains( QLatin1String( "INTERPOLATION" ), Qt::CaseInsensitive ) )
         {
-          inputStringComponents = inputLine.split( ':' );
+          QStringList inputStringComponents = inputLine.split( ':' );
           if ( inputStringComponents.size() == 2 )
           {
             if ( inputStringComponents[1].trimmed().toUpper().compare( QLatin1String( "INTERPOLATED" ), Qt::CaseInsensitive ) == 0 )
@@ -71,13 +71,12 @@ bool QgsRasterRendererUtils::parseColorMapFile( const QString &path, QList<QgsCo
         }
         else
         {
-          inputStringComponents = inputLine.split( ',' );
-          if ( inputStringComponents.size() == 6 )
+          const QRegularExpressionMatch match = itemRegex.match( inputLine );
+          if ( match.hasMatch() )
           {
-            QgsColorRampShader::ColorRampItem currentItem( QLocale().toDouble( inputStringComponents[0] ),
-                QColor::fromRgb( inputStringComponents[1].toInt(), inputStringComponents[2].toInt(),
-                                 inputStringComponents[3].toInt(), inputStringComponents[4].toInt() ),
-                inputStringComponents[5] );
+            QgsColorRampShader::ColorRampItem currentItem( match.captured( 1 ).toDouble(),
+                QColor::fromRgb( match.captured( 2 ).toInt(), match.captured( 3 ).toInt(), match.captured( 4 ).toInt(), match.captured( 5 ).toInt() ),
+                match.captured( 6 ) );
             items.push_back( currentItem );
           }
           else
