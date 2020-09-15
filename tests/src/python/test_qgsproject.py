@@ -1360,6 +1360,14 @@ class TestQgsProject(unittest.TestCase):
         p.setUseProjectScales(False)
         self.assertEqual(len(spy), 4)
 
+    def testSetInstance(self):
+        """Test singleton API"""
+
+        p = QgsProject()
+        self.assertNotEqual(p, QgsProject.instance())
+        QgsProject.setInstance(p)
+        self.assertEqual(p, QgsProject.instance())
+
 
 if __name__ == '__main__':
     unittest.main()
