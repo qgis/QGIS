@@ -1993,6 +1993,24 @@ tests:
         type: vector
 
   - algorithm: native:joinbynearest
+    name: Nearest lines to polys, max distance 0
+    params:
+      INPUT:
+        name: snap_polys.gml|layername=snap_polys
+        type: vector
+      INPUT_2:
+        name: snap_lines.gml|layername=snap_lines
+        type: vector
+      MAX_DISTANCE: 0.0
+      NEIGHBORS: 1
+      PREFIX: ''
+    results:
+      OUTPUT:
+        name: expected/nearest_lines_to_polys_max_distance_0.gml
+        type: vector
+        pk: [fid,fid_2]
+
+  - algorithm: native:joinbynearest
     name: Nearest points to lines, with max distance
     params:
       INPUT:
