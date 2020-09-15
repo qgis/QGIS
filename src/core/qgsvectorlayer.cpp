@@ -2331,8 +2331,8 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
     // Attributes excluded from WMS and WFS
     const QList<QPair<QString, QgsField::ConfigurationFlag>> legacyConfig
     {
-      qMakePair( QStringLiteral( "excludeAttributesWMS" ), QgsField::ConfigurationFlag::Wms ),
-      qMakePair( QStringLiteral( "excludeAttributesWFS" ), QgsField::ConfigurationFlag::Wfs )
+      qMakePair( QStringLiteral( "excludeAttributesWMS" ), QgsField::ConfigurationFlag::ExposeViaWms ),
+      qMakePair( QStringLiteral( "excludeAttributesWFS" ), QgsField::ConfigurationFlag::ExposeViaWfs )
     };
     for ( const auto &config : legacyConfig )
     {

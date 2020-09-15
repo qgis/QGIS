@@ -1973,6 +1973,7 @@ Returns a map of field name to attribute alias
 A set of attributes that are not advertised in WMS requests with QGIS server.
 
 .. deprecated:: QGIS 3.16
+  use fields().configurationFlags() instead
 %End
 
  void setExcludeAttributesWms( const QSet<QString> &att ) /Deprecated/;
@@ -1980,6 +1981,7 @@ A set of attributes that are not advertised in WMS requests with QGIS server.
 A set of attributes that are not advertised in WMS requests with QGIS server.
 
 .. deprecated:: QGIS 3.16
+  use setFieldConfigurationFlag instead
 %End
 
  QSet<QString> excludeAttributesWfs() /Deprecated/ const;
@@ -1987,6 +1989,7 @@ A set of attributes that are not advertised in WMS requests with QGIS server.
 A set of attributes that are not advertised in WFS requests with QGIS server.
 
 .. deprecated:: QGIS 3.16
+  use fields().configurationFlags() instead
 %End
 
  void setExcludeAttributesWfs( const QSet<QString> &att ) /Deprecated/;
@@ -1994,6 +1997,7 @@ A set of attributes that are not advertised in WFS requests with QGIS server.
 A set of attributes that are not advertised in WFS requests with QGIS server.
 
 .. deprecated:: QGIS 3.16
+  use setFieldConfigurationFlag instead
 %End
 
     virtual bool deleteAttribute( int attr );
