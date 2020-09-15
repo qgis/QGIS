@@ -150,7 +150,7 @@ class QgsShadowRenderingFrameGraph
     Qt3DRender::QCamera *mLightCamera = nullptr;
     Qt3DRender::QCameraSelector *mLightCameraSelector = nullptr;
     bool mShadowRenderingEnabled = false;
-    float mShadowBias = 0.00001;
+    float mShadowBias = 0.00001f;
     int mShadowMapResolution = 2048;
 
     Qt3DRender::QLayerFilter *mShadowSceneEntitiesFilter = nullptr;

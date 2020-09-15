@@ -753,13 +753,18 @@ ADD_BISON_FILES_PREFIX(QGIS_CORE_SRCS sqlstatement_ qgssqlstatementparser.yy)
 ADD_BISON_FILES_PREFIX(QGIS_CORE_SRCS mesh mesh/qgsmeshcalcparser.yy)
 
 IF(NOT MSVC)
-  SET_SOURCE_FILES_PROPERTIES(qgsexpressionparser.cpp qgssqlstatementparser.cpp qgsmeshcalcparser.cpp PROPERTIES COMPILE_FLAGS -w)
+  SET_SOURCE_FILES_PROPERTIES(
+    qgsexpressionparser.cpp
+    qgssqlstatementparser.cpp
+    qgsmeshcalcparser.cpp
+    PROPERTIES COMPILE_FLAGS -w)
 ELSE(NOT MSVC)
   # -wd4702 unreachable code
   SET_SOURCE_FILES_PROPERTIES(
     geometry/qgsgeos.cpp
     pal/feature.cpp
     pal/pointset.cpp
+    ${CMAKE_BINARY_DIR}/src/core/qgsmeshcalcparser.cpp
     PROPERTIES COMPILE_FLAGS -wd4702)
 ENDIF(NOT MSVC)
 
@@ -1519,7 +1524,6 @@ ELSE (MSVC)
   # automatically generated file produces warnings (unused-parameter, unused-variable, misleading-indentation)
   SET_SOURCE_FILES_PROPERTIES(${VECTOR_TILE_PROTO_SRCS} PROPERTIES COMPILE_FLAGS -w)
 ENDIF (MSVC)
-
 
 # install headers
 # install qgsconfig.h and plugin.h here so they can get into

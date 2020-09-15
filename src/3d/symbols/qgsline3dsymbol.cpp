@@ -126,5 +126,4 @@ bool QgsLine3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore::
     }
     return renderers.size() != 0;
   }
-  return false;
 }

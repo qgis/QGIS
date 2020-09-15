@@ -437,15 +437,10 @@ QDateTime QgsWmsSettings::parseWmstDateTimes( QString item )
   // Check if it does not have time part
   if ( !item.contains( 'T' ) )
     return QDateTime::fromString( item, "yyyy-MM-dd" );
+  else if ( item.contains( '.' ) )
+    return QDateTime::fromString( item, Qt::ISODateWithMs );
   else
-  {
-    if ( item.contains( '.' ) )
-      return QDateTime::fromString( item, Qt::ISODateWithMs );
-    else
-      return QDateTime::fromString( item, Qt::ISODate );
-  }
-
-  return QDateTime::fromString( item, format );
+    return QDateTime::fromString( item, Qt::ISODate );
 }
 
 
