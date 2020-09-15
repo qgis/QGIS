@@ -2089,7 +2089,7 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
       bool res = layer->loadDefaultStyle( error, warnings );
       if ( res && !warnings.empty() )
       {
-        QString message = QStringLiteral( "<p>%1</p>" ).arg( tr( "The following warnings were generated while converting the LYR file:" ) );
+        QString message = QStringLiteral( "<p>%1</p>" ).arg( tr( "The following warnings were generated while converting the vector tile style:" ) );
         message += QStringLiteral( "<ul>" );
 
         std::sort( warnings.begin(), warnings.end() );
