@@ -261,7 +261,7 @@ namespace QgsWfs
         QList<QString> fieldnames;
         for ( int idx = 0; idx < fields.count(); ++idx )
         {
-          if (!fields.at(idx).configurationFlags().testFlag(QgsField::ConfigurationFlag::ExposeViaWfs))
+          if ( !fields.at( idx ).configurationFlags().testFlag( QgsField::ConfigurationFlag::ExposeViaWfs ) )
             continue;
 
           fieldnames.append( fields[idx].name() );

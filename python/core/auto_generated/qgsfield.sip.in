@@ -291,12 +291,6 @@ Sets the alias for the field (the friendly displayed name of the field ).
 Formats string for display
 %End
 
-    static QString readableConfigurationFlag( ConfigurationFlag flag );
-%Docstring
-Returns the reabable and translated value of the configuration flag
-
-.. versionadded:: 3.16
-%End
 
 
     bool convertCompatible( QVariant &v ) const;

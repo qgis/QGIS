@@ -122,14 +122,6 @@ Toggles the item check state
 .. seealso:: :py:func:`setItemCheckState`
 %End
 
-    QgsCheckableItemModel *model() const;
-%Docstring
-Returns the custom item model which handles checking the items
-
-.. seealso:: :py:class:`QgsCheckableItemModel`
-
-.. versionadded:: 3.16
-%End
 
     virtual void hidePopup();
 

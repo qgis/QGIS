@@ -333,7 +333,7 @@ class CORE_EXPORT QgsField
      * Returns the reabable and translated value of the configuration flag
      * \since QGIS 3.16
      */
-    static QString readableConfigurationFlag( ConfigurationFlag flag );
+    static QString readableConfigurationFlag( QgsField::ConfigurationFlag flag ) SIP_SKIP;
 
 #ifndef SIP_RUN
 

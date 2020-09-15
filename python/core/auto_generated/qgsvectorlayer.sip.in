@@ -1968,7 +1968,7 @@ Convenience function that returns the attribute alias if defined or the field na
 Returns a map of field name to attribute alias
 %End
 
- QSet<QString> excludeAttributesWms() /Deprecated/ const;
+ QSet<QString> excludeAttributesWms() const /Deprecated/;
 %Docstring
 A set of attributes that are not advertised in WMS requests with QGIS server.
 
@@ -1984,7 +1984,7 @@ A set of attributes that are not advertised in WMS requests with QGIS server.
   use setFieldConfigurationFlag instead
 %End
 
- QSet<QString> excludeAttributesWfs() /Deprecated/ const;
+ QSet<QString> excludeAttributesWfs() const /Deprecated/;
 %Docstring
 A set of attributes that are not advertised in WFS requests with QGIS server.
 
