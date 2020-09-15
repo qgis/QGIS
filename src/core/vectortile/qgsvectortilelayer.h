@@ -110,7 +110,7 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
 
     /**
      * Loads the default style for the layer, and returns TRUE if the style was
-     * sucessfully loaded.
+     * successfully loaded.
      *
      * The \a error string will be filled with a translated error message if an error
      * occurs during the style load. The \a warnings list will be populated with any
