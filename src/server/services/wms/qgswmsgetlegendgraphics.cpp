@@ -105,6 +105,7 @@ namespace QgsWms
     }
     else
     {
+<<<<<<< HEAD
       result.reset( renderer.getLegendGraphics( *model.get() ) );
     }
 
@@ -113,6 +114,26 @@ namespace QgsWms
     if ( result )
     {
       writeImage( response, *result,  format, context.imageQuality() );
+=======
+      std::unique_ptr<QImage> result;
+      if ( !parameters.rule().isEmpty() )
+      {
+        QgsLayerTreeModelLegendNode *node = legendNode( parameters.rule(), *model.get() );
+        if ( ! node )
+        {
+          throw QgsException( QStringLiteral( "Could not get a legend node for the requested RULE" ) );
+        }
+        result.reset( renderer.getLegendGraphics( *node ) );
+      }
+      else
+      {
+        result.reset( renderer.getLegendGraphics( *model.get() ) );
+      }
+      tree->clear();
+      if ( result )
+      {
+        writeImage( response, *result, parameters.formatAsString(), context.imageQuality() );
+>>>>>>> 3f1975ffb8... Server: prevents a crash non non-existent RULE
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
       if ( cacheManager )
       {
