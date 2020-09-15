@@ -98,7 +98,9 @@
 #include <lmcons.h>
 #define SECURITY_WIN32
 #include <security.h>
+#ifdef _MSC_VER
 #pragma comment( lib, "Secur32.lib" )
+#endif
 #endif
 
 #include "qgsconfig.h"

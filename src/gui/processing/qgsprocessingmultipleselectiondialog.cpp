@@ -37,14 +37,9 @@ QgsProcessingMultipleSelectionPanelWidget::QgsProcessingMultipleSelectionPanelWi
   , mValueFormatter( []( const QVariant & v )->QString
 {
   if ( v.canConvert< QgsProcessingModelChildParameterSource >() )
-  {
     return v.value< QgsProcessingModelChildParameterSource >().staticValue().toString();
-  }
   else
-  {
     return v.toString();
-  }
-  return QString();
 } )
 {
   setupUi( this );

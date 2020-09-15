@@ -155,8 +155,9 @@ bool QgsAbstractGeoPdfExporter::compositionModeSupported( QPainter::CompositionM
       return true;
 
     default:
-      return false;
+      break;
   }
+
   return false;
 }
 
@@ -627,10 +628,10 @@ QString QgsAbstractGeoPdfExporter::compositionModeToString( QPainter::Compositio
       return QStringLiteral( "Exclusion" );
 
     default:
-      QgsDebugMsg( QStringLiteral( "Unsupported PDF blend mode %1" ).arg( mode ) );
-      return QStringLiteral( "Normal" );
-
+      break;
   }
-  return QString();
+
+  QgsDebugMsg( QStringLiteral( "Unsupported PDF blend mode %1" ).arg( mode ) );
+  return QStringLiteral( "Normal" );
 }
 
