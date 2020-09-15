@@ -453,34 +453,34 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri )
           wmsLayer[ "pk" ] = vl->primaryKeyAttributes();
           int fieldIdx { 0 };
           json fieldsData;
-          const auto &cFields { vl->fields() };
-          for ( const auto &f : cFields )
+          const QgsFields &cFields { vl->fields() };
+          for ( const QgsField &field : cFields )
           {
-            if ( vl->excludeAttributesWfs().contains( vl->name() ) )
+            if ( !field.configurationFlags().testFlag( QgsField::ConfigurationFlag::Wfs ) )
             {
               ++fieldIdx;
               continue;
             }
-            const auto &constraints { f.constraints().constraints() };
+            const QgsFieldConstraints::Constraints constraints { field.constraints().constraints() };
             const bool notNull { constraints &QgsFieldConstraints::Constraint::ConstraintNotNull &&
-                                 f.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintNotNull ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard };
+                                 field.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintNotNull ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard };
             const bool unique { constraints &QgsFieldConstraints::Constraint::ConstraintUnique &&
-                                f.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintUnique ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard };
+                                field.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintUnique ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard };
             const bool hasExpression { constraints &QgsFieldConstraints::Constraint::ConstraintExpression &&
-                                       f.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintExpression ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard };
+                                       field.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintExpression ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard };
             const QString &defaultValue { vl->dataProvider()->defaultValueClause( fieldIdx ) };
             const bool isReadOnly( notNull && unique && ! defaultValue.isEmpty() );
-            fieldsData[ f.name().toStdString() ] =
+            fieldsData[ field.name().toStdString() ] =
             {
-              { "type", f.typeName().toStdString() },
-              { "label", f.alias().isEmpty() ? f.name().toStdString() : f.alias().toStdString() },
-              { "precision", f.precision() },
-              { "length", f.length() },
+              { "type", field.typeName().toStdString() },
+              { "label", field.alias().isEmpty() ? field.name().toStdString() : field.alias().toStdString() },
+              { "precision", field.precision() },
+              { "length", field.length() },
               { "unique", unique },
               { "not_null", notNull },
               { "has_expression", hasExpression },
               { "default", defaultValue.toStdString() },
-              { "expression", f.constraints().constraintExpression().toStdString() },
+              { "expression", field.constraints().constraintExpression().toStdString() },
               { "editable", !isReadOnly }
             };
 
