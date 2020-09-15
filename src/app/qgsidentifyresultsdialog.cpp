@@ -1013,6 +1013,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     tblResults->setItem( j, 0, item );
     tblResults->setItem( j, 1, new QTableWidgetItem( QString::number( i + 1 ) ) );
     tblResults->setItem( j, 2, new QTableWidgetItem( it.key() ) );
+    tblResults->setItem( j, 3, new QTableWidgetItem( it.value() ) );
 
     bool foundLinks = false;
     QString links = QgsStringUtils::insertLinks( it.value(), &foundLinks );
@@ -1020,12 +1021,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     {
       auto valueLabel { qgis::make_unique<QLabel>( links ) };
       valueLabel->setOpenExternalLinks( true );
-      tblResults->setItem( j, 3, item );
       tblResults->setCellWidget( j, 3, valueLabel.release() );
-    }
-    else
-    {
-      tblResults->setItem( j, 3, new QTableWidgetItem( it.value() ) );
     }
 
     tblResults->resizeRowToContents( j );
