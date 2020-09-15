@@ -744,8 +744,34 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
   QString fontName;
   if ( jsonLayout.contains( QStringLiteral( "text-font" ) ) )
   {
+    auto splitFontFamily = []( const QString & fontName, QString & family, QString & style ) -> bool
+    {
+      const QStringList textFontParts = fontName.split( ' ' );
+      for ( int i = 1; i < textFontParts.size(); ++i )
+      {
+        const QString candidateFontName = textFontParts.mid( 0, i ).join( ' ' );
+        const QString candidateFontStyle = textFontParts.mid( i ).join( ' ' );
+        if ( QgsFontUtils::fontFamilyHasStyle( candidateFontName, candidateFontStyle ) )
+        {
+          family = candidateFontName;
+          style = candidateFontStyle;
+          return true;
+        }
+      }
+
+      if ( QFontDatabase().hasFamily( fontName ) )
+      {
+        // the json isn't following the spec correctly!!
+        family = fontName;
+        style.clear();
+        return true;
+      }
+      return false;
+    };
+
     const QVariant jsonTextFont = jsonLayout.value( QStringLiteral( "text-font" ) );
-    if ( jsonTextFont.type() != QVariant::List && jsonTextFont.type() != QVariant::StringList && jsonTextFont.type() != QVariant::String )
+    if ( jsonTextFont.type() != QVariant::List && jsonTextFont.type() != QVariant::StringList && jsonTextFont.type() != QVariant::String
+         && jsonTextFont.type() != QVariant::Map )
     {
       context.pushWarning( QObject::tr( "%1: Skipping unsupported text-font type (%2)" ).arg( context.layerId(), QMetaType::typeName( jsonTextFont.type() ) ) );
     }
@@ -762,28 +788,86 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
           fontName = jsonTextFont.toString();
           break;
 
+        case QVariant::Map:
+        {
+          QString familyCaseString = QStringLiteral( "CASE " );
+          QString styleCaseString = QStringLiteral( "CASE " );
+          QString fontFamily;
+          QString fontStyle;
+          const QVariantList stops = jsonTextFont.toMap().value( QStringLiteral( "stops" ) ).toList();
+
+          bool error = false;
+          for ( int i = 0; i < stops.length() - 1; ++i )
+          {
+            // bottom zoom and value
+            const QVariant bz = stops.value( i ).toList().value( 0 );
+            const QString bv = stops.value( i ).toList().value( 1 ).type() == QVariant::String ? stops.value( i ).toList().value( 1 ).toString() : stops.value( i ).toList().value( 1 ).toList().value( 0 ).toString();
+            if ( bz.type() == QVariant::List || bz.type() == QVariant::StringList )
+            {
+              context.pushWarning( QObject::tr( "%1: Expressions in interpolation function are not supported, skipping." ).arg( context.layerId() ) );
+              error = true;
+              break;
+            }
+
+            // top zoom
+            const QVariant tz = stops.value( i + 1 ).toList().value( 0 );
+            if ( tz.type() == QVariant::List || tz.type() == QVariant::StringList )
+            {
+              context.pushWarning( QObject::tr( "%1: Expressions in interpolation function are not supported, skipping." ).arg( context.layerId() ) );
+              error = true;
+              break;
+            }
+
+            if ( splitFontFamily( bv, fontFamily, fontStyle ) )
+            {
+              familyCaseString += QStringLiteral( "WHEN @zoom_level > %1 AND @zoom_level <= %2 "
+                                                  "THEN %3 " ).arg( bz.toString(),
+                                                      tz.toString(),
+                                                      QgsExpression::quotedValue( fontFamily ) );
+              styleCaseString += QStringLiteral( "WHEN @zoom_level > %1 AND @zoom_level <= %2 "
+                                                 "THEN %3 " ).arg( bz.toString(),
+                                                     tz.toString(),
+                                                     QgsExpression::quotedValue( fontStyle ) );
+            }
+            else
+            {
+              context.pushWarning( QObject::tr( "%1: Referenced font %2 is not available on system" ).arg( context.layerId(), bv ) );
+            }
+          }
+          if ( error )
+            break;
+
+          const QString bv = stops.constLast().toList().value( 1 ).type() == QVariant::String ? stops.constLast().toList().value( 1 ).toString() : stops.constLast().toList().value( 1 ).toList().value( 0 ).toString();
+          if ( splitFontFamily( bv, fontFamily, fontStyle ) )
+          {
+            familyCaseString += QStringLiteral( "ELSE %1 END" ).arg( QgsExpression::quotedValue( fontFamily ) );
+            styleCaseString += QStringLiteral( "ELSE %1 END" ).arg( QgsExpression::quotedValue( fontStyle ) );
+          }
+          else
+          {
+            context.pushWarning( QObject::tr( "%1: Referenced font %2 is not available on system" ).arg( context.layerId(), bv ) );
+          }
+
+          ddLabelProperties.setProperty( QgsPalLayerSettings::Family, QgsProperty::fromExpression( familyCaseString ) );
+          ddLabelProperties.setProperty( QgsPalLayerSettings::FontStyle, QgsProperty::fromExpression( styleCaseString ) );
+
+          foundFont = true;
+          fontName = fontFamily;
+
+          break;
+        }
+
         default:
           break;
       }
 
-      const QStringList textFontParts = fontName.split( ' ' );
-      for ( int i = 1; i < textFontParts.size(); ++i )
+      QString fontFamily;
+      QString fontStyle;
+      if ( splitFontFamily( fontName, fontFamily, fontStyle ) )
       {
-        const QString candidateFontName = textFontParts.mid( 0, i ).join( ' ' );
-        const QString candidateFontStyle = textFontParts.mid( i ).join( ' ' );
-        if ( QgsFontUtils::fontFamilyHasStyle( candidateFontName, candidateFontStyle ) )
-        {
-          textFont = QFont( candidateFontName );
-          textFont.setStyleName( candidateFontStyle );
-          foundFont = true;
-          break;
-        }
-      }
-
-      if ( !foundFont && QgsFontUtils::fontFamilyOnSystem( fontName ) )
-      {
-        // the json isn't following the spec correctly!!
-        textFont = QFont( fontName );
+        textFont = QFont( fontFamily );
+        if ( !fontStyle.isEmpty() )
+          textFont.setStyleName( fontStyle );
         foundFont = true;
       }
     }
