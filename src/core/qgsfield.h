@@ -81,8 +81,8 @@ class CORE_EXPORT QgsField
     {
       None = 0, //!< No flag is defined
       Searchable = 1 << 1, //!< Defines if the field is searchable (used in the locator search for instance)
-      Wms = 1 << 2, //!< Fields is available if layer is served as WMS
-      Wfs = 1 << 3, //!< Fields is available if layer is served as WFS
+      ExposeViaWms = 1 << 2, //!< Fields is available if layer is served as WMS from QGIS server
+      ExposeViaWfs = 1 << 3, //!< Fields is available if layer is served as WFS from QGIS server
       DefaultFlags = Searchable | Wms | Wfs, //!< Default set of flags for a field
     };
     Q_ENUM( ConfigurationFlag )

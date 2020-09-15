@@ -293,7 +293,7 @@ Formats string for display
 
     static QString readableConfigurationFlag( ConfigurationFlag flag );
 %Docstring
-Returns the reabable and translated value of the configuration flag
+Returns a readable and translated value of the configuration flag
 
 .. versionadded:: 3.16
 %End
