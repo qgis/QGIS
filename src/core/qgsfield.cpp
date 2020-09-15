@@ -354,9 +354,9 @@ QString QgsField::readableConfigurationFlag( QgsField::ConfigurationFlag flag )
       return QObject::tr( "None" );
     case ConfigurationFlag::Searchable:
       return QObject::tr( "Searchable" );
-    case ConfigurationFlag::Wms:
+    case ConfigurationFlag::ExposeViaWms:
       return QStringLiteral( "Expose via WMS" );
-    case ConfigurationFlag::Wfs:
+    case ConfigurationFlag::ExposeViaWfs:
       return QStringLiteral( "Expose via WFS" );
     case ConfigurationFlag::DefaultFlags:
       return QObject::tr( "Default flags" );

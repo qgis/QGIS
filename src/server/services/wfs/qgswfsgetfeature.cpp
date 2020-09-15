@@ -249,7 +249,7 @@ namespace QgsWfs
 
       //Using pending attributes and pending fields
       QgsAttributeList attrIndexes = vlayer->attributeList();
-      QgsFields fields = vlayer->fields();
+      const QgsFields fields = vlayer->fields();
       bool withGeom = true;
       if ( !propertyList.isEmpty() && propertyList.first() != QStringLiteral( "*" ) )
       {
@@ -261,6 +261,9 @@ namespace QgsWfs
         QList<QString> fieldnames;
         for ( int idx = 0; idx < fields.count(); ++idx )
         {
+          if (!fields.at(idx).configurationFlags().testFlag(QgsField::ConfigurationFlag::ExposeViaWfs))
+            continue;
+
           fieldnames.append( fields[idx].name() );
           propertynames.append( fields.field( idx ).name().replace( ' ', '_' ).replace( cleanTagNameRegExp, QString() ) );
         }
@@ -287,21 +290,6 @@ namespace QgsWfs
           attrIndexes = idxList;
         }
       }
-
-      //excluded attributes for this layer
-      const QSet<QString> &layerExcludedAttributes = vlayer->excludeAttributesWfs();
-      if ( !attrIndexes.isEmpty() && !layerExcludedAttributes.isEmpty() )
-      {
-        foreach ( const QString &excludedAttribute, layerExcludedAttributes )
-        {
-          int fieldNameIdx = fields.indexOf( excludedAttribute );
-          if ( fieldNameIdx > -1 && attrIndexes.contains( fieldNameIdx ) )
-          {
-            attrIndexes.removeOne( fieldNameIdx );
-          }
-        }
-      }
-
 
       // update request
       QgsFeatureRequest featureRequest = query.featureRequest;

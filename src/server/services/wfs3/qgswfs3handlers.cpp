@@ -245,7 +245,7 @@ QgsFields QgsWfs3AbstractItemsHandler::publishedFields( const QgsVectorLayer *vL
   const QgsFields &fields = vLayer->fields();
   for ( const QgsField &field : fields )
   {
-    if ( field.configurationFlags().testFlag( QgsField::ConfigurationFlag::Wfs ) )
+    if ( field.configurationFlags().testFlag( QgsField::ConfigurationFlag::ExposeViaWfs ) )
     {
       publishedAttributes.push_back( field.name() );
     }

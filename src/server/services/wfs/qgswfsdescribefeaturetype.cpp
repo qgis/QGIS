@@ -267,7 +267,7 @@ namespace QgsWfs
       const QgsField field = fields.at( idx );
       QString attributeName = field.name();
       //skip attribute if excluded from WFS publication
-      if ( !field.configurationFlags().testFlag( QgsField::ConfigurationFlag::Wfs ) )
+      if ( !field.configurationFlags().testFlag( QgsField::ConfigurationFlag::ExposeViaWfs ) )
       {
         continue;
       }
