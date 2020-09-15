@@ -38,6 +38,20 @@ open within the main QGIS application.
 Returns the QgsProject singleton instance
 %End
 
+    static void setInstance( QgsProject *project );
+%Docstring
+Set the current project instance to ``project``
+
+.. note::
+
+   this is used mainly by the server, which caches the projects and (potentially) needs to switch the current instance on every request
+
+.. seealso:: :py:func:`instance`
+
+.. versionadded:: 3.10
+%End
+
+
     explicit QgsProject( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Create a new QgsProject.
