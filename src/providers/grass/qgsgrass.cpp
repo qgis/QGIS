@@ -1908,7 +1908,7 @@ QString QgsGrass::findModule( QString module )
     const auto constPaths = paths;
     for ( const QString &path : constPaths )
     {
-      QString full = module + ext;;
+      QString full = module + ext;
       if ( !path.isEmpty() )
       {
         full.prepend( path + "/" );

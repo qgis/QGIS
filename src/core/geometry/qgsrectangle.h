@@ -365,7 +365,7 @@ class CORE_EXPORT QgsRectangle
         mXmin = std::min( mXmin, rect.xMinimum() );
         mXmax = std::max( mXmax, rect.xMaximum() );
         mYmin = std::min( mYmin, rect.yMinimum() );
-        mYmax = std::max( mYmax, rect.yMaximum() );;
+        mYmax = std::max( mYmax, rect.yMaximum() );
       }
     }
 

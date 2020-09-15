@@ -7509,7 +7509,7 @@ void TestQgsGeometry::triangle()
   // cast
   QgsTriangle pCast;
   QVERIFY( QgsPolygon().cast( &pCast ) );
-  QgsTriangle pCast2( QgsPoint( 7, 4 ), QgsPoint( 13, 3 ), QgsPoint( 9, 6 ) );;
+  QgsTriangle pCast2( QgsPoint( 7, 4 ), QgsPoint( 13, 3 ), QgsPoint( 9, 6 ) );
   QVERIFY( QgsPolygon().cast( &pCast2 ) );
 }
 

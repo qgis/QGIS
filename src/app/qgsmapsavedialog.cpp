@@ -302,7 +302,7 @@ bool QgsMapSaveDialog::saveWorldFile() const
 
 bool QgsMapSaveDialog::exportMetadata() const
 {
-  return mExportMetadataCheckBox->isChecked();;
+  return mExportMetadataCheckBox->isChecked();
 }
 
 bool QgsMapSaveDialog::saveAsRaster() const

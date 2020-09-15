@@ -219,7 +219,7 @@ int QgsDualEdgeTriangulation::addPoint( const QgsPoint &p )
           int edgeFromPoint1ToVirtualSide2 = mHalfEdge[edgeFromNewPointToPoint1]->getNext();
           int edgeFromVirtualToPoint1Side1 = mHalfEdge[mHalfEdge[edgeFromNewPointToPoint2]->getNext()]->getNext();
           int edgeFromPoint2ToVirtualSide1 = mHalfEdge[edgeFromNewPointToPoint2]->getNext();
-          int edgeFromVirtualToPoint2Side2 = mHalfEdge[mHalfEdge[edgeFromNewPointToPoint1]->getNext()]->getNext();;
+          int edgeFromVirtualToPoint2Side2 = mHalfEdge[mHalfEdge[edgeFromNewPointToPoint1]->getNext()]->getNext();
           //insert new edges
           int edgeFromVirtualToNewPointSide1 = insertEdge( -10, edgeFromNewPointToPoint2, newPoint, false, false );
           int edgeFromNewPointToVirtualSide1 = insertEdge( edgeFromVirtualToNewPointSide1, edgeFromVirtualToPoint1Side1, -1, false, false );

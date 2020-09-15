@@ -723,7 +723,7 @@ void QgsSettingsLocatorFilter::fetchResults( const QString &string, const QgsLoc
       continue;
     }
 
-    result.score = fuzzyScore( result.displayString, string );;
+    result.score = fuzzyScore( result.displayString, string );
 
     if ( result.score > 0 )
       emit resultFetched( result );
