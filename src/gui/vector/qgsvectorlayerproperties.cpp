@@ -578,6 +578,9 @@ void QgsVectorLayerProperties::syncToLayer()
   // set initial state for variable editor
   updateVariableEditor();
 
+  if ( diagramPropertiesDialog )
+    diagramPropertiesDialog->syncToLayer();
+
   // sync all plugin dialogs
   const auto constMLayerPropertiesPages = mLayerPropertiesPages;
   for ( QgsMapLayerConfigWidget *page : constMLayerPropertiesPages )
