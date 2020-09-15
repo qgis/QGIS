@@ -379,8 +379,8 @@ Item {
 
         text: qsTr(ConstraintDescription)
         visible: !ConstraintHardValid || !ConstraintSoftValid
-        height:  visible ? 0 : undefined
-
+        height: visible ? undefined : 0
+        wrapMode: Text.WordWrap
         color: form.style.constraint.descriptionColor
       }
 
