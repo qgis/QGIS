@@ -1567,7 +1567,7 @@ namespace QgsWms
         for ( int i = 0; i < featureAttributes.count(); ++i )
         {
           //skip attribute if it is explicitly excluded from WMS publication
-          if ( fields.at( i ).configurationFlags().testFlag( QgsField::ConfigurationFlag::ExposeViaWms ) )
+          if ( !fields.at( i ).configurationFlags().testFlag( QgsField::ConfigurationFlag::ExposeViaWms ) )
           {
             continue;
           }
