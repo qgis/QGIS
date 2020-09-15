@@ -512,6 +512,7 @@
 %Include auto_generated/raster/qgsrasterpyramid.sip
 %Include auto_generated/raster/qgsrasterrange.sip
 %Include auto_generated/raster/qgsrasterrenderer.sip
+%Include auto_generated/raster/qgsrasterrendererutils.sip
 %Include auto_generated/raster/qgsrasterresamplefilter.sip
 %Include auto_generated/raster/qgsrasterresampler.sip
 %Include auto_generated/raster/qgsrastershader.sip

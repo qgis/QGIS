@@ -590,6 +590,7 @@ SET(QGIS_CORE_SRCS
   raster/qgsrasterfilewriter.cpp
   raster/qgsrasterrenderer.cpp
   raster/qgsrasterrendererregistry.cpp
+  raster/qgsrasterrendererutils.cpp
   raster/qgsrasterresamplefilter.cpp
   raster/qgssinglebandcolordatarenderer.cpp
   raster/qgssinglebandgrayrenderer.cpp
@@ -1377,6 +1378,7 @@ SET(QGIS_CORE_HDRS
   raster/qgsrasterrange.h
   raster/qgsrasterrenderer.h
   raster/qgsrasterrendererregistry.h
+  raster/qgsrasterrendererutils.h
   raster/qgsrasterresamplefilter.h
   raster/qgsrasterresampler.h
   raster/qgsrastershader.h
