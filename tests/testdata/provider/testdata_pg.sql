@@ -714,10 +714,10 @@ CREATE TABLE test_table_default_values (
 
 CREATE TABLE IF NOT EXISTS "test_check_constraint" (
     "id" SERIAL PRIMARY KEY,
-    "geom" geometry(POINT),
+    "geom" geometry(POINT, 4326),
     "i_will_fail_on_no_name" TEXT CHECK ("i_will_fail_on_no_name" != 'no name')
 );
 
 INSERT INTO test_check_constraint (geom, i_will_fail_on_no_name)
-VALUES ('POINT(9 45)'::geometry, 'I have a name'), ('POINT(10 46)'::geometry, 'I have a name too');
+VALUES ('SRID=4326;POINT(9 45)'::geometry, 'I have a name'), ('SRID=4326;POINT(10 46)'::geometry, 'I have a name too');
 
