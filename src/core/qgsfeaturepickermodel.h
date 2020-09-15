@@ -72,7 +72,7 @@ class CORE_EXPORT QgsFeaturePickerModel : public QgsFeaturePickerModelBase
 
     bool identifierIsNull( const QVariant &identifier ) const override;
 
-    QVariant nullIentifier() const override;
+    QVariant nullIdentifier() const override;
 };
 
 #endif // QGSFEATUREPICKERMODEL_H
