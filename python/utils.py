@@ -780,13 +780,11 @@ def _import(name, globals={}, locals={}, fromlist=[], level=None):
                 global _RemoveDllDirectory
 
                 for p in set(new_path.split(';')) - set(old_path.split(';')):
-                    if p:
-                        qDebug(u"AddDllDirectory:{}".format(p))
+                    if p is not None and p not in _import_path:
                         _import_paths[p] = _AddDllDirectory(p)
 
                 for p in set(old_path.split(';')) - set(new_path.split(';')):
                     if p in _import_paths:
-                        qDebug(u"RemoveDllDirectory:{}".format(p))
                         _RemoveDllDirectory(_import_paths.pop(p))
 
                 _import_path = new_path
