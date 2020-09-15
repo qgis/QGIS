@@ -36,6 +36,7 @@ import traceback
 import codecs
 import re
 import importlib
+from functools import partial
 
 
 class KeyFilter(QObject):
@@ -270,9 +271,13 @@ class Editor(QgsPythonConsoleBase):
                        QCoreApplication.translate("PythonConsole", "Uncomment"),
                        self.parent.pc.uncommentCode, 'Shift+Ctrl+3')
         menu.addSeparator()
-        codePadAction = menu.addAction(self.iconCodePad,
-                                       QCoreApplication.translate("PythonConsole", "Share on Codepad"),
-                                       self.codepad)
+        gist_menu = QMenu(self)
+        gist_menu.setTitle(QCoreApplication.translate("PythonConsole", "Share on GitHub"))
+        gist_menu.setIcon(self.iconCodePad)
+        gist_menu.addAction(QCoreApplication.translate("PythonConsole", "Secret Gist"),
+                            partial(self.shareOnGist, False))
+        gist_menu.addAction(QCoreApplication.translate("PythonConsole", "Public Gist"),
+                            partial(self.shareOnGist, True))
         showCodeInspection = menu.addAction(self.iconObjInsp,
                                             QCoreApplication.translate("PythonConsole", "Hide/Show Object Inspector"),
                                             self.objectListEditor)
@@ -283,7 +288,7 @@ class Editor(QgsPythonConsoleBase):
         syntaxCheck.setEnabled(False)
         pasteAction.setEnabled(False)
         pyQGISHelpAction.setEnabled(False)
-        codePadAction.setEnabled(False)
+        gist_menu.setEnabled(False)
         cutAction.setEnabled(False)
         runSelected.setEnabled(False)  # spellok
         copyAction.setEnabled(False)
@@ -295,7 +300,8 @@ class Editor(QgsPythonConsoleBase):
             runSelected.setEnabled(True)  # spellok
             copyAction.setEnabled(True)
             cutAction.setEnabled(True)
-            codePadAction.setEnabled(True)
+            if self.settings.value("pythonConsole/accessTokenGithub", ''):
+                gist_menu.setEnabled(True)
             pyQGISHelpAction.setEnabled(True)
         if not self.text() == '':
             selectAllAction.setEnabled(True)
@@ -358,36 +364,34 @@ class Editor(QgsPythonConsoleBase):
             listObj.show()
             self.parent.pc.objectListButton.setChecked(True)
 
-    def codepad(self):
-        import urllib.request
-        import urllib.parse
-        import urllib.error
-        listText = self.selectedText().split('\n')
-        getCmd = []
-        for strLine in listText:
-            getCmd.append(strLine)
-        pasteText = "\n".join(getCmd)
-        url = 'http://codepad.org'
-        values = {'lang': 'Python',
-                  'code': pasteText,
-                  'submit': 'Submit'}
+    def shareOnGist(self, is_public):
+        import requests
+        import json
+
+        ACCESS_TOKEN = self.settings.value("pythonConsole/accessTokenGithub", '')
+        URL = "https://api.github.com/gists"
+
+        headers = {'Authorization': 'token %s' % ACCESS_TOKEN}
+        params = {'scope': 'gist'}
+
+        path = self.parent.tw.currentWidget().path
+        filename = os.path.basename(path) if path else None
+        filename = filename if filename else "pyqgis_snippet.py"
+
+        selected_text = self.selectedText()
+        data = {"description": "Gist created by PyQGIS Console",
+                "public": is_public,
+                "files": {filename: {"content": selected_text}}}
         try:
-            response = urllib.request.urlopen(url, urllib.parse.urlencode(values))
-            url = response.read()
-            for href in url.split("</a>"):
-                if "Link:" in href:
-                    ind = href.index('Link:')
-                    found = href[ind + 5:]
-                    for i in found.split('">'):
-                        if '<a href=' in i:
-                            link = i.replace('<a href="', "").strip()
-            if link:
-                QApplication.clipboard().setText(link)
-                msgText = QCoreApplication.translate('PythonConsole', 'URL copied to clipboard.')
-                self.parent.pc.callWidgetMessageBarEditor(msgText, 0, True)
-        except urllib.error.URLError as e:
-            msgText = QCoreApplication.translate('PythonConsole', 'Connection error: ')
-            self.parent.pc.callWidgetMessageBarEditor(msgText + repr(e.args), 0, True)
+            res = requests.post(URL, headers=headers, params=params, data=json.dumps(data)).json()
+            print(res)
+            if res['html_url']:
+                QApplication.clipboard().setText(res['html_url'])
+                msg = QCoreApplication.translate('PythonConsole', 'URL copied to clipboard.')
+                self.parent.pc.callWidgetMessageBarEditor(msg, 0, True)
+        except requests.ConnectionError as e:
+            msg = QCoreApplication.translate('PythonConsole', 'Connection error: ')
+            self.parent.pc.callWidgetMessageBarEditor(msg + repr(e.args), 0, True)
 
     def hideEditor(self):
         self.parent.pc.splitterObj.hide()

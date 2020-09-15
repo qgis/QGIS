@@ -145,6 +145,8 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         settings.setValue("pythonConsole/preloadAPI", self.preloadAPI.isChecked())
         settings.setValue("pythonConsole/autoSaveScript", self.autoSaveScript.isChecked())
 
+        settings.setValue("pythonConsole/accessTokenGithub", self.tokenGhLineEdit.text())
+
         fontFamilyText = self.fontComboBox.currentText()
         settings.setValue("pythonConsole/fontfamilytext", fontFamilyText)
 
@@ -207,6 +209,7 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
                                                               font.family())))
         self.preloadAPI.setChecked(settings.value("pythonConsole/preloadAPI", True, type=bool))
         self.lineEdit.setText(settings.value("pythonConsole/preparedAPIFile", "", type=str))
+        self.tokenGhLineEdit.setText(settings.value("pythonConsole/accessTokenGithub", "", type=str))
         itemTable = settings.value("pythonConsole/userAPI", [])
         if itemTable:
             self.tableWidget.setRowCount(0)
