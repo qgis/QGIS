@@ -2078,6 +2078,8 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
     }
     else if ( u.layerType == QLatin1String( "vector-tile" ) )
     {
+      QgsTemporaryCursorOverride busyCursor( Qt::WaitCursor );
+
       QgsVectorTileLayer *layer = new QgsVectorTileLayer( uri, u.name );
       bool ok = false;
       layer->loadDefaultMetadata( ok );
