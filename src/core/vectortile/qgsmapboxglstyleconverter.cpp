@@ -2382,7 +2382,7 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
       }
       else
       {
-        context.pushWarning( QObject::tr( "%1: Skipping non-supported expression" ).arg( context.layerId() ) );
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported expression" ).arg( context.layerId() ) );
         return QString();
       }
     }
@@ -2422,7 +2422,7 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
   }
   else
   {
-    context.pushWarning( QObject::tr( "%1: Skipping non-supported expression" ).arg( context.layerId() ) );
+    context.pushWarning( QObject::tr( "%1: Skipping unsupported expression" ).arg( context.layerId() ) );
     return QString();
   }
 }

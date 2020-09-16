@@ -92,8 +92,8 @@ QgsFields QgsFieldCalculatorAlgorithm::outputFields( const QgsFields & ) const
 QString QgsFieldCalculatorAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm computes a new vector layer with the same features of the input layer, "
-                      "but either overwriting an existing attribute or adding an additional attribute. The values of this field"
-                      "are computed from each feature using an expression, based on the properties and attributes of the feature."
+                      "but either overwriting an existing attribute or adding an additional attribute. The values of this field "
+                      "are computed from each feature using an expression, based on the properties and attributes of the feature. "
                       "Note that selecting a value in \"Result in existing field\" will ignore all the rest of the "
                       "field settings." );
 }
