@@ -286,17 +286,4 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
     QAction *mDeselectAllAction = nullptr;
 };
 
-#ifndef SIP_RUN
-template <typename Flag, typename Readable>
-class CORE_EXPORT QgsFlagCheckableComboBox : public QgsCheckableComboBox
-{
-  public:
-    QgsFlagCheckableComboBox( Readable readable, QWidget *parent SIP_TRANSFERTHIS = nullptr );
-
-    void setFlags( QFlags<Flag> flags );
-
-    QFlags<Flag> flags() const;
-};
-#endif
-
 #endif // QGSCHECKABLECOMBOBOX_H

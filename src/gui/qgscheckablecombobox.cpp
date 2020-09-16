@@ -314,36 +314,3 @@ void QgsCheckableComboBox::updateDisplayText()
   setEditText( text );
 }
 
-template<typename Flag, typename Readable>
-QgsFlagCheckableComboBox<Flag, Readable>::QgsFlagCheckableComboBox( Readable readable, QWidget *parent )
-  : QgsCheckableComboBox( parent )
-{
-  const auto flags = qgsEnumMap<Flag>().keys();
-  for ( const Flag flag : flags )
-    addItem( readable( flag ), QVariant::fromValue( flag ) );
-}
-
-template<class Flag, typename Readable>
-void QgsFlagCheckableComboBox<Flag, Readable>::setFlags( QFlags<Flag> flags )
-{
-  for ( int r = 0; r < mModel->rowCount(); ++r )
-  {
-    QModelIndex index = mModel->index( r, 0 );
-    QFlags<Flag> flag = mModel->data( index, Qt::UserRole ).value<Flag>();
-    setItemCheckState( r, flags.testFlag( flag ) ? Qt::Checked : Qt::Unchecked );
-  }
-}
-
-template<class Flag, typename Readable>
-QFlags<Flag> QgsFlagCheckableComboBox<Flag, Readable>::flags() const
-{
-  QFlags<Flag> flags;
-  for ( int r = 0; r < mModel->rowCount(); ++r )
-  {
-    QModelIndex index = mModel->index( r, 0 );
-    Flag flag = mModel->data( index, Qt::UserRole ).value<Flag>();
-    bool active = mModel->data( index, Qt::CheckStateRole ).value<Qt::CheckState>() == Qt::Checked ? true : false;
-    flags.setFlag( flag, active );
-  }
-  return flags;
-}
