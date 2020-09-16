@@ -877,6 +877,12 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      */
     QPainterPath maskLabelPainterPath( int id = 0 ) { return mMaskLabelPainterPaths[id]; } SIP_SKIP
 
+    void addPainterForSymbolLayer(const QgsSymbolLayer* symbolLayer, QPainter* painter);
+
+    QPainter* painterForSymbolLayer(QgsSymbolLayer * symbolLayer);
+
+    QMap<const QgsSymbolLayer*, QPainter* > getSubPainter();
+
   private:
 
     Flags mFlags;
@@ -976,6 +982,8 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     QgsGeometry mFeatureClipGeometry;
 
     QPointF mTextureOrigin;
+
+    QMap<const QgsSymbolLayer*, QPainter* > mSubPainterMap;
 
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;

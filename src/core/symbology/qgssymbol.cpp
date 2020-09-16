@@ -52,6 +52,7 @@
 #include "qgsrenderedfeaturehandlerinterface.h"
 #include "qgslegendpatchshape.h"
 #include "qgsmasksymbollayer.h"
+#include "qgspainterswapper.h"
 
 inline
 QgsProperty rotateWholeSymbol( double additionalRotation, const QgsProperty &property )
@@ -1866,6 +1867,13 @@ void QgsMarkerSymbol::renderPoint( QPointF point, const QgsFeature *f, QgsRender
     QgsSymbolLayer *symbolLayer = mLayers.value( layerIdx );
     if ( symbolLayer && symbolLayer->enabled() && context.isSymbolLayerEnabled( symbolLayer ) )
     {
+      QPainter* symbolLayerPainter = symbolContext.renderContext().painterForSymbolLayer( symbolLayer );
+      QPainter* painter = symbolLayerPainter != nullptr ? symbolLayerPainter : symbolContext.renderContext().painter();
+      //QgsPainterSwapper swapper( symbolContext.renderContext(), painter );
+      symbolContext.renderContext().setPainter(painter);
+
+      if( symbolLayerPainter != nullptr ) QgsDebugMsg("RenderPoint, using custom painter");
+
       if ( symbolLayer->type() == QgsSymbol::Marker )
       {
         QgsMarkerSymbolLayer *markerLayer = static_cast<QgsMarkerSymbolLayer *>( symbolLayer );
@@ -1885,6 +1893,13 @@ void QgsMarkerSymbol::renderPoint( QPointF point, const QgsFeature *f, QgsRender
 
     if ( !symbolLayer->enabled() || !context.isSymbolLayerEnabled( symbolLayer ) )
       continue;
+
+    QPainter* symbolLayerPainter = symbolContext.renderContext().painterForSymbolLayer( symbolLayer );
+    QPainter* painter = symbolLayerPainter != nullptr ? symbolLayerPainter : symbolContext.renderContext().painter();
+    //QgsPainterSwapper swapper( symbolContext.renderContext(), painter );
+    symbolContext.renderContext().setPainter(painter);
+
+    if( symbolLayerPainter != nullptr ) QgsDebugMsg("RenderPoint, using custom painter");
 
     if ( symbolLayer->type() == QgsSymbol::Marker )
     {
@@ -2118,6 +2133,19 @@ void QgsLineSymbol::renderPolyline( const QPolygonF &points, const QgsFeature *f
     QgsSymbolLayer *symbolLayer = mLayers.value( layerIdx );
     if ( symbolLayer && symbolLayer->enabled() && context.isSymbolLayerEnabled( symbolLayer ) )
     {
+      QPainter* symbolLayerPainter = symbolContext.renderContext().painterForSymbolLayer( symbolLayer );
+      QPainter* painter = symbolLayerPainter != nullptr ? symbolLayerPainter : symbolContext.renderContext().painter();
+      symbolContext.renderContext().setPainter(painter);
+      //QgsPainterSwapper swapper( symbolContext.renderContext(), painter );
+      if( symbolLayerPainter != nullptr )
+      {
+        QgsDebugMsg("RenderPolyline, using custom painter");
+      }
+      else
+      {
+        QgsDebugMsg("RenderPolyline, no custom painter found !");
+      }
+
       if ( symbolLayer->type() == QgsSymbol::Line )
       {
         QgsLineSymbolLayer *lineLayer = static_cast<QgsLineSymbolLayer *>( symbolLayer );
@@ -2137,6 +2165,20 @@ void QgsLineSymbol::renderPolyline( const QPolygonF &points, const QgsFeature *f
 
     if ( !symbolLayer->enabled() || !context.isSymbolLayerEnabled( symbolLayer ) )
       continue;
+
+    QPainter* symbolLayerPainter = symbolContext.renderContext().painterForSymbolLayer( symbolLayer );
+    QPainter* painter = symbolLayerPainter != nullptr ? symbolLayerPainter : symbolContext.renderContext().painter();
+    symbolContext.renderContext().setPainter(painter);
+    //QgsPainterSwapper swapper( symbolContext.renderContext(), painter );
+
+    if( symbolLayerPainter != nullptr )
+    {
+      QgsDebugMsg("RenderPolyline, using custom painter");
+    }
+    else
+    {
+      QgsDebugMsg("RenderPolyline, no custom painter found !");
+    }
 
     if ( symbolLayer->type() == QgsSymbol::Line )
     {
@@ -2196,6 +2238,7 @@ QgsFillSymbol::QgsFillSymbol( const QgsSymbolLayerList &layers )
 
 void QgsFillSymbol::renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, const QgsFeature *f, QgsRenderContext &context, int layerIdx, bool selected )
 {
+  QgsDebugMsg("Render polygon");
   QgsSymbolRenderContext symbolContext( context, QgsUnitTypes::RenderUnknownUnit, mOpacity, selected, mRenderHints, f );
   symbolContext.setOriginalGeometryType( QgsWkbTypes::PolygonGeometry );
   symbolContext.setGeometryPartCount( symbolRenderContext()->geometryPartCount() );

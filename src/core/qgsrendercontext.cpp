@@ -557,3 +557,26 @@ void QgsRenderContext::addToMaskLabelPainterPath( int id, QPainterPath const &pa
   mMaskLabelPainterPaths[id].addPath( path );
 }
 
+void QgsRenderContext::addPainterForSymbolLayer(const QgsSymbolLayer* symbolLayer, QPainter* painter)
+{
+  mSubPainterMap[symbolLayer] = painter;
+}
+
+QPainter* QgsRenderContext::painterForSymbolLayer(QgsSymbolLayer * symbolLayer)
+{
+  auto it = mSubPainterMap.find(symbolLayer);
+  if ( it != mSubPainterMap.end() )
+  {
+    return *it;
+  }
+  else
+  {
+    return nullptr;
+  }
+}
+
+QMap<const QgsSymbolLayer*, QPainter* > QgsRenderContext::getSubPainter()
+{
+  return mSubPainterMap;
+}
+
