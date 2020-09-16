@@ -110,6 +110,8 @@ void QgsDecorationTitleDialog::mInsertExpressionButton_clicked()
   if ( selText.startsWith( QLatin1String( "[%" ) ) && selText.endsWith( QLatin1String( "%]" ) ) )
     selText = selText.mid( 2, selText.size() - 4 );
 
+  selText = selText.replace( QChar( 0x2029 ), QChar( '\n' ) );
+
   QgsExpressionBuilderDialog exprDlg( nullptr, selText, this, QStringLiteral( "generic" ), QgisApp::instance()->mapCanvas()->mapSettings().expressionContext() );
 
   exprDlg.setWindowTitle( QObject::tr( "Insert Expression" ) );
