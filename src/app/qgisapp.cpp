@@ -92,6 +92,7 @@
 #include "qgsprojecttimesettings.h"
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsmeshlayertemporalproperties.h"
+#include "qgsvectorlayersavestyledialog.h"
 
 #include "qgsanalysis.h"
 #include "qgsgeometrycheckregistry.h"
@@ -8831,24 +8832,99 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
     layer = activeLayer();
   }
 
-  QgsSettings settings;
-  QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
-  QString filename = QFileDialog::getSaveFileName( this,
-                     tr( "Save as QGIS Layer Style File" ),
-                     lastUsedDir,
-                     tr( "QGIS Layer Style File" ) + " (*.qml)" );
-  if ( filename.isEmpty() )
+  if ( !layer )
     return;
 
-  if ( ! filename.endsWith( QStringLiteral( ".qml" ) ) )
+  switch ( layer->type() )
   {
-    filename += QStringLiteral( ".qml" );
+
+    case QgsMapLayerType::VectorLayer:
+    {
+      QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer * >( layer );
+      QgsVectorLayerSaveStyleDialog dlg( vlayer, this );
+
+      if ( dlg.exec() )
+      {
+        bool resultFlag = false;
+
+        QgsVectorLayerProperties::StyleType type = dlg.currentStyleType();
+        switch ( type )
+        {
+          case QgsVectorLayerProperties::QML:
+          case QgsVectorLayerProperties::SLD:
+          {
+            QString message;
+            QString filePath = dlg.outputFilePath();
+            if ( type == QgsVectorLayerProperties::QML )
+              message = vlayer->saveNamedStyle( filePath, resultFlag, dlg.styleCategories() );
+            else
+              message = vlayer->saveSldStyle( filePath, resultFlag );
+
+            if ( resultFlag )
+            {
+              mInfoBar->pushMessage( tr( "Style saved" ), tr( "Successfully exported style to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( filePath ).toString(), QDir::toNativeSeparators( filePath ) ), Qgis::Success );
+            }
+            else
+            {
+              mInfoBar->pushMessage( tr( "Save Style" ), message, Qgis::Warning );
+            }
+
+            break;
+          }
+          case QgsVectorLayerProperties::DB:
+          {
+            QString infoWindowTitle = QObject::tr( "Save style to DB (%1)" ).arg( vlayer->providerType() );
+            QString msgError;
+
+            QgsVectorLayerSaveStyleDialog::SaveToDbSettings dbSettings = dlg.saveToDbSettings();
+
+            vlayer->saveStyleToDatabase( dbSettings.name, dbSettings.description, dbSettings.isDefault, dbSettings.uiFileContent, msgError );
+
+            if ( !msgError.isNull() )
+            {
+              mInfoBar->pushMessage( infoWindowTitle, msgError, Qgis::Warning );
+            }
+            else
+            {
+              mInfoBar->pushMessage( infoWindowTitle, tr( "Style saved" ), Qgis::Success );
+            }
+            break;
+          }
+        }
+      }
+      break;
+    }
+
+    case QgsMapLayerType::RasterLayer:
+    case QgsMapLayerType::MeshLayer:
+    {
+      QgsSettings settings;
+      QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
+      QString filename = QFileDialog::getSaveFileName( this,
+                         tr( "Save as QGIS Layer Style File" ),
+                         lastUsedDir,
+                         tr( "QGIS Layer Style File" ) + " (*.qml)" );
+      if ( filename.isEmpty() )
+        return;
+
+      if ( ! filename.endsWith( QStringLiteral( ".qml" ) ) )
+      {
+        filename += QStringLiteral( ".qml" );
+      }
+
+      bool defaultLoadedFlag;
+      layer->saveNamedStyle( filename, defaultLoadedFlag );
+
+      settings.setValue( QStringLiteral( "style/lastStyleDir" ), filename );
+      break;
+    }
+
+    case QgsMapLayerType::VectorTileLayer:
+    case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::PluginLayer:
+      break;
+
   }
-
-  bool defaultLoadedFlag;
-  layer->saveNamedStyle( filename, defaultLoadedFlag );
-
-  settings.setValue( QStringLiteral( "style/lastStyleDir" ), filename );
 }
 
 ///@cond PRIVATE
