@@ -33,7 +33,8 @@ from qgis.core import (QgsTextBufferSettings,
                        QgsProperty,
                        QgsFontUtils,
                        QgsSymbolLayerId,
-                       QgsSymbolLayerReference)
+                       QgsSymbolLayerReference,
+                       QgsStringUtils)
 from qgis.PyQt.QtGui import (QColor, QPainter, QFont, QImage, QBrush, QPen, QFontMetricsF)
 from qgis.PyQt.QtCore import (Qt, QSizeF, QPointF, QRectF, QDir, QSize)
 from qgis.PyQt.QtXml import QDomDocument
@@ -139,6 +140,10 @@ class PyQgsTextRenderer(unittest.TestCase):
 
         t = QgsTextFormat()
         t.setOrientation(QgsTextFormat.VerticalOrientation)
+        self.assertTrue(t.isValid())
+
+        t = QgsTextFormat()
+        t.setCapitalization(QgsStringUtils.TitleCase)
         self.assertTrue(t.isValid())
 
         t = QgsTextFormat()
@@ -681,6 +686,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         font = getTestFont()
         font.setKerning(False)
         s.setFont(font)
+        s.setCapitalization(QgsStringUtils.TitleCase)
         s.setNamedStyle('Italic')
         s.setSize(5)
         s.setSizeUnit(QgsUnitTypes.RenderPoints)
@@ -782,6 +788,10 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertNotEqual(s, s2)
         s = self.createFormatSettings()
 
+        s.setCapitalization(QgsStringUtils.ForceFirstLetterToCapital)
+        self.assertNotEqual(s, s2)
+        s = self.createFormatSettings()
+
         s.dataDefinedProperties().setProperty(QgsPalLayerSettings.Bold, QgsProperty.fromExpression('1>3'))
         self.assertNotEqual(s, s2)
 
@@ -807,6 +817,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertEqual(s.lineHeight(), 5)
         self.assertEqual(s.previewBackgroundColor().name(), '#6496c8')
         self.assertEqual(s.orientation(), QgsTextFormat.VerticalOrientation)
+        self.assertEqual(s.capitalization(), QgsStringUtils.TitleCase)
         self.assertTrue(s.allowHtmlFormatting())
         self.assertEqual(s.dataDefinedProperties().property(QgsPalLayerSettings.Bold).expressionString(), '1>2')
 
