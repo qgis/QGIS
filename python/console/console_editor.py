@@ -18,11 +18,12 @@ email                : lrssvtml (at) gmail (dot) com
  ***************************************************************************/
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
-from qgis.PyQt.QtCore import Qt, QObject, QEvent, QCoreApplication, QFileInfo, QSize, QDir
+from qgis.PyQt.QtCore import Qt, QObject, QEvent, QCoreApplication, QFileInfo, QSize, QDir, QByteArray, QJsonDocument, QUrl
 from qgis.PyQt.QtGui import QFont, QFontMetrics, QColor, QKeySequence, QCursor, QFontDatabase
+from qgis.PyQt.QtNetwork import QNetworkRequest
 from qgis.PyQt.QtWidgets import QShortcut, QMenu, QApplication, QWidget, QGridLayout, QSpacerItem, QSizePolicy, QFileDialog, QTabWidget, QTreeWidgetItem, QFrame, QLabel, QToolButton, QMessageBox
 from qgis.PyQt.Qsci import QsciScintilla, QsciAPIs, QsciStyle
-from qgis.core import Qgis, QgsApplication, QgsSettings
+from qgis.core import Qgis, QgsApplication, QgsSettings, QgsBlockingNetworkRequest
 from qgis.gui import QgsMessageBar
 from qgis.utils import OverrideCursor
 from .console_base import QgsPythonConsoleBase
@@ -278,6 +279,7 @@ class Editor(QgsPythonConsoleBase):
                             partial(self.shareOnGist, False))
         gist_menu.addAction(QCoreApplication.translate("PythonConsole", "Public Gist"),
                             partial(self.shareOnGist, True))
+        menu.addMenu(gist_menu)
         showCodeInspection = menu.addAction(self.iconObjInsp,
                                             QCoreApplication.translate("PythonConsole", "Hide/Show Object Inspector"),
                                             self.objectListEditor)
@@ -365,14 +367,8 @@ class Editor(QgsPythonConsoleBase):
             self.parent.pc.objectListButton.setChecked(True)
 
     def shareOnGist(self, is_public):
-        import requests
-        import json
-
-        ACCESS_TOKEN = self.settings.value("pythonConsole/accessTokenGithub", '')
+        ACCESS_TOKEN = self.settings.value("pythonConsole/accessTokenGithub", '', type=QByteArray)
         URL = "https://api.github.com/gists"
-
-        headers = {'Authorization': 'token %s' % ACCESS_TOKEN}
-        params = {'scope': 'gist'}
 
         path = self.parent.tw.currentWidget().path
         filename = os.path.basename(path) if path else None
@@ -382,16 +378,24 @@ class Editor(QgsPythonConsoleBase):
         data = {"description": "Gist created by PyQGIS Console",
                 "public": is_public,
                 "files": {filename: {"content": selected_text}}}
-        try:
-            res = requests.post(URL, headers=headers, params=params, data=json.dumps(data)).json()
-            print(res)
-            if res['html_url']:
-                QApplication.clipboard().setText(res['html_url'])
-                msg = QCoreApplication.translate('PythonConsole', 'URL copied to clipboard.')
-                self.parent.pc.callWidgetMessageBarEditor(msg, 0, True)
-        except requests.ConnectionError as e:
+
+        request = QgsBlockingNetworkRequest()
+        net_req = QNetworkRequest()
+        url = QUrl(URL)
+        net_req.setUrl(url)
+        net_req.setRawHeader(b"Authorization", b"token %s" % ACCESS_TOKEN)
+        err = request.post(net_req, QJsonDocument(data).toJson())
+        if not err:
+            response = request.reply().content()
+            json_doc = QJsonDocument()
+            _json = json_doc.fromJson(response)
+            link = _json.object()['html_url'].toString()
+            QApplication.clipboard().setText(link)
+            msg = QCoreApplication.translate('PythonConsole', 'URL copied to clipboard.')
+            self.parent.pc.callWidgetMessageBarEditor(msg, 0, True)
+        else:
             msg = QCoreApplication.translate('PythonConsole', 'Connection error: ')
-            self.parent.pc.callWidgetMessageBarEditor(msg + repr(e.args), 0, True)
+            self.parent.pc.callWidgetMessageBarEditor(msg + request.erroMessage(), 0, True)
 
     def hideEditor(self):
         self.parent.pc.splitterObj.hide()
