@@ -361,6 +361,7 @@ QString QgsField::readableConfigurationFlag( QgsField::ConfigurationFlag flag )
     case ConfigurationFlag::DefaultFlags:
       return QObject::tr( "Default flags" );
   }
+  return QString();
 }
 
 /***************************************************************************
