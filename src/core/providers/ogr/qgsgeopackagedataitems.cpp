@@ -394,3 +394,17 @@ bool QgsGeoPackageCollectionItem::layerCollection() const
 {
   return true;
 }
+
+bool QgsGeoPackageCollectionItem::hasDragEnabled() const
+{
+  return true;
+}
+
+QgsMimeDataUtils::Uri QgsGeoPackageCollectionItem::mimeUri() const
+{
+  QgsMimeDataUtils::Uri u;
+  u.providerKey = QStringLiteral( "ogr" );
+  u.uri = path();
+  u.layerType = QStringLiteral( "vector" );
+  return u;
+}

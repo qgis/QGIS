@@ -129,6 +129,9 @@ class CORE_EXPORT QgsOgrDataCollectionItem final: public QgsDataCollectionItem
      * \param ogrDriverName the OGR/GDAL driver name (e.g. "GPKG")
      */
     static bool createConnection( const QString &name, const QString &extensions, const QString &ogrDriverName );
+
+    bool hasDragEnabled() const override;
+    QgsMimeDataUtils::Uri mimeUri() const override;
 };
 
 //! Provider for OGR root data item
