@@ -65,7 +65,7 @@ class TestQgsMeshRenderer : public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init(); // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
-    bool imageCheck(const QString &testType, QgsMeshLayer *layer, double rotation = 0.0 );
+    bool imageCheck( const QString &testType, QgsMeshLayer *layer, double rotation = 0.0 );
     QString readFile( const QString &fname ) const;
 
 
