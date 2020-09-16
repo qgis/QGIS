@@ -370,6 +370,24 @@ Sets the ``orientation`` for the text.
 .. versionadded:: 3.10
 %End
 
+    QgsStringUtils::Capitalization capitalization() const;
+%Docstring
+Returns the text capitalization style.
+
+.. seealso:: :py:func:`setCapitalization`
+
+.. versionadded:: 3.16
+%End
+
+    void setCapitalization( QgsStringUtils::Capitalization capitalization );
+%Docstring
+Sets the text ``capitalization`` style.
+
+.. seealso:: :py:func:`capitalization`
+
+.. versionadded:: 3.16
+%End
+
     bool allowHtmlFormatting() const;
 %Docstring
 Returns ``True`` if text should be treated as a HTML document and HTML tags should be used for formatting

@@ -23,6 +23,7 @@
 #include "qgstextbackgroundsettings.h"
 #include "qgstextshadowsettings.h"
 #include "qgstextmasksettings.h"
+#include "qgsstringutils.h"
 
 #include <QSharedDataPointer>
 
@@ -338,6 +339,22 @@ class CORE_EXPORT QgsTextFormat
      * \since QGIS 3.10
      */
     void setOrientation( TextOrientation orientation );
+
+    /**
+     * Returns the text capitalization style.
+     *
+     * \see setCapitalization()
+     * \since QGIS 3.16
+     */
+    QgsStringUtils::Capitalization capitalization() const;
+
+    /**
+     * Sets the text \a capitalization style.
+     *
+     * \see capitalization()
+     * \since QGIS 3.16
+     */
+    void setCapitalization( QgsStringUtils::Capitalization capitalization );
 
     /**
      * Returns TRUE if text should be treated as a HTML document and HTML tags should be used for formatting
