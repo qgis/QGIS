@@ -87,12 +87,12 @@ QgsWeakRelation QgsWeakRelation::readXml( const QgsVectorLayer *layer, WeakRelat
   }
 
   QList<QgsRelation::FieldPair> fieldPairs;
-  const QDomNodeList fieldPairNodes { relationElement.elementsByTagName( QStringLiteral( "fieldPair" ) ) };
+  const QDomNodeList fieldPairNodes { relationElement.elementsByTagName( QStringLiteral( "fieldRef" ) ) };
   for ( int j = 0; j < fieldPairNodes.length(); ++j )
   {
     const QDomElement fieldPairElement = fieldPairNodes.at( j ).toElement();
-    fieldPairs.push_back( { fieldPairElement.attribute( QStringLiteral( "referencing" ) ),
-                            fieldPairElement.attribute( QStringLiteral( "referenced" ) )
+    fieldPairs.push_back( { fieldPairElement.attribute( QStringLiteral( "referencingField" ) ),
+                            fieldPairElement.attribute( QStringLiteral( "referencedField" ) )
                           } );
   }
 
