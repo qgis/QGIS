@@ -40,11 +40,15 @@ Returns the QgsProject singleton instance
 
     static void setInstance( QgsProject *project );
 %Docstring
-Set the current project instance to ``project``
+Set the current project singleton instance to ``project``
 
 .. note::
 
-   this is used mainly by the server, which caches the projects and (potentially) needs to switch the current instance on every request
+   this method is provided mainly for the server, which caches the projects and (potentially) needs to switch the current instance on every request.
+
+.. warning::
+
+   calling this method can have serious, unintended consequences, including instability, data loss and undefined behaviour. Use with EXTREME caution!
 
 .. seealso:: :py:func:`instance`
 
