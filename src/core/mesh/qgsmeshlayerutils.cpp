@@ -202,10 +202,10 @@ QgsRectangle QgsMeshLayerUtils::boundingBoxToScreenRectangle(
   const QgsRectangle &bbox
 )
 {
-  QgsPointXY topLeft = mtp.transform( bbox.xMinimum(), bbox.yMaximum() );
-  QgsPointXY topRight = mtp.transform( bbox.xMaximum(), bbox.yMaximum() );
-  QgsPointXY bottomLeft = mtp.transform( bbox.xMinimum(), bbox.yMinimum() );
-  QgsPointXY bottomRight = mtp.transform( bbox.xMaximum(), bbox.yMinimum() );
+  const QgsPointXY topLeft = mtp.transform( bbox.xMinimum(), bbox.yMaximum() );
+  const QgsPointXY topRight = mtp.transform( bbox.xMaximum(), bbox.yMaximum() );
+  const QgsPointXY bottomLeft = mtp.transform( bbox.xMinimum(), bbox.yMinimum() );
+  const QgsPointXY bottomRight = mtp.transform( bbox.xMaximum(), bbox.yMinimum() );
 
   double xMin = std::min( {topLeft.x(), topRight.x(), bottomLeft.x(), bottomRight.x()} );
   double xMax = std::max( {topLeft.x(), topRight.x(), bottomLeft.x(), bottomRight.x()} );
@@ -225,7 +225,7 @@ void QgsMeshLayerUtils::boundingBoxToScreenRectangle(
   int &bottomLim,
   int &topLim )
 {
-  QgsRectangle screenBBox = boundingBoxToScreenRectangle( mtp, bbox );
+  const QgsRectangle screenBBox = boundingBoxToScreenRectangle( mtp, bbox );
 
   bottomLim = std::max( int( screenBBox.yMinimum() ), 0 );
   topLim = std::min( int( screenBBox.yMaximum() ), outputSize.height() - 1 );
