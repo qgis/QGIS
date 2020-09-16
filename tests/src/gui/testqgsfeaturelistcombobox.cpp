@@ -137,11 +137,10 @@ void TestQgsFeatureListComboBox::testSetGetForeignKey()
 
   Q_NOWARN_DEPRECATED_PUSH
   QVERIFY( cb.identifierValue().isNull() );
-
+  
   cb.setSourceLayer( mLayer.get() );
   cb.setDisplayExpression( "\"material\"" );
   cb.setIdentifierField( "material" );
-  cb.lineEdit()->setText( "ro" );
 
   QSignalSpy spy( &cb, &QgsFeatureListComboBox::identifierValueChanged );
   QTest::keyClicks( cb.lineEdit(), "ro" );
@@ -212,20 +211,18 @@ void TestQgsFeatureListComboBox::testValuesAndSelection()
 {
   QFETCH( bool, allowNull );
 
-
   QgsApplication::setNullRepresentation( QStringLiteral( "nope" ) );
   std::unique_ptr<QgsFeatureListComboBox> cb( new QgsFeatureListComboBox() );
 
-  QgsFeatureFilterModel *model = qobject_cast<QgsFeatureFilterModel *>( cb->model() );
-  QEventLoop loop;
-  connect( model, &QgsFeatureFilterModel::filterJobCompleted, &loop, &QEventLoop::quit );
+  QSignalSpy spy( cb.get(), &QgsFeatureListComboBox::identifierValueChanged );
 
   cb->setSourceLayer( mLayer.get() );
-  cb->setDisplayExpression( QStringLiteral( "\"raccord\"" ) );
   cb->setAllowNull( allowNull );
+  cb->setIdentifierFields( {QStringLiteral( "raccord" )} );
+  cb->setDisplayExpression( QStringLiteral( "\"raccord\"" ) );
 
   //check if everything is fine:
-  loop.exec();
+  spy.wait();
   QCOMPARE( cb->currentIndex(), allowNull ? cb->nullIndex() : 0 );
   QCOMPARE( cb->currentText(), allowNull ? QStringLiteral( "nope" ) : QStringLiteral( "brides" ) );
 
@@ -245,7 +242,7 @@ void TestQgsFeatureListComboBox::testValuesAndSelection()
 
   //check with another entry, clear button needs to be there then:
   QTest::keyClicks( cb.get(), QStringLiteral( "sleeve" ) );
-  loop.exec();
+  spy.wait();
   QCOMPARE( cb->currentText(), QStringLiteral( "sleeve" ) );
   QVERIFY( cb->mLineEdit->mClearAction );
 }
@@ -293,21 +290,24 @@ void TestQgsFeatureListComboBox::testNotExistingYetFeature()
 
 void TestQgsFeatureListComboBox::testFeatureFurtherThanFetchLimit()
 {
+  int fetchLimit = 20;
+  QVERIFY( fetchLimit < mLayer->featureCount() );
   std::unique_ptr<QgsFeatureListComboBox> cb( new QgsFeatureListComboBox() );
   QgsFeatureFilterModel *model = qobject_cast<QgsFeatureFilterModel *>( cb->model() );
   QSignalSpy spy( cb.get(), &QgsFeatureListComboBox::identifierValueChanged );
+  model->setFetchLimit( 20 );
   model->setAllowNull( false );
   cb->setSourceLayer( mLayer.get() );
   cb->setIdentifierFields( {QStringLiteral( "pk" )} );
   spy.wait();
-  QCOMPARE( model->mEntries.count(), 100 );
-  for ( int i = 0; i < 100; i++ )
-    QVERIFY( model->mEntries.at( i ).identifierValues.at( 0 ).toInt() != 110 );
-  cb->setIdentifierValues( {110} );
+  QCOMPARE( model->mEntries.count(), 20 );
+  for ( int i = 0; i < 20; i++ )
+    QCOMPARE( model->mEntries.at( i ).identifierFields.at( 0 ).toInt(), i + 10 );
+  cb->setIdentifierValues( {33} );
   spy.wait();
-  QCOMPARE( cb->lineEdit()->text(), QStringLiteral( "110" ) );
-  QCOMPARE( model->mEntries.count(), 101 );
-  QCOMPARE( model->mEntries.at( 0 ).identifierValues.at( 0 ).toInt(), 110 );
+  QCOMPARE( cb->lineEdit()->text(), QStringLiteral( "33" ) );
+  QCOMPARE( model->mEntries.count(), 21 );
+  QCOMPARE( model->mEntries.at( 0 ).identifierFields.at( 0 ).toInt(), 33 );
 }
 
 QGSTEST_MAIN( TestQgsFeatureListComboBox )
