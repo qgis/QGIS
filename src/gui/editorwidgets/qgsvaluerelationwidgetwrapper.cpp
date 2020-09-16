@@ -243,13 +243,21 @@ void QgsValueRelationWidgetWrapper::updateValues( const QVariant &value, const Q
   }
   else if ( mLineEdit )
   {
+    mLineEdit->clear();
+    bool wasFound { false };
     for ( const QgsValueRelationFieldFormatter::ValueRelationItem &i : qgis::as_const( mCache ) )
     {
       if ( i.key == value )
       {
         mLineEdit->setText( i.value );
+        wasFound = true;
         break;
       }
+    }
+    // Value could not be found
+    if ( ! wasFound )
+    {
+      mLineEdit->setText( tr( "(no selection)" ) );
     }
   }
 }
