@@ -285,7 +285,7 @@ QStringList QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string,
   QgsAttributeList subsetOfAttributes;
   for ( const QgsField &field : fields )
   {
-    if ( !field.configurationFlags().testFlag( QgsField::ConfigurationFlag::Searchable ) )
+    if ( field.configurationFlags().testFlag( QgsField::ConfigurationFlag::NotSearchable ) )
       continue;
 
     if ( !_fieldRestriction.isEmpty() && !field.name().startsWith( _fieldRestriction ) )
