@@ -4774,6 +4774,59 @@ QSet<const QgsSymbolLayer *> QgsSymbolLayerUtils::toSymbolLayerPointers( QgsFeat
   return visitor.mSymbolLayers;
 }
 
+QList< QPair<QgsSymbolLayerId, const QgsSymbolLayer*> > QgsSymbolLayerUtils::listSymbolLayers( QgsFeatureRenderer *renderer )
+{
+  class SymbolLayerVisitor : public QgsStyleEntityVisitorInterface
+  {
+    public:
+      bool visitEnter( const QgsStyleEntityVisitorInterface::Node &node ) override
+      {
+        if ( node.type == QgsStyleEntityVisitorInterface::NodeType::SymbolRule )
+        {
+          mCurrentRuleKey = node.identifier;
+          return true;
+        }
+        return false;
+      }
+
+      void visitSymbol( const QgsSymbol *symbol, const QString &identifier, QVector<int> rootPath )
+      {
+        for ( int idx = 0; idx < symbol->symbolLayerCount(); idx++ )
+        {
+          QVector<int> indexPath = rootPath;
+          indexPath.append( idx );
+          const QgsSymbolLayer *sl = symbol->symbolLayer( idx );
+          QgsSymbolLayerId layerId = QgsSymbolLayerId( mCurrentRuleKey + identifier, indexPath );
+          mSymbolLayers.append( QPair<QgsSymbolLayerId, const QgsSymbolLayer*>(layerId, sl) );
+
+          const QgsSymbol *subSymbol = const_cast<QgsSymbolLayer *>( sl )->subSymbol();
+          if ( subSymbol )
+            visitSymbol( subSymbol, identifier, indexPath );
+        }
+      }
+
+      bool visit( const QgsStyleEntityVisitorInterface::StyleLeaf &leaf ) override
+      {
+        if ( leaf.entity && leaf.entity->type() == QgsStyle::SymbolEntity )
+        {
+          auto symbolEntity = static_cast<const QgsStyleSymbolEntity *>( leaf.entity );
+          if ( symbolEntity->symbol() )
+          {
+            visitSymbol( symbolEntity->symbol(), leaf.identifier, {} );
+          }
+        }
+        return true;
+      }
+
+      QString mCurrentRuleKey;
+      QList< QPair<QgsSymbolLayerId, const QgsSymbolLayer*> > mSymbolLayers;
+  };
+
+  SymbolLayerVisitor visitor;
+  renderer->accept( &visitor );
+  return visitor.mSymbolLayers;
+}
+
 QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double minSize, double maxSize, QgsRenderContext *context, double &width, double &height )
 {
   if ( !s || !context )

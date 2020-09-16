@@ -910,6 +910,12 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      */
     void setZRange( const QgsDoubleRange &range );
 
+    void addPainterForSymbolLayer(const QgsSymbolLayer* symbolLayer, QPainter* painter);
+
+    QPainter* painterForSymbolLayer(QgsSymbolLayer * symbolLayer);
+
+    QMap<const QgsSymbolLayer*, QPainter* > getSubPainter();
+
   private:
 
     Flags mFlags;
@@ -1014,6 +1020,8 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     QPointF mTextureOrigin;
 
     QgsDoubleRange mZRange;
+
+    QMap<const QgsSymbolLayer*, QPainter* > mSubPainterMap;
 
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;

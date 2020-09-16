@@ -38,6 +38,7 @@ class QgsLabelingResults;
 class QgsMapLayerRenderer;
 class QgsMapRendererCache;
 class QgsFeatureFilterProvider;
+class QgsSymbolLayer;
 
 #ifndef SIP_RUN
 /// @cond PRIVATE
@@ -137,6 +138,10 @@ struct LayerRenderJob
    * In this latter case, the second element of the QPair gives the label mask id.
    */
   QList<QPair<LayerRenderJob *, int>> maskJobs;
+
+  QList<QPair<const QgsSymbolLayer*, QPicture*>> symbolLayerPic;
+
+  QSet<const QgsSymbolLayer*> isSymbolLayerMasked;
 };
 
 typedef QList<LayerRenderJob> LayerRenderJobs;
@@ -474,6 +479,8 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 
     //! \note not available in Python bindings
     static void drawLabeling( QgsRenderContext &renderContext, QgsLabelingEngine *labelingEngine2, QPainter *painter ) SIP_SKIP;
+
+    static void OutputQPicture(QPicture* pic, QString const& path, int width, int height);
 
   private:
 

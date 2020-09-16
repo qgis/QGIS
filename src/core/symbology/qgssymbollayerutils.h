@@ -810,6 +810,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static QSet<const QgsSymbolLayer *> toSymbolLayerPointers( QgsFeatureRenderer *renderer, const QSet<QgsSymbolLayerId> &symbolLayerIds );
 
+    static QList< QPair<QgsSymbolLayerId, const QgsSymbolLayer*> > listSymbolLayers( QgsFeatureRenderer *renderer );
+
     /**
      * \brief Creates a new symbol with size restricted to min/max size if original size is out of min/max range
      * \param s the original symbol

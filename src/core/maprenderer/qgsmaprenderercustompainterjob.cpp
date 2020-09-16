@@ -423,6 +423,11 @@ void QgsMapRendererCustomPainterJob::doRender()
           job.renderer->renderContext()->painter()->end();
         }
 
+        for(auto elem: job.renderer->renderContext()->getSubPainter())
+        {
+          elem->end();
+        }
+
         job.renderingTime += layerTime.elapsed();
       }
     }

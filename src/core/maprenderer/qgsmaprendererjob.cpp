@@ -703,9 +703,33 @@ LayerRenderJobs QgsMapRendererJob::prepareSecondPassJobs( LayerRenderJobs &first
     QgsVectorLayerRenderer *mapRenderer = static_cast<QgsVectorLayerRenderer *>( vl1->createMapRenderer( job2.context ) );
     job2.renderer = mapRenderer;
 
-    // Modify the render context so that symbol layers get disabled as needed.
-    // The map renderer stores a reference to the context, so we can modify it even after the map renderer creation (what we need here)
-    job2.context.setDisabledSymbolLayers( QgsSymbolLayerUtils::toSymbolLayerPointers( mapRenderer->featureRenderer(), symbolList ) );
+    if ( mapSettings().testFlag( QgsMapSettings::Flag::ForceVectorOutput ) == false )
+    {
+      // Modify the render context so that symbol layers get disabled as needed.
+      // The map renderer stores a reference to the context, so we can modify it even after the map renderer creation (what we need here)
+      job2.context.setDisabledSymbolLayers( QgsSymbolLayerUtils::toSymbolLayerPointers( mapRenderer->featureRenderer(), symbolList ) );
+    }
+    else
+    {
+      QList< QPair<QgsSymbolLayerId, const QgsSymbolLayer*> > slList = QgsSymbolLayerUtils::listSymbolLayers( mapRenderer->featureRenderer() );
+
+      QgsDebugMsg("List symbolLayer ");
+      for( QPair<QgsSymbolLayerId, const QgsSymbolLayer*>& slId : slList )
+      {
+        QgsDebugMsg("Got symbolLayer with id : " + QString::number( qHash( slId.second ) ) );
+        QPicture* slPic = nullptr;
+        QPainter* slPainter = allocatePictureAndPainter( slPic );
+
+        job2.symbolLayerPic.append(QPair<const QgsSymbolLayer*, QPicture*>(slId.second, slPic));
+        job2.context.addPainterForSymbolLayer(slId.second, slPainter);
+
+        if( symbolList.find(slId.first) != symbolList.end() )
+        {
+          job2.isSymbolLayerMasked.insert(slId.second);
+        }
+      }
+      QgsDebugMsg("/List symbolLayer ");
+    }
   }
 
   return secondPassJobs;
@@ -975,6 +999,7 @@ QImage QgsMapRendererJob::layerImageToBeComposed(
 
 void QgsMapRendererJob::composeSecondPass( LayerRenderJobs &secondPassJobs, LabelRenderJob &labelJob, bool forceVector )
 {
+  int i = 0;
   // compose the second pass with the mask
   for ( LayerRenderJob &job : secondPassJobs )
   {
@@ -1058,6 +1083,8 @@ void QgsMapRendererJob::composeSecondPass( LayerRenderJobs &secondPassJobs, Labe
       }
       else
       {
+        OutputQPicture(job.firstPassJob->imgPic, QString("/tmp/outputpic/firstJob_%1.png").arg(i), job.context.painter()->device()->width(), job.context.painter()->device()->height());
+        OutputQPicture(job.imgPic, QString("/tmp/outputpic/secondJob_%1.png").arg(i), job.context.painter()->device()->width(), job.context.painter()->device()->height());
         //Masking is done with clipping so our final clip path is actually the full image
         //minus the path of the masking symbols
         QPainterPath finalMask;
@@ -1091,18 +1118,53 @@ void QgsMapRendererJob::composeSecondPass( LayerRenderJobs &secondPassJobs, Labe
         //First the rasterized alpha blended first pass (containing only what is under the mask if not opaque)
         painter1->drawImage( 0, 0, firstPassMasked );
 
-        //Then the vector second pass on top (nothing is masked here)
-        painter1->drawPicture( 0, 0, *job.imgPic );
+//         //Then the vector second pass on top (nothing is masked here)
+//         painter1->drawPicture( 0, 0, *job.imgPic );
+//
+//         //Set clipping path to remove the masked part
+//         painter1->setClipPath( finalMask );
+//
+//         //Finally paint the first pass picture clipped
+//         painter1->drawPicture( 0, 0, firstJobPic );
+//         painter1->end();
 
-        //Set clipping path to remove the masked part
-        painter1->setClipPath( finalMask );
+        int j=0;
+        for(QPair<const QgsSymbolLayer*, QPicture*>& elem : job.symbolLayerPic)
+        {
+          QgsDebugMsg("Output pic");
+          QString picName = QString("/tmp/outputpic/pic_%1_%2.png").arg(i).arg(j);
+          if( job.isSymbolLayerMasked.find(elem.first) != job.isSymbolLayerMasked.end() )
+          {
+            QgsDebugMsg("Pic " + picName + " isMasked ");
+            painter1->setClipping(true);
+            painter1->setClipPath( finalMask );
+            painter1->drawPicture( 0, 0, *elem.second );
+          }
+          else
+          {
+            painter1->setClipping(false);
+            painter1->drawPicture( 0, 0, *elem.second );
+          }
+          OutputQPicture(elem.second, picName, job.context.painter()->device()->width(), job.context.painter()->device()->height());
+          j++;
+        }
 
-        //Finally paint the first pass picture clipped
-        painter1->drawPicture( 0, 0, firstJobPic );
         painter1->end();
       }
     }
+    ++i;
   }
+}
+
+void QgsMapRendererJob::OutputQPicture(QPicture* pic, QString const& path, int width, int height)
+{
+
+  QImage img(width, height, QImage::Format_ARGB32);
+  QPainter painter(&img);
+  painter.fillRect(0,0,width, height, QColor(0, 255, 0, 255));
+  painter.drawPicture(0, 0, *pic);
+  painter.end();
+  img.save(path);
 }
 
 void QgsMapRendererJob::logRenderingTime( const LayerRenderJobs &jobs, const LayerRenderJobs &secondPassJobs, const LabelRenderJob &labelJob )
