@@ -1370,16 +1370,18 @@ QgsGeometry::OperationResult QgsVectorLayer::splitFeatures( const QVector<QgsPoi
 QgsGeometry::OperationResult QgsVectorLayer::splitFeatures( const QgsPointSequence &splitLine, bool topologicalEditing )
 {
   QgsLineString splitLineString( splitLine );
-  return splitFeatures( &splitLineString, topologicalEditing );
+  QgsPointSequence topologyTestPoints;
+  bool preserveCircular = false;
+  return splitFeatures( &splitLineString, topologyTestPoints, preserveCircular, topologicalEditing );
 }
 
-QgsGeometry::OperationResult QgsVectorLayer::splitFeatures( const QgsCurve *curve, bool preserveCircular, bool topologicalEditing )
+QgsGeometry::OperationResult QgsVectorLayer::splitFeatures( const QgsCurve *curve, QgsPointSequence &topologyTestPoints, bool preserveCircular, bool topologicalEditing )
 {
   if ( !isValid() || !mEditBuffer || !mDataProvider )
     return QgsGeometry::OperationResult::LayerNotEditable;
 
   QgsVectorLayerEditUtils utils( this );
-  return utils.splitFeatures( curve, preserveCircular, topologicalEditing );
+  return utils.splitFeatures( curve, topologyTestPoints, preserveCircular, topologicalEditing );
 }
 
 int QgsVectorLayer::addTopologicalPoints( const QgsGeometry &geom )
@@ -1403,6 +1405,15 @@ int QgsVectorLayer::addTopologicalPoints( const QgsPoint &p )
 
   QgsVectorLayerEditUtils utils( this );
   return utils.addTopologicalPoints( p );
+}
+
+int QgsVectorLayer::addTopologicalPoints( const QgsPointSequence &ps )
+{
+  if ( !mValid || !mEditBuffer || !mDataProvider )
+    return -1;
+
+  QgsVectorLayerEditUtils utils( this );
+  return utils.addTopologicalPoints( ps );
 }
 
 void QgsVectorLayer::setLabeling( QgsAbstractVectorLayerLabeling *labeling )

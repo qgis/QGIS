@@ -1551,7 +1551,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Splits features cut by the given curve
      * \param curve curve that splits the layer features
-     * \param preserveCircular whether if circular strings are preserved after splitting
+     * \param[out] topologyTestPoints topological points to be tested against other layers
+     * \param preserveCircular whether circular strings are preserved after splitting
      * \param topologicalEditing TRUE if topological editing is enabled
      * \returns QgsGeometry::OperationResult
      *
@@ -1569,7 +1570,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * changes can be discarded by calling rollBack().
      * \since QGIS 3.16
      */
-    Q_INVOKABLE QgsGeometry::OperationResult splitFeatures( const QgsCurve *curve, bool preserveCircular = false, bool topologicalEditing = false );
+    Q_INVOKABLE QgsGeometry::OperationResult splitFeatures( const QgsCurve *curve, QgsPointSequence &topologyTestPoints SIP_OUT, bool preserveCircular = false, bool topologicalEditing = false );
 
     /**
      * Adds topological points for every vertex of the geometry.
@@ -1612,6 +1613,21 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \since 3.10
      */
     int addTopologicalPoints( const QgsPoint &p );
+
+    /**
+     * Adds a vertex to segments which intersect any of the points \a p but don't
+     * already have a vertex there. If a feature already has a vertex at position \a p,
+     * no additional vertex is inserted. This method is useful for topological
+     * editing.
+     * \param ps point sequence of the vertices
+     * \returns 0 in case of success
+     * \note Calls to addTopologicalPoints() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
+     * \since 3.16
+     */
+    int addTopologicalPoints( const QgsPointSequence &ps );
 
     /**
      * Access to const labeling configuration. May be NULLPTR if labeling is not used.
