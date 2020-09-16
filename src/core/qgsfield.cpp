@@ -352,7 +352,7 @@ QString QgsField::readableConfigurationFlag( QgsField::ConfigurationFlag flag )
   {
     case ConfigurationFlag::None:
       return QObject::tr( "None" );
-    case ConfigurationFlag::Searchable:
+    case ConfigurationFlag::NotSearchable:
       return QObject::tr( "Not searchable" );
     case ConfigurationFlag::DoNotExposeViaWms:
       return QStringLiteral( "Do not expose via WMS" );

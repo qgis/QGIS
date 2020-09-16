@@ -2313,7 +2313,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
       const QDomElement fieldWidgetElement = fieldConfigElement.elementsByTagName( QStringLiteral( "editWidget" ) ).at( 0 ).toElement();
 
       QString fieldName = fieldConfigElement.attribute( QStringLiteral( "name" ) );
-      mFieldConfigurationFlags[fieldName] = qgsFlagKeysToValue( fieldConfigElement.attribute( QStringLiteral( "configurationFlags" ) ), QgsField::ConfigurationFlag::DefaultFlags );
+      mFieldConfigurationFlags[fieldName] = qgsFlagKeysToValue( fieldConfigElement.attribute( QStringLiteral( "configurationFlags" ) ), QgsField::ConfigurationFlag::None );
 
       const QString widgetType = fieldWidgetElement.attribute( QStringLiteral( "type" ) );
       const QDomElement cfgElem = fieldConfigElement.elementsByTagName( QStringLiteral( "config" ) ).at( 0 ).toElement();
@@ -5477,7 +5477,7 @@ QgsField::ConfigurationFlags QgsVectorLayer::fieldConfigurationFlags( int index 
 {
 
   if ( index < 0 || index >= mFields.count() )
-    return QgsField::ConfigurationFlag::DefaultFlags;
+    return QgsField::ConfigurationFlag::None;
 
   return mFields.at( index ).configurationFlags();
 }
