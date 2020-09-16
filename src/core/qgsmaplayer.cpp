@@ -257,7 +257,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
   QDomNode srsNode = layerElement.namedItem( QStringLiteral( "srs" ) );
   mCRS.readXml( srsNode );
   mCRS.setValidationHint( tr( "Specify CRS for layer %1" ).arg( mne.text() ) );
-  if ( isSpatial() )
+  if ( isSpatial() && type() != QgsMapLayerType::AnnotationLayer )
     mCRS.validate();
   savedCRS = mCRS;
 
@@ -770,7 +770,7 @@ void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSign
 {
   mCRS = srs;
 
-  if ( mShouldValidateCrs && isSpatial() && !mCRS.isValid() )
+  if ( mShouldValidateCrs && isSpatial() && !mCRS.isValid() && type() != QgsMapLayerType::AnnotationLayer )
   {
     mCRS.setValidationHint( tr( "Specify CRS for layer %1" ).arg( name() ) );
     mCRS.validate();
