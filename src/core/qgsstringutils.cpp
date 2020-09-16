@@ -73,7 +73,8 @@ QString QgsStringUtils::capitalize( const QString &string, QgsStringUtils::Capit
         splitWords = QRegularExpression( QStringLiteral( "\\b" ), QRegularExpression::UseUnicodePropertiesOption );
       }
 
-      const QStringList parts = string.split( splitWords, QString::SkipEmptyParts );
+      const bool allSameCase = string.toLower() == string || string.toUpper() == string;
+      const QStringList parts = ( allSameCase ? string.toLower() : string ).split( splitWords, QString::SkipEmptyParts );
       QString result;
       bool firstWord = true;
       int i = 0;

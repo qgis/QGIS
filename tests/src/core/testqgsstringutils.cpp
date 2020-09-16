@@ -173,6 +173,8 @@ void TestQgsStringUtils::titleCase_data()
   QTest::newRow( "empty string" ) << "" << "";
   QTest::newRow( "single character" ) << "a" << "A";
   QTest::newRow( "string 1" ) << "follow step-by-step instructions" << "Follow Step-by-Step Instructions";
+  QTest::newRow( "originally uppercase" ) << "FOLLOW STEP-BY-STEP INSTRUCTIONS" << "Follow Step-by-Step Instructions";
+  QTest::newRow( "string 1" ) << "Follow step-by-step instructions" << "Follow Step-by-Step Instructions";
   QTest::newRow( "string 2" ) << "this sub-phrase is nice" << "This Sub-Phrase Is Nice";
   QTest::newRow( "" ) << "catchy title: a subtitle" << "Catchy Title: A Subtitle";
   QTest::newRow( "string 3" ) << "all words capitalized" << "All Words Capitalized";
