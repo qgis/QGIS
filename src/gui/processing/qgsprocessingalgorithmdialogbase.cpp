@@ -403,7 +403,7 @@ void QgsProcessingAlgorithmDialogBase::reportError( const QString &error, bool f
 
 void QgsProcessingAlgorithmDialogBase::pushInfo( const QString &info )
 {
-  setInfo( info );
+  setInfo( info, false, false );
   processEvents();
 }
 
