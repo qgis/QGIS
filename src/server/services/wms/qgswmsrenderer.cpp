@@ -1774,7 +1774,14 @@ namespace QgsWms
         {
           QDomElement attributeElement = infoDocument.createElement( QStringLiteral( "Attribute" ) );
           attributeElement.setAttribute( QStringLiteral( "name" ), layer->bandName( it.key() ) );
-          attributeElement.setAttribute( QStringLiteral( "value" ), QString::number( it.value().toDouble() ) );
+
+          QString value( QStringLiteral( "no data" ) );
+          if ( ! it.value().isNull() )
+          {
+            value  = QString::number( it.value().toDouble() );
+          }
+
+          attributeElement.setAttribute( QStringLiteral( "value" ), value );
           layerElement.appendChild( attributeElement );
         }
       }
