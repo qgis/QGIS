@@ -180,7 +180,10 @@ Selects all items.
 Removes selection from all items.
 %End
 
+  protected:
+
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

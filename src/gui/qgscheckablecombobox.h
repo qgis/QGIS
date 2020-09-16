@@ -25,6 +25,7 @@
 
 #include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis.h"
 
 class QEvent;
 
@@ -268,6 +269,9 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
      */
     void deselectAllOptions();
 
+  protected:
+    QgsCheckableItemModel *mModel = nullptr;
+
   private:
     void updateCheckedItems();
     void updateDisplayText();
@@ -275,13 +279,24 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
     QString mSeparator;
     QString mDefaultText;
 
-    QgsCheckableItemModel *mModel = nullptr;
-
     bool mSkipHide = false;
 
     QMenu *mContextMenu = nullptr;
     QAction *mSelectAllAction = nullptr;
     QAction *mDeselectAllAction = nullptr;
 };
+
+#ifndef SIP_RUN
+template <typename Flag, typename Readable>
+class CORE_EXPORT QgsFlagCheckableComboBox : public QgsCheckableComboBox
+{
+  public:
+    QgsFlagCheckableComboBox( Readable readable, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    void setFlags( QFlags<Flag> flags );
+
+    QFlags<Flag> flags() const;
+};
+#endif
 
 #endif // QGSCHECKABLECOMBOBOX_H

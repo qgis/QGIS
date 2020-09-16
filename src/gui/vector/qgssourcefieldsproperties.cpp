@@ -271,17 +271,8 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
     mFieldsList->item( row, AttrNameCol )->setFlags( mFieldsList->item( row, AttrNameCol )->flags() & ~Qt::ItemIsEditable );
 
   // Flags
-  QgsCheckableComboBox *cb = new QgsCheckableComboBox( mFieldsList );
-  const QList<QgsField::ConfigurationFlag> flagList = qgsEnumMap<QgsField::ConfigurationFlag>().keys();
-  for ( const QgsField::ConfigurationFlag flag : flagList )
-  {
-    if ( flag == QgsField::ConfigurationFlag::None || flag == QgsField::ConfigurationFlag::DefaultFlags )
-      continue;
-
-    cb->addItemWithCheckState( QgsField::readableConfigurationFlag( flag ),
-                               mLayer->fieldConfigurationFlags( idx ).testFlag( flag ) ? Qt::Checked : Qt::Unchecked,
-                               QVariant::fromValue( flag ) );
-  }
+  std::function<QString( QgsField::ConfigurationFlag )> readable = []( QgsField::ConfigurationFlag flag ) {return QgsField::readableConfigurationFlag( flag );};
+  QgsCheckableComboBox *cb = new QgsFlagCheckableComboBox<QgsField::ConfigurationFlag>( readable, mFieldsList );
   mFieldsList->setCellWidget( row, AttrConfigurationFlagsCol, cb );
 }
 

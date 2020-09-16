@@ -293,7 +293,7 @@ namespace QgsWfs
       {
         for ( const QgsField &field : fields )
         {
-          if ( !field.configurationFlags().testFlag( QgsField::ConfigurationFlag::ExposeViaWfs ) )
+          if ( field.configurationFlags().testFlag( QgsField::ConfigurationFlag::DoNotExposeViaWfs ) )
           {
             int fieldNameIdx = fields.indexOf( field.name() );
             if ( fieldNameIdx > -1 && attrIndexes.contains( fieldNameIdx ) )
