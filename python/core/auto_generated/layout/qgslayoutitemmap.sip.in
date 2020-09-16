@@ -95,7 +95,7 @@ Returns the list of map layers to clip to the atlas feature.
 
    This setting is only used if :py:func:`~QgsLayoutItemMapAtlasClippingSettings.restrictToLayers` is ``True``.
 
-.. seealso:: :py:func:`restrictedLayers`
+.. seealso:: :py:func:`restrictToLayers`
 
 .. seealso:: :py:func:`setLayersToClip`
 %End
@@ -108,7 +108,7 @@ Sets the list of map ``layers`` to clip to the atlas feature.
 
    This setting is only used if :py:func:`~QgsLayoutItemMapAtlasClippingSettings.restrictToLayers` is ``True``.
 
-.. seealso:: :py:func:`restrictedLayers`
+.. seealso:: :py:func:`restrictToLayers`
 
 .. seealso:: :py:func:`layersToClip`
 %End

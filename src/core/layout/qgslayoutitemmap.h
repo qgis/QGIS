@@ -110,7 +110,7 @@ class CORE_EXPORT QgsLayoutItemMapAtlasClippingSettings : public QObject
      *
      * \note This setting is only used if restrictToLayers() is TRUE.
      *
-     * \see restrictedLayers()
+     * \see restrictToLayers()
      * \see setLayersToClip()
      */
     QList< QgsMapLayer * > layersToClip() const;
@@ -120,7 +120,7 @@ class CORE_EXPORT QgsLayoutItemMapAtlasClippingSettings : public QObject
      *
      * \note This setting is only used if restrictToLayers() is TRUE.
      *
-     * \see restrictedLayers()
+     * \see restrictToLayers()
      * \see layersToClip()
      */
     void setLayersToClip( const QList< QgsMapLayer * > &layers );
