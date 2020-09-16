@@ -1554,6 +1554,7 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
     QgsMapClippingRegion region( clipGeom );
     region.setFeatureClip( mAtlasClippingSettings->featureClippingType() );
     region.setRestrictedLayers( mAtlasClippingSettings->layersToClip() );
+    region.setRestrictToLayers( mAtlasClippingSettings->restrictToLayers() );
     jobMapSettings.addClippingRegion( region );
 
     if ( mAtlasClippingSettings->forceLabelsInsideFeature() )
@@ -2784,6 +2785,20 @@ void QgsLayoutItemMapAtlasClippingSettings::setForceLabelsInsideFeature( bool fo
   emit changed();
 }
 
+bool QgsLayoutItemMapAtlasClippingSettings::restrictToLayers() const
+{
+  return mRestrictToLayers;
+}
+
+void QgsLayoutItemMapAtlasClippingSettings::setRestrictToLayers( bool enabled )
+{
+  if ( mRestrictToLayers == enabled )
+    return;
+
+  mRestrictToLayers = enabled;
+  emit changed();
+}
+
 QList<QgsMapLayer *> QgsLayoutItemMapAtlasClippingSettings::layersToClip() const
 {
   return _qgis_listRefToRaw( mLayersToClip );
@@ -2801,6 +2816,7 @@ bool QgsLayoutItemMapAtlasClippingSettings::writeXml( QDomElement &element, QDom
   settingsElem.setAttribute( QStringLiteral( "enabled" ), mClipToAtlasFeature ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   settingsElem.setAttribute( QStringLiteral( "forceLabelsInside" ), mForceLabelsInsideFeature ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   settingsElem.setAttribute( QStringLiteral( "clippingType" ), QString::number( static_cast<int>( mFeatureClippingType ) ) );
+  settingsElem.setAttribute( QStringLiteral( "restrictLayers" ), mRestrictToLayers ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 
   //layer set
   QDomElement layerSetElem = document.createElement( QStringLiteral( "layersToClip" ) );
@@ -2831,6 +2847,7 @@ bool QgsLayoutItemMapAtlasClippingSettings::readXml( const QDomElement &element,
   mClipToAtlasFeature = settingsElem.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt();
   mForceLabelsInsideFeature = settingsElem.attribute( QStringLiteral( "forceLabelsInside" ), QStringLiteral( "0" ) ).toInt();
   mFeatureClippingType = static_cast< QgsMapClippingRegion::FeatureClippingType >( settingsElem.attribute( QStringLiteral( "clippingType" ), QStringLiteral( "0" ) ).toInt() );
+  mRestrictToLayers = settingsElem.attribute( QStringLiteral( "restrictLayers" ), QStringLiteral( "0" ) ).toInt();
 
   mLayersToClip.clear();
   QDomNodeList layerSetNodeList = settingsElem.elementsByTagName( QStringLiteral( "layersToClip" ) );

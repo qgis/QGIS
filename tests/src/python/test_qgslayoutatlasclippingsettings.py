@@ -74,6 +74,14 @@ class TestQgsLayoutItemMapAtlasClippingSettings(unittest.TestCase):
         p.removeMapLayer(l1.id())
         self.assertCountEqual(settings.layersToClip(), [l2])
 
+        settings.setRestrictToLayers(False)
+        self.assertFalse(settings.restrictToLayers())
+        self.assertEqual(len(spy), 4)
+
+        settings.setRestrictToLayers(True)
+        self.assertTrue(settings.restrictToLayers())
+        self.assertEqual(len(spy), 5)
+
     def testSaveRestore(self):
         p = QgsProject()
         l1 = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
@@ -89,6 +97,7 @@ class TestQgsLayoutItemMapAtlasClippingSettings(unittest.TestCase):
         settings.setEnabled(True)
         settings.setFeatureClippingType(QgsMapClippingRegion.FeatureClippingType.NoClipping)
         settings.setForceLabelsInsideFeature(True)
+        settings.setRestrictToLayers(True)
         settings.setLayersToClip([l2])
 
         # save map to xml
@@ -107,6 +116,7 @@ class TestQgsLayoutItemMapAtlasClippingSettings(unittest.TestCase):
         self.assertEqual(map2.atlasClippingSettings().featureClippingType(), QgsMapClippingRegion.FeatureClippingType.NoClipping)
         self.assertTrue(map2.atlasClippingSettings().forceLabelsInsideFeature())
         self.assertEqual(map2.atlasClippingSettings().layersToClip(), [l2])
+        self.assertTrue(map2.atlasClippingSettings().restrictToLayers())
 
 
 if __name__ == '__main__':

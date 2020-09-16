@@ -66,15 +66,38 @@ This setting is only used while rendering vector layers, for other layer types i
 .. seealso:: :py:func:`featureClip`
 %End
 
+    bool restrictToLayers() const;
+%Docstring
+Returns ``True`` if clipping should be restricted to a subset of layers.
+
+.. seealso:: :py:func:`restrictedLayers`
+
+.. seealso:: :py:func:`setRestrictToLayers`
+%End
+
+    void setRestrictToLayers( bool enabled );
+%Docstring
+Sets whether clipping should be restricted to a subset of layers.
+
+.. seealso:: :py:func:`setRestrictedLayers`
+
+.. seealso:: :py:func:`restrictToLayers`
+%End
+
     void setRestrictedLayers( const QList< QgsMapLayer * > &layers );
 %Docstring
 Sets a list of ``layers`` to restrict the clipping region effects to.
 
 By default the clipping region applies to all layers.
 
-.. seealso:: :py:func:`restrictedLayers`
-%End
+.. note::
 
+   This setting is only used if :py:func:`~QgsMapClippingRegion.restrictToLayers` is ``True``.
+
+.. seealso:: :py:func:`restrictedLayers`
+
+.. seealso:: :py:func:`setRestrictToLayers`
+%End
 
     QList< QgsMapLayer * > restrictedLayers() const;
 %Docstring
@@ -82,7 +105,13 @@ Returns the list of layers to restrict the clipping region effects to.
 
 If the list is empty then the clipping will be applied to all layers.
 
+.. note::
+
+   This setting is only used if :py:func:`~QgsMapClippingRegion.restrictToLayers` is ``True``.
+
 .. seealso:: :py:func:`setRestrictedLayers`
+
+.. seealso:: :py:func:`restrictToLayers`
 %End
 
     bool appliesToLayer( const QgsMapLayer *layer ) const;

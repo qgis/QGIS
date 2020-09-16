@@ -2016,7 +2016,7 @@ QgsLayoutMapClippingWidget::QgsLayoutMapClippingWidget( QgsLayoutItemMap *map )
     {
       mBlockUpdates = true;
       mMapItem->beginCommand( tr( "Change Atlas Clipping Layers" ) );
-      mMapItem->atlasClippingSettings()->setLayersToClip( mLayerModel->layersChecked( ) );
+      mMapItem->atlasClippingSettings()->setRestrictToLayers( true );
       mMapItem->endCommand();
       mBlockUpdates = false;
     }
@@ -2027,7 +2027,7 @@ QgsLayoutMapClippingWidget::QgsLayoutMapClippingWidget( QgsLayoutItemMap *map )
     {
       mBlockUpdates = true;
       mMapItem->beginCommand( tr( "Change Atlas Clipping Layers" ) );
-      mMapItem->atlasClippingSettings()->setLayersToClip( QList< QgsMapLayer * >() );
+      mMapItem->atlasClippingSettings()->setRestrictToLayers( false );
       mMapItem->endCommand();
       mBlockUpdates = false;
     }
@@ -2136,8 +2136,8 @@ void QgsLayoutMapClippingWidget::updateGuiElements()
   mAtlasClippingTypeComboBox->setCurrentIndex( mAtlasClippingTypeComboBox->findData( static_cast< int >( mMapItem->atlasClippingSettings()->featureClippingType() ) ) );
   mForceLabelsInsideCheckBox->setChecked( mMapItem->atlasClippingSettings()->forceLabelsInsideFeature() );
 
-  mRadioClipAllLayers->setChecked( mMapItem->atlasClippingSettings()->layersToClip().isEmpty() );
-  mRadioClipSelectedLayers->setChecked( !mMapItem->atlasClippingSettings()->layersToClip().isEmpty() );
+  mRadioClipAllLayers->setChecked( !mMapItem->atlasClippingSettings()->restrictToLayers() );
+  mRadioClipSelectedLayers->setChecked( mMapItem->atlasClippingSettings()->restrictToLayers() );
   mLayerModel->setLayersChecked( mMapItem->atlasClippingSettings()->layersToClip() );
 
   mClipToItemCheckBox->setChecked( mMapItem->itemClippingSettings()->enabled() );

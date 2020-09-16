@@ -40,6 +40,10 @@ class TestQgsMapClippingRegion(unittest.TestCase):
         self.assertEqual(len(region.restrictedLayers()), 0)
         region.setRestrictedLayers([layer, layer2])
         self.assertCountEqual(region.restrictedLayers(), [layer, layer2])
+        region.setRestrictToLayers(False)
+        self.assertFalse(region.restrictToLayers())
+        region.setRestrictToLayers(True)
+        self.assertTrue(region.restrictToLayers())
 
     def testAppliesToLayer(self):
         layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
@@ -58,6 +62,16 @@ class TestQgsMapClippingRegion(unittest.TestCase):
         region.setRestrictedLayers([layer, layer2])
         self.assertTrue(region.appliesToLayer(layer))
         self.assertTrue(region.appliesToLayer(layer2))
+        self.assertTrue(region.appliesToLayer(layer3))
+
+        region.setRestrictToLayers(True)
+        self.assertTrue(region.appliesToLayer(layer))
+        self.assertTrue(region.appliesToLayer(layer2))
+        self.assertFalse(region.appliesToLayer(layer3))
+
+        region.setRestrictedLayers([])
+        self.assertFalse(region.appliesToLayer(layer))
+        self.assertFalse(region.appliesToLayer(layer2))
         self.assertFalse(region.appliesToLayer(layer3))
 
 
