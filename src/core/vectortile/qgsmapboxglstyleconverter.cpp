@@ -403,6 +403,11 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
   }
 
   const QVariantMap jsonPaint = jsonLayer.value( QStringLiteral( "paint" ) ).toMap();
+  if ( jsonPaint.contains( QStringLiteral( "line-pattern" ) ) )
+  {
+    context.pushWarning( QObject::tr( "%1: Skipping unsupported line-pattern property" ).arg( context.layerId() ) );
+    return false;
+  }
 
   QgsPropertyCollection ddProperties;
 
