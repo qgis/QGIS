@@ -802,6 +802,49 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                      'wms_getfeatureinfo_cascading_issue31177',
                                      project_name)
 
+    def testGetFeatureInfoRasterNoData(self):
+        # out
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=-39.43236293126383885,135.95002698514588246,-30.54405018572365194,156.29582900705395332' +
+                                 '&CRS=EPSG:4326' +
+                                 '&VERSION=1.3.0' +
+                                 '&WIDTH=800&HEIGHT=400' +
+                                 '&LAYERS=requires_warped_vrt' +
+                                 '&QUERY_LAYERS=requires_warped_vrt' +
+                                 '&I=1&J=1' +
+                                 '&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_raster_nodata_out',
+                                 'test_raster_nodata.qgz',
+                                 normalizeJson=True)
+
+        # 0
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=-39.43236293126383885,135.95002698514588246,-30.54405018572365194,156.29582900705395332' +
+                                 '&CRS=EPSG:4326' +
+                                 '&VERSION=1.3.0' +
+                                 '&WIDTH=800&HEIGHT=400' +
+                                 '&LAYERS=requires_warped_vrt' +
+                                 '&QUERY_LAYERS=requires_warped_vrt' +
+                                 '&I=576&J=163' +
+                                 '&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_raster_nodata_zero',
+                                 'test_raster_nodata.qgz',
+                                 normalizeJson=True)
+
+        # nodata
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=-39.43236293126383885,135.95002698514588246,-30.54405018572365194,156.29582900705395332' +
+                                 '&CRS=EPSG:4326' +
+                                 '&VERSION=1.3.0' +
+                                 '&WIDTH=800&HEIGHT=400' +
+                                 '&LAYERS=requires_warped_vrt' +
+                                 '&QUERY_LAYERS=requires_warped_vrt' +
+                                 '&I=560&J=78' +
+                                 '&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_raster_nodata',
+                                 'test_raster_nodata.qgz',
+                                 normalizeJson=True)
+
 
 if __name__ == '__main__':
     unittest.main()
