@@ -1678,6 +1678,8 @@ QgisApp::~QgisApp()
   mGeometryValidationDock = nullptr;
   delete mSnappingUtils;
   mSnappingUtils = nullptr;
+  delete mUserInputDockWidget;
+  mUserInputDockWidget = nullptr;
 
   QgsGui::instance()->nativePlatformInterface()->cleanup();
 
