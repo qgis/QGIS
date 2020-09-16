@@ -1968,24 +1968,36 @@ Convenience function that returns the attribute alias if defined or the field na
 Returns a map of field name to attribute alias
 %End
 
-    QSet<QString> excludeAttributesWms() const;
+ QSet<QString> excludeAttributesWms() const /Deprecated/;
 %Docstring
 A set of attributes that are not advertised in WMS requests with QGIS server.
+
+.. deprecated:: QGIS 3.16
+  use fields().configurationFlags() instead
 %End
 
-    void setExcludeAttributesWms( const QSet<QString> &att );
+ void setExcludeAttributesWms( const QSet<QString> &att ) /Deprecated/;
 %Docstring
 A set of attributes that are not advertised in WMS requests with QGIS server.
+
+.. deprecated:: QGIS 3.16
+  use setFieldConfigurationFlag instead
 %End
 
-    QSet<QString> excludeAttributesWfs() const;
+ QSet<QString> excludeAttributesWfs() const /Deprecated/;
 %Docstring
 A set of attributes that are not advertised in WFS requests with QGIS server.
+
+.. deprecated:: QGIS 3.16
+  use fields().configurationFlags() instead
 %End
 
-    void setExcludeAttributesWfs( const QSet<QString> &att );
+ void setExcludeAttributesWfs( const QSet<QString> &att ) /Deprecated/;
 %Docstring
 A set of attributes that are not advertised in WFS requests with QGIS server.
+
+.. deprecated:: QGIS 3.16
+  use setFieldConfigurationFlag instead
 %End
 
     virtual bool deleteAttribute( int attr );
@@ -2291,6 +2303,7 @@ can also be set. Setting an empty expression will clear any existing expression 
 
 .. versionadded:: 3.0
 %End
+
 
 
 

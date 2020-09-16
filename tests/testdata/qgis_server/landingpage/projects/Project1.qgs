@@ -1,5 +1,5 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis saveUser="ale" version="3.13.0-Master" projectname="Project1 Title" saveUserFull="Alessandro Pasotti">
+<qgis saveUserFull="Denis Rouzaud" version="3.15.0-Master" projectname="Project1 Title" saveUser="denis" saveDateTime="2020-09-15T16:25:28">
   <homePath path=""/>
   <title>Project1 Title</title>
   <autotransaction active="0"/>
@@ -20,20 +20,20 @@
   </projectCrs>
   <layer-tree-group>
     <customproperties/>
-    <layer-tree-layer legend_exp="" name="points" providerKey="ogr" source="./project_data.gpkg|layername=points" expanded="1" id="points_842425df_7f45_4091_a6c9_086e1dc1edd1" checked="Qt::Checked">
+    <layer-tree-layer id="points_842425df_7f45_4091_a6c9_086e1dc1edd1" source="./project_data.gpkg|layername=points" legend_split_behavior="0" patch_size="0,0" name="points" checked="Qt::Checked" expanded="1" legend_exp="" providerKey="ogr">
       <customproperties/>
     </layer-tree-layer>
     <custom-order enabled="0">
       <item>points_842425df_7f45_4091_a6c9_086e1dc1edd1</item>
     </custom-order>
   </layer-tree-group>
-  <snapping-settings type="1" tolerance="12" mode="2" unit="1" intersection-snapping="0" minScale="0" scaleDependencyMode="0" enabled="0" maxScale="0">
+  <snapping-settings unit="1" scaleDependencyMode="0" mode="2" tolerance="12" intersection-snapping="0" maxScale="0" type="1" enabled="0" minScale="0" self-snapping="0">
     <individual-layer-settings>
-      <layer-setting type="1" tolerance="12" units="1" id="points_842425df_7f45_4091_a6c9_086e1dc1edd1" minScale="0" enabled="0" maxScale="0"/>
+      <layer-setting id="points_842425df_7f45_4091_a6c9_086e1dc1edd1" tolerance="12" units="1" maxScale="0" type="1" enabled="0" minScale="0"/>
     </individual-layer-settings>
   </snapping-settings>
   <relations/>
-  <mapcanvas name="theMapCanvas" annotationsVisible="1">
+  <mapcanvas annotationsVisible="1" name="theMapCanvas">
     <units>degrees</units>
     <extent>
       <xmin>-23.31087998257129357</xmin>
@@ -58,17 +58,65 @@
     <rendermaptile>0</rendermaptile>
     <expressionContextScope/>
   </mapcanvas>
-  <projectModels/>
   <legend updateDrawingOrder="true">
-    <legendlayer name="points" open="true" checked="Qt::Checked" drawingOrder="-1" showFeatureCount="0">
-      <filegroup hidden="false" open="true">
-        <legendlayerfile visible="1" isInOverview="0" layerid="points_842425df_7f45_4091_a6c9_086e1dc1edd1"/>
+    <legendlayer open="true" drawingOrder="-1" showFeatureCount="0" checked="Qt::Checked" name="points">
+      <filegroup open="true" hidden="false">
+        <legendlayerfile layerid="points_842425df_7f45_4091_a6c9_086e1dc1edd1" isInOverview="0" visible="1"/>
       </filegroup>
     </legendlayer>
   </legend>
   <mapViewDocks/>
+  <mapViewDocks3D/>
+  <main-annotation-layer refreshOnNotifyMessage="" refreshOnNotifyEnabled="0" autoRefreshEnabled="0" autoRefreshTime="0" type="annotation">
+    <id>Annotations_e424930a_3838_4a42_94ca_e28ac525201f</id>
+    <datasource></datasource>
+    <keywordList>
+      <value></value>
+    </keywordList>
+    <layername></layername>
+    <srs>
+      <spatialrefsys>
+        <wkt></wkt>
+        <proj4></proj4>
+        <srsid>0</srsid>
+        <srid>0</srid>
+        <authid></authid>
+        <description></description>
+        <projectionacronym></projectionacronym>
+        <ellipsoidacronym></ellipsoidacronym>
+        <geographicflag>false</geographicflag>
+      </spatialrefsys>
+    </srs>
+    <resourceMetadata>
+      <identifier></identifier>
+      <parentidentifier></parentidentifier>
+      <language></language>
+      <type></type>
+      <title></title>
+      <abstract></abstract>
+      <links/>
+      <fees></fees>
+      <encoding></encoding>
+      <crs>
+        <spatialrefsys>
+          <wkt></wkt>
+          <proj4></proj4>
+          <srsid>0</srsid>
+          <srid>0</srid>
+          <authid></authid>
+          <description></description>
+          <projectionacronym></projectionacronym>
+          <ellipsoidacronym></ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </crs>
+      <extent/>
+    </resourceMetadata>
+    <items/>
+    <layerOpacity>1</layerOpacity>
+  </main-annotation-layer>
   <projectlayers>
-    <maplayer labelsEnabled="0" wkbType="Point" autoRefreshTime="0" styleCategories="AllStyleCategories" simplifyDrawingTol="1.2" simplifyDrawingHints="0" simplifyAlgorithm="0" type="vector" autoRefreshEnabled="0" simplifyMaxScale="1" refreshOnNotifyMessage="" minScale="100000000" refreshOnNotifyEnabled="0" geometry="Point" simplifyLocal="1" hasScaleBasedVisibilityFlag="0" readOnly="0" maxScale="0">
+    <maplayer wkbType="Point" simplifyDrawingHints="0" readOnly="0" simplifyLocal="1" autoRefreshTime="0" simplifyAlgorithm="0" labelsEnabled="0" maxScale="0" refreshOnNotifyMessage="" autoRefreshEnabled="0" hasScaleBasedVisibilityFlag="0" styleCategories="AllStyleCategories" geometry="Point" refreshOnNotifyEnabled="0" simplifyMaxScale="1" minScale="100000000" simplifyDrawingTol="1.2" type="vector">
       <extent>
         <xmin>-1.12365841865539995</xmin>
         <ymin>43.23918533325200286</ymin>
@@ -85,7 +133,7 @@
       </keywordList>
       <dataUrl format="">http://data.url</dataUrl>
       <attribution href="http://attribution.url">Qgis Server Layer Properties Attribution</attribution>
-      <metadataUrl format="text/plain" type="FGDC">http://metadata.url</metadataUrl>
+      <metadataUrl type="FGDC" format="text/plain">http://metadata.url</metadataUrl>
       <layername>points</layername>
       <srs>
         <spatialrefsys>
@@ -129,7 +177,7 @@
           <role>distributor</role>
         </contact>
         <links>
-          <link format="HTML" size="unknown" type="https" name="A link" url="https://www.itopen.it" mimeType="text/html" description="An interesting link"/>
+          <link size="unknown" url="https://www.itopen.it" description="An interesting link" name="A link" type="https" mimeType="text/html" format="HTML"/>
         </links>
         <history>Once upon a time ...</history>
         <fees>None</fees>
@@ -151,7 +199,7 @@
           </spatialrefsys>
         </crs>
         <extent>
-          <spatial crs="EPSG:4326" minz="0" minx="-154.68031310999998595" miny="31.41943359400000091" maxx="-142.43476867699999389" maxy="40.44245529199999822" dimensions="2" maxz="0"/>
+          <spatial maxy="40.44245529199999822" maxx="-142.43476867699999389" miny="31.41943359400000091" maxz="0" minx="-154.68031310999998595" minz="0" crs="EPSG:4326" dimensions="2"/>
           <temporal>
             <period>
               <start></start>
@@ -175,10 +223,16 @@
         <Removable>1</Removable>
         <Searchable>1</Searchable>
       </flags>
-      <renderer-v2 type="singleSymbol" symbollevels="0" forceraster="0" enableorderby="0">
+      <temporal durationField="" endField="" fixedDuration="0" startField="" mode="0" accumulate="0" endExpression="" durationUnit="min" enabled="0" startExpression="">
+        <fixedRange>
+          <start></start>
+          <end></end>
+        </fixedRange>
+      </temporal>
+      <renderer-v2 symbollevels="0" enableorderby="0" type="singleSymbol" forceraster="0">
         <symbols>
-          <symbol clip_to_extent="1" type="marker" name="0" force_rhr="0" alpha="1">
-            <layer locked="0" pass="0" enabled="1" class="SimpleMarker">
+          <symbol alpha="1" name="0" force_rhr="0" type="marker" clip_to_extent="1">
+            <layer class="SimpleMarker" pass="0" enabled="1" locked="0">
               <prop v="0" k="angle"/>
               <prop v="183,72,75,255" k="color"/>
               <prop v="1" k="horizontal_anchor_point"/>
@@ -199,9 +253,9 @@
               <prop v="1" k="vertical_anchor_point"/>
               <data_defined_properties>
                 <Option type="Map">
-                  <Option type="QString" name="name" value=""/>
+                  <Option name="name" value="" type="QString"/>
                   <Option name="properties"/>
-                  <Option type="QString" name="type" value="collection"/>
+                  <Option name="type" value="collection" type="QString"/>
                 </Option>
               </data_defined_properties>
             </layer>
@@ -219,16 +273,20 @@
       <featureBlendMode>0</featureBlendMode>
       <layerOpacity>1</layerOpacity>
       <SingleCategoryDiagramRenderer attributeLegend="1" diagramType="Histogram">
-        <DiagramCategory sizeScale="3x:0,0,0,0,0,0" diagramOrientation="Up" backgroundColor="#ffffff" spacing="5" sizeType="MM" minScaleDenominator="0" scaleBasedVisibility="0" backgroundAlpha="255" penAlpha="255" spacingUnit="MM" spacingUnitScale="3x:0,0,0,0,0,0" labelPlacementMethod="XHeight" height="15" maxScaleDenominator="1e+08" enabled="0" minimumSize="0" showAxis="1" lineSizeType="MM" opacity="1" penWidth="0" penColor="#000000" barWidth="5" direction="0" lineSizeScale="3x:0,0,0,0,0,0" scaleDependency="Area" rotationOffset="270" width="15">
+        <DiagramCategory rotationOffset="270" penWidth="0" penColor="#000000" labelPlacementMethod="XHeight" spacing="5" direction="0" minimumSize="0" scaleBasedVisibility="0" minScaleDenominator="0" showAxis="1" spacingUnitScale="3x:0,0,0,0,0,0" maxScaleDenominator="1e+08" enabled="0" height="15" sizeType="MM" barWidth="5" diagramOrientation="Up" opacity="1" spacingUnit="MM" lineSizeScale="3x:0,0,0,0,0,0" backgroundAlpha="255" scaleDependency="Area" backgroundColor="#ffffff" width="15" penAlpha="255" lineSizeType="MM" sizeScale="3x:0,0,0,0,0,0">
           <fontProperties style="Regular" description="Noto Sans,10,-1,5,50,0,0,0,0,0,Regular"/>
-          <attribute label="" field="" color="#000000"/>
+          <attribute label="" color="#000000" field=""/>
           <axisSymbol>
-            <symbol clip_to_extent="1" type="line" name="" force_rhr="0" alpha="1">
-              <layer locked="0" pass="0" enabled="1" class="SimpleLine">
+            <symbol alpha="1" name="" force_rhr="0" type="line" clip_to_extent="1">
+              <layer class="SimpleLine" pass="0" enabled="1" locked="0">
+                <prop v="0" k="align_dash_pattern"/>
                 <prop v="square" k="capstyle"/>
                 <prop v="5;2" k="customdash"/>
                 <prop v="3x:0,0,0,0,0,0" k="customdash_map_unit_scale"/>
                 <prop v="MM" k="customdash_unit"/>
+                <prop v="0" k="dash_pattern_offset"/>
+                <prop v="3x:0,0,0,0,0,0" k="dash_pattern_offset_map_unit_scale"/>
+                <prop v="MM" k="dash_pattern_offset_unit"/>
                 <prop v="0" k="draw_inside_polygon"/>
                 <prop v="bevel" k="joinstyle"/>
                 <prop v="35,35,35,255" k="line_color"/>
@@ -239,13 +297,14 @@
                 <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
                 <prop v="MM" k="offset_unit"/>
                 <prop v="0" k="ring_filter"/>
+                <prop v="0" k="tweak_dash_pattern_on_corners"/>
                 <prop v="0" k="use_custom_dash"/>
                 <prop v="3x:0,0,0,0,0,0" k="width_map_unit_scale"/>
                 <data_defined_properties>
                   <Option type="Map">
-                    <Option type="QString" name="name" value=""/>
+                    <Option name="name" value="" type="QString"/>
                     <Option name="properties"/>
-                    <Option type="QString" name="type" value="collection"/>
+                    <Option name="type" value="collection" type="QString"/>
                   </Option>
                 </data_defined_properties>
               </layer>
@@ -253,12 +312,12 @@
           </axisSymbol>
         </DiagramCategory>
       </SingleCategoryDiagramRenderer>
-      <DiagramLayerSettings linePlacementFlags="18" dist="0" zIndex="0" priority="0" showAll="1" obstacle="0" placement="0">
+      <DiagramLayerSettings priority="0" showAll="1" obstacle="0" linePlacementFlags="18" zIndex="0" dist="0" placement="0">
         <properties>
           <Option type="Map">
-            <Option type="QString" name="name" value=""/>
+            <Option name="name" value="" type="QString"/>
             <Option name="properties"/>
-            <Option type="QString" name="type" value="collection"/>
+            <Option name="type" value="collection" type="QString"/>
           </Option>
         </properties>
       </DiagramLayerSettings>
@@ -267,16 +326,15 @@
         <checkConfiguration/>
       </geometryOptions>
       <referencedLayers/>
-      <referencingLayers/>
       <fieldConfiguration>
-        <field name="fid">
+        <field name="fid" configurationFlags="DefaultFlags">
           <editWidget type="TextEdit">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
-        <field name="name">
+        <field name="name" configurationFlags="DefaultFlags">
           <editWidget type="TextEdit">
             <config>
               <Option/>
@@ -285,32 +343,30 @@
         </field>
       </fieldConfiguration>
       <aliases>
-        <alias name="" field="fid" index="0"/>
-        <alias name="" field="name" index="1"/>
+        <alias field="fid" index="0" name=""/>
+        <alias field="name" index="1" name=""/>
       </aliases>
-      <excludeAttributesWMS/>
-      <excludeAttributesWFS/>
       <defaults>
         <default expression="" field="fid" applyOnUpdate="0"/>
         <default expression="" field="name" applyOnUpdate="0"/>
       </defaults>
       <constraints>
-        <constraint unique_strength="1" constraints="3" exp_strength="0" field="fid" notnull_strength="1"/>
-        <constraint unique_strength="0" constraints="0" exp_strength="0" field="name" notnull_strength="0"/>
+        <constraint field="fid" exp_strength="0" constraints="3" notnull_strength="1" unique_strength="1"/>
+        <constraint field="name" exp_strength="0" constraints="0" notnull_strength="0" unique_strength="0"/>
       </constraints>
       <constraintExpressions>
-        <constraint exp="" field="fid" desc=""/>
-        <constraint exp="" field="name" desc=""/>
+        <constraint desc="" exp="" field="fid"/>
+        <constraint desc="" exp="" field="name"/>
       </constraintExpressions>
       <expressionfields/>
       <attributeactions>
         <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
       </attributeactions>
-      <attributetableconfig sortExpression="" sortOrder="0" actionWidgetStyle="dropDown">
+      <attributetableconfig sortExpression="" actionWidgetStyle="dropDown" sortOrder="0">
         <columns>
-          <column hidden="0" type="field" name="fid" width="-1"/>
-          <column hidden="0" type="field" name="name" width="-1"/>
-          <column hidden="1" type="actions" width="-1"/>
+          <column hidden="0" name="fid" width="-1" type="field"/>
+          <column hidden="0" name="name" width="-1" type="field"/>
+          <column hidden="1" width="-1" type="actions"/>
         </columns>
       </attributetableconfig>
       <conditionalstyles>
@@ -342,8 +398,8 @@ def my_form_open(dialog, layer, feature):
       <featformsuppress>0</featformsuppress>
       <editorlayout>generatedlayout</editorlayout>
       <editable>
-        <field name="fid" editable="1"/>
-        <field name="name" editable="1"/>
+        <field editable="1" name="fid"/>
+        <field editable="1" name="name"/>
       </editable>
       <labelOnTop>
         <field name="fid" labelOnTop="0"/>
@@ -485,9 +541,16 @@ def my_form_open(dialog, layer, feature):
     </WMTSPngLayers>
     <WMTSUrl type="QString"></WMTSUrl>
   </properties>
+  <dataDefinedServerProperties>
+    <Option type="Map">
+      <Option name="name" value="" type="QString"/>
+      <Option name="properties"/>
+      <Option name="type" value="collection" type="QString"/>
+    </Option>
+  </dataDefinedServerProperties>
   <visibility-presets/>
   <transformContext>
-    <srcDest allowFallback="1" coordinateOp="+proj=pipeline +step +inv +proj=sterea +lat_0=52.1561605555556 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +step +proj=push +v_3 +step +proj=cart +ellps=bessel +step +proj=helmert +x=565.2369 +y=50.0087 +z=465.658 +rx=0.406857330322398 +ry=-0.350732676542563 +rz=1.8703473836068 +s=4.0812 +convention=coordinate_frame +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=unitconvert +xy_in=rad +xy_out=deg">
+    <srcDest coordinateOp="+proj=pipeline +step +inv +proj=sterea +lat_0=52.1561605555556 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +step +proj=push +v_3 +step +proj=cart +ellps=bessel +step +proj=helmert +x=565.2369 +y=50.0087 +z=465.658 +rx=0.406857330322398 +ry=-0.350732676542563 +rz=1.8703473836068 +s=4.0812 +convention=coordinate_frame +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=unitconvert +xy_in=rad +xy_out=deg" allowFallback="1">
       <src>
         <spatialrefsys>
           <wkt>PROJCRS["Amersfoort / RD New",BASEGEOGCRS["Amersfoort",DATUM["Amersfoort",ELLIPSOID["Bessel 1841",6377397.155,299.1528128,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],ID["EPSG",4289]],CONVERSION["RD New",METHOD["Oblique Stereographic",ID["EPSG",9809]],PARAMETER["Latitude of natural origin",52.1561605555556,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8801]],PARAMETER["Longitude of natural origin",5.38763888888889,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8802]],PARAMETER["Scale factor at natural origin",0.9999079,SCALEUNIT["unity",1],ID["EPSG",8805]],PARAMETER["False easting",155000,LENGTHUNIT["metre",1],ID["EPSG",8806]],PARAMETER["False northing",463000,LENGTHUNIT["metre",1],ID["EPSG",8807]]],CS[Cartesian,2],AXIS["easting (X)",east,ORDER[1],LENGTHUNIT["metre",1]],AXIS["northing (Y)",north,ORDER[2],LENGTHUNIT["metre",1]],USAGE[SCOPE["unknown"],AREA["Netherlands - onshore"],BBOX[50.75,3.2,53.7,7.22]],ID["EPSG",28992]]</wkt>
@@ -515,7 +578,7 @@ def my_form_open(dialog, layer, feature):
         </spatialrefsys>
       </dest>
     </srcDest>
-    <srcDest allowFallback="1" coordinateOp="+proj=pipeline +step +inv +proj=laea +lat_0=52 +lon_0=10 +x_0=4321000 +y_0=3210000 +ellps=GRS80 +step +proj=unitconvert +xy_in=rad +xy_out=deg">
+    <srcDest coordinateOp="+proj=pipeline +step +inv +proj=laea +lat_0=52 +lon_0=10 +x_0=4321000 +y_0=3210000 +ellps=GRS80 +step +proj=unitconvert +xy_in=rad +xy_out=deg" allowFallback="1">
       <src>
         <spatialrefsys>
           <wkt>PROJCRS["ETRS89-extended / LAEA Europe",BASEGEOGCRS["ETRS89",DATUM["European Terrestrial Reference System 1989",ELLIPSOID["GRS 1980",6378137,298.257222101,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],ID["EPSG",4258]],CONVERSION["Europe Equal Area 2001",METHOD["Lambert Azimuthal Equal Area",ID["EPSG",9820]],PARAMETER["Latitude of natural origin",52,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8801]],PARAMETER["Longitude of natural origin",10,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8802]],PARAMETER["False easting",4321000,LENGTHUNIT["metre",1],ID["EPSG",8806]],PARAMETER["False northing",3210000,LENGTHUNIT["metre",1],ID["EPSG",8807]]],CS[Cartesian,2],AXIS["northing (Y)",north,ORDER[1],LENGTHUNIT["metre",1]],AXIS["easting (X)",east,ORDER[2],LENGTHUNIT["metre",1]],USAGE[SCOPE["unknown"],AREA["Europe - LCC &amp; LAEA"],BBOX[24.6,-35.58,84.17,44.83]],ID["EPSG",3035]]</wkt>
@@ -573,7 +636,7 @@ def my_form_open(dialog, layer, feature):
       <role>custodian</role>
     </contact>
     <links>
-      <link format="WTF" size="big" type="OpenSearch1.1:Description" name="link1" url="http://url.com" mimeType="application/octet-stream" description="A link"/>
+      <link size="big" url="http://url.com" description="A link" name="link1" type="OpenSearch1.1:Description" mimeType="application/octet-stream" format="WTF"/>
     </links>
     <history>History1</history>
     <author>Alessandro Pasotti</author>
@@ -585,18 +648,18 @@ def my_form_open(dialog, layer, feature):
   <ProjectViewSettings UseProjectScales="0">
     <Scales/>
   </ProjectViewSettings>
-  <ProjectTimeSettings timeStepUnit="h" frameRate="1" timeStep="1"/>
+  <ProjectTimeSettings frameRate="1" timeStep="1" cumulativeTemporalRange="0" timeStepUnit="h"/>
   <ProjectDisplaySettings>
     <BearingFormat id="bearing">
       <Option type="Map">
-        <Option type="QChar" name="decimal_separator" value=""/>
-        <Option type="int" name="decimals" value="6"/>
-        <Option type="int" name="direction_format" value="0"/>
-        <Option type="int" name="rounding_type" value="0"/>
-        <Option type="bool" name="show_plus" value="false"/>
-        <Option type="bool" name="show_thousand_separator" value="true"/>
-        <Option type="bool" name="show_trailing_zeros" value="false"/>
-        <Option type="QChar" name="thousand_separator" value=""/>
+        <Option name="decimal_separator" value="" type="QChar"/>
+        <Option name="decimals" value="6" type="int"/>
+        <Option name="direction_format" value="0" type="int"/>
+        <Option name="rounding_type" value="0" type="int"/>
+        <Option name="show_plus" value="false" type="bool"/>
+        <Option name="show_thousand_separator" value="true" type="bool"/>
+        <Option name="show_trailing_zeros" value="false" type="bool"/>
+        <Option name="thousand_separator" value="" type="QChar"/>
       </Option>
     </BearingFormat>
   </ProjectDisplaySettings>

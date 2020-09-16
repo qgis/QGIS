@@ -262,13 +262,12 @@ namespace QgsWfs
     //Attributes
     QgsFields fields = layer->fields();
     //hidden attributes for this layer
-    const QSet<QString> &layerExcludedAttributes = layer->excludeAttributesWfs();
     for ( int idx = 0; idx < fields.count(); ++idx )
     {
       const QgsField field = fields.at( idx );
       QString attributeName = field.name();
       //skip attribute if excluded from WFS publication
-      if ( layerExcludedAttributes.contains( attributeName ) )
+      if ( !field.configurationFlags().testFlag( QgsField::ConfigurationFlag::ExposeViaWfs ) )
       {
         continue;
       }

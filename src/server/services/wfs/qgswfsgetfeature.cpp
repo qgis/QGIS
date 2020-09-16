@@ -249,7 +249,7 @@ namespace QgsWfs
 
       //Using pending attributes and pending fields
       QgsAttributeList attrIndexes = vlayer->attributeList();
-      QgsFields fields = vlayer->fields();
+      const QgsFields fields = vlayer->fields();
       bool withGeom = true;
       if ( !propertyList.isEmpty() && propertyList.first() != QStringLiteral( "*" ) )
       {
@@ -259,10 +259,10 @@ namespace QgsWfs
         // build corresponding propertyname
         QList<QString> propertynames;
         QList<QString> fieldnames;
-        for ( int idx = 0; idx < fields.count(); ++idx )
+        for ( const QgsField &field : fields )
         {
-          fieldnames.append( fields[idx].name() );
-          propertynames.append( fields.field( idx ).name().replace( ' ', '_' ).replace( cleanTagNameRegExp, QString() ) );
+          fieldnames.append( field.name() );
+          propertynames.append( field.name().replace( ' ', '_' ).replace( cleanTagNameRegExp, QString() ) );
         }
         QString fieldName;
         for ( plstIt = propertyList.constBegin(); plstIt != propertyList.constEnd(); ++plstIt )
@@ -289,19 +289,20 @@ namespace QgsWfs
       }
 
       //excluded attributes for this layer
-      const QSet<QString> &layerExcludedAttributes = vlayer->excludeAttributesWfs();
-      if ( !attrIndexes.isEmpty() && !layerExcludedAttributes.isEmpty() )
+      if ( !attrIndexes.isEmpty() )
       {
-        foreach ( const QString &excludedAttribute, layerExcludedAttributes )
+        for ( const QgsField &field : fields )
         {
-          int fieldNameIdx = fields.indexOf( excludedAttribute );
-          if ( fieldNameIdx > -1 && attrIndexes.contains( fieldNameIdx ) )
+          if ( !field.configurationFlags().testFlag( QgsField::ConfigurationFlag::ExposeViaWfs ) )
           {
-            attrIndexes.removeOne( fieldNameIdx );
+            int fieldNameIdx = fields.indexOf( field.name() );
+            if ( fieldNameIdx > -1 && attrIndexes.contains( fieldNameIdx ) )
+            {
+              attrIndexes.removeOne( fieldNameIdx );
+            }
           }
         }
       }
-
 
       // update request
       QgsFeatureRequest featureRequest = query.featureRequest;

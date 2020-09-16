@@ -77,8 +77,9 @@ void QgsCheckBoxDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
 QgsCheckableComboBox::QgsCheckableComboBox( QWidget *parent )
   : QComboBox( parent )
   , mSeparator( QStringLiteral( ", " ) )
+  , mModel( new QgsCheckableItemModel( this ) )
 {
-  setModel( new QgsCheckableItemModel( this ) );
+  setModel( mModel );
   setItemDelegate( new QgsCheckBoxDelegate( this ) );
 
   QLineEdit *lineEdit = new QLineEdit( this );
@@ -132,6 +133,12 @@ void QgsCheckableComboBox::setDefaultText( const QString &text )
     mDefaultText = text;
     updateDisplayText();
   }
+}
+
+void QgsCheckableComboBox::addItemWithCheckState( const QString &text, Qt::CheckState state, const QVariant &userData )
+{
+  QComboBox::addItem( text, userData );
+  setItemCheckState( count() - 1, state );
 }
 
 QStringList QgsCheckableComboBox::checkedItems() const

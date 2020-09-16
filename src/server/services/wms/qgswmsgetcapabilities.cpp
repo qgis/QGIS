@@ -1862,7 +1862,6 @@ namespace QgsWms
         case QgsMapLayerType::VectorLayer:
         {
           QgsVectorLayer *vLayer = static_cast<QgsVectorLayer *>( currentLayer );
-          const QSet<QString> &excludedAttributes = vLayer->excludeAttributesWms();
 
           int displayFieldIdx = -1;
           QString displayField = QStringLiteral( "maptip" );
@@ -1879,7 +1878,7 @@ namespace QgsWms
           for ( int idx = 0; idx < layerFields.count(); ++idx )
           {
             QgsField field = layerFields.at( idx );
-            if ( excludedAttributes.contains( field.name() ) )
+            if ( !field.configurationFlags().testFlag( QgsField::ConfigurationFlag::ExposeViaWms ) )
             {
               continue;
             }
