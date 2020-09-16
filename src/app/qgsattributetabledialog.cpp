@@ -119,12 +119,16 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
 
   mActionSelectAll->setShortcuts( QKeySequence::SelectAll );
   mActionSelectAll->setShortcutContext( Qt::WidgetWithChildrenShortcut );
+  mMainView->addAction( mActionSelectAll );
   mActionCopySelectedRows->setShortcuts( QKeySequence::Copy );
   mActionCopySelectedRows->setShortcutContext( Qt::WidgetWithChildrenShortcut );
+  mMainView->addAction( mActionCopySelectedRows );
   mActionCutSelectedRows->setShortcuts( QKeySequence::Cut );
   mActionCutSelectedRows->setShortcutContext( Qt::WidgetWithChildrenShortcut );
+  mMainView->addAction( mActionCutSelectedRows );
   mActionPasteFeatures->setShortcuts( QKeySequence::Paste );
   mActionPasteFeatures->setShortcutContext( Qt::WidgetWithChildrenShortcut );
+  mMainView->addAction( mActionPasteFeatures );
 
   QgsSettings settings;
 
