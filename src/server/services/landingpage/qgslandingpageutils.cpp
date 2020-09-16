@@ -456,15 +456,11 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri )
           const QgsFields &cFields { vl->fields() };
           for ( const QgsField &field : cFields )
           {
-            // TODO: replace with non deprecated method and fix the tests
-            // if ( !field.configurationFlags().testFlag( QgsField::ConfigurationFlag::ExposeViaWfs ) )
-            Q_NOWARN_DEPRECATED_PUSH
-            if ( vl->excludeAttributesWfs().contains( vl->name() ) )
+            if ( !field.configurationFlags().testFlag( QgsField::ConfigurationFlag::ExposeViaWfs ) )
             {
               ++fieldIdx;
               continue;
             }
-            Q_NOWARN_DEPRECATED_POP
             const QgsFieldConstraints::Constraints constraints { field.constraints().constraints() };
             const bool notNull { constraints &QgsFieldConstraints::Constraint::ConstraintNotNull &&
                                  field.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintNotNull ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard };
