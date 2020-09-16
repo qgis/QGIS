@@ -26,6 +26,7 @@ QgsAnnotationLayer::QgsAnnotationLayer( const QString &name, const LayerOptions 
   : QgsMapLayer( QgsMapLayerType::AnnotationLayer, name )
   , mTransformContext( options.transformContext )
 {
+  mShouldValidateCrs = false;
   mValid = true;
 }
 
