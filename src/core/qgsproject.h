@@ -166,9 +166,10 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     static QgsProject *instance();
 
     /**
-     * Set the current project instance to \a project
+     * Set the current project singleton instance to \a project
      *
-     * \note this is used mainly by the server, which caches the projects and (potentially) needs to switch the current instance on every request
+     * \note this method is provided mainly for the server, which caches the projects and (potentially) needs to switch the current instance on every request.
+     * \warning calling this method can have serious, unintended consequences, including instability, data loss and undefined behaviour. Use with EXTREME caution!
      * \see instance()
      * \since QGIS 3.10.11
      */
