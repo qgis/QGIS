@@ -79,7 +79,7 @@ Set the current project singleton instance to ``project``
 
 .. warning::
 
-   calling this method can have serious, unintended consequences, including instability, data loss and undefined behaviour. Use with EXTREME caution!
+   calling this method can have serious, unintended consequences, including instability, data loss and undefined behavior. Use with EXTREME caution!
 
 .. seealso:: :py:func:`instance`
 
