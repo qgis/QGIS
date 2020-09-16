@@ -89,21 +89,42 @@ class CORE_EXPORT QgsMapClippingRegion
     }
 
     /**
+     * Returns TRUE if clipping should be restricted to a subset of layers.
+     *
+     * \see restrictedLayers()
+     * \see setRestrictToLayers()
+     */
+    bool restrictToLayers() const;
+
+    /**
+     * Sets whether clipping should be restricted to a subset of layers.
+     *
+     * \see setRestrictedLayers()
+     * \see restrictToLayers()
+     */
+    void setRestrictToLayers( bool enabled );
+
+    /**
      * Sets a list of \a layers to restrict the clipping region effects to.
      *
      * By default the clipping region applies to all layers.
      *
+     * \note This setting is only used if restrictToLayers() is TRUE.
+     *
      * \see restrictedLayers()
+     * \see setRestrictToLayers()
      */
     void setRestrictedLayers( const QList< QgsMapLayer * > &layers );
-
 
     /**
      * Returns the list of layers to restrict the clipping region effects to.
      *
      * If the list is empty then the clipping will be applied to all layers.
      *
+     * \note This setting is only used if restrictToLayers() is TRUE.
+     *
      * \see setRestrictedLayers()
+     * \see restrictToLayers()
      */
     QList< QgsMapLayer * > restrictedLayers() const;
 
@@ -117,6 +138,7 @@ class CORE_EXPORT QgsMapClippingRegion
     //! Geometry of clipping region (in destination map coordinates and CRS)
     QgsGeometry mGeometry;
 
+    bool mRestrictToLayers = false;
     QgsWeakMapLayerPointerList mRestrictToLayersList;
 
     FeatureClippingType mFeatureClip = FeatureClippingType::ClipToIntersection;

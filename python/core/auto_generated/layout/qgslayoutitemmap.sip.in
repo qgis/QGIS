@@ -69,11 +69,33 @@ Sets whether labels should only be placed inside the atlas feature geometry.
 .. seealso:: :py:func:`forceLabelsInsideFeature`
 %End
 
+    bool restrictToLayers() const;
+%Docstring
+Returns ``True`` if clipping should be restricted to a subset of layers.
+
+.. seealso:: :py:func:`layersToClip`
+
+.. seealso:: :py:func:`setRestrictToLayers`
+%End
+
+    void setRestrictToLayers( bool enabled );
+%Docstring
+Sets whether clipping should be restricted to a subset of layers.
+
+.. seealso:: :py:func:`setLayersToClip`
+
+.. seealso:: :py:func:`restrictToLayers`
+%End
+
     QList< QgsMapLayer * > layersToClip() const;
 %Docstring
 Returns the list of map layers to clip to the atlas feature.
 
-If the returned list is empty then all layers will be clipped.
+.. note::
+
+   This setting is only used if :py:func:`~QgsLayoutItemMapAtlasClippingSettings.restrictToLayers` is ``True``.
+
+.. seealso:: :py:func:`restrictedLayers`
 
 .. seealso:: :py:func:`setLayersToClip`
 %End
@@ -82,7 +104,11 @@ If the returned list is empty then all layers will be clipped.
 %Docstring
 Sets the list of map ``layers`` to clip to the atlas feature.
 
-If the ``layers`` list is empty then all layers will be clipped.
+.. note::
+
+   This setting is only used if :py:func:`~QgsLayoutItemMapAtlasClippingSettings.restrictToLayers` is ``True``.
+
+.. seealso:: :py:func:`restrictedLayers`
 
 .. seealso:: :py:func:`layersToClip`
 %End

@@ -43,6 +43,7 @@ class TestQgsMapClippingUtils(unittest.TestCase):
         region = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon((0 0, 1 0, 1 1, 0 1, 0 0))'))
         region2 = QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon((0 0, 0.1 0, 0.1 2, 0 2, 0 0))'))
         region2.setRestrictedLayers([layer])
+        region2.setRestrictToLayers(True)
         ms = QgsMapSettings()
         ms.addClippingRegion(region)
         ms.addClippingRegion(region2)

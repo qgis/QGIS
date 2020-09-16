@@ -90,10 +90,27 @@ class CORE_EXPORT QgsLayoutItemMapAtlasClippingSettings : public QObject
     void setForceLabelsInsideFeature( bool forceInside );
 
     /**
+     * Returns TRUE if clipping should be restricted to a subset of layers.
+     *
+     * \see layersToClip()
+     * \see setRestrictToLayers()
+     */
+    bool restrictToLayers() const;
+
+    /**
+     * Sets whether clipping should be restricted to a subset of layers.
+     *
+     * \see setLayersToClip()
+     * \see restrictToLayers()
+     */
+    void setRestrictToLayers( bool enabled );
+
+    /**
      * Returns the list of map layers to clip to the atlas feature.
      *
-     * If the returned list is empty then all layers will be clipped.
+     * \note This setting is only used if restrictToLayers() is TRUE.
      *
+     * \see restrictedLayers()
      * \see setLayersToClip()
      */
     QList< QgsMapLayer * > layersToClip() const;
@@ -101,8 +118,9 @@ class CORE_EXPORT QgsLayoutItemMapAtlasClippingSettings : public QObject
     /**
      * Sets the list of map \a layers to clip to the atlas feature.
      *
-     * If the \a layers list is empty then all layers will be clipped.
+     * \note This setting is only used if restrictToLayers() is TRUE.
      *
+     * \see restrictedLayers()
      * \see layersToClip()
      */
     void setLayersToClip( const QList< QgsMapLayer * > &layers );
@@ -135,6 +153,7 @@ class CORE_EXPORT QgsLayoutItemMapAtlasClippingSettings : public QObject
 
     QgsLayoutItemMap *mMap = nullptr;
     bool mClipToAtlasFeature = false;
+    bool mRestrictToLayers = false;
     QList< QgsMapLayerRef > mLayersToClip;
     QgsMapClippingRegion::FeatureClippingType mFeatureClippingType = QgsMapClippingRegion::FeatureClippingType::ClipPainterOnly;
     bool mForceLabelsInsideFeature = false;
