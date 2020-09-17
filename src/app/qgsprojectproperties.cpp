@@ -76,7 +76,7 @@
 //qt includes
 #include <QInputDialog>
 #include <QFileDialog>
-#include <QHeaderView>  // Qt 4.4
+#include <QHeaderView>
 #include <QMessageBox>
 #include <QDesktopServices>
 #include <QAbstractListModel>
@@ -87,7 +87,7 @@ const char *QgsProjectProperties::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOptions
 
 //stdc++ includes
 
-QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *parent, Qt::WindowFlags fl )
+QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *parent, Qt::WindowFlags fl, const QList<QgsOptionsWidgetFactory *> &optionsFactories )
   : QgsOptionsDialogBase( QStringLiteral( "ProjectProperties" ), parent, fl )
   , mMapCanvas( mapCanvas )
   , mEllipsoidIndex( 0 )
@@ -971,6 +971,24 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   mBearingFormat.reset( QgsProject::instance()->displaySettings()->bearingFormat()->clone() );
 
+  const auto constOptionsFactories = optionsFactories;
+  for ( QgsOptionsWidgetFactory *factory : constOptionsFactories )
+  {
+    QListWidgetItem *item = new QListWidgetItem();
+    item->setIcon( factory->icon() );
+    item->setText( factory->title() );
+    item->setToolTip( factory->title() );
+
+    mOptionsListWidget->addItem( item );
+
+    QgsOptionsPageWidget *page = factory->createWidget( this );
+    if ( !page )
+      continue;
+
+    mAdditionalProjectPropertiesWidgets << page;
+    mOptionsStackedWidget->addWidget( page );
+  }
+
   restoreOptionsBaseUi();
 
 #ifdef QGISDEBUG
@@ -1524,6 +1542,11 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->setCustomVariables( mVariableEditor->variablesInActiveScope() );
 
   QgsProject::instance()->displaySettings()->setBearingFormat( mBearingFormat->clone() );
+
+  for ( QgsOptionsPageWidget *widget : qgis::as_const( mAdditionalProjectPropertiesWidgets ) )
+  {
+    widget->apply();
+  }
 
   //refresh canvases to reflect new properties, eg background color and scale bar after changing display units.
   for ( QgsMapCanvas *canvas : constMapCanvases )
@@ -2524,6 +2547,17 @@ void QgsProjectProperties::showHelp()
   {
     link = QStringLiteral( "working_with_ogc/server/getting_started.html#prepare-a-project-to-serve" );
   }
+
+  // give first priority to created pages which have specified a help key
+  for ( const QgsOptionsPageWidget *widget : qgis::as_const( mAdditionalProjectPropertiesWidgets ) )
+  {
+    if ( widget == activeTab )
+    {
+      link = widget->helpKey();
+      break;
+    }
+  }
+
   QgsHelp::openHelp( link );
 }
 

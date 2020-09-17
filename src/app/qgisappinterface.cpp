@@ -445,6 +445,11 @@ void QgisAppInterface::showOptionsDialog( QWidget *parent, const QString &curren
   return qgis->showOptionsDialog( parent, currentPage );
 }
 
+void QgisAppInterface::showProjectPropertiesDialog( const QString &currentPage )
+{
+  return qgis->showProjectProperties( currentPage );
+}
+
 QMap<QString, QVariant> QgisAppInterface::defaultStyleSheetOptions()
 {
   return qgis->styleSheetBuilder()->defaultOptions();
@@ -544,6 +549,16 @@ void QgisAppInterface::registerOptionsWidgetFactory( QgsOptionsWidgetFactory *fa
 void QgisAppInterface::unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory )
 {
   qgis->unregisterOptionsWidgetFactory( factory );
+}
+
+void QgisAppInterface::registerProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory )
+{
+  qgis->registerProjectPropertiesWidgetFactory( factory );
+}
+
+void QgisAppInterface::unregisterProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory )
+{
+  qgis->unregisterProjectPropertiesWidgetFactory( factory );
 }
 
 void QgisAppInterface::registerDevToolWidgetFactory( QgsDevToolWidgetFactory *factory )

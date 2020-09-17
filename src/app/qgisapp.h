@@ -733,6 +733,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Unregister a previously registered tab in the options dialog
     void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory );
 
+    //! Register a new tab in the project properties dialog
+    void registerProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory );
+
+    //! Unregister a previously registered tab in the project properties dialog
+    void unregisterProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory );
+
     //! Register a dev tool factory
     void registerDevToolFactory( QgsDevToolWidgetFactory *factory );
 
@@ -2555,6 +2561,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QList<QgsMapLayerConfigWidgetFactory *> mMapLayerPanelFactories;
     QList<QPointer<QgsOptionsWidgetFactory>> mOptionsWidgetFactories;
+    QList<QPointer<QgsOptionsWidgetFactory>> mProjectPropertiesWidgetFactories;
 
     QList<QgsDevToolWidgetFactory * > mDevToolFactories;
 
