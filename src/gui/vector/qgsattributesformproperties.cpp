@@ -1024,12 +1024,12 @@ bool QgsAttributesDnDTree::dropMimeData( QTreeWidgetItem *parent, int index, con
 
       if ( parent )
       {
-        newItem = addItem( parent, itemElement, index );
+        newItem = addItem( parent, itemElement, index++ );
         bDropSuccessful = true;
       }
       else
       {
-        newItem = addItem( invisibleRootItem(), itemElement, index );
+        newItem = addItem( invisibleRootItem(), itemElement, index++ );
         bDropSuccessful = true;
       }
 
