@@ -516,7 +516,7 @@ class TestQgsServerWFS(QgsServerTestBase):
             if version == '1.0.0':
                 self.assertTrue(b'<SUCCESS/>' in body, body)
             else:
-                self.assertTrue(b'<TotalUpdated>1</TotalUpdated>' in body, body)
+                self.assertTrue(b'<totalUpdated>1</totalUpdated>' in body, body)
             header, body = self._execute_request("?MAP=%s&SERVICE=WFS&REQUEST=GetFeature&TYPENAME=cdb_lines&FEATUREID=cdb_lines.22" % (
                 self.testdata_path + 'test_project_wms_grouped_layers.qgs'))
             if value is not None:
@@ -550,7 +550,7 @@ class TestQgsServerWFS(QgsServerTestBase):
             if version == '1.0.0':
                 self.assertTrue(b'<ERROR/>' in body, body)
             else:
-                self.assertTrue(b'<TotalUpdated>0</TotalUpdated>' in body)
+                self.assertTrue(b'<totalUpdated>0</totalUpdated>' in body)
             self.assertTrue(b'<Message>NOT NULL constraint error on layer \'cdb_lines\', field \'name\'</Message>' in body, body)
 
     def test_describeFeatureTypeGeometryless(self):
