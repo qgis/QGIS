@@ -354,9 +354,9 @@ QString QgsField::readableConfigurationFlag( QgsField::ConfigurationFlag flag )
       return QObject::tr( "None" );
     case ConfigurationFlag::NotSearchable:
       return QObject::tr( "Not searchable" );
-    case ConfigurationFlag::DoNotExposeViaWms:
+    case ConfigurationFlag::HideFromWms:
       return QStringLiteral( "Do not expose via WMS" );
-    case ConfigurationFlag::DoNotExposeViaWfs:
+    case ConfigurationFlag::HideFromWfs:
       return QStringLiteral( "Do not expose via WFS" );
   }
 }
