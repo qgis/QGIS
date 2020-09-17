@@ -4340,6 +4340,18 @@ void QgsOgrProviderUtils::GDALCloseWrapper( GDALDatasetH hDS )
       GDALClose( hDS );
     }
   }
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,1,0) && GDAL_VERSION_NUM <= GDAL_COMPUTE_VERSION(3,1,3)
+  else if ( mGDALDriverName == QLatin1String( "XLSX" ) ||
+            mGDALDriverName == QLatin1String( "ODS" ) )
+  {
+    // Workaround bug in GDAL 3.1.0 to 3.1.3 that creates XLSX and ODS files incompatible with LibreOffice due to use of ZIP64
+    CPLSetThreadLocalConfigOption( "CPL_CREATE_ZIP64", "NO" );
+    GDALClose( hDS );
+    CPLSetThreadLocalConfigOption( "CPL_CREATE_ZIP64", nullptr );
+  }
+#endif
+
   else
   {
     GDALClose( hDS );
@@ -6186,7 +6198,25 @@ OGRErr QgsOgrLayer::RollbackTransaction()
 OGRErr QgsOgrLayer::SyncToDisk()
 {
   QMutexLocker locker( &ds->mutex );
-  return OGR_L_SyncToDisk( hLayer );
+
+  OGRErr eErr;
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,1,0) && GDAL_VERSION_NUM <= GDAL_COMPUTE_VERSION(3,1,3)
+  // Workaround bug in GDAL 3.1.0 to 3.1.3 that creates XLSX and ODS files incompatible with LibreOffice due to use of ZIP64
+  QString drvName = GDALGetDriverShortName( GDALGetDatasetDriver( ds->hDS ) );
+  if ( drvName == QLatin1String( "XLSX" ) ||
+       drvName == QLatin1String( "ODS" ) )
+  {
+    CPLSetThreadLocalConfigOption( "CPL_CREATE_ZIP64", "NO" );
+    eErr = OGR_L_SyncToDisk( hLayer );
+    CPLSetThreadLocalConfigOption( "CPL_CREATE_ZIP64", nullptr );
+  }
+  else
+#endif
+  {
+    eErr = OGR_L_SyncToDisk( hLayer );
+  }
+
+  return eErr;
 }
 
 void QgsOgrLayer::ExecuteSQLNoReturn( const QByteArray &sql )
