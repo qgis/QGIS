@@ -2312,29 +2312,6 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
 
     updateFields();
 
-    // Load editor widget configuration
-    QDomElement widgetsElem = layerNode.namedItem( QStringLiteral( "fieldConfiguration" ) ).toElement();
-    QDomNodeList fieldConfigurationElementList = widgetsElem.elementsByTagName( QStringLiteral( "field" ) );
-    for ( int i = 0; i < fieldConfigurationElementList.size(); ++i )
-    {
-      const QDomElement fieldConfigElement = fieldConfigurationElementList.at( i ).toElement();
-      const QDomElement fieldWidgetElement = fieldConfigElement.elementsByTagName( QStringLiteral( "editWidget" ) ).at( 0 ).toElement();
-
-      QString fieldName = fieldConfigElement.attribute( QStringLiteral( "name" ) );
-      mFieldConfigurationFlags[fieldName] = qgsFlagKeysToValue( fieldConfigElement.attribute( QStringLiteral( "configurationFlags" ) ), QgsField::ConfigurationFlag::None );
-
-      const QString widgetType = fieldWidgetElement.attribute( QStringLiteral( "type" ) );
-      const QDomElement cfgElem = fieldConfigElement.elementsByTagName( QStringLiteral( "config" ) ).at( 0 ).toElement();
-      const QDomElement optionsElem = cfgElem.childNodes().at( 0 ).toElement();
-      QVariantMap optionsMap = QgsXmlUtils::readVariant( optionsElem ).toMap();
-      if ( widgetType == QStringLiteral( "ValueRelation" ) )
-      {
-        optionsMap[ QStringLiteral( "Value" ) ] = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:fields:%2:valuerelationvalue" ).arg( layerNode.namedItem( QStringLiteral( "id" ) ).toElement().text(), fieldName ), optionsMap[ QStringLiteral( "Value" ) ].toString() );
-      }
-      QgsEditorWidgetSetup setup = QgsEditorWidgetSetup( widgetType, optionsMap );
-      mFieldWidgetSetups[fieldName] = setup;
-    }
-
     // Legacy reading for QGIS 3.14 and older projects
     // Attributes excluded from WMS and WFS
     const QList<QPair<QString, QgsField::ConfigurationFlag>> legacyConfig
@@ -2354,6 +2331,38 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
           int index = mFields.indexFromName( fieldName );
           setFieldConfigurationFlag( index, config.second, true );
         }
+      }
+    }
+  }
+
+  // load field configuration
+  if ( categories.testFlag( Fields ) || categories.testFlag( Forms ) )
+  {
+    QDomElement widgetsElem = layerNode.namedItem( QStringLiteral( "fieldConfiguration" ) ).toElement();
+    QDomNodeList fieldConfigurationElementList = widgetsElem.elementsByTagName( QStringLiteral( "field" ) );
+    for ( int i = 0; i < fieldConfigurationElementList.size(); ++i )
+    {
+      const QDomElement fieldConfigElement = fieldConfigurationElementList.at( i ).toElement();
+      const QDomElement fieldWidgetElement = fieldConfigElement.elementsByTagName( QStringLiteral( "editWidget" ) ).at( 0 ).toElement();
+
+      QString fieldName = fieldConfigElement.attribute( QStringLiteral( "name" ) );
+
+      if ( categories.testFlag( Fields ) )
+        mFieldConfigurationFlags[fieldName] = qgsFlagKeysToValue( fieldConfigElement.attribute( QStringLiteral( "configurationFlags" ) ), QgsField::ConfigurationFlag::None );
+
+      // Load editor widget configuration
+      if ( categories.testFlag( Forms ) )
+      {
+        const QString widgetType = fieldWidgetElement.attribute( QStringLiteral( "type" ) );
+        const QDomElement cfgElem = fieldConfigElement.elementsByTagName( QStringLiteral( "config" ) ).at( 0 ).toElement();
+        const QDomElement optionsElem = cfgElem.childNodes().at( 0 ).toElement();
+        QVariantMap optionsMap = QgsXmlUtils::readVariant( optionsElem ).toMap();
+        if ( widgetType == QStringLiteral( "ValueRelation" ) )
+        {
+          optionsMap[ QStringLiteral( "Value" ) ] = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:fields:%2:valuerelationvalue" ).arg( layerNode.namedItem( QStringLiteral( "id" ) ).toElement().text(), fieldName ), optionsMap[ QStringLiteral( "Value" ) ].toString() );
+        }
+        QgsEditorWidgetSetup setup = QgsEditorWidgetSetup( widgetType, optionsMap );
+        mFieldWidgetSetups[fieldName] = setup;
       }
     }
   }
@@ -2642,35 +2651,44 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
 
   }
 
-  if ( categories.testFlag( Fields ) )
+  // write field configurations
+  if ( categories.testFlag( Fields ) || categories.testFlag( Forms ) )
   {
-    QDomElement fieldConfigurationElement = doc.createElement( QStringLiteral( "fieldConfiguration" ) );
+    QDomElement fieldConfigurationElement;
+    // field configuration flag
+    fieldConfigurationElement = doc.createElement( QStringLiteral( "fieldConfiguration" ) );
     node.appendChild( fieldConfigurationElement );
 
-    int index = 0;
     for ( const QgsField &field : qgis::as_const( mFields ) )
     {
       QDomElement fieldElement = doc.createElement( QStringLiteral( "field" ) );
       fieldElement.setAttribute( QStringLiteral( "name" ), field.name() );
-      fieldElement.setAttribute( QStringLiteral( "configurationFlags" ), qgsFlagValueToKeys( field.configurationFlags() ) );
-
       fieldConfigurationElement.appendChild( fieldElement );
 
-      QgsEditorWidgetSetup widgetSetup = field.editorWidgetSetup();
+      if ( categories.testFlag( Fields ) )
+      {
+        fieldElement.setAttribute( QStringLiteral( "configurationFlags" ), qgsFlagValueToKeys( field.configurationFlags() ) );
+      }
 
-      // TODO : wrap this part in an if to only save if it was user-modified
-      QDomElement editWidgetElement = doc.createElement( QStringLiteral( "editWidget" ) );
-      fieldElement.appendChild( editWidgetElement );
-      editWidgetElement.setAttribute( QStringLiteral( "type" ), field.editorWidgetSetup().type() );
-      QDomElement editWidgetConfigElement = doc.createElement( QStringLiteral( "config" ) );
+      if ( categories.testFlag( Forms ) )
+      {
+        QgsEditorWidgetSetup widgetSetup = field.editorWidgetSetup();
 
-      editWidgetConfigElement.appendChild( QgsXmlUtils::writeVariant( widgetSetup.config(), doc ) );
-      editWidgetElement.appendChild( editWidgetConfigElement );
-      // END TODO : wrap this part in an if to only save if it was user-modified
+        // TODO : wrap this part in an if to only save if it was user-modified
+        QDomElement editWidgetElement = doc.createElement( QStringLiteral( "editWidget" ) );
+        fieldElement.appendChild( editWidgetElement );
+        editWidgetElement.setAttribute( QStringLiteral( "type" ), field.editorWidgetSetup().type() );
+        QDomElement editWidgetConfigElement = doc.createElement( QStringLiteral( "config" ) );
 
-      ++index;
+        editWidgetConfigElement.appendChild( QgsXmlUtils::writeVariant( widgetSetup.config(), doc ) );
+        editWidgetElement.appendChild( editWidgetConfigElement );
+        // END TODO : wrap this part in an if to only save if it was user-modified
+      }
     }
+  }
 
+  if ( categories.testFlag( Fields ) )
+  {
     //attribute aliases
     QDomElement aliasElem = doc.createElement( QStringLiteral( "aliases" ) );
     for ( const QgsField &field : qgis::as_const( mFields ) )
