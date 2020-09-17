@@ -1119,16 +1119,16 @@ struct CORE_EXPORT QgsVertexId
   }
 
   //! Part number
-  int part;
+  int part = -1;
 
   //! Ring number
-  int ring;
+  int ring = -1;
 
   //! Vertex number
-  int vertex;
+  int vertex = -1;
 
   //! Vertex type
-  VertexType type;
+  VertexType type = SegmentVertex;
 
 #ifdef SIP_RUN
   SIP_PYOBJECT __repr__();
