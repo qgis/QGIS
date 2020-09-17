@@ -51,6 +51,7 @@
 #include "qgsprocessingparameterfieldmap.h"
 #include "qgsprocessingparameteraggregate.h"
 #include "qgsprocessingparametertininputlayers.h"
+#include "qgsprocessingparameterdxflayers.h"
 
 class DummyAlgorithm : public QgsProcessingAlgorithm
 {
@@ -603,6 +604,7 @@ class TestQgsProcessing: public QObject
     void parameterFieldMapping();
     void parameterAggregate();
     void parameterTinInputLayers();
+    void parameterDxfLayers();
     void checkParamValues();
     void combineLayerExtent();
     void processingFeatureSource();
@@ -8362,6 +8364,46 @@ void TestQgsProcessing::parameterDateTime()
   QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
   QCOMPARE( fromCode->flags(), def->flags() );
   QVERIFY( !fromCode->defaultValue().isValid() );
+}
+
+void TestQgsProcessing::parameterDxfLayers()
+{
+  QgsProcessingContext context;
+  QgsProject project;
+  context.setProject( &project );
+  QgsVectorLayer *vectorLayer = new QgsVectorLayer( QStringLiteral( "Point" ),
+      QStringLiteral( "PointLayer" ),
+      QStringLiteral( "memory" ) );
+  project.addMapLayer( vectorLayer );
+
+  std::unique_ptr< QgsProcessingParameterDxfLayers > def( new QgsProcessingParameterDxfLayers( "dxf input layer" ) );
+  QVERIFY( !def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( !def->checkValueIsAcceptable( "test" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVariantList layerList;
+  QVERIFY( !def->checkValueIsAcceptable( layerList ) );
+  QVariantMap layerMap;
+  layerList.append( layerMap );
+  QVERIFY( !def->checkValueIsAcceptable( layerList ) );
+  layerMap["layer"] = "layerName";
+  layerMap["attributeIndex"] = -1;
+  layerList[0] = layerMap;
+  QVERIFY( def->checkValueIsAcceptable( layerList ) );
+  QVERIFY( !def->checkValueIsAcceptable( layerList, &context ) ); //no corresponding layer in the context's project
+  layerMap["layer"] = "PointLayer";
+  layerMap["attributeIndex"] = 1; //change for invalid attribute index
+  layerList[0] = layerMap;
+  QVERIFY( !def->checkValueIsAcceptable( layerList, &context ) );
+
+  layerMap["attributeIndex"] = -1;
+  layerList[0] = layerMap;
+  QVERIFY( def->checkValueIsAcceptable( layerList, &context ) );
+
+  QString valueAsPythonString = def->valueAsPythonString( layerList, context );
+  QCOMPARE( valueAsPythonString, QStringLiteral( "[{'layer': '%1','attributeIndex': -1}]" ).arg( vectorLayer->source() ) );
+
+  QString pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterDxfLayers('dxf input layer', '')" ) );
 }
 
 void TestQgsProcessing::checkParamValues()
