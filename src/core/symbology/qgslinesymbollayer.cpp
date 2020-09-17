@@ -2056,12 +2056,14 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineCentral( const QPolygonF &po
     }
 
     // draw the marker
-    double origAngle = symbolAngle();
+    // rotate marker (if desired)
     if ( rotateSymbols() )
-      setSymbolAngle( origAngle + thisSymbolAngle * 180 / M_PI );
+    {
+      setSymbolLineAngle( thisSymbolAngle * 180 / M_PI );
+    }
+
     renderSymbol( pt, context.feature(), context.renderContext(), -1, context.selected() );
-    if ( rotateSymbols() )
-      setSymbolAngle( origAngle );
+
   }
 }
 
