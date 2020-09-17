@@ -45,7 +45,6 @@ class Grass7Utils:
     GRASS_REGION_XMAX = 'GRASS7_REGION_XMAX'
     GRASS_REGION_YMAX = 'GRASS7_REGION_YMAX'
     GRASS_REGION_CELLSIZE = 'GRASS7_REGION_CELLSIZE'
-    GRASS_FOLDER = 'GRASS7_FOLDER'
     GRASS_LOG_COMMANDS = 'GRASS7_LOG_COMMANDS'
     GRASS_LOG_CONSOLE = 'GRASS7_LOG_CONSOLE'
     GRASS_HELP_PATH = 'GRASS_HELP_PATH'
@@ -206,27 +205,23 @@ class Grass7Utils:
         if not isWindows() and not isMac():
             return ''
 
-        if isMac():
-            folder = ProcessingConfig.getSetting(Grass7Utils.GRASS_FOLDER) or ''
-            if not os.path.exists(folder):
-                folder = None
-        else:
-            folder = None
-
-        if folder is None:
-            # Under MS-Windows, we use OSGEO4W or QGIS Path for folder
-            if isWindows():
-                if "GISBASE" in os.environ:
-                    folder = os.environ["GISBASE"]
-                else:
-                    testfolder = os.path.join(os.path.dirname(QgsApplication.prefixPath()), 'grass')
-                    if os.path.isdir(testfolder):
-                        grassfolders = sorted([f for f in os.listdir(testfolder) if f.startswith("grass-7.") and os.path.isdir(os.path.join(testfolder, f))], reverse=True, key=lambda x: [int(v) for v in x[len("grass-"):].split('.') if v != 'svn'])
-                        if grassfolders:
-                            folder = os.path.join(testfolder, grassfolders[0])
-            elif isMac():
-                # For MacOSX, we scan some well-known directories
-                # Start with QGIS bundle
+        folder = None
+        # Under MS-Windows, we use GISBASE or QGIS Path for folder
+        if isWindows():
+            if "GISBASE" in os.environ:
+                folder = os.environ["GISBASE"]
+            else:
+                testfolder = os.path.join(os.path.dirname(QgsApplication.prefixPath()), 'grass')
+                if os.path.isdir(testfolder):
+                    grassfolders = sorted([f for f in os.listdir(testfolder) if f.startswith("grass-7.") and os.path.isdir(os.path.join(testfolder, f))], reverse=True, key=lambda x: [int(v) for v in x[len("grass-"):].split('.') if v != 'svn'])
+                    if grassfolders:
+                        folder = os.path.join(testfolder, grassfolders[0])
+        elif isMac():
+            # For MacOSX, first check environment
+            if "GISBASE" in os.environ:
+                folder = os.environ["GISBASE"]
+            else:
+                # Find grass folder if it exists inside QGIS bundle
                 for version in ['', '7', '78', '76', '74', '72', '71', '70']:
                     testfolder = os.path.join(str(QgsApplication.prefixPath()),
                                               'grass{}'.format(version))
