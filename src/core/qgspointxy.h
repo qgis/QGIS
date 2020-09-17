@@ -52,17 +52,17 @@ class CORE_EXPORT QgsPointXY
     QgsPointXY() = default;
 
     //! Create a point from another point
-    QgsPointXY( const QgsPointXY &p );
+    QgsPointXY( const QgsPointXY &p ) SIP_HOLDGIL;
 
     /**
      * Create a point from x,y coordinates
      * \param x x coordinate
      * \param y y coordinate
      */
-    QgsPointXY( double x, double y )
-      : mX( x )
-      , mY( y )
-      , mIsEmpty( false )
+    QgsPointXY( double x, double y ) SIP_HOLDGIL
+  : mX( x )
+    , mY( y )
+    , mIsEmpty( false )
     {}
 
     /**
@@ -70,10 +70,10 @@ class CORE_EXPORT QgsPointXY
      * \param point QPointF source
      * \since QGIS 2.7
      */
-    QgsPointXY( QPointF point )
-      : mX( point.x() )
-      , mY( point.y() )
-      , mIsEmpty( false )
+    QgsPointXY( QPointF point ) SIP_HOLDGIL
+  : mX( point.x() )
+    , mY( point.y() )
+    , mIsEmpty( false )
     {}
 
     /**
@@ -81,10 +81,10 @@ class CORE_EXPORT QgsPointXY
      * \param point QPoint source
      * \since QGIS 2.7
      */
-    QgsPointXY( QPoint point )
-      : mX( point.x() )
-      , mY( point.y() )
-      , mIsEmpty( false )
+    QgsPointXY( QPoint point ) SIP_HOLDGIL
+  : mX( point.x() )
+    , mY( point.y() )
+    , mIsEmpty( false )
     {}
 
     /**
@@ -93,7 +93,7 @@ class CORE_EXPORT QgsPointXY
      *
      * \since QGIS 3.0
      */
-    QgsPointXY( const QgsPoint &point );
+    QgsPointXY( const QgsPoint &point ) SIP_HOLDGIL;
 
     // IMPORTANT - while QgsPointXY is inherited by QgsReferencedPointXY, we do NOT want a virtual destructor here
     // because this class MUST be lightweight and we don't want the cost of the vtable here.
@@ -104,7 +104,7 @@ class CORE_EXPORT QgsPointXY
      * Sets the x value of the point
      * \param x x coordinate
      */
-    void setX( double x )
+    void setX( double x ) SIP_HOLDGIL
     {
       mX = x;
       mIsEmpty = false;
@@ -114,14 +114,14 @@ class CORE_EXPORT QgsPointXY
      * Sets the y value of the point
      * \param y y coordinate
      */
-    void setY( double y )
+    void setY( double y ) SIP_HOLDGIL
     {
       mY = y;
       mIsEmpty = false;
     }
 
     //! Sets the x and y value of the point
-    void set( double x, double y )
+    void set( double x, double y ) SIP_HOLDGIL
     {
       mX = x;
       mY = y;
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsPointXY
      * Gets the x value of the point
      * \returns x coordinate
      */
-    double x() const
+    double x() const SIP_HOLDGIL
     {
       return mX;
     }
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsPointXY
      * Gets the y value of the point
      * \returns y coordinate
      */
-    double y() const
+    double y() const SIP_HOLDGIL
     {
       return mY;
     }
@@ -172,7 +172,7 @@ class CORE_EXPORT QgsPointXY
      * Returns the squared distance between this point a specified x, y coordinate.
      * \see distance()
     */
-    double sqrDist( double x, double y ) const
+    double sqrDist( double x, double y ) const SIP_HOLDGIL
     {
       return ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y );
     }
@@ -181,7 +181,7 @@ class CORE_EXPORT QgsPointXY
      * Returns the squared distance between this point another point.
      * \see distance()
     */
-    double sqrDist( const QgsPointXY &other ) const
+    double sqrDist( const QgsPointXY &other ) const SIP_HOLDGIL
     {
       return sqrDist( other.x(), other.y() );
     }
@@ -193,7 +193,7 @@ class CORE_EXPORT QgsPointXY
      * \see sqrDist()
      * \since QGIS 2.16
     */
-    double distance( double x, double y ) const
+    double distance( double x, double y ) const SIP_HOLDGIL
     {
       return std::sqrt( sqrDist( x, y ) );
     }
@@ -204,16 +204,16 @@ class CORE_EXPORT QgsPointXY
      * \see sqrDist()
      * \since QGIS 2.16
     */
-    double distance( const QgsPointXY &other ) const
+    double distance( const QgsPointXY &other ) const SIP_HOLDGIL
     {
       return std::sqrt( sqrDist( other ) );
     }
 
     //! Returns the minimum distance between this point and a segment
-    double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPointXY &minDistPoint SIP_OUT, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
+    double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPointXY &minDistPoint SIP_OUT, double epsilon = DEFAULT_SEGMENT_EPSILON ) const SIP_HOLDGIL;
 
     //! Calculates azimuth between this point and other one (clockwise in degree, starting from north)
-    double azimuth( const QgsPointXY &other ) const;
+    double azimuth( const QgsPointXY &other ) const SIP_HOLDGIL;
 
     /**
      * Returns a new point which corresponds to this point projected by a specified distance
@@ -222,7 +222,7 @@ class CORE_EXPORT QgsPointXY
      * \param bearing angle to project in, clockwise in degrees starting from north
      * \since QGIS 2.16
      */
-    QgsPointXY project( double distance, double bearing ) const;
+    QgsPointXY project( double distance, double bearing ) const SIP_HOLDGIL;
 
     /**
      * Returns TRUE if the geometry is empty.
@@ -231,7 +231,7 @@ class CORE_EXPORT QgsPointXY
      * A QgsPointXY is considered empty, when the coordinates have not been explicitly filled in.
      * \since QGIS 3.10
      */
-    bool isEmpty() const { return mIsEmpty; }
+    bool isEmpty() const SIP_HOLDGIL { return mIsEmpty; }
 
     /**
      * Compares this point with another point with a fuzzy tolerance
@@ -240,13 +240,13 @@ class CORE_EXPORT QgsPointXY
      * \returns TRUE if points are equal within specified tolerance
      * \since QGIS 2.9
      */
-    bool compare( const QgsPointXY &other, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) const
+    bool compare( const QgsPointXY &other, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) const SIP_HOLDGIL
     {
       return ( qgsDoubleNear( mX, other.x(), epsilon ) && qgsDoubleNear( mY, other.y(), epsilon ) );
     }
 
     //! equality operator
-    bool operator==( const QgsPointXY &other )
+    bool operator==( const QgsPointXY &other ) SIP_HOLDGIL
     {
       if ( isEmpty() && other.isEmpty() )
         return true;
@@ -263,7 +263,7 @@ class CORE_EXPORT QgsPointXY
     }
 
     //! Inequality operator
-    bool operator!=( const QgsPointXY &other ) const
+    bool operator!=( const QgsPointXY &other ) const SIP_HOLDGIL
     {
       if ( isEmpty() && other.isEmpty() )
         return false;
@@ -280,14 +280,14 @@ class CORE_EXPORT QgsPointXY
     }
 
     //! Multiply x and y by the given value
-    void multiply( double scalar )
+    void multiply( double scalar ) SIP_HOLDGIL
     {
       mX *= scalar;
       mY *= scalar;
     }
 
     //! Assignment
-    QgsPointXY &operator=( const QgsPointXY &other )
+    QgsPointXY &operator=( const QgsPointXY &other ) SIP_HOLDGIL
     {
       if ( &other != this )
       {

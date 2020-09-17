@@ -446,6 +446,7 @@ sub fix_annotations {
     $line =~ s/\bSIP_NODEFAULTCTORS\b/\/NoDefaultCtors\//;
     $line =~ s/\bSIP_OUT\b/\/Out\//g;
     $line =~ s/\bSIP_RELEASEGIL\b/\/ReleaseGIL\//;
+    $line =~ s/\bSIP_HOLDGIL\b/\/HoldGIL\//;    
     $line =~ s/\bSIP_TRANSFER\b/\/Transfer\//g;
     $line =~ s/\bSIP_TRANSFERBACK\b/\/TransferBack\//;
     $line =~ s/\bSIP_TRANSFERTHIS\b/\/TransferThis\//;
