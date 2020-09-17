@@ -1021,6 +1021,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 
     QgsDoubleRange mZRange;
 
+    //!Sub painter for separated layer rendering
     QMap<const QgsSymbolLayer*, QPainter* > mSubPainterMap;
 
 #ifdef QGISDEBUG

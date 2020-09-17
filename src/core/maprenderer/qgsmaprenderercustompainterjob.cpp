@@ -423,7 +423,7 @@ void QgsMapRendererCustomPainterJob::doRender()
           job.renderer->renderContext()->painter()->end();
         }
 
-        for(auto elem: job.renderer->renderContext()->getSubPainter())
+        for ( auto elem : job.renderer->renderContext()->getSubPainter() )
         {
           elem->end();
         }
@@ -433,7 +433,9 @@ void QgsMapRendererCustomPainterJob::doRender()
     }
 
     bool forceVector = mSettings.testFlag( QgsMapSettings::ForceVectorOutput );
-    composeSecondPass( mSecondPassLayerJobs, mLabelJob, forceVector );
+    bool hasClipping = mPainter->hasClipping();
+    QPainterPath existingPath = mPainter->clipPath();
+    composeSecondPass( mSecondPassLayerJobs, mLabelJob, forceVector, hasClipping, existingPath );
 
     if ( forceVector == false )
     {
