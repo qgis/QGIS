@@ -631,7 +631,7 @@ QGroupBox::indicator:checked:disabled {
 
 QRadioButton::indicator
 {
-    border: 1px solid @background;
+    border: 1px solid rgba(0,0,0,0);
     width:0.8em;
     height:0.8em;
 }
@@ -654,13 +654,17 @@ QRadioButton::indicator:checked:disabled {
     image: url(@theme_path/icons/qradiobox-checked-disabled.svg);
 }
 
+QRadioButton:disabled {
+    background-color: transparent;
+}
+
 /* ==================================================================================== */
 /* CHECKBOX                                                                             */
 /* ==================================================================================== */
 
 QCheckBox::indicator
 {
-    border: 1px solid @background;
+    border: 1px solid rgba(0,0,0,0);
     width:0.8em;
     height:0.8em;
 }
@@ -679,6 +683,10 @@ QCheckBox::indicator:checked {
 
 QCheckBox::indicator:checked:disabled {
     image: url(@theme_path/icons/qcheckbox-checked-disabled.svg);
+}
+
+QCheckBox:disabled {
+    background-color: transparent;
 }
 
 /* ==================================================================================== */
