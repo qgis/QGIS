@@ -12175,6 +12175,17 @@ QMap< QString, QString > QgisApp::projectPropertiesPagesMap()
     sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Temporal" ), QStringLiteral( "mTemporalOptions" ) );
   } );
 
+  int idx = sProjectPropertiesPagesMap.count();
+  for ( const QPointer< QgsOptionsWidgetFactory > &f : qgis::as_const( mProjectPropertiesWidgetFactories ) )
+  {
+    // remove any deleted factories
+    if ( f )
+    {
+      sProjectPropertiesPagesMap.insert( f->title(), f->title() );
+    }
+    idx++;
+  }
+
   return sProjectPropertiesPagesMap;
 }
 
@@ -12614,6 +12625,16 @@ void QgisApp::registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory )
 void QgisApp::unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory )
 {
   mOptionsWidgetFactories.removeAll( factory );
+}
+
+void QgisApp::registerProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory )
+{
+  mProjectPropertiesWidgetFactories << factory;
+}
+
+void QgisApp::unregisterProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory )
+{
+  mProjectPropertiesWidgetFactories.removeAll( factory );
 }
 
 void QgisApp::registerDevToolFactory( QgsDevToolWidgetFactory *factory )
@@ -14111,7 +14132,16 @@ void QgisApp::projectProperties( const QString &currentPage )
   // dialog results in the construction of the spatial reference
   // system QMap
   QApplication::setOverrideCursor( Qt::WaitCursor );
-  QgsProjectProperties *pp = new QgsProjectProperties( mMapCanvas, this );
+
+  QList< QgsOptionsWidgetFactory * > factories;
+  const auto constProjectPropertiesWidgetFactories = mProjectPropertiesWidgetFactories;
+  for ( const QPointer< QgsOptionsWidgetFactory > &f : constProjectPropertiesWidgetFactories )
+  {
+    if ( f )
+      factories << f;
+  }
+  QgsProjectProperties *pp = new QgsProjectProperties( mMapCanvas, this, QgsGuiUtils::ModalDialogFlags, factories );
+
   // if called from the status bar, show the projection tab
   if ( mShowProjectionTab )
   {
