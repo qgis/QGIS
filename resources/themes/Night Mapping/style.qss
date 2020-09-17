@@ -664,6 +664,10 @@ QRadioButton::indicator:checked:disabled {
     image: url(@theme_path/icons/qradiobox-checked-disabled.svg);
 }
 
+QRadioButton:disabled {
+    background-color: transparent;
+}
+
 /* ==================================================================================== */
 /* CHECKBOX                                                                             */
 /* ==================================================================================== */
@@ -689,6 +693,10 @@ QCheckBox::indicator:checked {
 
 QCheckBox::indicator:checked:disabled {
     image: url(@theme_path/icons/qcheckbox-checked-disabled.svg);
+}
+
+QCheckBox:disabled {
+    background-color: transparent;
 }
 
 /* ==================================================================================== */
