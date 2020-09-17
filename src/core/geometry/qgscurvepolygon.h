@@ -43,8 +43,8 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 
     ~QgsCurvePolygon() override;
 
-    QString geometryType() const override;
-    int dimension() const override;
+    QString geometryType() const override SIP_HOLDGIL;
+    int dimension() const override SIP_HOLDGIL;
     QgsCurvePolygon *clone() const override SIP_FACTORY;
     void clear() override;
 
@@ -59,8 +59,8 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     QString asKml( int precision = 17 ) const override;
 
     //surface interface
-    double area() const override;
-    double perimeter() const override;
+    double area() const override SIP_HOLDGIL;
+    double perimeter() const override SIP_HOLDGIL;
     QgsPolygon *surfaceToPolygon() const override SIP_FACTORY;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
     QgsCurvePolygon *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
@@ -73,7 +73,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      *
      * \see interiorRing()
      */
-    int numInteriorRings() const
+    int numInteriorRings() const SIP_HOLDGIL
     {
       return mInteriorRings.size();
     }
@@ -83,7 +83,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      *
      * \see interiorRing()
      */
-    const QgsCurve *exteriorRing() const
+    const QgsCurve *exteriorRing() const SIP_HOLDGIL
     {
       return mExteriorRing.get();
     }
@@ -96,7 +96,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      * \see numInteriorRings()
      * \see exteriorRing()
      */
-    const QgsCurve *interiorRing( int i ) const
+    const QgsCurve *interiorRing( int i ) const SIP_HOLDGIL
     {
       if ( i < 0 || i >= mInteriorRings.size() )
       {
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      * \see numInteriorRings()
      * \see exteriorRing()
      */
-    SIP_PYOBJECT interiorRing( int i ) SIP_TYPEHINT( QgsCurve );
+    SIP_PYOBJECT interiorRing( int i ) SIP_HOLDGIL SIP_TYPEHINT( QgsCurve );
     % MethodCode
     if ( a0 < 0 || a0 >= sipCpp->numInteriorRings() )
     {
@@ -225,7 +225,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     QgsCoordinateSequence coordinateSequence() const override;
     int nCoordinates() const override;
     int vertexNumberFromVertexId( QgsVertexId id ) const override;
-    bool isEmpty() const override;
+    bool isEmpty() const override SIP_HOLDGIL;
     double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, int *leftOf SIP_OUT = nullptr, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) const override;
 
     bool nextVertex( QgsVertexId &id, QgsPoint &vertex SIP_OUT ) const override;
@@ -247,8 +247,8 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     double vertexAngle( QgsVertexId vertex ) const override;
 
     int vertexCount( int part = 0, int ring = 0 ) const override;
-    int ringCount( int part = 0 ) const override;
-    int partCount() const override;
+    int ringCount( int part = 0 ) const override SIP_HOLDGIL;
+    int partCount() const override SIP_HOLDGIL;
     QgsPoint vertexAt( QgsVertexId id ) const override;
     double segmentLength( QgsVertexId startVertex ) const override;
 

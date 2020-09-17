@@ -22,7 +22,7 @@ Multi surface geometry collection.
 #include "qgsmultisurface.h"
 %End
   public:
-    QgsMultiSurface();
+    QgsMultiSurface() /HoldGIL/;
 
 
 
@@ -47,7 +47,7 @@ An IndexError will be raised if no surface with the specified index exists.
 %End
 
 
-    virtual QString geometryType() const;
+    virtual QString geometryType() const /HoldGIL/;
 
     virtual void clear();
 

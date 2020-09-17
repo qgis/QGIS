@@ -35,7 +35,7 @@ class QgsPoint;
 class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
 {
   public:
-    QgsGeometryCollection();
+    QgsGeometryCollection() SIP_HOLDGIL;
     QgsGeometryCollection( const QgsGeometryCollection &c );
     QgsGeometryCollection &operator=( const QgsGeometryCollection &c );
     ~QgsGeometryCollection() override;
@@ -48,7 +48,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     /**
      * Returns the number of geometries within the collection.
      */
-    int numGeometries() const
+    int numGeometries() const SIP_HOLDGIL
     {
       return mGeometries.size();
     }
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
      * Returns a geometry from within the collection.
      * \param n index of geometry to return
      */
-    QgsAbstractGeometry *geometryN( int n );
+    QgsAbstractGeometry *geometryN( int n ) SIP_HOLDGIL;
 #else
 
     /**
@@ -110,9 +110,9 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
 
 
     //methods inherited from QgsAbstractGeometry
-    bool isEmpty() const override;
-    int dimension() const override;
-    QString geometryType() const override;
+    bool isEmpty() const override SIP_HOLDGIL;
+    int dimension() const override SIP_HOLDGIL;
+    QString geometryType() const override SIP_HOLDGIL;
     void clear() override;
     QgsGeometryCollection *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
      *
      * \since QGIS 3.10
      */
-    void reserve( int size );
+    void reserve( int size ) SIP_HOLDGIL;
 
     //! Adds a geometry and takes ownership. Returns TRUE in case of success.
     virtual bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER );
@@ -200,11 +200,11 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
     bool deleteVertex( QgsVertexId position ) override;
 
-    double length() const override;
-    double area() const override;
-    double perimeter() const override;
+    double length() const override SIP_HOLDGIL;
+    double area() const override SIP_HOLDGIL;
+    double perimeter() const override SIP_HOLDGIL;
 
-    bool hasCurvedSegments() const override;
+    bool hasCurvedSegments() const override SIP_HOLDGIL;
 
     /**
      * Returns a geometry without curves. Caller takes ownership

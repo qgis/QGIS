@@ -75,7 +75,7 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
     const QgsCurve *curveN( int index ) const;
 #endif
 
-    QString geometryType() const override;
+    QString geometryType() const override SIP_HOLDGIL;
     QgsMultiCurve *clone() const override SIP_FACTORY;
     void clear() override;
     QgsMultiCurve *toCurveType() const override SIP_FACTORY;

@@ -20,7 +20,7 @@ Multi point geometry collection.
 #include "qgsmultipoint.h"
 %End
   public:
-    QgsMultiPoint();
+    QgsMultiPoint() /HoldGIL/;
 
 
 
@@ -59,7 +59,7 @@ An IndexError will be raised if no point with the specified index exists.
 
     virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
 
-    virtual int nCoordinates() const;
+    virtual int nCoordinates() const /HoldGIL/;
 
     virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
 
@@ -71,7 +71,7 @@ An IndexError will be raised if no point with the specified index exists.
 
     virtual double segmentLength( QgsVertexId startVertex ) const;
 
-    virtual bool isValid( QString &error /Out/, int flags = 0 ) const;
+    virtual bool isValid( QString &error /Out/, int flags = 0 ) const /HoldGIL/;
 
 
 

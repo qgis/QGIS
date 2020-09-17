@@ -156,7 +156,7 @@ class CORE_EXPORT QgsGeometry
     Q_ENUM( OperationResult )
 
     //! Constructor
-    QgsGeometry();
+    QgsGeometry() SIP_HOLDGIL;
 
     //! Copy constructor will prompt a deep copy of the object
     QgsGeometry( const QgsGeometry & );
@@ -194,7 +194,7 @@ class CORE_EXPORT QgsGeometry
      * \see get()
      * \since QGIS 3.0
     */
-    const QgsAbstractGeometry *constGet() const;
+    const QgsAbstractGeometry *constGet() const SIP_HOLDGIL;
 
     /**
      * Returns a modifiable (non-const) reference to the underlying abstract geometry primitive.
@@ -231,12 +231,12 @@ class CORE_EXPORT QgsGeometry
      * \see isEmpty()
      * \since QGIS 2.10
      */
-    bool isNull() const;
+    bool isNull() const SIP_HOLDGIL;
 
     //! Creates a new geometry from a WKT string
     static QgsGeometry fromWkt( const QString &wkt );
     //! Creates a new geometry from a QgsPointXY object
-    static QgsGeometry fromPointXY( const QgsPointXY &point );
+    static QgsGeometry fromPointXY( const QgsPointXY &point ) SIP_HOLDGIL;
     //! Creates a new geometry from a QgsMultiPointXY object
     static QgsGeometry fromMultiPointXY( const QgsMultiPointXY &multipoint );
 
@@ -271,7 +271,7 @@ class CORE_EXPORT QgsGeometry
     //! Creates a new geometry from a QgsMultiPolygon
     static QgsGeometry fromMultiPolygonXY( const QgsMultiPolygonXY &multipoly );
     //! Creates a new geometry from a QgsRectangle
-    static QgsGeometry fromRect( const QgsRectangle &rect );
+    static QgsGeometry fromRect( const QgsRectangle &rect ) SIP_HOLDGIL;
     //! Creates a new multipart geometry from a list of QgsGeometry objects
     static QgsGeometry collectGeometry( const QVector<QgsGeometry> &geometries );
 
@@ -310,13 +310,13 @@ class CORE_EXPORT QgsGeometry
      * Returns type of the geometry as a WKB type (point / linestring / polygon etc.)
      * \see type
      */
-    QgsWkbTypes::Type wkbType() const;
+    QgsWkbTypes::Type wkbType() const SIP_HOLDGIL;
 
     /**
      * Returns type of the geometry as a QgsWkbTypes::GeometryType
      * \see wkbType
      */
-    QgsWkbTypes::GeometryType type() const;
+    QgsWkbTypes::GeometryType type() const SIP_HOLDGIL;
 
     /**
      * Returns TRUE if the geometry is empty (eg a linestring with no vertices,
@@ -327,7 +327,7 @@ class CORE_EXPORT QgsGeometry
     bool isEmpty() const;
 
     //! Returns TRUE if WKB of the geometry is of WKBMulti* type
-    bool isMultipart() const;
+    bool isMultipart() const SIP_HOLDGIL;
 
     /**
      * Test if this geometry is exactly equal to another \a geometry.
@@ -1936,7 +1936,7 @@ class CORE_EXPORT QgsGeometry
      * otherwise returns a null QPointF.
      * \since QGIS 2.7
      */
-    QPointF asQPointF() const;
+    QPointF asQPointF() const SIP_HOLDGIL;
 
     /**
      * Returns contents of the geometry as a QPolygonF.
@@ -1950,7 +1950,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \since QGIS 2.7
      */
-    QPolygonF asQPolygonF() const;
+    QPolygonF asQPolygonF() const SIP_HOLDGIL;
 
     /**
      * Deletes a ring in polygon or multipolygon.
@@ -2194,7 +2194,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \since QGIS 3.0
      */
-    QString lastError() const;
+    QString lastError() const SIP_HOLDGIL;
 
     /**
      * Filters the vertices from the geometry in place, removing any which do not return TRUE for the \a filter function
@@ -2228,7 +2228,7 @@ class CORE_EXPORT QgsGeometry
      * \param point source QPointF
      * \since QGIS 2.7
      */
-    static QgsGeometry fromQPointF( QPointF point );
+    static QgsGeometry fromQPointF( QPointF point ) SIP_HOLDGIL;
 
     /**
      * Construct geometry from a QPolygonF. If the polygon is closed than

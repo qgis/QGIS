@@ -51,7 +51,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * \param radius The radius of the circle.
      * \param azimuth Angle in degrees started from the North to the first quadrant.
      */
-    QgsCircle( const QgsPoint &center, double radius, double azimuth = 0 );
+    QgsCircle( const QgsPoint &center, double radius, double azimuth = 0 ) SIP_HOLDGIL;
 
     /**
      * Constructs a circle by 2 points on the circle.
@@ -63,7 +63,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * \param pt1 First point.
      * \param pt2 Second point.
      */
-    static QgsCircle from2Points( const QgsPoint &pt1, const QgsPoint &pt2 );
+    static QgsCircle from2Points( const QgsPoint &pt1, const QgsPoint &pt2 ) SIP_HOLDGIL;
 
     /**
      * Constructs a circle by 3 points on the circle.
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * \param pt3 Third point.
      * \param epsilon Value used to compare point.
      */
-    static QgsCircle from3Points( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double epsilon = 1E-8 );
+    static QgsCircle from3Points( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double epsilon = 1E-8 ) SIP_HOLDGIL;
 
     /**
      * Constructs a circle by a center point and a diameter.
@@ -86,7 +86,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * \param diameter Diameter of the circle.
      * \param azimuth Azimuth of the circle.
      */
-    static QgsCircle fromCenterDiameter( const QgsPoint &center, double diameter, double azimuth = 0 );
+    static QgsCircle fromCenterDiameter( const QgsPoint &center, double diameter, double azimuth = 0 ) SIP_HOLDGIL;
 
 
     /**
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * \param center Center point.
      * \param pt1 A point on the circle.
      */
-    static QgsCircle fromCenterPoint( const QgsPoint &center, const QgsPoint &pt1 );
+    static QgsCircle fromCenterPoint( const QgsPoint &center, const QgsPoint &pt1 ) SIP_HOLDGIL;
 
 
     /**
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      */
     static QgsCircle from3Tangents( const QgsPoint &pt1_tg1, const QgsPoint &pt2_tg1,
                                     const QgsPoint &pt1_tg2, const QgsPoint &pt2_tg2,
-                                    const QgsPoint &pt1_tg3, const QgsPoint &pt2_tg3, double epsilon = 1E-8 );
+                                    const QgsPoint &pt1_tg3, const QgsPoint &pt2_tg3, double epsilon = 1E-8 ) SIP_HOLDGIL;
 
     /**
      * Constructs a circle by an extent (aka bounding box / QgsRectangle).
@@ -126,7 +126,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * \param pt1 First corner.
      * \param pt2 Second corner.
      */
-    static QgsCircle fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 );
+    static QgsCircle fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 ) SIP_HOLDGIL;
 
     /**
      * Constructs the smallest circle from 3 points.
@@ -138,7 +138,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * \param pt3 Third point.
      * \param epsilon Value used to compare point.
      */
-    static QgsCircle minimalCircleFrom3Points( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double epsilon = 1E-8 );
+    static QgsCircle minimalCircleFrom3Points( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double epsilon = 1E-8 ) SIP_HOLDGIL;
 
     /**
      * Calculates the intersections points between this circle and an \a other circle.
@@ -221,8 +221,8 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
                        QgsPointXY &line1P1 SIP_OUT, QgsPointXY &line1P2 SIP_OUT,
                        QgsPointXY &line2P1 SIP_OUT, QgsPointXY &line2P2 SIP_OUT ) const;
 
-    double area() const override;
-    double perimeter() const override;
+    double area() const override SIP_HOLDGIL;
+    double perimeter() const override SIP_HOLDGIL;
 
     //inherited
     // void setAzimuth(const double azimuth);
@@ -234,19 +234,19 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * \see radius()
      * \see setRadius()
      */
-    void setSemiMajorAxis( double semiMajorAxis ) override;
+    void setSemiMajorAxis( double semiMajorAxis ) override SIP_HOLDGIL;
 
     /**
      * Inherited method. Use setRadius instead.
      * \see radius()
      * \see setRadius()
      */
-    void setSemiMinorAxis( double semiMinorAxis ) override;
+    void setSemiMinorAxis( double semiMinorAxis ) override SIP_HOLDGIL;
 
     //! Returns the radius of the circle
-    double radius() const {return mSemiMajorAxis;}
+    double radius() const SIP_HOLDGIL {return mSemiMajorAxis;}
     //! Sets the radius of the circle
-    void setRadius( double radius )
+    void setRadius( double radius ) SIP_HOLDGIL
     {
       mSemiMajorAxis = std::fabs( radius );
       mSemiMinorAxis = mSemiMajorAxis;

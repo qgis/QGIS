@@ -130,7 +130,7 @@ Returns a unique string representing the geometry type.
 .. seealso:: :py:func:`wktTypeStr`
 %End
 
-    QgsWkbTypes::Type wkbType() const;
+    QgsWkbTypes::Type wkbType() const /HoldGIL/;
 %Docstring
 Returns the WKB type of the geometry.
 
@@ -148,14 +148,14 @@ Returns the WKT type string of the geometry.
 .. seealso:: :py:func:`wkbType`
 %End
 
-    bool is3D() const;
+    bool is3D() const /HoldGIL/;
 %Docstring
 Returns ``True`` if the geometry is 3D and contains a z-value.
 
 .. seealso:: :py:func:`isMeasure`
 %End
 
-    bool isMeasure() const;
+    bool isMeasure() const /HoldGIL/;
 %Docstring
 Returns ``True`` if the geometry contains m values.
 
@@ -850,17 +850,17 @@ struct QgsVertexId
 
   explicit QgsVertexId( int _part = -1, int _ring = -1, int _vertex = -1, VertexType _type = SegmentVertex );
 
-  bool isValid() const;
+  bool isValid() const  /HoldGIL/;
 %Docstring
 Returns ``True`` if the vertex id is valid
 %End
 
-  bool operator==( QgsVertexId other ) const;
-  bool operator!=( QgsVertexId other ) const;
-  bool partEqual( QgsVertexId o ) const;
-  bool ringEqual( QgsVertexId o ) const;
-  bool vertexEqual( QgsVertexId o ) const;
-  bool isValid( const QgsAbstractGeometry *geom ) const;
+  bool operator==( QgsVertexId other ) const /HoldGIL/;
+  bool operator!=( QgsVertexId other ) const /HoldGIL/;
+  bool partEqual( QgsVertexId o ) const /HoldGIL/;
+  bool ringEqual( QgsVertexId o ) const /HoldGIL/;
+  bool vertexEqual( QgsVertexId o ) const /HoldGIL/;
+  bool isValid( const QgsAbstractGeometry *geom ) const /HoldGIL/;
 
   int part;
   int ring;
@@ -946,7 +946,7 @@ Constructor for QgsGeometryPartIterator
 Constructs iterator for the given geometry
 %End
 
-    bool hasNext() const;
+    bool hasNext() const /HoldGIL/;
 %Docstring
 Find out whether there are more parts
 %End
@@ -994,7 +994,7 @@ Constructor for QgsGeometryConstPartIterator
 Constructs iterator for the given geometry
 %End
 
-    bool hasNext() const;
+    bool hasNext() const /HoldGIL/;
 %Docstring
 Find out whether there are more parts
 %End

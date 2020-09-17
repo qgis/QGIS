@@ -190,7 +190,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \see geometryType
      * \see wktTypeStr
      */
-    inline QgsWkbTypes::Type wkbType() const { return mWkbType; }
+    inline QgsWkbTypes::Type wkbType() const SIP_HOLDGIL { return mWkbType; }
 
     /**
      * Returns the WKT type string of the geometry.
@@ -203,7 +203,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * Returns TRUE if the geometry is 3D and contains a z-value.
      * \see isMeasure
      */
-    bool is3D() const
+    bool is3D() const SIP_HOLDGIL
     {
       return QgsWkbTypes::hasZ( mWkbType );
     }
@@ -212,7 +212,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * Returns TRUE if the geometry contains m values.
      * \see is3D
      */
-    bool isMeasure() const
+    bool isMeasure() const SIP_HOLDGIL
     {
       return QgsWkbTypes::hasM( mWkbType );
     }
@@ -1064,29 +1064,29 @@ struct CORE_EXPORT QgsVertexId
   /**
    * Returns TRUE if the vertex id is valid
    */
-  bool isValid() const { return part >= 0 && ring >= 0 && vertex >= 0; }
+  bool isValid() const  SIP_HOLDGIL { return part >= 0 && ring >= 0 && vertex >= 0; }
 
-  bool operator==( QgsVertexId other ) const
+  bool operator==( QgsVertexId other ) const SIP_HOLDGIL
   {
     return part == other.part && ring == other.ring && vertex == other.vertex;
   }
-  bool operator!=( QgsVertexId other ) const
+  bool operator!=( QgsVertexId other ) const SIP_HOLDGIL
   {
     return part != other.part || ring != other.ring || vertex != other.vertex;
   }
-  bool partEqual( QgsVertexId o ) const
+  bool partEqual( QgsVertexId o ) const SIP_HOLDGIL
   {
     return part >= 0 && o.part == part;
   }
-  bool ringEqual( QgsVertexId o ) const
+  bool ringEqual( QgsVertexId o ) const SIP_HOLDGIL
   {
     return partEqual( o ) && ( ring >= 0 && o.ring == ring );
   }
-  bool vertexEqual( QgsVertexId o ) const
+  bool vertexEqual( QgsVertexId o ) const SIP_HOLDGIL
   {
     return ringEqual( o ) && ( vertex >= 0 && o.ring == ring );
   }
-  bool isValid( const QgsAbstractGeometry *geom ) const
+  bool isValid( const QgsAbstractGeometry *geom ) const SIP_HOLDGIL
   {
     return ( part >= 0 && part < geom->partCount() ) &&
            ( ring < geom->ringCount( part ) ) &&
@@ -1189,7 +1189,7 @@ class CORE_EXPORT QgsGeometryPartIterator
     }
 
     //! Find out whether there are more parts
-    bool hasNext() const
+    bool hasNext() const SIP_HOLDGIL
     {
       return g && g->parts_end() != i;
     }
@@ -1239,7 +1239,7 @@ class CORE_EXPORT QgsGeometryConstPartIterator
     }
 
     //! Find out whether there are more parts
-    bool hasNext() const
+    bool hasNext() const SIP_HOLDGIL
     {
       return g && g->const_parts_end() != i;
     }

@@ -31,7 +31,7 @@ class QgsLineString;
 class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
 {
   public:
-    QgsMultiLineString();
+    QgsMultiLineString() SIP_HOLDGIL;
 
 
 #ifndef SIP_RUN
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
     const QgsLineString *lineStringN( int index ) const;
 #endif
 
-    QString geometryType() const override;
+    QString geometryType() const override SIP_HOLDGIL;
     QgsMultiLineString *clone() const override SIP_FACTORY;
     void clear() override;
     bool fromWkt( const QString &wkt ) override;

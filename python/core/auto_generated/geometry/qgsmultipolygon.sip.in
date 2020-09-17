@@ -21,7 +21,7 @@ Multi polygon geometry collection.
 #include "qgsmultipolygon.h"
 %End
   public:
-    QgsMultiPolygon();
+    QgsMultiPolygon() /HoldGIL/;
 
 
 
@@ -46,7 +46,7 @@ An IndexError will be raised if no polygon with the specified index exists.
 %End
 
 
-    virtual QString geometryType() const;
+    virtual QString geometryType() const /HoldGIL/;
 
     virtual void clear();
 

@@ -144,7 +144,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      */
     explicit QgsPoint( QgsWkbTypes::Type wkbType, double x = std::numeric_limits<double>::quiet_NaN(), double y = std::numeric_limits<double>::quiet_NaN(), double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN() ) SIP_SKIP;
 
-    bool operator==( const QgsAbstractGeometry &other ) const override
+    bool operator==( const QgsAbstractGeometry &other ) const override SIP_HOLDGIL
     {
       const QgsPoint *pt = qgsgeometry_cast< const QgsPoint * >( &other );
       if ( !pt )
@@ -192,7 +192,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
       return true;
     }
 
-    bool operator!=( const QgsAbstractGeometry &other ) const override
+    bool operator!=( const QgsAbstractGeometry &other ) const override SIP_HOLDGIL
     {
       return !operator==( other );
     }
@@ -202,28 +202,28 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see setX()
      * \see rx()
      */
-    double x() const { return mX; }
+    double x() const SIP_HOLDGIL { return mX; }
 
     /**
      * Returns the point's y-coordinate.
      * \see setY()
      * \see ry()
      */
-    double y() const { return mY; }
+    double y() const SIP_HOLDGIL { return mY; }
 
     /**
      * Returns the point's z-coordinate.
      * \see setZ()
      * \see rz()
      */
-    double z() const { return mZ; }
+    double z() const SIP_HOLDGIL { return mZ; }
 
     /**
      * Returns the point's m value.
      * \see setM()
      * \see rm()
      */
-    double m() const { return mM; }
+    double m() const SIP_HOLDGIL { return mM; }
 
     /**
      * Returns a reference to the x-coordinate of this point.
@@ -266,7 +266,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see x()
      * \see rx()
      */
-    void setX( double x )
+    void setX( double x ) SIP_HOLDGIL
     {
       clearCache();
       mX = x;
@@ -277,7 +277,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see y()
      * \see ry()
      */
-    void setY( double y )
+    void setY( double y ) SIP_HOLDGIL
     {
       clearCache();
       mY = y;
@@ -290,7 +290,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see z()
      * \see rz()
      */
-    void setZ( double z )
+    void setZ( double z ) SIP_HOLDGIL
     {
       if ( !is3D() )
         return;
@@ -305,7 +305,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see m()
      * \see rm()
      */
-    void setM( double m )
+    void setM( double m ) SIP_HOLDGIL
     {
       if ( !isMeasure() )
         return;
@@ -317,7 +317,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * Returns the point as a QPointF.
      * \since QGIS 2.14
      */
-    QPointF toQPointF() const
+    QPointF toQPointF() const SIP_HOLDGIL
     {
       return QPointF( mX, mY );
     }
@@ -329,7 +329,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see distanceSquared()
      * \since QGIS 3.0
     */
-    double distance( double x, double y ) const
+    double distance( double x, double y ) const SIP_HOLDGIL
     {
       return std::sqrt( ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y ) );
     }
@@ -340,7 +340,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * when comparing distances.
      * \since QGIS 3.0
     */
-    double distance( const QgsPoint &other ) const
+    double distance( const QgsPoint &other ) const SIP_HOLDGIL
     {
       return std::sqrt( ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) );
     }
@@ -352,7 +352,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see distance()
      * \since QGIS 3.0
     */
-    double distanceSquared( double x, double y ) const
+    double distanceSquared( double x, double y ) const SIP_HOLDGIL
     {
       return ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y );
     }
@@ -364,7 +364,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see distance()
      * \since QGIS 3.0
     */
-    double distanceSquared( const QgsPoint &other ) const
+    double distanceSquared( const QgsPoint &other ) const SIP_HOLDGIL
     {
       return ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() );
     }
@@ -376,7 +376,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see distanceSquared()
      * \since QGIS 3.0
     */
-    double distance3D( double x, double y, double z ) const;
+    double distance3D( double x, double y, double z ) const SIP_HOLDGIL;
 
     /**
      * Returns the Cartesian 3D distance between this point and another point. In certain
@@ -384,7 +384,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * when comparing distances.
      * \since QGIS 3.0
     */
-    double distance3D( const QgsPoint &other ) const;
+    double distance3D( const QgsPoint &other ) const SIP_HOLDGIL;
 
     /**
      * Returns the Cartesian 3D squared distance between this point and a specified x, y, z coordinate. Calling
@@ -393,7 +393,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see distance()
      * \since QGIS 3.0
     */
-    double distanceSquared3D( double x, double y, double z ) const;
+    double distanceSquared3D( double x, double y, double z ) const SIP_HOLDGIL;
 
     /**
      * Returns the Cartesian 3D squared distance between this point and another point. Calling
@@ -402,20 +402,20 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see distance()
      * \since QGIS 3.0
     */
-    double distanceSquared3D( const QgsPoint &other ) const;
+    double distanceSquared3D( const QgsPoint &other ) const SIP_HOLDGIL;
 
     /**
      * Calculates Cartesian azimuth between this point and other one (clockwise in degree, starting from north)
      * \since QGIS 3.0
      */
-    double azimuth( const QgsPoint &other ) const;
+    double azimuth( const QgsPoint &other ) const SIP_HOLDGIL;
 
     /**
      * Calculates Cartesian inclination between this point and other one (starting from zenith = 0 to nadir = 180. Horizon = 90)
      * Returns 90.0 if the distance between this point and other one is equal to 0 (same point).
      * \since QGIS 3.0
      */
-    double inclination( const QgsPoint &other ) const;
+    double inclination( const QgsPoint &other ) const SIP_HOLDGIL;
 
     /**
      * Returns a new point which correspond to this point projected by a specified distance
@@ -447,43 +447,43 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \endcode
      * \since QGIS 3.0
      */
-    QgsPoint project( double distance, double azimuth, double inclination = 90.0 ) const;
+    QgsPoint project( double distance, double azimuth, double inclination = 90.0 ) const SIP_HOLDGIL;
 
     /**
      * Calculates the vector obtained by subtracting a point from this point.
      * \since QGIS 3.0
      */
-    QgsVector operator-( const QgsPoint &p ) const { return QgsVector( mX - p.mX, mY - p.mY ); }
+    QgsVector operator-( const QgsPoint &p ) const SIP_HOLDGIL { return QgsVector( mX - p.mX, mY - p.mY ); }
 
     /**
      * Adds a vector to this point in place.
      * \since QGIS 3.0
      */
-    QgsPoint &operator+=( QgsVector v ) { mX += v.x(); mY += v.y(); return *this; }
+    QgsPoint &operator+=( QgsVector v ) SIP_HOLDGIL { mX += v.x(); mY += v.y(); return *this; }
 
     /**
      * Subtracts a vector from this point in place.
      * \since QGIS 3.0
      */
-    QgsPoint &operator-=( QgsVector v ) { mX -= v.x(); mY -= v.y(); return *this; }
+    QgsPoint &operator-=( QgsVector v ) SIP_HOLDGIL { mX -= v.x(); mY -= v.y(); return *this; }
 
     /**
      * Adds a vector to this point.
      * \since QGIS 3.0
      */
-    QgsPoint operator+( QgsVector v ) const { QgsPoint r = *this; r.rx() += v.x(); r.ry() += v.y(); return r; }
+    QgsPoint operator+( QgsVector v ) const SIP_HOLDGIL { QgsPoint r = *this; r.rx() += v.x(); r.ry() += v.y(); return r; }
 
     /**
      * Subtracts a vector from this point.
      * \since QGIS 3.0
      */
-    QgsPoint operator-( QgsVector v ) const { QgsPoint r = *this; r.rx() -= v.x(); r.ry() -= v.y(); return r; }
+    QgsPoint operator-( QgsVector v ) const SIP_HOLDGIL { QgsPoint r = *this; r.rx() -= v.x(); r.ry() -= v.y(); return r; }
 
     //implementation of inherited methods
-    bool isEmpty() const override;
-    QgsRectangle boundingBox() const override;
-    QString geometryType() const override;
-    int dimension() const override;
+    bool isEmpty() const override SIP_HOLDGIL;
+    QgsRectangle boundingBox() const override SIP_HOLDGIL;
+    QString geometryType() const override SIP_HOLDGIL;
+    int dimension() const override SIP_HOLDGIL;
     QgsPoint *clone() const override SIP_FACTORY;
     QgsPoint *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
@@ -501,10 +501,10 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) override SIP_THROW( QgsCsException );
     void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
     QgsCoordinateSequence coordinateSequence() const override;
-    int nCoordinates() const override;
+    int nCoordinates() const override SIP_HOLDGIL;
     int vertexNumberFromVertexId( QgsVertexId id ) const override;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
-    bool isValid( QString &error SIP_OUT, int flags = 0 ) const override;
+    bool isValid( QString &error SIP_OUT, int flags = 0 ) const override SIP_HOLDGIL;
 
     //low-level editing
     bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;

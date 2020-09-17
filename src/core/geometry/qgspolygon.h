@@ -33,7 +33,7 @@ class QgsLineString;
 class CORE_EXPORT QgsPolygon: public QgsCurvePolygon
 {
   public:
-    QgsPolygon();
+    QgsPolygon() SIP_HOLDGIL;
 
     /**
      * Constructor for QgsPolygon, with the specified \a exterior ring and interior \a rings.
@@ -42,9 +42,9 @@ class CORE_EXPORT QgsPolygon: public QgsCurvePolygon
      *
      * \since QGIS 3.14
      */
-    QgsPolygon( QgsLineString *exterior SIP_TRANSFER, const QList< QgsLineString * > &rings SIP_TRANSFER = QList< QgsLineString * >() );
+    QgsPolygon( QgsLineString *exterior SIP_TRANSFER, const QList< QgsLineString * > &rings SIP_TRANSFER = QList< QgsLineString * >() ) SIP_HOLDGIL;
 
-    QString geometryType() const override;
+    QString geometryType() const override SIP_HOLDGIL;
     QgsPolygon *clone() const override SIP_FACTORY;
     void clear() override;
     bool fromWkb( QgsConstWkbPtr &wkb ) override;

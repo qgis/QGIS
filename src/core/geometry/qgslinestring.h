@@ -43,7 +43,7 @@ class QgsLineSegment2D;
 class CORE_EXPORT QgsLineString: public QgsCurve
 {
   public:
-    QgsLineString();
+    QgsLineString() SIP_HOLDGIL;
 
     /**
      * Construct a linestring from a vector of points.
@@ -51,7 +51,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * in the vector.
      * \since QGIS 3.0
      */
-    QgsLineString( const QVector<QgsPoint> &points );
+    QgsLineString( const QVector<QgsPoint> &points ) SIP_HOLDGIL;
 
     /**
      * Construct a linestring from arrays of coordinates. If the z or m
@@ -70,13 +70,13 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     QgsLineString( const QVector<double> &x, const QVector<double> &y,
                    const QVector<double> &z = QVector<double>(),
-                   const QVector<double> &m = QVector<double>(), bool is25DType = false );
+                   const QVector<double> &m = QVector<double>(), bool is25DType = false ) SIP_HOLDGIL;
 
     /**
      * Constructs a linestring with a single segment from \a p1 to \a p2.
      * \since QGIS 3.2
      */
-    QgsLineString( const QgsPoint &p1, const QgsPoint &p2 );
+    QgsLineString( const QgsPoint &p1, const QgsPoint &p2 ) SIP_HOLDGIL;
 
     /**
      * Construct a linestring from list of points.
@@ -84,13 +84,13 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * or repeatedly calling addVertex()
      * \since QGIS 3.0
      */
-    QgsLineString( const QVector<QgsPointXY> &points );
+    QgsLineString( const QVector<QgsPointXY> &points ) SIP_HOLDGIL;
 
     /**
      * Construct a linestring from a single 2d line segment.
      * \since QGIS 3.2
      */
-    explicit QgsLineString( const QgsLineSegment2D &segment );
+    explicit QgsLineString( const QgsLineSegment2D &segment ) SIP_HOLDGIL;
 
     /**
      * Returns a new linestring created by segmentizing the bezier curve between \a start and \a end, with
@@ -577,11 +577,11 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     //reimplemented methods
 
-    QString geometryType() const override;
-    int dimension() const override;
+    QString geometryType() const override SIP_HOLDGIL;
+    int dimension() const override SIP_HOLDGIL;
     QgsLineString *clone() const override SIP_FACTORY;
     void clear() override;
-    bool isEmpty() const override;
+    bool isEmpty() const override SIP_HOLDGIL;
     QgsLineString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
     QPolygonF asQPolygonF() const override;
@@ -597,7 +597,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     QString asKml( int precision = 17 ) const override;
 
     //curve interface
-    double length() const override;
+    double length() const override SIP_HOLDGIL;
 
     /**
      * Returns the length in 3D world of the line string.
@@ -605,9 +605,9 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \see length()
      * \since QGIS 3.10
      */
-    double length3D() const;
-    QgsPoint startPoint() const override;
-    QgsPoint endPoint() const override;
+    double length3D() const SIP_HOLDGIL;
+    QgsPoint startPoint() const override SIP_HOLDGIL;
+    QgsPoint endPoint() const override SIP_HOLDGIL;
 
     /**
      * Returns a new line string geometry corresponding to a segmentized approximation
@@ -617,8 +617,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     */
     QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override  SIP_FACTORY;
 
-    int numPoints() const override;
-    int nCoordinates() const override;
+    int numPoints() const override SIP_HOLDGIL;
+    int nCoordinates() const override SIP_HOLDGIL;
     void points( QgsPointSequence &pt SIP_OUT ) const override;
 
     void draw( QPainter &p ) const override;

@@ -21,7 +21,7 @@ Multi line string geometry collection.
 #include "qgsmultilinestring.h"
 %End
   public:
-    QgsMultiLineString();
+    QgsMultiLineString() /HoldGIL/;
 
 
 
@@ -46,7 +46,7 @@ An IndexError will be raised if no line string with the specified index exists.
 %End
 
 
-    virtual QString geometryType() const;
+    virtual QString geometryType() const /HoldGIL/;
 
     virtual QgsMultiLineString *clone() const /Factory/;
 
