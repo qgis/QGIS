@@ -292,6 +292,7 @@ SET(QGIS_GUI_SRCS
   processing/qgsprocessingalgorithmconfigurationwidget.cpp
   processing/qgsprocessingalgorithmdialogbase.cpp
   processing/qgsprocessingconfigurationwidgets.cpp
+  processing/qgsprocessingdxflayerswidgetwrapper.cpp
   processing/qgsprocessingenummodelerwidget.cpp
   processing/qgsprocessingfeaturesourceoptionswidget.cpp
   processing/qgsprocessingfieldmapwidgetwrapper.cpp
@@ -1051,6 +1052,7 @@ SET(QGIS_GUI_HDRS
   processing/qgsprocessingalgorithmconfigurationwidget.h
   processing/qgsprocessingalgorithmdialogbase.h
   processing/qgsprocessingconfigurationwidgets.h
+  processing/qgsprocessingdxflayerswidgetwrapper.h
   processing/qgsprocessingenummodelerwidget.h
   processing/qgsprocessingfeaturesourceoptionswidget.h
   processing/qgsprocessingfieldmapwidgetwrapper.h
@@ -1317,6 +1319,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/callouts
+  ${CMAKE_SOURCE_DIR}/src/core/dxf
   ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
   ${CMAKE_SOURCE_DIR}/src/core/geocoding
   ${CMAKE_SOURCE_DIR}/src/core/geometry

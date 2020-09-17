@@ -21,6 +21,7 @@
 #include "qgsprocessingvectortilewriterlayerswidgetwrapper.h"
 #include "qgsprocessingfieldmapwidgetwrapper.h"
 #include "qgsprocessingaggregatewidgetwrapper.h"
+#include "qgsprocessingdxflayerswidgetwrapper.h"
 #include "qgsprocessingwidgetwrapperimpl.h"
 #include "qgsprocessingtininputlayerswidget.h"
 #include "qgsprocessingparameters.h"
@@ -73,6 +74,7 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingFieldMapWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingAggregateWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingTinInputLayersWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingDxfLayersWidgetWrapper() );
 }
 
 QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()
