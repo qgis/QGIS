@@ -33,6 +33,11 @@ class QgsLineString;
 class CORE_EXPORT QgsPolygon: public QgsCurvePolygon
 {
   public:
+
+
+    /**
+     * Constructor for an empty polygon geometry.
+     */
     QgsPolygon() SIP_HOLDGIL;
 
     /**

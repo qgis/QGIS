@@ -43,6 +43,10 @@ class QgsLineSegment2D;
 class CORE_EXPORT QgsLineString: public QgsCurve
 {
   public:
+
+    /**
+     * Constructor for an empty linestring geometry.
+     */
     QgsLineString() SIP_HOLDGIL;
 
     /**

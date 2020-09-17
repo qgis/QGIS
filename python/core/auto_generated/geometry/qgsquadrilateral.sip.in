@@ -24,7 +24,11 @@ This class allows the creation of simple quadrilateral (which does not self-inte
 #include "qgsquadrilateral.h"
 %End
   public:
+
     QgsQuadrilateral() /HoldGIL/;
+%Docstring
+Constructor for an empty quadrilateral geometry.
+%End
 
     QgsQuadrilateral( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 ) /HoldGIL/;
 %Docstring

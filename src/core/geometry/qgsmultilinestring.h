@@ -31,6 +31,10 @@ class QgsLineString;
 class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
 {
   public:
+
+    /**
+     * Constructor for an empty multilinestring geometry.
+     */
     QgsMultiLineString() SIP_HOLDGIL;
 
 

@@ -1048,17 +1048,24 @@ class CORE_EXPORT QgsAbstractGeometry
  */
 struct CORE_EXPORT QgsVertexId
 {
+
+  /**
+   * Type of vertex
+   */
   enum VertexType
   {
-    SegmentVertex = 1, //start / endpoint of a segment
-    CurveVertex
+    SegmentVertex = 1, //!< The actual start or end point of a segment
+    CurveVertex, //!< An intermediate point on a segment defining the curvature of the segment
   };
 
-  explicit QgsVertexId( int _part = -1, int _ring = -1, int _vertex = -1, VertexType _type = SegmentVertex )
-    : part( _part )
-    , ring( _ring )
-    , vertex( _vertex )
-    , type( _type )
+  /**
+   * Constructor for QgsVertexId.
+   */
+  explicit QgsVertexId( int _part = -1, int _ring = -1, int _vertex = -1, VertexType _type = SegmentVertex ) SIP_HOLDGIL
+: part( _part )
+  , ring( _ring )
+  , vertex( _vertex )
+  , type( _type )
   {}
 
   /**
@@ -1074,18 +1081,36 @@ struct CORE_EXPORT QgsVertexId
   {
     return part != other.part || ring != other.ring || vertex != other.vertex;
   }
+
+  /**
+   * Returns TRUE if this vertex ID belongs to the same part as another vertex ID.
+   */
   bool partEqual( QgsVertexId o ) const SIP_HOLDGIL
   {
     return part >= 0 && o.part == part;
   }
+
+  /**
+   * Returns TRUE if this vertex ID belongs to the same ring as another vertex ID (i.e. the part
+   * and ring number are equal).
+   */
   bool ringEqual( QgsVertexId o ) const SIP_HOLDGIL
   {
     return partEqual( o ) && ( ring >= 0 && o.ring == ring );
   }
+
+  /**
+   * Returns TRUE if this vertex ID corresponds to the same vertex as another vertex ID (i.e. the part,
+   * ring number and vertex number are equal).
+   */
   bool vertexEqual( QgsVertexId o ) const SIP_HOLDGIL
   {
     return ringEqual( o ) && ( vertex >= 0 && o.ring == ring );
   }
+
+  /**
+   * Returns TRUE if this vertex ID is valid for the specified \a geom.
+   */
   bool isValid( const QgsAbstractGeometry *geom ) const SIP_HOLDGIL
   {
     return ( part >= 0 && part < geom->partCount() ) &&
@@ -1093,9 +1118,16 @@ struct CORE_EXPORT QgsVertexId
            ( vertex < 0 || vertex < geom->vertexCount( part, ring ) );
   }
 
+  //! Part number
   int part;
+
+  //! Ring number
   int ring;
+
+  //! Vertex number
   int vertex;
+
+  //! Vertex type
   VertexType type;
 
 #ifdef SIP_RUN

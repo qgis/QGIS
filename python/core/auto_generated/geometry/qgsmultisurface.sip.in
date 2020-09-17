@@ -22,8 +22,11 @@ Multi surface geometry collection.
 #include "qgsmultisurface.h"
 %End
   public:
-    QgsMultiSurface() /HoldGIL/;
 
+    QgsMultiSurface() /HoldGIL/;
+%Docstring
+Constructor for an empty multisurface geometry.
+%End
 
 
     SIP_PYOBJECT surfaceN( int index ) /TypeHint="QgsSurface"/;

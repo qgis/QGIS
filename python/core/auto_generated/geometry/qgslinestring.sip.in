@@ -25,7 +25,11 @@ Line string geometry type, with support for z-dimension and m-values.
 #include "qgslinestring.h"
 %End
   public:
+
     QgsLineString() /HoldGIL/;
+%Docstring
+Constructor for an empty linestring geometry.
+%End
 
     QgsLineString( const QVector<QgsPoint> &points ) /HoldGIL/;
 %Docstring
