@@ -458,9 +458,9 @@ sub fix_annotations {
     $line =~ s/SIP_THROW\(\s*(\w+)\s*\)/throw\( $1 \)/;
 
     # combine multiple annotations
-    # https://regex101.com/r/uvCt4M/4
+    # https://regex101.com/r/uvCt4M/5
     do {no warnings 'uninitialized';
-        $line =~ s/\/([\w,]+(=\w+)?)\/\s*\/([\w,]+(=\w+)?)\//\/$1,$3\//;
+        $line =~ s/\/([\w,]+(=\"?\w+\"?)?)\/\s*\/([\w,]+(=\"?\w+\"?)?)\//\/$1,$3\//;
         (! $3) or dbg_info("combine multiple annotations -- works only for 2");
     };
 
