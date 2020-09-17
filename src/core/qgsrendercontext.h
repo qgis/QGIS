@@ -983,6 +983,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 
     QPointF mTextureOrigin;
 
+    //!Sub painter for separated layer rendering
     QMap<const QgsSymbolLayer*, QPainter* > mSubPainterMap;
 
 #ifdef QGISDEBUG

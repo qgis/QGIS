@@ -96,6 +96,7 @@ struct LayerRenderJob
 
   QPainterPath maskPainterPath;
 
+  //! qpicture for first pass vector rendering
   QPicture *imgPic;
 
   /**
@@ -112,9 +113,15 @@ struct LayerRenderJob
    */
   QList<QPair<LayerRenderJob *, int>> maskJobs;
 
-  QList<QPair<const QgsSymbolLayer*, QPicture*>> symbolLayerPic;
+  /**
+   * Symbol layer list and associated qpicture
+   * This list is used for composition of the rendering second pass in the case of
+   * separated sybol layer rendering
+   */
+  QList<QPair<const QgsSymbolLayer *, QPicture *>> symbolLayerPic;
 
-  QSet<const QgsSymbolLayer*> isSymbolLayerMasked;
+  //! List masked symbol layer, used in the composition of second pass rendering
+  QSet<const QgsSymbolLayer *> isSymbolLayerMasked;
 };
 
 typedef QList<LayerRenderJob> LayerRenderJobs;
@@ -386,7 +393,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      * \note not available in Python bindings
      * \since QGIS 3.12
      */
-    static void composeSecondPass( LayerRenderJobs &secondPassJobs, LabelRenderJob &labelJob, bool forceVector ) SIP_SKIP;
+    static void composeSecondPass( LayerRenderJobs &secondPassJobs, LabelRenderJob &labelJob, bool forceVector, bool hasClipping, QPainterPath clipPath ) SIP_SKIP;
 
     //! \note not available in Python bindings
     void logRenderingTime( const LayerRenderJobs &jobs, const LayerRenderJobs &secondPassJobs, const LabelRenderJob &labelJob ) SIP_SKIP;
@@ -414,8 +421,6 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     //! \note not available in Python bindings
     static void drawLabeling( QgsRenderContext &renderContext, QgsLabelingEngine *labelingEngine2, QPainter *painter ) SIP_SKIP;
 
-    static void OutputQPicture(QPicture* pic, QString const& path, int width, int height);
-
   private:
 
     /**
@@ -437,6 +442,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     //! Convenient method to allocate a new image and a new QPainter on this image
     QPainter *allocateImageAndPainter( QString layerId, QImage *&image );
 
+    //! Convenient method to allocate a new qpicture and associated qpainter
     QPainter *allocatePictureAndPainter( QPicture *&image );
 };
 
