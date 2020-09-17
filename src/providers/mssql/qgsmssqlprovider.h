@@ -141,6 +141,7 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
     static QString quotedIdentifier( const QString &value );
 
     QString defaultValueClause( int fieldId ) const override;
+    QVariant defaultValue( int fieldId ) const override;
 
     //! Convert time value
     static QVariant convertTimeValue( const QVariant &value );
