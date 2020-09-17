@@ -988,6 +988,14 @@ the dialog to open at a specific page.
 .. versionadded:: 3.0
 %End
 
+    virtual void showProjectPropertiesDialog( const QString &currentPage = QString() ) = 0;
+%Docstring
+Opens the project properties dialog. The ``currentPage`` argument can be used to force
+the dialog to open at a specific page.
+
+.. versionadded:: 3.16
+%End
+
     virtual void buildStyleSheet( const QMap<QString, QVariant> &opts ) = 0;
 %Docstring
 Generate stylesheet
@@ -1176,6 +1184,33 @@ Unregister a previously registered tab in the options dialog.
 .. seealso:: :py:func:`registerOptionsWidgetFactory`
 
 .. versionadded:: 3.0
+%End
+
+    virtual void registerProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
+%Docstring
+Register a new tab in the project properties dialog.
+
+.. note::
+
+   Ownership of the factory is not transferred, and the factory must
+   be unregistered when plugin is unloaded.
+
+.. seealso:: :py:class:`QgsOptionsWidgetFactory`
+
+.. seealso:: :py:func:`unregisterProjectPropertiesWidgetFactory`
+
+.. versionadded:: 3.16
+%End
+
+    virtual void unregisterProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
+%Docstring
+Unregister a previously registered tab in the options dialog.
+
+.. seealso:: :py:class:`QgsOptionsWidgetFactory`
+
+.. seealso:: :py:func:`registerProjectPropertiesWidgetFactory`
+
+.. versionadded:: 3.16
 %End
 
     virtual void registerDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) = 0;

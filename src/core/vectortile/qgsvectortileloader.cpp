@@ -165,6 +165,7 @@ QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const
   if ( !isUrl )
   {
     bool res = mbReader.open();
+    Q_UNUSED( res );
     Q_ASSERT( res );
   }
 

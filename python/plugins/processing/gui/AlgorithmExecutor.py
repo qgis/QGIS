@@ -207,7 +207,7 @@ def execute_in_place_run(alg, parameters, context=None, feedback=None, raise_exc
 
                 feedback.setProgress(int((current + 1) * step))
 
-            results, ok = {}, True
+            results, ok = {'__count': current + 1}, True
 
         else:  # Traditional 'run' with delete and add features cycle
 
@@ -246,6 +246,7 @@ def execute_in_place_run(alg, parameters, context=None, feedback=None, raise_exc
                     raise QgsProcessingException(tr("Error adding processed features back into the layer."))
                 new_ids = set([f.id() for f in active_layer.getFeatures(req)])
                 new_feature_ids += list(new_ids - old_ids)
+                results['__count'] = len(new_feature_ids)
 
         active_layer.endEditCommand()
 

@@ -285,7 +285,7 @@ QStringList QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string,
   QgsAttributeList subsetOfAttributes;
   for ( const QgsField &field : fields )
   {
-    if ( !field.configurationFlags().testFlag( QgsField::ConfigurationFlag::Searchable ) )
+    if ( field.configurationFlags().testFlag( QgsField::ConfigurationFlag::NotSearchable ) )
       continue;
 
     if ( !_fieldRestriction.isEmpty() && !field.name().startsWith( _fieldRestriction ) )
@@ -723,7 +723,7 @@ void QgsSettingsLocatorFilter::fetchResults( const QString &string, const QgsLoc
       continue;
     }
 
-    result.score = fuzzyScore( result.displayString, string );;
+    result.score = fuzzyScore( result.displayString, string );
 
     if ( result.score > 0 )
       emit resultFetched( result );

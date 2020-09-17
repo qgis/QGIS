@@ -219,6 +219,7 @@ class TestProcessingGui : public QObject
     void testLayoutItemWrapper();
     void testPointPanel();
     void testPointWrapper();
+    void testGeometryWrapper();
     void testExtentWrapper();
     void testColorWrapper();
     void testCoordinateOperationWrapper();
@@ -4510,6 +4511,7 @@ void TestProcessingGui::testPointPanel()
   panel.reset();
 }
 
+
 void TestProcessingGui::testPointWrapper()
 {
   auto testWrapper = []( QgsProcessingGui::WidgetType type )
@@ -4687,6 +4689,125 @@ void TestProcessingGui::testPointWrapper()
   QCOMPARE( static_cast< QgsProcessingParameterPoint * >( def.get() )->defaultValue().toString(), QStringLiteral( "4.000000,7.000000" ) );
 
 }
+
+
+void TestProcessingGui::testGeometryWrapper()
+{
+  auto testWrapper = []( QgsProcessingGui::WidgetType type )
+  {
+    // non optional
+    QgsProcessingParameterGeometry param( QStringLiteral( "geometry" ), QStringLiteral( "geometry" ), false );
+
+    QgsProcessingGeometryWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+    QWidget *w = wrapper.createWrappedWidget( context );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingLayoutItemWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( QStringLiteral( "POINT (1 2)" ), context );
+    QCOMPARE( spy.count(), 1 );
+    QCOMPARE( wrapper.widgetValue().toString().toLower(), QStringLiteral( "point (1 2)" ) );
+    QCOMPARE( static_cast< QLineEdit * >( wrapper.wrappedWidget() )->text().toLower(), QStringLiteral( "point (1 2)" ).toLower() );
+    wrapper.setWidgetValue( QString(), context );
+    QCOMPARE( spy.count(), 2 );
+    QVERIFY( wrapper.widgetValue().toString().isEmpty() );
+    QVERIFY( static_cast< QLineEdit * >( wrapper.wrappedWidget() )->text().isEmpty() );
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "geometry" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    // check signal
+    static_cast< QLineEdit * >( wrapper.wrappedWidget() )->setText( QStringLiteral( "b" ) );
+    QCOMPARE( spy.count(), 3 );
+    static_cast< QLineEdit * >( wrapper.wrappedWidget() )->clear();
+    QCOMPARE( spy.count(), 4 );
+
+    delete w;
+
+    // optional
+
+    QgsProcessingParameterGeometry param2( QStringLiteral( "geometry" ), QStringLiteral( "geometry" ), QVariant(), true );
+
+    QgsProcessingGeometryWidgetWrapper wrapper2( &param2, type );
+
+    w = wrapper2.createWrappedWidget( context );
+
+    QSignalSpy spy2( &wrapper2, &QgsProcessingLayoutItemWidgetWrapper::widgetValueHasChanged );
+    wrapper2.setWidgetValue( "POINT (1 2)", context );
+    QCOMPARE( spy2.count(), 1 );
+    QCOMPARE( wrapper2.widgetValue().toString().toLower(), QStringLiteral( "point (1 2)" ) );
+    QCOMPARE( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text().toLower(), QStringLiteral( "point (1 2)" ) );
+
+    wrapper2.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy2.count(), 2 );
+    QVERIFY( !wrapper2.widgetValue().isValid() );
+    QVERIFY( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text().isEmpty() );
+
+    wrapper2.setWidgetValue( "POINT (1 3)", context );
+    QCOMPARE( spy2.count(), 3 );
+    wrapper2.setWidgetValue( "", context );
+    QCOMPARE( spy2.count(), 4 );
+    QVERIFY( !wrapper2.widgetValue().isValid() );
+    QVERIFY( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text().isEmpty() );
+
+    delete w;
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
+
+
+  // config widget
+  QgsProcessingContext context;
+  QgsProcessingParameterWidgetContext widgetContext;
+  std::unique_ptr< QgsProcessingParameterDefinitionWidget > widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "geometry" ), context, widgetContext );
+  std::unique_ptr< QgsProcessingParameterDefinition > def( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) ); // should default to mandatory
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+
+  // using a parameter definition as initial values
+  QgsProcessingParameterGeometry geometryParam( QStringLiteral( "n" ), QStringLiteral( "test desc" ), QStringLiteral( "POINT (1 2)" ) );
+
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "geometry" ), context, widgetContext, &geometryParam );
+
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+  QCOMPARE( static_cast< QgsProcessingParameterGeometry * >( def.get() )->defaultValue().toString().toLower(), QStringLiteral( "point (1 2)" ) );
+  geometryParam.setFlags( QgsProcessingParameterDefinition::FlagAdvanced | QgsProcessingParameterDefinition::FlagOptional );
+  geometryParam.setDefaultValue( QStringLiteral( "POINT (4 7)" ) );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "geometry" ), context, widgetContext, &geometryParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagOptional );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced );
+  QCOMPARE( static_cast< QgsProcessingParameterGeometry * >( def.get() )->defaultValue().toString().toLower(), QStringLiteral( "point (4 7)" ) );
+
+}
+
+
+
 
 void TestProcessingGui::testExtentWrapper()
 {

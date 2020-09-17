@@ -1551,7 +1551,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Splits features cut by the given curve
      * \param curve curve that splits the layer features
-     * \param preserveCircular whether if circular strings are preserved after splitting
+     * \param[out] topologyTestPoints topological points to be tested against other layers
+     * \param preserveCircular whether circular strings are preserved after splitting
      * \param topologicalEditing TRUE if topological editing is enabled
      * \returns QgsGeometry::OperationResult
      *
@@ -1569,7 +1570,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * changes can be discarded by calling rollBack().
      * \since QGIS 3.16
      */
-    Q_INVOKABLE QgsGeometry::OperationResult splitFeatures( const QgsCurve *curve, bool preserveCircular = false, bool topologicalEditing = false );
+    Q_INVOKABLE QgsGeometry::OperationResult splitFeatures( const QgsCurve *curve, QgsPointSequence &topologyTestPoints SIP_OUT, bool preserveCircular = false, bool topologicalEditing = false );
 
     /**
      * Adds topological points for every vertex of the geometry.
@@ -1612,6 +1613,21 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \since 3.10
      */
     int addTopologicalPoints( const QgsPoint &p );
+
+    /**
+     * Adds a vertex to segments which intersect any of the points \a p but don't
+     * already have a vertex there. If a feature already has a vertex at position \a p,
+     * no additional vertex is inserted. This method is useful for topological
+     * editing.
+     * \param ps point sequence of the vertices
+     * \returns 0 in case of success
+     * \note Calls to addTopologicalPoints() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
+     * \since 3.16
+     */
+    int addTopologicalPoints( const QgsPointSequence &ps );
 
     /**
      * Access to const labeling configuration. May be NULLPTR if labeling is not used.
@@ -1839,23 +1855,27 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * A set of attributes that are not advertised in WMS requests with QGIS server.
+     * \deprecated since QGIS 3.16, use fields().configurationFlags() instead
      */
-    QSet<QString> excludeAttributesWms() const { return mExcludeAttributesWMS; }
+    Q_DECL_DEPRECATED QSet<QString> excludeAttributesWms() const SIP_DEPRECATED { return mExcludeAttributesWMS; }
 
     /**
      * A set of attributes that are not advertised in WMS requests with QGIS server.
+     * \deprecated since QGIS 3.16, use setFieldConfigurationFlag instead
      */
-    void setExcludeAttributesWms( const QSet<QString> &att ) { mExcludeAttributesWMS = att; }
+    Q_DECL_DEPRECATED void setExcludeAttributesWms( const QSet<QString> &att ) SIP_DEPRECATED { mExcludeAttributesWMS = att; }
 
     /**
      * A set of attributes that are not advertised in WFS requests with QGIS server.
+     * \deprecated since QGIS 3.16, use fields().configurationFlags() instead
      */
-    QSet<QString> excludeAttributesWfs() const { return mExcludeAttributesWFS; }
+    Q_DECL_DEPRECATED QSet<QString> excludeAttributesWfs() const SIP_DEPRECATED { return mExcludeAttributesWFS; }
 
     /**
      * A set of attributes that are not advertised in WFS requests with QGIS server.
+     * \deprecated since QGIS 3.16, use setFieldConfigurationFlag instead
      */
-    void setExcludeAttributesWfs( const QSet<QString> &att ) { mExcludeAttributesWFS = att; }
+    Q_DECL_DEPRECATED void setExcludeAttributesWfs( const QSet<QString> &att ) SIP_DEPRECATED { mExcludeAttributesWFS = att; }
 
     /**
      * Deletes an attribute field (but does not commit it).
@@ -2121,6 +2141,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \since QGIS 3.16
      */
     void setFieldConfigurationFlags( int index, QgsField::ConfigurationFlags flags ) SIP_SKIP;
+
+    /**
+     * Sets the given configuration \a flag for the field at given \a index to be \a active or not.
+     * \since QGIS 3.16
+     */
+    void setFieldConfigurationFlag( int index, QgsField::ConfigurationFlag flag, bool active ) SIP_SKIP;
 
     /**
      * Returns the configuration flags of the field at given index
@@ -2952,6 +2978,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool mDataChangedFired = false;
 
     QList<QgsWeakRelation> mWeakRelations;
+
+    bool mSetLegendFromStyle = false;
 };
 
 

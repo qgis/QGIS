@@ -110,7 +110,7 @@ QMap<QString, QString> QgsPhongMaterialSettings::toExportParameters() const
   parameters[ QStringLiteral( "Kd" ) ] = QStringLiteral( "%1 %2 %3" ).arg( mDiffuse.redF() ).arg( mDiffuse.greenF() ).arg( mDiffuse.blueF() );
   parameters[ QStringLiteral( "Ka" ) ] = QStringLiteral( "%1 %2 %3" ).arg( mAmbient.redF() ).arg( mAmbient.greenF() ).arg( mAmbient.blueF() );
   parameters[ QStringLiteral( "Ks" ) ] = QStringLiteral( "%1 %2 %3" ).arg( mSpecular.redF() ).arg( mSpecular.greenF() ).arg( mSpecular.blueF() );
-  parameters[ QStringLiteral( "Ns" ) ] = QStringLiteral( "%1" ).arg( mShininess );
+  parameters[ QStringLiteral( "Ns" ) ] = QString::number( mShininess );
   return parameters;
 }
 

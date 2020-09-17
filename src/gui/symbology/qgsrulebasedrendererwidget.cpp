@@ -479,7 +479,7 @@ void QgsRuleBasedRendererWidget::restoreSectionWidths()
 void QgsRuleBasedRendererWidget::copy()
 {
   QModelIndexList indexlist = viewRules->selectionModel()->selectedRows();
-  QgsDebugMsg( QStringLiteral( "%1" ).arg( indexlist.count() ) );
+  QgsDebugMsgLevel( QString::number( indexlist.count() ), 2 );
 
   if ( indexlist.isEmpty() )
     return;

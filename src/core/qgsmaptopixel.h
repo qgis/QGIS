@@ -169,7 +169,7 @@ class CORE_EXPORT QgsMapToPixel
     void setMapRotation( double degrees, double cx, double cy );
 
     /**
-     * Returns current map rotation in degrees
+     * Returns current map rotation in degrees (clockwise)
      * \since QGIS 2.8
      */
     double mapRotation() const;

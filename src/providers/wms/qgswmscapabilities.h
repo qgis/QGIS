@@ -769,7 +769,7 @@ struct QgsWmsAuthorization
 
     if ( !mReferer.isEmpty() )
     {
-      request.setRawHeader( "Referer", QStringLiteral( "%1" ).arg( mReferer ).toLatin1() );
+      request.setRawHeader( "Referer", mReferer.toLatin1() );
     }
     return true;
   }

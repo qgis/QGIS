@@ -578,6 +578,9 @@ void QgsVectorLayerProperties::syncToLayer()
   // set initial state for variable editor
   updateVariableEditor();
 
+  if ( diagramPropertiesDialog )
+    diagramPropertiesDialog->syncToLayer();
+
   // sync all plugin dialogs
   const auto constMLayerPropertiesPages = mLayerPropertiesPages;
   for ( QgsMapLayerConfigWidget *page : constMLayerPropertiesPages )
@@ -589,7 +592,9 @@ void QgsVectorLayerProperties::syncToLayer()
 
   mTemporalWidget->syncToLayer();
 
-} // syncToLayer()
+  mLegendWidget->setLayer( mLayer );
+
+}
 
 void QgsVectorLayerProperties::apply()
 {
@@ -1538,7 +1543,7 @@ void QgsVectorLayerProperties::addJoinToTreeWidget( const QgsVectorLayerJoinInfo
   childFields->setText( 0, QStringLiteral( "Joined fields" ) );
   const QStringList *list = join.joinFieldNamesSubset();
   if ( list )
-    childFields->setText( 1, QStringLiteral( "%1" ).arg( list->count() ) );
+    childFields->setText( 1, QString::number( list->count() ) );
   else
     childFields->setText( 1, tr( "all" ) );
   joinItem->addChild( childFields );

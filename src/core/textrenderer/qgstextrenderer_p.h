@@ -28,6 +28,8 @@
 #include "qgsapplication.h"
 #include "qgspainteffect.h"
 #include "qgssymbollayerreference.h"
+#include "qgsstringutils.h"
+
 #include <QSharedData>
 #include <QPainter>
 
@@ -271,6 +273,7 @@ class QgsTextSettingsPrivate : public QSharedData
       , orientation( other.orientation )
       , previewBackgroundColor( other.previewBackgroundColor )
       , allowHtmlFormatting( other.allowHtmlFormatting )
+      , capitalization( other.capitalization )
       , mDataDefinedProperties( other.mDataDefinedProperties )
     {
     }
@@ -287,8 +290,8 @@ class QgsTextSettingsPrivate : public QSharedData
     double multilineHeight = 1.0 ; //0.0 to 10.0, leading between lines as multiplyer of line height
     QgsTextFormat::TextOrientation orientation = QgsTextFormat::HorizontalOrientation;
     QColor previewBackgroundColor = Qt::white;
-
     bool allowHtmlFormatting = false;
+    QgsStringUtils::Capitalization capitalization = QgsStringUtils::MixedCase;
 
     //! Property collection for data defined settings
     QgsPropertyCollection mDataDefinedProperties;

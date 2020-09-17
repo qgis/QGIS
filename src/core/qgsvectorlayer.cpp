@@ -274,8 +274,6 @@ QgsVectorLayer *QgsVectorLayer::clone() const
   layer->setMapTipTemplate( mapTipTemplate() );
   layer->setReadOnly( isReadOnly() );
   layer->selectByIds( selectedFeatureIds() );
-  layer->setExcludeAttributesWms( excludeAttributesWms() );
-  layer->setExcludeAttributesWfs( excludeAttributesWfs() );
   layer->setAttributeTableConfig( attributeTableConfig() );
   layer->setFeatureBlendMode( featureBlendMode() );
   layer->setOpacity( opacity() );
@@ -1372,16 +1370,18 @@ QgsGeometry::OperationResult QgsVectorLayer::splitFeatures( const QVector<QgsPoi
 QgsGeometry::OperationResult QgsVectorLayer::splitFeatures( const QgsPointSequence &splitLine, bool topologicalEditing )
 {
   QgsLineString splitLineString( splitLine );
-  return splitFeatures( &splitLineString, topologicalEditing );
+  QgsPointSequence topologyTestPoints;
+  bool preserveCircular = false;
+  return splitFeatures( &splitLineString, topologyTestPoints, preserveCircular, topologicalEditing );
 }
 
-QgsGeometry::OperationResult QgsVectorLayer::splitFeatures( const QgsCurve *curve, bool preserveCircular, bool topologicalEditing )
+QgsGeometry::OperationResult QgsVectorLayer::splitFeatures( const QgsCurve *curve, QgsPointSequence &topologyTestPoints, bool preserveCircular, bool topologicalEditing )
 {
   if ( !isValid() || !mEditBuffer || !mDataProvider )
     return QgsGeometry::OperationResult::LayerNotEditable;
 
   QgsVectorLayerEditUtils utils( this );
-  return utils.splitFeatures( curve, preserveCircular, topologicalEditing );
+  return utils.splitFeatures( curve, topologyTestPoints, preserveCircular, topologicalEditing );
 }
 
 int QgsVectorLayer::addTopologicalPoints( const QgsGeometry &geom )
@@ -1405,6 +1405,15 @@ int QgsVectorLayer::addTopologicalPoints( const QgsPoint &p )
 
   QgsVectorLayerEditUtils utils( this );
   return utils.addTopologicalPoints( p );
+}
+
+int QgsVectorLayer::addTopologicalPoints( const QgsPointSequence &ps )
+{
+  if ( !mValid || !mEditBuffer || !mDataProvider )
+    return -1;
+
+  QgsVectorLayerEditUtils utils( this );
+  return utils.addTopologicalPoints( ps );
 }
 
 void QgsVectorLayer::setLabeling( QgsAbstractVectorLayerLabeling *labeling )
@@ -1568,6 +1577,9 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
 
   updateFields();
 
+  // If style doesn't include a legend, we'll need to make a default one later...
+  mSetLegendFromStyle = false;
+
   QString errorMsg;
   if ( !readSymbology( layer_node, errorMsg, context ) )
   {
@@ -1586,11 +1598,8 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
   }
   setDependencies( sources );
 
-  QgsMapLayerLegend *legend = QgsMapLayerLegend::defaultVectorLegend( this );
-  QDomElement legendElem = layer_node.firstChildElement( QStringLiteral( "legend" ) );
-  if ( !legendElem.isNull() )
-    legend->readXml( legendElem, context );
-  setLegend( legend );
+  if ( !mSetLegendFromStyle )
+    setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
 
   // read extent
   if ( mReadExtentFromXml )
@@ -1667,6 +1676,10 @@ void QgsVectorLayer::setDataSource( const QString &dataSource, const QString &ba
       }
     }
 
+    // need to check whether the default style included a legend, and if not, we need to make a default legend
+    // later...
+    mSetLegendFromStyle = false;
+
     // else check if there is a default style / propertysheet defined
     // for this layer and if so apply it
     if ( !defaultLoadedFlag && loadDefaultStyleFlag )
@@ -1681,7 +1694,8 @@ void QgsVectorLayer::setDataSource( const QString &dataSource, const QString &ba
       setRenderer( QgsFeatureRenderer::defaultRenderer( geometryType() ) );
     }
 
-    setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
+    if ( !mSetLegendFromStyle )
+      setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
 
     if ( mDataProvider->capabilities() & QgsVectorDataProvider::CreateLabeling )
     {
@@ -1894,14 +1908,6 @@ bool QgsVectorLayer::writeXml( QDomNode &layer_node,
     dataDependenciesElement.appendChild( depElem );
   }
   layer_node.appendChild( dataDependenciesElement );
-
-  // legend
-  if ( legend() )
-  {
-    QDomElement legendElement = legend()->writeXml( document, context );
-    if ( !legendElement.isNull() )
-      layer_node.appendChild( legendElement );
-  }
 
   // save expression fields
   mExpressionFieldBuffer->writeXml( layer_node, document );
@@ -2306,29 +2312,6 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
 
     updateFields();
 
-    //Attributes excluded from WMS and WFS
-    mExcludeAttributesWMS.clear();
-    QDomNode excludeWMSNode = layerNode.namedItem( QStringLiteral( "excludeAttributesWMS" ) );
-    if ( !excludeWMSNode.isNull() )
-    {
-      QDomNodeList attributeNodeList = excludeWMSNode.toElement().elementsByTagName( QStringLiteral( "attribute" ) );
-      for ( int i = 0; i < attributeNodeList.size(); ++i )
-      {
-        mExcludeAttributesWMS.insert( attributeNodeList.at( i ).toElement().text() );
-      }
-    }
-
-    mExcludeAttributesWFS.clear();
-    QDomNode excludeWFSNode = layerNode.namedItem( QStringLiteral( "excludeAttributesWFS" ) );
-    if ( !excludeWFSNode.isNull() )
-    {
-      QDomNodeList attributeNodeList = excludeWFSNode.toElement().elementsByTagName( QStringLiteral( "attribute" ) );
-      for ( int i = 0; i < attributeNodeList.size(); ++i )
-      {
-        mExcludeAttributesWFS.insert( attributeNodeList.at( i ).toElement().text() );
-      }
-    }
-
     // Load editor widget configuration
     QDomElement widgetsElem = layerNode.namedItem( QStringLiteral( "fieldConfiguration" ) ).toElement();
     QDomNodeList fieldConfigurationElementList = widgetsElem.elementsByTagName( QStringLiteral( "field" ) );
@@ -2338,7 +2321,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
       const QDomElement fieldWidgetElement = fieldConfigElement.elementsByTagName( QStringLiteral( "editWidget" ) ).at( 0 ).toElement();
 
       QString fieldName = fieldConfigElement.attribute( QStringLiteral( "name" ) );
-      mFieldConfigurationFlags[fieldName] = qgsFlagKeysToValue( fieldConfigElement.attribute( QStringLiteral( "configurationFlags" ) ), QgsField::ConfigurationFlag::DefaultFlags );
+      mFieldConfigurationFlags[fieldName] = qgsFlagKeysToValue( fieldConfigElement.attribute( QStringLiteral( "configurationFlags" ) ), QgsField::ConfigurationFlag::None );
 
       const QString widgetType = fieldWidgetElement.attribute( QStringLiteral( "type" ) );
       const QDomElement cfgElem = fieldConfigElement.elementsByTagName( QStringLiteral( "config" ) ).at( 0 ).toElement();
@@ -2350,6 +2333,28 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
       }
       QgsEditorWidgetSetup setup = QgsEditorWidgetSetup( widgetType, optionsMap );
       mFieldWidgetSetups[fieldName] = setup;
+    }
+
+    // Legacy reading for QGIS 3.14 and older projects
+    // Attributes excluded from WMS and WFS
+    const QList<QPair<QString, QgsField::ConfigurationFlag>> legacyConfig
+    {
+      qMakePair( QStringLiteral( "excludeAttributesWMS" ), QgsField::ConfigurationFlag::HideFromWms ),
+      qMakePair( QStringLiteral( "excludeAttributesWFS" ), QgsField::ConfigurationFlag::HideFromWfs )
+    };
+    for ( const auto &config : legacyConfig )
+    {
+      QDomNode excludeNode = layerNode.namedItem( config.first );
+      if ( !excludeNode.isNull() )
+      {
+        QDomNodeList attributeNodeList = excludeNode.toElement().elementsByTagName( QStringLiteral( "attribute" ) );
+        for ( int i = 0; i < attributeNodeList.size(); ++i )
+        {
+          QString fieldName = attributeNodeList.at( i ).toElement().text();
+          int index = mFields.indexFromName( fieldName );
+          setFieldConfigurationFlag( index, config.second, true );
+        }
+      }
     }
   }
 
@@ -2375,6 +2380,18 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
     mReadOnly = true;
 
   updateFields();
+
+  if ( categories.testFlag( Legend ) )
+  {
+    const QDomElement legendElem = layerNode.firstChildElement( QStringLiteral( "legend" ) );
+    if ( !legendElem.isNull() )
+    {
+      std::unique_ptr< QgsMapLayerLegend > legend( QgsMapLayerLegend::defaultVectorLegend( this ) );
+      legend->readXml( legendElem, context );
+      setLegend( legend.release() );
+      mSetLegendFromStyle = true;
+    }
+  }
 
   return true;
 }
@@ -2593,6 +2610,12 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
   if ( categories.testFlag( GeometryOptions ) )
     mGeometryOptions->writeXml( node );
 
+  if ( categories.testFlag( Legend ) && legend() )
+  {
+    QDomElement legendElement = legend()->writeXml( doc, context );
+    if ( !legendElement.isNull() )
+      node.appendChild( legendElement );
+  }
 
   // Relation information for both referenced and referencing sides
   if ( categories.testFlag( Relations ) )
@@ -2659,30 +2682,6 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
       aliasElem.appendChild( aliasEntryElem );
     }
     node.appendChild( aliasElem );
-
-    //exclude attributes WMS
-    QDomElement excludeWMSElem = doc.createElement( QStringLiteral( "excludeAttributesWMS" ) );
-    QSet<QString>::const_iterator attWMSIt = mExcludeAttributesWMS.constBegin();
-    for ( ; attWMSIt != mExcludeAttributesWMS.constEnd(); ++attWMSIt )
-    {
-      QDomElement attrElem = doc.createElement( QStringLiteral( "attribute" ) );
-      QDomText attrText = doc.createTextNode( *attWMSIt );
-      attrElem.appendChild( attrText );
-      excludeWMSElem.appendChild( attrElem );
-    }
-    node.appendChild( excludeWMSElem );
-
-    //exclude attributes WFS
-    QDomElement excludeWFSElem = doc.createElement( QStringLiteral( "excludeAttributesWFS" ) );
-    QSet<QString>::const_iterator attWFSIt = mExcludeAttributesWFS.constBegin();
-    for ( ; attWFSIt != mExcludeAttributesWFS.constEnd(); ++attWFSIt )
-    {
-      QDomElement attrElem = doc.createElement( QStringLiteral( "attribute" ) );
-      QDomText attrText = doc.createTextNode( *attWFSIt );
-      attrElem.appendChild( attrText );
-      excludeWFSElem.appendChild( attrElem );
-    }
-    node.appendChild( excludeWFSElem );
 
     //default expressions
     QDomElement defaultsElem = doc.createElement( QStringLiteral( "defaults" ) );
@@ -5487,17 +5486,24 @@ void QgsVectorLayer::setFieldConfigurationFlags( int index, QgsField::Configurat
   if ( index < 0 || index >= mFields.count() )
     return;
 
-  mFields.at( index ).setConfigurationFlags( flags );
-
   mFieldConfigurationFlags.insert( mFields.at( index ).name(), flags );
   updateFields();
+}
+
+void QgsVectorLayer::setFieldConfigurationFlag( int index, QgsField::ConfigurationFlag flag, bool active )
+{
+  if ( index < 0 || index >= mFields.count() )
+    return;
+  QgsField::ConfigurationFlags flags = mFields.at( index ).configurationFlags();
+  flags.setFlag( flag, active );
+  setFieldConfigurationFlags( index, flags );
 }
 
 QgsField::ConfigurationFlags QgsVectorLayer::fieldConfigurationFlags( int index ) const
 {
 
   if ( index < 0 || index >= mFields.count() )
-    return QgsField::ConfigurationFlag::DefaultFlags;
+    return QgsField::ConfigurationFlag::None;
 
   return mFields.at( index ).configurationFlags();
 }

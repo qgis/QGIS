@@ -101,6 +101,7 @@ RUN  apt-get update \
     qtbase5-private-dev \
     saga \
     spawn-fcgi \
+    supervisor \
     unzip \
     xauth \
     xfonts-100dpi \
@@ -111,7 +112,6 @@ RUN  apt-get update \
     opencl-headers \
     ocl-icd-libopencl1 \
     ocl-icd-opencl-dev \
-    supervisor \
     expect \
   && pip3 install \
     psycopg2 \

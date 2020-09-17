@@ -124,7 +124,7 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
 
   for ( const QgsRelation &relation : relations )
   {
-    DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Relation, QStringLiteral( "%1" ).arg( relation.id() ), QStringLiteral( "%1" ).arg( relation.name() ) );
+    DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Relation, relation.id(), relation.name() );
     itemData.setShowLabel( true );
     QTreeWidgetItem *item = mAvailableWidgetsTree->addItem( catitem, itemData );
     item->setData( 0, FieldNameRole, relation.id() );

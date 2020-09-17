@@ -77,7 +77,7 @@ bool QgsOapifCollection::deserialize( const json &j )
     mdLink.mimeType = link.type;
     mdLink.description = link.title;
     if ( link.length > 0 )
-      mdLink.size = QStringLiteral( "%1" ).arg( link.length );
+      mdLink.size = QString::number( link.length );
     mLayerMetadata.addLink( mdLink );
   }
 

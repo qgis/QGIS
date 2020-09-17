@@ -122,7 +122,7 @@ class CORE_EXPORT QgsFeatureFilterModel : public QgsFeaturePickerModelBase
 
     bool identifierIsNull( const QVariant &identifier ) const override;
 
-    QVariant nullIentifier() const override;
+    QVariant nullIdentifier() const override;
 
     QStringList mIdentifierFields;
 };

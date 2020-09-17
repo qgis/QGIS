@@ -6742,7 +6742,7 @@ int QgsOgrProviderMetadata::listStyles(
          geometryColumn == QString::fromUtf8( OGR_L_GetGeometryColumn( hUserLayer ) ) )
     {
       // Append first all related styles
-      QString id( QStringLiteral( "%1" ).arg( fid ) );
+      QString id( QString::number( fid ) );
       ids.append( id );
       names.append( styleName );
       descriptions.append( description );
@@ -6771,7 +6771,7 @@ int QgsOgrProviderMetadata::listStyles(
     for ( int j = 0; j < listId.size(); j++ )
     {
       int fid = listId[j];
-      QString id( QStringLiteral( "%1" ).arg( fid ) );
+      QString id( QString::number( fid ) );
       ids.append( id );
       names.append( mapIdToStyleName[fid] );
       descriptions.append( mapIdToDescription[fid] );

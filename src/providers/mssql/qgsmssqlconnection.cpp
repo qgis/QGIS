@@ -363,7 +363,6 @@ bool QgsMssqlConnection::isSystemSchema( const QString &schema )
 
 QgsDataSourceUri QgsMssqlConnection::connUri( const QString &connName )
 {
-
   QgsSettings settings;
 
   const QString key = "/MSSQL/connections/" + connName;

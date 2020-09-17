@@ -299,7 +299,7 @@ class CORE_EXPORT QgsFeaturePickerModelBase : public QAbstractItemModel SIP_ABST
     virtual bool compareEntries( const QgsFeatureExpressionValuesGatherer::Entry &a, const QgsFeatureExpressionValuesGatherer::Entry &b ) const = 0;
 
     //! Returns a null identifier
-    virtual QVariant nullIentifier() const = 0;
+    virtual QVariant nullIdentifier() const = 0;
 
     /**
      * Returns TRUE if the entry is null

@@ -160,6 +160,9 @@ class QgsOapifSharedData final: public QObject, public QgsBackgroundCachedShared
     //! Page size. 0 = disabled
     int mPageSize = 0;
 
+    //! Extra query parameters from the URI, to append to other requests
+    QString mExtraQueryParameters;
+
     //! Url to /collections/{collectionId}
     QString mCollectionUrl;
 
@@ -171,6 +174,9 @@ class QgsOapifSharedData final: public QObject, public QgsBackgroundCachedShared
 
     //! Translation state of filter to server-side filter.
     QgsOapifProvider::FilterTranslationState mFilterTranslationState = QgsOapifProvider::FilterTranslationState::FULLY_CLIENT;
+
+    //! Append extra query parameters if needed
+    QString appendExtraQueryParameters( const QString &url ) const;
 
   private:
 

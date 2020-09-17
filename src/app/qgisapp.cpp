@@ -92,6 +92,7 @@
 #include "qgsprojecttimesettings.h"
 #include "qgsmaplayertemporalproperties.h"
 #include "qgsmeshlayertemporalproperties.h"
+#include "qgsvectorlayersavestyledialog.h"
 
 #include "qgsanalysis.h"
 #include "qgsgeometrycheckregistry.h"
@@ -1839,6 +1840,7 @@ QgisApp::~QgisApp()
   }
 
   // these may have references to map layers which need to be cleaned up
+  mBrowserWidget->close(); // close first, to trigger save of state
   delete mBrowserWidget;
   mBrowserWidget = nullptr;
   delete mBrowserWidget2;
@@ -1849,6 +1851,8 @@ QgisApp::~QgisApp()
   mGeometryValidationDock = nullptr;
   delete mSnappingUtils;
   mSnappingUtils = nullptr;
+  delete mUserInputDockWidget;
+  mUserInputDockWidget = nullptr;
 
   QgsGui::instance()->nativePlatformInterface()->cleanup();
 
@@ -2038,6 +2042,24 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
 
   QgsScopedProxyProgressTask task( tr( "Loading layers" ) );
 
+
+  auto showLayerLoadWarnings = [ = ]( const QString & title, const QString & shortMessage, const QString & longMessage, Qgis::MessageLevel level )
+  {
+    QgsMessageBarItem *messageWidget = visibleMessageBar()->createMessage( title, shortMessage );
+    QPushButton *detailsButton = new QPushButton( tr( "Details" ) );
+    connect( detailsButton, &QPushButton::clicked, this, [ = ]
+    {
+      if ( QgsMessageViewer *dialog = dynamic_cast< QgsMessageViewer * >( QgsMessageOutput::createMessageOutput() ) )
+      {
+        dialog->setTitle( title );
+        dialog->setMessage( longMessage, QgsMessageOutput::MessageHtml );
+        dialog->showMessage();
+      }
+    } );
+    messageWidget->layout()->addWidget( detailsButton );
+    return visibleMessageBar()->pushWidget( messageWidget, level, 0 );
+  };
+
   // insert items in reverse order as each one is inserted on top of previous one
   int count = 0;
   for ( int i = lst.size() - 1 ; i >= 0 ; i--, count++ )
@@ -2060,10 +2082,31 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
     }
     else if ( u.layerType == QLatin1String( "vector-tile" ) )
     {
+      QgsTemporaryCursorOverride busyCursor( Qt::WaitCursor );
+
       QgsVectorTileLayer *layer = new QgsVectorTileLayer( uri, u.name );
       bool ok = false;
-      layer->loadDefaultStyle( ok );
       layer->loadDefaultMetadata( ok );
+
+      QString error;
+      QStringList warnings;
+      bool res = layer->loadDefaultStyle( error, warnings );
+      if ( res && !warnings.empty() )
+      {
+        QString message = QStringLiteral( "<p>%1</p>" ).arg( tr( "The following warnings were generated while converting the vector tile style:" ) );
+        message += QStringLiteral( "<ul>" );
+
+        std::sort( warnings.begin(), warnings.end() );
+        warnings.erase( std::unique( warnings.begin(), warnings.end() ), warnings.end() );
+
+        for ( const QString &w : qgis::as_const( warnings ) )
+        {
+          message += QStringLiteral( "<li>%1</li>" ).arg( w.toHtmlEscaped().replace( '\n', QStringLiteral( "<br>" ) ) );
+        }
+        message += QStringLiteral( "</ul>" );
+        showLayerLoadWarnings( tr( "Vector tiles" ), tr( "Style could not be completely converted" ),
+                               message, Qgis::Warning );
+      }
       addMapLayer( layer );
     }
     else if ( u.layerType == QLatin1String( "plugin" ) )
@@ -8792,24 +8835,99 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
     layer = activeLayer();
   }
 
-  QgsSettings settings;
-  QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
-  QString filename = QFileDialog::getSaveFileName( this,
-                     tr( "Save as QGIS Layer Style File" ),
-                     lastUsedDir,
-                     tr( "QGIS Layer Style File" ) + " (*.qml)" );
-  if ( filename.isEmpty() )
+  if ( !layer )
     return;
 
-  if ( ! filename.endsWith( QStringLiteral( ".qml" ) ) )
+  switch ( layer->type() )
   {
-    filename += QStringLiteral( ".qml" );
+
+    case QgsMapLayerType::VectorLayer:
+    {
+      QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer * >( layer );
+      QgsVectorLayerSaveStyleDialog dlg( vlayer, this );
+
+      if ( dlg.exec() )
+      {
+        bool resultFlag = false;
+
+        QgsVectorLayerProperties::StyleType type = dlg.currentStyleType();
+        switch ( type )
+        {
+          case QgsVectorLayerProperties::QML:
+          case QgsVectorLayerProperties::SLD:
+          {
+            QString message;
+            QString filePath = dlg.outputFilePath();
+            if ( type == QgsVectorLayerProperties::QML )
+              message = vlayer->saveNamedStyle( filePath, resultFlag, dlg.styleCategories() );
+            else
+              message = vlayer->saveSldStyle( filePath, resultFlag );
+
+            if ( resultFlag )
+            {
+              mInfoBar->pushMessage( tr( "Style saved" ), tr( "Successfully exported style to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( filePath ).toString(), QDir::toNativeSeparators( filePath ) ), Qgis::Success );
+            }
+            else
+            {
+              mInfoBar->pushMessage( tr( "Save Style" ), message, Qgis::Warning );
+            }
+
+            break;
+          }
+          case QgsVectorLayerProperties::DB:
+          {
+            QString infoWindowTitle = QObject::tr( "Save style to DB (%1)" ).arg( vlayer->providerType() );
+            QString msgError;
+
+            QgsVectorLayerSaveStyleDialog::SaveToDbSettings dbSettings = dlg.saveToDbSettings();
+
+            vlayer->saveStyleToDatabase( dbSettings.name, dbSettings.description, dbSettings.isDefault, dbSettings.uiFileContent, msgError );
+
+            if ( !msgError.isNull() )
+            {
+              mInfoBar->pushMessage( infoWindowTitle, msgError, Qgis::Warning );
+            }
+            else
+            {
+              mInfoBar->pushMessage( infoWindowTitle, tr( "Style saved" ), Qgis::Success );
+            }
+            break;
+          }
+        }
+      }
+      break;
+    }
+
+    case QgsMapLayerType::RasterLayer:
+    case QgsMapLayerType::MeshLayer:
+    {
+      QgsSettings settings;
+      QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
+      QString filename = QFileDialog::getSaveFileName( this,
+                         tr( "Save as QGIS Layer Style File" ),
+                         lastUsedDir,
+                         tr( "QGIS Layer Style File" ) + " (*.qml)" );
+      if ( filename.isEmpty() )
+        return;
+
+      if ( ! filename.endsWith( QStringLiteral( ".qml" ) ) )
+      {
+        filename += QStringLiteral( ".qml" );
+      }
+
+      bool defaultLoadedFlag;
+      layer->saveNamedStyle( filename, defaultLoadedFlag );
+
+      settings.setValue( QStringLiteral( "style/lastStyleDir" ), filename );
+      break;
+    }
+
+    case QgsMapLayerType::VectorTileLayer:
+    case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::PluginLayer:
+      break;
+
   }
-
-  bool defaultLoadedFlag;
-  layer->saveNamedStyle( filename, defaultLoadedFlag );
-
-  settings.setValue( QStringLiteral( "style/lastStyleDir" ), filename );
 }
 
 ///@cond PRIVATE
@@ -9266,11 +9384,15 @@ bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmp
   {
     layoutNames << l->name();
   }
+
+  const QString windowTitle = tr( "Create %1" ).arg( QgsGui::higFlags() & QgsGui::HigDialogTitleIsTitleCase ? QgsStringUtils::capitalize( typeString, QgsStringUtils::TitleCase )
+                              : typeString );
+
   while ( !titleValid )
   {
 
     QgsNewNameDialog dlg( typeString, newTitle, QStringList(), layoutNames, QRegExp(), Qt::CaseSensitive, parent );
-    dlg.setWindowTitle( tr( "Create %1 Title" ).arg( typeString ) );
+    dlg.setWindowTitle( windowTitle );
     dlg.setHintString( titleMsg );
     dlg.setOverwriteEnabled( false );
     dlg.setAllowEmptyName( true );
@@ -10751,7 +10873,7 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
 
   bool res = true;
 
-  QString connString = QgsDataSourceUri( vlayer->source() ).connectionInfo();
+  QString connString = QgsTransaction::connectionString( vlayer->source() );
   QString key = vlayer->providerType();
 
   QMap< QPair< QString, QString>, QgsTransactionGroup *> transactionGroups = QgsProject::instance()->transactionGroups();
@@ -10761,8 +10883,42 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
   bool isModified = false;
 
   // Assume changes if: a) the layer reports modifications or b) its transaction group was modified
-  if ( vlayer->isModified() || ( tg && tg->layers().contains( vlayer ) && tg->modified() ) )
+  QString modifiedLayerNames;
+  bool hasSeveralModifiedLayers = false;
+  if ( tg && tg->layers().contains( vlayer ) && tg->modified() )
+  {
+    isModified = true;
+    std::vector<QString> vectModifiedLayerNames;
+    if ( vlayer->isModified() )
+    {
+      vectModifiedLayerNames.push_back( vlayer->name() );
+    }
+    for ( QgsVectorLayer *iterLayer : tg->layers() )
+    {
+      if ( iterLayer != vlayer && iterLayer->isModified() )
+      {
+        vectModifiedLayerNames.push_back( iterLayer->name() );
+      }
+    }
+    if ( vectModifiedLayerNames.size() == 1 )
+    {
+      modifiedLayerNames = vectModifiedLayerNames[0];
+    }
+    else if ( vectModifiedLayerNames.size() == 2 )
+    {
+      modifiedLayerNames = tr( "%1 and %2" ).arg( vectModifiedLayerNames[0] ).arg( vectModifiedLayerNames[1] );
+    }
+    else if ( vectModifiedLayerNames.size() > 2 )
+    {
+      modifiedLayerNames = tr( "%1, %2, …" ).arg( vectModifiedLayerNames[0] ).arg( vectModifiedLayerNames[1] );
+    }
+    hasSeveralModifiedLayers = vectModifiedLayerNames.size() > 1;
+  }
+  else if ( vlayer->isModified() )
+  {
     isModified  = true;
+    modifiedLayerNames = vlayer->name();
+  }
 
   if ( !vlayer->isEditable() && !vlayer->readOnly() )
   {
@@ -10797,7 +10953,9 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
 
     switch ( QMessageBox::question( nullptr,
                                     tr( "Stop Editing" ),
-                                    tr( "Do you want to save the changes to layer %1?" ).arg( vlayer->name() ),
+                                    hasSeveralModifiedLayers ?
+                                    tr( "Do you want to save the changes to layers %1?" ).arg( modifiedLayerNames ) :
+                                    tr( "Do you want to save the changes to layer %1?" ).arg( modifiedLayerNames ),
                                     buttons ) )
     {
       case QMessageBox::Cancel:
@@ -12021,6 +12179,17 @@ QMap< QString, QString > QgisApp::projectPropertiesPagesMap()
     sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Temporal" ), QStringLiteral( "mTemporalOptions" ) );
   } );
 
+  int idx = sProjectPropertiesPagesMap.count();
+  for ( const QPointer< QgsOptionsWidgetFactory > &f : qgis::as_const( mProjectPropertiesWidgetFactories ) )
+  {
+    // remove any deleted factories
+    if ( f )
+    {
+      sProjectPropertiesPagesMap.insert( f->title(), f->title() );
+    }
+    idx++;
+  }
+
   return sProjectPropertiesPagesMap;
 }
 
@@ -12460,6 +12629,16 @@ void QgisApp::registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory )
 void QgisApp::unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory )
 {
   mOptionsWidgetFactories.removeAll( factory );
+}
+
+void QgisApp::registerProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory )
+{
+  mProjectPropertiesWidgetFactories << factory;
+}
+
+void QgisApp::unregisterProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory )
+{
+  mProjectPropertiesWidgetFactories.removeAll( factory );
 }
 
 void QgisApp::registerDevToolFactory( QgsDevToolWidgetFactory *factory )
@@ -13957,7 +14136,16 @@ void QgisApp::projectProperties( const QString &currentPage )
   // dialog results in the construction of the spatial reference
   // system QMap
   QApplication::setOverrideCursor( Qt::WaitCursor );
-  QgsProjectProperties *pp = new QgsProjectProperties( mMapCanvas, this );
+
+  QList< QgsOptionsWidgetFactory * > factories;
+  const auto constProjectPropertiesWidgetFactories = mProjectPropertiesWidgetFactories;
+  for ( const QPointer< QgsOptionsWidgetFactory > &f : constProjectPropertiesWidgetFactories )
+  {
+    if ( f )
+      factories << f;
+  }
+  QgsProjectProperties *pp = new QgsProjectProperties( mMapCanvas, this, QgsGuiUtils::ModalDialogFlags, factories );
+
   // if called from the status bar, show the projection tab
   if ( mShowProjectionTab )
   {

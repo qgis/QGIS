@@ -568,6 +568,7 @@ class TestQgsProcessing: public QObject
     void parameterMapLayer();
     void parameterExtent();
     void parameterPoint();
+    void parameterGeometry();
     void parameterFile();
     void parameterMatrix();
     void parameterLayerList();
@@ -3378,6 +3379,201 @@ void TestQgsProcessing::parameterPoint()
   QCOMPARE( fromCode->flags(), def->flags() );
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
 }
+
+void TestQgsProcessing::parameterGeometry()
+{
+  QgsProcessingContext context;
+
+  // not optional!
+  std::unique_ptr< QgsProcessingParameterGeometry > def( new QgsProcessingParameterGeometry( "non_optional", QString(), QString( "Point(1 2)" ), false ) );
+  QVERIFY( !def->checkValueIsAcceptable( false ) );
+  QVERIFY( !def->checkValueIsAcceptable( true ) );
+  QVERIFY( !def->checkValueIsAcceptable( 5 ) );
+  QVERIFY( !def->checkValueIsAcceptable( "Nonsense string" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+  QVERIFY( !def->checkValueIsAcceptable( QString( "LineString(10 10, 20 a)" ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QString( "LineString(10 10, 20 20)" ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsGeometry::fromPointXY( QgsPointXY( 1, 2 ) ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsGeometry::fromWkt( QStringLiteral( "LineString(10 10, 20 20)" ) ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsPointXY( 1, 2 ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsReferencedPointXY( QgsPointXY( 1, 2 ), QgsCoordinateReferenceSystem( "EPSG:4326" ) ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsRectangle( 10, 10, 20, 20 ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsReferencedRectangle( QgsRectangle( 10, 10, 20, 20 ), QgsCoordinateReferenceSystem( "EPSG:4326" ) ) ) );
+
+  // string representing a geometry
+  QVariantMap params;
+  params.insert( "non_optional", QString( "LineString(10 10, 20 20)" ) );
+  QVERIFY( def->checkValueIsAcceptable( "LineString(10 10, 20 20)" ) );
+  QgsGeometry geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context );
+  QCOMPARE( geometry.asWkt(), QStringLiteral( "LineString (10 10, 20 20)" ) );
+
+  // with target CRS - should make no difference, because source CRS is unknown
+  geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:3785" ) );
+  QCOMPARE( geometry.asWkt(), QStringLiteral( "LineString (10 10, 20 20)" ) );
+
+  // with CRS as string
+  params.insert( "non_optional", QString( "CRS=EPSG:4326;Point ( 1.1 2.2 )" ) );
+  geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context );
+  QPointF point = geometry.asQPointF();
+  QGSCOMPARENEAR( point.x(), 1.1, 0.001 );
+  QGSCOMPARENEAR( point.y(), 2.2, 0.001 );
+  QCOMPARE( QgsProcessingParameters::parameterAsGeometryCrs( def.get(), params, context ).authid(), QStringLiteral( "EPSG:4326" ) );
+  geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:3785" ) );
+  point = geometry.asQPointF();
+  QGSCOMPARENEAR( point.x(), 122451, 100 );
+  QGSCOMPARENEAR( point.y(), 244963, 100 );
+
+  // QgsReferencedGeometry
+  params.insert( "non_optional", QgsReferencedGeometry( QgsGeometry::fromPointXY( QgsPointXY( 1.1, 2.2 ) ), QgsCoordinateReferenceSystem( "EPSG:4326" ) ) );
+  geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context );
+  point = geometry.asQPointF();
+  QGSCOMPARENEAR( point.x(), 1.1, 0.001 );
+  QGSCOMPARENEAR( point.y(), 2.2, 0.001 );
+  QCOMPARE( QgsProcessingParameters::parameterAsGeometryCrs( def.get(), params, context ).authid(), QStringLiteral( "EPSG:4326" ) );
+  geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:3785" ) );
+  point = geometry.asQPointF();
+  QGSCOMPARENEAR( point.x(), 122451, 100 );
+  QGSCOMPARENEAR( point.y(), 244963, 100 );
+
+  // QgsPointXY
+  params.insert( "non_optional", QgsPointXY( 11.1, 12.2 ) );
+  geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context );
+  point = geometry.asQPointF();
+  QGSCOMPARENEAR( point.x(), 11.1, 0.001 );
+  QGSCOMPARENEAR( point.y(), 12.2, 0.001 );
+
+  // with target CRS - should make no difference, because source CRS is unknown
+  geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:3785" ) );
+  point = geometry.asQPointF();
+  QGSCOMPARENEAR( point.x(), 11.1, 0.001 );
+  QGSCOMPARENEAR( point.y(), 12.2, 0.001 );
+
+  // QgsReferencedPointXY
+  params.insert( "non_optional", QgsReferencedPointXY( QgsPointXY( 1.1, 2.2 ), QgsCoordinateReferenceSystem( "EPSG:4326" ) ) );
+  geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context );
+  point = geometry.asQPointF();
+  QGSCOMPARENEAR( point.x(), 1.1, 0.001 );
+  QGSCOMPARENEAR( point.y(), 2.2, 0.001 );
+  QCOMPARE( QgsProcessingParameters::parameterAsGeometryCrs( def.get(), params, context ).authid(), QStringLiteral( "EPSG:4326" ) );
+
+  // with target CRS
+  params.insert( "non_optional", QgsReferencedPointXY( QgsPointXY( 1.1, 2.2 ), QgsCoordinateReferenceSystem( "EPSG:4326" ) ) );
+  geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:3785" ) );
+  point = geometry.asQPointF();
+  QGSCOMPARENEAR( point.x(), 122451, 100 );
+  QGSCOMPARENEAR( point.y(), 244963, 100 );
+
+  // QgsRectangle
+  params.insert( "non_optional", QgsRectangle( 11.1, 12.2, 13.3, 14.4 ) );
+  geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context );
+  QCOMPARE( geometry.asWkt( 1 ), QStringLiteral( "Polygon ((11.1 12.2, 13.3 12.2, 13.3 14.4, 11.1 14.4, 11.1 12.2))" ) );
+
+  // with target CRS - should make no difference, because source CRS is unknown
+  geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:3785" ) );
+  QCOMPARE( geometry.asWkt( 1 ), QStringLiteral( "Polygon ((11.1 12.2, 13.3 12.2, 13.3 14.4, 11.1 14.4, 11.1 12.2))" ) );
+
+  // QgsReferenced Rectangle
+  params.insert( "non_optional", QgsReferencedRectangle( QgsRectangle( 11.1, 12.2, 13.3, 14.4 ), QgsCoordinateReferenceSystem( "EPSG:4326" ) ) );
+  geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context );
+  QCOMPARE( geometry.asWkt( 1 ), QStringLiteral( "Polygon ((11.1 12.2, 13.3 12.2, 13.3 14.4, 11.1 14.4, 11.1 12.2))" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsGeometryCrs( def.get(), params, context ).authid(), QStringLiteral( "EPSG:4326" ) );
+
+  // with target CRS
+  geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:3785" ) );
+  QCOMPARE( geometry.constGet()->vertexCount(), 85 );
+  QgsRectangle ext = geometry.boundingBox();
+  QGSCOMPARENEAR( ext.xMinimum(), 1235646, 100 );
+  QGSCOMPARENEAR( ext.xMaximum(), 1480549, 100 );
+  QGSCOMPARENEAR( ext.yMinimum(), 1368478, 100 );
+  QGSCOMPARENEAR( ext.yMaximum(), 1620147, 100 );
+
+  // nonsense string
+  params.insert( "non_optional", QString( "i'm not a geometry, and nothing you can do will make me one" ) );
+  geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context );
+  QVERIFY( geometry.isNull() );
+
+  QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
+  QCOMPARE( def->valueAsPythonString( "LineString( 10 10, 20 20)", context ), QStringLiteral( "'LineString( 10 10, 20 20)'" ) );
+  QCOMPARE( def->valueAsPythonString( QgsGeometry::fromWkt( QStringLiteral( "LineString( 10 10, 20 20)" ) ), context ), QStringLiteral( "'LineString (10 10, 20 20)'" ) );
+
+  // With Srid as string
+  QCOMPARE( def->valueAsPythonString( QgsReferencedGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString( 10 10, 20 20)" ) ),
+                                      QgsCoordinateReferenceSystem( "EPSG:4326" ) ), context ),
+            QStringLiteral( "'CRS=EPSG:4326;LineString (10 10, 20 20)'" ) );
+
+  QString pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterGeometry('non_optional', '', defaultValue='Point(1 2)')" ) );
+
+  QString code = def->asScriptCode();
+  QCOMPARE( code, QStringLiteral( "##non_optional=geometry Point(1 2)" ) );
+  std::unique_ptr< QgsProcessingParameterGeometry > fromCode( dynamic_cast< QgsProcessingParameterGeometry * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+
+  QVariantMap map = def->toVariantMap();
+  QgsProcessingParameterGeometry fromMap( "x" );
+  QVERIFY( fromMap.fromVariantMap( map ) );
+  QCOMPARE( fromMap.name(), def->name() );
+  QCOMPARE( fromMap.description(), def->description() );
+  QCOMPARE( fromMap.flags(), def->flags() );
+  QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
+  def.reset( dynamic_cast< QgsProcessingParameterGeometry *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
+  QVERIFY( dynamic_cast< QgsProcessingParameterGeometry *>( def.get() ) );
+
+  // optional
+  def.reset( new QgsProcessingParameterGeometry( "optional", QString(), QString( "Point(-1 3)" ), true ) );
+  QVERIFY( def->checkValueIsAcceptable( "LineString(10 10, 20 20)" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "Point(-1 a)" ) );
+  QVERIFY( def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
+
+  params.insert( "optional",  QVariant() );
+  geometry = QgsProcessingParameters::parameterAsGeometry( def.get(), params, context );
+  QCOMPARE( geometry.asWkt(), QStringLiteral( "Point (-1 3)" ) );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterGeometry('optional', '', optional=True, defaultValue='Point(-1 3)')" ) );
+
+  code = def->asScriptCode();
+  QCOMPARE( code, QStringLiteral( "##optional=optional geometry Point(-1 3)" ) );
+  fromCode.reset( dynamic_cast< QgsProcessingParameterGeometry * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+
+  // non optional with filter
+  def.reset( new QgsProcessingParameterGeometry( "filtered", QString(), QString( "Point(-1 3)" ), false,
+  { QgsWkbTypes::LineGeometry } ) );
+  QVERIFY( def->geometryTypes().contains( QgsWkbTypes::LineGeometry ) );
+  QVERIFY( def->checkValueIsAcceptable( "LineString(10 10, 20 20)" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "Point(1 2)" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterGeometry('filtered', '', geometryTypes=[ QgsWkbTypes.LineGeometry ], defaultValue='Point(-1 3)')" ) );
+
+  QVariantMap map2 = def->toVariantMap();
+  QgsProcessingParameterGeometry fromMap2( "x" );
+  QVERIFY( fromMap2.fromVariantMap( map2 ) );
+  QCOMPARE( fromMap2.name(), def->name() );
+  QCOMPARE( fromMap2.description(), def->description() );
+  QCOMPARE( fromMap2.flags(), def->flags() );
+  QCOMPARE( fromMap2.defaultValue(), def->defaultValue() );
+  QCOMPARE( fromMap2.geometryTypes(), def->geometryTypes() );
+  def.reset( dynamic_cast< QgsProcessingParameterGeometry *>( QgsProcessingParameters::parameterFromVariantMap( map2 ) ) );
+  QVERIFY( dynamic_cast< QgsProcessingParameterGeometry *>( def.get() ) );
+
+
+}
+
+
 
 void TestQgsProcessing::parameterFile()
 {

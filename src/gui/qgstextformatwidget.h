@@ -272,7 +272,6 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     void onSubstitutionsChanged( const QgsStringReplacementCollection &substitutions );
     void previewScaleChanged( double scale );
     void mFontSizeSpinBox_valueChanged( double d );
-    void mFontCapitalsComboBox_currentIndexChanged( int index );
     void mFontFamilyCmbBx_currentFontChanged( const QFont &f );
     void mFontStyleComboBox_currentIndexChanged( const QString &text );
     void mFontUnderlineBtn_toggled( bool ckd );

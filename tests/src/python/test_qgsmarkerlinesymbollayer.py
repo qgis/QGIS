@@ -340,6 +340,58 @@ class TestQgsMarkerLineSymbolLayer(unittest.TestCase):
         rendered_image = self.renderGeometry(s, g)
         assert self.imageCheck('markerline_segmentcenter', 'markerline_segmentcenter', rendered_image)
 
+    def testMarkerAngleDD(self):
+        """Test issue https://github.com/qgis/QGIS/issues/38716"""
+
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        marker_line = QgsMarkerLineSymbolLayer(True)
+        marker_line.setRotateSymbols(True)
+        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.CentralPoint)
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Arrow, 10)
+        marker.setAngle(90)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        marker_line.setSubSymbol(marker_symbol)
+        line_symbol = QgsLineSymbol()
+        line_symbol.changeSymbolLayer(0, marker_line)
+
+        s.appendSymbolLayer(marker_line.clone())
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 20 20)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('markerline_center_angle_dd', 'markerline_center_angle_dd', rendered_image)
+
+        # Now with DD
+
+        s = QgsLineSymbol()
+        s.deleteSymbolLayer(0)
+
+        marker_line = QgsMarkerLineSymbolLayer(True)
+        marker_line.setRotateSymbols(True)
+        marker_line.setPlacement(QgsTemplatedLineSymbolLayerBase.CentralPoint)
+        marker = QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayer.Arrow, 10)
+        # Note: set this to a different value than the reference test (90)
+        marker.setAngle(30)
+        marker.setColor(QColor(255, 0, 0))
+        marker.setStrokeStyle(Qt.NoPen)
+        marker_symbol = QgsMarkerSymbol()
+        marker_symbol.changeSymbolLayer(0, marker)
+        # This is the same value of the reference test
+        marker_symbol.setDataDefinedAngle(QgsProperty.fromExpression('90'))
+        marker_line.setSubSymbol(marker_symbol)
+        line_symbol = QgsLineSymbol()
+        line_symbol.changeSymbolLayer(0, marker_line)
+
+        s.appendSymbolLayer(marker_line.clone())
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 20 20)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('markerline_center_angle_dd', 'markerline_center_angle_dd', rendered_image)
+
     def renderGeometry(self, symbol, geom, buffer=20):
         f = QgsFeature()
         f.setGeometry(geom)

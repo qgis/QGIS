@@ -693,7 +693,7 @@ Qt::ItemFlags QgsPalettedRendererModel::flags( const QModelIndex &index ) const
       f = f | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
       break;
   }
-  return f | Qt::ItemIsEnabled | Qt::ItemIsSelectable;;
+  return f | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
 bool QgsPalettedRendererModel::removeRows( int row, int count, const QModelIndex &parent )

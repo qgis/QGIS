@@ -111,7 +111,7 @@ QString QgsClassificationLogarithmic::valueToLabel( double value ) const
 {
   if ( value <= 0 )
   {
-    return QString( QStringLiteral( "%1" ) ).arg( value );
+    return QString::number( value );
   }
   else
   {

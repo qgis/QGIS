@@ -166,6 +166,17 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     static QgsProject *instance();
 
     /**
+     * Set the current project singleton instance to \a project
+     *
+     * \note this method is provided mainly for the server, which caches the projects and (potentially) needs to switch the current instance on every request.
+     * \warning calling this method can have serious, unintended consequences, including instability, data loss and undefined behavior. Use with EXTREME caution!
+     * \see instance()
+     * \since QGIS 3.10.11
+     */
+    static void setInstance( QgsProject *project ) ;
+
+
+    /**
      * Create a new QgsProject.
      *
      * Most of the time you want to use QgsProject::instance() instead as many components of QGIS work with the singleton.
@@ -1837,15 +1848,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     static QgsProject *sProject;
 
-    /**
-     * Set the current project instance to \a project
-     *
-     * \note this is used mainly by the server, which caches the projects and (potentially) needs to switch the current instance on every request
-     * \see instance()
-     * \note not available in Python bindings
-     * \since QGIS 3.2
-     */
-    static void setInstance( QgsProject *project ) SIP_SKIP;
 
     /**
      * Read map layers from project file.

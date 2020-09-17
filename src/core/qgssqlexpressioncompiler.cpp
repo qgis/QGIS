@@ -397,7 +397,7 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
       args = sqlArgumentsFromFunctionName( fd->name(), args );
 
       // build result
-      result = !nd.isEmpty() ? QStringLiteral( "%1(%2)" ).arg( nd, args.join( ',' ) ) : QStringLiteral( "%1" ).arg( args.join( ',' ) );
+      result = !nd.isEmpty() ? QStringLiteral( "%1(%2)" ).arg( nd, args.join( ',' ) ) : args.join( ',' );
       return inResult == Partial ? Partial : Complete;
     }
 

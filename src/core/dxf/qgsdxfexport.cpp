@@ -298,7 +298,7 @@ int QgsDxfExport::writeHandle( int code, int handle )
 
   Q_ASSERT_X( handle < DXF_HANDMAX, "QgsDxfExport::writeHandle(int, int)", "DXF handle too large" );
 
-  writeGroup( code, QStringLiteral( "%1" ).arg( handle, 0, 16 ) );
+  writeGroup( code, QString::number( handle, 16 ) );
   return handle;
 }
 
@@ -551,7 +551,7 @@ void QgsDxfExport::writeBlocks()
   {
     writeGroup( 0, QStringLiteral( "BLOCK" ) );
     writeHandle();
-    writeGroup( 330, QStringLiteral( "%1" ).arg( mBlockHandles[ block ], 0, 16 ) );
+    writeGroup( 330, QString::number( mBlockHandles[ block ], 16 ) );
     writeGroup( 100, QStringLiteral( "AcDbEntity" ) );
     writeGroup( 8, QStringLiteral( "0" ) );
     writeGroup( 100, QStringLiteral( "AcDbBlockBegin" ) );
@@ -592,7 +592,7 @@ void QgsDxfExport::writeBlocks()
     }
 
     QString block( QStringLiteral( "symbolLayer%1" ).arg( mBlockCounter++ ) );
-    mBlockHandle = QStringLiteral( "%1" ).arg( mBlockHandles[ block ], 0, 16 );
+    mBlockHandle = QString::number( mBlockHandles[ block ], 16 );
 
     writeGroup( 0, QStringLiteral( "BLOCK" ) );
     writeHandle();
@@ -631,7 +631,7 @@ void QgsDxfExport::writeEntities()
   startSection();
   writeGroup( 2, QStringLiteral( "ENTITIES" ) );
 
-  mBlockHandle = QStringLiteral( "%1" ).arg( mBlockHandles[ QStringLiteral( "*Model_Space" )], 0, 16 );
+  mBlockHandle = QString::number( mBlockHandles[ QStringLiteral( "*Model_Space" )], 16 );
 
   // iterate through the maplayers
   for ( DxfLayerJob *job : qgis::as_const( mJobs ) )

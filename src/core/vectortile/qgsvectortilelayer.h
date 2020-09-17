@@ -107,6 +107,20 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
 
     void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
     QString loadDefaultStyle( bool &resultFlag SIP_OUT ) override;
+
+    /**
+     * Loads the default style for the layer, and returns TRUE if the style was
+     * successfully loaded.
+     *
+     * The \a error string will be filled with a translated error message if an error
+     * occurs during the style load. The \a warnings list will be populated with any
+     * warning messages generated during the style load (e.g. default style properties
+     * which could not be converted).
+     *
+     * \since QGIS 3.16
+     */
+    bool loadDefaultStyle( QString &error, QStringList &warnings ) SIP_SKIP;
+
     QString loadDefaultMetadata( bool &resultFlag SIP_OUT ) override;
 
     QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const FINAL;

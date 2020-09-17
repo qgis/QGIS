@@ -183,7 +183,7 @@ bool QgsBackgroundCachedSharedData::createCache()
     int counter = 2;
     while ( setSQLiteColumnNameUpperCase.find( sqliteFieldName.toUpper() ) != setSQLiteColumnNameUpperCase.end() )
     {
-      sqliteFieldName = field.name() + QStringLiteral( "%1" ).arg( counter );
+      sqliteFieldName = field.name() + QString::number( counter );
       counter++;
     }
     setSQLiteColumnNameUpperCase.insert( sqliteFieldName.toUpper() );
@@ -659,7 +659,7 @@ void QgsBackgroundCachedSharedData::serializeFeatures( QVector<QgsFeatureUniqueI
         QString errorMsg;
 
         QString sql = qgs_sqlite3_mprintf( "SELECT qgisId, dbId FROM id_cache WHERE uniqueId = '%q'",
-                                      uniqueId.toUtf8().constData() );
+                                           uniqueId.toUtf8().constData() );
         auto stmt = mCacheIdDb.prepare( sql, resultCode );
         Q_ASSERT( resultCode == SQLITE_OK );
         if ( stmt.step() == SQLITE_ROW )
@@ -669,15 +669,15 @@ void QgsBackgroundCachedSharedData::serializeFeatures( QVector<QgsFeatureUniqueI
           if ( dbId != oldDbId )
           {
             sql = qgs_sqlite3_mprintf( "UPDATE id_cache SET dbId = NULL WHERE dbId = %lld",
-                                     dbId );
+                                       dbId );
             if ( mCacheIdDb.exec( sql, errorMsg ) != SQLITE_OK )
             {
               QgsMessageLog::logMessage( QObject::tr( "Problem when updating id cache: %1 -> %2" ).arg( sql ).arg( errorMsg ), mComponentTranslated );
             }
 
             sql = qgs_sqlite3_mprintf( "UPDATE id_cache SET dbId = %lld WHERE uniqueId = '%q'",
-                                     dbId,
-                                     uniqueId.toUtf8().constData() );
+                                       dbId,
+                                       uniqueId.toUtf8().constData() );
             if ( mCacheIdDb.exec( sql, errorMsg ) != SQLITE_OK )
             {
               QgsMessageLog::logMessage( QObject::tr( "Problem when updating id cache: %1 -> %2" ).arg( sql ).arg( errorMsg ), mComponentTranslated );
@@ -687,7 +687,7 @@ void QgsBackgroundCachedSharedData::serializeFeatures( QVector<QgsFeatureUniqueI
         else
         {
           sql = qgs_sqlite3_mprintf( "UPDATE id_cache SET dbId = NULL WHERE dbId = %lld",
-                                   dbId );
+                                     dbId );
           if ( mCacheIdDb.exec( sql, errorMsg ) != SQLITE_OK )
           {
             QgsMessageLog::logMessage( QObject::tr( "Problem when updating id cache: %1 -> %2" ).arg( sql ).arg( errorMsg ), mComponentTranslated );
@@ -696,9 +696,9 @@ void QgsBackgroundCachedSharedData::serializeFeatures( QVector<QgsFeatureUniqueI
           qgisId = mNextCachedIdQgisId;
           mNextCachedIdQgisId ++;
           sql = qgs_sqlite3_mprintf( "INSERT INTO id_cache (uniqueId, dbId, qgisId) VALUES ('%q', %lld, %lld)",
-                                   uniqueId.toUtf8().constData(),
-                                   dbId,
-                                   qgisId );
+                                     uniqueId.toUtf8().constData(),
+                                     dbId,
+                                     qgisId );
           if ( mCacheIdDb.exec( sql, errorMsg ) != SQLITE_OK )
           {
             QgsMessageLog::logMessage( QObject::tr( "Problem when updating id cache: %1 -> %2" ).arg( sql ).arg( errorMsg ), mComponentTranslated );

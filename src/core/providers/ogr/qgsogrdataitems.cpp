@@ -442,6 +442,20 @@ bool QgsOgrDataCollectionItem::createConnection( const QString &name, const QStr
   return saveConnection( path, ogrDriverName );
 }
 
+bool QgsOgrDataCollectionItem::hasDragEnabled() const
+{
+  return true;
+}
+
+QgsMimeDataUtils::Uri QgsOgrDataCollectionItem::mimeUri() const
+{
+  QgsMimeDataUtils::Uri u;
+  u.providerKey = QStringLiteral( "ogr" );
+  u.uri = path();
+  u.layerType = QStringLiteral( "vector" );
+  return u;
+}
+
 // ---------------------------------------------------------------------------
 
 QString QgsOgrDataItemProvider::name()

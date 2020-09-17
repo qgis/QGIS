@@ -1447,7 +1447,6 @@ namespace QgsWms
     const QgsFields fields = layer->fields();
     bool addWktGeometry = ( QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( *mProject ) && mWmsParameters.withGeometry() );
     bool segmentizeWktGeometry = QgsServerProjectUtils::wmsFeatureInfoSegmentizeWktGeometry( *mProject );
-    const QSet<QString> &excludedAttributes = layer->excludeAttributesWms();
 
     bool hasGeometry = QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( *mProject ) || addWktGeometry || featureBBox || layerFilterGeom;
     fReq.setFlags( ( ( hasGeometry ) ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) | QgsFeatureRequest::ExactIntersect );
@@ -1568,7 +1567,7 @@ namespace QgsWms
         for ( int i = 0; i < featureAttributes.count(); ++i )
         {
           //skip attribute if it is explicitly excluded from WMS publication
-          if ( excludedAttributes.contains( fields.at( i ).name() ) )
+          if ( fields.at( i ).configurationFlags().testFlag( QgsField::ConfigurationFlag::HideFromWms ) )
           {
             continue;
           }
@@ -2417,7 +2416,7 @@ namespace QgsWms
     {
       QString attributeName = fields.at( i ).name();
       //skip attribute if it is explicitly excluded from WMS publication
-      if ( layer && layer->excludeAttributesWms().contains( attributeName ) )
+      if ( fields.at( i ).configurationFlags().testFlag( QgsField::ConfigurationFlag::HideFromWms ) )
       {
         continue;
       }

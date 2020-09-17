@@ -413,6 +413,7 @@ void QgsVectorTileBasicLabelingWidget::editStyleAtIndex( const QModelIndex &prox
     QList<QgsExpressionContextScope> scopes = context.additionalExpressionContextScopes();
     QgsExpressionContextScope tileScope;
     tileScope.setVariable( "zoom_level", zoom, true );
+    tileScope.setVariable( "vector_tile_zoom", QgsVectorTileUtils::scaleToZoom( mMapCanvas->scale() ), true );
     scopes << tileScope;
     context.setAdditionalExpressionContextScopes( scopes );
   }

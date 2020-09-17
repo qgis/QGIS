@@ -790,6 +790,7 @@ void QgsExpression::initVariableHelp()
 
   // vector tile layer variables
   sVariableHelpTexts()->insert( QStringLiteral( "zoom_level" ), QCoreApplication::translate( "variable_help", "Zoom level of the tile that is being rendered (derived from the current map scale). Normally in interval [0, 20]." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "vector_tile_zoom" ), QCoreApplication::translate( "variable_help", "Exact zoom level of the tile that is being rendered (derived from the current map scale). Normally in interval [0, 20]. Unlike @zoom_level, this variable is a floating point value which can be used to interpolated values between two integer zoom levels." ) );
 
   sVariableHelpTexts()->insert( QStringLiteral( "row_number" ), QCoreApplication::translate( "variable_help", "Stores the number of the current row." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "grid_number" ), QCoreApplication::translate( "variable_help", "Current grid annotation value." ) );

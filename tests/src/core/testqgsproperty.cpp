@@ -358,7 +358,7 @@ void TestQgsProperty::staticProperty()
   p2.setTransformer( new TestTransformer( 10, 20 ) );
   // copy assign
   QgsProperty p3;
-  p3 = p2;;
+  p3 = p2;
   QVERIFY( p3.isActive() );
   QCOMPARE( p3.staticValue().toString(), QStringLiteral( "test" ) );
   QVERIFY( p3.transformer() );

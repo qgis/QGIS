@@ -148,7 +148,7 @@ void QgsLayoutPdfExportOptionsDialog::setGeoreferencingEnabled( bool enabled )
 
 bool QgsLayoutPdfExportOptionsDialog::georeferencingEnabled() const
 {
-  return mAppendGeoreferenceCheckbox->isChecked();;
+  return mAppendGeoreferenceCheckbox->isChecked();
 }
 
 void QgsLayoutPdfExportOptionsDialog::setMetadataEnabled( bool enabled )

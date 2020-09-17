@@ -346,6 +346,22 @@ QString QgsField::displayString( const QVariant &v ) const
   return v.toString();
 }
 
+QString QgsField::readableConfigurationFlag( QgsField::ConfigurationFlag flag )
+{
+  switch ( flag )
+  {
+    case ConfigurationFlag::None:
+      return QObject::tr( "None" );
+    case ConfigurationFlag::NotSearchable:
+      return QObject::tr( "Not searchable" );
+    case ConfigurationFlag::HideFromWms:
+      return QStringLiteral( "Do not expose via WMS" );
+    case ConfigurationFlag::HideFromWfs:
+      return QStringLiteral( "Do not expose via WFS" );
+  }
+  return QString();
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests in testqgsfield.cpp.

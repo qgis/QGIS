@@ -70,7 +70,6 @@ void QgsTextFormatWidget::initWidget()
 
   connect( mShapeSVGPathLineEdit, &QLineEdit::textChanged, this, &QgsTextFormatWidget::mShapeSVGPathLineEdit_textChanged );
   connect( mFontSizeSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsTextFormatWidget::mFontSizeSpinBox_valueChanged );
-  connect( mFontCapitalsComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsTextFormatWidget::mFontCapitalsComboBox_currentIndexChanged );
   connect( mFontFamilyCmbBx, &QFontComboBox::currentFontChanged, this, &QgsTextFormatWidget::mFontFamilyCmbBx_currentFontChanged );
   connect( mFontStyleComboBox, &QComboBox::currentTextChanged, this, &QgsTextFormatWidget::mFontStyleComboBox_currentIndexChanged );
   connect( mFontUnderlineBtn, &QToolButton::toggled, this, &QgsTextFormatWidget::mFontUnderlineBtn_toggled );
@@ -890,6 +889,7 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
   mFontLetterSpacingSpinBox->setValue( format.font().letterSpacing() );
   whileBlocking( mKerningCheckBox )->setChecked( format.font().kerning() );
 
+  whileBlocking( mFontCapitalsComboBox )->setCurrentIndex( mFontCapitalsComboBox->findData( format.capitalization() ) );
   QgsFontUtils::updateFontViaStyle( mRefFont, format.namedStyle() );
   updateFont( mRefFont );
 
@@ -1025,6 +1025,7 @@ QgsTextFormat QgsTextFormatWidget::format( bool includeDataDefinedProperties ) c
   format.setPreviewBackgroundColor( mPreviewBackgroundColor );
   format.setOrientation( static_cast< QgsTextFormat::TextOrientation >( mTextOrientationComboBox->currentData().toInt() ) );
   format.setAllowHtmlFormatting( mHtmlFormattingCheckBox->isChecked( ) );
+  format.setCapitalization( static_cast< QgsStringUtils::Capitalization >( mFontCapitalsComboBox->currentData().toInt() ) );
 
   // buffer
   QgsTextBufferSettings buffer;
@@ -1218,8 +1219,6 @@ void QgsTextFormatWidget::updateFont( const QFont &font )
   blockFontChangeSignals( true );
   mFontFamilyCmbBx->setCurrentFont( mRefFont );
   populateFontStyleComboBox();
-  int idx = mFontCapitalsComboBox->findData( QVariant( static_cast< unsigned int >( mRefFont.capitalization() ) ) );
-  mFontCapitalsComboBox->setCurrentIndex( idx == -1 ? 0 : idx );
   mFontUnderlineBtn->setChecked( mRefFont.underline() );
   mFontStrikethroughBtn->setChecked( mRefFont.strikeOut() );
   mKerningCheckBox->setChecked( mRefFont.kerning() );
@@ -1417,13 +1416,14 @@ void QgsTextFormatWidget::updatePlacementWidgets()
 
 void QgsTextFormatWidget::populateFontCapitalsComboBox()
 {
-  mFontCapitalsComboBox->addItem( tr( "No Change" ), QVariant( 0 ) );
-  mFontCapitalsComboBox->addItem( tr( "All Uppercase" ), QVariant( 1 ) );
-  mFontCapitalsComboBox->addItem( tr( "All Lowercase" ), QVariant( 2 ) );
+  mFontCapitalsComboBox->addItem( tr( "No Change" ), QgsStringUtils::MixedCase );
+  mFontCapitalsComboBox->addItem( tr( "All Uppercase" ), QgsStringUtils::AllUppercase );
+  mFontCapitalsComboBox->addItem( tr( "All Lowercase" ), QgsStringUtils::AllLowercase );
   // Small caps doesn't work right with QPainterPath::addText()
   // https://bugreports.qt.io/browse/QTBUG-13965
 //  mFontCapitalsComboBox->addItem( tr( "Small Caps" ), QVariant( 3 ) );
-  mFontCapitalsComboBox->addItem( tr( "Capitalize First Letter" ), QVariant( 4 ) );
+  mFontCapitalsComboBox->addItem( tr( "Title Case" ), QgsStringUtils::TitleCase );
+  mFontCapitalsComboBox->addItem( tr( "Force First Letter to Capital" ), QgsStringUtils::ForceFirstLetterToCapital );
 }
 
 void QgsTextFormatWidget::populateFontStyleComboBox()
@@ -1456,13 +1456,6 @@ void QgsTextFormatWidget::populateFontStyleComboBox()
 void QgsTextFormatWidget::mFontSizeSpinBox_valueChanged( double d )
 {
   mRefFont.setPointSizeF( d );
-  updateFont( mRefFont );
-}
-
-void QgsTextFormatWidget::mFontCapitalsComboBox_currentIndexChanged( int index )
-{
-  int capitalsindex = mFontCapitalsComboBox->itemData( index ).toInt();
-  mRefFont.setCapitalization( static_cast< QFont::Capitalization >( capitalsindex ) );
   updateFont( mRefFont );
 }
 

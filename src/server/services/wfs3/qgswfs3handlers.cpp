@@ -242,13 +242,12 @@ QgsFields QgsWfs3AbstractItemsHandler::publishedFields( const QgsVectorLayer *vL
   QStringList publishedAttributes = QStringList();
   // Removed attributes
   // WFS excluded attributes for this layer
-  const QSet<QString> &layerExcludedAttributes = vLayer->excludeAttributesWfs();
   const QgsFields &fields = vLayer->fields();
-  for ( int i = 0; i < fields.count(); ++i )
+  for ( const QgsField &field : fields )
   {
-    if ( ! layerExcludedAttributes.contains( fields.at( i ).name() ) )
+    if ( !field.configurationFlags().testFlag( QgsField::ConfigurationFlag::HideFromWfs ) )
     {
-      publishedAttributes.push_back( fields.at( i ).name() );
+      publishedAttributes.push_back( field.name() );
     }
   }
 

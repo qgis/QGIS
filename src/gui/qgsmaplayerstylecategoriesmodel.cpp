@@ -142,7 +142,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
       switch ( role )
       {
         case Qt::DisplayRole:
-          return tr( "Fields" );
+          return tr( "Field and Widget Configuration" );
         case Qt::ToolTipRole:
           return tr( "Aliases, widgets, WMS/WFS, expressions, constraints, virtual fields" );
         case Qt::DecorationRole:
@@ -153,7 +153,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
       switch ( role )
       {
         case Qt::DisplayRole:
-          return tr( "Forms" );
+          return tr( "Form Layout" );
         case Qt::ToolTipRole:
           return QVariant();
         case Qt::DecorationRole:
@@ -258,6 +258,18 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
           return tr( "Temporal properties" );
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/temporal.svg" ) );
+      }
+      break;
+
+    case QgsMapLayer::StyleCategory::Legend:
+      switch ( role )
+      {
+        case Qt::DisplayRole:
+          return tr( "Legend Settings" );
+        case Qt::ToolTipRole:
+          return tr( "Legend settings" );
+        case Qt::DecorationRole:
+          return QgsApplication::getThemeIcon( QStringLiteral( "/legend.svg" ) );
       }
       break;
 

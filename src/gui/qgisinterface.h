@@ -849,6 +849,13 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void showOptionsDialog( QWidget *parent = nullptr, const QString &currentPage = QString() ) = 0;
 
     /**
+     * Opens the project properties dialog. The \a currentPage argument can be used to force
+     * the dialog to open at a specific page.
+     * \since QGIS 3.16
+     */
+    virtual void showProjectPropertiesDialog( const QString &currentPage = QString() ) = 0;
+
+    /**
      * Generate stylesheet
      * \param opts generated default option values, or a changed copy of them
      */
@@ -983,6 +990,24 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.0
     */
     virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
+
+    /**
+     * Register a new tab in the project properties dialog.
+     * \note Ownership of the factory is not transferred, and the factory must
+     *       be unregistered when plugin is unloaded.
+     * \see QgsOptionsWidgetFactory
+     * \see unregisterProjectPropertiesWidgetFactory()
+     * \since QGIS 3.16
+     */
+    virtual void registerProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
+
+    /**
+     * Unregister a previously registered tab in the options dialog.
+     * \see QgsOptionsWidgetFactory
+     * \see registerProjectPropertiesWidgetFactory()
+     * \since QGIS 3.16
+    */
+    virtual void unregisterProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 
     /**
      * Register a new tool in the development/debugging tools dock.

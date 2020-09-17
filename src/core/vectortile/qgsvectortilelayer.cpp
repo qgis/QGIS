@@ -295,6 +295,14 @@ void QgsVectorTileLayer::setTransformContext( const QgsCoordinateTransformContex
 
 QString QgsVectorTileLayer::loadDefaultStyle( bool &resultFlag )
 {
+  QString error;
+  QStringList warnings;
+  resultFlag = loadDefaultStyle( error, warnings );
+  return error;
+}
+
+bool QgsVectorTileLayer::loadDefaultStyle( QString &error, QStringList &warnings )
+{
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( mDataSource );
 
@@ -325,8 +333,8 @@ QString QgsVectorTileLayer::loadDefaultStyle( bool &resultFlag )
       case QgsBlockingNetworkRequest::NetworkError:
       case QgsBlockingNetworkRequest::TimeoutError:
       case QgsBlockingNetworkRequest::ServerExceptionError:
-        resultFlag = false;
-        return QObject::tr( "Error retrieving default style" );
+        error = QObject::tr( "Error retrieving default style" );
+        return false;
     }
 
     const QgsNetworkReplyContent content = networkRequest.reply();
@@ -403,20 +411,21 @@ QString QgsVectorTileLayer::loadDefaultStyle( bool &resultFlag )
     QgsMapBoxGlStyleConverter converter;
     if ( converter.convert( styleDefinition, &context ) != QgsMapBoxGlStyleConverter::Success )
     {
-      resultFlag = false;
-      return converter.errorMessage();
+      warnings = converter.warnings();
+      error = converter.errorMessage();
+      return false;
     }
 
     setRenderer( converter.renderer() );
     setLabeling( converter.labeling() );
-    resultFlag = true;
-    return QString();
+    warnings = converter.warnings();
+    return true;
   }
   else
   {
-    QgsMapLayer::loadDefaultStyle( resultFlag );
-    resultFlag = true;
-    return QString();
+    bool resultFlag = false;
+    error = QgsMapLayer::loadDefaultStyle( resultFlag );
+    return resultFlag;
   }
 }
 

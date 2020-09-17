@@ -49,20 +49,7 @@ void QgsExpressionPreviewWidget::setCurrentFeature( const QgsFeature &feature )
 {
   // todo: update the combo box if it has been set externaly?
 
-  // force the feature to be valid, so it can evaluate an invalid feature but having its fields set
-  if ( !feature.isValid() )
-  {
-    QgsFeature validFeature( feature );
-    validFeature.setValid( true );
-    mExpressionContext.setFeature( validFeature );
-    mFeaturePickerWidget->setEnabled( false );
-    mFeaturePickerWidget->setToolTip( tr( "No feature was found on this layer to evaluate the expression." ) );
-  }
-  else
-  {
-    mExpressionContext.setFeature( feature );
-    mFeaturePickerWidget->setEnabled( true );
-  }
+  mExpressionContext.setFeature( feature );
   refreshPreview();
 }
 
@@ -92,6 +79,16 @@ void QgsExpressionPreviewWidget::refreshPreview()
   else
   {
     mExpression = QgsExpression( mExpressionText );
+
+    if ( !mExpressionContext.feature().isValid() )
+    {
+      if ( !mExpression.referencedColumns().isEmpty() || mExpression.needsGeometry() )
+      {
+        mPreviewLabel->setText( tr( "No feature was found on this layer to evaluate the expression." ) );
+        mPreviewLabel->setStyleSheet( QStringLiteral( "color: rgba(255, 6, 10,  255);" ) );
+        return;
+      }
+    }
 
     if ( mUseGeomCalculator )
     {

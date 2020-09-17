@@ -1518,7 +1518,7 @@ QVariant QgsProcessingRangeWidgetWrapper::widgetValue() const
     if ( qgsDoubleNear( mMinSpinBox->value(), mMinSpinBox->minimum() ) )
       value = QStringLiteral( "None" );
     else
-      value = QStringLiteral( "%1" ).arg( mMinSpinBox->value() );
+      value = QString::number( mMinSpinBox->value() );
 
     if ( qgsDoubleNear( mMaxSpinBox->value(), mMaxSpinBox->minimum() ) )
       value += QStringLiteral( ",None" );
@@ -3160,6 +3160,122 @@ QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingPointWidgetWrapper:
   return new QgsProcessingPointParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
 
+
+//
+// QgsProcessingGeometryWidgetWrapper
+//
+
+
+QgsProcessingGeometryParameterDefinitionWidget::QgsProcessingGeometryParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
+
+  mDefaultLineEdit = new QLineEdit();
+  mDefaultLineEdit->setToolTip( tr( "Geometry as WKT" ) );
+  mDefaultLineEdit->setPlaceholderText( tr( "Geometry as WKT" ) );
+  if ( const QgsProcessingParameterGeometry *geometryParam = dynamic_cast<const QgsProcessingParameterGeometry *>( definition ) )
+  {
+    QgsGeometry g = QgsProcessingParameters::parameterAsGeometry( geometryParam, geometryParam->defaultValue(), context );
+    if ( !g.isNull() )
+      mDefaultLineEdit->setText( g.asWkt() );
+  }
+
+  vlayout->addWidget( mDefaultLineEdit );
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingGeometryParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  auto param = qgis::make_unique< QgsProcessingParameterGeometry >( name, description, mDefaultLineEdit->text() );
+  param->setFlags( flags );
+  return param.release();
+}
+
+QgsProcessingGeometryWidgetWrapper::QgsProcessingGeometryWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingGeometryWidgetWrapper::createWidget()
+{
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Modeler:
+    case QgsProcessingGui::Batch:
+    {
+      mLineEdit = new QLineEdit();
+      mLineEdit->setToolTip( parameterDefinition()->toolTip() );
+      connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]
+      {
+        emit widgetValueHasChanged( this );
+      } );
+      return mLineEdit;
+    }
+  }
+  return nullptr;
+}
+
+void QgsProcessingGeometryWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  if ( mLineEdit )
+  {
+    QgsGeometry g = QgsProcessingParameters::parameterAsGeometry( parameterDefinition(), value, context );
+    if ( !g.isNull() )
+      mLineEdit->setText( g.asWkt() );
+    else
+      mLineEdit->clear();
+  }
+}
+
+QVariant QgsProcessingGeometryWidgetWrapper::widgetValue() const
+{
+  if ( mLineEdit )
+    return mLineEdit->text().isEmpty() ? QVariant() : mLineEdit->text();
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingGeometryWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterGeometry::typeName()
+         << QgsProcessingParameterString::typeName()
+         << QgsProcessingParameterPoint::typeName()
+         << QgsProcessingParameterExtent::typeName();
+}
+
+QStringList QgsProcessingGeometryWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputString::typeName();
+}
+
+QString QgsProcessingGeometryWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "string in the Well-Known-Text format or a geometry value" );
+}
+
+QString QgsProcessingGeometryWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterGeometry::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingGeometryWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingGeometryWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingGeometryWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingGeometryParameterDefinitionWidget( context, widgetContext, definition, algorithm );
+}
 
 
 //

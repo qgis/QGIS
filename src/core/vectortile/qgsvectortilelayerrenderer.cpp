@@ -132,6 +132,7 @@ bool QgsVectorTileLayerRenderer::render()
   // add @zoom_level variable which can be used in styling
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Tiles" ) ); // will be deleted by popper
   scope->setVariable( "zoom_level", mTileZoom, true );
+  scope->setVariable( "vector_tile_zoom", QgsVectorTileUtils::scaleToZoom( ctx.rendererScale() ), true );
   QgsExpressionContextScopePopper popper( ctx.expressionContext(), scope );
 
   mRenderer->startRender( *renderContext(), mTileZoom, mTileRange );
@@ -151,6 +152,8 @@ bool QgsVectorTileLayerRenderer::render()
   for ( QString layerName : requiredFields.keys() )
     mPerLayerFields[layerName] = QgsVectorTileUtils::makeQgisFields( requiredFields[layerName] );
 
+  mRequiredLayers = mRenderer->requiredLayers( ctx, mTileZoom );
+
   if ( mLabelProvider )
   {
     mLabelProvider->setFields( mPerLayerFields );
@@ -160,6 +163,8 @@ bool QgsVectorTileLayerRenderer::render()
       ctx.labelingEngine()->removeProvider( mLabelProvider );
       mLabelProvider = nullptr; // provider is deleted by the engine
     }
+
+    mRequiredLayers.unite( mLabelProvider->requiredLayers( ctx, mTileZoom ) );
   }
 
   if ( !isAsync )
@@ -212,7 +217,7 @@ void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &
 
   QgsVectorTileRendererData tile( rawTile.id );
   tile.setFields( mPerLayerFields );
-  tile.setFeatures( decoder.layerFeatures( mPerLayerFields, ct ) );
+  tile.setFeatures( decoder.layerFeatures( mPerLayerFields, ct, &mRequiredLayers ) );
   tile.setTilePolygon( QgsVectorTileUtils::tilePolygon( rawTile.id, ct, mTileMatrix, ctx.mapToPixel() ) );
 
   mTotalDecodeTime += tLoad.elapsed();

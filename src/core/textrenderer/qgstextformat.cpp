@@ -74,6 +74,7 @@ bool QgsTextFormat::operator==( const QgsTextFormat &other ) const
        || d->orientation != other.orientation()
        || d->previewBackgroundColor != other.previewBackgroundColor()
        || d->allowHtmlFormatting != other.allowHtmlFormatting()
+       || d->capitalization != other.capitalization()
        || mBufferSettings != other.mBufferSettings
        || mBackgroundSettings != other.mBackgroundSettings
        || mShadowSettings != other.mShadowSettings
@@ -283,6 +284,19 @@ void QgsTextFormat::setOrientation( TextOrientation orientation )
   d->orientation = orientation;
 }
 
+QgsStringUtils::Capitalization QgsTextFormat::capitalization() const
+{
+  // bit of complexity here to maintain API..
+  return d->capitalization == QgsStringUtils::MixedCase && d->textFont.capitalization() != QFont::MixedCase ? static_cast< QgsStringUtils::Capitalization >( d->textFont.capitalization() ) : d->capitalization ;
+}
+
+void QgsTextFormat::setCapitalization( QgsStringUtils::Capitalization capitalization )
+{
+  d->isValid = true;
+  d->capitalization = capitalization;
+  d->textFont.setCapitalization( QFont::MixedCase );
+}
+
 bool QgsTextFormat::allowHtmlFormatting() const
 {
   return d->allowHtmlFormatting;
@@ -365,7 +379,7 @@ void QgsTextFormat::readFromLayer( QgsVectorLayer *layer )
   d->textFont = QFont( fontFamily, d->fontSize, fontWeight, fontItalic );
   d->textNamedStyle = QgsFontUtils::translateNamedStyle( layer->customProperty( QStringLiteral( "labeling/namedStyle" ), QVariant( "" ) ).toString() );
   QgsFontUtils::updateFontViaStyle( d->textFont, d->textNamedStyle ); // must come after textFont.setPointSizeF()
-  d->textFont.setCapitalization( static_cast< QFont::Capitalization >( layer->customProperty( QStringLiteral( "labeling/fontCapitals" ), QVariant( 0 ) ).toUInt() ) );
+  d->capitalization = static_cast< QgsStringUtils::Capitalization >( layer->customProperty( QStringLiteral( "labeling/fontCapitals" ), QVariant( 0 ) ).toUInt() );
   d->textFont.setUnderline( layer->customProperty( QStringLiteral( "labeling/fontUnderline" ) ).toBool() );
   d->textFont.setStrikeOut( layer->customProperty( QStringLiteral( "labeling/fontStrikeout" ) ).toBool() );
   d->textFont.setLetterSpacing( QFont::AbsoluteSpacing, layer->customProperty( QStringLiteral( "labeling/fontLetterSpacing" ), QVariant( 0.0 ) ).toDouble() );
@@ -453,7 +467,6 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
   d->textFont.setPointSizeF( d->fontSize ); //double precision needed because of map units
   d->textNamedStyle = QgsFontUtils::translateNamedStyle( textStyleElem.attribute( QStringLiteral( "namedStyle" ) ) );
   QgsFontUtils::updateFontViaStyle( d->textFont, d->textNamedStyle ); // must come after textFont.setPointSizeF()
-  d->textFont.setCapitalization( static_cast< QFont::Capitalization >( textStyleElem.attribute( QStringLiteral( "fontCapitals" ), QStringLiteral( "0" ) ).toUInt() ) );
   d->textFont.setUnderline( textStyleElem.attribute( QStringLiteral( "fontUnderline" ) ).toInt() );
   d->textFont.setStrikeOut( textStyleElem.attribute( QStringLiteral( "fontStrikeout" ) ).toInt() );
   d->textFont.setKerning( textStyleElem.attribute( QStringLiteral( "fontKerning" ), QStringLiteral( "1" ) ).toInt() );
@@ -483,6 +496,11 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
   {
     d->multilineHeight = textStyleElem.attribute( QStringLiteral( "multilineHeight" ), QStringLiteral( "1" ) ).toDouble();
   }
+
+  if ( textStyleElem.hasAttribute( QStringLiteral( "capitalization" ) ) )
+    d->capitalization = static_cast< QgsStringUtils::Capitalization >( textStyleElem.attribute( QStringLiteral( "capitalization" ), QString::number( QgsStringUtils::MixedCase ) ).toInt() );
+  else
+    d->capitalization = static_cast< QgsStringUtils::Capitalization >( textStyleElem.attribute( QStringLiteral( "fontCapitals" ), QStringLiteral( "0" ) ).toUInt() );
 
   d->allowHtmlFormatting = textStyleElem.attribute( QStringLiteral( "allowHtml" ), QStringLiteral( "0" ) ).toInt();
 
@@ -549,7 +567,6 @@ QDomElement QgsTextFormat::writeXml( QDomDocument &doc, const QgsReadWriteContex
   textStyleElem.setAttribute( QStringLiteral( "fontUnderline" ), d->textFont.underline() );
   textStyleElem.setAttribute( QStringLiteral( "textColor" ), QgsSymbolLayerUtils::encodeColor( d->textColor ) );
   textStyleElem.setAttribute( QStringLiteral( "previewBkgrdColor" ), QgsSymbolLayerUtils::encodeColor( d->previewBackgroundColor ) );
-  textStyleElem.setAttribute( QStringLiteral( "fontCapitals" ), static_cast< unsigned int >( d->textFont.capitalization() ) );
   textStyleElem.setAttribute( QStringLiteral( "fontLetterSpacing" ), d->textFont.letterSpacing() );
   textStyleElem.setAttribute( QStringLiteral( "fontWordSpacing" ), d->textFont.wordSpacing() );
   textStyleElem.setAttribute( QStringLiteral( "fontKerning" ), d->textFont.kerning() );
@@ -558,6 +575,7 @@ QDomElement QgsTextFormat::writeXml( QDomDocument &doc, const QgsReadWriteContex
   textStyleElem.setAttribute( QStringLiteral( "blendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
   textStyleElem.setAttribute( QStringLiteral( "multilineHeight" ), d->multilineHeight );
   textStyleElem.setAttribute( QStringLiteral( "allowHtml" ), d->allowHtmlFormatting ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  textStyleElem.setAttribute( QStringLiteral( "capitalization" ), QString::number( static_cast< int >( d->capitalization ) ) );
 
   QDomElement ddElem = doc.createElement( QStringLiteral( "dd_properties" ) );
   d->mDataDefinedProperties.writeXml( ddElem, QgsPalLayerSettings::propertyDefinitions() );

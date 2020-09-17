@@ -232,7 +232,7 @@ void QgsFeaturePickerModelBase::updateCompleter()
 
   if ( mExtraValueIndex == -1 )
   {
-    setExtraIdentifierValueUnguarded( nullIentifier() );
+    setExtraIdentifierValueUnguarded( nullIdentifier() );
   }
 
   // Only reloading the current entry?

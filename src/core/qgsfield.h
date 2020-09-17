@@ -71,6 +71,7 @@ class CORE_EXPORT QgsField
        * Configuration flags for fields
        * These flags are meant to be user-configurable
        * and are not describing any information from the data provider.
+       * \note Flags are expressed in the negative forms so that default flags is None.
        * \since QGIS 3.16
        */
 #if QT_VERSION < QT_VERSION_CHECK(5, 12, 0)
@@ -80,8 +81,9 @@ class CORE_EXPORT QgsField
 #endif
     {
       None = 0, //!< No flag is defined
-      Searchable = 0x1, //!< Defines if the field is searchable (used in the locator search for instance)
-      DefaultFlags = Searchable, //!< Default set of flags for a field
+      NotSearchable = 1 << 1, //!< Defines if the field is searchable (used in the locator search for instance)
+      HideFromWms = 1 << 2, //!< Fields is available if layer is served as WMS from QGIS server
+      HideFromWfs = 1 << 3, //!< Fields is available if layer is served as WFS from QGIS server
     };
     Q_ENUM( ConfigurationFlag )
     Q_DECLARE_FLAGS( ConfigurationFlags, ConfigurationFlag )
@@ -326,6 +328,12 @@ class CORE_EXPORT QgsField
 
     //! Formats string for display
     QString displayString( const QVariant &v ) const;
+
+    /**
+     * Returns the reabable and translated value of the configuration flag
+     * \since QGIS 3.16
+     */
+    static QString readableConfigurationFlag( QgsField::ConfigurationFlag flag ) SIP_SKIP;
 
 #ifndef SIP_RUN
 

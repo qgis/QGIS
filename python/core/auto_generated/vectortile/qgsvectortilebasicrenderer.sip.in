@@ -157,6 +157,8 @@ Constructs renderer with no styles
 
     virtual void startRender( QgsRenderContext &context, int tileZoom, const QgsTileRange &tileRange );
 
+    virtual QSet< QString > requiredLayers( QgsRenderContext &context, int tileZoom ) const;
+
     virtual void stopRender( QgsRenderContext &context );
 
     virtual void renderTile( const QgsVectorTileRendererData &tile, QgsRenderContext &context );

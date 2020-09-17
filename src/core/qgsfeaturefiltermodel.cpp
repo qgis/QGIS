@@ -40,7 +40,7 @@ QgsFeatureFilterModel::QgsFeatureFilterModel( QObject *parent )
 {
   setFetchGeometry( false );
   setFetchLimit( QgsSettings().value( QStringLiteral( "maxEntriesRelationWidget" ), 100, QgsSettings::Gui ).toInt() );
-  setExtraIdentifierValueUnguarded( nullIentifier() );
+  setExtraIdentifierValueUnguarded( nullIdentifier() );
 }
 
 QString QgsFeatureFilterModel::identifierField() const
@@ -104,7 +104,7 @@ bool QgsFeatureFilterModel::identifierIsNull( const QVariant &identifier ) const
   return true;
 }
 
-QVariant QgsFeatureFilterModel::nullIentifier() const
+QVariant QgsFeatureFilterModel::nullIdentifier() const
 {
   QVariantList nullValues;
   for ( int i = 0; i < mIdentifierFields.count(); i++ )
@@ -139,7 +139,7 @@ QVariantList QgsFeatureFilterModel::extraIdentifierValues() const
   QVariantList values = mExtraIdentifierValue.toList();
   if ( values.count() != mIdentifierFields.count() )
   {
-    return nullIentifier().toList();
+    return nullIdentifier().toList();
   }
   return values;
 }

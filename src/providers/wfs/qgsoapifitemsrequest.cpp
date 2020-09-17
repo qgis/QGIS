@@ -140,7 +140,7 @@ void QgsOapifItemsRequest::processReply()
             }
             else if ( id.is_number_integer() )
             {
-              mFeatures[i].second = QStringLiteral( "%1" ).arg( id.get<qint64>() );
+              mFeatures[i].second = QString::number( id.get<qint64>() );
             }
           }
         }

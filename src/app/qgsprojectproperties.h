@@ -17,14 +17,18 @@
  ***************************************************************************/
 
 
-#include "qgsoptionsdialogbase.h"
 #include "ui_qgsprojectpropertiesbase.h"
+
+#include "qgsoptionsdialogbase.h"
+#include "qgsoptionswidgetfactory.h"
 #include "qgis.h"
 #include "qgsunittypes.h"
 #include "qgsguiutils.h"
 #include "qgsscalewidget.h"
 #include "qgshelp.h"
 #include "qgis_app.h"
+
+#include <QList>
 
 class QgsMapCanvas;
 class QgsRelationManagerDialog;
@@ -35,6 +39,7 @@ class QgsMetadataWidget;
 class QgsTreeWidgetItem;
 class QgsLayerCapabilitiesModel;
 class QgsBearingNumericFormat;
+class QgsOptionsPageWidget;
 
 /**
  * Dialog to set project level properties
@@ -48,7 +53,8 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
   public:
     //! Constructor
-    QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
+                          const QList<QgsOptionsWidgetFactory *> &optionsFactories = QList<QgsOptionsWidgetFactory *>() );
 
     ~QgsProjectProperties() override;
 
@@ -249,6 +255,8 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     QList<EllipsoidDefs> mEllipsoidList;
     int mEllipsoidIndex;
     bool mBlockCrsUpdates = false;
+
+    QList< QgsOptionsPageWidget * > mAdditionalProjectPropertiesWidgets;
 
     std::unique_ptr< QgsBearingNumericFormat > mBearingFormat;
 

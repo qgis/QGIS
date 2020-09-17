@@ -292,6 +292,7 @@ Formats string for display
 %End
 
 
+
     bool convertCompatible( QVariant &v ) const;
 %Docstring
 Converts the provided variant to a compatible format

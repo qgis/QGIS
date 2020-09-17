@@ -342,6 +342,8 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterExtent;
     else if ( sipCpp->type() == QgsProcessingParameterPoint::typeName() )
       sipType = sipType_QgsProcessingParameterPoint;
+    else if ( sipCpp->type() == QgsProcessingParameterGeometry::typeName() )
+      sipType = sipType_QgsProcessingParameterGeometry;
     else if ( sipCpp->type() == QgsProcessingParameterFile::typeName() )
       sipType = sipType_QgsProcessingParameterFile;
     else if ( sipCpp->type() == QgsProcessingParameterMatrix::typeName() )
@@ -1248,6 +1250,36 @@ class CORE_EXPORT QgsProcessingParameters
     static QgsCoordinateReferenceSystem parameterAsPointCrs( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
 
     /**
+     * Evaluates the parameter with matching \a definition to a geometry.
+     *
+     * \since QGIS 3.16
+     */
+    static QgsGeometry parameterAsGeometry( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+
+    /**
+     * Evaluates the parameter with matching \a definition and \a value to a geometry.
+     *
+     * \since QGIS 3.16
+     */
+    static QgsGeometry parameterAsGeometry( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+
+    /**
+     * Returns the coordinate reference system associated with a geometry parameter value.
+     *
+     * \see parameterAsGeometry()
+     * \since QGIS 3.16
+     */
+    static QgsCoordinateReferenceSystem parameterAsGeometryCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+
+    /**
+     * Returns the coordinate reference system associated with an point parameter value.
+     *
+     * \see parameterAsGeometry()
+     * \since QGIS 3.16
+     */
+    static QgsCoordinateReferenceSystem parameterAsGeometryCrs( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+
+    /**
      * Evaluates the parameter with matching \a definition to a file/folder name.
      */
     static QString parameterAsFile( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
@@ -1565,6 +1597,60 @@ class CORE_EXPORT QgsProcessingParameterPoint : public QgsProcessingParameterDef
      * Creates a new parameter using the definition from a script code.
      */
     static QgsProcessingParameterPoint *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
+};
+
+/**
+ * \class QgsProcessingParameterGeometry
+ * \ingroup core
+ * A geometry parameter for processing algorithms.
+  * \since QGIS 3.16
+ */
+class CORE_EXPORT QgsProcessingParameterGeometry : public QgsProcessingParameterDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterGeometry.
+     *
+     * The \a geometryTypes argument allows for specifying a list of geometry types (see QgsWkbTypes::GeometryType) acceptable for this
+     * parameter. Passing a empty list will allow for any type of geometry.
+     */
+    QgsProcessingParameterGeometry( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), bool optional = false, const QList< int > &geometryTypes = QList< int >() );
+
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "geometry" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
+    QString type() const override { return typeName(); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString asScriptCode() const override;
+    QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+    /**
+     * Returns the parameter allowed geometries, as a list of QgsWkbTypes::GeometryType values.
+     * \see setGeometryTypes()
+     */
+    QList<int>  geometryTypes() const { return mGeomTypes; }
+
+    /**
+     * Sets the allowed  \a geometryTypes, as a list of QgsWkbTypes::GeometryType values.
+     * \see geometryTypes()
+     */
+    void setGeometryTypes( const QList<int> &geometryTypes ) { mGeomTypes = geometryTypes; }
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterGeometry *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
+  private:
+
+    QList<int> mGeomTypes;
 
 };
 
