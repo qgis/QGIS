@@ -2349,6 +2349,9 @@ static QVariant fcnGeomZ( const QVariantList &values, const QgsExpressionContext
   if ( geom.isNull() )
     return QVariant(); //or 0?
 
+  if ( !geom.constGet()->is3D() )
+    return QVariant();
+
   //if single point, return the point's z coordinate
   if ( geom.type() == QgsWkbTypes::PointGeometry && !geom.isMultipart() )
   {
