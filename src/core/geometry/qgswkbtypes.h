@@ -23,6 +23,7 @@
 #include <QString>
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
