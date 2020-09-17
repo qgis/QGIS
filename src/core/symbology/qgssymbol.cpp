@@ -1869,8 +1869,7 @@ void QgsMarkerSymbol::renderPoint( QPointF point, const QgsFeature *f, QgsRender
     {
       QPainter* symbolLayerPainter = symbolContext.renderContext().painterForSymbolLayer( symbolLayer );
       QPainter* painter = symbolLayerPainter != nullptr ? symbolLayerPainter : symbolContext.renderContext().painter();
-      //QgsPainterSwapper swapper( symbolContext.renderContext(), painter );
-      symbolContext.renderContext().setPainter(painter);
+      QgsPainterSwapper swapper( symbolContext.renderContext(), painter );
 
       if( symbolLayerPainter != nullptr ) QgsDebugMsg("RenderPoint, using custom painter");
 
@@ -1896,8 +1895,7 @@ void QgsMarkerSymbol::renderPoint( QPointF point, const QgsFeature *f, QgsRender
 
     QPainter* symbolLayerPainter = symbolContext.renderContext().painterForSymbolLayer( symbolLayer );
     QPainter* painter = symbolLayerPainter != nullptr ? symbolLayerPainter : symbolContext.renderContext().painter();
-    //QgsPainterSwapper swapper( symbolContext.renderContext(), painter );
-    symbolContext.renderContext().setPainter(painter);
+    QgsPainterSwapper swapper( symbolContext.renderContext(), painter );
 
     if( symbolLayerPainter != nullptr ) QgsDebugMsg("RenderPoint, using custom painter");
 
@@ -2135,8 +2133,7 @@ void QgsLineSymbol::renderPolyline( const QPolygonF &points, const QgsFeature *f
     {
       QPainter* symbolLayerPainter = symbolContext.renderContext().painterForSymbolLayer( symbolLayer );
       QPainter* painter = symbolLayerPainter != nullptr ? symbolLayerPainter : symbolContext.renderContext().painter();
-      symbolContext.renderContext().setPainter(painter);
-      //QgsPainterSwapper swapper( symbolContext.renderContext(), painter );
+      QgsPainterSwapper swapper( symbolContext.renderContext(), painter );
       if( symbolLayerPainter != nullptr )
       {
         QgsDebugMsg("RenderPolyline, using custom painter");
@@ -2168,8 +2165,7 @@ void QgsLineSymbol::renderPolyline( const QPolygonF &points, const QgsFeature *f
 
     QPainter* symbolLayerPainter = symbolContext.renderContext().painterForSymbolLayer( symbolLayer );
     QPainter* painter = symbolLayerPainter != nullptr ? symbolLayerPainter : symbolContext.renderContext().painter();
-    symbolContext.renderContext().setPainter(painter);
-    //QgsPainterSwapper swapper( symbolContext.renderContext(), painter );
+    QgsPainterSwapper swapper( symbolContext.renderContext(), painter );
 
     if( symbolLayerPainter != nullptr )
     {
@@ -2249,6 +2245,10 @@ void QgsFillSymbol::renderPolygon( const QPolygonF &points, const QVector<QPolyg
     QgsSymbolLayer *symbolLayer = mLayers.value( layerIdx );
     if ( symbolLayer && symbolLayer->enabled() && context.isSymbolLayerEnabled( symbolLayer ) )
     {
+      QPainter* symbolLayerPainter = symbolContext.renderContext().painterForSymbolLayer( symbolLayer );
+      QPainter* painter = symbolLayerPainter != nullptr ? symbolLayerPainter : symbolContext.renderContext().painter();
+      QgsPainterSwapper swapper( symbolContext.renderContext(), painter );
+
       if ( symbolLayer->type() == Fill || symbolLayer->type() == Line )
         renderPolygonUsingLayer( symbolLayer, points, rings, symbolContext );
       else
@@ -2265,6 +2265,10 @@ void QgsFillSymbol::renderPolygon( const QPolygonF &points, const QVector<QPolyg
 
     if ( !symbolLayer->enabled() || !context.isSymbolLayerEnabled( symbolLayer ) )
       continue;
+
+    QPainter* symbolLayerPainter = symbolContext.renderContext().painterForSymbolLayer( symbolLayer );
+    QPainter* painter = symbolLayerPainter != nullptr ? symbolLayerPainter : symbolContext.renderContext().painter();
+    QgsPainterSwapper swapper( symbolContext.renderContext(), painter );
 
     if ( symbolLayer->type() == Fill || symbolLayer->type() == Line )
       renderPolygonUsingLayer( symbolLayer, points, rings, symbolContext );
