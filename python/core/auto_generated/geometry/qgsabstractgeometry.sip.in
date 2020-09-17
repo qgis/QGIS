@@ -842,13 +842,17 @@ Clears any cached parameters associated with the geometry, e.g., bounding boxes
 
 struct QgsVertexId
 {
+
   enum VertexType
   {
     SegmentVertex,
-    CurveVertex
+    CurveVertex,
   };
 
-  explicit QgsVertexId( int _part = -1, int _ring = -1, int _vertex = -1, VertexType _type = SegmentVertex );
+  explicit QgsVertexId( int _part = -1, int _ring = -1, int _vertex = -1, VertexType _type = SegmentVertex ) /HoldGIL/;
+%Docstring
+Constructor for QgsVertexId.
+%End
 
   bool isValid() const  /HoldGIL/;
 %Docstring
@@ -857,14 +861,35 @@ Returns ``True`` if the vertex id is valid
 
   bool operator==( QgsVertexId other ) const /HoldGIL/;
   bool operator!=( QgsVertexId other ) const /HoldGIL/;
+
   bool partEqual( QgsVertexId o ) const /HoldGIL/;
+%Docstring
+Returns ``True`` if this vertex ID belongs to the same part as another vertex ID.
+%End
+
   bool ringEqual( QgsVertexId o ) const /HoldGIL/;
+%Docstring
+Returns ``True`` if this vertex ID belongs to the same ring as another vertex ID (i.e. the part
+and ring number are equal).
+%End
+
   bool vertexEqual( QgsVertexId o ) const /HoldGIL/;
+%Docstring
+Returns ``True`` if this vertex ID corresponds to the same vertex as another vertex ID (i.e. the part,
+ring number and vertex number are equal).
+%End
+
   bool isValid( const QgsAbstractGeometry *geom ) const /HoldGIL/;
+%Docstring
+Returns ``True`` if this vertex ID is valid for the specified ``geom``.
+%End
 
   int part;
+
   int ring;
+
   int vertex;
+
   VertexType type;
 
   SIP_PYOBJECT __repr__();

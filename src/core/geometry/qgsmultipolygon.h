@@ -31,6 +31,10 @@ class QgsPolygon;
 class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
 {
   public:
+
+    /**
+     * Constructor for an empty multipolygon geometry.
+     */
     QgsMultiPolygon() SIP_HOLDGIL;
 
 

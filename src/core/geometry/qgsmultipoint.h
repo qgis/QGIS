@@ -29,8 +29,11 @@ email                : marco.hugentobler at sourcepole dot com
 class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
 {
   public:
-    QgsMultiPoint() SIP_HOLDGIL;
 
+    /**
+     * Constructor for an empty multipoint geometry.
+     */
+    QgsMultiPoint() SIP_HOLDGIL;
 
 #ifndef SIP_RUN
 

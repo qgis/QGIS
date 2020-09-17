@@ -35,6 +35,10 @@
 class CORE_EXPORT QgsQuadrilateral
 {
   public:
+
+    /**
+     * Constructor for an empty quadrilateral geometry.
+     */
     QgsQuadrilateral() SIP_HOLDGIL;
 
     /**

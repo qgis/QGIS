@@ -21,7 +21,11 @@ Multi polygon geometry collection.
 #include "qgsmultipolygon.h"
 %End
   public:
+
     QgsMultiPolygon() /HoldGIL/;
+%Docstring
+Constructor for an empty multipolygon geometry.
+%End
 
 
 

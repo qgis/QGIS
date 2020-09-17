@@ -33,6 +33,10 @@
 class CORE_EXPORT QgsTriangle : public QgsPolygon
 {
   public:
+
+    /**
+     * Constructor for an empty triangle geometry.
+     */
     QgsTriangle() SIP_HOLDGIL;
 
     /**

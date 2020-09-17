@@ -35,7 +35,13 @@ class QgsPoint;
 class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
 {
   public:
+
+
+    /**
+     * Constructor for an empty geometry collection.
+     */
     QgsGeometryCollection() SIP_HOLDGIL;
+
     QgsGeometryCollection( const QgsGeometryCollection &c );
     QgsGeometryCollection &operator=( const QgsGeometryCollection &c );
     ~QgsGeometryCollection() override;
