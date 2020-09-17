@@ -1394,6 +1394,9 @@ int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
   if ( ! sProjectFileName.isEmpty() )
   {
+    // in case the project contains broken layers, interactive
+    // "Handle Bad Layers" is displayed that could be blocked by splash screen
+    mypSplash->hide();
     qgis->openProject( sProjectFileName );
   }
 
