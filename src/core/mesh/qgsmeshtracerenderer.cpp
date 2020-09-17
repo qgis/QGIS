@@ -19,6 +19,11 @@
 #include "qgsmeshlayerrenderer.h"
 ///@cond PRIVATE
 
+#ifndef M_DEG2RAD
+#define M_DEG2RAD 0.0174532925
+#endif
+
+
 QgsVector QgsMeshVectorValueInterpolator::vectorValue( const QgsPointXY &point ) const
 {
   if ( mCacheFaceIndex != -1 && mCacheFaceIndex < mTriangularMesh.triangles().count() )
@@ -268,7 +273,7 @@ void QgsMeshStreamField::updateSize( const QgsRenderContext &renderContext )
   }
   catch ( QgsCsException &cse )
   {
-    Q_UNUSED( cse );
+    Q_UNUSED( cse )
     //if the transform fails, consider the whole map
     layerExtent = mMapExtent;
   }
@@ -288,17 +293,11 @@ void QgsMeshStreamField::updateSize( const QgsRenderContext &renderContext )
     return;
   }
 
-  QgsPointXY interestZoneTopLeft;
-  QgsPointXY interestZoneBottomRight;
 
-  interestZoneTopLeft = deviceMapToPixel.transform( QgsPointXY( interestZoneExtent.xMinimum(), interestZoneExtent.yMaximum() ) );
-  interestZoneBottomRight = deviceMapToPixel.transform( QgsPointXY( interestZoneExtent.xMaximum(), interestZoneExtent.yMinimum() ) );
-
-
-  mFieldTopLeftInDeviceCoordinates = interestZoneTopLeft.toQPointF().toPoint();
-  QPoint mFieldBottomRightInDeviceCoordinates = interestZoneBottomRight.toQPointF().toPoint();
-  int fieldWidthInDeviceCoordinate = mFieldBottomRightInDeviceCoordinates.x() - mFieldTopLeftInDeviceCoordinates.x();
-  int fieldHeightInDeviceCoordinate = mFieldBottomRightInDeviceCoordinates.y() - mFieldTopLeftInDeviceCoordinates.y();
+  QgsRectangle fieldInterestZoneInDeviceCoordinates = QgsMeshLayerUtils::boundingBoxToScreenRectangle( deviceMapToPixel, interestZoneExtent );
+  mFieldTopLeftInDeviceCoordinates = QPoint( int( fieldInterestZoneInDeviceCoordinates.xMinimum() ), int( fieldInterestZoneInDeviceCoordinates.yMinimum() ) );
+  int fieldWidthInDeviceCoordinate = int( fieldInterestZoneInDeviceCoordinates.width() );
+  int fieldHeightInDeviceCoordinate = int ( fieldInterestZoneInDeviceCoordinates.height() );
 
   int fieldWidth = int( fieldWidthInDeviceCoordinate / mFieldResolution );
   int fieldHeight = int( fieldHeightInDeviceCoordinate / mFieldResolution );
@@ -319,10 +318,9 @@ void QgsMeshStreamField::updateSize( const QgsRenderContext &renderContext )
     mFieldSize.setHeight( fieldHeight );
   }
 
-
   double mapUnitPerFieldPixel;
   if ( interestZoneExtent.width() > 0 )
-    mapUnitPerFieldPixel = interestZoneExtent.width() / fieldWidthInDeviceCoordinate * mFieldResolution;
+    mapUnitPerFieldPixel = deviceMapToPixel.mapUnitsPerPixel() * mFieldResolution * mFieldSize.width() / ( fieldWidthInDeviceCoordinate / mFieldResolution ) ;
   else
     mapUnitPerFieldPixel = 1e-8;
 
@@ -341,7 +339,9 @@ void QgsMeshStreamField::updateSize( const QgsRenderContext &renderContext )
                                     xc,
                                     yc,
                                     fieldWidth,
-                                    fieldHeight, 0 );
+                                    fieldHeight,
+                                    deviceMapToPixel.mapRotation()
+                                  );
 
   initField();
   mValid = true;
@@ -363,8 +363,6 @@ bool QgsMeshStreamField::isValid() const
 
 void QgsMeshStreamField::addTrace( QgsPointXY startPoint )
 {
-  QPoint sp;
-  sp = mMapToFieldPixel.transform( startPoint ).toQPointF().toPoint();
   addTrace( mMapToFieldPixel.transform( startPoint ).toQPointF().toPoint() );
 }
 
@@ -462,8 +460,10 @@ void QgsMeshStreamField::addTrace( QPoint startPixel )
     /* nondimensional value :  Vu=2 when the particle need dt=1 to go through a pixel with the mMagMax magnitude
      * The nondimensional size of the side of a pixel is 2
      */
+    vector = vector.rotateBy( -mMapToFieldPixel.mapRotation() * M_DEG2RAD );
     QgsVector vu = vector / mMaximumMagnitude * 2;
     data.magnitude = vector.length();
+
     double Vx = vu.x();
     double Vy = vu.y();
     double Vu = data.magnitude / mMaximumMagnitude * 2; //nondimensional vector magnitude
