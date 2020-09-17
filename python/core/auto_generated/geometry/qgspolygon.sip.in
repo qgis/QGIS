@@ -22,9 +22,9 @@ Polygon geometry type.
 #include "qgspolygon.h"
 %End
   public:
-    QgsPolygon();
+    QgsPolygon() /HoldGIL/;
 
-    QgsPolygon( QgsLineString *exterior /Transfer/, const QList< QgsLineString * > &rings /Transfer/ = QList< QgsLineString * >() );
+    QgsPolygon( QgsLineString *exterior /Transfer/, const QList< QgsLineString * > &rings /Transfer/ = QList< QgsLineString * >() ) /HoldGIL/;
 %Docstring
 Constructor for QgsPolygon, with the specified ``exterior`` ring and interior ``rings``.
 
@@ -33,7 +33,7 @@ Ownership of ``exterior`` and ``rings`` is transferred to the polygon.
 .. versionadded:: 3.14
 %End
 
-    virtual QString geometryType() const;
+    virtual QString geometryType() const /HoldGIL/;
 
     virtual QgsPolygon *clone() const /Factory/;
 

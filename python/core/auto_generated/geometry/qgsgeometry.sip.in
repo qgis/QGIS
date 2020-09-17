@@ -80,7 +80,7 @@ raw geometry primitive, such as the point, line, polygon, curve or other geometr
       SplitCannotSplitPoint,
     };
 
-    QgsGeometry();
+    QgsGeometry() /HoldGIL/;
 %Docstring
 Constructor
 %End
@@ -102,7 +102,7 @@ geom is transferred.
 
     virtual ~QgsGeometry();
 
-    const QgsAbstractGeometry *constGet() const;
+    const QgsAbstractGeometry *constGet() const /HoldGIL/;
 %Docstring
 Returns a non-modifiable (const) reference to the underlying abstract geometry primitive.
 
@@ -158,7 +158,7 @@ Sets the underlying geometry store. Ownership of geometry is transferred.
 .. versionadded:: 3.0
 %End
 
-    bool isNull() const;
+    bool isNull() const /HoldGIL/;
 %Docstring
 Returns ``True`` if the geometry is null (ie, contains no underlying geometry
 accessible via :py:func:`~QgsGeometry.geometry` ).
@@ -174,7 +174,7 @@ accessible via :py:func:`~QgsGeometry.geometry` ).
 %Docstring
 Creates a new geometry from a WKT string
 %End
-    static QgsGeometry fromPointXY( const QgsPointXY &point );
+    static QgsGeometry fromPointXY( const QgsPointXY &point ) /HoldGIL/;
 %Docstring
 Creates a new geometry from a QgsPointXY object
 %End
@@ -222,7 +222,7 @@ Creates a new geometry from a :py:class:`QgsPolygon`
 %Docstring
 Creates a new geometry from a :py:class:`QgsMultiPolygon`
 %End
-    static QgsGeometry fromRect( const QgsRectangle &rect );
+    static QgsGeometry fromRect( const QgsRectangle &rect ) /HoldGIL/;
 %Docstring
 Creates a new geometry from a :py:class:`QgsRectangle`
 %End
@@ -257,14 +257,14 @@ Set the geometry, feeding in the buffer containing OGC Well-Known Binary
 .. versionadded:: 3.0
 %End
 
-    QgsWkbTypes::Type wkbType() const;
+    QgsWkbTypes::Type wkbType() const /HoldGIL/;
 %Docstring
 Returns type of the geometry as a WKB type (point / linestring / polygon etc.)
 
 .. seealso:: :py:func:`type`
 %End
 
-    QgsWkbTypes::GeometryType type() const;
+    QgsWkbTypes::GeometryType type() const /HoldGIL/;
 %Docstring
 Returns type of the geometry as a QgsWkbTypes.GeometryType
 
@@ -280,7 +280,7 @@ return ``True`` for :py:func:`~QgsGeometry.isEmpty`.
 .. seealso:: :py:func:`isNull`
 %End
 
-    bool isMultipart() const;
+    bool isMultipart() const /HoldGIL/;
 %Docstring
 Returns ``True`` if WKB of the geometry is of WKBMulti* type
 %End
@@ -1832,7 +1832,7 @@ Returns contents of the geometry as a list of geometries
 .. versionadded:: 1.1
 %End
 
-    QPointF asQPointF() const;
+    QPointF asQPointF() const /HoldGIL/;
 %Docstring
 Returns contents of the geometry as a QPointF if wkbType is WKBPoint,
 otherwise returns a null QPointF.
@@ -1840,7 +1840,7 @@ otherwise returns a null QPointF.
 .. versionadded:: 2.7
 %End
 
-    QPolygonF asQPolygonF() const;
+    QPolygonF asQPolygonF() const /HoldGIL/;
 %Docstring
 Returns contents of the geometry as a QPolygonF.
 
@@ -2091,7 +2091,7 @@ Returns -1 if a corresponding vertex could not be found.
 .. versionadded:: 2.10
 %End
 
-    QString lastError() const;
+    QString lastError() const /HoldGIL/;
 %Docstring
 Returns an error string referring to the last error encountered
 either when this geometry was created or when an operation
@@ -2102,7 +2102,7 @@ was performed on the geometry.
 
 
 
-    static QgsGeometry fromQPointF( QPointF point );
+    static QgsGeometry fromQPointF( QPointF point ) /HoldGIL/;
 %Docstring
 Construct geometry from a QPointF
 

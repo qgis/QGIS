@@ -31,7 +31,7 @@ class QgsPolygon;
 class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
 {
   public:
-    QgsMultiPolygon();
+    QgsMultiPolygon() SIP_HOLDGIL;
 
 
 #ifndef SIP_RUN
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
     const QgsPolygon *polygonN( int index ) const;
 #endif
 
-    QString geometryType() const override;
+    QString geometryType() const override SIP_HOLDGIL;
     void clear() override;
     QgsMultiPolygon *clone() const override SIP_FACTORY;
     bool fromWkt( const QString &wkt ) override;

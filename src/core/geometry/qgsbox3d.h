@@ -40,103 +40,103 @@ class CORE_EXPORT QgsBox3d
     /**
      * Constructor for QgsBox3D which accepts the ranges of x/y/z coordinates.
      */
-    QgsBox3d( double xmin = 0, double ymin = 0, double zmin = 0, double xmax = 0, double ymax = 0, double zmax = 0 );
+    QgsBox3d( double xmin = 0, double ymin = 0, double zmin = 0, double xmax = 0, double ymax = 0, double zmax = 0 ) SIP_HOLDGIL;
 
     /**
      * Constructs a QgsBox3D from two points representing opposite corners of the box.
      * The box is normalized after construction.
      */
-    QgsBox3d( const QgsPoint &p1, const QgsPoint &p2 );
+    QgsBox3d( const QgsPoint &p1, const QgsPoint &p2 ) SIP_HOLDGIL;
 
     /**
      * Constructs a QgsBox3D from a rectangle.
      * Z Minimum and Z Maximum are set to 0.0.
      */
-    QgsBox3d( const QgsRectangle &rect );
+    QgsBox3d( const QgsRectangle &rect ) SIP_HOLDGIL;
 
     /**
      * Sets the minimum \a x value.
      * \see xMinimum()
      * \see setXMaximum()
      */
-    void setXMinimum( double x );
+    void setXMinimum( double x ) SIP_HOLDGIL;
 
     /**
      * Sets the maximum \a x value.
      * \see xMaximum()
      * \see setXMinimum()
      */
-    void setXMaximum( double x );
+    void setXMaximum( double x ) SIP_HOLDGIL;
 
     /**
      * Returns the minimum x value.
      * \see setXMinimum()
      * \see xMaximum()
      */
-    double xMinimum() const { return mBounds2d.xMinimum(); }
+    double xMinimum() const SIP_HOLDGIL { return mBounds2d.xMinimum(); }
 
     /**
      * Returns the maximum x value.
      * \see setXMaximum()
      * \see xMinimum()
      */
-    double xMaximum() const { return mBounds2d.xMaximum(); }
+    double xMaximum() const SIP_HOLDGIL { return mBounds2d.xMaximum(); }
 
     /**
      * Sets the minimum \a y value.
      * \see yMinimum()
      * \see setYMaximum()
      */
-    void setYMinimum( double y );
+    void setYMinimum( double y ) SIP_HOLDGIL;
 
     /**
      * Sets the maximum \a y value.
      * \see yMaximum()
      * \see setYMinimum()
      */
-    void setYMaximum( double y );
+    void setYMaximum( double y ) SIP_HOLDGIL;
 
     /**
      * Returns the minimum y value.
      * \see setYMinimum()
      * \see yMaximum()
      */
-    double yMinimum() const { return mBounds2d.yMinimum(); }
+    double yMinimum() const SIP_HOLDGIL { return mBounds2d.yMinimum(); }
 
     /**
      * Returns the maximum y value.
      * \see setYMaximum()
      * \see yMinimum()
      */
-    double yMaximum() const { return mBounds2d.yMaximum(); }
+    double yMaximum() const SIP_HOLDGIL { return mBounds2d.yMaximum(); }
 
     /**
      * Sets the minimum \a z value.
      * \see zMinimum()
      * \see setZMaximum()
      */
-    void setZMinimum( double z );
+    void setZMinimum( double z ) SIP_HOLDGIL;
 
     /**
      * Sets the maximum \a z value.
      * \see zMaximum()
      * \see setZMinimum()
      */
-    void setZMaximum( double z );
+    void setZMaximum( double z ) SIP_HOLDGIL;
 
     /**
      * Returns the minimum z value.
      * \see setZMinimum()
      * \see zMaximum()
      */
-    double zMinimum() const { return mZmin; }
+    double zMinimum() const SIP_HOLDGIL { return mZmin; }
 
     /**
      * Returns the maximum z value.
      * \see setZMaximum()
      * \see zMinimum()
      */
-    double zMaximum() const { return mZmax; }
+    double zMaximum() const SIP_HOLDGIL { return mZmax; }
 
     /**
      * Normalize the box so it has non-negative width/height/depth.
@@ -148,26 +148,26 @@ class CORE_EXPORT QgsBox3d
      * \see height()
      * \see depth()
      */
-    double width() const { return mBounds2d.width(); }
+    double width() const SIP_HOLDGIL { return mBounds2d.width(); }
 
     /**
      * Returns the height of the box.
      * \see width()
      * \see depth()
      */
-    double height() const { return mBounds2d.height(); }
+    double height() const SIP_HOLDGIL { return mBounds2d.height(); }
 
     /**
      * Returns the depth of the box.
      * \see width()
      * \see height()
      */
-    double depth() const { return mZmax - mZmin; }
+    double depth() const SIP_HOLDGIL { return mZmax - mZmin; }
 
     /**
      * Returns the volume of the box.
      */
-    double volume() const { return mBounds2d.area() * ( mZmax - mZmin ); }
+    double volume() const SIP_HOLDGIL { return mBounds2d.area() * ( mZmax - mZmin ); }
 
     /**
      * Returns the intersection of this box and another 3D box.
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsBox3d
      * Returns TRUE if the box can be considered a 2-dimensional box, i.e.
      * it has equal minimum and maximum z values.
      */
-    bool is2d() const;
+    bool is2d() const SIP_HOLDGIL;
 
     /**
      * Returns TRUE if box intersects with another box.

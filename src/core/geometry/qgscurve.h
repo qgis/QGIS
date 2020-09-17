@@ -67,12 +67,12 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
     /**
      * Returns TRUE if the curve is closed.
      */
-    virtual bool isClosed() const;
+    virtual bool isClosed() const SIP_HOLDGIL;
 
     /**
      * Returns TRUE if the curve is a ring.
      */
-    virtual bool isRing() const;
+    virtual bool isRing() const SIP_HOLDGIL;
 
     /**
      * Returns a new line string geometry corresponding to a segmentized approximation

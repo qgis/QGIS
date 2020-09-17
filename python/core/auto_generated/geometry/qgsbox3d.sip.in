@@ -28,24 +28,24 @@ extent of a geometry or collection of geometries.
 %End
   public:
 
-    QgsBox3d( double xmin = 0, double ymin = 0, double zmin = 0, double xmax = 0, double ymax = 0, double zmax = 0 );
+    QgsBox3d( double xmin = 0, double ymin = 0, double zmin = 0, double xmax = 0, double ymax = 0, double zmax = 0 ) /HoldGIL/;
 %Docstring
 Constructor for QgsBox3D which accepts the ranges of x/y/z coordinates.
 %End
 
-    QgsBox3d( const QgsPoint &p1, const QgsPoint &p2 );
+    QgsBox3d( const QgsPoint &p1, const QgsPoint &p2 ) /HoldGIL/;
 %Docstring
 Constructs a QgsBox3D from two points representing opposite corners of the box.
 The box is normalized after construction.
 %End
 
-    QgsBox3d( const QgsRectangle &rect );
+    QgsBox3d( const QgsRectangle &rect ) /HoldGIL/;
 %Docstring
 Constructs a QgsBox3D from a rectangle.
 Z Minimum and Z Maximum are set to 0.0.
 %End
 
-    void setXMinimum( double x );
+    void setXMinimum( double x ) /HoldGIL/;
 %Docstring
 Sets the minimum ``x`` value.
 
@@ -54,7 +54,7 @@ Sets the minimum ``x`` value.
 .. seealso:: :py:func:`setXMaximum`
 %End
 
-    void setXMaximum( double x );
+    void setXMaximum( double x ) /HoldGIL/;
 %Docstring
 Sets the maximum ``x`` value.
 
@@ -63,7 +63,7 @@ Sets the maximum ``x`` value.
 .. seealso:: :py:func:`setXMinimum`
 %End
 
-    double xMinimum() const;
+    double xMinimum() const /HoldGIL/;
 %Docstring
 Returns the minimum x value.
 
@@ -72,7 +72,7 @@ Returns the minimum x value.
 .. seealso:: :py:func:`xMaximum`
 %End
 
-    double xMaximum() const;
+    double xMaximum() const /HoldGIL/;
 %Docstring
 Returns the maximum x value.
 
@@ -81,7 +81,7 @@ Returns the maximum x value.
 .. seealso:: :py:func:`xMinimum`
 %End
 
-    void setYMinimum( double y );
+    void setYMinimum( double y ) /HoldGIL/;
 %Docstring
 Sets the minimum ``y`` value.
 
@@ -90,7 +90,7 @@ Sets the minimum ``y`` value.
 .. seealso:: :py:func:`setYMaximum`
 %End
 
-    void setYMaximum( double y );
+    void setYMaximum( double y ) /HoldGIL/;
 %Docstring
 Sets the maximum ``y`` value.
 
@@ -99,7 +99,7 @@ Sets the maximum ``y`` value.
 .. seealso:: :py:func:`setYMinimum`
 %End
 
-    double yMinimum() const;
+    double yMinimum() const /HoldGIL/;
 %Docstring
 Returns the minimum y value.
 
@@ -108,7 +108,7 @@ Returns the minimum y value.
 .. seealso:: :py:func:`yMaximum`
 %End
 
-    double yMaximum() const;
+    double yMaximum() const /HoldGIL/;
 %Docstring
 Returns the maximum y value.
 
@@ -117,7 +117,7 @@ Returns the maximum y value.
 .. seealso:: :py:func:`yMinimum`
 %End
 
-    void setZMinimum( double z );
+    void setZMinimum( double z ) /HoldGIL/;
 %Docstring
 Sets the minimum ``z`` value.
 
@@ -126,7 +126,7 @@ Sets the minimum ``z`` value.
 .. seealso:: :py:func:`setZMaximum`
 %End
 
-    void setZMaximum( double z );
+    void setZMaximum( double z ) /HoldGIL/;
 %Docstring
 Sets the maximum ``z`` value.
 
@@ -135,7 +135,7 @@ Sets the maximum ``z`` value.
 .. seealso:: :py:func:`setZMinimum`
 %End
 
-    double zMinimum() const;
+    double zMinimum() const /HoldGIL/;
 %Docstring
 Returns the minimum z value.
 
@@ -144,7 +144,7 @@ Returns the minimum z value.
 .. seealso:: :py:func:`zMaximum`
 %End
 
-    double zMaximum() const;
+    double zMaximum() const /HoldGIL/;
 %Docstring
 Returns the maximum z value.
 
@@ -158,7 +158,7 @@ Returns the maximum z value.
 Normalize the box so it has non-negative width/height/depth.
 %End
 
-    double width() const;
+    double width() const /HoldGIL/;
 %Docstring
 Returns the width of the box.
 
@@ -167,7 +167,7 @@ Returns the width of the box.
 .. seealso:: :py:func:`depth`
 %End
 
-    double height() const;
+    double height() const /HoldGIL/;
 %Docstring
 Returns the height of the box.
 
@@ -176,7 +176,7 @@ Returns the height of the box.
 .. seealso:: :py:func:`depth`
 %End
 
-    double depth() const;
+    double depth() const /HoldGIL/;
 %Docstring
 Returns the depth of the box.
 
@@ -185,7 +185,7 @@ Returns the depth of the box.
 .. seealso:: :py:func:`height`
 %End
 
-    double volume() const;
+    double volume() const /HoldGIL/;
 %Docstring
 Returns the volume of the box.
 %End
@@ -195,7 +195,7 @@ Returns the volume of the box.
 Returns the intersection of this box and another 3D box.
 %End
 
-    bool is2d() const;
+    bool is2d() const /HoldGIL/;
 %Docstring
 Returns ``True`` if the box can be considered a 2-dimensional box, i.e.
 it has equal minimum and maximum z values.

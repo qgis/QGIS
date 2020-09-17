@@ -32,7 +32,7 @@ class QgsSurface;
 class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
 {
   public:
-    QgsMultiSurface();
+    QgsMultiSurface() SIP_HOLDGIL;
 
 
 #ifndef SIP_RUN
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
     const QgsSurface *surfaceN( int index ) const;
 #endif
 
-    QString geometryType() const override;
+    QString geometryType() const override SIP_HOLDGIL;
     void clear() override;
     QgsMultiSurface *clone() const override SIP_FACTORY;
     QgsMultiSurface *toCurveType() const override SIP_FACTORY;

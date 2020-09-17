@@ -29,7 +29,7 @@ email                : marco.hugentobler at sourcepole dot com
 class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
 {
   public:
-    QgsMultiPoint();
+    QgsMultiPoint() SIP_HOLDGIL;
 
 
 #ifndef SIP_RUN
@@ -83,13 +83,13 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
     QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     json asJsonObject( int precision = 17 ) const override SIP_SKIP;
-    int nCoordinates() const override;
+    int nCoordinates() const override SIP_HOLDGIL;
     bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
     bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
     int vertexNumberFromVertexId( QgsVertexId id ) const override;
     double segmentLength( QgsVertexId startVertex ) const override;
-    bool isValid( QString &error SIP_OUT, int flags = 0 ) const override;
+    bool isValid( QString &error SIP_OUT, int flags = 0 ) const override SIP_HOLDGIL;
 
 #ifndef SIP_RUN
     void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;

@@ -57,12 +57,12 @@ Returns the end point of the curve.
 .. seealso:: :py:func:`startPoint`
 %End
 
-    virtual bool isClosed() const;
+    virtual bool isClosed() const /HoldGIL/;
 %Docstring
 Returns ``True`` if the curve is closed.
 %End
 
-    virtual bool isRing() const;
+    virtual bool isRing() const /HoldGIL/;
 %Docstring
 Returns ``True`` if the curve is a ring.
 %End

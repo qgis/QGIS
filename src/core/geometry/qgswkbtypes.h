@@ -153,7 +153,7 @@ class CORE_EXPORT QgsWkbTypes
      * \see curveType()
      * \see flatType()
      */
-    static Type singleType( Type type )
+    static Type singleType( Type type ) SIP_HOLDGIL
     {
       switch ( type )
       {
@@ -298,7 +298,7 @@ class CORE_EXPORT QgsWkbTypes
      * \see curveType()
      * \see flatType()
      */
-    static Type multiType( Type type )
+    static Type multiType( Type type ) SIP_HOLDGIL
     {
       switch ( type )
       {
@@ -447,7 +447,7 @@ class CORE_EXPORT QgsWkbTypes
      *
      * \since QGIS 3.10
      */
-    static Type curveType( Type type )
+    static Type curveType( Type type ) SIP_HOLDGIL
     {
       switch ( type )
       {
@@ -588,7 +588,7 @@ class CORE_EXPORT QgsWkbTypes
      *
      * \since QGIS 3.14
      */
-    static Type linearType( Type type )
+    static Type linearType( Type type ) SIP_HOLDGIL
     {
       switch ( type )
       {
@@ -698,7 +698,7 @@ class CORE_EXPORT QgsWkbTypes
      * \see multiType()
      * \see curveType()
      */
-    static Type flatType( Type type )
+    static Type flatType( Type type ) SIP_HOLDGIL
     {
       switch ( type )
       {
@@ -797,7 +797,7 @@ class CORE_EXPORT QgsWkbTypes
     }
 
     //! Returns the modified input geometry type according to hasZ / hasM
-    static Type zmType( Type type, bool hasZ, bool hasM )
+    static Type zmType( Type type, bool hasZ, bool hasM ) SIP_HOLDGIL
     {
       type = flatType( type );
       if ( hasZ )
@@ -818,7 +818,7 @@ class CORE_EXPORT QgsWkbTypes
      * \see isMultiType()
      * \see singleType()
      */
-    static bool isSingleType( Type type )
+    static bool isSingleType( Type type ) SIP_HOLDGIL
     {
       return ( type != Unknown && !isMultiType( type ) );
     }
@@ -828,7 +828,7 @@ class CORE_EXPORT QgsWkbTypes
      * \see isSingleType()
      * \see multiType()
      */
-    static bool isMultiType( Type type )
+    static bool isMultiType( Type type ) SIP_HOLDGIL
     {
       switch ( type )
       {
@@ -877,7 +877,7 @@ class CORE_EXPORT QgsWkbTypes
      * Returns TRUE if the WKB type is a curved type or can contain curved geometries.
      * \since QGIS 2.14
      */
-    static bool isCurvedType( Type type )
+    static bool isCurvedType( Type type ) SIP_HOLDGIL
     {
       switch ( flatType( type ) )
       {
@@ -900,7 +900,7 @@ class CORE_EXPORT QgsWkbTypes
      * Invalid geometry types will return a dimension of 0.
      * \see coordDimensions()
      */
-    static int wkbDimensions( Type type )
+    static int wkbDimensions( Type type ) SIP_HOLDGIL
     {
       GeometryType gtype = geometryType( type );
       switch ( gtype )
@@ -921,7 +921,7 @@ class CORE_EXPORT QgsWkbTypes
      * \see wkbDimensions()
      * \since QGIS 2.14
      */
-    static int coordDimensions( Type type )
+    static int coordDimensions( Type type ) SIP_HOLDGIL
     {
       if ( type == Unknown || type == NoGeometry )
         return 0;
@@ -934,7 +934,7 @@ class CORE_EXPORT QgsWkbTypes
      * PolygonGeometry geometry type.
      * GeometryCollections are reported as QgsWkbTypes::UnknownGeometry.
      */
-    static GeometryType geometryType( Type type )
+    static GeometryType geometryType( Type type ) SIP_HOLDGIL
     {
       switch ( type )
       {
@@ -1015,7 +1015,7 @@ class CORE_EXPORT QgsWkbTypes
     /**
      * Returns a display string type for a WKB type, e.g., the geometry name used in WKT geometry representations.
      */
-    static QString displayString( Type type );
+    static QString displayString( Type type ) SIP_HOLDGIL;
 
     /**
      * Returns a display string for a geometry type.
@@ -1031,7 +1031,7 @@ class CORE_EXPORT QgsWkbTypes
      *
      * \since QGIS 3.0
      */
-    static QString geometryDisplayString( GeometryType type );
+    static QString geometryDisplayString( GeometryType type ) SIP_HOLDGIL;
 
     /**
      * Tests whether a WKB type contains the z-dimension.
@@ -1039,7 +1039,7 @@ class CORE_EXPORT QgsWkbTypes
      * \see addZ()
      * \see hasM()
      */
-    static bool hasZ( Type type )
+    static bool hasZ( Type type ) SIP_HOLDGIL
     {
       switch ( type )
       {
@@ -1089,7 +1089,7 @@ class CORE_EXPORT QgsWkbTypes
      * \see addM()
      * \see hasZ()
      */
-    static bool hasM( Type type )
+    static bool hasM( Type type ) SIP_HOLDGIL
     {
       switch ( type )
       {
@@ -1135,7 +1135,7 @@ class CORE_EXPORT QgsWkbTypes
      * \see hasZ()
      * \since QGIS 2.12
      */
-    static Type addZ( Type type )
+    static Type addZ( Type type ) SIP_HOLDGIL
     {
       if ( hasZ( type ) )
         return type;
@@ -1160,7 +1160,7 @@ class CORE_EXPORT QgsWkbTypes
      * \see hasM()
      * \since QGIS 2.12
      */
-    static Type addM( Type type )
+    static Type addM( Type type ) SIP_HOLDGIL
     {
       if ( hasM( type ) )
         return type;
@@ -1191,7 +1191,7 @@ class CORE_EXPORT QgsWkbTypes
      * \see addZ()
      * \since QGIS 2.14
      */
-    static Type dropZ( Type type )
+    static Type dropZ( Type type ) SIP_HOLDGIL
     {
       if ( !hasZ( type ) )
         return type;
@@ -1209,7 +1209,7 @@ class CORE_EXPORT QgsWkbTypes
      * \see addM()
      * \since QGIS 2.14
      */
-    static Type dropM( Type type )
+    static Type dropM( Type type ) SIP_HOLDGIL
     {
       if ( !hasM( type ) )
         return type;
@@ -1225,7 +1225,7 @@ class CORE_EXPORT QgsWkbTypes
      * \param type The type to convert
      * \returns the 25D version of the type or Unknown
      */
-    static Type to25D( Type type )
+    static Type to25D( Type type ) SIP_HOLDGIL
     {
       QgsWkbTypes::Type flat = flatType( type );
 

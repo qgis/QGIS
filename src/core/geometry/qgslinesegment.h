@@ -37,25 +37,25 @@ class CORE_EXPORT QgsLineSegment2D
      * Constructor for a QgsLineSegment2D from the specified \a start point to
      * the \a end point.
      */
-    QgsLineSegment2D( const QgsPointXY &start, const QgsPointXY &end )
-      : mStart( start )
-      , mEnd( end )
+    QgsLineSegment2D( const QgsPointXY &start, const QgsPointXY &end ) SIP_HOLDGIL
+  : mStart( start )
+    , mEnd( end )
     {}
 
     /**
      * Constructor for a QgsLineSegment2D from the point (\a x1, \a y2) to
      * (\a x2, \a y2).
      */
-    QgsLineSegment2D( double x1, double y1, double x2, double y2 )
-      : mStart( QgsPointXY( x1, y1 ) )
-      , mEnd( QgsPointXY( x2, y2 ) )
+    QgsLineSegment2D( double x1, double y1, double x2, double y2 ) SIP_HOLDGIL
+  : mStart( QgsPointXY( x1, y1 ) )
+    , mEnd( QgsPointXY( x2, y2 ) )
     {}
 
     /**
      * Returns the length of the segment.
      * \see lengthSquared()
      */
-    double length() const
+    double length() const SIP_HOLDGIL
     {
       return std::sqrt( ( mStart.x() - mEnd.x() ) * ( mStart.x() - mEnd.x() ) + ( mStart.y() - mEnd.y() ) * ( mStart.y() - mEnd.y() ) );
     }
@@ -64,7 +64,7 @@ class CORE_EXPORT QgsLineSegment2D
      * Returns the squared length of the segment.
      * \see length()
      */
-    double lengthSquared() const
+    double lengthSquared() const SIP_HOLDGIL
     {
       return ( mStart.x() - mEnd.x() ) * ( mStart.x() - mEnd.x() ) + ( mStart.y() - mEnd.y() ) * ( mStart.y() - mEnd.y() );
     }
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsLineSegment2D
      * \see start()
      * \see startY()
      */
-    double startX() const
+    double startX() const SIP_HOLDGIL
     {
       return mStart.x();
     }
@@ -84,7 +84,7 @@ class CORE_EXPORT QgsLineSegment2D
      * \see start()
      * \see startX()
      */
-    double startY() const
+    double startY() const SIP_HOLDGIL
     {
       return mStart.y();
     }
@@ -94,7 +94,7 @@ class CORE_EXPORT QgsLineSegment2D
      * \see end()
      * \see endY()
      */
-    double endX() const
+    double endX() const SIP_HOLDGIL
     {
       return mEnd.x();
     }
@@ -104,7 +104,7 @@ class CORE_EXPORT QgsLineSegment2D
      * \see end()
      * \see endX()
      */
-    double endY() const
+    double endY() const SIP_HOLDGIL
     {
       return mEnd.y();
     }
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsLineSegment2D
      * \see startX()
      * \see startY()
      */
-    QgsPointXY start() const
+    QgsPointXY start() const SIP_HOLDGIL
     {
       return mStart;
     }
@@ -126,7 +126,7 @@ class CORE_EXPORT QgsLineSegment2D
      * \see endX()
      * \see endY()
      */
-    QgsPointXY end() const
+    QgsPointXY end() const SIP_HOLDGIL
     {
       return mEnd;
     }
@@ -137,7 +137,7 @@ class CORE_EXPORT QgsLineSegment2D
      * \see setStart()
      * \see setStartY()
      */
-    void setStartX( double x )
+    void setStartX( double x ) SIP_HOLDGIL
     {
       mStart.setX( x );
     }
@@ -148,7 +148,7 @@ class CORE_EXPORT QgsLineSegment2D
      * \see setStart()
      * \see setStartX()
      */
-    void setStartY( double y )
+    void setStartY( double y ) SIP_HOLDGIL
     {
       mStart.setY( y );
     }
@@ -159,7 +159,7 @@ class CORE_EXPORT QgsLineSegment2D
      * \see setEnd()
      * \see setEndY()
      */
-    void setEndX( double x )
+    void setEndX( double x ) SIP_HOLDGIL
     {
       mEnd.setX( x );
     }
@@ -170,7 +170,7 @@ class CORE_EXPORT QgsLineSegment2D
      * \see setEnd()
      * \see setEndX()
      */
-    void setEndY( double y )
+    void setEndY( double y ) SIP_HOLDGIL
     {
       mEnd.setY( y );
     }
@@ -181,7 +181,7 @@ class CORE_EXPORT QgsLineSegment2D
      * \see setStartY()
      * \see setEnd()
      */
-    void setStart( const QgsPointXY &start )
+    void setStart( const QgsPointXY &start ) SIP_HOLDGIL
     {
       mStart = start;
     }
@@ -192,7 +192,7 @@ class CORE_EXPORT QgsLineSegment2D
      * \see setEndY()
      * \see setStart()
      */
-    void setEnd( const QgsPointXY &end )
+    void setEnd( const QgsPointXY &end ) SIP_HOLDGIL
     {
       mEnd = end;
     }
@@ -208,24 +208,24 @@ class CORE_EXPORT QgsLineSegment2D
      *
      * \see QgsGeometryUtils::leftOfLine()
      */
-    int pointLeftOfLine( const QgsPointXY &point ) const;
+    int pointLeftOfLine( const QgsPointXY &point ) const SIP_HOLDGIL;
 
     /**
      * Reverses the line segment, so that the start and end points are flipped.
      */
-    void reverse()
+    void reverse() SIP_HOLDGIL
     {
       std::swap( mStart, mEnd );
     }
 
     //! Equality operator
-    bool operator==( const QgsLineSegment2D &other ) const
+    bool operator==( const QgsLineSegment2D &other ) const SIP_HOLDGIL
     {
       return mStart == other.mStart && mEnd == other.mEnd;
     }
 
     //! Inequality operator
-    bool operator!=( const QgsLineSegment2D &other ) const
+    bool operator!=( const QgsLineSegment2D &other ) const SIP_HOLDGIL
     {
       return mStart != other.mStart || mEnd != other.mEnd;
     }

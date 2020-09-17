@@ -33,7 +33,7 @@
 class CORE_EXPORT QgsTriangle : public QgsPolygon
 {
   public:
-    QgsTriangle();
+    QgsTriangle() SIP_HOLDGIL;
 
     /**
      * Construct a QgsTriangle from three QgsPointV2.
@@ -41,7 +41,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      * \param p2 second point
      * \param p3 third point
      */
-    QgsTriangle( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3 );
+    QgsTriangle( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3 ) SIP_HOLDGIL;
 
     /**
      * Construct a QgsTriangle from three QgsPoint.
@@ -49,7 +49,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      * \param p2 second point
      * \param p3 third point
      */
-    explicit QgsTriangle( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3 );
+    explicit QgsTriangle( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3 ) SIP_HOLDGIL;
 
     /**
      * Construct a QgsTriangle from three QPointF.
@@ -57,12 +57,12 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      * \param p2 second point
      * \param p3 third point
      */
-    explicit QgsTriangle( QPointF p1, QPointF p2, QPointF p3 );
+    explicit QgsTriangle( QPointF p1, QPointF p2, QPointF p3 ) SIP_HOLDGIL;
 
-    bool operator==( const QgsTriangle &other ) const;
-    bool operator!=( const QgsTriangle &other ) const;
+    bool operator==( const QgsTriangle &other ) const SIP_HOLDGIL;
+    bool operator!=( const QgsTriangle &other ) const SIP_HOLDGIL;
 
-    QString geometryType() const override;
+    QString geometryType() const override SIP_HOLDGIL;
     QgsTriangle *clone() const override SIP_FACTORY;
     void clear() override;
 
@@ -103,7 +103,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *  \param atVertex index of the vertex
      *  \returns Coordinates of the vertex or empty QgsPoint() on error (\a atVertex < 0 or > 3).
      */
-    QgsPoint vertexAt( int atVertex ) const;
+    QgsPoint vertexAt( int atVertex ) const SIP_HOLDGIL;
 
     /**
      * Returns the three lengths of the triangle.
@@ -120,7 +120,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # []
      * \endcode
      */
-    QVector<double> lengths() const;
+    QVector<double> lengths() const SIP_HOLDGIL;
 
     /**
      * Returns the three angles of the triangle.
@@ -137,7 +137,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # []
      * \endcode
      */
-    QVector<double> angles() const;
+    QVector<double> angles() const SIP_HOLDGIL;
 
     /**
      * Convenient method checking if the geometry is degenerate (have duplicate or colinear point(s)).
@@ -160,7 +160,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # True
      *  \endcode
      */
-    bool isDegenerate();
+    bool isDegenerate() SIP_HOLDGIL;
 
     /**
      * Is the triangle isocele (two sides with the same length)?
@@ -180,7 +180,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # False
      * \endcode
      */
-    bool isIsocele( double lengthTolerance = 0.0001 ) const;
+    bool isIsocele( double lengthTolerance = 0.0001 ) const SIP_HOLDGIL;
 
     /**
      * Is the triangle equilateral (three sides with the same length)?
@@ -200,7 +200,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # False
      * \endcode
      */
-    bool isEquilateral( double lengthTolerance = 0.0001 ) const;
+    bool isEquilateral( double lengthTolerance = 0.0001 ) const SIP_HOLDGIL;
 
     /**
      * Is the triangle right-angled?
@@ -220,7 +220,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # False
      * \endcode
      */
-    bool isRight( double angleTolerance = 0.0001 ) const;
+    bool isRight( double angleTolerance = 0.0001 ) const SIP_HOLDGIL;
 
     /**
      * Is the triangle scalene (all sides have different lengths)?
@@ -240,7 +240,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # False
      * \endcode
      */
-    bool isScalene( double lengthTolerance = 0.0001 ) const;
+    bool isScalene( double lengthTolerance = 0.0001 ) const SIP_HOLDGIL;
 
     /**
      * An altitude is a segment (defined by a QgsLineString) from a vertex to the opposite side (or, if necessary, to the extension of the opposite side).
@@ -257,7 +257,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # []
      * \endcode
      */
-    QVector<QgsLineString> altitudes() const;
+    QVector<QgsLineString> altitudes() const SIP_HOLDGIL;
 
     /**
      * A median is a segment (defined by a QgsLineString) from a vertex to the midpoint of the opposite side.
@@ -274,7 +274,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # []
      * \endcode
      */
-    QVector<QgsLineString> medians() const;
+    QVector<QgsLineString> medians() const SIP_HOLDGIL;
 
     /**
      * The segment (defined by a QgsLineString) returned bisect the angle of a vertex to the opposite side.
@@ -292,7 +292,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # []
      * \endcode
      */
-    QVector<QgsLineString> bisectors( double lengthTolerance = 0.0001 ) const;
+    QVector<QgsLineString> bisectors( double lengthTolerance = 0.0001 ) const SIP_HOLDGIL;
 
     /**
      * Medial (or midpoint) triangle of a triangle ABC is the triangle with vertices at the midpoints of the triangle's sides.
@@ -309,7 +309,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # 'Triangle ( )'
      * \endcode
      */
-    QgsTriangle medial() const;
+    QgsTriangle medial() const SIP_HOLDGIL;
 
     /**
      * An orthocenter is the point of intersection of the altitudes of a triangle.
@@ -327,7 +327,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # 'Point (0 0)'
      * \endcode
      */
-    QgsPoint orthocenter( double lengthTolerance = 0.0001 ) const;
+    QgsPoint orthocenter( double lengthTolerance = 0.0001 ) const SIP_HOLDGIL;
 
     /**
      * Center of the circumscribed circle of the triangle.
@@ -344,7 +344,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # 'Point (0 0)'
      * \endcode
      */
-    QgsPoint circumscribedCenter() const;
+    QgsPoint circumscribedCenter() const SIP_HOLDGIL;
 
     /**
      * Radius of the circumscribed circle of the triangle.
@@ -361,7 +361,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # 0.0
      * \endcode
      */
-    double circumscribedRadius() const;
+    double circumscribedRadius() const SIP_HOLDGIL;
 
     /**
      * Circumscribed circle of the triangle.
@@ -378,7 +378,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # QgsCircle()
      * \endcode
      */
-    QgsCircle circumscribedCircle() const;
+    QgsCircle circumscribedCircle() const SIP_HOLDGIL;
 
     /**
      * Center of the inscribed circle of the triangle. Z dimension is
@@ -396,7 +396,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # 'Point (0 0)'
      * \endcode
      */
-    QgsPoint inscribedCenter() const;
+    QgsPoint inscribedCenter() const SIP_HOLDGIL;
 
     /**
      * Radius of the inscribed circle of the triangle.
@@ -413,7 +413,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # 0.0
      * \endcode
      */
-    double inscribedRadius() const;
+    double inscribedRadius() const SIP_HOLDGIL;
 
     /**
      * Inscribed circle of the triangle.
@@ -430,7 +430,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # QgsCircle()
      * \endcode
      */
-    QgsCircle inscribedCircle() const;
+    QgsCircle inscribedCircle() const SIP_HOLDGIL;
 
 #ifndef SIP_RUN
 

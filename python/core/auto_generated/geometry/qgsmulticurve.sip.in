@@ -45,7 +45,7 @@ An IndexError will be raised if no curve with the specified index exists.
 %End
 
 
-    virtual QString geometryType() const;
+    virtual QString geometryType() const /HoldGIL/;
 
     virtual QgsMultiCurve *clone() const /Factory/;
 
