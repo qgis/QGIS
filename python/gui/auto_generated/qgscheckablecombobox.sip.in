@@ -180,6 +180,8 @@ Selects all items.
 Removes selection from all items.
 %End
 
+  protected:
+
 };
 
 /************************************************************************

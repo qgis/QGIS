@@ -2321,7 +2321,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
       const QDomElement fieldWidgetElement = fieldConfigElement.elementsByTagName( QStringLiteral( "editWidget" ) ).at( 0 ).toElement();
 
       QString fieldName = fieldConfigElement.attribute( QStringLiteral( "name" ) );
-      mFieldConfigurationFlags[fieldName] = qgsFlagKeysToValue( fieldConfigElement.attribute( QStringLiteral( "configurationFlags" ) ), QgsField::ConfigurationFlag::DefaultFlags );
+      mFieldConfigurationFlags[fieldName] = qgsFlagKeysToValue( fieldConfigElement.attribute( QStringLiteral( "configurationFlags" ) ), QgsField::ConfigurationFlag::None );
 
       const QString widgetType = fieldWidgetElement.attribute( QStringLiteral( "type" ) );
       const QDomElement cfgElem = fieldConfigElement.elementsByTagName( QStringLiteral( "config" ) ).at( 0 ).toElement();
@@ -2339,8 +2339,8 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
     // Attributes excluded from WMS and WFS
     const QList<QPair<QString, QgsField::ConfigurationFlag>> legacyConfig
     {
-      qMakePair( QStringLiteral( "excludeAttributesWMS" ), QgsField::ConfigurationFlag::ExposeViaWms ),
-      qMakePair( QStringLiteral( "excludeAttributesWFS" ), QgsField::ConfigurationFlag::ExposeViaWfs )
+      qMakePair( QStringLiteral( "excludeAttributesWMS" ), QgsField::ConfigurationFlag::HideFromWms ),
+      qMakePair( QStringLiteral( "excludeAttributesWFS" ), QgsField::ConfigurationFlag::HideFromWfs )
     };
     for ( const auto &config : legacyConfig )
     {
@@ -2352,7 +2352,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
         {
           QString fieldName = attributeNodeList.at( i ).toElement().text();
           int index = mFields.indexFromName( fieldName );
-          setFieldConfigurationFlag( index, config.second, false );
+          setFieldConfigurationFlag( index, config.second, true );
         }
       }
     }
@@ -5503,7 +5503,7 @@ QgsField::ConfigurationFlags QgsVectorLayer::fieldConfigurationFlags( int index 
 {
 
   if ( index < 0 || index >= mFields.count() )
-    return QgsField::ConfigurationFlag::DefaultFlags;
+    return QgsField::ConfigurationFlag::None;
 
   return mFields.at( index ).configurationFlags();
 }

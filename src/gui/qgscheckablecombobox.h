@@ -25,6 +25,7 @@
 
 #include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis.h"
 
 class QEvent;
 
@@ -268,14 +269,15 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
      */
     void deselectAllOptions();
 
+  protected:
+    QgsCheckableItemModel *mModel = nullptr;
+
   private:
     void updateCheckedItems();
     void updateDisplayText();
 
     QString mSeparator;
     QString mDefaultText;
-
-    QgsCheckableItemModel *mModel = nullptr;
 
     bool mSkipHide = false;
 

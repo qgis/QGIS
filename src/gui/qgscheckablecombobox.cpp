@@ -76,8 +76,8 @@ void QgsCheckBoxDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
 
 QgsCheckableComboBox::QgsCheckableComboBox( QWidget *parent )
   : QComboBox( parent )
-  , mSeparator( QStringLiteral( ", " ) )
   , mModel( new QgsCheckableItemModel( this ) )
+  , mSeparator( QStringLiteral( ", " ) )
 {
   setModel( mModel );
   setItemDelegate( new QgsCheckBoxDelegate( this ) );
@@ -313,3 +313,4 @@ void QgsCheckableComboBox::updateDisplayText()
   text = fontMetrics.elidedText( text, Qt::ElideRight, rect.width() );
   setEditText( text );
 }
+

@@ -275,7 +275,7 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
   const QList<QgsField::ConfigurationFlag> flagList = qgsEnumMap<QgsField::ConfigurationFlag>().keys();
   for ( const QgsField::ConfigurationFlag flag : flagList )
   {
-    if ( flag == QgsField::ConfigurationFlag::None || flag == QgsField::ConfigurationFlag::DefaultFlags )
+    if ( flag == QgsField::ConfigurationFlag::None )
       continue;
 
     cb->addItemWithCheckState( QgsField::readableConfigurationFlag( flag ),
