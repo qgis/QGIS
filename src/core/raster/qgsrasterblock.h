@@ -77,7 +77,9 @@ class CORE_EXPORT QgsRasterBlock
      */
     bool isEmpty() const;
 
-    // Return data type size in bytes
+    /**
+     * Returns the size in bytes for the specified \a dataType.
+     */
     static int typeSize( int dataType ) SIP_HOLDGIL
     {
       // Modified and extended copy from GDAL
@@ -113,7 +115,9 @@ class CORE_EXPORT QgsRasterBlock
       }
     }
 
-    // Data type in bytes
+    /**
+     * Data type size in bytes.
+     */
     int dataTypeSize() const SIP_HOLDGIL
     {
       return typeSize( mDataType );
