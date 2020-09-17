@@ -3761,8 +3761,8 @@ bool QgsPostgresProvider::getGeometryDetails()
       sql = QStringLiteral(
               "SELECT t.typname FROM pg_type t inner join (SELECT pg_typeof(%1) typeof FROM %2.%3 LIMIT 1) g ON oid = g.typeof"
             ).arg( quotedIdentifier( geomCol ),
-                   quotedValue( schemaName ),
-                   quotedValue( tableName ) );
+                   quotedIdentifier( schemaName ),
+                   quotedIdentifier( tableName ) );
     }
     QgsDebugMsgLevel( QStringLiteral( "Getting the spatial column type: %1" ).arg( sql ), 2 );
 

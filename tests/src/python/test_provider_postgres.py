@@ -2984,6 +2984,43 @@ class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCas
         self.assertTrue(lines.isValid())
         self.assertTrue(polygons.isValid())
 
+    def testTrustFlag(self):
+        """Test regression https://github.com/qgis/QGIS/issues/38809"""
+
+        vl = QgsVectorLayer(
+            self.dbconn +
+            ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."editData" (geom) sql=',
+            'testTrustFlag', 'postgres')
+
+        self.assertTrue(vl.isValid())
+
+        p = QgsProject.instance()
+        d = QTemporaryDir()
+        dir_path = d.path()
+
+        self.assertTrue(p.addMapLayers([vl]))
+        project_path = os.path.join(dir_path, 'testTrustFlag.qgs')
+        self.assertTrue(p.write(project_path))
+
+        del vl
+
+        p.clear()
+        self.assertTrue(p.read(project_path))
+        vl = p.mapLayersByName('testTrustFlag')[0]
+        self.assertTrue(vl.isValid())
+        self.assertFalse(p.trustLayerMetadata())
+
+        # Set the trust flag
+        p.setTrustLayerMetadata(True)
+        self.assertTrue(p.write(project_path))
+
+        # Re-read
+        p.clear()
+        self.assertTrue(p.read(project_path))
+        self.assertTrue(p.trustLayerMetadata())
+        vl = p.mapLayersByName('testTrustFlag')[0]
+        self.assertTrue(vl.isValid())
+
 
 if __name__ == '__main__':
     unittest.main()
