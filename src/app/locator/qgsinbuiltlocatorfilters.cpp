@@ -282,7 +282,7 @@ QStringList QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string,
   QStringList expressionParts;
   QStringList completionList;
   const QgsFields fields = layer->fields();
-  QgsAttributeList subsetOfAttributes;
+  QgsAttributeList subsetOfAttributes = qgis::setToList( mDispExpression.referencedAttributeIndexes( layer->fields() ) );
   for ( const QgsField &field : fields )
   {
     if ( field.configurationFlags().testFlag( QgsField::ConfigurationFlag::NotSearchable ) )
@@ -292,7 +292,11 @@ QStringList QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string,
       continue;
 
     if ( !_fieldRestriction.isEmpty() )
-      subsetOfAttributes << layer->fields().indexFromName( field.name() );
+    {
+      int index = layer->fields().indexFromName( field.name() );
+      if ( !subsetOfAttributes.contains( index ) )
+        subsetOfAttributes << index;
+    }
 
     completionList.append( QStringLiteral( "@%1 " ).arg( field.name() ) );
     if ( field.type() == QVariant::String )
@@ -309,7 +313,8 @@ QStringList QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string,
   QString expression = QStringLiteral( "(%1)" ).arg( expressionParts.join( QStringLiteral( " ) OR ( " ) ) );
 
   QgsFeatureRequest req;
-  req.setFlags( QgsFeatureRequest::NoGeometry );
+  if ( !mDispExpression.needsGeometry() )
+    req.setFlags( QgsFeatureRequest::NoGeometry );
   req.setFilterExpression( expression );
   if ( !_fieldRestriction.isEmpty() )
     req.setSubsetOfAttributes( subsetOfAttributes );
