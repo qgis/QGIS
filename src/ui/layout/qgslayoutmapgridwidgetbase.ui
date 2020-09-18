@@ -524,7 +524,7 @@
            <widget class="QComboBox" name="mFrameDivisionsRightComboBox"/>
           </item>
           <item row="16" column="0">
-           <widget class="QLabel" name="label_7">
+           <widget class="QLabel" name="mRotatedTicksThresholdLabel">
             <property name="text">
              <string>Skip low angled ticks</string>
             </property>
@@ -690,7 +690,7 @@
            </widget>
           </item>
           <item row="15" column="0">
-           <widget class="QLabel" name="label_6">
+           <widget class="QLabel" name="mRotatedTicksLengthModeLabel">
             <property name="text">
              <string>Rotated ticks alignment</string>
             </property>
@@ -704,7 +704,7 @@
            </widget>
           </item>
           <item row="14" column="0">
-           <widget class="QLabel" name="label_8">
+           <widget class="QLabel" name="mRotatedTicksLabel">
             <property name="text">
              <string>Rotate ticks</string>
             </property>
@@ -718,7 +718,7 @@
            </widget>
           </item>
           <item row="17" column="0">
-           <widget class="QLabel" name="label_annot_corner">
+           <widget class="QLabel" name="mRotatedTicksMarginToCornerLabel">
             <property name="text">
              <string>Margin to map corner</string>
             </property>
@@ -728,6 +728,9 @@
            <widget class="QDoubleSpinBox" name="mRotatedTicksMarginToCornerSpinBox">
             <property name="toolTip">
              <string>Outwards facing ticks closer to the corners than this margin will be ignored. This only makes sense for rotated grids.</string>
+            </property>
+            <property name="suffix">
+             <string> mm</string>
             </property>
             <property name="decimals">
              <number>0</number>
@@ -762,7 +765,7 @@
          </property>
          <layout class="QGridLayout" name="gridLayout" columnstretch="0,0,0">
           <item row="17" column="0">
-           <widget class="QLabel" name="label_11">
+           <widget class="QLabel" name="mRotatedAnnotationsLabel">
             <property name="text">
              <string>Rotate annotations</string>
             </property>
@@ -770,6 +773,9 @@
           </item>
           <item row="19" column="1" colspan="2">
            <widget class="QDoubleSpinBox" name="mRotatedAnnotationsThresholdSpinBox">
+            <property name="toolTip">
+             <string>Annotations of grid lines intersecting the border below this threshold will be ignored. This only makes sense for rotated grids.</string>
+            </property>
             <property name="suffix">
              <string> °</string>
             </property>
@@ -782,7 +788,7 @@
            </widget>
           </item>
           <item row="18" column="0">
-           <widget class="QLabel" name="label_10">
+           <widget class="QLabel" name="mRotatedAnnotationsLengthModeLabel">
             <property name="text">
              <string>Rotated annotations alignment</string>
             </property>
@@ -856,7 +862,7 @@
            <widget class="QComboBox" name="mRotatedAnnotationsLengthModeComboBox"/>
           </item>
           <item row="19" column="0">
-           <widget class="QLabel" name="label_9">
+           <widget class="QLabel" name="mRotatedAnnotationsThresholdLabel">
             <property name="text">
              <string>Skip low angled annotations</string>
             </property>
@@ -965,7 +971,7 @@
            </widget>
           </item>
           <item row="20" column="0">
-           <widget class="QLabel" name="label_12">
+           <widget class="QLabel" name="mRotatedAnnotationsMarginToCornerLabel">
             <property name="text">
              <string>Margin to map corner</string>
             </property>
@@ -975,6 +981,9 @@
            <widget class="QDoubleSpinBox" name="mRotatedAnnotationsMarginToCornerSpinBox">
             <property name="toolTip">
              <string>Outwards facing annotations closer to the corners than this margin will be ignored. This only makes sense for rotated grids.</string>
+            </property>
+            <property name="suffix">
+             <string> mm</string>
             </property>
             <property name="decimals">
              <number>0</number>
