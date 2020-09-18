@@ -118,7 +118,8 @@ class APP_EXPORT QgsActiveLayerFeaturesLocatorFilter : public QgsLocatorFilter
 
     QgsExpression mDispExpression;
     QgsExpressionContext mContext;
-    QgsFeatureIterator mIterator;
+    QgsFeatureIterator mDisplayTitleIterator;
+    QgsFeatureIterator mFieldIterator;
     QString mLayerId;
     QIcon mLayerIcon;
     QStringList mAttributeAliases;

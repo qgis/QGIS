@@ -278,6 +278,25 @@ QStringList QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string,
   bool allowNumeric = false;
   double numericalValue = searchString.toDouble( &allowNumeric );
 
+  // search in display expression if no field restriction
+  if ( _fieldRestriction.isEmpty() )
+  {
+    QgsFeatureRequest req;
+    req.setSubsetOfAttributes( qgis::setToList( mDispExpression.referencedAttributeIndexes( layer->fields() ) ) );
+    if ( !mDispExpression.needsGeometry() )
+      req.setFlags( QgsFeatureRequest::NoGeometry );
+    QString enhancedSearch = searchString;
+    enhancedSearch.replace( ' ', '%' );
+    req.setFilterExpression( QStringLiteral( "%1 ILIKE '%%2%'" )
+                             .arg( layer->displayExpression(), enhancedSearch ) );
+    req.setLimit( mMaxTotalResults );
+    mDisplayTitleIterator = layer->getFeatures( req );
+  }
+  else
+  {
+    mDisplayTitleIterator = QgsFeatureIterator();
+  }
+
   // build up request expression
   QStringList expressionParts;
   QStringList completionList;
@@ -319,8 +338,8 @@ QStringList QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string,
   if ( !_fieldRestriction.isEmpty() )
     req.setSubsetOfAttributes( subsetOfAttributes );
 
-  req.setLimit( 30 );
-  mIterator = layer->getFeatures( req );
+  req.setLimit( mMaxTotalResults );
+  mFieldIterator = layer->getFeatures( req );
 
   mLayerId = layer->id();
   mLayerIcon = QgsMapLayerModel::iconForLayer( layer );
@@ -340,7 +359,32 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
   QString searchString = string;
   fieldRestriction( searchString );
 
-  while ( mIterator.nextFeature( f ) )
+  // search in display title
+  if ( mDisplayTitleIterator.isValid() )
+  {
+    while ( mDisplayTitleIterator.nextFeature( f ) )
+    {
+      if ( feedback->isCanceled() )
+        return;
+
+      mContext.setFeature( f );
+
+      QgsLocatorResult result;
+
+      result.displayString =  mDispExpression.evaluate( &mContext ).toString();
+      result.userData = QVariantList() << f.id() << mLayerId;
+      result.icon = mLayerIcon;
+      result.score = static_cast< double >( searchString.length() ) / result.displayString.size();
+      emit resultFetched( result );
+
+      found++;
+      if ( found >= mMaxTotalResults )
+        break;
+    }
+  }
+
+  // search in fields
+  while ( mFieldIterator.nextFeature( f ) )
   {
     if ( feedback->isCanceled() )
       return;
@@ -369,7 +413,6 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
       continue; //not sure how this result slipped through...
 
     result.description = mDispExpression.evaluate( &mContext ).toString();
-
     result.userData = QVariantList() << f.id() << mLayerId;
     result.icon = mLayerIcon;
     result.score = static_cast< double >( searchString.length() ) / result.displayString.size();
