@@ -70,16 +70,25 @@ QVariant QgsListWidgetWrapper::value() const
 {
   QVariant::Type type = field().type();
   if ( !mWidget ) return QVariant( type );
+  const QVariantList list = mWidget->list();
   if ( type == QVariant::StringList )
   {
     QStringList result;
-    const QVariantList list = mWidget->list();
     for ( QVariantList::const_iterator it = list.constBegin(); it != list.constEnd(); ++it )
       result.append( it->toString() );
     return result;
   }
   else
-    return QVariant( mWidget->list() );
+  {
+    if ( list.size() == 0 )
+    {
+      return QVariant( );
+    }
+    else
+    {
+      return list;
+    }
+  }
 }
 
 void QgsListWidgetWrapper::onValueChanged()
