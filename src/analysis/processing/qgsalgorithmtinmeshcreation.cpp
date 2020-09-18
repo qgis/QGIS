@@ -58,8 +58,11 @@ void QgsTinMeshCreationAlgorithm::initAlgorithm( const QVariantMap &configuratio
   Q_UNUSED( configuration );
   addParameter( new QgsProcessingParameterTinInputLayers( QStringLiteral( "SOURCE_DATA" ), QObject::tr( "Input layers" ) ) );
 
-  const QList<QgsMeshDriverMetadata> &driverList =
-    QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "mdal" ) )->meshDriversMetadata();
+  QgsProviderMetadata *meta = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "mdal" ) );
+
+  QList<QgsMeshDriverMetadata> driverList;
+  if ( meta )
+    driverList = meta->meshDriversMetadata();
 
   for ( const QgsMeshDriverMetadata &driverMeta : driverList )
     if ( driverMeta.capabilities() & QgsMeshDriverMetadata::CanWriteMeshData )
@@ -179,4 +182,15 @@ void QgsTinMeshCreationAlgorithm::addZValueDataset( const QString &fileName, con
   tempLayer->addDatasets( zValueDatasetGroup );
   int datasetGroupIndex = tempLayer->datasetGroupCount() - 1;
   tempLayer->saveDataset( fileName, datasetGroupIndex, driver );
+}
+
+bool QgsTinMeshCreationAlgorithm::canExecute( QString *errorMessage ) const
+{
+  if ( mAvailableFormat.count() == 0 )
+  {
+    *errorMessage = QObject::tr( "MDAL not available" );
+    return false;
+  }
+
+  return true;
 }

@@ -34,6 +34,7 @@ class QgsTinMeshCreationAlgorithm: public QgsProcessingAlgorithm
     QString shortHelpString() const override;
     QString name() const override;
     QString displayName() const override;
+    bool canExecute( QString *errorMessage ) const override;
 
   protected:
     QgsProcessingAlgorithm *createInstance() const override;
