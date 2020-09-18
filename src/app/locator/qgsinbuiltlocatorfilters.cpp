@@ -354,7 +354,7 @@ QStringList QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string,
 
 void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback *feedback )
 {
-  int found = 0;
+  QgsFeatureIds featuresFound;
   QgsFeature f;
   QString searchString = string;
   fieldRestriction( searchString );
@@ -377,8 +377,9 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
       result.score = static_cast< double >( searchString.length() ) / result.displayString.size();
       emit resultFetched( result );
 
-      found++;
-      if ( found >= mMaxTotalResults )
+      featuresFound << f.id();
+
+      if ( featuresFound.count() >= mMaxTotalResults )
         break;
     }
   }
@@ -388,6 +389,10 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
   {
     if ( feedback->isCanceled() )
       return;
+
+    // do not display twice the same feature
+    if ( featuresFound.contains( f.id() ) )
+      continue;
 
     QgsLocatorResult result;
 
@@ -418,8 +423,8 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
     result.score = static_cast< double >( searchString.length() ) / result.displayString.size();
     emit resultFetched( result );
 
-    found++;
-    if ( found >= mMaxTotalResults )
+    featuresFound << f.id();
+    if ( featuresFound.count() >= mMaxTotalResults )
       break;
   }
 }
