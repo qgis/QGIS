@@ -23,6 +23,7 @@
 #include "qgswebview.h"
 #include "qgswebframe.h"
 #include "qgsapplication.h"
+#include "qgsrenderer.h"
 #include "qgsexpressioncontextutils.h"
 
 // Qt includes
@@ -212,12 +213,30 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
     exp.prepare( &context );
     request.setSubsetOfAttributes( exp.referencedColumns(), vlayer->fields() );
   }
+
+  QgsRenderContext renderCtx = QgsRenderContext::fromMapSettings( mapCanvas->mapSettings() );
+  renderCtx.expressionContext() << QgsExpressionContextUtils::layerScope( vlayer );
+
+  std::unique_ptr< QgsFeatureRenderer > renderer;
+  if ( vlayer->renderer() )
+  {
+    renderer.reset( vlayer->renderer()->clone() );
+    renderer->startRender( renderCtx, vlayer->fields() );
+  }
+
   QgsFeatureIterator it = vlayer->getFeatures( request );
   QElapsedTimer timer;
   timer.start();
   while ( it.nextFeature( feature ) )
   {
     context.setFeature( feature );
+
+    renderCtx.expressionContext().setFeature( feature );
+    if ( renderer && !renderer->willRenderFeature( feature, renderCtx ) )
+    {
+      continue;
+    }
+
     if ( !mapTip.isEmpty() )
     {
       tipString = QgsExpression::replaceExpressionText( mapTip, &context );
@@ -232,6 +251,9 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
       break;
     }
   }
+
+  if ( renderer )
+    renderer->stopRender( renderCtx );
 
   return tipString;
 }
