@@ -155,11 +155,11 @@ int QgsDualEdgeTriangulation::addPoint( const QgsPoint &p )
     //test, if it is the same point as the first point
     if ( p.x() == mPointVector[0]->x() && p.y() == mPointVector[0]->y() )
     {
-      //QgsDebugMsg( QStringLiteral( "second point is the same as the first point, it thus has not been inserted" ) );
+      //second point is the same as the first point
       QgsPoint *p = mPointVector[1];
       mPointVector.remove( 1 );
       delete p;
-      return -100;
+      return 0;
     }
 
     unsigned int edgeFromPoint0ToPoint1 /* 2 */ = insertEdge( -10, -10, 1, false, false );//edge pointing from point 0 to point 1
@@ -190,6 +190,7 @@ int QgsDualEdgeTriangulation::addPoint( const QgsPoint &p )
       mEdgeOutside = firstEdgeOutSide();
     if ( mEdgeOutside < 0 || mHalfEdge[mEdgeOutside]->getPoint() < 0 || mHalfEdge[mHalfEdge[mEdgeOutside]->getDual()]->getPoint() < 0 )
       return -100;
+
     double leftOfNumber = MathUtils::leftOf( p,  mPointVector[mHalfEdge[mHalfEdge[mEdgeOutside]->getDual()]->getPoint()], mPointVector[mHalfEdge[mEdgeOutside]->getPoint()] );
     if ( fabs( leftOfNumber ) <= leftOfTresh )
     {
@@ -204,7 +205,22 @@ int QgsDualEdgeTriangulation::addPoint( const QgsPoint &p )
         int point1 = mHalfEdge[mEdgeOutside]->getPoint();
         int point2 = mHalfEdge[mHalfEdge[mEdgeOutside]->getDual()]->getPoint();
         double distance1 = p.distance( *mPointVector[point1] );
+        if ( distance1 <= leftOfTresh ) // point1 == new point
+        {
+          QgsPoint *pt = mPointVector.last();
+          mPointVector.removeLast();
+          delete pt;
+          return point1;
+        }
         double distance2 = p.distance( *mPointVector[point2] );
+        if ( distance2 <= leftOfTresh ) // point2 == new point
+        {
+          QgsPoint *pt = mPointVector.last();
+          mPointVector.removeLast();
+          delete pt;
+          return point2;
+        }
+
         double edgeLength = mPointVector[point1]->distance( *mPointVector[point2] );
 
         if ( distance1 < edgeLength && distance2 < edgeLength )
@@ -427,7 +443,27 @@ int QgsDualEdgeTriangulation::addPoint( const QgsPoint &p )
     //the point is exactly on an existing edge (the number of the edge is stored in the variable 'mEdgeWithPoint'---------------
     else if ( number == -20 )
     {
-      //QgsDebugMsg( "point exactly on edge" );
+      //point exactly on edge;
+
+      //check if new point is the same than one extremity
+      int point1 = mHalfEdge[mEdgeWithPoint]->getPoint();
+      int point2 = mHalfEdge[mHalfEdge[mEdgeWithPoint]->getDual()]->getPoint();
+      double distance1 = p.distance( *mPointVector[point1] );
+      if ( distance1 <= leftOfTresh ) // point1 == new point
+      {
+        QgsPoint *pt = mPointVector.last();
+        mPointVector.removeLast();
+        delete pt;
+        return point1;
+      }
+      double distance2 = p.distance( *mPointVector[point2] );
+      if ( distance2 <= leftOfTresh ) // point2 == new point
+      {
+        QgsPoint *pt = mPointVector.last();
+        mPointVector.removeLast();
+        delete pt;
+        return point2;
+      }
 
       int edgea = mEdgeWithPoint;
       int edgeb = mHalfEdge[mEdgeWithPoint]->getDual();
@@ -558,7 +594,12 @@ int QgsDualEdgeTriangulation::baseEdgeOfPoint( int point )
 
 int QgsDualEdgeTriangulation::baseEdgeOfTriangle( const QgsPoint &point )
 {
-  unsigned int actEdge = mEdgeInside;//start with an edge which does not point to the virtual point (usually number 3)
+  unsigned int actEdge = mEdgeInside;//start with an edge which does not point to the virtual point
+  if ( mHalfEdge[actEdge]->getPoint() < 0 )
+    actEdge = mHalfEdge[mHalfEdge[mHalfEdge[actEdge]->getDual()]->getNext()]->getDual();//get an real inside edge
+  if ( mHalfEdge[mHalfEdge[actEdge]->getDual()]->getPoint() < 0 )
+    actEdge = mHalfEdge[mHalfEdge[actEdge]->getNext()]->getDual();
+
   int counter = 0;//number of consecutive successful left-of-tests
   int nulls = 0;//number of left-of-tests, which returned 0. 1 means, that the point is on a line, 2 means that it is on an existing point
   int numInstabs = 0;//number of suspect left-of-tests due to 'leftOfTresh'
