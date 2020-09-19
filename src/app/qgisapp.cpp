@@ -10087,17 +10087,18 @@ void QgisApp::enableDigitizeWithCurveAction( bool enable )
   QgsSettings settings;
 
   QObject *sender = QObject::sender();
-  if ( sender && sender != this )
-    enable &= ( sender == mActionAddFeature && mMapTools.mAddFeature->mode() != QgsMapToolCapture::CapturePoint ) ||
-              sender == mActionSplitFeatures;
-  else
-    enable &= ( mMapCanvas->mapTool() == mMapTools.mAddFeature && mMapTools.mAddFeature->mode() != QgsMapToolCapture::CapturePoint ) ||
-              mMapCanvas->mapTool() == mMapTools.mSplitFeatures;
+
+  enable &= ( sender == mActionAddFeature && mMapTools.mAddFeature->mode() != QgsMapToolCapture::CapturePoint ) ||
+            ( mMapCanvas->mapTool() == mMapTools.mAddFeature && mMapTools.mAddFeature->mode() != QgsMapToolCapture::CapturePoint ) ||
+            sender == mActionSplitFeatures ||
+            mMapCanvas->mapTool() == mMapTools.mSplitFeatures;
 
   bool isChecked = settings.value( QStringLiteral( "UI/digitizeWithCurve" ) ).toInt() && enable;
   mActionDigitizeWithCurve->setChecked( isChecked );
-
   mActionDigitizeWithCurve->setEnabled( enable );
+
+  mMapTools.mAddFeature->setCircularDigitizingEnabled( isChecked );
+  static_cast<QgsMapToolCapture *>( mMapTools.mSplitFeatures )->setCircularDigitizingEnabled( isChecked );
 }
 
 void QgisApp::splitFeatures()
