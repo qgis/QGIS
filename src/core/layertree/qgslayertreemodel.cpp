@@ -868,6 +868,17 @@ void QgsLayerTreeModel::legendNodeDataChanged()
     emit dataChanged( index, index );
 }
 
+void QgsLayerTreeModel::legendNodeSizeChanged()
+{
+  QgsLayerTreeModelLegendNode *legendNode = qobject_cast<QgsLayerTreeModelLegendNode *>( sender() );
+  if ( !legendNode )
+    return;
+
+  QModelIndex index = legendNode2index( legendNode );
+  if ( index.isValid() )
+    emit dataChanged( index, index, QVector<int> { Qt::SizeHintRole } );
+}
+
 
 void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer *nodeLayer )
 {
@@ -1293,6 +1304,7 @@ void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer *nodeL )
   {
     n->setParent( this );
     connect( n, &QgsLayerTreeModelLegendNode::dataChanged, this, &QgsLayerTreeModel::legendNodeDataChanged );
+    connect( n, &QgsLayerTreeModelLegendNode::sizeChanged, this, &QgsLayerTreeModel::legendNodeSizeChanged );
   }
 
   // See if we have an embedded node - if we do, we will not use it among active nodes.

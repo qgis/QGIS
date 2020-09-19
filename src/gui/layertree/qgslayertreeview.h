@@ -248,6 +248,8 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     //! Handles updating the viewport to avoid flicker
     void onHorizontalScroll( int value );
 
+    void onDataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles );
+
   protected:
     //! helper class with default actions. Lazily initialized.
     QgsLayerTreeViewDefaultActions *mDefaultActions = nullptr;

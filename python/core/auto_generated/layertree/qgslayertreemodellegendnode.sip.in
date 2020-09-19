@@ -209,6 +209,13 @@ Draws label on the right side of the item
 Emitted on internal data change so the layer tree model can forward the signal to views
 %End
 
+    void sizeChanged();
+%Docstring
+Emitted when the size of this node changes.
+
+.. versionadded:: 3.16
+%End
+
   protected:
     explicit QgsLayerTreeModelLegendNode( QgsLayerTreeLayer *nodeL, QObject *parent /TransferThis/ = 0 );
 %Docstring

@@ -458,6 +458,9 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     double mLegendMapViewScale;
     QTimer mDeferLegendInvalidationTimer;
 
+  private slots:
+    void legendNodeSizeChanged();
+
   private:
 
     //! Returns a temporary render context
