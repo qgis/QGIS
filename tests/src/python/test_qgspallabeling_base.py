@@ -11,7 +11,6 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-import collections
 
 __author__ = 'Larry Shaffer'
 __date__ = '07/09/2013'
@@ -24,6 +23,11 @@ import sys
 import datetime
 import glob
 import shutil
+
+try:
+    from collections.abc import Callable
+except ImportError:
+    from collections import Callable
 
 from qgis.PyQt.QtCore import QSize, qDebug, Qt
 from qgis.PyQt.QtGui import QFont, QColor
@@ -267,7 +271,7 @@ class TestQgsPalLabeling(unittest.TestCase):
                 value = getattr(lyr, attr)
                 if isinstance(value, (QgsGeometry, QgsStringReplacementCollection, QgsCoordinateTransform)):
                     continue  # ignore these objects
-                if not isinstance(value, collections.Callable):
+                if not isinstance(value, Callable):
                     res[attr] = value
         return res
 
