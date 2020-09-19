@@ -68,6 +68,15 @@ QSizeF QgsLayerTreeModelLegendNode::userPatchSize() const
   return mUserSize;
 }
 
+void QgsLayerTreeModelLegendNode::setUserPatchSize( QSizeF size )
+{
+  if ( mUserSize == size )
+    return;
+
+  mUserSize = size;
+  emit sizeChanged();
+}
+
 QgsLayerTreeModelLegendNode::ItemMetrics QgsLayerTreeModelLegendNode::draw( const QgsLegendSettings &settings, ItemContext *ctx )
 {
   QFont symbolLabelFont = settings.style( QgsLegendStyle::SymbolLabel ).font();
@@ -1146,6 +1155,7 @@ void QgsWmsLegendNode::getLegendGraphicFinished( const QImage &image )
     if ( image != mImage )
     {
       mImage = image;
+      setUserPatchSize( mImage.size() );
       emit dataChanged();
     }
     mValid = true; // only if not null I guess
