@@ -3,6 +3,8 @@
 
 Providers must implement a test based on TestPyQgsProviderConnectionBase
 
+Provider test cases can define a "slowQuery" member with the SQL code for executeSql cancellation test
+
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -16,6 +18,7 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
+import time
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
 from qgis.testing import start_app
 from qgis.core import (
@@ -30,6 +33,9 @@ from qgis.core import (
     QgsProviderConnectionException,
     QgsFeature,
     QgsGeometry,
+    QgsFeedback,
+    QgsApplication,
+    QgsTask,
 )
 from qgis.PyQt import QtCore
 from qgis.PyQt.QtTest import QSignalSpy
@@ -409,6 +415,30 @@ class TestPyQgsProviderConnectionBase():
         names = [nt.mTypeName.lower() for nt in native_types]
         self.assertTrue('integer' in names or 'decimal' in names, names)
         self.assertTrue('string' in names or 'text' in names, names)
+
+    def testExecuteSqlCancel(self):
+        """Test that feedback can cancel an executeSql query"""
+
+        if hasattr(self, 'slowQuery'):
+
+            md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
+            conn = md.createConnection(self.uri, {})
+            feedback = QgsFeedback()
+
+            def _run(task):
+                conn.executeSql(self.slowQuery, feedback=feedback)
+
+            def _cancel():
+                feedback.cancel()
+
+            start = time.time()
+            QtCore.QTimer.singleShot(500, _cancel)
+            task = QgsTask.fromFunction('test long running query', _run)
+            QgsApplication.taskManager().addTask(task)
+            while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
+                QgsApplication.processEvents()
+            end = time.time()
+            self.assertTrue(end - start < 1)
 
     def treat_date_as_string(self):
         return False

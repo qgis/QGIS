@@ -250,6 +250,7 @@ class QgsPostgresConn : public QObject
 
     // run a query and check for errors, thread-safe
     PGresult *PQexec( const QString &query, bool logError = true, bool retry = true ) const;
+    int PQCancel();
     void PQfinish();
     QString PQerrorMessage() const;
     int PQstatus() const;

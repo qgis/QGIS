@@ -14,6 +14,7 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
+import time
 from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
 from qgis.core import (
     QgsWkbTypes,
@@ -37,6 +38,9 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
     uri = ''
     # Provider test cases must define the provider name (e.g. "postgres" or "ogr")
     providerKey = 'postgres'
+
+    # Provider test cases can define a slowQuery for executeSql cancellation test
+    slowQuery = "select pg_sleep(30)"
 
     @classmethod
     def setUpClass(cls):
