@@ -112,10 +112,10 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
 
   blockAllSignals( true );
 
-  mMapGridUnitComboBox->addItem( tr( "Map Unit" ), QgsLayoutItemMapGrid::MapUnit );
+  mMapGridUnitComboBox->addItem( tr( "Map Units" ), QgsLayoutItemMapGrid::MapUnit );
   mMapGridUnitComboBox->addItem( tr( "Fit Segment Width" ), QgsLayoutItemMapGrid::DynamicPageSizeBased );
-  mMapGridUnitComboBox->addItem( tr( "Millimeter" ), QgsLayoutItemMapGrid::MM );
-  mMapGridUnitComboBox->addItem( tr( "Centimeter" ), QgsLayoutItemMapGrid::CM );
+  mMapGridUnitComboBox->addItem( tr( "Millimeters" ), QgsLayoutItemMapGrid::MM );
+  mMapGridUnitComboBox->addItem( tr( "Centimeters" ), QgsLayoutItemMapGrid::CM );
 
   mGridTypeComboBox->insertItem( 0, tr( "Solid" ), QgsLayoutItemMapGrid::Solid );
   mGridTypeComboBox->insertItem( 1, tr( "Cross" ), QgsLayoutItemMapGrid::Cross );

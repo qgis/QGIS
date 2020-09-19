@@ -76,7 +76,7 @@
          <item>
           <widget class="QCheckBox" name="mEnabledCheckBox">
            <property name="text">
-            <string>Grid enabled</string>
+            <string>Enable grid</string>
            </property>
           </widget>
          </item>
