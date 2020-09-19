@@ -26,7 +26,7 @@ void QgsNative::cleanup()
 
 QgsNative::Capabilities QgsNative::capabilities() const
 {
-  return nullptr;
+  return QgsNative::Capabilities();
 }
 
 void QgsNative::initializeMainWindow( QWindow *,
