@@ -1348,7 +1348,7 @@ int QgsPostgresConn::PQCancel()
     char errbuf[255];
     result = ::PQcancel( cancel, errbuf, 255 );
     if ( ! result )
-      QgsDebugMsgLevel( QStringLiteral( "Cancelling query error:" ).arg( errbuf ), 3 );
+      QgsDebugMsgLevel( QStringLiteral( "Error canceling the query:" ).arg( errbuf ), 3 );
   }
   ::PQfreeCancel( cancel );
   return result;
