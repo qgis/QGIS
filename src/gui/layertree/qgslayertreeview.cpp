@@ -595,7 +595,7 @@ void QgsLayerTreeView::onDataChanged( const QModelIndex &topLeft, const QModelIn
   Q_UNUSED( topLeft )
   Q_UNUSED( bottomRight )
 
-  // If an item is resized asynchroneously (e.g. wms legend)
+  // If an item is resized asynchronously (e.g. wms legend)
   // The items below will need to be shifted vertically.
   // This doesn't happen automatically, unless the viewport update is triggered.
 
