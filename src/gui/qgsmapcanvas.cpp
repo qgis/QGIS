@@ -1090,8 +1090,6 @@ void QgsMapCanvas::setExtent( const QgsRectangle &r, bool magnified )
   }
   emit extentsChanged();
   updateScale();
-  if ( mLastExtent.size() > 20 )
-    mLastExtent.removeAt( 0 );
 
   //clear all extent items after current index
   for ( int i = mLastExtent.size() - 1; i > mLastExtentIndex; i-- )
@@ -1101,8 +1099,8 @@ void QgsMapCanvas::setExtent( const QgsRectangle &r, bool magnified )
 
   mLastExtent.append( extent() );
 
-  // adjust history to no more than 20
-  if ( mLastExtent.size() > 20 )
+  // adjust history to no more than 100
+  if ( mLastExtent.size() > 100 )
   {
     mLastExtent.removeAt( 0 );
   }
