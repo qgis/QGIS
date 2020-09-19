@@ -300,6 +300,7 @@ QgsMapToolCaptureRubberBand *QgsMapToolCapture::createCurveRubberBand() const
 {
   QgsSettings settings;
   QgsMapToolCaptureRubberBand *rb = new QgsMapToolCaptureRubberBand( mCanvas );
+  rb->setStrokeWidth( digitizingStrokeWidth() );
   QColor color = digitizingStrokeColor();
 
   double alphaScale = settings.value( QStringLiteral( "qgis/digitizing/line_color_alpha_scale" ), 0.75 ).toDouble();
