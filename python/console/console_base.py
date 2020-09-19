@@ -137,20 +137,20 @@ class QgsPythonConsoleBase(QsciScintilla):
             paperColor = QColor(self.settings.value("pythonConsole/paperBackgroundColor", QColor(self.BACKGROUND_COLOR)))
             self.lexer.setPaper(paperColor, style)
 
-            self.api = QsciAPIs(self.lexer)
-            checkBoxAPI = self.settings.value("pythonConsole/preloadAPI", True, type=bool)
-            checkBoxPreparedAPI = self.settings.value("pythonConsole/usePreparedAPIFile", False, type=bool)
-            if checkBoxAPI:
-                pap = os.path.join(QgsApplication.pkgDataPath(), "python", "qsci_apis", "pyqgis.pap")
-                self.api.loadPrepared(pap)
-            elif checkBoxPreparedAPI:
-                self.api.loadPrepared(self.settings.value("pythonConsole/preparedAPIFile"))
-            else:
-                apiPath = self.settings.value("pythonConsole/userAPI", [])
-                for i in range(0, len(apiPath)):
-                    self.api.load(apiPath[i])
-                self.api.prepare()
-                self.lexer.setAPIs(self.api)
+        self.api = QsciAPIs(self.lexer)
+        checkBoxAPI = self.settings.value("pythonConsole/preloadAPI", True, type=bool)
+        checkBoxPreparedAPI = self.settings.value("pythonConsole/usePreparedAPIFile", False, type=bool)
+        if checkBoxAPI:
+            pap = os.path.join(QgsApplication.pkgDataPath(), "python", "qsci_apis", "pyqgis.pap")
+            self.api.loadPrepared(pap)
+        elif checkBoxPreparedAPI:
+            self.api.loadPrepared(self.settings.value("pythonConsole/preparedAPIFile"))
+        else:
+            apiPath = self.settings.value("pythonConsole/userAPI", [])
+            for i in range(0, len(apiPath)):
+                self.api.load(apiPath[i])
+            self.api.prepare()
+            self.lexer.setAPIs(self.api)
 
         self.setLexer(self.lexer)
 
