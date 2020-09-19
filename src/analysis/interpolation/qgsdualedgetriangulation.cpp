@@ -156,9 +156,7 @@ int QgsDualEdgeTriangulation::addPoint( const QgsPoint &p )
     if ( p.x() == mPointVector[0]->x() && p.y() == mPointVector[0]->y() )
     {
       //second point is the same as the first point
-      QgsPoint *p = mPointVector[1];
-      mPointVector.remove( 1 );
-      delete p;
+      removeLastPoint();
       return 0;
     }
 
@@ -207,17 +205,13 @@ int QgsDualEdgeTriangulation::addPoint( const QgsPoint &p )
         double distance1 = p.distance( *mPointVector[point1] );
         if ( distance1 <= leftOfTresh ) // point1 == new point
         {
-          QgsPoint *pt = mPointVector.last();
-          mPointVector.removeLast();
-          delete pt;
+          removeLastPoint();
           return point1;
         }
         double distance2 = p.distance( *mPointVector[point2] );
         if ( distance2 <= leftOfTresh ) // point2 == new point
         {
-          QgsPoint *pt = mPointVector.last();
-          mPointVector.removeLast();
-          delete pt;
+          removeLastPoint();
           return point2;
         }
 
@@ -451,17 +445,13 @@ int QgsDualEdgeTriangulation::addPoint( const QgsPoint &p )
       double distance1 = p.distance( *mPointVector[point1] );
       if ( distance1 <= leftOfTresh ) // point1 == new point
       {
-        QgsPoint *pt = mPointVector.last();
-        mPointVector.removeLast();
-        delete pt;
+        removeLastPoint();
         return point1;
       }
       double distance2 = p.distance( *mPointVector[point2] );
       if ( distance2 <= leftOfTresh ) // point2 == new point
       {
-        QgsPoint *pt = mPointVector.last();
-        mPointVector.removeLast();
-        delete pt;
+        removeLastPoint();
         return point2;
       }
 
@@ -501,9 +491,7 @@ int QgsDualEdgeTriangulation::addPoint( const QgsPoint &p )
     else if ( number == -100 || number == -5 )//this means unknown problems or a numerical error occurred in 'baseEdgeOfTriangle'
     {
       //QgsDebugMsg( "point has not been inserted because of unknown problems" );
-      QgsPoint *p = mPointVector[mPointVector.count() - 1];
-      mPointVector.remove( mPointVector.count() - 1 );
-      delete p;
+      removeLastPoint();
       return -100;
     }
     else if ( number == -25 )//this means that the point has already been inserted in the triangulation
@@ -513,8 +501,7 @@ int QgsDualEdgeTriangulation::addPoint( const QgsPoint &p )
       QgsPoint *existingPoint = mPointVector[mTwiceInsPoint];
       existingPoint->setZ( std::max( newPoint->z(), existingPoint->z() ) );
 
-      mPointVector.remove( mPointVector.count() - 1 );
-      delete newPoint;
+      removeLastPoint();
       return mTwiceInsPoint;
     }
   }
@@ -3385,4 +3372,12 @@ int QgsDualEdgeTriangulation::firstEdgeOutSide()
     return -1;
   else
     return edge;
+}
+
+void QgsDualEdgeTriangulation::removeLastPoint()
+{
+  if ( mPointVector.isEmpty() )
+    return;
+  QgsPoint *p = mPointVector.takeLast();
+  delete p;
 }

@@ -172,6 +172,8 @@ class ANALYSIS_EXPORT QgsDualEdgeTriangulation: public QgsTriangulation
 
     int firstEdgeOutSide();
 
+    void removeLastPoint();
+
 
     friend class TestQgsInterpolator;
 };
