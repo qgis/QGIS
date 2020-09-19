@@ -381,7 +381,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
     def executeSqlCanceled(self):
         self.btnCancel.setEnabled(False)
-        self.btnCancel.setText(self.tr("Cancelling, please wait ..."))
+        self.btnCancel.setText(self.tr("Canceling, please wait ..."))
         self.modelAsync.cancel()
 
     def executeSqlCompleted(self):
