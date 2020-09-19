@@ -28,6 +28,7 @@ class QPlainTextEdit;
 class QLabel;
 
 class QgisInterface;
+class QgsDoubleSpinBox;
 class QgsGeorefDataPoint;
 class QgsGCPListWidget;
 class QgsMapTool;
@@ -105,6 +106,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     void jumpToGCP( uint theGCPIndex );
     void extentsChangedGeorefCanvas();
     void extentsChangedQGisCanvas();
+    void updateCanvasRotation();
 
     // canvas info
     void showMouseCoords( const QgsPointXY &pt );
@@ -211,6 +213,8 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     QLabel *mCoordsLabel = nullptr;
     QLabel *mTransformParamLabel = nullptr;
     QLabel *mEPSG = nullptr;
+    QLabel *mRotationLabel = nullptr;
+    QgsDoubleSpinBox *mRotationEdit = nullptr;
     unsigned int mMousePrecisionDecimalPlaces;
 
     QString mRasterFileName;
