@@ -2313,6 +2313,7 @@ void TestQgsProcessing::parameterGeneral()
   QCOMPARE( param.defaultValue(), QVariant( true ) );
   QVERIFY( param.flags() & QgsProcessingParameterDefinition::FlagOptional );
   QVERIFY( param.dependsOnOtherParameters().isEmpty() );
+  QVERIFY( param.help().isEmpty() );
 
   // test getters and setters
   param.setDescription( "p2" );
@@ -2325,6 +2326,8 @@ void TestQgsProcessing::parameterGeneral()
   QCOMPARE( param.defaultValue(), QVariant( true ) );
   param.setDefaultValue( QVariant() );
   QCOMPARE( param.defaultValue(), QVariant() );
+  param.setHelp( QStringLiteral( "my help" ) );
+  QCOMPARE( param.help(), QStringLiteral( "my help" ) );
 
   QVariantMap metadata;
   metadata.insert( "p1", 5 );
@@ -2348,6 +2351,7 @@ void TestQgsProcessing::parameterGeneral()
   QCOMPARE( fromMap.flags(), param.flags() );
   QCOMPARE( fromMap.defaultValue(), param.defaultValue() );
   QCOMPARE( fromMap.metadata(), param.metadata() );
+  QCOMPARE( fromMap.help(), QStringLiteral( "my help" ) );
 }
 
 void TestQgsProcessing::parameterBoolean()
