@@ -286,7 +286,7 @@ QDomElement QgsMeshZValueDatasetGroup::writeXml( QDomDocument &doc, const QgsRea
 
 QgsMeshZValueDataset::QgsMeshZValueDataset( const QgsMesh &mesh ): mMesh( mesh )
 {
-  for ( const QgsMeshVertex vertex : mMesh.vertices )
+  for ( const QgsMeshVertex &vertex : mesh.vertices )
   {
     if ( vertex.z() < mZMinimum )
       mZMinimum = vertex.z();
