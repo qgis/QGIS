@@ -379,6 +379,9 @@ used to identify this parameter.
 %Docstring
 Returns the help for the parameter.
 
+This is a descriptive (possibly lengthy), translated string explaining
+the parameter's behavior and use in depth.
+
 .. seealso:: :py:func:`setHelp`
 
 .. versionadded:: 3.16
@@ -387,6 +390,9 @@ Returns the help for the parameter.
     void setHelp( const QString &help );
 %Docstring
 Sets the ``help`` for the parameter.
+
+The ``help`` string should be a descriptive, translated string explaining
+the parameter's behavior and use in depth.
 
 .. seealso:: :py:func:`help`
 
