@@ -5343,13 +5343,14 @@ QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QString
 
   // Adjust layer CRS to project CRS
   QgsCoordinateReferenceSystem testCrs;
-  const auto constSupportedCrs = supportedCrs;
-  for ( const QString &c : constSupportedCrs )
+
+  QRegularExpression crsRe( QStringLiteral( "crs=[^& ]+" ) );
+  for ( const QString &c : supportedCrs )
   {
     testCrs.createFromOgcWmsCrs( c );
     if ( testCrs == mMapCanvas->mapSettings().destinationCrs() )
     {
-      newuri.replace( QRegExp( "crs=[^&]+" ), "crs=" + c );
+      newuri.replace( crsRe, QStringLiteral( "crs=" ) + c );
       QgsDebugMsg( QStringLiteral( "Changing layer crs to %1, new uri: %2" ).arg( c, uri ) );
       break;
     }
@@ -5357,12 +5358,13 @@ QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QString
 
   // Use the last used image format
   QString lastImageEncoding = QgsSettings().value( QStringLiteral( "/qgis/lastWmsImageEncoding" ), "image/png" ).toString();
-  const auto constSupportedFormats = supportedFormats;
-  for ( const QString &fmt : constSupportedFormats )
+
+  QRegularExpression formatRe( QStringLiteral( "format=[^& ]+" ) );
+  for ( const QString &fmt : supportedFormats )
   {
     if ( fmt == lastImageEncoding )
     {
-      newuri.replace( QRegExp( "format=[^&]+" ), "format=" + fmt );
+      newuri.replace( formatRe, QStringLiteral( "format=" ) + fmt );
       QgsDebugMsg( QStringLiteral( "Changing layer format to %1, new uri: %2" ).arg( fmt, uri ) );
       break;
     }
