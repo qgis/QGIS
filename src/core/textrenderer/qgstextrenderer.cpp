@@ -79,7 +79,8 @@ void QgsTextRenderer::drawText( const QRectF &rect, double rotation, QgsTextRend
     tmpFormat.updateDataDefinedProperties( context );
   tmpFormat = updateShadowPosition( tmpFormat );
 
-  const QgsTextDocument document = format.allowHtmlFormatting() ? QgsTextDocument::fromHtml( textLines ) : QgsTextDocument::fromPlainText( textLines );
+  QgsTextDocument document = format.allowHtmlFormatting() ? QgsTextDocument::fromHtml( textLines ) : QgsTextDocument::fromPlainText( textLines );
+  document.applyCapitalization( format.capitalization() );
 
   if ( tmpFormat.background().enabled() )
   {
@@ -101,7 +102,8 @@ void QgsTextRenderer::drawText( QPointF point, double rotation, QgsTextRenderer:
     tmpFormat.updateDataDefinedProperties( context );
   tmpFormat = updateShadowPosition( tmpFormat );
 
-  const QgsTextDocument document = format.allowHtmlFormatting() ? QgsTextDocument::fromHtml( textLines ) : QgsTextDocument::fromPlainText( textLines );
+  QgsTextDocument document = format.allowHtmlFormatting() ? QgsTextDocument::fromHtml( textLines ) : QgsTextDocument::fromPlainText( textLines );
+  document.applyCapitalization( format.capitalization() );
 
   if ( tmpFormat.background().enabled() )
   {
@@ -489,14 +491,17 @@ void QgsTextRenderer::drawMask( QgsRenderContext &context, const QgsTextRenderer
 
 double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, QFontMetricsF * )
 {
+  QgsTextDocument doc;
   if ( !format.allowHtmlFormatting() )
   {
-    return textWidth( context, format, QgsTextDocument::fromPlainText( textLines ) );
+    doc = QgsTextDocument::fromPlainText( textLines );
   }
   else
   {
-    return textWidth( context, format, QgsTextDocument::fromHtml( textLines ) );
+    doc = QgsTextDocument::fromHtml( textLines );
   }
+  doc.applyCapitalization( format.capitalization() );
+  return textWidth( context, format, doc );
 }
 
 double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTextFormat &format, const QgsTextDocument &document )
@@ -600,8 +605,11 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
   return height + maxExtension;
 }
 
-double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QgsTextDocument &document, DrawMode mode )
+double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QgsTextDocument &doc, DrawMode mode )
 {
+  QgsTextDocument document = doc;
+  document.applyCapitalization( format.capitalization() );
+
   //calculate max height of text lines
   const double scaleFactor = ( context.flags() & QgsRenderContext::ApplyScalingWorkaroundForTextRendering ) ? FONT_WORKAROUND_SCALE : 1.0;
 
