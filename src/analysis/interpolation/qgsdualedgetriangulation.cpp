@@ -513,16 +513,21 @@ int QgsDualEdgeTriangulation::baseEdgeOfPoint( int point )
 {
   unsigned int actedge = mEdgeInside;//starting edge
 
-  if ( mPointVector.count() < 4 || point == -1 )//at the beginning, mEdgeInside is not defined yet
+  if ( mPointVector.count() < 4 || point == -1 || mDimension == 1 ) //at the beginning, mEdgeInside is not defined yet
   {
-    //first find pointingedge(an edge pointing to p1)
+    int fromVirtualPoint = -1;
+    //first find pointingedge(an edge pointing to p1, priority to edge that no come from virtual point)
     for ( int i = 0; i < mHalfEdge.count(); i++ )
     {
-      if ( mHalfEdge[i]->getPoint() == point )//we found it
+      if ( mHalfEdge[i]->getPoint() == point )//we found one
       {
-        return i;
+        if ( mHalfEdge[mHalfEdge[i]->getDual()]->getPoint() != -1 )
+          return i;
+        else
+          fromVirtualPoint = i;
       }
     }
+    return fromVirtualPoint;
   }
 
   int control = 0;
@@ -1373,7 +1378,9 @@ int QgsDualEdgeTriangulation::insertForcedSegment( int p1, int p2, QgsInterpolat
     }
 
     //test, if the forced segment is a multiple of actEdge and if the direction is the same
-    else if ( /*lines are parallel*/( mPointVector[p2]->y() - mPointVector[p1]->y() ) / ( mPointVector[mHalfEdge[actEdge]->getPoint()]->y() - mPointVector[p1]->y() ) == ( mPointVector[p2]->x() - mPointVector[p1]->x() ) / ( mPointVector[mHalfEdge[actEdge]->getPoint()]->x() - mPointVector[p1]->x() ) && ( ( mPointVector[p2]->y() - mPointVector[p1]->y() ) >= 0 ) == ( ( mPointVector[mHalfEdge[actEdge]->getPoint()]->y() - mPointVector[p1]->y() ) > 0 ) && ( ( mPointVector[p2]->x() - mPointVector[p1]->x() ) >= 0 ) == ( ( mPointVector[mHalfEdge[actEdge]->getPoint()]->x() - mPointVector[p1]->x() ) > 0 ) )
+    else if ( /*lines are parallel*/( mPointVector[p2]->y() - mPointVector[p1]->y() ) / ( mPointVector[mHalfEdge[actEdge]->getPoint()]->y() - mPointVector[p1]->y() ) == ( mPointVector[p2]->x() - mPointVector[p1]->x() ) / ( mPointVector[mHalfEdge[actEdge]->getPoint()]->x() - mPointVector[p1]->x() )
+                                    && ( ( mPointVector[p2]->y() - mPointVector[p1]->y() ) >= 0 ) == ( ( mPointVector[mHalfEdge[actEdge]->getPoint()]->y() - mPointVector[p1]->y() ) > 0 )
+                                    && ( ( mPointVector[p2]->x() - mPointVector[p1]->x() ) >= 0 ) == ( ( mPointVector[mHalfEdge[actEdge]->getPoint()]->x() - mPointVector[p1]->x() ) > 0 ) )
     {
       //mark actedge and Dual(actedge) as forced, reset p1 and start the method from the beginning
       mHalfEdge[actEdge]->setForced( true );
