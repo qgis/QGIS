@@ -482,6 +482,10 @@ class CORE_EXPORT QgsProcessingParameterDefinition
 
     /**
      * Returns the help for the parameter.
+     *
+     * This is a descriptive (possibly lengthy), translated string explaining
+     * the parameter's behavior and use in depth.
+     *
      * \see setHelp()
      * \since QGIS 3.16
      */
@@ -489,6 +493,10 @@ class CORE_EXPORT QgsProcessingParameterDefinition
 
     /**
      * Sets the \a help for the parameter.
+     *
+     * The \a help string should be a descriptive, translated string explaining
+     * the parameter's behavior and use in depth.
+     *
      * \see help()
      * \since QGIS 3.16
      */
