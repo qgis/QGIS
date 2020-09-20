@@ -18,6 +18,7 @@
 
 #include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgsstringutils.h"
 
 #include <QVector>
 
@@ -136,6 +137,13 @@ class CORE_EXPORT QgsTextDocument
      * if FALSE then the lines are wrapped to an ideal minimum length of \a autoWrapLength characters.
      */
     void splitLines( const QString &wrapCharacter, int autoWrapLength = 0, bool useMaxLineLengthWhenAutoWrapping = true );
+
+    /**
+     * Applies a \a capitalization style to the document's text.
+     *
+     * \since QGIS 3.16
+     */
+    void applyCapitalization( QgsStringUtils::Capitalization capitalization );
 
 #ifndef SIP_RUN
     ///@cond PRIVATE

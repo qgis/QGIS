@@ -68,3 +68,8 @@ double QgsTextFragment::horizontalAdvance( const QFont &font, bool fontHasBeenUp
   }
 }
 
+void QgsTextFragment::applyCapitalization( QgsStringUtils::Capitalization capitalization )
+{
+  mText = QgsStringUtils::capitalize( mText, capitalization );
+}
+
