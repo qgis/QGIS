@@ -590,6 +590,7 @@ class HistoryDialog(QDialog, Ui_HistoryDialogPythonConsole):
 
     def _reloadHistory(self):
         self.model.clear()
+        item = None
         for i in self.parent.history:
             item = QStandardItem(i)
             if sys.platform.startswith('win'):
@@ -598,6 +599,8 @@ class HistoryDialog(QDialog, Ui_HistoryDialogPythonConsole):
 
         self.listView.setModel(self.model)
         self.listView.scrollToBottom()
+        if item:
+            self.listView.setCurrentIndex(self.model.indexFromItem(item))
 
     def _deleteItem(self):
         itemsSelected = self.listView.selectionModel().selectedIndexes()
