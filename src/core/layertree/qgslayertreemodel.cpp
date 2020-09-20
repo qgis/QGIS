@@ -1318,7 +1318,8 @@ void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer *nodeL )
 
   int count = legendTree ? legendTree->children[nullptr].count() : filteredLstNew.count();
 
-  if ( !filteredLstNew.isEmpty() ) beginInsertRows( node2index( nodeL ), 0, count - 1 );
+  if ( !filteredLstNew.isEmpty() )
+    beginInsertRows( node2index( nodeL ), 0, count - 1 );
 
   LayerLegendData data;
   data.originalNodes = lstNew;
@@ -1328,10 +1329,12 @@ void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer *nodeL )
 
   mLegend[nodeL] = data;
 
-  if ( !filteredLstNew.isEmpty() ) endInsertRows();
+  if ( !filteredLstNew.isEmpty() )
+    endInsertRows();
 
   // invalidate map based data even if the data is not map-based to make sure
   // the symbol sizes are computed at least once
+  mInvalidatedNodes.insert( nodeL );
   legendInvalidateMapBasedData();
 }
 
@@ -1575,7 +1578,7 @@ void QgsLayerTreeModel::legendInvalidateMapBasedData()
   if ( !testFlag( DeferredLegendInvalidation ) )
     invalidateLegendMapBasedData();
   else
-    mDeferLegendInvalidationTimer.start( 1000 );
+    mDeferLegendInvalidationTimer.start( 10 );
 }
 
 void QgsLayerTreeModel::invalidateLegendMapBasedData()
@@ -1583,15 +1586,17 @@ void QgsLayerTreeModel::invalidateLegendMapBasedData()
   // we have varying icon sizes, and we want icon to be centered and
   // text to be left aligned, so we have to compute the max width of icons
   //
-  // we do that for nodes who share a common parent
+  // we do that for nodes which share a common parent
   //
   // we do that here because for symbols with size defined in map units
   // the symbol sizes changes depends on the zoom level
 
   std::unique_ptr<QgsRenderContext> context( createTemporaryRenderContext() );
 
-  for ( const LayerLegendData &data : qgis::as_const( mLegend ) )
+  for ( QgsLayerTreeLayer *layerNode : qgis::as_const( mInvalidatedNodes ) )
   {
+    const LayerLegendData &data = mLegend.value( layerNode );
+
     QList<QgsSymbolLegendNode *> symbolNodes;
     QMap<QString, int> widthMax;
     for ( QgsLayerTreeModelLegendNode *legendNode : qgis::as_const( data.originalNodes ) )
@@ -1606,8 +1611,7 @@ void QgsLayerTreeModel::invalidateLegendMapBasedData()
         symbolNodes.append( n );
       }
     }
-    const auto constSymbolNodes = symbolNodes;
-    for ( QgsSymbolLegendNode *n : constSymbolNodes )
+    for ( QgsSymbolLegendNode *n : qgis::as_const( symbolNodes ) )
     {
       const QString parentKey( n->data( QgsLayerTreeModelLegendNode::ParentRuleKeyRole ).toString() );
       Q_ASSERT( widthMax[parentKey] > 0 );
@@ -1618,6 +1622,7 @@ void QgsLayerTreeModel::invalidateLegendMapBasedData()
       legendNode->invalidateMapBasedData();
   }
 
+  mInvalidatedNodes.clear();
 }
 
 // Legend nodes routines - end

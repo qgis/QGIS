@@ -435,6 +435,12 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! Per layer data about layer's legend nodes
     QHash<QgsLayerTreeLayer *, LayerLegendData> mLegend;
 
+    /**
+     * Keep track of layer nodes for which the legend
+     * size needs to be recalculated
+     */
+    QSet<QgsLayerTreeLayer *> mInvalidatedNodes;
+
     QFont mFontLayer;
     QFont mFontGroup;
 
