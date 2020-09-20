@@ -416,8 +416,8 @@ void QgsLayoutMapGridWidget::insertFrameDisplayEntries( QComboBox *c )
 void QgsLayoutMapGridWidget::insertAnnotationDisplayEntries( QComboBox *c )
 {
   c->insertItem( 0, tr( "Show All" ), QgsLayoutItemMapGrid::ShowAll );
-  c->insertItem( 1, tr( "Show Latitude Only" ), QgsLayoutItemMapGrid::LatitudeOnly );
-  c->insertItem( 2, tr( "Show Longitude Only" ), QgsLayoutItemMapGrid::LongitudeOnly );
+  c->insertItem( 1, tr( "Show Latitude/Y Only" ), QgsLayoutItemMapGrid::LatitudeOnly );
+  c->insertItem( 2, tr( "Show Longitude/X Only" ), QgsLayoutItemMapGrid::LongitudeOnly );
   c->insertItem( 3, tr( "Disabled" ), QgsLayoutItemMapGrid::HideAll );
 }
 
