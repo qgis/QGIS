@@ -89,7 +89,7 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
   mAutoFindButton->setToolTip( tr( "Attempts to automatically find the layers based on the file name (can be slow)." ) );
   buttonBox->addButton( mAutoFindButton, QDialogButtonBox::ActionRole );
   mApplyButton = new QPushButton( tr( "Apply Changes" ) );
-  mApplyButton->setToolTip( tr( "Apply fixes to unavailable layers (remaining unavailable layers will be removed from the project)." ) );
+  mApplyButton->setToolTip( tr( "Apply fixes to unavailable layers and load them in the project if the new path is correct." ) );
   buttonBox->addButton( mApplyButton, QDialogButtonBox::ActionRole );
 
   connect( mLayerList, &QTableWidget::itemSelectionChanged, this, &QgsHandleBadLayers::selectionChanged );
