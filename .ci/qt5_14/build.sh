@@ -3,7 +3,7 @@
 mkdir /usr/src/qgis/build
 cd /usr/src/qgis/build || exit -1
 
-CLANG_WARNINGS="-Wall"
+CLANG_WARNINGS="-Wrange-loop-construct"
 
 cmake -GNinja \
  -DWITH_QUICK=OFF \
