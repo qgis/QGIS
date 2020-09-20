@@ -113,6 +113,13 @@ argument controls whether the lines should be wrapped to an ideal maximum of ``a
 if ``False`` then the lines are wrapped to an ideal minimum length of ``autoWrapLength`` characters.
 %End
 
+    void applyCapitalization( QgsStringUtils::Capitalization capitalization );
+%Docstring
+Applies a ``capitalization`` style to the document's text.
+
+.. versionadded:: 3.16
+%End
+
 
 };
 

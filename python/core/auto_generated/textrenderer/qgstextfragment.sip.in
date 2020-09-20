@@ -78,6 +78,13 @@ based on the resultant font metrics. Failure to do so will result in poor qualit
 at small font sizes.
 %End
 
+    void applyCapitalization( QgsStringUtils::Capitalization capitalization );
+%Docstring
+Applies a ``capitalization`` style to the fragment's text.
+
+.. versionadded:: 3.16
+%End
+
 };
 
 /************************************************************************

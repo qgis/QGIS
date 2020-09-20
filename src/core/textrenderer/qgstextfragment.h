@@ -19,6 +19,7 @@
 #include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgstextcharacterformat.h"
+#include "qgsstringutils.h"
 
 class QTextFragment;
 
@@ -86,6 +87,13 @@ class CORE_EXPORT QgsTextFragment
      * at small font sizes.
      */
     double horizontalAdvance( const QFont &font, bool fontHasBeenUpdatedForFragment = false, double scaleFactor = 1.0 ) const;
+
+    /**
+     * Applies a \a capitalization style to the fragment's text.
+     *
+     * \since QGIS 3.16
+     */
+    void applyCapitalization( QgsStringUtils::Capitalization capitalization );
 
   private:
 
