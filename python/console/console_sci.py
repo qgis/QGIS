@@ -573,9 +573,9 @@ class HistoryDialog(QDialog, Ui_HistoryDialogPythonConsole):
         self.listView.doubleClicked.connect(self._runHistory)
         self.reloadHistory.clicked.connect(self._reloadHistory)
         self.saveHistory.clicked.connect(self._saveHistory)
-        self.runHistoryButton.clicked.connect(self._runSelectedHistory)
+        self.runHistoryButton.clicked.connect(self._executeSelectedHistory)
 
-    def _runSelectedHistory(self):
+    def _executeSelectedHistory(self):
         items = self.listView.selectionModel().selectedIndexes()
         items.sort()
         for item in items:
