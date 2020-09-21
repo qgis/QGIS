@@ -386,6 +386,11 @@ void myMessageOutput( QtMsgType type, const QMessageLogContext &, const QString 
       break;
     case QtCriticalMsg:
       myPrint( "Critical: %s\n", msg.toLocal8Bit().constData() );
+
+#ifdef QGISDEBUG
+      dumpBacktrace( 20 );
+#endif
+
       break;
     case QtWarningMsg:
     {
