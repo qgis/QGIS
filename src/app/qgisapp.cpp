@@ -800,7 +800,7 @@ void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
 
       if ( mySelector->exec() )
       {
-        QgsDebugMsg( "Layer srs set from dialog: " + QString::number( mySelector->crs().srsid() ) );
+        QgsDebugMsgLevel( "Layer srs set from dialog: " + QString::number( mySelector->crs().srsid() ), 2 );
         srs = mySelector->crs();
         sAuthId = srs.authid();
       }
@@ -814,7 +814,7 @@ void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
       // XXX TODO: Change project to store selected CS as 'projectCRS' not 'selectedWkt'
       srs = QgsProject::instance()->crs();
       sAuthId = srs.authid();
-      QgsDebugMsg( "Layer srs set from project: " + sAuthId );
+      QgsDebugMsgLevel( "Layer srs set from project: " + sAuthId, 2 );
       visibleMessageBar()->pushMessage( tr( "CRS was undefined" ), tr( "defaulting to project CRS %1" ).arg( srs.userFriendlyIdentifier() ), Qgis::Warning, messageTimeout() );
       break;
     }
@@ -3952,7 +3952,6 @@ void QgisApp::setTheme( const QString &themeName )
   mStyleSheetBuilder->buildStyleSheet( mStyleSheetBuilder->defaultOptions() );
   QgsApplication::setUITheme( theme );
 
-  //QgsDebugMsg("Setting theme to \n" + themeName);
   mActionNewProject->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileNew.svg" ) ) );
   mActionOpenProject->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileOpen.svg" ) ) );
   mActionSaveProject->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileSave.svg" ) ) );
@@ -5350,7 +5349,7 @@ QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QString
     if ( testCrs == mMapCanvas->mapSettings().destinationCrs() )
     {
       newuri.replace( QRegExp( "crs=[^&]+" ), "crs=" + c );
-      QgsDebugMsg( QStringLiteral( "Changing layer crs to %1, new uri: %2" ).arg( c, uri ) );
+      QgsDebugMsgLevel( QStringLiteral( "Changing layer crs to %1, new uri: %2" ).arg( c, uri ), 2 );
       break;
     }
   }
@@ -5363,7 +5362,7 @@ QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QString
     if ( fmt == lastImageEncoding )
     {
       newuri.replace( QRegExp( "format=[^&]+" ), "format=" + fmt );
-      QgsDebugMsg( QStringLiteral( "Changing layer format to %1, new uri: %2" ).arg( fmt, uri ) );
+      QgsDebugMsgLevel( QStringLiteral( "Changing layer format to %1, new uri: %2" ).arg( fmt, uri ), 2 );
       break;
     }
   }
@@ -5608,7 +5607,7 @@ QgsMeshLayer *QgisApp::addMeshLayerPrivate( const QString &url, const QString &b
     base = QgsMapLayer::formatLayerName( base );
   }
 
-  QgsDebugMsg( "completeBaseName: " + base );
+  QgsDebugMsgLevel( "completeBaseName: " + base, 2 );
 
   // create the layer
   QgsMeshLayer::LayerOptions options;
@@ -5726,7 +5725,7 @@ bool QgisApp::askUserForZipItemLayers( const QString &path )
   QgsSettings settings;
   QgsSublayersDialog::PromptMode promptLayers = settings.enumValue( QStringLiteral( "qgis/promptForSublayers" ), QgsSublayersDialog::PromptAlways );
 
-  QgsDebugMsg( "askUserForZipItemLayers( " + path + ')' );
+  QgsDebugMsgLevel( "askUserForZipItemLayers( " + path + ')', 2 );
 
   // if scanZipBrowser == no: skip to the next file
   if ( settings.value( QStringLiteral( "qgis/scanZipInBrowser2" ), "basic" ).toString() == QLatin1String( "no" ) )
@@ -5739,7 +5738,7 @@ bool QgisApp::askUserForZipItemLayers( const QString &path )
     return false;
 
   zipItem->populate( true );
-  QgsDebugMsg( QStringLiteral( "Path= %1 got zipitem with %2 children" ).arg( path ).arg( zipItem->rowCount() ) );
+  QgsDebugMsgLevel( QStringLiteral( "Path= %1 got zipitem with %2 children" ).arg( path ).arg( zipItem->rowCount() ), 2 );
 
   // if 1 or 0 child found, exit so a normal item is created by gdal or ogr provider
   if ( zipItem->rowCount() <= 1 )
@@ -5815,7 +5814,7 @@ bool QgisApp::askUserForZipItemLayers( const QString &path )
     if ( !layerItem )
       continue;
 
-    QgsDebugMsg( QStringLiteral( "item path=%1 provider=%2" ).arg( item->path(), layerItem->providerKey() ) );
+    QgsDebugMsgLevel( QStringLiteral( "item path=%1 provider=%2" ).arg( item->path(), layerItem->providerKey() ), 2 );
     if ( layerItem->providerKey() == QLatin1String( "gdal" ) )
     {
       if ( addRasterLayer( item->path(), QFileInfo( item->name() ).completeBaseName() ) )
@@ -5840,7 +5839,7 @@ QList< QgsMapLayer * > QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
     return result;
 
   QStringList sublayers = layer->subLayers();
-  QgsDebugMsg( QStringLiteral( "raster has %1 sublayers" ).arg( layer->subLayers().size() ) );
+  QgsDebugMsgLevel( QStringLiteral( "raster has %1 sublayers" ).arg( layer->subLayers().size() ), 2 );
 
   if ( sublayers.empty() )
     return result;
@@ -6421,8 +6420,6 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
 
   setTitleBarText_( *this );
 
-  //QgsDebugMsg("emitting new project signal");
-
   // emit signal so listeners know we have a new project
   emit newProject();
 
@@ -6475,7 +6472,7 @@ bool QgisApp::fileNewFromTemplate( const QString &fileName )
   }
 
   MAYBE_UNUSED QgsProjectDirtyBlocker dirtyBlocker( QgsProject::instance() );
-  QgsDebugMsg( QStringLiteral( "loading project template: %1" ).arg( fileName ) );
+  QgsDebugMsgLevel( QStringLiteral( "loading project template: %1" ).arg( fileName ), 2 );
   if ( addProject( fileName ) )
   {
     // set null filename so we don't override the template
@@ -7549,7 +7546,7 @@ void QgisApp::openFile( const QString &fileName, const QString &fileTypeHint )
   QFileInfo fi( fileName );
   if ( fileTypeHint == QStringLiteral( "project" ) || fi.suffix().compare( QLatin1String( "qgs" ), Qt::CaseInsensitive ) == 0 || fi.suffix().compare( QLatin1String( "qgz" ), Qt::CaseInsensitive ) == 0 )
   {
-    QgsDebugMsg( "Opening project " + fileName );
+    QgsDebugMsgLevel( "Opening project " + fileName, 2 );
     openProject( fileName );
   }
   else if ( fi.suffix().compare( QLatin1String( "qlr" ), Qt::CaseInsensitive ) == 0 )
@@ -7923,26 +7920,22 @@ void QgisApp::stopRendering()
     canvas->stopRendering();
 }
 
-//reimplements method from base (gui) class
 void QgisApp::hideAllLayers()
 {
-  QgsDebugMsg( QStringLiteral( "hiding all layers!" ) );
+  QgsDebugMsgLevel( QStringLiteral( "hiding all layers!" ), 3 );
   mLayerTreeView->layerTreeModel()->rootGroup()->setItemVisibilityCheckedRecursive( false );
 
 }
 
-
-// reimplements method from base (gui) class
 void QgisApp::showAllLayers()
 {
-  QgsDebugMsg( QStringLiteral( "Showing all layers!" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Showing all layers!" ), 3 );
   mLayerTreeView->layerTreeModel()->rootGroup()->setItemVisibilityCheckedRecursive( true );
 }
 
-//reimplements method from base (gui) class
 void QgisApp::hideSelectedLayers()
 {
-  QgsDebugMsg( QStringLiteral( "hiding selected layers!" ) );
+  QgsDebugMsgLevel( QStringLiteral( "hiding selected layers!" ), 3 );
 
   const auto constSelectedNodes = mLayerTreeView->selectedNodes();
   for ( QgsLayerTreeNode *node : constSelectedNodes )
@@ -7953,7 +7946,7 @@ void QgisApp::hideSelectedLayers()
 
 void QgisApp::toggleSelectedLayers()
 {
-  QgsDebugMsg( QStringLiteral( "toggling selected layers!" ) );
+  QgsDebugMsgLevel( QStringLiteral( "toggling selected layers!" ), 3 );
 
   const auto constSelectedNodes = mLayerTreeView->selectedNodes();
   if ( ! constSelectedNodes.isEmpty() )
@@ -7968,7 +7961,7 @@ void QgisApp::toggleSelectedLayers()
 
 void QgisApp::toggleSelectedLayersIndependently()
 {
-  QgsDebugMsg( QStringLiteral( "toggling selected layers independently!" ) );
+  QgsDebugMsgLevel( QStringLiteral( "toggling selected layers independently!" ), 3 );
 
   const auto constSelectedNodes = mLayerTreeView->selectedNodes();
   if ( ! constSelectedNodes.isEmpty() )
@@ -7993,10 +7986,9 @@ void QgisApp::hideDeselectedLayers()
   }
 }
 
-// reimplements method from base (gui) class
 void QgisApp::showSelectedLayers()
 {
-  QgsDebugMsg( QStringLiteral( "show selected layers!" ) );
+  QgsDebugMsgLevel( QStringLiteral( "show selected layers!" ), 3 );
 
   const auto constSelectedNodes = mLayerTreeView->selectedNodes();
   for ( QgsLayerTreeNode *node : constSelectedNodes )
@@ -8013,7 +8005,7 @@ void QgisApp::showSelectedLayers()
 
 void QgisApp::zoomIn()
 {
-  QgsDebugMsg( QStringLiteral( "Setting map tool to zoomIn" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Setting map tool to zoomIn" ), 2 );
 
   mMapCanvas->setMapTool( mMapTools.mZoomIn );
 }
@@ -8612,8 +8604,7 @@ QString QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer, const bool defau
 
   if ( d.mode() == QgsRasterLayerSaveAsDialog::RawDataMode )
   {
-    QgsDebugMsg( QStringLiteral( "Writing raw data" ) );
-    //QgsDebugMsg( QStringLiteral( "Writing raw data" ).arg( pos ) );
+    QgsDebugMsgLevel( QStringLiteral( "Writing raw data" ), 2 );
     pipe.reset( new QgsRasterPipe() );
     if ( !pipe->set( rasterLayer->dataProvider()->clone() ) )
     {
@@ -8647,7 +8638,7 @@ QString QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer, const bool defau
   else // RenderedImageMode
   {
     // clone the whole pipe
-    QgsDebugMsg( QStringLiteral( "Writing rendered image" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Writing rendered image" ), 2 );
     pipe.reset( new QgsRasterPipe( *rasterLayer->pipe() ) );
     QgsRasterProjector *projector = pipe->projector();
     if ( !projector )
@@ -8813,7 +8804,7 @@ void QgisApp::saveAsLayerDefinition()
   QString lastUsedDir = settings.value( QStringLiteral( "UI/lastQLRDir" ), QDir::homePath() ).toString();
 
   QString path = QFileDialog::getSaveFileName( this, QStringLiteral( "Save as Layer Definition File" ), lastUsedDir, QStringLiteral( "*.qlr" ) );
-  QgsDebugMsg( path );
+  QgsDebugMsgLevel( path, 2 );
   if ( path.isEmpty() )
     return;
 
@@ -10616,7 +10607,7 @@ std::unique_ptr<QgsVectorLayer> QgisApp::pasteToNewMemoryVector()
   layer->startEditing();
   for ( const QgsField &f : clipboard()->fields() )
   {
-    QgsDebugMsg( QStringLiteral( "field %1 (%2)" ).arg( f.name(), QVariant::typeToName( f.type() ) ) );
+    QgsDebugMsgLevel( QStringLiteral( "field %1 (%2)" ).arg( f.name(), QVariant::typeToName( f.type() ) ), 2 );
     if ( !layer->addAttribute( f ) )
     {
       visibleMessageBar()->pushMessage( tr( "Paste features" ),
@@ -10663,7 +10654,7 @@ std::unique_ptr<QgsVectorLayer> QgisApp::pasteToNewMemoryVector()
     return nullptr;
   }
 
-  QgsDebugMsg( QStringLiteral( "%1 features pasted to temporary scratch layer" ).arg( layer->featureCount() ) );
+  QgsDebugMsgLevel( QStringLiteral( "%1 features pasted to temporary scratch layer" ).arg( layer->featureCount() ), 2 );
   return layer;
 }
 
@@ -11826,8 +11817,8 @@ void QgisApp::legendLayerZoomNative()
 
   if ( QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( currentLayer ) )
   {
-    QgsDebugMsg( "Raster units per pixel  : " + QString::number( layer->rasterUnitsPerPixelX() ) );
-    QgsDebugMsg( "MapUnitsPerPixel before : " + QString::number( mMapCanvas->mapUnitsPerPixel() ) );
+    QgsDebugMsgLevel( "Raster units per pixel  : " + QString::number( layer->rasterUnitsPerPixelX() ), 2 );
+    QgsDebugMsgLevel( "MapUnitsPerPixel before : " + QString::number( mMapCanvas->mapUnitsPerPixel() ), 2 );
 
     QList< double >nativeResolutions;
     if ( layer->dataProvider() )
@@ -11855,12 +11846,12 @@ void QgisApp::legendLayerZoomNative()
       int i;
       for ( i = 0; i < diagonalNativeResolutions.size() && diagonalNativeResolutions.at( i ) < diagonalSize; i++ )
       {
-        QgsDebugMsg( QStringLiteral( "test resolution %1: %2" ).arg( i ).arg( diagonalNativeResolutions.at( i ) ) );
+        QgsDebugMsgLevel( QStringLiteral( "test resolution %1: %2" ).arg( i ).arg( diagonalNativeResolutions.at( i ) ), 2 );
       }
       if ( i == nativeResolutions.size() ||
            ( i > 0 && ( ( diagonalNativeResolutions.at( i ) - diagonalSize ) > ( diagonalSize - diagonalNativeResolutions.at( i - 1 ) ) ) ) )
       {
-        QgsDebugMsg( QStringLiteral( "previous resolution" ) );
+        QgsDebugMsgLevel( QStringLiteral( "previous resolution" ), 2 );
         i--;
       }
 
@@ -11872,7 +11863,7 @@ void QgisApp::legendLayerZoomNative()
     }
 
     mMapCanvas->refresh();
-    QgsDebugMsg( "MapUnitsPerPixel after  : " + QString::number( mMapCanvas->mapUnitsPerPixel() ) );
+    QgsDebugMsgLevel( "MapUnitsPerPixel after  : " + QString::number( mMapCanvas->mapUnitsPerPixel() ), 2 );
   }
 }
 
@@ -12065,8 +12056,6 @@ void QgisApp::loadPythonSupport()
   }
 
 #ifdef WITH_BINDINGS
-
-  //QgsDebugMsg("Python support library loaded successfully.");
   typedef QgsPythonUtils*( *inst )();
   inst pythonlib_inst = reinterpret_cast< inst >( cast_to_fptr( pythonlib.resolve( "instance" ) ) );
   if ( !pythonlib_inst )
@@ -12076,7 +12065,6 @@ void QgisApp::loadPythonSupport()
     return;
   }
 
-  //QgsDebugMsg("Python support library's instance() symbol resolved.");
   mPythonUtils = pythonlib_inst();
   if ( mPythonUtils )
   {
@@ -13091,10 +13079,6 @@ bool QgisApp::saveDirty()
   QMessageBox::StandardButton answer( QMessageBox::Discard );
   QgsCanvasRefreshBlocker refreshBlocker;
 
-  //QgsDebugMsg(QString("Layer count is %1").arg(mMapCanvas->layerCount()));
-  //QgsDebugMsg(QString("Project is %1dirty").arg( QgsProject::instance()->isDirty() ? "" : "not "));
-  //QgsDebugMsg(QString("Map canvas is %1dirty").arg(mMapCanvas->isDirty() ? "" : "not "));
-
   QgsSettings settings;
   bool askThem = settings.value( QStringLiteral( "qgis/askToSaveProjectChanges" ), true ).toBool();
 
@@ -14107,7 +14091,6 @@ void QgisApp::showMapTip()
     QgsMapLayer *mypLayer = mMapCanvas->currentLayer();
     if ( mypLayer )
     {
-      // QgsDebugMsg("Current layer for maptip display is: " + mypLayer->source());
       // only process vector layers
       if ( mypLayer->type() == QgsMapLayerType::VectorLayer )
       {
@@ -15064,8 +15047,8 @@ QgsRasterLayer *QgisApp::addRasterLayerPrivate(
   QgsSettings settings;
   QString baseName =  settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() ? QgsMapLayer::formatLayerName( shortName ) : shortName;
 
-  QgsDebugMsg( "Creating new raster layer using " + uri
-               + " with baseName of " + baseName );
+  QgsDebugMsgLevel( "Creating new raster layer using " + uri
+                    + " with baseName of " + baseName, 2 );
 
   QgsRasterLayer *layer = nullptr;
   // XXX ya know QgsRasterLayer can snip out the basename on its own;
@@ -15082,7 +15065,7 @@ QgsRasterLayer *QgisApp::addRasterLayerPrivate(
   else
     layer = new QgsRasterLayer( uri, baseName, providerKey );
 
-  QgsDebugMsg( QStringLiteral( "Constructed new layer" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Constructed new layer" ), 2 );
 
   QgsError error;
   QString title;
@@ -15311,7 +15294,6 @@ void QgisApp::keyReleaseEvent( QKeyEvent *event )
 
 void QgisApp::keyPressEvent( QKeyEvent *e )
 {
-  // QgsDebugMsg( QStringLiteral( "%1 (keypress received)" ).arg( e->text() ) );
   emit keyPressed( e );
 
 #if 0 && defined(_MSC_VER) && defined(QGISDEBUG)
@@ -16026,7 +16008,7 @@ void QgisApp::eraseAuthenticationDatabase()
     QgsLayerTreeGroup *layertree( QgsProject::instance()->layerTreeRoot() );
     if ( layertree && layertree->customProperty( QStringLiteral( "loading" ) ).toBool() )
     {
-      QgsDebugMsg( QStringLiteral( "Project loading, skipping auth db erase" ) );
+      QgsDebugMsgLevel( QStringLiteral( "Project loading, skipping auth db erase" ), 2 );
       QgsApplication::authManager()->setScheduledAuthDatabaseEraseRequestEmitted( false );
       return;
     }
