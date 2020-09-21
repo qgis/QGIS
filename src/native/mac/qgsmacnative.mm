@@ -60,7 +60,10 @@ QgsMacNative::~QgsMacNative()
 
 void QgsMacNative::setIconPath( const QString &iconPath )
 {
-  mQgsUserNotificationCenter->_qgisIcon = QtMac::toNSImage( QPixmap( iconPath ) );
+  QImage image = QPixmap( iconPath ).toImage();
+  CGImageRef imgRef = image.toCGImage();
+  NSSize nsize = NSMakeSize((CGFloat)image.size().width(), (CGFloat)image.size().height());
+  mQgsUserNotificationCenter->_qgisIcon = [[NSImage alloc] initWithCGImage:imgRef size:nsize];
 }
 
 const char *QgsMacNative::currentAppLocalizedName()
