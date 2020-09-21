@@ -1221,7 +1221,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     {
       for ( const LineInfo &info : qgis::as_const( linesToRender ) )
       {
-        if ( context.hasRenderedFeatureHandlers() )
+        if ( context.hasRenderedFeatureHandlers() && !info.renderLine.empty() )
         {
           renderedBoundsGeom = renderedBoundsGeom.isNull() ? QgsGeometry::fromQPolygonF( info.renderLine )
                                : QgsGeometry::collectGeometry( QVector< QgsGeometry>() << QgsGeometry::fromQPolygonF( info.renderLine ) << renderedBoundsGeom );
@@ -1240,7 +1240,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       int i = 0;
       for ( const PolygonInfo &info : qgis::as_const( polygonsToRender ) )
       {
-        if ( context.hasRenderedFeatureHandlers() )
+        if ( context.hasRenderedFeatureHandlers() && !info.renderExterior.empty() )
         {
           renderedBoundsGeom = renderedBoundsGeom.isNull() ? QgsGeometry::fromQPolygonF( info.renderExterior )
                                : QgsGeometry::collectGeometry( QVector< QgsGeometry>() << QgsGeometry::fromQPolygonF( info.renderExterior ) << renderedBoundsGeom );
@@ -1265,7 +1265,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       break;
   }
 
-  if ( context.hasRenderedFeatureHandlers() )
+  if ( context.hasRenderedFeatureHandlers() && !renderedBoundsGeom.isNull() )
   {
     QgsRenderedFeatureHandlerInterface::RenderedFeatureContext featureContext( context );
     const QList< QgsRenderedFeatureHandlerInterface * > handlers = context.renderedFeatureHandlers();
