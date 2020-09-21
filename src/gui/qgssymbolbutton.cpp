@@ -115,7 +115,6 @@ void QgsSymbolButton::showSettingsDialog()
     d->setPanelTitle( mDialogTitle );
     d->setContext( symbolContext );
     connect( d, &QgsPanelWidget::widgetChanged, this, &QgsSymbolButton::updateSymbolFromWidget );
-    connect( d, &QgsPanelWidget::panelAccepted, this, &QgsSymbolButton::cleanUpSymbolSelector );
     panel->openPanel( d );
   }
   else
@@ -141,15 +140,6 @@ void QgsSymbolButton::updateSymbolFromWidget()
 {
   if ( QgsSymbolSelectorWidget *w = qobject_cast<QgsSymbolSelectorWidget *>( sender() ) )
     setSymbol( w->symbol()->clone() );
-}
-
-void QgsSymbolButton::cleanUpSymbolSelector( QgsPanelWidget *container )
-{
-  QgsSymbolSelectorWidget *w = qobject_cast<QgsSymbolSelectorWidget *>( container );
-  if ( !w )
-    return;
-
-  delete w->symbol();
 }
 
 QgsMapCanvas *QgsSymbolButton::mapCanvas() const

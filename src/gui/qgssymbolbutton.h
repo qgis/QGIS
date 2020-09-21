@@ -234,7 +234,6 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
 
     void showSettingsDialog();
     void updateSymbolFromWidget();
-    void cleanUpSymbolSelector( QgsPanelWidget *container );
 
     /**
      * Creates the drop-down menu entries
