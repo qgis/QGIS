@@ -17,6 +17,7 @@
 
 #include "qgs3dmapsettings.h"
 #include "qgsapplication.h"
+#include "qgssettings.h"
 
 #include <QMessageBox>
 
@@ -54,6 +55,13 @@ QgsLightsWidget::QgsLightsWidget( QWidget *parent )
   connect( spinDirectionZ, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::updateCurrentDirectionalLightParameters );
   connect( spinDirectionalIntensity, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::updateCurrentDirectionalLightParameters );
   connect( btnDirectionalColor, &QgsColorButton::colorChanged, this, &QgsLightsWidget::updateCurrentDirectionalLightParameters );
+
+  tabWidget->setCurrentIndex( QgsSettings().value( QStringLiteral( "UI/last3DLightsTab" ), 1 ).toInt() );
+}
+
+QgsLightsWidget::~QgsLightsWidget()
+{
+  QgsSettings().setValue( QStringLiteral( "UI/last3DLightsTab" ), tabWidget->currentIndex() );
 }
 
 void QgsLightsWidget::setPointLights( const QList<QgsPointLightSettings> &pointLights )
