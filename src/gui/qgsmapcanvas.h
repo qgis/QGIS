@@ -1265,6 +1265,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     */
     bool boundingBoxOfFeatureIds( const QgsFeatureIds &ids, QgsVectorLayer *layer, QgsRectangle &bbox, QString &errorMsg ) const;
 
+    /**
+     * Rerturns the optimal extent for a point \a layer and a given \a center point in canvas CRS.
+     * This will return an extent combined of the center and the closest point in the layer.
+     * The extent can be scaled with a \a scale factor.
+     * The returned extent might be an empty rect if it cannot be determnined.
+     */
+    QgsRectangle optimalExtentForPointLayer( QgsVectorLayer *layer, const QgsPointXY &center, int scaleFactor = 5 );
+
     void setLayersPrivate( const QList<QgsMapLayer *> &layers );
 
     void startPreviewJobs();
