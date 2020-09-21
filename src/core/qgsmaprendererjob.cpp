@@ -149,8 +149,7 @@ bool QgsMapRendererJob::prepareLabelCache() const
 
 bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const QgsCoordinateTransform &ct, QgsRectangle &extent, QgsRectangle &r2 )
 {
-  bool split = false;
-
+  bool res = true;
   // we can safely use ballpark transforms without bothering the user here -- at the likely scale of layer extents there
   // won't be an appreciable difference, and we aren't actually transforming any rendered points here anyway (just the layer extent)
   QgsCoordinateTransform approxTransform = ct;
@@ -197,6 +196,7 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
         else
         {
           extent = QgsRectangle( -180.0, -90.0, 180.0, 90.0 );
+          res = false;
         }
       }
       else
@@ -225,6 +225,7 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
           // for rendering, labeling and caching as everything is rendered just in one go
           extent.setXMinimum( -SPLIT_COORD );
           extent.setXMaximum( SPLIT_COORD );
+          res = false;
         }
       }
 
@@ -242,20 +243,23 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
         // E.g. longitude -200 to +160 would be understood as +40 to +160 due to periodicity.
         // We could try to clamp coords to (-180,180) for lon resp. (-90,90) for lat,
         // but this seems like a safer choice.
+      {
         extent = QgsRectangle( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max() );
+        res = false;
+      }
       else
         extent = approxTransform.transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
     }
   }
-  catch ( QgsCsException &cse )
+  catch ( QgsCsException & )
   {
-    Q_UNUSED( cse )
     QgsDebugMsg( QStringLiteral( "Transform error caught" ) );
     extent = QgsRectangle( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max() );
-    r2     = QgsRectangle( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max() );
+    r2 = QgsRectangle( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max() );
+    res = false;
   }
 
-  return split;
+  return res;
 }
 
 QImage *QgsMapRendererJob::allocateImage( QString layerId )
