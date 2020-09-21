@@ -1193,22 +1193,24 @@ int main( int argc, char *argv[] )
   QgsCustomization::instance()->loadDefault();
 
 #ifdef Q_OS_MACX
-  // If the GDAL plugins are bundled with the application and GDAL_DRIVER_PATH
-  // is not already defined, use the GDAL plugins in the application bundle.
-  QString gdalPlugins( QCoreApplication::applicationDirPath().append( "/lib/gdalplugins" ) );
-  if ( QFile::exists( gdalPlugins ) && !getenv( "GDAL_DRIVER_PATH" ) )
+  if ( !getenv( "GDAL_DRIVER_PATH" ) )
   {
-    setenv( "GDAL_DRIVER_PATH", gdalPlugins.toUtf8(), 1 );
+    // If the GDAL plugins are bundled with the application and GDAL_DRIVER_PATH
+    // is not already defined, use the GDAL plugins in the application bundle.
+    QString gdalPlugins( QCoreApplication::applicationDirPath().append( "/lib/gdalplugins" ) );
+    if ( QFile::exists( gdalPlugins ) )
+    {
+      setenv( "GDAL_DRIVER_PATH", gdalPlugins.toUtf8(), 1 );
+    }
   }
 
   // Point GDAL_DATA at any GDAL share directory embedded in the app bundle
   if ( !getenv( "GDAL_DATA" ) )
   {
     QStringList gdalShares;
-    QString appResources( QDir::cleanPath( QgsApplication::pkgDataPath() ) );
     gdalShares << QCoreApplication::applicationDirPath().append( "/share/gdal" )
-               << appResources.append( "/share/gdal" )
-               << appResources.append( "/gdal" );
+               << QDir::cleanPath( QgsApplication::pkgDataPath() ).append( "/share/gdal" )
+               << QDir::cleanPath( QgsApplication::pkgDataPath() ).append( "/gdal" );
     const auto constGdalShares = gdalShares;
     for ( const QString &gdalShare : constGdalShares )
     {
@@ -1223,10 +1225,10 @@ int main( int argc, char *argv[] )
   // Point PROJ_LIB at any PROJ_LIB share directory embedded in the app bundle
   if ( !getenv( "PROJ_LIB" ) )
   {
-    QString appResources( QDir::cleanPath( QgsApplication::pkgDataPath() ) );
-    if ( QFile::exists( appResources.append( "/proj" ) ) )
+    QString projLib( QDir::cleanPath( QgsApplication::pkgDataPath().append( "/proj" ) ) );
+    if ( QFile::exists( projLib ) )
     {
-      setenv( "PROJ_LIB", appResources.append( "/proj" ).toUtf8().constData(), 1 );
+      setenv( "PROJ_LIB", projLib.toUtf8().constData(), 1 );
     }
   }
 
