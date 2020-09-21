@@ -142,7 +142,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
       switch ( role )
       {
         case Qt::DisplayRole:
-          return tr( "Field and Widget Configuration" );
+          return tr( "Fields" );
         case Qt::ToolTipRole:
           return tr( "Aliases, widgets, WMS/WFS, expressions, constraints, virtual fields" );
         case Qt::DecorationRole:
@@ -153,7 +153,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
       switch ( role )
       {
         case Qt::DisplayRole:
-          return tr( "Form Layout" );
+          return tr( "Forms" );
         case Qt::ToolTipRole:
           return QVariant();
         case Qt::DecorationRole:
