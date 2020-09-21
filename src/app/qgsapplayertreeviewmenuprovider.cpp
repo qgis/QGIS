@@ -347,7 +347,6 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           for ( const QgsCoordinateReferenceSystem &crs : recentProjections )
           {
             QAction *action = menuSetCRS->addAction( tr( "Set to %1" ).arg( crs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ) ) );
-            action->setProperty( "layerId", layer->id() );
             action->setProperty( "crs", crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
             i++;
             if ( i == 2 )
@@ -1025,12 +1024,20 @@ bool QgsAppLayerTreeViewMenuProvider::removeActionEnabled()
 
 void QgsAppLayerTreeViewMenuProvider::setLayerCrs( QAction *action )
 {
-  QString layerId = action->property( "layerId" ).toString();
-  QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerId );
-  if ( !layer )
-    return;
+  const QString wkt = action->property( "crs" ).toString();
+  const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( wkt );
 
-  QString wkt = action->property( "crs" ).toString();
-  layer->setCrs( QgsCoordinateReferenceSystem( wkt ), true );
-  layer->triggerRepaint();
+  const auto constSelectedNodes = mView->selectedNodes();
+  for ( QgsLayerTreeNode *node : constSelectedNodes )
+  {
+    if ( QgsLayerTree::isLayer( node ) )
+    {
+      QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
+      if ( nodeLayer->layer() )
+      {
+        nodeLayer->layer()->setCrs( crs, true );
+        nodeLayer->layer()->triggerRepaint();
+      }
+    }
+  }
 }
