@@ -880,7 +880,7 @@ void QgsOgrProvider::addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Unknown geometry type, count features for each geometry type" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Unknown geometry type, count features for each geometry type" ), 2 );
     // Add virtual sublayers for supported geometry types if layer type is unknown
     // Count features for geometry types
     QMap<OGRwkbGeometryType, int> fCount;
@@ -949,7 +949,7 @@ void QgsOgrProvider::addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer
                           << longDescription;
 
       QString sl = parts.join( sublayerSeparator() );
-      QgsDebugMsgLevel( "sub layer: " + sl, 1 );
+      QgsDebugMsgLevel( "sub layer: " + sl, 2 );
       mSubLayerList << sl;
     }
   }
