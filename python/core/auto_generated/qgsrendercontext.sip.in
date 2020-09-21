@@ -47,6 +47,7 @@ to be rendered etc.
       LosslessImageRendering,
       ApplyScalingWorkaroundForTextRendering,
       Render3DMap,
+      ApplyClipAfterReprojection,
     };
     typedef QFlags<QgsRenderContext::Flag> Flags;
 
