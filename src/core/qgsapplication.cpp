@@ -448,19 +448,19 @@ bool QgsApplication::notify( QObject *receiver, QEvent *event )
   }
   catch ( QgsException &e )
   {
-    QgsDebugMsg( "Caught unhandled QgsException: " + e.what() );
+    qCritical() << "Caught unhandled QgsException: " << e.what();
     if ( qApp->thread() == QThread::currentThread() )
       QMessageBox::critical( activeWindow(), tr( "Exception" ), e.what() );
   }
   catch ( std::exception &e )
   {
-    QgsDebugMsg( "Caught unhandled std::exception: " + QString::fromLatin1( e.what() ) );
+    qCritical() << "Caught unhandled std::exception: " << e.what();
     if ( qApp->thread() == QThread::currentThread() )
       QMessageBox::critical( activeWindow(), tr( "Exception" ), e.what() );
   }
   catch ( ... )
   {
-    QgsDebugMsg( QStringLiteral( "Caught unhandled unknown exception" ) );
+    qCritical() << "Caught unhandled unknown exception";
     if ( qApp->thread() == QThread::currentThread() )
       QMessageBox::critical( activeWindow(), tr( "Exception" ), tr( "unknown exception" ) );
   }
