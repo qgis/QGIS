@@ -1991,6 +1991,13 @@ class TestQgsGeometry(unittest.TestCase):
         wkt = g1.nearestPoint(g2).asWkt()
         self.assertTrue(compareWkt(expWkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
 
+        # trivial point case
+        expWkt = 'Point (3 4)'
+        wkt = QgsGeometry.fromWkt('Point(3 4)').nearestPoint(QgsGeometry.fromWkt('Point(-1 -8)')).asWkt()
+        self.assertTrue(compareWkt(expWkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
+        wkt = QgsGeometry.fromWkt('Point(3 4)').nearestPoint(QgsGeometry.fromWkt('LineString( 1 1, 5 1, 5 5 )')).asWkt()
+        self.assertTrue(compareWkt(expWkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
+
     def testShortestLine(self):
         # test with empty geometries
         g1 = QgsGeometry()
@@ -2020,6 +2027,11 @@ class TestQgsGeometry(unittest.TestCase):
         g2 = QgsGeometry.fromWkt('Point( 2 3 )')
         expWkt = 'LineString( 2 3, 2 3 )'
         wkt = g1.shortestLine(g2).asWkt()
+        self.assertTrue(compareWkt(expWkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
+
+        # trivial point to point case
+        expWkt = 'LineString (3 4, -1 -8)'
+        wkt = QgsGeometry.fromWkt('Point(3 4)').shortestLine(QgsGeometry.fromWkt('Point(-1 -8)')).asWkt()
         self.assertTrue(compareWkt(expWkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
 
     def testBoundingBox(self):

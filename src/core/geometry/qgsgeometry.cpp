@@ -609,6 +609,12 @@ double QgsGeometry::sqrDistToVertexAt( QgsPointXY &point, int atVertex ) const
 
 QgsGeometry QgsGeometry::nearestPoint( const QgsGeometry &other ) const
 {
+  // avoid calling geos for trivial point calculations
+  if ( d->geometry && QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::Point )
+  {
+    return QgsGeometry( qgsgeometry_cast< const QgsPoint * >( d->geometry.get() )->clone() );
+  }
+
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
   QgsGeometry result = geos.closestPoint( other );
@@ -618,6 +624,12 @@ QgsGeometry QgsGeometry::nearestPoint( const QgsGeometry &other ) const
 
 QgsGeometry QgsGeometry::shortestLine( const QgsGeometry &other ) const
 {
+  // avoid calling geos for trivial point-to-point line calculations
+  if ( d->geometry && QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::Point && QgsWkbTypes::flatType( other.wkbType() ) == QgsWkbTypes::Point )
+  {
+    return QgsGeometry( qgis::make_unique< QgsLineString >( *qgsgeometry_cast< const QgsPoint * >( d->geometry.get() ), *qgsgeometry_cast< const QgsPoint * >( other.constGet() ) ) );
+  }
+
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
   QgsGeometry result = geos.shortestLine( other, &mLastError );
