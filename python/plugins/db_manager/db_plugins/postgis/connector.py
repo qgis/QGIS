@@ -44,6 +44,7 @@ from qgis.core import (
     QgsDataSourceUri,
     QgsProviderRegistry,
     QgsProviderConnectionException,
+    QgsFeedback,
 )
 
 from ..connector import DBConnector
@@ -68,12 +69,13 @@ class CursorAdapter():
         pass
         # print("XXX CursorAdapter[" + hex(id(self)) + "]: " + msg)
 
-    def __init__(self, connection, sql=None):
+    def __init__(self, connection, sql=None, feedback=None):
         self._debug("Created with sql: " + str(sql))
         self.connection = connection
         self.sql = sql
         self.result = None
         self.cursor = 0
+        self.feedback = feedback
         self.closed = False
         if (self.sql is not None):
             self._execute()
@@ -103,7 +105,7 @@ class CursorAdapter():
             return
         self._debug("execute called with sql " + self.sql)
         try:
-            self.result = self._toStrResultSet(self.connection.executeSql(self.sql))
+            self.result = self._toStrResultSet(self.connection.executeSql(self.sql, feedback=self.feedback))
         except QgsProviderConnectionException as e:
             raise DbError(e, self.sql)
         self._debug("execute returned " + str(len(self.result)) + " rows")
@@ -119,7 +121,7 @@ class CursorAdapter():
             uri = QgsDataSourceUri(self.connection.uri())
 
             # TODO: make this part provider-agnostic
-            uri.setTable('(SELECT row_number() OVER () AS __rid__, * FROM (' + self.sql + ') as foo)')
+            uri.setTable('(SELECT row_number() OVER () AS __rid__, * FROM (' + self.sql + ' LIMIT 1) as foo)')
             uri.setKeyColumn('__rid__')
             # TODO: fetch provider name from connection (QgsAbstractConnectionProvider)
             # TODO: re-use the VectorLayer for fetching rows in batch mode
@@ -228,6 +230,8 @@ class PostGisDBConnector(DBConnector):
         self._checkGeometryColumnsTable()
         self._checkRasterColumnsTable()
 
+        self.feedback = None
+
     def _connectionInfo(self):
         return str(self.uri().connectionInfo(True))
 
@@ -306,6 +310,8 @@ class PostGisDBConnector(DBConnector):
     def cancel(self):
         if self.connection:
             self.connection.cancel()
+        if self.core_connection:
+            self.feedback.cancel()
 
     def getInfo(self):
         c = self._execute(None, u"SELECT version()")
@@ -1166,7 +1172,8 @@ class PostGisDBConnector(DBConnector):
         if cursor is not None:
             cursor._execute(sql)
             return cursor
-        return CursorAdapter(self.core_connection, sql)
+        self.feedback = QgsFeedback()
+        return CursorAdapter(self.core_connection, sql, feedback=self.feedback)
 
     def _executeSql(self, sql):
         return self.core_connection.executeSql(sql)

@@ -181,10 +181,10 @@ void QgsSpatiaLiteProviderConnection::renameVectorTable( const QString &schema, 
   }
 }
 
-QList<QList<QVariant>> QgsSpatiaLiteProviderConnection::executeSql( const QString &sql ) const
+QList<QList<QVariant>> QgsSpatiaLiteProviderConnection::executeSql( const QString &sql, QgsFeedback *feedback ) const
 {
   checkCapability( Capability::ExecuteSql );
-  return executeSqlPrivate( sql );
+  return executeSqlPrivate( sql, feedback );
 }
 
 void QgsSpatiaLiteProviderConnection::vacuum( const QString &schema, const QString &name ) const
@@ -395,13 +395,26 @@ void QgsSpatiaLiteProviderConnection::setDefaultCapabilities()
   };
 }
 
-QList<QVariantList> QgsSpatiaLiteProviderConnection::executeSqlPrivate( const QString &sql ) const
+QList<QVariantList> QgsSpatiaLiteProviderConnection::executeSqlPrivate( const QString &sql, QgsFeedback *feedback ) const
 {
-  QString errCause;
   QList<QVariantList> results;
+
+  if ( feedback && feedback->isCanceled() )
+  {
+    return results;
+  }
+
+  QString errCause;
+
   gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( pathFromUri().toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
   if ( hDS )
   {
+
+    if ( feedback && feedback->isCanceled() )
+    {
+      return results;
+    }
+
     OGRLayerH ogrLayer( GDALDatasetExecuteSQL( hDS.get(), sql.toUtf8().constData(), nullptr, nullptr ) );
     if ( ogrLayer )
     {
@@ -409,6 +422,12 @@ QList<QVariantList> QgsSpatiaLiteProviderConnection::executeSqlPrivate( const QS
       QgsFields fields;
       while ( fet.reset( OGR_L_GetNextFeature( ogrLayer ) ), fet )
       {
+
+        if ( feedback && feedback->isCanceled() )
+        {
+          break;
+        }
+
         QVariantList row;
         // Try to get the right type for the returned values
         if ( fields.isEmpty() )

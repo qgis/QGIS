@@ -25,6 +25,8 @@
 
 #include <QObject>
 
+class QgsFeedback;
+
 /**
  * The QgsAbstractDatabaseProviderConnection class provides common functionality
  * for DB based connections.
@@ -452,11 +454,11 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual void renameSchema( const QString &name, const QString &newName ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Executes raw \a sql and returns the (possibly empty) list of results in a multi-dimensional array.
+     * Executes raw \a sql and returns the (possibly empty) list of results in a multi-dimensional array, optionally \a feedback can be provided.
      * Raises a QgsProviderConnectionException if any errors are encountered.
      * \throws QgsProviderConnectionException
      */
-    virtual QList<QList<QVariant>> executeSql( const QString &sql ) const SIP_THROW( QgsProviderConnectionException );
+    virtual QList<QList<QVariant>> executeSql( const QString &sql, QgsFeedback *feedback = nullptr ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Vacuum the database table with given \a schema and \a name (schema is ignored if not supported by the backend).

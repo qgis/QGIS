@@ -192,16 +192,23 @@ void QgsPostgresProviderConnection::renameSchema( const QString &name, const QSt
                      .arg( QgsPostgresConn::quotedIdentifier( newName ) ) );
 }
 
-QList<QVariantList> QgsPostgresProviderConnection::executeSql( const QString &sql ) const
+QList<QVariantList> QgsPostgresProviderConnection::executeSql( const QString &sql, QgsFeedback *feedback ) const
 {
   checkCapability( Capability::ExecuteSql );
-  return executeSqlPrivate( sql );
+  return executeSqlPrivate( sql, true, feedback );
 }
 
-QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QString &sql, bool resolveTypes ) const
+QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QString &sql, bool resolveTypes, QgsFeedback *feedback ) const
 {
-  const QgsDataSourceUri dsUri { uri() };
   QList<QVariantList> results;
+
+  // Check feedback first!
+  if ( feedback && feedback->isCanceled() )
+  {
+    return results;
+  }
+
+  const QgsDataSourceUri dsUri { uri() };
   QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( dsUri.connectionInfo( false ) );
   if ( !conn )
   {
@@ -209,7 +216,28 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
   }
   else
   {
+
+    if ( feedback && feedback->isCanceled() )
+    {
+      return results;
+    }
+
+    // This is gross but I tried with both conn and a context QObject without success: the lambda is never called.
+    QMetaObject::Connection qtConnection;
+    if ( feedback )
+    {
+      qtConnection = QObject::connect( feedback, &QgsFeedback::canceled, [ &conn ]
+      {
+        conn->PQCancel();
+      } );
+    }
+
     QgsPostgresResult res( conn->PQexec( sql ) );
+    if ( feedback )
+    {
+      QObject::disconnect( qtConnection );
+    }
+
     QString errCause;
     if ( conn->PQstatus() != CONNECTION_OK || ! res.result() )
     {
@@ -236,6 +264,10 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
       {
         for ( int rowIdx = 0; rowIdx < res.PQnfields(); rowIdx++ )
         {
+          if ( feedback && feedback->isCanceled() )
+          {
+            break;
+          }
           const Oid oid { res.PQftype( rowIdx ) };
           QList<QVariantList> typeRes { executeSqlPrivate( QStringLiteral( "SELECT typname FROM pg_type WHERE oid = %1" ).arg( oid ), false ) };
           // Set the default to string
@@ -292,6 +324,10 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
       }
       for ( int rowIdx = 0; rowIdx < res.PQntuples(); rowIdx++ )
       {
+        if ( feedback && feedback->isCanceled() )
+        {
+          break;
+        }
         QVariantList row;
         for ( int colIdx = 0; colIdx < res.PQnfields(); colIdx++ )
         {

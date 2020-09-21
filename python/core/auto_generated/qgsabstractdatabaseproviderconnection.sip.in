@@ -8,6 +8,7 @@
 
 
 
+
 class QgsAbstractDatabaseProviderConnection : QgsAbstractProviderConnection
 {
 %Docstring
@@ -427,9 +428,9 @@ Raises a QgsProviderConnectionException if any errors are encountered.
 :raises :: py:class:`QgsProviderConnectionException`
 %End
 
-    virtual QList<QList<QVariant>> executeSql( const QString &sql ) const throw( QgsProviderConnectionException );
+    virtual QList<QList<QVariant>> executeSql( const QString &sql, QgsFeedback *feedback = 0 ) const throw( QgsProviderConnectionException );
 %Docstring
-Executes raw ``sql`` and returns the (possibly empty) list of results in a multi-dimensional array.
+Executes raw ``sql`` and returns the (possibly empty) list of results in a multi-dimensional array, optionally ``feedback`` can be provided.
 Raises a QgsProviderConnectionException if any errors are encountered.
 
 :raises :: py:class:`QgsProviderConnectionException`

@@ -164,10 +164,10 @@ void QgsGeoPackageProviderConnection::renameVectorTable( const QString &schema, 
   }
 }
 
-QList<QList<QVariant>> QgsGeoPackageProviderConnection::executeSql( const QString &sql ) const
+QList<QList<QVariant>> QgsGeoPackageProviderConnection::executeSql( const QString &sql, QgsFeedback *feedback ) const
 {
   checkCapability( Capability::ExecuteSql );
-  return executeGdalSqlPrivate( sql );
+  return executeGdalSqlPrivate( sql, feedback );
 }
 
 void QgsGeoPackageProviderConnection::vacuum( const QString &schema, const QString &name ) const
@@ -354,13 +354,25 @@ void QgsGeoPackageProviderConnection::setDefaultCapabilities()
   };
 }
 
-QList<QVariantList> QgsGeoPackageProviderConnection::executeGdalSqlPrivate( const QString &sql ) const
+QList<QVariantList> QgsGeoPackageProviderConnection::executeGdalSqlPrivate( const QString &sql, QgsFeedback *feedback ) const
 {
-  QString errCause;
   QList<QVariantList> results;
+
+  if ( feedback && feedback->isCanceled() )
+  {
+    return results;
+  }
+
+  QString errCause;
   gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
   if ( hDS )
   {
+
+    if ( feedback && feedback->isCanceled() )
+    {
+      return results;
+    }
+
     OGRLayerH ogrLayer( GDALDatasetExecuteSQL( hDS.get(), sql.toUtf8().constData(), nullptr, nullptr ) );
     if ( ogrLayer )
     {
@@ -368,12 +380,20 @@ QList<QVariantList> QgsGeoPackageProviderConnection::executeGdalSqlPrivate( cons
       QgsFields fields;
       while ( fet.reset( OGR_L_GetNextFeature( ogrLayer ) ), fet )
       {
+
+        if ( feedback && feedback->isCanceled() )
+        {
+          break;
+        }
+
         QVariantList row;
+
         // Try to get the right type for the returned values
         if ( fields.isEmpty() )
         {
           fields = QgsOgrUtils::readOgrFields( fet.get(), QTextCodec::codecForName( "UTF-8" ) );
         }
+
         if ( ! fields.isEmpty() )
         {
           QgsFeature f { QgsOgrUtils::readOgrFeature( fet.get(), fields, QTextCodec::codecForName( "UTF-8" ) ) };

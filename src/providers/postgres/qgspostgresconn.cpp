@@ -1338,6 +1338,22 @@ PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError, bool ret
 
 }
 
+int QgsPostgresConn::PQCancel()
+{
+  // No locker: this is supposed to be thread safe
+  int result = 0;
+  auto cancel = ::PQgetCancel( mConn ) ;
+  if ( cancel )
+  {
+    char errbuf[255];
+    result = ::PQcancel( cancel, errbuf, 255 );
+    if ( ! result )
+      QgsDebugMsgLevel( QStringLiteral( "Error canceling the query:" ).arg( errbuf ), 3 );
+  }
+  ::PQfreeCancel( cancel );
+  return result;
+}
+
 bool QgsPostgresConn::openCursor( const QString &cursorName, const QString &sql )
 {
   QMutexLocker locker( &mLock ); // to protect access to mOpenCursors

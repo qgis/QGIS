@@ -39,6 +39,18 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
     # Provider test cases must define the provider name (e.g. "postgres" or "ogr")
     providerKey = 'ogr'
 
+    # Provider test cases can define a slowQuery for executeSql cancellation test
+    # Note: GDAL does not support GDALDatasetExecuteSQL interruption, so
+    # let's disable this test for the time being
+    slowQuery___disabled = """
+    WITH RECURSIVE r(i) AS (
+        VALUES(0)
+        UNION ALL
+        SELECT i FROM r
+        LIMIT 10000000
+        )
+    SELECT i FROM r WHERE i = 1;"""
+
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
