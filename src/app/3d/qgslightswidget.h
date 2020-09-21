@@ -33,6 +33,7 @@ class QgsLightsWidget : public QWidget, private Ui::QgsLightsWidget
     Q_OBJECT
   public:
     explicit QgsLightsWidget( QWidget *parent = nullptr );
+    ~QgsLightsWidget() override;
 
     void setPointLights( const QList<QgsPointLightSettings> &pointLights );
     void setDirectionalLights( const QList<QgsDirectionalLightSettings> &directionalLights );
