@@ -223,10 +223,10 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
     }
 
     // This is gross but I tried with both conn and a context QObject without success: the lambda is never called.
-    QMetaObject::Connection moConn;
+    QMetaObject::Connection qtConnection;
     if ( feedback )
     {
-      moConn = QObject::connect( feedback, &QgsFeedback::canceled, [ &conn ]
+      qtConnection = QObject::connect( feedback, &QgsFeedback::canceled, [ &conn ]
       {
         conn->PQCancel();
       } );
@@ -235,7 +235,7 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
     QgsPostgresResult res( conn->PQexec( sql ) );
     if ( feedback )
     {
-      QObject::disconnect( moConn );
+      QObject::disconnect( qtConnection );
     }
 
     QString errCause;
