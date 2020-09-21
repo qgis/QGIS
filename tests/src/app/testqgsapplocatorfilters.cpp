@@ -189,6 +189,16 @@ void TestQgsAppLocatorFilters::testSearchActiveLayer()
   results = gatherResults( &filter, QStringLiteral( "@unknown_field nice" ), context );
   QCOMPARE( results.count(), 0 );
 
+  // check with display expression, feature should not be shown twice
+  vl->setDisplayExpression( QStringLiteral( "concat(\"my_text\", ' ', \"my_double\")" ) );
+  results = gatherResults( &filter, QStringLiteral( "nice" ), context );
+  QCOMPARE( results.count(), 1 );
+  results = gatherResults( &filter, QStringLiteral( "a feature" ), context );
+  QCOMPARE( results.count(), 1 );
+  results = gatherResults( &filter, QStringLiteral( "nice .678" ), context );
+  QCOMPARE( results.count(), 1 );
+
+
   QgsProject::instance()->removeAllMapLayers();
 }
 
