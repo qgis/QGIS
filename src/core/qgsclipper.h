@@ -108,6 +108,13 @@ class CORE_EXPORT QgsClipper
      */
     static QPolygonF clippedLine( const QgsCurve &curve, const QgsRectangle &clipExtent );
 
+    /**
+     * Takes a \a curve and clips it to clipExtent.
+     *
+     * \since QGIS 3.16
+     */
+    static QPolygonF clippedLine( const QPolygonF &curve, const QgsRectangle &clipExtent );
+
   private:
 
     // Used when testing for equivalence to 0.0
