@@ -344,9 +344,10 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
     QgsCoordinateTransform ct;
 
     ct = mSettings.layerTransform( ml );
+    bool haveExtentInLayerCrs = true;
     if ( ct.isValid() )
     {
-      reprojectToLayerExtent( ml, ct, r1, r2 );
+      haveExtentInLayerCrs = reprojectToLayerExtent( ml, ct, r1, r2 );
     }
     QgsDebugMsgLevel( "extent: " + r1.toString(), 3 );
     if ( !r1.isFinite() || !r2.isFinite() )
@@ -382,6 +383,8 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
     job.context.setLabelingEngine( labelingEngine2 );
     job.context.setCoordinateTransform( ct );
     job.context.setExtent( r1 );
+    if ( !haveExtentInLayerCrs )
+      job.context.setFlag( QgsRenderContext::ApplyClipAfterReprojection, true );
 
     if ( mFeatureFilterProvider )
       job.context.setFeatureFilterProvider( mFeatureFilterProvider );
