@@ -59,30 +59,6 @@ class GUI_EXPORT QgsFieldDefinitionWidget : public QWidget, private Ui::QgsField
     //! Constructor
     QgsFieldDefinitionWidget( AdvancedFields advancedFields = AdvancedFields(), QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    //! Adds string field type to given field form with default settings
-    static void addStringType( QgsFieldDefinitionWidget *fieldDefinitionWidget )
-    {
-      fieldDefinitionWidget->addType( QStringLiteral( "String" ), tr( "Text data" ), QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) ) );
-    }
-
-    //! Adds integer field type to given field form with default settings
-    static void addIntegerType( QgsFieldDefinitionWidget *fieldDefinitionWidget )
-    {
-      fieldDefinitionWidget->addType( QStringLiteral( "Integer" ), tr( "Whole number (integer)" ), QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ) );
-    }
-
-    //! Adds real field type to given field form with default settings
-    static void addRealType( QgsFieldDefinitionWidget *fieldDefinitionWidget )
-    {
-      fieldDefinitionWidget->addType( QStringLiteral( "Real" ), tr( "Decimal number (real)" ), QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldFloat.svg" ) ), 15, 15 );
-    }
-
-    //! Adds date field type to given field form with default settings
-    static void addDateType( QgsFieldDefinitionWidget *fieldDefinitionWidget )
-    {
-      fieldDefinitionWidget->addType( QStringLiteral( "Date" ), tr( "Date" ), QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDate.svg" ) ) );
-    }
-
     /**
      * Returns the name of the field.
      */
@@ -94,14 +70,14 @@ class GUI_EXPORT QgsFieldDefinitionWidget : public QWidget, private Ui::QgsField
     void setName( const QString &name );
 
     /**
-     * Returns the string name of the field type.
+     * Returns the current field type.
      */
-    QString type() const;
+    QVariant::Type type() const;
 
     /**
-     * Sets the string name of the field type. If no such type is present, does nothing.
+     * Sets the current field type. If no such type is present, does nothing.
      */
-    bool setType( const QString &typeName );
+    bool setType( const QVariant::Type &typeName );
 
     /**
      * Returns the field comment.
@@ -156,32 +132,32 @@ class GUI_EXPORT QgsFieldDefinitionWidget : public QWidget, private Ui::QgsField
     /**
      * Returns a list of string type names.
      */
-    QStringList types() const;
+    QList<QVariant::Type> types() const;
 
     /**
-     * Adds a new type \a typeName in the end of the types combobox. If \a length or \a precision are given as negative number, their UI fields are disabled for that type.
+     * Adds available types \a types to the field definition form.
      */
-    bool addType( const QString &typeName, const QString &typeDisplay, const QIcon &icon = QIcon(), int length = -1, int precision = -1 );
+    bool addTypes( const QList<QVariant::Type> &types );
 
     /**
-     * Inserts a new type \a typeName at given \a position in the types combobox. If \a length or \a precision are given as negative number, their UI fields are disabled for that type.
+     * Inserts a new type \a type at given \a position in the types combobox. If \a length or \a precision are given as negative number, their UI fields are disabled for that type.
      */
-    bool insertType( const int position, const QString &typeName, const QString &typeDisplay, const QIcon &icon = QIcon(), int length = -1, int precision = -1 );
+    bool insertType( const int position, const QVariant::Type &type );
 
     /**
-     * Removes a type identified by its string \a typename from the list of available field data types.
+     * Removes a \a type from the list of available field data types.
      */
-    bool removeType( const QString &typeName );
+    bool removeType( const QVariant::Type &type );
 
     /**
-     * Checks whether the \a typeName is present as a field data type.
+     * Checks whether a \a type is present as a field data type.
      */
-    bool hasType( const QString &typeName ) const;
+    bool hasType( const QVariant::Type &type ) const;
 
     /**
-     * Returns the index of the given \a typeName in the list of available data types.
+     * Returns the index of the given \a type in the list of available data types.
      */
-    int typeIndex( const QString &typeName ) const;
+    int typeIndex( const QVariant::Type &type ) const;
 
     /**
      * Returns the current field name validator regular expresiion.

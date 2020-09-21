@@ -115,13 +115,13 @@ void QgsFieldDefinitionWidget::setPrecision( int precision )
   return mPrecisionSpinBox->setValue( precision );
 }
 
-QString QgsFieldDefinitionWidget::type() const
+QVariant::Type QgsFieldDefinitionWidget::type() const
 {
   QVariant data = mTypeCmb->currentData();
-  return data.toMap().value( "type" ).toString();
+  return static_cast<QVariant::Type>( data.toMap().value( "type" ).toInt() );
 }
 
-bool QgsFieldDefinitionWidget::setType( const QString &typeName )
+bool QgsFieldDefinitionWidget::setType( const QVariant::Type &typeName )
 {
   if ( ! hasType( typeName ) )
     return false;
@@ -131,31 +131,95 @@ bool QgsFieldDefinitionWidget::setType( const QString &typeName )
   return true;
 }
 
-bool QgsFieldDefinitionWidget::addType( const QString &typeName, const QString &typeDisplay, const QIcon &icon, int length, int precision )
+bool QgsFieldDefinitionWidget::addTypes( const QList<QVariant::Type> &types )
 {
-  return insertType( -1, typeName, typeDisplay, icon, length, precision );
+  for ( const QVariant::Type &type : types )
+  {
+    if ( ! insertType( -1, type ) )
+    {
+      return false;
+    }
+  }
+
+  return true;
 }
 
-bool QgsFieldDefinitionWidget::insertType( const int position, const QString &typeName, const QString &typeDisplay, const QIcon &icon, int length, int precision )
+bool QgsFieldDefinitionWidget::insertType( const int position, const QVariant::Type &type )
 {
-  if ( typeName.isEmpty() || typeDisplay.isEmpty() )
+  int length = -1;
+  int precision = -1;
+  QString typeName;
+  QIcon icon;
+
+  switch ( type )
+  {
+    case QVariant::Bool:
+      typeName = QStringLiteral( "boolean" );
+      icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBool.svg" ) );
+      break;
+    case QVariant::Int:
+      typeName = QStringLiteral( "int" );
+      icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) );
+      break;
+    case QVariant::LongLong:
+      typeName = QStringLiteral( "long long" );
+      icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) );
+      break;
+    case QVariant::Double:
+      typeName = QStringLiteral( "double" );
+      icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldFloat.svg" ) );
+      break;
+    case QVariant::Char:
+    case QVariant::String:
+      typeName = QStringLiteral( "string" );
+      icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) );
+      length = 255;
+      break;
+    case QVariant::BitArray:
+    case QVariant::ByteArray:
+      typeName = QStringLiteral( "binary" );
+      icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldBinary.svg" ) );
+      length = 255;
+      break;
+    case QVariant::DateTime:
+      typeName = QStringLiteral( "datetime" );
+      icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDateTime.svg" ) );
+      break;
+    case QVariant::Time:
+      typeName = QStringLiteral( "time" );
+      icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldTime.svg" ) );
+      break;
+    case QVariant::Date:
+      typeName = QStringLiteral( "date" );
+      icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDate.svg" ) );
+      break;
+    case QVariant::Uuid:
+      typeName = QStringLiteral( "uuid" );
+      icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) );
+      break;
+    default:
+      return false;
+  }
+
+  if ( typeName.isEmpty() || typeName.isEmpty() )
     return false;
 
-  if ( hasType( typeName ) )
+  if ( hasType( type ) )
     return false;
 
   if ( precision > length )
     return false;
 
   QVariantMap data;
-  data.insert( QStringLiteral( "type" ), QVariant( typeName ) );
+  data.insert( QStringLiteral( "type" ), QVariant( type ) );
+  data.insert( QStringLiteral( "typeName" ), QVariant( typeName ) );
   data.insert( QStringLiteral( "length" ), QVariant( length ) );
   data.insert( QStringLiteral( "precision" ), QVariant( precision ) );
 
   if ( position >= 0 )
-    mTypeCmb->insertItem( position, icon, typeDisplay, QVariant( data ) );
+    mTypeCmb->insertItem( position, icon, typeName, QVariant( data ) );
   else
-    mTypeCmb->addItem( icon, typeDisplay, QVariant( data ) );
+    mTypeCmb->addItem( icon, typeName, QVariant( data ) );
 
   if ( mTypeCmb->count() == 1 )
     mTypeCmb->setCurrentIndex( 0 );
@@ -163,40 +227,40 @@ bool QgsFieldDefinitionWidget::insertType( const int position, const QString &ty
   return true;
 }
 
-bool QgsFieldDefinitionWidget::hasType( const QString &typeName ) const
+bool QgsFieldDefinitionWidget::hasType( const QVariant::Type &type ) const
 {
-  return typeIndex( typeName ) >= 0;
+  return typeIndex( type ) >= 0;
 }
 
-int QgsFieldDefinitionWidget::typeIndex( const QString &typeName ) const
+int QgsFieldDefinitionWidget::typeIndex( const QVariant::Type &type ) const
 {
   for ( int i = 0; i < mTypeCmb->count(); i++ )
   {
     QVariant data = mTypeCmb->itemData( i );
 
-    if ( data.toMap().value( QStringLiteral( "type" ) ) == typeName )
+    if ( static_cast<QVariant::Type>( data.toMap().value( QStringLiteral( "type" ) ).toInt() ) == type )
       return i;
   }
 
   return -1;
 }
 
-bool QgsFieldDefinitionWidget::removeType( const QString &typeName )
+bool QgsFieldDefinitionWidget::removeType( const QVariant::Type &type )
 {
-  if ( hasType( typeName ) )
+  if ( hasType( type ) )
     return false;
 
-  mTypeCmb->removeItem( typeIndex( typeName ) );
+  mTypeCmb->removeItem( typeIndex( type ) );
 
   return false;
 }
 
-QStringList QgsFieldDefinitionWidget::types() const
+QList<QVariant::Type> QgsFieldDefinitionWidget::types() const
 {
-  QStringList result;
+  QList<QVariant::Type> result;
 
   for ( int i = 0; i < mTypeCmb->count(); i++ )
-    result << mTypeCmb->itemData( i ).toMap().value( QStringLiteral( "type" ) ).toString();
+    result << static_cast<QVariant::Type>( mTypeCmb->itemData( i ).toMap().value( QStringLiteral( "type" ) ).toInt() );
 
   return result;
 }
@@ -264,7 +328,7 @@ QgsField *QgsFieldDefinitionWidget::asField() const
   if ( ! isValidForm() )
     return nullptr;
 
-  QgsField *field = new QgsField( name(), QVariant::String, type(), length(), precision(), comment() );
+  QgsField *field = new QgsField( name(), QVariant::String, "", length(), precision(), comment() );
   field->setAlias( alias() );
 
   return field;

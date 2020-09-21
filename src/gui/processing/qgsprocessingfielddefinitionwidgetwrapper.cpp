@@ -110,11 +110,11 @@ QWidget *QgsProcessingFieldDefinitionWidgetWrapper::createWidget()
 {
   mPanel = new QgsFieldDefinitionWidget();
   mPanel->setToolTip( parameterDefinition()->toolTip() );
-
-  QgsFieldDefinitionWidget::addStringType( mPanel );
-  QgsFieldDefinitionWidget::addIntegerType( mPanel );
-  QgsFieldDefinitionWidget::addRealType( mPanel );
-  QgsFieldDefinitionWidget::addDateType( mPanel );
+  mPanel->addTypes( QList<QVariant::Type>()
+                    << QVariant::String
+                    << QVariant::Int
+                    << QVariant::Double
+                    << QVariant::Date );
 
   connect( mPanel, &QgsFieldDefinitionWidget::changed, this, [ = ]
   {
@@ -215,7 +215,7 @@ void QgsProcessingFieldDefinitionWidgetWrapper::setWidgetValue( const QVariant &
   const QVariantMap fieldSettingsMap = value.toMap();
 
   mPanel->setName( fieldSettingsMap.value( QStringLiteral( "name" ) ).toString() );
-  mPanel->setType( fieldSettingsMap.value( QStringLiteral( "type" ) ).toString() );
+  mPanel->setType( static_cast<QVariant::Type>( fieldSettingsMap.value( QStringLiteral( "type" ) ).toInt() ) );
   mPanel->setLength( fieldSettingsMap.value( QStringLiteral( "length" ) ).toUInt() );
   mPanel->setPrecision( fieldSettingsMap.value( QStringLiteral( "precision" ) ).toDouble() );
 }

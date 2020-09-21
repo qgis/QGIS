@@ -63,7 +63,6 @@ class CORE_EXPORT QgsProcessingParameterFieldDefinition : public QgsProcessingPa
 };
 
 ///@cond PRIVATE
-#ifndef SIP_RUN
 /**
  * Parameter type definition for QgsProcessingParameterFieldDefinition.
  *
@@ -109,8 +108,6 @@ class CORE_EXPORT QgsProcessingParameterTypeFieldDefinition : public QgsProcessi
       return QStringList() << QObject::tr( "dict: field definitions as dictionary" );
     }
 };
-#endif // SIP_RUN
-
 ///@endcond
 
 #endif // QGSPROCESSINGPARAMETERFIELDDEFINITION_H
