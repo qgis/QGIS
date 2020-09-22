@@ -377,9 +377,9 @@ bool QgsOapifSharedData::isRestrictedToRequestBBOX() const
 }
 
 
-std::unique_ptr<QgsFeatureDownloaderImpl> QgsOapifSharedData::newFeatureDownloaderImpl( QgsFeatureDownloader *downloader )
+std::unique_ptr<QgsFeatureDownloaderImpl> QgsOapifSharedData::newFeatureDownloaderImpl( QgsFeatureDownloader *downloader, bool requestMadeFromMainThread )
 {
-  return std::unique_ptr<QgsFeatureDownloaderImpl>( new QgsOapifFeatureDownloaderImpl( this, downloader ) );
+  return std::unique_ptr<QgsFeatureDownloaderImpl>( new QgsOapifFeatureDownloaderImpl( this, downloader, requestMadeFromMainThread ) );
 }
 
 
@@ -595,10 +595,11 @@ void QgsOapifSharedData::pushError( const QString &errorMsg )
 
 // ---------------------------------
 
-QgsOapifFeatureDownloaderImpl::QgsOapifFeatureDownloaderImpl( QgsOapifSharedData *shared, QgsFeatureDownloader *downloader ):
+QgsOapifFeatureDownloaderImpl::QgsOapifFeatureDownloaderImpl( QgsOapifSharedData *shared, QgsFeatureDownloader *downloader, bool requestMadeFromMainThread ):
   QgsFeatureDownloaderImpl( shared, downloader ),
   mShared( shared )
 {
+  QGS_FEATURE_DOWNLOADER_IMPL_CONNECT_SIGNALS( requestMadeFromMainThread );
 }
 
 QgsOapifFeatureDownloaderImpl::~QgsOapifFeatureDownloaderImpl()

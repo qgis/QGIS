@@ -135,7 +135,7 @@ class QgsOapifSharedData final: public QObject, public QgsBackgroundCachedShared
 
     bool hasGeometry() const override { return mWKBType != QgsWkbTypes::Unknown; }
 
-    std::unique_ptr<QgsFeatureDownloaderImpl> newFeatureDownloaderImpl( QgsFeatureDownloader * ) override;
+    std::unique_ptr<QgsFeatureDownloaderImpl> newFeatureDownloaderImpl( QgsFeatureDownloader *, bool requestFromMainThread ) override;
 
     bool isRestrictedToRequestBBOX() const override;
 
@@ -220,7 +220,7 @@ class QgsOapifFeatureDownloaderImpl final: public QObject, public QgsFeatureDown
     void updateProgress( int totalFeatureCount );
 
   public:
-    QgsOapifFeatureDownloaderImpl( QgsOapifSharedData *shared, QgsFeatureDownloader *downloader );
+    QgsOapifFeatureDownloaderImpl( QgsOapifSharedData *shared, QgsFeatureDownloader *downloader, bool requestMadeFromMainThread );
     ~QgsOapifFeatureDownloaderImpl() override;
 
     void run( bool serializeFeatures, int maxFeatures ) override;
