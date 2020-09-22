@@ -1272,9 +1272,8 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(gpkg_virtual_layer.subsetString(), '"join_value" = \'twenty\'')
 
     def test_feature_count_on_error(self):
-
-        # Test that triggered exception while getting feature count on a badly defined
-        # virtual layer is correctly caught (see https://github.com/qgis/QGIS/issues/34378)
+        """Test that triggered exception while getting feature count on a badly defined
+        virtual layer is correctly caught (see https://github.com/qgis/QGIS/issues/34378)"""
 
         l1 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "france", "ogr",
                             QgsVectorLayer.LayerOptions(False))
