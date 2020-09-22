@@ -35,8 +35,8 @@ class GUI_EXPORT QgsPreviewEffect: public QGraphicsEffect
   public:
     enum PreviewMode
     {
-      PreviewMono,
       PreviewGrayscale,
+      PreviewMono,
       PreviewProtanope,
       PreviewDeuteranope,
       PreviewTritanope
