@@ -295,7 +295,7 @@ void TestQgsFeatureListComboBox::testFeatureFurtherThanFetchLimit()
   std::unique_ptr<QgsFeatureListComboBox> cb( new QgsFeatureListComboBox() );
   QgsFeatureFilterModel *model = qobject_cast<QgsFeatureFilterModel *>( cb->model() );
   QSignalSpy spy( cb.get(), &QgsFeatureListComboBox::identifierValueChanged );
-  model->setFetchLimit( 20 );
+  QgsSettings().setValue( QStringLiteral( "maxEntriesRelationWidget" ), fetchLimit, QgsSettings::Gui );
   model->setAllowNull( false );
   cb->setSourceLayer( mLayer.get() );
   cb->setIdentifierFields( {QStringLiteral( "pk" )} );
