@@ -121,7 +121,8 @@ class CursorAdapter():
             uri = QgsDataSourceUri(self.connection.uri())
 
             # TODO: make this part provider-agnostic
-            uri.setTable('(SELECT row_number() OVER () AS __rid__, * FROM (' + self.sql + ' LIMIT 1) as foo)')
+            sql = self.sql if self.sql.upper().find(' LIMIT ') >= 0 else self.sql + ' LIMIT 1 '
+            uri.setTable('(SELECT row_number() OVER () AS __rid__, * FROM (' + sql + ') as foo)')
             uri.setKeyColumn('__rid__')
             # TODO: fetch provider name from connection (QgsAbstractConnectionProvider)
             # TODO: re-use the VectorLayer for fetching rows in batch mode
