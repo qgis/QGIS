@@ -243,10 +243,10 @@
      </property>
      <addaction name="mActionPreviewModeOff"/>
      <addaction name="mActionPreviewModeMono"/>
-     <addaction name="mActionPreviewAchromatopsia"/>
-     <addaction name="mActionPreviewProtanopia"/>
-     <addaction name="mActionPreviewDeuteranopia"/>
-     <addaction name="mActionPreviewTritanopia"/>
+     <addaction name="mActionPreviewGrayscale"/>
+     <addaction name="mActionPreviewProtanope"/>
+     <addaction name="mActionPreviewDeuteranope"/>
+     <addaction name="mActionPreviewTritanope"/>
     </widget>
     <addaction name="mActionRefreshView"/>
     <addaction name="menuPreview"/>
@@ -1086,14 +1086,6 @@
     <string>Normal</string>
    </property>
   </action>
-  <action name="mActionPreviewModeGrayscale">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Simulate Photocopy (&amp;Grayscale)</string>
-   </property>
-  </action>
   <action name="mActionPreviewModeMono">
    <property name="checkable">
     <bool>true</bool>
@@ -1102,7 +1094,7 @@
     <string>Simulate Fax (&amp;Mono)</string>
    </property>
   </action>
-  <action name="mActionPreviewAchromatopsia">
+  <action name="mActionPreviewModeGrayscale">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -1110,7 +1102,7 @@
     <string>Simulate Achromatopsia Color Blindness and Photocopy (&amp;Grayscale)</string>
    </property>
   </action>
-  <action name="mActionPreviewProtanopia">
+  <action name="mActionPreviewProtanope">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -1118,7 +1110,7 @@
     <string>Simulate Protonopia Color Blindness (&amp;No Red)</string>
    </property>
   </action>
-  <action name="mActionPreviewDeuteranopia">
+  <action name="mActionPreviewDeuteranope">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -1126,7 +1118,7 @@
     <string>Simulate Deuteranopia Color Blindness (&amp;No Green)</string>
    </property>
   </action>
-  <action name="mActionPreviewTritanopia">
+  <action name="mActionPreviewTritanope">
    <property name="checkable">
     <bool>true</bool>
    </property>

@@ -1895,29 +1895,28 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void activateMonoPreview();
 
     /**
-     * Enable a color blindness (achromatopsia) preview mode on the map canvas
-     * Replaces the grayscale preview mode
-     * \since QGIS 3.17
+     * Enable a grayscale preview mode on the map canvas
+     * \since QGIS 2.3
     */
-    void activateAchromatopsiaPreview();
+    void activateGrayscalePreview();
 
     /**
      * Enable a color blindness (protanopia) preview mode on the map canvas
      * \since QGIS 2.3
     */
-    void activateProtanopiaPreview();
+    void activateProtanopePreview();
 
     /**
      * Enable a color blindness (deuteranopia) preview mode on the map canvas
      * \since QGIS 2.3
     */
-    void activateDeuteranopiaPreview();
+    void activateDeuteranopePreview();
 
     /**
      * Enable a color blindness (tritanopia) preview mode on the map canvas
      * \since QGIS 3.17
     */
-    void activateTritanopiaPreview();
+    void activateTritanopePreview();
 
     void toggleFilterLegendByExpression( bool );
     void updateFilterLegend();

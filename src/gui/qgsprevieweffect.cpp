@@ -21,7 +21,7 @@
 
 QgsPreviewEffect::QgsPreviewEffect( QObject *parent )
   : QGraphicsEffect( parent )
-  , mMode( PreviewAchromatopsia )
+  , mMode( PreviewGrayscale )
 {
   //effect is disabled by default
   setEnabled( false );
@@ -60,10 +60,10 @@ void QgsPreviewEffect::draw( QPainter *painter )
       painter->drawImage( offset, bwImage );
       break;
     }
-    case QgsPreviewEffect::PreviewAchromatopsia:
-    case QgsPreviewEffect::PreviewProtanopia:
-    case QgsPreviewEffect::PreviewDeuteranopia:
-    case QgsPreviewEffect::PreviewTritanopia:
+    case QgsPreviewEffect::PreviewGrayscale:
+    case QgsPreviewEffect::PreviewProtanope:
+    case QgsPreviewEffect::PreviewDeuteranope:
+    case QgsPreviewEffect::PreviewTritanope:
     {
       QRgb *line = nullptr;
 
@@ -98,17 +98,17 @@ QRgb QgsPreviewEffect::simulateColorBlindness( QRgb &originalColor, QgsPreviewEf
   //https://www.inf.ufrgs.br/~oliveira/pubs_files/CVD_Simulation/CVD_Simulation.html
   switch ( mode )
   {
-    case PreviewAchromatopsia:
-      simulateAchromatopsia( r, g, b, red, green, blue );
+    case PreviewGrayscale:
+      simulateGrayscale( r, g, b, red, green, blue );
       break;
-    case PreviewProtanopia:
-      simulateProtanopia( r, g, b, red, green, blue );
+    case PreviewProtanope:
+      simulateProtanope( r, g, b, red, green, blue );
       break;
-    case PreviewDeuteranopia:
-      simulateDeuteranopia( r, g, b, red, green, blue );
+    case PreviewDeuteranope:
+      simulateDeuteranope( r, g, b, red, green, blue );
       break;
-    case PreviewTritanopia:
-      simulateTritanopia( r, g, b, red, green, blue );
+    case PreviewTritanope:
+      simulateTritanope( r, g, b, red, green, blue );
       break;
     default:
       break;
@@ -122,28 +122,28 @@ QRgb QgsPreviewEffect::simulateColorBlindness( QRgb &originalColor, QgsPreviewEf
   return qRgb( r, g, b );
 }
 
-void QgsPreviewEffect::simulateAchromatopsia( int &r, int &g, int &b, int &red, int &green, int &blue )
+void QgsPreviewEffect::simulateGrayscale( int &r, int &g, int &b, int &red, int &green, int &blue )
 {
   r = ( 0.299 * red ) + ( 0.587 * green ) + ( 0.114 * blue );
   g = r;
   b = r;
 }
 
-void QgsPreviewEffect::simulateProtanopia( int &r, int &g, int &b, int &red, int &green, int &blue )
+void QgsPreviewEffect::simulateProtanope( int &r, int &g, int &b, int &red, int &green, int &blue )
 {
   r = ( 0.152286 * red ) + ( 1.052583 * green ) + ( -0.204868 * blue );
   g = ( 0.114503 * red ) + ( 0.786281 * green ) + ( 0.099216 * blue );
   b = ( -0.003882 * red ) + ( -0.048116 * green ) + ( 1.051998 * blue );
 }
 
-void QgsPreviewEffect::simulateDeuteranopia( int &r, int &g, int &b, int &red, int &green, int &blue )
+void QgsPreviewEffect::simulateDeuteranope( int &r, int &g, int &b, int &red, int &green, int &blue )
 {
   r = ( 0.367322 * red ) + ( 0.860646 * green ) + ( -0.227968 * blue );
   g = ( 0.280085 * red ) + ( 0.672501 * green ) + ( 0.047413 * blue );
   b = ( -0.011820 * red ) + ( 0.042940 * green ) + ( 0.968881 * blue );
 }
 
-void QgsPreviewEffect::simulateTritanopia( int &r, int &g, int &b, int &red, int &green, int &blue )
+void QgsPreviewEffect::simulateTritanope( int &r, int &g, int &b, int &red, int &green, int &blue )
 {
   r = ( 1.255528 * red ) + ( -0.076749 * green ) + ( -0.178779 * blue );
   g = ( -0.078411 * red ) + ( 0.930809 * green ) + ( 0.147602 * blue );
