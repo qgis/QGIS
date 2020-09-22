@@ -244,12 +244,13 @@ QgsActiveLayerFeaturesLocatorFilter *QgsActiveLayerFeaturesLocatorFilter::clone(
   return new QgsActiveLayerFeaturesLocatorFilter();
 }
 
-QString QgsActiveLayerFeaturesLocatorFilter::fieldRestriction( QString &searchString ) const
+QString QgsActiveLayerFeaturesLocatorFilter::fieldRestriction( QString &searchString )
 {
   QString _fieldRestriction;
+  searchString = searchString.trimmed();
   if ( searchString.startsWith( '@' ) )
   {
-    _fieldRestriction = searchString.left( std::max( searchString.indexOf( ' ' ), 0 ) ).remove( 0, 1 );
+    _fieldRestriction = searchString.left( std::min( searchString.indexOf( ' ' ), searchString.length() ) ).remove( 0, 1 );
     searchString = searchString.mid( _fieldRestriction.length() + 2 );
   }
   return _fieldRestriction;
@@ -278,11 +279,30 @@ QStringList QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string,
   bool allowNumeric = false;
   double numericalValue = searchString.toDouble( &allowNumeric );
 
+  // search in display expression if no field restriction
+  if ( _fieldRestriction.isEmpty() )
+  {
+    QgsFeatureRequest req;
+    req.setSubsetOfAttributes( qgis::setToList( mDispExpression.referencedAttributeIndexes( layer->fields() ) ) );
+    if ( !mDispExpression.needsGeometry() )
+      req.setFlags( QgsFeatureRequest::NoGeometry );
+    QString enhancedSearch = searchString;
+    enhancedSearch.replace( ' ', '%' );
+    req.setFilterExpression( QStringLiteral( "%1 ILIKE '%%2%'" )
+                             .arg( layer->displayExpression(), enhancedSearch ) );
+    req.setLimit( mMaxTotalResults );
+    mDisplayTitleIterator = layer->getFeatures( req );
+  }
+  else
+  {
+    mDisplayTitleIterator = QgsFeatureIterator();
+  }
+
   // build up request expression
   QStringList expressionParts;
   QStringList completionList;
   const QgsFields fields = layer->fields();
-  QgsAttributeList subsetOfAttributes;
+  QgsAttributeList subsetOfAttributes = qgis::setToList( mDispExpression.referencedAttributeIndexes( layer->fields() ) );
   for ( const QgsField &field : fields )
   {
     if ( field.configurationFlags().testFlag( QgsField::ConfigurationFlag::NotSearchable ) )
@@ -292,9 +312,14 @@ QStringList QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string,
       continue;
 
     if ( !_fieldRestriction.isEmpty() )
-      subsetOfAttributes << layer->fields().indexFromName( field.name() );
+    {
+      int index = layer->fields().indexFromName( field.name() );
+      if ( !subsetOfAttributes.contains( index ) )
+        subsetOfAttributes << index;
+    }
 
     completionList.append( QStringLiteral( "@%1 " ).arg( field.name() ) );
+
     if ( field.type() == QVariant::String )
     {
       expressionParts << QStringLiteral( "%1 ILIKE '%%2%'" ).arg( QgsExpression::quotedColumnRef( field.name() ),
@@ -309,13 +334,14 @@ QStringList QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string,
   QString expression = QStringLiteral( "(%1)" ).arg( expressionParts.join( QStringLiteral( " ) OR ( " ) ) );
 
   QgsFeatureRequest req;
-  req.setFlags( QgsFeatureRequest::NoGeometry );
+  if ( !mDispExpression.needsGeometry() )
+    req.setFlags( QgsFeatureRequest::NoGeometry );
   req.setFilterExpression( expression );
   if ( !_fieldRestriction.isEmpty() )
     req.setSubsetOfAttributes( subsetOfAttributes );
 
-  req.setLimit( 30 );
-  mIterator = layer->getFeatures( req );
+  req.setLimit( mMaxTotalResults );
+  mFieldIterator = layer->getFeatures( req );
 
   mLayerId = layer->id();
   mLayerIcon = QgsMapLayerModel::iconForLayer( layer );
@@ -330,15 +356,45 @@ QStringList QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string,
 
 void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback *feedback )
 {
-  int found = 0;
+  QgsFeatureIds featuresFound;
   QgsFeature f;
   QString searchString = string;
   fieldRestriction( searchString );
 
-  while ( mIterator.nextFeature( f ) )
+  // search in display title
+  if ( mDisplayTitleIterator.isValid() )
+  {
+    while ( mDisplayTitleIterator.nextFeature( f ) )
+    {
+      if ( feedback->isCanceled() )
+        return;
+
+      mContext.setFeature( f );
+
+      QgsLocatorResult result;
+
+      result.displayString =  mDispExpression.evaluate( &mContext ).toString();
+      result.userData = QVariantList() << f.id() << mLayerId;
+      result.icon = mLayerIcon;
+      result.score = static_cast< double >( searchString.length() ) / result.displayString.size();
+      emit resultFetched( result );
+
+      featuresFound << f.id();
+
+      if ( featuresFound.count() >= mMaxTotalResults )
+        break;
+    }
+  }
+
+  // search in fields
+  while ( mFieldIterator.nextFeature( f ) )
   {
     if ( feedback->isCanceled() )
       return;
+
+    // do not display twice the same feature
+    if ( featuresFound.contains( f.id() ) )
+      continue;
 
     QgsLocatorResult result;
 
@@ -364,14 +420,13 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
       continue; //not sure how this result slipped through...
 
     result.description = mDispExpression.evaluate( &mContext ).toString();
-
     result.userData = QVariantList() << f.id() << mLayerId;
     result.icon = mLayerIcon;
     result.score = static_cast< double >( searchString.length() ) / result.displayString.size();
     emit resultFetched( result );
 
-    found++;
-    if ( found >= mMaxTotalResults )
+    featuresFound << f.id();
+    if ( featuresFound.count() >= mMaxTotalResults )
       break;
   }
 }
