@@ -542,6 +542,7 @@ void QgsMetadataWidget::setUiFromMetadata()
     mRightsModel->setStringList( layerMetadata->rights() );
 
     // Constraints
+    mConstraintsModel->clear();
     const QList<QgsLayerMetadata::Constraint> &constraints = layerMetadata->constraints();
     for ( const QgsLayerMetadata::Constraint &constraint : constraints )
     {
