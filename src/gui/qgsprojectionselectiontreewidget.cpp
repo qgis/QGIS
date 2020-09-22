@@ -87,6 +87,9 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
       mFrameProjections->setDisabled( checked );
     }
   } );
+
+  QgsSettings settings;
+  mSplitter->restoreState( settings.value( QStringLiteral( "Windows/ProjectionSelector/splitterState" ) ).toByteArray() );
 }
 
 QgsProjectionSelectionTreeWidget::~QgsProjectionSelectionTreeWidget()
@@ -100,6 +103,9 @@ QgsProjectionSelectionTreeWidget::~QgsProjectionSelectionTreeWidget()
   long crsId = selectedCrsId();
   if ( crsId == 0 )
     return;
+
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/ProjectionSelector/splitterState" ), mSplitter->saveState() );
 
   QgsCoordinateReferenceSystem::pushRecentCoordinateReferenceSystem( crs() );
 }
