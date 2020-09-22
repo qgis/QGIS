@@ -696,6 +696,7 @@ int vtableColumn( sqlite3_vtab_cursor *cursor, sqlite3_context *ctxt, int idx )
     {
       case QVariant::Int:
       case QVariant::UInt:
+      case QVariant::Bool:
         sqlite3_result_int( ctxt, v.toInt() );
         break;
       case QVariant::LongLong:
