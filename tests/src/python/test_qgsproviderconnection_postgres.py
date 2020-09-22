@@ -329,6 +329,30 @@ IMPORT FOREIGN SCHEMA qgis_test LIMIT TO ( "someData" )
         fields = conn.fields('qgis_test', 'someData')
         self.assertEqual(fields.names(), ['pk', 'cnt', 'name', 'name2', 'num_char', 'dt', 'date', 'time', 'geom'])
 
+    def test_fields_no_pk(self):
+        """Test issue: no fields are exposed for raster_columns"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        conn = md.createConnection(self.uri, {})
+        fields = conn.fields("public", "raster_columns")
+        self.assertEqual(fields.names(), [
+            'r_table_catalog',
+            'r_table_schema',
+            'r_table_name',
+            'r_raster_column',
+            'srid',
+            'scale_x',
+            'scale_y',
+            'blocksize_x',
+            'blocksize_y',
+            'same_alignment',
+            'regular_blocking',
+            'num_bands',
+            'pixel_types',
+            'nodata_values',
+            'out_db',
+            'spatial_index'])
+
 
 if __name__ == '__main__':
     unittest.main()

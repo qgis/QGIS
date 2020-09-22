@@ -656,3 +656,48 @@ QList<QgsVectorDataProvider::NativeType> QgsPostgresProviderConnection::nativeTy
   }
   return types;
 }
+
+
+QgsFields QgsPostgresProviderConnection::fields( const QString &schema, const QString &tableName ) const
+{
+  // Try the base implementation first and fall back to a more complex approch for the
+  // few PG-specific corner cases that do not work with the base implementation.
+  try
+  {
+    return QgsAbstractDatabaseProviderConnection::fields( schema, tableName );
+  }
+  catch ( QgsProviderConnectionException &ex )
+  {
+    // This table might expose multiple geometry columns (different geom type or SRID)
+    // but we are only interested in fields here, so let's pick the first one.
+    TableProperty tableInfo { table( schema, tableName ) };
+    if ( tableInfo.geometryColumnTypes().count( ) > 1 )
+    {
+      try
+      {
+        QgsDataSourceUri tUri { tableUri( schema, tableName ) };
+        TableProperty::GeometryColumnType geomCol { tableInfo.geometryColumnTypes().first() };
+        tUri.setGeometryColumn( tableInfo.geometryColumn() );
+        tUri.setWkbType( geomCol.wkbType );
+        tUri.setSrid( QString::number( geomCol.crs.postgisSrid() ) );
+        if ( tableInfo.primaryKeyColumns().count() > 0 )
+        {
+          tUri.setKeyColumn( tableInfo.primaryKeyColumns().first() );
+        }
+        tUri.setParam( QStringLiteral( "checkPrimaryKeyUnicity" ), QLatin1String( "0" ) );
+        QgsVectorLayer::LayerOptions options { true, true };
+        options.skipCrsValidation = true;
+        QgsVectorLayer vl { tUri.uri(), QStringLiteral( "temp_layer" ), mProviderKey, options };
+        if ( vl.isValid() )
+        {
+          return vl.fields();
+        }
+      }
+      catch ( QgsProviderConnectionException & )
+      {
+        // fall-through
+      }
+    }
+    throw ex;
+  }
+}
