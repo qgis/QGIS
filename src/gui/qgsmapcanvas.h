@@ -1110,6 +1110,28 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
   private:
 
+    // Restore scale RAII
+    class ScaleRestorer
+    {
+      public:
+        ScaleRestorer( QgsMapCanvas *canvas ):
+          mCanvas( canvas )
+        {
+          mLockedScale = mCanvas->mapSettings().scale();
+        };
+
+        ~ScaleRestorer()
+        {
+          QgsRectangle newExtent = mCanvas->mapSettings().extent();
+          newExtent.scale( mLockedScale / mCanvas->mapSettings().scale() );
+          mCanvas->mSettings.setExtent( newExtent );
+        };
+
+      private:
+        QgsMapCanvas *mCanvas;
+        double mLockedScale;
+    };
+
     //! encompases all map settings necessary for map rendering
     QgsMapSettings mSettings;
 

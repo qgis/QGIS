@@ -1201,6 +1201,7 @@ called when panning is in action, reset indicates end of panning
 called on resize or changed extent to notify canvas items to change their rectangle
 %End
 
+      public:
 }; // class QgsMapCanvas
 
 

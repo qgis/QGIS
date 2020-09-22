@@ -226,6 +226,7 @@ void QgsMapSettings::updateDerived()
   QgsDebugMsgLevel( QStringLiteral( "Rotation: %1 degrees" ).arg( mRotation ), 5 );
   QgsDebugMsgLevel( QStringLiteral( "Extent: %1" ).arg( mExtent.asWktCoordinates() ), 5 );
   QgsDebugMsgLevel( QStringLiteral( "Visible Extent: %1" ).arg( mVisibleExtent.asWktCoordinates() ), 5 );
+  QgsDebugMsgLevel( QStringLiteral( "Magnification factor: %1" ).arg( mMagnificationFactor ), 5 );
 
   mValid = true;
 }
