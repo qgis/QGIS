@@ -786,7 +786,12 @@ void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
       // it in the ctor of the layer projection selector
 
       QgsProjectionSelectionDialog *mySelector = new QgsProjectionSelectionDialog();
-      mySelector->setMessage( srs.validationHint() ); //shows a generic message, if not specified
+      const QString validationHint = srs.validationHint();
+      if ( !validationHint.isEmpty() )
+        mySelector->setMessage( validationHint );
+      else
+        mySelector->showNoCrsForLayerMessage();
+
       if ( sAuthId.isNull() )
         sAuthId = QgsProject::instance()->crs().authid();
 
@@ -11753,7 +11758,10 @@ void QgisApp::setLayerCrs()
 
   QgsProjectionSelectionDialog mySelector( this );
   mySelector.setCrs( mLayerTreeView->currentLayer()->crs() );
-  mySelector.setMessage( QString() );
+
+  if ( !mLayerTreeView->currentLayer()->crs().isValid() )
+    mySelector.showNoCrsForLayerMessage();
+
   if ( !mySelector.exec() )
   {
     QApplication::restoreOverrideCursor();
@@ -11932,7 +11940,6 @@ void QgisApp::legendGroupSetCrs()
     return;
 
   QgsProjectionSelectionDialog mySelector( this );
-  mySelector.setMessage( QString() );
   if ( !mySelector.exec() )
   {
     QApplication::restoreOverrideCursor();

@@ -69,11 +69,19 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog, private Ui::QgsG
     QgsCoordinateReferenceSystem crs() const;
 
     /**
-     * Sets a \a message to show in the dialog. If an empty string is
-     * passed, the message will be a generic
-     * 'define the CRS for this layer'.
+     * Sets a \a message to show in the dialog.
+     *
+     * \see showNoCrsForLayerMessage()
      */
     void setMessage( const QString &message );
+
+    /**
+     * When called, the dialog will show a default "layer has no CRS set" message above the projection selector.
+     *
+     * \see setMessage()
+     * \since QGIS 3.16
+     */
+    void showNoCrsForLayerMessage();
 
     /**
      * Sets whether a "no/invalid" projection option should be shown. If this
