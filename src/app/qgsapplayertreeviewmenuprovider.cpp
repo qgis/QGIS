@@ -347,9 +347,10 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           int i = 0;
           for ( const QgsCoordinateReferenceSystem &crs : recentProjections )
           {
-            QAction *action = menuSetCRS->addAction( tr( "Set to %1" ).arg( crs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ) ) );
-            action->setProperty( "crs", crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
+            if ( crs == layer->crs() )
+              continue;
 
+            QAction *action = menuSetCRS->addAction( tr( "Set to %1" ).arg( crs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ) ) );
             connect( action, &QAction::triggered, this, [ = ]
             {
               setLayerCrs( crs );
