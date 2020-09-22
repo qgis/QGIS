@@ -3603,8 +3603,8 @@ void QgsCoordinateReferenceSystem::pushRecentCoordinateReferenceSystem( const Qg
   recent.removeAll( crs );
   recent.insert( 0, crs );
 
-  // trim to max 10 items
-  recent = recent.mid( 0, 10 );
+  // trim to max 30 items
+  recent = recent.mid( 0, 30 );
   QStringList authids;
   authids.reserve( recent.size() );
   QStringList proj;
