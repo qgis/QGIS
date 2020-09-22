@@ -22,6 +22,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsfeaturefiltermodel.h"
 #include "qgsgui.h"
+#include "qgssettings.h"
 
 #include <memory>
 
