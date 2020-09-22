@@ -1564,13 +1564,13 @@ void TestQgsCoordinateReferenceSystem::recentProjections()
   QCOMPARE( recent.at( 1 ).authid(), QStringLiteral( "EPSG:3111" ) );
   QCOMPARE( recent.at( 2 ).authid(), QStringLiteral( "EPSG:4326" ) );
 
-  // list should be truncated after 10 entries
+  // list should be truncated after 30 entries
   for ( int i = 32510; i < 32550; ++i )
   {
     QgsCoordinateReferenceSystem::pushRecentCoordinateReferenceSystem( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:%1" ).arg( i ) ) );
   }
   recent = QgsCoordinateReferenceSystem::recentCoordinateReferenceSystems();
-  QCOMPARE( recent.size(), 10 );
+  QCOMPARE( recent.size(), 30 );
   QCOMPARE( recent.at( 0 ).authid(), QStringLiteral( "EPSG:32549" ) );
   QCOMPARE( recent.at( 1 ).authid(), QStringLiteral( "EPSG:32548" ) );
   QCOMPARE( recent.at( 2 ).authid(), QStringLiteral( "EPSG:32547" ) );
@@ -1581,6 +1581,7 @@ void TestQgsCoordinateReferenceSystem::recentProjections()
   QCOMPARE( recent.at( 7 ).authid(), QStringLiteral( "EPSG:32542" ) );
   QCOMPARE( recent.at( 8 ).authid(), QStringLiteral( "EPSG:32541" ) );
   QCOMPARE( recent.at( 9 ).authid(), QStringLiteral( "EPSG:32540" ) );
+  QCOMPARE( recent.constLast().authid(), QStringLiteral( "EPSG:32520" ) );
 }
 
 void TestQgsCoordinateReferenceSystem::displayIdentifier()
