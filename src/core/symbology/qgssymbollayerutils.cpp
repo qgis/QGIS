@@ -3261,6 +3261,9 @@ QMimeData *QgsSymbolLayerUtils::colorToMimeData( const QColor &color )
 
 QColor QgsSymbolLayerUtils::colorFromMimeData( const QMimeData *mimeData, bool &hasAlpha )
 {
+  if ( !mimeData->hasColor() )
+    return QColor();
+
   //attempt to read color data directly from mime
   QColor mimeColor = mimeData->colorData().value<QColor>();
   if ( mimeColor.isValid() )
