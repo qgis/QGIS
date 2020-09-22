@@ -227,7 +227,13 @@ QgsFieldItem::~QgsFieldItem()
 
 QIcon QgsFieldItem::icon()
 {
-  return QgsFields::iconForFieldType( mField.type() );
+  const QIcon icon { QgsFields::iconForFieldType( mField.type() ) };
+  // Try subtype if icon is null
+  if ( icon.isNull() )
+  {
+    return QgsFields::iconForFieldType( mField.subType() );
+  }
+  return icon;
 }
 
 QIcon QgsFavoritesItem::iconFavorites()
