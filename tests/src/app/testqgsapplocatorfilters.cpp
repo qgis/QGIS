@@ -220,6 +220,16 @@ void TestQgsAppLocatorFilters::testActiveLayerFieldRestriction()
   restr = QgsActiveLayerFeaturesLocatorFilter::fieldRestriction( search );
   QCOMPARE( restr, QStringLiteral( "home" ) );
   QCOMPARE( search, QStringLiteral( "" ) );
+
+  search = QStringLiteral( "@" );
+  restr = QgsActiveLayerFeaturesLocatorFilter::fieldRestriction( search );
+  QVERIFY( !restr.isNull() );
+  QCOMPARE( search, QStringLiteral( "" ) );
+
+  search = QStringLiteral( "hello there" );
+  restr = QgsActiveLayerFeaturesLocatorFilter::fieldRestriction( search );
+  QVERIFY( restr.isNull() );
+  QCOMPARE( search, QStringLiteral( "hello there" ) );
 }
 
 void TestQgsAppLocatorFilters::testActiveLayerCompletion()

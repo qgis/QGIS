@@ -108,6 +108,24 @@ class APP_EXPORT QgsActiveLayerFeaturesLocatorFilter : public QgsLocatorFilter
     bool hasConfigWidget() const override {return true;}
     void openConfigWidget( QWidget *parent ) override;
 
+    enum class ResultType
+    {
+      Feature,
+      FieldRestriction,
+    };
+
+    struct Data
+    {
+      Data() = default;
+      Data( QgsFeatureId fid, const QString &layerId ) : type( ResultType::Feature ), fid( fid ), layerId( layerId ) {}
+      Data( const QString &searchText ) : type( ResultType::FieldRestriction ), searchText( searchText ) {}
+
+      ResultType type = ResultType::Feature;
+      QgsFeatureId fid;
+      QString layerId;
+      QString searchText;
+    };
+
   private:
 
     /**
@@ -123,10 +141,14 @@ class APP_EXPORT QgsActiveLayerFeaturesLocatorFilter : public QgsLocatorFilter
     QString mLayerId;
     QIcon mLayerIcon;
     QStringList mAttributeAliases;
+    QStringList mFieldsCompletion;
     int mMaxTotalResults = 30;
 
     friend class TestQgsAppLocatorFilters;
 };
+
+Q_DECLARE_METATYPE( QgsActiveLayerFeaturesLocatorFilter::Data )
+
 
 class APP_EXPORT QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
 {
