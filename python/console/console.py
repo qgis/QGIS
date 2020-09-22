@@ -572,7 +572,7 @@ class PythonConsoleWidget(QWidget):
             objName = itemName[0:charPos]
         else:
             objName = itemName
-        tabEditor.goToLine(objName, linenr)
+        tabEditor.goToLine(str.encode(objName), linenr)
 
     def toggleEditor(self, checked):
         self.splitterObj.show() if checked else self.splitterObj.hide()
