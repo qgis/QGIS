@@ -333,7 +333,7 @@ void TestQgsGeoPdfExport::testGeoref()
   doc.setContent( composition );
   QCOMPARE( doc.elementsByTagName( QStringLiteral( "SRS" ) ).at( 0 ).toElement().text(), QStringLiteral( "EPSG:4283" ) );
   QCOMPARE( doc.elementsByTagName( QStringLiteral( "BoundingBox" ) ).at( 0 ).toElement().attribute( QStringLiteral( "x1" ) ), QStringLiteral( "0" ) );
-  QCOMPARE( doc.elementsByTagName( QStringLiteral( "BoundingBox" ) ).at( 0 ).toElement().attribute( QStringLiteral( "x2" ) ), QStringLiteral( "717.732" ) );
+  QCOMPARE( doc.elementsByTagName( QStringLiteral( "BoundingBox" ) ).at( 0 ).toElement().attribute( QStringLiteral( "x2" ) ).left( 9 ), QStringLiteral( "717.73228" ) );
   QCOMPARE( doc.elementsByTagName( QStringLiteral( "BoundingBox" ) ).at( 0 ).toElement().attribute( QStringLiteral( "y1" ) ), QStringLiteral( "0" ) );
   QCOMPARE( doc.elementsByTagName( QStringLiteral( "BoundingBox" ) ).at( 0 ).toElement().attribute( QStringLiteral( "y2" ) ), QStringLiteral( "630" ) );
 
@@ -342,8 +342,9 @@ void TestQgsGeoPdfExport::testGeoref()
   QDomElement cp1;
   for ( int i = 0; i < 4; ++i )
   {
-    if ( cps.at( i ).toElement().attribute( QStringLiteral( "GeoX" ) ) == QStringLiteral( "-122.4" )
-         && cps.at( i ).toElement().attribute( QStringLiteral( "GeoY" ) ) == QStringLiteral( "53.6" ) )
+    const QString x = cps.at( i ).toElement().attribute( QStringLiteral( "GeoX" ) ).left( 10 );
+    const QString y = cps.at( i ).toElement().attribute( QStringLiteral( "GeoY" ) ).left( 10 );
+    if ( x == QStringLiteral( "-122.40000" ) && y == QStringLiteral( "53.6000000" ) )
     {
       cp1 = cps.at( i ).toElement();
       break;
@@ -351,7 +352,7 @@ void TestQgsGeoPdfExport::testGeoref()
   }
   QVERIFY( !cp1.isNull() );
   QCOMPARE( cp1.attribute( QStringLiteral( "x" ) ), QStringLiteral( "0" ) );
-  QCOMPARE( cp1.attribute( QStringLiteral( "y" ) ), QStringLiteral( "-2.83465" ) );
+  QCOMPARE( cp1.attribute( QStringLiteral( "y" ) ).left( 10 ), QStringLiteral( "-2.8346456" ) );
 }
 
 void TestQgsGeoPdfExport::testGeorefPolygon()
@@ -387,8 +388,9 @@ void TestQgsGeoPdfExport::testGeorefPolygon()
   QDomElement cp1;
   for ( int i = 0; i < 4; ++i )
   {
-    if ( cps.at( i ).toElement().attribute( QStringLiteral( "GeoX" ) ) == QStringLiteral( "-122.4" )
-         && cps.at( i ).toElement().attribute( QStringLiteral( "GeoY" ) ) == QStringLiteral( "53.6" ) )
+    const QString x = cps.at( i ).toElement().attribute( QStringLiteral( "GeoX" ) ).left( 10 );
+    const QString y = cps.at( i ).toElement().attribute( QStringLiteral( "GeoY" ) ).left( 10 );
+    if ( x == QStringLiteral( "-122.40000" ) && y == QStringLiteral( "53.6000000" ) )
     {
       cp1 = cps.at( i ).toElement();
       break;
@@ -396,7 +398,7 @@ void TestQgsGeoPdfExport::testGeorefPolygon()
   }
   QVERIFY( !cp1.isNull() );
   QCOMPARE( cp1.attribute( QStringLiteral( "x" ) ), QStringLiteral( "0" ) );
-  QCOMPARE( cp1.attribute( QStringLiteral( "y" ) ), QStringLiteral( "-2.83465" ) );
+  QCOMPARE( cp1.attribute( QStringLiteral( "y" ) ).left( 10 ), QStringLiteral( "-2.8346456" ) );
 }
 
 void TestQgsGeoPdfExport::testGroups()
