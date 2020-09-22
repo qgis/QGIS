@@ -77,7 +77,6 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
 
   mPropertiesDock->setFeatures( QDockWidget::NoDockWidgetFeatures );
 
-  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::foregroundColorChanged, mTableWidget, &QgsTableEditorWidget::setSelectionForegroundColor );
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::backgroundColorChanged, mTableWidget, &QgsTableEditorWidget::setSelectionBackgroundColor );
 
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::horizontalAlignmentChanged, mTableWidget, &QgsTableEditorWidget::setSelectionHorizontalAlignment );
@@ -98,7 +97,6 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
 
   connect( mTableWidget, &QgsTableEditorWidget::activeCellChanged, this, [ = ]
   {
-    mFormattingWidget->setForegroundColor( mTableWidget->selectionForegroundColor() );
     mFormattingWidget->setBackgroundColor( mTableWidget->selectionBackgroundColor() );
     mFormattingWidget->setNumericFormat( mTableWidget->selectionNumericFormat(), mTableWidget->hasMixedSelectionNumericFormat() );
     mFormattingWidget->setRowHeight( mTableWidget->selectionRowHeight() );

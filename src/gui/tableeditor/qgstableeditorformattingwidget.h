@@ -68,14 +68,6 @@ class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, public 
     QgsTextFormat textFormat() const;
 
     /**
-     * Sets the cell foreground \a color to show in the widget.
-     *
-     * \see foregroundColorChanged()
-     * \see setBackgroundColor()
-     */
-    void setForegroundColor( const QColor &color );
-
-    /**
      * Sets the cell background \a color to show in the widget.
      *
      * \see backgroundColorChanged()
@@ -153,13 +145,6 @@ class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, public 
     QgsExpressionContext createExpressionContext() const override;
 
   signals:
-
-    /**
-     * Emitted whenever the cell foreground \a color is changed in the widget.
-     *
-     * \see setForegroundColor()
-     */
-    void foregroundColorChanged( const QColor &color );
 
     /**
      * Emitted whenever the cell background \a color is changed in the widget.

@@ -76,7 +76,7 @@ Returns ``True`` if the current selection has a mix of numeric formats.
 .. seealso:: :py:func:`selectionNumericFormat`
 %End
 
-    QColor selectionForegroundColor();
+ QColor selectionForegroundColor() /Deprecated/;
 %Docstring
 Returns the foreground color for the currently selected cells.
 
@@ -86,6 +86,9 @@ invalid color will be returned.
 .. seealso:: :py:func:`setSelectionForegroundColor`
 
 .. seealso:: :py:func:`selectionBackgroundColor`
+
+.. deprecated::
+   use selectionTextFormat() instead.
 %End
 
     QColor selectionBackgroundColor();
@@ -278,13 +281,16 @@ current selected cells.
 Clears the contents of the currently selected cells.
 %End
 
-    void setSelectionForegroundColor( const QColor &color );
+ void setSelectionForegroundColor( const QColor &color ) /Deprecated/;
 %Docstring
 Sets the foreground color for the currently selected cells.
 
 .. seealso:: :py:func:`selectionForegroundColor`
 
 .. seealso:: :py:func:`setSelectionBackgroundColor`
+
+.. deprecated::
+   Use setSelectionTextFormat() instead.
 %End
 
     void setSelectionBackgroundColor( const QColor &color );
