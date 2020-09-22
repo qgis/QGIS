@@ -242,10 +242,11 @@
       <string>&amp;Preview</string>
      </property>
      <addaction name="mActionPreviewModeOff"/>
-     <addaction name="mActionPreviewModeGrayscale"/>
      <addaction name="mActionPreviewModeMono"/>
-     <addaction name="mActionPreviewProtanope"/>
-     <addaction name="mActionPreviewDeuteranope"/>
+     <addaction name="mActionPreviewAchromatopsia"/>
+     <addaction name="mActionPreviewProtanopia"/>
+     <addaction name="mActionPreviewDeuteranopia"/>
+     <addaction name="mActionPreviewTritanopia"/>
     </widget>
     <addaction name="mActionRefreshView"/>
     <addaction name="menuPreview"/>
@@ -1101,24 +1102,40 @@
     <string>Simulate Fax (&amp;Mono)</string>
    </property>
   </action>
-  <action name="mActionPreviewProtanope">
+  <action name="mActionPreviewAchromatopsia">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Simulate Color Blindness (&amp;Protanope)</string>
+    <string>Simulate Achromatopsia Color Blindness and Photocopy (&amp;Grayscale)</string>
    </property>
   </action>
-  <action name="mActionPreviewDeuteranope">
+  <action name="mActionPreviewProtanopia">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Simulate Color Blindness (&amp;Deuteranope)</string>
+    <string>Simulate Protonopia Color Blindness (&amp;No Red)</string>
+   </property>
+  </action>
+  <action name="mActionPreviewDeuteranopia">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Simulate Deuteranopia Color Blindness (&amp;No Green)</string>
+   </property>
+  </action>
+  <action name="mActionPreviewTritanopia">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Simulate Tritanopia Color Blindness (&amp;Tritanopia)</string>
    </property>
   </action>
   <action name="mActionShowPage">
-   <property name="checkable">
+   <property name="checkable">q
     <bool>true</bool>
    </property>
    <property name="text">

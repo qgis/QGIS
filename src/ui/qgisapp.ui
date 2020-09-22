@@ -116,10 +116,11 @@
       <string>Preview Mode</string>
      </property>
      <addaction name="mActionPreviewModeOff"/>
-     <addaction name="mActionPreviewModeGrayscale"/>
      <addaction name="mActionPreviewModeMono"/>
-     <addaction name="mActionPreviewProtanope"/>
-     <addaction name="mActionPreviewDeuteranope"/>
+     <addaction name="mActionPreviewAchromatopsia"/>
+     <addaction name="mActionPreviewProtanopia"/>
+     <addaction name="mActionPreviewDeuteranopia"/>
+     <addaction name="mActionPreviewTritanopia"/>
     </widget>
     <addaction name="mActionNewMapCanvas"/>
     <addaction name="mActionNew3DMapCanvas"/>
@@ -2632,17 +2633,6 @@ Acts on the currently active layer only.</string>
     <string>Normal Preview Mode</string>
    </property>
   </action>
-  <action name="mActionPreviewModeGrayscale">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Simulate Photocopy (Grayscale)</string>
-   </property>
-   <property name="toolTip">
-    <string>Simulate Photocopy (Grayscale)</string>
-   </property>
-  </action>
   <action name="mActionPreviewModeMono">
    <property name="checkable">
     <bool>true</bool>
@@ -2654,26 +2644,48 @@ Acts on the currently active layer only.</string>
     <string>Simulate Fax (Mono)</string>
    </property>
   </action>
-  <action name="mActionPreviewProtanope">
+  <action name="mActionPreviewAchromatopsia">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Simulate Color Blindness (Protanope)</string>
+    <string>Simulate Achromatopsia Color Blindness and Photocopy (Grayscale)</string>
    </property>
    <property name="toolTip">
-    <string>Simulate Color Blindness (Protanope)</string>
+    <string>Simulate Achromatopsia Color Blindness and Photocopy (Grayscale)</string>
    </property>
   </action>
-  <action name="mActionPreviewDeuteranope">
+  <action name="mActionPreviewProtanopia">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Simulate Color Blindness (Deuteranope)</string>
+    <string>Simulate Protanopia Color Blindness (No Red)</string>
    </property>
    <property name="toolTip">
-    <string>Simulate Color Blindness (Deuteranope)</string>
+    <string>Simulate Protanopia Color Blindness (No Red)</string>
+   </property>
+  </action>
+  <action name="mActionPreviewDeuteranopia">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Simulate Deuteranopia Color Blindness (No Green)</string>
+   </property>
+   <property name="toolTip">
+    <string>Simulate Deuteranopia Color Blindness (No Green)</string>
+   </property>
+  </action>
+  <action name="mActionPreviewTritanopia">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Simulate Tritanopia Color Blindness (No Blue)</string>
+   </property>
+   <property name="toolTip">
+    <string>Simulate Color Blindness (No Blue)</string>
    </property>
   </action>
   <action name="mActionSetLayerScaleVisibility">

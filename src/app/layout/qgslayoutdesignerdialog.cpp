@@ -552,24 +552,29 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   {
     mView->setPreviewModeEnabled( false );
   } );
-  connect( mActionPreviewModeGrayscale, &QAction::triggered, this, [ = ]
-  {
-    mView->setPreviewMode( QgsPreviewEffect::PreviewGrayscale );
-    mView->setPreviewModeEnabled( true );
-  } );
   connect( mActionPreviewModeMono, &QAction::triggered, this, [ = ]
   {
     mView->setPreviewMode( QgsPreviewEffect::PreviewMono );
     mView->setPreviewModeEnabled( true );
   } );
-  connect( mActionPreviewProtanope, &QAction::triggered, this, [ = ]
+  connect( mActionPreviewAchromatopsia, &QAction::triggered, this, [ = ]
   {
-    mView->setPreviewMode( QgsPreviewEffect::PreviewProtanope );
+    mView->setPreviewMode( QgsPreviewEffect::PreviewAchromatopsia );
     mView->setPreviewModeEnabled( true );
   } );
-  connect( mActionPreviewDeuteranope, &QAction::triggered, this, [ = ]
+  connect( mActionPreviewProtanopia, &QAction::triggered, this, [ = ]
   {
-    mView->setPreviewMode( QgsPreviewEffect::PreviewDeuteranope );
+    mView->setPreviewMode( QgsPreviewEffect::PreviewProtanopia );
+    mView->setPreviewModeEnabled( true );
+  } );
+  connect( mActionPreviewDeuteranopia, &QAction::triggered, this, [ = ]
+  {
+    mView->setPreviewMode( QgsPreviewEffect::PreviewDeuteranopia );
+    mView->setPreviewModeEnabled( true );
+  } );
+  connect( mActionPreviewTritanopia, &QAction::triggered, this, [ = ]
+  {
+    mView->setPreviewMode( QgsPreviewEffect::PreviewTritanopia );
     mView->setPreviewModeEnabled( true );
   } );
   QActionGroup *previewGroup = new QActionGroup( this );
@@ -577,8 +582,10 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mActionPreviewModeOff->setActionGroup( previewGroup );
   mActionPreviewModeGrayscale->setActionGroup( previewGroup );
   mActionPreviewModeMono->setActionGroup( previewGroup );
-  mActionPreviewProtanope->setActionGroup( previewGroup );
-  mActionPreviewDeuteranope->setActionGroup( previewGroup );
+  mActionPreviewAchromatopsia->setActionGroup( previewGroup );
+  mActionPreviewProtanopia->setActionGroup( previewGroup );
+  mActionPreviewDeuteranopia->setActionGroup( previewGroup );
+  mActionPreviewTritanopia->setActionGroup( previewGroup );
 
   connect( mActionSaveAsTemplate, &QAction::triggered, this, &QgsLayoutDesignerDialog::saveAsTemplate );
   connect( mActionLoadFromTemplate, &QAction::triggered, this, &QgsLayoutDesignerDialog::addItemsFromTemplate );

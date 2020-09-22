@@ -3061,10 +3061,11 @@ void QgisApp::createActionGroups()
   QActionGroup *mPreviewGroup = new QActionGroup( this );
   mPreviewGroup->setExclusive( true );
   mActionPreviewModeOff->setActionGroup( mPreviewGroup );
-  mActionPreviewModeGrayscale->setActionGroup( mPreviewGroup );
   mActionPreviewModeMono->setActionGroup( mPreviewGroup );
-  mActionPreviewProtanope->setActionGroup( mPreviewGroup );
-  mActionPreviewDeuteranope->setActionGroup( mPreviewGroup );
+  mActionPreviewAchromatopsia->setActionGroup( mPreviewGroup );
+  mActionPreviewProtanopia->setActionGroup( mPreviewGroup );
+  mActionPreviewDeuteranopia->setActionGroup( mPreviewGroup );
+  mActionPreviewTritanopia->setActionGroup( mPreviewGroup );
 }
 
 void QgisApp::setAppStyleSheet( const QString &stylesheet )
@@ -4302,10 +4303,11 @@ void QgisApp::setupConnections()
 
   // connect preview modes actions
   connect( mActionPreviewModeOff, &QAction::triggered, this, &QgisApp::disablePreviewMode );
-  connect( mActionPreviewModeGrayscale, &QAction::triggered, this, &QgisApp::activateGrayscalePreview );
   connect( mActionPreviewModeMono, &QAction::triggered, this, &QgisApp::activateMonoPreview );
-  connect( mActionPreviewProtanope, &QAction::triggered, this, &QgisApp::activateProtanopePreview );
-  connect( mActionPreviewDeuteranope, &QAction::triggered, this, &QgisApp::activateDeuteranopePreview );
+  connect( mActionPreviewAchromatopsia, &QAction::triggered, this, &QgisApp::activateAchromatopsiaPreview );
+  connect( mActionPreviewProtanopia, &QAction::triggered, this, &QgisApp::activateProtanopiaPreview );
+  connect( mActionPreviewDeuteranopia, &QAction::triggered, this, &QgisApp::activateDeuteranopiaPreview );
+  connect( mActionPreviewTritanopia, &QAction::triggered, this, &QgisApp::activateTritanopiaPreview );
 
   // setup undo/redo actions
   connect( mUndoWidget, &QgsUndoWidget::undoStackChanged, this, &QgisApp::updateUndoActions );
@@ -7694,28 +7696,34 @@ void QgisApp::disablePreviewMode()
   mMapCanvas->setPreviewModeEnabled( false );
 }
 
-void QgisApp::activateGrayscalePreview()
-{
-  mMapCanvas->setPreviewModeEnabled( true );
-  mMapCanvas->setPreviewMode( QgsPreviewEffect::PreviewGrayscale );
-}
-
 void QgisApp::activateMonoPreview()
 {
   mMapCanvas->setPreviewModeEnabled( true );
   mMapCanvas->setPreviewMode( QgsPreviewEffect::PreviewMono );
 }
 
-void QgisApp::activateProtanopePreview()
+void QgisApp::activateAchromatopsiaPreview()
 {
   mMapCanvas->setPreviewModeEnabled( true );
-  mMapCanvas->setPreviewMode( QgsPreviewEffect::PreviewProtanope );
+  mMapCanvas->setPreviewMode( QgsPreviewEffect::PreviewAchromatopsia );
 }
 
-void QgisApp::activateDeuteranopePreview()
+void QgisApp::activateProtanopiaPreview()
 {
   mMapCanvas->setPreviewModeEnabled( true );
-  mMapCanvas->setPreviewMode( QgsPreviewEffect::PreviewDeuteranope );
+  mMapCanvas->setPreviewMode( QgsPreviewEffect::PreviewProtanopia );
+}
+
+void QgisApp::activateDeuteranopiaPreview()
+{
+  mMapCanvas->setPreviewModeEnabled( true );
+  mMapCanvas->setPreviewMode( QgsPreviewEffect::PreviewDeuteranopia );
+}
+
+void QgisApp::activateTritanopiaPreview()
+{
+  mMapCanvas->setPreviewModeEnabled( true );
+  mMapCanvas->setPreviewMode( QgsPreviewEffect::PreviewTritanopia );
 }
 
 void QgisApp::toggleFilterLegendByExpression( bool checked )
