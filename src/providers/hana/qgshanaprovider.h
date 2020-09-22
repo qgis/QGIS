@@ -55,7 +55,8 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     static const QString HANA_KEY;
     static const QString HANA_DESCRIPTION;
 
-    QgsHanaProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
+    QgsHanaProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options,
+                     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
     ~QgsHanaProvider() override;
 
     /* Functions inherited from QgsVectorDataProvider */
@@ -181,7 +182,7 @@ class QgsHanaProviderMetadata : public QgsProviderMetadata
 
     void cleanupProvider() override;
 
-    QgsHanaProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QgsHanaProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
 
     QgsVectorLayerExporter::ExportError createEmptyLayer(
       const QString &uri,

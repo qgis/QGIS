@@ -203,14 +203,21 @@ void QgsHanaProviderConnection::renameSchema( const QString &name, const QString
                        .arg( QgsHanaUtils::quotedIdentifier( name ), QgsHanaUtils::quotedIdentifier( newName ) ) );
 }
 
-QList<QVariantList> QgsHanaProviderConnection::executeSql( const QString &sql ) const
+QList<QVariantList> QgsHanaProviderConnection::executeSql( const QString &sql, QgsFeedback *feedback ) const
 {
   checkCapability( Capability::ExecuteSql );
+
+  // Check feedback first!
+  if ( feedback && feedback->isCanceled() )
+    return QList<QVariantList>();
 
   const QgsDataSourceUri dsUri { uri() };
   QgsHanaConnectionRef conn( dsUri );
   if ( conn.isNull() )
     throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
+
+  if ( feedback && feedback->isCanceled() )
+    return QList<QVariantList>();
 
   bool isQuery = false;
 
@@ -225,15 +232,15 @@ QList<QVariantList> QgsHanaProviderConnection::executeSql( const QString &sql ) 
   }
 
   if ( isQuery )
-    return executeSqlQuery( *conn, sql );
+    return executeSqlQuery( *conn, sql, feedback );
   else
   {
-    executeSqlStatement( sql );
+    executeSqlStatement( *conn, sql );
     return QList<QVariantList>();
   }
 }
 
-QList<QVariantList> QgsHanaProviderConnection::executeSqlQuery( QgsHanaConnection &conn, const QString &sql ) const
+QList<QVariantList> QgsHanaProviderConnection::executeSqlQuery( QgsHanaConnection &conn, const QString &sql, QgsFeedback *feedback ) const
 {
   QList<QVariantList> results;
 
@@ -243,6 +250,9 @@ QList<QVariantList> QgsHanaProviderConnection::executeSqlQuery( QgsHanaConnectio
     const unsigned short nColumns = resultSet->getMetadata().getColumnCount();
     while ( resultSet->next() )
     {
+      if ( feedback && feedback->isCanceled() )
+        break;
+
       QVariantList row;
       for ( unsigned short i = 1; i <= nColumns; ++i )
         row.push_back( resultSet->getValue( i ) );

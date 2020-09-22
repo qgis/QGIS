@@ -40,7 +40,7 @@ class QgsHanaProviderConnection : public QgsAbstractDatabaseProviderConnection
     void createSchema( const QString &name ) const override;
     void dropSchema( const QString &name, bool force = false ) const override;
     void renameSchema( const QString &name, const QString &newName ) const override;
-    QList<QVariantList> executeSql( const QString &sql ) const override;
+    QList<QVariantList> executeSql( const QString &sql, QgsFeedback *feedback = nullptr ) const override;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema,
         const TableFlags &flags = nullptr ) const override;
     QStringList schemas( ) const override;
@@ -50,7 +50,7 @@ class QgsHanaProviderConnection : public QgsAbstractDatabaseProviderConnection
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
 
   private:
-    QList<QVariantList> executeSqlQuery( QgsHanaConnection &conn, const QString &sql ) const;
+    QList<QVariantList> executeSqlQuery( QgsHanaConnection &conn, const QString &sql, QgsFeedback *feedback = nullptr ) const;
     void executeSqlStatement( QgsHanaConnection &conn, const QString &sql ) const;
     void executeSqlStatement( const QString &sql ) const;
     void setCapabilities();

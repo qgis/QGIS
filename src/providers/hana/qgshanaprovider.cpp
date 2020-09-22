@@ -241,8 +241,8 @@ const QString QgsHanaProvider::HANA_DESCRIPTION = QStringLiteral( "HANA spatial 
 
 QgsHanaProvider::QgsHanaProvider(
   const QString &uri,
-  const ProviderOptions &options )
-  : QgsVectorDataProvider( uri, options )
+  const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+  : QgsVectorDataProvider( uri, options, flags )
   , mUri( uri )
   , mFeaturesCount( -1 )
 {
@@ -1601,9 +1601,9 @@ void QgsHanaProviderMetadata::cleanupProvider()
 }
 
 QgsHanaProvider *QgsHanaProviderMetadata::createProvider(
-  const QString &uri, const QgsDataProvider::ProviderOptions &options )
+  const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
-  return new QgsHanaProvider( uri, options );
+  return new QgsHanaProvider( uri, options, flags );
 }
 
 QList< QgsDataItemProvider *> QgsHanaProviderMetadata::dataItemProviders() const
