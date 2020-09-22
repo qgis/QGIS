@@ -1776,7 +1776,6 @@ void QgsProjectProperties::pbnWMSExtCanvas_clicked()
 void QgsProjectProperties::pbnWMSAddSRS_clicked()
 {
   QgsProjectionSelectionDialog *mySelector = new QgsProjectionSelectionDialog( this );
-  mySelector->setMessage( QString() );
   if ( mWMSList->count() > 0 )
   {
     mySelector->setCrs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( mWMSList->item( mWMSList->count() - 1 )->text() ) );

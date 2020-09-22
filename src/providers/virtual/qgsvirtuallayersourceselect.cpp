@@ -159,7 +159,9 @@ void QgsVirtualLayerSourceSelect::browseCRS()
   QgsCoordinateReferenceSystem crs( mSrid );
   Q_NOWARN_DEPRECATED_POP
   crsSelector.setCrs( crs );
-  crsSelector.setMessage( QString() );
+  if ( !crs.isValid() )
+    crsSelector.showNoCrsForLayerMessage();
+
   if ( crsSelector.exec() )
   {
     mCRS->setText( crsSelector.crs().authid() );

@@ -39,7 +39,7 @@ void QgsLayerTreeViewNoCrsIndicatorProvider::onIndicatorClicked( const QModelInd
     return;
 
   QgsProjectionSelectionDialog selector( QgisApp::instance() );
-  selector.setMessage( QString() );
+  selector.showNoCrsForLayerMessage();
   if ( selector.exec() )
   {
     QgsCoordinateReferenceSystem crs = selector.crs();

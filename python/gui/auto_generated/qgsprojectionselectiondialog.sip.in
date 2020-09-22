@@ -57,9 +57,18 @@ Returns the CRS currently selected in the widget.
 
     void setMessage( const QString &message );
 %Docstring
-Sets a ``message`` to show in the dialog. If an empty string is
-passed, the message will be a generic
-'define the CRS for this layer'.
+Sets a ``message`` to show in the dialog.
+
+.. seealso:: :py:func:`showNoCrsForLayerMessage`
+%End
+
+    void showNoCrsForLayerMessage();
+%Docstring
+When called, the dialog will show a default "layer has no CRS set" message above the projection selector.
+
+.. seealso:: :py:func:`setMessage`
+
+.. versionadded:: 3.16
 %End
 
     void setShowNoProjection( bool show );

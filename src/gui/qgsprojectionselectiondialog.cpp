@@ -49,22 +49,17 @@ QgsProjectionSelectionDialog::~QgsProjectionSelectionDialog()
 
 void QgsProjectionSelectionDialog::setMessage( const QString &message )
 {
-  QString m = message;
-  //short term kludge to make the layer selector default to showing
-  //a layer projection selection message. If you want the selector
-  if ( m.isEmpty() )
-  {
-    // Set up text edit pane
-    QString sentence1 = tr( "This layer appears to have no projection specification." );
-    QString sentence2 = tr( "By default, this layer will now have its projection set to that of the project, "
-                            "but you may override this by selecting a different projection below." );
-    m = QStringLiteral( "%1 %2" ).arg( sentence1, sentence2 );
-  }
-
-  QString myStyle = QgsApplication::reportStyleSheet();
-  m = "<head><style>" + myStyle + "</style></head><body>" + m + "</body>";
-  textEdit->setHtml( m );
+  textEdit->setHtml( QStringLiteral( "<head><style>%1</style></head><body>%2</body>" ).arg( QgsApplication::reportStyleSheet(),
+                     message ) );
   textEdit->show();
+}
+
+void QgsProjectionSelectionDialog::showNoCrsForLayerMessage()
+{
+  setMessage( tr( "This layer appears to have no projection specification." )
+              + ' '
+              + tr( "By default, this layer will now have its projection set to that of the project, "
+                    "but you may override this by selecting a different projection below." ) );
 }
 
 void QgsProjectionSelectionDialog::setShowNoProjection( bool show )

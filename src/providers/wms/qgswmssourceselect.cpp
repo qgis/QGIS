@@ -647,13 +647,16 @@ void QgsWMSSourceSelect::btnChangeSpatialRefSys_clicked()
   }
 
   QgsProjectionSelectionDialog *mySelector = new QgsProjectionSelectionDialog( this );
-  mySelector->setMessage( QString() );
   mySelector->setOgcWmsCrsFilter( mCRSs );
 
   QgsCoordinateReferenceSystem defaultCRS = QgsProject::instance()->crs();
   if ( defaultCRS.isValid() )
   {
     mySelector->setCrs( defaultCRS );
+  }
+  else
+  {
+    mySelector->showNoCrsForLayerMessage();
   }
 
   if ( !mySelector->exec() )
