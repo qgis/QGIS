@@ -244,12 +244,13 @@ QgsActiveLayerFeaturesLocatorFilter *QgsActiveLayerFeaturesLocatorFilter::clone(
   return new QgsActiveLayerFeaturesLocatorFilter();
 }
 
-QString QgsActiveLayerFeaturesLocatorFilter::fieldRestriction( QString &searchString ) const
+QString QgsActiveLayerFeaturesLocatorFilter::fieldRestriction( QString &searchString )
 {
   QString _fieldRestriction;
+  searchString = searchString.trimmed();
   if ( searchString.startsWith( '@' ) )
   {
-    _fieldRestriction = searchString.left( std::max( searchString.indexOf( ' ' ), 0 ) ).remove( 0, 1 );
+    _fieldRestriction = searchString.left( std::min( searchString.indexOf( ' ' ), searchString.length() ) ).remove( 0, 1 );
     searchString = searchString.mid( _fieldRestriction.length() + 2 );
   }
   return _fieldRestriction;
@@ -318,6 +319,7 @@ QStringList QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string,
     }
 
     completionList.append( QStringLiteral( "@%1 " ).arg( field.name() ) );
+
     if ( field.type() == QVariant::String )
     {
       expressionParts << QStringLiteral( "%1 ILIKE '%%2%'" ).arg( QgsExpression::quotedColumnRef( field.name() ),

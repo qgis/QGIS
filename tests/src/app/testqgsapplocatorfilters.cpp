@@ -37,6 +37,8 @@ class TestQgsAppLocatorFilters : public QObject
     void testLayers();
     void testLayouts();
     void testSearchActiveLayer();
+    void testActiveLayerFieldRestriction();
+    void testActiveLayerCompletion();
     void testSearchAllLayers();
     void testSearchAllLayersPrioritizeExactMatch();
     void testGoto();
@@ -160,8 +162,11 @@ void TestQgsAppLocatorFilters::testSearchActiveLayer()
   QgsFeature f;
   f.setAttributes( QVector<QVariant>() << 1001 << "A nice feature" << 1234567890 << 12345.6789 );
   f.setGeometry( QgsGeometry::fromWkt( "Point (-71.123 78.23)" ) );
-
   vl->dataProvider()->addFeature( f );
+  QgsFeature f2;
+  f2.setAttributes( QVector<QVariant>() << 100 << "@home" << 13579 << 13.57 );
+  f2.setGeometry( QgsGeometry::fromWkt( "Point (-71.223 78.33)" ) );
+  vl->dataProvider()->addFeature( f2 );
 
   mQgisApp->setActiveLayer( vl );
 
@@ -198,6 +203,39 @@ void TestQgsAppLocatorFilters::testSearchActiveLayer()
   results = gatherResults( &filter, QStringLiteral( "nice .678" ), context );
   QCOMPARE( results.count(), 1 );
 
+  results = gatherResults( &filter, QStringLiteral( "@my_text @home" ), context );
+  QCOMPARE( results.count(), 1 );
+
+  QgsProject::instance()->removeAllMapLayers();
+}
+
+void TestQgsAppLocatorFilters::testActiveLayerFieldRestriction()
+{
+  QString search = QStringLiteral( "@my_field search" );
+  QString restr = QgsActiveLayerFeaturesLocatorFilter::fieldRestriction( search );
+  QCOMPARE( restr, QStringLiteral( "my_field" ) );
+  QCOMPARE( search, QStringLiteral( "search" ) );
+
+  search = QStringLiteral( "@home" );
+  restr = QgsActiveLayerFeaturesLocatorFilter::fieldRestriction( search );
+  QCOMPARE( restr, QStringLiteral( "home" ) );
+  QCOMPARE( search, QStringLiteral( "" ) );
+}
+
+void TestQgsAppLocatorFilters::testActiveLayerCompletion()
+{
+  QString layerDef = QStringLiteral( "Point?crs=epsg:4326&field=pk:integer&field=my_text:string&field=my_integer:integer&field=my_double:double&key=pk" );
+  QgsVectorLayer *vl = new QgsVectorLayer( layerDef, QStringLiteral( "Layer" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( vl );
+  mQgisApp->setActiveLayer( vl );
+
+  QgsFeedback f;
+  QgsActiveLayerFeaturesLocatorFilter filter;
+  QgsLocatorContext context;
+  context.usingPrefix = true;
+
+  QCOMPARE( filter.prepare( QStringLiteral( "" ), context ), QStringList( { "@pk ", "@my_text ", "@my_integer ", "@my_double " } ) );
+  QCOMPARE( filter.prepare( QStringLiteral( "@my_i" ), context ), QStringList( { "@my_integer " } ) );
 
   QgsProject::instance()->removeAllMapLayers();
 }
