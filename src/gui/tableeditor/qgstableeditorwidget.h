@@ -169,8 +169,10 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
      *
      * \see setSelectionForegroundColor()
      * \see selectionBackgroundColor()
+     *
+     * \deprecated use selectionTextFormat() instead.
      */
-    QColor selectionForegroundColor();
+    Q_DECL_DEPRECATED QColor selectionForegroundColor() SIP_DEPRECATED;
 
     /**
      * Returns the background color for the currently selected cells.
@@ -364,8 +366,10 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
      *
      * \see selectionForegroundColor()
      * \see setSelectionBackgroundColor()
+     *
+     * \deprecated Use setSelectionTextFormat() instead.
      */
-    void setSelectionForegroundColor( const QColor &color );
+    Q_DECL_DEPRECATED void setSelectionForegroundColor( const QColor &color ) SIP_DEPRECATED;
 
     /**
      * Sets the background color for the currently selected cells.
