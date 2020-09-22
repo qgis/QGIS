@@ -117,7 +117,7 @@
      </property>
      <addaction name="mActionPreviewModeOff"/>
      <addaction name="mActionPreviewModeMono"/>
-     <addaction name="mActionPreviewGrayscale"/>
+     <addaction name="mActionPreviewModeGrayscale"/>
      <addaction name="mActionPreviewProtanope"/>
      <addaction name="mActionPreviewDeuteranope"/>
      <addaction name="mActionPreviewTritanope"/>
@@ -2644,7 +2644,7 @@ Acts on the currently active layer only.</string>
     <string>Simulate Fax (Mono)</string>
    </property>
   </action>
-  <action name="mActionPreviewGrayscale">
+  <action name="mActionPreviewModeGrayscale">
    <property name="checkable">
     <bool>true</bool>
    </property>

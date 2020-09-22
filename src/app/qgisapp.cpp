@@ -3062,7 +3062,7 @@ void QgisApp::createActionGroups()
   mPreviewGroup->setExclusive( true );
   mActionPreviewModeOff->setActionGroup( mPreviewGroup );
   mActionPreviewModeMono->setActionGroup( mPreviewGroup );
-  mActionPreviewGrayscale->setActionGroup( mPreviewGroup );
+  mActionPreviewModeGrayscale->setActionGroup( mPreviewGroup );
   mActionPreviewProtanope->setActionGroup( mPreviewGroup );
   mActionPreviewDeuteranope->setActionGroup( mPreviewGroup );
   mActionPreviewTritanope->setActionGroup( mPreviewGroup );
@@ -4304,7 +4304,7 @@ void QgisApp::setupConnections()
   // connect preview modes actions
   connect( mActionPreviewModeOff, &QAction::triggered, this, &QgisApp::disablePreviewMode );
   connect( mActionPreviewModeMono, &QAction::triggered, this, &QgisApp::activateMonoPreview );
-  connect( mActionPreviewGrayscale, &QAction::triggered, this, &QgisApp::activateGrayscalePreview );
+  connect( mActionPreviewModeGrayscale, &QAction::triggered, this, &QgisApp::activateGrayscalePreview );
   connect( mActionPreviewProtanope, &QAction::triggered, this, &QgisApp::activateProtanopePreview );
   connect( mActionPreviewDeuteranope, &QAction::triggered, this, &QgisApp::activateDeuteranopePreview );
   connect( mActionPreviewTritanope, &QAction::triggered, this, &QgisApp::activateTritanopePreview );

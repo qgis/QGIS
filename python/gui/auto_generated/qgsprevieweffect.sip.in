@@ -24,7 +24,7 @@ color blindness modes.
     enum PreviewMode
     {
       PreviewMono,
-      PreviewGrayscale
+      PreviewGrayscale,
       PreviewProtanope,
       PreviewDeuteranope,
       PreviewTritanope
