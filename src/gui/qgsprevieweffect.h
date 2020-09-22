@@ -36,10 +36,10 @@ class GUI_EXPORT QgsPreviewEffect: public QGraphicsEffect
     enum PreviewMode
     {
       PreviewMono,
-      PreviewAchromatopsia,
-      PreviewProtanopia,
-      PreviewDeuteranopia,
-      PreviewTritanopia
+      PreviewGrayscale,
+      PreviewProtanope,
+      PreviewDeuteranope,
+      PreviewTritanope
     };
 
     QgsPreviewEffect( QObject *parent SIP_TRANSFERTHIS );
@@ -68,10 +68,10 @@ class GUI_EXPORT QgsPreviewEffect: public QGraphicsEffect
     PreviewMode mMode;
 
     QRgb simulateColorBlindness( QRgb &originalColor, PreviewMode type );
-    void simulateAchromatopsia( int &r, int &g, int &b, int &red, int &green, int &blue );
-    void simulateProtanopia( int &r, int &g, int &b, int &red, int &green, int &blue );
-    void simulateDeuteranopia( int &r, int &g, int &b, int &red, int &green, int &blue );
-    void simulateTritanopia( int &r, int &g, int &b, int &red, int &green, int &blue );
+    void simulateGrayscale( int &r, int &g, int &b, int &red, int &green, int &blue );
+    void simulateProtanope( int &r, int &g, int &b, int &red, int &green, int &blue );
+    void simulateDeuteranope( int &r, int &g, int &b, int &red, int &green, int &blue );
+    void simulateTritanope( int &r, int &g, int &b, int &red, int &green, int &blue );
 };
 
 #endif // QGSPREVIEWEFFECT_H

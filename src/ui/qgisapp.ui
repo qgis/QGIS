@@ -117,10 +117,10 @@
      </property>
      <addaction name="mActionPreviewModeOff"/>
      <addaction name="mActionPreviewModeMono"/>
-     <addaction name="mActionPreviewAchromatopsia"/>
-     <addaction name="mActionPreviewProtanopia"/>
-     <addaction name="mActionPreviewDeuteranopia"/>
-     <addaction name="mActionPreviewTritanopia"/>
+     <addaction name="mActionPreviewGrayscale"/>
+     <addaction name="mActionPreviewProtanope"/>
+     <addaction name="mActionPreviewDeuteranope"/>
+     <addaction name="mActionPreviewTritanope"/>
     </widget>
     <addaction name="mActionNewMapCanvas"/>
     <addaction name="mActionNew3DMapCanvas"/>
@@ -2644,7 +2644,7 @@ Acts on the currently active layer only.</string>
     <string>Simulate Fax (Mono)</string>
    </property>
   </action>
-  <action name="mActionPreviewAchromatopsia">
+  <action name="mActionPreviewGrayscale">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -2655,7 +2655,7 @@ Acts on the currently active layer only.</string>
     <string>Simulate Achromatopsia Color Blindness and Photocopy (Grayscale)</string>
    </property>
   </action>
-  <action name="mActionPreviewProtanopia">
+  <action name="mActionPreviewProtanope">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -2666,7 +2666,7 @@ Acts on the currently active layer only.</string>
     <string>Simulate Protanopia Color Blindness (No Red)</string>
    </property>
   </action>
-  <action name="mActionPreviewDeuteranopia">
+  <action name="mActionPreviewDeuteranope">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -2677,7 +2677,7 @@ Acts on the currently active layer only.</string>
     <string>Simulate Deuteranopia Color Blindness (No Green)</string>
    </property>
   </action>
-  <action name="mActionPreviewTritanopia">
+  <action name="mActionPreviewTritanope">
    <property name="checkable">
     <bool>true</bool>
    </property>
