@@ -44,6 +44,8 @@ the you probably want to look at QgsProjectionSelectionWidget instead.
 Constructor for QgsProjectionSelectionDialog.
 %End
 
+    ~QgsProjectionSelectionDialog();
+
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
 Returns the CRS currently selected in the widget.
