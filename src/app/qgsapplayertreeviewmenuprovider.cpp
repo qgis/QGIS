@@ -357,7 +357,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
             } );
 
             i++;
-            if ( i == 2 )
+            if ( i == 5 )
               break;
           }
         }
