@@ -132,6 +132,9 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
   if ( layer == mCurrentLayer )
     return;
 
+  // when current layer is changed, apply the main panel stack to allow it to gracefully clean up
+  mWidgetStack->acceptAllPanels();
+
   if ( mCurrentLayer )
   {
     disconnect( mCurrentLayer, &QgsMapLayer::styleChanged, this, &QgsLayerStylingWidget::updateCurrentWidgetLayer );
@@ -602,6 +605,9 @@ void QgsLayerStylingWidget::layerAboutToBeRemoved( QgsMapLayer *layer )
 {
   if ( layer == mCurrentLayer )
   {
+    // when current layer is removed, apply the main panel stack to allow it to gracefully clean up
+    mWidgetStack->acceptAllPanels();
+
     mAutoApplyTimer->stop();
     setLayer( nullptr );
   }
