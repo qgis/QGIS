@@ -243,7 +243,7 @@
      </property>
      <addaction name="mActionPreviewModeOff"/>
      <addaction name="mActionPreviewModeMono"/>
-     <addaction name="mActionPreviewGrayscale"/>
+     <addaction name="mActionPreviewModeGrayscale"/>
      <addaction name="mActionPreviewProtanope"/>
      <addaction name="mActionPreviewDeuteranope"/>
      <addaction name="mActionPreviewTritanope"/>
@@ -1123,7 +1123,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Simulate Tritanopia Color Blindness (&amp;Tritanopia)</string>
+    <string>Simulate Tritanopia Color Blindness (&amp;No Blue)</string>
    </property>
   </action>
   <action name="mActionShowPage">
