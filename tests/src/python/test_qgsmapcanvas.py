@@ -26,6 +26,7 @@ from qgis.core import (QgsMapSettings,
                        QgsPolygon,
                        QgsLineString,
                        QgsPoint,
+                       QgsPointXY,
                        QgsApplication)
 from qgis.gui import (QgsMapCanvas)
 
@@ -484,6 +485,79 @@ class TestQgsMapCanvas(unittest.TestCase):
         self.assertEqual(set(c4.expressionContextScope().variableNames()), {'vara', 'varc'})
         self.assertEqual(c4.expressionContextScope().variable('vara'), 2222)
         self.assertEqual(c4.expressionContextScope().variable('varc'), 'cc')
+
+    def testLockedScale(self):
+        """Test zoom/pan/center operations when scale lock is on"""
+
+        c = QgsMapCanvas()
+        c.setExtent(QgsRectangle(5, 45, 9, 47))
+        c.zoomScale(2500000)
+        c.setScaleLocked(True)
+
+        # Test setExtent
+        c.setExtent(QgsRectangle(6, 45.5, 8, 46), True)
+        self.assertEqual(round(c.scale()), 2500000)
+        self.assertEqual(c.center().x(), 7.0)
+        self.assertEqual(c.center().y(), 45.75)
+        self.assertEqual(round(c.magnificationFactor(), 1), 1.9)
+
+        # Test setCenter
+        c.setCenter(QgsPointXY(6, 46))
+        self.assertEqual(c.center().x(), 6)
+        self.assertEqual(c.center().y(), 46)
+        self.assertEqual(round(c.scale()), 2500000)
+
+        # Test zoom
+        c.zoomByFactor(0.5, QgsPointXY(6.5, 46.5), False)
+        self.assertEqual(c.center().x(), 6.5)
+        self.assertEqual(c.center().y(), 46.5)
+        self.assertEqual(round(c.magnificationFactor(), 1), 3.9)
+        self.assertEqual(round(c.scale()), 2500000)
+
+        # Test zoom with center
+        # default zoom factor is 2, x and y are pixel coordinates, default size is 640x480
+        c.zoomWithCenter(300, 200, True)
+        self.assertEqual(round(c.center().x(), 1), 6.5)
+        self.assertEqual(round(c.center().y(), 1), 46.6)
+        self.assertEqual(round(c.scale()), 2500000)
+        self.assertEqual(round(c.magnificationFactor(), 1), 7.8)
+        # out ...
+        c.zoomWithCenter(300, 200, False)
+        self.assertEqual(round(c.center().x(), 1), 6.5)
+        self.assertEqual(round(c.center().y(), 1), 46.6)
+        self.assertEqual(round(c.scale()), 2500000)
+        self.assertEqual(round(c.magnificationFactor(), 1), 3.9)
+
+        # Test setExtent with different ratio
+        c2 = QgsMapCanvas()
+        c2.setExtent(QgsRectangle(5, 45, 9, 47))
+        c2.zoomScale(2500000)
+        c2.setScaleLocked(True)
+
+        c2.setExtent(QgsRectangle(3, 45, 11, 45.5), True)
+        self.assertEqual(round(c2.scale()), 2500000)
+        self.assertEqual(c2.center().x(), 7.0)
+        self.assertEqual(c2.center().y(), 45.25)
+        self.assertEqual(round(c2.magnificationFactor(), 1), 0.5)
+
+        # Restore original
+        c2.setExtent(QgsRectangle(5, 45, 9, 47), True)
+        self.assertEqual(round(c2.scale()), 2500000)
+        self.assertEqual(c2.center().x(), 7.0)
+        self.assertEqual(c2.center().y(), 46.0)
+        self.assertEqual(round(c2.magnificationFactor(), 1), 1)
+
+        c2.setExtent(QgsRectangle(7, 46, 11, 46.5), True)
+        self.assertEqual(round(c2.scale()), 2500000)
+        self.assertEqual(c2.center().x(), 9.0)
+        self.assertEqual(c2.center().y(), 46.25)
+        self.assertEqual(round(c2.magnificationFactor(), 1), 1)
+
+        c2.setExtent(QgsRectangle(7, 46, 9, 46.5), True)
+        self.assertEqual(round(c2.scale()), 2500000)
+        self.assertEqual(c2.center().x(), 8.0)
+        self.assertEqual(c2.center().y(), 46.25)
+        self.assertEqual(round(c2.magnificationFactor(), 1), 2)
 
 
 if __name__ == '__main__':

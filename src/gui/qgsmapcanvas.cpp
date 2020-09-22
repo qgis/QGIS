@@ -1086,7 +1086,23 @@ void QgsMapCanvas::setExtent( const QgsRectangle &r, bool magnified )
   }
   else
   {
-    mSettings.setExtent( r, magnified );
+    // If scale is locked we need to maintain the current scale, so we
+    // - magnify and recenter the map
+    // - restore locked scale
+    if ( mScaleLocked && magnified )
+    {
+      ScaleRestorer restorer( this );
+      const double ratio { extent().width() / extent().height() };
+      const double factor { r.width() / r.height() > ratio ? extent().width() / r.width() :  extent().height() / r.height() };
+      const double scaleFactor { qBound( QgsGuiUtils::CANVAS_MAGNIFICATION_MIN,  mSettings.magnificationFactor() * factor, QgsGuiUtils::CANVAS_MAGNIFICATION_MAX ) };
+      const QgsPointXY newCenter { r.center() };
+      mSettings.setMagnificationFactor( scaleFactor, &newCenter );
+      emit magnificationChanged( scaleFactor );
+    }
+    else
+    {
+      mSettings.setExtent( r, magnified );
+    }
   }
   emit extentsChanged();
   updateScale();
@@ -1134,18 +1150,15 @@ bool QgsMapCanvas::setReferencedExtent( const QgsReferencedRectangle &extent )
 void QgsMapCanvas::setCenter( const QgsPointXY &center )
 {
   const QgsRectangle r = mapSettings().extent();
-  const double x = center.x();
-  const double y = center.y();
+  const double xMin = center.x() - r.width() / 2.0;
+  const double yMin = center.y() - r.height() / 2.0;
   const QgsRectangle rect(
-    x - r.width() / 2.0, y - r.height() / 2.0,
-    x + r.width() / 2.0, y + r.height() / 2.0
+    xMin, yMin,
+    xMin + r.width(), yMin + r.height()
   );
   if ( ! rect.isEmpty() )
   {
-    setExtent(
-      rect,
-      true
-    );
+    setExtent( rect, true );
   }
 } // setCenter
 
@@ -1941,6 +1954,7 @@ void QgsMapCanvas::zoomWithCenter( int x, int y, bool zoomIn )
 
   if ( mScaleLocked )
   {
+    ScaleRestorer restorer( this );
     setMagnificationFactor( mapSettings().magnificationFactor() / scaleFactor, &center );
   }
   else
@@ -2523,7 +2537,7 @@ void QgsMapCanvas::zoomByFactor( double scaleFactor, const QgsPointXY *center, b
 {
   if ( mScaleLocked && !ignoreScaleLock )
   {
-    // zoom map to mouse cursor by magnifying
+    ScaleRestorer restorer( this );
     setMagnificationFactor( mapSettings().magnificationFactor() / scaleFactor, center );
   }
   else
