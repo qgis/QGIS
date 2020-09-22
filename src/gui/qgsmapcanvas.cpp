@@ -2410,7 +2410,7 @@ QgsPreviewEffect::PreviewMode QgsMapCanvas::previewMode() const
 {
   if ( !mPreviewEffect )
   {
-    return QgsPreviewEffect::PreviewGrayscale;
+    return QgsPreviewEffect::PreviewAchromatopsia;
   }
 
   return mPreviewEffect->mode();

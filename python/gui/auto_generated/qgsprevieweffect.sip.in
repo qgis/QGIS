@@ -23,10 +23,11 @@ color blindness modes.
   public:
     enum PreviewMode
     {
-      PreviewGrayscale,
       PreviewMono,
-      PreviewProtanope,
-      PreviewDeuteranope
+      PreviewAchromatopsia,
+      PreviewProtanopia,
+      PreviewDeuteranopia,
+      PreviewTritanopia
     };
 
     QgsPreviewEffect( QObject *parent /TransferThis/ );
