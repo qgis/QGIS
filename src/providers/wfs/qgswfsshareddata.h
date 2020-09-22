@@ -40,7 +40,7 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     //! Return provider geometry attribute name
     const QString &geometryAttribute() const { return mGeometryAttribute; }
 
-    std::unique_ptr<QgsFeatureDownloaderImpl> newFeatureDownloaderImpl( QgsFeatureDownloader * ) override;
+    std::unique_ptr<QgsFeatureDownloaderImpl> newFeatureDownloaderImpl( QgsFeatureDownloader *, bool requestFromMainThread ) override;
 
     bool isRestrictedToRequestBBOX() const override;
 

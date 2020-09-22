@@ -101,6 +101,11 @@ void QgsFeatureDownloaderImpl::emitEndOfDownload( bool success )
   emit mDownloader->endOfDownload( success );
 }
 
+void QgsFeatureDownloaderImpl::emitResumeMainThread()
+{
+  emit mDownloader->resumeMainThread();
+}
+
 void QgsFeatureDownloaderImpl::stop()
 {
   QgsDebugMsgLevel( QStringLiteral( "QgsFeatureDownloaderImpl::stop()" ), 4 );
@@ -212,6 +217,7 @@ void QgsFeatureDownloader::stop()
 
 QgsThreadedFeatureDownloader::QgsThreadedFeatureDownloader( QgsBackgroundCachedSharedData *shared )
   : mShared( shared )
+  , mRequestMadeFromMainThread( QThread::currentThread() == QApplication::instance()->thread() )
 {
 }
 
@@ -246,7 +252,7 @@ void QgsThreadedFeatureDownloader::run()
 {
   // We need to construct it in the run() method (i.e. in the new thread)
   mDownloader = new QgsFeatureDownloader();
-  mDownloader->setImpl( mShared->newFeatureDownloaderImpl( mDownloader ) );
+  mDownloader->setImpl( mShared->newFeatureDownloaderImpl( mDownloader, mRequestMadeFromMainThread ) );
   {
     QMutexLocker locker( &mWaitMutex );
     mWaitCond.wakeOne();
@@ -487,6 +493,9 @@ void QgsBackgroundCachedFeatureIterator::connectSignals( QgsFeatureDownloader *d
 
   connect( downloader, &QgsFeatureDownloader::endOfDownload,
            this, &QgsBackgroundCachedFeatureIterator::endOfDownloadSynchronous, Qt::DirectConnection );
+
+  connect( downloader, &QgsFeatureDownloader::resumeMainThread,
+           this, &QgsBackgroundCachedFeatureIterator::resumeMainThreadSynchronous, Qt::DirectConnection );
 }
 
 void QgsBackgroundCachedFeatureIterator::endOfDownloadSynchronous( bool )
@@ -494,6 +503,14 @@ void QgsBackgroundCachedFeatureIterator::endOfDownloadSynchronous( bool )
   // Wake up waiting loop
   QMutexLocker locker( &mMutex );
   mDownloadFinished = true;
+  mWaitCond.wakeOne();
+}
+
+void QgsBackgroundCachedFeatureIterator::resumeMainThreadSynchronous()
+{
+  // Wake up waiting loop
+  QMutexLocker locker( &mMutex );
+  mProcessEvents = true;
   mWaitCond.wakeOne();
 }
 
@@ -618,6 +635,8 @@ bool QgsBackgroundCachedFeatureIterator::fetchFeature( QgsFeature &f )
 
     return true;
   }
+
+  const bool requestMadeFromMainThread = QThread::currentThread() == QApplication::instance()->thread();
 
   // Second step is to wait for features to be notified by the downloader
   while ( true )
@@ -745,6 +764,11 @@ bool QgsBackgroundCachedFeatureIterator::fetchFeature( QgsFeature &f )
         break;
       }
       mWaitCond.wait( &mMutex, timeout );
+      if ( requestMadeFromMainThread && mProcessEvents )
+      {
+        QgsApplication::instance()->processEvents();
+        mProcessEvents = false;
+      }
       if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
       {
         mTimeoutOrInterruptionOccurred = true;

@@ -168,7 +168,7 @@ class QgsBackgroundCachedSharedData
     //////// Pure virtual methods
 
     //! Instantiate a new feature downloader implementation.
-    virtual std::unique_ptr<QgsFeatureDownloaderImpl> newFeatureDownloaderImpl( QgsFeatureDownloader * ) = 0;
+    virtual std::unique_ptr<QgsFeatureDownloaderImpl> newFeatureDownloaderImpl( QgsFeatureDownloader *, bool requestMadeFromMainThread ) = 0;
 
     //! Return whether the GetFeature request should include the request bounding box.
     virtual bool isRestrictedToRequestBBOX() const = 0;
