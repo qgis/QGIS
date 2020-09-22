@@ -349,13 +349,17 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           {
             QAction *action = menuSetCRS->addAction( tr( "Set to %1" ).arg( crs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ) ) );
             action->setProperty( "crs", crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
+
+            connect( action, &QAction::triggered, this, [ = ]
+            {
+              setLayerCrs( crs );
+            } );
+
             i++;
             if ( i == 2 )
               break;
           }
         }
-        // Connect once for the entire submenu.
-        connect( menuSetCRS, &QMenu::triggered, this, &QgsAppLayerTreeViewMenuProvider::setLayerCrs );
 
         // set layer crs
         menuSetCRS->addSeparator();
@@ -1023,11 +1027,8 @@ bool QgsAppLayerTreeViewMenuProvider::removeActionEnabled()
   return true;
 }
 
-void QgsAppLayerTreeViewMenuProvider::setLayerCrs( QAction *action )
+void QgsAppLayerTreeViewMenuProvider::setLayerCrs( const QgsCoordinateReferenceSystem &crs )
 {
-  const QString wkt = action->property( "crs" ).toString();
-  const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( wkt );
-
   const auto constSelectedNodes = mView->selectedNodes();
   for ( QgsLayerTreeNode *node : constSelectedNodes )
   {
