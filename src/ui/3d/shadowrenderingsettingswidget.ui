@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>350</width>
+    <width>416</width>
     <height>139</height>
    </rect>
   </property>
@@ -14,7 +14,7 @@
    <item row="0" column="0">
     <widget class="QLabel" name="labelUsedDirectionalLight">
      <property name="text">
-      <string>Used directional light</string>
+      <string>Directional light</string>
      </property>
     </widget>
    </item>
@@ -30,6 +30,9 @@
    </item>
    <item row="1" column="1">
     <widget class="QDoubleSpinBox" name="shadowRenderinMaximumDistanceSpinBox">
+     <property name="suffix">
+      <string> map units</string>
+     </property>
      <property name="maximum">
       <double>9999999999.000000000000000</double>
      </property>
@@ -67,6 +70,9 @@
    </item>
    <item row="3" column="1">
     <widget class="QSpinBox" name="shadowMapResolutionSpinBox">
+     <property name="suffix">
+      <string> px</string>
+     </property>
      <property name="minimum">
       <number>128</number>
      </property>
