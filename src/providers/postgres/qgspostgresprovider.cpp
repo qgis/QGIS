@@ -1054,7 +1054,7 @@ bool QgsPostgresProvider::loadFields()
         fieldType = QVariant::Time;
         fieldSize = -1;
       }
-      else if ( fieldTypeName == QLatin1String( "timestamp" ) )
+      else if ( fieldTypeName == QLatin1String( "timestamp" ) || fieldTypeName == QLatin1String( "timestamptz" ) )
       {
         fieldType = QVariant::DateTime;
         fieldSize = -1;
