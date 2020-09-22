@@ -1187,6 +1187,41 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(gpkg_virtual_layer.subsetString(), '"join_value" = \'twenty\'')
         self.assertEqual(gpkg_virtual_layer.featureCount(), 1)
 
+    def test_bool_fields(self):
+
+        ml = QgsVectorLayer("NoGeometry?field=a:int&field=b:boolean", "mem", "memory")
+        self.assertEqual(ml.isValid(), True)
+        QgsProject.instance().addMapLayer(ml)
+
+        ml.startEditing()
+        f1 = QgsFeature(ml.fields())
+        f1.setAttribute('a', 1)
+        f1.setAttribute('b', True)
+        f2 = QgsFeature(ml.fields())
+        f2.setAttribute('a', 2)
+        f2.setAttribute('b', False)
+        ml.addFeatures([f1, f2])
+        ml.commitChanges()
+
+        self.assertEqual([(f['a'], f['b']) for f in ml.getFeatures()], [(1, True), (2, False)])
+
+        df = QgsVirtualLayerDefinition()
+        df.setQuery('select * from mem')
+        vl = QgsVectorLayer(df.toString(), "testq", "virtual")
+        self.assertEqual([(f['a'], f['b']) for f in vl.getFeatures()], [(1, True), (2, False)])
+
+        df = QgsVirtualLayerDefinition()
+        df.setQuery('select * from mem where b')
+        vl = QgsVectorLayer(df.toString(), "testq", "virtual")
+        self.assertEqual([(f['a'], f['b']) for f in vl.getFeatures()], [(1, True)])
+
+        df = QgsVirtualLayerDefinition()
+        df.setQuery('select * from mem where not b')
+        vl = QgsVectorLayer(df.toString(), "testq", "virtual")
+        self.assertEqual([(f['a'], f['b']) for f in vl.getFeatures()], [(2, False)])
+
+        QgsProject.instance().removeMapLayer(ml.id())
+
 
 if __name__ == '__main__':
     unittest.main()
