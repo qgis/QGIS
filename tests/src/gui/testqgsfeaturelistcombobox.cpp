@@ -307,7 +307,7 @@ void TestQgsFeatureListComboBox::testFeatureFurtherThanFetchLimit()
   spy.wait();
   QCOMPARE( cb->lineEdit()->text(), QStringLiteral( "33" ) );
   QCOMPARE( model->mEntries.count(), 21 );
-  QCOMPARE( model->mEntries.at( 0 ).identifierFields.at( 0 ).toInt(), 33 );
+  QCOMPARE( model->mEntries.at( 0 ).identifierValues.at( 0 ).toInt(), 33 );
 }
 
 QGSTEST_MAIN( TestQgsFeatureListComboBox )
