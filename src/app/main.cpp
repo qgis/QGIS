@@ -1227,16 +1227,6 @@ int main( int argc, char *argv[] )
     }
   }
 
-  // Point PROJ_LIB at any PROJ_LIB share directory embedded in the app bundle
-  if ( !getenv( "PROJ_LIB" ) )
-  {
-    QString projLib( QDir::cleanPath( QgsApplication::pkgDataPath().append( "/proj" ) ) );
-    if ( QFile::exists( projLib ) )
-    {
-      setenv( "PROJ_LIB", projLib.toUtf8().constData(), 1 );
-    }
-  }
-
   // Point PYTHONHOME to embedded interpreter if present in the bundle
   if ( !getenv( "PYTHONHOME" ) )
   {
