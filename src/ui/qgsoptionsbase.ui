@@ -133,6 +133,18 @@
          </item>
          <item>
           <property name="text">
+           <string>Transformations</string>
+          </property>
+          <property name="toolTip">
+           <string>Coordinate transformations and operations</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/propertyicons/CRS.svg</normaloff>:/images/themes/default/propertyicons/CRS.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Data Sources</string>
           </property>
           <property name="toolTip">
@@ -332,7 +344,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>3</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -362,7 +374,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>843</width>
-                <height>917</height>
+                <height>1037</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -1122,7 +1134,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>843</width>
-                <height>1072</height>
+                <height>1102</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1649,102 +1661,10 @@
                 <x>0</x>
                 <y>0</y>
                 <width>857</width>
-                <height>682</height>
+                <height>679</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
-               <item row="4" column="0">
-                <widget class="QgsCollapsibleGroupBox" name="mDefaultDatumTransformGroupBox">
-                 <property name="title">
-                  <string>Default Datum Transformations</string>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_10">
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="label_40">
-                    <property name="text">
-                     <string>Enter default datum transformations which will be used in any newly created project</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="0">
-                   <widget class="QCheckBox" name="mShowDatumTransformDialogCheckBox">
-                    <property name="text">
-                     <string>Ask for datum transformation if several are available</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="Line" name="line_2">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="0">
-                   <widget class="QgsDatumTransformTableWidget" name="mDefaultDatumTransformTableWidget" native="true"/>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item row="5" column="0">
-                <widget class="QCheckBox" name="mPlanimetricMeasurementsComboBox">
-                 <property name="text">
-                  <string>Planimetric measurements</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="0">
-                <widget class="QgsCollapsibleGroupBox" name="grpProjectProjection">
-                 <property name="title">
-                  <string>CRS for Projects</string>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_27" columnstretch="0,1">
-                  <item row="0" column="0" colspan="2">
-                   <widget class="QLabel" name="label_42">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>When a new project is created</string>
-                    </property>
-                    <property name="wordWrap">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="1">
-                   <widget class="QgsProjectionSelectionWidget" name="leProjectGlobalCrs" native="true">
-                    <property name="minimumSize">
-                     <size>
-                      <width>0</width>
-                      <height>5</height>
-                     </size>
-                    </property>
-                    <property name="focusPolicy">
-                     <enum>Qt::StrongFocus</enum>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="QRadioButton" name="radProjectUseDefaultCrs">
-                    <property name="text">
-                     <string>&amp;Use a default CRS</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0" colspan="2">
-                   <widget class="QRadioButton" name="radProjectUseCrsOfFirstLayer">
-                    <property name="text">
-                     <string>Use CRS from first layer added</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
                <item row="3" column="0">
                 <widget class="QgsCollapsibleGroupBox" name="grpProjectionBehavior">
                  <property name="title">
@@ -1815,7 +1735,7 @@
                  </layout>
                 </widget>
                </item>
-               <item row="6" column="0">
+               <item row="5" column="0">
                 <spacer name="verticalSpacer">
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
@@ -1827,6 +1747,136 @@
                   </size>
                  </property>
                 </spacer>
+               </item>
+               <item row="2" column="0">
+                <widget class="QgsCollapsibleGroupBox" name="grpProjectProjection">
+                 <property name="title">
+                  <string>CRS for Projects</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_27" columnstretch="0,1">
+                  <item row="0" column="0" colspan="2">
+                   <widget class="QLabel" name="label_42">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>When a new project is created</string>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QgsProjectionSelectionWidget" name="leProjectGlobalCrs" native="true">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>5</height>
+                     </size>
+                    </property>
+                    <property name="focusPolicy">
+                     <enum>Qt::StrongFocus</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QRadioButton" name="radProjectUseDefaultCrs">
+                    <property name="text">
+                     <string>&amp;Use a default CRS</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0" colspan="2">
+                   <widget class="QRadioButton" name="radProjectUseCrsOfFirstLayer">
+                    <property name="text">
+                     <string>Use CRS from first layer added</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item row="4" column="0">
+                <widget class="QCheckBox" name="mPlanimetricMeasurementsComboBox">
+                 <property name="text">
+                  <string>Planimetric measurements</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="mOptionsPageTransformations">
+          <layout class="QVBoxLayout" name="verticalLayout_46">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QgsScrollArea" name="scrollArea_2">
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="scrollAreaWidgetContents_2">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>857</width>
+                <height>679</height>
+               </rect>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_47">
+               <item>
+                <widget class="QGroupBox" name="mDefaultDatumTransformGroupBox">
+                 <property name="title">
+                  <string>Default Datum Transformations</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_10" rowstretch="0,0,0,1">
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="label_40">
+                    <property name="text">
+                     <string>Enter default datum transformations which will be used in any newly created project</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QCheckBox" name="mShowDatumTransformDialogCheckBox">
+                    <property name="text">
+                     <string>Ask for datum transformation if several are available</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="Line" name="line_2">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QgsDatumTransformTableWidget" name="mDefaultDatumTransformTableWidget" native="true"/>
+                  </item>
+                 </layout>
+                </widget>
                </item>
               </layout>
              </widget>
@@ -1862,7 +1912,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>843</width>
-                <height>762</height>
+                <height>822</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -2259,7 +2309,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>843</width>
-                <height>1084</height>
+                <height>1216</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_22">
@@ -3052,7 +3102,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>857</width>
-                <height>682</height>
+                <height>679</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3362,8 +3412,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>857</width>
-                <height>682</height>
+                <width>843</width>
+                <height>727</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3868,7 +3918,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                 <x>0</x>
                 <y>0</y>
                 <width>857</width>
-                <height>682</height>
+                <height>679</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -4036,7 +4086,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                 <x>0</x>
                 <y>0</y>
                 <width>843</width>
-                <height>870</height>
+                <height>974</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4661,7 +4711,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                 <x>0</x>
                 <y>0</y>
                 <width>857</width>
-                <height>682</height>
+                <height>679</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -4930,7 +4980,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                 <x>0</x>
                 <y>0</y>
                 <width>857</width>
-                <height>682</height>
+                <height>679</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -5168,8 +5218,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>857</width>
-                <height>682</height>
+                <width>843</width>
+                <height>717</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -5656,7 +5706,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Fira Sans'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Noto Sans'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
@@ -5768,9 +5818,15 @@ p, li { white-space: pre-wrap; }
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -5779,10 +5835,9 @@ p, li { white-space: pre-wrap; }
    <header>qgsfilterlineedit.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsProjectionSelectionWidget</class>
@@ -5791,20 +5846,15 @@ p, li { white-space: pre-wrap; }
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsColorSchemeList</class>
    <extends>QWidget</extends>
    <header location="global">qgscolorschemelist.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -5905,7 +5955,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>radPromptForProjection</tabstop>
   <tabstop>radUseProjectProjection</tabstop>
   <tabstop>radUseGlobalProjection</tabstop>
-  <tabstop>mShowDatumTransformDialogCheckBox</tabstop>
   <tabstop>mPlanimetricMeasurementsComboBox</tabstop>
   <tabstop>mOptionsScrollArea_11</tabstop>
   <tabstop>cbxAttributeTableDocked</tabstop>

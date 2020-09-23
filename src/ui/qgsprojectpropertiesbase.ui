@@ -127,6 +127,18 @@
          </item>
          <item>
           <property name="text">
+           <string>Transformations</string>
+          </property>
+          <property name="toolTip">
+           <string>Coordinate transformations and operations</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/propertyicons/CRS.svg</normaloff>:/images/themes/default/propertyicons/CRS.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Default Styles</string>
           </property>
           <property name="toolTip">
@@ -245,7 +257,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>4</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mProjOptsGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -275,7 +287,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>671</width>
-                <height>847</height>
+                <height>865</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout">
@@ -898,7 +910,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>685</width>
-                <height>680</height>
+                <height>679</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -917,13 +929,51 @@
                  </layout>
                 </widget>
                </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="mProjTransformations">
+          <layout class="QVBoxLayout" name="verticalLayout_8">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QgsScrollArea" name="scrollArea_3">
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="scrollAreaWidgetContents_3">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>685</width>
+                <height>679</height>
+               </rect>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_9">
                <item>
-                <widget class="QgsCollapsibleGroupBox" name="mDatumTransformGroupBox">
+                <widget class="QGroupBox" name="mDatumTransformGroupBox">
                  <property name="title">
                   <string>Datum Transformations</string>
                  </property>
-                 <layout class="QGridLayout" name="gridLayout_2">
-                  <item row="0" column="0">
+                 <layout class="QVBoxLayout" name="verticalLayout_10">
+                  <item>
                    <widget class="QCheckBox" name="mShowDatumTransformDialogCheckBox">
                     <property name="enabled">
                      <bool>false</bool>
@@ -933,7 +983,7 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="0">
+                  <item>
                    <widget class="QgsDatumTransformTableWidget" name="mDatumTransformTableWidget" native="true"/>
                   </item>
                  </layout>
@@ -972,8 +1022,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>680</height>
+                <width>291</width>
+                <height>563</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1548,8 +1598,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>167</width>
-                <height>55</height>
+                <width>685</width>
+                <height>679</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -1611,7 +1661,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>671</width>
-                <height>3139</height>
+                <height>3187</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1698,8 +1748,8 @@
                      </widget>
                     </item>
                     <item row="0" column="1">
-                     <widget class="QgsPropertyOverrideButton" name="mWMSOnlineResourceExpressionButton" native="true">
-                      <property name="text" stdset="0">
+                     <widget class="QgsPropertyOverrideButton" name="mWMSOnlineResourceExpressionButton">
+                      <property name="text">
                        <string>...</string>
                       </property>
                      </widget>
@@ -3054,20 +3104,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsFilterLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgsfilterlineedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsVariableEditorWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsvariableeditorwidget.h</header>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -3077,39 +3116,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDateTimeEdit</class>
-   <extends>QDateTimeEdit</extends>
-   <header>qgsdatetimeedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsOpacityWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsopacitywidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorSchemeList</class>
-   <extends>QWidget</extends>
-   <header location="global">qgscolorschemelist.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDatumTransformTableWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsdatumtransformtablewidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsCodeEditorPython</class>
-   <extends>QWidget</extends>
-   <header>qgscodeeditorpython.h</header>
-   <container>1</container>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
   </customwidget>
   <customwidget>
    <class>QgsProjectionSelectionTreeWidget</class>
@@ -3119,8 +3128,49 @@
   </customwidget>
   <customwidget>
    <class>QgsPropertyOverrideButton</class>
-   <extends>QWidget</extends>
+   <extends>QToolButton</extends>
    <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorSchemeList</class>
+   <extends>QWidget</extends>
+   <header location="global">qgscolorschemelist.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsVariableEditorWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">qgsvariableeditorwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDatumTransformTableWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsdatumtransformtablewidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDateTimeEdit</class>
+   <extends>QDateTimeEdit</extends>
+   <header>qgsdatetimeedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCodeEditorPython</class>
+   <extends>QWidget</extends>
+   <header>qgscodeeditorpython.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -3151,7 +3201,6 @@
   <tabstop>pbnExportScales</tabstop>
   <tabstop>lstScales</tabstop>
   <tabstop>scrollArea</tabstop>
-  <tabstop>mShowDatumTransformDialogCheckBox</tabstop>
   <tabstop>scrollArea_4</tabstop>
   <tabstop>cboStyleMarker</tabstop>
   <tabstop>pbtnStyleMarker</tabstop>
