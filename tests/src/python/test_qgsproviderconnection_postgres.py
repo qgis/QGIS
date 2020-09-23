@@ -334,6 +334,7 @@ IMPORT FOREIGN SCHEMA qgis_test LIMIT TO ( "someData" )
 
         md = QgsProviderRegistry.instance().providerMetadata('postgres')
         conn = md.createConnection(self.uri, {})
+        self.assertTrue(conn.tableExists('public', 'raster_columns'))
         fields = conn.fields("public", "raster_columns")
         self.assertEqual(fields.names(), [
             'r_table_catalog',

@@ -671,32 +671,32 @@ QgsFields QgsPostgresProviderConnection::fields( const QString &schema, const QS
     // This table might expose multiple geometry columns (different geom type or SRID)
     // but we are only interested in fields here, so let's pick the first one.
     TableProperty tableInfo { table( schema, tableName ) };
-    if ( tableInfo.geometryColumnTypes().count( ) > 1 )
+    try
     {
-      try
+      QgsDataSourceUri tUri { tableUri( schema, tableName ) };
+      if ( tableInfo.geometryColumnTypes().count( ) > 1 )
       {
-        QgsDataSourceUri tUri { tableUri( schema, tableName ) };
         TableProperty::GeometryColumnType geomCol { tableInfo.geometryColumnTypes().first() };
         tUri.setGeometryColumn( tableInfo.geometryColumn() );
         tUri.setWkbType( geomCol.wkbType );
         tUri.setSrid( QString::number( geomCol.crs.postgisSrid() ) );
-        if ( tableInfo.primaryKeyColumns().count() > 0 )
-        {
-          tUri.setKeyColumn( tableInfo.primaryKeyColumns().first() );
-        }
-        tUri.setParam( QStringLiteral( "checkPrimaryKeyUnicity" ), QLatin1String( "0" ) );
-        QgsVectorLayer::LayerOptions options { false, true };
-        options.skipCrsValidation = true;
-        QgsVectorLayer vl { tUri.uri(), QStringLiteral( "temp_layer" ), mProviderKey, options };
-        if ( vl.isValid() )
-        {
-          return vl.fields();
-        }
       }
-      catch ( QgsProviderConnectionException & )
+      if ( tableInfo.primaryKeyColumns().count() > 0 )
       {
-        // fall-through
+        tUri.setKeyColumn( tableInfo.primaryKeyColumns().first() );
       }
+      tUri.setParam( QStringLiteral( "checkPrimaryKeyUnicity" ), QLatin1String( "0" ) );
+      QgsVectorLayer::LayerOptions options { false, true };
+      options.skipCrsValidation = true;
+      QgsVectorLayer vl { tUri.uri(), QStringLiteral( "temp_layer" ), mProviderKey, options };
+      if ( vl.isValid() )
+      {
+        return vl.fields();
+      }
+    }
+    catch ( QgsProviderConnectionException & )
+    {
+      // fall-through
     }
     throw ex;
   }
