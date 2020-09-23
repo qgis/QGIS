@@ -416,10 +416,16 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
     {
       if ( dontResolveType )
       {
-        //QgsDebugMsg( QStringLiteral( "skipping column %1.%2 without type constraint" ).arg( layerProperty.schemaName ).arg( layerProperty.tableName ) );
+        QgsDebugMsgLevel( QStringLiteral( "skipping column %1.%2 without type constraint" ).arg( layerProperty.schemaName ).arg( layerProperty.tableName ), 2 );
         continue;
       }
+      // If the table is empty there is no way we can retrieve layer types, let's make a copy and restore it
+      QgsPostgresLayerProperty propertyCopy { layerProperty };
       conn->retrieveLayerTypes( layerProperty, estimatedMetadata );
+      if ( layerProperty.size() == 0 )
+      {
+        layerProperty = propertyCopy;
+      }
     }
 
     for ( int i = 0; i < layerProperty.size(); i++ )
@@ -512,8 +518,9 @@ QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProp
         break;
       default:
         if ( !layerProperty.geometryColName.isEmpty() )
-          return nullptr;
-
+        {
+          QgsDebugMsgLevel( QStringLiteral( "Adding layer item %1.%2 without type constraint as geometryless table" ).arg( layerProperty.schemaName ).arg( layerProperty.tableName ), 2 );
+        }
         layerType = QgsLayerItem::TableLayer;
         tip = tr( "as geometryless table" );
     }
