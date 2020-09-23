@@ -91,6 +91,14 @@ option is selected, calling :py:func:`~QgsProjectionSelectionDialog.crs` will re
 .. versionadded:: 3.0
 %End
 
+    void setNotSetText( const QString &text );
+%Docstring
+Sets the text to show for the not set option. Note that this option is not shown
+by default and must be set visible by calling :py:func:`~QgsProjectionSelectionDialog.setShowNoProjection`.
+
+.. versionadded:: 3.16
+%End
+
   public slots:
 
     void setCrs( const QgsCoordinateReferenceSystem &crs );

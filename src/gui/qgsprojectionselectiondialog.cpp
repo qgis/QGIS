@@ -72,6 +72,11 @@ bool QgsProjectionSelectionDialog::showNoProjection() const
   return projectionSelector->showNoProjection();
 }
 
+void QgsProjectionSelectionDialog::setNotSetText( const QString &text )
+{
+  projectionSelector->setNotSetText( text );
+}
+
 QgsCoordinateReferenceSystem QgsProjectionSelectionDialog::crs() const
 {
   return projectionSelector->crs();

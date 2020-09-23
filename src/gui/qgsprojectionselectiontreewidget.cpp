@@ -433,6 +433,11 @@ bool QgsProjectionSelectionTreeWidget::showNoProjection() const
   return !mCheckBoxNoProjection->isHidden();
 }
 
+void QgsProjectionSelectionTreeWidget::setNotSetText( const QString &text )
+{
+  mCheckBoxNoProjection->setText( text );
+}
+
 bool QgsProjectionSelectionTreeWidget::showBoundsMap() const
 {
   return mShowMap;
