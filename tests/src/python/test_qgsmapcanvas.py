@@ -490,6 +490,9 @@ class TestQgsMapCanvas(unittest.TestCase):
         """Test zoom/pan/center operations when scale lock is on"""
 
         c = QgsMapCanvas()
+        self.assertEqual(c.size().width(), 640)
+        self.assertEqual(c.size().height(), 480)
+
         c.setExtent(QgsRectangle(5, 45, 9, 47))
         c.zoomScale(2500000)
         c.setScaleLocked(True)
