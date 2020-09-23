@@ -2685,7 +2685,7 @@ Acts on the currently active layer only.</string>
     <string>Simulate Tritanopia Color Blindness (No Blue)</string>
    </property>
    <property name="toolTip">
-    <string>Simulate Color Blindness (No Blue)</string>
+    <string>Simulate Tritanopia Color Blindness (No Blue)</string>
    </property>
   </action>
   <action name="mActionSetLayerScaleVisibility">
