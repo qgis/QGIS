@@ -685,7 +685,7 @@ QgsFields QgsPostgresProviderConnection::fields( const QString &schema, const QS
           tUri.setKeyColumn( tableInfo.primaryKeyColumns().first() );
         }
         tUri.setParam( QStringLiteral( "checkPrimaryKeyUnicity" ), QLatin1String( "0" ) );
-        QgsVectorLayer::LayerOptions options { true, true };
+        QgsVectorLayer::LayerOptions options { false, true };
         options.skipCrsValidation = true;
         QgsVectorLayer vl { tUri.uri(), QStringLiteral( "temp_layer" ), mProviderKey, options };
         if ( vl.isValid() )
