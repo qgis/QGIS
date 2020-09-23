@@ -331,10 +331,6 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           menu->addAction( tr( "Zoom to &Visible Scale" ), QgisApp::instance(), &QgisApp::zoomToLayerScale );
 
         QMenu *menuSetCRS = new QMenu( tr( "Layer CRS" ), menu );
-        QAction *actionCurrentCrs = new QAction( layer->crs().isValid() ? layer->crs().userFriendlyIdentifier()
-            : tr( "No CRS" ), menuSetCRS );
-        actionCurrentCrs->setEnabled( false );
-        menuSetCRS->addAction( actionCurrentCrs );
 
         const QList<QgsLayerTreeNode *> selectedNodes = mView->selectedNodes();
         QgsCoordinateReferenceSystem layerCrs;
@@ -360,6 +356,12 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
             }
           }
         }
+
+        QAction *actionCurrentCrs = new QAction( !allSameCrs ? tr( "Mixed CRS" )
+            : layer->crs().isValid() ? layer->crs().userFriendlyIdentifier()
+            : tr( "No CRS" ), menuSetCRS );
+        actionCurrentCrs->setEnabled( false );
+        menuSetCRS->addAction( actionCurrentCrs );
 
         if ( allSameCrs && layerCrs.isValid() )
         {
