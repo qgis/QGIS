@@ -137,6 +137,11 @@ Encodes a shape to its string representation.
 
 
     QPainterPath path();
+%Docstring
+Returns the symbol layer path as a QPainterPath
+
+:return: the path
+%End
 
   protected:
 

@@ -871,6 +871,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * \since QGIS 3.16
      */
     void setTextureOrigin( const QPointF &origin );
+
     /**
      * Add a painter path to the mask painter path of this render context
      */
@@ -889,7 +890,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     void addToMaskLabelPainterPath( int id, QPainterPath const &path ); SIP_SKIP
 
     /**
-     * Return the label mask painter path with id
+     * Returns the label mask painter path with id
      * \since QGIS 3.16
      */
     QPainterPath maskLabelPainterPath( int id = 0 ) { return mMaskLabelPainterPaths[id]; } SIP_SKIP
@@ -910,11 +911,25 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      */
     void setZRange( const QgsDoubleRange &range );
 
+    /*
+     * Add a subpainter for a specific symbolLayer
+     * \since QGIS 3.16
+     */
     void addPainterForSymbolLayer(const QgsSymbolLayer* symbolLayer, QPainter* painter);
 
-    QPainter* painterForSymbolLayer(QgsSymbolLayer * symbolLayer);
+    /**
+     * Returns the sub painter for a specifi symbolLayer. Returns nullptr if there is no
+     * qpainter for the symbolLayer.
+     * \returns A pointer to a qpainter
+     * \since QGIS 3.16
+     */
+    QPainter *painterForSymbolLayer( QgsSymbolLayer *symbolLayer ); SIP_SKIP
 
-    QMap<const QgsSymbolLayer*, QPainter* > getSubPainter();
+    /**
+     * Returns a map of all symbolLayers and associated qpainters.
+     * \since QGIS 3.16
+     */
+    QMap<const QgsSymbolLayer *, QPainter * > getSubPainter(); SIP_SKIP
 
   private:
 
@@ -1022,7 +1037,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     QgsDoubleRange mZRange;
 
     //!Sub painter for separated layer rendering
-    QMap<const QgsSymbolLayer*, QPainter* > mSubPainterMap;
+    QMap< const QgsSymbolLayer *, QPainter * > mSubPainterMap;
 
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;

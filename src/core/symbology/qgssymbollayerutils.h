@@ -810,7 +810,11 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static QSet<const QgsSymbolLayer *> toSymbolLayerPointers( QgsFeatureRenderer *renderer, const QSet<QgsSymbolLayerId> &symbolLayerIds );
 
-    static QList< QPair<QgsSymbolLayerId, const QgsSymbolLayer*> > listSymbolLayers( QgsFeatureRenderer *renderer );
+    /**
+     * Lists the symbol layer in carried by the feature renderer.
+     * \since QGIS 3.16
+     */
+    static QList< QPair<QgsSymbolLayerId, const QgsSymbolLayer * > > listSymbolLayers( QgsFeatureRenderer *renderer ); SIP_SKIP
 
     /**
      * \brief Creates a new symbol with size restricted to min/max size if original size is out of min/max range

@@ -1056,7 +1056,7 @@ void QgsMapRendererJob::composeSecondPass( LayerRenderJobs &secondPassJobs, Labe
         painter->setCompositionMode( QPainter::CompositionMode_DestinationIn );
 
         //Create an "alpha binarized" image of the maskImage to :
-        //* Eliminate antialiasing artefact
+        //* Eliminate antialiasing artifact
         //* Avoid applying mask opacity to elements under the mask but not masked
         QImage maskBinAlpha = maskImage->createMaskFromColor( 0 );
         QVector<QRgb> mswTable;
