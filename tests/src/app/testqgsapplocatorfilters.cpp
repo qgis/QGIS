@@ -224,7 +224,7 @@ void TestQgsAppLocatorFilters::testActiveLayerFieldRestriction()
   search = QStringLiteral( "@" );
   restr = QgsActiveLayerFeaturesLocatorFilter::fieldRestriction( search );
   QVERIFY( !restr.isNull() );
-  QCOMPARE( search, QStringLiteral( "" ) );
+  QCOMPARE( search, QString() );
 
   search = QStringLiteral( "hello there" );
   restr = QgsActiveLayerFeaturesLocatorFilter::fieldRestriction( search );

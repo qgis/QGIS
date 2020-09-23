@@ -262,7 +262,7 @@ QStringList QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string,
   mFieldsCompletion.clear();
 
   // Normally skip very short search strings, unless when specifically searching using this filter or try to match fields
-  if ( string.length() < 3 && !context.usingPrefix && !string.startsWith( QStringLiteral( "@" ) ) )
+  if ( string.length() < 3 && !context.usingPrefix && !string.startsWith( '@' ) ) )
     return QStringList();
 
   QgsSettings settings;
@@ -1133,4 +1133,3 @@ void QgsGotoLocatorFilter::triggerResult( const QgsLocatorResult &result )
 
   mapCanvas->flashGeometries( QList< QgsGeometry >() << QgsGeometry::fromPointXY( point ) );
 }
-
