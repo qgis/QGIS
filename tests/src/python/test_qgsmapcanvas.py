@@ -490,19 +490,22 @@ class TestQgsMapCanvas(unittest.TestCase):
         """Test zoom/pan/center operations when scale lock is on"""
 
         c = QgsMapCanvas()
+        dpr = c.mapSettings().devicePixelRatio()
         self.assertEqual(c.size().width(), 640)
         self.assertEqual(c.size().height(), 480)
 
         c.setExtent(QgsRectangle(5, 45, 9, 47))
+        self.assertEqual(round(c.scale() / 100000), 13 * dpr)
         c.zoomScale(2500000)
         c.setScaleLocked(True)
+        self.assertEqual(round(c.magnificationFactor(), 1), 1)
 
         # Test setExtent
         c.setExtent(QgsRectangle(6, 45.5, 8, 46), True)
         self.assertEqual(round(c.scale()), 2500000)
         self.assertEqual(c.center().x(), 7.0)
         self.assertEqual(c.center().y(), 45.75)
-        self.assertEqual(round(c.magnificationFactor(), 1), 1.9)
+        self.assertEqual(round(c.magnificationFactor()), 4 / dpr)
 
         # Test setCenter
         c.setCenter(QgsPointXY(6, 46))
@@ -514,7 +517,7 @@ class TestQgsMapCanvas(unittest.TestCase):
         c.zoomByFactor(0.5, QgsPointXY(6.5, 46.5), False)
         self.assertEqual(c.center().x(), 6.5)
         self.assertEqual(c.center().y(), 46.5)
-        self.assertEqual(round(c.magnificationFactor(), 1), 3.9)
+        self.assertTrue(c.magnificationFactor() > 7 / dpr)
         self.assertEqual(round(c.scale()), 2500000)
 
         # Test zoom with center
@@ -523,13 +526,13 @@ class TestQgsMapCanvas(unittest.TestCase):
         self.assertEqual(round(c.center().x(), 1), 6.5)
         self.assertEqual(round(c.center().y(), 1), 46.6)
         self.assertEqual(round(c.scale()), 2500000)
-        self.assertEqual(round(c.magnificationFactor(), 1), 7.8)
+        self.assertTrue(c.magnificationFactor() > (14 / dpr) and c.magnificationFactor() < (16 / dpr))
         # out ...
         c.zoomWithCenter(300, 200, False)
         self.assertEqual(round(c.center().x(), 1), 6.5)
         self.assertEqual(round(c.center().y(), 1), 46.6)
         self.assertEqual(round(c.scale()), 2500000)
-        self.assertEqual(round(c.magnificationFactor(), 1), 3.9)
+        self.assertTrue(c.magnificationFactor() > 7 / dpr)
 
         # Test setExtent with different ratio
         c2 = QgsMapCanvas()
@@ -541,26 +544,26 @@ class TestQgsMapCanvas(unittest.TestCase):
         self.assertEqual(round(c2.scale()), 2500000)
         self.assertEqual(c2.center().x(), 7.0)
         self.assertEqual(c2.center().y(), 45.25)
-        self.assertEqual(round(c2.magnificationFactor(), 1), 0.5)
+        self.assertAlmostEqual(c2.magnificationFactor(), 1 / dpr, 0)
 
         # Restore original
         c2.setExtent(QgsRectangle(5, 45, 9, 47), True)
         self.assertEqual(round(c2.scale()), 2500000)
         self.assertEqual(c2.center().x(), 7.0)
         self.assertEqual(c2.center().y(), 46.0)
-        self.assertEqual(round(c2.magnificationFactor(), 1), 1)
+        self.assertAlmostEqual(c2.magnificationFactor(), 2 / dpr, 0)
 
         c2.setExtent(QgsRectangle(7, 46, 11, 46.5), True)
         self.assertEqual(round(c2.scale()), 2500000)
         self.assertEqual(c2.center().x(), 9.0)
         self.assertEqual(c2.center().y(), 46.25)
-        self.assertEqual(round(c2.magnificationFactor(), 1), 1)
+        self.assertAlmostEqual(c2.magnificationFactor(), 2 / dpr, 0)
 
         c2.setExtent(QgsRectangle(7, 46, 9, 46.5), True)
         self.assertEqual(round(c2.scale()), 2500000)
         self.assertEqual(c2.center().x(), 8.0)
         self.assertEqual(c2.center().y(), 46.25)
-        self.assertEqual(round(c2.magnificationFactor(), 1), 2)
+        self.assertAlmostEqual(c2.magnificationFactor(), 4 / dpr, 0)
 
 
 if __name__ == '__main__':
