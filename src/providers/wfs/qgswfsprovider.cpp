@@ -118,9 +118,19 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
   //Failed to detect feature type from describeFeatureType -> get first feature from layer to detect type
   if ( mShared->mWKBType == QgsWkbTypes::Unknown )
   {
-    QgsWFSFeatureDownloader downloader( mShared.get() );
+    const bool requestMadeFromMainThread = QThread::currentThread() == QApplication::instance()->thread();
+    QgsWFSFeatureDownloader downloader( mShared.get(), requestMadeFromMainThread );
     connect( &downloader, static_cast<void ( QgsWFSFeatureDownloader::* )( QVector<QgsWFSFeatureGmlIdPair> )>( &QgsWFSFeatureDownloader::featureReceived ),
              this, &QgsWFSProvider::featureReceivedAnalyzeOneFeature );
+    if ( requestMadeFromMainThread )
+    {
+      auto processEvents = []()
+      {
+        QgsApplication::instance()->processEvents();
+      };
+      connect( &downloader, &QgsWFSFeatureDownloader::resumeMainThread,
+               this, processEvents );
+    }
     downloader.run( false, /* serialize features */
                     1 /* maxfeatures */ );
   }
