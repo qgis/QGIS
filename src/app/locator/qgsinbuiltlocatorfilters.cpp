@@ -245,10 +245,12 @@ QgsActiveLayerFeaturesLocatorFilter *QgsActiveLayerFeaturesLocatorFilter::clone(
   return new QgsActiveLayerFeaturesLocatorFilter();
 }
 
-QString QgsActiveLayerFeaturesLocatorFilter::fieldRestriction( QString &searchString )
+QString QgsActiveLayerFeaturesLocatorFilter::fieldRestriction( QString &searchString, bool *isRestricting )
 {
   QString _fieldRestriction;
   searchString = searchString.trimmed();
+  if ( isRestricting )
+    *isRestricting = searchString.startsWith( '@' );
   if ( searchString.startsWith( '@' ) )
   {
     _fieldRestriction = searchString.left( std::min( searchString.indexOf( ' ' ), searchString.length() ) ).remove( 0, 1 );
@@ -262,7 +264,7 @@ QStringList QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string,
   mFieldsCompletion.clear();
 
   // Normally skip very short search strings, unless when specifically searching using this filter or try to match fields
-  if ( string.length() < 3 && !context.usingPrefix && !string.startsWith( '@' ) ) )
+  if ( string.length() < 3 && !context.usingPrefix && !string.startsWith( '@' ) )
     return QStringList();
 
   QgsSettings settings;
@@ -278,12 +280,13 @@ QStringList QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string,
 
   // determine if search is restricted to a specific field
   QString searchString = string;
-  QString _fieldRestriction = fieldRestriction( searchString );
+  bool isRestricting = false;
+  QString _fieldRestriction = fieldRestriction( searchString, &isRestricting );
   bool allowNumeric = false;
   double numericalValue = searchString.toDouble( &allowNumeric );
 
   // search in display expression if no field restriction
-  if ( _fieldRestriction.isNull() )
+  if ( !isRestricting )
   {
     QgsFeatureRequest req;
     req.setSubsetOfAttributes( qgis::setToList( mDispExpression.referencedAttributeIndexes( layer->fields() ) ) );
@@ -311,10 +314,10 @@ QStringList QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string,
     if ( field.configurationFlags().testFlag( QgsField::ConfigurationFlag::NotSearchable ) )
       continue;
 
-    if ( !_fieldRestriction.isNull() && !field.name().startsWith( _fieldRestriction ) )
+    if ( isRestricting && !field.name().startsWith( _fieldRestriction ) )
       continue;
 
-    if ( !_fieldRestriction.isNull() )
+    if ( isRestricting )
     {
       int index = layer->fields().indexFromName( field.name() );
       if ( !subsetOfAttributes.contains( index ) )
@@ -323,7 +326,7 @@ QStringList QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string,
 
     // if we are trying to find a field (and not searching anything yet)
     // keep the list of matching fields to display them as results
-    if ( !_fieldRestriction.isNull() && searchString.isEmpty() && _fieldRestriction != field.name() )
+    if ( isRestricting && searchString.isEmpty() && _fieldRestriction != field.name() )
     {
       mFieldsCompletion << field.name();
     }
@@ -348,7 +351,7 @@ QStringList QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string,
   if ( !mDispExpression.needsGeometry() )
     req.setFlags( QgsFeatureRequest::NoGeometry );
   req.setFilterExpression( expression );
-  if ( !_fieldRestriction.isEmpty() )
+  if ( isRestricting )
     req.setSubsetOfAttributes( subsetOfAttributes );
 
   req.setLimit( mMaxTotalResults );
@@ -377,8 +380,9 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
   {
     QgsLocatorResult result;
     result.displayString = QStringLiteral( "@%1" ).arg( field );
-    result.description = QStringLiteral( "Limit the search to the field '%1'" ).arg( field );
-    result.userData = QVariant::fromValue( Data( QStringLiteral( "%1 @%2 " ).arg( prefix(), field ) ) );
+    result.description = tr( "Limit the search to the field '%1'" ).arg( field );
+    result.userData = QVariantMap( {{QStringLiteral( "type" ), QVariant::fromValue( ResultType::FieldRestriction )},
+      {QStringLiteral( "search_text" ), QStringLiteral( "%1 @%2 " ).arg( prefix(), field ) } } );
     result.score = 1;
     emit resultFetched( result );
   }
@@ -396,7 +400,12 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
       QgsLocatorResult result;
 
       result.displayString =  mDispExpression.evaluate( &mContext ).toString();
-      result.userData = QVariant::fromValue( Data( f.id(), mLayerId ) );
+      result.userData = QVariantMap(
+      {
+        {QStringLiteral( "type" ), QVariant::fromValue( ResultType::Feature )},
+        {QStringLiteral( "feature_id" ), f.id()},
+        {QStringLiteral( "layer_id" ), mLayerId}
+      } );
       result.icon = mLayerIcon;
       result.score = static_cast< double >( searchString.length() ) / result.displayString.size();
       emit resultFetched( result );
@@ -442,7 +451,12 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
       continue; //not sure how this result slipped through...
 
     result.description = mDispExpression.evaluate( &mContext ).toString();
-    result.userData = QVariant::fromValue( Data( f.id(), mLayerId ) );
+    result.userData = QVariantMap(
+    {
+      {QStringLiteral( "type" ), QVariant::fromValue( ResultType::Feature )},
+      {QStringLiteral( "feature_id" ), f.id()},
+      {QStringLiteral( "layer_id" ), mLayerId}
+    } );
     result.icon = mLayerIcon;
     result.score = static_cast< double >( searchString.length() ) / result.displayString.size();
     emit resultFetched( result );
@@ -455,23 +469,24 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
 
 void QgsActiveLayerFeaturesLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
-  Data data = result.userData.value<Data>();
-  switch ( data.type )
+  QVariantMap data = result.userData.value<QVariantMap>();
+  switch ( data.value( QStringLiteral( "type" ) ).value<ResultType>() )
   {
     case ResultType::Feature:
     {
-      QgsVectorLayer *layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( data.layerId );
+      QgsVectorLayer *layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( data.value( QStringLiteral( "layer_id" ) ).toString() );
       if ( layer )
       {
-        QgisApp::instance()->mapCanvas()->zoomToFeatureIds( layer, QgsFeatureIds() << data.fid );
-        QgisApp::instance()->mapCanvas()->flashFeatureIds( layer, QgsFeatureIds() << data.fid );
+        QgsFeatureId fid = data.value( QStringLiteral( "feature_id" ) ).value<QgsFeatureId>();
+        QgisApp::instance()->mapCanvas()->zoomToFeatureIds( layer, QgsFeatureIds() << fid );
+        QgisApp::instance()->mapCanvas()->flashFeatureIds( layer, QgsFeatureIds() << fid );
       }
       break;
     }
     case ResultType::FieldRestriction:
     {
       // this is a field restriction
-      QgisApp::instance()->locatorWidget()->search( data.searchText );
+      QgisApp::instance()->locatorWidget()->search( data.value( QStringLiteral( "search_text" ) ).toString() );
       break;
     }
   }

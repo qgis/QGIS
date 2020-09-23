@@ -211,23 +211,29 @@ void TestQgsAppLocatorFilters::testSearchActiveLayer()
 
 void TestQgsAppLocatorFilters::testActiveLayerFieldRestriction()
 {
+  bool isRestricting = false;
+
   QString search = QStringLiteral( "@my_field search" );
-  QString restr = QgsActiveLayerFeaturesLocatorFilter::fieldRestriction( search );
+  QString restr = QgsActiveLayerFeaturesLocatorFilter::fieldRestriction( search, &isRestricting );
+  QVERIFY( isRestricting );
   QCOMPARE( restr, QStringLiteral( "my_field" ) );
   QCOMPARE( search, QStringLiteral( "search" ) );
 
   search = QStringLiteral( "@home" );
-  restr = QgsActiveLayerFeaturesLocatorFilter::fieldRestriction( search );
+  restr = QgsActiveLayerFeaturesLocatorFilter::fieldRestriction( search, &isRestricting );
+  QVERIFY( isRestricting );
   QCOMPARE( restr, QStringLiteral( "home" ) );
   QCOMPARE( search, QStringLiteral( "" ) );
 
   search = QStringLiteral( "@" );
-  restr = QgsActiveLayerFeaturesLocatorFilter::fieldRestriction( search );
-  QVERIFY( !restr.isNull() );
+  restr = QgsActiveLayerFeaturesLocatorFilter::fieldRestriction( search, &isRestricting );
+  QVERIFY( isRestricting );
+  QCOMPARE( restr, QString() );
   QCOMPARE( search, QString() );
 
   search = QStringLiteral( "hello there" );
-  restr = QgsActiveLayerFeaturesLocatorFilter::fieldRestriction( search );
+  restr = QgsActiveLayerFeaturesLocatorFilter::fieldRestriction( search, &isRestricting );
+  QVERIFY( !isRestricting );
   QVERIFY( restr.isNull() );
   QCOMPARE( search, QStringLiteral( "hello there" ) );
 }
