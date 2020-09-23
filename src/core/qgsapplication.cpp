@@ -340,7 +340,7 @@ void QgsApplication::init( QString profileFolder )
   QString projLib( QDir::cleanPath( pkgDataPath().append( "/proj" ) ) );
   if ( QFile::exists( projLib ) )
   {
-    currentProjSearchPaths.append(projLib);
+    currentProjSearchPaths.append( projLib );
   }
 #endif // Q_OS_MACX
 
