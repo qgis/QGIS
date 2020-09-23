@@ -335,10 +335,39 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
             : tr( "No CRS" ), menuSetCRS );
         actionCurrentCrs->setEnabled( false );
         menuSetCRS->addAction( actionCurrentCrs );
-        // assign layer crs to project
-        QAction *actionSetProjectCrs = new QAction( tr( "Set &Project CRS from Layer" ), menuSetCRS );
-        connect( actionSetProjectCrs, &QAction::triggered, QgisApp::instance(), &QgisApp::setProjectCrsFromLayer );
-        menuSetCRS->addAction( actionSetProjectCrs );
+
+        const QList<QgsLayerTreeNode *> selectedNodes = mView->selectedNodes();
+        QgsCoordinateReferenceSystem layerCrs;
+        bool firstLayer = true;
+        bool allSameCrs = true;
+        for ( QgsLayerTreeNode *node : selectedNodes )
+        {
+          if ( QgsLayerTree::isLayer( node ) )
+          {
+            QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
+            if ( nodeLayer->layer() )
+            {
+              if ( firstLayer )
+              {
+                layerCrs = nodeLayer->layer()->crs();
+                firstLayer = false;
+              }
+              else if ( nodeLayer->layer()->crs() != layerCrs )
+              {
+                allSameCrs = false;
+                break;
+              }
+            }
+          }
+        }
+
+        if ( allSameCrs && layerCrs.isValid() )
+        {
+          // assign layer crs to project
+          QAction *actionSetProjectCrs = new QAction( tr( "Set &Project CRS from Layer" ), menuSetCRS );
+          connect( actionSetProjectCrs, &QAction::triggered, QgisApp::instance(), &QgisApp::setProjectCrsFromLayer );
+          menuSetCRS->addAction( actionSetProjectCrs );
+        }
 
         const QList< QgsCoordinateReferenceSystem> recentProjections = QgsCoordinateReferenceSystem::recentCoordinateReferenceSystems();
         if ( !recentProjections.isEmpty() )
