@@ -518,22 +518,27 @@ void TestQgsRelationReferenceWidget::testSetGetForeignKey()
   w.setRelation( *mRelation, true );
   w.init();
 
-  QSignalSpy spy( &w, SIGNAL( foreignKeyChanged( QVariant ) ) );
+  QSignalSpy spy( &w, &QgsRelationReferenceWidget::foreignKeysChanged );
+
+  w.setForeignKeys( QVariantList() << 0 );
+  QCOMPARE( w.foreignKeys().at( 0 ), QVariant( 0 ) );
+  QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "(0)" ) );
+  QCOMPARE( spy.count(), 1 );
 
   w.setForeignKeys( QVariantList() << 11 );
   QCOMPARE( w.foreignKeys().at( 0 ), QVariant( 11 ) );
   QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "(11)" ) );
-  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.count(), 2 );
 
   w.setForeignKeys( QVariantList() << 12 );
   QCOMPARE( w.foreignKeys().at( 0 ), QVariant( 12 ) );
   QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "(12)" ) );
-  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spy.count(), 3 );
 
   w.setForeignKeys( QVariantList() << QVariant() );
   QVERIFY( w.foreignKeys().at( 0 ).isNull() );
   QVERIFY( w.foreignKeys().at( 0 ).isValid() );
-  QCOMPARE( spy.count(), 3 );
+  QCOMPARE( spy.count(), 4 );
 }
 
 // Test issue https://github.com/qgis/QGIS/issues/29884
