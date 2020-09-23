@@ -174,6 +174,9 @@ void QgsProjectionSelectionWidget::selectCrs()
     dlg.setMessage( mMessage );
   dlg.setCrs( mCrs );
 
+  if ( !mNotSetText.isEmpty() )
+    dlg.setNotSetText( mNotSetText );
+
   if ( optionVisible( QgsProjectionSelectionWidget::CrsOption::CrsNotSet ) )
   {
     dlg.setShowNoProjection( true );
