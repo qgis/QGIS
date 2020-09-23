@@ -113,18 +113,7 @@ class APP_EXPORT QgsActiveLayerFeaturesLocatorFilter : public QgsLocatorFilter
       Feature,
       FieldRestriction,
     };
-
-    struct Data
-    {
-      Data() = default;
-      Data( QgsFeatureId fid, const QString &layerId ) : type( ResultType::Feature ), fid( fid ), layerId( layerId ) {}
-      Data( const QString &searchText ) : type( ResultType::FieldRestriction ), searchText( searchText ) {}
-
-      ResultType type = ResultType::Feature;
-      QgsFeatureId fid;
-      QString layerId;
-      QString searchText;
-    };
+    Q_ENUM( ResultType )
 
   private:
 
@@ -132,7 +121,7 @@ class APP_EXPORT QgsActiveLayerFeaturesLocatorFilter : public QgsLocatorFilter
      * Returns the field restriction if defined (starting with @)
      * The \a searchString is modified accordingly by removing the field restriction
      */
-    static QString fieldRestriction( QString &searchString );
+    static QString fieldRestriction( QString &searchString, bool *isRestricting = nullptr );
 
     QgsExpression mDispExpression;
     QgsExpressionContext mContext;
@@ -146,9 +135,6 @@ class APP_EXPORT QgsActiveLayerFeaturesLocatorFilter : public QgsLocatorFilter
 
     friend class TestQgsAppLocatorFilters;
 };
-
-Q_DECLARE_METATYPE( QgsActiveLayerFeaturesLocatorFilter::Data )
-
 
 class APP_EXPORT QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
 {
