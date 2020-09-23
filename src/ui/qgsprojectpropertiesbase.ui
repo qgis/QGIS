@@ -134,7 +134,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/CRS.svg</normaloff>:/images/themes/default/propertyicons/CRS.svg</iconset>
+            <normaloff>:/images/themes/default/transformation.svg</normaloff>:/images/themes/default/transformation.svg</iconset>
           </property>
          </item>
          <item>
@@ -909,8 +909,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>679</height>
+                <width>337</width>
+                <height>74</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -962,8 +962,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>679</height>
+                <width>604</width>
+                <height>105</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -1598,8 +1598,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>679</height>
+                <width>179</width>
+                <height>56</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -1660,7 +1660,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>671</width>
+                <width>653</width>
                 <height>3187</height>
                </rect>
               </property>
