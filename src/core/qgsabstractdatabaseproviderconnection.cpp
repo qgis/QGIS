@@ -275,7 +275,7 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty::GeometryColumnType> 
 
 QgsFields QgsAbstractDatabaseProviderConnection::fields( const QString &schema, const QString &tableName ) const
 {
-  QgsVectorLayer::LayerOptions options { true, true };
+  QgsVectorLayer::LayerOptions options { false, true };
   options.skipCrsValidation = true;
   QgsVectorLayer vl { tableUri( schema, tableName ), QStringLiteral( "temp_layer" ), mProviderKey, options };
   if ( vl.isValid() )
