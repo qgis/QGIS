@@ -33,6 +33,7 @@
 #include "qgsexception.h"
 #include "qgsfeedback.h"
 #include "qgssqliteutils.h"
+#include "qgsnetworkaccessmanager.h"
 
 #include <algorithm>
 #include <QDir>
@@ -84,7 +85,7 @@ QString QgsWFSFeatureHitsAsyncRequest::errorMessageWithReason( const QString &re
 
 // -------------------------
 
-QgsWFSFeatureDownloader::QgsWFSFeatureDownloader( QgsWFSSharedData *shared )
+QgsWFSFeatureDownloader::QgsWFSFeatureDownloader( QgsWFSSharedData *shared, bool requestMadeFromMainThread )
   : QgsWfsRequest( shared->mURI )
   , mShared( shared )
   , mStop( false )
@@ -97,6 +98,22 @@ QgsWFSFeatureDownloader::QgsWFSFeatureDownloader( QgsWFSSharedData *shared )
 {
   // Needed because used by a signal
   qRegisterMetaType< QVector<QgsWFSFeatureGmlIdPair> >( "QVector<QgsWFSFeatureGmlIdPair>" );
+
+  if ( requestMadeFromMainThread )
+  {
+    auto emitResumeMainThread = [this]()
+    {
+      emit resumeMainThread();
+    };
+    connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::authRequestOccurred,
+             this, emitResumeMainThread, Qt::DirectConnection );
+    connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::proxyAuthenticationRequired,
+             this, emitResumeMainThread, Qt::DirectConnection );
+#ifndef QT_NO_SSL
+    connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::sslErrorsOccurred,
+             this, emitResumeMainThread, Qt::DirectConnection );
+#endif
+  }
 }
 
 QgsWFSFeatureDownloader::~QgsWFSFeatureDownloader()
@@ -893,6 +910,7 @@ QString QgsWFSFeatureDownloader::errorMessageWithReason( const QString &reason )
 
 QgsWFSThreadedFeatureDownloader::QgsWFSThreadedFeatureDownloader( QgsWFSSharedData *shared )
   : mShared( shared )
+  , mRequestMadeFromMainThread( QThread::currentThread() == QApplication::instance()->thread() )
 {
 }
 
@@ -926,7 +944,7 @@ void QgsWFSThreadedFeatureDownloader::startAndWait()
 void QgsWFSThreadedFeatureDownloader::run()
 {
   // We need to construct it in the run() method (i.e. in the new thread)
-  mDownloader = new QgsWFSFeatureDownloader( mShared );
+  mDownloader = new QgsWFSFeatureDownloader( mShared, mRequestMadeFromMainThread );
   {
     QMutexLocker locker( &mWaitMutex );
     mWaitCond.wakeOne();
@@ -1132,6 +1150,9 @@ void QgsWFSFeatureIterator::connectSignals( QgsWFSFeatureDownloader *downloader 
 
   connect( downloader, &QgsWFSFeatureDownloader::endOfDownload,
            this, &QgsWFSFeatureIterator::endOfDownloadSynchronous, Qt::DirectConnection );
+
+  connect( downloader, &QgsWFSFeatureDownloader::resumeMainThread,
+           this, &QgsWFSFeatureIterator::resumeMainThreadSynchronous, Qt::DirectConnection );
 }
 
 void QgsWFSFeatureIterator::endOfDownloadSynchronous( bool )
@@ -1139,6 +1160,14 @@ void QgsWFSFeatureIterator::endOfDownloadSynchronous( bool )
   // Wake up waiting loop
   QMutexLocker locker( &mMutex );
   mDownloadFinished = true;
+  mWaitCond.wakeOne();
+}
+
+void QgsWFSFeatureIterator::resumeMainThreadSynchronous()
+{
+  // Wake up waiting loop
+  QMutexLocker locker( &mMutex );
+  mProcessEvents = true;
   mWaitCond.wakeOne();
 }
 
@@ -1266,6 +1295,8 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature &f )
 
     return true;
   }
+
+  const bool requestMadeFromMainThread = QThread::currentThread() == QApplication::instance()->thread();
 
   // Second step is to wait for features to be notified by the downloader
   while ( true )
@@ -1400,6 +1431,11 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature &f )
         break;
       }
       mWaitCond.wait( &mMutex, timeout );
+      if ( requestMadeFromMainThread && mProcessEvents )
+      {
+        QgsApplication::instance()->processEvents();
+        mProcessEvents = false;
+      }
       if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
       {
         mTimeoutOrInterruptionOccurred = true;

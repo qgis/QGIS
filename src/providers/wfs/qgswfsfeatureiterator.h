@@ -92,7 +92,7 @@ class QgsWFSFeatureDownloader: public QgsWfsRequest
 {
     Q_OBJECT
   public:
-    explicit QgsWFSFeatureDownloader( QgsWFSSharedData *shared );
+    explicit QgsWFSFeatureDownloader( QgsWFSSharedData *shared, bool requestMadeFromMainThread );
     ~QgsWFSFeatureDownloader() override;
 
     /**
@@ -117,6 +117,11 @@ class QgsWFSFeatureDownloader: public QgsWfsRequest
 
     //! Emitted when the download is finished (successful or not)
     void endOfDownload( bool success );
+
+    // Emitted when QgsNetworkAccessManager emit signals that require
+    // QgsBackgroundCachedFeatureIterator to process (authentication) events,
+    // if it was started from the main thread.
+    void resumeMainThread();
 
     //! Used internally by the stop() method
     void doStop();
@@ -187,6 +192,7 @@ class QgsWFSThreadedFeatureDownloader: public QThread
     QgsWFSFeatureDownloader *mDownloader = nullptr;
     QWaitCondition mWaitCond;
     QMutex mWaitMutex;
+    bool mRequestMadeFromMainThread = false;
 };
 
 class QgsWFSFeatureSource;
@@ -216,6 +222,7 @@ class QgsWFSFeatureIterator : public QObject,
   private slots:
     void featureReceivedSynchronous( const QVector<QgsWFSFeatureGmlIdPair> &list );
     void endOfDownloadSynchronous( bool success );
+    void resumeMainThreadSynchronous();
 
   private:
 
@@ -234,6 +241,7 @@ class QgsWFSFeatureIterator : public QObject,
 
     bool mNewFeaturesReceived = false;
     bool mDownloadFinished = false;
+    bool mProcessEvents = false;
     QgsFeatureIterator mCacheIterator;
     QgsFeedback *mInterruptionChecker = nullptr;
     bool mTimeoutOrInterruptionOccurred = false;
