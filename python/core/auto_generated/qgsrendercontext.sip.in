@@ -865,6 +865,8 @@ rendering using QBrush objects.
 .. versionadded:: 3.16
 %End
 
+
+
 };
 
 QFlags<QgsRenderContext::Flag> operator|(QgsRenderContext::Flag f1, QFlags<QgsRenderContext::Flag> f2);

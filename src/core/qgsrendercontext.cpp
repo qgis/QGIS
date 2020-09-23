@@ -44,6 +44,8 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mFlags( rh.mFlags )
   , mPainter( rh.mPainter )
   , mMaskPainter( rh.mMaskPainter )
+  , mMaskPainterPath( rh.mMaskPainterPath )
+  , mMaskLabelPainterPaths( rh.mMaskLabelPainterPaths )
   , mCoordTransform( rh.mCoordTransform )
   , mDistanceArea( rh.mDistanceArea )
   , mExtent( rh.mExtent )
@@ -70,6 +72,7 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mClippingRegions( rh.mClippingRegions )
   , mFeatureClipGeometry( rh.mFeatureClipGeometry )
   , mTextureOrigin( rh.mTextureOrigin )
+  , mSubPainterMap( rh.mSubPainterMap )
 #ifdef QGISDEBUG
   , mHasTransformContext( rh.mHasTransformContext )
 #endif
@@ -81,6 +84,8 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mFlags = rh.mFlags;
   mPainter = rh.mPainter;
   mMaskPainter = rh.mMaskPainter;
+  mMaskPainterPath = rh.mMaskPainterPath;
+  mMaskLabelPainterPaths = rh.mMaskLabelPainterPaths;
   mCoordTransform = rh.mCoordTransform;
   mExtent = rh.mExtent;
   mOriginalMapExtent = rh.mOriginalMapExtent;
@@ -106,6 +111,7 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mClippingRegions = rh.mClippingRegions;
   mFeatureClipGeometry = rh.mFeatureClipGeometry;
   mTextureOrigin = rh.mTextureOrigin;
+  mSubPainterMap = rh.mSubPainterMap;
   setIsTemporal( rh.isTemporal() );
   if ( isTemporal() )
     setTemporalRange( rh.temporalRange() );
@@ -557,14 +563,15 @@ void QgsRenderContext::addToMaskLabelPainterPath( int id, QPainterPath const &pa
   mMaskLabelPainterPaths[id].addPath( path );
 }
 
-void QgsRenderContext::addPainterForSymbolLayer(const QgsSymbolLayer* symbolLayer, QPainter* painter)
+void QgsRenderContext::addPainterForSymbolLayer( const QgsSymbolLayer *symbolLayer, QPainter *painter )
 {
   mSubPainterMap[symbolLayer] = painter;
 }
 
-QPainter* QgsRenderContext::painterForSymbolLayer(QgsSymbolLayer * symbolLayer)
+QPainter *QgsRenderContext::painterForSymbolLayer( QgsSymbolLayer *symbolLayer )
 {
-  auto it = mSubPainterMap.find(symbolLayer);
+  auto it = mSubPainterMap.find( symbolLayer );
+
   if ( it != mSubPainterMap.end() )
   {
     return *it;
@@ -575,7 +582,7 @@ QPainter* QgsRenderContext::painterForSymbolLayer(QgsSymbolLayer * symbolLayer)
   }
 }
 
-QMap<const QgsSymbolLayer*, QPainter* > QgsRenderContext::getSubPainter()
+QMap<const QgsSymbolLayer *, QPainter * > QgsRenderContext::getSubPainter()
 {
   return mSubPainterMap;
 }

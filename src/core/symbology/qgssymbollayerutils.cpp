@@ -4613,7 +4613,7 @@ QSet<const QgsSymbolLayer *> QgsSymbolLayerUtils::toSymbolLayerPointers( QgsFeat
   return visitor.mSymbolLayers;
 }
 
-QList< QPair<QgsSymbolLayerId, const QgsSymbolLayer*> > QgsSymbolLayerUtils::listSymbolLayers( QgsFeatureRenderer *renderer )
+QList< QPair<QgsSymbolLayerId, const QgsSymbolLayer *> > QgsSymbolLayerUtils::listSymbolLayers( QgsFeatureRenderer *renderer )
 {
   class SymbolLayerVisitor : public QgsStyleEntityVisitorInterface
   {
@@ -4636,7 +4636,7 @@ QList< QPair<QgsSymbolLayerId, const QgsSymbolLayer*> > QgsSymbolLayerUtils::lis
           indexPath.append( idx );
           const QgsSymbolLayer *sl = symbol->symbolLayer( idx );
           QgsSymbolLayerId layerId = QgsSymbolLayerId( mCurrentRuleKey + identifier, indexPath );
-          mSymbolLayers.append( QPair<QgsSymbolLayerId, const QgsSymbolLayer*>(layerId, sl) );
+          mSymbolLayers.append( QPair<QgsSymbolLayerId, const QgsSymbolLayer *>( layerId, sl ) );
 
           const QgsSymbol *subSymbol = const_cast<QgsSymbolLayer *>( sl )->subSymbol();
           if ( subSymbol )
@@ -4653,12 +4653,13 @@ QList< QPair<QgsSymbolLayerId, const QgsSymbolLayer*> > QgsSymbolLayerUtils::lis
           {
             visitSymbol( symbolEntity->symbol(), leaf.identifier, {} );
           }
+
         }
         return true;
       }
 
       QString mCurrentRuleKey;
-      QList< QPair<QgsSymbolLayerId, const QgsSymbolLayer*> > mSymbolLayers;
+      QList< QPair<QgsSymbolLayerId, const QgsSymbolLayer *> > mSymbolLayers;
   };
 
   SymbolLayerVisitor visitor;
