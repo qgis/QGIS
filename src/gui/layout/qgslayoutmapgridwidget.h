@@ -65,7 +65,7 @@ class GUI_EXPORT QgsLayoutMapGridWidget: public QgsLayoutItemBaseWidget, private
     void mGridFrameFill1ColorButton_colorChanged( const QColor &newColor );
     void mGridFrameFill2ColorButton_colorChanged( const QColor &newColor );
     void mGridTypeComboBox_currentIndexChanged( int );
-    void mMapGridCRSButton_clicked();
+    void mapGridCrsChanged( const QgsCoordinateReferenceSystem &crs );
     void mGridBlendComboBox_currentIndexChanged( int index );
     void mCheckGridLeftSide_toggled( bool checked );
     void mCheckGridRightSide_toggled( bool checked );

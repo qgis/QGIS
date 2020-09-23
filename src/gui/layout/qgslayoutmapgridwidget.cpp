@@ -76,7 +76,6 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   connect( mGridFrameFill1ColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutMapGridWidget::mGridFrameFill1ColorButton_colorChanged );
   connect( mGridFrameFill2ColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutMapGridWidget::mGridFrameFill2ColorButton_colorChanged );
   connect( mGridTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutMapGridWidget::mGridTypeComboBox_currentIndexChanged );
-  connect( mMapGridCRSButton, &QPushButton::clicked, this, &QgsLayoutMapGridWidget::mMapGridCRSButton_clicked );
   connect( mMapGridUnitComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutMapGridWidget::intervalUnitChanged );
   connect( mGridBlendComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutMapGridWidget::mGridBlendComboBox_currentIndexChanged );
   connect( mCheckGridLeftSide, &QCheckBox::toggled, this, &QgsLayoutMapGridWidget::mCheckGridLeftSide_toggled );
@@ -109,6 +108,10 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   connect( mEnabledCheckBox, &QCheckBox::toggled, this, &QgsLayoutMapGridWidget::gridEnabledToggled );
   setPanelTitle( tr( "Map Grid Properties" ) );
 
+  mMapGridCrsSelector->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, true );
+  mMapGridCrsSelector->setNotSetText( tr( "Use Map CRS" ) );
+
+  connect( mMapGridCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsLayoutMapGridWidget::mapGridCrsChanged );
 
   blockAllSignals( true );
 
@@ -631,10 +634,7 @@ void QgsLayoutMapGridWidget::setGridItems()
   mMinWidthSpinBox->setValue( mMapGrid->minimumIntervalWidth() );
   mMaxWidthSpinBox->setValue( mMapGrid->maximumIntervalWidth() );
 
-  //CRS button
-  QgsCoordinateReferenceSystem gridCrs = mMapGrid->crs();
-  QString crsButtonText = gridCrs.isValid() ? gridCrs.authid() : tr( "Change…" );
-  mMapGridCRSButton->setText( crsButtonText );
+  whileBlocking( mMapGridCrsSelector )->setCrs( mMapGrid->crs() );
 }
 
 void QgsLayoutMapGridWidget::mIntervalXSpinBox_editingFinished()
@@ -1144,25 +1144,21 @@ void QgsLayoutMapGridWidget::mGridTypeComboBox_currentIndexChanged( int )
   mMap->endCommand();
 }
 
-void QgsLayoutMapGridWidget::mMapGridCRSButton_clicked()
+void QgsLayoutMapGridWidget::mapGridCrsChanged( const QgsCoordinateReferenceSystem &crs )
 {
   if ( !mMapGrid || !mMap )
   {
     return;
   }
 
-  QgsProjectionSelectionDialog crsDialog( this );
-  QgsCoordinateReferenceSystem crs = mMapGrid->crs();
-  crsDialog.setCrs( crs.isValid() ? crs : mMap->crs() );
+  if ( mMapGrid->crs() == crs )
+    return;
 
-  if ( crsDialog.exec() == QDialog::Accepted )
-  {
-    mMap->beginCommand( tr( "Change Grid CRS" ) );
-    mMapGrid->setCrs( crsDialog.crs() );
-    mMap->updateBoundingRect();
-    mMapGridCRSButton->setText( crsDialog.crs().authid() );
-    mMap->endCommand();
-  }
+  mMap->beginCommand( tr( "Change Grid CRS" ) );
+  mMapGrid->setCrs( crs );
+  mMap->updateBoundingRect();
+  mMap->update();
+  mMap->endCommand();
 }
 
 void QgsLayoutMapGridWidget::mDrawAnnotationGroupBox_toggled( bool state )
