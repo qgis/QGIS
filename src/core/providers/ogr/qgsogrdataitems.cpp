@@ -619,6 +619,7 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
       QStringLiteral( "kml" ),
       QStringLiteral( "osm" ),
       QStringLiteral( "mdb" ),
+      QStringLiteral( "pdf" ),
       QStringLiteral( "pbf" ) };
   static QStringList sOgrSupportedDbDriverNames { QStringLiteral( "GPKG" ),
       QStringLiteral( "db" ),
