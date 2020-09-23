@@ -29,7 +29,7 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QDoubleSpinBox" name="shadowRenderinMaximumDistanceSpinBox">
+    <widget class="QgsDoubleSpinBox" name="shadowRenderinMaximumDistanceSpinBox">
      <property name="suffix">
       <string> map units</string>
      </property>
@@ -49,12 +49,15 @@
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="QDoubleSpinBox" name="shadowBiasSpinBox">
+    <widget class="QgsDoubleSpinBox" name="shadowBiasSpinBox">
      <property name="decimals">
       <number>10</number>
      </property>
      <property name="maximum">
       <double>1.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.000010000000000</double>
      </property>
      <property name="value">
       <double>0.000010000000000</double>
@@ -69,7 +72,7 @@
     </widget>
    </item>
    <item row="3" column="1">
-    <widget class="QSpinBox" name="shadowMapResolutionSpinBox">
+    <widget class="QgsSpinBox" name="shadowMapResolutionSpinBox">
      <property name="suffix">
       <string> px</string>
      </property>
@@ -86,6 +89,18 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
