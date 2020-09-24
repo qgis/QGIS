@@ -1185,7 +1185,65 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(project.read(project_path))
         gpkg_virtual_layer = project.mapLayersByName('virtual_data')[0]
         self.assertEqual(gpkg_virtual_layer.subsetString(), '"join_value" = \'twenty\'')
+<<<<<<< HEAD
         self.assertEqual(gpkg_virtual_layer.featureCount(), 1)
+=======
+
+    def test_feature_count_on_error(self):
+        """Test that triggered exception while getting feature count on a badly defined
+        virtual layer is correctly caught (see https://github.com/qgis/QGIS/issues/34378)"""
+
+        l1 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "france", "ogr",
+                            QgsVectorLayer.LayerOptions(False))
+        self.assertEqual(l1.isValid(), True)
+        QgsProject.instance().addMapLayer(l1)
+
+        df = QgsVirtualLayerDefinition()
+        df.setQuery('select error')
+
+        vl = QgsVectorLayer(df.toString(), "testq", "virtual")
+        self.assertEqual(vl.isValid(), False)
+        self.assertEqual(vl.featureCount(), 0)
+        ids = [f.id() for f in vl.getFeatures()]
+        self.assertEqual(len(ids), 0)
+
+        QgsProject.instance().removeMapLayer(l1.id())
+
+    def test_bool_fields(self):
+
+        ml = QgsVectorLayer("NoGeometry?field=a:int&field=b:boolean", "mem", "memory")
+        self.assertEqual(ml.isValid(), True)
+        QgsProject.instance().addMapLayer(ml)
+
+        ml.startEditing()
+        f1 = QgsFeature(ml.fields())
+        f1.setAttribute('a', 1)
+        f1.setAttribute('b', True)
+        f2 = QgsFeature(ml.fields())
+        f2.setAttribute('a', 2)
+        f2.setAttribute('b', False)
+        ml.addFeatures([f1, f2])
+        ml.commitChanges()
+
+        self.assertEqual([(f['a'], f['b']) for f in ml.getFeatures()], [(1, True), (2, False)])
+
+        df = QgsVirtualLayerDefinition()
+        df.setQuery('select * from mem')
+        vl = QgsVectorLayer(df.toString(), "testq", "virtual")
+        self.assertEqual([(f['a'], f['b']) for f in vl.getFeatures()], [(1, True), (2, False)])
+
+        df = QgsVirtualLayerDefinition()
+        df.setQuery('select * from mem where b')
+        vl = QgsVectorLayer(df.toString(), "testq", "virtual")
+        self.assertEqual([(f['a'], f['b']) for f in vl.getFeatures()], [(1, True)])
+
+        df = QgsVirtualLayerDefinition()
+        df.setQuery('select * from mem where not b')
+        vl = QgsVectorLayer(df.toString(), "testq", "virtual")
+        self.assertEqual([(f['a'], f['b']) for f in vl.getFeatures()], [(2, False)])
+
+        QgsProject.instance().removeMapLayer(ml.id())
+>>>>>>> f3a5b69691... [VirtualLayer] Catch exception while updating virtual layer stats
 
 
 if __name__ == '__main__':
