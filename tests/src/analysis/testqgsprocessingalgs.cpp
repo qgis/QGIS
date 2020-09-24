@@ -2286,6 +2286,18 @@ void TestQgsProcessingAlgs::cellStatistics_data()
       << true
       << QStringLiteral( "/cellstatistics_mean_ignore_nodata_result.tif" )
       << Qgis::Float64;
+
+  /*
+   * Testcase 16: Sum (integer)
+   */
+  QTest::newRow( "testcase_16" )
+      << QStringList( {"/raster/statisticsRas1_int32.tif", "/raster/statisticsRas2_int32.tif", "/raster/statisticsRas3_int32.tif"} )
+      << QStringLiteral( "/raster/statisticsRas1_int32.tif" )
+      << 5
+      << false
+      << QStringLiteral( "/cellstatistics_variance_result_float32.tif" )
+      << Qgis::Float32;
+
 }
 
 void TestQgsProcessingAlgs::cellStatistics()
