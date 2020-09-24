@@ -23,11 +23,7 @@ import sys
 import datetime
 import glob
 import shutil
-
-try:
-    from collections.abc import Callable
-except ImportError:
-    from collections import Callable
+from collections.abc import Callable
 
 from qgis.PyQt.QtCore import QSize, qDebug, Qt
 from qgis.PyQt.QtGui import QFont, QColor

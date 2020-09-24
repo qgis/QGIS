@@ -30,10 +30,7 @@ import inspect
 import time
 import test_qgsdelimitedtextprovider_wanted as want  # NOQA
 
-try:
-    from collections.abc import Callable
-except ImportError:
-    from collections import Callable
+from collections.abc import Callable
 
 rebuildTests = 'REBUILD_DELIMITED_TEXT_TESTS' in os.environ
 
