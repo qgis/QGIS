@@ -413,6 +413,13 @@ Returns individual layer snappings settings (applied if mode is AdvancedConfigur
 Sets individual layer snappings settings (applied if mode is AdvancedConfiguration)
 %End
 
+    void clearIndividualLayerSettings();
+%Docstring
+Removes all individual layer snapping settings
+
+.. versionadded:: 3.16
+%End
+
     bool operator!= ( const QgsSnappingConfig &other ) const;
 
     void readProject( const QDomDocument &doc );
