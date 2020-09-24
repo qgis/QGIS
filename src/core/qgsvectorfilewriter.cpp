@@ -35,6 +35,7 @@
 #include "qgsgeometryengine.h"
 #include "qgsproviderregistry.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsreadwritelocker.h"
 
 #include <QFile>
 #include <QFileInfo>
@@ -43,6 +44,7 @@
 #include <QTextStream>
 #include <QSet>
 #include <QMetaType>
+#include <QMutex>
 
 #include <cassert>
 #include <cstdlib> // size_t
@@ -3231,7 +3233,17 @@ void QgsVectorFileWriter::setSymbologyScale( double d )
 
 QList< QgsVectorFileWriter::FilterFormatDetails > QgsVectorFileWriter::supportedFiltersAndFormats( const VectorFormatOptions options )
 {
-  QList< FilterFormatDetails > results;
+  static QReadWriteLock sFilterLock;
+  static QMap< VectorFormatOptions, QList< QgsVectorFileWriter::FilterFormatDetails > > sFilters;
+
+  QgsReadWriteLocker locker( sFilterLock, QgsReadWriteLocker::Read );
+
+  const auto it = sFilters.constFind( options );
+  if ( it != sFilters.constEnd() )
+    return it.value();
+
+  locker.changeMode( QgsReadWriteLocker::Write );
+  QList< QgsVectorFileWriter::FilterFormatDetails > results;
 
   QgsApplication::registerOgrDrivers();
   int const drvCount = OGRGetDriverCount();
@@ -3303,6 +3315,7 @@ QList< QgsVectorFileWriter::FilterFormatDetails > QgsVectorFileWriter::supported
     return a.filterString.toLower().localeAwareCompare( b.filterString.toLower() ) < 0;
   } );
 
+  sFilters.insert( options, results );
   return results;
 }
 
