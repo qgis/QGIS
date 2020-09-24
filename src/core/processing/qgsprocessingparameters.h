@@ -1947,7 +1947,7 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
  * shown in the parameter's widget can be specified by setting the parameter's metadata. For example:
  *
  * \code{.py}
- *   param = QgsProcessingParameterNumber( 'VAL', 'Threshold', type=QgsProcessingParameter.Double)
+ *   param = QgsProcessingParameterNumber( 'VAL', 'Threshold', type=QgsProcessingParameterNumber.Double)
  *   # only show two decimal places in parameter's widgets, not 6:
  *   param.setMetadata( {'widget_wrapper':
  *     { 'decimals': 2 }
