@@ -901,6 +901,13 @@ class PostGisDBConnector(DBConnector):
                 self.quoteString(new_table), self.quoteString(tablename), schema_where)
             self._executeSql(sql)
 
+    def renameSchema(self, schema, new_schema):
+        try:
+            self.core_connection.renameSchema(schema, new_schema)
+            return True
+        except QgsProviderConnectionException:
+            return False
+
     def commentTable(self, schema, tablename, comment=None):
         if comment is None:
             self._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS NULL;'.format(schema, tablename))
