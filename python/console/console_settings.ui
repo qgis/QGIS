@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>1055</width>
-    <height>720</height>
+    <height>786</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -687,7 +687,14 @@
               <item row="0" column="0">
                <widget class="QLineEdit" name="tokenGhLineEdit">
                 <property name="placeholderText">
-                 <string>&lt;ACCESS_TOKEN&gt;</string>
+                 <string>&lt;PERSONAL_ACCESS_TOKEN&gt;</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QPushButton" name="generateToken">
+                <property name="text">
+                 <string>Generate</string>
                 </property>
                </widget>
               </item>

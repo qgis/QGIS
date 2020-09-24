@@ -19,9 +19,9 @@ email                : lrssvtml (at) gmail (dot) com
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
 
-from qgis.PyQt.QtCore import QCoreApplication, QSize, Qt
+from qgis.PyQt.QtCore import QCoreApplication, QSize, Qt, QUrl
 from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QTableWidgetItem
-from qgis.PyQt.QtGui import QIcon, QFont, QColor, QFontDatabase
+from qgis.PyQt.QtGui import QIcon, QFont, QColor, QFontDatabase, QDesktopServices
 
 from qgis.core import QgsSettings
 
@@ -58,6 +58,13 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.resetFontColor.setIcon(QIcon(":/images/themes/default/mActionUndo.svg"))
         self.resetFontColor.setIconSize(QSize(18, 18))
         self.resetFontColor.clicked.connect(self._resetFontColor)
+
+        self.generateToken.clicked.connect(self.generateGHToken)
+
+    def generateGHToken(self):
+        description = self.tr("PyQGIS Console")
+        url = 'https://github.com/settings/tokens/new?description={}&scopes=gist'.format(description)
+        QDesktopServices.openUrl(QUrl(url))
 
     def initialCheck(self):
         if self.preloadAPI.isChecked():
