@@ -612,7 +612,7 @@ void QgsFeaturePickerModelBase::reload()
 
 void QgsFeaturePickerModelBase::setExtraIdentifierValue( const QVariant &extraIdentifierValue )
 {
-  if ( extraIdentifierValue == mExtraIdentifierValue && !identifierIsNull( extraIdentifierValue ) )
+  if ( extraIdentifierValue == mExtraIdentifierValue && !identifierIsNull( extraIdentifierValue ) && !identifierIsNull( mExtraIdentifierValue ) )
     return;
 
   if ( mIsSettingExtraIdentifierValue )

@@ -151,6 +151,6 @@ void QgsFeatureFilterModel::setExtraIdentifierValues( const QVariantList &extraI
 
 void QgsFeatureFilterModel::setExtraIdentifierValueToNull()
 {
-  setExtraIdentifierValue( QVariantList() );
+  setExtraIdentifierValue( nullIdentifier() );
 }
 
