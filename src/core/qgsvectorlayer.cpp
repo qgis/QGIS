@@ -2311,28 +2311,6 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
     }
 
     updateFields();
-
-    // Legacy reading for QGIS 3.14 and older projects
-    // Attributes excluded from WMS and WFS
-    const QList<QPair<QString, QgsField::ConfigurationFlag>> legacyConfig
-    {
-      qMakePair( QStringLiteral( "excludeAttributesWMS" ), QgsField::ConfigurationFlag::HideFromWms ),
-      qMakePair( QStringLiteral( "excludeAttributesWFS" ), QgsField::ConfigurationFlag::HideFromWfs )
-    };
-    for ( const auto &config : legacyConfig )
-    {
-      QDomNode excludeNode = layerNode.namedItem( config.first );
-      if ( !excludeNode.isNull() )
-      {
-        QDomNodeList attributeNodeList = excludeNode.toElement().elementsByTagName( QStringLiteral( "attribute" ) );
-        for ( int i = 0; i < attributeNodeList.size(); ++i )
-        {
-          QString fieldName = attributeNodeList.at( i ).toElement().text();
-          int index = mFields.indexFromName( fieldName );
-          setFieldConfigurationFlag( index, config.second, true );
-        }
-      }
-    }
   }
 
   // load field configuration
@@ -2363,6 +2341,31 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
         }
         QgsEditorWidgetSetup setup = QgsEditorWidgetSetup( widgetType, optionsMap );
         mFieldWidgetSetups[fieldName] = setup;
+      }
+    }
+  }
+
+  // Legacy reading for QGIS 3.14 and older projects
+  // Attributes excluded from WMS and WFS
+  if ( categories.testFlag( Fields ) )
+  {
+    const QList<QPair<QString, QgsField::ConfigurationFlag>> legacyConfig
+    {
+      qMakePair( QStringLiteral( "excludeAttributesWMS" ), QgsField::ConfigurationFlag::HideFromWms ),
+      qMakePair( QStringLiteral( "excludeAttributesWFS" ), QgsField::ConfigurationFlag::HideFromWfs )
+    };
+    for ( const auto &config : legacyConfig )
+    {
+      QDomNode excludeNode = layerNode.namedItem( config.first );
+      if ( !excludeNode.isNull() )
+      {
+        QDomNodeList attributeNodeList = excludeNode.toElement().elementsByTagName( QStringLiteral( "attribute" ) );
+        for ( int i = 0; i < attributeNodeList.size(); ++i )
+        {
+          QString fieldName = attributeNodeList.at( i ).toElement().text();
+          int index = mFields.indexFromName( fieldName );
+          setFieldConfigurationFlag( index, config.second, true );
+        }
       }
     }
   }
