@@ -73,7 +73,7 @@ QString QgsCellStatisticsAlgorithm::shortHelpString() const
                       "Input raster layers that do not match the cell size of the reference raster layer will be "
                       "resampled using nearest neighbor resampling. The output raster data type will be set to "
                       "the most complex data type present in the input datasets except when using the functions "
-                      "Mean and Standard deviation (data type is always Float32) or Count and Variety (data type is always Int32).\n"
+                      "Mean, Standard deviation and Variance (data type is always Float32/Float64 depending on input float type) or Count and Variety (data type is always Int32).\n"
                       "<i>Calculation details - general:</i> NoData values in any of the input layers will result in a NoData cell output if the Ignore NoData parameter is not set.\n"
                       "<i>Calculation details - Count:</i> Count will always result in the number of cells without NoData values at the current cell location.\n"
                       "<i>Calculation details - Median:</i> If the number of input layers is even, the median will be calculated as the "
@@ -190,7 +190,7 @@ QVariantMap QgsCellStatisticsAlgorithm::processAlgorithm( const QVariantMap &par
   }
 
   //force data types on specific functions if input data types don't match
-  if ( method == QgsRasterAnalysisUtils::Mean || method == QgsRasterAnalysisUtils::StandardDeviation )
+  if ( method == QgsRasterAnalysisUtils::Mean || method == QgsRasterAnalysisUtils::StandardDeviation || method == QgsRasterAnalysisUtils::Variance )
   {
     if ( static_cast<int>( mDataType ) < 6 )
       mDataType = Qgis::Float32; //force float on mean and stddev if all inputs are integer
