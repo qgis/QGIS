@@ -124,12 +124,6 @@ void QgsBrowserModel::addRootItems()
     mRootItems << item;
   }
 
-#ifdef Q_OS_MAC
-  QString path = QString( "/Volumes" );
-  QgsDirectoryItem *vols = new QgsDirectoryItem( nullptr, path, path, path, QStringLiteral( "special:Volumes" ) );
-  mRootItems << vols;
-#endif
-
   // container for displaying providers as sorted groups (by QgsDataProvider::DataCapability enum)
   QMap<int, QgsDataItem *> providerMap;
 

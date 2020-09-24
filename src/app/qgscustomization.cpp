@@ -714,7 +714,6 @@ void QgsCustomization::createTreeItemBrowser()
   items << QStringList( {QStringLiteral( "special:ProjectHome" ), tr( "Project Home Folder" )} );
   items << QStringList( {QStringLiteral( "special:Favorites" ), tr( "Favorites Folder" )} );
   items << QStringList( {QStringLiteral( "special:Drives" ), tr( "Drive Folders (e.g. C:\\)" )} );
-  items << QStringList( {QStringLiteral( "special:Volumes" ), tr( "Volume Folder (MacOS only)" )} );
 
   const auto constProviders = QgsApplication::dataItemProviderRegistry()->providers();
   for ( QgsDataItemProvider *pr : constProviders )
