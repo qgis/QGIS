@@ -61,7 +61,7 @@ void QgsHanaDataItemGuiProvider::populateContextMenu(
   }
 }
 
-bool QgsHanaDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataItemGuiContext )
+bool QgsHanaDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataItemGuiContext context )
 {
   if ( QgsHanaLayerItem *layerItem = qobject_cast<QgsHanaLayerItem *>( item ) )
   {
@@ -86,13 +86,13 @@ bool QgsHanaDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataItemGui
     bool res = conn->execute( sql, &errMessage );
     if ( !res )
     {
-      QMessageBox::warning( nullptr, tr( "Delete %1" ).arg( typeName ), errMessage );
+      notify( tr( "Delete %1" ).arg( typeName ), errMessage, context, Qgis::MessageLevel::Warning );
     }
     else
     {
-      QMessageBox::information( nullptr,
-                                tr( "Delete %1" ).arg( typeName ),
-                                tr( "%1 %2 deleted successfully." ).arg( typeName, objectName ) );
+      notify( tr( "Delete %1" ).arg( typeName ), tr( "%1 %2 deleted successfully." ).arg( typeName, objectName ),
+              context, Qgis::MessageLevel::Success );
+
       if ( layerItem->parent() )
         layerItem->parent()->refresh();
     }

@@ -309,8 +309,8 @@ QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request 
     limitAtProvider = false;
 
   bool subsetOfAttributes = mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes;
-  QgsAttributeIds attrIds = subsetOfAttributes ?
-                            request.subsetOfAttributes().toSet() : mSource->mFields.allAttributesList().toSet();
+  QgsAttributeIds attrIds = qgis::listToSet( subsetOfAttributes ?
+                            request.subsetOfAttributes() : mSource->mFields.allAttributesList() );
 
   if ( subsetOfAttributes )
   {

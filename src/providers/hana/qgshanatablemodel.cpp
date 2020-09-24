@@ -245,8 +245,8 @@ bool QgsHanaTableModel::setData( const QModelIndex &idx, const QVariant &value, 
     QStringList pkCols = idx.sibling( idx.row(), DbtmPkCol ).data( Qt::UserRole + 1 ).toStringList();
     if ( tip.isEmpty() && !pkCols.isEmpty() )
     {
-      QSet<QString> s0( idx.sibling( idx.row(), DbtmPkCol ).data( Qt::UserRole + 2 ).toStringList().toSet() );
-      QSet<QString> s1( pkCols.toSet() );
+      QSet<QString> s0( qgis::listToSet( idx.sibling( idx.row(), DbtmPkCol ).data( Qt::UserRole + 2 ).toStringList() ) );
+      QSet<QString> s1( qgis::listToSet( pkCols ) );
       if ( s0.intersect( s1 ).isEmpty() )
         tip = tr( "Select columns in the '%1' column that uniquely identify features of this layer" ).arg( tr( "Feature ID" ) );
     }
