@@ -89,6 +89,8 @@
 #include "qgsprocessingparameteraggregate.h"
 #include "qgsprocessingparametertininputlayers.h"
 #include "qgsprocessingtininputlayerswidget.h"
+#include "qgsprocessingparameterdxflayers.h"
+#include "qgsprocessingdxflayerswidgetwrapper.h"
 
 
 class TestParamType : public QgsProcessingParameterDefinition
@@ -251,6 +253,7 @@ class TestProcessingGui : public QObject
     void testFileOutWrapper();
     void testFolderOutWrapper();
     void testTinInputLayerWrapper();
+    void testDxfLayersWrapper();
     void testModelGraphicsView();
 
   private:
@@ -8867,6 +8870,41 @@ void TestProcessingGui::testTinInputLayerWrapper()
   QVERIFY( definition.checkValueIsAcceptable( value, &context ) );
   QString valueAsPythonString = definition.valueAsPythonString( value, context );
   QCOMPARE( valueAsPythonString, QStringLiteral( "[{'source': 'PointLayerForTin','type': 0,'attributeIndex': -1}]" ) );
+}
+
+void TestProcessingGui::testDxfLayersWrapper()
+{
+  QgsProcessingParameterDxfLayers definition( QStringLiteral( "DXF layers" ) ) ;
+  QgsProcessingDxfLayersWidgetWrapper wrapper;
+
+  std::unique_ptr<QWidget> w( wrapper.createWidget() );
+  QVERIFY( w );
+
+  QSignalSpy spy( &wrapper, &QgsProcessingTinInputLayersWidgetWrapper::widgetValueHasChanged );
+
+  QgsProcessingContext context;
+  QgsProject project;
+  context.setProject( &project );
+  QgsVectorLayer *vectorLayer = new QgsVectorLayer( QStringLiteral( "Point" ),
+      QStringLiteral( "PointLayer" ),
+      QStringLiteral( "memory" ) );
+  project.addMapLayer( vectorLayer );
+
+  QVariantList layerList;
+  QVariantMap layerMap;
+  layerMap["layer"] = "PointLayer";
+  layerMap["attributeIndex"] = -1;
+  layerList.append( layerMap );
+
+  QVERIFY( definition.checkValueIsAcceptable( layerList, &context ) );
+  wrapper.setWidgetValue( layerList, context );
+  QCOMPARE( spy.count(), 1 );
+
+  QVariant value = wrapper.widgetValue();
+
+  QVERIFY( definition.checkValueIsAcceptable( value, &context ) );
+  QString valueAsPythonString = definition.valueAsPythonString( value, context );
+  QCOMPARE( valueAsPythonString, QStringLiteral( "[{'layer': '%1','attributeIndex': -1}]" ).arg( vectorLayer->source() ) );
 }
 
 void TestProcessingGui::testModelGraphicsView()
