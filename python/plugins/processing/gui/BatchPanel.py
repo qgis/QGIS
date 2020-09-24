@@ -391,9 +391,13 @@ class BatchPanelFillWidget(QToolButton):
                 res = [res]
 
             first_row = self.panel.batchRowCount() if self.panel.batchRowCount() > 1 else 0
+            self.panel.addRow(len(res))
+            self.panel.tblParameters.setUpdatesEnabled(False)
             for row, value in enumerate(res):
                 self.setRowValue(row + first_row, value, context)
+            self.panel.tblParameters.setUpdatesEnabled(True)
         else:
+            self.panel.tblParameters.setUpdatesEnabled(False)
             for row in range(self.panel.batchRowCount()):
                 params, ok = self.panel.parametersForRow(row, warnOnInvalid=False)
 
@@ -415,6 +419,7 @@ class BatchPanelFillWidget(QToolButton):
                 exp = QgsExpression(dlg.expressionText())
                 value = exp.evaluate(expression_context)
                 self.setRowValue(row, value, context)
+            self.panel.tblParameters.setUpdatesEnabled(True)
 
 
 class BatchPanel(QgsPanelWidget, WIDGET):
