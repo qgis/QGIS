@@ -1187,6 +1187,26 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(gpkg_virtual_layer.subsetString(), '"join_value" = \'twenty\'')
         self.assertEqual(gpkg_virtual_layer.featureCount(), 1)
 
+    def test_feature_count_on_error(self):
+        """Test that triggered exception while getting feature count on a badly defined
+        virtual layer is correctly caught (see https://github.com/qgis/QGIS/issues/34378)"""
+
+        l1 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "france", "ogr",
+                            QgsVectorLayer.LayerOptions(False))
+        self.assertEqual(l1.isValid(), True)
+        QgsProject.instance().addMapLayer(l1)
+
+        df = QgsVirtualLayerDefinition()
+        df.setQuery('select error')
+
+        vl = QgsVectorLayer(df.toString(), "testq", "virtual")
+        self.assertEqual(vl.isValid(), False)
+        self.assertEqual(vl.featureCount(), 0)
+        ids = [f.id() for f in vl.getFeatures()]
+        self.assertEqual(len(ids), 0)
+
+        QgsProject.instance().removeMapLayer(l1.id())
+
 
 if __name__ == '__main__':
     unittest.main()
