@@ -224,6 +224,7 @@ class BatchPanelFillWidget(QToolButton):
             context = dataobjects.createContext()
 
             first_row = self.panel.batchRowCount() if self.panel.batchRowCount() > 1 else 0
+            self.panel.addRow(len(files))
             for row, file in enumerate(files):
                 self.setRowValue(first_row + row, file, context)
 
@@ -246,6 +247,7 @@ class BatchPanelFillWidget(QToolButton):
         context = dataobjects.createContext()
 
         first_row = self.panel.batchRowCount() if self.panel.batchRowCount() > 1 else 0
+        self.panel.addRow(len(files))
         for row, file in enumerate(files):
             self.setRowValue(first_row + row, file, context)
 
@@ -283,6 +285,7 @@ class BatchPanelFillWidget(QToolButton):
         context = dataobjects.createContext()
 
         first_row = self.panel.batchRowCount() if self.panel.batchRowCount() > 1 else 0
+        self.panel.addRow(len(files))
         for row, file in enumerate(files):
             self.setRowValue(first_row + row, file, context)
 
@@ -655,34 +658,39 @@ class BatchPanel(QgsPanelWidget, WIDGET):
             param_definition = self.alg.parameterDefinition(self.column_to_parameter_definition[col])
             self.tblParameters.setCellWidget(0, col, BatchPanelFillWidget(param_definition, col, self))
 
-    def addRow(self):
-        self.wrappers.append([None] * self.tblParameters.columnCount())
-        self.tblParameters.setRowCount(self.tblParameters.rowCount() + 1)
+    def addRow(self, nb=1):
+        self.tblParameters.setUpdatesEnabled(False)
+        self.tblParameters.setRowCount(self.tblParameters.rowCount() + nb)
 
         context = dataobjects.createContext()
 
         wrappers = {}
-        row = self.tblParameters.rowCount() - 1
-        for param in self.alg.parameterDefinitions():
-            if param.isDestination():
-                continue
+        row = self.tblParameters.rowCount() - nb
+        while row < self.tblParameters.rowCount():
+            self.wrappers.append([None] * self.tblParameters.columnCount())
+            for param in self.alg.parameterDefinitions():
+                if param.isDestination():
+                    continue
 
-            column = self.parameter_to_column[param.name()]
-            wrapper = WidgetWrapperFactory.create_wrapper(param, self.parent, row, column)
-            wrappers[param.name()] = wrapper
-            self.setCellWrapper(row, column, wrapper, context)
+                column = self.parameter_to_column[param.name()]
+                wrapper = WidgetWrapperFactory.create_wrapper(param, self.parent, row, column)
+                wrappers[param.name()] = wrapper
+                self.setCellWrapper(row, column, wrapper, context)
 
-        for out in self.alg.destinationParameterDefinitions():
-            if out.flags() & QgsProcessingParameterDefinition.FlagHidden:
-                continue
+            for out in self.alg.destinationParameterDefinitions():
+                if out.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                    continue
 
-            column = self.parameter_to_column[out.name()]
-            self.tblParameters.setCellWidget(
-                row, column, BatchOutputSelectionPanel(
-                    out, self.alg, row, column, self))
+                column = self.parameter_to_column[out.name()]
+                self.tblParameters.setCellWidget(
+                    row, column, BatchOutputSelectionPanel(
+                        out, self.alg, row, column, self))
 
-        for wrapper in list(wrappers.values()):
-            wrapper.postInitialize(list(wrappers.values()))
+            for wrapper in list(wrappers.values()):
+                wrapper.postInitialize(list(wrappers.values()))
+            row += 1
+
+        self.tblParameters.setUpdatesEnabled(True)
 
     def removeRows(self):
         rows = set()
