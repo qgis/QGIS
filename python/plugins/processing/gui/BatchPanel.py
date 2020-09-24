@@ -225,8 +225,10 @@ class BatchPanelFillWidget(QToolButton):
 
             first_row = self.panel.batchRowCount() if self.panel.batchRowCount() > 1 else 0
             self.panel.addRow(len(files))
+            self.panel.tblParameters.setUpdatesEnabled(False)
             for row, file in enumerate(files):
                 self.setRowValue(first_row + row, file, context)
+            self.panel.tblParameters.setUpdatesEnabled(True)
 
     def showFileSelectionDialog(self):
         settings = QgsSettings()
@@ -248,8 +250,10 @@ class BatchPanelFillWidget(QToolButton):
 
         first_row = self.panel.batchRowCount() if self.panel.batchRowCount() > 1 else 0
         self.panel.addRow(len(files))
+        self.panel.tblParameters.setUpdatesEnabled(False)
         for row, file in enumerate(files):
             self.setRowValue(first_row + row, file, context)
+        self.panel.tblParameters.setUpdatesEnabled(True)
 
     def showDirectorySelectionDialog(self):
         settings = QgsSettings()
@@ -286,8 +290,10 @@ class BatchPanelFillWidget(QToolButton):
 
         first_row = self.panel.batchRowCount() if self.panel.batchRowCount() > 1 else 0
         self.panel.addRow(len(files))
+        self.panel.tblParameters.setUpdatesEnabled(False)
         for row, file in enumerate(files):
             self.setRowValue(first_row + row, file, context)
+        self.panel.tblParameters.setUpdatesEnabled(True)
 
     def showLayerSelectionDialog(self):
         layers = []
