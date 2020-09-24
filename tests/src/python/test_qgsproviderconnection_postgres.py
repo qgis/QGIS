@@ -336,7 +336,7 @@ IMPORT FOREIGN SCHEMA qgis_test LIMIT TO ( "someData" )
         conn = md.createConnection(self.uri, {})
         self.assertTrue(conn.tableExists('public', 'raster_columns'))
         fields = conn.fields("public", "raster_columns")
-        self.assertEqual(fields.names(), [
+        self.assertTrue(set(fields.names()).issuperset({
             'r_table_catalog',
             'r_table_schema',
             'r_table_name',
@@ -352,7 +352,7 @@ IMPORT FOREIGN SCHEMA qgis_test LIMIT TO ( "someData" )
             'pixel_types',
             'nodata_values',
             'out_db',
-            'spatial_index'])
+            'spatial_index'}))
 
 
 if __name__ == '__main__':
