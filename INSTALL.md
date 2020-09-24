@@ -672,9 +672,6 @@ http://download.osgeo.org/qgis/win32/msys.zip
 
 and unpack to c:\msys
 
-If you wish to prepare your msys environment yourself rather than using
-our pre-made one, detailed instructions are provided elsewhere in this
-document.
 
 ### 4.2.2. Qt
 
@@ -857,193 +854,15 @@ Now using windows explorer, enter the win_build directory in your QGIS source
 tree. Read the READMEfile there and follow the instructions. Next right click
 on qgis.nsi and choose the option 'Compile NSIS Script'.
 
-## 4.3. Creation of MSYS environment for compilation of QGIS
 
-### 4.3.1. Initial setup
-
-#### 4.3.1.1. MSYS
-
-This is the environment that supplies many utilities from UNIX world in Windows and is needed
-by many dependencies to be able to compile.
-
-Download from here:
-
-http://puzzle.dl.sourceforge.net/sourceforge/mingw/MSYS-1.0.11-2004.04.30-1.exe
-
-Install to `c:\msys`
-
-All stuff we're going to compile is going to get to this directory (resp. its subdirs).
-
-#### 4.3.1.2. MinGW
-
-Download from here:
-
-http://puzzle.dl.sourceforge.net/sourceforge/mingw/MinGW-5.1.3.exe
-
-Install to `c:\msys\mingw`
-
-It suffices to download and install only `g++` and `mingw-make` components.
-
-#### 4.3.1.3. Flex and Bison
-
-Flex and Bison are tools for generation of parsers, they're needed for GRASS and also QGIS compilation.
-
-Download the following packages:
-
-* http://gnuwin32.sourceforge.net/downlinks/flex-bin-zip.php
-* http://gnuwin32.sourceforge.net/downlinks/bison-bin-zip.php
-* http://gnuwin32.sourceforge.net/downlinks/bison-dep-zip.php
-
-Unpack them all to `c:\msys\local`
-
-### 4.3.2. Installing dependencies
-
-#### 4.3.2.1. Getting ready
-
-Paul Kelly did a great job and prepared a package of precompiled libraries for GRASS.
-The package currently includes:
-
-* zlib-1.2.3
-* libpng-1.2.16-noconfig
-* xdr-4.0-mingw2
-* freetype-2.3.4
-* fftw-2.1.5
-* PDCurses-3.1
-* proj-4.5.0
-* gdal-1.4.1
-
-It's available for download here:
-
-http://www.stjohnspoint.co.uk/grass/wingrass-extralibs.tar.gz
-
-Moreover he also left the notes how to compile it (for those interested):
-
-http://www.stjohnspoint.co.uk/grass/README.extralibs
-
-Unpack the whole package to `c:\msys\local`
-
-#### 4.3.2.2. GRASS
-
-Grab sources from CVS or use a weekly snapshot, see:
-
-http://grass.itc.it/devel/cvs.php
-
-In MSYS console go to the directory where you've unpacked or checked out sources
-(e.g. `c:\msys\local\src\grass-6.3.cvs`)
-
-Run these commands:
-
-```cmd
-    export PATH="/usr/local/bin:/usr/local/lib:$PATH"
-    ./configure --prefix=/usr/local --bindir=/usr/local --with-includes=/usr/local/include --with-libs=/usr/local/lib --with-cxx --without-jpeg \
-    --without-tiff --with-postgres=yes --with-postgres-includes=/local/pgsql/include --with-pgsql-libs=/local/pgsql/lib --with-opengl=windows --with-fftw \
-    --with-freetype --with-freetype-includes=/mingw/include/freetype2 --without-x --without-tcltk --enable-x11=no --enable-shared=yes \
-    --with-proj-share=/usr/local/share/proj
-    make
-    make install
-```
-
-It should get installed to `c:\msys\local\grass-6.3.cvs`
-
-By the way, these pages might be useful:
-
-* http://grass.gdf-hannover.de/wiki/WinGRASS_Current_Status
-* http://geni.ath.cx/grass.html
-
-#### 4.3.2.3. GEOS
-
-Download the sources:
-
-http://geos.refractions.net/geos-2.2.3.tar.bz2
-
-Unpack to e.g. `c:\msys\local\src`
-
-To compile, I had to patch the sources: in file `source/headers/timeval.h` line 13.
-Change it from:
-
-    #ifdef _WIN32
-
-to:
-
-    #if defined(_WIN32) && defined(_MSC_VER)
-
-Now, in MSYS console, go to the source directory and run:
-
-```cmd
-    ./configure --prefix=/usr/local
-    make
-    make install
-```
-
-#### 4.3.2.4. SQLITE
-
-You can use precompiled DLL, no need to compile from source:
-
-Download this archive:
-
-http://www.sqlite.org/sqlitedll-3_3_17.zip
-
-and copy sqlite3.dll from it to `c:\msys\local\lib`
-
-Then download this archive:
-
-http://www.sqlite.org/sqlite-source-3_3_17.zip
-
-and copy sqlite3.h to `c:\msys\local\include`
-
-#### 4.3.2.5. GSL
-
-Download sources:
-
-ftp://ftp.gnu.org/gnu/gsl/gsl-1.9.tar.gz
-
-Unpack to `c:\msys\local\src`
-
-Run from MSYS console in the source directory:
-
-```cmd
-    ./configure
-    make
-    make install
-```
-
-#### 4.3.2.6. EXPAT
-
-Download sources:
-
-http://dfn.dl.sourceforge.net/sourceforge/expat/expat-2.0.0.tar.gz
-
-Unpack to `c:\msys\local\src`
-
-Run from MSYS console in the source directory:
-
-```cmd
-    ./configure
-    make
-    make install
-```
-
-#### 4.3.2.7. POSTGRES
-
-We're going to use precompiled binaries. Use the link below for download:
-
-http://wwwmaster.postgresql.org/download/mirrors-ftp?file=%2Fbinary%2Fv8.2.4%2Fwin32%2Fpostgresql-8.2.4-1-binaries-no-installer.zip
-
-copy contents of pgsql directory from the archive to `c:\msys\local`
-
-### 4.3.3. Cleanup
-
-We're done with preparation of MSYS environment. Now you can delete all stuff in `c:\msys\local\src` - it takes quite a lot
-of space and it's not necessary at all.
-
-## 4.4. Building on Linux with mxe
+## 4.3. Building on Linux with mxe
 
 With this approach you can cross build a Windows binary on Linux using MXE (M cross environment).
 You can find the build script and a README.md file in the ms-windows/mxe directory.
 
 For now, Python buildings cannot be built with mxe.
 
-### 4.4.1. Building with Docker
+### 4.3.1. Building with Docker
 
 This is the simplest way, but you need to have Docker installed
 on your system.
@@ -1056,22 +875,22 @@ the script ms-windows/mxe/build.sh from the root directory of QGIS repository.
 This requires to install mxe toolchain on your system and build
 all dependencies by yourself.
 
-#### 4.4.1.1. Initial setup
+#### 4.3.1.1. Initial setup
 
 Please follow the instructions on mxe website to setup your building toolchain http://mxe.cc/,
 take note of the path where you have installed mxe.
 
-#### 4.4.1.2. Building the dependencies
+#### 4.3.1.2. Building the dependencies
 
 Please see README.md under ms-windows/mxe for detailed instructions and for the
 list of dependencies that need to be built in mxe before attempting to build QGIS.
 
-#### 4.4.1.3. Cross-Building QGIS
+#### 4.3.1.3. Cross-Building QGIS
 
 Edit the build-mxe.sh script and optionally adjust the path where your mxe installation is located, you
 can also change the build and release directories.
 
-### 4.4.2. Testing QGIS
+### 4.3.2. Testing QGIS
 
 Copy and unzip on the Windows machine package produced by the build and launch the qgis binary: no installation
 is required.
