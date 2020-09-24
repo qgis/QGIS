@@ -57,5 +57,5 @@ def processOutputs(alg, parameters, context, feedback):
         if raster.bandCount() == 1:
             grassName = '{}{}'.format(color, alg.uniqueSuffix)
         else:
-            grassName = '{}{}'.format(alg.exportedLayers['input'], color)
+            grassName = '{}.{}'.format(alg.exportedLayers['input'], color)
         alg.exportRasterLayer(grassName, fileName, True)
