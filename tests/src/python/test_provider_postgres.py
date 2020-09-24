@@ -3021,6 +3021,23 @@ class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCas
         vl = p.mapLayersByName('testTrustFlag')[0]
         self.assertTrue(vl.isValid())
 
+    def testQueryLayerDuplicatedFields(self):
+        """Test that duplicated fields from a query layer are returned"""
+
+        def _get_layer(sql):
+            return QgsVectorLayer(
+                self.dbconn +
+                ' sslmode=disable key=\'__rid__\' table=\'(SELECT row_number() OVER () AS __rid__, * FROM (' + sql + ') as foo)\'  sql=',
+                'test', 'postgres')
+
+        l = _get_layer('SELECT 1, 2')
+        self.assertEqual(l.fields().count(), 3)
+        self.assertEqual([f.name() for f in l.fields()], ['__rid__', '?column?', '?column? (2)'])
+
+        l = _get_layer('SELECT 1 as id, 2 as id')
+        self.assertEqual(l.fields().count(), 3)
+        self.assertEqual([f.name() for f in l.fields()], ['__rid__', 'id', 'id (2)'])
+
 
 if __name__ == '__main__':
     unittest.main()

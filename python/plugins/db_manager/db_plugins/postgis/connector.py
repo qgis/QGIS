@@ -29,7 +29,6 @@ from functools import cmp_to_key
 from qgis.PyQt.QtCore import (
     QRegExp,
     QFile,
-    QCoreApplication,
     QVariant,
     QDateTime,
     QTime,
@@ -39,7 +38,6 @@ from qgis.PyQt.QtCore import (
 from qgis.core import (
     Qgis,
     QgsCoordinateReferenceSystem,
-    QgsCredentials,
     QgsVectorLayer,
     QgsDataSourceUri,
     QgsProviderRegistry,
@@ -48,9 +46,10 @@ from qgis.core import (
 )
 
 from ..connector import DBConnector
-from ..plugin import ConnectionError, DbError, Table
+from ..plugin import DbError, Table
 
 import os
+import re
 import psycopg2
 import psycopg2.extensions
 
@@ -118,29 +117,49 @@ class CursorAdapter():
 
         if self._description is None:
 
-            uri = QgsDataSourceUri(self.connection.uri())
-
-            # TODO: make this part provider-agnostic
-            sql = self.sql if self.sql.upper().find(' LIMIT ') >= 0 else self.sql + ' LIMIT 1 '
-            uri.setTable('(SELECT row_number() OVER () AS __rid__, * FROM (' + sql + ') as foo)')
-            uri.setKeyColumn('__rid__')
-            # TODO: fetch provider name from connection (QgsAbstractConnectionProvider)
-            # TODO: re-use the VectorLayer for fetching rows in batch mode
-            vl = QgsVectorLayer(uri.uri(False), 'dbmanager_cursor', 'postgres')
-
-            fields = vl.fields()
             self._description = []
-            for i in range(1, len(fields)):  # skip first field (__rid__)
-                f = fields[i]
-                self._description.append([
-                    f.name(),  # name
-                    f.type(),  # type_code
-                    f.length(),  # display_size
-                    f.length(),  # internal_size
-                    f.precision(),  # precision
-                    None,  # scale
-                    True  # null_ok
-                ])
+
+            if re.match('^SHOW', self.sql.strip().upper()):
+                try:
+                    count = len(self.connection.executeSql(self.sql)[0])
+                except QgsProviderConnectionException:
+                    count = 1
+                for i in range(count):
+                    self._description.append([
+                        '',  # name
+                        '',  # type_code
+                        -1,  # display_size
+                        -1,  # internal_size
+                        -1,  # precision
+                        None,  # scale
+                        True  # null_ok
+                    ])
+            else:
+                uri = QgsDataSourceUri(self.connection.uri())
+
+                # TODO: make this part provider-agnostic
+                sql = self.sql if self.sql.upper().find(' LIMIT ') >= 0 else self.sql + ' LIMIT 1 '
+                uri.setTable('(SELECT row_number() OVER () AS __rid__, * FROM (' + sql + ') as foo)')
+                uri.setKeyColumn('__rid__')
+                uri.setParam('checkPrimaryKeyUnicity', '0')
+                # TODO: fetch provider name from connection (QgsAbstractConnectionProvider)
+                # TODO: re-use the VectorLayer for fetching rows in batch mode
+                vl = QgsVectorLayer(uri.uri(False), 'dbmanager_cursor', 'postgres')
+
+                fields = vl.fields()
+
+                for i in range(1, len(fields)):  # skip first field (__rid__)
+                    f = fields[i]
+                    self._description.append([
+                        f.name(),  # name
+                        f.type(),  # type_code
+                        f.length(),  # display_size
+                        f.length(),  # internal_size
+                        f.precision(),  # precision
+                        None,  # scale
+                        True  # null_ok
+                    ])
+
             self._debug("get_description returned " + str(len(self._description)) + " cols")
 
         return self._description
