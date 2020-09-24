@@ -1006,6 +1006,9 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
           return param->flags() & QgsProcessingParameterDefinition::FlagHidden || param->isDestination();
         } ), params.end() );
 
+        // check if index remain valid after erasing of the previous step. Otherwise qgis crash calling params.at( index )
+        if ( index >= params.size() )
+          return QString();
 
         QString title = params.at( index )->description();
         if ( !mInputs.value( params.at( index )->name() ).toString().isEmpty() )
