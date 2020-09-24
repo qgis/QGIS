@@ -96,7 +96,7 @@ bool QgsFeatureFilterModel::identifierIsNull( const QVariant &identifier ) const
   const QVariantList values = identifier.toList();
   for ( const QVariant &value : values )
   {
-    if ( !value.isNull() && value.isValid() )
+    if ( !value.isNull() )
     {
       return false;
     }

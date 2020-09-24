@@ -54,7 +54,7 @@ bool qVariantListIsNull( const QVariantList &list )
 
   for ( int i = 0; i < list.size(); ++i )
   {
-    if ( !list.at( i ).isNull() && list.at( i ).isValid() )
+    if ( !list.at( i ).isNull() )
       return false;
   }
   return true;
