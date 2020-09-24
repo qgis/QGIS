@@ -402,6 +402,13 @@ class CORE_EXPORT QgsSnappingConfig
     void setIndividualLayerSettings( QgsVectorLayer *vl, const QgsSnappingConfig::IndividualLayerSettings &individualLayerSettings );
 
     /**
+     * Removes all individual layer snapping settings
+     *
+     * \since QGIS 3.16
+     */
+    void clearIndividualLayerSettings();
+
+    /**
      * Compare this configuration to other.
      */
     bool operator!= ( const QgsSnappingConfig &other ) const;
