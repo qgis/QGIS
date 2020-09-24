@@ -528,8 +528,8 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
         selectedDeletableItemPaths.append( qobject_cast<QgsLayerItem *>( selectedItem )->uri() );
     }
 
-    const QString deleteText = selectedDeletableItemPaths.count() == 1 ? tr( "Delete Layer" )
-                               : tr( "Delete Selected Layers" );
+    const QString deleteText = selectedDeletableItemPaths.count() == 1 ? tr( "Delete Layer…" )
+                               : tr( "Delete Selected Layers…" );
     QAction *deleteAction = new QAction( deleteText, menu );
     connect( deleteAction, &QAction::triggered, this, [ = ]
     {
