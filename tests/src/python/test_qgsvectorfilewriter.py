@@ -870,6 +870,9 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertTrue('ods' in formats)
         parts = formats.split(';;')
         for i in range(2, len(parts) - 1):
+            if 'GeoJSON - Newline Delimited' in parts[i] or 'GeoJSON - Newline Delimited' in parts[i + 1]:
+                # Python's < operator doesn't do locale aware sorting, so skip this problematic one
+                continue
             self.assertLess(parts[i].lower(), parts[i + 1].lower())
 
         # alphabetical sorting
@@ -877,6 +880,9 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertNotEqual(formats.index('gpkg'), formats2.index('gpkg'))
         parts = formats2.split(';;')
         for i in range(len(parts) - 1):
+            if 'GeoJSON - Newline Delimited' in parts[i] or 'GeoJSON - Newline Delimited' in parts[i + 1]:
+                # Python's < operator doesn't do locale aware sorting, so skip this problematic one
+                continue
             self.assertLess(parts[i].lower(), parts[i + 1].lower())
 
         # hide non spatial
