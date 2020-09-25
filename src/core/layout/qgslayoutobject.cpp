@@ -78,6 +78,7 @@ void QgsLayoutObject::initPropertyDefinitions()
     { QgsLayoutObject::MapGridCrossSize, QgsPropertyDefinition( "dataDefinedMapGridCrossSize", QObject::tr( "Grid cross size" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsLayoutObject::MapGridFrameMargin, QgsPropertyDefinition( "dataDefinedMapGridFrameMargin", QObject::tr( "Grid frame margin" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsLayoutObject::MapGridLabelDistance, QgsPropertyDefinition( "dataDefinedMapGridLabelDistance", QObject::tr( "Grid label distance" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::MapGridAnnotationDisplayLeft, QgsPropertyDefinition( "dataDefinedMapGridAnnotationDisplayLeft", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map grid annotation display left" ), QObject::tr( "string " ) + QLatin1String( "[<b>all</b>|<b>x_only</b>|<b>y_only</b>|<b>disabled</b>]" ) ) },
     { QgsLayoutObject::PictureSource, QgsPropertyDefinition( "dataDefinedSource", QObject::tr( "Picture source (URL)" ), QgsPropertyDefinition::String ) },
     { QgsLayoutObject::SourceUrl, QgsPropertyDefinition( "dataDefinedSourceUrl", QObject::tr( "Source URL" ), QgsPropertyDefinition::String ) },
     { QgsLayoutObject::PictureSvgBackgroundColor, QgsPropertyDefinition( "dataDefinedSvgBackgroundColor", QObject::tr( "SVG background color" ), QgsPropertyDefinition::ColorWithAlpha ) },

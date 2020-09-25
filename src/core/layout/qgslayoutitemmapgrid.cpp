@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmessagelog.h"
 #include "qgslayoutitemmapgrid.h"
 #include "qgslayoututils.h"
 #include "qgsclipper.h"
@@ -1892,7 +1893,7 @@ bool QgsLayoutItemMapGrid::shouldShowAnnotationForSide( QgsLayoutItemMapGrid::An
   switch ( side )
   {
     case QgsLayoutItemMapGrid::Left:
-      return shouldShowForDisplayMode( coordinate, mLeftGridAnnotationDisplay );
+      return shouldShowForDisplayMode( coordinate, mEvaluatedLeftGridAnnotationDisplay );
     case QgsLayoutItemMapGrid::Right:
       return shouldShowForDisplayMode( coordinate, mRightGridAnnotationDisplay );
     case QgsLayoutItemMapGrid::Top:
@@ -1909,6 +1910,19 @@ bool QgsLayoutItemMapGrid::shouldShowForDisplayMode( QgsLayoutItemMapGrid::Annot
          || ( mode == QgsLayoutItemMapGrid::LatitudeOnly && coordinate == QgsLayoutItemMapGrid::Latitude )
          || ( mode == QgsLayoutItemMapGrid::LongitudeOnly && coordinate == QgsLayoutItemMapGrid::Longitude );
 }
+
+/*
+QgsLayoutItemMapGrid::DisplayMode gridAnnotationDisplayModeFromDD(QString ddValue) {
+  if( ddValue == QStringLiteral("x_only") )
+    return QgsLayoutItemMapGrid::LatitudeOnly;
+  else if ( ddValue == QStringLiteral("y_only") )
+    return QgsLayoutItemMapGrid::LongitudeOnly;
+  else if ( ddValue == QStringLiteral("disabled") )
+    return QgsLayoutItemMapGrid::HideAll;
+  else // if ( ddValue == QStringLiteral("all") )
+    return QgsLayoutItemMapGrid::ShowAll;
+}
+*/
 
 void QgsLayoutItemMapGrid::refreshDataDefinedProperties()
 {
@@ -1952,6 +1966,16 @@ void QgsLayoutItemMapGrid::refreshDataDefinedProperties()
   mEvaluatedAnnotationFrameDistance = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapGridLabelDistance, context, mAnnotationFrameDistance );
   mEvaluatedCrossLength = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapGridCrossSize, context, mCrossLength );
   mEvaluatedGridFrameLineThickness = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapGridFrameLineThickness, context, mGridFramePenThickness );
+  QString leftGridAnnotationDisplayStr = mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridAnnotationDisplayLeft, context, QStringLiteral("all") );
+  QgsMessageLog::logMessage(QStringLiteral("DEBUG MAPGRID : ") + leftGridAnnotationDisplayStr, QStringLiteral("DEBUGDEBUG"));
+  if( leftGridAnnotationDisplayStr == QStringLiteral("x_only") )
+    mEvaluatedLeftGridAnnotationDisplay = LatitudeOnly;
+  else if ( leftGridAnnotationDisplayStr == QStringLiteral("y_only") )
+    mEvaluatedLeftGridAnnotationDisplay = LongitudeOnly;
+  else if ( leftGridAnnotationDisplayStr == QStringLiteral("disabled") )
+    mEvaluatedLeftGridAnnotationDisplay = HideAll;
+  else // if ( leftGridAnnotationDisplayStr == QStringLiteral("all") )
+    mEvaluatedLeftGridAnnotationDisplay = ShowAll;
 }
 
 double QgsLayoutItemMapGrid::mapWidth() const
