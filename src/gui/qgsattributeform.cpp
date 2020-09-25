@@ -1310,6 +1310,11 @@ void QgsAttributeForm::parentFormValueChanged( const QString &attribute, const Q
   }
 }
 
+bool QgsAttributeForm::needsGeometry() const
+{
+  return mNeedsGeometry;
+}
+
 void QgsAttributeForm::synchronizeEnabledState()
 {
   bool isEditable = ( mFeature.isValid()
@@ -1355,6 +1360,7 @@ void QgsAttributeForm::init()
 
   // Cleanup of any previously shown widget, we start from scratch
   QWidget *formWidget = nullptr;
+  mNeedsGeometry = false;
 
   bool buttonBoxVisible = true;
   // Cleanup button box but preserve visibility
@@ -2156,6 +2162,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       newWidgetInfo.labelText = elementDef->name();
       newWidgetInfo.labelOnTop = true;
       newWidgetInfo.showLabel = widgetDef->showLabel();
+      mNeedsGeometry |= htmlWrapper->needsGeometry();
       break;
     }
 

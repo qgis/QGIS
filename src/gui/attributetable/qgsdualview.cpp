@@ -126,15 +126,20 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
   mLayer = layer;
   mEditorContext = context;
 
-  initLayerCache( !( request.flags() & QgsFeatureRequest::NoGeometry ) || !request.filterRect().isNull() );
+  delete mAttributeForm;
+  mAttributeForm = new QgsAttributeForm( mLayer, mTempAttributeFormFeature, mEditorContext );
+
+  bool needsGeometry = !( request.flags() & QgsFeatureRequest::NoGeometry )
+                       || !request.filterRect().isNull()
+                       || mAttributeForm->needsGeometry();
+
+  initLayerCache( needsGeometry );
   initModels( mapCanvas, request, loadFeatures );
 
   mConditionalFormatWidget->setLayer( mLayer );
 
   mTableView->setModel( mFilterModel );
   mFeatureListView->setModel( mFeatureListModel );
-  delete mAttributeForm;
-  mAttributeForm = new QgsAttributeForm( mLayer, mTempAttributeFormFeature, mEditorContext );
   mTempAttributeFormFeature = QgsFeature();
   if ( !context.parentContext() )
   {

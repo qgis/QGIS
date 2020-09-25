@@ -307,9 +307,14 @@ have filter expressions that depend on the parent form scope.
 .. versionadded:: 3.14
 %End
 
+    bool needsGeometry() const;
+%Docstring
+Returns true if one of the form widgets needs feature geometry
+
+.. versionadded:: 3.16
+%End
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *
