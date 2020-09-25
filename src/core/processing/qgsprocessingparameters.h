@@ -1608,8 +1608,13 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
  * For numeric parameters with a dataType() of Double, the number of decimals places
  * shown in the parameter's widget can be specified by setting the parameter's metadata. For example:
  *
+<<<<<<< HEAD
  * * \code{.py}
  *   param = QgsProcessingParameterNumber( 'VAL', 'Threshold', type=QgsProcessingParameter.Double)
+=======
+ * \code{.py}
+ *   param = QgsProcessingParameterNumber( 'VAL', 'Threshold', type=QgsProcessingParameterNumber.Double)
+>>>>>>> 279c499bb1... Fix QgsProcessingParameterNumber docstring example
  *   # only show two decimal places in parameter's widgets, not 6:
  *   param.setMetadata( {'widget_wrapper':
  *     { 'decimals': 2 }
