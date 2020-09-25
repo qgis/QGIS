@@ -240,6 +240,8 @@ Read a custom property from layer. Properties are stored in a map and saved in p
 %Docstring
 Remove a custom property from layer. Properties are stored in a map and saved in project file.
 %End
+
+
     QStringList customProperties() const;
 %Docstring
 Returns list of keys stored in custom properties
@@ -247,6 +249,26 @@ Returns list of keys stored in custom properties
     bool takeChild( QgsLayerTreeNode *node );
 %Docstring
 Remove a child from a node
+%End
+
+
+    const QgsObjectCustomProperties &customPropertiesMap() const;
+%Docstring
+Read all custom properties from layer tree node
+
+.. seealso:: :py:func:`setCustomPropertiesMap`
+
+.. versionadded:: 3.16
+%End
+
+
+    void setCustomPropertiesMap( const QgsObjectCustomProperties &properties );
+%Docstring
+Set custom properties for layer tree node. Current properties are dropped.
+
+.. seealso:: :py:func:`customPropertiesMap`
+
+.. versionadded:: 3.16
 %End
 
   signals:

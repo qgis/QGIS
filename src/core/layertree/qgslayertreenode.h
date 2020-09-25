@@ -227,10 +227,31 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     QVariant customProperty( const QString &key, const QVariant &defaultValue = QVariant() ) const;
     //! Remove a custom property from layer. Properties are stored in a map and saved in project file.
     void removeCustomProperty( const QString &key );
+
+    // TODO: Harmonize this with QgsMapLayer::customPropertyKeys() for QGIS 4 API
+
     //! Returns list of keys stored in custom properties
     QStringList customProperties() const;
     //! Remove a child from a node
     bool takeChild( QgsLayerTreeNode *node );
+
+    // TODO: Harmonize this with QgsMapLayer::customProperties() for QGIS 4 API
+
+    /**
+     * Read all custom properties from layer tree node
+     * \see setCustomPropertiesMap
+     * \since QGIS 3.16
+     */
+    const QgsObjectCustomProperties &customPropertiesMap() const;
+
+    // TODO: Harmonize this with QgsMapLayer::setCustomProperties() for QGIS 4 API
+
+    /**
+     * Set custom properties for layer tree node. Current properties are dropped.
+     * \see customPropertiesMap
+     * \since QGIS 3.16
+     */
+    void setCustomPropertiesMap( const QgsObjectCustomProperties &properties );
 
   signals:
 

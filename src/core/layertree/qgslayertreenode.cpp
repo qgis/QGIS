@@ -205,6 +205,16 @@ QStringList QgsLayerTreeNode::customProperties() const
   return mProperties.keys();
 }
 
+const QgsObjectCustomProperties &QgsLayerTreeNode::customPropertiesMap() const
+{
+  return mProperties;
+}
+
+void QgsLayerTreeNode::setCustomPropertiesMap( const QgsObjectCustomProperties &properties )
+{
+  mProperties = properties;
+}
+
 void QgsLayerTreeNode::readCommonXml( QDomElement &element )
 {
   mProperties.readXml( element );
