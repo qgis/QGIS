@@ -838,6 +838,11 @@ bool QgsCoordinateReferenceSystem::hasAxisInverted() const
 
 bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
 {
+  return createFromWktInternal( wkt, QString() );
+}
+
+bool QgsCoordinateReferenceSystem::createFromWktInternal( const QString &wkt, const QString &description )
+{
   if ( wkt.isEmpty() )
     return false;
 
@@ -851,6 +856,14 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
     {
       // found a match in the cache
       *this = crsIt.value();
+
+      if ( !description.isEmpty() && d->mDescription.isEmpty() )
+      {
+        // now we have a name for a previously unknown CRS! Update the cached CRS accordingly, so that we use the name from now on...
+        d->mDescription = description;
+        locker.changeMode( QgsReadWriteLocker::Write );
+        sWktCache()->insert( wkt, *this );
+      }
       return true;
     }
   }
@@ -2036,8 +2049,14 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
     // if wkt is present, prefer that since it's lossless (unlike proj4 strings)
     if ( !initialized )
     {
+      // before doing anything, we grab and set the stored CRS name (description).
+      // this way if the stored CRS doesn't match anything available locally (i.e. from Proj's db
+      // or the user's custom CRS list), then we will correctly show the CRS with its original
+      // name (instead of just "custom crs")
+      const QString description = srsNode.namedItem( QStringLiteral( "description" ) ).toElement().text();
+
       const QString wkt = srsNode.namedItem( QStringLiteral( "wkt" ) ).toElement().text();
-      initialized = createFromWkt( wkt );
+      initialized = createFromWktInternal( wkt, description );
     }
 
     if ( !initialized )
