@@ -49,7 +49,7 @@
         <x>0</x>
         <y>0</y>
         <width>492</width>
-        <height>1211</height>
+        <height>1209</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -232,7 +232,7 @@
                  <double>9999999.000000000000000</double>
                 </property>
                 <property name="showClearButton" stdset="0">
-                  <bool>true</bool>
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -694,9 +694,6 @@
                <property name="toolTip">
                 <string>Grid lines intersecting the border below this threshold will be ignored.</string>
                </property>
-               <property name="showClearButton" stdset="0">
-                <bool>true</bool>
-               </property>
                <property name="suffix">
                 <string> °</string>
                </property>
@@ -708,6 +705,9 @@
                </property>
                <property name="value">
                 <double>0.000000000000000</double>
+               </property>
+               <property name="showClearButton" stdset="0">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -723,9 +723,6 @@
                <property name="toolTip">
                 <string>Outwards facing ticks closer to the corners than this margin will be ignored.</string>
                </property>
-               <property name="showClearButton" stdset="0">
-                <bool>true</bool>
-               </property>
                <property name="suffix">
                 <string> mm</string>
                </property>
@@ -734,6 +731,9 @@
                </property>
                <property name="value">
                 <double>0.000000000000000</double>
+               </property>
+               <property name="showClearButton" stdset="0">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -771,6 +771,12 @@
           <bool>false</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout" columnstretch="0,0,0">
+          <item row="15" column="1" colspan="2">
+           <widget class="QComboBox" name="mAnnotationPositionBottomComboBox"/>
+          </item>
+          <item row="10" column="1" colspan="2">
+           <widget class="QComboBox" name="mAnnotationDirectionComboBoxRight"/>
+          </item>
           <item row="8" column="0">
            <widget class="QLabel" name="mAnnotationPositionLabelRight">
             <property name="text">
@@ -778,27 +784,11 @@
             </property>
            </widget>
           </item>
-          <item row="7" column="1" colspan="2">
-           <widget class="QComboBox" name="mAnnotationDirectionComboBoxLeft"/>
-          </item>
-          <item row="6" column="1" colspan="2">
-           <widget class="QComboBox" name="mAnnotationPositionLeftComboBox"/>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="mAnnotationFormatLabel">
-            <property name="text">
-             <string>Format</string>
-            </property>
-           </widget>
-          </item>
           <item row="8" column="1" colspan="2">
            <widget class="QComboBox" name="mAnnotationDisplayRightComboBox"/>
           </item>
-          <item row="9" column="1" colspan="2">
-           <widget class="QComboBox" name="mAnnotationPositionRightComboBox"/>
-          </item>
-          <item row="10" column="1" colspan="2">
-           <widget class="QComboBox" name="mAnnotationDirectionComboBoxRight"/>
+          <item row="6" column="1" colspan="2">
+           <widget class="QComboBox" name="mAnnotationPositionLeftComboBox"/>
           </item>
           <item row="0" column="1" colspan="2">
            <layout class="QHBoxLayout" name="horizontalLayout_13">
@@ -817,19 +807,6 @@
              </widget>
             </item>
            </layout>
-          </item>
-          <item row="14" column="0">
-           <widget class="QLabel" name="mAnnotationPositionLabelBottom">
-            <property name="text">
-             <string>Bottom</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="15" column="1" colspan="2">
-           <widget class="QComboBox" name="mAnnotationPositionBottomComboBox"/>
           </item>
           <item row="11" column="1" colspan="2">
            <widget class="QComboBox" name="mAnnotationDisplayTopComboBox"/>
@@ -857,24 +834,28 @@
           <item row="13" column="1" colspan="2">
            <widget class="QComboBox" name="mAnnotationDirectionComboBoxTop"/>
           </item>
-          <item row="16" column="1" colspan="2">
-           <widget class="QComboBox" name="mAnnotationDirectionComboBoxBottom"/>
-          </item>
-          <item row="14" column="1" colspan="2">
-           <widget class="QComboBox" name="mAnnotationDisplayBottomComboBox"/>
-          </item>
-          <item row="17" column="1" colspan="2">
-           <widget class="QgsFontButton" name="mAnnotationFontButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
+          <item row="14" column="0">
+           <widget class="QLabel" name="mAnnotationPositionLabelBottom">
             <property name="text">
-             <string>Font</string>
+             <string>Bottom</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
             </property>
            </widget>
+          </item>
+          <item row="7" column="1" colspan="2">
+           <widget class="QComboBox" name="mAnnotationDirectionComboBoxLeft"/>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="mAnnotationFormatLabel">
+            <property name="text">
+             <string>Format</string>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="1" colspan="2">
+           <widget class="QComboBox" name="mAnnotationPositionRightComboBox"/>
           </item>
           <item row="20" column="1" colspan="2">
            <widget class="QgsSpinBox" name="mCoordinatePrecisionSpinBox">
@@ -893,6 +874,13 @@
             </property>
            </widget>
           </item>
+          <item row="18" column="1">
+           <widget class="QgsDoubleSpinBox" name="mDistanceToMapFrameSpinBox">
+            <property name="suffix">
+             <string> mm</string>
+            </property>
+           </widget>
+          </item>
           <item row="18" column="2">
            <widget class="QgsPropertyOverrideButton" name="mLabelDistDDBtn">
             <property name="text">
@@ -900,12 +888,11 @@
             </property>
            </widget>
           </item>
-          <item row="18" column="1">
-           <widget class="QgsDoubleSpinBox" name="mDistanceToMapFrameSpinBox">
-            <property name="suffix">
-             <string> mm</string>
-            </property>
-           </widget>
+          <item row="16" column="1" colspan="2">
+           <widget class="QComboBox" name="mAnnotationDirectionComboBoxBottom"/>
+          </item>
+          <item row="14" column="1" colspan="2">
+           <widget class="QComboBox" name="mAnnotationDisplayBottomComboBox"/>
           </item>
           <item row="20" column="0">
            <widget class="QLabel" name="mCoordinatePrecisionLabel">
@@ -914,6 +901,19 @@
             </property>
             <property name="wordWrap">
              <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="17" column="1" colspan="2">
+           <widget class="QgsFontButton" name="mAnnotationFontButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Font</string>
             </property>
            </widget>
           </item>
@@ -935,9 +935,9 @@
              </item>
              <item row="0" column="1">
               <widget class="QComboBox" name="mRotatedAnnotationsLengthModeComboBox">
-                <property name="toolTip">
-                  <string>Determines how the ticks length is defined when rotated.</string>
-                </property>
+               <property name="toolTip">
+                <string>Determines how the ticks length is defined when rotated.</string>
+               </property>
               </widget>
              </item>
              <item row="1" column="0">
@@ -952,9 +952,6 @@
                <property name="toolTip">
                 <string>Grid lines intersecting the border below this threshold will be ignored.</string>
                </property>
-               <property name="showClearButton" stdset="0">
-                <bool>true</bool>
-               </property>
                <property name="suffix">
                 <string> °</string>
                </property>
@@ -963,6 +960,9 @@
                </property>
                <property name="maximum">
                 <double>90.000000000000000</double>
+               </property>
+               <property name="showClearButton" stdset="0">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -978,9 +978,6 @@
                <property name="toolTip">
                 <string>Outwards facing annotations closer to the corners than this margin will be ignored.</string>
                </property>
-               <property name="showClearButton" stdset="0">
-                <bool>true</bool>
-               </property>
                <property name="suffix">
                 <string> mm</string>
                </property>
@@ -990,26 +987,18 @@
                <property name="value">
                 <double>0.000000000000000</double>
                </property>
+               <property name="showClearButton" stdset="0">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
             </layout>
            </widget>
           </item>
-          <item row="1" column="1" colspan="2">
-           <layout class="QHBoxLayout" name="horizontalLayout_3">
-            <item>
-             <widget class="QComboBox" name="mAnnotationDisplayLeftComboBox"/>
-            </item>
-            <item>
-             <widget class="QgsPropertyOverrideButton" name="mAnnotationDisplayLeftDDBtn">
-              <property name="text">
-               <string>…</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
+          <item row="2" column="1" colspan="2">
+           <widget class="QComboBox" name="mAnnotationDisplayLeftComboBox"/>
           </item>
-          <item row="1" column="0">
+          <item row="2" column="0">
            <widget class="QLabel" name="mAnnotationPositionLabelLeft">
             <property name="text">
              <string>Left</string>
