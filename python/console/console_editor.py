@@ -302,8 +302,7 @@ class Editor(QgsPythonConsoleBase):
             runSelected.setEnabled(True)  # spellok
             copyAction.setEnabled(True)
             cutAction.setEnabled(True)
-            if self.settings.value("pythonConsole/accessTokenGithub", ''):
-                gist_menu.setEnabled(True)
+            gist_menu.setEnabled(True)
             pyQGISHelpAction.setEnabled(True)
         if not self.text() == '':
             selectAllAction.setEnabled(True)
@@ -368,6 +367,12 @@ class Editor(QgsPythonConsoleBase):
 
     def shareOnGist(self, is_public):
         ACCESS_TOKEN = self.settings.value("pythonConsole/accessTokenGithub", '', type=QByteArray)
+        if not ACCESS_TOKEN:
+            msg_text = QCoreApplication.translate(
+                'PythonConsole', 'GitHub personal access token must be generated (see Console Options)')
+            self.parent.pc.callWidgetMessageBarEditor(msg_text, 0, True)
+            return
+
         URL = "https://api.github.com/gists"
 
         path = self.parent.tw.currentWidget().path
