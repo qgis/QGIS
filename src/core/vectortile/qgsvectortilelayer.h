@@ -191,7 +191,7 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
 
     QVariantMap mArcgisLayerConfiguration;
 
-    bool setupArcgisVectorTileServiceConnection( const QString &uri );
+    bool setupArcgisVectorTileServiceConnection( const QString &uri, const QgsDataSourceUri &dataSourceUri );
 };
 
 
