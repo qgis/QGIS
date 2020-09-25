@@ -348,9 +348,6 @@ void QgsLayoutMapGridWidget::toggleFrameControls( bool frameEnabled, bool frameF
   mTopDivisionsLabel->setEnabled( frameEnabled );
   mBottomDivisionsLabel->setEnabled( frameEnabled );
   mRotatedTicksGroupBox->setEnabled( rotationEnabled );
-  mRotatedTicksLengthModeComboBox->setEnabled( rotationEnabled );
-  mRotatedTicksThresholdSpinBox->setEnabled( rotationEnabled );
-  mRotatedTicksMarginToCornerSpinBox->setEnabled( rotationEnabled );
 }
 
 void QgsLayoutMapGridWidget::insertAnnotationPositionEntries( QComboBox *c )
