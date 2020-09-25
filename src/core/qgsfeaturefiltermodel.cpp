@@ -640,7 +640,6 @@ void QgsFeatureFilterModel::setExtraIdentifierValue( const QVariant &extraIdenti
 
 void QgsFeatureFilterModel::setExtraIdentifierValues( const QVariantList &extraIdentifierValues )
 {
-<<<<<<< HEAD
   if ( extraIdentifierValues == mExtraIdentifierValues && !mExtraIdentifierValues.isEmpty() )
     return;
 
@@ -656,9 +655,6 @@ void QgsFeatureFilterModel::setExtraIdentifierValues( const QVariantList &extraI
   mIsSettingExtraIdentifierValue = false;
 
   emit extraIdentifierValueChanged();
-=======
-  setExtraIdentifierValue( nullIdentifier() );
->>>>>>> c7633874aa... Merge pull request #38968 from 3nids/rel-ref-fix-ps
 }
 
 void QgsFeatureFilterModel::setExtraIdentifierValuesToNull()
