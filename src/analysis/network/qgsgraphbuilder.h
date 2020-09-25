@@ -32,7 +32,7 @@ class QgsGraph;
 * \brief This class used for making the QgsGraph object
 */
 
-class ANALYSIS_EXPORT QgsGraphBuilder : public QgsGraphBuilderInterface
+class ANALYSIS_EXPORT QgsGraphBuilder : public QgsGraphBuilderInterface SIP_NODEFAULTCTORS
 {
   public:
 
@@ -58,6 +58,9 @@ class ANALYSIS_EXPORT QgsGraphBuilder : public QgsGraphBuilderInterface
   private:
 
     QgsGraph *mGraph = nullptr;
+
+    QgsGraphBuilder( const QgsGraphBuilder & ) = delete;
+    QgsGraphBuilder &operator=( const QgsGraphBuilder & ) = delete;
 };
 
 // clazy:excludeall=qstring-allocations

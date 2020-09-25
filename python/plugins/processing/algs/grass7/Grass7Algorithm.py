@@ -42,6 +42,7 @@ from qgis.core import (Qgis,
                        QgsProcessingAlgorithm,
                        QgsProcessingParameterDefinition,
                        QgsProcessingException,
+                       QgsProcessingParameterCrs,
                        QgsProcessingParameterExtent,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterNumber,
@@ -65,6 +66,7 @@ from qgis.core import (Qgis,
 from qgis.utils import iface
 
 import warnings
+
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     from osgeo import ogr
@@ -82,7 +84,6 @@ pluginPath = os.path.normpath(os.path.join(
 
 
 class Grass7Algorithm(QgsProcessingAlgorithm):
-
     GRASS_OUTPUT_TYPE_PARAMETER = 'GRASS_OUTPUT_TYPE_PARAMETER'
     GRASS_MIN_AREA_PARAMETER = 'GRASS_MIN_AREA_PARAMETER'
     GRASS_SNAP_TOLERANCE_PARAMETER = 'GRASS_SNAP_TOLERANCE_PARAMETER'
@@ -116,6 +117,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         self.commands = []
         self.outputCommands = []
         self.exportedLayers = {}
+        self.fileOutputs = {}
         self.descriptionFile = descriptionfile
 
         # Default GRASS parameters
@@ -398,6 +400,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         self.commands = []
         self.outputCommands = []
         self.exportedLayers = {}
+        self.fileOutputs = {}
 
         # If GRASS session has been created outside of this algorithm then
         # get the list of layers loaded in GRASS otherwise start a new
@@ -442,9 +445,15 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         for out in self.outputDefinitions():
             outName = out.name()
             if outName in parameters:
-                outputs[outName] = parameters[outName]
+                if outName in self.fileOutputs:
+                    print('ADD', outName)
+                    print('VAL', parameters[outName])
+                    print('VAL 2', self.fileOutputs[outName])
+                    outputs[outName] = self.fileOutputs[outName]
+                else:
+                    outputs[outName] = parameters[outName]
                 if isinstance(out, QgsProcessingOutputHtml):
-                    self.convertToHtml(parameters[outName])
+                    self.convertToHtml(self.fileOutputs[outName])
 
         return outputs
 
@@ -625,6 +634,9 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                     continue
                 else:
                     value = '{},{}'.format(v[0], v[1])
+            elif isinstance(param, QgsProcessingParameterCrs):
+                if self.parameterAsCrs(parameters, paramName, context):
+                    value = '"{}"'.format(self.parameterAsCrs(parameters, paramName, context).toProj())
             # For everything else, we assume that it is a string
             else:
                 value = '"{}"'.format(
@@ -643,23 +655,18 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 # For File destination
                 if isinstance(out, QgsProcessingParameterFileDestination):
                     if outName in parameters and parameters[outName] is not None:
+                        outPath = self.parameterAsFileOutput(parameters, outName, context)
+                        self.fileOutputs[outName] = outPath
                         # for HTML reports, we need to redirect stdout
                         if out.defaultFileExtension().lower() == 'html':
                             if outName == 'html':
                                 # for "fake" outputs redirect command stdout
-                                command += ' > "{}"'.format(
-                                    self.parameterAsFileOutput(
-                                        parameters, outName, context)
-                                )
+                                command += ' > "{}"'.format(outPath)
                             else:
                                 # for real outputs only output itself should be redirected
-                                command += ' {}=- > "{}"'.format(
-                                    outName,
-                                    self.parameterAsFileOutput(parameters, outName, context))
+                                command += ' {}=- > "{}"'.format(outName, outPath)
                         else:
-                            command += ' {}="{}"'.format(
-                                outName,
-                                self.parameterAsFileOutput(parameters, outName, context))
+                            command += ' {}="{}"'.format(outName, outPath)
                 # For folders destination
                 elif isinstance(out, QgsProcessingParameterFolderDestination):
                     # We need to add a unique temporary basename
@@ -764,6 +771,8 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         createOpt = self.parameterAsString(parameters, self.GRASS_RASTER_FORMAT_OPT, context)
         metaOpt = self.parameterAsString(parameters, self.GRASS_RASTER_FORMAT_META, context)
         self.exportRasterLayer(grassName, fileName, colorTable, outFormat, createOpt, metaOpt)
+
+        self.fileOutputs[name] = fileName
 
     def exportRasterLayer(self, grassName, fileName,
                           colorTable=True, outFormat='GTiff',
@@ -939,6 +948,8 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         lco = self.parameterAsString(parameters, self.GRASS_VECTOR_LCO, context)
         exportnocat = self.parameterAsBoolean(parameters, self.GRASS_VECTOR_EXPORT_NOCAT, context)
         self.exportVectorLayer(grassName, fileName, layer, nocats, dataType, outFormat, dsco, lco, exportnocat)
+
+        self.fileOutputs[name] = fileName
 
     def exportVectorLayer(self, grassName, fileName, layer=None, nocats=False, dataType='auto',
                           outFormat=None, dsco=None, lco=None, exportnocat=False):

@@ -38,6 +38,7 @@ namespace MDAL
   } Statistics;
 
   typedef std::vector< std::pair< std::string, std::string > > Metadata;
+  typedef std::vector<std::pair<double, double>> Classification;
 
   class Dataset
   {
@@ -77,6 +78,7 @@ namespace MDAL
       Mesh *mesh() const;
 
       double time( RelativeTimestamp::Unit unit ) const;
+      RelativeTimestamp timestamp() const;
       void setTime( double time, RelativeTimestamp::Unit unit = RelativeTimestamp::hours );
       void setTime( const RelativeTimestamp &time );
 
@@ -150,6 +152,7 @@ namespace MDAL
 
       std::string getMetadata( const std::string &key );
       void setMetadata( const std::string &key, const std::string &val );
+      void setMetadata( const Metadata &metadata );
 
       std::string name();
       void setName( const std::string &name );
@@ -164,6 +167,7 @@ namespace MDAL
       void setDataLocation( MDAL_DataLocation dataLocation );
 
       std::string uri() const;
+      void replaceUri( std::string uri );
 
       Statistics statistics() const;
       void setStatistics( const Statistics &statistics );
@@ -179,12 +183,20 @@ namespace MDAL
       void startEditing();
       void stopEditing();
 
+      //! First value is the angle for full rotation and second value is the start angle
+      void setReferenceAngles( const std::pair<double, double> &referenceAngle );
+      std::pair<double, double> referenceAngles() const;
+
+      bool isPolar() const;
+      void setIsPolar( bool isPolar );
     private:
       bool mInEditMode = false;
 
       const std::string mDriverName;
       Mesh *mParent = nullptr;
       bool mIsScalar = true;
+      bool mIsPolar = false;
+      std::pair<double, double> mReferenceAngles = {-360, 0}; //default full rotation is negative to be consistent with usual geographical clockwise
       MDAL_DataLocation mDataLocation = MDAL_DataLocation::DataOnVertices;
       std::string mUri; // file/uri from where it came
       Statistics mStatistics;
@@ -226,11 +238,7 @@ namespace MDAL
   {
     public:
       Mesh( const std::string &driverName,
-            size_t verticesCount,
-            size_t edgesCount,
-            size_t facesCount,
             size_t faceVerticesMaximumCount,
-            BBox extent,
             const std::string &uri );
 
       virtual ~Mesh();
@@ -251,21 +259,27 @@ namespace MDAL
       //! Find a dataset group by name
       std::shared_ptr<DatasetGroup> group( const std::string &name );
 
-      size_t verticesCount() const;
-      size_t edgesCount() const;
-      size_t facesCount() const;
+      virtual size_t verticesCount() const = 0;
+      virtual size_t edgesCount() const = 0;
+      virtual size_t facesCount() const = 0;
+      virtual BBox extent() const = 0;
       std::string uri() const;
-      BBox extent() const;
       std::string crs() const;
       size_t faceVerticesMaximumCount() const;
 
+      virtual void closeSource() {};
+
+      virtual bool isEditable() const {return false;}
+
+      virtual void addVertices( size_t vertexCount, double *coordinates );
+      virtual void addFaces( size_t faceCount, size_t driverMaxVerticesPerFace, int *faceSizes, int *vertexIndices );
+
+    protected:
+      void setFaceVerticesMaximumCount( const size_t &faceVerticesMaximumCount );
+
     private:
       const std::string mDriverName;
-      size_t mVerticesCount = 0; // non-zero for any mesh types
-      size_t mEdgesCount = 0; // usually 0 for 2D meshes/3D meshes
-      size_t mFacesCount = 0; // usually 0 for 1D meshes
       size_t mFaceVerticesMaximumCount = 0; //typically 3 or 4, sometimes up to 9
-      BBox mExtent;
       const std::string mUri; // file/uri from where it came
       std::string mCrs;
   };

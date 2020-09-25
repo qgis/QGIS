@@ -1,6 +1,7 @@
 {
   "name": "coalesce",
   "type": "function",
+  "groups": ["Conditionals"],
   "description": "Returns the first non-NULL value from the expression list.<br>This function can take any number of arguments.",
   "variableLenArguments": true,
   "arguments": [ {"arg":"expression1", "syntaxOnly": true},

@@ -17,7 +17,6 @@
 ***************************************************************************
 """
 
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -60,7 +59,6 @@ sessionExportedLayers = {}
 
 
 class SagaAlgorithm(SagaAlgorithmBase):
-
     OUTPUT_EXTENT = 'OUTPUT_EXTENT'
 
     def __init__(self, descriptionfile):
@@ -154,8 +152,8 @@ class SagaAlgorithm(SagaAlgorithmBase):
                 elif line.startswith('AllowUnmatching'):
                     self.allow_nonmatching_grid_extents = True
                 else:
-                    pass # TODO
-                    #self.addOutput(getOutputFromString(line))
+                    pass  # TODO
+                    # self.addOutput(getOutputFromString(line))
                 line = lines.readline().strip('\n').strip()
 
     def processAlgorithm(self, parameters, context, feedback):
@@ -266,7 +264,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
             if isinstance(param, (QgsProcessingParameterRasterLayer, QgsProcessingParameterFeatureSource)):
                 command += ' -{} "{}"'.format(param.name(), self.exportedLayers[param.name()])
             elif isinstance(param, QgsProcessingParameterMultipleLayers):
-                if parameters[param.name()]: # parameter may have been an empty list
+                if parameters[param.name()]:  # parameter may have been an empty list
                     command += ' -{} "{}"'.format(param.name(), ';'.join(self.exportedLayers[param.name()]))
             elif isinstance(param, QgsProcessingParameterBoolean):
                 if self.parameterAsBoolean(parameters, param.name(), context):
@@ -311,7 +309,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
 
         output_layers = []
         output_files = {}
-        #If the user has entered an output file that has non-ascii chars, we use a different path with only ascii chars
+        # If the user has entered an output file that has non-ascii chars, we use a different path with only ascii chars
         output_files_nonascii = {}
         for out in self.destinationParameterDefinitions():
             filePath = self.parameterAsOutputLayer(parameters, out.name(), context)

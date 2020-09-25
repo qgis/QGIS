@@ -28,7 +28,8 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.core import (QgsProcessingException,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterCrs,
-                       QgsProcessingOutputRasterLayer)
+                       QgsProcessingOutputRasterLayer,
+                       QgsProcessingContext)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
@@ -38,7 +39,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class AssignProjection(GdalAlgorithm):
-
     INPUT = 'INPUT'
     CRS = 'CRS'
     OUTPUT = 'OUTPUT'
@@ -98,3 +98,37 @@ class AssignProjection(GdalAlgorithm):
         self.setOutputValue(self.OUTPUT, fileName)
 
         return commands
+
+    def postProcessAlgorithm(self, context, feedback):
+        # get output value
+        fileName = self.output_values.get(self.OUTPUT)
+        if not fileName:
+            return {}
+
+        # search in context project's layers
+        if context.project():
+
+            for l in context.project().mapLayers().values():
+
+                # check the source
+                if l.source() != fileName:
+                    continue
+
+                # reload provider's data
+                l.dataProvider().reloadData()
+                l.setCrs(l.dataProvider().crs())
+                l.triggerRepaint()
+
+        # search in context temporary layer store
+        for l in context.temporaryLayerStore().mapLayers().values():
+
+            # check the source
+            if l.source() != fileName:
+                continue
+
+            # reload provider's data
+            l.dataProvider().reloadData()
+            l.setCrs(l.dataProvider().crs())
+            context.temporaryLayerStore().addMapLayer(l)
+
+        return {}

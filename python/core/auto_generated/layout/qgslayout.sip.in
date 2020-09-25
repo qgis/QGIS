@@ -50,7 +50,7 @@ user settings such as the layout context DPI.
 Construct a new layout linked to the specified ``project``.
 
 If the layout is a "new" layout (as opposed to a layout which will
-restore a previous state from XML) then initializeDefaults() should be
+restore a previous state from XML) then :py:func:`~QgsLayout.initializeDefaults` should be
 called on the new layout.
 %End
 
@@ -116,7 +116,7 @@ Returns ``True`` if the item was successfully raised.
 
 If ``deferUpdate`` is ``True``, the scene will not be visibly updated
 to reflect the new stacking order. This allows multiple
-raiseItem() calls to be made in sequence without the cost of
+:py:func:`~QgsLayout.raiseItem` calls to be made in sequence without the cost of
 updating the scene for each one.
 
 .. seealso:: :py:func:`lowerItem`
@@ -131,7 +131,7 @@ Returns ``True`` if the item was successfully lowered.
 
 If ``deferUpdate`` is ``True``, the scene will not be visibly updated
 to reflect the new stacking order. This allows multiple
-raiseItem() calls to be made in sequence without the cost of
+:py:func:`~QgsLayout.raiseItem` calls to be made in sequence without the cost of
 updating the scene for each one.
 
 .. seealso:: :py:func:`raiseItem`
@@ -146,7 +146,7 @@ Returns ``True`` if the item was successfully raised.
 
 If ``deferUpdate`` is ``True``, the scene will not be visibly updated
 to reflect the new stacking order. This allows multiple
-raiseItem() calls to be made in sequence without the cost of
+:py:func:`~QgsLayout.raiseItem` calls to be made in sequence without the cost of
 updating the scene for each one.
 
 .. seealso:: :py:func:`moveItemToBottom`
@@ -160,7 +160,7 @@ Lowers an ``item`` down to the bottom of the z-order.
 Returns ``True`` if the item was successfully lowered.
 If ``deferUpdate`` is ``True``, the scene will not be visibly updated
 to reflect the new stacking order. This allows multiple
-raiseItem() calls to be made in sequence without the cost of
+:py:func:`~QgsLayout.raiseItem` calls to be made in sequence without the cost of
 updating the scene for each one.
 
 .. seealso:: :py:func:`moveItemToTop`
@@ -184,7 +184,7 @@ If ``includeTemplateUuids`` is ``True``, then item's template UUID
 will also be tested when trying to match the uuid. This may differ from the item's UUID
 for items which have been added to an existing layout from a template. In this case
 the template UUID returns the original item UUID at the time the template was created,
-vs the item's uuid() which returns the current instance of the item's unique identifier.
+vs the item's :py:func:`~QgsLayout.uuid` which returns the current instance of the item's unique identifier.
 Note that template UUIDs are only available while a layout is being restored from XML.
 
 .. seealso:: :py:func:`itemByTemplateUuid`
@@ -197,12 +197,12 @@ Note that template UUIDs are only available while a layout is being restored fro
     QgsLayoutItem *itemByTemplateUuid( const QString &uuid ) const;
 %Docstring
 Returns the layout item with matching template ``uuid`` unique identifier, or ``None``
-if a matching item could not be found. Unlike itemByUuid(), this method ONLY checks
+if a matching item could not be found. Unlike :py:func:`~QgsLayout.itemByUuid`, this method ONLY checks
 template UUIDs for a match.
 
 Template UUIDs are valid only for items which have been added to an existing layout from a template. In this case
 the template UUID is the original item UUID at the time the template was created,
-vs the item's uuid() which returns the current instance of the item's unique identifier.
+vs the item's :py:func:`~QgsLayout.uuid` which returns the current instance of the item's unique identifier.
 
 Note that template UUIDs are only available while a layout is being restored from XML.
 
@@ -231,7 +231,7 @@ If ``includeTemplateUuids`` is ``True``, then the multiframe's :py:func:`QgsLayo
 will also be tested when trying to match the uuid. Template UUIDs are valid only for items
 which have been added to an existing layout from a template. In this case
 the template UUID is the original item UUID at the time the template was created,
-vs the item's uuid() which returns the current instance of the item's unique identifier.
+vs the item's :py:func:`~QgsLayout.uuid` which returns the current instance of the item's unique identifier.
 Note that template UUIDs are only available while a layout is being restored from XML.
 
 .. seealso:: :py:func:`itemByUuid`
@@ -437,7 +437,7 @@ Returns list of keys stored in custom properties for the layout.
     QgsLayoutItemMap *referenceMap() const;
 %Docstring
 Returns the map item which will be used to generate corresponding world files when the
-layout is exported. If no map was explicitly set via setReferenceMap(), the largest
+layout is exported. If no map was explicitly set via :py:func:`~QgsLayout.setReferenceMap`, the largest
 map in the layout will be returned (or ``None`` if there are no maps in the layout).
 
 .. seealso:: :py:func:`setReferenceMap`
@@ -485,20 +485,20 @@ The returned bounds are in layout units.
 
     void addLayoutItem( QgsLayoutItem *item /Transfer/ );
 %Docstring
-Adds an ``item`` to the layout. This should be called instead of the base class addItem()
+Adds an ``item`` to the layout. This should be called instead of the base class :py:func:`~QgsLayout.addItem`
 method. Ownership of the item is transferred to the layout.
 %End
 
     void removeLayoutItem( QgsLayoutItem *item );
 %Docstring
-Removes an ``item`` from the layout. This should be called instead of the base class removeItem()
+Removes an ``item`` from the layout. This should be called instead of the base class :py:func:`~QgsLayout.removeItem`
 method.
 The item will also be deleted.
 %End
 
     void addMultiFrame( QgsLayoutMultiFrame *multiFrame /Transfer/ );
 %Docstring
-Adds a ``multiFrame`` to the layout. The object is owned by the layout until removeMultiFrame() is called.
+Adds a ``multiFrame`` to the layout. The object is owned by the layout until :py:func:`~QgsLayout.removeMultiFrame` is called.
 
 .. seealso:: :py:func:`removeMultiFrame`
 

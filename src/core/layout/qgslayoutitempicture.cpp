@@ -87,7 +87,7 @@ QgsLayoutItemPicture *QgsLayoutItemPicture::create( QgsLayout *layout )
 void QgsLayoutItemPicture::draw( QgsLayoutItemRenderContext &context )
 {
   QPainter *painter = context.renderContext().painter();
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   // painter is scaled to dots, so scale back to layout units
   painter->scale( context.renderContext().scaleFactor(), context.renderContext().scaleFactor() );
 
@@ -204,7 +204,6 @@ void QgsLayoutItemPicture::draw( QgsLayoutItemRenderContext &context )
     }
 
   }
-  painter->restore();
 }
 
 QSizeF QgsLayoutItemPicture::applyItemSizeConstraint( const QSizeF targetSize )
@@ -446,6 +445,12 @@ void QgsLayoutItemPicture::loadLocalPicture( const QString &path )
 
 void QgsLayoutItemPicture::loadPictureUsingCache( const QString &path )
 {
+  if ( path.isEmpty() )
+  {
+    mImage = QImage();
+    return;
+  }
+
   switch ( mMode )
   {
     case FormatUnknown:
@@ -454,7 +459,10 @@ void QgsLayoutItemPicture::loadPictureUsingCache( const QString &path )
     case FormatRaster:
     {
       bool fitsInCache = false;
-      mImage = QgsApplication::imageCache()->pathAsImage( path, QSize(), true, 1, fitsInCache, true );
+      bool isMissing = false;
+      mImage = QgsApplication::imageCache()->pathAsImage( path, QSize(), true, 1, fitsInCache, true, &isMissing );
+      if ( mImage.isNull() || isMissing )
+        mMode = FormatUnknown;
       break;
     }
 
@@ -464,10 +472,11 @@ void QgsLayoutItemPicture::loadPictureUsingCache( const QString &path )
       QColor fillColor = mDataDefinedProperties.valueAsColor( QgsLayoutObject::PictureSvgBackgroundColor, context, mSvgFillColor );
       QColor strokeColor = mDataDefinedProperties.valueAsColor( QgsLayoutObject::PictureSvgStrokeColor, context, mSvgStrokeColor );
       double strokeWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::PictureSvgStrokeWidth, context, mSvgStrokeWidth );
+      bool isMissingImage = false;
       const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( path, rect().width(), fillColor, strokeColor, strokeWidth,
-                                     1.0 );
+                                     1.0, 0, false, &isMissingImage );
       mSVG.load( svgContent );
-      if ( mSVG.isValid() )
+      if ( mSVG.isValid() && !isMissingImage )
       {
         mMode = FormatSVG;
         QRect viewBox = mSVG.viewBox(); //take width/height ratio from view box instead of default size

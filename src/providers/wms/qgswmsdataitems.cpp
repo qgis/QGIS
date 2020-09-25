@@ -302,7 +302,7 @@ QString QgsWMSItemBase::createUri()
   if ( mDataSourceUri.param( QLatin1String( "type" ) ) == QLatin1String( "wmst" ) )
   {
     mDataSourceUri.setParam( QLatin1String( "temporalSource" ), QLatin1String( "provider" ) );
-    mDataSourceUri.setParam( QLatin1String( "enableTime" ), QLatin1String( "yes" ) );
+    mDataSourceUri.setParam( QLatin1String( "allowTemporalUpdates" ), QLatin1String( "true" ) );
   }
 
   QString format;
@@ -507,7 +507,7 @@ QString QgsWMTSLayerItem::createUri()
 
 // ---------------------------------------------------------------------------
 QgsWMSRootItem::QgsWMSRootItem( QgsDataItem *parent, QString name, QString path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "WMS" ) )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "WMS" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconWms.svg" );
@@ -532,7 +532,7 @@ QVector<QgsDataItem *> QgsWMSRootItem::createChildren()
 // ---------------------------------------------------------------------------
 
 QgsWMTSRootItem::QgsWMTSRootItem( QgsDataItem *parent, QString name, QString path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "WMS" ) )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "WMS" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconWms.svg" );
@@ -573,10 +573,10 @@ QgsDataItem *QgsWmsDataItemProvider::createDataItem( const QString &path, QgsDat
 
 
 QgsXyzTileRootItem::QgsXyzTileRootItem( QgsDataItem *parent, QString name, QString path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "WMS" ) )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "WMS" ) )
 {
   mCapabilities |= Fast;
-  mIconName = QStringLiteral( "mIconWms.svg" );
+  mIconName = QStringLiteral( "mIconXyz.svg" );
   populate();
 }
 
@@ -600,6 +600,7 @@ QVector<QgsDataItem *> QgsXyzTileRootItem::createChildren()
 QgsXyzLayerItem::QgsXyzLayerItem( QgsDataItem *parent, QString name, QString path, const QString &encodedUri )
   : QgsLayerItem( parent, name, path, encodedUri, QgsLayerItem::Raster, QStringLiteral( "wms" ) )
 {
+  mIconName = QStringLiteral( "mIconXyz.svg" );
   setState( Populated );
 }
 

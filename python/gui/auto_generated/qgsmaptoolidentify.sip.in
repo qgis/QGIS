@@ -16,9 +16,10 @@ class QgsMapToolIdentify : QgsMapTool
 Map tool for identifying features in layers
 
 after selecting a point, performs the identification:
+
 - for raster layers shows value of underlying pixel
 - for vector layers shows feature attributes within search radius
-(allows editing values when vector layer is in editing mode)
+  (allows editing values when vector layer is in editing mode)
 %End
 
 %TypeHeaderCode
@@ -40,6 +41,7 @@ after selecting a point, performs the identification:
       VectorLayer,
       RasterLayer,
       MeshLayer,
+      VectorTileLayer,
       AllLayers
     };
     typedef QFlags<QgsMapToolIdentify::Type> LayerType;
@@ -90,9 +92,9 @@ Performs the identification.
 :param x: x coordinates of mouseEvent
 :param y: y coordinates of mouseEvent
 :param layerList: Performs the identification within the given list of layers. Default value is an empty list, i.e. uses all the layers.
-:param mode: Identification mode. Can use Qgis default settings or a defined mode. Default mode is DefaultQgsSetting.
+:param mode: Identification mode. Can use QGIS default settings or a defined mode. Default mode is DefaultQgsSetting.
 
-:return: a list of IdentifyResult*
+:return: a list of IdentifyResult
 %End
 
     QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType = AllLayers );
@@ -103,7 +105,7 @@ this has been made private and two publics methods are offered
 
 :param x: x coordinates of mouseEvent
 :param y: y coordinates of mouseEvent
-:param mode: Identification mode. Can use Qgis default settings or a defined mode.
+:param mode: Identification mode. Can use QGIS default settings or a defined mode.
 :param layerType: Only performs identification in a certain type of layers (raster, vector, mesh). Default value is AllLayers.
 
 :return: a list of IdentifyResult
@@ -143,7 +145,7 @@ this has been made private and two publics methods are offered
 
 :param x: x coordinates of mouseEvent
 :param y: y coordinates of mouseEvent
-:param mode: Identification mode. Can use Qgis default settings or a defined mode.
+:param mode: Identification mode. Can use QGIS default settings or a defined mode.
 :param layerList: Performs the identification within the given list of layers.
 :param layerType: Only performs identification in a certain type of layers (raster, vector, mesh).
 
@@ -181,7 +183,7 @@ This is useful when the identification is triggered by some other piece of GUI l
 and some properties like search radius need to be adjusted so that identification returns correct
 results. Currently only search radius may be overridden.
 
-When the custom identification has finished, restoreCanvasPropertiesOverrides() should
+When the custom identification has finished, :py:func:`~QgsMapToolIdentify.restoreCanvasPropertiesOverrides` should
 be called to erase any overrides.
 
 .. seealso:: :py:func:`restoreCanvasPropertiesOverrides`
@@ -191,7 +193,7 @@ be called to erase any overrides.
 
     void restoreCanvasPropertiesOverrides();
 %Docstring
-Clears canvas properties overrides previously set with setCanvasPropertiesOverrides()
+Clears canvas properties overrides previously set with :py:func:`~QgsMapToolIdentify.setCanvasPropertiesOverrides`
 
 .. seealso:: :py:func:`setCanvasPropertiesOverrides`
 

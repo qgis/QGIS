@@ -9,7 +9,7 @@
 
 
 
-class QgsTransformEffect : QgsPaintEffect
+class QgsTransformEffect : QgsPaintEffect /NoDefaultCtors/
 {
 %Docstring
 A paint effect which applies transformations (such as move,

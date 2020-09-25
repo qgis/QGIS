@@ -230,3 +230,14 @@ bool QgsMapLayerStyleManager::isDefault( const QString &styleName ) const
 {
   return styleName == defaultStyleName();
 }
+
+void QgsMapLayerStyleManager::copyStylesFrom( QgsMapLayerStyleManager *other )
+{
+  const QStringList styleNames = other->mStyles.keys();
+
+  for ( const QString &styleName : styleNames )
+  {
+    mStyles.remove( styleName );
+    addStyle( styleName, other->style( styleName ) );
+  }
+}

@@ -120,7 +120,8 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
 
     /**
      * Grass does not seem to have any function to init Cell_head,
-     * initialization is done in G__read_Cell_head_array */
+     * initialization is done in G__read_Cell_head_array
+    */
     void initCellHead( struct Cell_head *cellhd );
 
     //! Gets raster from map of opened rasters, open it if it is not yet open
@@ -148,18 +149,19 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
     //! Current region extent
     QgsRectangle mExtent;
     //! Current region rows
-    int mRows;
+    int mRows = 0;
     //! Current region columns
-    int mColumns;
+    int mColumns = 0;
     //! X resolution
-    double mXRes;
+    double mXRes = 0;
     //! Y resolution
-    double mYRes;
+    double mYRes = 0;
     //! Current coordinate reference system
     QgsCoordinateReferenceSystem mCrs;
     QgsDistanceArea mDistanceArea;
     //! Lat1, lat2 used for geodesic distance calculation
-    double mLat1, mLat2;
+    double mLat1 = 0;
+    double mLat2 = 0;
 };
 
 #endif // QGSGRASSGISLIB_H

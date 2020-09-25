@@ -23,7 +23,7 @@
 
 QString crsToKey( const QgsCoordinateReferenceSystem &crs )
 {
-  return crs.authid().isEmpty() ? crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) : crs.authid();
+  return crs.authid().isEmpty() ? crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) : crs.authid();
 }
 
 template<>

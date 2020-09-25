@@ -278,18 +278,17 @@ int point2vertex( const QgsTracerGraph &g, const QgsPointXY &pt, double epsilon 
 
 int point2edge( const QgsTracerGraph &g, const QgsPointXY &pt, int &lineVertexAfter, double epsilon = 1e-6 )
 {
-  int vertexAfter;
-
   for ( int i = 0; i < g.e.count(); ++i )
   {
     if ( g.inactiveEdges.contains( i ) )
       continue;  // ignore temporarily disabled edges
 
     const QgsTracerGraph::E &e = g.e.at( i );
+    int vertexAfter = -1;
     double dist = closestSegment( e.coords, pt, vertexAfter, epsilon );
     if ( dist == 0 )
     {
-      lineVertexAfter = vertexAfter; //NOLINT
+      lineVertexAfter = vertexAfter;
       return i;
     }
   }

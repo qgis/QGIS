@@ -39,13 +39,14 @@ class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
     //! Enumeration for the state of a point. Normal means, that the point is not on a BreakLine, BreakLine means that the point is on a breakline (but not an end point of it) and EndPoint means, that it is an endpoint of a breakline.
     enum PointState {Normal, BreakLine, EndPoint};
     NormVecDecorator();
-    NormVecDecorator( Triangulation *tin );
+    //! Constructor for TriDecorator with an existing triangulation
+    NormVecDecorator( QgsTriangulation *tin );
     ~NormVecDecorator() override;
     int addPoint( const QgsPoint &p ) override;
     //! Calculates the normal at a point on the surface and assigns it to 'result'. Returns TRUE in case of success and FALSE in case of failure
-    bool calcNormal( double x, double y, Vector3D *result SIP_OUT ) override;
+    bool calcNormal( double x, double y, QgsPoint &result SIP_OUT ) override;
     //! Calculates the normal of a triangle-point for the point with coordinates x and y. This is needed, if a point is on a break line and there is no unique normal stored in 'mNormVec'. Returns FALSE, it something went wrong and TRUE otherwise
-    bool calcNormalForPoint( double x, double y, int point, Vector3D *result SIP_OUT );
+    bool calcNormalForPoint( double x, double y, int pointIndex, Vector3D *result SIP_OUT );
     bool calcPoint( double x, double y, QgsPoint &result SIP_OUT ) override;
     //! Eliminates the horizontal triangles by swapping or by insertion of new points. If alreadyestimated is TRUE, a re-estimation of the normals will be done
     void eliminateHorizontalTriangles() override;
@@ -68,6 +69,8 @@ class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
 
     bool saveTriangulation( QgsFeatureSink *sink, QgsFeedback *feedback = nullptr ) const override;
 
+    QgsMesh triangulationToMesh( QgsFeedback *feedback = nullptr ) const override;
+
   protected:
     //! Is TRUE, if the normals already have been estimated
     bool alreadyestimated;
@@ -80,6 +83,10 @@ class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
     QVector<PointState> *mPointState;
     //! Sets the state (BreakLine, Normal, EndPoint) of a point
     void setState( int pointno, PointState s );
+
+  private:
+    NormVecDecorator( const NormVecDecorator & ) = delete;
+    NormVecDecorator &operator=( const NormVecDecorator & ) = delete;
 };
 
 #ifndef SIP_RUN
@@ -91,7 +98,7 @@ inline NormVecDecorator::NormVecDecorator()
   alreadyestimated = false;
 }
 
-inline NormVecDecorator::NormVecDecorator( Triangulation *tin )
+inline NormVecDecorator::NormVecDecorator( QgsTriangulation *tin )
   : TriDecorator( tin )
   , mNormVec( new QVector<Vector3D*>( DEFAULT_STORAGE_FOR_NORMALS ) )
   , mPointState( new QVector<PointState>( DEFAULT_STORAGE_FOR_NORMALS ) )

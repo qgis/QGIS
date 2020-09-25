@@ -40,6 +40,7 @@
 #include "qgsnumericformatwidget.h"
 
 #include "qgsattributetablefiltermodel.h"
+#include "qgslocalizeddatapathregistry.h"
 #include "qgsrasterformatsaveoptionswidget.h"
 #include "qgsrasterpyramidsoptionswidget.h"
 #include "qgsdatumtransformtablewidget.h"
@@ -58,6 +59,7 @@
 #include "qgswelcomepage.h"
 #include "qgsnewsfeedparser.h"
 #include "qgsbearingnumericformat.h"
+#include "qgssublayersdialog.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -97,7 +99,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   setupUi( this );
   connect( cbxProjectDefaultNew, &QCheckBox::toggled, this, &QgsOptions::cbxProjectDefaultNew_toggled );
   connect( leLayerGlobalCrs, &QgsProjectionSelectionWidget::crsChanged, this, &QgsOptions::leLayerGlobalCrs_crsChanged );
-  connect( lstGdalDrivers, &QTreeWidget::itemDoubleClicked, this, &QgsOptions::lstGdalDrivers_itemDoubleClicked );
+  connect( lstRasterDrivers, &QTreeWidget::itemDoubleClicked, this, &QgsOptions::lstRasterDrivers_itemDoubleClicked );
   connect( mProjectOnLaunchCmbBx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsOptions::mProjectOnLaunchCmbBx_currentIndexChanged );
   connect( spinFontSize, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsOptions::spinFontSize_valueChanged );
   connect( mFontFamilyRadioQt, &QRadioButton::released, this, &QgsOptions::mFontFamilyRadioQt_released );
@@ -155,9 +157,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   mEnableMacrosComboBox->addItem( tr( "Never" ), QVariant::fromValue( Qgis::PythonMacroMode::Never ) );
   mEnableMacrosComboBox->addItem( tr( "Ask" ), QVariant::fromValue( Qgis::PythonMacroMode::Ask ) );
-  mEnableMacrosComboBox->addItem( tr( "For this session only" ), QVariant::fromValue( Qgis::PythonMacroMode::SessionOnly ) );
-  mEnableMacrosComboBox->addItem( tr( "Not during this session" ), QVariant::fromValue( Qgis::PythonMacroMode::NotForThisSession ) );
-  mEnableMacrosComboBox->addItem( tr( "Always (not recommended)" ), QVariant::fromValue( Qgis::PythonMacroMode::Always ) );
+  mEnableMacrosComboBox->addItem( tr( "For This Session Only" ), QVariant::fromValue( Qgis::PythonMacroMode::SessionOnly ) );
+  mEnableMacrosComboBox->addItem( tr( "Not During This Session" ), QVariant::fromValue( Qgis::PythonMacroMode::NotForThisSession ) );
+  mEnableMacrosComboBox->addItem( tr( "Always (Not Recommended)" ), QVariant::fromValue( Qgis::PythonMacroMode::Always ) );
 
   mIdentifyHighlightColorButton->setColorDialogTitle( tr( "Identify Highlight Color" ) );
   mIdentifyHighlightColorButton->setAllowOpacity( true );
@@ -254,8 +256,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     for ( int i = 0; i < varStrItms.size(); ++i )
     {
       QTableWidgetItem *varNameItm = new QTableWidgetItem( varStrItms.at( i ) );
-      varNameItm->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable
-                            | Qt::ItemIsEditable | Qt::ItemIsDragEnabled );
+      varNameItm->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
       fItm = varNameItm->font();
       if ( !sysVarVal.isEmpty() )
       {
@@ -307,6 +308,21 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   }
   connect( mBtnAddTemplatePath, &QAbstractButton::clicked, this, &QgsOptions::addTemplatePath );
   connect( mBtnRemoveTemplatePath, &QAbstractButton::clicked, this, &QgsOptions::removeTemplatePath );
+
+  // localized data paths
+  connect( mLocalizedDataPathAddButton, &QAbstractButton::clicked, this, &QgsOptions::addLocalizedDataPath );
+  connect( mLocalizedDataPathRemoveButton, &QAbstractButton::clicked, this, &QgsOptions::removeLocalizedDataPath );
+  connect( mLocalizedDataPathUpButton, &QAbstractButton::clicked, this, &QgsOptions::moveLocalizedDataPathUp );
+  connect( mLocalizedDataPathDownButton, &QAbstractButton::clicked, this, &QgsOptions::moveLocalizedDataPathDown );
+
+  const QStringList localizedPaths = QgsApplication::localizedDataPathRegistry()->paths();
+  for ( const QString &path : localizedPaths )
+  {
+    QListWidgetItem *newItem = new QListWidgetItem( mLocalizedDataPathListWidget );
+    newItem->setText( path );
+    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    mLocalizedDataPathListWidget->addItem( newItem );
+  }
 
   //paths hidden from browser
   const QStringList hiddenPathList = mSettings->value( QStringLiteral( "/browser/hiddenPaths" ) ).toStringList();
@@ -403,41 +419,33 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     mSettings->setValue( QStringLiteral( "clear_auth_cache_on_errors" ), checked, QgsSettings::Section::Auth );
   } );
 
-  //wms search server
-  leWmsSearch->setText( mSettings->value( QStringLiteral( "/qgis/WMSSearchUrl" ), "http://geopole.org/wms/search?search=%1&type=rss" ).toString() );
-
   // set the attribute table default filter
   cmbAttrTableBehavior->clear();
-  cmbAttrTableBehavior->addItem( tr( "Show all features" ), QgsAttributeTableFilterModel::ShowAll );
-  cmbAttrTableBehavior->addItem( tr( "Show selected features" ), QgsAttributeTableFilterModel::ShowSelected );
-  cmbAttrTableBehavior->addItem( tr( "Show features visible on map" ), QgsAttributeTableFilterModel::ShowVisible );
+  cmbAttrTableBehavior->addItem( tr( "Show All Features" ), QgsAttributeTableFilterModel::ShowAll );
+  cmbAttrTableBehavior->addItem( tr( "Show Selected Features" ), QgsAttributeTableFilterModel::ShowSelected );
+  cmbAttrTableBehavior->addItem( tr( "Show Features Visible on Map" ), QgsAttributeTableFilterModel::ShowVisible );
   cmbAttrTableBehavior->setCurrentIndex( cmbAttrTableBehavior->findData( mSettings->enumValue( QStringLiteral( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowAll ) ) );
 
   mAttrTableViewComboBox->clear();
-  mAttrTableViewComboBox->addItem( tr( "Remember last view" ), -1 );
-  mAttrTableViewComboBox->addItem( tr( "Table view" ), QgsDualView::AttributeTable );
-  mAttrTableViewComboBox->addItem( tr( "Form view" ), QgsDualView::AttributeEditor );
+  mAttrTableViewComboBox->addItem( tr( "Remember Last View" ), -1 );
+  mAttrTableViewComboBox->addItem( tr( "Table View" ), QgsDualView::AttributeTable );
+  mAttrTableViewComboBox->addItem( tr( "Form View" ), QgsDualView::AttributeEditor );
   mAttrTableViewComboBox->setCurrentIndex( mAttrTableViewComboBox->findData( mSettings->value( QStringLiteral( "/qgis/attributeTableView" ), -1 ).toInt() ) );
 
   spinBoxAttrTableRowCache->setValue( mSettings->value( QStringLiteral( "/qgis/attributeTableRowCache" ), 10000 ).toInt() );
   spinBoxAttrTableRowCache->setSpecialValueText( tr( "All" ) );
 
-  // set the prompt for raster sublayers
-  // 0 = Always -> always ask (if there are existing sublayers)
-  // 1 = If needed -> ask if layer has no bands, but has sublayers
-  // 2 = Never -> never prompt, will not load anything
-  // 3 = Load all -> never prompt, but load all sublayers
-  cmbPromptRasterSublayers->clear();
-  cmbPromptRasterSublayers->addItem( tr( "Always" ) );
-  cmbPromptRasterSublayers->addItem( tr( "If needed" ) ); //this means, prompt if there are sublayers but no band in the main dataset
-  cmbPromptRasterSublayers->addItem( tr( "Never" ) );
-  cmbPromptRasterSublayers->addItem( tr( "Load all" ) );
-  cmbPromptRasterSublayers->setCurrentIndex( mSettings->value( QStringLiteral( "/qgis/promptForRasterSublayers" ), 0 ).toInt() );
+  cmbPromptSublayers->clear();
+  cmbPromptSublayers->addItem( tr( "Always" ), QgsSublayersDialog::PromptAlways );
+  cmbPromptSublayers->addItem( tr( "If Needed" ), QgsSublayersDialog::PromptIfNeeded ); //this means, prompt if there are sublayers but no band in the main dataset
+  cmbPromptSublayers->addItem( tr( "Never" ), QgsSublayersDialog::PromptNever );
+  cmbPromptSublayers->addItem( tr( "Load All" ), QgsSublayersDialog::PromptLoadAll ); // check if this is true
+  cmbPromptSublayers->setCurrentIndex( cmbPromptSublayers->findData( mSettings->enumValue( QStringLiteral( "/qgis/promptForSublayers" ), QgsSublayersDialog::PromptAlways ) ) );
 
   // Scan for valid items in the browser dock
   cmbScanItemsInBrowser->clear();
-  cmbScanItemsInBrowser->addItem( tr( "Check file contents" ), "contents" ); // 0
-  cmbScanItemsInBrowser->addItem( tr( "Check extension" ), "extension" );    // 1
+  cmbScanItemsInBrowser->addItem( tr( "Check File Contents" ), "contents" ); // 0
+  cmbScanItemsInBrowser->addItem( tr( "Check Extension" ), "extension" );    // 1
   int index = cmbScanItemsInBrowser->findData( mSettings->value( QStringLiteral( "/qgis/scanItemsInBrowser2" ), QString() ) );
   if ( index == -1 ) index = 1;
   cmbScanItemsInBrowser->setCurrentIndex( index );
@@ -446,8 +454,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   cmbScanZipInBrowser->clear();
   cmbScanZipInBrowser->addItem( tr( "No" ), QVariant( "no" ) );
   // cmbScanZipInBrowser->addItem( tr( "Passthru" ) );     // 1 - removed
-  cmbScanZipInBrowser->addItem( tr( "Basic scan" ), QVariant( "basic" ) );
-  cmbScanZipInBrowser->addItem( tr( "Full scan" ), QVariant( "full" ) );
+  cmbScanZipInBrowser->addItem( tr( "Basic Scan" ), QVariant( "basic" ) );
+  cmbScanZipInBrowser->addItem( tr( "Full Scan" ), QVariant( "full" ) );
   index = cmbScanZipInBrowser->findData( mSettings->value( QStringLiteral( "/qgis/scanZipInBrowser2" ), QString() ) );
   if ( index == -1 ) index = 1;
   cmbScanZipInBrowser->setCurrentIndex( index );
@@ -513,11 +521,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mDistanceUnitsComboBox->addItem( tr( "Feet" ), QgsUnitTypes::DistanceFeet );
   mDistanceUnitsComboBox->addItem( tr( "Yards" ), QgsUnitTypes::DistanceYards );
   mDistanceUnitsComboBox->addItem( tr( "Miles" ), QgsUnitTypes::DistanceMiles );
-  mDistanceUnitsComboBox->addItem( tr( "Nautical miles" ), QgsUnitTypes::DistanceNauticalMiles );
+  mDistanceUnitsComboBox->addItem( tr( "Nautical Miles" ), QgsUnitTypes::DistanceNauticalMiles );
   mDistanceUnitsComboBox->addItem( tr( "Centimeters" ), QgsUnitTypes::DistanceCentimeters );
   mDistanceUnitsComboBox->addItem( tr( "Millimeters" ), QgsUnitTypes::DistanceMillimeters );
   mDistanceUnitsComboBox->addItem( tr( "Degrees" ), QgsUnitTypes::DistanceDegrees );
-  mDistanceUnitsComboBox->addItem( tr( "Map units" ), QgsUnitTypes::DistanceUnknownUnit );
+  mDistanceUnitsComboBox->addItem( tr( "Map Units" ), QgsUnitTypes::DistanceUnknownUnit );
 
   bool ok = false;
   QgsUnitTypes::DistanceUnit distanceUnits = QgsUnitTypes::decodeDistanceUnit( mSettings->value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString(), &ok );
@@ -525,18 +533,18 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     distanceUnits = QgsUnitTypes::DistanceMeters;
   mDistanceUnitsComboBox->setCurrentIndex( mDistanceUnitsComboBox->findData( distanceUnits ) );
 
-  mAreaUnitsComboBox->addItem( tr( "Square meters" ), QgsUnitTypes::AreaSquareMeters );
-  mAreaUnitsComboBox->addItem( tr( "Square kilometers" ), QgsUnitTypes::AreaSquareKilometers );
-  mAreaUnitsComboBox->addItem( tr( "Square feet" ), QgsUnitTypes::AreaSquareFeet );
-  mAreaUnitsComboBox->addItem( tr( "Square yards" ), QgsUnitTypes::AreaSquareYards );
-  mAreaUnitsComboBox->addItem( tr( "Square miles" ), QgsUnitTypes::AreaSquareMiles );
+  mAreaUnitsComboBox->addItem( tr( "Square Meters" ), QgsUnitTypes::AreaSquareMeters );
+  mAreaUnitsComboBox->addItem( tr( "Square Kilometers" ), QgsUnitTypes::AreaSquareKilometers );
+  mAreaUnitsComboBox->addItem( tr( "Square Feet" ), QgsUnitTypes::AreaSquareFeet );
+  mAreaUnitsComboBox->addItem( tr( "Square Yards" ), QgsUnitTypes::AreaSquareYards );
+  mAreaUnitsComboBox->addItem( tr( "Square Miles" ), QgsUnitTypes::AreaSquareMiles );
   mAreaUnitsComboBox->addItem( tr( "Hectares" ), QgsUnitTypes::AreaHectares );
   mAreaUnitsComboBox->addItem( tr( "Acres" ), QgsUnitTypes::AreaAcres );
-  mAreaUnitsComboBox->addItem( tr( "Square nautical miles" ), QgsUnitTypes::AreaSquareNauticalMiles );
-  mAreaUnitsComboBox->addItem( tr( "Square centimeters" ), QgsUnitTypes::AreaSquareCentimeters );
-  mAreaUnitsComboBox->addItem( tr( "Square millimeters" ), QgsUnitTypes::AreaSquareMillimeters );
-  mAreaUnitsComboBox->addItem( tr( "Square degrees" ), QgsUnitTypes::AreaSquareDegrees );
-  mAreaUnitsComboBox->addItem( tr( "Map units" ), QgsUnitTypes::AreaUnknownUnit );
+  mAreaUnitsComboBox->addItem( tr( "Square Nautical Miles" ), QgsUnitTypes::AreaSquareNauticalMiles );
+  mAreaUnitsComboBox->addItem( tr( "Square Centimeters" ), QgsUnitTypes::AreaSquareCentimeters );
+  mAreaUnitsComboBox->addItem( tr( "Square Millimeters" ), QgsUnitTypes::AreaSquareMillimeters );
+  mAreaUnitsComboBox->addItem( tr( "Square Degrees" ), QgsUnitTypes::AreaSquareDegrees );
+  mAreaUnitsComboBox->addItem( tr( "Map Units" ), QgsUnitTypes::AreaUnknownUnit );
 
   QgsUnitTypes::AreaUnit areaUnits = QgsUnitTypes::decodeAreaUnit( mSettings->value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString(), &ok );
   if ( !ok )
@@ -546,11 +554,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mAngleUnitsComboBox->addItem( tr( "Degrees" ), QgsUnitTypes::AngleDegrees );
   mAngleUnitsComboBox->addItem( tr( "Radians" ), QgsUnitTypes::AngleRadians );
   mAngleUnitsComboBox->addItem( tr( "Gon/gradians" ), QgsUnitTypes::AngleGon );
-  mAngleUnitsComboBox->addItem( tr( "Minutes of arc" ), QgsUnitTypes::AngleMinutesOfArc );
-  mAngleUnitsComboBox->addItem( tr( "Seconds of arc" ), QgsUnitTypes::AngleSecondsOfArc );
+  mAngleUnitsComboBox->addItem( tr( "Minutes of Arc" ), QgsUnitTypes::AngleMinutesOfArc );
+  mAngleUnitsComboBox->addItem( tr( "Seconds of Arc" ), QgsUnitTypes::AngleSecondsOfArc );
   mAngleUnitsComboBox->addItem( tr( "Turns/revolutions" ), QgsUnitTypes::AngleTurn );
-  mAngleUnitsComboBox->addItem( tr( "Milliradians (SI definition)" ), QgsUnitTypes::AngleMilliradiansSI );
-  mAngleUnitsComboBox->addItem( tr( "Mil (NATO/military definition)" ), QgsUnitTypes::AngleMilNATO );
+  mAngleUnitsComboBox->addItem( tr( "Milliradians (SI Definition)" ), QgsUnitTypes::AngleMilliradiansSI );
+  mAngleUnitsComboBox->addItem( tr( "Mil (NATO/military Definition)" ), QgsUnitTypes::AngleMilNATO );
 
   QgsUnitTypes::AngleUnit unit = QgsUnitTypes::decodeAngleUnit( mSettings->value( QStringLiteral( "/qgis/measure/angleunits" ), QgsUnitTypes::encodeUnit( QgsUnitTypes::AngleDegrees ) ).toString() );
   mAngleUnitsComboBox->setCurrentIndex( mAngleUnitsComboBox->findData( unit ) );
@@ -633,8 +641,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mSimplifyDrawingAtProvider->setChecked( !mSettings->value( QStringLiteral( "/qgis/simplifyLocal" ), true ).toBool() );
 
   //segmentation tolerance type
-  mToleranceTypeComboBox->addItem( tr( "Maximum angle" ), QgsAbstractGeometry::MaximumAngle );
-  mToleranceTypeComboBox->addItem( tr( "Maximum difference" ), QgsAbstractGeometry::MaximumDifference );
+  mToleranceTypeComboBox->addItem( tr( "Maximum Angle" ), QgsAbstractGeometry::MaximumAngle );
+  mToleranceTypeComboBox->addItem( tr( "Maximum Difference" ), QgsAbstractGeometry::MaximumDifference );
   QgsAbstractGeometry::SegmentationToleranceType toleranceType = mSettings->enumValue( QStringLiteral( "/qgis/segmentationToleranceType" ), QgsAbstractGeometry::MaximumAngle );
   int toleranceTypeIndex = mToleranceTypeComboBox->findData( toleranceType );
   if ( toleranceTypeIndex != -1 )
@@ -670,7 +678,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mSimplifyAlgorithmComboBox->addItem( tr( "Visvalingam" ), static_cast<int>( QgsVectorSimplifyMethod::Visvalingam ) );
   mSimplifyAlgorithmComboBox->setCurrentIndex( mSimplifyAlgorithmComboBox->findData( mSettings->enumValue( QStringLiteral( "/qgis/simplifyAlgorithm" ), QgsVectorSimplifyMethod::NoSimplification ) ) );
 
-  // Slightly awkard here at the settings value is true to use QImage,
+  // Slightly awkward here at the settings value is true to use QImage,
   // but the checkbox is true to use QPixmap
   chkAddedVisibility->setChecked( mSettings->value( QStringLiteral( "/qgis/new_layers_visible" ), true ).toBool() );
   cbxLegendClassifiers->setChecked( mSettings->value( QStringLiteral( "/qgis/showLegendClassifiers" ), false ).toBool() );
@@ -682,8 +690,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   cbxAttributeTableDocked->setChecked( mSettings->value( QStringLiteral( "/qgis/dockAttributeTable" ), false ).toBool() );
   cbxCompileExpressions->setChecked( mSettings->value( QStringLiteral( "/qgis/compileExpressions" ), true ).toBool() );
 
-  mComboCopyFeatureFormat->addItem( tr( "Plain text, no geometry" ), QgsClipboard::AttributesOnly );
-  mComboCopyFeatureFormat->addItem( tr( "Plain text, WKT geometry" ), QgsClipboard::AttributesWithWKT );
+  mComboCopyFeatureFormat->addItem( tr( "Plain Text, No Geometry" ), QgsClipboard::AttributesOnly );
+  mComboCopyFeatureFormat->addItem( tr( "Plain Text, WKT Geometry" ), QgsClipboard::AttributesWithWKT );
   mComboCopyFeatureFormat->addItem( tr( "GeoJSON" ), QgsClipboard::GeoJSON );
   mComboCopyFeatureFormat->setCurrentIndex( mComboCopyFeatureFormat->findData( mSettings->enumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesWithWKT ) ) );
   leNullValue->setText( QgsApplication::nullRepresentation() );
@@ -707,12 +715,14 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mZoomedInResamplingComboBox->insertItem( 1, tr( "Bilinear" ), QStringLiteral( "bilinear" ) );
   mZoomedInResamplingComboBox->insertItem( 2, tr( "Cubic" ), QStringLiteral( "cubic" ) );
   mZoomedOutResamplingComboBox->insertItem( 0, tr( "Nearest neighbour" ), QStringLiteral( "nearest neighbour" ) );
-  mZoomedOutResamplingComboBox->insertItem( 1, tr( "Average" ), QStringLiteral( "bilinear" ) );
+  mZoomedOutResamplingComboBox->insertItem( 1, tr( "Bilinear" ), QStringLiteral( "bilinear" ) );
+  mZoomedOutResamplingComboBox->insertItem( 2, tr( "Cubic" ), QStringLiteral( "cubic" ) );
   QString zoomedInResampling = mSettings->value( QStringLiteral( "/Raster/defaultZoomedInResampling" ), QStringLiteral( "nearest neighbour" ) ).toString();
   mZoomedInResamplingComboBox->setCurrentIndex( mZoomedInResamplingComboBox->findData( zoomedInResampling ) );
   QString zoomedOutResampling = mSettings->value( QStringLiteral( "/Raster/defaultZoomedOutResampling" ), QStringLiteral( "nearest neighbour" ) ).toString();
   mZoomedOutResamplingComboBox->setCurrentIndex( mZoomedOutResamplingComboBox->findData( zoomedOutResampling ) );
   spnOversampling->setValue( mSettings->value( QStringLiteral( "/Raster/defaultOversampling" ), 2.0 ).toDouble() );
+  mCbEarlyResampling->setChecked( mSettings->value( QStringLiteral( "/Raster/defaultEarlyResampling" ), false ).toBool() );
 
   initContrastEnhancement( cboxContrastEnhancementAlgorithmSingleBand, QStringLiteral( "singleBand" ),
                            QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsRasterLayer::SINGLE_BAND_ENHANCEMENT_ALGORITHM ) );
@@ -1072,7 +1082,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   //vertex marker
   mMarkersOnlyForSelectedCheckBox->setChecked( mSettings->value( QStringLiteral( "/qgis/digitizing/marker_only_for_selected" ), true ).toBool() );
 
-  mMarkerStyleComboBox->addItem( tr( "Semi transparent circle" ) );
+  mMarkerStyleComboBox->addItem( tr( "Semi Transparent Circle" ) );
   mMarkerStyleComboBox->addItem( tr( "Cross" ) );
   mMarkerStyleComboBox->addItem( tr( "None" ) );
 
@@ -1084,7 +1094,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   QString markerStyle = mSettings->value( QStringLiteral( "/qgis/digitizing/marker_style" ), "Cross" ).toString();
   if ( markerStyle == QLatin1String( "SemiTransparentCircle" ) )
   {
-    mMarkerStyleComboBox->setCurrentIndex( mMarkerStyleComboBox->findText( tr( "Semi transparent circle" ) ) );
+    mMarkerStyleComboBox->setCurrentIndex( mMarkerStyleComboBox->findText( tr( "Semi Transparent Circle" ) ) );
   }
   else if ( markerStyle == QLatin1String( "Cross" ) )
   {
@@ -1112,6 +1122,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mOffsetJoinStyleComboBox->setCurrentIndex( mOffsetJoinStyleComboBox->findData( joinStyleSetting ) );
   mOffsetQuadSegSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), 8 ).toInt() );
   mCurveOffsetMiterLimitComboBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), 5.0 ).toDouble() );
+
+  mTracingConvertToCurveCheckBox->setChecked( mSettings->value( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), false ).toBool() );
 
   // load gdal driver list only when gdal tab is first opened
   mLoadedGdalDriverList = false;
@@ -1156,8 +1168,13 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   {
     if ( checked )
     {
+      // Since this may crash and lock users out of the settings, let's disable opencl setting before entering
+      // and restore after available was successfully called
+      const bool openClStatus { QgsOpenClUtils::enabled() };
+      QgsOpenClUtils::setEnabled( false );
       if ( QgsOpenClUtils::available( ) )
       {
+        QgsOpenClUtils::setEnabled( openClStatus );
         mOpenClContainerWidget->setEnabled( true );
         mOpenClDevicesCombo->clear();
 
@@ -1411,6 +1428,11 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "Layout/searchPathsForTemplates" ), pathsList, QgsSettings::Core );
 
   pathsList.clear();
+  for ( int r = 0; r < mLocalizedDataPathListWidget->count(); r++ )
+    pathsList << mLocalizedDataPathListWidget->item( r )->text();
+  QgsApplication::localizedDataPathRegistry()->setPaths( pathsList );
+
+  pathsList.clear();
   for ( int i = 0; i < mListHiddenBrowserPaths->count(); ++i )
   {
     pathsList << mListHiddenBrowserPaths->item( i )->text();
@@ -1472,9 +1494,6 @@ void QgsOptions::saveOptions()
 
   QgisApp::instance()->namUpdate();
 
-  //wms search url
-  mSettings->setValue( QStringLiteral( "/qgis/WMSSearchUrl" ), leWmsSearch->text() );
-
   //general settings
   mSettings->setValue( QStringLiteral( "/Map/searchRadiusMM" ), spinBoxIdentifyValue->value() );
   mSettings->setValue( QStringLiteral( "/Map/highlight/color" ), mIdentifyHighlightColorButton->color().name() );
@@ -1493,7 +1512,8 @@ void QgsOptions::saveOptions()
   mSettings->setEnumValue( QStringLiteral( "/qgis/attributeTableBehavior" ), ( QgsAttributeTableFilterModel::FilterMode )cmbAttrTableBehavior->currentData().toInt() );
   mSettings->setValue( QStringLiteral( "/qgis/attributeTableView" ), mAttrTableViewComboBox->currentData() );
   mSettings->setValue( QStringLiteral( "/qgis/attributeTableRowCache" ), spinBoxAttrTableRowCache->value() );
-  mSettings->setValue( QStringLiteral( "/qgis/promptForRasterSublayers" ), cmbPromptRasterSublayers->currentIndex() );
+  mSettings->setEnumValue( QStringLiteral( "/qgis/promptForSublayers" ), ( QgsSublayersDialog::PromptMode )cmbPromptSublayers->currentData().toInt() );
+
   mSettings->setValue( QStringLiteral( "/qgis/scanItemsInBrowser2" ),
                        cmbScanItemsInBrowser->currentData().toString() );
   mSettings->setValue( QStringLiteral( "/qgis/scanZipInBrowser2" ),
@@ -1577,6 +1597,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/Raster/defaultZoomedInResampling" ), mZoomedInResamplingComboBox->currentData().toString() );
   mSettings->setValue( QStringLiteral( "/Raster/defaultZoomedOutResampling" ), mZoomedOutResamplingComboBox->currentData().toString() );
   mSettings->setValue( QStringLiteral( "/Raster/defaultOversampling" ), spnOversampling->value() );
+  mSettings->setValue( QStringLiteral( "/Raster/defaultEarlyResampling" ), mCbEarlyResampling->isChecked() );
 
   saveContrastEnhancement( cboxContrastEnhancementAlgorithmSingleBand, QStringLiteral( "singleBand" ) );
   saveContrastEnhancement( cboxContrastEnhancementAlgorithmMultiBandSingleByte, QStringLiteral( "multiBandSingleByte" ) );
@@ -1692,7 +1713,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/marker_only_for_selected" ), mMarkersOnlyForSelectedCheckBox->isChecked() );
 
   QString markerComboText = mMarkerStyleComboBox->currentText();
-  if ( markerComboText == tr( "Semi transparent circle" ) )
+  if ( markerComboText == tr( "Semi Transparent Circle" ) )
   {
     mSettings->setValue( QStringLiteral( "/qgis/digitizing/marker_style" ), "SemiTransparentCircle" );
   }
@@ -1713,6 +1734,8 @@ void QgsOptions::saveOptions()
   mSettings->setEnumValue( QStringLiteral( "/qgis/digitizing/offset_join_style" ), mOffsetJoinStyleComboBox->currentData().value<QgsGeometry::JoinStyle>() );
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), mOffsetQuadSegSpinBox->value() );
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), mCurveOffsetMiterLimitComboBox->value() );
+
+  mSettings->setValue( QStringLiteral( "/qgis/digitizing/convert_to_curve" ), mTracingConvertToCurveCheckBox->isChecked() );
 
   // default scale list
   QString myPaths;
@@ -1867,7 +1890,7 @@ void QgsOptions::leLayerGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem
   mLayerDefaultCrs = crs;
 }
 
-void QgsOptions::lstGdalDrivers_itemDoubleClicked( QTreeWidgetItem *item, int column )
+void QgsOptions::lstRasterDrivers_itemDoubleClicked( QTreeWidgetItem *item, int column )
 {
   Q_UNUSED( column )
   // edit driver if driver supports write
@@ -2236,6 +2259,7 @@ void QgsOptions::loadGdalDriverList()
   QStringList myDrivers;
   QStringList myGdalWriteDrivers;
   QMap<QString, QString> myDriversFlags, myDriversExt, myDriversLongName;
+  QMap<QString, QgsMapLayerType> driversType;
 
   // make sure we save list when accept()
   mLoadedGdalDriverList = true;
@@ -2257,33 +2281,52 @@ void QgsOptions::loadGdalDriverList()
       continue;
     }
 
-    // in GDAL 2.0 vector and mixed drivers are returned by GDALGetDriver, so filter out non-raster drivers
-    // TODO add same UI for vector drivers
-    if ( QString( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_RASTER, nullptr ) ) != QLatin1String( "YES" ) )
-      continue;
-
+    // in GDAL 2.0 both vector and raster drivers are returned by GDALGetDriver
     myGdalDriverDescription = GDALGetDescription( myGdalDriver );
     myDrivers << myGdalDriverDescription;
+    if ( QString( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_RASTER, nullptr ) ) == QLatin1String( "YES" ) )
+    {
+      driversType[myGdalDriverDescription] = QgsMapLayerType::RasterLayer;
+    }
+    else if ( QString( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_VECTOR, nullptr ) ) == QLatin1String( "YES" ) )
+    {
+      driversType[myGdalDriverDescription] = QgsMapLayerType::VectorLayer;
+    }
 
     QgsDebugMsg( QStringLiteral( "driver #%1 - %2" ).arg( i ).arg( myGdalDriverDescription ) );
 
-    // get driver R/W flags, taken from GDALGeneralCmdLineProcessor()
-    const char *pszRWFlag, *pszVirtualIO;
-    if ( QgsGdalUtils::supportsRasterCreate( myGdalDriver ) )
+    // get driver R/W flags, adopted from GDALGeneralCmdLineProcessor()
+    QString driverFlags = "";
+    if ( driversType[myGdalDriverDescription] == QgsMapLayerType::RasterLayer )
     {
-      myGdalWriteDrivers << myGdalDriverDescription;
-      pszRWFlag = "rw+";
+      if ( QgsGdalUtils::supportsRasterCreate( myGdalDriver ) )
+      {
+        myGdalWriteDrivers << myGdalDriverDescription;
+        driverFlags = "rw+";
+      }
+      else if ( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_CREATECOPY,
+                                     nullptr ) )
+        driverFlags = "rw";
+      else
+        driverFlags = "ro";
     }
-    else if ( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_CREATECOPY,
-                                   nullptr ) )
-      pszRWFlag = "rw";
     else
-      pszRWFlag = "ro";
+    {
+      if ( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_OPEN, nullptr ) )
+        driverFlags = "r";
+
+      if ( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_CREATE, nullptr ) )
+        driverFlags += "w+";
+      else if ( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_CREATECOPY, nullptr ) )
+        driverFlags += "w";
+      else
+        driverFlags += "o";
+    }
+
     if ( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_VIRTUALIO, nullptr ) )
-      pszVirtualIO = "v";
-    else
-      pszVirtualIO = "";
-    myDriversFlags[myGdalDriverDescription] = QStringLiteral( "%1%2" ).arg( pszRWFlag, pszVirtualIO );
+      driverFlags += "v";
+
+    myDriversFlags[myGdalDriverDescription] = driverFlags;
 
     // get driver extensions and long name
     // the gdal provider can override/add extensions but there is no interface to query this
@@ -2321,13 +2364,24 @@ void QgsOptions::loadGdalDriverList()
     QString myFlags = myDriversFlags[myName];
     mypItem->setText( 2, myFlags );
     mypItem->setText( 3, myDriversLongName[myName] );
-    lstGdalDrivers->addTopLevelItem( mypItem );
+    if ( driversType[myName] == QgsMapLayerType::RasterLayer )
+    {
+      lstRasterDrivers->addTopLevelItem( mypItem );
+    }
+    else
+    {
+      lstVectorDrivers->addTopLevelItem( mypItem );
+    }
   }
+
   // adjust column width
   for ( int i = 0; i < 4; i++ )
   {
-    lstGdalDrivers->resizeColumnToContents( i );
-    lstGdalDrivers->setColumnWidth( i, lstGdalDrivers->columnWidth( i ) + 5 );
+    lstRasterDrivers->resizeColumnToContents( i );
+    lstRasterDrivers->setColumnWidth( i, lstRasterDrivers->columnWidth( i ) + 5 );
+
+    lstVectorDrivers->resizeColumnToContents( i );
+    lstVectorDrivers->setColumnWidth( i, lstVectorDrivers->columnWidth( i ) + 5 );
   }
 
   // populate cmbEditCreateOptions with gdal write drivers - sorted, GTiff first
@@ -2351,11 +2405,11 @@ void QgsOptions::saveGdalDriverList()
   const auto oldSkippedGdalDrivers = QgsApplication::skippedGdalDrivers();
   auto deferredSkippedGdalDrivers = QgsApplication::deferredSkippedGdalDrivers();
   QStringList skippedGdalDrivers;
-  for ( int i = 0; i < lstGdalDrivers->topLevelItemCount(); i++ )
+
+  auto checkDriver = [ & ]( QTreeWidgetItem * item )
   {
-    QTreeWidgetItem *mypItem = lstGdalDrivers->topLevelItem( i );
-    const auto &driverName( mypItem->text( 0 ) );
-    if ( mypItem->checkState( 0 ) == Qt::Unchecked )
+    const auto &driverName( item->text( 0 ) );
+    if ( item->checkState( 0 ) == Qt::Unchecked )
     {
       skippedGdalDrivers << driverName;
       if ( !deferredSkippedGdalDrivers.contains( driverName ) &&
@@ -2372,7 +2426,20 @@ void QgsOptions::saveGdalDriverList()
         deferredSkippedGdalDrivers.removeAll( driverName );
       }
     }
+  };
+
+  // raster drivers
+  for ( int i = 0; i < lstRasterDrivers->topLevelItemCount(); i++ )
+  {
+    checkDriver( lstRasterDrivers->topLevelItem( i ) );
   }
+
+  // vector drivers
+  for ( int i = 0; i < lstVectorDrivers->topLevelItemCount(); i++ )
+  {
+    checkDriver( lstVectorDrivers->topLevelItem( i ) );
+  }
+
   if ( driverUnregisterNeeded )
   {
     QMessageBox::information( this, tr( "Drivers Disabled" ),
@@ -2499,11 +2566,11 @@ void QgsOptions::initMinMaxLimits( QComboBox *cbox, const QString &name, const Q
   QgsSettings settings;
 
   //add items to the color limitsContrast combo boxes
-  cbox->addItem( tr( "Cumulative pixel count cut" ),
+  cbox->addItem( tr( "Cumulative Pixel Count Cut" ),
                  QgsRasterMinMaxOrigin::limitsString( QgsRasterMinMaxOrigin::CumulativeCut ) );
-  cbox->addItem( tr( "Minimum / maximum" ),
+  cbox->addItem( tr( "Minimum / Maximum" ),
                  QgsRasterMinMaxOrigin::limitsString( QgsRasterMinMaxOrigin::MinMax ) );
-  cbox->addItem( tr( "Mean +/- standard deviation" ),
+  cbox->addItem( tr( "Mean +/- Standard Deviation" ),
                  QgsRasterMinMaxOrigin::limitsString( QgsRasterMinMaxOrigin::StdDev ) );
 
   QString contrastLimits = mSettings->value( "/Raster/defaultContrastEnhancementLimits/" + name, defaultVal ).toString();
@@ -2528,6 +2595,55 @@ void QgsOptions::addColor()
 
   mTreeCustomColors->addColor( newColor, QgsSymbolLayerUtils::colorToName( newColor ) );
 }
+
+void QgsOptions::removeLocalizedDataPath()
+{
+  qDeleteAll( mLocalizedDataPathListWidget->selectedItems() );
+}
+
+void QgsOptions::addLocalizedDataPath()
+{
+  QString myDir = QFileDialog::getExistingDirectory(
+                    this,
+                    tr( "Choose a Directory" ),
+                    QDir::homePath(),
+                    QFileDialog::ShowDirsOnly
+                  );
+
+  if ( ! myDir.isEmpty() )
+  {
+    QListWidgetItem *newItem = new QListWidgetItem( mLocalizedDataPathListWidget );
+    newItem->setText( myDir );
+    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    mLocalizedDataPathListWidget->addItem( newItem );
+    mLocalizedDataPathListWidget->setCurrentItem( newItem );
+  }
+}
+
+void QgsOptions::moveLocalizedDataPathUp()
+{
+  QList<QListWidgetItem *> selectedItems = mLocalizedDataPathListWidget->selectedItems();
+  QList<QListWidgetItem *>::iterator itemIt = selectedItems.begin();
+  for ( ; itemIt != selectedItems.end(); ++itemIt )
+  {
+    int row = mLocalizedDataPathListWidget->row( *itemIt );
+    mLocalizedDataPathListWidget->takeItem( row );
+    mLocalizedDataPathListWidget->insertItem( row - 1, *itemIt );
+  }
+}
+
+void QgsOptions::moveLocalizedDataPathDown()
+{
+  QList<QListWidgetItem *> selectedItems = mLocalizedDataPathListWidget->selectedItems();
+  QList<QListWidgetItem *>::iterator itemIt = selectedItems.begin();
+  for ( ; itemIt != selectedItems.end(); ++itemIt )
+  {
+    int row = mLocalizedDataPathListWidget->row( *itemIt );
+    mLocalizedDataPathListWidget->takeItem( row );
+    mLocalizedDataPathListWidget->insertItem( row + 1, *itemIt );
+  }
+}
+
 
 QListWidgetItem *QgsOptions::addScaleToScaleList( const QString &newScale )
 {

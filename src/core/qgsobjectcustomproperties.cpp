@@ -42,6 +42,10 @@ void QgsObjectCustomProperties::remove( const QString &key )
   mMap.remove( key );
 }
 
+bool QgsObjectCustomProperties::contains( const QString &key ) const
+{
+  return mMap.contains( key );
+}
 
 void QgsObjectCustomProperties::readXml( const QDomNode &parentNode, const QString &keyStartsWith )
 {

@@ -22,7 +22,7 @@
 #include "qgsmessagebar.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsgui.h"
-
+#include "qgsmapcanvasutils.h"
 
 QgsSelectByFormDialog::QgsSelectByFormDialog( QgsVectorLayer *layer, const QgsAttributeEditorContext &context, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -47,7 +47,7 @@ QgsSelectByFormDialog::QgsSelectByFormDialog( QgsVectorLayer *layer, const QgsAt
 
   QgsGui::enableAutoGeometryRestore( this );
 
-  setWindowTitle( tr( "%1 - Select Features" ).arg( layer->name() ) );
+  setWindowTitle( tr( "%1 — Select Features" ).arg( layer->name() ) );
 }
 
 void QgsSelectByFormDialog::setMessageBar( QgsMessageBar *messageBar )
@@ -65,35 +65,11 @@ void QgsSelectByFormDialog::setMapCanvas( QgsMapCanvas *canvas )
 
 void QgsSelectByFormDialog::zoomToFeatures( const QString &filter )
 {
-  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
-
-  QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( filter )
-                              .setExpressionContext( context )
-                              .setNoAttributes();
-
-  QgsFeatureIterator features = mLayer->getFeatures( request );
-
-  QgsRectangle bbox;
-  bbox.setMinimal();
-  QgsFeature feat;
-  int featureCount = 0;
-  while ( features.nextFeature( feat ) )
-  {
-    QgsGeometry geom = feat.geometry();
-    if ( geom.isNull() || geom.constGet()->isEmpty() )
-      continue;
-
-    QgsRectangle r = mMapCanvas->mapSettings().layerExtentToOutputExtent( mLayer, geom.boundingBox() );
-    bbox.combineExtentWith( r );
-    featureCount++;
-  }
-  features.close();
-
+  const long featureCount = QgsMapCanvasUtils::zoomToMatchingFeatures( mMapCanvas, mLayer, filter );
   QgsSettings settings;
   int timeout = settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
   if ( featureCount > 0 )
   {
-    mMapCanvas->zoomToFeatureExtent( bbox );
     if ( mMessageBar )
     {
       mMessageBar->pushMessage( QString(),
@@ -113,28 +89,10 @@ void QgsSelectByFormDialog::zoomToFeatures( const QString &filter )
 
 void QgsSelectByFormDialog::flashFeatures( const QString &filter )
 {
-  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
-
-  QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( filter )
-                              .setExpressionContext( context )
-                              .setNoAttributes();
-
-  QgsFeatureIterator features = mLayer->getFeatures( request );
-  QgsFeature feat;
-  QList< QgsGeometry > geoms;
-  while ( features.nextFeature( feat ) )
-  {
-    if ( feat.hasGeometry() )
-      geoms << feat.geometry();
-  }
-
+  const long featureCount = QgsMapCanvasUtils::flashMatchingFeatures( mMapCanvas, mLayer, filter );
   QgsSettings settings;
   int timeout = settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
-  if ( !geoms.empty() )
-  {
-    mMapCanvas->flashGeometries( geoms, mLayer->crs() );
-  }
-  else if ( mMessageBar )
+  if ( featureCount == 0 && mMessageBar )
   {
     mMessageBar->pushMessage( QString(),
                               tr( "No matching features found" ),

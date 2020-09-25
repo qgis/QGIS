@@ -52,12 +52,12 @@ enum QgsOraclePrimaryKeyType
 };
 
 /**
-  \class QgsOracleProvider
-  \brief Data provider for oracle layers.
-
-  This provider implements the
-  interface defined in the QgsDataProvider class to provide access to spatial
-  data residing in a oracle enabled database.
+  * \class QgsOracleProvider
+  * \brief Data provider for oracle layers.
+  *
+  * This provider implements the
+  * interface defined in the QgsDataProvider class to provide access to spatial
+  * data residing in a oracle enabled database.
   */
 class QgsOracleProvider final: public QgsVectorDataProvider
 {
@@ -84,8 +84,10 @@ class QgsOracleProvider final: public QgsVectorDataProvider
      * \param uri String containing the required parameters to connect to the database
      * and query the table.
      * \param options generic data provider options
+     * \param flags generic data provider flags
      */
-    explicit QgsOracleProvider( QString const &uri, const QgsDataProvider::ProviderOptions &options );
+    explicit QgsOracleProvider( QString const &uri, const QgsDataProvider::ProviderOptions &options,
+                                QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     //! Destructor
     ~QgsOracleProvider() override;
@@ -128,9 +130,12 @@ class QgsOracleProvider final: public QgsVectorDataProvider
     bool determinePrimaryKey();
 
     /**
-     * Determine the always generated identity fields
+     * Determine the fields making up the primary key from the uri attribute keyColumn
+     *
+     * Fills mPrimaryKeyType and mPrimaryKeyAttrs
+     * from mUri
      */
-    bool determineAlwaysGeneratedKeys();
+    void determinePrimaryKeyFromUriKeyColumn();
 
     QgsFields fields() const override;
     QString dataComment() const override;
@@ -149,7 +154,7 @@ class QgsOracleProvider final: public QgsVectorDataProvider
     QVariant defaultValue( int fieldId ) const override;
     QString defaultValueClause( int fieldId ) const override;
     bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const override;
-    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool addAttributes( const QList<QgsField> &attributes ) override;
     bool deleteAttributes( const QgsAttributeIds &ids ) override;
@@ -258,9 +263,10 @@ class QgsOracleProvider final: public QgsVectorDataProvider
     QString mPrimaryKeyDefault;
 
     /**
-     * List of always generated key attributes
+     * For each attributes, true if the attribute is always generated (virtual column
+     * and identity always generated columns)
      */
-    QList<int> mAlwaysGeneratedKeyAttrs;
+    QList<bool> mAlwaysGenerated;
 
     QString mGeometryColumn;           //!< Name of the geometry column
     mutable QgsRectangle mLayerExtent; //!< Rectangle that contains the extent (bounding box) of the layer
@@ -314,6 +320,8 @@ class QgsOracleProvider final: public QgsVectorDataProvider
 
       private:
         QString mWhat;
+
+        OracleException &operator= ( const OracleException & ) = delete;
     };
 
     // A function that determines if the given schema.table.column
@@ -330,6 +338,7 @@ class QgsOracleProvider final: public QgsVectorDataProvider
 
     bool mHasSpatialIndex;                   //!< Geometry column is indexed
     QString mSpatialIndexName;               //!< Name of spatial index of geometry column
+    int mOracleVersion;                      //!< Oracle database version
 
     std::shared_ptr<QgsOracleSharedData> mShared;
 
@@ -366,7 +375,8 @@ class QgsOracleUtils
 /**
  * Data shared between provider class and its feature sources. Ideally there should
  *  be as few members as possible because there could be simultaneous reads/writes
- *  from different threads and therefore locking has to be involved. */
+ *  from different threads and therefore locking has to be involved.
+*/
 class QgsOracleSharedData
 {
   public:
@@ -388,6 +398,8 @@ class QgsOracleSharedData
 
 class QgsOracleProviderMetadata final: public QgsProviderMetadata
 {
+    Q_OBJECT
+
   public:
     QgsOracleProviderMetadata();
     QString getStyleById( const QString &uri, QString styleId, QString &errCause ) override;
@@ -402,7 +414,7 @@ class QgsOracleProviderMetadata final: public QgsProviderMetadata
         QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage,
         const QMap<QString, QVariant> *options ) override;
 
-    QgsOracleProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QgsOracleProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QList<QgsDataItemProvider *> dataItemProviders() const override;
 
     QgsTransaction *createTransaction( const QString &connString ) override;

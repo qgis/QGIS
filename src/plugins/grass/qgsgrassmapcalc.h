@@ -198,6 +198,9 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     QAction *mActionLoad = nullptr;
     QAction *mActionSave = nullptr;
     QAction *mActionSaveAs = nullptr;
+
+    QgsGrassMapcalc( const QgsGrassMapcalc & ) = delete;
+    QgsGrassMapcalc &operator = ( const QgsGrassMapcalc & ) = delete;
 };
 
 /*

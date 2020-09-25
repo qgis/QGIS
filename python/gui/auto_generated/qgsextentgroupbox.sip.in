@@ -19,7 +19,7 @@ Collapsible group box for configuration of extent, typically for a save operatio
 Besides allowing the user to enter the extent manually, it comes with options to use
 original extent or extent defined by the current view in map canvas.
 
-When using the group box, make sure to call setOriginalExtent(), setCurrentExtent() and setOutputCrs() during initialization.
+When using the group box, make sure to call :py:func:`~setOriginalExtent`, :py:func:`~setCurrentExtent` and :py:func:`~setOutputCrs` during initialization.
 
 .. seealso:: :py:class:`QgsExtentWidget`
 

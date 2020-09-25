@@ -167,7 +167,7 @@ QVector<QgsDataItem *> QgsDb2ConnectionItem::createChildren()
   QSqlDatabase db = QgsDb2Provider::getDatabase( connInfo, errorMsg );
   if ( errorMsg.isEmpty() )
   {
-    //children.append( new QgsFavouritesItem(this, "connection successful", mPath + "/success"));
+    //children.append( new QgsFavoritesItem(this, "connection successful", mPath + "/success"));
     QgsDebugMsg( "DB open successful for connection " + db.connectionName() );
   }
   else
@@ -334,7 +334,7 @@ bool QgsDb2ConnectionItem::handleDrop( const QMimeData *data, const QString &toS
 }
 
 QgsDb2RootItem::QgsDb2RootItem( QgsDataItem *parent, QString name, QString path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "DB2" ) )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "DB2" ) )
 {
   mIconName = QStringLiteral( "mIconDb2.svg" );
   populate();

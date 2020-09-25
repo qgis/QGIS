@@ -44,5 +44,5 @@ saga:rastercalculator: >
   - lt(x,y): true if x is lower than y
 
   - eq(x,y): true if x equals y. When using this function SAGA evaluates it in a per–cell basis. Therefore, eq(a,b) will not return 1 if grid a equals grid b. It will return 1 for those cells that have the same value in both grids, and zero otherwise.
-  
+
   - ifelse(condition, x, y) returns x if condition evaluates to true (condition=1) or y if it evaluates to false

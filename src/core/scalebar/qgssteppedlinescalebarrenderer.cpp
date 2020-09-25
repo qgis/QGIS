@@ -18,6 +18,7 @@
 #include "qgsscalebarsettings.h"
 #include "qgslayoututils.h"
 #include "qgssymbol.h"
+#include "qgstextrenderer.h"
 #include <QList>
 #include <QPainter>
 
@@ -71,8 +72,7 @@ void QgsSteppedLineScaleBarRenderer::draw( QgsRenderContext &context, const QgsS
   const double barBottomPosition = barTopPosition + context.convertToPainterUnits( settings.height(), QgsUnitTypes::RenderMillimeters );
 
   painter->save();
-  if ( context.flags() & QgsRenderContext::Antialiasing )
-    painter->setRenderHint( QPainter::Antialiasing, true );
+  context.setPainterFlagsUsingContext( painter );
 
   painter->setPen( Qt::NoPen );
 

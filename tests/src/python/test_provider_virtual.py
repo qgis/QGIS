@@ -23,14 +23,16 @@ from qgis.core import (QgsVectorLayer,
                        QgsVirtualLayerDefinitionUtils,
                        QgsWkbTypes,
                        QgsProject,
-                       QgsVectorLayerJoinInfo
+                       QgsVectorLayerJoinInfo,
+                       QgsVectorFileWriter,
+                       QgsVirtualLayerDefinitionUtils
                        )
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 
 from providertestbase import ProviderTestCase
-from qgis.PyQt.QtCore import QUrl, QVariant
+from qgis.PyQt.QtCore import QUrl, QVariant, QTemporaryDir
 
 from qgis.utils import spatialite_connect
 
@@ -71,6 +73,15 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
     def tearDownClass(cls):
         """Run after all tests"""
         pass
+
+    def treat_datetime_as_string(self):
+        return True
+
+    def treat_date_as_string(self):
+        return True
+
+    def treat_time_as_string(self):
+        return True
 
     def setUp(self):
         """Run before each test."""
@@ -130,7 +141,9 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(f.attributes()[idx], 'Biplane')
 
     def test_CsvNoGeometry(self):
-        l1 = QgsVectorLayer(QUrl.fromLocalFile(os.path.join(self.testDataDir, "delimitedtext/test.csv")).toString() + "?type=csv&geomType=none&subsetIndex=no&watchFile=no", "test", "delimitedtext", QgsVectorLayer.LayerOptions(False))
+        l1 = QgsVectorLayer(QUrl.fromLocalFile(os.path.join(self.testDataDir,
+                                                            "delimitedtext/test.csv")).toString() + "?type=csv&geomType=none&subsetIndex=no&watchFile=no",
+                            "test", "delimitedtext", QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l1.isValid(), True)
         QgsProject.instance().addMapLayer(l1)
 
@@ -141,7 +154,8 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
 
     def test_source_escaping(self):
         # the source contains ':'
-        source = QUrl.fromLocalFile(os.path.join(self.testDataDir, "delimitedtext/test.csv")).toString() + "?type=csv&geomType=none&subsetIndex=no&watchFile=no"
+        source = QUrl.fromLocalFile(os.path.join(self.testDataDir,
+                                                 "delimitedtext/test.csv")).toString() + "?type=csv&geomType=none&subsetIndex=no&watchFile=no"
         d = QgsVirtualLayerDefinition()
         d.addSource("t", source, "delimitedtext")
         l = QgsVectorLayer(d.toString(), "vtab", "virtual", QgsVectorLayer.LayerOptions(False))
@@ -180,18 +194,22 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(l.isValid(), True)
 
     def test_DynamicGeometry(self):
-        l1 = QgsVectorLayer(QUrl.fromLocalFile(os.path.join(self.testDataDir, "delimitedtext/testextpt.txt")).toString() + "?type=csv&delimiter=%7C&geomType=none&subsetIndex=no&watchFile=no", "test", "delimitedtext", QgsVectorLayer.LayerOptions(False))
+        l1 = QgsVectorLayer(QUrl.fromLocalFile(os.path.join(self.testDataDir,
+                                                            "delimitedtext/testextpt.txt")).toString() + "?type=csv&delimiter=%7C&geomType=none&subsetIndex=no&watchFile=no",
+                            "test", "delimitedtext", QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l1.isValid(), True)
         QgsProject.instance().addMapLayer(l1)
 
         query = toPercent("select *,makepoint(x,y) as geom from vtab1")
-        l2 = QgsVectorLayer("?layer_ref=%s&query=%s&geometry=geom:point:0&uid=id" % (l1.id(), query), "vtab", "virtual", QgsVectorLayer.LayerOptions(False))
+        l2 = QgsVectorLayer("?layer_ref=%s&query=%s&geometry=geom:point:0&uid=id" % (l1.id(), query), "vtab", "virtual",
+                            QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l2.isValid(), True)
 
         QgsProject.instance().removeMapLayer(l1)
 
     def test_ShapefileWithGeometry(self):
-        l1 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "france_parts", "ogr", QgsVectorLayer.LayerOptions(False))
+        l1 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "france_parts", "ogr",
+                            QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l1.isValid(), True)
         QgsProject.instance().addMapLayer(l1)
 
@@ -205,13 +223,15 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         QgsProject.instance().removeMapLayer(l1.id())
 
     def test_Query(self):
-        l1 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "france_parts", "ogr", QgsVectorLayer.LayerOptions(False))
+        l1 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "france_parts", "ogr",
+                            QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l1.isValid(), True)
         QgsProject.instance().addMapLayer(l1)
         ref_sum = sum(f.attributes()[0] for f in l1.getFeatures())
 
         query = toPercent("SELECT * FROM vtab1")
-        l2 = QgsVectorLayer("?layer_ref=%s&geometry=geometry:3:4326&query=%s&uid=OBJECTID" % (l1.id(), query), "vtab", "virtual", QgsVectorLayer.LayerOptions(False))
+        l2 = QgsVectorLayer("?layer_ref=%s&geometry=geometry:3:4326&query=%s&uid=OBJECTID" % (l1.id(), query), "vtab",
+                            "virtual", QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l2.isValid(), True)
         self.assertEqual(l2.dataProvider().wkbType(), 3)
 
@@ -223,7 +243,8 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(ref_sum, ref_sum3)
 
         # the same, without specifying the geometry column name
-        l2 = QgsVectorLayer("?layer_ref=%s&query=%s&uid=OBJECTID" % (l1.id(), query), "vtab", "virtual", QgsVectorLayer.LayerOptions(False))
+        l2 = QgsVectorLayer("?layer_ref=%s&query=%s&uid=OBJECTID" % (l1.id(), query), "vtab", "virtual",
+                            QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l2.isValid(), True)
         self.assertEqual(l2.dataProvider().wkbType(), 6)
         ref_sum2 = sum(f.attributes()[0] for f in l2.getFeatures())
@@ -235,7 +256,8 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
 
         # with two geometry columns
         query = toPercent("SELECT *,geometry as geom FROM vtab1")
-        l2 = QgsVectorLayer("?layer_ref=%s&query=%s&uid=OBJECTID&geometry=geom:3:4326" % (l1.id(), query), "vtab", "virtual", QgsVectorLayer.LayerOptions(False))
+        l2 = QgsVectorLayer("?layer_ref=%s&query=%s&uid=OBJECTID&geometry=geom:3:4326" % (l1.id(), query), "vtab",
+                            "virtual", QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l2.isValid(), True)
         self.assertEqual(l2.dataProvider().wkbType(), 3)
         ref_sum2 = sum(f.attributes()[0] for f in l2.getFeatures())
@@ -246,7 +268,8 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(ref_sum, ref_sum3)
 
         # with two geometry columns, but no geometry column specified (will take the first)
-        l2 = QgsVectorLayer("?layer_ref=%s&query=%s&uid=OBJECTID" % (l1.id(), query), "vtab", "virtual", QgsVectorLayer.LayerOptions(False))
+        l2 = QgsVectorLayer("?layer_ref=%s&query=%s&uid=OBJECTID" % (l1.id(), query), "vtab", "virtual",
+                            QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l2.isValid(), True)
         self.assertEqual(l2.dataProvider().wkbType(), 6)
         ref_sum2 = sum(f.attributes()[0] for f in l2.getFeatures())
@@ -258,7 +281,8 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
 
         # the same, without geometry
         query = toPercent("SELECT * FROM ww")
-        l2 = QgsVectorLayer("?layer_ref=%s:ww&query=%s&uid=ObJeCtId&nogeometry" % (l1.id(), query), "vtab", "virtual", QgsVectorLayer.LayerOptions(False))
+        l2 = QgsVectorLayer("?layer_ref=%s:ww&query=%s&uid=ObJeCtId&nogeometry" % (l1.id(), query), "vtab", "virtual",
+                            QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l2.isValid(), True)
         self.assertEqual(l2.dataProvider().wkbType(), 100)  # NoGeometry
         ref_sum2 = sum(f.attributes()[0] for f in l2.getFeatures())
@@ -267,46 +291,56 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(ref_sum, ref_sum3)
 
         # check that it fails when a query has a wrong geometry column
-        l2 = QgsVectorLayer("?layer_ref=%s&query=%s&geometry=geo" % (l1.id(), query), "vtab", "virtual", QgsVectorLayer.LayerOptions(False))
+        l2 = QgsVectorLayer("?layer_ref=%s&query=%s&geometry=geo" % (l1.id(), query), "vtab", "virtual",
+                            QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l2.isValid(), False)
 
         QgsProject.instance().removeMapLayer(l1.id())
 
     def test_QueryUrlEncoding(self):
-        l1 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "france_parts", "ogr", QgsVectorLayer.LayerOptions(False))
+        l1 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "france_parts", "ogr",
+                            QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l1.isValid(), True)
         QgsProject.instance().addMapLayer(l1)
 
         query = toPercent("SELECT * FROM vtab1")
-        l2 = QgsVectorLayer("?layer_ref=%s&query=%s&uid=ObjectId&nogeometry" % (l1.id(), query), "vtab", "virtual", QgsVectorLayer.LayerOptions(False))
+        l2 = QgsVectorLayer("?layer_ref=%s&query=%s&uid=ObjectId&nogeometry" % (l1.id(), query), "vtab", "virtual",
+                            QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l2.isValid(), True)
 
         QgsProject.instance().removeMapLayer(l1.id())
 
     def test_QueryTableName(self):
-        l1 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "france_parts", "ogr", QgsVectorLayer.LayerOptions(False))
+        l1 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "france_parts", "ogr",
+                            QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l1.isValid(), True)
         QgsProject.instance().addMapLayer(l1)
 
         query = toPercent("SELECT * FROM vt")
-        l2 = QgsVectorLayer("?layer_ref=%s:vt&query=%s&uid=ObJeCtId&nogeometry" % (l1.id(), query), "vtab", "virtual", QgsVectorLayer.LayerOptions(False))
+        l2 = QgsVectorLayer("?layer_ref=%s:vt&query=%s&uid=ObJeCtId&nogeometry" % (l1.id(), query), "vtab", "virtual",
+                            QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l2.isValid(), True)
         self.assertEqual(l2.dataProvider().wkbType(), 100)  # NoGeometry
 
         QgsProject.instance().removeMapLayer(l1.id())
 
     def test_Join(self):
-        l1 = QgsVectorLayer(os.path.join(self.testDataDir, "points.shp"), "points", "ogr", QgsVectorLayer.LayerOptions(False))
+        l1 = QgsVectorLayer(os.path.join(self.testDataDir, "points.shp"), "points", "ogr",
+                            QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l1.isValid(), True)
         QgsProject.instance().addMapLayer(l1)
-        l2 = QgsVectorLayer(os.path.join(self.testDataDir, "points_relations.shp"), "points_relations", "ogr", QgsVectorLayer.LayerOptions(False))
+        l2 = QgsVectorLayer(os.path.join(self.testDataDir, "points_relations.shp"), "points_relations", "ogr",
+                            QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l2.isValid(), True)
         QgsProject.instance().addMapLayer(l2)
         ref_sum = sum(f.attributes()[1] for f in l2.getFeatures())
 
         # use a temporary file
-        query = toPercent("select id,Pilots,vtab1.geometry from vtab1,vtab2 where intersects(vtab1.geometry,vtab2.geometry)")
-        l3 = QgsVectorLayer("?layer_ref=%s&layer_ref=%s&uid=id&query=%s&geometry=geometry:1:4326" % (l1.id(), l2.id(), query), "vtab", "virtual", QgsVectorLayer.LayerOptions(False))
+        query = toPercent(
+            "select id,Pilots,vtab1.geometry from vtab1,vtab2 where intersects(vtab1.geometry,vtab2.geometry)")
+        l3 = QgsVectorLayer(
+            "?layer_ref=%s&layer_ref=%s&uid=id&query=%s&geometry=geometry:1:4326" % (l1.id(), l2.id(), query), "vtab",
+            "virtual", QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l3.isValid(), True)
         self.assertEqual(l3.dataProvider().wkbType(), 1)
         self.assertEqual(l3.dataProvider().fields().count(), 2)
@@ -323,7 +357,11 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
                (3, "POLYGON", "((0 0,1 0,1 1,0 0))"),
                (4, "MULTIPOINT", "((1 1))"),
                (5, "MULTILINESTRING", "((0 0,1 0),(0 1,1 1))"),
-               (6, "MULTIPOLYGON", "(((0 0,1 0,1 1,0 0)),((2 2,3 0,3 3,2 2)))")]
+               (6, "MULTIPOLYGON", "(((0 0,1 0,1 1,0 0)),((2 2,3 0,3 3,2 2)))"),
+               (9, "COMPOUNDCURVE", "(CIRCULARSTRING(0 0, 1 0, 1 1))"),
+               (10, "CURVEPOLYGON", "(COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 0, 1 1)))"),
+               (11, "MULTICURVE", "(COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 0, 1 1)),COMPOUNDCURVE(CIRCULARSTRING(2 2, 3 2, 3 3)))"),
+               (12, "MULTISURFACE", "(CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 0, 1 1))),CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(2 2, 3 2, 3 3))))")]
         for wkb_type, wkt_type, wkt in geo:
             l = QgsVectorLayer("%s?crs=epsg:4326" % wkt_type, "m1", "memory", QgsVectorLayer.LayerOptions(False))
             self.assertEqual(l.isValid(), True)
@@ -338,7 +376,13 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
             l2 = QgsVectorLayer("?layer_ref=%s" % l.id(), "vtab", "virtual", QgsVectorLayer.LayerOptions(False))
             self.assertEqual(l2.isValid(), True)
             self.assertEqual(l2.dataProvider().featureCount(), 1)
-            self.assertEqual(l2.dataProvider().wkbType(), wkb_type)
+            # we ensure the geom type matches the original (segmentized) type
+            self.assertEqual(l2.dataProvider().wkbType(), QgsWkbTypes.linearType(wkb_type))
+
+            # we ensure the geometry still matches the original (segmentized) geometry
+            f2 = QgsFeature()
+            l2.getFeatures().nextFeature(f2)
+            self.assertEqual(f2.geometry().asWkt(), f1.geometry().constGet().segmentize().asWkt())
 
             QgsProject.instance().removeMapLayer(l.id())
 
@@ -354,7 +398,8 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         source = toPercent(os.path.join(self.testDataDir, "france_parts.shp"))
 
         query = toPercent("select * from vtab where _search_frame_=BuildMbr(-2.10,49.38,-1.3,49.99,4326)")
-        l2 = QgsVectorLayer("?layer=ogr:%s:vtab&query=%s&uid=objectid" % (source, query), "vtab2", "virtual", QgsVectorLayer.LayerOptions(False))
+        l2 = QgsVectorLayer("?layer=ogr:%s:vtab&query=%s&uid=objectid" % (source, query), "vtab2", "virtual",
+                            QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l2.isValid(), True)
         self.assertEqual(l2.dataProvider().featureCount(), 1)
         a = [fit.attributes()[4] for fit in l2.getFeatures()]
@@ -382,7 +427,8 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
     def test_reopen(self):
         source = toPercent(os.path.join(self.testDataDir, "france_parts.shp"))
         tmp = QUrl.fromLocalFile(os.path.join(tempfile.gettempdir(), "t.sqlite")).toString()
-        l = QgsVectorLayer("%s?layer=ogr:%s:vtab" % (tmp, source), "vtab2", "virtual", QgsVectorLayer.LayerOptions(False))
+        l = QgsVectorLayer("%s?layer=ogr:%s:vtab" % (tmp, source), "vtab2", "virtual",
+                           QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l.isValid(), True)
 
         l2 = QgsVectorLayer(tmp, "tt", "virtual", QgsVectorLayer.LayerOptions(False))
@@ -393,7 +439,8 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
     def test_reopen2(self):
         source = toPercent(os.path.join(self.testDataDir, "france_parts.shp"))
         tmp = QUrl.fromLocalFile(os.path.join(tempfile.gettempdir(), "t.sqlite")).toString()
-        l = QgsVectorLayer("%s?layer=ogr:%s:vtab&nogeometry" % (tmp, source), "vtab2", "virtual", QgsVectorLayer.LayerOptions(False))
+        l = QgsVectorLayer("%s?layer=ogr:%s:vtab&nogeometry" % (tmp, source), "vtab2", "virtual",
+                           QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l.isValid(), True)
 
         l2 = QgsVectorLayer(tmp, "tt", "virtual", QgsVectorLayer.LayerOptions(False))
@@ -405,7 +452,8 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         source = toPercent(os.path.join(self.testDataDir, "france_parts.shp"))
         tmp = QUrl.fromLocalFile(os.path.join(tempfile.gettempdir(), "t.sqlite")).toString()
         query = toPercent("SELECT * FROM vtab")
-        l = QgsVectorLayer("%s?layer=ogr:%s:vtab&query=%s&uid=objectid&geometry=geometry:3:4326" % (tmp, source, query), "vtab2", "virtual", QgsVectorLayer.LayerOptions(False))
+        l = QgsVectorLayer("%s?layer=ogr:%s:vtab&query=%s&uid=objectid&geometry=geometry:3:4326" % (tmp, source, query),
+                           "vtab2", "virtual", QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l.isValid(), True)
 
         l2 = QgsVectorLayer(tmp, "tt", "virtual", QgsVectorLayer.LayerOptions(False))
@@ -421,7 +469,8 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         source = toPercent(os.path.join(self.testDataDir, "france_parts.shp"))
         tmp = QUrl.fromLocalFile(os.path.join(tempfile.gettempdir(), "t.sqlite")).toString()
         query = toPercent("SELECT * FROM vtab")
-        l = QgsVectorLayer("%s?layer=ogr:%s:vtab&query=%s&uid=objectid&nogeometry" % (tmp, source, query), "vtab2", "virtual", QgsVectorLayer.LayerOptions(False))
+        l = QgsVectorLayer("%s?layer=ogr:%s:vtab&query=%s&uid=objectid&nogeometry" % (tmp, source, query), "vtab2",
+                           "virtual", QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l.isValid(), True)
 
         l2 = QgsVectorLayer(tmp, "tt", "virtual", QgsVectorLayer.LayerOptions(False))
@@ -434,7 +483,9 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(suma, 3064.0)
 
     def test_refLayer(self):
-        l1 = QgsVectorLayer(QUrl.fromLocalFile(os.path.join(self.testDataDir, "delimitedtext/test.csv")).toString() + "?type=csv&geomType=none&subsetIndex=no&watchFile=no", "test", "delimitedtext", QgsVectorLayer.LayerOptions(False))
+        l1 = QgsVectorLayer(QUrl.fromLocalFile(os.path.join(self.testDataDir,
+                                                            "delimitedtext/test.csv")).toString() + "?type=csv&geomType=none&subsetIndex=no&watchFile=no",
+                            "test", "delimitedtext", QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l1.isValid(), True)
         QgsProject.instance().addMapLayer(l1)
 
@@ -447,14 +498,17 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         print((sum([f.id() for f in l2.getFeatures()])))
 
     def test_refLayers(self):
-        l1 = QgsVectorLayer(QUrl.fromLocalFile(os.path.join(self.testDataDir, "delimitedtext/test.csv")).toString() + "?type=csv&geomType=none&subsetIndex=no&watchFile=no", "test", "delimitedtext", QgsVectorLayer.LayerOptions(False))
+        l1 = QgsVectorLayer(QUrl.fromLocalFile(os.path.join(self.testDataDir,
+                                                            "delimitedtext/test.csv")).toString() + "?type=csv&geomType=none&subsetIndex=no&watchFile=no",
+                            "test", "delimitedtext", QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l1.isValid(), True)
         QgsProject.instance().addMapLayer(l1)
 
         # cf qgis bug #12266
         for i in range(10):
             q = toPercent("select * from t" + str(i))
-            l2 = QgsVectorLayer("?layer_ref=%s:t%d&query=%s&uid=id" % (l1.id(), i, q), "vtab", "virtual", QgsVectorLayer.LayerOptions(False))
+            l2 = QgsVectorLayer("?layer_ref=%s:t%d&query=%s&uid=id" % (l1.id(), i, q), "vtab", "virtual",
+                                QgsVectorLayer.LayerOptions(False))
             QgsProject.instance().addMapLayer(l2)
             self.assertEqual(l2.isValid(), True)
             s = sum([f.id() for f in l2.dataProvider().getFeatures()])  # NOQA
@@ -462,7 +516,9 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
             QgsProject.instance().removeMapLayer(l2.id())
 
     def test_refLayers2(self):
-        l1 = QgsVectorLayer(QUrl.fromLocalFile(os.path.join(self.testDataDir, "delimitedtext/test.csv")).toString() + "?type=csv&geomType=none&subsetIndex=no&watchFile=no", "test", "delimitedtext", QgsVectorLayer.LayerOptions(False))
+        l1 = QgsVectorLayer(QUrl.fromLocalFile(os.path.join(self.testDataDir,
+                                                            "delimitedtext/test.csv")).toString() + "?type=csv&geomType=none&subsetIndex=no&watchFile=no",
+                            "test", "delimitedtext", QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l1.isValid(), True)
         QgsProject.instance().addMapLayer(l1)
 
@@ -473,7 +529,9 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual("Cannot store referenced layers" in l2.dataProvider().error().message(), True)
 
     def test_sql(self):
-        l1 = QgsVectorLayer(QUrl.fromLocalFile(os.path.join(self.testDataDir, "delimitedtext/test.csv")).toString() + "?type=csv&geomType=none&subsetIndex=no&watchFile=no", "test", "delimitedtext", QgsVectorLayer.LayerOptions(False))
+        l1 = QgsVectorLayer(QUrl.fromLocalFile(os.path.join(self.testDataDir,
+                                                            "delimitedtext/test.csv")).toString() + "?type=csv&geomType=none&subsetIndex=no&watchFile=no",
+                            "test", "delimitedtext", QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l1.isValid(), True)
         QgsProject.instance().addMapLayer(l1)
 
@@ -484,7 +542,8 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(s, 15)
 
     def test_sql2(self):
-        l2 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "france_parts", "ogr", QgsVectorLayer.LayerOptions(False))
+        l2 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "france_parts", "ogr",
+                            QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l2.isValid(), True)
         QgsProject.instance().addMapLayer(l2)
 
@@ -541,7 +600,8 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(l5.dataProvider().featureCount(), 1)
 
     def test_sql3(self):
-        l2 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "france_parts", "ogr", QgsVectorLayer.LayerOptions(False))
+        l2 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "france_parts", "ogr",
+                            QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l2.isValid(), True)
         QgsProject.instance().addMapLayer(l2)
 
@@ -566,7 +626,8 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(l4.dataProvider().fields().at(3).type(), QVariant.Double)
 
         # with type annotations
-        query = toPercent("SELECT '42.0' as t /*:real*/, 3 as t2/*:text  */, GeomFromText('') as t3 /*:multiPoInT:4326 */, 3.14*2 as t4/*:int*/")
+        query = toPercent(
+            "SELECT '42.0' as t /*:real*/, 3 as t2/*:text  */, GeomFromText('') as t3 /*:multiPoInT:4326 */, 3.14*2 as t4/*:int*/")
         l4 = QgsVectorLayer("?query=%s" % query, "tt", "virtual", QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l4.isValid(), True)
         self.assertEqual(l4.dataProvider().fields().at(0).name(), "t")
@@ -590,8 +651,10 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(l4.dataProvider().wkbType(), 1)  # point
 
         # with type annotations and url options (2)
-        query = toPercent("SELECT 1 as id /*:int*/, 3.14 as f, geomfromtext('point(0 0)',4326) as geometry/*:point:4326*/")
-        l4 = QgsVectorLayer("?query=%s&geometry=geometry&field=id:text" % query, "tt", "virtual", QgsVectorLayer.LayerOptions(False))
+        query = toPercent(
+            "SELECT 1 as id /*:int*/, 3.14 as f, geomfromtext('point(0 0)',4326) as geometry/*:point:4326*/")
+        l4 = QgsVectorLayer("?query=%s&geometry=geometry&field=id:text" % query, "tt", "virtual",
+                            QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l4.isValid(), True)
         self.assertEqual(l4.dataProvider().fields().at(0).name(), "id")
         self.assertEqual(l4.dataProvider().fields().at(0).type(), QVariant.String)
@@ -607,7 +670,8 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
 
         # forced geometry type
         query = toPercent("SELECT GeomFromText('POINT(0 0)') as geom")
-        l4 = QgsVectorLayer("?query=%s&geometry=geom:point:0" % query, "tt", "virtual", QgsVectorLayer.LayerOptions(False))
+        l4 = QgsVectorLayer("?query=%s&geometry=geom:point:0" % query, "tt", "virtual",
+                            QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l4.isValid(), True)
         self.assertEqual(l4.dataProvider().wkbType(), 1)
 
@@ -617,7 +681,8 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(l4.dataProvider().wkbType(), 1)
 
     def test_sql4(self):
-        l2 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "france_parts", "ogr", QgsVectorLayer.LayerOptions(False))
+        l2 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "france_parts", "ogr",
+                            QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l2.isValid(), True)
         QgsProject.instance().addMapLayer(l2)
 
@@ -629,7 +694,8 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
 
     def test_layer_name(self):
         # test space and upper case
-        l2 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "FranCe parts", "ogr", QgsVectorLayer.LayerOptions(False))
+        l2 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "FranCe parts", "ogr",
+                            QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l2.isValid(), True)
         QgsProject.instance().addMapLayer(l2)
 
@@ -657,7 +723,8 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
     def test_rowid(self):
         source = toPercent(os.path.join(self.testDataDir, "france_parts.shp"))
         query = toPercent("select rowid as uid, * from vtab limit 1 offset 3")
-        l = QgsVectorLayer("?layer=ogr:%s:vtab&query=%s" % (source, query), "vtab2", "virtual", QgsVectorLayer.LayerOptions(False))
+        l = QgsVectorLayer("?layer=ogr:%s:vtab&query=%s" % (source, query), "vtab2", "virtual",
+                           QgsVectorLayer.LayerOptions(False))
         # the last line must have a fixed rowid (not an autoincrement)
         for f in l.getFeatures():
             lid = f.attributes()[0]
@@ -665,21 +732,25 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
 
     def test_geometry_conversion(self):
         query = toPercent("select geomfromtext('multipoint((0 0),(1 1))') as geom")
-        l = QgsVectorLayer("?query=%s&geometry=geom:multipoint:0" % query, "tt", "virtual", QgsVectorLayer.LayerOptions(False))
+        l = QgsVectorLayer("?query=%s&geometry=geom:multipoint:0" % query, "tt", "virtual",
+                           QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l.isValid(), True)
         for f in l.getFeatures():
             self.assertEqual(f.geometry().asWkt().lower().startswith("multipoint"), True)
             self.assertEqual("),(" in f.geometry().asWkt(), True)  # has two points
 
-        query = toPercent("select geomfromtext('multipolygon(((0 0,1 0,1 1,0 1,0 0)),((0 1,1 1,1 2,0 2,0 1)))') as geom")
-        l = QgsVectorLayer("?query=%s&geometry=geom:multipolygon:0" % query, "tt", "virtual", QgsVectorLayer.LayerOptions(False))
+        query = toPercent(
+            "select geomfromtext('multipolygon(((0 0,1 0,1 1,0 1,0 0)),((0 1,1 1,1 2,0 2,0 1)))') as geom")
+        l = QgsVectorLayer("?query=%s&geometry=geom:multipolygon:0" % query, "tt", "virtual",
+                           QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l.isValid(), True)
         for f in l.getFeatures():
             self.assertEqual(f.geometry().asWkt().lower().startswith("multipolygon"), True)
             self.assertEqual(")),((" in f.geometry().asWkt(), True)  # has two polygons
 
         query = toPercent("select geomfromtext('multilinestring((0 0,1 0,1 1,0 1,0 0),(0 1,1 1,1 2,0 2,0 1))') as geom")
-        l = QgsVectorLayer("?query=%s&geometry=geom:multilinestring:0" % query, "tt", "virtual", QgsVectorLayer.LayerOptions(False))
+        l = QgsVectorLayer("?query=%s&geometry=geom:multilinestring:0" % query, "tt", "virtual",
+                           QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l.isValid(), True)
         for f in l.getFeatures():
             self.assertEqual(f.geometry().asWkt().lower().startswith("multilinestring"), True)
@@ -711,7 +782,8 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
 
     def test_ProjectDependencies(self):
         # make a virtual layer with living references and save it to a project
-        l1 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "france_parts", "ogr", QgsVectorLayer.LayerOptions(False))
+        l1 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "france_parts", "ogr",
+                            QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l1.isValid(), True)
         QgsProject.instance().addMapLayer(l1)
 
@@ -756,7 +828,8 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
 
         # make a virtual layer with living references and save it to a project
         QgsProject.instance().clear()
-        l0 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "france_parts", "ogr", QgsVectorLayer.LayerOptions(False))
+        l0 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "france_parts", "ogr",
+                            QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l0.isValid(), True)
         QgsProject.instance().addMapLayer(l0)
 
@@ -772,7 +845,6 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         QgsProject.instance().setFileName(temp)
         QgsProject.instance().write()
 
-        QgsProject.instance().removeAllMapLayers()
         QgsProject.instance().clear()
         self.assertEqual(len(QgsProject.instance().mapLayers()), 0)
 
@@ -780,7 +852,6 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         percent_path_relative = toPercent("./france_parts.shp")
         with open(temp, 'r') as f:
             content = ''.join(f.readlines())
-            print(content)
             self.assertTrue('<datasource>?layer=ogr:{}'.format(percent_path_relative) in content)
 
         # Check that project is correctly re-read with all layers
@@ -793,7 +864,6 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         QgsProject.instance().writeEntryBool('Paths', '/Absolute', True)
         QgsProject.instance().write()
 
-        QgsProject.instance().removeAllMapLayers()
         QgsProject.instance().clear()
         self.assertEqual(len(QgsProject.instance().mapLayers()), 0)
 
@@ -812,7 +882,8 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         QgsProject.instance().setTitle('project')
         self.assertEqual(QgsProject.instance().title(), 'project')
         df = QgsVirtualLayerDefinition()
-        df.setQuery("SELECT format('hello %1', 'world') as a, year(todate('2016-01-02')) as b, title('This') as t, var('project_title') as c")
+        df.setQuery(
+            "SELECT format('hello %1', 'world') as a, year(todate('2016-01-02')) as b, title('This') as t, var('project_title') as c")
         l = QgsVectorLayer(df.toString(), "testq", "virtual")
         self.assertEqual(l.isValid(), True)
 
@@ -838,7 +909,8 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(ids, [])
 
     def test_layer_with_accents(self):
-        l1 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "françéà", "ogr", QgsVectorLayer.LayerOptions(False))
+        l1 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "françéà", "ogr",
+                            QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l1.isValid(), True)
         QgsProject.instance().addMapLayer(l1)
 
@@ -853,7 +925,8 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         QgsProject.instance().removeMapLayer(l1.id())
 
     def test_lazy(self):
-        l1 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "françéà", "ogr", QgsVectorLayer.LayerOptions(False))
+        l1 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "françéà", "ogr",
+                            QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l1.isValid(), True)
         QgsProject.instance().addMapLayer(l1)
 
@@ -873,7 +946,8 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         QgsProject.instance().removeMapLayer(l1.id())
 
     def test_joined_layers_conversion(self):
-        v1 = QgsVectorLayer("Point?field=id:integer&field=b_id:integer&field=c_id:integer&field=name:string", "A", "memory")
+        v1 = QgsVectorLayer("Point?field=id:integer&field=b_id:integer&field=c_id:integer&field=name:string", "A",
+                            "memory")
         self.assertEqual(v1.isValid(), True)
         v2 = QgsVectorLayer("Point?field=id:integer&field=bname:string&field=bfield:integer", "B", "memory")
         self.assertEqual(v2.isValid(), True)
@@ -888,12 +962,14 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         joinInfo.setTargetFieldName("b_id")
         joinInfo.setJoinLayer(v2)
         joinInfo.setJoinFieldName("id")
-        #joinInfo.setPrefix("B_")
+        # joinInfo.setPrefix("B_")
         v1.addJoin(joinInfo)
         self.assertEqual(len(v1.fields()), 6)
 
         df = QgsVirtualLayerDefinitionUtils.fromJoinedLayer(v1)
-        self.assertEqual(df.query(), 'SELECT t.geometry, t.rowid AS uid, t."id", t."b_id", t."c_id", t."name", j1."bname" AS "B_bname", j1."bfield" AS "B_bfield" FROM "{}" AS t LEFT JOIN "{}" AS j1 ON t."b_id"=j1."id"'.format(v1.id(), v2.id()))
+        self.assertEqual(df.query(),
+                         'SELECT t.geometry, t.rowid AS uid, t."id", t."b_id", t."c_id", t."name", j1."bname" AS "B_bname", j1."bfield" AS "B_bfield" FROM "{}" AS t LEFT JOIN "{}" AS j1 ON t."b_id"=j1."id"'.format(
+                             v1.id(), v2.id()))
 
         # with a field subset
         v1.removeJoin(v2.id())
@@ -901,7 +977,9 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         v1.addJoin(joinInfo)
         self.assertEqual(len(v1.fields()), 5)
         df = QgsVirtualLayerDefinitionUtils.fromJoinedLayer(v1)
-        self.assertEqual(df.query(), 'SELECT t.geometry, t.rowid AS uid, t."id", t."b_id", t."c_id", t."name", j1."bname" AS "B_bname" FROM "{}" AS t LEFT JOIN "{}" AS j1 ON t."b_id"=j1."id"'.format(v1.id(), v2.id()))
+        self.assertEqual(df.query(),
+                         'SELECT t.geometry, t.rowid AS uid, t."id", t."b_id", t."c_id", t."name", j1."bname" AS "B_bname" FROM "{}" AS t LEFT JOIN "{}" AS j1 ON t."b_id"=j1."id"'.format(
+                             v1.id(), v2.id()))
         joinInfo.setJoinFieldNamesSubset(None)
 
         # add a table prefix to the join
@@ -910,7 +988,9 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         v1.addJoin(joinInfo)
         self.assertEqual(len(v1.fields()), 6)
         df = QgsVirtualLayerDefinitionUtils.fromJoinedLayer(v1)
-        self.assertEqual(df.query(), 'SELECT t.geometry, t.rowid AS uid, t."id", t."b_id", t."c_id", t."name", j1."bname" AS "BB_bname", j1."bfield" AS "BB_bfield" FROM "{}" AS t LEFT JOIN "{}" AS j1 ON t."b_id"=j1."id"'.format(v1.id(), v2.id()))
+        self.assertEqual(df.query(),
+                         'SELECT t.geometry, t.rowid AS uid, t."id", t."b_id", t."c_id", t."name", j1."bname" AS "BB_bname", j1."bfield" AS "BB_bfield" FROM "{}" AS t LEFT JOIN "{}" AS j1 ON t."b_id"=j1."id"'.format(
+                             v1.id(), v2.id()))
         joinInfo.setPrefix("")
         v1.removeJoin(v2.id())
         v1.addJoin(joinInfo)
@@ -923,9 +1003,10 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         v1.addJoin(joinInfo2)
         self.assertEqual(len(v1.fields()), 7)
         df = QgsVirtualLayerDefinitionUtils.fromJoinedLayer(v1)
-        self.assertEqual(df.query(), ('SELECT t.geometry, t.rowid AS uid, t."id", t."b_id", t."c_id", t."name", j1."bname" AS "B_bname", j1."bfield" AS "B_bfield", j2."cname" AS "C_cname" FROM "{}" AS t '
-                                      + 'LEFT JOIN "{}" AS j1 ON t."b_id"=j1."id" '
-                                      + 'LEFT JOIN "{}" AS j2 ON t."c_id"=j2."id"').format(v1.id(), v2.id(), v3.id()))
+        self.assertEqual(df.query(), (
+            'SELECT t.geometry, t.rowid AS uid, t."id", t."b_id", t."c_id", t."name", j1."bname" AS "B_bname", j1."bfield" AS "B_bfield", j2."cname" AS "C_cname" FROM "{}" AS t ' +
+            'LEFT JOIN "{}" AS j1 ON t."b_id"=j1."id" ' +
+            'LEFT JOIN "{}" AS j2 ON t."c_id"=j2."id"').format(v1.id(), v2.id(), v3.id()))
 
         # test NoGeometry joined layers with field names starting with a digit or containing white spaces
         joinInfo3 = QgsVectorLayerJoinInfo()
@@ -935,7 +1016,9 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         tl1.addJoin(joinInfo3)
         self.assertEqual(len(tl1.fields()), 4)
         df = QgsVirtualLayerDefinitionUtils.fromJoinedLayer(tl1)
-        self.assertEqual(df.query(), 'SELECT t.rowid AS uid, t."id", t."e_id", t."0name", j1."ena me" AS "E_ena me" FROM "{}" AS t LEFT JOIN "{}" AS j1 ON t."e_id"=j1."id"'.format(tl1.id(), tl2.id()))
+        self.assertEqual(df.query(),
+                         'SELECT t.rowid AS uid, t."id", t."e_id", t."0name", j1."ena me" AS "E_ena me" FROM "{}" AS t LEFT JOIN "{}" AS j1 ON t."e_id"=j1."id"'.format(
+                             tl1.id(), tl2.id()))
 
         QgsProject.instance().removeMapLayers([v1.id(), v2.id(), v3.id(), tl1.id(), tl2.id()])
 
@@ -1067,6 +1150,181 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(point.y(), 3)
 
         QgsProject.instance().removeMapLayer(ml)
+
+    def test_filter_rect_precise(self):
+
+        # Check if don't lost precision when filtering on rect (see https://github.com/qgis/QGIS/issues/36054)
+
+        pl = QgsVectorLayer(os.path.join(self.testDataDir, "points.shp"), "points", "ogr")
+        self.assertTrue(pl.isValid())
+        QgsProject.instance().addMapLayer(pl)
+
+        query = toPercent("SELECT * FROM points")
+        vl = QgsVectorLayer("?query=%s&uid=OBJECTID" % (query), "vl", "virtual")
+        self.assertEqual(vl.isValid(), True)
+        self.assertEqual(vl.dataProvider().featureCount(), 17)
+
+        # Take an extent where east farthest point is excluded and second farthest east is on the edge
+        # and should be returned
+        extent = QgsRectangle(-117.23257418909581418, 22.80020703933767834, -85.6521739130433276, 46.87198067632875365)
+        r = QgsFeatureRequest(extent)
+        features = [feature for feature in vl.getFeatures(r)]
+        self.assertEqual(len(features), 16)
+
+        QgsProject.instance().removeMapLayer(pl)
+
+    def test_subset_string(self):
+        """Test that subset strings are stored and restored correctly from the project
+        See: GH #26189
+        """
+
+        project = QgsProject.instance()
+        project.clear()
+        data_layer = QgsVectorLayer('Point?crs=epsg:4326&field=fid:integer&field=value:integer&field=join_pk:integer', 'data', 'memory')
+        join_layer = QgsVectorLayer('NoGeometry?field=fid:integer&field=value:string', 'join', 'memory')
+        tempdir = QTemporaryDir()
+        gpkg_path = os.path.join(tempdir.path(), 'test_subset.gpkg')
+        project_path = os.path.join(tempdir.path(), 'test_subset.qgs')
+        self.assertTrue(data_layer.isValid())
+        self.assertTrue(join_layer.isValid())
+        self.assertFalse(join_layer.isSpatial())
+
+        f = QgsFeature(data_layer.fields())
+        f.setAttributes([1, 20, 2])
+        f.setGeometry(QgsGeometry.fromWkt('point(9 45'))
+        self.assertTrue(data_layer.dataProvider().addFeature(f))
+
+        f = QgsFeature(data_layer.fields())
+        f.setAttributes([2, 10, 1])
+        f.setGeometry(QgsGeometry.fromWkt('point(9 45'))
+        self.assertTrue(data_layer.dataProvider().addFeature(f))
+
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = 'GPKG'
+        options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteFile
+        options.layerName = 'data'
+
+        _, _ = QgsVectorFileWriter.writeAsVectorFormatV2(
+            data_layer,
+            gpkg_path,
+            data_layer.transformContext(),
+            options
+        )
+
+        f = QgsFeature(join_layer.fields())
+        f.setAttributes([1, "ten"])
+        self.assertTrue(join_layer.dataProvider().addFeature(f))
+        f.setAttributes([2, "twenty"])
+        self.assertTrue(join_layer.dataProvider().addFeature(f))
+
+        options.layerName = 'join'
+        options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteLayer
+
+        _, _ = QgsVectorFileWriter.writeAsVectorFormatV2(
+            join_layer,
+            gpkg_path,
+            join_layer.transformContext(),
+            options
+        )
+
+        gpkg_join_layer = QgsVectorLayer(gpkg_path + '|layername=join', 'join', 'ogr')
+        gpkg_data_layer = QgsVectorLayer(gpkg_path + '|layername=data', 'data', 'ogr')
+
+        self.assertTrue(gpkg_join_layer.isValid())
+        self.assertTrue(gpkg_data_layer.isValid())
+        self.assertEqual(gpkg_data_layer.featureCount(), 2)
+        self.assertEqual(gpkg_join_layer.featureCount(), 2)
+
+        self.assertTrue(project.addMapLayers([gpkg_data_layer, gpkg_join_layer]))
+
+        joinInfo = QgsVectorLayerJoinInfo()
+        joinInfo.setTargetFieldName("join_pk")
+        joinInfo.setJoinLayer(gpkg_join_layer)
+        joinInfo.setJoinFieldName("fid")
+        gpkg_data_layer.addJoin(joinInfo)
+        self.assertEqual(len(gpkg_data_layer.fields()), 4)
+
+        self.assertTrue(project.write(project_path))
+
+        # Reload project
+        self.assertTrue(project.read(project_path))
+        gpkg_data_layer = project.mapLayersByName('data')[0]
+        gpkg_join_layer = project.mapLayersByName('join')[0]
+
+        self.assertEqual(gpkg_data_layer.vectorJoins()[0], joinInfo)
+
+        # Now set a subset filter -> virtual layer
+        virtual_def = QgsVirtualLayerDefinitionUtils.fromJoinedLayer(gpkg_data_layer)
+        virtual = QgsVectorLayer(virtual_def.toString(), "virtual_data", "virtual")
+        self.assertTrue(virtual.isValid())
+        project.addMapLayers([virtual])
+
+        self.assertEqual(virtual.featureCount(), 2)
+        self.assertTrue(virtual.setSubsetString('"join_value" = \'twenty\''))
+        self.assertEqual(virtual.featureCount(), 1)
+        self.assertEqual([f.attributes() for f in virtual.getFeatures()], [[1, 20, 2, 'twenty']])
+
+        # Store and reload the project
+        self.assertTrue(project.write(project_path))
+        self.assertTrue(project.read(project_path))
+        gpkg_virtual_layer = project.mapLayersByName('virtual_data')[0]
+        self.assertEqual(gpkg_virtual_layer.featureCount(), 1)
+        self.assertEqual(gpkg_virtual_layer.subsetString(), '"join_value" = \'twenty\'')
+
+    def test_feature_count_on_error(self):
+        """Test that triggered exception while getting feature count on a badly defined
+        virtual layer is correctly caught (see https://github.com/qgis/QGIS/issues/34378)"""
+
+        l1 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "france", "ogr",
+                            QgsVectorLayer.LayerOptions(False))
+        self.assertEqual(l1.isValid(), True)
+        QgsProject.instance().addMapLayer(l1)
+
+        df = QgsVirtualLayerDefinition()
+        df.setQuery('select error')
+
+        vl = QgsVectorLayer(df.toString(), "testq", "virtual")
+        self.assertEqual(vl.isValid(), False)
+        self.assertEqual(vl.featureCount(), 0)
+        ids = [f.id() for f in vl.getFeatures()]
+        self.assertEqual(len(ids), 0)
+
+        QgsProject.instance().removeMapLayer(l1.id())
+
+    def test_bool_fields(self):
+
+        ml = QgsVectorLayer("NoGeometry?field=a:int&field=b:boolean", "mem", "memory")
+        self.assertEqual(ml.isValid(), True)
+        QgsProject.instance().addMapLayer(ml)
+
+        ml.startEditing()
+        f1 = QgsFeature(ml.fields())
+        f1.setAttribute('a', 1)
+        f1.setAttribute('b', True)
+        f2 = QgsFeature(ml.fields())
+        f2.setAttribute('a', 2)
+        f2.setAttribute('b', False)
+        ml.addFeatures([f1, f2])
+        ml.commitChanges()
+
+        self.assertEqual([(f['a'], f['b']) for f in ml.getFeatures()], [(1, True), (2, False)])
+
+        df = QgsVirtualLayerDefinition()
+        df.setQuery('select * from mem')
+        vl = QgsVectorLayer(df.toString(), "testq", "virtual")
+        self.assertEqual([(f['a'], f['b']) for f in vl.getFeatures()], [(1, True), (2, False)])
+
+        df = QgsVirtualLayerDefinition()
+        df.setQuery('select * from mem where b')
+        vl = QgsVectorLayer(df.toString(), "testq", "virtual")
+        self.assertEqual([(f['a'], f['b']) for f in vl.getFeatures()], [(1, True)])
+
+        df = QgsVirtualLayerDefinition()
+        df.setQuery('select * from mem where not b')
+        vl = QgsVectorLayer(df.toString(), "testq", "virtual")
+        self.assertEqual([(f['a'], f['b']) for f in vl.getFeatures()], [(2, False)])
+
+        QgsProject.instance().removeMapLayer(ml.id())
 
 
 if __name__ == '__main__':

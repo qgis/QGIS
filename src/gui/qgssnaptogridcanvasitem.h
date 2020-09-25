@@ -37,8 +37,14 @@
  *
  * \since QGIS 3.4
  */
+#ifndef SIP_RUN
 class GUI_EXPORT QgsSnapToGridCanvasItem : public QObject, public QgsMapCanvasItem
 {
+#else
+class GUI_EXPORT QgsSnapToGridCanvasItem : public QgsMapCanvasItem
+{
+#endif
+
     Q_OBJECT
 
 #ifdef SIP_RUN

@@ -82,7 +82,7 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
 
   mAttributeCount++;
 
-  QgsDebugMsg( QStringLiteral( "Created empty layer" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Created empty layer" ), 2 );
 
   QString uriUpdated( uri );
   // HACK sorry...
@@ -186,6 +186,11 @@ bool QgsVectorLayerExporter::addFeature( QgsFeature &feat, Flags )
   }
 
   return true;
+}
+
+QString QgsVectorLayerExporter::lastError() const
+{
+  return mErrorMessage;
 }
 
 bool QgsVectorLayerExporter::flushBuffer()

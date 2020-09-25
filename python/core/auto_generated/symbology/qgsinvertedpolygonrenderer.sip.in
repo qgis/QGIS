@@ -19,7 +19,7 @@ It is designed on top of another feature renderer, which is called "embedded"
 Most of the methods are then only proxies to the embedded renderer.
 
 Features are collected to form one "inverted" polygon
-during renderFeature() and rendered on stopRender().
+during :py:func:`~renderFeature` and rendered on :py:func:`~stopRender`.
 
 .. versionadded:: 2.4
 %End
@@ -41,7 +41,7 @@ Constructor
     virtual QgsInvertedPolygonRenderer *clone() const /Factory/;
 
 %Docstring
-Direct copies are forbidden. Use clone() instead.
+Direct copies are forbidden. Use :py:func:`~QgsInvertedPolygonRenderer.clone` instead.
 %End
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
 
@@ -50,7 +50,7 @@ Direct copies are forbidden. Use clone() instead.
 
 %Docstring
 Renders a given feature.
-This will here collect features. The actual rendering will be postponed to stopRender()
+This will here collect features. The actual rendering will be postponed to :py:func:`~QgsInvertedPolygonRenderer.stopRender`
 
 :param feature: the feature to render
 :param context: the rendering context
@@ -65,7 +65,7 @@ This will here collect features. The actual rendering will be postponed to stopR
 
 %Docstring
 The actual rendering will take place here.
-Features collected during renderFeature() are rendered using the embedded feature renderer
+Features collected during :py:func:`~QgsInvertedPolygonRenderer.renderFeature` are rendered using the embedded feature renderer
 %End
 
     virtual QString dump() const;

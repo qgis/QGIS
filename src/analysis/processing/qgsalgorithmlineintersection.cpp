@@ -125,7 +125,7 @@ QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &p
       continue;
 
     QgsGeometry inGeom = inFeatureA.geometry();
-    QgsFeatureIds lines = spatialIndex.intersects( inGeom.boundingBox() ).toSet();
+    QgsFeatureIds lines = qgis::listToSet( spatialIndex.intersects( inGeom.boundingBox() ) );
     if ( !lines.empty() )
     {
       // use prepared geometries for faster intersection tests

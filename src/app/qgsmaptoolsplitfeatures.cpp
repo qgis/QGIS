@@ -92,44 +92,83 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     deleteTempRubberBand();
 
     //bring up dialog if a split was not possible (polygon) or only done once (line)
-    int topologicalEditing = QgsProject::instance()->topologicalEditing();
+    bool topologicalEditing = QgsProject::instance()->topologicalEditing();
+    QgsPointSequence topologyTestPoints;
     vlayer->beginEditCommand( tr( "Features split" ) );
-    QgsGeometry::OperationResult returnCode = vlayer->splitFeatures( pointsZM(), topologicalEditing );
-    vlayer->endEditCommand();
-    if ( returnCode == QgsGeometry::OperationResult::NothingHappened )
+    QgsGeometry::OperationResult returnCode = vlayer->splitFeatures( captureCurve(), topologyTestPoints, true, topologicalEditing );
+    if ( returnCode == QgsGeometry::OperationResult::Success )
     {
-      QgisApp::instance()->messageBar()->pushMessage(
-        tr( "No features were split" ),
-        tr( "If there are selected features, the split tool only applies to those. If you would like to split all features under the split line, clear the selection." ),
-        Qgis::Warning,
-        QgisApp::instance()->messageTimeout() );
+      vlayer->endEditCommand();
     }
-    else if ( returnCode == QgsGeometry::OperationResult::GeometryEngineError )
+    else
     {
-      QgisApp::instance()->messageBar()->pushMessage(
-        tr( "No feature split done" ),
-        tr( "Cut edges detected. Make sure the line splits features into multiple parts." ),
-        Qgis::Warning,
-        QgisApp::instance()->messageTimeout() );
-    }
-    else if ( returnCode == QgsGeometry::OperationResult::InvalidBaseGeometry )
-    {
-      QgisApp::instance()->messageBar()->pushMessage(
-        tr( "No feature split done" ),
-        tr( "The geometry is invalid. Please repair before trying to split it." ),
-        Qgis::Warning,
-        QgisApp::instance()->messageTimeout() );
-    }
-    else if ( returnCode != QgsGeometry::OperationResult::Success )
-    {
-      //several intersections but only one split (most likely line)
-      QgisApp::instance()->messageBar()->pushMessage(
-        tr( "No feature split done" ),
-        tr( "An error occurred during splitting." ),
-        Qgis::Warning,
-        QgisApp::instance()->messageTimeout() );
+      vlayer->destroyEditCommand();
     }
 
+    switch ( returnCode )
+    {
+      case QgsGeometry::OperationResult::Success:
+        if ( topologicalEditing == true &&
+             ! topologyTestPoints.isEmpty() )
+        {
+          //check if we need to add topological points to other layers
+          QList<QgsVectorLayer *> editableLayers;
+          const auto layers = canvas()->layers();
+          for ( QgsMapLayer *layer : layers )
+          {
+            QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
+            if ( vectorLayer &&
+                 vectorLayer->isEditable() &&
+                 vectorLayer->isSpatial() &&
+                 vectorLayer != vlayer &&
+                 ( vectorLayer->geometryType() == QgsWkbTypes::LineGeometry ||
+                   vectorLayer->geometryType() == QgsWkbTypes::PolygonGeometry ) )
+            {
+              vectorLayer->beginEditCommand( tr( "Topological points from Features split" ) );
+              int returnValue = vectorLayer->addTopologicalPoints( topologyTestPoints );
+              if ( returnValue == 0 )
+              {
+                vectorLayer->endEditCommand();
+              }
+              else
+              {
+                // the layer was not modified, leave the undo buffer intact
+                vectorLayer->destroyEditCommand();
+              }
+            }
+          }
+        }
+        break;
+      case QgsGeometry::OperationResult::NothingHappened:
+        QgisApp::instance()->messageBar()->pushMessage(
+          tr( "No features were split" ),
+          tr( "If there are selected features, the split tool only applies to those. If you would like to split all features under the split line, clear the selection." ),
+          Qgis::Warning,
+          QgisApp::instance()->messageTimeout() );
+        break;
+      case QgsGeometry::OperationResult::GeometryEngineError:
+        QgisApp::instance()->messageBar()->pushMessage(
+          tr( "No feature split done" ),
+          tr( "Cut edges detected. Make sure the line splits features into multiple parts." ),
+          Qgis::Warning,
+          QgisApp::instance()->messageTimeout() );
+        break;
+      case QgsGeometry::OperationResult::InvalidBaseGeometry:
+        QgisApp::instance()->messageBar()->pushMessage(
+          tr( "No feature split done" ),
+          tr( "The geometry is invalid. Please repair before trying to split it." ),
+          Qgis::Warning,
+          QgisApp::instance()->messageTimeout() );
+        break;
+      default:
+        //several intersections but only one split (most likely line)
+        QgisApp::instance()->messageBar()->pushMessage(
+          tr( "No feature split done" ),
+          tr( "An error occurred during splitting." ),
+          Qgis::Warning,
+          QgisApp::instance()->messageTimeout() );
+        break;
+    }
     stopCapturing();
   }
 }

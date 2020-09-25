@@ -403,6 +403,7 @@ void Screen::updateEffectiveRendition()
 
 void Screen::copyFromHistory(Character* dest, int startLine, int count) const
 {
+    // cppcheck-suppress assertWithSideEffect
     Q_ASSERT( startLine >= 0 && count > 0 && startLine + count <= history->getLines() );
 
     for (int line = startLine; line < startLine + count; line++)
@@ -456,6 +457,7 @@ void Screen::copyFromScreen(Character* dest , int startLine , int count) const
 void Screen::getImage( Character* dest, int size, int startLine, int endLine ) const
 {
     Q_ASSERT( startLine >= 0 );
+    // cppcheck-suppress assertWithSideEffect
     Q_ASSERT( endLine >= startLine && endLine < history->getLines() + lines );
 
     const int mergedLines = endLine - startLine + 1;
@@ -492,6 +494,7 @@ void Screen::getImage( Character* dest, int size, int startLine, int endLine ) c
 QVector<LineProperty> Screen::getLineProperties( int startLine , int endLine ) const
 {
     Q_ASSERT( startLine >= 0 );
+    // cppcheck-suppress assertWithSideEffect
     Q_ASSERT( endLine >= startLine && endLine < history->getLines() + lines );
 
     const int mergedLines = endLine-startLine+1;
@@ -1204,6 +1207,7 @@ int Screen::copyLineToStream(int line ,
         // safety checks
         assert( start >= 0 );
         assert( count >= 0 );
+        // cppcheck-suppress assertWithSideEffect
         assert( (start+count) <= history->getLineLen(line) );
 
         history->getCells(line,start,count,characterBuffer);

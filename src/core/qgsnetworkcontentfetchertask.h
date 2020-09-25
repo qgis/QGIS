@@ -56,7 +56,7 @@ class CORE_EXPORT QgsNetworkContentFetcherTask : public QgsTask
      *
      * Optionally, authentication configuration can be set via the \a authcfg argument.
      */
-    QgsNetworkContentFetcherTask( const QUrl &url, const QString &authcfg = QString() );
+    QgsNetworkContentFetcherTask( const QUrl &url, const QString &authcfg = QString(), QgsTask::Flags flags = QgsTask::CanCancel );
 
     /**
      * Constructor for a QgsNetworkContentFetcherTask which fetches
@@ -64,7 +64,7 @@ class CORE_EXPORT QgsNetworkContentFetcherTask : public QgsTask
      *
      * Optionally, authentication configuration can be set via the \a authcfg argument.
      */
-    QgsNetworkContentFetcherTask( const QNetworkRequest &request, const QString &authcfg = QString() );
+    QgsNetworkContentFetcherTask( const QNetworkRequest &request, const QString &authcfg = QString(), QgsTask::Flags flags = QgsTask::CanCancel );
 
     ~QgsNetworkContentFetcherTask() override;
 

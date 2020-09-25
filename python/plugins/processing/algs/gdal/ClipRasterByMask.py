@@ -44,7 +44,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class ClipRasterByMask(GdalAlgorithm):
-
     INPUT = 'INPUT'
     MASK = 'MASK'
     SOURCE_CRS = 'SOURCE_CRS'

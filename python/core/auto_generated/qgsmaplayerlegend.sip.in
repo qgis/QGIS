@@ -34,14 +34,14 @@ Constructor for QgsMapLayerLegend
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 %Docstring
-Reads configuration from a DOM element previously written by writeXml()
+Reads configuration from a DOM element previously written by :py:func:`~QgsMapLayerLegend.writeXml`
 
 .. versionadded:: 3.2
 %End
 
     virtual QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
-Writes configuration to a DOM element, to be used later with readXml()
+Writes configuration to a DOM element, to be used later with :py:func:`~QgsMapLayerLegend.readXml`
 
 .. versionadded:: 3.2
 %End
@@ -96,6 +96,92 @@ Miscellaneous utility functions for handling of map layer legend
     static QString legendNodeUserLabel( QgsLayerTreeLayer *nodeLayer, int originalIndex );
     static bool hasLegendNodeUserLabel( QgsLayerTreeLayer *nodeLayer, int originalIndex );
 
+    static void setLegendNodePatchShape( QgsLayerTreeLayer *nodeLayer, int originalIndex, const QgsLegendPatchShape &shape );
+%Docstring
+Sets the legend patch ``shape`` for the legend node belonging to ``nodeLayer`` at the specified ``originalIndex``.
+
+.. seealso:: :py:func:`legendNodePatchShape`
+
+.. versionadded:: 3.14
+%End
+
+    static QgsLegendPatchShape legendNodePatchShape( QgsLayerTreeLayer *nodeLayer, int originalIndex );
+%Docstring
+Returns the legend patch shape for the legend node belonging to ``nodeLayer`` at the specified ``originalIndex``.
+
+.. seealso:: :py:func:`setLegendNodePatchShape`
+
+.. versionadded:: 3.14
+%End
+
+    static void setLegendNodeSymbolSize( QgsLayerTreeLayer *nodeLayer, int originalIndex, QSizeF size );
+%Docstring
+Sets the legend symbol ``size`` for the legend node belonging to ``nodeLayer`` at the specified ``originalIndex``.
+
+If either the width or height are non-zero, they will be used when rendering the legend node instead of the default
+symbol width or height from :py:class:`QgsLegendSettings`.
+
+.. seealso:: :py:func:`legendNodeSymbolSize`
+
+.. versionadded:: 3.14
+%End
+
+    static QSizeF legendNodeSymbolSize( QgsLayerTreeLayer *nodeLayer, int originalIndex );
+%Docstring
+Returns the legend node symbol size for the legend node belonging to ``nodeLayer`` at the specified ``originalIndex``.
+
+If either the width or height are non-zero, they will be used when rendering the legend node instead of the default
+symbol width or height from :py:class:`QgsLegendSettings`.
+
+.. seealso:: :py:func:`setLegendNodeSymbolSize`
+
+.. versionadded:: 3.14
+%End
+
+    static void setLegendNodeCustomSymbol( QgsLayerTreeLayer *nodeLayer, int originalIndex, const QgsSymbol *symbol );
+%Docstring
+Sets a custom legend ``symbol`` size for the legend node belonging to ``nodeLayer`` at the specified ``originalIndex``.
+
+If ``symbol`` is non-``None``, it will be used in place of the default symbol when rendering
+the legend node.
+
+.. seealso:: :py:func:`legendNodeCustomSymbol`
+
+.. versionadded:: 3.14
+%End
+
+    static QgsSymbol *legendNodeCustomSymbol( QgsLayerTreeLayer *nodeLayer, int originalIndex ) /Factory/;
+%Docstring
+Returns the custom legend symbol for the legend node belonging to ``nodeLayer`` at the specified ``originalIndex``.
+
+If the symbol is non-``None``, it will be used in place of the default symbol when rendering
+the legend node.
+
+Caller takes ownership of the returned symbol.
+
+.. seealso:: :py:func:`setLegendNodeCustomSymbol`
+
+.. versionadded:: 3.14
+%End
+
+    static void setLegendNodeColumnBreak( QgsLayerTreeLayer *nodeLayer, int originalIndex, bool columnBreakBeforeNode );
+%Docstring
+Sets whether a forced column break should occur before the node.
+
+.. seealso:: :py:func:`legendNodeColumnBreak`
+
+.. versionadded:: 3.14
+%End
+
+    static bool legendNodeColumnBreak( QgsLayerTreeLayer *nodeLayer, int originalIndex );
+%Docstring
+Returns whether a forced column break should occur before the node.
+
+.. seealso:: :py:func:`setLegendNodeColumnBreak`
+
+.. versionadded:: 3.14
+%End
+
     static void applyLayerNodeProperties( QgsLayerTreeLayer *nodeLayer, QList<QgsLayerTreeModelLegendNode *> &nodes );
 %Docstring
 update according to layer node's custom properties (order of items, user labels for items)
@@ -123,7 +209,7 @@ Default legend implementation for vector layers
 %Docstring
 Returns whether the "text on symbol" functionality is enabled. When enabled, legend symbols
 may have extra text rendered on top. The content of labels and their style is controlled
-by textOnSymbolContent() and textOnSymbolTextFormat().
+by :py:func:`~QgsDefaultVectorLayerLegend.textOnSymbolContent` and :py:func:`~QgsDefaultVectorLayerLegend.textOnSymbolTextFormat`.
 
 .. versionadded:: 3.2
 %End
@@ -132,7 +218,7 @@ by textOnSymbolContent() and textOnSymbolTextFormat().
 %Docstring
 Sets whether the "text on symbol" functionality is enabled. When enabled, legend symbols
 may have extra text rendered on top. The content of labels and their style is controlled
-by textOnSymbolContent() and textOnSymbolTextFormat().
+by :py:func:`~QgsDefaultVectorLayerLegend.textOnSymbolContent` and :py:func:`~QgsDefaultVectorLayerLegend.textOnSymbolTextFormat`.
 
 .. versionadded:: 3.2
 %End

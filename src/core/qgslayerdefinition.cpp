@@ -28,6 +28,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsreadwritecontext.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectortilelayer.h"
 #include "qgsapplication.h"
 
 bool QgsLayerDefinition::loadLayerDefinition( const QString &path, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage )
@@ -292,6 +293,10 @@ QList<QgsMapLayer *> QgsLayerDefinition::loadLayerDefinitionLayers( QDomDocument
     else if ( type == QLatin1String( "raster" ) )
     {
       layer = new QgsRasterLayer;
+    }
+    else if ( type == QLatin1String( "vector-tile" ) )
+    {
+      layer = new QgsVectorTileLayer;
     }
     else if ( type == QLatin1String( "plugin" ) )
     {

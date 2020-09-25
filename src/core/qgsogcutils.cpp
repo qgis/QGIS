@@ -24,6 +24,7 @@
 #include "qgsrectangle.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgslogger.h"
 
 #include <QColor>
 #include <QStringList>
@@ -72,10 +73,11 @@ QgsOgcUtilsExprToFilter::QgsOgcUtilsExprToFilter( QDomDocument &doc,
   }
 }
 
-QgsGeometry QgsOgcUtils::geometryFromGML( const QDomNode &geometryNode )
+QgsGeometry QgsOgcUtils::geometryFromGML( const QDomNode &geometryNode, const Context &context )
 {
   QDomElement geometryTypeElement = geometryNode.toElement();
   QString geomType = geometryTypeElement.tagName();
+  QgsGeometry geometry;
 
   if ( !( geomType == QLatin1String( "Point" ) || geomType == QLatin1String( "LineString" ) || geomType == QLatin1String( "Polygon" ) ||
           geomType == QLatin1String( "MultiPoint" ) || geomType == QLatin1String( "MultiLineString" ) || geomType == QLatin1String( "MultiPolygon" ) ||
@@ -84,7 +86,7 @@ QgsGeometry QgsOgcUtils::geometryFromGML( const QDomNode &geometryNode )
     QDomNode geometryChild = geometryNode.firstChild();
     if ( geometryChild.isNull() )
     {
-      return QgsGeometry();
+      return geometry;
     }
     geometryTypeElement = geometryChild.toElement();
     geomType = geometryTypeElement.tagName();
@@ -97,43 +99,72 @@ QgsGeometry QgsOgcUtils::geometryFromGML( const QDomNode &geometryNode )
 
   if ( geomType == QLatin1String( "Point" ) )
   {
-    return geometryFromGMLPoint( geometryTypeElement );
+    geometry = geometryFromGMLPoint( geometryTypeElement );
   }
   else if ( geomType == QLatin1String( "LineString" ) )
   {
-    return geometryFromGMLLineString( geometryTypeElement );
+    geometry = geometryFromGMLLineString( geometryTypeElement );
   }
   else if ( geomType == QLatin1String( "Polygon" ) )
   {
-    return geometryFromGMLPolygon( geometryTypeElement );
+    geometry = geometryFromGMLPolygon( geometryTypeElement );
   }
   else if ( geomType == QLatin1String( "MultiPoint" ) )
   {
-    return geometryFromGMLMultiPoint( geometryTypeElement );
+    geometry = geometryFromGMLMultiPoint( geometryTypeElement );
   }
   else if ( geomType == QLatin1String( "MultiLineString" ) )
   {
-    return geometryFromGMLMultiLineString( geometryTypeElement );
+    geometry = geometryFromGMLMultiLineString( geometryTypeElement );
   }
   else if ( geomType == QLatin1String( "MultiPolygon" ) )
   {
-    return geometryFromGMLMultiPolygon( geometryTypeElement );
+    geometry = geometryFromGMLMultiPolygon( geometryTypeElement );
   }
   else if ( geomType == QLatin1String( "Box" ) )
   {
-    return QgsGeometry::fromRect( rectangleFromGMLBox( geometryTypeElement ) );
+    geometry = QgsGeometry::fromRect( rectangleFromGMLBox( geometryTypeElement ) );
   }
   else if ( geomType == QLatin1String( "Envelope" ) )
   {
-    return QgsGeometry::fromRect( rectangleFromGMLEnvelope( geometryTypeElement ) );
+    geometry = QgsGeometry::fromRect( rectangleFromGMLEnvelope( geometryTypeElement ) );
   }
   else //unknown type
   {
-    return QgsGeometry();
+    return geometry;
   }
+
+  // Handle srsName if context has information about the layer and the transformation context
+  if ( context.layer )
+  {
+    QgsCoordinateReferenceSystem geomSrs;
+
+    if ( geometryTypeElement.hasAttribute( QStringLiteral( "srsName" ) ) )
+    {
+      geomSrs.createFromString( geometryTypeElement.attribute( QStringLiteral( "srsName" ) ) );
+      if ( geomSrs.isValid() && geomSrs != context.layer->crs() )
+      {
+        const QgsCoordinateTransform transformer { geomSrs, context.layer->crs(), context.transformContext };
+        try
+        {
+          const QgsGeometry::OperationResult result = geometry.transform( transformer );
+          if ( result != QgsGeometry::OperationResult::Success )
+          {
+            QgsDebugMsgLevel( QStringLiteral( "Error transforming geometry: %1" ).arg( result ), 2 );
+          }
+        }
+        catch ( QgsCsException & )
+        {
+          QgsDebugMsgLevel( QStringLiteral( "CS error transforming geometry" ), 2 );
+        }
+      }
+    }
+  }
+
+  return geometry;
 }
 
-QgsGeometry QgsOgcUtils::geometryFromGML( const QString &xmlString )
+QgsGeometry QgsOgcUtils::geometryFromGML( const QString &xmlString, const Context &context )
 {
   // wrap the string into a root tag to have "gml" namespace (and also as a default namespace)
   QString xml = QStringLiteral( "<tmp xmlns=\"%1\" xmlns:gml=\"%1\">%2</tmp>" ).arg( GML_NAMESPACE, xmlString );
@@ -141,7 +172,7 @@ QgsGeometry QgsOgcUtils::geometryFromGML( const QString &xmlString )
   if ( !doc.setContent( xml, true ) )
     return QgsGeometry();
 
-  return geometryFromGML( doc.documentElement().firstChildElement() );
+  return geometryFromGML( doc.documentElement().firstChildElement(), context );
 }
 
 
@@ -328,7 +359,8 @@ QgsGeometry QgsOgcUtils::geometryFromGMLPolygon( const QDomElement &geometryElem
       {
         return QgsGeometry();
       }
-      if ( readGMLPositions( interiorPointList, posElement ) != 0 )
+      // Note: readGMLPositions returns true on errors and false on success
+      if ( readGMLPositions( interiorPointList, posElement ) )
       {
         return QgsGeometry();
       }

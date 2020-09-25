@@ -175,7 +175,7 @@ Except for 0 which is always allowed.
 %Docstring
 Sets the widget to the null value.
 
-This only has an effect if allowNull() is true.
+This only has an effect if :py:func:`~QgsScaleWidget.allowNull` is true.
 
 .. seealso:: :py:func:`allowNull`
 

@@ -31,6 +31,7 @@ from qgis.core import (QgsProcessingModelAlgorithm,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFile)
 from processing.modeler.ModelerParametersDialog import (ModelerParametersDialog)
+
 start_app()
 
 

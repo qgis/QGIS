@@ -11,9 +11,9 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2">
+  <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0,0,0">
    <item row="5" column="3">
     <widget class="QgsPropertyOverrideButton" name="mRotationDDBtn">
      <property name="text">
@@ -26,7 +26,7 @@
      <property name="focusPolicy">
       <enum>Qt::StrongFocus</enum>
      </property>
-    </widget>    
+    </widget>
    </item>
    <item row="2" column="3">
     <widget class="QgsPropertyOverrideButton" name="mWidthDDBtn">
@@ -37,15 +37,8 @@
    </item>
    <item row="8" column="2">
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>x</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QgsDoubleSpinBox" name="mSpinOffsetX">
+     <item row="1" column="0">
+      <widget class="QgsDoubleSpinBox" name="mSpinOffsetY">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>1</horstretch>
@@ -66,7 +59,7 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="2" rowspan="2">
+     <item row="0" column="1" rowspan="2">
       <widget class="QgsUnitSelectionWidget" name="mOffsetUnitWidget" native="true">
        <property name="minimumSize">
         <size>
@@ -79,15 +72,8 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>y</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QgsDoubleSpinBox" name="mSpinOffsetY">
+     <item row="0" column="0">
+      <widget class="QgsDoubleSpinBox" name="mSpinOffsetX">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>1</horstretch>
@@ -122,26 +108,6 @@
       </size>
      </property>
     </spacer>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="mTextureWidthLabel">
-     <property name="text">
-      <string>Image width</string>
-     </property>
-     <property name="buddy">
-      <cstring>mWidthSpinBox</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Coord mode</string>
-     </property>
-     <property name="buddy">
-      <cstring>cboCoordinateMode</cstring>
-     </property>
-    </widget>
    </item>
    <item row="3" column="2">
     <widget class="QComboBox" name="cboCoordinateMode">
@@ -233,16 +199,6 @@
      </property>
     </widget>
    </item>
-   <item row="8" column="0">
-    <widget class="QLabel" name="label_7">
-     <property name="text">
-      <string>Offset</string>
-     </property>
-     <property name="buddy">
-      <cstring>mSpinOffsetX</cstring>
-     </property>
-    </widget>
-   </item>
    <item row="2" column="2">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
@@ -282,27 +238,10 @@
      </item>
     </layout>
    </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="mRotationLabel">
-     <property name="text">
-      <string>Rotation</string>
-     </property>
-     <property name="buddy">
-      <cstring>mRotationSpinBox</cstring>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="3">
     <widget class="QgsPropertyOverrideButton" name="mFilenameDDBtn">
      <property name="text">
       <string>…</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Opacity</string>
      </property>
     </widget>
    </item>
@@ -315,6 +254,78 @@
    </item>
    <item row="4" column="3">
     <widget class="QgsPropertyOverrideButton" name="mOpacityDDBtn">
+     <property name="text">
+      <string>…</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0" colspan="2">
+    <layout class="QGridLayout" name="gridLayout_3" columnstretch="1,0">
+     <item row="0" column="1">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>x</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>y</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0" rowspan="2">
+      <widget class="QLabel" name="label_7">
+       <property name="text">
+        <string>Offset</string>
+       </property>
+       <property name="buddy">
+        <cstring>mSpinOffsetX</cstring>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="5" column="0" colspan="2">
+    <widget class="QLabel" name="mRotationLabel">
+     <property name="text">
+      <string>Rotation</string>
+     </property>
+     <property name="buddy">
+      <cstring>mRotationSpinBox</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="2">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Opacity</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="2">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Coord mode</string>
+     </property>
+     <property name="buddy">
+      <cstring>cboCoordinateMode</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <widget class="QLabel" name="mTextureWidthLabel">
+     <property name="text">
+      <string>Image width</string>
+     </property>
+     <property name="buddy">
+      <cstring>mWidthSpinBox</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="3">
+    <widget class="QgsPropertyOverrideButton" name="mOffsetDDBtn">
      <property name="text">
       <string>…</string>
      </property>

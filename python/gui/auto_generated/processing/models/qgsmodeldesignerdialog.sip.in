@@ -29,7 +29,7 @@ Model designer dialog base class
 %End
   public:
 
-    QgsModelDesignerDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = 0 );
+    QgsModelDesignerDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
     ~QgsModelDesignerDialog();
 
     virtual void closeEvent( QCloseEvent *event );
@@ -109,6 +109,20 @@ Sets the inputs for child algorithms for the last run of the model through the d
 
 };
 
+
+
+class QgsModelChildDependenciesWidget : QWidget
+{
+
+%TypeHeaderCode
+#include "qgsmodeldesignerdialog.h"
+%End
+  public:
+
+    QgsModelChildDependenciesWidget( QWidget *parent, QgsProcessingModelAlgorithm *model, const QString &childId );
+    QList< QgsProcessingModelChildDependency > value() const;
+    void setValue( const QList< QgsProcessingModelChildDependency >  &value );
+};
 
 /************************************************************************
  * This file has been generated automatically from                      *

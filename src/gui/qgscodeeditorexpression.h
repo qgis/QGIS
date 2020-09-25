@@ -70,12 +70,12 @@ class GUI_EXPORT QgsCodeEditorExpression : public QgsCodeEditor
 
 /**
  * Internal use.
-
-   setAutoCompletionCaseSensitivity( false ) is not sufficient when installing
-   a lexer, since its caseSensitive() method is actually used, and defaults
-   to true.
-   \note not available in Python bindings
-   \ingroup gui
+ *
+ * setAutoCompletionCaseSensitivity( false ) is not sufficient when installing
+ * a lexer, since its caseSensitive() method is actually used, and defaults
+ * to true.
+ * \note not available in Python bindings
+ * \ingroup gui
 */
 class QgsLexerExpression : public QsciLexerSQL
 {

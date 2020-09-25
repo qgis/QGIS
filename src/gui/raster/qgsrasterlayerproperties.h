@@ -28,6 +28,7 @@
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmaptoolemitpoint.h"
 #include "qgis_gui.h"
+#include "qgsresamplingutils.h"
 
 class QgsPointXY;
 class QgsMapLayer;
@@ -75,13 +76,6 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
      */
     QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 
-    /**
-     * Sets the dialog \a page (by object name) to show.
-     *
-     * \since QGIS 3.14
-     */
-    void setCurrentPage( const QString &page );
-
   protected slots:
     //! \brief auto slot executed when the active page in the main widget stack is changed
     void optionsStackedWidget_CurrentChanged( int index ) override SIP_SKIP ;
@@ -120,6 +114,9 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     //! \brief slot executed when user "Static time range" radio button on time options in source page.
     void staticTemporalRange_toggled( bool checked );
 
+    //! \brief slot executed when temporal properties status change.
+    void temporalPropertiesChange();
+
     /**
      * \brief slot executed when the single band radio button is pressed.
      * \brief slot executed when the reset null value to file default icon is selected
@@ -128,7 +125,17 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
 
     void pixelSelected( const QgsPointXY &, const Qt::MouseButton & );
 
+    /**
+     * updates gamma spinbox on slider changes
+     * \since QGIS 3.16
+     */
+    void updateGammaSpinBox( int value );
 
+    /**
+     * updates gamma slider on spinbox changes
+     * \since QGIS 3.16
+     */
+    void updateGammaSlider( double value );
 
     void mRenderTypeComboBox_currentIndexChanged( int index );
     //! Load the default style when appropriate button is pressed.
@@ -230,19 +237,16 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     void updateInformationContent();
 
     /**
-     * Updates the temporal properties for temporal based raster layers.
-     */
-    void updateTemporalProperties();
-
-    /**
      * Updates the layers date source URI with the new time.
      *
+     * \since QGIS 3.14
      */
     void updateSourceStaticTime();
 
     /**
-     * Initialiaze the layers static time inputs state.
+     * Initializes the layers static time inputs state.
      *
+     * \since QGIS 3.14
      */
     void setSourceStaticTimeState();
 
@@ -278,7 +282,8 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
 
     /**
      * Previous layer style. Used to reset style to previous state if new style
-     * was loaded but dialog is canceled */
+     * was loaded but dialog is canceled.
+    */
     QgsMapLayerStyle mOldStyle;
 
     bool mDisableRenderTypeComboBoxCurrentIndexChanged = false;
@@ -287,6 +292,8 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
 
     //! Synchronize state with associated raster layer
     void sync();
+
+    QgsResamplingUtils mResamplingUtils;
 
     friend class QgsAppScreenShots;
 };

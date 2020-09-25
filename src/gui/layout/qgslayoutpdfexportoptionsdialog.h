@@ -27,6 +27,9 @@
 
 #include "qgsrendercontext.h"
 
+class QgsGeoPdfLayerTreeModel;
+class QgsGeoPdfLayerFilteredTreeModel;
+
 /**
  * \ingroup gui
  * A dialog for customizing the properties of an exported PDF file from a layout.
@@ -43,9 +46,17 @@ class GUI_EXPORT QgsLayoutPdfExportOptionsDialog: public QDialog, private Ui::Qg
     /**
      * Constructor for QgsLayoutPdfExportOptionsDialog
      * \param parent parent widget
+     * \param allowGeoPdfExport set to FALSE if geoPdf export is blocked
+     * \param geoPdfReason set to a descriptive translated string explaining why geopdf export is not available if applicable
+     * \param geoPdfLayerOrder optional layer ID order list for layers in the geopdf file. Any layers not present in this list
+     * will instead be appended to the end of the geopdf layer list
      * \param flags window flags
      */
-    QgsLayoutPdfExportOptionsDialog( QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
+    QgsLayoutPdfExportOptionsDialog( QWidget *parent = nullptr,
+                                     bool allowGeoPdfExport = true,
+                                     const QString &geoPdfReason = QString(),
+                                     const QStringList &geoPdfLayerOrder = QStringList(),
+                                     Qt::WindowFlags flags = Qt::WindowFlags() );
 
     //! Sets the text render format
     void setTextRenderFormat( QgsRenderContext::TextRenderFormat format );
@@ -74,6 +85,11 @@ class GUI_EXPORT QgsLayoutPdfExportOptionsDialog: public QDialog, private Ui::Qg
     //! Returns whether geometry simplification is enabled
     bool geometriesSimplified() const;
 
+    //! Sets whether to use lossless image compression
+    void setLosslessImageExport( bool enabled );
+    //! Returns whether lossless image compression is enabled
+    bool losslessImageExport() const;
+
     //! Sets whether to export a Geo-PDF
     void setExportGeoPdf( bool enabled );
     //! Returns whether Geo-PDF export is enabled
@@ -84,23 +100,25 @@ class GUI_EXPORT QgsLayoutPdfExportOptionsDialog: public QDialog, private Ui::Qg
     //! Returns whether use of OGC best-practice format is enabled
     bool useOgcBestPracticeFormat() const;
 
-    //! Sets whether to export Geo-PDF features
-    void setExportGeoPdfFeatures( bool enabled );
-    //! Returns whether export of Geo-PDF features is enabled
-    bool exportGeoPdfFeatures() const;
-
     //! Sets the list of export themes
     void setExportThemes( const QStringList &themes );
     //! Returns the list of export themes
     QStringList exportThemes() const;
 
+    //! Returns a list of map layer IDs in the desired order they should appear in a generated GeoPDF file
+    QStringList geoPdfLayerOrder() const;
+
   private slots:
 
     void showHelp();
+    void showContextMenuForGeoPdfStructure( QPoint point, const QModelIndex &index );
 
   private:
 
     bool mGeopdfAvailable = true;
+    QgsGeoPdfLayerTreeModel *mGeoPdfStructureModel = nullptr;
+    QgsGeoPdfLayerFilteredTreeModel *mGeoPdfStructureProxyModel = nullptr;
+    QMenu *mGeoPdfStructureTreeMenu = nullptr;
 
 };
 

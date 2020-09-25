@@ -43,6 +43,7 @@ class TestQgsRectangle: public QObject
     void scale();
     void snappedToGrid();
     void distanceToPoint();
+    void center();
 };
 
 void TestQgsRectangle::isEmpty()
@@ -402,6 +403,23 @@ void TestQgsRectangle::distanceToPoint()
   QGSCOMPARENEAR( rect.distance( QgsPointXY( 25, 95 ) ), 7.071068, 0.00001 );
   QGSCOMPARENEAR( rect.distance( QgsPointXY( 5, 115 ) ), 7.071068, 0.00001 );
   QGSCOMPARENEAR( rect.distance( QgsPointXY( 25, 115 ) ), 7.071068, 0.00001 );
+}
+
+void TestQgsRectangle::center()
+{
+  QgsRectangle rect( 10, 100, 20, 110 );
+  QCOMPARE( rect.center().x(), 15.0 );
+  QCOMPARE( rect.center().y(), 105.0 );
+  rect = QgsRectangle( 10, 100, 10, 100 );
+  QCOMPARE( rect.center().x(), 10.0 );
+  QCOMPARE( rect.center().y(), 100.0 );
+  rect = QgsRectangle( -10, -100, 10, 100 );
+  QCOMPARE( rect.center().x(), 0.0 );
+  QCOMPARE( rect.center().y(), 0.0 );
+  // a "maximal" rect
+  rect = QgsRectangle( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max() );
+  QCOMPARE( rect.center().x(), 0.0 );
+  QCOMPARE( rect.center().y(), 0.0 );
 }
 
 QGSTEST_MAIN( TestQgsRectangle )

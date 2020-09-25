@@ -121,7 +121,7 @@ void QgsFormAnnotation::renderAnnotation( QgsRenderContext &context, QSizeF size
     return;
 
   // scale painter back to 96 dpi, so that forms look good even in layout prints
-  context.painter()->save();
+  QgsScopedQPainterState painterState( context.painter() );
   const double scaleFactor = context.painter()->device()->logicalDpiX() / 96.0;
   context.painter()->scale( scaleFactor, scaleFactor );
   size /= scaleFactor;
@@ -130,8 +130,6 @@ void QgsFormAnnotation::renderAnnotation( QgsRenderContext &context, QSizeF size
   context.painter()->setBrush( Qt::NoBrush );
   context.painter()->setPen( Qt::NoPen );
   mDesignerWidget->render( context.painter(), QPoint( 0, 0 ) );
-
-  context.painter()->restore();
 }
 
 QSizeF QgsFormAnnotation::minimumFrameSize() const

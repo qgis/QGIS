@@ -40,6 +40,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
+#include "qgsmaplayerstylemanager.h"
 
 #include <QDir>
 #include <QDomDocument>
@@ -59,6 +60,7 @@ extern "C"
 #define CUSTOM_PROPERTY_REMOTE_SOURCE "remoteSource"
 #define CUSTOM_PROPERTY_REMOTE_PROVIDER "remoteProvider"
 #define CUSTOM_SHOW_FEATURE_COUNT "showFeatureCount"
+#define CUSTOM_PROPERTY_ORIGINAL_LAYERID "remoteLayerId"
 #define PROJECT_ENTRY_SCOPE_OFFLINE "OfflineEditingPlugin"
 #define PROJECT_ENTRY_KEY_OFFLINE_DB_PATH "/OfflineDbPath"
 
@@ -72,15 +74,16 @@ QgsOfflineEditing::QgsOfflineEditing()
  * returns offline project file path
  *
  * Workflow:
- *  - copy layers to SpatiaLite
- *  - create SpatiaLite db at offlineDataPath
- *  - create table for each layer
- *  - add new SpatiaLite layer
- *  - copy features
- *  - save as offline project
- *  - mark offline layers
- *  - remove remote layers
- *  - mark as offline project
+ *
+ * - copy layers to SpatiaLite
+ * - create SpatiaLite db at offlineDataPath
+ * - create table for each layer
+ * - add new SpatiaLite layer
+ * - copy features
+ * - save as offline project
+ * - mark offline layers
+ * - remove remote layers
+ * - mark as offline project
  */
 bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath, const QString &offlineDbFile, const QStringList &layerIds, bool onlySelected, ContainerType containerType )
 {
@@ -689,7 +692,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
       }
 
       OGRSFDriverH hDriver = nullptr;
-      OGRSpatialReferenceH hSRS = OSRNewSpatialReference( layer->crs().toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ).toLocal8Bit().data() );
+      OGRSpatialReferenceH hSRS = OSRNewSpatialReference( layer->crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ).toLocal8Bit().data() );
       gdal::ogr_datasource_unique_ptr hDS( OGROpen( offlineDbPath.toUtf8().constData(), true, &hDriver ) );
       OGRLayerH hLayer = OGR_DS_CreateLayer( hDS.get(), tableName.toUtf8().constData(), hSRS, static_cast<OGRwkbGeometryType>( layer->wkbType() ), options );
       CSLDestroy( options );
@@ -856,9 +859,10 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
     // mark as offline layer
     newLayer->setCustomProperty( CUSTOM_PROPERTY_IS_OFFLINE_EDITABLE, true );
 
-    // store original layer source
+    // store original layer source and information
     newLayer->setCustomProperty( CUSTOM_PROPERTY_REMOTE_SOURCE, layer->source() );
     newLayer->setCustomProperty( CUSTOM_PROPERTY_REMOTE_PROVIDER, layer->providerType() );
+    newLayer->setCustomProperty( CUSTOM_PROPERTY_ORIGINAL_LAYERID, layer->id() );
 
     // register this layer with the central layers registry
     QgsProject::instance()->addMapLayers(
@@ -1096,6 +1100,8 @@ void QgsOfflineEditing::updateFidLookup( QgsVectorLayer *remoteLayer, sqlite3 *d
 
 void QgsOfflineEditing::copySymbology( QgsVectorLayer *sourceLayer, QgsVectorLayer *targetLayer )
 {
+  targetLayer->styleManager()->copyStylesFrom( sourceLayer->styleManager() );
+
   QString error;
   QDomDocument doc;
   QgsReadWriteContext context;

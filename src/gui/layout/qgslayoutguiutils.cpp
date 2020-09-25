@@ -49,9 +49,10 @@
 /**
  * Attempts to find the best guess at a map item to link \a referenceItem to,
  * by:
- * 1. Prioritizing a selected map
- * 2. If no selection, prioritizing the topmost map the item was drawn over
- * 3. If still none, use the layout's reference map (or biggest map)
+ *
+ * # Prioritizing a selected map
+ * # If no selection, prioritizing the topmost map the item was drawn over
+ * # If still none, use the layout's reference map (or biggest map)
  */
 QgsLayoutItemMap *findSensibleDefaultLinkedMapItem( QgsLayoutItem *referenceItem )
 {
@@ -410,6 +411,21 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
       }
     }
 
+    //set default table fonts from settings
+    QgsSettings settings;
+    const QString defaultFontString = settings.value( QStringLiteral( "LayoutDesigner/defaultFont" ), QVariant(), QgsSettings::Gui ).toString();
+    if ( !defaultFontString.isEmpty() )
+    {
+      QgsTextFormat format;
+      QFont f = format.font();
+      f.setFamily( defaultFontString );
+      format.setFont( f );
+      tableMultiFrame->setContentTextFormat( format );
+      f.setBold( true );
+      format.setFont( f );
+      tableMultiFrame->setHeaderTextFormat( format );
+    }
+
     layout->addMultiFrame( tableMultiFrame.release() );
     std::unique_ptr< QgsLayoutFrame > frame = qgis::make_unique< QgsLayoutFrame >( layout, table );
     QgsLayoutFrame *f = frame.get();
@@ -435,6 +451,21 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     contents << ( QgsTableRow() << QgsTableCell() << QgsTableCell() );
     contents << ( QgsTableRow() << QgsTableCell() << QgsTableCell() );
     table->setTableContents( contents );
+
+    //set default table fonts from settings
+    QgsSettings settings;
+    const QString defaultFontString = settings.value( QStringLiteral( "LayoutDesigner/defaultFont" ), QVariant(), QgsSettings::Gui ).toString();
+    if ( !defaultFontString.isEmpty() )
+    {
+      QgsTextFormat format;
+      QFont f = format.font();
+      f.setFamily( defaultFontString );
+      format.setFont( f );
+      tableMultiFrame->setContentTextFormat( format );
+      f.setBold( true );
+      format.setFont( f );
+      tableMultiFrame->setHeaderTextFormat( format );
+    }
 
     layout->addMultiFrame( tableMultiFrame.release() );
 

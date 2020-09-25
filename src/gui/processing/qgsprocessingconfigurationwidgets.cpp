@@ -163,4 +163,134 @@ bool QgsFilterAlgorithmConfigurationWidgetFactory::canCreateFor( const QgsProces
   return algorithm->name() == QStringLiteral( "filter" );
 }
 
+
+//
+// QgsConditionalBranchAlgorithmConfigurationWidget
+//
+
+QgsConditionalBranchAlgorithmConfigurationWidget::QgsConditionalBranchAlgorithmConfigurationWidget( QWidget *parent )
+  : QgsProcessingAlgorithmConfigurationWidget( parent )
+{
+  setContentsMargins( 0, 0, 0, 0 );
+
+  mConditionExpressionWidget = new QTableWidget();
+  mConditionExpressionWidget->setColumnCount( 2 );
+  mConditionExpressionWidget->setHorizontalHeaderItem( 0, new QTableWidgetItem( tr( "Branch Name" ) ) );
+  mConditionExpressionWidget->setHorizontalHeaderItem( 1, new QTableWidgetItem( tr( "Condition" ) ) );
+  mConditionExpressionWidget->horizontalHeader()->setSectionResizeMode( 1, QHeaderView::Stretch );
+  QGridLayout *layout = new QGridLayout();
+  setLayout( layout );
+
+  layout->addWidget( new QLabel( tr( "Conditions" ) ), 0, 0, 1, 2 );
+  layout->addWidget( mConditionExpressionWidget, 1, 0, 4, 1 );
+  QToolButton *addConditionButton = new QToolButton();
+  addConditionButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddLayer.svg" ) ) );
+  addConditionButton->setText( tr( "Add Condition" ) );
+
+  QToolButton *removeConditionButton = new QToolButton();
+  removeConditionButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRemoveLayer.svg" ) ) );
+  removeConditionButton->setToolTip( tr( "Remove Selected Conditions" ) );
+
+  layout->addWidget( addConditionButton, 2, 1, 1, 1 );
+  layout->addWidget( removeConditionButton, 3, 1, 1, 1 );
+
+  connect( addConditionButton, &QToolButton::clicked, this, &QgsConditionalBranchAlgorithmConfigurationWidget::addCondition );
+  connect( removeConditionButton, &QToolButton::clicked, this, &QgsConditionalBranchAlgorithmConfigurationWidget::removeSelectedConditions );
+
+  connect( mConditionExpressionWidget->selectionModel(), &QItemSelectionModel::selectionChanged, this, [removeConditionButton, this]
+  {
+    removeConditionButton->setEnabled( !mConditionExpressionWidget->selectionModel()->selectedIndexes().isEmpty() );
+  } );
+}
+
+QVariantMap QgsConditionalBranchAlgorithmConfigurationWidget::configuration() const
+{
+  QVariantList outputs;
+
+  for ( int i = 0; i < mConditionExpressionWidget->rowCount(); ++i )
+  {
+    QVariantMap output;
+    output.insert( QStringLiteral( "name" ), mConditionExpressionWidget->item( i, 0 )->text() );
+    output.insert( QStringLiteral( "expression" ), qobject_cast<QgsExpressionLineEdit *>( mConditionExpressionWidget->cellWidget( i, 1 ) )->expression() );
+    outputs.append( output );
+  }
+
+  QVariantMap map;
+  map.insert( "conditions", outputs );
+
+  return map;
+}
+
+
+void QgsConditionalBranchAlgorithmConfigurationWidget::setConfiguration( const QVariantMap &configuration )
+{
+  mConditionExpressionWidget->setRowCount( 0 );
+  int currentRow = 0;
+  const QVariantList conditions = configuration.value( "conditions" ).toList();
+
+  for ( const QVariant &conditionvar : conditions )
+  {
+    const QVariantMap output = conditionvar.toMap();
+    mConditionExpressionWidget->insertRow( currentRow );
+    mConditionExpressionWidget->setItem( currentRow, 0, new QTableWidgetItem( output.value( "name" ).toString() ) );
+    QgsExpressionLineEdit *expressionBuilder = new QgsExpressionLineEdit();
+    expressionBuilder->registerExpressionContextGenerator( this );
+    expressionBuilder->setExpression( output.value( "expression" ).toString() );
+    mConditionExpressionWidget->setCellWidget( currentRow, 1, expressionBuilder );
+    currentRow++;
+  }
+
+  if ( conditions .isEmpty() )
+    addCondition();
+}
+
+void QgsConditionalBranchAlgorithmConfigurationWidget::removeSelectedConditions()
+{
+  QItemSelection selection( mConditionExpressionWidget->selectionModel()->selection() );
+
+  QList<int> rows;
+  const QModelIndexList indexes = selection.indexes();
+  for ( const QModelIndex &index : indexes )
+  {
+    rows.append( index.row() );
+  }
+
+  std::sort( rows.begin(), rows.end() );
+
+  int prev = -1;
+  for ( int i = rows.count() - 1; i >= 0; i -= 1 )
+  {
+    int current = rows[i];
+    if ( current != prev )
+    {
+      mConditionExpressionWidget->removeRow( current );
+      prev = current;
+    }
+  }
+}
+
+void QgsConditionalBranchAlgorithmConfigurationWidget::addCondition()
+{
+  int rowIndex = mConditionExpressionWidget->rowCount();
+  mConditionExpressionWidget->setRowCount( rowIndex + 1 );
+  QgsExpressionLineEdit *expressionBuilder = new QgsExpressionLineEdit();
+  expressionBuilder->registerExpressionContextGenerator( this );
+  mConditionExpressionWidget->setItem( rowIndex, 0, new QTableWidgetItem( QString() ) );
+  mConditionExpressionWidget->setCellWidget( rowIndex, 1, expressionBuilder );
+}
+
+QgsConditionalBranchAlgorithmConfigurationWidget *QgsConditionalBranchAlgorithmConfigurationWidgetFactory::create( const QgsProcessingAlgorithm *algorithm ) const
+{
+  if ( algorithm->name() == QStringLiteral( "condition" ) )
+    return new QgsConditionalBranchAlgorithmConfigurationWidget();
+  else
+    return nullptr;
+}
+
+bool QgsConditionalBranchAlgorithmConfigurationWidgetFactory::canCreateFor( const QgsProcessingAlgorithm *algorithm ) const
+{
+  return algorithm->name() == QStringLiteral( "condition" );
+}
+
+
 ///@endcond PRIVATE

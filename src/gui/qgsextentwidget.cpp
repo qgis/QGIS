@@ -36,11 +36,10 @@ QgsExtentWidget::QgsExtentWidget( QWidget *parent, WidgetStyle style )
   connect( mYMinLineEdit, &QLineEdit::textEdited, this, &QgsExtentWidget::setOutputExtentFromLineEdit );
   connect( mYMaxLineEdit, &QLineEdit::textEdited, this, &QgsExtentWidget::setOutputExtentFromLineEdit );
 
-  mCondensedRe = QRegularExpression( QStringLiteral( "\\s*([\\d\\.]+)\\s*,\\s*([\\d\\.]+)\\s*,\\s*([\\d\\.]+)\\s*,\\s*([\\d\\.]+)\\s*(\\[.*?\\])" ) );
+  mCondensedRe = QRegularExpression( QStringLiteral( "\\s*([\\d\\.\\-]+)\\s*,\\s*([\\d\\.\\-]+)\\s*,\\s*([\\d\\.\\-]+)\\s*,\\s*([\\d\\.\\-]+)\\s*(?:\\[(.*?)\\])?" ) );
   mCondensedLineEdit->setValidator( new QRegularExpressionValidator( mCondensedRe, this ) );
   mCondensedLineEdit->setShowClearButton( false );
   connect( mCondensedLineEdit, &QgsFilterLineEdit::cleared, this, &QgsExtentWidget::clear );
-
   connect( mCondensedLineEdit, &QLineEdit::textEdited, this, &QgsExtentWidget::setOutputExtentFromCondensedLineEdit );
 
   mLayerMenu = new QMenu( tr( "Calculate from Layer" ) );
@@ -246,7 +245,14 @@ void QgsExtentWidget::setOutputExtentFromCondensedLineEdit()
       whileBlocking( mXMaxLineEdit )->setText( match.captured( 2 ) );
       whileBlocking( mYMinLineEdit )->setText( match.captured( 3 ) );
       whileBlocking( mYMaxLineEdit )->setText( match.captured( 4 ) );
+      if ( !match.captured( 5 ).isEmpty() )
+      {
+        mOutputCrs = QgsCoordinateReferenceSystem( match.captured( 5 ) );
+      }
+
       emit extentChanged( outputExtent() );
+      if ( !mIsValid )
+        setValid( true );
     }
   }
 }

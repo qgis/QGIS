@@ -153,6 +153,7 @@ class CORE_EXPORT sqlite3_database_unique_ptr : public std::unique_ptr< sqlite3,
      * \since QGIS 3.6
      */
     int exec( const QString &sql, QString &errorMessage SIP_OUT ) const;
+
 };
 
 /**
@@ -160,7 +161,7 @@ class CORE_EXPORT sqlite3_database_unique_ptr : public std::unique_ptr< sqlite3,
  * \note not available in Python bindings.
  * \since QGIS 3.2
  */
-QString CORE_EXPORT QgsSqlite3Mprintf( const char *format, ... );
+QString CORE_EXPORT qgs_sqlite3_mprintf( const char *format, ... );
 
 #endif
 
@@ -200,6 +201,29 @@ class CORE_EXPORT QgsSqliteUtils
      * \since QGIS 3.8
      */
     static QStringList systemTables();
+
+    /**
+     * Returns a list of field names for \a connection and \a tableName having a UNIQUE constraint,
+     * fields that are part of a UNIQUE constraint that spans over multiple fields
+     * are not returned.
+     * \note the implementation is the same of GDAL but the test coverage is much
+     *       better in GDAL.
+     * \since QGIS 3.14
+     * \note not available in Python bindings
+     */
+    static QSet<QString> uniqueFields( sqlite3 *connection, const QString &tableName, QString &errorMessage ) SIP_SKIP;
+
+    /**
+     * Increments and returns an SQLITE sequence of the table "sqlite_sequence"
+     * for \a tableName and returns it value, \a errorMessage is filled with the
+     * error message in case of errors.
+     *
+     * \returns the next sequence value or -1 case of errors
+     * \since QGIS 3.14
+     * \note not available in Python bindings
+     */
+    static long long nextSequenceValue( sqlite3 *connection, const QString &tableName, QString errorMessage ) SIP_SKIP;
+
 };
 
 #endif // QGSSQLITEUTILS_H

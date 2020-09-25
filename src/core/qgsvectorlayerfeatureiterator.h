@@ -198,8 +198,9 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     /**
      * Adds attributes that don't source from the provider but are added inside QGIS
      * Includes
-     *  - Joined fields
-     *  - Expression fields
+     *
+     * - Joined fields
+     * - Expression fields
      *
      * \param f The feature will be modified
      * \note not available in Python bindings
@@ -244,7 +245,8 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
 
     /**
      * Information about joins used in the current select() statement.
-      Allows faster mapping of attribute ids compared to mVectorJoins */
+     * Allows faster mapping of attribute ids compared to mVectorJoins.
+    */
     QMap<const QgsVectorLayerJoinInfo *, QgsVectorLayerFeatureIterator::FetchJoinInfo> mFetchJoinInfo;
 
     QMap<int, QgsExpression *> mExpressionFieldInfo;
@@ -287,6 +289,8 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
      * Checks a feature's geometry for validity, if requested in feature request.
      */
     bool checkGeometryValidity( const QgsFeature &feature );
+
+    bool mDelegatedOrderByToProvider = false;
 };
 
 

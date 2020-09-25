@@ -21,7 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'July 2013'
 __copyright__ = '(C) 2013, Victor Olaya'
 
-
 from processing.tests.TestData import table
 
 

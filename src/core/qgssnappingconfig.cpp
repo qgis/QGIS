@@ -179,6 +179,7 @@ bool QgsSnappingConfig::operator==( const QgsSnappingConfig &other ) const
          && mTolerance == other.mTolerance
          && mUnits == other.mUnits
          && mIntersectionSnapping == other.mIntersectionSnapping
+         && mSelfSnapping == other.mSelfSnapping
          && mIndividualLayerSettings == other.mIndividualLayerSettings
          && mScaleDependencyMode == other.mScaleDependencyMode
          && mMinimumScale == other.mMinimumScale
@@ -218,6 +219,7 @@ void QgsSnappingConfig::reset()
     mUnits = units;
   }
   mIntersectionSnapping = false;
+  mSelfSnapping = false;
 
   // set advanced config
   if ( mProject )
@@ -343,6 +345,16 @@ void QgsSnappingConfig::setIntersectionSnapping( bool enabled )
   mIntersectionSnapping = enabled;
 }
 
+bool QgsSnappingConfig::selfSnapping() const
+{
+  return mSelfSnapping;
+}
+
+void QgsSnappingConfig::setSelfSnapping( bool enabled )
+{
+  mSelfSnapping = enabled;
+}
+
 QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> QgsSnappingConfig::individualLayerSettings() const
 {
   return mIndividualLayerSettings;
@@ -459,6 +471,9 @@ void QgsSnappingConfig::readProject( const QDomDocument &doc )
   if ( snapSettingsElem.hasAttribute( QStringLiteral( "intersection-snapping" ) ) )
     mIntersectionSnapping = snapSettingsElem.attribute( QStringLiteral( "intersection-snapping" ) ) == QLatin1String( "1" );
 
+  if ( snapSettingsElem.hasAttribute( QStringLiteral( "self-snapping" ) ) )
+    mSelfSnapping = snapSettingsElem.attribute( QStringLiteral( "self-snapping" ) ) == QLatin1String( "1" );
+
   // do not clear the settings as they must be automatically synchronized with current layers
   QDomNodeList nodes = snapSettingsElem.elementsByTagName( QStringLiteral( "individual-layer-settings" ) );
   if ( nodes.count() )
@@ -504,6 +519,7 @@ void QgsSnappingConfig::writeProject( QDomDocument &doc )
   snapSettingsElem.setAttribute( QStringLiteral( "tolerance" ), mTolerance );
   snapSettingsElem.setAttribute( QStringLiteral( "unit" ), static_cast<int>( mUnits ) );
   snapSettingsElem.setAttribute( QStringLiteral( "intersection-snapping" ), QString::number( mIntersectionSnapping ) );
+  snapSettingsElem.setAttribute( QStringLiteral( "self-snapping" ), QString::number( mSelfSnapping ) );
   snapSettingsElem.setAttribute( QStringLiteral( "scaleDependencyMode" ), QString::number( mScaleDependencyMode ) );
   snapSettingsElem.setAttribute( QStringLiteral( "minScale" ), mMinimumScale );
   snapSettingsElem.setAttribute( QStringLiteral( "maxScale" ), mMaximumScale );

@@ -115,8 +115,9 @@ void QgsProcessingModelComponent::saveCommonProperties( QVariantMap &map ) const
   map.insert( QStringLiteral( "parameters_collapsed" ), mTopEdgeLinksCollapsed );
   map.insert( QStringLiteral( "outputs_collapsed" ), mBottomEdgeLinksCollapsed );
   map.insert( QStringLiteral( "color" ), mColor.isValid() ? QgsSymbolLayerUtils::encodeColor( mColor ) : QString() );
-  if ( comment() )
-    map.insert( QStringLiteral( "comment" ), comment()->toVariant() );
+  const QgsProcessingModelComment *thisComment = comment();
+  if ( thisComment )
+    map.insert( QStringLiteral( "comment" ), thisComment->toVariant() );
 }
 
 void QgsProcessingModelComponent::restoreCommonProperties( const QVariantMap &map )
@@ -131,8 +132,9 @@ void QgsProcessingModelComponent::restoreCommonProperties( const QVariantMap &ma
   mColor = map.value( QStringLiteral( "color" ) ).toString().isEmpty() ? QColor() : QgsSymbolLayerUtils::decodeColor( map.value( QStringLiteral( "color" ) ).toString() );
   mTopEdgeLinksCollapsed = map.value( QStringLiteral( "parameters_collapsed" ) ).toBool();
   mBottomEdgeLinksCollapsed = map.value( QStringLiteral( "outputs_collapsed" ) ).toBool();
-  if ( comment() )
-    comment()->loadVariant( map.value( QStringLiteral( "comment" ) ).toMap() );
+  QgsProcessingModelComment *thisComment = comment();
+  if ( thisComment )
+    thisComment->loadVariant( map.value( QStringLiteral( "comment" ) ).toMap() );
 }
 
 void QgsProcessingModelComponent::copyNonDefinitionProperties( const QgsProcessingModelComponent &other )
@@ -141,13 +143,15 @@ void QgsProcessingModelComponent::copyNonDefinitionProperties( const QgsProcessi
   setSize( other.size() );
   setLinksCollapsed( Qt::TopEdge, other.linksCollapsed( Qt::TopEdge ) );
   setLinksCollapsed( Qt::BottomEdge, other.linksCollapsed( Qt::BottomEdge ) );
-  if ( comment() && other.comment() )
+  QgsProcessingModelComment *thisComment = comment();
+  const QgsProcessingModelComment *otherComment = other.comment();
+  if ( thisComment && otherComment )
   {
-    if ( !other.comment()->position().isNull() )
-      comment()->setPosition( other.comment()->position() );
+    if ( !otherComment->position().isNull() )
+      thisComment->setPosition( otherComment->position() );
     else
-      comment()->setPosition( other.position() + QPointF( size().width(), -1.5 * size().height() ) );
-    comment()->setSize( other.comment()->size() );
+      thisComment->setPosition( other.position() + QPointF( size().width(), -1.5 * size().height() ) );
+    thisComment->setSize( otherComment->size() );
   }
 }
 

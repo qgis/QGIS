@@ -1,0 +1,123 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsdoublevalidator.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsDoubleValidator : QRegularExpressionValidator
+{
+%Docstring
+
+QgsDoubleValidator is a QLineEdit Validator that combines QDoubleValidator
+and QRegularExpressionValidator to allow user to enter double with both
+local and C interpretation as a fallback.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsdoublevalidator.h"
+%End
+  public:
+
+    explicit QgsDoubleValidator( QObject *parent );
+%Docstring
+Constructor for QgsDoubleValidator.
+%End
+
+    QgsDoubleValidator( const QRegularExpression &expression, double bottom, double top, QObject *parent );
+%Docstring
+Constructor for QgsDoubleValidator.
+
+:param bottom: the minimal range limit accepted by the validator
+:param top: the maximal range limit accepted by the validator
+%End
+
+    QgsDoubleValidator( double bottom, double top, QObject *parent );
+%Docstring
+Constructor for QgsDoubleValidator.
+
+:param bottom: the minimal range limit accepted by the validator
+:param top: the maximal range limit accepted by the validator
+%End
+
+    QgsDoubleValidator( double bottom, double top, int decimal, QObject *parent );
+%Docstring
+Constructor for QgsDoubleValidator.
+
+:param bottom: the minimal range limit accepted by the validator
+:param top: the maximal range limit accepted by the validator
+:param decimal: the number of decimal accepted by the validator
+%End
+
+
+
+    QValidator::State validate( QString &input ) const;
+%Docstring
+Evaluates ``input`` string validity according to QRegularExpression
+and ability to be converted in double value.
+%End
+
+
+    static double toDouble( const QString &input );
+%Docstring
+Converts ``input`` string to double value.
+It used locale interpretation first
+and C locale interpretation as fallback
+%End
+
+    void setBottom( double bottom );
+%Docstring
+Set top range limit
+
+.. seealso:: :py:func:`setTop`
+
+.. seealso:: :py:func:`setRange`
+%End
+
+    void setTop( double top );
+%Docstring
+Set top range limit
+
+.. seealso:: :py:func:`setBottom`
+
+.. seealso:: :py:func:`setRange`
+%End
+
+    virtual void setRange( double bottom, double top );
+%Docstring
+Set bottom and top range limits
+
+.. seealso:: :py:func:`setBottom`
+
+.. seealso:: :py:func:`setTop`
+%End
+
+    double bottom() const;
+%Docstring
+Returns top range limit
+
+.. seealso:: :py:func:`setBottom`
+%End
+
+    double top() const;
+%Docstring
+Returns top range limit
+
+.. seealso:: :py:func:`setTop`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsdoublevalidator.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

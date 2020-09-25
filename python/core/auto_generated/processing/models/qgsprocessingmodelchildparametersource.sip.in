@@ -36,7 +36,7 @@ Source for the value of a parameter for a child algorithm within a model.
     QgsProcessingModelChildParameterSource();
 %Docstring
 Constructor for QgsProcessingModelChildParameterSource. It is recommended that the static methods
-fromStaticValue(), fromModelParameter(), fromChildOutput() and fromExpression() are used instead.
+:py:func:`~QgsProcessingModelChildParameterSource.fromStaticValue`, :py:func:`~QgsProcessingModelChildParameterSource.fromModelParameter`, :py:func:`~QgsProcessingModelChildParameterSource.fromChildOutput` and :py:func:`~QgsProcessingModelChildParameterSource.fromExpression` are used instead.
 %End
 
     bool operator==( const QgsProcessingModelChildParameterSource &other ) const;
@@ -132,35 +132,35 @@ Sets the parameter's source.
 
     QVariant staticValue() const;
 %Docstring
-Returns the source's static value. This is only used when the source() is StaticValue.
+Returns the source's static value. This is only used when the :py:func:`~QgsProcessingModelChildParameterSource.source` is StaticValue.
 
 .. seealso:: :py:func:`setStaticValue`
 %End
 
     void setStaticValue( const QVariant &value );
 %Docstring
-Sets the source's static value. Calling this will also change the source() to StaticValue.
+Sets the source's static value. Calling this will also change the :py:func:`~QgsProcessingModelChildParameterSource.source` to StaticValue.
 
 .. seealso:: :py:func:`staticValue`
 %End
 
     QString parameterName() const;
 %Docstring
-Returns the source's model parameter name. This is only used when the source() is ModelParameter.
+Returns the source's model parameter name. This is only used when the :py:func:`~QgsProcessingModelChildParameterSource.source` is ModelParameter.
 
 .. seealso:: :py:func:`setParameterName`
 %End
 
     void setParameterName( const QString &name );
 %Docstring
-Sets the source's model parameter ``name``. Calling this will also change the source() to ModelParameter.
+Sets the source's model parameter ``name``. Calling this will also change the :py:func:`~QgsProcessingModelChildParameterSource.source` to ModelParameter.
 
 .. seealso:: :py:func:`parameterName`
 %End
 
     QString outputChildId() const;
 %Docstring
-Returns the source's child algorithm ID from which the output value will be taken. This is only used when the source() is ChildOutput.
+Returns the source's child algorithm ID from which the output value will be taken. This is only used when the :py:func:`~QgsProcessingModelChildParameterSource.source` is ChildOutput.
 
 .. seealso:: :py:func:`setOutputChildId`
 
@@ -169,7 +169,7 @@ Returns the source's child algorithm ID from which the output value will be take
 
     void setOutputChildId( const QString &id );
 %Docstring
-Sets the source's child algorithm ``id`` from which the output value will be taken. Calling this will also change the source() to ChildOutput.
+Sets the source's child algorithm ``id`` from which the output value will be taken. Calling this will also change the :py:func:`~QgsProcessingModelChildParameterSource.source` to ChildOutput.
 
 .. seealso:: :py:func:`parameterName`
 
@@ -178,7 +178,7 @@ Sets the source's child algorithm ``id`` from which the output value will be tak
 
     QString outputName() const;
 %Docstring
-Returns the source's child algorithm output name from which the output value will be taken. This is only used when the source() is ChildOutput.
+Returns the source's child algorithm output name from which the output value will be taken. This is only used when the :py:func:`~QgsProcessingModelChildParameterSource.source` is ChildOutput.
 
 .. seealso:: :py:func:`setOutputName`
 
@@ -187,7 +187,7 @@ Returns the source's child algorithm output name from which the output value wil
 
     void setOutputName( const QString &name );
 %Docstring
-Sets the source's child algorithm output ``name`` from which the output value will be taken. Calling this will also change the source() to ChildOutput.
+Sets the source's child algorithm output ``name`` from which the output value will be taken. Calling this will also change the :py:func:`~QgsProcessingModelChildParameterSource.source` to ChildOutput.
 
 .. seealso:: :py:func:`outputName`
 
@@ -196,14 +196,14 @@ Sets the source's child algorithm output ``name`` from which the output value wi
 
     QString expression() const;
 %Docstring
-Returns the source's expression. This is only used when the source() is Expression.
+Returns the source's expression. This is only used when the :py:func:`~QgsProcessingModelChildParameterSource.source` is Expression.
 
 .. seealso:: :py:func:`setExpression`
 %End
 
     void setExpression( const QString &expression );
 %Docstring
-Sets the source's expression. Calling this will also change the source() to Expression.
+Sets the source's expression. Calling this will also change the :py:func:`~QgsProcessingModelChildParameterSource.source` to Expression.
 The expression is evaluated just before the child algorithm executes, and can use functions available
 in its expression context to include results calculated from the child algorithms already
 executed by the model.
@@ -214,7 +214,7 @@ executed by the model.
     QString expressionText() const;
 %Docstring
 Returns the source's text with expressions. This is only used when the
-source() is ExpressionText.
+:py:func:`~QgsProcessingModelChildParameterSource.source` is ExpressionText.
 
 .. seealso:: :py:func:`setExpressionText`
 
@@ -224,7 +224,7 @@ source() is ExpressionText.
     void setExpressionText( const QString &text );
 %Docstring
 Sets the source's text containing expressions. Calling this will also
-change the source() to ExpressionText. Expressions are evaluated just
+change the :py:func:`~QgsProcessingModelChildParameterSource.source` to ExpressionText. Expressions are evaluated just
 before the child algorithm executes, and can use functions available
 in its expression context to include results calculated from the child
 algorithms already executed by the model.

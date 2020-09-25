@@ -41,7 +41,7 @@ class GUI_EXPORT QgsMapToolPan : public QgsMapTool
     void activate() override;
     void deactivate() override;
 
-    Flags flags() const override { return QgsMapTool::Transient | QgsMapTool::AllowZoomRect; }
+    Flags flags() const override;
     void canvasPressEvent( QgsMapMouseEvent *e ) override;
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;

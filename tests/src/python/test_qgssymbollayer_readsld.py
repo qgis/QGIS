@@ -78,13 +78,14 @@ def createLayerWithOnePolygon():
     assert layer.isValid()
     f1 = QgsFeature(layer.dataProvider().fields(), 1)
     f1.setAttribute("pk", 1)
-    f1.setGeometry(QgsGeometry.fromPolygonXY([[QgsPointXY(2484588, 2425722), QgsPointXY(2482767, 2398853), QgsPointXY(2520109, 2397715), QgsPointXY(2520792, 2425494), QgsPointXY(2484588, 2425722)]]))
+    f1.setGeometry(QgsGeometry.fromPolygonXY([[QgsPointXY(2484588, 2425722), QgsPointXY(2482767, 2398853),
+                                               QgsPointXY(2520109, 2397715), QgsPointXY(2520792, 2425494),
+                                               QgsPointXY(2484588, 2425722)]]))
     assert layer.dataProvider().addFeatures([f1])
     return layer
 
 
 class TestQgsSymbolLayerReadSld(unittest.TestCase):
-
     """
     This class checks if SLD styles are properly applied
     """
@@ -128,17 +129,19 @@ class TestQgsSymbolLayerReadSld(unittest.TestCase):
         # technically it's not necessary to use a real shape, but a empty memory
         # layer. In case these tests will upgrade to a rendering where to
         # compare also rendering not only properties
-        #myShpFile = os.path.join(unitTestDataPath(), 'points.shp')
-        #layer = QgsVectorLayer(myShpFile, 'points', 'ogr')
+        # myShpFile = os.path.join(unitTestDataPath(), 'points.shp')
+        # layer = QgsVectorLayer(myShpFile, 'points', 'ogr')
         layer = QgsVectorLayer("Point", "addfeat", "memory")
-        assert(layer.isValid())
+        assert (layer.isValid())
         # test if able to read <sld:Rotation>50.0</sld:Rotation>
-        mFilePath = os.path.join(unitTestDataPath(), 'symbol_layer/external_sld/testSimpleMarkerRotation-directValue.sld')
+        mFilePath = os.path.join(unitTestDataPath(),
+                                 'symbol_layer/external_sld/testSimpleMarkerRotation-directValue.sld')
         layer.loadSldStyle(mFilePath)
         props = layer.renderer().symbol().symbolLayers()[0].properties()
         self.assertEqual(props['angle'], '50')
         # test if able to read <se:Rotation><ogc:Literal>50</ogc:Literal></se:Rotation>
-        mFilePath = os.path.join(unitTestDataPath(), 'symbol_layer/external_sld/testSimpleMarkerRotation-ogcLiteral.sld')
+        mFilePath = os.path.join(unitTestDataPath(),
+                                 'symbol_layer/external_sld/testSimpleMarkerRotation-ogcLiteral.sld')
         layer.loadSldStyle(mFilePath)
         props = layer.renderer().symbol().symbolLayers()[0].properties()
         self.assertEqual(props['angle'], '50')

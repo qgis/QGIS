@@ -3,6 +3,7 @@ SET (PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python)
 
 SET(PY_CONSOLE_FILES
   console.py
+  console_base.py
   console_sci.py
   console_settings.py
   console_output.py

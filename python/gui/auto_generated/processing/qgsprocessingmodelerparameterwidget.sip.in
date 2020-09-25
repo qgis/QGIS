@@ -26,7 +26,7 @@ parameter for the model itself.
 
 Individual modeler parameter widgets are not usually created directly, instead they are
 constructed through the central registry, via calls to
-QgsGui.processingGuiRegistry()->createModelerParameterWidget().
+:py:func:`QgsGui.processingGuiRegistry()`->:py:func:`~createModelerParameterWidget`.
 
 .. versionadded:: 3.4
 %End
@@ -80,7 +80,7 @@ choices.
 
 In order to determine the available source, the ``compatibleParameterTypes`` and
 ``compatibleOutputTypes`` arguments are used. These lists correspond to the
-various available values for QgsProcessingParameterDefinition.type() (for
+various available values for :py:func:`QgsProcessingParameterDefinition.type()` (for
 ``compatibleParameterTypes``) and the values for :py:func:`QgsProcessingOutputDefinition.type()`
 (for ``compatibleOutputTypes``).
 
@@ -147,7 +147,7 @@ Returns ``True`` if the widget is set to the model output mode.
 
     QString modelOutputName() const;
 %Docstring
-Returns the model output name, if isModelOutput() is ``True``.
+Returns the model output name, if :py:func:`~QgsProcessingModelerParameterWidget.isModelOutput` is ``True``.
 
 .. seealso:: :py:func:`setToModelOutput`
 

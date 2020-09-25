@@ -13,17 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsnetworkloggerpanelwidget.h"
+#include "qgsapplication.h"
 #include "qgsguiutils.h"
+#include "qgsjsonutils.h"
+#include "qgsnetworkloggerpanelwidget.h"
+#include "qgsnetworkloggernode.h"
 #include "qgsnetworklogger.h"
 #include "qgssettings.h"
-#include "qgsnetworkloggernode.h"
-#include "qgsjsonutils.h"
+
+#include <QFileDialog>
 #include <QFontDatabase>
 #include <QMenu>
-#include <QScrollBar>
-#include <QFileDialog>
 #include <QMessageBox>
+#include <QScrollBar>
+#include <QToolButton>
+
 #include <nlohmann/json.hpp>
 
 //
@@ -200,4 +204,17 @@ QgsNetworkLoggerPanelWidget::QgsNetworkLoggerPanelWidget( QgsNetworkLogger *logg
 
     fout << json;
   } );
+
+
+  QMenu *settingsMenu = new QMenu( this );
+  QToolButton *settingsButton = new QToolButton();
+  settingsButton->setAutoRaise( true );
+  settingsButton->setToolTip( tr( "Settings" ) );
+  settingsButton->setMenu( settingsMenu );
+  settingsButton->setPopupMode( QToolButton::InstantPopup );
+  settingsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
+  mToolbar->addWidget( settingsButton );
+
+  settingsMenu->addAction( mActionShowSuccessful );
+  settingsMenu->addAction( mActionShowTimeouts );
 }

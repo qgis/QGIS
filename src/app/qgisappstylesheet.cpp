@@ -25,7 +25,7 @@
 #include "qgsproxystyle.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
-
+#include "qgsguiutils.h"
 
 QgisAppStyleSheet::QgisAppStyleSheet( QObject *parent )
   : QObject( parent )
@@ -133,22 +133,24 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
   if ( themeName == QStringLiteral( "default" ) || !QgsApplication::uiThemes().contains( themeName ) )
   {
     //sidebar style
-    QString style = "QListWidget#mOptionsListWidget {"
-                    "    background-color: rgba(69, 69, 69, 0);"
-                    "    outline: 0;"
-                    "}"
-                    "QFrame#mOptionsListFrame {"
-                    "    background-color: rgba(69, 69, 69, 220);"
-                    "}"
-                    "QListWidget#mOptionsListWidget::item {"
-                    "    color: white;"
-                    "    padding: 3px;"
-                    "}"
-                    "QListWidget#mOptionsListWidget::item::selected {"
-                    "    color: black;"
-                    "    background-color:palette(Window);"
-                    "    padding-right: 0px;"
-                    "}";
+    const int frameMargin = QgsGuiUtils::scaleIconSize( 3 );
+
+    QString style = QStringLiteral( "QListWidget#mOptionsListWidget {"
+                                    "    background-color: rgba(69, 69, 69, 0);"
+                                    "    outline: 0;"
+                                    "}"
+                                    "QFrame#mOptionsListFrame {"
+                                    "    background-color: rgba(69, 69, 69, 220);"
+                                    "}"
+                                    "QListWidget#mOptionsListWidget::item {"
+                                    "    color: white;"
+                                    "    padding: %1px;"
+                                    "}"
+                                    "QListWidget#mOptionsListWidget::item::selected {"
+                                    "    color: black;"
+                                    "    background-color:palette(Window);"
+                                    "    padding-right: 0px;"
+                                    "}" ).arg( frameMargin );
 
     QString toolbarSpacing = opts.value( QStringLiteral( "toolbarSpacing" ), QString() ).toString();
     if ( !toolbarSpacing.isEmpty() )

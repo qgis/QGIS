@@ -94,10 +94,11 @@ class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protect
 
     /**
      * Returns the best suited CRS from a set of authority ids
-       1. project CRS if contained in the set
-       2. WGS84 if contained in the set
-       3. the first entry in the set else
-    \returns the authority id of the crs or an empty string in case of error*/
+     * 1. project CRS if contained in the set
+     * 2. WGS84 if contained in the set
+     * 3. the first entry in the set else
+     * \returns the authority id of the crs or an empty string in case of error
+    */
     QString getPreferredCrs( const QSet<QString> &crsSet ) const;
 
     /**
@@ -126,6 +127,8 @@ class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protect
     void showHelp();
     void treeWidgetItemDoubleClicked( const QModelIndex &index );
     void treeWidgetCurrentRowChanged( const QModelIndex &current, const QModelIndex &previous );
+    void btnSave_clicked();
+    void btnLoad_clicked();
 };
 
 /**

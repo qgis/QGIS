@@ -27,7 +27,8 @@ from qgis.core import (QgsLabelingEngineSettings,
                        QgsMarkerSymbol,
                        QgsProperty,
                        QgsVectorLayerSimpleLabeling,
-                       QgsLabelObstacleSettings)
+                       QgsLabelObstacleSettings,
+                       QgsLabeling)
 from utilities import getTempfilePath, renderMapToImage, mapSettingsString
 
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
@@ -143,6 +144,19 @@ class TestPointPlacement(TestPlacementBase):
         self.removeMapLayer(self.layer)
         self.layer = None
 
+    def test_line_with_no_candidate_show_all(self):
+        # A line too short to have any candidates, yet we need to show all labels for the layer
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('line_short')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.layer.setLabelsEnabled(True)
+        self.lyr.displayAll = True
+        f = self.lyr.format()
+        f.setSize(60)
+        self.lyr.setFormat(f)
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
     def test_polygon_placement_with_hole(self):
         # Horizontal label placement for polygon with hole
         # Note for this test, the mask is used to check only pixels outside of the polygon.
@@ -245,6 +259,29 @@ class TestPointPlacement(TestPlacementBase):
         self.lyr.placement = QgsPalLayerSettings.OverPoint
         self.lyr.quadOffset = QgsPalLayerSettings.QuadrantBelowLeft
         self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_obstacle_collision_but_showing_all(self):
+        # Test the when a collision occurs and the Show All labels setting is active, Show All wins
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('point')
+
+        obstacleLayer = TestQgsPalLabeling.loadFeatureLayer('line')
+        obstacle_label_settings = QgsPalLayerSettings()
+        obstacle_label_settings.obstacle = True
+        obstacle_label_settings.drawLabels = False
+        obstacle_label_settings.obstacleFactor = 8
+        obstacleLayer.setLabeling(QgsVectorLayerSimpleLabeling(obstacle_label_settings))
+        obstacleLayer.setLabelsEnabled(True)
+
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.OverPoint
+        self.lyr.quadOffset = QgsPalLayerSettings.QuadrantAboveLeft
+        self.lyr.priority = 4
+        self.lyr.displayAll = True
+        self.checkTest()
+
+        self.removeMapLayer(obstacleLayer)
         self.removeMapLayer(self.layer)
         self.layer = None
 
@@ -773,6 +810,129 @@ class TestPointPlacement(TestPlacementBase):
         self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_small')
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
         self.lyr.placement = QgsPalLayerSettings.Line
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_small_polygon_large_label(self):
+        # Default polygon placement for small polygon with a large label
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_small')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.OverPoint
+        self.lyr.format().setSize(30)
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_small_polygon_large_label_force_inside(self):
+        # Default polygon placement for small polygon with a large label, with only placement of inside labels
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_small')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.OverPoint
+        self.lyr.fitInPolygonOnly = True
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_small_polygon_large_label_allow_outside(self):
+        # Default polygon placement for small polygon with a large label, allowing outside placement
+        # we expect this to sit outside, because it CAN'T fit
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_small')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.OverPoint
+        self.lyr.setPolygonPlacementFlags(QgsLabeling.AllowPlacementOutsideOfPolygon | QgsLabeling.AllowPlacementInsideOfPolygon)
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_small_polygon_small_label_inside_and_outside(self):
+        # Default polygon placement for small polygon with a small label, allowing outside placement
+        # we expect this to sit inside, because it CAN fit
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_small')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.OverPoint
+        self.lyr.setPolygonPlacementFlags(QgsLabeling.AllowPlacementOutsideOfPolygon | QgsLabeling.AllowPlacementInsideOfPolygon)
+        f = self.lyr.format()
+        f.setSize(8)
+        self.lyr.setFormat(f)
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_small_polygon_small_label_outside_only(self):
+        # Default polygon placement for small polygon with a small label, allowing outside placement only
+        # we expect this to sit outside, cos we are blocking inside placement
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_small')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.OverPoint
+        self.lyr.setPolygonPlacementFlags(QgsLabeling.AllowPlacementOutsideOfPolygon)
+        f = self.lyr.format()
+        f.setSize(8)
+        self.lyr.setFormat(f)
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_small_polygon_small_data_defined_allow_outside(self):
+        # Default data defined allow outside mode
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_small')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.Horizontal
+        self.lyr.dataDefinedProperties().setProperty(QgsPalLayerSettings.PolygonLabelOutside, QgsProperty.fromValue(1))
+        f = self.lyr.format()
+        f.setSize(8)
+        self.lyr.setFormat(f)
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_small_polygon_small_data_defined_force_outside(self):
+        # Default data defined allow outside mode
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_small')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.Horizontal
+        self.lyr.dataDefinedProperties().setProperty(QgsPalLayerSettings.PolygonLabelOutside, QgsProperty.fromValue('force'))
+        f = self.lyr.format()
+        f.setSize(8)
+        self.lyr.setFormat(f)
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_small_polygon_small_data_defined_allow_outside_large(self):
+        # Default data defined allow outside mode
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_small')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.Horizontal
+        self.lyr.dataDefinedProperties().setProperty(QgsPalLayerSettings.PolygonLabelOutside, QgsProperty.fromValue(1))
+        f = self.lyr.format()
+        f.setSize(20)
+        self.lyr.setFormat(f)
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_small_polygon_small_label_outside_mode(self):
+        # Forced outside placement for polygon
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_small')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.OutsidePolygons
+        f = self.lyr.format()
+        f.setSize(8)
+        self.lyr.setFormat(f)
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_small_polygon_small_label_outside_mode_distance(self):
+        # Forced outside placement for polygon with distance
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_small')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.OutsidePolygons
+        self.lyr.dist = 10
+        f = self.lyr.format()
+        f.setSize(8)
+        self.lyr.setFormat(f)
         self.checkTest()
         self.removeMapLayer(self.layer)
         self.layer = None

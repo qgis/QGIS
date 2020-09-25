@@ -10,7 +10,7 @@
 
 
 
-class QgsLine3DSymbol : QgsAbstract3DSymbol
+class QgsLine3DSymbol : QgsAbstract3DSymbol /NoDefaultCtors/
 {
 %Docstring
 3D symbol that draws linestring geometries as planar polygons (created from lines using a buffer with given thickness).
@@ -31,6 +31,14 @@ class QgsLine3DSymbol : QgsAbstract3DSymbol
 %Docstring
 Constructor for QgsLine3DSymbol
 %End
+    ~QgsLine3DSymbol();
+
+    static QgsAbstract3DSymbol *create() /Factory/;
+%Docstring
+Creates a new QgsLine3DSymbol.
+
+Caller takes ownership of the returned symbol.
+%End
 
     virtual QString type() const;
     virtual QgsAbstract3DSymbol *clone() const /Factory/;
@@ -39,6 +47,8 @@ Constructor for QgsLine3DSymbol
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+    virtual QList< QgsWkbTypes::GeometryType > compatibleGeometryTypes() const;
 
 
     Qgs3DTypes::AltitudeClamping altitudeClamping() const;
@@ -95,14 +105,18 @@ Returns whether the renderer will render data with simple lines (otherwise it us
 Sets whether the renderer will render data with simple lines (otherwise it uses buffer)
 %End
 
-    QgsPhongMaterialSettings material() const;
+    QgsAbstractMaterialSettings *material() const;
 %Docstring
 Returns material used for shading of the symbol
 %End
-    void setMaterial( const QgsPhongMaterialSettings &material );
+
+    void setMaterial( QgsAbstractMaterialSettings *material /Transfer/ );
 %Docstring
-Sets material used for shading of the symbol
+Sets the ``material`` settings used for shading of the symbol.
+
+Ownership of ``material`` is transferred to the symbol.
 %End
+
 
 };
 

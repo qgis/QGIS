@@ -10,6 +10,8 @@
 #include <algorithm>
 #include <iterator>
 #include "mdal_utils.hpp"
+#include "mdal_logger.hpp"
+#include "mdal.h"
 
 MDAL::MemoryDataset2D::MemoryDataset2D( MDAL::DatasetGroup *grp, bool hasActiveFlag )
   : Dataset2D( grp )
@@ -50,10 +52,12 @@ void MDAL::MemoryDataset2D::activateFaces( MDAL::MemoryMesh *mesh )
   // Activate only Faces that do all Vertex's outputs with some data
   const size_t nFaces = mesh->facesCount();
 
+  const Faces &faces = mesh->faces();
   for ( unsigned int idx = 0; idx < nFaces; ++idx )
   {
-    Face elem = mesh->faces.at( idx );
-    for ( size_t i = 0; i < elem.size(); ++i )
+    const Face &elem = faces.at( idx );
+    const std::size_t elemSize = elem.size();
+    for ( size_t i = 0; i < elemSize; ++i )
     {
       const size_t vertexIndex = elem[i];
       if ( isScalar )
@@ -114,21 +118,12 @@ size_t MDAL::MemoryDataset2D::vectorData( size_t indexStart, size_t count, doubl
 }
 
 MDAL::MemoryMesh::MemoryMesh( const std::string &driverName,
-                              size_t verticesCount,
-                              size_t edgesCount,
-                              size_t facesCount,
                               size_t faceVerticesMaximumCount,
-                              MDAL::BBox extent,
                               const std::string &uri )
   : MDAL::Mesh( driverName,
-                verticesCount,
-                edgesCount,
-                facesCount,
                 faceVerticesMaximumCount,
-                extent,
                 uri )
-{
-}
+{}
 
 std::unique_ptr<MDAL::MeshVertexIterator> MDAL::MemoryMesh::readVertices()
 {
@@ -146,6 +141,91 @@ std::unique_ptr<MDAL::MeshFaceIterator> MDAL::MemoryMesh::readFaces()
 {
   std::unique_ptr<MDAL::MeshFaceIterator> it( new MemoryMeshFaceIterator( this ) );
   return it;
+}
+
+void MDAL::MemoryMesh::setVertices( Vertices vertices )
+{
+  mExtent = MDAL::computeExtent( vertices );
+  mVertices = std::move( vertices );
+}
+
+void MDAL::MemoryMesh::setFaces( MDAL::Faces faces )
+{
+  mFaces = std::move( faces );
+}
+
+void MDAL::MemoryMesh::setEdges( MDAL::Edges edges )
+{
+  mEdges = std::move( edges );
+}
+
+MDAL::BBox MDAL::MemoryMesh::extent() const
+{
+  return mExtent;
+}
+
+void MDAL::MemoryMesh::addVertices( size_t vertexCount, double *coordinates )
+{
+  size_t coordinateIndex = 0;
+  size_t vertexIndex = mVertices.size();
+  size_t totalVertexCount = vertexIndex + vertexCount;
+  mVertices.resize( totalVertexCount );
+  for ( ; vertexIndex < totalVertexCount; ++vertexIndex )
+  {
+    Vertex vertex;
+    vertex.x = coordinates[coordinateIndex];
+    ++coordinateIndex;
+    vertex.y = coordinates[coordinateIndex];
+    ++coordinateIndex;
+    vertex.z = coordinates[coordinateIndex];
+    ++coordinateIndex;
+
+    mVertices[vertexIndex] = std::move( vertex );
+  }
+
+  mExtent = computeExtent( mVertices );
+}
+
+void MDAL::MemoryMesh::addFaces( size_t faceCount, size_t driverMaxVerticesPerFace, int *faceSizes, int *vertexIndices )
+{
+  size_t indicesIndex = 0;
+  Faces newFaces( faceCount );
+  for ( size_t faceIndex = 0; faceIndex < faceCount; ++faceIndex )
+  {
+    size_t faceSize = faceSizes[faceIndex];
+    if ( faceSize > driverMaxVerticesPerFace )
+    {
+      MDAL::Log::error( Err_InvalidData, "Incompatible faces count" );
+      return;
+    }
+
+    if ( faceSize > faceVerticesMaximumCount() )
+      setFaceVerticesMaximumCount( faceSize );
+
+    Face face( faceSize );
+    for ( size_t i = 0; i < faceSize; ++i )
+    {
+      const int indice = vertexIndices[indicesIndex + i];
+      if ( indice < 0 )
+      {
+        MDAL::Log::error( Err_InvalidData, "Invalid vertex index when adding faces" );
+        return;
+      }
+      size_t indiceU = static_cast< size_t >( indice );
+      if ( indiceU < mVertices.size() )
+        face[i] = indiceU;
+      else
+      {
+        MDAL::Log::error( Err_InvalidData, "Invalid vertex index when adding faces" );
+        return;
+      }
+    }
+    indicesIndex = indicesIndex + faceSize;
+    newFaces[faceIndex] = std::move( face );
+  }
+
+  // if everything is ok
+  std::move( newFaces.begin(), newFaces.end(), std::back_inserter( mFaces ) );
 }
 
 MDAL::MemoryMesh::~MemoryMesh() = default;
@@ -171,6 +251,7 @@ size_t MDAL::MemoryMeshVertexIterator::next( size_t vertexCount, double *coordin
     return 0;
 
   size_t i = 0;
+  const Vertices &vertices = mMemoryMesh->vertices();
 
   while ( true )
   {
@@ -180,7 +261,7 @@ size_t MDAL::MemoryMeshVertexIterator::next( size_t vertexCount, double *coordin
     if ( i >= vertexCount )
       break;
 
-    const Vertex v = mMemoryMesh->vertices[mLastVertexIndex + i];
+    const Vertex &v = vertices[mLastVertexIndex + i];
     coordinates[3 * i] = v.x;
     coordinates[3 * i + 1] = v.y;
     coordinates[3 * i + 2] = v.z;
@@ -208,6 +289,7 @@ size_t MDAL::MemoryMeshEdgeIterator::next( size_t edgeCount,
   assert( endVertexIndices );
 
   size_t maxEdges = mMemoryMesh->edgesCount();
+  const Edges &edges = mMemoryMesh->edges();
 
   if ( edgeCount > maxEdges )
     edgeCount = maxEdges;
@@ -225,7 +307,7 @@ size_t MDAL::MemoryMeshEdgeIterator::next( size_t edgeCount,
     if ( i >= edgeCount )
       break;
 
-    const Edge e = mMemoryMesh->edges[mLastEdgeIndex + i];
+    const Edge &e = edges[mLastEdgeIndex + i];
     startVertexIndices[i] = e.startVertex;
     endVertexIndices[i] = e.endVertex;
 
@@ -255,6 +337,7 @@ size_t MDAL::MemoryMeshFaceIterator::next(
   size_t faceVerticesMaximumCount = mMemoryMesh->faceVerticesMaximumCount();
   size_t vertexIndex = 0;
   size_t faceIndex = 0;
+  const Faces &faces = mMemoryMesh->faces();
 
   while ( true )
   {
@@ -267,8 +350,9 @@ size_t MDAL::MemoryMeshFaceIterator::next(
     if ( mLastFaceIndex + faceIndex >= maxFaces )
       break;
 
-    const Face f = mMemoryMesh->faces[mLastFaceIndex + faceIndex];
-    for ( size_t faceVertexIndex = 0; faceVertexIndex < f.size(); ++faceVertexIndex )
+    const Face &f = faces[mLastFaceIndex + faceIndex];
+    const std::size_t faceSize = f.size();
+    for ( size_t faceVertexIndex = 0; faceVertexIndex < faceSize; ++faceVertexIndex )
     {
       assert( vertexIndex < vertexIndicesBufferLen );
       vertexIndicesBuffer[vertexIndex] = static_cast<int>( f[faceVertexIndex] );

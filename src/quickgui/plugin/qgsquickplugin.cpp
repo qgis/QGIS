@@ -46,7 +46,7 @@
 #include "qgsquickscalebarkit.h"
 #include "qgsquicksubmodel.h"
 #include "qgsquickutils.h"
-#include "qgsquickvaluerelationlistmodel.h"
+#include "qgsquickfeatureslistmodel.h"
 
 static QObject *_utilsProvider( QQmlEngine *engine, QJSEngine *scriptEngine )
 {
@@ -73,7 +73,6 @@ void QgsQuickPlugin::registerTypes( const char *uri )
   qRegisterMetaType< QVariant::Type >( "QVariant::Type" );
 
   qmlRegisterUncreatableType< QgsUnitTypes >( uri, 0, 1, "QgsUnitTypes", "Only enums from QgsUnitTypes can be used" );
-
   qmlRegisterType< QgsProject >( uri, 0, 1, "Project" );
   qmlRegisterType< QgsQuickAttributeFormModel >( uri, 0, 1, "AttributeFormModel" );
   qmlRegisterType< QgsQuickAttributeModel >( uri, 0, 1, "AttributeModel" );
@@ -88,7 +87,7 @@ void QgsQuickPlugin::registerTypes( const char *uri )
   qmlRegisterType< QgsQuickScaleBarKit >( uri, 0, 1, "ScaleBarKit" );
   qmlRegisterType< QgsQuickSubModel >( uri, 0, 1, "SubModel" );
   qmlRegisterType< QgsVectorLayer >( uri, 0, 1, "VectorLayer" );
-  qmlRegisterType< QgsQuickValueRelationListModel > ( uri, 0, 1, "ValueRelationListModel" );
+  qmlRegisterType< QgsQuickFeaturesListModel >( uri, 0, 1, "FeaturesListModel" );
 
   qmlRegisterSingletonType< QgsQuickUtils >( uri, 0, 1, "Utils", _utilsProvider );
 }

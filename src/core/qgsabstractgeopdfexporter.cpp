@@ -136,6 +136,30 @@ QString QgsAbstractGeoPdfExporter::generateTemporaryFilepath( const QString &fil
   return mTemporaryDir.filePath( filename );
 }
 
+bool QgsAbstractGeoPdfExporter::compositionModeSupported( QPainter::CompositionMode mode )
+{
+  switch ( mode )
+  {
+    case QPainter::CompositionMode_SourceOver:
+    case QPainter::CompositionMode_Multiply:
+    case QPainter::CompositionMode_Screen:
+    case QPainter::CompositionMode_Overlay:
+    case QPainter::CompositionMode_Darken:
+    case QPainter::CompositionMode_Lighten:
+    case QPainter::CompositionMode_ColorDodge:
+    case QPainter::CompositionMode_ColorBurn:
+    case QPainter::CompositionMode_HardLight:
+    case QPainter::CompositionMode_SoftLight:
+    case QPainter::CompositionMode_Difference:
+    case  QPainter::CompositionMode_Exclusion:
+      return true;
+
+    default:
+      break;
+  }
+
+  return false;
+}
 
 void QgsAbstractGeoPdfExporter::pushRenderedFeature( const QString &layerId, const QgsAbstractGeoPdfExporter::RenderedFeature &feature, const QString &group )
 {
@@ -257,12 +281,12 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
   }
   compositionElem.appendChild( metadata );
 
-  // layertree
-  QDomElement layerTree = doc.createElement( QStringLiteral( "LayerTree" ) );
-  //layerTree.setAttribute( QStringLiteral("displayOnlyOnVisiblePages"), QStringLiteral("true"));
   QMap< QString, QSet< QString > > createdLayerIds;
   QMap< QString, QDomElement > groupLayerMap;
   QMap< QString, QString > customGroupNamesToIds;
+
+  QMultiMap< QString, QDomElement > pendingLayerTreeElements;
+
   if ( details.includeFeatures )
   {
     for ( const VectorComponentDetail &component : qgis::as_const( mVectorComponents ) )
@@ -272,8 +296,8 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
 
       QDomElement layer = doc.createElement( QStringLiteral( "Layer" ) );
       layer.setAttribute( QStringLiteral( "id" ), component.group.isEmpty() ? component.mapLayerId : QStringLiteral( "%1_%2" ).arg( component.group, component.mapLayerId ) );
-      layer.setAttribute( QStringLiteral( "name" ), component.name );
-      layer.setAttribute( QStringLiteral( "initiallyVisible" ), QStringLiteral( "true" ) );
+      layer.setAttribute( QStringLiteral( "name" ), details.layerIdToPdfLayerTreeNameMap.contains( component.mapLayerId ) ? details.layerIdToPdfLayerTreeNameMap.value( component.mapLayerId ) : component.name );
+      layer.setAttribute( QStringLiteral( "initiallyVisible" ), details.initialLayerVisibility.value( component.mapLayerId, true ) ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
 
       if ( !component.group.isEmpty() )
       {
@@ -288,20 +312,20 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
           group.setAttribute( QStringLiteral( "name" ), component.group );
           group.setAttribute( QStringLiteral( "initiallyVisible" ), groupLayerMap.empty() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
           group.setAttribute( QStringLiteral( "mutuallyExclusiveGroupId" ), QStringLiteral( "__mutually_exclusive_groups__" ) );
-          layerTree.appendChild( group );
+          pendingLayerTreeElements.insert( component.mapLayerId, group );
           group.appendChild( layer );
           groupLayerMap[ component.group ] = group;
         }
       }
       else
       {
-        layerTree.appendChild( layer );
+        pendingLayerTreeElements.insert( component.mapLayerId, layer );
       }
 
       createdLayerIds[ component.group ].insert( component.mapLayerId );
     }
   }
-  // some PDF components may not be linked to vector components - e.g. layers with labels but no features
+  // some PDF components may not be linked to vector components - e.g. layers with labels but no features (or raster layers)
   for ( const ComponentLayerDetail &component : components )
   {
     if ( component.mapLayerId.isEmpty() || createdLayerIds.value( component.group ).contains( component.mapLayerId ) )
@@ -312,8 +336,8 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
 
     QDomElement layer = doc.createElement( QStringLiteral( "Layer" ) );
     layer.setAttribute( QStringLiteral( "id" ), component.group.isEmpty() ? component.mapLayerId : QStringLiteral( "%1_%2" ).arg( component.group, component.mapLayerId ) );
-    layer.setAttribute( QStringLiteral( "name" ), component.name );
-    layer.setAttribute( QStringLiteral( "initiallyVisible" ), QStringLiteral( "true" ) );
+    layer.setAttribute( QStringLiteral( "name" ), details.layerIdToPdfLayerTreeNameMap.contains( component.mapLayerId ) ? details.layerIdToPdfLayerTreeNameMap.value( component.mapLayerId ) : component.name );
+    layer.setAttribute( QStringLiteral( "initiallyVisible" ), details.initialLayerVisibility.value( component.mapLayerId, true ) ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
 
     if ( !component.group.isEmpty() )
     {
@@ -328,18 +352,22 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
         group.setAttribute( QStringLiteral( "name" ), component.group );
         group.setAttribute( QStringLiteral( "initiallyVisible" ), groupLayerMap.empty() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
         group.setAttribute( QStringLiteral( "mutuallyExclusiveGroupId" ), QStringLiteral( "__mutually_exclusive_groups__" ) );
-        layerTree.appendChild( group );
+        pendingLayerTreeElements.insert( component.mapLayerId, group );
         group.appendChild( layer );
         groupLayerMap[ component.group ] = group;
       }
     }
     else
     {
-      layerTree.appendChild( layer );
+      pendingLayerTreeElements.insert( component.mapLayerId, layer );
     }
 
     createdLayerIds[ component.group ].insert( component.mapLayerId );
   }
+
+  // layertree
+  QDomElement layerTree = doc.createElement( QStringLiteral( "LayerTree" ) );
+  //layerTree.setAttribute( QStringLiteral("displayOnlyOnVisiblePages"), QStringLiteral("true"));
 
   // create custom layer tree entries
   for ( auto it = details.customLayerTreeGroups.constBegin(); it != details.customLayerTreeGroups.constEnd(); ++it )
@@ -356,21 +384,40 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
     layerTree.appendChild( layer );
   }
 
+  // start by adding layer tree elements with known layer orders
+  for ( const QString &layerId : details.layerOrder )
+  {
+    const QList< QDomElement> elements = pendingLayerTreeElements.values( layerId );
+    for ( const QDomElement &element : elements )
+      layerTree.appendChild( element );
+  }
+  // then add all the rest (those we don't have an explicit order for)
+  for ( auto it = pendingLayerTreeElements.constBegin(); it != pendingLayerTreeElements.constEnd(); ++it )
+  {
+    if ( details.layerOrder.contains( it.key() ) )
+    {
+      // already added this one, just above...
+      continue;
+    }
+
+    layerTree.appendChild( it.value() );
+  }
+
   compositionElem.appendChild( layerTree );
 
   // pages
   QDomElement page = doc.createElement( QStringLiteral( "Page" ) );
   QDomElement dpi = doc.createElement( QStringLiteral( "DPI" ) );
-  dpi.appendChild( doc.createTextNode( QString::number( details.dpi ) ) );
+  dpi.appendChild( doc.createTextNode( qgsDoubleToString( details.dpi ) ) );
   page.appendChild( dpi );
   // assumes DPI of 72, which is an assumption on GDALs/PDF side. It's only related to the PDF coordinate space and doesn't affect the actual output DPI!
   QDomElement width = doc.createElement( QStringLiteral( "Width" ) );
   const double pageWidthPdfUnits = std::ceil( details.pageSizeMm.width() / 25.4 * 72 );
-  width.appendChild( doc.createTextNode( QString::number( pageWidthPdfUnits ) ) );
+  width.appendChild( doc.createTextNode( qgsDoubleToString( pageWidthPdfUnits ) ) );
   page.appendChild( width );
   QDomElement height = doc.createElement( QStringLiteral( "Height" ) );
   const double pageHeightPdfUnits = std::ceil( details.pageSizeMm.height() / 25.4 * 72 );
-  height.appendChild( doc.createTextNode( QString::number( pageHeightPdfUnits ) ) );
+  height.appendChild( doc.createTextNode( qgsDoubleToString( pageHeightPdfUnits ) ) );
   page.appendChild( height );
 
 
@@ -394,7 +441,7 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
       }
       else
       {
-        srs.appendChild( doc.createTextNode( section.crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) ) );
+        srs.appendChild( doc.createTextNode( section.crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ) ) );
       }
       georeferencing.appendChild( srs );
     }
@@ -428,25 +475,40 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
         the whole PDF page will be assumed to be georeferenced.
         */
       QDomElement boundingBox = doc.createElement( QStringLiteral( "BoundingBox" ) );
-      boundingBox.setAttribute( QStringLiteral( "x1" ), QString::number( section.pageBoundsMm.xMinimum() / 25.4 * 72 ) );
-      boundingBox.setAttribute( QStringLiteral( "y1" ), QString::number( section.pageBoundsMm.yMinimum() / 25.4 * 72 ) );
-      boundingBox.setAttribute( QStringLiteral( "x2" ), QString::number( section.pageBoundsMm.xMaximum() / 25.4 * 72 ) );
-      boundingBox.setAttribute( QStringLiteral( "y2" ), QString::number( section.pageBoundsMm.yMaximum() / 25.4 * 72 ) );
+      boundingBox.setAttribute( QStringLiteral( "x1" ), qgsDoubleToString( section.pageBoundsMm.xMinimum() / 25.4 * 72 ) );
+      boundingBox.setAttribute( QStringLiteral( "y1" ), qgsDoubleToString( section.pageBoundsMm.yMinimum() / 25.4 * 72 ) );
+      boundingBox.setAttribute( QStringLiteral( "x2" ), qgsDoubleToString( section.pageBoundsMm.xMaximum() / 25.4 * 72 ) );
+      boundingBox.setAttribute( QStringLiteral( "y2" ), qgsDoubleToString( section.pageBoundsMm.yMaximum() / 25.4 * 72 ) );
       georeferencing.appendChild( boundingBox );
     }
 
     for ( const ControlPoint &point : section.controlPoints )
     {
       QDomElement cp1 = doc.createElement( QStringLiteral( "ControlPoint" ) );
-      cp1.setAttribute( QStringLiteral( "x" ), QString::number( point.pagePoint.x() / 25.4 * 72 ) );
-      cp1.setAttribute( QStringLiteral( "y" ), QString::number( ( details.pageSizeMm.height() - point.pagePoint.y() ) / 25.4 * 72 ) );
-      cp1.setAttribute( QStringLiteral( "GeoX" ), QString::number( point.geoPoint.x() ) );
-      cp1.setAttribute( QStringLiteral( "GeoY" ), QString::number( point.geoPoint.y() ) );
+      cp1.setAttribute( QStringLiteral( "x" ), qgsDoubleToString( point.pagePoint.x() / 25.4 * 72 ) );
+      cp1.setAttribute( QStringLiteral( "y" ), qgsDoubleToString( ( details.pageSizeMm.height() - point.pagePoint.y() ) / 25.4 * 72 ) );
+      cp1.setAttribute( QStringLiteral( "GeoX" ), qgsDoubleToString( point.geoPoint.x() ) );
+      cp1.setAttribute( QStringLiteral( "GeoY" ), qgsDoubleToString( point.geoPoint.y() ) );
       georeferencing.appendChild( cp1 );
     }
 
     page.appendChild( georeferencing );
   }
+
+  auto createPdfDatasetElement = [&doc]( const ComponentLayerDetail & component ) -> QDomElement
+  {
+    QDomElement pdfDataset = doc.createElement( QStringLiteral( "PDF" ) );
+    pdfDataset.setAttribute( QStringLiteral( "dataset" ), component.sourcePdfPath );
+    if ( component.opacity != 1.0 || component.compositionMode != QPainter::CompositionMode_SourceOver )
+    {
+      QDomElement blendingElement = doc.createElement( QStringLiteral( "Blending" ) );
+      blendingElement.setAttribute( QStringLiteral( "opacity" ), component.opacity );
+      blendingElement.setAttribute( QStringLiteral( "function" ), compositionModeToString( component.compositionMode ) );
+
+      pdfDataset.appendChild( blendingElement );
+    }
+    return pdfDataset;
+  };
 
   // content
   QDomElement content = doc.createElement( QStringLiteral( "Content" ) );
@@ -454,9 +516,7 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
   {
     if ( component.mapLayerId.isEmpty() )
     {
-      QDomElement pdfDataset = doc.createElement( QStringLiteral( "PDF" ) );
-      pdfDataset.setAttribute( QStringLiteral( "dataset" ), component.sourcePdfPath );
-      content.appendChild( pdfDataset );
+      content.appendChild( createPdfDatasetElement( component ) );
     }
     else if ( !component.group.isEmpty() )
     {
@@ -470,9 +530,8 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
         ifLayerOn.setAttribute( QStringLiteral( "layerId" ), component.mapLayerId );
       else
         ifLayerOn.setAttribute( QStringLiteral( "layerId" ), QStringLiteral( "%1_%2" ).arg( component.group, component.mapLayerId ) );
-      QDomElement pdfDataset = doc.createElement( QStringLiteral( "PDF" ) );
-      pdfDataset.setAttribute( QStringLiteral( "dataset" ), component.sourcePdfPath );
-      ifLayerOn.appendChild( pdfDataset );
+
+      ifLayerOn.appendChild( createPdfDatasetElement( component ) );
       ifGroupOn.appendChild( ifLayerOn );
       content.appendChild( ifGroupOn );
     }
@@ -485,9 +544,7 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
         ifLayerOn.setAttribute( QStringLiteral( "layerId" ), component.mapLayerId );
       else
         ifLayerOn.setAttribute( QStringLiteral( "layerId" ), QStringLiteral( "%1_%2" ).arg( component.group, component.mapLayerId ) );
-      QDomElement pdfDataset = doc.createElement( QStringLiteral( "PDF" ) );
-      pdfDataset.setAttribute( QStringLiteral( "dataset" ), component.sourcePdfPath );
-      ifLayerOn.appendChild( pdfDataset );
+      ifLayerOn.appendChild( createPdfDatasetElement( component ) );
       content.appendChild( ifLayerOn );
     }
   }
@@ -528,5 +585,53 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
   doc.save( stream, -1 );
 
   return composition;
+}
+
+QString QgsAbstractGeoPdfExporter::compositionModeToString( QPainter::CompositionMode mode )
+{
+  switch ( mode )
+  {
+    case QPainter::CompositionMode_SourceOver:
+      return QStringLiteral( "Normal" );
+
+    case QPainter::CompositionMode_Multiply:
+      return QStringLiteral( "Multiply" );
+
+    case QPainter::CompositionMode_Screen:
+      return QStringLiteral( "Screen" );
+
+    case QPainter::CompositionMode_Overlay:
+      return QStringLiteral( "Overlay" );
+
+    case QPainter::CompositionMode_Darken:
+      return QStringLiteral( "Darken" );
+
+    case QPainter::CompositionMode_Lighten:
+      return QStringLiteral( "Lighten" );
+
+    case QPainter::CompositionMode_ColorDodge:
+      return QStringLiteral( "ColorDodge" );
+
+    case QPainter::CompositionMode_ColorBurn:
+      return QStringLiteral( "ColorBurn" );
+
+    case QPainter::CompositionMode_HardLight:
+      return QStringLiteral( "HardLight" );
+
+    case QPainter::CompositionMode_SoftLight:
+      return QStringLiteral( "SoftLight" );
+
+    case QPainter::CompositionMode_Difference:
+      return QStringLiteral( "Difference" );
+
+    case  QPainter::CompositionMode_Exclusion:
+      return QStringLiteral( "Exclusion" );
+
+    default:
+      break;
+  }
+
+  QgsDebugMsg( QStringLiteral( "Unsupported PDF blend mode %1" ).arg( mode ) );
+  return QStringLiteral( "Normal" );
 }
 

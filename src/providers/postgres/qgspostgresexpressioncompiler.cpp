@@ -104,6 +104,9 @@ static const QMap<QString, QString> FUNCTION_NAMES_SQL_FUNCTIONS_MAP
   { "lower", "lower" },
   { "trim", "trim" },
   { "upper", "upper" },
+  { "make_date", "make_date" },
+  { "make_time", "make_time" },
+  { "make_datetime", "make_timestamp" },
 };
 
 QString QgsPostgresExpressionCompiler::sqlFunctionFromFunctionName( const QString &fnName ) const

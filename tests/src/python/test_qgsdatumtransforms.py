@@ -234,7 +234,7 @@ class TestPyQgsDatumTransform(unittest.TestCase):
         self.assertTrue(ops[op3_index].grids[0].directDownload)
         self.assertTrue(ops[op3_index].grids[0].openLicense)
 
-    @unittest.skipIf(QgsProjUtils.projVersionMajor() < 6, 'Not a proj6 build')
+    @unittest.skipIf(QgsProjUtils.projVersionMajor() < 7, 'Not a proj >= 7 build')
     def testNoLasLos(self):
         """
         Test that operations which rely on an las/los grid shift file (which are unsupported by Proj6) are not returned

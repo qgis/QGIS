@@ -34,6 +34,7 @@ class QString;
 * a means to fetch a pointer to a plugin and unload it
 *
 * plugin key is:
+*
 * - C++ plugins: base name of plugin library, e.g. libgrassplugin
 * - Python plugins: module name (directory) of plugin, e.g. db_manager
 */

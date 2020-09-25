@@ -94,7 +94,7 @@ bool QgsSnappingUtils::isIndexPrepared( QgsPointLocator *loc, const QgsRectangle
   if ( mStrategy == IndexAlwaysFull && loc->hasIndex() )
     return true;
 
-  if ( mStrategy == IndexExtent && loc->hasIndex() && loc->extent()->intersects( areaOfInterest ) )
+  if ( mStrategy == IndexExtent && loc->hasIndex() && ( !loc->extent() || loc->extent()->intersects( areaOfInterest ) ) )
     return true;
 
   QgsRectangle aoi( areaOfInterest );
@@ -275,6 +275,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
       return QgsPointLocator::Match();
 
     QgsPointLocator::Match bestMatch;
+    QgsPointLocator::MatchList edges; // for snap on intersection
     _updateBestMatch( bestMatch, pointMap, loc, type, tolerance, filter, relaxed );
 
     if ( mSnappingConfig.intersectionSnapping() )
@@ -282,8 +283,19 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
       QgsPointLocator *locEdges = locatorForLayerUsingStrategy( mCurrentLayer, pointMap, tolerance );
       if ( !locEdges )
         return QgsPointLocator::Match();
+      edges = locEdges->edgesInRect( pointMap, tolerance );
+    }
 
-      QgsPointLocator::MatchList edges = locEdges->edgesInRect( pointMap, tolerance );
+    for ( QgsVectorLayer *vl : mExtraSnapLayers )
+    {
+      QgsPointLocator *loc = locatorForLayer( vl );
+      _updateBestMatch( bestMatch, pointMap, loc, type, tolerance, filter, false );
+      if ( mSnappingConfig.intersectionSnapping() )
+        edges << loc->edgesInRect( pointMap, tolerance );
+    }
+
+    if ( mSnappingConfig.intersectionSnapping() )
+    {
       _replaceIfBetter( bestMatch, _findClosestSegmentIntersection( pointMap, edges ), tolerance );
     }
 
@@ -294,15 +306,18 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
     QList<LayerAndAreaOfInterest> layers;
     QList<LayerConfig> filteredConfigs;
 
-    bool inRangeGlobal = ( mSnappingConfig.minimumScale() <= 0.0 || mMapSettings.scale() >= mSnappingConfig.minimumScale() )
-                         && ( mSnappingConfig.maximumScale() <= 0.0 || mMapSettings.scale() <= mSnappingConfig.maximumScale() );
+    //maximum scale is the one with smallest denominator
+    //minimum scale is the one with highest denominator
+    //So : maxscale < range on which snapping is enabled < minscale
+    bool inRangeGlobal = ( mSnappingConfig.minimumScale() <= 0.0 || mMapSettings.scale() <= mSnappingConfig.minimumScale() )
+                         && ( mSnappingConfig.maximumScale() <= 0.0 || mMapSettings.scale() >= mSnappingConfig.maximumScale() );
 
     for ( const LayerConfig &layerConfig : qgis::as_const( mLayers ) )
     {
       QgsSnappingConfig::IndividualLayerSettings layerSettings = mSnappingConfig.individualLayerSettings( layerConfig.layer );
 
-      bool inRangeLayer = ( layerSettings.minimumScale() <= 0.0 || mMapSettings.scale() >= layerSettings.minimumScale() )
-                          && ( layerSettings.maximumScale() <= 0.0 || mMapSettings.scale() <= layerSettings.maximumScale() );
+      bool inRangeLayer = ( layerSettings.minimumScale() <= 0.0 || mMapSettings.scale() <= layerSettings.minimumScale() )
+                          && ( layerSettings.maximumScale() <= 0.0 || mMapSettings.scale() >= layerSettings.maximumScale() );
 
       //If limit to scale is disabled, snapping activated on all layer
       //If no per layer config is set use the global one, otherwise use the layer config
@@ -319,7 +334,8 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
 
     QgsPointLocator::Match bestMatch;
     QgsPointLocator::MatchList edges; // for snap on intersection
-    double maxSnapIntTolerance = 0;
+    double maxTolerance = 0;
+    QgsPointLocator::Type maxTypes = QgsPointLocator::Invalid;
 
     for ( const LayerConfig &layerConfig : qgis::as_const( filteredConfigs ) )
     {
@@ -331,13 +347,24 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
         if ( mSnappingConfig.intersectionSnapping() )
         {
           edges << loc->edgesInRect( pointMap, tolerance );
-          maxSnapIntTolerance = std::max( maxSnapIntTolerance, tolerance );
         }
+        // We keep the maximum tolerance for intersection snapping and extra snapping
+        maxTolerance = std::max( maxTolerance, tolerance );
+        // To avoid yet an additional setting, on extra snappings, we use the combination of all enabled snap types
+        maxTypes = static_cast<QgsPointLocator::Type>( maxTypes | layerConfig.type );
       }
     }
 
+    for ( QgsVectorLayer *vl : mExtraSnapLayers )
+    {
+      QgsPointLocator *loc = locatorForLayer( vl );
+      _updateBestMatch( bestMatch, pointMap, loc, maxTypes, maxTolerance, filter, false );
+      if ( mSnappingConfig.intersectionSnapping() )
+        edges << loc->edgesInRect( pointMap, maxTolerance );
+    }
+
     if ( mSnappingConfig.intersectionSnapping() )
-      _replaceIfBetter( bestMatch, _findClosestSegmentIntersection( pointMap, edges ), maxSnapIntTolerance );
+      _replaceIfBetter( bestMatch, _findClosestSegmentIntersection( pointMap, edges ), maxTolerance );
 
     return bestMatch;
   }
@@ -368,6 +395,14 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
         if ( mSnappingConfig.intersectionSnapping() )
           edges << loc->edgesInRect( pointMap, tolerance );
       }
+    }
+
+    for ( QgsVectorLayer *vl : mExtraSnapLayers )
+    {
+      QgsPointLocator *loc = locatorForLayer( vl );
+      _updateBestMatch( bestMatch, pointMap, loc, type, tolerance, filter, false );
+      if ( mSnappingConfig.intersectionSnapping() )
+        edges << loc->edgesInRect( pointMap, tolerance );
     }
 
     if ( mSnappingConfig.intersectionSnapping() )

@@ -61,14 +61,25 @@ Abstract base class for spatial data provider implementations.
 
     struct ProviderOptions
     {
+
       QgsCoordinateTransformContext transformContext;
+
     };
 
-    QgsDataProvider( const QString &uri = QString(), const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions() );
+    enum ReadFlag
+    {
+      FlagTrustDataSource,
+    };
+    typedef QFlags<QgsDataProvider::ReadFlag> ReadFlags;
+
+
+    QgsDataProvider( const QString &uri = QString(),
+                     const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions(),
+                     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 %Docstring
 Create a new dataprovider with the specified in the ``uri``.
 
-Additional creation options are specified within the ``options`` value.
+Additional creation options are specified within the ``options`` value and since QGIS 3.16 creation flags are specified within the ``flags`` value.
 %End
 
     virtual QgsCoordinateReferenceSystem crs() const = 0;
@@ -287,7 +298,7 @@ databases and servers.
 
     virtual void reloadData();
 %Docstring
-Reloads the data from the source by calling reloadProviderData() implemented
+Reloads the data from the source by calling :py:func:`~QgsDataProvider.reloadProviderData` implemented
 by providers with data caches to synchronize, changes in the data source, feature
 counts and other specific actions.
 Emits the `dataChanged` signal
@@ -307,7 +318,7 @@ Current time stamp of data source
 %Docstring
 Gets current status error. This error describes some principal problem
 for which provider cannot work and thus is not valid. It is not last error
-after accessing data by block(), identify() etc.
+after accessing data by :py:func:`~QgsDataProvider.block`, :py:func:`~QgsDataProvider.identify` etc.
 %End
 
     virtual void invalidateConnections( const QString &connection );
@@ -323,18 +334,18 @@ Enter update mode.
 
 This is aimed at providers that can open differently the connection to
 the datasource, according it to be in update mode or in read-only mode.
-A call to this method shall be balanced with a call to leaveUpdateMode(),
+A call to this method shall be balanced with a call to :py:func:`~QgsDataProvider.leaveUpdateMode`,
 if this method returns ``True``.
 
 Most providers will have an empty implementation for that method.
 
-For backward compatibility, providers that implement enterUpdateMode() should
-still make sure to allow editing operations to work even if enterUpdateMode()
+For backward compatibility, providers that implement :py:func:`~QgsDataProvider.enterUpdateMode` should
+still make sure to allow editing operations to work even if :py:func:`~QgsDataProvider.enterUpdateMode`
 is not explicitly called.
 
-Several successive calls to enterUpdateMode() can be done. So there is
+Several successive calls to :py:func:`~QgsDataProvider.enterUpdateMode` can be done. So there is
 a concept of stack of calls that must be handled by the provider. Only the first
-call to enterUpdateMode() will really turn update mode on.
+call to :py:func:`~QgsDataProvider.enterUpdateMode` will really turn update mode on.
 
 :return: ``True`` in case of success (or no-op implementation), ``False`` in case of failure.
 
@@ -347,13 +358,13 @@ Leave update mode.
 
 This is aimed at providers that can open differently the connection to
 the datasource, according it to be in update mode or in read-only mode.
-This method shall be balanced with a successful call to enterUpdateMode().
+This method shall be balanced with a successful call to :py:func:`~QgsDataProvider.enterUpdateMode`.
 
 Most providers will have an empty implementation for that method.
 
-Several successive calls to enterUpdateMode() can be done. So there is
+Several successive calls to :py:func:`~QgsDataProvider.enterUpdateMode` can be done. So there is
 a concept of stack of calls that must be handled by the provider. Only the last
-call to leaveUpdateMode() will really turn update mode off.
+call to :py:func:`~QgsDataProvider.leaveUpdateMode` will really turn update mode off.
 
 :return: ``True`` in case of success (or no-op implementation), ``False`` in case of failure.
 
@@ -477,7 +488,10 @@ Add error message
 Sets error message
 %End
 
+
 };
+
+QFlags<QgsDataProvider::ReadFlag> operator|(QgsDataProvider::ReadFlag f1, QFlags<QgsDataProvider::ReadFlag> f2);
 
 
 /************************************************************************

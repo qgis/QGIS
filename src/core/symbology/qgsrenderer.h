@@ -271,7 +271,7 @@ class CORE_EXPORT QgsFeatureRenderer
      *     skip_the_curren_feature()
      * \endcode
      */
-    virtual QgsFeatureRenderer::Capabilities capabilities() { return nullptr; }
+    virtual QgsFeatureRenderer::Capabilities capabilities() { return QgsFeatureRenderer::Capabilities(); }
 
     /**
      * Returns list of symbols used by the renderer.
@@ -509,8 +509,9 @@ class CORE_EXPORT QgsFeatureRenderer
     /**
      * Clones generic renderer data to another renderer.
      * Currently clones
-     *  * Order By
-     *  * Paint Effect
+     *
+     * - Order By
+     * - Paint Effect
      *
      * \param destRenderer destination renderer for copied effect
      */

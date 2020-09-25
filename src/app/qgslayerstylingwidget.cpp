@@ -36,6 +36,7 @@
 #include "qgsstyle.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectortilelayer.h"
+#include "qgsvectortilebasiclabelingwidget.h"
 #include "qgsvectortilebasicrendererwidget.h"
 #include "qgsmeshlayer.h"
 #include "qgsproject.h"
@@ -100,6 +101,12 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBa
   connect( mLayerCombo, &QgsMapLayerComboBox::layerChanged, this, &QgsLayerStylingWidget::setLayer );
   connect( mLiveApplyCheck, &QAbstractButton::toggled, this, &QgsLayerStylingWidget::liveApplyToggled );
 
+  mLayerCombo->setFilters( QgsMapLayerProxyModel::Filter::HasGeometry
+                           | QgsMapLayerProxyModel::Filter::RasterLayer
+                           | QgsMapLayerProxyModel::Filter::PluginLayer
+                           | QgsMapLayerProxyModel::Filter::MeshLayer
+                           | QgsMapLayerProxyModel::Filter::VectorTileLayer );
+
   mStackedWidget->setCurrentIndex( 0 );
 }
 
@@ -134,6 +141,9 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
 {
   if ( layer == mCurrentLayer )
     return;
+
+  // when current layer is changed, apply the main panel stack to allow it to gracefully clean up
+  mWidgetStack->acceptAllPanels();
 
   if ( mCurrentLayer )
   {
@@ -233,16 +243,19 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
       symbolItem->setData( Qt::UserRole, Symbology );
       symbolItem->setToolTip( tr( "Symbology" ) );
       mOptionsListWidget->addItem( symbolItem );
-
+      QListWidgetItem *labelItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "labelingSingle.svg" ) ), QString() );
+      labelItem->setData( Qt::UserRole, VectorLabeling );
+      labelItem->setToolTip( tr( "Labels" ) );
+      mOptionsListWidget->addItem( labelItem );
       break;
     }
 
     case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::AnnotationLayer:
       break;
   }
 
-  const auto constMPageFactories = mPageFactories;
-  for ( QgsMapLayerConfigWidgetFactory *factory : constMPageFactories )
+  for ( QgsMapLayerConfigWidgetFactory *factory : qgis::as_const( mPageFactories ) )
   {
     if ( factory->supportsStyleDock() && factory->supportsLayer( layer ) )
     {
@@ -473,6 +486,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             if ( !mMaskingWidget )
             {
               mMaskingWidget = new QgsMaskingWidget( mWidgetStack );
+              mMaskingWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
               connect( mMaskingWidget, &QgsMaskingWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
             }
             mMaskingWidget->setLayer( vlayer );
@@ -484,7 +498,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
           {
             if ( !mVector3DWidget )
             {
-              mVector3DWidget = new QgsVectorLayer3DRendererWidget( nullptr, mMapCanvas, mWidgetStack );
+              mVector3DWidget = new QgsVectorLayer3DRendererWidget( vlayer, mMapCanvas, mWidgetStack );
               mVector3DWidget->setDockMode( true );
               connect( mVector3DWidget, &QgsVectorLayer3DRendererWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
             }
@@ -601,7 +615,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
               mMesh3DWidget->setDockMode( true );
               connect( mMesh3DWidget, &QgsMeshLayer3DRendererWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
             }
-            mMesh3DWidget->setLayer( meshLayer );
+            mMesh3DWidget->syncToLayer( meshLayer );
             mWidgetStack->setMainPanel( mMesh3DWidget );
             break;
           }
@@ -625,6 +639,14 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             mWidgetStack->setMainPanel( mVectorTileStyleWidget );
             break;
           }
+          case 1: // Labeling
+          {
+            mVectorTileLabelingWidget = new QgsVectorTileBasicLabelingWidget( vtLayer, mMapCanvas, mMessageBar, mWidgetStack );
+            mVectorTileLabelingWidget->setDockMode( true );
+            connect( mVectorTileLabelingWidget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+            mWidgetStack->setMainPanel( mVectorTileLabelingWidget );
+            break;
+          }
           default:
             break;
         }
@@ -632,6 +654,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
       }
 
       case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::AnnotationLayer:
       {
         mStackedWidget->setCurrentIndex( mNotSupportedPage );
         break;
@@ -659,6 +682,9 @@ void QgsLayerStylingWidget::layerAboutToBeRemoved( QgsMapLayer *layer )
 {
   if ( layer == mCurrentLayer )
   {
+    // when current layer is removed, apply the main panel stack to allow it to gracefully clean up
+    mWidgetStack->acceptAllPanels();
+
     mAutoApplyTimer->stop();
     setLayer( nullptr );
   }
@@ -759,6 +785,7 @@ bool QgsLayerStyleManagerWidgetFactory::supportsLayer( QgsMapLayer *layer ) cons
       return false;  // TODO
 
     case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::AnnotationLayer:
       return false;
   }
   return false; // no warnings

@@ -87,8 +87,8 @@ class GUI_EXPORT QgsTextEditWrapper : public QgsEditorWidgetWrapper
     void textChanged( const QString &text );
 
   private:
-    bool mutable mInvalidJSON;
-    QgsAttributeForm *mForm;
+    bool mutable mInvalidJSON = false;
+    QgsAttributeForm *mForm = nullptr;
     void updateValues( const QVariant &val, const QVariantList & = QVariantList() ) override;
 
     QTextBrowser *mTextBrowser = nullptr;

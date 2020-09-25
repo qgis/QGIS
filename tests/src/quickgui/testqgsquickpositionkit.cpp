@@ -22,9 +22,8 @@
 
 #include "qgsquickpositionkit.h"
 #include "qgsquicksimulatedpositionsource.h"
-#include "qgsquickutils.h"
 
-class TestQgsQuickUtils: public QObject
+class TestQgsQuickPositionKit: public QObject
 {
     Q_OBJECT
   private slots:
@@ -34,11 +33,10 @@ class TestQgsQuickUtils: public QObject
     void simulated_position();
 
   private:
-    QgsQuickUtils utils;
     QgsQuickPositionKit positionKit;
 };
 
-void TestQgsQuickUtils::simulated_position()
+void TestQgsQuickPositionKit::simulated_position()
 {
   QVERIFY( !positionKit.isSimulated() );
   positionKit.useSimulatedLocation( -92.36, 38.93, -1 );
@@ -57,5 +55,5 @@ void TestQgsQuickUtils::simulated_position()
   QVERIFY( !positionKit.isSimulated() );
 }
 
-QGSTEST_MAIN( TestQgsQuickUtils )
+QGSTEST_MAIN( TestQgsQuickPositionKit )
 #include "testqgsquickpositionkit.moc"

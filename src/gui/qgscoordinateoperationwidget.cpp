@@ -252,18 +252,22 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
     QStringList authorityCodes;
 
     QStringList opText;
+    QString lastSingleOpScope;
+    QString lastSingleOpRemarks;
     for ( const QgsDatumTransform::SingleOperationDetails &singleOpDetails : transform.operationDetails )
     {
       QString text;
       if ( !singleOpDetails.scope.isEmpty() )
       {
         text += QStringLiteral( "<b>%1</b>: %2" ).arg( tr( "Scope" ), formatScope( singleOpDetails.scope ) );
+        lastSingleOpScope = singleOpDetails.scope;
       }
       if ( !singleOpDetails.remarks.isEmpty() )
       {
         if ( !text.isEmpty() )
           text += QStringLiteral( "<br>" );
         text += QStringLiteral( "<b>%1</b>: %2" ).arg( tr( "Remarks" ), singleOpDetails.remarks );
+        lastSingleOpRemarks = singleOpDetails.remarks;
       }
       if ( !singleOpDetails.areaOfUse.isEmpty() )
       {
@@ -284,11 +288,11 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
     }
 
     QString text;
-    if ( !transform.scope.isEmpty() )
+    if ( !transform.scope.isEmpty() && transform.scope != lastSingleOpScope )
     {
       text += QStringLiteral( "<b>%1</b>: %2" ).arg( tr( "Scope" ), transform.scope );
     }
-    if ( !transform.remarks.isEmpty() )
+    if ( !transform.remarks.isEmpty() && transform.remarks != lastSingleOpRemarks )
     {
       if ( !text.isEmpty() )
         text += QStringLiteral( "<br>" );

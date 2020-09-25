@@ -28,10 +28,6 @@
 QgsAmsSourceSelect::QgsAmsSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsArcGisServiceSourceSelect( QStringLiteral( "ARCGISMAPSERVER" ), QgsArcGisServiceSourceSelect::MapService, parent, fl, widgetMode )
 {
-
-  // import/export of connections not supported yet
-  btnLoad->hide();
-  btnSave->hide();
 }
 
 bool QgsAmsSourceSelect::connectToService( const QgsOwsConnection &connection )

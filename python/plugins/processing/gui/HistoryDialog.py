@@ -120,7 +120,10 @@ class HistoryDialog(BASE, WIDGET):
         if isinstance(item, TreeLogEntryItem):
             if item.isAlg:
                 script = 'import processing\n'
-                script += 'from qgis.core import QgsProcessingOutputLayerDefinition, QgsProcessingFeatureSourceDefinition, QgsProperty, QgsCoordinateReferenceSystem\n'
+                # adding to this list? Also update the BatchPanel.py imports!!
+                script += 'from qgis.core import QgsProcessingOutputLayerDefinition, QgsProcessingFeatureSourceDefinition, QgsProperty, QgsCoordinateReferenceSystem, QgsFeatureRequest\n'
+                script += 'from qgis.PyQt.QtCore import QDate, QTime, QDateTime\n'
+                script += 'from qgis.PyQt.QtGui import QColor\n'
                 script += item.entry.text.replace('processing.run(', 'processing.execAlgorithmDialog(')
                 self.close()
                 exec(script)

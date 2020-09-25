@@ -27,6 +27,7 @@
 #include "qgsproperty.h"
 #include "qgsexpressioncontextutils.h"
 
+#include <algorithm>
 #include <QPainter>
 #include <QDomDocument>
 #include <QDomElement>
@@ -177,6 +178,19 @@ QgsSymbolLayer *QgsSimpleLineSymbolLayer::create( const QgsStringMap &props )
     l->setRingFilter( static_cast< RenderRingFilter>( props[QStringLiteral( "ring_filter" )].toInt() ) );
   }
 
+  if ( props.contains( QStringLiteral( "dash_pattern_offset" ) ) )
+    l->setDashPatternOffset( props[QStringLiteral( "dash_pattern_offset" )].toDouble() );
+  if ( props.contains( QStringLiteral( "dash_pattern_offset_unit" ) ) )
+    l->setDashPatternOffsetUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "dash_pattern_offset_unit" )] ) );
+  if ( props.contains( QStringLiteral( "dash_pattern_offset_map_unit_scale" ) ) )
+    l->setDashPatternOffsetMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "dash_pattern_offset_map_unit_scale" )] ) );
+
+  if ( props.contains( QStringLiteral( "align_dash_pattern" ) ) )
+    l->setAlignDashPattern( props[ QStringLiteral( "align_dash_pattern" )].toInt() );
+
+  if ( props.contains( QStringLiteral( "tweak_dash_pattern_on_corners" ) ) )
+    l->setTweakDashPatternOnCorners( props[ QStringLiteral( "tweak_dash_pattern_on_corners" )].toInt() );
+
   l->restoreOldDataDefinedProperties( props );
 
   return l;
@@ -195,21 +209,16 @@ void QgsSimpleLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
   mPen.setColor( penColor );
   double scaledWidth = context.renderContext().convertToPainterUnits( mWidth, mWidthUnit, mWidthMapUnitScale );
   mPen.setWidthF( scaledWidth );
+
+  //note that Qt seems to have issues with scaling dash patterns with very small pen widths.
+  //treating the pen as having no less than a 1 pixel size avoids the worst of these issues
+  const double dashWidthDiv = std::max( 1.0, scaledWidth );
   if ( mUseCustomDashPattern )
   {
     mPen.setStyle( Qt::CustomDashLine );
 
     //scale pattern vector
-    double dashWidthDiv = qgsDoubleNear( scaledWidth, 0 ) ? 1.0 : scaledWidth;
 
-    //fix dash pattern width in Qt 4.8
-    QStringList versionSplit = QString( qVersion() ).split( '.' );
-    if ( versionSplit.size() > 1
-         && versionSplit.at( 1 ).toInt() >= 8
-         && scaledWidth < 1.0 )
-    {
-      dashWidthDiv = 1.0;
-    }
     QVector<qreal> scaledVector;
     QVector<qreal>::const_iterator it = mCustomDashVector.constBegin();
     for ( ; it != mCustomDashVector.constEnd(); ++it )
@@ -223,6 +232,12 @@ void QgsSimpleLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
   {
     mPen.setStyle( mPenStyle );
   }
+
+  if ( mDashPatternOffset && mPen.style() != Qt::SolidLine )
+  {
+    mPen.setDashOffset( context.renderContext().convertToPainterUnits( mDashPatternOffset, mDashPatternOffsetUnit, mDashPatternOffsetMapUnitScale ) / dashWidthDiv ) ;
+  }
+
   mPen.setJoinStyle( mPenJoinStyle );
   mPen.setCapStyle( mPenCapStyle );
 
@@ -238,7 +253,7 @@ void QgsSimpleLineSymbolLayer::stopRender( QgsSymbolRenderContext &context )
   Q_UNUSED( context )
 }
 
-void QgsSimpleLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context )
+void QgsSimpleLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )
 {
   QPainter *p = context.renderContext().painter();
   if ( !p )
@@ -263,8 +278,7 @@ void QgsSimpleLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, QLi
         if ( rings )
         {
           //add polygon rings
-          QList<QPolygonF>::const_iterator it = rings->constBegin();
-          for ( ; it != rings->constEnd(); ++it )
+          for ( auto it = rings->constBegin(); it != rings->constEnd(); ++it )
           {
             QPolygonF ring = *it;
             clipPath.addPolygon( ring );
@@ -320,50 +334,62 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
   double offset = mOffset;
   applyDataDefinedSymbology( context, mPen, mSelPen, offset );
 
-  p->setPen( context.selected() ? mSelPen : mPen );
+  const QPen pen = context.selected() ? mSelPen : mPen;
   p->setBrush( Qt::NoBrush );
 
   // Disable 'Antialiasing' if the geometry was generalized in the current RenderContext (We known that it must have least #2 points).
+  std::unique_ptr< QgsScopedQPainterState > painterState;
   if ( points.size() <= 2 &&
        ( context.renderContext().vectorSimplifyMethod().simplifyHints() & QgsVectorSimplifyMethod::AntialiasingSimplification ) &&
        QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( points, context.renderContext().vectorSimplifyMethod().threshold() ) &&
        ( p->renderHints() & QPainter::Antialiasing ) )
   {
+    painterState = qgis::make_unique< QgsScopedQPainterState >( p );
     p->setRenderHint( QPainter::Antialiasing, false );
-#if 0
-    p->drawPolyline( points );
-#else
-    QPainterPath path;
-    path.addPolygon( points );
-    p->drawPath( path );
-#endif
-    p->setRenderHint( QPainter::Antialiasing, true );
-    return;
   }
+
+  const bool applyPatternTweaks = mAlignDashPattern
+                                  && ( pen.style() != Qt::SolidLine || !pen.dashPattern().empty() )
+                                  && pen.dashOffset() == 0;
 
   if ( qgsDoubleNear( offset, 0 ) )
   {
-#if 0
-    p->drawPolyline( points );
-#else
-    QPainterPath path;
-    path.addPolygon( points );
-    p->drawPath( path );
-#endif
+    if ( applyPatternTweaks )
+    {
+      drawPathWithDashPatternTweaks( p, points, pen );
+    }
+    else
+    {
+      p->setPen( pen );
+      QPainterPath path;
+      path.addPolygon( points );
+      p->drawPath( path );
+    }
   }
   else
   {
     double scaledOffset = context.renderContext().convertToPainterUnits( offset, mOffsetUnit, mOffsetMapUnitScale );
-    QList<QPolygonF> mline = ::offsetLine( points, scaledOffset, context.originalGeometryType() != QgsWkbTypes::UnknownGeometry ? context.originalGeometryType() : QgsWkbTypes::LineGeometry );
-    for ( int part = 0; part < mline.count(); ++part )
+    if ( mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits && context.renderContext().flags() & QgsRenderContext::RenderSymbolPreview )
     {
-#if 0
-      p->drawPolyline( mline );
-#else
-      QPainterPath path;
-      path.addPolygon( mline[ part ] );
-      p->drawPath( path );
-#endif
+      // rendering for symbol previews -- a size in meters in map units can't be calculated, so treat the size as millimeters
+      // and clamp it to a reasonable range. It's the best we can do in this situation!
+      scaledOffset = std::min( std::max( context.renderContext().convertToPainterUnits( offset, QgsUnitTypes::RenderMillimeters ), 3.0 ), 100.0 );
+    }
+
+    QList<QPolygonF> mline = ::offsetLine( points, scaledOffset, context.originalGeometryType() != QgsWkbTypes::UnknownGeometry ? context.originalGeometryType() : QgsWkbTypes::LineGeometry );
+    for ( const QPolygonF &part : mline )
+    {
+      if ( applyPatternTweaks )
+      {
+        drawPathWithDashPatternTweaks( p, part, pen );
+      }
+      else
+      {
+        p->setPen( pen );
+        QPainterPath path;
+        path.addPolygon( part );
+        p->drawPath( path );
+      }
     }
   }
 }
@@ -385,8 +411,13 @@ QgsStringMap QgsSimpleLineSymbolLayer::properties() const
   map[QStringLiteral( "customdash" )] = QgsSymbolLayerUtils::encodeRealVector( mCustomDashVector );
   map[QStringLiteral( "customdash_unit" )] = QgsUnitTypes::encodeUnit( mCustomDashPatternUnit );
   map[QStringLiteral( "customdash_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mCustomDashPatternMapUnitScale );
+  map[QStringLiteral( "dash_pattern_offset" )] = QString::number( mDashPatternOffset );
+  map[QStringLiteral( "dash_pattern_offset_unit" )] = QgsUnitTypes::encodeUnit( mDashPatternOffsetUnit );
+  map[QStringLiteral( "dash_pattern_offset_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mDashPatternOffsetMapUnitScale );
   map[QStringLiteral( "draw_inside_polygon" )] = ( mDrawInsidePolygon ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   map[QStringLiteral( "ring_filter" )] = QString::number( static_cast< int >( mRingFilter ) );
+  map[QStringLiteral( "align_dash_pattern" )] = mAlignDashPattern ? QStringLiteral( "1" ) : QStringLiteral( "0" );
+  map[QStringLiteral( "tweak_dash_pattern_on_corners" )] = mPatternCartographicTweakOnSharpCorners ? QStringLiteral( "1" ) : QStringLiteral( "0" );
   return map;
 }
 
@@ -406,6 +437,12 @@ QgsSimpleLineSymbolLayer *QgsSimpleLineSymbolLayer::clone() const
   l->setCustomDashVector( mCustomDashVector );
   l->setDrawInsidePolygon( mDrawInsidePolygon );
   l->setRingFilter( mRingFilter );
+  l->setDashPatternOffset( mDashPatternOffset );
+  l->setDashPatternOffsetUnit( mDashPatternOffsetUnit );
+  l->setDashPatternOffsetMapUnitScale( mDashPatternOffsetMapUnitScale );
+  l->setAlignDashPattern( mAlignDashPattern );
+  l->setTweakDashPatternOnCorners( mPatternCartographicTweakOnSharpCorners );
+
   copyDataDefinedProperties( l );
   copyPaintEffect( l );
   return l;
@@ -537,26 +574,13 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   }
 
   //dash dot vector
+
+  //note that Qt seems to have issues with scaling dash patterns with very small pen widths.
+  //treating the pen as having no less than a 1 pixel size avoids the worst of these issues
+  const double dashWidthDiv = std::max( hasStrokeWidthExpression ? pen.widthF() : mPen.widthF(), 1.0 );
+
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyCustomDash ) )
   {
-    double scaledWidth = context.renderContext().convertToPainterUnits( mWidth, mWidthUnit, mWidthMapUnitScale );
-    double dashWidthDiv = mPen.widthF();
-
-    if ( hasStrokeWidthExpression )
-    {
-      dashWidthDiv = pen.widthF();
-      scaledWidth = pen.widthF();
-    }
-
-    //fix dash pattern width in Qt 4.8
-    QStringList versionSplit = QString( qVersion() ).split( '.' );
-    if ( versionSplit.size() > 1
-         && versionSplit.at( 1 ).toInt() >= 8
-         && scaledWidth < 1.0 )
-    {
-      dashWidthDiv = 1.0;
-    }
-
     QVector<qreal> dashVector;
     QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyCustomDash, context.renderContext().expressionContext() );
     if ( exprVal.isValid() )
@@ -569,6 +593,15 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
       }
       pen.setDashPattern( dashVector );
     }
+  }
+
+  // dash pattern offset
+  double patternOffset = mDashPatternOffset;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyDashPatternOffset ) && pen.style() != Qt::SolidLine )
+  {
+    context.setOriginalValueVariable( mDashPatternOffset );
+    patternOffset = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyDashPatternOffset, context.renderContext().expressionContext(), mDashPatternOffset );
+    pen.setDashOffset( context.renderContext().convertToPainterUnits( patternOffset, mDashPatternOffsetUnit, mDashPatternOffsetMapUnitScale ) / dashWidthDiv );
   }
 
   //line style
@@ -596,6 +629,296 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
     QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyCapStyle, context.renderContext().expressionContext() );
     if ( exprVal.isValid() )
       pen.setCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( exprVal.toString() ) );
+  }
+}
+
+void QgsSimpleLineSymbolLayer::drawPathWithDashPatternTweaks( QPainter *painter, const QPolygonF &points, QPen pen ) const
+{
+  if ( pen.dashPattern().empty() || points.size() < 2 )
+    return;
+
+  QVector< qreal > sourcePattern = pen.dashPattern();
+  const double dashWidthDiv = std::max( 1.0001, pen.widthF() );
+  // back to painter units
+  for ( int i = 0; i < sourcePattern.size(); ++ i )
+    sourcePattern[i] *= pen.widthF();
+
+  if ( pen.widthF() <= 1.0 )
+    pen.setWidthF( 1.0001 );
+
+  QVector< qreal > buffer;
+  QPolygonF bufferedPoints;
+  QPolygonF previousSegmentBuffer;
+  // we iterate through the line points, building a custom dash pattern and adding it to the buffer
+  // as soon as we hit a sharp bend, we scale the buffered pattern in order to nicely place a dash component over the bend
+  // and then append the buffer to the output pattern.
+
+  auto ptIt = points.constBegin();
+  double totalBufferLength = 0;
+  int patternIndex = 0;
+  double currentRemainingDashLength = 0;
+  double currentRemainingGapLength = 0;
+
+  auto compressPattern = []( const QVector< qreal > &buffer ) -> QVector< qreal >
+  {
+    QVector< qreal > result;
+    result.reserve( buffer.size() );
+    for ( auto it = buffer.begin(); it != buffer.end(); )
+    {
+      qreal dash = *it++;
+      qreal gap = *it++;
+      while ( dash == 0 && !result.empty() )
+      {
+        result.last() += gap;
+
+        if ( it == buffer.end() )
+          return result;
+        dash = *it++;
+        gap = *it++;
+      }
+      while ( gap == 0 && it != buffer.end() )
+      {
+        dash += *it++;
+        gap = *it++;
+      }
+      result << dash << gap;
+    }
+    return result;
+  };
+
+  double currentBufferLineLength = 0;
+  auto flushBuffer = [pen, painter, &buffer, &bufferedPoints, &previousSegmentBuffer, &currentRemainingDashLength, &currentRemainingGapLength,  &currentBufferLineLength, &totalBufferLength,
+                           dashWidthDiv, &compressPattern]( QPointF * nextPoint )
+  {
+    if ( buffer.empty() || bufferedPoints.size() < 2 )
+    {
+      return;
+    }
+
+    if ( currentRemainingDashLength )
+    {
+      // ended midway through a dash -- we want to finish this off
+      buffer << currentRemainingDashLength << 0.0;
+      totalBufferLength += currentRemainingDashLength;
+    }
+    QVector< qreal > compressed = compressPattern( buffer );
+    if ( !currentRemainingDashLength )
+    {
+      // ended midway through a gap -- we don't want this, we want to end at previous dash
+      totalBufferLength -= compressed.last();
+      compressed.last() = 0;
+    }
+
+    // rescale buffer for final bit of line -- we want to end at the end of a dash, not a gap
+    const double scaleFactor = currentBufferLineLength / totalBufferLength;
+
+    bool shouldFlushPreviousSegmentBuffer = false;
+
+    if ( !previousSegmentBuffer.empty() )
+    {
+      // add first dash from current buffer
+      QPolygonF firstDashSubstring = QgsSymbolLayerUtils::polylineSubstring( bufferedPoints, 0, compressed.first() * scaleFactor );
+      if ( !firstDashSubstring.empty() )
+        QgsSymbolLayerUtils::appendPolyline( previousSegmentBuffer, firstDashSubstring );
+
+      // then we skip over the first dash and gap for this segment
+      bufferedPoints = QgsSymbolLayerUtils::polylineSubstring( bufferedPoints, ( compressed.first() + compressed.at( 1 ) ) * scaleFactor, 0 );
+
+      compressed = compressed.mid( 2 );
+      shouldFlushPreviousSegmentBuffer = !compressed.empty();
+    }
+
+    if ( !previousSegmentBuffer.empty() && ( shouldFlushPreviousSegmentBuffer || !nextPoint ) )
+    {
+      QPen adjustedPen = pen;
+      adjustedPen.setStyle( Qt::SolidLine );
+      painter->setPen( adjustedPen );
+      QPainterPath path;
+      path.addPolygon( previousSegmentBuffer );
+      painter->drawPath( path );
+      previousSegmentBuffer.clear();
+    }
+
+    double finalDash = 0;
+    if ( nextPoint )
+    {
+      // sharp bend:
+      // 1. rewind buffered points line by final dash and gap length
+      // (later) 2. draw the bend with a solid line of length 2 * final dash size
+
+      if ( !compressed.empty() )
+      {
+        finalDash = compressed.at( compressed.size() - 2 );
+        const double finalGap = compressed.size() > 2 ? compressed.at( compressed.size() - 3 ) : 0;
+
+        const QPolygonF thisPoints = bufferedPoints;
+        bufferedPoints = QgsSymbolLayerUtils::polylineSubstring( thisPoints, 0, -( finalDash + finalGap ) * scaleFactor );
+        previousSegmentBuffer = QgsSymbolLayerUtils::polylineSubstring( thisPoints, - finalDash * scaleFactor, 0 );
+      }
+      else
+      {
+        previousSegmentBuffer << bufferedPoints;
+      }
+    }
+
+    currentBufferLineLength = 0;
+    currentRemainingDashLength = 0;
+    currentRemainingGapLength = 0;
+    totalBufferLength = 0;
+    buffer.clear();
+
+    if ( !bufferedPoints.empty() && ( !compressed.empty() || !nextPoint ) )
+    {
+      QPen adjustedPen = pen;
+      if ( !compressed.empty() )
+      {
+        // maximum size of dash pattern is 32 elements
+        compressed = compressed.mid( 0, 32 );
+        std::for_each( compressed.begin(), compressed.end(), [scaleFactor, dashWidthDiv]( qreal & element ) { element *= scaleFactor / dashWidthDiv; } );
+        adjustedPen.setDashPattern( compressed );
+      }
+      else
+      {
+        adjustedPen.setStyle( Qt::SolidLine );
+      }
+
+      painter->setPen( adjustedPen );
+      QPainterPath path;
+      path.addPolygon( bufferedPoints );
+      painter->drawPath( path );
+    }
+
+    bufferedPoints.clear();
+  };
+
+  QPointF p1;
+  QPointF p2 = *ptIt;
+  ptIt++;
+  bufferedPoints << p2;
+  for ( ; ptIt != points.constEnd(); ++ptIt )
+  {
+    p1 = *ptIt;
+    if ( qgsDoubleNear( p1.y(), p2.y() ) && qgsDoubleNear( p1.x(), p2.x() ) )
+    {
+      continue;
+    }
+
+    double remainingSegmentDistance = std::sqrt( std::pow( p2.x() - p1.x(), 2.0 ) + std::pow( p2.y() - p1.y(), 2.0 ) );
+    currentBufferLineLength += remainingSegmentDistance;
+    while ( true )
+    {
+      // handle currentRemainingDashLength/currentRemainingGapLength
+      if ( currentRemainingDashLength > 0 )
+      {
+        // bit more of dash to insert
+        if ( remainingSegmentDistance >= currentRemainingDashLength )
+        {
+          // all of dash fits in
+          buffer << currentRemainingDashLength << 0.0;
+          totalBufferLength += currentRemainingDashLength;
+          remainingSegmentDistance -= currentRemainingDashLength;
+          patternIndex++;
+          currentRemainingDashLength = 0.0;
+          currentRemainingGapLength = sourcePattern.at( patternIndex );
+        }
+        else
+        {
+          // only part of remaining dash fits in
+          buffer << remainingSegmentDistance << 0.0;
+          totalBufferLength += remainingSegmentDistance;
+          currentRemainingDashLength -= remainingSegmentDistance;
+          break;
+        }
+      }
+      if ( currentRemainingGapLength > 0 )
+      {
+        // bit more of gap to insert
+        if ( remainingSegmentDistance >= currentRemainingGapLength )
+        {
+          // all of gap fits in
+          buffer << 0.0 << currentRemainingGapLength;
+          totalBufferLength += currentRemainingGapLength;
+          remainingSegmentDistance -= currentRemainingGapLength;
+          currentRemainingGapLength = 0.0;
+          patternIndex++;
+        }
+        else
+        {
+          // only part of remaining gap fits in
+          buffer << 0.0 << remainingSegmentDistance;
+          totalBufferLength += remainingSegmentDistance;
+          currentRemainingGapLength -= remainingSegmentDistance;
+          break;
+        }
+      }
+
+      if ( patternIndex >= sourcePattern.size() )
+        patternIndex = 0;
+
+      const double nextPatternDashLength = sourcePattern.at( patternIndex );
+      const double nextPatternGapLength = sourcePattern.at( patternIndex + 1 );
+      if ( nextPatternDashLength + nextPatternGapLength <= remainingSegmentDistance )
+      {
+        buffer << nextPatternDashLength << nextPatternGapLength;
+        remainingSegmentDistance -= nextPatternDashLength + nextPatternGapLength;
+        totalBufferLength += nextPatternDashLength + nextPatternGapLength;
+        patternIndex += 2;
+      }
+      else if ( nextPatternDashLength <= remainingSegmentDistance )
+      {
+        // can fit in "dash", but not "gap"
+        buffer << nextPatternDashLength << remainingSegmentDistance - nextPatternDashLength;
+        totalBufferLength += remainingSegmentDistance;
+        currentRemainingGapLength = nextPatternGapLength - ( remainingSegmentDistance - nextPatternDashLength );
+        currentRemainingDashLength = 0;
+        patternIndex++;
+        break;
+      }
+      else
+      {
+        // can't fit in "dash"
+        buffer << remainingSegmentDistance << 0.0;
+        totalBufferLength += remainingSegmentDistance;
+        currentRemainingGapLength = 0;
+        currentRemainingDashLength = nextPatternDashLength - remainingSegmentDistance;
+        break;
+      }
+    }
+
+    bufferedPoints << p1;
+    if ( mPatternCartographicTweakOnSharpCorners && ptIt + 1 != points.constEnd() )
+    {
+      QPointF nextPoint = *( ptIt + 1 );
+
+      // extreme angles form more than 45 degree angle at a node
+      if ( QgsSymbolLayerUtils::isSharpCorner( p2, p1, nextPoint ) )
+      {
+        // extreme angle. Rescale buffer and flush
+        flushBuffer( &nextPoint );
+        bufferedPoints << p1;
+        // restart the line with the full length of the most recent dash element -- see
+        // "Cartographic Generalization" (Swiss Society of Cartography) p33, example #8
+        if ( patternIndex % 2 == 1 )
+        {
+          patternIndex--;
+        }
+        currentRemainingDashLength = sourcePattern.at( patternIndex );
+      }
+    }
+
+    p2 = p1;
+  }
+
+  flushBuffer( nullptr );
+  if ( !previousSegmentBuffer.empty() )
+  {
+    QPen adjustedPen = pen;
+    adjustedPen.setStyle( Qt::SolidLine );
+    painter->setPen( adjustedPen );
+    QPainterPath path;
+    path.addPolygon( previousSegmentBuffer );
+    painter->drawPath( path );
+    previousSegmentBuffer.clear();
   }
 }
 
@@ -649,6 +972,26 @@ QColor QgsSimpleLineSymbolLayer::dxfColor( QgsSymbolRenderContext &context ) con
     return mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyStrokeColor, context.renderContext().expressionContext(), mColor );
   }
   return mColor;
+}
+
+bool QgsSimpleLineSymbolLayer::alignDashPattern() const
+{
+  return mAlignDashPattern;
+}
+
+void QgsSimpleLineSymbolLayer::setAlignDashPattern( bool enabled )
+{
+  mAlignDashPattern = enabled;
+}
+
+bool QgsSimpleLineSymbolLayer::tweakDashPatternOnCorners() const
+{
+  return mPatternCartographicTweakOnSharpCorners;
+}
+
+void QgsSimpleLineSymbolLayer::setTweakDashPatternOnCorners( bool enabled )
+{
+  mPatternCartographicTweakOnSharpCorners = enabled;
 }
 
 double QgsSimpleLineSymbolLayer::dxfOffset( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const
@@ -802,8 +1145,7 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &points, Q
     }
   }
 
-
-  context.renderContext().painter()->save();
+  QgsScopedQPainterState painterState( context.renderContext().painter() );
 
   double averageOver = mAverageAngleLength;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyAverageAngleLength ) )
@@ -863,11 +1205,9 @@ void QgsTemplatedLineSymbolLayerBase::renderPolyline( const QPolygonF &points, Q
       }
     }
   }
-
-  context.renderContext().painter()->restore();
 }
 
-void QgsTemplatedLineSymbolLayerBase::renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context )
+void QgsTemplatedLineSymbolLayerBase::renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )
 {
   const QgsCurvePolygon *curvePolygon = dynamic_cast<const QgsCurvePolygon *>( context.renderContext().geometry() );
 
@@ -1110,12 +1450,25 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineInterval( const QPolygonF &p
     offsetAlongLine = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyOffsetAlongLine, context.renderContext().expressionContext(), mOffsetAlongLine );
   }
 
-  const double painterUnitInterval = rc.convertToPainterUnits( interval, intervalUnit(), intervalMapUnitScale() );
+  double painterUnitInterval = rc.convertToPainterUnits( interval, intervalUnit(), intervalMapUnitScale() );
+  if ( intervalUnit() == QgsUnitTypes::RenderMetersInMapUnits && rc.flags() & QgsRenderContext::RenderSymbolPreview )
+  {
+    // rendering for symbol previews -- an interval in meters in map units can't be calculated, so treat the size as millimeters
+    // and clamp it to a reasonable range. It's the best we can do in this situation!
+    painterUnitInterval = std::min( std::max( rc.convertToPainterUnits( interval, QgsUnitTypes::RenderMillimeters ), 10.0 ), 100.0 );
+  }
 
   if ( painterUnitInterval < 0 )
     return;
 
-  const double painterUnitOffsetAlongLine = rc.convertToPainterUnits( offsetAlongLine, offsetAlongLineUnit(), offsetAlongLineMapUnitScale() );
+  double painterUnitOffsetAlongLine = rc.convertToPainterUnits( offsetAlongLine, offsetAlongLineUnit(), offsetAlongLineMapUnitScale() );
+  if ( offsetAlongLineUnit() == QgsUnitTypes::RenderMetersInMapUnits && rc.flags() & QgsRenderContext::RenderSymbolPreview )
+  {
+    // rendering for symbol previews -- an offset in meters in map units can't be calculated, so treat the size as millimeters
+    // and clamp it to a reasonable range. It's the best we can do in this situation!
+    painterUnitOffsetAlongLine = std::min( std::max( rc.convertToPainterUnits( offsetAlongLine, QgsUnitTypes::RenderMillimeters ), 3.0 ), 100.0 );
+  }
+
   lengthLeft = painterUnitInterval - painterUnitOffsetAlongLine;
 
   if ( averageOver > 0 && !qgsDoubleNear( averageOver, 0.0 ) )
@@ -1703,12 +2056,14 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineCentral( const QPolygonF &po
     }
 
     // draw the marker
-    double origAngle = symbolAngle();
+    // rotate marker (if desired)
     if ( rotateSymbols() )
-      setSymbolAngle( origAngle + thisSymbolAngle * 180 / M_PI );
+    {
+      setSymbolLineAngle( thisSymbolAngle * 180 / M_PI );
+    }
+
     renderSymbol( pt, context.feature(), context.renderContext(), -1, context.selected() );
-    if ( rotateSymbols() )
-      setSymbolAngle( origAngle );
+
   }
 }
 

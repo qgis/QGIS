@@ -20,6 +20,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsPointXY,
                        QgsField)
 from qgis.testing import start_app, unittest
+
 start_app()
 
 
@@ -290,7 +291,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         self.assertEqual(layer.getFeature(2).geometry().constGet().x(), 2)
 
         # apply second change to same feature
-        layer.beginEditCommand('second change') # need to use an edit command to avoid the two geometry changes being merged
+        layer.beginEditCommand('second change')  # need to use an edit command to avoid the two geometry changes being merged
         layer.changeGeometry(1, QgsGeometry.fromPointXY(QgsPointXY(100, 200)))
         layer.endEditCommand()
 

@@ -542,6 +542,7 @@ void QgsMetadataWidget::setUiFromMetadata()
     mRightsModel->setStringList( layerMetadata->rights() );
 
     // Constraints
+    mConstraintsModel->clear();
     const QList<QgsLayerMetadata::Constraint> &constraints = layerMetadata->constraints();
     for ( const QgsLayerMetadata::Constraint &constraint : constraints )
     {
@@ -797,9 +798,9 @@ bool QgsMetadataWidget::checkMetadata()
     for ( const QgsAbstractMetadataBaseValidator::ValidationResult &result : qgis::as_const( validationResults ) )
     {
       errors += QLatin1String( "<b>" ) % result.section;
-      if ( ! result.identifier.isNull() )
+      if ( ! result._identifier().isNull() )
       {
-        errors += QLatin1String( " " ) % QVariant( result.identifier.toInt() + 1 ).toString();
+        errors += QLatin1String( " " ) % QVariant( result._identifier().toInt() + 1 ).toString();
       }
       errors += QLatin1String( "</b>: " ) % result.note % QLatin1String( "<br />" );
     }

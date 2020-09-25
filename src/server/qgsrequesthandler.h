@@ -23,17 +23,12 @@
 #include <QMap>
 #include "qgis_sip.h"
 #include <QString>
-#include <QPair>
-#include <QColor>
 
 #include "qgis_server.h"
 
 class QgsServerException;
 class QgsServerRequest;
 class QgsServerResponse;
-
-typedef QList< QPair<QRgb, int> > QgsColorBox; //Color / number of pixels
-typedef QMultiMap< int, QgsColorBox > QgsColorBoxMap; // sum of pixels / color box
 
 /**
  * \ingroup server
@@ -107,6 +102,12 @@ class SERVER_EXPORT QgsRequestHandler
     //! Returns the request url
     QString url() const;
 
+    /**
+     * Returns the path component of the request URL
+     * \since QGIS 3.16
+     */
+    QString path() const;
+
     //! Sets response http status code
     void setStatusCode( int code );
 
@@ -142,6 +143,9 @@ class SERVER_EXPORT QgsRequestHandler
     bool headersSent() const;
 
   private:
+#ifdef SIP_RUN
+    QgsRequestHandler &operator=( const QgsRequestHandler & );
+#endif
 
     void setupParameters();
 

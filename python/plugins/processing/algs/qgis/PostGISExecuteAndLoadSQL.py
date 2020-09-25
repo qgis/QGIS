@@ -32,13 +32,13 @@ from qgis.core import (QgsProcessingException,
                        QgsProcessingContext,
                        QgsProcessingParameterProviderConnection,
                        QgsProviderRegistry,
-                       QgsProviderConnectionException
+                       QgsProviderConnectionException,
+                       QgsProcessingAlgorithm
                        )
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class PostGISExecuteAndLoadSQL(QgisAlgorithm):
-
     DATABASE = 'DATABASE'
     SQL = 'SQL'
     OUTPUT = 'OUTPUT'
@@ -53,6 +53,9 @@ class PostGISExecuteAndLoadSQL(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNotAvailableInStandaloneTool | QgsProcessingAlgorithm.FlagRequiresProject
 
     def initAlgorithm(self, config=None):
         db_param = QgsProcessingParameterProviderConnection(

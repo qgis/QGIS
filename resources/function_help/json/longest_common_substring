@@ -1,6 +1,7 @@
 {
   "name": "longest_common_substring",
   "type": "function",
+  "groups": ["Fuzzy Matching"],
   "description": "Returns the longest common substring between two strings. This substring is the longest string that is a substring of the two input strings. For example, the longest common substring of \"ABABC\" and \"BABCA\" is \"ABC\". The substring is case sensitive.",
   "arguments": [
 	{"arg":"string1","description":"a string"},

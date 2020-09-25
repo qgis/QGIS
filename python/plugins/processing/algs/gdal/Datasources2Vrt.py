@@ -22,13 +22,16 @@ __date__ = 'May 2015'
 __copyright__ = '(C) 2015, Luigi Pirelli'
 
 import html
+import pathlib
 
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsProcessing,
                        QgsProcessingException,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterVectorDestination,
-                       QgsProcessingOutputString
+                       QgsProcessingOutputString,
+                       QgsProcessingParameters
                        )
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -82,11 +85,20 @@ class Datasources2Vrt(GdalAlgorithm):
                 copy = ParameterVectorVrtDestination(self.name(), self.description())
                 return copy
 
-            def type(self):
-                return 'vrt_vector_destination'
-
             def defaultFileExtension(self):
                 return 'vrt'
+
+            def createFileFilter(self):
+                return '{} (*.vrt *.VRT)'.format(QCoreApplication.translate("GdalAlgorithm", 'VRT files'))
+
+            def supportedOutputRasterLayerExtensions(self):
+                return ['vrt']
+
+            def isSupportedOutputValue(self, value, context):
+                output_path = QgsProcessingParameters.parameterAsOutputLayer(self, value, context)
+                if pathlib.Path(output_path).suffix.lower() != '.vrt':
+                    return False, QCoreApplication.translate("GdalAlgorithm", 'Output filename must use a .vrt extension')
+                return True, ''
 
         self.addParameter(ParameterVectorVrtDestination(self.OUTPUT,
                                                         self.tr('Virtual vector')))

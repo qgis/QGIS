@@ -77,13 +77,13 @@ to generate the surface. The output path and file format are also required.
     Result run();
 %Docstring
 Runs the KDE calculation across the whole layer at once. Either call this method, or manually
-call run(), addFeature() and finalise() separately.
+call :py:func:`~QgsKernelDensityEstimation.run`, :py:func:`~QgsKernelDensityEstimation.addFeature` and :py:func:`~QgsKernelDensityEstimation.finalise` separately.
 %End
 
     Result prepare();
 %Docstring
 Prepares the output file for writing and setups up the surface calculation. This must be called
-before adding features via addFeature().
+before adding features via :py:func:`~QgsKernelDensityEstimation.addFeature`.
 
 .. seealso:: :py:func:`addFeature`
 
@@ -92,7 +92,7 @@ before adding features via addFeature().
 
     Result addFeature( const QgsFeature &feature );
 %Docstring
-Adds a single feature to the KDE surface. prepare() must be called before adding features.
+Adds a single feature to the KDE surface. :py:func:`~QgsKernelDensityEstimation.prepare` must be called before adding features.
 
 .. seealso:: :py:func:`prepare`
 
@@ -101,7 +101,7 @@ Adds a single feature to the KDE surface. prepare() must be called before adding
 
     Result finalise();
 %Docstring
-Finalises the output file. Must be called after adding all features via addFeature().
+Finalises the output file. Must be called after adding all features via :py:func:`~QgsKernelDensityEstimation.addFeature`.
 
 .. seealso:: :py:func:`prepare`
 

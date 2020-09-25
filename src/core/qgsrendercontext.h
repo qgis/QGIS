@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include <QColor>
+#include <QPainter>
 #include <memory>
 
 #include "qgscoordinatetransform.h"
@@ -42,8 +43,8 @@ class QgsLabelingEngine;
 class QgsMapSettings;
 class QgsRenderedFeatureHandlerInterface;
 class QgsSymbolLayer;
-
 class QgsMaskIdProvider;
+class QgsMapClippingRegion;
 
 
 /**
@@ -57,6 +58,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 {
   public:
     QgsRenderContext();
+    ~QgsRenderContext() override;
 
     QgsRenderContext( const QgsRenderContext &rh );
     QgsRenderContext &operator=( const QgsRenderContext &rh );
@@ -78,6 +80,11 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
       RenderPartialOutput      = 0x100, //!< Whether to make extra effort to update map image with partially rendered layers (better for interactive map canvas). Added in QGIS 3.0
       RenderPreviewJob         = 0x200, //!< Render is a 'canvas preview' render, and shortcuts should be taken to ensure fast rendering
       RenderBlocking           = 0x400, //!< Render and load remote sources in the same thread to ensure rendering remote sources (svg and images). WARNING: this flag must NEVER be used from GUI based applications (like the main QGIS application) or crashes will result. Only for use in external scripts or QGIS server.
+      RenderSymbolPreview      = 0x800, //!< The render is for a symbol preview only and map based properties may not be available, so care should be taken to handle map unit based sizes in an appropriate way.
+      LosslessImageRendering   = 0x1000, //!< Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF). This flag only works with builds based on Qt 5.13 or later.
+      ApplyScalingWorkaroundForTextRendering = 0x2000, //!< Whether a scaling workaround designed to stablise the rendering of small font sizes (or for painters scaled out by a large amount) when rendering text. Generally this is recommended, but it may incur some performance cost.
+      Render3DMap              = 0x4000, //!< Render is for a 3D map
+      ApplyClipAfterReprojection = 0x8000, //!< Feature geometry clipping to mapExtent() must be performed after the geometries are transformed using coordinateTransform(). Usually feature geometry clipping occurs using the extent() in the layer's CRS prior to geometry transformation, but in some cases when extent() could not be accurately calculated it is necessary to clip geometries to mapExtent() AFTER transforming them using coordinateTransform().
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -180,6 +187,17 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     */
     const QPainter *painter() const { return mPainter; }
 #endif
+
+    /**
+     * Sets relevant flags on a destination \a painter, using the flags and settings
+     * currently defined for the render context.
+     *
+     * If no \a painter is specified, then the flags will be applied to the render
+     * context's painter().
+     *
+     * \since QGIS 3.16
+     */
+    void setPainterFlagsUsingContext( QPainter *painter = nullptr ) const;
 
     /**
      * Returns a mask QPainter for the render operation.
@@ -784,6 +802,60 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      */
     void clearCustomRenderingFlag( const QString &flag ) { mCustomRenderingFlags.remove( flag ); }
 
+    /**
+     * Returns the list of clipping regions to apply during the render.
+     *
+     * These regions are always in the final destination CRS for the map.
+     *
+     * \since QGIS 3.16
+     */
+    QList< QgsMapClippingRegion > clippingRegions() const;
+
+    /**
+     * Returns the geometry to use to clip features at render time.
+     *
+     * When vector features are rendered, they should be clipped to this geometry.
+     *
+     * \warning The clipping must take effect for rendering the feature's symbol only,
+     * and should never be applied directly to the feature being rendered. Doing so would
+     * impact the results of rendering rules which rely on feature geometry, such as
+     * a rule-based renderer using the feature's area.
+     *
+     * \see setFeatureClipGeometry()
+     *
+     * \since QGIS 3.16
+     */
+    QgsGeometry featureClipGeometry() const;
+
+    /**
+     * Sets a \a geometry to use to clip features at render time.
+     *
+     * \note This is not usually set directly, but rather specified by calling QgsMapSettings:addClippingRegion()
+     * prior to constructing a QgsRenderContext.
+     *
+     * \see featureClipGeometry()
+     * \since QGIS 3.16
+     */
+    void setFeatureClipGeometry( const QgsGeometry &geometry );
+
+    /**
+     * Returns the texture origin, which should be used as a brush transform when
+     * rendering using QBrush objects.
+     *
+     * \see setTextureOrigin()
+     * \since QGIS 3.16
+     */
+    QPointF textureOrigin() const;
+
+    /**
+     * Sets the texture \a origin, which should be used as a brush transform when
+     * rendering using QBrush objects.
+     *
+     * \see textureOrigin()
+     * \since QGIS 3.16
+     */
+    void setTextureOrigin( const QPointF &origin );
+
   private:
 
     Flags mFlags;
@@ -875,11 +947,203 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 
     QSet<const QgsSymbolLayer *> mDisabledSymbolLayers;
 
+    QList< QgsMapClippingRegion > mClippingRegions;
+    QgsGeometry mFeatureClipGeometry;
+
+    QPointF mTextureOrigin;
+
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;
 #endif
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsRenderContext::Flags )
+
+#ifndef SIP_RUN
+
+/**
+ * \ingroup core
+ *
+ * Scoped object for temporary replacement of a QgsRenderContext destination painter.
+ *
+ * Temporarily swaps out the destination QPainter object for a QgsRenderContext for the lifetime of the object,
+ * before replacing it to the original painter on destruction.
+ *
+ * \note Not available in Python bindings
+ * \since QGIS 3.14
+ */
+class QgsScopedRenderContextPainterSwap
+{
+  public:
+
+    /**
+     * Constructor for QgsScopedRenderContextPainterSwap.
+     *
+     * Swaps the destination painter for \a context (set QgsRenderContext::setPainter() ) to
+     * \a temporaryPainter.
+     */
+    QgsScopedRenderContextPainterSwap( QgsRenderContext &context, QPainter *temporaryPainter )
+      : mContext( context )
+      , mPreviousPainter( context.painter() )
+    {
+      mContext.setPainter( temporaryPainter );
+    }
+
+    /**
+     * Resets the destination painter for the context back to the original QPainter object.
+     */
+    void reset()
+    {
+      if ( !mReleased )
+      {
+        mContext.setPainter( mPreviousPainter );
+        mReleased = true;
+      }
+    }
+
+    /**
+     * Returns the destination painter for the context back to the original QPainter object.
+     */
+    ~QgsScopedRenderContextPainterSwap()
+    {
+      reset();
+    }
+
+  private:
+
+    QgsRenderContext &mContext;
+    QPainter *mPreviousPainter = nullptr;
+    bool mReleased = false;
+};
+
+
+/**
+ * \ingroup core
+ *
+ * Scoped object for temporary scaling of a QgsRenderContext for millimeter based rendering.
+ *
+ * Temporarily scales the destination QPainter for a QgsRenderContext to use millimeter based units for the lifetime of the object,
+ * before returning it to pixel based units on destruction.
+ *
+ * \note Not available in Python bindings
+ * \since QGIS 3.14
+ */
+class QgsScopedRenderContextScaleToMm
+{
+  public:
+
+    /**
+     * Constructor for QgsScopedRenderContextScaleToMm.
+     *
+     * Rescales the destination painter (see QgsRenderContext::painter() ) to use millimeter based units.
+     *
+     * \warning It is the caller's responsibility to ensure that \a context is initially scaled to use pixel based units!
+     */
+    QgsScopedRenderContextScaleToMm( QgsRenderContext &context )
+      : mContext( context )
+    {
+      if ( mContext.painter() )
+        mContext.painter()->scale( mContext.scaleFactor(), mContext.scaleFactor() );
+    }
+
+    /**
+     * Returns the destination painter back to pixel based units.
+     */
+    ~QgsScopedRenderContextScaleToMm()
+    {
+      if ( mContext.painter() )
+        mContext.painter()->scale( 1.0 / mContext.scaleFactor(), 1.0 / mContext.scaleFactor() );
+    }
+
+  private:
+
+    QgsRenderContext &mContext;
+};
+
+
+/**
+ * \ingroup core
+ *
+ * Scoped object for temporary scaling of a QgsRenderContext for pixel based rendering.
+ *
+ * Temporarily scales the destination QPainter for a QgsRenderContext to use pixel based units for the lifetime of the object,
+ * before returning it to millimeter based units on destruction.
+ *
+ * \note Not available in Python bindings
+ * \since QGIS 3.14
+ */
+class QgsScopedRenderContextScaleToPixels
+{
+  public:
+
+    /**
+     * Constructor for QgsScopedRenderContextScaleToPixels.
+     *
+     * Rescales the destination painter (see QgsRenderContext::painter() ) to use pixel based units.
+     *
+     * \warning It is the caller's responsibility to ensure that \a context is initially scaled to use millimeter based units!
+     */
+    QgsScopedRenderContextScaleToPixels( QgsRenderContext &context )
+      : mContext( context )
+    {
+      if ( mContext.painter() )
+        mContext.painter()->scale( 1.0 / mContext.scaleFactor(), 1.0 / mContext.scaleFactor() );
+    }
+
+    /**
+     * Returns the destination painter back to millimeter based units.
+     */
+    ~QgsScopedRenderContextScaleToPixels()
+    {
+      if ( mContext.painter() )
+        mContext.painter()->scale( mContext.scaleFactor(), mContext.scaleFactor() );
+    }
+
+  private:
+
+    QgsRenderContext &mContext;
+};
+
+
+/**
+ * \ingroup core
+ *
+ * Scoped object for saving and restoring a QPainter object's state.
+ *
+ * Temporarily saves the QPainter state for the lifetime of the object, before restoring it
+ * on destruction.
+ *
+ * \note Not available in Python bindings
+ * \since QGIS 3.16
+ */
+class QgsScopedQPainterState
+{
+  public:
+
+    /**
+     * Constructor for QgsScopedQPainterState.
+     *
+     * Saves the specified \a painter state.
+     */
+    QgsScopedQPainterState( QPainter *painter )
+      : mPainter( painter )
+    {
+      mPainter->save();
+    }
+
+    /**
+     * Restores the painter back to its original state.
+     */
+    ~QgsScopedQPainterState()
+    {
+      mPainter->restore();
+    }
+
+  private:
+
+    QPainter *mPainter = nullptr;
+};
+
+#endif
 
 #endif

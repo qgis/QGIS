@@ -221,7 +221,7 @@ void QgsVectorLayerJoinBuffer::updateFields( QgsFields &fields )
     if ( joinIt->hasSubset() )
     {
       const QStringList subsetNames = QgsVectorLayerJoinInfo::joinFieldNamesSubset( *joinIt );
-      subset = QSet<QString>::fromList( subsetNames );
+      subset = qgis::listToSet( subsetNames );
     }
 
     if ( joinIt->prefix().isNull() )
@@ -534,8 +534,8 @@ bool QgsVectorLayerJoinBuffer::addFeatures( QgsFeatureList &features, QgsFeature
     return false;
 
   // try to add/update a feature in each joined layer
-  const auto constVectorJoins = vectorJoins();
-  for ( const QgsVectorLayerJoinInfo &info : constVectorJoins )
+  const QgsVectorJoinList joins = vectorJoins();
+  for ( const QgsVectorLayerJoinInfo &info : joins )
   {
     QgsVectorLayer *joinLayer = info.joinLayer();
 
@@ -543,8 +543,7 @@ bool QgsVectorLayerJoinBuffer::addFeatures( QgsFeatureList &features, QgsFeature
     {
       QgsFeatureList joinFeatures;
 
-      const auto constFeatures = features;
-      for ( const QgsFeature &feature : constFeatures )
+      for ( const QgsFeature &feature : qgis::as_const( features ) )
       {
         const QgsFeature joinFeature = info.extractJoinedFeature( feature );
 
@@ -663,12 +662,12 @@ bool QgsVectorLayerJoinBuffer::changeAttributeValues( QgsFeatureId fid, const Qg
   return success;
 }
 
-bool QgsVectorLayerJoinBuffer::deleteFeature( QgsFeatureId fid ) const
+bool QgsVectorLayerJoinBuffer::deleteFeature( QgsFeatureId fid, QgsVectorLayer::DeleteContext *context ) const
 {
-  return deleteFeatures( QgsFeatureIds() << fid );
+  return deleteFeatures( QgsFeatureIds() << fid, context );
 }
 
-bool QgsVectorLayerJoinBuffer::deleteFeatures( const QgsFeatureIds &fids ) const
+bool QgsVectorLayerJoinBuffer::deleteFeatures( const QgsFeatureIds &fids, QgsVectorLayer::DeleteContext *context ) const
 {
   if ( !containsJoins() )
     return false;
@@ -683,7 +682,7 @@ bool QgsVectorLayerJoinBuffer::deleteFeatures( const QgsFeatureIds &fids ) const
       {
         const QgsFeature joinFeature = joinedFeatureOf( &info, mLayer->getFeature( fid ) );
         if ( joinFeature.isValid() )
-          info.joinLayer()->deleteFeature( joinFeature.id() );
+          info.joinLayer()->deleteFeature( joinFeature.id(), context );
       }
     }
   }

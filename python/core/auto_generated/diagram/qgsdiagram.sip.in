@@ -9,10 +9,10 @@
 
 
 
-class QgsDiagram
+class QgsDiagram /NoDefaultCtors/
 {
 %Docstring
-Base class for all diagram types*
+Base class for all diagram types.
 %End
 
 %TypeHeaderCode

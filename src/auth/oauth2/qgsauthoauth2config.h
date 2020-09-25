@@ -68,9 +68,9 @@ class QgsAuthOAuth2Config : public QObject
     //! OAuth2 grant flow
     enum GrantFlow
     {
-      AuthCode,      //!< @see http://tools.ietf.org/html/rfc6749#section-4.1
-      Implicit,      //!< @see http://tools.ietf.org/html/rfc6749#section-4.2
-      ResourceOwner, //!< @see http://tools.ietf.org/html/rfc6749#section-4.3
+      AuthCode,      //!< See http://tools.ietf.org/html/rfc6749#section-4.1
+      Implicit,      //!< See http://tools.ietf.org/html/rfc6749#section-4.2
+      ResourceOwner, //!< See http://tools.ietf.org/html/rfc6749#section-4.3
     };
 
     //! Configuration format for serialize/unserialize operations

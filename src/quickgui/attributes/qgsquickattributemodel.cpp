@@ -200,12 +200,18 @@ bool QgsQuickAttributeModel::deleteFeature()
     rv = false;
   }
 
-  if ( !mFeatureLayerPair.layer()->deleteFeature( mFeatureLayerPair.feature().id() ) )
+  bool isDeleted = mFeatureLayerPair.layer()->deleteFeature( mFeatureLayerPair.feature().id() );
+  rv = commit();
+
+  if ( !isDeleted )
     QgsMessageLog::logMessage( tr( "Cannot delete feature" ),
                                QStringLiteral( "QgsQuick" ),
                                Qgis::Warning );
-
-  rv = commit();
+  else
+  {
+    mFeatureLayerPair = QgsQuickFeatureLayerPair();
+    emit featureLayerPairChanged();
+  }
 
   return rv;
 }

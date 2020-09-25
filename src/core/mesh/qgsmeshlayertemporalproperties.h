@@ -2,8 +2,8 @@
                          qgsmeshlayertemporalproperties.h
                          -----------------------
     begin                : March 2020
-    copyright            : (C) 2020 by Vincent
-    email                : zilolv at gmail dot com
+    copyright            : (C) 2020 by Vincent Cloarec
+    email                : vcloarec at gmail dot com
  ***************************************************************************/
 
 /***************************************************************************
@@ -19,6 +19,7 @@
 #define QGSMESHLAYERTEMPORALPROPERTIES_H
 
 #include "qgsmaplayertemporalproperties.h"
+#include "qgsmeshdataprovidertemporalcapabilities.h"
 
 
 /**
@@ -28,10 +29,12 @@
  *
  *
  * The time in a mesh layer is defined by :
+ *
  * - a reference time provided by the data, the project or the user
  * - each dataset is associated with a relative times
  * - time extent is defined by the first time and the last time of all dataset
  *
+ * \code{.unparsed}
  * Reference time :          AT
  * Dataset 1 time            o-----RT------RT-----RT-----------RT
  * Dataset 2 time            o---------RT------RT--------RT
@@ -40,6 +43,7 @@
  *
  * AT : absolute time (QDateTime)
  * RT : relative time (qint64)
+ *  \endcode
  *
  * \since QGIS 3.14
  */
@@ -59,9 +63,11 @@ class CORE_EXPORT QgsMeshLayerTemporalProperties : public QgsMapLayerTemporalPro
     QgsMeshLayerTemporalProperties( QObject *parent SIP_TRANSFERTHIS = nullptr, bool enabled = true );
 
   public:
+
     QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) override;
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
     void setDefaultsFromDataProviderTemporalCapabilities( const QgsDataProviderTemporalCapabilities *capabilities ) override;
+    QgsDateTimeRange calculateTemporalExtent( QgsMapLayer *layer ) const override SIP_SKIP;
 
     /**
      * Returns the time extent
@@ -82,9 +88,23 @@ class CORE_EXPORT QgsMeshLayerTemporalProperties : public QgsMapLayerTemporalPro
      */
     void setReferenceTime( const QDateTime &referenceTime, const QgsDataProviderTemporalCapabilities *capabilities );
 
+    /**
+     * Returns the method used to match dataset from temporal capabilities
+     */
+    QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod matchingMethod() const;
+
+    /**
+     * Sets the method used to match dataset from temporal capabilities
+     *
+     * \param matchingMethod the matching method
+     */
+    void setMatchingMethod( const QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod &matchingMethod );
+
   private:
     QDateTime mReferenceTime;
     QgsDateTimeRange mTimeExtent;
+    QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod mMatchingMethod =
+      QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetBeforeStartRangeTime;
 };
 
 #endif // QGSMESHLAYERTEMPORALPROPERTIES_H

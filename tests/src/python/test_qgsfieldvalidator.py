@@ -24,7 +24,6 @@ from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
 
-
 start_app()
 
 
@@ -90,8 +89,8 @@ class TestQgsFieldValidator(unittest.TestCase):
         _test('onetwothree', QValidator.Invalid)
 
         int_field = self.vl.fields()[self.vl.fields().indexFromName('int_field')]
-        self.assertEqual(int_field.precision(), 0) # this is what the provider reports :(
-        self.assertEqual(int_field.length(), 0) # not set
+        self.assertEqual(int_field.precision(), 0)  # this is what the provider reports :(
+        self.assertEqual(int_field.length(), 0)  # not set
         self.assertEqual(int_field.type(), QVariant.Int)
 
         validator = QgsFieldValidator(None, int_field, '0', '')
@@ -109,8 +108,8 @@ class TestQgsFieldValidator(unittest.TestCase):
     def test_doubleValidator(self):
         """Test the double with default (system) locale"""
         field = self.vl.fields()[self.vl.fields().indexFromName('double_field')]
-        self.assertEqual(field.precision(), 0) # this is what the provider reports :(
-        self.assertEqual(field.length(), 0) # not set
+        self.assertEqual(field.precision(), 0)  # this is what the provider reports :(
+        self.assertEqual(field.length(), 0)  # not set
         self.assertEqual(field.type(), QVariant.Double)
         self._fld_checker(field)
 

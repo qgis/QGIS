@@ -652,7 +652,7 @@ void MDAL::DriverXdmf::load( const std::string &datFile,
   }
   catch ( MDAL_Status err )
   {
-    MDAL::Log::error( err, "Error occured while loading file " + mDatFile );
+    MDAL::Log::error( err, "Error occurred while loading file " + mDatFile );
   }
   catch ( MDAL::Error err )
   {

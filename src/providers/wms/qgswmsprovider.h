@@ -101,13 +101,13 @@ class QgsCachedImageFetcher: public QgsImageFetcher
 
 
 /**
-
-  \brief Data provider for OGC WMS layers.
-
-  This provider implements the
-  interface defined in the QgsDataProvider class to provide access to spatial
-  data residing in a OGC Web Map Service.
-
+ *
+ * \brief Data provider for OGC WMS layers.
+ *
+ * This provider implements the
+ * interface defined in the QgsDataProvider class to provide access to spatial
+ * data residing in a OGC Web Map Service.
+ *
 */
 class QgsWmsProvider final: public QgsRasterDataProvider
 {
@@ -261,6 +261,8 @@ class QgsWmsProvider final: public QgsRasterDataProvider
     } TilePosition;
     typedef QList<TilePosition> TilePositions;
 
+    static bool isUrlForWMTS( const QString &url );
+
   private slots:
     void identifyReplyFinished();
     void getLegendGraphicReplyFinished( const QImage & );
@@ -413,6 +415,9 @@ class QgsWmsProvider final: public QgsRasterDataProvider
     QgsRectangle mGetLegendGraphicExtent;
 
     std::unique_ptr<QgsImageFetcher> mLegendGraphicFetcher;
+
+    //! TRUE if an error was encountered while fetching a legend graphic
+    bool mLegendGraphicFetchErrored = false;
 
     /**
      * Visibility status of the given active sublayer
@@ -589,8 +594,10 @@ class QgsWmsProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsWmsProviderMetadata();
-    QgsWmsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QgsWmsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QList<QgsDataItemProvider *> dataItemProviders() const override;
+    QVariantMap decodeUri( const QString &uri ) override;
+    QString encodeUri( const QVariantMap &parts ) override;
 };
 
 #endif

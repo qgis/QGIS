@@ -81,26 +81,29 @@ void QgsLayerTreeViewItemDelegate::paint( QPainter *painter, const QStyleOptionV
   QStyleOptionViewItem opt = option;
   initStyleOption( &opt, index );
 
-  QRect tRect = mLayerTreeView->style()->subElementRect( QStyle::SE_ItemViewItemText, &opt, mLayerTreeView );
-  int tPadding = tRect.height() / 10;
-
-  // Draw layer context menu mark
-  QRect mRect( mLayerTreeView->viewport()->rect().right() - mLayerTreeView->layerMarkWidth(), tRect.top() + tPadding, mLayerTreeView->layerMarkWidth(), tRect.height() - tPadding * 2 );
-  QBrush pb = painter->brush();
-  QPen pp = painter->pen();
-  painter->setPen( QPen( Qt::NoPen ) );
-  QBrush b = QBrush( opt.palette.mid() );
-  QColor bc = b.color();
-  // mix mid color with base color for a less dominant, yet still opaque, version of the color
   const QColor baseColor = opt.palette.base().color();
-  bc.setRed( static_cast< int >( bc.red() * 0.3 + baseColor.red() * 0.7 ) );
-  bc.setGreen( static_cast< int >( bc.green() * 0.3 + baseColor.green() * 0.7 ) );
-  bc.setBlue( static_cast< int >( bc.blue() * 0.3 + baseColor.blue() * 0.7 ) );
-  b.setColor( bc );
-  painter->setBrush( b );
-  painter->drawRect( mRect );
-  painter->setBrush( pb );
-  painter->setPen( pp );
+  QRect tRect = mLayerTreeView->style()->subElementRect( QStyle::SE_ItemViewItemText, &opt, mLayerTreeView );
+
+  const bool shouldShowLayerMark = tRect.left() < 0;  // Layer/group node icon not visible anymore?
+  if ( shouldShowLayerMark )
+  {
+    int tPadding = tRect.height() / 10;
+    QRect mRect( mLayerTreeView->viewport()->rect().right() - mLayerTreeView->layerMarkWidth(), tRect.top() + tPadding, mLayerTreeView->layerMarkWidth(), tRect.height() - tPadding * 2 );
+    QBrush pb = painter->brush();
+    QPen pp = painter->pen();
+    painter->setPen( QPen( Qt::NoPen ) );
+    QBrush b = QBrush( opt.palette.mid() );
+    QColor bc = b.color();
+    // mix mid color with base color for a less dominant, yet still opaque, version of the color
+    bc.setRed( static_cast< int >( bc.red() * 0.3 + baseColor.red() * 0.7 ) );
+    bc.setGreen( static_cast< int >( bc.green() * 0.3 + baseColor.green() * 0.7 ) );
+    bc.setBlue( static_cast< int >( bc.blue() * 0.3 + baseColor.blue() * 0.7 ) );
+    b.setColor( bc );
+    painter->setBrush( b );
+    painter->drawRect( mRect );
+    painter->setBrush( pb );
+    painter->setPen( pp );
+  }
 
   const QList<QgsLayerTreeViewIndicator *> indicators = mLayerTreeView->indicators( node );
   if ( indicators.isEmpty() )

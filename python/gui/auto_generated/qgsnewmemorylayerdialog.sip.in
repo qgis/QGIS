@@ -58,6 +58,13 @@ Returns the selected CRS for the new layer.
 Returns the layer name
 %End
 
+    QgsFields fields() const;
+%Docstring
+Returns attributes for the new layer.
+
+.. versionadded:: 3.14
+%End
+
 };
 
 /************************************************************************

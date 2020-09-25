@@ -79,13 +79,14 @@ QString QgsWFSFeatureHitsAsyncRequest::errorMessageWithReason( const QString &re
 
 // -------------------------
 
-QgsWFSFeatureDownloaderImpl::QgsWFSFeatureDownloaderImpl( QgsWFSSharedData *shared, QgsFeatureDownloader *downloader ):
+QgsWFSFeatureDownloaderImpl::QgsWFSFeatureDownloaderImpl( QgsWFSSharedData *shared, QgsFeatureDownloader *downloader, bool requestMadeFromMainThread ):
   QgsWfsRequest( shared->mURI ),
   QgsFeatureDownloaderImpl( shared, downloader ),
   mShared( shared ),
   mPageSize( shared->mPageSize ),
   mFeatureHitsAsyncRequest( shared->mURI )
 {
+  QGS_FEATURE_DOWNLOADER_IMPL_CONNECT_SIGNALS( requestMadeFromMainThread );
 }
 
 QgsWFSFeatureDownloaderImpl::~QgsWFSFeatureDownloaderImpl()

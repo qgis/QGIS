@@ -36,10 +36,13 @@
 class QgsAABB;
 class AABBMesh;
 
+#define SIP_NO_FILE
+
 
 /**
  * \ingroup 3d
  * Draws bounds of axis aligned bounding boxes
+ * \note Not available in Python bindings
  * \since QGIS 3.0
  */
 class QgsChunkBoundsEntity : public Qt3DCore::QEntity

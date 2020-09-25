@@ -37,7 +37,6 @@ const QgsMapCanvas *QgsAbstractDataSourceWidget::mapCanvas() const
 
 void QgsAbstractDataSourceWidget::setupButtons( QDialogButtonBox *buttonBox )
 {
-
   buttonBox->setStandardButtons( QDialogButtonBox::Apply | QDialogButtonBox::Close | QDialogButtonBox::Help );
 #ifdef Q_OS_MACX
   buttonBox->setStyleSheet( "* { button-layout: 2 }" );
@@ -52,9 +51,7 @@ void QgsAbstractDataSourceWidget::setupButtons( QDialogButtonBox *buttonBox )
   QPushButton *closeButton = buttonBox->button( QDialogButtonBox::Close );
   closeButton->setToolTip( tr( "Close this dialog without adding any layer" ) );
   connect( closeButton, &QPushButton::clicked, this, &QgsAbstractDataSourceWidget::reject );
-
 }
-
 
 void QgsAbstractDataSourceWidget::setMapCanvas( const QgsMapCanvas *mapCanvas )
 {
@@ -68,4 +65,3 @@ void QgsAbstractDataSourceWidget::addButtonClicked()
 void QgsAbstractDataSourceWidget::reset()
 {
 }
-

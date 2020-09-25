@@ -1,6 +1,7 @@
 {
   "name": "base_file_name",
   "type": "function",
+  "groups": ["Files and Paths"],
   "description": "Returns the base name of the file without the directory or file suffix.",
   "arguments": [ {"arg":"path","description":"a file path"}],
   "examples": [ { "expression":"base_file_name('/home/qgis/data/country_boundaries.shp')", "returns":"'country_boundaries'"}]

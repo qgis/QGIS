@@ -17,13 +17,15 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgstextrenderer.h"
+#include "qgstextformat.h"
 
 #include <QToolButton>
 
 class QgsExpressionContextGenerator;
 class QgsMapCanvas;
 class QgsMessageBar;
+class QgsTextFormatPanelWidget;
+
 
 /**
  * \ingroup gui
@@ -163,6 +165,45 @@ class GUI_EXPORT QgsFontButton : public QToolButton
      */
     void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 
+    /**
+     * Sets whether the "null format" option should be shown in the button's drop-down menu. This option
+     * is only used for buttons set to the ModeTextRenderer mode().
+     *
+     * If selected, the "null format" option sets the button's format to an invalid QgsTextFormat. This
+     * can be used to represent a "use default format" state for the button.
+     *
+     * By default this option is not shown.
+     *
+     * \see setNoFormatString()
+     * \see showNullFormat()
+     * \since QGIS 3.16
+     */
+    void setShowNullFormat( const bool show ) { mShowNoFormat = show; }
+
+    /**
+     * Sets the \a string to use for the "null format" option in the button's drop-down menu.
+     *
+     * \note The "null format" option is only shown if showNullFormat() is TRUE.
+     *
+     * \see setShowNullFormat()
+     * \since QGIS 3.16
+     */
+    void setNoFormatString( const QString &string ) { mNullFormatString = string; }
+
+    /**
+     * Returns whether the "null format" option will be shown in the button's drop-down menu. This option
+     * is only used for buttons set to the ModeTextRenderer mode().
+     *
+     * If selected, the "null format" option sets the button's format to an invalid QgsTextFormat. This
+     * can be used to represent a "use default format" state for the button.
+     *
+     * By default this option is not shown.
+     *
+     * \see setShowNullFormat()
+     * \since QGIS 3.16
+     */
+    bool showNullFormat() const { return mShowNoFormat; }
+
   public slots:
 
     /**
@@ -171,6 +212,15 @@ class GUI_EXPORT QgsFontButton : public QToolButton
      * \see textFormat()
      */
     void setTextFormat( const QgsTextFormat &format );
+
+    /**
+     * Sets the text format to a null (invalid) QgsTextFormat.
+     *
+     * This is only used when mode() is ModeTextRenderer.
+     *
+     * \since QGIS 3.16
+     */
+    void setToNullFormat();
 
     /**
      * Sets the current text \a font to show in the widget.
@@ -277,6 +327,11 @@ class GUI_EXPORT QgsFontButton : public QToolButton
     QSize mIconSize;
 
     QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
+
+    bool mShowNoFormat = false;
+    QString mNullFormatString;
+    QPointer< QAction > mNullFormatAction;
+    QPointer< QgsTextFormatPanelWidget > mActivePanel;
 
     /**
      * Attempts to parse \a mimeData as a text format.

@@ -103,8 +103,12 @@ Content-Type: text/xml; charset=utf-8
   </Exception>
   <sld:UserDefinedSymbolization UserStyle="1" RemoteWFS="0" RemoteWCS="0" InlineFeature="0" UserLayer="0" SupportSLD="1"/>
   <Layer queryable="1">
+   <Name>QGIS Server WMS Dimensions</Name>
    <Title>QGIS Server WMS Dimensions</Title>
    <Abstract>QGIS Server WMS Dimensions</Abstract>
+   <KeywordList>
+    <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
+   </KeywordList>
    <CRS>CRS:84</CRS>
    <CRS>EPSG:3857</CRS>
    <CRS>EPSG:4326</CRS>
@@ -116,10 +120,6 @@ Content-Type: text/xml; charset=utf-8
    </EX_GeographicBoundingBox>
    <BoundingBox miny="-174.766579" maxy="177.930822" minx="-69.957839" maxx="84.307877" CRS="EPSG:4326"/>
    <BoundingBox miny="-11055007" maxy="19143773" minx="-20609694" maxx="20961936" CRS="EPSG:3857"/>
-   <Name>QGIS Server WMS Dimensions</Name>
-   <KeywordList>
-    <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
-   </KeywordList>
    <Layer queryable="1">
     <Name>Contours</Name>
     <Title>Contours</Title>

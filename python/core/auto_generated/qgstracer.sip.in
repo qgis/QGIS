@@ -73,7 +73,7 @@ Sets extent to which graph's features will be limited (empty extent means no lim
 
     double offset() const;
 %Docstring
-Gets offset in map units that should be applied to the traced paths returned from findShortestPath().
+Gets offset in map units that should be applied to the traced paths returned from :py:func:`~QgsTracer.findShortestPath`.
 Positive offset for right side, negative offset for left side.
 
 .. versionadded:: 3.0
@@ -81,7 +81,7 @@ Positive offset for right side, negative offset for left side.
 
     void setOffset( double offset );
 %Docstring
-Set offset in map units that should be applied to the traced paths returned from findShortestPath().
+Set offset in map units that should be applied to the traced paths returned from :py:func:`~QgsTracer.findShortestPath`.
 Positive offset for right side, negative offset for left side.
 
 .. versionadded:: 3.0
@@ -114,7 +114,7 @@ Gets maximum possible number of features in graph. If the number is exceeded, gr
 %Docstring
 Build the internal data structures. This may take some time
 depending on how big the input layers are. It is not necessary
-to call this method explicitly - it will be called by findShortestPath()
+to call this method explicitly - it will be called by :py:func:`~QgsTracer.findShortestPath`
 if necessary.
 %End
 

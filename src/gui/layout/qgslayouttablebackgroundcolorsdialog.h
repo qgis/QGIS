@@ -47,7 +47,7 @@ class GUI_EXPORT QgsLayoutTableBackgroundColorsDialog: public QDialog, private U
      * \param parent parent widget
      * \param flags window flags
      */
-    QgsLayoutTableBackgroundColorsDialog( QgsLayoutTable *table, QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
+    QgsLayoutTableBackgroundColorsDialog( QgsLayoutTable *table, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
 
   private slots:
 

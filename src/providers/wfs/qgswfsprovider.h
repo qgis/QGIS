@@ -42,12 +42,14 @@ class QgsWFSSharedData;
  * Below quick design notes on the whole provider.
  *
  * QgsWFSProvider class purpose:
+ *
  * - in constructor, do a GetCapabilities request to determine server-side feature limit,
      paging capabilities, WFS version, edition capabilities. Do a DescribeFeatureType request
      to determine fields, geometry name and type.
  * - in other methods, mostly WFS-T related operations.
  *
  * QgsWFSSharedData class purpose:
+ *
  * - contains logic shared by QgsWFSProvider, QgsWFSFeatureIterator and QgsWFSFeatureDownloader.
  * - one of its main function is to maintain a on-disk cache of the features retrieved
  *   from the server. This cache is a SpatiaLite database.
@@ -110,7 +112,7 @@ class QgsWFSProvider final: public QgsVectorDataProvider
 
     //Editing operations
 
-    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
     bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
@@ -157,14 +159,16 @@ class QgsWFSProvider final: public QgsVectorDataProvider
 
     /**
      * Collects information about the field types. Is called internally from QgsWFSProvider ctor.
-       The method gives back the name of
-       the geometry attribute and the thematic attributes with their types*/
+     * The method gives back the name of
+     * the geometry attribute and the thematic attributes with their types.
+    */
     bool describeFeatureType( QString &geometryAttribute,
                               QgsFields &fields, QgsWkbTypes::Type &geomType );
 
     /**
      * For a given typename, reads the name of the geometry attribute, the
-        thematic attributes and their types from a dom document. Returns true in case of success*/
+     * thematic attributes and their types from a dom document. Returns true in case of success.
+    */
     bool readAttributesFromSchema( QDomDocument &schemaDoc,
                                    const QString &prefixedTypename,
                                    QString &geometryAttribute,
@@ -174,8 +178,9 @@ class QgsWFSProvider final: public QgsVectorDataProvider
 
     /**
      * Sends the transaction document to the server using HTTP POST
-      \returns true if transmission to the server succeeded, otherwise false
-        note: true does not automatically mean that the transaction succeeded*/
+     * \returns true if transmission to the server succeeded, otherwise false
+     * \note true does not automatically mean that the transaction succeeded
+    */
     bool sendTransactionDocument( const QDomDocument &doc, QDomDocument &serverResponse );
 
     //! Creates a transaction element and adds it (normally as first element) to the document
@@ -202,7 +207,7 @@ class QgsWfsProviderMetadata final: public QgsProviderMetadata
   public:
     QgsWfsProviderMetadata();
     QList<QgsDataItemProvider *> dataItemProviders() const override;
-    QgsWFSProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QgsWFSProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
 };
 
 

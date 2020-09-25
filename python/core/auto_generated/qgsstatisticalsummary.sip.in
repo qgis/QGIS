@@ -15,10 +15,10 @@ class QgsStatisticalSummary
 %Docstring
 Calculator for summary statistics for a list of doubles.
 
-Statistics are calculated by calling calculate() and passing a list of doubles. The
+Statistics are calculated by calling :py:func:`~calculate` and passing a list of doubles. The
 individual statistics can then be retrieved using the associated methods. Note that not all statistics
 are calculated by default. Statistics which require slower computations are only calculated by
-specifying the statistic in the constructor or via setStatistics().
+specifying the statistic in the constructor or via :py:func:`~setStatistics`.
 
 .. versionadded:: 2.9
 %End
@@ -97,18 +97,18 @@ Calculates summary statistics for a list of values
 Adds a single value to the statistics calculation. Calling this method
 allows values to be added to the calculation one at a time. For large
 quantities of values this may be more efficient then first adding all the
-values to a list and calling calculate().
+values to a list and calling :py:func:`~QgsStatisticalSummary.calculate`.
 
 :param value: value to add
 
 .. note::
 
-   call reset() before adding the first value using this method
+   call :py:func:`~QgsStatisticalSummary.reset` before adding the first value using this method
    to clear the results from any previous calculations
 
 .. note::
 
-   finalize() must be called after adding the final value and before
+   :py:func:`~QgsStatisticalSummary.finalize` must be called after adding the final value and before
    retrieving calculated statistics.
 
 .. seealso:: :py:func:`calculate`
@@ -125,18 +125,18 @@ values to a list and calling calculate().
 Adds a single value to the statistics calculation. Calling this method
 allows values to be added to the calculation one at a time. For large
 quantities of values this may be more efficient then first adding all the
-values to a list and calling calculate().
+values to a list and calling :py:func:`~QgsStatisticalSummary.calculate`.
 
 :param value: variant containing to add. Non-numeric values are treated as null.
 
 .. note::
 
-   call reset() before adding the first value using this method
+   call :py:func:`~QgsStatisticalSummary.reset` before adding the first value using this method
    to clear the results from any previous calculations
 
 .. note::
 
-   finalize() must be called after adding the final value and before
+   :py:func:`~QgsStatisticalSummary.finalize` must be called after adding the final value and before
    retrieving calculated statistics.
 
 .. seealso:: :py:func:`addValue`
@@ -150,7 +150,7 @@ values to a list and calling calculate().
 
     void finalize();
 %Docstring
-Must be called after adding all values with addValues() and before retrieving
+Must be called after adding all values with :py:func:`~QgsStatisticalSummary.addValues` and before retrieving
 any calculated statistics.
 
 .. seealso:: :py:func:`addValue`

@@ -34,12 +34,12 @@ for i in "${EXT[@]}"
 do
 	DESTFILE=$DIR/../src/customwidgets/${CLASSLOWER}plugin.$i
 	cp "$DIR"/customwidget."$i".template "$DESTFILE"
-	${GP}sed -i s/%DATE%/${TODAY}/g ${DESTFILE}
-	${GP}sed -i s/%YEAR%/${YEAR}/g ${DESTFILE}
-	${GP}sed -i s/%AUTHOR%/${AUTHOR}/g ${DESTFILE}
-	${GP}sed -i s/%EMAIL%/${EMAIL}/g ${DESTFILE}
-	${GP}sed -i s/%CLASSUPPERCASE%/${CLASSUPPER}/g ${DESTFILE}
-	${GP}sed -i s/%CLASSLOWERCASE%/${CLASSLOWER}/g ${DESTFILE}
-	${GP}sed -i s/%CLASSMIXEDCASE%/${CLASSNAME}/g ${DESTFILE}
-	${GP}sed -i s/%CLASSWITHOUTQGS%/${CLASSWITHOUTQGS}/g ${DESTFILE}
+	${GP}sed -i "s/%DATE%/${TODAY}/g" ${DESTFILE}
+	${GP}sed -i "s/%YEAR%/${YEAR}/g" ${DESTFILE}
+	${GP}sed -i "s/%AUTHOR%/${AUTHOR}/g" ${DESTFILE}
+	${GP}sed -i "s/%EMAIL%/${EMAIL}/g" ${DESTFILE}
+	${GP}sed -i "s/%CLASSUPPERCASE%/${CLASSUPPER}/g" ${DESTFILE}
+	${GP}sed -i "s/%CLASSLOWERCASE%/${CLASSLOWER}/g" ${DESTFILE}
+	${GP}sed -i "s/%CLASSMIXEDCASE%/${CLASSNAME}/g" ${DESTFILE}
+	${GP}sed -i "s/%CLASSWITHOUTQGS%/${CLASSWITHOUTQGS}/g" ${DESTFILE}
 done

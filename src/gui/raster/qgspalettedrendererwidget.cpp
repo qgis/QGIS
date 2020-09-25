@@ -693,7 +693,7 @@ Qt::ItemFlags QgsPalettedRendererModel::flags( const QModelIndex &index ) const
       f = f | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
       break;
   }
-  return f | Qt::ItemIsEnabled | Qt::ItemIsSelectable;;
+  return f | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
 bool QgsPalettedRendererModel::removeRows( int row, int count, const QModelIndex &parent )
@@ -727,7 +727,7 @@ bool QgsPalettedRendererModel::insertRows( int row, int count, const QModelIndex
   beginInsertRows( QModelIndex(), row, row + count - 1 );
   for ( int i = row; i < row + count; ++i, ++nextValue )
   {
-    mData.insert( i, QgsPalettedRasterRenderer::Class( nextValue, QColor( 200, 200, 200 ), QString::number( nextValue ) ) );
+    mData.insert( i, QgsPalettedRasterRenderer::Class( nextValue, QColor( 200, 200, 200 ), QLocale().toString( nextValue ) ) );
   }
   endInsertRows();
   emit classesChanged();

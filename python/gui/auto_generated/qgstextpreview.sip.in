@@ -19,7 +19,7 @@ using QgsTextRenderer. The preview includes all settings contained within
 a QgsTextFormat, including shadow, background and buffer.
 
 In order to preview the exact appearance of text which uses sizes in map units,
-the scale and map units must be set by calling setScale() and setMapUnits().
+the scale and map units must be set by calling :py:func:`~setScale` and :py:func:`~setMapUnits`.
 
 .. versionadded:: 3.0
 %End

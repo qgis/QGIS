@@ -29,9 +29,6 @@
 QgsAfsSourceSelect::QgsAfsSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsArcGisServiceSourceSelect( QStringLiteral( "ARCGISFEATURESERVER" ), QgsArcGisServiceSourceSelect::FeatureService, parent, fl, widgetMode )
 {
-  // import/export of connections not supported yet
-  btnLoad->hide();
-  btnSave->hide();
 }
 
 bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )

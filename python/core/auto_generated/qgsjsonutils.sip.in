@@ -95,7 +95,7 @@ Sets whether to include attributes of features linked via references in the JSON
 
 .. note::
 
-   associated vector layer must be set with setVectorLayer()
+   associated vector layer must be set with :py:func:`~QgsJsonExporter.setVectorLayer`
 
 .. seealso:: :py:func:`includeRelated`
 %End
@@ -126,7 +126,7 @@ Returns whether original names of attributes or aliases are printed.
     void setVectorLayer( QgsVectorLayer *vectorLayer );
 %Docstring
 Sets the associated vector layer (required for related attribute export). This will automatically
-update the sourceCrs() to match.
+update the :py:func:`~QgsJsonExporter.sourceCrs` to match.
 
 :param vectorLayer: vector layer
 
@@ -149,7 +149,7 @@ correctly automatically reprojected to WGS 84, to match GeoJSON specifications.
 
 .. note::
 
-   the source CRS will be overwritten when a vector layer is specified via setVectorLayer()
+   the source CRS will be overwritten when a vector layer is specified via :py:func:`~QgsJsonExporter.setVectorLayer`
 
 .. seealso:: :py:func:`sourceCrs`
 %End
@@ -183,7 +183,7 @@ Sets the list of attributes to include in the JSON exports.
 
 .. note::
 
-   Attributes excluded via setExcludedAttributes() take precedence over
+   Attributes excluded via :py:func:`~QgsJsonExporter.setExcludedAttributes` take precedence over
    attributes specified by this method.
 %End
 
@@ -198,14 +198,14 @@ an empty list if all attributes will be included.
 
 .. note::
 
-   Attributes excluded via excludedAttributes() take precedence over
+   Attributes excluded via :py:func:`~QgsJsonExporter.excludedAttributes` take precedence over
    attributes returned by this method.
 %End
 
     void setExcludedAttributes( const QgsAttributeList &attributes );
 %Docstring
 Sets a list of attributes to specifically exclude from the JSON exports. Excluded attributes
-take precedence over attributes included via setAttributes().
+take precedence over attributes included via :py:func:`~QgsJsonExporter.setAttributes`.
 
 :param attributes: list of attribute indexes to exclude
 
@@ -217,7 +217,7 @@ take precedence over attributes included via setAttributes().
     QgsAttributeList excludedAttributes() const;
 %Docstring
 Returns a list of attributes which will be specifically excluded from the JSON exports. Excluded attributes
-take precedence over attributes included via attributes().
+take precedence over attributes included via :py:func:`~QgsJsonExporter.attributes`.
 
 .. seealso:: :py:func:`setExcludedAttributes`
 

@@ -46,12 +46,10 @@ from qgis.PyQt.uic import loadUiType
 
 from qgis.core import Qgis, QgsSettings
 
-
 LOGGER = logging.getLogger('MetaSearch')
 
 
 class StaticContext(object):
-
     """base configuration / scaffolding"""
 
     def __init__(self):

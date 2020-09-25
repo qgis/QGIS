@@ -66,9 +66,10 @@ QgsDecorationScaleBar::QgsDecorationScaleBar( QObject *parent )
   mStyleLabels << tr( "Tick Down" ) << tr( "Tick Up" )
                << tr( "Bar" ) << tr( "Box" );
 
-  setName( "Scale Bar" );
-  projectRead();
+  setDisplayName( tr( "Scale Bar" ) );
+  mConfigurationName = QStringLiteral( "ScaleBar" );
 
+  projectRead();
   mSettings.setNumberOfSegments( 1 );
   mSettings.setNumberOfSegmentsLeft( 0 );
 }
@@ -76,17 +77,17 @@ QgsDecorationScaleBar::QgsDecorationScaleBar( QObject *parent )
 void QgsDecorationScaleBar::projectRead()
 {
   QgsDecorationItem::projectRead();
-  mPreferredSize = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/PreferredSize" ), 30 );
-  mStyleIndex = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/Style" ), 0 );
-  mSnapping = QgsProject::instance()->readBoolEntry( mNameConfig, QStringLiteral( "/Snapping" ), true );
-  mColor = QgsSymbolLayerUtils::decodeColor( QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/Color" ), QStringLiteral( "#000000" ) ) );
-  mOutlineColor = QgsSymbolLayerUtils::decodeColor( QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/OutlineColor" ), QStringLiteral( "#FFFFFF" ) ) );
-  mMarginHorizontal = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/MarginH" ), 0 );
-  mMarginVertical = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/MarginV" ), 0 );
+  mPreferredSize = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/PreferredSize" ), 30 );
+  mStyleIndex = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/Style" ), 0 );
+  mSnapping = QgsProject::instance()->readBoolEntry( mConfigurationName, QStringLiteral( "/Snapping" ), true );
+  mColor = QgsSymbolLayerUtils::decodeColor( QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Color" ), QStringLiteral( "#000000" ) ) );
+  mOutlineColor = QgsSymbolLayerUtils::decodeColor( QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/OutlineColor" ), QStringLiteral( "#FFFFFF" ) ) );
+  mMarginHorizontal = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/MarginH" ), 0 );
+  mMarginVertical = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/MarginV" ), 0 );
 
   QDomDocument doc;
   QDomElement elem;
-  QString textFormatXml = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/TextFormat" ) );
+  QString textFormatXml = QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/TextFormat" ) );
   if ( !textFormatXml.isEmpty() )
   {
     doc.setContent( textFormatXml );
@@ -97,7 +98,7 @@ void QgsDecorationScaleBar::projectRead()
   }
   else
   {
-    QString fontXml = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/Font" ) );
+    QString fontXml = QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Font" ) );
     if ( !fontXml.isEmpty() )
     {
       doc.setContent( fontXml );
@@ -119,13 +120,13 @@ void QgsDecorationScaleBar::projectRead()
 void QgsDecorationScaleBar::saveToProject()
 {
   QgsDecorationItem::saveToProject();
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/PreferredSize" ), mPreferredSize );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Snapping" ), mSnapping );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Style" ), mStyleIndex );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Color" ), QgsSymbolLayerUtils::encodeColor( mColor ) );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/OutlineColor" ), QgsSymbolLayerUtils::encodeColor( mOutlineColor ) );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginH" ), mMarginHorizontal );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginV" ), mMarginVertical );
+  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/PreferredSize" ), mPreferredSize );
+  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Snapping" ), mSnapping );
+  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Style" ), mStyleIndex );
+  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Color" ), QgsSymbolLayerUtils::encodeColor( mColor ) );
+  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/OutlineColor" ), QgsSymbolLayerUtils::encodeColor( mOutlineColor ) );
+  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/MarginH" ), mMarginHorizontal );
+  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/MarginV" ), mMarginVertical );
 
   QDomDocument fontDoc;
   QgsReadWriteContext context;
@@ -133,7 +134,7 @@ void QgsDecorationScaleBar::saveToProject()
   QDomElement textElem = mTextFormat.writeXml( fontDoc, context );
   fontDoc.appendChild( textElem );
 
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/TextFormat" ), fontDoc.toString() );
+  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/TextFormat" ), fontDoc.toString() );
 }
 
 
@@ -167,7 +168,8 @@ void QgsDecorationScaleBar::setupScaleBar()
       lineSymbol->setColor( mColor ); // Compatibility with pre 3.2 configuration
       lineSymbol->setWidth( 0.3 );
       lineSymbol->setOutputUnit( QgsUnitTypes::RenderMillimeters );
-      mSettings.setLineSymbol( lineSymbol.release() );
+      mSettings.setLineSymbol( lineSymbol->clone() );
+      mSettings.setDivisionLineSymbol( lineSymbol.release() );
       mSettings.setHeight( 2.2 );
       break;
     }
@@ -205,6 +207,32 @@ void QgsDecorationScaleBar::setupScaleBar()
   }
   mSettings.setLabelBarSpace( 1.8 );
 }
+
+double QgsDecorationScaleBar::mapWidth( const QgsMapSettings &settings ) const
+{
+  const QgsRectangle mapExtent = settings.extent();
+  if ( mSettings.units() == QgsUnitTypes::DistanceUnknownUnit )
+  {
+    return mapExtent.width();
+  }
+  else
+  {
+    QgsDistanceArea da;
+    da.setSourceCrs( settings.destinationCrs(), QgsProject::instance()->transformContext() );
+    da.setEllipsoid( QgsProject::instance()->ellipsoid() );
+
+    QgsUnitTypes::DistanceUnit units = da.lengthUnits();
+
+    // we measure the horizontal distance across the vertical center of the map
+    const double yPosition = 0.5 * ( mapExtent.yMinimum() + mapExtent.yMaximum() );
+    double measure = da.measureLine( QgsPointXY( mapExtent.xMinimum(), yPosition ),
+                                     QgsPointXY( mapExtent.xMaximum(), yPosition ) );
+
+    measure /= QgsUnitTypes::fromUnitToUnitFactor( mSettings.units(), units );
+    return measure;
+  }
+}
+
 void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRenderContext &context )
 {
   if ( !enabled() )
@@ -212,20 +240,8 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
 
   //Get canvas dimensions
   QPaintDevice *device = context.painter()->device();
-  int deviceHeight = device->height() / device->devicePixelRatioF();
-  int deviceWidth = device->width() / device->devicePixelRatioF();
-
-  //Get map units per pixel. This can be negative at times (to do with
-  //projections) and that just confuses the rest of the code in this
-  //function, so force to a positive number.
-  double scaleBarUnitsPerPixel = std::fabs( context.mapToPixel().mapUnitsPerPixel() );
-
-  // Exit if the canvas width is 0 or layercount is 0 or QGIS will freeze
-  if ( mapSettings.layers().isEmpty() || !deviceWidth || !scaleBarUnitsPerPixel )
-    return;
-
-  double unitsPerSegment = mPreferredSize;
-
+  const int deviceHeight = device->height() / device->devicePixelRatioF();
+  const int deviceWidth = device->width() / device->devicePixelRatioF();
   QgsSettings settings;
   bool ok = false;
   QgsUnitTypes::DistanceUnit preferredUnits = QgsUnitTypes::decodeDistanceUnit( settings.value( QStringLiteral( "qgis/measure/displayunits" ) ).toString(), &ok );
@@ -234,9 +250,15 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
 
   QgsUnitTypes::DistanceUnit scaleBarUnits = mapSettings.mapUnits();
 
-  // Adjust units meter/feet/... or vice versa
-  scaleBarUnitsPerPixel *= QgsUnitTypes::fromUnitToUnitFactor( scaleBarUnits, preferredUnits );
+  //Get map units per pixel
+  const double scaleBarUnitsPerPixel = ( mapWidth( mapSettings ) / mapSettings.outputSize().width() ) * QgsUnitTypes::fromUnitToUnitFactor( mSettings.units(), preferredUnits );
   scaleBarUnits = preferredUnits;
+
+  // Exit if the canvas width is 0 or layercount is 0 or QGIS will freeze
+  if ( mapSettings.layers().isEmpty() || !deviceWidth || !scaleBarUnitsPerPixel )
+    return;
+
+  double unitsPerSegment = mPreferredSize;
 
   //Calculate size of scale bar for preferred number of map units
   double scaleBarWidth = mPreferredSize / scaleBarUnitsPerPixel;
@@ -257,19 +279,17 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
 
   // Work out the exponent for the number - e.g, 1234 will give 3,
   // and .001234 will give -3
-  double powerOf10 = std::floor( std::log10( unitsPerSegment ) );
+  const double powerOf10 = std::floor( std::log10( unitsPerSegment ) );
 
   // snap to integer < 10 times power of 10
   if ( mSnapping )
   {
-    double scaler = std::pow( 10.0, powerOf10 );
+    const double scaler = std::pow( 10.0, powerOf10 );
     unitsPerSegment = std::round( unitsPerSegment / scaler ) * scaler;
     scaleBarWidth = unitsPerSegment / scaleBarUnitsPerPixel;
   }
 
-  //Get type of map units and set scale bar unit label text
-  double mapSize = unitsPerSegment * QgsUnitTypes::fromUnitToUnitFactor( scaleBarUnits, mapSettings.mapUnits() );
-  double segmentSize = context.convertFromMapUnits( mapSize, QgsUnitTypes::RenderMillimeters );
+  const double segmentSizeInMm = scaleBarWidth / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
 
   QString scaleBarUnitLabel;
   switch ( scaleBarUnits )
@@ -347,7 +367,7 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
   mSettings.setLabelHorizontalPlacement( mPlacement == TopCenter || mPlacement == BottomCenter ? QgsScaleBarSettings::LabelCenteredSegment : QgsScaleBarSettings::LabelCenteredEdge );
 
   QgsScaleBarRenderer::ScaleBarContext scaleContext;
-  scaleContext.segmentWidth = mStyleIndex == 3 ? segmentSize / 2 : segmentSize;
+  scaleContext.segmentWidth = mStyleIndex == 3 ? segmentSizeInMm / 2 : segmentSizeInMm;
   scaleContext.scale = mapSettings.scale();
 
   //Calculate total width of scale bar and label
@@ -415,8 +435,7 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
       QgsDebugMsg( QStringLiteral( "Unsupported placement index of %1" ).arg( static_cast<int>( mPlacement ) ) );
   }
 
-  context.painter()->save();
+  QgsScopedQPainterState painterState( context.painter() );
   context.painter()->translate( originX, originY );
   mStyle->draw( context, mSettings, scaleContext );
-  context.painter()->restore();
 }

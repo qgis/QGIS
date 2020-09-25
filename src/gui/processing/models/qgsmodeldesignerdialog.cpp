@@ -28,6 +28,11 @@
 #include "qgsmodelgraphicsscene.h"
 #include "qgsmodelcomponentgraphicitem.h"
 #include "processing/models/qgsprocessingmodelgroupbox.h"
+#include "processing/models/qgsmodelinputreorderwidget.h"
+#include "qgsmessageviewer.h"
+#include "qgsmessagebaritem.h"
+#include "qgspanelwidget.h"
+#include "qgsprocessingmultipleselectiondialog.h"
 
 #include <QShortcut>
 #include <QDesktopWidget>
@@ -39,6 +44,7 @@
 #include <QCloseEvent>
 #include <QMessageBox>
 #include <QUndoView>
+#include <QPushButton>
 
 ///@cond NOT_STABLE
 
@@ -134,6 +140,9 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   connect( mActionSaveAs, &QAction::triggered, this, [ = ] { saveModel( true ); } );
   connect( mActionDeleteComponents, &QAction::triggered, this, &QgsModelDesignerDialog::deleteSelected );
   connect( mActionSnapSelected, &QAction::triggered, mView, &QgsModelGraphicsView::snapSelected );
+  connect( mActionValidate, &QAction::triggered, this, &QgsModelDesignerDialog::validate );
+  connect( mActionReorderInputs, &QAction::triggered, this, &QgsModelDesignerDialog::reorderInputs );
+  connect( mReorderInputsButton, &QPushButton::clicked, this, &QgsModelDesignerDialog::reorderInputs );
 
   mActionSnappingEnabled->setChecked( settings.value( QStringLiteral( "/Processing/Modeler/enableSnapToGrid" ), false ).toBool() );
   connect( mActionSnappingEnabled, &QAction::toggled, this, [ = ]( bool enabled )
@@ -165,6 +174,39 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   mGroupMenu = new QMenu( tr( "Zoom To" ), this );
   mMenuView->insertMenu( mActionZoomIn, mGroupMenu );
   connect( mGroupMenu, &QMenu::aboutToShow, this, &QgsModelDesignerDialog::populateZoomToMenu );
+
+  //cut/copy/paste actions. Note these are not included in the ui file
+  //as ui files have no support for QKeySequence shortcuts
+  mActionCut = new QAction( tr( "Cu&t" ), this );
+  mActionCut->setShortcuts( QKeySequence::Cut );
+  mActionCut->setStatusTip( tr( "Cut" ) );
+  mActionCut->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditCut.svg" ) ) );
+  connect( mActionCut, &QAction::triggered, this, [ = ]
+  {
+    mView->copySelectedItems( QgsModelGraphicsView::ClipboardCut );
+  } );
+
+  mActionCopy = new QAction( tr( "&Copy" ), this );
+  mActionCopy->setShortcuts( QKeySequence::Copy );
+  mActionCopy->setStatusTip( tr( "Copy" ) );
+  mActionCopy->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditCopy.svg" ) ) );
+  connect( mActionCopy, &QAction::triggered, this, [ = ]
+  {
+    mView->copySelectedItems( QgsModelGraphicsView::ClipboardCopy );
+  } );
+
+  mActionPaste = new QAction( tr( "&Paste" ), this );
+  mActionPaste->setShortcuts( QKeySequence::Paste );
+  mActionPaste->setStatusTip( tr( "Paste" ) );
+  mActionPaste->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditPaste.svg" ) ) );
+  connect( mActionPaste, &QAction::triggered, this, [ = ]
+  {
+    mView->pasteItems( QgsModelGraphicsView::PasteModeCursor );
+  } );
+  mMenuEdit->insertAction( mActionDeleteComponents, mActionCut );
+  mMenuEdit->insertAction( mActionDeleteComponents, mActionCopy );
+  mMenuEdit->insertAction( mActionDeleteComponents, mActionPaste );
+  mMenuEdit->insertSeparator( mActionDeleteComponents );
 
   QgsProcessingToolboxProxyModel::Filters filters = QgsProcessingToolboxProxyModel::FilterModeler;
   if ( settings.value( QStringLiteral( "Processing/Configuration/SHOW_ALGORITHMS_KNOWN_ISSUES" ), false ).toBool() )
@@ -272,6 +314,18 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
     mUndoStack->endMacro();
     mIgnoreUndoStackChanges--;
   } );
+  connect( mView, &QgsModelGraphicsView::beginCommand, this, [ = ]( const QString & text )
+  {
+    beginUndoCommand( text );
+  } );
+  connect( mView, &QgsModelGraphicsView::endCommand, this, [ = ]
+  {
+    endUndoCommand();
+  } );
+  connect( mView, &QgsModelGraphicsView::deleteSelectedItems, this, [ = ]
+  {
+    deleteSelected();
+  } );
 
   connect( mActionAddGroupBox, &QAction::triggered, this, [ = ]
   {
@@ -372,7 +426,10 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
   mScene = scene;
   mScene->setParent( this );
   mScene->setChildAlgorithmResults( mChildResults );
+  mScene->setModel( mModel.get() );
+  mScene->setMessageBar( mMessageBar );
 
+  const QPointF center = mView->mapToScene( mView->viewport()->rect().center() );
   mView->setModelScene( mScene );
 
   mSelectTool->resetCache();
@@ -387,6 +444,8 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
   } );
   connect( mScene, &QgsModelGraphicsScene::componentAboutToChange, this, [ = ]( const QString & description, int id ) { beginUndoCommand( description, id ); } );
   connect( mScene, &QgsModelGraphicsScene::componentChanged, this, [ = ] { endUndoCommand(); } );
+
+  mView->centerOn( center );
 
   if ( oldScene )
     oldScene->deleteLater();
@@ -727,6 +786,51 @@ void QgsModelDesignerDialog::populateZoomToMenu()
   }
 }
 
+void QgsModelDesignerDialog::validate()
+{
+  QStringList issues;
+  if ( model()->validate( issues ) )
+  {
+    mMessageBar->pushSuccess( QString(), tr( "Model is valid!" ) );
+  }
+  else
+  {
+    QgsMessageBarItem *messageWidget = mMessageBar->createMessage( QString(), tr( "Model is invalid!" ) );
+    QPushButton *detailsButton = new QPushButton( tr( "Details" ) );
+    connect( detailsButton, &QPushButton::clicked, detailsButton, [ = ]
+    {
+      QgsMessageViewer *dialog = new QgsMessageViewer( detailsButton );
+      dialog->setTitle( tr( "Model is Invalid" ) );
+
+      QString longMessage = tr( "<p>This model is not valid:</p>" ) + QStringLiteral( "<ul>" );
+      for ( const QString &issue : issues )
+      {
+        longMessage += QStringLiteral( "<li>%1</li>" ).arg( issue );
+      }
+      longMessage += QStringLiteral( "</ul>" );
+
+      dialog->setMessage( longMessage, QgsMessageOutput::MessageHtml );
+      dialog->showMessage();
+    } );
+    messageWidget->layout()->addWidget( detailsButton );
+    mMessageBar->clearWidgets();
+    mMessageBar->pushWidget( messageWidget, Qgis::Warning, 0 );
+  }
+}
+
+void QgsModelDesignerDialog::reorderInputs()
+{
+  QgsModelInputReorderDialog dlg( this );
+  dlg.setModel( mModel.get() );
+  if ( dlg.exec() )
+  {
+    const QStringList inputOrder = dlg.inputOrder();
+    beginUndoCommand( tr( "Reorder Inputs" ) );
+    mModel->setParameterOrder( inputOrder );
+    endUndoCommand();
+  }
+}
+
 bool QgsModelDesignerDialog::isDirty() const
 {
   return mHasChanged && mUndoStack->index() != -1;
@@ -761,5 +865,86 @@ void QgsModelDesignerDialog::fillInputsTree()
 }
 
 
-///@endcond
+//
+// QgsModelChildDependenciesWidget
+//
 
+QgsModelChildDependenciesWidget::QgsModelChildDependenciesWidget( QWidget *parent,  QgsProcessingModelAlgorithm *model, const QString &childId )
+  : QWidget( parent )
+  , mModel( model )
+  , mChildId( childId )
+{
+  QHBoxLayout *hl = new QHBoxLayout();
+  hl->setMargin( 0 );
+  hl->setContentsMargins( 0, 0, 0, 0 );
+
+  mLineEdit = new QLineEdit();
+  mLineEdit->setEnabled( false );
+  hl->addWidget( mLineEdit, 1 );
+
+  mToolButton = new QToolButton();
+  mToolButton->setText( QString( QChar( 0x2026 ) ) );
+  hl->addWidget( mToolButton );
+
+  setLayout( hl );
+
+  mLineEdit->setText( tr( "%1 dependencies selected" ).arg( 0 ) );
+
+  connect( mToolButton, &QToolButton::clicked, this, &QgsModelChildDependenciesWidget::showDialog );
+}
+
+void QgsModelChildDependenciesWidget::setValue( const QList<QgsProcessingModelChildDependency> &value )
+{
+  mValue = value;
+
+  updateSummaryText();
+}
+
+void QgsModelChildDependenciesWidget::showDialog()
+{
+  const QList<QgsProcessingModelChildDependency> available = mModel->availableDependenciesForChildAlgorithm( mChildId );
+
+  QVariantList availableOptions;
+  for ( const QgsProcessingModelChildDependency &dep : available )
+    availableOptions << QVariant::fromValue( dep );
+  QVariantList selectedOptions;
+  for ( const QgsProcessingModelChildDependency &dep : mValue )
+    selectedOptions << QVariant::fromValue( dep );
+
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel )
+  {
+    QgsProcessingMultipleSelectionPanelWidget *widget = new QgsProcessingMultipleSelectionPanelWidget( availableOptions, selectedOptions );
+    widget->setPanelTitle( tr( "Algorithm Dependencies" ) );
+
+    widget->setValueFormatter( [ = ]( const QVariant & v ) -> QString
+    {
+      const QgsProcessingModelChildDependency dep = v.value< QgsProcessingModelChildDependency >();
+
+      const QString description = mModel->childAlgorithm( dep.childId ).description();
+      if ( dep.conditionalBranch.isEmpty() )
+        return description;
+      else
+        return tr( "Condition “%1” from algorithm “%2”" ).arg( dep.conditionalBranch, description );
+    } );
+
+    connect( widget, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged, this, [ = ]()
+    {
+      QList< QgsProcessingModelChildDependency > res;
+      for ( const QVariant &v : widget->selectedOptions() )
+      {
+        res << v.value< QgsProcessingModelChildDependency >();
+      }
+      setValue( res );
+    } );
+    connect( widget, &QgsProcessingMultipleSelectionPanelWidget::acceptClicked, widget, &QgsPanelWidget::acceptPanel );
+    panel->openPanel( widget );
+  }
+}
+
+void QgsModelChildDependenciesWidget::updateSummaryText()
+{
+  mLineEdit->setText( tr( "%1 dependencies selected" ).arg( mValue.count() ) );
+}
+
+///@endcond

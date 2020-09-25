@@ -43,13 +43,11 @@ from qgis.core import (NULL,
                        QgsProcessingParameterFeatureSink)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.tools import vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class ExportGeometryInfo(QgisAlgorithm):
-
     INPUT = 'INPUT'
     METHOD = 'CALC_METHOD'
     OUTPUT = 'OUTPUT'
@@ -139,8 +137,10 @@ class ExportGeometryInfo(QgisAlgorithm):
         self.distance_area = QgsDistanceArea()
         if method == 2:
             self.distance_area.setSourceCrs(source.sourceCrs(), context.transformContext())
-            self.distance_area.setEllipsoid(context.project().ellipsoid())
+            self.distance_area.setEllipsoid(context.ellipsoid())
         elif method == 1:
+            if not context.project():
+                raise QgsProcessingException(self.tr('No project is available in this context'))
             coordTransform = QgsCoordinateTransform(source.sourceCrs(), context.project().crs(), context.project())
 
         features = source.getFeatures()

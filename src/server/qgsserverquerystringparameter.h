@@ -91,6 +91,7 @@ class SERVER_EXPORT QgsServerQueryStringParameter
      * If the value is not set and a default was not provided an invalid QVariant is returned.
      *
      * Validation steps:
+     *
      * - required
      * - can convert to proper Type
      * - custom validator (if set - not available in Python bindings)

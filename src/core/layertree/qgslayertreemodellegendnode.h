@@ -28,6 +28,7 @@
 
 #include "qgsrasterdataprovider.h" // for QgsImageFetcher dtor visibility
 #include "qgsexpressioncontext.h"
+#include "qgslegendpatchshape.h"
 
 class QgsLayerTreeLayer;
 class QgsLayerTreeModel;
@@ -86,11 +87,50 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     virtual QString userLabel() const { return mUserLabel; }
     virtual void setUserLabel( const QString &userLabel ) { mUserLabel = userLabel; }
 
+    /**
+     * Returns the user (overridden) size for the legend node.
+     *
+     * If either the width or height are non-zero, they will be used when rendering the legend node instead of the default
+     * symbol width or height from QgsLegendSettings.
+     *
+     * \see setUserPatchSize()
+     * \since QGIS 3.14
+     */
+    virtual QSizeF userPatchSize() const;
+
+    /**
+     * Sets the user (overridden) \a size for the legend node.
+     *
+     * If either the width or height are non-zero, they will be used when rendering the legend node instead of the default
+     * symbol width or height from QgsLegendSettings.
+     *
+     * \see userPatchSize()
+     * \since QGIS 3.14
+     */
+    virtual void setUserPatchSize( QSizeF size );
+
+    /**
+     * Sets whether a forced column break should occur before the node.
+     *
+     * \see columnBreak()
+     * \since QGIS 3.14
+     */
+    virtual void setColumnBreak( bool breakBeforeNode ) { mColumnBreakBeforeNode = breakBeforeNode; }
+
+    /**
+     * Returns whether a forced column break should occur before the node.
+     *
+     * \see setColumnBreak()
+     * \since QGIS 3.14
+     */
+    virtual bool columnBreak() const { return mColumnBreakBeforeNode; }
+
     virtual bool isScaleOK( double scale ) const { Q_UNUSED( scale ) return true; }
 
     /**
      * Notification from model that information from associated map view has changed.
-     *  Default implementation does nothing. */
+     *  Default implementation does nothing.
+    */
     virtual void invalidateMapBasedData() {}
 
     struct ItemContext
@@ -145,6 +185,21 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
        */
       double maxSiblingSymbolWidth = 0.0;
 
+      /**
+       * The patch shape to render for the node.
+       *
+       * \since QGIS 3.14
+       */
+      QgsLegendPatchShape patchShape;
+
+      /**
+       * Symbol patch size to render for the node.
+       *
+       * If either the width or height are zero, then the default width/height from QgsLegendSettings::symbolSize() should be used instead.
+       *
+       * \since QGIS 3.14
+       */
+      QSizeF patchSize;
     };
 
     struct ItemMetrics
@@ -166,10 +221,9 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
      * JSON object.
      * \param settings Legend layout configuration
      * \param context Rendering context
-     * \param json The json object to update
      * \since QGIS 3.8
      */
-    void exportToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json );
+    QJsonObject exportToJson( const QgsLegendSettings &settings, const QgsRenderContext &context );
 
     /**
      * Draws symbol on the left side of the item
@@ -184,10 +238,9 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
      * Adds a symbol in base64 string within a JSON object with the key "icon".
      * \param settings Legend layout configuration
      * \param context Rendering context
-     * \param json The json object to update
      * \since QGIS 3.8
      */
-    virtual void exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json ) const;
+    virtual QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const;
 
     /**
      * Draws label on the right side of the item
@@ -198,17 +251,16 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
      */
     virtual QSizeF drawSymbolText( const QgsLegendSettings &settings, ItemContext *ctx, QSizeF symbolSize ) const;
 
-    /**
-     * Adds a label in a JSON object with the key "title".
-     * \param settings Legend layout configuration
-     * \param json The json object to update
-     * \since QGIS 3.8
-     */
-    void exportSymbolTextToJson( const QgsLegendSettings &settings, QJsonObject &json ) const;
-
   signals:
     //! Emitted on internal data change so the layer tree model can forward the signal to views
     void dataChanged();
+
+    /**
+     * Emitted when the size of this node changes.
+     *
+     * \since QGIS 3.16
+     */
+    void sizeChanged();
 
   protected:
     //! Construct the node with pointer to its parent layer node
@@ -221,10 +273,13 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     QgsLayerTreeLayer *mLayerNode = nullptr;
     bool mEmbeddedInParent;
     QString mUserLabel;
+    QgsLegendPatchShape mPatchShape;
+    QSizeF mUserSize;
+    bool mColumnBreakBeforeNode = false;
 };
 
 #include "qgslegendsymbolitem.h"
-#include "qgstextrenderer.h"
+#include "qgstextformat.h"
 
 /**
  * \ingroup core
@@ -254,7 +309,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 
     QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
 
-    void exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json ) const override;
+    QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const override;
 
     void setEmbeddedInParent( bool embedded ) override;
 
@@ -336,6 +391,46 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     QString symbolLabel() const;
 
     /**
+     * Returns the symbol patch shape to use when rendering the legend node symbol.
+     *
+     * \see setPatchShape()
+     * \since QGIS 3.14
+     */
+    QgsLegendPatchShape patchShape() const;
+
+    /**
+     * Sets the symbol patch \a shape to use when rendering the legend node symbol.
+     *
+     * \see patchShape()
+     * \since QGIS 3.14
+     */
+    void setPatchShape( const QgsLegendPatchShape &shape );
+
+    /**
+     * Returns the node's custom symbol.
+     *
+     * If a non-NULLPTR value is returned, then this symbol will be used for rendering
+     * the legend node instead of the default symbol().
+     *
+     * \see setCustomSymbol()
+     * \since QGIS 3.14
+     */
+    QgsSymbol *customSymbol() const;
+
+    /**
+     * Sets the node's custom \a symbol.
+     *
+     * If a non-NULLPTR value is set, then this symbol will be used for rendering
+     * the legend node instead of the default symbol().
+     *
+     * Ownership of \a symbol is transferred.
+     *
+     * \see customSymbol()
+     * \since QGIS 3.14
+     */
+    void setCustomSymbol( QgsSymbol *symbol SIP_TRANSFER );
+
+    /**
      * Evaluates  and returns the text label of the current node
      * \param context extra QgsExpressionContext to use for evaluating the expression
      * \param label text to evaluate instead of the layer layertree string
@@ -381,6 +476,8 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 
     QString mTextOnSymbolLabel;
     QgsTextFormat mTextOnSymbolTextFormat;
+
+    std::unique_ptr< QgsSymbol > mCustomSymbol;
 
     // ident the symbol icon to make it look like a tree structure
     static const int INDENT_SIZE = 20;
@@ -455,7 +552,7 @@ class CORE_EXPORT QgsImageLegendNode : public QgsLayerTreeModelLegendNode
 
     QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
 
-    void exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json ) const override;
+    QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const override;
 
   private:
     QImage mImage;
@@ -486,7 +583,7 @@ class CORE_EXPORT QgsRasterSymbolLegendNode : public QgsLayerTreeModelLegendNode
 
     QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
 
-    void exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json ) const override;
+    QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const override;
 
   private:
     QColor mColor;
@@ -518,7 +615,7 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
 
     QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
 
-    void exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context, QJsonObject &json ) const override;
+    QJsonObject exportSymbolToJson( const QgsLegendSettings &settings, const QgsRenderContext &context ) const override;
 
     void invalidateMapBasedData() override;
 

@@ -48,7 +48,7 @@ void QgsSpatiaLiteDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
   }
 }
 
-bool QgsSpatiaLiteDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataItemGuiContext )
+bool QgsSpatiaLiteDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataItemGuiContext context )
 {
   if ( QgsSLLayerItem *layerItem = qobject_cast< QgsSLLayerItem * >( item ) )
   {
@@ -61,13 +61,13 @@ bool QgsSpatiaLiteDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataI
     QString errCause;
     if ( !SpatiaLiteUtils::deleteLayer( uri.database(), uri.table(), errCause ) )
     {
-      QMessageBox::warning( nullptr, tr( "Delete Layer" ), errCause );
-      return false;
+      notify( tr( "Delete Layer" ), errCause, context, Qgis::MessageLevel::Warning );
     }
     else
     {
-      QMessageBox::information( nullptr, tr( "Delete Layer" ), tr( "Layer deleted successfully." ) );
-      layerItem->parent()->refresh();
+      notify( tr( "Delete Layer" ), tr( "Layer deleted successfully." ), context, Qgis::MessageLevel::Success );
+      if ( layerItem->parent() )
+        layerItem->parent()->refresh();
       return true;
     }
   }

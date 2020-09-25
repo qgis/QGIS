@@ -41,6 +41,12 @@ class QgsDataProviderTemporalCapabilities;
  */
 class CORE_EXPORT QgsMapLayerTemporalProperties : public QgsTemporalProperty
 {
+#ifdef SIP_RUN
+#include "qgsrasterlayertemporalproperties.h"
+#include "qgsmeshlayertemporalproperties.h"
+#include "qgsvectorlayertemporalproperties.h"
+#endif
+
     Q_OBJECT
 
 #ifdef SIP_RUN
@@ -52,6 +58,10 @@ class CORE_EXPORT QgsMapLayerTemporalProperties : public QgsTemporalProperty
     else if ( qobject_cast<QgsMeshLayerTemporalProperties *>( sipCpp ) )
     {
       sipType = sipType_QgsMeshLayerTemporalProperties;
+    }
+    else if ( qobject_cast<QgsVectorLayerTemporalProperties *>( sipCpp ) )
+    {
+      sipType = sipType_QgsVectorLayerTemporalProperties;
     }
     else
     {
@@ -94,6 +104,19 @@ class CORE_EXPORT QgsMapLayerTemporalProperties : public QgsTemporalProperty
      */
     virtual void setDefaultsFromDataProviderTemporalCapabilities( const QgsDataProviderTemporalCapabilities *capabilities ) = 0;
 
+#ifndef SIP_RUN
+// sip gets confused with this, refuses to compile
+
+    /**
+     * Attempts to calculate the overall temporal extent for the specified \a layer, using
+     * the settings defined by the temporal properties object.
+     *
+     * May return an infinite range if the extent could not be calculated.
+     *
+     * \note Not available in Python bindings
+     */
+    virtual QgsDateTimeRange calculateTemporalExtent( QgsMapLayer *layer ) const;
+#endif
 };
 
 #endif // QGSMAPLAYERTEMPORALPROPERTIES_H

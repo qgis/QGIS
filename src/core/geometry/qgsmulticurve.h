@@ -30,7 +30,52 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
 {
   public:
     QgsMultiCurve();
-    QString geometryType() const override;
+
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns the curve with the specified \a index.
+     *
+     * \since QGIS 3.16
+     */
+    QgsCurve *curveN( int index );
+#else
+
+    /**
+     * Returns the curve with the specified \a index.
+     *
+     * An IndexError will be raised if no curve with the specified index exists.
+     *
+     * \since QGIS 3.16
+     */
+    SIP_PYOBJECT curveN( int index ) SIP_TYPEHINT( QgsCurve );
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      return sipConvertFromType( sipCpp->curveN( a0 ), sipType_QgsCurve, NULL );
+    }
+    % End
+#endif
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns the curve with the specified \a index.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 3.16
+     */
+    const QgsCurve *curveN( int index ) const;
+#endif
+
+    QString geometryType() const override SIP_HOLDGIL;
     QgsMultiCurve *clone() const override SIP_FACTORY;
     void clear() override;
     QgsMultiCurve *toCurveType() const override SIP_FACTORY;

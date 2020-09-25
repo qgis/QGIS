@@ -749,7 +749,7 @@ protected:
         ElementTypeReal increase;
         ElementTypeReal bestIncr = CastElementTypeReal(-1);
         ElementTypeReal area;
-        ElementTypeReal bestArea;
+        ElementTypeReal bestArea = CastElementTypeReal(-1);
         int best = 0;
         Rect tempRect;
 
@@ -969,6 +969,7 @@ protected:
 
             // It is assured that AddBranch here will not cause a node split. 
             bool nodeWasSplit = AddBranch(&a_parVars->m_branchBuf[index], targetNodes[targetNodeIndex], nullptr);
+            (void)nodeWasSplit;
             RTreeAssert(!nodeWasSplit);
         }
     }

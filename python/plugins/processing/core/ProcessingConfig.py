@@ -44,7 +44,6 @@ settingsWatcher = SettingsWatcher()
 
 
 class ProcessingConfig:
-
     OUTPUT_FOLDER = 'OUTPUTS_FOLDER'
     RASTER_STYLE = 'RASTER_STYLE'
     VECTOR_POINT_STYLE = 'VECTOR_POINT_STYLE'
@@ -63,6 +62,7 @@ class ProcessingConfig:
     DEFAULT_OUTPUT_RASTER_LAYER_EXT = 'DefaultOutputRasterLayerExt'
     DEFAULT_OUTPUT_VECTOR_LAYER_EXT = 'DefaultOutputVectorLayerExt'
     TEMP_PATH = 'TEMP_PATH2'
+    RESULTS_GROUP_NAME = 'RESULTS_GROUP_NAME'
 
     settings = {}
     settingIcons = {}
@@ -142,8 +142,8 @@ class ProcessingConfig:
             valuetype=Setting.SELECTION,
             options=invalidFeaturesOptions))
 
-        threads = QgsApplication.maxThreads() # if user specified limit for rendering, lets keep that as default here, otherwise max
-        threads = cpu_count() if threads == -1 else threads # if unset, maxThreads() returns -1
+        threads = QgsApplication.maxThreads()  # if user specified limit for rendering, lets keep that as default here, otherwise max
+        threads = cpu_count() if threads == -1 else threads  # if unset, maxThreads() returns -1
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.MAX_THREADS,
@@ -171,8 +171,18 @@ class ProcessingConfig:
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.TEMP_PATH,
-            ProcessingConfig.tr('Override temporary output folder path (leave blank for default)'), None,
-            valuetype=Setting.FOLDER))
+            ProcessingConfig.tr('Override temporary output folder path'), None,
+            valuetype=Setting.FOLDER,
+            placeholder=ProcessingConfig.tr('Leave blank for default')))
+
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.RESULTS_GROUP_NAME,
+            ProcessingConfig.tr("Results group name"),
+            "",
+            valuetype=Setting.STRING,
+            placeholder=ProcessingConfig.tr("Leave blank to avoid loading results in a predetermined group")
+        ))
 
     @staticmethod
     def setGroupIcon(group, icon):
@@ -248,7 +258,6 @@ class ProcessingConfig:
 
 
 class Setting:
-
     """A simple config parameter that will appear on the config dialog.
     """
     STRING = 0
@@ -260,7 +269,7 @@ class Setting:
     MULTIPLE_FOLDERS = 6
 
     def __init__(self, group, name, description, default, hidden=False, valuetype=None,
-                 validator=None, options=None):
+                 validator=None, options=None, placeholder=""):
         self.group = group
         self.name = name
         self.qname = "Processing/Configuration/" + self.name
@@ -269,6 +278,7 @@ class Setting:
         self.hidden = hidden
         self.valuetype = valuetype
         self.options = options
+        self.placeholder = placeholder
 
         if self.valuetype is None:
             if isinstance(default, int):
@@ -283,6 +293,7 @@ class Setting:
                         float(v)
                     except ValueError:
                         raise ValueError(self.tr('Wrong parameter value:\n{0}').format(v))
+
                 validator = checkFloat
             elif self.valuetype == self.INT:
                 def checkInt(v):
@@ -290,11 +301,13 @@ class Setting:
                         int(v)
                     except ValueError:
                         raise ValueError(self.tr('Wrong parameter value:\n{0}').format(v))
+
                 validator = checkInt
             elif self.valuetype in [self.FILE, self.FOLDER]:
                 def checkFileOrFolder(v):
                     if v and not os.path.exists(v):
                         raise ValueError(self.tr('Specified path does not exist:\n{0}').format(v))
+
                 validator = checkFileOrFolder
             elif self.valuetype == self.MULTIPLE_FOLDERS:
                 def checkMultipleFolders(v):
@@ -302,6 +315,7 @@ class Setting:
                     for f in folders:
                         if f and not os.path.exists(f):
                             raise ValueError(self.tr('Specified path does not exist:\n{0}').format(f))
+
                 validator = checkMultipleFolders
             else:
                 def validator(x):

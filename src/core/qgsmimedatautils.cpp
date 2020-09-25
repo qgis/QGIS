@@ -67,7 +67,7 @@ QgsMimeDataUtils::Uri::Uri( const QString &encData )
 QgsMimeDataUtils::Uri::Uri( QgsMapLayer *layer )
   : providerKey( layer->providerType() )
   , name( layer->name() )
-  , uri( layer->dataProvider()->dataSourceUri() )
+  , uri( layer->dataProvider() ? layer->dataProvider()->dataSourceUri() : layer->source() )
   , layerId( layer->id() )
   , pId( QString::number( QCoreApplication::applicationPid() ) )
 {
@@ -98,6 +98,7 @@ QgsMimeDataUtils::Uri::Uri( QgsMapLayer *layer )
     }
 
     case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::AnnotationLayer:
     {
       // plugin layers do not have a standard way of storing their URI...
       return;

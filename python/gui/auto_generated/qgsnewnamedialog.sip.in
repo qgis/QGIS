@@ -82,6 +82,25 @@ Returns whether users are permitted to overwrite existing names.
 .. versionadded:: 2.12
 %End
 
+    void setAllowEmptyName( bool allowed );
+%Docstring
+Sets whether users are permitted to leave the widget empty.
+If ``True``, the dialog will accept an empty name value.
+
+.. seealso:: :py:func:`allowEmptyName`
+
+.. versionadded:: 3.14
+%End
+
+    bool allowEmptyName() const;
+%Docstring
+Returns ``True`` if the widget can be left empty (no name filled).
+
+.. seealso:: :py:func:`setAllowEmptyName`
+
+.. versionadded:: 3.14
+%End
+
     void setConflictingNameWarning( const QString &string );
 %Docstring
 Sets the string used for warning users if a conflicting name exists.

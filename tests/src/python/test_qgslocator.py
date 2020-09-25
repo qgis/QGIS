@@ -9,6 +9,7 @@ the Free Software Foundation; either version 2 of the License, or
 __author__ = '(C) 2017 by Nyall Dawson'
 __date__ = '6/05/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'
+
 import qgis  # NOQA
 
 import os
@@ -25,6 +26,7 @@ from qgis.PyQt.QtCore import QVariant, pyqtSignal, QCoreApplication
 from time import sleep
 from qgis.testing import start_app, unittest
 from qgis.PyQt import sip
+
 start_app()
 
 
@@ -356,7 +358,7 @@ class TestQgsLocator(unittest.TestCase):
         for i in range(200):
             sleep(0.002)
             QCoreApplication.processEvents()
-        self.assertEqual(p.rowCount(), 16) # 1 title a + 3 results + 1 title b + 2 groups + 9 results
+        self.assertEqual(p.rowCount(), 16)  # 1 title a + 3 results + 1 title b + 2 groups + 9 results
         self.assertEqual(p.data(p.index(0, 0)), 'test_a')
         self.assertEqual(p.data(p.index(0, 0), QgsLocatorModel.ResultTypeRole), 0)
         self.assertEqual(p.data(p.index(1, 0)), 'a0')

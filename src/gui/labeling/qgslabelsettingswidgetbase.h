@@ -26,6 +26,7 @@
 
 #include <QDialog>
 
+class QDialogButtonBox;
 class QgsPropertyOverrideButton;
 
 /**
@@ -151,6 +152,18 @@ class GUI_EXPORT QgsLabelSettingsWidgetDialog : public QDialog
      * \param parent parent widget
      */
     QgsLabelSettingsWidgetDialog( QgsLabelSettingsWidgetBase *widget SIP_TRANSFER, QWidget *parent = nullptr );
+
+
+    /**
+     * Returns the dialog's button box.
+     *
+     * \since QGIS 3.14
+     */
+    QDialogButtonBox *buttonBox();
+
+  private:
+
+    QDialogButtonBox *mButtonBox = nullptr;
 
 };
 

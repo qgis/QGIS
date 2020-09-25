@@ -150,28 +150,29 @@ namespace QgsWcs
     QDomElement xAxisElem = doc.createElement( QStringLiteral( "gml:axisName" ) );
     QDomText xAxisText = doc.createTextNode( QStringLiteral( "x" ) );
     xAxisElem.appendChild( xAxisText );
-    spatialDomainElem.appendChild( xAxisElem );
+    rectGridElem.appendChild( xAxisElem );
 
     QDomElement yAxisElem = doc.createElement( QStringLiteral( "gml:axisName" ) );
     QDomText yAxisText = doc.createTextNode( QStringLiteral( "y" ) );
     yAxisElem.appendChild( yAxisText );
-    spatialDomainElem.appendChild( yAxisElem );
+    rectGridElem.appendChild( yAxisElem );
 
     QDomElement originElem = doc.createElement( QStringLiteral( "gml:origin" ) );
     QDomElement originPosElem = doc.createElement( QStringLiteral( "gml:pos" ) );
+    originElem.appendChild( originPosElem );
     QDomText originPosText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( layerBBox.xMinimum(), precision ), precision ) + " " + qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( layerBBox.yMinimum(), precision ), precision ) );
     originPosElem.appendChild( originPosText );
-    spatialDomainElem.appendChild( originElem );
+    rectGridElem.appendChild( originElem );
 
     QDomElement xOffsetElem = doc.createElement( QStringLiteral( "gml:offsetVector" ) );
     QDomText xOffsetText = doc.createTextNode( QString::number( layer->rasterUnitsPerPixelX() ) + " 0" );
     xOffsetElem.appendChild( xOffsetText );
-    spatialDomainElem.appendChild( xOffsetElem );
+    rectGridElem.appendChild( xOffsetElem );
 
     QDomElement yOffsetElem = doc.createElement( QStringLiteral( "gml:offsetVector" ) );
     QDomText yOffsetText = doc.createTextNode( "0 " + QString::number( layer->rasterUnitsPerPixelY() ) );
     yOffsetElem.appendChild( yOffsetText );
-    spatialDomainElem.appendChild( yOffsetElem );
+    rectGridElem.appendChild( yOffsetElem );
 
     //GML property containing one RangeSet GML object.
     QDomElement rangeSetElem = doc.createElement( QStringLiteral( "rangeSet" ) );
@@ -192,6 +193,11 @@ namespace QgsWcs
     rsNameElem.appendChild( rsNameText );
     RangeSetElem.appendChild( rsNameElem );
 
+    QDomElement rsLabelElem = doc.createElement( QStringLiteral( "label" ) );
+    QDomText rsLabelText = doc.createTextNode( QStringLiteral( "Bands" ) );
+    rsLabelElem.appendChild( rsLabelText );
+    RangeSetElem.appendChild( rsLabelElem );
+
     QDomElement axisDescElem = doc.createElement( QStringLiteral( "axisDescription" ) );
     RangeSetElem.appendChild( axisDescElem );
 
@@ -203,10 +209,15 @@ namespace QgsWcs
     adNameElem.appendChild( adNameText );
     AxisDescElem.appendChild( adNameElem );
 
+    QDomElement adLabelElem = doc.createElement( QStringLiteral( "label" ) );
+    QDomText adLablelText = doc.createTextNode( QStringLiteral( "bands" ) );
+    adLabelElem.appendChild( adLablelText );
+    AxisDescElem.appendChild( adLabelElem );
+
     QDomElement adValuesElem = doc.createElement( QStringLiteral( "values" ) );
     for ( int idx = 0; idx < layer->bandCount(); ++idx )
     {
-      QDomElement adValueElem = doc.createElement( QStringLiteral( "value" ) );
+      QDomElement adValueElem = doc.createElement( QStringLiteral( "singleValue" ) );
       QDomText adValueText = doc.createTextNode( QString::number( idx + 1 ) );
       adValueElem.appendChild( adValueText );
       adValuesElem.appendChild( adValueElem );

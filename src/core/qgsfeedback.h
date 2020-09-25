@@ -29,10 +29,8 @@
  *
  * When cancel() is called, the internal code has two options to check for cancellation state:
  *
- * - if the worker thread uses an event loop (e.g. for network communication), the code can
- *   make a queued connection to canceled() signal and handle the cancellation in its slot.
- * - if the worker thread does not use an event loop, it can poll isCanceled() method regularly
- *   to see if the operation should be canceled.
+ * - if the worker thread uses an event loop (e.g. for network communication), the code can make a queued connection to canceled() signal and handle the cancellation in its slot.
+ * - if the worker thread does not use an event loop, it can poll isCanceled() method regularly to see if the operation should be canceled.
  *
  * The class is meant to be created and destroyed in the main thread.
  *

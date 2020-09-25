@@ -53,6 +53,8 @@ The QgsCadUtils class provides routines for CAD editing.
 
       QgsPointXY finalMapPoint;
 
+      QgsPointLocator::Match snapMatch;
+
       QgsPointLocator::Match edgeMatch;
 
       double softLockCommonAngle;

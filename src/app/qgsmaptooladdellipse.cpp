@@ -29,6 +29,8 @@ QgsMapToolAddEllipse::QgsMapToolAddEllipse( QgsMapToolCapture *parentTool, QgsMa
   , mParentTool( parentTool )
   , mSnapIndicator( qgis::make_unique< QgsSnapIndicator>( canvas ) )
 {
+  mToolName = tr( "Add ellipse" );
+
   clean();
   connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddEllipse::stopCapturing );
   connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolAddEllipse::stopCapturing );
@@ -95,7 +97,7 @@ void QgsMapToolAddEllipse::deactivate()
 
   // keep z value from the first snapped point
   std::unique_ptr<QgsLineString> ls( mEllipse.toLineString( segments() ) );
-  for ( const QgsPoint point : qgis::as_const( mPoints ) )
+  for ( const QgsPoint &point : qgis::as_const( mPoints ) )
   {
     if ( QgsWkbTypes::hasZ( point.wkbType() ) &&
          point.z() != defaultZValue() )

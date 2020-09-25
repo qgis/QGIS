@@ -71,3 +71,8 @@ QString QgsTerrainGenerator::typeToString( QgsTerrainGenerator::Type type )
   }
   return QString();
 }
+
+bool QgsTerrainGenerator::isValid() const
+{
+  return mIsValid;
+}

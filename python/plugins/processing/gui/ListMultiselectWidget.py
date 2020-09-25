@@ -21,7 +21,6 @@ __author__ = 'Marco Bernasocchi'
 __date__ = 'June 2016'
 __copyright__ = '(C) 2016, Marco Bernasocchi'
 
-
 from qgis.PyQt.QtWidgets import (QGroupBox,
                                  QPushButton,
                                  QSizePolicy,
@@ -35,7 +34,6 @@ from qgis.PyQt.QtCore import Qt, QSize, pyqtSignal
 
 
 class ListMultiSelectWidget(QGroupBox):
-
     """Widget to show two parallel lists and move elements between the two
 
     usage from code:

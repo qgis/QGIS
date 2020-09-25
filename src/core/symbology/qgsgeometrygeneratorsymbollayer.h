@@ -49,8 +49,9 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
     QgsSymbol::SymbolType symbolType() const { return mSymbolType; }
 
     void startRender( QgsSymbolRenderContext &context ) override;
-
     void stopRender( QgsSymbolRenderContext &context ) override;
+    void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
+    void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
 
     QgsSymbolLayer *clone() const override SIP_FACTORY;
 
@@ -113,6 +114,9 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
      * The type of the sub symbol.
      */
     QgsSymbol::SymbolType mSymbolType;
+
+    bool mRenderingFeature = false;
+    bool mHasRenderedFeature = false;
 };
 
 #endif // QGSGEOMETRYGENERATORSYMBOLLAYER_H

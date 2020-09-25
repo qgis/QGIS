@@ -80,7 +80,7 @@ Returns the encoding selected within the dialog.
     void setEncoding( const QString &encoding );
 %Docstring
 Sets the ``encoding`` selected within the dialog.
-see encoding()
+see :py:func:`~QgsEncodingSelectionDialog.encoding`
 %End
 
 };

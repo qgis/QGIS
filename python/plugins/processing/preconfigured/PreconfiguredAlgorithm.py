@@ -21,7 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'April 2016'
 __copyright__ = '(C) 2016, Victor Olaya'
 
-
 import os
 from qgis.core import (QgsProcessingAlgorithm,
                        QgsApplication)

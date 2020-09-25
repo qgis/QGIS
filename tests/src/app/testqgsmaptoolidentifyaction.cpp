@@ -21,6 +21,7 @@
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgsvectordataprovider.h"
+#include "qgsvectortilelayer.h"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
 #include "qgsmeshlayer.h"
@@ -34,6 +35,8 @@
 #include "qgsactionmenu.h"
 #include "qgsidentifyresultsdialog.h"
 #include "qgsmapmouseevent.h"
+#include "qgsmaplayertemporalproperties.h"
+#include "qgsmeshlayertemporalproperties.h"
 
 #include <QTimer>
 
@@ -56,6 +59,7 @@ class TestQgsMapToolIdentifyAction : public QObject
     void identifyRasterFloat32(); // test pixel identification and decimal precision
     void identifyRasterFloat64(); // test pixel identification and decimal precision
     void identifyMesh(); // test identification for mesh layer
+    void identifyVectorTile();  // test identification for vector tile layer
     void identifyInvalidPolygons(); // test selecting invalid polygons
     void clickxy(); // test if clicked_x and clicked_y variables are propagated
     void closestPoint();
@@ -70,6 +74,7 @@ class TestQgsMapToolIdentifyAction : public QObject
     QString testIdentifyRaster( QgsRasterLayer *layer, double xGeoref, double yGeoref );
     QList<QgsMapToolIdentify::IdentifyResult> testIdentifyVector( QgsVectorLayer *layer, double xGeoref, double yGeoref );
     QList<QgsMapToolIdentify::IdentifyResult> testIdentifyMesh( QgsMeshLayer *layer, double xGeoref, double yGeoref );
+    QList<QgsMapToolIdentify::IdentifyResult> testIdentifyVectorTile( QgsVectorTileLayer *layer, double xGeoref, double yGeoref );
 
     // Release return with delete []
     unsigned char *
@@ -540,6 +545,16 @@ TestQgsMapToolIdentifyAction::testIdentifyVector( QgsVectorLayer *layer, double 
   return result;
 }
 
+// private
+QList<QgsMapToolIdentify::IdentifyResult>
+TestQgsMapToolIdentifyAction::testIdentifyVectorTile( QgsVectorTileLayer *layer, double xGeoref, double yGeoref )
+{
+  std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
+  QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
+  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << layer );
+  return result;
+}
+
 void TestQgsMapToolIdentifyAction::identifyRasterFloat32()
 {
   //create a temporary layer
@@ -607,6 +622,9 @@ void TestQgsMapToolIdentifyAction::identifyMesh()
   QVERIFY( tempLayer->isValid() );
   const QString vectorDs = QStringLiteral( TEST_DATA_DIR ) + "/mesh/quad_and_triangle_vertex_vector.dat";
   tempLayer->dataProvider()->addDataset( vectorDs );
+  static_cast<QgsMeshLayerTemporalProperties *>(
+    tempLayer->temporalProperties() )->setReferenceTime(
+      QDateTime( QDate( 1950, 01, 01 ), QTime( 0, 0, 0, Qt::UTC ), Qt::UTC ), tempLayer->dataProvider()->temporalCapabilities() );
 
   // we need to setup renderer otherwise triangular mesh
   // will not be populated and identify will not work
@@ -625,42 +643,107 @@ void TestQgsMapToolIdentifyAction::identifyMesh()
   QList<QgsMapToolIdentify::IdentifyResult> results;
 
   results = testIdentifyMesh( tempLayer, 500, 500 );
-  QCOMPARE( results.size(), 1 );
+  QCOMPARE( results.size(), 2 );
   QCOMPARE( results[0].mAttributes[ QStringLiteral( "Scalar Value" )], QStringLiteral( "no data" ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Source" )], mesh );
+  QCOMPARE( results[1].mLabel, QStringLiteral( "Geometry" ) );
   results = testIdentifyMesh( tempLayer, 2400, 2400 );
-  QCOMPARE( results.size(), 1 );
+  QCOMPARE( results.size(), 2 );
   QCOMPARE( results[0].mAttributes[ QStringLiteral( "Scalar Value" )], QStringLiteral( "42" ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Source" )], mesh );
+  QCOMPARE( results[1].mLabel, QStringLiteral( "Geometry" ) );
+  QCOMPARE( results[1].mDerivedAttributes[QStringLiteral( "Face Centroid X" )], QStringLiteral( "2333.33" ) );
+  QCOMPARE( results[1].mDerivedAttributes[QStringLiteral( "Face Centroid Y" )], QStringLiteral( "2333.33" ) );
+  results = testIdentifyMesh( tempLayer, 1999, 2999 );
+  QCOMPARE( results[1].mDerivedAttributes[QStringLiteral( "Snapped Vertex Position X" )], QStringLiteral( "2000" ) );
+  QCOMPARE( results[1].mDerivedAttributes[QStringLiteral( "Snapped Vertex Position Y" )], QStringLiteral( "3000" ) );
+
+  canvas->setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 1950, 01, 01 ), QTime( 0, 0, 0, Qt::UTC ), Qt::UTC ),
+                            QDateTime( QDate( 1950, 01, 01 ), QTime( 1, 0, 0, Qt::UTC ), Qt::UTC ) ) );
+
+  tempLayer->temporalProperties()->setIsActive( true );
+  results = testIdentifyMesh( tempLayer, 2400, 2400 );
+  QCOMPARE( results.size(), 3 );
+  QCOMPARE( results[0].mLabel, QStringLiteral( "Bed Elevation (active)" ) );
+  QCOMPARE( results[0].mAttributes[ QStringLiteral( "Scalar Value" )], QStringLiteral( "42" ) );
+  QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Source" )], mesh );
+
+  QCOMPARE( results[1].mDerivedAttributes[ QStringLiteral( "Time Step" )], QStringLiteral( "01.01.1950 00:00:00" ) );
+
+  QCOMPARE( results[1].mLabel, QStringLiteral( "VertexVectorDataset" ) );
+  QCOMPARE( results[1].mDerivedAttributes[QStringLiteral( "Source" )], vectorDs );
+  QCOMPARE( results[1].mAttributes[ QStringLiteral( "Vector Magnitude" )], QStringLiteral( "3" ) );
+  QCOMPARE( results[1].mDerivedAttributes[ QStringLiteral( "Vector x-component" )], QStringLiteral( "1.8" ) );
+  QCOMPARE( results[1].mDerivedAttributes[ QStringLiteral( "Vector y-component" )], QStringLiteral( "2.4" ) );
+
+  QCOMPARE( results[2].mLabel, QStringLiteral( "Geometry" ) );
+  QCOMPARE( results[2].mDerivedAttributes[QStringLiteral( "Face Centroid X" )], QStringLiteral( "2333.33" ) );
+  QCOMPARE( results[2].mDerivedAttributes[QStringLiteral( "Face Centroid Y" )], QStringLiteral( "2333.33" ) );
+  results = testIdentifyMesh( tempLayer, 1999, 2999 );
+  QCOMPARE( results[2].mDerivedAttributes[QStringLiteral( "Snapped Vertex Position X" )], QStringLiteral( "2000" ) );
+  QCOMPARE( results[2].mDerivedAttributes[QStringLiteral( "Snapped Vertex Position Y" )], QStringLiteral( "3000" ) );
+
+  tempLayer->temporalProperties()->setIsActive( false );
 
   // scalar + vector same
   tempLayer->setStaticScalarDatasetIndex( QgsMeshDatasetIndex( 1, 0 ) );
   tempLayer->setStaticVectorDatasetIndex( QgsMeshDatasetIndex( 1, 0 ) );
   results = testIdentifyMesh( tempLayer, 500, 500 );
-  QCOMPARE( results.size(), 1 );
+  QCOMPARE( results.size(), 2 );
   QCOMPARE( results[0].mAttributes[ QStringLiteral( "Vector Value" )], QStringLiteral( "no data" ) );
   results = testIdentifyMesh( tempLayer, 2400, 2400 );
-  QCOMPARE( results.size(), 1 );
+  QCOMPARE( results.size(), 2 );
   QCOMPARE( results[0].mAttributes[ QStringLiteral( "Vector Magnitude" )], QStringLiteral( "3" ) );
-  QCOMPARE( results[0].mAttributes[ QStringLiteral( "Vector x-component" )], QStringLiteral( "1.8" ) );
-  QCOMPARE( results[0].mAttributes[ QStringLiteral( "Vector y-component" )], QStringLiteral( "2.4" ) );
+  QCOMPARE( results[0].mDerivedAttributes[ QStringLiteral( "Vector x-component" )], QStringLiteral( "1.8" ) );
+  QCOMPARE( results[0].mDerivedAttributes[ QStringLiteral( "Vector y-component" )], QStringLiteral( "2.4" ) );
 
   // scalar + vector different
   tempLayer->setStaticScalarDatasetIndex( QgsMeshDatasetIndex( 0, 0 ) );
   tempLayer->setStaticVectorDatasetIndex( QgsMeshDatasetIndex( 1, 0 ) );
   results = testIdentifyMesh( tempLayer, 2400, 2400 );
-  QCOMPARE( results.size(), 2 );
+  QCOMPARE( results.size(), 3 );
   QCOMPARE( results[0].mAttributes[ QStringLiteral( "Scalar Value" )], QStringLiteral( "42" ) );
   QCOMPARE( results[1].mAttributes[ QStringLiteral( "Vector Magnitude" )], QStringLiteral( "3" ) );
-  QCOMPARE( results[1].mAttributes[ QStringLiteral( "Vector x-component" )], QStringLiteral( "1.8" ) );
-  QCOMPARE( results[1].mAttributes[ QStringLiteral( "Vector y-component" )], QStringLiteral( "2.4" ) );
+  QCOMPARE( results[1].mDerivedAttributes[ QStringLiteral( "Vector x-component" )], QStringLiteral( "1.8" ) );
+  QCOMPARE( results[1].mDerivedAttributes[ QStringLiteral( "Vector y-component" )], QStringLiteral( "2.4" ) );
 
   // only vector
   tempLayer->setStaticScalarDatasetIndex( QgsMeshDatasetIndex() );
   tempLayer->setStaticVectorDatasetIndex( QgsMeshDatasetIndex( 1, 0 ) );
   results = testIdentifyMesh( tempLayer, 2400, 2400 );
-  QCOMPARE( results.size(), 1 );
+  QCOMPARE( results.size(), 2 );
   QCOMPARE( results[0].mAttributes[ QStringLiteral( "Vector Magnitude" )], QStringLiteral( "3" ) );
-  QCOMPARE( results[0].mAttributes[ QStringLiteral( "Vector x-component" )], QStringLiteral( "1.8" ) );
-  QCOMPARE( results[0].mAttributes[ QStringLiteral( "Vector y-component" )], QStringLiteral( "2.4" ) );
+  QCOMPARE( results[0].mDerivedAttributes[ QStringLiteral( "Vector x-component" )], QStringLiteral( "1.8" ) );
+  QCOMPARE( results[0].mDerivedAttributes[ QStringLiteral( "Vector y-component" )], QStringLiteral( "2.4" ) );
+}
+
+void TestQgsMapToolIdentifyAction::identifyVectorTile()
+{
+  //create a temporary layer
+  QString vtPath = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/vector_tile/{z}-{x}-{y}.pbf" );
+  QgsDataSourceUri dsUri;
+  dsUri.setParam( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
+  dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( vtPath ).toString() );
+  QgsVectorTileLayer *tempLayer = new QgsVectorTileLayer( dsUri.encodedUri(), QStringLiteral( "testlayer" ) );
+  QVERIFY( tempLayer->isValid() );
+
+  QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:3857" ) );
+  canvas->setDestinationCrs( srs );
+  canvas->setExtent( tempLayer->extent() );
+  canvas->resize( 512, 512 );
+  canvas->setLayers( QList<QgsMapLayer *>() << tempLayer );
+  canvas->setCurrentLayer( tempLayer );
+
+  QList<QgsMapToolIdentify::IdentifyResult> results;
+  results = testIdentifyVectorTile( tempLayer, 15186127, -2974969 );
+  QCOMPARE( results.size(), 1 );
+  QCOMPARE( results[0].mLayer, tempLayer );
+  QCOMPARE( results[0].mLabel, QStringLiteral( "place" ) );
+  QCOMPARE( results[0].mFeature.geometry().wkbType(), QgsWkbTypes::Point );
+  QCOMPARE( results[0].mFeature.attribute( QStringLiteral( "class" ) ).toString(), QStringLiteral( "country" ) );
+  QCOMPARE( results[0].mFeature.attribute( QStringLiteral( "name" ) ).toString(), QStringLiteral( "Australia" ) );
+
+  delete tempLayer;
 }
 
 void TestQgsMapToolIdentifyAction::identifyInvalidPolygons()

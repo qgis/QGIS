@@ -72,7 +72,7 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 
   //add database drivers
   mVectorFileFilter = QgsProviderRegistry::instance()->fileVectorFilters();
-  QgsDebugMsg( "Database drivers :" + QgsProviderRegistry::instance()->databaseDrivers() );
+  QgsDebugMsgLevel( "Database drivers :" + QgsProviderRegistry::instance()->databaseDrivers(), 2 );
   QStringList dbDrivers = QgsProviderRegistry::instance()->databaseDrivers().split( ';' );
 
   for ( int i = 0; i < dbDrivers.count(); i++ )
@@ -111,6 +111,7 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   mFileWidget->setDialogTitle( tr( "Open OGR Supported Vector Dataset(s)" ) );
   mFileWidget->setFilter( mVectorFileFilter );
   mFileWidget->setStorageMode( QgsFileWidget::GetMultipleFiles );
+  mFileWidget->setOptions( QFileDialog::HideNameFilterDetails );
 
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
   {
@@ -215,6 +216,11 @@ void QgsOgrSourceSelect::populateConnectionList()
     ++it;
   }
   settings.endGroup();
+
+  btnEdit->setDisabled( cmbConnections->count() == 0 );
+  btnDelete->setDisabled( cmbConnections->count() == 0 );
+  cmbConnections->setDisabled( cmbConnections->count() == 0 );
+
   setConnectionListPosition();
 }
 
@@ -268,14 +274,14 @@ void QgsOgrSourceSelect::setSelectedConnectionType()
   QgsSettings settings;
   QString baseKey = QStringLiteral( "/ogr/connections/" );
   settings.setValue( baseKey + "selectedtype", cmbDatabaseTypes->currentText() );
-  QgsDebugMsg( "Setting selected type to" + cmbDatabaseTypes->currentText() );
+  QgsDebugMsgLevel( "Setting selected type to" + cmbDatabaseTypes->currentText(), 3 );
 }
 
 void QgsOgrSourceSelect::setSelectedConnection()
 {
   QgsSettings settings;
   settings.setValue( '/' + cmbDatabaseTypes->currentText() + "/connections/selected", cmbConnections->currentText() );
-  QgsDebugMsg( "Setting selected connection to " + cmbConnections->currentText() );
+  QgsDebugMsgLevel( "Setting selected connection to " + cmbConnections->currentText(), 3 );
 }
 
 void QgsOgrSourceSelect::setProtocolWidgetsVisibility()

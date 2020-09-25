@@ -428,6 +428,9 @@ void TestQgsAttributeTable::testFilteredFeatures()
 
   std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get(), QgsAttributeTableFilterModel::ShowAll ) );
 
+  QEventLoop loop;
+  connect( qobject_cast<QgsAttributeTableFilterModel *>( dlg->mMainView->mFilterModel ), &QgsAttributeTableFilterModel::featuresFiltered, &loop, &QEventLoop::quit );
+
   // show all (three features)
   dlg->mFeatureFilterWidget->filterShowAll();
   QCOMPARE( dlg->mMainView->featureCount(), 3 );
@@ -463,7 +466,7 @@ void TestQgsAttributeTable::testFilteredFeatures()
   f6.setAttribute( 1, 12 );
   QVERIFY( tempLayer->addFeatures( QgsFeatureList() << f5 << f6 ) );
   tempLayer->commitChanges();
-
+  loop.exec();
   //no filter change -> now two of six features
   QCOMPARE( dlg->mMainView->featureCount(), 6 );
   QCOMPARE( dlg->mMainView->filteredFeatureCount(), 2 );

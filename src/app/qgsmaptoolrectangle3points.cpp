@@ -29,6 +29,7 @@ QgsMapToolRectangle3Points::QgsMapToolRectangle3Points( QgsMapToolCapture *paren
   : QgsMapToolAddRectangle( parentTool, canvas, mode ),
     mCreateMode( createMode )
 {
+  mToolName = tr( "Add rectangle from 3 points" );
 }
 
 void QgsMapToolRectangle3Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
@@ -46,8 +47,14 @@ void QgsMapToolRectangle3Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
   if ( e->button() == Qt::LeftButton )
   {
-    if ( !point.is3D() )
+    bool is3D = false;
+    QgsVectorLayer *currentLayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+    if ( currentLayer )
+      is3D = QgsWkbTypes::hasZ( currentLayer->wkbType() );
+
+    if ( is3D && !point.is3D() )
       point.addZValue( defaultZValue() );
+
     if ( mPoints.size() < 2 )
     {
       mPoints.append( point );
@@ -86,12 +93,18 @@ void QgsMapToolRectangle3Points::cadCanvasMoveEvent( QgsMapMouseEvent *e )
         line->addVertex( mPoints.at( 0 ) );
         line->addVertex( point );
         mTempRubberBand->setGeometry( line.release() );
-        break;
       }
+      break;
       case 2:
       {
-        if ( !point.is3D() )
+        bool is3D = false;
+        QgsVectorLayer *currentLayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+        if ( currentLayer )
+          is3D = QgsWkbTypes::hasZ( currentLayer->wkbType() );
+
+        if ( is3D && !point.is3D() )
           point.addZValue( defaultZValue() );
+
         switch ( mCreateMode )
         {
           case DistanceMode:
@@ -101,10 +114,11 @@ void QgsMapToolRectangle3Points::cadCanvasMoveEvent( QgsMapMouseEvent *e )
             mRectangle = QgsQuadrilateral::rectangleFrom3Points( mPoints.at( 0 ), mPoints.at( 1 ), point, QgsQuadrilateral::Projected );
             break;
         }
-
-        mTempRubberBand->setGeometry( mRectangle.toPolygon() );
-        break;
+        mTempRubberBand->setGeometry( mRectangle.toPolygon( ) );
       }
+      break;
+      default:
+        break;
     }
   }
 }

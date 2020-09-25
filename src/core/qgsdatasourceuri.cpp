@@ -58,7 +58,7 @@ QgsDataSourceUri::QgsDataSourceUri( const QString &u )
 
     if ( i == uri.length() || uri[i] != '=' )
     {
-      QgsDebugMsg( QStringLiteral( "= expected after parameter name, skipping text '%1'" ).arg( pname ) );
+      // no "=", so likely not a parameter name
       continue;
     }
 
@@ -159,7 +159,7 @@ QgsDataSourceUri::QgsDataSourceUri( const QString &u )
       }
       else if ( pname == QLatin1String( "connect_timeout" ) )
       {
-        QgsDebugMsg( QStringLiteral( "connection timeout ignored" ) );
+        QgsDebugMsgLevel( QStringLiteral( "connection timeout ignored" ), 3 );
       }
       else if ( pname == QLatin1String( "dbname" ) )
       {

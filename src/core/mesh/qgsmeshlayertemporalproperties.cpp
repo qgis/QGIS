@@ -2,8 +2,8 @@
                          qgsmeshlayertemporalproperties.cpp
                          -----------------------
     begin                : March 2020
-    copyright            : (C) 2020 by Vincent
-    email                : zilolv at gmail dot com
+    copyright            : (C) 2020 by Vincent Cloarec
+    email                : vcloarec at gmail dot com
  ***************************************************************************/
 
 /***************************************************************************
@@ -33,6 +33,7 @@ QDomElement QgsMeshLayerTemporalProperties::writeXml( QDomElement &element, QDom
   temporalElement.setAttribute( QStringLiteral( "reference-time" ), mReferenceTime.toTimeSpec( Qt::UTC ).toString( Qt::ISODate ) );
   temporalElement.setAttribute( QStringLiteral( "start-time-extent" ), mTimeExtent.begin().toTimeSpec( Qt::UTC ).toString( Qt::ISODate ) );
   temporalElement.setAttribute( QStringLiteral( "end-time-extent" ), mTimeExtent.end().toTimeSpec( Qt::UTC ).toString( Qt::ISODate ) );
+  temporalElement.setAttribute( QStringLiteral( "matching-method" ), mMatchingMethod );
 
   element.appendChild( temporalElement );
 
@@ -57,6 +58,9 @@ bool QgsMeshLayerTemporalProperties::readXml( const QDomElement &element, const 
     mTimeExtent = QgsDateTimeRange( start, end );
   }
 
+  mMatchingMethod = static_cast<QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod>(
+                      temporalElement.attribute( QStringLiteral( "matching-method" ) ).toInt() );
+
   return true;
 }
 
@@ -70,6 +74,11 @@ void QgsMeshLayerTemporalProperties::setDefaultsFromDataProviderTemporalCapabili
 
   if ( mReferenceTime.isValid() )
     mTimeExtent = temporalCapabilities->timeExtent();
+}
+
+QgsDateTimeRange QgsMeshLayerTemporalProperties::calculateTemporalExtent( QgsMapLayer * ) const
+{
+  return mTimeExtent;
 }
 
 QgsDateTimeRange QgsMeshLayerTemporalProperties::timeExtent() const
@@ -92,4 +101,14 @@ void QgsMeshLayerTemporalProperties::setReferenceTime( const QDateTime &referenc
   }
   else
     mTimeExtent = QgsDateTimeRange( referenceTime, referenceTime );
+}
+
+QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod QgsMeshLayerTemporalProperties::matchingMethod() const
+{
+  return mMatchingMethod;
+}
+
+void QgsMeshLayerTemporalProperties::setMatchingMethod( const QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod &matchingMethod )
+{
+  mMatchingMethod = matchingMethod;
 }

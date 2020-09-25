@@ -14,7 +14,7 @@
 #include <qgssnaptogridcanvasitem.h>
 %End
 
-class QgsSnapToGridCanvasItem : QObject, QgsMapCanvasItem
+class QgsSnapToGridCanvasItem : QgsMapCanvasItem
 {
 %Docstring
 

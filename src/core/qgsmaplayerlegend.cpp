@@ -24,7 +24,7 @@
 #include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgsdiagramrenderer.h"
-
+#include "qgssymbollayerutils.h"
 
 QgsMapLayerLegend::QgsMapLayerLegend( QObject *parent )
   : QObject( parent )
@@ -146,6 +146,88 @@ bool QgsMapLayerLegendUtils::hasLegendNodeUserLabel( QgsLayerTreeLayer *nodeLaye
   return nodeLayer->customProperties().contains( "legend/label-" + QString::number( originalIndex ) );
 }
 
+void QgsMapLayerLegendUtils::setLegendNodePatchShape( QgsLayerTreeLayer *nodeLayer, int originalIndex, const QgsLegendPatchShape &shape )
+{
+  QDomDocument patchDoc;
+  QDomElement patchElem = patchDoc.createElement( QStringLiteral( "patch" ) );
+  shape.writeXml( patchElem, patchDoc, QgsReadWriteContext() );
+  patchDoc.appendChild( patchElem );
+  nodeLayer->setCustomProperty( "legend/patch-shape-" + QString::number( originalIndex ), patchDoc.toString() );
+}
+
+QgsLegendPatchShape QgsMapLayerLegendUtils::legendNodePatchShape( QgsLayerTreeLayer *nodeLayer, int originalIndex )
+{
+  QString patchDef = nodeLayer->customProperty( "legend/patch-shape-" + QString::number( originalIndex ) ).toString();
+  if ( patchDef.isEmpty() )
+    return QgsLegendPatchShape();
+
+  QDomDocument doc( QStringLiteral( "patch" ) );
+  doc.setContent( patchDef );
+  QgsLegendPatchShape shape;
+  shape.readXml( doc.documentElement(), QgsReadWriteContext() );
+  return shape;
+}
+
+void QgsMapLayerLegendUtils::setLegendNodeSymbolSize( QgsLayerTreeLayer *nodeLayer, int originalIndex, QSizeF size )
+{
+  if ( size.isValid() )
+    nodeLayer->setCustomProperty( "legend/symbol-size-" + QString::number( originalIndex ), QgsSymbolLayerUtils::encodeSize( size ) );
+  else
+    nodeLayer->removeCustomProperty( "legend/symbol-size-" + QString::number( originalIndex ) );
+}
+
+QSizeF QgsMapLayerLegendUtils::legendNodeSymbolSize( QgsLayerTreeLayer *nodeLayer, int originalIndex )
+{
+  const QString size = nodeLayer->customProperty( "legend/symbol-size-" + QString::number( originalIndex ) ).toString();
+  if ( size.isEmpty() )
+    return QSizeF();
+  else
+    return QgsSymbolLayerUtils::decodeSize( size );
+}
+
+void QgsMapLayerLegendUtils::setLegendNodeCustomSymbol( QgsLayerTreeLayer *nodeLayer, int originalIndex, const QgsSymbol *symbol )
+{
+  if ( symbol )
+  {
+    QDomDocument doc;
+    QgsReadWriteContext rwContext;
+    rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
+    QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "custom symbol" ), symbol, doc, rwContext );
+    doc.appendChild( elem );
+    nodeLayer->setCustomProperty( "legend/custom-symbol-" + QString::number( originalIndex ), doc.toString() );
+  }
+  else
+    nodeLayer->removeCustomProperty( "legend/custom-symbol-" + QString::number( originalIndex ) );
+}
+
+QgsSymbol *QgsMapLayerLegendUtils::legendNodeCustomSymbol( QgsLayerTreeLayer *nodeLayer, int originalIndex )
+{
+  const QString symbolDef = nodeLayer->customProperty( "legend/custom-symbol-" + QString::number( originalIndex ) ).toString();
+  if ( symbolDef.isEmpty() )
+    return nullptr;
+
+  QDomDocument doc;
+  doc.setContent( symbolDef );
+  const QDomElement elem = doc.documentElement();
+
+  QgsReadWriteContext rwContext;
+  rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
+
+  return QgsSymbolLayerUtils::loadSymbol( elem, rwContext );
+}
+
+void QgsMapLayerLegendUtils::setLegendNodeColumnBreak( QgsLayerTreeLayer *nodeLayer, int originalIndex, bool columnBreakBeforeNode )
+{
+  if ( columnBreakBeforeNode )
+    nodeLayer->setCustomProperty( "legend/column-break-" + QString::number( originalIndex ), QStringLiteral( "1" ) );
+  else
+    nodeLayer->removeCustomProperty( "legend/column-break-" + QString::number( originalIndex ) );
+}
+
+bool QgsMapLayerLegendUtils::legendNodeColumnBreak( QgsLayerTreeLayer *nodeLayer, int originalIndex )
+{
+  return nodeLayer->customProperty( "legend/column-break-" + QString::number( originalIndex ) ).toInt();
+}
 
 void QgsMapLayerLegendUtils::applyLayerNodeProperties( QgsLayerTreeLayer *nodeLayer, QList<QgsLayerTreeModelLegendNode *> &nodes )
 {
@@ -154,9 +236,28 @@ void QgsMapLayerLegendUtils::applyLayerNodeProperties( QgsLayerTreeLayer *nodeLa
   const auto constNodes = nodes;
   for ( QgsLayerTreeModelLegendNode *legendNode : constNodes )
   {
-    QString userLabel = QgsMapLayerLegendUtils::legendNodeUserLabel( nodeLayer, i++ );
+    QString userLabel = QgsMapLayerLegendUtils::legendNodeUserLabel( nodeLayer, i );
     if ( !userLabel.isNull() )
       legendNode->setUserLabel( userLabel );
+
+    if ( QgsSymbolLegendNode *symbolNode = dynamic_cast< QgsSymbolLegendNode * >( legendNode ) )
+    {
+      const QgsLegendPatchShape shape = QgsMapLayerLegendUtils::legendNodePatchShape( nodeLayer, i );
+      symbolNode->setPatchShape( shape );
+
+      symbolNode->setCustomSymbol( QgsMapLayerLegendUtils::legendNodeCustomSymbol( nodeLayer, i ) );
+    }
+
+    const QSizeF userSize = QgsMapLayerLegendUtils::legendNodeSymbolSize( nodeLayer, i );
+    if ( userSize.isValid() )
+    {
+      legendNode->setUserPatchSize( userSize );
+    }
+
+    if ( legendNodeColumnBreak( nodeLayer, i ) )
+      legendNode->setColumnBreak( true );
+
+    i++;
   }
 
   // handle user order of nodes

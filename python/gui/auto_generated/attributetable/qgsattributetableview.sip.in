@@ -111,7 +111,7 @@ Disables selection change by only pressing an arrow key
     virtual void contextMenuEvent( QContextMenuEvent *event );
 
 %Docstring
-Is called when the context menu will be shown. Emits a willShowContextMenu() signal,
+Is called when the context menu will be shown. Emits a :py:func:`~QgsAttributeTableView.willShowContextMenu` signal,
 so the menu can be populated by other parts of the application.
 
 :param event: The associated event object.

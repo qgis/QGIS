@@ -146,7 +146,7 @@ void QgsAuthConfigSelect::populateConfigSelector()
 
   cmbConfigSelect->blockSignals( true );
   cmbConfigSelect->clear();
-  cmbConfigSelect->addItem( tr( "No authentication" ), "0" );
+  cmbConfigSelect->addItem( tr( "No Authentication" ), "0" );
 
   QgsStringMap sortmap;
   QgsAuthMethodConfigsMap::const_iterator cit = mConfigs.constBegin();

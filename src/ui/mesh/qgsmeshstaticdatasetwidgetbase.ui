@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="3">
@@ -76,6 +76,10 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mScalarDatasetComboBox</tabstop>
+  <tabstop>mVectorDatasetComboBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

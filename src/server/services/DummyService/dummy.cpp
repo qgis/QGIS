@@ -26,11 +26,6 @@ class SampleService: public QgsService
     QString name()    const override { return "SampleService"; }
     QString version() const override { return "1.0"; }
 
-    bool allowMethod( QgsServerRequest::Method method ) const override
-    {
-      return method == QgsServerRequest::GetMethod;
-    }
-
     void executeRequest( const QgsServerRequest &request, QgsServerResponse &response,
                          const QgsProject *project ) override
     {

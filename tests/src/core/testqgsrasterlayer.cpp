@@ -1006,7 +1006,7 @@ void TestQgsRasterLayer::sample()
 
 void TestQgsRasterLayer::testTemporalProperties()
 {
-  QgsRasterLayerTemporalProperties *temporalProperties = mTemporalRasterLayer->temporalProperties();
+  QgsRasterLayerTemporalProperties *temporalProperties = qobject_cast< QgsRasterLayerTemporalProperties * >( mTemporalRasterLayer->temporalProperties() );
   QVERIFY( !mTemporalRasterLayer->temporalProperties()->isActive() );
 
   QgsDateTimeRange dateTimeRange = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ) ),
@@ -1014,8 +1014,8 @@ void TestQgsRasterLayer::testTemporalProperties()
 
   temporalProperties->setFixedTemporalRange( dateTimeRange );
 
-  QCOMPARE( mTemporalRasterLayer->temporalProperties()->fixedTemporalRange().begin(), dateTimeRange.begin() );
-  QCOMPARE( mTemporalRasterLayer->temporalProperties()->fixedTemporalRange().end(), dateTimeRange.end() );
+  QCOMPARE( temporalProperties->fixedTemporalRange().begin(), dateTimeRange.begin() );
+  QCOMPARE( temporalProperties->fixedTemporalRange().end(), dateTimeRange.end() );
 
   // writing and reading from xml
   QDomDocument document;
@@ -1033,8 +1033,8 @@ void TestQgsRasterLayer::testTemporalProperties()
   QVERIFY( temporalProperties->readXml( element, QgsReadWriteContext() ) );
   QCOMPARE( temporalProperties->mode(), QgsRasterLayerTemporalProperties::TemporalMode::ModeTemporalRangeFromDataProvider );
 
-  QCOMPARE( mTemporalRasterLayer->temporalProperties()->fixedTemporalRange().begin(), dateTimeRange.begin() );
-  QCOMPARE( mTemporalRasterLayer->temporalProperties()->fixedTemporalRange().end(), dateTimeRange.end() );
+  QCOMPARE( temporalProperties->fixedTemporalRange().begin(), dateTimeRange.begin() );
+  QCOMPARE( temporalProperties->fixedTemporalRange().end(), dateTimeRange.end() );
 }
 
 QGSTEST_MAIN( TestQgsRasterLayer )

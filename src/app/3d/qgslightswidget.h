@@ -21,6 +21,7 @@
 #include "ui_qgslightswidget.h"
 
 #include "qgspointlightsettings.h"
+#include "qgsdirectionallightsettings.h"
 
 
 /**
@@ -32,24 +33,33 @@ class QgsLightsWidget : public QWidget, private Ui::QgsLightsWidget
     Q_OBJECT
   public:
     explicit QgsLightsWidget( QWidget *parent = nullptr );
+    ~QgsLightsWidget() override;
 
     void setPointLights( const QList<QgsPointLightSettings> &pointLights );
+    void setDirectionalLights( const QList<QgsDirectionalLightSettings> &directionalLights );
 
     QList<QgsPointLightSettings> pointLights();
+    QList<QgsDirectionalLightSettings> directionalLights();
 
   signals:
-
+    void directionalLightsCountChanged( int count );
   private slots:
     void onCurrentLightChanged( int index );
     void updateCurrentLightParameters();
     void onAddLight();
     void onRemoveLight();
 
+    void onCurrentDirectionalLightChanged( int index );
+    void updateCurrentDirectionalLightParameters();
+    void onAddDirectionalLight();
+    void onRemoveDirectionalLight();
   private:
     void updateLightsList();
+    void updateDirectionalLightsList();
 
   private:
     QList<QgsPointLightSettings> mPointLights;
+    QList<QgsDirectionalLightSettings> mDirectionalLights;
 };
 
 #endif // QGSLIGHTSWIDGET_H

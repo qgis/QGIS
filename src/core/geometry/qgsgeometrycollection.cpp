@@ -36,7 +36,11 @@ QgsGeometryCollection::QgsGeometryCollection()
   mWkbType = QgsWkbTypes::GeometryCollection;
 }
 
-QgsGeometryCollection::QgsGeometryCollection( const QgsGeometryCollection &c ): QgsAbstractGeometry( c )
+QgsGeometryCollection::QgsGeometryCollection( const QgsGeometryCollection &c ):
+  QgsAbstractGeometry( c ),
+  mBoundingBox( c.mBoundingBox ),
+  mHasCachedValidity( c.mHasCachedValidity ),
+  mValidityFailureReason( c.mValidityFailureReason )
 {
   int nGeoms = c.mGeometries.size();
   mGeometries.resize( nGeoms );
@@ -304,6 +308,18 @@ void QgsGeometryCollection::draw( QPainter &p ) const
   }
 }
 
+QPainterPath QgsGeometryCollection::asQPainterPath() const
+{
+  QPainterPath p;
+  for ( const QgsAbstractGeometry *geom : mGeometries )
+  {
+    QPainterPath partPath = geom->asQPainterPath();
+    if ( !partPath.isEmpty() )
+      p.addPath( partPath );
+  }
+  return p;
+}
+
 bool QgsGeometryCollection::fromWkb( QgsConstWkbPtr &wkbPtr )
 {
   if ( !wkbPtr )
@@ -353,7 +369,7 @@ bool QgsGeometryCollection::fromWkt( const QString &wkt )
                             << new QgsMultiCurve << new QgsMultiSurface, QStringLiteral( "GeometryCollection" ) );
 }
 
-QByteArray QgsGeometryCollection::asWkb() const
+QByteArray QgsGeometryCollection::asWkb( WkbFlags flags ) const
 {
   int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
   QVector<QByteArray> wkbForGeometries;
@@ -361,7 +377,7 @@ QByteArray QgsGeometryCollection::asWkb() const
   {
     if ( geom )
     {
-      QByteArray wkb( geom->asWkb() );
+      QByteArray wkb( geom->asWkb( flags ) );
       binarySize += wkb.length();
       wkbForGeometries << wkb;
     }
@@ -682,7 +698,10 @@ bool QgsGeometryCollection::fromCollectionWkt( const QString &wkt, const QVector
   }
   mWkbType = parts.first;
 
-  if ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 )
+  QString secondWithoutParentheses = parts.second;
+  secondWithoutParentheses = secondWithoutParentheses.remove( '(' ).remove( ')' ).simplified().remove( ' ' );
+  if ( ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 ) ||
+       secondWithoutParentheses.isEmpty() )
     return true;
 
   QString defChildWkbType = QStringLiteral( "%1%2%3 " ).arg( defaultChildWkbType, is3D() ? QStringLiteral( "Z" ) : QString(), isMeasure() ? QStringLiteral( "M" ) : QString() );
@@ -748,7 +767,7 @@ bool QgsGeometryCollection::hasCurvedSegments() const
 
 QgsAbstractGeometry *QgsGeometryCollection::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
 {
-  std::unique_ptr< QgsAbstractGeometry > geom( QgsGeometryFactory::geomFromWkbType( mWkbType ) );
+  std::unique_ptr< QgsAbstractGeometry > geom( QgsGeometryFactory::geomFromWkbType( QgsWkbTypes::linearType( mWkbType ) ) );
   QgsGeometryCollection *geomCollection = qgsgeometry_cast<QgsGeometryCollection *>( geom.get() );
   if ( !geomCollection )
   {

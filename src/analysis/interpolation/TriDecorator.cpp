@@ -55,7 +55,7 @@ void TriDecorator::performConsistencyTest()
   }
 }
 
-bool TriDecorator::calcNormal( double x, double y, Vector3D *result )
+bool TriDecorator::calcNormal( double x, double y, QgsPoint &result )
 {
   if ( mTIN )
   {
@@ -83,11 +83,11 @@ bool TriDecorator::calcPoint( double x, double y, QgsPoint &result )
   }
 }
 
-QgsPoint *TriDecorator::getPoint( int i ) const
+QgsPoint *TriDecorator::point( int i ) const
 {
   if ( mTIN )
   {
-    QgsPoint *p = mTIN->getPoint( i );
+    QgsPoint *p = mTIN->point( i );
     return p;
   }
   else
@@ -97,11 +97,11 @@ QgsPoint *TriDecorator::getPoint( int i ) const
   }
 }
 
-bool TriDecorator::getTriangle( double x, double y, QgsPoint &p1, int &n1, QgsPoint &p2, int &n2, QgsPoint &p3, int &n3 )
+bool TriDecorator::triangleVertices( double x, double y, QgsPoint &p1, int &n1, QgsPoint &p2, int &n2, QgsPoint &p3, int &n3 )
 {
   if ( mTIN )
   {
-    bool b = mTIN->getTriangle( x, y, p1, n1, p2, n2, p3, n3 );
+    bool b = mTIN->triangleVertices( x, y, p1, n1, p2, n2, p3, n3 );
     return b;
   }
   else
@@ -111,11 +111,11 @@ bool TriDecorator::getTriangle( double x, double y, QgsPoint &p1, int &n1, QgsPo
   }
 }
 
-bool TriDecorator::getTriangle( double x, double y, QgsPoint &p1, QgsPoint &p2, QgsPoint &p3 )
+bool TriDecorator::triangleVertices( double x, double y, QgsPoint &p1, QgsPoint &p2, QgsPoint &p3 )
 {
   if ( mTIN )
   {
-    bool b = mTIN->getTriangle( x, y, p1, p2, p3 );
+    bool b = mTIN->triangleVertices( x, y, p1, p2, p3 );
     return b;
   }
   else
@@ -125,11 +125,11 @@ bool TriDecorator::getTriangle( double x, double y, QgsPoint &p1, QgsPoint &p2, 
   }
 }
 
-int TriDecorator::getNumberOfPoints() const
+int TriDecorator::pointsCount() const
 {
   if ( mTIN )
   {
-    return ( mTIN->getNumberOfPoints() );
+    return ( mTIN->pointsCount() );
   }
   else
   {
@@ -138,11 +138,11 @@ int TriDecorator::getNumberOfPoints() const
   }
 }
 
-int TriDecorator::getOppositePoint( int p1, int p2 )
+int TriDecorator::oppositePoint( int p1, int p2 )
 {
   if ( mTIN )
   {
-    int i = mTIN->getOppositePoint( p1, p2 );
+    int i = mTIN->oppositePoint( p1, p2 );
     return i;
   }
   else
@@ -152,11 +152,11 @@ int TriDecorator::getOppositePoint( int p1, int p2 )
   }
 }
 
-QList<int> TriDecorator::getSurroundingTriangles( int pointno )
+QList<int> TriDecorator::surroundingTriangles( int pointno )
 {
   if ( mTIN )
   {
-    return mTIN->getSurroundingTriangles( pointno );
+    return mTIN->surroundingTriangles( pointno );
   }
   else
   {
@@ -164,11 +164,11 @@ QList<int> TriDecorator::getSurroundingTriangles( int pointno )
   }
 }
 
-double TriDecorator::getXMax() const
+double TriDecorator::xMax() const
 {
   if ( mTIN )
   {
-    double d = mTIN->getXMax();
+    double d = mTIN->xMax();
     return d;
   }
   else
@@ -178,11 +178,11 @@ double TriDecorator::getXMax() const
   }
 }
 
-double TriDecorator::getXMin() const
+double TriDecorator::xMin() const
 {
   if ( mTIN )
   {
-    double d = mTIN->getXMin();
+    double d = mTIN->xMin();
     return d;
   }
   else
@@ -191,25 +191,11 @@ double TriDecorator::getXMin() const
     return 0;
   }
 }
-double TriDecorator::getYMax() const
+double TriDecorator::yMax() const
 {
   if ( mTIN )
   {
-    double d = mTIN->getYMax();
-    return d;
-  }
-  else
-  {
-    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
-    return 0;
-  }
-}
-
-double TriDecorator::getYMin() const
-{
-  if ( mTIN )
-  {
-    double d = mTIN->getYMin();
+    double d = mTIN->yMax();
     return d;
   }
   else
@@ -219,47 +205,25 @@ double TriDecorator::getYMin() const
   }
 }
 
-void TriDecorator::setForcedCrossBehavior( Triangulation::ForcedCrossBehavior b )
+double TriDecorator::yMin() const
+{
+  if ( mTIN )
+  {
+    double d = mTIN->yMin();
+    return d;
+  }
+  else
+  {
+    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
+    return 0;
+  }
+}
+
+void TriDecorator::setForcedCrossBehavior( QgsTriangulation::ForcedCrossBehavior b )
 {
   if ( mTIN )
   {
     mTIN->setForcedCrossBehavior( b );
-  }
-  else
-  {
-    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
-  }
-}
-
-void TriDecorator::setEdgeColor( int r, int g, int b )
-{
-  if ( mTIN )
-  {
-    mTIN->setEdgeColor( r, g, b );
-  }
-  else
-  {
-    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
-  }
-}
-
-void TriDecorator::setForcedEdgeColor( int r, int g, int b )
-{
-  if ( mTIN )
-  {
-    mTIN->setForcedEdgeColor( r, g, b );
-  }
-  else
-  {
-    QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
-  }
-}
-
-void TriDecorator::setBreakEdgeColor( int r, int g, int b )
-{
-  if ( mTIN )
-  {
-    mTIN->setBreakEdgeColor( r, g, b );
   }
   else
   {
@@ -331,15 +295,15 @@ bool TriDecorator::swapEdge( double x, double y )
   }
 }
 
-QList<int> *TriDecorator::getPointsAroundEdge( double x, double y )
+QList<int> TriDecorator::pointsAroundEdge( double x, double y )
 {
   if ( mTIN )
   {
-    return mTIN->getPointsAroundEdge( x, y );
+    return mTIN->pointsAroundEdge( x, y );
   }
   else
   {
     QgsDebugMsg( QStringLiteral( "warning, null pointer" ) );
-    return nullptr;
+    return QList<int>();
   }
 }

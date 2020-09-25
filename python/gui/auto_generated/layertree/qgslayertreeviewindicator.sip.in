@@ -13,10 +13,10 @@ class QgsLayerTreeViewIndicator : QObject
 {
 %Docstring
 Indicator that can be used in a layer tree view to display icons next to items of the layer tree.
-They add extra context to the item and interactivity (using clicked() signal).
+They add extra context to the item and interactivity (using :py:func:`~clicked` signal).
 
 Indicators can be added/removed to individual layer tree items using :py:func:`QgsLayerTreeView.addIndicator()`
-and QgsLayerTreeView.removeIndicator() calls.
+and :py:func:`QgsLayerTreeView.removeIndicator()` calls.
 
 .. versionadded:: 3.2
 %End

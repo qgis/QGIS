@@ -50,6 +50,8 @@ class QgsDelimitedTextSourceSelect : public QgsAbstractDataSourceWidget, private
     std::unique_ptr<QgsDelimitedTextFile> mFile;
     int mExampleRowCount = 20;
     int mBadRowCount = 0;
+    static constexpr int DEFAULT_MAX_FIELDS = 10000;
+    int mMaxFields = DEFAULT_MAX_FIELDS; // to avoid Denial Of Service (at least in source select). Configurable through /max_fields settings sub-key.
     QString mSettingsKey;
     QString mLastFileType;
     QButtonGroup *bgFileFormat = nullptr;

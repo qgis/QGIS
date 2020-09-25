@@ -52,7 +52,7 @@ class APP_EXPORT QgsFixAttributeDialog : public QDialog
     /**
      * Constructor for QgsFixAttributeDialog
      */
-    QgsFixAttributeDialog( QgsVectorLayer *vl, QgsFeatureList &features, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsFixAttributeDialog( QgsVectorLayer *vl, QgsFeatureList &features, QWidget *parent SIP_TRANSFERTHIS = nullptr, const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
 
     /**
      * Returns fixed features
@@ -69,7 +69,7 @@ class APP_EXPORT QgsFixAttributeDialog : public QDialog
     void reject() override;
 
   private:
-    void init( QgsVectorLayer *layer );
+    void init( QgsVectorLayer *layer, const QgsAttributeEditorContext &context );
     QString descriptionText();
 
     QgsFeatureList mFeatures;

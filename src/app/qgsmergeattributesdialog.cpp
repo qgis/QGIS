@@ -241,8 +241,8 @@ QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnT
       break;
   }
 
-  newComboBox->addItem( tr( "Skip attribute" ), QStringLiteral( "skip" ) );
-  newComboBox->addItem( tr( "Manual value" ), QStringLiteral( "manual" ) );
+  newComboBox->addItem( tr( "Skip Attribute" ), QStringLiteral( "skip" ) );
+  newComboBox->addItem( tr( "Manual Value" ), QStringLiteral( "manual" ) );
 
   connect( newComboBox, &QComboBox::currentTextChanged,
            this, &QgsMergeAttributesDialog::comboValueChanged );

@@ -51,6 +51,7 @@ from qgis.core import Qgis
 
 import re
 
+
 # ------------------------------------------------------------------------ #
 
 
@@ -140,7 +141,7 @@ def compareVersions(a, b):
         if compareElements(v1[i], v2[i]):
             return compareElements(v1[i], v2[i])
     # if the lists are identical till the end of the shorther string, try to compare the odd tail
-    #with the simple space (because the 'alpha', 'beta', 'preview' and 'rc' are LESS then nothing)
+    # with the simple space (because the 'alpha', 'beta', 'preview' and 'rc' are LESS then nothing)
     if len(v1) > l:
         return compareElements(v1[l], u' ')
     if len(v2) > l:

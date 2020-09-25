@@ -88,7 +88,6 @@ WIDGET, BASE = uic.loadUiType(os.path.join(pluginPath, 'interpolationdatawidgetb
 
 
 class InterpolationDataWidget(BASE, WIDGET):
-
     hasChanged = pyqtSignal()
 
     def __init__(self):

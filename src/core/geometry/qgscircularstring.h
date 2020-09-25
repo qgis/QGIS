@@ -38,7 +38,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     /**
      * Constructs an empty circular string.
      */
-    QgsCircularString();
+    QgsCircularString() SIP_HOLDGIL;
 
     /**
      * Constructs a circular string with a single
@@ -48,7 +48,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
      */
     QgsCircularString( const QgsPoint &p1,
                        const QgsPoint &p2,
-                       const QgsPoint &p3 );
+                       const QgsPoint &p3 ) SIP_HOLDGIL;
 
     /**
      * Creates a circular string with a single arc representing
@@ -67,26 +67,26 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
 
     bool equals( const QgsCurve &other ) const override;
 
-    QString geometryType() const override;
-    int dimension() const override;
+    QString geometryType() const override SIP_HOLDGIL;
+    int dimension() const override SIP_HOLDGIL;
     QgsCircularString *clone() const override SIP_FACTORY;
     void clear() override;
 
     bool fromWkb( QgsConstWkbPtr &wkb ) override;
     bool fromWkt( const QString &wkt ) override;
 
-    QByteArray asWkb() const override;
+    QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const override;
     QString asWkt( int precision = 17 ) const override;
     QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     json asJsonObject( int precision = 17 ) const override SIP_SKIP;
-    bool isEmpty() const override;
-    int numPoints() const override;
+    bool isEmpty() const override SIP_HOLDGIL;
+    int numPoints() const override SIP_HOLDGIL;
 
     /**
      * Returns the point at index i within the circular string.
      */
-    QgsPoint pointN( int i ) const;
+    QgsPoint pointN( int i ) const SIP_HOLDGIL;
 
     void points( QgsPointSequence &pts SIP_OUT ) const override;
 
@@ -96,8 +96,8 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     void setPoints( const QgsPointSequence &points );
 
     double length() const override;
-    QgsPoint startPoint() const override;
-    QgsPoint endPoint() const override;
+    QgsPoint startPoint() const override SIP_HOLDGIL;
+    QgsPoint endPoint() const override SIP_HOLDGIL;
     QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
     QgsCircularString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
@@ -124,8 +124,8 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     bool dropZValue() override;
     bool dropMValue() override;
     void swapXy() override;
-    double xAt( int index ) const override;
-    double yAt( int index ) const override;
+    double xAt( int index ) const override SIP_HOLDGIL;
+    double yAt( int index ) const override SIP_HOLDGIL;
 
 #ifndef SIP_RUN
     void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;

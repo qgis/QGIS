@@ -16,7 +16,7 @@ class QgsPointDistanceRenderer: QgsFeatureRenderer
 %Docstring
 An abstract base class for distance based point renderers (e.g., clusterer and displacement renderers).
 QgsPointDistanceRenderer handles calculation of point clusters using a distance based threshold.
-Subclasses must implement drawGroup() to handle the rendering of individual point clusters
+Subclasses must implement :py:func:`~drawGroup` to handle the rendering of individual point clusters
 in the desired style.
 
 .. versionadded:: 3.0
@@ -210,7 +210,7 @@ Returns the color used for for labeling points.
     void setTolerance( double distance );
 %Docstring
 Sets the tolerance distance for grouping points. Units are specified using
-setToleranceUnit().
+:py:func:`~QgsPointDistanceRenderer.setToleranceUnit`.
 
 :param distance: tolerance distance
 
@@ -222,7 +222,7 @@ setToleranceUnit().
     double tolerance() const;
 %Docstring
 Returns the tolerance distance for grouping points. Units are retrieved using
-toleranceUnit().
+:py:func:`~QgsPointDistanceRenderer.toleranceUnit`.
 
 .. seealso:: :py:func:`setTolerance`
 
@@ -256,7 +256,7 @@ Returns the units for the tolerance distance.
     void setToleranceMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
 Sets the map unit scale object for the distance tolerance. This is only used if the
-toleranceUnit() is set to QgsUnitTypes.RenderMapUnits.
+:py:func:`~QgsPointDistanceRenderer.toleranceUnit` is set to QgsUnitTypes.RenderMapUnits.
 
 :param scale: scale for distance tolerance
 
@@ -268,7 +268,7 @@ toleranceUnit() is set to QgsUnitTypes.RenderMapUnits.
     const QgsMapUnitScale &toleranceMapUnitScale() const;
 %Docstring
 Returns the map unit scale object for the distance tolerance. This is only used if the
-toleranceUnit() is set to QgsUnitTypes.RenderMapUnits.
+:py:func:`~QgsPointDistanceRenderer.toleranceUnit` is set to QgsUnitTypes.RenderMapUnits.
 
 .. seealso:: :py:func:`setToleranceMapUnitScale`
 

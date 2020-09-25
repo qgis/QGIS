@@ -150,6 +150,7 @@ def getQueryBuilderDictionary():
 
     def add_paren(l):
         return [s + "(" for s in l]
+
     foo = sorted(add_paren(ff(list(set.union(set(functions), set(spatialite_functions))))))
     m = sorted(add_paren(ff(math_functions)))
     agg = sorted(add_paren(ff(aggregate_functions)))

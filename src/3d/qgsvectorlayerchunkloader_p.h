@@ -31,6 +31,8 @@
 #include "qgsfeature3dhandler_p.h"
 #include "qgschunkedentity_p.h"
 
+#define SIP_NO_FILE
+
 class Qgs3DMapSettings;
 class QgsVectorLayer;
 class QgsVectorLayer3DTilingSettings;

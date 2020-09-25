@@ -36,6 +36,12 @@ std::string MDAL::Driver::filters() const
   return mFilters;
 }
 
+std::string MDAL::Driver::writeDatasetOnFileSuffix() const
+{
+
+  return std::string();
+}
+
 bool MDAL::Driver::hasCapability( MDAL::Capability capability ) const
 {
   return capability == ( mCapabilityFlags & capability );
@@ -64,7 +70,12 @@ bool MDAL::Driver::hasWriteDatasetCapability( MDAL_DataLocation location ) const
 
 int MDAL::Driver::faceVerticesMaximumCount() const { return -1; }
 
-std::unique_ptr< MDAL::Mesh > MDAL::Driver::load( const std::string & ) { return std::unique_ptr< MDAL::Mesh >(); }
+std::string MDAL::Driver::buildUri( const std::string &meshFile )
+{
+  return MDAL::buildMeshUri( meshFile, "", this->name() );
+}
+
+std::unique_ptr< MDAL::Mesh > MDAL::Driver::load( const std::string &, const std::string & ) { return std::unique_ptr< MDAL::Mesh >(); }
 
 void MDAL::Driver::load( const std::string &, Mesh * ) {}
 

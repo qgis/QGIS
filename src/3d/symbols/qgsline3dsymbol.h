@@ -19,9 +19,9 @@
 #include "qgis_3d.h"
 
 #include "qgsabstract3dsymbol.h"
-#include "qgsphongmaterialsettings.h"
 #include "qgs3dtypes.h"
 
+class QgsAbstractMaterialSettings;
 
 /**
  * \ingroup 3d
@@ -32,17 +32,26 @@
  *
  * \since QGIS 3.0
  */
-class _3D_EXPORT QgsLine3DSymbol : public QgsAbstract3DSymbol
+class _3D_EXPORT QgsLine3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTORS
 {
   public:
     //! Constructor for QgsLine3DSymbol
-    QgsLine3DSymbol() = default;
+    QgsLine3DSymbol();
+    ~QgsLine3DSymbol() override;
+
+    /**
+     * Creates a new QgsLine3DSymbol.
+     *
+     * Caller takes ownership of the returned symbol.
+     */
+    static QgsAbstract3DSymbol *create() SIP_FACTORY;
 
     QString type() const override { return "line"; }
     QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
+    QList< QgsWkbTypes::GeometryType > compatibleGeometryTypes() const override;
 
     //! Returns method that determines altitude (whether to clamp to feature to terrain)
     Qgs3DTypes::AltitudeClamping altitudeClamping() const { return mAltClamping; }
@@ -75,9 +84,20 @@ class _3D_EXPORT QgsLine3DSymbol : public QgsAbstract3DSymbol
     void setRenderAsSimpleLines( bool enabled ) { mRenderAsSimpleLines = enabled; }
 
     //! Returns material used for shading of the symbol
-    QgsPhongMaterialSettings material() const { return mMaterial; }
-    //! Sets material used for shading of the symbol
-    void setMaterial( const QgsPhongMaterialSettings &material ) { mMaterial = material; }
+    QgsAbstractMaterialSettings *material() const;
+
+    /**
+     * Sets the \a material settings used for shading of the symbol.
+     *
+     * Ownership of \a material is transferred to the symbol.
+     */
+    void setMaterial( QgsAbstractMaterialSettings *material SIP_TRANSFER );
+
+    /**
+     * Exports the geometries contained within the hierarchy of entity.
+     * Returns whether any objects were exported
+     */
+    bool exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore::QEntity *entity, const QString &objectNamePrefix ) const override SIP_SKIP;
 
   private:
     //! how to handle altitude of vector features
@@ -89,7 +109,7 @@ class _3D_EXPORT QgsLine3DSymbol : public QgsAbstract3DSymbol
     float mHeight = 0.0f;           //!< Base height of polygons
     float mExtrusionHeight = 0.0f;  //!< How much to extrude (0 means no walls)
     bool mRenderAsSimpleLines = false;   //!< Whether to render data with simple lines (otherwise it uses buffer)
-    QgsPhongMaterialSettings mMaterial;  //!< Defines appearance of objects
+    std::unique_ptr< QgsAbstractMaterialSettings > mMaterial;  //!< Defines appearance of objects
 };
 
 

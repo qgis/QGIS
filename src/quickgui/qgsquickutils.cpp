@@ -26,6 +26,7 @@
 #include "qgsfeature.h"
 #include "qgsapplication.h"
 #include "qgsvaluerelationfieldformatter.h"
+#include "qgsdatetimefieldformatter.h"
 
 #include "qgsquickfeaturelayerpair.h"
 #include "qgsquickmapsettings.h"
@@ -381,6 +382,31 @@ void QgsQuickUtils::selectFeaturesInLayer( QgsVectorLayer *layer, const QList<in
   for ( const int &fid : fids )
     qgsFids << fid;
   layer->selectByIds( qgsFids, behavior );
+}
+
+QString QgsQuickUtils::fieldType( const QgsField &field )
+{
+  return QVariant( field.type() ).typeName();
+}
+
+QString QgsQuickUtils::dateTimeFieldFormat( const QString &fieldFormat )
+{
+  if ( QgsDateTimeFieldFormatter::DATE_FORMAT == fieldFormat )
+  {
+    return QString( "Date" );
+  }
+  else if ( QgsDateTimeFieldFormatter::TIME_FORMAT == fieldFormat )
+  {
+    return QString( "Time" );
+  }
+  else if ( QgsDateTimeFieldFormatter::DATETIME_FORMAT == fieldFormat )
+  {
+    return QString( "Date Time" );
+  }
+  else
+  {
+    return QString( "Date Time" );
+  }
 }
 
 qreal QgsQuickUtils::screenDensity() const

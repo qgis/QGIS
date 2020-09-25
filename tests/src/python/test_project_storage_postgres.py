@@ -11,6 +11,7 @@ the Free Software Foundation; either version 2 of the License, or
 
 """
 from builtins import next
+
 __author__ = 'Martin Dobias'
 __date__ = '2018-03-29'
 __copyright__ = 'Copyright 2018, The QGIS Project'
@@ -96,7 +97,6 @@ class TestPyQgsProjectStoragePostgres(unittest.TestCase):
         self.execSQLCommand("DROP TABLE IF EXISTS qgis_test.qgis_projects;")
 
     def testSaveLoadProject(self):
-
         schema_uri = encode_uri(self.ds_uri, 'qgis_test')
         project_uri = encode_uri(self.ds_uri, 'qgis_test', 'abc')
 

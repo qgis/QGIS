@@ -45,6 +45,7 @@ void QgsDemTerrainGenerator::setCrs( const QgsCoordinateReferenceSystem &crs, co
 QgsTerrainGenerator *QgsDemTerrainGenerator::clone() const
 {
   QgsDemTerrainGenerator *cloned = new QgsDemTerrainGenerator;
+  cloned->setTerrain( mTerrain );
   cloned->mCrs = mCrs;
   cloned->mLayer = mLayer;
   cloned->mResolution = mResolution;
@@ -98,7 +99,8 @@ void QgsDemTerrainGenerator::resolveReferences( const QgsProject &project )
 
 QgsChunkLoader *QgsDemTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
 {
-  return new QgsDemTerrainTileLoader( mTerrain, node );
+  // A bit of a hack to make cloning terrain generator work properly
+  return new QgsDemTerrainTileLoader( mTerrain, node, const_cast<QgsDemTerrainGenerator *>( this ) );
 }
 
 void QgsDemTerrainGenerator::updateGenerator()
@@ -113,11 +115,13 @@ void QgsDemTerrainGenerator::updateGenerator()
     mTerrainTilingScheme = QgsTilingScheme( te, mCrs );
     delete mHeightMapGenerator;
     mHeightMapGenerator = new QgsDemHeightMapGenerator( dem, mTerrainTilingScheme, mResolution, mTransformContext );
+    mIsValid = true;
   }
   else
   {
     mTerrainTilingScheme = QgsTilingScheme();
     delete mHeightMapGenerator;
     mHeightMapGenerator = nullptr;
+    mIsValid = false;
   }
 }

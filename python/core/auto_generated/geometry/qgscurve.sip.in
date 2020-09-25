@@ -57,12 +57,12 @@ Returns the end point of the curve.
 .. seealso:: :py:func:`startPoint`
 %End
 
-    virtual bool isClosed() const;
+    virtual bool isClosed() const /HoldGIL/;
 %Docstring
 Returns ``True`` if the curve is closed.
 %End
 
-    virtual bool isRing() const;
+    virtual bool isRing() const /HoldGIL/;
 %Docstring
 Returns ``True`` if the curve is a ring.
 %End
@@ -83,6 +83,8 @@ segments in a full circle)
 %Docstring
 Adds a curve to a painter path.
 %End
+    virtual QPainterPath asQPainterPath() const;
+
 
     virtual void drawAsPolygon( QPainter &p ) const = 0;
 %Docstring
@@ -159,7 +161,7 @@ Returns a reversed copy of the curve, where the direction of the curve has been 
 Returns a geometry without curves. Caller takes ownership
 
 :param tolerance: segmentation tolerance
-:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve*
+:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve
 %End
 
     virtual int vertexCount( int part = 0, int ring = 0 ) const;
@@ -239,11 +241,11 @@ between the first and last vertex of the curve. (Also known as
 
     double sinuosity() const;
 %Docstring
-Returns the curve sinuosity, which is the ratio of the curve length() to curve
-straightDistance2d(). Larger numbers indicate a more "sinuous" curve (i.e. more
+Returns the curve sinuosity, which is the ratio of the curve :py:func:`~QgsCurve.length` to curve
+:py:func:`~QgsCurve.straightDistance2d`. Larger numbers indicate a more "sinuous" curve (i.e. more
 "bendy"). The minimum value returned of 1.0 indicates a perfectly straight curve.
 
-If a curve isClosed(), it has infinite sinuosity and will return NaN.
+If a curve :py:func:`~QgsCurve.isClosed`, it has infinite sinuosity and will return NaN.
 
 .. versionadded:: 3.2
 %End

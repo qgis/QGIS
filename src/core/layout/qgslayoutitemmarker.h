@@ -159,6 +159,9 @@ class CORE_EXPORT QgsLayoutItemMarker : public QgsLayoutItem
     QString mRotationMapUuid;
     QgsLayoutNorthArrowHandler *mNorthArrowHandler = nullptr;
     double mNorthArrowRotation = 0;
+
+    QgsLayoutItemMarker( const QgsLayoutItemMarker & ) = delete;
+    QgsLayoutItemMarker &operator=( const QgsLayoutItemMarker & ) = delete;
 };
 
 

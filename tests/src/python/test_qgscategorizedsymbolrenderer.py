@@ -382,7 +382,7 @@ class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
         # no matching category
         f.setAttributes(['xxx'])
         symbol = renderer.originalSymbolForFeature(f, context)
-        self.assertEqual(symbol.color(), QColor(255, 255, 255)) # default symbol
+        self.assertEqual(symbol.color(), QColor(255, 255, 255))  # default symbol
 
         renderer.stopRender(context)
 
@@ -413,7 +413,7 @@ class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
         renderer.addCategory(QgsRendererCategory('', default_symbol, 'default'))
 
         context = QgsRenderContext()
-        context.setRendererScale(0) # simulate counting
+        context.setRendererScale(0)  # simulate counting
         renderer.startRender(context, fields)
 
         f = QgsFeature(fields)
@@ -689,7 +689,8 @@ class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
         self.assertEqual(renderer2.classAttribute(), 'x')
         self.assertEqual([l.label() for l in renderer2.categories()], ['a', 'b', 'c', 'de', 'default'])
         self.assertEqual([l.value() for l in renderer2.categories()], ['a', 'b', 'c', ['d', 'e'], ''])
-        self.assertEqual([l.symbol().color().name() for l in renderer2.categories()], ['#ff0000', '#00ff00', '#0000ff', '#ff00ff', '#ffffff'])
+        self.assertEqual([l.symbol().color().name() for l in renderer2.categories()],
+                         ['#ff0000', '#00ff00', '#0000ff', '#ff00ff', '#ffffff'])
 
 
 if __name__ == "__main__":

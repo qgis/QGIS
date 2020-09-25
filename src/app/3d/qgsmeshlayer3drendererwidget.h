@@ -20,6 +20,7 @@
 
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsmeshlayer3drenderer.h"
+#include "qgsmaplayerconfigwidgetfactory.h"
 
 class QCheckBox;
 
@@ -35,7 +36,7 @@ class QgsMeshLayer3DRendererWidget : public QgsMapLayerConfigWidget
   public:
     explicit QgsMeshLayer3DRendererWidget( QgsMeshLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
-    void setLayer( QgsMeshLayer *layer );
+    void syncToLayer( QgsMapLayer *layer ) override;
 
     //! no transfer of ownership
     void setRenderer( const QgsMeshLayer3DRenderer *renderer );
@@ -52,6 +53,18 @@ class QgsMeshLayer3DRendererWidget : public QgsMapLayerConfigWidget
     QCheckBox *mChkEnabled = nullptr;
     QgsMesh3dSymbolWidget *mWidgetMesh = nullptr;
     std::unique_ptr<QgsMeshLayer3DRenderer> mRenderer;
+};
+
+class QgsMeshLayer3DRendererWidgetFactory : public QObject, public QgsMapLayerConfigWidgetFactory
+{
+    Q_OBJECT
+  public:
+    explicit QgsMeshLayer3DRendererWidgetFactory( QObject *parent = nullptr );
+
+    QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget, QWidget *parent ) const override;
+    bool supportLayerPropertiesDialog() const override;
+    bool supportsLayer( QgsMapLayer *layer ) const override;
+    QString layerPropertiesPagePositionHint() const override;
 };
 
 #endif // QGSMESHLAYER3DRENDERERWIDGET_H

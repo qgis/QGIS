@@ -255,13 +255,14 @@ class CORE_EXPORT QgsVectorLayerUtils
      * converting a multi part geometry to single part
      *
      * The following operations will be performed to convert the input features:
-     *  - convert single geometries to multi part
-     *  - drop additional attributes
-     *  - drop geometry if layer is geometry-less
-     *  - add missing attribute fields
-     *  - add back M/Z values (initialized to 0)
-     *  - drop Z/M
-     *  - convert multi part geometries to single part
+     *
+     * - convert single geometries to multi part
+     * - drop additional attributes
+     * - drop geometry if layer is geometry-less
+     * - add missing attribute fields
+     * - add back M/Z values (initialized to 0)
+     * - drop Z/M
+     * - convert multi part geometries to single part
      *
      * \since QGIS 3.4
      */
@@ -275,13 +276,14 @@ class CORE_EXPORT QgsVectorLayerUtils
      * of input features.
      *
      * The following operations will be performed to convert the input features:
-     *  - convert single geometries to multi part
-     *  - drop additional attributes
-     *  - drop geometry if layer is geometry-less
-     *  - add missing attribute fields
-     *  - add back M/Z values (initialized to 0)
-     *  - drop Z/M
-     *  - convert multi part geometries to single part
+     *
+     * - convert single geometries to multi part
+     * - drop additional attributes
+     * - drop geometry if layer is geometry-less
+     * - add missing attribute fields
+     * - add back M/Z values (initialized to 0)
+     * - drop Z/M
+     * - convert multi part geometries to single part
      *
      * \since QGIS 3.4
      */
@@ -319,6 +321,15 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \since QGIS 3.12
      */
     static QString getFeatureDisplayString( const QgsVectorLayer *layer, const QgsFeature &feature );
+
+    /**
+     * \returns TRUE if at least one feature of the \a fids on \a layer is connected as parent in at
+     * least one composition relation of the \a project or contains joins, where cascade delete is set.
+     * Details about cascading effects will be written to \a context.
+     * \since QGIS 3.14
+     */
+    static bool impactsCascadeFeatures( const QgsVectorLayer *layer, const QgsFeatureIds &fids, const QgsProject *project, QgsDuplicateFeatureContext &context SIP_OUT );
+
 };
 
 

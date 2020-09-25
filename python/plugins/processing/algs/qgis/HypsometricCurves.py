@@ -44,7 +44,6 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 
 class HypsometricCurves(QgisAlgorithm):
-
     INPUT_DEM = 'INPUT_DEM'
     BOUNDARY_LAYER = 'BOUNDARY_LAYER'
     STEP = 'STEP'

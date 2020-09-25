@@ -20,9 +20,9 @@ SET(NETCDF_DEFINITIONS ${PC_NETCDF_CFLAGS_OTHER})
 FIND_PATH (NETCDF_INCLUDE_DIR netcdf.h 
            HINTS $ENV{LIB_DIR}/include ${PC_NETCDF_INCLUDEDIR} ${PC_NETCDF_INCLUDE_DIRS} ${NETCDF_PREFIX}/include
            PATH_SUFFIXES libnetcdf )
-
-FIND_LIBRARY (NETCDF_LIBRARY
-              NAMES netcdf libnetcdf
+           
+FIND_LIBRARY (NETCDF_LIBRARY 
+              NAMES netcdf libnetcdf 
               HINTS $ENV{LIB_DIR}/lib ${PC_NETCDF_LIBDIR} ${PC_NETCDF_LIBRARY_DIRS} ${NETCDF_PREFIX}/lib)
 
 INCLUDE (FindPackageHandleStandardArgs)

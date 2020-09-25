@@ -386,6 +386,11 @@ void myMessageOutput( QtMsgType type, const QMessageLogContext &, const QString 
       break;
     case QtCriticalMsg:
       myPrint( "Critical: %s\n", msg.toLocal8Bit().constData() );
+
+#ifdef QGISDEBUG
+      dumpBacktrace( 20 );
+#endif
+
       break;
     case QtWarningMsg:
     {
@@ -896,10 +901,20 @@ int main( int argc, char *argv[] )
   // Set up the QgsSettings Global Settings:
   // - use the path specified with --globalsettingsfile path,
   // - use the environment if not found
+  // - use the AppDataLocation ($HOME/.local/share/QGIS/QGIS3 on Linux, roaming path on Windows)
   // - use a default location as a fallback
   if ( globalsettingsfile.isEmpty() )
   {
     globalsettingsfile = getenv( "QGIS_GLOBAL_SETTINGS_FILE" );
+  }
+
+  if ( globalsettingsfile.isEmpty() )
+  {
+    QStringList startupPaths = QStandardPaths::locateAll( QStandardPaths::AppDataLocation, QStringLiteral( "qgis_global_settings.ini" ) );
+    if ( !startupPaths.isEmpty() )
+    {
+      globalsettingsfile = startupPaths.at( 0 );
+    }
   }
 
   if ( globalsettingsfile.isEmpty() )
@@ -1183,22 +1198,24 @@ int main( int argc, char *argv[] )
   QgsCustomization::instance()->loadDefault();
 
 #ifdef Q_OS_MACX
-  // If the GDAL plugins are bundled with the application and GDAL_DRIVER_PATH
-  // is not already defined, use the GDAL plugins in the application bundle.
-  QString gdalPlugins( QCoreApplication::applicationDirPath().append( "/lib/gdalplugins" ) );
-  if ( QFile::exists( gdalPlugins ) && !getenv( "GDAL_DRIVER_PATH" ) )
+  if ( !getenv( "GDAL_DRIVER_PATH" ) )
   {
-    setenv( "GDAL_DRIVER_PATH", gdalPlugins.toUtf8(), 1 );
+    // If the GDAL plugins are bundled with the application and GDAL_DRIVER_PATH
+    // is not already defined, use the GDAL plugins in the application bundle.
+    QString gdalPlugins( QCoreApplication::applicationDirPath().append( "/lib/gdalplugins" ) );
+    if ( QFile::exists( gdalPlugins ) )
+    {
+      setenv( "GDAL_DRIVER_PATH", gdalPlugins.toUtf8(), 1 );
+    }
   }
 
   // Point GDAL_DATA at any GDAL share directory embedded in the app bundle
   if ( !getenv( "GDAL_DATA" ) )
   {
     QStringList gdalShares;
-    QString appResources( QDir::cleanPath( QgsApplication::pkgDataPath() ) );
     gdalShares << QCoreApplication::applicationDirPath().append( "/share/gdal" )
-               << appResources.append( "/share/gdal" )
-               << appResources.append( "/gdal" );
+               << QDir::cleanPath( QgsApplication::pkgDataPath() ).append( "/share/gdal" )
+               << QDir::cleanPath( QgsApplication::pkgDataPath() ).append( "/gdal" );
     const auto constGdalShares = gdalShares;
     for ( const QString &gdalShare : constGdalShares )
     {
@@ -1207,6 +1224,15 @@ int main( int argc, char *argv[] )
         setenv( "GDAL_DATA", gdalShare.toUtf8().constData(), 1 );
         break;
       }
+    }
+  }
+
+  // Point PYTHONHOME to embedded interpreter if present in the bundle
+  if ( !getenv( "PYTHONHOME" ) )
+  {
+    if ( QFile::exists( QCoreApplication::applicationDirPath().append( "/bin/python3" ) ) )
+    {
+      setenv( "PYTHONHOME", QCoreApplication::applicationDirPath().toUtf8().constData(), 1 );
     }
   }
 #endif
@@ -1365,6 +1391,9 @@ int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
   if ( ! sProjectFileName.isEmpty() )
   {
+    // in case the project contains broken layers, interactive
+    // "Handle Bad Layers" is displayed that could be blocked by splash screen
+    mypSplash->hide();
     qgis->openProject( sProjectFileName );
   }
 

@@ -42,6 +42,8 @@ class QgsDataItemProvider;
 class QgsTransaction;
 
 class QgsRasterDataProvider;
+class QgsMeshDataProvider;
+struct QgsMesh;
 
 /**
  * \ingroup core
@@ -63,6 +65,7 @@ class CORE_EXPORT QgsMeshDriverMetadata
       CanWriteFaceDatasets = 1 << 0, //!< If the driver can persist datasets defined on faces
       CanWriteVertexDatasets = 1 << 1, //!< If the driver can persist datasets defined on vertices
       CanWriteEdgeDatasets = 1 << 2, //!< If the driver can persist datasets defined on edges \since QGIS 3.14
+      CanWriteMeshData = 1 << 3, //!< If the driver can write mesh data on file \since QGIS 3.16
     };
 
     Q_ENUM( MeshDriverCapability )
@@ -81,7 +84,8 @@ class CORE_EXPORT QgsMeshDriverMetadata
      */
     QgsMeshDriverMetadata( const QString &name,
                            const QString &description,
-                           const MeshDriverCapabilities &capabilities );
+                           const MeshDriverCapabilities &capabilities,
+                           const QString &writeDatasetOnFileSuffix );
 
     /**
      * Returns the capabilities for this driver.
@@ -98,10 +102,16 @@ class CORE_EXPORT QgsMeshDriverMetadata
      */
     QString description() const;
 
+    /**
+     * Returns the suffix used to write datasets on file
+     */
+    QString writeDatasetOnFileSuffix() const;
+
   private:
     QString mName;
     QString mDescription;
     MeshDriverCapabilities mCapabilities;
+    QString mWriteDatasetOnFileSuffix;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMeshDriverMetadata::MeshDriverCapabilities )
@@ -133,7 +143,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * Typedef for data provider creation function.
      * \since QGIS 3.0
      */
-    SIP_SKIP typedef std::function < QgsDataProvider*( const QString &, const QgsDataProvider::ProviderOptions & ) > CreateDataProviderFunction;
+    SIP_SKIP typedef std::function < QgsDataProvider*( const QString &, const QgsDataProvider::ProviderOptions &, QgsDataProvider::ReadFlags & ) > CreateDataProviderFunction;
 
     /**
      * Constructor for provider metadata
@@ -228,9 +238,33 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
 
     /**
      * Class factory to return a pointer to a newly created QgsDataProvider object
+     *
+     * \param uri the datasource uri
+     * \param options creation options
+     * \param flags creation flags, sing QGIS 3.16
+     *
      * \since QGIS 3.10
      */
-    virtual QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) SIP_FACTORY;
+    virtual QgsDataProvider *createProvider( const QString &uri,
+        const QgsDataProvider::ProviderOptions &options,
+        QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) SIP_FACTORY;
+
+    /**
+     * Sets the \a value into the \a uri \a parameter as a bool.
+     * eg. "yes" value will be saved as true, 0 will be saved as false
+     *
+     * \since QGIS 3.14
+     */
+    static void setBoolParameter( QVariantMap &uri, const QString &parameter, const QVariant &value );
+
+    /**
+     * Returns the \a parameter value in the \a uri as a bool.
+     * eg. "yes" value will be returned as true, 0 will be returned as false
+     *
+     * \since QGIS 3.14
+     */
+    static bool boolParameter( const QVariantMap &uri, const QString &parameter, bool defaultValue = false );
+
 
 #ifndef SIP_RUN
 
@@ -265,6 +299,16 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
       const QStringList &createOptions = QStringList() ) SIP_FACTORY;
 
     /**
+     * Creates mesh data source, that is the mesh frame stored in file, memory or with other way (depending of the provider)
+     * \since QGIS 3.16
+     */
+    virtual bool createMeshData(
+      const QgsMesh &mesh,
+      const QString uri,
+      const QString &driverName,
+      const QgsCoordinateReferenceSystem &crs ) const;
+
+    /**
      * Returns pyramid resampling methods available for provider
      * \since QGIS 3.10
      */
@@ -274,6 +318,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * Breaks a provider data source URI into its component paths (e.g. file path, layer name).
      * \param uri uri string
      * \returns map containing components. Standard components may include:
+     *
      * - "path": file path
      * - "layerName"
      * - "url": base URL, for online services
@@ -282,6 +327,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * - "bounds": hardcoded layer bounds (as a QgsRectangle)
      * - "crs": CRS definition
      * - "authcfg": authentication configuration ID
+     *
      * \note this function may not be supported by all providers, an empty map will be returned in such case
      * \since QGIS 3.10
      */

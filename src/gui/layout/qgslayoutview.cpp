@@ -364,6 +364,7 @@ void QgsLayoutView::copyItems( const QList<QgsLayoutItem *> &items, QgsLayoutVie
     if ( itemNode.isElement() )
     {
       itemNode.toElement().removeAttribute( QStringLiteral( "uuid" ) );
+      itemNode.toElement().removeAttribute( QStringLiteral( "groupUuid" ) );
     }
   }
   QDomNodeList multiFrameNodes = doc.elementsByTagName( QStringLiteral( "LayoutMultiFrame" ) );

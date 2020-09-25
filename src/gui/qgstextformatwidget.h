@@ -19,7 +19,7 @@
 
 #include "ui_qgstextformatwidgetbase.h"
 #include "qgis_sip.h"
-#include "qgstextrenderer.h"
+#include "qgstextformat.h"
 #include "qgsstringutils.h"
 #include "qgsguiutils.h"
 #include "qgssymbolwidgetcontext.h"
@@ -161,6 +161,14 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
 
     QgsExpressionContext createExpressionContext() const override;
 
+    /**
+     * Returns the geometry type which will be used by the labeling engine
+     * when registering labels for the labeling settings currently defined by the widget.
+     *
+     * \since QGIS 3.16
+     */
+    QgsWkbTypes::GeometryType labelGeometryType() const;
+
     //! Text substitution list
     QgsStringReplacementCollection mSubstitutions;
     //! Quadrant button group
@@ -169,12 +177,6 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     QButtonGroup *mDirectSymbBtnGrp = nullptr;
     //! Upside down labels button group
     QButtonGroup *mUpsidedownBtnGrp = nullptr;
-    //! Point placement button group
-    QButtonGroup *mPlacePointBtnGrp = nullptr;
-    //! Line placement button group
-    QButtonGroup *mPlaceLineBtnGrp = nullptr;
-    //! Polygon placement button group
-    QButtonGroup *mPlacePolygonBtnGrp = nullptr;
     //! Pixel size font limit
     int mMinPixelLimit = 0;
 
@@ -191,6 +193,9 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     QgsVectorLayer *mLayer = nullptr;
 
     QgsSymbolLayerReferenceList mMaskedSymbolLayers;
+
+    //! Geometry type for layer, if known
+    QgsWkbTypes::GeometryType mGeomType = QgsWkbTypes::UnknownGeometry;
 
   protected slots:
 
@@ -267,7 +272,6 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     void onSubstitutionsChanged( const QgsStringReplacementCollection &substitutions );
     void previewScaleChanged( double scale );
     void mFontSizeSpinBox_valueChanged( double d );
-    void mFontCapitalsComboBox_currentIndexChanged( int index );
     void mFontFamilyCmbBx_currentFontChanged( const QFont &f );
     void mFontStyleComboBox_currentIndexChanged( const QString &text );
     void mFontUnderlineBtn_toggled( bool ckd );
@@ -280,8 +284,8 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     void mFontMaxPixelSpinBox_valueChanged( int px );
     void mBufferUnitWidget_changed();
     void mMaskBufferUnitWidget_changed();
-    void mCoordXDDBtn_activated( bool active );
-    void mCoordYDDBtn_activated( bool active );
+    void mCoordXDDBtn_changed( );
+    void mCoordYDDBtn_changed( );
     void mShapeTypeCmbBx_currentIndexChanged( int index );
     void mShapeRotationCmbBx_currentIndexChanged( int index );
     void mShapeSVGParamsBtn_clicked();
@@ -396,6 +400,13 @@ class GUI_EXPORT QgsTextFormatPanelWidget : public QgsPanelWidgetWrapper
     QgsTextFormat format() const;
 
     /**
+     * Sets the \a format to show in the widget.
+     *
+     * \since QGIS 3.16
+     */
+    void setFormat( const QgsTextFormat &format );
+
+    /**
      * Sets the \a context in which the widget is shown, e.g., the associated map canvas and expression contexts.
      * \since QGIS 3.10
      */
@@ -406,6 +417,7 @@ class GUI_EXPORT QgsTextFormatPanelWidget : public QgsPanelWidgetWrapper
   private:
 
     QgsTextFormatWidget *mFormatWidget = nullptr;
+    bool mBlockSignals = false;
 };
 
 #endif //QGSTEXTFORMATWIDGET_H

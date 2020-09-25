@@ -33,6 +33,7 @@
 #include "qgslogger.h"
 #include "qgsoptionsdialoghighlightwidget.h"
 #include "qgsoptionswidgetfactory.h"
+#include "qgsguiutils.h"
 
 QgsOptionsDialogBase::QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent, Qt::WindowFlags fl, QgsSettings *settings )
   : QDialog( parent, fl )
@@ -101,14 +102,15 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString &title
     return;
   }
 
-  int size = mSettings->value( QStringLiteral( "/IconSize" ), 24 ).toInt();
+  int size = QgsGuiUtils::scaleIconSize( mSettings->value( QStringLiteral( "/IconSize" ), 24 ).toInt() );
   // buffer size to match displayed icon size in toolbars, and expected geometry restore
   // newWidth (above) may need adjusted if you adjust iconBuffer here
-  int iconBuffer = 4;
+  const int iconBuffer = QgsGuiUtils::scaleIconSize( 4 );
   mOptListWidget->setIconSize( QSize( size + iconBuffer, size + iconBuffer ) );
   mOptListWidget->setFrameStyle( QFrame::NoFrame );
 
-  optionsFrame->layout()->setContentsMargins( 0, 3, 3, 3 );
+  const int frameMargin = QgsGuiUtils::scaleIconSize( 3 );
+  optionsFrame->layout()->setContentsMargins( 0, frameMargin, frameMargin, frameMargin );
   QVBoxLayout *layout = static_cast<QVBoxLayout *>( optionsFrame->layout() );
 
   if ( buttonBoxFrame )
@@ -166,11 +168,13 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString &title )
   if ( !title.isEmpty() )
   {
     mDialogTitle = title;
-    updateWindowTitle();
   }
-
-  // re-save original dialog title in case it was changed after dialog initialization
-  mDialogTitle = windowTitle();
+  else
+  {
+    // re-save original dialog title in case it was changed after dialog initialization
+    mDialogTitle = windowTitle();
+  }
+  updateWindowTitle();
 
   restoreGeometry( mSettings->value( QStringLiteral( "/Windows/%1/geometry" ).arg( mOptsKey ) ).toByteArray() );
   // mOptListWidget width is fixed to take up less space in QtDesigner
@@ -178,6 +182,15 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString &title )
   mOptListWidget->setMaximumWidth(
     mSettings->value( QStringLiteral( "/Windows/%1/splitState" ).arg( mOptsKey ) ).isNull() ? 150 : 16777215 );
   mOptSplitter->restoreState( mSettings->value( QStringLiteral( "/Windows/%1/splitState" ).arg( mOptsKey ) ).toByteArray() );
+
+  restoreLastPage();
+
+  // get rid of annoying outer focus rect on Mac
+  mOptListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
+}
+
+void QgsOptionsDialogBase::restoreLastPage()
+{
   int curIndx = mSettings->value( QStringLiteral( "/Windows/%1/tab" ).arg( mOptsKey ), 0 ).toInt();
 
   // if the last used tab is out of range or not enabled display the first enabled one
@@ -200,9 +213,6 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString &title )
     mOptStackedWidget->setCurrentIndex( curIndx );
     mOptListWidget->setCurrentRow( curIndx );
   }
-
-  // get rid of annoying outer focus rect on Mac
-  mOptListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
 }
 
 void QgsOptionsDialogBase::resizeAlltabs( int index )
@@ -227,6 +237,57 @@ void QgsOptionsDialogBase::resizeAlltabs( int index )
     }
   }
   mOptStackedWidget->adjustSize();
+}
+
+void QgsOptionsDialogBase::setCurrentPage( const QString &page )
+{
+  //find the page with a matching widget name
+  for ( int idx = 0; idx < mOptStackedWidget->count(); ++idx )
+  {
+    QWidget *currentPage = mOptStackedWidget->widget( idx );
+    if ( currentPage->objectName() == page )
+    {
+      //found the page, set it as current
+      mOptStackedWidget->setCurrentIndex( idx );
+      return;
+    }
+  }
+}
+
+void QgsOptionsDialogBase::addPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget )
+{
+  QListWidgetItem *item = new QListWidgetItem();
+  item->setIcon( icon );
+  item->setText( title );
+  item->setToolTip( tooltip );
+
+  mOptListWidget->addItem( item );
+  mOptStackedWidget->addWidget( widget );
+}
+
+void QgsOptionsDialogBase::insertPage( const QString &title, const QString &tooltip, const QIcon &icon, QWidget *widget, const QString &before )
+{
+  //find the page with a matching widget name
+  for ( int idx = 0; idx < mOptStackedWidget->count(); ++idx )
+  {
+    QWidget *currentPage = mOptStackedWidget->widget( idx );
+    if ( currentPage->objectName() == before )
+    {
+      //found the "before" page
+
+      QListWidgetItem *item = new QListWidgetItem();
+      item->setIcon( icon );
+      item->setText( title );
+      item->setToolTip( tooltip );
+
+      mOptListWidget->insertItem( idx, item );
+      mOptStackedWidget->insertWidget( idx, widget );
+      return;
+    }
+  }
+
+  // no matching pages, so just add the page
+  addPage( title, tooltip, icon, widget );
 }
 
 void QgsOptionsDialogBase::searchText( const QString &text )
@@ -348,7 +409,10 @@ void QgsOptionsDialogBase::updateWindowTitle()
   QListWidgetItem *curitem = mOptListWidget->currentItem();
   if ( curitem )
   {
-    setWindowTitle( QStringLiteral( "%1 | %2" ).arg( mDialogTitle, curitem->text() ) );
+    setWindowTitle( QStringLiteral( "%1 %2 %3" )
+                    .arg( mDialogTitle )
+                    .arg( QChar( 0x2014 ) ) // em-dash unicode
+                    .arg( curitem->text() ) );
   }
   else
   {

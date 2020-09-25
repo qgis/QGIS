@@ -192,7 +192,7 @@ void QgsWmsDimensionDialog::fieldChanged()
     int currentEndFieldIndexOf = mLayer->fields().indexOf( currentEndFieldName );
     uniqueValues.unite( mLayer->uniqueValues( currentEndFieldIndexOf ) );
   }
-  QList<QVariant> values = uniqueValues.toList();
+  QList<QVariant> values = qgis::setToList( uniqueValues );
   std::sort( values.begin(), values.end() );
 
   mReferenceValueComboBox->clear();

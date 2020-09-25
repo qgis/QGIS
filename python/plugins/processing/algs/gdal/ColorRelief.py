@@ -37,7 +37,6 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 
 
 class ColorRelief(GdalAlgorithm):
-
     INPUT = 'INPUT'
     BAND = 'BAND'
     COMPUTE_EDGES = 'COMPUTE_EDGES'

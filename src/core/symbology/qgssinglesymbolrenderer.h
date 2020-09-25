@@ -18,9 +18,9 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgsrenderer.h"
-#include "qgssymbol.h"
-#include "qgsexpression.h"
-#include "qgsdatadefinedsizelegend.h"
+
+class QgsDataDefinedSizeLegend;
+class QgsSymbol;
 
 /**
  * \ingroup core
@@ -37,6 +37,7 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
      * of \a symbol is transferred to the renderer.
      */
     QgsSingleSymbolRenderer( QgsSymbol *symbol SIP_TRANSFER );
+    ~QgsSingleSymbolRenderer() override;
 
     QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
     QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;

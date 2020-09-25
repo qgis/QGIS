@@ -38,7 +38,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class DefineProjection(QgisAlgorithm):
-
     INPUT = 'INPUT'
     CRS = 'CRS'
 

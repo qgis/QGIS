@@ -124,7 +124,7 @@ void QgsRasterDrawer::drawImage( QPainter *p, QgsRasterViewPort *viewPort, const
 
   //top left position in device coords
   QPoint tlPoint = QPoint( viewPort->mTopLeftPoint.x() + topLeftCol, viewPort->mTopLeftPoint.y() + topLeftRow );
-  p->save();
+  QgsScopedQPainterState painterState( p );
   p->setRenderHint( QPainter::Antialiasing, false );
 
   // Blending problem was reported with PDF output if background color has alpha < 255
@@ -170,7 +170,5 @@ void QgsRasterDrawer::drawImage( QPainter *p, QgsRasterViewPort *viewPort, const
   br = QRectF( c - QPointF( nw / 2, nh / 2 ), QSize( nw, nh ) );
   p->drawRoundedRect( br, rad, rad );
 #endif
-
-  p->restore();
 }
 

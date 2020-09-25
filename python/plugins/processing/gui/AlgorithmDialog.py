@@ -58,7 +58,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
         self.feedback_dialog = None
         self.in_place = in_place
-        self.active_layer = None
+        self.active_layer = iface.activeLayer() if self.in_place else None
 
         self.context = None
         self.feedback = None
@@ -72,7 +72,8 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             self.buttonBox().addButton(self.runAsBatchButton,
                                        QDialogButtonBox.ResetRole)  # reset role to ensure left alignment
         else:
-            self.active_layer = iface.activeLayer()
+            self.mainWidget().setParameters({'INPUT': self.active_layer})
+
             self.runAsBatchButton = None
             has_selection = self.active_layer and (self.active_layer.selectedFeatureCount() > 0)
             self.buttonBox().button(QDialogButtonBox.Ok).setText(
@@ -85,7 +86,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         self.updateRunButtonVisibility()
 
     def getParametersPanel(self, alg, parent):
-        panel = ParametersPanel(parent, alg, self.in_place)
+        panel = ParametersPanel(parent, alg, self.in_place, self.active_layer)
         return panel
 
     def runAsBatch(self):

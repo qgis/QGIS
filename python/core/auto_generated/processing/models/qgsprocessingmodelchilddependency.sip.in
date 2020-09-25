@@ -1,0 +1,65 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/models/qgsprocessingmodelchilddependency.h       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsProcessingModelChildDependency
+{
+%Docstring
+Contains details of a child algorithm dependency.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingmodelchilddependency.h"
+%End
+  public:
+
+    QgsProcessingModelChildDependency( const QString &childId = QString(), const QString &conditionalBranch = QString() );
+%Docstring
+Constructor for QgsProcessingModelChildDependency, with the specified ``childId``.
+%End
+
+    QString childId;
+
+    QString conditionalBranch;
+
+    QVariant toVariant() const;
+%Docstring
+Saves this dependency to a QVariant.
+
+.. seealso:: :py:func:`loadVariant`
+%End
+
+    bool loadVariant( const QVariantMap &map );
+%Docstring
+Loads this dependency from a QVariantMap.
+
+.. seealso:: :py:func:`toVariant`
+%End
+
+    bool operator==( const QgsProcessingModelChildDependency &other ) const;
+
+    bool operator!=( const QgsProcessingModelChildDependency &other ) const;
+
+    bool operator<( const QgsProcessingModelChildDependency &other ) const;
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/models/qgsprocessingmodelchilddependency.h       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

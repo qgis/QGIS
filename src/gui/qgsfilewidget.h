@@ -23,6 +23,7 @@ class QVariant;
 class QgsFileDropEdit;
 class QHBoxLayout;
 #include <QWidget>
+#include <QFileDialog>
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
@@ -44,7 +45,6 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     SIP_END
 #endif
 
-
     Q_OBJECT
     Q_PROPERTY( bool fileWidgetButtonVisible READ fileWidgetButtonVisible WRITE setFileWidgetButtonVisible )
     Q_PROPERTY( bool useLink READ useLink WRITE setUseLink )
@@ -54,6 +54,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     Q_PROPERTY( QString defaultRoot READ defaultRoot WRITE setDefaultRoot )
     Q_PROPERTY( StorageMode storageMode READ storageMode WRITE setStorageMode )
     Q_PROPERTY( RelativeStorage relativeStorage READ relativeStorage WRITE setRelativeStorage )
+    Q_PROPERTY( QFileDialog::Options options READ options WRITE setOptions )
 
   public:
 
@@ -124,6 +125,18 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     void setFilter( const QString &filter );
 
     /**
+     * Returns additional options used for QFileDialog
+     * \since QGIS 3.14
+     */
+    QFileDialog::Options options() const;
+
+    /**
+     * \brief setOptions sets additional options used for QFileDialog. These options affect the look and feel of the QFileDialog
+     * \since QGIS 3.14
+     */
+    void setOptions( QFileDialog::Options options );
+
+    /**
      * Sets the selected filter when the file dialog opens.
      */
     void setSelectedFilter( const QString &selectedFilter ) { mSelectedFilter = selectedFilter; }
@@ -189,23 +202,20 @@ class GUI_EXPORT QgsFileWidget : public QWidget
      */
     void fileChanged( const QString &path );
 
-    /**
-     * Emitted before and after showing the file dialog.
-     *
-     * \note not available in Python bindings
-     * \since QGIS 3.10
-     */
-    void blockEvents( bool ) SIP_SKIP;
-
   private slots:
     void openFileDialog();
     void textEdited( const QString &path );
+    void editLink();
 
   private:
+    void updateLayout();
+
     QString mFilePath;
     bool mButtonVisible = true;
     bool mUseLink = false;
     bool mFullUrl = false;
+    bool mReadOnly = false;
+    bool mIsLinkEdited = false;
     QString mDialogTitle;
     QString mFilter;
     QString mSelectedFilter;
@@ -213,9 +223,11 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     bool mConfirmOverwrite = true;
     StorageMode mStorageMode = GetFile;
     RelativeStorage mRelativeStorage = Absolute;
+    QFileDialog::Options mOptions = QFileDialog::Options();
 
     QLabel *mLinkLabel = nullptr;
     QgsFileDropEdit *mLineEdit = nullptr;
+    QToolButton *mLinkEditButton = nullptr;
     QToolButton *mFileWidgetButton = nullptr;
     QHBoxLayout *mLayout = nullptr;
 
@@ -228,9 +240,9 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     friend class TestQgsFileWidget;
 };
 
-
-
 ///@cond PRIVATE
+
+
 
 #ifndef SIP_RUN
 

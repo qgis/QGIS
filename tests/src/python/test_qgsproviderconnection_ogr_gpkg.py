@@ -39,6 +39,18 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
     # Provider test cases must define the provider name (e.g. "postgres" or "ogr")
     providerKey = 'ogr'
 
+    # Provider test cases can define a slowQuery for executeSql cancellation test
+    # Note: GDAL does not support GDALDatasetExecuteSQL interruption, so
+    # let's disable this test for the time being
+    slowQuery___disabled = """
+    WITH RECURSIVE r(i) AS (
+        VALUES(0)
+        UNION ALL
+        SELECT i FROM r
+        LIMIT 10000000
+        )
+    SELECT i FROM r WHERE i = 1;"""
+
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
@@ -117,6 +129,14 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
         self.assertFalse('osm' in table_names)
         self.assertFalse('myNewTable' in table_names)
         self.assertTrue('myNewAspatialTable' in table_names)
+
+    def test_gpkg_fields(self):
+        """Test fields"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('ogr')
+        conn = md.createConnection(self.uri, {})
+        fields = conn.fields('', 'cdb_lines')
+        self.assertEqual(fields.names(), ['fid', 'id', 'typ', 'name', 'ortsrat', 'id_long'])
 
 
 if __name__ == '__main__':

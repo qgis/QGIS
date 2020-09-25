@@ -38,11 +38,12 @@ namespace Qt3DExtras
 
 #include <memory>
 
-#ifndef SIP_RUN
+#define SIP_NO_FILE
 
 /**
  * \ingroup 3d
  * Miscellaneous utility functions used from 3D code.
+ * \note Not available in Python bindings
  * \since QGIS 3.0
  */
 class _3D_EXPORT Qgs3DUtils
@@ -168,16 +169,11 @@ class _3D_EXPORT Qgs3DUtils
      */
     static void estimateVectorLayerZRange( QgsVectorLayer *layer, double &zMin, double &zMax );
 
-    //! Returns a new 3D symbol based on given geometry type (or NULLPTR if geometry type is not supported)
-    static std::unique_ptr<QgsAbstract3DSymbol> symbolForGeometryType( QgsWkbTypes::GeometryType geomType );
-
     //! Returns expression context for use in preparation of 3D data of a layer
     static QgsExpressionContext globalProjectLayerExpressionContext( QgsVectorLayer *layer );
 
-    //! Returns phong material object based on the material settings
-    static Qt3DExtras::QPhongMaterial *phongMaterial( const QgsPhongMaterialSettings &settings );
+    //! Returns phong material settings object based on the Qt3D material
+    static QgsPhongMaterialSettings phongMaterialFromQt3DComponent( Qt3DExtras::QPhongMaterial *material );
 };
-
-#endif
 
 #endif // QGS3DUTILS_H

@@ -44,7 +44,7 @@ Ownership of ``feedback`` is not transferred and callers must ensure that it exi
 %Docstring
 Returns the fields output by features when saving the triangulation.
 These fields should be used when creating
-a suitable feature sink for setTriangulationSink()
+a suitable feature sink for :py:func:`~QgsTinInterpolator.setTriangulationSink`
 
 .. seealso:: :py:func:`setTriangulationSink`
 
@@ -56,7 +56,7 @@ a suitable feature sink for setTriangulationSink()
 Sets the optional ``sink`` for saving the triangulation features.
 
 The sink must be setup to accept LineString features, with fields matching
-those returned by triangulationFields().
+those returned by :py:func:`~QgsTinInterpolator.triangulationFields`.
 
 .. seealso:: :py:func:`triangulationFields`
 

@@ -26,15 +26,18 @@
 
 class Qgs3DRendererRegistry;
 class QgsActionScopeRegistry;
+class QgsAnnotationItemRegistry;
 class QgsRuntimeProfiler;
 class QgsTaskManager;
 class QgsFieldFormatterRegistry;
 class QgsColorSchemeRegistry;
 class QgsPaintEffectRegistry;
 class QgsProjectStorageRegistry;
+class QgsLocalizedDataPathRegistry;
 class QgsRendererRegistry;
 class QgsSvgCache;
 class QgsImageCache;
+class QgsSourceCache;
 class QgsSymbolLayerRegistry;
 class QgsRasterRendererRegistry;
 class QgsGpsConnectionRegistry;
@@ -58,6 +61,7 @@ class QgsStyleModel;
 class QgsNumericFormatRegistry;
 class QgsConnectionRegistry;
 class QgsScaleBarRendererRegistry;
+class Qgs3DSymbolRegistry;
 
 /**
  * \ingroup core
@@ -183,11 +187,11 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * This method initializes paths etc for QGIS. Called by the ctor or call it manually
-        when your app does not extend the QApplication class.
-        \note you will probably want to call initQgis too to load the providers in
-        the above case.
-        \note not available in Python bindings
-      */
+     * when your app does not extend the QApplication class.
+     * \note you will probably want to call initQgis too to load the providers in
+     * the above case.
+     * \note not available in Python bindings
+    */
     static void init( QString profileFolder = QString() ) SIP_SKIP;
 
     //! Watch for QFileOpenEvent.
@@ -249,14 +253,16 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Returns the path to the contributors file.
      * Contributors are people who have submitted patches
-     * but don't have commit access. */
+     * but don't have commit access.
+    */
     static QString contributorsFilePath();
 
     /**
      * Returns the path to the developers map file.
      * The developers map was created by using leaflet framework,
      * it shows the contributors.json file.
-     * \since QGIS 2.7 */
+     * \since QGIS 2.7
+    */
     static QString developersMapFilePath();
 
     //! Returns the path to the sponsors file.
@@ -497,7 +503,8 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Convenience function to get a summary of the paths used in this
-     * application instance useful for debugging mainly.*/
+     * application instance useful for debugging mainly.
+    */
     static QString showSettings();
 
     /**
@@ -577,13 +584,15 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Gets maximum concurrent thread count
-     * \since QGIS 2.4 */
+     * \since QGIS 2.4
+    */
     static int maxThreads();
 
     /**
      * Set maximum concurrent thread count
      * \note must be between 1 and \#cores, -1 means use all available cores
-     * \since QGIS 2.4 */
+     * \since QGIS 2.4
+    */
     static void setMaxThreads( int maxThreads );
 
     /**
@@ -643,6 +652,13 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsImageCache *imageCache();
 
     /**
+     * Returns the application's source cache, used for caching embedded and remote source strings as local files
+     *
+     * \since QGIS 3.16
+     */
+    static QgsSourceCache *sourceCache();
+
+    /**
      * Returns the application's network content registry used for fetching temporary files during QGIS session
      * \since QGIS 3.2
      */
@@ -671,6 +687,12 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \since QGIS 3.0
      */
     static QgsLayoutItemRegistry *layoutItemRegistry() SIP_KEEPREFERENCE;
+
+    /**
+     * Returns the application's annotation item registry, used for annotation item types.
+     * \since QGIS 3.16
+     */
+    static QgsAnnotationItemRegistry *annotationItemRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the application's GPS connection registry, used for managing GPS connections.
@@ -777,6 +799,12 @@ class CORE_EXPORT QgsApplication : public QApplication
     static Qgs3DRendererRegistry *renderer3DRegistry() SIP_KEEPREFERENCE;
 
     /**
+     * Returns registry of available 3D symbols.
+     * \since QGIS 3.16
+     */
+    static Qgs3DSymbolRegistry *symbol3DRegistry() SIP_KEEPREFERENCE;
+
+    /**
      * Gets the registry of available scalebar renderers.
      *
      * \since QGIS 3.14
@@ -788,6 +816,15 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \since QGIS 3.2
      */
     static QgsProjectStorageRegistry *projectStorageRegistry() SIP_KEEPREFERENCE;
+
+    /**
+     * Returns the registry of data repositories
+     * These are used as paths for basemaps, logos, etc. which can be referenced
+     * differently across work stations.
+     * \see QgsLocalizedDataPathRegistry
+     * \since QGIS 3.14
+     */
+    static QgsLocalizedDataPathRegistry *localizedDataPathRegistry() SIP_KEEPREFERENCE;
 
     /**
      * This string is used to represent the value `NULL` throughout QGIS.
@@ -895,7 +932,8 @@ class CORE_EXPORT QgsApplication : public QApplication
     static bool ABISYM( mRunningFromBuildDir );
 
     /**
-     * \since QGIS 2.4 */
+     * \since QGIS 2.4
+    */
     static int ABISYM( sMaxThreads );
 
     QMap<QString, QIcon> mIconCache;
@@ -910,9 +948,11 @@ class CORE_EXPORT QgsApplication : public QApplication
     struct ApplicationMembers
     {
       Qgs3DRendererRegistry *m3DRendererRegistry = nullptr;
+      Qgs3DSymbolRegistry *m3DSymbolRegistry = nullptr;
       QgsActionScopeRegistry *mActionScopeRegistry = nullptr;
       QgsAnnotationRegistry *mAnnotationRegistry = nullptr;
       QgsColorSchemeRegistry *mColorSchemeRegistry = nullptr;
+      QgsLocalizedDataPathRegistry *mLocalizedDataPathRegistry = nullptr;
       QgsNumericFormatRegistry *mNumericFormatRegistry = nullptr;
       QgsFieldFormatterRegistry *mFieldFormatterRegistry = nullptr;
       QgsGpsConnectionRegistry *mGpsConnectionRegistry = nullptr;
@@ -929,13 +969,14 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsPageSizeRegistry *mPageSizeRegistry = nullptr;
       QgsRasterRendererRegistry *mRasterRendererRegistry = nullptr;
       QgsRendererRegistry *mRendererRegistry = nullptr;
-      QgsRuntimeProfiler *mProfiler = nullptr;
       QgsSvgCache *mSvgCache = nullptr;
       QgsImageCache *mImageCache = nullptr;
+      QgsSourceCache *mSourceCache = nullptr;
       QgsSymbolLayerRegistry *mSymbolLayerRegistry = nullptr;
       QgsCalloutRegistry *mCalloutRegistry = nullptr;
       QgsTaskManager *mTaskManager = nullptr;
       QgsLayoutItemRegistry *mLayoutItemRegistry = nullptr;
+      QgsAnnotationItemRegistry *mAnnotationItemRegistry = nullptr;
       QgsUserProfileManager *mUserConfigManager = nullptr;
       QgsBookmarkManager *mBookmarkManager = nullptr;
       QgsStyleModel *mStyleModel = nullptr;

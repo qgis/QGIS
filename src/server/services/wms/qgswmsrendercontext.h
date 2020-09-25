@@ -53,9 +53,9 @@ namespace QgsWms
       Q_DECLARE_FLAGS( Flags, Flag )
 
       /**
-       * Default constructor for QgsWmsRenderContext.
+       * Destructor for QgsWmsRenderContext.
        */
-      QgsWmsRenderContext() = default;
+      ~QgsWmsRenderContext();
 
       /**
        * Constructor for QgsWmsRenderContext.
@@ -179,6 +179,12 @@ namespace QgsWms
       bool isValidLayer( const QString &nickname ) const;
 
       /**
+       * Returns the group's layers list corresponding to the nickname, or
+       * an empty list if not found.
+       */
+      QList<QgsMapLayer *> layersFromGroup( const QString &nickname ) const;
+
+      /**
        * Returns true if \a name is a group.
        */
       bool isValidGroup( const QString &name ) const;
@@ -238,6 +244,12 @@ namespace QgsWms
        */
       int mapHeight() const;
 
+      /**
+       * Returns true if the layer is an external layer, false otherwise.
+       * \since QGIS 3.16
+       */
+      bool isExternalLayer( const QString &name ) const;
+
     private:
       void initNicknameLayers();
       void initRestrictedLayers();
@@ -255,7 +267,7 @@ namespace QgsWms
       const QgsProject *mProject = nullptr;
       QgsServerInterface *mInterface = nullptr;
       QgsWmsParameters mParameters;
-      Flags mFlags = nullptr;
+      Flags mFlags = Flags();
       double mScaleDenominator = -1.0;
 
       // nickname of all layers defined within the project
@@ -271,6 +283,9 @@ namespace QgsWms
 
       QMap<QString, QDomElement> mSlds;
       QMap<QString, QString> mStyles;
+
+      // list for external layers
+      QList<QgsMapLayer *> mExternalLayers;
   };
 };
 

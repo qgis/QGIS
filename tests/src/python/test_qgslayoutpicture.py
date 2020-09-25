@@ -90,7 +90,7 @@ class TestQgsLayoutPicture(unittest.TestCase, LayoutItemTestCase):
         pic.setMode(QgsLayoutItemPicture.FormatRaster)
         self.assertEqual(len(spy), 1)
         pic.setMode(QgsLayoutItemPicture.FormatSVG)
-        self.assertEqual(len(spy), 3) # ideally only 2!
+        self.assertEqual(len(spy), 3)  # ideally only 2!
         self.assertEquals(pic.mode(), QgsLayoutItemPicture.FormatSVG)
 
         # set picture path without explicit format
@@ -116,7 +116,7 @@ class TestQgsLayoutPicture(unittest.TestCase, LayoutItemTestCase):
         # mode should be saved/restored
         pic.setMode(QgsLayoutItemPicture.FormatRaster)
 
-        #save original item to xml
+        # save original item to xml
         doc = QDomDocument("testdoc")
         elem = doc.createElement("test")
         self.assertTrue(pic.writeXml(elem, doc, QgsReadWriteContext()))
@@ -145,7 +145,8 @@ class TestQgsLayoutPicture(unittest.TestCase, LayoutItemTestCase):
 
     def testRemoteImage(self):
         """Test fetching remote picture."""
-        self.picture.setPicturePath('http://localhost:' + str(TestQgsLayoutPicture.port) + '/qgis_local_server/logo.png')
+        self.picture.setPicturePath(
+            'http://localhost:' + str(TestQgsLayoutPicture.port) + '/qgis_local_server/logo.png')
 
         checker = QgsLayoutChecker('composerpicture_remote', self.layout)
         checker.setControlPathPrefix("composer_picture")

@@ -28,6 +28,7 @@
 
 class QgsRasterLayer;
 class QgsVectorLayer;
+class QgsVectorTileLayer;
 class QgsMapLayer;
 class QgsMapCanvas;
 class QgsMeshLayer;
@@ -36,12 +37,13 @@ class QgsIdentifyMenu;
 
 /**
  * \ingroup gui
-  \brief Map tool for identifying features in layers
-
-  after selecting a point, performs the identification:
-  - for raster layers shows value of underlying pixel
-  - for vector layers shows feature attributes within search radius
-    (allows editing values when vector layer is in editing mode)
+ * \brief Map tool for identifying features in layers
+ *
+ * after selecting a point, performs the identification:
+ *
+ * - for raster layers shows value of underlying pixel
+ * - for vector layers shows feature attributes within search radius
+ *   (allows editing values when vector layer is in editing mode)
 */
 class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 {
@@ -64,7 +66,8 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
       VectorLayer = 1,
       RasterLayer = 2,
       MeshLayer = 4, //!< \since QGIS 3.6
-      AllLayers = VectorLayer | RasterLayer | MeshLayer
+      VectorTileLayer = 8,  //!< \since QGIS 3.14
+      AllLayers = VectorLayer | RasterLayer | MeshLayer | VectorTileLayer
     };
     Q_DECLARE_FLAGS( LayerType, Type )
     Q_FLAG( LayerType )
@@ -106,11 +109,12 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
     /**
      * Performs the identification.
-    \param x x coordinates of mouseEvent
-    \param y y coordinates of mouseEvent
-    \param layerList Performs the identification within the given list of layers. Default value is an empty list, i.e. uses all the layers.
-    \param mode Identification mode. Can use Qgis default settings or a defined mode. Default mode is DefaultQgsSetting.
-    \returns a list of IdentifyResult*/
+     * \param x x coordinates of mouseEvent
+     * \param y y coordinates of mouseEvent
+     * \param layerList Performs the identification within the given list of layers. Default value is an empty list, i.e. uses all the layers.
+     * \param mode Identification mode. Can use QGIS default settings or a defined mode. Default mode is DefaultQgsSetting.
+     * \returns a list of IdentifyResult
+    */
     QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, const QList<QgsMapLayer *> &layerList = QList<QgsMapLayer *>(), IdentifyMode mode = DefaultQgsSetting );
 
     /**
@@ -119,7 +123,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
      * this has been made private and two publics methods are offered
      * \param x x coordinates of mouseEvent
      * \param y y coordinates of mouseEvent
-     * \param mode Identification mode. Can use Qgis default settings or a defined mode.
+     * \param mode Identification mode. Can use QGIS default settings or a defined mode.
      * \param layerType Only performs identification in a certain type of layers (raster, vector, mesh). Default value is AllLayers.
      * \returns a list of IdentifyResult
      */
@@ -153,7 +157,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
      * this has been made private and two publics methods are offered
      * \param x x coordinates of mouseEvent
      * \param y y coordinates of mouseEvent
-     * \param mode Identification mode. Can use Qgis default settings or a defined mode.
+     * \param mode Identification mode. Can use QGIS default settings or a defined mode.
      * \param layerList Performs the identification within the given list of layers.
      * \param layerType Only performs identification in a certain type of layers (raster, vector, mesh).
      * \returns a list of IdentifyResult
@@ -206,6 +210,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     bool identifyRasterLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsRasterLayer *layer, const QgsGeometry &geometry, const QgsRectangle &viewExtent, double mapUnitsPerPixel );
     bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsGeometry &geometry );
     bool identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMeshLayer *layer, const QgsGeometry &geometry );
+    bool identifyVectorTileLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorTileLayer *layer, const QgsGeometry &geometry );
 
     /**
      * Desired units for distance display.

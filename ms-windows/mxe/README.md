@@ -44,7 +44,10 @@ make MXE_TARGETS=i686-w64-mingw32.shared.posix -j 16 \
     qtwinextras \
     libzip \
     gsl \
-    libspatialindex
+    libspatialindex \
+    exiv2 \
+    protobuf
+
 ```
 
 When done, you can check and edit the `build-mxe.sh` script and set the `MXE` path to your mxe installation directory, `MXE` can also be passed as an environment variable.

@@ -15,7 +15,7 @@
 #ifndef QGSTEXTPREVIEW_H
 #define QGSTEXTPREVIEW_H
 
-#include "qgstextrenderer.h"
+#include "qgstextformat.h"
 #include "qgsrendercontext.h"
 
 #include <QLabel>

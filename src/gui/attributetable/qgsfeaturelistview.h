@@ -215,11 +215,6 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     void editSelectionChanged( const QItemSelection &deselected, const QItemSelection &selected );
 
     /**
-     * Emits the signal for the feature and the selection information
-     */
-    void updateEditSelectionDependencies();
-
-    /**
      * Make sure, there is an edit selection. If there is none, choose the first item.
      * If \a inSelection is set to TRUE, the edit selection is done in selected entries if
      * there is a selected entry visible.

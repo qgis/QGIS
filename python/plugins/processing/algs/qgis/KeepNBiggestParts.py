@@ -23,7 +23,6 @@ __copyright__ = '(C) 2014, Victor Olaya'
 
 from operator import itemgetter
 
-
 from qgis.core import (QgsGeometry,
                        QgsFeatureSink,
                        QgsProcessing,
@@ -37,7 +36,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class KeepNBiggestParts(QgisAlgorithm):
-
     POLYGONS = 'POLYGONS'
     PARTS = 'PARTS'
     OUTPUT = 'OUTPUT'

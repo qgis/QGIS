@@ -50,11 +50,11 @@ class GUI_EXPORT QgsProcessingParametersWidget : public QgsPanelWidget, public Q
 
     virtual void initWidgets();
 
-    void addParameterWidget( const QgsProcessingParameterDefinition *parameter, QWidget *widget SIP_TRANSFER );
+    void addParameterWidget( const QgsProcessingParameterDefinition *parameter, QWidget *widget SIP_TRANSFER, int stretch = 0 );
     void addParameterLabel( const QgsProcessingParameterDefinition *parameter, QWidget *label SIP_TRANSFER );
 
     void addOutputLabel( QWidget *label SIP_TRANSFER );
-    void addOutputWidget( QWidget *widget SIP_TRANSFER );
+    void addOutputWidget( QWidget *widget SIP_TRANSFER, int stretch = 0 );
 
     void addExtraWidget( QWidget *widget SIP_TRANSFER );
 

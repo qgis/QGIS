@@ -283,6 +283,9 @@ public:
         UrlType urlType() const;
 
         FilterObject* _urlObject;
+
+        HotSpot( const HotSpot& ) = delete;
+        HotSpot& operator= ( const HotSpot& ) = delete;
     };
 
     UrlFilter();

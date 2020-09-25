@@ -28,6 +28,7 @@
 #include "qgsvectorlayerserverproperties.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
+#include "qgslayertreefilterproxymodel.h"
 
 class QgsMapLayer;
 
@@ -48,6 +49,7 @@ class QgsVectorLayer3DRendererWidget;
 class QgsMapLayerComboBox;
 class QgsDoubleSpinBox;
 class QgsMaskingWidget;
+class QgsVectorLayerTemporalPropertiesWidget;
 
 class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVectorLayerPropertiesBase, private QgsExpressionContextGenerator
 {
@@ -208,7 +210,8 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     /**
      * Previous layer style. Used to reset style to previous state if new style
-     * was loaded but dialog is canceled */
+     * was loaded but dialog is canceled.
+    */
     QgsMapLayerStyle mOldStyle;
 
     void initDiagramTab();
@@ -226,8 +229,7 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     QgsExpressionContext createExpressionContext() const override;
 
-    std::unique_ptr<QgsLayerTree> mLayersDependenciesTreeGroup;
-    std::unique_ptr<QgsLayerTreeModel> mLayersDependenciesTreeModel;
+    QgsLayerTreeFilterProxyModel *mLayersDependenciesTreeModel;
 
     void showHelp();
 
@@ -241,6 +243,8 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QAction *mAuxiliaryLayerActionAddField = nullptr;
 
     QgsVectorLayer3DRendererWidget *mVector3DWidget = nullptr;
+
+    QgsVectorLayerTemporalPropertiesWidget *mTemporalWidget = nullptr;
 
   private slots:
     void openPanel( QgsPanelWidget *panel );

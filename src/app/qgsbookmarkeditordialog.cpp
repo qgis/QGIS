@@ -39,8 +39,8 @@ QgsBookmarkEditorDialog::QgsBookmarkEditorDialog( QgsBookmark bookmark, bool inP
 
   mName->setText( mBookmark.name() );
 
-  QSet<QString> groups = QSet<QString>::fromList( QgsProject::instance()->bookmarkManager()->groups() << QgsApplication::instance()->bookmarkManager()->groups() );
-  QStringList groupsList = groups.toList();
+  QSet<QString> groups = qgis::listToSet( QgsProject::instance()->bookmarkManager()->groups() << QgsApplication::instance()->bookmarkManager()->groups() );
+  QStringList groupsList = qgis::setToList( groups );
   groupsList.removeOne( QString() );
   groupsList.sort();
   mGroup->addItems( groupsList );

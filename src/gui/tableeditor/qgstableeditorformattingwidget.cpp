@@ -17,37 +17,30 @@
 #include "qgsnumericformatselectorwidget.h"
 #include "qgsnumericformat.h"
 #include "qgis.h"
+#include "qgsproperty.h"
 
 QgsTableEditorFormattingWidget::QgsTableEditorFormattingWidget( QWidget *parent )
   : QgsPanelWidget( parent )
 {
   setupUi( this );
-  setPanelTitle( tr( "Formatting" ) );
+  setPanelTitle( tr( "Cell Contents" ) );
 
   mFormatNumbersCheckBox->setTristate( false );
 
-  mTextColorButton->setAllowOpacity( true );
-  mTextColorButton->setColorDialogTitle( tr( "Text Color" ) );
-  mTextColorButton->setDefaultColor( QColor( 0, 0, 0 ) );
-  mTextColorButton->setShowNull( true );
+  mFontButton->setShowNullFormat( true );
+  mFontButton->setNoFormatString( tr( "Clear Formatting" ) );
+
   mBackgroundColorButton->setAllowOpacity( true );
   mBackgroundColorButton->setColorDialogTitle( tr( "Text Color" ) );
   mBackgroundColorButton->setDefaultColor( QColor( 255, 255, 255 ) );
   mBackgroundColorButton->setShowNull( true );
 
+  mHorizontalAlignComboBox->setAvailableAlignments( Qt::AlignLeft | Qt::AlignHCenter | Qt::AlignRight | Qt::AlignJustify );
+  mVerticalAlignComboBox->setAvailableAlignments( Qt::AlignTop | Qt::AlignVCenter | Qt::AlignBottom );
+
   mRowHeightSpinBox->setClearValue( 0, tr( "Automatic" ) );
   mColumnWidthSpinBox->setClearValue( 0, tr( "Automatic" ) );
 
-  connect( mTextColorButton, &QgsColorButton::colorChanged, this, [ = ]
-  {
-    if ( !mBlockSignals )
-      emit foregroundColorChanged( mTextColorButton->color() );
-  } );
-  connect( mTextColorButton, &QgsColorButton::cleared, this, [ = ]
-  {
-    if ( !mBlockSignals )
-      emit foregroundColorChanged( QColor() );
-  } );
   connect( mBackgroundColorButton, &QgsColorButton::colorChanged, this,  [ = ]
   {
     if ( !mBlockSignals )
@@ -66,6 +59,12 @@ QgsTableEditorFormattingWidget::QgsTableEditorFormattingWidget( QWidget *parent 
       mFormatNumbersCheckBox->setTristate( false );
     if ( !mBlockSignals )
       emit numberFormatChanged();
+  } );
+
+  connect( mFontButton, &QgsFontButton::changed, this, [ = ]
+  {
+    if ( !mBlockSignals )
+      emit textFormatChanged();
   } );
 
   mCustomizeFormatButton->setEnabled( false );
@@ -104,6 +103,35 @@ QgsTableEditorFormattingWidget::QgsTableEditorFormattingWidget( QWidget *parent 
       mBlockSignals--;
     }
   } );
+
+  connect( mHorizontalAlignComboBox, &QgsAlignmentComboBox::changed, this, [ = ]
+  {
+    if ( !mBlockSignals )
+    {
+      emit horizontalAlignmentChanged( mHorizontalAlignComboBox->currentAlignment() );
+    }
+  } );
+
+  connect( mVerticalAlignComboBox, &QgsAlignmentComboBox::changed, this, [ = ]
+  {
+    if ( !mBlockSignals )
+    {
+      emit verticalAlignmentChanged( mVerticalAlignComboBox->currentAlignment() );
+    }
+  } );
+
+  connect( mExpressionEdit, qgis::overload<const QString &>::of( &QgsFieldExpressionWidget::fieldChanged ), this, [ = ]( const QString & expression )
+  {
+    if ( !mBlockSignals )
+    {
+      emit cellPropertyChanged( expression.isEmpty() ? QgsProperty() : QgsProperty::fromExpression( expression ) );
+    }
+  } );
+
+  mExpressionEdit->setAllowEmptyFieldName( true );
+
+  mExpressionEdit->registerExpressionContextGenerator( this );
+  mFontButton->registerExpressionContextGenerator( this );
 }
 
 QgsNumericFormat *QgsTableEditorFormattingWidget::numericFormat()
@@ -114,11 +142,9 @@ QgsNumericFormat *QgsTableEditorFormattingWidget::numericFormat()
   return mNumericFormat->clone();
 }
 
-void QgsTableEditorFormattingWidget::setForegroundColor( const QColor &color )
+QgsTextFormat QgsTableEditorFormattingWidget::textFormat() const
 {
-  mBlockSignals++;
-  mTextColorButton->setColor( color );
-  mBlockSignals--;
+  return mFontButton->textFormat();
 }
 
 void QgsTableEditorFormattingWidget::setBackgroundColor( const QColor &color )
@@ -134,6 +160,13 @@ void QgsTableEditorFormattingWidget::setNumericFormat( QgsNumericFormat *format,
   mBlockSignals++;
   mFormatNumbersCheckBox->setTristate( isMixedFormat );
   mFormatNumbersCheckBox->setCheckState( isMixedFormat ? Qt::PartiallyChecked : ( mNumericFormat.get() ? Qt::Checked : Qt::Unchecked ) );
+  mBlockSignals--;
+}
+
+void QgsTableEditorFormattingWidget::setTextFormat( const QgsTextFormat &format )
+{
+  mBlockSignals++;
+  mFontButton->setTextFormat( format );
   mBlockSignals--;
 }
 
@@ -157,6 +190,57 @@ void QgsTableEditorFormattingWidget::setColumnWidth( double width )
     mColumnWidthSpinBox->setClearValue( 0, tr( "Automatic" ) );
   mColumnWidthSpinBox->setValue( width < 0 ? 0 : width );
   mBlockSignals--;
+}
+
+void QgsTableEditorFormattingWidget::setHorizontalAlignment( Qt::Alignment alignment )
+{
+  mBlockSignals++;
+  if ( alignment & Qt::AlignHorizontal_Mask && alignment & Qt::AlignVertical_Mask )
+    mHorizontalAlignComboBox->setCurrentIndex( -1 );
+  else
+    mHorizontalAlignComboBox->setCurrentAlignment( alignment );
+  mBlockSignals--;
+}
+
+void QgsTableEditorFormattingWidget::setVerticalAlignment( Qt::Alignment alignment )
+{
+  mBlockSignals++;
+  if ( alignment & Qt::AlignHorizontal_Mask && alignment & Qt::AlignVertical_Mask )
+    mVerticalAlignComboBox->setCurrentIndex( -1 );
+  else
+    mVerticalAlignComboBox->setCurrentAlignment( alignment );
+  mBlockSignals--;
+}
+
+void QgsTableEditorFormattingWidget::setCellProperty( const QgsProperty &property )
+{
+  mBlockSignals++;
+  if ( !property.isActive() )
+    mExpressionEdit->setExpression( QString() );
+  else
+    mExpressionEdit->setExpression( property.asExpression() );
+  mBlockSignals--;
+}
+
+void QgsTableEditorFormattingWidget::registerExpressionContextGenerator( QgsExpressionContextGenerator *generator )
+{
+  mContextGenerator = generator;
+}
+
+QgsExpressionContext QgsTableEditorFormattingWidget::createExpressionContext() const
+{
+  QgsExpressionContext context;
+  if ( mContextGenerator )
+    context = mContextGenerator->createExpressionContext();
+
+  QgsExpressionContextScope *cellScope = new QgsExpressionContextScope();
+  // TODO -- could set real row/column numbers here, in certain circumstances...
+  cellScope->setVariable( QStringLiteral( "row_number" ), 0 );
+  cellScope->setVariable( QStringLiteral( "column_number" ), 0 );
+  context.appendScope( cellScope );
+
+  context.setHighlightedVariables( QStringList() << QStringLiteral( "row_number" ) << QStringLiteral( "column_number" ) );
+  return context;
 }
 
 QgsTableEditorFormattingWidget::~QgsTableEditorFormattingWidget() = default;

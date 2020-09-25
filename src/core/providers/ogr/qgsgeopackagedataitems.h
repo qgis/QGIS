@@ -65,6 +65,8 @@ class CORE_EXPORT QgsGeoPackageCollectionItem : public QgsDataCollectionItem
     // QgsDataItem interface
   public:
     bool layerCollection() const override;
+    bool hasDragEnabled() const override;
+    QgsMimeDataUtils::Uri mimeUri() const override;
 };
 
 
@@ -126,6 +128,8 @@ class CORE_EXPORT QgsGeoPackageVectorLayerItem final: public QgsGeoPackageAbstra
     QgsGeoPackageVectorLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType );
     bool executeDeleteLayer( QString &errCause ) override;
 
+    // QgsDataItem interface
+    QVector<QgsDataItem *> createChildren() override;
 };
 
 /**
@@ -142,7 +146,7 @@ class CORE_EXPORT QgsGeoPackageConnectionItem final: public QgsGeoPackageCollect
 };
 
 
-class CORE_EXPORT QgsGeoPackageRootItem final: public QgsDataCollectionItem
+class CORE_EXPORT QgsGeoPackageRootItem final: public QgsConnectionsRootItem
 {
     Q_OBJECT
 

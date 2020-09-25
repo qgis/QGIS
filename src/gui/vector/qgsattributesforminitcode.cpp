@@ -25,9 +25,9 @@ QgsAttributesFormInitCode::QgsAttributesFormInitCode()
 
   // Init function stuff
   mInitCodeSourceComboBox->addItem( QString() );
-  mInitCodeSourceComboBox->addItem( tr( "Load from external file" ) );
-  mInitCodeSourceComboBox->addItem( tr( "Provide code in this dialog" ) );
-  mInitCodeSourceComboBox->addItem( tr( "Load from the environment" ) );
+  mInitCodeSourceComboBox->addItem( tr( "Load from External File" ) );
+  mInitCodeSourceComboBox->addItem( tr( "Provide Code in this Dialog" ) );
+  mInitCodeSourceComboBox->addItem( tr( "Load from the Environment" ) );
 
   QgsSettings settings;
   mInitFileWidget->setDefaultRoot( settings.value( QStringLiteral( "style/lastInitFilePathDir" ), "." ).toString() );

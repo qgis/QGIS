@@ -270,14 +270,14 @@ void TestQgsGpsInformationWidget::testTimestampWrite()
   QCOMPARE( _testWrite( tempLayerString, widget.get(), QStringLiteral( "stringf" ),  Qt::TimeSpec::TimeZone ).toString( Qt::DateFormat::ISODate ),  tzTime.toString( Qt::DateFormat::ISODate ) );
 
   // Test write on line string field
-  widget->mCaptureList.push_back( QgsPointXY( 1, 2 ) );
-  widget->mCaptureList.push_back( QgsPointXY( 3, 4 ) );
+  widget->mCaptureList.push_back( QgsPoint( 1, 2 ) );
+  widget->mCaptureList.push_back( QgsPoint( 3, 4 ) );
   QCOMPARE( _testWrite( tempLayerLineString, widget.get(), QStringLiteral( "stringf" ),  Qt::TimeSpec::UTC ).toString( Qt::DateFormat::ISODate ), dateTime.toString( Qt::DateFormat::ISODate ) );
-  widget->mCaptureList.push_back( QgsPointXY( 1, 2 ) );
-  widget->mCaptureList.push_back( QgsPointXY( 3, 4 ) );
+  widget->mCaptureList.push_back( QgsPoint( 1, 2 ) );
+  widget->mCaptureList.push_back( QgsPoint( 3, 4 ) );
   QCOMPARE( _testWrite( tempLayerLineString, widget.get(), QStringLiteral( "stringf" ),  Qt::TimeSpec::LocalTime ).toString( Qt::DateFormat::ISODate ), localTime.toString( Qt::DateFormat::ISODate ) );
-  widget->mCaptureList.push_back( QgsPointXY( 1, 2 ) );
-  widget->mCaptureList.push_back( QgsPointXY( 3, 4 ) );
+  widget->mCaptureList.push_back( QgsPoint( 1, 2 ) );
+  widget->mCaptureList.push_back( QgsPoint( 3, 4 ) );
   QCOMPARE( _testWrite( tempLayerLineString, widget.get(), QStringLiteral( "stringf" ),  Qt::TimeSpec::TimeZone ).toString( Qt::DateFormat::ISODate ),  tzTime.toString( Qt::DateFormat::ISODate ) );
 
   // Write on GPKG

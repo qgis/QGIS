@@ -294,7 +294,7 @@ certIsCurrent checks if ``cert`` is viable for its not before and not after date
 
     static QList<QSslError> certViabilityErrors( const QSslCertificate &cert );
 %Docstring
-certViabilityErrors checks basic characteristics (validity dates, blacklisting, etc.) of given ``cert``
+certViabilityErrors checks basic characteristics (validity dates, blocklisting, etc.) of given ``cert``
 
 :param cert: certificate to be checked
 

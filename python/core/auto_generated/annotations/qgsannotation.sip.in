@@ -18,13 +18,13 @@ class QgsAnnotation : QObject
 Abstract base class for annotation items which are drawn over a map.
 
 QgsAnnotation is an abstract base class for map annotation items. These annotations can be
-drawn within a map, and have either a fixed map position (retrieved using mapPosition())
-or are placed relative to the map's frame (retrieved using relativePosition()).
+drawn within a map, and have either a fixed map position (retrieved using :py:func:`~mapPosition`)
+or are placed relative to the map's frame (retrieved using :py:func:`~relativePosition`).
 Annotations with a fixed map position also have a corresponding
-QgsCoordinateReferenceSystem, which can be determined by calling mapPositionCrs().
+QgsCoordinateReferenceSystem, which can be determined by calling :py:func:`~mapPositionCrs`.
 
 Derived classes should implement their custom painting routines within
-a renderAnnotation() override.
+a :py:func:`~renderAnnotation` override.
 
 .. versionadded:: 3.0
 %End
@@ -145,7 +145,7 @@ the relative percentage for the position compared to the map width and height.
 
  void setFrameOffsetFromReferencePoint( QPointF offset ) /Deprecated/;
 %Docstring
-Sets the annotation's frame's offset (in pixels) from the mapPosition() reference point.
+Sets the annotation's frame's offset (in pixels) from the :py:func:`~QgsAnnotation.mapPosition` reference point.
 
 .. seealso:: :py:func:`frameOffsetFromReferencePoint`
 
@@ -155,7 +155,7 @@ Sets the annotation's frame's offset (in pixels) from the mapPosition() referenc
 
  QPointF frameOffsetFromReferencePoint() const /Deprecated/;
 %Docstring
-Returns the annotation's frame's offset (in pixels) from the mapPosition() reference point.
+Returns the annotation's frame's offset (in pixels) from the :py:func:`~QgsAnnotation.mapPosition` reference point.
 
 .. seealso:: :py:func:`setFrameOffsetFromReferencePoint`
 
@@ -165,7 +165,7 @@ Returns the annotation's frame's offset (in pixels) from the mapPosition() refer
 
     void setFrameOffsetFromReferencePointMm( QPointF offset );
 %Docstring
-Sets the annotation's frame's offset (in millimeters) from the mapPosition() reference point.
+Sets the annotation's frame's offset (in millimeters) from the :py:func:`~QgsAnnotation.mapPosition` reference point.
 
 .. seealso:: :py:func:`frameOffsetFromReferencePointMm`
 
@@ -174,7 +174,7 @@ Sets the annotation's frame's offset (in millimeters) from the mapPosition() ref
 
     QPointF frameOffsetFromReferencePointMm() const;
 %Docstring
-Returns the annotation's frame's offset (in millimeters) from the mapPosition() reference point.
+Returns the annotation's frame's offset (in millimeters) from the :py:func:`~QgsAnnotation.mapPosition` reference point.
 
 .. seealso:: :py:func:`setFrameOffsetFromReferencePointMm`
 
@@ -394,7 +394,7 @@ This method should be called from subclasses in their readXml method.
 %Docstring
 Copies common annotation properties to the ``targe``
 annotation.
-Can be used within QgsAnnotation.clone() implementations
+Can be used within :py:func:`QgsAnnotation.clone()` implementations
 to assist with creating copies.
 %End
 

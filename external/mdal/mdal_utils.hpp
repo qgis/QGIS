@@ -12,6 +12,7 @@
 #include <limits>
 #include <sstream>
 #include <fstream>
+#include <cmath>
 
 #include <algorithm>
 
@@ -23,20 +24,28 @@
 #define MDAL_UNUSED(x) (void)x;
 #define MDAL_NAN std::numeric_limits<double>::quiet_NaN()
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846264338327
+#endif
+
 namespace MDAL
 {
   // endianness
   bool isNativeLittleEndian();
 
   // numbers
-  bool equals( double val1, double val2, double eps = std::numeric_limits<double>::epsilon() );
+  inline bool equals( double val1, double val2, double eps = std::numeric_limits<double>::epsilon() )
+  {
+    return fabs( val1 - val2 ) < eps;
+  }
 
   //! returns quiet_NaN if value equals nodata value, otherwise returns val itself
   double safeValue( double val, double nodata, double eps = std::numeric_limits<double>::epsilon() );
 
   /** Return whether file exists */
   bool fileExists( const std::string &filename );
-  std::string baseName( const std::string &filename );
+  std::string baseName( const std::string &filename, bool keepExtension = false );
+  std::string fileExtension( const std::string &path );
   std::string dirName( const std::string &filename );
   std::string pathJoin( const std::string &path1, const std::string &path2 );
   std::string readFileToString( const std::string &filename );
@@ -53,6 +62,8 @@ namespace MDAL
   bool contains( const std::string &str, const std::string &substr, ContainsBehaviour behaviour = CaseSensitive );
   bool contains( const std::vector<std::string> &list, const std::string &str );
   std::string replace( const std::string &str, const std::string &substr, const std::string &replacestr, ContainsBehaviour behaviour = CaseSensitive );
+  std::string removeFrom( const std::string &str, const std::string &substr );
+
   //! left justify and truncate, resulting string will always have width chars
   std::string leftJustified( const std::string &str, size_t width, char fill = ' ' );
 
@@ -128,7 +139,7 @@ namespace MDAL
   //! Adds altitude dataset group to mesh
   void addFaceScalarDatasetGroup( MDAL::Mesh *mesh, const std::vector<double> &values, const std::string &name );
 
-  //! function used to read all of type of value. Option to change the endianness is provided
+  //! Reads all of type of value. Option to change the endianness is provided
   template<typename T>
   bool readValue( T &value, std::ifstream &in, bool changeEndianness = false )
   {
@@ -141,6 +152,19 @@ namespace MDAL
       std::reverse( p, p + sizeof( T ) );
 
     return true;
+  }
+
+  //! Writes all of type of value. Option to change the endianness is provided
+  template<typename T>
+  void writeValue( T &value, std::ofstream &out, bool changeEndianness = false )
+  {
+    T v = value;
+    char *const p = reinterpret_cast<char *>( &v );
+
+    if ( changeEndianness )
+      std::reverse( p, p + sizeof( T ) );
+
+    out.write( p, sizeof( T ) );
   }
 
   //! Prepend 0 to string to have n char
@@ -156,9 +180,43 @@ namespace MDAL
   //! https://www.unidata.ucar.edu/software/netcdf-java/current/CDM/CalendarDateTime.html
   MDAL::DateTime parseCFReferenceTime( const std::string &timeInformation, const std::string &calendarString );
 
+  /**
+    * parses information received from load mesh uri
+    * load mesh uri contains: <drivername>:"meshfile":<meshname>
+    * drivername and meshname are optional parameters
+    */
+  void parseDriverAndMeshFromUri( const std::string &uri, std::string &driver, std::string &meshFile, std::string &meshName );
+
+  /**
+    * parses only driver information from URI
+    */
+  void parseDriverFromUri( const std::string &uri, std::string &driver );
+
+  /**
+    * parses only meshfile name from URI
+    */
+  void parseMeshFileFromUri( const std::string &uri, std::string &meshFile );
+
+  /**
+    * build uri from provided information about meshfile, driver and meshname
+    * only required field is meshFile
+    * returns string in formats:
+    *  - if both driver and meshname are provided:    <driver>:"meshfile":<meshname>
+    *  - if only driver is provided:                  <driver>:"meshfile"
+    *  - if only meshname is provided:                "meshfile":meshname
+    *  - if neither driver nor meshname is provided:  meshfile
+    *  - if not even meshfile is provided:            ""
+    */
+  std::string buildMeshUri( const std::string &meshFile, const std::string &meshName, const std::string &driver );
+
+  /**
+    * helper function to build and merge uris in the same time without the need of cycle
+    */
+  std::string buildAndMergeMeshUris( const std::string &meshfile, const std::vector<std::string> &meshNames, const std::string &driver = "" );
+
   struct Error
   {
-    Error( MDAL_Status s, std::string m, std::string d = "" );
+    Error( MDAL_Status status, std::string message, std::string driverName = "" );
     void setDriver( std::string d );
     MDAL_Status status;
     std::string mssg;

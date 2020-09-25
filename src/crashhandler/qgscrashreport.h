@@ -97,7 +97,7 @@ class QgsCrashReport
 
   private:
     Flags mFlags;
-    QgsStackTrace *mStackTrace;
+    QgsStackTrace *mStackTrace = nullptr;
     QStringList mVersionInfo;
 
 };

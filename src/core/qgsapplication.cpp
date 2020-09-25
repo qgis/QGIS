@@ -15,9 +15,11 @@
 
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
+#include "qgslocalizeddatapathregistry.h"
 #include "qgsdataitemproviderregistry.h"
 #include "qgsexception.h"
 #include "qgsgeometry.h"
+#include "qgsannotationitemregistry.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
@@ -34,6 +36,7 @@
 #include "qgsscalebarrendererregistry.h"
 #include "qgssvgcache.h"
 #include "qgsimagecache.h"
+#include "qgssourcecache.h"
 #include "qgscolorschemeregistry.h"
 #include "qgspainteffectregistry.h"
 #include "qgsprojectstorageregistry.h"
@@ -52,6 +55,7 @@
 #include "qgsuserprofilemanager.h"
 #include "qgsreferencedgeometry.h"
 #include "qgs3drendererregistry.h"
+#include "qgs3dsymbolregistry.h"
 #include "qgslayoutrendercontext.h"
 #include "qgssqliteutils.h"
 #include "qgsstyle.h"
@@ -62,10 +66,12 @@
 #include "qgsstylemodel.h"
 #include "qgsconnectionregistry.h"
 #include "qgsremappingproxyfeaturesink.h"
+#include "qgsmeshlayer.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
 #include "processing/models/qgsprocessingmodelchildparametersource.h"
+#include "processing/models/qgsprocessingmodelchilddependency.h"
 
 #include "layout/qgspagesizeregistry.h"
 
@@ -92,7 +98,9 @@
 #include <lmcons.h>
 #define SECURITY_WIN32
 #include <security.h>
+#ifdef _MSC_VER
 #pragma comment( lib, "Secur32.lib" )
+#endif
 #endif
 
 #include "qgsconfig.h"
@@ -161,7 +169,7 @@ QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const Q
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "loading of qgis translation failed %1/qgis_%2" ).arg( i18nPath(), *sTranslation() ) );
+      QgsDebugMsgLevel( QStringLiteral( "loading of qgis translation failed %1/qgis_%2" ).arg( i18nPath(), *sTranslation() ), 2 );
     }
 
     /* Translation file for Qt.
@@ -176,7 +184,7 @@ QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const Q
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "loading of qt translation failed %1/qt_%2" ).arg( QLibraryInfo::location( QLibraryInfo::TranslationsPath ), *sTranslation() ) );
+      QgsDebugMsgLevel( QStringLiteral( "loading of qt translation failed %1/qt_%2" ).arg( QLibraryInfo::location( QLibraryInfo::TranslationsPath ), *sTranslation() ), 2 );
     }
   }
 
@@ -218,6 +226,7 @@ void QgsApplication::init( QString profileFolder )
   qRegisterMetaType<Qgis::MessageLevel>( "Qgis::MessageLevel" );
   qRegisterMetaType<QgsReferencedRectangle>( "QgsReferencedRectangle" );
   qRegisterMetaType<QgsReferencedPointXY>( "QgsReferencedPointXY" );
+  qRegisterMetaType<QgsReferencedGeometry>( "QgsReferencedGeometry" );
   qRegisterMetaType<QgsLayoutRenderContext::Flags>( "QgsLayoutRenderContext::Flags" );
   qRegisterMetaType<QgsStyle::StyleEntity>( "QgsStyle::StyleEntity" );
   qRegisterMetaType<QgsCoordinateReferenceSystem>( "QgsCoordinateReferenceSystem" );
@@ -232,6 +241,11 @@ void QgsApplication::init( QString profileFolder )
   qRegisterMetaType<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
   qRegisterMetaTypeStreamOperators<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
   qRegisterMetaType<QgsRemappingSinkDefinition>( "QgsRemappingSinkDefinition" );
+  qRegisterMetaType<QgsProcessingModelChildDependency>( "QgsProcessingModelChildDependency" );
+  qRegisterMetaType<QgsTextFormat>( "QgsTextFormat" );
+  QMetaType::registerComparators<QgsProcessingModelChildDependency>();
+  QMetaType::registerEqualsComparator<QgsProcessingFeatureSourceDefinition>();
+  QMetaType::registerEqualsComparator<QgsProperty>();
 
   ( void ) resolvePkgPath();
 
@@ -321,6 +335,15 @@ void QgsApplication::init( QString profileFolder )
   // append local user-writable folder as a proj search path
   QStringList currentProjSearchPaths = QgsProjUtils::searchPaths();
   currentProjSearchPaths.append( qgisSettingsDirPath() + QStringLiteral( "proj" ) );
+#ifdef Q_OS_MACX
+  // append bundled proj lib for MacOS
+  QString projLib( QDir::cleanPath( pkgDataPath().append( "/proj" ) ) );
+  if ( QFile::exists( projLib ) )
+  {
+    currentProjSearchPaths.append( projLib );
+  }
+#endif // Q_OS_MACX
+
   char **newPaths = new char *[currentProjSearchPaths.length()];
   for ( int i = 0; i < currentProjSearchPaths.count(); ++i )
   {
@@ -332,8 +355,7 @@ void QgsApplication::init( QString profileFolder )
     CPLFree( newPaths[i] );
   }
   delete [] newPaths;
-#endif
-
+#endif // PROJ_VERSION_MAJOR>=6
 
   // allow Qt to search for Qt plugins (e.g. sqldrivers) in our plugin directory
   QCoreApplication::addLibraryPath( pluginPath() );
@@ -343,10 +365,17 @@ void QgsApplication::init( QString profileFolder )
   // so we read actual value in main.cpp
   ABISYM( sMaxThreads ) = -1;
 
-  colorSchemeRegistry()->addDefaultSchemes();
-  colorSchemeRegistry()->initStyleScheme();
+  {
+    QgsScopedRuntimeProfile profile( tr( "Load color schemes" ) );
+    colorSchemeRegistry()->addDefaultSchemes();
+    colorSchemeRegistry()->initStyleScheme();
+  }
 
-  bookmarkManager()->initialize( QgsApplication::qgisSettingsDirPath() + "/bookmarks.xml" );
+  {
+    QgsScopedRuntimeProfile profile( tr( "Load bookmarks" ) );
+    bookmarkManager()->initialize( QgsApplication::qgisSettingsDirPath() + "/bookmarks.xml" );
+  }
+
   if ( !members()->mStyleModel )
     members()->mStyleModel = new QgsStyleModel( QgsStyle::defaultStyle() );
 
@@ -427,19 +456,19 @@ bool QgsApplication::notify( QObject *receiver, QEvent *event )
   }
   catch ( QgsException &e )
   {
-    QgsDebugMsg( "Caught unhandled QgsException: " + e.what() );
+    qCritical() << "Caught unhandled QgsException: " << e.what();
     if ( qApp->thread() == QThread::currentThread() )
       QMessageBox::critical( activeWindow(), tr( "Exception" ), e.what() );
   }
   catch ( std::exception &e )
   {
-    QgsDebugMsg( "Caught unhandled std::exception: " + QString::fromLatin1( e.what() ) );
+    qCritical() << "Caught unhandled std::exception: " << e.what();
     if ( qApp->thread() == QThread::currentThread() )
       QMessageBox::critical( activeWindow(), tr( "Exception" ), e.what() );
   }
   catch ( ... )
   {
-    QgsDebugMsg( QStringLiteral( "Caught unhandled unknown exception" ) );
+    qCritical() << "Caught unhandled unknown exception";
     if ( qApp->thread() == QThread::currentThread() )
       QMessageBox::critical( activeWindow(), tr( "Exception" ), tr( "unknown exception" ) );
   }
@@ -449,7 +478,7 @@ bool QgsApplication::notify( QObject *receiver, QEvent *event )
 
 QgsRuntimeProfiler *QgsApplication::profiler()
 {
-  return members()->mProfiler;
+  return QgsRuntimeProfiler::threadLocalInstance();
 }
 
 void QgsApplication::setFileOpenEventReceiver( QObject *receiver )
@@ -745,7 +774,7 @@ QString QgsApplication::resolvePkgPath()
       QgsDebugMsgLevel( QStringLiteral( "- source directory: %1" ).arg( sBuildSourcePath()->toUtf8().constData() ), 4 );
       QgsDebugMsgLevel( QStringLiteral( "- output directory of the build: %1" ).arg( sBuildOutputPath()->toUtf8().constData() ), 4 );
 #if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
-      *sCfgIntDir() = appPath.split( '/', QString::SkipEmptyParts ).last();
+      *sCfgIntDir() = prefix.split( '/', QString::SkipEmptyParts ).last();
       qDebug( "- cfg: %s", sCfgIntDir()->toUtf8().constData() );
 #endif
     }
@@ -1657,7 +1686,7 @@ void QgsApplication::setSkippedGdalDrivers( const QStringList &skippedGdalDriver
   *sDeferredSkippedGdalDrivers() = deferredSkippedGdalDrivers;
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "gdal/skipList" ), skippedGdalDrivers.join( QStringLiteral( " " ) ) );
+  settings.setValue( QStringLiteral( "gdal/skipDrivers" ), skippedGdalDrivers.join( QStringLiteral( "," ) ) );
 
   applyGdalSkippedDrivers();
 }
@@ -1665,11 +1694,21 @@ void QgsApplication::setSkippedGdalDrivers( const QStringList &skippedGdalDriver
 void QgsApplication::registerGdalDriversFromSettings()
 {
   QgsSettings settings;
-  QString joinedList = settings.value( QStringLiteral( "gdal/skipList" ), QString() ).toString();
+  QString joinedList, delimiter;
+  if ( settings.contains( QStringLiteral( "gdal/skipDrivers" ) ) )
+  {
+    joinedList = settings.value( QStringLiteral( "gdal/skipDrivers" ), QString() ).toString();
+    delimiter = QStringLiteral( "," );
+  }
+  else
+  {
+    joinedList = settings.value( QStringLiteral( "gdal/skipList" ), QString() ).toString();
+    delimiter = QStringLiteral( " " );
+  }
   QStringList myList;
   if ( !joinedList.isEmpty() )
   {
-    myList = joinedList.split( ' ' );
+    myList = joinedList.split( delimiter );
   }
   *sGdalSkipList() = myList;
   applyGdalSkippedDrivers();
@@ -1689,9 +1728,9 @@ void QgsApplication::applyGdalSkippedDrivers()
     if ( !sDeferredSkippedGdalDrivers()->contains( driverName ) )
       realDisabledDriverList << driverName;
   }
-  QString myDriverList = realDisabledDriverList.join( ' ' );
-  QgsDebugMsgLevel( QStringLiteral( "Gdal Skipped driver list set to:" ), 1 );
-  QgsDebugMsgLevel( myDriverList, 1 );
+  QString myDriverList = realDisabledDriverList.join( ',' );
+  QgsDebugMsgLevel( QStringLiteral( "Gdal Skipped driver list set to:" ), 2 );
+  QgsDebugMsgLevel( myDriverList, 2 );
   CPLSetConfigOption( "GDAL_SKIP", myDriverList.toUtf8() );
   GDALAllRegister(); //to update driver list and skip missing ones
 }
@@ -2051,7 +2090,7 @@ bool QgsApplication::createDatabase( QString *errorMessage )
 
 void QgsApplication::setMaxThreads( int maxThreads )
 {
-  QgsDebugMsgLevel( QStringLiteral( "maxThreads: %1" ).arg( maxThreads ), 1 );
+  QgsDebugMsgLevel( QStringLiteral( "maxThreads: %1" ).arg( maxThreads ), 2 );
 
   // make sure value is between 1 and #cores, if not set to -1 (use #cores)
   // 0 could be used to disable any parallel processing
@@ -2067,7 +2106,7 @@ void QgsApplication::setMaxThreads( int maxThreads )
 
   // set max thread count in QThreadPool
   QThreadPool::globalInstance()->setMaxThreadCount( maxThreads );
-  QgsDebugMsgLevel( QStringLiteral( "set QThreadPool max thread count to %1" ).arg( QThreadPool::globalInstance()->maxThreadCount() ), 1 );
+  QgsDebugMsgLevel( QStringLiteral( "set QThreadPool max thread count to %1" ).arg( QThreadPool::globalInstance()->maxThreadCount() ), 2 );
 }
 
 QgsTaskManager *QgsApplication::taskManager()
@@ -2125,6 +2164,11 @@ QgsImageCache *QgsApplication::imageCache()
   return members()->mImageCache;
 }
 
+QgsSourceCache *QgsApplication::sourceCache()
+{
+  return members()->mSourceCache;
+}
+
 QgsNetworkContentFetcherRegistry *QgsApplication::networkContentFetcherRegistry()
 {
   return members()->mNetworkContentFetcherRegistry;
@@ -2148,6 +2192,11 @@ QgsCalloutRegistry *QgsApplication::calloutRegistry()
 QgsLayoutItemRegistry *QgsApplication::layoutItemRegistry()
 {
   return members()->mLayoutItemRegistry;
+}
+
+QgsAnnotationItemRegistry *QgsApplication::annotationItemRegistry()
+{
+  return members()->mAnnotationItemRegistry;
 }
 
 QgsGpsConnectionRegistry *QgsApplication::gpsConnectionRegistry()
@@ -2215,6 +2264,11 @@ Qgs3DRendererRegistry *QgsApplication::renderer3DRegistry()
   return members()->m3DRendererRegistry;
 }
 
+Qgs3DSymbolRegistry *QgsApplication::symbol3DRegistry()
+{
+  return members()->m3DSymbolRegistry;
+}
+
 QgsScaleBarRendererRegistry *QgsApplication::scaleBarRendererRegistry()
 {
   return members()->mScaleBarRendererRegistry;
@@ -2225,39 +2279,162 @@ QgsProjectStorageRegistry *QgsApplication::projectStorageRegistry()
   return members()->mProjectStorageRegistry;
 }
 
+QgsLocalizedDataPathRegistry *QgsApplication::localizedDataPathRegistry()
+{
+  return members()->mLocalizedDataPathRegistry;
+}
+
 QgsApplication::ApplicationMembers::ApplicationMembers()
 {
   // don't use initializer lists or scoped pointers - as more objects are added here we
   // will need to be careful with the order of creation/destruction
+  mLocalizedDataPathRegistry = new QgsLocalizedDataPathRegistry();
   mMessageLog = new QgsMessageLog();
-  mProfiler = new QgsRuntimeProfiler();
-  mConnectionRegistry = new QgsConnectionRegistry();
-  mTaskManager = new QgsTaskManager();
-  mActionScopeRegistry = new QgsActionScopeRegistry();
-  mNumericFormatRegistry = new QgsNumericFormatRegistry();
-  mFieldFormatterRegistry = new QgsFieldFormatterRegistry();
-  mSvgCache = new QgsSvgCache();
-  mImageCache = new QgsImageCache();
-  mColorSchemeRegistry = new QgsColorSchemeRegistry();
-  mPaintEffectRegistry = new QgsPaintEffectRegistry();
-  mSymbolLayerRegistry = new QgsSymbolLayerRegistry();
-  mCalloutRegistry = new QgsCalloutRegistry();
-  mRendererRegistry = new QgsRendererRegistry();
-  mRasterRendererRegistry = new QgsRasterRendererRegistry();
-  mGpsConnectionRegistry = new QgsGpsConnectionRegistry();
-  mPluginLayerRegistry = new QgsPluginLayerRegistry();
-  mProcessingRegistry = new QgsProcessingRegistry();
+  QgsRuntimeProfiler *profiler = QgsRuntimeProfiler::threadLocalInstance();
+
+  {
+    profiler->start( tr( "Create connection registry" ) );
+    mConnectionRegistry = new QgsConnectionRegistry();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup task manager" ) );
+    mTaskManager = new QgsTaskManager();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup action scope registry" ) );
+    mActionScopeRegistry = new QgsActionScopeRegistry();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup numeric formats" ) );
+    mNumericFormatRegistry = new QgsNumericFormatRegistry();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup field formats" ) );
+    mFieldFormatterRegistry = new QgsFieldFormatterRegistry();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup SVG cache" ) );
+    mSvgCache = new QgsSvgCache();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup image cache" ) );
+    mImageCache = new QgsImageCache();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup source cache" ) );
+    mSourceCache = new QgsSourceCache();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup color scheme registry" ) );
+    mColorSchemeRegistry = new QgsColorSchemeRegistry();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup paint effect" ) );
+    mPaintEffectRegistry = new QgsPaintEffectRegistry();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup symbol layer registry" ) );
+    mSymbolLayerRegistry = new QgsSymbolLayerRegistry();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup callout registry" ) );
+    mCalloutRegistry = new QgsCalloutRegistry();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup renderer registry" ) );
+    mRendererRegistry = new QgsRendererRegistry();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup raster renderer registry" ) );
+    mRasterRendererRegistry = new QgsRasterRendererRegistry();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup GPS registry" ) );
+    mGpsConnectionRegistry = new QgsGpsConnectionRegistry();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup plugin layer registry" ) );
+    mPluginLayerRegistry = new QgsPluginLayerRegistry();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup Processing registry" ) );
+    mProcessingRegistry = new QgsProcessingRegistry();
+    profiler->end();
+  }
   mPageSizeRegistry = new QgsPageSizeRegistry();
-  mLayoutItemRegistry = new QgsLayoutItemRegistry();
-  mLayoutItemRegistry->populate();
-  mAnnotationRegistry = new QgsAnnotationRegistry();
-  m3DRendererRegistry = new Qgs3DRendererRegistry();
-  mProjectStorageRegistry = new QgsProjectStorageRegistry();
-  mNetworkContentFetcherRegistry = new QgsNetworkContentFetcherRegistry();
-  mValidityCheckRegistry = new QgsValidityCheckRegistry();
-  mClassificationMethodRegistry = new QgsClassificationMethodRegistry();
-  mBookmarkManager = new QgsBookmarkManager( nullptr );
-  mScaleBarRendererRegistry = new QgsScaleBarRendererRegistry();
+  {
+    profiler->start( tr( "Setup layout item registry" ) );
+    mLayoutItemRegistry = new QgsLayoutItemRegistry();
+    mLayoutItemRegistry->populate();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup annotation registry" ) );
+    mAnnotationRegistry = new QgsAnnotationRegistry();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup annotation item registry" ) );
+    mAnnotationItemRegistry = new QgsAnnotationItemRegistry();
+    mAnnotationItemRegistry->populate();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup 3D symbol registry" ) );
+    m3DSymbolRegistry = new Qgs3DSymbolRegistry();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup 3D renderer registry" ) );
+    m3DRendererRegistry = new Qgs3DRendererRegistry();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup project storage registry" ) );
+    mProjectStorageRegistry = new QgsProjectStorageRegistry();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup network content cache" ) );
+    mNetworkContentFetcherRegistry = new QgsNetworkContentFetcherRegistry();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup layout check registry" ) );
+    mValidityCheckRegistry = new QgsValidityCheckRegistry();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup classification registry" ) );
+    mClassificationMethodRegistry = new QgsClassificationMethodRegistry();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup bookmark manager" ) );
+    mBookmarkManager = new QgsBookmarkManager( nullptr );
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup scalebar registry" ) );
+    mScaleBarRendererRegistry = new QgsScaleBarRendererRegistry();
+    profiler->end();
+  }
 }
 
 QgsApplication::ApplicationMembers::~ApplicationMembers()
@@ -2267,6 +2444,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mValidityCheckRegistry;
   delete mActionScopeRegistry;
   delete m3DRendererRegistry;
+  delete m3DSymbolRegistry;
   delete mAnnotationRegistry;
   delete mColorSchemeRegistry;
   delete mFieldFormatterRegistry;
@@ -2277,12 +2455,13 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mProcessingRegistry;
   delete mProjectStorageRegistry;
   delete mPageSizeRegistry;
+  delete mAnnotationItemRegistry;
   delete mLayoutItemRegistry;
-  delete mProfiler;
   delete mRasterRendererRegistry;
   delete mRendererRegistry;
   delete mSvgCache;
   delete mImageCache;
+  delete mSourceCache;
   delete mCalloutRegistry;
   delete mSymbolLayerRegistry;
   delete mTaskManager;
@@ -2291,6 +2470,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mNumericFormatRegistry;
   delete mBookmarkManager;
   delete mConnectionRegistry;
+  delete mLocalizedDataPathRegistry;
 }
 
 QgsApplication::ApplicationMembers *QgsApplication::members()

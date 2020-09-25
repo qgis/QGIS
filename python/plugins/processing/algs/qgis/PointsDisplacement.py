@@ -37,7 +37,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class PointsDisplacement(QgisAlgorithm):
-
     INPUT = 'INPUT'
     DISTANCE = 'DISTANCE'
     PROXIMITY = 'PROXIMITY'

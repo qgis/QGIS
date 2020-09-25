@@ -214,7 +214,7 @@ class TestQgsMapLayerStore(unittest.TestCase):
         self.assertEqual(store.mapLayersByName('test'), [l1])
         self.assertEqual(store.mapLayersByName('test2'), [l2])
 
-        #duplicate name
+        # duplicate name
 
         # little bit of a hack - we don't want a duplicate ID and since IDs are currently based on time we wait a bit here
         sleep(0.1)
@@ -252,7 +252,7 @@ class TestQgsMapLayerStore(unittest.TestCase):
         store.addMapLayers([l1, l2, l3])
         self.assertEqual(store.count(), 3)
 
-        #remove bad layers
+        # remove bad layers
         store.removeMapLayersById(['bad'])
         self.assertEqual(store.count(), 3)
         store.removeMapLayersById([None])
@@ -293,7 +293,7 @@ class TestQgsMapLayerStore(unittest.TestCase):
         store.addMapLayers([l1, l2, l3])
         self.assertEqual(store.count(), 3)
 
-        #remove bad layers
+        # remove bad layers
         store.removeMapLayers([None])
         self.assertEqual(store.count(), 3)
 
@@ -324,7 +324,7 @@ class TestQgsMapLayerStore(unittest.TestCase):
         store.addMapLayers([l1, l2])
         self.assertEqual(store.count(), 2)
 
-        #remove bad layers
+        # remove bad layers
         store.removeMapLayer('bad')
         self.assertEqual(store.count(), 2)
         store.removeMapLayer(None)
@@ -365,7 +365,7 @@ class TestQgsMapLayerStore(unittest.TestCase):
         store.addMapLayers([l1, l2])
         self.assertEqual(store.count(), 2)
 
-        #remove bad layers
+        # remove bad layers
         store.removeMapLayer(None)
         self.assertEqual(store.count(), 2)
         l3 = createLayer('test3')
@@ -450,7 +450,7 @@ class TestQgsMapLayerStore(unittest.TestCase):
         self.assertEqual(len(layer_removed_spy), 4)
         self.assertEqual(len(remove_all_spy), 1)
 
-        #remove some layers which aren't in the store
+        # remove some layers which aren't in the store
         store.removeMapLayersById(['asdasd'])
         self.assertEqual(len(layers_will_be_removed_spy), 3)
         self.assertEqual(len(layer_will_be_removed_spy_str), 4)
@@ -477,7 +477,7 @@ class TestQgsMapLayerStore(unittest.TestCase):
 
         # check also that the removal of an unexistent layer does not insert a null layer
         for k, layer in list(store.mapLayers().items()):
-            assert(layer is not None)
+            assert (layer is not None)
 
     def testTakeLayer(self):
         # test taking ownership of a layer from the store
@@ -498,7 +498,7 @@ class TestQgsMapLayerStore(unittest.TestCase):
 
         # take layer from store
         self.assertEqual(store.takeMapLayer(l1), l1)
-        self.assertFalse(store.mapLayers()) # no layers left
+        self.assertFalse(store.mapLayers())  # no layers left
         # but l1 should still exist
         self.assertTrue(l1.isValid())
         # layer should have no parent now
@@ -529,12 +529,12 @@ class TestQgsMapLayerStore(unittest.TestCase):
         store2.addMapLayer(l3)
 
         store2.transferLayersFromStore(store1)
-        self.assertFalse(store1.mapLayers()) # no layers left
+        self.assertFalse(store1.mapLayers())  # no layers left
         self.assertEqual(len(store2.mapLayers()), 3)
         self.assertEqual(store2.mapLayers(), {l1.id(): l1, l2.id(): l2, l3.id(): l3})
 
         store1.transferLayersFromStore(store2)
-        self.assertFalse(store2.mapLayers()) # no layers left
+        self.assertFalse(store2.mapLayers())  # no layers left
         self.assertEqual(len(store1.mapLayers()), 3)
         self.assertEqual(store1.mapLayers(), {l1.id(): l1, l2.id(): l2, l3.id(): l3})
 
@@ -559,7 +559,8 @@ class TestQgsMapLayerStore(unittest.TestCase):
         self.assertEqual(len(store.mapLayers()), 2)
 
         doc = QDomDocument()
-        doc.setContent('<maplayer><provider encoding="UTF-8">ogr</provider><layername>fixed</layername><id>%s</id></maplayer>' % vl2.id())
+        doc.setContent(
+            '<maplayer><provider encoding="UTF-8">ogr</provider><layername>fixed</layername><id>%s</id></maplayer>' % vl2.id())
         layer_node = QDomNode(doc.firstChild())
         self.assertTrue(vl2.writeXml(layer_node, doc, QgsReadWriteContext()))
         datasource_node = doc.createElement("datasource")

@@ -7,6 +7,7 @@
  ************************************************************************/
 
 
+
 class QgsSingleSymbolRenderer : QgsFeatureRenderer
 {
 
@@ -22,6 +23,7 @@ Constructor for QgsSingleSymbolRenderer.
 The same ``symbol`` will be used to render every feature. Ownership
 of ``symbol`` is transferred to the renderer.
 %End
+    ~QgsSingleSymbolRenderer();
 
     virtual QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 

@@ -67,7 +67,7 @@ This can be an `field_name` for the attribute which was clicked or
 
     void setExpressionContextScope( const QgsExpressionContextScope &expressionContextScope );
 %Docstring
-\copydoc expressionContextScope()
+\copydoc :py:func:`~QgsActionScope.expressionContextScope`
 %End
 
     QString id() const;
@@ -79,7 +79,7 @@ A unique identifier for this action scope.
 
     void setId( const QString &id );
 %Docstring
-\copydoc id()
+\copydoc :py:func:`~QgsActionScope.id`
 %End
 
     QString title() const;
@@ -91,20 +91,20 @@ presented to the user in the properties dialog.
 %End
     void setTitle( const QString &title );
 %Docstring
-\copydoc title()
+\copydoc :py:func:`~QgsActionScope.title`
 %End
 
     QString description() const;
 %Docstring
 The description should be a longer description of where actions in this scope
 are available. It is not necessary to list the available expression variables
-in here, they are extracted automatically from the expressionContextScope().
+in here, they are extracted automatically from the :py:func:`~QgsActionScope.expressionContextScope`.
 
 .. versionadded:: 3.0
 %End
     void setDescription( const QString &description );
 %Docstring
-\copydoc description()
+\copydoc :py:func:`~QgsActionScope.description`
 %End
 
     bool isValid() const;

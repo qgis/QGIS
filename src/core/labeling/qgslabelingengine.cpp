@@ -404,8 +404,9 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
   t.start();
 
   const QgsLabelingEngineSettings &settings = mMapSettings.labelingEngineSettings();
+
+  context.setPainterFlagsUsingContext();
   QPainter *painter = context.painter();
-  painter->setRenderHint( QPainter::Antialiasing );
 
   // prepare for rendering
   for ( QgsAbstractLabelProvider *provider : qgis::as_const( mProviders ) )
@@ -753,7 +754,7 @@ QString QgsLabelingUtils::encodeLinePlacementFlags( QgsLabeling::LinePlacementFl
 
 QgsLabeling::LinePlacementFlags QgsLabelingUtils::decodeLinePlacementFlags( const QString &string )
 {
-  QgsLabeling::LinePlacementFlags flags = nullptr;
+  QgsLabeling::LinePlacementFlags flags = QgsLabeling::LinePlacementFlags();
   const QStringList flagList = string.split( ',' );
   bool foundLineOrientationFlag = false;
   for ( const QString &flag : flagList )

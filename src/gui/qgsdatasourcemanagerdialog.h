@@ -111,10 +111,17 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     void addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey );
 
     /**
-     * Emitted when a mesh layer was selected for addition: for signal forwarding to QgisApp\
+     * Emitted when a mesh layer was selected for addition: for signal forwarding to QgisApp
      * \since QGIS 3.4
      */
     void addMeshLayer( const QString &uri, const QString &baseName, const QString &providerKey );
+
+    /**
+     * Emitted when a vector tile layer was selected for addition: for signal forwarding to QgisApp
+     * \since QGIS 3.14
+     */
+    void addVectorTileLayer( const QString &uri, const QString &baseName );
+
     //! Replace the selected layer by a vector layer defined by uri, layer name, data source uri
     void replaceSelectedVectorLayer( const QString &oldId, const QString &uri, const QString &layerName, const QString &provider );
     //! Emitted when a one or more layer were selected for addition: for signal forwarding to QgisApp

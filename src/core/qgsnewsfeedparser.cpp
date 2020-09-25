@@ -140,7 +140,8 @@ void QgsNewsFeedParser::fetch()
 
   mFetchStartTime = QDateTime::currentDateTimeUtc().toSecsSinceEpoch();
 
-  QgsNetworkContentFetcherTask *task = new QgsNetworkContentFetcherTask( req, mAuthCfg );
+  // allow canceling the news fetching without prompts -- it's not crucial if this gets finished or not
+  QgsNetworkContentFetcherTask *task = new QgsNetworkContentFetcherTask( req, mAuthCfg, QgsTask::CanCancel | QgsTask::CancelWithoutPrompt );
   task->setDescription( tr( "Fetching News Feed" ) );
   connect( task, &QgsNetworkContentFetcherTask::fetched, this, [this, task]
   {

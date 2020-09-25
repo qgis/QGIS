@@ -40,7 +40,7 @@ from qgis.core import QgsProject
 class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
     """QGIS Server WMS Tests for GetFeatureInfo request"""
 
-    #regenerate_reference = True
+    # regenerate_reference = True
 
     def testGetFeatureInfo(self):
         # Test getfeatureinfo response xml
@@ -657,7 +657,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  '&INFO_FORMAT=application/json' +
                                  '&I=0&J=1' +
                                  '&FEATURE_COUNT=10',
-                                 'wms_getfeatureinfo_group_name_areas',
+                                 'wms_getfeatureinfo_group_name_areas_nested',
                                  'test_project_wms_grouped_nested_layers.qgs',
                                  normalizeJson=True)
 
@@ -670,7 +670,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  '&INFO_FORMAT=application/json' +
                                  '&I=0&J=1' +
                                  '&FEATURE_COUNT=10',
-                                 'wms_getfeatureinfo_group_name_areas',
+                                 'wms_getfeatureinfo_group_name_areas_nested',
                                  'test_project_wms_grouped_nested_layers.qgs',
                                  normalizeJson=True)
 
@@ -752,7 +752,41 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'test_project_wms_grouped_nested_layers.qgs',
                                  normalizeJson=True)
 
-        @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', "This test cannot run in TRAVIS because it relies on cascading external services")
+    def testGetFeatureInfoJsonUseIdAsLayerName(self):
+        """Test GH #36262 where json response + use layer id"""
+
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=44.90139177500000045,8.20335906129666981,44.90148522499999473,8.20364693870333284' +
+                                 '&CRS=EPSG:4326' +
+                                 '&WIDTH=1568&HEIGHT=509' +
+                                 '&LAYERS=testlayer_%C3%A8%C3%A9_cf86cf11_222f_4b62_929c_12cfc82b9774' +
+                                 '&STYLES=' +
+                                 '&FORMAT=image/jpeg' +
+                                 '&QUERY_LAYERS=testlayer_%C3%A8%C3%A9_cf86cf11_222f_4b62_929c_12cfc82b9774' +
+                                 '&INFO_FORMAT=application/json' +
+                                 '&I=1022&J=269' +
+                                 '&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_json_layer_ids',
+                                 'test_project_use_layer_ids.qgs',
+                                 normalizeJson=True)
+
+        # Raster
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=30.1492201749999964,17.81444988978388722,30.2599248249999988,18.15548111021611533' +
+                                 '&CRS=EPSG:4326' +
+                                 '&WIDTH=1568&HEIGHT=509' +
+                                 '&LAYERS=landsat_a7d15b35_ca83_4b23_a9fb_af3fbdd60d15' +
+                                 '&STYLES=' +
+                                 '&FORMAT=image/jpeg' +
+                                 '&QUERY_LAYERS=landsat_a7d15b35_ca83_4b23_a9fb_af3fbdd60d15' +
+                                 '&INFO_FORMAT=application/json' +
+                                 '&I=769&J=275&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_json_layer_ids_raster',
+                                 'test_project_use_layer_ids.qgs',
+                                 normalizeJson=True)
+
+        @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true',
+                         "This test cannot run in TRAVIS because it relies on cascading external services")
         def testGetFeatureInfoCascadingLayers(self):
             """Test that we can get feature info on cascading WMS layers"""
 

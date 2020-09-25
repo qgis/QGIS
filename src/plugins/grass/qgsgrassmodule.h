@@ -45,7 +45,6 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
         bool direct = true;
         Description() = default;
         Description( QString lab, bool dir = false ): label( lab ), direct( dir ) { }
-        Description( const Description &desc ) { label = desc.label; direct = desc.direct; }
     };
 
     //! Constructor
@@ -72,12 +71,14 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
     //! Returns pointer to QGIS interface
     QgisInterface *qgisIface();
 
-    // ! Options widget
+    //! Options widget
     QgsGrassModuleOptions *options() { return mOptions; }
 
-    // ! Get executable + arguments. Executable is returned as first string.
-    // On Window if the module is script the executable will be path to shell
-    // Returns empty list if not found.
+    /**
+     * Get executable + arguments. Executable is returned as first string.
+     * On Window if the module is script the executable will be path to shell
+     * Returns empty list if not found.
+     */
     static QStringList execArguments( QString module );
 
     //! Gets environment for process to start GRASS modules (set PATH)
@@ -95,10 +96,10 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
     QStringList errors() { return mErrors; }
 
   signals:
-    // ! emitted when the module started
+    //! emitted when the module started
     void moduleStarted();
 
-    // ! emitted when the module finished
+    //! emitted when the module finished
     void moduleFinished();
 
   public slots:
@@ -131,7 +132,8 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
     /**
      * Set progress bar or busy indicator if percent is 100
      * \param percent progress to show in %
-     * \param force to set progress for 100% */
+     * \param force to set progress for 100%
+    */
     void setProgress( int percent, bool force = false );
 
     //! Pointer to the QGIS interface object

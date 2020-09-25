@@ -66,6 +66,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
   mGroupSelectionDlg = nullptr;
   mTempFile = nullptr;
 
+  QgsStyle *dialogStyle = nullptr;
   if ( mDialogMode == Import )
   {
     setWindowTitle( tr( "Import Item(s)" ) );
@@ -91,8 +92,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
     label->setText( tr( "Select items to import" ) );
     buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "Import" ) );
 
-    mModel = new QgsStyleModel( mTempStyle.get(), this );
-    listItems->setModel( mModel );
+    dialogStyle = mTempStyle.get();
   }
   else
   {
@@ -115,7 +115,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
 
     buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "Export" ) );
 
-    mModel = new QgsStyleModel( mStyle, this );
+    dialogStyle = mStyle;
   }
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
@@ -125,7 +125,10 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
 #endif
   listItems->setIconSize( QSize( static_cast< int >( iconSize ), static_cast< int >( iconSize * 0.9 ) ) );  // ~100, 90 on low dpi
 
+  mModel = new QgsStyleProxyModel( dialogStyle, this );
+
   mModel->addDesiredIconSize( listItems->iconSize() );
+
   listItems->setModel( mModel );
 
   connect( listItems->selectionModel(), &QItemSelectionModel::selectionChanged,
@@ -255,6 +258,18 @@ void QgsStyleExportImportDialog::clearSelection()
   listItems->clearSelection();
 }
 
+void QgsStyleExportImportDialog::selectFavorites()
+{
+  QStringList symbolNames = mStyle->symbolsOfFavorite( QgsStyle::SymbolEntity );
+  selectSymbols( symbolNames );
+}
+
+void QgsStyleExportImportDialog::deselectFavorites()
+{
+  QStringList symbolNames = mStyle->symbolsOfFavorite( QgsStyle::SymbolEntity );
+  deselectSymbols( symbolNames );
+}
+
 void QgsStyleExportImportDialog::selectSymbols( const QStringList &symbolNames )
 {
   const auto constSymbolNames = symbolNames;
@@ -326,6 +341,8 @@ void QgsStyleExportImportDialog::selectByGroup()
     connect( mGroupSelectionDlg, &QgsStyleGroupSelectionDialog::tagDeselected, this, &QgsStyleExportImportDialog::deselectTag );
     connect( mGroupSelectionDlg, &QgsStyleGroupSelectionDialog::allSelected, this, &QgsStyleExportImportDialog::selectAll );
     connect( mGroupSelectionDlg, &QgsStyleGroupSelectionDialog::allDeselected, this, &QgsStyleExportImportDialog::clearSelection );
+    connect( mGroupSelectionDlg, &QgsStyleGroupSelectionDialog::favoritesSelected, this, &QgsStyleExportImportDialog::selectFavorites );
+    connect( mGroupSelectionDlg, &QgsStyleGroupSelectionDialog::favoritesDeselected, this, &QgsStyleExportImportDialog::deselectFavorites );
     connect( mGroupSelectionDlg, &QgsStyleGroupSelectionDialog::smartgroupSelected, this, &QgsStyleExportImportDialog::selectSmartgroup );
     connect( mGroupSelectionDlg, &QgsStyleGroupSelectionDialog::smartgroupDeselected, this, &QgsStyleExportImportDialog::deselectSmartgroup );
   }

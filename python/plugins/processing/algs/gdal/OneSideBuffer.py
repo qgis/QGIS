@@ -37,7 +37,6 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 
 
 class OneSideBuffer(GdalAlgorithm):
-
     INPUT = 'INPUT'
     FIELD = 'FIELD'
     BUFFER_SIDE = 'BUFFER_SIDE'

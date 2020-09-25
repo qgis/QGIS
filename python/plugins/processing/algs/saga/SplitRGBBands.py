@@ -33,7 +33,6 @@ pluginPath = os.path.normpath(os.path.join(
 
 
 class SplitRGBBands(SagaAlgorithmBase):
-
     INPUT = 'INPUT'
     R = 'R'
     G = 'G'

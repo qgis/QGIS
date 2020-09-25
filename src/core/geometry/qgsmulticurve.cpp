@@ -31,6 +31,16 @@ QgsMultiCurve::QgsMultiCurve()
   mWkbType = QgsWkbTypes::MultiCurve;
 }
 
+QgsCurve *QgsMultiCurve::curveN( int index )
+{
+  return qgsgeometry_cast< QgsCurve * >( geometryN( index ) );
+}
+
+const QgsCurve *QgsMultiCurve::curveN( int index ) const
+{
+  return qgsgeometry_cast< const QgsCurve * >( geometryN( index ) );
+}
+
 QString QgsMultiCurve::geometryType() const
 {
   return QStringLiteral( "MultiCurve" );

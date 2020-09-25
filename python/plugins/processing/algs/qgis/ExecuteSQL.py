@@ -57,7 +57,6 @@ class ParameterExecuteSql(QgsProcessingParameterDefinition):
 
 
 class ExecuteSQL(QgisAlgorithm):
-
     """ This algorithm allows executing an SQL query on a set of input
     vector layers thanks to the virtual layer provider
     """
@@ -134,7 +133,7 @@ class ExecuteSQL(QgisAlgorithm):
             # access (thanks the QgsVirtualLayerProvider) to memory layer that
             # belongs to temporary QgsMapLayerStore, not project.
             # So, we write them to disk is this is the case.
-            if not context.project().mapLayer(layer.id()):
+            if context.project() and not context.project().mapLayer(layer.id()):
                 basename = "memorylayer." + QgsVectorFileWriter.supportedFormatExtensions()[0]
                 tmp_path = QgsProcessingUtils.generateTempFilename(basename)
                 QgsVectorFileWriter.writeAsVectorFormat(

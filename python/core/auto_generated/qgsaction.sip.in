@@ -97,8 +97,8 @@ The icon
     QString command() const;
 %Docstring
 Returns the command that is executed by this action.
-How the content is interpreted depends on the type() and
-the actionScope().
+How the content is interpreted depends on the :py:func:`~QgsAction.type` and
+the :py:func:`~QgsAction.actionScope`.
 
 .. versionadded:: 3.0
 %End

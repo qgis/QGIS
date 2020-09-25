@@ -44,11 +44,31 @@ class QgsVectorLayer;
  *   OGC (Open Geospatial Consortium) standards and QGIS internal representations.
  *
  * Currently supported standards:
+ *
  * - GML2 - Geography Markup Language (import, export)
  */
 class CORE_EXPORT QgsOgcUtils
 {
   public:
+
+    /**
+     * The Context struct stores the current layer and coordinate transform context.
+     * \since QGIS 3.14
+     */
+    struct Context
+    {
+
+      /**
+       * Constructs a Context from \a layer and \a transformContext
+       */
+      Context( const QgsMapLayer *layer = nullptr, const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() )
+        : layer( layer )
+        , transformContext( transformContext )
+      {
+      }
+      const QgsMapLayer *layer = nullptr;
+      QgsCoordinateTransformContext transformContext;
+    };
 
     /**
      *GML version
@@ -62,16 +82,17 @@ class CORE_EXPORT QgsOgcUtils
 
     /**
      * Static method that creates geometry from GML
-     \param xmlString xml representation of the geometry. GML elements are expected to be
-       in default namespace (\verbatim {<Point>...</Point> \endverbatim) or in
-       "gml" namespace (\verbatim <gml:Point>...</gml:Point> \endverbatim)
+     * \param xmlString xml representation of the geometry. GML elements are expected to be
+     *  in default namespace (\verbatim {<Point>...</Point> \endverbatim) or in
+     *  "gml" namespace (\verbatim <gml:Point>...</gml:Point> \endverbatim)
+     * \param context QgsOgcUtils context
      */
-    static QgsGeometry geometryFromGML( const QString &xmlString );
+    static QgsGeometry geometryFromGML( const QString &xmlString, const QgsOgcUtils::Context &context = QgsOgcUtils::Context() );
 
     /**
      * Static method that creates geometry from GML
       */
-    static QgsGeometry geometryFromGML( const QDomNode &geometryNode );
+    static QgsGeometry geometryFromGML( const QDomNode &geometryNode, const QgsOgcUtils::Context &context = QgsOgcUtils::Context() );
 
     //! Read rectangle from GML2 Box
     static QgsRectangle rectangleFromGMLBox( const QDomNode &boxNode );
@@ -81,8 +102,8 @@ class CORE_EXPORT QgsOgcUtils
 
     /**
      * Exports the geometry to GML
-        \returns QDomElement
-        \since QGIS 2.16
+      * \returns QDomElement
+      * \since QGIS 2.16
      */
     static QDomElement geometryToGML( const QgsGeometry &geometry, QDomDocument &doc,
                                       QgsOgcUtils::GMLVersion gmlVersion,
@@ -93,26 +114,26 @@ class CORE_EXPORT QgsOgcUtils
 
     /**
      * Exports the geometry to GML2 or GML3
-        \returns QDomElement
+     * \returns QDomElement
      */
     static QDomElement geometryToGML( const QgsGeometry &geometry, QDomDocument &doc, const QString &format, int precision = 17 );
 
     /**
      * Exports the geometry to GML2
-        \returns QDomElement
+     * \returns QDomElement
      */
     static QDomElement geometryToGML( const QgsGeometry &geometry, QDomDocument &doc, int precision = 17 );
 
     /**
      * Exports the rectangle to GML2 Box
-        \returns QDomElement
+     * \returns QDomElement
      */
     static QDomElement rectangleToGMLBox( QgsRectangle *box, QDomDocument &doc, int precision = 17 );
 
     /**
      * Exports the rectangle to GML2 Box
-        \returns QDomElement
-        \since QGIS 2.16
+     * \returns QDomElement
+     * \since QGIS 2.16
      */
     static QDomElement rectangleToGMLBox( QgsRectangle *box, QDomDocument &doc,
                                           const QString &srsName,
@@ -121,14 +142,14 @@ class CORE_EXPORT QgsOgcUtils
 
     /**
      * Exports the rectangle to GML3 Envelope
-        \returns QDomElement
+     * \returns QDomElement
      */
     static QDomElement rectangleToGMLEnvelope( QgsRectangle *env, QDomDocument &doc, int precision = 17 );
 
     /**
      * Exports the rectangle to GML3 Envelope
-        \returns QDomElement
-        \since QGIS 2.16
+     * \returns QDomElement
+     * \since QGIS 2.16
      */
     static QDomElement rectangleToGMLEnvelope( QgsRectangle *env, QDomDocument &doc,
         const QString &srsName,
@@ -277,33 +298,37 @@ class CORE_EXPORT QgsOgcUtils
 
     /**
      * Reads the \verbatim <gml:coordinates> \endverbatim element and extracts the coordinates as points
-       \param coords list where the found coordinates are appended
-       \param elem the \verbatim <gml:coordinates> \endverbatim element
-       \returns boolean for success*/
+     * \param coords list where the found coordinates are appended
+     * \param elem the \verbatim <gml:coordinates> \endverbatim element
+     * \returns boolean FALSE on success
+    */
     static bool readGMLCoordinates( QgsPolylineXY &coords, const QDomElement &elem );
 
     /**
      * Reads the \verbatim <gml:pos> \endverbatim or \verbatim <gml:posList> \endverbatim
-       and extracts the coordinates as points
-       \param coords list where the found coordinates are appended
-       \param elem the \verbatim <gml:pos> \endverbatim or
-                    \verbatim <gml:posList> \endverbatim element
-       \returns boolean for success*/
+     * and extracts the coordinates as points
+     * \param coords list where the found coordinates are appended
+     * \param elem the \verbatim <gml:pos> \endverbatim or
+     *              \verbatim <gml:posList> \endverbatim element
+     * \returns boolean FALSE on success
+     */
     static bool readGMLPositions( QgsPolylineXY &coords, const QDomElement &elem );
 
 
     /**
      * Create a GML coordinates element from a point list.
-      \param points list of data points
-      \param doc the GML document
-      \returns QDomElement */
+     * \param points list of data points
+     * \param doc the GML document
+     * \returns QDomElement
+    */
     static QDomElement createGMLCoordinates( const QgsPolylineXY &points, QDomDocument &doc );
 
     /**
      * Create a GML pos or posList element from a point list.
-      \param points list of data points
-      \param doc the GML document
-      \returns QDomElement */
+     * \param points list of data points
+     * \param doc the GML document
+     * \returns QDomElement
+    */
     static QDomElement createGMLPositions( const QgsPolylineXY &points, QDomDocument &doc );
 
     //! handle a generic sub-expression

@@ -33,9 +33,11 @@ class QgsFeature;
  *
  * \since QGIS 3.14
  */
-class QgsVectorTileMVTDecoder
+class CORE_EXPORT QgsVectorTileMVTDecoder
 {
   public:
+    QgsVectorTileMVTDecoder();
+    ~QgsVectorTileMVTDecoder();
 
     //! Tries to decode raw tile data, returns true on success
     bool decode( QgsTileXYZ tileID, const QByteArray &rawTileData );
@@ -46,8 +48,13 @@ class QgsVectorTileMVTDecoder
     //! Returns a list of all field names in a tile. It can only be called after a successful decode()
     QStringList layerFieldNames( const QString &layerName ) const;
 
-    //! Returns decoded features grouped by sub-layers. It can only be called after a successful decode()
-    QgsVectorTileFeatures layerFeatures( const QMap<QString, QgsFields> &perLayerFields, const QgsCoordinateTransform &ct ) const;
+    /**
+     * Returns decoded features grouped by sub-layers. It can only be called after a successful decode()
+     *
+     * If \a layerSubset is specified then only features from the specified layers will be returned.
+     */
+    QgsVectorTileFeatures layerFeatures( const QMap<QString, QgsFields> &perLayerFields, const QgsCoordinateTransform &ct,
+                                         const QSet< QString > *layerSubset = nullptr ) const;
 
   private:
     vector_tile::Tile tile;

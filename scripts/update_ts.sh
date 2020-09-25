@@ -18,6 +18,7 @@ set -e
 
 export SRCDIR=$PWD
 
+retries=20
 action=$1
 
 case "$action" in
@@ -120,13 +121,18 @@ files="$files $(find python -name "*.ts")"
 
 if [ $action = push ]; then
 	echo Pulling source from transifex...
-	tx pull -s -l none $TX_FLAGS
-	if ! [ -f "i18n/qgis_en.ts" ]; then
+	fail=1
+	for i in $(seq $retries); do
+		tx pull -s -l none $TX_FLAGS && fail=0 && break
+		echo Retry $i/$retries...
+		sleep 10
+	done
+	if (( fail )) || ! [ -f "i18n/qgis_en.ts" ]; then
 		echo Download of source translation failed
 		exit 1
 	fi
 	cp i18n/qgis_en.ts /tmp/qgis_en.ts-downloaded
-	perl scripts/ts-clear.pl  # reset English translations
+	perl scripts/ts_clear.pl  # reset English translations
 elif [ $action = pull ]; then
 	rm -f i18n/qgis_*.ts
 
@@ -139,9 +145,9 @@ elif [ $action = pull ]; then
 	fi
 
 	fail=1
-	for i in $(seq 10); do
+	for i in $(seq $retries); do
 		tx pull $o -s --minimum-perc=35 $TX_FLAGS && fail=0 && break
-		echo Retrying...
+		echo Retry $i/$retries...
 		sleep 10
 	done
 
@@ -206,9 +212,9 @@ if [ $action = push ]; then
 	cp i18n/qgis_en.ts /tmp/qgis_en.ts-uploading
 	echo Pushing translation...
 	fail=1
-	for i in $(seq 10); do
+	for i in $(seq $retries); do
 		tx push -s --parallel $TX_FLAGS && fail=0 && break
-		echo Retrying...
+		echo Retry $i/$retries...
 		sleep 10
 	done
 	if (( fail )); then

@@ -24,8 +24,6 @@
 #include <qgsproviderregistry.h>
 #include <qgsvectorlayer.h>
 #include <qgsnetworkaccessmanager.h>
-#include <qgsgeopackagedataitems.h>
-#include <qgsdataitem.h>
 
 #include <QObject>
 
@@ -50,8 +48,6 @@ class TestQgsOgrProvider : public QObject
     void decodeUri();
     void encodeUri();
     void testThread();
-    //! Test GPKG data items rename
-    void testGpkgDataItemRename();
 
   private:
     QString mTestDataDir;
@@ -129,32 +125,123 @@ void TestQgsOgrProvider::setupProxy()
 void TestQgsOgrProvider::decodeUri()
 {
   auto parts( QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), QStringLiteral( "MySQL:database_name,host=localhost,port=3306 authcfg='f8wwfx8'" ) ) );
+  QCOMPARE( parts.size(), 3 );
   QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString( "database_name" ) );
+  QVERIFY( !parts.value( QStringLiteral( "layerId" ) ).isValid() );
+  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QString( "MySQL:database_name,host=localhost,port=3306 authcfg='f8wwfx8'" ) );
   parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), QStringLiteral( "MYSQL:westholland,user=root,password=psv9570,port=3306,tables=bedrijven" ) );
+  QCOMPARE( parts.size(), 3 );
   QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString( "westholland" ) );
+  QVERIFY( !parts.value( QStringLiteral( "layerId" ) ).isValid() );
+  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QString( "MYSQL:westholland,user=root,password=psv9570,port=3306,tables=bedrijven" ) );
   parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), QStringLiteral( "/path/to/a/geopackage.gpkg|layername=a_layer" ) );
+  QCOMPARE( parts.size(), 3 );
   QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString( "a_layer" ) );
+  QVERIFY( !parts.value( QStringLiteral( "layerId" ) ).isValid() );
+  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QString( "/path/to/a/geopackage.gpkg" ) );
+  parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), QStringLiteral( "/path/to/a/geopackage.gpkg|layerid=4" ) );
+  QCOMPARE( parts.size(), 3 );
+  QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString() );
+  QCOMPARE( parts.value( QStringLiteral( "layerId" ) ).toInt(), 4 );
+  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QString( "/path/to/a/geopackage.gpkg" ) );
+  parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), QStringLiteral( "/path/to/a/geopackage.gpkg|layerid=4|layername=a_layer4" ) );
+  QCOMPARE( parts.size(), 3 );
+  QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString( "a_layer4" ) );
+  QVERIFY( !parts.value( QStringLiteral( "layerId" ) ).isValid() ); // layername should take preference
+  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QString( "/path/to/a/geopackage.gpkg" ) );
+  parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), QStringLiteral( "/path/to/a/geopackage.gpkg|layername=a_layer|geometrytype=point" ) );
+  QCOMPARE( parts.size(), 4 );
+  QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString( "a_layer" ) );
+  QVERIFY( !parts.value( QStringLiteral( "layerId" ) ).isValid() );
+  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QString( "/path/to/a/geopackage.gpkg" ) );
+  QCOMPARE( parts.value( QStringLiteral( "geometryType" ) ).toString(), QString( "point" ) );
+  parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), QStringLiteral( "/path/to/a/geopackage.gpkg|geometrytype=point|layername=a_layer" ) );
+  QCOMPARE( parts.size(), 4 );
+  QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString( "a_layer" ) );
+  QVERIFY( !parts.value( QStringLiteral( "layerId" ) ).isValid() );
+  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QString( "/path/to/a/geopackage.gpkg" ) );
+  QCOMPARE( parts.value( QStringLiteral( "geometryType" ) ).toString(), QString( "point" ) );
+  parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), QStringLiteral( "/path/to/a/geopackage.gpkg|geometrytype=point|layerid=4" ) );
+  QCOMPARE( parts.size(), 4 );
+  QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString() );
+  QCOMPARE( parts.value( QStringLiteral( "layerId" ) ).toInt(), 4 );
+  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QString( "/path/to/a/geopackage.gpkg" ) );
+  QCOMPARE( parts.value( QStringLiteral( "geometryType" ) ).toString(), QString( "point" ) );
+  parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), QStringLiteral( "/path/to/a/geopackage.gpkg|geometrytype=point|layerid=4|layername=a_layer" ) );
+  QCOMPARE( parts.size(), 4 );
+  QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString( "a_layer" ) );
+  QVERIFY( !parts.value( QStringLiteral( "layerId" ) ).isValid() );
+  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QString( "/path/to/a/geopackage.gpkg" ) );
+  QCOMPARE( parts.value( QStringLiteral( "geometryType" ) ).toString(), QString( "point" ) );
+  parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), QStringLiteral( "/path/to/a/geopackage.gpkg|geometrytype=point|layername=a_layer_with_geometrytype" ) );
+  QCOMPARE( parts.size(), 4 );
+  QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString( "a_layer_with_geometrytype" ) );
+  QVERIFY( !parts.value( QStringLiteral( "layerId" ) ).isValid() );
+  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QString( "/path/to/a/geopackage.gpkg" ) );
+  QCOMPARE( parts.value( QStringLiteral( "geometryType" ) ).toString(), QString( "point" ) );
+  parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), QStringLiteral( "/path/to/a/geopackage.gpkg|geometrytype=point" ) );
+  QCOMPARE( parts.size(), 4 );
+  QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString() );
+  QVERIFY( !parts.value( QStringLiteral( "layerId" ) ).isValid() );
+  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QString( "/path/to/a/geopackage.gpkg" ) );
+  QCOMPARE( parts.value( QStringLiteral( "geometryType" ) ).toString(), QString( "point" ) );
+  parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), QStringLiteral( "/path/to/a/geopackage.gpkg|subset=A IN (3,4,5) or \"b\"='x|y'" ) );
+  QCOMPARE( parts.size(), 4 );
+  QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString() );
+  QVERIFY( !parts.value( QStringLiteral( "layerId" ) ).isValid() );
+  QCOMPARE( parts.value( QStringLiteral( "subset" ) ).toString(), QString( "A IN (3,4,5) or \"b\"='x|y'" ) );
+  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QString( "/path/to/a/geopackage.gpkg" ) );
+  parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), QStringLiteral( "/path/to/a/geopackage.gpkg|layername=my_subset|subset=A IN (3,4,5) or \"b\"='x|layerid'" ) );
+  QCOMPARE( parts.size(), 4 );
+  QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString( "my_subset" ) );
+  QVERIFY( !parts.value( QStringLiteral( "layerId" ) ).isValid() );
+  QCOMPARE( parts.value( QStringLiteral( "subset" ) ).toString(), QString( "A IN (3,4,5) or \"b\"='x|layerid'" ) );
+  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QString( "/path/to/a/geopackage.gpkg" ) );
+  parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), QStringLiteral( "/path/to/a/geopackage.gpkg|subset=A IN (3,4,5) or \"b\"='x|layerid'|layername=my_subset" ) );
+  QCOMPARE( parts.size(), 4 );
+  QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString( "my_subset" ) );
+  QVERIFY( !parts.value( QStringLiteral( "layerId" ) ).isValid() );
+  QCOMPARE( parts.value( QStringLiteral( "subset" ) ).toString(), QString( "A IN (3,4,5) or \"b\"='x|layerid'" ) );
+  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QString( "/path/to/a/geopackage.gpkg" ) );
+  parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), QStringLiteral( "/path/to/a/geopackage.gpkg|layerid=4|subset=A IN (3,4,5) or \"b\"='x|layerid'|layername=my_subset" ) );
+  QCOMPARE( parts.size(), 4 );
+  QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString( "my_subset" ) );
+  QVERIFY( !parts.value( QStringLiteral( "layerId" ) ).isValid() );
+  QCOMPARE( parts.value( QStringLiteral( "subset" ) ).toString(), QString( "A IN (3,4,5) or \"b\"='x|layerid'" ) );
+  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QString( "/path/to/a/geopackage.gpkg" ) );
+  parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), QStringLiteral( "/path/to/a/geopackage.gpkg|layerid=4|subset=A IN (3,4,5) or \"b\"='x|layerid'|geometrytype=polygonz|layername=my_subset" ) );
+  QCOMPARE( parts.size(), 5 );
+  QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString( "my_subset" ) );
+  QCOMPARE( parts.value( QStringLiteral( "geometryType" ) ).toString(), QString( "polygonz" ) );
+  QVERIFY( !parts.value( QStringLiteral( "layerId" ) ).isValid() );
+  QCOMPARE( parts.value( QStringLiteral( "subset" ) ).toString(), QString( "A IN (3,4,5) or \"b\"='x|layerid'" ) );
+  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QString( "/path/to/a/geopackage.gpkg" ) );
 }
 
 void TestQgsOgrProvider::encodeUri()
 {
   QVariantMap parts;
   parts.insert( QStringLiteral( "path" ), QStringLiteral( "/home/user/test.gpkg" ) );
-  QCOMPARE( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "gdal" ), parts ), QStringLiteral( "/home/user/test.gpkg" ) );
+  QCOMPARE( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "ogr" ), parts ), QStringLiteral( "/home/user/test.gpkg" ) );
 
   // layerName only
   parts.insert( QStringLiteral( "layerName" ), QStringLiteral( "test" ) );
-  QCOMPARE( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "gdal" ), parts ), QStringLiteral( "/home/user/test.gpkg|layername=test" ) );
+  QCOMPARE( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "ogr" ), parts ), QStringLiteral( "/home/user/test.gpkg|layername=test" ) );
   parts.remove( QStringLiteral( "layerName" ) );
 
   // layerId only
   parts.insert( QStringLiteral( "layerId" ), QStringLiteral( "testid" ) );
-  QCOMPARE( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "gdal" ), parts ), QStringLiteral( "/home/user/test.gpkg|layerid=testid" ) );
+  QCOMPARE( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "ogr" ), parts ), QStringLiteral( "/home/user/test.gpkg|layerid=testid" ) );
 
   // Both layerName and layerId: layerName takes precedence
   parts.insert( QStringLiteral( "layerName" ), QStringLiteral( "test" ) );
-  QCOMPARE( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "gdal" ), parts ), QStringLiteral( "/home/user/test.gpkg|layername=test|layername=test" ) );
+  QCOMPARE( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "ogr" ), parts ), QStringLiteral( "/home/user/test.gpkg|layername=test" ) );
 
+  parts.insert( QStringLiteral( "geometryType" ), QStringLiteral( "point" ) );
+  QCOMPARE( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "ogr" ), parts ), QStringLiteral( "/home/user/test.gpkg|layername=test|geometrytype=point" ) );
+
+  parts.insert( QStringLiteral( "subset" ), QStringLiteral( "\"a\"='b'" ) );
+  QCOMPARE( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "ogr" ), parts ), QStringLiteral( "/home/user/test.gpkg|layername=test|geometrytype=point|subset=\"a\"='b'" ) );
 }
 
 class ReadVectorLayer : public QThread
@@ -242,37 +329,6 @@ void TestQgsOgrProvider::testThread()
   thread->wait();
   qInstallMessageHandler( 0 );
 
-}
-
-void TestQgsOgrProvider::testGpkgDataItemRename()
-{
-  QTemporaryFile f( QStringLiteral( "qgis-XXXXXX.gpkg" ) );
-  f.open();
-  f.close();
-  QString fileName { f.fileName( ) };
-  f.remove();
-  QVERIFY( QFile::copy( QStringLiteral( "%1/provider/bug_21227-rename-styles.gpkg" ).arg( mTestDataDir ),  fileName ) );
-  QgsGeoPackageVectorLayerItem item( nullptr,
-                                     QStringLiteral( "Layer 1" ),
-                                     QStringLiteral( "gpkg:/%1|layername=layer 1" )
-                                     .arg( fileName ),
-                                     QStringLiteral( "%1|layername=layer 1" ).arg( fileName ),
-                                     QgsLayerItem::LayerType::TableLayer );
-  item.rename( "layer 3" );
-  // Check that the style is still available
-  QgsVectorLayer metadataLayer( QStringLiteral( "/%1|layername=layer_styles" ).arg( fileName ) );
-  QVERIFY( metadataLayer.isValid() );
-  QgsFeature feature;
-  QgsFeatureIterator it = metadataLayer.getFeatures( QgsFeatureRequest( QgsExpression( QStringLiteral( "\"f_table_name\" = 'layer 3'" ) ) ) );
-  QVERIFY( it.nextFeature( feature ) );
-  QVERIFY( feature.isValid() );
-  QCOMPARE( feature.attribute( QStringLiteral( "styleName" ) ).toString(), QString( "style for layer 1" ) );
-  it = metadataLayer.getFeatures( QgsFeatureRequest( QgsExpression( QStringLiteral( "\"f_table_name\" = 'layer 1' " ) ) ) );
-  QVERIFY( !it.nextFeature( feature ) );
-  it = metadataLayer.getFeatures( QgsFeatureRequest( QgsExpression( QStringLiteral( "\"f_table_name\" = 'layer 2' " ) ) ) );
-  QVERIFY( it.nextFeature( feature ) );
-  QVERIFY( feature.isValid() );
-  QCOMPARE( feature.attribute( QStringLiteral( "styleName" ) ).toString(), QString( "style for layer 2" ) );
 }
 
 

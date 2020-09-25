@@ -10,7 +10,8 @@
 
 
 
-class QgsPoint3DSymbol : QgsAbstract3DSymbol
+
+class QgsPoint3DSymbol : QgsAbstract3DSymbol /NoDefaultCtors/
 {
 %Docstring
 3D symbol that draws point geometries as 3D objects using one of the predefined shapes.
@@ -37,6 +38,13 @@ Constructor for QgsPoint3DSymbol with default QgsMarkerSymbol as the billboardSy
 Copy Constructor for QgsPoint3DSymbol
 %End
 
+    static QgsAbstract3DSymbol *create() /Factory/;
+%Docstring
+Creates a new QgsPoint3DSymbol.
+
+Caller takes ownership of the returned symbol.
+%End
+
     virtual QString type() const;
     virtual QgsAbstract3DSymbol *clone() const /Factory/;
 
@@ -44,6 +52,8 @@ Copy Constructor for QgsPoint3DSymbol
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+    virtual QList< QgsWkbTypes::GeometryType > compatibleGeometryTypes() const;
 
 
     Qgs3DTypes::AltitudeClamping altitudeClamping() const;
@@ -55,13 +65,16 @@ Returns method that determines altitude (whether to clamp to feature to terrain)
 Sets method that determines altitude (whether to clamp to feature to terrain)
 %End
 
-    QgsPhongMaterialSettings material() const;
+    QgsAbstractMaterialSettings *material() const;
 %Docstring
 Returns material used for shading of the symbol
 %End
-    void setMaterial( const QgsPhongMaterialSettings &material );
+
+    void setMaterial( QgsAbstractMaterialSettings *material /Transfer/ );
 %Docstring
-Sets material used for shading of the symbol
+Sets the ``material`` settings used for shading of the symbol.
+
+Ownership of ``material`` is transferred to the symbol.
 %End
 
     enum Shape

@@ -1,0 +1,5 @@
+{
+  "name": "Processing",
+  "type": "group",
+  "description": "This group contains functions that are available in the processing algorithms context."
+}

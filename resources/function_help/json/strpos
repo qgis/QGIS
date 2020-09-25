@@ -1,6 +1,7 @@
 {
   "name": "strpos",
   "type": "function",
+  "groups": ["String"],
   "description": "Return the first matching position of a substring within another string, or 0 if the substring is not found.",
   "arguments": [ {"arg":"haystack","description":"string that is to be searched"},
                  {"arg":"needle","description":"string to search for"}],

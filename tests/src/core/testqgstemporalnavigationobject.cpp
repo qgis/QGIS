@@ -41,6 +41,8 @@ class TestQgsTemporalNavigationObject : public QObject
     void animationState();
     void temporalExtents();
     void frameSettings();
+    void navigationMode();
+    void expressionContext();
 
   private:
     QgsTemporalNavigationObject *navigationObject = nullptr;
@@ -64,6 +66,7 @@ void TestQgsTemporalNavigationObject::init()
   //create a temporal object that will be used in all tests...
 
   navigationObject = new QgsTemporalNavigationObject();
+  navigationObject->setNavigationMode( QgsTemporalNavigationObject::Animated );
 }
 
 void TestQgsTemporalNavigationObject::cleanup()
@@ -113,7 +116,7 @@ void TestQgsTemporalNavigationObject::animationState()
   QCOMPARE( navigationObject->currentFrameNumber(), 0 );
 
   navigationObject->skipToEnd();
-  QCOMPARE( navigationObject->currentFrameNumber(), 10 );
+  QCOMPARE( navigationObject->currentFrameNumber(), 9 );
 
   navigationObject->rewindToStart();
   QCOMPARE( navigationObject->currentFrameNumber(), 0 );
@@ -137,6 +140,41 @@ void TestQgsTemporalNavigationObject::temporalExtents()
   QCOMPARE( navigationObject->temporalExtents(), QgsDateTimeRange() );
 }
 
+void TestQgsTemporalNavigationObject::navigationMode()
+{
+  QgsDateTimeRange range = QgsDateTimeRange(
+                             QDateTime( QDate( 2010, 1, 1 ) ),
+                             QDateTime( QDate( 2020, 1, 1 ) ) );
+
+  QgsDateTimeRange range2 = QgsDateTimeRange(
+                              QDateTime( QDate( 2015, 1, 1 ) ),
+                              QDateTime( QDate( 2020, 1, 1 ) ) );
+
+  QgsDateTimeRange check;
+  auto checkUpdateTemporalRange = [&check]( const QgsDateTimeRange range )
+  {
+    QCOMPARE( range, check );
+  };
+  QObject *context = new QObject( this );
+  connect( navigationObject, &QgsTemporalNavigationObject::updateTemporalRange, context, checkUpdateTemporalRange );
+
+  // Changing navigation mode emits an updateTemporalRange, in this case it should be an empty range
+  navigationObject->setNavigationMode( QgsTemporalNavigationObject::NavigationOff );
+  // Setting temporal extents also triggers an updateTemporalRange with an empty range
+  navigationObject->setTemporalExtents( range );
+
+  // Changing navigation mode emits an updateTemporalRange, in this case it should be the last range
+  // we used in setTemporalExtents.
+  check = range;
+  navigationObject->setNavigationMode( QgsTemporalNavigationObject::FixedRange );
+  check = range2;
+  navigationObject->setTemporalExtents( range2 );
+
+  // Delete context to disconnect the signal to the lambda function
+  delete context;
+  navigationObject->setNavigationMode( QgsTemporalNavigationObject::Animated );
+}
+
 void TestQgsTemporalNavigationObject::frameSettings()
 {
   qRegisterMetaType<QgsDateTimeRange>( "QgsDateTimeRange" );
@@ -144,8 +182,16 @@ void TestQgsTemporalNavigationObject::frameSettings()
 
   QgsDateTimeRange range = QgsDateTimeRange(
                              QDateTime( QDate( 2020, 1, 1 ), QTime( 8, 0, 0 ) ),
-                             QDateTime( QDate( 2020, 1, 1 ), QTime( 12, 0, 0 ) )
+                             QDateTime( QDate( 2020, 1, 1 ), QTime( 12, 0, 0 ) ),
+                             true,
+                             false
                            );
+  QgsDateTimeRange lastRange = QgsDateTimeRange(
+                                 QDateTime( QDate( 2020, 1, 1 ), QTime( 12, 0, 0 ) ),
+                                 QDateTime( QDate( 2020, 1, 1 ), QTime( 12, 0, 0 ) ),
+                                 true,
+                                 false
+                               );
   navigationObject->setTemporalExtents( range );
   QCOMPARE( temporalRangeSignal.count(), 1 );
 
@@ -162,6 +208,31 @@ void TestQgsTemporalNavigationObject::frameSettings()
   navigationObject->setFramesPerSecond( 1 );
   QCOMPARE( navigationObject->framesPerSecond(), 1.0 );
 
+  QCOMPARE( navigationObject->dateTimeRangeForFrameNumber( 4 ), lastRange );
+
+  navigationObject->setTemporalRangeCumulative( true );
+  QCOMPARE( navigationObject->dateTimeRangeForFrameNumber( 4 ), range );
+}
+
+void TestQgsTemporalNavigationObject::expressionContext()
+{
+  QgsTemporalNavigationObject object;
+  QgsDateTimeRange range = QgsDateTimeRange(
+                             QDateTime( QDate( 2020, 1, 1 ), QTime( 8, 0, 0 ) ),
+                             QDateTime( QDate( 2020, 1, 1 ), QTime( 12, 0, 0 ) )
+                           );
+  object.setTemporalExtents( range );
+  object.setFrameDuration( QgsInterval( 1, QgsUnitTypes::TemporalHours ) );
+  object.setCurrentFrameNumber( 1 );
+  object.setFramesPerSecond( 30 );
+
+  std::unique_ptr< QgsExpressionContextScope > scope( object.createExpressionContextScope() );
+  QCOMPARE( scope->variable( QStringLiteral( "frame_rate" ) ).toDouble(), 30.0 );
+  QCOMPARE( scope->variable( QStringLiteral( "frame_duration" ) ).value< QgsInterval >().seconds(), 3600.0 );
+  QCOMPARE( scope->variable( QStringLiteral( "frame_number" ) ).toInt(), 1 );
+  QCOMPARE( scope->variable( QStringLiteral( "animation_start_time" ) ).toDateTime(), range.begin() );
+  QCOMPARE( scope->variable( QStringLiteral( "animation_end_time" ) ).toDateTime(), range.end() );
+  QCOMPARE( scope->variable( QStringLiteral( "animation_interval" ) ).value< QgsInterval >(), range.end() - range.begin() );
 }
 
 QGSTEST_MAIN( TestQgsTemporalNavigationObject )

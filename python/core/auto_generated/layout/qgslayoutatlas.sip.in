@@ -18,7 +18,7 @@ directly with QgsLayoutExporter to automatically output all pages from the atlas
 
 For QgsPrintLayout layouts, it is not necessary to manually construct a
 QgsLayoutAtlas object. Instead, the atlas attached to the print layout
-should be used. This can be retrieved by calling :py:func:`QgsPrintLayout.atlas()`
+should be used. This can be retrieved by calling :py:func:`QgsPrintLayout.atlas()`.
 
 .. versionadded:: 3.0
 %End
@@ -166,7 +166,7 @@ Sets whether features should be sorted in the atlas.
 %Docstring
 Returns ``True`` if features should be sorted in an ascending order.
 
-This property has no effect is sortFeatures() is ``False``.
+This property has no effect is :py:func:`~QgsLayoutAtlas.sortFeatures` is ``False``.
 
 .. seealso:: :py:func:`sortFeatures`
 
@@ -179,7 +179,7 @@ This property has no effect is sortFeatures() is ``False``.
 %Docstring
 Sets whether features should be sorted in an ascending order.
 
-This property has no effect is sortFeatures() is ``False``.
+This property has no effect is :py:func:`~QgsLayoutAtlas.sortFeatures` is ``False``.
 
 .. seealso:: :py:func:`setSortFeatures`
 
@@ -192,7 +192,7 @@ This property has no effect is sortFeatures() is ``False``.
 %Docstring
 Returns the expression (or field name) to use for sorting features.
 
-This property has no effect is sortFeatures() is ``False``.
+This property has no effect is :py:func:`~QgsLayoutAtlas.sortFeatures` is ``False``.
 
 .. seealso:: :py:func:`sortFeatures`
 
@@ -205,7 +205,7 @@ This property has no effect is sortFeatures() is ``False``.
 %Docstring
 Sets the ``expression`` (or field name) to use for sorting features.
 
-This property has no effect is sortFeatures() is ``False``.
+This property has no effect is :py:func:`~QgsLayoutAtlas.sortFeatures` is ``False``.
 
 .. seealso:: :py:func:`setSortFeatures`
 
@@ -236,7 +236,7 @@ Sets whether features should be ``filtered`` in the coverage layer.
 %Docstring
 Returns the expression used for filtering features in the coverage layer.
 
-This property has no effect is filterFeatures() is ``False``.
+This property has no effect is :py:func:`~QgsLayoutAtlas.filterFeatures` is ``False``.
 
 .. seealso:: :py:func:`setFilterExpression`
 
@@ -247,7 +247,7 @@ This property has no effect is filterFeatures() is ``False``.
 %Docstring
 Sets the ``expression`` used for filtering features in the coverage layer.
 
-This property has no effect is filterFeatures() is ``False``.
+This property has no effect is :py:func:`~QgsLayoutAtlas.filterFeatures` is ``False``.
 
 If an invalid expression is passed, ``False`` will be returned and ``errorString``
 will be set to the expression error.

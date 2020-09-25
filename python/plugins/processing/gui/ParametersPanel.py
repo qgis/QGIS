@@ -35,7 +35,8 @@ from qgis.gui import (QgsProcessingContextGenerator,
                       QgsProcessingParametersWidget,
                       QgsGui,
                       QgsProcessingGui,
-                      QgsProcessingParametersGenerator)
+                      QgsProcessingParametersGenerator,
+                      QgsProcessingHiddenWidgetWrapper)
 from qgis.utils import iface
 
 from processing.gui.wrappers import WidgetWrapperFactory, WidgetWrapper
@@ -45,11 +46,14 @@ from processing.tools.dataobjects import createContext
 
 class ParametersPanel(QgsProcessingParametersWidget):
 
-    def __init__(self, parent, alg, in_place=False):
+    def __init__(self, parent, alg, in_place=False, active_layer=None):
         super().__init__(alg, parent)
         self.in_place = in_place
+        self.active_layer = active_layer
 
         self.wrappers = {}
+
+        self.extra_parameters = {}
 
         self.processing_context = createContext()
 
@@ -98,6 +102,15 @@ class ParametersPanel(QgsProcessingParametersWidget):
             if param.isDestination():
                 continue
             else:
+                if self.in_place and param.name() in ('INPUT', 'OUTPUT'):
+                    # don't show the input/output parameter widgets in in-place mode
+                    # we still need to CREATE them, because other wrappers may need to interact
+                    # with them (e.g. those parameters which need the input layer for field
+                    # selections/crs properties/etc)
+                    self.wrappers[param.name()] = QgsProcessingHiddenWidgetWrapper(param, QgsProcessingGui.Standard, self)
+                    self.wrappers[param.name()].setLinkedVectorLayer(self.active_layer)
+                    continue
+
                 wrapper = WidgetWrapperFactory.create_wrapper(param, self.parent())
                 wrapper.setWidgetContext(widget_context)
                 wrapper.registerProcessingContextGenerator(self.context_generator)
@@ -109,17 +122,12 @@ class ParametersPanel(QgsProcessingParametersWidget):
                 # QgsAbstractProcessingParameterWidgetWrapper class
                 # TODO QGIS 4.0 - remove
                 is_python_wrapper = issubclass(wrapper.__class__, WidgetWrapper)
+                stretch = 0
                 if not is_python_wrapper:
                     widget = wrapper.createWrappedWidget(self.processing_context)
+                    stretch = wrapper.stretch()
                 else:
                     widget = wrapper.widget
-
-                if self.in_place and param.name() in ('INPUT', 'OUTPUT'):
-                    # don't show the input/output parameter widgets in in-place mode
-                    # we still need to CREATE them, because other wrappers may need to interact
-                    # with them (e.g. those parameters which need the input layer for field
-                    # selections/crs properties/etc)
-                    continue
 
                 if widget is not None:
                     if is_python_wrapper:
@@ -141,7 +149,7 @@ class ParametersPanel(QgsProcessingParametersWidget):
                             desc += self.tr(' [optional]')
                         widget.setText(desc)
 
-                    self.addParameterWidget(param, widget)
+                    self.addParameterWidget(param, widget, stretch)
 
         for output in self.algorithm().destinationParameterDefinitions():
             if output.flags() & QgsProcessingParameterDefinition.FlagHidden:
@@ -161,7 +169,7 @@ class ParametersPanel(QgsProcessingParametersWidget):
                 self.addOutputLabel(label)
 
             widget = wrapper.createWrappedWidget(self.processing_context)
-            self.addOutputWidget(widget)
+            self.addOutputWidget(widget, wrapper.stretch())
 
             #    def skipOutputChanged(widget, checkbox, skipped):
             # TODO
@@ -188,16 +196,13 @@ class ParametersPanel(QgsProcessingParametersWidget):
 
     def createProcessingParameters(self):
         parameters = {}
+        for p, v in self.extra_parameters.items():
+            parameters[p] = v
 
         for param in self.algorithm().parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
             if not param.isDestination():
-
-                if self.in_place and param.name() == 'INPUT':
-                    parameters[param.name()] = self.active_layer
-                    continue
-
                 try:
                     wrapper = self.wrappers[param.name()]
                 except KeyError:
@@ -212,7 +217,7 @@ class ParametersPanel(QgsProcessingParametersWidget):
                 else:
                     widget = wrapper.wrappedWidget()
 
-                if widget is None:
+                if not isinstance(wrapper, QgsProcessingHiddenWidgetWrapper) and widget is None:
                     continue
 
                 value = wrapper.parameterValue()
@@ -241,17 +246,20 @@ class ParametersPanel(QgsProcessingParametersWidget):
                     value.destinationProject = dest_project
                 if value:
                     parameters[param.name()] = value
-                    if param.isDestination():
-                        context = createContext()
-                        ok, error = self.algorithm().provider().isSupportedOutputValue(value, param, context)
-                        if not ok:
-                            raise AlgorithmDialogBase.InvalidOutputExtension(widget, error)
+
+                    context = createContext()
+                    ok, error = param.isSupportedOutputValue(value, context)
+                    if not ok:
+                        raise AlgorithmDialogBase.InvalidOutputExtension(widget, error)
 
         return self.algorithm().preprocessParameters(parameters)
 
     def setParameters(self, parameters):
+        self.extra_parameters = {}
         for param in self.algorithm().parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                if param.name() in parameters:
+                    self.extra_parameters[param.name()] = parameters[param.name()]
                 continue
 
             if not param.name() in parameters:

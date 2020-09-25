@@ -21,8 +21,8 @@ namespace MDAL
 
   typedef struct
   {
-    double x;
-    double y;
+    double x = std::numeric_limits<double>::quiet_NaN();
+    double y = std::numeric_limits<double>::quiet_NaN();
     double z = 0.0; // Bed elevation
 
   } Vertex;
@@ -171,22 +171,44 @@ namespace MDAL
   class MemoryMesh: public Mesh
   {
     public:
+      //! Constructs an empty mesh
       MemoryMesh( const std::string &driverName,
-                  size_t verticesCount,
-                  size_t edgesCount,
-                  size_t facesCount,
                   size_t faceVerticesMaximumCount,
-                  BBox extent,
                   const std::string &uri );
+
       ~MemoryMesh() override;
 
       std::unique_ptr<MDAL::MeshVertexIterator> readVertices() override;
       std::unique_ptr<MDAL::MeshEdgeIterator> readEdges() override;
       std::unique_ptr<MDAL::MeshFaceIterator> readFaces() override;
 
-      Vertices vertices;
-      Faces faces;
-      Edges edges;
+      const Vertices &vertices() const {return mVertices;}
+      const Faces &faces() const {return mFaces;}
+      const Edges &edges() const {return mEdges;}
+
+      //! Sets all vertices using std::move if possible
+      void setVertices( Vertices vertices );
+
+      //! Sets all faces using std::move if possible
+      void setFaces( Faces faces );
+
+      //! Sets all edges using std::move if possible
+      void setEdges( Edges edges );
+
+      size_t verticesCount() const override {return mVertices.size();}
+      size_t edgesCount() const override {return mEdges.size();}
+      size_t facesCount() const override {return mFaces.size();}
+      BBox extent() const override;
+      void addVertices( size_t vertexCount, double *coordinates ) override;
+      void addFaces( size_t faceCount, size_t driverMaxVerticesPerFace, int *faceSizes, int *vertexIndices ) override;
+
+      bool isEditable() const override {return true;}
+
+    private:
+      BBox mExtent;
+      Vertices mVertices;
+      Faces mFaces;
+      Edges mEdges;
   };
 
   class MemoryMeshVertexIterator: public MeshVertexIterator

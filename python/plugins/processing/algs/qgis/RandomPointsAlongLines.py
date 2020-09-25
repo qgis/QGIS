@@ -48,7 +48,6 @@ from processing.tools import vector
 
 
 class RandomPointsAlongLines(QgisAlgorithm):
-
     INPUT = 'INPUT'
     POINTS_NUMBER = 'POINTS_NUMBER'
     MIN_DISTANCE = 'MIN_DISTANCE'
@@ -111,7 +110,7 @@ class RandomPointsAlongLines(QgisAlgorithm):
 
         da = QgsDistanceArea()
         da.setSourceCrs(source.sourceCrs(), context.transformContext())
-        da.setEllipsoid(context.project().ellipsoid())
+        da.setEllipsoid(context.ellipsoid())
 
         request = QgsFeatureRequest()
 

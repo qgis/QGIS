@@ -81,6 +81,8 @@ QgsRasterCalcDialog::QgsRasterCalcDialog( QgsRasterLayer *rasterLayer, QWidget *
     mCrsSelector->setCrs( rasterLayer->crs() );
   }
 
+  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
+
   //add supported output formats
   insertAvailableOutputFormats();
   insertAvailableRasterBands();

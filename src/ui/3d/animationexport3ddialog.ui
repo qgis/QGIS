@@ -23,7 +23,7 @@
    <item row="4" column="0">
     <widget class="QLabel" name="mHeightLabel">
      <property name="text">
-      <string>Output Height</string>
+      <string>Output height</string>
      </property>
      <property name="buddy">
       <cstring>mHeightSpinBox</cstring>
@@ -33,7 +33,7 @@
    <item row="2" column="0">
     <widget class="QLabel" name="mFpsLabel">
      <property name="text">
-      <string>Frames Per Second</string>
+      <string>Frames per second</string>
      </property>
     </widget>
    </item>
@@ -47,7 +47,7 @@
    <item row="1" column="0">
     <widget class="QLabel" name="mOutputDirLabel">
      <property name="text">
-      <string>Output Directory</string>
+      <string>Output directory</string>
      </property>
     </widget>
    </item>
@@ -74,7 +74,7 @@
    <item row="3" column="0">
     <widget class="QLabel" name="mWidthLabel">
      <property name="text">
-      <string>Output Width</string>
+      <string>Output width</string>
      </property>
      <property name="buddy">
       <cstring>mWidthSpinBox</cstring>
@@ -135,7 +135,7 @@
    <item row="6" column="0" colspan="3">
     <widget class="QDialogButtonBox" name="mButtonBox">
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -144,19 +144,20 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsFileWidget</class>
    <extends>QWidget</extends>
    <header>qgsfilewidget.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header location="global">qgsspinbox.h</header>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mTemplateLineEdit</tabstop>
+  <tabstop>mFpsSpinBox</tabstop>
   <tabstop>mWidthSpinBox</tabstop>
   <tabstop>mHeightSpinBox</tabstop>
  </tabstops>

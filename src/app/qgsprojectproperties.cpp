@@ -63,6 +63,7 @@
 #include "qgsmessagelog.h"
 #include "qgslayercapabilitiesmodel.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsprojectservervalidator.h"
 #include "qgsprojectstorage.h"
 #include "qgsprojectstorageregistry.h"
 #include "qgsprojectviewsettings.h"
@@ -75,7 +76,7 @@
 //qt includes
 #include <QInputDialog>
 #include <QFileDialog>
-#include <QHeaderView>  // Qt 4.4
+#include <QHeaderView>
 #include <QMessageBox>
 #include <QDesktopServices>
 #include <QAbstractListModel>
@@ -86,7 +87,7 @@ const char *QgsProjectProperties::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOptions
 
 //stdc++ includes
 
-QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *parent, Qt::WindowFlags fl )
+QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *parent, Qt::WindowFlags fl, const QList<QgsOptionsWidgetFactory *> &optionsFactories )
   : QgsOptionsDialogBase( QStringLiteral( "ProjectProperties" ), parent, fl )
   , mMapCanvas( mapCanvas )
   , mEllipsoidIndex( 0 )
@@ -130,34 +131,34 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
   initOptionsBase( false );
 
-  mCoordinateDisplayComboBox->addItem( tr( "Map units" ), MapUnits );
-  mCoordinateDisplayComboBox->addItem( tr( "Decimal degrees" ), DecimalDegrees );
-  mCoordinateDisplayComboBox->addItem( tr( "Degrees, minutes" ), DegreesMinutes );
-  mCoordinateDisplayComboBox->addItem( tr( "Degrees, minutes, seconds" ), DegreesMinutesSeconds );
+  mCoordinateDisplayComboBox->addItem( tr( "Map Units" ), MapUnits );
+  mCoordinateDisplayComboBox->addItem( tr( "Decimal Degrees" ), DecimalDegrees );
+  mCoordinateDisplayComboBox->addItem( tr( "Degrees, Minutes" ), DegreesMinutes );
+  mCoordinateDisplayComboBox->addItem( tr( "Degrees, Minutes, Seconds" ), DegreesMinutesSeconds );
 
   mDistanceUnitsCombo->addItem( tr( "Meters" ), QgsUnitTypes::DistanceMeters );
   mDistanceUnitsCombo->addItem( tr( "Kilometers" ), QgsUnitTypes::DistanceKilometers );
   mDistanceUnitsCombo->addItem( tr( "Feet" ), QgsUnitTypes::DistanceFeet );
   mDistanceUnitsCombo->addItem( tr( "Yards" ), QgsUnitTypes::DistanceYards );
   mDistanceUnitsCombo->addItem( tr( "Miles" ), QgsUnitTypes::DistanceMiles );
-  mDistanceUnitsCombo->addItem( tr( "Nautical miles" ), QgsUnitTypes::DistanceNauticalMiles );
+  mDistanceUnitsCombo->addItem( tr( "Nautical Miles" ), QgsUnitTypes::DistanceNauticalMiles );
   mDistanceUnitsCombo->addItem( tr( "Centimeters" ), QgsUnitTypes::DistanceCentimeters );
   mDistanceUnitsCombo->addItem( tr( "Millimeters" ), QgsUnitTypes::DistanceMillimeters );
   mDistanceUnitsCombo->addItem( tr( "Degrees" ), QgsUnitTypes::DistanceDegrees );
-  mDistanceUnitsCombo->addItem( tr( "Map units" ), QgsUnitTypes::DistanceUnknownUnit );
+  mDistanceUnitsCombo->addItem( tr( "Map Units" ), QgsUnitTypes::DistanceUnknownUnit );
 
-  mAreaUnitsCombo->addItem( tr( "Square meters" ), QgsUnitTypes::AreaSquareMeters );
-  mAreaUnitsCombo->addItem( tr( "Square kilometers" ), QgsUnitTypes::AreaSquareKilometers );
-  mAreaUnitsCombo->addItem( tr( "Square feet" ), QgsUnitTypes::AreaSquareFeet );
-  mAreaUnitsCombo->addItem( tr( "Square yards" ), QgsUnitTypes::AreaSquareYards );
-  mAreaUnitsCombo->addItem( tr( "Square miles" ), QgsUnitTypes::AreaSquareMiles );
+  mAreaUnitsCombo->addItem( tr( "Square Meters" ), QgsUnitTypes::AreaSquareMeters );
+  mAreaUnitsCombo->addItem( tr( "Square Kilometers" ), QgsUnitTypes::AreaSquareKilometers );
+  mAreaUnitsCombo->addItem( tr( "Square Feet" ), QgsUnitTypes::AreaSquareFeet );
+  mAreaUnitsCombo->addItem( tr( "Square Yards" ), QgsUnitTypes::AreaSquareYards );
+  mAreaUnitsCombo->addItem( tr( "Square Miles" ), QgsUnitTypes::AreaSquareMiles );
   mAreaUnitsCombo->addItem( tr( "Hectares" ), QgsUnitTypes::AreaHectares );
   mAreaUnitsCombo->addItem( tr( "Acres" ), QgsUnitTypes::AreaAcres );
-  mAreaUnitsCombo->addItem( tr( "Square nautical miles" ), QgsUnitTypes::AreaSquareNauticalMiles );
-  mAreaUnitsCombo->addItem( tr( "Square centimeters" ), QgsUnitTypes::AreaSquareCentimeters );
-  mAreaUnitsCombo->addItem( tr( "Square millimeters" ), QgsUnitTypes::AreaSquareMillimeters );
-  mAreaUnitsCombo->addItem( tr( "Square degrees" ), QgsUnitTypes::AreaSquareDegrees );
-  mAreaUnitsCombo->addItem( tr( "Map units" ), QgsUnitTypes::AreaUnknownUnit );
+  mAreaUnitsCombo->addItem( tr( "Square Nautical Miles" ), QgsUnitTypes::AreaSquareNauticalMiles );
+  mAreaUnitsCombo->addItem( tr( "Square Centimeters" ), QgsUnitTypes::AreaSquareCentimeters );
+  mAreaUnitsCombo->addItem( tr( "Square Millimeters" ), QgsUnitTypes::AreaSquareMillimeters );
+  mAreaUnitsCombo->addItem( tr( "Square Degrees" ), QgsUnitTypes::AreaSquareDegrees );
+  mAreaUnitsCombo->addItem( tr( "Map Units" ), QgsUnitTypes::AreaUnknownUnit );
 
   projectionSelector->setShowNoProjection( true );
 
@@ -237,6 +238,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   // Set time settings input
   QgsDateTimeRange range = QgsProject::instance()->timeSettings()->temporalRange();
 
+  mStartDateTimeEdit->setDateTimeRange( QDateTime( QDate( 1, 1, 1 ) ), mStartDateTimeEdit->maximumDateTime() );
+  mEndDateTimeEdit->setDateTimeRange( QDateTime( QDate( 1, 1, 1 ) ), mEndDateTimeEdit->maximumDateTime() );
   mStartDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
   mEndDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
 
@@ -245,7 +248,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   mAutoTransaction->setChecked( QgsProject::instance()->autoTransaction() );
   title( QgsProject::instance()->title() );
-  mProjectFileLineEdit->setText( QDir::toNativeSeparators( QgsProject::instance()->fileName() ) );
+  mProjectFileLineEdit->setText( QDir::toNativeSeparators( !QgsProject::instance()->fileName().isEmpty() ? QgsProject::instance()->fileName() : QgsProject::instance()->originalPath() ) );
   mProjectHomeLineEdit->setShowClearButton( true );
   mProjectHomeLineEdit->setText( QDir::toNativeSeparators( QgsProject::instance()->presetHomePath() ) );
   connect( mButtonSetProjectHome, &QToolButton::clicked, this, [ = ]
@@ -285,7 +288,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   connect( mButtonOpenProjectFolder, &QToolButton::clicked, this, [ = ]
   {
     QString path;
-    QString project = QgsProject::instance()->fileName();
+    QString project = !QgsProject::instance()->fileName().isEmpty() ? QgsProject::instance()->fileName() : QgsProject::instance()->originalPath();
     QgsProjectStorage *storage = QgsProject::instance()->projectStorage();
     if ( storage )
       path = storage->filePath( project );
@@ -386,7 +389,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   {
     for ( double scale : projectScales )
     {
-      addScaleToScaleList( QStringLiteral( "1:%1" ).arg( scale ) );
+      addScaleToScaleList( QStringLiteral( "1:%1" ).arg( QLocale().toString( scale, 'f', 0 ) ) );
     }
   }
   connect( lstScales, &QListWidget::itemChanged, this, &QgsProjectProperties::scaleItemChanged );
@@ -444,6 +447,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mWMSUrlLineEdit->setText( QgsProject::instance()->readEntry( QStringLiteral( "WMSUrl" ), QStringLiteral( "/" ), QString() ) );
   mWMSKeywordList->setText( QgsProject::instance()->readListEntry( QStringLiteral( "WMSKeywordList" ), QStringLiteral( "/" ) ).join( QStringLiteral( ", " ) ) );
 
+  mWMSOnlineResourceExpressionButton->registerExpressionContextGenerator( this );
+  mWMSOnlineResourceExpressionButton->setToProperty( QgsProject::instance()->dataDefinedServerProperties().property( QgsProject::DataDefinedServerProperty::WMSOnlineResource ) );
+
   // WMS Name validator
   QValidator *shortNameValidator = new QRegExpValidator( QgsApplication::shortNameRegExp(), this );
   mWMSName->setValidator( shortNameValidator );
@@ -456,8 +462,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mWMSContactPositionCb->addItem( tr( "User" ), "user" );
   mWMSContactPositionCb->addItem( tr( "Distributor" ), "distributor" );
   mWMSContactPositionCb->addItem( tr( "Originator" ), "originator" );
-  mWMSContactPositionCb->addItem( tr( "Point of contact" ), "pointOfContact" );
-  mWMSContactPositionCb->addItem( tr( "Principal investigator" ), "principalInvestigator" );
+  mWMSContactPositionCb->addItem( tr( "Point of Contact" ), "pointOfContact" );
+  mWMSContactPositionCb->addItem( tr( "Principal Investigator" ), "principalInvestigator" );
   mWMSContactPositionCb->addItem( tr( "Processor" ), "processor" );
   mWMSContactPositionCb->addItem( tr( "Publisher" ), "publisher" );
   mWMSContactPositionCb->addItem( tr( "Author" ), "author" );
@@ -473,8 +479,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   // WMS Fees
   QString feesText = QgsProject::instance()->readEntry( QStringLiteral( "WMSFees" ), QStringLiteral( "/" ), QString() );
-  mWMSFeesCb->addItem( tr( "Conditions unknown" ), "conditions unknown" );
-  mWMSFeesCb->addItem( tr( "No conditions apply" ), "no conditions apply" );
+  mWMSFeesCb->addItem( tr( "Conditions Unknown" ), "conditions unknown" );
+  mWMSFeesCb->addItem( tr( "No Conditions Apply" ), "no conditions apply" );
   int feesIndex = mWMSFeesCb->findData( feesText );
   if ( feesIndex > -1 )
   {
@@ -490,12 +496,12 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mWMSAccessConstraintsCb->addItem( tr( "None" ), "None" );
   mWMSAccessConstraintsCb->addItem( tr( "Copyright" ), "copyright" );
   mWMSAccessConstraintsCb->addItem( tr( "Patent" ), "patent" );
-  mWMSAccessConstraintsCb->addItem( tr( "Patent pending" ), "patentPending" );
+  mWMSAccessConstraintsCb->addItem( tr( "Patent Pending" ), "patentPending" );
   mWMSAccessConstraintsCb->addItem( tr( "Trademark" ), "trademark" );
   mWMSAccessConstraintsCb->addItem( tr( "License" ), "license" );
-  mWMSAccessConstraintsCb->addItem( tr( "Intellectual property rights" ), "intellectualPropertyRights" );
+  mWMSAccessConstraintsCb->addItem( tr( "Intellectual Property Rights" ), "intellectualPropertyRights" );
   mWMSAccessConstraintsCb->addItem( tr( "Restricted" ), "restricted" );
-  mWMSAccessConstraintsCb->addItem( tr( "Other restrictions" ), "otherRestrictions" );
+  mWMSAccessConstraintsCb->addItem( tr( "Other Restrictions" ), "otherRestrictions" );
   int accessConstraintsIndex = mWMSAccessConstraintsCb->findData( accessConstraintsText );
   if ( accessConstraintsIndex > -1 )
   {
@@ -965,6 +971,24 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   mBearingFormat.reset( QgsProject::instance()->displaySettings()->bearingFormat()->clone() );
 
+  const auto constOptionsFactories = optionsFactories;
+  for ( QgsOptionsWidgetFactory *factory : constOptionsFactories )
+  {
+    QListWidgetItem *item = new QListWidgetItem();
+    item->setIcon( factory->icon() );
+    item->setText( factory->title() );
+    item->setToolTip( factory->title() );
+
+    mOptionsListWidget->addItem( item );
+
+    QgsOptionsPageWidget *page = factory->createWidget( this );
+    if ( !page )
+      continue;
+
+    mAdditionalProjectPropertiesWidgets << page;
+    mOptionsStackedWidget->addWidget( page );
+  }
+
   restoreOptionsBaseUi();
 
 #ifdef QGISDEBUG
@@ -991,6 +1015,16 @@ void QgsProjectProperties::setSelectedCrs( const QgsCoordinateReferenceSystem &c
   projectionSelector->setCrs( crs );
   mBlockCrsUpdates = false;
   crsChanged( projectionSelector->crs() );
+}
+
+QgsExpressionContext QgsProjectProperties::createExpressionContext() const
+{
+  QgsExpressionContext context;
+  context
+      << QgsExpressionContextUtils::globalScope()
+      << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+
+  return context;
 }
 
 void QgsProjectProperties::apply()
@@ -1170,6 +1204,10 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSServiceAbstract" ), QStringLiteral( "/" ), mWMSAbstract->toPlainText() );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSOnlineResource" ), QStringLiteral( "/" ), mWMSOnlineResourceLineEdit->text() );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSUrl" ), QStringLiteral( "/" ), mWMSUrlLineEdit->text() );
+
+  QgsPropertyCollection propertyCollection = QgsProject::instance()->dataDefinedServerProperties();
+  propertyCollection.setProperty( QgsProject::DataDefinedServerProperty::WMSOnlineResource, mWMSOnlineResourceExpressionButton->toProperty() );
+  QgsProject::instance()->setDataDefinedServerProperties( propertyCollection );
 
   // WMS Contact Position
   int contactPositionIndex = mWMSContactPositionCb->currentIndex();
@@ -1505,6 +1543,11 @@ void QgsProjectProperties::apply()
 
   QgsProject::instance()->displaySettings()->setBearingFormat( mBearingFormat->clone() );
 
+  for ( QgsOptionsPageWidget *widget : qgis::as_const( mAdditionalProjectPropertiesWidgets ) )
+  {
+    widget->apply();
+  }
+
   //refresh canvases to reflect new properties, eg background color and scale bar after changing display units.
   for ( QgsMapCanvas *canvas : constMapCanvases )
   {
@@ -1733,7 +1776,6 @@ void QgsProjectProperties::pbnWMSExtCanvas_clicked()
 void QgsProjectProperties::pbnWMSAddSRS_clicked()
 {
   QgsProjectionSelectionDialog *mySelector = new QgsProjectionSelectionDialog( this );
-  mySelector->setMessage( QString() );
   if ( mWMSList->count() > 0 )
   {
     mySelector->setCrs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( mWMSList->item( mWMSList->count() - 1 )->text() ) );
@@ -1907,60 +1949,28 @@ void QgsProjectProperties::pbnWCSLayersDeselectAll_clicked()
 
 void QgsProjectProperties::pbnLaunchOWSChecker_clicked()
 {
+  QList<QgsProjectServerValidator::ValidationResult> validationResults;
+  bool results = QgsProjectServerValidator::validate( QgsProject::instance(), validationResults );
+
+  QString errors;
+  if ( !results )
+  {
+    for ( const QgsProjectServerValidator::ValidationResult &result : qgis::as_const( validationResults ) )
+    {
+      errors += QLatin1String( "<b>" ) % QgsProjectServerValidator::displayValidationError( result.error ) % QLatin1String( " :</b> " );
+      errors += result.identifier.toString();
+    }
+  }
+  else
+  {
+    errors += tr( "Project is valid." );
+  }
+
   QString myStyle = QgsApplication::reportStyleSheet();
+  myStyle.append( QStringLiteral( "body { margin: 10px; }\n " ) );
   teOWSChecker->clear();
   teOWSChecker->document()->setDefaultStyleSheet( myStyle );
-  teOWSChecker->setHtml( "<h1>" + tr( "Start checking QGIS Server" ) + "</h1>" );
-
-  QStringList owsNames, encodingMessages;
-  checkOWS( QgisApp::instance()->layerTreeView()->layerTreeModel()->rootGroup(), owsNames, encodingMessages );
-
-  QStringList duplicateNames, regExpMessages;
-  QRegExp snRegExp = QgsApplication::shortNameRegExp();
-  const auto constOwsNames = owsNames;
-  for ( const QString &name : constOwsNames )
-  {
-    if ( !snRegExp.exactMatch( name ) )
-      regExpMessages << tr( "Use short name for \"%1\"" ).arg( name );
-    if ( duplicateNames.contains( name ) )
-      continue;
-    if ( owsNames.count( name ) > 1 )
-      duplicateNames << name;
-  }
-
-  if ( !duplicateNames.empty() )
-  {
-    QString nameMessage = "<h1>" + tr( "Some layers and groups have the same name or short name" ) + "</h1>";
-    nameMessage += "<h2>" + tr( "Duplicate names:" ) + "</h2>";
-    nameMessage += duplicateNames.join( QStringLiteral( "</li><li>" ) ) + "</li></ul>";
-    teOWSChecker->setHtml( teOWSChecker->toHtml() + nameMessage );
-  }
-  else
-  {
-    teOWSChecker->setHtml( teOWSChecker->toHtml() + "<h1>" + tr( "All names and short names of layer and group are unique" ) + "</h1>" );
-  }
-
-  if ( !regExpMessages.empty() )
-  {
-    QString encodingMessage = "<h1>" + tr( "Some layer short names have to be updated:" ) + "</h1><ul><li>" + regExpMessages.join( QStringLiteral( "</li><li>" ) ) + "</li></ul>";
-    teOWSChecker->setHtml( teOWSChecker->toHtml() + encodingMessage );
-  }
-  else
-  {
-    teOWSChecker->setHtml( teOWSChecker->toHtml() + "<h1>" + tr( "All layer short names are well formed" ) + "</h1>" );
-  }
-
-  if ( !encodingMessages.empty() )
-  {
-    QString encodingMessage = "<h1>" + tr( "Some layer encodings are not set:" ) + "</h1><ul><li>" + encodingMessages.join( QStringLiteral( "</li><li>" ) ) + "</li></ul>";
-    teOWSChecker->setHtml( teOWSChecker->toHtml() + encodingMessage );
-  }
-  else
-  {
-    teOWSChecker->setHtml( teOWSChecker->toHtml() + "<h1>" + tr( "All layer encodings are set" ) + "</h1>" );
-  }
-
-  teOWSChecker->setHtml( teOWSChecker->toHtml() + "<h1>" + tr( "Start checking QGIS Server" ) + "</h1>" );
+  teOWSChecker->setHtml( errors );
 }
 
 void QgsProjectProperties::pbnAddScale_clicked()
@@ -2323,44 +2333,6 @@ void QgsProjectProperties::addWmtsGrid( const QString &crsStr )
   twWmtsGrids->blockSignals( false );
 }
 
-void QgsProjectProperties::checkOWS( QgsLayerTreeGroup *treeGroup, QStringList &owsNames, QStringList &encodingMessages )
-{
-  QList< QgsLayerTreeNode * > treeGroupChildren = treeGroup->children();
-  for ( int i = 0; i < treeGroupChildren.size(); ++i )
-  {
-    QgsLayerTreeNode *treeNode = treeGroupChildren.at( i );
-    if ( treeNode->nodeType() == QgsLayerTreeNode::NodeGroup )
-    {
-      QgsLayerTreeGroup *treeGroupChild = static_cast<QgsLayerTreeGroup *>( treeNode );
-      QString shortName = treeGroupChild->customProperty( QStringLiteral( "wmsShortName" ) ).toString();
-      if ( shortName.isEmpty() )
-        owsNames << treeGroupChild->name();
-      else
-        owsNames << shortName;
-      checkOWS( treeGroupChild, owsNames, encodingMessages );
-    }
-    else
-    {
-      QgsLayerTreeLayer *treeLayer = static_cast<QgsLayerTreeLayer *>( treeNode );
-      QgsMapLayer *l = treeLayer->layer();
-      if ( l )
-      {
-        QString shortName = l->shortName();
-        if ( shortName.isEmpty() )
-          owsNames << l->name();
-        else
-          owsNames << shortName;
-        if ( l->type() == QgsMapLayerType::VectorLayer )
-        {
-          QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( l );
-          if ( vl->dataProvider()->encoding() == QLatin1String( "System" ) )
-            encodingMessages << tr( "Update layer \"%1\" encoding" ).arg( l->name() );
-        }
-      }
-    }
-  }
-}
-
 void QgsProjectProperties::populateEllipsoidList()
 {
   //
@@ -2574,6 +2546,17 @@ void QgsProjectProperties::showHelp()
   {
     link = QStringLiteral( "working_with_ogc/server/getting_started.html#prepare-a-project-to-serve" );
   }
+
+  // give first priority to created pages which have specified a help key
+  for ( const QgsOptionsPageWidget *widget : qgis::as_const( mAdditionalProjectPropertiesWidgets ) )
+  {
+    if ( widget == activeTab )
+    {
+      link = widget->helpKey();
+      break;
+    }
+  }
+
   QgsHelp::openHelp( link );
 }
 

@@ -29,10 +29,10 @@
 #include "qgsterraintextureimage_p.h"
 
 
-QgsMeshTerrainTileLoader::QgsMeshTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node, QgsMeshLayer *layer, const QgsMesh3DSymbol &symbol ):
-  QgsTerrainTileLoader( terrain, node ),
-  mLayerRef( layer ),
-  mSymbol( symbol )
+QgsMeshTerrainTileLoader::QgsMeshTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node, QgsMeshLayer *layer, const QgsMesh3DSymbol *symbol )
+  : QgsTerrainTileLoader( terrain, node )
+  , mLayerRef( layer )
+  , mSymbol( symbol->clone() )
 {
   loadTexture();
 }
@@ -45,17 +45,26 @@ Qt3DCore::QEntity *QgsMeshTerrainTileLoader::createEntity( Qt3DCore::QEntity *pa
 
   QgsCoordinateTransform transform( terrain()->map3D().crs(), layer->crs(), terrain()->map3D().transformContext() );
   layer->updateTriangularMesh( transform );
-  QgsMesh3dTerrainTileEntity *entity = new QgsMesh3dTerrainTileEntity( terrain()->map3D(), layer, mSymbol, mNode->tileId(), parent );
+  QgsMesh3dTerrainTileEntity *entity = new QgsMesh3dTerrainTileEntity( terrain()->map3D(), layer, mSymbol.get(), mNode->tileId(), parent );
   entity->build();
   createTexture( entity );
 
   return entity;
 }
 
+//
+// QgsMeshTerrainGenerator
+//
+
+QgsMeshTerrainGenerator::QgsMeshTerrainGenerator()
+  : mSymbol( qgis::make_unique< QgsMesh3DSymbol >() )
+{
+
+}
+
 QgsChunkLoader *QgsMeshTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
 {
-  if ( !mLayer )
-    return nullptr;
+  Q_ASSERT( meshLayer() );
 
   return new QgsMeshTerrainTileLoader( mTerrain, node, meshLayer(), symbol() );
 }
@@ -99,7 +108,9 @@ void QgsMeshTerrainGenerator::resolveReferences( const QgsProject &project )
 void QgsMeshTerrainGenerator::setLayer( QgsMeshLayer *layer )
 {
   mLayer = QgsMapLayerRef( layer );
+  mIsValid = layer != nullptr;
 }
+
 
 QgsMeshLayer *QgsMeshTerrainGenerator::meshLayer() const
 {
@@ -112,7 +123,7 @@ QgsTerrainGenerator *QgsMeshTerrainGenerator::clone() const
   cloned->mLayer = mLayer;
   cloned->mTerrainTilingScheme = QgsTilingScheme();
   cloned->mCrs = mCrs;
-  cloned->mSymbol = mSymbol;
+  cloned->mSymbol.reset( mSymbol->clone() );
   cloned->mTransformContext = mTransformContext;
   return cloned;
 }
@@ -149,7 +160,7 @@ void QgsMeshTerrainGenerator::writeXml( QDomElement &elem ) const
   elem.setAttribute( QStringLiteral( "layer" ), mLayer.layerId );
   QDomElement elemSymbol = doc.createElement( "symbol" );
   QgsReadWriteContext rwc;
-  mSymbol.writeXml( elemSymbol, rwc );
+  mSymbol->writeXml( elemSymbol, rwc );
   elem.appendChild( elemSymbol );
 }
 
@@ -157,17 +168,17 @@ void QgsMeshTerrainGenerator::readXml( const QDomElement &elem )
 {
   mLayer = QgsMapLayerRef( elem.attribute( QStringLiteral( "layer" ) ) );
   QgsReadWriteContext rwc;
-  mSymbol.readXml( elem.firstChildElement( "symbol" ), rwc );
+  mSymbol->readXml( elem.firstChildElement( "symbol" ), rwc );
 }
 
-QgsMesh3DSymbol QgsMeshTerrainGenerator::symbol() const
+QgsMesh3DSymbol *QgsMeshTerrainGenerator::symbol() const
 {
-  return mSymbol;
+  return mSymbol.get();
 }
 
-void QgsMeshTerrainGenerator::setSymbol( const QgsMesh3DSymbol &symbol )
+void QgsMeshTerrainGenerator::setSymbol( QgsMesh3DSymbol *symbol )
 {
-  mSymbol = symbol;
+  mSymbol.reset( symbol );
 }
 
 void QgsMeshTerrainGenerator::setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context )

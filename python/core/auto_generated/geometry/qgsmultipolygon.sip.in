@@ -8,6 +8,7 @@
 
 
 
+
 class QgsMultiPolygon: QgsMultiSurface
 {
 %Docstring
@@ -20,8 +21,36 @@ Multi polygon geometry collection.
 #include "qgsmultipolygon.h"
 %End
   public:
-    QgsMultiPolygon();
-    virtual QString geometryType() const;
+
+    QgsMultiPolygon() /HoldGIL/;
+%Docstring
+Constructor for an empty multipolygon geometry.
+%End
+
+
+
+    SIP_PYOBJECT polygonN( int index ) /TypeHint="QgsPolygon"/;
+%Docstring
+Returns the polygon with the specified ``index``.
+
+An IndexError will be raised if no polygon with the specified index exists.
+
+.. versionadded:: 3.16
+%End
+%MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      return sipConvertFromType( sipCpp->polygonN( a0 ), sipType_QgsPolygon, NULL );
+    }
+%End
+
+
+    virtual QString geometryType() const /HoldGIL/;
 
     virtual void clear();
 
@@ -43,7 +72,7 @@ Multi polygon geometry collection.
 %Docstring
 Returns the geometry converted to the more generic curve type :py:class:`QgsMultiSurface`
 
-:return: the converted geometry. Caller takes ownership*
+:return: the converted geometry. Caller takes ownership
 %End
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;

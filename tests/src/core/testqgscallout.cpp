@@ -999,6 +999,23 @@ void TestQgsCallout::calloutLabelAnchorTopRight()
   p.end();
 
   QVERIFY( imageCheck( "callout_label_anchor_top_right", img, 20 ) );
+
+  img = job.renderedImage();
+  p.begin( &img );
+  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.xOffset = 6;
+  settings.yOffset = -6;
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromValue( 15 ) );
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+
+  QgsDefaultLabelingEngine engine2;
+  engine2.setMapSettings( mapSettings );
+  engine2.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
+  //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
+  engine2.run( context );
+  p.end();
+  QVERIFY( imageCheck( "callout_label_anchor_top_right_rotated", img, 20 ) );
+
 }
 
 void TestQgsCallout::calloutLabelAnchorTopLeft()
@@ -1051,6 +1068,22 @@ void TestQgsCallout::calloutLabelAnchorTopLeft()
   p.end();
 
   QVERIFY( imageCheck( "callout_label_anchor_top_left", img, 20 ) );
+
+  img = job.renderedImage();
+  p.begin( &img );
+  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.xOffset = 6;
+  settings.yOffset = -6;
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromValue( 15 ) );
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+
+  QgsDefaultLabelingEngine engine2;
+  engine2.setMapSettings( mapSettings );
+  engine2.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
+  //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
+  engine2.run( context );
+  p.end();
+  QVERIFY( imageCheck( "callout_label_anchor_top_left_rotated", img, 20 ) );
 }
 
 void TestQgsCallout::calloutLabelAnchorTop()
@@ -1103,6 +1136,22 @@ void TestQgsCallout::calloutLabelAnchorTop()
   p.end();
 
   QVERIFY( imageCheck( "callout_label_anchor_top_middle", img, 20 ) );
+
+  img = job.renderedImage();
+  p.begin( &img );
+  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.xOffset = 6;
+  settings.yOffset = -6;
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromValue( 15 ) );
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+
+  QgsDefaultLabelingEngine engine2;
+  engine2.setMapSettings( mapSettings );
+  engine2.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
+  //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
+  engine2.run( context );
+  p.end();
+  QVERIFY( imageCheck( "callout_label_anchor_top_middle_rotated", img, 20 ) );
 }
 
 void TestQgsCallout::calloutLabelAnchorBottomLeft()
@@ -1155,6 +1204,22 @@ void TestQgsCallout::calloutLabelAnchorBottomLeft()
   p.end();
 
   QVERIFY( imageCheck( "callout_label_anchor_bottom_left", img, 20 ) );
+
+  img = job.renderedImage();
+  p.begin( &img );
+  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.xOffset = 6;
+  settings.yOffset = -6;
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromValue( 15 ) );
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+
+  QgsDefaultLabelingEngine engine2;
+  engine2.setMapSettings( mapSettings );
+  engine2.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
+  //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
+  engine2.run( context );
+  p.end();
+  QVERIFY( imageCheck( "callout_label_anchor_bottom_left_rotated", img, 20 ) );
 }
 
 void TestQgsCallout::calloutLabelAnchorBottom()
@@ -1207,6 +1272,22 @@ void TestQgsCallout::calloutLabelAnchorBottom()
   p.end();
 
   QVERIFY( imageCheck( "callout_label_anchor_bottom_middle", img, 20 ) );
+
+  img = job.renderedImage();
+  p.begin( &img );
+  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.xOffset = 6;
+  settings.yOffset = -6;
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromValue( 15 ) );
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+
+  QgsDefaultLabelingEngine engine2;
+  engine2.setMapSettings( mapSettings );
+  engine2.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
+  //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
+  engine2.run( context );
+  p.end();
+  QVERIFY( imageCheck( "callout_label_anchor_bottom_middle_rotated", img, 20 ) );
 }
 
 void TestQgsCallout::calloutLabelAnchorBottomRight()
@@ -1259,6 +1340,22 @@ void TestQgsCallout::calloutLabelAnchorBottomRight()
   p.end();
 
   QVERIFY( imageCheck( "callout_label_anchor_bottom_right", img, 20 ) );
+
+  img = job.renderedImage();
+  p.begin( &img );
+  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.xOffset = 6;
+  settings.yOffset = -6;
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromValue( 15 ) );
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+
+  QgsDefaultLabelingEngine engine2;
+  engine2.setMapSettings( mapSettings );
+  engine2.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
+  //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
+  engine2.run( context );
+  p.end();
+  QVERIFY( imageCheck( "callout_label_anchor_bottom_right_rotated", img, 20 ) );
 }
 
 void TestQgsCallout::calloutLabelAnchorLeft()
@@ -1311,6 +1408,22 @@ void TestQgsCallout::calloutLabelAnchorLeft()
   p.end();
 
   QVERIFY( imageCheck( "callout_label_anchor_left", img, 20 ) );
+
+  img = job.renderedImage();
+  p.begin( &img );
+  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.xOffset = 6;
+  settings.yOffset = -6;
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromValue( 15 ) );
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+
+  QgsDefaultLabelingEngine engine2;
+  engine2.setMapSettings( mapSettings );
+  engine2.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
+  //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
+  engine2.run( context );
+  p.end();
+  QVERIFY( imageCheck( "callout_label_anchor_left_rotated", img, 20 ) );
 }
 
 void TestQgsCallout::calloutLabelAnchorRight()
@@ -1363,6 +1476,22 @@ void TestQgsCallout::calloutLabelAnchorRight()
   p.end();
 
   QVERIFY( imageCheck( "callout_label_anchor_right", img, 20 ) );
+
+  img = job.renderedImage();
+  p.begin( &img );
+  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.xOffset = 6;
+  settings.yOffset = -6;
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromValue( 15 ) );
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+
+  QgsDefaultLabelingEngine engine2;
+  engine2.setMapSettings( mapSettings );
+  engine2.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
+  //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
+  engine2.run( context );
+  p.end();
+  QVERIFY( imageCheck( "callout_label_anchor_right_rotated", img, 20 ) );
 }
 
 void TestQgsCallout::calloutLabelAnchorCentroid()
@@ -1415,6 +1544,22 @@ void TestQgsCallout::calloutLabelAnchorCentroid()
   p.end();
 
   QVERIFY( imageCheck( "callout_label_anchor_centroid", img, 20 ) );
+
+  img = job.renderedImage();
+  p.begin( &img );
+  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.xOffset = 6;
+  settings.yOffset = -6;
+  settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromValue( 15 ) );
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+
+  QgsDefaultLabelingEngine engine2;
+  engine2.setMapSettings( mapSettings );
+  engine2.addProvider( new QgsVectorLayerLabelProvider( vl, QString(), true, &settings ) );
+  //engine.setFlags( QgsLabelingEngine::RenderOutlineLabels | QgsLabelingEngine::DrawLabelRectOnly );
+  engine2.run( context );
+  p.end();
+  QVERIFY( imageCheck( "callout_label_anchor_centroid_rotated", img, 20 ) );
 }
 
 void TestQgsCallout::calloutLabelDataDefinedAnchor()

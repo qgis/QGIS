@@ -43,7 +43,11 @@ class QgsLineSegment2D;
 class CORE_EXPORT QgsLineString: public QgsCurve
 {
   public:
-    QgsLineString();
+
+    /**
+     * Constructor for an empty linestring geometry.
+     */
+    QgsLineString() SIP_HOLDGIL;
 
     /**
      * Construct a linestring from a vector of points.
@@ -51,7 +55,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * in the vector.
      * \since QGIS 3.0
      */
-    QgsLineString( const QVector<QgsPoint> &points );
+    QgsLineString( const QVector<QgsPoint> &points ) SIP_HOLDGIL;
 
     /**
      * Construct a linestring from arrays of coordinates. If the z or m
@@ -70,13 +74,13 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     QgsLineString( const QVector<double> &x, const QVector<double> &y,
                    const QVector<double> &z = QVector<double>(),
-                   const QVector<double> &m = QVector<double>(), bool is25DType = false );
+                   const QVector<double> &m = QVector<double>(), bool is25DType = false ) SIP_HOLDGIL;
 
     /**
      * Constructs a linestring with a single segment from \a p1 to \a p2.
      * \since QGIS 3.2
      */
-    QgsLineString( const QgsPoint &p1, const QgsPoint &p2 );
+    QgsLineString( const QgsPoint &p1, const QgsPoint &p2 ) SIP_HOLDGIL;
 
     /**
      * Construct a linestring from list of points.
@@ -84,13 +88,13 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * or repeatedly calling addVertex()
      * \since QGIS 3.0
      */
-    QgsLineString( const QVector<QgsPointXY> &points );
+    QgsLineString( const QVector<QgsPointXY> &points ) SIP_HOLDGIL;
 
     /**
      * Construct a linestring from a single 2d line segment.
      * \since QGIS 3.2
      */
-    explicit QgsLineString( const QgsLineSegment2D &segment );
+    explicit QgsLineString( const QgsLineSegment2D &segment ) SIP_HOLDGIL;
 
     /**
      * Returns a new linestring created by segmentizing the bezier curve between \a start and \a end, with
@@ -550,7 +554,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     /**
      * Returns the geometry converted to the more generic curve type QgsCompoundCurve
-        \returns the converted geometry. Caller takes ownership*/
+     * \returns the converted geometry. Caller takes ownership
+    */
     QgsCompoundCurve *toCurveType() const override SIP_FACTORY;
 
     /**
@@ -561,13 +566,26 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     void extend( double startDistance, double endDistance );
 
+#ifndef SIP_RUN
+
+    /**
+     * Visits regular points along the linestring, spaced by \a distance.
+     *
+     * The \a visitPoint function should return FALSE to abort further traversal.
+     */
+    void visitPointsByRegularDistance( double distance, const std::function< bool( double x, double y, double z, double m,
+                                       double startSegmentX, double startSegmentY, double startSegmentZ, double startSegmentM,
+                                       double endSegmentX, double endSegmentY, double endSegmentZ, double endSegmentM
+                                                                                 ) > &visitPoint ) const;
+#endif
+
     //reimplemented methods
 
-    QString geometryType() const override;
-    int dimension() const override;
+    QString geometryType() const override SIP_HOLDGIL;
+    int dimension() const override SIP_HOLDGIL;
     QgsLineString *clone() const override SIP_FACTORY;
     void clear() override;
-    bool isEmpty() const override;
+    bool isEmpty() const override SIP_HOLDGIL;
     QgsLineString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
     QPolygonF asQPolygonF() const override;
@@ -575,7 +593,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     bool fromWkb( QgsConstWkbPtr &wkb ) override;
     bool fromWkt( const QString &wkt ) override;
 
-    QByteArray asWkb() const override;
+    QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const override;
     QString asWkt( int precision = 17 ) const override;
     QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
@@ -583,7 +601,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     QString asKml( int precision = 17 ) const override;
 
     //curve interface
-    double length() const override;
+    double length() const override SIP_HOLDGIL;
 
     /**
      * Returns the length in 3D world of the line string.
@@ -591,19 +609,20 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \see length()
      * \since QGIS 3.10
      */
-    double length3D() const;
-    QgsPoint startPoint() const override;
-    QgsPoint endPoint() const override;
+    double length3D() const SIP_HOLDGIL;
+    QgsPoint startPoint() const override SIP_HOLDGIL;
+    QgsPoint endPoint() const override SIP_HOLDGIL;
 
     /**
      * Returns a new line string geometry corresponding to a segmentized approximation
      * of the curve.
      * \param tolerance segmentation tolerance
-     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
+     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve
+    */
     QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override  SIP_FACTORY;
 
-    int numPoints() const override;
-    int nCoordinates() const override;
+    int numPoints() const override SIP_HOLDGIL;
+    int nCoordinates() const override SIP_HOLDGIL;
     void points( QgsPointSequence &pt SIP_OUT ) const override;
 
     void draw( QPainter &p ) const override;

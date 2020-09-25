@@ -26,6 +26,7 @@
 #include <QSet>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QPainterPath>
 
 #include "qgssymbol.h"
 #include "qgsfields.h"
@@ -184,9 +185,10 @@ class CORE_EXPORT QgsSymbolLayer
       PropertyPointCount, //!< Point count
       PropertyRandomSeed, //!< Random number seed
       PropertyClipPoints, //!< Whether markers should be clipped to polygon boundaries
-      PropertyDensityArea, //<! Density area
+      PropertyDensityArea, //!< Density area
       PropertyFontFamily, //!< Font family
       PropertyFontStyle, //!< Font style
+      PropertyDashPatternOffset, //!< Dash pattern offset
     };
 
     /**
@@ -231,22 +233,26 @@ class CORE_EXPORT QgsSymbolLayer
 
     /**
      * Set stroke color. Supported by marker and fill layers.
-     * \since QGIS 2.1 */
+     * \since QGIS 2.1
+    */
     virtual void setStrokeColor( const QColor &color ) { Q_UNUSED( color ) }
 
     /**
      * Gets stroke color. Supported by marker and fill layers.
-     * \since QGIS 2.1 */
+     * \since QGIS 2.1
+    */
     virtual QColor strokeColor() const { return QColor(); }
 
     /**
      * Set fill color. Supported by marker and fill layers.
-     * \since QGIS 2.1 */
+     * \since QGIS 2.1
+    */
     virtual void setFillColor( const QColor &color ) { Q_UNUSED( color ) }
 
     /**
      * Gets fill color. Supported by marker and fill layers.
-     * \since QGIS 2.1 */
+     * \since QGIS 2.1
+    */
     virtual QColor fillColor() const { return QColor(); }
 
     /**
@@ -359,10 +365,11 @@ class CORE_EXPORT QgsSymbolLayer
 
     /**
      * Returns the estimated maximum distance which the layer style will bleed outside
-      the drawn shape when drawn in the specified /a context. For example, polygons
-      drawn with an stroke will draw half the width
-      of the stroke outside of the polygon. This amount is estimated, since it may
-      be affected by data defined symbology rules.*/
+     * the drawn shape when drawn in the specified /a context. For example, polygons
+     * drawn with an stroke will draw half the width
+     * of the stroke outside of the polygon. This amount is estimated, since it may
+     * be affected by data defined symbology rules.
+    */
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const { Q_UNUSED( context ) return 0; }
 
     /**
@@ -929,7 +936,7 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
      *
      * \see renderPolyline()
      */
-    virtual void renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
+    virtual void renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
     /**
      * Sets the \a width of the line symbol layer.
@@ -1098,7 +1105,12 @@ class CORE_EXPORT QgsFillSymbolLayer : public QgsSymbolLayer
     //! QgsFillSymbolLayer cannot be copied
     QgsFillSymbolLayer &operator=( const QgsFillSymbolLayer &other ) = delete;
 
-    virtual void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) = 0;
+    /**
+     * Renders the fill symbol layer for the polygon whose outer ring is defined by \a points, using the given render \a context.
+     *
+     * The \a rings argument optionally specifies a list of polygon rings to render as holes.
+     */
+    virtual void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) = 0;
 
     void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
 
@@ -1108,7 +1120,7 @@ class CORE_EXPORT QgsFillSymbolLayer : public QgsSymbolLayer
   protected:
     QgsFillSymbolLayer( bool locked = false );
     //! Default method to render polygon
-    void _renderPolygon( QPainter *p, const QPolygonF &points, const QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
+    void _renderPolygon( QPainter *p, const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
     double mAngle = 0.0;
 

@@ -41,7 +41,7 @@ template <TYPE>
   if ((l = PyList_New(sipCpp->size())) == NULL)
     return NULL;
 
-  const sipMappedType *qvector_type = sipFindMappedType("QVector<TYPE>");
+  const sipTypeDef *qvector_type = sipFindType("QVector<TYPE>");
 
   // Set the list elements.
   for (int i = 0; i < sipCpp->size(); ++i)
@@ -62,7 +62,7 @@ template <TYPE>
 %End
 
 %ConvertToTypeCode
-  const sipMappedType *qvector_type = sipFindMappedType("QVector<TYPE>");
+  const sipTypeDef *qvector_type = sipFindType("QVector<TYPE>");
 
   // Check the type if that is all that is required.
   if (sipIsErr == NULL)
@@ -71,7 +71,7 @@ template <TYPE>
       return 0;
 
     for (int i = 0; i < PyList_GET_SIZE(sipPy); ++i)
-      if (!sipCanConvertToMappedType(PyList_GET_ITEM(sipPy, i), qvector_type, SIP_NOT_NONE))
+      if (!sipCanConvertToType(PyList_GET_ITEM(sipPy, i), qvector_type, SIP_NOT_NONE))
         return 0;
 
     return 1;
@@ -84,16 +84,16 @@ template <TYPE>
   {
     int state;
     //TYPE *t = reinterpret_cast<TYPE *>(sipConvertToType(PyList_GET_ITEM(sipPy, i), sipType_TYPE, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
-    QVector<TYPE> *t = reinterpret_cast< QVector<TYPE> * >(sipConvertToMappedType(PyList_GET_ITEM(sipPy, i), qvector_type, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+    QVector<TYPE> *t = reinterpret_cast< QVector<TYPE> * >(sipConvertToType(PyList_GET_ITEM(sipPy, i), qvector_type, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
 
     if (*sipIsErr)
     {
-      sipReleaseMappedType(t, qvector_type, state);
+      sipReleaseType(t, qvector_type, state);
       delete ql;
       return 0;
     }
     ql->append(*t);
-    sipReleaseMappedType(t, qvector_type, state);
+    sipReleaseType(t, qvector_type, state);
   }
 
   *sipCppPtr = ql;
@@ -118,7 +118,7 @@ template <TYPE>
   if ((l = PyList_New(sipCpp->size())) == NULL)
     return NULL;
 
-  const sipMappedType *qvector_type = sipFindMappedType("QVector<QVector<TYPE> >");
+  const sipTypeDef *qvector_type = sipFindType("QVector<QVector<TYPE> >");
 
   // Set the list elements.
   for (int i = 0; i < sipCpp->size(); ++i)
@@ -139,7 +139,7 @@ template <TYPE>
 
 %ConvertToTypeCode
 
-  const sipMappedType *qvector_type = sipFindMappedType("QVector<QVector<TYPE> >");
+  const sipTypeDef *qvector_type = sipFindType("QVector<QVector<TYPE> >");
 
   // Check the type if that is all that is required.
   if (sipIsErr == NULL)
@@ -148,7 +148,7 @@ template <TYPE>
       return 0;
 
     for (int i = 0; i < PyList_GET_SIZE(sipPy); ++i)
-      if (!sipCanConvertToMappedType(PyList_GET_ITEM(sipPy, i), qvector_type, SIP_NOT_NONE))
+      if (!sipCanConvertToType(PyList_GET_ITEM(sipPy, i), qvector_type, SIP_NOT_NONE))
         return 0;
 
     return 1;
@@ -161,16 +161,16 @@ template <TYPE>
   {
     int state;
     //TYPE *t = reinterpret_cast<TYPE *>(sipConvertToType(PyList_GET_ITEM(sipPy, i), sipType_TYPE, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
-    QVector<QVector<TYPE> > *t = reinterpret_cast< QVector< QVector<TYPE> > * >(sipConvertToMappedType(PyList_GET_ITEM(sipPy, i), qvector_type, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+    QVector<QVector<TYPE> > *t = reinterpret_cast< QVector< QVector<TYPE> > * >(sipConvertToType(PyList_GET_ITEM(sipPy, i), qvector_type, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
 
     if (*sipIsErr)
     {
-      sipReleaseMappedType(t, qvector_type, state);
+      sipReleaseType(t, qvector_type, state);
       delete ql;
       return 0;
     }
     ql->append(*t);
-    sipReleaseMappedType(t, qvector_type, state);
+    sipReleaseType(t, qvector_type, state);
   }
 
   *sipCppPtr = ql;
@@ -194,7 +194,7 @@ template <TYPE>
   if ((l = PyList_New(sipCpp->size())) == NULL)
     return NULL;
 
-  const sipMappedType *qlist_type = sipFindMappedType("QList<TYPE>");
+  const sipTypeDef *qlist_type = sipFindType("QList<TYPE>");
 
   // Set the list elements.
   for (int i = 0; i < sipCpp->size(); ++i)
@@ -215,7 +215,7 @@ template <TYPE>
 %End
 
 %ConvertToTypeCode
-  const sipMappedType *qlist_type = sipFindMappedType("QList<TYPE>");
+  const sipTypeDef *qlist_type = sipFindType("QList<TYPE>");
 
   // Check the type if that is all that is required.
   if (sipIsErr == NULL)
@@ -224,7 +224,7 @@ template <TYPE>
       return 0;
 
     for (int i = 0; i < PyList_GET_SIZE(sipPy); ++i)
-      if (!sipCanConvertToMappedType(PyList_GET_ITEM(sipPy, i), qlist_type, SIP_NOT_NONE))
+      if (!sipCanConvertToType(PyList_GET_ITEM(sipPy, i), qlist_type, SIP_NOT_NONE))
         return 0;
 
     return 1;
@@ -237,16 +237,16 @@ template <TYPE>
   {
     int state;
     //TYPE *t = reinterpret_cast<TYPE *>(sipConvertToType(PyList_GET_ITEM(sipPy, i), sipType_TYPE, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
-    QList<TYPE> *t = reinterpret_cast< QList<TYPE> * >(sipConvertToMappedType(PyList_GET_ITEM(sipPy, i), qlist_type, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+    QList<TYPE> *t = reinterpret_cast< QList<TYPE> * >(sipConvertToType(PyList_GET_ITEM(sipPy, i), qlist_type, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
 
     if (*sipIsErr)
     {
-      sipReleaseMappedType(t, qlist_type, state);
+      sipReleaseType(t, qlist_type, state);
       delete ql;
       return 0;
     }
     ql->append(*t);
-    sipReleaseMappedType(t, qlist_type, state);
+    sipReleaseType(t, qlist_type, state);
   }
 
   *sipCppPtr = ql;
@@ -462,7 +462,7 @@ template<TYPE>
   if ((d = PyDict_New()) == NULL)
     return NULL;
 
-  const sipMappedType *qmap2 = sipFindMappedType("QMap<int, TYPE>");
+  const sipTypeDef *qmap2 = sipFindType("QMap<int, TYPE>");
 
   // Set the list elements.
   for (QMap<qint64, QMap<int, TYPE> >::iterator it = sipCpp->begin(); it != sipCpp->end(); ++it)
@@ -531,7 +531,7 @@ template<TYPE>
   {
     qint64 k = PyLong_AsLongLong(kobj);
 
-    // using sipConvertToMappedType to convert directly to QMap<int, TYPE> doesn't work
+    // using sipConvertToType to convert directly to QMap<int, TYPE> doesn't work
     // and ends with a segfault
 
     QMap<int, TYPE> qm2;
@@ -1025,7 +1025,7 @@ template<TYPE2>
     Py_ssize_t i = 0;
 
 
-    const sipMappedType *qlist_type = sipFindMappedType("QList<TYPE2>");
+    const sipTypeDef *qlist_type = sipFindType("QList<TYPE2>");
 
 
     // Check the type if that is all that is required.
@@ -1051,7 +1051,7 @@ template<TYPE2>
 
         QString *t1 = reinterpret_cast<QString *>(sipConvertToType(t1obj, sipType_QString, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
 
-    QList<TYPE2> *t2 = reinterpret_cast< QList<TYPE2> * >(sipConvertToMappedType(t2obj, qlist_type, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+    QList<TYPE2> *t2 = reinterpret_cast< QList<TYPE2> * >(sipConvertToType(t2obj, qlist_type, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
         if (*sipIsErr)
         {
             sipReleaseType(t2, sipType_TYPE2, state);
@@ -1435,6 +1435,7 @@ template <TYPE>
 %End
 };
 
+%If (VECTOR_MAPPED_TYPE)
 template <TYPE>
 %MappedType QVector< TYPE* >
 {
@@ -1507,6 +1508,7 @@ template <TYPE>
     return sipGetState(sipTransferObj);
 %End
 };
+%End
 
 %MappedType QMap<qint64, QgsFeature*>
 {
@@ -1698,8 +1700,8 @@ bool null_from_qvariant_converter( const QVariant *varp, PyObject **objp )
 
   // If we deal with a NULL QVariant (and it's not a QByteArray which properly
   // maps NULL values)
-  // If there are more cases like QByteArray, we should consider using a whitelist
-  // instead of a blacklist.
+  // If there are more cases like QByteArray, we should consider using a allowlist
+  // instead of a blocklist.
   if ( varp->isNull() && varp->type() != QVariant::ByteArray )
   {
     sWatchDog = true;

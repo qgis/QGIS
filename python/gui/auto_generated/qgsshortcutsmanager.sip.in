@@ -16,7 +16,7 @@ Shortcuts manager is a class that contains a list of QActions and QShortcuts
 that have been registered and their shortcuts can be changed.
 
 QgsShortcutsManager is not usually directly created, but rather accessed through
-:py:func:`QgsGui.shortcutsManager()`
+:py:func:`QgsGui.shortcutsManager()`.
 
 .. versionadded:: 2.16
 %End

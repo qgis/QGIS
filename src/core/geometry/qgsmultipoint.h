@@ -29,7 +29,54 @@ email                : marco.hugentobler at sourcepole dot com
 class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
 {
   public:
-    QgsMultiPoint();
+
+    /**
+     * Constructor for an empty multipoint geometry.
+     */
+    QgsMultiPoint() SIP_HOLDGIL;
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns the point with the specified \a index.
+     *
+     * \since QGIS 3.16
+     */
+    QgsPoint *pointN( int index );
+#else
+
+    /**
+     * Returns the point with the specified \a index.
+     *
+     * An IndexError will be raised if no point with the specified index exists.
+     *
+     * \since QGIS 3.16
+     */
+    SIP_PYOBJECT pointN( int index ) SIP_TYPEHINT( QgsPoint );
+    % MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      return sipConvertFromType( sipCpp->pointN( a0 ), sipType_QgsPoint, NULL );
+    }
+    % End
+#endif
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns the point with the specified \a index.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 3.16
+     */
+    const QgsPoint *pointN( int index ) const;
+#endif
 
     QString geometryType() const override;
     QgsMultiPoint *clone() const override SIP_FACTORY;
@@ -39,13 +86,13 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
     QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     json asJsonObject( int precision = 17 ) const override SIP_SKIP;
-    int nCoordinates() const override;
+    int nCoordinates() const override SIP_HOLDGIL;
     bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
     bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
     int vertexNumberFromVertexId( QgsVertexId id ) const override;
     double segmentLength( QgsVertexId startVertex ) const override;
-    bool isValid( QString &error SIP_OUT, int flags = 0 ) const override;
+    bool isValid( QString &error SIP_OUT, int flags = 0 ) const override SIP_HOLDGIL;
 
 #ifndef SIP_RUN
     void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;

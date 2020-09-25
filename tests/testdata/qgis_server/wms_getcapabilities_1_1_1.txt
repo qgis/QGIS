@@ -102,18 +102,18 @@ Content-Type: text/xml; charset=utf-8
    <Format>application/vnd.ogc.se_xml</Format>
   </Exception>
   <Layer queryable="1">
+   <Name>QGIS Test Project</Name>
    <Title>QGIS Test Project</Title>
    <Abstract>QGIS Test Project</Abstract>
+   <KeywordList>
+    <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
+   </KeywordList>
    <SRS>CRS:84</SRS>
    <SRS>EPSG:4326</SRS>
    <SRS>EPSG:3857</SRS>
    <LatLonBoundingBox maxy="44.901599" maxx="8.204165" miny="44.901236" minx="8.203154"/>
    <BoundingBox maxy="5606043.446" SRS="EPSG:3857" maxx="913283.462" miny="5605986.581" minx="913170.942"/>
    <BoundingBox maxy="44.901599" SRS="EPSG:4326" maxx="8.204165" miny="44.901236" minx="8.203154"/>
-   <Name>QGIS Test Project</Name>
-   <KeywordList>
-    <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
-   </KeywordList>
    <Layer queryable="1">
     <Name>layer_with_short_name</Name>
     <Title>A Layer with a short name</Title>

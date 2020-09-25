@@ -32,8 +32,10 @@ class QgsSnappingConfig;
  * Internally, it keeps a cache of QgsPointLocator instances for multiple layers.
  *
  * Currently it supports the following queries:
+ *
  * - snapToMap() - has multiple modes of operation
  * - snapToCurrentLayer()
+ *
  * For more complex queries it is possible to use locatorForLayer() method that returns
  * point locator instance with layer's indexed data.
  *
@@ -121,16 +123,16 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
       /**
        * Create a new configuration for a snapping layer.
-
-        ```py
-        snapper = QgsMapCanvasSnappingUtils(mapCanvas)
-
-        snapping_layer1 = QgsSnappingUtils.LayerConfig(layer1, QgsPointLocator.Vertex, 10, QgsTolerance.Pixels)
-        snapping_layer2 = QgsSnappingUtils.LayerConfig(layer2, QgsPointLocator.Vertex and QgsPointLocator.Edge, 10, QgsTolerance.Pixels)
-
-        snapper.setLayers([snapping_layer1, snapping_layer2])
-        ```
-
+       *
+       * \code{.py}
+       * snapper = QgsMapCanvasSnappingUtils(mapCanvas)
+       *
+       * snapping_layer1 = QgsSnappingUtils.LayerConfig(layer1, QgsPointLocator.Vertex, 10, QgsTolerance.Pixels)
+       * snapping_layer2 = QgsSnappingUtils.LayerConfig(layer2, QgsPointLocator.Vertex and QgsPointLocator.Edge, 10, QgsTolerance.Pixels)
+       *
+       * snapper.setLayers([snapping_layer1, snapping_layer2])
+       * \endcode
+       *
        * \param l   The vector layer for which this configuration is
        * \param t   Which parts of the geometry should be snappable
        * \param tol The tolerance radius in which the snapping will trigger
@@ -184,6 +186,48 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
      * \since QGIS 3.2
      */
     void setEnableSnappingForInvisibleFeature( bool enable );
+
+    /**
+     * Supply an extra snapping layer (typically a memory layer).
+     * This can be used by map tools to provide additional
+     * snappings points.
+     *
+     * \see removeExtraSnapLayer()
+     * \see getExtraSnapLayers()
+     *
+     * \since QGIS 3.14
+     */
+    void addExtraSnapLayer( QgsVectorLayer *vl )
+    {
+      mExtraSnapLayers.insert( vl );
+    }
+
+    /**
+     * Removes an extra snapping layer
+     *
+     * \see addExtraSnapLayer()
+     * \see getExtraSnapLayers()
+     *
+     * \since QGIS 3.14
+     */
+    void removeExtraSnapLayer( QgsVectorLayer *vl )
+    {
+      mExtraSnapLayers.remove( vl );
+    }
+
+    /**
+     * Returns the list of extra snapping layers
+     *
+     * \see addExtraSnapLayer()
+     * \see removeExtraSnapLayer()
+     *
+     * \since QGIS 3.14
+     */
+    QSet<QgsVectorLayer *> getExtraSnapLayers()
+    {
+      return mExtraSnapLayers;
+    }
+
 
   public slots:
 
@@ -257,11 +301,15 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     LocatorsMap mTemporaryLocators;
     //! list of layer IDs that are too large to be indexed (hybrid strategy will use temporary locators for those)
     QSet<QString> mHybridNonindexableLayers;
+    //! list of additional snapping layers
+    QSet<QgsVectorLayer *> mExtraSnapLayers;
 
     /**
      * a record for each layer seen:
+     *
      * - value -1  == it is small layer -> fully indexed
      * - value > 0 == maximum area (in map units) for which it may make sense to build index.
+     *
      * This means that index is built in area around the point with this total area, because
      * for a larger area the number of features will likely exceed the limit. When the limit
      * is exceeded, the maximum area is lowered to prevent that from happening.
