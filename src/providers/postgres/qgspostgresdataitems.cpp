@@ -389,10 +389,10 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
   }
 
   QVector<QgsPostgresLayerProperty> layerProperties;
-  bool ok = conn->supportedLayers( layerProperties,
-                                   QgsPostgresConn::geometryColumnsOnly( mConnectionName ),
-                                   QgsPostgresConn::publicSchemaOnly( mConnectionName ),
-                                   QgsPostgresConn::allowGeometrylessTables( mConnectionName ), mName );
+  const bool ok = conn->supportedLayers( layerProperties,
+                                         QgsPostgresConn::geometryColumnsOnly( mConnectionName ),
+                                         QgsPostgresConn::publicSchemaOnly( mConnectionName ),
+                                         QgsPostgresConn::allowGeometrylessTables( mConnectionName ), mName );
 
   if ( !ok )
   {
@@ -401,8 +401,8 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
     return items;
   }
 
-  bool dontResolveType = QgsPostgresConn::dontResolveType( mConnectionName );
-  bool estimatedMetadata = QgsPostgresConn::useEstimatedMetadata( mConnectionName );
+  const bool dontResolveType = QgsPostgresConn::dontResolveType( mConnectionName );
+  const bool estimatedMetadata = QgsPostgresConn::useEstimatedMetadata( mConnectionName );
   const auto constLayerProperties = layerProperties;
   for ( QgsPostgresLayerProperty layerProperty : constLayerProperties )
   {
@@ -410,7 +410,7 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
       continue;
 
     if ( !layerProperty.geometryColName.isNull() &&
-         //!layerProperty.isRaster &&
+         !layerProperty.isRaster &&
          ( layerProperty.types.value( 0, QgsWkbTypes::Unknown ) == QgsWkbTypes::Unknown  ||
            layerProperty.srids.value( 0, std::numeric_limits<int>::min() ) == std::numeric_limits<int>::min() ) )
     {
