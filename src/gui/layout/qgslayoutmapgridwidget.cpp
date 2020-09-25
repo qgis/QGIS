@@ -190,6 +190,13 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   registerDataDefinedButton( mCrossWidthDDBtn, QgsLayoutObject::MapGridCrossSize );
   registerDataDefinedButton( mFrameLineThicknessDDBtn, QgsLayoutObject::MapGridFrameLineThickness );
   registerDataDefinedButton( mAnnotationDisplayLeftDDBtn, QgsLayoutObject::MapGridAnnotationDisplayLeft );
+  registerDataDefinedButton( mAnnotationDisplayRightDDBtn, QgsLayoutObject::MapGridAnnotationDisplayRight );
+  registerDataDefinedButton( mAnnotationDisplayTopDDBtn, QgsLayoutObject::MapGridAnnotationDisplayTop );
+  registerDataDefinedButton( mAnnotationDisplayBottomDDBtn, QgsLayoutObject::MapGridAnnotationDisplayBottom );
+  registerDataDefinedButton( mFrameDivisionsLeftDDBtn, QgsLayoutObject::MapGridFrameDivisionsLeft );
+  registerDataDefinedButton( mFrameDivisionsRightDDBtn, QgsLayoutObject::MapGridFrameDivisionsRight );
+  registerDataDefinedButton( mFrameDivisionsTopDDBtn, QgsLayoutObject::MapGridFrameDivisionsTop );
+  registerDataDefinedButton( mFrameDivisionsBottomDDBtn, QgsLayoutObject::MapGridFrameDivisionsBottom );
 
   updateGuiElements();
 
@@ -225,6 +232,13 @@ void QgsLayoutMapGridWidget::populateDataDefinedButtons()
   updateDataDefinedButton( mCrossWidthDDBtn );
   updateDataDefinedButton( mFrameLineThicknessDDBtn );
   updateDataDefinedButton( mAnnotationDisplayLeftDDBtn );
+  updateDataDefinedButton( mAnnotationDisplayRightDDBtn );
+  updateDataDefinedButton( mAnnotationDisplayTopDDBtn );
+  updateDataDefinedButton( mAnnotationDisplayBottomDDBtn );
+  updateDataDefinedButton( mFrameDivisionsLeftDDBtn );
+  updateDataDefinedButton( mFrameDivisionsRightDDBtn );
+  updateDataDefinedButton( mFrameDivisionsTopDDBtn );
+  updateDataDefinedButton( mFrameDivisionsBottomDDBtn );
 }
 
 void QgsLayoutMapGridWidget::setGuiElementValues()
