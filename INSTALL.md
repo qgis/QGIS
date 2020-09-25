@@ -1,6 +1,6 @@
 Building QGIS from source - step by step
 
-<!-- Table of contents generated from https://freelance-tech-writer.github.io/table-of-contents-generator/index.html -->
+<!-- Table of contents generated with https://freelance-tech-writer.github.io/table-of-contents-generator/index.html -->
 
 * [1. Introduction](#1-introduction)
 * [2. Overview](#2-overview)
@@ -25,50 +25,18 @@ Building QGIS from source - step by step
        * [4.1.2. Other tools and dependencies](#412-other-tools-and-dependencies)
        * [4.1.3. Clone the QGIS Source Code](#413-clone-the-qgis-source-code)
        * [4.1.4. Configure and build with CMake from command line](#414-configure-and-build-with-cmake-from-command-line)
-           * [4.1.4.1 Using configonly.bat to create the MSVC solution file:](#4141-using-configonlybat-to-create-the-msvc-solution-file)
-           * [4.1.4.2 Compiling QGIS with MSVC:](#4142-compiling-qgis-with-msvc)
-       * [4.1.5 Old alternative method that might still work using cmake-gui:](#415-old-alternative-method-that-might-still-work-using-cmake-gui)
+           * [4.1.4.1 Using configonly.bat to create the MSVC solution file](#4141-using-configonlybat-to-create-the-msvc-solution-file)
+           * [4.1.4.2 Compiling QGIS with MSVC](#4142-compiling-qgis-with-msvc)
+       * [4.1.5 Old alternative method that might still work using cmake-gui](#415-old-alternative-method-that-might-still-work-using-cmake-gui)
        * [4.1.6. Packaging](#416-packaging)
        * [4.1.7. Packaging your own build of QGIS](#417-packaging-your-own-build-of-qgis)
        * [4.1.8. Osgeo4w packaging](#418-osgeo4w-packaging)
-   * [4.2. Building using MinGW](#42-building-using-mingw)
-       * [4.2.1. MSYS](#421-msys)
-       * [4.2.2. Qt](#422-qt)
-       * [4.2.3. Flex and Bison](#423-flex-and-bison)
-       * [4.2.4. Python](#424-python)
-           * [4.2.4.1. Download and install Python - use Windows installer](#4241-download-and-install-python---use-windows-installer)
-           * [4.2.4.2. Download SIP and PyQt5 sources](#4242-download-sip-and-pyqt5-sources)
-           * [4.2.4.3. Compile SIP](#4243-compile-sip)
-           * [4.2.4.4. Compile PyQt](#4244-compile-pyqt)
-           * [4.2.4.5. Final python notes](#4245-final-python-notes)
-       * [4.2.5. git](#425-git)
-       * [4.2.6. CMake](#426-cmake)
-       * [4.2.7. QGIS](#427-qgis)
-       * [4.2.8. Compiling](#428-compiling)
-       * [4.2.9. Configuration](#429-configuration)
-       * [4.2.10. Compilation and installation](#4210-compilation-and-installation)
-       * [4.2.11. Run qgis.exe from the directory where it's installed (CMAKE_INSTALL_PREFIX)](#4211-run-qgisexe-from-the-directory-where-its-installed-cmake_install_prefix)
-       * [4.2.12. Create the installation package: (optional)](#4212-create-the-installation-package-optional)
-   * [4.3. Creation of MSYS environment for compilation of QGIS](#43-creation-of-msys-environment-for-compilation-of-qgis)
-       * [4.3.1. Initial setup](#431-initial-setup)
-           * [4.3.1.1. MSYS](#4311-msys)
-           * [4.3.1.2. MinGW](#4312-mingw)
-           * [4.3.1.3. Flex and Bison](#4313-flex-and-bison)
-       * [4.3.2. Installing dependencies](#432-installing-dependencies)
-           * [4.3.2.1. Getting ready](#4321-getting-ready)
-           * [4.3.2.2. GRASS](#4322-grass)
-           * [4.3.2.3. GEOS](#4323-geos)
-           * [4.3.2.4. SQLITE](#4324-sqlite)
-           * [4.3.2.5. GSL](#4325-gsl)
-           * [4.3.2.6. EXPAT](#4326-expat)
-           * [4.3.2.7. POSTGRES](#4327-postgres)
-       * [4.3.3. Cleanup](#433-cleanup)
-   * [4.4. Building on Linux with mxe](#44-building-on-linux-with-mxe)
-       * [4.4.1. Building with Docker](#441-building-with-docker)
-           * [4.4.1.1. Initial setup](#4411-initial-setup)
-           * [4.4.1.2. Building the dependencies](#4412-building-the-dependencies)
-           * [4.4.1.3. Cross-Building QGIS](#4413-cross-building-qgis)
-       * [4.4.2. Testing QGIS](#442-testing-qgis)
+   * [4.2. Building on Linux with mxe](#42-building-on-linux-with-mxe)
+       * [4.2.1. Building with Docker](#421-building-with-docker)
+           * [4.2.1.1. Initial setup](#4211-initial-setup)
+           * [4.2.1.2. Building the dependencies](#4212-building-the-dependencies)
+           * [4.2.1.3. Cross-Building QGIS](#4213-cross-building-qgis)
+       * [4.2.2. Testing QGIS](#422-testing-qgis)
 * [5. Building on MacOS X](#5-building-on-macos-x)
    * [5.1. Install Developer Tools](#51-install-developer-tools)
    * [5.2. Install CMake and other build tools](#52-install-cmake-and-other-build-tools)
@@ -85,6 +53,7 @@ Building QGIS from source - step by step
 * [7. Setting up a Jenkins Build Server](#7-setting-up-a-jenkins-build-server)
 * [8. Debug output and running tests](#8-debug-output-and-running-tests)
 * [9. Authors and Acknowledgments](#9-authors-and-acknowledgments)
+
 # 1. Introduction
 
 This document is the original installation guide of the described software
@@ -608,7 +577,7 @@ installed in the default locations):
 
 Save the batch file as `C:\OSGeo4W64\OSGeo4W-dev.bat` and run it.
 
-#### 4.1.4.1 Using configonly.bat to create the MSVC solution file:
+#### 4.1.4.1 Using configonly.bat to create the MSVC solution file
   We will be using the file `ms-windows/osgeo4w/configonly.bat` to create an MSVC solution file.
   There are two supported CMake generators for creating a solution file: Ninja, and native MSVC.
   The advantage of using native MSVC solution is that you can find the root of build problems much more easily.
@@ -619,7 +588,7 @@ Save the batch file as `C:\OSGeo4W64\OSGeo4W-dev.bat` and run it.
     configonly.bat
 ```
 
-#### 4.1.4.2 Compiling QGIS with MSVC:
+#### 4.1.4.2 Compiling QGIS with MSVC
   We will need to run MSVC with all the environment variables set, thus we will run it as follows:
   Run the batch file OSGeo4W-dev.bat you created before.
   On the command prompt run `call gdal-dev-env.bat` to add the release gdal and proj libraries to your PATH.
@@ -635,7 +604,7 @@ Running QGIS from within MSVC:
   To run, use the menu commands: Debug -> Start Debugging (F5) or Start Without Debugging (Ctrl+F5).
   Ignore the "These projects are out of date" message, it appears even if no files were changed.
 
-### 4.1.5 Old alternative method that might still work using cmake-gui:
+### 4.1.5 Old alternative method that might still work using cmake-gui
   Create a 'build' directory somewhere. This will be where all the build output
   will be generated.
 
@@ -719,224 +688,17 @@ of QGIS and all dependencies needed to run it on a windows machine.
 ### 4.1.8. Osgeo4w packaging
 
 The actual packaging process is currently not documented, for now please take a
-look at:
+look at `ms-windows/osgeo4w/package.cmd`.
 
-> ms-windows/osgeo4w/package.cmd
 
-## 4.2. Building using MinGW
-
-**Note:** This section might be outdated as nowadays Visual C++ is used to build
-the "official" packages.
-
-**Note:** For a detailed account of building all the dependencies yourself you
-can visit Marco Pasetti's website here:
-
-http://www.webalice.it/marco.pasetti/qgis+grass/BuildFromSource.html
-
-Read on to use the simplified approach with pre-built libraries...
-
-### 4.2.1. MSYS
-
-MSYS provides a unix style build environment under windows. We have created a
-zip archive that contains just about all dependencies.
-
-Get this:
-
-http://download.osgeo.org/qgis/win32/msys.zip
-
-and unpack to c:\msys
-
-
-### 4.2.2. Qt
-
-Download Qt opensource precompiled edition exe and install (including the
-download and install of mingw) from here:
-
-http://qt.nokia.com/downloads/
-
-When the installer will ask for MinGW, you don't need to download and install
-it, just point the installer to c:\msys\mingw
-
-When Qt installation is complete:
-
-Edit C:\Qt\5.9.1\bin\qtvars.bat and add the following lines:
-
-```cmd
-    set PATH=%PATH%;C:\msys\local\bin;c:\msys\local\lib
-    set PATH=%PATH%;"C:\Program Files\Subversion\bin"
-```
-
-I suggest you also add C:\Qt\5.9.1\bin\ to your Environment Variables Path in
-the windows system preferences.
-
-If you plan to do some debugging, you'll need to compile debug version of Qt:
-C:\Qt\5.9.1\bin\qtvars.bat compile_debug
-
-Note: there is a problem when compiling debug version of Qt 4.7, the script ends with
-this message  "mingw32-make:*** No rule to make target `debug'.  Stop.". To
-compile the debug version you have to go out of src directory and execute the
-following command:
-
-```cmd
-    c:\Qt\5.9.1 make
-```
-
-### 4.2.3. Flex and Bison
-
-Get Flex
-http://sourceforge.net/project/showfiles.php?group_id=23617&package_id=16424
-(the zip bin) and extract it into c:\msys\mingw\bin
-
-### 4.2.4. Python
-
-Follow this section in case you would like to use Python bindings for QGIS.  To
-be able to compile bindings, you need to compile SIP and PyQt5 from sources as
-their installer doesn't include some development files which are necessary.
-
-Note that even if you compile without the Python bindings, Python3 is still
-a necessary dependency for building QGIS.
-
-#### 4.2.4.1. Download and install Python - use Windows installer
-
-(It doesn't matter to what folder you'll install it)
-
-https://python.org/download/
-
-#### 4.2.4.2. Download SIP and PyQt5 sources
-
-http://www.riverbankcomputing.com/software/sip/download
-http://www.riverbankcomputing.com/software/pyqt/download
-
-Extract each of the above zip files in a temporary directory. Make sure
-to get versions that match your current Qt installed version.
-
-#### 4.2.4.3. Compile SIP
-
-```cmd
-    c:\Qt\5.9.1\bin\qtvars.bat
-    python configure.py -p win32-g++
-    make
-    make install
-```
-
-#### 4.2.4.4. Compile PyQt
-
-```cmd
-    c:\Qt\5.9.1\bin\qtvars.bat
-    python configure.py
-    make
-    make install
-```
-
-#### 4.2.4.5. Final python notes
-
-You can delete the directories with unpacked SIP and PyQt5 sources after a
-successful install, they're not needed anymore.
-
-### 4.2.5. git
-
-In order to check out QGIS sources from the repository, you need a git client.
-This installer should work fine:
-
-https://git-scm.com/download/win
-
-### 4.2.6. CMake
-
-CMake is build system used by QGIS. Download it from here:
-
-https://cmake.org/files/v3.9/cmake-3.9.3-win64-x64.msi
-
-### 4.2.7. QGIS
-
-Start a cmd.exe window ( Start -> Run -> cmd.exe ) Create development
-directory and move into it
-
-```cmd
-    md c:\dev\cpp
-    cd c:\dev\cpp
-```
-
-Check out sources from GIT:
-
-    git clone git://github.com/qgis/QGIS.git
-
-### 4.2.8. Compiling
-
-As a background read the generic building with CMake notes at the end of
-this document.
-
-Start a cmd.exe window ( Start -> Run -> cmd.exe ) if you don't have one
-already.  Add paths to compiler and our MSYS environment:
-
-```cmd
-    c:\Qt\5.9.1\bin\qtvars.bat
-```
-
-For ease of use add c:\Qt\5.9.1\bin\ to your system path in system
-properties so you can just type qtvars.bat when you open the cmd console.
-Create build directory and set it as current directory:
-
-```cmd
-    cd c:\dev\cpp\qgis
-    md build
-    cd build
-```
-
-### 4.2.9. Configuration
-
-```cmd
-    cmakesetup ..
-```
-
-**Note:** You must include the '..' above.
-
-Click 'Configure' button.  When asked, you should choose 'MinGW Makefiles' as
-generator.
-
-There's a problem with MinGW Makefiles on Win2K. If you're compiling on this
-platform, use 'MSYS Makefiles' generator instead.
-
-All dependencies should be picked up automatically, if you have set up the
-Paths correctly. The only thing you need to change is the installation
-destination (CMAKE_INSTALL_PREFIX) and/or set 'Debug'.
-
-For compatibility with NSIS packaging scripts I recommend to leave the install
-prefix to its default c:\program files\
-
-When configuration is done, click 'OK' to exit the setup utility.
-
-### 4.2.10. Compilation and installation
-
-```cmd
-     make install
-```
-
-### 4.2.11. Run qgis.exe from the directory where it's installed (CMAKE_INSTALL_PREFIX)
-
-Make sure to copy all .dll:s needed to the same directory as the qgis.exe
-binary is installed to, if not already done so, otherwise QGIS will complain
-about missing libraries when started.
-
-A possibility is to run qgis.exe when your path contains c:\msys\local\bin and
-c:\msys\local\lib directories, so the DLLs will be used from that place.
-
-### 4.2.12. Create the installation package: (optional)
-
-Download and install NSIS from (http://nsis.sourceforge.net/Main_Page)
-
-Now using windows explorer, enter the win_build directory in your QGIS source
-tree. Read the READMEfile there and follow the instructions. Next right click
-on qgis.nsi and choose the option 'Compile NSIS Script'.
-
-
-## 4.3. Building on Linux with mxe
+## 4.2. Building on Linux with mxe
 
 With this approach you can cross build a Windows binary on Linux using MXE (M cross environment).
 You can find the build script and a README.md file in the ms-windows/mxe directory.
 
 For now, Python buildings cannot be built with mxe.
 
-### 4.3.1. Building with Docker
+### 4.2.1. Building with Docker
 
 This is the simplest way, but you need to have Docker installed
 on your system.
@@ -949,22 +711,22 @@ the script ms-windows/mxe/build.sh from the root directory of QGIS repository.
 This requires to install mxe toolchain on your system and build
 all dependencies by yourself.
 
-#### 4.3.1.1. Initial setup
+#### 4.2.1.1. Initial setup
 
 Please follow the instructions on mxe website to setup your building toolchain http://mxe.cc/,
 take note of the path where you have installed mxe.
 
-#### 4.3.1.2. Building the dependencies
+#### 4.2.1.2. Building the dependencies
 
 Please see README.md under ms-windows/mxe for detailed instructions and for the
 list of dependencies that need to be built in mxe before attempting to build QGIS.
 
-#### 4.3.1.3. Cross-Building QGIS
+#### 4.2.1.3. Cross-Building QGIS
 
 Edit the build-mxe.sh script and optionally adjust the path where your mxe installation is located, you
 can also change the build and release directories.
 
-### 4.3.2. Testing QGIS
+### 4.2.2. Testing QGIS
 
 Copy and unzip on the Windows machine package produced by the build and launch the qgis binary: no installation
 is required.
