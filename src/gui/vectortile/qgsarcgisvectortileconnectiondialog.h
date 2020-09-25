@@ -35,6 +35,8 @@ class QgsArcgisVectorTileConnectionDialog : public QDialog, public Ui::QgsArcgis
     QString connectionUri() const;
     QString connectionName() const;
 
+    void accept() override;
+
   private slots:
     void updateOkButtonState();
 

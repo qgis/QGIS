@@ -53,7 +53,7 @@ bool QgsVectorTileLayer::loadDataSource()
   mSourcePath = dsUri.param( QStringLiteral( "url" ) );
   if ( mSourceType == QStringLiteral( "xyz" ) && dsUri.param( QStringLiteral( "serviceType" ) ) == QLatin1String( "arcgis" ) )
   {
-    if ( !setupArcgisVectorTileServiceConnection( mSourcePath ) )
+    if ( !setupArcgisVectorTileServiceConnection( mSourcePath, dsUri ) )
       return false;
   }
   else if ( mSourceType == QStringLiteral( "xyz" ) )
@@ -117,7 +117,7 @@ bool QgsVectorTileLayer::loadDataSource()
   return true;
 }
 
-bool QgsVectorTileLayer::setupArcgisVectorTileServiceConnection( const QString &uri )
+bool QgsVectorTileLayer::setupArcgisVectorTileServiceConnection( const QString &uri, const QgsDataSourceUri &dataSourceUri )
 {
   QNetworkRequest request = QNetworkRequest( QUrl( uri ) );
 
@@ -159,8 +159,17 @@ bool QgsVectorTileLayer::setupArcgisVectorTileServiceConnection( const QString &
     return false;
   }
 
-  mSourceMinZoom = 0;
-  mSourceMaxZoom = mArcgisLayerConfiguration.value( QStringLiteral( "maxzoom" ) ).toInt();
+  // if hardcoded zoom limits aren't specified, take them from the server
+  if ( !dataSourceUri.hasParam( QStringLiteral( "zmin" ) ) )
+    mSourceMinZoom = 0;
+  else
+    mSourceMinZoom = dataSourceUri.param( QStringLiteral( "zmin" ) ).toInt();
+
+  if ( !dataSourceUri.hasParam( QStringLiteral( "zmax" ) ) )
+    mSourceMaxZoom = mArcgisLayerConfiguration.value( QStringLiteral( "maxzoom" ) ).toInt();
+  else
+    mSourceMaxZoom = dataSourceUri.param( QStringLiteral( "zmax" ) ).toInt();
+
   setExtent( QgsRectangle( -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 ) );
 
   return true;
