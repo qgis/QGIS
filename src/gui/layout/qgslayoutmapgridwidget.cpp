@@ -63,11 +63,11 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   connect( mFrameWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mFrameWidthSpinBox_valueChanged );
   connect( mGridFrameMarginSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mGridFrameMarginSpinBox_valueChanged );
   connect( mFrameStyleComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutMapGridWidget::mFrameStyleComboBox_currentIndexChanged );
-  connect( mRotatedTicksCheckBox, &QCheckBox::toggled, this, &QgsLayoutMapGridWidget::mRotatedTicksCheckBox_toggled );
+  connect( mRotatedTicksGroupBox, &QGroupBox::toggled, this, &QgsLayoutMapGridWidget::mRotatedTicksGroupBox_toggled );
   connect( mRotatedTicksLengthModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutMapGridWidget::mRotatedTicksLengthModeComboBox_currentIndexChanged );
   connect( mRotatedTicksThresholdSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mRotatedTicksThresholdSpinBox_valueChanged );
   connect( mRotatedTicksMarginToCornerSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mRotatedTicksMarginToCornerSpinBox_valueChanged );
-  connect( mRotatedAnnotationsCheckBox, &QCheckBox::toggled, this, &QgsLayoutMapGridWidget::mRotatedAnnotationsCheckBox_toggled );
+  connect( mRotatedAnnotationsGroupBox, &QGroupBox::toggled, this, &QgsLayoutMapGridWidget::mRotatedAnnotationsGroupBox_toggled );
   connect( mRotatedAnnotationsLengthModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutMapGridWidget::mRotatedAnnotationsLengthModeComboBox_currentIndexChanged );
   connect( mRotatedAnnotationsThresholdSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mRotatedAnnotationsThresholdSpinBox_valueChanged );
   connect( mRotatedAnnotationsMarginToCornerSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mRotatedAnnotationsMarginToCornerSpinBox_valueChanged );
@@ -347,7 +347,7 @@ void QgsLayoutMapGridWidget::toggleFrameControls( bool frameEnabled, bool frameF
   mRightDivisionsLabel->setEnabled( frameEnabled );
   mTopDivisionsLabel->setEnabled( frameEnabled );
   mBottomDivisionsLabel->setEnabled( frameEnabled );
-  mRotatedTicksCheckBox->setEnabled( rotationEnabled );
+  mRotatedTicksGroupBox->setEnabled( rotationEnabled );
   mRotatedTicksLengthModeComboBox->setEnabled( rotationEnabled );
   mRotatedTicksThresholdSpinBox->setEnabled( rotationEnabled );
   mRotatedTicksMarginToCornerSpinBox->setEnabled( rotationEnabled );
@@ -570,12 +570,12 @@ void QgsLayoutMapGridWidget::setGridItems()
   mCheckGridTopSide->setChecked( mMapGrid->testFrameSideFlag( QgsLayoutItemMapGrid::FrameTop ) );
   mCheckGridBottomSide->setChecked( mMapGrid->testFrameSideFlag( QgsLayoutItemMapGrid::FrameBottom ) );
 
-  mRotatedTicksCheckBox->setChecked( mMapGrid->rotatedTicksEnabled() );
+  mRotatedTicksGroupBox->setChecked( mMapGrid->rotatedTicksEnabled() );
   mRotatedTicksLengthModeComboBox->setCurrentIndex( mRotatedTicksLengthModeComboBox->findData( mMapGrid->rotatedTicksLengthMode() ) );
   mRotatedTicksThresholdSpinBox->setValue( mMapGrid->rotatedTicksMinimumAngle() );
   mRotatedTicksMarginToCornerSpinBox->setValue( mMapGrid->rotatedTicksMarginToCorner() );
 
-  mRotatedAnnotationsCheckBox->setChecked( mMapGrid->rotatedAnnotationsEnabled() );
+  mRotatedAnnotationsGroupBox->setChecked( mMapGrid->rotatedAnnotationsEnabled() );
   mRotatedAnnotationsLengthModeComboBox->setCurrentIndex( mRotatedAnnotationsLengthModeComboBox->findData( mMapGrid->rotatedAnnotationsLengthMode() ) );
   mRotatedAnnotationsThresholdSpinBox->setValue( mMapGrid->rotatedAnnotationsMinimumAngle() );
   mRotatedAnnotationsMarginToCornerSpinBox->setValue( mMapGrid->rotatedAnnotationsMarginToCorner() );
@@ -897,7 +897,7 @@ void QgsLayoutMapGridWidget::mFrameStyleComboBox_currentIndexChanged( int )
   mMap->endCommand();
 }
 
-void QgsLayoutMapGridWidget::mRotatedTicksCheckBox_toggled( bool state )
+void QgsLayoutMapGridWidget::mRotatedTicksGroupBox_toggled( bool state )
 {
   if ( !mMapGrid || !mMap )
   {
@@ -950,7 +950,7 @@ void QgsLayoutMapGridWidget::mRotatedTicksMarginToCornerSpinBox_valueChanged( do
   mMap->endCommand();
 }
 
-void QgsLayoutMapGridWidget::mRotatedAnnotationsCheckBox_toggled( bool state )
+void QgsLayoutMapGridWidget::mRotatedAnnotationsGroupBox_toggled( bool state )
 {
   if ( !mMapGrid || !mMap )
   {
