@@ -576,7 +576,7 @@ void QgsRelationReferenceWidget::init()
     }
 
     // Only connect after iterating, to have only one iterator on the referenced table at once
-    connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRelationReferenceWidget::comboReferenceChanged );
+    connect( mComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsRelationReferenceWidget::comboReferenceChanged );
 
     QApplication::restoreOverrideCursor();
 
@@ -1041,7 +1041,7 @@ void QgsRelationReferenceWidget::disableChainedComboBoxes( const QComboBox *scb 
 
 void QgsRelationReferenceWidget::emitForeignKeysChanged( const QVariantList &foreignKeys, bool force )
 {
-  if ( foreignKeys == mForeignKeys && force == false )
+  if ( foreignKeys == mForeignKeys && force == false && qVariantListIsNull( foreignKeys ) == qVariantListIsNull( mForeignKeys ) )
     return;
 
   mForeignKeys = foreignKeys;
