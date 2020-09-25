@@ -662,7 +662,7 @@
           <item row="14" column="0" colspan="5">
            <widget class="QGroupBox" name="mRotatedTicksGroupBox">
             <property name="title">
-             <string>Rotate ticks</string>
+             <string>Follow grid rotation</string>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -920,7 +920,7 @@
           <item row="21" column="0" colspan="3">
            <widget class="QGroupBox" name="mRotatedAnnotationsGroupBox">
             <property name="title">
-             <string>Rotate annotations</string>
+             <string>Follow grid rotation</string>
             </property>
             <property name="checkable">
              <bool>true</bool>
