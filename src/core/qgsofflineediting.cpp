@@ -59,7 +59,6 @@ extern "C"
 #define CUSTOM_PROPERTY_IS_OFFLINE_EDITABLE "isOfflineEditable"
 #define CUSTOM_PROPERTY_REMOTE_SOURCE "remoteSource"
 #define CUSTOM_PROPERTY_REMOTE_PROVIDER "remoteProvider"
-#define CUSTOM_SHOW_FEATURE_COUNT "showFeatureCount"
 #define CUSTOM_PROPERTY_ORIGINAL_LAYERID "remoteLayerId"
 #define PROJECT_ENTRY_SCOPE_OFFLINE "OfflineEditingPlugin"
 #define PROJECT_ENTRY_KEY_OFFLINE_DB_PATH "/OfflineDbPath"
@@ -283,7 +282,7 @@ void QgsOfflineEditing::synchronize()
       //set QgsLayerTreeNode properties back
       QgsLayerTreeLayer *layerTreeLayer = QgsProject::instance()->layerTreeRoot()->findLayer( offlineLayer->id() );
       QgsLayerTreeLayer *newLayerTreeLayer = QgsProject::instance()->layerTreeRoot()->findLayer( remoteLayer->id() );
-      newLayerTreeLayer->setCustomProperty( CUSTOM_SHOW_FEATURE_COUNT, layerTreeLayer->customProperty( CUSTOM_SHOW_FEATURE_COUNT ) );
+      newLayerTreeLayer->setCustomPropertiesMap( layerTreeLayer->customPropertiesMap() );
 
       // apply layer edit log
       QString qgisLayerId = layer->id();
@@ -895,8 +894,8 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
         if ( newLayerTreeLayer )
         {
           QgsLayerTreeNode *newLayerTreeLayerClone = newLayerTreeLayer->clone();
-          //copy the showFeatureCount property to the new node
-          newLayerTreeLayerClone->setCustomProperty( CUSTOM_SHOW_FEATURE_COUNT, layerTreeLayer->customProperty( CUSTOM_SHOW_FEATURE_COUNT ) );
+          // Copy the custom properties from original layer
+          newLayerTreeLayerClone->setCustomPropertiesMap( layerTreeLayer->customPropertiesMap() );
           newLayerTreeLayerClone->setItemVisibilityChecked( layerTreeLayer->isVisible() );
           QgsLayerTreeGroup *grp = qobject_cast<QgsLayerTreeGroup *>( newLayerTreeLayer->parent() );
           parentTreeGroup->insertChildNode( index, newLayerTreeLayerClone );
