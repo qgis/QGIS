@@ -1324,13 +1324,13 @@ QString QgsCoordinateReferenceSystem::userFriendlyIdentifier( IdentifierType typ
   else if ( !description().isEmpty() )
     return description();
   else if ( type == ShortString )
-    return QObject::tr( "Unknown CRS" );
+    return isValid() ? QObject::tr( "Custom CRS" ) : QObject::tr( "Unknown CRS" );
   else if ( !toWkt( WKT_PREFERRED ).isEmpty() )
-    return QObject::tr( "Unknown CRS: %1" ).arg(
+    return QObject::tr( "Custom CRS: %1" ).arg(
              type == MediumString ? ( toWkt( WKT_PREFERRED ).left( 50 ) + QString( QChar( 0x2026 ) ) )
              : toWkt( WKT_PREFERRED ) );
   else if ( !toProj().isEmpty() )
-    return QObject::tr( "Unknown CRS: %1" ).arg( type == MediumString ? ( toProj().left( 50 ) + QString( QChar( 0x2026 ) ) )
+    return QObject::tr( "Custom CRS: %1" ).arg( type == MediumString ? ( toProj().left( 50 ) + QString( QChar( 0x2026 ) ) )
            : toProj() );
   else
     return QString();
