@@ -69,7 +69,7 @@ void QgsVectorLayerCache::setCacheGeometry( bool cacheGeometry )
   mCacheGeometry = shouldCacheGeometry;
   if ( cacheGeometry )
   {
-    connect( mLayer, &QgsVectorLayer::geometryChanged, this, &QgsVectorLayerCache::geometryChanged );
+    connect( mLayer, &QgsVectorLayer::geometryChanged, this, &QgsVectorLayerCache::geometryChanged, Qt::UniqueConnection );
   }
   else
   {

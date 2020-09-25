@@ -130,7 +130,14 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
   mLayer = layer;
   mEditorContext = context;
 
-  initLayerCache( !( request.flags() & QgsFeatureRequest::NoGeometry ) || !request.filterRect().isNull() );
+  // create an empty form to find out if it needs geometry or not
+  QgsAttributeForm emptyForm( mLayer, QgsFeature(), mEditorContext );
+
+  const bool needsGeometry = !( request.flags() & QgsFeatureRequest::NoGeometry )
+                             || !request.filterRect().isNull()
+                             || emptyForm.needsGeometry();
+
+  initLayerCache( needsGeometry );
   initModels( mapCanvas, request, loadFeatures );
 
   mConditionalFormatWidget->setLayer( mLayer );
