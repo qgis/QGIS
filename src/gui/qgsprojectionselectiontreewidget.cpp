@@ -698,7 +698,7 @@ void QgsProjectionSelectionTreeWidget::loadUnknownCrs( const QgsCoordinateRefere
 {
   if ( !mUnknownList )
   {
-    mUnknownList = new QTreeWidgetItem( lstCoordinateSystems, QStringList( tr( "Unknown Coordinate Systems" ) ) );
+    mUnknownList = new QTreeWidgetItem( lstCoordinateSystems, QStringList( tr( "Custom Coordinate Systems" ) ) );
     QFont fontTemp = mUnknownList->font( 0 );
     fontTemp.setItalic( true );
     fontTemp.setBold( true );
@@ -706,7 +706,7 @@ void QgsProjectionSelectionTreeWidget::loadUnknownCrs( const QgsCoordinateRefere
     mUnknownList->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/user.svg" ) ) );
   }
 
-  QTreeWidgetItem *newItem = new QTreeWidgetItem( mUnknownList, QStringList( QObject::tr( "Unknown CRS" ) ) );
+  QTreeWidgetItem *newItem = new QTreeWidgetItem( mUnknownList, QStringList( crs.description().isEmpty() ? QObject::tr( "Custom CRS" ) : crs.description() ) );
   newItem->setData( 0, RoleWkt, crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
   newItem->setData( 0, RoleProj, crs.toProj() );
 
