@@ -31,7 +31,8 @@ class APP_EXPORT QgsDisplayAngle: public QDialog, private Ui::QgsDisplayAngleBas
 
     /**
      * Sets the measured angle value (in radians). The value is going to
-      be converted to degrees / gon automatically if necessary*/
+     * be converted to degrees / gon automatically if necessary.
+    */
     void setValueInRadians( double value );
 
   private:

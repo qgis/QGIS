@@ -31,8 +31,9 @@
  * preference, from top to bottom.
  *
  * URI construction takes in account following information:
- *  - QGIS version
- *  - language of the QGIS UI
+ *
+ * - QGIS version
+ * - language of the QGIS UI
  *
  * If no help found, default error page with information how to setup
  * help system will be shown.

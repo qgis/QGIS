@@ -19,7 +19,7 @@ SET (WMS_SRCS
   qgsmediancut.cpp
   qgswmsrenderer.cpp
   qgswmsparameters.cpp
-  qgslayerrestorer.cpp
+  qgswmsrestorer.cpp
   qgswmsrendercontext.cpp
 )
 
@@ -55,6 +55,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/core/layout
+  ${CMAKE_SOURCE_DIR}/src/core/textrenderer
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core

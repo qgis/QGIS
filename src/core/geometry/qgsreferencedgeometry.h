@@ -22,6 +22,7 @@
 #include "qgis_core.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"
+#include "qgsgeometry.h"
 
 /**
  * \class QgsReferencedGeometryBase
@@ -145,5 +146,54 @@ class CORE_EXPORT QgsReferencedPointXY : public QgsPointXY, public QgsReferenced
 };
 
 Q_DECLARE_METATYPE( QgsReferencedPointXY )
+
+/**
+ * \ingroup core
+ * A QgsGeometry with associated coordinate reference system.
+ * \since QGIS 3.16
+ */
+class CORE_EXPORT QgsReferencedGeometry : public QgsGeometry, public QgsReferencedGeometryBase
+{
+  public:
+
+    /**
+     * Constructor for QgsReferencedGeometry, with the specified initial \a geometry
+     * and \a crs.
+     */
+    QgsReferencedGeometry( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs );
+
+    /**
+     * Constructor for QgsReferencedGeometry.
+     */
+    QgsReferencedGeometry() = default;
+
+    //! Allows direct construction of QVariants from geometry.
+    operator QVariant() const
+    {
+      return QVariant::fromValue( *this );
+    }
+
+    /**
+     * Construct a new QgsReferencedGeometry from referenced \a point
+     */
+    static QgsReferencedGeometry fromReferencedPointXY( const QgsReferencedPointXY &point );
+
+    /**
+     * Construct a new QgsReferencedGeometry from referenced \a rectangle
+     */
+    static QgsReferencedGeometry fromReferencedRect( const QgsReferencedRectangle &rectangle );
+
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsReferencedGeometry: %1 (%2)>" ).arg( sipCpp->asWkt(), sipCpp->crs().authid() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
+};
+
+Q_DECLARE_METATYPE( QgsReferencedGeometry )
 
 #endif // QGSREFERENCEDGEOMETRY_H

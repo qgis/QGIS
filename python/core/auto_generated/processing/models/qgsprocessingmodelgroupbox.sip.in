@@ -38,7 +38,7 @@ Saves this group box to a QVariant.
 .. seealso:: :py:func:`loadVariant`
 %End
 
-    bool loadVariant( const QVariantMap &map );
+    bool loadVariant( const QVariantMap &map, bool ignoreUuid = false );
 %Docstring
 Loads this group box from a QVariantMap.
 

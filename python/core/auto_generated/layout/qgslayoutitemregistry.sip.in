@@ -146,7 +146,7 @@ class QgsLayoutItemRegistry : QObject
 Registry of available layout item types.
 
 QgsLayoutItemRegistry is not usually directly created, but rather accessed through
-:py:func:`QgsApplication.layoutItemRegistry()`
+:py:func:`QgsApplication.layoutItemRegistry()`.
 
 A companion class, :py:class:`QgsLayoutItemGuiRegistry`, handles the GUI behavior
 of layout items.
@@ -203,7 +203,7 @@ of layout items.
 Creates a new empty item registry.
 
 QgsLayoutItemRegistry is not usually directly created, but rather accessed through
-:py:func:`QgsApplication.layoutItemRegistry()`
+:py:func:`QgsApplication.layoutItemRegistry()`.
 
 .. seealso:: :py:func:`populate`
 %End

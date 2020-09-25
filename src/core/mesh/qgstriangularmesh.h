@@ -180,11 +180,11 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
 
     /**
      * Returns the corresponding index of level of detail on which this mesh is associated
-     * 0 : base mesh
-     * 1 : first simplified mesh
-     * 2 : second simplified mesh (lower level of detail)
-     * ...
-     * ...
+     *
+     * - 0: base mesh
+     * - 1: first simplified mesh
+     * - 2: second simplified mesh (lower level of detail)
+     * - ...
      *
      * \since QGIS 3.14
      */

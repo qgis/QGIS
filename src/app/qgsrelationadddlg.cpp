@@ -29,6 +29,7 @@
 #include "qgsfieldcombobox.h"
 #include "qgsmaplayerproxymodel.h"
 #include "qgsapplication.h"
+#include "qgshelp.h"
 
 
 
@@ -43,11 +44,13 @@ QgsFieldPairWidget::QgsFieldPairWidget( int index, QWidget *parent )
   mAddButton = new QToolButton( this );
   mAddButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyAdd.svg" ) ) );
   mAddButton->setMinimumWidth( 30 );
+  mAddButton->setToolTip( "Add new field pair as part of a composite foreign key" );
   mLayout->addWidget( mAddButton, 0, Qt::AlignLeft );
 
   mRemoveButton = new QToolButton( this );
   mRemoveButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyRemove.svg" ) ) );
   mRemoveButton->setMinimumWidth( 30 );
+  mRemoveButton->setToolTip( "Remove the last pair of fields" );
   mLayout->addWidget( mRemoveButton, 0, Qt::AlignLeft );
 
   mSpacerItem = new QSpacerItem( 30, 30, QSizePolicy::Minimum, QSizePolicy::Maximum );
@@ -120,7 +123,8 @@ void QgsFieldPairWidget::changeEnable()
 QgsRelationAddDlg::QgsRelationAddDlg( QWidget *parent )
   : QDialog( parent )
 {
-  QGridLayout *layout = new QGridLayout(); // column 0 is kept free for alignmenent purpose
+  setWindowTitle( "Add New Relation" );
+  QGridLayout *layout = new QGridLayout(); // column 0 is kept free for alignment purpose
 
   // row 0: name
   // col 1
@@ -176,9 +180,13 @@ QgsRelationAddDlg::QgsRelationAddDlg( QWidget *parent )
   // row 6: button box
   mButtonBox = new QDialogButtonBox( this );
   mButtonBox->setOrientation( Qt::Horizontal );
-  mButtonBox->setStandardButtons( QDialogButtonBox::Cancel | QDialogButtonBox::Ok );
+  mButtonBox->setStandardButtons( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsRelationAddDlg::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsRelationAddDlg::reject );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [ = ]
+  {
+    QgsHelp::openHelp( QStringLiteral( "working_with_vector/attribute_table.html#defining-1-n-relations" ) );
+  } );
   layout->addWidget( mButtonBox, 7, 1, 1, 2 );
 
   // set layout
@@ -239,6 +247,8 @@ QList< QPair< QString, QString > > QgsRelationAddDlg::references()
   QList< QPair< QString, QString > > references;
   for ( int i = 0; i < mFieldPairWidgets.count(); i++ )
   {
+    if ( !mFieldPairWidgets.at( i )->isPairEnabled() )
+      continue;
     QString referencingField = mFieldPairWidgets.at( i )->referencingField();
     QString referencedField = mFieldPairWidgets.at( i )->referencedField();
     references << qMakePair( referencingField, referencedField );

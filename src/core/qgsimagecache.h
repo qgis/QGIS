@@ -60,6 +60,13 @@ class CORE_EXPORT QgsImageCacheEntry : public QgsAbstractContentCacheEntry
     //! Rendered, resampled image.
     QImage image;
 
+    /**
+     * TRUE if the image represents a broken/missing path.
+     *
+     * \since QGIS 3.14
+     */
+    bool isMissingImage = false;
+
     int dataSize() const override;
     void dump() const override;
     bool isEqual( const QgsAbstractContentCacheEntry *other ) const override;
@@ -122,7 +129,11 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
      * be TRUE from GUI based applications (like the main QGIS application) or crashes will result. Only for
      * use in external scripts or QGIS server.
      */
+#ifndef SIP_RUN
+    QImage pathAsImage( const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache SIP_OUT, bool blocking = false, bool *isMissing = nullptr );
+#else
     QImage pathAsImage( const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache SIP_OUT, bool blocking = false );
+#endif
 
     /**
      * Returns the original size (in pixels) of the image at the specified \a path.
@@ -150,7 +161,7 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
 
   private:
 
-    QImage renderImage( const QString &path, QSize size, const bool keepAspectRatio, const double opacity, bool blocking = false ) const;
+    QImage renderImage( const QString &path, QSize size, const bool keepAspectRatio, const double opacity, bool &isBroken, bool blocking = false ) const;
 
     //! SVG content to be rendered if SVG file was not found.
     QByteArray mMissingSvg;

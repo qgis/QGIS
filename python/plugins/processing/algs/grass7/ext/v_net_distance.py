@@ -21,7 +21,6 @@ __author__ = 'Médéric Ribreux'
 __date__ = 'December 2015'
 __copyright__ = '(C) 2015, Médéric Ribreux'
 
-
 import os
 from .v_net import variableOutput
 from processing.tools.system import getTempFilename

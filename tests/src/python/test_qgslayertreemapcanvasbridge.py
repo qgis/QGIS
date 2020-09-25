@@ -52,7 +52,7 @@ class TestQgsLayerTreeMapCanvasBridge(unittest.TestCase):
         canvas = QgsMapCanvas()
         bridge = QgsLayerTreeMapCanvasBridge(prj.layerTreeRoot(), canvas)
 
-        #custom layer order
+        # custom layer order
         prj.layerTreeRoot().setHasCustomLayerOrder(True)
         prj.layerTreeRoot().setCustomLayerOrder([layer3, layer, layer2])
         app.processEvents()
@@ -99,7 +99,7 @@ class TestQgsLayerTreeMapCanvasBridge(unittest.TestCase):
         bridge = QgsLayerTreeMapCanvasBridge(prj.layerTreeRoot(), canvas)
         custom_order_widget = QgsCustomLayerOrderWidget(bridge)
 
-        #custom layer order
+        # custom layer order
         prj.layerTreeRoot().setHasCustomLayerOrder(True)
         prj.layerTreeRoot().setCustomLayerOrder([layer3, layer, layer2])
         app.processEvents()
@@ -149,7 +149,7 @@ class TestQgsLayerTreeMapCanvasBridge(unittest.TestCase):
         canvas = QgsMapCanvas()
         bridge = QgsLayerTreeMapCanvasBridge(prj.layerTreeRoot(), canvas)
 
-        #custom layer order
+        # custom layer order
         prj.layerTreeRoot().setHasCustomLayerOrder(True)
         prj.layerTreeRoot().setCustomLayerOrder([layer3, layer, layer2])
         app.processEvents()
@@ -158,7 +158,7 @@ class TestQgsLayerTreeMapCanvasBridge(unittest.TestCase):
         # with non-spatial (should not be possible through ui, but is through api)
         prj.layerTreeRoot().setCustomLayerOrder([layer3, layer, layer2, non_spatial])
         app.processEvents()
-        #self.assertEqual(canvas.mapSettings().layers(),[layer3,layer,layer2])
+        # self.assertEqual(canvas.mapSettings().layers(),[layer3,layer,layer2])
 
         # no custom layer order
         prj.layerTreeRoot().setHasCustomLayerOrder(False)

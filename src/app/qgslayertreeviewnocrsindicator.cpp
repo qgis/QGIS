@@ -21,6 +21,7 @@
 #include "qgsvectorlayer.h"
 #include "qgisapp.h"
 #include "qgsprojectionselectiondialog.h"
+#include "qgsannotationlayer.h"
 
 QgsLayerTreeViewNoCrsIndicatorProvider::QgsLayerTreeViewNoCrsIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )
@@ -38,7 +39,7 @@ void QgsLayerTreeViewNoCrsIndicatorProvider::onIndicatorClicked( const QModelInd
     return;
 
   QgsProjectionSelectionDialog selector( QgisApp::instance() );
-  selector.setMessage( QString() );
+  selector.showNoCrsForLayerMessage();
   if ( selector.exec() )
   {
     QgsCoordinateReferenceSystem crs = selector.crs();
@@ -50,7 +51,7 @@ void QgsLayerTreeViewNoCrsIndicatorProvider::onIndicatorClicked( const QModelInd
 
 bool QgsLayerTreeViewNoCrsIndicatorProvider::acceptLayer( QgsMapLayer *layer )
 {
-  return layer && layer->isValid() && layer->isSpatial() && !layer->crs().isValid();
+  return layer && layer->isValid() && layer->isSpatial() && !layer->crs().isValid() && !qobject_cast< QgsAnnotationLayer * >( layer );
 }
 
 QString QgsLayerTreeViewNoCrsIndicatorProvider::iconName( QgsMapLayer *layer )

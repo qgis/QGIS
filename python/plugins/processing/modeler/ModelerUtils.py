@@ -27,7 +27,6 @@ from processing.core.ProcessingConfig import ProcessingConfig
 
 
 class ModelerUtils:
-
     MODELS_FOLDER = 'MODELS_FOLDER'
 
     @staticmethod

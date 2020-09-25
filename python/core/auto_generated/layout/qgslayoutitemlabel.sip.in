@@ -174,8 +174,8 @@ contents, in layout units.
 %Docstring
 Sets the ``margin`` between the edge of the frame and the label contents.
 This method sets both the horizontal and vertical margins to the same
-value. The margins can be individually controlled using the setMarginX()
-and setMarginY() methods.
+value. The margins can be individually controlled using the :py:func:`~QgsLayoutItemLabel.setMarginX`
+and :py:func:`~QgsLayoutItemLabel.setMarginY` methods.
 
 Margins are set using the current layout units.
 

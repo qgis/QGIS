@@ -28,9 +28,24 @@ from hashlib import md5
 
 import os
 
-from qgis.PyQt.QtCore import Qt, pyqtSignal, QDir
-from qgis.PyQt.QtWidgets import QDialog, QWidget, QAction, QApplication, QInputDialog, QStyledItemDelegate, QTableWidgetItem, QFileDialog
-from qgis.PyQt.QtGui import QKeySequence, QCursor, QClipboard, QIcon, QStandardItemModel, QStandardItem
+from qgis.PyQt.QtCore import Qt, pyqtSignal, QDir, QCoreApplication
+from qgis.PyQt.QtWidgets import (QDialog,
+                                 QWidget,
+                                 QAction,
+                                 QApplication,
+                                 QInputDialog,
+                                 QStyledItemDelegate,
+                                 QTableWidgetItem,
+                                 QFileDialog,
+                                 QMessageBox
+                                 )
+from qgis.PyQt.QtGui import (QKeySequence,
+                             QCursor,
+                             QClipboard,
+                             QIcon,
+                             QStandardItemModel,
+                             QStandardItem
+                             )
 from qgis.PyQt.Qsci import QsciAPIs
 
 from qgis.core import (
@@ -62,7 +77,7 @@ import re
 
 def check_comments_in_sql(raw_sql_input):
     lines = []
-    for line in raw_sql_input.split('\n'):
+    for line in raw_sql_input.splitlines():
         if not line.strip().startswith('--'):
             if '--' in line:
                 comment_positions = []
@@ -94,6 +109,7 @@ def check_comments_in_sql(raw_sql_input):
 class DlgSqlWindow(QWidget, Ui_Dialog):
     nameChanged = pyqtSignal(str)
     QUERY_HISTORY_LIMIT = 20
+    hasChanged = False
 
     def __init__(self, iface, db, parent=None):
         QWidget.__init__(self, parent)
@@ -104,8 +120,9 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.connectionName = db.connection().connectionName()
         self.filter = ""
         self.modelAsync = None
-        self.allowMultiColumnPk = isinstance(db, PGDatabase)  # at the moment only PostgreSQL allows a primary key to span multiple columns, SpatiaLite doesn't
-        self.aliasSubQuery = isinstance(db, PGDatabase)       # only PostgreSQL requires subqueries to be aliases
+        self.allowMultiColumnPk = isinstance(db,
+                                             PGDatabase)  # at the moment only PostgreSQL allows a primary key to span multiple columns, SpatiaLite doesn't
+        self.aliasSubQuery = isinstance(db, PGDatabase)  # only PostgreSQL requires subqueries to be aliases
         self.setupUi(self)
         self.setWindowTitle(
             self.tr(u"{0} - {1} [{2}]").format(self.windowTitle(), self.connectionName, self.dbType))
@@ -121,6 +138,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.editSql.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.editSql.setMarginVisible(True)
         self.initCompleter()
+        self.editSql.textChanged.connect(lambda: self.setHasChanged(True))
 
         settings = QgsSettings()
         self.history = settings.value('DB_Manager/queryHistory/' + self.dbType, {self.connectionName: []})
@@ -171,8 +189,9 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.uniqueCombo.setModel(self.uniqueModel)
         if self.allowMultiColumnPk:
             self.uniqueCombo.setItemDelegate(QStyledItemDelegate())
-            self.uniqueModel.itemChanged.connect(self.uniqueChanged)                 # react to the (un)checking of an item
-            self.uniqueCombo.lineEdit().textChanged.connect(self.uniqueTextChanged)  # there are other events that change the displayed text and some of them can not be caught directly
+            self.uniqueModel.itemChanged.connect(self.uniqueChanged)  # react to the (un)checking of an item
+            self.uniqueCombo.lineEdit().textChanged.connect(
+                self.uniqueTextChanged)  # there are other events that change the displayed text and some of them can not be caught directly
 
         # hide the load query as layer if feature is not supported
         self._loadAsLayerAvailable = self.db.connector.hasCustomQuerySupport()
@@ -325,6 +344,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.editSql.clear()
         self.editSql.setFocus()
         self.filter = ""
+        self.setHasChanged(True)
 
     def updateUiWhileSqlExecution(self, status):
         if status:
@@ -361,6 +381,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
     def executeSqlCanceled(self):
         self.btnCancel.setEnabled(False)
+        self.btnCancel.setText(QCoreApplication.translate("DlgSqlWindow", "Canceling…"))
         self.modelAsync.cancel()
 
     def executeSqlCompleted(self):
@@ -386,8 +407,9 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
                 self.uniqueModel.clear()
                 self.geomCombo.clear()
 
-    def executeSql(self):
+            self.btnCancel.setText(self.tr("Cancel"))
 
+    def executeSql(self):
         sql = self._getExecutableSqlQuery()
         if sql == "":
             return
@@ -634,9 +656,10 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         return sql
 
     def _getExecutableSqlQuery(self):
-        sql = self._getSqlQuery()
+        sql = self._getSqlQuery().strip()
 
         uncommented_sql = check_comments_in_sql(sql)
+        uncommented_sql = uncommented_sql.rstrip(';')
         return uncommented_sql
 
     def uniqueChanged(self):
@@ -664,3 +687,23 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         if dlg.exec_():
             self.filter = dlg.sql()
         layer.deleteLater()
+
+    def setHasChanged(self, hasChanged):
+        self.hasChanged = hasChanged
+
+    def close(self):
+        if self.hasChanged:
+            ret = QMessageBox.question(
+                self, self.tr('Unsaved Changes?'),
+                self.tr('There are unsaved changes. Do you want to keep them?'),
+                QMessageBox.Save | QMessageBox.Cancel | QMessageBox.Discard, QMessageBox.Cancel)
+
+            if ret == QMessageBox.Save:
+                self.saveAsFilePreset()
+                return True
+            elif ret == QMessageBox.Discard:
+                return True
+            else:
+                return False
+        else:
+            return True

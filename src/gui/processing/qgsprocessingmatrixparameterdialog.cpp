@@ -23,8 +23,8 @@
 
 ///@cond NOT_STABLE
 
-QgsProcessingMatrixParameterDialog::QgsProcessingMatrixParameterDialog( QWidget *parent, Qt::WindowFlags flags, const QgsProcessingParameterMatrix *param, const QVariantList &initialTable )
-  : QDialog( parent, flags )
+QgsProcessingMatrixParameterPanelWidget::QgsProcessingMatrixParameterPanelWidget( QWidget *parent, const QgsProcessingParameterMatrix *param, const QVariantList &initialTable )
+  : QgsPanelWidget( parent )
   , mParam( param )
 {
   setupUi( this );
@@ -43,9 +43,19 @@ QgsProcessingMatrixParameterDialog::QgsProcessingMatrixParameterDialog( QWidget 
   mButtonRemoveAll = new QPushButton( tr( "Remove All" ) );
   mButtonBox->addButton( mButtonRemoveAll, QDialogButtonBox::ActionRole );
 
-  connect( mButtonAdd, &QPushButton::clicked, this, &QgsProcessingMatrixParameterDialog::addRow );
-  connect( mButtonRemove, &QPushButton::clicked, this, &QgsProcessingMatrixParameterDialog::deleteRow );
-  connect( mButtonRemoveAll, &QPushButton::clicked, this, &QgsProcessingMatrixParameterDialog::deleteAllRows );
+  connect( mButtonBox->button( QDialogButtonBox::Ok ), &QPushButton::clicked, this, [ = ]
+  {
+    emit widgetChanged();
+    acceptPanel();
+  } );
+  connect( mButtonBox->button( QDialogButtonBox::Cancel ), &QPushButton::clicked, this, [ = ]
+  {
+    acceptPanel();
+  } );
+
+  connect( mButtonAdd, &QPushButton::clicked, this, &QgsProcessingMatrixParameterPanelWidget::addRow );
+  connect( mButtonRemove, &QPushButton::clicked, this, &QgsProcessingMatrixParameterPanelWidget::deleteRow );
+  connect( mButtonRemoveAll, &QPushButton::clicked, this, &QgsProcessingMatrixParameterPanelWidget::deleteAllRows );
 
   if ( param && param->hasFixedNumberRows() )
   {
@@ -57,7 +67,7 @@ QgsProcessingMatrixParameterDialog::QgsProcessingMatrixParameterDialog( QWidget 
   populateTable( initialTable );
 }
 
-QVariantList QgsProcessingMatrixParameterDialog::table() const
+QVariantList QgsProcessingMatrixParameterPanelWidget::table() const
 {
   const int cols = mModel->columnCount();
   const int rows = mModel->rowCount();
@@ -74,7 +84,7 @@ QVariantList QgsProcessingMatrixParameterDialog::table() const
   return res;
 }
 
-void QgsProcessingMatrixParameterDialog::addRow()
+void QgsProcessingMatrixParameterPanelWidget::addRow()
 {
   QList< QStandardItem * > items;
   for ( int i = 0; i < mTblView->model()->columnCount(); ++i )
@@ -84,7 +94,7 @@ void QgsProcessingMatrixParameterDialog::addRow()
   mModel->appendRow( items );
 }
 
-void QgsProcessingMatrixParameterDialog::deleteRow()
+void QgsProcessingMatrixParameterPanelWidget::deleteRow()
 {
   QModelIndexList selected = mTblView->selectionModel()->selectedRows();
   QSet< int > rows;
@@ -92,7 +102,7 @@ void QgsProcessingMatrixParameterDialog::deleteRow()
   for ( const QModelIndex &i : selected )
     rows << i.row();
 
-  QList< int > rowsToDelete = rows.toList();
+  QList< int > rowsToDelete = qgis::setToList( rows );
   std::sort( rowsToDelete.begin(), rowsToDelete.end(), std::greater<int>() );
   mTblView->setUpdatesEnabled( false );
   for ( int i : qgis::as_const( rowsToDelete ) )
@@ -101,14 +111,14 @@ void QgsProcessingMatrixParameterDialog::deleteRow()
   mTblView->setUpdatesEnabled( true );
 }
 
-void QgsProcessingMatrixParameterDialog::deleteAllRows()
+void QgsProcessingMatrixParameterPanelWidget::deleteAllRows()
 {
   mModel->clear();
   if ( mParam )
     mModel->setHorizontalHeaderLabels( mParam->headers() );
 }
 
-void QgsProcessingMatrixParameterDialog::populateTable( const QVariantList &contents )
+void QgsProcessingMatrixParameterPanelWidget::populateTable( const QVariantList &contents )
 {
   if ( !mParam )
     return;
@@ -175,10 +185,18 @@ void QgsProcessingMatrixParameterPanel::setValue( const QVariantList &value )
 
 void QgsProcessingMatrixParameterPanel::showDialog()
 {
-  QgsProcessingMatrixParameterDialog dlg( this, nullptr, mParam, mTable );
-  if ( dlg.exec() )
+  if ( QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this ) )
   {
-    setValue( dlg.table() );
+    QgsProcessingMatrixParameterPanelWidget *widget = new QgsProcessingMatrixParameterPanelWidget( this, mParam, mTable );
+
+    widget->setPanelTitle( mParam->description() );
+
+    panel->openPanel( widget );
+
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [ = ]
+    {
+      setValue( widget->table() );
+    } );
   }
 }
 

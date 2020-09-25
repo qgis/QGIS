@@ -21,10 +21,13 @@
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QAttribute>
 
+#define SIP_NO_FILE
 
 /**
  * \ingroup 3d
  * Geometry of the billboard rendering for points in 3D map view.
+ *
+ * \note Not available in Python bindings
  *
  * \since QGIS 3.10
  */
@@ -42,7 +45,6 @@ class QgsBillboardGeometry : public Qt3DRender::QGeometry
 
     //! Returns the number of points.
     int count() const;
-
   signals:
     //! Signal when the number of points changed.
     void countChanged( int count );

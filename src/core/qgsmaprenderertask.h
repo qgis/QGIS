@@ -156,6 +156,8 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
 
     QList< QgsAnnotation * > mAnnotations;
     QList< QgsMapDecoration * > mDecorations;
+    QMap< QString, QString> mLayerIdToLayerNameMap;
+    QStringList mMapLayerOrder;
 
     int mError = 0;
 

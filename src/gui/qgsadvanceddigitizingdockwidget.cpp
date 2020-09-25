@@ -648,10 +648,10 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
   bool res = output.valid;
   QgsPointXY point = output.finalMapPoint;
   mSnappedSegment.clear();
-  if ( output.edgeMatch.hasEdge() )
+  if ( output.snapMatch.hasEdge() )
   {
     QgsPointXY edgePt0, edgePt1;
-    output.edgeMatch.edgePoints( edgePt0, edgePt1 );
+    output.snapMatch.edgePoints( edgePt0, edgePt1 );
     mSnappedSegment << edgePt0 << edgePt1;
   }
   if ( mAngleConstraint->lockMode() != CadConstraint::HardLock )
@@ -667,14 +667,9 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
     }
   }
 
-  // set the point coordinates in the map event
-  e->setMapPoint( point );
-
-  mSnapMatch = context.snappingUtils->snapToMap( point, nullptr, true );
-
-  if ( mSnapMatch.isValid() )
+  if ( output.snapMatch.isValid() )
   {
-    mSnapIndicator->setMatch( mSnapMatch );
+    mSnapIndicator->setMatch( output.snapMatch );
     mSnapIndicator->setVisible( true );
   }
   else
@@ -690,6 +685,8 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
    * when the snapped point corresponds to the constrained point or on an edge
    * if the topological editing is activated.
    */
+  e->setMapPoint( point );
+  mSnapMatch = context.snappingUtils->snapToMap( point, nullptr, true );
   if ( ( mSnapMatch.hasVertex() && ( point == mSnapMatch.point() ) ) || ( mSnapMatch.hasEdge() && QgsProject::instance()->topologicalEditing() ) )
   {
     e->snapPoint();

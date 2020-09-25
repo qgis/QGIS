@@ -118,7 +118,7 @@ class TestQgsLayoutMarker(unittest.TestCase, LayoutItemTestCase):
         marker.setNorthMode(QgsLayoutNorthArrowHandler.TrueNorth)
         marker.setNorthOffset(15)
 
-        #save original item to xml
+        # save original item to xml
         doc = QDomDocument("testdoc")
         elem = doc.createElement("test")
         self.assertTrue(marker.writeXml(elem, doc, QgsReadWriteContext()))

@@ -392,6 +392,15 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
      */
     virtual void postInitialize( const QList< QgsAbstractProcessingParameterWidgetWrapper * > &wrappers );
 
+    /**
+     * Returns the Qt layout "stretch" factor to use when adding this widget to a layout.
+     *
+     * The default implementation returns 0.
+     *
+     * \since QGIS 3.14
+     */
+    virtual int stretch() const;
+
     QgsExpressionContext createExpressionContext() const override;
 
     /**
@@ -634,6 +643,51 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
      * This is purely a text format and no expression validation is made against it.
      */
     virtual QString modelerExpressionFormatString() const;
+
+};
+
+/**
+ * \class QgsProcessingHiddenWidgetWrapper
+ *
+ * An widget wrapper for hidden widgets.
+ *
+ * The hidden widget wrapper allows for creation of a widget wrapper which does not provide
+ * a graphical widget, yet still implements the QgsAbstractProcessingParameterWidgetWrapper
+ * interface.
+ *
+ * \ingroup gui
+ * \since QGIS 3.14
+ */
+class GUI_EXPORT QgsProcessingHiddenWidgetWrapper: public QgsAbstractProcessingParameterWidgetWrapper
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingHiddenWidgetWrapper, for the specified
+     * \a parameter definition and dialog \a type.
+     */
+    QgsProcessingHiddenWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
+                                      QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard,
+                                      QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
+    QVariant widgetValue() const override;
+
+    const QgsVectorLayer *linkedVectorLayer() const override;
+
+    /**
+     * Sets the vector layer linked to the wrapper.
+     */
+    void setLinkedVectorLayer( const QgsVectorLayer *layer );
+
+  protected:
+    QWidget *createWidget() override;
+    QLabel *createLabel() override;
+
+  private:
+
+    QVariant mValue;
+    QPointer < const QgsVectorLayer > mLayer;
 
 };
 

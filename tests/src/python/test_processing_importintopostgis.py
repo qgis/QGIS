@@ -27,7 +27,6 @@ start_app()
 
 
 class ConsoleFeedBack(QgsProcessingFeedback):
-
     _errors = []
 
     def reportError(self, error, fatalError=False):

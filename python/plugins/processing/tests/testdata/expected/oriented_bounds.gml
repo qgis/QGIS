@@ -6,35 +6,35 @@
      xmlns:gml="http://www.opengis.net/gml">
   <gml:boundedBy>
     <gml:Box>
-      <gml:coord><gml:X>-1</gml:X><gml:Y>-3.270344827586211</gml:Y></gml:coord>
-      <gml:coord><gml:X>10.0441379310345</gml:X><gml:Y>6.468552677345371</gml:Y></gml:coord>
+      <gml:coord><gml:X>-1</gml:X><gml:Y>-3.270344827586206</gml:Y></gml:coord>
+      <gml:coord><gml:X>10.04413793103448</gml:X><gml:Y>6.494117647058823</gml:Y></gml:coord>
     </gml:Box>
   </gml:boundedBy>
-                                                                                                               
+                                                                                                              
   <gml:featureMember>
     <ogr:oriented_bounds fid="polys.4">
-      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>6.0,-3.0 7.69811320754717,0.056603773584905 3.80943396226415,2.21698113207547 2.11132075471698,-0.839622641509436 6.0,-3.0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>3.8,2.2 2.11847133757962,-0.882802547770694 6.0,-3.0 7.68152866242039,0.082802547770697 3.8,2.2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
       <ogr:intval>120</ogr:intval>
       <ogr:floatval>-100291.43213</ogr:floatval>
       <ogr:name xsi:nil="true"/>
-      <ogr:width>3.496629</ogr:width>
-      <ogr:height>4.448489</ogr:height>
-      <ogr:angle>119.054604</ogr:angle>
-      <ogr:area>15.554717</ogr:area>
-      <ogr:perimeter>15.890237</ogr:perimeter>
+      <ogr:width>3.511582</ogr:width>
+      <ogr:height>4.421401</ogr:height>
+      <ogr:angle>118.610460</ogr:angle>
+      <ogr:area>15.526115</ogr:area>
+      <ogr:perimeter>15.865967</ogr:perimeter>
     </ogr:oriented_bounds>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:oriented_bounds fid="polys.1">
-      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>5.6332734,5.0792647 3.84029,4.4700214 4.2070166,3.3907567 6,4 5.6332734,5.0792647</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>4.0,4.0 4.67567567567567,3.05405405405406 6.07567567567567,4.05405405405405 5.4,5.0 4.0,4.0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
       <ogr:intval>-33</ogr:intval>
       <ogr:floatval>0</ogr:floatval>
       <ogr:name>Aaaaa</ogr:name>
-      <ogr:width>1.893665</ogr:width>
-      <ogr:height>1.139869</ogr:height>
-      <ogr:angle>161.232595</ogr:angle>
-      <ogr:area>2.158529</ogr:area>
-      <ogr:perimeter>6.067067</ogr:perimeter>
+      <ogr:width>1.162476</ogr:width>
+      <ogr:height>1.720465</ogr:height>
+      <ogr:angle>54.462322</ogr:angle>
+      <ogr:area>2.000000</ogr:area>
+      <ogr:perimeter>5.765883</ogr:perimeter>
     </ogr:oriented_bounds>
   </gml:featureMember>
   <gml:featureMember>
@@ -52,7 +52,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:oriented_bounds fid="polys.3">
-      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>6.4,-3 9.6441379,-3.2703448 10.0441379,1.5296552 6.8,1.8 6.4,-3</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>6.4,-3.0 9.64413793103449,-3.27034482758621 10.0441379310345,1.52965517241379 6.8,1.8 6.4,-3.0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
       <ogr:intval>0</ogr:intval>
       <ogr:floatval xsi:nil="true"/>
       <ogr:name>ASDF</ogr:name>
@@ -65,28 +65,28 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:oriented_bounds fid="polys.2">
-      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>1.1679275,5.4220069 1.6,4.8 3.1065959,5.8465458 2.6745233,6.4685527 1.1679275,5.4220069</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>3.0,6.0 2.57647058823529,6.49411764705882 1.17647058823529,5.29411764705882 1.6,4.8 3.0,6.0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
       <ogr:intval xsi:nil="true"/>
       <ogr:floatval>0.123</ogr:floatval>
       <ogr:name>bbaaa</ogr:name>
-      <ogr:width>0.757350</ogr:width>
-      <ogr:height>1.834418</ogr:height>
-      <ogr:angle>55.214507</ogr:angle>
-      <ogr:area>1.389297</ogr:area>
-      <ogr:perimeter>5.183536</ogr:perimeter>
+      <ogr:width>0.650791</ogr:width>
+      <ogr:height>1.843909</ogr:height>
+      <ogr:angle>49.398705</ogr:angle>
+      <ogr:area>1.200000</ogr:area>
+      <ogr:perimeter>4.989401</ogr:perimeter>
     </ogr:oriented_bounds>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:oriented_bounds fid="polys.5">
-      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>6.0,-3.0 7.69811320754717,0.056603773584905 3.80943396226415,2.21698113207547 2.11132075471698,-0.839622641509436 6.0,-3.0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>3.8,2.2 2.11847133757962,-0.882802547770694 6.0,-3.0 7.68152866242039,0.082802547770697 3.8,2.2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
       <ogr:intval>2</ogr:intval>
       <ogr:floatval>3.33</ogr:floatval>
       <ogr:name>elim</ogr:name>
-      <ogr:width>3.496629</ogr:width>
-      <ogr:height>4.448489</ogr:height>
-      <ogr:angle>119.054604</ogr:angle>
-      <ogr:area>15.554717</ogr:area>
-      <ogr:perimeter>15.890237</ogr:perimeter>
+      <ogr:width>3.511582</ogr:width>
+      <ogr:height>4.421401</ogr:height>
+      <ogr:angle>118.610460</ogr:angle>
+      <ogr:area>15.526115</ogr:area>
+      <ogr:perimeter>15.865967</ogr:perimeter>
     </ogr:oriented_bounds>
   </gml:featureMember>
 </ogr:FeatureCollection>

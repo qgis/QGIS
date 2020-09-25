@@ -22,10 +22,16 @@
 #include "qgshelp.h"
 #include "qgsgui.h"
 
+#include <QDomDocument>
+#include <QDomElement>
+#include <QFileDialog>
+#include <QInputDialog>
 #include <QListView>
 #include <QMessageBox>
 #include <QRegExp>
 #include <QPushButton>
+#include <QTextStream>
+
 
 // constructor used when the query builder must make its own
 // connection to the database
@@ -66,6 +72,16 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
   connect( pbn, &QAbstractButton::clicked, this, &QgsQueryBuilder::clear );
 
+  pbn = new QPushButton( tr( "&Save…" ) );
+  buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
+  pbn->setToolTip( tr( "Save query to QQF file" ) );
+  connect( pbn, &QAbstractButton::clicked, this, &QgsQueryBuilder::saveQuery );
+
+  pbn = new QPushButton( tr( "&Load…" ) );
+  buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
+  pbn->setToolTip( tr( "Load query from QQF file" ) );
+  connect( pbn, &QAbstractButton::clicked, this, &QgsQueryBuilder::loadQuery );
+
   setupGuiViews();
 
   mOrigSubsetString = layer->subsetString();
@@ -91,6 +107,7 @@ void QgsQueryBuilder::showEvent( QShowEvent *event )
 void QgsQueryBuilder::populateFields()
 {
   const QgsFields &fields = mLayer->fields();
+  txtSQL->setFields( fields );
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
     if ( fields.fieldOrigin( idx ) != QgsFields::OriginProvider )
@@ -140,7 +157,7 @@ void QgsQueryBuilder::fillValues( int idx, int limit )
   mModelValues->clear();
 
   // determine the field type
-  QList<QVariant> values = mLayer->uniqueValues( idx, limit ).toList();
+  QList<QVariant> values = qgis::setToList( mLayer->uniqueValues( idx, limit ) );
   std::sort( values.begin(), values.end() );
 
   QString nullValue = QgsApplication::nullRepresentation();
@@ -434,4 +451,85 @@ void QgsQueryBuilder::setDatasourceDescription( const QString &uri )
 void QgsQueryBuilder::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#query-builder" ) );
+}
+
+void QgsQueryBuilder::saveQuery()
+{
+  QgsSettings s;
+  QString lastQueryFileDir = s.value( QStringLiteral( "/UI/lastQueryFileDir" ), QDir::homePath() ).toString();
+  //save as qqf (QGIS query file)
+  QString saveFileName = QFileDialog::getSaveFileName( nullptr, tr( "Save Query to File" ), lastQueryFileDir, tr( "Query files (*.qqf *.QQF)" ) );
+  if ( saveFileName.isNull() )
+  {
+    return;
+  }
+
+  if ( !saveFileName.endsWith( QLatin1String( ".qqf" ), Qt::CaseInsensitive ) )
+  {
+    saveFileName += QLatin1String( ".qqf" );
+  }
+
+  QFile saveFile( saveFileName );
+  if ( !saveFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+  {
+    QMessageBox::critical( nullptr, tr( "Save Query to File" ), tr( "Could not open file for writing." ) );
+    return;
+  }
+
+  QDomDocument xmlDoc;
+  QDomElement queryElem = xmlDoc.createElement( QStringLiteral( "Query" ) );
+  QDomText queryTextNode = xmlDoc.createTextNode( txtSQL->text() );
+  queryElem.appendChild( queryTextNode );
+  xmlDoc.appendChild( queryElem );
+
+  QTextStream fileStream( &saveFile );
+  xmlDoc.save( fileStream, 2 );
+
+  QFileInfo fi( saveFile );
+  s.setValue( QStringLiteral( "/UI/lastQueryFileDir" ), fi.absolutePath() );
+}
+
+void QgsQueryBuilder::loadQuery()
+{
+  QgsSettings s;
+  QString lastQueryFileDir = s.value( QStringLiteral( "/UI/lastQueryFileDir" ), QDir::homePath() ).toString();
+
+  QString queryFileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Query from File" ), lastQueryFileDir, tr( "Query files" ) + " (*.qqf);;" + tr( "All files" ) + " (*)" );
+  if ( queryFileName.isNull() )
+  {
+    return;
+  }
+
+  QFile queryFile( queryFileName );
+  if ( !queryFile.open( QIODevice::ReadOnly ) )
+  {
+    QMessageBox::critical( nullptr, tr( "Load Query from File" ), tr( "Could not open file for reading." ) );
+    return;
+  }
+  QDomDocument queryDoc;
+  if ( !queryDoc.setContent( &queryFile ) )
+  {
+    QMessageBox::critical( nullptr, tr( "Load Query from File" ), tr( "File is not a valid xml document." ) );
+    return;
+  }
+
+  QDomElement queryElem = queryDoc.firstChildElement( QStringLiteral( "Query" ) );
+  if ( queryElem.isNull() )
+  {
+    QMessageBox::critical( nullptr, tr( "Load Query from File" ), tr( "File is not a valid query document." ) );
+    return;
+  }
+
+  QString query = queryElem.text();
+
+  //TODO: test if all the attributes are valid
+  QgsExpression search( query );
+  if ( search.hasParserError() )
+  {
+    QMessageBox::critical( this, tr( "Query Result" ), search.parserErrorString() );
+    return;
+  }
+
+  txtSQL->clear();
+  txtSQL->insertText( query );
 }

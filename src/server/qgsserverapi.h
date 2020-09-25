@@ -111,11 +111,6 @@ class SERVER_EXPORT QgsServerApi
     virtual const QString rootPath() const = 0;
 
     /**
-     * Returns TRUE if the given method is supported by the API, default implementation supports all methods.
-     */
-    virtual bool allowMethod( QgsServerRequest::Method ) const { return true; }
-
-    /**
      * Returns TRUE if the given \a url is handled by the API, default implementation checks for the presence of rootPath inside the \a url path.
      */
     virtual bool accept( const QUrl &url ) const;

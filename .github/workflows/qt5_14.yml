@@ -1,0 +1,38 @@
+name: Build with Qt 5.14
+
+on:
+  push:
+    branches:
+      - master
+      - release-**
+    paths:
+    - 'src/**'
+    - 'tests/**'
+    - 'CMakeLists.txt'
+    - '.github/workflows/**'
+    - '.ci/**'
+  pull_request:
+    branches:
+      - master
+      - release-**
+    paths:
+    - 'src/**'
+    - 'tests/**'
+    - 'CMakeLists.txt'
+    - '.github/workflows/**'
+    - '.ci/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Setup build dependencies
+        run: |
+          docker build -t qgis_build_deps -f .ci/qt5_14/Dockerfile .
+
+      - name: Run build
+        run: |
+          docker run -v $(pwd):/usr/src/qgis qgis_build_deps /usr/src/qgis/.ci/qt5_14/build.sh

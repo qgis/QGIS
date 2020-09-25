@@ -22,6 +22,7 @@
 #include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorfilewriter.h"
+#include "qgslayertree.h"
 
 #include <gdal.h>
 #include "qgsgdalutils.h"
@@ -115,17 +116,22 @@ QgsLayoutGeoPdfExporter::QgsLayoutGeoPdfExporter( QgsLayout *layout )
   const QMap< QString, QgsMapLayer * > layers = mLayout->project()->mapLayers( true );
   for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
   {
-    if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( it.value() ) )
+    if ( QgsMapLayer *ml = it.value() )
     {
-      const QVariant v = vl->customProperty( QStringLiteral( "geopdf/includeFeatures" ) );
-      if ( !v.isValid() || v.toBool() )
+      const QVariant visibility = ml->customProperty( QStringLiteral( "geopdf/initiallyVisible" ), true );
+      mInitialLayerVisibility.insert( ml->id(), !visibility.isValid() ? true : visibility.toBool() );
+      if ( ml->type() == QgsMapLayerType::VectorLayer )
       {
-        exportableLayerIds << vl->id();
+        const QVariant v = ml->customProperty( QStringLiteral( "geopdf/includeFeatures" ) );
+        if ( !v.isValid() || v.toBool() )
+        {
+          exportableLayerIds << ml->id();
+        }
       }
 
-      const QString groupName = vl->customProperty( QStringLiteral( "geopdf/groupName" ) ).toString();
+      const QString groupName = ml->customProperty( QStringLiteral( "geopdf/groupName" ) ).toString();
       if ( !groupName.isEmpty() )
-        mCustomLayerTreeGroups.insert( vl->id(), groupName );
+        mCustomLayerTreeGroups.insert( ml->id(), groupName );
     }
   }
 
@@ -138,6 +144,28 @@ QgsLayoutGeoPdfExporter::QgsLayoutGeoPdfExporter( QgsLayout *layout )
     mMapHandlers.insert( map, handler );
     map->addRenderedFeatureHandler( handler );
   }
+
+  // start with project layer order, and then apply custom layer order if set
+  QStringList geoPdfLayerOrder;
+  const QString presetLayerOrder = mLayout->customProperty( QStringLiteral( "pdfLayerOrder" ) ).toString();
+  if ( !presetLayerOrder.isEmpty() )
+    geoPdfLayerOrder = presetLayerOrder.split( QStringLiteral( "~~~" ) );
+
+  QList< QgsMapLayer * > layerOrder = mLayout->project()->layerTreeRoot()->layerOrder();
+  for ( auto it = geoPdfLayerOrder.rbegin(); it != geoPdfLayerOrder.rend(); ++it )
+  {
+    for ( int i = 0; i < layerOrder.size(); ++i )
+    {
+      if ( layerOrder.at( i )->id() == *it )
+      {
+        layerOrder.move( i, 0 );
+        break;
+      }
+    }
+  }
+
+  for ( const QgsMapLayer *layer : layerOrder )
+    mLayerOrder << layer->id();
 }
 
 QgsLayoutGeoPdfExporter::~QgsLayoutGeoPdfExporter()

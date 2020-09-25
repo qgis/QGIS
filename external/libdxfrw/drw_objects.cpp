@@ -583,7 +583,7 @@ bool DRW_LType::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
   QStringList l;
   for ( unsigned i = 0; i < path.size() ; i++ )
   {
-    l << QStringLiteral( "%1" ).arg( path[i] );
+    l << QString::number( path[i] );
   }
   QgsDebugMsg( QString( "path=%1 rem:%2" ).arg( l.join( " " ) ).arg( buf->numRemainingBytes() ) );
 

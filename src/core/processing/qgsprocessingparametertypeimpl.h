@@ -519,6 +519,58 @@ class CORE_EXPORT QgsProcessingParameterTypePoint : public QgsProcessingParamete
 };
 
 /**
+ * A geometry parameter for processing algorithms.
+ *
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('geometry')
+ * \since QGIS 3.16
+ */
+class CORE_EXPORT QgsProcessingParameterTypeGeometry : public QgsProcessingParameterType
+{
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterGeometry( name );
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A geometry parameter." );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Geometry" );
+    }
+
+    QString id() const override
+    {
+      return QStringLiteral( "geometry" );
+    }
+
+    QString pythonImportString() const override
+    {
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterGeometry" );
+    }
+
+    QString className() const override
+    {
+      return QStringLiteral( "QgsProcessingParameterGeometry" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "str: as Well-Known Text string (WKT)" )
+             << QStringLiteral( "QgsGeometry" )
+             << QStringLiteral( "QgsProperty" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "Well-Known Text string (WKT)" );
+    }
+};
+
+/**
  * An enum based parameter for processing algorithms, allowing for selection from predefined values.
  *
  * \ingroup core
@@ -621,7 +673,7 @@ class CORE_EXPORT QgsProcessingParameterTypeExtent : public QgsProcessingParamet
              << QStringLiteral( "QgsProperty" )
              << QStringLiteral( "QgsRectangle" )
              << QStringLiteral( "QgsReferencedRectangle" )
-             << QStringLiteral( "QgsGeometry: bounding box of geometry is used" );;
+             << QStringLiteral( "QgsGeometry: bounding box of geometry is used" );
     }
 
     QStringList acceptedStringValues() const override

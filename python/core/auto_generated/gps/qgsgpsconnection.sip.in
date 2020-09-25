@@ -111,6 +111,13 @@ Returns the fix status
 
 .. versionadded:: 3.10
 %End
+
+    QString qualityDescription() const;
+%Docstring
+Returns a descriptive string for the signal quality.
+
+.. versionadded:: 3.16
+%End
 };
 
 class QgsGpsConnection : QObject

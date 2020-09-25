@@ -31,6 +31,13 @@ code autocompletion.
 Constructor for QgsCodeEditorSQL
 %End
 
+    void setFields( const QgsFields &fields );
+%Docstring
+Set field names to be added to the lexer API.
+
+.. versionadded:: 3.14
+%End
+
 };
 
 

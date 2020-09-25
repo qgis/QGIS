@@ -37,7 +37,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class RandomExtractWithinSubsets(QgisAlgorithm):
-
     INPUT = 'INPUT'
     METHOD = 'METHOD'
     NUMBER = 'NUMBER'

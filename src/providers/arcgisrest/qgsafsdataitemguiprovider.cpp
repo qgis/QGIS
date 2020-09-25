@@ -16,10 +16,12 @@
 #include "qgsafsdataitemguiprovider.h"
 #include "qgsafsdataitems.h"
 #include "qgsafssourceselect.h"
+#include "qgsmanageconnectionsdialog.h"
 #include "qgsnewhttpconnection.h"
 #include "qgsowsconnection.h"
 
 #include <QDesktopServices>
+#include <QFileDialog>
 #include <QMessageBox>
 
 
@@ -30,6 +32,14 @@ void QgsAfsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
     QAction *actionNew = new QAction( tr( "New Connection…" ), menu );
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
     menu->addAction( actionNew );
+
+    QAction *actionSaveServers = new QAction( tr( "Save Connections…" ), this );
+    connect( actionSaveServers, &QAction::triggered, this, [] { saveConnections(); } );
+    menu->addAction( actionSaveServers );
+
+    QAction *actionLoadServers = new QAction( tr( "Load Connections…" ), this );
+    connect( actionLoadServers, &QAction::triggered, this, [rootItem] { loadConnections( rootItem ); } );
+    menu->addAction( actionLoadServers );
   }
   else if ( QgsAfsConnectionItem *connectionItem = qobject_cast< QgsAfsConnectionItem * >( item ) )
   {
@@ -96,7 +106,7 @@ void QgsAfsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
 void QgsAfsDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
   QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ), QString(), QgsNewHttpConnection::FlagShowHttpSettings );
-  nc.setWindowTitle( tr( "Create a New ArcGIS Feature Server Connection" ) );
+  nc.setWindowTitle( tr( "Create a New ArcGIS Feature Service Connection" ) );
 
   if ( nc.exec() )
   {
@@ -107,7 +117,7 @@ void QgsAfsDataItemGuiProvider::newConnection( QgsDataItem *item )
 void QgsAfsDataItemGuiProvider::editConnection( QgsDataItem *item )
 {
   QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ), item->name(), QgsNewHttpConnection::FlagShowHttpSettings );
-  nc.setWindowTitle( tr( "Modify ArcGIS Feature Server Connection" ) );
+  nc.setWindowTitle( tr( "Modify ArcGIS Feature Service Connection" ) );
 
   if ( nc.exec() )
   {
@@ -138,4 +148,24 @@ void QgsAfsDataItemGuiProvider::refreshConnection( QgsDataItem *item )
   // the parent should be updated
   if ( item->parent() )
     item->parent()->refreshConnections();
+}
+
+void QgsAfsDataItemGuiProvider::saveConnections()
+{
+  QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Export, QgsManageConnectionsDialog::ArcgisFeatureServer );
+  dlg.exec();
+}
+
+void QgsAfsDataItemGuiProvider::loadConnections( QgsDataItem *item )
+{
+  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
+                     tr( "XML files (*.xml *.XML)" ) );
+  if ( fileName.isEmpty() )
+  {
+    return;
+  }
+
+  QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::ArcgisFeatureServer, fileName );
+  if ( dlg.exec() == QDialog::Accepted )
+    item->refreshConnections();
 }

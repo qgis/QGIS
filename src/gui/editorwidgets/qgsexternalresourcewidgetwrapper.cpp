@@ -77,7 +77,7 @@ bool QgsExternalResourceWidgetWrapper::valid() const
   return mLineEdit || mLabel || mQgsWidget;
 }
 
-void QgsExternalResourceWidgetWrapper::setFeature( const QgsFeature &feature )
+void QgsExternalResourceWidgetWrapper::updateProperties( const QgsFeature &feature )
 {
   if ( mQgsWidget && mPropertyCollection.hasActiveProperties() )
   {
@@ -115,12 +115,21 @@ void QgsExternalResourceWidgetWrapper::setFeature( const QgsFeature &feature )
       }
     }
   }
+}
 
+void QgsExternalResourceWidgetWrapper::setFeature( const QgsFeature &feature )
+{
+  updateProperties( feature );
   QgsEditorWidgetWrapper::setFeature( feature );
 }
 
 QWidget *QgsExternalResourceWidgetWrapper::createWidget( QWidget *parent )
 {
+  mForm = qobject_cast<QgsAttributeForm *>( parent );
+
+  if ( mForm )
+    connect( mForm, &QgsAttributeForm::widgetValueChanged, this, &QgsExternalResourceWidgetWrapper::widgetValueChanged );
+
   return new QgsExternalResourceWidget( parent );
 }
 
@@ -185,6 +194,14 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget *editor )
     {
       mQgsWidget->fileWidget()->setFilter( cfg.value( QStringLiteral( "FileWidgetFilter" ) ).toString() );
     }
+    if ( cfg.contains( QStringLiteral( "DocumentViewerHeight" ) ) )
+    {
+      mQgsWidget->setDocumentViewerHeight( cfg.value( QStringLiteral( "DocumentViewerHeight" ) ).toInt( ) );
+    }
+    if ( cfg.contains( QStringLiteral( "DocumentViewerWidth" ) ) )
+    {
+      mQgsWidget->setDocumentViewerWidth( cfg.value( QStringLiteral( "DocumentViewerWidth" ) ).toInt( ) );
+    }
   }
 
   if ( mLineEdit )
@@ -242,6 +259,23 @@ void QgsExternalResourceWidgetWrapper::setEnabled( bool enabled )
 
   if ( mQgsWidget )
     mQgsWidget->setReadOnly( !enabled );
+}
+
+void QgsExternalResourceWidgetWrapper::widgetValueChanged( const QString &attribute, const QVariant &newValue, bool attributeChanged )
+{
+  Q_UNUSED( newValue );
+  if ( attributeChanged )
+  {
+    QgsExpression documentViewerContentExp = QgsExpression( mPropertyCollection.property( QgsEditorWidgetWrapper::DocumentViewerContent ).expressionString() );
+    QgsExpression rootPathExp = QgsExpression( mPropertyCollection.property( QgsEditorWidgetWrapper::RootPath ).expressionString() );
+
+    if ( documentViewerContentExp.referencedColumns().contains( attribute ) ||
+         rootPathExp.referencedColumns().contains( attribute ) )
+    {
+      QgsFeature feature = mForm->currentFormFeature();
+      updateProperties( feature );
+    }
+  }
 }
 
 void QgsExternalResourceWidgetWrapper::updateConstraintWidgetStatus()

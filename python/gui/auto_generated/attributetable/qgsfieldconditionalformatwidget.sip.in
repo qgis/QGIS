@@ -70,7 +70,7 @@ Sets the preset ``styles`` that can be used for quick pick.
     static QList<QgsConditionalStyle> defaultPresets();
 %Docstring
 Returns a list of the default presets. Normally used when the widget is
-created, however calling setPresets() will override the default styles.
+created, however calling :py:func:`~QgsFieldConditionalFormatWidget.setPresets` will override the default styles.
 %End
 
   signals:

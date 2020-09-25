@@ -19,10 +19,12 @@
 
 #define SUBLAYER_SEPARATOR QStringLiteral( "!!::!!" )
 
-QgsDataProvider::QgsDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions )
+QgsDataProvider::QgsDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions,
+                                  QgsDataProvider::ReadFlags flags )
   : mDataSourceURI( uri ),
     mOptions( providerOptions )
 {
+  mReadFlags = flags;
 }
 
 QgsDataProviderTemporalCapabilities *QgsDataProvider::temporalCapabilities()

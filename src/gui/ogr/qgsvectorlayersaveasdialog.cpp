@@ -19,6 +19,7 @@
 #include "qgsvectorlayersaveasdialog.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsvectordataprovider.h"
+#include "qgsogrdataitems.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgseditorwidgetfactory.h"
 #include "qgseditorwidgetregistry.h"
@@ -38,7 +39,7 @@ static const int COLUMN_IDX_EXPORT_AS_DISPLAYED_VALUE = 2;
 
 QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
-  , mCRS( srsid )
+  , mSelectedCrs( QgsCoordinateReferenceSystem::fromSrsId( srsid ) )
   , mAttributeTableItemChangedSlotEnabled( true )
   , mReplaceRawFieldValuesStateChangedSlotEnabled( true )
   , mActionOnExistingFile( QgsVectorFileWriter::CreateOrOverwriteFile )
@@ -56,7 +57,7 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, i
 {
   if ( layer )
   {
-    mCRS = layer->crs().srsid();
+    mSelectedCrs = layer->crs();
     mLayerExtent = layer->extent();
   }
   setup();
@@ -148,9 +149,8 @@ void QgsVectorLayerSaveAsDialog::setup()
     idx = 0;
   }
 
-  QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromSrsId( mCRS );
-  mCrsSelector->setCrs( srs );
-  mCrsSelector->setLayerCrs( srs );
+  mCrsSelector->setCrs( mSelectedCrs );
+  mCrsSelector->setLayerCrs( mSelectedCrs );
   mCrsSelector->setMessage( tr( "Select the coordinate reference system for the vector file. "
                                 "The data points will be transformed from the layer coordinate reference system." ) );
 
@@ -158,14 +158,14 @@ void QgsVectorLayerSaveAsDialog::setup()
   mFormatComboBox_currentIndexChanged( mFormatComboBox->currentIndex() );
 
   //symbology export combo box
-  mSymbologyExportComboBox->addItem( tr( "No symbology" ), QgsVectorFileWriter::NoSymbology );
-  mSymbologyExportComboBox->addItem( tr( "Feature symbology" ), QgsVectorFileWriter::FeatureSymbology );
-  mSymbologyExportComboBox->addItem( tr( "Symbol layer symbology" ), QgsVectorFileWriter::SymbolLayerSymbology );
+  mSymbologyExportComboBox->addItem( tr( "No Symbology" ), QgsVectorFileWriter::NoSymbology );
+  mSymbologyExportComboBox->addItem( tr( "Feature Symbology" ), QgsVectorFileWriter::FeatureSymbology );
+  mSymbologyExportComboBox->addItem( tr( "Symbol Layer Symbology" ), QgsVectorFileWriter::SymbolLayerSymbology );
   mSymbologyExportComboBox_currentIndexChanged( mSymbologyExportComboBox->currentText() );
 
   // extent group box
-  mExtentGroupBox->setOutputCrs( srs );
-  mExtentGroupBox->setOriginalExtent( mLayerExtent, srs );
+  mExtentGroupBox->setOutputCrs( mSelectedCrs );
+  mExtentGroupBox->setOriginalExtent( mLayerExtent, mSelectedCrs );
   mExtentGroupBox->setOutputExtentFromOriginal();
   mExtentGroupBox->setCheckable( true );
   mExtentGroupBox->setChecked( false );
@@ -274,97 +274,58 @@ void QgsVectorLayerSaveAsDialog::accept()
       QgsVectorFileWriter::editionCapabilities( filename() );
     bool layerExists = QgsVectorFileWriter::targetLayerExists( filename(),
                        layername() );
+    QMessageBox msgBox;
+    msgBox.setIcon( QMessageBox::Question );
+    msgBox.setWindowTitle( tr( "Save Vector Layer As" ) );
+    QPushButton *overwriteFileButton = msgBox.addButton( tr( "Overwrite File" ), QMessageBox::ActionRole );
+    QPushButton *overwriteLayerButton = msgBox.addButton( tr( "Overwrite Layer" ), QMessageBox::ActionRole );
+    QPushButton *appendToLayerButton = msgBox.addButton( tr( "Append to Layer" ), QMessageBox::ActionRole );
+    msgBox.setStandardButtons( QMessageBox::Cancel );
+    msgBox.setDefaultButton( QMessageBox::Cancel );
+    overwriteFileButton->hide();
+    overwriteLayerButton->hide();
+    appendToLayerButton->hide();
     if ( layerExists )
     {
       if ( !( caps & QgsVectorFileWriter::CanAppendToExistingLayer ) &&
            ( caps & QgsVectorFileWriter::CanDeleteLayer ) &&
            ( caps & QgsVectorFileWriter::CanAddNewLayer ) )
       {
-        QMessageBox msgBox;
-        msgBox.setIcon( QMessageBox::Question );
-        msgBox.setWindowTitle( tr( "Save Vector Layer As" ) );
         msgBox.setText( tr( "The layer already exists. Do you want to overwrite the whole file or overwrite the layer?" ) );
-        QPushButton *overwriteFileButton = msgBox.addButton( tr( "Overwrite File" ), QMessageBox::ActionRole );
-        QPushButton *overwriteLayerButton = msgBox.addButton( tr( "Overwrite Layer" ), QMessageBox::ActionRole );
-        msgBox.setStandardButtons( QMessageBox::Cancel );
-        msgBox.setDefaultButton( QMessageBox::Cancel );
-        int ret = msgBox.exec();
-        if ( ret == QMessageBox::Cancel )
-          return;
-        if ( msgBox.clickedButton() == overwriteFileButton )
-          mActionOnExistingFile = QgsVectorFileWriter::CreateOrOverwriteFile;
-        else if ( msgBox.clickedButton() == overwriteLayerButton )
-          mActionOnExistingFile = QgsVectorFileWriter::CreateOrOverwriteLayer;
+        overwriteFileButton->setVisible( true );
+        overwriteLayerButton->setVisible( true );
       }
       else if ( !( caps & QgsVectorFileWriter::CanAppendToExistingLayer ) )
       {
-        if ( QMessageBox::question( this,
-                                    tr( "Save Vector Layer As" ),
-                                    tr( "The file already exists. Do you want to overwrite it?" ) ) == QMessageBox::NoButton )
-        {
-          return;
-        }
-        mActionOnExistingFile = QgsVectorFileWriter::CreateOrOverwriteFile;
+        msgBox.setText( tr( "The file already exists. Do you want to overwrite it?" ) );
+        overwriteFileButton->setVisible( true );
       }
       else if ( ( caps & QgsVectorFileWriter::CanDeleteLayer ) &&
                 ( caps & QgsVectorFileWriter::CanAddNewLayer ) )
       {
-        QMessageBox msgBox;
-        msgBox.setIcon( QMessageBox::Question );
-        msgBox.setWindowTitle( tr( "Save Vector Layer As" ) );
         msgBox.setText( tr( "The layer already exists. Do you want to overwrite the whole file, overwrite the layer or append features to the layer?" ) );
-        QPushButton *overwriteFileButton = msgBox.addButton( tr( "Overwrite File" ), QMessageBox::ActionRole );
-        QPushButton *overwriteLayerButton = msgBox.addButton( tr( "Overwrite Layer" ), QMessageBox::ActionRole );
-        QPushButton *appendToLayerButton = msgBox.addButton( tr( "Append to Layer" ), QMessageBox::ActionRole );
-        msgBox.setStandardButtons( QMessageBox::Cancel );
-        msgBox.setDefaultButton( QMessageBox::Cancel );
-        int ret = msgBox.exec();
-        if ( ret == QMessageBox::Cancel )
-          return;
-        if ( msgBox.clickedButton() == overwriteFileButton )
-          mActionOnExistingFile = QgsVectorFileWriter::CreateOrOverwriteFile;
-        else if ( msgBox.clickedButton() == overwriteLayerButton )
-          mActionOnExistingFile = QgsVectorFileWriter::CreateOrOverwriteLayer;
-        else if ( msgBox.clickedButton() == appendToLayerButton )
-          mActionOnExistingFile = QgsVectorFileWriter::AppendToLayerNoNewFields;
+        appendToLayerButton->setVisible( true );
+        overwriteFileButton->setVisible( true );
+        overwriteLayerButton->setVisible( true );
       }
       else
       {
-        QMessageBox msgBox;
-        msgBox.setIcon( QMessageBox::Question );
-        msgBox.setWindowTitle( tr( "Save Vector Layer As" ) );
         msgBox.setText( tr( "The layer already exists. Do you want to overwrite the whole file or append features to the layer?" ) );
-        QPushButton *overwriteFileButton = msgBox.addButton( tr( "Overwrite File" ), QMessageBox::ActionRole );
-        QPushButton *appendToLayerButton = msgBox.addButton( tr( "Append to Layer" ), QMessageBox::ActionRole );
-        msgBox.setStandardButtons( QMessageBox::Cancel );
-        msgBox.setDefaultButton( QMessageBox::Cancel );
-        int ret = msgBox.exec();
-        if ( ret == QMessageBox::Cancel )
-          return;
-        if ( msgBox.clickedButton() == overwriteFileButton )
-          mActionOnExistingFile = QgsVectorFileWriter::CreateOrOverwriteFile;
-        else if ( msgBox.clickedButton() == appendToLayerButton )
-          mActionOnExistingFile = QgsVectorFileWriter::AppendToLayerNoNewFields;
+        appendToLayerButton->setVisible( true );
+        overwriteFileButton->setVisible( true );
       }
 
-      if ( mActionOnExistingFile == QgsVectorFileWriter::AppendToLayerNoNewFields )
-      {
-        if ( QgsVectorFileWriter::areThereNewFieldsToCreate( filename(),
-             layername(),
-             mLayer,
-             selectedAttributes() ) )
-        {
-          if ( QMessageBox::question( this,
-                                      tr( "Save Vector Layer As" ),
-                                      tr( "The existing layer has different fields. Do you want to add the missing fields to the layer?" ) ) == QMessageBox::Yes )
-          {
-            mActionOnExistingFile = QgsVectorFileWriter::AppendToLayerAddFields;
-          }
-        }
-      }
-
+      int ret = msgBox.exec();
+      if ( ret == QMessageBox::Cancel )
+        return;
+      if ( msgBox.clickedButton() == overwriteFileButton )
+        mActionOnExistingFile = QgsVectorFileWriter::CreateOrOverwriteFile;
+      else if ( msgBox.clickedButton() == overwriteLayerButton )
+        mActionOnExistingFile = QgsVectorFileWriter::CreateOrOverwriteLayer;
+      else if ( msgBox.clickedButton() == appendToLayerButton )
+        mActionOnExistingFile = QgsVectorFileWriter::AppendToLayerNoNewFields;
     }
-    else
+    else // !layerExists
     {
       if ( ( caps & QgsVectorFileWriter::CanAddNewLayer ) )
       {
@@ -372,6 +333,7 @@ void QgsVectorLayerSaveAsDialog::accept()
       }
       else
       {
+        // should not reach here, layer does not exist and cannot add new layer
         if ( QMessageBox::question( this,
                                     tr( "Save Vector Layer As" ),
                                     tr( "The file already exists. Do you want to overwrite it?" ) ) == QMessageBox::NoButton )
@@ -380,6 +342,51 @@ void QgsVectorLayerSaveAsDialog::accept()
         }
         mActionOnExistingFile = QgsVectorFileWriter::CreateOrOverwriteFile;
       }
+    }
+  }
+
+  if ( mActionOnExistingFile == QgsVectorFileWriter::AppendToLayerNoNewFields )
+  {
+    if ( QgsVectorFileWriter::areThereNewFieldsToCreate( filename(), layername(), mLayer, selectedAttributes() ) )
+    {
+      if ( QMessageBox::question( this,
+                                  tr( "Save Vector Layer As" ),
+                                  tr( "The existing layer has additional fields. Do you want to add the missing fields to the layer?" ) ) == QMessageBox::Yes )
+      {
+        mActionOnExistingFile = QgsVectorFileWriter::AppendToLayerAddFields;
+      }
+    }
+  }
+  else if ( mActionOnExistingFile == QgsVectorFileWriter::CreateOrOverwriteFile && QFile::exists( filename() ) )
+  {
+    try
+    {
+      const QList<QgsOgrDbLayerInfo *> subLayers = QgsOgrLayerItem::subLayers( filename(), format() );
+      QStringList layerList;
+      for ( const QgsOgrDbLayerInfo *layer : subLayers )
+      {
+        layerList.append( layer->name() );
+      }
+      qDeleteAll( subLayers );
+      if ( layerList.length() > 1 )
+      {
+        layerList.sort( Qt::CaseInsensitive );
+        QMessageBox msgBox;
+        msgBox.setIcon( QMessageBox::Warning );
+        msgBox.setWindowTitle( tr( "Overwrite File" ) );
+        msgBox.setText( tr( "This file contains %1 layers that will be lost!\n" ).arg( QString::number( layerList.length() ) ) );
+        msgBox.setDetailedText( tr( "The following layers will be permanently lost:\n\n%1" ).arg( layerList.join( "\n" ) ) );
+        msgBox.setStandardButtons( QMessageBox::Ok | QMessageBox::Cancel );
+        if ( msgBox.exec() == QMessageBox::Cancel )
+          return;
+      }
+    }
+    catch ( QgsOgrLayerNotValidException &ex )
+    {
+      QMessageBox::critical( this,
+                             tr( "Save Vector Layer As" ),
+                             tr( "Error opening destination file: %1" ).arg( ex.what() ) );
+      return;
     }
   }
 
@@ -728,8 +735,8 @@ void QgsVectorLayerSaveAsDialog::mAttributeTable_itemChanged( QTableWidgetItem *
 
 void QgsVectorLayerSaveAsDialog::mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
-  mCRS = crs.srsid();
-  mExtentGroupBox->setOutputCrs( crs );
+  mSelectedCrs = crs;
+  mExtentGroupBox->setOutputCrs( mSelectedCrs );
 }
 
 QString QgsVectorLayerSaveAsDialog::filename() const
@@ -754,7 +761,12 @@ QString QgsVectorLayerSaveAsDialog::format() const
 
 long QgsVectorLayerSaveAsDialog::crs() const
 {
-  return mCRS;
+  return mSelectedCrs.srsid();
+}
+
+QgsCoordinateReferenceSystem QgsVectorLayerSaveAsDialog::crsObject() const
+{
+  return mSelectedCrs;
 }
 
 QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const

@@ -281,17 +281,17 @@ bool QgsFeatureListModel::sortByDisplayExpression() const
   return mSortByDisplayExpression;
 }
 
-void QgsFeatureListModel::setSortByDisplayExpression( bool sortByDisplayExpression )
+void QgsFeatureListModel::setSortByDisplayExpression( bool sortByDisplayExpression, Qt::SortOrder order )
 {
   mSortByDisplayExpression = sortByDisplayExpression;
 
   // If we are sorting by display expression, we do not support injected null
-  if ( sortByDisplayExpression )
+  if ( mSortByDisplayExpression )
     setInjectNull( false );
 
   setSortRole( QgsAttributeTableModel::SortRole + 1 );
   setDynamicSortFilter( mSortByDisplayExpression );
-  sort( 0 );
+  sort( 0, order );
 }
 
 QModelIndex QgsFeatureListModel::mapToMaster( const QModelIndex &proxyIndex ) const

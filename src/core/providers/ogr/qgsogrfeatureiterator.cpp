@@ -130,8 +130,8 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   {
     //ensure that all fields required for filter expressions are prepared
     QSet<int> attributeIndexes = request.filterExpression()->referencedAttributeIndexes( mSource->mFields );
-    attributeIndexes += attrs.toSet();
-    attrs = attributeIndexes.toList();
+    attributeIndexes += qgis::listToSet( attrs );
+    attrs = qgis::setToList( attributeIndexes );
     mRequest.setSubsetOfAttributes( attrs );
   }
   // also need attributes required by order by
@@ -143,8 +143,8 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
     {
       attributeIndexes << attrIdx;
     }
-    attributeIndexes += attrs.toSet();
-    attrs = attributeIndexes.toList();
+    attributeIndexes += qgis::listToSet( attrs );
+    attrs = qgis::setToList( attributeIndexes );
     mRequest.setSubsetOfAttributes( attrs );
   }
 
@@ -206,6 +206,11 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
         //if only partial success when compiling expression, we need to double-check results using QGIS' expressions
         mExpressionCompiled = ( result == QgsSqlExpressionCompiler::Complete );
         mCompileStatus = ( mExpressionCompiled ? Compiled : PartiallyCompiled );
+      }
+      else if ( !mSource->mSubsetString.isEmpty() )
+      {
+        // OGR rejected the compiled expression. Make sure we restore the original subset string if set (and do the filtering on QGIS' side)
+        OGR_L_SetAttributeFilter( mOgrLayer, mSource->mEncoding->fromUnicode( mSource->mSubsetString ).constData() );
       }
     }
     else if ( mSource->mSubsetString.isEmpty() )

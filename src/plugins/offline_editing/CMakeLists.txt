@@ -20,11 +20,9 @@ SET (offline_editing_plugin_RCCS  offline_editing_plugin.qrc)
 
 QT5_WRAP_UI(offline_editing_plugin_UIS_H ${offline_editing_plugin_UIS})
 
-QT5_ADD_RESOURCES(offline_editing_plugin_RCC_SRCS ${offline_editing_plugin_RCCS})
-
 ADD_LIBRARY (offlineeditingplugin MODULE
   ${offline_editing_plugin_SRCS}
-  ${offline_editing_plugin_RCC_SRCS}
+  ${offline_editing_plugin_RCCS}
   ${offline_editing_plugin_UIS_H}
 )
 
@@ -49,6 +47,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/effects
+  ${CMAKE_SOURCE_DIR}/src/core/textrenderer
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/layertree
   ${CMAKE_SOURCE_DIR}/src/plugins

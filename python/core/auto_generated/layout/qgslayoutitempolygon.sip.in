@@ -9,7 +9,6 @@
 
 
 
-
 class QgsLayoutItemPolygon: QgsLayoutNodesItem
 {
 %Docstring
@@ -48,6 +47,10 @@ The caller takes responsibility for deleting the returned object.
     virtual QString displayName() const;
 
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
+    virtual QgsLayoutItem::Flags itemFlags() const;
+
+    virtual QgsGeometry clipPath() const;
 
 
     QgsFillSymbol *symbol();

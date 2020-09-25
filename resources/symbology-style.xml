@@ -1,5 +1,5 @@
 <!DOCTYPE qgis_style>
-<qgis_style version="1">
+<qgis_style version="2">
   <symbols>
     <symbol force_rhr="0" name="cat trail" alpha="1" tags="Showcase" type="line" clip_to_extent="1">
       <layer enabled="1" class="SimpleLine" locked="0" pass="0">

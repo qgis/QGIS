@@ -114,7 +114,7 @@ Returns the registry of GUI-related components of data providers
     static void enableAutoGeometryRestore( QWidget *widget, const QString &key = QString() );
 %Docstring
 Register the widget to allow its position to be automatically saved and restored when open and closed.
-Use this to avoid needing to call saveGeometry() and restoreGeometry() on your widget.
+Use this to avoid needing to call :py:func:`~QgsGui.saveGeometry` and :py:func:`~QgsGui.restoreGeometry` on your widget.
 %End
 
     static QgsWindowManagerInterface *windowManager();

@@ -1,0 +1,123 @@
+name: Build Docker images for current branches
+
+on:
+  schedule:
+    # runs every day
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+    # POST https://api.github.com/repos/qgis/QGIS/actions/workflows/2264135/dispatches:
+
+jobs:
+  build-docker:
+    runs-on: ubuntu-latest
+
+    env:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      CC: /usr/lib/ccache/gcc
+      CXX: /usr/lib/ccache/g++ # Building SIP binding freezes with Clang in Docker, maybe a SIP issue, maybe not
+
+    strategy:
+      matrix:
+        branch: [master, release-3_10, release-3_14]
+
+    steps:
+      - name: Cache
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.ccache
+          key: docker-build-${{ matrix.branch }}
+
+      - name: checkout ${branch}
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ matrix.branch }}
+
+      - name: Build QGIS Docker image for branch ${{ matrix.branch }}
+        env:
+          branch: ${{ matrix.branch }}
+        run: |
+          export DOCKER_TAG=${branch//master/latest}
+          export DOCKER_BUILD_DEPS_FILE=qgis3-build-deps-focal.dockerfile
+          export DOCKER_DEPS_TAG=${DOCKER_TAG}_focal
+
+          echo "branch: ${branch}"
+          echo "docker tag: ${DOCKER_TAG}"
+          echo "docker deps tag: ${DOCKER_DEPS_TAG}"
+
+          [[ -d ~/.ccache ]] && echo "cache directory (~/.ccache) exists" || mkdir -p ~/.ccache
+          # copy ccache dir within QGIS source so it can be accessed from docker
+          cp -r ~/.ccache/. ./.ccache_image_build
+
+          echo "##[group] QGIS deps Docker pull/rebuild"
+          cd .docker
+          docker --version
+          docker pull "qgis/qgis3-build-deps:${DOCKER_DEPS_TAG}" || true
+          docker build --cache-from "qgis/qgis3-build-deps:${DOCKER_DEPS_TAG}" -t "qgis/qgis3-build-deps:${DOCKER_DEPS_TAG}" -f ${DOCKER_BUILD_DEPS_FILE} .
+          echo "push to qgis/qgis3-build-deps:${DOCKER_DEPS_TAG}"
+          docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+          docker push "qgis/qgis3-build-deps:${DOCKER_DEPS_TAG}"
+          echo "##[endgroup]"
+
+          echo "##[group] Docker QGIS build"
+          DOCKER_BUILD_ARGS="--build-arg DOCKER_DEPS_TAG --build-arg CC --build-arg CXX"
+          docker build ${DOCKER_BUILD_ARGS} \
+                       --cache-from "qgis/qgis:${DOCKER_TAG}" \
+                       -t "qgis/qgis:BUILDER" \
+                       -f qgis.dockerfile ..
+          echo "##[endgroup]"
+
+          echo "##[group] Tag container and copy cache"
+          docker run --name qgis_container qgis/qgis:BUILDER /bin/true
+          docker cp qgis_container:/QGIS/build_exit_value ./build_exit_value
+
+          if [[ $(cat ./build_exit_value) -ne "OK" ]]; then
+            echo "Build failed, not pushing image"
+            exit 1
+          fi
+
+          echo "Copy build cache from Docker container to Travis cache directory"
+          rm -rf ~/.ccache/*
+          mkdir -p ~/.ccache
+          docker cp qgis_container:/QGIS/.ccache_image_build/. ~/.ccache
+          echo "Cache size: "$(du -sh ~/.ccache)
+          echo "##[endgroup]"
+
+          echo "##[group] Finalize image"
+          # enable experimental features in Docker to squash
+          echo '{ "experimental": true}' | sudo tee /etc/docker/daemon.json
+          sudo service docker restart
+          docker build ${DOCKER_BUILD_ARGS} \
+                     --cache-from "qgis/qgis:BUILDER" \
+                     --squash \
+                     -t "qgis/qgis:${DOCKER_TAG}" \
+                     -f qgis.dockerfile ..
+          echo "##[endgroup]"
+
+          echo "##[group] Pushing image to docker hub"
+          docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+          docker push "qgis/qgis:${DOCKER_TAG}"
+          echo "##[endgroup]"
+
+      - name: Trigger PyQGIS API docs build for ${{ matrix.branch }}
+        if: success()
+        env:
+          branch: ${{ matrix.branch }}
+        run: |
+          echo "##[group] Trigger build of PyQGIS Documentation"
+          body='{
+            "ref": "master",
+            "inputs": {"qgis_branch": "__QGIS_VERSION_BRANCH__"}
+          }'
+          body=$(sed "s/__QGIS_VERSION_BRANCH__/${TRAVIS_BRANCH}/;" <<< $body)
+          curl -X POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: token ${GH_TOKEN}" \
+            https://api.github.com/repos/qgis/pyqgis/actions/workflows/2246440/dispatches \
+            -d "${body}"
+          echo "##[endgroup]"
+
+
+

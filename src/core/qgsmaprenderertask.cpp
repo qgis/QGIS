@@ -184,8 +184,11 @@ bool QgsMapRendererTask::run()
     while ( !job->isFinished() )
     {
       QgsAbstractGeoPdfExporter::ComponentLayerDetail component;
+
       component.name = QStringLiteral( "layer_%1" ).arg( outputLayer );
       component.mapLayerId = job->currentLayerId();
+      component.opacity = job->currentLayerOpacity();
+      component.compositionMode = job->currentLayerCompositionMode();
       component.sourcePdfPath = mGeoPdfExporter->generateTemporaryFilepath( QStringLiteral( "layer_%1.pdf" ).arg( outputLayer ) );
       pdfComponents << component;
 
@@ -211,6 +214,9 @@ bool QgsMapRendererTask::run()
     const double pageHeightMM = mMapSettings.outputSize().height() * 25.4 / mMapSettings.outputDpi();
     exportDetails.pageSizeMm = QSizeF( pageWidthMM, pageHeightMM );
     exportDetails.dpi = mMapSettings.outputDpi();
+
+    exportDetails.layerIdToPdfLayerTreeNameMap = mLayerIdToLayerNameMap;
+    exportDetails.layerOrder = mMapLayerOrder;
 
     if ( mSaveWorldFile )
     {
@@ -267,8 +273,8 @@ bool QgsMapRendererTask::run()
       continue;
     }
 
-    context.painter()->save();
-    context.painter()->setRenderHint( QPainter::Antialiasing, context.flags() & QgsRenderContext::Antialiasing );
+    QgsScopedQPainterState painterState( context.painter() );
+    context.setPainterFlagsUsingContext();
 
     double itemX, itemY;
     if ( annotation->hasFixedMapPosition() )
@@ -285,7 +291,6 @@ bool QgsMapRendererTask::run()
     context.painter()->translate( itemX, itemY );
 
     annotation->render( context );
-    context.painter()->restore();
   }
 
   if ( !mFileName.isEmpty() )
@@ -320,7 +325,7 @@ bool QgsMapRendererTask::run()
             f -= 0.5 * e;
             double geoTransform[6] = { c, a, b, f, d, e };
             GDALSetGeoTransform( outputDS.get(), geoTransform );
-            GDALSetProjection( outputDS.get(), mMapSettings.destinationCrs().toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ).toLocal8Bit().constData() );
+            GDALSetProjection( outputDS.get(), mMapSettings.destinationCrs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ).toLocal8Bit().constData() );
           }
 
           if ( mExportMetadata )
@@ -396,7 +401,7 @@ bool QgsMapRendererTask::run()
             f -= 0.5 * e;
             double geoTransform[] = { c, a, b, f, d, e };
             GDALSetGeoTransform( outputDS.get(), geoTransform );
-            GDALSetProjection( outputDS.get(), mMapSettings.destinationCrs().toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ).toLocal8Bit().constData() );
+            GDALSetProjection( outputDS.get(), mMapSettings.destinationCrs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ).toLocal8Bit().constData() );
           }
         }
 
@@ -445,6 +450,14 @@ void QgsMapRendererTask::prepare()
       mRenderedFeatureHandler = qgis::make_unique< QgsMapRendererTaskRenderedFeatureHandler >( static_cast< QgsMapRendererTaskGeoPdfExporter * >( mGeoPdfExporter.get() ), mMapSettings );
       mMapSettings.addRenderedFeatureHandler( mRenderedFeatureHandler.get() );
     }
+
+    const QList< QgsMapLayer * > layers = mMapSettings.layers();
+    for ( const QgsMapLayer *layer : layers )
+    {
+      mLayerIdToLayerNameMap.insert( layer->id(), layer->name() );
+      mMapLayerOrder << layer->id();
+    }
+
     mJob.reset( new QgsMapRendererStagedRenderJob( mMapSettings, QgsMapRendererStagedRenderJob::RenderLabelsByMapLayer ) );
     mJob->start();
     return;

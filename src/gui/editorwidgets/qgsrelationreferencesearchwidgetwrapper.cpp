@@ -72,6 +72,11 @@ QgsSearchWidgetWrapper::FilterFlags QgsRelationReferenceSearchWidgetWrapper::sup
   return EqualTo | NotEqualTo | IsNull | IsNotNull;
 }
 
+QgsSearchWidgetWrapper::FilterFlags QgsRelationReferenceSearchWidgetWrapper::defaultFlags() const
+{
+  return EqualTo;
+}
+
 QString QgsRelationReferenceSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const
 {
   QString fieldName = createFieldIdentifier();
@@ -96,9 +101,17 @@ QString QgsRelationReferenceSearchWidgetWrapper::createExpression( QgsSearchWidg
     case QVariant::ULongLong:
     {
       if ( flags & EqualTo )
+      {
+        if ( v.isNull() )
+          return fieldName + " IS NULL";
         return fieldName + '=' + v.toString();
+      }
       else if ( flags & NotEqualTo )
+      {
+        if ( v.isNull() )
+          return fieldName + " IS NOT NULL";
         return fieldName + "<>" + v.toString();
+      }
       break;
     }
 
@@ -143,7 +156,7 @@ void QgsRelationReferenceSearchWidgetWrapper::onValueChanged( const QVariant &va
 
 void QgsRelationReferenceSearchWidgetWrapper::onValuesChanged( const QVariantList &values )
 {
-  if ( !values.isEmpty() )
+  if ( values.isEmpty() )
   {
     clearExpression();
     emit valueCleared();
@@ -204,10 +217,14 @@ void QgsRelationReferenceSearchWidgetWrapper::initWidget( QWidget *editor )
   {
     mWidget->setFilterFields( config( QStringLiteral( "FilterFields" ) ).toStringList() );
     mWidget->setChainFilters( config( QStringLiteral( "ChainFilters" ) ).toBool() );
+    mWidget->setFilterExpression( config( QStringLiteral( "FilterExpression" ) ).toString() );
   }
 
   QgsRelation relation = QgsProject::instance()->relationManager()->relation( config( QStringLiteral( "Relation" ) ).toString() );
-  mWidget->setRelation( relation, false );
+  // if no relation is given from the config, fetch one if there is only one available
+  if ( !relation.isValid() && !layer()->referencingRelations( mFieldIdx ).isEmpty() && layer()->referencingRelations( mFieldIdx ).count() == 1 )
+    relation = layer()->referencingRelations( mFieldIdx )[0];
+  mWidget->setRelation( relation, config( QStringLiteral( "AllowNULL" ) ).toBool() );
 
   mWidget->showIndeterminateState();
   connect( mWidget, &QgsRelationReferenceWidget::foreignKeysChanged, this, &QgsRelationReferenceSearchWidgetWrapper::onValuesChanged );

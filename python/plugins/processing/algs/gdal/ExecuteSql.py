@@ -21,7 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'November 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-
 from qgis.core import (QgsProcessingException,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSource,
@@ -33,7 +32,6 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 
 
 class ExecuteSql(GdalAlgorithm):
-
     INPUT = 'INPUT'
     SQL = 'SQL'
     DIALECT = 'DIALECT'

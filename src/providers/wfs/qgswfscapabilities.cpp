@@ -132,13 +132,15 @@ class CPLXMLTreeUniquePointer
     /**
      * Returns the node pointer/
      * Modifying the contents pointed to by the return is allowed.
-     * \return the node pointer */
+     * \return the node pointer
+    */
     CPLXMLNode *get() const { return the_data_; }
 
     /**
      * Returns the node pointer/
      * Modifying the contents pointed to by the return is allowed.
-     * \return the node pointer */
+     * \return the node pointer
+    */
     CPLXMLNode *operator->() const { return get(); }
 
   private:
@@ -176,11 +178,24 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
   // handle exceptions
   if ( doc.tagName() == QLatin1String( "ExceptionReport" ) )
   {
-    QDomNode ex = doc.firstChild();
+    QDomNode ex = doc.firstChild(); // Get Exception element
     QString exc = ex.toElement().attribute( QStringLiteral( "exceptionCode" ), QStringLiteral( "Exception" ) );
-    QDomElement ext = ex.firstChild().toElement();
+    QDomElement ext = ex.firstChild().toElement(); // Get ExceptionText element
     mErrorCode = QgsWfsRequest::ServerExceptionError;
     mErrorMessage = exc + ": " + ext.firstChild().nodeValue();
+    emit gotCapabilities();
+    return;
+  }
+
+  // handle WMS exceptions as well (to be nice with users...)
+  // See https://github.com/qgis/QGIS/issues/29866
+  if ( doc.tagName() == QLatin1String( "ServiceExceptionReport" ) )
+  {
+    QDomNode ex = doc.firstChild(); // Get ServiceExceptionReport element
+    QString exc = ex.toElement().attribute( QStringLiteral( "code" ), QStringLiteral( "Exception" ) );
+    QDomElement ext = ex.toElement();
+    mErrorCode = QgsWfsRequest::ServerExceptionError;
+    mErrorMessage = exc + ": " + ext.firstChild().nodeValue().trimmed();
     emit gotCapabilities();
     return;
   }

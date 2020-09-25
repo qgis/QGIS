@@ -33,7 +33,10 @@ QModelIndex QgsFieldModel::indexFromName( const QString &fieldName )
 {
   QString fldName( fieldName ); // we may need a copy
 
-  if ( mLayer )
+  // only non-empty names should be used here, as by default all fields
+  // have no aliases set and calling key() fill return just first value
+  // from the aliases map
+  if ( mLayer && !fldName.isEmpty() )
   {
     // the name could be an alias
     // it would be better to have "display name" directly in QgsFields

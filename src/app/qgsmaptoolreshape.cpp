@@ -27,6 +27,7 @@
 QgsMapToolReshape::QgsMapToolReshape( QgsMapCanvas *canvas )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine )
 {
+  mToolName = tr( "Reshape features" );
 }
 
 void QgsMapToolReshape::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
@@ -157,12 +158,27 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
           QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures;
           ignoreFeatures.insert( vlayer, vlayer->allFeatureIds() );
 
-          if ( geom.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers(), ignoreFeatures ) != 0 )
+          QList<QgsVectorLayer *>  avoidIntersectionsLayers;
+          switch ( QgsProject::instance()->avoidIntersectionsMode() )
           {
-            emit messageEmitted( tr( "An error was reported during intersection removal" ), Qgis::Critical );
-            vlayer->destroyEditCommand();
-            stopCapturing();
-            return;
+            case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:
+              avoidIntersectionsLayers.append( vlayer );
+              break;
+            case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsLayers:
+              avoidIntersectionsLayers = QgsProject::instance()->avoidIntersectionsLayers();
+              break;
+            case QgsProject::AvoidIntersectionsMode::AllowIntersections:
+              break;
+          }
+          if ( avoidIntersectionsLayers.size() > 0 )
+          {
+            if ( geom.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers(), ignoreFeatures ) != 0 )
+            {
+              emit messageEmitted( tr( "An error was reported during intersection removal" ), Qgis::Critical );
+              vlayer->destroyEditCommand();
+              stopCapturing();
+              return;
+            }
           }
 
           if ( geom.isEmpty() ) //intersection removal might have removed the whole geometry

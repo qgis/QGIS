@@ -48,6 +48,7 @@ QgsRasterPipe::QgsRasterPipe( const QgsRasterPipe &pipe )
       mRoleMap.insert( role, i );
     }
   }
+  setResamplingStage( pipe.resamplingStage() );
 }
 
 QgsRasterPipe::~QgsRasterPipe()
@@ -163,7 +164,7 @@ bool QgsRasterPipe::set( QgsRasterInterface *interface )
 {
   if ( !interface ) return false;
 
-  QgsDebugMsgLevel( QStringLiteral( "%1" ).arg( typeid( *interface ).name() ), 4 );
+  QgsDebugMsgLevel( typeid( *interface ).name(), 4 );
   Role role = interfaceRole( interface );
 
   // We don't know where to place unknown interface
@@ -339,4 +340,15 @@ bool QgsRasterPipe::setOn( int idx, bool on )
 bool QgsRasterPipe::checkBounds( int idx ) const
 {
   return !( idx < 0 || idx >= mInterfaces.size() );
+}
+
+void QgsRasterPipe::setResamplingStage( ResamplingStage stage )
+{
+  mResamplingStage = stage;
+  setOn( ResamplerRole, stage == ResamplingStage::ResampleFilter );
+  QgsRasterDataProvider *l_provider = provider();
+  if ( l_provider )
+  {
+    l_provider->enableProviderResampling( stage == ResamplingStage::Provider );
+  }
 }

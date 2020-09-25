@@ -36,14 +36,19 @@ class GUI_EXPORT QgsAttributeFormContainerEdit: public QWidget, private Ui_QgsAt
     Q_OBJECT
 
   public:
-    explicit QgsAttributeFormContainerEdit( QTreeWidgetItem *item, QWidget *parent = nullptr );
+    explicit QgsAttributeFormContainerEdit( QTreeWidgetItem *item, QgsVectorLayer *layer, QWidget *parent = nullptr );
 
+    /**
+     * Register an expression context generator class that will be used to retrieve
+     * an expression context for the widget when required.
+     * \since QGIS 3.14
+     */
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 
     void updateItemData();
 
-
   private:
-    QTreeWidgetItem *mTreeItem;
+    QTreeWidgetItem *mTreeItem = nullptr;
 };
 
 #endif // QGSATTRIBUTEFORMCONTAINEREDIT_H

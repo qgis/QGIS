@@ -21,6 +21,7 @@
 #include <Qt3DCore/QEntity>
 
 #include "qgsfeatureid.h"
+#include "qgsshadowrenderingframegraph.h"
 
 namespace Qt3DRender
 {
@@ -38,6 +39,7 @@ namespace Qt3DLogic
 namespace Qt3DExtras
 {
   class QForwardRenderer;
+  class QSkyboxEntity;
 }
 
 class QgsAbstract3DEngine;
@@ -48,11 +50,19 @@ class Qgs3DMapScenePickHandler;
 class Qgs3DMapSettings;
 class QgsTerrainEntity;
 class QgsChunkedEntity;
+class QgsSkyboxEntity;
+class QgsSkyboxSettings;
+class Qgs3DMapExportSettings;
+class QgsShadowRenderingFrameGraph;
+class QgsPostprocessingEntity;
 
+
+#define SIP_NO_FILE
 
 /**
  * \ingroup 3d
  * Entity that encapsulates our 3D scene - contains all other entities (such as terrain) as children.
+ * \note Not available in Python bindings
  * \since QGIS 3.0
  */
 class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
@@ -100,6 +110,8 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
      */
     float worldSpaceError( float epsilon, float distance );
 
+    //! Exports the scene according to the scene export settings
+    void exportScene( const Qgs3DMapExportSettings &exportSettings );
   signals:
     //! Emitted when the current terrain entity is replaced by a new one
     void terrainEntityChanged();
@@ -130,6 +142,9 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void updateLights();
     void updateCameraLens();
     void onRenderersChanged();
+    void onSkyboxSettingsChanged();
+    void onShadowSettingsChanged();
+
   private:
     void addLayerEntity( QgsMapLayer *layer );
     void removeLayerEntity( QgsMapLayer *layer );
@@ -160,6 +175,10 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     QList<Qgs3DMapScenePickHandler *> mPickHandlers;
     //! List of lights in the scene
     QList<Qt3DCore::QEntity *> mLightEntities;
+    //! List of light origins in the scene
+    QList<Qt3DCore::QEntity *> mLightOriginEntities;
+    QList<QgsMapLayer *> mModelVectorLayers;
+    QgsSkyboxEntity *mSkybox = nullptr;
 };
 
 #endif // QGS3DMAPSCENE_H

@@ -49,6 +49,11 @@ QStringList QgsRasterizeAlgorithm::tags() const
   return QObject::tr( "layer,raster,convert,file,map themes,tiles,render" ).split( ',' );
 }
 
+QgsProcessingAlgorithm::Flags QgsRasterizeAlgorithm::flags() const
+{
+  return QgsProcessingAlgorithm::flags() | FlagRequiresProject;
+}
+
 QString QgsRasterizeAlgorithm::group() const
 {
   return QObject::tr( "Raster tools" );
@@ -173,7 +178,7 @@ QVariantMap QgsRasterizeAlgorithm::processAlgorithm( const QVariantMap &paramete
     throw QgsProcessingException( QObject::tr( "Error creating GDAL output layer" ) );
   }
 
-  GDALSetProjection( hOutputDataset.get(), context.project()->crs().toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ).toLatin1().constData() );
+  GDALSetProjection( hOutputDataset.get(), context.project()->crs().toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ).toLatin1().constData() );
   double geoTransform[6];
   geoTransform[0] = extent.xMinimum();
   geoTransform[1] = mapUnitsPerPixel;

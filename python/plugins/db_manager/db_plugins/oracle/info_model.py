@@ -575,7 +575,7 @@ class ORVectorTableInfo(ORTableInfo, VectorTableInfo):
             (QApplication.translate("DBManagerPlugin", "Geometry:"),
              self.table.geomType),
             (QApplication.translate("DBManagerPlugin",
-                                    "Qgis Geometry type:"),
+                                    "QGIS Geometry type:"),
              QgsWkbTypes.displayString(self.table.wkbType))
         ]
 

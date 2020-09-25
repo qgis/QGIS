@@ -14,6 +14,7 @@ __copyright__ = 'Copyright 2019, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
+import time
 from test_qgsproviderconnection_base import TestPyQgsProviderConnectionBase
 from qgis.core import (
     QgsWkbTypes,
@@ -24,6 +25,7 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsRasterLayer,
     QgsDataSourceUri,
+    QgsSettings,
 )
 from qgis.testing import unittest
 from osgeo import gdal
@@ -36,6 +38,9 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
     uri = ''
     # Provider test cases must define the provider name (e.g. "postgres" or "ogr")
     providerKey = 'postgres'
+
+    # Provider test cases can define a slowQuery for executeSql cancellation test
+    slowQuery = "select pg_sleep(30)"
 
     @classmethod
     def setUpClass(cls):
@@ -68,6 +73,16 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
 
         rl = QgsRasterLayer(conn.tableUri('qgis_test', 'Raster1'), 'r1', 'postgresraster')
         self.assertTrue(rl.isValid())
+
+    def test_sslmode_store(self):
+        """Test that sslmode is stored as a string in the settings"""
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        conn = md.createConnection('database=\'mydb\' username=\'myuser\' password=\'mypasswd\' sslmode=verify-ca', {})
+        conn.store('my_sslmode_test')
+        settings = QgsSettings()
+        settings.beginGroup('/PostgreSQL/connections/my_sslmode_test')
+        self.assertEqual(settings.value("sslmode"), 'SslVerifyCa')
+        self.assertEqual(settings.enumValue("sslmode", QgsDataSourceUri.SslPrefer), QgsDataSourceUri.SslVerifyCa)
 
     def test_postgis_geometry_filter(self):
         """Make sure the postgres provider only returns one matching geometry record and no polygons etc."""
@@ -305,6 +320,39 @@ IMPORT FOREIGN SCHEMA qgis_test LIMIT TO ( "someData" )
 """.format(host=host, user=user, port=port, dbname=dbname, password=password, service=service)
         conn.executeSql(foreign_table_definition)
         self.assertEquals(conn.tables('foreign_schema', QgsAbstractDatabaseProviderConnection.Foreign)[0].tableName(), 'someData')
+
+    def test_fields(self):
+        """Test fields"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        conn = md.createConnection(self.uri, {})
+        fields = conn.fields('qgis_test', 'someData')
+        self.assertEqual(fields.names(), ['pk', 'cnt', 'name', 'name2', 'num_char', 'dt', 'date', 'time', 'geom'])
+
+    def test_fields_no_pk(self):
+        """Test issue: no fields are exposed for raster_columns"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        conn = md.createConnection(self.uri, {})
+        self.assertTrue(conn.tableExists('public', 'raster_columns'))
+        fields = conn.fields("public", "raster_columns")
+        self.assertTrue(set(fields.names()).issuperset({
+            'r_table_catalog',
+            'r_table_schema',
+            'r_table_name',
+            'r_raster_column',
+            'srid',
+            'scale_x',
+            'scale_y',
+            'blocksize_x',
+            'blocksize_y',
+            'same_alignment',
+            'regular_blocking',
+            'num_bands',
+            'pixel_types',
+            'nodata_values',
+            'out_db',
+            'spatial_index'}))
 
 
 if __name__ == '__main__':

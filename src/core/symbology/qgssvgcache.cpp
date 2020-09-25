@@ -204,11 +204,11 @@ QPicture QgsSvgCache::svgAsPicture( const QString &path, double size, const QCol
 }
 
 QByteArray QgsSvgCache::svgContent( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                                    double widthScaleFactor, double fixedAspectRatio, bool blocking )
+                                    double widthScaleFactor, double fixedAspectRatio, bool blocking, bool *isMissingImage )
 {
   QMutexLocker locker( &mMutex );
 
-  QgsSvgCacheEntry *currentEntry = cacheEntry( path, size, fill, stroke, strokeWidth, widthScaleFactor, fixedAspectRatio, blocking );
+  QgsSvgCacheEntry *currentEntry = cacheEntry( path, size, fill, stroke, strokeWidth, widthScaleFactor, fixedAspectRatio, blocking, isMissingImage );
 
   return currentEntry->svgContent;
 }
@@ -289,8 +289,10 @@ void QgsSvgCache::replaceParamsAndCacheSvg( QgsSvgCacheEntry *entry, bool blocki
     return;
   }
 
+  const QByteArray content = getContent( entry->path, mMissingSvg, mFetchingSvg, blocking ) ;
+  entry->isMissingImage = content == mMissingSvg;
   QDomDocument svgDoc;
-  if ( !svgDoc.setContent( getContent( entry->path, mMissingSvg, mFetchingSvg, blocking ) ) )
+  if ( !svgDoc.setContent( content ) )
   {
     return;
   }
@@ -304,6 +306,7 @@ void QgsSvgCache::replaceParamsAndCacheSvg( QgsSvgCacheEntry *entry, bool blocki
   replaceElemParams( docElem, entry->fill, entry->stroke, entry->strokeWidth * sizeScaleFactor );
 
   entry->svgContent = svgDoc.toByteArray( 0 );
+
 
   // toByteArray screws up tspans inside text by adding new lines before and after each span... this should help, at the
   // risk of potentially breaking some svgs where the newline is desired
@@ -345,7 +348,31 @@ double QgsSvgCache::calcSizeScaleFactor( QgsSvgCacheEntry *entry, const QDomElem
 
   //could not find valid viewbox attribute
   if ( viewBox.isEmpty() )
+  {
+    // trying looking for width/height and use them as a fallback
+    if ( docElem.tagName() == QLatin1String( "svg" ) && docElem.hasAttribute( QStringLiteral( "width" ) ) )
+    {
+      const QString widthString = docElem.attribute( QStringLiteral( "width" ) );
+      const QRegularExpression measureRegEx( QStringLiteral( "([\\d\\.]+).*?$" ) );
+      const QRegularExpressionMatch widthMatch = measureRegEx.match( widthString );
+      if ( widthMatch.hasMatch() )
+      {
+        double width = widthMatch.captured( 1 ).toDouble();
+        const QString heightString = docElem.attribute( QStringLiteral( "height" ) );
+
+        const QRegularExpressionMatch heightMatch = measureRegEx.match( heightString );
+        if ( heightMatch.hasMatch() )
+        {
+          double height = heightMatch.captured( 1 ).toDouble();
+          viewboxSize = QSizeF( width, height );
+          return width / entry->size;
+        }
+      }
+    }
+
     return 1.0;
+  }
+
 
   //width should be 3rd element in a 4 part space delimited string
   QStringList parts = viewBox.split( ' ' );
@@ -404,6 +431,8 @@ void QgsSvgCache::cacheImage( QgsSvgCacheEntry *entry )
   std::unique_ptr< QImage > image = qgis::make_unique< QImage >( imageSize, QImage::Format_ARGB32_Premultiplied );
   image->fill( 0 ); // transparent background
 
+  const bool isFixedAR = entry->fixedAspectRatio > 0;
+
   QPainter p( image.get() );
   QSvgRenderer r( entry->svgContent );
   if ( qgsDoubleNear( viewBoxSize.width(), viewBoxSize.height() ) )
@@ -413,7 +442,7 @@ void QgsSvgCache::cacheImage( QgsSvgCacheEntry *entry )
   else
   {
     QSizeF s( viewBoxSize );
-    s.scale( scaledSize.width(), scaledSize.height(), Qt::KeepAspectRatio );
+    s.scale( scaledSize.width(), scaledSize.height(), isFixedAR ? Qt::IgnoreAspectRatio : Qt::KeepAspectRatio );
     QRectF rect( ( imageSize.width() - s.width() ) / 2, ( imageSize.height() - s.height() ) / 2, s.width(), s.height() );
     r.render( &p, rect );
   }
@@ -465,7 +494,7 @@ void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput 
 }
 
 QgsSvgCacheEntry *QgsSvgCache::cacheEntry( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-    double widthScaleFactor, double fixedAspectRatio, bool blocking )
+    double widthScaleFactor, double fixedAspectRatio, bool blocking, bool *isMissingImage )
 {
   QgsSvgCacheEntry *currentEntry = findExistingEntry( new QgsSvgCacheEntry( path, size, strokeWidth, widthScaleFactor, fill, stroke, fixedAspectRatio ) );
 
@@ -473,6 +502,9 @@ QgsSvgCacheEntry *QgsSvgCache::cacheEntry( const QString &path, double size, con
   {
     replaceParamsAndCacheSvg( currentEntry, blocking );
   }
+
+  if ( isMissingImage )
+    *isMissingImage = currentEntry->isMissingImage;
 
   return currentEntry;
 }

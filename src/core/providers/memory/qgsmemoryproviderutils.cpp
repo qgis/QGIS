@@ -65,7 +65,10 @@ QgsVectorLayer *QgsMemoryProviderUtils::createMemoryLayer( const QString &name, 
   QStringList parts;
   if ( crs.isValid() )
   {
-    parts << QStringLiteral( "crs=" ) + crs.authid();
+    if ( !crs.authid().isEmpty() )
+      parts << QStringLiteral( "crs=%1" ).arg( crs.authid() );
+    else
+      parts << QStringLiteral( "crs=wkt:%1" ).arg( crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
   }
   for ( const auto &field : fields )
   {

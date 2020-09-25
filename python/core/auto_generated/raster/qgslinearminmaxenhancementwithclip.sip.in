@@ -27,6 +27,9 @@ linearly between min and max.
 
     virtual bool isValueInDisplayableRange( double );
 
+
+  private:
+    QgsLinearMinMaxEnhancementWithClip &operator=( const QgsLinearMinMaxEnhancementWithClip & );
 };
 
 /************************************************************************

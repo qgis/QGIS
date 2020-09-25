@@ -557,7 +557,7 @@ class SpatiaLiteDBConnector(DBConnector):
         self.connection.isolation_level = None
         c = self._get_cursor()
         c.execute('VACUUM')
-        self.connection.isolation_level = '' # reset to default isolation
+        self.connection.isolation_level = ''  # reset to default isolation
 
     def addTableColumn(self, table, field_def):
         """Adds a column to table """
@@ -691,31 +691,31 @@ class SpatiaLiteDBConnector(DBConnector):
     #       pass
 
     # moved into the parent class: DbConnector._execute_and_commit()
-    #def _execute_and_commit(self, sql):
+    # def _execute_and_commit(self, sql):
     #       pass
 
     # moved into the parent class: DbConnector._get_cursor()
-    #def _get_cursor(self, name=None):
+    # def _get_cursor(self, name=None):
     #       pass
 
     # moved into the parent class: DbConnector._fetchall()
-    #def _fetchall(self, c):
+    # def _fetchall(self, c):
     #       pass
 
     # moved into the parent class: DbConnector._fetchone()
-    #def _fetchone(self, c):
+    # def _fetchone(self, c):
     #       pass
 
     # moved into the parent class: DbConnector._commit()
-    #def _commit(self):
+    # def _commit(self):
     #       pass
 
     # moved into the parent class: DbConnector._rollback()
-    #def _rollback(self):
+    # def _rollback(self):
     #       pass
 
     # moved into the parent class: DbConnector._get_cursor_columns()
-    #def _get_cursor_columns(self, c):
+    # def _get_cursor_columns(self, c):
     #       pass
 
     def getSqlDictionary(self):

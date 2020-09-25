@@ -170,7 +170,7 @@ QVariant QgsLayoutModel::data( const QModelIndex &index, int role ) const
       return item->uuid();
     case Qt::UserRole+1:
       //user role stores reference in column object
-      return qVariantFromValue( qobject_cast<QObject *>( item ) );
+      return QVariant::fromValue( qobject_cast<QObject *>( item ) );
 
     case Qt::TextAlignmentRole:
       return Qt::AlignLeft & Qt::AlignVCenter;
@@ -244,11 +244,11 @@ QVariant QgsLayoutModel::headerData( int section, Qt::Orientation orientation, i
     {
       if ( section == Visibility )
       {
-        return qVariantFromValue( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayersGray.svg" ) ) );
+        return QVariant::fromValue( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayersGray.svg" ) ) );
       }
       else if ( section == LockStatus )
       {
-        return qVariantFromValue( QgsApplication::getThemeIcon( QStringLiteral( "/lockedGray.svg" ) ) );
+        return QVariant::fromValue( QgsApplication::getThemeIcon( QStringLiteral( "/lockedGray.svg" ) ) );
       }
 
       return QVariant();
@@ -1000,6 +1000,17 @@ bool QgsLayoutProxyModel::allowEmptyItem() const
   return mAllowEmpty;
 }
 
+void QgsLayoutProxyModel::setItemFlags( QgsLayoutItem::Flags flags )
+{
+  mItemFlags = flags;
+  invalidateFilter();
+}
+
+QgsLayoutItem::Flags QgsLayoutProxyModel::itemFlags() const
+{
+  return mItemFlags;
+}
+
 void QgsLayoutProxyModel::setFilterType( QgsLayoutItemRegistry::ItemType filter )
 {
   mItemTypeFilter = filter;
@@ -1031,6 +1042,11 @@ bool QgsLayoutProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &so
   // filter by type
   if ( mItemTypeFilter != QgsLayoutItemRegistry::LayoutItem && item->type() != mItemTypeFilter )
     return false;
+
+  if ( mItemFlags && !( item->itemFlags() & mItemFlags ) )
+  {
+    return false;
+  }
 
   return true;
 }

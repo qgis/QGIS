@@ -68,6 +68,7 @@ class GUI_EXPORT QgsValueMapWidgetWrapper : public QgsEditorWidgetWrapper
     void updateValues( const QVariant &value, const QVariantList & = QVariantList() ) override;
 
     QComboBox *mComboBox = nullptr;
+
 };
 
 #endif // QGSVALUEMAPWIDGETWRAPPER_H

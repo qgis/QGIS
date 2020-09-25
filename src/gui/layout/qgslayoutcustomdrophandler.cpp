@@ -31,3 +31,8 @@ bool QgsLayoutCustomDropHandler::handleFileDrop( QgsLayoutDesignerInterface *, Q
 {
   return false;
 }
+
+bool QgsLayoutCustomDropHandler::handlePaste( QgsLayoutDesignerInterface *, QPointF, const QMimeData *, QList<QgsLayoutItem *> & )
+{
+  return false;
+}

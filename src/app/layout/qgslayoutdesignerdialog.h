@@ -64,6 +64,7 @@ class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
     QgsMessageBar *messageBar() override;
     void selectItems( const QList< QgsLayoutItem * > &items ) override;
     void setAtlasPreviewEnabled( bool enabled ) override;
+    void setAtlasFeature( const QgsFeature &feature ) override;
     bool atlasPreviewEnabled() const override;
     void showItemOptions( QgsLayoutItem *item, bool bringPanelToFront = true ) override;
     QMenu *layoutMenu() override;
@@ -101,7 +102,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
 
   public:
 
-    QgsLayoutDesignerDialog( QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
+    QgsLayoutDesignerDialog( QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
 
     /**
      * Returns the designer interface for the dialog.
@@ -178,7 +179,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     /**
      * Sets the specified feature as the current atlas feature
      */
-    void setAtlasFeature( QgsMapLayer *layer, const QgsFeature &feat );
+    void setAtlasFeature( const QgsFeature &feature );
 
     /**
      * Sets a section \a title, to use to update the dialog title to display
@@ -487,6 +488,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
 
     QgsLayoutGuideWidget *mGuideWidget = nullptr;
 
+    bool mIsExportingAtlas = false;
+
     //! Save window state
     void saveWindowState();
 
@@ -521,7 +524,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     bool showFileSizeWarning();
     bool getRasterExportSettings( QgsLayoutExporter::ImageExportSettings &settings, QSize &imageSize );
     bool getSvgExportSettings( QgsLayoutExporter::SvgExportSettings &settings );
-    bool getPdfExportSettings( QgsLayoutExporter::PdfExportSettings &settings );
+    bool getPdfExportSettings( QgsLayoutExporter::PdfExportSettings &settings, bool allowGeoPdfExport = true, const QString &geoPdfReason = QString() );
 
     void toggleAtlasActions( bool enabled );
 
@@ -555,6 +558,11 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     void setLastExportPath( const QString &path ) const;
 
     bool checkBeforeExport();
+
+    //! update default action of toolbutton
+    void toolButtonActionTriggered( QAction * );
+
+    friend class QgsAtlasExportGuard;
 };
 
 #endif // QGSLAYOUTDESIGNERDIALOG_H

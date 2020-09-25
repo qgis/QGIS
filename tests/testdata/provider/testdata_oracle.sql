@@ -1,11 +1,11 @@
-CREATE TABLE QGIS.SOME_DATA ( "pk" INTEGER PRIMARY KEY, "cnt" INTEGER, "name" VARCHAR2(100) DEFAULT 'qgis', "name2" VARCHAR2(100) DEFAULT 'qgis', "num_char" VARCHAR2(100), GEOM SDO_GEOMETRY);
+CREATE TABLE QGIS.SOME_DATA ( "pk" INTEGER PRIMARY KEY, "cnt" INTEGER, "name" VARCHAR2(100) DEFAULT 'qgis', "name2" VARCHAR2(100) DEFAULT 'qgis', "num_char" VARCHAR2(100), "dt" TIMESTAMP, "date" DATE, "time" VARCHAR2(100), GEOM SDO_GEOMETRY);
 
-INSERT INTO QGIS.SOME_DATA ("pk", "cnt", "name", "name2", "num_char", GEOM)
-      SELECT 5, -200, NULL, 'NuLl', '5', SDO_GEOMETRY( 2001,4326,SDO_POINT_TYPE(-71.123, 78.23, NULL), NULL, NULL) from dual
-  UNION ALL SELECT 3,  300, 'Pear', 'PEaR', '3', NULL from dual
-  UNION ALL SELECT 1,  100, 'Orange', 'oranGe', '1', SDO_GEOMETRY( 2001,4326,SDO_POINT_TYPE(-70.332, 66.33, NULL), NULL, NULL) from dual
-  UNION ALL SELECT 2,  200, 'Apple', 'Apple', '2', SDO_GEOMETRY( 2001,4326,SDO_POINT_TYPE(-68.2, 70.8, NULL), NULL, NULL) from dual
-  UNION ALL SELECT 4,  400, 'Honey', 'Honey', '4', SDO_GEOMETRY( 2001,4326,SDO_POINT_TYPE(-65.32, 78.3, NULL), NULL, NULL) from dual;
+INSERT INTO QGIS.SOME_DATA ("pk", "cnt", "name", "name2", "num_char", "dt", "date", "time", GEOM)
+      SELECT 5, -200, NULL, 'NuLl', '5', TIMESTAMP '2020-05-04 12:13:14', DATE '2020-05-02','12:13:01', SDO_GEOMETRY( 2001,4326,SDO_POINT_TYPE(-71.123, 78.23, NULL), NULL, NULL) from dual
+  UNION ALL SELECT 3,  300, 'Pear', 'PEaR', '3', NULL, NULL, NULL, NULL from dual
+  UNION ALL SELECT 1,  100, 'Orange', 'oranGe', '1', TIMESTAMP '2020-05-03 12:13:14', DATE '2020-05-03','12:13:14', SDO_GEOMETRY( 2001,4326,SDO_POINT_TYPE(-70.332, 66.33, NULL), NULL, NULL) from dual
+  UNION ALL SELECT 2,  200, 'Apple', 'Apple', '2', TIMESTAMP '2020-05-04 12:14:14', DATE '2020-05-04','12:14:14', SDO_GEOMETRY( 2001,4326,SDO_POINT_TYPE(-68.2, 70.8, NULL), NULL, NULL) from dual
+  UNION ALL SELECT 4,  400, 'Honey', 'Honey', '4', TIMESTAMP '2021-05-04 13:13:14', DATE '2021-05-04','13:13:14', SDO_GEOMETRY( 2001,4326,SDO_POINT_TYPE(-65.32, 78.3, NULL), NULL, NULL) from dual;
 
 INSERT INTO user_sdo_geom_metadata (TABLE_NAME, COLUMN_NAME, DIMINFO, SRID) VALUES ( 'SOME_DATA', 'GEOM', sdo_dim_array(sdo_dim_element('X',-75,-55,0.005),sdo_dim_element('Y',65,85,0.005)),4326);
 
@@ -72,6 +72,7 @@ CREATE TABLE QGIS.POINT_DATA_IDENTITY ( "pk" NUMBER GENERATED ALWAYS AS IDENTITY
 INSERT INTO QGIS.POINT_DATA_IDENTITY (GEOM)
  SELECT SDO_GEOMETRY( 2001,4326,SDO_POINT_TYPE(1, 2, NULL), NULL, NULL) from dual;
 
+
 CREATE TABLE QGIS.MIX_SIMPLE_MULTI_POLYGON ( "pk" INTEGER PRIMARY KEY, GEOM SDO_GEOMETRY);
 INSERT INTO QGIS.MIX_SIMPLE_MULTI_POLYGON ("pk", GEOM)
 SELECT 1, SDO_GEOMETRY( 2003,4326,NULL, SDO_ELEM_INFO_ARRAY(1,1003,1), SDO_ORDINATE_ARRAY(-69.0,81.4 , -69.0,80.2 , -73.7,80.2 , -73.7,76.3 , -74.9,76.3 , -74.9,81.4 , -69.0,81.4)) from dual
@@ -82,4 +83,9 @@ INSERT INTO user_sdo_geom_metadata (TABLE_NAME, COLUMN_NAME, DIMINFO, SRID) VALU
 
 CREATE INDEX mix_poly_data_spatial_idx ON QGIS.MIX_SIMPLE_MULTI_POLYGON(GEOM) INDEXTYPE IS MDSYS.SPATIAL_INDEX;
 
+                                                                                                                                       
+CREATE TABLE QGIS.GENERATED_COLUMNS ( "pk" INTEGER PRIMARY KEY, "generated_field" GENERATED ALWAYS AS ('test:' || "pk") VIRTUAL);
+INSERT INTO QGIS.GENERATED_COLUMNS ("pk") SELECT 1 FROM dual;
+                                                                                                                                      
+                                                                                                                                     
 COMMIT;

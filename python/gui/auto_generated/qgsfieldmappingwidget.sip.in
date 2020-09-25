@@ -8,6 +8,7 @@
 
 
 
+
 class QgsFieldMappingWidget : QgsPanelWidget
 {
 %Docstring
@@ -80,6 +81,22 @@ Returns the selection model
 Set source fields of the underlying mapping model to ``sourceFields``
 %End
 
+    void setSourceLayer( QgsVectorLayer *layer );
+%Docstring
+Sets a source ``layer`` to use when generating expression previews in the widget.
+
+.. versionadded:: 3.16
+%End
+
+    QgsVectorLayer *sourceLayer();
+%Docstring
+Returns the source layer for use when generating expression previews.
+
+Returned value may be ``None``.
+
+.. versionadded:: 3.16
+%End
+
     void setDestinationFields( const QgsFields &destinationFields,
                                const QMap<QString, QString> &expressions = QMap<QString, QString>() );
 %Docstring
@@ -92,6 +109,19 @@ corresponding expression.
     void scrollTo( const QModelIndex &index ) const;
 %Docstring
 Scroll the fields view to ``index``
+%End
+
+    void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
+%Docstring
+Register an expression context ``generator`` class that will be used to retrieve
+an expression context for the widget.
+%End
+
+  signals:
+
+    void changed();
+%Docstring
+Emitted when the fields defined in the widget are changed.
 %End
 
   public slots:
@@ -108,12 +138,12 @@ Removes the currently selected field from the model
 
     bool moveSelectedFieldsUp( );
 %Docstring
-Moves down currently selected field
+Moves up currently selected field
 %End
 
     bool moveSelectedFieldsDown( );
 %Docstring
-Moves up the currently selected field
+Moves down the currently selected field
 %End
 
       public:

@@ -40,7 +40,7 @@ task. This can be used to draw maps without blocking the QGIS interface.
 Constructor for QgsMapRendererTask to render a map to an image file.
 
 If the output ``fileFormat`` is set to PDF, the ``geoPdf`` argument controls whether a GeoPDF file is created.
-See QgsAbstractGeoPdfExporter.geoPDFCreationAvailable() for conditions on GeoPDF creation availability.
+See :py:func:`QgsAbstractGeoPdfExporter.geoPDFCreationAvailable()` for conditions on GeoPDF creation availability.
 %End
 
     QgsMapRendererTask( const QgsMapSettings &ms,

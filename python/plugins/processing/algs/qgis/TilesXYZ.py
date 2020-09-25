@@ -49,7 +49,8 @@ from qgis.core import (QgsProcessingException,
                        QgsMapRendererCustomPainterJob,
                        QgsLabelingEngineSettings,
                        QgsApplication,
-                       QgsExpressionContextUtils)
+                       QgsExpressionContextUtils,
+                       QgsProcessingAlgorithm)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 import threading
 from concurrent.futures import ThreadPoolExecutor
@@ -180,7 +181,7 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
                                                        minValue=1,
                                                        maxValue=20,
                                                        defaultValue=4))
-        self.thread_nr_re = re.compile('[0-9]+$') # thread number regex
+        self.thread_nr_re = re.compile('[0-9]+$')  # thread number regex
 
     def prepareAlgorithm(self, parameters, context, feedback):
         project = context.project()
@@ -193,10 +194,10 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
             return
             # Haven't found a better way to break than to make all the new threads return instantly
 
-        if "Dummy" in threading.current_thread().name or len(self.settingsDictionary) == 1: # single thread testing
+        if "Dummy" in threading.current_thread().name or len(self.settingsDictionary) == 1:  # single thread testing
             threadSpecificSettings = list(self.settingsDictionary.values())[0]
         else:
-            thread_nr = self.thread_nr_re.search(threading.current_thread().name)[0] # terminating number only
+            thread_nr = self.thread_nr_re.search(threading.current_thread().name)[0]  # terminating number only
             threadSpecificSettings = self.settingsDictionary[thread_nr]
 
         size = QSize(self.tile_width * metatile.rows(), self.tile_height * metatile.columns())
@@ -204,7 +205,7 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         threadSpecificSettings.setExtent(self.wgs_to_dest.transformBoundingBox(extent))
         threadSpecificSettings.setOutputSize(size)
 
-        #Append MapSettings scope in order to update map variables (e.g @map_scale) with new extent data
+        # Append MapSettings scope in order to update map variables (e.g @map_scale) with new extent data
         exp_context = threadSpecificSettings.expressionContext()
         exp_context.appendScope(QgsExpressionContextUtils.mapSettingsScope(threadSpecificSettings))
         threadSpecificSettings.setExpressionContext(exp_context)
@@ -219,10 +220,10 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         job.renderSynchronously()
         painter.end()
 
-        ## For analysing metatiles (labels, etc.)
-        ## metatile_dir = os.path.join(output_dir, str(zoom))
-        ## os.makedirs(metatile_dir, exist_ok=True)
-        ## image.save(os.path.join(metatile_dir, 'metatile_%s.png' % i))
+        # For analysing metatiles (labels, etc.)
+        # metatile_dir = os.path.join(output_dir, str(zoom))
+        # os.makedirs(metatile_dir, exist_ok=True)
+        # image.save(os.path.join(metatile_dir, 'metatile_%s.png' % i))
 
         for r, c, tile in metatile.tiles:
             tileImage = image.copy(self.tile_width * r, self.tile_height * c, self.tile_width, self.tile_height)
@@ -270,7 +271,7 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
             if self.tile_format == 'PNG':
                 self.settingsDictionary[thread].setBackgroundColor(self.color)
 
-            ## disable partial labels (they would be cut at the edge of tiles)
+            # disable partial labels (they would be cut at the edge of tiles)
             labeling_engine_settings = self.settingsDictionary[thread].labelingEngineSettings()
             labeling_engine_settings.setFlag(QgsLabelingEngineSettings.UsePartialCandidates, False)
             self.settingsDictionary[thread].setLabelingEngineSettings(labeling_engine_settings)
@@ -439,6 +440,9 @@ class TilesXYZAlgorithmMBTiles(TilesXYZAlgorithmBase):
 
     def groupId(self):
         return 'rastertools'
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagRequiresProject
 
     def processAlgorithm(self, parameters, context, feedback):
         output_file = self.parameterAsString(parameters, self.OUTPUT_FILE, context)

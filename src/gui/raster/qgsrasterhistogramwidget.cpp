@@ -22,6 +22,7 @@
 #include "qgsrasterhistogramwidget.h"
 #include "qgsrasterminmaxwidget.h"
 #include "qgsrasterdataprovider.h"
+#include "qgsdoublevalidator.h"
 #include "qgssettings.h"
 
 #include <QMenu>
@@ -48,9 +49,7 @@
 #include <time.h>
 #endif
 
-// this has been removed, now we let the provider/raster interface decide
-// how many bins are suitable depending on data type and range
-//#define RASTER_HISTOGRAM_BINS 256
+constexpr int SAMPLE_SIZE = 250000; // number of sample cells
 
 QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget *parent )
   : QgsMapLayerConfigWidget( lyr, nullptr, parent )
@@ -104,8 +103,8 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget
     }
 
     // histo min/max selectors
-    leHistoMin->setValidator( new QDoubleValidator( this ) );
-    leHistoMax->setValidator( new QDoubleValidator( this ) );
+    leHistoMin->setValidator( new QgsDoubleValidator( this ) );
+    leHistoMax->setValidator( new QgsDoubleValidator( this ) );
     // this might generate many refresh events! test..
     // connect( leHistoMin, SIGNAL( textChanged( const QString & ) ), this, SLOT( updateHistoMarkers() ) );
     // connect( leHistoMax, SIGNAL( textChanged( const QString & ) ), this, SLOT( updateHistoMarkers() ) );
@@ -279,6 +278,52 @@ void QgsRasterHistogramWidget::btnHistoCompute_clicked()
   refreshHistogram();
 }
 
+// Compute the number of bins
+// Logic partially borrowed to QgsRasterInterface::initHistogram(),
+// but with a limitation to 1000 bins. Otherwise the histogram will be
+// unreadable (see https://github.com/qgis/QGIS/issues/38298)
+// NOTE: the number of bins should probably be let to the user, and/or adaptative
+// to the width in pixels of the chart.
+static int getBinCount( QgsRasterInterface *rasterInterface,
+                        int bandNo,
+                        int sampleSize )
+{
+  const Qgis::DataType mySrcDataType = rasterInterface->sourceDataType( bandNo );
+  const double statsMin = mySrcDataType == Qgis::Byte ? 0 :
+                          rasterInterface->bandStatistics( bandNo, QgsRasterBandStats::Min, QgsRectangle(), sampleSize ).minimumValue;
+  const double statsMax = mySrcDataType == Qgis::Byte ? 255 :
+                          rasterInterface->bandStatistics( bandNo, QgsRasterBandStats::Max, QgsRectangle(), sampleSize ).maximumValue;
+  const QgsRectangle extent( rasterInterface->extent() );
+
+  // Calc resolution from sampleSize
+  double xRes, yRes;
+  xRes = yRes = std::sqrt( ( static_cast<double>( extent.width( ) ) * extent.height() ) / sampleSize );
+
+  // But limit by physical resolution
+  if ( rasterInterface->capabilities() & QgsRasterInterface::Size )
+  {
+    const double srcXRes = extent.width() / rasterInterface->xSize();
+    const double srcYRes = extent.height() / rasterInterface->ySize();
+    if ( xRes < srcXRes ) xRes = srcXRes;
+    if ( yRes < srcYRes ) yRes = srcYRes;
+  }
+
+  const int histogramWidth = static_cast <int>( extent.width() / xRes );
+  const int histogramHeight = static_cast <int>( extent.height() / yRes );
+
+  int binCount = static_cast<int>( std::min( static_cast<qint64>( 1000 ),
+                                   static_cast<qint64>( histogramWidth ) * histogramHeight ) );
+
+  if ( mySrcDataType == Qgis::Int16 || mySrcDataType == Qgis::Int32 ||
+       mySrcDataType == Qgis::UInt16 || mySrcDataType == Qgis::UInt32 )
+  {
+    binCount = static_cast<int>( std::min( static_cast<qint64>( binCount ),
+                                           static_cast<qint64>( std::ceil( statsMax - statsMin + 1 ) ) ) );
+  }
+
+  return binCount;
+}
+
 bool QgsRasterHistogramWidget::computeHistogram( bool forceComputeFlag )
 {
 
@@ -293,8 +338,9 @@ bool QgsRasterHistogramWidget::computeHistogram( bool forceComputeFlag )
           myIteratorInt <= myBandCountInt;
           ++myIteratorInt )
     {
-      int sampleSize = 250000; // number of sample cells
-      if ( !mRasterLayer->dataProvider()->hasHistogram( myIteratorInt, 0, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), QgsRectangle(), sampleSize ) )
+      int sampleSize = SAMPLE_SIZE; // number of sample cells
+      const int binCount = getBinCount( mRasterLayer->dataProvider(), myIteratorInt, sampleSize );
+      if ( !mRasterLayer->dataProvider()->hasHistogram( myIteratorInt, binCount, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), QgsRectangle(), sampleSize ) )
       {
         QgsDebugMsg( QStringLiteral( "band %1 does not have cached histo" ).arg( myIteratorInt ) );
         return false;
@@ -313,8 +359,9 @@ bool QgsRasterHistogramWidget::computeHistogram( bool forceComputeFlag )
         myIteratorInt <= myBandCountInt;
         ++myIteratorInt )
   {
-    int sampleSize = 250000; // number of sample cells
-    mRasterLayer->dataProvider()->histogram( myIteratorInt, 0, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), QgsRectangle(), sampleSize, false, feedback.get() );
+    int sampleSize = SAMPLE_SIZE; // number of sample cells
+    const int binCount = getBinCount( mRasterLayer->dataProvider(), myIteratorInt, sampleSize );
+    mRasterLayer->dataProvider()->histogram( myIteratorInt, binCount, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), QgsRectangle(), sampleSize, false, feedback.get() );
   }
 
   // mHistogramProgress->hide();
@@ -479,12 +526,13 @@ void QgsRasterHistogramWidget::refreshHistogram()
         continue;
     }
 
-    int sampleSize = 250000; // number of sample cells
+    int sampleSize = SAMPLE_SIZE; // number of sample cells
 
     std::unique_ptr< QgsRasterBlockFeedback > feedback( new QgsRasterBlockFeedback() );
     connect( feedback.get(), &QgsRasterBlockFeedback::progressChanged, mHistogramProgress, &QProgressBar::setValue );
 
-    QgsRasterHistogram myHistogram = mRasterLayer->dataProvider()->histogram( myIteratorInt, 0, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), QgsRectangle(), sampleSize, false, feedback.get() );
+    const int binCount = getBinCount( mRasterLayer->dataProvider(), myIteratorInt, sampleSize );
+    QgsRasterHistogram myHistogram = mRasterLayer->dataProvider()->histogram( myIteratorInt, binCount, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), QgsRectangle(), sampleSize, false, feedback.get() );
 
     QgsDebugMsg( QStringLiteral( "got raster histo for band %1 : min=%2 max=%3 count=%4" ).arg( myIteratorInt ).arg( myHistogram.minimum ).arg( myHistogram.maximum ).arg( myHistogram.binCount ) );
 

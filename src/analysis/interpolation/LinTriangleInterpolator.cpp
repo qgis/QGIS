@@ -26,7 +26,7 @@ bool LinTriangleInterpolator::calcFirstDerX( double x, double y, Vector3D *vec )
     QgsPoint pt2( 0, 0, 0 );
     QgsPoint pt3( 0, 0, 0 );
 
-    if ( !mTIN->getTriangle( x, y, pt1, pt2, pt3 ) )
+    if ( !mTIN->triangleVertices( x, y, pt1, pt2, pt3 ) )
     {
       return false;//point outside the convex hull or numerical problems
     }
@@ -52,7 +52,7 @@ bool LinTriangleInterpolator::calcFirstDerY( double x, double y, Vector3D *vec )
     QgsPoint pt2( 0, 0, 0 );
     QgsPoint pt3( 0, 0, 0 );
 
-    if ( !mTIN->getTriangle( x, y, pt1, pt2, pt3 ) )
+    if ( !mTIN->triangleVertices( x, y, pt1, pt2, pt3 ) )
     {
       return false;
     }
@@ -70,10 +70,10 @@ bool LinTriangleInterpolator::calcFirstDerY( double x, double y, Vector3D *vec )
   }
 }
 
-bool LinTriangleInterpolator::calcNormVec( double x, double y, Vector3D *vec )
+bool LinTriangleInterpolator::calcNormVec( double x, double y, QgsPoint &vec )
 {
 //calculate vector product of the two derivative vectors in x- and y-direction and set the length to 1
-  if ( vec && mTIN )
+  if ( mTIN )
   {
     Vector3D vec1;
     Vector3D vec2;
@@ -83,9 +83,9 @@ bool LinTriangleInterpolator::calcNormVec( double x, double y, Vector3D *vec )
     {return false;}
     Vector3D vec3( vec1.getY()*vec2.getZ() - vec1.getZ()*vec2.getY(), vec1.getZ()*vec2.getX() - vec1.getX()*vec2.getZ(), vec1.getX()*vec2.getY() - vec1.getY()*vec2.getX() );//calculate vector product
     double absvec3 = std::sqrt( vec3.getX() * vec3.getX() + vec3.getY() * vec3.getY() + vec3.getZ() * vec3.getZ() );//length of vec3
-    vec->setX( vec3.getX() / absvec3 );//standardize vec3 and assign it to vec
-    vec->setY( vec3.getY() / absvec3 );
-    vec->setZ( vec3.getZ() / absvec3 );
+    vec.setX( vec3.getX() / absvec3 );//standardize vec3 and assign it to vec
+    vec.setY( vec3.getY() / absvec3 );
+    vec.setZ( vec3.getZ() / absvec3 );
     return true;
   }
 
@@ -105,7 +105,7 @@ bool LinTriangleInterpolator::calcPoint( double x, double y, QgsPoint &point )
     QgsPoint pt2( 0, 0, 0 );
     QgsPoint pt3( 0, 0, 0 );
 
-    if ( !mTIN->getTriangle( x, y, pt1, pt2, pt3 ) )
+    if ( !mTIN->triangleVertices( x, y, pt1, pt2, pt3 ) )
     {
       return false;//point is outside the convex hull or numerical problems
     }

@@ -29,6 +29,30 @@
 #include "qgsapplication.h"
 #include "qgsscalewidget.h"
 
+class SnapTypeMenu: public QMenu
+{
+  public:
+    SnapTypeMenu( const QString &title, QWidget *parent = nullptr )
+      : QMenu( title, parent ) {}
+
+    void mouseReleaseEvent( QMouseEvent *e )
+    {
+      QAction *action = activeAction();
+      if ( action )
+        action->trigger();
+      else
+        QMenu::mouseReleaseEvent( e );
+    }
+
+    // set focus to parent so that mTypeButton is not displayed
+    void hideEvent( QHideEvent *e )
+    {
+      qobject_cast<QWidget *>( parent() )->setFocus();
+      QMenu::hideEvent( e );
+    }
+};
+
+
 QgsSnappingLayerDelegate::QgsSnappingLayerDelegate( QgsMapCanvas *canvas, QObject *parent )
   : QItemDelegate( parent )
   , mCanvas( canvas )
@@ -46,7 +70,7 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
     QToolButton *mTypeButton = new QToolButton( parent );
     mTypeButton->setToolTip( tr( "Snapping Type" ) );
     mTypeButton->setPopupMode( QToolButton::InstantPopup );
-    QMenu *typeMenu = new QMenu( tr( "Set Snapping Mode" ), parent );
+    SnapTypeMenu *typeMenu = new SnapTypeMenu( tr( "Set Snapping Mode" ), parent );
     QAction *mVertexAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingVertex.svg" ) ), tr( "Vertex" ), typeMenu );
     QAction *mSegmentAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingSegment.svg" ) ), tr( "Segment" ), typeMenu );
     QAction *mAreaAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingArea.svg" ) ), tr( "Area" ), typeMenu );
@@ -104,14 +128,14 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
   if ( index.column() == QgsSnappingLayerTreeModel::MinScaleColumn )
   {
     QgsScaleWidget *minLimitSp = new QgsScaleWidget( parent );
-    minLimitSp->setToolTip( tr( "Min Scale" ) );
+    minLimitSp->setToolTip( tr( "Minimum scale from which snapping is enabled (i.e. most \"zoomed out\" scale)" ) );
     return minLimitSp;
   }
 
   if ( index.column() == QgsSnappingLayerTreeModel::MaxScaleColumn )
   {
     QgsScaleWidget *maxLimitSp = new QgsScaleWidget( parent );
-    maxLimitSp->setToolTip( tr( "Max Scale" ) );
+    maxLimitSp->setToolTip( tr( "Maximum scale up to which snapping is enabled (i.e. most \"zoomed in\" scale)" ) );
     return maxLimitSp;
   }
 
@@ -238,11 +262,11 @@ QgsSnappingLayerTreeModel::QgsSnappingLayerTreeModel( QgsProject *project, QgsMa
   , mProject( project )
   , mCanvas( canvas )
   , mIndividualLayerSettings( project->snappingConfig().individualLayerSettings() )
-  , mEnableMinMaxColumn( project->snappingConfig().scaleDependencyMode() == QgsSnappingConfig::PerLayer )
 
 {
   connect( project, &QgsProject::snappingConfigChanged, this, &QgsSnappingLayerTreeModel::onSnappingSettingsChanged );
   connect( project, &QgsProject::avoidIntersectionsLayersChanged, this, &QgsSnappingLayerTreeModel::onSnappingSettingsChanged );
+  connect( project, &QgsProject::readProject, this, [ = ] {resetLayerTreeModel();} );
 }
 
 int QgsSnappingLayerTreeModel::columnCount( const QModelIndex &parent ) const
@@ -281,7 +305,7 @@ Qt::ItemFlags QgsSnappingLayerTreeModel::flags( const QModelIndex &idx ) const
       }
       else if ( idx.column() == MaxScaleColumn || idx.column() == MinScaleColumn )
       {
-        if ( mEnableMinMaxColumn )
+        if ( mProject->snappingConfig().scaleDependencyMode() == QgsSnappingConfig::PerLayer )
         {
           return Qt::ItemIsEnabled | Qt::ItemIsEditable;
         }
@@ -345,7 +369,6 @@ void QgsSnappingLayerTreeModel::setFilterText( const QString &filterText )
 void QgsSnappingLayerTreeModel::onSnappingSettingsChanged()
 {
   const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> oldSettings = mIndividualLayerSettings;
-  bool wasMinMaxEnabled = mEnableMinMaxColumn;
 
   for ( auto it = oldSettings.constBegin(); it != oldSettings.constEnd(); ++it )
   {
@@ -369,18 +392,17 @@ void QgsSnappingLayerTreeModel::onSnappingSettingsChanged()
     }
   }
 
-  mEnableMinMaxColumn = ( mProject->snappingConfig().scaleDependencyMode() == QgsSnappingConfig::PerLayer );
-  hasRowchanged( mLayerTreeModel->rootGroup(), oldSettings, wasMinMaxEnabled != mEnableMinMaxColumn );
+  hasRowchanged( mLayerTreeModel->rootGroup(), oldSettings );
 }
 
-void QgsSnappingLayerTreeModel::hasRowchanged( QgsLayerTreeNode *node, const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> &oldSettings, bool forceRefresh )
+void QgsSnappingLayerTreeModel::hasRowchanged( QgsLayerTreeNode *node, const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> &oldSettings )
 {
   if ( node->nodeType() == QgsLayerTreeNode::NodeGroup )
   {
     const auto constChildren = node->children();
     for ( QgsLayerTreeNode *child : constChildren )
     {
-      hasRowchanged( child, oldSettings, forceRefresh );
+      hasRowchanged( child, oldSettings );
     }
   }
   else
@@ -391,7 +413,7 @@ void QgsSnappingLayerTreeModel::hasRowchanged( QgsLayerTreeNode *node, const QHa
     {
       emit dataChanged( QModelIndex(), idx );
     }
-    if ( oldSettings.value( vl ) != mProject->snappingConfig().individualLayerSettings().value( vl ) || forceRefresh )
+    if ( oldSettings.value( vl ) != mProject->snappingConfig().individualLayerSettings().value( vl ) )
     {
       mIndividualLayerSettings.insert( vl, mProject->snappingConfig().individualLayerSettings().value( vl ) );
       emit dataChanged( idx, index( idx.row(), columnCount( idx ) - 1 ) );
@@ -456,7 +478,7 @@ QVariant QgsSnappingLayerTreeModel::headerData( int section, Qt::Orientation ori
         case 3:
           return tr( "Units" );
         case 4:
-          return tr( "Avoid overlap" );
+          return tr( "Avoid Overlap" );
         case 5:
           return tr( "Min Scale" );
         case 6:
@@ -576,7 +598,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
               }
               if ( activeTypes > 0 )
                 modes.append( tr( ", " ) );
-              modes.append( QgsSnappingConfig::snappingTypeFlagToString( ls.typeFlag() ) );
+              modes.append( QgsSnappingConfig::snappingTypeFlagToString( ls.typeFlag() & snappingTypeEnum.value( i ) ) );
               activeTypes++;
             }
           }

@@ -11,7 +11,7 @@
 
 
 
-class QgsGraphBuilder : QgsGraphBuilderInterface
+class QgsGraphBuilder : QgsGraphBuilderInterface /NoDefaultCtors/
 {
 %Docstring
 This class used for making the QgsGraph object

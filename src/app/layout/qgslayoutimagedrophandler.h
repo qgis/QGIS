@@ -27,6 +27,7 @@ class QgsLayoutImageDropHandler : public QgsLayoutCustomDropHandler
     QgsLayoutImageDropHandler( QObject *parent = nullptr );
 
     bool handleFileDrop( QgsLayoutDesignerInterface *iface, QPointF point, const QString &file ) override;
+    bool handlePaste( QgsLayoutDesignerInterface *iface, QPointF pastePoint, const QMimeData *data, QList< QgsLayoutItem * > &pastedItems ) override;
 };
 
 #endif // QGSLAYOUTIMAGEDROPHANDLER_H

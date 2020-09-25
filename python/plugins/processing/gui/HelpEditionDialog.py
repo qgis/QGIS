@@ -43,7 +43,6 @@ with warnings.catch_warnings():
 
 
 class HelpEditionDialog(BASE, WIDGET):
-
     ALG_DESC = 'ALG_DESC'
     ALG_CREATOR = 'ALG_CREATOR'
     ALG_HELP_CREATOR = 'ALG_HELP_CREATOR'

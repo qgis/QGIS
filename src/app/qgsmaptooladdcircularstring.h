@@ -36,6 +36,9 @@ class APP_EXPORT QgsMapToolAddCircularString: public QgsMapToolCapture
 
     void activate() override;
 
+    //! Clean drawings on map canvas
+    void clean() override;
+
     /*private slots:
       void setParentTool( QgsMapTool *newTool, QgsMapTool *oldTool );*/
 
@@ -47,7 +50,7 @@ class APP_EXPORT QgsMapToolAddCircularString: public QgsMapToolCapture
     /**
      * The parent map tool, e.g. the add feature tool.
      *  Completed circular strings will be added to this tool by calling its addCurve() method.
-     * */
+     */
     QgsMapToolCapture *mParentTool = nullptr;
     //! Circular string points (in map coordinates)
     QgsPointSequence mPoints;

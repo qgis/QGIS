@@ -43,7 +43,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
-
     INPUT = 'INPUT'
     SHAPE = 'SHAPE'
     WIDTH = 'WIDTH'

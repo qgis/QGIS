@@ -1,3 +1,5 @@
+SET LANGUAGE us_english;  -- avoid month day swap in datetime
+
 DROP TABLE IF EXISTS qgis_test.[someData];
 GO
 
@@ -28,6 +30,15 @@ GO
 DROP TABLE IF EXISTS qgis_test.[sacrificialLamb];
 GO
 
+DROP TABLE IF EXISTS qgis_test.[someDataCompound];
+GO
+
+DROP TABLE IF EXISTS qgis_test.[tb_test_compound_pk];
+GO
+
+DROP TABLE IF EXISTS qgis_test.[tb_test_composite_float_pk];
+GO
+
 DROP SCHEMA qgis_test;
 GO
 
@@ -40,6 +51,9 @@ CREATE TABLE qgis_test.[someData] (
     name nvarchar(max) DEFAULT 'qgis',
     name2 nvarchar(max) DEFAULT 'qgis',
     num_char nvarchar(max),
+    dt datetime,
+    [date] date,
+    [time] time,
     geom geometry
 );
 GO
@@ -77,12 +91,12 @@ CREATE TABLE qgis_test.[sacrificialLamb] (
 );
 GO
 
-INSERT INTO qgis_test.[someData] (pk, cnt, name, name2, num_char, geom) VALUES
-(5, -200, NULL, 'NuLl', '5', geometry::STGeomFromText( 'Point(-71.123 78.23)', 4326 )),
-(3,  300, 'Pear', 'PEaR', '3', NULL),
-(1,  100, 'Orange', 'oranGe', '1', geometry::STGeomFromText( 'Point(-70.332 66.33)', 4326 )),
-(2,  200, 'Apple', 'Apple', '2', geometry::STGeomFromText( 'Point(-68.2 70.8)', 4326 )),
-(4,  400, 'Honey', 'Honey', '4', geometry::STGeomFromText( 'Point(-65.32 78.3)', 4326 ))
+INSERT INTO qgis_test.[someData] (pk, cnt, name, name2, num_char, dt, [date], [time], geom) VALUES
+(5, -200, NULL, 'NuLl', '5', '2020-05-04 12:13:14', '2020-05-02', '12:13:01', geometry::STGeomFromText( 'Point(-71.123 78.23)', 4326 )),
+(3,  300, 'Pear', 'PEaR', '3', NULL, NULL, NULL, NULL),
+(1,  100, 'Orange', 'oranGe', '1', '2020-05-03 12:13:14', '2020-05-03', '12:13:14', geometry::STGeomFromText( 'Point(-70.332 66.33)', 4326 )),
+(2,  200, 'Apple', 'Apple', '2', '2020-05-04 12:14:14', '2020-05-04', '12:14:14', geometry::STGeomFromText( 'Point(-68.2 70.8)', 4326 )),
+(4,  400, 'Honey', 'Honey', '4', '2021-05-04 13:13:14', '2021-05-04', '13:13:14', geometry::STGeomFromText( 'Point(-65.32 78.3)', 4326 ))
 ;
 GO
 
@@ -213,3 +227,61 @@ GO
 SET IDENTITY_INSERT [qgis_test].[invalid_polys] OFF
 GO
 
+-- Provider check with compound key
+
+CREATE TABLE [qgis_test].[someDataCompound] (
+    pk integer NOT NULL,
+    cnt integer,
+    name nvarchar(max) DEFAULT 'qgis',
+    name2 nvarchar(max) DEFAULT 'qgis',
+    num_char nvarchar(max),
+    dt datetime,
+    "date" date,
+    "time" time,
+    geom geometry,
+    key1 integer,
+    key2 integer,
+    PRIMARY KEY(key1, key2)
+);
+
+INSERT INTO [qgis_test].[someDataCompound] ( key1, key2, pk, cnt, name, name2, num_char, dt, "date", "time", geom) VALUES
+(1, 1, 5, -200, NULL, 'NuLl', '5', '2020-05-04 12:13:14', '2020-05-02', '12:13:01', geometry::STGeomFromText('POINT(-71.123 78.23)', 4326)),
+(1, 2, 3,  300, 'Pear', 'PEaR', '3', NULL, NULL, NULL, NULL),
+(2, 1, 1,  100, 'Orange', 'oranGe', '1', '2020-05-03 12:13:14', '2020-05-03', '12:13:14', geometry::STGeomFromText('POINT(-70.332 66.33)', 4326)),
+(2, 2, 2,  200, 'Apple', 'Apple', '2', '2020-05-04 12:14:14', '2020-05-04', '12:14:14', geometry::STGeomFromText('POINT(-68.2 70.8)', 4326)),
+(2, 3, 4,  400, 'Honey', 'Honey', '4', '2021-05-04 13:13:14', '2021-05-04', '13:13:14', geometry::STGeomFromText('POINT(-65.32 78.3)', 4326));
+GO
+
+
+CREATE TABLE [qgis_test].[tb_test_compound_pk]
+(
+    pk1 integer,
+    pk2 bigint,
+    value nvarchar(16),
+    geom geometry,
+    PRIMARY KEY (pk1, pk2)
+);
+
+INSERT INTO [qgis_test].[tb_test_compound_pk] (pk1, pk2, value, geom) VALUES
+(1, 1, 'test 1', geometry::STGeomFromText('POINT(-47.930 -15.818)', 4326)),
+(1, 2, 'test 2', geometry::STGeomFromText('POINT(-47.887 -15.864)', 4326)),
+(2, 1, 'test 3', geometry::STGeomFromText('POINT(-47.902 -15.763)', 4326)),
+(2, 2, 'test 4', geometry::STGeomFromText('POINT(-47.952 -15.781)', 4326));
+GO
+
+CREATE TABLE [qgis_test].[tb_test_composite_float_pk]
+(
+    pk1 integer,
+    pk2 bigint,
+    pk3 real,
+    value nvarchar(16),
+    geom geometry,
+    PRIMARY KEY (pk1, pk2, pk3)
+);
+
+INSERT INTO [qgis_test].[tb_test_composite_float_pk] (pk1, pk2, pk3, value, geom) VALUES
+    (1, 1, 1.0,         'test 1', geometry::STGeomFromText('POINT(-47.930 -15.818)', 4326)),
+    (1, 2, 3.141592741, 'test 2', geometry::STGeomFromText('POINT(-47.887 -15.864)', 4326)),
+    (2, 2, 2.718281828, 'test 3', geometry::STGeomFromText('POINT(-47.902 -15.763)', 4326)),
+    (2, 2, 1.0,         'test 4', geometry::STGeomFromText('POINT(-47.952 -15.781)', 4326));
+GO

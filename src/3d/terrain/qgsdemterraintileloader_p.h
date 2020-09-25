@@ -27,6 +27,8 @@
 // version without notice, or even be removed.
 //
 
+#define SIP_NO_FILE
+
 #include <QtConcurrent/QtConcurrentRun>
 #include <QFutureWatcher>
 #include <QElapsedTimer>
@@ -39,6 +41,7 @@
 class QgsRasterDataProvider;
 class QgsRasterLayer;
 class QgsCoordinateTransformContext;
+class QgsTerrainGenerator;
 
 /**
  * \ingroup 3d
@@ -50,7 +53,7 @@ class QgsDemTerrainTileLoader : public QgsTerrainTileLoader
     Q_OBJECT
   public:
     //! Constructs loader for the given chunk node
-    QgsDemTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node );
+    QgsDemTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node, QgsTerrainGenerator *terrainGenerator );
 
     Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
@@ -88,8 +91,8 @@ class QgsDemHeightMapGenerator : public QObject
     //! asynchronous terrain read for a tile (array of floats)
     int render( int x, int y, int z );
 
-    //! synchronous terrain read for a tile
-    QByteArray renderSynchronously( int x, int y, int z );
+    //! Waits for the tile to finish rendering
+    void waitForFinished();
 
     //! Returns resolution(number of height values on each side of tile)
     int resolution() const { return mResolution; }
@@ -125,7 +128,6 @@ class QgsDemHeightMapGenerator : public QObject
       QgsChunkNodeId tileId;
       QgsRectangle extent;
       QFuture<QByteArray> future;
-      QFutureWatcher<QByteArray> *fw;
       QElapsedTimer timer;
     };
 

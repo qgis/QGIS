@@ -162,12 +162,17 @@ QgsLabelSettingsWidgetDialog::QgsLabelSettingsWidgetDialog( QgsLabelSettingsWidg
   setWindowTitle( widget->windowTitle() );
   QVBoxLayout *vLayout = new QVBoxLayout();
   vLayout->addWidget( widget );
-  QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal );
-  connect( bbox, &QDialogButtonBox::accepted, this, &QDialog::accept );
-  connect( bbox, &QDialogButtonBox::rejected, this, &QDialog::reject );
-  vLayout->addWidget( bbox );
+  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal );
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  vLayout->addWidget( mButtonBox );
   setLayout( vLayout );
 
   setObjectName( QStringLiteral( "QgsLabelSettingsWidgetDialog" ) );
   QgsGui::instance()->enableAutoGeometryRestore( this );
+}
+
+QDialogButtonBox *QgsLabelSettingsWidgetDialog::buttonBox()
+{
+  return mButtonBox;
 }

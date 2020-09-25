@@ -8,6 +8,7 @@
 
 
 
+
 class QgsMultiLineString: QgsMultiCurve
 {
 %Docstring
@@ -20,9 +21,36 @@ Multi line string geometry collection.
 #include "qgsmultilinestring.h"
 %End
   public:
-    QgsMultiLineString();
 
-    virtual QString geometryType() const;
+    QgsMultiLineString() /HoldGIL/;
+%Docstring
+Constructor for an empty multilinestring geometry.
+%End
+
+
+
+    SIP_PYOBJECT lineStringN( int index ) /TypeHint="QgsLineString"/;
+%Docstring
+Returns the line string with the specified ``index``.
+
+An IndexError will be raised if no line string with the specified index exists.
+
+.. versionadded:: 3.16
+%End
+%MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      return sipConvertFromType( sipCpp->lineStringN( a0 ), sipType_QgsLineString, NULL );
+    }
+%End
+
+
+    virtual QString geometryType() const /HoldGIL/;
 
     virtual QgsMultiLineString *clone() const /Factory/;
 
@@ -44,7 +72,7 @@ Multi line string geometry collection.
 %Docstring
 Returns the geometry converted to the more generic curve type :py:class:`QgsMultiCurve`
 
-:return: the converted geometry. Caller takes ownership*
+:return: the converted geometry. Caller takes ownership
 %End
 
 

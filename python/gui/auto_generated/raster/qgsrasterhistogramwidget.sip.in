@@ -50,12 +50,12 @@ Compute the histogram on demand.
 
     void histoAction( const QString &actionName, bool actionFlag = true );
 %Docstring
-Apply a histoActionTriggered() event.
+Apply a :py:func:`~QgsRasterHistogramWidget.histoActionTriggered` event.
 %End
 
     void setSelectedBand( int index );
 %Docstring
-Apply a histoActionTriggered() event.
+Apply a :py:func:`~QgsRasterHistogramWidget.histoActionTriggered` event.
 %End
 
   public slots:

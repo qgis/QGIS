@@ -28,6 +28,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgswkbtypes.h"
 #include "qgsconfig.h"
+#include "qgsvectordataprovider.h"
 
 extern "C"
 {
@@ -51,6 +52,7 @@ enum QgsPostgresPrimaryKeyType
 {
   PktUnknown,
   PktInt,
+  PktInt64,
   PktUint64,
   PktTid,
   PktOid,
@@ -248,6 +250,7 @@ class QgsPostgresConn : public QObject
 
     // run a query and check for errors, thread-safe
     PGresult *PQexec( const QString &query, bool logError = true, bool retry = true ) const;
+    int PQCancel();
     void PQfinish();
     QString PQerrorMessage() const;
     int PQstatus() const;
@@ -338,9 +341,17 @@ class QgsPostgresConn : public QObject
 
     qint64 getBinaryInt( QgsPostgresResult &queryResult, int row, int col );
 
+    QString fieldExpressionForWhereClause( const QgsField &fld, QVariant::Type valueType = QVariant::LastType, QString expr = "%1" );
+
     QString fieldExpression( const QgsField &fld, QString expr = "%1" );
 
     QString connInfo() const { return mConnInfo; }
+
+    /**
+     * Returns a list of supported native types for this connection.
+     * \since QGIS 3.16
+     */
+    QList<QgsVectorDataProvider::NativeType> nativeTypes();
 
     /**
      * Returns the underlying database.
@@ -392,6 +403,9 @@ class QgsPostgresConn : public QObject
     //! GEOS capability
     mutable bool mGeosAvailable;
 
+    //! PROJ capability
+    mutable bool mProjAvailable;
+
     //! Topology capability
     mutable bool mTopologyAvailable;
 
@@ -435,12 +449,12 @@ class QgsPostgresConn : public QObject
     /**
      * Flag indicating whether data from binary cursors must undergo an
      * endian conversion prior to use
-     \note
-
-     XXX Umm, it'd be helpful to know what we're swapping from and to.
-     XXX Presumably this means swapping from big-endian (network) byte order
-     XXX to little-endian; but the inverse transaction is possible, too, and
-     XXX that's not reflected in this variable
+     * \note
+     *
+     * XXX Umm, it'd be helpful to know what we're swapping from and to.
+     * XXX Presumably this means swapping from big-endian (network) byte order
+     * XXX to little-endian; but the inverse transaction is possible, too, and
+     * XXX that's not reflected in this variable
      */
     bool mSwapEndian;
     void deduceEndian();

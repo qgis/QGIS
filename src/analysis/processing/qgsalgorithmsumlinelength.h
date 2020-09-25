@@ -54,7 +54,7 @@ class QgsSumLineLengthAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString inputParameterDescription() const override;
     QString outputName() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
 
   private:
@@ -66,6 +66,7 @@ class QgsSumLineLengthAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     mutable QgsFields mFields;
     mutable QgsCoordinateReferenceSystem mCrs;
     mutable QgsDistanceArea mDa;
+    QgsCoordinateTransformContext mTransformContext;
     std::unique_ptr< QgsProcessingFeatureSource > mLinesSource;
 };
 

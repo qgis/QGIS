@@ -25,6 +25,7 @@ class QgsMessageBar;
 class QgsDockWidget;
 class QgsPanelWidgetStack;
 class QgsTableEditorFormattingWidget;
+class QgsExpressionContextGenerator;
 
 /**
  * \ingroup gui
@@ -134,6 +135,13 @@ class GUI_EXPORT QgsTableEditorDialog : public QMainWindow, private Ui::QgsTable
      */
     void setTableHeaders( const QVariantList &headers );
 
+    /**
+     * Register an expression context generator class that will be used to retrieve
+     * an expression context for the editor when required.
+     * \since QGIS 3.16
+     */
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
+
   signals:
 
     /**
@@ -145,6 +153,10 @@ class GUI_EXPORT QgsTableEditorDialog : public QMainWindow, private Ui::QgsTable
      * Emitted whenever the "include table header" setting is changed.
      */
     void includeHeaderChanged( bool included );
+
+  protected:
+
+    void closeEvent( QCloseEvent * ) override;
 
   private:
     QgsTableEditorWidget *mTableWidget = nullptr;

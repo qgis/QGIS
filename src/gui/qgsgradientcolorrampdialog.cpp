@@ -423,7 +423,7 @@ void QgsGradientColorRampDialog::plotMousePress( QPointF point )
       currentDist = std::pow( point.x() - currentOff, 2.0 ) + std::pow( point.y() - currentCol.alphaF(), 2.0 );
       if ( currentDist < minDist )
       {
-        minDist = currentDist;;
+        minDist = currentDist;
         mCurrentPlotColorComponent = 3;
         mCurrentPlotMarkerIndex = i;
       }

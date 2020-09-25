@@ -50,10 +50,9 @@ void QgsColorEffect::draw( QgsRenderContext &context )
   QgsImageOperation::adjustHueSaturation( image, mSaturation, mColorizeOn ? mColorizeColor : QColor(), mColorizeStrength / 100.0 );
 
   QgsImageOperation::multiplyOpacity( image, mOpacity );
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   painter->setCompositionMode( mBlendMode );
   painter->drawImage( imageOffset( context ), image );
-  painter->restore();
 }
 
 

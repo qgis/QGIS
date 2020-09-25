@@ -22,6 +22,7 @@ __date__ = 'October 2016'
 __copyright__ = '(C) 2016, Alexander Bruy'
 
 import os
+import math
 
 from qgis.PyQt.QtGui import QIcon
 
@@ -43,7 +44,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class IdwInterpolation(QgisAlgorithm):
-
     INTERPOLATION_DATA = 'INTERPOLATION_DATA'
     DISTANCE_COEFFICIENT = 'DISTANCE_COEFFICIENT'
     PIXEL_SIZE = 'PIXEL_SIZE'
@@ -115,9 +115,9 @@ class IdwInterpolation(QgisAlgorithm):
         columns = self.parameterAsInt(parameters, self.COLUMNS, context)
         rows = self.parameterAsInt(parameters, self.ROWS, context)
         if columns == 0:
-            columns = max(round(bbox.width() / pixel_size) + 1, 1)
+            columns = max(math.ceil(bbox.width() / pixel_size), 1)
         if rows == 0:
-            rows = max(round(bbox.height() / pixel_size) + 1, 1)
+            rows = max(math.ceil(bbox.height() / pixel_size), 1)
 
         if interpolationData is None:
             raise QgsProcessingException(

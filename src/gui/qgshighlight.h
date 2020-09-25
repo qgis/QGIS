@@ -53,8 +53,14 @@ class QgsSymbol;
  *   highlight.show()
  * \endcode
  */
+#ifndef SIP_RUN
 class GUI_EXPORT QgsHighlight: public QObject, public QgsMapCanvasItem
 {
+#else
+class GUI_EXPORT QgsHighlight : public QgsMapCanvasItem
+{
+#endif
+
     Q_OBJECT
 
 #ifdef SIP_RUN
@@ -98,7 +104,8 @@ class GUI_EXPORT QgsHighlight: public QObject, public QgsMapCanvasItem
 
     /**
      * Set line/stroke to color, polygon fill to color with alpha = 63.
-     *  This is legacy function, use setFillColor() after setColor() if different fill color is required. */
+     * This is legacy function, use setFillColor() after setColor() if different fill color is required.
+    */
     void setColor( const QColor &color );
 
     /**

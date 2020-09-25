@@ -50,13 +50,13 @@ class GUI_EXPORT QgsMapToolExtent : public QgsMapTool
      * Sets a fixed aspect ratio to be used when dragging extent onto the canvas.
      * To unset a fixed aspect ratio, set the width and height to zero.
      * \param ratio aspect ratio's width and height
-     * */
+     */
     void setRatio( QSize ratio ) { mRatio = ratio; }
 
     /**
      * Returns the current fixed aspect ratio to be used when dragging extent onto the canvas.
      * If the aspect ratio isn't fixed, the width and height will be set to zero.
-     * */
+     */
     QSize ratio() const { return mRatio; }
 
     /**

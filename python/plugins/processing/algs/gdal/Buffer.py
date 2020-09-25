@@ -36,7 +36,6 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 
 
 class Buffer(GdalAlgorithm):
-
     INPUT = 'INPUT'
     FIELD = 'FIELD'
     GEOMETRY = 'GEOMETRY'

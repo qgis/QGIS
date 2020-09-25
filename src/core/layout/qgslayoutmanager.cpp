@@ -23,6 +23,7 @@
 #include "qgscompositionconverter.h"
 #include "qgsreadwritecontext.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgsruntimeprofiler.h"
 #include <QMessageBox>
 
 QgsLayoutManager::QgsLayoutManager( QgsProject *project )
@@ -148,6 +149,7 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
   //restore each composer
   bool result = true;
   QDomNodeList composerNodes = element.elementsByTagName( QStringLiteral( "Composer" ) );
+  QgsScopedRuntimeProfile profile( tr( "Loading QGIS 2.x compositions" ), QStringLiteral( "projectload" ) );
   for ( int i = 0; i < composerNodes.size(); ++i )
   {
     // This legacy title is the Composer "title" (that can be overridden by the Composition "name")
@@ -195,12 +197,17 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
   QgsReadWriteContext context;
   context.setPathResolver( mProject->pathResolver() );
 
+  profile.switchTask( tr( "Creating layouts" ) );
+
   // restore layouts
   const QDomNodeList layoutNodes = layoutsElem.childNodes();
   for ( int i = 0; i < layoutNodes.size(); ++i )
   {
     if ( layoutNodes.at( i ).nodeName() != QStringLiteral( "Layout" ) )
       continue;
+
+    const QString layoutName = layoutNodes.at( i ).toElement().attribute( QStringLiteral( "name" ) );
+    QgsScopedRuntimeProfile profile( layoutName, QStringLiteral( "projectload" ) );
 
     std::unique_ptr< QgsPrintLayout > l = qgis::make_unique< QgsPrintLayout >( mProject );
     l->undoStack()->blockCommands( true );
@@ -216,9 +223,13 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
     }
   }
   //reports
+  profile.switchTask( tr( "Creating reports" ) );
   const QDomNodeList reportNodes = element.elementsByTagName( QStringLiteral( "Report" ) );
   for ( int i = 0; i < reportNodes.size(); ++i )
   {
+    const QString layoutName = reportNodes.at( i ).toElement().attribute( QStringLiteral( "name" ) );
+    QgsScopedRuntimeProfile profile( layoutName, QStringLiteral( "projectload" ) );
+
     std::unique_ptr< QgsReport > r = qgis::make_unique< QgsReport >( mProject );
     if ( !r->readLayoutXml( reportNodes.at( i ).toElement(), doc, context ) )
     {

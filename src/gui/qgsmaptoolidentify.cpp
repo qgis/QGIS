@@ -28,6 +28,7 @@
 #include "qgsmaptopixel.h"
 #include "qgsmessageviewer.h"
 #include "qgsmeshlayer.h"
+#include "qgsmeshlayertemporalproperties.h"
 #include "qgsmaplayer.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
@@ -35,8 +36,12 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectortilelayer.h"
+#include "qgsvectortilemvtdecoder.h"
+#include "qgsvectortileutils.h"
 #include "qgsproject.h"
 #include "qgsrenderer.h"
+#include "qgstiles.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeometrycollection.h"
 #include "qgscurve.h"
@@ -220,6 +225,10 @@ bool QgsMapToolIdentify::identifyLayer( QList<IdentifyResult> *results, QgsMapLa
   {
     return identifyMeshLayer( results, qobject_cast<QgsMeshLayer *>( layer ), geometry );
   }
+  else if ( layer->type() == QgsMapLayerType::VectorTileLayer && layerType.testFlag( VectorTileLayer ) )
+  {
+    return identifyVectorTileLayer( results, qobject_cast<QgsVectorTileLayer *>( layer ), geometry );
+  }
   else
   {
     return false;
@@ -240,78 +249,241 @@ bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyRe
 bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMeshLayer *layer, const QgsPointXY &point )
 {
   QgsDebugMsgLevel( "point = " + point.toString(), 4 );
-  if ( !layer || !layer->dataProvider() )
+  if ( !layer )
     return false;
 
-  const QgsMeshRendererSettings rendererSettings = layer->rendererSettings();
-  const QgsMeshDatasetIndex scalarDatasetIndex = layer->activeScalarDatasetAtTime( mCanvas->temporalRange() );
-  const QgsMeshDatasetIndex vectorDatasetIndex = layer->activeVectorDatasetAtTime( mCanvas->temporalRange() );
-  if ( ! scalarDatasetIndex.isValid() && ! vectorDatasetIndex.isValid() )
-    return false;
+  double searchRadius = mOverrideCanvasSearchRadius < 0 ? searchRadiusMU( mCanvas ) : mOverrideCanvasSearchRadius;
+  bool isTemporal = mCanvas->mapSettings().isTemporal() && layer->temporalProperties()->isActive();
 
-  QMap< QString, QString > scalarAttributes, vectorAttributes, raw3dAttributes;
+  QList<QgsMeshDatasetIndex> datasetIndexList;
+  int activeScalarGroup = layer->rendererSettings().activeScalarDatasetGroup();
+  int activeVectorGroup = layer->rendererSettings().activeVectorDatasetGroup();
 
-  QString scalarGroup;
-  if ( scalarDatasetIndex.isValid() )
+  if ( isTemporal ) //non active dataset group value are only accesible if temporal is active
   {
-    scalarGroup = layer->dataProvider()->datasetGroupMetadata( scalarDatasetIndex.group() ).name();
+    const QgsDateTimeRange &time = mCanvas->mapSettings().temporalRange();
+    if ( activeScalarGroup >= 0 )
+      datasetIndexList.append( layer->activeScalarDatasetAtTime( time ) );
+    if ( activeVectorGroup >= 0 && activeVectorGroup != activeScalarGroup )
+      datasetIndexList.append( layer->activeVectorDatasetAtTime( time ) );
 
-    const QgsMeshDatasetValue scalarValue = layer->datasetValue( scalarDatasetIndex, point );
-    const double scalar = scalarValue.scalar();
-    if ( std::isnan( scalar ) )
-      scalarAttributes.insert( tr( "Scalar Value" ), tr( "no data" ) );
-    else
-      scalarAttributes.insert( tr( "Scalar Value" ), QString::number( scalar ) );
-  }
-
-  QString vectorGroup;
-  if ( vectorDatasetIndex.isValid() )
-  {
-    vectorGroup = layer->dataProvider()->datasetGroupMetadata( vectorDatasetIndex.group() ).name();
-
-    const QgsMeshDatasetValue vectorValue = layer->datasetValue( vectorDatasetIndex, point );
-    const double vectorX = vectorValue.x();
-    const double vectorY = vectorValue.y();
-
-    if ( std::isnan( vectorX ) || std::isnan( vectorY ) )
-      vectorAttributes.insert( tr( "Vector Value" ), tr( "no data" ) );
-    else
+    const QList<int> allGroup = layer->datasetGroupsIndexes();
+    for ( int groupIndex : allGroup )
     {
-      vectorAttributes.insert( tr( "Vector Magnitude" ), QString::number( vectorValue.scalar() ) );
-      vectorAttributes.insert( tr( "Vector x-component" ), QString::number( vectorY ) );
-      vectorAttributes.insert( tr( "Vector y-component" ), QString::number( vectorX ) );
+      if ( groupIndex != activeScalarGroup && groupIndex != activeVectorGroup )
+        datasetIndexList.append( layer->datasetIndexAtTime( time, groupIndex ) );
     }
-  }
-
-  const QMap< QString, QString > derivedAttributes = derivedAttributesForPoint( QgsPoint( point ) );
-  if ( scalarGroup == vectorGroup )
-  {
-    const IdentifyResult result( qobject_cast<QgsMapLayer *>( layer ),
-                                 scalarGroup,
-                                 vectorAttributes,
-                                 derivedAttributes );
-    results->append( result );
   }
   else
   {
-    if ( !scalarGroup.isEmpty() )
-    {
-      const IdentifyResult result( qobject_cast<QgsMapLayer *>( layer ),
-                                   scalarGroup,
-                                   scalarAttributes,
-                                   derivedAttributes );
-      results->append( result );
-    }
-    if ( !vectorGroup.isEmpty() )
-    {
-      const IdentifyResult result( qobject_cast<QgsMapLayer *>( layer ),
-                                   vectorGroup,
-                                   vectorAttributes,
-                                   derivedAttributes );
-      results->append( result );
-    }
+    if ( activeScalarGroup >= 0 )
+      datasetIndexList.append( layer->staticScalarDatasetIndex() );
+    if ( activeVectorGroup >= 0 && activeVectorGroup != activeScalarGroup )
+      datasetIndexList.append( layer->staticVectorDatasetIndex() );
   }
+
+  //create results
+  for ( const QgsMeshDatasetIndex &index : datasetIndexList )
+  {
+    if ( !index.isValid() )
+      continue;
+
+    const QgsMeshDatasetGroupMetadata &groupMeta = layer->datasetGroupMetadata( index );
+    QMap< QString, QString > derivedAttributes;
+
+    QMap<QString, QString> attribute;
+    if ( groupMeta.isScalar() )
+    {
+      const QgsMeshDatasetValue scalarValue = layer->datasetValue( index, point, searchRadius );
+      const double scalar = scalarValue.scalar();
+      attribute.insert( tr( "Scalar Value" ), std::isnan( scalar ) ? tr( "no data" ) : QString::number( scalar ) );
+    }
+
+    if ( groupMeta.isVector() )
+    {
+      const QgsMeshDatasetValue vectorValue = layer->datasetValue( index, point, searchRadius );
+      const double vectorX = vectorValue.x();
+      const double vectorY = vectorValue.y();
+      if ( std::isnan( vectorX ) || std::isnan( vectorY ) )
+        attribute.insert( tr( "Vector Value" ), tr( "no data" ) );
+      else
+      {
+        attribute.insert( tr( "Vector Magnitude" ), QString::number( vectorValue.scalar() ) );
+        derivedAttributes.insert( tr( "Vector x-component" ), QString::number( vectorY ) );
+        derivedAttributes.insert( tr( "Vector y-component" ), QString::number( vectorX ) );
+      }
+    }
+
+    const QgsMeshDatasetMetadata &meta = layer->datasetMetadata( index );
+
+    if ( groupMeta.isTemporal() )
+      derivedAttributes.insert( tr( "Time Step" ), layer->formatTime( meta.time() ) );
+    derivedAttributes.insert( tr( "Source" ), groupMeta.uri() );
+
+    QString resultName = groupMeta.name();
+    if ( isTemporal && ( index.group() == activeScalarGroup  || index.group() == activeVectorGroup ) )
+      resultName.append( tr( " (active)" ) );
+
+    const IdentifyResult result( qobject_cast<QgsMapLayer *>( layer ),
+                                 resultName,
+                                 attribute,
+                                 derivedAttributes );
+
+    results->append( result );
+  }
+
+  QMap<QString, QString> derivedGeometry;
+
+  QgsPointXY vertexPoint = layer->snapOnElement( QgsMesh::Vertex, point, searchRadius );
+  if ( !vertexPoint.isEmpty() )
+  {
+    derivedGeometry.insert( tr( "Snapped Vertex Position X" ), QString::number( vertexPoint.x() ) );
+    derivedGeometry.insert( tr( "Snapped Vertex Position Y" ), QString::number( vertexPoint.y() ) );
+  }
+
+  QgsPointXY faceCentroid = layer->snapOnElement( QgsMesh::Face, point, searchRadius );
+  if ( !faceCentroid.isEmpty() )
+  {
+    derivedGeometry.insert( tr( "Face Centroid X" ), QString::number( faceCentroid.x() ) );
+    derivedGeometry.insert( tr( "Face Centroid Y" ), QString::number( faceCentroid.y() ) );
+  }
+
+  QgsPointXY pointOnEdge = layer->snapOnElement( QgsMesh::Edge, point, searchRadius );
+  if ( !pointOnEdge.isEmpty() )
+  {
+    derivedGeometry.insert( tr( "Point on Edge X" ), QString::number( pointOnEdge.x() ) );
+    derivedGeometry.insert( tr( "Point on Edge Y" ), QString::number( pointOnEdge.y() ) );
+  }
+
+  const IdentifyResult result( qobject_cast<QgsMapLayer *>( layer ),
+                               tr( "Geometry" ),
+                               derivedAttributesForPoint( QgsPoint( point ) ),
+                               derivedGeometry );
+
+  results->append( result );
+
   return true;
+}
+
+bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorTileLayer *layer, const QgsGeometry &geometry )
+{
+  if ( !layer || !layer->isSpatial() )
+    return false;
+
+  if ( !layer->isInScaleRange( mCanvas->mapSettings().scale() ) )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Out of scale limits" ), 2 );
+    return false;
+  }
+
+  QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
+
+  QMap< QString, QString > commonDerivedAttributes;
+
+  QgsGeometry selectionGeom = geometry;
+  bool isPointOrRectangle;
+  QgsPointXY point;
+  bool isSingleClick = selectionGeom.type() == QgsWkbTypes::PointGeometry;
+  if ( isSingleClick )
+  {
+    isPointOrRectangle = true;
+    point = selectionGeom.asPoint();
+
+    commonDerivedAttributes = derivedAttributesForPoint( QgsPoint( point ) );
+  }
+  else
+  {
+    // we have a polygon - maybe it is a rectangle - in such case we can avoid costly insterestion tests later
+    isPointOrRectangle = QgsGeometry::fromRect( selectionGeom.boundingBox() ).isGeosEqual( selectionGeom );
+  }
+
+  int featureCount = 0;
+
+  QgsFeatureList featureList;
+  std::unique_ptr<QgsGeometryEngine> selectionGeomPrepared;
+
+  // toLayerCoordinates will throw an exception for an 'invalid' point.
+  // For example, if you project a world map onto a globe using EPSG 2163
+  // and then click somewhere off the globe, an exception will be thrown.
+  try
+  {
+    QgsRectangle r;
+    if ( isSingleClick )
+    {
+      double sr = mOverrideCanvasSearchRadius < 0 ? searchRadiusMU( mCanvas ) : mOverrideCanvasSearchRadius;
+      r = toLayerCoordinates( layer, QgsRectangle( point.x() - sr, point.y() - sr, point.x() + sr, point.y() + sr ) );
+    }
+    else
+    {
+      r = toLayerCoordinates( layer, selectionGeom.boundingBox() );
+
+      if ( !isPointOrRectangle )
+      {
+        QgsCoordinateTransform ct( mCanvas->mapSettings().destinationCrs(), layer->crs(), mCanvas->mapSettings().transformContext() );
+        if ( ct.isValid() )
+          selectionGeom.transform( ct );
+
+        // use prepared geometry for faster intersection test
+        selectionGeomPrepared.reset( QgsGeometry::createGeometryEngine( selectionGeom.constGet() ) );
+      }
+    }
+
+    int tileZoom = QgsVectorTileUtils::scaleToZoomLevel( mCanvas->scale(), layer->sourceMinZoom(), layer->sourceMaxZoom() );
+    QgsTileMatrix tileMatrix = QgsTileMatrix::fromWebMercator( tileZoom );
+    QgsTileRange tileRange = tileMatrix.tileRangeFromExtent( r );
+
+    for ( int row = tileRange.startRow(); row <= tileRange.endRow(); ++row )
+    {
+      for ( int col = tileRange.startColumn(); col <= tileRange.endColumn(); ++col )
+      {
+        QgsTileXYZ tileID( col, row, tileZoom );
+        QByteArray data = layer->getRawTile( tileID );
+        if ( data.isEmpty() )
+          continue;  // failed to get data
+
+        QgsVectorTileMVTDecoder decoder;
+        if ( !decoder.decode( tileID, data ) )
+          continue;  // failed to decode
+
+        QMap<QString, QgsFields> perLayerFields;
+        const QStringList layerNames = decoder.layers();
+        for ( const QString &layerName : layerNames )
+        {
+          QSet<QString> fieldNames = qgis::listToSet( decoder.layerFieldNames( layerName ) );
+          perLayerFields[layerName] = QgsVectorTileUtils::makeQgisFields( fieldNames );
+        }
+
+        const QgsVectorTileFeatures features = decoder.layerFeatures( perLayerFields, QgsCoordinateTransform() );
+        const QStringList featuresLayerNames = features.keys();
+        for ( const QString &layerName : featuresLayerNames )
+        {
+          const QgsFields fFields = perLayerFields[layerName];
+          const QVector<QgsFeature> &layerFeatures = features[layerName];
+          for ( const QgsFeature &f : layerFeatures )
+          {
+            if ( f.geometry().intersects( r ) && ( !selectionGeomPrepared || selectionGeomPrepared->intersects( f.geometry().constGet() ) ) )
+            {
+              QMap< QString, QString > derivedAttributes = commonDerivedAttributes;
+              derivedAttributes.insert( tr( "Feature ID" ), FID_TO_STRING( f.id() ) );
+
+              results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), layerName, fFields, f, derivedAttributes ) );
+
+              featureCount++;
+            }
+          }
+        }
+      }
+    }
+
+  }
+  catch ( QgsCsException &cse )
+  {
+    Q_UNUSED( cse )
+    // catch exception for 'invalid' point and proceed with no features found
+    QgsDebugMsg( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
+  }
+
+  return featureCount > 0;
 }
 
 QMap<QString, QString> QgsMapToolIdentify::derivedAttributesForPoint( const QgsPoint &point )
@@ -447,6 +619,13 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
 
 void QgsMapToolIdentify::closestVertexAttributes( const QgsAbstractGeometry &geometry, QgsVertexId vId, QgsMapLayer *layer, QMap< QString, QString > &derivedAttributes )
 {
+  if ( ! vId.isValid( ) )
+  {
+    // We should not get here ...
+    QgsDebugMsg( "Invalid vertex id!" );
+    return;
+  }
+
   QString str = QLocale().toString( vId.vertex + 1 );
   derivedAttributes.insert( tr( "Closest vertex number" ), str );
 
@@ -541,6 +720,8 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
     //find closest vertex to clicked point
     closestPoint = QgsGeometryUtils::closestVertex( *feature.geometry().constGet(), QgsPoint( layerPoint ), vId );
   }
+
+
 
   if ( QgsWkbTypes::isMultiType( wkbType ) )
   {
@@ -851,7 +1032,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
             }
 
             QMap< QString, QString > derAttributes = derivedAttributes;
-            derAttributes.unite( featureDerivedAttributes( feature, layer ) );
+            derAttributes.unite( featureDerivedAttributes( feature, layer, toLayerCoordinates( layer, point ) ) );
 
             IdentifyResult identifyResult( qobject_cast<QgsMapLayer *>( layer ), labels.join( QStringLiteral( " / " ) ), featureStore.fields(), feature, derAttributes );
 

@@ -81,7 +81,7 @@ void QgsColorSchemeList::removeSelection()
     rows << index.row();
   }
   //remove duplicates
-  QList<int> rowsToRemove = QList<int>::fromSet( rows.toSet() );
+  QList<int> rowsToRemove = qgis::setToList( qgis::listToSet( rows ) );
 
   //remove rows in descending order
   std::sort( rowsToRemove.begin(), rowsToRemove.end(), std::greater<int>() );
@@ -124,7 +124,7 @@ void QgsColorSchemeList::copyColors()
     rows << index.row();
   }
   //remove duplicates
-  QList<int> rowsToCopy = QList<int>::fromSet( rows.toSet() );
+  QList<int> rowsToCopy = qgis::setToList( qgis::listToSet( rows ) );
 
   QgsNamedColorList colorsToCopy;
   const auto constRowsToCopy = rowsToCopy;
@@ -208,7 +208,7 @@ void QgsColorSchemeList::keyPressEvent( QKeyEvent *event )
       rows << index.row();
     }
     //remove duplicates
-    QList<int> rowsToRemove = QList<int>::fromSet( rows.toSet() );
+    QList<int> rowsToRemove = qgis::setToList( qgis::listToSet( rows ) );
 
     //remove rows in descending order
     std::sort( rowsToRemove.begin(), rowsToRemove.end(), std::greater<int>() );
@@ -723,7 +723,7 @@ void QgsColorSwatchDelegate::paint( QPainter *painter, const QStyleOptionViewIte
   rect.setSize( QSize( iconSize, iconSize ) );
   rect.adjust( 0, 1, 0, 1 );
   //create an icon pixmap
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   painter->setRenderHint( QPainter::Antialiasing );
   painter->setPen( Qt::NoPen );
   if ( color.alpha() < 255 )
@@ -737,7 +737,6 @@ void QgsColorSwatchDelegate::paint( QPainter *painter, const QStyleOptionViewIte
   //draw semi-transparent color on top
   painter->setBrush( color );
   painter->drawRoundedRect( rect, cornerSize, cornerSize );
-  painter->restore();
 }
 
 QPixmap QgsColorSwatchDelegate::transparentBackground() const

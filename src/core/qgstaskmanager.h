@@ -70,6 +70,7 @@ class CORE_EXPORT QgsTask : public QObject
     enum Flag
     {
       CanCancel = 1 << 1, //!< Task can be canceled
+      CancelWithoutPrompt = 1 << 2, //!< Task can be canceled without any users prompts, e.g. when closing a project or QGIS.
       AllFlags = CanCancel, //!< Task supports all flags
     };
     Q_DECLARE_FLAGS( Flags, Flag )

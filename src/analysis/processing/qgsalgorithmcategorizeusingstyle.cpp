@@ -51,6 +51,13 @@ void QgsCategorizeUsingStyleAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( failSymbols.release() );
 }
 
+QgsProcessingAlgorithm::Flags QgsCategorizeUsingStyleAlgorithm::flags() const
+{
+  Flags f = QgsProcessingAlgorithm::flags();
+  f |= FlagNotAvailableInStandaloneTool;
+  return f;
+}
+
 QString QgsCategorizeUsingStyleAlgorithm::name() const
 {
   return QStringLiteral( "categorizeusingstyle" );
@@ -204,7 +211,7 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
     uniqueVals << value;
   }
 
-  QVariantList sortedUniqueVals = uniqueVals.toList();
+  QVariantList sortedUniqueVals = qgis::setToList( uniqueVals );
   std::sort( sortedUniqueVals.begin(), sortedUniqueVals.end() );
 
   QgsCategoryList cats;

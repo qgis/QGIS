@@ -76,6 +76,9 @@ class QgsFeaturePrivate : public QSharedData
     //! Optional field map for name-based attribute lookups
     QgsFields fields;
 
+  private:
+    QgsFeaturePrivate &operator=( const QgsFeaturePrivate & ) = delete;
+
 };
 
 /// @endcond

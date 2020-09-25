@@ -862,7 +862,9 @@ class CORE_EXPORT QgsAuthManager : public QObject
     int mScheduledDbEraseRequestWait = 3 ; // in seconds
     bool mScheduledDbEraseRequestEmitted = false;
     int mScheduledDbEraseRequestCount = 0;
-    QMutex *mMutex = nullptr;
+
+    std::unique_ptr<QMutex> mMutex;
+    std::unique_ptr<QMutex> mMasterPasswordMutex;
 
 #ifndef QT_NO_SSL
     // mapping of sha1 digest and cert source and cert

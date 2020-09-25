@@ -60,6 +60,16 @@ QgsStyleSaveDialog::QgsStyleSaveDialog( QWidget *parent, QgsStyle::StyleEntity t
       possibleEntities << QgsStyle::LabelSettingsEntity << QgsStyle::TextFormatEntity;
       break;
 
+    case QgsStyle::LegendPatchShapeEntity:
+      this->setWindowTitle( tr( "Save New Legend Patch Shape" ) );
+      possibleEntities << QgsStyle::LegendPatchShapeEntity;
+      break;
+
+    case QgsStyle::Symbol3DEntity:
+      this->setWindowTitle( tr( "Save New 3D Symbol" ) );
+      possibleEntities << QgsStyle::Symbol3DEntity;
+      break;
+
     case QgsStyle::TagEntity:
     case QgsStyle::SmartgroupEntity:
       break;
@@ -90,6 +100,14 @@ QgsStyleSaveDialog::QgsStyleSaveDialog( QWidget *parent, QgsStyle::StyleEntity t
 
         case QgsStyle::LabelSettingsEntity:
           mComboSaveAs->addItem( QgsApplication::getThemeIcon( QStringLiteral( "labelingSingle.svg" ) ), tr( "Label Settings" ), e );
+          break;
+
+        case QgsStyle::LegendPatchShapeEntity:
+          mComboSaveAs->addItem( QgsApplication::getThemeIcon( QStringLiteral( "legend.svg" ) ), tr( "Legend Patch Shape" ), e );
+          break;
+
+        case QgsStyle::Symbol3DEntity:
+          mComboSaveAs->addItem( QgsApplication::getThemeIcon( QStringLiteral( "3d.svg" ) ), tr( "3D Symbol" ), e );
           break;
 
         case QgsStyle::TagEntity:

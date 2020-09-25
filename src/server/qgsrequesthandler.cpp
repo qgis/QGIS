@@ -121,6 +121,11 @@ QString QgsRequestHandler::url() const
   return mRequest.url().toString();
 }
 
+QString QgsRequestHandler::path() const
+{
+  return mRequest.url().path();
+}
+
 void QgsRequestHandler::setStatusCode( int code )
 {
   mResponse.setStatusCode( code );

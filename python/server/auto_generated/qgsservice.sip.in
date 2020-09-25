@@ -49,12 +49,6 @@ Constructor
 :return: the version of the service
 %End
 
-    virtual bool allowMethod( QgsServerRequest::Method ) const = 0;
-%Docstring
-Returns ``True`` if the given method is supported for that
-service.
-%End
-
     virtual void executeRequest( const QgsServerRequest &request,
                                  QgsServerResponse &response,
                                  const QgsProject *project ) = 0;

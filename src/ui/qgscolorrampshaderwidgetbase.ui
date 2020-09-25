@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
@@ -257,8 +257,10 @@
    <item row="2" column="0">
     <widget class="QLabel" name="mUnitLabel">
      <property name="text">
-      <string>Label unit
-suffix</string>
+      <string>Label unit suffix</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
      </property>
     </widget>
    </item>

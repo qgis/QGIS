@@ -394,6 +394,12 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     //! Menu for the "Add item" toolbutton when in label settings mode
     QMenu *mMenuBtnAddItemLabelSettings = nullptr;
 
+    //! Menu for the "Add item" toolbutton when in legend patch shape mode
+    QMenu *mMenuBtnAddItemLegendPatchShape = nullptr;
+
+    //! Menu for the "Add item" toolbutton when in 3d symbol mode
+    QMenu *mMenuBtnAddItemSymbol3D = nullptr;
+
     QAction *mActionCopyToDefault = nullptr;
 
     QAction *mActionCopyItem = nullptr;
@@ -411,6 +417,12 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
 
     bool addLabelSettings( QgsWkbTypes::GeometryType type );
     bool editLabelSettings();
+
+    bool addLegendPatchShape( QgsSymbol::SymbolType type );
+    bool editLegendPatchShape();
+
+    bool addSymbol3D( const QString &type );
+    bool editSymbol3D();
 
     friend class QgsStyleExportImportDialog;
 };

@@ -170,7 +170,7 @@ namespace pal
       int mTotalCandidates = 0;
 
       /**
-       * # candidates (all, including)
+       * Number of candidates (all, including)
        */
       int mAllNblp = 0;
 

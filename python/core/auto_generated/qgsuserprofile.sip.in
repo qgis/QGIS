@@ -58,7 +58,7 @@ Init the settings from the user folder.
 %Docstring
 Returns the alias for the user profile.
 
-:return: If no alias is set name() is returned.
+:return: If no alias is set :py:func:`~QgsUserProfile.name` is returned.
 %End
 
     QgsError setAlias( const QString &alias );

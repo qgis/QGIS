@@ -121,7 +121,7 @@ QVariant QgsVertexEditorModel::data( const QModelIndex &index, int role ) const
     if ( calcR( index.row(), r, minRadius ) )
     {
       font.setItalic( true );
-      fontChanged = true;;
+      fontChanged = true;
     }
     if ( fontChanged )
     {
@@ -499,4 +499,11 @@ void CoordinateItemDelegate::setModelData( QWidget *editor, QAbstractItemModel *
   }
 }
 
-
+void CoordinateItemDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
+{
+  QLineEdit *lineEdit = qobject_cast<QLineEdit *>( editor );
+  if ( lineEdit && index.isValid() )
+  {
+    lineEdit->setText( QLocale().toString( index.data( ).toDouble( ), 'f', 4 ) );
+  }
+}

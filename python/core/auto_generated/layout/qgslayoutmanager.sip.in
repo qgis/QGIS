@@ -17,7 +17,7 @@ Manages storage of a set of layouts.
 
 QgsLayoutManager handles the storage, serializing and deserializing
 of print layouts and reports. Usually this class is not constructed directly, but
-rather accessed through a QgsProject via :py:func:`QgsProject.layoutManager()`
+rather accessed through a QgsProject via :py:func:`QgsProject.layoutManager()`.
 
 QgsLayoutManager retains ownership of all the layouts contained
 in the manager.
@@ -106,7 +106,7 @@ Returns a DOM element representing the state of the manager.
 %Docstring
 Duplicates an existing ``layout`` from the manager. The new
 layout will automatically be stored in the manager.
-Returns new the layout if duplication was successful.
+Returns the new layout if duplication was successful.
 %End
 
     QString generateUniqueTitle( QgsMasterLayoutInterface::Type type = QgsMasterLayoutInterface::PrintLayout ) const;

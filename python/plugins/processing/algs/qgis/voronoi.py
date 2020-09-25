@@ -21,6 +21,7 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
+
 #############################################################################
 #
 # Voronoi diagram calculator/ Delaunay triangulator
@@ -95,6 +96,7 @@ Steve J. Fortune (1987) A Sweepline Algorithm for Voronoi Diagrams,
 Algorithmica 2, 153-174.
 """)
 
+
 #############################################################################
 #
 # For programmatic use two functions are available:
@@ -125,6 +127,7 @@ Algorithmica 2, 153-174.
 import math
 import sys
 import getopt
+
 TOLERANCE = 1e-9
 BIG_FLOAT = 1e38
 
@@ -138,11 +141,11 @@ class Context(object):
         self.debug = 0
         self.plot = 0
         self.triangulate = False
-        self.vertices = []    # list of vertex 2-tuples: (x,y)
-        self.lines = []    # equation of line 3-tuple (a b c), for the equation of the line a*x+b*y = c
-        self.edges = []    # edge 3-tuple: (line index, vertex 1 index, vertex 2 index)   if either vertex index is -1, the edge extends to infiinity
-        self.triangles = []    # 3-tuple of vertex indices
-        self.polygons = {}    # a dict of site:[edges] pairs
+        self.vertices = []  # list of vertex 2-tuples: (x,y)
+        self.lines = []  # equation of line 3-tuple (a b c), for the equation of the line a*x+b*y = c
+        self.edges = []  # edge 3-tuple: (line index, vertex 1 index, vertex 2 index)   if either vertex index is -1, the edge extends to infiinity
+        self.triangles = []  # 3-tuple of vertex indices
+        self.polygons = {}  # a dict of site:[edges] pairs
 
     def circle(self, x, y, rad):
         pass
@@ -357,6 +360,7 @@ def voronoi(siteList, context):
         he = he.right
     Edge.EDGE_NUM = 0
 
+
 # ------------------------------------------------------------------
 
 
@@ -364,6 +368,7 @@ def isEqual(a, b, relativeError=TOLERANCE):
     # is nearly equal to within the allowed relative error
     norm = max(abs(a), abs(b))
     return (norm < relativeError) or (abs(a - b) < (relativeError * norm))
+
 
 # ------------------------------------------------------------------
 
@@ -397,6 +402,7 @@ class Site(object):
         dy = self.y - other.y
         return math.sqrt(dx * dx + dy * dy)
 
+
 # ------------------------------------------------------------------
 
 
@@ -404,7 +410,7 @@ class Edge(object):
     LE = 0
     RE = 1
     EDGE_NUM = 0
-    DELETED = {}   # marker value
+    DELETED = {}  # marker value
 
     def __init__(self):
         self.a = 0.0
@@ -465,10 +471,10 @@ class Edge(object):
 class Halfedge(object):
 
     def __init__(self, edge=None, pm=Edge.LE):
-        self.left = None   # left Halfedge in the edge list
-        self.right = None   # right Halfedge in the edge list
-        self.qnext = None   # priority queue linked list pointer
-        self.edge = edge   # edge list Edge
+        self.left = None  # left Halfedge in the edge list
+        self.right = None  # right Halfedge in the edge list
+        self.qnext = None  # priority queue linked list pointer
+        self.edge = edge  # edge list Edge
         self.pm = pm
         self.vertex = None  # Site()
         self.ystar = BIG_FLOAT
@@ -529,13 +535,13 @@ class Halfedge(object):
         topsite = e.reg[1]
         right_of_site = pt.x > topsite.x
 
-        if(right_of_site and self.pm == Edge.LE):
+        if (right_of_site and self.pm == Edge.LE):
             return True
 
-        if(not right_of_site and self.pm == Edge.RE):
+        if (not right_of_site and self.pm == Edge.RE):
             return False
 
-        if(e.a == 1.0):
+        if (e.a == 1.0):
             dyp = pt.y - topsite.y
             dxp = pt.x - topsite.x
             fast = 0
@@ -544,14 +550,14 @@ class Halfedge(object):
                 fast = above
             else:
                 above = pt.x + pt.y * e.b > e.c
-                if(e.b < 0.0):
+                if (e.b < 0.0):
                     above = not above
                 if (not above):
                     fast = 1
             if (not fast):
                 dxs = topsite.x - (e.reg[0]).x
                 above = e.b * (dxp * dxp - dyp * dyp) < dxs * dyp * (1.0 + 2.0 * dxp / dxs + e.b * e.b)
-                if(e.b < 0.0):
+                if (e.b < 0.0):
                     above = not above
         else:  # e.b == 1.0
             yl = e.c - e.a * pt.x
@@ -560,7 +566,7 @@ class Halfedge(object):
             t3 = yl - topsite.y
             above = t1 * t1 > t2 * t2 + t3 * t3
 
-        if(self.pm == Edge.LE):
+        if (self.pm == Edge.LE):
             return above
         else:
             return not above
@@ -583,7 +589,7 @@ class Halfedge(object):
 
         xint = (e1.c * e2.b - e2.c * e1.b) / d
         yint = (e2.c * e1.a - e1.c * e2.a) / d
-        if(cmp(e1.reg[1], e2.reg[1]) < 0):
+        if (cmp(e1.reg[1], e2.reg[1]) < 0):
             he = self
             e = e1
         else:
@@ -591,8 +597,8 @@ class Halfedge(object):
             e = e2
 
         rightOfSite = xint >= e.reg[1].x
-        if((rightOfSite and he.pm == Edge.LE) or
-           (not rightOfSite and he.pm == Edge.RE)):
+        if ((rightOfSite and he.pm == Edge.LE)
+                or (not rightOfSite and he.pm == Edge.RE)):
             return None
 
         # create a new site at the point of intersection - this is a new
@@ -632,7 +638,7 @@ class EdgeList(object):
 
     # Get entry from hash table, pruning any deleted nodes
     def gethash(self, b):
-        if(b < 0 or b >= self.hashsize):
+        if (b < 0 or b >= self.hashsize):
             return None
         he = self.hash[b]
         if he is None or he.edge is not Edge.DELETED:
@@ -646,14 +652,14 @@ class EdgeList(object):
         # Use hash table to get close to desired halfedge
         bucket = int(((pt.x - self.xmin) / self.deltax * self.hashsize))
 
-        if(bucket < 0):
+        if (bucket < 0):
             bucket = 0
 
-        if(bucket >= self.hashsize):
+        if (bucket >= self.hashsize):
             bucket = self.hashsize - 1
 
         he = self.gethash(bucket)
-        if(he is None):
+        if (he is None):
             i = 1
             while True:
                 he = self.gethash(bucket - i)
@@ -676,7 +682,7 @@ class EdgeList(object):
                 he = he.left
 
         # Update hash table and reference counts
-        if(bucket > 0 and bucket < self.hashsize - 1):
+        if (bucket > 0 and bucket < self.hashsize - 1):
             self.hash[bucket] = he
         return he
 
@@ -705,7 +711,7 @@ class PriorityQueue(object):
         he.ystar = site.y + offset
         last = self.hash[self.getBucket(he)]
         next = last.qnext
-        while((next is not None) and cmp(he, next) > 0):
+        while ((next is not None) and cmp(he, next) > 0):
             last = next
             next = last.qnext
         he.qnext = last.qnext
@@ -732,7 +738,7 @@ class PriorityQueue(object):
         return bucket
 
     def getMinPt(self):
-        while(self.hash[self.minidx].qnext is None):
+        while (self.hash[self.minidx].qnext is None):
             self.minidx += 1
         he = self.hash[self.minidx].qnext
         x = he.vertex.x
@@ -832,6 +838,7 @@ def computeVoronoiDiagram(points):
     context = Context()
     voronoi(siteList, context)
     return (context.vertices, context.lines, context.edges)
+
 
 # ------------------------------------------------------------------
 

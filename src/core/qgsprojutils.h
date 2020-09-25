@@ -117,7 +117,7 @@ class CORE_EXPORT QgsProjUtils
      *
      * Returns TRUE if a matching authority and code was found.
      */
-    static bool identifyCrs( const PJ *crs, QString &authName, QString &authCode, IdentifyFlags flags = nullptr );
+    static bool identifyCrs( const PJ *crs, QString &authName, QString &authCode, IdentifyFlags flags = IdentifyFlags() );
 
     /**
      * Returns TRUE if a coordinate operation (specified via proj string) is available.

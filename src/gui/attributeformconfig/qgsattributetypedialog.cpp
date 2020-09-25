@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsattributetypedialog.h"
+#include "qgsattributeeditorelement.h"
 #include "qgsattributetypeloaddialog.h"
 #include "qgsvectordataprovider.h"
 #include "qgsmapcanvas.h"
@@ -73,6 +74,12 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   mExpressionWidget->registerExpressionContextGenerator( this );
   mExpressionWidget->setLayer( mLayer );
 
+  mAliasExpressionButton->registerExpressionContextGenerator( this );
+  connect( mAliasExpressionButton, &QgsPropertyOverrideButton::changed, this, [ = ]
+  {
+    mDataDefinedProperties.setProperty( QgsEditFormConfig::DataDefinedProperty::Alias, mAliasExpressionButton->toProperty() );
+  } );
+
   connect( mExpressionWidget, &QgsExpressionLineEdit::expressionChanged, this, &QgsAttributeTypeDialog::defaultExpressionChanged );
   connect( mUniqueCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
   {
@@ -92,6 +99,7 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
 
   constraintExpressionWidget->setAllowEmptyFieldName( true );
   constraintExpressionWidget->setLayer( vl );
+
 }
 
 QgsAttributeTypeDialog::~QgsAttributeTypeDialog()
@@ -303,7 +311,13 @@ QgsExpressionContext QgsAttributeTypeDialog::createExpressionContext() const
       << QgsExpressionContextUtils::globalScope()
       << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
       << QgsExpressionContextUtils::layerScope( mLayer )
+      << QgsExpressionContextUtils::formScope( QgsFeature( mLayer->fields() ) )
       << QgsExpressionContextUtils::mapToolCaptureScope( QList<QgsPointLocator::Match>() );
+
+  context.setHighlightedFunctions( QStringList() << QStringLiteral( "current_value" ) );
+  context.setHighlightedVariables( QStringList() << QStringLiteral( "current_geometry" )
+                                   << QStringLiteral( "current_feature" )
+                                   << QStringLiteral( "form_mode" ) );
 
   return context;
 }
@@ -339,12 +353,21 @@ void QgsAttributeTypeDialog::setFieldEditable( bool editable )
 
 void QgsAttributeTypeDialog::setAlias( const QString &alias )
 {
-  leAlias->setText( alias );
+  mAlias->setText( alias );
 }
 
 QString QgsAttributeTypeDialog::alias() const
 {
-  return leAlias->text();
+  return mAlias->text();
+}
+
+void QgsAttributeTypeDialog::setDataDefinedProperties( const QgsPropertyCollection &properties )
+{
+  mDataDefinedProperties = properties;
+  if ( properties.hasProperty( QgsEditFormConfig::DataDefinedProperty::Alias ) )
+  {
+    mAliasExpressionButton->setToProperty( properties.property( QgsEditFormConfig::DataDefinedProperty::Alias ) );
+  }
 }
 
 void QgsAttributeTypeDialog::setComment( const QString &comment )
@@ -411,4 +434,9 @@ QStandardItem *QgsAttributeTypeDialog::currentItem() const
 {
   QStandardItemModel *widgetTypeModel = qobject_cast<QStandardItemModel *>( mWidgetTypeComboBox->model() );
   return widgetTypeModel->item( mWidgetTypeComboBox->currentIndex() );
+}
+
+QgsPropertyCollection QgsAttributeTypeDialog::dataDefinedProperties() const
+{
+  return mDataDefinedProperties;
 }

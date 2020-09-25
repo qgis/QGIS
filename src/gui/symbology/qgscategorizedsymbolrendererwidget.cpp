@@ -27,6 +27,7 @@
 #include "qgsstyle.h"
 #include "qgslogger.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgstemporalcontroller.h"
 
 #include "qgssymbolselectordialog.h"
 #include "qgsexpressionbuilderdialog.h"
@@ -785,7 +786,7 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
   }
   else
   {
-    uniqueValues = mLayer->uniqueValues( idx ).toList();
+    uniqueValues = qgis::setToList( mLayer->uniqueValues( idx ) );
   }
 
   // ask to abort if too many classes
@@ -975,7 +976,7 @@ QList<QgsSymbol *> QgsCategorizedSymbolRendererWidget::selectedSymbols()
   QItemSelectionModel *m = viewCategories->selectionModel();
   QModelIndexList selectedIndexes = m->selectedRows( 1 );
 
-  if ( m && !selectedIndexes.isEmpty() )
+  if ( !selectedIndexes.isEmpty() )
   {
     const QgsCategoryList &categories = mRenderer->categories();
     QModelIndexList::const_iterator indexIt = selectedIndexes.constBegin();
@@ -999,7 +1000,7 @@ QgsCategoryList QgsCategorizedSymbolRendererWidget::selectedCategoryList()
   QItemSelectionModel *m = viewCategories->selectionModel();
   QModelIndexList selectedIndexes = m->selectedRows( 1 );
 
-  if ( m && !selectedIndexes.isEmpty() )
+  if ( !selectedIndexes.isEmpty() )
   {
     QModelIndexList::const_iterator indexIt = selectedIndexes.constBegin();
     for ( ; indexIt != selectedIndexes.constEnd(); ++indexIt )
@@ -1150,7 +1151,7 @@ void QgsCategorizedSymbolRendererWidget::applyChangeToSymbol()
   QItemSelectionModel *m = viewCategories->selectionModel();
   QModelIndexList i = m->selectedRows();
 
-  if ( m && !i.isEmpty() )
+  if ( !i.isEmpty() )
   {
     QList<int> selectedCats = selectedCategories();
 
@@ -1211,6 +1212,10 @@ QgsExpressionContext QgsCategorizedSymbolRendererWidget::createExpressionContext
   {
     expContext << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )
                << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
+    if ( const QgsExpressionContextScopeGenerator *generator = dynamic_cast< const QgsExpressionContextScopeGenerator * >( mContext.mapCanvas()->temporalController() ) )
+    {
+      expContext << generator->createExpressionContextScope();
+    }
   }
   else
   {

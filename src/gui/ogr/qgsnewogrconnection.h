@@ -55,6 +55,8 @@ class GUI_EXPORT QgsNewOgrConnection : public QDialog, private Ui::QgsNewOgrConn
 
   private slots:
     void btnConnect_clicked();
+    //! Updates state of the OK button depending of the filled fields
+    void updateOkButtonState();
 
   private:
     QString mOriginalConnName;

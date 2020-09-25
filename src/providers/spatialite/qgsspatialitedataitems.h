@@ -24,7 +24,11 @@ class QgsSLLayerItem : public QgsLayerItem
   public:
     QgsSLLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType );
 
+    // QgsDataItem interface
+    QVector<QgsDataItem *> createChildren() override;
 };
+
+
 
 class QgsSLConnectionItem : public QgsDataCollectionItem
 {
@@ -45,7 +49,7 @@ class QgsSLConnectionItem : public QgsDataCollectionItem
     bool layerCollection() const override;
 };
 
-class QgsSLRootItem : public QgsDataCollectionItem
+class QgsSLRootItem : public QgsConnectionsRootItem
 {
     Q_OBJECT
   public:

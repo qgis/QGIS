@@ -374,6 +374,24 @@
           "type" : "string"
         }
       },
+      "sortby" : {
+        "name" : "sortby",
+        "in" : "query",
+        "description" : "Sort results by the specified field name",
+        "required" : false,
+        "schema" : {
+          "type" : "string"
+        }
+      },
+      "sortdesc" : {
+        "name" : "sortdesc",
+        "in" : "query",
+        "description" : "Sort results in descending order, field name must be specified with 'sortby' parameter",
+        "required" : false,
+        "schema" : {
+          "type" : "boolean"
+        }
+      },
       "relations" : {
         "name" : "relations",
         "in" : "query",

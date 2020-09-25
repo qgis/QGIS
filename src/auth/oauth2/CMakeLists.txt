@@ -109,14 +109,13 @@ IF(WITH_INTERNAL_O2 AND CMAKE_GENERATOR MATCHES "Ninja")
 ENDIF()
 QT5_WRAP_UI(OAUTH2_UIS_H ${OAUTH2_UIS})
 
-QT5_ADD_RESOURCES(OAUTH2_RCC_SRCS ${OAUTH2_RCCS})
 ############################################################
 # Set up plugin targets
 
 ADD_LIBRARY (oauth2authmethod MODULE
   ${OAUTH2_SRCS}
   ${OAUTH2_HDRS}
-  ${OAUTH2_RCC_SRCS}
+  ${OAUTH2_RCCS}
   ${OAUTH2_UIS_H}
 )
 
@@ -124,7 +123,7 @@ ADD_LIBRARY (oauth2authmethod MODULE
 ADD_LIBRARY (oauth2authmethod_static STATIC
   ${OAUTH2_SRCS}
   ${OAUTH2_HDRS}
-  ${OAUTH2_RCC_SRCS}
+  ${OAUTH2_RCCS}
   ${OAUTH2_UIS_H}
 )
 

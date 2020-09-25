@@ -99,7 +99,7 @@ used from any code which potentially blocks operation in the main GUI thread.
     void fetchLayers();
 %Docstring
 Triggers a new request to fetch the list of available layers from the
-server. When complete, the layersFetched() signal will be emitted
+server. When complete, the :py:func:`~QgsGeoNodeRequest.layersFetched` signal will be emitted
 with the result.
 
 This method is non-blocking and returns immediately.

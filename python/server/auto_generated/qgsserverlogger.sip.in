@@ -56,7 +56,7 @@ Set the current log file
 %Docstring
 Activates logging to stderr.
 
-.. versionadded:: 3.4.
+.. versionadded:: 3.4
 %End
 
   public slots:

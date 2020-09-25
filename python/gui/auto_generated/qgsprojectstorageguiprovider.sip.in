@@ -26,14 +26,14 @@ and registered in QgsProjectStorageGuiRegistry.
 
     virtual QString type() = 0;
 %Docstring
-Unique identifier of the project storage type. If type() returns "memory", all project file names
+Unique identifier of the project storage type. If :py:func:`~QgsProjectStorageGuiProvider.type` returns "memory", all project file names
 starting with "memory:" will have read/write redirected through that storage implementation.
 %End
 
     virtual QString visibleName();
 %Docstring
 Returns human-readable name of the storage. Used as the menu item text in QGIS. Empty name
-indicates that the storage does not implement GUI support (showLoadGui() and showSaveGui()).
+indicates that the storage does not implement GUI support (:py:func:`~QgsProjectStorageGuiProvider.showLoadGui` and :py:func:`~QgsProjectStorageGuiProvider.showSaveGui`).
 The name may be translatable and ideally unique as well.
 %End
 

@@ -41,7 +41,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class GridAverage(GdalAlgorithm):
-
     INPUT = 'INPUT'
     Z_FIELD = 'Z_FIELD'
     RADIUS_1 = 'RADIUS_1'

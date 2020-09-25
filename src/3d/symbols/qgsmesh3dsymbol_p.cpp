@@ -29,6 +29,7 @@
 #include "qgsmeshlayer.h"
 #include "qgstriangularmesh.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsphongtexturedmaterialsettings.h"
 
 static QgsExpressionContext _expressionContext3D()
 {
@@ -47,7 +48,7 @@ QgsMesh3DSymbolEntity::QgsMesh3DSymbolEntity( const Qgs3DMapSettings &map,
   : Qt3DCore::QEntity( parent )
 {
   // build the default material
-  Qt3DExtras::QPhongMaterial *mat = material( symbol );
+  Qt3DRender::QMaterial *mat = material( symbol );
 
   // build a transform function
   Qt3DCore::QTransform *tform = new Qt3DCore::QTransform;
@@ -61,9 +62,10 @@ QgsMesh3DSymbolEntity::QgsMesh3DSymbolEntity( const Qgs3DMapSettings &map,
   entity->setParent( this );
 }
 
-Qt3DExtras::QPhongMaterial *QgsMesh3DSymbolEntity::material( const QgsMesh3DSymbol &symbol ) const
+Qt3DRender::QMaterial *QgsMesh3DSymbolEntity::material( const QgsMesh3DSymbol &symbol ) const
 {
-  Qt3DExtras::QPhongMaterial *material = new Qt3DExtras::QPhongMaterial;
+  QgsMaterialContext context;
+  Qt3DRender::QMaterial *material = symbol.material()->toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, context );
 
   // front/back side culling
   auto techniques = material->effect()->techniques();
@@ -77,11 +79,6 @@ Qt3DExtras::QPhongMaterial *QgsMesh3DSymbolEntity::material( const QgsMesh3DSymb
       ( *rpit )->addRenderState( cullFace );
     }
   }
-
-  material->setAmbient( symbol.material().ambient() );
-  material->setDiffuse( symbol.material().diffuse() );
-  material->setSpecular( symbol.material().specular() );
-  material->setShininess( symbol.material().shininess() );
   return material;
 }
 
@@ -115,7 +112,7 @@ Qt3DRender::QGeometryRenderer *QgsMesh3DSymbolEntityNode::renderer( const Qgs3DM
   }
 
   const QgsTriangularMesh *mesh = layer->triangularMesh();
-  if ( layer && mesh )
+  if ( mesh )
   {
     const QVector<QgsMeshFace> &triangles = mesh->triangles();
     const QVector<QgsMeshVertex> &vertices = mesh->vertices();
@@ -137,9 +134,10 @@ Qt3DRender::QGeometryRenderer *QgsMesh3DSymbolEntityNode::renderer( const Qgs3DM
   // Polygons from mesh are already triangles, but
   // call QgsTessellatedPolygonGeometry to
   // use symbol settings for back faces, normals, etc
-  mGeometry = new QgsTessellatedPolygonGeometry;
-  mGeometry->setInvertNormals( false );
-  mGeometry->setAddBackFaces( symbol.addBackFaces() );
+
+  const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( symbol.material() );
+
+  mGeometry = new QgsTessellatedPolygonGeometry( true, false, symbol.addBackFaces(), texturedMaterialSettings ? texturedMaterialSettings->requiresTextureCoordinates() : false );
   QList<float> extrusionHeightPerPolygon;
   mGeometry->setPolygons( polygons, fids, origin, 0.0, extrusionHeightPerPolygon );
 

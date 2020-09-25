@@ -1,0 +1,57 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/labeling/qgslabellineanchorwidget.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsLabelLineAnchorWidget : QgsLabelSettingsWidgetBase
+{
+%Docstring
+A widget for customising label line anchor settings.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgslabellineanchorwidget.h"
+%End
+  public:
+
+    QgsLabelLineAnchorWidget( QWidget *parent /TransferThis/ = 0, QgsVectorLayer *vl = 0 );
+%Docstring
+Constructor for QgsLabelLineAnchorWidget.
+
+:param parent: parent widget
+:param vl: associated vector layer
+%End
+
+    void setSettings( const QgsLabelLineSettings &settings );
+%Docstring
+Sets the line ``settings`` to show in the widget.
+
+.. seealso:: :py:func:`settings`
+%End
+
+    QgsLabelLineSettings settings() const;
+%Docstring
+Returns the line settings defined by the widget.
+
+.. seealso:: :py:func:`setSettings`
+%End
+
+    virtual void updateDataDefinedProperties( QgsPropertyCollection &properties );
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/labeling/qgslabellineanchorwidget.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

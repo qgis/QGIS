@@ -27,6 +27,8 @@
 
 #include <QObject>
 
+#define SIP_NO_FILE
+
 class QgsMeshLayer;
 
 
@@ -36,6 +38,7 @@ class QgsMeshLayer;
  *
  * \warning This is not considered stable API, and may change in future QGIS releases
  *
+ * \note Not available in Python bindings
  * \since QGIS 3.6
  */
 class _3D_EXPORT QgsMeshLayer3DRendererMetadata : public Qgs3DRendererAbstractMetadata

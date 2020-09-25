@@ -95,7 +95,7 @@ value.
     static QString encodeProviderKeyAndUri( const QString &providerKey, const QString &uri );
 %Docstring
 Encodes a provider key and layer ``uri`` to a single string, for use with
-decodeProviderKeyAndUri()
+:py:func:`~QgsProcessingUtils.decodeProviderKeyAndUri`
 
 .. versionadded:: 3.14
 %End
@@ -103,9 +103,9 @@ decodeProviderKeyAndUri()
     static bool decodeProviderKeyAndUri( const QString &string, QString &providerKey /Out/, QString &uri /Out/ );
 %Docstring
 Decodes a provider key and layer ``uri`` from an encoded string, for use with
-encodeProviderKeyAndUri()
+:py:func:`~QgsProcessingUtils.encodeProviderKeyAndUri`
 
-:param string: encoded string, as returned by encodeProviderKeyAndUri()
+:param string: encoded string, as returned by :py:func:`~QgsProcessingUtils.encodeProviderKeyAndUri`
 :param uri: decoded layer uri
 
 :return: - ``True`` if ``string`` was successfully decoded
@@ -200,12 +200,12 @@ temporary layer store.
 
 .. note::
 
-   this version of the createFeatureSink() function has an API designed around use from the
-   SIP bindings. c++ code should call the other createFeatureSink() version.
+   this version of the :py:func:`~QgsProcessingUtils.createFeatureSink` function has an API designed around use from the
+   SIP bindings. c++ code should call the other :py:func:`~QgsProcessingUtils.createFeatureSink` version.
 
 .. note::
 
-   available in Python bindings as createFeatureSink()
+   available in Python bindings as :py:func:`~QgsProcessingUtils.createFeatureSink`
 %End
 
 
@@ -279,7 +279,7 @@ layer export is required. This defaults to shapefiles.
 The ``featureLimit`` argument can be used to specify a limit on the number of features read from the layer.
 
 When an algorithm is capable of handling multi-layer input files (such as Geopackage), it is preferable
-to use convertToCompatibleFormatAndLayerName() which may avoid conversion in more situations.
+to use :py:func:`~QgsProcessingUtils.convertToCompatibleFormatAndLayerName` which may avoid conversion in more situations.
 
 .. seealso:: :py:func:`convertToCompatibleFormatAndLayerName`
 %End
@@ -306,8 +306,8 @@ The ``featureLimit`` argument can be used to specify a limit on the number of fe
 The ``preferredFormat`` argument is used to specify to desired file extension to use when a temporary
 layer export is required. This defaults to shapefiles.
 
-This method should be preferred over convertToCompatibleFormat() when an algorithm is able
-to correctly handle files with multiple layers. Unlike convertToCompatibleFormat(), it will not force
+This method should be preferred over :py:func:`~QgsProcessingUtils.convertToCompatibleFormat` when an algorithm is able
+to correctly handle files with multiple layers. Unlike :py:func:`~QgsProcessingUtils.convertToCompatibleFormat`, it will not force
 a conversion in this case and will return the target layer name in the ``layerName`` argument.
 
 :param layer: source layer to convert (if required)

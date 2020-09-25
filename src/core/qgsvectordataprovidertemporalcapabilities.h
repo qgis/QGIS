@@ -39,11 +39,35 @@ class CORE_EXPORT QgsVectorDataProviderTemporalCapabilities : public QgsDataProv
   public:
 
     /**
+     * Provider temporal handling mode
+     **/
+    enum TemporalMode
+    {
+      ProviderHasFixedTemporalRange = 0, //!< Entire dataset from provider has a fixed start and end datetime.
+      ProviderStoresFeatureDateTimeInstantInField, //!< Dataset has feature datetime instants stored in a single field
+      ProviderStoresFeatureDateTimeStartAndEndInSeparateFields, //!< Dataset stores feature start and end datetimes in separate fields
+    };
+
+    /**
      * Constructor for QgsVectorDataProviderTemporalCapabilities.
      *
      * The \a enabled argument specifies whether the data provider has temporal capabilities.
      */
     QgsVectorDataProviderTemporalCapabilities( bool enabled = false );
+
+    /**
+     * Returns the temporal properties mode.
+     *
+     *\see setMode()
+    **/
+    TemporalMode mode() const;
+
+    /**
+     * Sets the temporal properties \a mode.
+     *
+     *\see mode()
+    **/
+    void setMode( TemporalMode mode );
 
     /**
      * Sets the datetime \a range extent from which temporal data is available from the provider.
@@ -59,6 +83,42 @@ class CORE_EXPORT QgsVectorDataProviderTemporalCapabilities : public QgsDataProv
     */
     const QgsDateTimeRange &availableTemporalRange() const;
 
+    /**
+     * Returns the name of the start datetime field, which contains the start time for the feature's time spans.
+     *
+     * If mode() is ProviderStoresFeatureDateTimeInstantInField, then this field stores both the start AND end times.
+     *
+     * \see setStartField()
+     * \see endField()
+     */
+    QString startField() const;
+
+    /**
+     * Sets the name of the start datetime \a field, which stores the start time for the feature's time spans.
+     *
+     * If mode() is ModeFeatureDateTimeInstantFromField, then this field stores both the start AND end times.
+     *
+     * \see startField()
+     * \see setEndField()
+     */
+    void setStartField( const QString &field );
+
+    /**
+     * Returns the name of the end datetime field, which stores the end time for the feature's time spans.
+     *
+     * \see setEndField()
+     * \see startField()
+     */
+    QString endField() const;
+
+    /**
+     * Sets the name of the end datetime \a field, which stores the end time for the feature's time spans.
+     *
+     * \see endField()
+     * \see setStartField()
+     */
+    void setEndField( const QString &field );
+
   private:
 
     /**
@@ -70,6 +130,11 @@ class CORE_EXPORT QgsVectorDataProviderTemporalCapabilities : public QgsDataProv
      *
      */
     QgsDateTimeRange mAvailableTemporalRange;
+
+    TemporalMode mMode = ProviderHasFixedTemporalRange;
+
+    QString mStartField;
+    QString mEndField;
 
 };
 

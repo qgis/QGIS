@@ -28,6 +28,7 @@
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsvectorlayer.h"
+#include "qgstextrenderer.h"
 #include <QMenu>
 #include <QClipboard>
 #include <QDrag>
@@ -37,7 +38,7 @@
 QgsFontButton::QgsFontButton( QWidget *parent, const QString &dialogTitle )
   : QToolButton( parent )
   , mDialogTitle( dialogTitle.isEmpty() ? tr( "Text Format" ) : dialogTitle )
-
+  , mNullFormatString( tr( "No Format" ) )
 {
   setText( tr( "Font" ) );
 
@@ -93,12 +94,12 @@ void QgsFontButton::showSettingsDialog()
       QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
       if ( panel && panel->dockMode() )
       {
-        QgsTextFormatPanelWidget *formatWidget = new QgsTextFormatPanelWidget( mFormat, mMapCanvas, this, mLayer.data() );
-        formatWidget->setPanelTitle( mDialogTitle );
-        formatWidget->setContext( symbolContext );
+        mActivePanel = new QgsTextFormatPanelWidget( mFormat, mMapCanvas, this, mLayer.data() );
+        mActivePanel->setPanelTitle( mDialogTitle );
+        mActivePanel->setContext( symbolContext );
 
-        connect( formatWidget, &QgsTextFormatPanelWidget::widgetChanged, this, [ this, formatWidget ] { this->setTextFormat( formatWidget->format() ); } );
-        panel->openPanel( formatWidget );
+        connect( mActivePanel, &QgsTextFormatPanelWidget::widgetChanged, this, [ this ] { setTextFormat( mActivePanel->format() ); } );
+        panel->openPanel( mActivePanel );
         return;
       }
 
@@ -153,7 +154,20 @@ QgsMessageBar *QgsFontButton::messageBar() const
 
 void QgsFontButton::setTextFormat( const QgsTextFormat &format )
 {
+  if ( mActivePanel && !format.isValid() )
+    mActivePanel->acceptPanel();
+
   mFormat = format;
+  updatePreview();
+
+  if ( mActivePanel && format.isValid() )
+    mActivePanel->setFormat( format );
+  emit changed();
+}
+
+void QgsFontButton::setToNullFormat()
+{
+  mFormat = QgsTextFormat();
   updatePreview();
   emit changed();
 }
@@ -162,6 +176,9 @@ void QgsFontButton::setColor( const QColor &color )
 {
   QColor opaque = color;
   opaque.setAlphaF( 1.0 );
+
+  if ( mNullFormatAction )
+    mNullFormatAction->setChecked( false );
 
   if ( mFormat.color() != opaque )
   {
@@ -375,7 +392,7 @@ void QgsFontButton::wheelEvent( QWheelEvent *event )
       break;
   }
 
-  double increment = event->modifiers() & Qt::ControlModifier ? 0.1 : 1;
+  double increment = ( event->modifiers() & Qt::ControlModifier ) ? 0.1 : 1;
   if ( event->delta() > 0 )
   {
     size += increment;
@@ -520,6 +537,17 @@ void QgsFontButton::prepareMenu()
   //menu is opened, otherwise color schemes like the recent color scheme grid are meaningless
   mMenu->clear();
 
+  if ( mMode == ModeTextRenderer && mShowNoFormat )
+  {
+    mNullFormatAction = new QAction( mNullFormatString, this );
+    mMenu->addAction( mNullFormatAction );
+    connect( mNullFormatAction, &QAction::triggered, this, &QgsFontButton::setToNullFormat );
+    if ( !mFormat.isValid() )
+    {
+      mNullFormatAction->setCheckable( true );
+      mNullFormatAction->setChecked( true );
+    }
+  }
 
   QWidgetAction *sizeAction = new QWidgetAction( mMenu );
   QWidget *sizeWidget = new QWidget();
@@ -554,6 +582,8 @@ void QgsFontButton::prepareMenu()
     switch ( mMode )
     {
       case ModeTextRenderer:
+        if ( mNullFormatAction )
+          mNullFormatAction->setChecked( false );
         mFormat.setSize( value );
         break;
       case ModeQFont:
@@ -671,6 +701,8 @@ void QgsFontButton::prepareMenu()
       double opacity = color.alphaF();
       mFormat.setOpacity( opacity );
       updatePreview();
+      if ( mNullFormatAction )
+        mNullFormatAction->setChecked( false );
       emit changed();
     } );
     connect( colorAction, &QgsColorWidgetAction::colorChanged, alphaRamp, [alphaRamp]( const QColor & color ) { alphaRamp->setColor( color, false ); }
@@ -795,6 +827,12 @@ void QgsFontButton::resizeEvent( QResizeEvent *event )
 
 void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, QFont *font )
 {
+  if ( mShowNoFormat && !mFormat.isValid() )
+  {
+    setIcon( QPixmap() );
+    return;
+  }
+
   QgsTextFormat tempFormat;
   QFont tempFont;
 
@@ -866,6 +904,7 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
 
       context.setScaleFactor( QgsApplication::desktop()->logicalDpiX() / 25.4 );
       context.setUseAdvancedEffects( true );
+      context.setFlag( QgsRenderContext::Antialiasing, true );
       context.setPainter( &p );
 
       // slightly inset text to account for buffer/background

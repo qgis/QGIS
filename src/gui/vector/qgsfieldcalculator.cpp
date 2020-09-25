@@ -153,6 +153,8 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
 
   mInfoIcon->setPixmap( style()->standardPixmap( QStyle::SP_MessageBoxInformation ) );
 
+  setWindowTitle( tr( "%1 — Field Calculator" ).arg( mVectorLayer->name() ) );
+
   setOkButtonState();
 }
 
@@ -347,6 +349,8 @@ void QgsFieldCalculator::populateOutputFieldTypes()
     return;
   }
 
+  int oldDataType = mOutputFieldTypeComboBox->currentData( Qt::UserRole + FTC_TYPE_ROLE_IDX ).toInt();
+
   mOutputFieldTypeComboBox->blockSignals( true );
 
   // Standard subset of fields in case of virtual
@@ -380,8 +384,18 @@ void QgsFieldCalculator::populateOutputFieldTypes()
     mOutputFieldTypeComboBox->setItemData( i, static_cast<int>( typelist[i].mSubType ), Qt::UserRole + FTC_SUBTYPE_IDX );
   }
   mOutputFieldTypeComboBox->blockSignals( false );
-  mOutputFieldTypeComboBox->setCurrentIndex( 0 );
-  mOutputFieldTypeComboBox_activated( 0 );
+
+  int idx = mOutputFieldTypeComboBox->findData( oldDataType, Qt::UserRole + FTC_TYPE_ROLE_IDX );
+  if ( idx != -1 )
+  {
+    mOutputFieldTypeComboBox->setCurrentIndex( idx );
+    mOutputFieldTypeComboBox_activated( idx );
+  }
+  else
+  {
+    mOutputFieldTypeComboBox->setCurrentIndex( 0 );
+    mOutputFieldTypeComboBox_activated( 0 );
+  }
 }
 
 void QgsFieldCalculator::mNewFieldGroupBox_toggled( bool on )

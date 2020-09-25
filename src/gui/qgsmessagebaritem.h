@@ -14,10 +14,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef qgsmessagebaritem_H
-#define qgsmessagebaritem_H
+#ifndef QGSMESSAGEBARITEM_H
+#define QGSMESSAGEBARITEM_H
 
-#include "qgsmessagebaritem.h"
 #include "qgis.h"
 
 #include <QWidget>
@@ -32,64 +31,153 @@ class QgsMessageBar;
 /**
  * \ingroup gui
  * \class QgsMessageBarItem
+ * Represents an item shown within a QgsMessageBar widget.
+ *
+ * QgsMessageBarItem represents a single item (or message) which can be shown in a QgsMessageBar widget.
  */
 class GUI_EXPORT QgsMessageBarItem : public QWidget
 {
     Q_OBJECT
   public:
-    //! make out a widget containing a message to be displayed on the bar
+
+    /**
+     * Constructor for QgsMessageBarItem, containing a message with the specified \a text to be displayed on the bar.
+     *
+     * The \a level argument specifies the desired message level (severity) of the message, which controls
+     * how the message bar is styled when the item is displayed.
+     *
+     * The optional \a duration argument can be used to specify the message timeout in seconds. If \a duration
+     * is set to 0, then the message must be manually dismissed by the user.
+     */
     QgsMessageBarItem( const QString &text, Qgis::MessageLevel level = Qgis::Info, int duration = 0, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    //! make out a widget containing title and message to be displayed on the bar
+    /**
+     * Constructor for QgsMessageBarItem, containing a \a title and message with the specified \a text to be displayed on the bar.
+     *
+     * The \a level argument specifies the desired message level (severity) of the message, which controls
+     * how the message bar is styled when the item is displayed.
+     *
+     * The optional \a duration argument can be used to specify the message timeout in seconds. If \a duration
+     * is set to 0, then the message must be manually dismissed by the user.
+     */
     QgsMessageBarItem( const QString &title, const QString &text, Qgis::MessageLevel level = Qgis::Info, int duration = 0, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    //! make out a widget containing title, message and widget to be displayed on the bar
+    /**
+     * Constructor for QgsMessageBarItem, containing a \a title, message with the specified \a text, and a custom \a widget to be displayed on the bar.
+     *
+     * The \a level argument specifies the desired message level (severity) of the message, which controls
+     * how the message bar is styled when the item is displayed.
+     *
+     * The optional \a duration argument can be used to specify the message timeout in seconds. If \a duration
+     * is set to 0, then the message must be manually dismissed by the user.
+     */
     QgsMessageBarItem( const QString &title, const QString &text, QWidget *widget, Qgis::MessageLevel level = Qgis::Info, int duration = 0, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    //! make out a widget containing a widget to be displayed on the bar
+    /**
+     * Constructor for QgsMessageBarItem, containing a custom \a widget to be displayed on the bar.
+     *
+     * The \a level argument specifies the desired message level (severity) of the message, which controls
+     * how the message bar is styled when the item is displayed.
+     *
+     * The optional \a duration argument can be used to specify the message timeout in seconds. If \a duration
+     * is set to 0, then the message must be manually dismissed by the user.
+     */
     QgsMessageBarItem( QWidget *widget, Qgis::MessageLevel level = Qgis::Info, int duration = 0, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
+    /**
+     * Sets the message \a text to show in the item.
+     *
+     * \see text()
+     */
     QgsMessageBarItem *setText( const QString &text );
 
     /**
      * Returns the text for the message.
+     *
+     * \see setText()
      */
     QString text() const;
 
+    /**
+     * Sets the \a title for in the item.
+     *
+     * \see title()
+     */
     QgsMessageBarItem *setTitle( const QString &title );
 
     /**
      * Returns the title for the message.
+     *
+     * \see setTitle()
      */
     QString title() const;
 
+    /**
+     * Sets the message \a level for the item, which controls how the message bar is styled
+     * when the item is displayed.
+     *
+     * \see level()
+     */
     QgsMessageBarItem *setLevel( Qgis::MessageLevel level );
 
     /**
      * Returns the message level for the message.
+     *
+     * \see setLevel()
      */
     Qgis::MessageLevel level() const;
 
+    /**
+     * Sets a custom \a widget to show in the item.
+     *
+     * \see widget()
+     */
     QgsMessageBarItem *setWidget( QWidget *widget );
 
     /**
      * Returns the widget for the message.
+     *
+     * \see setWidget()
      */
     QWidget *widget() const;
 
+    /**
+     * Sets the \a icon associated with the message.
+     *
+     * \see icon()
+     */
     QgsMessageBarItem *setIcon( const QIcon &icon );
 
     /**
      * Returns the icon for the message.
+     *
+     * \see setIcon()
      */
     QIcon icon() const;
 
+    /**
+     * Sets the \a duration (in seconds) to show the message for. If \a duration
+     * is 0 then the message will not automatically timeout and instead must be
+     * manually dismissed by the user.
+     *
+     * \see duration()
+     */
     QgsMessageBarItem *setDuration( int duration );
 
-    //! returns the duration in second of the message
+    /**
+     * Returns the duration (in seconds) of the message.
+     *
+     * If the duration is 0 then the message will not automatically timeout and instead must be
+     * manually dismissed by the user.
+     *
+     * \see setDuration()
+     */
     int duration() const { return mDuration; }
 
-    //! returns the styleSheet
+    /**
+     * Returns the styleSheet which should be used to style a QgsMessageBar object when
+     * this item is displayed.
+     */
     QString getStyleSheet() { return mStyleSheet; }
 
   public slots:
@@ -104,7 +192,11 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
     void dismiss();
 
   signals:
-    //! emitted when the message level has changed
+
+    /**
+     * Emitted when the item's message level has changed and the message bar style
+     * will need to be updated as a result.
+     */
     void styleChanged( const QString &styleSheet );
 
   private slots:
@@ -129,4 +221,4 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
     friend class QgsMessageBar;
 };
 
-#endif // qgsmessagebaritem_H
+#endif // QGSMESSAGEBARITEM_H

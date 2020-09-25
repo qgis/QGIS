@@ -77,6 +77,18 @@ class GUI_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
     QString alias() const;
 
     /**
+     * Sets the data defined properties to \a properties.
+     * \since QGIS 3.14
+     */
+    void setDataDefinedProperties( const QgsPropertyCollection &properties );
+
+    /**
+     * Returns the data defined properties.
+     * \since QGIS 3.14
+     */
+    QgsPropertyCollection dataDefinedProperties() const;
+
+    /**
      * Setter for label comment
      */
     void setComment( const QString &comment );
@@ -203,6 +215,7 @@ class GUI_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
     bool applyDefaultValueOnUpdate() const;
     void setApplyDefaultValueOnUpdate( bool applyDefaultValueOnUpdate );
 
+
   private slots:
 
     /**
@@ -225,6 +238,8 @@ class GUI_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
     QStandardItem *currentItem() const;
 
     QgsFeature mPreviewFeature;
+
+    QgsPropertyCollection mDataDefinedProperties;
 };
 
 #endif

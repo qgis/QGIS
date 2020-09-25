@@ -218,7 +218,6 @@ bool QgsProjectPropertyValue::readXml( const QDomNode &keyNode )
       value_ = QVariant( subkeyElement.text() ).toULongLong();
       break;
 #endif
-
     default :
       QgsDebugMsg( QStringLiteral( "unsupported value type %1 .. not properly translated to QVariant" ).arg( typeString ) );
   }

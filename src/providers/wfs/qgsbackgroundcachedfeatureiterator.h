@@ -17,6 +17,7 @@
 
 #include "qgsfeatureiterator.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsnetworkaccessmanager.h"
 #include "qgsspatialindex.h"
 #include "qgsvectordataprovider.h"
 
@@ -107,6 +108,11 @@ class QgsFeatureDownloaderImpl
     // To be used when the download is finished (successful or not)
     void emitEndOfDownload( bool success );
 
+    // To be used when QgsNetworkAccessManager emit signals that require
+    // QgsBackgroundCachedFeatureIterator to process (authentication) events,
+    // if it was started from the main thread.
+    void emitResumeMainThread();
+
 #if 0
     // NOTE: implementations should copy & paste the below block
   signals:
@@ -126,7 +132,8 @@ class QgsFeatureDownloaderImpl
 
     /**
      * If the progress dialog should be shown immediately, or if it should be
-        let to QProgressDialog logic to decide when to show it */
+     * let to QProgressDialog logic to decide when to show it.
+    */
     bool mProgressDialogShowImmediately = false;
 
     QTimer *mTimer = nullptr;
@@ -141,12 +148,49 @@ class QgsFeatureDownloaderImpl
                    bool truncatedResponse, bool interrupted,
                    const QString &errorMessage );
 
+    void connectSignals( QObject *obj, bool requestMadeFromMainThread );
+
   private:
     QgsBackgroundCachedSharedData *mSharedBase;
     QgsFeatureDownloader *mDownloader;
     QWidget *mMainWindow = nullptr;
     QMutex mMutexCreateProgressDialog;
 };
+
+// Sorry for ugliness. Due to QgsFeatureDownloaderImpl that cannot derive from QObject
+#define QGS_FEATURE_DOWNLOADER_IMPL_CONNECT_SIGNALS_BASE(requestMadeFromMainThread) \
+  do { \
+    if ( requestMadeFromMainThread ) \
+    { \
+      auto resumeMainThread = [this]() \
+      { \
+        emitResumeMainThread(); \
+      }; \
+      QObject::connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::authRequestOccurred,  \
+                        this, resumeMainThread, Qt::DirectConnection );  \
+      QObject::connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::proxyAuthenticationRequired,  \
+                        this, resumeMainThread, Qt::DirectConnection );  \
+    } \
+  } while(false)
+
+#ifndef QT_NO_SSL
+#define QGS_FEATURE_DOWNLOADER_IMPL_CONNECT_SIGNALS(requestMadeFromMainThread) \
+  do { \
+    QGS_FEATURE_DOWNLOADER_IMPL_CONNECT_SIGNALS_BASE(requestMadeFromMainThread); \
+    if ( requestMadeFromMainThread ) \
+    { \
+      auto resumeMainThread = [this]() \
+      { \
+        emitResumeMainThread(); \
+      }; \
+      QObject::connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::sslErrorsOccurred,  \
+                        this, resumeMainThread, Qt::DirectConnection );  \
+    } \
+  } while(false)
+#else
+#define QGS_FEATURE_DOWNLOADER_IMPL_CONNECT_SIGNALS(requestMadeFromMainThread) \
+  QGS_FEATURE_DOWNLOADER_IMPL_CONNECT_SIGNALS_BASE(requestMadeFromMainThread)
+#endif
 
 // Sorry for ugliness. Due to QgsFeatureDownloaderImpl that cannot derive from QObject
 #define CONNECT_PROGRESS_DIALOG(actual_downloader_impl_class) do { \
@@ -220,6 +264,11 @@ class QgsFeatureDownloader: public QObject
     //! Emitted when the download is finished (successful or not)
     void endOfDownload( bool success );
 
+    // Emitted when QgsNetworkAccessManager emit signals that require
+    // QgsBackgroundCachedFeatureIterator to process (authentication) events,
+    // if it was started from the main thread.
+    void resumeMainThread();
+
   private:
     std::unique_ptr<QgsFeatureDownloaderImpl> mImpl;
 };
@@ -252,6 +301,7 @@ class QgsThreadedFeatureDownloader: public QThread
     QgsFeatureDownloader *mDownloader = nullptr;
     QWaitCondition mWaitCond;
     QMutex mWaitMutex;
+    bool mRequestMadeFromMainThread = false;
 };
 
 
@@ -259,9 +309,10 @@ class QgsBackgroundCachedFeatureSource;
 
 /**
  * Feature iterator. The iterator will internally both subscribe to a live
-    downloader to receive 'fresh' features, and to a iterator on the features
-    already cached. It will actually start by consuming cache features for
-    initial feedback, and then process the live downloaded features. */
+ * downloader to receive 'fresh' features, and to a iterator on the features
+ * already cached. It will actually start by consuming cache features for
+ * initial feedback, and then process the live downloaded features.
+*/
 class QgsBackgroundCachedFeatureIterator final: public QObject,
   public QgsAbstractFeatureIteratorFromSource<QgsBackgroundCachedFeatureSource>
 {
@@ -285,6 +336,7 @@ class QgsBackgroundCachedFeatureIterator final: public QObject,
   private slots:
     void featureReceivedSynchronous( const QVector<QgsFeatureUniqueIdPair> &list );
     void endOfDownloadSynchronous( bool success );
+    void resumeMainThreadSynchronous();
 
   private:
 
@@ -295,6 +347,7 @@ class QgsBackgroundCachedFeatureIterator final: public QObject,
 
     bool mNewFeaturesReceived = false;
     bool mDownloadFinished = false;
+    bool mProcessEvents = false;
     QgsFeatureIterator mCacheIterator;
     QgsFeedback *mInterruptionChecker = nullptr;
     bool mTimeoutOrInterruptionOccurred = false;

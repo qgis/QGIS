@@ -156,6 +156,16 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
                      const QMap< QString, QString > &attributes,
                      const QMap< QString, QString > &derivedAttributes );
 
+    /**
+     * Adds results from vector tile layer
+     * \since QGIS 3.14
+     */
+    void addFeature( QgsVectorTileLayer *layer,
+                     const QString &label,
+                     const QgsFields &fields,
+                     const QgsFeature &feature,
+                     const QMap< QString, QString > &derivedAttributes );
+
     //! Adds feature from identify results
     void addFeature( const QgsMapToolIdentify::IdentifyResult &result );
 
@@ -225,8 +235,10 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     void expandAll();
     void collapseAll();
 
-    /* Called when an item is expanded so that we can ensure that the
-       column width if expanded to show it */
+    /**
+     * Called when an item is expanded so that we can ensure that the
+     * column width if expanded to show it.
+     */
     void itemExpanded( QTreeWidgetItem * );
 
     //! sends signal if current feature id has changed
@@ -260,7 +272,8 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     enum ItemDataRole
     {
-      GetFeatureInfoUrlRole = Qt::UserRole + 10
+      GetFeatureInfoUrlRole = Qt::UserRole + 10,
+      FeatureRole,
     };
 
     QMenu *mActionPopup = nullptr;
@@ -275,6 +288,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     QgsVectorLayer *vectorLayer( QTreeWidgetItem *item );
     QgsRasterLayer *rasterLayer( QTreeWidgetItem *item );
     QgsMeshLayer *meshLayer( QTreeWidgetItem *item );
+    QgsVectorTileLayer *vectorTileLayer( QTreeWidgetItem *item );
     QTreeWidgetItem *featureItem( QTreeWidgetItem *item );
     QTreeWidgetItem *layerItem( QTreeWidgetItem *item );
     QTreeWidgetItem *layerItem( QObject *layer );
@@ -306,6 +320,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     void setSelectionMode();
 
     void initSelectionModes();
+    QgsIdentifyResultsFeatureItem *createFeatureItem( QgsVectorLayer *vlayer, const QgsFeature &f, const QMap<QString, QString> &derivedAttributes, bool includeRelations, QTreeWidgetItem *parentItem );
 };
 
 class QgsIdentifyResultsDialogMapLayerAction : public QAction

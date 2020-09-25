@@ -11,6 +11,7 @@
 
 
 
+
 class QgsLabelPosition
 {
 
@@ -99,6 +100,7 @@ class QgsPalLayerSettings
       Free,
       OrderedPositionsAroundPoint,
       PerimeterCurved,
+      OutsidePolygons,
     };
 
     enum PredefinedPointPosition
@@ -153,6 +155,7 @@ class QgsPalLayerSettings
       ShowAll
     };
 
+
     enum DirectionSymbols
     {
       SymbolLeftRight,
@@ -165,7 +168,8 @@ class QgsPalLayerSettings
       MultiLeft,
       MultiCenter,
       MultiRight,
-      MultiFollowPlacement
+      MultiFollowPlacement,
+      MultiJustify,
     };
 
 
@@ -287,6 +291,8 @@ class QgsPalLayerSettings
       LinePlacementOptions,
       OverrunDistance,
       LabelAllParts,
+      PolygonLabelOutside,
+      LineAnchorPercent,
 
       // rendering
       ScaleVisibility,
@@ -321,12 +327,19 @@ names which the labeling requires for the rendering.
 .. versionadded:: 3.8
 %End
 
+    QSet<QString> referencedFields( const QgsRenderContext &context ) const;
+%Docstring
+Returns all field names referenced by the configuration (e.g. field name or expression, data defined properties).
+
+.. versionadded:: 3.14
+%End
+
     void startRender( QgsRenderContext &context );
 %Docstring
 Prepares the label settings for rendering.
 
 This should be called before rendering any labels, and must be
-followed by a call to stopRender() in order to gracefully clean up symbols.
+followed by a call to :py:func:`~QgsPalLayerSettings.stopRender` in order to gracefully clean up symbols.
 
 .. versionadded:: 3.10
 %End
@@ -335,7 +348,7 @@ followed by a call to stopRender() in order to gracefully clean up symbols.
 %Docstring
 Finalises the label settings after use.
 
-This must be called after a call to startRender(), in order to gracefully clean up symbols.
+This must be called after a call to :py:func:`~QgsPalLayerSettings.startRender`, in order to gracefully clean up symbols.
 
 .. versionadded:: 3.10
 %End
@@ -373,16 +386,6 @@ Returns the QgsExpression for this label settings. May be ``None`` if isExpressi
 
     MultiLineAlign multilineAlign;
 
-    bool addDirectionSymbol;
-
-    QString leftDirectionSymbol;
-
-    QString rightDirectionSymbol;
-
-    DirectionSymbols placeDirectionSymbol;
-
-    bool reverseDirectionSymbol;
-
     bool formatNumbers;
 
     int decimals;
@@ -392,7 +395,23 @@ Returns the QgsExpression for this label settings. May be ``None`` if isExpressi
 
     Placement placement;
 
-    unsigned int placementFlags;
+    QgsLabeling::PolygonPlacementFlags polygonPlacementFlags() const;
+%Docstring
+Returns the polygon placement flags, which dictate how polygon labels can be placed.
+
+.. seealso:: :py:func:`setPolygonPlacementFlags`
+
+.. versionadded:: 3.14
+%End
+
+    void setPolygonPlacementFlags( QgsLabeling::PolygonPlacementFlags flags );
+%Docstring
+Sets the polygon placement ``flags``, which dictate how polygon labels can be placed.
+
+.. seealso:: :py:func:`polygonPlacementFlags`
+
+.. versionadded:: 3.14
+%End
 
     bool centroidWhole;
 
@@ -414,12 +433,6 @@ Returns the QgsExpression for this label settings. May be ``None`` if isExpressi
     QgsUnitTypes::RenderUnit repeatDistanceUnit;
 
     QgsMapUnitScale repeatDistanceMapUnitScale;
-
-    double overrunDistance;
-
-    QgsUnitTypes::RenderUnit overrunDistanceUnit;
-
-    QgsMapUnitScale overrunDistanceMapUnitScale;
 
     QuadrantPosition quadOffset;
 
@@ -460,8 +473,6 @@ Returns the QgsExpression for this label settings. May be ``None`` if isExpressi
 
     bool labelPerPart;
 
-    bool mergeLines;
-
 
 %Property( name = limitNumLabels, get = _limitNumLabels, set = _setLimitNumLabels )
 %Property( name = maxNumLabels, get = _maxNumLabels, set = _setMaxNumLabels )
@@ -469,6 +480,17 @@ Returns the QgsExpression for this label settings. May be ``None`` if isExpressi
 %Property( name = obstacle, get = _getIsObstacle, set = _setIsObstacle )
 %Property( name = obstacleFactor, get = _getObstacleFactor, set = _setObstacleFactor )
 %Property( name = obstacleType, get = _getObstacleType, set = _setObstacleType )
+%Property( name = placementFlags, get = _getLinePlacementFlags, set = _setLinePlacementFlags )
+%Property( name = mergeLines, get = _getMergeLines, set = _setMergeLines )
+%Property( name = addDirectionSymbol, get = _getAddDirectionSymbol, set = _setAddDirectionSymbol )
+%Property( name = leftDirectionSymbol, get = _getLeftDirectionSymbol, set = _setLeftDirectionSymbol )
+%Property( name = rightDirectionSymbol, get = _getRightDirectionSymbol, set = _setRightDirectionSymbol )
+%Property( name = reverseDirectionSymbol, get = _getReverseDirectionSymbol, set = _setReverseDirectionSymbol )
+%Property( name = placeDirectionSymbol, get = _getPlaceDirectionSymbol, set = _setPlaceDirectionSymbol )
+
+%Property( name = overrunDistance, get = _getOverrunDistance, set = _setOverrunDistance )
+%Property( name = overrunDistanceUnit, get = _getOverrunDistanceUnit, set = _setOverrunDistanceUnit )
+%Property( name = overrunDistanceMapUnitScale, get = _getOverrunDistanceMapUnitScale, set = _setOverrunDistanceMapUnitScale )
 
     bool _limitNumLabels() const;
     void _setLimitNumLabels( bool limit );
@@ -482,7 +504,26 @@ Returns the QgsExpression for this label settings. May be ``None`` if isExpressi
     void _setObstacleFactor( double factor );
     ObstacleType _getObstacleType() const;
     void _setObstacleType( ObstacleType type );
-
+    unsigned int _getLinePlacementFlags() const;
+    void _setLinePlacementFlags( unsigned int flags );
+    bool _getMergeLines() const;
+    void _setMergeLines( bool merge );
+    bool _getAddDirectionSymbol() const;
+    void _setAddDirectionSymbol( bool add );
+    QString _getLeftDirectionSymbol() const;
+    void _setLeftDirectionSymbol( const QString &symbol );
+    QString _getRightDirectionSymbol() const;
+    void _setRightDirectionSymbol( const QString &symbol );
+    bool _getReverseDirectionSymbol() const;
+    void _setReverseDirectionSymbol( bool reverse );
+    DirectionSymbols _getPlaceDirectionSymbol() const;
+    void _setPlaceDirectionSymbol( DirectionSymbols placement );
+    double _getOverrunDistance() const;
+    void _setOverrunDistance( double distance );
+    QgsUnitTypes::RenderUnit _getOverrunDistanceUnit() const;
+    void _setOverrunDistanceUnit( QgsUnitTypes::RenderUnit unit );
+    QgsMapUnitScale _getOverrunDistanceMapUnitScale() const;
+    void _setOverrunDistanceMapUnitScale( const QgsMapUnitScale &scale );
 
     double zIndex;
 
@@ -592,6 +633,29 @@ Ownership of ``callout`` is transferred to the settings.
 .. seealso:: :py:func:`callout`
 
 .. versionadded:: 3.10
+%End
+
+
+    QgsLabelLineSettings &lineSettings();
+%Docstring
+Returns the label line settings, which contain settings related to how the label
+engine places and formats labels for line features (or polygon features which are labeled in
+a "perimeter" style mode).
+
+.. seealso:: :py:func:`setLineSettings`
+
+.. versionadded:: 3.16
+%End
+
+    void setLineSettings( const QgsLabelLineSettings &settings );
+%Docstring
+Sets the label line ``settings``, which contain settings related to how the label
+engine places and formats labels for line features (or polygon features which are labeled in
+a "perimeter" style mode).
+
+.. seealso:: :py:func:`lineSettings`
+
+.. versionadded:: 3.16
 %End
 
 
@@ -718,9 +782,9 @@ class QgsPalLabeling
 %End
   public:
 
-    static bool staticWillUseLayer( QgsVectorLayer *layer );
+    static bool staticWillUseLayer( const QgsMapLayer *layer );
 %Docstring
-called to find out whether the layer is used for labeling
+Called to find out whether a specified ``layer`` is used for labeling.
 
 .. versionadded:: 2.4
 %End

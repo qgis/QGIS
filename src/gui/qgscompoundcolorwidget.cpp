@@ -292,7 +292,6 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
 
 QgsCompoundColorWidget::~QgsCompoundColorWidget()
 {
-  saveSettings();
   if ( !mDiscarded )
   {
     QgsRecentColorScheme::addRecentColor( color() );
@@ -739,6 +738,12 @@ void QgsCompoundColorWidget::setPreviousColor( const QColor &color )
 {
   mOldColorLabel->setVisible( color.isValid() );
   mColorPreview->setColor2( color );
+}
+
+void QgsCompoundColorWidget::hideEvent( QHideEvent *e )
+{
+  saveSettings();
+  QWidget::hideEvent( e );
 }
 
 void QgsCompoundColorWidget::mousePressEvent( QMouseEvent *e )

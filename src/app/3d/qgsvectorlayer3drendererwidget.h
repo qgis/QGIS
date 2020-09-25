@@ -39,19 +39,20 @@ class QgsSingleSymbol3DRendererWidget : public QWidget
 {
     Q_OBJECT
   public:
-    QgsSingleSymbol3DRendererWidget( QWidget *parent = nullptr );
+    QgsSingleSymbol3DRendererWidget( QgsVectorLayer *layer, QWidget *parent = nullptr );
 
     //! no transfer of ownership
     void setLayer( QgsVectorLayer *layer );
 
     //! Returns the cloned symbol or NULLPTR.
-    QgsAbstract3DSymbol *symbol();
+    std::unique_ptr< QgsAbstract3DSymbol > symbol();
 
   signals:
     void widgetChanged();
 
   private:
     QgsSymbol3DWidget *widgetSymbol = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
 
 };
 
@@ -92,11 +93,11 @@ class QgsVectorLayer3DRendererWidgetFactory : public QObject, public QgsMapLayer
     Q_OBJECT
   public:
     explicit QgsVectorLayer3DRendererWidgetFactory( QObject *parent = nullptr );
+
     QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget, QWidget *parent ) const override;
-
-    bool supportLayerPropertiesDialog() const override { return true; }
-
+    bool supportLayerPropertiesDialog() const override;
     bool supportsLayer( QgsMapLayer *layer ) const override;
+    QString layerPropertiesPagePositionHint() const override;
 };
 
 

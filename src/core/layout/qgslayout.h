@@ -754,6 +754,9 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     //! Calculates the item minimum position from an XML element
     QPointF minPointFromXml( const QDomElement &elem ) const;
 
+    QgsLayout( const QgsLayout & ) = delete;
+    QgsLayout &operator=( const QgsLayout & ) = delete;
+
     friend class QgsLayoutItemAddItemCommand;
     friend class QgsLayoutItemDeleteUndoCommand;
     friend class QgsLayoutItemUndoCommand;

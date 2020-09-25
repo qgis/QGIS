@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="3" column="0">
@@ -51,7 +51,7 @@
    <item row="4" column="0" colspan="3">
     <widget class="QgsCollapsibleGroupBox" name="mControlVisibilityGroupBox">
      <property name="title">
-      <string>Control visibility by expression</string>
+      <string>Control Visibility by Expression</string>
      </property>
      <property name="checkable">
       <bool>true</bool>

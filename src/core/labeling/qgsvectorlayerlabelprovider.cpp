@@ -28,6 +28,8 @@
 #include "qgslogger.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsmaskidprovider.h"
+#include "qgstextcharacterformat.h"
+#include "qgstextfragment.h"
 
 #include "feature.h"
 #include "labelposition.h"
@@ -36,6 +38,8 @@
 #include "pal/layer.h"
 
 #include <QPicture>
+#include <QTextDocument>
+#include <QTextFragment>
 
 using namespace pal;
 
@@ -57,6 +61,19 @@ QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer *layer,
   init();
 }
 
+QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsWkbTypes::GeometryType geometryType, const QgsFields &fields, const QgsCoordinateReferenceSystem &crs, const QString &providerId, const QgsPalLayerSettings *settings, QgsMapLayer *layer, const QString &layerName )
+  : QgsAbstractLabelProvider( layer, providerId )
+  , mSettings( settings ? * settings : QgsPalLayerSettings() ) // TODO: all providers should have valid settings?
+  , mLayerGeometryType( geometryType )
+  , mRenderer( nullptr )
+  , mFields( fields )
+  , mCrs( crs )
+{
+  mName = layerName.isEmpty() ? layer->id() : layerName;
+
+  init();
+}
+
 void QgsVectorLayerLabelProvider::init()
 {
   mPlacement = mSettings.placement;
@@ -65,7 +82,7 @@ void QgsVectorLayerLabelProvider::init()
     mFlags |= DrawLabels;
   if ( mSettings.displayAll )
     mFlags |= DrawAllLabels;
-  if ( mSettings.mergeLines && !mSettings.addDirectionSymbol )
+  if ( mSettings.lineSettings().mergeLines() && !mSettings.lineSettings().addDirectionSymbol() )
     mFlags |= MergeConnectedLines;
   if ( mSettings.centroidInside )
     mFlags |= CentroidMustBeInside;
@@ -503,8 +520,6 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
   component.origin = outPt;
   component.rotation = label->getAlpha();
 
-
-
   if ( drawType == QgsTextRenderer::Background )
   {
     // get rotated label's center point
@@ -530,7 +545,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
 
     component.size = QSizeF( labelWidthPx, labelHeightPx );
 
-    QgsTextRenderer::drawBackground( context, component, tmpLyr.format(), QStringList(), QgsTextRenderer::Label );
+    QgsTextRenderer::drawBackground( context, component, tmpLyr.format(), QgsTextDocument(), QgsTextRenderer::Label );
   }
 
   else if ( drawType == QgsTextRenderer::Buffer
@@ -551,40 +566,45 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
 
     //add the direction symbol if needed
     if ( !txt.isEmpty() && tmpLyr.placement == QgsPalLayerSettings::Line &&
-         tmpLyr.addDirectionSymbol )
+         tmpLyr.lineSettings().addDirectionSymbol() )
     {
       bool prependSymb = false;
-      QString symb = tmpLyr.rightDirectionSymbol;
+      QString symb = tmpLyr.lineSettings().rightDirectionSymbol();
 
       if ( label->getReversed() )
       {
         prependSymb = true;
-        symb = tmpLyr.leftDirectionSymbol;
+        symb = tmpLyr.lineSettings().leftDirectionSymbol();
       }
 
-      if ( tmpLyr.reverseDirectionSymbol )
+      if ( tmpLyr.lineSettings().reverseDirectionSymbol() )
       {
-        if ( symb == tmpLyr.rightDirectionSymbol )
+        if ( symb == tmpLyr.lineSettings().rightDirectionSymbol() )
         {
           prependSymb = true;
-          symb = tmpLyr.leftDirectionSymbol;
+          symb = tmpLyr.lineSettings().leftDirectionSymbol();
         }
         else
         {
           prependSymb = false;
-          symb = tmpLyr.rightDirectionSymbol;
+          symb = tmpLyr.lineSettings().rightDirectionSymbol();
         }
       }
 
-      if ( tmpLyr.placeDirectionSymbol == QgsPalLayerSettings::SymbolAbove )
+      switch ( tmpLyr.lineSettings().directionSymbolPlacement() )
       {
-        prependSymb = true;
-        symb = symb + QStringLiteral( "\n" );
-      }
-      else if ( tmpLyr.placeDirectionSymbol == QgsPalLayerSettings::SymbolBelow )
-      {
-        prependSymb = false;
-        symb = QStringLiteral( "\n" ) + symb;
+        case QgsLabelLineSettings::DirectionSymbolPlacement::SymbolAbove:
+          prependSymb = true;
+          symb = symb + QStringLiteral( "\n" );
+          break;
+
+        case QgsLabelLineSettings::DirectionSymbolPlacement::SymbolBelow:
+          prependSymb = false;
+          symb = QStringLiteral( "\n" ) + symb;
+          break;
+
+        case QgsLabelLineSettings::DirectionSymbolPlacement::SymbolLeftRight:
+          break;
       }
 
       if ( prependSymb )
@@ -597,25 +617,36 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
       }
     }
 
-    //QgsDebugMsgLevel( "drawLabel " + txt, 4 );
-    QStringList multiLineList = QgsPalLabeling::splitToLines( txt, tmpLyr.wrapChar, tmpLyr.autoWrapLength, tmpLyr.useMaxLineLengthForAutoWrap );
 
     QgsTextRenderer::HAlignment hAlign = QgsTextRenderer::AlignLeft;
     if ( tmpLyr.multilineAlign == QgsPalLayerSettings::MultiCenter )
       hAlign = QgsTextRenderer::AlignCenter;
     else if ( tmpLyr.multilineAlign == QgsPalLayerSettings::MultiRight )
       hAlign = QgsTextRenderer::AlignRight;
+    else if ( tmpLyr.multilineAlign == QgsPalLayerSettings::MultiJustify )
+      hAlign = QgsTextRenderer::AlignJustify;
 
     QgsTextRenderer::Component component;
     component.origin = outPt;
     component.rotation = label->getAlpha();
 
-    QgsTextRenderer::drawTextInternal( drawType, context, tmpLyr.format(), component, multiLineList, labelfm,
-                                       hAlign, QgsTextRenderer::Label );
+    QgsTextDocument document;
+    if ( !tmpLyr.format().allowHtmlFormatting() || tmpLyr.placement == QgsPalLayerSettings::Curved )
+    {
+      const QgsTextCharacterFormat c = lf->characterFormat( label->getPartId() );
+      const QStringList multiLineList = QgsPalLabeling::splitToLines( txt, tmpLyr.wrapChar, tmpLyr.autoWrapLength, tmpLyr.useMaxLineLengthForAutoWrap );
+      for ( const QString &line : multiLineList )
+        document.append( QgsTextBlock( QgsTextFragment( line, c ) ) );
+    }
+    else
+    {
+      document = lf->document();
+    }
+
+    QgsTextRenderer::drawTextInternal( drawType, context, tmpLyr.format(), component, document, labelfm,
+                                       hAlign, QgsTextRenderer::AlignTop, QgsTextRenderer::Label );
 
   }
-
-  // NOTE: this used to be within above multi-line loop block, at end. (a mistake since 2010? [LS])
   if ( label->nextPart() )
     drawLabelPrivate( label->nextPart(), context, tmpLyr, drawType, dpiRatio );
 }

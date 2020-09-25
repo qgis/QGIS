@@ -432,8 +432,31 @@ void LabelPosition::insertIntoIndex( PalRtree<LabelPosition> &index )
 double LabelPosition::getDistanceToPoint( double xp, double yp ) const
 {
   //first check if inside, if so then distance is -1
-  double distance = ( containsPoint( xp, yp ) ? -1
-                      : std::sqrt( minDistanceToPoint( xp, yp ) ) );
+  bool contains = false;
+  if ( alpha == 0 )
+  {
+    // easy case -- horizontal label
+    contains = x[0] <= xp && x[1] >= xp && y[0] <= yp && y[2] >= yp;
+  }
+  else
+  {
+    contains = containsPoint( xp, yp );
+  }
+
+  double distance = -1;
+  if ( !contains )
+  {
+    if ( alpha == 0 )
+    {
+      const double dx = std::max( std::max( x[0] - xp, 0.0 ), xp - x[1] );
+      const double dy = std::max( std::max( y[0] - yp, 0.0 ), yp - y[2] );
+      distance = std::sqrt( dx * dx + dy * dy );
+    }
+    else
+    {
+      distance = std::sqrt( minDistanceToPoint( xp, yp ) );
+    }
+  }
 
   if ( mNextPart && distance > 0 )
     return std::min( distance, mNextPart->getDistanceToPoint( xp, yp ) );

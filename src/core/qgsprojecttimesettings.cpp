@@ -63,6 +63,7 @@ bool QgsProjectTimeSettings::readXml( const QDomElement &element, const QgsReadW
   mTimeStepUnit = QgsUnitTypes::decodeTemporalUnit( element.attribute( QStringLiteral( "timeStepUnit" ), QgsUnitTypes::encodeUnit( QgsUnitTypes::TemporalHours ) ) );
   mTimeStep = element.attribute( QStringLiteral( "timeStep" ), "1" ).toDouble();
   mFrameRate = element.attribute( QStringLiteral( "frameRate" ), "1" ).toDouble();
+  mCumulativeTemporalRange = element.attribute( QStringLiteral( "cumulativeTemporalRange" ), "0" ).toInt();
 
   return true;
 }
@@ -92,6 +93,7 @@ QDomElement QgsProjectTimeSettings::writeXml( QDomDocument &document, const QgsR
   element.setAttribute( QStringLiteral( "timeStepUnit" ), QgsUnitTypes::encodeUnit( mTimeStepUnit ) );
   element.setAttribute( QStringLiteral( "timeStep" ), qgsDoubleToString( mTimeStep ) );
   element.setAttribute( QStringLiteral( "frameRate" ), qgsDoubleToString( mFrameRate ) );
+  element.setAttribute( QStringLiteral( "cumulativeTemporalRange" ),  mCumulativeTemporalRange ? 1 : 0 );
 
   return element;
 }
@@ -124,5 +126,14 @@ void QgsProjectTimeSettings::setFramesPerSecond( double rate )
 double QgsProjectTimeSettings::framesPerSecond() const
 {
   return mFrameRate;
+}
+
+void QgsProjectTimeSettings::setIsTemporalRangeCumulative( bool state )
+{
+  mCumulativeTemporalRange = state;
+}
+bool QgsProjectTimeSettings::isTemporalRangeCumulative() const
+{
+  return mCumulativeTemporalRange;
 }
 

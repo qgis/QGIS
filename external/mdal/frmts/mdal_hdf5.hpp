@@ -151,6 +151,7 @@ class HdfAttribute
     hid_t id() const;
 
     std::string readString() const;
+    double readDouble() const;
 
     void write( const std::string &value );
     void write( int value );

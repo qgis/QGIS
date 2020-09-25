@@ -22,7 +22,6 @@ __author__ = 'Hugo Mercier'
 __date__ = 'December 2015'
 __copyright__ = '(C) 2015, Hugo Mercier'
 
-
 # keywords
 keywords = [
     # TODO get them from a reference page
@@ -167,6 +166,7 @@ def getQueryBuilderDictionary():
 
     def add_paren(l):
         return [s + "(" for s in l]
+
     foo = sorted(add_paren(ff(list(set.union(set(functions), set(spatialite_functions), set(qgis_functions))))))
     m = sorted(add_paren(ff(math_functions)))
     agg = sorted(add_paren(ff(aggregate_functions)))

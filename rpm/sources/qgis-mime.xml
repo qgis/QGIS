@@ -14,6 +14,20 @@
     </magic>
     <glob pattern="*.qgs"/>
   </mime-type>
+  
+  <mime-type type="application/x-qgis-project-container">
+    <comment>QGIS Project</comment>
+    <comment xml:lang="de">QGIS-Projekt</comment>
+    <sub-class-of type="application/zip"/>
+    <alias type="application/x-qgis"/>
+    <icon name="qgis-qgs"/>
+    <magic priority="50">
+      <match type="string" offset="0" value="&lt;!DOCTYPE qgis">
+        <match type="string" offset="0:256" value="&lt;qgis projectname"/>
+      </match>
+    </magic>
+    <glob pattern="*.qgz"/>
+  </mime-type>
 
   <mime-type type="application/x-qgis-layer-settings">
     <comment>QGIS layer settings</comment>

@@ -59,10 +59,13 @@ enum MDAL_Status
   Warn_InvalidElements,
   Warn_ElementWithInvalidNode,
   Warn_ElementNotUnique,
-  Warn_NodeNotUnique
+  Warn_NodeNotUnique,
+  Warn_MultipleMeshesInFile
 };
 
-//! Log levels
+/**
+ * Log levels
+ */
 enum MDAL_LogLevel
 {
   Error,
@@ -88,14 +91,13 @@ enum MDAL_DataLocation
   DataOnEdges
 };
 
-typedef void *MeshH;
-typedef void *MeshVertexIteratorH;
-typedef void *MeshEdgeIteratorH;
-typedef void *MeshFaceIteratorH;
-typedef void *DatasetGroupH;
-typedef void *DatasetH;
-typedef void *DriverH;
-typedef void *AveragingMethodH;
+typedef void *MDAL_MeshH;
+typedef void *MDAL_MeshVertexIteratorH;
+typedef void *MDAL_MeshEdgeIteratorH;
+typedef void *MDAL_MeshFaceIteratorH;
+typedef void *MDAL_DatasetGroupH;
+typedef void *MDAL_DatasetH;
+typedef void *MDAL_DriverH;
 
 typedef void ( *MDAL_LoggerCallback )( MDAL_LogLevel logLevel, MDAL_Status status, const char *message );
 
@@ -142,48 +144,56 @@ MDAL_EXPORT int MDAL_driverCount();
  * Returns driver handle by index
  * Do not free the returned pointer
  */
-MDAL_EXPORT DriverH MDAL_driverFromIndex( int index );
+MDAL_EXPORT MDAL_DriverH MDAL_driverFromIndex( int index );
 
 /**
  * Returns driver handle by name
  * Do not free the returned pointer
  */
-MDAL_EXPORT DriverH MDAL_driverFromName( const char *name );
+MDAL_EXPORT MDAL_DriverH MDAL_driverFromName( const char *name );
 
 /**
  * Returns whether driver can be used to mesh
  * if false, driver can be only used to load datasets to existing mesh
  */
-MDAL_EXPORT bool MDAL_DR_meshLoadCapability( DriverH driver );
+MDAL_EXPORT bool MDAL_DR_meshLoadCapability( MDAL_DriverH driver );
 
 /**
  * Returns whether driver has capability to write/edit dataset (groups)
  */
-MDAL_EXPORT bool MDAL_DR_writeDatasetsCapability( DriverH driver, MDAL_DataLocation location );
+MDAL_EXPORT bool MDAL_DR_writeDatasetsCapability( MDAL_DriverH driver, MDAL_DataLocation location );
+
+/**
+ * Returns the file suffix used to write datasets on file
+ * not thread-safe and valid only till next call
+ *
+ * \since MDAL 0.7.0
+ */
+MDAL_EXPORT const char *MDAL_DR_writeDatasetsSuffix( MDAL_DriverH driver );
 
 /**
  * Returns whether driver has capability to save mesh
  */
-MDAL_EXPORT bool MDAL_DR_saveMeshCapability( DriverH driver );
+MDAL_EXPORT bool MDAL_DR_saveMeshCapability( MDAL_DriverH driver );
 
 /**
  * Returns name of MDAL driver
  * not thread-safe and valid only till next call
  */
-MDAL_EXPORT const char *MDAL_DR_name( DriverH driver );
+MDAL_EXPORT const char *MDAL_DR_name( MDAL_DriverH driver );
 
 /**
  * Returns long name of MDAL driver
  * not thread-safe and valid only till next call
  */
-MDAL_EXPORT const char *MDAL_DR_longName( DriverH driver );
+MDAL_EXPORT const char *MDAL_DR_longName( MDAL_DriverH driver );
 
 /**
  * Returns file filters that MDAL driver recognizes
  * Filters are separated by ;;, e.g. *.abc;;*.def
  * not thread-safe and valid only till next call
  */
-MDAL_EXPORT const char *MDAL_DR_filters( DriverH driver );
+MDAL_EXPORT const char *MDAL_DR_filters( MDAL_DriverH driver );
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /// MESH
@@ -193,51 +203,117 @@ MDAL_EXPORT const char *MDAL_DR_filters( DriverH driver );
  * Loads mesh file. On error see MDAL_LastStatus for error type
  * This may effectively load whole mesh in-memory for some providers
  * Caller must free memory with MDAL_CloseMesh() afterwards
+ *
+ * since MDAL 0.6.0 const char parameter is renamed to uri and might contain
+ * following:  <DriverName>:"<MeshFilePath>":<SpecificMeshName or Id>
+ * examples: Ugrid:"mesh.nc":0, Ugrid:"mesh.nc":mesh1d, "mesh.nc":mesh1d, Ugrid:"mesh.nc", "mesh.nc", mesh.nc
  */
-MDAL_EXPORT MeshH MDAL_LoadMesh( const char *meshFile );
+MDAL_EXPORT MDAL_MeshH MDAL_LoadMesh( const char *uri );
+
+/**
+ * Returns uris that the resource contains (mesh names)
+ * Uris are separated by ;; and have form <DriverName>:"<MeshFilePath>"[:<SpecificMeshName>]
+ * not thread-safe and valid only till next call
+ *
+ * Parameter uri can be in format:
+ *
+ * - <drivername>:"meshfile" - function then returns uris with provided driver and meshfile
+ * - "meshfile" or meshfile  - function then finds proper driver and returns uris with it
+ *
+ * The uris can be used directly in MDAL_LoadMesh to load particular meshes
+ *
+ * \since MDAL 0.6.0
+ */
+MDAL_EXPORT const char *MDAL_MeshNames( const char *uri );
 
 /**
  * Closes mesh, frees the memory
  */
-MDAL_EXPORT void MDAL_CloseMesh( MeshH mesh );
+MDAL_EXPORT void MDAL_CloseMesh( MDAL_MeshH mesh );
+
+/**
+ * Creates a empty mesh in memory
+ *
+ * \since MDAL 0.7
+ *
+ * \note the mesh is editable (vertices and faces can be added, see MDAL_M_addVertices() and MDAL_M_addFaces()),
+ * and can be saved with MDAL_SaveMesh()
+ */
+MDAL_EXPORT MDAL_MeshH MDAL_CreateMesh( MDAL_DriverH driver );
 
 /**
  * Saves mesh (only mesh structure) on a file with the specified driver. On error see MDAL_LastStatus for error type.
  */
-MDAL_EXPORT void MDAL_SaveMesh( MeshH mesh, const char *meshFile, const char *driver );
+MDAL_EXPORT void MDAL_SaveMesh( MDAL_MeshH mesh, const char *meshFile, const char *driver );
 
 /**
  * Returns mesh projection
  * not thread-safe and valid only till next call
  */
-MDAL_EXPORT const char *MDAL_M_projection( MeshH mesh );
+MDAL_EXPORT const char *MDAL_M_projection( MDAL_MeshH mesh );
+
+/**
+ * Sets mesh projection
+ * not thread-safe and valid only till next call
+ *
+ * \since MDAL 0.7
+ */
+MDAL_EXPORT void MDAL_M_setProjection( MDAL_MeshH mesh, const char *projection );
 
 /**
  * Returns mesh extent in native projection
  * Returns NaN on error
  */
-MDAL_EXPORT void MDAL_M_extent( MeshH mesh, double *minX, double *maxX, double *minY, double *maxY );
+MDAL_EXPORT void MDAL_M_extent( MDAL_MeshH mesh, double *minX, double *maxX, double *minY, double *maxY );
+
+/**
+ * Adds vertices to the mesh
+ * \param mesh the mesh which the vertices are added
+ * \param vertexCount the count of vertices
+ * \param coordinates coordinates of vertices (x0,y0,z0,x1,y1,z1,...,xn,yn,zn)
+ *
+ * \note to avoid incompatible datasets, adding faces removes all the existing dataset group
+ *
+ * \since MDAL 0.7
+ */
+MDAL_EXPORT void MDAL_M_addVertices( MDAL_MeshH mesh, int vertexCount, double *coordinates );
+
+/**
+ * Adds faces to the mesh
+ * \param mesh the mesh which the faces are added
+ * \param faceCount the count of faces
+ * \param faceSizes a pointer to an array of integer containing the number of vertices per each faces
+ * \param vertexIndices a pointer to an array of integer containing the indices of vertices of each faces
+ *
+ * \note to avoid incompatible datasets, adding faces removes all the existing dataset group
+ *
+ * \since MDAL 0.7
+ */
+MDAL_EXPORT void MDAL_M_addFaces( MDAL_MeshH mesh,
+                                  int faceCount,
+                                  int *faceSizes,
+                                  int *vertexIndices );
 
 /**
  * Returns vertex count for the mesh
  */
-MDAL_EXPORT int MDAL_M_vertexCount( MeshH mesh );
+MDAL_EXPORT int MDAL_M_vertexCount( MDAL_MeshH mesh );
 
 /**
  * Returns edge count for the mesh
  * \since MDAL 0.6.0
  */
-MDAL_EXPORT int MDAL_M_edgeCount( MeshH mesh );
+MDAL_EXPORT int MDAL_M_edgeCount( MDAL_MeshH mesh );
 
 /**
  * Returns face count for the mesh
  */
-MDAL_EXPORT int MDAL_M_faceCount( MeshH mesh );
+MDAL_EXPORT int MDAL_M_faceCount( MDAL_MeshH mesh );
 
 /**
  * Returns maximum number of vertices face can consist of, e.g. 4 for regular quad mesh
  */
-MDAL_EXPORT int MDAL_M_faceVerticesMaximumCount( MeshH mesh );
+MDAL_EXPORT int MDAL_M_faceVerticesMaximumCount( MDAL_MeshH mesh );
 
 /**
  * Loads dataset file. On error see MDAL_LastStatus for error type.
@@ -245,17 +321,17 @@ MDAL_EXPORT int MDAL_M_faceVerticesMaximumCount( MeshH mesh );
  * Datasets will be closed automatically on mesh destruction or memory
  * can be freed manually with MDAL_CloseDataset if needed
  */
-MDAL_EXPORT void MDAL_M_LoadDatasets( MeshH mesh, const char *datasetFile );
+MDAL_EXPORT void MDAL_M_LoadDatasets( MDAL_MeshH mesh, const char *datasetFile );
 
 /**
  * Returns dataset groups count
  */
-MDAL_EXPORT int MDAL_M_datasetGroupCount( MeshH mesh );
+MDAL_EXPORT int MDAL_M_datasetGroupCount( MDAL_MeshH mesh );
 
 /**
  * Returns dataset group handle
  */
-MDAL_EXPORT DatasetGroupH MDAL_M_datasetGroup( MeshH mesh, int index );
+MDAL_EXPORT MDAL_DatasetGroupH MDAL_M_datasetGroup( MDAL_MeshH mesh, int index );
 
 /**
  * Adds empty (new) dataset group to the mesh
@@ -275,18 +351,19 @@ MDAL_EXPORT DatasetGroupH MDAL_M_datasetGroup( MeshH mesh, int index );
  * \param datasetGroupFile file to store the new dataset group
  * \returns empty pointer if not possible to create group, otherwise handle to new group
  */
-MDAL_EXPORT DatasetGroupH MDAL_M_addDatasetGroup( MeshH mesh,
-    const char *name,
-    MDAL_DataLocation dataLocation,
-    bool hasScalarData,
-    DriverH driver,
-    const char *datasetGroupFile );
+MDAL_EXPORT MDAL_DatasetGroupH MDAL_M_addDatasetGroup(
+  MDAL_MeshH mesh,
+  const char *name,
+  MDAL_DataLocation dataLocation,
+  bool hasScalarData,
+  MDAL_DriverH driver,
+  const char *datasetGroupFile );
 
 /**
  * Returns name of MDAL driver
  * not thread-safe and valid only till next call
  */
-MDAL_EXPORT const char *MDAL_M_driverName( MeshH mesh );
+MDAL_EXPORT const char *MDAL_M_driverName( MDAL_MeshH mesh );
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /// MESH VERTICES
@@ -296,7 +373,7 @@ MDAL_EXPORT const char *MDAL_M_driverName( MeshH mesh );
  * Returns iterator to the mesh vertices
  * For some formats this may effectively load all vertices in-memory until iterator is closed
  */
-MDAL_EXPORT MeshVertexIteratorH MDAL_M_vertexIterator( MeshH mesh );
+MDAL_EXPORT MDAL_MeshVertexIteratorH MDAL_M_vertexIterator( MDAL_MeshH mesh );
 
 /**
  * Returns vertices from iterator for the mesh
@@ -305,12 +382,12 @@ MDAL_EXPORT MeshVertexIteratorH MDAL_M_vertexIterator( MeshH mesh );
  * \param coordinates must be allocated to 3* verticesCount items to store x1, y1, z1, ..., xN, yN, zN coordinates
  * \returns number of vertices written in the buffer
  */
-MDAL_EXPORT int MDAL_VI_next( MeshVertexIteratorH iterator, int verticesCount, double *coordinates );
+MDAL_EXPORT int MDAL_VI_next( MDAL_MeshVertexIteratorH iterator, int verticesCount, double *coordinates );
 
 /**
  * Closes mesh data iterator, frees the memory
  */
-MDAL_EXPORT void MDAL_VI_close( MeshVertexIteratorH iterator );
+MDAL_EXPORT void MDAL_VI_close( MDAL_MeshVertexIteratorH iterator );
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /// MESH EDGES
@@ -322,7 +399,7 @@ MDAL_EXPORT void MDAL_VI_close( MeshVertexIteratorH iterator );
  *
  * \since MDAL 0.6.0
  */
-MDAL_EXPORT MeshEdgeIteratorH MDAL_M_edgeIterator( MeshH mesh );
+MDAL_EXPORT MDAL_MeshEdgeIteratorH MDAL_M_edgeIterator( MDAL_MeshH mesh );
 
 /**
  * Returns edges from iterator for the mesh
@@ -334,14 +411,14 @@ MDAL_EXPORT MeshEdgeIteratorH MDAL_M_edgeIterator( MeshH mesh );
  *
  * \since MDAL 0.6.0
  */
-MDAL_EXPORT int MDAL_EI_next( MeshEdgeIteratorH iterator, int edgesCount, int *startVertexIndices, int *endVertexIndices );
+MDAL_EXPORT int MDAL_EI_next( MDAL_MeshEdgeIteratorH iterator, int edgesCount, int *startVertexIndices, int *endVertexIndices );
 
 /**
  * Closes mesh data iterator, frees the memory
  *
  * \since MDAL 0.6.0
  */
-MDAL_EXPORT void MDAL_EI_close( MeshEdgeIteratorH iterator );
+MDAL_EXPORT void MDAL_EI_close( MDAL_MeshEdgeIteratorH iterator );
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /// MESH FACES
@@ -351,7 +428,7 @@ MDAL_EXPORT void MDAL_EI_close( MeshEdgeIteratorH iterator );
  * Returns iterator to the mesh faces
  * For some formats this may effectively load all faces in-memory until iterator is closed
  */
-MDAL_EXPORT MeshFaceIteratorH MDAL_M_faceIterator( MeshH mesh );
+MDAL_EXPORT MDAL_MeshFaceIteratorH MDAL_M_faceIterator( MDAL_MeshH mesh );
 
 /**
  * Returns next faces from iterator for the mesh
@@ -368,7 +445,7 @@ MDAL_EXPORT MeshFaceIteratorH MDAL_M_faceIterator( MeshH mesh );
  *                            faceOffsetsBuffer[i-1] is index where the vertices for face i begins,
  * \returns number of faces written in the buffer
  */
-MDAL_EXPORT int MDAL_FI_next( MeshFaceIteratorH iterator,
+MDAL_EXPORT int MDAL_FI_next( MDAL_MeshFaceIteratorH iterator,
                               int faceOffsetsBufferLen,
                               int *faceOffsetsBuffer,
                               int vertexIndicesBufferLen,
@@ -377,7 +454,7 @@ MDAL_EXPORT int MDAL_FI_next( MeshFaceIteratorH iterator,
 /**
  * Closes mesh data iterator, frees the memory
  */
-MDAL_EXPORT void MDAL_FI_close( MeshFaceIteratorH iterator );
+MDAL_EXPORT void MDAL_FI_close( MDAL_MeshFaceIteratorH iterator );
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /// DATASET GROUPS
@@ -386,73 +463,73 @@ MDAL_EXPORT void MDAL_FI_close( MeshFaceIteratorH iterator );
 /**
  * Returns dataset parent mesh
  */
-MDAL_EXPORT MeshH MDAL_G_mesh( DatasetGroupH group );
+MDAL_EXPORT MDAL_MeshH MDAL_G_mesh( MDAL_DatasetGroupH group );
 
 /**
  * Returns dataset count in group
  */
-MDAL_EXPORT int MDAL_G_datasetCount( DatasetGroupH group );
+MDAL_EXPORT int MDAL_G_datasetCount( MDAL_DatasetGroupH group );
 
 /**
  * Returns dataset handle
  */
-MDAL_EXPORT DatasetH MDAL_G_dataset( DatasetGroupH group, int index );
+MDAL_EXPORT MDAL_DatasetH MDAL_G_dataset( MDAL_DatasetGroupH group, int index );
 
 /**
  * Returns number of metadata values
  */
-MDAL_EXPORT int MDAL_G_metadataCount( DatasetGroupH group );
+MDAL_EXPORT int MDAL_G_metadataCount( MDAL_DatasetGroupH group );
 
 /**
  * Returns dataset metadata key
  * not thread-safe and valid only till next call
  */
-MDAL_EXPORT const char *MDAL_G_metadataKey( DatasetGroupH group, int index );
+MDAL_EXPORT const char *MDAL_G_metadataKey( MDAL_DatasetGroupH group, int index );
 
 /**
  * Returns dataset metadata value
  * not thread-safe and valid only till next call
  */
-MDAL_EXPORT const char *MDAL_G_metadataValue( DatasetGroupH group, int index );
+MDAL_EXPORT const char *MDAL_G_metadataValue( MDAL_DatasetGroupH group, int index );
 
 /**
  * Adds new metadata to the group
  * Group must be in edit mode MDAL_G_isInEditMode()
  */
-MDAL_EXPORT void MDAL_G_setMetadata( DatasetGroupH group, const char *key, const char *val );
+MDAL_EXPORT void MDAL_G_setMetadata( MDAL_DatasetGroupH group, const char *key, const char *val );
 
 /**
  * Returns dataset group name
  * not thread-safe and valid only till next call
  */
-MDAL_EXPORT const char *MDAL_G_name( DatasetGroupH group );
+MDAL_EXPORT const char *MDAL_G_name( MDAL_DatasetGroupH group );
 
 /**
  * Returns name of MDAL driver
  * not thread-safe and valid only till next call
  */
-MDAL_EXPORT const char *MDAL_G_driverName( DatasetGroupH group );
+MDAL_EXPORT const char *MDAL_G_driverName( MDAL_DatasetGroupH group );
 
 /**
  * Whether dataset has scalar data associated
  */
-MDAL_EXPORT bool MDAL_G_hasScalarData( DatasetGroupH group );
+MDAL_EXPORT bool MDAL_G_hasScalarData( MDAL_DatasetGroupH group );
 
 /**
  * Whether dataset is on vertices
  */
-MDAL_EXPORT MDAL_DataLocation MDAL_G_dataLocation( DatasetGroupH group );
+MDAL_EXPORT MDAL_DataLocation MDAL_G_dataLocation( MDAL_DatasetGroupH group );
 
 /**
  * Returns maximum number of vertical levels (for 3D meshes)
  */
-MDAL_EXPORT int MDAL_G_maximumVerticalLevelCount( DatasetGroupH group );
+MDAL_EXPORT int MDAL_G_maximumVerticalLevelCount( MDAL_DatasetGroupH group );
 
 /**
  * Returns the minimum and maximum values of the group
  * Returns NaN on error
  */
-MDAL_EXPORT void MDAL_G_minimumMaximum( DatasetGroupH group, double *min, double *max );
+MDAL_EXPORT void MDAL_G_minimumMaximum( MDAL_DatasetGroupH group, double *min, double *max );
 
 /**
  * Adds empty (new) dataset to the group
@@ -476,16 +553,17 @@ MDAL_EXPORT void MDAL_G_minimumMaximum( DatasetGroupH group, double *min, double
  * \param active if null pointer, MDAL_D_hasActiveFlagCapability returns false. Otherwise size must be equal to face count.
  * \returns empty pointer if not possible to create dataset (e.g. group opened in read mode), otherwise handle to new dataset
  */
-MDAL_EXPORT DatasetH MDAL_G_addDataset( DatasetGroupH group,
-                                        double time,
-                                        const double *values,
-                                        const int *active
-                                      );
+MDAL_EXPORT MDAL_DatasetH MDAL_G_addDataset(
+  MDAL_DatasetGroupH group,
+  double time,
+  const double *values,
+  const int *active
+);
 
 /**
  * Returns whether dataset group is in edit mode
  */
-MDAL_EXPORT bool MDAL_G_isInEditMode( DatasetGroupH group );
+MDAL_EXPORT bool MDAL_G_isInEditMode( MDAL_DatasetGroupH group );
 
 /**
  * Close edit mode for group and all its datasets.
@@ -494,12 +572,32 @@ MDAL_EXPORT bool MDAL_G_isInEditMode( DatasetGroupH group );
  *
  * When closed, minimum and maximum dataset group values are automatically calculated
  */
-MDAL_EXPORT void MDAL_G_closeEditMode( DatasetGroupH group );
+MDAL_EXPORT void MDAL_G_closeEditMode( MDAL_DatasetGroupH group );
 
 /**
  * Returns reference time for dataset group expressed in date with ISO8601 format, return "" if reference time is not defined
  */
-MDAL_EXPORT const char *MDAL_G_referenceTime( DatasetGroupH group );
+MDAL_EXPORT const char *MDAL_G_referenceTime( MDAL_DatasetGroupH group );
+
+/**
+ * Sets reference time for dataset group expressed in date with ISO8601 format
+ */
+MDAL_EXPORT void MDAL_G_setReferenceTime( MDAL_DatasetGroupH group, const char *referenceTimeISO8601 );
+
+/**
+ * Returns whether the dataset group is temporal, i.e. has time-related datasets
+ *
+ * \since MDAL 0.6.0
+ */
+MDAL_EXPORT bool MDAL_G_isTemporal( MDAL_DatasetGroupH group );
+
+/**
+ * Returns dataset group uri
+ * not thread-safe and valid only till next call
+ *
+ * \since MDAL 0.7.0
+ */
+MDAL_EXPORT const char *MDAL_G_uri( MDAL_DatasetGroupH group );
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /// DATASETS
@@ -508,22 +606,22 @@ MDAL_EXPORT const char *MDAL_G_referenceTime( DatasetGroupH group );
 /**
  * Returns dataset parent group
  */
-MDAL_EXPORT DatasetGroupH MDAL_D_group( DatasetH dataset );
+MDAL_EXPORT MDAL_DatasetGroupH MDAL_D_group( MDAL_DatasetH dataset );
 
 /**
  * Returns dataset time (hours)
  */
-MDAL_EXPORT double MDAL_D_time( DatasetH dataset );
+MDAL_EXPORT double MDAL_D_time( MDAL_DatasetH dataset );
 
 /**
  * Returns volumes count for the mesh (for 3D meshes)
  */
-MDAL_EXPORT int MDAL_D_volumesCount( DatasetH dataset );
+MDAL_EXPORT int MDAL_D_volumesCount( MDAL_DatasetH dataset );
 
 /**
  * Returns maximum number of vertical levels (for 3D meshes)
  */
-MDAL_EXPORT int MDAL_D_maximumVerticalLevelCount( DatasetH dataset );
+MDAL_EXPORT int MDAL_D_maximumVerticalLevelCount( MDAL_DatasetH dataset );
 
 /**
  * Returns number of values
@@ -532,17 +630,17 @@ MDAL_EXPORT int MDAL_D_maximumVerticalLevelCount( DatasetH dataset );
  * For dataset with data location DataOnVolumes returns volumes count
  * For dataset with data location DataOnEdges returns edges count
  */
-MDAL_EXPORT int MDAL_D_valueCount( DatasetH dataset );
+MDAL_EXPORT int MDAL_D_valueCount( MDAL_DatasetH dataset );
 
 /**
  * Returns whether dataset is valid
  */
-MDAL_EXPORT bool MDAL_D_isValid( DatasetH dataset );
+MDAL_EXPORT bool MDAL_D_isValid( MDAL_DatasetH dataset );
 
 /**
  * Returns whether dataset supports active flag for dataset faces
  */
-MDAL_EXPORT bool MDAL_D_hasActiveFlagCapability( DatasetH dataset );
+MDAL_EXPORT bool MDAL_D_hasActiveFlagCapability( MDAL_DatasetH dataset );
 
 /**
  * Data type to be returned by MDAL_D_data
@@ -579,13 +677,13 @@ enum MDAL_DataType
  *               For VECTOR_2D_VOLUMES_DOUBLE, the minimum size must be 2 * volumesCount * size_of(double)
  * \returns number of values written to buffer. If return value != count requested, see MDAL_LastStatus() for error type
  */
-MDAL_EXPORT int MDAL_D_data( DatasetH dataset, int indexStart, int count, MDAL_DataType dataType, void *buffer );
+MDAL_EXPORT int MDAL_D_data( MDAL_DatasetH dataset, int indexStart, int count, MDAL_DataType dataType, void *buffer );
 
 /**
  * Returns the minimum and maximum values of the dataset
  * Returns NaN on error
  */
-MDAL_EXPORT void MDAL_D_minimumMaximum( DatasetH dataset, double *min, double *max );
+MDAL_EXPORT void MDAL_D_minimumMaximum( MDAL_DatasetH dataset, double *min, double *max );
 
 #ifdef __cplusplus
 }

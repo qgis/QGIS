@@ -54,6 +54,7 @@
 #include <QTemporaryFile>
 #include <QHash>
 #include <QTextCodec>
+#include <QElapsedTimer>
 
 
 extern "C"
@@ -1478,7 +1479,7 @@ QStringList QgsGrass::elements( const QString  &mapsetPath, const QString  &elem
 QStringList QgsGrass::grassObjects( const QgsGrassObject &mapsetObject, QgsGrassObject::Type type )
 {
   QgsDebugMsg( "mapsetPath = " + mapsetObject.mapsetPath() + " type = " +  QgsGrassObject::elementShort( type ) );
-  QTime time;
+  QElapsedTimer time;
   time.start();
   QStringList list;
   if ( !QDir( mapsetObject.mapsetPath() ).isReadable() )
@@ -1908,7 +1909,7 @@ QString QgsGrass::findModule( QString module )
     const auto constPaths = paths;
     for ( const QString &path : constPaths )
     {
-      QString full = module + ext;;
+      QString full = module + ext;
       if ( !path.isEmpty() )
       {
         full.prepend( path + "/" );
@@ -1997,7 +1998,7 @@ QByteArray QgsGrass::runModule( const QString &gisdbase, const QString  &locatio
                                 const QStringList &arguments, int timeOut, bool qgisModule )
 {
   QgsDebugMsg( QString( "gisdbase = %1 location = %2 timeOut = %3" ).arg( gisdbase, location ).arg( timeOut ) );
-  QTime time;
+  QElapsedTimer time;
   time.start();
 
   QTemporaryFile gisrcFile;
@@ -2867,7 +2868,6 @@ void QgsGrass::vectDestroyMapStruct( struct Map_info *map )
   // call G_fatal_error, otherwise check and remove use of vectDestroyMapStruct from G_CATCH blocks
   QgsDebugMsg( QString( "free map = %1" ).arg( ( quint64 )map ) );
   qgsFree( map );
-  map = nullptr;
 }
 
 void QgsGrass::sleep( int ms )
@@ -2889,7 +2889,7 @@ QgsGrass::ModuleOutput QgsGrass::parseModuleOutput( const QString &input, QStrin
   for ( int i = 0; i < input.size(); i++ )
   {
     int c = input.at( i ).toLatin1();
-    ascii += QString().sprintf( "%2x ", c );
+    ascii += QStringLiteral( "%1 " ).arg( c, 0, 16 );
   }
   QgsDebugMsg( "ascii = " + ascii );
 #endif

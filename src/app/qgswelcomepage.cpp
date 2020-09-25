@@ -18,6 +18,7 @@
 #include "qgisapp.h"
 #include "qgsversioninfo.h"
 #include "qgsapplication.h"
+#include "qgsfocuskeeper.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
 #include "qgsnative.h"
@@ -291,6 +292,7 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
       QAction *openFolderAction = new QAction( tr( "Open Directory…" ), menu );
       connect( openFolderAction, &QAction::triggered, this, [path]
       {
+        QgsFocusKeeper focusKeeper;
         QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( path );
       } );
       menu->addAction( openFolderAction );
@@ -436,6 +438,11 @@ void QgsWelcomePage::updateNewsFeedVisibility()
   else
   {
     mSplitter2->restoreState( QgsSettings().value( QStringLiteral( "Windows/WelcomePage/SplitState2" ), QVariant(), QgsSettings::App ).toByteArray() );
+    if ( mSplitter2->sizes().first() == 0 )
+    {
+      int splitSize = mSplitter2->height() / 2;
+      mSplitter2->setSizes( QList< int > { splitSize, splitSize} );
+    }
   }
 }
 

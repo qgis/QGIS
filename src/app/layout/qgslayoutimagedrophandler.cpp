@@ -18,6 +18,7 @@
 #include "qgslayout.h"
 #include "qgslayoutview.h"
 #include "qgslayoutitempicture.h"
+
 #include <QImageReader>
 
 QgsLayoutImageDropHandler::QgsLayoutImageDropHandler( QObject *parent )
@@ -29,19 +30,27 @@ QgsLayoutImageDropHandler::QgsLayoutImageDropHandler( QObject *parent )
 bool QgsLayoutImageDropHandler::handleFileDrop( QgsLayoutDesignerInterface *iface, QPointF point, const QString &file )
 {
   QFileInfo fi( file );
-
   bool matched = false;
-  const QList<QByteArray> formats = QImageReader::supportedImageFormats();
-  for ( const QByteArray &format : formats )
+  bool svg = false;
+  if ( fi.suffix().compare( "svg", Qt::CaseInsensitive ) == 0 )
   {
-    if ( fi.suffix().compare( format, Qt::CaseInsensitive ) == 0 )
+    matched = true;
+    svg = true;
+  }
+  else
+  {
+    const QList<QByteArray> formats = QImageReader::supportedImageFormats();
+    for ( const QByteArray &format : formats )
     {
-      matched = true;
-      break;
+      if ( fi.suffix().compare( format, Qt::CaseInsensitive ) == 0 )
+      {
+        matched = true;
+        break;
+      }
     }
   }
-  if ( !matched )
 
+  if ( !matched )
     return false;
 
   if ( !iface->layout() )
@@ -51,7 +60,7 @@ bool QgsLayoutImageDropHandler::handleFileDrop( QgsLayoutDesignerInterface *ifac
 
   QgsLayoutPoint layoutPoint = iface->layout()->convertFromLayoutUnits( point, iface->layout()->units() );
 
-  item->setPicturePath( file );
+  item->setPicturePath( file, svg ? QgsLayoutItemPicture::FormatSVG : QgsLayoutItemPicture::FormatRaster );
 
   // force a resize to the image's actual size
   item->setResizeMode( QgsLayoutItemPicture::FrameToImageSize );
@@ -71,6 +80,43 @@ bool QgsLayoutImageDropHandler::handleFileDrop( QgsLayoutDesignerInterface *ifac
   iface->layout()->addLayoutItem( item.release() );
   iface->layout()->deselectAll();
   iface->selectItems( newSelection );
+
+  return true;
+}
+
+bool QgsLayoutImageDropHandler::handlePaste( QgsLayoutDesignerInterface *iface, QPointF pastePoint, const QMimeData *data, QList<QgsLayoutItem *> &pastedItems )
+{
+  if ( !data->hasImage() )
+    return false;
+
+  QgsLayoutPoint layoutPoint = iface->layout()->convertFromLayoutUnits( pastePoint, iface->layout()->units() );
+  std::unique_ptr< QgsLayoutItemPicture > item = qgis::make_unique< QgsLayoutItemPicture >( iface->layout() );
+
+  const QByteArray imageData = data->data( QStringLiteral( "application/x-qt-image" ) );
+  if ( imageData.isEmpty() )
+    return false;
+
+  const QByteArray encoded = imageData.toBase64();
+
+  QString path( encoded );
+  path.prepend( QLatin1String( "base64:" ) );
+
+  item->setPicturePath( path, QgsLayoutItemPicture::FormatRaster );
+
+  // force a resize to the image's actual size
+  item->setResizeMode( QgsLayoutItemPicture::FrameToImageSize );
+  // and then move back to standard freeform image sizing
+  item->setResizeMode( QgsLayoutItemPicture::Zoom );
+
+  // we want the drop location to be the center of the placed item, because drag thumbnails are usually centered on the mouse cursor
+  item->setReferencePoint( QgsLayoutItem::Middle );
+  item->attemptMove( layoutPoint );
+
+  // reset to standard top-left reference point location
+  item->setReferencePoint( QgsLayoutItem::UpperLeft );
+
+  pastedItems << item.get();
+  iface->layout()->addLayoutItem( item.release() );
 
   return true;
 }

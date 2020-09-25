@@ -34,6 +34,7 @@ Holds metadata about mesh driver
       CanWriteFaceDatasets,
       CanWriteVertexDatasets,
       CanWriteEdgeDatasets,
+      CanWriteMeshData,
     };
 
     typedef QFlags<QgsMeshDriverMetadata::MeshDriverCapability> MeshDriverCapabilities;
@@ -46,7 +47,8 @@ Constructs default metadata without any capabilities
 
     QgsMeshDriverMetadata( const QString &name,
                            const QString &description,
-                           const MeshDriverCapabilities &capabilities );
+                           const MeshDriverCapabilities &capabilities,
+                           const QString &writeDatasetOnFileSuffix );
 %Docstring
 Constructs driver metadata with selected capabilities
 
@@ -68,6 +70,11 @@ Returns the name (key) for this driver.
     QString description() const;
 %Docstring
 Returns the description for this driver.
+%End
+
+    QString writeDatasetOnFileSuffix() const;
+%Docstring
+Returns the suffix used to write datasets on file
 %End
 
 };
@@ -174,12 +181,35 @@ Builds the list of available mesh drivers metadata
 .. versionadded:: 3.12
 %End
 
-    virtual QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) /Factory/;
+    virtual QgsDataProvider *createProvider( const QString &uri,
+        const QgsDataProvider::ProviderOptions &options,
+        QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) /Factory/;
 %Docstring
 Class factory to return a pointer to a newly created QgsDataProvider object
 
+:param uri: the datasource uri
+:param options: creation options
+:param flags: creation flags, sing QGIS 3.16
+
 .. versionadded:: 3.10
 %End
+
+    static void setBoolParameter( QVariantMap &uri, const QString &parameter, const QVariant &value );
+%Docstring
+Sets the ``value`` into the ``uri`` ``parameter`` as a bool.
+eg. "yes" value will be saved as true, 0 will be saved as false
+
+.. versionadded:: 3.14
+%End
+
+    static bool boolParameter( const QVariantMap &uri, const QString &parameter, bool defaultValue = false );
+%Docstring
+Returns the ``parameter`` value in the ``uri`` as a bool.
+eg. "yes" value will be returned as true, 0 will be returned as false
+
+.. versionadded:: 3.14
+%End
+
 
 
     virtual QgsRasterDataProvider *createRasterDataProvider(
@@ -198,6 +228,17 @@ Creates a new instance of the raster data provider.
 .. versionadded:: 3.10
 %End
 
+    virtual bool createMeshData(
+      const QgsMesh &mesh,
+      const QString uri,
+      const QString &driverName,
+      const QgsCoordinateReferenceSystem &crs ) const;
+%Docstring
+Creates mesh data source, that is the mesh frame stored in file, memory or with other way (depending of the provider)
+
+.. versionadded:: 3.16
+%End
+
     virtual QList<QPair<QString, QString> > pyramidResamplingMethods();
 %Docstring
 Returns pyramid resampling methods available for provider
@@ -212,6 +253,7 @@ Breaks a provider data source URI into its component paths (e.g. file path, laye
 :param uri: uri string
 
 :return: map containing components. Standard components may include:
+
          - "path": file path
          - "layerName"
          - "url": base URL, for online services
@@ -359,7 +401,7 @@ Raises a QgsProviderConnectionException if any errors are encountered.
 %Docstring
 Creates a new connection from ``uri`` and ``configuration``,
 the newly created connection is not automatically stored in the settings, call
-saveConnection() to save it.
+:py:func:`~QgsProviderMetadata.saveConnection` to save it.
 Ownership is transferred to the caller.
 
 :raises :: py:class:`QgsProviderConnectionException`

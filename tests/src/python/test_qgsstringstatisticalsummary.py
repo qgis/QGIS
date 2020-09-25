@@ -53,7 +53,7 @@ class PyQgsStringStatisticalSummary(unittest.TestCase):
         self.assertEqual(s.majority(), 'aaaa')
         self.assertEqual(s2.majority(), 'aaaa')
 
-        #extra check for minLength without empty strings
+        # extra check for minLength without empty strings
         s.calculate(['1111111', '111', '11111'])
         self.assertEqual(s.minLength(), 3)
 

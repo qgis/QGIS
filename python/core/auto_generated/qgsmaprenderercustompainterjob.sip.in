@@ -78,7 +78,7 @@ platforms).
 %Docstring
 Wait for the job to be finished - and keep the thread's event loop running while waiting.
 
-With a call to waitForFinished(), the waiting is done with a synchronization primitive
+With a call to :py:func:`~QgsMapRendererCustomPainterJob.waitForFinished`, the waiting is done with a synchronization primitive
 and does not involve processing of messages. That may cause issues to code which requires
 some events to be handled in the main thread. Some plugins hooking into the rendering
 pipeline may require this in order to work properly - for example, OpenLayers plugin
@@ -93,7 +93,7 @@ rendering should not need to actively wait for rendering to finish.
 Render the map synchronously in this thread. The function does not return until the map
 is completely rendered.
 
-This is an alternative to ordinary API (using start() + waiting for finished() signal).
+This is an alternative to ordinary API (using :py:func:`~QgsMapRendererCustomPainterJob.start` + waiting for :py:func:`~QgsMapRendererCustomPainterJob.finished` signal).
 Users are discouraged to use this method unless they have a strong reason for doing it.
 The synchronous rendering blocks the main thread, making the application unresponsive.
 Also, it is not possible to cancel rendering while it is in progress.
@@ -105,8 +105,8 @@ Prepares the job for rendering synchronously in a background thread.
 
 Must be called from the main thread.
 
-This is an alternative to ordinary API (using start() + waiting for finished() signal),
-and an alternative to renderSynchronously() (which should only ever be called from the main thread).
+This is an alternative to ordinary API (using :py:func:`~QgsMapRendererCustomPainterJob.start` + waiting for :py:func:`~QgsMapRendererCustomPainterJob.finished` signal),
+and an alternative to :py:func:`~QgsMapRendererCustomPainterJob.renderSynchronously` (which should only ever be called from the main thread).
 
 .. seealso:: :py:func:`renderPrepared`
 
@@ -117,10 +117,10 @@ and an alternative to renderSynchronously() (which should only ever be called fr
 %Docstring
 Render a pre-prepared job. Can be safely called in a background thread.
 
-Must be preceded by a call to prepare()
+Must be preceded by a call to :py:func:`~QgsMapRendererCustomPainterJob.prepare`
 
-This is an alternative to ordinary API (using start() + waiting for finished() signal),
-and an alternative to renderSynchronously() (which should only ever be called from the main thread).
+This is an alternative to ordinary API (using :py:func:`~QgsMapRendererCustomPainterJob.start` + waiting for :py:func:`~QgsMapRendererCustomPainterJob.finished` signal),
+and an alternative to :py:func:`~QgsMapRendererCustomPainterJob.renderSynchronously` (which should only ever be called from the main thread).
 
 .. versionadded:: 3.10
 %End

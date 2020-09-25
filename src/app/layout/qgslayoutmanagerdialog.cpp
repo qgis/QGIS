@@ -93,8 +93,8 @@ QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags
   connect( mWindowAction, &QAction::triggered, this, &QgsLayoutManagerDialog::activate );
 #endif
 
-  mTemplate->addItem( tr( "Empty layout" ) );
-  mTemplate->addItem( tr( "Empty report" ) );
+  mTemplate->addItem( tr( "Empty Layout" ) );
+  mTemplate->addItem( tr( "Empty Report" ) );
   mTemplate->addItem( tr( "Specific" ) );
 
   mUserTemplatesDir = QgsApplication::qgisSettingsDirPath() + "/composer_templates";
@@ -448,7 +448,7 @@ void QgsLayoutManagerDialog::duplicateClicked()
   QString currentTitle = currentLayout->name();
 
   QString newTitle;
-  if ( !QgisApp::instance()->uniqueLayoutTitle( this, newTitle, false, currentLayout->layoutType(), tr( "%1 copy" ).arg( currentTitle ) ) )
+  if ( !QgisApp::instance()->uniqueLayoutTitle( this, newTitle, true, currentLayout->layoutType(), tr( "%1 copy" ).arg( currentTitle ) ) )
   {
     return;
   }
@@ -488,7 +488,7 @@ void QgsLayoutManagerDialog::renameClicked()
 
   QString currentTitle = currentLayout->name();
   QString newTitle;
-  if ( !QgisApp::instance()->uniqueLayoutTitle( this, newTitle, false, currentLayout->layoutType(), currentTitle ) )
+  if ( !QgisApp::instance()->uniqueLayoutTitle( this, newTitle, true, currentLayout->layoutType(), currentTitle ) )
   {
     return;
   }

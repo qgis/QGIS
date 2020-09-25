@@ -84,8 +84,8 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
      * Sets the customization for data items based on item's data provider key
      *
      * By default browser model shows all items from all available data items provider and few special
-     * items (e.g. Favourites). To customize the behavior, set the filter to not load certain data items.
-     * The items that are not based on data item providers (e.g. Favourites, Home) have
+     * items (e.g. Favorites). To customize the behavior, set the filter to not load certain data items.
+     * The items that are not based on data item providers (e.g. Favorites, Home) have
      * prefix "special:"
      *
      * Used in the proxy browser model to hide items

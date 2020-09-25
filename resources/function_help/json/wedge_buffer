@@ -1,6 +1,7 @@
 {
   "name": "wedge_buffer",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Returns a wedge shaped buffer originating from a point geometry.",
   "arguments": [ {"arg":"center","description":"center point (origin) of buffer. Must be a point geometry."},
                  {"arg":"azimuth","description":"angle (in degrees) for the middle of the wedge to point."},

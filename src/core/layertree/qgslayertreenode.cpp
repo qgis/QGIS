@@ -179,8 +179,11 @@ void QgsLayerTreeNode::setExpanded( bool expanded )
 
 void QgsLayerTreeNode::setCustomProperty( const QString &key, const QVariant &value )
 {
-  mProperties.setValue( key, value );
-  emit customPropertyChanged( this, key );
+  if ( !mProperties.contains( key ) || mProperties.value( key ) != value )
+  {
+    mProperties.setValue( key, value );
+    emit customPropertyChanged( this, key );
+  }
 }
 
 QVariant QgsLayerTreeNode::customProperty( const QString &key, const QVariant &defaultValue ) const
@@ -190,8 +193,11 @@ QVariant QgsLayerTreeNode::customProperty( const QString &key, const QVariant &d
 
 void QgsLayerTreeNode::removeCustomProperty( const QString &key )
 {
-  mProperties.remove( key );
-  emit customPropertyChanged( this, key );
+  if ( mProperties.contains( key ) )
+  {
+    mProperties.remove( key );
+    emit customPropertyChanged( this, key );
+  }
 }
 
 QStringList QgsLayerTreeNode::customProperties() const

@@ -216,7 +216,7 @@ bool QgsTriangularMesh::update( QgsMesh *nativeMesh, const QgsCoordinateTransfor
   mNativeMeshEdgeCentroids.resize( nativeMesh->edgeCount() );
   for ( int i = 0; i < nativeMesh->edgeCount(); ++i )
   {
-    const QgsMeshEdge &edge = mTriangularMesh.edges.at( i ) ;
+    const QgsMeshEdge &edge = nativeMesh->edges.at( i ) ;
     const QgsPoint &a = mTriangularMesh.vertices[edge.first];
     const QgsPoint &b = mTriangularMesh.vertices[edge.second];
     mNativeMeshEdgeCentroids[i] = QgsMeshVertex( ( a.x() + b.x() ) / 2.0, ( a.y() + b.y() ) / 2.0, ( a.z() + b.z() ) / 2.0 );

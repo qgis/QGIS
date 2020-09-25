@@ -24,7 +24,7 @@ A generic dialog widget for displaying QGIS log messages.
     QgsMessageLogViewer( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
 Create a new message log viewer. The viewer will automatically connect to the system's
-QgsApplication.messageLog() instance.
+:py:func:`QgsApplication.messageLog()` instance.
 %End
 
   public slots:

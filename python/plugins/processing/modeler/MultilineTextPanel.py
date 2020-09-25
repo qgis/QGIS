@@ -25,7 +25,6 @@ from qgis.PyQt.QtWidgets import QComboBox, QPlainTextEdit, QSizePolicy, QVBoxLay
 
 
 class MultilineTextPanel(QWidget):
-
     USE_TEXT = 0
 
     def __init__(self, options, parent=None):

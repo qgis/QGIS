@@ -36,7 +36,9 @@
 QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
   , mSnapIndicator( qgis::make_unique< QgsSnapIndicator >( canvas ) )
-{}
+{
+  mToolName = tr( "Map tool offset curve" );
+}
 
 QgsMapToolOffsetCurve::~QgsMapToolOffsetCurve()
 {
@@ -530,7 +532,7 @@ void QgsMapToolOffsetCurve::prepareGeometry( const QgsPointLocator::Match &match
       int vertex = match.vertexIndex();
       QgsVertexId vertexId;
       geom.vertexIdFromVertexNr( vertex, vertexId );
-      QgsDebugMsg( QStringLiteral( "%1" ).arg( vertexId.ring ) );
+      QgsDebugMsgLevel( QString::number( vertexId.ring ), 2 );
 
       if ( !geom.isMultipart() )
       {

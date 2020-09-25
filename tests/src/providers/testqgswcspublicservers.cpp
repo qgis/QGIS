@@ -388,7 +388,7 @@ void TestQgsWcsPublicServers::test()
         myLog << "describeCoverageUrl:" + myCapabilities.getDescribeCoverageUrl( myCoverage.identifier );
         // Test time
         //myLog << "date:" + QString( "%1").arg( QDateTime::currentDateTime().toTime_t() );
-        myLog << "date:" + QStringLiteral( "%1" ).arg( QDateTime::currentDateTime().toString() );
+        myLog << "date:" + QDateTime::currentDateTime().toString();
 
         int myWidth = 100;
         int myHeight = 100;
@@ -404,7 +404,7 @@ void TestQgsWcsPublicServers::test()
 
         Q_FOREACH ( const QString &provider, providers )
         {
-          QTime time;
+          QElapsedTimer time;
           time.start();
           QString uri;
           if ( provider == QLatin1String( "wcs" ) )

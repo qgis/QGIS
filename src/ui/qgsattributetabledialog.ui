@@ -339,9 +339,6 @@
    <property name="toolTip">
     <string>Select all (Ctrl+A)</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+A</string>
-   </property>
   </action>
   <action name="mActionInvertSelection">
    <property name="icon">
@@ -361,13 +358,13 @@
   <action name="mActionRemoveSelection">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionDeselectAll.svg</normaloff>:/images/themes/default/mActionDeselectAll.svg</iconset>
+     <normaloff>:/images/themes/default/mActionDeselectActiveLayer.svg</normaloff>:/images/themes/default/mActionDeselectActiveLayer.svg</iconset>
    </property>
    <property name="text">
-    <string>Deselect all</string>
+    <string>Deselect all features from the layer</string>
    </property>
    <property name="toolTip">
-    <string>Deselect all (Ctrl+Shift+A)</string>
+    <string>Deselect all features from the layer (Ctrl+Shift+A)</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+A</string>
@@ -429,9 +426,6 @@
    <property name="toolTip">
     <string>Cut selected rows to clipboard (Ctrl+X)</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+X</string>
-   </property>
   </action>
   <action name="mActionCopySelectedRows">
    <property name="icon">
@@ -444,9 +438,6 @@
    <property name="toolTip">
     <string>Copy selected rows to clipboard (Ctrl+C)</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+C</string>
-   </property>
   </action>
   <action name="mActionPasteFeatures">
    <property name="icon">
@@ -458,9 +449,6 @@
    </property>
    <property name="toolTip">
     <string>Paste features from clipboard (Ctrl+V)</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+V</string>
    </property>
   </action>
   <action name="mActionRemoveAttribute">
@@ -542,6 +530,27 @@
    </property>
    <property name="text">
     <string>Organize Columns</string>
+   </property>
+  </action>
+  <action name="mActionAddFeatureViaAttributeTable">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionNewTableRow.svg</normaloff>:/images/themes/default/mActionNewTableRow.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add feature via attribute table</string>
+   </property>
+  </action>
+  <action name="mActionAddFeatureViaAttributeForm">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mIconFormSelect.svg</normaloff>:/images/themes/default/mIconFormSelect.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add feature via attribute form</string>
+   </property>
+   <property name="toolTip">
+    <string>Add feature via attribute form</string>
    </property>
   </action>
  </widget>

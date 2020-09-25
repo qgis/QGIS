@@ -32,11 +32,11 @@ class QgsMesh3dSymbolWidget : public QWidget, private Ui::QgsMesh3dPropsWidget
   public:
     explicit QgsMesh3dSymbolWidget( QgsMeshLayer *meshLayer, QWidget *parent = nullptr );
 
-    QgsMesh3DSymbol symbol() const;
+    std::unique_ptr< QgsMesh3DSymbol > symbol() const;
 
     void setLayer( QgsMeshLayer *meshLayer, bool updateSymbol = true );
     QgsMeshLayer *meshLayer() const;
-    void setSymbol( const QgsMesh3DSymbol &symbol );
+    void setSymbol( const QgsMesh3DSymbol *symbol );
 
     void configureForTerrain();
     void configureForDataset();
@@ -44,6 +44,7 @@ class QgsMesh3dSymbolWidget : public QWidget, private Ui::QgsMesh3dPropsWidget
   public slots:
     void reloadColorRampShaderMinMax();
     void enableVerticalSetting( bool isEnable );
+    void enableArrowSettings( bool isEnable );
 
   signals:
     void changed();
@@ -58,7 +59,7 @@ class QgsMesh3dSymbolWidget : public QWidget, private Ui::QgsMesh3dPropsWidget
     void setColorRampMinMax( double min, double max );
     QgsMeshLayer *mLayer = nullptr;
     QgsMeshDatasetGroupListModel *mDatasetGroupListModel = nullptr;
-    QgsMesh3DSymbol mSymbol;
+    std::unique_ptr< QgsMesh3DSymbol > mSymbol;
 
 };
 

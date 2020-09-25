@@ -70,7 +70,7 @@ def __get_test_function(test_module_name):
         test_module = importlib.import_module(test_module_name)
         function_name = 'run_all'
     except ImportError as e:
-        #traceback.print_exc(file=sys.stdout)
+        # traceback.print_exc(file=sys.stdout)
         # Strip latest name
         pos = test_module_name.rfind('.')
         if pos <= 0:
@@ -81,7 +81,7 @@ def __get_test_function(test_module_name):
         try:
             test_module = importlib.import_module(test_module_name)
         except ImportError as e:
-            #traceback.print_exc(file=sys.stdout)
+            # traceback.print_exc(file=sys.stdout)
             raise e
     return getattr(test_module, function_name, None)
 
@@ -107,7 +107,7 @@ if iface is None:
         '--noversioncheck',
         '--code',
         me,
-        test_module_name, # Must be the last one!
+        test_module_name,  # Must be the last one!
     ]
     command_line = ' '.join(args)
     print("QGIS Test Runner - launching QGIS as %s ..." % command_line)
@@ -129,7 +129,7 @@ if iface is None:
     print("QGIS Test Runner - %s bytes returned and finished with exit code: %s" % (len(out), 0 if ok else 1))
     sys.exit(0 if ok else 1)
 
-else: # We are inside QGIS!
+else:  # We are inside QGIS!
     # Start as soon as the initializationCompleted signal is fired
     from qgis.core import QgsApplication, QgsProjectBadLayerHandler, QgsProject
     from qgis.PyQt.QtCore import QDir
@@ -144,6 +144,7 @@ else: # We are inside QGIS!
 
     def _write(self, m):
         sys.__stdout__.write(m)
+
     writeOut.write = _write
 
     # Add current working dir to the python path
@@ -167,4 +168,5 @@ else: # We are inside QGIS!
             traceback.print_exc(file=sys.stdout)
         app = QgsApplication.instance()
         os.kill(app.applicationPid(), signal.SIGTERM)
+
     iface.initializationCompleted.connect(__run_test)

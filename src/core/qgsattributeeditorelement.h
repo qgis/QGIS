@@ -19,7 +19,9 @@
 #include "qgis_core.h"
 #include "qgsrelation.h"
 #include "qgsoptionalexpression.h"
+#include "qgspropertycollection.h"
 #include <QColor>
+
 
 class QgsRelationManager;
 
@@ -28,7 +30,7 @@ class QgsRelationManager;
  * This is an abstract base class for any elements of a drag and drop form.
  *
  * This can either be a container which will be represented on the screen
- * as a tab widget or ca collapsible group box. Or it can be a field which will
+ * as a tab widget or a collapsible group box. Or it can be a field which will
  * then be represented based on the QgsEditorWidget type and configuration.
  * Or it can be a relation and embed the form of several children of another
  * layer.
@@ -129,7 +131,6 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
 
     /**
      * Controls if this element should be labeled with a title (field, relation or groupname).
-     *
      * \since QGIS 2.18
      */
     void setShowLabel( bool showLabel );
@@ -158,6 +159,7 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
      * \since QGIS 2.18
      */
     virtual QString typeIdentifier() const = 0;
+
 };
 
 
@@ -331,7 +333,27 @@ class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
  */
 class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
 {
+    Q_GADGET
   public:
+
+    /**
+       * Possible buttons shown in the relation editor
+       * \since QGIS 3.16
+       */
+    enum Button
+    {
+      Link = 1 << 1, //!< Link button
+      Unlink = 1 << 2, //!< Unlink button
+      SaveChildEdits = 1 << 3, //!< Save child edits button
+      AddChildFeature = 1 << 4, //!< Add child feature (as in some projects we only want to allow linking/unlinking existing features)
+      DuplicateChildFeature = 1 << 5, //!< Duplicate child feature
+      DeleteChildFeature = 1 << 6, //!< Delete child feature button
+      ZoomToChildFeature = 1 << 7, //!< Zoom to child feature
+      AllButtons = Link | Unlink | SaveChildEdits | AddChildFeature | DuplicateChildFeature | DeleteChildFeature | ZoomToChildFeature //!< All buttons
+    };
+    Q_ENUM( Button )
+    Q_DECLARE_FLAGS( Buttons, Button )
+    Q_FLAG( Buttons )
 
     /**
      * \deprecated since QGIS 3.0.2. The name parameter is not used for anything and overwritten by the relationId internally.
@@ -393,56 +415,111 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
 
     /**
      * Determines if the "link feature" button should be shown
-     *
      * \since QGIS 2.18
+     * \deprecated since QGIS 3.16 use visibleButtons() instead
      */
-    bool showLinkButton() const;
+    Q_DECL_DEPRECATED bool showLinkButton() const SIP_DEPRECATED;
 
     /**
      * Determines if the "link feature" button should be shown
-     *
      * \since QGIS 2.18
+     * \deprecated since QGIS 3.16 use setVisibleButtons() instead
      */
-    void setShowLinkButton( bool showLinkButton );
+    Q_DECL_DEPRECATED void setShowLinkButton( bool showLinkButton ) SIP_DEPRECATED;
 
     /**
      * Determines if the "unlink feature" button should be shown
-     *
      * \since QGIS 2.18
+     * \deprecated since QGIS 3.16 use visibleButtons() instead
      */
-    bool showUnlinkButton() const;
+    Q_DECL_DEPRECATED bool showUnlinkButton() const SIP_DEPRECATED;
 
     /**
      * Determines if the "unlink feature" button should be shown
-     *
      * \since QGIS 2.18
+     * \deprecated since QGIS 3.16 use setVisibleButtons() instead
      */
-    void setShowUnlinkButton( bool showUnlinkButton );
+    Q_DECL_DEPRECATED void setShowUnlinkButton( bool showUnlinkButton ) SIP_DEPRECATED;
 
     /**
-     * Determines if the "save child layer edits" button should be shown
-     *
+     * Determines if the "Save child layer edits" button should be shown
      * \since QGIS 3.14
+     * \deprecated since QGIS 3.16 use setVisibleButtons() instead
      */
-    void setShowSaveChildEditsButton( bool showSaveChildEditsButton );
+    Q_DECL_DEPRECATED void setShowSaveChildEditsButton( bool showChildEdits ) SIP_DEPRECATED;
 
     /**
-     * Returns TRUE if the "save child layer edits" button should be shown.
-     *
+     * Determines if the "Save child layer edits" button should be shown
      * \since QGIS 3.14
+     * \deprecated since QGIS 3.16 use visibleButtons() instead
      */
-    bool showSaveChildEditsButton( ) const;
+    Q_DECL_DEPRECATED bool showSaveChildEditsButton() const SIP_DEPRECATED;
 
+    /**
+     * Defines the buttons which are shown
+     * \since QGIS 3.16
+     */
+    void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons );
+
+    /**
+     * Returns the buttons which are shown
+     * \since QGIS 3.16
+     */
+    QgsAttributeEditorRelation::Buttons visibleButtons() const {return mButtons;}
+
+    /**
+     * Determines the force suppress form popup status.
+     * \since QGIS 3.16
+     */
+    bool forceSuppressFormPopup() const;
+
+    /**
+     * Sets force suppress form popup status to \a forceSuppressFormPopup.
+     * This flag is to override the layer and general settings regarding the automatic
+     * opening of the attribute form dialog when digitizing is completed.
+     * \since QGIS 3.16
+     */
+    void setForceSuppressFormPopup( bool forceSuppressFormPopup );
+
+    /**
+     * Determines the relation id of the second relation involved in an N:M relation.
+     * \since QGIS 3.16
+     */
+    QVariant nmRelationId() const;
+
+    /**
+     * Sets \a nmRelationId for the relation id of the second relation involved in an N:M relation.
+     * If it's empty, then it's considered as a 1:M relationship.
+     * \since QGIS 3.16
+     */
+    void setNmRelationId( const QVariant &nmRelationId = QVariant() );
+
+    /**
+     * Determines the label of this element
+     * \since QGIS 3.16
+     */
+    QString label() const;
+
+    /**
+     * Sets \a label for this element
+     * If it's empty it takes the relation id as label
+     * \since QGIS 3.16
+     */
+    void setLabel( const QString &label = QString() );
 
   private:
     void saveConfiguration( QDomElement &elem ) const override;
     QString typeIdentifier() const override;
     QString mRelationId;
     QgsRelation mRelation;
-    bool mShowLinkButton = true;
-    bool mShowUnlinkButton = true;
-    bool mShowSaveChildEditsButton = true;
+    Buttons mButtons = Buttons( Button::AllButtons );
+    bool mForceSuppressFormPopup = false;
+    QVariant mNmRelationId;
+    QString mLabel;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAttributeEditorRelation::Buttons )
+
 
 /**
  * \ingroup core

@@ -111,6 +111,17 @@ Returns whether the atlas preview mode is enabled in the designer.
 .. versionadded:: 3.4
 %End
 
+    virtual void setAtlasFeature( const QgsFeature &feature ) = 0;
+%Docstring
+Sets the specified feature as the current atlas feature
+
+.. warning::
+
+   it is the caller's responsibility to ensure that ``feature`` is a feature from the layout's current atlas coverage layer.
+
+.. versionadded:: 3.14
+%End
+
     virtual void showItemOptions( QgsLayoutItem *item, bool bringPanelToFront = true ) = 0;
 %Docstring
 Shows the configuration widget for the specified layout ``item``.

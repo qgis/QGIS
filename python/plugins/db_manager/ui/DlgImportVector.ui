@@ -82,13 +82,6 @@
           </property>
          </spacer>
         </item>
-        <item>
-         <widget class="QPushButton" name="btnUpdateInputLayer">
-          <property name="text">
-           <string>Update options</string>
-          </property>
-         </widget>
-        </item>
        </layout>
       </item>
      </layout>
@@ -299,7 +292,6 @@
   <tabstop>cboInputLayer</tabstop>
   <tabstop>btnChooseInputFile</tabstop>
   <tabstop>chkSelectedFeatures</tabstop>
-  <tabstop>btnUpdateInputLayer</tabstop>
   <tabstop>cboSchema</tabstop>
   <tabstop>cboTable</tabstop>
   <tabstop>chkPrimaryKey</tabstop>

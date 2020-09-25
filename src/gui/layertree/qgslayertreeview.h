@@ -29,6 +29,8 @@ class QgsLayerTreeViewDefaultActions;
 class QgsLayerTreeViewIndicator;
 class QgsLayerTreeViewMenuProvider;
 class QgsMapLayer;
+class QgsMessageBar;
+
 
 /**
  * \ingroup gui
@@ -206,6 +208,12 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
      */
     void setLayerMarkWidth( int width ) { mLayerMarkWidth = width; }
 
+    /**
+     * Set the message bar to display messages from the layer tree
+     * \since QGIS 3.14
+     */
+    void setMessageBar( QgsMessageBar *messageBar );
+
   signals:
     //! Emitted when a current layer is changed
     void currentLayerChanged( QgsMapLayer *layer );
@@ -237,6 +245,10 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 
   private slots:
     void onCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key );
+    //! Handles updating the viewport to avoid flicker
+    void onHorizontalScroll( int value );
+
+    void onDataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles );
 
   protected:
     //! helper class with default actions. Lazily initialized.
@@ -252,6 +264,9 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 
     //! Width of contextual menu mark for layer nodes
     int mLayerMarkWidth;
+
+  private:
+    QgsMessageBar *mMessageBar = nullptr;
 
     // friend so it can access viewOptions() method and mLastReleaseMousePos without making them public
     friend class QgsLayerTreeViewItemDelegate;

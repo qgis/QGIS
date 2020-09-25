@@ -137,13 +137,13 @@ Find all group layer nodes
     static QgsLayerTreeGroup *readXml( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
 Read group (tree) from XML element <layer-tree-group> and return the newly created group (or ``None`` on error).
-Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
+Does not resolve textual references to layers. Call :py:func:`~QgsLayerTreeGroup.resolveReferences` afterwards to do it.
 %End
 
     static QgsLayerTreeGroup *readXml( QDomElement &element, const QgsProject *project, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
 Read group (tree) from XML element <layer-tree-group> and return the newly created group (or ``None`` on error).
-Also resolves textual references to layers from the project (calls resolveReferences() internally).
+Also resolves textual references to layers from the project (calls :py:func:`~QgsLayerTreeGroup.resolveReferences` internally).
 
 .. versionadded:: 3.0
 %End
@@ -157,7 +157,7 @@ Write group (tree) as XML element <layer-tree-group> and add it to the given par
     void readChildrenFromXml( QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Read children from XML and append them to the group.
-Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
+Does not resolve textual references to layers. Call :py:func:`~QgsLayerTreeGroup.resolveReferences` afterwards to do it.
 %End
 
     virtual QString dump() const;
@@ -175,7 +175,7 @@ Returns a clone of the group. The children are cloned too.
     virtual void resolveReferences( const QgsProject *project, bool looseMatching = false );
 
 %Docstring
-Calls resolveReferences() on child tree nodes
+Calls :py:func:`~QgsLayerTreeGroup.resolveReferences` on child tree nodes
 
 .. versionadded:: 3.0
 %End

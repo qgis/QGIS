@@ -11,6 +11,7 @@ env:
 jobs:
   pr-without-milestones:
     runs-on: ubuntu-latest
+    if: github.repository == 'qgis/QGIS'
     steps:
       # list the tags and milestones
       - uses: octokit/graphql-action@v2.x

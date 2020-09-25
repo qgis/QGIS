@@ -124,8 +124,9 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     /**
      * Copies common properties like opacity / transparency data from other renderer.
-     *  Useful when cloning renderers.
-     *  \since QGIS 2.16  */
+     * Useful when cloning renderers.
+     * \since QGIS 2.16
+     */
     void copyCommonProperties( const QgsRasterRenderer *other, bool copyMinMaxOrigin = true );
 
     //! Returns a list of band numbers used by the renderer
@@ -139,7 +140,8 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     /**
      * Used from subclasses to create SLD Rule elements following SLD v1.0 specs
-     * \since QGIS 3.6  */
+     * \since QGIS 3.6
+    */
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
 
     /**
@@ -167,7 +169,8 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     /**
      * Read alpha value from band. Is combined with value from raster transparency / global alpha value.
-        Default: -1 (not set)*/
+     * Default: -1 (not set)
+    */
     int mAlphaBand = -1;
 
     //! Origin of min/max values

@@ -24,11 +24,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 import os
 
 from qgis.core import (QgsApplication,
-                       QgsProcessingProvider)
+                       QgsProcessingProvider,
+                       QgsRuntimeProfiler)
 
 from PyQt5.QtCore import QCoreApplication
 
-from .Aggregate import Aggregate
 from .BarPlot import BarPlot
 from .BasicStatistics import BasicStatisticsForField
 from .BoxPlot import BoxPlot
@@ -42,8 +42,6 @@ from .EliminateSelection import EliminateSelection
 from .ExecuteSQL import ExecuteSQL
 from .ExportGeometryInfo import ExportGeometryInfo
 from .FieldPyculator import FieldsPyculator
-from .FieldsCalculator import FieldsCalculator
-from .FieldsMapper import FieldsMapper
 from .FindProjection import FindProjection
 from .GeometryConvert import GeometryConvert
 from .Heatmap import Heatmap
@@ -63,8 +61,6 @@ from .PointsDisplacement import PointsDisplacement
 from .PointsFromLines import PointsFromLines
 from .PointsToPaths import PointsToPaths
 from .PolarPlot import PolarPlot
-from .Polygonize import Polygonize
-from .PostGISExecuteSQL import PostGISExecuteSQL
 from .PostGISExecuteAndLoadSQL import PostGISExecuteAndLoadSQL
 from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 from .RandomPointsAlongLines import RandomPointsAlongLines
@@ -74,7 +70,6 @@ from .RandomSelection import RandomSelection
 from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
 from .RasterCalculator import RasterCalculator
 from .RasterLayerHistogram import RasterLayerHistogram
-from .RasterSampling import RasterSampling
 from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
 from .RegularPoints import RegularPoints
 from .Relief import Relief
@@ -82,8 +77,6 @@ from .SelectByAttribute import SelectByAttribute
 from .SelectByExpression import SelectByExpression
 from .SetRasterStyle import SetRasterStyle
 from .SetVectorStyle import SetVectorStyle
-from .SnapGeometries import SnapGeometriesToLayer
-from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
 from .SpatialJoinSummary import SpatialJoinSummary
 from .StatisticsByCategories import StatisticsByCategories
 from .TextToFloat import TextToFloat
@@ -95,7 +88,6 @@ from .VariableDistanceBuffer import VariableDistanceBuffer
 from .VectorLayerHistogram import VectorLayerHistogram
 from .VectorLayerScatterplot import VectorLayerScatterplot
 from .VectorLayerScatterplot3D import VectorLayerScatterplot3D
-from .VectorSplit import VectorSplit
 from .VoronoiPolygons import VoronoiPolygons
 
 
@@ -104,13 +96,10 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
 
     def __init__(self):
         super().__init__()
-        self.algs = []
-        self.externalAlgs = []
         QgsApplication.processingRegistry().addAlgorithmAlias('qgis:rectanglesovalsdiamondsfixed', 'native:rectanglesovalsdiamonds')
 
     def getAlgs(self):
-        algs = [Aggregate(),
-                BarPlot(),
+        algs = [BarPlot(),
                 BasicStatisticsForField(),
                 BoxPlot(),
                 CheckValidity(),
@@ -122,8 +111,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 EliminateSelection(),
                 ExecuteSQL(),
                 ExportGeometryInfo(),
-                FieldsCalculator(),
-                FieldsMapper(),
                 FieldsPyculator(),
                 FindProjection(),
                 GeometryConvert(),
@@ -144,8 +131,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 PointsFromLines(),
                 PointsToPaths(),
                 PolarPlot(),
-                Polygonize(),
-                PostGISExecuteSQL(),
                 PostGISExecuteAndLoadSQL(),
                 RandomExtractWithinSubsets(),
                 RandomPointsAlongLines(),
@@ -155,7 +140,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 RandomSelectionWithinSubsets(),
                 RasterCalculator(),
                 RasterLayerHistogram(),
-                RasterSampling(),
                 RectanglesOvalsDiamondsVariable(),
                 RegularPoints(),
                 Relief(),
@@ -163,8 +147,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 SelectByExpression(),
                 SetRasterStyle(),
                 SetVectorStyle(),
-                SnapGeometriesToLayer(),
-                SpatialiteExecuteSQL(),
                 SpatialJoinSummary(),
                 StatisticsByCategories(),
                 TextToFloat(),
@@ -177,7 +159,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 VectorLayerHistogram(),
                 VectorLayerScatterplot(),
                 VectorLayerScatterplot3D(),
-                VectorSplit(),
                 VoronoiPolygons(),
                 ]
 
@@ -199,25 +180,17 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
         return QgsApplication.iconPath("providerQgis.svg")
 
     def loadAlgorithms(self):
-        self.algs = self.getAlgs()
-        for a in self.algs:
-            self.addAlgorithm(a)
-        for a in self.externalAlgs:
+        for a in self.getAlgs():
             self.addAlgorithm(a)
 
     def load(self):
-        success = super().load()
-
-        if success:
-            self.parameterTypeFieldsMapping = FieldsMapper.ParameterFieldsMappingType()
-            QgsApplication.instance().processingRegistry().addParameterType(self.parameterTypeFieldsMapping)
+        with QgsRuntimeProfiler.profile('QGIS Python Provider'):
+            success = super().load()
 
         return success
 
     def unload(self):
         super().unload()
-
-        QgsApplication.instance().processingRegistry().removeParameterType(self.parameterTypeFieldsMapping)
 
     def supportsNonFileBasedOutput(self):
         return True

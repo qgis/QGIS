@@ -49,8 +49,8 @@ class QgsGrassFeatureIterator;
  */
 
 /**
-  \class QgsGrassProvider
-  \brief Data provider for GRASS vectors
+ * \class QgsGrassProvider
+ * \brief Data provider for GRASS vectors
 */
 class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 {
@@ -72,7 +72,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     QgsRectangle extent() const override;
     QgsFields fields() const override;
 
-    // ! Key (category) field index
+    //! Key (category) field index
     int keyField();
 
     //! Restart reading features from previous select operation
@@ -82,7 +82,8 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     /**
      * Returns the maximum value of an attribute
-     *  \param index the index of the attribute */
+     *  \param index the index of the attribute
+    */
     QVariant maxValue( int index );
 
     /**
@@ -102,7 +103,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     // ----------------------------------- New edit --------------------------------
     // Changes are written during editing.
     // TODO: implement also these functions but disable during manual layer editing
-    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = nullptr ) override { Q_UNUSED( flist ) Q_UNUSED( flags ); return true; }
+    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override { Q_UNUSED( flist ) Q_UNUSED( flags ); return true; }
     bool deleteFeatures( const QgsFeatureIds &id ) override { Q_UNUSED( id ) return true; }
     bool addAttributes( const QList<QgsField> &attributes ) override;
     bool deleteAttributes( const QgsAttributeIds &attributes ) override;

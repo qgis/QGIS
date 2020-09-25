@@ -31,6 +31,8 @@
 
 #include <QTime>
 
+#define SIP_NO_FILE
+
 namespace Qt3DCore
 {
   class QEntity;

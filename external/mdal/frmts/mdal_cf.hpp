@@ -26,11 +26,10 @@ namespace MDAL
       enum Type
       {
         UnknownType = 0, //!< Unknown
-        Vertex1D, //!< Vertex in 1D mesh
-        Vertex2D, //!< Vertex in 2D mesh
-        Line1D, //!< Line joining 1D vertices
+        Vertex, //!< Mesh vertex ( node )
+        Edge, //!< Line joining 2 vertices ( edge )
         Face2DEdge, //!< Edge of 2D Face
-        Face2D, //!< 2D (Polygon) Face
+        Face, //!< 2D (Polygon) Face
         Volume3D, //!< 3D (stacked) volumes
         StackedFace3D, //! 3D (stacked) Faces
         Time, //!< Time steps
@@ -61,12 +60,17 @@ namespace MDAL
     };
     std::string name; //!< Dataset group name
     CFDimensions::Type outputType;
-    bool is_vector;
+    bool isVector;
+    bool isPolar;
+    bool isInvertedDirection;
     TimeLocation timeLocation;
     size_t nTimesteps;
     size_t nValues;
     int ncid_x; //!< NetCDF variable id
     int ncid_y; //!< NetCDF variable id
+    Metadata metadata;
+    Classification classification_x;
+    Classification classification_y;
   };
   typedef std::map<std::string, CFDatasetGroupInfo> cfdataset_info_map; // name -> DatasetInfo
 
@@ -78,6 +82,8 @@ namespace MDAL
                    double fill_val_y,
                    int ncid_x,
                    int ncid_y,
+                   Classification classification_x,
+                   Classification classification_y,
                    CFDatasetGroupInfo::TimeLocation timeLocation,
                    size_t timesteps,
                    size_t values,
@@ -94,6 +100,8 @@ namespace MDAL
       double mFillValY;
       int mNcidX; //!< NetCDF variable id
       int mNcidY; //!< NetCDF variable id
+      Classification mClassificationX; //!< Classification, void if not classified
+      Classification mClassificationY; //!< Classification, void if not classified
       CFDatasetGroupInfo::TimeLocation mTimeLocation;
       size_t mTimesteps;
       size_t mValues;
@@ -113,16 +121,22 @@ namespace MDAL
                 const int capabilities );
       virtual ~DriverCF() override;
       bool canReadMesh( const std::string &uri ) override;
-      std::unique_ptr< Mesh > load( const std::string &fileName ) override;
+      std::unique_ptr< Mesh > load( const std::string &fileName, const std::string &meshName = "" ) override;
 
     protected:
       virtual CFDimensions populateDimensions( ) = 0;
-      virtual void populateFacesAndVertices( Vertices &vertices, Faces &faces ) = 0;
+      virtual void populateElements( Vertices &vertices, Edges &edges, Faces &faces ) = 0;
       virtual void addBedElevation( MDAL::MemoryMesh *mesh ) = 0;
       virtual std::string getCoordinateSystemVariableName() = 0;
       virtual std::set<std::string> ignoreNetCDFVariables() = 0;
-      virtual void parseNetCDFVariableMetadata( int varid, const std::string &variableName,
-          std::string &name, bool *is_vector, bool *is_x ) = 0;
+      virtual void parseNetCDFVariableMetadata( int varid,
+          std::string &variableName,
+          std::string &name,
+          bool *is_vector,
+          bool *isPolar,
+          bool *invertedDirection,
+          bool *is_x ) = 0;
+      virtual std::vector<std::pair<double, double> > parseClassification( int varid ) const = 0;
       virtual std::string getTimeVariableName() const = 0;
       virtual std::shared_ptr<MDAL::Dataset> create2DDataset(
         std::shared_ptr<MDAL::DatasetGroup> group,
@@ -149,6 +163,7 @@ namespace MDAL
                              const cfdataset_info_map &dsinfo_map, const DateTime &referenceTime );
 
       std::string mFileName;
+      std::string mRequestedMeshName;
       std::shared_ptr<NetCDFFile> mNcFile;
       CFDimensions mDimensions;
   };

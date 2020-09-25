@@ -14,6 +14,7 @@ IF (WITH_GUI)
     qgstilescalewidget.cpp
     qgswmtsdimensions.cpp
     qgsxyzconnectiondialog.cpp
+    qgsxyzsourceselect.cpp
   )
 ENDIF ()
 

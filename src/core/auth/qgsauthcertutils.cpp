@@ -1326,7 +1326,7 @@ QList<QSslError> QgsAuthCertUtils::validateCertChain( const QList<QSslCertificat
     }
   }
 
-  // Check that no certs in the chain are expired or not yet valid or blacklisted
+  // Check that no certs in the chain are expired or not yet valid or blocklisted
   const QList<QSslCertificate> constTrustedChain( trustedChain );
   for ( const auto &cert : constTrustedChain )
   {

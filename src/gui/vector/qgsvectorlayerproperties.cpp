@@ -60,11 +60,12 @@
 #include "qgssymbollayer.h"
 #include "qgsgeometryoptions.h"
 #include "qgsvectorlayersavestyledialog.h"
-#include "qgsvectorlayerloadstyledialog.h"
+#include "qgsmaplayerloadstyledialog.h"
 #include "qgsmessagebar.h"
 #include "qgssymbolwidgetcontext.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsmaskingwidget.h"
+#include "qgsvectorlayertemporalpropertieswidget.h"
 
 #include "layertree/qgslayertreelayer.h"
 #include "qgslayertree.h"
@@ -185,19 +186,19 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   {
     // Create the Labeling dialog tab
     layout = new QVBoxLayout( labelingFrame );
-    layout->setMargin( 0 );
+    layout->setContentsMargins( 0, 0, 0, 0 );
     labelingDialog = new QgsLabelingWidget( mLayer, mCanvas, labelingFrame );
-    labelingDialog->layout()->setContentsMargins( -1, 0, -1, 0 );
+    labelingDialog->layout()->setContentsMargins( 0, 0, 0, 0 );
     connect( labelingDialog, &QgsLabelingWidget::auxiliaryFieldCreated, this, [ = ] { updateAuxiliaryStoragePage(); } );
     layout->addWidget( labelingDialog );
     labelingFrame->setLayout( layout );
 
     // Create the masking dialog tab
     layout = new QVBoxLayout( mMaskingFrame );
-    layout->setMargin( 0 );
+    layout->setContentsMargins( 0, 0, 0, 0 );
     mMaskingWidget = new QgsMaskingWidget( mMaskingFrame );
     mMaskingWidget->setLayer( mLayer );
-    mMaskingWidget->layout()->setContentsMargins( -1, 0, -1, 0 );
+    mMaskingWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
     layout->addWidget( mMaskingWidget );
     mMaskingFrame->setLayout( layout );
   }
@@ -212,33 +213,38 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   // Create the Actions dialog tab
   QVBoxLayout *actionLayout = new QVBoxLayout( actionOptionsFrame );
-  actionLayout->setMargin( 0 );
+  actionLayout->setContentsMargins( 0, 0, 0, 0 );
   mActionDialog = new QgsAttributeActionDialog( *mLayer->actions(), actionOptionsFrame );
-  mActionDialog->layout()->setMargin( 0 );
+  mActionDialog->layout()->setContentsMargins( 0, 0, 0, 0 );
   actionLayout->addWidget( mActionDialog );
 
   mSourceFieldsPropertiesDialog = new QgsSourceFieldsProperties( mLayer, mSourceFieldsFrame );
-  mSourceFieldsPropertiesDialog->layout()->setMargin( 0 );
+  mSourceFieldsPropertiesDialog->layout()->setContentsMargins( 0, 0, 0, 0 );
   mSourceFieldsFrame->setLayout( new QVBoxLayout( mSourceFieldsFrame ) );
-  mSourceFieldsFrame->layout()->setMargin( 0 );
+  mSourceFieldsFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
   mSourceFieldsFrame->layout()->addWidget( mSourceFieldsPropertiesDialog );
 
   connect( mSourceFieldsPropertiesDialog, &QgsSourceFieldsProperties::toggleEditing, this, static_cast<void ( QgsVectorLayerProperties::* )()>( &QgsVectorLayerProperties::toggleEditing ) );
 
   mAttributesFormPropertiesDialog = new QgsAttributesFormProperties( mLayer, mAttributesFormFrame );
-  mAttributesFormPropertiesDialog->layout()->setMargin( 0 );
+  mAttributesFormPropertiesDialog->layout()->setContentsMargins( 0, 0, 0, 0 );
   mAttributesFormFrame->setLayout( new QVBoxLayout( mAttributesFormFrame ) );
-  mAttributesFormFrame->layout()->setMargin( 0 );
+  mAttributesFormFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
   mAttributesFormFrame->layout()->addWidget( mAttributesFormPropertiesDialog );
 
   // Metadata tab, before the syncToLayer
   QVBoxLayout *metadataLayout = new QVBoxLayout( metadataFrame );
-  metadataLayout->setMargin( 0 );
+  metadataLayout->setContentsMargins( 0, 0, 0, 0 );
   mMetadataWidget = new QgsMetadataWidget( this, mLayer );
-  mMetadataWidget->layout()->setContentsMargins( -1, 0, -1, 0 );
+  mMetadataWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
   mMetadataWidget->setMapCanvas( mCanvas );
   metadataLayout->addWidget( mMetadataWidget );
   metadataFrame->setLayout( metadataLayout );
+
+  QVBoxLayout *temporalLayout = new QVBoxLayout( temporalFrame );
+  temporalLayout->setContentsMargins( 0, 0, 0, 0 );
+  mTemporalWidget = new QgsVectorLayerTemporalPropertiesWidget( this, mLayer );
+  temporalLayout->addWidget( mTemporalWidget );
 
   syncToLayer();
 
@@ -294,9 +300,9 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mOldJoins = mLayer->vectorJoins();
 
   QVBoxLayout *diagLayout = new QVBoxLayout( mDiagramFrame );
-  diagLayout->setMargin( 0 );
+  diagLayout->setContentsMargins( 0, 0, 0, 0 );
   diagramPropertiesDialog = new QgsDiagramProperties( mLayer, mDiagramFrame, mCanvas );
-  diagramPropertiesDialog->layout()->setContentsMargins( -1, 0, -1, 0 );
+  diagramPropertiesDialog->layout()->setContentsMargins( 0, 0, 0, 0 );
   connect( diagramPropertiesDialog, &QgsDiagramProperties::auxiliaryFieldCreated, this, [ = ] { updateAuxiliaryStoragePage(); } );
   diagLayout->addWidget( diagramPropertiesDialog );
   mDiagramFrame->setLayout( diagLayout );
@@ -368,33 +374,25 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
                        mOptStackedWidget->indexOf( mOptsPage_Style ) );
   }
 
-  QString title = QString( tr( "Layer Properties - %1" ) ).arg( mLayer->name() );
+  QString title = tr( "Layer Properties — %1" ).arg( mLayer->name() );
   if ( !mLayer->styleManager()->isDefault( mLayer->styleManager()->currentStyle() ) )
     title += QStringLiteral( " (%1)" ).arg( mLayer->styleManager()->currentStyle() );
   restoreOptionsBaseUi( title );
 
-  mLayersDependenciesTreeGroup.reset( QgsProject::instance()->layerTreeRoot()->clone() );
-  mLayersDependenciesTreeModel.reset( new QgsLayerTreeModel( mLayersDependenciesTreeGroup.get() ) );
-  // use visibility as selection
-  mLayersDependenciesTreeModel->setFlag( QgsLayerTreeModel::AllowNodeChangeVisibility );
-
-  mLayersDependenciesTreeGroup->setItemVisibilityChecked( false );
-
-  QSet<QString> dependencySources;
+  QList<QgsMapLayer *> dependencySources;
   const QSet<QgsMapLayerDependency> constDependencies = mLayer->dependencies();
   for ( const QgsMapLayerDependency &dep : constDependencies )
   {
-    dependencySources << dep.layerId();
-  }
-  const QList<QgsLayerTreeLayer *> constFindLayers = mLayersDependenciesTreeGroup->findLayers();
-  for ( QgsLayerTreeLayer *layer : constFindLayers )
-  {
-    layer->setItemVisibilityChecked( dependencySources.contains( layer->layerId() ) );
+    QgsMapLayer *layer = QgsProject::instance()->mapLayer( dep.layerId() );
+    if ( layer )
+      dependencySources << layer;
   }
 
-  QgsMapSettings ms = mCanvas->mapSettings();
-  mLayersDependenciesTreeModel->setLegendMapViewData( mCanvas->mapUnitsPerPixel(), ms.outputDpi(), ms.scale() );
-  mLayersDependenciesTreeView->setModel( mLayersDependenciesTreeModel.get() );
+  mLayersDependenciesTreeModel = new QgsLayerTreeFilterProxyModel( this );
+  mLayersDependenciesTreeModel->setLayerTreeModel( new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot(), mLayersDependenciesTreeModel ) );
+  mLayersDependenciesTreeModel->setCheckedLayers( dependencySources );
+  connect( QgsProject::instance(), &QObject::destroyed, this, [ = ] {mLayersDependenciesTreeView->setModel( nullptr );} );
+  mLayersDependenciesTreeView->setModel( mLayersDependenciesTreeModel );
 
   connect( mRefreshLayerCheckBox, &QCheckBox::toggled, mRefreshLayerIntervalSpinBox, &QDoubleSpinBox::setEnabled );
 
@@ -464,16 +462,14 @@ void QgsVectorLayerProperties::addPropertiesPageFactory( QgsMapLayerConfigWidget
     return;
   }
 
-  QListWidgetItem *item = new QListWidgetItem();
-  item->setIcon( factory->icon() );
-  item->setText( factory->title() );
-  item->setToolTip( factory->title() );
-
-  mOptionsListWidget->addItem( item );
-
   QgsMapLayerConfigWidget *page = factory->createWidget( mLayer, nullptr, false, this );
   mLayerPropertiesPages << page;
-  mOptionsStackedWidget->addWidget( page );
+
+  const QString beforePage = factory->layerPropertiesPagePositionHint();
+  if ( beforePage.isEmpty() )
+    addPage( factory->title(), factory->title(), factory->icon(), page );
+  else
+    insertPage( factory->title(), factory->title(), factory->icon(), page, beforePage );
 }
 
 void QgsVectorLayerProperties::insertFieldOrExpression()
@@ -582,6 +578,9 @@ void QgsVectorLayerProperties::syncToLayer()
   // set initial state for variable editor
   updateVariableEditor();
 
+  if ( diagramPropertiesDialog )
+    diagramPropertiesDialog->syncToLayer();
+
   // sync all plugin dialogs
   const auto constMLayerPropertiesPages = mLayerPropertiesPages;
   for ( QgsMapLayerConfigWidget *page : constMLayerPropertiesPages )
@@ -591,7 +590,11 @@ void QgsVectorLayerProperties::syncToLayer()
 
   mMetadataWidget->setMetadata( &mLayer->metadata() );
 
-} // syncToLayer()
+  mTemporalWidget->syncToLayer();
+
+  mLegendWidget->setLayer( mLayer );
+
+}
 
 void QgsVectorLayerProperties::apply()
 {
@@ -607,6 +610,10 @@ void QgsVectorLayerProperties::apply()
   // save metadata
   mMetadataWidget->acceptMetadata();
   mMetadataFilled = false;
+
+  // save masking settings
+  if ( mMaskingWidget && mMaskingWidget->hasBeenPopulated() )
+    mMaskingWidget->apply();
 
   //
   // Set up sql subset query if applicable
@@ -635,7 +642,7 @@ void QgsVectorLayerProperties::apply()
     }
   }
 
-  mLayer->setDisplayExpression( mDisplayExpressionWidget->currentField() );
+  mLayer->setDisplayExpression( mDisplayExpressionWidget->asExpression() );
   mLayer->setMapTipTemplate( mMapTipWidget->text() );
 
   mLayer->actions()->clearActions();
@@ -665,6 +672,9 @@ void QgsVectorLayerProperties::apply()
 
   mAttributesFormPropertiesDialog->apply();
   mSourceFieldsPropertiesDialog->apply();
+
+  // Update temporal properties
+  mTemporalWidget->saveTemporalProperties();
 
   if ( mLayer->renderer() )
   {
@@ -769,12 +779,9 @@ void QgsVectorLayerProperties::apply()
 
   // save dependencies
   QSet<QgsMapLayerDependency> deps;
-  const auto constFindLayers = mLayersDependenciesTreeGroup->findLayers();
-  for ( const QgsLayerTreeLayer *layer : constFindLayers )
-  {
-    if ( layer->isVisible() )
-      deps << QgsMapLayerDependency( layer->layerId() );
-  }
+  const auto checkedLayers = mLayersDependenciesTreeModel->checkedLayers();
+  for ( const QgsMapLayer *layer : checkedLayers )
+    deps << QgsMapLayerDependency( layer->id() );
   if ( ! mLayer->setDependencies( deps ) )
   {
     QMessageBox::warning( nullptr, tr( "Save Dependency" ), tr( "This configuration introduces a cycle in data dependencies and will be ignored." ) );
@@ -1288,7 +1295,7 @@ void QgsVectorLayerProperties::loadStyle()
 
   //get the list of styles in the db
   int sectionLimit = mLayer->listStylesInDatabase( ids, names, descriptions, errorMsg );
-  QgsVectorLayerLoadStyleDialog dlg( mLayer );
+  QgsMapLayerLoadStyleDialog dlg( mLayer );
   dlg.initializeLists( ids, names, descriptions, sectionLimit );
 
   if ( dlg.exec() )
@@ -1536,7 +1543,7 @@ void QgsVectorLayerProperties::addJoinToTreeWidget( const QgsVectorLayerJoinInfo
   childFields->setText( 0, QStringLiteral( "Joined fields" ) );
   const QStringList *list = join.joinFieldNamesSubset();
   if ( list )
-    childFields->setText( 1, QStringLiteral( "%1" ).arg( list->count() ) );
+    childFields->setText( 1, QString::number( list->count() ) );
   else
     childFields->setText( 1, tr( "all" ) );
   joinItem->addChild( childFields );

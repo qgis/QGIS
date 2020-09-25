@@ -34,7 +34,6 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 
 
 class OffsetCurve(GdalAlgorithm):
-
     INPUT = 'INPUT'
     GEOMETRY = 'GEOMETRY'
     DISTANCE = 'DISTANCE'

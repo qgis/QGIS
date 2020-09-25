@@ -27,6 +27,18 @@ QgsAbstractPropertyCollection::QgsAbstractPropertyCollection( const QString &nam
 
 }
 
+QDateTime QgsAbstractPropertyCollection::valueAsDateTime( int key, const QgsExpressionContext &context, const QDateTime &defaultDateTime, bool *ok ) const
+{
+  if ( ok )
+    *ok = false;
+
+  QgsProperty prop = property( key );
+  if ( !prop || !prop.isActive() )
+    return defaultDateTime;
+
+  return prop.valueAsDateTime( context, defaultDateTime, ok );
+}
+
 QString QgsAbstractPropertyCollection::valueAsString( int key, const QgsExpressionContext &context, const QString &defaultString, bool *ok ) const
 {
   if ( ok )
@@ -132,6 +144,16 @@ QgsPropertyCollection &QgsPropertyCollection::operator=( const QgsPropertyCollec
   return *this;
 }
 
+bool QgsPropertyCollection::operator==( const QgsPropertyCollection &other ) const
+{
+  return mProperties == other.mProperties;
+}
+
+bool QgsPropertyCollection::operator!=( const QgsPropertyCollection &other ) const
+{
+  return !( *this == other );
+}
+
 int QgsPropertyCollection::count() const
 {
   if ( !mDirty )
@@ -229,7 +251,7 @@ bool QgsPropertyCollection::prepare( const QgsExpressionContext &context ) const
   return result;
 }
 
-QSet< QString > QgsPropertyCollection::referencedFields( const QgsExpressionContext &context ) const
+QSet< QString > QgsPropertyCollection::referencedFields( const QgsExpressionContext &context, bool ignoreContext ) const
 {
   QSet< QString > cols;
   QHash<int, QgsProperty>::const_iterator it = mProperties.constBegin();
@@ -238,7 +260,7 @@ QSet< QString > QgsPropertyCollection::referencedFields( const QgsExpressionCont
     if ( !it.value().isActive() )
       continue;
 
-    cols.unite( it.value().referencedFields( context ) );
+    cols.unite( it.value().referencedFields( context, ignoreContext ) );
   }
   return cols;
 }
@@ -368,7 +390,7 @@ QgsPropertyCollectionStack::~QgsPropertyCollectionStack()
 }
 
 QgsPropertyCollectionStack::QgsPropertyCollectionStack( const QgsPropertyCollectionStack &other )
-  : QgsAbstractPropertyCollection( other )
+  : QgsAbstractPropertyCollection( other ), mStack()
 {
   clear();
 
@@ -482,13 +504,13 @@ QVariant QgsPropertyCollectionStack::value( int key, const QgsExpressionContext 
   return p.value( context, defaultValue );
 }
 
-QSet< QString > QgsPropertyCollectionStack::referencedFields( const QgsExpressionContext &context ) const
+QSet< QString > QgsPropertyCollectionStack::referencedFields( const QgsExpressionContext &context, bool ignoreContext ) const
 {
   QSet< QString > cols;
   const auto constMStack = mStack;
   for ( QgsPropertyCollection *collection : constMStack )
   {
-    cols.unite( collection->referencedFields( context ) );
+    cols.unite( collection->referencedFields( context, ignoreContext ) );
   }
   return cols;
 }

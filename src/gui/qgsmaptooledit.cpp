@@ -27,6 +27,11 @@
 QgsMapToolEdit::QgsMapToolEdit( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
 {
+  if ( mCanvas->project() )
+  {
+    connect( mCanvas->project(), &QgsProject::layersAdded, this, &QgsMapToolEdit::connectLayers );
+    connectLayers( mCanvas->project()->mapLayers().values() );  // Connect existing layers
+  }
 }
 
 double QgsMapToolEdit::defaultZValue() const
@@ -170,4 +175,40 @@ void QgsMapToolEdit::notifyNotVectorLayer()
 void QgsMapToolEdit::notifyNotEditableLayer()
 {
   emit messageEmitted( tr( "Layer not editable" ) );
+}
+
+void QgsMapToolEdit::connectLayers( const QList<QgsMapLayer *> &layers )
+{
+  for ( QgsMapLayer *layer : layers )
+  {
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+    if ( vlayer )
+    {
+      connect( vlayer, &QgsVectorLayer::editingStopped, this, &QgsMapToolEdit::cleanCanvas );
+    }
+  }
+}
+
+void QgsMapToolEdit::cleanCanvas()
+{
+  if ( editableVectorLayers().isEmpty() )
+  {
+    clean();
+  }
+}
+
+QList<QgsVectorLayer *> QgsMapToolEdit::editableVectorLayers()
+{
+  QList<QgsVectorLayer *> editableLayers;
+  if ( mCanvas->project() )
+  {
+    const auto layers = mCanvas->project()->mapLayers().values();
+    for ( QgsMapLayer *layer : layers )
+    {
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+      if ( vlayer && vlayer->isEditable() && vlayer->isSpatial() )
+        editableLayers << vlayer;
+    }
+  }
+  return editableLayers;
 }

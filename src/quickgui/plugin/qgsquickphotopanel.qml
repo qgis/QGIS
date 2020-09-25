@@ -211,8 +211,7 @@ Drawer {
           onClicked: {
             captureItem.saveImage = true
             photoPanel.visible = false
-            photoPanel.lastPhotoName = QgsQuick.Utils.getRelativePath(camera.imageCapture.capturedImagePath, photoPanel.prefixToRelativePath)
-            confirmButtonClicked(photoPanel.prefixToRelativePath, photoPanel.lastPhotoName)
+            confirmButtonClicked(photoPanel.prefixToRelativePath, camera.imageCapture.capturedImagePath)
           }
         }
 

@@ -46,16 +46,23 @@ bool QgsCurve::isClosed() const
   QgsPoint start = startPoint();
   QgsPoint end = endPoint();
 
-  bool closed = qgsDoubleNear( start.x(), end.x(), 1E-8 ) &&
-                qgsDoubleNear( start.y(), end.y(), 1E-8 );
+  bool closed = qgsDoubleNear( start.x(), end.x() ) &&
+                qgsDoubleNear( start.y(), end.y() );
   if ( is3D() && closed )
-    closed &= qgsDoubleNear( start.z(), end.z(), 1E-8 ) || ( std::isnan( start.z() ) && std::isnan( end.z() ) );
+    closed &= qgsDoubleNear( start.z(), end.z() ) || ( std::isnan( start.z() ) && std::isnan( end.z() ) );
   return closed;
 }
 
 bool QgsCurve::isRing() const
 {
   return ( isClosed() && numPoints() >= 4 );
+}
+
+QPainterPath QgsCurve::asQPainterPath() const
+{
+  QPainterPath p;
+  addToPainterPath( p );
+  return p;
 }
 
 QgsCoordinateSequence QgsCurve::coordinateSequence() const
@@ -222,14 +229,8 @@ bool QgsCurve::isValid( QString &error, int flags ) const
 
 QPolygonF QgsCurve::asQPolygonF() const
 {
-  const int nb = numPoints();
-  QPolygonF points;
-  points.reserve( nb );
-  for ( int i = 0; i < nb; ++i )
-  {
-    points << QPointF( xAt( i ), yAt( i ) );
-  }
-  return points;
+  std::unique_ptr< QgsLineString > segmentized( curveToLine() );
+  return segmentized->asQPolygonF();
 }
 
 double QgsCurve::straightDistance2d() const

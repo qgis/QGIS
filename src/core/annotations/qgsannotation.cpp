@@ -138,7 +138,9 @@ void QgsAnnotation::render( QgsRenderContext &context ) const
     return;
   }
 
-  painter->save();
+  QgsScopedQPainterState painterState( context.painter() );
+  context.setPainterFlagsUsingContext();
+
   drawFrame( context );
   if ( mHasFixedMapPosition )
   {
@@ -162,7 +164,6 @@ void QgsAnnotation::render( QgsRenderContext &context ) const
 // context.painter()->scale( dotsPerMM, dotsPerMM );
 
   renderAnnotation( context, size );
-  painter->restore();
 }
 
 void QgsAnnotation::setMarkerSymbol( QgsMarkerSymbol *symbol )
@@ -354,11 +355,9 @@ void QgsAnnotation::drawFrame( QgsRenderContext &context ) const
   if ( !mFillSymbol )
     return;
 
-  context.painter()->setRenderHint( QPainter::Antialiasing, context.flags() & QgsRenderContext::Antialiasing );
-
   QPolygonF poly;
   poly.reserve( 9 + ( mHasFixedMapPosition ? 3 : 0 ) );
-  QList<QPolygonF> rings; //empty list
+  QVector<QPolygonF> rings; //empty list
   for ( int i = 0; i < 4; ++i )
   {
     QLineF currentSegment = segment( i, &context );

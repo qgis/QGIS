@@ -78,7 +78,8 @@ class TestQgsServerAccessControlWMS(TestQgsServerAccessControl):
             str(response).find("<TreeName>Country_grp</TreeName>") != -1,
             "No Country_grp layer in GetProjectSettings\n%s" % response)
         self.assertTrue(
-            str(response).find("<LayerDrawingOrder>Country_Diagrams,Country_Labels,Country,dem,Hello_Filter_SubsetString,Hello_Project_SubsetString,Hello_SubsetString,Hello,db_point</LayerDrawingOrder>") != -1,
+            str(response).find(
+                "<LayerDrawingOrder>Country_Diagrams,Country_Labels,Country,dem,Hello_Filter_SubsetString,Hello_Project_SubsetString,Hello_SubsetString,Hello,db_point</LayerDrawingOrder>") != -1,
             "LayerDrawingOrder in GetProjectSettings\n%s" % response)
 
         response, headers = self._get_restricted(query_string)
@@ -92,7 +93,8 @@ class TestQgsServerAccessControlWMS(TestQgsServerAccessControl):
             str(response).find("<TreeName>Country_grp</TreeName>") != -1,
             "Unexpected Country_grp layer in GetProjectSettings\n%s" % response)
         self.assertTrue(
-            str(response).find("<LayerDrawingOrder>Country_Diagrams,Country_Labels,dem,Hello_Filter_SubsetString,Hello_Project_SubsetString,Hello_SubsetString,Hello,db_point</LayerDrawingOrder>") != -1,
+            str(response).find(
+                "<LayerDrawingOrder>Country_Diagrams,Country_Labels,dem,Hello_Filter_SubsetString,Hello_Project_SubsetString,Hello_SubsetString,Hello,db_point</LayerDrawingOrder>") != -1,
             "Wrong LayerDrawingOrder in GetProjectSettings\n%s" % response)
 
     def test_wms_getprojectsettings(self):
@@ -111,8 +113,8 @@ class TestQgsServerAccessControlWMS(TestQgsServerAccessControl):
             str(response).find("name=\"Country\"") != -1,
             "No Country layer in GetProjectSettings\n%s" % response)
         self.assertTrue(
-            str(response).find("name=\"Country\"") <
-            str(response).find("name=\"Hello\""),
+            str(response).find("name=\"Country\"")
+            < str(response).find("name=\"Hello\""),
             "Hello layer not after Country layer\n%s" % response)
 
         response, headers = self._get_restricted(query_string)
@@ -461,8 +463,7 @@ class TestQgsServerAccessControlWMS(TestQgsServerAccessControl):
             str(response).find("<qgs:pk>1</qgs:pk>") != -1,
             "Unexpected result in GetFeatureInfo\n%s" % response)
 
-
-# # Subset String # #
+    # # Subset String # #
 
     def test_wms_getmap_subsetstring(self):
         query_string = "&".join(["%s=%s" % i for i in list({
@@ -925,11 +926,11 @@ class TestQgsServerAccessControlWMS(TestQgsServerAccessControl):
                 return None
 
         def _gfi(restrict, layers):
-            qs = ("?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&"
-                  + "BBOX=612616,5810132,619259,5813237"
-                  + "&CRS=EPSG:25832&WIDTH=2759&HEIGHT=1290&&STYLES="
-                  + "&FORMAT=application/json&QUERY_LAYERS=%s"
-                  + "&INFO_FORMAT=application/json&I=508&J=560&FEATURE_COUNT=10") % layers
+            qs = ("?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetFeatureInfo&" +
+                  "BBOX=612616,5810132,619259,5813237" +
+                  "&CRS=EPSG:25832&WIDTH=2759&HEIGHT=1290&&STYLES=" +
+                  "&FORMAT=application/json&QUERY_LAYERS=%s" +
+                  "&INFO_FORMAT=application/json&I=508&J=560&FEATURE_COUNT=10") % layers
             if restrict:
                 qs = qs + "&LAYER_PERM=yes"
             request = QgsBufferServerRequest(qs)

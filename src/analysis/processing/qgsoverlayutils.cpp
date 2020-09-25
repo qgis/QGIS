@@ -104,7 +104,7 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
     if ( featA.hasGeometry() )
     {
       QgsGeometry geom( featA.geometry() );
-      QgsFeatureIds intersects = indexB.intersects( geom.boundingBox() ).toSet();
+      QgsFeatureIds intersects = qgis::listToSet( indexB.intersects( geom.boundingBox() ) );
 
       QgsFeatureRequest request;
       request.setFilterFids( intersects );
@@ -209,7 +209,7 @@ void QgsOverlayUtils::intersection( const QgsFeatureSource &sourceA, const QgsFe
       continue;
 
     QgsGeometry geom( featA.geometry() );
-    QgsFeatureIds intersects = indexB.intersects( geom.boundingBox() ).toSet();
+    QgsFeatureIds intersects = qgis::listToSet( indexB.intersects( geom.boundingBox() ) );
 
     QgsFeatureRequest request;
     request.setFilterFids( intersects );

@@ -105,10 +105,12 @@ class CORE_EXPORT QgsVectorLayerEditUtils
     /**
      * Adds a new part polygon to a multipart feature
      * \returns - QgsGeometry::Success
+     *
      * - QgsGeometry::AddPartSelectedGeometryNotFound
      * - QgsGeometry::AddPartNotMultiGeometry
      * - QgsGeometry::InvalidBaseGeometry
      * - QgsGeometry::InvalidInput
+     *
      * \deprecated since QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
      */
     Q_DECL_DEPRECATED QgsGeometry::OperationResult addPart( const QVector<QgsPointXY> &ring, QgsFeatureId featureId ) SIP_DEPRECATED;
@@ -117,10 +119,12 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * Adds a new part polygon to a multipart feature
      *
      * \returns - QgsGeometry::Success
+     *
      * - QgsGeometry::AddPartSelectedGeometryNotFound
      * - QgsGeometry::AddPartNotMultiGeometry
      * - QgsGeometry::InvalidBaseGeometry
      * - QgsGeometry::InvalidInput
+     *
      * \note available in python bindings as addPartV2
      */
     QgsGeometry::OperationResult addPart( const QgsPointSequence &ring, QgsFeatureId featureId );
@@ -129,6 +133,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * Adds a new part polygon to a multipart feature
      *
      * \returns - QgsGeometry::Success
+     *
      * - QgsGeometry::AddPartSelectedGeometryNotFound
      * - QgsGeometry::AddPartNotMultiGeometry
      * - QgsGeometry::InvalidBaseGeometry
@@ -152,12 +157,14 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * \param splitLine line that splits the layer feature parts
      * \param topologicalEditing TRUE if topological editing is enabled
      * \returns  - QgsGeometry::InvalidBaseGeometry
-     *  - QgsGeometry::Success
-     *  - QgsGeometry::InvalidInput
-     *  - QgsGeometry::NothingHappened if a selection is present but no feature has been split
-     *  - QgsGeometry::InvalidBaseGeometry
-     *  - QgsGeometry::GeometryEngineError
-     *  - QgsGeometry::SplitCannotSplitPoint
+     *
+     * - QgsGeometry::Success
+     * - QgsGeometry::InvalidInput
+     * - QgsGeometry::NothingHappened if a selection is present but no feature has been split
+     * - QgsGeometry::InvalidBaseGeometry
+     * - QgsGeometry::GeometryEngineError
+     * - QgsGeometry::SplitCannotSplitPoint
+     *
      * \deprecated since QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
      */
     Q_DECL_DEPRECATED QgsGeometry::OperationResult splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false ) SIP_DEPRECATED;
@@ -167,12 +174,13 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * \param splitLine line that splits the layer feature parts
      * \param topologicalEditing TRUE if topological editing is enabled
      * \returns  - QgsGeometry::InvalidBaseGeometry
-     *  - QgsGeometry::Success
-     *  - QgsGeometry::InvalidInput
-     *  - QgsGeometry::NothingHappened if a selection is present but no feature has been split
-     *  - QgsGeometry::InvalidBaseGeometry
-     *  - QgsGeometry::GeometryEngineError
-     *  - QgsGeometry::SplitCannotSplitPoint
+     *
+     * - QgsGeometry::Success
+     * - QgsGeometry::InvalidInput
+     * - QgsGeometry::NothingHappened if a selection is present but no feature has been split
+     * - QgsGeometry::InvalidBaseGeometry
+     * - QgsGeometry::GeometryEngineError
+     * - QgsGeometry::SplitCannotSplitPoint
      */
     QgsGeometry::OperationResult splitParts( const QgsPointSequence &splitLine, bool topologicalEditing = false );
 
@@ -180,8 +188,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * Splits features cut by the given line
      * \param splitLine line that splits the layer features
      * \param topologicalEditing TRUE if topological editing is enabled
-     * \returns 0 in case of success,
-     *  4 if there is a selection but no feature split
+     * \returns QgsGeometry::OperationResult
      * \deprecated since QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
      */
     Q_DECL_DEPRECATED QgsGeometry::OperationResult splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false ) SIP_DEPRECATED;
@@ -190,15 +197,27 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * Splits features cut by the given line
      * \param splitLine line that splits the layer features
      * \param topologicalEditing TRUE if topological editing is enabled
-     * \returns 0 in case of success,
-     *  4 if there is a selection but no feature split
+     * \returns QgsGeometry::OperationResult
      */
     QgsGeometry::OperationResult splitFeatures( const QgsPointSequence &splitLine, bool topologicalEditing = false );
+
+    /**
+     * Splits features cut by the given curve
+     * \param curve line that splits the layer features
+     * \param[out] topologyTestPoints topological points to be tested against other layers
+     * \param preserveCircular whether circular strings are preserved after splitting
+     * \param topologicalEditing TRUE if topological editing is enabled
+     * \returns QgsGeometry::OperationResult
+     * \since QGIS 3.16
+     */
+    QgsGeometry::OperationResult splitFeatures( const QgsCurve *curve, QgsPointSequence &topologyTestPoints SIP_OUT, bool preserveCircular = false, bool topologicalEditing = false );
 
     /**
      * Adds topological points for every vertex of the geometry.
      * \param geom the geometry where each vertex is added to segments of other features
      * \return 0 in case of success
+     * \return 1 in case of error
+     * \return 2 in case no vertices needed to be added
      * \note geom is not going to be modified by the function
      */
     int addTopologicalPoints( const QgsGeometry &geom );
@@ -209,6 +228,8 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * no additional vertex is inserted. This method is useful for topological
      * editing.
      * \return 0 in case of success
+     * \return 1 in case of error
+     * \return 2 in case no vertices needed to be added
      */
     int addTopologicalPoints( const QgsPointXY &p );
 
@@ -218,9 +239,23 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * no additional vertex is inserted. This method is useful for topological
      * editing.
      * \return 0 in case of success
+     * \return 1 in case of error
+     * \return 2 in case no vertices needed to be added
      * \since QGIS 3.10
      */
     int addTopologicalPoints( const QgsPoint &p );
+
+    /**
+     * Adds a vertex to segments which intersect point \a p but don't
+     * already have a vertex there. If a feature already has a vertex at position p,
+     * no additional vertex is inserted. This method is useful for topological
+     * editing.
+     * \return 0 in case of success
+     * \return 1 in case of error
+     * \return 2 in case vertex already exists or point does not intersect segment
+     * \since QGIS 3.16
+     */
+    int addTopologicalPoints( const QgsPointSequence &ps );
 
   private:
 

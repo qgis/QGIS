@@ -31,6 +31,7 @@
 #include <QClipboard>
 #include <QMessageBox>
 
+const double ICON_PADDING_FACTOR = 0.16;
 
 static QList<QgsExpressionContextScope *> _globalProjectAtlasMapLayerScopes( QgsMapCanvas *mapCanvas, const QgsMapLayer *layer )
 {
@@ -291,8 +292,8 @@ QVariant QgsRuleBasedLabelingModel::data( const QModelIndex &index, int role ) c
   }
   else if ( role == Qt::DecorationRole && index.column() == 0 && rule->settings() )
   {
-    // TODO return QgsSymbolLayerUtils::symbolPreviewIcon( rule->symbol(), QSize( 16, 16 ) );
-    return QVariant();
+    const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
+    return QgsPalLayerSettings::labelSettingsPreviewPixmap( *rule->settings(), QSize( iconSize, iconSize ), QString(),  static_cast< int >( iconSize * ICON_PADDING_FACTOR ) );
   }
   else if ( role == Qt::TextAlignmentRole )
   {
@@ -341,7 +342,7 @@ QVariant QgsRuleBasedLabelingModel::headerData( int section, Qt::Orientation ori
   if ( orientation == Qt::Horizontal && role == Qt::DisplayRole && section >= 0 && section < 5 )
   {
     QStringList lst;
-    lst << tr( "Label" ) << tr( "Rule" ) << tr( "Min. scale" ) << tr( "Max. scale" ) << tr( "Text" ); // << tr( "Count" ) << tr( "Duplicate count" );
+    lst << tr( "Label" ) << tr( "Rule" ) << tr( "Min. Scale" ) << tr( "Max. Scale" ) << tr( "Text" ); // << tr( "Count" ) << tr( "Duplicate Count" );
     return lst[section];
   }
 

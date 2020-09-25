@@ -49,7 +49,38 @@ MDAL::DateTime::DateTime( double value, Epoch epoch ):  mValid( true )
   }
 }
 
-std::string MDAL::DateTime::toStandartCalendarISO8601() const
+MDAL::DateTime::DateTime( const std::string &fromISO8601 )
+{
+  std::vector<std::string> splitedDateTime = split( fromISO8601, 'T' );
+
+  if ( splitedDateTime.size() != 2 )
+    return;
+  //parse date
+  std::vector<std::string> splitedDate = split( splitedDateTime.at( 0 ), '-' );
+  if ( splitedDate.size() != 3 )
+    return;
+
+  //parse time
+  splitedDateTime[1] = replace( splitedDateTime.at( 1 ), "Z", "", ContainsBehaviour::CaseInsensitive );
+  std::vector<std::string> splitedTime = split( splitedDateTime.at( 1 ), ':' );
+  if ( splitedTime.size() < 2 || splitedTime.size() > 3 )
+    return;
+
+  DateTimeValues dateTimeValues;
+  dateTimeValues.year = toInt( splitedDate[0] );
+  dateTimeValues.month = toInt( splitedDate[1] );
+  dateTimeValues.day = toInt( splitedDate[2] );
+  dateTimeValues.hours = toInt( splitedTime[0] );
+  dateTimeValues.minutes = toInt( splitedTime[1] );
+  if ( splitedTime.size() == 3 )
+    dateTimeValues.seconds = toDouble( splitedTime[2] );
+  else
+    dateTimeValues.seconds = 0.0;
+
+  setWithGregorianCalendarDate( dateTimeValues );
+}
+
+std::string MDAL::DateTime::toStandardCalendarISO8601() const
 {
   if ( mValid )
   {
@@ -69,6 +100,23 @@ double MDAL::DateTime::toJulianDay() const
 std::string MDAL::DateTime::toJulianDayString() const
 {
   return std::to_string( toJulianDay() );
+}
+
+std::vector<int> MDAL::DateTime::expandToCalendarArray() const
+{
+  std::vector<int> dateTimeArray( 6, 0 );
+  if ( mValid )
+  {
+    DateTimeValues value = dateTimeGregorianProleptic();
+    dateTimeArray[0] = value.year;
+    dateTimeArray[1] = value.month;
+    dateTimeArray[2] = value.day;
+    dateTimeArray[3] = value.hours;
+    dateTimeArray[4] = value.minutes;
+    dateTimeArray[5] = int( value.seconds + 0.5 );
+  }
+
+  return dateTimeArray;
 }
 
 
@@ -246,16 +294,16 @@ void MDAL::DateTime::setWithGregorianJulianCalendarDate( MDAL::DateTime::DateTim
 
 std::string MDAL::DateTime::toString( MDAL::DateTime::DateTimeValues values ) const
 {
-  int miliseconds = int( ( values.seconds - int( values.seconds ) ) * 1000 + 0.5 );
+  int milliseconds = int( ( values.seconds - int( values.seconds ) ) * 1000 + 0.5 );
   std::string msStr;
-  if ( miliseconds > 0 )
+  if ( milliseconds > 0 )
   {
-    if ( miliseconds < 10 )
-      msStr = prependZero( std::to_string( miliseconds ), 3 );
-    else if ( miliseconds < 100 )
-      msStr = prependZero( std::to_string( miliseconds ), 2 );
-    else if ( miliseconds < 1000 )
-      msStr = std::to_string( miliseconds );
+    if ( milliseconds < 10 )
+      msStr = prependZero( std::to_string( milliseconds ), 3 );
+    else if ( milliseconds < 100 )
+      msStr = prependZero( std::to_string( milliseconds ), 2 );
+    else if ( milliseconds < 1000 )
+      msStr = std::to_string( milliseconds );
 
     msStr = std::string( "," ).append( msStr );
   }

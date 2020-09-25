@@ -35,5 +35,5 @@ void QgsGpsConnectionRegistry::unregisterConnection( QgsGpsConnection *c )
 
 QList< QgsGpsConnection * > QgsGpsConnectionRegistry::connectionList() const
 {
-  return mConnections.toList();
+  return qgis::setToList( mConnections );
 }

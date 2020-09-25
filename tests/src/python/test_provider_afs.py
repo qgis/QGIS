@@ -16,7 +16,7 @@ import re
 import tempfile
 import shutil
 
-from qgis.PyQt.QtCore import QCoreApplication, Qt, QObject, QDate
+from qgis.PyQt.QtCore import QCoreApplication, Qt, QObject, QDate, QDateTime, QTime
 
 from qgis.core import (NULL,
                        QgsVectorLayer,
@@ -29,7 +29,8 @@ from qgis.core import (NULL,
                        QgsCategorizedSymbolRenderer,
                        QgsProviderRegistry,
                        QgsWkbTypes,
-                       QgsDataSourceUri
+                       QgsDataSourceUri,
+                       QgsVectorDataProviderTemporalCapabilities
                        )
 from qgis.testing import (start_app,
                           unittest
@@ -47,7 +48,9 @@ def sanitize(endpoint, x):
         # print('Before: ' + endpoint + x)
         # print('After:  ' + ret)
         return ret
-    return endpoint + x.replace('?', '_').replace('&', '_').replace('<', '_').replace('>', '_').replace('"', '_').replace("'", '_').replace(' ', '_').replace(':', '_').replace('/', '_').replace('\n', '_')
+    return endpoint + x.replace('?', '_').replace('&', '_').replace('<', '_').replace('>', '_').replace('"',
+                                                                                                        '_').replace(
+        "'", '_').replace(' ', '_').replace(':', '_').replace('/', '_').replace('\n', '_')
 
 
 class MessageLogger(QObject):
@@ -73,6 +76,12 @@ class MessageLogger(QObject):
 
 
 class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
+
+    def treat_date_as_datetime(self):
+        return True
+
+    def treat_time_as_string(self):
+        return True
 
     @classmethod
     def setUpClass(cls):
@@ -104,6 +113,9 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
 {"name":"name","type":"esriFieldTypeString","alias":"name","length":100,"domain":null},
 {"name":"name2","type":"esriFieldTypeString","alias":"name2","length":100,"domain":null},
 {"name":"num_char","type":"esriFieldTypeString","alias":"num_char","length":100,"domain":null},
+{"name":"dt","type":"esriFieldTypeDate","alias":"num_char","length":100,"domain":null},
+{"name":"date","type":"esriFieldTypeDate","alias":"num_char","length":100,"domain":null},
+{"name":"time","type":"esriFieldTypeString","alias":"num_char","length":100,"domain":null},
 {"name":"Shape","type":"esriFieldTypeGeometry","alias":"Shape","domain":null}],
 "relationships":[],"canModifyLayer":false,"canScaleSymbols":false,"hasLabels":false,
 "capabilities":"Map,Query,Data","maxRecordCount":1000,"supportsStatistics":true,
@@ -132,7 +144,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         with open(sanitize(endpoint,
                            '/query?f=json&objectIds=5,3,1,2,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false'),
                   'wb') as f:
-            f.write("""
+            f.write(("""
         {
          "displayFieldName": "name",
          "fieldAliases": {
@@ -149,6 +161,9 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         {"name":"name","type":"esriFieldTypeString","alias":"name","length":100,"domain":null},
         {"name":"name2","type":"esriFieldTypeString","alias":"name2","length":100,"domain":null},
         {"name":"num_char","type":"esriFieldTypeString","alias":"num_char","length":100,"domain":null},
+        {"name":"dt","type":"esriFieldTypeDate","alias":"num_char","length":100,"domain":null},
+        {"name":"date","type":"esriFieldTypeDate","alias":"num_char","length":100,"domain":null},
+        {"name":"time","type":"esriFieldTypeString","alias":"num_char","length":100,"domain":null},
         {"name":"Shape","type":"esriFieldTypeGeometry","alias":"Shape","domain":null}],
          "features": [
           {
@@ -158,7 +173,10 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
             "cnt": -200,
             "name": null,
             "name2":"NuLl",
-            "num_char":"5"
+            "num_char":"5",
+            "dt": """ + str(QDateTime(QDate(2020, 5, 4), QTime(12, 13, 14)).toMSecsSinceEpoch()) + """,
+            "date": """ + str(QDateTime(QDate(2020, 5, 2), QTime(0, 0, 0)).toMSecsSinceEpoch()) + """,
+            "time": "12:13:01"
            },
            "geometry": {
             "x": -71.123,
@@ -172,7 +190,10 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
             "cnt": 300,
             "name": "Pear",
             "name2":"PEaR",
-            "num_char":"3"
+            "num_char":"3",
+            "dt": null,
+            "date": null,
+            "time": null
            },
            "geometry": null
           },
@@ -183,7 +204,10 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
             "cnt": 100,
             "name": "Orange",
             "name2":"oranGe",
-            "num_char":"1"
+            "num_char":"1",
+            "dt": """ + str(QDateTime(QDate(2020, 5, 3), QTime(12, 13, 14)).toMSecsSinceEpoch()) + """,
+            "date": """ + str(QDateTime(QDate(2020, 5, 3), QTime(0, 0, 0)).toMSecsSinceEpoch()) + """,
+            "time": "12:13:14"
            },
            "geometry": {
             "x": -70.332,
@@ -197,7 +221,10 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
             "cnt": 200,
             "name": "Apple",
             "name2":"Apple",
-            "num_char":"2"
+            "num_char":"2",
+            "dt": """ + str(QDateTime(QDate(2020, 5, 4), QTime(12, 14, 14)).toMSecsSinceEpoch()) + """,
+            "date": """ + str(QDateTime(QDate(2020, 5, 4), QTime(0, 0, 0)).toMSecsSinceEpoch()) + """,
+            "time": "12:14:14"
            },
            "geometry": {
             "x": -68.2,
@@ -211,7 +238,10 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
             "cnt": 400,
             "name": "Honey",
             "name2":"Honey",
-            "num_char":"4"
+            "num_char":"4",
+            "dt": """ + str(QDateTime(QDate(2021, 5, 4), QTime(13, 13, 14)).toMSecsSinceEpoch()) + """,
+            "date": """ + str(QDateTime(QDate(2021, 5, 4), QTime(0, 0, 0)).toMSecsSinceEpoch()) + """,
+            "time": "13:13:14"
            },
            "geometry": {
             "x": -65.32,
@@ -219,9 +249,11 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
            }
           }
          ]
-        }""".encode('UTF-8'))
+        }""").encode('UTF-8'))
 
-        with open(sanitize(endpoint, '/query?f=json&objectIds=5,3,1,2,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false&geometry=-71.123000,66.330000,-65.320000,78.300000&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects'), 'wb') as f:
+        with open(sanitize(endpoint,
+                           '/query?f=json&objectIds=5,3,1,2,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false&geometry=-71.123000,66.330000,-65.320000,78.300000&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects'),
+                  'wb') as f:
             f.write("""
 {
  "displayFieldName": "name",
@@ -239,6 +271,9 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
 {"name":"name","type":"esriFieldTypeString","alias":"name","length":100,"domain":null},
 {"name":"name2","type":"esriFieldTypeString","alias":"name2","length":100,"domain":null},
 {"name":"num_char","type":"esriFieldTypeString","alias":"num_char","length":100,"domain":null},
+{"name":"dt","type":"esriFieldTypeDate","alias":"num_char","length":100,"domain":null},
+{"name":"date","type":"esriFieldTypeDate","alias":"num_char","length":100,"domain":null},
+{"name":"time","type":"esriFieldTypeString","alias":"num_char","length":100,"domain":null},
 {"name":"Shape","type":"esriFieldTypeGeometry","alias":"Shape","domain":null}],
  "features": [
   {
@@ -331,6 +366,9 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         {"name":"name","type":"esriFieldTypeString","alias":"name","length":100,"domain":null},
         {"name":"name2","type":"esriFieldTypeString","alias":"name2","length":100,"domain":null},
         {"name":"num_char","type":"esriFieldTypeString","alias":"num_char","length":100,"domain":null},
+        {"name":"dt","type":"esriFieldTypeDate","alias":"num_char","length":100,"domain":null},
+        {"name":"date","type":"esriFieldTypeDate","alias":"num_char","length":100,"domain":null},
+        {"name":"time","type":"esriFieldTypeDate","alias":"num_char","length":100,"domain":null},
         {"name":"Shape","type":"esriFieldTypeGeometry","alias":"Shape","domain":null}],
          "features": [
           {
@@ -364,7 +402,9 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
          ]
         }""".encode('UTF-8'))
 
-        with open(sanitize(endpoint, '/query?f=json&where=1=1&returnIdsOnly=true&geometry=-70.000000,67.000000,-60.000000,80.000000&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects'), 'wb') as f:
+        with open(sanitize(endpoint,
+                           '/query?f=json&where=1=1&returnIdsOnly=true&geometry=-70.000000,67.000000,-60.000000,80.000000&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects'),
+                  'wb') as f:
             f.write("""
         {
          "objectIdFieldName": "OBJECTID",
@@ -375,7 +415,9 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         }
         """.encode('UTF-8'))
 
-        with open(sanitize(endpoint, '/query?f=json&where==1=&returnIdsOnly=true&geometry=-73.000000,70.000000,-63.000000,80.000000&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects'), 'wb') as f:
+        with open(sanitize(endpoint,
+                           '/query?f=json&where==1=&returnIdsOnly=true&geometry=-73.000000,70.000000,-63.000000,80.000000&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects'),
+                  'wb') as f:
             f.write("""
         {
          "objectIdFieldName": "OBJECTID",
@@ -386,7 +428,9 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         }
         """.encode('UTF-8'))
 
-        with open(sanitize(endpoint, '/query?f=json&where=1=1&returnIdsOnly=true&geometry=-68.721119,68.177676,-64.678700,79.123755&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects'), 'wb') as f:
+        with open(sanitize(endpoint,
+                           '/query?f=json&where=1=1&returnIdsOnly=true&geometry=-68.721119,68.177676,-64.678700,79.123755&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects'),
+                  'wb') as f:
             f.write("""
         {
          "objectIdFieldName": "OBJECTID",
@@ -401,7 +445,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
     def tearDownClass(cls):
         """Run after all tests"""
         QgsSettings().clear()
-        #shutil.rmtree(cls.basetestpath, True)
+        # shutil.rmtree(cls.basetestpath, True)
         cls.vl = None  # so as to properly close the provider and remove any temporary file
 
     def testGetFeaturesSubsetAttributes2(self):
@@ -471,7 +515,9 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         }
         """.encode('UTF-8'))
 
-        with open(sanitize(endpoint, '/query?f=json&objectIds=5,3,1,2,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false'), 'wb') as f:
+        with open(sanitize(endpoint,
+                           '/query?f=json&objectIds=5,3,1,2,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false'),
+                  'wb') as f:
             f.write("""
         {
          "displayFieldName": "LABEL",
@@ -545,8 +591,12 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         vl = QgsVectorLayer("url='http://" + endpoint + "' crs='epsg:4326'", 'test', 'arcgisfeatureserver')
 
         self.assertTrue(vl.isValid())
+
+        self.assertFalse(vl.dataProvider().temporalCapabilities().hasTemporalCapabilities())
+
         with open(sanitize(endpoint,
-                           '/query?f=json&objectIds=1,2&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false'), 'wb') as f:
+                           '/query?f=json&objectIds=1,2&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false'),
+                  'wb') as f:
             f.write("""
         {
          "displayFieldName": "name",
@@ -590,7 +640,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
 
         features = [f for f in vl.getFeatures()]
         self.assertEqual(len(features), 2)
-        self.assertEqual([f['dt'] for f in features], [QDate(2017, 5, 3), NULL])
+        self.assertEqual([f['dt'] for f in features], [QDateTime(2017, 5, 3, 0, 0, 0, 0, Qt.UTC).toLocalTime(), NULL])
 
     def testMetadata(self):
         """ Test that metadata is correctly acquired from provider """
@@ -646,6 +696,46 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         l.type = 'WWW:LINK'
         l.url = 'http://' + sanitize(endpoint, '')
         self.assertEqual(md.links(), [l])
+
+    def testFieldAlias(self):
+        """ Test that field aliases are correctly acquired from provider """
+
+        endpoint = self.basetestpath + '/alias_fake_qgis_http_endpoint'
+        with open(sanitize(endpoint, '?f=json'), 'wb') as f:
+            f.write("""
+        {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
+        "QGIS Provider Test Layer","geometryType":"esriGeometryPoint","copyrightText":"not copyright","parentLayer":{"id":2,"name":"QGIS Tests"},"subLayers":[],
+        "minScale":72225,"maxScale":0,
+        "defaultVisibility":true,
+        "extent":{"xmin":-71.123,"ymin":66.33,"xmax":-65.32,"ymax":78.3,
+        "spatialReference":{"wkid":4326,"latestWkid":4326}},
+        "hasAttachments":false,"htmlPopupType":"esriServerHTMLPopupTypeAsHTMLText",
+        "displayField":"LABEL","typeIdField":null,
+        "fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"field id","domain":null},{"name":"second","type":"esriFieldTypeString","domain":null}],
+        "relationships":[],"canModifyLayer":false,"canScaleSymbols":false,"hasLabels":false,
+        "capabilities":"Map,Query,Data","maxRecordCount":1000,"supportsStatistics":true,
+        "supportsAdvancedQueries":true,"supportedQueryFormats":"JSON, AMF",
+        "ownershipBasedAccessControlForFeatures":{"allowOthersToQuery":true},"useStandardizedQueries":true}""".encode(
+                'UTF-8'))
+
+        with open(sanitize(endpoint, '/query?f=json_where=1=1&returnIdsOnly=true'), 'wb') as f:
+            f.write("""
+        {
+         "objectIdFieldName": "OBJECTID",
+         "objectIds": [
+          1
+         ]
+        }
+        """.encode('UTF-8'))
+
+        # Create test layer
+        vl = QgsVectorLayer("url='http://" + endpoint + "' crs='epsg:4326'", 'test', 'arcgisfeatureserver')
+        self.assertTrue(vl.isValid())
+
+        self.assertEqual(vl.fields().at(0).name(), 'OBJECTID')
+        self.assertEqual(vl.fields().at(0).alias(), 'field id')
+        self.assertEqual(vl.fields().at(1).name(), 'second')
+        self.assertFalse(vl.fields().at(1).alias())
 
     def testRenderer(self):
         """ Test that renderer is correctly acquired from provider """
@@ -754,7 +844,9 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         Test limiting provider to features within a preset bounding box
         """
         endpoint = self.basetestpath + '/fake_qgis_http_endpoint'
-        vl = QgsVectorLayer("url='http://" + endpoint + "' crs='epsg:4326' bbox='-70.000000,67.000000,-60.000000,80.000000'", 'test', 'arcgisfeatureserver')
+        vl = QgsVectorLayer(
+            "url='http://" + endpoint + "' crs='epsg:4326' bbox='-70.000000,67.000000,-60.000000,80.000000'", 'test',
+            'arcgisfeatureserver')
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.featureCount(), 2)
         self.assertEqual([f['pk'] for f in vl.getFeatures()], [2, 4])
@@ -799,7 +891,8 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
 
         self.assertTrue(vl.isValid())
         with open(sanitize(endpoint,
-                           '/query?f=json&objectIds=1,2,3&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false'), 'wb') as f:
+                           '/query?f=json&objectIds=1,2,3&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false'),
+                  'wb') as f:
             f.write("""
         {
          "displayFieldName": "name",
@@ -843,7 +936,8 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
 
         features = [f for f in vl.getFeatures()]
         self.assertEqual(len(features), 3)
-        self.assertEqual([f.geometry().asWkt() for f in features], ['MultiPoint ((-70 66))', '', 'MultiPoint ((-68 70),(-22 21))'])
+        self.assertEqual([f.geometry().asWkt() for f in features],
+                         ['MultiPoint ((-70 66))', '', 'MultiPoint ((-68 70),(-22 21))'])
 
     def testDomain(self):
         """
@@ -908,7 +1002,118 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
         self.assertFalse(vl.fields()[0].editorWidgetSetup().type())
         self.assertEqual(vl.fields()[1].editorWidgetSetup().type(), 'ValueMap')
-        self.assertEqual(vl.fields()[1].editorWidgetSetup().config(), {'map': [{'Value 1': 1.0}, {'Value 2': 2.0}, {'Value 3': 3.0}]})
+        self.assertEqual(vl.fields()[1].editorWidgetSetup().config(),
+                         {'map': [{'Value 1': 1.0}, {'Value 2': 2.0}, {'Value 3': 3.0}]})
+
+    def testTemporal1(self):
+        """
+        Test timeinfo parsing
+        """
+        endpoint = self.basetestpath + '/temporal1_fake_qgis_http_endpoint'
+        with open(sanitize(endpoint, '?f=json'), 'wb') as f:
+            f.write("""
+        {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
+        "QGIS Provider Test Layer.\n","geometryType":"esriGeometryPoint","copyrightText":"","parentLayer":{"id":0,"name":"QGIS Tests"},"subLayers":[],
+        "minScale":72225,"maxScale":0,
+        "defaultVisibility":true,
+        "extent":{"xmin":-71.123,"ymin":66.33,"xmax":-65.32,"ymax":78.3,
+        "spatialReference":{"wkid":4326,"latestWkid":4326}},
+        "hasAttachments":false,"htmlPopupType":"esriServerHTMLPopupTypeAsHTMLText",
+        "displayField":"LABEL","typeIdField":null,
+        "fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null}
+        ],
+        "timeInfo": {
+          "startTimeField": "date_start",
+          "endTimeField": null,
+          "trackIdField": null,
+          "timeExtent": [
+           1142000000000,
+           1487000000000
+          ]
+         },
+        "relationships":[],"canModifyLayer":false,"canScaleSymbols":false,"hasLabels":false,
+        "capabilities":"Map,Query,Data","maxRecordCount":1000,"supportsStatistics":true,
+        "supportsAdvancedQueries":true,"supportedQueryFormats":"JSON, AMF",
+        "ownershipBasedAccessControlForFeatures":{"allowOthersToQuery":true},"useStandardizedQueries":true}""".encode(
+                'UTF-8'))
+
+        with open(sanitize(endpoint, '/query?f=json_where=1=1&returnIdsOnly=true'), 'wb') as f:
+            f.write("""
+        {
+         "objectIdFieldName": "OBJECTID",
+         "objectIds": [
+          1,
+          2,
+          3
+         ]
+        }
+        """.encode('UTF-8'))
+
+        # Create test layer
+        vl = QgsVectorLayer("url='http://" + endpoint + "' crs='epsg:4326'", 'test', 'arcgisfeatureserver')
+
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.dataProvider().temporalCapabilities().hasTemporalCapabilities())
+        self.assertEqual(vl.dataProvider().temporalCapabilities().startField(), 'date_start')
+        self.assertFalse(vl.dataProvider().temporalCapabilities().endField())
+        self.assertEqual(vl.dataProvider().temporalCapabilities().mode(), QgsVectorDataProviderTemporalCapabilities.ProviderStoresFeatureDateTimeInstantInField)
+        self.assertEqual(vl.dataProvider().temporalCapabilities().availableTemporalRange().begin(), QDateTime(QDate(2006, 3, 10), QTime(14, 13, 20), Qt.UTC))
+        self.assertEqual(vl.dataProvider().temporalCapabilities().availableTemporalRange().end(), QDateTime(QDate(2017, 2, 13), QTime(15, 33, 20), Qt.UTC))
+
+    def testTemporal2(self):
+        """
+        Test timeinfo parsing
+        """
+        endpoint = self.basetestpath + '/temporal2_fake_qgis_http_endpoint'
+        with open(sanitize(endpoint, '?f=json'), 'wb') as f:
+            f.write("""
+        {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
+        "QGIS Provider Test Layer.\n","geometryType":"esriGeometryPoint","copyrightText":"","parentLayer":{"id":0,"name":"QGIS Tests"},"subLayers":[],
+        "minScale":72225,"maxScale":0,
+        "defaultVisibility":true,
+        "extent":{"xmin":-71.123,"ymin":66.33,"xmax":-65.32,"ymax":78.3,
+        "spatialReference":{"wkid":4326,"latestWkid":4326}},
+        "hasAttachments":false,"htmlPopupType":"esriServerHTMLPopupTypeAsHTMLText",
+        "displayField":"LABEL","typeIdField":null,
+        "fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null}
+        ],
+        "timeInfo": {
+          "startTimeField": "date_start",
+          "endTimeField": "date_end",
+          "trackIdField": null,
+          "timeExtent": [
+           1142000000000,
+           1487000000000
+          ]
+         },
+        "relationships":[],"canModifyLayer":false,"canScaleSymbols":false,"hasLabels":false,
+        "capabilities":"Map,Query,Data","maxRecordCount":1000,"supportsStatistics":true,
+        "supportsAdvancedQueries":true,"supportedQueryFormats":"JSON, AMF",
+        "ownershipBasedAccessControlForFeatures":{"allowOthersToQuery":true},"useStandardizedQueries":true}""".encode(
+                'UTF-8'))
+
+        with open(sanitize(endpoint, '/query?f=json_where=1=1&returnIdsOnly=true'), 'wb') as f:
+            f.write("""
+        {
+         "objectIdFieldName": "OBJECTID",
+         "objectIds": [
+          1,
+          2,
+          3
+         ]
+        }
+        """.encode('UTF-8'))
+
+        # Create test layer
+        vl = QgsVectorLayer("url='http://" + endpoint + "' crs='epsg:4326'", 'test', 'arcgisfeatureserver')
+
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.dataProvider().temporalCapabilities().hasTemporalCapabilities())
+        self.assertEqual(vl.dataProvider().temporalCapabilities().startField(), 'date_start')
+        self.assertEqual(vl.dataProvider().temporalCapabilities().endField(), 'date_end')
+        self.assertEqual(vl.dataProvider().temporalCapabilities().mode(), QgsVectorDataProviderTemporalCapabilities.ProviderStoresFeatureDateTimeStartAndEndInSeparateFields)
+        self.assertEqual(vl.dataProvider().temporalCapabilities().availableTemporalRange().begin(), QDateTime(QDate(2006, 3, 10), QTime(14, 13, 20), Qt.UTC))
+        self.assertEqual(vl.dataProvider().temporalCapabilities().availableTemporalRange().end(), QDateTime(QDate(2017, 2, 13), QTime(15, 33, 20), Qt.UTC))
 
     def testImageServer(self):
         """

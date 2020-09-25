@@ -26,7 +26,6 @@ from processing.tools.system import userFolder
 
 
 class RenderingStyles:
-
     styles = {}
 
     @staticmethod

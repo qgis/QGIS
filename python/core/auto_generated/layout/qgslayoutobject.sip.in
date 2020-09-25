@@ -164,6 +164,8 @@ A base class for objects which belong to a layout.
       //table item
       AttributeTableSourceLayer,
       MapCrs,
+      StartDateTime,
+      EndDateTime,
     };
 
     enum PropertyValueType

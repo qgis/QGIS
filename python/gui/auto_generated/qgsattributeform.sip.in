@@ -44,6 +44,14 @@ class QgsAttributeForm : QWidget
 
     const QgsFeature &feature();
 
+    QgsFeature currentFormFeature() const;
+%Docstring
+Returns the feature that is currently displayed in the form with all
+the changes received on editing the values in the widgets.
+
+.. versionadded:: 3.16
+%End
+
     void displayWarning( const QString &message );
 %Docstring
 Displays a warning message in the form message bar
@@ -167,6 +175,14 @@ In this case it will return a combined expression according to the chosen filter
 on all attribute widgets.
 
 .. versionadded:: 3.0
+%End
+
+    void setExtraContextScope( QgsExpressionContextScope *extraScope /Transfer/ );
+%Docstring
+Sets an additional expression context scope to be used
+for calculations in this form.
+
+.. versionadded:: 3.16
 %End
 
   signals:

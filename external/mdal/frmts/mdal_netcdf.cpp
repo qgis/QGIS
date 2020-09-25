@@ -37,6 +37,7 @@ void NetCDFFile::openFile( const std::string &fileName )
   {
     throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Could not open file " + fileName );
   }
+  mFileName = fileName;
 }
 
 std::vector<int> NetCDFFile::readIntArr( const std::string &name, size_t dim ) const
@@ -445,4 +446,9 @@ void NetCDFFile::putDataArrayInt( int varId, size_t line, size_t faceVerticesMax
   {
     throw MDAL::Error( MDAL_Status::Err_FailToWriteToDisk, nc_strerror( res ) );
   }
+}
+
+std::string NetCDFFile::getFileName() const
+{
+  return mFileName;
 }

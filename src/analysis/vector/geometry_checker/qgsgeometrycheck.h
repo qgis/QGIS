@@ -47,33 +47,15 @@ class QgsFeaturePool;
  * A new subclass of QgsGeometryCheck needs to be written and at least the following
  * abstract methods need to be implemented:
  *
- *  - `compatibleGeometryTypes()`
- *
- *    A list of geometry types to which this check applies
- *
- *  - `resolutionMethods()`
- *
- *    A list of names for (automated) resolution methods that can be used to fix errors of this type
- *
- *  - `description()`
- *
- *    A description for the geometry check.
- *
- *  - `id()`
- *
- *    A unique id for this check.
- *
- *  - `checkType()`
- *
- *    One of QgsGeometryCheck.LayerCheck, QgsGeometryCheck.FeatureCheck,QgsGeometryCheck.FeatureNodeCheck
- *
- *  - \link collectErrors() `collectErrors(featurePools, errors, messages, feedback, ids)`\endlink
- *
- *    This method will be called to validate geometries. All geometries which should be validated are passed
- *    into this method with the parameter ids and should be retrieved from the available featurePools to make
- *    use of caching. New errors should be appended to the error list and other message strings to messages.
- *    The method needs to return a tuple (errors, messages).
- *
+ * - compatibleGeometryTypes(): A list of geometry types to which this check applies
+ * - resolutionMethods(): A list of names for (automated) resolution methods that can be used to fix errors of this type
+ * - description(): A description for the geometry check.
+ * - id(): A unique id for this check.
+ * - checkType(): One of QgsGeometryCheck.LayerCheck, QgsGeometryCheck.FeatureCheck,QgsGeometryCheck.FeatureNodeCheck
+ * - collectErrors(): This method will be called to validate geometries. All geometries which should be validated are passed
+ *   into this method with the parameter ids and should be retrieved from the available featurePools to make
+ *   use of caching. New errors should be appended to the error list and other message strings to messages.
+ *   The method needs to return a tuple (errors, messages).
  *
  * ### Creating a geometry check factory
  *
@@ -84,30 +66,13 @@ class QgsFeaturePool;
  * A new subclass of QgsGeometryCheckFactory needs to be written and at least the following
  * abstract methods need to be implemented:
  *
- *  - \link QgsGeometryCheckFactory::createGeometryCheck() `createGeometryCheck(context, configuration)`\endlink
- *
- *    Needs to return a new subclassed QgsGeometryCheck object that has been written in the previous step.
- *
- *  - \link QgsGeometryCheckFactory::id() `id()\endlink
- *
- *    A unique id for this geometry check.
- *
- *  - \link QgsGeometryCheckFactory::description() `description()\endlink
- *
- *    A description for this geometry check that can be presented to the user for more explanation.
- *
- *  - \link QgsGeometryCheckFactory::isCompatible() `QgsGeometryCheckFactory::isCompatible(layer)`\endlink
- *
- *    Returns a boolean that determines if this check is available for a given layer. This often
- *    checks for the geometry type of the layer.
- *
- *  - \link QgsGeometryCheckFactory::flags() `flags()`\endlink
- *
- *    Returns additional flags for a geometry check. If unsure return QgsGeometryCheck.AvailableInValidation.
- *
- *  - \link QgsGeometryCheckFactory::checkType() `checkType()`\endlink
- *
- *    Returns the type of this geometry check.
+ * - QgsGeometryCheckFactory::createGeometryCheck(): Needs to return a new subclassed QgsGeometryCheck object that has been written in the previous step.
+ * - QgsGeometryCheckFactory::id(): A unique id for this geometry check.
+ * - QgsGeometryCheckFactory::description(): A description for this geometry check that can be presented to the user for more explanation.
+ * - QgsGeometryCheckFactory::isCompatible(): Returns a boolean that determines if this check is available for a given layer. This often
+ *   checks for the geometry type of the layer.
+ * - QgsGeometryCheckFactory::flags(): Returns additional flags for a geometry check. If unsure return QgsGeometryCheck.AvailableInValidation.
+ * - QgsGeometryCheckFactory::checkType(): Returns the type of this geometry check.
  *
  * ### Registering the geometry check
  *
@@ -140,7 +105,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
     struct ANALYSIS_EXPORT LayerFeatureIds
     {
       LayerFeatureIds() = default;
-      LayerFeatureIds( const QMap<QString, QgsFeatureIds> &ids ) SIP_SKIP;
+      LayerFeatureIds( const QMap<QString, QgsFeatureIds> &idsIn ) SIP_SKIP;
 
       QMap<QString, QgsFeatureIds> ids SIP_SKIP;
 

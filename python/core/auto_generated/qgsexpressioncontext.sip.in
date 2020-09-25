@@ -13,7 +13,7 @@ class QgsScopedExpressionFunction : QgsExpressionFunction
 %Docstring
 Expression function for use within a QgsExpressionContextScope. This differs from a
 standard QgsExpression.Function in that it requires an implemented
-clone() method.
+:py:func:`~clone` method.
 
 .. versionadded:: 2.12
 %End
@@ -142,7 +142,7 @@ Returns the friendly display name of the context scope.
 Convenience method for setting a variable in the context scope by ``name`` name and ``value``. If a variable
 with the same name is already set then its value is overwritten, otherwise a new variable is added to the scope.
 If the ``isStatic`` parameter is set to ``True``, this variable can be cached during the execution
-of :py:func:`QgsExpression.prepare()`
+of :py:func:`QgsExpression.prepare()`.
 
 .. seealso:: :py:func:`addVariable`
 %End
@@ -596,7 +596,7 @@ Returns whether a variable is read only, and should not be modifiable by users.
 Returns a translated description string for the variable with specified ``name``.
 
 If no specific description has been provided for the variable, the value from
-QgsExpression.variableHelpText() will be returned.
+:py:func:`QgsExpression.variableHelpText()` will be returned.
 
 .. versionadded:: 3.0
 %End

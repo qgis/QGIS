@@ -36,6 +36,11 @@ class CORE_EXPORT QgsLinearMinMaxEnhancementWithClip : public QgsContrastEnhance
     int enhance( double ) override;
 
     bool isValueInDisplayableRange( double ) override;
+
+  private:
+#ifdef SIP_RUN
+    QgsLinearMinMaxEnhancementWithClip &operator=( const QgsLinearMinMaxEnhancementWithClip & );
+#endif
 };
 
 #endif

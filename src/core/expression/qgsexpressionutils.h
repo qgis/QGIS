@@ -238,7 +238,7 @@ class QgsExpressionUtils
       qlonglong x = value.toLongLong( &ok );
       if ( ok && x >= std::numeric_limits<int>::min() && x <= std::numeric_limits<int>::max() )
       {
-        return x;
+        return static_cast<int>( x );
       }
       else
       {

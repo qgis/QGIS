@@ -28,9 +28,9 @@ Compound curve geometry type
     virtual bool equals( const QgsCurve &other ) const;
 
 
-    virtual QString geometryType() const;
+    virtual QString geometryType() const /HoldGIL/;
 
-    virtual int dimension() const;
+    virtual int dimension() const /HoldGIL/;
 
     virtual QgsCompoundCurve *clone() const /Factory/;
 
@@ -42,7 +42,7 @@ Compound curve geometry type
     virtual bool fromWkt( const QString &wkt );
 
 
-    virtual QByteArray asWkb() const;
+    virtual QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
 
     virtual QString asWkt( int precision = 17 ) const;
 
@@ -51,17 +51,17 @@ Compound curve geometry type
     virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
 
 
-    virtual double length() const;
+    virtual double length() const /HoldGIL/;
 
-    virtual QgsPoint startPoint() const;
+    virtual QgsPoint startPoint() const /HoldGIL/;
 
-    virtual QgsPoint endPoint() const;
+    virtual QgsPoint endPoint() const /HoldGIL/;
 
     virtual void points( QgsPointSequence &pts /Out/ ) const;
 
-    virtual int numPoints() const;
+    virtual int numPoints() const /HoldGIL/;
 
-    virtual bool isEmpty() const;
+    virtual bool isEmpty() const /HoldGIL/;
 
 
     virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
@@ -71,7 +71,7 @@ Returns a new line string geometry corresponding to a segmentized approximation
 of the curve.
 
 :param tolerance: segmentation tolerance
-:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve*
+:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve
 %End
 
     virtual QgsCompoundCurve *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;
@@ -79,12 +79,12 @@ of the curve.
     virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
 
 
-    int nCurves() const;
+    int nCurves() const /HoldGIL/;
 %Docstring
 Returns the number of curves in the geometry.
 %End
 
-    const QgsCurve *curveAt( int i ) const;
+    const QgsCurve *curveAt( int i ) const /HoldGIL/;
 %Docstring
 Returns the curve at the specified index.
 %End
@@ -159,9 +159,9 @@ Appends first point if not already closed.
     virtual void swapXy();
 
 
-    virtual double xAt( int index ) const;
+    virtual double xAt( int index ) const /HoldGIL/;
 
-    virtual double yAt( int index ) const;
+    virtual double yAt( int index ) const /HoldGIL/;
 
 
 

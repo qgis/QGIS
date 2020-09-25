@@ -19,9 +19,15 @@
 #include "qgspropertytransformer.h"
 #include "qgssymbollayerutils.h"
 #include "qgsxmlutils.h"
+#include "qgslinesymbollayer.h"
+#include "qgstextformat.h"
+#include "qgstextrenderer.h"
 
-
-QgsDataDefinedSizeLegend::QgsDataDefinedSizeLegend() = default;
+QgsDataDefinedSizeLegend::QgsDataDefinedSizeLegend()
+{
+  std::unique_ptr< QgsSimpleLineSymbolLayer > lineSymbolLayer = qgis::make_unique< QgsSimpleLineSymbolLayer >( QColor( 0, 0, 0 ), 0.2 );
+  mLineSymbol = qgis::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << lineSymbolLayer.release() );
+}
 
 QgsDataDefinedSizeLegend::~QgsDataDefinedSizeLegend() = default;
 
@@ -30,6 +36,7 @@ QgsDataDefinedSizeLegend::QgsDataDefinedSizeLegend( const QgsDataDefinedSizeLege
   , mTitleLabel( other.mTitleLabel )
   , mSizeClasses( other.mSizeClasses )
   , mSymbol( other.mSymbol.get() ? other.mSymbol->clone() : nullptr )
+  , mLineSymbol( other.mLineSymbol.get() ? other.mLineSymbol->clone() : nullptr )
   , mSizeScaleTransformer( other.mSizeScaleTransformer.get() ? new QgsSizeScaleTransformer( *other.mSizeScaleTransformer ) : nullptr )
   , mVAlign( other.mVAlign )
   , mFont( other.mFont )
@@ -46,6 +53,7 @@ QgsDataDefinedSizeLegend &QgsDataDefinedSizeLegend::operator=( const QgsDataDefi
     mTitleLabel = other.mTitleLabel;
     mSizeClasses = other.mSizeClasses;
     mSymbol.reset( other.mSymbol.get() ? other.mSymbol->clone() : nullptr );
+    mLineSymbol.reset( other.mLineSymbol.get() ? other.mLineSymbol->clone() : nullptr );
     mSizeScaleTransformer.reset( other.mSizeScaleTransformer.get() ? new QgsSizeScaleTransformer( *other.mSizeScaleTransformer ) : nullptr );
     mVAlign = other.mVAlign;
     mFont = other.mFont;
@@ -63,6 +71,16 @@ void QgsDataDefinedSizeLegend::setSymbol( QgsMarkerSymbol *symbol )
 QgsMarkerSymbol *QgsDataDefinedSizeLegend::symbol() const
 {
   return mSymbol.get();
+}
+
+void QgsDataDefinedSizeLegend::setLineSymbol( QgsLineSymbol *symbol )
+{
+  mLineSymbol.reset( symbol );
+}
+
+QgsLineSymbol *QgsDataDefinedSizeLegend::lineSymbol() const
+{
+  return mLineSymbol.get();
 }
 
 void QgsDataDefinedSizeLegend::setSizeScaleTransformer( QgsSizeScaleTransformer *transformer )
@@ -143,6 +161,8 @@ QgsLegendSymbolList QgsDataDefinedSizeLegend::legendSymbolList() const
 
 void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, QSizeF *outputSize, double *labelXOffset ) const
 {
+  // this assumes the context's painter has been scaled to pixels in advance!
+
   if ( mType != LegendCollapsed || mSizeClasses.isEmpty() || !mSymbol )
   {
     if ( outputSize )
@@ -251,8 +271,7 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
   //
 
   QPainter *p = context.painter();
-
-  p->save();
+  QgsScopedQPainterState painterState( p );
   p->translate( 0, -textTopY );
 
   // draw symbols first so that they do not cover
@@ -263,7 +282,7 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
     double outputSymbolSize = context.convertToPainterUnits( c.size, s->sizeUnit(), s->sizeMapUnitScale() );
     double tx = ( outputLargestSize - outputSymbolSize ) / 2;
 
-    p->save();
+    QgsScopedQPainterState symbolPainterState( p );
     switch ( mVAlign )
     {
       case AlignCenter:
@@ -273,27 +292,39 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
         p->translate( tx, outputLargestSize - outputSymbolSize );
         break;
     }
-    s->drawPreviewIcon( p, QSize( outputSymbolSize, outputSymbolSize ) );
-    p->restore();
+    s->drawPreviewIcon( nullptr, QSize( outputSymbolSize, outputSymbolSize ), &context );
   }
 
-  p->setPen( mTextColor );
-  p->setFont( mFont );
+  QgsTextFormat format = QgsTextFormat::fromQFont( mFont );
+  format.setColor( mTextColor );
+
+  if ( mLineSymbol )
+  {
+    mLineSymbol->setColor( mTextColor );
+    mLineSymbol->startRender( context );
+  }
 
   int i = 0;
   for ( const SizeClass &c : qgis::as_const( classes ) )
   {
     // line from symbol to the text
-    p->drawLine( outputLargestSize / 2, symbolTopY[i], outputLargestSize + hLengthLine, textCenterY[i] );
+    if ( mLineSymbol )
+    {
+      mLineSymbol->renderPolyline( QPolygonF() << QPointF( outputLargestSize / 2, symbolTopY[i] )
+                                   << QPointF( outputLargestSize + hLengthLine, textCenterY[i] ), nullptr, context );
+    }
 
     // draw label
     QRect rect( outputLargestSize + hLengthLine + hSpaceLineText, textCenterY[i] - textHeight / 2,
                 maxTextWidth, textHeight );
-    p->drawText( rect, mTextAlignment, c.label );
+
+    QgsTextRenderer::drawText( rect, 0, QgsTextRenderer::convertQtHAlignment( mTextAlignment ),
+                               QStringList() << c.label, context, format );
     i++;
   }
 
-  p->restore();
+  if ( mLineSymbol )
+    mLineSymbol->stopRender( context );
 }
 
 
@@ -342,6 +373,12 @@ QgsDataDefinedSizeLegend *QgsDataDefinedSizeLegend::readXml( const QDomElement &
   if ( !elemSymbol.isNull() )
   {
     ddsLegend->setSymbol( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( elemSymbol, context ) );
+  }
+
+  QDomElement lineSymbol = elem.firstChildElement( QStringLiteral( "lineSymbol" ) );
+  if ( !lineSymbol.isNull() )
+  {
+    ddsLegend->setLineSymbol( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( lineSymbol, context ) );
   }
 
   QgsSizeScaleTransformer *transformer = nullptr;
@@ -393,6 +430,12 @@ void QgsDataDefinedSizeLegend::writeXml( QDomElement &elem, const QgsReadWriteCo
   if ( mSymbol )
   {
     QDomElement elemSymbol = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "source" ), mSymbol.get(), doc, context );
+    elem.appendChild( elemSymbol );
+  }
+
+  if ( mLineSymbol )
+  {
+    QDomElement elemSymbol = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "lineSymbol" ), mLineSymbol.get(), doc, context );
     elem.appendChild( elemSymbol );
   }
 

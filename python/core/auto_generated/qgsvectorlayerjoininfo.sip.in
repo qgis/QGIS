@@ -39,7 +39,7 @@ Returns joined layer (may be ``None`` if the reference was set by layer ID and n
 
     void setJoinLayerId( const QString &layerId );
 %Docstring
-Sets ID of the joined layer. It will need to be overwritten by setJoinLayer() to a reference to real layer
+Sets ID of the joined layer. It will need to be overwritten by :py:func:`~QgsVectorLayerJoinInfo.setJoinLayer` to a reference to real layer
 %End
     QString joinLayerId() const;
 %Docstring
@@ -170,32 +170,52 @@ join layer information.
 .. versionadded:: 3.0
 %End
 
-    void setJoinFieldNamesBlackList( const QStringList &blackList );
+ void setJoinFieldNamesBlackList( const QStringList &blackList ) /Deprecated/;
 %Docstring
 Sets a list of fields to ignore whatever happens.
 
-.. versionadded:: 3.0
+.. deprecated::
+   use setJoinFieldNamesBlockList() instead
 %End
 
-    QStringList joinFieldNamesBlackList() const;
+ QStringList joinFieldNamesBlackList() const /Deprecated/;
 %Docstring
 Returns the list of fields to ignore.
 
-.. versionadded:: 3.0
+.. deprecated::
+   use joinFieldNamesBlockList() instead
 %End
 
-    bool hasSubset( bool blacklisted = true ) const;
+    void setJoinFieldNamesBlockList( const QStringList &list );
 %Docstring
-Returns ``True`` if blacklisted fields is not empty or if a subset of names
+Sets a ``list`` of fields to ignore whatever happens.
+
+.. seealso:: :py:func:`joinFieldNamesBlockList`
+
+.. versionadded:: 3.14
+%End
+
+    QStringList joinFieldNamesBlockList() const;
+%Docstring
+Returns the list of fields to ignore.
+
+.. seealso:: :py:func:`setJoinFieldNamesBlockList`
+
+.. versionadded:: 3.14
+%End
+
+    bool hasSubset( bool blocklisted = true ) const;
+%Docstring
+Returns ``True`` if blocklisted fields is not empty or if a subset of names
 has been set.
 
 .. versionadded:: 3.0
 %End
 
-    static QStringList joinFieldNamesSubset( const QgsVectorLayerJoinInfo &info, bool blacklisted = true );
+    static QStringList joinFieldNamesSubset( const QgsVectorLayerJoinInfo &info, bool blocklisted = true );
 %Docstring
 Returns the list of field names to use for joining considering
-blacklisted fields and subset.
+blocklisted fields and subset.
 
 .. versionadded:: 3.0
 %End

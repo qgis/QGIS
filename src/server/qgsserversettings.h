@@ -33,7 +33,6 @@
  * \brief Provides some enum describing the environment currently supported for configuration.
  * \since QGIS 3.0
  */
-#ifndef SIP_RUN
 class SERVER_EXPORT QgsServerSettingsEnv : public QObject
 {
     Q_OBJECT
@@ -59,18 +58,22 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
       QGIS_SERVER_LOG_STDERR,
       QGIS_PROJECT_FILE,
       MAX_CACHE_LAYERS,
+      QGIS_SERVER_IGNORE_BAD_LAYERS, //!< Do not consider the whole project unavailable if it contains bad layers
       QGIS_SERVER_CACHE_DIRECTORY,
       QGIS_SERVER_CACHE_SIZE,
-      QGIS_SERVER_SHOW_GROUP_SEPARATOR,  //! Show group (thousands) separator when formatting numeric values, defaults to FALSE (since QGIS 3.8)
-      QGIS_SERVER_OVERRIDE_SYSTEM_LOCALE,  //! Override system locale (since QGIS 3.8)
-      QGIS_SERVER_WMS_MAX_HEIGHT, //! Maximum height for a WMS request. The most conservative between this and the project one is used (since QGIS 3.6.2)
-      QGIS_SERVER_WMS_MAX_WIDTH, //! Maximum width for a WMS request. The most conservative between this and the project one is used (since QGIS 3.6.2)
-      QGIS_SERVER_API_RESOURCES_DIRECTORY, //! Base directory where HTML templates and static assets (e.g. images, js and css files) are searched for (since QGIS 3.10).
-      QGIS_SERVER_API_WFS3_MAX_LIMIT //! Maximum value for "limit" in a features request, defaults to 10000 (since QGIS 3.10).
+      QGIS_SERVER_SHOW_GROUP_SEPARATOR,  //!< Show group (thousands) separator when formatting numeric values, defaults to FALSE (since QGIS 3.8)
+      QGIS_SERVER_OVERRIDE_SYSTEM_LOCALE,  //!< Override system locale (since QGIS 3.8)
+      QGIS_SERVER_WMS_MAX_HEIGHT, //!< Maximum height for a WMS request. The most conservative between this and the project one is used (since QGIS 3.6.2)
+      QGIS_SERVER_WMS_MAX_WIDTH, //!< Maximum width for a WMS request. The most conservative between this and the project one is used (since QGIS 3.6.2)
+      QGIS_SERVER_API_RESOURCES_DIRECTORY, //!< Base directory where HTML templates and static assets (e.g. images, js and css files) are searched for (since QGIS 3.10).
+      QGIS_SERVER_API_WFS3_MAX_LIMIT, //!< Maximum value for "limit" in a features request, defaults to 10000 (since QGIS 3.10).
+      QGIS_SERVER_TRUST_LAYER_METADATA, //!< Trust layer metadata. Improves project read time. (since QGIS 3.16).
+      QGIS_SERVER_DISABLE_GETPRINT, //!< Disabled WMS GetPrint request and don't load layouts. Improves project read time. (since QGIS 3.16).
+      QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES, //!< Directories used by the landing page service to find .qgs and .qgz projects (since QGIS 3.16)
+      QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS //!< PostgreSQL connection strings used by the landing page service to find projects (since QGIS 3.16)
     };
     Q_ENUM( EnvVar )
 };
-#endif
 
 /**
  * \ingroup server
@@ -203,6 +206,22 @@ class SERVER_EXPORT QgsServerSettings
     int wmsMaxWidth() const;
 
     /**
+     * Returns the directories used by the landing page service to find .qgs
+     * and .qgz projects. Multiple directories can be specified by separating
+     * them with '||'.
+     * \since QGIS 3.16
+     */
+    QString landingPageProjectsDirectories() const;
+
+    /**
+     * Returns the PostgreSQL connection strings used by the landing page
+     * service to find projects. Multiple connections can be specified by
+     * separating them with '||'.
+     * \since QGIS 3.16
+     */
+    QString landingPageProjectsPgConnections() const;
+
+    /**
      * Returns the server-wide base directory where HTML templates and static assets (e.g. images, js and css files) are searched for.
      *
      * The default path is calculated by joining QgsApplication::pkgDataPath() with "resources/server/api", this path
@@ -222,9 +241,47 @@ class SERVER_EXPORT QgsServerSettings
      */
     qlonglong apiWfs3MaxLimit() const;
 
+    /**
+     * Returns TRUE if the bad layers are ignored and FALSE when the presence of a
+     * bad layers invalidates the whole project making it unavailable.
+     *
+     * The default value is TRUE, this value can be changed by setting the environment
+     * variable QGIS_SERVER_IGNORE_BAD_LAYERS.
+     *
+     * \since QGIS 3.10.5
+     */
+    bool ignoreBadLayers() const;
+
+    /**
+     * Returns TRUE if the reading flag trust layer metadata is activated.
+     *
+     * The default value is FALSE, this value can be changed by setting the environment
+     * variable QGIS_SERVER_TRUST_LAYER_METADATA.
+     *
+     * \since QGIS 3.16
+     */
+    bool trustLayerMetadata() const;
+
+    /**
+     * Returns TRUE if WMS GetPrint request is disabled and the project's
+     * reading flag QgsProject::ReadFlag::FlagDontLoadLayouts is activated.
+     *
+     * The default value is FALSE, this value can be changed by setting the environment
+     * variable QGIS_SERVER_DISABLE_GETPRINT.
+     *
+     * \since QGIS 3.16
+     */
+    bool getPrintDisabled() const;
+
+    /**
+     * Returns the string representation of a setting.
+     * \since QGIS 3.16
+     */
+    static QString name( QgsServerSettingsEnv::EnvVar env );
+
   private:
     void initSettings();
-    QVariant value( QgsServerSettingsEnv::EnvVar envVar ) const;
+    QVariant value( QgsServerSettingsEnv::EnvVar envVar, bool actual = false ) const;
     QMap<QgsServerSettingsEnv::EnvVar, QString> getEnv() const;
     void loadQSettings( const QString &envOptPath ) const;
     void prioritize( const QMap<QgsServerSettingsEnv::EnvVar, QString> &env );

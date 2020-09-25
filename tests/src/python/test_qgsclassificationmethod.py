@@ -17,10 +17,10 @@ from qgis.testing import unittest, start_app
 from qgis.core import QgsClassificationMethod, QgsClassificationLogarithmic, QgsFeature, QgsVectorLayer, QgsPointXY, \
     QgsGeometry
 
-
 start_app()
 
-#===========================================================
+
+# ===========================================================
 # Utility functions
 
 

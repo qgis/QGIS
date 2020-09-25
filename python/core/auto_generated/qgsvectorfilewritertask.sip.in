@@ -48,7 +48,7 @@ parameter indicates the file path for the written file.
 
 .. note::
 
-   this signal is deprecated in favor of completed().
+   this signal is deprecated in favor of :py:func:`~QgsVectorFileWriterTask.completed`.
 %End
 
 

@@ -17,6 +17,7 @@
 #include "qgsdiagramrenderer.h"
 #include "qgsrendercontext.h"
 #include "qgsexpression.h"
+#include "qgssymbollayerutils.h"
 
 #include <QPainter>
 
@@ -53,7 +54,7 @@ QSizeF QgsStackedBarDiagram::diagramSize( const QgsFeature &feature, const QgsRe
   }
 
   bool ok = false;
-  double value = attrVal.toDouble( &ok );
+  double value = fabs( attrVal.toDouble( &ok ) );
   if ( !ok )
   {
     return QSizeF(); //zero size if attribute is missing
@@ -86,6 +87,13 @@ QSizeF QgsStackedBarDiagram::diagramSize( const QgsFeature &feature, const QgsRe
       size = QSizeF( totalBarLength, s.barWidth );
       break;
     }
+  }
+
+  if ( s.showAxis() && s.axisLineSymbol() )
+  {
+    const double maxBleed = QgsSymbolLayerUtils::estimateMaxSymbolBleed( s.axisLineSymbol(), c ) / painterUnitConversionScale;
+    size.setWidth( size.width() + 2 * maxBleed );
+    size.setHeight( size.height() + 2 * maxBleed );
   }
 
   return size;
@@ -121,12 +129,6 @@ QSizeF QgsStackedBarDiagram::diagramSize( const QgsAttributes &attributes, const
     return QSizeF(); //zero size if no attributes
   }
 
-  double totalSum = 0;
-  for ( int i = 0; i < attributes.count(); ++i )
-  {
-    totalSum += attributes.at( i ).toDouble();
-  }
-
   // eh - this method returns size in unknown units ...! We'll have to fake it and use a rough estimation of
   // a conversion factor to painter units...
   // TODO QGIS 4.0 -- these methods should all use painter units, dependent on the render context scaling...
@@ -158,7 +160,8 @@ void QgsStackedBarDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCo
     return;
   }
 
-  QList<double> values;
+  QList< QPair<double, QColor> > values;
+  QList< QPair<double, QColor> > negativeValues;
 
   QgsExpressionContext expressionContext = c.expressionContext();
   expressionContext.setFeature( feature );
@@ -167,13 +170,26 @@ void QgsStackedBarDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCo
 
   values.reserve( s.categoryAttributes.size() );
   double total = 0;
+  double negativeTotal = 0;
+
+  QList< QColor >::const_iterator colIt = s.categoryColors.constBegin();
   for ( const QString &cat : qgis::as_const( s.categoryAttributes ) )
   {
     QgsExpression *expression = getExpression( cat, expressionContext );
     double currentVal = expression->evaluate( &expressionContext ).toDouble();
-    values.push_back( currentVal );
-    total += currentVal;
+    total += fabs( currentVal );
+    if ( currentVal >= 0 )
+    {
+      values.push_back( qMakePair( currentVal, *colIt ) );
+    }
+    else
+    {
+      negativeTotal += currentVal;
+      negativeValues.push_back( qMakePair( -currentVal, *colIt ) );
+    }
+    ++colIt;
   }
+
 
   const double spacing = c.convertToPainterUnits( s.spacing(), s.spacingUnit(), s.spacingMapUnitScale() );
   const double totalSpacing = std::max( 0, s.categoryAttributes.size() - 1 ) * spacing;
@@ -194,24 +210,41 @@ void QgsStackedBarDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCo
   if ( mApplySpacingAdjust )
     scaledMaxVal -= totalSpacing;
 
-  double currentOffset = 0;
+  double axisOffset = 0;
+  if ( !negativeValues.isEmpty() )
+  {
+    axisOffset = -negativeTotal / total * scaledMaxVal + ( negativeValues.size() - 1 ) * spacing;
+  }
   double scaledWidth = sizePainterUnits( s.barWidth, s, c );
-
 
   double baseX = position.x();
   double baseY = position.y();
+
+  if ( s.showAxis() && s.axisLineSymbol() )
+  {
+    // if showing axis, the diagram position needs shifting from the default base x so that the axis
+    // line stroke sits within the desired label engine rect (otherwise we risk overlaps of the axis line stroke)
+    const double maxBleed = QgsSymbolLayerUtils::estimateMaxSymbolBleed( s.axisLineSymbol(), c );
+    baseX += maxBleed;
+    baseY -= maxBleed;
+  }
 
   mPen.setColor( s.penColor );
   setPenWidth( mPen, s, c );
   p->setPen( mPen );
 
-  QList<double>::const_iterator valIt = values.constBegin();
-  QList< QColor >::const_iterator colIt = s.categoryColors.constBegin();
-  for ( ; valIt != values.constEnd(); ++valIt, ++colIt )
+  while ( !negativeValues.isEmpty() )
   {
-    double length = *valIt / total * scaledMaxVal;
+    values.push_front( negativeValues.takeLast() );
+  }
 
-    mCategoryBrush.setColor( *colIt );
+  double currentOffset = 0;
+  QList< QPair<double, QColor> >::const_iterator valIt = values.constBegin();
+  for ( ; valIt != values.constEnd(); ++valIt )
+  {
+    double length = valIt->first / total * scaledMaxVal;
+
+    mCategoryBrush.setColor( valIt->second );
     p->setBrush( mCategoryBrush );
 
     switch ( s.diagramOrientation )
@@ -234,5 +267,40 @@ void QgsStackedBarDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCo
     }
 
     currentOffset += length + spacing;
+  }
+
+  if ( s.showAxis() && s.axisLineSymbol() )
+  {
+    s.axisLineSymbol()->startRender( c );
+    QPolygonF axisPoints;
+    switch ( s.diagramOrientation )
+    {
+      case QgsDiagramSettings::Up:
+        axisPoints << QPointF( baseX, baseY - scaledMaxVal - spacing * std::max( 0, values.size() - 1 ) )
+                   << QPointF( baseX, baseY - axisOffset )
+                   << QPointF( baseX + scaledWidth, baseY - axisOffset );
+        break;
+
+      case QgsDiagramSettings::Down:
+        axisPoints << QPointF( baseX, baseY )
+                   << QPointF( baseX, baseY - scaledMaxVal - spacing * std::max( 0, values.size() - 1 ) + axisOffset )
+                   << QPointF( baseX + scaledWidth, baseY - scaledMaxVal - spacing * std::max( 0, values.size() - 1 ) + axisOffset );
+        break;
+
+      case QgsDiagramSettings::Right:
+        axisPoints << QPointF( baseX + scaledMaxVal + spacing * std::max( 0, values.size() - 1 ), baseY - scaledWidth )
+                   << QPointF( baseX + axisOffset, baseY - scaledWidth )
+                   << QPointF( baseX + axisOffset, baseY );
+        break;
+
+      case QgsDiagramSettings::Left:
+        axisPoints << QPointF( baseX, baseY - scaledWidth )
+                   << QPointF( baseX + scaledMaxVal + spacing * std::max( 0, values.size() - 1 ) - axisOffset, baseY - scaledWidth )
+                   << QPointF( baseX + scaledMaxVal + spacing * std::max( 0, values.size() - 1 ) - axisOffset, baseY );
+        break;
+    }
+
+    s.axisLineSymbol()->renderPolyline( axisPoints, nullptr, c );
+    s.axisLineSymbol()->stopRender( c );
   }
 }

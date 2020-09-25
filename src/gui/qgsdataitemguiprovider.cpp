@@ -14,7 +14,12 @@
  ***************************************************************************/
 
 #include "qgsdataitemguiprovider.h"
-
+#include "qgsdataitem.h"
+#include "qgsproviderregistry.h"
+#include "qgsprovidermetadata.h"
+#include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsmessagebar.h"
+#include <QMessageBox>
 //
 // QgsDataItemGuiContext
 //
@@ -35,6 +40,7 @@ void QgsDataItemGuiContext::setMessageBar( QgsMessageBar *messageBar )
 
 void QgsDataItemGuiProvider::populateContextMenu( QgsDataItem *, QMenu *, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
 {
+
 }
 
 bool QgsDataItemGuiProvider::rename( QgsDataItem *, const QString &, QgsDataItemGuiContext )
@@ -65,4 +71,61 @@ bool QgsDataItemGuiProvider::handleDrop( QgsDataItem *, QgsDataItemGuiContext, c
 QWidget *QgsDataItemGuiProvider::createParamWidget( QgsDataItem *, QgsDataItemGuiContext )
 {
   return nullptr;
+}
+
+void QgsDataItemGuiProvider::notify( const QString &title, const QString &message, QgsDataItemGuiContext context, Qgis::MessageLevel level )
+{
+  switch ( level )
+  {
+    case Qgis::MessageLevel::Info:
+    case Qgis::MessageLevel::None:
+    {
+      if ( context.messageBar() )
+      {
+        context.messageBar()->pushInfo( title, message );
+      }
+      else
+      {
+        QMessageBox::information( nullptr, title, message );
+      }
+      break;
+    }
+    case Qgis::MessageLevel::Warning:
+    {
+      if ( context.messageBar() )
+      {
+        context.messageBar()->pushWarning( title, message );
+      }
+      else
+      {
+        QMessageBox::warning( nullptr, title, message );
+      }
+      break;
+    }
+    case Qgis::MessageLevel::Critical:
+    {
+      if ( context.messageBar() )
+      {
+        context.messageBar()->pushCritical( title, message );
+      }
+      else
+      {
+        QMessageBox::critical( nullptr, title, message );
+      }
+      break;
+    }
+    case Qgis::MessageLevel::Success:
+    {
+      if ( context.messageBar() )
+      {
+        context.messageBar()->pushSuccess( title, message );
+      }
+      else
+      {
+        // There is no "success" in message box, let's use information instead
+        QMessageBox::information( nullptr, title, message );
+      }
+      break;
+    }
+  }
 }

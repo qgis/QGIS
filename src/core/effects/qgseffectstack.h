@@ -41,7 +41,7 @@
  * \since QGIS 2.9
  */
 
-class CORE_EXPORT QgsEffectStack : public QgsPaintEffect
+class CORE_EXPORT QgsEffectStack : public QgsPaintEffect SIP_NODEFAULTCTORS
 {
 
   public:

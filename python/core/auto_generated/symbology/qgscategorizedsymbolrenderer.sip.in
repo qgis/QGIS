@@ -144,8 +144,9 @@ Constructor for QgsCategorizedSymbolRenderer.
 The ``attrName`` argument specifies the layer's field name, or expression, which the categories will be matched against.
 
 A list of renderer ``categories`` can optionally be specified. If no categories are specified in the constructor, they
-can be added later by calling addCategory().
+can be added later by calling :py:func:`~QgsCategorizedSymbolRenderer.addCategory`.
 %End
+    ~QgsCategorizedSymbolRenderer();
 
     virtual QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
@@ -483,7 +484,7 @@ Returns the matching symbol corresponding to an attribute ``value``.
 Returns the matching symbol corresponding to an attribute ``value``.
 
 Will return ``None`` if no matching symbol was found for ``value``, or
-if the category corresponding to ``value`` is currently disabled (see QgsRendererCategory.renderState()).
+if the category corresponding to ``value`` is currently disabled (see :py:func:`QgsRendererCategory.renderState()`).
 
 If ``foundMatchingSymbol`` is specified then it will be set to ``True`` if
 a matching category was found. This can be used to differentiate between

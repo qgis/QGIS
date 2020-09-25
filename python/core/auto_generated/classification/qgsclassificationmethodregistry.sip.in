@@ -18,7 +18,7 @@ class QgsClassificationMethodRegistry
 This class manages all known classification methods
 
 QgsClassificationMethodRegistry is not usually directly created, but rather accessed through
-:py:func:`QgsApplication.classificationMethodRegistry()`
+:py:func:`QgsApplication.classificationMethodRegistry()`.
 
 .. versionadded:: 3.10
 %End

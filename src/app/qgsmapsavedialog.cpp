@@ -45,13 +45,15 @@
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfileutils.h"
+#include "qgsannotationlayer.h"
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 
-QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, const QList<QgsDecorationItem *> &decorations, const QList< QgsAnnotation *> &annotations, DialogType type )
+QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, const QList<QgsMapDecoration *> &decorations, const QList< QgsAnnotation *> &annotations, DialogType type )
   : QDialog( parent )
   , mDialogType( type )
   , mMapCanvas( mapCanvas )
+  , mDecorations( decorations )
   , mAnnotations( annotations )
 {
   setupUi( this );
@@ -75,14 +77,13 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
   mScaleWidget->setShowCurrentScaleButton( true );
 
   QString activeDecorations;
-  const auto constDecorations = decorations;
-  for ( QgsDecorationItem *decoration : constDecorations )
+  const auto constDecorations = mDecorations;
+  for ( QgsMapDecoration *decoration : constDecorations )
   {
-    mDecorations << decoration;
     if ( activeDecorations.isEmpty() )
-      activeDecorations = decoration->name().toLower();
+      activeDecorations = decoration->displayName().toLower();
     else
-      activeDecorations += QStringLiteral( ", %1" ).arg( decoration->name().toLower() );
+      activeDecorations += QStringLiteral( ", %1" ).arg( decoration->displayName().toLower() );
   }
   mDrawDecorations->setText( tr( "Draw active decorations: %1" ).arg( !activeDecorations.isEmpty() ? activeDecorations : tr( "none" ) ) );
 
@@ -99,25 +100,13 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
   {
     case Pdf:
     {
-      QStringList layers = QgsMapSettingsUtils::containsAdvancedEffects( mMapCanvas->mapSettings() );
-      if ( !layers.isEmpty() )
+      connect( mInfo, &QLabel::linkActivated, this, [this]( const QString & )
       {
-        mInfoDetails = tr( "The following layer(s) use advanced effects:\n\n%1\n\nRasterizing map is recommended for proper rendering." ).arg(
-                         QChar( 0x2022 ) + QStringLiteral( " " ) + layers.join( QStringLiteral( "\n" ) + QChar( 0x2022 ) + QStringLiteral( " " ) ) );
-        connect( mInfo, &QLabel::linkActivated, this, [this]( const QString & )
-        {
-          QgsMessageViewer *viewer = new QgsMessageViewer( this );
-          viewer->setWindowTitle( tr( "Advanced effects warning" ) );
-          viewer->setMessageAsPlainText( mInfoDetails );
-          viewer->exec();
-        } );
-        mInfo->setText( tr( "%1A number of layers%2 use advanced effects, rasterizing map is recommended for proper rendering." ).arg( QStringLiteral( "<a href='#'>" ), QStringLiteral( "</a>" ) ) );
-        mSaveAsRaster->setChecked( true );
-      }
-      else
-      {
-        mSaveAsRaster->setChecked( false );
-      }
+        QgsMessageViewer *viewer = new QgsMessageViewer( this );
+        viewer->setWindowTitle( tr( "Advanced effects warning" ) );
+        viewer->setMessageAsPlainText( mInfoDetails );
+        viewer->exec();
+      } );
 
       this->setWindowTitle( tr( "Save Map as PDF" ) );
 
@@ -143,6 +132,9 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
         mGeoPdfFormatComboBox->addItem( tr( "ISO 32000 Extension (recommended)" ) );
         mGeoPdfFormatComboBox->addItem( tr( "OGC Best Practice" ) );
       }
+
+      connect( mGeoPDFGroupBox, &QGroupBox::toggled, this, &QgsMapSaveDialog::updatePdfExportWarning );
+      updatePdfExportWarning();
       break;
     }
 
@@ -310,7 +302,7 @@ bool QgsMapSaveDialog::saveWorldFile() const
 
 bool QgsMapSaveDialog::exportMetadata() const
 {
-  return mExportMetadataCheckBox->isChecked();;
+  return mExportMetadataCheckBox->isChecked();
 }
 
 bool QgsMapSaveDialog::saveAsRaster() const
@@ -343,10 +335,19 @@ void QgsMapSaveDialog::applyMapSettings( QgsMapSettings &mapSettings )
   mapSettings.setBackgroundColor( mMapCanvas->canvasColor() );
   mapSettings.setRotation( mMapCanvas->rotation() );
   mapSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
-  mapSettings.setLayers( mMapCanvas->layers() );
+
+  QList< QgsMapLayer * > layers = mMapCanvas->layers();
+  if ( !QgsProject::instance()->mainAnnotationLayer()->isEmpty() )
+  {
+    layers.insert( 0, QgsProject::instance()->mainAnnotationLayer() );
+  }
+  mapSettings.setLayers( layers );
   mapSettings.setLabelingEngineSettings( mMapCanvas->mapSettings().labelingEngineSettings() );
   mapSettings.setTransformContext( QgsProject::instance()->transformContext() );
   mapSettings.setPathResolver( QgsProject::instance()->pathResolver() );
+  mapSettings.setTemporalRange( mMapCanvas->mapSettings().temporalRange() );
+  mapSettings.setIsTemporal( mMapCanvas->mapSettings().isTemporal() );
+
 
   //build the expression context
   QgsExpressionContext expressionContext;
@@ -568,6 +569,23 @@ void QgsMapSaveDialog::onAccepted()
       }
       break;
     }
+  }
+}
+
+void QgsMapSaveDialog::updatePdfExportWarning()
+{
+  QStringList layers = QgsMapSettingsUtils::containsAdvancedEffects( mMapCanvas->mapSettings(), mGeoPDFGroupBox->isChecked() ? QgsMapSettingsUtils::EffectsCheckFlags( QgsMapSettingsUtils::EffectsCheckFlag::IgnoreGeoPdfSupportedEffects ) : nullptr );
+  if ( !layers.isEmpty() )
+  {
+    mInfoDetails = tr( "The following layer(s) use advanced effects:\n\n%1\n\nRasterizing map is recommended for proper rendering." ).arg(
+                     QChar( 0x2022 ) + QStringLiteral( " " ) + layers.join( QStringLiteral( "\n" ) + QChar( 0x2022 ) + QStringLiteral( " " ) ) );
+    mInfo->setText( tr( "%1A number of layers%2 use advanced effects, rasterizing map is recommended for proper rendering." ).arg( QStringLiteral( "<a href='#'>" ), QStringLiteral( "</a>" ) ) );
+    mSaveAsRaster->setChecked( true );
+  }
+  else
+  {
+    mSaveAsRaster->setChecked( false );
+    mInfo->clear();
   }
 }
 

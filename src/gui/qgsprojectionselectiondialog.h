@@ -34,13 +34,13 @@
  * Typically you will use this when you want to prompt the user for
  * a coordinate system identifier e.g. from a plugin you might do this
  * to get an epsg code:
- * \code{.cpp}
- * QgsProjectionSelectionDialog mySelector( mQGisIface->mainWindow() );
- * mySelector.setCrs( crs );
- * if ( mySelector.exec() )
- * {
- *   mCrs = mySelector.crs();
- * }
+ *
+ * \code{.py}
+ *     crs = QgsCoordinateReferenceSystem()
+ *     mySelector = QgsProjectionSelectionDialog( iface.mainWindow() )
+ *     mySelector.setCrs( crs )
+ *     if mySelector.exec():
+ *       mCrs = mySelector.crs()
  * \endcode
  *
  * If you wish to embed the projection selector into an existing dialog
@@ -59,6 +59,8 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog, private Ui::QgsG
     QgsProjectionSelectionDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr,
                                   Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
+    ~QgsProjectionSelectionDialog() override;
+
     /**
      * Returns the CRS currently selected in the widget.
      * \see setCrs()
@@ -67,11 +69,19 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog, private Ui::QgsG
     QgsCoordinateReferenceSystem crs() const;
 
     /**
-     * Sets a \a message to show in the dialog. If an empty string is
-     * passed, the message will be a generic
-     * 'define the CRS for this layer'.
+     * Sets a \a message to show in the dialog.
+     *
+     * \see showNoCrsForLayerMessage()
      */
     void setMessage( const QString &message );
+
+    /**
+     * When called, the dialog will show a default "layer has no CRS set" message above the projection selector.
+     *
+     * \see setMessage()
+     * \since QGIS 3.16
+     */
+    void showNoCrsForLayerMessage();
 
     /**
      * Sets whether a "no/invalid" projection option should be shown. If this
@@ -89,6 +99,13 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog, private Ui::QgsG
      */
     bool showNoProjection() const;
 
+    /**
+     * Sets the text to show for the not set option. Note that this option is not shown
+     * by default and must be set visible by calling setShowNoProjection().
+     * \since QGIS 3.16
+     */
+    void setNotSetText( const QString &text );
+
   public slots:
 
     /**
@@ -105,7 +122,7 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog, private Ui::QgsG
      * by the given Coordinate Reference Systems.
      *
      * \param crsFilter a list of OGC Coordinate Reference Systems to filter the
-     *                  list of projections by.  This is useful in (e.g.) WMS situations
+     *                  list of projections by. This is useful in (e.g.) WMS situations
      *                  where you just want to offer what the WMS server can support.
      *
      * \warning This function's behavior is undefined if it is called after the dialog is shown.

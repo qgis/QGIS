@@ -24,7 +24,7 @@
 #include "qgis_sip.h"
 
 class QgsMapLayer;
-
+class QgsProject;
 
 /**
  * \ingroup core
@@ -56,18 +56,40 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
 
     /**
      * \brief QgsMapLayerModel creates a model to display layers in widgets.
+     *
+     * If a specific \a project is not specified then the QgsProject::instance() project will be used to
+     * populate the model.
      */
-    explicit QgsMapLayerModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
+    explicit QgsMapLayerModel( QObject *parent SIP_TRANSFERTHIS = nullptr, QgsProject *project = nullptr );
 
     /**
      * \brief QgsMapLayerModel creates a model to display a specific list of layers in a widget.
+     *
+     * If a specific \a project is not specified then the QgsProject::instance() project will be used to
+     * populate the model.
      */
-    explicit QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject *parent = nullptr );
+    explicit QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject *parent = nullptr, QgsProject *project = nullptr );
 
     /**
      * \brief setItemsCheckable defines if layers should be selectable in the widget
      */
     void setItemsCheckable( bool checkable );
+
+    /**
+     * Sets whether items in the model can be reordered via drag and drop.
+     *
+     * \see itemsCanBeReordered()
+     * \since QGIS 3.14
+     */
+    void setItemsCanBeReordered( bool allow );
+
+    /**
+     * Returns TRUE if items in the model can be reordered via drag and drop.
+     *
+     * \see setItemsCanBeReordered()
+     * \since QGIS 3.14
+     */
+    bool itemsCanBeReordered() const;
 
     /**
      * \brief checkAll changes the checkstate for all the layers
@@ -106,6 +128,12 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      * \brief layersChecked returns the list of layers which are checked (or unchecked)
      */
     QList<QgsMapLayer *> layersChecked( Qt::CheckState checkState = Qt::Checked );
+
+    /**
+     * Sets which layers are checked in the model.
+     */
+    void setLayersChecked( const QList< QgsMapLayer * > &layers );
+
     //! returns if the items can be checked or not
     bool itemsCheckable() const { return mItemCheckable; }
 
@@ -144,6 +172,15 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
+    bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
+    QStringList mimeTypes() const override;
+    bool canDropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) const override;
+    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
+    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
+    Qt::DropActions supportedDropActions() const override;
 
     /**
      * Returns strings for all roles supported by this model.
@@ -151,9 +188,6 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      * \note Available only with Qt5 (Python and c++)
      */
     QHash<int, QByteArray> roleNames() const override SIP_SKIP;
-
-    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
     /**
      * Returns the icon corresponding to a specified map \a layer.
@@ -169,6 +203,9 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     QList<QgsMapLayer *> mLayers;
     QMap<QString, Qt::CheckState> mLayersChecked;
     bool mItemCheckable = false;
+    bool mCanReorder = false;
+
+    QgsProject *mProject = nullptr;
 
   private:
 

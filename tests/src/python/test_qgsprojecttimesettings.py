@@ -67,6 +67,8 @@ class TestQgsProjectTimeSettings(unittest.TestCase):
         self.assertEqual(p.timeStepUnit(), QgsUnitTypes.TemporalDecades)
         p.setFramesPerSecond(90)
         self.assertEqual(p.framesPerSecond(), 90)
+        p.setIsTemporalRangeCumulative(True)
+        self.assertTrue(p.isTemporalRangeCumulative())
 
     def testReadWrite(self):
         p = QgsProjectTimeSettings()
@@ -88,6 +90,7 @@ class TestQgsProjectTimeSettings(unittest.TestCase):
         p.setTimeStep(4.8)
         p.setTimeStepUnit(QgsUnitTypes.TemporalDecades)
         p.setFramesPerSecond(90)
+        p.setIsTemporalRangeCumulative(True)
         elem = p.writeXml(doc, QgsReadWriteContext())
 
         p2 = QgsProjectTimeSettings()
@@ -98,6 +101,7 @@ class TestQgsProjectTimeSettings(unittest.TestCase):
         self.assertEqual(p2.timeStep(), 4.8)
         self.assertEqual(p2.timeStepUnit(), QgsUnitTypes.TemporalDecades)
         self.assertEqual(p2.framesPerSecond(), 90)
+        self.assertTrue(p.isTemporalRangeCumulative())
 
 
 if __name__ == '__main__':

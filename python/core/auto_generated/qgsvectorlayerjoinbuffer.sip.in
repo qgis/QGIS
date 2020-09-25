@@ -17,7 +17,7 @@ typedef QList< QgsVectorLayerJoinInfo > QgsVectorJoinList;
 class QgsVectorLayerJoinBuffer : QObject, QgsFeatureSink
 {
 %Docstring
-Manages joined fields for a vector layer*
+Manages joined fields for a vector layer.
 %End
 
 %TypeHeaderCode
@@ -51,7 +51,7 @@ Updates field map with joined attributes
 
     void createJoinCaches();
 %Docstring
-Calls cacheJoinLayer() for all vector joins
+Calls :py:func:`~QgsVectorLayerJoinBuffer.cacheJoinLayer` for all vector joins
 %End
 
     void writeXml( QDomNode &layer_node, QDomDocument &document ) const;
@@ -62,7 +62,7 @@ Saves mVectorJoins to xml under the layer node
     void readXml( const QDomNode &layer_node );
 %Docstring
 Reads joins from project file.
-Does not resolve layer IDs to layers - call resolveReferences() afterwards
+Does not resolve layer IDs to layers - call :py:func:`~QgsVectorLayerJoinBuffer.resolveReferences` afterwards
 %End
 
     void resolveReferences( QgsProject *project );
@@ -154,7 +154,7 @@ Create a copy of the join buffer
 .. versionadded:: 2.6
 %End
 
-    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 );
+    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 
 %Docstring
 Adds a list of features in joined layers. Features given in parameter
@@ -207,12 +207,13 @@ created if its fields are not empty.
 .. versionadded:: 3.0
 %End
 
-    bool deleteFeature( QgsFeatureId fid ) const;
+    bool deleteFeature( QgsFeatureId fid, QgsVectorLayer::DeleteContext *context = 0 ) const;
 %Docstring
 Deletes a feature from joined layers. The feature id given in
 parameter is the one coming from the target layer.
 
 :param fid: The feature id from the target layer to delete
+:param context: The chain of features which will be deleted for feedback and to avoid infinite recursions. Can be ``None``.
 
 :return: ``False`` if an error happened, ``True`` otherwise
 
@@ -220,12 +221,13 @@ parameter is the one coming from the target layer.
 .. versionadded:: 3.0
 %End
 
-    bool deleteFeatures( const QgsFeatureIds &fids ) const;
+    bool deleteFeatures( const QgsFeatureIds &fids, QgsVectorLayer::DeleteContext *context = 0 ) const;
 %Docstring
 Deletes a list of features from joined layers. Feature ids given
 in a parameter are those coming from the target layer.
 
 :param fids: Feature ids from the target layer to delete
+:param context: The chain of features who will be deleted for feedback and to avoid infinite recursions. Can be ``None``.
 
 :return: ``False`` if an error happened, ``True`` otherwise
 

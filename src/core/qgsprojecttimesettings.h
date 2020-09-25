@@ -141,6 +141,20 @@ class CORE_EXPORT QgsProjectTimeSettings : public QObject
      */
     double framesPerSecond() const;
 
+    /**
+     * Sets the project's temporal range as cumulative in animation settings.
+     *
+     * \see isTemporalRangeCumulative()
+     */
+    void setIsTemporalRangeCumulative( bool state );
+
+    /**
+     * Returns the value of cumulative temporal range in animation settings.
+     *
+     * \see setIsTemporalRangeCumulative()
+     */
+    bool isTemporalRangeCumulative() const;
+
   signals:
 
     /**
@@ -157,6 +171,7 @@ class CORE_EXPORT QgsProjectTimeSettings : public QObject
     QgsUnitTypes::TemporalUnit mTimeStepUnit = QgsUnitTypes::TemporalHours;
     double mTimeStep = 1;
     double mFrameRate = 1;
+    bool mCumulativeTemporalRange = false;
 };
 
 

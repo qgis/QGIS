@@ -192,6 +192,8 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       //table item
       AttributeTableSourceLayer, //!< Attribute table source layer
       MapCrs, //!< Map CRS
+      StartDateTime, //!< Temporal range's start DateTime
+      EndDateTime, //!< Temporal range's end DateTime
     };
 
     /**

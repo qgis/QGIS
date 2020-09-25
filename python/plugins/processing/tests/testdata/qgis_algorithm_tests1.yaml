@@ -687,6 +687,25 @@ tests:
             path: skip
 
   - algorithm: native:mergevectorlayers
+    name: Merge points with mixed attribute types
+    params:
+      LAYERS:
+        params:
+        - name: custom/points.shp
+          type: vector
+        - name: custom/points_alt.shp
+          type: vector
+        type: multi
+    results:
+      OUTPUT:
+        name: expected/merged_points_mixed.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+            path: skip
+
+  - algorithm: native:mergevectorlayers
     name: Merge polygons
     params:
       LAYERS:
@@ -1693,18 +1712,6 @@ tests:
         - 094a2d0dea250690084e0812bf1e8f8666043d17d6a71de278810bb9
         type: rasterhash
 
-  - algorithm: native:createconstantrasterlayer
-    name: Create constant raster
-    params:
-      EXTENT: 270736.0673250682,270899.8544675339,4458899.000550019,4459029.574521748
-      TARGET_CRS: EPSG:23030
-      PIXEL_SIZE: 10.0
-      NUMBER: 3.0
-    results:
-      OUTPUT:
-        hash: 56172fe81f40efba9fadcaeccdbab247e99c8725990a94d9609769f6
-        type: rasterhash
-
   - algorithm: native:lineintersections
     name: Line intersections all fields
     params:
@@ -1795,6 +1802,22 @@ tests:
     results:
       OUTPUT:
         name: expected/sum_line_length.gml
+        type: vector
+
+  - algorithm: native:sumlinelengths
+    name: Sum line lengths (projected CRS)
+    params:
+      COUNT_FIELD: line_count
+      LEN_FIELD: line_len
+      LINES:
+        name: custom/sumlinelengths.gpkg|layername=roads
+        type: vector
+      POLYGONS:
+        name: custom/sumlinelengths.gpkg|layername=polygons
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/sum_line_length_projected_crs.gml
         type: vector
 
   - algorithm: qgis:delaunaytriangulation

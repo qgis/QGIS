@@ -50,8 +50,8 @@ class TestQgsMapLayerProxyModel(unittest.TestCase):
         m.setExceptedLayerList([l2])
         self.assertEqual(m.exceptedLayerList(), [l2])
 
-        m.setLayerWhitelist([l2])
-        self.assertEqual(m.layerWhitelist(), [l2])
+        m.setLayerAllowlist([l2])
+        self.assertEqual(m.layerAllowlist(), [l2])
 
         m.setExcludedProviders(['a', 'b'])
         self.assertEqual(m.excludedProviders(), ['a', 'b'])
@@ -246,7 +246,7 @@ class TestQgsMapLayerProxyModel(unittest.TestCase):
         self.assertTrue(m.acceptsLayer(l3))
         self.assertFalse(m.acceptsLayer(l4))
 
-        m.setLayerWhitelist([l1])
+        m.setLayerAllowlist([l1])
         self.assertEqual(m.rowCount(), 1)
         self.assertEqual(m.data(m.index(0, 0)), 'layer 1')
 
@@ -264,7 +264,7 @@ class TestQgsMapLayerProxyModel(unittest.TestCase):
         self.assertFalse(m.acceptsLayer(l3))
         self.assertFalse(m.acceptsLayer(l4))
 
-        m.setLayerWhitelist([l2, l3])
+        m.setLayerAllowlist([l2, l3])
         self.assertEqual(m.rowCount(), 2)
         self.assertEqual(m.data(m.index(0, 0)), 'another')
         self.assertEqual(m.data(m.index(1, 0)), 'lAyEr 2')
@@ -274,7 +274,7 @@ class TestQgsMapLayerProxyModel(unittest.TestCase):
         self.assertTrue(m.acceptsLayer(l3))
         self.assertFalse(m.acceptsLayer(l4))
 
-        m.setLayerWhitelist([])
+        m.setLayerAllowlist([])
         self.assertEqual(m.rowCount(), 4)
 
         self.assertTrue(m.acceptsLayer(l1))

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string notr="true">Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="4" column="0" colspan="2">
@@ -29,7 +29,11 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QComboBox" name="mComboRelation"/>
+    <widget class="QComboBox" name="mComboRelation">
+     <property name="sizeAdjustPolicy">
+      <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+     </property>
+    </widget>
    </item>
    <item row="2" column="0" colspan="2">
     <widget class="QCheckBox" name="mCbxAllowNull">
@@ -95,6 +99,33 @@
       <bool>false</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout">
+      <item row="2" column="1">
+       <widget class="QToolButton" name="mAddFilterButton">
+        <property name="text">
+         <string>…</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" rowspan="4">
+       <widget class="QListWidget" name="mAvailableFieldsList"/>
+      </item>
+      <item row="1" column="2" rowspan="4">
+       <widget class="QListWidget" name="mFilterFieldsList"/>
+      </item>
+      <item row="5" column="0" colspan="3">
+       <widget class="QCheckBox" name="mCbxChainFilters">
+        <property name="toolTip">
+         <string>When activated, the filters will restrict the choices of fields to options that are </string>
+        </property>
+        <property name="text">
+         <string>Chain filters</string>
+        </property>
+       </widget>
+      </item>
       <item row="4" column="1">
        <spacer name="verticalSpacer_2">
         <property name="orientation">
@@ -107,28 +138,6 @@
          </size>
         </property>
        </spacer>
-      </item>
-      <item row="2" column="1">
-       <widget class="QToolButton" name="mAddFilterButton">
-        <property name="text">
-         <string>…</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QToolButton" name="mRemoveFilterButton">
-        <property name="text">
-         <string>…</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../../../images/images.qrc">
-          <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
-        </property>
-       </widget>
       </item>
       <item row="1" column="1">
        <spacer name="verticalSpacer">
@@ -143,21 +152,54 @@
         </property>
        </spacer>
       </item>
-      <item row="1" column="2" rowspan="4">
-       <widget class="QListWidget" name="mFilterFieldsList"/>
-      </item>
-      <item row="1" column="0" rowspan="4">
-       <widget class="QListWidget" name="mAvailableFieldsList"/>
-      </item>
-      <item row="5" column="0" colspan="3">
-       <widget class="QCheckBox" name="mCbxChainFilters">
-        <property name="toolTip">
-         <string>When activated, the filters will restrict the choices of fields to options that are </string>
+      <item row="6" column="0" colspan="3">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <property name="topMargin">
+         <number>10</number>
         </property>
+        <item>
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>Filter expression</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QToolButton" name="mEditExpression">
+          <property name="icon">
+           <iconset resource="../../../images/images.qrc">
+            <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="3" column="1">
+       <widget class="QToolButton" name="mRemoveFilterButton">
         <property name="text">
-         <string>Chain filters</string>
+         <string>…</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../images/images.qrc">
+          <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
         </property>
        </widget>
+      </item>
+      <item row="7" column="0" colspan="3">
+       <widget class="QTextEdit" name="mFilterExpression"/>
       </item>
      </layout>
     </widget>

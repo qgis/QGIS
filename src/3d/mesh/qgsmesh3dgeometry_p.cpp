@@ -314,24 +314,23 @@ QgsMeshLayer *QgsMesh3dGeometry::meshLayer() const
 
 QgsMesh3dGeometry::QgsMesh3dGeometry( QgsMeshLayer *layer,
                                       const QgsVector3D &origin,
-                                      const QgsMesh3DSymbol &symbol,
-                                      Qt3DCore::QNode *parent ):
-  Qt3DRender::QGeometry( parent ),
-  mOrigin( origin ),
-  mVertScale( symbol.verticalScale() ),
-  mLayerRef( layer )
+                                      const QgsMesh3DSymbol *symbol,
+                                      Qt3DCore::QNode *parent )
+  : Qt3DRender::QGeometry( parent )
+  , mOrigin( origin )
+  , mVertScale( symbol->verticalScale() )
+  , mLayerRef( layer )
 {}
 
-QgsMeshDataset3dGeometry::QgsMeshDataset3dGeometry(
-  QgsMeshLayer *layer,
-  const QgsDateTimeRange &timeRange,
-  const QgsVector3D &origin,
-  const QgsMesh3DSymbol &symbol,
-  Qt3DCore::QNode *parent ):
-  QgsMesh3dGeometry( layer, origin, symbol, parent ),
-  mIsVerticalMagnitudeRelative( symbol.isVerticalMagnitudeRelative() ),
-  mVerticalGroupDatasetIndex( symbol.verticalDatasetGroupIndex() ),
-  mTimeRange( timeRange )
+QgsMeshDataset3dGeometry::QgsMeshDataset3dGeometry( QgsMeshLayer *layer,
+    const QgsDateTimeRange &timeRange,
+    const QgsVector3D &origin,
+    const QgsMesh3DSymbol *symbol,
+    Qt3DCore::QNode *parent )
+  : QgsMesh3dGeometry( layer, origin, symbol, parent )
+  , mIsVerticalMagnitudeRelative( symbol->isVerticalMagnitudeRelative() )
+  , mVerticalGroupDatasetIndex( symbol->verticalDatasetGroupIndex() )
+  , mTimeRange( timeRange )
 {
   init();
 }
@@ -410,14 +409,18 @@ int QgsMeshDataset3dGeometry::extractDataset( QVector<double> &verticalMagnitude
 
   //extract the scalar dataset used to render vertical magnitude of geometry
   //define the vertical magnitude datasetIndex
-  int verticalDataSetIndexNumber = 0;
-  verticalDataSetIndexNumber = scalarDatasetIndex.dataset();
-  verticalDataSetIndexNumber = std::min( verticalDataSetIndexNumber, layer->dataProvider()->datasetCount( mVerticalGroupDatasetIndex ) - 1 );
-  QgsMeshDatasetIndex verticalMagDatasetIndex( mVerticalGroupDatasetIndex, verticalDataSetIndexNumber );
-
+  QgsMeshDatasetIndex verticalMagDatasetIndex;
+  verticalMagDatasetIndex = layer->datasetIndexAtTime( mTimeRange, mVerticalGroupDatasetIndex );
+  if ( !verticalMagDatasetIndex.isValid() )
+  {
+    //if invalid (for example, static mode) use the scalar dataset index
+    int vertDataSetIndex = scalarDatasetIndex.dataset();
+    vertDataSetIndex = std::min( vertDataSetIndex, layer->datasetCount( mVerticalGroupDatasetIndex ) - 1 );
+    verticalMagDatasetIndex = QgsMeshDatasetIndex( vertDataSetIndex, mVerticalGroupDatasetIndex );
+  }
   //define the active face for vertical magnitude, the inactive faces will not be rendered
   // The active face flag values are defined based on the vertival magnitude dataset
-  activeFaceFlagValues = layer->dataProvider()->areFacesActive( verticalMagDatasetIndex, 0, nativeMesh.faces.count() );
+  activeFaceFlagValues = layer->areFacesActive( verticalMagDatasetIndex, 0, nativeMesh.faces.count() );
   verticalMagnitude = QgsMeshLayerUtils::calculateMagnitudeOnVertices(
                         layer,
                         verticalMagDatasetIndex,
@@ -437,7 +440,7 @@ int QgsMeshDataset3dGeometry::extractDataset( QVector<double> &verticalMagnitude
 
   //extract the scalar dataset used to render color shading
   QgsMeshDataBlock scalarActiveFaceFlagValues =
-    layer->dataProvider()->areFacesActive( scalarDatasetIndex, 0, nativeMesh.faces.count() );
+    layer->areFacesActive( scalarDatasetIndex, 0, nativeMesh.faces.count() );
   scalarMagnitude = QgsMeshLayerUtils::calculateMagnitudeOnVertices(
                       layer,
                       scalarDatasetIndex,
@@ -447,12 +450,11 @@ int QgsMeshDataset3dGeometry::extractDataset( QVector<double> &verticalMagnitude
 }
 
 
-QgsMeshTerrain3dGeometry::QgsMeshTerrain3dGeometry(
-  QgsMeshLayer *layer,
-  const QgsVector3D &origin,
-  const QgsMesh3DSymbol &symbol,
-  Qt3DCore::QNode *parent ):
-  QgsMesh3dGeometry( layer, origin, symbol, parent )
+QgsMeshTerrain3dGeometry::QgsMeshTerrain3dGeometry( QgsMeshLayer *layer,
+    const QgsVector3D &origin,
+    const QgsMesh3DSymbol *symbol,
+    Qt3DCore::QNode *parent )
+  : QgsMesh3dGeometry( layer, origin, symbol, parent )
 {
   init();
 }

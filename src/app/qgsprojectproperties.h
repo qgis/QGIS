@@ -17,14 +17,18 @@
  ***************************************************************************/
 
 
-#include "qgsoptionsdialogbase.h"
 #include "ui_qgsprojectpropertiesbase.h"
+
+#include "qgsoptionsdialogbase.h"
+#include "qgsoptionswidgetfactory.h"
 #include "qgis.h"
 #include "qgsunittypes.h"
 #include "qgsguiutils.h"
 #include "qgsscalewidget.h"
 #include "qgshelp.h"
 #include "qgis_app.h"
+
+#include <QList>
 
 class QgsMapCanvas;
 class QgsRelationManagerDialog;
@@ -35,20 +39,22 @@ class QgsMetadataWidget;
 class QgsTreeWidgetItem;
 class QgsLayerCapabilitiesModel;
 class QgsBearingNumericFormat;
+class QgsOptionsPageWidget;
 
 /**
  * Dialog to set project level properties
-
-  \note actual state is stored in QgsProject singleton instance
-
+ *
+ * \note actual state is stored in QgsProject singleton instance
+ *
  */
-class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui::QgsProjectPropertiesBase
+class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui::QgsProjectPropertiesBase, public QgsExpressionContextGenerator
 {
     Q_OBJECT
 
   public:
     //! Constructor
-    QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
+                          const QList<QgsOptionsWidgetFactory *> &optionsFactories = QList<QgsOptionsWidgetFactory *>() );
 
     ~QgsProjectProperties() override;
 
@@ -65,6 +71,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
      */
     void setSelectedCrs( const QgsCoordinateReferenceSystem &crs );
 
+    QgsExpressionContext createExpressionContext() const override;
   public slots:
 
     /**
@@ -79,12 +86,14 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
     /**
      * Let the user add a scale to the list of project scales
-     * used in scale combobox instead of global ones */
+     * used in scale combobox instead of global ones.
+    */
     void pbnAddScale_clicked();
 
     /**
      * Let the user remove a scale from the list of project scales
-     * used in scale combobox instead of global ones */
+     * used in scale combobox instead of global ones.
+    */
     void pbnRemoveScale_clicked();
 
     //! Let the user load scales from file
@@ -170,8 +179,10 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
      */
     void cbxWCSPubliedStateChanged( int aIdx );
 
-    /* Update ComboBox accorindg to the selected new index
-     * Also sets the new selected Ellipsoid. */
+    /**
+     * Update ComboBox accorindg to the selected new index
+     * Also sets the new selected Ellipsoid.
+    */
     void updateEllipsoidUI( int newIndex );
 
     void mButtonAddColor_clicked();
@@ -245,14 +256,14 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     int mEllipsoidIndex;
     bool mBlockCrsUpdates = false;
 
+    QList< QgsOptionsPageWidget * > mAdditionalProjectPropertiesWidgets;
+
     std::unique_ptr< QgsBearingNumericFormat > mBearingFormat;
 
     //! populate WMTS tree
     void populateWmtsTree( const QgsLayerTreeGroup *treeGroup, QgsTreeWidgetItem *treeItem );
     //! add WMTS Grid definition based on CRS
     void addWmtsGrid( const QString &crsStr );
-    //! Check OWS configuration
-    void checkOWS( QgsLayerTreeGroup *treeGroup, QStringList &owsNames, QStringList &encodingMessages );
 
     //! Populates list with ellipsoids from Sqlite3 db
     void populateEllipsoidList();

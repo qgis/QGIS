@@ -491,13 +491,16 @@ Returns list of available DXF encodings
 %End
 
 
-    void registerDxfLayer( const QString &layerId, QgsFeatureId fid, const QString &layer );
+ void registerDxfLayer( const QString &layerId, QgsFeatureId fid, const QString &layer );
 %Docstring
 Register name of layer for feature
 
 :param layerId: id of layer
 :param fid: id of feature
 :param layer: dxf layer of feature
+
+.. deprecated::
+   Will be made private in QGIS 4
 %End
 
   private:

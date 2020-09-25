@@ -36,10 +36,14 @@ class QgsFeature;
 
 class Qgs3DMapSettings;
 
+#define SIP_NO_FILE
+
 
 /**
  * \ingroup 3d
  * Rendering context for preparation of 3D entities.
+ *
+ * \note Not available in Python bindings
  */
 class Qgs3DRenderContext
 {

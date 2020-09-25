@@ -277,6 +277,11 @@ void QgsAbstractProcessingParameterWidgetWrapper::postInitialize( const QList<Qg
   }
 }
 
+int QgsAbstractProcessingParameterWidgetWrapper::stretch() const
+{
+  return 0;
+}
+
 QgsExpressionContext QgsAbstractProcessingParameterWidgetWrapper::createExpressionContext() const
 {
   QgsExpressionContext context = QgsProcessingGuiUtils::createExpressionContext( mProcessingContextGenerator, mWidgetContext, mParameterDefinition ? mParameterDefinition->algorithm() : nullptr, linkedVectorLayer() );
@@ -430,3 +435,44 @@ QgsExpressionContext QgsProcessingGuiUtils::createExpressionContext( QgsProcessi
   return c;
 }
 ///@endcond
+
+QgsProcessingHiddenWidgetWrapper::QgsProcessingHiddenWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QObject *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+void QgsProcessingHiddenWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext & )
+{
+  if ( mValue == value )
+    return;
+
+  mValue = value;
+  emit widgetValueHasChanged( this );
+}
+
+QVariant QgsProcessingHiddenWidgetWrapper::widgetValue() const
+{
+  return mValue;
+}
+
+const QgsVectorLayer *QgsProcessingHiddenWidgetWrapper::linkedVectorLayer() const
+{
+  return mLayer;
+}
+
+void QgsProcessingHiddenWidgetWrapper::setLinkedVectorLayer( const QgsVectorLayer *layer )
+{
+  mLayer = layer;
+}
+
+QWidget *QgsProcessingHiddenWidgetWrapper::createWidget()
+{
+  return nullptr;
+
+}
+
+QLabel *QgsProcessingHiddenWidgetWrapper::createLabel()
+{
+  return nullptr;
+}

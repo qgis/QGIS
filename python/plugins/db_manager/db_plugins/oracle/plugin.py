@@ -394,8 +394,8 @@ class ORTable(Table):
         return ORTableDataModel(self, parent)
 
     def getValidQgisUniqueFields(self, onlyOne=False):
-        """ list of fields valid to load the table as layer in Qgis canvas.
-        Qgis automatically search for a valid unique field, so it's
+        """ list of fields valid to load the table as layer in QGIS canvas.
+        QGIS automatically search for a valid unique field, so it's
         needed only for queries and views.
         """
 

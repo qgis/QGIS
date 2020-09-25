@@ -351,8 +351,6 @@ class CORE_EXPORT QgsExpressionContextScope
     QHash<QString, QgsScopedExpressionFunction * > mFunctions;
     bool mHasFeature = false;
     QgsFeature mFeature;
-
-    bool variableNameSort( const QString &a, const QString &b );
 };
 
 /**

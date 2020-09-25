@@ -384,13 +384,6 @@ void QgsLayoutPictureWidget::updateSvgParamGui( bool resetValues )
     return;
 
   QString picturePath = mPicture->picturePath();
-  if ( !picturePath.endsWith( QLatin1String( ".svg" ), Qt::CaseInsensitive ) )
-  {
-    mFillColorButton->setEnabled( false );
-    mStrokeColorButton->setEnabled( false );
-    mStrokeWidthSpinBox->setEnabled( false );
-    return;
-  }
 
   //activate gui for svg parameters only if supported by the svg file
   bool hasFillParam, hasFillOpacityParam, hasStrokeParam, hasStrokeWidthParam, hasStrokeOpacityParam;

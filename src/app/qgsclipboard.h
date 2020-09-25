@@ -28,24 +28,22 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgis_app.h"
 
-/**
-  \brief QGIS internal clipboard for features.
-
-  An internal clipboard is required so that features can be retained in
-  their original fidelity.
-
-  The internal clipboard makes a copy of features that are presented to it,
-  therefore the original objects can safely be destructed independent of
-  the lifetime of the internal clipboard.
-
-  As this class matures it should also be able to accept CSV representations
-  of features in and out of the system clipboard (QClipboard).
-
-*/
-
 class QgsVectorLayer;
 class QgsFeatureStore;
 
+/**
+ * \brief QGIS internal clipboard for features.
+ *
+ * An internal clipboard is required so that features can be retained in
+ * their original fidelity.
+ *
+ * The internal clipboard makes a copy of features that are presented to it,
+ * therefore the original objects can safely be destructed independent of
+ * the lifetime of the internal clipboard.
+ *
+ * As this class matures it should also be able to accept CSV representations
+ * of features in and out of the system clipboard (QClipboard).
+*/
 class APP_EXPORT QgsClipboard : public QObject
 {
     Q_OBJECT

@@ -93,6 +93,8 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
   private slots:
     void projectSnapSettingsChanged();
 
+    void projectAvoidIntersectionModeChanged();
+
     void projectTopologicalEditingChanged();
 
     void enableSnapping( bool checked );
@@ -112,7 +114,10 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
 
     void enableIntersectionSnapping( bool enabled );
 
+    void enableSelfSnapping( bool enabled );
+
     void modeButtonTriggered( QAction *action );
+    void avoidIntersectionsModeButtonTriggered( QAction *action );
     void typeButtonTriggered( QAction *action );
     void snappingScaleModeTriggered( QAction *action );
 
@@ -137,6 +142,11 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     QgsMapCanvas *mCanvas = nullptr;
 
     QAction *mEnabledAction = nullptr;
+    QToolButton *mAvoidIntersectionsModeButton = nullptr;
+    QAction *mAvoidIntersectionsModeAction = nullptr; // hide widget does not work on toolbar, action needed
+    QAction *mAllowIntersectionsAction = nullptr;
+    QAction *mAvoidIntersectionsCurrentLayerAction = nullptr;
+    QAction *mAvoidIntersectionsLayersAction = nullptr;
     QToolButton *mModeButton = nullptr;
     QAction *mModeAction = nullptr; // hide widget does not work on toolbar, action needed
     QAction *mAllLayersAction = nullptr;
@@ -164,6 +174,7 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     QAction *mIntersectionSnappingAction = nullptr;
     QAction *mEnableTracingAction = nullptr;
     QgsDoubleSpinBox *mTracingOffsetSpinBox = nullptr;
+    QAction *mSelfSnappingAction = nullptr;
     QTreeView *mLayerTreeView = nullptr;
     QWidget *mAdvancedConfigWidget = nullptr;
     QgsFloatingWidget *mAdvancedConfigContainer = nullptr;

@@ -38,33 +38,34 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 
     bool equals( const QgsCurve &other ) const override;
 
-    QString geometryType() const override;
-    int dimension() const override;
+    QString geometryType() const override SIP_HOLDGIL;
+    int dimension() const override SIP_HOLDGIL;
     QgsCompoundCurve *clone() const override SIP_FACTORY;
     void clear() override;
 
     bool fromWkb( QgsConstWkbPtr &wkb ) override;
     bool fromWkt( const QString &wkt ) override;
 
-    QByteArray asWkb() const override;
+    QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const override;
     QString asWkt( int precision = 17 ) const override;
     QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     json asJsonObject( int precision = 17 ) const override SIP_SKIP;
 
     //curve interface
-    double length() const override;
-    QgsPoint startPoint() const override;
-    QgsPoint endPoint() const override;
+    double length() const override SIP_HOLDGIL;
+    QgsPoint startPoint() const override SIP_HOLDGIL;
+    QgsPoint endPoint() const override SIP_HOLDGIL;
     void points( QgsPointSequence &pts SIP_OUT ) const override;
-    int numPoints() const override;
-    bool isEmpty() const override;
+    int numPoints() const override SIP_HOLDGIL;
+    bool isEmpty() const override SIP_HOLDGIL;
 
     /**
      * Returns a new line string geometry corresponding to a segmentized approximation
      * of the curve.
      * \param tolerance segmentation tolerance
-     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
+     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve
+    */
     QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
 
     QgsCompoundCurve *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
@@ -73,12 +74,12 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     /**
      * Returns the number of curves in the geometry.
      */
-    int nCurves() const { return mCurves.size(); }
+    int nCurves() const SIP_HOLDGIL { return mCurves.size(); }
 
     /**
      * Returns the curve at the specified index.
      */
-    const QgsCurve *curveAt( int i ) const;
+    const QgsCurve *curveAt( int i ) const SIP_HOLDGIL;
 
     /**
      * Adds a curve to the geometry (takes ownership)
@@ -125,8 +126,8 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     bool dropMValue() override;
     void swapXy() override;
 
-    double xAt( int index ) const override;
-    double yAt( int index ) const override;
+    double xAt( int index ) const override SIP_HOLDGIL;
+    double yAt( int index ) const override SIP_HOLDGIL;
 
 #ifndef SIP_RUN
     void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
@@ -169,7 +170,8 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 
     /**
      * Turns a vertex id for the compound curve into one or more ids for the subcurves
-        \returns the index of the subcurve or -1 in case of error*/
+     * \returns the index of the subcurve or -1 in case of error
+    */
     QVector< QPair<int, QgsVertexId> > curveVertexId( QgsVertexId id ) const;
 
 };

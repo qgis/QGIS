@@ -689,12 +689,15 @@ QgsCurveTransform::QgsCurveTransform( const QgsCurveTransform &other )
 
 QgsCurveTransform &QgsCurveTransform::operator=( const QgsCurveTransform &other )
 {
-  mControlPoints = other.mControlPoints;
-  if ( other.mSecondDerivativeArray )
+  if ( this != &other )
   {
-    delete [] mSecondDerivativeArray;
-    mSecondDerivativeArray = new double[ mControlPoints.count()];
-    memcpy( mSecondDerivativeArray, other.mSecondDerivativeArray, sizeof( double ) * mControlPoints.count() );
+    mControlPoints = other.mControlPoints;
+    if ( other.mSecondDerivativeArray )
+    {
+      delete [] mSecondDerivativeArray;
+      mSecondDerivativeArray = new double[ mControlPoints.count()];
+      memcpy( mSecondDerivativeArray, other.mSecondDerivativeArray, sizeof( double ) * mControlPoints.count() );
+    }
   }
   return *this;
 }

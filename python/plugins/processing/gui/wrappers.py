@@ -141,7 +141,6 @@ def getExtendedLayerName(layer):
 
 
 class WidgetWrapper(QgsAbstractProcessingParameterWidgetWrapper):
-
     NOT_SET_OPTION = '~~~~!!!!NOT SET!!!!~~~~~~~'
 
     def __init__(self, param, dialog, row=0, col=0, **kwargs):
@@ -1832,7 +1831,6 @@ class BandWidgetWrapper(WidgetWrapper):
 
 
 class WidgetWrapperFactory:
-
     """
     Factory for parameter widget wrappers
     """

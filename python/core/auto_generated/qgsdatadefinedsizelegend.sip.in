@@ -76,6 +76,26 @@ Sets marker symbol that will be used to draw markers in legend
 Returns marker symbol that will be used to draw markers in legend
 %End
 
+    void setLineSymbol( QgsLineSymbol *symbol /Transfer/ );
+%Docstring
+Sets the line ``symbol`` that will be used to draw callout lines in legend.
+
+Ownership of ``symbol`` is transferred.
+
+.. seealso:: :py:func:`lineSymbol`
+
+.. versionadded:: 3.14
+%End
+
+    QgsLineSymbol *lineSymbol() const;
+%Docstring
+Returns the line symbol that will be used to draw callout lines in legend.
+
+.. seealso:: :py:func:`setLineSymbol`
+
+.. versionadded:: 3.14
+%End
+
     void setSizeScaleTransformer( QgsSizeScaleTransformer *transformer /Transfer/ );
 %Docstring
 Sets transformer for scaling of symbol sizes. Takes ownership of the object. Accepts ``None`` to set no transformer.

@@ -18,7 +18,7 @@
 #include "qgsattributesformproperties.h"
 
 
-QgsAttributeFormContainerEdit::QgsAttributeFormContainerEdit( QTreeWidgetItem *item, QWidget *parent )
+QgsAttributeFormContainerEdit::QgsAttributeFormContainerEdit( QTreeWidgetItem *item, QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
   , mTreeItem( item )
 {
@@ -32,6 +32,7 @@ QgsAttributeFormContainerEdit::QgsAttributeFormContainerEdit( QTreeWidgetItem *i
     // only top level items can be tabs
     // i.e. it's always a group box if it's a nested container
     mShowAsGroupBoxCheckBox->hide();
+    mShowAsGroupBoxCheckBox->setEnabled( false );
   }
 
   mTitleLineEdit->setText( itemData.name() );
@@ -40,6 +41,7 @@ QgsAttributeFormContainerEdit::QgsAttributeFormContainerEdit( QTreeWidgetItem *i
   mShowAsGroupBoxCheckBox->setChecked( itemData.showAsGroupBox() );
 
   mControlVisibilityGroupBox->setChecked( itemData.visibilityExpression().enabled() );
+  mVisibilityExpressionWidget->setLayer( layer );
   mVisibilityExpressionWidget->setExpression( itemData.visibilityExpression()->expression() );
   mColumnCountSpinBox->setValue( itemData.columnCount() );
   mBackgroundColorButton->setColor( itemData.backgroundColor() );
@@ -48,12 +50,17 @@ QgsAttributeFormContainerEdit::QgsAttributeFormContainerEdit( QTreeWidgetItem *i
   connect( mShowAsGroupBoxCheckBox, &QCheckBox::stateChanged, mShowLabelCheckBox, &QCheckBox::setEnabled );
 }
 
+void QgsAttributeFormContainerEdit::registerExpressionContextGenerator( QgsExpressionContextGenerator *generator )
+{
+  mVisibilityExpressionWidget->registerExpressionContextGenerator( generator );
+}
+
 void QgsAttributeFormContainerEdit::updateItemData()
 {
   QgsAttributesFormProperties::DnDTreeItemData itemData = mTreeItem->data( 0, QgsAttributesFormProperties::DnDTreeRole ).value<QgsAttributesFormProperties::DnDTreeItemData>();
 
   itemData.setColumnCount( mColumnCountSpinBox->value() );
-  itemData.setShowAsGroupBox( mShowAsGroupBoxCheckBox->isVisible() ? mShowAsGroupBoxCheckBox->isChecked() : false );
+  itemData.setShowAsGroupBox( mShowAsGroupBoxCheckBox->isEnabled() ? mShowAsGroupBoxCheckBox->isChecked() : false );
   itemData.setName( mTitleLineEdit->text() );
   itemData.setShowLabel( mShowLabelCheckBox->isChecked() );
   itemData.setBackgroundColor( mBackgroundColorButton->color() );

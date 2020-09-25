@@ -52,7 +52,6 @@ try:
 except:
     QGIS_SERVER_ENDPOINT_PORT = '0'  # Auto
 
-
 QGIS_AUTH_DB_DIR_PATH = tempfile.mkdtemp()
 
 os.environ['QGIS_AUTH_DB_DIR_PATH'] = QGIS_AUTH_DB_DIR_PATH
@@ -164,7 +163,7 @@ class TestAuthManager(unittest.TestCase):
         cls.server = subprocess.Popen([sys.executable, server_path],
                                       env=os.environ, stdout=subprocess.PIPE)
         line = cls.server.stdout.readline()
-        cls.port = int(re.findall(b':(\d+)', line)[0])
+        cls.port = int(re.findall(br':(\d+)', line)[0])
         assert cls.port != 0
 
         # We need a valid port before we setup the oauth configuration

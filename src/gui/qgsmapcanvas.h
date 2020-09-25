@@ -27,6 +27,8 @@
 #include "qgsgeometry.h"
 #include "qgscustomdrophandler.h"
 #include "qgstemporalrangeobject.h"
+#include "qgsmapcanvasinteractionblocker.h"
+#include "qgsproject.h"
 
 #include <QDomDocument>
 #include <QGraphicsView>
@@ -69,6 +71,10 @@ class QgsMapCanvasAnnotationItem;
 class QgsReferencedRectangle;
 
 class QgsTemporalController;
+
+class QMenu;
+class QgsMapMouseEvent;
+
 
 /**
  * \ingroup gui
@@ -126,7 +132,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     const QgsMapSettings &mapSettings() const SIP_KEEPREFERENCE;
 
     /**
-     * Sets the temporal controller, this controller will be used to
+     * Sets the temporal controller, tQgsMapCanvasInteractionBlockerhis controller will be used to
      * update the canvas temporal range.
      *
      * \since QGIS 3.14
@@ -282,14 +288,15 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Zoom to the next extent (view)
     void zoomToNextExtent();
 
-    // ! Clears the list of extents and sets current extent as first item
+    //! Clears the list of extents and sets current extent as first item
     void clearExtentHistory();
 
 
     /**
      * Set canvas extent to the bounding box of a set of features
-        \param layer the vector layer
-        \param ids the feature ids*/
+     * \param layer the vector layer
+     * \param ids the feature ids
+    */
     void zoomToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids );
 
     /**
@@ -349,6 +356,21 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! Returns the currently active tool
     QgsMapTool *mapTool();
+
+    /**
+     * Sets the \a project linked to this canvas.
+     *
+     * \since QGIS 3.14
+     */
+    void setProject( QgsProject *project );
+
+    /**
+     * Returns the project linked to this canvas.
+     * The returned value may be NULLPTR.
+     *
+     * \since QGIS 3.14
+     */
+    QgsProject *project();
 
     //! Write property of QColor bgColor.
     void setCanvasColor( const QColor &_newVal );
@@ -545,7 +567,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * Enables a preview mode for the map canvas
      * \param previewEnabled set to TRUE to enable a preview mode
      * \see setPreviewMode
-     * \since QGIS 2.3 */
+     * \since QGIS 2.3
+    */
     void setPreviewModeEnabled( bool previewEnabled );
 
     /**
@@ -553,7 +576,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * \returns TRUE if a preview mode is currently enabled
      * \see setPreviewModeEnabled
      * \see previewMode
-     * \since QGIS 2.3 */
+     * \since QGIS 2.3
+    */
     bool previewModeEnabled() const;
 
     /**
@@ -563,7 +587,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * \see previewMode
      * \see setPreviewModeEnabled
      * \see previewModeEnabled
-     * \since QGIS 2.3 */
+     * \since QGIS 2.3
+    */
     void setPreviewMode( QgsPreviewEffect::PreviewMode mode );
 
     /**
@@ -572,7 +597,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * \returns preview mode for map canvas
      * \see setPreviewMode
      * \see previewModeEnabled
-     * \since QGIS 2.3 */
+     * \since QGIS 2.3
+    */
     QgsPreviewEffect::PreviewMode previewMode() const;
 
     /**
@@ -636,12 +662,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /**
      * Sets the segmentation tolerance applied when rendering curved geometries
-    \param tolerance the segmentation tolerance*/
+     * \param tolerance the segmentation tolerance
+    */
     void setSegmentationTolerance( double tolerance );
 
     /**
      * Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
-    \param type the segmentation tolerance typename*/
+     * \param type the segmentation tolerance typename
+    */
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type );
 
     /**
@@ -723,6 +751,35 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     */
     const QgsDateTimeRange &temporalRange() const;
 
+    /**
+     * Installs an interaction \a blocker onto the canvas, which may prevent certain map canvas
+     * interactions from occurring.
+     *
+     * The caller retains ownership of \a blocker, and must correctly call removeInteractionBlocker()
+     * before deleting the object.
+     *
+     * \see allowInteraction()
+     * \see removeInteractionBlocker()
+     * \since QGIS 3.14
+     */
+    void installInteractionBlocker( QgsMapCanvasInteractionBlocker *blocker );
+
+    /**
+     * Removes an interaction \a blocker from the canvas.
+     *
+     * \see allowInteraction()
+     * \see installInteractionBlocker()
+     * \since QGIS 3.14
+     */
+    void removeInteractionBlocker( QgsMapCanvasInteractionBlocker *blocker );
+
+    /**
+     * Returns TRUE if the specified \a interaction is currently permitted on the canvas.
+     *
+     * \since QGIS 3.14
+     */
+    bool allowInteraction( QgsMapCanvasInteractionBlocker::Interaction interaction ) const;
+
   public slots:
 
     //! Repaints the canvas map
@@ -783,9 +840,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * Sets the factor of magnification to apply to the map canvas. Indeed, we
      * increase/decrease the DPI of the map settings according to this factor
      * in order to render marker point, labels, ... bigger.
+     * \param factor The factor of magnification
+     * \param center Optional point to re-center the map
      * \since QGIS 2.16
      */
-    void setMagnificationFactor( double factor );
+    void setMagnificationFactor( double factor, const QgsPointXY *center = nullptr );
 
     /**
      * Lock the scale, so zooming can be performed using magnication
@@ -835,12 +894,15 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void refreshMap();
 
     void mapThemeChanged( const QString &theme );
+    //! Renames the active map theme called \a theme to \a newTheme
+    void mapThemeRenamed( const QString &theme, const QString &newTheme );
 
   signals:
 
     /**
      * Emits current mouse position
-        \note changed in 1.3 */
+     * \note changed in 1.3
+    */
     void xyCoordinates( const QgsPointXY &p );
 
     //! Emitted when the scale of the map changes
@@ -876,8 +938,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      *
      */
 
+    // TODO: deprecate when decorations are reimplemented as map canvas items
+
     /**
-     * TODO: deprecate when decorations are reimplemented as map canvas items
      * - anything related to rendering progress is not visible outside of map canvas
      * - additional drawing shall be done directly within the renderer job or independently as a map canvas item
      */
@@ -979,10 +1042,20 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /**
      * Emitted when the map canvas temporal range changes.
-    *
-    * \since QGIS 3.14
-    */
+     *
+     * \since QGIS 3.14
+     */
     void temporalRangeChanged();
+
+
+    /**
+     * Emitted before the map canvas context menu will be shown.
+     * Can be used to extend the context menu.
+     *
+     * \since QGIS 3.16
+     */
+    void contextMenuAboutToShow( QMenu *menu, QgsMapMouseEvent *event );
+
 
   protected:
 
@@ -1037,6 +1110,28 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
   private:
 
+    // Restore scale RAII
+    class ScaleRestorer
+    {
+      public:
+        ScaleRestorer( QgsMapCanvas *canvas ):
+          mCanvas( canvas )
+        {
+          mLockedScale = mCanvas->mapSettings().scale();
+        };
+
+        ~ScaleRestorer()
+        {
+          QgsRectangle newExtent = mCanvas->mapSettings().extent();
+          newExtent.scale( mLockedScale / mCanvas->mapSettings().scale() );
+          mCanvas->mSettings.setExtent( newExtent );
+        };
+
+      private:
+        QgsMapCanvas *mCanvas;
+        double mLockedScale;
+    };
+
     //! encompases all map settings necessary for map rendering
     QgsMapSettings mSettings;
 
@@ -1055,6 +1150,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Flag that allows squashing multiple refresh() calls into just one delayed rendering job
     bool mRefreshScheduled = false;
 
+    //! Flag that triggers a refresh after an ongoing rendering job triggered by autoRefresh
+    bool mRefreshAfterJob = false;
+
     //! determines whether user has requested to suppress rendering
     bool mRenderFlag = true;
 
@@ -1069,6 +1167,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! previous tool if current is for zooming/panning
     QgsMapTool *mLastNonZoomMapTool = nullptr;
+
+    //! Pointer to project linked to this canvas
+    QgsProject *mProject = nullptr;
+
+    //! Context menu
+    QMenu *mMenu = nullptr;
 
     //! recently used extent
     QList <QgsRectangle> mLastExtent;
@@ -1145,6 +1249,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QgsDistanceArea mDa;
     QList<double> mZoomResolutions;
 
+    QList< QgsMapCanvasInteractionBlocker * > mInteractionBlockers;
+
     /**
      * Returns the last cursor position on the canvas in geographical coordinates
      * \since QGIS 3.4
@@ -1173,12 +1279,21 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /**
      * Returns bounding box of feature list (in canvas coordinates)
-        \param ids feature id list
-        \param layer the layer
-        \param bbox out: bounding box
-        \param errorMsg error message in case of error
-        \returns true in case of success*/
+     * \param ids feature id list
+     * \param layer the layer
+     * \param bbox out: bounding box
+     * \param errorMsg error message in case of error
+     * \returns true in case of success
+    */
     bool boundingBoxOfFeatureIds( const QgsFeatureIds &ids, QgsVectorLayer *layer, QgsRectangle &bbox, QString &errorMsg ) const;
+
+    /**
+     * Rerturns the optimal extent for a point \a layer and a given \a center point in canvas CRS.
+     * This will return an extent combined of the center and the closest point in the layer.
+     * The extent can be scaled with a \a scale factor.
+     * The returned extent might be an empty rect if it cannot be determnined.
+     */
+    QgsRectangle optimalExtentForPointLayer( QgsVectorLayer *layer, const QgsPointXY &center, int scaleFactor = 5 );
 
     void setLayersPrivate( const QList<QgsMapLayer *> &layers );
 
@@ -1194,6 +1309,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     int nextZoomLevel( const QList<double> &resolutions, bool zoomIn = true ) const;
     double zoomInFactor() const;
     double zoomOutFactor() const;
+
+    /**
+     * Make sure to remove any rendered images of temporal-enabled layers from cache (does nothing if cache is not enabled)
+     * \since QGIS 3.14
+     */
+    void clearTemporalCache();
+
+    void showContextMenu( QgsMapMouseEvent *event );
 
     friend class TestQgsMapCanvas;
 

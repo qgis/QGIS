@@ -20,6 +20,7 @@
 
 #include "qgis_gui.h"
 #include "qgstablecell.h"
+#include "qgsproperty.h"
 #include <QTableWidget>
 #include <QPlainTextEdit>
 #include <QStyledItemDelegate>
@@ -168,8 +169,10 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
      *
      * \see setSelectionForegroundColor()
      * \see selectionBackgroundColor()
+     *
+     * \deprecated use selectionTextFormat() instead.
      */
-    QColor selectionForegroundColor();
+    Q_DECL_DEPRECATED QColor selectionForegroundColor() SIP_DEPRECATED;
 
     /**
      * Returns the background color for the currently selected cells.
@@ -181,6 +184,45 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
      * \see selectionForegroundColor()
      */
     QColor selectionBackgroundColor();
+
+    /**
+     * Returns the horizontal alignment for the currently selected cells.
+     *
+     * If the returned value contains both horizontal and vertical alignment flags, then
+     * the selected cells have a mix of different horizontal alignments.
+     *
+     * \see selectionVerticalAlignment()
+     */
+    Qt::Alignment selectionHorizontalAlignment();
+
+    /**
+     * Returns the horizontal alignment for the currently selected cells.
+     *
+     * If the returned value contains both horizontal and vertical alignment flags, then
+     * the selected cells have a mix of different vertical alignments.
+     *
+     * \see selectionVerticalAlignment()
+     */
+    Qt::Alignment selectionVerticalAlignment();
+
+    /**
+     * Returns the QgsProperty used for the contents of the currently selected cells.
+     *
+     * If the returned value is a default constructed QgsProperty, then the selected
+     * cells have a mix of different properties.
+     *
+     * \since QGIS 3.16
+     */
+    QgsProperty selectionCellProperty();
+
+    /**
+     * Returns the text format for the currently selected cells.
+     *
+     * Returns an invalid QgsTextFormat if the selection has mixed text format.
+     *
+     * \since QGIS 3.16
+     */
+    QgsTextFormat selectionTextFormat();
 
     /**
      * Returns the height (in millimeters) of the rows associated with the current selection,
@@ -324,8 +366,10 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
      *
      * \see selectionForegroundColor()
      * \see setSelectionBackgroundColor()
+     *
+     * \deprecated Use setSelectionTextFormat() instead.
      */
-    void setSelectionForegroundColor( const QColor &color );
+    Q_DECL_DEPRECATED void setSelectionForegroundColor( const QColor &color ) SIP_DEPRECATED;
 
     /**
      * Sets the background color for the currently selected cells.
@@ -334,6 +378,40 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
      * \see setSelectionForegroundColor()
      */
     void setSelectionBackgroundColor( const QColor &color );
+
+    /**
+     * Sets the horizontal alignment for the currently selected cells.
+     *
+     * \see selectionHorizontalAlignment()
+     * \see setSelectionVerticalAlignment()
+     *
+     * \since QGIS 3.16
+     */
+    void setSelectionHorizontalAlignment( Qt::Alignment alignment );
+
+    /**
+     * Sets the vertical alignment for the currently selected cells.
+     *
+     * \see selectionVerticalAlignment()
+     * \see setSelectionHorizontalAlignment()
+     *
+     * \since QGIS 3.16
+     */
+    void setSelectionVerticalAlignment( Qt::Alignment alignment );
+
+    /**
+     * Sets the cell contents QgsProperty for the currently selected cells.
+     *
+     * \since QGIS 3.16
+     */
+    void setSelectionCellProperty( const QgsProperty &property );
+
+    /**
+     * Sets the text \a format for the selected cells.
+     *
+     * \since QGIS 3.16
+     */
+    void setSelectionTextFormat( const QgsTextFormat &format );
 
     /**
      * Sets the row \a height (in millimeters) for the currently selected rows, or 0 for automatic row height.
@@ -390,7 +468,11 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
       PresetBackgroundColorRole = Qt::UserRole + 1,
       RowHeight,
       ColumnWidth,
-      CellContent
+      CellContent,
+      TextFormat,
+      HorizontalAlignment,
+      VerticalAlignment,
+      CellProperty,
     };
 
     void updateHeaders();

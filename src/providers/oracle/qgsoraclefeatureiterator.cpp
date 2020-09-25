@@ -143,7 +143,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
   }
   else if ( !mFilterRect.isNull() )
   {
-    QgsDebugMsg( QStringLiteral( "filterRect without geometry ignored" ) );
+    QgsDebugMsgLevel( QStringLiteral( "filterRect without geometry ignored" ), 2 );
   }
 
   switch ( mRequest.filterType() )
@@ -511,7 +511,7 @@ bool QgsOracleFeatureIterator::openQuery( const QString &whereClause, const QVar
     if ( !whereClause.isEmpty() )
       query += QStringLiteral( " WHERE %1" ).arg( whereClause );
 
-    QgsDebugMsg( QStringLiteral( "Fetch features: %1" ).arg( query ) );
+    QgsDebugMsgLevel( QStringLiteral( "Fetch features: %1" ).arg( query ), 2 );
     mSql = query;
     mArgs = args;
     if ( !execQuery( query, args, 1 ) )

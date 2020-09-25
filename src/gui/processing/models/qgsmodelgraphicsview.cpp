@@ -22,9 +22,15 @@
 #include "qgsmodelviewtooltemporarykeyzoom.h"
 #include "qgsmodelcomponentgraphicitem.h"
 #include "qgsmodelgraphicsscene.h"
-
+#include "qgsprocessingmodelcomponent.h"
+#include "qgsprocessingmodelparameter.h"
+#include "qgsprocessingmodelchildalgorithm.h"
+#include "qgsxmlutils.h"
+#include "qgsprocessingmodelalgorithm.h"
 #include <QDragEnterEvent>
 #include <QScrollBar>
+#include <QApplication>
+#include <QClipboard>
 
 ///@cond NOT_STABLE
 
@@ -458,6 +464,346 @@ void QgsModelGraphicsView::snapSelected()
   endMacroCommand();
 }
 
+void QgsModelGraphicsView::copySelectedItems( QgsModelGraphicsView::ClipboardOperation operation )
+{
+  copyItems( modelScene()->selectedComponentItems(), operation );
+}
+
+void QgsModelGraphicsView::copyItems( const QList<QgsModelComponentGraphicItem *> &items, QgsModelGraphicsView::ClipboardOperation operation )
+{
+  if ( !modelScene() )
+    return;
+
+  QgsReadWriteContext context;
+  QDomDocument doc;
+  QDomElement documentElement = doc.createElement( QStringLiteral( "ModelComponentClipboard" ) );
+  if ( operation == ClipboardCut )
+  {
+    emit macroCommandStarted( tr( "Cut Items" ) );
+    emit beginCommand( QString() );
+  }
+
+  QList< QVariant > paramComponents;
+  QList< QVariant > groupBoxComponents;
+  QList< QVariant > algComponents;
+
+  QList< QgsModelComponentGraphicItem * > selectedCommentParents;
+  QList< QgsProcessingModelOutput > selectedOutputs;
+  QList< QgsProcessingModelOutput > selectedOutputsComments;
+  for ( QgsModelComponentGraphicItem *item : items )
+  {
+    if ( const QgsModelCommentGraphicItem *commentItem = dynamic_cast< QgsModelCommentGraphicItem * >( item ) )
+    {
+      selectedCommentParents << commentItem->parentComponentItem();
+      if ( const QgsModelOutputGraphicItem *outputItem = dynamic_cast< QgsModelOutputGraphicItem * >( commentItem->parentComponentItem() ) )
+      {
+        selectedOutputsComments << *( static_cast< const QgsProcessingModelOutput *>( outputItem->component() ) );
+      }
+    }
+    else if ( const QgsModelOutputGraphicItem *outputItem = dynamic_cast< QgsModelOutputGraphicItem * >( item ) )
+    {
+      selectedOutputs << *( static_cast< const QgsProcessingModelOutput *>( outputItem->component() ) );
+    }
+  }
+
+  for ( QgsModelComponentGraphicItem *item : items )
+  {
+    if ( const QgsProcessingModelParameter *param = dynamic_cast< QgsProcessingModelParameter * >( item->component() ) )
+    {
+      QgsProcessingModelParameter component = *param;
+
+      // was comment selected?
+      if ( !selectedCommentParents.contains( item ) )
+      {
+        // no, so drop comment
+        component.comment()->setDescription( QString() );
+      }
+
+      QVariantMap paramDef;
+      paramDef.insert( QStringLiteral( "component" ), component.toVariant() );
+      const QgsProcessingParameterDefinition *def = modelScene()->model()->parameterDefinition( component.parameterName() );
+      paramDef.insert( QStringLiteral( "definition" ), def->toVariantMap() );
+
+      paramComponents << paramDef;
+    }
+    else if ( QgsProcessingModelGroupBox *groupBox = dynamic_cast< QgsProcessingModelGroupBox * >( item->component() ) )
+    {
+      groupBoxComponents << groupBox->toVariant();
+    }
+    else if ( const QgsProcessingModelChildAlgorithm *alg = dynamic_cast< QgsProcessingModelChildAlgorithm * >( item->component() ) )
+    {
+      QgsProcessingModelChildAlgorithm childAlg = *alg;
+
+      // was comment selected?
+      if ( !selectedCommentParents.contains( item ) )
+      {
+        // no, so drop comment
+        childAlg.comment()->setDescription( QString() );
+      }
+
+      // don't copy outputs which weren't selected either
+      QMap<QString, QgsProcessingModelOutput> clipboardOutputs;
+      const QMap<QString, QgsProcessingModelOutput> existingOutputs = childAlg.modelOutputs();
+      for ( auto it = existingOutputs.constBegin(); it != existingOutputs.constEnd(); ++ it )
+      {
+        bool found = false;
+        for ( const QgsProcessingModelOutput &candidate : selectedOutputs )
+        {
+          if ( candidate.childId() == childAlg.childId() && candidate.name() == it.value().name() && candidate.childOutputName() == it.value().childOutputName() )
+          {
+            found = true;
+            break;
+          }
+        }
+        if ( found )
+        {
+          // should we also copy the comment?
+          bool commentFound = false;
+          for ( const QgsProcessingModelOutput &candidate : selectedOutputsComments )
+          {
+            if ( candidate.childId() == childAlg.childId() && candidate.name() == it.value().name() && candidate.childOutputName() == it.value().childOutputName() )
+            {
+              commentFound = true;
+              break;
+            }
+          }
+
+          QgsProcessingModelOutput output = it.value();
+          if ( !commentFound )
+            output.comment()->setDescription( QString() );
+
+          clipboardOutputs.insert( it.key(), output );
+        }
+      }
+      childAlg.setModelOutputs( clipboardOutputs );
+
+      algComponents << childAlg.toVariant();
+    }
+  }
+  QVariantMap components;
+  components.insert( QStringLiteral( "parameters" ), paramComponents );
+  components.insert( QStringLiteral( "groupboxes" ), groupBoxComponents );
+  components.insert( QStringLiteral( "algs" ), algComponents );
+  doc.appendChild( QgsXmlUtils::writeVariant( components, doc ) );
+  if ( operation == ClipboardCut )
+  {
+    emit deleteSelectedItems();
+    emit endCommand();
+    emit macroCommandEnded();
+  }
+
+  QMimeData *mimeData = new QMimeData;
+  mimeData->setData( QStringLiteral( "text/xml" ), doc.toByteArray() );
+  mimeData->setText( doc.toByteArray() );
+  QClipboard *clipboard = QApplication::clipboard();
+  clipboard->setMimeData( mimeData );
+}
+
+void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
+{
+  if ( !modelScene() )
+    return;
+
+  QList< QgsModelComponentGraphicItem * > pastedItems;
+  QDomDocument doc;
+  QClipboard *clipboard = QApplication::clipboard();
+  if ( doc.setContent( clipboard->mimeData()->data( QStringLiteral( "text/xml" ) ) ) )
+  {
+    QDomElement docElem = doc.documentElement();
+    QVariantMap res = QgsXmlUtils::readVariant( docElem ).toMap();
+
+    if ( res.contains( QStringLiteral( "parameters" ) ) && res.contains( QStringLiteral( "algs" ) ) )
+    {
+      QPointF pt;
+      switch ( mode )
+      {
+        case PasteModeCursor:
+        case PasteModeInPlace:
+        {
+          // place items at cursor position
+          pt = mapToScene( mapFromGlobal( QCursor::pos() ) );
+          break;
+        }
+        case PasteModeCenter:
+        {
+          // place items in center of viewport
+          pt = mapToScene( viewport()->rect().center() );
+          break;
+        }
+      }
+
+      emit beginCommand( tr( "Paste Items" ) );
+
+      QRectF pastedBounds;
+
+      QList< QgsProcessingModelGroupBox > pastedGroups;
+      for ( const QVariant &v : res.value( QStringLiteral( "groupboxes" ) ).toList() )
+      {
+        QgsProcessingModelGroupBox box;
+        // don't restore the uuid -- we need them to be unique in the model
+        box.loadVariant( v.toMap(), true );
+
+        pastedGroups << box;
+
+        modelScene()->model()->addGroupBox( box );
+
+        if ( !pastedBounds.isValid( ) )
+          pastedBounds = QRectF( box.position() - QPointF( box.size().width() / 2.0, box.size().height() / 2.0 ), box.size() );
+        else
+          pastedBounds = pastedBounds.united( QRectF( box.position() - QPointF( box.size().width() / 2.0, box.size().height() / 2.0 ), box.size() ) );
+      }
+
+      QStringList pastedParameters;
+      for ( const QVariant &v : res.value( QStringLiteral( "parameters" ) ).toList() )
+      {
+        QVariantMap param = v.toMap();
+        QVariantMap componentDef = param.value( QStringLiteral( "component" ) ).toMap();
+        QVariantMap paramDef = param.value( QStringLiteral( "definition" ) ).toMap();
+
+        std::unique_ptr< QgsProcessingParameterDefinition > paramDefinition( QgsProcessingParameters::parameterFromVariantMap( paramDef ) );
+
+        QgsProcessingModelParameter p;
+        p.loadVariant( componentDef );
+
+        // we need a unique name for the parameter
+        QString name = p.parameterName();
+        QString description = paramDefinition->description();
+        int next = 1;
+        while ( modelScene()->model()->parameterDefinition( name ) )
+        {
+          next++;
+          name = QStringLiteral( "%1 (%2)" ).arg( p.parameterName() ).arg( next );
+          description = QStringLiteral( "%1 (%2)" ).arg( paramDefinition->description() ).arg( next );
+        }
+        paramDefinition->setName( name );
+        paramDefinition->setDescription( description );
+        p.setParameterName( name );
+
+        modelScene()->model()->addModelParameter( paramDefinition.release(), p );
+        pastedParameters << p.parameterName();
+
+        if ( !pastedBounds.isValid( ) )
+          pastedBounds = QRectF( p.position() - QPointF( p.size().width() / 2.0, p.size().height() / 2.0 ), p.size() );
+        else
+          pastedBounds = pastedBounds.united( QRectF( p.position() - QPointF( p.size().width() / 2.0, p.size().height() / 2.0 ), p.size() ) );
+
+        if ( !p.comment()->description().isEmpty() )
+          pastedBounds = pastedBounds.united( QRectF( p.comment()->position() - QPointF( p.comment()->size().width() / 2.0, p.comment()->size().height() / 2.0 ), p.comment()->size() ) );
+      }
+
+      QStringList pastedAlgorithms;
+      for ( const QVariant &v : res.value( QStringLiteral( "algs" ) ).toList() )
+      {
+        QgsProcessingModelChildAlgorithm alg;
+        alg.loadVariant( v.toMap() );
+
+        // ensure algorithm id is unique
+        alg.generateChildId( *modelScene()->model() );
+        alg.reattach();
+
+        pastedAlgorithms << alg.childId();
+
+        if ( !pastedBounds.isValid( ) )
+          pastedBounds = QRectF( alg.position() - QPointF( alg.size().width() / 2.0, alg.size().height() / 2.0 ), alg.size() );
+        else
+          pastedBounds = pastedBounds.united( QRectF( alg.position() - QPointF( alg.size().width() / 2.0, alg.size().height() / 2.0 ), alg.size() ) );
+
+        if ( !alg.comment()->description().isEmpty() )
+          pastedBounds = pastedBounds.united( QRectF( alg.comment()->position() - QPointF( alg.comment()->size().width() / 2.0, alg.comment()->size().height() / 2.0 ), alg.comment()->size() ) );
+
+        const QMap<QString, QgsProcessingModelChildAlgorithm> existingAlgs = modelScene()->model()->childAlgorithms();
+
+        const QMap<QString, QgsProcessingModelOutput> outputs = alg.modelOutputs();
+        QMap<QString, QgsProcessingModelOutput> pastedOutputs;
+        for ( auto it = outputs.constBegin(); it != outputs.constEnd(); ++it )
+        {
+          QString name = it.value().name();
+          int next = 1;
+          bool unique = false;
+          while ( !unique )
+          {
+            unique = true;
+            for ( auto algIt = existingAlgs.constBegin(); algIt != existingAlgs.constEnd(); ++algIt )
+            {
+              const QMap<QString, QgsProcessingModelOutput> algOutputs = algIt->modelOutputs();
+              for ( auto outputIt = algOutputs.constBegin(); outputIt != algOutputs.constEnd(); ++outputIt )
+              {
+                if ( outputIt.value().name() == name )
+                {
+                  unique = false;
+                  break;
+                }
+              }
+              if ( !unique )
+                break;
+            }
+            if ( unique )
+              break;
+            next++;
+            name = QStringLiteral( "%1 (%2)" ).arg( it.value().name() ).arg( next );
+          }
+
+          QgsProcessingModelOutput newOutput = it.value();
+          newOutput.setName( name );
+          newOutput.setDescription( name );
+          pastedOutputs.insert( name, newOutput );
+
+          pastedBounds = pastedBounds.united( QRectF( newOutput.position() - QPointF( newOutput.size().width() / 2.0, newOutput.size().height() / 2.0 ), newOutput.size() ) );
+
+          if ( !alg.comment()->description().isEmpty() )
+            pastedBounds = pastedBounds.united( QRectF( newOutput.comment()->position() - QPointF( newOutput.comment()->size().width() / 2.0, newOutput.comment()->size().height() / 2.0 ), newOutput.comment()->size() ) );
+        }
+        alg.setModelOutputs( pastedOutputs );
+
+        modelScene()->model()->addChildAlgorithm( alg );
+      }
+
+      QPointF offset( 0, 0 );
+      switch ( mode )
+      {
+        case PasteModeInPlace:
+          break;
+
+        case PasteModeCursor:
+        case PasteModeCenter:
+        {
+          offset = pt - pastedBounds.topLeft();
+          break;
+        }
+      }
+
+      if ( !offset.isNull() )
+      {
+        for ( QgsProcessingModelGroupBox pastedGroup : qgis::as_const( pastedGroups ) )
+        {
+          pastedGroup.setPosition( pastedGroup.position() + offset );
+          modelScene()->model()->addGroupBox( pastedGroup );
+        }
+        for ( const QString &pastedParam : qgis::as_const( pastedParameters ) )
+        {
+          modelScene()->model()->parameterComponent( pastedParam ).setPosition( modelScene()->model()->parameterComponent( pastedParam ).position() + offset );
+          modelScene()->model()->parameterComponent( pastedParam ).comment()->setPosition( modelScene()->model()->parameterComponent( pastedParam ).comment()->position() + offset );
+        }
+        for ( const QString &pastedAlg : qgis::as_const( pastedAlgorithms ) )
+        {
+          modelScene()->model()->childAlgorithm( pastedAlg ).setPosition( modelScene()->model()->childAlgorithm( pastedAlg ).position() + offset );
+          modelScene()->model()->childAlgorithm( pastedAlg ).comment()->setPosition( modelScene()->model()->childAlgorithm( pastedAlg ).comment()->position() + offset );
+
+          const QMap<QString, QgsProcessingModelOutput> outputs = modelScene()->model()->childAlgorithm( pastedAlg ).modelOutputs();
+          for ( auto it = outputs.begin(); it != outputs.end(); ++it )
+          {
+            modelScene()->model()->childAlgorithm( pastedAlg ).modelOutput( it.key() ).setPosition( modelScene()->model()->childAlgorithm( pastedAlg ).modelOutput( it.key() ).position() + offset );
+            modelScene()->model()->childAlgorithm( pastedAlg ).modelOutput( it.key() ).comment()->setPosition( modelScene()->model()->childAlgorithm( pastedAlg ).modelOutput( it.key() ).comment()->position() + offset );
+          }
+        }
+      }
+
+      emit endCommand();
+    }
+  }
+
+  modelScene()->rebuildRequired();
+}
 
 QgsModelViewSnapMarker::QgsModelViewSnapMarker()
   : QGraphicsRectItem( QRectF( 0, 0, 0, 0 ) )

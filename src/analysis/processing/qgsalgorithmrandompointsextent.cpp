@@ -113,7 +113,7 @@ QVariantMap QgsRandomPointsExtentAlgorithm::processAlgorithm( const QVariantMap 
     int i = 0;
     while ( i < mNumPoints )
     {
-      if ( feedback && feedback->isCanceled() )
+      if ( feedback->isCanceled() )
         break;
 
       double rx = x_distribution( random_device );
@@ -136,7 +136,7 @@ QVariantMap QgsRandomPointsExtentAlgorithm::processAlgorithm( const QVariantMap 
     int i = 0;
     while ( i < mNumPoints )
     {
-      if ( feedback && feedback->isCanceled() )
+      if ( feedback->isCanceled() )
         break;
 
       double rx = x_distribution( random_device );

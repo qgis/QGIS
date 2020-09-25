@@ -95,7 +95,7 @@ Snaps a layout coordinate ``point``. If ``point`` was snapped, ``snapped`` will 
 
 The ``scaleFactor`` argument should be set to the transformation from
 scalar transform from layout coordinates to pixels, i.e. the
-graphics view transform().m11() value.
+graphics view :py:func:`~QgsLayoutSnapper.transform`.m11() value.
 
 This method considers snapping to the grid, snap lines, etc.
 
@@ -118,7 +118,7 @@ as a result of the snap operation.
 
 The ``scaleFactor`` argument should be set to the transformation from
 scalar transform from layout coordinates to pixels, i.e. the
-graphics view transform().m11() value.
+graphics view :py:func:`~QgsLayoutSnapper.transform`.m11() value.
 
 This method considers snapping to the grid, snap lines, etc.
 
@@ -138,9 +138,9 @@ was snapped vertically, ``snappedY`` will be set to ``True``.
 
 The ``scaleFactor`` argument should be set to the transformation from
 scalar transform from layout coordinates to pixels, i.e. the
-graphics view transform().m11() value.
+graphics view :py:func:`~QgsLayoutSnapper.transform`.m11() value.
 
-If snapToGrid() is disabled, this method will return the point
+If :py:func:`~QgsLayoutSnapper.snapToGrid` is disabled, this method will return the point
 unchanged.
 
 .. seealso:: :py:func:`snapPointsToGrid`
@@ -153,9 +153,9 @@ were snapped, ``snapped`` will be set to ``True``.
 
 The ``scaleFactor`` argument should be set to the transformation from
 scalar transform from layout coordinates to pixels, i.e. the
-graphics view transform().m11() value.
+graphics view :py:func:`~QgsLayoutSnapper.transform`.m11() value.
 
-If snapToGrid() is disabled, this method will not attempt to snap the points.
+If :py:func:`~QgsLayoutSnapper.snapToGrid` is disabled, this method will not attempt to snap the points.
 
 The returned value is the smallest delta which the points need to be shifted by in order to align
 one of the points to the grid.
@@ -170,9 +170,9 @@ was snapped, ``snapped`` will be set to ``True``.
 
 The ``scaleFactor`` argument should be set to the transformation from
 scalar transform from layout coordinates to pixels, i.e. the
-graphics view transform().m11() value.
+graphics view :py:func:`~QgsLayoutSnapper.transform`.m11() value.
 
-If snapToGuides() is disabled, this method will return the point
+If :py:func:`~QgsLayoutSnapper.snapToGuides` is disabled, this method will return the point
 unchanged.
 
 .. seealso:: :py:func:`snapPointsToGuides`
@@ -185,9 +185,9 @@ were snapped, ``snapped`` will be set to ``True``.
 
 The ``scaleFactor`` argument should be set to the transformation from
 scalar transform from layout coordinates to pixels, i.e. the
-graphics view transform().m11() value.
+graphics view :py:func:`~QgsLayoutSnapper.transform`.m11() value.
 
-If snapToGuides() is disabled, this method will not attempt to snap the points.
+If :py:func:`~QgsLayoutSnapper.snapToGuides` is disabled, this method will not attempt to snap the points.
 
 The returned value is the smallest delta which the points need to be shifted by in order to align
 one of the points to a guide.
@@ -203,9 +203,9 @@ was snapped, ``snapped`` will be set to ``True``.
 
 The ``scaleFactor`` argument should be set to the transformation from
 scalar transform from layout coordinates to pixels, i.e. the
-graphics view transform().m11() value.
+graphics view :py:func:`~QgsLayoutSnapper.transform`.m11() value.
 
-If snapToItems() is disabled, this method will return the point
+If :py:func:`~QgsLayoutSnapper.snapToItems` is disabled, this method will return the point
 unchanged.
 
 A list of items to ignore during the snapping can be specified via the ``ignoreItems`` list.
@@ -224,9 +224,9 @@ were snapped, ``snapped`` will be set to ``True``.
 
 The ``scaleFactor`` argument should be set to the transformation from
 scalar transform from layout coordinates to pixels, i.e. the
-graphics view transform().m11() value.
+graphics view :py:func:`~QgsLayoutSnapper.transform`.m11() value.
 
-If snapToItems() is disabled, this method will not attempt to snap the points.
+If :py:func:`~QgsLayoutSnapper.snapToItems` is disabled, this method will not attempt to snap the points.
 
 The returned value is the smallest delta which the points need to be shifted by in order to align
 one of the points to an item bound.
