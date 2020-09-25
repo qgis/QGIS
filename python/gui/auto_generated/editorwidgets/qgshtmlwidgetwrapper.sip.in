@@ -48,6 +48,13 @@ Clears the content and makes new initialization
 Sets the HTML code to ``htmlCode``
 %End
 
+    bool needsGeometry() const;
+%Docstring
+Returns true if the widget needs feature geometry
+
+.. versionadded:: 3.20
+%End
+
   public slots:
     virtual void setFeature( const QgsFeature &feature );
 
