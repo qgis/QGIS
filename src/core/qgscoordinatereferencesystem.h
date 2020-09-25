@@ -928,6 +928,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     bool loadFromDatabase( const QString &db, const QString &expression, const QString &value );
 
+    bool createFromWktInternal( const QString &wkt, const QString &description );
+
 #if PROJ_VERSION_MAJOR<6 // not used for proj >= 6.0
     static bool loadIds( QHash<int, QString> &wkts );
     static bool loadWkts( QHash<int, QString> &wkts, const char *filename );
