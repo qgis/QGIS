@@ -1861,13 +1861,13 @@ bool QgsLayoutItemMapGrid::shouldShowDivisionForSide( QgsLayoutItemMapGrid::Anno
   switch ( side )
   {
     case QgsLayoutItemMapGrid::Left:
-      return testFrameSideFlag( QgsLayoutItemMapGrid::FrameLeft ) && shouldShowForDisplayMode( coordinate, mLeftFrameDivisions );
+      return testFrameSideFlag( QgsLayoutItemMapGrid::FrameLeft ) && shouldShowForDisplayMode( coordinate, mEvaluatedLeftFrameDivisions );
     case QgsLayoutItemMapGrid::Right:
-      return testFrameSideFlag( QgsLayoutItemMapGrid::FrameRight ) && shouldShowForDisplayMode( coordinate, mRightFrameDivisions );
+      return testFrameSideFlag( QgsLayoutItemMapGrid::FrameRight ) && shouldShowForDisplayMode( coordinate, mEvaluatedRightFrameDivisions );
     case QgsLayoutItemMapGrid::Top:
-      return testFrameSideFlag( QgsLayoutItemMapGrid::FrameTop ) && shouldShowForDisplayMode( coordinate, mTopFrameDivisions );
+      return testFrameSideFlag( QgsLayoutItemMapGrid::FrameTop ) && shouldShowForDisplayMode( coordinate, mEvaluatedTopFrameDivisions );
     case QgsLayoutItemMapGrid::Bottom:
-      return testFrameSideFlag( QgsLayoutItemMapGrid::FrameBottom ) && shouldShowForDisplayMode( coordinate, mBottomFrameDivisions );
+      return testFrameSideFlag( QgsLayoutItemMapGrid::FrameBottom ) && shouldShowForDisplayMode( coordinate, mEvaluatedBottomFrameDivisions );
   }
   return false; // no warnings
 }
@@ -1879,11 +1879,11 @@ bool QgsLayoutItemMapGrid::shouldShowAnnotationForSide( QgsLayoutItemMapGrid::An
     case QgsLayoutItemMapGrid::Left:
       return shouldShowForDisplayMode( coordinate, mEvaluatedLeftGridAnnotationDisplay );
     case QgsLayoutItemMapGrid::Right:
-      return shouldShowForDisplayMode( coordinate, mRightGridAnnotationDisplay );
+      return shouldShowForDisplayMode( coordinate, mEvaluatedRightGridAnnotationDisplay );
     case QgsLayoutItemMapGrid::Top:
-      return shouldShowForDisplayMode( coordinate, mTopGridAnnotationDisplay );
+      return shouldShowForDisplayMode( coordinate, mEvaluatedTopGridAnnotationDisplay );
     case QgsLayoutItemMapGrid::Bottom:
-      return shouldShowForDisplayMode( coordinate, mBottomGridAnnotationDisplay );
+      return shouldShowForDisplayMode( coordinate, mEvaluatedBottomGridAnnotationDisplay );
   }
   return false; // no warnings
 }
@@ -1895,7 +1895,7 @@ bool QgsLayoutItemMapGrid::shouldShowForDisplayMode( QgsLayoutItemMapGrid::Annot
          || ( mode == QgsLayoutItemMapGrid::LongitudeOnly && coordinate == QgsLayoutItemMapGrid::Longitude );
 }
 
-/*
+
 QgsLayoutItemMapGrid::DisplayMode gridAnnotationDisplayModeFromDD(QString ddValue) {
   if( ddValue == QStringLiteral("x_only") )
     return QgsLayoutItemMapGrid::LatitudeOnly;
@@ -1906,7 +1906,7 @@ QgsLayoutItemMapGrid::DisplayMode gridAnnotationDisplayModeFromDD(QString ddValu
   else // if ( ddValue == QStringLiteral("all") )
     return QgsLayoutItemMapGrid::ShowAll;
 }
-*/
+
 
 void QgsLayoutItemMapGrid::refreshDataDefinedProperties()
 {
@@ -1950,16 +1950,15 @@ void QgsLayoutItemMapGrid::refreshDataDefinedProperties()
   mEvaluatedAnnotationFrameDistance = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapGridLabelDistance, context, mAnnotationFrameDistance );
   mEvaluatedCrossLength = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapGridCrossSize, context, mCrossLength );
   mEvaluatedGridFrameLineThickness = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapGridFrameLineThickness, context, mGridFramePenThickness );
-  QString leftGridAnnotationDisplayStr = mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridAnnotationDisplayLeft, context, QStringLiteral("all") );
-  QgsMessageLog::logMessage(QStringLiteral("DEBUG MAPGRID : ") + leftGridAnnotationDisplayStr, QStringLiteral("DEBUGDEBUG"));
-  if( leftGridAnnotationDisplayStr == QStringLiteral("x_only") )
-    mEvaluatedLeftGridAnnotationDisplay = LatitudeOnly;
-  else if ( leftGridAnnotationDisplayStr == QStringLiteral("y_only") )
-    mEvaluatedLeftGridAnnotationDisplay = LongitudeOnly;
-  else if ( leftGridAnnotationDisplayStr == QStringLiteral("disabled") )
-    mEvaluatedLeftGridAnnotationDisplay = HideAll;
-  else // if ( leftGridAnnotationDisplayStr == QStringLiteral("all") )
-    mEvaluatedLeftGridAnnotationDisplay = ShowAll;
+  mEvaluatedLeftGridAnnotationDisplay = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridAnnotationDisplayLeft, context, QStringLiteral("all") ) );
+  mEvaluatedRightGridAnnotationDisplay = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridAnnotationDisplayRight, context, QStringLiteral("all") ) );
+  mEvaluatedTopGridAnnotationDisplay = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridAnnotationDisplayTop, context, QStringLiteral("all") ) );
+  mEvaluatedBottomGridAnnotationDisplay = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridAnnotationDisplayBottom, context, QStringLiteral("all") ) );
+  mEvaluatedLeftFrameDivisions = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridFrameDivisionsLeft, context, QStringLiteral("all") ) );
+  mEvaluatedRightFrameDivisions = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridFrameDivisionsRight, context, QStringLiteral("all") ) );
+  mEvaluatedTopFrameDivisions = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridFrameDivisionsTop, context, QStringLiteral("all") ) );
+  mEvaluatedBottomFrameDivisions = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridFrameDivisionsBottom, context, QStringLiteral("all") ) );
+
 }
 
 double QgsLayoutItemMapGrid::mapWidth() const

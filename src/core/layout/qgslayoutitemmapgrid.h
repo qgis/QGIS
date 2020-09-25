@@ -1187,6 +1187,13 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     double mEvaluatedCrossLength = 0;
     double mEvaluatedGridFrameLineThickness = 0;
     DisplayMode mEvaluatedLeftGridAnnotationDisplay = QgsLayoutItemMapGrid::ShowAll;
+    DisplayMode mEvaluatedRightGridAnnotationDisplay = QgsLayoutItemMapGrid::ShowAll;
+    DisplayMode mEvaluatedTopGridAnnotationDisplay = QgsLayoutItemMapGrid::ShowAll;
+    DisplayMode mEvaluatedBottomGridAnnotationDisplay = QgsLayoutItemMapGrid::ShowAll;
+    DisplayMode mEvaluatedLeftFrameDivisions = QgsLayoutItemMapGrid::ShowAll;
+    DisplayMode mEvaluatedRightFrameDivisions = QgsLayoutItemMapGrid::ShowAll;
+    DisplayMode mEvaluatedTopFrameDivisions = QgsLayoutItemMapGrid::ShowAll;
+    DisplayMode mEvaluatedBottomFrameDivisions = QgsLayoutItemMapGrid::ShowAll;
 
     /**
      * Updates the grid lines annotation positions
