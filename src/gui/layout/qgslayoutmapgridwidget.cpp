@@ -189,6 +189,7 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   registerDataDefinedButton( mLabelDistDDBtn, QgsLayoutObject::MapGridLabelDistance );
   registerDataDefinedButton( mCrossWidthDDBtn, QgsLayoutObject::MapGridCrossSize );
   registerDataDefinedButton( mFrameLineThicknessDDBtn, QgsLayoutObject::MapGridFrameLineThickness );
+  registerDataDefinedButton( mAnnotationDisplayLeftDDBtn, QgsLayoutObject::MapGridAnnotationDisplayLeft );
 
   updateGuiElements();
 
@@ -223,6 +224,7 @@ void QgsLayoutMapGridWidget::populateDataDefinedButtons()
   updateDataDefinedButton( mLabelDistDDBtn );
   updateDataDefinedButton( mCrossWidthDDBtn );
   updateDataDefinedButton( mFrameLineThicknessDDBtn );
+  updateDataDefinedButton( mAnnotationDisplayLeftDDBtn );
 }
 
 void QgsLayoutMapGridWidget::setGuiElementValues()
