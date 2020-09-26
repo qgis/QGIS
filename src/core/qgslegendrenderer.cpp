@@ -442,9 +442,11 @@ int QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups 
   double totalHeight = 0;
   qreal maxGroupHeight = 0;
   int forcedColumnBreaks = 0;
+  double totalSpaceAboveGroups = 0;
   for ( const LegendComponentGroup &group : qgis::as_const( componentGroups ) )
   {
     totalHeight += spaceAboveGroup( group );
+    totalSpaceAboveGroups += spaceAboveGroup( group );
     totalHeight += group.size.height();
     maxGroupHeight = std::max( group.size.height(), maxGroupHeight );
 
@@ -472,17 +474,25 @@ int QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups 
   double closedColumnsHeight = 0;
   int autoPlacedBreaks = 0;
 
+  // Calculate the expected average space between items
+  double averageSpaceAboveGroups = 0;
+  if ( componentGroups.size() > targetNumberColumns )
+    averageSpaceAboveGroups = totalSpaceAboveGroups / ( componentGroups.size() );
+  // Correct the totalHeight using the number of columns because the first item
+  // in each column does not get any space above it
+  totalHeight -= targetNumberColumns * averageSpaceAboveGroups;
+
   for ( int i = 0; i < componentGroups.size(); i++ )
   {
-    // Recalc average height for remaining columns including current
-    double avgColumnHeight = ( totalHeight - closedColumnsHeight ) / ( numberAutoPlacedBreaks + 1 - autoPlacedBreaks );
-
     LegendComponentGroup group = componentGroups.at( i );
     double currentHeight = currentColumnHeight;
     if ( currentColumnGroupCount > 0 )
       currentHeight += spaceAboveGroup( group );
     currentHeight += group.size.height();
 
+    // Recalc average height for remaining columns including current
+    int numberRemainingColumns = numberAutoPlacedBreaks + 1 - autoPlacedBreaks;
+    double avgColumnHeight = ( totalHeight - closedColumnsHeight ) / numberRemainingColumns;
     bool canCreateNewColumn = ( currentColumnGroupCount > 0 )  // do not leave empty column
                               && ( currentColumn < targetNumberColumns - 1 ) // must not exceed max number of columns
                               && ( autoPlacedBreaks < numberAutoPlacedBreaks );
