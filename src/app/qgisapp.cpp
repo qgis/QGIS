@@ -7928,8 +7928,12 @@ void QgisApp::stopRendering()
 void QgisApp::hideAllLayers()
 {
   QgsDebugMsgLevel( QStringLiteral( "hiding all layers!" ), 3 );
-  mLayerTreeView->layerTreeModel()->rootGroup()->setItemVisibilityCheckedRecursive( false );
 
+  const auto constChildren = mLayerTreeView->layerTreeModel()->rootGroup()->children();
+  for ( QgsLayerTreeNode *node : constChildren )
+  {
+    node->setItemVisibilityCheckedRecursive( false );
+  }
 }
 
 void QgisApp::showAllLayers()
