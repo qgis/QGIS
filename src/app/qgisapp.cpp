@@ -1425,6 +1425,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.initPluginInstaller()" ) );
     // enable Python in the Plugin Manager and pass the PythonUtils to it
     mPluginManager->setPythonUtils( mPythonUtils );
+    // add Python Console options
+    initPythonConsoleOptions();
     endProfile();
   }
   else if ( mActionShowPythonDialog )
@@ -2926,6 +2928,12 @@ void QgisApp::createActions()
 void QgisApp::showStyleManager()
 {
   QgsGui::windowManager()->openStandardDialog( QgsWindowManagerInterface::DialogStyleManager );
+}
+
+void QgisApp::initPythonConsoleOptions()
+{
+  QgsPythonRunner::run( QStringLiteral( "import console" ) );
+  QgsPythonRunner::run( QStringLiteral( "console.init_options_widget()" ) );
 }
 
 void QgisApp::showPythonDialog()

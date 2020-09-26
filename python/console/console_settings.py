@@ -19,15 +19,54 @@ email                : lrssvtml (at) gmail (dot) com
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
 
-from qgis.PyQt.QtCore import QCoreApplication, QSize, Qt, QUrl
-from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QTableWidgetItem
+from qgis.PyQt.QtCore import QCoreApplication, QSize, QObject, Qt, pyqtSignal
+from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QTableWidgetItem, QHBoxLayout
 from qgis.PyQt.QtGui import QIcon, QFont, QColor, QFontDatabase, QDesktopServices
 
-from qgis.core import QgsSettings
+from qgis.core import QgsSettings, QgsApplication
+from qgis.gui import QgsOptionsPageWidget, QgsOptionsWidgetFactory
 
 from .console_base import QgsPythonConsoleBase
 from .console_compile_apis import PrepareAPIDialog
 from .ui_console_settings import Ui_SettingsDialogPythonConsole
+
+
+class SettingsWatcher(QObject):
+    settingsChanged = pyqtSignal()
+
+
+settingsWatcher = SettingsWatcher()
+
+
+class ConsoleOptionsFactory(QgsOptionsWidgetFactory):
+
+    def __init__(self):
+        super(QgsOptionsWidgetFactory, self).__init__()
+
+    def icon(self):
+        return QgsApplication.getThemeIcon('/console/mIconRunConsole.svg')
+
+    def createWidget(self, parent):
+        return ConsoleOptionsPage(parent)
+
+
+class ConsoleOptionsPage(QgsOptionsPageWidget):
+
+    def __init__(self, parent):
+        super(ConsoleOptionsPage, self).__init__(parent)
+        self.options_widget = optionsDialog(parent)
+        layout = QHBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setMargin(0)
+        self.setLayout(layout)
+        layout.addWidget(self.options_widget)
+        self.setObjectName('consoleOptions')
+
+    def apply(self):
+        self.config_widget.accept()
+
+    def helpKey(self):
+        return 'plugins/python_console.html'
 
 
 class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
@@ -128,6 +167,7 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
             )
             return
         self.saveSettings()
+        settingsWatcher.settingsChanged.emit()
         self.listPath = []
         QDialog.accept(self)
 

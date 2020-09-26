@@ -1762,6 +1762,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! show Python console
     void showPythonDialog();
 
+    //! add Python cnosole at start up
+    void initPythonConsoleOptions();
+
     //! Shows a warning when an old project file is read.
     void oldProjectVersionWarning( const QString & );
 
