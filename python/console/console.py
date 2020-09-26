@@ -28,7 +28,7 @@ from qgis.utils import iface
 from .console_sci import ShellScintilla
 from .console_output import ShellOutputScintilla
 from .console_editor import EditorTabWidget
-from .console_settings import optionsDialog
+from .console_settings import ConsoleOptionsFactory, settingsWatcher
 from qgis.core import Qgis, QgsApplication, QgsSettings
 from qgis.gui import QgsFilterLineEdit, QgsHelp, QgsDockWidget
 from functools import partial
@@ -37,6 +37,7 @@ import sys
 import re
 
 _console = None
+_options_factory = ConsoleOptionsFactory()
 
 
 def show_console():
@@ -72,6 +73,13 @@ def console_displayhook(obj):
     _console_output = obj
 
 
+def init_options_widget():
+    """ called from QGIS to add the console options widget """
+    global _options_factory
+    _options_factory.setTitle(QCoreApplication.translate("PythonConsole", "Python Console"))
+    iface.registerOptionsWidgetFactory(_options_factory)
+
+
 class PythonConsole(QgsDockWidget):
 
     def __init__(self, parent=None):
@@ -81,6 +89,7 @@ class PythonConsole(QgsDockWidget):
         # self.setAllowedAreas(Qt.BottomDockWidgetArea)
 
         self.console = PythonConsoleWidget(self)
+        settingsWatcher.settingsChanged.connect(self.console.updateSettings)
         self.setWidget(self.console)
         self.setFocusProxy(self.console)
 
@@ -688,10 +697,12 @@ class PythonConsoleWidget(QWidget):
             QDesktopServices.openUrl(QUrl('https://docs.qgis.org/{}.{}/en/docs/pyqgis_developer_cookbook/index.html'.format(m.group(1), m.group(2))))
 
     def openSettings(self):
-        if optionsDialog(self).exec_():
-            self.shell.refreshSettingsShell()
-            self.shellOut.refreshSettingsOutput()
-            self.tabEditorWidget.refreshSettingsEditor()
+        iface.showOptionsDialog(iface.mainWindow(), currentPage='consoleOptions')
+
+    def updateSettings(self):
+        self.shell.refreshSettingsShell()
+        self.shellOut.refreshSettingsOutput()
+        self.tabEditorWidget.refreshSettingsEditor()
 
     def callWidgetMessageBar(self, text):
         self.shellOut.widgetMessageBar(iface, text)
