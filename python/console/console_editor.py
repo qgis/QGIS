@@ -370,7 +370,7 @@ class Editor(QgsPythonConsoleBase):
         if not ACCESS_TOKEN:
             msg_text = QCoreApplication.translate(
                 'PythonConsole', 'GitHub personal access token must be generated (see Console Options)')
-            self.parent.pc.callWidgetMessageBarEditor(msg_text, 0, True)
+            self.parent.pc.callWidgetMessageBarEditor(msg_text, 1, True)
             return
 
         URL = "https://api.github.com/gists"
