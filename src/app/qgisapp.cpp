@@ -7166,9 +7166,18 @@ void QgisApp::stopRendering()
 //reimplements method from base (gui) class
 void QgisApp::hideAllLayers()
 {
+<<<<<<< HEAD
   QgsDebugMsg( QStringLiteral( "hiding all layers!" ) );
   mLayerTreeView->layerTreeModel()->rootGroup()->setItemVisibilityCheckedRecursive( false );
+=======
+  QgsDebugMsgLevel( QStringLiteral( "hiding all layers!" ), 3 );
+>>>>>>> 8d2a0d1ebb... Fix broken 'hide all layers' UX
 
+  const auto constChildren = mLayerTreeView->layerTreeModel()->rootGroup()->children();
+  for ( QgsLayerTreeNode *node : constChildren )
+  {
+    node->setItemVisibilityCheckedRecursive( false );
+  }
 }
 
 
