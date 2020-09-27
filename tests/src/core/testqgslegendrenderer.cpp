@@ -934,6 +934,8 @@ void TestQgsLegendRenderer::testColumns_data()
   QTest::newRow( "5 items, 3 columns" ) << "legend_5_by_3" << 5 << 3;
   QTest::newRow( "6 items, 3 columns" ) << "legend_6_by_3" << 6 << 3;
   QTest::newRow( "7 items, 3 columns" ) << "legend_7_by_3" << 7 << 3;
+  QTest::newRow( "27 items, 3 columns" ) << "legend_27_by_3" << 27 << 3;
+  QTest::newRow( "27 items, 9 columns" ) << "legend_27_by_9" << 27 << 9;
 }
 
 void TestQgsLegendRenderer::testColumns()

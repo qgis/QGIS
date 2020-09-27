@@ -453,7 +453,7 @@ int QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups 
     if ( group.placeColumnBreakBeforeGroup )
       forcedColumnBreaks++;
   }
-  double averageGroupHeight = (totalHeight - totalSpaceAboveGroups) / componentGroups.size();
+  double averageGroupHeight = ( totalHeight - totalSpaceAboveGroups ) / componentGroups.size();
 
   if ( mSettings.columnCount() == 0 && forcedColumnBreaks == 0 )
     return 0;
@@ -495,11 +495,11 @@ int QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups 
 
     // Recalc average height for remaining columns including current
     int numberRemainingColumns = numberAutoPlacedBreaks + 1 - autoPlacedBreaks;
-    double avgColumnHeight = ( currentHeight + numberRemainingGroups * averageGroupHeight + (numberRemainingGroups - numberRemainingColumns - 1) *  averageSpaceAboveGroups ) / numberRemainingColumns;
+    double avgColumnHeight = ( currentHeight + numberRemainingGroups * averageGroupHeight + ( numberRemainingGroups - numberRemainingColumns - 1 ) *  averageSpaceAboveGroups ) / numberRemainingColumns;
     // Round up to the next full number of groups to put in one column
     // This ensures that earlier columns contain more elements than later columns
-    int averageGroupsPerColumn = std::ceil(avgColumnHeight / (averageGroupHeight + averageSpaceAboveGroups));
-    avgColumnHeight = averageGroupsPerColumn * (averageGroupHeight + averageSpaceAboveGroups) - averageSpaceAboveGroups;
+    int averageGroupsPerColumn = std::ceil( avgColumnHeight / ( averageGroupHeight + averageSpaceAboveGroups ) );
+    avgColumnHeight = averageGroupsPerColumn * ( averageGroupHeight + averageSpaceAboveGroups ) - averageSpaceAboveGroups;
 
     bool canCreateNewColumn = ( currentColumnGroupCount > 0 )  // do not leave empty column
                               && ( currentColumn < targetNumberColumns - 1 ) // must not exceed max number of columns
