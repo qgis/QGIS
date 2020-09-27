@@ -453,6 +453,7 @@ int QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups 
     if ( group.placeColumnBreakBeforeGroup )
       forcedColumnBreaks++;
   }
+  double averageGroupHeight = (totalHeight - totalSpaceAboveGroups) / componentGroups.size();
 
   if ( mSettings.columnCount() == 0 && forcedColumnBreaks == 0 )
     return 0;
@@ -490,14 +491,21 @@ int QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups 
       currentHeight += spaceAboveGroup( group );
     currentHeight += group.size.height();
 
+    int numberRemainingGroups = componentGroups.size() - i;
+
     // Recalc average height for remaining columns including current
     int numberRemainingColumns = numberAutoPlacedBreaks + 1 - autoPlacedBreaks;
-    double avgColumnHeight = ( totalHeight - closedColumnsHeight ) / numberRemainingColumns;
+    double avgColumnHeight = ( currentHeight + numberRemainingGroups * averageGroupHeight + (numberRemainingGroups - numberRemainingColumns - 1) *  averageSpaceAboveGroups ) / numberRemainingColumns;
+    // Round up to the next full number of groups to put in one column
+    // This ensures that earlier columns contain more elements than later columns
+    int averageGroupsPerColumn = std::ceil(avgColumnHeight / (averageGroupHeight + averageSpaceAboveGroups));
+    avgColumnHeight = averageGroupsPerColumn * (averageGroupHeight + averageSpaceAboveGroups) - averageSpaceAboveGroups;
+
     bool canCreateNewColumn = ( currentColumnGroupCount > 0 )  // do not leave empty column
                               && ( currentColumn < targetNumberColumns - 1 ) // must not exceed max number of columns
                               && ( autoPlacedBreaks < numberAutoPlacedBreaks );
 
-    bool shouldCreateNewColumn = ( currentHeight - avgColumnHeight ) > group.size.height() / 2  // center of current group is over average height
+    bool shouldCreateNewColumn = currentHeight  > avgColumnHeight  // current group height is greater than expected group height
                                  && currentColumnGroupCount > 0 // do not leave empty column
                                  && currentHeight > maxGroupHeight  // no sense to make smaller columns than max group height
                                  && currentHeight > maxColumnHeight; // no sense to make smaller columns than max column already created
