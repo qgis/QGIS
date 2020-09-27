@@ -450,6 +450,7 @@ class PythonConsoleWidget(QWidget):
         self.layoutFind = QGridLayout(self.widgetFind)
         self.layoutFind.setContentsMargins(0, 0, 0, 0)
         self.lineEditFind = QgsFilterLineEdit()
+        self.lineEditFind.setShowSearchIcon(True)
         placeHolderTxt = QCoreApplication.translate("PythonConsole", "Enter text to find…")
 
         self.lineEditFind.setPlaceholderText(placeHolderTxt)
