@@ -340,7 +340,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      * Emits dataChanged() for all scale dependent layers.
      * \since QGIS 2.16
      */
-    void refreshScaleBasedLayers( const QModelIndex &index = QModelIndex() );
+    void refreshScaleBasedLayers( const QModelIndex &index = QModelIndex(), double previousScale = 0.0 );
 
     static QIcon iconGroup();
 

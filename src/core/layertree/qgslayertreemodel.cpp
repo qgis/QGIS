@@ -690,14 +690,16 @@ void QgsLayerTreeModel::setLegendMapViewData( double mapUnitsPerPixel, int dpi, 
   if ( mLegendMapViewDpi == dpi && qgsDoubleNear( mLegendMapViewMupp, mapUnitsPerPixel ) && qgsDoubleNear( mLegendMapViewScale, scale ) )
     return;
 
+  double previousScale = mLegendMapViewScale;
+  mLegendMapViewScale = scale;
   mLegendMapViewMupp = mapUnitsPerPixel;
   mLegendMapViewDpi = dpi;
-  mLegendMapViewScale = scale;
 
   // now invalidate legend nodes!
   legendInvalidateMapBasedData();
 
-  refreshScaleBasedLayers();
+  if ( scale != previousScale )
+    refreshScaleBasedLayers( QModelIndex(), previousScale );
 }
 
 void QgsLayerTreeModel::legendMapViewData( double *mapUnitsPerPixel, int *dpi, double *scale ) const
@@ -1020,7 +1022,7 @@ void QgsLayerTreeModel::recursivelyEmitDataChanged( const QModelIndex &idx )
     recursivelyEmitDataChanged( index( i, 0, idx ) );
 }
 
-void QgsLayerTreeModel::refreshScaleBasedLayers( const QModelIndex &idx )
+void QgsLayerTreeModel::refreshScaleBasedLayers( const QModelIndex &idx, double previousScale )
 {
   QgsLayerTreeNode *node = index2node( idx );
   if ( !node )
@@ -1031,12 +1033,13 @@ void QgsLayerTreeModel::refreshScaleBasedLayers( const QModelIndex &idx )
     const QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
     if ( layer && layer->hasScaleBasedVisibility() )
     {
-      emit dataChanged( idx, idx );
+      if ( layer->isInScaleRange( mLegendMapViewScale ) != layer->isInScaleRange( previousScale ) )
+        emit dataChanged( idx, idx, QVector<int>() << Qt::FontRole << Qt::ForegroundRole );
     }
   }
   int count = node->children().count();
   for ( int i = 0; i < count; ++i )
-    refreshScaleBasedLayers( index( i, 0, idx ) );
+    refreshScaleBasedLayers( index( i, 0, idx ), previousScale );
 }
 
 Qt::DropActions QgsLayerTreeModel::supportedDropActions() const
