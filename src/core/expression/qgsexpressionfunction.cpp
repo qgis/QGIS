@@ -2380,6 +2380,9 @@ static QVariant fcnGeomM( const QVariantList &values, const QgsExpressionContext
   if ( geom.isNull() )
     return QVariant(); //or 0?
 
+  if ( !geom.constGet()->isMeasure() )
+    return QVariant();
+
   //if single point, return the point's m value
   if ( geom.type() == QgsWkbTypes::PointGeometry && !geom.isMultipart() )
   {
