@@ -2306,7 +2306,13 @@ namespace QgsWms
         {
           const QDomElement attrElmt = attributesNode.at( j ).toElement();
           const QString name = attrElmt.attribute( QStringLiteral( "name" ) );
-          const QString value = attrElmt.attribute( QStringLiteral( "value" ) );
+
+          QString value = attrElmt.attribute( QStringLiteral( "value" ) );
+          if ( value.isEmpty() )
+          {
+            value = QStringLiteral( "null" );
+          }
+
           properties[name.toStdString()] = value.toStdString();
         }
 
