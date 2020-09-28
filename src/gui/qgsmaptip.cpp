@@ -217,11 +217,13 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
   QgsRenderContext renderCtx = QgsRenderContext::fromMapSettings( mapCanvas->mapSettings() );
   renderCtx.expressionContext() << QgsExpressionContextUtils::layerScope( vlayer );
 
+  bool filter = false;
   std::unique_ptr< QgsFeatureRenderer > renderer;
   if ( vlayer->renderer() )
   {
     renderer.reset( vlayer->renderer()->clone() );
     renderer->startRender( renderCtx, vlayer->fields() );
+    filter = renderer->capabilities() & QgsFeatureRenderer::Filter;
   }
 
   QgsFeatureIterator it = vlayer->getFeatures( request );
@@ -232,7 +234,7 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
     context.setFeature( feature );
 
     renderCtx.expressionContext().setFeature( feature );
-    if ( renderer && !renderer->willRenderFeature( feature, renderCtx ) )
+    if ( filter && renderer && !renderer->willRenderFeature( feature, renderCtx ) )
     {
       continue;
     }
