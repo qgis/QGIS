@@ -1775,7 +1775,7 @@ namespace QgsWms
           QDomElement attributeElement = infoDocument.createElement( QStringLiteral( "Attribute" ) );
           attributeElement.setAttribute( QStringLiteral( "name" ), layer->bandName( it.key() ) );
 
-          QString value( QStringLiteral( "no data" ) );
+          QString value;
           if ( ! it.value().isNull() )
           {
             value  = QString::number( it.value().toDouble() );
@@ -2126,8 +2126,13 @@ namespace QgsWms
         for ( int j = 0; j < attributeNodeList.size(); ++j )
         {
           QDomElement attributeElement = attributeNodeList.at( j ).toElement();
+          QString value = attributeElement.attribute( QStringLiteral( "value" ) );
+          if ( value.isEmpty() )
+          {
+            value = QStringLiteral( "no data" );
+          }
           featureInfoString.append( "<TR><TH>" + attributeElement.attribute( QStringLiteral( "name" ) ) +
-                                    "</TH><TD>" + attributeElement.attribute( QStringLiteral( "value" ) ) + "</TD></TR>\n" );
+                                    "</TH><TD>" + value + "</TD></TR>\n" );
         }
       }
 
@@ -2184,8 +2189,13 @@ namespace QgsWms
         for ( int j = 0; j < attributeNodeList.size(); ++j )
         {
           QDomElement attributeElement = attributeNodeList.at( j ).toElement();
+          QString value = attributeElement.attribute( QStringLiteral( "value" ) );
+          if ( value.isEmpty() )
+          {
+            value = QStringLiteral( "no data" );
+          }
           featureInfoString.append( attributeElement.attribute( QStringLiteral( "name" ) ) + " = '" +
-                                    attributeElement.attribute( QStringLiteral( "value" ) ) + "'\n" );
+                                    value + "'\n" );
         }
       }
 
