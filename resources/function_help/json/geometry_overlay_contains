@@ -2,15 +2,25 @@
   "name": "geometry_overlay_contains",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Performs a spatial join of type CONTAINS. This returns an array of results of an expression evaluated on features from a different layer that CONTAINS the current feature, or, if no expression if provided, simply returns whether at least one feature from the other layer CONTAINS the current feature.",
-  "arguments": [
+  "description": "Performs a spatial join of type CONTAINS. This returns whether at least one feature from a layer contains the current feature, or an array of results of an expression evaluated using features that contain the current feature.",
+  "variants": [
+  {
+     "variant": "Boolean check",
+     "variant_description": "If called with only the layer parameter, the function evaluates whether at least one feature from the layer contains the current feature and returns True or false.",
+     "arguments": [ { "arg": "layer", "description": "the layer whose overlay is checked" } ],
+     "examples": [ { "expression": "geometry_overlay_contains('regions')", "returns": "True, if at least one feature from the \"regions\" layer contains the current feature." } ]
+  },
+  {
+    "variant": "Array of overlaid features",
+    "variant_description": "If called with an expression parameter, the function evaluates the expression on the features from the layer and returns an array of results for the features that contain the current feature.",
+    "arguments": [
     {
       "arg": "layer",
-      "description": "the other layer"
+      "description": "the layer whose overlay is checked"
     },
     {
       "arg": "expression",
-      "description": "an optional expression to evaluate on the features from the other layer (if not set, the function will just return a boolean indicating whether there is at least one match)",
+      "description": "an optional expression to return the matching features from the layer. If not set, the function will return a boolean indicating whether there is at least one match.",
       "optional": true
     },
     {
@@ -27,14 +37,10 @@
       "arg": "cache",
       "description": "set this to true to build a local spatial index (most of the time, this is unwanted, unless you are working with a particularly slow data provider)",
       "optional": true,
-      "default": false
+      "default": "false"
     }
-  ],
-  "examples": [
-    {
-      "expression": "geometry_overlay_contains('regions')",
-      "returns": "True"
-    },
+    ],
+    "examples": [
     {
       "expression": "geometry_overlay_contains('regions', name)",
       "returns": "['South Africa', 'Africa', 'World']"
@@ -47,5 +53,7 @@
       "expression": "geometry_overlay_contains('regions', name, limit:=1)",
       "returns": "['South Africa']"
     }
-  ]
+    ]
+   }
+ ]
 }
