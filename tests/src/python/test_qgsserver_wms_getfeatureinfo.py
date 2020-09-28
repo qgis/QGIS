@@ -815,7 +815,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  '&FEATURE_COUNT=10',
                                  'wms_getfeatureinfo_raster_nodata_out_txt',
                                  'test_raster_nodata.qgz',
-                                 normalizeJson=True)
+                                 raw=True)
 
         # 0 text
         self.wms_request_compare('GetFeatureInfo',
@@ -829,7 +829,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  '&FEATURE_COUNT=10',
                                  'wms_getfeatureinfo_raster_nodata_zero_txt',
                                  'test_raster_nodata.qgz',
-                                 normalizeJson=True)
+                                 raw=True)
 
         # nodata text
         self.wms_request_compare('GetFeatureInfo',
@@ -843,7 +843,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  '&FEATURE_COUNT=10',
                                  'wms_getfeatureinfo_raster_nodata_txt',
                                  'test_raster_nodata.qgz',
-                                 normalizeJson=True)
+                                 raw=True)
 
         # out html
         self.wms_request_compare('GetFeatureInfo',
@@ -858,7 +858,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  '&FEATURE_COUNT=10',
                                  'wms_getfeatureinfo_raster_nodata_out_html',
                                  'test_raster_nodata.qgz',
-                                 normalizeJson=True)
+                                 raw=True)
 
         # 0 html
         self.wms_request_compare('GetFeatureInfo',
@@ -873,7 +873,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  '&FEATURE_COUNT=10',
                                  'wms_getfeatureinfo_raster_nodata_zero_html',
                                  'test_raster_nodata.qgz',
-                                 normalizeJson=True)
+                                 raw=True)
 
         # nodata html
         self.wms_request_compare('GetFeatureInfo',
@@ -888,7 +888,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  '&FEATURE_COUNT=10',
                                  'wms_getfeatureinfo_raster_nodata_html',
                                  'test_raster_nodata.qgz',
-                                 normalizeJson=True)
+                                 raw=True)
 
 
 if __name__ == '__main__':
