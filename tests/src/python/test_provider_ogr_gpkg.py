@@ -389,7 +389,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
     def testBug15351_commit_closeIter_closeProvider(self):
         self.internalTestBug15351('commit_closeIter_closeProvider')
 
-    @unittest.skip(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 1, 2))
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 1, 2), 'GDAL 2.1.2 required')
     def testGeopackageExtentUpdate(self):
         ''' test https://github.com/qgis/QGIS/issues/23209 '''
         tmpfile = os.path.join(self.basetestpath, 'testGeopackageExtentUpdate.gpkg')

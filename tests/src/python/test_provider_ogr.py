@@ -526,7 +526,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertIsInstance(features[2]['DATA'], QByteArray)
         self.assertEqual(hashlib.md5(features[2]['DATA'].data()).hexdigest(), '4b952b80e4288ca5111be2f6dd5d6809')
 
-    @unittest.skip(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 4, 0))
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 4, 0), "GDAL 2.4 required")
     def testStringListField(self):
         source = os.path.join(TEST_DATA_DIR, 'stringlist.gml')
         vl = QgsVectorLayer(source)
@@ -730,7 +730,7 @@ class PyQgsOGRProvider(unittest.TestCase):
 
         self.assertCountEqual([f.attributes() for f in vl.getFeatures(request)], [['rectangle', '1']])
 
-    @unittest.skip(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 2, 0))
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 2, 0), "GDAL 3.2 required")
     def testFieldAliases(self):
         """
         Test that field aliases are taken from OGR where available (requires GDAL 3.2 or later)
@@ -740,9 +740,17 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertTrue(vl.isValid())
 
         fields = vl.fields()
-        self.assertEqual([f.name() for f in fields], ['OBJECTID', 'text', 'short_int', 'long_int', 'float', 'double', 'date', 'blob', 'guid', 'raster', 'SHAPE_Length', 'SHAPE_Area'])
-        self.assertEqual([f.alias() for f in fields],
-                         ['', 'My Text Field', 'My Short Int Field', 'My Long Int Field', 'My Float Field', 'My Double Field', 'My Date Field', 'My Blob Field', 'My GUID field', 'My Raster Field', '', ''])
+
+        # proprietary FileGDB driver doesn't have the raster column
+        if 'raster' not in set(f.name() for f in fields):
+            expected_fieldnames = ['OBJECTID', 'text', 'short_int', 'long_int', 'float', 'double', 'date', 'blob', 'guid', 'SHAPE_Length', 'SHAPE_Area']
+            expected_alias = ['', 'My Text Field', 'My Short Int Field', 'My Long Int Field', 'My Float Field', 'My Double Field', 'My Date Field', 'My Blob Field', 'My GUID field', '', '']
+        else:
+            expected_fieldnames = ['OBJECTID', 'text', 'short_int', 'long_int', 'float', 'double', 'date', 'blob', 'guid', 'raster', 'SHAPE_Length', 'SHAPE_Area']
+            expected_alias = ['', 'My Text Field', 'My Short Int Field', 'My Long Int Field', 'My Float Field', 'My Double Field', 'My Date Field', 'My Blob Field', 'My GUID field', 'My Raster Field', '', '']
+
+        self.assertEqual([f.name() for f in fields], expected_fieldnames)
+        self.assertEqual([f.alias() for f in fields], expected_alias)
 
 
 if __name__ == '__main__':
