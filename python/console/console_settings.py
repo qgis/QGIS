@@ -19,7 +19,7 @@ email                : lrssvtml (at) gmail (dot) com
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
 
-from qgis.PyQt.QtCore import QCoreApplication, QSize, QObject, Qt, pyqtSignal
+from qgis.PyQt.QtCore import QCoreApplication, QSize, QUrl, QObject, Qt, pyqtSignal
 from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QTableWidgetItem, QHBoxLayout
 from qgis.PyQt.QtGui import QIcon, QFont, QColor, QFontDatabase, QDesktopServices
 
