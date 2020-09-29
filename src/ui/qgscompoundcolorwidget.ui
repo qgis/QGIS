@@ -186,7 +186,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QSpinBox" name="mSpinBoxRadius">
+            <widget class="QgsSpinBox" name="mSpinBoxRadius">
              <property name="suffix">
               <string> px</string>
              </property>
@@ -942,6 +942,11 @@
   </action>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
   <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>

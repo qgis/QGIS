@@ -181,7 +181,7 @@ Use &quot;%1&quot; for the lower bound of the classification, and &quot;%2&quot;
       </widget>
      </item>
      <item>
-      <widget class="QSpinBox" name="spinPrecision">
+      <widget class="QgsSpinBox" name="spinPrecision">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>0</horstretch>

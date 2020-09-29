@@ -144,7 +144,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QSpinBox" name="spinColorizeStrength">
+              <widget class="QgsSpinBox" name="spinColorizeStrength">
                <property name="suffix">
                 <string>%</string>
                </property>
@@ -217,7 +217,7 @@
           </widget>
          </item>
          <item row="3" column="2">
-          <widget class="QSpinBox" name="mContrastSpinBox">
+          <widget class="QgsSpinBox" name="mContrastSpinBox">
            <property name="minimum">
             <number>-100</number>
            </property>
@@ -301,7 +301,7 @@
           </widget>
          </item>
          <item row="2" column="2">
-          <widget class="QSpinBox" name="spinBoxSaturation">
+          <widget class="QgsSpinBox" name="spinBoxSaturation">
            <property name="minimum">
             <number>-100</number>
            </property>
@@ -317,7 +317,7 @@
           </widget>
          </item>
          <item row="1" column="2">
-          <widget class="QSpinBox" name="mBrightnessSpinBox">
+          <widget class="QgsSpinBox" name="mBrightnessSpinBox">
            <property name="minimum">
             <number>-255</number>
            </property>
@@ -477,6 +477,11 @@
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsBlendModeComboBox</class>

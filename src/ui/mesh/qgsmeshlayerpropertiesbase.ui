@@ -471,7 +471,7 @@ border-radius: 2px;</string>
                </widget>
               </item>
               <item row="1" column="2">
-               <widget class="QSpinBox" name="mSimplifyMeshResolutionSpinBox">
+               <widget class="QgsSpinBox" name="mSimplifyMeshResolutionSpinBox">
                 <property name="suffix">
                  <string> pixels/triangle</string>
                 </property>
@@ -775,6 +775,11 @@ border-radius: 2px;</string>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsScrollArea</class>

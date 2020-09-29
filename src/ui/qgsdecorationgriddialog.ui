@@ -249,7 +249,7 @@
           <enum>QLayout::SetMinimumSize</enum>
          </property>
          <item row="3" column="1">
-          <widget class="QSpinBox" name="mCoordinatePrecisionSpinBox"/>
+          <widget class="QgsSpinBox" name="mCoordinatePrecisionSpinBox"/>
          </item>
          <item row="2" column="1">
           <widget class="QgsDoubleSpinBox" name="mDistanceToMapFrameSpinBox"/>
@@ -349,6 +349,11 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
