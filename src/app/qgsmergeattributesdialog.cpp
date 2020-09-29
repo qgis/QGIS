@@ -324,6 +324,7 @@ void QgsMergeAttributesDialog::refreshMergedValue( int col )
   const int fieldIdx = mTableWidget->horizontalHeaderItem( col )->data( FieldIndex ).toInt();
 
   //evaluate behavior (feature value or min / max / mean )
+  QTableWidgetItem *item = mTableWidget->item( mTableWidget->rowCount() - 1, col );
   const QString mergeBehaviorString = comboBox->currentData().toString();
   QVariant mergeResult; // result to show in the merge result field
   if ( mergeBehaviorString == QStringLiteral( "concat" ) )
@@ -336,7 +337,7 @@ void QgsMergeAttributesDialog::refreshMergedValue( int col )
   }
   else if ( mergeBehaviorString == QLatin1String( "manual" ) )
   {
-    return; //nothing to do
+    mergeResult = item->data( Qt::DisplayRole );
   }
   else if ( mergeBehaviorString.startsWith( 'f' ) )
   {
@@ -353,7 +354,6 @@ void QgsMergeAttributesDialog::refreshMergedValue( int col )
 
   //insert string into table widget
   mUpdating = true; // prevent combobox changing to "manual" value
-  QTableWidgetItem *item = mTableWidget->item( mTableWidget->rowCount() - 1, col );
 
   // Result formatting
   QString stringVal;
@@ -559,6 +559,7 @@ void QgsMergeAttributesDialog::tableWidgetCellChanged( int row, int column )
     currentComboBox->blockSignals( true );
     currentComboBox->setCurrentIndex( currentComboBox->findData( QStringLiteral( "manual" ) ) );
     currentComboBox->blockSignals( false );
+    refreshMergedValue( column );
   }
 }
 
