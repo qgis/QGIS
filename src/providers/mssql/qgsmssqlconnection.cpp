@@ -25,6 +25,7 @@
 #include <QSqlQuery>
 #include <QSet>
 #include <QCoreApplication>
+#include <QFile>
 
 int QgsMssqlConnection::sConnectionId = 0;
 QMutex QgsMssqlConnection::sMutex{ QMutex::Recursive };
@@ -97,6 +98,16 @@ QSqlDatabase QgsMssqlConnection::getDatabase( const QString &service, const QStr
   {
 #ifdef Q_OS_WIN
     connectionString = "driver={SQL Server}";
+#elif defined (Q_OS_MAC)
+    QString freeTDSDriver( QCoreApplication::applicationDirPath().append( "/lib/libtdsodbc.so" ) );
+    if ( QFile::exists( freeTDSDriver ) )
+    {
+      connectionString = QStringLiteral( "driver=%1;port=1433;TDS_Version=auto" ).arg( freeTDSDriver );
+    }
+    else
+    {
+      connectionString = QStringLiteral( "driver={FreeTDS};port=1433;TDS_Version=auto" );
+    }
 #else
     // It seems that FreeTDS driver by default uses an ancient TDS protocol version (4.2) to communicate with MS SQL
     // which was causing various data corruption errors, for example:
