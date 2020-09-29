@@ -20,6 +20,7 @@
 #include <QWidget>
 #include <QStringList>
 #include "qgis_gui.h"
+#include "qgis.h"
 
 #define SIP_NO_FILE
 
@@ -189,6 +190,14 @@ namespace QgsGuiUtils
    * \since QGIS 3.8
    */
   QSize GUI_EXPORT panelIconSize( QSize size );
+
+  /**
+   * Returns a localized string representation of the \a value with the appropriate number of
+   * decimals supported by the \a rasterDataType.
+   * \since QGIS 3.16
+   */
+  QString displayValue( const Qgis::DataType rasterDataType, const double value );
+
 }
 
 /**

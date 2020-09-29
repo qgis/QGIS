@@ -25,6 +25,7 @@
 #include "qgstreewidgetitem.h"
 #include "qgssettings.h"
 #include "qgsmapcanvas.h"
+#include "qgsguiutils.h"
 
 // for color ramps - todo add rasterStyle and refactor raster vs. vector ramps
 #include "qgsstyle.h"
@@ -280,43 +281,13 @@ void QgsSingleBandPseudoColorRendererWidget::minMaxModified()
 
 QString QgsSingleBandPseudoColorRendererWidget::displayValue( const double value )
 {
-  int precision { 9 };
   if ( mRasterLayer->dataProvider() )
   {
-    switch ( mRasterLayer->dataProvider()->dataType( mBandComboBox->currentBand() ) )
-    {
-      case Qgis::DataType::Int16:
-      case Qgis::DataType::UInt16:
-      {
-        precision = 5;
-        break;
-      }
-      case Qgis::DataType::Int32:
-      case Qgis::DataType::UInt32:
-      {
-        precision = 10;
-        break;
-      }
-      case Qgis::DataType::Byte:
-      {
-        precision = 3;
-        break;
-      }
-      case Qgis::DataType::Float32:
-      {
-        precision = 9;
-        break;
-      }
-      case Qgis::DataType::Float64:
-      {
-        precision = 17;
-        break;
-      }
-      default:
-      {
-        precision = 9;
-      }
-    }
+    return QgsGuiUtils::displayValue( mRasterLayer->dataProvider()->dataType( mBandComboBox->currentBand() ), value );
   }
-  return QLocale().toString( value, 'g', precision );
+  else
+  {
+    // Use QLocale default
+    return QLocale().toString( value, 'g' );
+  }
 }
