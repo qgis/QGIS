@@ -3018,30 +3018,21 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
     if ( mTileLayer->getFeatureInfoURLs.contains( formatStr ) )
     {
       // REST
-      
+
 
       QString url = mTileLayer->getFeatureInfoURLs[ formatStr ];
 
-      if (mSettings.mIgnoreGetFeatureInfoUrl)
+      if ( mSettings.mIgnoreGetFeatureInfoUrl )
       {
         // rewrite the URL if the one in the capabilities document is incorrect
-        QString base = mSettings.mBaseUrl;
-        QgsDebugMsgLevel( QStringLiteral( "1 base=%1" ).arg( base ), 2 );
         // strip every thing after the ? from the base url
-        base = base.split(QRegExp("\\?"))[0];
-        QgsDebugMsgLevel( QStringLiteral( "2 base=%1" ).arg( base ), 2 );
+        const QString base = mSettings.mBaseUrl.split( QRegularExpression( "\\?" ) )[0];
         // and strip everything before the `rest` element (at least for GeoServer)
-        QgsDebugMsgLevel( QStringLiteral( "url=%1" ).arg( url ), 2 );
-        int index = url.length() - url.lastIndexOf("rest") + 1; // +1 for the /
-        QgsDebugMsgLevel( QStringLiteral( "url=%1" ).arg( url.right(index) ), 2 );
-
-
-        url = base + url.right(index);
-        QgsDebugMsgLevel( QStringLiteral( "new url=%1" ).arg( url ), 2 );
-
+        const int index = url.length() - url.lastIndexOf( QStringLiteral( "rest" ) ) + 1; // +1 for the /
+        url = base + url.right( index );
       }
 
-      QgsDebugMsgLevel( QStringLiteral( "getfeatureinfo: %1" ).arg( url), 2 );
+      QgsDebugMsgLevel( QStringLiteral( "getfeatureinfo: %1" ).arg( url ), 2 );
 
       url.replace( QLatin1String( "{layer}" ), mSettings.mActiveSubLayers[0], Qt::CaseInsensitive );
       url.replace( QLatin1String( "{style}" ), mSettings.mActiveSubStyles[0], Qt::CaseInsensitive );
