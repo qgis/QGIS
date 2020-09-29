@@ -31,6 +31,7 @@
 #include "qgscolordialog.h"
 #include "qgsrasterrendererutils.h"
 #include "qgsfileutils.h"
+#include "qgsguiutils.h"
 
 #include <QCursor>
 #include <QPushButton>
@@ -101,10 +102,10 @@ QgsColorRampShaderWidget::QgsColorRampShaderWidget( QWidget *parent )
   connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsColorRampShaderWidget::applyColorRamp );
   connect( mNumberOfEntriesSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsColorRampShaderWidget::classify );
   connect( mClipCheckBox, &QAbstractButton::toggled, this, &QgsColorRampShaderWidget::widgetChanged );
-  connect( mLabelPrecisionRawData, &QCheckBox::toggled, this, [ = ]
+  connect( mLabelPrecisionUseDefault, &QCheckBox::toggled, this, [ = ]
   {
     autoLabel();
-    mPrecisionSpinBox->setEnabled( ! mLabelPrecisionRawData->isChecked() );
+    mPrecisionSpinBox->setEnabled( ! mLabelPrecisionUseDefault->isChecked() );
   } );
   connect( mPrecisionSpinBox, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, [ = ]( int ) { autoLabel(); } );
 }
@@ -174,14 +175,23 @@ void QgsColorRampShaderWidget::autoLabel()
   QString label;
   int topLevelItemCount = mColormapTreeWidget->topLevelItemCount();
 
-  auto applyPrecision = [ = ]( QString value )
+  auto applyPrecision = [ = ]( const QString & value )
   {
-    // TODO: rounding to powers of 10
-    if ( ! mLabelPrecisionRawData->isChecked() )
+    double val { QLocale().toDouble( value ) };
+    if ( ! mLabelPrecisionUseDefault->isChecked() )
     {
-      value = QLocale().toString( QLocale().toDouble( value ), 'f', mPrecisionSpinBox->value() );
+      if ( mPrecisionSpinBox->value() <  0 )
+      {
+        const double factor { std::pow( 10, - mPrecisionSpinBox->value() ) };
+        val = static_cast<qlonglong>( val / factor ) * factor;
+        return QLocale().toString( val, 'f', 0 );
+      }
+      return QLocale().toString( val, 'f', mPrecisionSpinBox->value() );
     }
-    return value;
+    else
+    {
+      return QgsGuiUtils::displayValue( mRasterDataProvider->dataType( mBand ), val );
+    }
   };
 
   QTreeWidgetItem *currentItem = nullptr;

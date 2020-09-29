@@ -275,6 +275,48 @@ namespace QgsGuiUtils
     }
     return QSize( adjustedSize, adjustedSize );
   }
+
+  QString displayValue( const Qgis::DataType rasterDataType, const double value )
+  {
+
+    int precision { 9 };
+    switch ( rasterDataType )
+    {
+      case Qgis::DataType::Int16:
+      case Qgis::DataType::UInt16:
+      {
+        precision = 5;
+        break;
+      }
+      case Qgis::DataType::Int32:
+      case Qgis::DataType::UInt32:
+      {
+        precision = 10;
+        break;
+      }
+      case Qgis::DataType::Byte:
+      {
+        precision = 3;
+        break;
+      }
+      case Qgis::DataType::Float32:
+      {
+        precision = 9;
+        break;
+      }
+      case Qgis::DataType::Float64:
+      {
+        precision = 17;
+        break;
+      }
+      default:
+      {
+        precision = 9;
+      }
+    }
+    return QLocale().toString( value, 'f', precision );
+  }
+
 }
 
 //
