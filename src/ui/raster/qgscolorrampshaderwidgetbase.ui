@@ -227,7 +227,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QSpinBox" name="mNumberOfEntriesSpinBox">
+      <widget class="QgsSpinBox" name="mNumberOfEntriesSpinBox">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -265,6 +265,11 @@ suffix</string>
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
   <customwidget>
    <class>QgsColorRampButton</class>
    <extends>QToolButton</extends>

@@ -102,7 +102,7 @@
        </widget>
       </item>
       <item row="0" column="3">
-       <widget class="QSpinBox" name="mQuadrantSpinBox">
+       <widget class="QgsSpinBox" name="mQuadrantSpinBox">
         <property name="minimum">
          <number>1</number>
         </property>
@@ -148,6 +148,11 @@
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
  </customwidgets>
  <resources>

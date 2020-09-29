@@ -137,7 +137,7 @@
    <item row="1" column="0" colspan="4">
     <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,1,0,1">
      <item row="0" column="1">
-      <widget class="QSpinBox" name="mPagesSpinBox">
+      <widget class="QgsSpinBox" name="mPagesSpinBox">
        <property name="minimum">
         <number>1</number>
        </property>
@@ -193,7 +193,7 @@
       </widget>
      </item>
      <item row="1" column="2">
-      <widget class="QSpinBox" name="mExistingPageSpinBox">
+      <widget class="QgsSpinBox" name="mExistingPageSpinBox">
        <property name="minimum">
         <number>1</number>
        </property>
@@ -242,6 +242,11 @@
    <class>QgsLayoutUnitsComboBox</class>
    <extends>QComboBox</extends>
    <header>qgslayoutunitscombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

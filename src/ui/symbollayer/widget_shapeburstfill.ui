@@ -79,7 +79,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QSpinBox" name="mSpinBlurRadius">
+      <widget class="QgsSpinBox" name="mSpinBlurRadius">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
          <horstretch>1</horstretch>
@@ -457,6 +457,11 @@
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsColorRampButton</class>

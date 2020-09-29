@@ -678,7 +678,7 @@
                       </widget>
                      </item>
                      <item>
-                      <widget class="QSpinBox" name="spinBoxDP">
+                      <widget class="QgsSpinBox" name="spinBoxDP">
                        <property name="toolTip">
                         <string>The number of decimal places for the manual option</string>
                        </property>
@@ -2170,7 +2170,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QSpinBox" name="mWMSMaxAtlasFeaturesSpinBox">
+                     <widget class="QgsSpinBox" name="mWMSMaxAtlasFeaturesSpinBox">
                       <property name="maximum">
                        <number>9999999</number>
                       </property>
@@ -2198,7 +2198,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QSpinBox" name="mWMSPrecisionSpinBox">
+                     <widget class="QgsSpinBox" name="mWMSPrecisionSpinBox">
                       <property name="minimum">
                        <number>1</number>
                       </property>
@@ -2567,7 +2567,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QSpinBox" name="mWMSImageQualitySpinBox">
+                     <widget class="QgsSpinBox" name="mWMSImageQualitySpinBox">
                       <property name="minimum">
                        <number>10</number>
                       </property>
@@ -2597,7 +2597,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QSpinBox" name="mWMSTileBufferSpinBox"/>
+                     <widget class="QgsSpinBox" name="mWMSTileBufferSpinBox"/>
                     </item>
                    </layout>
                   </item>
@@ -2626,7 +2626,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QSpinBox" name="mWMTSMinScaleLineEdit">
+                     <widget class="QgsSpinBox" name="mWMTSMinScaleLineEdit">
                       <property name="minimum">
                        <number>1</number>
                       </property>
@@ -3165,6 +3165,11 @@
    <extends>QWidget</extends>
    <header>qgsopacitywidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCodeEditorPython</class>
