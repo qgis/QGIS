@@ -653,7 +653,7 @@
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
-   <extends>QWidget</extends>
+   <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
