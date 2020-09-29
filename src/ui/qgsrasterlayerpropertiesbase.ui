@@ -1072,7 +1072,7 @@ border-radius: 2px;</string>
                    </widget>
                   </item>
                   <item row="2" column="2">
-                   <widget class="QDoubleSpinBox" name="mGammaSpinBox">
+                   <widget class="QgsDoubleSpinBox" name="mGammaSpinBox">
                     <property name="minimum">
                      <double>0.100000000000000</double>
                     </property>
@@ -1191,7 +1191,7 @@ border-radius: 2px;</string>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QDoubleSpinBox" name="mMaximumOversamplingSpinBox"/>
+                   <widget class="QgsDoubleSpinBox" name="mMaximumOversamplingSpinBox"/>
                   </item>
                   <item>
                    <widget class="QCheckBox" name="mCbEarlyResampling">
@@ -1843,7 +1843,7 @@ border-radius: 2px;</string>
               </widget>
              </item>
              <item>
-              <widget class="QDoubleSpinBox" name="mRefreshLayerIntervalSpinBox">
+              <widget class="QgsDoubleSpinBox" name="mRefreshLayerIntervalSpinBox">
                <property name="toolTip">
                 <string>Higher values result in more simplification</string>
                </property>
@@ -2637,6 +2637,11 @@ p, li { white-space: pre-wrap; }
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
   <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>

@@ -181,7 +181,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QDoubleSpinBox" name="spinEdgeWidth">
+       <widget class="QgsDoubleSpinBox" name="spinEdgeWidth">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
           <horstretch>1</horstretch>

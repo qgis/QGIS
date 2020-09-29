@@ -291,7 +291,7 @@
       </widget>
      </item>
      <item row="8" column="1">
-      <widget class="QDoubleSpinBox" name="spinBillboardHeight">
+      <widget class="QgsDoubleSpinBox" name="spinBillboardHeight">
        <property name="maximum">
         <double>99999.000000000000000</double>
        </property>

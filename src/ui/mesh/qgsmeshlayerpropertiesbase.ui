@@ -487,7 +487,7 @@ border-radius: 2px;</string>
                </widget>
               </item>
               <item row="0" column="2">
-               <widget class="QDoubleSpinBox" name="mSimplifyReductionFactorSpinBox">
+               <widget class="QgsDoubleSpinBox" name="mSimplifyReductionFactorSpinBox">
                 <property name="decimals">
                  <number>1</number>
                 </property>
@@ -770,6 +770,11 @@ border-radius: 2px;</string>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsScrollArea</class>
