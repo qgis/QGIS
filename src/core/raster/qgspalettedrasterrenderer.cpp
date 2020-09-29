@@ -70,10 +70,10 @@ QgsRasterRenderer *QgsPalettedRasterRenderer::create( const QDomElement &elem, Q
       QString label;
       entryElem = paletteEntries.at( i ).toElement();
       value = static_cast<int>( entryElem.attribute( QStringLiteral( "value" ), QStringLiteral( "0" ) ).toDouble() );
-      QgsDebugMsgLevel( entryElem.attribute( "color", "#000000" ), 4 );
       color = QColor( entryElem.attribute( QStringLiteral( "color" ), QStringLiteral( "#000000" ) ) );
       color.setAlpha( entryElem.attribute( QStringLiteral( "alpha" ), QStringLiteral( "255" ) ).toInt() );
       label = entryElem.attribute( QStringLiteral( "label" ) );
+      QgsDebugMsgLevel( QStringLiteral( "Value: %1, label: %2, color: %3" ).arg( value ).arg( label, entryElem.attribute( QStringLiteral( "color" ) ) ), 4 );
       classData << Class( value, color, label );
     }
   }
