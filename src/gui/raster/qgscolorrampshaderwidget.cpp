@@ -182,7 +182,7 @@ void QgsColorRampShaderWidget::autoLabel()
     {
       if ( mPrecisionSpinBox->value() <  0 )
       {
-        const double factor { std::pow( 10, - mPrecisionSpinBox->value() ) };
+        const double factor = std::pow( 10, - mPrecisionSpinBox->value() );
         val = static_cast<qlonglong>( val / factor ) * factor;
         return QLocale().toString( val, 'f', 0 );
       }
