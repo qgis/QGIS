@@ -25,10 +25,10 @@ namespace MDAL
     BBox() {}
     BBox( double lx, double ux, double ly, double uy ): minX( lx ), maxX( ux ), minY( ly ), maxY( uy ) {}
 
-    double minX;
-    double maxX;
-    double minY;
-    double maxY;
+    double minX = std::numeric_limits<double>::max();
+    double maxX = -std::numeric_limits<double>::max();
+    double minY = std::numeric_limits<double>::max();
+    double maxY = -std::numeric_limits<double>::max();
   };
 
   typedef struct

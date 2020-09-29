@@ -66,13 +66,12 @@ namespace MDAL
         size_t id;
         double x;
         double y;
-        std::vector<int> conn; // north, east, south, west cell center index, -1 boundary Vertex
       };
 
       std::unique_ptr< MDAL::MemoryMesh > mMesh;
       std::string mDatFileName;
 
-      void createMesh2d( const std::vector<CellCenter> &cells, double half_cell_size );
+      void createMesh2d( const std::vector<CellCenter> &cells, const MDAL::BBox &cellCenterExtent, double cell_size );
       void createMesh1d( const std::string &datFileName, const std::vector<CellCenter> &cells, std::map<size_t, size_t> &cellsIdToVertex );
 
       void parseOUTDatasets( const std::string &datFileName, const std::vector<double> &elevations );
@@ -80,14 +79,13 @@ namespace MDAL
       void parseVELFPVELOCFile( const std::string &datFileName );
       void parseDEPTHFile( const std::string &datFileName, const std::vector<double> &elevations );
       void parseTIMDEPFile( const std::string &datFileName, const std::vector<double> &elevations );
-      void parseFPLAINFile( std::vector<double> &elevations, const std::string &datFileName, std::vector<CellCenter> &cells );
-      void parseCADPTSFile( const std::string &datFileName, std::vector<CellCenter> &cells );
+      void parseFPLAINFile( std::vector<double> &elevations, const std::string &datFileName, std::vector<CellCenter> &cells, double &cellZize );
+      void parseCADPTSFile( const std::string &datFileName, std::vector<CellCenter> &cells, BBox &cellCenterExtent );
       void parseCHANBANKFile( const std::string &datFileName, std::map<size_t, size_t> &cellIdToVertices, std::map<size_t, std::vector<size_t> > &duplicatedRightBankToVertex, size_t &verticesCount );
       void parseCHANFile( const std::string &datFileName, const std::map<size_t, size_t> &cellIdToVertices, std::vector<Edge> &edges );
       void parseHYCHANFile( const std::string &datFileName, const std::map<size_t, size_t> &cellIdToVertices );
       void addStaticDataset( std::vector<double> &vals, const std::string &groupName, const std::string &datFileName );
       static MDAL::Vertex createVertex( size_t position, double half_cell_size, const CellCenter &cell );
-      static double calcCellSize( const std::vector<CellCenter> &cells );
 
       std::unique_ptr< Mesh > loadMesh2d();
       std::unique_ptr<Mesh> loadMesh1d();

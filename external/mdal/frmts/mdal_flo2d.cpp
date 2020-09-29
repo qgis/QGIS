@@ -22,21 +22,7 @@
 
 #define FLO2D_NAN 0.0
 
-struct VertexCompare
-{
-  bool operator()( const MDAL::Vertex &lhs, const MDAL::Vertex &rhs ) const
-  {
-    double resX = 0;
-    resX += lhs.x * 1000000;
-    resX += lhs.y * 1000;
-
-    double resY = 0;
-    resY += rhs.x * 1000000;
-    resY += rhs.y * 1000;
-
-    return resX < resY;
-  }
-};
+#define INVALID_INDEX std::numeric_limits<size_t>::max()
 
 static std::string fileNameFromDir( const std::string &mainFileName, const std::string &name )
 {
@@ -99,7 +85,8 @@ void MDAL::DriverFlo2D::addStaticDataset(
   mMesh->datasetGroups.push_back( group );
 }
 
-void MDAL::DriverFlo2D::parseCADPTSFile( const std::string &datFileName, std::vector<CellCenter> &cells )
+
+void MDAL::DriverFlo2D::parseCADPTSFile( const std::string &datFileName, std::vector<CellCenter> &cells, MDAL::BBox &cellCenterExtent )
 {
   std::string cadptsFile( fileNameFromDir( datFileName, "CADPTS.DAT" ) );
   if ( !MDAL::fileExists( cadptsFile ) )
@@ -122,8 +109,16 @@ void MDAL::DriverFlo2D::parseCADPTSFile( const std::string &datFileName, std::ve
     cc.id = MDAL::toSizeT( lineParts[0] ) - 1; //numbered from 1
     cc.x = MDAL::toDouble( lineParts[1] );
     cc.y = MDAL::toDouble( lineParts[2] );
-    cc.conn.resize( 4 );
     cells.push_back( cc );
+
+    if ( cc.x > cellCenterExtent.maxX )
+      cellCenterExtent.maxX = cc.x;
+    if ( cc.x < cellCenterExtent.minX )
+      cellCenterExtent.minX = cc.x;
+    if ( cc.y > cellCenterExtent.maxY )
+      cellCenterExtent.maxY = cc.y;
+    if ( cc.y < cellCenterExtent.minY )
+      cellCenterExtent.minY = cc.y;
   }
 }
 
@@ -481,7 +476,8 @@ void MDAL::DriverFlo2D::createMesh1d( const std::string &datFileName, const std:
 
 void MDAL::DriverFlo2D::parseFPLAINFile( std::vector<double> &elevations,
     const std::string &datFileName,
-    std::vector<CellCenter> &cells )
+    std::vector<CellCenter> &cells,
+    double &cellSize )
 {
   elevations.clear();
   // FPLAIN.DAT - CONNECTIVITY (ELEM NUM, ELEM N, ELEM E, ELEM S, ELEM W, MANNING-N, BED ELEVATION)
@@ -494,21 +490,41 @@ void MDAL::DriverFlo2D::parseFPLAINFile( std::vector<double> &elevations,
   std::ifstream fplainStream( fplainFile, std::ifstream::in );
   std::string line;
 
+  bool cellSizeCalculated = false;
+
   while ( std::getline( fplainStream, line ) )
   {
     line = MDAL::rtrim( line );
     std::vector<std::string> lineParts = MDAL::split( line, ' ' );
     if ( lineParts.size() != 7 )
     {
-      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Error while loading Fplain file, wrong lineparts count (7)" );
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Error while loading FPLAIN.DAT file, wrong lineparts count (7)" );
     }
-    size_t cc_i = MDAL::toSizeT( lineParts[0] ) - 1; //numbered from 1
-    for ( size_t j = 0; j < 4; ++j )
+
+    if ( !cellSizeCalculated )
     {
-      cells[cc_i].conn[j] = MDAL::toInt( lineParts[j + 1] ) - 1; //numbered from 1, 0 boundary Vertex
+      size_t cc_i = MDAL::toSizeT( lineParts[0] ) - 1; //numbered from 1
+      for ( int i = 1; i < 5; ++i )  //search the first cell that have a neighbor to calculate cell size
+      {
+        int neighborCell = MDAL::toInt( lineParts[i] );
+        if ( neighborCell != 0 )
+        {
+          if ( i % 2 == 1 ) //North or South neighbor
+            cellSize = fabs( cells[neighborCell - 1].y - cells[cc_i].y );
+          else // East or West
+            cellSize = fabs( cells[neighborCell - 1].x - cells[cc_i].x );
+
+          cellSizeCalculated = true;
+          break;
+        }
+      }
     }
+
     elevations.push_back( MDAL::toDouble( lineParts[6] ) );
   }
+
+  if ( !cellSizeCalculated )
+    throw MDAL::Error( MDAL_Status::Err_IncompatibleMesh, "Only isolated cell(s), not possible to calculate cell size" );
 }
 
 static void addDatasetToGroup( std::shared_ptr<MDAL::DatasetGroup> group, std::shared_ptr<MDAL::MemoryDataset2D> dataset )
@@ -756,31 +772,6 @@ void MDAL::DriverFlo2D::parseVELFPVELOCFile( const std::string &datFileName )
   addStaticDataset( maxVel, "Velocity/Maximums", datFileName );
 }
 
-double MDAL::DriverFlo2D::calcCellSize( const std::vector<CellCenter> &cells )
-{
-  // find first cell that is not izolated from the others
-  // and return its distance to the neighbor's cell center
-  for ( size_t i = 0; i < cells.size(); ++i )
-  {
-    for ( size_t j = 0; j < 4; ++j )
-    {
-      int idx = cells[i].conn[0];
-      if ( idx > -1 )
-      {
-        if ( ( j == 0 ) || ( j == 2 ) )
-        {
-          return fabs( cells[static_cast<size_t>( idx )].y - cells[i].y );
-        }
-        else
-        {
-          return fabs( cells[static_cast<size_t>( idx )].x - cells[i].x );
-        }
-      }
-    }
-  }
-  throw MDAL::Error( MDAL_Status::Err_IncompatibleMesh, "Did not find izolated cell" );
-}
-
 MDAL::Vertex MDAL::DriverFlo2D::createVertex( size_t position, double half_cell_size, const CellCenter &cell )
 {
   MDAL::Vertex n;
@@ -813,38 +804,69 @@ MDAL::Vertex MDAL::DriverFlo2D::createVertex( size_t position, double half_cell_
   return n;
 }
 
-void MDAL::DriverFlo2D::createMesh2d( const std::vector<CellCenter> &cells, double half_cell_size )
+void MDAL::DriverFlo2D::createMesh2d( const std::vector<CellCenter> &cells, const BBox &cellCenterExtent, double cell_size )
 {
   // Create all Faces from cell centers.
   // Vertexs must be also created, they are not stored in FLO-2D files
   // try to reuse Vertexs already created for other Faces by usage of unique_Vertexs set.
-  Faces faces;
+
+  double half_cell_size = cell_size / 2;
+  Faces faces( cells.size(), Face( 4 ) );
+
+  BBox vertexExtent( cellCenterExtent.minX - half_cell_size,
+                     cellCenterExtent.maxX + half_cell_size,
+                     cellCenterExtent.minY - half_cell_size,
+                     cellCenterExtent.maxY + half_cell_size );
+
+  size_t width = ( vertexExtent.maxX - vertexExtent.minX ) / cell_size + 1;
+  size_t heigh = ( vertexExtent.maxY - vertexExtent.minY ) / cell_size + 1;
+  std::vector<std::vector<size_t>> vertexGrid( width, std::vector<size_t>( heigh, INVALID_INDEX ) );
+
   Vertices vertices;
-  std::map<Vertex, size_t, VertexCompare> unique_vertices; //vertex -> id
-  size_t vertex_idx = 0;
 
   for ( size_t i = 0; i < cells.size(); ++i )
   {
-    Face e( 4 );
+    Face &e = faces[i];
+
+    size_t xVertexIdx = ( cells[i].x - vertexExtent.minX ) / cell_size;
+    size_t yVertexIdx = ( cells[i].y - vertexExtent.minY ) / cell_size;
 
     for ( size_t position = 0; position < 4; ++position )
     {
-      Vertex n = createVertex( position, half_cell_size, cells[i] );
-      const auto iter = unique_vertices.find( n );
-      if ( iter == unique_vertices.end() )
-      {
-        unique_vertices[n] = vertex_idx;
-        vertices.push_back( n );
-        e[position] = vertex_idx;
-        ++vertex_idx;
-      }
-      else
-      {
-        e[position] = iter->second;
-      }
-    }
+      size_t xPos;
+      size_t yPos;
 
-    faces.push_back( e );
+      switch ( position )
+      {
+        case 0:
+          xPos = 1;
+          yPos = 0;
+          break;
+
+        case 1:
+          xPos = 1;
+          yPos = 1;
+          break;
+
+        case 2:
+          xPos = 0;
+          yPos = 1;
+          break;
+
+        case 3:
+          xPos = 0;
+          yPos = 0;
+          break;
+      }
+
+      if ( vertexGrid[xVertexIdx + xPos][yVertexIdx + yPos] == INVALID_INDEX )
+      {
+        vertices.push_back( createVertex( position, half_cell_size, cells.at( i ) ) );
+        vertexGrid[xVertexIdx + xPos][yVertexIdx + yPos] = vertices.size() - 1;
+      }
+
+      e[position] = vertexGrid[xVertexIdx + xPos][yVertexIdx + yPos];
+    }
   }
 
   mMesh.reset(
@@ -1074,11 +1096,11 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverFlo2D::loadMesh1d()
 {
   std::vector<CellCenter> cells;
   std::map<size_t, size_t> cellsIdToVertex;
-
+  MDAL::BBox cellCenterExtent;
   try
   {
     // Parse cells position
-    parseCADPTSFile( mDatFileName, cells );
+    parseCADPTSFile( mDatFileName, cells, cellCenterExtent );
     createMesh1d( mDatFileName, cells, cellsIdToVertex );
     parseHYCHANFile( mDatFileName, cellsIdToVertex );
   }
@@ -1100,13 +1122,14 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverFlo2D::loadMesh2d()
   try
   {
     // Parse mMesh info
-    parseCADPTSFile( mDatFileName, cells );
+    MDAL::BBox cellCenterExtent;
+    parseCADPTSFile( mDatFileName, cells, cellCenterExtent );
     std::vector<double> elevations;
-    parseFPLAINFile( elevations, mDatFileName, cells );
-    double cell_size = calcCellSize( cells );
+    double cell_size;
+    parseFPLAINFile( elevations, mDatFileName, cells, cell_size );
 
     // Create mMesh
-    createMesh2d( cells, cell_size / 2.0 );
+    createMesh2d( cells, cellCenterExtent, cell_size );
 
     // create output for bed elevation
     addStaticDataset( elevations, "Bed Elevation", mDatFileName );
