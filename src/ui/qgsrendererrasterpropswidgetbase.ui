@@ -394,7 +394,7 @@
           </widget>
          </item>
          <item row="4" column="2">
-          <widget class="QDoubleSpinBox" name="mGammaSpinBox">
+          <widget class="QgsDoubleSpinBox" name="mGammaSpinBox">
            <property name="minimum">
             <double>0.100000000000000</double>
            </property>
@@ -446,7 +446,7 @@
           <widget class="QComboBox" name="mZoomedOutResamplingComboBox"/>
          </item>
          <item row="2" column="2">
-          <widget class="QDoubleSpinBox" name="mMaximumOversamplingSpinBox"/>
+          <widget class="QgsDoubleSpinBox" name="mMaximumOversamplingSpinBox"/>
          </item>
          <item row="3" column="0">
           <widget class="QCheckBox" name="mCbEarlyResampling">
@@ -467,6 +467,11 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
   <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>

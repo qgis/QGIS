@@ -519,7 +519,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QDoubleSpinBox" name="mStreamlinesDensitySpinBox">
+            <widget class="QgsDoubleSpinBox" name="mStreamlinesDensitySpinBox">
              <property name="suffix">
               <string>%</string>
              </property>
@@ -588,7 +588,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="mTracesMaxLengthSpinBox">
+         <widget class="QgsDoubleSpinBox" name="mTracesMaxLengthSpinBox">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
             <horstretch>0</horstretch>

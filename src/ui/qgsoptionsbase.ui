@@ -2444,7 +2444,7 @@
                       </widget>
                      </item>
                      <item row="1" column="2">
-                      <widget class="QDoubleSpinBox" name="mSimplifyDrawingSpinBox">
+                      <widget class="QgsDoubleSpinBox" name="mSimplifyDrawingSpinBox">
                        <property name="toolTip">
                         <string>Higher values result in more simplification</string>
                        </property>
@@ -2547,7 +2547,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QDoubleSpinBox" name="doubleSpinBoxMagnifierDefault"/>
+                     <widget class="QgsDoubleSpinBox" name="doubleSpinBoxMagnifierDefault"/>
                     </item>
                     <item>
                      <spacer name="horizontalSpacer_4">
@@ -2612,7 +2612,7 @@
                    </widget>
                   </item>
                   <item row="0" column="1">
-                   <widget class="QDoubleSpinBox" name="mSegmentationToleranceSpinBox"/>
+                   <widget class="QgsDoubleSpinBox" name="mSegmentationToleranceSpinBox"/>
                   </item>
                   <item row="1" column="0">
                    <widget class="QLabel" name="mToleranceTypeLabel">
@@ -2732,7 +2732,7 @@
                      <item row="3" column="1">
                       <layout class="QHBoxLayout" name="horizontalLayoutOversampling">
                        <item>
-                        <widget class="QDoubleSpinBox" name="spnOversampling"/>
+                        <widget class="QgsDoubleSpinBox" name="spnOversampling"/>
                        </item>
                        <item>
                         <spacer name="horizontalSpacer_25">
@@ -2915,7 +2915,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QDoubleSpinBox" name="mRasterCumulativeCutLowerDoubleSpinBox">
+                         <widget class="QgsDoubleSpinBox" name="mRasterCumulativeCutLowerDoubleSpinBox">
                           <property name="decimals">
                            <number>1</number>
                           </property>
@@ -2929,7 +2929,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QDoubleSpinBox" name="mRasterCumulativeCutUpperDoubleSpinBox">
+                         <widget class="QgsDoubleSpinBox" name="mRasterCumulativeCutUpperDoubleSpinBox">
                           <property name="decimals">
                            <number>1</number>
                           </property>
@@ -2981,7 +2981,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QDoubleSpinBox" name="spnThreeBandStdDev">
+                         <widget class="QgsDoubleSpinBox" name="spnThreeBandStdDev">
                           <property name="maximum">
                            <double>10.000000000000000</double>
                           </property>
@@ -3433,7 +3433,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QDoubleSpinBox" name="spinBoxIdentifyValue">
+                     <widget class="QgsDoubleSpinBox" name="spinBoxIdentifyValue">
                       <property name="suffix">
                        <string> mm</string>
                       </property>
@@ -3511,7 +3511,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QDoubleSpinBox" name="mIdentifyHighlightBufferSpinBox">
+                     <widget class="QgsDoubleSpinBox" name="mIdentifyHighlightBufferSpinBox">
                       <property name="toolTip">
                        <string>Lines / outlines buffer in millimeters.</string>
                       </property>
@@ -3531,7 +3531,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QDoubleSpinBox" name="mIdentifyHighlightMinWidthSpinBox">
+                     <widget class="QgsDoubleSpinBox" name="mIdentifyHighlightMinWidthSpinBox">
                       <property name="toolTip">
                        <string>Minimum line / stroke width in millimeters.</string>
                       </property>
@@ -4147,7 +4147,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                    </widget>
                   </item>
                   <item row="3" column="2">
-                   <widget class="QDoubleSpinBox" name="mDefaultZValueSpinBox">
+                   <widget class="QgsDoubleSpinBox" name="mDefaultZValueSpinBox">
                     <property name="decimals">
                      <number>3</number>
                     </property>
@@ -4367,7 +4367,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                    </spacer>
                   </item>
                   <item row="2" column="2">
-                   <widget class="QDoubleSpinBox" name="mDefaultSnappingToleranceSpinBox">
+                   <widget class="QgsDoubleSpinBox" name="mDefaultSnappingToleranceSpinBox">
                     <property name="decimals">
                      <number>5</number>
                     </property>
@@ -4417,7 +4417,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                    </spacer>
                   </item>
                   <item row="3" column="2">
-                   <widget class="QDoubleSpinBox" name="mSearchRadiusVertexEditSpinBox">
+                   <widget class="QgsDoubleSpinBox" name="mSearchRadiusVertexEditSpinBox">
                     <property name="decimals">
                      <number>5</number>
                     </property>
@@ -4521,7 +4521,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                    </widget>
                   </item>
                   <item row="2" column="2">
-                   <widget class="QDoubleSpinBox" name="mMarkerSizeSpinBox">
+                   <widget class="QgsDoubleSpinBox" name="mMarkerSizeSpinBox">
                     <property name="layoutDirection">
                      <enum>Qt::LeftToRight</enum>
                     </property>
@@ -4604,7 +4604,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                    </widget>
                   </item>
                   <item row="2" column="2">
-                   <widget class="QDoubleSpinBox" name="mCurveOffsetMiterLimitComboBox"/>
+                   <widget class="QgsDoubleSpinBox" name="mCurveOffsetMiterLimitComboBox"/>
                   </item>
                   <item row="0" column="1">
                    <spacer name="horizontalSpacer_29">
@@ -4800,7 +4800,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                    </widget>
                   </item>
                   <item row="0" column="1">
-                   <widget class="QDoubleSpinBox" name="mGridResolutionSpinBox">
+                   <widget class="QgsDoubleSpinBox" name="mGridResolutionSpinBox">
                     <property name="suffix">
                      <string> mm</string>
                     </property>
@@ -4825,7 +4825,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                   <item row="0" column="3">
                    <layout class="QHBoxLayout" name="horizontalLayout_36">
                     <item>
-                     <widget class="QDoubleSpinBox" name="mOffsetXSpinBox">
+                     <widget class="QgsDoubleSpinBox" name="mOffsetXSpinBox">
                       <property name="prefix">
                        <string>x: </string>
                       </property>
@@ -4835,7 +4835,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QDoubleSpinBox" name="mOffsetYSpinBox">
+                     <widget class="QgsDoubleSpinBox" name="mOffsetYSpinBox">
                       <property name="prefix">
                        <string>y: </string>
                       </property>
@@ -5828,6 +5828,11 @@ p, li { white-space: pre-wrap; }
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsFilterLineEdit</class>

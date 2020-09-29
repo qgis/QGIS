@@ -1604,7 +1604,7 @@ border-radius: 2px;</string>
                    </widget>
                   </item>
                   <item row="1" column="2">
-                   <widget class="QDoubleSpinBox" name="mSimplifyDrawingSpinBox">
+                   <widget class="QgsDoubleSpinBox" name="mSimplifyDrawingSpinBox">
                     <property name="toolTip">
                      <string>Higher values result in more simplification</string>
                     </property>
@@ -1711,7 +1711,7 @@ border-radius: 2px;</string>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QDoubleSpinBox" name="mRefreshLayerIntervalSpinBox">
+                  <widget class="QgsDoubleSpinBox" name="mRefreshLayerIntervalSpinBox">
                    <property name="toolTip">
                     <string>Lower values result in more data refreshing. Canvas updates are deferred in order to avoid refreshing multiple times if more than one layer has an auto update interval set.</string>
                    </property>
@@ -2542,6 +2542,11 @@ border-radius: 2px;</string>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>

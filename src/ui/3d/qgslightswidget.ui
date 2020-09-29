@@ -55,7 +55,7 @@
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QDoubleSpinBox" name="spinPositionX">
+          <widget class="QgsDoubleSpinBox" name="spinPositionX">
            <property name="decimals">
             <number>1</number>
            </property>
@@ -75,7 +75,7 @@
           </widget>
          </item>
          <item row="5" column="1">
-          <widget class="QDoubleSpinBox" name="spinIntensity">
+          <widget class="QgsDoubleSpinBox" name="spinIntensity">
            <property name="decimals">
             <number>1</number>
            </property>
@@ -92,7 +92,7 @@
           </widget>
          </item>
          <item row="1" column="1" rowspan="2">
-          <widget class="QDoubleSpinBox" name="spinPositionY">
+          <widget class="QgsDoubleSpinBox" name="spinPositionY">
            <property name="decimals">
             <number>1</number>
            </property>
@@ -112,7 +112,7 @@
           </widget>
          </item>
          <item row="3" column="1">
-          <widget class="QDoubleSpinBox" name="spinPositionZ">
+          <widget class="QgsDoubleSpinBox" name="spinPositionZ">
            <property name="decimals">
             <number>1</number>
            </property>
@@ -141,7 +141,7 @@
           </widget>
          </item>
          <item row="7" column="1">
-          <widget class="QDoubleSpinBox" name="spinA0">
+          <widget class="QgsDoubleSpinBox" name="spinA0">
            <property name="maximum">
             <double>9.000000000000000</double>
            </property>
@@ -151,7 +151,7 @@
           </widget>
          </item>
          <item row="8" column="1">
-          <widget class="QDoubleSpinBox" name="spinA1">
+          <widget class="QgsDoubleSpinBox" name="spinA1">
            <property name="maximum">
             <double>9.000000000000000</double>
            </property>
@@ -161,7 +161,7 @@
           </widget>
          </item>
          <item row="9" column="1">
-          <widget class="QDoubleSpinBox" name="spinA2">
+          <widget class="QgsDoubleSpinBox" name="spinA2">
            <property name="maximum">
             <double>9.000000000000000</double>
            </property>
@@ -217,7 +217,7 @@
        <item row="1" column="0" colspan="3">
         <layout class="QGridLayout" name="gridLayout_3">
          <item row="3" column="1">
-          <widget class="QDoubleSpinBox" name="spinDirectionZ">
+          <widget class="QgsDoubleSpinBox" name="spinDirectionZ">
            <property name="decimals">
             <number>1</number>
            </property>
@@ -267,7 +267,7 @@
           </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QDoubleSpinBox" name="spinDirectionY">
+          <widget class="QgsDoubleSpinBox" name="spinDirectionY">
            <property name="decimals">
             <number>1</number>
            </property>
@@ -280,7 +280,7 @@
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QDoubleSpinBox" name="spinDirectionX">
+          <widget class="QgsDoubleSpinBox" name="spinDirectionX">
            <property name="decimals">
             <number>1</number>
            </property>
@@ -293,7 +293,7 @@
           </widget>
          </item>
          <item row="5" column="1">
-          <widget class="QDoubleSpinBox" name="spinDirectionalIntensity">
+          <widget class="QgsDoubleSpinBox" name="spinDirectionalIntensity">
            <property name="decimals">
             <number>1</number>
            </property>
@@ -362,6 +362,11 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
   <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
