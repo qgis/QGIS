@@ -1497,12 +1497,12 @@ gray = no data
   </customwidget>
   <customwidget>
    <class>QgsColorButton</class>
-   <extends>QWidget</extends>
+   <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsSpinBox</class>
-   <extends>QWidget</extends>
+   <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
   </customwidget>
  </customwidgets>
