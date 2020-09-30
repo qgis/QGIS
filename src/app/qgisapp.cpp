@@ -5434,8 +5434,9 @@ static void setupVectorLayer( const QString &vectorLayerPath,
   {
     auto uriParts = QgsProviderRegistry::instance()->decodeUri(
                       layer->providerType(), layer->dataProvider()->dataSourceUri() );
-    QString composedURI( uriParts.value( QStringLiteral( "path" ) ).toString() );
-    composedURI += "|layername=" + rawLayerName;
+    uriParts.insert( QStringLiteral( "layerName" ), rawLayerName );
+    QString composedURI = QgsProviderRegistry::instance()->encodeUri(
+                            layer->providerType(), uriParts );
 
     auto newLayer = qgis::make_unique<QgsVectorLayer>( composedURI, layer->name(), QStringLiteral( "ogr" ), options );
     if ( newLayer && newLayer->isValid() )
@@ -6108,6 +6109,7 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer, con
   auto uriParts = QgsProviderRegistry::instance()->decodeUri(
                     layer->providerType(), layer->dataProvider()->dataSourceUri() );
   QString uri( uriParts.value( QStringLiteral( "path" ) ).toString() );
+  QStringList openOptions( uriParts.value( QStringLiteral( "openOptions" ) ).toStringList() );
 
   // The uri must contain the actual uri of the vectorLayer from which we are
   // going to load the sublayers.
@@ -6115,23 +6117,30 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer, con
   const auto constSelection = chooseSublayersDialog.selection();
   for ( const QgsSublayersDialog::LayerDefinition &def : constSelection )
   {
+    QVariantMap newUriParts;
+    newUriParts.insert( QStringLiteral( "path" ), uri );
     QString layerGeometryType = def.type;
-    QString composedURI = uri;
     if ( uniqueNames )
     {
-      composedURI += "|layername=" + def.layerName;
+      newUriParts.insert( QStringLiteral( "layerName" ), def.layerName );
     }
     else
     {
       // Only use layerId if there are ambiguities with names
-      composedURI += "|layerid=" + QString::number( def.layerId );
+      newUriParts.insert( QStringLiteral( "layerId" ), QString::number( def.layerId ) );
     }
 
     if ( !layerGeometryType.isEmpty() )
     {
-      composedURI += "|geometrytype=" + layerGeometryType;
+      newUriParts.insert( QStringLiteral( "geometryType" ), layerGeometryType );
+    }
+    if ( !openOptions.isEmpty() )
+    {
+      newUriParts.insert( QStringLiteral( "openOptions" ), openOptions );
     }
 
+    QString composedURI = QgsProviderRegistry::instance()->encodeUri(
+                            layer->providerType(), newUriParts );
     QgsDebugMsgLevel( "Creating new vector layer using " + composedURI, 2 );
 
     // if user has opted to add sublayers to a group, then we don't need to include the
