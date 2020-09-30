@@ -3496,10 +3496,6 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri )
     }
   }
 
-  QString vsiPrefix = qgsVsiPrefix( path );
-  if ( !vsiPrefix.isEmpty() )
-    path = path.mid( vsiPrefix.count() );
-
   QVariantMap uriComponents;
   uriComponents.insert( QStringLiteral( "path" ), path );
   uriComponents.insert( QStringLiteral( "layerName" ), layerName );
