@@ -18,6 +18,7 @@
 #include "qgsogrexpressioncompiler.h"
 #include "qgssqliteexpressioncompiler.h"
 
+#include "qgscplhttpfetchoverrider.h"
 #include "qgsogrutils.h"
 #include "qgsapplication.h"
 #include "qgsgeometry.h"
@@ -46,6 +47,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   , mSharedDS( source->mSharedDS )
   , mFirstFieldIsFid( source->mFirstFieldIsFid )
   , mFieldsWithoutFid( source->mFieldsWithoutFid )
+  , mAuthCfg( source->mAuthCfg )
 {
 
   /* When inside a transaction for GPKG/SQLite and fetching fid(s) we might be nested inside an outer fetching loop,
@@ -56,6 +58,9 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
                        ( source->mDriverName != QLatin1String( "GPKG" ) && source->mDriverName != QLatin1String( "SQLite" ) ) ||
                        ( mRequest.filterType() != QgsFeatureRequest::FilterType::FilterFid
                          && mRequest.filterType() != QgsFeatureRequest::FilterType::FilterFids );
+
+  QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
+  QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrFeatureIterator" ) );
 
   for ( const auto &id :  mRequest.filterFids() )
   {
@@ -334,9 +339,17 @@ bool QgsOgrFeatureIterator::checkFeature( gdal::ogr_feature_unique_ptr &fet, Qgs
   return true;
 }
 
+void QgsOgrFeatureIterator::setInterruptionChecker( QgsFeedback *interruptionChecker )
+{
+  mInterruptionChecker = interruptionChecker;
+}
+
 bool QgsOgrFeatureIterator::fetchFeature( QgsFeature &feature )
 {
   QMutexLocker locker( mSharedDS ? &mSharedDS->mutex() : nullptr );
+
+  QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg, mInterruptionChecker );
+  QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrFeatureIterator" ) );
 
   feature.setValid( false );
 
@@ -568,6 +581,7 @@ bool QgsOgrFeatureIterator::readFeature( gdal::ogr_feature_unique_ptr fet, QgsFe
 
 QgsOgrFeatureSource::QgsOgrFeatureSource( const QgsOgrProvider *p )
   : mDataSource( p->dataSourceUri( true ) )
+  , mAuthCfg( p->authCfg() )
   , mShareSameDatasetAmongLayers( p->mShareSameDatasetAmongLayers )
   , mLayerName( p->layerName() )
   , mLayerIndex( p->layerIndex() )

@@ -163,6 +163,8 @@ class QgsOgrProvider final: public QgsVectorDataProvider
 
     QString filePath() const { return mFilePath; }
 
+    QString authCfg() const { return mAuthCfg; }
+
     int layerIndex() const { return mLayerIndex; }
 
     QByteArray quotedIdentifier( const QByteArray &field ) const;
@@ -254,6 +256,9 @@ class QgsOgrProvider final: public QgsVectorDataProvider
 
     //! path to filename
     QString mFilePath;
+
+    //! Authentication configuration
+    QString mAuthCfg;
 
     //! layer name
     QString mLayerName;
