@@ -227,6 +227,10 @@ void TestQgsOgrProvider::decodeUri()
   QVERIFY( !parts.value( QStringLiteral( "layerId" ) ).isValid() );
   QCOMPARE( parts.value( QStringLiteral( "subset" ) ).toString(), QString( "A IN (3,4,5) or \n\"b\"='x|layerid'" ) );
   QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QString( "/path/to/a/geopackage.gpkg" ) );
+
+  parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), QStringLiteral( "/path/to/a/geopackage.gpkg|option:FOO=BAR|option:FOO2=BAR2" ) );
+  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QString( "/path/to/a/geopackage.gpkg" ) );
+  QCOMPARE( parts.value( QStringLiteral( "openOptions" ) ).toStringList(), QStringList() << QStringLiteral( "FOO=BAR" ) << QStringLiteral( "FOO2=BAR2" ) );
 }
 
 void TestQgsOgrProvider::encodeUri()
@@ -253,6 +257,11 @@ void TestQgsOgrProvider::encodeUri()
 
   parts.insert( QStringLiteral( "subset" ), QStringLiteral( "\"a\"='b'" ) );
   QCOMPARE( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "ogr" ), parts ), QStringLiteral( "/home/user/test.gpkg|layername=test|geometrytype=point|subset=\"a\"='b'" ) );
+
+  parts.clear();
+  parts.insert( QStringLiteral( "path" ), QStringLiteral( "/home/user/test.gpkg" ) );
+  parts.insert( QStringLiteral( "openOptions" ), QStringList() << QStringLiteral( "FOO=BAR" ) << QStringLiteral( "FOO2=BAR2" ) );
+  QCOMPARE( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "ogr" ), parts ), QStringLiteral( "/home/user/test.gpkg|option:FOO=BAR|option:FOO2=BAR2" ) );
 }
 
 class ReadVectorLayer : public QThread
