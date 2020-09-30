@@ -133,6 +133,8 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
   QgsVectorLayer layer( path, QStringLiteral( "ogr_tmp" ), QStringLiteral( "ogr" ), layerOptions );
   if ( layer.isValid( ) )
   {
+    QVariantMap oriParts = QgsOgrProviderMetadata().decodeUri( path );
+
     // Collect mixed-geom layers
     QMultiMap<int, QStringList> subLayersMap;
     QgsOgrProvider *ogrProvider = qobject_cast<QgsOgrProvider *>( layer.dataProvider() );
@@ -177,7 +179,6 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
         // example URI for mixed-geoms geoms:    '/path/gdal_sample_v1.2_no_extensions.gpkg|layerid=7|geometrytype=Point'
         // example URI for mixed-geoms attr table:    '/path/gdal_sample_v1.2_no_extensions.gpkg|layername=MyLayer|layerid=7'
         // example URI for single geoms:    '/path/gdal_sample_v1.2_no_extensions.gpkg|layerid=6'
-        QString uri;
         if ( layerType != QgsLayerItem::LayerType::NoType )
         {
           if ( geometryType.contains( QStringLiteral( "Collection" ), Qt::CaseInsensitive ) )
@@ -186,14 +187,16 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
           }
           else
           {
+            QVariantMap parts( oriParts );
             if ( uniqueNames )
-              uri = QStringLiteral( "%1|layername=%2" ).arg( path, name );
+              parts.insert( QStringLiteral( "layerName" ), name );
             else
-              uri = QStringLiteral( "%1|layerid=%2" ).arg( path, layerId );
+              parts.insert( QStringLiteral( "layerId" ), layerId );
             if ( values.size() > 1 )
             {
-              uri += QStringLiteral( "|geometrytype=" ) + geometryType;
+              parts.insert( QStringLiteral( "geometryType" ), geometryType );
             }
+            QString uri = QgsOgrProviderMetadata().encodeUri( parts );
             QgsDebugMsgLevel( QStringLiteral( "Adding %1 Vector item %2 %3 %4" ).arg( driver, name, uri, geometryType ), 3 );
             children.append( new QgsOgrDbLayerInfo( path, uri, name, geometryColumn, geometryType, layerType, driver ) );
           }
@@ -201,10 +204,12 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
         else
         {
           QgsDebugMsgLevel( QStringLiteral( "Layer type is not a supported %1 Vector layer %2" ).arg( driver, path ), 3 );
-          uri = QStringLiteral( "%1|layerid=%2|layername=%3" ).arg( path, layerId, name );
+          QVariantMap parts( oriParts );
+          parts.insert( QStringLiteral( "layerId" ), layerId );
+          parts.insert( QStringLiteral( "layerName" ), name );
+          QString uri = QgsOgrProviderMetadata().encodeUri( parts );
           children.append( new QgsOgrDbLayerInfo( path, uri, name, geometryColumn, geometryType, QgsLayerItem::LayerType::TableLayer, driver ) );
         }
-        QgsDebugMsgLevel( QStringLiteral( "Adding %1 Vector item %2 %3 %4" ).arg( driver, name, uri, geometryType ), 3 );
       }
     }
   }

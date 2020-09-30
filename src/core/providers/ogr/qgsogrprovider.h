@@ -258,6 +258,9 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     //! layer index
     int mLayerIndex = 0;
 
+    //! open options
+    QStringList mOpenOptions;
+
     //! was a sub layer requested?
     bool mIsSubLayer = false;
 

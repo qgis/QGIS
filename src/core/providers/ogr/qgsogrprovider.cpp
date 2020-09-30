@@ -222,11 +222,11 @@ void QgsOgrProvider::repack()
       QString errCause;
       if ( mLayerName.isNull() )
       {
-        mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, true, QStringList(), mLayerIndex, errCause, true );
+        mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, true, mOpenOptions, mLayerIndex, errCause, true );
       }
       else
       {
-        mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, true, QStringList(), mLayerName, errCause, true );
+        mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, true, mOpenOptions, mLayerName, errCause, true );
       }
 
       if ( !mOgrOrigLayer )
@@ -267,75 +267,53 @@ static QString AnalyzeURI( QString const &uri,
                            int &layerIndex,
                            QString &layerName,
                            QString &subsetString,
-                           OGRwkbGeometryType &ogrGeometryTypeFilter )
+                           OGRwkbGeometryType &ogrGeometryTypeFilter,
+                           QStringList &openOptions )
 {
   isSubLayer = false;
   layerIndex = 0;
   layerName = QString();
   subsetString = QString();
   ogrGeometryTypeFilter = wkbUnknown;
+  openOptions.clear();
 
   QgsDebugMsgLevel( "Data source uri is [" + uri + ']', 2 );
 
-  // try to open for update, but disable error messages to avoid a
-  // message if the file is read only, because we cope with that
-  // ourselves.
+  QVariantMap parts = QgsOgrProviderMetadata().decodeUri( uri );
 
-  // This part of the code parses the uri transmitted to the ogr provider to
-  // get the options the client wants us to apply
-
-  // If there is no | in the uri, then the uri is just the filename. The loaded
-  // layer will be layer 0.
-
-  if ( !uri.contains( '|', Qt::CaseSensitive ) )
+  if ( parts.contains( QStringLiteral( "layerName" ) ) )
   {
-    return uri;
-  }
-  else
-  {
-    QStringList theURIParts = uri.split( '|' );
-    QString filePath = theURIParts.at( 0 );
-
-    for ( int i = 1 ; i < theURIParts.size(); i++ )
-    {
-      QString part = theURIParts.at( i );
-      int pos = part.indexOf( '=' );
-      QString field = part.left( pos );
-      QString value = part.mid( pos + 1 );
-
-      if ( field == QLatin1String( "layerid" ) )
-      {
-        bool ok;
-        layerIndex = value.toInt( &ok );
-        if ( ! ok || layerIndex < 0 )
-        {
-          layerIndex = -1;
-        }
-        else
-        {
-          isSubLayer = true;
-        }
-      }
-      else if ( field == QLatin1String( "layername" ) )
-      {
-        layerName = value;
-        isSubLayer = true;
-      }
-
-      else if ( field == QLatin1String( "subset" ) )
-      {
-        subsetString = value;
-      }
-
-      else if ( field == QLatin1String( "geometrytype" ) )
-      {
-        ogrGeometryTypeFilter = ogrWkbGeometryTypeFromName( value );
-      }
-    }
-
-    return filePath;
+    layerName = parts.value( QStringLiteral( "layerName" ) ).toString();
+    isSubLayer = !layerName.isEmpty();
   }
 
+  if ( parts.contains( QStringLiteral( "layerId" ) ) &&
+       parts.value( QStringLiteral( "layerId" ) ) != QVariant() )
+  {
+    bool ok;
+    layerIndex = parts.value( QStringLiteral( "layerId" ) ).toInt( &ok );
+    if ( ok && layerIndex >= 0 )
+      isSubLayer = true;
+    else
+      layerIndex = -1;
+  }
+
+  if ( parts.contains( QStringLiteral( "subset" ) ) )
+  {
+    subsetString = parts.value( QStringLiteral( "subset" ) ).toString();
+  }
+
+  if ( parts.contains( QStringLiteral( "geometryType" ) ) )
+  {
+    ogrGeometryTypeFilter = ogrWkbGeometryTypeFromName( parts.value( QStringLiteral( "geometryType" ) ).toString() );
+  }
+
+  if ( parts.contains( QStringLiteral( "openOptions" ) ) )
+  {
+    openOptions = parts.value( QStringLiteral( "openOptions" ) ).toStringList();
+  }
+
+  return parts.value( QStringLiteral( "path" ) ).toString();
 }
 
 QgsVectorLayerExporter::ExportError QgsOgrProvider::createEmptyLayer( const QString &uri,
@@ -510,7 +488,8 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
                           mLayerIndex,
                           mLayerName,
                           mSubsetString,
-                          mOgrGeometryTypeFilter );
+                          mOgrGeometryTypeFilter,
+                          mOpenOptions );
 
   open( OpenModeInitial );
 
@@ -2234,26 +2213,34 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
   }
   mSubsetString = theSQL;
 
-  QString uri = mFilePath;
+  QVariantMap parts;
+  parts.insert( QStringLiteral( "path" ), mFilePath );
+
   if ( !mLayerName.isNull() )
   {
-    uri += QStringLiteral( "|layername=%1" ).arg( mLayerName );
+    parts.insert( QStringLiteral( "layerName" ), mLayerName );
   }
-  else if ( mLayerIndex >= 0 )
+  else if ( mIsSubLayer && mLayerIndex >= 0 )
   {
-    uri += QStringLiteral( "|layerid=%1" ).arg( mLayerIndex );
+    parts.insert( QStringLiteral( "layerId" ), mLayerIndex );
   }
 
   if ( !mSubsetString.isEmpty() )
   {
-    uri += QStringLiteral( "|subset=%1" ).arg( mSubsetString );
+    parts.insert( QStringLiteral( "subset" ), mSubsetString );
   }
 
   if ( mOgrGeometryTypeFilter != wkbUnknown )
   {
-    uri += QStringLiteral( "|geometrytype=%1" ).arg( ogrWkbGeometryTypeName( mOgrGeometryTypeFilter ) );
+    parts.insert( QStringLiteral( "geometryType" ), ogrWkbGeometryTypeName( mOgrGeometryTypeFilter ) );
   }
 
+  if ( !mOpenOptions.isEmpty() )
+  {
+    parts.insert( QStringLiteral( "openOptions" ), mOpenOptions );
+  }
+
+  QString uri = QgsOgrProviderMetadata().encodeUri( parts );
   if ( uri != dataSourceUri() )
   {
     if ( hasExistingRef )
@@ -3424,6 +3411,7 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri )
   QString layerName;
   QString subset;
   QString geometryType;
+  QStringList openOptions;
   QString databaseName;
 
   int layerId = -1;
@@ -3434,6 +3422,7 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri )
     const QRegularExpression layerNameRegex( QStringLiteral( "\\|layername=([^|]*)" ) );
     const QRegularExpression layerIdRegex( QStringLiteral( "\\|layerid=([^|]*)" ) );
     const QRegularExpression subsetRegex( QStringLiteral( "\\|subset=((?:.*[\r\n]*)*)\\Z" ) );
+    const QRegularExpression openOptionRegex( QStringLiteral( "\\|option:([^|]*)" ) );
 
 
     // we first try to split off the geometry type component, if that's present. That's a known quantity which
@@ -3460,6 +3449,20 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri )
     {
       layerId = match.captured( 1 ).toInt();
       path = path.remove( match.capturedStart( 0 ), match.capturedLength( 0 ) );
+    }
+
+    while ( true )
+    {
+      match = openOptionRegex.match( path );
+      if ( match.hasMatch() )
+      {
+        openOptions << match.captured( 1 );
+        path = path.remove( match.capturedStart( 0 ), match.capturedLength( 0 ) );
+      }
+      else
+      {
+        break;
+      }
     }
 
     // lastly, try to parse out the subset component. This is the biggest unknown, because it's
@@ -3506,6 +3509,8 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri )
     uriComponents.insert( QStringLiteral( "geometryType" ), geometryType );
   if ( !databaseName.isEmpty() )
     uriComponents.insert( QStringLiteral( "databaseName" ), databaseName );
+  if ( !openOptions.isEmpty() )
+    uriComponents.insert( QStringLiteral( "openOptions" ), openOptions );
   return uriComponents;
 }
 
@@ -3516,10 +3521,18 @@ QString QgsOgrProviderMetadata::encodeUri( const QVariantMap &parts )
   const QString layerId = parts.value( QStringLiteral( "layerId" ) ).toString();
   const QString subset = parts.value( QStringLiteral( "subset" ) ).toString();
   const QString geometryType = parts.value( QStringLiteral( "geometryType" ) ).toString();
-  return path
-         + ( !layerName.isEmpty() ? QStringLiteral( "|layername=%1" ).arg( layerName ) : !layerId.isEmpty() ? QStringLiteral( "|layerid=%1" ).arg( layerId ) : QString() )
-         + ( !geometryType.isEmpty() ? QStringLiteral( "|geometrytype=%1" ).arg( geometryType ) : QString() )
-         + ( !subset.isEmpty() ? QStringLiteral( "|subset=%1" ).arg( subset ) : QString() );
+  const QStringList openOptions = parts.value( QStringLiteral( "openOptions" ) ).toStringList();
+  QString uri = path
+                + ( !layerName.isEmpty() ? QStringLiteral( "|layername=%1" ).arg( layerName ) : !layerId.isEmpty() ? QStringLiteral( "|layerid=%1" ).arg( layerId ) : QString() )
+                + ( !geometryType.isEmpty() ? QStringLiteral( "|geometrytype=%1" ).arg( geometryType ) : QString() );
+  for ( const QString &openOption : openOptions )
+  {
+    uri += QStringLiteral( "|option:" );
+    uri += openOption;
+  }
+  if ( !subset.isEmpty() )
+    uri += QStringLiteral( "|subset=%1" ).arg( subset );
+  return uri;
 }
 
 QString QgsOgrProviderUtils::fileVectorFilters()
@@ -4622,7 +4635,7 @@ void QgsOgrProvider::open( OpenMode mode )
   QString errCause;
   if ( !openReadOnly )
   {
-    QStringList options;
+    QStringList options( mOpenOptions );
     if ( mode == OpenModeForceUpdateRepackOff || ( mDeferRepack && OpenModeSameAsCurrent ) )
     {
       options << "AUTO_REPACK=OFF";
@@ -4653,10 +4666,11 @@ void QgsOgrProvider::open( OpenMode mode )
       QgsDebugMsg( QStringLiteral( "OGR failed to opened in update mode, trying in read-only mode" ) );
     }
 
-    QStringList options;
+    QStringList options( mOpenOptions );
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,1,0)
     // assume trusted data to get more speed
-    if ( mGDALDriverName == QLatin1String( "FlatGeobuf" ) )
+    if ( mGDALDriverName == QLatin1String( "FlatGeobuf" ) &&
+         !options.contains( "VERIFY_BUFFERS=YES" ) )
     {
       options << "VERIFY_BUFFERS=NO";
     }
@@ -4762,11 +4776,11 @@ void QgsOgrProvider::open( OpenMode mode )
     // try to open read-only
     if ( !mLayerName.isNull() )
     {
-      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, QStringList(), mLayerName, errCause, true );
+      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, mOpenOptions, mLayerName, errCause, true );
     }
     else
     {
-      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, QStringList(), mLayerIndex, errCause, true );
+      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, mOpenOptions, mLayerIndex, errCause, true );
     }
 
     mWriteAccess = false;
@@ -6322,12 +6336,14 @@ QgsOgrLayerUniquePtr LoadDataSourceAndLayer( const QString &uri,
   QString layerName;
   QString subsetString;
   OGRwkbGeometryType ogrGeometryType;
+  QStringList openOptions;
   QString filePath = AnalyzeURI( uri,
                                  isSubLayer,
                                  layerIndex,
                                  layerName,
                                  subsetString,
-                                 ogrGeometryType );
+                                 ogrGeometryType,
+                                 openOptions );
 
   if ( !layerName.isEmpty() )
   {
@@ -6598,12 +6614,14 @@ bool LoadDataSourceLayerStylesAndLayer( const QString &uri,
   QString layerName;
   QString subsetString;
   OGRwkbGeometryType ogrGeometryType;
+  QStringList openOptions;
   QString filePath = AnalyzeURI( uri,
                                  isSubLayer,
                                  layerIndex,
                                  layerName,
                                  subsetString,
-                                 ogrGeometryType );
+                                 ogrGeometryType,
+                                 openOptions );
 
   layerStyles =
     QgsOgrProviderUtils::getLayer( filePath, "layer_styles", errCause );
@@ -6697,12 +6715,14 @@ int QgsOgrProviderMetadata::listStyles(
   QString layerName;
   QString subsetString;
   OGRwkbGeometryType ogrGeometryType;
+  QStringList openOptions;
   QString filePath = AnalyzeURI( uri,
                                  isSubLayer,
                                  layerIndex,
                                  layerName,
                                  subsetString,
-                                 ogrGeometryType );
+                                 ogrGeometryType,
+                                 openOptions );
 
   QgsOgrLayerUniquePtr userLayer;
   if ( !layerName.isEmpty() )
@@ -6858,12 +6878,14 @@ bool QgsOgrProviderUtils::deleteLayer( const QString &uri, QString &errCause )
   QString layerName;
   QString subsetString;
   OGRwkbGeometryType ogrGeometryType;
+  QStringList openOptions;
   QString filePath = AnalyzeURI( uri,
                                  isSubLayer,
                                  layerIndex,
                                  layerName,
                                  subsetString,
-                                 ogrGeometryType );
+                                 ogrGeometryType,
+                                 openOptions );
 
 
   GDALDatasetH hDS = GDALOpenEx( filePath.toUtf8().constData(), GDAL_OF_RASTER | GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr );

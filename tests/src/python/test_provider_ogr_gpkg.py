@@ -1207,7 +1207,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
 
         testPath = tmpfile + '|layername=bug_17795'
         subSetString = '"name" = \'int\''
-        subSet = '|layername=bug_17795|subset=%s' % subSetString
+        subSet = '|subset=%s' % subSetString
 
         # unfiltered
         vl = QgsVectorLayer(testPath, 'test', 'ogr')

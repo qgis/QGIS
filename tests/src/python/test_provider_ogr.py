@@ -752,6 +752,34 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual([f.name() for f in fields], expected_fieldnames)
         self.assertEqual([f.alias() for f in fields], expected_alias)
 
+    def testOpenOptions(self):
+
+        filename = os.path.join(tempfile.gettempdir(), "testOpenOptions.gpkg")
+        if os.path.exists(filename):
+            os.remove(filename)
+        ds = ogr.GetDriverByName("GPKG").CreateDataSource(filename)
+        lyr = ds.CreateLayer("points", geom_type=ogr.wkbPoint)
+        ds.ExecuteSQL("CREATE TABLE foo(id INTEGER PRIMARY KEY, name TEXT)")
+        ds.ExecuteSQL("INSERT INTO foo VALUES(1, 'bar');")
+        ds = None
+
+        vl = QgsVectorLayer(filename + "|option:LIST_ALL_TABLES=NO", 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.dataProvider().subLayers()), 1)
+        del vl
+
+        vl = QgsVectorLayer(filename + "|option:LIST_ALL_TABLES=YES", 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.dataProvider().subLayers()), 2)
+        del vl
+
+        vl = QgsVectorLayer(filename + "|layername=foo|option:LIST_ALL_TABLES=YES", 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len([f for f in vl.getFeatures()]), 1)
+        del vl
+
+        os.remove(filename)
+
 
 if __name__ == '__main__':
     unittest.main()
