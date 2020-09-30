@@ -21,6 +21,7 @@
 #include "qgsprovidermetadata.h"
 #include "qgsrasterprojector.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
 #include "qgsapplication.h"
 
 #include <QTime>
@@ -56,6 +57,8 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
   if ( block->isEmpty() )
   {
     QgsDebugMsg( QStringLiteral( "Couldn't create raster block" ) );
+    block->setError( { tr( "Couldn't create raster block." ), QStringLiteral( "Raster" ) } );
+    block->setValid( false );
     return block.release();
   }
 
@@ -65,6 +68,8 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
   if ( tmpExtent.isEmpty() )
   {
     QgsDebugMsg( QStringLiteral( "Extent outside provider extent" ) );
+    block->setError( { tr( "Extent outside provider extent." ), QStringLiteral( "Raster" ) } );
+    block->setValid( false );
     block->setIsNoData();
     return block.release();
   }
@@ -113,6 +118,8 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
     {
       // Should not happen
       QgsDebugMsg( QStringLiteral( "Row or column limits out of range" ) );
+      block->setError( { tr( "Row or column limits out of range" ), QStringLiteral( "Raster" ) } );
+      block->setValid( false );
       return block.release();
     }
 
@@ -149,6 +156,8 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
     if ( !readBlock( bandNo, tmpExtent, tmpWidth, tmpHeight, tmpBlock->bits(), feedback ) )
     {
       QgsDebugMsg( QStringLiteral( "Error occurred while reading block" ) );
+      block->setError( { tr( "Error occurred while reading block." ), QStringLiteral( "Raster" ) } );
+      block->setValid( false );
       block->setIsNoData();
       return block.release();
     }
@@ -174,6 +183,8 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
         {
           QgsDebugMsg( QStringLiteral( "Source row or column limits out of range" ) );
           block->setIsNoData(); // so that the problem becomes obvious and fixed
+          block->setError( { tr( "Source row or column limits out of range." ), QStringLiteral( "Raster" ) } );
+          block->setValid( false );
           return block.release();
         }
 
@@ -202,6 +213,8 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
     {
       QgsDebugMsg( QStringLiteral( "Error occurred while reading block" ) );
       block->setIsNoData();
+      block->setError( { tr( "Error occurred while reading block." ), QStringLiteral( "Raster" ) } );
+      block->setValid( false );
       return block.release();
     }
   }

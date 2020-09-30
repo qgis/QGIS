@@ -683,8 +683,9 @@ QgsRasterBlock *QgsGdalProvider::block( int bandNo, const QgsRectangle &extent, 
   }
   if ( !readBlock( bandNo, extent, width, height, block->bits(), feedback ) )
   {
-    QgsDebugMsg( QStringLiteral( "Error occurred while reading block" ) );
+    block->setError( { tr( "Error occurred while reading block." ), QStringLiteral( "GDAL" ) } );
     block->setIsNoData();
+    block->setValid( false );
     return block.release();
   }
   // apply scale and offset
