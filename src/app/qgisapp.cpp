@@ -5471,8 +5471,8 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layerQStringList, const
       // Try to extract the database name and use it as base name
       // sublayers names (if any) will be appended to the layer name
       auto parts( QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), src ) );
-      if ( parts.value( QStringLiteral( "layerName" ) ).isValid() )
-        baseName = parts.value( QStringLiteral( "layerName" ) ).toString();
+      if ( parts.value( QStringLiteral( "databaseName" ) ).isValid() )
+        baseName = parts.value( QStringLiteral( "databaseName" ) ).toString();
       else
         baseName = src;
     }

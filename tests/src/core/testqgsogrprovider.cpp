@@ -125,15 +125,26 @@ void TestQgsOgrProvider::setupProxy()
 void TestQgsOgrProvider::decodeUri()
 {
   auto parts( QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), QStringLiteral( "MySQL:database_name,host=localhost,port=3306 authcfg='f8wwfx8'" ) ) );
-  QCOMPARE( parts.size(), 3 );
-  QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString( "database_name" ) );
+  QCOMPARE( parts.size(), 4 );
+  QCOMPARE( parts.value( QStringLiteral( "databaseName" ) ).toString(), QString( "database_name" ) );
+  QVERIFY( parts.value( QStringLiteral( "layerName" ) ).toString().isEmpty() );
   QVERIFY( !parts.value( QStringLiteral( "layerId" ) ).isValid() );
   QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QString( "MySQL:database_name,host=localhost,port=3306 authcfg='f8wwfx8'" ) );
+  QCOMPARE( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "ogr" ), parts ), QStringLiteral( "MySQL:database_name,host=localhost,port=3306 authcfg='f8wwfx8'" ) );
+
   parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), QStringLiteral( "MYSQL:westholland,user=root,password=psv9570,port=3306,tables=bedrijven" ) );
-  QCOMPARE( parts.size(), 3 );
-  QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString( "westholland" ) );
+  QCOMPARE( parts.size(), 4 );
+  QCOMPARE( parts.value( QStringLiteral( "databaseName" ) ).toString(), QString( "westholland" ) );
   QVERIFY( !parts.value( QStringLiteral( "layerId" ) ).isValid() );
   QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QString( "MYSQL:westholland,user=root,password=psv9570,port=3306,tables=bedrijven" ) );
+
+  parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), QStringLiteral( "MYSQL:westholland|layername=foo" ) );
+  QCOMPARE( parts.size(), 4 );
+  QCOMPARE( parts.value( QStringLiteral( "databaseName" ) ).toString(), QString( "westholland" ) );
+  QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString( "foo" ) );
+  QVERIFY( !parts.value( QStringLiteral( "layerId" ) ).isValid() );
+  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QString( "MYSQL:westholland" ) );
+
   parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), QStringLiteral( "/path/to/a/geopackage.gpkg|layername=a_layer" ) );
   QCOMPARE( parts.size(), 3 );
   QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString( "a_layer" ) );
