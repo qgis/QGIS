@@ -107,6 +107,66 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
     ErrorCode post( QNetworkRequest &request, const QByteArray &data, bool forceRefresh = false, QgsFeedback *feedback = nullptr );
 
     /**
+     * Performs a "head" operation on the specified \a request.
+     *
+     * If \a forceRefresh is FALSE then previously cached replies may be used for the request. If
+     * it is set to TRUE then a new query is always performed.
+     *
+     * If an authCfg() has been set, then any authentication configuration required will automatically be applied to
+     * \a request. There is no need to manually apply the authentication to the request prior to calling
+     * this method.
+     *
+     * The optional \a feedback argument can be used to abort ongoing requests.
+     *
+     * The method will return NoError if the get operation was successful. The contents of the reply can be retrieved
+     * by calling reply().
+     *
+     * If an error was encountered then a specific ErrorCode will be returned, and a detailed error message
+     * can be retrieved by calling errorMessage().
+     *
+     * \since 3.18
+     */
+    ErrorCode head( QNetworkRequest &request, bool forceRefresh = false, QgsFeedback *feedback = nullptr );
+
+    /**
+     * Performs a "put" operation on the specified \a request, using the given \a data.
+     *
+     * If an authCfg() has been set, then any authentication configuration required will automatically be applied to
+     * \a request. There is no need to manually apply the authentication to the request prior to calling
+     * this method.
+     *
+     * The optional \a feedback argument can be used to abort ongoing requests.
+     *
+     * The method will return NoError if the get operation was successful. The contents of the reply can be retrieved
+     * by calling reply().
+     *
+     * If an error was encountered then a specific ErrorCode will be returned, and a detailed error message
+     * can be retrieved by calling errorMessage().
+     *
+     * \since 3.18
+     */
+    ErrorCode put( QNetworkRequest &request, const QByteArray &data, QgsFeedback *feedback = nullptr );
+
+    /**
+     * Performs a "delete" operation on the specified \a request.
+     *
+     * If an authCfg() has been set, then any authentication configuration required will automatically be applied to
+     * \a request. There is no need to manually apply the authentication to the request prior to calling
+     * this method.
+     *
+     * The optional \a feedback argument can be used to abort ongoing requests.
+     *
+     * The method will return NoError if the get operation was successful. The contents of the reply can be retrieved
+     * by calling reply().
+     *
+     * If an error was encountered then a specific ErrorCode will be returned, and a detailed error message
+     * can be retrieved by calling errorMessage().
+     *
+     * \since 3.18
+     */
+    ErrorCode deleteResource( QNetworkRequest &request, QgsFeedback *feedback = nullptr );
+
+    /**
      * Returns the error message string, after a get() or post() request has been made.\
      */
     QString errorMessage() const { return mErrorMessage; }
@@ -157,14 +217,17 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
     enum Method
     {
       Get,
-      Post
+      Post,
+      Head,
+      Put,
+      Delete
     };
 
     //! The reply to the request
     QNetworkReply *mReply = nullptr;
 
     Method mMethod = Get;
-    QByteArray mPostData;
+    QByteArray mPayloadData;
 
     //! Authentication configuration ID
     QString mAuthCfg;
@@ -197,6 +260,7 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
 
     QString errorMessageFailedAuth();
 
+    void sendRequestToNetworkAccessManager( const QNetworkRequest &request );
 };
 
 ///@cond PRIVATE
