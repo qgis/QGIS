@@ -127,6 +127,7 @@ void QgsBrowserModel::addRootItems()
 #ifdef Q_OS_MAC
   QString path = QString( "/Volumes" );
   QgsDirectoryItem *vols = new QgsDirectoryItem( nullptr, path, path, path, QStringLiteral( "special:Volumes" ) );
+  setupItemConnections( vols );
   mRootItems << vols;
 #endif
 
