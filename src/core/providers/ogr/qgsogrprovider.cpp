@@ -3424,6 +3424,7 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri )
   QString layerName;
   QString subset;
   QString geometryType;
+  QString databaseName;
 
   int layerId = -1;
 
@@ -3486,12 +3487,12 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri )
        uri.startsWith( QStringLiteral( "IDB" ), Qt::CaseSensitivity::CaseInsensitive ) ||
        uri.startsWith( QStringLiteral( "OCI" ), Qt::CaseSensitivity::CaseInsensitive ) )
   {
-    auto parts( uri.split( ':' ) );
+    auto parts( path.split( ':' ) );
     if ( parts.count( ) > 1 )
     {
       auto dataParts( parts.at( 1 ).split( ',' ) );
       if ( dataParts.count() > 0 )
-        layerName = dataParts.at( 0 );
+        databaseName = dataParts.at( 0 );
     }
   }
 
@@ -3507,6 +3508,8 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri )
     uriComponents.insert( QStringLiteral( "subset" ), subset );
   if ( !geometryType.isEmpty() )
     uriComponents.insert( QStringLiteral( "geometryType" ), geometryType );
+  if ( !databaseName.isEmpty() )
+    uriComponents.insert( QStringLiteral( "databaseName" ), databaseName );
   return uriComponents;
 }
 
