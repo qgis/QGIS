@@ -20,6 +20,7 @@
 #include "qgsrasterviewport.h"
 #include "qgssymbollayerutils.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgsmessagelog.h"
 
 #include <QColor>
 #include <QDomDocument>
@@ -497,9 +498,13 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromRas
       {
         break;
       }
-      raster->extent();
       const QgsRectangle rowExtent { fullExtent.xMinimum(), fullExtent.yMinimum() + yStep * row, fullExtent.xMaximum(), fullExtent.yMinimum() + yStep *( row + 1 ) };
       std::unique_ptr<QgsRasterBlock> block { raster->block( bandNumber, rowExtent, raster->xSize(), 1, feedback ) };
+      if ( ! block->isValid() )
+      {
+        QgsMessageLog::logMessage( QStringLiteral( "Invalid block reading from raster. %1" ).arg( block->error().summary() ), QStringLiteral( "Raster" ) );
+        return data;
+      }
       for ( col = 0; col < static_cast<qgssize>( raster->xSize() ); ++col )
       {
         if ( presentValues >= MAX_FLOAT_CLASSES )
@@ -529,7 +534,7 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromRas
     }
     if ( presentValues == MAX_FLOAT_CLASSES && ( col < static_cast<qgssize>( raster->xSize() ) || row < static_cast<qgssize>( raster->ySize() ) ) )
     {
-      QgsDebugMsg( QStringLiteral( "Numer of classes exceeded maximum (%1)." ).arg( MAX_FLOAT_CLASSES ) );
+      QgsMessageLog::logMessage( QStringLiteral( "Number of classes exceeded maximum (%1)." ).arg( MAX_FLOAT_CLASSES ), QStringLiteral( "Raster" ) );
     }
   }
   else
