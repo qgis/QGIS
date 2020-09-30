@@ -2639,17 +2639,17 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
     const auto constReferencingRelations { QgsProject::instance()->relationManager()->referencingRelations( this ) };
     for ( const auto &rel : constReferencingRelations )
     {
-      QgsWeakRelation::writeXml( this, rel, referencedLayersElement, doc );
+      QgsWeakRelation::writeXml( this, QgsWeakRelation::Referencing, rel, referencedLayersElement, doc );
     }
 
     // Store referencing layers: relations where "this" is the parent layer (the referenced part, that holds the FK)
     QDomElement referencingLayersElement = doc.createElement( QStringLiteral( "referencingLayers" ) );
     node.appendChild( referencedLayersElement );
 
-    const auto constReferencedRelations { QgsProject::instance()->relationManager()->referencingRelations( this ) };
+    const auto constReferencedRelations { QgsProject::instance()->relationManager()->referencedRelations( this ) };
     for ( const auto &rel : constReferencedRelations )
     {
-      QgsWeakRelation::writeXml( this, rel, referencingLayersElement, doc );
+      QgsWeakRelation::writeXml( this, QgsWeakRelation::Referenced, rel, referencingLayersElement, doc );
     }
 
   }

@@ -136,15 +136,17 @@ void TestQgsWeakRelation::testReadWrite()
       QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
 
+  // Check the XML is written for the referenced layer
   QDomElement node = doc.createElement( QStringLiteral( "relation" ) );
-  QgsWeakRelation::writeXml( &referencedLayer, relation, node, doc );
+  QgsWeakRelation::writeXml( &referencedLayer, QgsWeakRelation::Referenced, relation, node, doc );
   QgsWeakRelation weakRelReferenced( QgsWeakRelation::readXml( &referencedLayer, QgsWeakRelation::Referenced, node,  QgsProject::instance()->pathResolver() ) );
   QCOMPARE( weakRelReferenced.fieldPairs(), fieldPairs );
   QCOMPARE( weakRelReferenced.strength(), QgsRelation::RelationStrength::Association );
   QCOMPARE( weakRelReferenced.referencedLayer().resolve( QgsProject::instance() ), &referencedLayer );
 
+  // Check the XML is written for the referencing layer
   node = doc.createElement( QStringLiteral( "relation" ) );
-  QgsWeakRelation::writeXml( &referencingLayer, relation, node, doc );
+  QgsWeakRelation::writeXml( &referencingLayer, QgsWeakRelation::Referencing, relation, node, doc );
   QgsWeakRelation weakRelReferencing( QgsWeakRelation::readXml( &referencingLayer, QgsWeakRelation::Referencing, node,  QgsProject::instance()->pathResolver() ) );
   QCOMPARE( weakRelReferencing.fieldPairs(), fieldPairs );
   QCOMPARE( weakRelReferencing.strength(), QgsRelation::RelationStrength::Association );
