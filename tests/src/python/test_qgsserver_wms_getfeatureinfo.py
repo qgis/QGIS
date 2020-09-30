@@ -802,6 +802,139 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                      'wms_getfeatureinfo_cascading_issue31177',
                                      project_name)
 
+    def testGetFeatureInfoRasterNoData(self):
+        # outside the image in text
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=-39.43236293126383885,135.95002698514588246,-30.54405018572365194,156.29582900705395332' +
+                                 '&CRS=EPSG:4326' +
+                                 '&VERSION=1.3.0' +
+                                 '&WIDTH=800&HEIGHT=400' +
+                                 '&LAYERS=requires_warped_vrt' +
+                                 '&QUERY_LAYERS=requires_warped_vrt' +
+                                 '&I=1&J=1' +
+                                 '&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_raster_nodata_out_txt',
+                                 'test_raster_nodata.qgz',
+                                 raw=True)
+
+        # 0 text
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=-39.43236293126383885,135.95002698514588246,-30.54405018572365194,156.29582900705395332' +
+                                 '&CRS=EPSG:4326' +
+                                 '&VERSION=1.3.0' +
+                                 '&WIDTH=800&HEIGHT=400' +
+                                 '&LAYERS=requires_warped_vrt' +
+                                 '&QUERY_LAYERS=requires_warped_vrt' +
+                                 '&I=576&J=163' +
+                                 '&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_raster_nodata_zero_txt',
+                                 'test_raster_nodata.qgz',
+                                 raw=True)
+
+        # nodata text
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=-39.43236293126383885,135.95002698514588246,-30.54405018572365194,156.29582900705395332' +
+                                 '&CRS=EPSG:4326' +
+                                 '&VERSION=1.3.0' +
+                                 '&WIDTH=800&HEIGHT=400' +
+                                 '&LAYERS=requires_warped_vrt' +
+                                 '&QUERY_LAYERS=requires_warped_vrt' +
+                                 '&I=560&J=78' +
+                                 '&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_raster_nodata_txt',
+                                 'test_raster_nodata.qgz',
+                                 raw=True)
+
+        # outside the image in html
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=-39.43236293126383885,135.95002698514588246,-30.54405018572365194,156.29582900705395332' +
+                                 '&CRS=EPSG:4326' +
+                                 '&VERSION=1.3.0' +
+                                 '&INFO_FORMAT=text/html' +
+                                 '&WIDTH=800&HEIGHT=400' +
+                                 '&LAYERS=requires_warped_vrt' +
+                                 '&QUERY_LAYERS=requires_warped_vrt' +
+                                 '&I=1&J=1' +
+                                 '&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_raster_nodata_out_html',
+                                 'test_raster_nodata.qgz',
+                                 raw=True)
+
+        # 0 html
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=-39.43236293126383885,135.95002698514588246,-30.54405018572365194,156.29582900705395332' +
+                                 '&CRS=EPSG:4326' +
+                                 '&VERSION=1.3.0' +
+                                 '&INFO_FORMAT=text/html' +
+                                 '&WIDTH=800&HEIGHT=400' +
+                                 '&LAYERS=requires_warped_vrt' +
+                                 '&QUERY_LAYERS=requires_warped_vrt' +
+                                 '&I=576&J=163' +
+                                 '&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_raster_nodata_zero_html',
+                                 'test_raster_nodata.qgz',
+                                 raw=True)
+
+        # nodata html
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=-39.43236293126383885,135.95002698514588246,-30.54405018572365194,156.29582900705395332' +
+                                 '&CRS=EPSG:4326' +
+                                 '&VERSION=1.3.0' +
+                                 '&INFO_FORMAT=text/html' +
+                                 '&WIDTH=800&HEIGHT=400' +
+                                 '&LAYERS=requires_warped_vrt' +
+                                 '&QUERY_LAYERS=requires_warped_vrt' +
+                                 '&I=560&J=78' +
+                                 '&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_raster_nodata_html',
+                                 'test_raster_nodata.qgz',
+                                 raw=True)
+
+        # outside the image in json
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=-39.43236293126383885,135.95002698514588246,-30.54405018572365194,156.29582900705395332' +
+                                 '&CRS=EPSG:4326' +
+                                 '&VERSION=1.3.0' +
+                                 '&INFO_FORMAT=application/json' +
+                                 '&WIDTH=800&HEIGHT=400' +
+                                 '&LAYERS=requires_warped_vrt' +
+                                 '&QUERY_LAYERS=requires_warped_vrt' +
+                                 '&I=1&J=1' +
+                                 '&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_raster_nodata_out_json',
+                                 'test_raster_nodata.qgz',
+                                 raw=True)
+
+        # 0 json
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=-39.43236293126383885,135.95002698514588246,-30.54405018572365194,156.29582900705395332' +
+                                 '&CRS=EPSG:4326' +
+                                 '&VERSION=1.3.0' +
+                                 '&INFO_FORMAT=application/json' +
+                                 '&WIDTH=800&HEIGHT=400' +
+                                 '&LAYERS=requires_warped_vrt' +
+                                 '&QUERY_LAYERS=requires_warped_vrt' +
+                                 '&I=576&J=163' +
+                                 '&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_raster_nodata_zero_json',
+                                 'test_raster_nodata.qgz',
+                                 raw=True)
+
+        # nodata json
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=-39.43236293126383885,135.95002698514588246,-30.54405018572365194,156.29582900705395332' +
+                                 '&CRS=EPSG:4326' +
+                                 '&VERSION=1.3.0' +
+                                 '&INFO_FORMAT=application/json' +
+                                 '&WIDTH=800&HEIGHT=400' +
+                                 '&LAYERS=requires_warped_vrt' +
+                                 '&QUERY_LAYERS=requires_warped_vrt' +
+                                 '&I=560&J=78' +
+                                 '&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_raster_nodata_json',
+                                 'test_raster_nodata.qgz',
+                                 raw=True)
+
 
 if __name__ == '__main__':
     unittest.main()
