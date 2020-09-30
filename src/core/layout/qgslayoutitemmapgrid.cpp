@@ -1896,12 +1896,13 @@ bool QgsLayoutItemMapGrid::shouldShowForDisplayMode( QgsLayoutItemMapGrid::Annot
 }
 
 
-QgsLayoutItemMapGrid::DisplayMode gridAnnotationDisplayModeFromDD(QString ddValue) {
-  if( ddValue == QStringLiteral("x_only") )
+QgsLayoutItemMapGrid::DisplayMode gridAnnotationDisplayModeFromDD( QString ddValue )
+{
+  if ( ddValue == QStringLiteral( "x_only" ) )
     return QgsLayoutItemMapGrid::LatitudeOnly;
-  else if ( ddValue == QStringLiteral("y_only") )
+  else if ( ddValue == QStringLiteral( "y_only" ) )
     return QgsLayoutItemMapGrid::LongitudeOnly;
-  else if ( ddValue == QStringLiteral("disabled") )
+  else if ( ddValue == QStringLiteral( "disabled" ) )
     return QgsLayoutItemMapGrid::HideAll;
   else // if ( ddValue == QStringLiteral("all") )
     return QgsLayoutItemMapGrid::ShowAll;
@@ -1950,14 +1951,14 @@ void QgsLayoutItemMapGrid::refreshDataDefinedProperties()
   mEvaluatedAnnotationFrameDistance = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapGridLabelDistance, context, mAnnotationFrameDistance );
   mEvaluatedCrossLength = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapGridCrossSize, context, mCrossLength );
   mEvaluatedGridFrameLineThickness = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapGridFrameLineThickness, context, mGridFramePenThickness );
-  mEvaluatedLeftGridAnnotationDisplay = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridAnnotationDisplayLeft, context, QStringLiteral("all") ) );
-  mEvaluatedRightGridAnnotationDisplay = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridAnnotationDisplayRight, context, QStringLiteral("all") ) );
-  mEvaluatedTopGridAnnotationDisplay = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridAnnotationDisplayTop, context, QStringLiteral("all") ) );
-  mEvaluatedBottomGridAnnotationDisplay = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridAnnotationDisplayBottom, context, QStringLiteral("all") ) );
-  mEvaluatedLeftFrameDivisions = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridFrameDivisionsLeft, context, QStringLiteral("all") ) );
-  mEvaluatedRightFrameDivisions = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridFrameDivisionsRight, context, QStringLiteral("all") ) );
-  mEvaluatedTopFrameDivisions = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridFrameDivisionsTop, context, QStringLiteral("all") ) );
-  mEvaluatedBottomFrameDivisions = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridFrameDivisionsBottom, context, QStringLiteral("all") ) );
+  mEvaluatedLeftGridAnnotationDisplay = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridAnnotationDisplayLeft, context, QStringLiteral( "all" ) ) );
+  mEvaluatedRightGridAnnotationDisplay = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridAnnotationDisplayRight, context, QStringLiteral( "all" ) ) );
+  mEvaluatedTopGridAnnotationDisplay = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridAnnotationDisplayTop, context, QStringLiteral( "all" ) ) );
+  mEvaluatedBottomGridAnnotationDisplay = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridAnnotationDisplayBottom, context, QStringLiteral( "all" ) ) );
+  mEvaluatedLeftFrameDivisions = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridFrameDivisionsLeft, context, QStringLiteral( "all" ) ) );
+  mEvaluatedRightFrameDivisions = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridFrameDivisionsRight, context, QStringLiteral( "all" ) ) );
+  mEvaluatedTopFrameDivisions = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridFrameDivisionsTop, context, QStringLiteral( "all" ) ) );
+  mEvaluatedBottomFrameDivisions = gridAnnotationDisplayModeFromDD( mDataDefinedProperties.valueAsString( QgsLayoutObject::MapGridFrameDivisionsBottom, context, QStringLiteral( "all" ) ) );
 
 }
 
