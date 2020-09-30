@@ -257,6 +257,7 @@ SET(QGIS_CORE_SRCS
   qgscoordinatetransform_p.cpp
   qgscoordinatetransformcontext.cpp
   qgscoordinateutils.cpp
+  qgscplhttpfetchoverrider.cpp
   qgscredentials.cpp
   qgsdartmeasurement.cpp
   qgsdatabaseschemamodel.cpp
