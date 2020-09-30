@@ -123,7 +123,7 @@ void QgsNewOgrConnection::showHelp()
 
 void QgsNewOgrConnection::updateOkButtonState()
 {
-  bool enabled = !txtName->text().isEmpty() && !txtHost->text().isEmpty() && !txtDatabase->text().isEmpty() && !txtPort->text().isEmpty();
+  bool enabled = !txtName->text().isEmpty();
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
 }
 
