@@ -28,6 +28,7 @@
 #define QGSOGRSOURCESELECT_H
 
 #include <QDialog>
+#include <vector>
 
 #include "ui_qgsogrsourceselectbase.h"
 #include "qgshelp.h"
@@ -111,6 +112,11 @@ class QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOg
     void showHelp();
 
   private:
+
+    void computeDataSources( bool interactive );
+    void clearOpenOptions();
+    void fillOpenOptions();
+    std::vector<QWidget *> mOpenOptionsWidgets;
 
     QString mVectorPath;
 
