@@ -4118,28 +4118,30 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
   CPLErrorReset();
 
   char **papszOpenOptions = CSLDuplicate( papszOpenOptionsIn );
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,2,0)
-  const char *apszAllowedDrivers[] = { "GML", nullptr };
-  GDALDriverH hIdentifiedDriver =
-    GDALIdentifyDriverEx( pszPath, GDAL_OF_VECTOR, apszAllowedDrivers, nullptr );
-#else
-  GDALDriverH hIdentifiedDriver =
-    GDALIdentifyDriver( pszPath, nullptr );
-#endif
-  if ( hIdentifiedDriver &&
-       strcmp( GDALGetDriverShortName( hIdentifiedDriver ), "GML" ) == 0 )
+
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,3,0)
   {
-    // There's currently a bug in the OGR GML driver. If a .gfs file exists
-    // and FORCE_SRS_DETECTION is set, then OGR_L_GetFeatureCount() returns
-    // twice the number of features. And as, the .gfs contains the SRS, there
-    // is no need to turn this option on.
-    // https://trac.osgeo.org/gdal/ticket/7046
-    VSIStatBufL sStat;
-    if ( VSIStatL( CPLResetExtension( pszPath, "gfs" ), &sStat ) != 0 )
+    // Workaround for a bug in the GML driver that was fixed in 2.3.0 (and 2.2.X)
+    // See https://trac.osgeo.org/gdal/ticket/7046
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,2,0)
+    const char *apszAllowedDrivers[] = { "GML", nullptr };
+    GDALDriverH hIdentifiedDriver =
+      GDALIdentifyDriverEx( pszPath, GDAL_OF_VECTOR, apszAllowedDrivers, nullptr );
+#else
+    GDALDriverH hIdentifiedDriver =
+      GDALIdentifyDriver( pszPath, nullptr );
+#endif
+    if ( hIdentifiedDriver &&
+         strcmp( GDALGetDriverShortName( hIdentifiedDriver ), "GML" ) == 0 )
     {
-      papszOpenOptions = CSLSetNameValue( papszOpenOptions, "FORCE_SRS_DETECTION", "YES" );
+      VSIStatBufL sStat;
+      if ( VSIStatL( CPLResetExtension( pszPath, "gfs" ), &sStat ) != 0 )
+      {
+        papszOpenOptions = CSLSetNameValue( papszOpenOptions, "FORCE_SRS_DETECTION", "YES" );
+      }
     }
   }
+#endif
 
   QString filePath( QString::fromUtf8( pszPath ) );
 
