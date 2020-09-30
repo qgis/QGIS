@@ -2349,6 +2349,9 @@ static QVariant fcnGeomZ( const QVariantList &values, const QgsExpressionContext
   if ( geom.isNull() )
     return QVariant(); //or 0?
 
+  if ( !geom.constGet()->is3D() )
+    return QVariant();
+
   //if single point, return the point's z coordinate
   if ( geom.type() == QgsWkbTypes::PointGeometry && !geom.isMultipart() )
   {
@@ -2376,6 +2379,9 @@ static QVariant fcnGeomM( const QVariantList &values, const QgsExpressionContext
   QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
   if ( geom.isNull() )
     return QVariant(); //or 0?
+
+  if ( !geom.constGet()->isMeasure() )
+    return QVariant();
 
   //if single point, return the point's m value
   if ( geom.type() == QgsWkbTypes::PointGeometry && !geom.isMultipart() )
