@@ -480,26 +480,26 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromRas
   // Collect unique values for float rasters
   if ( raster->dataType( bandNumber ) == Qgis::DataType::Float32 || raster->dataType( bandNumber ) == Qgis::DataType::Float64 )
   {
+    const QgsRectangle fullExtent { raster->extent() };
     QList<double> values;
-    if ( feedback )
-    {
-      // Start showing some progress
-      feedback->setProgress( 1 );
-    }
-    std::unique_ptr<QgsRasterBlock> block { raster->block( bandNumber, raster->extent(), raster->xSize(), raster->ySize(), feedback ) };
+
     if ( feedback && feedback->isCanceled() )
     {
       return data;
     }
+    const double yStep { fullExtent.height() / raster->ySize() };
     // Max MAX_FLOAT_CLASSES classes!
     qgssize col = 0;
     qgssize row = 0;
-    for ( ; row < static_cast<qgssize>( raster->ySize() ); ++row )
+    for ( row = raster->ySize() - 1; row >= 0; --row )
     {
       if ( presentValues >= MAX_FLOAT_CLASSES )
       {
         break;
       }
+      raster->extent();
+      const QgsRectangle rowExtent { fullExtent.xMinimum(), fullExtent.yMinimum() + yStep * row, fullExtent.xMaximum(), fullExtent.yMinimum() + yStep *( row + 1 ) };
+      std::unique_ptr<QgsRasterBlock> block { raster->block( bandNumber, rowExtent, raster->xSize(), 1, feedback ) };
       for ( col = 0; col < static_cast<qgssize>( raster->xSize() ); ++col )
       {
         if ( presentValues >= MAX_FLOAT_CLASSES )
@@ -511,7 +511,7 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromRas
           return data;
         }
         bool isNoData;
-        const double currentValue { block->valueAndNoData( row, col, isNoData ) };
+        const double currentValue { block->valueAndNoData( 0, col, isNoData ) };
         if ( ! isNoData && !values.contains( currentValue ) )
         {
           values.push_back( currentValue );
@@ -521,8 +521,10 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromRas
       }
       if ( feedback )
       {
-        // Show no less than 2%, then the max between class fill and real progress
-        feedback->setProgress( std::max<int>( 2, 100 * std::max<double>( ( row + 1 ) / raster->ySize(), presentValues / MAX_FLOAT_CLASSES ) ) );
+        // Show the max between class fill and real
+        const double progress { 100 * std::max<double>( ( raster->ySize() - row + 1 ) / raster->ySize(), presentValues / MAX_FLOAT_CLASSES ) };
+        feedback->setProgress( progress );
+        // qDebug() << "Progress: " << progress;
       }
     }
     if ( presentValues == MAX_FLOAT_CLASSES && ( col < static_cast<qgssize>( raster->xSize() ) || row < static_cast<qgssize>( raster->ySize() ) ) )
