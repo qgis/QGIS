@@ -110,7 +110,7 @@ class HtmlExpression : public QObject
 
 /**
  * \ingroup gui
- * Evaluate expression when rendering the html content to determine wether we need feature
+ * Evaluate expression when rendering the html content to determine whether we need feature
  * geometry or not for later evaluation
  * \since QGIS 3.16
  */
