@@ -2007,6 +2007,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     friend class QgsServer;
 
     friend class TestQgsProject;
+
+    Q_DISABLE_COPY( QgsProject )
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProject::ReadFlags )
