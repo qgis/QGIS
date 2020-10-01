@@ -128,7 +128,7 @@ int QgsLayoutItem::type() const
 
 QgsLayoutItem::Flags QgsLayoutItem::itemFlags() const
 {
-  return nullptr;
+  return QgsLayoutItem::Flags();
 }
 
 void QgsLayoutItem::setId( const QString &id )

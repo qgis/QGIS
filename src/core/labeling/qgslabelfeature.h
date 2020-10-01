@@ -570,7 +570,7 @@ class CORE_EXPORT QgsLabelFeature
     //! Distance to smooth angle of line start and end when calculating overruns
     double mOverrunSmoothDistance = 0;
 
-    QgsLabeling::LinePlacementFlags mArrangementFlags = nullptr;
+    QgsLabeling::LinePlacementFlags mArrangementFlags = QgsLabeling::LinePlacementFlags();
     QgsLabeling::PolygonPlacementFlags mPolygonPlacementFlags = QgsLabeling::PolygonPlacementFlag::AllowPlacementInsideOfPolygon;
 
   private:

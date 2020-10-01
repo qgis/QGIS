@@ -43,7 +43,7 @@ class QgsMssqlProviderConnection : public QgsAbstractDatabaseProviderConnection
     void dropSchema( const QString &name, bool force = false ) const override;
     QList<QVariantList> executeSql( const QString &sql, QgsFeedback *feedback ) const override;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema,
-        const TableFlags &flags = nullptr ) const override;
+        const TableFlags &flags = TableFlags() ) const override;
     QStringList schemas( ) const override;
     void store( const QString &name ) const override;
     void remove( const QString &name ) const override;

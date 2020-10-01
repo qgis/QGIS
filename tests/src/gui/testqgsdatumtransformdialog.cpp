@@ -127,7 +127,7 @@ void TestQgsDatumTransformDialog::fallback()
 {
 #if PROJ_VERSION_MAJOR>=6
   // don't default to allow fallback
-  QgsDatumTransformDialog dlg( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:7844" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4283" ) ), false, true, false, qMakePair( -1, -1 ), nullptr, nullptr, QString(), nullptr, false );
+  QgsDatumTransformDialog dlg( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:7844" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4283" ) ), false, true, false, qMakePair( -1, -1 ), nullptr, Qt::WindowFlags(), QString(), nullptr, false );
 
   QgsDatumTransformDialog::TransformInfo def = dlg.selectedDatumTransform();
   QCOMPARE( def.sourceCrs.authid(), QStringLiteral( "EPSG:7844" ) );

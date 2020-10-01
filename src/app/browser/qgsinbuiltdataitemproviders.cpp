@@ -705,7 +705,7 @@ void QgsProjectItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
       {
         p.accept( &visitor );
         override.release();
-        QgsStyleManagerDialog dlg( &style, QgisApp::instance(), nullptr, true );
+        QgsStyleManagerDialog dlg( &style, QgisApp::instance(), Qt::WindowFlags(), true );
         dlg.setFavoritesGroupVisible( false );
         dlg.setSmartGroupsVisible( false );
         QFileInfo fi( projectPath );
@@ -917,8 +917,8 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
                 const QString geometryColumn { dlg.geometryColumnName() };
                 const QgsWkbTypes::Type geometryType { dlg.geometryType() };
                 const bool createSpatialIndex { dlg.createSpatialIndex() &&
-                                                geometryType != QgsWkbTypes::NoGeometry &&
-                                                geometryType != QgsWkbTypes::Unknown };
+                  geometryType != QgsWkbTypes::NoGeometry &&
+                  geometryType != QgsWkbTypes::Unknown };
                 const QgsCoordinateReferenceSystem crs { dlg.crs( ) };
                 // This flag tells to the provider that field types do not need conversion
                 QMap<QString, QVariant> options { { QStringLiteral( "skipConvertFields" ), true } };

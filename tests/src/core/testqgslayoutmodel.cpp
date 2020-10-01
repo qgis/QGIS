@@ -1012,7 +1012,7 @@ void TestQgsLayoutModel::proxy()
   QCOMPARE( proxy->rowCount( QModelIndex() ), 2 );
   QCOMPARE( proxy->data( proxy->index( 0, 2, QModelIndex() ) ).toString(), QStringLiteral( "d" ) );
   QCOMPARE( proxy->data( proxy->index( 1, 2, QModelIndex() ) ).toString(), QStringLiteral( "e" ) );
-  proxy->setItemFlags( nullptr );
+  proxy->setItemFlags( QgsLayoutItem::Flags() );
   QCOMPARE( proxy->rowCount( QModelIndex() ), 5 );
 }
 

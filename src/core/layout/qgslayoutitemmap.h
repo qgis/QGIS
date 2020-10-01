@@ -939,7 +939,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem, public QgsTemporalRan
     void updateAtlasFeature();
   private:
 
-    QgsLayoutItemMap::MapItemFlags mMapFlags = nullptr;
+    QgsLayoutItemMap::MapItemFlags mMapFlags = QgsLayoutItemMap::MapItemFlags();
 
     //! Unique identifier
     int mMapId = 1;

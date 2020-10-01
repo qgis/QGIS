@@ -150,7 +150,7 @@ class QgsWFSProvider final: public QgsVectorDataProvider
     //! Namespace URL of the server (comes from DescribeFeatureDocument)
     QString mApplicationNamespace;
     //! Server capabilities for this layer (generated from capabilities document)
-    QgsVectorDataProvider::Capabilities mCapabilities = nullptr;
+    QgsVectorDataProvider::Capabilities mCapabilities = QgsVectorDataProvider::Capabilities();
     //! Fields of this typename. Might be different from mShared->mFields in case of SELECT
     QgsFields mThisTypenameFields;
 

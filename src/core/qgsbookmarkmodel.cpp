@@ -107,7 +107,7 @@ QVariant QgsBookmarkManagerModel::data( const QModelIndex &index, int role ) con
 Qt::ItemFlags QgsBookmarkManagerModel::flags( const QModelIndex &index ) const
 {
   if ( !index.isValid() || index.row() < 0 || index.row() >= rowCount() )
-    return nullptr;
+    return Qt::ItemFlags();
 
   Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
   if ( index.column() == ColumnStore )

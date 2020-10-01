@@ -158,7 +158,7 @@ QgsGui::HigFlags QgsGui::higFlags()
   }
   else
   {
-    return nullptr;
+    return QgsGui::HigFlags();
   }
 }
 

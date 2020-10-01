@@ -369,7 +369,7 @@ Example
 
     virtual bool fromWkt( const QString &wkt );
 
-    virtual QByteArray asWkb( QgsAbstractGeometry::WkbFlags = 0 ) const;
+    virtual QByteArray asWkb( QgsAbstractGeometry::WkbFlags = QgsAbstractGeometry::WkbFlags() ) const;
 
     virtual QString asWkt( int precision = 17 ) const;
 

@@ -536,7 +536,7 @@ void QgsAdvancedDigitizingDockWidget::lockAdditionalConstraint( AdditionalConstr
 
 void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange )
 {
-  CadCapacities newCapacities = nullptr;
+  CadCapacities newCapacities = CadCapacities();
   // first point is the mouse point (it doesn't count)
   if ( mCadPointList.count() > 1 )
   {

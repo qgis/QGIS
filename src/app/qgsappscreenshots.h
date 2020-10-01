@@ -59,7 +59,7 @@ class QgsAppScreenShots
     QgsAppScreenShots( const QString &saveDirectory );
 
     //! if categories is null, then takes all categories
-    void takePicturesOf( Categories categories = nullptr );
+    void takePicturesOf( Categories categories = Categories() );
 
     //! set gradient size
     void setGradientSize( int size );

@@ -43,7 +43,7 @@ class QgsSpatiaLiteProviderConnection : public QgsAbstractDatabaseProviderConnec
     void createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options = QgsAbstractDatabaseProviderConnection::SpatialIndexOptions() ) const override;
     bool spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const override;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(),
-        const TableFlags &flags = nullptr ) const override;
+        const TableFlags &flags = TableFlags() ) const override;
     QIcon icon() const override;
     void deleteField( const QString &fieldName, const QString &schema, const QString &tableName, bool force ) const override;
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;

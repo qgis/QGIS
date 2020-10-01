@@ -333,7 +333,7 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
     QList<QgsClassificationRange> breaksToClasses( const QList<double> &breaks ) const;
 
     // implementation properties (set by initialization)
-    MethodProperties mFlags = nullptr;
+    MethodProperties mFlags = MethodProperties();
     int mCodeComplexity = 1;
 
     // parameters (set by setters)

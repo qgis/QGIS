@@ -1700,7 +1700,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 } // QgisApp ctor
 
 QgisApp::QgisApp()
-  : QMainWindow( nullptr, nullptr )
+  : QMainWindow( nullptr, Qt::WindowFlags() )
 #ifdef Q_OS_MAC
   , mWindowMenu( nullptr )
 #endif
@@ -5765,7 +5765,7 @@ bool QgisApp::askUserForZipItemLayers( const QString &path )
     // initialize a selection dialog and display it.
     case QgsSublayersDialog::PromptAlways:
     case QgsSublayersDialog::PromptIfNeeded:
-      QgsSublayersDialog chooseSublayersDialog( QgsSublayersDialog::Vsifile, QStringLiteral( "vsi" ), this, nullptr, path );
+      QgsSublayersDialog chooseSublayersDialog( QgsSublayersDialog::Vsifile, QStringLiteral( "vsi" ), this, Qt::WindowFlags(), path );
       QgsSublayersDialog::LayerDefinitionList layers;
 
       for ( int i = 0; i < zipItem->children().size(); i++ )
@@ -5858,7 +5858,7 @@ QList< QgsMapLayer * > QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
   }
 
   // We initialize a selection dialog and display it.
-  QgsSublayersDialog chooseSublayersDialog( QgsSublayersDialog::Gdal, QStringLiteral( "gdal" ), this, nullptr, layer->dataProvider()->dataSourceUri() );
+  QgsSublayersDialog chooseSublayersDialog( QgsSublayersDialog::Gdal, QStringLiteral( "gdal" ), this, Qt::WindowFlags(), layer->dataProvider()->dataSourceUri() );
   chooseSublayersDialog.setShowAddToGroupCheckbox( true );
 
   QgsSublayersDialog::LayerDefinitionList layers;
@@ -6077,7 +6077,7 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer, con
   // Check if the current layer uri contains the
 
   // We initialize a selection dialog and display it.
-  QgsSublayersDialog chooseSublayersDialog( QgsSublayersDialog::Ogr, QStringLiteral( "ogr" ), this, nullptr, layer->dataProvider()->dataSourceUri() );
+  QgsSublayersDialog chooseSublayersDialog( QgsSublayersDialog::Ogr, QStringLiteral( "ogr" ), this, Qt::WindowFlags(), layer->dataProvider()->dataSourceUri() );
   chooseSublayersDialog.setShowAddToGroupCheckbox( true );
   chooseSublayersDialog.populateLayerTable( list );
 

@@ -54,7 +54,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     Q_OBJECT
 
   public:
-    QgsGeoreferencerMainWindow( QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr );
+    QgsGeoreferencerMainWindow( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
     ~QgsGeoreferencerMainWindow() override;
 
   protected:

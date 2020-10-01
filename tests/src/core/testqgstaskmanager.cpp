@@ -412,7 +412,7 @@ void TestQgsTaskManager::task()
   QCOMPARE( task->status(), QgsTask::Terminated );
 
   // test flags
-  task.reset( new TestTask( QStringLiteral( "test_task_6" ), nullptr ) );
+  task.reset( new TestTask( QStringLiteral( "test_task_6" ), QgsTask::Flags() ) );
   QVERIFY( !task->canCancel() );
   QVERIFY( !( task->flags() & QgsTask::CanCancel ) );
   task.reset( new TestTask( QStringLiteral( "test_task_7" ), QgsTask::CanCancel ) );

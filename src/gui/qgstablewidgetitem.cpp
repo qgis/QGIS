@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstablewidgetitem.h"
+#include "qgis.h"
 
 QgsTableWidgetItem::QgsTableWidgetItem( const QString &text )
   : QTableWidgetItem( text )
@@ -32,5 +33,5 @@ int QgsTableWidgetItem::sortRole() const
 
 bool QgsTableWidgetItem::operator<( const QTableWidgetItem &other ) const
 {
-  return data( mSortRole ) < other.data( mSortRole );
+  return qgsVariantLessThan( data( mSortRole ), other.data( mSortRole ) );
 }

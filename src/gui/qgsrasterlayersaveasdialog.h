@@ -58,7 +58,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
                                 const QgsCoordinateReferenceSystem &layerCrs,
                                 const QgsCoordinateReferenceSystem &currentCrs,
                                 QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                                Qt::WindowFlags f = nullptr );
+                                Qt::WindowFlags f = Qt::WindowFlags() );
 
     Mode mode() const;
     int nColumns() const;

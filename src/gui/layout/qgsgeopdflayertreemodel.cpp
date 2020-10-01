@@ -53,7 +53,7 @@ Qt::ItemFlags QgsGeoPdfLayerTreeModel::flags( const QModelIndex &idx ) const
   }
 
   if ( !mapLayer( idx ) )
-    return nullptr;
+    return Qt::ItemFlags();
 
   return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
 }

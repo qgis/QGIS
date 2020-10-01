@@ -2602,7 +2602,7 @@ namespace QgsWms
           {
             placement = QgsPalLayerSettings::AroundPoint;
             palSettings.dist = 2; // in mm
-            palSettings.lineSettings().setPlacementFlags( 0 );
+            palSettings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlags() );
             break;
           }
           case QgsWkbTypes::PolygonGeometry:

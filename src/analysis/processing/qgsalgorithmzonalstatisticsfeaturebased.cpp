@@ -113,7 +113,7 @@ bool QgsZonalStatisticsFeatureBasedAlgorithm::prepareAlgorithm( const QVariantMa
   mPrefix = parameterAsString( parameters, QStringLiteral( "COLUMN_PREFIX" ), context );
 
   const QList< int > stats = parameterAsEnums( parameters, QStringLiteral( "STATISTICS" ), context );
-  mStats = nullptr;
+  mStats = QgsZonalStatistics::Statistics();
   for ( int s : stats )
   {
     mStats |= STATS.at( s );
