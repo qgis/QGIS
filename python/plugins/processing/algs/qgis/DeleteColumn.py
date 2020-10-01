@@ -35,7 +35,7 @@ from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 class DeleteColumn(QgisFeatureBasedAlgorithm):
     COLUMNS = 'COLUMN'
     DELETE_ALL_EXCEPT_SELECTED = 'DELETE_ALL_EXCEPT_SELECTED'
-    
+
     def flags(self):
         return super().flags() & ~QgsProcessingAlgorithm.FlagSupportsInPlaceEdits
 
