@@ -3433,7 +3433,7 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri )
     const QRegularExpression geometryTypeRegex( QStringLiteral( "\\|geometrytype=([a-zA-Z0-9]*)" ) );
     const QRegularExpression layerNameRegex( QStringLiteral( "\\|layername=([^|]*)" ) );
     const QRegularExpression layerIdRegex( QStringLiteral( "\\|layerid=([^|]*)" ) );
-    const QRegularExpression subsetRegex( QStringLiteral( "\\|subset=(.*)$" ) );
+    const QRegularExpression subsetRegex( QStringLiteral( "\\|subset=((?:.*[\r\n]*)*)\\Z" ) );
 
 
     // we first try to split off the geometry type component, if that's present. That's a known quantity which
