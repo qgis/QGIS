@@ -506,7 +506,27 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
     mGeometryString.append( " ", 1 );
     for ( const XML_Char **attrIter = attr; attrIter && *attrIter; attrIter += 2 )
     {
-      mGeometryString.append( attrIter[0] );
+      const size_t nAttrLen = strlen( attrIter[0] );
+      const size_t GML32_NAMESPACE_LEN = strlen( GML32_NAMESPACE );
+      const size_t GML_NAMESPACE_LEN = strlen( GML_NAMESPACE );
+      if ( nAttrLen > GML32_NAMESPACE_LEN &&
+           attrIter[0][GML32_NAMESPACE_LEN] == '?' &&
+           memcmp( attrIter[0], GML32_NAMESPACE, GML32_NAMESPACE_LEN ) == 0 )
+      {
+        mGeometryString.append( "gml:" );
+        mGeometryString.append( attrIter[0] + GML32_NAMESPACE_LEN + 1 );
+      }
+      else if ( nAttrLen > GML_NAMESPACE_LEN &&
+                attrIter[0][GML_NAMESPACE_LEN] == '?' &&
+                memcmp( attrIter[0], GML_NAMESPACE, GML_NAMESPACE_LEN ) == 0 )
+      {
+        mGeometryString.append( "gml:" );
+        mGeometryString.append( attrIter[0] + GML_NAMESPACE_LEN + 1 );
+      }
+      else
+      {
+        mGeometryString.append( attrIter[0] );
+      }
       mGeometryString.append( "=\"", 2 );
       mGeometryString.append( attrIter[1] );
       mGeometryString.append( "\" ", 2 );
@@ -887,6 +907,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
     if ( mFoundUnhandledGeometryElement )
     {
       gdal::ogr_geometry_unique_ptr hGeom( OGR_G_CreateFromGML( mGeometryString.c_str() ) );
+      //QgsDebugMsg( QStringLiteral("for OGR: %1 -> %2").arg(mGeometryString.c_str()).arg(hGeom != nullptr));
       if ( hGeom )
       {
         const int wkbSize = OGR_G_WkbSize( hGeom.get() );
