@@ -220,12 +220,12 @@ void TestQgsOgrProvider::decodeUri()
   QVERIFY( !parts.value( QStringLiteral( "layerId" ) ).isValid() );
   QCOMPARE( parts.value( QStringLiteral( "subset" ) ).toString(), QString( "A IN (3,4,5) or \"b\"='x|layerid'" ) );
   QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QString( "/path/to/a/geopackage.gpkg" ) );
-  parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), QStringLiteral( "/path/to/a/geopackage.gpkg|layerid=4|subset=A IN (3,4,5) or \"b\"='x|layerid'|geometrytype=polygonz|layername=my_subset" ) );
+  parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "ogr" ), QStringLiteral( "/path/to/a/geopackage.gpkg|layerid=4|subset=A IN (3,4,5) or \n\"b\"='x|layerid'|geometrytype=polygonz|layername=my_subset" ) );
   QCOMPARE( parts.size(), 5 );
   QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString( "my_subset" ) );
   QCOMPARE( parts.value( QStringLiteral( "geometryType" ) ).toString(), QString( "polygonz" ) );
   QVERIFY( !parts.value( QStringLiteral( "layerId" ) ).isValid() );
-  QCOMPARE( parts.value( QStringLiteral( "subset" ) ).toString(), QString( "A IN (3,4,5) or \"b\"='x|layerid'" ) );
+  QCOMPARE( parts.value( QStringLiteral( "subset" ) ).toString(), QString( "A IN (3,4,5) or \n\"b\"='x|layerid'" ) );
   QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QString( "/path/to/a/geopackage.gpkg" ) );
 }
 
