@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     DeleteColumn.py
@@ -16,23 +15,22 @@
 *                                                                         *
 ***************************************************************************
 """
-
 __author__ = 'Michael Minn'
 __date__ = 'May 2010'
 __copyright__ = '(C) 2010, Michael Minn'
-
 from qgis.PyQt.QtCore import QCoreApplication
 
 from qgis.core import (QgsProcessingParameterField,
                        QgsProcessing,
                        QgsProcessingAlgorithm,
-                       QgsProcessingFeatureSource)
+                       QgsProcessingFeatureSource,
+                       QgsProcessingParameterBoolean)
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
 class DeleteColumn(QgisFeatureBasedAlgorithm):
     COLUMNS = 'COLUMN'
-
+    DELETE_ALL_EXCEPT_SELECTED = 'DELETE_ALL_EXCEPT_SELECTED'
     def flags(self):
         return super().flags() & ~QgsProcessingAlgorithm.FlagSupportsInPlaceEdits
 
@@ -44,7 +42,6 @@ class DeleteColumn(QgisFeatureBasedAlgorithm):
 
     def groupId(self):
         return 'vectortable'
-
     def __init__(self):
         super().__init__()
         self.fields_to_delete = []
@@ -54,13 +51,14 @@ class DeleteColumn(QgisFeatureBasedAlgorithm):
         self.addParameter(QgsProcessingParameterField(self.COLUMNS,
                                                       self.tr('Fields to drop'),
                                                       None, 'INPUT', QgsProcessingParameterField.Any, True))
+        self.addParameter(QgsProcessingParameterBoolean(self.DELETE_ALL_EXCEPT_SELECTED,
+                                                        self.tr('Delete all fields except the selected ones'), defaultValue=False))
 
     def inputLayerTypes(self):
         return [QgsProcessing.TypeVector]
 
     def name(self):
         return 'deletecolumn'
-
     def displayName(self):
         return self.tr('Drop field(s)')
 
@@ -69,8 +67,12 @@ class DeleteColumn(QgisFeatureBasedAlgorithm):
 
     def prepareAlgorithm(self, parameters, context, feedback):
         self.fields_to_delete = self.parameterAsFields(parameters, self.COLUMNS, context)
-
         source = self.parameterAsSource(parameters, 'INPUT', context)
+        delete_all_except_selected = self.parameterAsBool(parameters, self.DELETE_ALL_EXCEPT_SELECTED, context)
+
+        if delete_all_except_selected:
+            self.fields_to_delete = list(set(source.fields().names()) - set(self.fields_to_delete))
+
         if source is not None:
             for f in self.fields_to_delete:
                 index = source.fields().lookupField(f)
