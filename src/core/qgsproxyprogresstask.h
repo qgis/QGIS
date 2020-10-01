@@ -98,6 +98,7 @@ class CORE_EXPORT QgsScopedProxyProgressTask
 
     QgsProxyProgressTask *mTask = nullptr;
 
+    Q_DISABLE_COPY( QgsScopedProxyProgressTask )
 };
 
 #endif // QGSPROXYPROGRESSTASK_H
