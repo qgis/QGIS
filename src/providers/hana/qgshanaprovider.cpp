@@ -105,7 +105,7 @@ namespace
                                   "DEFINITION %8 "
                                   "TRANSFORM DEFINITION %9" )
                   .arg( QgsHanaUtils::quotedIdentifier( srs.description() ),
-                        QString::number( srs.srsid() ),
+                        QString::number( srs.postgisSrid() ),
                         QgsHanaUtils::quotedIdentifier( QString( linearUnits ).toLower() ),
                         QgsHanaUtils::quotedIdentifier( QString( angularUnits ).toLower() ),
                         srs.isGeographic() ? QStringLiteral( "ROUND EARTH" ) : QStringLiteral( "PLANAR" ),
@@ -1469,7 +1469,7 @@ QgsVectorLayerExporter::ExportError QgsHanaProvider::createEmptyLayer(
   long srid = 0;
   if ( srs.isValid() )
   {
-    srid = srs.srsid();
+    srid = srs.postgisSrid();
     QString authSrid = QStringLiteral( "null" );
     QString authName = QStringLiteral( "null" );
     QStringList sl = srs.authid().split( ':' );
