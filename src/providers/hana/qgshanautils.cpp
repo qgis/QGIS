@@ -382,7 +382,7 @@ bool QgsHanaUtils::convertField( QgsField &field )
       }
       else
       {
-        fieldType = QStringLiteral( "DECIMAL(%1,%2)" ).arg( fieldSize, fieldPrec );
+        fieldType = QStringLiteral( "DECIMAL(%1,%2)" ).arg( QString::number( fieldSize ), QString::number( fieldPrec ) );
       }
       break;
     case QVariant::Char:

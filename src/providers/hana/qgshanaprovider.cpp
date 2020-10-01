@@ -125,7 +125,6 @@ namespace
   void setStatementValue(
     PreparedStatementRef &stmt,
     unsigned short paramIndex,
-    const QgsField &field,
     const FieldInfo &fieldInfo,
     const QVariant &value )
   {
@@ -163,8 +162,13 @@ namespace
         break;
       case SQLDataTypes::Numeric:
       case SQLDataTypes::Decimal:
-        stmt->setDecimal( paramIndex, isNull ? Decimal() :
-                          makeNullable<decimal>( value.toString().toStdString(), field.length(), field.precision() ) );
+        if ( isNull )
+          stmt->setDecimal( paramIndex, Decimal() );
+        else
+        {
+          double dvalue = value.toDouble();
+          stmt->setDouble( paramIndex, Double( dvalue ) );
+        }
         break;
       case SQLDataTypes::Real:
         stmt->setFloat( paramIndex, isNull ? Float() : Float( value.toFloat() ) );
@@ -581,7 +585,6 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       for ( int i = 0; i < fieldIds.size(); ++i )
       {
         const int fieldIndex = fieldIds[i];
-        const QgsField &field = mAttributeFields.at( fieldIndex );
         const FieldInfo &fieldInfo = mFieldInfos.at( fieldIndex );
         QVariant attrValue = fieldIndex < attrs.length() ? attrs.at( fieldIndex ) : QVariant( QVariant::LongLong );
         if ( fieldIndex == idFieldIndex )
@@ -596,7 +599,7 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
             attrValue = mDefaultValues[fieldIndex];
         }
 
-        setStatementValue( stmtInsert, paramIndex, field, fieldInfo, attrValue );
+        setStatementValue( stmtInsert, paramIndex, fieldInfo, attrValue );
         ++paramIndex;
       }
 
@@ -1016,7 +1019,7 @@ bool QgsHanaProvider::changeAttributeValues( const QgsChangedAttributesMap &attr
         if ( field.name().isEmpty() || fieldInfo.isAutoIncrement )
           continue;
 
-        setStatementValue( stmt, paramIndex, field, fieldInfo, *attrIt );
+        setStatementValue( stmt, paramIndex, fieldInfo, *attrIt );
         ++paramIndex;
       }
 
