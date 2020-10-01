@@ -42,7 +42,7 @@ class GUI_EXPORT QgsWmsDimensionDialog: public QDialog, private Ui::QgsWmsDimens
 {
     Q_OBJECT
   public:
-    QgsWmsDimensionDialog( QgsVectorLayer *layer, QStringList alreadyDefinedDimensions, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
+    QgsWmsDimensionDialog( QgsVectorLayer *layer, QStringList alreadyDefinedDimensions, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
 
     QgsVectorLayerServerProperties::WmsDimensionInfo info() const;
 

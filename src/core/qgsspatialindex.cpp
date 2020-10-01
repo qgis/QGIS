@@ -232,7 +232,7 @@ class QgsFeatureIteratorDataStream : public IDataStream
     QgsFeatureIterator mFi;
     RTree::Data *mNextData = nullptr;
     QgsFeedback *mFeedback = nullptr;
-    QgsSpatialIndex::Flags mFlags = nullptr;
+    QgsSpatialIndex::Flags mFlags = QgsSpatialIndex::Flags();
     const std::function< bool( const QgsFeature & ) > *mCallback = nullptr;
 
 };
@@ -253,7 +253,7 @@ class QgsSpatialIndexData : public QSharedData
       initTree();
     }
 
-    QgsSpatialIndex::Flags mFlags = nullptr;
+    QgsSpatialIndex::Flags mFlags = QgsSpatialIndex::Flags();
 
     QHash< QgsFeatureId, QgsGeometry > mGeometries;
 

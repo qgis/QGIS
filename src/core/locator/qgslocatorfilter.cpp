@@ -30,7 +30,7 @@ QgsLocatorFilter::QgsLocatorFilter( QObject *parent )
 
 QgsLocatorFilter::Flags QgsLocatorFilter::flags() const
 {
-  return nullptr;
+  return QgsLocatorFilter::Flags();
 }
 
 void QgsLocatorFilter::triggerResultFromAction( const QgsLocatorResult &result, const int actionId )

@@ -319,7 +319,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
 
     void computeCapabilities();
 
-    QgsVectorDataProvider::Capabilities mCapabilities = nullptr;
+    QgsVectorDataProvider::Capabilities mCapabilities = QgsVectorDataProvider::Capabilities();
 
     bool doInitialActionsForEdition();
 

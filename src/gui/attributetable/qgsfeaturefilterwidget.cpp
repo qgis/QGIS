@@ -336,7 +336,7 @@ void QgsFeatureFilterWidget::filterExpressionBuilder()
 
 void QgsFeatureFilterWidget::saveAsStoredFilterExpression()
 {
-  QgsDialog *dlg = new QgsDialog( this, nullptr, QDialogButtonBox::Save | QDialogButtonBox::Cancel );
+  QgsDialog *dlg = new QgsDialog( this, Qt::WindowFlags(), QDialogButtonBox::Save | QDialogButtonBox::Cancel );
   dlg->setWindowTitle( tr( "Save Expression As" ) );
   QVBoxLayout *layout = dlg->layout();
   dlg->resize( std::max( 400, this->width() / 2 ), dlg->height() );
@@ -358,7 +358,7 @@ void QgsFeatureFilterWidget::saveAsStoredFilterExpression()
 
 void QgsFeatureFilterWidget::editStoredFilterExpression()
 {
-  QgsDialog *dlg = new QgsDialog( this, nullptr, QDialogButtonBox::Save | QDialogButtonBox::Cancel );
+  QgsDialog *dlg = new QgsDialog( this, Qt::WindowFlags(), QDialogButtonBox::Save | QDialogButtonBox::Cancel );
   dlg->setWindowTitle( tr( "Edit expression" ) );
   QVBoxLayout *layout = dlg->layout();
   dlg->resize( std::max( 400, this->width() / 2 ), dlg->height() );
@@ -472,7 +472,7 @@ void QgsFeatureFilterWidget::replaceSearchWidget( QWidget *oldw, QWidget *neww )
 {
   mFilterLayout->removeWidget( oldw );
   oldw->setVisible( false );
-  mFilterLayout->addWidget( neww, 0, 0, nullptr );
+  mFilterLayout->addWidget( neww, 0, 0 );
   neww->setVisible( true );
   neww->setFocus();
 }

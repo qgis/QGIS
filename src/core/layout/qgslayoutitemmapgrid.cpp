@@ -1465,7 +1465,7 @@ QString QgsLayoutItemMapGrid::gridAnnotationString( double value, QgsLayoutItemM
 
     case DegreeMinuteNoSuffix:
       format = QgsCoordinateFormatter::FormatDegreesMinutes;
-      flags = nullptr;
+      flags = QgsCoordinateFormatter::FormatFlags();
       break;
 
     case DegreeMinutePadded:
@@ -1475,7 +1475,7 @@ QString QgsLayoutItemMapGrid::gridAnnotationString( double value, QgsLayoutItemM
 
     case DegreeMinuteSecondNoSuffix:
       format = QgsCoordinateFormatter::FormatDegreesMinutesSeconds;
-      flags = nullptr;
+      flags = QgsCoordinateFormatter::FormatFlags();
       break;
 
     case DegreeMinuteSecondPadded:

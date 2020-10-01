@@ -155,7 +155,7 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
 
 QgsScaleBarRenderer::Flags QgsScaleBarRenderer::flags() const
 {
-  return nullptr;
+  return QgsScaleBarRenderer::Flags();
 }
 
 int QgsScaleBarRenderer::sortKey() const

@@ -91,7 +91,7 @@ bool QgsExtractZMValuesAlgorithmBase::prepareAlgorithm( const QVariantMap &param
   mPrefix = parameterAsString( parameters, QStringLiteral( "COLUMN_PREFIX" ), context );
 
   const QList< int > stats = parameterAsEnums( parameters, QStringLiteral( "SUMMARIES" ), context );
-  mStats = nullptr;
+  mStats = QgsStatisticalSummary::Statistics();
   for ( int s : stats )
   {
     mStats |= STATS.at( s );

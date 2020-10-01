@@ -90,7 +90,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
                              bool forceChoice = true,
                              QPair<int, int> selectedDatumTransforms = qMakePair( -1, -1 ),
                              QWidget *parent = nullptr,
-                             Qt::WindowFlags f = nullptr,
+                             Qt::WindowFlags f = Qt::WindowFlags(),
                              const QString &selectedProj = QString(),
                              QgsMapCanvas *mapCanvas = nullptr,
                              bool allowFallback = true );

@@ -401,7 +401,7 @@ class CORE_EXPORT QgsLayoutProxyModel: public QSortFilterProxyModel
     QgsLayoutItemRegistry::ItemType mItemTypeFilter;
     QList< QgsLayoutItem * > mExceptedList;
     bool mAllowEmpty = false;
-    QgsLayoutItem::Flags mItemFlags = nullptr;
+    QgsLayoutItem::Flags mItemFlags = QgsLayoutItem::Flags();
 
 };
 

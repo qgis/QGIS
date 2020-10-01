@@ -128,9 +128,9 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     QgsMapLayerType mLayerType = QgsMapLayerType::VectorLayer;
 
     // determine if the action can be run on layer and/or single feature and/or multiple features
-    Targets mTargets = nullptr;
+    Targets mTargets = Targets();
 
-    QgsMapLayerAction::Flags mFlags = nullptr;
+    QgsMapLayerAction::Flags mFlags = QgsMapLayerAction::Flags();
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapLayerAction::Targets )

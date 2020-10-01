@@ -5402,7 +5402,7 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
 QgsFieldConstraints::Constraints QgsVectorLayer::fieldConstraints( int fieldIndex ) const
 {
   if ( fieldIndex < 0 || fieldIndex >= mFields.count() || !mDataProvider )
-    return nullptr;
+    return QgsFieldConstraints::Constraints();
 
   QgsFieldConstraints::Constraints constraints = mFields.at( fieldIndex ).constraints().constraints();
 
@@ -5444,7 +5444,7 @@ void QgsVectorLayer::setFieldConstraint( int index, QgsFieldConstraints::Constra
   QString name = mFields.at( index ).name();
 
   // add constraint to existing constraints
-  QgsFieldConstraints::Constraints constraints = mFieldConstraints.value( name, nullptr );
+  QgsFieldConstraints::Constraints constraints = mFieldConstraints.value( name, QgsFieldConstraints::Constraints() );
   constraints |= constraint;
   mFieldConstraints.insert( name, constraints );
 
@@ -5461,7 +5461,7 @@ void QgsVectorLayer::removeFieldConstraint( int index, QgsFieldConstraints::Cons
   QString name = mFields.at( index ).name();
 
   // remove constraint from existing constraints
-  QgsFieldConstraints::Constraints constraints = mFieldConstraints.value( name, nullptr );
+  QgsFieldConstraints::Constraints constraints = mFieldConstraints.value( name, QgsFieldConstraints::Constraints() );
   constraints &= ~constraint;
   mFieldConstraints.insert( name, constraints );
 

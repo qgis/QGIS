@@ -72,7 +72,7 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      * \param fl widget flags
      * \param settings custom QgsSettings pointer
      */
-    QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = nullptr, QgsSettings *settings = nullptr );
+    QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = Qt::WindowFlags(), QgsSettings *settings = nullptr );
     ~QgsOptionsDialogBase() override;
 
     /**

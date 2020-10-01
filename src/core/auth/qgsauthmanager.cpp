@@ -1041,14 +1041,14 @@ QWidget *QgsAuthManager::authMethodEditWidget( const QString &authMethodKey, QWi
 QgsAuthMethod::Expansions QgsAuthManager::supportedAuthMethodExpansions( const QString &authcfg )
 {
   if ( isDisabled() )
-    return QgsAuthMethod::Expansions( nullptr );
+    return QgsAuthMethod::Expansions();
 
   QgsAuthMethod *authmethod = configAuthMethod( authcfg );
   if ( authmethod )
   {
     return authmethod->supportedExpansions();
   }
-  return QgsAuthMethod::Expansions( nullptr );
+  return QgsAuthMethod::Expansions();
 }
 
 bool QgsAuthManager::storeAuthenticationConfig( QgsAuthMethodConfig &mconfig )

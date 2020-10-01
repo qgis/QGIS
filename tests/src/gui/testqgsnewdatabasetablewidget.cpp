@@ -134,7 +134,7 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsPostgres()
   QCOMPARE( w->mBrowserModel->data( index, Qt::DisplayRole ).toString(), QString( "PostGIS" ) );
   QRect rect = w->mBrowserTreeView->visualRect( w->mBrowserProxyModel.mapFromSource( index ) );
   QVERIFY( rect.isValid() );
-  QTest::mouseClick( w->mBrowserTreeView->viewport(), Qt::LeftButton, 0, rect.topLeft() );
+  QTest::mouseClick( w->mBrowserTreeView->viewport(), Qt::LeftButton, Qt::KeyboardModifiers(), rect.topLeft() );
 
   QVERIFY( ! w->isValid() );
 
@@ -160,7 +160,7 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsPostgres()
   w->mBrowserTreeView->scrollTo( w->mBrowserProxyModel.mapFromSource( index ) );
   rect = w->mBrowserTreeView->visualRect( w->mBrowserProxyModel.mapFromSource( index ) );
   QVERIFY( rect.isValid() );
-  QTest::mouseClick( w->mBrowserTreeView->viewport(), Qt::LeftButton, 0, rect.center() );
+  QTest::mouseClick( w->mBrowserTreeView->viewport(), Qt::LeftButton, Qt::KeyboardModifiers(), rect.center() );
 
   QVERIFY( ! w->isValid() );
 
@@ -203,7 +203,7 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsPostgres()
   w->mBrowserTreeView->scrollTo( w->mBrowserProxyModel.mapFromSource( index ) );
   rect = w->mBrowserTreeView->visualRect( w->mBrowserProxyModel.mapFromSource( index ) );
   QVERIFY( rect.isValid() );
-  QTest::mouseClick( w->mBrowserTreeView->viewport(), Qt::LeftButton, 0, rect.center() );
+  QTest::mouseClick( w->mBrowserTreeView->viewport(), Qt::LeftButton, Qt::KeyboardModifiers(), rect.center() );
   QCOMPARE( w->schema(), QString( "public" ) );
   QVERIFY( w->isValid() );
   QCOMPARE( validationSpy.count(), 1 );
@@ -253,7 +253,7 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsGeopackage()
   w->mBrowserTreeView->scrollTo( w->mBrowserProxyModel.mapFromSource( index ) );
   auto rect = w->mBrowserTreeView->visualRect( w->mBrowserProxyModel.mapFromSource( index ) );
   QVERIFY( rect.isValid() );
-  QTest::mouseClick( w->mBrowserTreeView->viewport(), Qt::LeftButton, 0, rect.center() );
+  QTest::mouseClick( w->mBrowserTreeView->viewport(), Qt::LeftButton, Qt::KeyboardModifiers(), rect.center() );
 
   QVERIFY( ! w->isValid() );
   QCOMPARE( schemaSpy.count(), 1 );

@@ -32,7 +32,7 @@ class APP_EXPORT QgsCustomProjectionDialog : public QDialog, private Ui::QgsCust
 {
     Q_OBJECT
   public:
-    QgsCustomProjectionDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr );
+    QgsCustomProjectionDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
 
   public slots:
     void pbnCalculate_clicked();

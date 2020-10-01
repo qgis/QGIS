@@ -469,6 +469,7 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
       }
     }
   }
+  return false;
 }
 
 bool QgsColorRampShader::shade( double redValue, double greenValue,

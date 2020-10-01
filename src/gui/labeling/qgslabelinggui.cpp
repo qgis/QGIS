@@ -521,7 +521,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.labelOffsetMapUnitScale = mPointOffsetUnitWidget->getMapUnitScale();
   lyr.angleOffset = mPointAngleSpinBox->value();
 
-  QgsLabeling::LinePlacementFlags linePlacementFlags = 0;
+  QgsLabeling::LinePlacementFlags linePlacementFlags = QgsLabeling::LinePlacementFlags();
   if ( chkLineAbove->isChecked() )
     linePlacementFlags |= QgsLabeling::LinePlacementFlag::AboveLine;
   if ( chkLineBelow->isChecked() )

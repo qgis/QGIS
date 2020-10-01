@@ -517,7 +517,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \throws QgsProviderConnectionException
      * \note Not available in Python bindings
      */
-    virtual QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(), const QgsAbstractDatabaseProviderConnection::TableFlags &flags = nullptr ) const SIP_SKIP;
+    virtual QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(), const QgsAbstractDatabaseProviderConnection::TableFlags &flags = QgsAbstractDatabaseProviderConnection::TableFlags() ) const SIP_SKIP;
 
     /**
      * Returns information on a \a table in the given \a schema.
@@ -581,8 +581,8 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     void checkCapability( Capability capability ) const;
 ///@endcond
 
-    Capabilities mCapabilities = nullptr SIP_SKIP;
-    GeometryColumnCapabilities mGeometryColumnCapabilities = nullptr SIP_SKIP;
+    Capabilities mCapabilities = Capabilities() SIP_SKIP;
+    GeometryColumnCapabilities mGeometryColumnCapabilities = GeometryColumnCapabilities() SIP_SKIP;
     QString mProviderKey;
 
 };

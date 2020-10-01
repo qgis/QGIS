@@ -2196,7 +2196,7 @@ void QgsProcessingEnumPanelWidget::showDialog()
   }
   else
   {
-    QgsProcessingMultipleSelectionDialog dlg( availableOptions, mValue, this, nullptr );
+    QgsProcessingMultipleSelectionDialog dlg( availableOptions, mValue, this, Qt::WindowFlags() );
 
     dlg.setValueFormatter( [options]( const QVariant & v ) -> QString
     {
@@ -3578,7 +3578,7 @@ QWidget *QgsProcessingCoordinateOperationWidgetWrapper::createWidget()
       button->setText( QString( QChar( 0x2026 ) ) );
       connect( button, &QToolButton::clicked, this, [ = ]
       {
-        QgsDatumTransformDialog dlg( mSourceCrs, mDestCrs, false, false, false, qMakePair( -1, -1 ), button, nullptr, mLineEdit->text(), mCanvas );
+        QgsDatumTransformDialog dlg( mSourceCrs, mDestCrs, false, false, false, qMakePair( -1, -1 ), button, Qt::WindowFlags(), mLineEdit->text(), mCanvas );
         if ( dlg.exec() )
         {
           mLineEdit->setText( dlg.selectedDatumTransform().proj );
@@ -3825,7 +3825,7 @@ void QgsProcessingFieldPanelWidget::showDialog()
   }
   else
   {
-    QgsProcessingMultipleSelectionDialog dlg( availableOptions, mValue, this, nullptr );
+    QgsProcessingMultipleSelectionDialog dlg( availableOptions, mValue, this, Qt::WindowFlags() );
 
     dlg.setValueFormatter( []( const QVariant & v ) -> QString
     {
@@ -6008,7 +6008,7 @@ void QgsProcessingRasterBandPanelWidget::showDialog()
   }
   else
   {
-    QgsProcessingMultipleSelectionDialog dlg( availableOptions, mValue, this, nullptr );
+    QgsProcessingMultipleSelectionDialog dlg( availableOptions, mValue, this, Qt::WindowFlags() );
 
     dlg.setValueFormatter( [this]( const QVariant & v ) -> QString
     {
@@ -6560,7 +6560,7 @@ void QgsProcessingMultipleLayerPanelWidget::showDialog()
   }
   else
   {
-    QgsProcessingMultipleInputDialog dlg( mParam, mValue, mModelSources, mModel, this, nullptr );
+    QgsProcessingMultipleInputDialog dlg( mParam, mValue, mModelSources, mModel, this, Qt::WindowFlags() );
     dlg.setProject( mProject );
     if ( dlg.exec() )
     {

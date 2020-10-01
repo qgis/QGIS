@@ -714,7 +714,7 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeatureIds mFilterFids;
     std::unique_ptr< QgsExpression > mFilterExpression;
     QgsExpressionContext mExpressionContext;
-    Flags mFlags;
+    Flags mFlags = Flags();
     QgsAttributeList mAttrs;
     QgsSimplifyMethod mSimplifyMethod;
     long mLimit = -1;

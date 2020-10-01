@@ -204,7 +204,7 @@ class GUI_EXPORT QgsModelViewTool : public QObject
     //! Pointer to model view.
     QgsModelGraphicsView *mView = nullptr;
 
-    QgsModelViewTool::Flags mFlags = nullptr;
+    QgsModelViewTool::Flags mFlags = QgsModelViewTool::Flags();
 
     //! Cursor used by tool
     QCursor mCursor = Qt::ArrowCursor;
