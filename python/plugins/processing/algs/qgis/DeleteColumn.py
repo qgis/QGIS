@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
 ***************************************************************************
     DeleteColumn.py
@@ -18,6 +19,7 @@
 __author__ = 'Michael Minn'
 __date__ = 'May 2010'
 __copyright__ = '(C) 2010, Michael Minn'
+
 from qgis.PyQt.QtCore import QCoreApplication
 
 from qgis.core import (QgsProcessingParameterField,
@@ -25,12 +27,14 @@ from qgis.core import (QgsProcessingParameterField,
                        QgsProcessingAlgorithm,
                        QgsProcessingFeatureSource,
                        QgsProcessingParameterBoolean)
+
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
 class DeleteColumn(QgisFeatureBasedAlgorithm):
     COLUMNS = 'COLUMN'
     DELETE_ALL_EXCEPT_SELECTED = 'DELETE_ALL_EXCEPT_SELECTED'
+    
     def flags(self):
         return super().flags() & ~QgsProcessingAlgorithm.FlagSupportsInPlaceEdits
 
@@ -42,6 +46,7 @@ class DeleteColumn(QgisFeatureBasedAlgorithm):
 
     def groupId(self):
         return 'vectortable'
+    
     def __init__(self):
         super().__init__()
         self.fields_to_delete = []
@@ -59,6 +64,7 @@ class DeleteColumn(QgisFeatureBasedAlgorithm):
 
     def name(self):
         return 'deletecolumn'
+    
     def displayName(self):
         return self.tr('Drop field(s)')
 
