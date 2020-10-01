@@ -115,7 +115,18 @@ void QgsNewOgrConnection::showHelp()
   QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#creating-a-stored-connection" ) );
 }
 
+<<<<<<< HEAD
 //! Autoconnected SLOTS *
+=======
+void QgsNewOgrConnection::updateOkButtonState()
+{
+  bool enabled = !txtName->text().isEmpty();
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
+}
+
+
+//! Autoconnected SLOTS
+>>>>>>> 9d9d0c0f5c... [GUI] OGR Database connection dialog: relax checks to enable 'OK' button
 void QgsNewOgrConnection::accept()
 {
   QgsSettings settings;
