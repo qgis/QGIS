@@ -838,3 +838,128 @@ ALTER TABLE ONLY relations.t_terrain
 ALTER TABLE ONLY relations.t_terrain
     ADD CONSTRAINT t_terrain_fk1 FOREIGN KEY (fk_acte) REFERENCES relations.t_actes(cnumero);
 
+
+
+--
+-- Spaced schema and table
+--
+
+ALTER TABLE IF EXISTS ONLY "spaced schema"."spaced child" DROP CONSTRAINT IF EXISTS parent_fk;
+ALTER TABLE IF EXISTS ONLY "spaced schema"."spaced parent" DROP CONSTRAINT IF EXISTS "spaced parent_pkey";
+ALTER TABLE IF EXISTS ONLY "spaced schema"."spaced child" DROP CONSTRAINT IF EXISTS "spaced child_pkey";
+ALTER TABLE IF EXISTS "spaced schema"."spaced parent" ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS "spaced schema"."spaced child" ALTER COLUMN id DROP DEFAULT;
+DROP SEQUENCE IF EXISTS "spaced schema"."spaced parent_id_seq";
+DROP TABLE IF EXISTS "spaced schema"."spaced parent";
+DROP SEQUENCE IF EXISTS "spaced schema"."spaced child_id_seq";
+DROP TABLE IF EXISTS "spaced schema"."spaced child";
+DROP SCHEMA IF EXISTS "spaced schema";
+--
+-- Name: spaced schema; Type: SCHEMA; Schema: -; Owner: -
+--
+
+CREATE SCHEMA "spaced schema";
+
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: spaced child; Type: TABLE; Schema: spaced schema; Owner: -
+--
+
+CREATE TABLE "spaced schema"."spaced child" (
+    id integer NOT NULL,
+    name character varying,
+    parent_id integer
+);
+
+
+--
+-- Name: spaced child_id_seq; Type: SEQUENCE; Schema: spaced schema; Owner: -
+--
+
+CREATE SEQUENCE "spaced schema"."spaced child_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: spaced child_id_seq; Type: SEQUENCE OWNED BY; Schema: spaced schema; Owner: -
+--
+
+ALTER SEQUENCE "spaced schema"."spaced child_id_seq" OWNED BY "spaced schema"."spaced child".id;
+
+
+--
+-- Name: spaced parent; Type: TABLE; Schema: spaced schema; Owner: -
+--
+
+CREATE TABLE "spaced schema"."spaced parent" (
+    id integer NOT NULL,
+    name character varying
+);
+
+
+--
+-- Name: spaced parent_id_seq; Type: SEQUENCE; Schema: spaced schema; Owner: -
+--
+
+CREATE SEQUENCE "spaced schema"."spaced parent_id_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: spaced parent_id_seq; Type: SEQUENCE OWNED BY; Schema: spaced schema; Owner: -
+--
+
+ALTER SEQUENCE "spaced schema"."spaced parent_id_seq" OWNED BY "spaced schema"."spaced parent".id;
+
+
+--
+-- Name: spaced child id; Type: DEFAULT; Schema: spaced schema; Owner: -
+--
+
+ALTER TABLE ONLY "spaced schema"."spaced child" ALTER COLUMN id SET DEFAULT nextval('"spaced schema"."spaced child_id_seq"'::regclass);
+
+
+--
+-- Name: spaced parent id; Type: DEFAULT; Schema: spaced schema; Owner: -
+--
+
+ALTER TABLE ONLY "spaced schema"."spaced parent" ALTER COLUMN id SET DEFAULT nextval('"spaced schema"."spaced parent_id_seq"'::regclass);
+
+
+--
+-- Name: spaced child spaced child_pkey; Type: CONSTRAINT; Schema: spaced schema; Owner: -
+--
+
+ALTER TABLE ONLY "spaced schema"."spaced child"
+    ADD CONSTRAINT "spaced child_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: spaced parent spaced parent_pkey; Type: CONSTRAINT; Schema: spaced schema; Owner: -
+--
+
+ALTER TABLE ONLY "spaced schema"."spaced parent"
+    ADD CONSTRAINT "spaced parent_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: spaced child parent_fk; Type: FK CONSTRAINT; Schema: spaced schema; Owner: -
+--
+
+ALTER TABLE ONLY "spaced schema"."spaced child"
+    ADD CONSTRAINT parent_fk FOREIGN KEY (parent_id) REFERENCES "spaced schema"."spaced parent"(id);
+

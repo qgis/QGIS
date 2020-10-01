@@ -4901,6 +4901,7 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer 
     QgsLogger::warning( "Error getting the foreign keys of " + mTableName + ": invalid connection" );
     return result;
   }
+
   QString sql(
     "WITH foreign_keys AS "
     "  ( SELECT c.conname, "
@@ -4919,7 +4920,11 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer 
     "      WHERE oid = c.confrelid) as constraint_schema "
     "   FROM pg_constraint c "
     "   WHERE contype = 'f' "
-    "     AND c.conrelid::regclass = " + QgsPostgresConn::quotedValue( QString( mSchemaName + "." +  mTableName ) ) + "::regclass ) "
+    "     AND c.conrelid::regclass = " +
+    QgsPostgresConn::quotedValue( QgsPostgresConn::quotedIdentifier( mSchemaName ) +
+                                  '.' +
+                                  QgsPostgresConn::quotedIdentifier( mTableName ) ) +
+    "::regclass ) "
     "SELECT fk.conname as constraint_name, "
     "       a.attname as column_name, "
     "       fk.constraint_schema, "
@@ -4947,8 +4952,17 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer 
   {
     const QString name = sqlResult.PQgetvalue( row, 0 );
     const QString fkColumn = sqlResult.PQgetvalue( row, 1 );
-    const QString refSchema = sqlResult.PQgetvalue( row, 2 );
-    const QString refTable = sqlResult.PQgetvalue( row, 3 );
+    QString refSchema = sqlResult.PQgetvalue( row, 2 );
+    QString refTable = sqlResult.PQgetvalue( row, 3 );
+    // Strip quotes
+    if ( refTable.startsWith( '"' ) && refTable.endsWith( '"' ) )
+    {
+      refTable = refTable.mid( 1, refTable.length() - 2 );
+    }
+    if ( refSchema.startsWith( '"' ) && refSchema.endsWith( '"' ) )
+    {
+      refSchema = refSchema.mid( 1, refSchema.length() - 2 );
+    }
     const QString refColumn = sqlResult.PQgetvalue( row, 4 );
     const QString position = sqlResult.PQgetvalue( row, 5 );
     if ( ( position == QLatin1String( "1" ) ) || ( nbFound == 0 ) )
