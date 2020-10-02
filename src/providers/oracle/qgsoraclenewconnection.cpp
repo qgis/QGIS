@@ -195,6 +195,11 @@ void QgsOracleNewConnection::showHelp()
 
 void QgsOracleNewConnection::updateOkButtonState()
 {
-  bool enabled = !txtName->text().isEmpty() && !txtHost->text().isEmpty() && !txtPort->text().isEmpty() && !txtDatabase->text().isEmpty();
+  // User can set database without host and port, meaning he is using a service (tnsnames.ora)
+  // if he sets host, port has to be set also (and vice versa)
+  // https://github.com/qgis/QGIS/issues/38979
+
+  bool enabled = !txtName->text().isEmpty() && !txtDatabase->text().isEmpty()
+                 && ( txtHost->text().isEmpty() == txtPort->text().isEmpty() );
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
 }
