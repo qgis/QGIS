@@ -55,7 +55,7 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     // QgsRasterInterface interface
     virtual Qgis::DataType dataType( int bandNo ) const override;
     virtual int bandCount() const override;
-    virtual QgsRasterInterface *clone() const override;
+    virtual QgsPostgresRasterProvider *clone() const override;
     virtual Qgis::DataType sourceDataType( int bandNo ) const override;
     virtual int xBlockSize() const override;
     virtual int yBlockSize() const override;
