@@ -695,7 +695,7 @@ int QgsPostgresRasterProvider::bandCount() const
   return mBandCount;
 }
 
-QgsRasterInterface *QgsPostgresRasterProvider::clone() const
+QgsPostgresRasterProvider *QgsPostgresRasterProvider::clone() const
 {
   QgsDataProvider::ProviderOptions options;
   options.transformContext = transformContext();

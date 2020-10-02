@@ -412,7 +412,7 @@ QgsLayerMetadata QgsAmsProvider::layerMetadata() const
   return mLayerMetadata;
 }
 
-QgsRasterInterface *QgsAmsProvider::clone() const
+QgsAmsProvider *QgsAmsProvider::clone() const
 {
   QgsDataProvider::ProviderOptions options;
   options.transformContext = transformContext();

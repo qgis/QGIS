@@ -121,7 +121,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
                            const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions(),
                            QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
-    QgsRasterInterface *clone() const override = 0;
+    QgsRasterDataProvider *clone() const override = 0;
 
     /**
      * Returns flags containing the supported capabilities of the data provider.
