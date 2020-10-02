@@ -274,7 +274,10 @@ class QgsAtlasExportGuard
       mDialog->mIsExportingAtlas = false;
 
       // need to update the GUI to reflect the final atlas feature
-      mDialog->atlasFeatureChanged( mDialog->currentLayout()->reportContext().feature() );
+      if ( mDialog->currentLayout() )
+      {
+        mDialog->atlasFeatureChanged( mDialog->currentLayout()->reportContext().feature() );
+      }
     }
 
   private:
@@ -4655,6 +4658,7 @@ void QgsLayoutDesignerDialog::toggleActions( bool layoutAvailable )
   mActionExportAsPDF->setEnabled( layoutAvailable );
   mActionExportAsSVG->setEnabled( layoutAvailable );
   mActionPrint->setEnabled( layoutAvailable );
+  mActionPrintReport->setEnabled( layoutAvailable );
   mActionCut->setEnabled( layoutAvailable );
   mActionCopy->setEnabled( layoutAvailable );
   mActionPaste->setEnabled( layoutAvailable );
@@ -4776,7 +4780,7 @@ void QgsLayoutDesignerDialog::setLastExportPath( const QString &path ) const
   QgsSettings().setValue( QStringLiteral( "lastLayoutExportDir" ), savePath, QgsSettings::App );
 }
 
-bool QgsLayoutDesignerDialog::checkBeforeExport()
+bool QgsLayoutDesignerDialog::checkBeforeExport( )
 {
   if ( mLayout )
   {
