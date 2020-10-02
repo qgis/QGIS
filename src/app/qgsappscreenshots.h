@@ -91,6 +91,8 @@ class QgsAppScreenShots
     QgsVectorLayer *mLineLayer = nullptr;
     QgsVectorLayer *mPolygonLayer = nullptr;
     QgsRasterLayer *mRasterLayer = nullptr;
+
+    Q_DISABLE_COPY( QgsAppScreenShots )
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAppScreenShots::Categories )

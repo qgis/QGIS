@@ -664,13 +664,33 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
                          value[1] >= '0' && value[1] <= '9' &&
                          value[2] == ':' &&
                          value[3] >= '0' && value[3] <= '5' &&
-                         value[4] >= '0' && value[4] <= '9' &&
-                         ( value.length() == 5 ||
-                           ( value.length() >= 8 && (
-                               value[5] == ':' &&
-                               value[6] >= '0' && value[6] <= '6' &&
-                               value[7] >= '0' && value[7] <= '9' &&
-                               ( value.length() == 8 || value[8] == '.' ) ) ) );
+                         value[4] >= '0' && value[4] <= '9';
+        if ( couldBeTime[i] && value.length() == 5 )
+        {
+          // ok
+        }
+        else if ( couldBeTime[i] && value.length() >= 8 )
+        {
+          couldBeTime[i] = value[5] == ':' &&
+                           value[6] >= '0' && value[6] <= '6' &&
+                           value[7] >= '0' && value[7] <= '9';
+          if ( couldBeTime[i] && value.length() == 8 )
+          {
+            // ok
+          }
+          else if ( couldBeTime[i] && value.length() >= 9 )
+          {
+            couldBeTime[i] = value[8] == '.';
+          }
+          else
+          {
+            couldBeTime[i] = false;
+          }
+        }
+        else
+        {
+          couldBeTime[i] = false;
+        }
 #endif
       }
     }

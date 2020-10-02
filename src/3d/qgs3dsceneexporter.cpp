@@ -80,7 +80,7 @@
 #include <numeric>
 
 template<typename T>
-QVector<T> getAttributeData( Qt3DRender::QAttribute *attribute, QByteArray data )
+QVector<T> getAttributeData( Qt3DRender::QAttribute *attribute, const QByteArray &data )
 {
   uint bytesOffset = attribute->byteOffset();
   uint bytesStride = attribute->byteStride();
@@ -93,17 +93,13 @@ QVector<T> getAttributeData( Qt3DRender::QAttribute *attribute, QByteArray data 
     return result;
   }
 
+  const char *pData = data.constData();
   for ( int i = bytesOffset; i < data.size(); i += bytesStride )
   {
     for ( unsigned int j = 0; j < vertexSize * sizeof( T ); j += sizeof( T ) )
     {
-      // maybe a problem with endienness can happen?
       T v;
-      char *vArr = ( char * )&v;
-      for ( unsigned int k = 0; k < sizeof( T ); ++k )
-      {
-        vArr[k] = data.at( i + j + k );
-      }
+      memcpy( &v, pData + i + j, sizeof( T ) );
       result.push_back( v );
     }
   }
@@ -111,22 +107,20 @@ QVector<T> getAttributeData( Qt3DRender::QAttribute *attribute, QByteArray data 
 }
 
 template<typename T>
-QVector<uint> _getIndexDataImplementation( QByteArray data )
+QVector<uint> _getIndexDataImplementation( const QByteArray &data )
 {
   QVector<uint> result;
+  const char *pData = data.constData();
   for ( int i = 0; i < data.size(); i += sizeof( T ) )
   {
-    // maybe a problem with indienness can happen?
     T v;
-    char *vArr = ( char * )&v;
-    for ( unsigned long k = 0; k < sizeof( T ); ++k )
-      vArr[k] = data.at( i + k );
+    memcpy( &v, pData + i, sizeof( T ) );
     result.push_back( ( uint ) v );
   }
   return result;
 }
 
-QVector<uint> getIndexData( Qt3DRender::QAttribute *indexAttribute, QByteArray data )
+QVector<uint> getIndexData( Qt3DRender::QAttribute *indexAttribute, const QByteArray &data )
 {
   switch ( indexAttribute->vertexBaseType() )
   {

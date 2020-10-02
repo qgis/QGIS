@@ -177,6 +177,8 @@ class QgsShadowRenderingFrameGraph
     Qt3DRender::QFrameGraphNode *constructForwardRenderPass();
     Qt3DRender::QFrameGraphNode *constructTexturesPreviewPass();
     Qt3DRender::QFrameGraphNode *constructPostprocessingPass();
+
+    Q_DISABLE_COPY( QgsShadowRenderingFrameGraph )
 };
 
 #endif // QGSSHADOWRENDERINGFRAMEGRAPH_H
