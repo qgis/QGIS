@@ -92,8 +92,8 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item, QgsMapCanvas *ma
   connect( mStartDateTime, &QDateTimeEdit::dateTimeChanged, this, &QgsLayoutMapWidget::updateTemporalExtent );
   connect( mEndDateTime, &QDateTimeEdit::dateTimeChanged, this, &QgsLayoutMapWidget::updateTemporalExtent );
 
-  mStartDateTime->setDateTimeRange( QDateTime( QDate( 1, 1, 1 ) ), mStartDateTime->maximumDateTime() );
-  mEndDateTime->setDateTimeRange( QDateTime( QDate( 1, 1, 1 ) ), mStartDateTime->maximumDateTime() );
+  mStartDateTime->setDateTimeRange( QDateTime( QDate( 1, 1, 1 ), QTime( 0, 0, 0 ) ), mStartDateTime->maximumDateTime() );
+  mEndDateTime->setDateTimeRange( QDateTime( QDate( 1, 1, 1 ), QTime( 0, 0, 0 ) ), mStartDateTime->maximumDateTime() );
   mStartDateTime->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
   mEndDateTime->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
 

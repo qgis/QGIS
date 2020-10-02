@@ -258,8 +258,8 @@ void TestQgsProperty::conversions()
   QCOMPARE( collection.valueAsString( 4, context, "y" ), QStringLiteral( "s" ) );
 
   // test datetime conversions
-  QDateTime dt = QDateTime( QDate( 2020, 1, 1 ) );
-  QDateTime dt2 = QDateTime( QDate( 2010, 1, 1 ) );
+  QDateTime dt = QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) );
+  QDateTime dt2 = QDateTime( QDate( 2010, 1, 1 ), QTime( 0, 0, 0 ) );
   QgsProperty dt1 = QgsProperty::fromValue( QVariant(), true );
   collection.setProperty( 5, dt1 );
   QCOMPARE( d1.valueAsDateTime( context, dt ), dt );

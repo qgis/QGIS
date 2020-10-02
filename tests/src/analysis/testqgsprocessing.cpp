@@ -8012,7 +8012,7 @@ void TestQgsProcessing::parameterDateTime()
   std::unique_ptr< QgsProcessingParameterDateTime > def( new QgsProcessingParameterDateTime( "non_optional", QString(), QgsProcessingParameterDateTime::DateTime, QDateTime( QDate( 2010, 4, 3 ), QTime( 12, 11, 10 ) ), false ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
   QVERIFY( !def->checkValueIsAcceptable( "1.1" ) );
-  QVERIFY( def->checkValueIsAcceptable( QDateTime( QDate( 2020, 2, 2 ) ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QDateTime( QDate( 2020, 2, 2 ), QTime( 0, 0, 0 ) ) ) );
   QVERIFY( def->checkValueIsAcceptable( QDate( 2020, 2, 2 ) ) );
   QVERIFY( !def->checkValueIsAcceptable( QTime( 13, 14, 15 ) ) );
   QVERIFY( def->checkValueIsAcceptable( "2020-02-03" ) );
@@ -8029,7 +8029,7 @@ void TestQgsProcessing::parameterDateTime()
   QTime t = QgsProcessingParameters::parameterAsTime( def.get(), params, context );
   QCOMPARE( t, QTime( 12, 11, 10 ) );
 
-  params.insert( "non_optional", QDateTime( QDate( 2010, 3, 4 ) ) );
+  params.insert( "non_optional", QDateTime( QDate( 2010, 3, 4 ), QTime( 0, 0, 0 ) ) );
   d = QgsProcessingParameters::parameterAsDateTime( def.get(), params, context );
   QCOMPARE( d, QDateTime( QDate( 2010, 3, 4 ), QTime() ) );
 
@@ -8049,22 +8049,22 @@ void TestQgsProcessing::parameterDateTime()
   QCOMPARE( d, QDateTime( QDate( 2010, 4, 3 ), QTime( 12, 11, 10 ) ) );
 
   // with min value
-  def->setMinimum( QDateTime( QDate( 2015, 1, 1 ) ) );
-  QVERIFY( !def->checkValueIsAcceptable( QDateTime( QDate( 2014, 12, 31 ) ) ) );
+  def->setMinimum( QDateTime( QDate( 2015, 1, 1 ), QTime( 0, 0, 0 ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QDateTime( QDate( 2014, 12, 31 ), QTime( 0, 0, 0 ) ) ) );
   QVERIFY( !def->checkValueIsAcceptable( QStringLiteral( "2014-12-31" ) ) );
-  QVERIFY( def->checkValueIsAcceptable( QDateTime( QDate( 2020, 12, 31 ) ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QDateTime( QDate( 2020, 12, 31 ), QTime( 0, 0, 0 ) ) ) );
   QVERIFY( def->checkValueIsAcceptable( QStringLiteral( "2020-12-31" ) ) );
   // with max value
-  def->setMaximum( QDateTime( QDate( 2015, 12, 31 ) ) );
-  QVERIFY( !def->checkValueIsAcceptable( QDateTime( QDate( 2014, 12, 31 ) ) ) );
+  def->setMaximum( QDateTime( QDate( 2015, 12, 31 ), QTime( 0, 0, 0 ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QDateTime( QDate( 2014, 12, 31 ), QTime( 0, 0, 0 ) ) ) );
   QVERIFY( !def->checkValueIsAcceptable( QStringLiteral( "2014-12-31" ) ) );
-  QVERIFY( !def->checkValueIsAcceptable( QDateTime( QDate( 2016, 1, 1 ) ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QDateTime( QDate( 2016, 1, 1 ), QTime( 0, 0, 0 ) ) ) );
   QVERIFY( !def->checkValueIsAcceptable( QStringLiteral( "2016-01-01" ) ) );
-  QVERIFY( def->checkValueIsAcceptable( QDateTime( QDate( 2015, 12, 31 ) ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QDateTime( QDate( 2015, 12, 31 ), QTime( 0, 0, 0 ) ) ) );
   QVERIFY( def->checkValueIsAcceptable( QStringLiteral( "2015-12-31" ) ) );
 
   QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
-  QCOMPARE( def->valueAsPythonString( QDateTime( QDate( 2014, 12, 31 ) ), context ), QStringLiteral( "QDateTime(QDate(2014, 12, 31), QTime(0, 0, 0))" ) );
+  QCOMPARE( def->valueAsPythonString( QDateTime( QDate( 2014, 12, 31 ), QTime( 0, 0, 0 ) ), context ), QStringLiteral( "QDateTime(QDate(2014, 12, 31), QTime(0, 0, 0))" ) );
   QCOMPARE( def->valueAsPythonString( QDateTime( QDate( 2014, 12, 31 ), QTime( 12, 11, 10 ) ), context ), QStringLiteral( "QDateTime(QDate(2014, 12, 31), QTime(12, 11, 10))" ) );
   QCOMPARE( def->valueAsPythonString( QStringLiteral( "2015-12-31" ), context ), QStringLiteral( "2015-12-31" ) );
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"a\"=1')" ) );
@@ -8098,7 +8098,7 @@ void TestQgsProcessing::parameterDateTime()
   def.reset( new QgsProcessingParameterDateTime( "optional", QString(), QgsProcessingParameterDateTime::DateTime, QDateTime( QDate( 2018, 5, 6 ), QTime( 4, 5, 6 ) ), true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
   QVERIFY( !def->checkValueIsAcceptable( "1.1" ) );
-  QVERIFY( def->checkValueIsAcceptable( QDateTime( QDate( 2020, 2, 2 ) ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QDateTime( QDate( 2020, 2, 2 ), QTime( 0, 0, 0 ) ) ) );
   QVERIFY( def->checkValueIsAcceptable( QDate( 2020, 2, 2 ) ) );
   QVERIFY( def->checkValueIsAcceptable( "2020-02-03" ) );
   QVERIFY( def->checkValueIsAcceptable( QgsProperty::fromExpression( "to_date( '2010-02-03') +  to_interval( '2 days')" ) ) );
@@ -8139,7 +8139,7 @@ void TestQgsProcessing::parameterDateTime()
   def.reset( new QgsProcessingParameterDateTime( "non_optional", QString(), QgsProcessingParameterDateTime::DateTime, QVariant(), false ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
   QVERIFY( !def->checkValueIsAcceptable( "1.1" ) );
-  QVERIFY( def->checkValueIsAcceptable( QDateTime( QDate( 2020, 2, 2 ) ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QDateTime( QDate( 2020, 2, 2 ), QTime( 0, 0, 0 ) ) ) );
   QVERIFY( def->checkValueIsAcceptable( QDate( 2020, 2, 2 ) ) );
   QVERIFY( def->checkValueIsAcceptable( "2020-02-03" ) );
   QVERIFY( def->checkValueIsAcceptable( QgsProperty::fromExpression( "to_date( '2010-02-03') +  to_interval( '2 days')" ) ) );
@@ -8154,7 +8154,7 @@ void TestQgsProcessing::parameterDateTime()
   def.reset( new QgsProcessingParameterDateTime( "non_optional", QString(), QgsProcessingParameterDateTime::Date, QDate( 2010, 4, 3 ), false ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
   QVERIFY( !def->checkValueIsAcceptable( "1.1" ) );
-  QVERIFY( def->checkValueIsAcceptable( QDateTime( QDate( 2020, 2, 2 ) ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QDateTime( QDate( 2020, 2, 2 ), QTime( 0, 0, 0 ) ) ) );
   QVERIFY( def->checkValueIsAcceptable( QDate( 2020, 2, 2 ) ) );
   QVERIFY( !def->checkValueIsAcceptable( QTime( 13, 14, 15 ) ) );
   QVERIFY( def->checkValueIsAcceptable( "2020-02-03" ) );
@@ -8188,13 +8188,13 @@ void TestQgsProcessing::parameterDateTime()
   QCOMPARE( dt, QDate( QDate( 2010, 4, 3 ) ) );
 
   // with min value
-  def->setMinimum( QDateTime( QDate( 2015, 1, 1 ) ) );
+  def->setMinimum( QDateTime( QDate( 2015, 1, 1 ), QTime( 0, 0, 0 ) ) );
   QVERIFY( !def->checkValueIsAcceptable( QDate( 2014, 12, 31 ) ) );
   QVERIFY( !def->checkValueIsAcceptable( QStringLiteral( "2014-12-31" ) ) );
   QVERIFY( def->checkValueIsAcceptable( QDate( 2020, 12, 31 ) ) );
   QVERIFY( def->checkValueIsAcceptable( QStringLiteral( "2020-12-31" ) ) );
   // with max value
-  def->setMaximum( QDateTime( QDate( 2015, 12, 31 ) ) );
+  def->setMaximum( QDateTime( QDate( 2015, 12, 31 ), QTime( 0, 0, 0 ) ) );
   QVERIFY( !def->checkValueIsAcceptable( QDate( 2014, 12, 31 ) ) );
   QVERIFY( !def->checkValueIsAcceptable( QStringLiteral( "2014-12-31" ) ) );
   QVERIFY( !def->checkValueIsAcceptable( QDate( 2016, 1, 1 ) ) );
@@ -8258,7 +8258,7 @@ void TestQgsProcessing::parameterDateTime()
   def.reset( new QgsProcessingParameterDateTime( "non_optional", QString(), QgsProcessingParameterDateTime::Time, QTime( 12, 11, 13 ), false ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
   QVERIFY( !def->checkValueIsAcceptable( "1.1" ) );
-  QVERIFY( !def->checkValueIsAcceptable( QDateTime( QDate( 2020, 2, 2 ) ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QDateTime( QDate( 2020, 2, 2 ), QTime( 0, 0, 0 ) ) ) );
   QVERIFY( !def->checkValueIsAcceptable( QDate( 2020, 2, 2 ) ) );
   QVERIFY( def->checkValueIsAcceptable( QTime( 13, 14, 15 ) ) );
   QVERIFY( def->checkValueIsAcceptable( "13:14:15" ) );

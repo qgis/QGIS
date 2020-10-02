@@ -31,8 +31,8 @@ QgsAnimationExportDialog::QgsAnimationExportDialog( QWidget *parent, QgsMapCanva
 {
   setupUi( this );
 
-  mStartDateTime->setDateTimeRange( QDateTime( QDate( 1, 1, 1 ) ), mStartDateTime->maximumDateTime() );
-  mEndDateTime->setDateTimeRange( QDateTime( QDate( 1, 1, 1 ) ), mStartDateTime->maximumDateTime() );
+  mStartDateTime->setDateTimeRange( QDateTime( QDate( 1, 1, 1 ), QTime( 0, 0, 0 ) ), mStartDateTime->maximumDateTime() );
+  mEndDateTime->setDateTimeRange( QDateTime( QDate( 1, 1, 1 ), QTime( 0, 0, 0 ) ), mStartDateTime->maximumDateTime() );
 
   // Use unrotated visible extent to insure output size and scale matches canvas
   QgsMapSettings ms = mMapCanvas->mapSettings();

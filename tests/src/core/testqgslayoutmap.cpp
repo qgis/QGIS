@@ -511,8 +511,8 @@ void TestQgsLayoutMap::dataDefinedTemporalRange()
   map->setLayers( layers );
   l.addLayoutItem( map );
 
-  QDateTime dt1 = QDateTime( QDate( 2010, 1, 1 ) );
-  QDateTime dt2 = QDateTime( QDate( 2020, 1, 1 ) );
+  QDateTime dt1 = QDateTime( QDate( 2010, 1, 1 ), QTime( 0, 0, 0 ) );
+  QDateTime dt2 = QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) );
   map->setIsTemporal( true );
   map->dataDefinedProperties().setProperty( QgsLayoutObject::StartDateTime, QgsProperty::fromValue( dt1 ) );
   map->dataDefinedProperties().setProperty( QgsLayoutObject::EndDateTime, QgsProperty::fromValue( dt2 ) );
