@@ -102,7 +102,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
 
     ~QgsGrassRasterProvider() override;
 
-    QgsRasterInterface *clone() const override;
+    QgsGrassRasterProvider *clone() const override;
 
     /**
      * Returns a provider name
