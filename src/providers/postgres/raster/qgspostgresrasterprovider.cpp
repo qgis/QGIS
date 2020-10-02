@@ -1081,7 +1081,7 @@ bool QgsPostgresRasterProvider::init()
             mSrcHasNoDataValue.append( true );
             mUseSrcNoDataValue.append( true );
           }
-          mSrcNoDataValue.append( nodataValue );
+          mSrcNoDataValue.append( QgsRaster::representableValue( nodataValue, type ) );
           ++i;
         }
 
@@ -1356,7 +1356,7 @@ bool QgsPostgresRasterProvider::init()
         nodataValue = std::numeric_limits<double>::min();
       }
 
-      mSrcNoDataValue.append( nodataValue );
+      mSrcNoDataValue.append( QgsRaster::representableValue( nodataValue, type ) );
       mSrcHasNoDataValue.append( true );
       mUseSrcNoDataValue.append( true );
     }
