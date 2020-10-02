@@ -6666,13 +6666,13 @@ void TestProcessingGui::testDateTimeWrapper()
     wrapper.setWidgetValue( QStringLiteral( "2019-08-07" ), context );
     QCOMPARE( spy.count(), 1 );
     QVERIFY( wrapper.widgetValue().isValid() );
-    QCOMPARE( wrapper.widgetValue().toDateTime(), QDateTime( QDate( 2019, 8, 7 ) ) );
-    QCOMPARE( static_cast< QgsDateTimeEdit * >( wrapper.wrappedWidget() )->dateTime(), QDateTime( QDate( 2019, 8, 7 ) ) );
+    QCOMPARE( wrapper.widgetValue().toDateTime(), QDateTime( QDate( 2019, 8, 7 ), QTime( 0, 0, 0 ) ) );
+    QCOMPARE( static_cast< QgsDateTimeEdit * >( wrapper.wrappedWidget() )->dateTime(), QDateTime( QDate( 2019, 8, 7 ), QTime( 0, 0, 0 ) ) );
     wrapper.setWidgetValue( QStringLiteral( "2019-08-07" ), context );
     QCOMPARE( spy.count(), 1 );
 
     // check signal
-    static_cast< QgsDateTimeEdit * >( wrapper.wrappedWidget() )->setDateTime( QDateTime( QDate( 2019, 8, 9 ) ) );
+    static_cast< QgsDateTimeEdit * >( wrapper.wrappedWidget() )->setDateTime( QDateTime( QDate( 2019, 8, 9 ), QTime( 0, 0, 0 ) ) );
     QCOMPARE( spy.count(), 2 );
 
     delete w;
@@ -6689,8 +6689,8 @@ void TestProcessingGui::testDateTimeWrapper()
     QVERIFY( !static_cast< QgsDateTimeEdit * >( wrapper3.wrappedWidget() )->dateTime().isValid() );
     wrapper3.setWidgetValue( QStringLiteral( "2019-03-20" ), context );
     QCOMPARE( spy3.count(), 1 );
-    QCOMPARE( wrapper3.widgetValue().toDateTime(), QDateTime( QDate( 2019, 3, 20 ) ) );
-    QCOMPARE( static_cast< QgsDateTimeEdit * >( wrapper3.wrappedWidget() )->dateTime(), QDateTime( QDate( 2019, 3, 20 ) ) );
+    QCOMPARE( wrapper3.widgetValue().toDateTime(), QDateTime( QDate( 2019, 3, 20 ), QTime( 0, 0, 0 ) ) );
+    QCOMPARE( static_cast< QgsDateTimeEdit * >( wrapper3.wrappedWidget() )->dateTime(), QDateTime( QDate( 2019, 3, 20 ), QTime( 0, 0, 0 ) ) );
     wrapper3.setWidgetValue( QVariant(), context );
     QCOMPARE( spy3.count(), 2 );
     QVERIFY( !wrapper3.widgetValue().isValid() );
