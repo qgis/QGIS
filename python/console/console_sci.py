@@ -65,8 +65,9 @@ class ShellScintilla(QgsPythonConsoleBase, code.InteractiveInterpreter):
         self.setMarginLineNumbers(0, False)  # NO linenumbers for the input line
 
         self.buffer = []
+        self.continuationLine = False
 
-        self.displayPrompt(self.buffer)
+        self.displayPrompt(self.continuationLine)
 
         for line in _init_commands:
             self.runsource(line)
@@ -212,7 +213,7 @@ class ShellScintilla(QgsPythonConsoleBase, code.InteractiveInterpreter):
         self.setCursorPosition(0, 0)
         self.ensureCursorVisible()
         self.ensureLineVisible(0)
-        self.displayPrompt(self.buffer)
+        self.displayPrompt(self.continuationLine)
 
     def move_cursor_to_end(self):
         """Move cursor to end of text"""
@@ -220,7 +221,7 @@ class ShellScintilla(QgsPythonConsoleBase, code.InteractiveInterpreter):
         self.setCursorPosition(line, index)
         self.ensureCursorVisible()
         self.ensureLineVisible(line)
-        self.displayPrompt(self.buffer)
+        self.displayPrompt(self.continuationLine)
 
     def is_cursor_on_last_line(self):
         """Return True if cursor is on the last line"""
@@ -417,7 +418,7 @@ class ShellScintilla(QgsPythonConsoleBase, code.InteractiveInterpreter):
                     self.setCursorPosition(line, index + 7)
             QsciScintilla.keyPressEvent(self, e)
 
-        self.displayPrompt(self.buffer)
+        self.displayPrompt(self.continuationLine)
 
     def contextMenuEvent(self, e):
         menu = QMenu(self)
@@ -538,14 +539,16 @@ class ShellScintilla(QgsPythonConsoleBase, code.InteractiveInterpreter):
             self.buffer.append(cmd)
             src = "\n".join(self.buffer)
             more = self.runsource(src)
+            self.continuationLine = True
             if not more:
+                self.continuationLine = False
                 self.buffer = []
 
         # prevents to commands with more lines to break the console
         # in the case they have a eol different from '\n'
         self.setText('')
         self.move_cursor_to_end()
-        self.displayPrompt(more)
+        self.displayPrompt(self.continuationLine)
 
     def write(self, txt):
         sys.stderr.write(txt)
@@ -554,7 +557,7 @@ class ShellScintilla(QgsPythonConsoleBase, code.InteractiveInterpreter):
         if sys.stdout:
             sys.stdout.fire_keyboard_interrupt = False
         if len(txt) > 0:
-            prompt = "... " if self.buffer else ">>> "
+            prompt = "... " if self.continuationLine else ">>> "
             sys.stdout.write(prompt + txt + '\n')
 
     def runsource(self, source, filename='<input>', symbol='single'):
