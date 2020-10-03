@@ -255,6 +255,36 @@ static bool cmpByText_( QAction *a, QAction *b )
 }
 
 
+<<<<<<< HEAD
+=======
+class QgsAtlasExportGuard
+{
+  public:
+
+    QgsAtlasExportGuard( QgsLayoutDesignerDialog *dialog )
+      : mDialog( dialog )
+    {
+      mDialog->mIsExportingAtlas = true;
+    }
+
+    ~QgsAtlasExportGuard()
+    {
+      mDialog->mIsExportingAtlas = false;
+
+      // need to update the GUI to reflect the final atlas feature
+      if ( mDialog->currentLayout() )
+      {
+        mDialog->atlasFeatureChanged( mDialog->currentLayout()->reportContext().feature() );
+      }
+    }
+
+  private:
+    QgsLayoutDesignerDialog *mDialog = nullptr;
+
+};
+
+
+>>>>>>> 8cd40aeebf... Merge pull request #39135 from elpaso/bugfix-gh39086-empty-report-crash
 QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFlags flags )
   : QMainWindow( parent, flags )
   , mInterface( new QgsAppLayoutDesignerInterface( this ) )
@@ -4514,6 +4544,7 @@ void QgsLayoutDesignerDialog::toggleActions( bool layoutAvailable )
   mActionExportAsPDF->setEnabled( layoutAvailable );
   mActionExportAsSVG->setEnabled( layoutAvailable );
   mActionPrint->setEnabled( layoutAvailable );
+  mActionPrintReport->setEnabled( layoutAvailable );
   mActionCut->setEnabled( layoutAvailable );
   mActionCopy->setEnabled( layoutAvailable );
   mActionPaste->setEnabled( layoutAvailable );
@@ -4635,7 +4666,7 @@ void QgsLayoutDesignerDialog::setLastExportPath( const QString &path ) const
   QgsSettings().setValue( QStringLiteral( "lastLayoutExportDir" ), savePath, QgsSettings::App );
 }
 
-bool QgsLayoutDesignerDialog::checkBeforeExport()
+bool QgsLayoutDesignerDialog::checkBeforeExport( )
 {
   if ( mLayout )
   {
