@@ -21,12 +21,13 @@ Some portions of code were taken from https://code.google.com/p/pydee/
 
 from qgis.PyQt.QtCore import Qt, QUrl
 from qgis.PyQt.QtGui import QColor, QFontDatabase, QDesktopServices
-from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs
+from qgis.PyQt.Qsci import QsciLexerPython, QsciAPIs
 from qgis.core import QgsApplication, Qgis
+from qgis.gui import QgsCodeEditorPython, QgsCodeEditor
 import os
 
 
-class QgsPythonConsoleBase(QsciScintilla):
+class QgsPythonConsoleBase(QgsCodeEditorPython):
 
     MARKER_NUM = 6
     DEFAULT_COLOR = "#4d4d4c"
@@ -55,7 +56,7 @@ class QgsPythonConsoleBase(QsciScintilla):
     ERROR_COLOR = "#e31a1c"
 
     def __init__(self, parent=None):
-        super(QgsPythonConsoleBase, self).__init__(parent)
+        super().__init__(parent)
 
         # Enable non-ascii chars
         self.setUtf8(True)
