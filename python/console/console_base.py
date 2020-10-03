@@ -30,30 +30,6 @@ import os
 class QgsPythonConsoleBase(QgsCodeEditorPython):
 
     MARKER_NUM = 6
-    DEFAULT_COLOR = "#4d4d4c"
-    KEYWORD_COLOR = "#8959a8"
-    CLASS_COLOR = "#4271ae"
-    METHOD_COLOR = "#4271ae"
-    DECORATION_COLOR = "#3e999f"
-    NUMBER_COLOR = "#c82829"
-    COMMENT_COLOR = "#8e908c"
-    COMMENT_BLOCK_COLOR = "#8e908c"
-    BACKGROUND_COLOR = "#ffffff"
-    CURSOR_COLOR = "#636363"
-    CARET_LINE_COLOR = "#efefef"
-    SINGLE_QUOTE_COLOR = "#718c00"
-    DOUBLE_QUOTE_COLOR = "#718c00"
-    TRIPLE_SINGLE_QUOTE_COLOR = "#eab700"
-    TRIPLE_DOUBLE_QUOTE_COLOR = "#eab700"
-    MARGIN_BACKGROUND_COLOR = "#efefef"
-    MARGIN_FOREGROUND_COLOR = "#636363"
-    SELECTION_BACKGROUND_COLOR = "#d7d7d7"
-    SELECTION_FOREGROUND_COLOR = "#303030"
-    MATCHED_BRACE_BACKGROUND_COLOR = "#b7f907"
-    MATCHED_BRACE_FOREGROUND_COLOR = "#303030"
-    EDGE_COLOR = "#efefef"
-    FOLD_COLOR = "#efefef"
-    ERROR_COLOR = "#e31a1c"
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -113,19 +89,19 @@ class QgsPythonConsoleBase(QgsCodeEditorPython):
             font.setPointSize(fontSize)
 
         self.lexer.setDefaultFont(font)
-        self.lexer.setDefaultColor(QColor(self.settings.value("pythonConsole/defaultFontColor", QColor(self.DEFAULT_COLOR))))
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentFontColor", QColor(self.COMMENT_COLOR))), 1)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/numberFontColor", QColor(self.NUMBER_COLOR))), 2)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/keywordFontColor", QColor(self.KEYWORD_COLOR))), 5)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/classFontColor", QColor(self.CLASS_COLOR))), 8)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/methodFontColor", QColor(self.METHOD_COLOR))), 9)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/decorFontColor", QColor(self.DECORATION_COLOR))), 15)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentBlockFontColor", QColor(self.COMMENT_BLOCK_COLOR))), 12)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/singleQuoteFontColor", QColor(self.SINGLE_QUOTE_COLOR))), 4)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/doubleQuoteFontColor", QColor(self.DOUBLE_QUOTE_COLOR))), 3)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/tripleSingleQuoteFontColor", QColor(self.TRIPLE_SINGLE_QUOTE_COLOR))), 6)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/tripleDoubleQuoteFontColor", QColor(self.TRIPLE_DOUBLE_QUOTE_COLOR))), 7)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/defaultFontColor", QColor(self.DEFAULT_COLOR))), 13)
+        self.lexer.setDefaultColor(self.color(QgsCodeEditor.ColorRole.Default))
+        self.lexer.setColor(self.color(QgsCodeEditor.ColorRole.Comment), 1)
+        self.lexer.setColor(self.color(QgsCodeEditor.ColorRole.Number), 2)
+        self.lexer.setColor(self.color(QgsCodeEditor.ColorRole.Keyword), 5)
+        self.lexer.setColor(self.color(QgsCodeEditor.ColorRole.Class), 8)
+        self.lexer.setColor(self.color(QgsCodeEditor.ColorRole.Method), 9)
+        self.lexer.setColor(self.color(QgsCodeEditor.ColorRole.Decoration), 15)
+        self.lexer.setColor(self.color(QgsCodeEditor.ColorRole.CommentBlock), 12)
+        self.lexer.setColor(self.color(QgsCodeEditor.ColorRole.SingleQuote), 4)
+        self.lexer.setColor(self.color(QgsCodeEditor.ColorRole.DoubleQuote), 3)
+        self.lexer.setColor(self.color(QgsCodeEditor.ColorRole.TripleSingleQuote), 6)
+        self.lexer.setColor(self.color(QgsCodeEditor.ColorRole.TripleDoubleQuote), 7)
+        self.lexer.setColor(self.color(QgsCodeEditor.ColorRole.Default), 13)
         self.lexer.setColor(QColor(Qt.red), 14)
         self.lexer.setFont(font, 1)
         self.lexer.setFont(font, 2)
@@ -134,8 +110,8 @@ class QgsPythonConsoleBase(QgsCodeEditorPython):
         self.lexer.setFont(font, QsciLexerPython.UnclosedString)
 
         # ? only for editor and console ?
+        paperColor = self.color(QgsCodeEditor.ColorRole.Background)
         for style in range(0, 33):
-            paperColor = QColor(self.settings.value("pythonConsole/paperBackgroundColor", QColor(self.BACKGROUND_COLOR)))
             self.lexer.setPaper(paperColor, style)
 
         self.api = QsciAPIs(self.lexer)

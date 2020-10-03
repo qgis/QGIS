@@ -24,7 +24,7 @@ from qgis.PyQt.QtNetwork import QNetworkRequest
 from qgis.PyQt.QtWidgets import QShortcut, QMenu, QApplication, QWidget, QGridLayout, QSpacerItem, QSizePolicy, QFileDialog, QTabWidget, QTreeWidgetItem, QFrame, QLabel, QToolButton, QMessageBox
 from qgis.PyQt.Qsci import QsciScintilla, QsciAPIs, QsciStyle
 from qgis.core import Qgis, QgsApplication, QgsSettings, QgsBlockingNetworkRequest
-from qgis.gui import QgsMessageBar
+from qgis.gui import QgsMessageBar, QgsCodeEditor
 from qgis.utils import OverrideCursor
 from .console_base import QgsPythonConsoleBase
 import sys
@@ -167,16 +167,16 @@ class Editor(QgsPythonConsoleBase):
         self.modificationAttempted.connect(self.fileReadOnly)
 
     def settingsEditor(self):
-        self.setSelectionForegroundColor(QColor(self.settings.value("pythonConsole/selectionForegroundColor", QColor(self.SELECTION_FOREGROUND_COLOR))))
-        self.setSelectionBackgroundColor(QColor(self.settings.value("pythonConsole/selectionBackgroundColor", QColor(self.SELECTION_BACKGROUND_COLOR))))
-        self.setMatchedBraceBackgroundColor(QColor(self.settings.value("pythonConsole/matchedBraceBackgroundColor", QColor(self.MATCHED_BRACE_BACKGROUND_COLOR))))
-        self.setMatchedBraceForegroundColor(QColor(self.settings.value("pythonConsole/matchedBraceForegroundColor", QColor(self.MATCHED_BRACE_FOREGROUND_COLOR))))
-        self.setMarginsForegroundColor(QColor(self.settings.value("pythonConsole/marginForegroundColor", QColor(self.MARGIN_FOREGROUND_COLOR))))
-        self.setMarginsBackgroundColor(QColor(self.settings.value("pythonConsole/marginBackgroundColor", QColor(self.MARGIN_BACKGROUND_COLOR))))
-        self.setIndentationGuidesForegroundColor(QColor(self.settings.value("pythonConsole/marginForegroundColor", QColor(self.MARGIN_FOREGROUND_COLOR))))
-        self.setIndentationGuidesBackgroundColor(QColor(self.settings.value("pythonConsole/marginBackgroundColor", QColor(self.MARGIN_BACKGROUND_COLOR))))
-        self.setEdgeColor(QColor(self.settings.value("pythonConsole/edgeColor", QColor(self.EDGE_COLOR))))
-        foldColor = QColor(self.settings.value("pythonConsole/foldColor", QColor(self.FOLD_COLOR)))
+        self.setSelectionForegroundColor(self.color(QgsCodeEditor.ColorRole.SelectionForeground))
+        self.setSelectionBackgroundColor(self.color(QgsCodeEditor.ColorRole.SelectionBackground))
+        self.setMatchedBraceBackgroundColor(self.color(QgsCodeEditor.ColorRole.MatchedBraceBackground))
+        self.setMatchedBraceForegroundColor(self.color(QgsCodeEditor.ColorRole.MatchedBraceForeground))
+        self.setMarginsForegroundColor(self.color(QgsCodeEditor.ColorRole.MarginForeground))
+        self.setMarginsBackgroundColor(self.color(QgsCodeEditor.ColorRole.MarginBackground))
+        self.setIndentationGuidesForegroundColor(self.color(QgsCodeEditor.ColorRole.MarginForeground))
+        self.setIndentationGuidesBackgroundColor(self.color(QgsCodeEditor.ColorRole.MarginBackground))
+        self.setEdgeColor(self.color(QgsCodeEditor.ColorRole.Edge))
+        foldColor = self.color(QgsCodeEditor.ColorRole.Fold)
         self.setFoldMarginColors(foldColor, foldColor)
 
         # Set Python lexer
@@ -195,10 +195,8 @@ class Editor(QgsPythonConsoleBase):
         else:
             self.setAutoCompletionSource(self.AcsNone)
 
-        caretLineColor = self.settings.value("pythonConsole/caretLineColor", QColor(self.CARET_LINE_COLOR))
-        cursorColor = self.settings.value("pythonConsole/cursorColor", QColor(self.CURSOR_COLOR))
-        self.setCaretLineBackgroundColor(caretLineColor)
-        self.setCaretForegroundColor(cursorColor)
+        self.setCaretLineBackgroundColor(self.color(QgsCodeEditor.ColorRole.CaretLine))
+        self.setCaretForegroundColor(self.color(QgsCodeEditor.ColorRole.Cursor))
 
     def autoCompleteKeyBinding(self):
         radioButtonSource = self.settings.value("pythonConsole/autoCompleteSource", 'fromAPI')
