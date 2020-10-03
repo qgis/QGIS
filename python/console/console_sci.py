@@ -531,10 +531,17 @@ class ShellScintilla(QgsPythonConsoleBase, code.InteractiveInterpreter):
 
     def runCommand(self, cmd):
         self.writeCMD(cmd)
+        import webbrowser
         self.updateHistory(cmd)
-        if cmd in self.HANDY_COMMANDS:
-            self.handyCommands(cmd)
-            more = False
+        version = 'master' if 'master' in Qgis.QGIS_VERSION.lower() else re.findall(r'^\d.[0-9]*', Qgis.QGIS_VERSION)[0]
+        if cmd in ('_pyqgis', '_api', '_cookbook'):
+            if cmd == '_pyqgis':
+                webbrowser.open("https://qgis.org/pyqgis/{}".format(version))
+            elif cmd == '_api':
+                webbrowser.open("https://qgis.org/api/{}".format('' if version == 'master' else version))
+            elif cmd == '_cookbook':
+                webbrowser.open("https://docs.qgis.org/{}/en/docs/pyqgis_developer_cookbook/".format(
+                    'testing' if version == 'master' else version))
         else:
             self.buffer.append(cmd)
             src = "\n".join(self.buffer)
