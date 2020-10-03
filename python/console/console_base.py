@@ -25,6 +25,7 @@ from qgis.PyQt.Qsci import QsciLexerPython, QsciAPIs
 from qgis.core import QgsApplication, Qgis
 from qgis.gui import QgsCodeEditorPython, QgsCodeEditor
 import os
+import re
 
 
 class QgsPythonConsoleBase(QgsCodeEditorPython):
