@@ -12,12 +12,15 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
 
+import sys
+
 from qgis.core import QgsSettings, QgsApplication
 from qgis.gui import QgsCodeEditor
 
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtGui import QColor, QFont
 from qgis.testing import start_app, unittest
+from utilities import getTestFont
 
 start_app()
 
@@ -60,6 +63,23 @@ class TestQgsCodeEditor(unittest.TestCase):
         QgsSettings().setValue('codeEditor/overrideColors', True, QgsSettings.Gui)
         QgsCodeEditor.setColor(QgsCodeEditor.ColorRole.Keyword, QColor('#cc11bb'))
         self.assertEqual(QgsCodeEditor.color(QgsCodeEditor.ColorRole.Keyword).name(), '#cc11bb')
+
+    def testFontFamily(self):
+        f = QgsCodeEditor().getMonospaceFont()
+        self.assertTrue(f.styleHint() & QFont.Monospace)
+
+        QgsSettings().setValue('codeEditor/fontfamily', getTestFont().family(), QgsSettings.Gui)
+        f = QgsCodeEditor().getMonospaceFont()
+        self.assertEqual(f.family(), 'QGIS Vera Sans')
+
+    @unittest.skipIf(sys.platform == 'darwin', 'MacOS has different font logic')
+    def testFontSize(self):
+        f = QgsCodeEditor().getMonospaceFont()
+        self.assertEqual(f.pointSize(), 10)
+
+        QgsSettings().setValue('codeEditor/fontsize', 14, QgsSettings.Gui)
+        f = QgsCodeEditor().getMonospaceFont()
+        self.assertEqual(f.pointSize(), 14)
 
 
 if __name__ == '__main__':
