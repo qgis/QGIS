@@ -1067,6 +1067,7 @@ bool QgsPostgresProvider::loadFields()
       else if ( fieldTypeName == QLatin1String( "text" ) ||
                 fieldTypeName == QLatin1String( "citext" ) ||
                 fieldTypeName == QLatin1String( "geometry" ) ||
+                fieldTypeName == QLatin1String( "geography" ) ||
                 fieldTypeName == QLatin1String( "inet" ) ||
                 fieldTypeName == QLatin1String( "money" ) ||
                 fieldTypeName == QLatin1String( "ltree" ) ||
