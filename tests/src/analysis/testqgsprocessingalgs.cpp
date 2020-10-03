@@ -4596,18 +4596,26 @@ void TestQgsProcessingAlgs::exportLayoutPng()
   QgsPrintLayout *layout = new QgsPrintLayout( &p );
   layout->initializeDefaults();
   layout->setName( QStringLiteral( "my layout" ) );
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( layout );
+  map->setBackgroundEnabled( false );
+  map->setFrameEnabled( false );
+  map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
+  layout->addLayoutItem( map );
+  map->setExtent( mPointsLayer->extent() );
+
   p.layoutManager()->addLayout( layout );
 
   std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:printlayouttoimage" ) ) );
   QVERIFY( alg != nullptr );
 
-  const QString outputPdf = QDir::tempPath() + "/my_layout.png";
-  if ( QFile::exists( outputPdf ) )
-    QFile::remove( outputPdf );
+  QString outputPng = QDir::tempPath() + "/my_layout.png";
+  if ( QFile::exists( outputPng ) )
+    QFile::remove( outputPng );
 
   QVariantMap parameters;
   parameters.insert( QStringLiteral( "LAYOUT" ), QStringLiteral( "missing" ) );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputPdf );
+  parameters.insert( QStringLiteral( "OUTPUT" ), outputPng );
 
   bool ok = false;
   std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
@@ -4617,13 +4625,24 @@ void TestQgsProcessingAlgs::exportLayoutPng()
   results = alg->run( parameters, *context, &feedback, &ok );
   // invalid layout name
   QVERIFY( !ok );
-  QVERIFY( !QFile::exists( outputPdf ) );
+  QVERIFY( !QFile::exists( outputPng ) );
 
   parameters.insert( QStringLiteral( "LAYOUT" ), QStringLiteral( "my layout" ) );
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
+  QVERIFY( QFile::exists( outputPng ) );
 
-  QVERIFY( QFile::exists( outputPdf ) );
+  outputPng = QDir::tempPath() + "/my_layout_custom_layers.png";
+  if ( QFile::exists( outputPng ) )
+    QFile::remove( outputPng );
+
+  parameters.insert( QStringLiteral( "OUTPUT" ), outputPng );
+  parameters.insert( QStringLiteral( "LAYERS" ), QVariantList() << QVariant::fromValue( mPointsLayer ) );
+  parameters.insert( QStringLiteral( "DPI" ), 96 );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QVERIFY( QFile::exists( outputPng ) );
+  QVERIFY( imageCheck( "export_layout_custom_layers", outputPng ) );
 }
 
 void TestQgsProcessingAlgs::exportAtlasLayoutPdf()
