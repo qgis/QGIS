@@ -40,7 +40,6 @@ class QgsPythonConsoleBase(QgsCodeEditorPython):
         # Set the default font
         font = QFontDatabase.systemFont(QFontDatabase.FixedFont)
         self.setFont(font)
-        self.setMarginsFont(font)
 
         # Margin 0 is used for line numbers (editor and output)
         self.setMarginWidth(0, "00000")

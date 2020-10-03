@@ -174,7 +174,8 @@ void QgsCodeEditor::setMarginVisible( bool margin )
   mMargin = margin;
   if ( margin )
   {
-    QFont marginFont( QStringLiteral( "Courier" ), 10 );
+    QFont marginFont = getMonospaceFont();
+    marginFont.setPointSize( 10 );
     setMarginLineNumbers( 1, true );
     setMarginsFont( marginFont );
     setMarginWidth( 1, QStringLiteral( "00000" ) );
