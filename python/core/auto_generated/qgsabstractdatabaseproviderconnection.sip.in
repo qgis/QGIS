@@ -370,6 +370,65 @@ Raises a QgsProviderConnectionException if any errors are encountered.
 :raises :: py:class:`QgsProviderConnectionException`
 %End
 
+<<<<<<< HEAD
+=======
+    struct SpatialIndexOptions
+    {
+      QString geometryColumnName;
+    };
+
+    virtual void createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options = QgsAbstractDatabaseProviderConnection::SpatialIndexOptions() ) const throw( QgsProviderConnectionException );
+%Docstring
+Creates a spatial index for the database table with given ``schema`` and ``name`` (schema is ignored if not supported by the backend).
+
+The ``options`` argument can be used to provide extra options controlling the spatial index creation.
+
+Raises a QgsProviderConnectionException if any errors are encountered.
+
+:raises :: py:class:`QgsProviderConnectionException`
+
+.. versionadded:: 3.14
+%End
+
+    virtual bool spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const throw( QgsProviderConnectionException );
+%Docstring
+Determines whether a spatial index exists for the database table with given ``schema``, ``name`` and ``geometryColumn`` (``schema`` and ``geometryColumn`` are
+ignored if not supported by the backend).
+
+Raises a QgsProviderConnectionException if any errors are encountered.
+
+:raises :: py:class:`QgsProviderConnectionException`
+
+.. versionadded:: 3.14
+%End
+
+    virtual void deleteSpatialIndex( const QString &schema, const QString &name, const QString &geometryColumn ) const throw( QgsProviderConnectionException );
+%Docstring
+Deletes the existing spatial index for the database table with given ``schema``, ``name`` and ``geometryColumn`` (``schema`` and ``geometryColumn`` are
+ignored if not supported by the backend).
+
+Raises a QgsProviderConnectionException if any errors are encountered.
+
+:raises :: py:class:`QgsProviderConnectionException`
+
+.. versionadded:: 3.14
+%End
+
+
+    virtual QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table ) const throw( QgsProviderConnectionException );
+%Docstring
+Returns information on a ``table`` in the given ``schema``.
+Raises a QgsProviderConnectionException if any errors are encountered or if the table does not exist.
+
+:raises :: py:class:`QgsProviderConnectionException`
+
+.. note::
+
+   Not available in Python bindings
+
+.. versionadded:: 3.12
+%End
+>>>>>>> b0189b4149... Return a proper QgsProviderConnectionException from python table()
 
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tablesInt( const QString &schema = QString(), const int flags = 0 ) const throw( QgsProviderConnectionException ) /PyName=tables/;
 %Docstring

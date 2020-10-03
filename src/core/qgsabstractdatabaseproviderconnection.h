@@ -409,7 +409,20 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \throws QgsProviderConnectionException
      * \note Not available in Python bindings
      */
+<<<<<<< HEAD
     virtual QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(), const QgsAbstractDatabaseProviderConnection::TableFlags &flags = nullptr ) const SIP_SKIP;
+=======
+    virtual QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(), const QgsAbstractDatabaseProviderConnection::TableFlags &flags = QgsAbstractDatabaseProviderConnection::TableFlags() ) const SIP_SKIP;
+
+    /**
+     * Returns information on a \a table in the given \a schema.
+     * Raises a QgsProviderConnectionException if any errors are encountered or if the table does not exist.
+     * \throws QgsProviderConnectionException
+     * \note Not available in Python bindings
+     * \since QGIS 3.12
+     */
+    virtual QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table ) const SIP_THROW( QgsProviderConnectionException );
+>>>>>>> b0189b4149... Return a proper QgsProviderConnectionException from python table()
 
     /**
      * Returns information on the tables in the given schema.

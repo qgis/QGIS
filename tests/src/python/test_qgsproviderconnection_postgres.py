@@ -184,6 +184,14 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         self.assertEqual(self._table_by_name(conn.tables(), 'bikes_view').primaryKeyColumns(), ['pk', 'name'])
         self.assertEqual(self._table_by_name(conn.tables(), 'some_poly_data_view').primaryKeyColumns(), ['pk', 'geom'])
 
+    def test_exceptions(self):
+        """Test that exception are converted to Python QgsProviderConnectionException"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        conn = md.createConnection(self.uri, {})
+        with self.assertRaises(QgsProviderConnectionException):
+            conn.table('my_not_existent_schema', 'my_not_existent_table')
+
 
 if __name__ == '__main__':
     unittest.main()
