@@ -24,7 +24,7 @@ from qgis.PyQt.QtGui import QColor, QFont, QKeySequence, QFontDatabase
 from qgis.PyQt.QtWidgets import QGridLayout, QSpacerItem, QSizePolicy, QShortcut, QMenu, QApplication
 from qgis.PyQt.Qsci import QsciScintilla
 from qgis.core import Qgis, QgsApplication, QgsSettings
-from qgis.gui import QgsMessageBar
+from qgis.gui import QgsMessageBar, QgsCodeEditor
 from .console_base import QgsPythonConsoleBase
 import sys
 
@@ -156,18 +156,13 @@ class ShellOutputScintilla(QgsPythonConsoleBase):
     def refreshSettingsOutput(self):
         # Set Python lexer
         self.setLexers()
-        self.setSelectionForegroundColor(QColor(
-            self.settings.value("pythonConsole/selectionForegroundColor", QColor(self.SELECTION_FOREGROUND_COLOR))))
-        self.setSelectionBackgroundColor(QColor(
-            self.settings.value("pythonConsole/selectionBackgroundColor", QColor(self.SELECTION_BACKGROUND_COLOR))))
-        self.setMarginsForegroundColor(
-            QColor(self.settings.value("pythonConsole/marginForegroundColor", QColor(self.MARGIN_FOREGROUND_COLOR))))
-        self.setMarginsBackgroundColor(
-            QColor(self.settings.value("pythonConsole/marginBackgroundColor", QColor(self.MARGIN_BACKGROUND_COLOR))))
-        caretLineColor = self.settings.value("pythonConsole/caretLineColor", QColor(self.CARET_LINE_COLOR))
-        cursorColor = self.settings.value("pythonConsole/cursorColor", QColor(self.CURSOR_COLOR))
-        self.setCaretLineBackgroundColor(caretLineColor)
-        self.setCaretForegroundColor(cursorColor)
+        self.setSelectionForegroundColor(self.color(QgsCodeEditor.ColorRole.SelectionForeground))
+        self.setSelectionBackgroundColor(self.color(QgsCodeEditor.ColorRole.SelectionBackground))
+        self.setMarginsForegroundColor(self.color(QgsCodeEditor.ColorRole.MarginForeground))
+        self.setMarginsBackgroundColor(self.color(QgsCodeEditor.ColorRole.MarginBackground))
+
+        self.setCaretLineBackgroundColor(self.color(QgsCodeEditor.ColorRole.CaretLine))
+        self.setCaretForegroundColor(self.color(QgsCodeEditor.ColorRole.Cursor))
 
     def clearConsole(self):
         self.setText('')

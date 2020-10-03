@@ -24,6 +24,7 @@ from qgis.PyQt.QtWidgets import QDialog, QMenu, QShortcut, QApplication
 from qgis.PyQt.QtGui import QColor, QKeySequence, QFont, QFontMetrics, QStandardItemModel, QStandardItem, QClipboard, \
     QFontDatabase
 from qgis.PyQt.Qsci import QsciScintilla
+from qgis.gui import QgsCodeEditor
 
 import sys
 import os
@@ -135,17 +136,14 @@ class ShellScintilla(QgsPythonConsoleBase, code.InteractiveInterpreter):
         else:
             self.setAutoCompletionSource(self.AcsNone)
 
-        cursorColor = self.settings.value("pythonConsole/cursorColor", QColor(self.CURSOR_COLOR))
-        self.setCaretForegroundColor(cursorColor)
-        self.setSelectionForegroundColor(QColor(
-            self.settings.value("pythonConsole/selectionForegroundColor", QColor(self.SELECTION_FOREGROUND_COLOR))))
-        self.setSelectionBackgroundColor(QColor(
-            self.settings.value("pythonConsole/selectionBackgroundColor", QColor(self.SELECTION_BACKGROUND_COLOR))))
-        self.setMatchedBraceBackgroundColor(QColor(self.settings.value("pythonConsole/matchedBraceBackgroundColor",
-                                                                       QColor(self.MATCHED_BRACE_BACKGROUND_COLOR))))
-        self.setMatchedBraceForegroundColor(QColor(self.settings.value("pythonConsole/matchedBraceForegroundColor",
-                                                                       QColor(self.MATCHED_BRACE_FOREGROUND_COLOR))))
-        self.setMarginsBackgroundColor(QColor(self.settings.value("pythonConsole/paperBackgroundColor", QColor(self.BACKGROUND_COLOR))))
+        self.setCaretLineBackgroundColor(self.color(QgsCodeEditor.ColorRole.CaretLine))
+        self.setCaretForegroundColor(self.color(QgsCodeEditor.ColorRole.Cursor))
+
+        self.setSelectionForegroundColor(self.color(QgsCodeEditor.ColorRole.SelectionForeground))
+        self.setSelectionBackgroundColor(self.color(QgsCodeEditor.ColorRole.SelectionBackground))
+        self.setMatchedBraceBackgroundColor(self.color(QgsCodeEditor.ColorRole.MatchedBraceBackground))
+        self.setMatchedBraceForegroundColor(self.color(QgsCodeEditor.ColorRole.MatchedBraceForeground))
+        self.setMarginsBackgroundColor(self.color(QgsCodeEditor.ColorRole.Background))
 
         # Sets minimum height for input area based of font metric
         self._setMinimumHeight()
