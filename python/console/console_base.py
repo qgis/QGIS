@@ -77,15 +77,7 @@ class QgsPythonConsoleBase(QgsCodeEditorPython):
         self.lexer.setFoldComments(True)
         self.lexer.setFoldQuotes(True)
 
-        font = QFontDatabase.systemFont(QFontDatabase.FixedFont)
-
-        # output and console
-        loadFont = self.settings.value("pythonConsole/fontfamilytext")
-        if loadFont:
-            font.setFamily(loadFont)
-        fontSize = self.settings.value("pythonConsole/fontsize", type=int)
-        if fontSize:
-            font.setPointSize(fontSize)
+        font = self.getMonospaceFont()
 
         self.lexer.setDefaultFont(font)
         self.lexer.setDefaultColor(self.color(QgsCodeEditor.ColorRole.Default))

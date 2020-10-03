@@ -430,13 +430,29 @@ bool QgsCodeEditor::isFixedPitch( const QFont &font )
 QFont QgsCodeEditor::getMonospaceFont()
 {
   QFont font = QFontDatabase::systemFont( QFontDatabase::FixedFont );
-#ifdef Q_OS_MAC
-  // The font size gotten from getMonospaceFont() is too small on Mac
-  font.setPointSize( QLabel().font().pointSize() );
-#else
+
   QgsSettings settings;
-  int fontSize = settings.value( QStringLiteral( "qgis/stylesheet/fontPointSize" ), 10 ).toInt();
-  font.setPointSize( fontSize );
+  if ( !settings.value( QStringLiteral( "codeEditor/fontfamily" ), QString(), QgsSettings::Gui ).toString().isEmpty() )
+    font.setFamily( settings.value( QStringLiteral( "codeEditor/fontfamily" ), QString(), QgsSettings::Gui ).toString() );
+
+  const int fontSize = settings.value( QStringLiteral( "codeEditor/fontsize" ), 0, QgsSettings::Gui ).toInt();
+
+#ifdef Q_OS_MAC
+  if ( fontSize > 0 )
+    font.setPointSize( fontSize );
+  else
+  {
+    // The font size gotten from getMonospaceFont() is too small on Mac
+    font.setPointSize( QLabel().font().pointSize() );
+  }
+#else
+  if ( fontSize > 0 )
+    font.setPointSize( fontSize );
+  else
+  {
+    int fontSize = settings.value( QStringLiteral( "qgis/stylesheet/fontPointSize" ), 10 ).toInt();
+    font.setPointSize( fontSize );
+  }
 #endif
   font.setBold( false );
 
