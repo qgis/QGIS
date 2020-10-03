@@ -329,6 +329,21 @@ IMPORT FOREIGN SCHEMA qgis_test LIMIT TO ( "someData" )
         fields = conn.fields('qgis_test', 'someData')
         self.assertEqual(fields.names(), ['pk', 'cnt', 'name', 'name2', 'num_char', 'dt', 'date', 'time', 'geom'])
 
+        # Test regression GH #37666
+        sql = """
+        DROP TABLE IF EXISTS qgis_test.gh_37666;
+        CREATE TABLE qgis_test.gh_37666 (id SERIAL PRIMARY KEY);
+        ALTER TABLE qgis_test.gh_37666 ADD COLUMN geom geometry(POINT,4326);
+        ALTER TABLE qgis_test.gh_37666 ADD COLUMN geog geography(POINT,4326);
+        INSERT INTO qgis_test.gh_37666 (id, geom) VALUES (221, ST_GeomFromText('point(9 45)', 4326));
+        UPDATE qgis_test.gh_37666 SET geog = ST_GeogFromWKB(st_asewkb(geom));
+        """
+
+        conn.executeSql(sql)
+        fields = conn.fields('qgis_test', 'gh_37666')
+        self.assertEqual([f.name() for f in fields], ['id', 'geom', 'geog'])
+        self.assertEqual([f.typeName() for f in fields], ['int4', 'geometry', 'geography'])
+
     def test_fields_no_pk(self):
         """Test issue: no fields are exposed for raster_columns"""
 
