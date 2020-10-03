@@ -176,6 +176,13 @@ QVariant QgsRelationReferenceFieldFormatter::createCache( QgsVectorLayer *layer,
 
 QList<QgsVectorLayerRef> QgsRelationReferenceFieldFormatter::layerDependencies( const QVariantMap &config ) const
 {
+  // Old projects, create before the weak relations were introduced and stored with the
+  // widget configuration do not have the referenced layer details but only the "Relation" id,
+  // for these projects automatic loading of broken references is not supported.
+  if ( config.value( QStringLiteral( "ReferencedLayerId" ) ).toString().isEmpty() )
+  {
+    return {};
+  }
 
   const QList<QgsVectorLayerRef> result {{
       QgsVectorLayerRef(

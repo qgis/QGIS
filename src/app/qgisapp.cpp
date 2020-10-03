@@ -2251,7 +2251,7 @@ const QList<QgsVectorLayerRef> QgisApp::findBrokenLayerDependencies( QgsVectorLa
 
         if ( found )
         {
-          // Make sure we don't add it twice
+          // Make sure we don't add it twice if it was already added by the form widgets check
           bool refFound = false;
           for ( const QgsVectorLayerRef &otherRef : qgis::as_const( brokenDependencies ) )
           {
@@ -2279,6 +2279,11 @@ void QgisApp::resolveVectorLayerDependencies( QgsVectorLayer *vl, QgsMapLayer::S
     const auto constDependencies { findBrokenLayerDependencies( vl, categories ) };
     for ( const QgsVectorLayerRef &dependency : constDependencies )
     {
+      // Temporary check for projects that were created before commit 7e8c7b3d0e094737336ff4834ea2af625d2921bf
+      if ( QgsProject::instance()->mapLayer( dependency.layerId ) )
+      {
+        continue;
+      }
       // try to aggressively resolve the broken dependencies
       bool loaded = false;
       const QString providerName { vl->dataProvider()->name() };
