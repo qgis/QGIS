@@ -72,6 +72,83 @@ made a selection.
 :param text: The text to be inserted
 %End
 
+    enum class ColorRole
+    {
+      Default,
+      Keyword,
+      Class,
+      Method,
+      Decoration,
+      Number,
+      Comment,
+      CommentLine,
+      CommentBlock,
+      Background,
+      Cursor,
+      CaretLine,
+      SingleQuote,
+      DoubleQuote,
+      TripleSingleQuote,
+      TripleDoubleQuote,
+      Operator,
+      QuotedOperator,
+      Identifier,
+      QuotedIdentifier,
+      Tag,
+      UnknownTag,
+      MarginBackground,
+      MarginForeground,
+      SelectionBackground,
+      SelectionForeground,
+      MatchedBraceBackground,
+      MatchedBraceForeground,
+      Edge,
+      Fold,
+      Error,
+    };
+
+    static QColor defaultColor( ColorRole role, const QString &theme = QString() );
+%Docstring
+Returns the default color for the specified ``role``.
+
+The optional ``theme`` argument can be used to specify a color ``theme``. A blank
+``theme`` indicates the default color scheme.
+
+Possible ``theme`` values are:
+
+- (empty string) follow application default colors
+- solarized
+- solarized_dark
+
+.. versionadded:: 3.16
+%End
+
+    static QColor color( ColorRole role );
+%Docstring
+Returns the color to use in the editor for the specified ``role``.
+
+This color will be the default theme color for the role, unless the user has manually
+selected a custom color scheme for the editor.
+
+.. seealso:: :py:func:`setColor`
+
+.. versionadded:: 3.16
+%End
+
+    static void setColor( ColorRole role, const QColor &color );
+%Docstring
+Sets the ``color`` to use in the editor for the specified ``role``.
+
+This color will be stored as the new default color for the role, to be used for all code editors.
+
+Set ``color`` to an invalid QColor in order to clear the stored color value and reset it to
+the default color.
+
+.. seealso:: :py:func:`color`
+
+.. versionadded:: 3.16
+%End
+
   protected:
 
     bool isFixedPitch( const QFont &font );

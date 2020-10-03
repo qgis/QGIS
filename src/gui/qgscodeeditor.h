@@ -79,6 +79,86 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      */
     void insertText( const QString &text );
 
+    /**
+     * Color roles.
+     *
+     * \since QGIS 3.16
+     */
+    enum class ColorRole
+    {
+      Default, //!< Default text color
+      Keyword, //!< Keyword color
+      Class, //!< Class color
+      Method, //!< Method color
+      Decoration, //!< Decoration color
+      Number, //!< Number color
+      Comment, //!< Comment color
+      CommentLine, //!< Line comment color
+      CommentBlock, //!< Comment block color
+      Background, //!< Background color
+      Cursor, //!< Cursor color
+      CaretLine, //!< Caret line color
+      SingleQuote, //!< Single quote color
+      DoubleQuote, //!< Double quote color
+      TripleSingleQuote, //!< Triple single quote color
+      TripleDoubleQuote, //!< Triple double quote color
+      Operator, //!< Operator color
+      QuotedOperator, //!< Quoted operator color
+      Identifier, //!< Identifier color
+      QuotedIdentifier, //!< Quoted identifier color
+      Tag, //!< Tag color
+      UnknownTag, //!< Unknown tag
+      MarginBackground, //!< Margin background color
+      MarginForeground, //!< Margin foreground color
+      SelectionBackground, //!< Selection background color
+      SelectionForeground, //!< Selection foreground color
+      MatchedBraceBackground, //!< Matched brace background color
+      MatchedBraceForeground, //!< Matched brace foreground color
+      Edge, //!< Edge color
+      Fold, //!< Fold color
+      Error, //!< Error color
+    };
+
+    /**
+     * Returns the default color for the specified \a role.
+     *
+     * The optional \a theme argument can be used to specify a color \a theme. A blank
+     * \a theme indicates the default color scheme.
+     *
+     * Possible \a theme values are:
+     *
+     * - (empty string) follow application default colors
+     * - solarized
+     * - solarized_dark
+     *
+     * \since QGIS 3.16
+     */
+    static QColor defaultColor( ColorRole role, const QString &theme = QString() );
+
+    /**
+     * Returns the color to use in the editor for the specified \a role.
+     *
+     * This color will be the default theme color for the role, unless the user has manually
+     * selected a custom color scheme for the editor.
+     *
+     * \see setColor()
+     * \since QGIS 3.16
+     */
+    static QColor color( ColorRole role );
+
+    /**
+     * Sets the \a color to use in the editor for the specified \a role.
+     *
+     * This color will be stored as the new default color for the role, to be used for all code editors.
+     *
+     * Set \a color to an invalid QColor in order to clear the stored color value and reset it to
+     * the default color.
+     *
+     * \see color()
+     * \since QGIS 3.16
+     */
+    static void setColor( ColorRole role, const QColor &color );
+
   protected:
 
     bool isFixedPitch( const QFont &font );
@@ -95,6 +175,8 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     QString mWidgetTitle;
     bool mFolding;
     bool mMargin;
+
+    static QMap< ColorRole, QString > sColorRoleToSettingsKey;
 };
 
 // clazy:excludeall=qstring-allocations
