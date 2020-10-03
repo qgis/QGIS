@@ -37,32 +37,22 @@ QgsCodeEditorHTML::QgsCodeEditorHTML( QWidget *parent )
 
 void QgsCodeEditorHTML::setSciLexerHTML()
 {
-  QHash< QString, QColor > colors;
-  if ( QgsApplication::instance()->themeName() != QStringLiteral( "default" ) )
-  {
-    QSettings ini( QgsApplication::instance()->uiThemes().value( QgsApplication::instance()->themeName() ) + "/qscintilla.ini", QSettings::IniFormat );
-    for ( const auto &key : ini.allKeys() )
-    {
-      colors.insert( key, QgsSymbolLayerUtils::decodeColor( ini.value( key ).toString() ) );
-    }
-  }
-
   QFont font = getMonospaceFont();
-  QColor defaultColor = colors.value( QStringLiteral( "html/defaultFontColor" ), Qt::black );
+  QColor defaultColor = color( ColorRole::Default );
 
   QsciLexerHTML *lexer = new QsciLexerHTML( this );
   lexer->setDefaultFont( font );
   lexer->setDefaultColor( defaultColor );
-  lexer->setDefaultPaper( colors.value( QStringLiteral( "html/paperBackgroundColor" ), Qt::white ) );
+  lexer->setDefaultPaper( color( ColorRole::Background ) );
   lexer->setFont( font, -1 );
 
   lexer->setColor( defaultColor, QsciLexerHTML::Default );
-  lexer->setColor( colors.value( QStringLiteral( "html/tagFontColor" ), QColor( 66, 113, 174 ) ), QsciLexerHTML::Tag );
-  lexer->setColor( colors.value( QStringLiteral( "html/unknownTagFontColor" ), QColor( 255, 0, 0 ) ), QsciLexerHTML::UnknownTag );
-  lexer->setColor( colors.value( QStringLiteral( "html/numberFontColor" ), QColor( 200, 40, 41 ) ), QsciLexerHTML::HTMLNumber );
-  lexer->setColor( colors.value( QStringLiteral( "html/commentFontColor" ), QColor( 142, 144, 140 ) ), QsciLexerHTML::HTMLComment );
-  lexer->setColor( colors.value( QStringLiteral( "html/singleQuoteFontColor" ), QColor( 113, 140, 0 ) ), QsciLexerHTML::HTMLSingleQuotedString );
-  lexer->setColor( colors.value( QStringLiteral( "html/doubleQuoteFontColor" ), QColor( 113, 140, 0 ) ), QsciLexerHTML::HTMLDoubleQuotedString );
+  lexer->setColor( color( ColorRole::Tag ), QsciLexerHTML::Tag );
+  lexer->setColor( color( ColorRole::UnknownTag ), QsciLexerHTML::UnknownTag );
+  lexer->setColor( color( ColorRole::Number ), QsciLexerHTML::HTMLNumber );
+  lexer->setColor( color( ColorRole::Comment ), QsciLexerHTML::HTMLComment );
+  lexer->setColor( color( ColorRole::SingleQuote ), QsciLexerHTML::HTMLSingleQuotedString );
+  lexer->setColor( color( ColorRole::DoubleQuote ), QsciLexerHTML::HTMLDoubleQuotedString );
 
   setLexer( lexer );
 }
