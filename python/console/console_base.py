@@ -25,14 +25,11 @@ from qgis.PyQt.Qsci import QsciLexerPython, QsciAPIs
 from qgis.core import QgsApplication, Qgis
 from qgis.gui import QgsCodeEditorPython, QgsCodeEditor
 import os
-import re
 
 
 class QgsPythonConsoleBase(QgsCodeEditorPython):
 
     MARKER_NUM = 6
-
-    HANDY_COMMANDS = ['_pyqgis', '_api', '_cookbook']
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -139,16 +136,6 @@ class QgsPythonConsoleBase(QgsCodeEditorPython):
             text = text.replace('>>> ', '').replace('... ', '').strip()  # removing prompts
             version = '.'.join(Qgis.QGIS_VERSION.split('.')[0:2])
             QDesktopServices.openUrl(QUrl('https://qgis.org/pyqgis/' + version + '/search.html?q=' + text))
-
-    def handyCommands(self, hcmd):
-        version = 'master' if 'master' in Qgis.QGIS_VERSION.lower() else re.findall(r'^\d.[0-9]*', Qgis.QGIS_VERSION)[0]
-        if hcmd == '_pyqgis':
-            QDesktopServices.openUrl(QUrl("https://qgis.org/pyqgis/{}".format(version)))
-        elif hcmd == '_api':
-            QDesktopServices.openUrl(QUrl("https://qgis.org/api/{}".format('' if version == 'master' else version)))
-        elif hcmd == '_cookbook':
-            QDesktopServices.openUrl(QUrl("https://docs.qgis.org/{}/en/docs/pyqgis_developer_cookbook/".format(
-                'testing' if version == 'master' else version)))
 
 
 if __name__ == "__main__":
