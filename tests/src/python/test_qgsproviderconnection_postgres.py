@@ -354,6 +354,14 @@ IMPORT FOREIGN SCHEMA qgis_test LIMIT TO ( "someData" )
             'out_db',
             'spatial_index'}))
 
+    def test_exceptions(self):
+        """Test that exception are converted to Python QgsProviderConnectionException"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        conn = md.createConnection(self.uri, {})
+        with self.assertRaises(QgsProviderConnectionException):
+            conn.table('my_not_existent_schema', 'my_not_existent_table')
+
 
 if __name__ == '__main__':
     unittest.main()
