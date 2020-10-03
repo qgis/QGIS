@@ -63,7 +63,7 @@ class ConsoleOptionsPage(QgsOptionsPageWidget):
         self.setObjectName('consoleOptions')
 
     def apply(self):
-        self.config_widget.accept()
+        self.options_widget.accept()
 
     def helpKey(self):
         return 'plugins/python_console.html'
