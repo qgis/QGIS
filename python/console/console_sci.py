@@ -66,7 +66,7 @@ class ShellScintilla(QgsPythonConsoleBase, code.InteractiveInterpreter):
 
         self.buffer = []
 
-        self.displayPrompt(False)
+        self.displayPrompt(self.buffer)
 
         for line in _init_commands:
             self.runsource(line)
@@ -212,7 +212,7 @@ class ShellScintilla(QgsPythonConsoleBase, code.InteractiveInterpreter):
         self.setCursorPosition(0, 0)
         self.ensureCursorVisible()
         self.ensureLineVisible(0)
-        self.displayPrompt(False)
+        self.displayPrompt(self.buffer)
 
     def move_cursor_to_end(self):
         """Move cursor to end of text"""
@@ -220,7 +220,7 @@ class ShellScintilla(QgsPythonConsoleBase, code.InteractiveInterpreter):
         self.setCursorPosition(line, index)
         self.ensureCursorVisible()
         self.ensureLineVisible(line)
-        self.displayPrompt(False)
+        self.displayPrompt(self.buffer)
 
     def is_cursor_on_last_line(self):
         """Return True if cursor is on the last line"""
@@ -417,8 +417,7 @@ class ShellScintilla(QgsPythonConsoleBase, code.InteractiveInterpreter):
                     self.setCursorPosition(line, index + 7)
             QsciScintilla.keyPressEvent(self, e)
 
-        if len(self.text(0)) == 0 or hasSelectedText:
-            self.displayPrompt(False)
+        self.displayPrompt(self.buffer)
 
     def contextMenuEvent(self, e):
         menu = QMenu(self)
@@ -505,7 +504,7 @@ class ShellScintilla(QgsPythonConsoleBase, code.InteractiveInterpreter):
                 cleanLine = line.replace(">>> ", "").replace("... ", "")
                 self.insert(cleanLine)
                 self.move_cursor_to_end()
-                self.runCommand(self.currentCommand())
+                self.runCommand(self.text())
             if pasteList[-1] != "":
                 line = pasteList[-1]
                 cleanLine = line.replace(">>> ", "").replace("... ", "")
@@ -518,35 +517,22 @@ class ShellScintilla(QgsPythonConsoleBase, code.InteractiveInterpreter):
             self.append(line)
             self.move_cursor_to_end()
             self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
-            self.runCommand(self.currentCommand())
+            self.runCommand(self.text())
         self.append(listOpenFile[-1])
         self.move_cursor_to_end()
         self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
 
     def entered(self):
         self.move_cursor_to_end()
-        self.runCommand(self.currentCommand())
+        self.runCommand(self.text())
         self.setFocus()
         self.move_cursor_to_end()
 
-    def currentCommand(self):
-        string = self.text()
-        cmd = string
-        return cmd
-
     def runCommand(self, cmd):
         self.writeCMD(cmd)
-        import webbrowser
         self.updateHistory(cmd)
-        version = 'master' if 'master' in Qgis.QGIS_VERSION.lower() else re.findall(r'^\d.[0-9]*', Qgis.QGIS_VERSION)[0]
-        if cmd in ('_pyqgis', '_api', '_cookbook'):
-            if cmd == '_pyqgis':
-                webbrowser.open("https://qgis.org/pyqgis/{}".format(version))
-            elif cmd == '_api':
-                webbrowser.open("https://qgis.org/api/{}".format('' if version == 'master' else version))
-            elif cmd == '_cookbook':
-                webbrowser.open("https://docs.qgis.org/{}/en/docs/pyqgis_developer_cookbook/".format(
-                    'testing' if version == 'master' else version))
+        if cmd in self.HANDY_COMMANDS:
+            self.handyCommands(cmd)
             more = False
         else:
             self.buffer.append(cmd)
@@ -554,6 +540,7 @@ class ShellScintilla(QgsPythonConsoleBase, code.InteractiveInterpreter):
             more = self.runsource(src)
             if not more:
                 self.buffer = []
+
         # prevents to commands with more lines to break the console
         # in the case they have a eol different from '\n'
         self.setText('')
@@ -567,8 +554,8 @@ class ShellScintilla(QgsPythonConsoleBase, code.InteractiveInterpreter):
         if sys.stdout:
             sys.stdout.fire_keyboard_interrupt = False
         if len(txt) > 0:
-            getCmdString = self.text()
-            sys.stdout.write('>>> ' + txt + '\n')
+            prompt = "... " if self.buffer else ">>> "
+            sys.stdout.write(prompt + txt + '\n')
 
     def runsource(self, source, filename='<input>', symbol='single'):
         if sys.stdout:
