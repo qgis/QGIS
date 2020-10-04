@@ -59,13 +59,16 @@ void QgsCodeEditorPython::initializeLexer()
   pyLexer->setFont( font, -1 );
   pyLexer->setColor( defaultColor, QsciLexerPython::Default );
   pyLexer->setColor( color( ColorRole::Class ), QsciLexerPython::ClassName );
+  pyLexer->setColor( color( ColorRole::Method ), QsciLexerPython::FunctionMethodName );
   pyLexer->setColor( color( ColorRole::Number ), QsciLexerPython::Number );
+  pyLexer->setColor( color( ColorRole::Operator ), QsciLexerPython::Operator );
+  pyLexer->setColor( color( ColorRole::Identifier ), QsciLexerPython::Identifier );
   pyLexer->setColor( color( ColorRole::Comment ), QsciLexerPython::Comment );
   pyLexer->setColor( color( ColorRole::CommentBlock ), QsciLexerPython::CommentBlock );
   pyLexer->setColor( color( ColorRole::Keyword ), QsciLexerPython::Keyword );
   pyLexer->setColor( color( ColorRole::Decoration ), QsciLexerPython::Decorator );
   pyLexer->setColor( color( ColorRole::SingleQuote ), QsciLexerPython::SingleQuotedString );
-  pyLexer->setColor( color( ColorRole::SingleQuote ), QsciLexerPython::DoubleQuotedString );
+  pyLexer->setColor( color( ColorRole::DoubleQuote ), QsciLexerPython::DoubleQuotedString );
   pyLexer->setColor( color( ColorRole::TripleSingleQuote ), QsciLexerPython::TripleSingleQuotedString );
   pyLexer->setColor( color( ColorRole::TripleDoubleQuote ), QsciLexerPython::TripleDoubleQuotedString );
 

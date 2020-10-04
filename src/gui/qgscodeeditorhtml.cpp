@@ -49,8 +49,17 @@ void QgsCodeEditorHTML::initializeLexer()
   lexer->setColor( defaultColor, QsciLexerHTML::Default );
   lexer->setColor( color( ColorRole::Tag ), QsciLexerHTML::Tag );
   lexer->setColor( color( ColorRole::UnknownTag ), QsciLexerHTML::UnknownTag );
+  lexer->setColor( color( ColorRole::Method ), QsciLexerHTML::Attribute );
+  lexer->setColor( color( ColorRole::Method ), QsciLexerHTML::UnknownAttribute );
+  lexer->setColor( color( ColorRole::Class ), QsciLexerHTML::Entity );
   lexer->setColor( color( ColorRole::Number ), QsciLexerHTML::HTMLNumber );
   lexer->setColor( color( ColorRole::Comment ), QsciLexerHTML::HTMLComment );
+  lexer->setColor( color( ColorRole::Comment ), QsciLexerHTML::JavaScriptComment );
+  lexer->setColor( color( ColorRole::CommentLine ), QsciLexerHTML::JavaScriptCommentLine );
+  lexer->setColor( color( ColorRole::Number ), QsciLexerHTML::JavaScriptNumber );
+  lexer->setColor( color( ColorRole::Keyword ), QsciLexerHTML::JavaScriptKeyword );
+  lexer->setColor( color( ColorRole::DoubleQuote ), QsciLexerHTML::JavaScriptDoubleQuotedString );
+  lexer->setColor( color( ColorRole::SingleQuote ), QsciLexerHTML::JavaScriptSingleQuotedString );
   lexer->setColor( color( ColorRole::SingleQuote ), QsciLexerHTML::HTMLSingleQuotedString );
   lexer->setColor( color( ColorRole::DoubleQuote ), QsciLexerHTML::HTMLDoubleQuotedString );
 
