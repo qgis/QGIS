@@ -37,8 +37,23 @@ QgsCodeEditorJavascript::QgsCodeEditorJavascript( QWidget *parent )
 void QgsCodeEditorJavascript::initializeLexer()
 {
   QsciLexerJavaScript *lexer = new QsciLexerJavaScript( this );
-  QFont f = getMonospaceFont();
-  lexer->setDefaultFont( f );
-  lexer->setFont( f, -1 );
+
+  const QFont font = getMonospaceFont();
+  lexer->setDefaultFont( font );
+  lexer->setFont( font, -1 );
+
+  lexer->setDefaultColor( color( ColorRole::Default ) );
+  lexer->setDefaultPaper( color( ColorRole::Background ) );
+
+  lexer->setColor( color( ColorRole::Class ), QsciLexerJavaScript::GlobalClass );
+  lexer->setColor( color( ColorRole::Keyword ), QsciLexerJavaScript::Keyword );
+  lexer->setColor( color( ColorRole::Operator ), QsciLexerJavaScript::Operator );
+  lexer->setColor( color( ColorRole::Number ), QsciLexerJavaScript::Number );
+  lexer->setColor( color( ColorRole::Comment ), QsciLexerJavaScript::Comment );
+  lexer->setColor( color( ColorRole::CommentLine ), QsciLexerJavaScript::CommentLine );
+  lexer->setColor( color( ColorRole::DoubleQuote ), QsciLexerJavaScript::DoubleQuotedString );
+  lexer->setColor( color( ColorRole::SingleQuote ), QsciLexerJavaScript::SingleQuotedString );
+  lexer->setColor( color( ColorRole::Identifier ), QsciLexerJavaScript::Identifier );
+
   setLexer( lexer );
 }
