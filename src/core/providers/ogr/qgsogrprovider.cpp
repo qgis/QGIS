@@ -4616,6 +4616,12 @@ void QgsOgrProvider::open( OpenMode mode )
   {
     mFilePath += ",tables=" + mLayerName;
   }
+  else if ( mFilePath.startsWith( QLatin1String( "inbuilt:" ) ) )
+  {
+    // be able to use an 'inbuild:'-uri to load ogr data from QGIS resources
+    // eg in python: iface.addVectorLayer('inbuilt:/data/world_map.gpkg|layername=countries', 'Countries', 'ogr')
+    mFilePath = QgsApplication::pkgDataPath() + QStringLiteral( "/resources" ) + mFilePath.mid( 8 );
+  }
 
   if ( mode == OpenModeForceReadOnly )
     openReadOnly = true;
