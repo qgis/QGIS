@@ -149,6 +149,13 @@ the default color.
 .. versionadded:: 3.16
 %End
 
+    static QFont getMonospaceFont();
+%Docstring
+Returns the monospaced font to use for code editors.
+
+.. versionadded:: 3.16
+%End
+
   protected:
 
     bool isFixedPitch( const QFont &font );
@@ -157,8 +164,6 @@ the default color.
 
     virtual void keyPressEvent( QKeyEvent *event );
 
-
-    QFont getMonospaceFont();
 
 };
 

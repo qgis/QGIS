@@ -19,14 +19,13 @@ email                : lrssvtml (at) gmail (dot) com
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
 
-from qgis.PyQt.QtCore import QCoreApplication, QSize, QUrl, QObject, Qt, pyqtSignal
+from qgis.PyQt.QtCore import QCoreApplication, QUrl, QObject, pyqtSignal
 from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QTableWidgetItem, QHBoxLayout
-from qgis.PyQt.QtGui import QIcon, QFont, QColor, QFontDatabase, QDesktopServices
+from qgis.PyQt.QtGui import QIcon, QDesktopServices
 
 from qgis.core import QgsSettings, QgsApplication
-from qgis.gui import QgsOptionsPageWidget, QgsOptionsWidgetFactory, QgsCodeEditor
+from qgis.gui import QgsOptionsPageWidget, QgsOptionsWidgetFactory
 
-from .console_base import QgsPythonConsoleBase
 from .console_compile_apis import PrepareAPIDialog
 from .ui_console_settings import Ui_SettingsDialogPythonConsole
 
@@ -93,10 +92,6 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.addAPIpath.clicked.connect(self.loadAPIFile)
         self.removeAPIpath.clicked.connect(self.removeAPI)
         self.compileAPIs.clicked.connect(self._prepareAPI)
-
-        self.resetFontColor.setIcon(QIcon(":/images/themes/default/mActionUndo.svg"))
-        self.resetFontColor.setIconSize(QSize(18, 18))
-        self.resetFontColor.clicked.connect(self._resetFontColor)
 
         self.generateToken.clicked.connect(self.generateGHToken)
 
@@ -194,15 +189,9 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
 
         settings.setValue("pythonConsole/accessTokenGithub", self.tokenGhLineEdit.text())
 
-        fontFamilyText = self.fontComboBox.currentText()
-        settings.setValue("pythonConsole/fontfamilytext", fontFamilyText)
-
-        fontSize = self.spinBox.value()
-
         for i in range(0, self.tableWidget.rowCount()):
             text = self.tableWidget.item(i, 1).text()
             self.listPath.append(text)
-        settings.setValue("pythonConsole/fontsize", fontSize)
         settings.setValue("pythonConsole/userAPI", self.listPath)
 
         settings.setValue("pythonConsole/autoCompThreshold", self.autoCompThreshold.value())
@@ -222,38 +211,8 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         settings.setValue("pythonConsole/autoCloseBracket", self.autoCloseBracket.isChecked())
         settings.setValue("pythonConsole/autoInsertionImport", self.autoInsertionImport.isChecked())
 
-        QgsCodeEditor.setColor(QgsCodeEditor.ColorRole.Default, self.defaultFontColor.color())
-        QgsCodeEditor.setColor(QgsCodeEditor.ColorRole.Class, self.classFontColor.color())
-        QgsCodeEditor.setColor(QgsCodeEditor.ColorRole.Keyword, self.keywordFontColor.color())
-        QgsCodeEditor.setColor(QgsCodeEditor.ColorRole.Decoration, self.decorFontColor.color())
-        QgsCodeEditor.setColor(QgsCodeEditor.ColorRole.Number, self.numberFontColor.color())
-        QgsCodeEditor.setColor(QgsCodeEditor.ColorRole.Method, self.methodFontColor.color())
-        QgsCodeEditor.setColor(QgsCodeEditor.ColorRole.Comment, self.commentFontColor.color())
-        QgsCodeEditor.setColor(QgsCodeEditor.ColorRole.CommentBlock, self.commentBlockFontColor.color())
-        QgsCodeEditor.setColor(QgsCodeEditor.ColorRole.Background, self.paperBackgroundColor.color())
-        QgsCodeEditor.setColor(QgsCodeEditor.ColorRole.Cursor, self.cursorColor.color())
-        QgsCodeEditor.setColor(QgsCodeEditor.ColorRole.CaretLine, self.caretLineColor.color())
-        QgsCodeEditor.setColor(QgsCodeEditor.ColorRole.Error, self.stderrFontColor.color())
-
-        QgsCodeEditor.setColor(QgsCodeEditor.ColorRole.SingleQuote, self.singleQuoteFontColor.color())
-        QgsCodeEditor.setColor(QgsCodeEditor.ColorRole.DoubleQuote, self.doubleQuoteFontColor.color())
-        QgsCodeEditor.setColor(QgsCodeEditor.ColorRole.TripleSingleQuote, self.tripleSingleQuoteFontColor.color())
-        QgsCodeEditor.setColor(QgsCodeEditor.ColorRole.TripleDoubleQuote, self.tripleDoubleQuoteFontColor.color())
-        QgsCodeEditor.setColor(QgsCodeEditor.ColorRole.Edge, self.edgeColor.color())
-        QgsCodeEditor.setColor(QgsCodeEditor.ColorRole.MarginBackground, self.marginBackgroundColor.color())
-        QgsCodeEditor.setColor(QgsCodeEditor.ColorRole.MarginForeground, self.marginForegroundColor.color())
-        QgsCodeEditor.setColor(QgsCodeEditor.ColorRole.Fold, self.foldColor.color())
-        QgsCodeEditor.setColor(QgsCodeEditor.ColorRole.SelectionBackground, self.selectionBackgroundColor.color())
-        QgsCodeEditor.setColor(QgsCodeEditor.ColorRole.SelectionForeground, self.selectionForegroundColor.color())
-        QgsCodeEditor.setColor(QgsCodeEditor.ColorRole.MatchedBraceBackground, self.matchedBraceBackgroundColor.color())
-        QgsCodeEditor.setColor(QgsCodeEditor.ColorRole.MatchedBraceForeground, self.matchedBraceForegroundColor.color())
-
     def restoreSettings(self):
         settings = QgsSettings()
-        font = QFontDatabase.systemFont(QFontDatabase.FixedFont)
-        self.spinBox.setValue(settings.value("pythonConsole/fontsize", font.pointSize(), type=int))
-        self.fontComboBox.setCurrentFont(QFont(settings.value("pythonConsole/fontfamilytext",
-                                                              font.family())))
         self.preloadAPI.setChecked(settings.value("pythonConsole/preloadAPI", True, type=bool))
         self.lineEdit.setText(settings.value("pythonConsole/preparedAPIFile", "", type=str))
         self.tokenGhLineEdit.setText(settings.value("pythonConsole/accessTokenGithub", "", type=str))
@@ -282,58 +241,6 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
             self.autoCompFromAPI.setChecked(True)
         elif settings.value("pythonConsole/autoCompleteSource") == 'fromDocAPI':
             self.autoCompFromDocAPI.setChecked(True)
-
-        # Setting font lexer color
-        self.defaultFontColor.setColor(QgsCodeEditor.color(QgsCodeEditor.ColorRole.Default))
-        self.keywordFontColor.setColor(QgsCodeEditor.color(QgsCodeEditor.ColorRole.Keyword))
-        self.classFontColor.setColor(QgsCodeEditor.color(QgsCodeEditor.ColorRole.Class))
-        self.methodFontColor.setColor(QgsCodeEditor.color(QgsCodeEditor.ColorRole.Method))
-        self.decorFontColor.setColor(QgsCodeEditor.color(QgsCodeEditor.ColorRole.Decoration))
-        self.numberFontColor.setColor(QgsCodeEditor.color(QgsCodeEditor.ColorRole.Number))
-        self.commentFontColor.setColor(QgsCodeEditor.color(QgsCodeEditor.ColorRole.Comment))
-        self.commentBlockFontColor.setColor(QgsCodeEditor.color(QgsCodeEditor.ColorRole.CommentBlock))
-        self.paperBackgroundColor.setColor(QgsCodeEditor.color(QgsCodeEditor.ColorRole.Background))
-        self.cursorColor.setColor(QgsCodeEditor.color(QgsCodeEditor.ColorRole.Cursor))
-        self.caretLineColor.setColor(QgsCodeEditor.color(QgsCodeEditor.ColorRole.CaretLine))
-        self.singleQuoteFontColor.setColor(QgsCodeEditor.color(QgsCodeEditor.ColorRole.SingleQuote))
-        self.doubleQuoteFontColor.setColor(QgsCodeEditor.color(QgsCodeEditor.ColorRole.DoubleQuote))
-        self.tripleSingleQuoteFontColor.setColor(QgsCodeEditor.color(QgsCodeEditor.ColorRole.TripleSingleQuote))
-        self.tripleDoubleQuoteFontColor.setColor(QgsCodeEditor.color(QgsCodeEditor.ColorRole.TripleDoubleQuote))
-        self.marginBackgroundColor.setColor(QgsCodeEditor.color(QgsCodeEditor.ColorRole.MarginBackground))
-        self.marginForegroundColor.setColor(QgsCodeEditor.color(QgsCodeEditor.ColorRole.MarginForeground))
-        self.selectionBackgroundColor.setColor(QgsCodeEditor.color(QgsCodeEditor.ColorRole.SelectionBackground))
-        self.selectionForegroundColor.setColor(QgsCodeEditor.color(QgsCodeEditor.ColorRole.SelectionForeground))
-        self.matchedBraceBackgroundColor.setColor(QgsCodeEditor.color(QgsCodeEditor.ColorRole.MatchedBraceBackground))
-        self.matchedBraceForegroundColor.setColor(QgsCodeEditor.color(QgsCodeEditor.ColorRole.MatchedBraceForeground))
-        self.stderrFontColor.setColor(QgsCodeEditor.color(QgsCodeEditor.ColorRole.Error))
-        self.edgeColor.setColor(QgsCodeEditor.color(QgsCodeEditor.ColorRole.Edge))
-        self.foldColor.setColor(QgsCodeEditor.color(QgsCodeEditor.ColorRole.Fold))
-
-    def _resetFontColor(self):
-        self.defaultFontColor.setColor(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.Default))
-        self.keywordFontColor.setColor(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.Keyword))
-        self.classFontColor.setColor(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.Class))
-        self.methodFontColor.setColor(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.Method))
-        self.decorFontColor.setColor(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.Decoration))
-        self.numberFontColor.setColor(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.Number))
-        self.commentFontColor.setColor(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.Comment))
-        self.commentBlockFontColor.setColor(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.CommentBlock))
-        self.paperBackgroundColor.setColor(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.Background))
-        self.cursorColor.setColor(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.Cursor))
-        self.caretLineColor.setColor(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.CaretLine))
-        self.singleQuoteFontColor.setColor(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.SingleQuote))
-        self.doubleQuoteFontColor.setColor(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.DoubleQuote))
-        self.tripleSingleQuoteFontColor.setColor(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.TripleSingleQuote))
-        self.tripleDoubleQuoteFontColor.setColor(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.TripleDoubleQuote))
-        self.marginBackgroundColor.setColor(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.MarginBackground))
-        self.marginForegroundColor.setColor(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.MarginForeground))
-        self.selectionBackgroundColor.setColor(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.SelectionBackground))
-        self.selectionForegroundColor.setColor(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.SelectionForeground))
-        self.matchedBraceBackgroundColor.setColor(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.MatchedBraceBackground))
-        self.matchedBraceForegroundColor.setColor(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.MatchedBraceForeground))
-        self.stderrFontColor.setColor(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.Error))
-        self.edgeColor.setColor(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.Edge))
-        self.foldColor.setColor(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.Fold))
 
     def reject(self):
         self.restoreSettings()
