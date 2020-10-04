@@ -197,6 +197,7 @@ SET(QGIS_APP_SRCS
   locator/qgsinbuiltlocatorfilters.cpp
   locator/qgslocatoroptionswidget.cpp
 
+  options/qgscodeeditoroptions.cpp
   options/qgsoptions.cpp
   options/qgsoptionsutils.cpp
 

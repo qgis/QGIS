@@ -159,14 +159,19 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      */
     static void setColor( ColorRole role, const QColor &color );
 
+    /**
+     * Returns the monospaced font to use for code editors.
+     *
+     * \since QGIS 3.16
+     */
+    static QFont getMonospaceFont();
+
   protected:
 
     bool isFixedPitch( const QFont &font );
 
     void focusOutEvent( QFocusEvent *event ) override;
     void keyPressEvent( QKeyEvent *event ) override;
-
-    QFont getMonospaceFont();
 
   private:
 

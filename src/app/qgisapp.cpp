@@ -97,6 +97,8 @@
 #include "qgsanalysis.h"
 #include "qgsgeometrycheckregistry.h"
 
+#include "options/qgscodeeditoroptions.h"
+
 #ifdef HAVE_3D
 #include "qgs3d.h"
 #include "qgs3danimationsettings.h"
@@ -1699,6 +1701,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   {
     mCentralContainer->setCurrentIndex( 0 );
   } );
+
+  mCodeEditorWidgetFactory.reset( qgis::make_unique< QgsCodeEditorOptionsFactory >() );
 } // QgisApp ctor
 
 QgisApp::QgisApp()

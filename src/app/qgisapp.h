@@ -173,6 +173,7 @@ class QgsNetworkLoggerWidgetFactory;
 #include "qgis_app.h"
 #include "qgsvectorlayerref.h"
 #include "devtools/qgsappdevtoolutils.h"
+#include "options/qgsoptionsutils.h"
 
 #include <QGestureEvent>
 #include <QTapAndHoldGesture>
@@ -2627,6 +2628,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsNetworkLogger *mNetworkLogger = nullptr;
     QgsScopedDevToolWidgetFactory mNetworkLoggerWidgetFactory;
     QgsScopedDevToolWidgetFactory mStartupProfilerWidgetFactory;
+
+    QgsScopedOptionsWidgetFactory mCodeEditorWidgetFactory;
 
     class QgsCanvasRefreshBlocker
     {
