@@ -44,6 +44,7 @@ void QgsCodeEditorJavascript::initializeLexer()
 
   lexer->setDefaultColor( color( ColorRole::Default ) );
   lexer->setDefaultPaper( color( ColorRole::Background ) );
+  lexer->setPaper( color( ColorRole::Background ), -1 );
 
   lexer->setColor( color( ColorRole::Class ), QsciLexerJavaScript::GlobalClass );
   lexer->setColor( color( ColorRole::Keyword ), QsciLexerJavaScript::Keyword );
