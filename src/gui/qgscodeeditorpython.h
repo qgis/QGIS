@@ -57,6 +57,15 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
      */
     bool loadScript( const QString &script );
 
+  public slots:
+
+    /**
+     * Searches the selected text in the official PyQGIS online documentation.
+     *
+     * \since QGIS 3.16
+     */
+    void searchSelectedTextInPyQGISDocs();
+
   protected:
 
     void initializeLexer() override;

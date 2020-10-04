@@ -122,13 +122,6 @@ class QgsPythonConsoleBase(QgsCodeEditorPython):
 
         self.setLexer(self.lexer)
 
-    def searchPyQGIS(self):
-        if self.hasSelectedText():
-            text = self.selectedText()
-            text = text.replace('>>> ', '').replace('... ', '').strip()  # removing prompts
-            version = '.'.join(Qgis.QGIS_VERSION.split('.')[0:2])
-            QDesktopServices.openUrl(QUrl('https://qgis.org/pyqgis/' + version + '/search.html?q=' + text))
-
 
 if __name__ == "__main__":
     pass

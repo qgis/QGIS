@@ -25,6 +25,7 @@
 #include <QMessageBox>
 #include <QTextStream>
 #include <Qsci/qscilexerpython.h>
+#include <QDesktopServices>
 
 QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> &filenames )
   : QgsCodeEditor( parent )
@@ -138,4 +139,15 @@ bool QgsCodeEditorPython::loadScript( const QString &script )
 
   initializeLexer();
   return true;
+}
+
+void QgsCodeEditorPython::searchSelectedTextInPyQGISDocs()
+{
+  if ( !hasSelectedText() )
+    return;
+
+  QString text = selectedText();
+  text = text.replace( QStringLiteral( ">>> " ), QString() ).replace( QStringLiteral( "... " ), QString() ).trimmed(); // removing prompts
+  const QString version = QString( Qgis::version() ).split( '.' ).mid( 0, 2 ).join( '.' );
+  QDesktopServices::openUrl( QUrl( QStringLiteral( "https://qgis.org/pyqgis/%1/search.html?q=%2" ).arg( version, text ) ) );
 }
