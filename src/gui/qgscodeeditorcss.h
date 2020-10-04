@@ -38,8 +38,8 @@ class GUI_EXPORT QgsCodeEditorCSS : public QgsCodeEditor
     //! Constructor for QgsCodeEditorCSS
     QgsCodeEditorCSS( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-  private:
-    void setSciLexerCSS();
+  protected:
+    void initializeLexer() override;
 };
 
 #endif

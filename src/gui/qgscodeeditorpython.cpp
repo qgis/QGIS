@@ -34,10 +34,10 @@ QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> 
   {
     setTitle( tr( "Python Editor" ) );
   }
-  setSciLexerPython();
+  initializeLexer();
 }
 
-void QgsCodeEditorPython::setSciLexerPython()
+void QgsCodeEditorPython::initializeLexer()
 {
   // current line
   setCaretWidth( 2 );
@@ -119,7 +119,7 @@ void QgsCodeEditorPython::loadAPIs( const QList<QString> &filenames )
 {
   mAPISFilesList = filenames;
   //QgsDebugMsg( QStringLiteral( "The apis files: %1" ).arg( mAPISFilesList[0] ) );
-  setSciLexerPython();
+  initializeLexer();
 }
 
 bool QgsCodeEditorPython::loadScript( const QString &script )
@@ -136,6 +136,6 @@ bool QgsCodeEditorPython::loadScript( const QString &script )
   setText( in.readAll().trimmed() );
   file.close();
 
-  setSciLexerPython();
+  initializeLexer();
   return true;
 }

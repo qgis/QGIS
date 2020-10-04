@@ -165,6 +165,15 @@ Returns the monospaced font to use for code editors.
     virtual void keyPressEvent( QKeyEvent *event );
 
 
+    virtual void initializeLexer();
+%Docstring
+Called when the dialect specific code lexer needs to be initialized (or reinitialized).
+
+The default implementation does nothing.
+
+.. versionadded:: 3.16
+%End
+
 };
 
 
