@@ -31,7 +31,7 @@ QgsCodeEditorCSS::QgsCodeEditorCSS( QWidget *parent )
   }
   setMarginVisible( false );
   setFoldingVisible( true );
-  initializeLexer();
+  QgsCodeEditorCSS::initializeLexer();
 }
 
 void QgsCodeEditorCSS::initializeLexer()

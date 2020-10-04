@@ -52,7 +52,7 @@ class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
   private:
     void updateApis();
     QsciAPIs *mApis = nullptr;
-    QsciLexerSQL *mSqlLexer;
+    QsciLexerSQL *mSqlLexer = nullptr;
 
     QStringList mFieldNames;
 };

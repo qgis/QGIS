@@ -35,7 +35,7 @@ QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> 
   {
     setTitle( tr( "Python Editor" ) );
   }
-  initializeLexer();
+  QgsCodeEditorPython::initializeLexer();
 }
 
 void QgsCodeEditorPython::initializeLexer()
