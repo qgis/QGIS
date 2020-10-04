@@ -974,7 +974,6 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
   }
   else if ( value.canConvert< QgsInterval >() )
   {
-    //result is a feature
     QgsInterval interval = value.value<QgsInterval>();
     return startToken + tr( "interval: %1 days" ).arg( interval.days() ) + endToken;
   }
