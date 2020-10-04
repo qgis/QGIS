@@ -975,7 +975,22 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
   else if ( value.canConvert< QgsInterval >() )
   {
     QgsInterval interval = value.value<QgsInterval>();
-    return startToken + tr( "interval: %1 days" ).arg( interval.days() ) + endToken;
+    if ( interval.days() > 1 )
+    {
+      return startToken + tr( "interval: %1 days" ).arg( interval.days() ) + endToken;
+    }
+    else if ( interval.hours() > 1 )
+    {
+      return startToken + tr( "interval: %1 hours" ).arg( interval.hours() ) + endToken;
+    }
+    else if ( interval.minutes() > 1 )
+    {
+      return startToken + tr( "interval: %1 minutes" ).arg( interval.minutes() ) + endToken;
+    }
+    else
+    {
+      return startToken + tr( "interval: %1 seconds" ).arg( interval.seconds() ) + endToken;
+    }
   }
   else if ( value.canConvert< QgsGradientColorRamp >() )
   {
