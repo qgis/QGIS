@@ -198,6 +198,7 @@ SET(QGIS_APP_SRCS
   locator/qgslocatoroptionswidget.cpp
 
   options/qgsoptions.cpp
+  options/qgsoptionsutils.cpp
 
   gps/qgsgpsbearingitem.cpp
   gps/qgsgpsinformationwidget.cpp
