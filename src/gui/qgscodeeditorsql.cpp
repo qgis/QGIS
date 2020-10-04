@@ -32,7 +32,7 @@ QgsCodeEditorSQL::QgsCodeEditorSQL( QWidget *parent )
   setMarginVisible( false );
   setFoldingVisible( true );
   setAutoCompletionCaseSensitivity( false );
-  initializeLexer();
+  QgsCodeEditorSQL::initializeLexer(); // avoid cppcheck warning by explicitly specifying namespace
 }
 
 void QgsCodeEditorSQL::initializeLexer()

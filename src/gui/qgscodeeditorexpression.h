@@ -60,7 +60,7 @@ class GUI_EXPORT QgsCodeEditorExpression : public QgsCodeEditor
   private:
     void updateApis();
     QsciAPIs *mApis = nullptr;
-    QsciLexerSQL *mSqlLexer;
+    QsciLexerSQL *mSqlLexer = nullptr;
 
     QStringList mVariables;
     QStringList mContextFunctions;

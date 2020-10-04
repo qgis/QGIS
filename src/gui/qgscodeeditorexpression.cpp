@@ -30,7 +30,7 @@ QgsCodeEditorExpression::QgsCodeEditorExpression( QWidget *parent )
   setMarginVisible( false );
   setFoldingVisible( true );
   setAutoCompletionCaseSensitivity( false );
-  initializeLexer();
+  QgsCodeEditorExpression::initializeLexer(); // avoid cppcheck warning by explicitly specifying namespace
 }
 
 void QgsCodeEditorExpression::setExpressionContext( const QgsExpressionContext &context )
