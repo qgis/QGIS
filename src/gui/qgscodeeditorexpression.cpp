@@ -98,7 +98,6 @@ void QgsCodeEditorExpression::setFields( const QgsFields &fields )
   updateApis();
 }
 
-
 void QgsCodeEditorExpression::initializeLexer()
 {
   QFont font = getMonospaceFont();

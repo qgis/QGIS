@@ -31,10 +31,10 @@ QgsCodeEditorCSS::QgsCodeEditorCSS( QWidget *parent )
   }
   setMarginVisible( false );
   setFoldingVisible( true );
-  setSciLexerCSS();
+  initializeLexer();
 }
 
-void QgsCodeEditorCSS::setSciLexerCSS()
+void QgsCodeEditorCSS::initializeLexer()
 {
   QsciLexerCSS *lexer = new QsciLexerCSS( this );
   lexer->setDefaultFont( getMonospaceFont() );

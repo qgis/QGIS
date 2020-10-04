@@ -32,10 +32,10 @@ QgsCodeEditorHTML::QgsCodeEditorHTML( QWidget *parent )
   }
   setMarginVisible( false );
   setFoldingVisible( true );
-  setSciLexerHTML();
+  initializeLexer();
 }
 
-void QgsCodeEditorHTML::setSciLexerHTML()
+void QgsCodeEditorHTML::initializeLexer()
 {
   QFont font = getMonospaceFont();
   QColor defaultColor = color( ColorRole::Default );

@@ -38,6 +38,10 @@ Set field names to be added to the lexer API.
 .. versionadded:: 3.14
 %End
 
+  protected:
+    virtual void initializeLexer();
+
+
 };
 
 

@@ -57,10 +57,11 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
      */
     bool loadScript( const QString &script );
 
+  protected:
+
+    void initializeLexer() override;
+
   private:
-    //QgsCodeEditor *mSciWidget;
-    //QWidget *mWidget;
-    void setSciLexerPython();
 
     QList<QString> mAPISFilesList;
     QString mPapFile;

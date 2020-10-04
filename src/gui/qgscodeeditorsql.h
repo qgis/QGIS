@@ -46,11 +46,10 @@ class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
      */
     void setFields( const QgsFields &fields );
 
+  protected:
+    void initializeLexer() override;
+
   private:
-    //QgsCodeEditor *mSciWidget;
-    //QWidget *mWidget;
-    void setSciLexerSQL();
-    void initializeLexer();
     void updateApis();
     QsciAPIs *mApis = nullptr;
     QsciLexerSQL *mSqlLexer;

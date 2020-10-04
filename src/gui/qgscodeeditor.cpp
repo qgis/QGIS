@@ -18,6 +18,7 @@
 #include "qgscodeeditor.h"
 #include "qgssettings.h"
 #include "qgssymbollayerutils.h"
+#include "qgsgui.h"
 
 #include <QLabel>
 #include <QWidget>
@@ -82,6 +83,12 @@ QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString &title, bool foldin
   SendScintilla( SCI_SETADDITIONALSELECTIONTYPING, 1 );
   SendScintilla( SCI_SETMULTIPASTE, 1 );
   SendScintilla( SCI_SETVIRTUALSPACEOPTIONS, SCVS_RECTANGULARSELECTION );
+
+  connect( QgsGui::instance(), &QgsGui::optionsChanged, this, [ = ]
+  {
+    setSciWidget();
+    initializeLexer();
+  } );
 }
 
 // Workaround a bug in QScintilla 2.8.X
@@ -126,6 +133,11 @@ void QgsCodeEditor::keyPressEvent( QKeyEvent *event )
   {
     QsciScintilla::keyPressEvent( event );
   }
+}
+
+void QgsCodeEditor::initializeLexer()
+{
+
 }
 
 void QgsCodeEditor::setSciWidget()

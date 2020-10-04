@@ -173,6 +173,15 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     void focusOutEvent( QFocusEvent *event ) override;
     void keyPressEvent( QKeyEvent *event ) override;
 
+    /**
+     * Called when the dialect specific code lexer needs to be initialized (or reinitialized).
+     *
+     * The default implementation does nothing.
+     *
+     * \since QGIS 3.16
+     */
+    virtual void initializeLexer();
+
   private:
 
     void setSciWidget();

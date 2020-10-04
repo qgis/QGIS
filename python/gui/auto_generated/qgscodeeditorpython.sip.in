@@ -52,6 +52,11 @@ Load a script file
 :param script: The script file to load
 %End
 
+  protected:
+
+    virtual void initializeLexer();
+
+
 };
 
 /************************************************************************
