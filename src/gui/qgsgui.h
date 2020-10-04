@@ -211,6 +211,24 @@ class GUI_EXPORT QgsGui : public QObject
      */
     static bool pythonMacroAllowed( void ( *lambda )() = nullptr, QgsMessageBar *messageBar = nullptr ) SIP_SKIP;
 
+    ///@cond PRIVATE
+    void emitOptionsChanged() SIP_SKIP;
+    ///@endcond
+
+  signals:
+
+    /**
+     * This signal is emitted whenever the application options have been changed.
+     *
+     * This signal is a "blanket" signal, and will be emitted whenever the options dialog
+     * has been accepted regardless of whether or not individual settings are changed.
+     * It is designed as a "last resort" fallback only, allowing widgets to respond
+     * to possible settings changes.
+     *
+     * \since QGIS 3.16
+     */
+    void optionsChanged();
+
   private:
 
     QgsGui();

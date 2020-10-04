@@ -28,9 +28,9 @@ from qgis.utils import iface
 from .console_sci import ShellScintilla
 from .console_output import ShellOutputScintilla
 from .console_editor import EditorTabWidget
-from .console_settings import ConsoleOptionsFactory, settingsWatcher
+from .console_settings import ConsoleOptionsFactory
 from qgis.core import Qgis, QgsApplication, QgsSettings
-from qgis.gui import QgsFilterLineEdit, QgsHelp, QgsDockWidget
+from qgis.gui import QgsFilterLineEdit, QgsHelp, QgsDockWidget, QgsGui
 from functools import partial
 
 import sys
@@ -89,7 +89,7 @@ class PythonConsole(QgsDockWidget):
         # self.setAllowedAreas(Qt.BottomDockWidgetArea)
 
         self.console = PythonConsoleWidget(self)
-        settingsWatcher.settingsChanged.connect(self.console.updateSettings)
+        QgsGui.instance().optionsChanged.connect(self.console.updateSettings)
         self.setWidget(self.console)
         self.setFocusProxy(self.console)
 

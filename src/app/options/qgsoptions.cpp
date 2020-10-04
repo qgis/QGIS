@@ -1840,6 +1840,8 @@ void QgsOptions::saveOptions()
   {
     widget->apply();
   }
+
+  QgsGui::instance()->emitOptionsChanged();
 }
 
 void QgsOptions::rejectOptions()

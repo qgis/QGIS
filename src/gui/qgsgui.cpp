@@ -316,3 +316,10 @@ bool QgsGui::pythonMacroAllowed( void ( *lambda )(), QgsMessageBar *messageBar )
   }
   return false;
 }
+
+///@cond PRIVATE
+void QgsGui::emitOptionsChanged()
+{
+  emit optionsChanged();
+}
+///@endcond
