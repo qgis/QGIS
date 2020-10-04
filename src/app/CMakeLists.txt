@@ -125,7 +125,6 @@ SET(QGIS_APP_SRCS
   qgsmeasuredialog.cpp
   qgsmeasuretool.cpp
   qgsmergeattributesdialog.cpp
-  qgsoptions.cpp
   qgspointmarkeritem.cpp
   qgspointrotationitem.cpp
   qgspluginmetadata.cpp
@@ -197,6 +196,8 @@ SET(QGIS_APP_SRCS
 
   locator/qgsinbuiltlocatorfilters.cpp
   locator/qgslocatoroptionswidget.cpp
+
+  options/qgsoptions.cpp
 
   gps/qgsgpsbearingitem.cpp
   gps/qgsgpsinformationwidget.cpp

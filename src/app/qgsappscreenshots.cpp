@@ -31,7 +31,7 @@
 #include "qgsrendererpropertiesdialog.h"
 #include "qgs25drendererwidget.h"
 #include "qgsapplication.h"
-#include "qgsoptions.h"
+#include "options/qgsoptions.h"
 #include "qgsguiutils.h"
 #include "qgsvectorlayerjoininfo.h"
 #include "qgsrasterlayer.h"
