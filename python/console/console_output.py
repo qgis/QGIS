@@ -189,7 +189,7 @@ class ShellOutputScintilla(QgsPythonConsoleBase):
                                      self.clearConsole)
         pyQGISHelpAction = menu.addAction(self.iconPyQGISHelp,
                                           QCoreApplication.translate("PythonConsole", "Search Selected in PyQGIS docs"),
-                                          self.searchPyQGIS)
+                                          self.searchSelectedTextInPyQGISDocs)
         menu.addSeparator()
         copyAction = menu.addAction(
             self.iconCopy,

@@ -52,6 +52,15 @@ Load a script file
 :param script: The script file to load
 %End
 
+  public slots:
+
+    void searchSelectedTextInPyQGISDocs();
+%Docstring
+Searches the selected text in the official PyQGIS online documentation.
+
+.. versionadded:: 3.16
+%End
+
   protected:
 
     virtual void initializeLexer();

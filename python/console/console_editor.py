@@ -235,7 +235,7 @@ class Editor(QgsPythonConsoleBase):
                                      self.runSelectedCode, 'Ctrl+E')  # spellok
         pyQGISHelpAction = menu.addAction(self.iconPyQGISHelp,
                                           QCoreApplication.translate("PythonConsole", "Search Selected in PyQGIS docs"),
-                                          self.searchPyQGIS)
+                                          self.searchSelectedTextInPyQGISDocs)
         menu.addAction(self.iconRunScript,
                        QCoreApplication.translate("PythonConsole", "Run Script"),
                        self.runScriptCode, 'Shift+Ctrl+E')
