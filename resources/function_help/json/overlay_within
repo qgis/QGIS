@@ -1,8 +1,8 @@
 {
-  "name": "geometry_overlay_disjoint",
+  "name": "overlay_within",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Performs a spatial join of type DISJOINT. This returns an array of results of an expression evaluated on features from a different layer that DISJOINT the current feature, or, if no expression if provided, simply returns whether at least one feature from the other layer DISJOINT the current feature.",
+  "description": "Performs a spatial join of type WITHIN. This returns an array of results of an expression evaluated on features from a different layer that are WITHIN the current feature, or, if no expression if provided, simply returns whether at least one feature from the other layer is WITHIN the current feature.",
   "arguments": [
     {
       "arg": "layer",
@@ -32,19 +32,19 @@
   ],
   "examples": [
     {
-      "expression": "geometry_overlay_disjoint('regions')",
+      "expression": "overlay_within('regions')",
       "returns": "True"
     },
     {
-      "expression": "geometry_overlay_disjoint('regions', name)",
+      "expression": "overlay_within('regions', name)",
       "returns": "['South Africa', 'Africa', 'World']"
     },
     {
-      "expression": "geometry_overlay_disjoint('regions', name, name != 'World')",
+      "expression": "overlay_within('regions', name, name != 'World')",
       "returns": "['South Africa', 'Africa']"
     },
     {
-      "expression": "geometry_overlay_disjoint('regions', name, limit:=1)",
+      "expression": "overlay_within('regions', name, limit:=1)",
       "returns": "['South Africa']"
     }
   ]
