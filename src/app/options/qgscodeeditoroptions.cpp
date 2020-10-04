@@ -121,7 +121,7 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
 
 QString QgsCodeEditorOptionsWidget::helpKey() const
 {
-  return QStringLiteral( "plugins/python_console.html" );
+  return QStringLiteral( "introduction/qgis_configuration.html#code-editor-settings" );
 }
 
 void QgsCodeEditorOptionsWidget::apply()
