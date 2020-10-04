@@ -374,7 +374,11 @@
   <tabstop>mDeleteFieldBtn</tabstop>
   <tabstop>mFieldUpBtn</tabstop>
   <tabstop>mFieldDownBtn</tabstop>
-  <tabstop>mButtonBox</tabstop>
+  <tabstop>mGeomTypeCbo</tabstop>
+  <tabstop>mGeomColumn</tabstop>
+  <tabstop>mHasZChk</tabstop>
+  <tabstop>mHasMChk</tabstop>
+  <tabstop>mSpatialIndexChk</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

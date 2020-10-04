@@ -490,6 +490,7 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>cboRenderers</tabstop>
   <tabstop>mBlendModeComboBox</tabstop>
   <tabstop>mSliderBrightness</tabstop>
   <tabstop>mBrightnessSpinBox</tabstop>
@@ -497,14 +498,18 @@
   <tabstop>spinBoxSaturation</tabstop>
   <tabstop>mSliderContrast</tabstop>
   <tabstop>mContrastSpinBox</tabstop>
+  <tabstop>mSliderGamma</tabstop>
+  <tabstop>mGammaSpinBox</tabstop>
   <tabstop>comboGrayscale</tabstop>
   <tabstop>mColorizeCheck</tabstop>
   <tabstop>btnColorizeColor</tabstop>
   <tabstop>sliderColorizeStrength</tabstop>
   <tabstop>spinColorizeStrength</tabstop>
+  <tabstop>mResetColorRenderingBtn</tabstop>
   <tabstop>mZoomedInResamplingComboBox</tabstop>
   <tabstop>mZoomedOutResamplingComboBox</tabstop>
   <tabstop>mMaximumOversamplingSpinBox</tabstop>
+  <tabstop>mCbEarlyResampling</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
