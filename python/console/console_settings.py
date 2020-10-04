@@ -19,7 +19,7 @@ email                : lrssvtml (at) gmail (dot) com
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
 
-from qgis.PyQt.QtCore import QCoreApplication, QUrl, QObject, pyqtSignal
+from qgis.PyQt.QtCore import QCoreApplication, QUrl
 from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QTableWidgetItem, QHBoxLayout
 from qgis.PyQt.QtGui import QIcon, QDesktopServices
 
@@ -28,13 +28,6 @@ from qgis.gui import QgsOptionsPageWidget, QgsOptionsWidgetFactory
 
 from .console_compile_apis import PrepareAPIDialog
 from .ui_console_settings import Ui_SettingsDialogPythonConsole
-
-
-class SettingsWatcher(QObject):
-    settingsChanged = pyqtSignal()
-
-
-settingsWatcher = SettingsWatcher()
 
 
 class ConsoleOptionsFactory(QgsOptionsWidgetFactory):
@@ -162,7 +155,6 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
             )
             return
         self.saveSettings()
-        settingsWatcher.settingsChanged.emit()
         self.listPath = []
         QDialog.accept(self)
 

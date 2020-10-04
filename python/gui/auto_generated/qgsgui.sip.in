@@ -167,6 +167,21 @@ Returns the screen at the given global ``point`` (pixel).
 %End
 
 
+
+  signals:
+
+    void optionsChanged();
+%Docstring
+This signal is emitted whenever the application options have been changed.
+
+This signal is a "blanket" signal, and will be emitted whenever the options dialog
+has been accepted regardless of whether or not individual settings are changed.
+It is designed as a "last resort" fallback only, allowing widgets to respond
+to possible settings changes.
+
+.. versionadded:: 3.16
+%End
+
   private:
     QgsGui( const QgsGui &other );
 };
