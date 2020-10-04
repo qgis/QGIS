@@ -163,7 +163,7 @@ QgsCodeEditorOptionsFactory::QgsCodeEditorOptionsFactory()
 
 QIcon QgsCodeEditorOptionsFactory::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/console/mIconRunConsole.svg" ) );
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconCodeEditor.svg" ) );
 }
 
 QgsOptionsPageWidget *QgsCodeEditorOptionsFactory::createWidget( QWidget *parent ) const

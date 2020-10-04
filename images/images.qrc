@@ -890,6 +890,7 @@
         <file>themes/default/mActionLabelAnchorEnd.svg</file>
         <file>themes/default/mActionLabelAnchorStart.svg</file>
         <file>themes/default/transformation.svg</file>
+        <file>themes/default/mIconCodeEditor.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
