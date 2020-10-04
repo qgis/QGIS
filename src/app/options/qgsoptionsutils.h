@@ -1,8 +1,7 @@
-
 /***************************************************************************
-    qgsappdevtoolutils.h
+    qgsoptionsutils.h
     -------------------------
-    begin                : March 2020
+    begin                : September 2020
     copyright            : (C) 2020 by Nyall Dawson
     email                : nyall dot dawson at gmail dot com
  ***************************************************************************
@@ -13,31 +12,31 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSAPPDEVTOOLUTILS_H
-#define QGSAPPDEVTOOLUTILS_H
+#ifndef QGSOPTIONSUTILS_H
+#define QGSOPTIONSUTILS_H
 
-class QgsDevToolWidgetFactory;
+class QgsOptionsWidgetFactory;
 #include <memory>
 
 /**
  * \ingroup app
  *
- * Manages lifetime of a QgsDevToolWidgetFactory, automatically
+ * Manages lifetime of a QgsOptionsWidgetFactory, automatically
  * registering and unregistering it as required.
  *
- * \since QGIS 3.14
+ * \since QGIS 3.16
  */
-class QgsScopedDevToolWidgetFactory
+class QgsScopedOptionsWidgetFactory
 {
   public:
-    QgsScopedDevToolWidgetFactory();
-    ~QgsScopedDevToolWidgetFactory();
+    QgsScopedOptionsWidgetFactory();
+    ~QgsScopedOptionsWidgetFactory();
 
-    void reset( std::unique_ptr< QgsDevToolWidgetFactory > factory = nullptr );
+    void reset( std::unique_ptr< QgsOptionsWidgetFactory > factory = nullptr );
 
   private:
-    std::unique_ptr< QgsDevToolWidgetFactory > mFactory;
+    std::unique_ptr< QgsOptionsWidgetFactory > mFactory;
 };
 
 
-#endif // QGSAPPDEVTOOLUTILS_H
+#endif // QGSOPTIONSUTILS_H

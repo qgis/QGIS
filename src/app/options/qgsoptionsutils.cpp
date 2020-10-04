@@ -1,8 +1,7 @@
-
 /***************************************************************************
-    qgsappdevtoolutils.h
+    qgsoptionsutils.cpp
     -------------------------
-    begin                : March 2020
+    begin                : September 2020
     copyright            : (C) 2020 by Nyall Dawson
     email                : nyall dot dawson at gmail dot com
  ***************************************************************************
@@ -13,31 +12,25 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSAPPDEVTOOLUTILS_H
-#define QGSAPPDEVTOOLUTILS_H
+#include "qgsoptionsutils.h"
 
-class QgsDevToolWidgetFactory;
-#include <memory>
+#include "qgisapp.h"
+#include "qgis.h"
+#include "qgsoptionswidgetfactory.h"
 
-/**
- * \ingroup app
- *
- * Manages lifetime of a QgsDevToolWidgetFactory, automatically
- * registering and unregistering it as required.
- *
- * \since QGIS 3.14
- */
-class QgsScopedDevToolWidgetFactory
+QgsScopedOptionsWidgetFactory::QgsScopedOptionsWidgetFactory() = default;
+
+QgsScopedOptionsWidgetFactory::~QgsScopedOptionsWidgetFactory()
 {
-  public:
-    QgsScopedDevToolWidgetFactory();
-    ~QgsScopedDevToolWidgetFactory();
+  if ( mFactory )
+    QgisApp::instance()->unregisterOptionsWidgetFactory( mFactory.get() );
+}
 
-    void reset( std::unique_ptr< QgsDevToolWidgetFactory > factory = nullptr );
-
-  private:
-    std::unique_ptr< QgsDevToolWidgetFactory > mFactory;
-};
-
-
-#endif // QGSAPPDEVTOOLUTILS_H
+void QgsScopedOptionsWidgetFactory::reset( std::unique_ptr<QgsOptionsWidgetFactory> factory )
+{
+  if ( mFactory )
+    QgisApp::instance()->unregisterOptionsWidgetFactory( mFactory.get() );
+  mFactory = std::move( factory );
+  if ( mFactory )
+    QgisApp::instance()->registerOptionsWidgetFactory( mFactory.get() );
+}
