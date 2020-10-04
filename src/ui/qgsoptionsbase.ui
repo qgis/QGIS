@@ -5818,26 +5818,10 @@ p, li { white-space: pre-wrap; }
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsFilterLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgsfilterlineedit.h</header>
   </customwidget>
   <customwidget>
    <class>QgsSpinBox</class>
@@ -5851,10 +5835,21 @@ p, li { white-space: pre-wrap; }
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
   </customwidget>
   <customwidget>
    <class>QgsColorSchemeList</class>
@@ -5897,6 +5892,11 @@ p, li { white-space: pre-wrap; }
    <header>qgsdatumtransformtablewidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mSearchLineEdit</tabstop>
@@ -5932,6 +5932,8 @@ p, li { white-space: pre-wrap; }
   <tabstop>mLayerDeleteConfirmationChkBx</tabstop>
   <tabstop>chbWarnOldProjectVersion</tabstop>
   <tabstop>mEnableMacrosComboBox</tabstop>
+  <tabstop>mFileFormatQgzButton</tabstop>
+  <tabstop>mFileFormatQgsButton</tabstop>
   <tabstop>mOptionsScrollArea_03</tabstop>
   <tabstop>mBtnAddSVGPath</tabstop>
   <tabstop>mBtnRemoveSVGPath</tabstop>
@@ -5961,6 +5963,8 @@ p, li { white-space: pre-wrap; }
   <tabstop>radUseProjectProjection</tabstop>
   <tabstop>radUseGlobalProjection</tabstop>
   <tabstop>mPlanimetricMeasurementsComboBox</tabstop>
+  <tabstop>scrollArea_2</tabstop>
+  <tabstop>mShowDatumTransformDialogCheckBox</tabstop>
   <tabstop>mOptionsScrollArea_11</tabstop>
   <tabstop>cbxAttributeTableDocked</tabstop>
   <tabstop>mComboCopyFeatureFormat</tabstop>
@@ -5973,6 +5977,11 @@ p, li { white-space: pre-wrap; }
   <tabstop>cmbPromptSublayers</tabstop>
   <tabstop>cbxCompileExpressions</tabstop>
   <tabstop>cbxEvaluateDefaultValues</tabstop>
+  <tabstop>mLocalizedDataPathAddButton</tabstop>
+  <tabstop>mLocalizedDataPathRemoveButton</tabstop>
+  <tabstop>mLocalizedDataPathUpButton</tabstop>
+  <tabstop>mLocalizedDataPathDownButton</tabstop>
+  <tabstop>mLocalizedDataPathListWidget</tabstop>
   <tabstop>mBtnRemoveHiddenPath</tabstop>
   <tabstop>mListHiddenBrowserPaths</tabstop>
   <tabstop>mOptionsScrollArea_04</tabstop>
@@ -6081,10 +6090,12 @@ p, li { white-space: pre-wrap; }
   <tabstop>mBtnRemoveTemplatePath</tabstop>
   <tabstop>mListComposerTemplatePaths</tabstop>
   <tabstop>mOptionsScrollArea_02</tabstop>
+  <tabstop>tabWidget</tabstop>
   <tabstop>cmbEditCreateOptions</tabstop>
   <tabstop>pbnEditCreateOptions</tabstop>
   <tabstop>pbnEditPyramidsOptions</tabstop>
   <tabstop>lstRasterDrivers</tabstop>
+  <tabstop>lstVectorDrivers</tabstop>
   <tabstop>mAuthConfigsGrpBx</tabstop>
   <tabstop>mOptionsScrollArea_10</tabstop>
   <tabstop>mNetworkTimeoutSpinBox</tabstop>
@@ -6110,6 +6121,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>mGPUEnableCheckBox</tabstop>
   <tabstop>mOpenClDevicesCombo</tabstop>
   <tabstop>mGPUInfoTextBrowser</tabstop>
+  <tabstop>mCbEarlyResampling</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

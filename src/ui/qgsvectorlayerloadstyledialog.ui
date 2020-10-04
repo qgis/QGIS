@@ -124,6 +124,12 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mStyleTypeComboBox</tabstop>
+  <tabstop>mRelatedTable</tabstop>
+  <tabstop>mOthersTable</tabstop>
+  <tabstop>mStyleCategoriesListView</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
