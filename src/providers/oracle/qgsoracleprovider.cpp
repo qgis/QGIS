@@ -2500,7 +2500,7 @@ long QgsOracleProvider::featureCount() const
       {
         sql += " AND ";
       }
-      sql += conn->databaseTypeFilter( QStringLiteral( "FEATUREREQUEST" ), mGeometryColumn, mRequestedGeomType, mUri.keyColumn(), mQuery );
+      sql += conn->databaseTypeFilter( QStringLiteral( "FEATUREREQUEST" ), mGeometryColumn, mRequestedGeomType );
     }
   }
 

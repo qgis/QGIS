@@ -189,7 +189,7 @@ class QgsOracleConn : public QObject
     static QString displayStringForWkbType( QgsWkbTypes::Type wkbType );
     static QgsWkbTypes::Type wkbTypeFromDatabase( int gtype );
 
-    static QString databaseTypeFilter( const QString &alias, QString geomCol, QgsWkbTypes::Type wkbType, QString pk, QString tableName );
+    static QString databaseTypeFilter( const QString &alias, QString geomCol, QgsWkbTypes::Type wkbType );
 
     static QgsWkbTypes::Type wkbTypeFromGeomType( QgsWkbTypes::GeometryType geomType );
 

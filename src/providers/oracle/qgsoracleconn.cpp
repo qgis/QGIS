@@ -632,10 +632,14 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
   }
 }
 
-QString QgsOracleConn::databaseTypeFilter( const QString &alias, QString geomCol, QgsWkbTypes::Type geomType, QString pk, QString tableName )
+QString QgsOracleConn::databaseTypeFilter( const QString &alias, QString geomCol, QgsWkbTypes::Type geomType )
 {
   geomCol = quotedIdentifier( alias ) + "." + quotedIdentifier( geomCol );
 
+  QString filter = QStringLiteral( " mod(%1.sdo_gtype,100) = %2 AND ("
+                                   "SELECT MAX(DECODE(MOD(ROWNUM, 3), 0, t.COLUMN_VALUE, NULL)) "
+                                   "FROM TABLE(%1.SDO_ELEM_INFO) t"
+                                   ") %3" );
   // Oracle DB allows tables to contain several geometry types (including also single and multi geometry).
   // This behavior is not wished in QGIS. Indeed, as other provider don't handle this feature, QgsVectorLayer is supposed to allow only one geometry type.
   // In Oracle DB, geometry type are determined by sdo_gtype and sdo_interpretation (cf. https://docs.oracle.com/database/121/SPATL/sdo_geometry-object-type.htm)
@@ -653,71 +657,29 @@ QString QgsOracleConn::databaseTypeFilter( const QString &alias, QString geomCol
     case QgsWkbTypes::LineString25D:
     case QgsWkbTypes::LineStringZ:
       // LineString gtype ends with 2, sdo_interpretation must not be equal to 2 (CircularString) or 3 (Nurbs)
-      return QStringLiteral( " mod(%3.sdo_gtype,100) = 2 AND %1.%2 in ( "
-                             "      SELECT res.pk"
-                             "      FROM ("
-                             "          SELECT %1.%2 as PK, MAX(DECODE(MOD(ROWNUM, 3), 0, t.COLUMN_VALUE, NULL)) interpretation "
-                             "          FROM %4 %1, TABLE(%3.sdo_elem_info) t "
-                             "          GROUP BY %1.%2) res"
-                             "      WHERE %1.%2= res.PK and not res.interpretation in (2,3)"
-                             "  )" ).arg( alias, quotedIdentifier( pk ), geomCol, tableName );
+      return filter.arg( geomCol, "2", "not in (2,3)" );
     case QgsWkbTypes::CircularString:
     case QgsWkbTypes::CircularStringZ:
       // CircularString gtype ends with 2, sdo_interpretation must be equal to 2 (CircularString) or 3 (Nurbs)
-      return QStringLiteral( " mod(%3.sdo_gtype,100) = 2 AND %1.%2 in ( "
-                             "      SELECT res.pk"
-                             "      FROM ("
-                             "          SELECT %1.%2 as PK, MAX(DECODE(MOD(ROWNUM, 3), 0, t.COLUMN_VALUE, NULL)) interpretation "
-                             "          FROM %4 %1, TABLE(%3.sdo_elem_info) t "
-                             "          GROUP BY %1.%2) res"
-                             "      WHERE %1.%2= res.PK and res.interpretation in (2,3)"
-                             "  )" ).arg( alias, quotedIdentifier( pk ), geomCol, tableName );
+      return filter.arg( geomCol, "2", "in (2,3)" );
     case QgsWkbTypes::MultiLineString:
     case QgsWkbTypes::MultiLineString25D:
     case QgsWkbTypes::MultiLineStringZ:
       // MultiLineString gtype ends with 6, sdo_interpretation must not be equal to 2 (CircularString) or 3 (Nurbs)
-      return QStringLiteral( " mod(%3.sdo_gtype,100) = 6 AND %1.%2 in ( "
-                             "      SELECT res.pk"
-                             "      FROM ("
-                             "          SELECT %1.%2 as PK, MAX(DECODE(MOD(ROWNUM, 3), 0, t.COLUMN_VALUE, NULL)) interpretation "
-                             "          FROM %4 %1, TABLE(%3.sdo_elem_info) t "
-                             "          GROUP BY %1.%2) res"
-                             "      WHERE %1.%2= res.PK and not res.interpretation in (2,3)"
-                             "  )" ).arg( alias, quotedIdentifier( pk ), geomCol, tableName );
+      return filter.arg( geomCol, "6", "not in (2,3)" );
     case QgsWkbTypes::MultiCurve:
     case QgsWkbTypes::MultiCurveZ:
-      // MultiCurve gtype ends with 2, sdo_interpretation must be equal to 2 (CircularString) or 3 (Nurbs)
-      return QStringLiteral( " mod(%3.sdo_gtype,100) = 6 AND %1.%2 in ( "
-                             "      SELECT res.pk"
-                             "      FROM ("
-                             "          SELECT %1.%2 as PK, MAX(DECODE(MOD(ROWNUM, 3), 0, t.COLUMN_VALUE, NULL)) interpretation "
-                             "          FROM %4 %1, TABLE(%3.sdo_elem_info) t "
-                             "          GROUP BY %1.%2) res"
-                             "      WHERE %1.%2= res.PK and res.interpretation in (2,3)"
-                             "  )" ).arg( alias, quotedIdentifier( pk ), geomCol, tableName );
+      // MultiCurve gtype ends with 6, sdo_interpretation must be equal to 2 (CircularString) or 3 (Nurbs)
+      return filter.arg( geomCol, "6", "in (2,3)" );
     case QgsWkbTypes::Polygon:
     case QgsWkbTypes::Polygon25D:
     case QgsWkbTypes::PolygonZ:
       // Polygon gtype ends with 3, sdo_interpretation must not be equal to 2 (CurvePolygon) or 4 (Circle)
-      return QStringLiteral( " mod(%3.sdo_gtype,100) = 3 AND %1.%2 in ( "
-                             "      SELECT res.pk"
-                             "      FROM ("
-                             "          SELECT %1.%2 as PK, MAX(DECODE(MOD(ROWNUM, 3), 0, t.COLUMN_VALUE, NULL)) interpretation "
-                             "          FROM %4 %1, TABLE(%3.sdo_elem_info) t "
-                             "          GROUP BY %1.%2) res"
-                             "      WHERE %1.%2= res.PK and not res.interpretation in (2,4)"
-                             "  )" ).arg( alias, quotedIdentifier( pk ), geomCol, tableName );
+      return filter.arg( geomCol, "3", "not in (2,4)" );
     case QgsWkbTypes::CurvePolygon:
     case QgsWkbTypes::CurvePolygonZ:
       // CurvePolygon gtype ends with 3, sdo_interpretation must be equal to 2 (CurvePolygon) or 4 (Circle)
-      return QStringLiteral( " mod(%3.sdo_gtype,100) = 3 AND %1.%2 in ( "
-                             "      SELECT res.pk"
-                             "      FROM ("
-                             "          SELECT %1.%2 as PK, MAX(DECODE(MOD(ROWNUM, 3), 0, t.COLUMN_VALUE, NULL)) interpretation "
-                             "          FROM %4 %1, TABLE(%3.sdo_elem_info) t "
-                             "          GROUP BY %1.%2) res"
-                             "      WHERE %1.%2= res.PK and res.interpretation in (2,4)"
-                             "  )" ).arg( alias, quotedIdentifier( pk ), geomCol, tableName );;
+      return filter.arg( geomCol, "3", "in (2,4)" );
     case QgsWkbTypes::MultiPolygon:
     case QgsWkbTypes::MultiPolygonZ:
     case QgsWkbTypes::MultiPolygon25D:
