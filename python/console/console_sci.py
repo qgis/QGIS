@@ -424,14 +424,14 @@ class ShellScintilla(QgsPythonConsoleBase, code.InteractiveInterpreter):
         menu.addMenu(subMenu)
         menu.addSeparator()
         copyAction = menu.addAction(
-            self.iconCopy,
+            QgsApplication.getThemeIcon("mActionEditCopy.svg"),
             QCoreApplication.translate("PythonConsole", "Copy"),
             self.copy, QKeySequence.Copy)
         pasteAction = menu.addAction(
-            self.iconPaste,
+            QgsApplication.getThemeIcon("mActionEditPaste.svg"),
             QCoreApplication.translate("PythonConsole", "Paste"),
             self.paste, QKeySequence.Paste)
-        pyQGISHelpAction = menu.addAction(self.iconPyQGISHelp,
+        pyQGISHelpAction = menu.addAction(QgsApplication.getThemeIcon("console/iconHelpConsole.svg"),
                                           QCoreApplication.translate("PythonConsole", "Search Selected in PyQGIS docs"),
                                           self.searchSelectedTextInPyQGISDocs)
         copyAction.setEnabled(False)
