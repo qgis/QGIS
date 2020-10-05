@@ -19,10 +19,10 @@ email                : lrssvtml (at) gmail (dot) com
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
 from qgis.PyQt.QtCore import Qt, QObject, QEvent, QCoreApplication, QFileInfo, QSize, QDir, QByteArray, QJsonDocument, QUrl
-from qgis.PyQt.QtGui import QFont, QFontMetrics, QColor, QKeySequence, QCursor, QFontDatabase
+from qgis.PyQt.QtGui import QFont, QColor, QKeySequence
 from qgis.PyQt.QtNetwork import QNetworkRequest
 from qgis.PyQt.QtWidgets import QShortcut, QMenu, QApplication, QWidget, QGridLayout, QSpacerItem, QSizePolicy, QFileDialog, QTabWidget, QTreeWidgetItem, QFrame, QLabel, QToolButton, QMessageBox
-from qgis.PyQt.Qsci import QsciScintilla, QsciAPIs, QsciStyle
+from qgis.PyQt.Qsci import QsciScintilla, QsciStyle
 from qgis.core import Qgis, QgsApplication, QgsSettings, QgsBlockingNetworkRequest
 from qgis.gui import QgsMessageBar, QgsCodeEditorPython
 from qgis.utils import OverrideCursor
@@ -102,8 +102,6 @@ class Editor(QgsCodeEditorPython):
 
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 
-        self.settingsEditor()
-
         # Annotations
         self.setAnnotationDisplay(QsciScintilla.ANNOTATION_BOXED)
 
@@ -120,7 +118,7 @@ class Editor(QgsCodeEditorPython):
         self.redoScut = QShortcut(QKeySequence(Qt.CTRL + Qt.SHIFT + Qt.Key_Z), self)
         self.redoScut.setContext(Qt.WidgetShortcut)
         self.redoScut.activated.connect(self.redo)
-        self.newShortcutCS.activated.connect(self.autoCompleteKeyBinding)
+        self.newShortcutCS.activated.connect(self.autoComplete)
         self.runScut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_E), self)
         self.runScut.setContext(Qt.WidgetShortcut)
         self.runScut.activated.connect(self.runSelectedCode)  # spellok
@@ -143,30 +141,6 @@ class Editor(QgsCodeEditorPython):
     def settingsEditor(self):
         # Set Python lexer
         self.initializeLexer()
-        threshold = self.settings.value("pythonConsole/autoCompThreshold", 2, type=int)
-        radioButtonSource = self.settings.value("pythonConsole/autoCompleteSource", 'fromAPI')
-        autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabled", True, type=bool)
-        self.setAutoCompletionThreshold(threshold)
-        if autoCompEnabled:
-            if radioButtonSource == 'fromDoc':
-                self.setAutoCompletionSource(self.AcsDocument)
-            elif radioButtonSource == 'fromAPI':
-                self.setAutoCompletionSource(self.AcsAPIs)
-            elif radioButtonSource == 'fromDocAPI':
-                self.setAutoCompletionSource(self.AcsAll)
-        else:
-            self.setAutoCompletionSource(self.AcsNone)
-
-    def autoCompleteKeyBinding(self):
-        radioButtonSource = self.settings.value("pythonConsole/autoCompleteSource", 'fromAPI')
-        autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabled", True, type=bool)
-        if autoCompEnabled:
-            if radioButtonSource == 'fromDoc':
-                self.autoCompleteFromDocument()
-            elif radioButtonSource == 'fromAPI':
-                self.autoCompleteFromAPIs()
-            elif radioButtonSource == 'fromDocAPI':
-                self.autoCompleteFromAll()
 
     def move_cursor_to_end(self):
         """Move cursor to end of text"""
@@ -1148,10 +1122,6 @@ class EditorTabWidget(QTabWidget):
                     # pass
 
     def refreshSettingsEditor(self):
-        countTab = self.count()
-        for i in range(countTab):
-            self.widget(i).newEditor.settingsEditor()
-
         objInspectorEnabled = self.settings.value("pythonConsole/enableObjectInsp",
                                                   False, type=bool)
         listObj = self.parent.objectListButton

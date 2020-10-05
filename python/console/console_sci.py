@@ -102,7 +102,7 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
         self.newShortcutCAS = QShortcut(QKeySequence(Qt.CTRL + Qt.ALT + Qt.Key_Space), self)
         self.newShortcutCSS.setContext(Qt.WidgetShortcut)
         self.newShortcutCAS.setContext(Qt.WidgetShortcut)
-        self.newShortcutCAS.activated.connect(self.autoCompleteKeyBinding)
+        self.newShortcutCAS.activated.connect(self.autoComplete)
         self.newShortcutCSS.activated.connect(self.showHistory)
 
     def _setMinimumHeight(self):
@@ -114,19 +114,6 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
     def refreshSettingsShell(self):
         # Set Python lexer
         self.initializeLexer()
-        threshold = self.settings.value("pythonConsole/autoCompThreshold", 2, type=int)
-        self.setAutoCompletionThreshold(threshold)
-        radioButtonSource = self.settings.value("pythonConsole/autoCompleteSource", 'fromAPI')
-        autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabled", True, type=bool)
-        if autoCompEnabled:
-            if radioButtonSource == 'fromDoc':
-                self.setAutoCompletionSource(self.AcsDocument)
-            elif radioButtonSource == 'fromAPI':
-                self.setAutoCompletionSource(self.AcsAPIs)
-            elif radioButtonSource == 'fromDocAPI':
-                self.setAutoCompletionSource(self.AcsAll)
-        else:
-            self.setAutoCompletionSource(self.AcsNone)
 
         # Sets minimum height for input area based of font metric
         self._setMinimumHeight()
@@ -149,17 +136,6 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
             self.historyDlg.show()
         self.historyDlg._reloadHistory()
         self.historyDlg.activateWindow()
-
-    def autoCompleteKeyBinding(self):
-        radioButtonSource = self.settings.value("pythonConsole/autoCompleteSource", 'fromAPI')
-        autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabled", True, type=bool)
-        if autoCompEnabled:
-            if radioButtonSource == 'fromDoc':
-                self.autoCompleteFromDocument()
-            elif radioButtonSource == 'fromAPI':
-                self.autoCompleteFromAPIs()
-            elif radioButtonSource == 'fromDocAPI':
-                self.autoCompleteFromAll()
 
     def commandConsole(self, commands):
         if not self.is_cursor_on_last_line():
