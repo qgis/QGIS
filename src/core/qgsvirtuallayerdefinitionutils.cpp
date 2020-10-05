@@ -69,9 +69,9 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVe
     QString prefix = join.prefix().isEmpty() ? joinedLayer->name() + "_" : join.prefix();
 
     leftJoins << QStringLiteral( "LEFT JOIN \"%1\" AS %2 ON t.\"%5\"=%2.\"%3\"" ).arg( joinedLayer->id(), joinName, join.joinFieldName(), join.targetFieldName() );
-    if ( join.joinFieldNamesSubset() )
+    if ( auto *lJoinFieldNamesSubset = join.joinFieldNamesSubset() )
     {
-      const QStringList joinFieldNamesSubset { *join.joinFieldNamesSubset() };
+      const QStringList joinFieldNamesSubset { *lJoinFieldNamesSubset };
       for ( const QString &f : joinFieldNamesSubset )
       {
         columns << joinName + ".\"" + f + "\" AS \"" + prefix + f + "\"";

@@ -48,9 +48,9 @@ void QgsQuickAttributeModel::setVectorLayer( QgsVectorLayer *layer )
   mFeatureLayerPair = QgsQuickFeatureLayerPair( mFeatureLayerPair.feature(), layer );
 
 
-  if ( mFeatureLayerPair.layer() )
+  if ( auto *lLayer = mFeatureLayerPair.layer() )
   {
-    mRememberedAttributes.resize( mFeatureLayerPair.layer()->fields().size() );
+    mRememberedAttributes.resize( lLayer->fields().size() );
     mRememberedAttributes.fill( false );
   }
   else

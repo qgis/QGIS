@@ -562,9 +562,9 @@ QSizeF QgsLegendRenderer::drawTitle( QgsRenderContext &context, double top, Qt::
   QStringList lines = mSettings.splitStringForWrapping( mSettings.title() );
   double y = top;
 
-  if ( context.painter() )
+  if ( auto *lPainter = context.painter() )
   {
-    context.painter()->setPen( mSettings.fontColor() );
+    lPainter->setPen( mSettings.fontColor() );
   }
 
   //calculate width and left pos of rectangle to draw text into
@@ -756,8 +756,8 @@ QSizeF QgsLegendRenderer::drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QgsRende
 
   double y = top;
 
-  if ( context.painter() )
-    context.painter()->setPen( mSettings.layerFontColor() );
+  if ( auto *lPainter = context.painter() )
+    lPainter->setPen( mSettings.layerFontColor() );
 
   QFont layerFont = mSettings.style( nodeLegendStyle( nodeLayer ) ).font();
 
@@ -813,8 +813,8 @@ QSizeF QgsLegendRenderer::drawGroupTitle( QgsLayerTreeGroup *nodeGroup, QgsRende
 
   double y = top;
 
-  if ( context.painter() )
-    context.painter()->setPen( mSettings.fontColor() );
+  if ( auto *lPainter = context.painter() )
+    lPainter->setPen( mSettings.fontColor() );
 
   QFont groupFont = mSettings.style( nodeLegendStyle( nodeGroup ) ).font();
 

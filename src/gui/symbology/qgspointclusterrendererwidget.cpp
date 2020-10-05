@@ -200,8 +200,8 @@ void QgsPointClusterRendererWidget::blockAllSignals( bool block )
 QgsExpressionContext QgsPointClusterRendererWidget::createExpressionContext() const
 {
   QgsExpressionContext context;
-  if ( mContext.expressionContext() )
-    context = *mContext.expressionContext();
+  if ( auto *lExpressionContext = mContext.expressionContext() )
+    context = *lExpressionContext;
   else
     context.appendScopes( mContext.globalProjectAtlasMapLayerScopes( mLayer ) );
   QgsExpressionContextScope scope;

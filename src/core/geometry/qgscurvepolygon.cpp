@@ -417,9 +417,9 @@ QDomElement QgsCurvePolygon::asGml3( QDomDocument &doc, int precision, const QSt
 json QgsCurvePolygon::asJsonObject( int precision ) const
 {
   json coordinates( json::array( ) );
-  if ( exteriorRing() )
+  if ( auto *lExteriorRing = exteriorRing() )
   {
-    std::unique_ptr< QgsLineString > exteriorLineString( exteriorRing()->curveToLine() );
+    std::unique_ptr< QgsLineString > exteriorLineString( lExteriorRing->curveToLine() );
     QgsPointSequence exteriorPts;
     exteriorLineString->points( exteriorPts );
     coordinates.push_back( QgsGeometryUtils::pointsToJson( exteriorPts, precision ) );

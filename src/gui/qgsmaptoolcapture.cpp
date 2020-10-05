@@ -769,8 +769,8 @@ void QgsMapToolCapture::stopCapturing()
   mCaptureCurve.clear();
   updateExtraSnapLayer();
   mSnappingMatches.clear();
-  if ( currentVectorLayer() )
-    currentVectorLayer()->triggerRepaint();
+  if ( auto *lCurrentVectorLayer = currentVectorLayer() )
+    lCurrentVectorLayer->triggerRepaint();
 }
 
 void QgsMapToolCapture::deleteTempRubberBand()

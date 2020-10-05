@@ -759,9 +759,9 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   {
     if ( mDataProvider->colorInterpretation( bandNo ) == QgsRaster::AlphaBand )
     {
-      if ( mPipe.renderer() )
+      if ( auto *lRenderer = mPipe.renderer() )
       {
-        mPipe.renderer()->setAlphaBand( bandNo );
+        lRenderer->setAlphaBand( bandNo );
       }
       break;
     }
@@ -1444,9 +1444,9 @@ QDateTime QgsRasterLayer::timestamp() const
 
 bool QgsRasterLayer::accept( QgsStyleEntityVisitorInterface *visitor ) const
 {
-  if ( mPipe.renderer() )
+  if ( auto *lRenderer = mPipe.renderer() )
   {
-    if ( !mPipe.renderer()->accept( visitor ) )
+    if ( !lRenderer->accept( visitor ) )
       return false;
   }
   return true;

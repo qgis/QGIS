@@ -461,7 +461,7 @@ void QgsRelationEditorWidget::addFeatureGeometry()
   connect( mMapToolDigitize, &QgsMapToolDigitizeFeature::digitizingCompleted, this, &QgsRelationEditorWidget::onDigitizingCompleted );
   connect( mEditorContext.mapCanvas(), &QgsMapCanvas::keyPressed, this, &QgsRelationEditorWidget::onKeyPressed );
 
-  if ( mEditorContext.mainMessageBar() )
+  if ( auto *lMainMessageBar = mEditorContext.mainMessageBar() )
   {
     QString displayString = QgsVectorLayerUtils::getFeatureDisplayString( layer, mFeature );
 
@@ -469,7 +469,7 @@ void QgsRelationEditorWidget::addFeatureGeometry()
     QString msg = tr( "Digitize the geometry for the new feature on layer %1. Press &lt;ESC&gt; to cancel." )
                   .arg( layer->name() );
     mMessageBarItem = QgsMessageBar::createMessage( title, msg, this );
-    mEditorContext.mainMessageBar()->pushItem( mMessageBarItem );
+    lMainMessageBar->pushItem( mMessageBarItem );
   }
 
 }

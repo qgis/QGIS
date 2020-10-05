@@ -145,10 +145,10 @@ QStringList QgsCheckableComboBox::checkedItems() const
 {
   QStringList items;
 
-  if ( model() )
+  if ( auto *lModel = model() )
   {
-    QModelIndex index = model()->index( 0, modelColumn(), rootModelIndex() );
-    QModelIndexList indexes = model()->match( index, Qt::CheckStateRole, Qt::Checked, -1, Qt::MatchExactly );
+    QModelIndex index = lModel->index( 0, modelColumn(), rootModelIndex() );
+    QModelIndexList indexes = lModel->match( index, Qt::CheckStateRole, Qt::Checked, -1, Qt::MatchExactly );
     const auto constIndexes = indexes;
     for ( const QModelIndex &index : constIndexes )
     {
@@ -163,10 +163,10 @@ QVariantList QgsCheckableComboBox::checkedItemsData() const
 {
   QVariantList data;
 
-  if ( model() )
+  if ( auto *lModel = model() )
   {
-    QModelIndex index = model()->index( 0, modelColumn(), rootModelIndex() );
-    QModelIndexList indexes = model()->match( index, Qt::CheckStateRole, Qt::Checked, -1, Qt::MatchExactly );
+    QModelIndex index = lModel->index( 0, modelColumn(), rootModelIndex() );
+    QModelIndexList indexes = lModel->match( index, Qt::CheckStateRole, Qt::Checked, -1, Qt::MatchExactly );
     const auto constIndexes = indexes;
     for ( const QModelIndex &index : constIndexes )
     {

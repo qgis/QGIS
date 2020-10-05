@@ -576,8 +576,8 @@ void QgsLayoutItem::setScenePos( const QPointF destinationPos )
   //since setPos does not account for item rotation, use difference between
   //current scenePos (which DOES account for rotation) and destination pos
   //to calculate how much the item needs to move
-  if ( parentItem() )
-    setPos( pos() + ( destinationPos - scenePos() ) + parentItem()->scenePos() );
+  if ( auto *lParentItem = parentItem() )
+    setPos( pos() + ( destinationPos - scenePos() ) + lParentItem->scenePos() );
   else
     setPos( pos() + ( destinationPos - scenePos() ) );
 }

@@ -162,8 +162,8 @@ class SymbolLayerItem : public QStandardItem
         icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSymbol, mSize );
       setIcon( icon );
 
-      if ( parent() )
-        static_cast<SymbolLayerItem *>( parent() )->updatePreview();
+      if ( auto *lParent = parent() )
+        static_cast<SymbolLayerItem *>( lParent )->updatePreview();
     }
 
     int type() const override { return SYMBOL_LAYER_ITEM_TYPE; }
@@ -356,9 +356,9 @@ void QgsSymbolSelectorWidget::setContext( const QgsSymbolWidgetContext &context 
 {
   mContext = context;
 
-  if ( mContext.expressionContext() )
+  if ( auto *lExpressionContext = mContext.expressionContext() )
   {
-    mPreviewExpressionContext = *mContext.expressionContext();
+    mPreviewExpressionContext = *lExpressionContext;
     if ( mVectorLayer )
       mPreviewExpressionContext.appendScope( QgsExpressionContextUtils::layerScope( mVectorLayer ) );
 

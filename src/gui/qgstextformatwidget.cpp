@@ -849,8 +849,8 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
   mBufferJoinStyleComboBox->setPenJoinStyle( buffer.joinStyle() );
   mBufferTranspFillChbx->setChecked( buffer.fillBufferInterior() );
   comboBufferBlendMode->setBlendMode( buffer.blendMode() );
-  if ( buffer.paintEffect() )
-    mBufferEffect.reset( buffer.paintEffect()->clone() );
+  if ( auto *lPaintEffect = buffer.paintEffect() )
+    mBufferEffect.reset( lPaintEffect->clone() );
   else
   {
     mBufferEffect.reset( QgsPaintEffectRegistry::defaultStack() );
@@ -866,8 +866,8 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
   mMaskBufferUnitWidget->setMapUnitScale( mask.sizeMapUnitScale() );
   mMaskOpacityWidget->setOpacity( mask.opacity() );
   mMaskJoinStyleComboBox->setPenJoinStyle( mask.joinStyle() );
-  if ( mask.paintEffect() )
-    mMaskEffect.reset( mask.paintEffect()->clone() );
+  if ( auto *lPaintEffect = mask.paintEffect() )
+    mMaskEffect.reset( lPaintEffect->clone() );
   else
   {
     mMaskEffect.reset( QgsPaintEffectRegistry::defaultStack() );
@@ -951,8 +951,8 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
   mLoadSvgParams = false;
   mShapeTypeCmbBx_currentIndexChanged( background.type() ); // force update of shape background gui
 
-  if ( background.paintEffect() )
-    mBackgroundEffect.reset( background.paintEffect()->clone() );
+  if ( auto *lPaintEffect = background.paintEffect() )
+    mBackgroundEffect.reset( lPaintEffect->clone() );
   else
   {
     mBackgroundEffect.reset( QgsPaintEffectRegistry::defaultStack() );
@@ -1165,9 +1165,9 @@ void QgsTextFormatWidget::setContext( const QgsSymbolWidgetContext &context )
 {
   mContext = context;
 
-  if ( mContext.expressionContext() )
+  if ( auto *lExpressionContext = mContext.expressionContext() )
   {
-    mPreviewExpressionContext = *mContext.expressionContext();
+    mPreviewExpressionContext = *lExpressionContext;
     if ( mLayer )
       mPreviewExpressionContext.appendScope( QgsExpressionContextUtils::layerScope( mLayer ) );
   }
@@ -2024,8 +2024,8 @@ void QgsTextFormatWidget::enableDataDefinedAlignment( bool enable )
 
 QgsExpressionContext QgsTextFormatWidget::createExpressionContext() const
 {
-  if ( mContext.expressionContext() )
-    return *mContext.expressionContext();
+  if ( auto *lExpressionContext = mContext.expressionContext() )
+    return *lExpressionContext;
 
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()

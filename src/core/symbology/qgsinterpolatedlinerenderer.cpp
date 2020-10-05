@@ -409,10 +409,10 @@ void QgsInterpolatedLineColor::setColor( const QColor &color )
 
 QColor QgsInterpolatedLineColor::color( double magnitude ) const
 {
-  if ( mColorRampShader.sourceColorRamp() )
+  if ( auto *lSourceColorRamp = mColorRampShader.sourceColorRamp() )
   {
     if ( mColorRampShader.isEmpty() )
-      return mColorRampShader.sourceColorRamp()->color( 0 );
+      return lSourceColorRamp->color( 0 );
 
     int r, g, b, a;
     if ( mColorRampShader.shade( magnitude, &r, &g, &b, &a ) )

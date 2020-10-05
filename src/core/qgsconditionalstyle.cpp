@@ -272,8 +272,8 @@ QgsConditionalStyle QgsConditionalStyle::compressStyles( const QList<QgsConditio
       style.setBackgroundColor( s.backgroundColor() );
     if ( s.textColor().isValid() && s.textColor().alpha() != 0 )
       style.setTextColor( s.textColor() );
-    if ( s.symbol() )
-      style.setSymbol( s.symbol() );
+    if ( auto *lSymbol = s.symbol() )
+      style.setSymbol( lSymbol );
   }
   return style;
 }

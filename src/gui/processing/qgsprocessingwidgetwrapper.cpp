@@ -402,23 +402,23 @@ QgsExpressionContext QgsProcessingGuiUtils::createExpressionContext( QgsProcessi
 
   QgsExpressionContext c = context->expressionContext();
 
-  if ( widgetContext.model() )
+  if ( auto *lModel = widgetContext.model() )
   {
-    c << QgsExpressionContextUtils::processingModelAlgorithmScope( widgetContext.model(), QVariantMap(), *context );
+    c << QgsExpressionContextUtils::processingModelAlgorithmScope( lModel, QVariantMap(), *context );
 
     const QgsProcessingAlgorithm *alg = nullptr;
-    if ( widgetContext.model()->childAlgorithms().contains( widgetContext.modelChildAlgorithmId() ) )
-      alg = widgetContext.model()->childAlgorithm( widgetContext.modelChildAlgorithmId() ).algorithm();
+    if ( lModel->childAlgorithms().contains( widgetContext.modelChildAlgorithmId() ) )
+      alg = lModel->childAlgorithm( widgetContext.modelChildAlgorithmId() ).algorithm();
 
     QgsExpressionContextScope *algorithmScope = QgsExpressionContextUtils::processingAlgorithmScope( alg ? alg : algorithm, QVariantMap(), *context );
     c << algorithmScope;
-    QgsExpressionContextScope *childScope = widgetContext.model()->createExpressionContextScopeForChildAlgorithm( widgetContext.modelChildAlgorithmId(), *context, QVariantMap(), QVariantMap() );
+    QgsExpressionContextScope *childScope = lModel->createExpressionContextScopeForChildAlgorithm( widgetContext.modelChildAlgorithmId(), *context, QVariantMap(), QVariantMap() );
     c << childScope;
 
     QStringList highlightedVariables = childScope->variableNames();
     QStringList highlightedFunctions = childScope->functionNames();
     highlightedVariables += algorithmScope->variableNames();
-    highlightedVariables += widgetContext.model()->variables().keys();
+    highlightedVariables += lModel->variables().keys();
     highlightedFunctions += algorithmScope->functionNames();
     c.setHighlightedVariables( highlightedVariables );
     c.setHighlightedFunctions( highlightedFunctions );

@@ -42,9 +42,9 @@ QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer *vl
       mComboRelation->addItem( QStringLiteral( "%1 (%2)" ).arg( relation.id(), relation.referencedLayerId() ), relation.id() );
     else
       mComboRelation->addItem( QStringLiteral( "%1 (%2)" ).arg( relation.name(), relation.referencedLayerId() ), relation.id() );
-    if ( relation.referencedLayer() )
+    if ( auto *lReferencedLayer = relation.referencedLayer() )
     {
-      mExpressionWidget->setField( relation.referencedLayer()->displayExpression() );
+      mExpressionWidget->setField( lReferencedLayer->displayExpression() );
     }
   }
 

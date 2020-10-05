@@ -422,8 +422,8 @@ void QgsMapThemeCollection::reconnectToLayersStyleManager()
   {
     for ( const MapThemeLayerRecord &layerRec : qgis::as_const( rec.mLayerRecords ) )
     {
-      if ( layerRec.layer() )
-        layers << layerRec.layer();
+      if ( auto *lLayer = layerRec.layer() )
+        layers << lLayer;
     }
   }
 
@@ -736,8 +736,8 @@ QHash<QgsMapLayer *, QgsMapThemeCollection::MapThemeLayerRecord> QgsMapThemeColl
   QHash<QgsMapLayer *, MapThemeLayerRecord> validSet;
   for ( const MapThemeLayerRecord &layerRec : mLayerRecords )
   {
-    if ( layerRec.layer() )
-      validSet.insert( layerRec.layer(), layerRec );
+    if ( auto *lLayer = layerRec.layer() )
+      validSet.insert( lLayer, layerRec );
   }
   return validSet;
 }

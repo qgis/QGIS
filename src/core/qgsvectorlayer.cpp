@@ -285,27 +285,27 @@ QgsVectorLayer *QgsVectorLayer::clone() const
     layer->actions()->addAction( action );
   }
 
-  if ( renderer() )
+  if ( auto *lRenderer = renderer() )
   {
-    layer->setRenderer( renderer()->clone() );
+    layer->setRenderer( lRenderer->clone() );
   }
 
-  if ( labeling() )
+  if ( auto *lLabeling = labeling() )
   {
-    layer->setLabeling( labeling()->clone() );
+    layer->setLabeling( lLabeling->clone() );
   }
   layer->setLabelsEnabled( labelsEnabled() );
 
   layer->setSimplifyMethod( simplifyMethod() );
 
-  if ( diagramRenderer() )
+  if ( auto *lDiagramRenderer = diagramRenderer() )
   {
-    layer->setDiagramRenderer( diagramRenderer()->clone() );
+    layer->setDiagramRenderer( lDiagramRenderer->clone() );
   }
 
-  if ( diagramLayerSettings() )
+  if ( auto *lDiagramLayerSettings = diagramLayerSettings() )
   {
-    layer->setDiagramLayerSettings( *diagramLayerSettings() );
+    layer->setDiagramLayerSettings( *lDiagramLayerSettings );
   }
 
   for ( int i = 0; i < fields().count(); i++ )
@@ -331,8 +331,8 @@ QgsVectorLayer *QgsVectorLayer::clone() const
 
   layer->setEditFormConfig( editFormConfig() );
 
-  if ( auxiliaryLayer() )
-    layer->setAuxiliaryLayer( auxiliaryLayer()->clone( layer ) );
+  if ( auto *lAuxiliaryLayer = auxiliaryLayer() )
+    layer->setAuxiliaryLayer( lAuxiliaryLayer->clone( layer ) );
 
   return layer;
 }

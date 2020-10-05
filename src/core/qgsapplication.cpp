@@ -1280,13 +1280,13 @@ void QgsApplication::initQgis()
 
 QgsAuthManager *QgsApplication::authManager()
 {
-  if ( instance() )
+  if ( auto *lInstance = instance() )
   {
-    if ( !instance()->mAuthManager )
+    if ( !lInstance->mAuthManager )
     {
-      instance()->mAuthManager = QgsAuthManager::instance();
+      lInstance->mAuthManager = QgsAuthManager::instance();
     }
-    return instance()->mAuthManager;
+    return lInstance->mAuthManager;
   }
   else
   {
@@ -1304,8 +1304,8 @@ void QgsApplication::exitQgis()
   QThreadPool::globalInstance()->waitForDone();
 
   // don't create to delete
-  if ( instance() )
-    delete instance()->mAuthManager;
+  if ( auto *lInstance = instance() )
+    delete lInstance->mAuthManager;
   else
     delete sAuthManager;
 
@@ -2136,13 +2136,13 @@ QgsRasterRendererRegistry *QgsApplication::rasterRendererRegistry()
 
 QgsDataItemProviderRegistry *QgsApplication::dataItemProviderRegistry()
 {
-  if ( instance() )
+  if ( auto *lInstance = instance() )
   {
     if ( !instance()->mDataItemProviderRegistry )
     {
-      instance()->mDataItemProviderRegistry = new QgsDataItemProviderRegistry();
+      lInstance->mDataItemProviderRegistry = new QgsDataItemProviderRegistry();
     }
-    return instance()->mDataItemProviderRegistry;
+    return lInstance->mDataItemProviderRegistry;
   }
   else
   {
@@ -2475,9 +2475,9 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
 
 QgsApplication::ApplicationMembers *QgsApplication::members()
 {
-  if ( instance() )
+  if ( auto *lInstance = instance() )
   {
-    return instance()->mApplicationMembers;
+    return lInstance->mApplicationMembers;
   }
   else
   {

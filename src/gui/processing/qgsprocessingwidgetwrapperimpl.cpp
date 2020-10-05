@@ -926,13 +926,13 @@ QgsProcessingDistanceParameterDefinitionWidget::QgsProcessingDistanceParameterDe
   if ( const QgsProcessingParameterDistance *distParam = dynamic_cast<const QgsProcessingParameterDistance *>( definition ) )
     initialParent = distParam->parentParameterName();
 
-  if ( widgetContext.model() )
+  if ( auto *lModel = widgetContext.model() )
   {
     // populate combo box with other model input choices
-    const QMap<QString, QgsProcessingModelParameter> components = widgetContext.model()->parameterComponents();
+    const QMap<QString, QgsProcessingModelParameter> components = lModel->parameterComponents();
     for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
     {
-      if ( const QgsProcessingParameterFeatureSource *definition = dynamic_cast< const QgsProcessingParameterFeatureSource * >( widgetContext.model()->parameterDefinition( it.value().parameterName() ) ) )
+      if ( const QgsProcessingParameterFeatureSource *definition = dynamic_cast< const QgsProcessingParameterFeatureSource * >( lModel->parameterDefinition( it.value().parameterName() ) ) )
       {
         mParentLayerComboBox-> addItem( definition->description(), definition->name() );
         if ( !initialParent.isEmpty() && initialParent == definition->name() )
@@ -940,7 +940,7 @@ QgsProcessingDistanceParameterDefinitionWidget::QgsProcessingDistanceParameterDe
           mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
         }
       }
-      else if ( const QgsProcessingParameterVectorLayer *definition = dynamic_cast< const QgsProcessingParameterVectorLayer * >( widgetContext.model()->parameterDefinition( it.value().parameterName() ) ) )
+      else if ( const QgsProcessingParameterVectorLayer *definition = dynamic_cast< const QgsProcessingParameterVectorLayer * >( lModel->parameterDefinition( it.value().parameterName() ) ) )
       {
         mParentLayerComboBox-> addItem( definition->description(), definition->name() );
         if ( !initialParent.isEmpty() && initialParent == definition->name() )
@@ -948,7 +948,7 @@ QgsProcessingDistanceParameterDefinitionWidget::QgsProcessingDistanceParameterDe
           mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
         }
       }
-      else if ( const QgsProcessingParameterMapLayer *definition = dynamic_cast< const QgsProcessingParameterMapLayer * >( widgetContext.model()->parameterDefinition( it.value().parameterName() ) ) )
+      else if ( const QgsProcessingParameterMapLayer *definition = dynamic_cast< const QgsProcessingParameterMapLayer * >( lModel->parameterDefinition( it.value().parameterName() ) ) )
       {
         mParentLayerComboBox-> addItem( definition->description(), definition->name() );
         if ( !initialParent.isEmpty() && initialParent == definition->name() )
@@ -956,7 +956,7 @@ QgsProcessingDistanceParameterDefinitionWidget::QgsProcessingDistanceParameterDe
           mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
         }
       }
-      else if ( const QgsProcessingParameterCrs *definition = dynamic_cast< const QgsProcessingParameterCrs * >( widgetContext.model()->parameterDefinition( it.value().parameterName() ) ) )
+      else if ( const QgsProcessingParameterCrs *definition = dynamic_cast< const QgsProcessingParameterCrs * >( lModel->parameterDefinition( it.value().parameterName() ) ) )
       {
         mParentLayerComboBox-> addItem( definition->description(), definition->name() );
         if ( !initialParent.isEmpty() && initialParent == definition->name() )
@@ -1872,13 +1872,13 @@ QgsProcessingExpressionParameterDefinitionWidget::QgsProcessingExpressionParamet
   if ( const QgsProcessingParameterExpression *expParam = dynamic_cast<const QgsProcessingParameterExpression *>( definition ) )
     initialParent = expParam->parentLayerParameterName();
 
-  if ( widgetContext.model() )
+  if ( auto *lModel = widgetContext.model() )
   {
     // populate combo box with other model input choices
-    const QMap<QString, QgsProcessingModelParameter> components = widgetContext.model()->parameterComponents();
+    const QMap<QString, QgsProcessingModelParameter> components = lModel->parameterComponents();
     for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
     {
-      if ( const QgsProcessingParameterFeatureSource *definition = dynamic_cast< const QgsProcessingParameterFeatureSource * >( widgetContext.model()->parameterDefinition( it.value().parameterName() ) ) )
+      if ( const QgsProcessingParameterFeatureSource *definition = dynamic_cast< const QgsProcessingParameterFeatureSource * >( lModel->parameterDefinition( it.value().parameterName() ) ) )
       {
         mParentLayerComboBox-> addItem( definition->description(), definition->name() );
         if ( !initialParent.isEmpty() && initialParent == definition->name() )
@@ -1886,7 +1886,7 @@ QgsProcessingExpressionParameterDefinitionWidget::QgsProcessingExpressionParamet
           mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
         }
       }
-      else if ( const QgsProcessingParameterVectorLayer *definition = dynamic_cast< const QgsProcessingParameterVectorLayer * >( widgetContext.model()->parameterDefinition( it.value().parameterName() ) ) )
+      else if ( const QgsProcessingParameterVectorLayer *definition = dynamic_cast< const QgsProcessingParameterVectorLayer * >( lModel->parameterDefinition( it.value().parameterName() ) ) )
       {
         mParentLayerComboBox-> addItem( definition->description(), definition->name() );
         if ( !initialParent.isEmpty() && initialParent == definition->name() )
@@ -2652,13 +2652,13 @@ QgsProcessingLayoutItemParameterDefinitionWidget::QgsProcessingLayoutItemParamet
   if ( const QgsProcessingParameterLayoutItem *itemParam = dynamic_cast<const QgsProcessingParameterLayoutItem *>( definition ) )
     initialParent = itemParam->parentLayoutParameterName();
 
-  if ( widgetContext.model() )
+  if ( auto *lModel = widgetContext.model() )
   {
     // populate combo box with other model input choices
-    const QMap<QString, QgsProcessingModelParameter> components = widgetContext.model()->parameterComponents();
+    const QMap<QString, QgsProcessingModelParameter> components = lModel->parameterComponents();
     for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
     {
-      if ( const QgsProcessingParameterLayout *definition = dynamic_cast< const QgsProcessingParameterLayout * >( widgetContext.model()->parameterDefinition( it.value().parameterName() ) ) )
+      if ( const QgsProcessingParameterLayout *definition = dynamic_cast< const QgsProcessingParameterLayout * >( lModel->parameterDefinition( it.value().parameterName() ) ) )
       {
         mParentLayoutComboBox-> addItem( definition->description(), definition->name() );
         if ( !initialParent.isEmpty() && initialParent == definition->name() )
@@ -3458,10 +3458,10 @@ QgsProcessingCoordinateOperationParameterDefinitionWidget::QgsProcessingCoordina
 
   mSourceParamComboBox->addItem( QString(), QString() );
   mDestParamComboBox->addItem( QString(), QString() );
-  if ( widgetContext.model() )
+  if ( auto *lModel = widgetContext.model() )
   {
     // populate combo box with other model input choices
-    const QMap<QString, QgsProcessingModelParameter> components = widgetContext.model()->parameterComponents();
+    const QMap<QString, QgsProcessingModelParameter> components = lModel->parameterComponents();
     for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
     {
       if ( definition && it->parameterName() == definition->name() )
@@ -3863,13 +3863,13 @@ QgsProcessingFieldParameterDefinitionWidget::QgsProcessingFieldParameterDefiniti
   if ( const QgsProcessingParameterField *fieldParam = dynamic_cast<const QgsProcessingParameterField *>( definition ) )
     initialParent = fieldParam->parentLayerParameterName();
 
-  if ( widgetContext.model() )
+  if ( auto *lModel = widgetContext.model() )
   {
     // populate combo box with other model input choices
-    const QMap<QString, QgsProcessingModelParameter> components = widgetContext.model()->parameterComponents();
+    const QMap<QString, QgsProcessingModelParameter> components = lModel->parameterComponents();
     for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
     {
-      if ( const QgsProcessingParameterFeatureSource *definition = dynamic_cast< const QgsProcessingParameterFeatureSource * >( widgetContext.model()->parameterDefinition( it.value().parameterName() ) ) )
+      if ( const QgsProcessingParameterFeatureSource *definition = dynamic_cast< const QgsProcessingParameterFeatureSource * >( lModel->parameterDefinition( it.value().parameterName() ) ) )
       {
         mParentLayerComboBox-> addItem( definition->description(), definition->name() );
         if ( !initialParent.isEmpty() && initialParent == definition->name() )
@@ -3877,7 +3877,7 @@ QgsProcessingFieldParameterDefinitionWidget::QgsProcessingFieldParameterDefiniti
           mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
         }
       }
-      else if ( const QgsProcessingParameterVectorLayer *definition = dynamic_cast< const QgsProcessingParameterVectorLayer * >( widgetContext.model()->parameterDefinition( it.value().parameterName() ) ) )
+      else if ( const QgsProcessingParameterVectorLayer *definition = dynamic_cast< const QgsProcessingParameterVectorLayer * >( lModel->parameterDefinition( it.value().parameterName() ) ) )
       {
         mParentLayerComboBox-> addItem( definition->description(), definition->name() );
         if ( !initialParent.isEmpty() && initialParent == definition->name() )
@@ -4768,16 +4768,16 @@ QgsProcessingDatabaseSchemaParameterDefinitionWidget::QgsProcessingDatabaseSchem
     initialConnection = schemaParam->parentConnectionParameterName();
   }
 
-  if ( widgetContext.model() )
+  if ( auto *lModel = widgetContext.model() )
   {
     // populate combo box with other model input choices
-    const QMap<QString, QgsProcessingModelParameter> components = widgetContext.model()->parameterComponents();
+    const QMap<QString, QgsProcessingModelParameter> components = lModel->parameterComponents();
     for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
     {
       if ( definition && it->parameterName() == definition->name() )
         continue;
 
-      if ( !dynamic_cast< const QgsProcessingParameterProviderConnection * >( widgetContext.model()->parameterDefinition( it->parameterName() ) ) )
+      if ( !dynamic_cast< const QgsProcessingParameterProviderConnection * >( lModel->parameterDefinition( it->parameterName() ) ) )
         continue;
 
       mConnectionParamComboBox->addItem( it->parameterName(), it->parameterName() );
@@ -5006,16 +5006,16 @@ QgsProcessingDatabaseTableParameterDefinitionWidget::QgsProcessingDatabaseTableP
     initialSchema = tableParam->parentSchemaParameterName();
   }
 
-  if ( widgetContext.model() )
+  if ( auto *lModel = widgetContext.model() )
   {
     // populate combo box with other model input choices
-    const QMap<QString, QgsProcessingModelParameter> components = widgetContext.model()->parameterComponents();
+    const QMap<QString, QgsProcessingModelParameter> components = lModel->parameterComponents();
     for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
     {
       if ( definition && it->parameterName() == definition->name() )
         continue;
 
-      if ( dynamic_cast< const QgsProcessingParameterProviderConnection * >( widgetContext.model()->parameterDefinition( it->parameterName() ) ) )
+      if ( dynamic_cast< const QgsProcessingParameterProviderConnection * >( lModel->parameterDefinition( it->parameterName() ) ) )
       {
         mConnectionParamComboBox->addItem( it->parameterName(), it->parameterName() );
         if ( !initialConnection.isEmpty() && initialConnection == it->parameterName() )
@@ -5023,7 +5023,7 @@ QgsProcessingDatabaseTableParameterDefinitionWidget::QgsProcessingDatabaseTableP
           mConnectionParamComboBox->setCurrentIndex( mConnectionParamComboBox->count() - 1 );
         }
       }
-      else if ( dynamic_cast< const QgsProcessingParameterDatabaseSchema * >( widgetContext.model()->parameterDefinition( it->parameterName() ) ) )
+      else if ( dynamic_cast< const QgsProcessingParameterDatabaseSchema * >( lModel->parameterDefinition( it->parameterName() ) ) )
       {
         mSchemaParamComboBox->addItem( it->parameterName(), it->parameterName() );
         if ( !initialConnection.isEmpty() && initialConnection == it->parameterName() )
@@ -6065,13 +6065,13 @@ QgsProcessingBandParameterDefinitionWidget::QgsProcessingBandParameterDefinition
   if ( const QgsProcessingParameterBand *bandParam = dynamic_cast<const QgsProcessingParameterBand *>( definition ) )
     initialParent = bandParam->parentLayerParameterName();
 
-  if ( widgetContext.model() )
+  if ( auto *lModel = widgetContext.model() )
   {
     // populate combo box with other model input choices
-    const QMap<QString, QgsProcessingModelParameter> components = widgetContext.model()->parameterComponents();
+    const QMap<QString, QgsProcessingModelParameter> components = lModel->parameterComponents();
     for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
     {
-      if ( const QgsProcessingParameterRasterLayer *definition = dynamic_cast< const QgsProcessingParameterRasterLayer * >( widgetContext.model()->parameterDefinition( it.value().parameterName() ) ) )
+      if ( const QgsProcessingParameterRasterLayer *definition = dynamic_cast< const QgsProcessingParameterRasterLayer * >( lModel->parameterDefinition( it.value().parameterName() ) ) )
       {
         mParentLayerComboBox-> addItem( definition->description(), definition->name() );
         if ( !initialParent.isEmpty() && initialParent == definition->name() )
