@@ -309,15 +309,15 @@ CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
         service = uri.service()
 
         foreign_table_definition = """
-CREATE EXTENSION IF NOT EXISTS postgres_fdw;
-CREATE SERVER IF NOT EXISTS postgres_fdw_test_server FOREIGN DATA WRAPPER postgres_fdw OPTIONS (service '{service}', dbname '{dbname}', host '{host}', port '{port}');
-DROP SCHEMA  IF EXISTS foreign_schema CASCADE;
-CREATE SCHEMA IF NOT EXISTS foreign_schema;
-CREATE USER MAPPING IF NOT EXISTS FOR CURRENT_USER SERVER postgres_fdw_test_server OPTIONS (user '{user}', password '{password}');
-IMPORT FOREIGN SCHEMA qgis_test LIMIT TO ( "someData" )
-  FROM SERVER postgres_fdw_test_server
-  INTO foreign_schema;
-""".format(host=host, user=user, port=port, dbname=dbname, password=password, service=service)
+        CREATE EXTENSION IF NOT EXISTS postgres_fdw;
+        CREATE SERVER IF NOT EXISTS postgres_fdw_test_server FOREIGN DATA WRAPPER postgres_fdw OPTIONS (service '{service}', dbname '{dbname}', host '{host}', port '{port}');
+        DROP SCHEMA  IF EXISTS foreign_schema CASCADE;
+        CREATE SCHEMA IF NOT EXISTS foreign_schema;
+        CREATE USER MAPPING IF NOT EXISTS FOR CURRENT_USER SERVER postgres_fdw_test_server OPTIONS (user '{user}', password '{password}');
+        IMPORT FOREIGN SCHEMA qgis_test LIMIT TO ( "someData" )
+        FROM SERVER postgres_fdw_test_server
+        INTO foreign_schema;
+        """.format(host=host, user=user, port=port, dbname=dbname, password=password, service=service)
         conn.executeSql(foreign_table_definition)
         self.assertEquals(conn.tables('foreign_schema', QgsAbstractDatabaseProviderConnection.Foreign)[0].tableName(), 'someData')
 
@@ -329,7 +329,6 @@ IMPORT FOREIGN SCHEMA qgis_test LIMIT TO ( "someData" )
         fields = conn.fields('qgis_test', 'someData')
         self.assertEqual(fields.names(), ['pk', 'cnt', 'name', 'name2', 'num_char', 'dt', 'date', 'time', 'geom'])
 
-        # Test regression GH #37666
         sql = """
         DROP TABLE IF EXISTS qgis_test.gh_37666;
         CREATE TABLE qgis_test.gh_37666 (id SERIAL PRIMARY KEY);
@@ -343,6 +342,8 @@ IMPORT FOREIGN SCHEMA qgis_test LIMIT TO ( "someData" )
         fields = conn.fields('qgis_test', 'gh_37666')
         self.assertEqual([f.name() for f in fields], ['id', 'geom', 'geog'])
         self.assertEqual([f.typeName() for f in fields], ['int4', 'geometry', 'geography'])
+        table = conn.table('qgis_test', 'gh_37666')
+        self.assertEqual(table.primaryKeyColumns(), ['id'])
 
     def test_fields_no_pk(self):
         """Test issue: no fields are exposed for raster_columns"""

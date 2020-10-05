@@ -472,16 +472,16 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
   }
   else
   {
-    bool ok = conn->getTableInfo( false, false, true, schema );
+    QVector<QgsPostgresLayerProperty> properties;
+    const bool aspatial { ! flags || flags.testFlag( TableFlag::Aspatial ) };
+    bool ok = conn->supportedLayers( properties, false, schema == QStringLiteral( "public" ), aspatial, schema );
     if ( ! ok )
     {
       errCause = QObject::tr( "Could not retrieve tables: %1" ).arg( uri() );
     }
     else
     {
-      QVector<QgsPostgresLayerProperty> properties;
-      const bool aspatial { ! flags || flags.testFlag( TableFlag::Aspatial ) };
-      conn->supportedLayers( properties, false, schema == QStringLiteral( "public" ), aspatial, schema );
+
       bool dontResolveType = configuration().value( QStringLiteral( "dontResolveType" ), false ).toBool();
       bool useEstimatedMetadata = configuration().value( QStringLiteral( "estimatedMetadata" ), false ).toBool();
 
@@ -533,9 +533,42 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
           property.setTableName( pr.tableName );
           property.setSchema( pr.schemaName );
           property.setGeometryColumn( pr.geometryColName );
-          property.setPrimaryKeyColumns( pr.pkCols );
+          // These are candidates, not actual PKs
+          // property.setPrimaryKeyColumns( pr.pkCols );
           property.setGeometryColumnCount( static_cast<int>( pr.nSpCols ) );
           property.setComment( pr.tableComment );
+
+          // Get PKs
+          if ( pr.isView || pr.isMaterializedView || pr.isForeignTable )
+          {
+            // Set the candidates
+            property.setPrimaryKeyColumns( pr.pkCols );
+          }
+          else  // Fetch and set the real pks
+          {
+            try
+            {
+              const auto pks = executeSql( QStringLiteral( R"(
+              WITH pkrelid AS (
+              SELECT indexrelid AS idxri FROM pg_index WHERE indrelid='%1.%2'::regclass AND (indisprimary OR indisunique)
+                ORDER BY CASE WHEN indisprimary THEN 1 ELSE 2 END LIMIT 1)
+              SELECT attname FROM pg_index,pg_attribute, pkrelid
+              WHERE indexrelid=pkrelid.idxri AND indrelid=attrelid AND pg_attribute.attnum=any(pg_index.indkey);
+             )" ).arg( QgsPostgresConn::quotedIdentifier( pr.schemaName ) )
+                                           .arg( QgsPostgresConn::quotedIdentifier( pr.tableName ) ) );
+              QStringList pkNames;
+              for ( const auto &pk : qgis::as_const( pks ) )
+              {
+                pkNames.push_back( pk.first().toString() );
+              }
+              property.setPrimaryKeyColumns( pkNames );
+            }
+            catch ( const QgsProviderConnectionException &ex )
+            {
+              QgsDebugMsg( QStringLiteral( "Error retrieving primary keys: %1" ).arg( ex.what() ) );
+            }
+          }
+
           tables.push_back( property );
         }
       }

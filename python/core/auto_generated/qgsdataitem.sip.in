@@ -1036,6 +1036,12 @@ Returns the connection URI
 Creates and returns a (possibly NULL) layer from the connection URI and schema/table information
 %End
 
+    QgsAbstractDatabaseProviderConnection::TableProperty *tableProperty() const;
+%Docstring
+Returns the (possibly NULL) properties of the table this fields belong to.
+
+.. versionadded:: 3.16
+%End
 
 };
 
@@ -1068,6 +1074,8 @@ Constructor for QgsFieldItem, with the specified ``parent`` item and ``field``.
     ~QgsFieldItem();
 
     virtual QIcon icon();
+
+
 
 
 };

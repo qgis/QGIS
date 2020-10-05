@@ -124,6 +124,19 @@ QgsFieldsItem::QgsFieldsItem( QgsDataItem *parent,
   , mConnectionUri( connectionUri )
 {
   mCapabilities |= ( Fertile | Collapse );
+  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
+  if ( md )
+  {
+    try
+    {
+      std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( mConnectionUri, {} ) ) };
+      mTableProperty = qgis::make_unique<QgsAbstractDatabaseProviderConnection::TableProperty>( conn->table( schema, tableName ) );
+    }
+    catch ( QgsProviderConnectionException &ex )
+    {
+      QgsDebugMsg( QStringLiteral( "Error creating fields item: %1" ).arg( ex.what() ) );
+    }
+  }
 }
 
 QgsFieldsItem::~QgsFieldsItem()
@@ -202,6 +215,11 @@ QgsVectorLayer *QgsFieldsItem::layer()
   return nullptr;
 }
 
+QgsAbstractDatabaseProviderConnection::TableProperty *QgsFieldsItem::tableProperty() const
+{
+  return mTableProperty.get();
+}
+
 QString QgsFieldsItem::tableName() const
 {
   return mTableName;
@@ -227,6 +245,30 @@ QgsFieldItem::~QgsFieldItem()
 
 QIcon QgsFieldItem::icon()
 {
+  // Check if this is a geometry column and show the right icon
+  QgsFieldsItem *parentFields { static_cast<QgsFieldsItem *>( parent() ) };
+  if ( parentFields && parentFields->tableProperty() &&
+       parentFields->tableProperty()->geometryColumn() == mName &&
+       parentFields->tableProperty()->geometryColumnTypes().count() )
+  {
+    if ( mField.typeName() == QStringLiteral( "raster" ) )
+    {
+      return QgsLayerItem::iconRaster();
+    }
+    const QgsWkbTypes::GeometryType geomType { QgsWkbTypes::geometryType( parentFields->tableProperty()->geometryColumnTypes().first().wkbType ) };
+    switch ( geomType )
+    {
+      case QgsWkbTypes::GeometryType::LineGeometry:
+        return QgsLayerItem::iconLine();
+      case QgsWkbTypes::GeometryType::PointGeometry:
+        return QgsLayerItem::iconPoint();
+      case QgsWkbTypes::GeometryType::PolygonGeometry:
+        return QgsLayerItem::iconPolygon();
+      case QgsWkbTypes::GeometryType::UnknownGeometry:
+      case QgsWkbTypes::GeometryType::NullGeometry:
+        return QgsLayerItem::iconDefault();
+    }
+  }
   const QIcon icon { QgsFields::iconForFieldType( mField.type() ) };
   // Try subtype if icon is null
   if ( icon.isNull() )
