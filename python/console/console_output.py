@@ -24,8 +24,7 @@ from qgis.PyQt.QtGui import QColor, QFont, QKeySequence, QFontDatabase
 from qgis.PyQt.QtWidgets import QGridLayout, QSpacerItem, QSizePolicy, QShortcut, QMenu, QApplication
 from qgis.PyQt.Qsci import QsciScintilla
 from qgis.core import Qgis, QgsApplication, QgsSettings
-from qgis.gui import QgsMessageBar, QgsCodeEditor
-from .console_base import QgsPythonConsoleBase
+from qgis.gui import QgsMessageBar, QgsCodeEditorPython
 import sys
 
 
@@ -94,10 +93,10 @@ class writeOut(QObject):
         return False
 
 
-class ShellOutputScintilla(QgsPythonConsoleBase):
+class ShellOutputScintilla(QgsCodeEditorPython):
 
     def __init__(self, parent=None):
-        super(ShellOutputScintilla, self).__init__(parent)
+        super().__init__(parent)
         self.parent = parent
         self.shell = self.parent.shell
 
@@ -119,6 +118,9 @@ class ShellOutputScintilla(QgsPythonConsoleBase):
 
         self.insertInitText()
         self.refreshSettingsOutput()
+        self.setReadOnly(True)
+
+        self.setCaretWidth(0)  # NO (blinking) caret in the output
 
         self.setMinimumHeight(120)
 
@@ -152,7 +154,7 @@ class ShellOutputScintilla(QgsPythonConsoleBase):
 
     def refreshSettingsOutput(self):
         # Set Python lexer
-        self.setLexers()
+        self.initializeLexer()
         self.setReadOnly(True)
 
         self.setCaretWidth(0)  # NO (blinking) caret in the output

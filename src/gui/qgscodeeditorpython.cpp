@@ -17,6 +17,8 @@
 #include "qgscodeeditorpython.h"
 #include "qgslogger.h"
 #include "qgssymbollayerutils.h"
+#include "qgssettings.h"
+#include "qgis.h"
 
 #include <QWidget>
 #include <QString>
@@ -90,15 +92,36 @@ void QgsCodeEditorPython::initializeLexer()
 
   QsciAPIs *apis = new QsciAPIs( pyLexer );
 
-  // check if the file is a prepared apis file.
-  //QString mPapFileName = QFileInfo( mAPISFilesList[0] ).fileName();
-  //QString isPapFile = mPapFileName.right( 3 );
-  //QgsDebugMsg( QStringLiteral( "file extension: %1" ).arg( isPapFile ) );
+  QgsSettings settings;
 
   if ( mAPISFilesList.isEmpty() )
   {
-    mPapFile = QgsApplication::pkgDataPath() + QStringLiteral( "/python/qsci_apis/pyqgis.pap" );
-    apis->loadPrepared( mPapFile );
+    if ( settings.value( QStringLiteral( "pythonConsole/preloadAPI" ), true ).toBool() )
+    {
+      mPapFile = QgsApplication::pkgDataPath() + QStringLiteral( "/python/qsci_apis/pyqgis.pap" );
+      apis->loadPrepared( mPapFile );
+    }
+    else if ( settings.value( QStringLiteral( "pythonConsole/usePreparedAPIFile" ), false ).toBool() )
+    {
+      apis->loadPrepared( settings.value( QStringLiteral( "pythonConsole/preparedAPIFile" ) ).toString() );
+    }
+    else
+    {
+      const QStringList apiPaths = settings.value( QStringLiteral( "pythonConsole/userAPI" ) ).toStringList();
+      for ( const QString &path : apiPaths )
+      {
+        if ( !QFileInfo::exists( path ) )
+        {
+          QgsDebugMsg( QStringLiteral( "The apis file %1 was not found" ).arg( path ) );
+        }
+        else
+        {
+          apis->load( path );
+        }
+      }
+      apis->prepare();
+      pyLexer->setAPIs( apis );
+    }
   }
   else if ( mAPISFilesList.length() == 1 && mAPISFilesList[0].right( 3 ) == QLatin1String( "pap" ) )
   {
@@ -112,16 +135,15 @@ void QgsCodeEditorPython::initializeLexer()
   }
   else
   {
-    for ( int i = 0; i < mAPISFilesList.size(); i++ )
+    for ( const QString &path : mAPISFilesList )
     {
-      if ( !QFileInfo::exists( mAPISFilesList[i] ) )
+      if ( !QFileInfo::exists( path ) )
       {
-        QgsDebugMsg( QStringLiteral( "The apis file %1 was not found" ).arg( mAPISFilesList.at( i ) ) );
-        return;
+        QgsDebugMsg( QStringLiteral( "The apis file %1 was not found" ).arg( path ) );
       }
       else
       {
-        apis->load( mAPISFilesList[i] );
+        apis->load( path );
       }
     }
     apis->prepare();
