@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>SettingsDialogPythonConsole</class>
- <widget class="QDialog" name="SettingsDialogPythonConsole">
-  <property name="windowModality">
-   <enum>Qt::NonModal</enum>
-  </property>
+ <widget class="QWidget" name="SettingsDialogPythonConsole">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -30,9 +27,6 @@
     <weight>50</weight>
     <bold>false</bold>
    </font>
-  </property>
-  <property name="modal">
-   <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout_16">
    <property name="leftMargin">
