@@ -240,6 +240,8 @@ void QgsCodeEditor::setMarginVisible( bool margin )
     setMarginLineNumbers( 1, true );
     setMarginsFont( marginFont );
     setMarginWidth( 1, QStringLiteral( "00000" ) );
+    setMarginsForegroundColor( lexerColor( ColorRole::MarginForeground ) );
+    setMarginsBackgroundColor( lexerColor( ColorRole::MarginBackground ) );
   }
   else
   {
