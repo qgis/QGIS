@@ -35,14 +35,15 @@ QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> 
   {
     setTitle( tr( "Python Editor" ) );
   }
+
+  setCaretWidth( 2 );
+
   QgsCodeEditorPython::initializeLexer();
 }
 
 void QgsCodeEditorPython::initializeLexer()
 {
   // current line
-  setCaretWidth( 2 );
-
   setEdgeMode( QsciScintilla::EdgeLine );
   setEdgeColumn( 80 );
   setEdgeColor( lexerColor( ColorRole::Edge ) );
@@ -53,6 +54,11 @@ void QgsCodeEditorPython::initializeLexer()
   QColor defaultColor = lexerColor( ColorRole::Default );
 
   QsciLexerPython *pyLexer = new QsciLexerPython( this );
+
+  pyLexer->setIndentationWarning( QsciLexerPython::Inconsistent );
+  pyLexer->setFoldComments( true );
+  pyLexer->setFoldQuotes( true );
+
   pyLexer->setDefaultFont( font );
   pyLexer->setDefaultColor( defaultColor );
   pyLexer->setDefaultPaper( lexerColor( ColorRole::Background ) );
@@ -126,6 +132,7 @@ void QgsCodeEditorPython::initializeLexer()
   setMarginVisible( true );
   setFoldingVisible( true );
   setIndentationsUseTabs( false );
+  setIndentationGuides( true );
 }
 
 

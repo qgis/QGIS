@@ -156,13 +156,6 @@ class ShellOutputScintilla(QgsPythonConsoleBase):
     def refreshSettingsOutput(self):
         # Set Python lexer
         self.setLexers()
-        self.setSelectionForegroundColor(self.color(QgsCodeEditor.ColorRole.SelectionForeground))
-        self.setSelectionBackgroundColor(self.color(QgsCodeEditor.ColorRole.SelectionBackground))
-        self.setMarginsForegroundColor(self.color(QgsCodeEditor.ColorRole.MarginForeground))
-        self.setMarginsBackgroundColor(self.color(QgsCodeEditor.ColorRole.MarginBackground))
-
-        self.setCaretLineBackgroundColor(self.color(QgsCodeEditor.ColorRole.CaretLine))
-        self.setCaretForegroundColor(self.color(QgsCodeEditor.ColorRole.Cursor))
 
     def clearConsole(self):
         self.setText('')

@@ -149,23 +149,23 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
   } );
 
   mPythonPreview->setText( R"""(def simple_function(x,y,z):
-   """
-   Function docstring
-   """
-   return [1, 1.2, "val", 'a string', {'a': 1, 'b': 2}]
+    """
+    Function docstring
+    """
+    return [1, 1.2, "val", 'a string', {'a': 1, 'b': 2}]
 
 @my_decorator
 def somefunc(param1: str='', param2=0):
-   r'''A docstring'''
-   if param1 > param2: # interesting
-       print('Gre\'ater'.lower())
-   return (param2 - param1 + 1 + 0b10l) or None
+    '''A docstring'''
+    if param1 > param2: # interesting
+        print('Gre\'ater'.lower())
+    return (param2 - param1 + 1 + 0b10l) or None
 
 class SomeClass:
-   """
-   My class docstring
-   """
-   pass
+    """
+    My class docstring
+    """
+    pass
 )""" );
 
   mExpressionPreview->setText( R"""(aggregate(layer:='rail_stations',
