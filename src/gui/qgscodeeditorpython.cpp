@@ -45,32 +45,32 @@ void QgsCodeEditorPython::initializeLexer()
 
   setEdgeMode( QsciScintilla::EdgeLine );
   setEdgeColumn( 80 );
-  setEdgeColor( color( ColorRole::Edge ) );
+  setEdgeColor( lexerColor( ColorRole::Edge ) );
 
   setWhitespaceVisibility( QsciScintilla::WsVisibleAfterIndent );
 
-  QFont font = getMonospaceFont();
-  QColor defaultColor = color( ColorRole::Default );
+  QFont font = lexerFont();
+  QColor defaultColor = lexerColor( ColorRole::Default );
 
   QsciLexerPython *pyLexer = new QsciLexerPython( this );
   pyLexer->setDefaultFont( font );
   pyLexer->setDefaultColor( defaultColor );
-  pyLexer->setDefaultPaper( color( ColorRole::Background ) );
+  pyLexer->setDefaultPaper( lexerColor( ColorRole::Background ) );
   pyLexer->setFont( font, -1 );
   pyLexer->setColor( defaultColor, QsciLexerPython::Default );
-  pyLexer->setColor( color( ColorRole::Class ), QsciLexerPython::ClassName );
-  pyLexer->setColor( color( ColorRole::Method ), QsciLexerPython::FunctionMethodName );
-  pyLexer->setColor( color( ColorRole::Number ), QsciLexerPython::Number );
-  pyLexer->setColor( color( ColorRole::Operator ), QsciLexerPython::Operator );
-  pyLexer->setColor( color( ColorRole::Identifier ), QsciLexerPython::Identifier );
-  pyLexer->setColor( color( ColorRole::Comment ), QsciLexerPython::Comment );
-  pyLexer->setColor( color( ColorRole::CommentBlock ), QsciLexerPython::CommentBlock );
-  pyLexer->setColor( color( ColorRole::Keyword ), QsciLexerPython::Keyword );
-  pyLexer->setColor( color( ColorRole::Decoration ), QsciLexerPython::Decorator );
-  pyLexer->setColor( color( ColorRole::SingleQuote ), QsciLexerPython::SingleQuotedString );
-  pyLexer->setColor( color( ColorRole::DoubleQuote ), QsciLexerPython::DoubleQuotedString );
-  pyLexer->setColor( color( ColorRole::TripleSingleQuote ), QsciLexerPython::TripleSingleQuotedString );
-  pyLexer->setColor( color( ColorRole::TripleDoubleQuote ), QsciLexerPython::TripleDoubleQuotedString );
+  pyLexer->setColor( lexerColor( ColorRole::Class ), QsciLexerPython::ClassName );
+  pyLexer->setColor( lexerColor( ColorRole::Method ), QsciLexerPython::FunctionMethodName );
+  pyLexer->setColor( lexerColor( ColorRole::Number ), QsciLexerPython::Number );
+  pyLexer->setColor( lexerColor( ColorRole::Operator ), QsciLexerPython::Operator );
+  pyLexer->setColor( lexerColor( ColorRole::Identifier ), QsciLexerPython::Identifier );
+  pyLexer->setColor( lexerColor( ColorRole::Comment ), QsciLexerPython::Comment );
+  pyLexer->setColor( lexerColor( ColorRole::CommentBlock ), QsciLexerPython::CommentBlock );
+  pyLexer->setColor( lexerColor( ColorRole::Keyword ), QsciLexerPython::Keyword );
+  pyLexer->setColor( lexerColor( ColorRole::Decoration ), QsciLexerPython::Decorator );
+  pyLexer->setColor( lexerColor( ColorRole::SingleQuote ), QsciLexerPython::SingleQuotedString );
+  pyLexer->setColor( lexerColor( ColorRole::DoubleQuote ), QsciLexerPython::DoubleQuotedString );
+  pyLexer->setColor( lexerColor( ColorRole::TripleSingleQuote ), QsciLexerPython::TripleSingleQuotedString );
+  pyLexer->setColor( lexerColor( ColorRole::TripleDoubleQuote ), QsciLexerPython::TripleDoubleQuotedString );
 
   QsciAPIs *apis = new QsciAPIs( pyLexer );
 

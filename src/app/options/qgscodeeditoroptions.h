@@ -36,6 +36,7 @@ class QgsCodeEditorOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsC
      * Constructor for QgsCodeEditorOptionsWidget with the specified \a parent widget.
      */
     QgsCodeEditorOptionsWidget( QWidget *parent );
+    ~QgsCodeEditorOptionsWidget() override;
 
     QString helpKey() const override;
 
@@ -45,6 +46,9 @@ class QgsCodeEditorOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsC
 
     QMap< QgsCodeEditor::ColorRole, QgsColorButton * > mColorButtonMap;
     bool mBlockCustomColorChange = false;
+
+    void updatePreview();
+
 
 };
 

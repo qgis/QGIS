@@ -12,6 +12,7 @@
 
 
 
+
 class QgsCodeEditor : QsciScintilla
 {
 %Docstring
@@ -156,6 +157,7 @@ Returns the monospaced font to use for code editors.
 .. versionadded:: 3.16
 %End
 
+
   protected:
 
     bool isFixedPitch( const QFont &font );
@@ -170,6 +172,20 @@ Returns the monospaced font to use for code editors.
 Called when the dialect specific code lexer needs to be initialized (or reinitialized).
 
 The default implementation does nothing.
+
+.. versionadded:: 3.16
+%End
+
+    QColor lexerColor( ColorRole role ) const;
+%Docstring
+Returns the color to use in the lexer for the specified ``role``.
+
+.. versionadded:: 3.16
+%End
+
+    QFont lexerFont() const;
+%Docstring
+Returns the font to use in the lexer.
 
 .. versionadded:: 3.16
 %End

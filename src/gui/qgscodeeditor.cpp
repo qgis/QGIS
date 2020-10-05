@@ -140,30 +140,79 @@ void QgsCodeEditor::initializeLexer()
 
 }
 
+QColor QgsCodeEditor::lexerColor( QgsCodeEditor::ColorRole role ) const
+{
+  if ( mUseDefaultSettings )
+    return color( role );
+
+  if ( !mOverrideColors )
+  {
+    return defaultColor( role, mColorScheme );
+  }
+  else
+  {
+    const QColor color = mCustomColors.value( role );
+    return !color.isValid() ? defaultColor( role ) : color;
+  }
+}
+
+QFont QgsCodeEditor::lexerFont() const
+{
+  if ( mUseDefaultSettings )
+    return getMonospaceFont();
+
+  QFont font = QFontDatabase::systemFont( QFontDatabase::FixedFont );
+
+  QgsSettings settings;
+  if ( !mFontFamily.isEmpty() )
+    font.setFamily( mFontFamily );
+
+#ifdef Q_OS_MAC
+  if ( mFontSize > 0 )
+    font.setPointSize( mFontSize );
+  else
+  {
+    // The font size gotten from getMonospaceFont() is too small on Mac
+    font.setPointSize( QLabel().font().pointSize() );
+  }
+#else
+  if ( mFontSize > 0 )
+    font.setPointSize( mFontSize );
+  else
+  {
+    int fontSize = settings.value( QStringLiteral( "qgis/stylesheet/fontPointSize" ), 10 ).toInt();
+    font.setPointSize( fontSize );
+  }
+#endif
+  font.setBold( false );
+
+  return font;
+}
+
 void QgsCodeEditor::setSciWidget()
 {
-  QFont font = getMonospaceFont();
+  QFont font = lexerFont();
   setFont( font );
 
   setUtf8( true );
   setCaretLineVisible( true );
-  setCaretLineBackgroundColor( color( ColorRole::CaretLine ) );
-  setCaretForegroundColor( color( ColorRole::Cursor ) );
-  setSelectionForegroundColor( color( ColorRole::SelectionForeground ) );
-  setSelectionBackgroundColor( color( ColorRole::SelectionBackground ) );
+  setCaretLineBackgroundColor( lexerColor( ColorRole::CaretLine ) );
+  setCaretForegroundColor( lexerColor( ColorRole::Cursor ) );
+  setSelectionForegroundColor( lexerColor( ColorRole::SelectionForeground ) );
+  setSelectionBackgroundColor( lexerColor( ColorRole::SelectionBackground ) );
 
   setBraceMatching( QsciScintilla::SloppyBraceMatch );
-  setMatchedBraceForegroundColor( color( ColorRole::MatchedBraceForeground ) );
-  setMatchedBraceBackgroundColor( color( ColorRole::MatchedBraceBackground ) );
+  setMatchedBraceForegroundColor( lexerColor( ColorRole::MatchedBraceForeground ) );
+  setMatchedBraceBackgroundColor( lexerColor( ColorRole::MatchedBraceBackground ) );
   // whether margin will be shown
   setMarginVisible( mMargin );
-  setMarginsForegroundColor( color( ColorRole::MarginForeground ) );
-  setMarginsBackgroundColor( color( ColorRole::MarginBackground ) );
-  setIndentationGuidesForegroundColor( color( ColorRole::MarginForeground ) );
-  setIndentationGuidesBackgroundColor( color( ColorRole::MarginBackground ) );
+  setMarginsForegroundColor( lexerColor( ColorRole::MarginForeground ) );
+  setMarginsBackgroundColor( lexerColor( ColorRole::MarginBackground ) );
+  setIndentationGuidesForegroundColor( lexerColor( ColorRole::MarginForeground ) );
+  setIndentationGuidesBackgroundColor( lexerColor( ColorRole::MarginBackground ) );
   // whether margin will be shown
   setFoldingVisible( mFolding );
-  QColor foldColor = color( ColorRole::Fold );
+  QColor foldColor = lexerColor( ColorRole::Fold );
   setFoldMarginColors( foldColor, foldColor );
   // indentation
   setAutoIndent( true );
@@ -186,7 +235,7 @@ void QgsCodeEditor::setMarginVisible( bool margin )
   mMargin = margin;
   if ( margin )
   {
-    QFont marginFont = getMonospaceFont();
+    QFont marginFont = lexerFont();
     marginFont.setPointSize( 10 );
     setMarginLineNumbers( 1, true );
     setMarginsFont( marginFont );
@@ -407,7 +456,6 @@ QColor QgsCodeEditor::defaultColor( QgsCodeEditor::ColorRole role, const QString
 QColor QgsCodeEditor::color( QgsCodeEditor::ColorRole role )
 {
   const QgsSettings settings;
-
   if ( !settings.value( QStringLiteral( "codeEditor/overrideColors" ), false, QgsSettings::Gui ).toBool() )
   {
     const QString theme = settings.value( QStringLiteral( "codeEditor/colorScheme" ), QString(), QgsSettings::Gui ).toString();
@@ -469,4 +517,17 @@ QFont QgsCodeEditor::getMonospaceFont()
   font.setBold( false );
 
   return font;
+}
+
+void QgsCodeEditor::setCustomAppearance( const QString &scheme, const QMap<QgsCodeEditor::ColorRole, QColor> &customColors, const QString &fontFamily, int fontSize )
+{
+  mUseDefaultSettings = false;
+  mOverrideColors = !customColors.isEmpty();
+  mColorScheme = scheme;
+  mCustomColors = customColors;
+  mFontFamily = fontFamily;
+  mFontSize = fontSize;
+
+  setSciWidget();
+  initializeLexer();
 }

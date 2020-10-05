@@ -23,6 +23,8 @@
 #include "qgis_sip.h"
 #include "qgis_gui.h"
 
+#include <QMap>
+
 
 SIP_IF_MODULE( HAVE_QSCI_SIP )
 
@@ -166,6 +168,15 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      */
     static QFont getMonospaceFont();
 
+    /**
+     * Sets a custom appearance for the widget, disconnecting it from using the standard appearance
+     * taken from QSettings.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.16
+     */
+    void setCustomAppearance( const QString &scheme = QString(), const QMap< ColorRole, QColor > &customColors = QMap< ColorRole, QColor >(), const QString &fontFamily = QString(), int fontSize = 0 ) SIP_SKIP;
+
   protected:
 
     bool isFixedPitch( const QFont &font );
@@ -182,6 +193,20 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      */
     virtual void initializeLexer();
 
+    /**
+     * Returns the color to use in the lexer for the specified \a role.
+     *
+     * \since QGIS 3.16
+     */
+    QColor lexerColor( ColorRole role ) const;
+
+    /**
+     * Returns the font to use in the lexer.
+     *
+     * \since QGIS 3.16
+     */
+    QFont lexerFont() const;
+
   private:
 
     void setSciWidget();
@@ -189,6 +214,14 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     QString mWidgetTitle;
     bool mFolding;
     bool mMargin;
+
+    bool mUseDefaultSettings = true;
+    // used if above is false, inplace of values taken from QSettings:
+    bool mOverrideColors = false;
+    QString mColorScheme;
+    QMap< ColorRole, QColor > mCustomColors;
+    QString mFontFamily;
+    int mFontSize = 0;
 
     static QMap< ColorRole, QString > sColorRoleToSettingsKey;
 };

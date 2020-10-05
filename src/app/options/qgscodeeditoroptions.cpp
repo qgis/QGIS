@@ -99,6 +99,8 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
       }
       mBlockCustomColorChange = false;
     }
+
+    updatePreview();
   } );
 
   for ( auto it = mColorButtonMap.constBegin(); it != mColorButtonMap.constEnd(); ++it )
@@ -109,6 +111,7 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
         return;
 
       mColorSchemeComboBox->setCurrentIndex( mColorSchemeComboBox->findData( QStringLiteral( "custom" ) ) );
+      updatePreview();
     } );
   }
 
@@ -117,6 +120,132 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
   mFontComboBox->setCurrentFont( font );
   mSizeSpin->setValue( font.pointSize() );
   mOverrideFontGroupBox->setChecked( !settings.value( QStringLiteral( "codeEditor/fontfamily" ), QString(), QgsSettings::Gui ).toString().isEmpty() );
+
+  connect( mFontComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]
+  {
+    updatePreview();
+  } );
+  connect( mSizeSpin, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, [ = ]
+  {
+    updatePreview();
+  } );
+  connect( mOverrideFontGroupBox, &QGroupBox::toggled, this, [ = ]
+  {
+    updatePreview();
+  } );
+
+  mListLanguage->addItem( tr( "Python" ) );
+  mListLanguage->addItem( tr( "QGIS Expression" ) );
+  mListLanguage->addItem( tr( "SQL" ) );
+  mListLanguage->addItem( tr( "HTML" ) );
+  mListLanguage->addItem( tr( "CSS" ) );
+  mListLanguage->addItem( tr( "JavaScript" ) );
+
+  connect( mListLanguage, &QListWidget::currentRowChanged, this, [ = ]
+  {
+    mPreviewStackedWidget->setCurrentIndex( mListLanguage->currentRow() );
+  } );
+
+  mPythonPreview->setText( R"""(def simple_function(x,y,z):
+   """
+   Function docstring
+   """
+   return [1, 1.2, "val", 'a string', {'a': 1, 'b': 2}]
+
+@my_decorator
+def somefunc(param1: str='', param2=0):
+   r'''A docstring'''
+   if param1 > param2: # interesting
+       print('Gre\'ater'.lower())
+   return (param2 - param1 + 1 + 0b10l) or None
+
+class SomeClass:
+   """
+   My class docstring
+   """
+   pass
+)""" );
+
+  mExpressionPreview->setText( R"""(aggregate(layer:='rail_stations',
+    aggregate:='collect', -- a comment
+    expression:=centroid($geometry), /* a comment */
+    filter:="region_name" = attribute(@parent,'name') + 55
+)
+)""");
+
+  mSQLPreview->setText( R"""(CREATE TABLE "my_table" (
+    "pk" serial NOT NULL PRIMARY KEY,
+    "a_field" integer,
+    "another_field" varchar(255)
+);
+
+-- Retrieve values
+SELECT count(*) FROM "my_table" WHERE "a_field" > 'a value';
+)""");
+
+  mHtmlPreview->setText(R"""(<html>
+  <head>
+    <title>QGIS</title>
+  </head>
+  <body>
+    <h1>QGIS Rocks!</h1>
+    <img src="qgis.png" style="width: 100px" />
+    <!--Sample comment-->
+    <p>Sample paragraph</p>
+  </body>
+</html>
+)""");
+
+  mCssPreview->setText( R"""(@import url(print.css);
+
+@font-face {
+ font-family: DroidSans; /* A comment */
+ src: url('DroidSans.ttf');
+}
+
+p.style_name:lang(en) {
+ color: #F0F0F0;
+ background: #600;
+}
+
+ul > li, a:hover {
+ line-height: 11px;
+ text-decoration: underline;
+}
+
+@media print {
+  a[href^=http]::after {
+    content: attr(href)
+  }
+}
+)""" );
+
+  mJsPreview->setText( R"""(// my sample JavaScript function
+
+window.onAction(function update() {
+    /* Do some work */
+    var prevPos = closure.pos;
+
+    element.width = 100;
+    element.height = 2500;
+    element.name = 'a string';
+    element.title= "another string";
+
+    if (prevPos.x > 100) {
+        element.x += max(100*2, 100);
+    }
+});)""" );
+
+  mListLanguage->setCurrentRow( 0 );
+  mPreviewStackedWidget->setCurrentIndex( 0 );
+
+  mSplitter->restoreState( settings.value( QStringLiteral( "Windows/CodeEditorOptions/splitterState" ) ).toByteArray() );
+}
+
+QgsCodeEditorOptionsWidget::~QgsCodeEditorOptionsWidget()
+{
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/CodeEditorOptions/splitterState" ), mSplitter->saveState() );
 }
 
 QString QgsCodeEditorOptionsWidget::helpKey() const
@@ -150,6 +279,37 @@ void QgsCodeEditorOptionsWidget::apply()
     settings.remove( QStringLiteral( "codeEditor/fontfamily" ), QgsSettings::Gui );
     settings.remove( QStringLiteral( "codeEditor/fontsize" ), QgsSettings::Gui );
   }
+}
+
+void QgsCodeEditorOptionsWidget::updatePreview()
+{
+  QString theme = mColorSchemeComboBox->currentData().toString();
+
+
+  QMap< QgsCodeEditor::ColorRole, QColor> colors;
+  if ( theme == QLatin1String( "custom" ) )
+  {
+    for ( auto it = mColorButtonMap.constBegin(); it != mColorButtonMap.constEnd(); ++it )
+    {
+      colors[ it.key() ] = it.value()->color();
+    }
+    theme.clear();
+  }
+
+  QString fontFamily;
+  int fontSize = 0;
+  if ( mOverrideFontGroupBox->isChecked() )
+  {
+    fontFamily = mFontComboBox->currentFont().family();
+    fontSize = mSizeSpin->value();
+  }
+
+  mPythonPreview->setCustomAppearance( theme, colors, fontFamily, fontSize );
+  mExpressionPreview->setCustomAppearance( theme, colors, fontFamily, fontSize );
+  mSQLPreview->setCustomAppearance( theme, colors, fontFamily, fontSize );
+  mHtmlPreview->setCustomAppearance( theme, colors, fontFamily, fontSize );
+  mCssPreview->setCustomAppearance( theme, colors, fontFamily, fontSize );
+  mJsPreview->setCustomAppearance( theme, colors, fontFamily, fontSize );
 }
 
 //
