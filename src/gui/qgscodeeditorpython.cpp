@@ -151,6 +151,23 @@ void QgsCodeEditorPython::initializeLexer()
   }
   setLexer( pyLexer );
 
+  const int threshold = settings.value( QStringLiteral( "pythonConsole/autoCompThreshold" ), 2 ).toInt();
+  setAutoCompletionThreshold( threshold );
+  if ( !settings.value( "pythonConsole/autoCompleteEnabled", true ).toBool() )
+  {
+    setAutoCompletionSource( AcsNone );
+  }
+  else
+  {
+    QString autoCompleteSource = settings.value( QStringLiteral( "pythonConsole/autoCompleteSource" ), QStringLiteral( "fromAPI" ) ).toString();
+    if ( autoCompleteSource == QLatin1String( "fromDoc" ) )
+      setAutoCompletionSource( AcsDocument );
+    else if ( autoCompleteSource == QLatin1String( "fromDocAPI" ) )
+      setAutoCompletionSource( AcsAll );
+    else
+      setAutoCompletionSource( AcsAPIs );
+  }
+
   setMarginVisible( true );
 
   // Margin 2 is used for the 'folding'
@@ -163,6 +180,26 @@ void QgsCodeEditorPython::initializeLexer()
   setIndentationGuides( true );
 }
 
+void QgsCodeEditorPython::autoComplete()
+{
+  switch ( autoCompletionSource() )
+  {
+    case AcsDocument:
+      autoCompleteFromDocument();
+      break;
+
+    case AcsAPIs:
+      autoCompleteFromAPIs();
+      break;
+
+    case AcsAll:
+      autoCompleteFromAll();
+      break;
+
+    case AcsNone:
+      break;
+  }
+}
 
 void QgsCodeEditorPython::loadAPIs( const QList<QString> &filenames )
 {

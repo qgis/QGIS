@@ -70,6 +70,15 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
 
     void initializeLexer() override;
 
+  protected slots:
+
+    /**
+     * Triggers the autocompletion popup.
+     *
+     * \since QGIS 3.16
+     */
+    void autoComplete();
+
   private:
 
     QList<QString> mAPISFilesList;

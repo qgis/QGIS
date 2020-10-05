@@ -66,6 +66,15 @@ Searches the selected text in the official PyQGIS online documentation.
     virtual void initializeLexer();
 
 
+  protected slots:
+
+    void autoComplete();
+%Docstring
+Triggers the autocompletion popup.
+
+.. versionadded:: 3.16
+%End
+
 };
 
 /************************************************************************
