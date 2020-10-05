@@ -352,7 +352,7 @@ QColor QgsCodeEditor::defaultColor( QgsCodeEditor::ColorRole role, const QString
         {ColorRole::MatchedBraceBackground, QColor( "#CBCCA3" ) },
         {ColorRole::MatchedBraceForeground, QColor( "#586E75" ) },
         {ColorRole::Edge, QColor( "#EEE8D5" ) },
-        {ColorRole::Fold, QColor( "#FDF6E3" ) },
+        {ColorRole::Fold, QColor( "#EEE8D5" ) },
         {ColorRole::Error, QColor( "#DC322F" ) },
       },
     },
@@ -388,7 +388,7 @@ QColor QgsCodeEditor::defaultColor( QgsCodeEditor::ColorRole role, const QString
         {ColorRole::MatchedBraceBackground, QColor( "#1F4D2C" ) },
         {ColorRole::MatchedBraceForeground, QColor( "#839496" ) },
         {ColorRole::Edge, QColor( "#586E75" ) },
-        {ColorRole::Fold, QColor( "#002B36" ) },
+        {ColorRole::Fold, QColor( "#073642" ) },
         {ColorRole::Error, QColor( "#DC322F" ) },
       }
     }
