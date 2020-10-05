@@ -142,8 +142,9 @@ class ShellScintilla(QgsPythonConsoleBase, code.InteractiveInterpreter):
         self.setMarginLineNumbers(1, True)
         self.setMarginWidth(1, "00000")
         self.setMarginType(1, 5)  # TextMarginRightJustified=5
-        self.setFoldMarginColors(self.color(QgsCodeEditor.ColorRole.Background),
-                                 self.color(QgsCodeEditor.ColorRole.Background))
+        self.setMarginsBackgroundColor(self.color(QgsCodeEditor.ColorRole.Background))
+        self.setFoldingVisible(False)
+        self.setEdgeMode(QsciScintilla.EdgeNone)
 
     def showHistory(self):
         if not self.historyDlg.isVisible():
