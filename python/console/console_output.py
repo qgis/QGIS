@@ -119,9 +119,6 @@ class ShellOutputScintilla(QgsPythonConsoleBase):
 
         self.insertInitText()
         self.refreshSettingsOutput()
-        self.setReadOnly(True)
-
-        self.setCaretWidth(0)  # NO (blinking) caret in the output
 
         self.setMinimumHeight(120)
 
@@ -156,6 +153,12 @@ class ShellOutputScintilla(QgsPythonConsoleBase):
     def refreshSettingsOutput(self):
         # Set Python lexer
         self.setLexers()
+        self.setReadOnly(True)
+
+        self.setCaretWidth(0)  # NO (blinking) caret in the output
+
+        self.setFoldingVisible(False)
+        self.setEdgeMode(QsciScintilla.EdgeNone)
 
     def clearConsole(self):
         self.setText('')
