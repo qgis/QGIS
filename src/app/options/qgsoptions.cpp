@@ -60,6 +60,7 @@
 #include "qgsnewsfeedparser.h"
 #include "qgsbearingnumericformat.h"
 #include "qgssublayersdialog.h"
+#include "options/qgsadvancedoptions.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -1140,10 +1141,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   locatorLayout->addWidget( mLocatorOptionsWidget );
   mOptionsLocatorGroupBox->setLayout( locatorLayout );
 
-  mAdvancedSettingsEditor->setSettingsObject( mSettings );
-
-  const auto constOptionsFactories = optionsFactories;
-  for ( QgsOptionsWidgetFactory *factory : constOptionsFactories )
+  QList< QgsOptionsWidgetFactory *> factories = optionsFactories;
+  // ensure advanced factory is always last
+  QgsAdvancedSettingsOptionsFactory advancedFactory;
+  factories << &advancedFactory;
+  for ( QgsOptionsWidgetFactory *factory : qgis::as_const( factories ) )
   {
     QListWidgetItem *item = new QListWidgetItem();
     item->setIcon( factory->icon() );
@@ -1158,6 +1160,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
     mAdditionalOptionWidgets << page;
     mOptionsStackedWidget->addWidget( page );
+
+    if ( QgsAdvancedSettingsWidget *advancedPage = qobject_cast< QgsAdvancedSettingsWidget * >( page ) )
+    {
+      advancedPage->settingsTree()->setSettingsObject( mSettings );
+    }
   }
 
 #ifdef HAVE_OPENCL
