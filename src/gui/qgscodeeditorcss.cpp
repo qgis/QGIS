@@ -38,28 +38,28 @@ void QgsCodeEditorCSS::initializeLexer()
 {
   QsciLexerCSS *lexer = new QsciLexerCSS( this );
 
-  const QFont font = getMonospaceFont();
+  const QFont font = lexerFont();
   lexer->setDefaultFont( font );
   lexer->setFont( font, -1 );
 
-  lexer->setDefaultColor( color( ColorRole::Default ) );
-  lexer->setDefaultPaper( color( ColorRole::Background ) );
-  lexer->setPaper( color( ColorRole::Background ), -1 );
+  lexer->setDefaultColor( lexerColor( ColorRole::Default ) );
+  lexer->setDefaultPaper( lexerColor( ColorRole::Background ) );
+  lexer->setPaper( lexerColor( ColorRole::Background ), -1 );
 
-  lexer->setColor( color( ColorRole::Tag ), QsciLexerCSS::Tag );
-  lexer->setColor( color( ColorRole::Class ), QsciLexerCSS::ClassSelector );
-  lexer->setColor( color( ColorRole::Keyword ), QsciLexerCSS::Attribute );
-  lexer->setColor( color( ColorRole::Method ), QsciLexerCSS::PseudoClass );
-  lexer->setColor( color( ColorRole::Method ), QsciLexerCSS::UnknownPseudoClass );
-  lexer->setColor( color( ColorRole::Operator ), QsciLexerCSS::Operator );
-  lexer->setColor( color( ColorRole::Number ), QsciLexerCSS::Value );
-  lexer->setColor( color( ColorRole::Comment ), QsciLexerCSS::Comment );
-  lexer->setColor( color( ColorRole::DoubleQuote ), QsciLexerCSS::DoubleQuotedString );
-  lexer->setColor( color( ColorRole::SingleQuote ), QsciLexerCSS::SingleQuotedString );
-  lexer->setColor( color( ColorRole::Identifier ), QsciLexerCSS::CSS1Property );
-  lexer->setColor( color( ColorRole::Identifier ), QsciLexerCSS::UnknownProperty );
-  lexer->setColor( color( ColorRole::Identifier ), QsciLexerCSS::CSS2Property );
-  lexer->setColor( color( ColorRole::Identifier ), QsciLexerCSS::CSS3Property );
+  lexer->setColor( lexerColor( ColorRole::Tag ), QsciLexerCSS::Tag );
+  lexer->setColor( lexerColor( ColorRole::Class ), QsciLexerCSS::ClassSelector );
+  lexer->setColor( lexerColor( ColorRole::Keyword ), QsciLexerCSS::Attribute );
+  lexer->setColor( lexerColor( ColorRole::Method ), QsciLexerCSS::PseudoClass );
+  lexer->setColor( lexerColor( ColorRole::Method ), QsciLexerCSS::UnknownPseudoClass );
+  lexer->setColor( lexerColor( ColorRole::Operator ), QsciLexerCSS::Operator );
+  lexer->setColor( lexerColor( ColorRole::Number ), QsciLexerCSS::Value );
+  lexer->setColor( lexerColor( ColorRole::Comment ), QsciLexerCSS::Comment );
+  lexer->setColor( lexerColor( ColorRole::DoubleQuote ), QsciLexerCSS::DoubleQuotedString );
+  lexer->setColor( lexerColor( ColorRole::SingleQuote ), QsciLexerCSS::SingleQuotedString );
+  lexer->setColor( lexerColor( ColorRole::Identifier ), QsciLexerCSS::CSS1Property );
+  lexer->setColor( lexerColor( ColorRole::Identifier ), QsciLexerCSS::UnknownProperty );
+  lexer->setColor( lexerColor( ColorRole::Identifier ), QsciLexerCSS::CSS2Property );
+  lexer->setColor( lexerColor( ColorRole::Identifier ), QsciLexerCSS::CSS3Property );
 
   setLexer( lexer );
 }

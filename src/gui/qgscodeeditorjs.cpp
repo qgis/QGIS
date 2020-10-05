@@ -38,23 +38,23 @@ void QgsCodeEditorJavascript::initializeLexer()
 {
   QsciLexerJavaScript *lexer = new QsciLexerJavaScript( this );
 
-  const QFont font = getMonospaceFont();
+  const QFont font = lexerFont();
   lexer->setDefaultFont( font );
   lexer->setFont( font, -1 );
 
-  lexer->setDefaultColor( color( ColorRole::Default ) );
-  lexer->setDefaultPaper( color( ColorRole::Background ) );
-  lexer->setPaper( color( ColorRole::Background ), -1 );
+  lexer->setDefaultColor( lexerColor( ColorRole::Default ) );
+  lexer->setDefaultPaper( lexerColor( ColorRole::Background ) );
+  lexer->setPaper( lexerColor( ColorRole::Background ), -1 );
 
-  lexer->setColor( color( ColorRole::Class ), QsciLexerJavaScript::GlobalClass );
-  lexer->setColor( color( ColorRole::Keyword ), QsciLexerJavaScript::Keyword );
-  lexer->setColor( color( ColorRole::Operator ), QsciLexerJavaScript::Operator );
-  lexer->setColor( color( ColorRole::Number ), QsciLexerJavaScript::Number );
-  lexer->setColor( color( ColorRole::Comment ), QsciLexerJavaScript::Comment );
-  lexer->setColor( color( ColorRole::CommentLine ), QsciLexerJavaScript::CommentLine );
-  lexer->setColor( color( ColorRole::DoubleQuote ), QsciLexerJavaScript::DoubleQuotedString );
-  lexer->setColor( color( ColorRole::SingleQuote ), QsciLexerJavaScript::SingleQuotedString );
-  lexer->setColor( color( ColorRole::Identifier ), QsciLexerJavaScript::Identifier );
+  lexer->setColor( lexerColor( ColorRole::Class ), QsciLexerJavaScript::GlobalClass );
+  lexer->setColor( lexerColor( ColorRole::Keyword ), QsciLexerJavaScript::Keyword );
+  lexer->setColor( lexerColor( ColorRole::Operator ), QsciLexerJavaScript::Operator );
+  lexer->setColor( lexerColor( ColorRole::Number ), QsciLexerJavaScript::Number );
+  lexer->setColor( lexerColor( ColorRole::Comment ), QsciLexerJavaScript::Comment );
+  lexer->setColor( lexerColor( ColorRole::CommentLine ), QsciLexerJavaScript::CommentLine );
+  lexer->setColor( lexerColor( ColorRole::DoubleQuote ), QsciLexerJavaScript::DoubleQuotedString );
+  lexer->setColor( lexerColor( ColorRole::SingleQuote ), QsciLexerJavaScript::SingleQuotedString );
+  lexer->setColor( lexerColor( ColorRole::Identifier ), QsciLexerJavaScript::Identifier );
 
   setLexer( lexer );
 }
