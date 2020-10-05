@@ -69,6 +69,7 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
   for ( auto it = mColorButtonMap.constBegin(); it != mColorButtonMap.constEnd(); ++it )
   {
     it.value()->setColor( QgsCodeEditor::color( it.key() ) );
+    it.value()->setDefaultColor( it.value()->color() );
   }
 
   mColorSchemeComboBox->addItem( tr( "Default" ), QString() );
@@ -96,6 +97,7 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
       for ( auto it = mColorButtonMap.constBegin(); it != mColorButtonMap.constEnd(); ++it )
       {
         it.value()->setColor( QgsCodeEditor::defaultColor( it.key(), theme ) );
+        it.value()->setDefaultColor( it.value()->color() );
       }
       mBlockCustomColorChange = false;
     }
