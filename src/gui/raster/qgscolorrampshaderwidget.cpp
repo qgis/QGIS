@@ -102,11 +102,6 @@ QgsColorRampShaderWidget::QgsColorRampShaderWidget( QWidget *parent )
   connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsColorRampShaderWidget::applyColorRamp );
   connect( mNumberOfEntriesSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsColorRampShaderWidget::classify );
   connect( mClipCheckBox, &QAbstractButton::toggled, this, &QgsColorRampShaderWidget::widgetChanged );
-  connect( mLabelPrecisionUseDefault, &QCheckBox::toggled, this, [ = ]
-  {
-    autoLabel();
-    mPrecisionSpinBox->setEnabled( ! mLabelPrecisionUseDefault->isChecked() );
-  } );
   connect( mPrecisionSpinBox, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, [ = ]( int ) { autoLabel(); } );
 }
 
@@ -125,6 +120,18 @@ void QgsColorRampShaderWidget::setRasterDataProvider( QgsRasterDataProvider *dp 
 void QgsColorRampShaderWidget::setRasterBand( int band )
 {
   mBand = band;
+  // Set the maximum number of digits in the precision spin box
+  if ( mRasterDataProvider )
+  {
+    const int maxDigits { QgsGuiUtils::significantDigits( mRasterDataProvider->dataType( mBand ) ) };
+    // Get current value
+    const int currentPrecision { mPrecisionSpinBox->value() };
+    mPrecisionSpinBox->setMaximum( maxDigits );
+    if ( currentPrecision > maxDigits )
+    {
+      mPrecisionSpinBox->setValue( maxDigits );
+    }
+  }
 }
 
 void QgsColorRampShaderWidget::setExtent( const QgsRectangle &extent )
@@ -178,20 +185,13 @@ void QgsColorRampShaderWidget::autoLabel()
   auto applyPrecision = [ = ]( const QString & value )
   {
     double val { QLocale().toDouble( value ) };
-    if ( ! mLabelPrecisionUseDefault->isChecked() )
+    if ( mPrecisionSpinBox->value() <  0 )
     {
-      if ( mPrecisionSpinBox->value() <  0 )
-      {
-        const double factor = std::pow( 10, - mPrecisionSpinBox->value() );
-        val = static_cast<qlonglong>( val / factor ) * factor;
-        return QLocale().toString( val, 'f', 0 );
-      }
-      return QLocale().toString( val, 'f', mPrecisionSpinBox->value() );
+      const double factor = std::pow( 10, - mPrecisionSpinBox->value() );
+      val = static_cast<qlonglong>( val / factor ) * factor;
+      return QLocale().toString( val, 'f', 0 );
     }
-    else
-    {
-      return QgsGuiUtils::displayValue( mRasterDataProvider->dataType( mBand ), val );
-    }
+    return QLocale().toString( val, 'f', mPrecisionSpinBox->value() );
   };
 
   QTreeWidgetItem *currentItem = nullptr;

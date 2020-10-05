@@ -196,7 +196,7 @@ void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int bandNo, double min,
   }
   else
   {
-    whileBlocking( mMinLineEdit )->setText( displayValue( min ) );
+    whileBlocking( mMinLineEdit )->setText( displayValueWithMaxPrecision( min ) );
   }
 
   if ( std::isnan( max ) )
@@ -205,13 +205,13 @@ void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int bandNo, double min,
   }
   else
   {
-    whileBlocking( mMaxLineEdit )->setText( displayValue( max ) );
+    whileBlocking( mMaxLineEdit )->setText( displayValueWithMaxPrecision( max ) );
   }
 
   // We compare old min and new min as text because QString::number keeps a fixed number of significant
   // digits (default 6) and so loaded min/max will always differ from current one, which triggers a
   // classification, and wipe out every user modification (see https://github.com/qgis/QGIS/issues/36172)
-  if ( mMinLineEdit->text() != displayValue( min ) || mMaxLineEdit->text() != displayValue( max ) )
+  if ( mMinLineEdit->text() != displayValueWithMaxPrecision( min ) || mMaxLineEdit->text() != displayValueWithMaxPrecision( max ) )
   {
     whileBlocking( mColorRampShaderWidget )->setRasterBand( bandNo );
     whileBlocking( mColorRampShaderWidget )->setMinimumMaximumAndClassify( min, max );
@@ -221,8 +221,8 @@ void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int bandNo, double min,
 
 void QgsSingleBandPseudoColorRendererWidget::loadMinMaxFromTree( double min, double max )
 {
-  whileBlocking( mMinLineEdit )->setText( displayValue( min ) );
-  whileBlocking( mMaxLineEdit )->setText( displayValue( max ) );
+  whileBlocking( mMinLineEdit )->setText( displayValueWithMaxPrecision( min ) );
+  whileBlocking( mMaxLineEdit )->setText( displayValueWithMaxPrecision( max ) );
   minMaxModified();
 }
 
@@ -232,7 +232,7 @@ void QgsSingleBandPseudoColorRendererWidget::setLineEditValue( QLineEdit *lineEd
   QString s;
   if ( !std::isnan( value ) )
   {
-    s = displayValue( value );
+    s = displayValueWithMaxPrecision( value );
   }
   lineEdit->setText( s );
 }
@@ -279,11 +279,11 @@ void QgsSingleBandPseudoColorRendererWidget::minMaxModified()
   mMinMaxWidget->userHasSetManualMinMaxValues();
 }
 
-QString QgsSingleBandPseudoColorRendererWidget::displayValue( const double value )
+QString QgsSingleBandPseudoColorRendererWidget::displayValueWithMaxPrecision( const double value )
 {
   if ( mRasterLayer->dataProvider() )
   {
-    return QgsGuiUtils::displayValue( mRasterLayer->dataProvider()->dataType( mBandComboBox->currentBand() ), value );
+    return QgsGuiUtils::displayValueWithMaximumDecimals( mRasterLayer->dataProvider()->dataType( mBandComboBox->currentBand() ), value );
   }
   else
   {
