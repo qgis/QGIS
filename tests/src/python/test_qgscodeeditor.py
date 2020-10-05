@@ -46,8 +46,10 @@ class TestQgsCodeEditor(unittest.TestCase):
         self.assertEqual(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.Keyword).name(), '#6cbcf7')
 
         # explicit theme, should override ui theme defaults
-        self.assertEqual(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.Keyword, 'solarized').name(), '#b79b00')
-        self.assertEqual(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.Keyword, 'solarized_dark').name(), '#6cbcf7')
+        self.assertEqual(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.Keyword, 'solarized').name(), '#859900')
+        self.assertEqual(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.Background, 'solarized').name(), '#fdf6e3')
+        self.assertEqual(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.Keyword, 'solarized_dark').name(), '#859900')
+        self.assertEqual(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.Background, 'solarized_dark').name(), '#002b36')
 
     def testColors(self):
         QgsApplication.setUITheme('default')
@@ -56,9 +58,11 @@ class TestQgsCodeEditor(unittest.TestCase):
         self.assertEqual(QgsCodeEditor.color(QgsCodeEditor.ColorRole.Keyword).name(), '#6cbcf7')
 
         QgsSettings().setValue('codeEditor/colorScheme', 'solarized', QgsSettings.Gui)
-        self.assertEqual(QgsCodeEditor.color(QgsCodeEditor.ColorRole.Keyword).name(), '#b79b00')
+        self.assertEqual(QgsCodeEditor.color(QgsCodeEditor.ColorRole.Keyword).name(), '#859900')
+        self.assertEqual(QgsCodeEditor.color(QgsCodeEditor.ColorRole.Background).name(), '#fdf6e3')
         QgsSettings().setValue('codeEditor/colorScheme', 'solarized_dark', QgsSettings.Gui)
-        self.assertEqual(QgsCodeEditor.color(QgsCodeEditor.ColorRole.Keyword).name(), '#6cbcf7')
+        self.assertEqual(QgsCodeEditor.color(QgsCodeEditor.ColorRole.Keyword).name(), '#859900')
+        self.assertEqual(QgsCodeEditor.color(QgsCodeEditor.ColorRole.Background).name(), '#002b36')
 
         QgsSettings().setValue('codeEditor/overrideColors', True, QgsSettings.Gui)
         QgsCodeEditor.setColor(QgsCodeEditor.ColorRole.Keyword, QColor('#cc11bb'))
