@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgscodeeditor.h                                              *
+ * src/gui/codeeditors/qgscodeeditor.h                                  *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -196,7 +196,7 @@ Returns the font to use in the lexer.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgscodeeditor.h                                              *
+ * src/gui/codeeditors/qgscodeeditor.h                                  *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
