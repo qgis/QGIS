@@ -194,9 +194,18 @@ namespace QgsGuiUtils
   /**
    * Returns a localized string representation of the \a value with the appropriate number of
    * decimals supported by the \a rasterDataType.
+   * Note that for floating point types the number of decimals may exceed the actual internal
+   * precision because the precision is always calculated on the mantissa and the conversion to
+   * string interprets the precision as decimal places.
    * \since QGIS 3.16
    */
-  QString displayValue( const Qgis::DataType rasterDataType, const double value );
+  QString displayValueWithMaximumDecimals( const Qgis::DataType rasterDataType, const double value );
+
+  /**
+   * Returns the maximum number of significant digits a for the given \a rasterDataType.
+   * \since QGIS 3.16
+   */
+  int significantDigits( const Qgis::DataType rasterDataType );
 
 }
 

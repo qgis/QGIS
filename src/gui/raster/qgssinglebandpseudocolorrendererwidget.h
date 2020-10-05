@@ -81,8 +81,8 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
 
     void minMaxModified();
 
-    // Convert min/max to localized display value with correct precision
-    QString displayValue( const double value );
+    // Convert min/max to localized display value with maximum precision for the current data type
+    QString displayValueWithMaxPrecision( const double value );
 
 };
 

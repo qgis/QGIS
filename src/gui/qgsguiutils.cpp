@@ -276,47 +276,45 @@ namespace QgsGuiUtils
     return QSize( adjustedSize, adjustedSize );
   }
 
-  QString displayValue( const Qgis::DataType rasterDataType, const double value )
+  QString displayValueWithMaximumDecimals( const Qgis::DataType rasterDataType, const double value )
   {
+    const int precision { significantDigits( rasterDataType ) };
+    // Reduce
+    return QLocale().toString( value, 'f', precision );
+  }
 
-    int precision { 9 };
+  int significantDigits( const Qgis::DataType rasterDataType )
+  {
     switch ( rasterDataType )
     {
       case Qgis::DataType::Int16:
       case Qgis::DataType::UInt16:
-      {
-        precision = 5;
-        break;
-      }
       case Qgis::DataType::Int32:
       case Qgis::DataType::UInt32:
-      {
-        precision = 10;
-        break;
-      }
       case Qgis::DataType::Byte:
+      case Qgis::DataType::CInt16:
+      case Qgis::DataType::CInt32:
+      case Qgis::DataType::ARGB32:
+      case Qgis::DataType::ARGB32_Premultiplied:
       {
-        precision = 3;
-        break;
+        return 0;
       }
       case Qgis::DataType::Float32:
+      case Qgis::DataType::CFloat32:
       {
-        precision = 9;
-        break;
+        return std::numeric_limits<float>::digits10 + 1;
       }
       case Qgis::DataType::Float64:
+      case Qgis::DataType::CFloat64:
       {
-        precision = 17;
-        break;
+        return std::numeric_limits<double>::digits10 + 1;
       }
-      default:
+      case Qgis::DataType::UnknownDataType:
       {
-        precision = 9;
+        return std::numeric_limits<double>::digits10 + 1;
       }
     }
-    return QLocale().toString( value, 'f', precision );
   }
-
 }
 
 //
