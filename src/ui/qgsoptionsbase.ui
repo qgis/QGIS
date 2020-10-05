@@ -289,18 +289,6 @@
          </item>
          <item>
           <property name="text">
-           <string>Advanced</string>
-          </property>
-          <property name="toolTip">
-           <string>Advanced</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/mIconWarning.svg</normaloff>:/images/themes/default/mIconWarning.svg</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
            <string>Acceleration</string>
           </property>
           <property name="toolTip">
@@ -5613,49 +5601,6 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mOptionsPageSettingsEditor">
-          <layout class="QVBoxLayout" name="verticalLayout_43">
-           <item>
-            <widget class="QGroupBox" name="groupBox_26">
-             <property name="title">
-              <string>Advanced Settings Editor</string>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_42">
-              <item>
-               <widget class="QWidget" name="mAdvancedSettingsWarning" native="true">
-                <layout class="QVBoxLayout" name="verticalLayout_44">
-                 <item>
-                  <widget class="QLabel" name="label_44">
-                   <property name="text">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Changes on this page are dangerous and can break your QGIS installation in various ways. Any change you make is applied immediately, without clicking the &lt;span style=&quot; font-style:italic;&quot;&gt;OK&lt;/span&gt; button.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                   </property>
-                   <property name="wordWrap">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="mAdvancedSettingsEnableButton">
-                   <property name="text">
-                    <string>I will be careful, I promise!</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item>
-               <widget class="QgsSettingsTree" name="mAdvancedSettingsEditor" native="true">
-                <property name="visible">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-          </layout>
-         </widget>
          <widget class="QWidget" name="mOptionsPageAcceleration">
           <layout class="QVBoxLayout" name="mOptionsPageAccelerationLayout">
            <item>
@@ -5867,12 +5812,6 @@ p, li { white-space: pre-wrap; }
    <class>QgsScaleComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsscalecombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsSettingsTree</class>
-   <extends>QWidget</extends>
-   <header>qgssettingstree.h</header>
-   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsAuthEditorWidgets</class>
@@ -6117,7 +6056,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>mAddUrlPushButton</tabstop>
   <tabstop>mRemoveUrlPushButton</tabstop>
   <tabstop>mNoProxyUrlListWidget</tabstop>
-  <tabstop>mAdvancedSettingsEnableButton</tabstop>
   <tabstop>mGPUEnableCheckBox</tabstop>
   <tabstop>mOpenClDevicesCombo</tabstop>
   <tabstop>mGPUInfoTextBrowser</tabstop>
@@ -6156,38 +6094,6 @@ p, li { white-space: pre-wrap; }
     <hint type="destinationlabel">
      <x>753</x>
      <y>126</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mAdvancedSettingsEnableButton</sender>
-   <signal>clicked()</signal>
-   <receiver>mAdvancedSettingsEditor</receiver>
-   <slot>show()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>481</x>
-     <y>261</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>481</x>
-     <y>412</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mAdvancedSettingsEnableButton</sender>
-   <signal>clicked()</signal>
-   <receiver>mAdvancedSettingsWarning</receiver>
-   <slot>hide()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>481</x>
-     <y>261</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>481</x>
-     <y>164</y>
     </hint>
    </hints>
   </connection>

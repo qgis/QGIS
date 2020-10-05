@@ -12273,8 +12273,7 @@ QMap< QString, int > QgisApp::optionsPagesMap()
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Authentication" ), 13 );
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Network" ), 14 );
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Locator" ), 15 );
-    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Advanced" ), 16 );
-    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Acceleration" ), 17 );
+    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Acceleration" ), 16 );
   } );
 
   QMap< QString, int > map = sOptionsPagesMap;
@@ -12288,6 +12287,8 @@ QMap< QString, int > QgisApp::optionsPagesMap()
     }
     idx++;
   }
+
+  map.insert( QCoreApplication::translate( "QgsOptionsBase", "Advanced" ), idx );
 
   return map;
 }
