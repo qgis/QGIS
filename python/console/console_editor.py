@@ -81,6 +81,8 @@ class KeyFilter(QObject):
 
 class Editor(QgsPythonConsoleBase):
 
+    MARKER_NUM = 6
+
     def __init__(self, parent=None):
         super(Editor, self).__init__(parent)
         self.parent = parent
@@ -98,40 +100,13 @@ class Editor(QgsPythonConsoleBase):
                           self.MARKER_NUM)
 
         self.setMinimumHeight(120)
-        # self.setMinimumWidth(300)
 
-        self.setBraceMatching(QsciScintilla.SloppyBraceMatch)
-
-        # Folding
-        self.setFolding(QsciScintilla.PlainFoldStyle)
-        # self.setWrapMode(QsciScintilla.WrapWord)
-
-        # Edge Mode
-        self.setEdgeMode(QsciScintilla.EdgeLine)
-        self.setEdgeColumn(80)
-
-        self.SendScintilla(self.SCI_SETADDITIONALSELECTIONTYPING, 1)
-        self.SendScintilla(self.SCI_SETMULTIPASTE, 1)
-        self.SendScintilla(self.SCI_SETVIRTUALSPACEOPTIONS, self.SCVS_RECTANGULARSELECTION)
-
-        # self.setWrapMode(QsciScintilla.WrapCharacter)
-        self.setWhitespaceVisibility(QsciScintilla.WsVisibleAfterIndent)
-        # self.SendScintilla(QsciScintilla.SCI_SETHSCROLLBAR, 0)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 
         self.settingsEditor()
 
         # Annotations
         self.setAnnotationDisplay(QsciScintilla.ANNOTATION_BOXED)
-
-        # Indentation
-        self.setAutoIndent(True)
-        self.setIndentationsUseTabs(False)
-        self.setIndentationWidth(4)
-        self.setTabIndents(True)
-        self.setBackspaceUnindents(True)
-        self.setTabWidth(4)
-        self.setIndentationGuides(True)
 
         # Disable command key
         ctrl, shift = self.SCMOD_CTRL << 16, self.SCMOD_SHIFT << 16
@@ -167,18 +142,6 @@ class Editor(QgsPythonConsoleBase):
         self.modificationAttempted.connect(self.fileReadOnly)
 
     def settingsEditor(self):
-        self.setSelectionForegroundColor(self.color(QgsCodeEditor.ColorRole.SelectionForeground))
-        self.setSelectionBackgroundColor(self.color(QgsCodeEditor.ColorRole.SelectionBackground))
-        self.setMatchedBraceBackgroundColor(self.color(QgsCodeEditor.ColorRole.MatchedBraceBackground))
-        self.setMatchedBraceForegroundColor(self.color(QgsCodeEditor.ColorRole.MatchedBraceForeground))
-        self.setMarginsForegroundColor(self.color(QgsCodeEditor.ColorRole.MarginForeground))
-        self.setMarginsBackgroundColor(self.color(QgsCodeEditor.ColorRole.MarginBackground))
-        self.setIndentationGuidesForegroundColor(self.color(QgsCodeEditor.ColorRole.MarginForeground))
-        self.setIndentationGuidesBackgroundColor(self.color(QgsCodeEditor.ColorRole.MarginBackground))
-        self.setEdgeColor(self.color(QgsCodeEditor.ColorRole.Edge))
-        foldColor = self.color(QgsCodeEditor.ColorRole.Fold)
-        self.setFoldMarginColors(foldColor, foldColor)
-
         # Set Python lexer
         self.setLexers()
         threshold = self.settings.value("pythonConsole/autoCompThreshold", 2, type=int)
@@ -194,9 +157,6 @@ class Editor(QgsPythonConsoleBase):
                 self.setAutoCompletionSource(self.AcsAll)
         else:
             self.setAutoCompletionSource(self.AcsNone)
-
-        self.setCaretLineBackgroundColor(self.color(QgsCodeEditor.ColorRole.CaretLine))
-        self.setCaretForegroundColor(self.color(QgsCodeEditor.ColorRole.Cursor))
 
     def autoCompleteKeyBinding(self):
         radioButtonSource = self.settings.value("pythonConsole/autoCompleteSource", 'fromAPI')

@@ -29,17 +29,8 @@ import os
 
 class QgsPythonConsoleBase(QgsCodeEditorPython):
 
-    MARKER_NUM = 6
-
     def __init__(self, parent=None):
         super().__init__(parent)
-
-        # Enable non-ascii chars
-        self.setUtf8(True)
-
-        # Set the default font
-        font = QFontDatabase.systemFont(QFontDatabase.FixedFont)
-        self.setFont(font)
 
         # Margin 0 is used for line numbers (editor and output)
         self.setMarginWidth(0, "00000")
@@ -48,9 +39,6 @@ class QgsPythonConsoleBase(QgsCodeEditorPython):
         self.setMarginType(1, 5)  # TextMarginRightJustified=5
         # Margin 2 is used for the 'folding' (editor)
         self.setMarginWidth(2, "0")
-
-        self.setCaretLineVisible(True)
-        self.setCaretWidth(2)
 
         self.iconRun = QgsApplication.getThemeIcon("console/mIconRunConsole.svg")
         self.iconRunScript = QgsApplication.getThemeIcon("mActionStart.svg")
@@ -72,40 +60,7 @@ class QgsPythonConsoleBase(QgsCodeEditorPython):
         self.iconPyQGISHelp = QgsApplication.getThemeIcon("console/iconHelpConsole.svg")
 
     def setLexers(self):
-        self.lexer = QsciLexerPython()
-        self.lexer.setIndentationWarning(QsciLexerPython.Inconsistent)
-        self.lexer.setFoldComments(True)
-        self.lexer.setFoldQuotes(True)
-
-        font = self.getMonospaceFont()
-
-        self.lexer.setDefaultFont(font)
-        self.lexer.setDefaultColor(self.color(QgsCodeEditor.ColorRole.Default))
-        self.lexer.setColor(self.color(QgsCodeEditor.ColorRole.Comment), 1)
-        self.lexer.setColor(self.color(QgsCodeEditor.ColorRole.Number), 2)
-        self.lexer.setColor(self.color(QgsCodeEditor.ColorRole.Keyword), 5)
-        self.lexer.setColor(self.color(QgsCodeEditor.ColorRole.Class), 8)
-        self.lexer.setColor(self.color(QgsCodeEditor.ColorRole.Method), 9)
-        self.lexer.setColor(self.color(QgsCodeEditor.ColorRole.Decoration), 15)
-        self.lexer.setColor(self.color(QgsCodeEditor.ColorRole.CommentBlock), 12)
-        self.lexer.setColor(self.color(QgsCodeEditor.ColorRole.SingleQuote), 4)
-        self.lexer.setColor(self.color(QgsCodeEditor.ColorRole.DoubleQuote), 3)
-        self.lexer.setColor(self.color(QgsCodeEditor.ColorRole.TripleSingleQuote), 6)
-        self.lexer.setColor(self.color(QgsCodeEditor.ColorRole.TripleDoubleQuote), 7)
-        self.lexer.setColor(self.color(QgsCodeEditor.ColorRole.Default), 13)
-        self.lexer.setColor(QColor(Qt.red), 14)
-        self.lexer.setFont(font, 1)
-        self.lexer.setFont(font, 2)
-        self.lexer.setFont(font, 3)
-        self.lexer.setFont(font, 4)
-        self.lexer.setFont(font, QsciLexerPython.UnclosedString)
-
-        # ? only for editor and console ?
-        paperColor = self.color(QgsCodeEditor.ColorRole.Background)
-        for style in range(0, 33):
-            self.lexer.setPaper(paperColor, style)
-
-        self.api = QsciAPIs(self.lexer)
+        self.api = QsciAPIs(self.lexer())
         checkBoxAPI = self.settings.value("pythonConsole/preloadAPI", True, type=bool)
         checkBoxPreparedAPI = self.settings.value("pythonConsole/usePreparedAPIFile", False, type=bool)
         if checkBoxAPI:
@@ -118,9 +73,7 @@ class QgsPythonConsoleBase(QgsCodeEditorPython):
             for i in range(0, len(apiPath)):
                 self.api.load(apiPath[i])
             self.api.prepare()
-            self.lexer.setAPIs(self.api)
-
-        self.setLexer(self.lexer)
+            self.lexer().setAPIs(self.api)
 
 
 if __name__ == "__main__":

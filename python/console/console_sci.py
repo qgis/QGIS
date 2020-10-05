@@ -61,9 +61,6 @@ class ShellScintilla(QgsPythonConsoleBase, code.InteractiveInterpreter):
 
         self.new_input_line = True
 
-        self.setCaretLineVisible(False)
-        self.setMarginLineNumbers(0, False)  # NO linenumbers for the input line
-
         self.buffer = []
         self.continuationLine = False
 
@@ -79,10 +76,6 @@ class ShellScintilla(QgsPythonConsoleBase, code.InteractiveInterpreter):
         self.readHistoryFile()
 
         self.historyDlg = HistoryDialog(self)
-
-        # Brace matching: enable for a brace immediately before or after
-        # the current position
-        self.setBraceMatching(QsciScintilla.SloppyBraceMatch)
 
         self.refreshSettingsShell()
 
@@ -115,7 +108,7 @@ class ShellScintilla(QgsPythonConsoleBase, code.InteractiveInterpreter):
         self.newShortcutCSS.activated.connect(self.showHistory)
 
     def _setMinimumHeight(self):
-        font = self.lexer.defaultFont(0)
+        font = self.lexer().defaultFont(0)
         fm = QFontMetrics(font)
 
         self.setMinimumHeight(fm.height() + 10)
@@ -137,17 +130,11 @@ class ShellScintilla(QgsPythonConsoleBase, code.InteractiveInterpreter):
         else:
             self.setAutoCompletionSource(self.AcsNone)
 
-        self.setCaretLineBackgroundColor(self.color(QgsCodeEditor.ColorRole.CaretLine))
-        self.setCaretForegroundColor(self.color(QgsCodeEditor.ColorRole.Cursor))
-
-        self.setSelectionForegroundColor(self.color(QgsCodeEditor.ColorRole.SelectionForeground))
-        self.setSelectionBackgroundColor(self.color(QgsCodeEditor.ColorRole.SelectionBackground))
-        self.setMatchedBraceBackgroundColor(self.color(QgsCodeEditor.ColorRole.MatchedBraceBackground))
-        self.setMatchedBraceForegroundColor(self.color(QgsCodeEditor.ColorRole.MatchedBraceForeground))
-        self.setMarginsBackgroundColor(self.color(QgsCodeEditor.ColorRole.Background))
-
         # Sets minimum height for input area based of font metric
         self._setMinimumHeight()
+
+        self.setCaretLineVisible(False)
+        self.setMarginLineNumbers(0, False)  # NO linenumbers for the input line
 
     def showHistory(self):
         if not self.historyDlg.isVisible():
