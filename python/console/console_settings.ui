@@ -60,11 +60,40 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>1041</width>
-        <height>736</height>
+        <width>779</width>
+        <height>748</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout">
+       <item row="1" column="0">
+        <widget class="QgsCollapsibleGroupBox" name="groupBox_4">
+         <property name="title">
+          <string>Typing</string>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="saveCollapsedState" stdset="0">
+          <bool>true</bool>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_11">
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="autoInsertionImport">
+            <property name="text">
+             <string>Automatic insertion of the 'import' string on 'from xxx'</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="autoCloseBracket">
+            <property name="text">
+             <string>Automatic parentheses insertion</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
        <item row="5" column="0">
         <widget class="QGroupBox" name="groupBox">
          <property name="title">
@@ -84,39 +113,6 @@
              <string>Generate</string>
             </property>
            </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QgsCollapsibleGroupBox" name="groupBox_4">
-         <property name="title">
-          <string>Typing</string>
-         </property>
-         <property name="collapsed" stdset="0">
-          <bool>true</bool>
-         </property>
-         <property name="saveCollapsedState" stdset="0">
-          <bool>true</bool>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_11">
-          <item row="0" column="0">
-           <layout class="QVBoxLayout" name="verticalLayout_2">
-            <item>
-             <widget class="QCheckBox" name="autoCloseBracket">
-              <property name="text">
-               <string>Automatic parentheses insertion</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="autoInsertionImport">
-              <property name="text">
-               <string>Automatic insertion of the 'import' string on 'from xxx'</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
           </item>
          </layout>
         </widget>
@@ -202,44 +198,6 @@
              </widget>
             </item>
            </layout>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QgsCollapsibleGroupBox" name="groupBoxRunDebugEditor">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="title">
-          <string>Run and Debug</string>
-         </property>
-         <property name="collapsed" stdset="0">
-          <bool>false</bool>
-         </property>
-         <property name="saveCollapsedState" stdset="0">
-          <bool>true</bool>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_21">
-          <item row="0" column="0">
-           <widget class="QCheckBox" name="enableObjectInspector">
-            <property name="text">
-             <string>Enable Object Inspector (switching between tabs may be slow)</string>
-            </property>
-            <property name="checked">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QCheckBox" name="autoSaveScript">
-            <property name="text">
-             <string>Auto-save script before running</string>
-            </property>
-           </widget>
           </item>
          </layout>
         </widget>
@@ -440,6 +398,38 @@
          </layout>
         </widget>
        </item>
+       <item row="2" column="0">
+        <widget class="QgsCollapsibleGroupBox" name="groupBoxRunDebugEditor">
+         <property name="title">
+          <string>Run and Debug</string>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="saveCollapsedState" stdset="0">
+          <bool>true</bool>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_21">
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="enableObjectInspector">
+            <property name="text">
+             <string>Enable Object Inspector (switching between tabs may be slow)</string>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="autoSaveScript">
+            <property name="text">
+             <string>Auto-save script before running</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
       </layout>
      </widget>
     </widget>
@@ -460,6 +450,27 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>groupBoxAutoCompletion</tabstop>
+  <tabstop>autoCompThreshold</tabstop>
+  <tabstop>autoCompFromDoc</tabstop>
+  <tabstop>autoCompFromAPI</tabstop>
+  <tabstop>autoCompFromDocAPI</tabstop>
+  <tabstop>autoCloseBracket</tabstop>
+  <tabstop>autoInsertionImport</tabstop>
+  <tabstop>enableObjectInspector</tabstop>
+  <tabstop>autoSaveScript</tabstop>
+  <tabstop>preloadAPI</tabstop>
+  <tabstop>tableWidget</tabstop>
+  <tabstop>addAPIpath</tabstop>
+  <tabstop>removeAPIpath</tabstop>
+  <tabstop>groupBoxPreparedAPI</tabstop>
+  <tabstop>compileAPIs</tabstop>
+  <tabstop>lineEdit</tabstop>
+  <tabstop>tokenGhLineEdit</tabstop>
+  <tabstop>generateToken</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
