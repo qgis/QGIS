@@ -32,14 +32,6 @@ class QgsPythonConsoleBase(QgsCodeEditorPython):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        # Margin 0 is used for line numbers (editor and output)
-        self.setMarginWidth(0, "00000")
-        # Margin 1 is used for the '>>>' prompt (console input)
-        self.setMarginWidth(1, "0")
-        self.setMarginType(1, 5)  # TextMarginRightJustified=5
-        # Margin 2 is used for the 'folding' (editor)
-        self.setMarginWidth(2, "0")
-
     def setLexers(self):
         self.api = QsciAPIs(self.lexer())
         checkBoxAPI = self.settings.value("pythonConsole/preloadAPI", True, type=bool)
