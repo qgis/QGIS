@@ -118,9 +118,6 @@ class ShellOutputScintilla(QgsCodeEditorPython):
 
         self.insertInitText()
         self.refreshSettingsOutput()
-        self.setReadOnly(True)
-
-        self.setCaretWidth(0)  # NO (blinking) caret in the output
 
         self.setMinimumHeight(120)
 
