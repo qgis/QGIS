@@ -112,6 +112,14 @@ SET(QGIS_GUI_SRCS
   auth/qgsauthsslimportdialog.cpp
   auth/qgsauthtrustedcasdialog.cpp
 
+  codeeditors/qgscodeeditor.cpp
+  codeeditors/qgscodeeditorcss.cpp
+  codeeditors/qgscodeeditorhtml.cpp
+  codeeditors/qgscodeeditorjs.cpp
+  codeeditors/qgscodeeditorpython.cpp
+  codeeditors/qgscodeeditorsql.cpp
+  codeeditors/qgscodeeditorexpression.cpp
+
   devtools/qgsdevtoolwidget.cpp
   devtools/qgsdevtoolwidgetfactory.cpp
 
@@ -373,13 +381,6 @@ SET(QGIS_GUI_SRCS
   qgsbusyindicatordialog.cpp
   qgscharacterselectordialog.cpp
   qgscheckablecombobox.cpp
-  qgscodeeditor.cpp
-  qgscodeeditorcss.cpp
-  qgscodeeditorhtml.cpp
-  qgscodeeditorjs.cpp
-  qgscodeeditorpython.cpp
-  qgscodeeditorsql.cpp
-  qgscodeeditorexpression.cpp
   qgscollapsiblegroupbox.cpp
   qgscolorbrewercolorrampdialog.cpp
   qgscolorbutton.cpp
@@ -609,13 +610,6 @@ SET(QGIS_GUI_HDRS
   qgsbusyindicatordialog.h
   qgscharacterselectordialog.h
   qgscheckablecombobox.h
-  qgscodeeditor.h
-  qgscodeeditorcss.h
-  qgscodeeditorexpression.h
-  qgscodeeditorhtml.h
-  qgscodeeditorjs.h
-  qgscodeeditorpython.h
-  qgscodeeditorsql.h
   qgscollapsiblegroupbox.h
   qgscolorbrewercolorrampdialog.h
   qgscolorbutton.h
@@ -861,6 +855,14 @@ SET(QGIS_GUI_HDRS
   auth/qgsauthtrustedcasdialog.h
 
   callouts/qgscalloutwidget.h
+
+  codeeditors/qgscodeeditor.h
+  codeeditors/qgscodeeditorcss.h
+  codeeditors/qgscodeeditorexpression.h
+  codeeditors/qgscodeeditorhtml.h
+  codeeditors/qgscodeeditorjs.h
+  codeeditors/qgscodeeditorpython.h
+  codeeditors/qgscodeeditorsql.h
 
   devtools/qgsdevtoolwidget.h
   devtools/qgsdevtoolwidgetfactory.h
@@ -1272,6 +1274,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/symbology
   ${CMAKE_SOURCE_DIR}/src/gui/attributetable
   ${CMAKE_SOURCE_DIR}/src/gui/auth
+  ${CMAKE_SOURCE_DIR}/src/gui/codeeditors
   ${CMAKE_SOURCE_DIR}/src/gui/devtools
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core

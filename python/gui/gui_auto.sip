@@ -23,27 +23,6 @@
 %Include auto_generated/qgsbusyindicatordialog.sip
 %Include auto_generated/qgscharacterselectordialog.sip
 %Include auto_generated/qgscheckablecombobox.sip
-%If ( HAVE_QSCI_SIP )
-%Include auto_generated/qgscodeeditor.sip
-%End
-%If ( HAVE_QSCI_SIP )
-%Include auto_generated/qgscodeeditorcss.sip
-%End
-%If ( HAVE_QSCI_SIP )
-%Include auto_generated/qgscodeeditorexpression.sip
-%End
-%If ( HAVE_QSCI_SIP )
-%Include auto_generated/qgscodeeditorhtml.sip
-%End
-%If ( HAVE_QSCI_SIP )
-%Include auto_generated/qgscodeeditorjs.sip
-%End
-%If ( HAVE_QSCI_SIP )
-%Include auto_generated/qgscodeeditorpython.sip
-%End
-%If ( HAVE_QSCI_SIP )
-%Include auto_generated/qgscodeeditorsql.sip
-%End
 %Include auto_generated/qgscollapsiblegroupbox.sip
 %Include auto_generated/qgscolorbrewercolorrampdialog.sip
 %Include auto_generated/qgscolorbutton.sip
@@ -259,6 +238,27 @@
 %Include auto_generated/auth/qgsauthsslimportdialog.sip
 %Include auto_generated/auth/qgsauthtrustedcasdialog.sip
 %Include auto_generated/callouts/qgscalloutwidget.sip
+%If ( HAVE_QSCI_SIP )
+%Include auto_generated/codeeditors/qgscodeeditor.sip
+%End
+%If ( HAVE_QSCI_SIP )
+%Include auto_generated/codeeditors/qgscodeeditorcss.sip
+%End
+%If ( HAVE_QSCI_SIP )
+%Include auto_generated/codeeditors/qgscodeeditorexpression.sip
+%End
+%If ( HAVE_QSCI_SIP )
+%Include auto_generated/codeeditors/qgscodeeditorhtml.sip
+%End
+%If ( HAVE_QSCI_SIP )
+%Include auto_generated/codeeditors/qgscodeeditorjs.sip
+%End
+%If ( HAVE_QSCI_SIP )
+%Include auto_generated/codeeditors/qgscodeeditorpython.sip
+%End
+%If ( HAVE_QSCI_SIP )
+%Include auto_generated/codeeditors/qgscodeeditorsql.sip
+%End
 %Include auto_generated/devtools/qgsdevtoolwidget.sip
 %Include auto_generated/devtools/qgsdevtoolwidgetfactory.sip
 %Include auto_generated/editorwidgets/core/qgseditorconfigwidget.sip
