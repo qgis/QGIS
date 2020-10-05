@@ -187,62 +187,62 @@ class Editor(QgsPythonConsoleBase):
             QCoreApplication.translate("PythonConsole", "Hide Editor"),
             self.hideEditor)
         menu.addSeparator()  # ------------------------------
-        syntaxCheck = menu.addAction(self.iconSyntaxCk,
+        syntaxCheck = menu.addAction(QgsApplication.getThemeIcon("console/iconSyntaxErrorConsole.svg"),
                                      QCoreApplication.translate("PythonConsole", "Check Syntax"),
                                      self.syntaxCheck, 'Ctrl+4')
-        runSelected = menu.addAction(self.iconRun,  # spellok
+        runSelected = menu.addAction(QgsApplication.getThemeIcon("console/mIconRunConsole.svg"),  # spellok
                                      QCoreApplication.translate("PythonConsole", "Run Selected"),
                                      self.runSelectedCode, 'Ctrl+E')  # spellok
-        pyQGISHelpAction = menu.addAction(self.iconPyQGISHelp,
+        pyQGISHelpAction = menu.addAction(QgsApplication.getThemeIcon("console/iconHelpConsole.svg"),
                                           QCoreApplication.translate("PythonConsole", "Search Selected in PyQGIS docs"),
                                           self.searchSelectedTextInPyQGISDocs)
-        menu.addAction(self.iconRunScript,
+        menu.addAction(QgsApplication.getThemeIcon("mActionStart.svg"),
                        QCoreApplication.translate("PythonConsole", "Run Script"),
                        self.runScriptCode, 'Shift+Ctrl+E')
         menu.addSeparator()
-        undoAction = menu.addAction(self.iconUndo,
+        undoAction = menu.addAction(QgsApplication.getThemeIcon("mActionUndo.svg"),
                                     QCoreApplication.translate("PythonConsole", "Undo"),
                                     self.undo, QKeySequence.Undo)
-        redoAction = menu.addAction(self.iconRedo,
+        redoAction = menu.addAction(QgsApplication.getThemeIcon("mActionRedo.svg"),
                                     QCoreApplication.translate("PythonConsole", "Redo"),
                                     self.redo, 'Ctrl+Shift+Z')
         menu.addSeparator()
-        menu.addAction(self.iconFind,
+        menu.addAction(QgsApplication.getThemeIcon("console/iconSearchEditorConsole.svg"),
                        QCoreApplication.translate("PythonConsole", "Find Text"),
                        self.openFindWidget)
-        cutAction = menu.addAction(self.iconCut,
+        cutAction = menu.addAction(QgsApplication.getThemeIcon("mActionEditCut.svg"),
                                    QCoreApplication.translate("PythonConsole", "Cut"),
                                    self.cut, QKeySequence.Cut)
-        copyAction = menu.addAction(self.iconCopy,
+        copyAction = menu.addAction(QgsApplication.getThemeIcon("mActionEditCopy.svg"),
                                     QCoreApplication.translate("PythonConsole", "Copy"),
                                     self.copy, QKeySequence.Copy)
-        pasteAction = menu.addAction(self.iconPaste,
+        pasteAction = menu.addAction(QgsApplication.getThemeIcon("mActionEditPaste.svg"),
                                      QCoreApplication.translate("PythonConsole", "Paste"),
                                      self.paste, QKeySequence.Paste)
         selectAllAction = menu.addAction(
             QCoreApplication.translate("PythonConsole", "Select All"),
             self.selectAll, QKeySequence.SelectAll)
         menu.addSeparator()
-        menu.addAction(self.iconCommentEditor,
+        menu.addAction(QgsApplication.getThemeIcon("console/iconCommentEditorConsole.svg"),
                        QCoreApplication.translate("PythonConsole", "Comment"),
                        self.parent.pc.commentCode, 'Ctrl+3')
-        menu.addAction(self.iconUncommentEditor,
+        menu.addAction(QgsApplication.getThemeIcon("console/iconUncommentEditorConsole.svg"),
                        QCoreApplication.translate("PythonConsole", "Uncomment"),
                        self.parent.pc.uncommentCode, 'Shift+Ctrl+3')
         menu.addSeparator()
         gist_menu = QMenu(self)
         gist_menu.setTitle(QCoreApplication.translate("PythonConsole", "Share on GitHub"))
-        gist_menu.setIcon(self.iconCodePad)
+        gist_menu.setIcon(QgsApplication.getThemeIcon("console/iconCodepadConsole.svg"))
         gist_menu.addAction(QCoreApplication.translate("PythonConsole", "Secret Gist"),
                             partial(self.shareOnGist, False))
         gist_menu.addAction(QCoreApplication.translate("PythonConsole", "Public Gist"),
                             partial(self.shareOnGist, True))
         menu.addMenu(gist_menu)
-        showCodeInspection = menu.addAction(self.iconObjInsp,
+        showCodeInspection = menu.addAction(QgsApplication.getThemeIcon("console/iconClassBrowserConsole.svg"),
                                             QCoreApplication.translate("PythonConsole", "Hide/Show Object Inspector"),
                                             self.objectListEditor)
         menu.addSeparator()
-        menu.addAction(self.iconSettings,
+        menu.addAction(QgsApplication.getThemeIcon("console/iconSettingsConsole.svg"),
                        QCoreApplication.translate("PythonConsole", "Options…"),
                        self.parent.pc.openSettings)
         syntaxCheck.setEnabled(False)

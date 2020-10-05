@@ -164,35 +164,35 @@ class ShellOutputScintilla(QgsPythonConsoleBase):
 
     def contextMenuEvent(self, e):
         menu = QMenu(self)
-        menu.addAction(self.iconHideTool,
+        menu.addAction(QgsApplication.getThemeIcon("console/iconHideToolConsole.svg"),
                        QCoreApplication.translate("PythonConsole", "Hide/Show Toolbar"),
                        self.hideToolBar)
         menu.addSeparator()
         showEditorAction = menu.addAction(
-            self.iconShowEditor,
+            QgsApplication.getThemeIcon("console/iconShowEditorConsole.svg"),
             QCoreApplication.translate("PythonConsole", "Show Editor"),
             self.showEditor)
         menu.addSeparator()
-        runAction = menu.addAction(self.iconRun,
+        runAction = menu.addAction(QgsApplication.getThemeIcon("console/mIconRunConsole.svg"),
                                    QCoreApplication.translate("PythonConsole", "Enter Selected"),
                                    self.enteredSelected,
                                    QKeySequence(Qt.CTRL + Qt.Key_E))
-        clearAction = menu.addAction(self.iconClear,
+        clearAction = menu.addAction(QgsApplication.getThemeIcon("console/iconClearConsole.svg"),
                                      QCoreApplication.translate("PythonConsole", "Clear Console"),
                                      self.clearConsole)
-        pyQGISHelpAction = menu.addAction(self.iconPyQGISHelp,
+        pyQGISHelpAction = menu.addAction(QgsApplication.getThemeIcon("console/iconHelpConsole.svg"),
                                           QCoreApplication.translate("PythonConsole", "Search Selected in PyQGIS docs"),
                                           self.searchSelectedTextInPyQGISDocs)
         menu.addSeparator()
         copyAction = menu.addAction(
-            self.iconCopy,
+            QgsApplication.getThemeIcon("mActionEditCopy.svg"),
             QCoreApplication.translate("PythonConsole", "Copy"),
             self.copy, QKeySequence.Copy)
         selectAllAction = menu.addAction(
             QCoreApplication.translate("PythonConsole", "Select All"),
             self.selectAll, QKeySequence.SelectAll)
         menu.addSeparator()
-        menu.addAction(self.iconSettings,
+        menu.addAction(QgsApplication.getThemeIcon("console/iconSettingsConsole.svg"),
                        QCoreApplication.translate("PythonConsole", "Options…"),
                        self.parent.openSettings)
         runAction.setEnabled(False)
