@@ -33,6 +33,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmimedatautils.h"
 #include "qgswkbtypes.h"
+#include "qgsabstractdatabaseproviderconnection.h"
 
 class QgsDataProvider;
 class QgsDataItem;
@@ -1021,12 +1022,19 @@ class CORE_EXPORT QgsFieldsItem : public QgsDataItem
      */
     QgsVectorLayer *layer() SIP_FACTORY;
 
+    /**
+     * Returns the (possibly NULL) properties of the table this fields belong to.
+     * \since QGIS 3.16
+     */
+    QgsAbstractDatabaseProviderConnection::TableProperty *tableProperty() const;
 
   private:
 
     QString mSchema;
     QString mTableName;
     QString mConnectionUri;
+    std::unique_ptr<QgsAbstractDatabaseProviderConnection::TableProperty> mTableProperty;
+
 };
 
 
@@ -1052,6 +1060,9 @@ class CORE_EXPORT QgsFieldItem : public QgsDataItem
     ~QgsFieldItem() override;
 
     QIcon icon() override;
+
+    //QgsField field() const;
+
 
   private:
 

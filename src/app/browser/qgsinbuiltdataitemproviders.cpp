@@ -836,7 +836,16 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
           connect( deleteFieldAction, &QAction::triggered, fieldsItem, [ md, fieldsItem, itemName, context, supportsCascade ]
           {
             // Confirmation dialog
-            QMessageBox msgbox{QMessageBox::Icon::Question, tr( "Delete Field" ), tr( "Delete '%1' permanently?" ).arg( itemName ), QMessageBox::Ok | QMessageBox::Cancel };
+            QString message {  tr( "Delete '%1' permanently?" ).arg( itemName ) };
+            if ( fieldsItem->tableProperty() && fieldsItem->tableProperty()->primaryKeyColumns().contains( itemName ) )
+            {
+              message.append( tr( "\nThis field is part of a primary key, its removal may make the table unusable by QGIS!" ) );
+            }
+            if ( fieldsItem->tableProperty() && fieldsItem->tableProperty()->geometryColumn() == itemName )
+            {
+              message.append( tr( "\nThis field is a geometry column, its removal may make the table unusable by QGIS!" ) );
+            }
+            QMessageBox msgbox{QMessageBox::Icon::Question, tr( "Delete Field" ), message, QMessageBox::Ok | QMessageBox::Cancel };
             QCheckBox *cb = new QCheckBox( tr( "Delete all related objects (CASCADE)?" ) );
             msgbox.setCheckBox( cb );
             msgbox.setDefaultButton( QMessageBox::Cancel );
@@ -917,8 +926,8 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
                 const QString geometryColumn { dlg.geometryColumnName() };
                 const QgsWkbTypes::Type geometryType { dlg.geometryType() };
                 const bool createSpatialIndex { dlg.createSpatialIndex() &&
-                  geometryType != QgsWkbTypes::NoGeometry &&
-                  geometryType != QgsWkbTypes::Unknown };
+                                                geometryType != QgsWkbTypes::NoGeometry &&
+                                                geometryType != QgsWkbTypes::Unknown };
                 const QgsCoordinateReferenceSystem crs { dlg.crs( ) };
                 // This flag tells to the provider that field types do not need conversion
                 QMap<QString, QVariant> options { { QStringLiteral( "skipConvertFields" ), true } };
