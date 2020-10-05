@@ -130,6 +130,12 @@ void QgsCodeEditorPython::initializeLexer()
   setLexer( pyLexer );
 
   setMarginVisible( true );
+
+  // Margin 2 is used for the 'folding'
+  setMarginWidth( 2, "0" );
+  setMarginsForegroundColor( lexerColor( ColorRole::MarginForeground ) );
+  setMarginsBackgroundColor( lexerColor( ColorRole::MarginBackground ) );
+
   setFoldingVisible( true );
   setIndentationsUseTabs( false );
   setIndentationGuides( true );

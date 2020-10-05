@@ -135,6 +135,15 @@ class ShellScintilla(QgsPythonConsoleBase, code.InteractiveInterpreter):
 
         self.setCaretLineVisible(False)
         self.setMarginLineNumbers(0, False)  # NO linenumbers for the input line
+        self.setMarginWidth(0, 0)
+        # margin 2 is the folding
+        self.setMarginWidth(2, 0)
+        # Margin 1 is used for the '>>>' prompt (console input)
+        self.setMarginLineNumbers(1, True)
+        self.setMarginWidth(1, "00000")
+        self.setMarginType(1, 5)  # TextMarginRightJustified=5
+        self.setFoldMarginColors(self.color(QgsCodeEditor.ColorRole.Background),
+                                 self.color(QgsCodeEditor.ColorRole.Background))
 
     def showHistory(self):
         if not self.historyDlg.isVisible():

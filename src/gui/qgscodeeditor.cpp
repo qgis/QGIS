@@ -237,9 +237,9 @@ void QgsCodeEditor::setMarginVisible( bool margin )
   {
     QFont marginFont = lexerFont();
     marginFont.setPointSize( 10 );
-    setMarginLineNumbers( 1, true );
+    setMarginLineNumbers( 0, true );
     setMarginsFont( marginFont );
-    setMarginWidth( 1, QStringLiteral( "00000" ) );
+    setMarginWidth( 0, QStringLiteral( "00000" ) );
     setMarginsForegroundColor( lexerColor( ColorRole::MarginForeground ) );
     setMarginsBackgroundColor( lexerColor( ColorRole::MarginBackground ) );
   }
