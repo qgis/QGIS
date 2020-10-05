@@ -320,9 +320,9 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromString( const QString &string, QgsP
 
   // prefer project layers
   QgsMapLayer *layer = nullptr;
-  if ( context.project() )
+  if ( auto *lProject = context.project() )
   {
-    QgsMapLayer *layer = mapLayerFromStore( string, context.project()->layerStore(), typeHint );
+    QgsMapLayer *layer = mapLayerFromStore( string, lProject->layerStore(), typeHint );
     if ( layer )
       return layer;
   }

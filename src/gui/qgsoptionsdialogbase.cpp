@@ -83,9 +83,9 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString &title
 
   // don't add to dialog margins
   // redefine now, or those in inherited .ui file will be added
-  if ( layout() )
+  if ( auto *lLayout = layout() )
   {
-    layout()->setContentsMargins( 0, 0, 0, 0 ); // Qt default spacing
+    lLayout->setContentsMargins( 0, 0, 0, 0 ); // Qt default spacing
   }
 
   // start with copy of qgsoptionsdialog_template.ui to ensure existence of these objects

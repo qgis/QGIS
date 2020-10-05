@@ -401,8 +401,8 @@ void QgsFeaturePickerModelBase::scheduledReload()
   QSet<QString> attributes = requestedAttributes();
   if ( !attributes.isEmpty() )
   {
-    if ( request.filterExpression() )
-      attributes += request.filterExpression()->referencedColumns();
+    if ( auto *lFilterExpression = request.filterExpression() )
+      attributes += lFilterExpression->referencedColumns();
     attributes += requestedAttributesForStyle();
 
     request.setSubsetOfAttributes( attributes, mSourceLayer->fields() );

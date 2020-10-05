@@ -557,10 +557,10 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
     QString txt = lf->text( label->getPartId() );
     QFontMetricsF *labelfm = lf->labelFontMetrics();
 
-    if ( context.maskIdProvider() )
+    if ( auto *lMaskIdProvider = context.maskIdProvider() )
     {
-      int maskId = context.maskIdProvider()->maskId( label->getFeaturePart()->layer()->provider()->layerId(),
-                   label->getFeaturePart()->layer()->provider()->providerId() );
+      int maskId = lMaskIdProvider->maskId( label->getFeaturePart()->layer()->provider()->layerId(),
+                                            label->getFeaturePart()->layer()->provider()->providerId() );
       context.setCurrentMaskId( maskId );
     }
 

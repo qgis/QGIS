@@ -46,8 +46,8 @@ void QgsLabelSettingsWidgetBase::setGeometryType( QgsWkbTypes::GeometryType )
 
 QgsExpressionContext QgsLabelSettingsWidgetBase::createExpressionContext() const
 {
-  if ( mContext.expressionContext() )
-    return *mContext.expressionContext();
+  if ( auto *lExpressionContext = mContext.expressionContext() )
+    return *lExpressionContext;
 
   QgsExpressionContext expContext( mContext.globalProjectAtlasMapLayerScopes( mVectorLayer ) );
   QgsExpressionContextScope *symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );

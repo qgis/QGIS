@@ -1293,8 +1293,8 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsExtentCrs( cons
   else if ( QgsMapLayer *layer = QgsProcessingUtils::mapLayerFromString( valueAsString, context ) )
     return layer->crs();
 
-  if ( context.project() )
-    return context.project()->crs();
+  if ( auto *lProject = context.project() )
+    return lProject->crs();
   else
     return QgsCoordinateReferenceSystem();
 }
@@ -1411,8 +1411,8 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsPointCrs( const
       return crs;
   }
 
-  if ( context.project() )
-    return context.project()->crs();
+  if ( auto *lProject = context.project() )
+    return lProject->crs();
   else
     return QgsCoordinateReferenceSystem();
 }
@@ -1585,8 +1585,8 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsGeometryCrs( co
       return crs;
   }
 
-  if ( context.project() )
-    return context.project()->crs();
+  if ( auto *lProject = context.project() )
+    return lProject->crs();
   else
     return QgsCoordinateReferenceSystem();
 }
@@ -5454,9 +5454,9 @@ QgsProcessingOutputDefinition *QgsProcessingParameterFeatureSink::toOutputDefini
 
 QString QgsProcessingParameterFeatureSink::defaultFileExtension() const
 {
-  if ( originalProvider() )
+  if ( auto *lOriginalProvider = originalProvider() )
   {
-    return originalProvider()->defaultVectorFileExtension( hasGeometry() );
+    return lOriginalProvider->defaultVectorFileExtension( hasGeometry() );
   }
   else if ( QgsProcessingProvider *p = provider() )
   {
@@ -5513,12 +5513,12 @@ QString QgsProcessingParameterFeatureSink::createFileFilter() const
 
 QStringList QgsProcessingParameterFeatureSink::supportedOutputVectorLayerExtensions() const
 {
-  if ( originalProvider() )
+  if ( auto *lOriginalProvider = originalProvider() )
   {
     if ( hasGeometry() )
-      return originalProvider()->supportedOutputVectorLayerExtensions();
+      return lOriginalProvider->supportedOutputVectorLayerExtensions();
     else
-      return originalProvider()->supportedOutputTableExtensions();
+      return lOriginalProvider->supportedOutputTableExtensions();
   }
   else if ( QgsProcessingProvider *p = provider() )
   {
@@ -5700,9 +5700,9 @@ QgsProcessingOutputDefinition *QgsProcessingParameterRasterDestination::toOutput
 
 QString QgsProcessingParameterRasterDestination::defaultFileExtension() const
 {
-  if ( originalProvider() )
+  if ( auto *lOriginalProvider = originalProvider() )
   {
-    return originalProvider()->defaultRasterFileExtension();
+    return lOriginalProvider->defaultRasterFileExtension();
   }
   else if ( QgsProcessingProvider *p = provider() )
   {
@@ -5727,9 +5727,9 @@ QString QgsProcessingParameterRasterDestination::createFileFilter() const
 
 QStringList QgsProcessingParameterRasterDestination::supportedOutputRasterLayerExtensions() const
 {
-  if ( originalProvider() )
+  if ( auto *lOriginalProvider = originalProvider() )
   {
-    return originalProvider()->supportedOutputRasterLayerExtensions();
+    return lOriginalProvider->supportedOutputRasterLayerExtensions();
   }
   else if ( QgsProcessingProvider *p = provider() )
   {
@@ -6028,8 +6028,8 @@ QString QgsProcessingDestinationParameter::generateTemporaryDestination() const
 
 bool QgsProcessingDestinationParameter::isSupportedOutputValue( const QVariant &value, QgsProcessingContext &context, QString &error ) const
 {
-  if ( originalProvider() )
-    return originalProvider()->isSupportedOutputValue( value, this, context, error );
+  if ( auto *lOriginalProvider = originalProvider() )
+    return lOriginalProvider->isSupportedOutputValue( value, this, context, error );
   else if ( provider() )
     return provider()->isSupportedOutputValue( value, this, context, error );
 
@@ -6152,9 +6152,9 @@ QgsProcessingOutputDefinition *QgsProcessingParameterVectorDestination::toOutput
 
 QString QgsProcessingParameterVectorDestination::defaultFileExtension() const
 {
-  if ( originalProvider() )
+  if ( auto *lOriginalProvider = originalProvider() )
   {
-    return originalProvider()->defaultVectorFileExtension( hasGeometry() );
+    return lOriginalProvider->defaultVectorFileExtension( hasGeometry() );
   }
   else if ( QgsProcessingProvider *p = provider() )
   {
@@ -6208,12 +6208,12 @@ QString QgsProcessingParameterVectorDestination::createFileFilter() const
 
 QStringList QgsProcessingParameterVectorDestination::supportedOutputVectorLayerExtensions() const
 {
-  if ( originalProvider() )
+  if ( auto *lOriginalProvider = originalProvider() )
   {
     if ( hasGeometry() )
-      return originalProvider()->supportedOutputVectorLayerExtensions();
+      return lOriginalProvider->supportedOutputVectorLayerExtensions();
     else
-      return originalProvider()->supportedOutputTableExtensions();
+      return lOriginalProvider->supportedOutputTableExtensions();
   }
   else if ( QgsProcessingProvider *p = provider() )
   {

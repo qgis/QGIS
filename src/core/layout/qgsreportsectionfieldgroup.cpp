@@ -125,12 +125,12 @@ QgsLayout *QgsReportSectionFieldGroup::nextBody( bool &ok )
     // no features left for this iteration
     mFeatures = QgsFeatureIterator();
 
-    if ( footer() )
+    if ( auto *lFooter = footer() )
     {
-      footer()->reportContext().blockSignals( true );
-      footer()->reportContext().setLayer( mCoverageLayer.get() );
-      footer()->reportContext().blockSignals( false );
-      footer()->reportContext().setFeature( mLastFeature );
+      lFooter->reportContext().blockSignals( true );
+      lFooter->reportContext().setLayer( mCoverageLayer.get() );
+      lFooter->reportContext().blockSignals( false );
+      lFooter->reportContext().setFeature( mLastFeature );
     }
     ok = false;
     return nullptr;

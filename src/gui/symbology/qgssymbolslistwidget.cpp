@@ -364,8 +364,8 @@ void QgsSymbolsListWidget::updateSymbolColor()
 
 QgsExpressionContext QgsSymbolsListWidget::createExpressionContext() const
 {
-  if ( mContext.expressionContext() )
-    return QgsExpressionContext( *mContext.expressionContext() );
+  if ( auto *lExpressionContext = mContext.expressionContext() )
+    return QgsExpressionContext( *lExpressionContext );
 
   //otherwise create a default symbol context
   QgsExpressionContext expContext( mContext.globalProjectAtlasMapLayerScopes( layer() ) );

@@ -439,11 +439,11 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mDataDefinedProperties = mSettings.dataDefinedProperties();
 
   // callout settings, to move to custom widget when multiple styles exist
-  if ( mSettings.callout() )
+  if ( auto *lCallout = mSettings.callout() )
   {
-    whileBlocking( mCalloutsDrawCheckBox )->setChecked( mSettings.callout()->enabled() );
-    whileBlocking( mCalloutStyleComboBox )->setCurrentIndex( mCalloutStyleComboBox->findData( mSettings.callout()->type() ) );
-    updateCalloutWidget( mSettings.callout() );
+    whileBlocking( mCalloutsDrawCheckBox )->setChecked( lCallout->enabled() );
+    whileBlocking( mCalloutStyleComboBox )->setCurrentIndex( mCalloutStyleComboBox->findData( lCallout->type() ) );
+    updateCalloutWidget( lCallout );
   }
   else
   {

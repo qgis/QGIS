@@ -1120,12 +1120,12 @@ QStringList QgsGrassModuleInput::currentLayerCodes()
 {
   QStringList list;
 
-  if ( currentLayer() )
+  if ( auto *lCurrentLayer = currentLayer() )
   {
     Q_FOREACH ( QString type, currentGeometryTypeNames() )
     {
       type.replace( QLatin1String( "area" ), QLatin1String( "polygon" ) );
-      list << QStringLiteral( "%1_%2" ).arg( currentLayer()->number() ).arg( type );
+      list << QStringLiteral( "%1_%2" ).arg( lCurrentLayer->number() ).arg( type );
     }
   }
   QgsDebugMsg( "list = " + list.join( "," ) );

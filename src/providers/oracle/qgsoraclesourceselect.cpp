@@ -81,8 +81,8 @@ QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QSt
     if ( values.size() == 0 )
     {
       QString ownerName = index.sibling( index.row(), QgsOracleTableModel::DbtmOwner ).data( Qt::DisplayRole ).toString();
-      if ( conn() )
-        values = conn()->pkCandidates( ownerName, tableName );
+      if ( auto *lConn = conn() )
+        values = lConn->pkCandidates( ownerName, tableName );
     }
 
     if ( values.size() == 0 )

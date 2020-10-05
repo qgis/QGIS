@@ -1034,9 +1034,9 @@ QgsGrassVectorItem::~QgsGrassVectorItem()
 
 void QgsGrassVectorItem::onDirectoryChanged()
 {
-  if ( parent() )
+  if ( auto *lParent = parent() )
   {
-    parent()->refresh();
+    lParent->refresh();
   }
 }
 

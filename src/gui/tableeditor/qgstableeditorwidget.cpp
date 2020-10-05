@@ -333,9 +333,9 @@ void QgsTableEditorWidget::setTableContents( const QgsTableContents &contents )
       if ( col.content().value< QgsProperty >().isActive() )
         item->setFlags( item->flags() & ( ~Qt::ItemIsEditable ) );
 
-      if ( col.numericFormat() )
+      if ( auto *lNumericFormat = col.numericFormat() )
       {
-        mNumericFormats.insert( item, col.numericFormat()->clone() );
+        mNumericFormats.insert( item, lNumericFormat->clone() );
         item->setData( Qt::DisplayRole, mNumericFormats.value( item )->formatDouble( col.content().toDouble(), numericContext ) );
       }
       setItem( rowNumber, colNumber, item );

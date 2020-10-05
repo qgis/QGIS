@@ -51,16 +51,16 @@ QgsColorRampShader::QgsColorRampShader( const QgsColorRampShader &other )
   , mLUTInitialized( other.mLUTInitialized )
   , mClip( other.mClip )
 {
-  if ( other.sourceColorRamp() )
-    mSourceColorRamp.reset( other.sourceColorRamp()->clone() );
+  if ( auto *lSourceColorRamp = other.sourceColorRamp() )
+    mSourceColorRamp.reset( lSourceColorRamp->clone() );
   mColorRampItemList = other.mColorRampItemList;
 }
 
 QgsColorRampShader &QgsColorRampShader::operator=( const QgsColorRampShader &other )
 {
   QgsRasterShaderFunction::operator=( other );
-  if ( other.sourceColorRamp() )
-    mSourceColorRamp.reset( other.sourceColorRamp()->clone() );
+  if ( auto *lSourceColorRamp = other.sourceColorRamp() )
+    mSourceColorRamp.reset( lSourceColorRamp->clone() );
   else
     mSourceColorRamp.reset();
 

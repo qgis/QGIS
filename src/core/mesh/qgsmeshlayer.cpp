@@ -712,8 +712,8 @@ QgsMeshDatasetIndex QgsMeshLayer::staticVectorDatasetIndex() const
 
 void QgsMeshLayer::setReferenceTime( const QDateTime &referenceTime )
 {
-  if ( dataProvider() )
-    mTemporalProperties->setReferenceTime( referenceTime, dataProvider()->temporalCapabilities() );
+  if ( auto *lDataProvider = dataProvider() )
+    mTemporalProperties->setReferenceTime( referenceTime, lDataProvider->temporalCapabilities() );
   else
     mTemporalProperties->setReferenceTime( referenceTime, nullptr );
 }

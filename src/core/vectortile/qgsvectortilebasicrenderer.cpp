@@ -129,9 +129,9 @@ void QgsVectorTileBasicRenderer::startRender( QgsRenderContext &context, int til
         QgsExpression expr( layerStyle.filterExpression() );
         mRequiredFields[layerStyle.layerName()].unite( expr.referencedColumns() );
       }
-      if ( layerStyle.symbol() )
+      if ( auto *lSymbol = layerStyle.symbol() )
       {
-        mRequiredFields[layerStyle.layerName()].unite( layerStyle.symbol()->usedAttributes( context ) );
+        mRequiredFields[layerStyle.layerName()].unite( lSymbol->usedAttributes( context ) );
       }
     }
   }

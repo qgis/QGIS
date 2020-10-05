@@ -4665,17 +4665,17 @@ QString  QgsPostgresProvider::description() const
   QString pgVersion( tr( "PostgreSQL version: unknown" ) );
   QString postgisVersion( tr( "unknown" ) );
 
-  if ( connectionRO() )
+  if ( auto *lConnectionRO = connectionRO() )
   {
     QgsPostgresResult result;
 
-    result = connectionRO()->PQexec( QStringLiteral( "SELECT version()" ) );
+    result = lConnectionRO->PQexec( QStringLiteral( "SELECT version()" ) );
     if ( result.PQresultStatus() == PGRES_TUPLES_OK )
     {
       pgVersion = result.PQgetvalue( 0, 0 );
     }
 
-    result = connectionRO()->PQexec( QStringLiteral( "SELECT postgis_version()" ) );
+    result = lConnectionRO->PQexec( QStringLiteral( "SELECT postgis_version()" ) );
     if ( result.PQresultStatus() == PGRES_TUPLES_OK )
     {
       postgisVersion = result.PQgetvalue( 0, 0 );

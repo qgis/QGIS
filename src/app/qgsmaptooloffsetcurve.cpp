@@ -86,11 +86,11 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
               QgsPointLocator::Types( QgsPointLocator::Edge | QgsPointLocator::Area ) );
     }
 
-    if ( match.layer() )
+    if ( auto *lLayer = match.layer() )
     {
-      mSourceLayer = match.layer();
+      mSourceLayer = lLayer;
       QgsFeature fet;
-      if ( match.layer()->getFeatures( QgsFeatureRequest( match.featureId() ) ).nextFeature( fet ) )
+      if ( lLayer->getFeatures( QgsFeatureRequest( match.featureId() ) ).nextFeature( fet ) )
       {
         mSourceFeature = fet;
         mCtrlHeldOnFirstClick = ( e->modifiers() & Qt::ControlModifier ); //no geometry modification if ctrl is pressed
@@ -98,7 +98,7 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
         mRubberBand = createRubberBand();
         if ( mRubberBand )
         {
-          mRubberBand->setToGeometry( mManipulatedGeometry, match.layer() );
+          mRubberBand->setToGeometry( mManipulatedGeometry, lLayer );
         }
         mModifiedFeature = fet.id();
         createUserInputWidget();

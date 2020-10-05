@@ -213,9 +213,9 @@ QVariantList QgsValueRelationFieldFormatter::availableValues( const QVariantMap 
 {
   QVariantList values;
 
-  if ( context.project() )
+  if ( auto *lProject = context.project() )
   {
-    const QgsVectorLayer *referencedLayer = qobject_cast<QgsVectorLayer *>( context.project()->mapLayer( config[QStringLiteral( "Layer" )].toString() ) );
+    const QgsVectorLayer *referencedLayer = qobject_cast<QgsVectorLayer *>( lProject->mapLayer( config[QStringLiteral( "Layer" )].toString() ) );
     if ( referencedLayer )
     {
       int fieldIndex = referencedLayer->fields().indexOf( config.value( QStringLiteral( "Key" ) ).toString() );

@@ -4186,10 +4186,10 @@ void QgisApp::setupConnections()
     {
       canvas->setCanvasColor( backgroundColor );
     }
-    if ( mapOverviewCanvas() )
+    if ( auto *lMapOverviewCanvas = mapOverviewCanvas() )
     {
-      mapOverviewCanvas()->setBackgroundColor( backgroundColor );
-      mapOverviewCanvas()->refresh();
+      lMapOverviewCanvas->setBackgroundColor( backgroundColor );
+      lMapOverviewCanvas->refresh();
     }
   } );
 
@@ -7300,13 +7300,13 @@ void QgisApp::dxfExport()
       flags = flags | QgsDxfExport::FlagNoMText;
     dxfExport.setFlags( flags );
 
-    if ( mapCanvas() )
+    if ( auto *lMapCanvas = mapCanvas() )
     {
       //extent
       if ( d.exportMapExtent() )
       {
-        QgsCoordinateTransform t( mapCanvas()->mapSettings().destinationCrs(), d.crs(), QgsProject::instance() );
-        dxfExport.setExtent( t.transformBoundingBox( mapCanvas()->extent() ) );
+        QgsCoordinateTransform t( lMapCanvas->mapSettings().destinationCrs(), d.crs(), QgsProject::instance() );
+        dxfExport.setExtent( t.transformBoundingBox( lMapCanvas->extent() ) );
       }
     }
 
@@ -16272,9 +16272,9 @@ void QgisApp::showSystemNotification( const QString &title, const QString &messa
   if ( !result.successful )
   {
     // fallback - use message bar if available, otherwise use a message log
-    if ( messageBar() )
+    if ( auto *lMessageBar = messageBar() )
     {
-      messageBar()->pushInfo( title, message );
+      lMessageBar->pushInfo( title, message );
     }
     else
     {

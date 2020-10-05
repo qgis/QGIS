@@ -77,9 +77,9 @@ void QgsUserInputWidget::widgetDestroyed( QObject *obj )
     QMap<QWidget *, QFrame *>::iterator i = mWidgetList.find( w );
     while ( i != mWidgetList.end() )
     {
-      if ( i.value() )
+      if ( auto *lValue = i.value() )
       {
-        i.value()->deleteLater();
+        lValue->deleteLater();
       }
       i = mWidgetList.erase( i );
     }
@@ -98,9 +98,9 @@ void QgsUserInputWidget::setLayoutDirection( QBoxLayout::Direction direction )
   QMap<QWidget *, QFrame *>::const_iterator i = mWidgetList.constBegin();
   while ( i != mWidgetList.constEnd() )
   {
-    if ( i.value() )
+    if ( auto *lValue = i.value() )
     {
-      i.value()->setFrameShape( horizontal ? QFrame::VLine : QFrame::HLine );
+      lValue->setFrameShape( horizontal ? QFrame::VLine : QFrame::HLine );
     }
     ++i;
   }

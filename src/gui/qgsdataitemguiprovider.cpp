@@ -80,9 +80,9 @@ void QgsDataItemGuiProvider::notify( const QString &title, const QString &messag
     case Qgis::MessageLevel::Info:
     case Qgis::MessageLevel::None:
     {
-      if ( context.messageBar() )
+      if ( auto *lMessageBar = context.messageBar() )
       {
-        context.messageBar()->pushInfo( title, message );
+        lMessageBar->pushInfo( title, message );
       }
       else
       {
@@ -92,9 +92,9 @@ void QgsDataItemGuiProvider::notify( const QString &title, const QString &messag
     }
     case Qgis::MessageLevel::Warning:
     {
-      if ( context.messageBar() )
+      if ( auto *lMessageBar = context.messageBar() )
       {
-        context.messageBar()->pushWarning( title, message );
+        lMessageBar->pushWarning( title, message );
       }
       else
       {
@@ -104,9 +104,9 @@ void QgsDataItemGuiProvider::notify( const QString &title, const QString &messag
     }
     case Qgis::MessageLevel::Critical:
     {
-      if ( context.messageBar() )
+      if ( auto *lMessageBar = context.messageBar() )
       {
-        context.messageBar()->pushCritical( title, message );
+        lMessageBar->pushCritical( title, message );
       }
       else
       {
@@ -116,9 +116,9 @@ void QgsDataItemGuiProvider::notify( const QString &title, const QString &messag
     }
     case Qgis::MessageLevel::Success:
     {
-      if ( context.messageBar() )
+      if ( auto *lMessageBar = context.messageBar() )
       {
-        context.messageBar()->pushSuccess( title, message );
+        lMessageBar->pushSuccess( title, message );
       }
       else
       {

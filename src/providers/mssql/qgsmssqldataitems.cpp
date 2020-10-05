@@ -602,8 +602,8 @@ QgsMssqlLayerItem *QgsMssqlSchemaItem::addLayer( const QgsMssqlLayerProperty &la
 
 void QgsMssqlSchemaItem::refresh()
 {
-  if ( parent() )
-    parent()->refresh();
+  if ( auto *lParent = parent() )
+    lParent->refresh();
 }
 
 

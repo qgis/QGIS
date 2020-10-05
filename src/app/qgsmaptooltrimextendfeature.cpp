@@ -60,9 +60,9 @@ static bool getPoints( const QgsPointLocator::Match &match, QgsPoint &p1, QgsPoi
   const QgsFeatureId fid = match.featureId();
   const int vertex = match.vertexIndex();
 
-  if ( match.layer() )
+  if ( auto *lLayer = match.layer() )
   {
-    const QgsGeometry geom = match.layer()->getGeometry( fid );
+    const QgsGeometry geom = lLayer->getGeometry( fid );
 
     if ( !( geom.isNull() || geom.isEmpty() ) )
     {
@@ -250,18 +250,18 @@ void QgsMapToolTrimExtendFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
           filter.setLayer( mVlayer );
           match = mCanvas->snappingUtils()->snapToMap( mMapPoint, &filter, true );
 
-          if ( match.layer() )
+          if ( auto *lLayer = match.layer() )
           {
 
-            match.layer()->beginEditCommand( tr( "Trim/Extend feature" ) );
-            match.layer()->changeGeometry( match.featureId(), mGeom );
+            lLayer->beginEditCommand( tr( "Trim/Extend feature" ) );
+            lLayer->changeGeometry( match.featureId(), mGeom );
             if ( QgsProject::instance()->topologicalEditing() )
             {
-              match.layer()->addTopologicalPoints( mIntersection );
+              lLayer->addTopologicalPoints( mIntersection );
               mLimitLayer->addTopologicalPoints( mIntersection );
             }
-            match.layer()->endEditCommand();
-            match.layer()->triggerRepaint();
+            lLayer->endEditCommand();
+            lLayer->triggerRepaint();
 
             emit messageEmitted( tr( "Feature trimmed/extended." ) );
           }

@@ -49,16 +49,16 @@ QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget *parent,
   mExpressionWidget->setFilters( QgsFieldProxyModel::Numeric );
   mExpressionWidget->setField( initialState.propertyType() == QgsProperty::ExpressionBasedProperty ? initialState.expressionString() : initialState.field() );
 
-  if ( initialState.transformer() )
+  if ( auto *lTransformer = initialState.transformer() )
   {
-    minValueSpinBox->setValue( initialState.transformer()->minValue() );
-    maxValueSpinBox->setValue( initialState.transformer()->maxValue() );
+    minValueSpinBox->setValue( lTransformer->minValue() );
+    maxValueSpinBox->setValue( lTransformer->maxValue() );
 
-    if ( initialState.transformer()->curveTransform() )
+    if ( lTransformer->curveTransform() )
     {
       mTransformCurveCheckBox->setChecked( true );
       mTransformCurveCheckBox->setCollapsed( false );
-      mCurveEditor->setCurve( *initialState.transformer()->curveTransform() );
+      mCurveEditor->setCurve( *lTransformer->curveTransform() );
     }
   }
 
