@@ -21,10 +21,9 @@ Some portions of code were taken from https://code.google.com/p/pydee/
 
 from qgis.PyQt.QtCore import Qt, QByteArray, QCoreApplication, QFile, QSize
 from qgis.PyQt.QtWidgets import QDialog, QMenu, QShortcut, QApplication
-from qgis.PyQt.QtGui import QColor, QKeySequence, QFont, QFontMetrics, QStandardItemModel, QStandardItem, QClipboard, \
-    QFontDatabase
+from qgis.PyQt.QtGui import QKeySequence, QFontMetrics, QStandardItemModel, QStandardItem, QClipboard
 from qgis.PyQt.Qsci import QsciScintilla
-from qgis.gui import QgsCodeEditor
+from qgis.gui import QgsCodeEditorPython, QgsCodeEditor
 
 import sys
 import os
@@ -35,7 +34,6 @@ import traceback
 
 from qgis.core import QgsApplication, QgsSettings, Qgis
 from .ui_console_history_dlg import Ui_HistoryDialogPythonConsole
-from .console_base import QgsPythonConsoleBase
 
 _init_commands = ["import sys", "import os", "import re", "import math", "from qgis.core import *",
                   "from qgis.gui import *", "from qgis.analysis import *", "from qgis._3d import *",
@@ -46,10 +44,10 @@ _init_commands = ["import sys", "import os", "import re", "import math", "from q
 _historyFile = os.path.join(QgsApplication.qgisSettingsDirPath(), "console_history.txt")
 
 
-class ShellScintilla(QgsPythonConsoleBase, code.InteractiveInterpreter):
+class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
 
     def __init__(self, parent=None):
-        super(ShellScintilla, self).__init__(parent)
+        super(QgsCodeEditorPython, self).__init__(parent)
         code.InteractiveInterpreter.__init__(self, locals=None)
 
         self.parent = parent
@@ -115,7 +113,7 @@ class ShellScintilla(QgsPythonConsoleBase, code.InteractiveInterpreter):
 
     def refreshSettingsShell(self):
         # Set Python lexer
-        self.setLexers()
+        self.initializeLexer()
         threshold = self.settings.value("pythonConsole/autoCompThreshold", 2, type=int)
         self.setAutoCompletionThreshold(threshold)
         radioButtonSource = self.settings.value("pythonConsole/autoCompleteSource", 'fromAPI')

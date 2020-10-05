@@ -24,9 +24,8 @@ from qgis.PyQt.QtNetwork import QNetworkRequest
 from qgis.PyQt.QtWidgets import QShortcut, QMenu, QApplication, QWidget, QGridLayout, QSpacerItem, QSizePolicy, QFileDialog, QTabWidget, QTreeWidgetItem, QFrame, QLabel, QToolButton, QMessageBox
 from qgis.PyQt.Qsci import QsciScintilla, QsciAPIs, QsciStyle
 from qgis.core import Qgis, QgsApplication, QgsSettings, QgsBlockingNetworkRequest
-from qgis.gui import QgsMessageBar, QgsCodeEditor
+from qgis.gui import QgsMessageBar, QgsCodeEditorPython
 from qgis.utils import OverrideCursor
-from .console_base import QgsPythonConsoleBase
 import sys
 import os
 import subprocess
@@ -79,12 +78,12 @@ class KeyFilter(QObject):
         return QObject.eventFilter(self, obj, event)
 
 
-class Editor(QgsPythonConsoleBase):
+class Editor(QgsCodeEditorPython):
 
     MARKER_NUM = 6
 
     def __init__(self, parent=None):
-        super(Editor, self).__init__(parent)
+        super().__init__(parent)
         self.parent = parent
         #  recent modification time
         self.lastModified = 0
@@ -143,7 +142,7 @@ class Editor(QgsPythonConsoleBase):
 
     def settingsEditor(self):
         # Set Python lexer
-        self.setLexers()
+        self.initializeLexer()
         threshold = self.settings.value("pythonConsole/autoCompThreshold", 2, type=int)
         radioButtonSource = self.settings.value("pythonConsole/autoCompleteSource", 'fromAPI')
         autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabled", True, type=bool)
