@@ -362,10 +362,22 @@
                 <x>0</x>
                 <y>0</y>
                 <width>843</width>
-                <height>1037</height>
+                <height>1019</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="grpLocale">
                  <property name="title">
@@ -1121,11 +1133,23 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>604</width>
-                <height>1105</height>
+                <width>843</width>
+                <height>1084</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_2">
                  <property name="title">
@@ -1648,11 +1672,23 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>358</width>
-                <height>460</height>
+                <width>857</width>
+                <height>679</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item row="3" column="0">
                 <widget class="QgsCollapsibleGroupBox" name="grpProjectionBehavior">
                  <property name="title">
@@ -1828,11 +1864,23 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>617</width>
-                <height>129</height>
+                <width>857</width>
+                <height>679</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_47">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QGroupBox" name="mDefaultDatumTransformGroupBox">
                  <property name="title">
@@ -1899,11 +1947,23 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>654</width>
-                <height>825</height>
+                <width>843</width>
+                <height>804</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_18">
                  <property name="title">
@@ -2296,11 +2356,23 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>731</width>
-                <height>1216</height>
+                <width>843</width>
+                <height>1198</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_22">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item row="0" column="0">
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_5">
                  <property name="title">
@@ -3089,11 +3161,23 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>527</width>
-                <height>321</height>
+                <width>857</width>
+                <height>679</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_9">
                  <property name="title">
@@ -3400,11 +3484,23 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>632</width>
-                <height>742</height>
+                <width>843</width>
+                <height>709</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="mIdentifyGroupBox">
                  <property name="title">
@@ -3905,11 +4001,23 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>157</width>
-                <height>273</height>
+                <width>857</width>
+                <height>679</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_7">
                  <property name="title">
@@ -4073,13 +4181,22 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>566</width>
-                <height>974</height>
+                <width>843</width>
+                <height>956</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
                <property name="topMargin">
-                <number>9</number>
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
                </property>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="mEnterAttributeValuesGroupBox">
@@ -4698,11 +4815,23 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>492</width>
-                <height>574</height>
+                <width>857</width>
+                <height>679</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_3">
                  <property name="enabled">
@@ -4967,11 +5096,23 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>465</width>
-                <height>449</height>
+                <width>857</width>
+                <height>679</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QTabWidget" name="tabWidget">
                  <property name="currentIndex">
@@ -5151,6 +5292,18 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
          </widget>
          <widget class="QWidget" name="mOptionsPageVariables">
           <layout class="QVBoxLayout" name="verticalLayout_40">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
            <item>
             <widget class="QGroupBox" name="groupBox_25">
              <property name="title">
@@ -5171,6 +5324,15 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
          </widget>
          <widget class="QWidget" name="mOptionsPageAuth">
           <layout class="QVBoxLayout" name="verticalLayout_45">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
            <property name="bottomMargin">
             <number>0</number>
            </property>
@@ -5206,11 +5368,23 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>678</width>
-                <height>717</height>
+                <width>843</width>
+                <height>699</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QGroupBox" name="groupBox_20">
                  <property name="title">
@@ -5592,6 +5766,18 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
          </widget>
          <widget class="QWidget" name="mOptionsLocatorSettings">
           <layout class="QHBoxLayout" name="horizontalLayout_6">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
            <item>
             <widget class="QGroupBox" name="mOptionsLocatorGroupBox">
              <property name="title">
@@ -5603,6 +5789,18 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
          </widget>
          <widget class="QWidget" name="mOptionsPageAcceleration">
           <layout class="QVBoxLayout" name="mOptionsPageAccelerationLayout">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
            <item>
             <widget class="QLabel" name="label_53">
              <property name="text">
