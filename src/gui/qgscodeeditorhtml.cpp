@@ -46,6 +46,11 @@ void QgsCodeEditorHTML::initializeLexer()
   lexer->setDefaultPaper( lexerColor( ColorRole::Background ) );
   lexer->setFont( font, -1 );
 
+  font.setItalic( true );
+  lexer->setFont( font, QsciLexerHTML::HTMLComment );
+  lexer->setFont( font, QsciLexerHTML::JavaScriptComment );
+  lexer->setFont( font, QsciLexerHTML::JavaScriptCommentLine );
+
   lexer->setColor( defaultColor, QsciLexerHTML::Default );
   lexer->setColor( lexerColor( ColorRole::Tag ), QsciLexerHTML::Tag );
   lexer->setColor( lexerColor( ColorRole::UnknownTag ), QsciLexerHTML::UnknownTag );
