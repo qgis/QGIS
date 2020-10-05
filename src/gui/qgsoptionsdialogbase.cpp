@@ -187,6 +187,15 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString &title )
 
   // get rid of annoying outer focus rect on Mac
   mOptListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
+
+  // brute force approach to try to standardize page margins!
+  for ( int i = 0; i < mOptStackedWidget->count(); ++i )
+  {
+    if ( QLayout *l = mOptStackedWidget->widget( i )->layout() )
+    {
+      l->setContentsMargins( 0, 0, 0, 0 );
+    }
+  }
 }
 
 void QgsOptionsDialogBase::restoreLastPage()
