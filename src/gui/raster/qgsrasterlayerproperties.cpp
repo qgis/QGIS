@@ -770,6 +770,24 @@ void QgsRasterLayerProperties::sync()
     mGammaSpinBox->setValue( brightnessFilter->gamma() );
   }
 
+  // Hue and saturation color control
+  const QgsHueSaturationFilter *hueSaturationFilter = mRasterLayer->hueSaturationFilter();
+  //set hue and saturation controls to current values
+  if ( hueSaturationFilter )
+  {
+    sliderSaturation->setValue( hueSaturationFilter->saturation() );
+    comboGrayscale->setCurrentIndex( ( int ) hueSaturationFilter->grayscaleMode() );
+
+    // Set state of saturation controls based on grayscale mode choice
+    toggleSaturationControls( static_cast<int>( hueSaturationFilter->grayscaleMode() ) );
+
+    // Set state of colorize controls
+    mColorizeCheck->setChecked( hueSaturationFilter->colorizeOn() );
+    btnColorizeColor->setColor( hueSaturationFilter->colorizeColor() );
+    toggleColorizeControls( hueSaturationFilter->colorizeOn() );
+    sliderColorizeStrength->setValue( hueSaturationFilter->colorizeStrength() );
+  }
+
   /*
    * Transparent Pixel Tab
    */
