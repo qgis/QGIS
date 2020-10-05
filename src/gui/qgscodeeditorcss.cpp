@@ -38,9 +38,17 @@ void QgsCodeEditorCSS::initializeLexer()
 {
   QsciLexerCSS *lexer = new QsciLexerCSS( this );
 
-  const QFont font = lexerFont();
+  QFont font = lexerFont();
   lexer->setDefaultFont( font );
   lexer->setFont( font, -1 );
+
+  font.setItalic( true );
+  lexer->setFont( font, QsciLexerCSS::Comment );
+
+  font.setItalic( false );
+  font.setBold( true );
+  lexer->setFont( font, QsciLexerCSS::SingleQuotedString );
+  lexer->setFont( font, QsciLexerCSS::DoubleQuotedString );
 
   lexer->setDefaultColor( lexerColor( ColorRole::Default ) );
   lexer->setDefaultPaper( lexerColor( ColorRole::Background ) );

@@ -57,6 +57,16 @@ void QgsCodeEditorPython::initializeLexer()
   pyLexer->setDefaultColor( defaultColor );
   pyLexer->setDefaultPaper( lexerColor( ColorRole::Background ) );
   pyLexer->setFont( font, -1 );
+
+  font.setItalic( true );
+  pyLexer->setFont( font, QsciLexerPython::Comment );
+  pyLexer->setFont( font, QsciLexerPython::CommentBlock );
+
+  font.setItalic( false );
+  font.setBold( true );
+  pyLexer->setFont( font, QsciLexerPython::SingleQuotedString );
+  pyLexer->setFont( font, QsciLexerPython::DoubleQuotedString );
+
   pyLexer->setColor( defaultColor, QsciLexerPython::Default );
   pyLexer->setColor( lexerColor( ColorRole::Class ), QsciLexerPython::ClassName );
   pyLexer->setColor( lexerColor( ColorRole::Method ), QsciLexerPython::FunctionMethodName );

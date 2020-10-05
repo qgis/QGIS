@@ -111,6 +111,11 @@ void QgsCodeEditorExpression::initializeLexer()
   font.setBold( true );
   mSqlLexer->setFont( font, QsciLexerSQL::Keyword );
 
+  font.setBold( false );
+  font.setItalic( true );
+  mSqlLexer->setFont( font, QsciLexerSQL::Comment );
+  mSqlLexer->setFont( font, QsciLexerSQL::CommentLine );
+
   mSqlLexer->setColor( Qt::darkYellow, QsciLexerSQL::DoubleQuotedString ); // fields
 
   mSqlLexer->setColor( defaultColor, QsciLexerSQL::Default );
