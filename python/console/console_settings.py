@@ -20,7 +20,7 @@ Some portions of code were taken from https://code.google.com/p/pydee/
 """
 
 from qgis.PyQt.QtCore import QCoreApplication, QUrl
-from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QTableWidgetItem, QHBoxLayout
+from qgis.PyQt.QtWidgets import QWidget, QFileDialog, QMessageBox, QTableWidgetItem, QHBoxLayout
 from qgis.PyQt.QtGui import QIcon, QDesktopServices
 
 from qgis.core import QgsSettings, QgsApplication
@@ -46,7 +46,7 @@ class ConsoleOptionsPage(QgsOptionsPageWidget):
 
     def __init__(self, parent):
         super(ConsoleOptionsPage, self).__init__(parent)
-        self.options_widget = optionsDialog(parent)
+        self.options_widget = ConsoleOptionsWidget(parent)
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setMargin(0)
@@ -61,10 +61,10 @@ class ConsoleOptionsPage(QgsOptionsPageWidget):
         return 'plugins/python_console.html'
 
 
-class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
+class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
 
     def __init__(self, parent):
-        QDialog.__init__(self, parent)
+        super().__init__(parent)
         self.setWindowTitle(QCoreApplication.translate(
             "SettingsDialogPythonConsole", "Python Console Settings"))
         self.parent = parent
@@ -156,7 +156,6 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
             return
         self.saveSettings()
         self.listPath = []
-        QDialog.accept(self)
 
     def addAPI(self, pathAPI):
         count = self.tableWidget.rowCount()
@@ -233,7 +232,3 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
             self.autoCompFromAPI.setChecked(True)
         elif settings.value("pythonConsole/autoCompleteSource") == 'fromDocAPI':
             self.autoCompFromDocAPI.setChecked(True)
-
-    def reject(self):
-        self.restoreSettings()
-        QDialog.reject(self)
