@@ -39,6 +39,7 @@ ADD_PYTHON_TEST(PyQgsCategorizedSymbolRenderer test_qgscategorizedsymbolrenderer
 ADD_PYTHON_TEST(PyQgsCheckableComboBox test_qgscheckablecombobox.py)
 ADD_PYTHON_TEST(PyQgsClassificationMethod test_qgsclassificationmethod.py)
 ADD_PYTHON_TEST(PyQgsCodeEditor test_qgscodeeditor.py)
+ADD_PYTHON_TEST(PyQgsCodeEditorColorScheme test_qgscodeeditorcolorscheme.py)
 ADD_PYTHON_TEST(PyQgsColorButton test_qgscolorbutton.py)
 ADD_PYTHON_TEST(PyQgsColorRamp test_qgscolorramp.py)
 ADD_PYTHON_TEST(PyQgsColorScheme test_qgscolorscheme.py)

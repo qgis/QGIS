@@ -240,6 +240,8 @@
 %If ( HAVE_QSCI_SIP )
 %Include auto_generated/codeeditors/qgscodeeditor.sip
 %End
+%Include auto_generated/codeeditors/qgscodeeditorcolorscheme.sip
+%Include auto_generated/codeeditors/qgscodeeditorcolorschemeregistry.sip
 %If ( HAVE_QSCI_SIP )
 %Include auto_generated/codeeditors/qgscodeeditorcss.sip
 %End

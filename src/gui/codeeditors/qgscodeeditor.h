@@ -18,6 +18,7 @@
 #define QGSCODEEDITOR_H
 
 #include <QString>
+#include "qgscodeeditorcolorscheme.h"
 // qscintilla includes
 #include <Qsci/qsciapis.h>
 #include "qgis_sip.h"
@@ -82,60 +83,17 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     void insertText( const QString &text );
 
     /**
-     * Color roles.
-     *
-     * \since QGIS 3.16
-     */
-    enum class ColorRole
-    {
-      Default, //!< Default text color
-      Keyword, //!< Keyword color
-      Class, //!< Class color
-      Method, //!< Method color
-      Decoration, //!< Decoration color
-      Number, //!< Number color
-      Comment, //!< Comment color
-      CommentLine, //!< Line comment color
-      CommentBlock, //!< Comment block color
-      Background, //!< Background color
-      Cursor, //!< Cursor color
-      CaretLine, //!< Caret line color
-      SingleQuote, //!< Single quote color
-      DoubleQuote, //!< Double quote color
-      TripleSingleQuote, //!< Triple single quote color
-      TripleDoubleQuote, //!< Triple double quote color
-      Operator, //!< Operator color
-      QuotedOperator, //!< Quoted operator color
-      Identifier, //!< Identifier color
-      QuotedIdentifier, //!< Quoted identifier color
-      Tag, //!< Tag color
-      UnknownTag, //!< Unknown tag
-      MarginBackground, //!< Margin background color
-      MarginForeground, //!< Margin foreground color
-      SelectionBackground, //!< Selection background color
-      SelectionForeground, //!< Selection foreground color
-      MatchedBraceBackground, //!< Matched brace background color
-      MatchedBraceForeground, //!< Matched brace foreground color
-      Edge, //!< Edge color
-      Fold, //!< Fold color
-      Error, //!< Error color
-    };
-
-    /**
      * Returns the default color for the specified \a role.
      *
      * The optional \a theme argument can be used to specify a color \a theme. A blank
      * \a theme indicates the default color scheme.
      *
-     * Possible \a theme values are:
-     *
-     * - (empty string) follow application default colors
-     * - solarized
-     * - solarized_dark
+     * Available themes are stored in QgsCodeEditorColorSchemeRegistry, and can be retrieved
+     * via QgsGui::codeEditorColorSchemeRegistry().
      *
      * \since QGIS 3.16
      */
-    static QColor defaultColor( ColorRole role, const QString &theme = QString() );
+    static QColor defaultColor( QgsCodeEditorColorScheme::ColorRole role, const QString &theme = QString() );
 
     /**
      * Returns the color to use in the editor for the specified \a role.
@@ -146,7 +104,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * \see setColor()
      * \since QGIS 3.16
      */
-    static QColor color( ColorRole role );
+    static QColor color( QgsCodeEditorColorScheme::ColorRole role );
 
     /**
      * Sets the \a color to use in the editor for the specified \a role.
@@ -159,7 +117,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * \see color()
      * \since QGIS 3.16
      */
-    static void setColor( ColorRole role, const QColor &color );
+    static void setColor( QgsCodeEditorColorScheme::ColorRole role, const QColor &color );
 
     /**
      * Returns the monospaced font to use for code editors.
@@ -175,7 +133,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * \note Not available in Python bindings
      * \since QGIS 3.16
      */
-    void setCustomAppearance( const QString &scheme = QString(), const QMap< ColorRole, QColor > &customColors = QMap< ColorRole, QColor >(), const QString &fontFamily = QString(), int fontSize = 0 ) SIP_SKIP;
+    void setCustomAppearance( const QString &scheme = QString(), const QMap< QgsCodeEditorColorScheme::ColorRole, QColor > &customColors = QMap< QgsCodeEditorColorScheme::ColorRole, QColor >(), const QString &fontFamily = QString(), int fontSize = 0 ) SIP_SKIP;
 
   protected:
 
@@ -198,7 +156,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      *
      * \since QGIS 3.16
      */
-    QColor lexerColor( ColorRole role ) const;
+    QColor lexerColor( QgsCodeEditorColorScheme::ColorRole role ) const;
 
     /**
      * Returns the font to use in the lexer.
@@ -219,11 +177,11 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     // used if above is false, inplace of values taken from QSettings:
     bool mOverrideColors = false;
     QString mColorScheme;
-    QMap< ColorRole, QColor > mCustomColors;
+    QMap< QgsCodeEditorColorScheme::ColorRole, QColor > mCustomColors;
     QString mFontFamily;
     int mFontSize = 0;
 
-    static QMap< ColorRole, QString > sColorRoleToSettingsKey;
+    static QMap< QgsCodeEditorColorScheme::ColorRole, QString > sColorRoleToSettingsKey;
 };
 
 // clazy:excludeall=qstring-allocations

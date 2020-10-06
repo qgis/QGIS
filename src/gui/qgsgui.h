@@ -38,6 +38,7 @@ class QgsDataItemGuiProviderRegistry;
 class QgsProviderGuiRegistry;
 class QgsProjectStorageGuiRegistry;
 class QgsNumericFormatGuiRegistry;
+class QgsCodeEditorColorSchemeRegistry;
 class QgsMessageBar;
 
 /**
@@ -121,6 +122,12 @@ class GUI_EXPORT QgsGui : public QObject
      * \since QGIS 3.12
      */
     static QgsNumericFormatGuiRegistry *numericFormatGuiRegistry() SIP_KEEPREFERENCE;
+
+    /**
+     * Returns the global code editor color scheme registry, used for registering the color schemes for QgsCodeEditor widgets.
+     * \since QGIS 3.16
+     */
+    static QgsCodeEditorColorSchemeRegistry *codeEditorColorSchemeRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns the global processing recent algorithm log, used for tracking recently used processing algorithms.
@@ -246,6 +253,7 @@ class GUI_EXPORT QgsGui : public QObject
     QgsProcessingRecentAlgorithmLog *mProcessingRecentAlgorithmLog = nullptr;
     QgsNumericFormatGuiRegistry *mNumericFormatGuiRegistry = nullptr;
     QgsDataItemGuiProviderRegistry *mDataItemGuiProviderRegistry = nullptr;
+    QgsCodeEditorColorSchemeRegistry *mCodeEditorColorSchemeRegistry = nullptr;
     QgsProjectStorageGuiRegistry *mProjectStorageGuiRegistry = nullptr;
     std::unique_ptr< QgsWindowManagerInterface > mWindowManager;
 

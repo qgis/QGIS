@@ -38,12 +38,12 @@ QgsCodeEditorSQL::QgsCodeEditorSQL( QWidget *parent )
 void QgsCodeEditorSQL::initializeLexer()
 {
   QFont font = lexerFont();
-  QColor defaultColor = lexerColor( ColorRole::Default );
+  QColor defaultColor = lexerColor( QgsCodeEditorColorScheme::ColorRole::Default );
 
   mSqlLexer = new QgsCaseInsensitiveLexerSQL( this );
   mSqlLexer->setDefaultFont( font );
   mSqlLexer->setDefaultColor( defaultColor );
-  mSqlLexer->setDefaultPaper( lexerColor( ColorRole::Background ) );
+  mSqlLexer->setDefaultPaper( lexerColor( QgsCodeEditorColorScheme::ColorRole::Background ) );
   mSqlLexer->setFont( font, -1 );
   font.setBold( true );
   mSqlLexer->setFont( font, QsciLexerSQL::Keyword );
@@ -54,16 +54,16 @@ void QgsCodeEditorSQL::initializeLexer()
   mSqlLexer->setFont( font, QsciLexerSQL::CommentLine );
 
   mSqlLexer->setColor( defaultColor, QsciLexerSQL::Default );
-  mSqlLexer->setColor( lexerColor( ColorRole::Comment ), QsciLexerSQL::Comment );
-  mSqlLexer->setColor( lexerColor( ColorRole::CommentLine ), QsciLexerSQL::CommentLine );
-  mSqlLexer->setColor( lexerColor( ColorRole::Number ), QsciLexerSQL::Number );
-  mSqlLexer->setColor( lexerColor( ColorRole::Keyword ), QsciLexerSQL::Keyword );
-  mSqlLexer->setColor( lexerColor( ColorRole::SingleQuote ), QsciLexerSQL::SingleQuotedString );
-  mSqlLexer->setColor( lexerColor( ColorRole::DoubleQuote ), QsciLexerSQL::DoubleQuotedString );
-  mSqlLexer->setColor( lexerColor( ColorRole::Operator ), QsciLexerSQL::Operator );
-  mSqlLexer->setColor( lexerColor( ColorRole::Identifier ), QsciLexerSQL::Identifier );
-  mSqlLexer->setColor( lexerColor( ColorRole::QuotedIdentifier ), QsciLexerSQL::QuotedIdentifier );
-  mSqlLexer->setColor( lexerColor( ColorRole::QuotedOperator ), QsciLexerSQL::QuotedOperator );
+  mSqlLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Comment ), QsciLexerSQL::Comment );
+  mSqlLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::CommentLine ), QsciLexerSQL::CommentLine );
+  mSqlLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Number ), QsciLexerSQL::Number );
+  mSqlLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Keyword ), QsciLexerSQL::Keyword );
+  mSqlLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::SingleQuote ), QsciLexerSQL::SingleQuotedString );
+  mSqlLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::DoubleQuote ), QsciLexerSQL::DoubleQuotedString );
+  mSqlLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Operator ), QsciLexerSQL::Operator );
+  mSqlLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Identifier ), QsciLexerSQL::Identifier );
+  mSqlLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::QuotedIdentifier ), QsciLexerSQL::QuotedIdentifier );
+  mSqlLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::QuotedOperator ), QsciLexerSQL::QuotedOperator );
 
   setLexer( mSqlLexer );
 }

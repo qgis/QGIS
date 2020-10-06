@@ -44,7 +44,7 @@ class QgsCodeEditorOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsC
 
   private:
 
-    QMap< QgsCodeEditor::ColorRole, QgsColorButton * > mColorButtonMap;
+    QMap< QgsCodeEditorColorScheme::ColorRole, QgsColorButton * > mColorButtonMap;
     bool mBlockCustomColorChange = false;
 
     void updatePreview();

@@ -82,6 +82,13 @@ Returns the global numeric format gui registry, used for registering the GUI wid
 .. versionadded:: 3.12
 %End
 
+    static QgsCodeEditorColorSchemeRegistry *codeEditorColorSchemeRegistry() /KeepReference/;
+%Docstring
+Returns the global code editor color scheme registry, used for registering the color schemes for QgsCodeEditor widgets.
+
+.. versionadded:: 3.16
+%End
+
     static QgsProcessingRecentAlgorithmLog *processingRecentAlgorithmLog();
 %Docstring
 Returns the global processing recent algorithm log, used for tracking recently used processing algorithms.

@@ -57,6 +57,7 @@
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgsnumericformatguiregistry.h"
+#include "qgscodeeditorcolorschemeregistry.h"
 
 
 QgsGui *QgsGui::instance()
@@ -108,6 +109,11 @@ QgsProcessingGuiRegistry *QgsGui::processingGuiRegistry()
 QgsNumericFormatGuiRegistry *QgsGui::numericFormatGuiRegistry()
 {
   return instance()->mNumericFormatGuiRegistry;
+}
+
+QgsCodeEditorColorSchemeRegistry *QgsGui::codeEditorColorSchemeRegistry()
+{
+  return instance()->mCodeEditorColorSchemeRegistry;
 }
 
 QgsProcessingRecentAlgorithmLog *QgsGui::processingRecentAlgorithmLog()
@@ -178,6 +184,7 @@ QgsGui::~QgsGui()
   delete mWidgetStateHelper;
   delete mProjectStorageGuiRegistry;
   delete mProviderGuiRegistry;
+  delete mCodeEditorColorSchemeRegistry;
 }
 
 QColor QgsGui::sampleColor( QPoint point )
@@ -222,6 +229,8 @@ QgsGui::QgsGui()
 #else
   mNative = new QgsNative();
 #endif
+
+  mCodeEditorColorSchemeRegistry = new QgsCodeEditorColorSchemeRegistry();
 
   // provider gui registry initialize QgsProviderRegistry too
   mProviderGuiRegistry = new QgsProviderGuiRegistry( QgsApplication::pluginPath() );
