@@ -314,6 +314,7 @@ namespace QgsGuiUtils
         return std::numeric_limits<double>::digits10 + 1;
       }
     }
+    return 0;
   }
 }
 
