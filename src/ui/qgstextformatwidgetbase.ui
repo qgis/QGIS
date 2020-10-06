@@ -717,8 +717,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>323</width>
-                       <height>317</height>
+                       <width>485</width>
+                       <height>429</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
@@ -1280,7 +1280,7 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>373</width>
+                       <width>374</width>
                        <height>708</height>
                       </rect>
                      </property>
@@ -2510,7 +2510,7 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>294</width>
+                       <width>296</width>
                        <height>291</height>
                       </rect>
                      </property>
@@ -2788,7 +2788,7 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>440</width>
+                       <width>444</width>
                        <height>786</height>
                       </rect>
                      </property>
@@ -4126,7 +4126,7 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>-1130</y>
+                       <y>0</y>
                        <width>472</width>
                        <height>1686</height>
                       </rect>
@@ -4145,7 +4145,7 @@ font-style: italic;</string>
                        <number>0</number>
                       </property>
                       <item>
-                       <widget class="QgsCollapsibleGroupBox" name="groupBox">
+                       <widget class="QGroupBox" name="groupBox">
                         <property name="title">
                          <string>General Settings</string>
                         </property>
@@ -5450,7 +5450,7 @@ font-style: italic;</string>
                        </widget>
                       </item>
                       <item>
-                       <widget class="QgsCollapsibleGroupBox" name="mPlacementDDGroupBox">
+                       <widget class="QGroupBox" name="mPlacementDDGroupBox">
                         <property name="title">
                          <string>Data defined</string>
                         </property>
@@ -5826,8 +5826,8 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>0</y>
-                       <width>430</width>
+                       <y>-304</y>
+                       <width>471</width>
                        <height>708</height>
                       </rect>
                      </property>
@@ -6355,7 +6355,7 @@ font-style: italic;</string>
                        </widget>
                       </item>
                       <item>
-                       <widget class="QgsCollapsibleGroupBox" name="mRenderingFeaturesGrpBx">
+                       <widget class="QGroupBox" name="mRenderingFeaturesGrpBx">
                         <property name="title">
                          <string>Feature options</string>
                         </property>
