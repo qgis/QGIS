@@ -102,7 +102,10 @@ QgsColorRampShaderWidget::QgsColorRampShaderWidget( QWidget *parent )
   connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsColorRampShaderWidget::applyColorRamp );
   connect( mNumberOfEntriesSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsColorRampShaderWidget::classify );
   connect( mClipCheckBox, &QAbstractButton::toggled, this, &QgsColorRampShaderWidget::widgetChanged );
-  connect( mLabelPrecisionSpinBox, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, [ = ]( int ) { autoLabel(); } );
+  connect( mLabelPrecisionSpinBox, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, [ = ]( int )
+  {
+    autoLabel();
+  } );
 }
 
 void QgsColorRampShaderWidget::initializeForUseWithRasterLayer()
@@ -124,13 +127,7 @@ void QgsColorRampShaderWidget::setRasterBand( int band )
   if ( mRasterDataProvider )
   {
     const int maxDigits { QgsGuiUtils::significantDigits( mRasterDataProvider->dataType( mBand ) ) };
-    // Get current value
-    const int currentPrecision { mLabelPrecisionSpinBox->value() };
     mLabelPrecisionSpinBox->setMaximum( maxDigits );
-    if ( currentPrecision > maxDigits )
-    {
-      mLabelPrecisionSpinBox->setValue( maxDigits );
-    }
   }
 }
 
