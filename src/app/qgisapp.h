@@ -111,6 +111,7 @@ class Qgs3DMapCanvasDockWidget;
 class QgsHandleBadLayersHandler;
 class QgsNetworkAccessManager;
 class QgsGpsConnection;
+class QgsApplicationExitBlockerInterface;
 
 class QDomDocument;
 class QNetworkReply;
@@ -745,6 +746,23 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Unregister a previously registered dev tool factory
     void unregisterDevToolFactory( QgsDevToolWidgetFactory *factory );
+
+    /**
+     * Register a new application exit blocker, which can be used to prevent the QGIS application
+     * from exiting while a plugin or script has unsaved changes.
+     *
+     * \note Ownership of \a blocker is not transferred, and the blocker must
+     *       be unregistered when plugin is unloaded.
+     *
+     * \see unregisterApplicationExitBlocker()
+     */
+    void registerApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker );
+
+    /**
+     * Unregister a previously registered application exit \a blocker.
+     * \see registerApplicationExitBlocker()
+    */
+    void unregisterApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker );
 
     //! Register a new custom drop handler.
     void registerCustomDropHandler( QgsCustomDropHandler *handler );
@@ -2094,6 +2112,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     bool checkMemoryLayers();
 
+    /**
+     * Checks whether any registered application exit blockers should prevent
+     * the application from exiting.
+     */
+    bool checkExitBlockers();
+
     //! Checks for running tasks dependent on the open project
     bool checkTasksDependOnProject();
 
@@ -2568,6 +2592,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QList<QPointer<QgsOptionsWidgetFactory>> mProjectPropertiesWidgetFactories;
 
     QList<QgsDevToolWidgetFactory * > mDevToolFactories;
+
+    QList<QgsApplicationExitBlockerInterface * > mApplicationExitBlockers;
 
     QVector<QPointer<QgsCustomDropHandler>> mCustomDropHandlers;
     QVector<QPointer<QgsCustomProjectOpenHandler>> mCustomProjectOpenHandlers;

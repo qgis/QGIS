@@ -571,6 +571,16 @@ void QgisAppInterface::unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *
   qgis->unregisterDevToolFactory( factory );
 }
 
+void QgisAppInterface::registerApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker )
+{
+  qgis->registerApplicationExitBlocker( blocker );
+}
+
+void QgisAppInterface::unregisterApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker )
+{
+  qgis->unregisterApplicationExitBlocker( blocker );
+}
+
 void QgisAppInterface::registerCustomDropHandler( QgsCustomDropHandler *handler )
 {
   qgis->registerCustomDropHandler( handler );

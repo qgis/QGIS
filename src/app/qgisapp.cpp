@@ -181,6 +181,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsauthsslerrorsdialog.h"
 #endif
 #include "qgsappscreenshots.h"
+#include "qgsapplicationexitblockerinterface.h"
 #include "qgsbookmarks.h"
 #include "qgsbookmarkeditordialog.h"
 #include "qgsbrowserdockwidget.h"
@@ -6388,7 +6389,7 @@ void QgisApp::fileExit()
   }
 
   QgsCanvasRefreshBlocker refreshBlocker;
-  if ( checkUnsavedLayerEdits() && checkMemoryLayers() && saveDirty() )
+  if ( checkUnsavedLayerEdits() && checkMemoryLayers() && checkExitBlockers() && saveDirty() )
   {
     closeProject();
     userProfileManager()->setDefaultFromActive();
@@ -12686,6 +12687,16 @@ void QgisApp::unregisterDevToolFactory( QgsDevToolWidgetFactory *factory )
   mDevToolFactories.removeAll( factory );
 }
 
+void QgisApp::registerApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker )
+{
+  mApplicationExitBlockers << blocker;
+}
+
+void QgisApp::unregisterApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker )
+{
+  mApplicationExitBlockers.removeAll( blocker );
+}
+
 QgsMapLayer *QgisApp::activeLayer()
 {
   return mLayerTreeView ? mLayerTreeView->currentLayer() : nullptr;
@@ -13235,6 +13246,16 @@ bool QgisApp::checkMemoryLayers()
                                    QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel ) == QMessageBox::Yes;
 
   return close;
+}
+
+bool QgisApp::checkExitBlockers()
+{
+  for ( QgsApplicationExitBlockerInterface *blocker : qgis::as_const( mApplicationExitBlockers ) )
+  {
+    if ( !blocker->allowExit() )
+      return false;
+  }
+  return true;
 }
 
 bool QgisApp::checkTasksDependOnProject()
