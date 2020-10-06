@@ -23,14 +23,23 @@ import os
 from qgis.PyQt.QtCore import Qt, QTimer, QCoreApplication, QSize, QByteArray, QFileInfo, QUrl, QDir
 from qgis.PyQt.QtWidgets import QToolBar, QToolButton, QWidget, QSplitter, QTreeWidget, QAction, QFileDialog, QCheckBox, QSizePolicy, QMenu, QGridLayout, QApplication, QShortcut
 from qgis.PyQt.QtGui import QDesktopServices, QKeySequence
-from qgis.PyQt.QtWidgets import QVBoxLayout
+from qgis.PyQt.QtWidgets import (
+    QVBoxLayout,
+    QMessageBox
+)
 from qgis.utils import iface
 from .console_sci import ShellScintilla
 from .console_output import ShellOutputScintilla
 from .console_editor import EditorTabWidget
 from .console_settings import ConsoleOptionsFactory
 from qgis.core import Qgis, QgsApplication, QgsSettings
-from qgis.gui import QgsFilterLineEdit, QgsHelp, QgsDockWidget, QgsGui
+from qgis.gui import (
+    QgsFilterLineEdit,
+    QgsHelp,
+    QgsDockWidget,
+    QgsGui,
+    QgsApplicationExitBlockerInterface
+)
 from functools import partial
 
 import sys
@@ -78,6 +87,16 @@ def init_options_widget():
     global _options_factory
     _options_factory.setTitle(QCoreApplication.translate("PythonConsole", "Python Console"))
     iface.registerOptionsWidgetFactory(_options_factory)
+
+
+class ConsoleExitBlocker(QgsApplicationExitBlockerInterface):
+
+    def __init__(self, console):
+        super().__init__()
+        self.console = console
+
+    def allowExit(self):
+        return self.console.allowExit()
 
 
 class PythonConsole(QgsDockWidget):
@@ -542,6 +561,33 @@ class PythonConsoleWidget(QWidget):
         self.findScut = QShortcut(Qt.Key_Escape, self.widgetEditor)
         self.findScut.setContext(Qt.WidgetWithChildrenShortcut)
         self.findScut.activated.connect(self._closeFind)
+
+        self.exit_blocker = ConsoleExitBlocker(self)
+        iface.registerApplicationExitBlocker(self.exit_blocker)
+
+    def allowExit(self):
+        tab_count = self.tabEditorWidget.count()
+        for i in range(tab_count):
+            # iterate backwards through tabs, as we may be closing some as we go
+            tab_index = tab_count - i - 1
+            tab_widget = self.tabEditorWidget.widget(tab_index)
+            if tab_widget.newEditor.isModified():
+                ret = QMessageBox.question(self, self.tr("Save {}").format(self.tabEditorWidget.tabText(tab_index)),
+                                           self.tr("There are unsaved changes in this script. Do you want to keep those?"),
+                                           QMessageBox.Save | QMessageBox.Cancel | QMessageBox.Discard, QMessageBox.Cancel)
+                if ret == QMessageBox.Save:
+                    tab_widget.save()
+                    if tab_widget.newEditor.isModified():
+                        # save failed, treat as cancel
+                        return False
+                elif ret == QMessageBox.Discard:
+                    pass
+                else:
+                    return False
+
+            self.tabEditorWidget.removeTab(tab_index)
+
+        return True
 
     def _toggleFind(self):
         self.tabEditorWidget.currentWidget().newEditor.toggleFindWidget()
