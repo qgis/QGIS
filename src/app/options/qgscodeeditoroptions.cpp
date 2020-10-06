@@ -172,7 +172,7 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
     """
     Function docstring
     """
-    return [1, 1.2, "val", 'a string', {'a': 1, 'b': 2}]
+    return [1, 1.2, "val", 'a string', {'a': True, 'b': False}]
 
 @my_decorator
 def somefunc(param1: str='', param2=0):
