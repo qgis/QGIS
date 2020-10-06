@@ -57,7 +57,7 @@ class BatchFeedback(QgsProcessingMultiStepFeedback):
         super().__init__(steps, feedback)
         self.errors = []
 
-    def reportError(self, error: str, fatalError: bool):
+    def reportError(self, error: str, fatalError: bool = False):
         self.errors.append(error)
         super().reportError(error, fatalError)
 
