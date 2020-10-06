@@ -826,7 +826,7 @@ def run_script_from_file(filepath):
     from qgis.processing import alg
     try:
         from qgis.core import QgsApplication, QgsProcessingAlgorithm, QgsProcessingFeatureBasedAlgorithm
-        from processing.gui.AlgorithmDialog import AlgorithmDialog
+        from qgis.processing import execAlgorithmDialog
         _locals = {}
         exec(open(filepath.replace("\\\\", "/").encode(sys.getfilesystemencoding())).read(), _locals)
         alginstance = None
@@ -840,7 +840,6 @@ def run_script_from_file(filepath):
         if alginstance:
             alginstance.setProvider(QgsApplication.processingRegistry().providerById("script"))
             alginstance.initAlgorithm()
-            dlg = AlgorithmDialog(alginstance)
-            dlg.show()
+            execAlgorithmDialog(alginstance)
     except ImportError:
         pass
