@@ -65,6 +65,7 @@ class QgsMeshLayer;
 class QgsBrowserGuiModel;
 class QgsDevToolWidgetFactory;
 class QgsGpsConnection;
+class QgsApplicationExitBlockerInterface;
 
 
 /**
@@ -1024,6 +1025,25 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.14
     */
     virtual void unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) = 0;
+
+    /**
+     * Register a new application exit blocker, which can be used to prevent the QGIS application
+     * from exiting while a plugin or script has unsaved changes.
+     *
+     * \note Ownership of \a blocker is not transferred, and the blocker must
+     *       be unregistered when plugin is unloaded.
+     *
+     * \see unregisterApplicationExitBlocker()
+     * \since QGIS 3.16
+     */
+    virtual void registerApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) = 0;
+
+    /**
+     * Unregister a previously registered application exit \a blocker.
+     * \see registerApplicationExitBlocker()
+     * \since QGIS 3.16
+    */
+    virtual void unregisterApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) = 0;
 
     /**
      * Register a new custom drop \a handler.

@@ -592,6 +592,7 @@ SET(QGIS_GUI_HDRS
   qgsadvanceddigitizingfloater.h
   qgsaggregatetoolbutton.h
   qgsalignmentcombobox.h
+  qgsapplicationexitblockerinterface.h
   qgsattributedialog.h
   qgsattributeeditorcontext.h
   qgsattributeform.h
