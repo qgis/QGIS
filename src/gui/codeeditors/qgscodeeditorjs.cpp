@@ -46,19 +46,19 @@ void QgsCodeEditorJavascript::initializeLexer()
   lexer->setFont( font, QsciLexerJavaScript::Comment );
   lexer->setFont( font, QsciLexerJavaScript::CommentLine );
 
-  lexer->setDefaultColor( lexerColor( ColorRole::Default ) );
-  lexer->setDefaultPaper( lexerColor( ColorRole::Background ) );
-  lexer->setPaper( lexerColor( ColorRole::Background ), -1 );
+  lexer->setDefaultColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Default ) );
+  lexer->setDefaultPaper( lexerColor( QgsCodeEditorColorScheme::ColorRole::Background ) );
+  lexer->setPaper( lexerColor( QgsCodeEditorColorScheme::ColorRole::Background ), -1 );
 
-  lexer->setColor( lexerColor( ColorRole::Class ), QsciLexerJavaScript::GlobalClass );
-  lexer->setColor( lexerColor( ColorRole::Keyword ), QsciLexerJavaScript::Keyword );
-  lexer->setColor( lexerColor( ColorRole::Operator ), QsciLexerJavaScript::Operator );
-  lexer->setColor( lexerColor( ColorRole::Number ), QsciLexerJavaScript::Number );
-  lexer->setColor( lexerColor( ColorRole::Comment ), QsciLexerJavaScript::Comment );
-  lexer->setColor( lexerColor( ColorRole::CommentLine ), QsciLexerJavaScript::CommentLine );
-  lexer->setColor( lexerColor( ColorRole::DoubleQuote ), QsciLexerJavaScript::DoubleQuotedString );
-  lexer->setColor( lexerColor( ColorRole::SingleQuote ), QsciLexerJavaScript::SingleQuotedString );
-  lexer->setColor( lexerColor( ColorRole::Identifier ), QsciLexerJavaScript::Identifier );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Class ), QsciLexerJavaScript::GlobalClass );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Keyword ), QsciLexerJavaScript::Keyword );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Operator ), QsciLexerJavaScript::Operator );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Number ), QsciLexerJavaScript::Number );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Comment ), QsciLexerJavaScript::Comment );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::CommentLine ), QsciLexerJavaScript::CommentLine );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::DoubleQuote ), QsciLexerJavaScript::DoubleQuotedString );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::SingleQuote ), QsciLexerJavaScript::SingleQuotedString );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Identifier ), QsciLexerJavaScript::Identifier );
 
   setLexer( lexer );
 }

@@ -23,7 +23,7 @@ from qgis.PyQt.QtCore import Qt, QByteArray, QCoreApplication, QFile, QSize
 from qgis.PyQt.QtWidgets import QDialog, QMenu, QShortcut, QApplication
 from qgis.PyQt.QtGui import QKeySequence, QFontMetrics, QStandardItemModel, QStandardItem, QClipboard
 from qgis.PyQt.Qsci import QsciScintilla
-from qgis.gui import QgsCodeEditorPython, QgsCodeEditor
+from qgis.gui import QgsCodeEditorPython, QgsCodeEditorColorScheme
 
 import sys
 import os
@@ -127,7 +127,7 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
         self.setMarginLineNumbers(1, True)
         self.setMarginWidth(1, "00000")
         self.setMarginType(1, 5)  # TextMarginRightJustified=5
-        self.setMarginsBackgroundColor(self.color(QgsCodeEditor.ColorRole.Background))
+        self.setMarginsBackgroundColor(self.color(QgsCodeEditorColorScheme.ColorRole.Background))
         self.setFoldingVisible(False)
         self.setEdgeMode(QsciScintilla.EdgeNone)
 

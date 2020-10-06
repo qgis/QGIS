@@ -113,6 +113,8 @@ SET(QGIS_GUI_SRCS
   auth/qgsauthtrustedcasdialog.cpp
 
   codeeditors/qgscodeeditor.cpp
+  codeeditors/qgscodeeditorcolorscheme.cpp
+  codeeditors/qgscodeeditorcolorschemeregistry.cpp
   codeeditors/qgscodeeditorcss.cpp
   codeeditors/qgscodeeditorhtml.cpp
   codeeditors/qgscodeeditorjs.cpp
@@ -857,6 +859,8 @@ SET(QGIS_GUI_HDRS
   callouts/qgscalloutwidget.h
 
   codeeditors/qgscodeeditor.h
+  codeeditors/qgscodeeditorcolorscheme.h
+  codeeditors/qgscodeeditorcolorschemeregistry.h
   codeeditors/qgscodeeditorcss.h
   codeeditors/qgscodeeditorexpression.h
   codeeditors/qgscodeeditorhtml.h

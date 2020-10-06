@@ -50,24 +50,24 @@ void QgsCodeEditorCSS::initializeLexer()
   lexer->setFont( font, QsciLexerCSS::SingleQuotedString );
   lexer->setFont( font, QsciLexerCSS::DoubleQuotedString );
 
-  lexer->setDefaultColor( lexerColor( ColorRole::Default ) );
-  lexer->setDefaultPaper( lexerColor( ColorRole::Background ) );
-  lexer->setPaper( lexerColor( ColorRole::Background ), -1 );
+  lexer->setDefaultColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Default ) );
+  lexer->setDefaultPaper( lexerColor( QgsCodeEditorColorScheme::ColorRole::Background ) );
+  lexer->setPaper( lexerColor( QgsCodeEditorColorScheme::ColorRole::Background ), -1 );
 
-  lexer->setColor( lexerColor( ColorRole::Tag ), QsciLexerCSS::Tag );
-  lexer->setColor( lexerColor( ColorRole::Class ), QsciLexerCSS::ClassSelector );
-  lexer->setColor( lexerColor( ColorRole::Keyword ), QsciLexerCSS::Attribute );
-  lexer->setColor( lexerColor( ColorRole::Method ), QsciLexerCSS::PseudoClass );
-  lexer->setColor( lexerColor( ColorRole::Method ), QsciLexerCSS::UnknownPseudoClass );
-  lexer->setColor( lexerColor( ColorRole::Operator ), QsciLexerCSS::Operator );
-  lexer->setColor( lexerColor( ColorRole::Number ), QsciLexerCSS::Value );
-  lexer->setColor( lexerColor( ColorRole::Comment ), QsciLexerCSS::Comment );
-  lexer->setColor( lexerColor( ColorRole::DoubleQuote ), QsciLexerCSS::DoubleQuotedString );
-  lexer->setColor( lexerColor( ColorRole::SingleQuote ), QsciLexerCSS::SingleQuotedString );
-  lexer->setColor( lexerColor( ColorRole::Identifier ), QsciLexerCSS::CSS1Property );
-  lexer->setColor( lexerColor( ColorRole::Identifier ), QsciLexerCSS::UnknownProperty );
-  lexer->setColor( lexerColor( ColorRole::Identifier ), QsciLexerCSS::CSS2Property );
-  lexer->setColor( lexerColor( ColorRole::Identifier ), QsciLexerCSS::CSS3Property );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Tag ), QsciLexerCSS::Tag );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Class ), QsciLexerCSS::ClassSelector );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Keyword ), QsciLexerCSS::Attribute );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Method ), QsciLexerCSS::PseudoClass );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Method ), QsciLexerCSS::UnknownPseudoClass );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Operator ), QsciLexerCSS::Operator );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Number ), QsciLexerCSS::Value );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Comment ), QsciLexerCSS::Comment );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::DoubleQuote ), QsciLexerCSS::DoubleQuotedString );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::SingleQuote ), QsciLexerCSS::SingleQuotedString );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Identifier ), QsciLexerCSS::CSS1Property );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Identifier ), QsciLexerCSS::UnknownProperty );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Identifier ), QsciLexerCSS::CSS2Property );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Identifier ), QsciLexerCSS::CSS3Property );
 
   setLexer( lexer );
 }

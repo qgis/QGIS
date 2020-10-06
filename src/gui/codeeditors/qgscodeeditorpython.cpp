@@ -48,12 +48,12 @@ void QgsCodeEditorPython::initializeLexer()
   // current line
   setEdgeMode( QsciScintilla::EdgeLine );
   setEdgeColumn( 80 );
-  setEdgeColor( lexerColor( ColorRole::Edge ) );
+  setEdgeColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Edge ) );
 
   setWhitespaceVisibility( QsciScintilla::WsVisibleAfterIndent );
 
   QFont font = lexerFont();
-  QColor defaultColor = lexerColor( ColorRole::Default );
+  QColor defaultColor = lexerColor( QgsCodeEditorColorScheme::ColorRole::Default );
 
   QsciLexerPython *pyLexer = new QsciLexerPython( this );
 
@@ -63,7 +63,7 @@ void QgsCodeEditorPython::initializeLexer()
 
   pyLexer->setDefaultFont( font );
   pyLexer->setDefaultColor( defaultColor );
-  pyLexer->setDefaultPaper( lexerColor( ColorRole::Background ) );
+  pyLexer->setDefaultPaper( lexerColor( QgsCodeEditorColorScheme::ColorRole::Background ) );
   pyLexer->setFont( font, -1 );
 
   font.setItalic( true );
@@ -76,19 +76,19 @@ void QgsCodeEditorPython::initializeLexer()
   pyLexer->setFont( font, QsciLexerPython::DoubleQuotedString );
 
   pyLexer->setColor( defaultColor, QsciLexerPython::Default );
-  pyLexer->setColor( lexerColor( ColorRole::Class ), QsciLexerPython::ClassName );
-  pyLexer->setColor( lexerColor( ColorRole::Method ), QsciLexerPython::FunctionMethodName );
-  pyLexer->setColor( lexerColor( ColorRole::Number ), QsciLexerPython::Number );
-  pyLexer->setColor( lexerColor( ColorRole::Operator ), QsciLexerPython::Operator );
-  pyLexer->setColor( lexerColor( ColorRole::Identifier ), QsciLexerPython::Identifier );
-  pyLexer->setColor( lexerColor( ColorRole::Comment ), QsciLexerPython::Comment );
-  pyLexer->setColor( lexerColor( ColorRole::CommentBlock ), QsciLexerPython::CommentBlock );
-  pyLexer->setColor( lexerColor( ColorRole::Keyword ), QsciLexerPython::Keyword );
-  pyLexer->setColor( lexerColor( ColorRole::Decoration ), QsciLexerPython::Decorator );
-  pyLexer->setColor( lexerColor( ColorRole::SingleQuote ), QsciLexerPython::SingleQuotedString );
-  pyLexer->setColor( lexerColor( ColorRole::DoubleQuote ), QsciLexerPython::DoubleQuotedString );
-  pyLexer->setColor( lexerColor( ColorRole::TripleSingleQuote ), QsciLexerPython::TripleSingleQuotedString );
-  pyLexer->setColor( lexerColor( ColorRole::TripleDoubleQuote ), QsciLexerPython::TripleDoubleQuotedString );
+  pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Class ), QsciLexerPython::ClassName );
+  pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Method ), QsciLexerPython::FunctionMethodName );
+  pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Number ), QsciLexerPython::Number );
+  pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Operator ), QsciLexerPython::Operator );
+  pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Identifier ), QsciLexerPython::Identifier );
+  pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Comment ), QsciLexerPython::Comment );
+  pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::CommentBlock ), QsciLexerPython::CommentBlock );
+  pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Keyword ), QsciLexerPython::Keyword );
+  pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Decoration ), QsciLexerPython::Decorator );
+  pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::SingleQuote ), QsciLexerPython::SingleQuotedString );
+  pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::DoubleQuote ), QsciLexerPython::DoubleQuotedString );
+  pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::TripleSingleQuote ), QsciLexerPython::TripleSingleQuotedString );
+  pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::TripleDoubleQuote ), QsciLexerPython::TripleDoubleQuotedString );
 
   QsciAPIs *apis = new QsciAPIs( pyLexer );
 
@@ -172,8 +172,8 @@ void QgsCodeEditorPython::initializeLexer()
 
   // Margin 2 is used for the 'folding'
   setMarginWidth( 2, "0" );
-  setMarginsForegroundColor( lexerColor( ColorRole::MarginForeground ) );
-  setMarginsBackgroundColor( lexerColor( ColorRole::MarginBackground ) );
+  setMarginsForegroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginForeground ) );
+  setMarginsBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginBackground ) );
 
   setFoldingVisible( true );
   setIndentationsUseTabs( false );

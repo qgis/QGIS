@@ -19,6 +19,7 @@
 #include "qgssettings.h"
 #include "qgssymbollayerutils.h"
 #include "qgsgui.h"
+#include "qgscodeeditorcolorschemeregistry.h"
 
 #include <QLabel>
 #include <QWidget>
@@ -27,39 +28,39 @@
 #include <QDebug>
 #include <QFocusEvent>
 
-QMap< QgsCodeEditor::ColorRole, QString > QgsCodeEditor::sColorRoleToSettingsKey
+QMap< QgsCodeEditorColorScheme::ColorRole, QString > QgsCodeEditor::sColorRoleToSettingsKey
 {
-  {ColorRole::Default, QStringLiteral( "defaultFontColor" ) },
-  {ColorRole::Keyword, QStringLiteral( "keywordFontColor" ) },
-  {ColorRole::Class, QStringLiteral( "classFontColor" ) },
-  {ColorRole::Method, QStringLiteral( "methodFontColor" ) },
-  {ColorRole::Decoration, QStringLiteral( "decoratorFontColor" ) },
-  {ColorRole::Number, QStringLiteral( "numberFontColor" ) },
-  {ColorRole::Comment, QStringLiteral( "commentFontColor" ) },
-  {ColorRole::CommentLine, QStringLiteral( "commentLineFontColor" ) },
-  {ColorRole::CommentBlock, QStringLiteral( "commentBlockFontColor" ) },
-  {ColorRole::Background, QStringLiteral( "paperBackgroundColor" ) },
-  {ColorRole::Cursor, QStringLiteral( "cursorColor" ) },
-  {ColorRole::CaretLine, QStringLiteral( "caretLineColor" ) },
-  {ColorRole::Operator, QStringLiteral( "operatorFontColor" ) },
-  {ColorRole::QuotedOperator, QStringLiteral( "quotedOperatorFontColor" ) },
-  {ColorRole::Identifier, QStringLiteral( "identifierFontColor" ) },
-  {ColorRole::QuotedIdentifier, QStringLiteral( "quotedIdentifierFontColor" ) },
-  {ColorRole::Tag, QStringLiteral( "tagFontColor" ) },
-  {ColorRole::UnknownTag, QStringLiteral( "unknownTagFontColor" ) },
-  {ColorRole::SingleQuote, QStringLiteral( "singleQuoteFontColor" ) },
-  {ColorRole::DoubleQuote, QStringLiteral( "doubleQuoteFontColor" ) },
-  {ColorRole::TripleSingleQuote, QStringLiteral( "tripleSingleQuoteFontColor" ) },
-  {ColorRole::TripleDoubleQuote, QStringLiteral( "tripleDoubleQuoteFontColor" ) },
-  {ColorRole::MarginBackground, QStringLiteral( "marginBackgroundColor" ) },
-  {ColorRole::MarginForeground, QStringLiteral( "marginForegroundColor" ) },
-  {ColorRole::SelectionBackground, QStringLiteral( "selectionBackgroundColor" ) },
-  {ColorRole::SelectionForeground, QStringLiteral( "selectionForegroundColor" ) },
-  {ColorRole::MatchedBraceBackground, QStringLiteral( "matchedBraceBackground" ) },
-  {ColorRole::MatchedBraceForeground, QStringLiteral( "matchedBraceColor" ) },
-  {ColorRole::Edge, QStringLiteral( "edgeColor" ) },
-  {ColorRole::Fold, QStringLiteral( "foldColor" ) },
-  {ColorRole::Error, QStringLiteral( "stderrFontColor" ) },
+  {QgsCodeEditorColorScheme::ColorRole::Default, QStringLiteral( "defaultFontColor" ) },
+  {QgsCodeEditorColorScheme::ColorRole::Keyword, QStringLiteral( "keywordFontColor" ) },
+  {QgsCodeEditorColorScheme::ColorRole::Class, QStringLiteral( "classFontColor" ) },
+  {QgsCodeEditorColorScheme::ColorRole::Method, QStringLiteral( "methodFontColor" ) },
+  {QgsCodeEditorColorScheme::ColorRole::Decoration, QStringLiteral( "decoratorFontColor" ) },
+  {QgsCodeEditorColorScheme::ColorRole::Number, QStringLiteral( "numberFontColor" ) },
+  {QgsCodeEditorColorScheme::ColorRole::Comment, QStringLiteral( "commentFontColor" ) },
+  {QgsCodeEditorColorScheme::ColorRole::CommentLine, QStringLiteral( "commentLineFontColor" ) },
+  {QgsCodeEditorColorScheme::ColorRole::CommentBlock, QStringLiteral( "commentBlockFontColor" ) },
+  {QgsCodeEditorColorScheme::ColorRole::Background, QStringLiteral( "paperBackgroundColor" ) },
+  {QgsCodeEditorColorScheme::ColorRole::Cursor, QStringLiteral( "cursorColor" ) },
+  {QgsCodeEditorColorScheme::ColorRole::CaretLine, QStringLiteral( "caretLineColor" ) },
+  {QgsCodeEditorColorScheme::ColorRole::Operator, QStringLiteral( "operatorFontColor" ) },
+  {QgsCodeEditorColorScheme::ColorRole::QuotedOperator, QStringLiteral( "quotedOperatorFontColor" ) },
+  {QgsCodeEditorColorScheme::ColorRole::Identifier, QStringLiteral( "identifierFontColor" ) },
+  {QgsCodeEditorColorScheme::ColorRole::QuotedIdentifier, QStringLiteral( "quotedIdentifierFontColor" ) },
+  {QgsCodeEditorColorScheme::ColorRole::Tag, QStringLiteral( "tagFontColor" ) },
+  {QgsCodeEditorColorScheme::ColorRole::UnknownTag, QStringLiteral( "unknownTagFontColor" ) },
+  {QgsCodeEditorColorScheme::ColorRole::SingleQuote, QStringLiteral( "singleQuoteFontColor" ) },
+  {QgsCodeEditorColorScheme::ColorRole::DoubleQuote, QStringLiteral( "doubleQuoteFontColor" ) },
+  {QgsCodeEditorColorScheme::ColorRole::TripleSingleQuote, QStringLiteral( "tripleSingleQuoteFontColor" ) },
+  {QgsCodeEditorColorScheme::ColorRole::TripleDoubleQuote, QStringLiteral( "tripleDoubleQuoteFontColor" ) },
+  {QgsCodeEditorColorScheme::ColorRole::MarginBackground, QStringLiteral( "marginBackgroundColor" ) },
+  {QgsCodeEditorColorScheme::ColorRole::MarginForeground, QStringLiteral( "marginForegroundColor" ) },
+  {QgsCodeEditorColorScheme::ColorRole::SelectionBackground, QStringLiteral( "selectionBackgroundColor" ) },
+  {QgsCodeEditorColorScheme::ColorRole::SelectionForeground, QStringLiteral( "selectionForegroundColor" ) },
+  {QgsCodeEditorColorScheme::ColorRole::MatchedBraceBackground, QStringLiteral( "matchedBraceBackground" ) },
+  {QgsCodeEditorColorScheme::ColorRole::MatchedBraceForeground, QStringLiteral( "matchedBraceColor" ) },
+  {QgsCodeEditorColorScheme::ColorRole::Edge, QStringLiteral( "edgeColor" ) },
+  {QgsCodeEditorColorScheme::ColorRole::Fold, QStringLiteral( "foldColor" ) },
+  {QgsCodeEditorColorScheme::ColorRole::Error, QStringLiteral( "stderrFontColor" ) },
 };
 
 
@@ -140,7 +141,7 @@ void QgsCodeEditor::initializeLexer()
 
 }
 
-QColor QgsCodeEditor::lexerColor( QgsCodeEditor::ColorRole role ) const
+QColor QgsCodeEditor::lexerColor( QgsCodeEditorColorScheme::ColorRole role ) const
 {
   if ( mUseDefaultSettings )
     return color( role );
@@ -196,23 +197,23 @@ void QgsCodeEditor::setSciWidget()
 
   setUtf8( true );
   setCaretLineVisible( true );
-  setCaretLineBackgroundColor( lexerColor( ColorRole::CaretLine ) );
-  setCaretForegroundColor( lexerColor( ColorRole::Cursor ) );
-  setSelectionForegroundColor( lexerColor( ColorRole::SelectionForeground ) );
-  setSelectionBackgroundColor( lexerColor( ColorRole::SelectionBackground ) );
+  setCaretLineBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::CaretLine ) );
+  setCaretForegroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Cursor ) );
+  setSelectionForegroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::SelectionForeground ) );
+  setSelectionBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::SelectionBackground ) );
 
   setBraceMatching( QsciScintilla::SloppyBraceMatch );
-  setMatchedBraceForegroundColor( lexerColor( ColorRole::MatchedBraceForeground ) );
-  setMatchedBraceBackgroundColor( lexerColor( ColorRole::MatchedBraceBackground ) );
+  setMatchedBraceForegroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MatchedBraceForeground ) );
+  setMatchedBraceBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MatchedBraceBackground ) );
   // whether margin will be shown
   setMarginVisible( mMargin );
-  setMarginsForegroundColor( lexerColor( ColorRole::MarginForeground ) );
-  setMarginsBackgroundColor( lexerColor( ColorRole::MarginBackground ) );
-  setIndentationGuidesForegroundColor( lexerColor( ColorRole::MarginForeground ) );
-  setIndentationGuidesBackgroundColor( lexerColor( ColorRole::MarginBackground ) );
+  setMarginsForegroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginForeground ) );
+  setMarginsBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginBackground ) );
+  setIndentationGuidesForegroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginForeground ) );
+  setIndentationGuidesBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginBackground ) );
   // whether margin will be shown
   setFoldingVisible( mFolding );
-  QColor foldColor = lexerColor( ColorRole::Fold );
+  QColor foldColor = lexerColor( QgsCodeEditorColorScheme::ColorRole::Fold );
   setFoldMarginColors( foldColor, foldColor );
   // indentation
   setAutoIndent( true );
@@ -240,8 +241,8 @@ void QgsCodeEditor::setMarginVisible( bool margin )
     setMarginLineNumbers( 0, true );
     setMarginsFont( marginFont );
     setMarginWidth( 0, QStringLiteral( "00000" ) );
-    setMarginsForegroundColor( lexerColor( ColorRole::MarginForeground ) );
-    setMarginsBackgroundColor( lexerColor( ColorRole::MarginBackground ) );
+    setMarginsForegroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginForeground ) );
+    setMarginsBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginBackground ) );
   }
   else
   {
@@ -280,120 +281,8 @@ void QgsCodeEditor::insertText( const QString &text )
   }
 }
 
-QColor QgsCodeEditor::defaultColor( QgsCodeEditor::ColorRole role, const QString &theme )
+QColor QgsCodeEditor::defaultColor( QgsCodeEditorColorScheme::ColorRole role, const QString &theme )
 {
-  static QMap< QString, QMap< ColorRole, QColor > > sColors
-  {
-    {
-      QString(),
-      {
-        {ColorRole::Default, QColor( "#4d4d4c" ) },
-        {ColorRole::Keyword, QColor( "#8959a8" ) },
-        {ColorRole::Class, QColor( "#4271ae" ) },
-        {ColorRole::Method, QColor( "#4271ae" ) },
-        {ColorRole::Decoration, QColor( "#3e999f" ) },
-        {ColorRole::Number, QColor( "#c82829" ) },
-        {ColorRole::Comment, QColor( "#8e908c" ) },
-        {ColorRole::CommentLine, QColor( "#8e908c" ) },
-        {ColorRole::CommentBlock, QColor( "#8e908c" ) },
-        {ColorRole::Background, QColor( "#ffffff" ) },
-        {ColorRole::Operator, QColor( "#8959a8" ) },
-        {ColorRole::QuotedOperator, QColor( "#8959a8" ) },
-        {ColorRole::Identifier, QColor( "#4271ae" ) },
-        {ColorRole::QuotedIdentifier, QColor( "#4271ae" ) },
-        {ColorRole::Tag, QColor( "#4271ae" ) },
-        {ColorRole::UnknownTag, QColor( "#4271ae" ) },
-        {ColorRole::Cursor, QColor( "#636363" ) },
-        {ColorRole::CaretLine, QColor( "#efefef" ) },
-        {ColorRole::SingleQuote, QColor( "#718c00" ) },
-        {ColorRole::DoubleQuote, QColor( "#718c00" ) },
-        {ColorRole::TripleSingleQuote, QColor( "#eab700" ) },
-        {ColorRole::TripleDoubleQuote, QColor( "#eab700" ) },
-        {ColorRole::MarginBackground, QColor( "#efefef" ) },
-        {ColorRole::MarginForeground, QColor( "#636363" ) },
-        {ColorRole::SelectionBackground, QColor( "#d7d7d7" ) },
-        {ColorRole::SelectionForeground, QColor( "#303030" ) },
-        {ColorRole::MatchedBraceBackground, QColor( "#b7f907" ) },
-        {ColorRole::MatchedBraceForeground, QColor( "#303030" ) },
-        {ColorRole::Edge, QColor( "#efefef" ) },
-        {ColorRole::Fold, QColor( "#efefef" ) },
-        {ColorRole::Error, QColor( "#e31a1c" ) },
-      },
-    },
-    {
-      QStringLiteral( "solarized" ),
-      {
-        {ColorRole::Default, QColor( "#586E75" ) },
-        {ColorRole::Keyword, QColor( "#859900" ) },
-        {ColorRole::Class, QColor( "#268BD2" ) },
-        {ColorRole::Method, QColor( "#268BD2" ) },
-        {ColorRole::Decoration, QColor( "#6C71C4" ) },
-        {ColorRole::Number, QColor( "#2AA198" ) },
-        {ColorRole::Comment, QColor( "#93A1A1" ) },
-        {ColorRole::CommentLine, QColor( "#93A1A1" ) },
-        {ColorRole::CommentBlock, QColor( "#3D8080" ) },
-        {ColorRole::Background, QColor( "#FDF6E3" ) },
-        {ColorRole::Cursor, QColor( "#DC322F" ) },
-        {ColorRole::CaretLine, QColor( "#EEE8D5" ) },
-        {ColorRole::Operator, QColor( "#586E75" ) },
-        {ColorRole::QuotedOperator, QColor( "#586E75" ) },
-        {ColorRole::Identifier, QColor( "#586E75" ) },
-        {ColorRole::QuotedIdentifier, QColor( "#586E75" ) },
-        {ColorRole::Tag, QColor( "#2AA198" ) },
-        {ColorRole::UnknownTag, QColor( "#2AA198" ) },
-        {ColorRole::SingleQuote, QColor( "#3D8080" ) },
-        {ColorRole::DoubleQuote, QColor( "#3D8080" ) },
-        {ColorRole::TripleSingleQuote, QColor( "#3D8080" ) },
-        {ColorRole::TripleDoubleQuote, QColor( "#3D8080" ) },
-        {ColorRole::MarginBackground, QColor( "#EEE8D5" ) },
-        {ColorRole::MarginForeground, QColor( "#93A1A1" ) },
-        {ColorRole::SelectionBackground, QColor( "#839496" ) },
-        {ColorRole::SelectionForeground, QColor( "#FDF6E3" ) },
-        {ColorRole::MatchedBraceBackground, QColor( "#CBCCA3" ) },
-        {ColorRole::MatchedBraceForeground, QColor( "#586E75" ) },
-        {ColorRole::Edge, QColor( "#EEE8D5" ) },
-        {ColorRole::Fold, QColor( "#EEE8D5" ) },
-        {ColorRole::Error, QColor( "#DC322F" ) },
-      },
-    },
-    {
-      QStringLiteral( "solarized_dark" ),
-      {
-        {ColorRole::Default, QColor( "#839496" ) },
-        {ColorRole::Keyword, QColor( "#859900" ) },
-        {ColorRole::Class, QColor( "#268BD2" ) },
-        {ColorRole::Method, QColor( "#268BD2" ) },
-        {ColorRole::Decoration, QColor( "#94558D" ) },
-        {ColorRole::Number, QColor( "#2AA198" ) },
-        {ColorRole::Comment, QColor( "#2AA198" ) },
-        {ColorRole::CommentLine, QColor( "#2AA198" ) },
-        {ColorRole::CommentBlock, QColor( "#2AA198" ) },
-        {ColorRole::Background, QColor( "#002B36" ) },
-        {ColorRole::Cursor, QColor( "#DC322F" ) },
-        {ColorRole::CaretLine, QColor( "#073642" ) },
-        {ColorRole::Operator, QColor( "#839496" ) },
-        {ColorRole::QuotedOperator, QColor( "#839496" ) },
-        {ColorRole::Identifier, QColor( "#839496" ) },
-        {ColorRole::QuotedIdentifier, QColor( "#839496" ) },
-        {ColorRole::Tag, QColor( "#268BD2" ) },
-        {ColorRole::UnknownTag, QColor( "#268BD2" ) },
-        {ColorRole::SingleQuote, QColor( "#3D8080" ) },
-        {ColorRole::DoubleQuote, QColor( "#3D8080" ) },
-        {ColorRole::TripleSingleQuote, QColor( "#3D8080" ) },
-        {ColorRole::TripleDoubleQuote, QColor( "#3D8080" ) },
-        {ColorRole::MarginBackground, QColor( "#073642" ) },
-        {ColorRole::MarginForeground, QColor( "#586E75" ) },
-        {ColorRole::SelectionBackground, QColor( "#073642" ) },
-        {ColorRole::SelectionForeground, QColor( "#002B36" ) },
-        {ColorRole::MatchedBraceBackground, QColor( "#1F4D2C" ) },
-        {ColorRole::MatchedBraceForeground, QColor( "#839496" ) },
-        {ColorRole::Edge, QColor( "#586E75" ) },
-        {ColorRole::Fold, QColor( "#073642" ) },
-        {ColorRole::Error, QColor( "#DC322F" ) },
-      }
-    }
-  };
-
   if ( theme.isEmpty() && QgsApplication::instance()->themeName() == QStringLiteral( "default" ) )
   {
     // if using default theme, take certain colors from the palette
@@ -401,9 +290,9 @@ QColor QgsCodeEditor::defaultColor( QgsCodeEditor::ColorRole role, const QString
 
     switch ( role )
     {
-      case ColorRole::SelectionBackground:
+      case QgsCodeEditorColorScheme::ColorRole::SelectionBackground:
         return pal.color( QPalette::Highlight );
-      case ColorRole::SelectionForeground:
+      case QgsCodeEditorColorScheme::ColorRole::SelectionForeground:
         return pal.color( QPalette::HighlightedText );
       default:
         break;
@@ -414,48 +303,50 @@ QColor QgsCodeEditor::defaultColor( QgsCodeEditor::ColorRole role, const QString
     // non default theme (e.g. Blend of Gray). Take colors from theme ini file...
     const QSettings ini( QgsApplication::instance()->uiThemes().value( QgsApplication::instance()->themeName() ) + "/qscintilla.ini", QSettings::IniFormat );
 
-    static QMap< ColorRole, QString > sColorRoleToIniKey
+    static QMap< QgsCodeEditorColorScheme::ColorRole, QString > sColorRoleToIniKey
     {
-      {ColorRole::Default, QStringLiteral( "python/defaultFontColor" ) },
-      {ColorRole::Keyword, QStringLiteral( "python/keywordFontColor" ) },
-      {ColorRole::Class, QStringLiteral( "python/classFontColor" ) },
-      {ColorRole::Method, QStringLiteral( "python/methodFontColor" ) },
-      {ColorRole::Decoration, QStringLiteral( "python/decoratorFontColor" ) },
-      {ColorRole::Number, QStringLiteral( "python/numberFontColor" ) },
-      {ColorRole::Comment, QStringLiteral( "python/commentFontColor" ) },
-      {ColorRole::CommentLine, QStringLiteral( "sql/commentLineFontColor" ) },
-      {ColorRole::CommentBlock, QStringLiteral( "python/commentBlockFontColor" ) },
-      {ColorRole::Background, QStringLiteral( "python/paperBackgroundColor" ) },
-      {ColorRole::Cursor, QStringLiteral( "cursorColor" ) },
-      {ColorRole::CaretLine, QStringLiteral( "caretLineColor" ) },
-      {ColorRole::Operator, QStringLiteral( "sql/operatorFontColor" ) },
-      {ColorRole::QuotedOperator, QStringLiteral( "sql/QuotedOperatorFontColor" ) },
-      {ColorRole::Identifier, QStringLiteral( "sql/identifierFontColor" ) },
-      {ColorRole::QuotedIdentifier, QStringLiteral( "sql/QuotedIdentifierFontColor" ) },
-      {ColorRole::Tag, QStringLiteral( "html/tagFontColor" ) },
-      {ColorRole::UnknownTag, QStringLiteral( "html/unknownTagFontColor" ) },
-      {ColorRole::SingleQuote, QStringLiteral( "sql/singleQuoteFontColor" ) },
-      {ColorRole::DoubleQuote, QStringLiteral( "sql/doubleQuoteFontColor" ) },
-      {ColorRole::TripleSingleQuote, QStringLiteral( "python/tripleSingleQuoteFontColor" ) },
-      {ColorRole::TripleDoubleQuote, QStringLiteral( "python/tripleDoubleQuoteFontColor" ) },
-      {ColorRole::MarginBackground, QStringLiteral( "marginBackgroundColor" ) },
-      {ColorRole::MarginForeground, QStringLiteral( "marginForegroundColor" ) },
-      {ColorRole::SelectionBackground, QStringLiteral( "selectionBackgroundColor" ) },
-      {ColorRole::SelectionForeground, QStringLiteral( "selectionForegroundColor" ) },
-      {ColorRole::MatchedBraceBackground, QStringLiteral( "matchedBraceBackground" ) },
-      {ColorRole::MatchedBraceForeground, QStringLiteral( "matchedBraceColor" ) },
-      {ColorRole::Edge, QStringLiteral( "edgeColor" ) },
-      {ColorRole::Fold, QStringLiteral( "foldColor" ) },
-      {ColorRole::Error, QStringLiteral( "stderrFontColor" ) },
+      {QgsCodeEditorColorScheme::ColorRole::Default, QStringLiteral( "python/defaultFontColor" ) },
+      {QgsCodeEditorColorScheme::ColorRole::Keyword, QStringLiteral( "python/keywordFontColor" ) },
+      {QgsCodeEditorColorScheme::ColorRole::Class, QStringLiteral( "python/classFontColor" ) },
+      {QgsCodeEditorColorScheme::ColorRole::Method, QStringLiteral( "python/methodFontColor" ) },
+      {QgsCodeEditorColorScheme::ColorRole::Decoration, QStringLiteral( "python/decoratorFontColor" ) },
+      {QgsCodeEditorColorScheme::ColorRole::Number, QStringLiteral( "python/numberFontColor" ) },
+      {QgsCodeEditorColorScheme::ColorRole::Comment, QStringLiteral( "python/commentFontColor" ) },
+      {QgsCodeEditorColorScheme::ColorRole::CommentLine, QStringLiteral( "sql/commentLineFontColor" ) },
+      {QgsCodeEditorColorScheme::ColorRole::CommentBlock, QStringLiteral( "python/commentBlockFontColor" ) },
+      {QgsCodeEditorColorScheme::ColorRole::Background, QStringLiteral( "python/paperBackgroundColor" ) },
+      {QgsCodeEditorColorScheme::ColorRole::Cursor, QStringLiteral( "cursorColor" ) },
+      {QgsCodeEditorColorScheme::ColorRole::CaretLine, QStringLiteral( "caretLineColor" ) },
+      {QgsCodeEditorColorScheme::ColorRole::Operator, QStringLiteral( "sql/operatorFontColor" ) },
+      {QgsCodeEditorColorScheme::ColorRole::QuotedOperator, QStringLiteral( "sql/QuotedOperatorFontColor" ) },
+      {QgsCodeEditorColorScheme::ColorRole::Identifier, QStringLiteral( "sql/identifierFontColor" ) },
+      {QgsCodeEditorColorScheme::ColorRole::QuotedIdentifier, QStringLiteral( "sql/QuotedIdentifierFontColor" ) },
+      {QgsCodeEditorColorScheme::ColorRole::Tag, QStringLiteral( "html/tagFontColor" ) },
+      {QgsCodeEditorColorScheme::ColorRole::UnknownTag, QStringLiteral( "html/unknownTagFontColor" ) },
+      {QgsCodeEditorColorScheme::ColorRole::SingleQuote, QStringLiteral( "sql/singleQuoteFontColor" ) },
+      {QgsCodeEditorColorScheme::ColorRole::DoubleQuote, QStringLiteral( "sql/doubleQuoteFontColor" ) },
+      {QgsCodeEditorColorScheme::ColorRole::TripleSingleQuote, QStringLiteral( "python/tripleSingleQuoteFontColor" ) },
+      {QgsCodeEditorColorScheme::ColorRole::TripleDoubleQuote, QStringLiteral( "python/tripleDoubleQuoteFontColor" ) },
+      {QgsCodeEditorColorScheme::ColorRole::MarginBackground, QStringLiteral( "marginBackgroundColor" ) },
+      {QgsCodeEditorColorScheme::ColorRole::MarginForeground, QStringLiteral( "marginForegroundColor" ) },
+      {QgsCodeEditorColorScheme::ColorRole::SelectionBackground, QStringLiteral( "selectionBackgroundColor" ) },
+      {QgsCodeEditorColorScheme::ColorRole::SelectionForeground, QStringLiteral( "selectionForegroundColor" ) },
+      {QgsCodeEditorColorScheme::ColorRole::MatchedBraceBackground, QStringLiteral( "matchedBraceBackground" ) },
+      {QgsCodeEditorColorScheme::ColorRole::MatchedBraceForeground, QStringLiteral( "matchedBraceColor" ) },
+      {QgsCodeEditorColorScheme::ColorRole::Edge, QStringLiteral( "edgeColor" ) },
+      {QgsCodeEditorColorScheme::ColorRole::Fold, QStringLiteral( "foldColor" ) },
+      {QgsCodeEditorColorScheme::ColorRole::Error, QStringLiteral( "stderrFontColor" ) },
     };
 
-    return QgsSymbolLayerUtils::decodeColor( ini.value( sColorRoleToIniKey.value( role ), sColors.value( QString() ).value( role ).name() ).toString() );
+    const QgsCodeEditorColorScheme defaultScheme = QgsGui::codeEditorColorSchemeRegistry()->scheme( QStringLiteral( "default" ) );
+    return QgsSymbolLayerUtils::decodeColor( ini.value( sColorRoleToIniKey.value( role ), defaultScheme.color( role ).name() ).toString() );
   }
 
-  return sColors.value( theme ).value( role );
+  const QgsCodeEditorColorScheme scheme = QgsGui::codeEditorColorSchemeRegistry()->scheme( theme.isEmpty() ? QStringLiteral( "default" ) : theme );
+  return scheme.color( role );
 }
 
-QColor QgsCodeEditor::color( QgsCodeEditor::ColorRole role )
+QColor QgsCodeEditor::color( QgsCodeEditorColorScheme::ColorRole role )
 {
   const QgsSettings settings;
   if ( !settings.value( QStringLiteral( "codeEditor/overrideColors" ), false, QgsSettings::Gui ).toBool() )
@@ -470,7 +361,7 @@ QColor QgsCodeEditor::color( QgsCodeEditor::ColorRole role )
   }
 }
 
-void QgsCodeEditor::setColor( QgsCodeEditor::ColorRole role, const QColor &color )
+void QgsCodeEditor::setColor( QgsCodeEditorColorScheme::ColorRole role, const QColor &color )
 {
   QgsSettings settings;
   if ( color.isValid() )
@@ -521,7 +412,7 @@ QFont QgsCodeEditor::getMonospaceFont()
   return font;
 }
 
-void QgsCodeEditor::setCustomAppearance( const QString &scheme, const QMap<QgsCodeEditor::ColorRole, QColor> &customColors, const QString &fontFamily, int fontSize )
+void QgsCodeEditor::setCustomAppearance( const QString &scheme, const QMap<QgsCodeEditorColorScheme::ColorRole, QColor> &customColors, const QString &fontFamily, int fontSize )
 {
   mUseDefaultSettings = false;
   mOverrideColors = !customColors.isEmpty();

@@ -17,6 +17,8 @@
 #include "qgsapplication.h"
 #include "qgssettings.h"
 #include "qgis.h"
+#include "qgsgui.h"
+#include "qgscodeeditorcolorschemeregistry.h"
 
 //
 // QgsCodeEditorOptionsWidget
@@ -33,37 +35,37 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
 
   mColorButtonMap =
   {
-    {QgsCodeEditor::ColorRole::Default, mColorDefault },
-    {QgsCodeEditor::ColorRole::Keyword, mColorKeyword },
-    {QgsCodeEditor::ColorRole::Class, mColorClass },
-    {QgsCodeEditor::ColorRole::Method, mColorFunction },
-    {QgsCodeEditor::ColorRole::Decoration, mColorDecorator },
-    {QgsCodeEditor::ColorRole::Number, mColorNumber },
-    {QgsCodeEditor::ColorRole::Comment, mColorComment },
-    {QgsCodeEditor::ColorRole::CommentLine, mColorCommentLine },
-    {QgsCodeEditor::ColorRole::CommentBlock, mColorCommentBlock },
-    {QgsCodeEditor::ColorRole::Background, mColorBackground },
-    {QgsCodeEditor::ColorRole::Cursor, mColorCursor },
-    {QgsCodeEditor::ColorRole::CaretLine, mColorCaretLine },
-    {QgsCodeEditor::ColorRole::Operator, mColorOperator },
-    {QgsCodeEditor::ColorRole::QuotedOperator, mColorQuotedOperator },
-    {QgsCodeEditor::ColorRole::Identifier, mColorIdentifier },
-    {QgsCodeEditor::ColorRole::QuotedIdentifier, mColorQuotedIdentifier },
-    {QgsCodeEditor::ColorRole::Tag, mColorTag },
-    {QgsCodeEditor::ColorRole::UnknownTag, mColorUnknownTag },
-    {QgsCodeEditor::ColorRole::SingleQuote, mColorSingleQuote },
-    {QgsCodeEditor::ColorRole::DoubleQuote, mColorDoubleQuote },
-    {QgsCodeEditor::ColorRole::TripleSingleQuote, mColorTripleSingleQuote },
-    {QgsCodeEditor::ColorRole::TripleDoubleQuote, mColorTripleDoubleQuote },
-    {QgsCodeEditor::ColorRole::MarginBackground, mColorMarginBackground },
-    {QgsCodeEditor::ColorRole::MarginForeground, mColorMarginForeground },
-    {QgsCodeEditor::ColorRole::SelectionBackground, mColorSelectionBackground },
-    {QgsCodeEditor::ColorRole::SelectionForeground, mColorSelectionForeground },
-    {QgsCodeEditor::ColorRole::MatchedBraceBackground, mColorBraceBackground },
-    {QgsCodeEditor::ColorRole::MatchedBraceForeground, mColorBraceForeground },
-    {QgsCodeEditor::ColorRole::Edge, mColorEdge },
-    {QgsCodeEditor::ColorRole::Fold, mColorFold },
-    {QgsCodeEditor::ColorRole::Error, mColorError },
+    {QgsCodeEditorColorScheme::ColorRole::Default, mColorDefault },
+    {QgsCodeEditorColorScheme::ColorRole::Keyword, mColorKeyword },
+    {QgsCodeEditorColorScheme::ColorRole::Class, mColorClass },
+    {QgsCodeEditorColorScheme::ColorRole::Method, mColorFunction },
+    {QgsCodeEditorColorScheme::ColorRole::Decoration, mColorDecorator },
+    {QgsCodeEditorColorScheme::ColorRole::Number, mColorNumber },
+    {QgsCodeEditorColorScheme::ColorRole::Comment, mColorComment },
+    {QgsCodeEditorColorScheme::ColorRole::CommentLine, mColorCommentLine },
+    {QgsCodeEditorColorScheme::ColorRole::CommentBlock, mColorCommentBlock },
+    {QgsCodeEditorColorScheme::ColorRole::Background, mColorBackground },
+    {QgsCodeEditorColorScheme::ColorRole::Cursor, mColorCursor },
+    {QgsCodeEditorColorScheme::ColorRole::CaretLine, mColorCaretLine },
+    {QgsCodeEditorColorScheme::ColorRole::Operator, mColorOperator },
+    {QgsCodeEditorColorScheme::ColorRole::QuotedOperator, mColorQuotedOperator },
+    {QgsCodeEditorColorScheme::ColorRole::Identifier, mColorIdentifier },
+    {QgsCodeEditorColorScheme::ColorRole::QuotedIdentifier, mColorQuotedIdentifier },
+    {QgsCodeEditorColorScheme::ColorRole::Tag, mColorTag },
+    {QgsCodeEditorColorScheme::ColorRole::UnknownTag, mColorUnknownTag },
+    {QgsCodeEditorColorScheme::ColorRole::SingleQuote, mColorSingleQuote },
+    {QgsCodeEditorColorScheme::ColorRole::DoubleQuote, mColorDoubleQuote },
+    {QgsCodeEditorColorScheme::ColorRole::TripleSingleQuote, mColorTripleSingleQuote },
+    {QgsCodeEditorColorScheme::ColorRole::TripleDoubleQuote, mColorTripleDoubleQuote },
+    {QgsCodeEditorColorScheme::ColorRole::MarginBackground, mColorMarginBackground },
+    {QgsCodeEditorColorScheme::ColorRole::MarginForeground, mColorMarginForeground },
+    {QgsCodeEditorColorScheme::ColorRole::SelectionBackground, mColorSelectionBackground },
+    {QgsCodeEditorColorScheme::ColorRole::SelectionForeground, mColorSelectionForeground },
+    {QgsCodeEditorColorScheme::ColorRole::MatchedBraceBackground, mColorBraceBackground },
+    {QgsCodeEditorColorScheme::ColorRole::MatchedBraceForeground, mColorBraceForeground },
+    {QgsCodeEditorColorScheme::ColorRole::Edge, mColorEdge },
+    {QgsCodeEditorColorScheme::ColorRole::Fold, mColorFold },
+    {QgsCodeEditorColorScheme::ColorRole::Error, mColorError },
   };
 
   for ( auto it = mColorButtonMap.constBegin(); it != mColorButtonMap.constEnd(); ++it )
@@ -73,8 +75,26 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
   }
 
   mColorSchemeComboBox->addItem( tr( "Default" ), QString() );
-  mColorSchemeComboBox->addItem( tr( "Solarized (Light)" ), QStringLiteral( "solarized" ) );
-  mColorSchemeComboBox->addItem( tr( "Solarized (Dark)" ),  QStringLiteral( "solarized_dark" ) );
+
+  QMap< QString, QString> themeNameToId;
+  QStringList names;
+  const QStringList ids = QgsGui::codeEditorColorSchemeRegistry()->schemes();
+  for ( const QString &id : ids )
+  {
+    if ( id == QLatin1String( "default" ) )
+      continue;
+
+    const QString name = QgsGui::codeEditorColorSchemeRegistry()->scheme( id ).name();
+    names << name;
+    themeNameToId.insert( name, id );
+  }
+
+  std::sort( names.begin(), names.end() );
+  for ( const QString &name : qgis::as_const( names ) )
+  {
+    mColorSchemeComboBox->addItem( name, themeNameToId.value( name ) );
+  }
+
   mColorSchemeComboBox->addItem( tr( "Custom" ), QStringLiteral( "custom" ) );
 
   QgsSettings settings;
@@ -288,7 +308,7 @@ void QgsCodeEditorOptionsWidget::updatePreview()
   QString theme = mColorSchemeComboBox->currentData().toString();
 
 
-  QMap< QgsCodeEditor::ColorRole, QColor> colors;
+  QMap< QgsCodeEditorColorScheme::ColorRole, QColor> colors;
   if ( theme == QLatin1String( "custom" ) )
   {
     for ( auto it = mColorButtonMap.constBegin(); it != mColorButtonMap.constEnd(); ++it )

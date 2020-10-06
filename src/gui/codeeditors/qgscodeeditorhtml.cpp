@@ -38,12 +38,12 @@ QgsCodeEditorHTML::QgsCodeEditorHTML( QWidget *parent )
 void QgsCodeEditorHTML::initializeLexer()
 {
   QFont font = lexerFont();
-  QColor defaultColor = lexerColor( ColorRole::Default );
+  QColor defaultColor = lexerColor( QgsCodeEditorColorScheme::ColorRole::Default );
 
   QsciLexerHTML *lexer = new QsciLexerHTML( this );
   lexer->setDefaultFont( font );
   lexer->setDefaultColor( defaultColor );
-  lexer->setDefaultPaper( lexerColor( ColorRole::Background ) );
+  lexer->setDefaultPaper( lexerColor( QgsCodeEditorColorScheme::ColorRole::Background ) );
   lexer->setFont( font, -1 );
 
   font.setItalic( true );
@@ -52,21 +52,21 @@ void QgsCodeEditorHTML::initializeLexer()
   lexer->setFont( font, QsciLexerHTML::JavaScriptCommentLine );
 
   lexer->setColor( defaultColor, QsciLexerHTML::Default );
-  lexer->setColor( lexerColor( ColorRole::Tag ), QsciLexerHTML::Tag );
-  lexer->setColor( lexerColor( ColorRole::UnknownTag ), QsciLexerHTML::UnknownTag );
-  lexer->setColor( lexerColor( ColorRole::Method ), QsciLexerHTML::Attribute );
-  lexer->setColor( lexerColor( ColorRole::Method ), QsciLexerHTML::UnknownAttribute );
-  lexer->setColor( lexerColor( ColorRole::Class ), QsciLexerHTML::Entity );
-  lexer->setColor( lexerColor( ColorRole::Number ), QsciLexerHTML::HTMLNumber );
-  lexer->setColor( lexerColor( ColorRole::Comment ), QsciLexerHTML::HTMLComment );
-  lexer->setColor( lexerColor( ColorRole::Comment ), QsciLexerHTML::JavaScriptComment );
-  lexer->setColor( lexerColor( ColorRole::CommentLine ), QsciLexerHTML::JavaScriptCommentLine );
-  lexer->setColor( lexerColor( ColorRole::Number ), QsciLexerHTML::JavaScriptNumber );
-  lexer->setColor( lexerColor( ColorRole::Keyword ), QsciLexerHTML::JavaScriptKeyword );
-  lexer->setColor( lexerColor( ColorRole::DoubleQuote ), QsciLexerHTML::JavaScriptDoubleQuotedString );
-  lexer->setColor( lexerColor( ColorRole::SingleQuote ), QsciLexerHTML::JavaScriptSingleQuotedString );
-  lexer->setColor( lexerColor( ColorRole::SingleQuote ), QsciLexerHTML::HTMLSingleQuotedString );
-  lexer->setColor( lexerColor( ColorRole::DoubleQuote ), QsciLexerHTML::HTMLDoubleQuotedString );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Tag ), QsciLexerHTML::Tag );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::UnknownTag ), QsciLexerHTML::UnknownTag );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Method ), QsciLexerHTML::Attribute );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Method ), QsciLexerHTML::UnknownAttribute );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Class ), QsciLexerHTML::Entity );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Number ), QsciLexerHTML::HTMLNumber );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Comment ), QsciLexerHTML::HTMLComment );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Comment ), QsciLexerHTML::JavaScriptComment );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::CommentLine ), QsciLexerHTML::JavaScriptCommentLine );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Number ), QsciLexerHTML::JavaScriptNumber );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Keyword ), QsciLexerHTML::JavaScriptKeyword );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::DoubleQuote ), QsciLexerHTML::JavaScriptDoubleQuotedString );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::SingleQuote ), QsciLexerHTML::JavaScriptSingleQuotedString );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::SingleQuote ), QsciLexerHTML::HTMLSingleQuotedString );
+  lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::DoubleQuote ), QsciLexerHTML::HTMLDoubleQuotedString );
 
   setLexer( lexer );
 }

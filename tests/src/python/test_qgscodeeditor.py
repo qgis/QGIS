@@ -15,7 +15,7 @@ import qgis  # NOQA
 import sys
 
 from qgis.core import QgsSettings, QgsApplication
-from qgis.gui import QgsCodeEditor
+from qgis.gui import QgsCodeEditor, QgsCodeEditorColorScheme
 
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QColor, QFont
@@ -39,34 +39,34 @@ class TestQgsCodeEditor(unittest.TestCase):
     def testDefaultColors(self):
         # default color theme, default application theme
         QgsApplication.setUITheme('default')
-        self.assertEqual(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.Keyword).name(), '#8959a8')
+        self.assertEqual(QgsCodeEditor.defaultColor(QgsCodeEditorColorScheme.ColorRole.Keyword).name(), '#8959a8')
 
         # default colors should respond to application ui theme
         QgsApplication.setUITheme('Night Mapping')
-        self.assertEqual(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.Keyword).name(), '#6cbcf7')
+        self.assertEqual(QgsCodeEditor.defaultColor(QgsCodeEditorColorScheme.ColorRole.Keyword).name(), '#6cbcf7')
 
         # explicit theme, should override ui theme defaults
-        self.assertEqual(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.Keyword, 'solarized').name(), '#859900')
-        self.assertEqual(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.Background, 'solarized').name(), '#fdf6e3')
-        self.assertEqual(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.Keyword, 'solarized_dark').name(), '#859900')
-        self.assertEqual(QgsCodeEditor.defaultColor(QgsCodeEditor.ColorRole.Background, 'solarized_dark').name(), '#002b36')
+        self.assertEqual(QgsCodeEditor.defaultColor(QgsCodeEditorColorScheme.ColorRole.Keyword, 'solarized').name(), '#859900')
+        self.assertEqual(QgsCodeEditor.defaultColor(QgsCodeEditorColorScheme.ColorRole.Background, 'solarized').name(), '#fdf6e3')
+        self.assertEqual(QgsCodeEditor.defaultColor(QgsCodeEditorColorScheme.ColorRole.Keyword, 'solarized_dark').name(), '#859900')
+        self.assertEqual(QgsCodeEditor.defaultColor(QgsCodeEditorColorScheme.ColorRole.Background, 'solarized_dark').name(), '#002b36')
 
     def testColors(self):
         QgsApplication.setUITheme('default')
-        self.assertEqual(QgsCodeEditor.color(QgsCodeEditor.ColorRole.Keyword).name(), '#8959a8')
+        self.assertEqual(QgsCodeEditor.color(QgsCodeEditorColorScheme.ColorRole.Keyword).name(), '#8959a8')
         QgsApplication.setUITheme('Night Mapping')
-        self.assertEqual(QgsCodeEditor.color(QgsCodeEditor.ColorRole.Keyword).name(), '#6cbcf7')
+        self.assertEqual(QgsCodeEditor.color(QgsCodeEditorColorScheme.ColorRole.Keyword).name(), '#6cbcf7')
 
         QgsSettings().setValue('codeEditor/colorScheme', 'solarized', QgsSettings.Gui)
-        self.assertEqual(QgsCodeEditor.color(QgsCodeEditor.ColorRole.Keyword).name(), '#859900')
-        self.assertEqual(QgsCodeEditor.color(QgsCodeEditor.ColorRole.Background).name(), '#fdf6e3')
+        self.assertEqual(QgsCodeEditor.color(QgsCodeEditorColorScheme.ColorRole.Keyword).name(), '#859900')
+        self.assertEqual(QgsCodeEditor.color(QgsCodeEditorColorScheme.ColorRole.Background).name(), '#fdf6e3')
         QgsSettings().setValue('codeEditor/colorScheme', 'solarized_dark', QgsSettings.Gui)
-        self.assertEqual(QgsCodeEditor.color(QgsCodeEditor.ColorRole.Keyword).name(), '#859900')
-        self.assertEqual(QgsCodeEditor.color(QgsCodeEditor.ColorRole.Background).name(), '#002b36')
+        self.assertEqual(QgsCodeEditor.color(QgsCodeEditorColorScheme.ColorRole.Keyword).name(), '#859900')
+        self.assertEqual(QgsCodeEditor.color(QgsCodeEditorColorScheme.ColorRole.Background).name(), '#002b36')
 
         QgsSettings().setValue('codeEditor/overrideColors', True, QgsSettings.Gui)
-        QgsCodeEditor.setColor(QgsCodeEditor.ColorRole.Keyword, QColor('#cc11bb'))
-        self.assertEqual(QgsCodeEditor.color(QgsCodeEditor.ColorRole.Keyword).name(), '#cc11bb')
+        QgsCodeEditor.setColor(QgsCodeEditorColorScheme.ColorRole.Keyword, QColor('#cc11bb'))
+        self.assertEqual(QgsCodeEditor.color(QgsCodeEditorColorScheme.ColorRole.Keyword).name(), '#cc11bb')
 
     def testFontFamily(self):
         f = QgsCodeEditor().getMonospaceFont()
