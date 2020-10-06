@@ -1204,10 +1204,14 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QgsRenderContext &context, 
     return;
 
   QgsLayoutItemMapGrid::BorderSide frameBorder = annot.border;
-  double textWidth = QgsLayoutUtils::textWidthMM( mAnnotationFormat.font(), annotationString );
+  double textWidth = QgsTextRenderer::textWidth( context, mAnnotationFormat, QStringList() << annotationString ) / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+  if ( extension )
+    textWidth *= 1.1; // little bit of extra padding when we are calculating the bounding rect, to account for antialiasing
+
   //relevant for annotations is the height of digits
-  double textHeight = extension ? QgsLayoutUtils::fontAscentMM( mAnnotationFormat.font() )
-                      : QgsLayoutUtils::fontHeightCharacterMM( mAnnotationFormat.font(), QChar( '0' ) );
+  double textHeight = ( extension ? ( QgsTextRenderer::textHeight( context, mAnnotationFormat, QChar(), true ) )
+                        : ( QgsTextRenderer::textHeight( context, mAnnotationFormat, '0', false ) ) ) / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+
   double xpos = annot.position.x();
   double ypos = annot.position.y();
   QPointF anchor = QPointF();
