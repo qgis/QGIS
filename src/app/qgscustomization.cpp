@@ -440,6 +440,26 @@ QTreeWidgetItem *QgsCustomizationDialog::readWidgetsXmlNode( const QDomNode &nod
   return myItem;
 }
 
+QAction *QgsCustomizationDialog::findAction( QToolButton *toolbutton )
+{
+  if ( !toolbutton->parent() )
+    return toolbutton->defaultAction();
+
+  // We need to find the QAction that was returned from the call of "QToolBar::addWidget".
+  // This is a defaultAction in most cases. But when QToolButton is composed of multiple actions,
+  // (e.g. "Select Features by ..." button) we need to go through the parent widget to search for the
+  // parent action name.
+  const QList<QWidgetAction *> tbWidgetActions = toolbutton->parent()->findChildren<QWidgetAction *>( QString(), Qt::FindDirectChildrenOnly );
+  for ( QWidgetAction *act : tbWidgetActions )
+  {
+    QWidget *widget = act->defaultWidget();
+    if ( widget == toolbutton )
+      return act;
+  }
+
+  return toolbutton->defaultAction();
+}
+
 bool QgsCustomizationDialog::switchWidget( QWidget *widget, QMouseEvent *e )
 {
   Q_UNUSED( e )
@@ -465,7 +485,7 @@ bool QgsCustomizationDialog::switchWidget( QWidget *widget, QMouseEvent *e )
     else if ( widget->inherits( "QToolButton" ) )
     {
       QToolButton *toolbutton = qobject_cast<QToolButton *>( widget );
-      QAction *action = toolbutton->defaultAction();
+      QAction *action = findAction( toolbutton );
       if ( !action )
         return false;
       QString toolbarName = widget->parent()->objectName();

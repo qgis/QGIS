@@ -100,6 +100,7 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
     void init();
     QTreeWidgetItem *createTreeItemWidgets();
     QTreeWidgetItem *readWidgetsXmlNode( const QDomNode &node );
+    QAction *findAction( QToolButton *toolbutton );
 
     QString mLastDirSettingsName;
     QSettings *mSettings = nullptr;
