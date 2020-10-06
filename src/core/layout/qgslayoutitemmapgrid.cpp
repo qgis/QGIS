@@ -1914,13 +1914,13 @@ bool QgsLayoutItemMapGrid::shouldShowForDisplayMode( QgsLayoutItemMapGrid::Annot
 
 QgsLayoutItemMapGrid::DisplayMode gridAnnotationDisplayModeFromDD( QString ddValue, QgsLayoutItemMapGrid::DisplayMode defValue )
 {
-  if ( ddValue == QStringLiteral( "x_only" ) )
+  if ( ddValue.toLower() == QStringLiteral( "x_only" ) )
     return QgsLayoutItemMapGrid::LatitudeOnly;
-  else if ( ddValue == QStringLiteral( "y_only" ) )
+  else if ( ddValue.toLower() == QStringLiteral( "y_only" ) )
     return QgsLayoutItemMapGrid::LongitudeOnly;
-  else if ( ddValue == QStringLiteral( "disabled" ) )
+  else if ( ddValue.toLower() == QStringLiteral( "disabled" ) )
     return QgsLayoutItemMapGrid::HideAll;
-  else if ( ddValue == QStringLiteral( "all" ) )
+  else if ( ddValue.toLower() == QStringLiteral( "all" ) )
     return QgsLayoutItemMapGrid::ShowAll;
   else
     return defValue;
