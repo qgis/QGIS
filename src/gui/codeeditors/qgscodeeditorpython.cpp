@@ -55,7 +55,7 @@ void QgsCodeEditorPython::initializeLexer()
   QFont font = lexerFont();
   QColor defaultColor = lexerColor( QgsCodeEditorColorScheme::ColorRole::Default );
 
-  QsciLexerPython *pyLexer = new QsciLexerPython( this );
+  QsciLexerPython *pyLexer = new QgsQsciLexerPython( this );
 
   pyLexer->setIndentationWarning( QsciLexerPython::Inconsistent );
   pyLexer->setFoldComments( true );
@@ -235,4 +235,25 @@ void QgsCodeEditorPython::searchSelectedTextInPyQGISDocs()
   text = text.replace( QStringLiteral( ">>> " ), QString() ).replace( QStringLiteral( "... " ), QString() ).trimmed(); // removing prompts
   const QString version = QString( Qgis::version() ).split( '.' ).mid( 0, 2 ).join( '.' );
   QDesktopServices::openUrl( QUrl( QStringLiteral( "https://qgis.org/pyqgis/%1/search.html?q=%2" ).arg( version, text ) ) );
+}
+
+//
+// QgsQsciLexerPython
+//
+QgsQsciLexerPython::QgsQsciLexerPython( QObject *parent )
+  : QsciLexerPython( parent )
+{
+
+}
+
+const char *QgsQsciLexerPython::keywords( int set ) const
+{
+  if ( set == 1 )
+  {
+    return "True False and as assert break class continue def del elif else except exec "
+           "finally for from global if import in is lambda None not or pass "
+           "print raise return try while with yield";
+  }
+
+  return QsciLexerPython::keywords( set );
 }

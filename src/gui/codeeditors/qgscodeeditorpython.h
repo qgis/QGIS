@@ -19,9 +19,24 @@
 #include "qgscodeeditor.h"
 #include "qgis_sip.h"
 #include "qgis_gui.h"
+#include <Qsci/qscilexerpython.h>
 
 SIP_IF_MODULE( HAVE_QSCI_SIP )
 
+#ifndef SIP_RUN
+///@cond PRIVATE
+class QgsQsciLexerPython : public QsciLexerPython
+{
+    Q_OBJECT
+  public:
+
+    QgsQsciLexerPython( QObject *parent = nullptr );
+
+    const char *keywords( int set ) const override;
+
+};
+///@endcond
+#endif
 
 /**
  * \ingroup gui
