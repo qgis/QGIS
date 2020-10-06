@@ -1357,17 +1357,17 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QgsRenderContext &context, 
     facingLeft = !facingLeft;
     facingRight = !facingRight;
   }
-  if ( annot.border == BorderSide::Top && ( ( facingLeft && xpos < mRotatedAnnotationsMarginToCorner ) ||
-       ( facingRight && xpos > mMap->rect().width() - mRotatedAnnotationsMarginToCorner ) ) )
+  if ( annot.border == BorderSide::Top && ( ( facingLeft && annot.position.x() < mRotatedAnnotationsMarginToCorner ) ||
+       ( facingRight && annot.position.x() > mMap->rect().width() - mRotatedAnnotationsMarginToCorner ) ) )
     return;
-  if ( annot.border == BorderSide::Bottom && ( ( facingLeft && xpos > mMap->rect().width() - mRotatedAnnotationsMarginToCorner ) ||
-       ( facingRight && xpos < mRotatedAnnotationsMarginToCorner ) ) )
+  if ( annot.border == BorderSide::Bottom && ( ( facingLeft && annot.position.x() > mMap->rect().width() - mRotatedAnnotationsMarginToCorner ) ||
+       ( facingRight && annot.position.x() < mRotatedAnnotationsMarginToCorner ) ) )
     return;
-  if ( annot.border == BorderSide::Left && ( ( facingLeft && ypos > mMap->rect().height() - mRotatedAnnotationsMarginToCorner ) ||
-       ( facingRight && ypos < mRotatedAnnotationsMarginToCorner ) ) )
+  if ( annot.border == BorderSide::Left && ( ( facingLeft && annot.position.y() > mMap->rect().height() - mRotatedAnnotationsMarginToCorner ) ||
+       ( facingRight && annot.position.y() < mRotatedAnnotationsMarginToCorner ) ) )
     return;
-  if ( annot.border == BorderSide::Right && ( ( facingLeft && ypos < mRotatedAnnotationsMarginToCorner ) ||
-       ( facingRight && ypos > mMap->rect().height() - mRotatedAnnotationsMarginToCorner ) ) )
+  if ( annot.border == BorderSide::Right && ( ( facingLeft && annot.position.y() < mRotatedAnnotationsMarginToCorner ) ||
+       ( facingRight && annot.position.y() > mMap->rect().height() - mRotatedAnnotationsMarginToCorner ) ) )
     return;
 
   QgsScopedQPainterState painterState( context.painter() );
