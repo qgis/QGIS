@@ -121,6 +121,10 @@ class CORE_EXPORT QgsLegendStyle
      */
     void setAlignment( Qt::Alignment alignment ) { mAlignment = alignment; }
 
+    double indent() { return mIndent; }
+
+    void setIndent( double indent ) { mIndent = indent; }
+
     /**
      * Writes the component's style definition to an XML element.
      * \see readXml()
@@ -159,6 +163,7 @@ class CORE_EXPORT QgsLegendStyle
     QFont mFont;
     QMap<Side, double> mMarginMap;
     Qt::Alignment mAlignment = Qt::AlignLeft;
+    double mIndent = 0;
 };
 
 #endif

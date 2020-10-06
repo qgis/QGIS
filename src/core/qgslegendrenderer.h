@@ -144,6 +144,8 @@ class CORE_EXPORT QgsLegendRenderer
         //! Component size
         QSizeF size;
 
+        double indent = 0;
+
         /**
          * Horizontal offset for the symbol label.
          *
@@ -215,7 +217,7 @@ class CORE_EXPORT QgsLegendRenderer
      * Returns a list of component groups for the specified \a parentGroup, respecting the current layer's
      * splitting settings.
      */
-    QList<LegendComponentGroup> createComponentGroupList( QgsLayerTreeGroup *parentGroup, QgsRenderContext &context );
+    QList<LegendComponentGroup> createComponentGroupList( QgsLayerTreeGroup *parentGroup, QgsRenderContext &context, double indent = 0 );
 
     /**
      * Divides a list of component groups into columns, and sets the column index for each group in the list.

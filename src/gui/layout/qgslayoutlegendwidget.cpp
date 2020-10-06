@@ -94,6 +94,8 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
   connect( mWmsLegendHeightSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mWmsLegendHeightSpinBox_valueChanged );
   connect( mTitleSpaceBottomSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mTitleSpaceBottomSpinBox_valueChanged );
   connect( mGroupSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mGroupSpaceSpinBox_valueChanged );
+  connect( mGroupIndentSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mGroupIndentSpinBox_valueChanged );
+  connect( mSubgroupIndentSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mSubgroupIndentSpinBox_valueChanged );
   connect( mSpaceBelowGroupHeadingSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::spaceBelowGroupHeadingChanged );
   connect( mGroupSideSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::spaceGroupSideChanged );
   connect( mLayerSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mLayerSpaceSpinBox_valueChanged );
@@ -240,6 +242,8 @@ void QgsLayoutLegendWidget::setGuiElements()
   mWmsLegendHeightSpinBox->setValue( mLegend->wmsLegendHeight() );
   mTitleSpaceBottomSpinBox->setValue( mLegend->style( QgsLegendStyle::Title ).margin( QgsLegendStyle::Bottom ) );
   mGroupSpaceSpinBox->setValue( mLegend->style( QgsLegendStyle::Group ).margin( QgsLegendStyle::Top ) );
+  mGroupIndentSpinBox->setValue( mLegend->style( QgsLegendStyle::Group ).indent() );
+  mSubgroupIndentSpinBox->setValue( mLegend->style( QgsLegendStyle::Subgroup ).indent() );
   mGroupSideSpinBox->setValue( mLegend->style( QgsLegendStyle::Group ).margin( QgsLegendStyle::Left ) );
   mSpaceBelowGroupHeadingSpinBox->setValue( mLegend->style( QgsLegendStyle::Group ).margin( QgsLegendStyle::Bottom ) );
   mLayerSpaceSpinBox->setValue( mLegend->style( QgsLegendStyle::Subgroup ).margin( QgsLegendStyle::Top ) );
@@ -487,6 +491,30 @@ void QgsLayoutLegendWidget::mGroupSpaceSpinBox_valueChanged( double d )
   {
     mLegend->beginCommand( tr( "Change Group Space" ), QgsLayoutItem::UndoLegendGroupSpace );
     mLegend->rstyle( QgsLegendStyle::Group ).setMargin( QgsLegendStyle::Top, d );
+    mLegend->adjustBoxSize();
+    mLegend->update();
+    mLegend->endCommand();
+  }
+}
+
+void QgsLayoutLegendWidget::mGroupIndentSpinBox_valueChanged( double d )
+{
+  if ( mLegend )
+  {
+    mLegend->beginCommand( tr( "Change Group Indent" ), QgsLayoutItem::UndoLegendGroupIndent );
+    mLegend->rstyle( QgsLegendStyle::Group ).setIndent( d );
+    mLegend->adjustBoxSize();
+    mLegend->update();
+    mLegend->endCommand();
+  }
+}
+
+void QgsLayoutLegendWidget::mSubgroupIndentSpinBox_valueChanged( double d )
+{
+  if ( mLegend )
+  {
+    mLegend->beginCommand( tr( "Change Subgroup Indent" ), QgsLayoutItem::UndoLegendSubgroupIndent );
+    mLegend->rstyle( QgsLegendStyle::Subgroup ).setIndent( d );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -1258,6 +1286,8 @@ void QgsLayoutLegendWidget::blockAllSignals( bool b )
   mMaxSymbolSizeSpinBox->blockSignals( b );
   mMinSymbolSizeSpinBox->blockSignals( b );
   mGroupSpaceSpinBox->blockSignals( b );
+  mGroupIndentSpinBox->blockSignals( b );
+  mSubgroupIndentSpinBox->blockSignals( b );
   mSpaceBelowGroupHeadingSpinBox->blockSignals( b );
   mGroupSideSpinBox->blockSignals( b );
   mSpaceBelowSubgroupHeadingSpinBox->blockSignals( b );

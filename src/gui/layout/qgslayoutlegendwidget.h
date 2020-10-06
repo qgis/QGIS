@@ -82,6 +82,8 @@ class GUI_EXPORT QgsLayoutLegendWidget: public QgsLayoutItemBaseWidget, private 
     void mWmsLegendHeightSpinBox_valueChanged( double d );
     void mTitleSpaceBottomSpinBox_valueChanged( double d );
     void mGroupSpaceSpinBox_valueChanged( double d );
+    void mGroupIndentSpinBox_valueChanged( double d );
+    void mSubgroupIndentSpinBox_valueChanged( double d );
     void mLayerSpaceSpinBox_valueChanged( double d );
     void mSymbolSpaceSpinBox_valueChanged( double d );
     void mIconLabelSpaceSpinBox_valueChanged( double d );
