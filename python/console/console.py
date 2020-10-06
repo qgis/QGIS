@@ -562,8 +562,9 @@ class PythonConsoleWidget(QWidget):
         self.findScut.setContext(Qt.WidgetWithChildrenShortcut)
         self.findScut.activated.connect(self._closeFind)
 
-        self.exit_blocker = ConsoleExitBlocker(self)
-        iface.registerApplicationExitBlocker(self.exit_blocker)
+        if iface is not None:
+            self.exit_blocker = ConsoleExitBlocker(self)
+            iface.registerApplicationExitBlocker(self.exit_blocker)
 
     def allowExit(self):
         tab_count = self.tabEditorWidget.count()
