@@ -4897,11 +4897,20 @@ QList<QgsVectorLayer *> QgsPostgresProvider::searchLayers( const QList<QgsVector
 QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const
 {
   QList<QgsRelation> result;
-  if ( !mValid )
+
+  // Silently skip if this is a query layer or for some obscure reason there are no table and schema name
+  if ( mIsQuery || mTableName.isEmpty() || mSchemaName.isEmpty() )
   {
-    QgsLogger::warning( "Error getting the foreign keys of " + mTableName + ": invalid connection" );
     return result;
   }
+
+  // Skip less silently if layer is not valid
+  if ( !mValid )
+  {
+    QgsLogger::warning( QStringLiteral( "Error discovering relations of %1: invalid layer" ).arg( mQuery ) );
+    return result;
+  }
+
 
   QString sql(
     "WITH foreign_keys AS "
