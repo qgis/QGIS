@@ -102,7 +102,7 @@ QgsColorRampShaderWidget::QgsColorRampShaderWidget( QWidget *parent )
   connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsColorRampShaderWidget::applyColorRamp );
   connect( mNumberOfEntriesSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsColorRampShaderWidget::classify );
   connect( mClipCheckBox, &QAbstractButton::toggled, this, &QgsColorRampShaderWidget::widgetChanged );
-  connect( mPrecisionSpinBox, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, [ = ]( int ) { autoLabel(); } );
+  connect( mLabelPrecisionSpinBox, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, [ = ]( int ) { autoLabel(); } );
 }
 
 void QgsColorRampShaderWidget::initializeForUseWithRasterLayer()
@@ -125,11 +125,11 @@ void QgsColorRampShaderWidget::setRasterBand( int band )
   {
     const int maxDigits { QgsGuiUtils::significantDigits( mRasterDataProvider->dataType( mBand ) ) };
     // Get current value
-    const int currentPrecision { mPrecisionSpinBox->value() };
-    mPrecisionSpinBox->setMaximum( maxDigits );
+    const int currentPrecision { mLabelPrecisionSpinBox->value() };
+    mLabelPrecisionSpinBox->setMaximum( maxDigits );
     if ( currentPrecision > maxDigits )
     {
-      mPrecisionSpinBox->setValue( maxDigits );
+      mLabelPrecisionSpinBox->setValue( maxDigits );
     }
   }
 }
@@ -185,13 +185,13 @@ void QgsColorRampShaderWidget::autoLabel()
   auto applyPrecision = [ = ]( const QString & value )
   {
     double val { QLocale().toDouble( value ) };
-    if ( mPrecisionSpinBox->value() <  0 )
+    if ( mLabelPrecisionSpinBox->value() <  0 )
     {
-      const double factor = std::pow( 10, - mPrecisionSpinBox->value() );
+      const double factor = std::pow( 10, - mLabelPrecisionSpinBox->value() );
       val = static_cast<qlonglong>( val / factor ) * factor;
       return QLocale().toString( val, 'f', 0 );
     }
-    return QLocale().toString( val, 'f', mPrecisionSpinBox->value() );
+    return QLocale().toString( val, 'f', mLabelPrecisionSpinBox->value() );
   };
 
   QTreeWidgetItem *currentItem = nullptr;
