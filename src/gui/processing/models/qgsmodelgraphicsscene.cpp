@@ -183,11 +183,11 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
             addItem( arrow );
           }
         }
+        if ( parameter->isDestination() )
+          bottomIdx++;
+        else
+          topIdx++;
       }
-      if ( parameter->isDestination() )
-        bottomIdx++;
-      else
-        topIdx++;
     }
     const QList< QgsProcessingModelChildDependency > dependencies = it.value().dependencies();
     for ( const QgsProcessingModelChildDependency &depend : dependencies )
