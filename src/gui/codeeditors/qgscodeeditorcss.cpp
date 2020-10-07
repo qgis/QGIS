@@ -36,7 +36,7 @@ QgsCodeEditorCSS::QgsCodeEditorCSS( QWidget *parent )
 
 void QgsCodeEditorCSS::initializeLexer()
 {
-  QsciLexerCSS *lexer = new QsciLexerCSS( this );
+  QsciLexerCSS *lexer = new QgsQsciLexerCSS( this );
 
   QFont font = lexerFont();
   lexer->setDefaultFont( font );
@@ -70,4 +70,22 @@ void QgsCodeEditorCSS::initializeLexer()
   lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Identifier ), QsciLexerCSS::CSS3Property );
 
   setLexer( lexer );
+}
+
+//
+// QgsQsciLexerCSS
+//
+QgsQsciLexerCSS::QgsQsciLexerCSS( QObject *parent )
+  : QsciLexerCSS( parent )
+{
+
+}
+
+QString QgsQsciLexerCSS::description( int style ) const
+{
+  // see https://www.riverbankcomputing.com/pipermail/qscintilla/2019-July/001415.html
+  if ( style == QsciLexerCSS::Comment )
+    return QStringLiteral( "Comment" );
+
+  return QsciLexerCSS::description( style );
 }

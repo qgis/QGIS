@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsCodeEditorCSS : QgsCodeEditor
 {
 %Docstring
