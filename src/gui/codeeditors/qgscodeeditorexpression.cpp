@@ -131,9 +131,7 @@ void QgsCodeEditorExpression::initializeLexer()
   mSqlLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::QuotedOperator ), QsciLexerSQL::QuotedOperator );
 
   setLexer( mSqlLexer );
-
-  setMatchedBraceForegroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MatchedBraceForeground ) );
-  setMatchedBraceBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MatchedBraceBackground ) );
+  runPostLexerConfigurationTasks();
 }
 
 void QgsCodeEditorExpression::updateApis()

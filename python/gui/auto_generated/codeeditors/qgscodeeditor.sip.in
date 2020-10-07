@@ -152,6 +152,13 @@ Returns the font to use in the lexer.
 .. versionadded:: 3.16
 %End
 
+    void runPostLexerConfigurationTasks();
+%Docstring
+Performs tasks which must be run after a lexer has been set for the widget.
+
+.. versionadded:: 3.16
+%End
+
 };
 
 

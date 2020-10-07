@@ -66,6 +66,8 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
     {QgsCodeEditorColorScheme::ColorRole::Edge, mColorEdge },
     {QgsCodeEditorColorScheme::ColorRole::Fold, mColorFold },
     {QgsCodeEditorColorScheme::ColorRole::Error, mColorError },
+    {QgsCodeEditorColorScheme::ColorRole::FoldIconForeground, mColorFoldIcon },
+    {QgsCodeEditorColorScheme::ColorRole::FoldIconHalo, mColorFoldIconHalo },
   };
 
   for ( auto it = mColorButtonMap.constBegin(); it != mColorButtonMap.constEnd(); ++it )

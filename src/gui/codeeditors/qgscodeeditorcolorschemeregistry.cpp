@@ -52,6 +52,8 @@ QgsCodeEditorColorSchemeRegistry::QgsCodeEditorColorSchemeRegistry()
     {QgsCodeEditorColorScheme::ColorRole::Edge, QColor( "#efefef" ) },
     {QgsCodeEditorColorScheme::ColorRole::Fold, QColor( "#efefef" ) },
     {QgsCodeEditorColorScheme::ColorRole::Error, QColor( "#e31a1c" ) },
+    {QgsCodeEditorColorScheme::ColorRole::FoldIconForeground, QColor( "#ffffff" ) },
+    {QgsCodeEditorColorScheme::ColorRole::FoldIconHalo, QColor( "#000000" ) },
   } );
   addColorScheme( defaultScheme );
 
@@ -89,6 +91,8 @@ QgsCodeEditorColorSchemeRegistry::QgsCodeEditorColorSchemeRegistry()
     {QgsCodeEditorColorScheme::ColorRole::Edge, QColor( "#EEE8D5" ) },
     {QgsCodeEditorColorScheme::ColorRole::Fold, QColor( "#EEE8D5" ) },
     {QgsCodeEditorColorScheme::ColorRole::Error, QColor( "#DC322F" ) },
+    {QgsCodeEditorColorScheme::ColorRole::FoldIconForeground, QColor( "#ffffff" ) },
+    {QgsCodeEditorColorScheme::ColorRole::FoldIconHalo, QColor( "#93a1a1" ) },
   } );
   addColorScheme( solarizedLight );
 
@@ -126,6 +130,8 @@ QgsCodeEditorColorSchemeRegistry::QgsCodeEditorColorSchemeRegistry()
     {QgsCodeEditorColorScheme::ColorRole::Edge, QColor( "#586E75" ) },
     {QgsCodeEditorColorScheme::ColorRole::Fold, QColor( "#073642" ) },
     {QgsCodeEditorColorScheme::ColorRole::Error, QColor( "#DC322F" ) },
+    {QgsCodeEditorColorScheme::ColorRole::FoldIconForeground, QColor( "#586e75" ) },
+    {QgsCodeEditorColorScheme::ColorRole::FoldIconHalo, QColor( "#839496" ) },
   } );
   addColorScheme( solarizedDark );
 }

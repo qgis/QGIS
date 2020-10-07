@@ -175,12 +175,12 @@ void QgsCodeEditorPython::initializeLexer()
   setMarginsForegroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginForeground ) );
   setMarginsBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginBackground ) );
 
-  setMatchedBraceForegroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MatchedBraceForeground ) );
-  setMatchedBraceBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MatchedBraceBackground ) );
-
   setFoldingVisible( true );
   setIndentationsUseTabs( false );
   setIndentationGuides( true );
+
+
+  runPostLexerConfigurationTasks();
 }
 
 void QgsCodeEditorPython::autoComplete()
