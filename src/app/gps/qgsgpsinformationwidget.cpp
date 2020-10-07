@@ -1634,12 +1634,14 @@ void QgsGpsInformationWidget::updateGpsDistanceStatusMessage( bool forceDisplay 
   if ( !mNmea )
     return;
 
+  static constexpr int GPS_DISTANCE_MESSAGE_TIMEOUT_MS = 2000;
+
   if ( !forceDisplay )
   {
     // if we aren't forcing the display of the message (i.e. in direct response to a mouse cursor movement),
     // then only show an updated message when the GPS position changes if the previous forced message occurred < 2 seconds ago.
     // otherwise we end up showing infinite messages as the GPS position constantly changes...
-    if ( mLastForcedStatusUpdate.hasExpired( 2000 ) )
+    if ( mLastForcedStatusUpdate.hasExpired( GPS_DISTANCE_MESSAGE_TIMEOUT_MS ) )
       return;
   }
   else
@@ -1654,7 +1656,8 @@ void QgsGpsInformationWidget::updateGpsDistanceStatusMessage( bool forceDisplay 
   const QString distanceString = QgsDistanceArea::formatDistance( distance, distanceDecimalPlaces, QgsProject::instance()->distanceUnits() );
   const QString bearingString = mBearingNumericFormat->formatDouble( bearing, QgsNumericFormatContext() );
 
-  QgisApp::instance()->statusBarIface()->showMessage( tr( "%1 (%2) from GPS location" ).arg( distanceString, bearingString ), forceDisplay ? 2000 : 2000 - mLastForcedStatusUpdate.elapsed() );
+  QgisApp::instance()->statusBarIface()->showMessage( tr( "%1 (%2) from GPS location" ).arg( distanceString, bearingString ), forceDisplay ? GPS_DISTANCE_MESSAGE_TIMEOUT_MS
+      : GPS_DISTANCE_MESSAGE_TIMEOUT_MS - mLastForcedStatusUpdate.elapsed() );
 }
 
 void QgsGpsInformationWidget::updateTimestampDestinationFields( QgsMapLayer *mapLayer )
