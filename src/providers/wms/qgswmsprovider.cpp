@@ -3026,7 +3026,8 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
       {
         // rewrite the URL if the one in the capabilities document is incorrect
         // strip every thing after the ? from the base url
-        const QString base = mSettings.mBaseUrl.split( QRegularExpression( "\\?" ) )[0];
+        const QList parts = mSettings.mBaseUrl.split( QRegularExpression( "\\?" ) );
+        const QString base = parts.isEmpty() ? mSettings.mBaseUrl : parts.first();
         // and strip everything before the `rest` element (at least for GeoServer)
         const int index = url.length() - url.lastIndexOf( QStringLiteral( "rest" ) ) + 1; // +1 for the /
         url = base + url.right( index );
@@ -3054,7 +3055,6 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
     else if ( !getFeatureInfoUrl().isNull() )
     {
       // KVP
-      QgsDebugMsg( QStringLiteral( "KVP ignore GetFeatureURL %1" ).arg( mSettings.mIgnoreGetFeatureInfoUrl ) );
       QUrl url( mSettings.mIgnoreGetFeatureInfoUrl ? mSettings.mBaseUrl : getFeatureInfoUrl() );
       QUrlQuery query( url );
 
