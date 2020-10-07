@@ -14042,7 +14042,7 @@ void QgisApp::showRotation()
 {
   // update the statusbar with the current rotation.
   double myrotation = mMapCanvas->rotation();
-  mRotationEdit->setValue( myrotation );
+  whileBlocking( mRotationEdit )->setValue( myrotation );
 }
 
 void QgisApp::showPanMessage( double distance, QgsUnitTypes::DistanceUnit unit, double bearing )
