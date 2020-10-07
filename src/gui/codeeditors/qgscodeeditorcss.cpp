@@ -70,6 +70,9 @@ void QgsCodeEditorCSS::initializeLexer()
   lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Identifier ), QsciLexerCSS::CSS3Property );
 
   setLexer( lexer );
+
+  setMatchedBraceForegroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MatchedBraceForeground ) );
+  setMatchedBraceBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MatchedBraceBackground ) );
 }
 
 //
