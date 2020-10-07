@@ -1068,12 +1068,12 @@ bool DnDTree::dropMimeData( QTreeWidgetItem *parent, int index, const QMimeData 
 
       if ( parent )
       {
-        newItem = addItem( parent, itemElement, index );
+        newItem = addItem( parent, itemElement, index++ );
         bDropSuccessful = true;
       }
       else
       {
-        newItem = addItem( invisibleRootItem(), itemElement, index );
+        newItem = addItem( invisibleRootItem(), itemElement, index++ );
         bDropSuccessful = true;
       }
 
@@ -1593,4 +1593,3 @@ void QgsAttributesFormProperties::DnDTreeItemData::setBackgroundColor( const QCo
 {
   mBackgroundColor = backgroundColor;
 }
-
