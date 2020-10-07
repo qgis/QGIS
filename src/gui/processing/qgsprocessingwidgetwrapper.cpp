@@ -138,7 +138,6 @@ QWidget *QgsAbstractProcessingParameterWidgetWrapper::createWrappedWidget( QgsPr
   if ( mParameterDefinition->isDynamic() )
   {
     QHBoxLayout *hLayout = new QHBoxLayout();
-    hLayout->setMargin( 0 );
     hLayout->setContentsMargins( 0, 0, 0, 0 );
     hLayout->addWidget( mWidget, 1 );
     mPropertyButton = new QgsPropertyOverrideButton();

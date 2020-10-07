@@ -552,7 +552,6 @@ void QgsFontButton::prepareMenu()
   QWidgetAction *sizeAction = new QWidgetAction( mMenu );
   QWidget *sizeWidget = new QWidget();
   QVBoxLayout *sizeLayout = new QVBoxLayout();
-  sizeLayout->setMargin( 0 );
   sizeLayout->setContentsMargins( 0, 0, 0, 3 );
   sizeLayout->setSpacing( 2 );
 
@@ -594,7 +593,6 @@ void QgsFontButton::prepareMenu()
     emit changed();
   } );
   QHBoxLayout *spinLayout = new QHBoxLayout();
-  spinLayout->setMargin( 0 );
   spinLayout->setContentsMargins( 4, 0, 4, 0 );
   spinLayout->addWidget( sizeSpin );
   sizeLayout->addLayout( spinLayout );

@@ -1284,7 +1284,7 @@ QgsColorSliderWidget::QgsColorSliderWidget( QWidget *parent, const ColorComponen
 
 {
   QHBoxLayout *hLayout = new QHBoxLayout();
-  hLayout->setMargin( 0 );
+  hLayout->setContentsMargins( 0, 0, 0, 0 );
   hLayout->setSpacing( 5 );
 
   mRampWidget = new QgsColorRampWidget( nullptr, component );
@@ -1415,7 +1415,7 @@ QgsColorTextWidget::QgsColorTextWidget( QWidget *parent )
   : QgsColorWidget( parent )
 {
   QHBoxLayout *hLayout = new QHBoxLayout();
-  hLayout->setMargin( 0 );
+  hLayout->setContentsMargins( 0, 0, 0, 0 );
   hLayout->setSpacing( 0 );
 
   mLineEdit = new QLineEdit( nullptr );

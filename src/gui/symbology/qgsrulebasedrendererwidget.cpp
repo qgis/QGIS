@@ -699,7 +699,6 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Ru
   , mContext( context )
 {
   setupUi( this );
-  layout()->setMargin( 0 );
   layout()->setContentsMargins( 0, 0, 0, 0 );
 
   mElseRadio->setChecked( mRule->isElse() );

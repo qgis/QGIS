@@ -312,10 +312,8 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   //create layout view
   QGridLayout *viewLayout = new QGridLayout();
   viewLayout->setSpacing( 0 );
-  viewLayout->setMargin( 0 );
   viewLayout->setContentsMargins( 0, 0, 0, 0 );
   centralWidget()->layout()->setSpacing( 0 );
-  centralWidget()->layout()->setMargin( 0 );
   centralWidget()->layout()->setContentsMargins( 0, 0, 0, 0 );
 
   mMessageBar = new QgsMessageBar( centralWidget() );

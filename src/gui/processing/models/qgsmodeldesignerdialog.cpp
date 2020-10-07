@@ -875,7 +875,6 @@ QgsModelChildDependenciesWidget::QgsModelChildDependenciesWidget( QWidget *paren
   , mChildId( childId )
 {
   QHBoxLayout *hl = new QHBoxLayout();
-  hl->setMargin( 0 );
   hl->setContentsMargins( 0, 0, 0, 0 );
 
   mLineEdit = new QLineEdit();

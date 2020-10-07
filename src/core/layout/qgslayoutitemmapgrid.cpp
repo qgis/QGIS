@@ -731,7 +731,11 @@ void QgsLayoutItemMapGrid::drawGridNoTransform( QgsRenderContext &context, doubl
 
         l2 = QLineF( hIt->line.first(), hIt->line.last() );
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
         if ( l2.intersect( l1, &intersectionPoint ) == QLineF::BoundedIntersection )
+#else
+        if ( l2.intersects( l1, &intersectionPoint ) == QLineF::BoundedIntersection )
+#endif
         {
           if ( mGridStyle == QgsLayoutItemMapGrid::Cross )
           {
@@ -773,7 +777,11 @@ void QgsLayoutItemMapGrid::drawGridNoTransform( QgsRenderContext &context, doubl
 
         l2 = QLineF( vIt->line.first(), vIt->line.last() );
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
         if ( l2.intersect( l1, &intersectionPoint ) == QLineF::BoundedIntersection )
+#else
+        if ( l2.intersects( l1, &intersectionPoint ) == QLineF::BoundedIntersection )
+#endif
         {
           //apply a threshold to avoid calculate point if the two points are very close together (can lead to artifacts)
           crossEnd1 = ( ( intersectionPoint - l1.p1() ).manhattanLength() > 0.01 ) ?
@@ -1572,7 +1580,11 @@ int QgsLayoutItemMapGrid::xGridLines() const
     for ( ; it != borderLines.constEnd(); ++it )
     {
       QPointF intersectionPoint;
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
       if ( it->intersect( gridLine, &intersectionPoint ) == QLineF::BoundedIntersection )
+#else
+      if ( it->intersects( gridLine, &intersectionPoint ) == QLineF::BoundedIntersection )
+#endif
       {
         intersectionList.push_back( intersectionPoint );
         if ( intersectionList.size() >= 2 )
@@ -1673,7 +1685,11 @@ int QgsLayoutItemMapGrid::yGridLines() const
     for ( ; it != borderLines.constEnd(); ++it )
     {
       QPointF intersectionPoint;
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
       if ( it->intersect( gridLine, &intersectionPoint ) == QLineF::BoundedIntersection )
+#else
+      if ( it->intersects( gridLine, &intersectionPoint ) == QLineF::BoundedIntersection )
+#endif
       {
         intersectionList.push_back( intersectionPoint );
         if ( intersectionList.size() >= 2 )

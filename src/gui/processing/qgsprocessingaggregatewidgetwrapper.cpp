@@ -198,7 +198,6 @@ QgsProcessingAggregateParameterDefinitionWidget::QgsProcessingAggregateParameter
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Parent layer" ) ) );

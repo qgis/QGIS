@@ -780,14 +780,10 @@ bool QgisAppInterface::openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f, b
 
 void QgisAppInterface::preloadForm( const QString &uifile )
 {
-  QSignalMapper *signalMapper = new QSignalMapper( this );
   mTimer = new QTimer( this );
 
-  connect( mTimer, SIGNAL( timeout() ), signalMapper, SLOT( map() ) );
-  connect( signalMapper, SIGNAL( mapped( QString ) ), mTimer, SLOT( stop() ) );
-  connect( signalMapper, SIGNAL( mapped( QString ) ), this, SLOT( cacheloadForm( QString ) ) );
-
-  signalMapper->setMapping( mTimer, uifile );
+  connect( mTimer, &QTimer::timeout, mTimer, &QTimer::stop );
+  connect( mTimer, &QTimer::timeout, this, [ = ] { cacheloadForm( uifile ); } );
 
   mTimer->start( 0 );
 }

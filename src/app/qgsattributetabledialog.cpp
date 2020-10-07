@@ -151,7 +151,6 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
 
   setAttribute( Qt::WA_DeleteOnClose );
 
-  layout()->setMargin( 0 );
   layout()->setContentsMargins( 0, 0, 0, 0 );
   static_cast< QGridLayout * >( layout() )->setVerticalSpacing( 0 );
 
@@ -1009,7 +1008,6 @@ void QgsAttributeTableDialog::toggleDockMode( bool docked )
 
     QVBoxLayout *vl = new QVBoxLayout();
     vl->setContentsMargins( 0, 0, 0, 0 );
-    vl->setMargin( 0 );
     vl->addWidget( this );
     mDialog->setLayout( vl );
 

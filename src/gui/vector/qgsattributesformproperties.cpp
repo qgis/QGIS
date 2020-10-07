@@ -45,7 +45,7 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   QGridLayout *availableWidgetsWidgetLayout = new QGridLayout;
   mAvailableWidgetsTree = new QgsAttributesDnDTree( mLayer );
   availableWidgetsWidgetLayout->addWidget( mAvailableWidgetsTree );
-  availableWidgetsWidgetLayout->setMargin( 0 );
+  availableWidgetsWidgetLayout->setContentsMargins( 0, 0, 0, 0 );
   mAvailableWidgetsWidget->setLayout( availableWidgetsWidgetLayout );
   mAvailableWidgetsTree->setSelectionMode( QAbstractItemView::SelectionMode::ExtendedSelection );
   mAvailableWidgetsTree->setHeaderLabels( QStringList() << tr( "Available Widgets" ) );
@@ -56,7 +56,7 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   mFormLayoutTree = new QgsAttributesDnDTree( mLayer );
   mFormLayoutWidget->setLayout( formLayoutWidgetLayout );
   formLayoutWidgetLayout->addWidget( mFormLayoutTree );
-  formLayoutWidgetLayout->setMargin( 0 );
+  formLayoutWidgetLayout->setContentsMargins( 0, 0, 0, 0 );
   mFormLayoutTree->setHeaderLabels( QStringList() << tr( "Form Layout" ) );
   mFormLayoutTree->setType( QgsAttributesDnDTree::Type::Drop );
 
@@ -272,8 +272,8 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
   mAttributeTypeDialog->setEditorWidgetConfig( cfg.mEditorWidgetConfig );
   mAttributeTypeDialog->setEditorWidgetType( cfg.mEditorWidgetType );
 
-  mAttributeTypeDialog->layout()->setMargin( 0 );
-  mAttributeTypeFrame->layout()->setMargin( 0 );
+  mAttributeTypeDialog->layout()->setContentsMargins( 0, 0, 0, 0 );
+  mAttributeTypeFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
 
   mAttributeTypeFrame->layout()->addWidget( mAttributeTypeDialog );
 }
@@ -359,14 +359,14 @@ void QgsAttributesFormProperties::loadAttributeWidgetEdit()
 
   QTreeWidgetItem *currentItem = mFormLayoutTree->selectedItems().at( 0 );
   mAttributeWidgetEdit = new QgsAttributeWidgetEdit( currentItem, this );
-  mAttributeTypeFrame->layout()->setMargin( 0 );
+  mAttributeTypeFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
   mAttributeTypeFrame->layout()->addWidget( mAttributeWidgetEdit );
 }
 
 void QgsAttributesFormProperties::loadInfoWidget( const QString &infoText )
 {
   mInfoTextWidget = new QLabel( infoText );
-  mAttributeTypeFrame->layout()->setMargin( 0 );
+  mAttributeTypeFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
   mAttributeTypeFrame->layout()->addWidget( mInfoTextWidget );
 }
 

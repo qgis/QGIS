@@ -39,7 +39,7 @@ QgsFieldPairWidget::QgsFieldPairWidget( int index, QWidget *parent )
   , mEnabled( index == 0 )
 {
   mLayout = new QHBoxLayout();
-  mLayout->setMargin( 0 );
+  mLayout->setContentsMargins( 0, 0, 0, 0 );
 
   mAddButton = new QToolButton( this );
   mAddButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyAdd.svg" ) ) );
