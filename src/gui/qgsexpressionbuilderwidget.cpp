@@ -160,8 +160,6 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   functionsplit->restoreState( settings.value( QStringLiteral( "Windows/QgsExpressionBuilderWidget/functionsplitter" ) ).toByteArray() );
   mShowHelpButton->setEnabled( functionsplit->sizes().at( 1 ) == 0 );
 
-  txtExpressionString->setFoldingVisible( false );
-
   if ( QgsPythonRunner::isValid() )
   {
     QgsPythonRunner::eval( QStringLiteral( "qgis.user.expressionspath" ), mFunctionsPath );
