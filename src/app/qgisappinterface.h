@@ -325,8 +325,6 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     //! Pointer to the QgisApp object
     QgisApp *qgis = nullptr;
 
-    QTimer *mTimer = nullptr;
-
     //! Pointer to the PluginManagerInterface object
     QgsAppPluginManagerInterface pluginManagerIface;
 };

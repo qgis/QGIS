@@ -780,12 +780,10 @@ bool QgisAppInterface::openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f, b
 
 void QgisAppInterface::preloadForm( const QString &uifile )
 {
-  mTimer = new QTimer( this );
-
-  connect( mTimer, &QTimer::timeout, mTimer, &QTimer::stop );
-  connect( mTimer, &QTimer::timeout, this, [ = ] { cacheloadForm( uifile ); } );
-
-  mTimer->start( 0 );
+  QTimer::singleShot( 0, this, [ = ]
+  {
+    cacheloadForm( uifile );
+  } );
 }
 
 void QgisAppInterface::cacheloadForm( const QString &uifile )
