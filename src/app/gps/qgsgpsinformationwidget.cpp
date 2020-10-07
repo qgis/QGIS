@@ -107,7 +107,7 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   connect( QgsProject::instance()->displaySettings(), &QgsProjectDisplaySettings::bearingFormatChanged, this, [ = ]
   {
     mBearingNumericFormat.reset( QgsProject::instance()->displaySettings()->bearingFormat()->clone() );
-    updateGpsDistanceStatusMessage();
+    updateGpsDistanceStatusMessage( false );
   } );
 
   mCanvasToWgs84Transform = QgsCoordinateTransform( mMapCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
@@ -1005,7 +1005,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
       addVertex();
     }
 
-    updateGpsDistanceStatusMessage();
+    updateGpsDistanceStatusMessage( false );
   }
 
   if ( !std::isnan( info.direction ) || ( mTravelBearingCheckBox->isChecked() && !mSecondLastGpsPosition.isEmpty() ) )
@@ -1621,7 +1621,7 @@ void QgsGpsInformationWidget::cursorCoordinateChanged( const QgsPointXY &point )
   try
   {
     mLastCursorPosWgs84 = mCanvasToWgs84Transform.transform( point );
-    updateGpsDistanceStatusMessage();
+    updateGpsDistanceStatusMessage( true );
   }
   catch ( QgsCsException & )
   {
@@ -1629,10 +1629,23 @@ void QgsGpsInformationWidget::cursorCoordinateChanged( const QgsPointXY &point )
   }
 }
 
-void QgsGpsInformationWidget::updateGpsDistanceStatusMessage()
+void QgsGpsInformationWidget::updateGpsDistanceStatusMessage( bool forceDisplay )
 {
   if ( !mNmea )
     return;
+
+  if ( !forceDisplay )
+  {
+    // if we aren't forcing the display of the message (i.e. in direct response to a mouse cursor movement),
+    // then only show an updated message when the GPS position changes if the previous forced message occurred < 2 seconds ago.
+    // otherwise we end up showing infinite messages as the GPS position constantly changes...
+    if ( mLastForcedStatusUpdate.hasExpired( 2000 ) )
+      return;
+  }
+  else
+  {
+    mLastForcedStatusUpdate.restart();
+  }
 
   const double distance = mDistanceCalculator.convertLengthMeasurement( mDistanceCalculator.measureLine( QVector< QgsPointXY >() << mLastCursorPosWgs84 << mLastGpsPosition ),
                           QgsProject::instance()->distanceUnits() );
@@ -1641,7 +1654,7 @@ void QgsGpsInformationWidget::updateGpsDistanceStatusMessage()
   const QString distanceString = QgsDistanceArea::formatDistance( distance, distanceDecimalPlaces, QgsProject::instance()->distanceUnits() );
   const QString bearingString = mBearingNumericFormat->formatDouble( bearing, QgsNumericFormatContext() );
 
-  QgisApp::instance()->statusBarIface()->showMessage( tr( "%1 (%2) from GPS location" ).arg( distanceString, bearingString ), 2000 );
+  QgisApp::instance()->statusBarIface()->showMessage( tr( "%1 (%2) from GPS location" ).arg( distanceString, bearingString ), forceDisplay ? 2000 : 2000 - mLastForcedStatusUpdate.elapsed() );
 }
 
 void QgsGpsInformationWidget::updateTimestampDestinationFields( QgsMapLayer *mapLayer )
@@ -1686,7 +1699,7 @@ void QgsGpsInformationWidget::tapAndHold( const QgsPointXY &mapPoint, QTapAndHol
   try
   {
     mLastCursorPosWgs84 = mCanvasToWgs84Transform.transform( mapPoint );
-    updateGpsDistanceStatusMessage();
+    updateGpsDistanceStatusMessage( true );
   }
   catch ( QgsCsException & )
   {
