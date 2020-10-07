@@ -1037,7 +1037,33 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
 
     if ( mRotateMapCheckBox->isChecked() && ( !mLastRotateTimer.isValid() || mLastRotateTimer.hasExpired( mSpinMapRotateInterval->value() * 1000 ) ) )
     {
-      mMapCanvas->setRotation( trueNorth - bearing - adjustment );
+      QgsCoordinateTransform wgs84ToCanvas( mWgs84CRS, mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
+
+      try
+      {
+        QLineF bearingLine;
+        bearingLine.setP1( wgs84ToCanvas.transform( myNewCenter ).toQPointF() );
+
+        // project out the bearing line by roughly the size of the canvas
+        QgsDistanceArea da1;
+        da1.setSourceCrs( mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
+        da1.setEllipsoid( QgsProject::instance()->ellipsoid() );
+        const double totalLength = da1.measureLine( mMapCanvas->mapSettings().extent().center(), QgsPointXY( mMapCanvas->mapSettings().extent().xMaximum(),
+                                   mMapCanvas->mapSettings().extent().yMaximum() ) );
+
+        QgsDistanceArea da;
+        da.setSourceCrs( mWgs84CRS, QgsProject::instance()->transformContext() );
+        da.setEllipsoid( QgsProject::instance()->ellipsoid() );
+        const QgsPointXY res = da.computeSpheroidProject( myNewCenter, totalLength, ( bearing - trueNorth + adjustment ) * M_PI / 180.0 );
+        bearingLine.setP2( wgs84ToCanvas.transform( res ).toQPointF() );
+
+        mMapCanvas->setRotation( 270 - bearingLine.angle() );
+      }
+      catch ( QgsCsException & )
+      {
+        QgsDebugMsg( QStringLiteral( "Coordinate exception encountered while calculating GPS bearing rotation" ) );
+        mMapCanvas->setRotation( trueNorth - bearing - adjustment );
+      }
       mLastRotateTimer.restart();
     }
 
