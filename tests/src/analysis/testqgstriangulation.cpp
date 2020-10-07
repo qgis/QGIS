@@ -37,6 +37,7 @@ class TestQgsTriangulation : public QObject
 
     void meshTriangulation();
     void meshTriangulationWithOnlyBreakLine();
+    void meshTriangulationPointAndBreakLineBreakLine();
 
   private:
 };
@@ -290,6 +291,54 @@ void TestQgsTriangulation::meshTriangulationWithOnlyBreakLine()
   QVERIFY( QgsMesh::compareFaces( mesh.face( 3 ), QgsMeshFace( {2, 4, 3} ) ) );
   QVERIFY( QgsMesh::compareFaces( mesh.face( 4 ), QgsMeshFace( {4, 6, 3} ) ) );
   QVERIFY( QgsMesh::compareFaces( mesh.face( 5 ), QgsMeshFace( {4, 7, 6} ) ) );
+}
+
+void TestQgsTriangulation::meshTriangulationPointAndBreakLineBreakLine()
+{
+  QgsMeshTriangulation meshTri;
+
+  QgsVectorLayer *mLayerPointsZ = new QgsVectorLayer( QStringLiteral( "PointZ" ),
+      QStringLiteral( "points Z" ),
+      QStringLiteral( "memory" ) );
+
+  for ( int i = 0; i < 4; ++i )
+  {
+    for ( int j = 0 ; j < 10; ++j )
+    {
+      QgsFeature feat;
+      feat.setGeometry( QgsGeometry( new QgsPoint( i * 10.0, j * 10.0 ) ) );
+      mLayerPointsZ->dataProvider()->addFeature( feat );
+    }
+  }
+
+  QgsCoordinateTransformContext transformContext;
+  QgsCoordinateTransform transform( mLayerPointsZ->crs(),
+                                    QgsCoordinateReferenceSystem(),
+                                    transformContext );
+
+  QgsFeatureIterator fIt = mLayerPointsZ->getFeatures();
+  meshTri.addVertices( fIt, -1, transform );
+
+  QgsMesh mesh = meshTri.triangulatedMesh();
+
+  QCOMPARE( mesh.vertexCount(), 40 );
+  QCOMPARE( mesh.faceCount(), 54 );
+
+  QgsVectorLayer *mLayerLineZ = new QgsVectorLayer( QStringLiteral( "LineStringZ" ),
+      QStringLiteral( "break line Z" ),
+      QStringLiteral( "memory" ) );
+
+
+  QgsFeature feat;
+  feat.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineStringZ (5 25 1, 95 25 2, 95 15 3, 5 15 4)" ) ) );
+  mLayerLineZ->dataProvider()->addFeature( feat );
+  fIt = mLayerLineZ->getFeatures();
+  meshTri.addBreakLines( fIt, -1, transform );
+
+  mesh = meshTri.triangulatedMesh();
+
+  QCOMPARE( mesh.vertexCount(), 44 );
+  QCOMPARE( mesh.faceCount(), 68 );
 }
 
 QGSTEST_MAIN( TestQgsTriangulation )

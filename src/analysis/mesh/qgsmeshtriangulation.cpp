@@ -150,9 +150,6 @@ void QgsMeshTriangulation::addBreakLinesFromFeature( const QgsFeature &feature, 
   if ( valueAttribute >= 0 )
     valueOnVertex = feature.attribute( valueAttribute ).toDouble();
 
-  if ( feedback )
-    feedback->setProgress( 0 );
-
   //from QgsTinInterpolator::insertData()
   std::vector<const QgsCurve *> curves;
   QgsGeometry geom = feature.geometry();
