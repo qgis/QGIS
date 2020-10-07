@@ -1423,7 +1423,7 @@ int QgsDualEdgeTriangulation::insertForcedSegment( int p1, int p2, QgsInterpolat
 
     if ( mHalfEdge[oppositeEdge]->getPoint() == -1 || mHalfEdge[mHalfEdge[oppositeEdge]->getDual()]->getPoint() == -1 ) //intersection with line to the virtual point makes no sense
     {
-      actEdge = mHalfEdge[mHalfEdge[oppositeEdge]->getNext()]->getDual(); //continue with the next edge arround p1
+      actEdge = mHalfEdge[mHalfEdge[oppositeEdge]->getNext()]->getDual(); //continue with the next edge around p1
       continue;
     }
 
@@ -1519,7 +1519,7 @@ int QgsDualEdgeTriangulation::insertForcedSegment( int p1, int p2, QgsInterpolat
       crossedEdges.append( oppositeEdge );
       break;
     }
-    actEdge = mHalfEdge[mHalfEdge[oppositeEdge]->getNext()]->getDual(); //continue with the next edge arround p1
+    actEdge = mHalfEdge[mHalfEdge[oppositeEdge]->getNext()]->getDual(); //continue with the next edge around p1
   }
   while ( actEdge != firstActEdge );
 
