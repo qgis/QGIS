@@ -1473,28 +1473,34 @@ QgsVectorLayerExporter::ExportError QgsHanaProvider::createEmptyLayer(
   if ( srs.isValid() )
   {
     srid = srs.postgisSrid();
-    QString authSrid = QStringLiteral( "null" );
-    QString authName = QStringLiteral( "null" );
-    QStringList sl = srs.authid().split( ':' );
-    if ( sl.length() == 2 )
+    if ( srid != 0 )
     {
-      authName = sl[0];
-      authSrid = sl[1];
-    }
-
-    try
-    {
-      sql = QStringLiteral( "SELECT COUNT(*) FROM SYS.ST_SPATIAL_REFERENCE_SYSTEMS "
-                            "WHERE SRS_ID = ? AND ORGANIZATION = ? AND ORGANIZATION_COORDSYS_ID = ?" );
-      size_t numCrs = conn->executeCountQuery( sql, { static_cast<qulonglong>( srid ), authName, authSrid} );
-      if ( numCrs == 0 )
-        createCoordinateSystem( conn, srs );
-    }
-    catch ( const QgsHanaException &ex )
-    {
-      if ( errorMessage )
-        *errorMessage = QObject::tr( "Connection to database failed." ) + QStringLiteral( " " ) + QString( ex.what() );
-      return QgsVectorLayerExporter::ErrConnectionFailed;
+      QStringList sl = srs.authid().split( ':' );
+      if ( sl.length() == 2 )
+      {
+        QString authName = sl[0];
+        QString authSrid = sl[1];
+        sql = QStringLiteral( "SELECT COUNT(*) FROM SYS.ST_SPATIAL_REFERENCE_SYSTEMS "
+                              "WHERE SRS_ID = ? AND ORGANIZATION = ? AND ORGANIZATION_COORDSYS_ID = ?" );
+        try
+        {
+          size_t numCrs = conn->executeCountQuery( sql, { static_cast<qulonglong>( srid ), authName, authSrid} );
+          if ( numCrs == 0 )
+            createCoordinateSystem( conn, srs );
+        }
+        catch ( const QgsHanaException &ex )
+        {
+          if ( errorMessage )
+            *errorMessage = QObject::tr( "Connection to database failed." ) + QStringLiteral( " " ) + QString( ex.what() );
+          return QgsVectorLayerExporter::ErrConnectionFailed;
+        }
+      }
+      else
+      {
+        if ( errorMessage )
+          *errorMessage = QObject::tr( "Unable to retrieve the authority identifier for an CRS with id = {1}." ).arg( QString::number( srid ) );
+        return QgsVectorLayerExporter::ErrCreateDataSource;
+      }
     }
   }
 
@@ -1547,7 +1553,7 @@ QgsVectorLayerExporter::ExportError QgsHanaProvider::createEmptyLayer(
     return QgsVectorLayerExporter::ErrInvalidLayer;
   }
 
-  // add fields to the layer
+// add fields to the layer
   if ( oldToNewAttrIdxMap )
     oldToNewAttrIdxMap->clear();
 
