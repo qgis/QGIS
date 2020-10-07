@@ -36,9 +36,6 @@ QgsMeshTriangulation::~QgsMeshTriangulation() = default;
 
 bool QgsMeshTriangulation::addVertices( QgsFeatureIterator &vertexFeatureIterator, int valueAttribute, const QgsCoordinateTransform &transform, QgsFeedback *feedback, long featureCount )
 {
-  if ( !vertexFeatureIterator.isValid() || vertexFeatureIterator.isClosed() )
-    return false;
-
   if ( feedback )
     feedback->setProgress( 0 );
 
@@ -63,9 +60,6 @@ bool QgsMeshTriangulation::addVertices( QgsFeatureIterator &vertexFeatureIterato
 
 bool QgsMeshTriangulation::addBreakLines( QgsFeatureIterator &lineFeatureIterator, int valueAttribute, const QgsCoordinateTransform &transform, QgsFeedback *feedback, long featureCount )
 {
-  if ( !lineFeatureIterator.isValid() || lineFeatureIterator.isClosed() )
-    return false;
-
   if ( feedback )
     feedback->setProgress( 0 );
 
