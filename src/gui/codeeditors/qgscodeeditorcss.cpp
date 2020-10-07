@@ -71,8 +71,7 @@ void QgsCodeEditorCSS::initializeLexer()
 
   setLexer( lexer );
 
-  setMatchedBraceForegroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MatchedBraceForeground ) );
-  setMatchedBraceBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MatchedBraceBackground ) );
+  runPostLexerConfigurationTasks();
 }
 
 //

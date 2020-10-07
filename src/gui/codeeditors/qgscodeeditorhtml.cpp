@@ -69,7 +69,5 @@ void QgsCodeEditorHTML::initializeLexer()
   lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::DoubleQuote ), QsciLexerHTML::HTMLDoubleQuotedString );
 
   setLexer( lexer );
-
-  setMatchedBraceForegroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MatchedBraceForeground ) );
-  setMatchedBraceBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MatchedBraceBackground ) );
+  runPostLexerConfigurationTasks();
 }

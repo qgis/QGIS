@@ -165,6 +165,13 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      */
     QFont lexerFont() const;
 
+    /**
+     * Performs tasks which must be run after a lexer has been set for the widget.
+     *
+     * \since QGIS 3.16
+     */
+    void runPostLexerConfigurationTasks();
+
   private:
 
     void setSciWidget();

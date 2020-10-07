@@ -67,8 +67,7 @@ void QgsCodeEditorSQL::initializeLexer()
 
   setLexer( mSqlLexer );
 
-  setMatchedBraceForegroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MatchedBraceForeground ) );
-  setMatchedBraceBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MatchedBraceBackground ) );
+  runPostLexerConfigurationTasks();
 }
 
 void QgsCodeEditorSQL::setFields( const QgsFields &fields )

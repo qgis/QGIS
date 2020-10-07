@@ -67,6 +67,8 @@ class GUI_EXPORT QgsCodeEditorColorScheme
       Edge, //!< Edge color
       Fold, //!< Fold color
       Error, //!< Error color
+      FoldIconForeground, //!< Fold icon foreground color
+      FoldIconHalo, //!< Fold icon halo color
     };
 
     /**
