@@ -350,12 +350,13 @@ QString QgsWmsProvider::getLegendGraphicUrl() const
       break;
     }
   }
-
+  QgsDebugMsgLevel( QStringLiteral( "step 1-> getLegendGraphicUrl is %1" ).arg( url ), 6 );
   if ( url.isEmpty() && !mCaps.mCapabilities.capability.request.getLegendGraphic.dcpType.isEmpty() )
   {
     url = mCaps.mCapabilities.capability.request.getLegendGraphic.dcpType.front().http.get.onlineResource.xlinkHref;
   }
 
+  QgsDebugMsgLevel( QStringLiteral( "step 2-> getLegendGraphicUrl is %1" ).arg( url ), 6 );
   if ( url.isEmpty() )
   {
     for ( const QgsWmtsTileLayer &l : mCaps.mTileLayersSupported )
@@ -380,6 +381,34 @@ QString QgsWmsProvider::getLegendGraphicUrl() const
         break;
     }
   }
+  if ( mSettings.mIgnoreGetMapUrl )
+  {
+    if ( url.isEmpty() )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "converting getLegendGraphicUrl is %1" ).arg( url ), 9 );
+      // rewrite the URL if the one in the capabilities document is incorrect
+      // strip every thing after the ? from the base url
+      const QStringList parts = mSettings.mBaseUrl.split( QRegularExpression( "\\?" ) );
+      const QString base = parts.isEmpty() ? mSettings.mBaseUrl : parts.first();
+      // and strip everything before the `rest` element (at least for GeoServer)
+      const int index = url.length() - url.lastIndexOf( QStringLiteral( "rest" ) ) + 1; // +1 for the /
+      url = base + url.right( index );
+    }
+    else
+    {
+      QgsDebugMsgLevel( QStringLiteral( "converting getLegendGraphicUrl is %1" ).arg( url ), 9 );
+      // rewrite the URL if the one in the capabilities document is incorrect
+      // strip every thing after the ? from the base url
+      const QStringList parts1 = mSettings.mBaseUrl.split( QRegularExpression( "\\?" ) );
+      const QString base = parts1.isEmpty() ? mSettings.mBaseUrl : parts1.first();
+      const QStringList parts2 = url.split( QRegularExpression( "\\?" ) );
+      const QString base2 = parts2.isEmpty() ? url : parts2.last();
+      // and strip everything before the `rest` element (at least for GeoServer)
+      url = base + "?" + base2;
+    }
+  }
+  QgsDebugMsgLevel( QStringLiteral( "final getLegendGraphicUrl is %1" ).arg( url ), 6 );
+
 
   return url.isEmpty() ? url : prepareUri( url );
 }
