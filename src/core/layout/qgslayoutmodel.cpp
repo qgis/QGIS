@@ -308,7 +308,7 @@ bool zOrderDescending( QgsLayoutItem *item1, QgsLayoutItem *item2 )
 bool QgsLayoutModel::dropMimeData( const QMimeData *data,
                                    Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
-  if ( column != ItemId & column != -1 )
+  if ( column != ItemId && column != -1 )
   {
     return false;
   }
@@ -1050,4 +1050,3 @@ bool QgsLayoutProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &so
 
   return true;
 }
-
