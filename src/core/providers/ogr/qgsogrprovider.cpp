@@ -2306,6 +2306,22 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 
   const bool inTransaction = startTransaction();
 
+  // Some drivers may need to call ResetReading() after GetFeature(), such
+  // as GPKG in GDAL < 2.3.0 to avoid letting the database in a locked state.
+  // But this is undesirable in general, so don't do this when we know that
+  // we don't need to.
+  bool mayNeedResetReadingAfterGetFeature = true;
+  if ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) )
+  {
+    mayNeedResetReadingAfterGetFeature = false;
+  }
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
+  else if ( mGDALDriverName == QLatin1String( "GPKG" ) )
+  {
+    mayNeedResetReadingAfterGetFeature = false;
+  }
+#endif
+
   for ( QgsChangedAttributesMap::const_iterator it = attr_map.begin(); it != attr_map.end(); ++it )
   {
     QgsFeatureId fid = it.key();
@@ -2320,7 +2336,11 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
       pushError( tr( "Feature %1 for attribute update not found." ).arg( fid ) );
       continue;
     }
-    mOgrLayer->ResetReading(); // needed for SQLite-based to clear iterator
+
+    if ( mayNeedResetReadingAfterGetFeature )
+    {
+      mOgrLayer->ResetReading();
+    }
 
     QgsLocaleNumC l;
 
@@ -2489,6 +2509,22 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 
   const bool inTransaction = startTransaction();
 
+  // Some drivers may need to call ResetReading() after GetFeature(), such
+  // as GPKG in GDAL < 2.3.0 to avoid letting the database in a locked state.
+  // But this is undesirable in general, so don't do this when we know that
+  // we don't need to.
+  bool mayNeedResetReadingAfterGetFeature = true;
+  if ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) )
+  {
+    mayNeedResetReadingAfterGetFeature = false;
+  }
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
+  else if ( mGDALDriverName == QLatin1String( "GPKG" ) )
+  {
+    mayNeedResetReadingAfterGetFeature = false;
+  }
+#endif
+
   for ( QgsGeometryMap::const_iterator it = geometry_map.constBegin(); it != geometry_map.constEnd(); ++it )
   {
     gdal::ogr_feature_unique_ptr theOGRFeature( mOgrLayer->GetFeature( FID_TO_NUMBER( it.key() ) ) );
@@ -2497,7 +2533,11 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
       pushError( tr( "OGR error changing geometry: feature %1 not found" ).arg( it.key() ) );
       continue;
     }
-    mOgrLayer->ResetReading(); // needed for SQLite-based to clear iterator
+
+    if ( mayNeedResetReadingAfterGetFeature )
+    {
+      mOgrLayer->ResetReading(); // needed for SQLite-based to clear iterator, which could let the database in a locked state otherwise
+    }
 
     OGRGeometryH newGeometry = nullptr;
     QByteArray wkb = it->asWkb();
