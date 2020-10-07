@@ -1027,10 +1027,17 @@ QString QgsPostgresConn::postgisVersion() const
 
   QgsDebugMsgLevel( "PostGIS version info: " + mPostgisVersionInfo, 2 );
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
   QStringList postgisParts = mPostgisVersionInfo.split( ' ', QString::SkipEmptyParts );
 
   // Get major and minor version
   QStringList postgisVersionParts = postgisParts[0].split( '.', QString::SkipEmptyParts );
+#else
+  QStringList postgisParts = mPostgisVersionInfo.split( ' ', Qt::SkipEmptyParts );
+
+  // Get major and minor version
+  QStringList postgisVersionParts = postgisParts[0].split( '.', Qt::SkipEmptyParts );
+#endif
   if ( postgisVersionParts.size() < 2 )
   {
     QgsMessageLog::logMessage( tr( "Could not parse postgis version string '%1'" ).arg( mPostgisVersionInfo ), tr( "PostGIS" ) );

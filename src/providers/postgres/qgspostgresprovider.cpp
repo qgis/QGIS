@@ -1214,15 +1214,15 @@ bool QgsPostgresProvider::loadFields()
     {
       const QString seqName { mTableName + '_' + fieldName + QStringLiteral( "_seq" ) };
       const QString seqSql { QStringLiteral( "SELECT c.oid "
-                                             "  FROM pg_class c "
-                                             "  LEFT JOIN pg_namespace n "
-                                             "    ON ( n.oid = c.relnamespace ) "
-                                             "  WHERE c.relkind = 'S' "
-                                             "    AND c.relname = %1 "
-                                             "    AND n.nspname = %2" )
-                             .arg( quotedValue( seqName ) )
-                             .arg( quotedValue( mSchemaName ) )
-                           };
+                                               "  FROM pg_class c "
+                                               "  LEFT JOIN pg_namespace n "
+                                               "    ON ( n.oid = c.relnamespace ) "
+                                               "  WHERE c.relkind = 'S' "
+                                               "    AND c.relname = %1 "
+                                               "    AND n.nspname = %2" )
+        .arg( quotedValue( seqName ) )
+        .arg( quotedValue( mSchemaName ) )
+      };
       QgsPostgresResult seqResult( connectionRO()->PQexec( seqSql ) );
       if ( seqResult.PQntuples() == 1 )
       {
@@ -2050,7 +2050,11 @@ bool QgsPostgresProvider::parseDomainCheckConstraint( QStringList &enumValues, c
       if ( arrayPosition != -1 )
       {
         QString valueList = checkDefinition.mid( arrayPosition + 6, closingBracketPos );
-        QStringList commaSeparation = valueList.split( ',', QString::SkipEmptyParts );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+        const QStringList commaSeparation = valueList.split( ',', QString::SkipEmptyParts );
+#else
+        const QStringList commaSeparation = valueList.split( ',', Qt::SkipEmptyParts );
+#endif
         QStringList::const_iterator cIt = commaSeparation.constBegin();
         for ( ; cIt != commaSeparation.constEnd(); ++cIt )
         {

@@ -1649,7 +1649,11 @@ void QgsWmsCapabilities::parseTileSetProfile( const QDomElement &element )
       }
       else if ( tagName == QLatin1String( "Resolutions" ) )
       {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
         resolutions = nodeElement.text().trimmed().split( ' ', QString::SkipEmptyParts );
+#else
+        resolutions = nodeElement.text().trimmed().split( ' ', Qt::SkipEmptyParts );
+#endif
       }
       else
       {

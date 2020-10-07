@@ -1317,7 +1317,7 @@ QgsDirectoryParamWidget::QgsDirectoryParamWidget( const QString &path, QWidget *
       size = QStringLiteral( "%1 B" ).arg( fi.size() );
     }
     texts << size;
-    texts << fi.lastModified().toString( Qt::SystemLocaleShortDate );
+    texts << QLocale().toString( fi.lastModified(), QLocale::ShortFormat );
     QString perm;
     perm += fi.permission( QFile::ReadOwner ) ? 'r' : '-';
     perm += fi.permission( QFile::WriteOwner ) ? 'w' : '-';

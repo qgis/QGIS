@@ -1542,8 +1542,13 @@ QString QgsApplication::absolutePathToRelativePath( const QString &aPath, const 
   const Qt::CaseSensitivity cs = Qt::CaseSensitive;
 #endif
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList targetElems = tPathUrl.split( '/', QString::SkipEmptyParts );
   QStringList aPathElems = aPathUrl.split( '/', QString::SkipEmptyParts );
+#else
+  QStringList targetElems = tPathUrl.split( '/', Qt::SkipEmptyParts );
+  QStringList aPathElems = aPathUrl.split( '/', Qt::SkipEmptyParts );
+#endif
 
   targetElems.removeAll( QStringLiteral( "." ) );
   aPathElems.removeAll( QStringLiteral( "." ) );
@@ -1601,8 +1606,13 @@ QString QgsApplication::relativePathToAbsolutePath( const QString &rpath, const 
   bool uncPath = targetPathUrl.startsWith( "//" );
 #endif
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList srcElems = rPathUrl.split( '/', QString::SkipEmptyParts );
   QStringList targetElems = targetPathUrl.split( '/', QString::SkipEmptyParts );
+#else
+  QStringList srcElems = rPathUrl.split( '/', Qt::SkipEmptyParts );
+  QStringList targetElems = targetPathUrl.split( '/', Qt::SkipEmptyParts );
+#endif
 
 #if defined(Q_OS_WIN)
   if ( uncPath )
