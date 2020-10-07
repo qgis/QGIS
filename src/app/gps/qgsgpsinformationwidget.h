@@ -136,7 +136,7 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
 #endif
     void createRubberBand();
 
-    void updateGpsDistanceStatusMessage();
+    void updateGpsDistanceStatusMessage( bool forceDisplay );
 
     QgsCoordinateReferenceSystem mWgs84CRS;
     QgsCoordinateTransform mCanvasToWgs84Transform;
@@ -170,6 +170,7 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     std::unique_ptr< QgsBearingNumericFormat > mBearingNumericFormat;
 
     QElapsedTimer mLastRotateTimer;
+    QElapsedTimer mLastForcedStatusUpdate;
 
     friend class TestQgsGpsInformationWidget;
 };
