@@ -1770,10 +1770,10 @@ void QgsVectorLayerProperties::updateSymbologyPage()
 
   if ( mRendererDialog )
   {
-    mRendererDialog->layout()->setMargin( 0 );
+    mRendererDialog->layout()->setContentsMargins( 0, 0, 0, 0 );
     widgetStackRenderers->addWidget( mRendererDialog );
     widgetStackRenderers->setCurrentWidget( mRendererDialog );
-    widgetStackRenderers->currentWidget()->layout()->setMargin( 0 );
+    widgetStackRenderers->currentWidget()->layout()->setContentsMargins( 0, 0, 0, 0 );
   }
 }
 

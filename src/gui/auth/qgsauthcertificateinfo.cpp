@@ -917,7 +917,7 @@ QgsAuthCertInfoDialog::QgsAuthCertInfoDialog( const QSslCertificate &cert,
 {
   setWindowTitle( tr( "Certificate Information" ) );
   QVBoxLayout *layout = new QVBoxLayout( this );
-  layout->setMargin( 6 );
+  layout->setContentsMargins( 6, 6, 6, 6 );
 
   mCertInfoWdgt = new QgsAuthCertInfo( cert, manageCertTrust, this, connectionCAs );
   layout->addWidget( mCertInfoWdgt );

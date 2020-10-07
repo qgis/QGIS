@@ -35,7 +35,7 @@ QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
   setAutoFillBackground( true );
 
   QGridLayout *layout = new QGridLayout();
-  layout->setMargin( 0 );
+  layout->setContentsMargins( 0, 0, 0, 0 );
 
   mFileWidget = new QgsFileWidget( this );
   layout->addWidget( mFileWidget, 0, 0 );

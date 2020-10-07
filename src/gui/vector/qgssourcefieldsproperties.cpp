@@ -34,7 +34,6 @@ QgsSourceFieldsProperties::QgsSourceFieldsProperties( QgsVectorLayer *layer, QWi
 
   setupUi( this );
   layout()->setContentsMargins( 0, 0, 0, 0 );
-  layout()->setMargin( 0 );
 
   //button appearance
   mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewAttribute.svg" ) ) );

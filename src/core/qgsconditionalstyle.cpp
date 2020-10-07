@@ -218,7 +218,6 @@ QPixmap QgsConditionalStyle::renderPreview( const QSize &size ) const
     painter.setPen( Qt::black );
 
   painter.setRenderHint( QPainter::Antialiasing );
-  painter.setRenderHint( QPainter::HighQualityAntialiasing );
   painter.setFont( font() );
   rect = QRect( pixmap.width() / 3, 0, 2 * pixmap.width() / 3, pixmap.height() );
   painter.drawText( rect, Qt::AlignCenter, QStringLiteral( "abc\n123" ) );

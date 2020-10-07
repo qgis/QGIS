@@ -52,7 +52,6 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
   {
     // shuffle stuff around
     QVBoxLayout *newLayout = new QVBoxLayout();
-    newLayout->setMargin( 0 );
     newLayout->setContentsMargins( 0, 0, 0, 0 );
     newLayout->addWidget( mTabWidget );
     newLayout->addWidget( mSlidersWidget );

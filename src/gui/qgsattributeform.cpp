@@ -1367,7 +1367,6 @@ void QgsAttributeForm::init()
   delete layout();
 
   QVBoxLayout *vl = new QVBoxLayout();
-  vl->setMargin( 0 );
   vl->setContentsMargins( 0, 0, 0, 0 );
   mMessageBar = new QgsMessageBar( this );
   mMessageBar->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
@@ -1676,7 +1675,6 @@ void QgsAttributeForm::init()
   {
     mSearchButtonBox = new QWidget();
     QHBoxLayout *boxLayout = new QHBoxLayout();
-    boxLayout->setMargin( 0 );
     boxLayout->setContentsMargins( 0, 0, 0, 0 );
     mSearchButtonBox->setLayout( boxLayout );
     mSearchButtonBox->setObjectName( QStringLiteral( "searchButtonBox" ) );
