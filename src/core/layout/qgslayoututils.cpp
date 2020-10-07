@@ -223,7 +223,7 @@ double QgsLayoutUtils::textWidthMM( const QFont &font, const QString &text )
   QFont metricsFont = scaledFontPixelSize( font );
   QFontMetricsF fontMetrics( metricsFont );
 #if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  return ( fontMetrics.width( text ).width() / FONT_WORKAROUND_SCALE );
+  return ( fontMetrics.width( text ) / FONT_WORKAROUND_SCALE );
 #else
   return ( fontMetrics.horizontalAdvance( text ) / FONT_WORKAROUND_SCALE );
 #endif
