@@ -1327,12 +1327,13 @@ unsigned int QgsDualEdgeTriangulation::insertEdge( int dual, int next, int point
 
 }
 
-static bool triangleIsFlat( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double tolerance )
+static bool altitudeTriangleIsSmall( const QgsPoint &pointBase1, const QgsPoint &pointBase2, const QgsPoint &pt3, double tolerance )
 {
-  double x1 = pt1.x();
-  double y1 = pt1.y();
-  double x2 = pt2.x();
-  double y2 = pt2.y();
+  // Compare the altitude of the triangle defined by base points and a third point with tolerance. Return true if the altitude < tolerance
+  double x1 = pointBase1.x();
+  double y1 = pointBase1.y();
+  double x2 = pointBase2.x();
+  double y2 = pointBase2.y();
   double X = pt3.x();
   double Y = pt3.y();
   QgsPoint projectedPoint;
@@ -1430,7 +1431,7 @@ int QgsDualEdgeTriangulation::insertForcedSegment( int p1, int p2, QgsInterpolat
     QgsPoint *oppositePoint1 = mPointVector[mHalfEdge[oppositeEdge]->getPoint()];
     QgsPoint *oppositePoint2 = mPointVector[mHalfEdge[mHalfEdge[oppositeEdge]->getDual()]->getPoint()];
 
-    if ( triangleIsFlat( *oppositePoint1, *oppositePoint2, *point1, oppositePoint1->distance( *oppositePoint2 ) / 500 ) )
+    if ( altitudeTriangleIsSmall( *oppositePoint1, *oppositePoint2, *point1, oppositePoint1->distance( *oppositePoint2 ) / 500 ) )
     {
       // to much risks to do something, go away
       return -100;
@@ -1640,7 +1641,7 @@ int QgsDualEdgeTriangulation::insertForcedSegment( int p1, int p2, QgsInterpolat
   QgsPoint *lastEdgePoint1 = mPointVector[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getPoint()];
   QgsPoint *lastEdgePoint2 = mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getNext()]->getPoint()];
   QgsPoint *lastEdgeOppositePoint = mPointVector[lastEdgeOppositePointIndex];
-  if ( triangleIsFlat( *lastEdgePoint1, *lastEdgePoint2, *lastEdgeOppositePoint, lastEdgePoint1->distance( *lastEdgePoint2 ) / 500 ) )
+  if ( altitudeTriangleIsSmall( *lastEdgePoint1, *lastEdgePoint2, *lastEdgeOppositePoint, lastEdgePoint1->distance( *lastEdgePoint2 ) / 500 ) )
     return -100;
 
   //set the flags 'forced' and 'break' to false for every edge and dualedge of 'crossEdges'
