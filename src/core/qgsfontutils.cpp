@@ -431,7 +431,11 @@ static QMap<QString, QString> createTranslatedStyleMap()
 
 QString QgsFontUtils::translateNamedStyle( const QString &namedStyle )
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList words = namedStyle.split( ' ', QString::SkipEmptyParts );
+#else
+  QStringList words = namedStyle.split( ' ', Qt::SkipEmptyParts );
+#endif
   for ( int i = 0, n = words.length(); i < n; ++i )
   {
     words[i] = QCoreApplication::translate( "QFontDatabase", words[i].toLocal8Bit().constData() );
@@ -442,7 +446,12 @@ QString QgsFontUtils::translateNamedStyle( const QString &namedStyle )
 QString QgsFontUtils::untranslateNamedStyle( const QString &namedStyle )
 {
   static QMap<QString, QString> translatedStyleMap = createTranslatedStyleMap();
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList words = namedStyle.split( ' ', QString::SkipEmptyParts );
+#else
+  QStringList words = namedStyle.split( ' ', Qt::SkipEmptyParts );
+#endif
+
   for ( int i = 0, n = words.length(); i < n; ++i )
   {
     if ( translatedStyleMap.contains( words[i] ) )

@@ -132,14 +132,14 @@ void QgsBrowserModel::addRootItems()
 #endif
 
   // container for displaying providers as sorted groups (by QgsDataProvider::DataCapability enum)
-  QMap<int, QgsDataItem *> providerMap;
+  QMultiMap<int, QgsDataItem *> providerMap;
 
   const auto constProviders = QgsApplication::dataItemProviderRegistry()->providers();
   for ( QgsDataItemProvider *pr : constProviders )
   {
     if ( QgsDataItem *item = addProviderRootItem( pr ) )
     {
-      providerMap.insertMulti( pr->capabilities(), item );
+      providerMap.insert( pr->capabilities(), item );
     }
   }
 

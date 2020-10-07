@@ -648,7 +648,7 @@ void QgsDataSourceUri::setEncodedUri( const QByteArray &uri )
     else if ( item.first == QLatin1String( "authcfg" ) )
       mAuthConfigId = item.second;
     else
-      mParams.insertMulti( item.first, item.second );
+      mParams.insert( item.first, item.second );
   }
 }
 
@@ -787,7 +787,7 @@ void QgsDataSourceUri::setParam( const QString &key, const QString &value )
   else
   {
     // may be multiple
-    mParams.insertMulti( key, value );
+    mParams.insert( key, value );
   }
 }
 

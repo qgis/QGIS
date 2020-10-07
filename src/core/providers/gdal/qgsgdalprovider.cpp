@@ -2446,7 +2446,11 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
     // the next driver
     if ( !( myGdalDriverExtensions.isEmpty() || myGdalDriverLongName.isEmpty() ) )
     {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
       const QStringList splitExtensions = myGdalDriverExtensions.split( ' ', QString::SkipEmptyParts );
+#else
+      const QStringList splitExtensions = myGdalDriverExtensions.split( ' ', Qt::SkipEmptyParts );
+#endif
 
       // XXX add check for SDTS; in that case we want (*CATD.DDF)
       QString glob;
@@ -2524,7 +2528,11 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
   }                           // each loaded GDAL driver
 
   // sort file filters alphabetically
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList filters = fileFiltersString.split( QStringLiteral( ";;" ), QString::SkipEmptyParts );
+#else
+  QStringList filters = fileFiltersString.split( QStringLiteral( ";;" ), Qt::SkipEmptyParts );
+#endif
   filters.sort();
   fileFiltersString = filters.join( QStringLiteral( ";;" ) ) + ";;";
 

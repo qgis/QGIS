@@ -1318,7 +1318,11 @@ bool QgsGmlStreamingParser::createBBoxFromCoordinateString( QgsRectangle &r, con
 int QgsGmlStreamingParser::pointsFromCoordinateString( QList<QgsPointXY> &points, const QString &coordString ) const
 {
   //tuples are separated by space, x/y by ','
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList tuples = coordString.split( mTupleSeparator, QString::SkipEmptyParts );
+#else
+  QStringList tuples = coordString.split( mTupleSeparator, Qt::SkipEmptyParts );
+#endif
   QStringList tuples_coordinates;
   double x, y;
   bool conversionSuccess;
@@ -1326,7 +1330,11 @@ int QgsGmlStreamingParser::pointsFromCoordinateString( QList<QgsPointXY> &points
   QStringList::const_iterator tupleIterator;
   for ( tupleIterator = tuples.constBegin(); tupleIterator != tuples.constEnd(); ++tupleIterator )
   {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     tuples_coordinates = tupleIterator->split( mCoordinateSeparator, QString::SkipEmptyParts );
+#else
+    tuples_coordinates = tupleIterator->split( mCoordinateSeparator, Qt::SkipEmptyParts );
+#endif
     if ( tuples_coordinates.size() < 2 )
     {
       continue;
@@ -1349,7 +1357,11 @@ int QgsGmlStreamingParser::pointsFromCoordinateString( QList<QgsPointXY> &points
 int QgsGmlStreamingParser::pointsFromPosListString( QList<QgsPointXY> &points, const QString &coordString, int dimension ) const
 {
   // coordinates separated by spaces
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList coordinates = coordString.split( ' ', QString::SkipEmptyParts );
+#else
+  QStringList coordinates = coordString.split( ' ', Qt::SkipEmptyParts );
+#endif
 
   if ( coordinates.size() % dimension != 0 )
   {

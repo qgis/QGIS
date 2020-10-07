@@ -17,6 +17,10 @@
 #include "qgsclassificationjenks.h"
 #include "qgsapplication.h"
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+#include <QRandomGenerator>
+#endif
+
 QgsClassificationJenks::QgsClassificationJenks()
   : QgsClassificationMethod()
 {
@@ -88,10 +92,16 @@ QList<double> QgsClassificationJenks::calculateBreaks( double &minimum, double &
 
     sample[ 0 ] = minimum;
     sample[ 1 ] = maximum;
+
     for ( int i = 2; i < sample.size(); i++ )
     {
       // pick a random integer from 0 to n
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+      double r = QRandomGenerator::global()->generate();
+#else
       double r = qrand();
+#endif
       int j = std::floor( r / RAND_MAX * ( values.size() - 1 ) );
       sample[ i ] = values[ j ];
     }
