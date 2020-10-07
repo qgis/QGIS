@@ -43,7 +43,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   : QgsDockWidget( parent )
   , mMapCanvas( canvas )
   , mSnapIndicator( qgis::make_unique< QgsSnapIndicator>( canvas ) )
-  , mCommonAngleConstraint( QgsSettings().value( QStringLiteral( "/Cad/CommonAngle" ), 90 ).toDouble() )
+  , mCommonAngleConstraint( QgsSettings().value( QStringLiteral( "/Cad/CommonAngle" ), 0.0 ).toDouble() )
 {
   setupUi( this );
 
