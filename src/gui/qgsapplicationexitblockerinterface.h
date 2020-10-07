@@ -57,7 +57,7 @@ class GUI_EXPORT QgsApplicationExitBlockerInterface
 
   public:
 
-    virtual ~QgsApplicationExitBlockerInterface() = default;
+    virtual ~QgsApplicationExitBlockerInterface();
 
     /**
      * Called whenever the QGIS application has been asked to exit by a user.

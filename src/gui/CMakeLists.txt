@@ -367,6 +367,7 @@ SET(QGIS_GUI_SRCS
   qgsadvanceddigitizingfloater.cpp
   qgsaggregatetoolbutton.cpp
   qgsalignmentcombobox.cpp
+  qgsapplicationexitblockerinterface.cpp
   qgsattributedialog.cpp
   qgsattributeeditorcontext.cpp
   qgsattributeform.cpp
