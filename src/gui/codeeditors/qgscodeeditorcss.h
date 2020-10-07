@@ -19,8 +19,25 @@
 #include "qgscodeeditor.h"
 #include "qgis_sip.h"
 #include "qgis_gui.h"
+#include <Qsci/qscilexercss.h>
 
 SIP_IF_MODULE( HAVE_QSCI_SIP )
+
+
+#ifndef SIP_RUN
+///@cond PRIVATE
+class QgsQsciLexerCSS : public QsciLexerCSS
+{
+    Q_OBJECT
+  public:
+
+    QgsQsciLexerCSS( QObject *parent = nullptr );
+
+    QString description( int style ) const override;
+
+};
+///@endcond
+#endif
 
 
 /**
