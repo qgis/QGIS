@@ -1635,8 +1635,8 @@ QString QgsOgrProvider::jsonStringValue( const QVariant &value ) const
 bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
 {
   bool returnValue = true;
-  QgsOgrFeatureDefn &fdef = mOgrLayer->GetLayerDefn();
-  gdal::ogr_feature_unique_ptr feature( fdef.CreateFeature() );
+  QgsOgrFeatureDefn &featureDefinition = mOgrLayer->GetLayerDefn();
+  gdal::ogr_feature_unique_ptr feature( featureDefinition.CreateFeature() );
 
   if ( f.hasGeometry() )
   {
@@ -1657,15 +1657,16 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
     }
   }
 
-  QgsAttributes attrs = f.attributes();
+  QgsAttributes attributes = f.attributes();
+  const QgsFields &qgisFields { f.fields() };
 
   QgsLocaleNumC l;
 
-  int qgisAttId = ( mFirstFieldIsFid ) ? 1 : 0;
+  int qgisAttributeId = ( mFirstFieldIsFid ) ? 1 : 0;
   // If the first attribute is the FID and the user has set it, then use it
-  if ( mFirstFieldIsFid && attrs.count() > 0 )
+  if ( mFirstFieldIsFid && attributes.count() > 0 )
   {
-    QVariant attrFid = attrs.at( 0 );
+    QVariant attrFid = attributes.at( 0 );
     if ( !attrFid.isNull() )
     {
       bool ok = false;
@@ -1678,26 +1679,33 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
   }
 
   //add possible attribute information
-  for ( int ogrAttId = 0; qgisAttId < attrs.count(); ++qgisAttId, ++ogrAttId )
+  for ( int ogrAttributeId = 0; qgisAttributeId < attributes.count(); ++qgisAttributeId, ++ogrAttributeId )
   {
-    // don't try to set field from attribute map if it's not present in layer
-    if ( ogrAttId >= fdef.GetFieldCount() )
+    // Skip fields that have no provider origin
+    if ( qgisFields.exists( qgisAttributeId ) && qgisFields.fieldOrigin( qgisAttributeId ) != QgsFields::FieldOrigin::OriginProvider )
     {
-      pushError( tr( "Feature has too many attributes (expecting %1, received %2)" ).arg( fdef.GetFieldCount() ).arg( f.attributes().count() ) );
+      qgisAttributeId++;
+      continue;
+    }
+
+    // don't try to set field from attribute map if it's not present in layer
+    if ( ogrAttributeId >= featureDefinition.GetFieldCount() )
+    {
+      pushError( tr( "Feature has too many attributes (expecting %1, received %2)" ).arg( featureDefinition.GetFieldCount() ).arg( f.attributes().count() ) );
       continue;
     }
 
     //if(!s.isEmpty())
     // continue;
     //
-    OGRFieldDefnH fldDef = fdef.GetFieldDefn( ogrAttId );
+    OGRFieldDefnH fldDef = featureDefinition.GetFieldDefn( ogrAttributeId );
     OGRFieldType type = OGR_Fld_GetType( fldDef );
 
-    QVariant attrVal = attrs.at( qgisAttId );
+    QVariant attrVal = attributes.at( qgisAttributeId );
     // The field value is equal to the default (that might be a provider-side expression)
-    if ( mDefaultValues.contains( qgisAttId ) && attrVal.toString() == mDefaultValues.value( qgisAttId ) )
+    if ( mDefaultValues.contains( qgisAttributeId ) && attrVal.toString() == mDefaultValues.value( qgisAttributeId ) )
     {
-      OGR_F_UnsetField( feature.get(), ogrAttId );
+      OGR_F_UnsetField( feature.get(), ogrAttributeId );
     }
     else if ( attrVal.isNull() || ( type != OFTString && attrVal.toString().isEmpty() ) )
     {
@@ -1709,7 +1717,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
 // field to not be present at all in the output, and thus on reading to
 // have disappeared. #16812
 #ifdef OGRNullMarker
-      OGR_F_SetFieldNull( feature.get(), ogrAttId );
+      OGR_F_SetFieldNull( feature.get(), ogrAttributeId );
 #else
       OGR_F_UnsetField( feature.get(), ogrAttId );
 #endif
@@ -1719,20 +1727,20 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
       switch ( type )
       {
         case OFTInteger:
-          OGR_F_SetFieldInteger( feature.get(), ogrAttId, attrVal.toInt() );
+          OGR_F_SetFieldInteger( feature.get(), ogrAttributeId, attrVal.toInt() );
           break;
 
 
         case OFTInteger64:
-          OGR_F_SetFieldInteger64( feature.get(), ogrAttId, attrVal.toLongLong() );
+          OGR_F_SetFieldInteger64( feature.get(), ogrAttributeId, attrVal.toLongLong() );
           break;
 
         case OFTReal:
-          OGR_F_SetFieldDouble( feature.get(), ogrAttId, attrVal.toDouble() );
+          OGR_F_SetFieldDouble( feature.get(), ogrAttributeId, attrVal.toDouble() );
           break;
 
         case OFTDate:
-          OGR_F_SetFieldDateTime( feature.get(), ogrAttId,
+          OGR_F_SetFieldDateTime( feature.get(), ogrAttributeId,
                                   attrVal.toDate().year(),
                                   attrVal.toDate().month(),
                                   attrVal.toDate().day(),
@@ -1741,7 +1749,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
           break;
 
         case OFTTime:
-          OGR_F_SetFieldDateTime( feature.get(), ogrAttId,
+          OGR_F_SetFieldDateTime( feature.get(), ogrAttributeId,
                                   0, 0, 0,
                                   attrVal.toTime().hour(),
                                   attrVal.toTime().minute(),
@@ -1750,7 +1758,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
           break;
 
         case OFTDateTime:
-          OGR_F_SetFieldDateTime( feature.get(), ogrAttId,
+          OGR_F_SetFieldDateTime( feature.get(), ogrAttributeId,
                                   attrVal.toDateTime().date().year(),
                                   attrVal.toDateTime().date().month(),
                                   attrVal.toDateTime().date().day(),
@@ -1775,16 +1783,16 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
           stringValue = attrVal.toString();
 #endif
           QgsDebugMsgLevel( QStringLiteral( "Writing string attribute %1 with %2, encoding %3" )
-                            .arg( qgisAttId )
+                            .arg( qgisAttributeId )
                             .arg( attrVal.toString(),
                                   textEncoding()->name().data() ), 3 );
-          OGR_F_SetFieldString( feature.get(), ogrAttId, textEncoding()->fromUnicode( stringValue ).constData() );
+          OGR_F_SetFieldString( feature.get(), ogrAttributeId, textEncoding()->fromUnicode( stringValue ).constData() );
           break;
         }
         case OFTBinary:
         {
           const QByteArray ba = attrVal.toByteArray();
-          OGR_F_SetFieldBinary( feature.get(), ogrAttId, ba.size(), const_cast< GByte * >( reinterpret_cast< const GByte * >( ba.data() ) ) );
+          OGR_F_SetFieldBinary( feature.get(), ogrAttributeId, ba.size(), const_cast< GByte * >( reinterpret_cast< const GByte * >( ba.data() ) ) );
           break;
         }
 
@@ -1804,13 +1812,13 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
             }
           }
           lst[count] = nullptr;
-          OGR_F_SetFieldStringList( feature.get(), ogrAttId, lst );
+          OGR_F_SetFieldStringList( feature.get(), ogrAttributeId, lst );
           break;
         }
 #endif
 
         default:
-          QgsMessageLog::logMessage( tr( "type %1 for attribute %2 not found" ).arg( type ).arg( qgisAttId ), tr( "OGR" ) );
+          QgsMessageLog::logMessage( tr( "type %1 for attribute %2 not found" ).arg( type ).arg( qgisAttributeId ), tr( "OGR" ) );
           break;
       }
     }
@@ -1828,7 +1836,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
     {
       f.setId( id );
 
-      if ( mFirstFieldIsFid && attrs.count() > 0 )
+      if ( mFirstFieldIsFid && attributes.count() > 0 )
       {
         f.setAttribute( 0, id );
       }
