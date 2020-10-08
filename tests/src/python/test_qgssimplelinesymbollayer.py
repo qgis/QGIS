@@ -41,7 +41,9 @@ from qgis.core import (QgsGeometry,
                        QgsLineSymbolLayer,
                        QgsLineSymbol,
                        QgsUnitTypes,
-                       QgsMapUnitScale
+                       QgsMapUnitScale,
+                       QgsSymbolLayer,
+                       QgsProperty
                        )
 
 from qgis.testing import unittest, start_app
@@ -59,6 +61,20 @@ class TestQgsSimpleLineSymbolLayer(unittest.TestCase):
         report_file_path = "%s/qgistest.html" % QDir.tempPath()
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
+
+    def testDashPatternWithDataDefinedWidth(self):
+        # rendering test
+        s = QgsLineSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '2'})
+
+        s[0].setUseCustomDashPattern(True)
+        s[0].setPenCapStyle(Qt.FlatCap)
+        s[0].setCustomDashVector([3, 4, 5, 6])
+
+        s[0].dataDefinedProperties().setProperty(QgsSymbolLayer.PropertyStrokeWidth, QgsProperty.fromExpression('3'))
+
+        g = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10)')
+        rendered_image = self.renderGeometry(s, g)
+        assert self.imageCheck('simpleline_dashpattern_datadefined_width', 'simpleline_dashpattern_datadefined_width', rendered_image)
 
     def testDashPatternOffset(self):
 

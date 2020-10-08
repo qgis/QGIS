@@ -594,6 +594,18 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
       pen.setDashPattern( dashVector );
     }
   }
+  else if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeWidth ) && mUseCustomDashPattern )
+  {
+    //re-scale pattern vector after data defined pen width was applied
+
+    QVector<qreal> scaledVector;
+    for ( double v : mCustomDashVector )
+    {
+      //the dash is specified in terms of pen widths, therefore the division
+      scaledVector << context.renderContext().convertToPainterUnits( v, mCustomDashPatternUnit, mCustomDashPatternMapUnitScale ) / dashWidthDiv;
+    }
+    mPen.setDashPattern( scaledVector );
+  }
 
   // dash pattern offset
   double patternOffset = mDashPatternOffset;
