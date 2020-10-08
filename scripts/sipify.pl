@@ -1303,6 +1303,7 @@ while ($LINE_IDX < $LINE_COUNT){
         else {
             dbg_info('writing comment');
             if ( $COMMENT !~ m/^\s*$/ ){
+                dbg_info('comment isnt empty');
                 my $doc_prepend = "";
                 $doc_prepend = "\@DOCSTRINGSTEMPLATE\@" if $COMMENT_TEMPLATE_DOCSTRING == 1;
                 write_output("CM1", "$doc_prepend%Docstring\n");
@@ -1311,6 +1312,20 @@ while ($LINE_IDX < $LINE_COUNT){
                 my @out_params = ();
                 my $waiting_for_return_to_end = 0;
                 foreach my $comment_line (@comment_lines) {
+
+                  if ( ( $comment_line =~ m/versionadded:/ || $comment_line =~ m/deprecated:/ ) && $#out_params >= 0 ){
+                    dbg_info('out style parameters remain to flush!');
+                    # member has /Out/ parameters, but no return type, so flush out out_params docs now
+                    my $first_out_param = shift(@out_params);
+                    write_output("CM7", "$doc_prepend:return: - $first_out_param\n");
+
+                    foreach my $out_param (@out_params) {
+                      write_output("CM7", "$doc_prepend         - $out_param\n");
+                    }
+                    write_output("CM7", "$doc_prepend\n");
+                    @out_params = ();
+                  }
+
                   # if ( $RETURN_TYPE ne '' && $comment_line =~ m/^\s*\.\. \w/ ){
                   #     # return type must be added before any other paragraph-level markup
                   #     write_output("CM5", ":rtype: $RETURN_TYPE\n\n");
