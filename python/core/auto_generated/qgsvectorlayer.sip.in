@@ -867,9 +867,9 @@ Resolves references to other layers (kept as layer IDs after reading XML) into l
 %Docstring
 Saves named and sld style of the layer to the style table in the db.
 
-:param name:
-:param description:
-:param useAsDefault:
+:param name: Style name
+:param description: A description of the style
+:param useAsDefault: Set to ``True`` if style should be used as the default style for the layer
 :param uiFileContent:
 %End
 
@@ -883,7 +883,7 @@ Lists all the style in db split into related to the layer and not related to
 
 :return: - the number of styles related to current layer (-1 on not implemented)
          - descriptions: the list in which will be stored the style descriptions
-         - msgError: 
+         - msgError: will be set to a descriptive error message if any occurs
 
 .. note::
 
@@ -902,7 +902,7 @@ Deletes a style from the database
 :param styleId: the provider's layer_styles table id of the style to delete
 
 :return: - ``True`` in case of success
-         - msgError: reference to string that will be updated with any error messages
+         - msgError: will be set to a descriptive error message if any occurs
 
 .. versionadded:: 3.0
 %End
