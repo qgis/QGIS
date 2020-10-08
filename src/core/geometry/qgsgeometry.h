@@ -639,7 +639,7 @@ class CORE_EXPORT QgsGeometry
      * \param Returns the square distance (sqrDist) between the closest vertex and the specified point
      * \returns the closest point in geometry. If not found (empty geometry), returns null point and sqrDist is negative.
      */
-    QgsPointXY closestVertex( const QgsPointXY &point, int &atVertex SIP_OUT, int &index_before_closest_vertex SIP_OUT, int &index_after_closest_vertex SIP_OUT, double &sqrDist SIP_OUT ) const;
+    QgsPointXY closestVertex( const QgsPointXY &point, int &index_at_closest_vertex SIP_OUT, int &index_before_closest_vertex SIP_OUT, int &index_after_closest_vertex SIP_OUT, double &sqrDist SIP_OUT ) const;
 
     /**
      * Returns the distance along this geometry from its first vertex to the specified vertex.
