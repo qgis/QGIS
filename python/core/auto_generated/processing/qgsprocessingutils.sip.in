@@ -106,10 +106,10 @@ Decodes a provider key and layer ``uri`` from an encoded string, for use with
 :py:func:`~QgsProcessingUtils.encodeProviderKeyAndUri`
 
 :param string: encoded string, as returned by :py:func:`~QgsProcessingUtils.encodeProviderKeyAndUri`
-:param uri: decoded layer uri
 
 :return: - ``True`` if ``string`` was successfully decoded
          - providerKey: ID key for corresponding data provider
+         - uri: decoded layer uri
 
 .. versionadded:: 3.14
 %End

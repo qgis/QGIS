@@ -42,11 +42,6 @@ The optional ``flags`` argument can be used to fine-tune the check behavior.
 Computes the six parameters of a world file.
 
 :param mapSettings: map settings
-:param b: the b parameter
-:param c: the c parameter
-:param d: the d parameter
-:param e: the e parameter
-:param f: the f parameter
 
 .. versionadded:: 3.10
 %End
