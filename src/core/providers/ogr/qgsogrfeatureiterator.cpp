@@ -52,10 +52,10 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
    * (see GH #39178) so we need to skip all calls that might reset the reading (rewind) to avoid an endless loop in the
    * outer fetching iterator that uses the same connection.
    */
-  mDoNotResetReading = transaction &&
-                       ( source->mDriverName == QLatin1String( "GPKG" ) || source->mDriverName == QLatin1String( "SQLite" ) ) &&
-                       ( mRequest.filterType() == QgsFeatureRequest::FilterType::FilterFid
-                         || mRequest.filterType() == QgsFeatureRequest::FilterType::FilterFids );
+  mAllowResetReading = ! transaction ||
+                       ( source->mDriverName != QLatin1String( "GPKG" ) & source->mDriverName != QLatin1String( "SQLite" ) ) ||
+                       ( mRequest.filterType() != QgsFeatureRequest::FilterType::FilterFid
+                         && mRequest.filterType() != QgsFeatureRequest::FilterType::FilterFids );
 
   for ( const auto &id :  mRequest.filterFids() )
   {
@@ -95,7 +95,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
       return;
     }
 
-    if ( ! mDoNotResetReading && !mSource->mSubsetString.isEmpty() )
+    if ( mAllowResetReading && !mSource->mSubsetString.isEmpty() )
     {
       mOgrLayerOri = mOgrLayer;
       mOgrLayer = QgsOgrProviderUtils::setSubsetString( mOgrLayer, mConn->ds, mSource->mEncoding, mSource->mSubsetString );
@@ -175,7 +175,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   }
 
   // spatial query to select features
-  if ( ! mDoNotResetReading )
+  if ( mAllowResetReading )
   {
     if ( !mFilterRect.isNull() )
     {
@@ -215,7 +215,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
                       QStringLiteral( ")" );
       }
 
-      if ( ! mDoNotResetReading )
+      if ( mAllowResetReading )
       {
         if ( OGR_L_SetAttributeFilter( mOgrLayer, mSource->mEncoding->fromUnicode( whereClause ).constData() ) == OGRERR_NONE )
         {
@@ -231,14 +231,14 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
       }
 
     }
-    else if ( mSource->mSubsetString.isEmpty() && ! mDoNotResetReading )
+    else if ( mSource->mSubsetString.isEmpty() && mAllowResetReading )
     {
       OGR_L_SetAttributeFilter( mOgrLayer, nullptr );
     }
 
     delete compiler;
   }
-  else if ( mSource->mSubsetString.isEmpty() && ! mDoNotResetReading )
+  else if ( mSource->mSubsetString.isEmpty() && mAllowResetReading )
   {
     OGR_L_SetAttributeFilter( mOgrLayer, nullptr );
   }
@@ -267,7 +267,7 @@ bool QgsOgrFeatureIterator::fetchFeatureWithId( QgsFeatureId id, QgsFeature &fea
   gdal::ogr_feature_unique_ptr fet;
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,2,0)
-  if ( ! mDoNotResetReading && !QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( mSource->mDriverName ) )
+  if ( mAllowResetReading && !QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( mSource->mDriverName ) )
   {
     OGRLayerH nextFeatureBelongingLayer;
     bool found = false;
@@ -399,7 +399,7 @@ bool QgsOgrFeatureIterator::fetchFeature( QgsFeature &feature )
 
 void QgsOgrFeatureIterator::resetReading()
 {
-  if ( mDoNotResetReading )
+  if ( ! mAllowResetReading )
   {
     return;
   }
