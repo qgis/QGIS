@@ -19,12 +19,23 @@ from datetime import datetime
 
 from osgeo import gdal, ogr  # NOQA
 from qgis.PyQt.QtCore import QVariant, QByteArray
-from qgis.core import (NULL,
-                       QgsApplication,
-                       QgsRectangle,
-                       QgsProviderRegistry,
-                       QgsFeature, QgsFeatureRequest, QgsField, QgsSettings, QgsDataProvider,
-                       QgsVectorDataProvider, QgsVectorLayer, QgsWkbTypes, QgsNetworkAccessManager)
+from qgis.core import (
+    NULL,
+    QgsApplication,
+    QgsProject,
+    QgsField,
+    QgsFields,
+    QgsRectangle,
+    QgsProviderRegistry,
+    QgsFeature,
+    QgsFeatureRequest,
+    QgsSettings,
+    QgsDataProvider,
+    QgsVectorDataProvider,
+    QgsVectorLayer,
+    QgsWkbTypes,
+    QgsNetworkAccessManager
+)
 from qgis.testing import start_app, unittest
 
 from utilities import unitTestDataPath
@@ -711,6 +722,39 @@ class PyQgsOGRProvider(unittest.TestCase):
                                                                            ['rectangle', '2']])
 
         self.assertCountEqual([f.attributes() for f in vl.getFeatures(request)], [['rectangle', '1']])
+
+    def testTransactionGroupExpressionFields(self):
+        """Test issue GH #39230, this is not really specific to GPKG"""
+
+        project = QgsProject()
+        project.setAutoTransaction(True)
+        tmpfile = os.path.join(
+            self.basetestpath, 'tempGeoPackageTransactionExpressionFields.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint)
+        lyr.CreateField(ogr.FieldDefn('str_field', ogr.OFTString))
+
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT (1 1)'))
+        f.SetField('str_field', 'one')
+        lyr.CreateFeature(f)
+
+        del lyr
+        del ds
+
+        vl = QgsVectorLayer(tmpfile + '|layername=test', 'test', 'ogr')
+        f = QgsField('expression_field', QVariant.Int)
+        idx = vl.addExpressionField('123', f)
+        self.assertEqual(vl.fields().fieldOrigin(idx), QgsFields.OriginExpression)
+
+        project.addMapLayers([vl])
+
+        feature = next(vl.getFeatures())
+        feature.setAttributes([None, 'two', 123])
+
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.addFeature(feature))
+        self.assertFalse(vl.dataProvider().hasErrors())
 
 
 if __name__ == '__main__':
