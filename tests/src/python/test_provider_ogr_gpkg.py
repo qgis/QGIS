@@ -1768,6 +1768,37 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertFalse(vl1_1.isEditable())
         self.assertFalse(vl1_2.isEditable())
 
+    def testTransactionGroupIterator(self):
+        """Test issue GH #39178: the bug is that this test hangs
+        forever in an endless loop"""
+
+        project = QgsProject()
+        project.setAutoTransaction(True)
+        tmpfile = os.path.join(
+            self.basetestpath, 'tempGeoPackageTransactionGroupIterator.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint)
+        lyr.CreateField(ogr.FieldDefn('str_field', ogr.OFTString))
+
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT (1 1)'))
+        f.SetField('str_field', 'one')
+        lyr.CreateFeature(f)
+
+        del lyr
+        del ds
+
+        vl = QgsVectorLayer(tmpfile + '|layername=test', 'test', 'ogr')
+        project.addMapLayers([vl])
+
+        self.assertTrue(vl.startEditing())
+
+        for f in vl.getFeatures():
+            self.assertTrue(vl.changeAttributeValue(1, 1, 'new value'))
+
+        # Test that QGIS sees the new changes
+        self.assertEqual(next(vl.getFeatures()).attribute(1), 'new value')
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1340,7 +1340,7 @@ void QgsOgrProviderUtils::setRelevantFields( OGRLayerH ogrLayer, int fieldCount,
 
 QgsFeatureIterator QgsOgrProvider::getFeatures( const QgsFeatureRequest &request ) const
 {
-  return QgsFeatureIterator( new QgsOgrFeatureIterator( static_cast<QgsOgrFeatureSource *>( featureSource() ), true, request ) );
+  return QgsFeatureIterator( new QgsOgrFeatureIterator( static_cast<QgsOgrFeatureSource *>( featureSource() ), true, request, mTransaction ) );
 }
 
 
