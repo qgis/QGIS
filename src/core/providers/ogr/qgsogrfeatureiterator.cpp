@@ -53,7 +53,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
    * outer fetching iterator that uses the same connection.
    */
   mAllowResetReading = ! transaction ||
-                       ( source->mDriverName != QLatin1String( "GPKG" ) & source->mDriverName != QLatin1String( "SQLite" ) ) ||
+                       ( source->mDriverName != QLatin1String( "GPKG" ) && source->mDriverName != QLatin1String( "SQLite" ) ) ||
                        ( mRequest.filterType() != QgsFeatureRequest::FilterType::FilterFid
                          && mRequest.filterType() != QgsFeatureRequest::FilterType::FilterFids );
 
