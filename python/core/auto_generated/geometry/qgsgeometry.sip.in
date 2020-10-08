@@ -556,14 +556,12 @@ Returns the vertex closest to the given point, the corresponding vertex index, s
 and the indices of the vertices before and after the closest vertex.
 
 :param point: point to search for
-:param beforeVertex: will be set to the vertex index of the previous vertex from the closest one. Will be set to -1 if
-                     not present.
-:param afterVertex: will be set to the vertex index of the next vertex after the closest one. Will be set to -1 if
-                    not present.
-:param sqrDist: will be set to the square distance between the closest vertex and the specified point
 
 :return: - closest point in geometry. If not found (empty geometry), returns null point and sqrDist is negative.
          - atVertex: will be set to the vertex index of the closest found vertex
+         - beforeVertex: will be set to the vertex index of the previous vertex from the closest one. Will be set to -1 if not present.
+         - afterVertex: will be set to the vertex index of the next vertex after the closest one. Will be set to -1 if not present.
+         - sqrDist: will be set to the square distance between the closest vertex and the specified point
 %End
 
     double distanceToVertex( int vertex ) const;
@@ -724,14 +722,12 @@ Searches for the closest vertex in this geometry to the given point.
 Searches for the closest segment of geometry to the given point
 
 :param point: Specifies the point for search
-:param afterVertex: Receives index of the vertex after the closest segment. The vertex
-                    before the closest segment is always afterVertex - 1
-:param leftOf: Out: Returns if the point lies on the left of left side of the geometry ( < 0 means left, > 0 means right, 0 indicates
-               that the test was unsuccessful, e.g. for a point exactly on the line)
 :param epsilon: epsilon for segment snapping
 
 :return: - The squared Cartesian distance is also returned in sqrDist, negative number on error
          - minDistPoint: Receives the nearest point on the segment
+         - afterVertex: Receives index of the vertex after the closest segment. The vertex before the closest segment is always afterVertex - 1
+         - leftOf: Out: Returns if the point lies on the left of left side of the geometry ( < 0 means left, > 0 means right, 0 indicates that the test was unsuccessful, e.g. for a point exactly on the line)
 %End
 
     OperationResult addRing( const QVector<QgsPointXY> &ring );
@@ -946,11 +942,11 @@ by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
 %Docstring
 Returns the minimal enclosing circle for the geometry.
 
-:param radius: Radius of the minimal enclosing circle returned
 :param segments: Number of segments used to segment geometry. :py:func:`QgsEllipse.toPolygon`
 
 :return: - the minimal enclosing circle as a QGIS geometry
          - center: Center of the minimal enclosing circle returneds
+         - radius: Radius of the minimal enclosing circle returned
 
 .. versionadded:: 3.0
 %End

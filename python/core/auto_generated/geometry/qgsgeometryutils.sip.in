@@ -110,12 +110,12 @@ Compute the intersection between two segments
 :param p2: First segment end point
 :param q1: Second segment start point
 :param q2: Second segment end point
-:param isIntersection: Output parameter, return ``True`` if an intersection is found
 :param tolerance: The tolerance to use
 :param acceptImproperIntersection: By default, this method returns true only if segments have proper intersection. If set true, returns also ``True`` if segments have improper intersection (end of one segment on other segment ; continuous segments).
 
 :return: - Whether the segments intersect
          - intersectionPoint: Output parameter, the intersection point
+         - isIntersection: Output parameter, return ``True`` if an intersection is found
 
 Example
 -------
@@ -565,8 +565,6 @@ Returns the coefficients (a, b, c for equation "ax + by + c = 0") of a line defi
 
 :param pt1: first point.
 :param pt2: second point.
-:param b: Output parameter, b coefficient of the equation.
-:param c: Output parameter, c coefficient of the equation.
 
 .. versionadded:: 3.0
 %End
@@ -678,7 +676,6 @@ Returns a weighted point inside the triangle denoted by the points (``aX``, ``aY
 :param cY: y-coordinate of third vertex in triangle
 :param weightB: weighting factor along axis A-B (between 0 and 1)
 :param weightC: weighting factor along axis A-C (between 0 and 1)
-:param pointY: y-coordinate of generated point
 
 .. versionadded:: 3.10
 %End

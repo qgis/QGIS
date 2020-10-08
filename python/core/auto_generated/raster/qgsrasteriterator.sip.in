@@ -46,13 +46,13 @@ the pixels in n rasters whilst aligning the result to a reference layer which is
 Note that calling this method also advances the iterator, just like calling :py:func:`~QgsRasterIterator.readNextRasterPart`.
 
 :param bandNumber: band to read
-:param rows: number of rows on output device
-:param topLeftColumn: top left column
-:param topLeftRow: top left row
-:param blockExtent: exact extent of returned raster block
 
 :return: - ``False`` if the last part was already returned
          - columns: number of columns on output device
+         - rows: number of rows on output device
+         - topLeftColumn: top left column
+         - topLeftRow: top left row
+         - blockExtent: exact extent of returned raster block
 
 .. versionadded:: 3.6
 %End
