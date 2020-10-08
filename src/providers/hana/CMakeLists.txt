@@ -16,6 +16,7 @@ SET (HANA_SRCS
   qgshanaresultset.cpp
   qgshanasettings.cpp
   qgshanatablemodel.cpp
+  qgshanacrsutils.cpp
   qgshanautils.cpp
 )
 

@@ -19,6 +19,7 @@
 
 #include "qgsdatasourceuri.h"
 #include "qgsfields.h"
+#include <qgsunittypes.h>
 #include <qgswkbtypes.h>
 #include <qstring.h>
 #include <QVariant>
@@ -36,6 +37,8 @@ class QgsHanaUtils
     static QString quotedIdentifier( const QString &str );
     static QString quotedString( const QString &str );
     static QString quotedValue( const QVariant &value );
+
+    static QString toString( QgsUnitTypes::DistanceUnit unit );
 
     static QString toQString( const odbc::NString &str );
     static QString toQString( const odbc::String &str );

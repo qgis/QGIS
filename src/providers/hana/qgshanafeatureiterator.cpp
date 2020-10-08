@@ -22,32 +22,14 @@
 #include "qgshanaexpressioncompiler.h"
 #include "qgshanafeatureiterator.h"
 #include "qgshanaprovider.h"
+#include "qgshanacrsutils.h"
 #include "qgshanautils.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
 
-#include "ogr_srs_api.h"
-
 namespace
 {
-  double getAngularUnits( const QgsCoordinateReferenceSystem &crs )
-  {
-    OGRSpatialReferenceH hCRS = OSRNewSpatialReference( nullptr );
-    int errcode = OSRImportFromProj4( hCRS, crs.toProj().toUtf8() );
-    if ( errcode != OGRERR_NONE )
-    {
-      if ( hCRS )
-        OSRRelease( hCRS );
-      throw QgsHanaException( "Unable to parse a spatial reference system" );
-    }
-
-    char *angularUnits = nullptr;
-    double factor = OSRGetAngularUnits( hCRS, &angularUnits );
-    OSRRelease( hCRS );
-    return factor;
-  }
-
   QgsRectangle clampBBOX( QgsRectangle bbox, const QgsCoordinateReferenceSystem &crs, double allowedExcessFactor )
   {
     // In geographic CRS', HANA will reject any points outside the "normalized"
@@ -58,7 +40,7 @@ namespace
     if ( !crs.isGeographic() )
       return bbox;
 
-    double factor = getAngularUnits( crs );
+    double factor = QgsHanaCrsUtils::getAngularUnits( crs );
 
     double minx = -M_PI / factor;
     double maxx = M_PI / factor;

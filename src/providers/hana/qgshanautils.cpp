@@ -118,6 +118,34 @@ QString QgsHanaUtils::quotedValue( const QVariant &value )
   }
 }
 
+QString QgsHanaUtils::toString( QgsUnitTypes::DistanceUnit unit )
+{
+  switch ( unit )
+  {
+    case QgsUnitTypes::DistanceMeters:
+      return "meter";
+    case QgsUnitTypes::DistanceKilometers:
+      return "kilometer";
+    case QgsUnitTypes::DistanceFeet:
+      return "foot";
+    case QgsUnitTypes::DistanceYards:
+      return "yard";
+    case QgsUnitTypes::DistanceMiles:
+      return "mile";
+    case QgsUnitTypes::DistanceDegrees:
+      return "degree";
+    case QgsUnitTypes::DistanceCentimeters:
+      return "centimeter";
+    case QgsUnitTypes::DistanceMillimeters:
+      return "millimeter";
+    case QgsUnitTypes::DistanceNauticalMiles:
+      return "nautical mile";
+    case QgsUnitTypes::DistanceUnknownUnit:
+      return "<unknown>";
+  }
+  return QString();
+}
+
 QString QgsHanaUtils::toQString( const NString &str )
 {
   if ( str.isNull() )

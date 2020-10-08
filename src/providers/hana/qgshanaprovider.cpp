@@ -28,6 +28,7 @@
 #include "qgshanaprovider.h"
 #include "qgshanaproviderconnection.h"
 #include "qgshanaresultset.h"
+#include "qgshanacrsutils.h"
 #include "qgshanautils.h"
 #ifdef HAVE_GUI
 #include "qgshanadataitems.h"
@@ -37,8 +38,6 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsrectangle.h"
-
-#include "ogr_srs_api.h"
 
 #include <ctype.h>
 
@@ -65,27 +64,23 @@ namespace
 
   void createCoordinateSystem( QgsHanaConnectionRef &conn, const QgsCoordinateReferenceSystem &srs )
   {
-    OGRSpatialReferenceH hCRS = OSRNewSpatialReference( nullptr );
-    int errcode = OSRImportFromProj4( hCRS, srs.toProj().toUtf8() );
-    if ( errcode != OGRERR_NONE )
+    QString authName;
+    long srid;
+    if ( !QgsHanaCrsUtils::identifyCrs( srs, authName, srid ) )
     {
-      if ( hCRS )
-        OSRRelease( hCRS );
-      throw QgsHanaException( "Unable to parse a spatial reference system" );
+      QString errorMessage = QObject::tr( "Unable to retrieve the authority identifier for an CRS with id = %1." ).arg( srs.authid() );
+      throw QgsHanaException( errorMessage.toStdString().c_str() );
     }
 
     QgsCoordinateReferenceSystem srsWGS84;
     srsWGS84.createFromString( "EPSG:4326" );
+    QgsCoordinateTransformContext coordTransCntx;
+    QgsCoordinateTransform ct( srsWGS84, srs, coordTransCntx );
+    QgsRectangle bounds = ct.transformBoundingBox( srs.bounds() );
 
-    QgsCoordinateTransform transform;
-    transform.setSourceCrs( srsWGS84 );
-    transform.setDestinationCrs( srs );
-    QgsRectangle bounds = transform.transformBoundingBox( srs.bounds() );
-
-    char *linearUnits = nullptr;
-    char *angularUnits = nullptr;
-    OSRGetLinearUnits( hCRS, &linearUnits );
-    OSRGetAngularUnits( hCRS, &angularUnits );
+    QString units = QgsHanaUtils::toString( srs.mapUnits() );
+    QString linearUnits = srs.isGeographic() ? QString( "NULL" ) : QgsHanaUtils::quotedIdentifier( units );
+    QString angularUnits = srs.isGeographic() ? QgsHanaUtils::quotedIdentifier( units ) : QString( "NULL" ) ;
 
     QString xRange = QStringLiteral( "%1 BETWEEN %2 AND %3" )
                      .arg( ( srs.isGeographic() ? "LONGITUDE" : "X" ),
@@ -105,15 +100,13 @@ namespace
                                   "DEFINITION %8 "
                                   "TRANSFORM DEFINITION %9" )
                   .arg( QgsHanaUtils::quotedIdentifier( srs.description() ),
-                        QString::number( srs.postgisSrid() ),
-                        QgsHanaUtils::quotedIdentifier( QString( linearUnits ).toLower() ),
-                        QgsHanaUtils::quotedIdentifier( QString( angularUnits ).toLower() ),
+                        QString::number( srid ),
+                        linearUnits,
+                        angularUnits,
                         srs.isGeographic() ? QStringLiteral( "ROUND EARTH" ) : QStringLiteral( "PLANAR" ),
                         xRange, yRange,
                         QgsHanaUtils::quotedString( srs.toWkt() ),
                         QgsHanaUtils::quotedString( srs.toProj() ) );
-
-    OSRRelease( hCRS );
 
     QString errorMessage;
     conn->execute( sql, &errorMessage );
@@ -1472,34 +1465,22 @@ QgsVectorLayerExporter::ExportError QgsHanaProvider::createEmptyLayer(
   long srid = 0;
   if ( srs.isValid() )
   {
-    srid = srs.postgisSrid();
-    if ( srid != 0 )
+    QString authName;
+    if ( QgsHanaCrsUtils::identifyCrs( srs, authName, srid ) )
     {
-      QStringList sl = srs.authid().split( ':' );
-      if ( sl.length() == 2 )
+      sql = QStringLiteral( "SELECT COUNT(*) FROM SYS.ST_SPATIAL_REFERENCE_SYSTEMS "
+                            "WHERE SRS_ID = ? AND ORGANIZATION = ? AND ORGANIZATION_COORDSYS_ID = ?" );
+      try
       {
-        QString authName = sl[0];
-        QString authSrid = sl[1];
-        sql = QStringLiteral( "SELECT COUNT(*) FROM SYS.ST_SPATIAL_REFERENCE_SYSTEMS "
-                              "WHERE SRS_ID = ? AND ORGANIZATION = ? AND ORGANIZATION_COORDSYS_ID = ?" );
-        try
-        {
-          size_t numCrs = conn->executeCountQuery( sql, { static_cast<qulonglong>( srid ), authName, authSrid} );
-          if ( numCrs == 0 )
-            createCoordinateSystem( conn, srs );
-        }
-        catch ( const QgsHanaException &ex )
-        {
-          if ( errorMessage )
-            *errorMessage = QObject::tr( "Connection to database failed." ) + QStringLiteral( " " ) + QString( ex.what() );
-          return QgsVectorLayerExporter::ErrConnectionFailed;
-        }
+        size_t numCrs = conn->executeCountQuery( sql, { static_cast<qulonglong>( srid ), authName, static_cast<qulonglong>( srid ) } );
+        if ( numCrs == 0 )
+          createCoordinateSystem( conn, srs );
       }
-      else
+      catch ( const QgsHanaException &ex )
       {
         if ( errorMessage )
-          *errorMessage = QObject::tr( "Unable to retrieve the authority identifier for an CRS with id = {1}." ).arg( QString::number( srid ) );
-        return QgsVectorLayerExporter::ErrCreateDataSource;
+          *errorMessage = QObject::tr( "Connection to database failed." ) + QStringLiteral( " " ) + QString( ex.what() );
+        return QgsVectorLayerExporter::ErrConnectionFailed;
       }
     }
   }
