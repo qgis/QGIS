@@ -422,12 +422,18 @@ sub fix_annotations {
 
     # get removed params to be able to drop them out of the API doc
     if ( $line =~ m/(\w+)\s+SIP_PYARGREMOVE/ ){
-      push @SKIPPED_PARAMS_REMOVE, $1;
-      dbg_info("caught removed param: $SKIPPED_PARAMS_REMOVE[$#SKIPPED_PARAMS_REMOVE]");
+      my @removed_params = $line =~ m/(\w+)\s+SIP_PYARGREMOVE/g;
+      foreach ( @removed_params ) {
+        push @SKIPPED_PARAMS_REMOVE, $_;
+        dbg_info("caught removed param: $SKIPPED_PARAMS_REMOVE[$#SKIPPED_PARAMS_REMOVE]");
+      }
     }
     if ( $line =~ m/(\w+)\s+SIP_OUT/ ){
-      push @SKIPPED_PARAMS_OUT, $1;
-      dbg_info("caught removed param: $SKIPPED_PARAMS_OUT[$#SKIPPED_PARAMS_OUT]");
+      my @out_params = $line =~ m/(\w+)\s+SIP_OUT/g;
+      foreach ( @out_params ) {
+        push @SKIPPED_PARAMS_OUT, $_;
+        dbg_info("caught removed param: $SKIPPED_PARAMS_OUT[$#SKIPPED_PARAMS_OUT]");
+      }
     }
 
     # printed annotations
