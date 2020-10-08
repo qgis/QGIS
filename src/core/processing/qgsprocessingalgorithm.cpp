@@ -445,7 +445,7 @@ QgsProcessingAlgorithm::VectorProperties QgsProcessingAlgorithm::sinkProperties(
   return VectorProperties();
 }
 
-QVariantMap QgsProcessingAlgorithm::run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok, const QVariantMap &configuration ) const
+QVariantMap QgsProcessingAlgorithm::run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok, const QVariantMap &configuration, bool catchExceptions ) const
 {
   std::unique_ptr< QgsProcessingAlgorithm > alg( create( configuration ) );
   if ( ok )
@@ -462,6 +462,9 @@ QVariantMap QgsProcessingAlgorithm::run( const QVariantMap &parameters, QgsProce
   }
   catch ( QgsProcessingException &e )
   {
+    if ( !catchExceptions )
+      throw e;
+
     QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), Qgis::Critical );
     feedback->reportError( e.what() );
     return QVariantMap();

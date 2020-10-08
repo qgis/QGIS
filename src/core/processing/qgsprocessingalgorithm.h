@@ -378,13 +378,17 @@ class CORE_EXPORT QgsProcessingAlgorithm
      *
      * If specified, \a ok will be set to TRUE if algorithm was successfully run.
      *
+     * If \a catchExceptions is set to FALSE, then QgsProcessingExceptions raised during
+     * the algorithm run will not be automatically caught and will be raised instead.
+     *
      * \returns A map of algorithm outputs. These may be output layer references, or calculated
      * values such as statistical calculations.
      *
      * \note this method can only be called from the main thread. Use prepare(), runPrepared() and postProcess()
      * if you need to run algorithms from a background thread, or use the QgsProcessingAlgRunnerTask class.
      */
-    QVariantMap run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok SIP_OUT = nullptr, const QVariantMap &configuration = QVariantMap() ) const;
+    QVariantMap run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok SIP_OUT = nullptr, const QVariantMap &configuration = QVariantMap(),
+                     bool catchExceptions = true ) const SIP_THROW( QgsProcessingException );
 
     /**
      * Prepares the algorithm for execution. This must be run in the main thread, and allows the algorithm
