@@ -1658,7 +1658,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
   }
 
   QgsAttributes attributes = f.attributes();
-  const QgsFields &qgisFields { f.fields() };
+  const QgsFields qgisFields { f.fields() };
 
   QgsLocaleNumC l;
 
