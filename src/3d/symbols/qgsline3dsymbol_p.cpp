@@ -114,7 +114,13 @@ void QgsBufferedLine3DSymbolHandler::processFeature( QgsFeature &f, const Qgs3DR
   const double mitreLimit = 0;
 
   QgsGeos engine( g );
+<<<<<<< HEAD
   QgsAbstractGeometry *buffered = engine.buffer( mSymbol.width() / 2., nSegments, endCapStyle, joinStyle, mitreLimit ); // factory
+=======
+  QgsAbstractGeometry *buffered = engine.buffer( mSymbol->width() / 2., nSegments, endCapStyle, joinStyle, mitreLimit ); // factory
+  if ( !buffered )
+    return;
+>>>>>>> f6eed85729... [3d] Fix crash when line feature cannot be buffered
 
   if ( QgsWkbTypes::flatType( buffered->wkbType() ) == QgsWkbTypes::Polygon )
   {
