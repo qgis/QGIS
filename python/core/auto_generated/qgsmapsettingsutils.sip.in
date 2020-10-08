@@ -43,6 +43,13 @@ Computes the six parameters of a world file.
 
 :param mapSettings: map settings
 
+:return: - a: the a parameter
+         - b: the b parameter
+         - c: the c parameter
+         - d: the d parameter
+         - e: the e parameter
+         - f: the f parameter
+
 .. versionadded:: 3.10
 %End
 
