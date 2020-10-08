@@ -92,7 +92,7 @@ bool QgsVectorDataProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
 QString QgsVectorDataProvider::lastError() const
 {
-  return mErrors.last();
+  return mErrors.isEmpty() ? QString() : mErrors.last();
 }
 
 bool QgsVectorDataProvider::deleteFeatures( const QgsFeatureIds &ids )
