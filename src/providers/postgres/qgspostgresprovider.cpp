@@ -4911,7 +4911,7 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer 
   // Skip less silently if layer is not valid
   if ( !mValid )
   {
-    QgsLogger::warning( QStringLiteral( "Error discovering relations of %1: invalid layer" ).arg( mQuery ) );
+    QgsLogger::warning( tr( "Error discovering relations of %1: invalid layer" ).arg( mQuery ) );
     return result;
   }
 
