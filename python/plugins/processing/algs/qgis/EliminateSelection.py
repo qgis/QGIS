@@ -116,6 +116,8 @@ class EliminateSelection(QgisAlgorithm):
                 # write the others to output
                 sink.addFeature(aFeat, QgsFeatureSink.FastInsert)
 
+        del sink
+
         # Delete all features to eliminate in processLayer
         processLayer = QgsProcessingUtils.mapLayerFromString(dest_id, context)
         processLayer.startEditing()
@@ -229,6 +231,6 @@ class EliminateSelection(QgisAlgorithm):
             if feedback.isCanceled():
                 break
 
-            sink.addFeature(feature, QgsFeatureSink.FastInsert)
+            processLayer.dataProvider().addFeature(feature, QgsFeatureSink.FastInsert)
 
         return {self.OUTPUT: dest_id}
