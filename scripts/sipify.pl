@@ -1303,7 +1303,7 @@ while ($LINE_IDX < $LINE_COUNT){
         else {
             dbg_info('writing comment');
             if ( $COMMENT !~ m/^\s*$/ ){
-                dbg_info('comment isnt empty');
+                dbg_info('comment non-empty');
                 my $doc_prepend = "";
                 $doc_prepend = "\@DOCSTRINGSTEMPLATE\@" if $COMMENT_TEMPLATE_DOCSTRING == 1;
                 write_output("CM1", "$doc_prepend%Docstring\n");
