@@ -18,7 +18,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsdatumtransformdialog.h"
 #include "qgisapp.h"
-
+#include "qgssettings.h"
 
 QgsDatumTransformTableModel::QgsDatumTransformTableModel( QObject *parent )
   : QAbstractTableModel( parent )
@@ -231,11 +231,15 @@ QgsDatumTransformTableWidget::QgsDatumTransformTableWidget( QWidget *parent )
 
   mTableView->setModel( mModel );
   mTableView->resizeColumnToContents( 0 );
-  mTableView->horizontalHeader()->setSectionResizeMode( QHeaderView::ResizeToContents );
+  mTableView->horizontalHeader()->setSectionResizeMode( QHeaderView::Interactive );
   mTableView->horizontalHeader()->show();
   mTableView->setSelectionMode( QAbstractItemView::SingleSelection );
   mTableView->setSelectionBehavior( QAbstractItemView::SelectRows );
   mTableView->setAlternatingRowColors( true );
+
+  QgsSettings settings;
+  mTableView->horizontalHeader()->restoreState( settings.value( QStringLiteral( "Windows/DatumTransformTable/headerState" ) ).toByteArray() );
+
   connect( mAddButton, &QToolButton::clicked, this, &QgsDatumTransformTableWidget::addDatumTransform );
   connect( mRemoveButton, &QToolButton::clicked, this, &QgsDatumTransformTableWidget::removeDatumTransform );
   connect( mEditButton, &QToolButton::clicked, this, [ = ]
@@ -254,6 +258,12 @@ QgsDatumTransformTableWidget::QgsDatumTransformTableWidget( QWidget *parent )
     editDatumTransform( index );
   } );
   mEditButton->setEnabled( false );
+}
+
+QgsDatumTransformTableWidget::~QgsDatumTransformTableWidget()
+{
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/DatumTransformTable/headerState" ), mTableView->horizontalHeader()->saveState() );
 }
 
 void QgsDatumTransformTableWidget::addDatumTransform()

@@ -81,6 +81,7 @@ class APP_EXPORT QgsDatumTransformTableWidget : public QWidget, private Ui::QgsD
 
   public:
     explicit QgsDatumTransformTableWidget( QWidget *parent = nullptr );
+    ~QgsDatumTransformTableWidget() override;
 
     void setTransformContext( const QgsCoordinateTransformContext &context )
     {
