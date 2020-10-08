@@ -50,6 +50,7 @@ class TestQgsLayoutModel : public QObject
     void reorderDown(); //test reordering an item down
     void reorderTop(); //test reordering an item to top
     void reorderBottom(); //test reordering an item to bottom
+    void moveItem(); //test move an item in the item tree
     void findItemAbove(); //test getting composer item above
     void findItemBelow(); //test getting composer item below
     void setItemRemoved(); //test setting an item as removed
@@ -558,6 +559,60 @@ void TestQgsLayoutModel::reorderBottom()
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
 
   delete label;
+}
+
+void TestQgsLayoutModel::moveItem()
+{
+  QgsLayout layout( QgsProject::instance() );
+
+  //some items in layout
+  QgsLayoutItem *item1 = new QgsLayoutItemMap( &layout );
+  layout.addLayoutItem( item1 );
+  item1->setId( QStringLiteral( "i1" ) );
+  QgsLayoutItem *item2 = new QgsLayoutItemMap( &layout );
+  layout.addLayoutItem( item2 );
+  item2->setId( QStringLiteral( "i2" ) );
+  QgsLayoutItem *item3 = new QgsLayoutItemMap( &layout );
+  layout.addLayoutItem( item3 );
+  item3->setId( QStringLiteral( "i3" ) );
+
+  // start with an empty model
+  layout.itemsModel()->clear();
+
+  layout.itemsModel()->rebuildZList();
+
+  //check z list
+  QCOMPARE( layout.itemsModel()->zOrderListSize(), 3 );
+  QCOMPARE( layout.itemsModel()->zOrderList().at( 0 ), item3 );
+  QCOMPARE( layout.itemsModel()->zOrderList().at( 1 ), item2 );
+  QCOMPARE( layout.itemsModel()->zOrderList().at( 2 ), item1 );
+
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 0, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QString() );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
+
+  QgsLayoutModel *model = layout.itemsModel();
+  QMimeData *mimedata = model->mimeData( QModelIndexList() << model->index( 2, 2 ) ); // get i2
+  model->dropMimeData( mimedata, Qt::MoveAction, 1, 2, QModelIndex() ); // move i2 at the top
+
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
+
+  mimedata = model->mimeData( QModelIndexList() << model->index( 1, 2 ) ); // get i2
+  model->dropMimeData( mimedata, Qt::MoveAction, -1, -1, QModelIndex() ); // move i2 at the bottom
+
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
+
+  mimedata = model->mimeData( QModelIndexList() << model->index( 3, 2 ) ); // get i2
+  model->dropMimeData( mimedata, Qt::MoveAction, 2, 2, QModelIndex() ); // move i2 between i3 and i1
+
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
 }
 
 void TestQgsLayoutModel::findItemAbove()
