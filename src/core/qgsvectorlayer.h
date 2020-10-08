@@ -925,11 +925,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Saves named and sld style of the layer to the style table in the db.
-     * \param name
-     * \param description
-     * \param useAsDefault
+     * \param name Style name
+     * \param description A description of the style
+     * \param useAsDefault Set to TRUE if style should be used as the default style for the layer
      * \param uiFileContent
-     * \param msgError
+     * \param msgError will be set to a descriptive error message if any occurs
      */
     virtual void saveStyleToDatabase( const QString &name, const QString &description,
                                       bool useAsDefault, const QString &uiFileContent,
@@ -940,7 +940,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param ids the list in which will be stored the style db ids
      * \param names the list in which will be stored the style names
      * \param descriptions the list in which will be stored the style descriptions
-     * \param msgError
+     * \param msgError will be set to a descriptive error message if any occurs
      * \returns the number of styles related to current layer (-1 on not implemented)
      * \note Since QGIS 3.2 Styles related to the layer are ordered with the default style first then by update time for Postgres, MySQL and Spatialite.
      */
@@ -955,7 +955,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Deletes a style from the database
      * \param styleId the provider's layer_styles table id of the style to delete
-     * \param msgError reference to string that will be updated with any error messages
+     * \param msgError will be set to a descriptive error message if any occurs
      * \returns TRUE in case of success
      * \since QGIS 3.0
      */
