@@ -120,6 +120,8 @@ void QgsBufferedLine3DSymbolHandler::processFeature( QgsFeature &f, const Qgs3DR
 
   QgsGeos engine( g );
   QgsAbstractGeometry *buffered = engine.buffer( mSymbol->width() / 2., nSegments, endCapStyle, joinStyle, mitreLimit ); // factory
+  if ( !buffered )
+    return;
 
   if ( QgsWkbTypes::flatType( buffered->wkbType() ) == QgsWkbTypes::Polygon )
   {
