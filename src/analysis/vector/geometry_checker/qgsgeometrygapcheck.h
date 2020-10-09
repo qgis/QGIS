@@ -21,6 +21,7 @@
 #include "qgsgeometrycheck.h"
 #include "qgsgeometrycheckerror.h"
 #include "qgsfeatureid.h"
+#include <QObject>
 
 /**
  * \ingroup analysis
@@ -88,7 +89,8 @@ class ANALYSIS_EXPORT QgsGeometryGapCheckError : public QgsGeometryCheckError
  */
 class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
 {
-    Q_GADGET
+    Q_DECLARE_TR_FUNCTIONS( QgsGeometryGapCheck )
+
   public:
     //! Resolution methods for geometry gap checks
     enum ResolutionMethod

@@ -91,7 +91,6 @@ class QgsFeaturePool;
 class ANALYSIS_EXPORT QgsGeometryCheck
 {
     Q_GADGET
-    Q_DECLARE_TR_FUNCTIONS( QgsGeometryCheck )
 
   public:
 
