@@ -692,7 +692,12 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
     if ( !d->mIsValid )
     {
       if ( !wkt.isEmpty() )
+      {
         setWktString( wkt, false );
+        // set WKT string resets the description to that description embedded in the WKT, so manually overwrite this back to the
+        // value from the user DB
+        d->mDescription = statement.columnAsText( 1 );
+      }
       else
         setProjString( d->mProj4 );
     }
@@ -1656,6 +1661,7 @@ bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt, bool allowP
     {
       // Still a valid CRS, just not a known one
       d->mIsValid = true;
+      d->mDescription = QString( proj_get_name( d->threadLocalProjObject() ) );
     }
     setMapUnits();
   }
