@@ -30,6 +30,7 @@
 #include <QtConcurrent/QtConcurrentRun>
 #include <QFutureWatcher>
 #include <QElapsedTimer>
+#include <QMutex>
 
 #include "qgsrectangle.h"
 #include "qgsterraintileloader_p.h"
@@ -129,6 +130,8 @@ class QgsDemHeightMapGenerator : public QObject
 
     QHash<QFutureWatcher<QByteArray>*, JobData> mJobs;
 
+    void lazyLoadDtmCoarseData( int res, const QgsRectangle &rect );
+    mutable QMutex mLazyLoadDtmCoarseDataMutex;
     //! used for height queries
     QByteArray mDtmCoarseData;
 };
