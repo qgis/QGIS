@@ -25,6 +25,7 @@
  */
 class ANALYSIS_EXPORT QgsGeometrySegmentLengthCheck : public QgsGeometryCheck
 {
+    Q_DECLARE_TR_FUNCTIONS( QgsGeometrySegmentLengthCheck )
   public:
     QgsGeometrySegmentLengthCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
       : QgsGeometryCheck( context, configuration )
