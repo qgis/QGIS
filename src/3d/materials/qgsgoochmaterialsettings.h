@@ -114,6 +114,11 @@ class _3D_EXPORT QgsGoochMaterialSettings : public QgsAbstractMaterialSettings
              mBeta == other.mBeta;
     }
 
+    QByteArray dataDefinedVertexColorsAsByte( const QgsExpressionContext &expressionContext ) const override
+    {
+      return QByteArray();
+    }
+
   private:
     QColor mDiffuse{ QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) };
     QColor mSpecular{ QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) };

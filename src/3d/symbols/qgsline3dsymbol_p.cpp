@@ -50,7 +50,7 @@ class QgsBufferedLine3DSymbolHandler : public QgsFeature3DHandler
       , mSelectedIds( selectedIds ) {}
 
     bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames ) override;
-    void processFeature( QgsFeature &feature, const Qgs3DRenderContext &context ) override;
+    void processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context ) override;
     void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
 
   private:
@@ -97,7 +97,7 @@ bool QgsBufferedLine3DSymbolHandler::prepare( const Qgs3DRenderContext &context,
   return true;
 }
 
-void QgsBufferedLine3DSymbolHandler::processFeature( QgsFeature &f, const Qgs3DRenderContext &context )
+void QgsBufferedLine3DSymbolHandler::processFeature( const QgsFeature &f, const Qgs3DRenderContext &context )
 {
   if ( f.geometry().isNull() )
     return;
@@ -213,7 +213,7 @@ class QgsSimpleLine3DSymbolHandler : public QgsFeature3DHandler
     }
 
     bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames ) override;
-    void processFeature( QgsFeature &feature, const Qgs3DRenderContext &context ) override;
+    void processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context ) override;
     void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
 
   private:
@@ -243,7 +243,7 @@ bool QgsSimpleLine3DSymbolHandler::prepare( const Qgs3DRenderContext &context, Q
   return true;
 }
 
-void QgsSimpleLine3DSymbolHandler::processFeature( QgsFeature &f, const Qgs3DRenderContext &context )
+void QgsSimpleLine3DSymbolHandler::processFeature( const QgsFeature &f, const Qgs3DRenderContext &context )
 {
   Q_UNUSED( context )
   if ( f.geometry().isNull() )
@@ -324,7 +324,7 @@ class QgsThickLine3DSymbolHandler : public QgsFeature3DHandler
     }
 
     bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames ) override;
-    void processFeature( QgsFeature &feature, const Qgs3DRenderContext &context ) override;
+    void processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context ) override;
     void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
 
   private:
@@ -357,7 +357,7 @@ bool QgsThickLine3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QS
   return true;
 }
 
-void QgsThickLine3DSymbolHandler::processFeature( QgsFeature &f, const Qgs3DRenderContext &context )
+void QgsThickLine3DSymbolHandler::processFeature( const QgsFeature &f, const Qgs3DRenderContext &context )
 {
   Q_UNUSED( context )
   if ( f.geometry().isNull() )

@@ -18,8 +18,14 @@
 
 #include "qgis_3d.h"
 #include "qgsabstractmaterialsettings.h"
+#include "qgspropertycollection.h"
 
 #include <QColor>
+
+namespace Qt3DRender
+{
+  class QGeometry;
+}
 
 class QDomElement;
 
@@ -81,6 +87,27 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
 #ifndef SIP_RUN
     Qt3DRender::QMaterial *toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const override SIP_FACTORY;
     void addParametersToEffect( Qt3DRender::QEffect *effect ) const override;
+
+    enum Property
+    {
+      Ambient,
+      Diffuse,
+      Specular
+    };
+
+    /**
+     * Sets the symbol layer's property collection, used for data defined overrides.
+     * \since QGIS 3.18
+     */
+    void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
+
+    QgsPropertyCollection dataDefinedProperties() const override {return mDataDefinedProperties;}
+    QgsPropertiesDefinition propertiesDefinition() const override;
+    QByteArray dataDefinedVertexColorsAsByte( const QgsExpressionContext &expressionContext ) const override;
+    int dataDefinedByteStride() const override;
+    bool isDataDefined() const override;
+    void applyDataDefinedToGeometry( Qt3DRender::QGeometry *geometry, int vertexCount, const QByteArray &data ) const override;
+
 #endif
 
     bool operator==( const QgsPhongMaterialSettings &other ) const
@@ -96,6 +123,12 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
     QColor mDiffuse{ QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) };
     QColor mSpecular{ QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) };
     float mShininess = 0.0f;
+    QgsPropertyCollection mDataDefinedProperties;
+    mutable QgsPropertiesDefinition mPropertyDefinitions;
+
+    //! Constructs a material from shader files
+    Qt3DRender::QMaterial *dataDefinedMaterial() const;
+    void initPropertyDefinitions() const;
 };
 
 

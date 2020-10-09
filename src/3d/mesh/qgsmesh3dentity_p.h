@@ -39,7 +39,6 @@
 #define SIP_NO_FILE
 
 class Qgs3DMapSettings;
-class QgsTessellatedPolygonGeometry;
 class QgsMesh3DSymbol;
 
 class QgsMeshLayer;

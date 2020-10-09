@@ -75,10 +75,11 @@ void QgsMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique tech
   materialTypeChanged();
 }
 
-void QgsMaterialWidget::setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer * )
+void QgsMaterialWidget::setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer )
 {
   mMaterialTypeComboBox->setCurrentIndex( mMaterialTypeComboBox->findData( settings->type() ) );
   mCurrentSettings.reset( settings->clone() );
+  mLayer = layer;
   updateMaterialWidget();
 }
 
@@ -141,7 +142,7 @@ void QgsMaterialWidget::updateMaterialWidget()
   {
     if ( QgsMaterialSettingsWidget *w = am->createWidget() )
     {
-      w->setSettings( mCurrentSettings.get(), nullptr );
+      w->setSettings( mCurrentSettings.get(), mLayer );
       w->setTechnique( mTechnique );
       mStackedWidget->addWidget( w );
       mStackedWidget->setCurrentWidget( w );
