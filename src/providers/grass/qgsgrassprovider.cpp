@@ -251,6 +251,10 @@ QgsGrassProvider::QgsGrassProvider( const QString &uri )
                   // << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date, 8, 8 );
                 );
 
+  // Assign default encoding
+  if ( !textEncoding() )
+    QgsVectorDataProvider::setEncoding( QStringLiteral( "UTF-8" ) );
+
   mValid = true;
 
   QgsDebugMsg( QString( "New GRASS layer opened, time (ms): %1" ).arg( time.elapsed() ) );

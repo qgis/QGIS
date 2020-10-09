@@ -743,7 +743,7 @@ QgsGrassFeatureSource::QgsGrassFeatureSource( const QgsGrassProvider *p )
   , mGrassType( p->mGrassType )
   , mQgisType( p->mQgisType )
   , mFields( p->fields() )
-  , mEncoding( p->textEncoding() )
+  , mEncoding( p->textEncoding() ) // no copying - this is a borrowed pointer from Qt
   , mEditing( p->mEditBuffer )
 {
   Q_ASSERT( mLayer );
