@@ -220,13 +220,21 @@ double QgsLayoutUtils::textWidthMM( const QFont &font, const QString &text )
 {
   //upscale using FONT_WORKAROUND_SCALE
   //ref: http://osgeo-org.1560.x6.nabble.com/Multi-line-labels-and-font-bug-td4157152.html
+
+  const QStringList multiLineSplit = text.split( '\n' );
   QFont metricsFont = scaledFontPixelSize( font );
   QFontMetricsF fontMetrics( metricsFont );
+
+  double maxWidth = 0;
+  for ( const QString &line : multiLineSplit )
+  {
 #if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  return ( fontMetrics.width( text ) / FONT_WORKAROUND_SCALE );
+    maxWidth = std::max( maxWidth, ( fontMetrics.width( line ) / FONT_WORKAROUND_SCALE ) );
 #else
-  return ( fontMetrics.horizontalAdvance( text ) / FONT_WORKAROUND_SCALE );
+    maxWidth = std::max( maxWidth, ( fontMetrics.horizontalAdvance( line ) / FONT_WORKAROUND_SCALE ) );
 #endif
+  }
+  return maxWidth;
 }
 
 double QgsLayoutUtils::textHeightMM( const QFont &font, const QString &text, double multiLineHeight )
