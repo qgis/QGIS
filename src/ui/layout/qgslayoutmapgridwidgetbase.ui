@@ -884,6 +884,9 @@
             <property name="suffix">
              <string> mm</string>
             </property>
+            <property name="minimum">
+             <double>-99.000000000000000</double>
+            </property>
            </widget>
           </item>
           <item row="22" column="2">
