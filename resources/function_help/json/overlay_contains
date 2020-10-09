@@ -1,8 +1,8 @@
 {
-  "name": "geometry_overlay_touches",
+  "name": "overlay_contains",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Performs a spatial join of type TOUCHES. This returns an array of results of an expression evaluated on features from a different layer that TOUCHES the current feature, or, if no expression if provided, simply returns whether at least one feature from the other layer TOUCHES the current feature.",
+  "description": "Performs a spatial join of type CONTAINS. This returns an array of results of an expression evaluated on features from a different layer that CONTAINS the current feature, or, if no expression if provided, simply returns whether at least one feature from the other layer CONTAINS the current feature.",
   "arguments": [
     {
       "arg": "layer",
@@ -32,19 +32,19 @@
   ],
   "examples": [
     {
-      "expression": "geometry_overlay_touches('regions')",
+      "expression": "overlay_contains('regions')",
       "returns": "True"
     },
     {
-      "expression": "geometry_overlay_touches('regions', name)",
+      "expression": "overlay_contains('regions', name)",
       "returns": "['South Africa', 'Africa', 'World']"
     },
     {
-      "expression": "geometry_overlay_touches('regions', name, name != 'World')",
+      "expression": "overlay_contains('regions', name, name != 'World')",
       "returns": "['South Africa', 'Africa']"
     },
     {
-      "expression": "geometry_overlay_touches('regions', name, limit:=1)",
+      "expression": "overlay_contains('regions', name, limit:=1)",
       "returns": "['South Africa']"
     }
   ]

@@ -1,8 +1,8 @@
 {
-  "name": "geometry_overlay_within",
+  "name": "overlay_touches",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Performs a spatial join of type WITHIN. This returns an array of results of an expression evaluated on features from a different layer that are WITHIN the current feature, or, if no expression if provided, simply returns whether at least one feature from the other layer is WITHIN the current feature.",
+  "description": "Performs a spatial join of type TOUCHES. This returns an array of results of an expression evaluated on features from a different layer that TOUCHES the current feature, or, if no expression if provided, simply returns whether at least one feature from the other layer TOUCHES the current feature.",
   "arguments": [
     {
       "arg": "layer",
@@ -32,19 +32,19 @@
   ],
   "examples": [
     {
-      "expression": "geometry_overlay_within('regions')",
+      "expression": "overlay_touches('regions')",
       "returns": "True"
     },
     {
-      "expression": "geometry_overlay_within('regions', name)",
+      "expression": "overlay_touches('regions', name)",
       "returns": "['South Africa', 'Africa', 'World']"
     },
     {
-      "expression": "geometry_overlay_within('regions', name, name != 'World')",
+      "expression": "overlay_touches('regions', name, name != 'World')",
       "returns": "['South Africa', 'Africa']"
     },
     {
-      "expression": "geometry_overlay_within('regions', name, limit:=1)",
+      "expression": "overlay_touches('regions', name, limit:=1)",
       "returns": "['South Africa']"
     }
   ]
