@@ -891,6 +891,10 @@ bool QgsCoordinateReferenceSystem::createFromWktInternal( const QString &wkt, co
   else
   {
     setWktString( wkt );
+    if ( !description.isEmpty() )
+    {
+      d->mDescription = description;
+    }
     if ( d->mSrsId == 0 )
     {
 #if PROJ_VERSION_MAJOR>=6
