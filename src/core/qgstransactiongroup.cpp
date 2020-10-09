@@ -85,7 +85,7 @@ void QgsTransactionGroup::onEditingStarted()
   {
     mTransaction->addLayer( layer );
     layer->startEditing();
-    connect( layer, &QgsVectorLayer::beforeCommitChanges, this, &QgsTransactionGroup::onCommitChanges );
+    connect( layer, &QgsVectorLayer::beforeCommitChanges, this, &QgsTransactionGroup::onBeforeCommitChanges );
     connect( layer, &QgsVectorLayer::beforeRollBack, this, &QgsTransactionGroup::onRollback );
   }
 }
@@ -95,7 +95,7 @@ void QgsTransactionGroup::onLayerDeleted()
   mLayers.remove( static_cast<QgsVectorLayer *>( sender() ) );
 }
 
-void QgsTransactionGroup::onCommitChanges()
+void QgsTransactionGroup::onBeforeCommitChanges( bool stopEditing )
 {
   if ( mEditingStopping )
     return;
@@ -111,7 +111,7 @@ void QgsTransactionGroup::onCommitChanges()
     for ( QgsVectorLayer *layer : constMLayers )
     {
       if ( layer != sender() )
-        layer->commitChanges();
+        layer->commitChanges( stopEditing );
     }
 
     disableTransaction();
@@ -160,7 +160,7 @@ void QgsTransactionGroup::disableTransaction()
   const auto constMLayers = mLayers;
   for ( QgsVectorLayer *layer : constMLayers )
   {
-    disconnect( layer, &QgsVectorLayer::beforeCommitChanges, this, &QgsTransactionGroup::onCommitChanges );
+    disconnect( layer, &QgsVectorLayer::beforeCommitChanges, this, &QgsTransactionGroup::onBeforeCommitChanges );
     disconnect( layer, &QgsVectorLayer::beforeRollBack, this, &QgsTransactionGroup::onRollback );
   }
 }

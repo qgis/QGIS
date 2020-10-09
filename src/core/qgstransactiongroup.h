@@ -82,7 +82,7 @@ class CORE_EXPORT QgsTransactionGroup : public QObject
   private slots:
     void onEditingStarted();
     void onLayerDeleted();
-    void onCommitChanges();
+    void onBeforeCommitChanges( bool stopEditing );
     void onRollback();
 
   private:
