@@ -53,6 +53,7 @@ class ANALYSIS_EXPORT QgsGeometryIsValidCheckError : public QgsSingleGeometryChe
  */
 class ANALYSIS_EXPORT QgsGeometryIsValidCheck : public QgsSingleGeometryCheck
 {
+    Q_DECLARE_TR_FUNCTIONS( QgsGeometryIsValidCheck )
   public:
 
     /**

@@ -58,6 +58,7 @@ class ANALYSIS_EXPORT QgsGeometryDuplicateCheckError : public QgsGeometryCheckEr
  */
 class ANALYSIS_EXPORT QgsGeometryDuplicateCheck : public QgsGeometryCheck
 {
+    Q_DECLARE_TR_FUNCTIONS( QgsGeometryDuplicateCheck )
   public:
     explicit QgsGeometryDuplicateCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
       : QgsGeometryCheck( context, configuration ) {}
