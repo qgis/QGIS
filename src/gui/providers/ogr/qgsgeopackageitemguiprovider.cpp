@@ -283,6 +283,7 @@ void QgsGeoPackageItemGuiProvider::renameVectorLayer()
   QVariantMap data = s->data().toMap();
   const QString uri = data[QStringLiteral( "uri" )].toString();
   const QString key = data[QStringLiteral( "key" )].toString();
+  // Collect existing table names
   const QStringList tableNames = data[QStringLiteral( "tableNames" )].toStringList();
   QPointer< QgsDataItem > item = data[QStringLiteral( "item" )].value<QPointer< QgsDataItem >>();
   QgsDataItemGuiContext context = data[QStringLiteral( "context" )].value< QgsDataItemGuiContext >();
@@ -291,8 +292,10 @@ void QgsGeoPackageItemGuiProvider::renameVectorLayer()
   QVariantMap pieces( QgsProviderRegistry::instance()->decodeUri( key, uri ) );
   QString layerName = pieces[QStringLiteral( "layerName" )].toString();
 
-  // Collect existing table names
-  const QRegExp checkRe( QStringLiteral( R"re([A-Za-z_][A-Za-z0-9_\s]+)re" ) );
+  // Allow any character, except |, which could create confusion, due to it being
+  // the URI componenent separator. And ideally we should remove that restriction
+  // by using proper escaping of |
+  const QRegExp checkRe( QStringLiteral( R"re([^|]+)re" ) );
   QgsNewNameDialog dlg( uri, layerName, QStringList(), tableNames, checkRe );
   dlg.setOverwriteEnabled( false );
 
