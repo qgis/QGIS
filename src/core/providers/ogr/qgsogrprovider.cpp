@@ -1551,7 +1551,12 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
     }
   }
 
+<<<<<<< HEAD
   QgsAttributes attrs = f.attributes();
+=======
+  QgsAttributes attributes = f.attributes();
+  const QgsFields qgisFields { f.fields() };
+>>>>>>> 064778dd80... Update src/core/providers/ogr/qgsogrprovider.cpp
 
   QgsLocaleNumC l;
 
