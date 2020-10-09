@@ -1768,7 +1768,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertFalse(vl1_1.isEditable())
         self.assertFalse(vl1_2.isEditable())
 
-   @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 3, 0), "GDAL 2.3 required")
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 3, 0), "GDAL 2.3 required")
     def testTransactionGroupIterator(self):
         """Test issue GH #39178: the bug is that this test hangs
         forever in an endless loop"""
@@ -1839,4 +1839,3 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
