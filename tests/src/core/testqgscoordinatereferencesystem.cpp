@@ -522,6 +522,13 @@ void TestQgsCoordinateReferenceSystem::fromWkt()
   QCOMPARE( myCrs.srsid(), GEOCRS_ID );
   myCrs = QgsCoordinateReferenceSystem::fromWkt( QStringLiteral( "not wkt" ) );
   QVERIFY( !myCrs.isValid() );
+
+#if PROJ_VERSION_MAJOR>=6
+  // wkt with embedded name
+  myCrs = QgsCoordinateReferenceSystem::fromWkt( R"""(PROJCRS["some locally made crs",BASEGEOGCRS["unknown",DATUM["Unknown based on WGS84 ellipsoid",ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1],ID["EPSG",7030]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8901]]],CONVERSION["unknown",METHOD["Hotine Oblique Mercator (variant B)",ID["EPSG",9815]],PARAMETER["Latitude of projection centre",47.2,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8811]],PARAMETER["Longitude of projection centre",9,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8812]],PARAMETER["Azimuth of initial line",39.4,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8813]],PARAMETER["Angle from Rectified to Skew Grid",0,ANGLEUNIT["degree",0.0174532925199433],ID["EPSG",8814]],PARAMETER["Scale factor on initial line",1,SCALEUNIT["unity",1],ID["EPSG",8815]],PARAMETER["Easting at projection centre",750,LENGTHUNIT["metre",1],ID["EPSG",8816]],PARAMETER["Northing at projection centre",250,LENGTHUNIT["metre",1],ID["EPSG",8817]]],CS[Cartesian,2],AXIS["(E)",east,ORDER[1],LENGTHUNIT["metre",1,ID["EPSG",9001]]],AXIS["(N)",north,ORDER[2],LENGTHUNIT["metre",1,ID["EPSG",9001]]]]])""" );
+  QVERIFY( myCrs.isValid() );
+  QCOMPARE( myCrs.description(), QStringLiteral( "some locally made crs" ) );
+#endif
 }
 
 void TestQgsCoordinateReferenceSystem::wktCache()
