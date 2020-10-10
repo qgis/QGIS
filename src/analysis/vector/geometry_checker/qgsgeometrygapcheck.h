@@ -21,7 +21,6 @@
 #include "qgsgeometrycheck.h"
 #include "qgsgeometrycheckerror.h"
 #include "qgsfeatureid.h"
-#include <QObject>
 
 /**
  * \ingroup analysis
