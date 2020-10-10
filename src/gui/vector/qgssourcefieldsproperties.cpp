@@ -73,6 +73,7 @@ QgsSourceFieldsProperties::QgsSourceFieldsProperties( QgsVectorLayer *layer, QWi
   mFieldsList->sortByColumn( 0, Qt::AscendingOrder );
   mFieldsList->setSelectionBehavior( QAbstractItemView::SelectRows );
   mFieldsList->setSelectionMode( QAbstractItemView::ExtendedSelection );
+  mFieldsList->horizontalHeader()->setStretchLastSection( true );
   mFieldsList->verticalHeader()->hide();
 
   //load buttons and field list
