@@ -694,7 +694,7 @@ bool QgsCompositionConverter::readPictureXml( QgsLayoutItemPicture *layoutItem, 
   layoutItem->mNorthArrowHandler->setNorthOffset( itemElem.attribute( QStringLiteral( "northOffset" ), QStringLiteral( "0" ) ).toDouble() );
 
   QString rotationMapId = itemElem.attribute( QStringLiteral( "mapId" ), QStringLiteral( "-1" ) );
-  if ( rotationMapId != QStringLiteral( "-1" ) )
+  if ( rotationMapId != QLatin1String( "-1" ) )
   {
     // Find uuid for map with given id
     QgsLayoutItemMap *mapInstance = qobject_cast<QgsLayoutItemMap *>( layoutItem->layout()->itemByUuid( mapId2Uuid[ rotationMapId ] ) );
@@ -913,7 +913,7 @@ bool QgsCompositionConverter::readMapXml( QgsLayoutItemMap *layoutItem, const QD
     std::unique_ptr<QgsLayoutItemMapOverview> mapOverview( new QgsLayoutItemMapOverview( mapOverviewElem.attribute( QStringLiteral( "name" ) ), layoutItem ) );
     mapOverview->readXml( mapOverviewElem, doc, context );
     QString frameMapId = mapOverviewElem.attribute( QStringLiteral( "frameMap" ), QStringLiteral( "-1" ) );
-    if ( frameMapId != QStringLiteral( "-1" ) && mapId2Uuid.contains( frameMapId ) )
+    if ( frameMapId != QLatin1String( "-1" ) && mapId2Uuid.contains( frameMapId ) )
     {
       QgsLayoutItemMap *mapInstance = qobject_cast<QgsLayoutItemMap *>( layoutItem->layout()->itemByUuid( mapId2Uuid[ frameMapId ] ) );
       if ( mapInstance )
@@ -1196,7 +1196,7 @@ bool QgsCompositionConverter::readScaleBarXml( QgsLayoutItemScaleBar *layoutItem
 
   //composer map: use uuid
   QString mapId = itemElem.attribute( QStringLiteral( "mapId" ), QStringLiteral( "-1" ) );
-  if ( mapId != QStringLiteral( "-1" ) && mapId2Uuid.contains( mapId ) )
+  if ( mapId != QLatin1String( "-1" ) && mapId2Uuid.contains( mapId ) )
   {
     QgsLayoutItemMap *mapInstance = qobject_cast<QgsLayoutItemMap *>( layoutItem->layout()->itemByUuid( mapId2Uuid[ mapId ] ) );
     if ( mapInstance )
@@ -1221,7 +1221,7 @@ bool QgsCompositionConverter::readLegendXml( QgsLayoutItemLegend *layoutItem, co
 
   //composer map: use uuid
   QString mapId = itemElem.attribute( QStringLiteral( "map" ), QStringLiteral( "-1" ) );
-  if ( mapId != QStringLiteral( "-1" ) && mapId2Uuid.contains( mapId ) )
+  if ( mapId != QLatin1String( "-1" ) && mapId2Uuid.contains( mapId ) )
   {
     QgsLayoutItemMap *mapInstance = qobject_cast<QgsLayoutItemMap *>( layoutItem->layout()->itemByUuid( mapId2Uuid[ mapId ] ) );
     if ( mapInstance )
@@ -1617,7 +1617,7 @@ bool QgsCompositionConverter::readXml( QgsLayoutItem *layoutItem, const QDomElem
   layoutItem->setLocked( positionLock.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 );
 
   //visibility
-  layoutItem->setVisibility( itemElem.attribute( QStringLiteral( "visibility" ), QStringLiteral( "1" ) ) != QStringLiteral( "0" ) );
+  layoutItem->setVisibility( itemElem.attribute( QStringLiteral( "visibility" ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
 
   layoutItem->mParentGroupUuid = itemElem.attribute( QStringLiteral( "groupUuid" ) );
   if ( !layoutItem->mParentGroupUuid.isEmpty() )

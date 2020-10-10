@@ -546,11 +546,11 @@ void TestQgsVectorFileWriter::_testExportToGpx( const QString &geomTypeName,
   QString memLayerDef( geomTypeName );
   if ( inputLayerName == QLatin1String( "track_points" ) )
   {
-    memLayerDef += QStringLiteral( "?field=track_fid:int&field=track_seg_id:int" );
+    memLayerDef += QLatin1String( "?field=track_fid:int&field=track_seg_id:int" );
   }
   else if ( inputLayerName == QLatin1String( "route_points" ) )
   {
-    memLayerDef += QStringLiteral( "?field=route_fid:int" );
+    memLayerDef += QLatin1String( "?field=route_fid:int" );
   }
   QgsVectorLayer vl( memLayerDef, "test", "memory" );
   QgsFeature f { vl.fields() };

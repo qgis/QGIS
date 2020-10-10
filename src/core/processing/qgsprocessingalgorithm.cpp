@@ -434,7 +434,7 @@ bool QgsProcessingAlgorithm::hasHtmlOutputs() const
 {
   for ( const QgsProcessingOutputDefinition *def : mOutputs )
   {
-    if ( def->type() == QStringLiteral( "outputHtml" ) )
+    if ( def->type() == QLatin1String( "outputHtml" ) )
       return true;
   }
   return false;
@@ -1071,7 +1071,7 @@ void QgsProcessingFeatureBasedAlgorithm::prepareSource( const QVariantMap &param
 QgsProcessingAlgorithm::VectorProperties QgsProcessingFeatureBasedAlgorithm::sinkProperties( const QString &sink, const QVariantMap &parameters, QgsProcessingContext &context, const QMap<QString, QgsProcessingAlgorithm::VectorProperties> &sourceProperties ) const
 {
   QgsProcessingAlgorithm::VectorProperties result;
-  if ( sink == QStringLiteral( "OUTPUT" ) )
+  if ( sink == QLatin1String( "OUTPUT" ) )
   {
     if ( sourceProperties.value( QStringLiteral( "INPUT" ) ).availability == QgsProcessingAlgorithm::Available )
     {

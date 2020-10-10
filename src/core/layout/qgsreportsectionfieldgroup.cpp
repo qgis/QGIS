@@ -254,7 +254,7 @@ QgsFeatureRequest QgsReportSectionFieldGroup::buildFeatureRequest() const
   }
   if ( !filterParts.empty() )
   {
-    QString filterString = QStringLiteral( "(%1)" ).arg( filterParts.join( QStringLiteral( ") AND (" ) ) );
+    QString filterString = QStringLiteral( "(%1)" ).arg( filterParts.join( QLatin1String( ") AND (" ) ) );
     request.setFilterExpression( filterString );
   }
 

@@ -465,7 +465,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
       mBandRenderingGrpBx->updateGeometry();
     }
 
-    if ( mRasterLayer->providerType() != QStringLiteral( "wms" ) )
+    if ( mRasterLayer->providerType() != QLatin1String( "wms" ) )
     {
       mWMSPrintGroupBox->hide();
       mPublishDataSourceUrlCheckBox->hide();
@@ -2355,7 +2355,7 @@ void QgsRasterLayerProperties::updateInformationContent()
 {
   const QString myStyle = QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType::WebBrowser );
   // Inject the stylesheet
-  const QString html { mRasterLayer->htmlMetadata().replace( QStringLiteral( "<head>" ), QStringLiteral( R"raw(<head><style type="text/css">%1</style>)raw" ) ).arg( myStyle ) };
+  const QString html { mRasterLayer->htmlMetadata().replace( QLatin1String( "<head>" ), QStringLiteral( R"raw(<head><style type="text/css">%1</style>)raw" ) ).arg( myStyle ) };
   mMetadataViewer->setHtml( html );
   mMetadataFilled = true;
 }

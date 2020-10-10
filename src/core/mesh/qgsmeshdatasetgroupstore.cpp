@@ -285,12 +285,12 @@ void QgsMeshDatasetGroupStore::readXml( const QDomElement &storeElem, const QgsR
     int globalIndex = datasetElem.attribute( QStringLiteral( "global-index" ) ).toInt();
     int sourceIndex;
     QgsMeshDatasetSourceInterface *source = nullptr;
-    if ( datasetElem.attribute( QStringLiteral( "source-type" ) ) == QStringLiteral( "persitent-provider" ) )
+    if ( datasetElem.attribute( QStringLiteral( "source-type" ) ) == QLatin1String( "persitent-provider" ) )
     {
       source = mPersistentProvider;
       sourceIndex = datasetElem.attribute( QStringLiteral( "source-index" ) ).toInt();
     }
-    else if ( datasetElem.attribute( QStringLiteral( "source-type" ) ) == QStringLiteral( "virtual" ) )
+    else if ( datasetElem.attribute( QStringLiteral( "source-type" ) ) == QLatin1String( "virtual" ) )
     {
       source = mExtraDatasets.get();
       QString name = datasetElem.attribute( QStringLiteral( "name" ) );

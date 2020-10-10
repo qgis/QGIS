@@ -136,7 +136,7 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
   clear();
 
   QDomElement layoutsElem = element;
-  if ( element.tagName() != QStringLiteral( "Layouts" ) )
+  if ( element.tagName() != QLatin1String( "Layouts" ) )
   {
     layoutsElem = element.firstChildElement( QStringLiteral( "Layouts" ) );
   }
@@ -203,7 +203,7 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
   const QDomNodeList layoutNodes = layoutsElem.childNodes();
   for ( int i = 0; i < layoutNodes.size(); ++i )
   {
-    if ( layoutNodes.at( i ).nodeName() != QStringLiteral( "Layout" ) )
+    if ( layoutNodes.at( i ).nodeName() != QLatin1String( "Layout" ) )
       continue;
 
     const QString layoutName = layoutNodes.at( i ).toElement().attribute( QStringLiteral( "name" ) );

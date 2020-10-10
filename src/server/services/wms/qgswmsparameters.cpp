@@ -604,7 +604,7 @@ namespace QgsWms
       }
       else //maybe an external wms parameter?
       {
-        int separator = key.indexOf( QStringLiteral( ":" ) );
+        int separator = key.indexOf( QLatin1Char( ':' ) );
         if ( separator >= 1 )
         {
           QString id = key.left( separator );
@@ -1435,7 +1435,7 @@ namespace QgsWms
     for ( int i = 0; i < rawFilters.size(); i++ )
     {
       const QString f = rawFilters[i];
-      if ( f.startsWith( QLatin1String( "<" ) ) \
+      if ( f.startsWith( QLatin1Char( '<' ) ) \
            && f.endsWith( QLatin1String( "Filter>" ) ) \
            &&  i < layers.size() )
       {
@@ -2066,7 +2066,7 @@ namespace QgsWms
     const QStringList unmanagedNames = mUnmanagedParameters.keys();
     for ( const QString &key : unmanagedNames )
     {
-      if ( key.startsWith( QStringLiteral( "DIM_" ) ) )
+      if ( key.startsWith( QLatin1String( "DIM_" ) ) )
       {
         dimValues[key.mid( 4 )] = mUnmanagedParameters[key];
       }

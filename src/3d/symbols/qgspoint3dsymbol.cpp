@@ -120,19 +120,19 @@ QgsPoint3DSymbol::Shape QgsPoint3DSymbol::shapeFromString( const QString &shape 
 {
   if ( shape ==  QStringLiteral( "sphere" ) )
     return Sphere;
-  else if ( shape == QStringLiteral( "cone" ) )
+  else if ( shape == QLatin1String( "cone" ) )
     return Cone;
-  else if ( shape == QStringLiteral( "cube" ) )
+  else if ( shape == QLatin1String( "cube" ) )
     return Cube;
-  else if ( shape == QStringLiteral( "torus" ) )
+  else if ( shape == QLatin1String( "torus" ) )
     return Torus;
-  else if ( shape == QStringLiteral( "plane" ) )
+  else if ( shape == QLatin1String( "plane" ) )
     return Plane;
-  else if ( shape == QStringLiteral( "extruded-text" ) )
+  else if ( shape == QLatin1String( "extruded-text" ) )
     return ExtrudedText;
-  else if ( shape == QStringLiteral( "model" ) )
+  else if ( shape == QLatin1String( "model" ) )
     return Model;
-  else if ( shape == QStringLiteral( "billboard" ) )
+  else if ( shape == QLatin1String( "billboard" ) )
     return Billboard;
   else   // "cylinder" (default)
     return Cylinder;

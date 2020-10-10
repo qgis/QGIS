@@ -817,23 +817,23 @@ void transform3000( QgsProjectFileTransform *pft )
         for ( int configIndex = 0; configIndex < configAttrs.count(); ++configIndex )
         {
           QDomAttr configAttr = configAttrs.item( configIndex ).toAttr();
-          if ( configAttr.name() == QStringLiteral( "fieldEditable" ) )
+          if ( configAttr.name() == QLatin1String( "fieldEditable" ) )
           {
             editWidgetConfigElement.setAttribute( QStringLiteral( "fieldEditable" ), configAttr.value() );
           }
-          else if ( configAttr.name() == QStringLiteral( "labelOnTop" ) )
+          else if ( configAttr.name() == QLatin1String( "labelOnTop" ) )
           {
             editWidgetConfigElement.setAttribute( QStringLiteral( "labelOnTop" ), configAttr.value() );
           }
-          else if ( configAttr.name() == QStringLiteral( "notNull" ) )
+          else if ( configAttr.name() == QLatin1String( "notNull" ) )
           {
             editWidgetConfigElement.setAttribute( QStringLiteral( "notNull" ), configAttr.value() );
           }
-          else if ( configAttr.name() == QStringLiteral( "constraint" ) )
+          else if ( configAttr.name() == QLatin1String( "constraint" ) )
           {
             constraintExpressionElem.setAttribute( QStringLiteral( "exp" ), configAttr.value() );
           }
-          else if ( configAttr.name() == QStringLiteral( "constraintDescription" ) )
+          else if ( configAttr.name() == QLatin1String( "constraintDescription" ) )
           {
             constraintExpressionElem.setAttribute( QStringLiteral( "desc" ), configAttr.value() );
           }
@@ -843,7 +843,7 @@ void transform3000( QgsProjectFileTransform *pft )
           }
         }
 
-        if ( ewv2Type == QStringLiteral( "ValueMap" ) )
+        if ( ewv2Type == QLatin1String( "ValueMap" ) )
         {
           QDomNodeList configElements = ewv2CfgElem.childNodes();
           QVariantMap map;
@@ -854,7 +854,7 @@ void transform3000( QgsProjectFileTransform *pft )
           }
           editWidgetConfiguration.insert( QStringLiteral( "map" ), map );
         }
-        else if ( ewv2Type == QStringLiteral( "Photo" ) )
+        else if ( ewv2Type == QLatin1String( "Photo" ) )
         {
           editWidgetElement.setAttribute( QStringLiteral( "type" ), QStringLiteral( "ExternalResource" ) );
 
@@ -863,13 +863,13 @@ void transform3000( QgsProjectFileTransform *pft )
           editWidgetConfiguration.insert( QStringLiteral( "DocumentViewerWidth" ), editWidgetConfiguration.value( QStringLiteral( "Width" ) ) );
           editWidgetConfiguration.insert( QStringLiteral( "RelativeStorage" ), 1 );
         }
-        else if ( ewv2Type == QStringLiteral( "FileName" ) )
+        else if ( ewv2Type == QLatin1String( "FileName" ) )
         {
           editWidgetElement.setAttribute( QStringLiteral( "type" ), QStringLiteral( "ExternalResource" ) );
 
           editWidgetConfiguration.insert( QStringLiteral( "RelativeStorage" ), 1 );
         }
-        else if ( ewv2Type == QStringLiteral( "WebView" ) )
+        else if ( ewv2Type == QLatin1String( "WebView" ) )
         {
           editWidgetElement.setAttribute( QStringLiteral( "type" ), QStringLiteral( "ExternalResource" ) );
 

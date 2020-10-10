@@ -1343,7 +1343,7 @@ QgsProcessingParameterDefinition *QgsProcessingRangeParameterDefinitionWidget::c
 
   if ( mMaxLineEdit->text().isEmpty() )
   {
-    defaultValue += QStringLiteral( ",None" );
+    defaultValue += QLatin1String( ",None" );
   }
   else
   {
@@ -1510,7 +1510,7 @@ QVariant QgsProcessingRangeWidgetWrapper::widgetValue() const
       value = QString::number( mMinSpinBox->value() );
 
     if ( qgsDoubleNear( mMaxSpinBox->value(), mMaxSpinBox->minimum() ) )
-      value += QStringLiteral( ",None" );
+      value += QLatin1String( ",None" );
     else
       value += QStringLiteral( ",%1" ).arg( mMaxSpinBox->value() );
 

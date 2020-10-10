@@ -1663,11 +1663,11 @@ void QgsWmsCapabilities::parseTileSetProfile( const QDomElement &element )
     node = node.nextSibling();
   }
 
-  matrixSet.identifier = QStringLiteral( "%1-wmsc-%2" ).arg( layers.join( QStringLiteral( "_" ) ) ).arg( mTileLayersSupported.size() );
+  matrixSet.identifier = QStringLiteral( "%1-wmsc-%2" ).arg( layers.join( QLatin1Char( '_' ) ) ).arg( mTileLayersSupported.size() );
 
-  tileLayer.identifier = layers.join( QStringLiteral( "," ) );
+  tileLayer.identifier = layers.join( QLatin1Char( ',' ) );
   QgsWmtsStyle style;
-  style.identifier = styles.join( QStringLiteral( "," ) );
+  style.identifier = styles.join( QLatin1Char( ',' ) );
   tileLayer.styles.insert( style.identifier, style );
   tileLayer.defaultStyle = style.identifier;
 

@@ -118,12 +118,12 @@ class QgsMapRendererTaskRenderedFeatureHandler : public QgsRenderedFeatureHandle
 
 QgsMapRendererTask::QgsMapRendererTask( const QgsMapSettings &ms, const QString &fileName, const QString &fileFormat, const bool forceRaster,
                                         const bool geoPDF, const QgsAbstractGeoPdfExporter::ExportDetails &geoPdfExportDetails )
-  : QgsTask( fileFormat == QStringLiteral( "PDF" ) ? tr( "Saving as PDF" ) : tr( "Saving as image" ) )
+  : QgsTask( fileFormat == QLatin1String( "PDF" ) ? tr( "Saving as PDF" ) : tr( "Saving as image" ) )
   , mMapSettings( ms )
   , mFileName( fileName )
   , mFileFormat( fileFormat )
   , mForceRaster( forceRaster )
-  , mGeoPDF( geoPDF && mFileFormat == QStringLiteral( "PDF" ) && QgsAbstractGeoPdfExporter::geoPDFCreationAvailable() )
+  , mGeoPDF( geoPDF && mFileFormat == QLatin1String( "PDF" ) && QgsAbstractGeoPdfExporter::geoPDFCreationAvailable() )
   , mGeoPdfExportDetails( geoPdfExportDetails )
 {
   prepare();
@@ -297,7 +297,7 @@ bool QgsMapRendererTask::run()
   {
     mDestPainter->end();
 
-    if ( mFileFormat == QStringLiteral( "PDF" ) )
+    if ( mFileFormat == QLatin1String( "PDF" ) )
     {
 #ifndef QT_NO_PRINTER
       if ( mForceRaster )
@@ -371,7 +371,7 @@ bool QgsMapRendererTask::run()
       return false;
 #endif // !QT_NO_PRINTER
     }
-    else if ( mFileFormat != QStringLiteral( "PDF" ) )
+    else if ( mFileFormat != QLatin1String( "PDF" ) )
     {
       bool success = mImage.save( mFileName, mFileFormat.toLocal8Bit().data() );
       if ( !success )
@@ -387,7 +387,7 @@ bool QgsMapRendererTask::run()
         // build the world file name
         QString outputSuffix = info.suffix();
         bool skipWorldFile = false;
-        if ( outputSuffix == QStringLiteral( "tif" ) || outputSuffix == QStringLiteral( "tiff" ) )
+        if ( outputSuffix == QLatin1String( "tif" ) || outputSuffix == QLatin1String( "tiff" ) )
         {
           gdal::dataset_unique_ptr outputDS( GDALOpen( mFileName.toLocal8Bit().constData(), GA_Update ) );
           if ( outputDS )
@@ -465,7 +465,7 @@ void QgsMapRendererTask::prepare()
 
   mDestPainter = mPainter;
 
-  if ( mFileFormat == QStringLiteral( "PDF" ) )
+  if ( mFileFormat == QLatin1String( "PDF" ) )
   {
 #ifndef QT_NO_PRINTER
     mPrinter.reset( new QPrinter() );

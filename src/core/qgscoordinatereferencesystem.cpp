@@ -1520,7 +1520,7 @@ void QgsCoordinateReferenceSystem::setProjString( const QString &proj4String )
   QString trimmed = proj4String.trimmed();
 
 #if PROJ_VERSION_MAJOR>=6
-  trimmed += QStringLiteral( " +type=crs" );
+  trimmed += QLatin1String( " +type=crs" );
   PJ_CONTEXT *ctx = QgsProjContext::get();
 
   {
@@ -2478,7 +2478,7 @@ bool QgsCoordinateReferenceSystem::loadFromAuthCode( const QString &auth, const 
   crs = QgsProjUtils::crsToSingleCrs( crs.get() );
 
   QString proj4 = getFullProjString( crs.get() );
-  proj4.replace( QStringLiteral( "+type=crs" ), QString() );
+  proj4.replace( QLatin1String( "+type=crs" ), QString() );
   proj4 = proj4.trimmed();
 
   d->mIsValid = true;
@@ -2854,7 +2854,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
       crs = QgsProjUtils::crsToSingleCrs( crs.get() );
 
       QString proj4 = getFullProjString( crs.get() );
-      proj4.replace( QStringLiteral( "+type=crs" ), QString() );
+      proj4.replace( QLatin1String( "+type=crs" ), QString() );
       proj4 = proj4.trimmed();
 
       if ( proj4.isEmpty() )

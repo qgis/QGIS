@@ -685,9 +685,9 @@ class CORE_EXPORT QgsDiagramRenderer
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( sipCpp->rendererName() == QStringLiteral( "SingleCategory" ) )
+    if ( sipCpp->rendererName() == QLatin1String( "SingleCategory" ) )
       sipType = sipType_QgsSingleCategoryDiagramRenderer;
-    else if ( sipCpp->rendererName() == QStringLiteral( "LinearlyInterpolated" ) )
+    else if ( sipCpp->rendererName() == QLatin1String( "LinearlyInterpolated" ) )
       sipType = sipType_QgsLinearlyInterpolatedDiagramRenderer;
     else
       sipType = NULL;

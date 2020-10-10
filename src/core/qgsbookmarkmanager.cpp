@@ -279,7 +279,7 @@ bool QgsBookmarkManager::readXml( const QDomElement &element, const QDomDocument
   clear();
 
   QDomElement bookmarksElem = element;
-  if ( element.tagName() != QStringLiteral( "Bookmarks" ) )
+  if ( element.tagName() != QLatin1String( "Bookmarks" ) )
   {
     bookmarksElem = element.firstChildElement( QStringLiteral( "Bookmarks" ) );
   }

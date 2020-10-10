@@ -1676,7 +1676,7 @@ void TestQgsProcessing::generateTemporaryDestination()
   std::unique_ptr< QgsProcessingParameterVectorDestination > def( new QgsProcessingParameterVectorDestination( "with.inside", QString(), QgsProcessing::TypeVectorAnyGeometry, QString(), false ) );
 
   // check that temporary destination does not have dot at the end when there is no extension
-  QVERIFY( !def->generateTemporaryDestination().endsWith( QLatin1String( "." ) ) );
+  QVERIFY( !def->generateTemporaryDestination().endsWith( QLatin1Char( '.' ) ) );
   // check that temporary destination starts with tempFolder
   QVERIFY( def->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
   // check that extension with QFileInfo::completeSuffix is "gpkg"
@@ -1687,7 +1687,7 @@ void TestQgsProcessing::generateTemporaryDestination()
   std::unique_ptr< QgsProcessingParameterRasterDestination > def2( new QgsProcessingParameterRasterDestination( "with.inside", QString(), QString(), false ) );
 
   // check that temporary destination does not have dot at the end when there is no extension
-  QVERIFY( !def2->generateTemporaryDestination().endsWith( QLatin1String( "." ) ) );
+  QVERIFY( !def2->generateTemporaryDestination().endsWith( QLatin1Char( '.' ) ) );
   // check that temporary destination starts with tempFolder
   QVERIFY( def2->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
   // check that extension with QFileInfo::completeSuffix is "tif"
@@ -1698,7 +1698,7 @@ void TestQgsProcessing::generateTemporaryDestination()
   std::unique_ptr< QgsProcessingParameterVectorDestination > def3( new QgsProcessingParameterVectorDestination( "without_inside", QString(), QgsProcessing::TypeVectorAnyGeometry, QString(), false ) );
 
   // check that temporary destination does not have dot at the end when there is no extension
-  QVERIFY( !def3->generateTemporaryDestination().endsWith( QLatin1String( "." ) ) );
+  QVERIFY( !def3->generateTemporaryDestination().endsWith( QLatin1Char( '.' ) ) );
   // check that temporary destination starts with tempFolder
   QVERIFY( def3->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
   // check that extension with QFileInfo::completeSuffix is "gpkg"
@@ -6663,7 +6663,7 @@ void TestQgsProcessing::parameterFolderOut()
   QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/", &context ) );
 
   // check that temporary destination does not have dot at the end when there is no extension
-  QVERIFY( !def->generateTemporaryDestination().endsWith( QLatin1String( "." ) ) );
+  QVERIFY( !def->generateTemporaryDestination().endsWith( QLatin1Char( '.' ) ) );
   QVERIFY( def->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
 
   QVariantMap params;
@@ -11118,8 +11118,8 @@ void TestQgsProcessing::defaultExtensionsForProvider()
   // unless the user has set a default format, which IS supported by that provider
   QgsSettings settings;
 
-  settings.setValue( QStringLiteral( "Processing/Configuration/DefaultOutputVectorLayerExt" ), QgsVectorFileWriter::supportedFormatExtensions().indexOf( QStringLiteral( "tab" ) ) );
-  settings.setValue( QStringLiteral( "Processing/Configuration/DefaultOutputRasterLayerExt" ), QgsRasterFileWriter::supportedFormatExtensions().indexOf( QStringLiteral( "sdat" ) ) );
+  settings.setValue( QStringLiteral( "Processing/Configuration/DefaultOutputVectorLayerExt" ), QgsVectorFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "tab" ) ) );
+  settings.setValue( QStringLiteral( "Processing/Configuration/DefaultOutputRasterLayerExt" ), QgsRasterFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "sdat" ) ) );
 
   QCOMPARE( provider.defaultVectorFileExtension( true ), QStringLiteral( "tab" ) );
   QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "sdat" ) );
@@ -11130,8 +11130,8 @@ void TestQgsProcessing::defaultExtensionsForProvider()
   QCOMPARE( context2.preferredRasterFormat(), QStringLiteral( "sdat" ) );
 
   // but if default is not supported by provider, we use a supported format
-  settings.setValue( QStringLiteral( "Processing/Configuration/DefaultOutputVectorLayerExt" ), QgsVectorFileWriter::supportedFormatExtensions().indexOf( QStringLiteral( "gpkg" ) ) );
-  settings.setValue( QStringLiteral( "Processing/Configuration/DefaultOutputRasterLayerExt" ), QgsRasterFileWriter::supportedFormatExtensions().indexOf( QStringLiteral( "ecw" ) ) );
+  settings.setValue( QStringLiteral( "Processing/Configuration/DefaultOutputVectorLayerExt" ), QgsVectorFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "gpkg" ) ) );
+  settings.setValue( QStringLiteral( "Processing/Configuration/DefaultOutputRasterLayerExt" ), QgsRasterFileWriter::supportedFormatExtensions().indexOf( QLatin1String( "ecw" ) ) );
   QCOMPARE( provider.defaultVectorFileExtension( true ), QStringLiteral( "mif" ) );
   QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "mig" ) );
 }

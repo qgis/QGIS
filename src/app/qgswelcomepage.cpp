@@ -303,7 +303,7 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
     menu->addAction( rescanAction );
 
     bool showClosestPath = storage ? false : true;
-    if ( storage && ( storage->type() == QStringLiteral( "geopackage" ) ) )
+    if ( storage && ( storage->type() == QLatin1String( "geopackage" ) ) )
     {
       QRegularExpression reGpkg( "^(geopackage:)([^\?]+)\?(.+)$", QRegularExpression::CaseInsensitiveOption );
       QRegularExpressionMatch matchGpkg = reGpkg.match( path );

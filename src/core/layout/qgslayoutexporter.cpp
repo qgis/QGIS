@@ -1655,7 +1655,7 @@ QString nameForLayerWithItems( const QList< QGraphicsItem * > &items, unsigned i
           currentLayerItemTypes.append( QObject::tr( "Other" ) );
       }
     }
-    return currentLayerItemTypes.join( QStringLiteral( ", " ) );
+    return currentLayerItemTypes.join( QLatin1String( ", " ) );
   }
   return QObject::tr( "Layer %1" ).arg( layerId );
 }

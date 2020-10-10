@@ -161,7 +161,7 @@ void QgsFileWidget::textEdited( const QString &path )
   // Show tooltip if multiple files are selected
   if ( path.contains( QStringLiteral( "\" \"" ) ) )
   {
-    mLineEdit->setToolTip( tr( "Selected files:<br><ul><li>%1</li></ul><br>" ).arg( splitFilePaths( path ).join( QStringLiteral( "</li><li>" ) ) ) );
+    mLineEdit->setToolTip( tr( "Selected files:<br><ul><li>%1</li></ul><br>" ).arg( splitFilePaths( path ).join( QLatin1String( "</li><li>" ) ) ) );
   }
   else
   {
@@ -391,7 +391,7 @@ void QgsFileWidget::openFileDialog()
     }
     if ( fileNames.length() > 1 )
     {
-      setFilePath( QStringLiteral( "\"%1\"" ).arg( fileNames.join( QStringLiteral( "\" \"" ) ) ) );
+      setFilePath( QStringLiteral( "\"%1\"" ).arg( fileNames.join( QLatin1String( "\" \"" ) ) ) );
     }
     else
     {
@@ -548,7 +548,7 @@ QString QgsFileDropEdit::acceptableFilePath( QDropEvent *event ) const
 
   if ( paths.size() > 1 )
   {
-    return QStringLiteral( "\"%1\"" ).arg( paths.join( QStringLiteral( "\" \"" ) ) );
+    return QStringLiteral( "\"%1\"" ).arg( paths.join( QLatin1String( "\" \"" ) ) );
   }
   else if ( paths.size() == 1 )
   {

@@ -826,7 +826,7 @@ void QgsApplication::setUITheme( const QString &themeName )
 {
   // Loop all style sheets, find matching name, load it.
   QHash<QString, QString> themes = QgsApplication::uiThemes();
-  if ( themeName == QStringLiteral( "default" ) || !themes.contains( themeName ) )
+  if ( themeName == QLatin1String( "default" ) || !themes.contains( themeName ) )
   {
     setThemeName( QStringLiteral( "default" ) );
     qApp->setStyleSheet( QString() );
@@ -847,7 +847,7 @@ void QgsApplication::setUITheme( const QString &themeName )
   }
 
   QString styledata = file.readAll();
-  styledata.replace( QStringLiteral( "@theme_path" ), path );
+  styledata.replace( QLatin1String( "@theme_path" ), path );
 
   if ( variableInfo.exists() )
   {
@@ -1585,7 +1585,7 @@ QString QgsApplication::absolutePathToRelativePath( const QString &aPath, const 
     aPathElems.insert( 0, QStringLiteral( "." ) );
   }
 
-  return aPathElems.join( QStringLiteral( "/" ) );
+  return aPathElems.join( QLatin1Char( '/' ) );
 }
 
 QString QgsApplication::relativePathToAbsolutePath( const QString &rpath, const QString &targetPath )
@@ -1628,7 +1628,7 @@ QString QgsApplication::relativePathToAbsolutePath( const QString &rpath, const 
 
   // resolve ..
   int pos;
-  while ( ( pos = targetElems.indexOf( QStringLiteral( ".." ) ) ) > 0 )
+  while ( ( pos = targetElems.indexOf( QLatin1String( ".." ) ) ) > 0 )
   {
     // remove preceding element and ..
     targetElems.removeAt( pos - 1 );
@@ -1640,7 +1640,7 @@ QString QgsApplication::relativePathToAbsolutePath( const QString &rpath, const 
   targetElems.prepend( QString() );
 #endif
 
-  return targetElems.join( QStringLiteral( "/" ) );
+  return targetElems.join( QLatin1Char( '/' ) );
 }
 
 QString QgsApplication::buildSourcePath()
@@ -1696,7 +1696,7 @@ void QgsApplication::setSkippedGdalDrivers( const QStringList &skippedGdalDriver
   *sDeferredSkippedGdalDrivers() = deferredSkippedGdalDrivers;
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "gdal/skipDrivers" ), skippedGdalDrivers.join( QStringLiteral( "," ) ) );
+  settings.setValue( QStringLiteral( "gdal/skipDrivers" ), skippedGdalDrivers.join( QLatin1Char( ',' ) ) );
 
   applyGdalSkippedDrivers();
 }

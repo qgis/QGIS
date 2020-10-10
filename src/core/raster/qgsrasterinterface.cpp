@@ -612,7 +612,7 @@ QString QgsRasterInterface::capabilitiesString() const
     abilitiesList += tr( "Build Pyramids" );
   }
 
-  QgsDebugMsgLevel( "Capability: " + abilitiesList.join( QStringLiteral( ", " ) ), 4 );
+  QgsDebugMsgLevel( "Capability: " + abilitiesList.join( QLatin1String( ", " ) ), 4 );
 
-  return abilitiesList.join( QStringLiteral( ", " ) );
+  return abilitiesList.join( QLatin1String( ", " ) );
 }

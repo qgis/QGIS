@@ -116,7 +116,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
   // SSL Extra CAs
   QString caparam;
   QList<QSslCertificate> cas;
-  if ( sslMode.startsWith( QStringLiteral( "verify-" ) ) )
+  if ( sslMode.startsWith( QLatin1String( "verify-" ) ) )
   {
     cas = QgsApplication::authManager()->trustedCaCerts();
     // save CAs to temp file
@@ -131,7 +131,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
   }
 
   // Branch for OGR
-  if ( dataprovider == QStringLiteral( "ogr" ) || dataprovider == QStringLiteral( "gdal" ) )
+  if ( dataprovider == QLatin1String( "ogr" ) || dataprovider == QLatin1String( "gdal" ) )
   {
     if ( ! password.isEmpty() )
     {
@@ -200,7 +200,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
         else if ( uri.startsWith( QLatin1String( "OCI:" ) ) )
         {
           // OCI:userid/password@database_instance:table,table
-          uri = uri.replace( QStringLiteral( "OCI:/" ),  QStringLiteral( "OCI:%1/%2" ).arg( username, password ) );
+          uri = uri.replace( QLatin1String( "OCI:/" ),  QStringLiteral( "OCI:%1/%2" ).arg( username, password ) );
         }
         else if ( uri.startsWith( QLatin1String( "ODBC:" ) ) )
         {
@@ -216,7 +216,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
                   || uri.startsWith( "/vsicurl/ftp://" )
                 )
         {
-          uri = uri.replace( QStringLiteral( "://" ), QStringLiteral( "://%1:%2@" ).arg( username, password ) );
+          uri = uri.replace( QLatin1String( "://" ), QStringLiteral( "://%1:%2@" ).arg( username, password ) );
         }
       }
       // Handle sub-layers

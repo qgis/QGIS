@@ -161,7 +161,7 @@ QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const
   QList<QgsVectorTileRawData> rawTiles;
 
   QgsMbTiles mbReader( sourcePath );
-  bool isUrl = ( sourceType == QStringLiteral( "xyz" ) );
+  bool isUrl = ( sourceType == QLatin1String( "xyz" ) );
   if ( !isUrl )
   {
     bool res = mbReader.open();

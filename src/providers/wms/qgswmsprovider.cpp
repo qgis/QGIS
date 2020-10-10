@@ -1205,8 +1205,8 @@ void QgsWmsProvider::createTileRequestsWMSC( const QgsWmtsTileMatrix *tm, const 
   setQueryItem( query, QStringLiteral( "SERVICE" ), QStringLiteral( "WMS" ) );
   setQueryItem( query, QStringLiteral( "VERSION" ), mCaps.mCapabilities.version );
   setQueryItem( query, QStringLiteral( "REQUEST" ), QStringLiteral( "GetMap" ) );
-  setQueryItem( query, QStringLiteral( "LAYERS" ), mSettings.mActiveSubLayers.join( QStringLiteral( "," ) ) );
-  setQueryItem( query, QStringLiteral( "STYLES" ), mSettings.mActiveSubStyles.join( QStringLiteral( "," ) ) );
+  setQueryItem( query, QStringLiteral( "LAYERS" ), mSettings.mActiveSubLayers.join( QLatin1Char( ',' ) ) );
+  setQueryItem( query, QStringLiteral( "STYLES" ), mSettings.mActiveSubStyles.join( QLatin1Char( ',' ) ) );
   setQueryItem( query, QStringLiteral( "WIDTH" ), QString::number( tm->tileWidth ) );
   setQueryItem( query, QStringLiteral( "HEIGHT" ), QString::number( tm->tileHeight ) );
   setFormatQueryItem( query );
@@ -2193,7 +2193,7 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
         const QgsWmsLegendUrlProperty &l = style.legendUrl[k];
         metadata += QStringLiteral( "<tr><td>" ) % l.format % QStringLiteral( "</td><td>" ) % l.onlineResource.xlinkHref % QStringLiteral( "</td></tr>" );
       }
-      metadata += QStringLiteral( "</table></td></tr>" );
+      metadata += QLatin1String( "</table></td></tr>" );
     }
 
     // Close the nested table
@@ -2278,7 +2278,7 @@ QString QgsWmsProvider::htmlMetadata()
               tr( "Keywords" ) %
               QStringLiteral( "</td>"
                               "<td>" ) %
-              mCaps.mCapabilities.service.keywordList.join( QStringLiteral( "<br />" ) ) %
+              mCaps.mCapabilities.service.keywordList.join( QLatin1String( "<br />" ) ) %
               QStringLiteral( "</td></tr>" );
 
   // Service Online Resource
@@ -2385,14 +2385,14 @@ QString QgsWmsProvider::htmlMetadata()
       {
         metadata += QStringLiteral( "%1:%2<br>" ).arg( it.key(), it.value() );
       }
-      metadata += QStringLiteral( "</td></tr>" );
+      metadata += QLatin1String( "</td></tr>" );
 
       // GetFeatureInfo Request Formats
       metadata += QStringLiteral( "<tr><td>" ) %
                   tr( "Identify Formats" ) %
                   QStringLiteral( "</td>"
                                   "<td>" ) %
-                  mTileLayer->infoFormats.join( QStringLiteral( "<br />" ) ) %
+                  mTileLayer->infoFormats.join( QLatin1String( "<br />" ) ) %
                   QStringLiteral( "</td></tr>" );
     }
   }
@@ -2403,7 +2403,7 @@ QString QgsWmsProvider::htmlMetadata()
                 tr( "Image Formats" ) %
                 QStringLiteral( "</td>"
                                 "<td>" ) %
-                mCaps.mCapabilities.capability.request.getMap.format.join( QStringLiteral( "<br />" ) ) %
+                mCaps.mCapabilities.capability.request.getMap.format.join( QLatin1String( "<br />" ) ) %
                 QStringLiteral( "</td></tr>"
 
                                 // GetFeatureInfo Request Formats
@@ -2411,7 +2411,7 @@ QString QgsWmsProvider::htmlMetadata()
                 tr( "Identify Formats" ) %
                 QStringLiteral( "</td>"
                                 "<td>" ) %
-                mCaps.mCapabilities.capability.request.getFeatureInfo.format.join( QStringLiteral( "<br />" ) ) %
+                mCaps.mCapabilities.capability.request.getFeatureInfo.format.join( QLatin1String( "<br />" ) ) %
                 QStringLiteral( "</td></tr>"
 
                                 // Layer Count (as managed by this provider)
@@ -2529,7 +2529,7 @@ QString QgsWmsProvider::htmlMetadata()
                   tr( "Selected" ) %
                   QStringLiteral( "</td>"
                                   "<td class=\"strong\">" ) %
-                  ( l.identifier == mSettings.mActiveSubLayers.join( QStringLiteral( "," ) ) ? tr( "Yes" ) : tr( "No" ) ) %
+                  ( l.identifier == mSettings.mActiveSubLayers.join( QLatin1Char( ',' ) ) ? tr( "Yes" ) : tr( "No" ) ) %
                   QStringLiteral( "</td></tr>" );
 
       if ( !l.styles.isEmpty() )
@@ -2543,7 +2543,7 @@ QString QgsWmsProvider::htmlMetadata()
         {
           styles << style.identifier;
         }
-        metadata += styles.join( QStringLiteral( ", " ) ) %
+        metadata += styles.join( QLatin1String( ", " ) ) %
                     QStringLiteral( "</td></tr>" );
       }
 
@@ -2576,10 +2576,10 @@ QString QgsWmsProvider::htmlMetadata()
         metadata += setLink.tileMatrixSet + "<br>";
       }
 
-      metadata += QStringLiteral( "</td></tr>" );
+      metadata += QLatin1String( "</td></tr>" );
     }
 
-    metadata += QStringLiteral( "</table></td></tr>" ); // End nested table 3
+    metadata += QLatin1String( "</table></td></tr>" ); // End nested table 3
 
     if ( mTileMatrixSet )
     {
@@ -2693,10 +2693,10 @@ QString QgsWmsProvider::htmlMetadata()
           metadata += QStringLiteral( "<td>%1</td>" ).arg( r.xMaximum(), 0, 'f' );
         }
 
-        metadata += QStringLiteral( "</tr>" );
+        metadata += QLatin1String( "</tr>" );
       }
 
-      metadata += QStringLiteral( "</table></td></tr>" );  // End nested table 3
+      metadata += QLatin1String( "</table></td></tr>" );  // End nested table 3
     }
 
     const QgsWmsStatistics::Stat &stat = QgsWmsStatistics::statForUri( dataSourceUri() );
@@ -3330,7 +3330,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
         if ( xsdPart < 0 && !featureTypeNames.isEmpty() && featureStoreList.isEmpty() )
         {
           QgsError err = QGS_ERROR( tr( "Cannot identify" ) );
-          err.append( tr( "Result parsing failed. %1 feature types were guessed from gml (%2) but no features were parsed." ).arg( featureTypeNames.size() ).arg( featureTypeNames.join( QStringLiteral( "," ) ) ) );
+          err.append( tr( "Result parsing failed. %1 feature types were guessed from gml (%2) but no features were parsed." ).arg( featureTypeNames.size() ).arg( featureTypeNames.join( QLatin1Char( ',' ) ) ) );
           QgsDebugMsg( "parsing GML error: " + err.message() );
           return QgsRasterIdentifyResult( err );
         }
@@ -4578,8 +4578,8 @@ void QgsWmsLegendDownloadHandler::finished()
   {
     QVariant phrase = mReply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
     QString msg( tr( "GetLegendGraphic request error" ) );
-    msg += QStringLiteral( " - " );
-    msg += QString( tr( "Status: %1\nReason phrase: %2" ) ).arg( status.toInt() ).arg( phrase.toString() );
+    msg += QLatin1String( " - " );
+    msg += tr( "Status: %1\nReason phrase: %2" ).arg( status.toInt() ).arg( phrase.toString() );
     sendError( msg );
     return;
   }

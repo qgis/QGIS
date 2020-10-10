@@ -205,7 +205,7 @@ void TestQgsOgrUtils::ogrGeometryToQgsGeometry2()
   QCOMPARE( static_cast< int >( geom.wkbType() ), type );
 
   // bit of trickiness here - QGIS wkt conversion changes 25D -> Z, so account for that
-  wkt.replace( QStringLiteral( "25D" ), QStringLiteral( "Z" ) );
+  wkt.replace( QLatin1String( "25D" ), QLatin1String( "Z" ) );
   QCOMPARE( geom.asWkt( 3 ), wkt );
 }
 

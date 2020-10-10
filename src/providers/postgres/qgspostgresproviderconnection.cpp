@@ -293,23 +293,23 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
             {
               vType = QVariant::LongLong;
             }
-            else if ( typName == QStringLiteral( "date" ) )
+            else if ( typName == QLatin1String( "date" ) )
             {
               vType = QVariant::Date;
             }
-            else if ( typName.startsWith( QStringLiteral( "timestamp" ) ) )
+            else if ( typName.startsWith( QLatin1String( "timestamp" ) ) )
             {
               vType = QVariant::DateTime;
             }
-            else if ( typName == QStringLiteral( "time" ) )
+            else if ( typName == QLatin1String( "time" ) )
             {
               vType = QVariant::Time;
             }
-            else if ( typName == QStringLiteral( "bool" ) )
+            else if ( typName == QLatin1String( "bool" ) )
             {
               vType = QVariant::Bool;
             }
-            else if ( typName == QStringLiteral( "char" ) )
+            else if ( typName == QLatin1String( "char" ) )
             {
               vType = QVariant::Char;
             }

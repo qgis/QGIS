@@ -327,7 +327,7 @@ void QgsMergeAttributesDialog::refreshMergedValue( int col )
   QTableWidgetItem *item = mTableWidget->item( mTableWidget->rowCount() - 1, col );
   const QString mergeBehaviorString = comboBox->currentData().toString();
   QVariant mergeResult; // result to show in the merge result field
-  if ( mergeBehaviorString == QStringLiteral( "concat" ) )
+  if ( mergeBehaviorString == QLatin1String( "concat" ) )
   {
     mergeResult = concatenationAttribute( col );
   }
@@ -426,7 +426,7 @@ QVariant QgsMergeAttributesDialog::concatenationAttribute( int col )
   {
     concatString << mTableWidget->item( i + 1, col )->text();
   }
-  return concatString.join( QStringLiteral( "," ) ); //todo: make separator user configurable
+  return concatString.join( QLatin1Char( ',' ) ); //todo: make separator user configurable
 }
 
 void QgsMergeAttributesDialog::mFromSelectedPushButton_clicked()
@@ -603,7 +603,7 @@ QgsAttributes QgsMergeAttributesDialog::mergedAttributes() const
     if ( fieldIdx >= results.count() )
       results.resize( fieldIdx + 1 ); // make sure the results vector is long enough (maybe not necessary)
 
-    if ( comboBox->currentData().toString() != QStringLiteral( "skip" ) )
+    if ( comboBox->currentData().toString() != QLatin1String( "skip" ) )
     {
       results[fieldIdx] = currentItem->data( Qt::UserRole );
     }
@@ -633,7 +633,7 @@ QSet<int> QgsMergeAttributesDialog::skippedAttributeIndexes() const
       continue;
     }
 
-    if ( comboBox->currentData().toString() == QStringLiteral( "skip" ) )
+    if ( comboBox->currentData().toString() == QLatin1String( "skip" ) )
     {
       skipped << i;
     }

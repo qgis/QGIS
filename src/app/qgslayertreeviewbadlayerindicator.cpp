@@ -88,7 +88,7 @@ void QgsLayerTreeViewBadLayerIndicatorProvider::onIndicatorClicked( const QModel
         QString message = QStringLiteral( "<ul>" );
         for ( const QString &e : thisLayerErrors )
           message += QStringLiteral( "<li>%1</li>" ).arg( e );
-        message += QStringLiteral( "</ul>" );
+        message += QLatin1String( "</ul>" );
         m->setMessageAsHtml( message );
       }
       m->exec();

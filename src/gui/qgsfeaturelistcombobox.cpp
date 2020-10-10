@@ -286,7 +286,7 @@ QgsFeatureRequest QgsFeatureListComboBox::currentFeatureRequest() const
         filtersAttrs << QgsExpression::createFieldEqualityExpression( identifierFields.at( i ), values.at( i ) );
       }
     }
-    const QString expression = filtersAttrs.join( QStringLiteral( " AND " ) );
+    const QString expression = filtersAttrs.join( QLatin1String( " AND " ) );
     return QgsFeatureRequest().setFilterExpression( expression );
   }
 }

@@ -532,7 +532,7 @@ namespace QgsWfs
       if ( !vlayer->commitChanges() )
       {
         action.error = true;
-        action.errorMsg = QStringLiteral( "Error committing updates: %1" ).arg( vlayer->commitErrors().join( QStringLiteral( "; " ) ) );
+        action.errorMsg = QStringLiteral( "Error committing updates: %1" ).arg( vlayer->commitErrors().join( QLatin1String( "; " ) ) );
         vlayer->rollBack();
         continue;
       }
@@ -651,7 +651,7 @@ namespace QgsWfs
       if ( !vlayer->commitChanges() )
       {
         action.error = true;
-        action.errorMsg = QStringLiteral( "Error committing deletes: %1" ).arg( vlayer->commitErrors().join( QStringLiteral( "; " ) ) );
+        action.errorMsg = QStringLiteral( "Error committing deletes: %1" ).arg( vlayer->commitErrors().join( QLatin1String( "; " ) ) );
         vlayer->rollBack();
         continue;
       }
@@ -767,7 +767,7 @@ namespace QgsWfs
       if ( !vlayer->commitChanges() )
       {
         action.error = true;
-        action.errorMsg = QStringLiteral( "Error committing inserts: %1" ).arg( vlayer->commitErrors().join( QStringLiteral( "; " ) ) );
+        action.errorMsg = QStringLiteral( "Error committing inserts: %1" ).arg( vlayer->commitErrors().join( QLatin1String( "; " ) ) );
         vlayer->rollBack();
         continue;
       }
@@ -861,7 +861,7 @@ namespace QgsWfs
     {
       throw QgsRequestNotWellFormedException( QStringLiteral( "OPERATION parameter is mandatory" ) );
     }
-    if ( parameters.value( QStringLiteral( "OPERATION" ) ).toUpper() != QStringLiteral( "DELETE" ) )
+    if ( parameters.value( QStringLiteral( "OPERATION" ) ).toUpper() != QLatin1String( "DELETE" ) )
     {
       throw QgsRequestNotWellFormedException( QStringLiteral( "Only DELETE value is defined for OPERATION parameter" ) );
     }

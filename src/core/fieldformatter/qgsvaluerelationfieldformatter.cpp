@@ -87,7 +87,7 @@ QString QgsValueRelationFieldFormatter::representValue( QgsVectorLayer *layer, i
       }
     }
 
-    return valueList.join( QStringLiteral( ", " ) ).prepend( '{' ).append( '}' );
+    return valueList.join( QLatin1String( ", " ) ).prepend( '{' ).append( '}' );
   }
   else
   {

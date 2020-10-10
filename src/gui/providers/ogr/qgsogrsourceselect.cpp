@@ -107,7 +107,7 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   cmbDatabaseTypes->blockSignals( false );
   cmbConnections->blockSignals( false );
 
-  mAuthWarning->setText( tr( " Additional credential options are required as documented <a href=\"%1\">here</a>." ).arg( QStringLiteral( "http://gdal.org/gdal_virtual_file_systems.html#gdal_virtual_file_systems_network" ) ) );
+  mAuthWarning->setText( tr( " Additional credential options are required as documented <a href=\"%1\">here</a>." ).arg( QLatin1String( "http://gdal.org/gdal_virtual_file_systems.html#gdal_virtual_file_systems_network" ) ) );
 
   mFileWidget->setDialogTitle( tr( "Open OGR Supported Vector Dataset(s)" ) );
   mFileWidget->setFilter( mVectorFileFilter );
@@ -163,11 +163,11 @@ QString QgsOgrSourceSelect::dataSourceType()
 
 bool QgsOgrSourceSelect::isProtocolCloudType()
 {
-  return ( cmbProtocolTypes->currentText() == QStringLiteral( "AWS S3" ) ||
-           cmbProtocolTypes->currentText() == QStringLiteral( "Google Cloud Storage" ) ||
-           cmbProtocolTypes->currentText() == QStringLiteral( "Microsoft Azure Blob" ) ||
-           cmbProtocolTypes->currentText() == QStringLiteral( "Alibaba Cloud OSS" ) ||
-           cmbProtocolTypes->currentText() == QStringLiteral( "OpenStack Swift Object Storage" ) );
+  return ( cmbProtocolTypes->currentText() == QLatin1String( "AWS S3" ) ||
+           cmbProtocolTypes->currentText() == QLatin1String( "Google Cloud Storage" ) ||
+           cmbProtocolTypes->currentText() == QLatin1String( "Microsoft Azure Blob" ) ||
+           cmbProtocolTypes->currentText() == QLatin1String( "Alibaba Cloud OSS" ) ||
+           cmbProtocolTypes->currentText() == QLatin1String( "OpenStack Swift Object Storage" ) );
 }
 
 void QgsOgrSourceSelect::addNewConnection()

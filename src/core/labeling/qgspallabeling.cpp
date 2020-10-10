@@ -596,7 +596,7 @@ QString updateDataDefinedString( const QString &value )
     values << QStringLiteral( "0" );
     values << QString();
     values << value; // all old-style values are only field names
-    newValue = values.join( QStringLiteral( "~~" ) );
+    newValue = values.join( QLatin1String( "~~" ) );
   }
 
   return newValue;

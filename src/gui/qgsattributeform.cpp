@@ -847,7 +847,7 @@ QString QgsAttributeForm::createFilterExpression() const
   if ( filters.isEmpty() )
     return QString();
 
-  QString filter = filters.join( QStringLiteral( ") AND (" ) ).prepend( '(' ).append( ')' );
+  QString filter = filters.join( QLatin1String( ") AND (" ) ).prepend( '(' ).append( ')' );
   return filter;
 }
 
@@ -1572,7 +1572,7 @@ void QgsAttributeForm::init()
       //show attribute alias if available
       QString fieldName = mLayer->attributeDisplayName( idx );
       QString labelText = fieldName;
-      labelText.replace( '&', QStringLiteral( "&&" ) ); // need to escape '&' or they'll be replace by _ in the label text
+      labelText.replace( '&', QLatin1String( "&&" ) ); // need to escape '&' or they'll be replace by _ in the label text
 
       const QgsEditorWidgetSetup widgetSetup = QgsGui::editorWidgetRegistry()->findBest( mLayer, field.name() );
 
@@ -1936,7 +1936,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
       newWidgetInfo.labelOnTop = mLayer->editFormConfig().labelOnTop( fldIdx );
       newWidgetInfo.labelText = mLayer->attributeDisplayName( fldIdx );
-      newWidgetInfo.labelText.replace( '&', QStringLiteral( "&&" ) ); // need to escape '&' or they'll be replace by _ in the label text
+      newWidgetInfo.labelText.replace( '&', QLatin1String( "&&" ) ); // need to escape '&' or they'll be replace by _ in the label text
       newWidgetInfo.toolTip = QStringLiteral( "<b>%1</b><p>%2</p>" ).arg( mLayer->attributeDisplayName( fldIdx ), newWidgetInfo.hint );
       newWidgetInfo.showLabel = widgetDef->showLabel();
 
@@ -2420,7 +2420,7 @@ QString QgsAttributeForm::aggregateFilter() const
       filters << '(' + filter + ')';
   }
 
-  return filters.join( QStringLiteral( " AND " ) );
+  return filters.join( QLatin1String( " AND " ) );
 }
 
 void QgsAttributeForm::setExtraContextScope( QgsExpressionContextScope *extraScope )

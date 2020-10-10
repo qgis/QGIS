@@ -273,7 +273,7 @@ QString QgsMimeDataUtils::encode( const QStringList &items )
   for ( const QString &item : constItems )
   {
     QString str = item;
-    str.replace( '\\', QStringLiteral( "\\\\" ) );
+    str.replace( '\\', QLatin1String( "\\\\" ) );
     str.replace( re, QStringLiteral( "\\:" ) );
     encoded += str + ':';
   }

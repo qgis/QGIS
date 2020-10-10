@@ -189,7 +189,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
       s.setValue( QStringLiteral( "/browser/hiddenPaths" ), pathsList );
 
       // get parent path and refresh corresponding node
-      int idx = path.lastIndexOf( QStringLiteral( "/" ) );
+      int idx = path.lastIndexOf( QLatin1Char( '/' ) );
       if ( idx != -1 && path.count( QStringLiteral( "/" ) ) > 1 )
       {
         QString parentPath = path.left( idx );
@@ -551,9 +551,9 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
     if ( layerItem )
     {
       // Also check for postgres layers (rasters are handled by GDAL)
-      isFile = ( layerItem->providerKey() == QStringLiteral( "ogr" ) ||
-                 layerItem->providerKey() == QStringLiteral( "gdal" ) ) &&
-               ! layerItem->uri().startsWith( QStringLiteral( "PG:" ) );
+      isFile = ( layerItem->providerKey() == QLatin1String( "ogr" ) ||
+                 layerItem->providerKey() == QLatin1String( "gdal" ) ) &&
+               ! layerItem->uri().startsWith( QLatin1String( "PG:" ) );
     }
     else
     {

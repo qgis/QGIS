@@ -769,8 +769,8 @@ void TestQgsProcessingAlgs::categorizeByStyle()
 
   QCOMPARE( catRenderer->categories().count(), 3 );
   QCOMPARE( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "a" ) ) ).symbol()->color().name(), QStringLiteral( "#ff0000" ) );
-  QVERIFY( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "b" ) ) ).symbol()->color().name() != QStringLiteral( "#00ff00" ) );
-  QVERIFY( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "c " ) ) ).symbol()->color().name() != QStringLiteral( "#0000ff" ) );
+  QVERIFY( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "b" ) ) ).symbol()->color().name() != QLatin1String( "#00ff00" ) );
+  QVERIFY( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "c " ) ) ).symbol()->color().name() != QLatin1String( "#0000ff" ) );
   // reset renderer
   layer->setRenderer( new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) ) );
 
@@ -791,7 +791,7 @@ void TestQgsProcessingAlgs::categorizeByStyle()
   QCOMPARE( catRenderer->categories().count(), 3 );
   QCOMPARE( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "a" ) ) ).symbol()->color().name(), QStringLiteral( "#ff0000" ) );
   QCOMPARE( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "b" ) ) ).symbol()->color().name(), QStringLiteral( "#00ff00" ) );
-  QVERIFY( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "c " ) ) ).symbol()->color().name() != QStringLiteral( "#0000ff" ) );
+  QVERIFY( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "c " ) ) ).symbol()->color().name() != QLatin1String( "#0000ff" ) );
   // reset renderer
   layer->setRenderer( new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) ) );
 
@@ -813,7 +813,7 @@ void TestQgsProcessingAlgs::categorizeByStyle()
 
   QCOMPARE( catRenderer->categories().count(), 3 );
   QCOMPARE( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "a" ) ) ).symbol()->color().name(), QStringLiteral( "#ff0000" ) );
-  QVERIFY( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "b" ) ) ).symbol()->color().name() != QStringLiteral( "#00ff00" ) );
+  QVERIFY( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "b" ) ) ).symbol()->color().name() != QLatin1String( "#00ff00" ) );
   QCOMPARE( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "c " ) ) ).symbol()->color().name(), QStringLiteral( "#0000ff" ) );
   // reset renderer
   layer->setRenderer( new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) ) );
@@ -3084,14 +3084,14 @@ void TestQgsProcessingAlgs::layoutMapExtent()
   QVERIFY( it.nextFeature( f1 ) );
   QgsFeature f2;
   QVERIFY( it.nextFeature( f2 ) );
-  f = f1.attribute( 0 ).toString() == QStringLiteral( "m" ) ? f1 : f2;
+  f = f1.attribute( 0 ).toString() == QLatin1String( "m" ) ? f1 : f2;
   QCOMPARE( f.attribute( 0 ).toString(), QStringLiteral( "m" ) );
   QCOMPARE( f.attribute( 1 ).toDouble(), 150.0 );
   QCOMPARE( f.attribute( 2 ).toDouble(), 180.0 );
   QCOMPARE( f.attribute( 3 ).toDouble(), 10000.0 );
   QCOMPARE( f.attribute( 4 ).toDouble(), 45.0 );
   QCOMPARE( f.geometry().asWkt( 0 ), QStringLiteral( "Polygon ((12077408 -7108521, 12079627 -7107575, 12080760 -7110245, 12078540 -7111191, 12077408 -7108521))" ) );
-  f = f1.attribute( 0 ).toString() == QStringLiteral( "m" ) ? f2 : f1;
+  f = f1.attribute( 0 ).toString() == QLatin1String( "m" ) ? f2 : f1;
   QCOMPARE( f.attribute( 0 ).toString(), QStringLiteral( "m2" ) );
   QCOMPARE( f.attribute( 1 ).toDouble(), 50.0 );
   QCOMPARE( f.attribute( 2 ).toDouble(), 80.0 );
@@ -3113,14 +3113,14 @@ void TestQgsProcessingAlgs::layoutMapExtent()
   it = qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) )->getFeatures();
   QVERIFY( it.nextFeature( f1 ) );
   QVERIFY( it.nextFeature( f2 ) );
-  f = f1.attribute( 0 ).toString() == QStringLiteral( "m" ) ? f1 : f2;
+  f = f1.attribute( 0 ).toString() == QLatin1String( "m" ) ? f1 : f2;
   QCOMPARE( f.attribute( 0 ).toString(), QStringLiteral( "m" ) );
   QCOMPARE( f.attribute( 1 ).toDouble(), 150.0 );
   QCOMPARE( f.attribute( 2 ).toDouble(), 180.0 );
   QCOMPARE( f.attribute( 3 ).toDouble(), 10000.0 );
   QCOMPARE( f.attribute( 4 ).toDouble(), 45.0 );
   QCOMPARE( f.geometry().asWkt( 0 ), QStringLiteral( "Polygon ((33833 140106, 34894 141167, 36167 139894, 35106 138833, 33833 140106))" ) );
-  f = f1.attribute( 0 ).toString() == QStringLiteral( "m" ) ? f2 : f1;
+  f = f1.attribute( 0 ).toString() == QLatin1String( "m" ) ? f2 : f1;
   QCOMPARE( f.attribute( 0 ).toString(), QStringLiteral( "m2" ) );
   QCOMPARE( f.attribute( 1 ).toDouble(), 50.0 );
   QCOMPARE( f.attribute( 2 ).toDouble(), 80.0 );

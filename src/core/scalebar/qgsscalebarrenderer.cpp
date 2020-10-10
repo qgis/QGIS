@@ -100,7 +100,7 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
     }
 
     //don't draw label for intermediate left segments or the zero label when it needs to be skipped
-    if ( ( segmentCounter == 0 || segmentCounter >= nSegmentsLeft ) && ( currentNumericLabel != QStringLiteral( "0" ) || drawZero ) )
+    if ( ( segmentCounter == 0 || segmentCounter >= nSegmentsLeft ) && ( currentNumericLabel != QLatin1String( "0" ) || drawZero ) )
     {
       scaleScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "scale_value" ), currentNumericLabel, true, false ) );
       QPointF pos;

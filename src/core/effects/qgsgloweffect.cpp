@@ -182,7 +182,7 @@ void QgsGlowEffect::readProperties( const QgsStringMap &props )
 
 //attempt to create color ramp from props
   delete mRamp;
-  if ( props.contains( QStringLiteral( "rampType" ) ) && props[QStringLiteral( "rampType" )] == QStringLiteral( "cpt-city" ) )
+  if ( props.contains( QStringLiteral( "rampType" ) ) && props[QStringLiteral( "rampType" )] == QLatin1String( "cpt-city" ) )
   {
     mRamp = QgsCptCityColorRamp::create( props );
   }

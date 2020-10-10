@@ -240,7 +240,7 @@ QgsStringMap QgsCptCityArchive::copyingInfo( const QString &fileName )
       }
       e = e.nextSiblingElement();
     }
-    copyingMap[ QStringLiteral( "authors" )] = authors.join( QStringLiteral( ", " ) );
+    copyingMap[ QStringLiteral( "authors" )] = authors.join( QLatin1String( ", " ) );
   }
 
   // load license information

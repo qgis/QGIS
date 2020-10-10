@@ -277,7 +277,7 @@ bool QgsBackgroundCachedSharedData::createCache()
 
       sql += QStringLiteral( ", %1 %2" ).arg( quotedIdentifier( field.name() ), type );
     }
-    sql += QLatin1String( ")" );
+    sql += QLatin1Char( ')' );
     rc = sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr );
     if ( rc != SQLITE_OK )
     {
@@ -909,19 +909,19 @@ QSet<QString> QgsBackgroundCachedSharedData::getExistingCachedMD5( const QVector
   for ( int i = 0; i < featureList.size(); i ++ )
   {
     if ( !first )
-      expr += QLatin1String( "," );
+      expr += QLatin1Char( ',' );
     else
     {
       expr = QgsBackgroundCachedFeatureIteratorConstants::FIELD_MD5 + " IN (";
       first = false;
     }
-    expr += QLatin1String( "'" );
+    expr += QLatin1Char( '\'' );
     expr += getMD5( featureList[i].first );
-    expr += QLatin1String( "'" );
+    expr += QLatin1Char( '\'' );
 
     if ( ( i > 0 && ( i % 1000 ) == 0 ) || i + 1 == featureList.size() )
     {
-      expr += QLatin1String( ")" );
+      expr += QLatin1Char( ')' );
 
       QgsFeatureRequest request;
       request.setFilterExpression( expr );

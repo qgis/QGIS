@@ -309,7 +309,7 @@ QString QgsVectorDataProvider::capabilitiesString() const
     abilitiesList += tr( "Curved Geometries" );
   }
 
-  return abilitiesList.join( QStringLiteral( ", " ) );
+  return abilitiesList.join( QLatin1String( ", " ) );
 }
 
 

@@ -208,7 +208,7 @@ QString QgsRelation::getRelatedFeaturesFilter( const QgsFeature &feature ) const
     conditions << QgsExpression::createFieldEqualityExpression( pair.referencingField(), val );
   }
 
-  return conditions.join( QStringLiteral( " AND " ) );
+  return conditions.join( QLatin1String( " AND " ) );
 }
 
 QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsAttributes &attributes ) const
@@ -225,7 +225,7 @@ QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsAttributes 
 
   QgsDebugMsgLevel( QStringLiteral( "Filter conditions: '%1'" ).arg( conditions.join( " AND " ) ), 2 );
 
-  myRequest.setFilterExpression( conditions.join( QStringLiteral( " AND " ) ) );
+  myRequest.setFilterExpression( conditions.join( QLatin1String( " AND " ) ) );
 
   return myRequest;
 }

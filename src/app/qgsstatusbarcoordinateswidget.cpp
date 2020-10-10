@@ -153,7 +153,7 @@ void QgsStatusBarCoordinatesWidget::validateCoordinates()
     refreshMapCanvas();
     return;
   }
-  else if ( mLineEdit->text() == QStringLiteral( "bored" ) )
+  else if ( mLineEdit->text() == QLatin1String( "bored" ) )
   {
     // it's friday afternoon and too late to start another piece of work...
     emit weAreBored();

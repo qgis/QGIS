@@ -343,7 +343,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
 
         parts << "<i>" + source.toHtmlEscaped() + "</i>";
 
-        return parts.join( QStringLiteral( "<br/>" ) );
+        return parts.join( QLatin1String( "<br/>" ) );
       }
     }
   }

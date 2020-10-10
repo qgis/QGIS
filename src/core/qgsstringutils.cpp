@@ -123,11 +123,11 @@ QString QgsStringUtils::ampersandEncode( const QString &string )
     if ( ch.unicode() > 160 )
       encoded += QStringLiteral( "&#%1;" ).arg( static_cast< int >( ch.unicode() ) );
     else if ( ch.unicode() == 38 )
-      encoded += QStringLiteral( "&amp;" );
+      encoded += QLatin1String( "&amp;" );
     else if ( ch.unicode() == 60 )
-      encoded += QStringLiteral( "&lt;" );
+      encoded += QLatin1String( "&lt;" );
     else if ( ch.unicode() == 62 )
-      encoded += QStringLiteral( "&gt;" );
+      encoded += QLatin1String( "&gt;" );
     else
       encoded += ch;
   }
@@ -571,7 +571,7 @@ QString QgsStringUtils::htmlToMarkdown( const QString &html )
   int offset = 0;
   while ( hrefRegEx.indexIn( converted, offset ) != -1 )
   {
-    QString url = hrefRegEx.cap( 1 ).replace( QStringLiteral( "\"" ), QString() );
+    QString url = hrefRegEx.cap( 1 ).replace( QLatin1String( "\"" ), QString() );
     url.replace( '\'', QString() );
     QString name = hrefRegEx.cap( 2 );
     QString anchor = QStringLiteral( "[%1](%2)" ).arg( name, url );

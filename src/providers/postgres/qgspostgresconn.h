@@ -148,7 +148,7 @@ struct QgsPostgresLayerProperty
                  geometryColName,
                  typeString,
                  sridString,
-                 pkCols.join( QStringLiteral( "|" ) ),
+                 pkCols.join( QLatin1Char( '|' ) ),
                  sql )
            .arg( nSpCols );
   }

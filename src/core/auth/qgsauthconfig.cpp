@@ -349,7 +349,7 @@ const QString QgsAuthConfigSslServer::configString() const
   {
     errs << QString::number( static_cast< int >( err ) );
   }
-  configlist << errs.join( QStringLiteral( "~~" ) );
+  configlist << errs.join( QLatin1String( "~~" ) );
 
   configlist << QStringLiteral( "%1~~%2" ).arg( static_cast< int >( mSslPeerVerifyMode ) ).arg( mSslPeerVerifyDepth );
 

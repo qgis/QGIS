@@ -98,7 +98,7 @@ template<typename T, class T2> T QgsServerApiUtils::parseTemporalInterval( const
   auto parseDate = [ ]( const QString & date ) -> T2
   {
     T2 result;
-    if ( date == QStringLiteral( ".." ) || date.isEmpty() )
+    if ( date == QLatin1String( ".." ) || date.isEmpty() )
     {
       return result;
     }
@@ -264,7 +264,7 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
   {
     const QStringList parts { interval.split( '/' ) };
     testType = parts[0];
-    if ( testType.isEmpty() || testType == QStringLiteral( ".." ) )
+    if ( testType.isEmpty() || testType == QLatin1String( ".." ) )
     {
       testType = parts[1];
     }
@@ -284,7 +284,7 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
       {
 
         // Determine the field type from the dimension name "time"/"date"
-        const QVariant::Type fieldType { dimension.name.toLower() == QStringLiteral( "time" ) ? QVariant::Type::DateTime :  QVariant::Type::Date };
+        const QVariant::Type fieldType { dimension.name.toLower() == QLatin1String( "time" ) ? QVariant::Type::DateTime :  QVariant::Type::Date };
 
         const auto fieldBeginCasted { refFieldCast( dimension.fieldName, queryType, fieldType ) };
         if ( fieldBeginCasted.isEmpty() )
@@ -320,7 +320,7 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
       {
 
         // Determine the field type from the dimension name "time"/"date"
-        const QVariant::Type fieldType { dimension.name.toLower() == QStringLiteral( "time" ) ? QVariant::Type::DateTime :  QVariant::Type::Date };
+        const QVariant::Type fieldType { dimension.name.toLower() == QLatin1String( "time" ) ? QVariant::Type::DateTime :  QVariant::Type::Date };
 
         const auto fieldfBeginCasted { refFieldCast( dimension.fieldName, queryType, fieldType ) };
         if ( fieldfBeginCasted.isEmpty() )
@@ -368,7 +368,7 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
     for ( const auto &dimension : qgis::as_const( dimensions ) )
     {
       // Determine the field type from the dimension name "time"/"date"
-      const bool fieldIsDateTime { dimension.name.toLower() == QStringLiteral( "time" ) };
+      const bool fieldIsDateTime { dimension.name.toLower() == QLatin1String( "time" ) };
       const QVariant::Type fieldType { fieldIsDateTime ? QVariant::Type::DateTime :  QVariant::Type::Date };
 
       const auto fieldRefBegin { refFieldCast( dimension.fieldName, queryType, fieldType ) };
@@ -430,7 +430,7 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
   }
   if ( ! conditions.isEmpty() )
   {
-    expression.setExpression( conditions.join( QStringLiteral( " AND " ) ) );
+    expression.setExpression( conditions.join( QLatin1String( " AND " ) ) );
   }
   return expression;
 }
@@ -569,7 +569,7 @@ const QVector<QgsVectorLayer *> QgsServerApiUtils::publishedWfsLayers( const Qgs
 QString QgsServerApiUtils::sanitizedFieldValue( const QString &value )
 {
   QString result { QUrl( value ).toString() };
-  return result.replace( '\'', QStringLiteral( "\'" ) );
+  return result.replace( '\'', QLatin1String( "\'" ) );
 }
 
 QStringList QgsServerApiUtils::publishedCrsList( const QgsProject *project )
@@ -596,9 +596,9 @@ QString QgsServerApiUtils::crsToOgcUri( const QgsCoordinateReferenceSystem &crs 
   const auto parts { crs.authid().split( ':' ) };
   if ( parts.length() == 2 )
   {
-    if ( parts[0] == QStringLiteral( "EPSG" ) )
+    if ( parts[0] == QLatin1String( "EPSG" ) )
       return  QStringLiteral( "http://www.opengis.net/def/crs/EPSG/9.6.2/%1" ).arg( parts[1] ) ;
-    else if ( parts[0] == QStringLiteral( "OGC" ) )
+    else if ( parts[0] == QLatin1String( "OGC" ) )
     {
       return  QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/%1" ).arg( parts[1] ) ;
     }

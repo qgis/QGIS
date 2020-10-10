@@ -882,7 +882,7 @@ void QgsDwgImporter::addLType( const DRW_LType &data )
     if ( upath.size() % 2 == 1 )
       l << QStringLiteral( "0" );
 
-    dash = l.join( QStringLiteral( ";" ) ).toUtf8().constData();
+    dash = l.join( QLatin1Char( ';' ) ).toUtf8().constData();
   }
   mLinetype.insert( name.toLower(), dash );
 

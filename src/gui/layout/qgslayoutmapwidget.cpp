@@ -1458,7 +1458,7 @@ void QgsLayoutMapWidget::mOverviewListWidget_itemChanged( QListWidgetItem *item 
   if ( item->isSelected() )
   {
     //update checkbox title if item is current item
-    mOverviewCheckBox->setTitle( QString( tr( "Draw \"%1\" overview" ) ).arg( overview->name() ) );
+    mOverviewCheckBox->setTitle( tr( "Draw \"%1\" overview" ).arg( overview->name() ) );
   }
 }
 
@@ -1498,7 +1498,7 @@ void QgsLayoutMapWidget::setOverviewItems( QgsLayoutItemMapOverview *overview )
 
   blockOverviewItemsSignals( true );
 
-  mOverviewCheckBox->setTitle( QString( tr( "Draw \"%1\" overview" ) ).arg( overview->name() ) );
+  mOverviewCheckBox->setTitle( tr( "Draw \"%1\" overview" ).arg( overview->name() ) );
   mOverviewCheckBox->setChecked( overview->enabled() );
 
   //overview frame

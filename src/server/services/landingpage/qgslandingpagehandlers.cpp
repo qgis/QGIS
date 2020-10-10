@@ -59,7 +59,7 @@ void QgsLandingPageHandler::handleRequest( const QgsServerApiContext &context ) 
 const QString QgsLandingPageHandler::templatePath( const QgsServerApiContext &context ) const
 {
   QString path { context.serverInterface()->serverSettings()->apiResourcesDirectory() };
-  path += QStringLiteral( "/ogc/static/landingpage/index.html" );
+  path += QLatin1String( "/ogc/static/landingpage/index.html" );
   return path;
 }
 

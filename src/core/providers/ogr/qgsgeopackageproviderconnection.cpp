@@ -268,11 +268,11 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
       static const QStringList aspatialTypes = { QStringLiteral( "attributes" ), QStringLiteral( "aspatial" ) };
       const QString dataType = row.at( 1 ).toString();
       // Table type
-      if ( dataType == QStringLiteral( "tiles" ) || dataType == QStringLiteral( "2d-gridded-coverage" ) )
+      if ( dataType == QLatin1String( "tiles" ) || dataType == QLatin1String( "2d-gridded-coverage" ) )
       {
         property.setFlag( QgsGeoPackageProviderConnection::Raster );
       }
-      else if ( dataType == QStringLiteral( "features" ) )
+      else if ( dataType == QLatin1String( "features" ) )
       {
         property.setFlag( QgsGeoPackageProviderConnection::Vector );
         property.setGeometryColumn( row.at( 5 ).toString() );

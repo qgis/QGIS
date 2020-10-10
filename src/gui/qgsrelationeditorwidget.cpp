@@ -808,7 +808,7 @@ void QgsRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &featureids )
 
     QString filter = QStringLiteral( "(%1) AND (%2)" ).arg(
                        mRelation.getRelatedFeaturesRequest( mFeature ).filterExpression()->expression(),
-                       filters.join( QStringLiteral( " OR " ) ) );
+                       filters.join( QLatin1String( " OR " ) ) );
 
     QgsFeatureIterator linkedIterator = mRelation.referencingLayer()->getFeatures( QgsFeatureRequest()
                                         .setNoAttributes()
@@ -915,7 +915,7 @@ void QgsRelationEditorWidget::updateUi()
 
       QgsFeatureRequest nmRequest;
 
-      nmRequest.setFilterExpression( filters.join( QStringLiteral( " OR " ) ) );
+      nmRequest.setFilterExpression( filters.join( QLatin1String( " OR " ) ) );
 
       initDualView( mNmRelation.referencedLayer(), nmRequest );
     }

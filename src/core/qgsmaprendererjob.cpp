@@ -924,7 +924,7 @@ void QgsMapRendererJob::logRenderingTime( const LayerRenderJobs &jobs, const Lay
   const auto constTt = tt;
   for ( int t : constTt )
   {
-    QgsMessageLog::logMessage( tr( "%1 ms: %2" ).arg( t ).arg( QStringList( elapsed.values( t ) ).join( QStringLiteral( ", " ) ) ), tr( "Rendering" ) );
+    QgsMessageLog::logMessage( tr( "%1 ms: %2" ).arg( t ).arg( QStringList( elapsed.values( t ) ).join( QLatin1String( ", " ) ) ), tr( "Rendering" ) );
   }
   QgsMessageLog::logMessage( QStringLiteral( "---" ), tr( "Rendering" ) );
 }

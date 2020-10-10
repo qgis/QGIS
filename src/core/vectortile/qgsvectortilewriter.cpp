@@ -58,7 +58,7 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
 
   QString sourceType = dsUri.param( QStringLiteral( "type" ) );
   QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
-  if ( sourceType == QStringLiteral( "xyz" ) )
+  if ( sourceType == QLatin1String( "xyz" ) )
   {
     // remove the initial file:// scheme
     sourcePath = QUrl( sourcePath ).toLocalFile();
@@ -69,7 +69,7 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
       return false;
     }
   }
-  else if ( sourceType == QStringLiteral( "mbtiles" ) )
+  else if ( sourceType == QLatin1String( "mbtiles" ) )
   {
     mbtiles.reset( new QgsMbTiles( sourcePath ) );
   }
@@ -194,7 +194,7 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
           continue;
         }
 
-        if ( sourceType == QStringLiteral( "xyz" ) )
+        if ( sourceType == QLatin1String( "xyz" ) )
         {
           if ( !writeTileFileXYZ( sourcePath, tileID, tileMatrix, tileData ) )
             return false;  // error message already set

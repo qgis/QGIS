@@ -523,5 +523,5 @@ QString QgsFeatureRequest::OrderBy::dump() const
     results << clause.dump();
   }
 
-  return results.join( QStringLiteral( ", " ) );
+  return results.join( QLatin1String( ", " ) );
 }

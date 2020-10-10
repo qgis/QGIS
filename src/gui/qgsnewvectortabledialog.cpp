@@ -385,7 +385,7 @@ void QgsNewVectorTableDialog::validate()
   const bool isValid { mValidationErrors.isEmpty() };
   if ( ! isValid )
   {
-    mValidationResults->setText( mValidationErrors.join( QStringLiteral( "<br>" ) ) );
+    mValidationResults->setText( mValidationErrors.join( QLatin1String( "<br>" ) ) );
   }
 
   mValidationFrame->setVisible( ! isValid );

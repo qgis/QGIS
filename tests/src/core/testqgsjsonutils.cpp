@@ -281,7 +281,7 @@ void TestQgsJsonUtils::testExportGeomToJson()
   {
     const auto g { QgsGeometry::fromWkt( w.first ) };
     QVERIFY( !g.isNull( ) );
-    if ( w.first.startsWith( QStringLiteral( "CIRCULARSTRING" ) ) )
+    if ( w.first.startsWith( QLatin1String( "CIRCULARSTRING" ) ) )
     {
       QVERIFY( g.asJson( 3 ).startsWith( w.second ) );
       QCOMPARE( QString::fromStdString( g.asJsonObject( 3 )["type"].dump() ), QStringLiteral( R"("LineString")" ) );

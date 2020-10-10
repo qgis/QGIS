@@ -51,12 +51,12 @@ bool QgsVectorTileLayer::loadDataSource()
 
   mSourceType = dsUri.param( QStringLiteral( "type" ) );
   mSourcePath = dsUri.param( QStringLiteral( "url" ) );
-  if ( mSourceType == QStringLiteral( "xyz" ) && dsUri.param( QStringLiteral( "serviceType" ) ) == QLatin1String( "arcgis" ) )
+  if ( mSourceType == QLatin1String( "xyz" ) && dsUri.param( QStringLiteral( "serviceType" ) ) == QLatin1String( "arcgis" ) )
   {
     if ( !setupArcgisVectorTileServiceConnection( mSourcePath, dsUri ) )
       return false;
   }
-  else if ( mSourceType == QStringLiteral( "xyz" ) )
+  else if ( mSourceType == QLatin1String( "xyz" ) )
   {
     if ( !QgsVectorTileUtils::checkXYZUrlTemplate( mSourcePath ) )
     {
@@ -75,7 +75,7 @@ bool QgsVectorTileLayer::loadDataSource()
 
     setExtent( QgsRectangle( -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 ) );
   }
-  else if ( mSourceType == QStringLiteral( "mbtiles" ) )
+  else if ( mSourceType == QLatin1String( "mbtiles" ) )
   {
     QgsMbTiles reader( mSourcePath );
     if ( !reader.open() )
@@ -85,7 +85,7 @@ bool QgsVectorTileLayer::loadDataSource()
     }
 
     QString format = reader.metadataValue( QStringLiteral( "format" ) );
-    if ( format != QStringLiteral( "pbf" ) )
+    if ( format != QLatin1String( "pbf" ) )
     {
       QgsDebugMsg( QStringLiteral( "Cannot open MBTiles for vector tiles. Format = " ) + format );
       return false;
@@ -230,7 +230,7 @@ bool QgsVectorTileLayer::readSymbology( const QDomNode &node, QString &errorMess
   if ( categories.testFlag( Symbology ) )
   {
     QgsVectorTileRenderer *r = nullptr;
-    if ( rendererType == QStringLiteral( "basic" ) )
+    if ( rendererType == QLatin1String( "basic" ) )
       r = new QgsVectorTileBasicRenderer;
     else
     {
@@ -250,7 +250,7 @@ bool QgsVectorTileLayer::readSymbology( const QDomNode &node, QString &errorMess
     {
       const QString labelingType = elemLabeling.attribute( QStringLiteral( "type" ) );
       QgsVectorTileLabeling *labeling = nullptr;
-      if ( labelingType == QStringLiteral( "basic" ) )
+      if ( labelingType == QLatin1String( "basic" ) )
         labeling = new QgsVectorTileBasicLabeling;
       else
       {
@@ -320,7 +320,7 @@ bool QgsVectorTileLayer::loadDefaultStyle( QString &error, QStringList &warnings
   {
     styleUrl = dsUri.param( QStringLiteral( "styleUrl" ) );
   }
-  else if ( mSourceType == QStringLiteral( "xyz" ) && dsUri.param( QStringLiteral( "serviceType" ) ) == QLatin1String( "arcgis" ) )
+  else if ( mSourceType == QLatin1String( "xyz" ) && dsUri.param( QStringLiteral( "serviceType" ) ) == QLatin1String( "arcgis" ) )
   {
     // for ArcMap VectorTileServices we default to the defaultStyles URL from the layer configuration
     styleUrl = mArcgisLayerConfiguration.value( QStringLiteral( "serviceUri" ) ).toString()
@@ -360,7 +360,7 @@ bool QgsVectorTileLayer::loadDefaultStyle( QString &error, QStringList &warnings
     {
       // retrieve sprite definition
       QString spriteUriBase;
-      if ( styleDefinition.value( QStringLiteral( "sprite" ) ).toString().startsWith( QStringLiteral( "http" ) ) )
+      if ( styleDefinition.value( QStringLiteral( "sprite" ) ).toString().startsWith( QLatin1String( "http" ) ) )
       {
         spriteUriBase = styleDefinition.value( QStringLiteral( "sprite" ) ).toString();
       }
@@ -442,7 +442,7 @@ QString QgsVectorTileLayer::loadDefaultMetadata( bool &resultFlag )
 {
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( mDataSource );
-  if ( mSourceType == QStringLiteral( "xyz" ) && dsUri.param( QStringLiteral( "serviceType" ) ) == QLatin1String( "arcgis" ) )
+  if ( mSourceType == QLatin1String( "xyz" ) && dsUri.param( QStringLiteral( "serviceType" ) ) == QLatin1String( "arcgis" ) )
   {
     // populate default metadata
     QgsLayerMetadata metadata;
@@ -479,7 +479,7 @@ QString QgsVectorTileLayer::encodedSource( const QString &source, const QgsReadW
 
   QString sourceType = dsUri.param( QStringLiteral( "type" ) );
   QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
-  if ( sourceType == QStringLiteral( "xyz" ) )
+  if ( sourceType == QLatin1String( "xyz" ) )
   {
     QUrl sourceUrl( sourcePath );
     if ( sourceUrl.isLocalFile() )
@@ -491,7 +491,7 @@ QString QgsVectorTileLayer::encodedSource( const QString &source, const QgsReadW
       return dsUri.encodedUri();
     }
   }
-  else if ( sourceType == QStringLiteral( "mbtiles" ) )
+  else if ( sourceType == QLatin1String( "mbtiles" ) )
   {
     sourcePath = context.pathResolver().writePath( sourcePath );
     dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
@@ -511,7 +511,7 @@ QString QgsVectorTileLayer::decodedSource( const QString &source, const QString 
 
   QString sourceType = dsUri.param( QStringLiteral( "type" ) );
   QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
-  if ( sourceType == QStringLiteral( "xyz" ) )
+  if ( sourceType == QLatin1String( "xyz" ) )
   {
     QUrl sourceUrl( sourcePath );
     if ( sourceUrl.isLocalFile() )  // file-based URL? convert to relative path
@@ -522,7 +522,7 @@ QString QgsVectorTileLayer::decodedSource( const QString &source, const QString 
       return dsUri.encodedUri();
     }
   }
-  else if ( sourceType == QStringLiteral( "mbtiles" ) )
+  else if ( sourceType == QLatin1String( "mbtiles" ) )
   {
     sourcePath = context.pathResolver().readPath( sourcePath );
     dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
@@ -552,10 +552,10 @@ QString QgsVectorTileLayer::htmlMetadata() const
   info += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Source path" ) % QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl( url ).toString(), sourcePath() ) ) + QStringLiteral( "</td></tr>\n" );
 
   info += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "Zoom levels" ) % QStringLiteral( "</td><td>" ) % QStringLiteral( "%1 - %2" ).arg( sourceMinZoom() ).arg( sourceMaxZoom() ) % QStringLiteral( "</td></tr>\n" );
-  info += QStringLiteral( "</table>" );
+  info += QLatin1String( "</table>" );
 
   // End Provider section
-  info += QStringLiteral( "</table>\n<br><br>" );
+  info += QLatin1String( "</table>\n<br><br>" );
 
   // Identification section
   info += QStringLiteral( "<h1>" ) % tr( "Identification" ) % QStringLiteral( "</h1>\n<hr>\n" ) %

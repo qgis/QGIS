@@ -87,7 +87,7 @@ void TestQgsDatumTransformDialog::defaultTransform()
   def = dlg2.defaultDatumTransform();
   QCOMPARE( def.sourceCrs.authid(), QStringLiteral( "EPSG:4326" ) );
   QCOMPARE( def.destinationCrs.authid(), QStringLiteral( "EPSG:26742" ) );
-  if ( def.proj == QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +inv +proj=hgridshift +grids=conus +step +proj=lcc +lat_0=37.6666666666667 +lon_0=-122 +lat_1=39.8333333333333 +lat_2=38.3333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=unitconvert +xy_in=m +xy_out=us-ft" ) )
+  if ( def.proj == QLatin1String( "+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +inv +proj=hgridshift +grids=conus +step +proj=lcc +lat_0=37.6666666666667 +lon_0=-122 +lat_1=39.8333333333333 +lat_2=38.3333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=unitconvert +xy_in=m +xy_out=us-ft" ) )
   {
     QCOMPARE( def.proj, QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +inv +proj=hgridshift +grids=conus +step +proj=lcc +lat_0=37.6666666666667 +lon_0=-122 +lat_1=39.8333333333333 +lat_2=38.3333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=unitconvert +xy_in=m +xy_out=us-ft" ) );
   }

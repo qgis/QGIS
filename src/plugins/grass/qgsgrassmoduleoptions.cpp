@@ -906,7 +906,7 @@ QDomDocument QgsGrassModuleStandardOptions::readInterfaceDescription( const QStr
                   + "<br><br>PATH=" + environment.value( QStringLiteral( "PATH" ) )
                   + "<br><br>PYTHONPATH=" + environment.value( QStringLiteral( "PYTHONPATH" ) )
                   + "<br><br>" + tr( "command" ) + QStringLiteral( ": %1 %2<br>%3<br>%4" )
-                  .arg( cmd, arguments.join( QStringLiteral( " " ) ),
+                  .arg( cmd, arguments.join( QLatin1Char( ' ' ) ),
                         process.readAllStandardOutput().constData(),
                         process.readAllStandardError().constData() );
     QgsDebugMsg( msg );

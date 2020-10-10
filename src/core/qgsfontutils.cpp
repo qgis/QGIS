@@ -395,7 +395,7 @@ QFont QgsFontUtils::fromMimeData( const QMimeData *data, bool *ok )
     {
       elem = doc.documentElement();
 
-      if ( elem.nodeName() != QStringLiteral( "font" ) )
+      if ( elem.nodeName() != QLatin1String( "font" ) )
         elem = elem.firstChildElement( QStringLiteral( "font" ) );
 
       if ( setFromXmlElement( font, elem ) )
@@ -440,7 +440,7 @@ QString QgsFontUtils::translateNamedStyle( const QString &namedStyle )
   {
     words[i] = QCoreApplication::translate( "QFontDatabase", words[i].toLocal8Bit().constData() );
   }
-  return words.join( QStringLiteral( " " ) );
+  return words.join( QLatin1Char( ' ' ) );
 }
 
 QString QgsFontUtils::untranslateNamedStyle( const QString &namedStyle )
@@ -463,7 +463,7 @@ QString QgsFontUtils::untranslateNamedStyle( const QString &namedStyle )
       QgsDebugMsgLevel( QStringLiteral( "Warning: style map does not contain %1" ).arg( words[i] ), 2 );
     }
   }
-  return words.join( QStringLiteral( " " ) );
+  return words.join( QLatin1Char( ' ' ) );
 }
 
 QString QgsFontUtils::asCSS( const QFont &font, double pointToPixelScale )
