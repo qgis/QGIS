@@ -3018,7 +3018,22 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
     if ( mTileLayer->getFeatureInfoURLs.contains( formatStr ) )
     {
       // REST
+
+
       QString url = mTileLayer->getFeatureInfoURLs[ formatStr ];
+
+      if ( mSettings.mIgnoreGetFeatureInfoUrl )
+      {
+        // rewrite the URL if the one in the capabilities document is incorrect
+        // strip every thing after the ? from the base url
+        const QStringList parts = mSettings.mBaseUrl.split( QRegularExpression( "\\?" ) );
+        const QString base = parts.isEmpty() ? mSettings.mBaseUrl : parts.first();
+        // and strip everything before the `rest` element (at least for GeoServer)
+        const int index = url.length() - url.lastIndexOf( QStringLiteral( "rest" ) ) + 1; // +1 for the /
+        url = base + url.right( index );
+      }
+
+      QgsDebugMsgLevel( QStringLiteral( "getfeatureinfo: %1" ).arg( url ), 2 );
 
       url.replace( QLatin1String( "{layer}" ), mSettings.mActiveSubLayers[0], Qt::CaseInsensitive );
       url.replace( QLatin1String( "{style}" ), mSettings.mActiveSubStyles[0], Qt::CaseInsensitive );
