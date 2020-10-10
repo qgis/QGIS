@@ -1460,7 +1460,7 @@ QString QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType styleSh
                    "  width: 95%;"
                    "}"
                    ".tabular-view th, .tabular-view td { "
-                   "  border:10px solid black;"
+                   "  border:1px solid black;"
                    "}" );
       break;
 
