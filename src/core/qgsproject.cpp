@@ -586,7 +586,7 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
 
         translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fieldaliases" ).arg( vlayer->id() ), fieldName );
 
-        if ( field.editorWidgetSetup().type() == QStringLiteral( "ValueRelation" ) )
+        if ( field.editorWidgetSetup().type() == QLatin1String( "ValueRelation" ) )
         {
           translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fields:%2:valuerelationvalue" ).arg( vlayer->id(), field.name() ), field.editorWidgetSetup().config().value( QStringLiteral( "Value" ) ).toString() );
         }

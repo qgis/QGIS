@@ -207,7 +207,7 @@ QgsStringMap QgsGradientColorRamp::properties() const
     {
       lst.append( QStringLiteral( "%1;%2" ).arg( it->offset ).arg( QgsSymbolLayerUtils::encodeColor( it->color ) ) );
     }
-    map[QStringLiteral( "stops" )] = lst.join( QStringLiteral( ":" ) );
+    map[QStringLiteral( "stops" )] = lst.join( QLatin1Char( ':' ) );
   }
 
   map[QStringLiteral( "discrete" )] = mDiscrete ? "1" : "0";

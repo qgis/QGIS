@@ -140,9 +140,9 @@ void TestQgsRasterSubLayer::subLayersList()
       qDebug() << "sublayer: " << s;
       sublayers << s.split( ':' ).last();
     }
-    qDebug() << "sublayers: " << sublayers.join( QStringLiteral( "," ) );
-    mReport += QStringLiteral( "sublayers:<br>%1<br>\n" ).arg( sublayers.join( QStringLiteral( "<br>" ) ) );
-    mReport += QStringLiteral( "expected:<br>%1<br>\n" ).arg( expected.join( QStringLiteral( "<br>" ) ) );
+    qDebug() << "sublayers: " << sublayers.join( QLatin1Char( ',' ) );
+    mReport += QStringLiteral( "sublayers:<br>%1<br>\n" ).arg( sublayers.join( QLatin1String( "<br>" ) ) );
+    mReport += QStringLiteral( "expected:<br>%1<br>\n" ).arg( expected.join( QLatin1String( "<br>" ) ) );
     QCOMPARE( sublayers, expected );
     mReport += QLatin1String( "<p>Passed</p>" );
   }

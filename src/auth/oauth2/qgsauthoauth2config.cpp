@@ -567,7 +567,7 @@ QList<QgsAuthOAuth2Config *> QgsAuthOAuth2Config::loadOAuth2Configs(
   if ( configfiles.size() > 0 )
   {
     QgsDebugMsg( QStringLiteral( "Config files found in: %1...\n%2" )
-                 .arg( configdir.path(), configfiles.join( QStringLiteral( ", " ) ) ) );
+                 .arg( configdir.path(), configfiles.join( QLatin1String( ", " ) ) ) );
   }
   else
   {
@@ -645,7 +645,7 @@ QgsStringMap QgsAuthOAuth2Config::mapOAuth2Configs(
   if ( configfiles.size() > 0 )
   {
     QgsDebugMsg( QStringLiteral( "Config files found in: %1...\n%2" )
-                 .arg( configdir.path(), configfiles.join( QStringLiteral( ", " ) ) ) );
+                 .arg( configdir.path(), configfiles.join( QLatin1String( ", " ) ) ) );
   }
   else
   {

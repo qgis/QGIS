@@ -731,7 +731,7 @@ static inline QString dumpVariantMap( const QVariantMap &variantMap, const QStri
           result += QStringLiteral( "<li>%1</li>" ).arg( QgsStringUtils::insertLinks( v.toString() ) );
         }
       }
-      result += QStringLiteral( "</ul></td></tr>" );
+      result += QLatin1String( "</ul></td></tr>" );
     }
     else if ( !childMap.isEmpty() )
     {
@@ -963,31 +963,31 @@ bool QgsPostgresRasterProvider::init()
     64BF - 64-bit float
     */
     Qgis::DataType type { Qgis::DataType::UnknownDataType };
-    if ( t == QStringLiteral( "8BUI" ) )
+    if ( t == QLatin1String( "8BUI" ) )
     {
       type = Qgis::DataType::Byte;
     }
-    else if ( t == QStringLiteral( "16BUI" ) )
+    else if ( t == QLatin1String( "16BUI" ) )
     {
       type = Qgis::DataType::UInt16;
     }
-    else if ( t == QStringLiteral( "16BSI" ) )
+    else if ( t == QLatin1String( "16BSI" ) )
     {
       type = Qgis::DataType::Int16;
     }
-    else if ( t == QStringLiteral( "32BSI" ) )
+    else if ( t == QLatin1String( "32BSI" ) )
     {
       type = Qgis::DataType::Int32;
     }
-    else if ( t == QStringLiteral( "32BUI" ) )
+    else if ( t == QLatin1String( "32BUI" ) )
     {
       type = Qgis::DataType::UInt32;
     }
-    else if ( t == QStringLiteral( "32BF" ) )
+    else if ( t == QLatin1String( "32BF" ) )
     {
       type = Qgis::DataType::Float32;
     }
-    else if ( t == QStringLiteral( "64BF" ) )
+    else if ( t == QLatin1String( "64BF" ) )
     {
       type = Qgis::DataType::Float64;
     }
@@ -1066,7 +1066,7 @@ bool QgsPostgresRasterProvider::init()
           double nodataValue { noDataValues.at( i ).toDouble( &ok ) };
           if ( ! ok )
           {
-            if ( noDataValues.at( i ) != QStringLiteral( "NULL" ) )
+            if ( noDataValues.at( i ) != QLatin1String( "NULL" ) )
             {
               QgsMessageLog::logMessage( tr( "Cannot convert nodata value '%1' to double" )
                                          .arg( noDataValues.at( i ) ),
@@ -1530,7 +1530,7 @@ bool QgsPostgresRasterProvider::loadFields()
         tableoidsList.append( QString::number( tableoid ) );
       }
 
-      QString tableoidsFilter = '(' + tableoidsList.join( QStringLiteral( "," ) ) + ')';
+      QString tableoidsFilter = '(' + tableoidsList.join( QLatin1Char( ',' ) ) + ')';
 
       // Collect formatted field types
       sql = QStringLiteral(

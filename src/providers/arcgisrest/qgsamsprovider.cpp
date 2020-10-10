@@ -447,7 +447,7 @@ static inline QString dumpVariantMap( const QVariantMap &variantMap, const QStri
           result += QStringLiteral( "<li>%1</li>" ).arg( QgsStringUtils::insertLinks( v.toString() ) );
         }
       }
-      result += QStringLiteral( "</ul></td></tr>" );
+      result += QLatin1String( "</ul></td></tr>" );
     }
     else if ( !childMap.isEmpty() )
     {

@@ -289,7 +289,7 @@ void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, 
           for ( int i = 0; i < vendorOptions.size(); ++i )
           {
             QDomElement vendorOption = vendorOptions.at( i ).toElement();
-            if ( vendorOption.attribute( QStringLiteral( "name" ) ) != QStringLiteral( "minValue" ) )
+            if ( vendorOption.attribute( QStringLiteral( "name" ) ) != QLatin1String( "minValue" ) )
               continue;
 
             // remove old value and add the new one

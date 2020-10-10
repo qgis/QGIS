@@ -251,7 +251,7 @@ QIcon QgsFieldItem::icon()
        parentFields->tableProperty()->geometryColumn() == mName &&
        parentFields->tableProperty()->geometryColumnTypes().count() )
   {
-    if ( mField.typeName() == QStringLiteral( "raster" ) )
+    if ( mField.typeName() == QLatin1String( "raster" ) )
     {
       return QgsLayerItem::iconRaster();
     }
@@ -1662,7 +1662,7 @@ QVector<QgsDataItem *> QgsZipItem::createChildren()
         continue;
 
       // ugly hack to remove .dbf file if there is a .shp file
-      if ( provider->name() == QStringLiteral( "OGR" ) )
+      if ( provider->name() == QLatin1String( "OGR" ) )
       {
         if ( info.suffix().compare( QLatin1String( "dbf" ), Qt::CaseInsensitive ) == 0 )
         {

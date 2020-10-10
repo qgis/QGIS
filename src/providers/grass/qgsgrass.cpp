@@ -883,7 +883,7 @@ QString QgsGrass::openMapset( const QString &gisdbase,
   QString lockProgram( gisbase() + "/etc/lock" );
   QStringList lockArguments;
   lockArguments << lock << QString::number( pid );
-  QString lockCommand = lockProgram + " " + lockArguments.join( QStringLiteral( " " ) ); // for debug
+  QString lockCommand = lockProgram + " " + lockArguments.join( QLatin1Char( ' ' ) ); // for debug
   QgsDebugMsg( "lock command: " + lockCommand );
 
   process.start( lockProgram, lockArguments );
@@ -1953,7 +1953,7 @@ QProcess *QgsGrass::startModule( const QString &gisdbase, const QString  &locati
     throw QgsGrass::Exception( QObject::tr( "Cannot open GISRC file" ) );
   }
 
-  QString error = tr( "Cannot start module" ) + "\n" + tr( "command: %1 %2" ).arg( module, arguments.join( QStringLiteral( " " ) ) );
+  QString error = tr( "Cannot start module" ) + "\n" + tr( "command: %1 %2" ).arg( module, arguments.join( QLatin1Char( ' ' ) ) );
 
   QTextStream out( &gisrcFile );
   out << "GISDBASE: " << gisdbase << "\n";
@@ -2011,7 +2011,7 @@ QByteArray QgsGrass::runModule( const QString &gisdbase, const QString  &locatio
 
     throw QgsGrass::Exception( QObject::tr( "Cannot run module" ) + "\n"
                                + QObject::tr( "command: %1 %2\nstdout: %3\nstderr: %4" )
-                               .arg( moduleName, arguments.join( QStringLiteral( " " ) ),
+                               .arg( moduleName, arguments.join( QLatin1Char( ' ' ) ),
                                      process->readAllStandardOutput().constData(),
                                      process->readAllStandardError().constData() ) );
   }
@@ -2410,7 +2410,7 @@ void QgsGrass::createTable( dbDriver *driver, const QString &tableName, const Qg
     }
     fieldsStringList <<  name + " " + typeName;
   }
-  QString sql = QStringLiteral( "create table %1 (%2);" ).arg( tableName, fieldsStringList.join( QStringLiteral( ", " ) ) );
+  QString sql = QStringLiteral( "create table %1 (%2);" ).arg( tableName, fieldsStringList.join( QLatin1String( ", " ) ) );
 
   dbString dbstr;
   db_init_string( &dbstr );
@@ -2473,7 +2473,7 @@ void QgsGrass::insertRow( dbDriver *driver, const QString &tableName,
 
     valuesStringList <<  valueString;
   }
-  QString sql = QStringLiteral( "insert into %1 values (%2);" ).arg( tableName, valuesStringList.join( QStringLiteral( ", " ) ) );
+  QString sql = QStringLiteral( "insert into %1 values (%2);" ).arg( tableName, valuesStringList.join( QLatin1String( ", " ) ) );
 
   dbString dbstr;
   db_init_string( &dbstr );

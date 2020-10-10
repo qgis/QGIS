@@ -49,7 +49,7 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
       cmbProtocolTypes->addItem( protocol.split( ',' ).at( 0 ) );
   }
 
-  mAuthWarning->setText( tr( " Additional credential options are required as documented <a href=\"%1\">here</a>." ).arg( QStringLiteral( "https://gdal.org/user/virtual_file_systems.html#drivers-supporting-virtual-file-systems" ) ) );
+  mAuthWarning->setText( tr( " Additional credential options are required as documented <a href=\"%1\">here</a>." ).arg( QLatin1String( "https://gdal.org/user/virtual_file_systems.html#drivers-supporting-virtual-file-systems" ) ) );
 
   connect( protocolURI, &QLineEdit::textChanged, this, [ = ]( const QString & text )
   {
@@ -80,11 +80,11 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
 
 bool QgsGdalSourceSelect::isProtocolCloudType()
 {
-  return ( cmbProtocolTypes->currentText() == QStringLiteral( "AWS S3" ) ||
-           cmbProtocolTypes->currentText() == QStringLiteral( "Google Cloud Storage" ) ||
-           cmbProtocolTypes->currentText() == QStringLiteral( "Microsoft Azure Blob" ) ||
-           cmbProtocolTypes->currentText() == QStringLiteral( "Alibaba Cloud OSS" ) ||
-           cmbProtocolTypes->currentText() == QStringLiteral( "OpenStack Swift Object Storage" ) );
+  return ( cmbProtocolTypes->currentText() == QLatin1String( "AWS S3" ) ||
+           cmbProtocolTypes->currentText() == QLatin1String( "Google Cloud Storage" ) ||
+           cmbProtocolTypes->currentText() == QLatin1String( "Microsoft Azure Blob" ) ||
+           cmbProtocolTypes->currentText() == QLatin1String( "Alibaba Cloud OSS" ) ||
+           cmbProtocolTypes->currentText() == QLatin1String( "OpenStack Swift Object Storage" ) );
 }
 
 void QgsGdalSourceSelect::setProtocolWidgetsVisibility()

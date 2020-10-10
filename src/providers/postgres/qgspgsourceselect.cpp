@@ -177,7 +177,7 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
           cols << item->text();
       }
 
-      model->setData( index, cols.isEmpty() ? tr( "Select…" ) : cols.join( QStringLiteral( ", " ) ) );
+      model->setData( index, cols.isEmpty() ? tr( "Select…" ) : cols.join( QLatin1String( ", " ) ) );
       model->setData( index, cols, Qt::UserRole + 2 );
     }
   }
@@ -511,7 +511,7 @@ void QgsPgSourceSelect::addButtonClicked()
       continue;
 
     mSelectedTables << uri;
-    if ( uri.startsWith( QStringLiteral( "PG: " ) ) )
+    if ( uri.startsWith( QLatin1String( "PG: " ) ) )
     {
       rasterTables.append( QPair<QString, QString>( idx.data().toString(), uri ) );
     }

@@ -511,7 +511,7 @@ QString QgsMeshLayerUtils::formatTime( double hours, const QDateTime &referenceT
     format = format.trimmed();
     int totalHours = static_cast<int>( hours );
 
-    if ( format == QStringLiteral( "hh:mm:ss.zzz" ) )
+    if ( format == QLatin1String( "hh:mm:ss.zzz" ) )
     {
       int ms = static_cast<int>( hours * 3600.0 * 1000 );
       int seconds = ms / 1000;
@@ -526,7 +526,7 @@ QString QgsMeshLayerUtils::formatTime( double hours, const QDateTime &referenceT
             arg( s, 2, 10, QLatin1Char( '0' ) ).
             arg( z, 3, 10, QLatin1Char( '0' ) );
     }
-    else if ( format == QStringLiteral( "hh:mm:ss" ) )
+    else if ( format == QLatin1String( "hh:mm:ss" ) )
     {
       int seconds = static_cast<int>( hours * 3600.0 );
       int m = seconds / 60;
@@ -539,7 +539,7 @@ QString QgsMeshLayerUtils::formatTime( double hours, const QDateTime &referenceT
             arg( s, 2, 10, QLatin1Char( '0' ) );
 
     }
-    else if ( format == QStringLiteral( "d hh:mm:ss" ) )
+    else if ( format == QLatin1String( "d hh:mm:ss" ) )
     {
       int seconds = static_cast<int>( hours * 3600.0 );
       int m = seconds / 60;
@@ -554,7 +554,7 @@ QString QgsMeshLayerUtils::formatTime( double hours, const QDateTime &referenceT
             arg( m, 2, 10, QLatin1Char( '0' ) ).
             arg( s, 2, 10, QLatin1Char( '0' ) );
     }
-    else if ( format == QStringLiteral( "d hh" ) )
+    else if ( format == QLatin1String( "d hh" ) )
     {
       int d = totalHours / 24;
       int h = totalHours % 24;
@@ -562,12 +562,12 @@ QString QgsMeshLayerUtils::formatTime( double hours, const QDateTime &referenceT
             arg( d ).
             arg( h );
     }
-    else if ( format == QStringLiteral( "d" ) )
+    else if ( format == QLatin1String( "d" ) )
     {
       int d = totalHours / 24;
       ret = QString::number( d );
     }
-    else if ( format == QStringLiteral( "ss" ) )
+    else if ( format == QLatin1String( "ss" ) )
     {
       int seconds = static_cast<int>( hours * 3600.0 );
       ret = QString::number( seconds );

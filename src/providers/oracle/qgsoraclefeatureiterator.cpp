@@ -174,7 +174,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
   if ( mSource->mRequestedGeomType != QgsWkbTypes::Unknown && mSource->mRequestedGeomType != mSource->mDetectedGeomType )
   {
     if ( !whereClause.isEmpty() )
-      whereClause += QStringLiteral( " AND " );
+      whereClause += QLatin1String( " AND " );
 
     whereClause += '(';
 
@@ -188,7 +188,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
   if ( !mSource->mSqlWhereClause.isEmpty() )
   {
     if ( !whereClause.isEmpty() )
-      whereClause += QStringLiteral( " AND " );
+      whereClause += QLatin1String( " AND " );
     whereClause += '(' + mSource->mSqlWhereClause + ')';
   }
 
@@ -233,10 +233,10 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
   if ( mRequest.limit() >= 0 && limitAtProvider )
   {
     if ( !whereClause.isEmpty() )
-      whereClause += QStringLiteral( " AND " );
+      whereClause += QLatin1String( " AND " );
 
-    whereClause += QStringLiteral( "rownum<=?" );
-    fallbackStatement += QStringLiteral( "rownum<=?" );
+    whereClause += QLatin1String( "rownum<=?" );
+    fallbackStatement += QLatin1String( "rownum<=?" );
     args << QVariant::fromValue( mRequest.limit() );
   }
 
@@ -405,7 +405,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
       QgsField fld = mSource->mFields.at( idx );
 
       QVariant v = mQry.value( col );
-      if ( fld.type() == QVariant::ByteArray && fld.typeName().endsWith( QStringLiteral( ".SDO_GEOMETRY" ) ) )
+      if ( fld.type() == QVariant::ByteArray && fld.typeName().endsWith( QLatin1String( ".SDO_GEOMETRY" ) ) )
       {
         QByteArray ba( v.toByteArray() );
         if ( ba.size() > 0 )

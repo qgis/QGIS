@@ -91,7 +91,7 @@ QgsVectorLayerDigitizingPropertiesPage::QgsVectorLayerDigitizingPropertiesPage( 
       cb->setChecked( activeChecks.contains( factory->id() ) );
       mGeometryCheckFactoriesGroupBoxes.insert( cb, factory->id() );
       topologyCheckLayout->addWidget( cb );
-      if ( factory->id() == QStringLiteral( "QgsGeometryGapCheck" ) )
+      if ( factory->id() == QLatin1String( "QgsGeometryGapCheck" ) )
       {
         const QVariantMap gapCheckConfig = vlayer->geometryOptions()->checkConfiguration( QStringLiteral( "QgsGeometryGapCheck" ) );
 

@@ -92,14 +92,14 @@ void QgsProcessingLayerOutputDestinationWidget::setValue( const QVariant &value 
   }
   else
   {
-    if ( value.toString() == QStringLiteral( "memory:" ) || value.toString() == QgsProcessing::TEMPORARY_OUTPUT )
+    if ( value.toString() == QLatin1String( "memory:" ) || value.toString() == QgsProcessing::TEMPORARY_OUTPUT )
     {
       saveToTemporary();
     }
     else if ( value.canConvert< QgsProcessingOutputLayerDefinition >() )
     {
       const QgsProcessingOutputLayerDefinition def = value.value< QgsProcessingOutputLayerDefinition >();
-      if ( def.sink.staticValue().toString() == QStringLiteral( "memory:" ) || def.sink.staticValue().toString() == QgsProcessing::TEMPORARY_OUTPUT || def.sink.staticValue().toString().isEmpty() )
+      if ( def.sink.staticValue().toString() == QLatin1String( "memory:" ) || def.sink.staticValue().toString() == QgsProcessing::TEMPORARY_OUTPUT || def.sink.staticValue().toString().isEmpty() )
       {
         saveToTemporary();
       }

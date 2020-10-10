@@ -2061,7 +2061,7 @@ void QgsVectorLayerProperties::deleteAuxiliaryField( int index )
   {
     const QString title = QObject::tr( "Delete Auxiliary Field" );
     const int timeout = QgsSettings().value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
-    const QString errors = mLayer->auxiliaryLayer()->commitErrors().join( QStringLiteral( "\n  " ) );
+    const QString errors = mLayer->auxiliaryLayer()->commitErrors().join( QLatin1String( "\n  " ) );
     const QString msg = QObject::tr( "Unable to remove auxiliary field (%1)" ).arg( errors );
     mMessageBar->pushMessage( title, msg, Qgis::Warning, timeout );
   }

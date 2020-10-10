@@ -237,11 +237,11 @@ QString Qgs3DUtils::cullingModeToString( Qgs3DTypes::CullingMode mode )
 
 Qgs3DTypes::CullingMode Qgs3DUtils::cullingModeFromString( const QString &str )
 {
-  if ( str == QStringLiteral( "front" ) )
+  if ( str == QLatin1String( "front" ) )
     return Qgs3DTypes::Front;
-  else if ( str == QStringLiteral( "back" ) )
+  else if ( str == QLatin1String( "back" ) )
     return Qgs3DTypes::Back;
-  else if ( str == QStringLiteral( "front-and-back" ) )
+  else if ( str == QLatin1String( "front-and-back" ) )
     return Qgs3DTypes::FrontAndBack;
   else
     return Qgs3DTypes::NoCulling;

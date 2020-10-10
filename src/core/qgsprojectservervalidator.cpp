@@ -117,19 +117,19 @@ bool QgsProjectServerValidator::validate( QgsProject *project, QList<QgsProjectS
   if ( !duplicateNames.empty() )
   {
     result = false;
-    results << ValidationResult( QgsProjectServerValidator::DuplicatedNames, duplicateNames.join( QStringLiteral( ", " ) ) );
+    results << ValidationResult( QgsProjectServerValidator::DuplicatedNames, duplicateNames.join( QLatin1String( ", " ) ) );
   }
 
   if ( !regExpMessages.empty() )
   {
     result = false;
-    results << ValidationResult( QgsProjectServerValidator::LayerShortName, regExpMessages.join( QStringLiteral( ", " ) ) );
+    results << ValidationResult( QgsProjectServerValidator::LayerShortName, regExpMessages.join( QLatin1String( ", " ) ) );
   }
 
   if ( !encodingMessages.empty() )
   {
     result = false;
-    results << ValidationResult( QgsProjectServerValidator::LayerEncoding, encodingMessages.join( QStringLiteral( ", " ) ) );
+    results << ValidationResult( QgsProjectServerValidator::LayerEncoding, encodingMessages.join( QLatin1String( ", " ) ) );
   }
 
   // Determine the root layername

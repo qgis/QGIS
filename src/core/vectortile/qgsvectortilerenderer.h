@@ -93,7 +93,7 @@ class CORE_EXPORT QgsVectorTileRenderer
 
     const QString type = sipCpp->type();
 
-    if ( type == QStringLiteral( "basic" ) )
+    if ( type == QLatin1String( "basic" ) )
       sipType = sipType_QgsVectorTileBasicRenderer;
     else
       sipType = 0;

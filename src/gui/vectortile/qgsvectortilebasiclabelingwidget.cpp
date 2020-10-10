@@ -345,7 +345,7 @@ void QgsVectorTileBasicLabelingWidget::setLayer( QgsVectorTileLayer *layer )
 {
   mVTLayer = layer;
 
-  if ( layer && layer->labeling() && layer->labeling()->type() == QStringLiteral( "basic" ) )
+  if ( layer && layer->labeling() && layer->labeling()->type() == QLatin1String( "basic" ) )
   {
     mLabeling.reset( static_cast<QgsVectorTileBasicLabeling *>( layer->labeling()->clone() ) );
   }

@@ -334,7 +334,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
     {
       kwdList << n.toElement().text();
     }
-    mKeywordList = kwdList.join( QStringLiteral( ", " ) );
+    mKeywordList = kwdList.join( QLatin1String( ", " ) );
   }
 
   //metadataUrl

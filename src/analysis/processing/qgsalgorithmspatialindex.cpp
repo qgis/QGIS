@@ -77,7 +77,7 @@ QVariantMap QgsSpatialIndexAlgorithm::processAlgorithm( const QVariantMap &param
   QgsVectorLayer *layer = parameterAsVectorLayer( parameters, QStringLiteral( "INPUT" ), context );
 
   if ( !layer )
-    throw QgsProcessingException( QObject::tr( "Could not load source layer for %1." ).arg( QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( QObject::tr( "Could not load source layer for %1." ).arg( QLatin1String( "INPUT" ) ) );
 
   QgsVectorDataProvider *provider = layer->dataProvider();
 

@@ -1479,7 +1479,7 @@ QString QgsExpressionNodeCondition::dump() const
   }
   if ( mElseExp )
     msg += QStringLiteral( " ELSE %1" ).arg( mElseExp->dump() );
-  msg += QStringLiteral( " END" );
+  msg += QLatin1String( " END" );
   return msg;
 }
 

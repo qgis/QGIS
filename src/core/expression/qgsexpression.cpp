@@ -105,7 +105,7 @@ QString QgsExpression::quotedValue( const QVariant &value, QVariant::Type type )
       {
         quotedValues += quotedValue( v );
       }
-      return QStringLiteral( "array( %1 )" ).arg( quotedValues.join( QStringLiteral( ", " ) ) );
+      return QStringLiteral( "array( %1 )" ).arg( quotedValues.join( QLatin1String( ", " ) ) );
     }
 
     default:
@@ -591,7 +591,7 @@ QString QgsExpression::helpText( QString name )
             if ( a.mOptional )
             {
               hasOptionalArgs = true;
-              helpContents += QStringLiteral( "[" );
+              helpContents += QLatin1Char( '[' );
             }
 
             helpContents += delim;
@@ -601,7 +601,7 @@ QString QgsExpression::helpText( QString name )
                             );
 
             if ( a.mOptional )
-              helpContents += QStringLiteral( "]" );
+              helpContents += QLatin1Char( ']' );
           }
           delim = QStringLiteral( "," );
         }
@@ -1042,8 +1042,8 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
       }
     }
     if ( !map.empty() )
-      mapStr += QStringLiteral( " " );
-    mapStr += QStringLiteral( "}" );
+      mapStr += QLatin1Char( ' ' );
+    mapStr += QLatin1Char( '}' );
     return mapStr;
   }
   else if ( value.type() == QVariant::List || value.type() == QVariant::StringList )
@@ -1066,8 +1066,8 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
       }
     }
     if ( !list.empty() )
-      listStr += QStringLiteral( " " );
-    listStr += QStringLiteral( "]" );
+      listStr += QLatin1Char( ' ' );
+    listStr += QLatin1Char( ']' );
     return listStr;
   }
   else

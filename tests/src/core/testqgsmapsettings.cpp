@@ -579,7 +579,7 @@ void TestQgsMapSettings::testCustomRenderingFlags()
   settings.setCustomRenderingFlag( QStringLiteral( "myexport" ), true );
   settings.setCustomRenderingFlag( QStringLiteral( "omitgeometries" ), QStringLiteral( "points" ) );
   QVERIFY( settings.customRenderingFlags()[ QStringLiteral( "myexport" ) ].toBool() == true );
-  QVERIFY( settings.customRenderingFlags()[ QStringLiteral( "omitgeometries" ) ].toString() == QStringLiteral( "points" ) );
+  QVERIFY( settings.customRenderingFlags()[ QStringLiteral( "omitgeometries" ) ].toString() == QLatin1String( "points" ) );
 
   // Test deprecated API
   Q_NOWARN_DEPRECATED_PUSH

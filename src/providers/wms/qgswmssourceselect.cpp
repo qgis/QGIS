@@ -545,7 +545,7 @@ void QgsWMSSourceSelect::addButtonClicked()
 
     for ( const QgsWmtsTileLayer &l : qgis::as_const( mTileLayers ) )
     {
-      if ( l.identifier == layers.join( QStringLiteral( "," ) ) )
+      if ( l.identifier == layers.join( QLatin1Char( ',' ) ) )
       {
         layer = &l;
         break;
@@ -598,7 +598,7 @@ void QgsWMSSourceSelect::addButtonClicked()
   uri.setParam( QStringLiteral( "contextualWMSLegend" ), mContextualLegendCheckbox->isChecked() ? "1" : "0" );
 
   emit addRasterLayer( uri.encodedUri(),
-                       leLayerName->text().isEmpty() ? titles.join( QStringLiteral( "/" ) ) : leLayerName->text(),
+                       leLayerName->text().isEmpty() ? titles.join( QLatin1Char( '/' ) ) : leLayerName->text(),
                        QStringLiteral( "wms" ) );
 }
 
@@ -1005,7 +1005,7 @@ void QgsWMSSourceSelect::updateButtons()
       {
         QStringList layers, styles, titles;
         collectSelectedLayers( layers, styles, titles );
-        mLastLayerName = titles.join( QStringLiteral( "/" ) );
+        mLastLayerName = titles.join( QLatin1Char( '/' ) );
         leLayerName->setText( mLastLayerName );
       }
     }

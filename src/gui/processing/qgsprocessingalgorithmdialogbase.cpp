@@ -647,7 +647,7 @@ void QgsProcessingAlgorithmDialogBase::setCurrentTask( QgsProcessingAlgRunnerTas
 QString QgsProcessingAlgorithmDialogBase::formatStringForLog( const QString &string )
 {
   QString s = string;
-  s.replace( '\n', QStringLiteral( "<br>" ) );
+  s.replace( '\n', QLatin1String( "<br>" ) );
   return s;
 }
 

@@ -327,7 +327,7 @@ void QgsOfflineEditing::synchronize()
         }
         else
         {
-          showWarning( remoteLayer->commitErrors().join( QStringLiteral( "\n" ) ) );
+          showWarning( remoteLayer->commitErrors().join( QLatin1Char( '\n' ) ) );
         }
       }
       else
@@ -858,7 +858,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
     }
     else
     {
-      showWarning( newLayer->commitErrors().join( QStringLiteral( "\n" ) ) );
+      showWarning( newLayer->commitErrors().join( QLatin1Char( '\n' ) ) );
     }
 
     // copy the custom properties from original layer

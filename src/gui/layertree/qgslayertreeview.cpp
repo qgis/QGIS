@@ -303,7 +303,7 @@ void QgsLayerTreeView::onExpandedChanged( QgsLayerTreeNode *node, bool expanded 
 
 void QgsLayerTreeView::onCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key )
 {
-  if ( key != QStringLiteral( "expandedLegendNodes" ) || !QgsLayerTree::isLayer( node ) )
+  if ( key != QLatin1String( "expandedLegendNodes" ) || !QgsLayerTree::isLayer( node ) )
     return;
 
   QSet<QString> expandedLegendNodes = qgis::listToSet( node->customProperty( QStringLiteral( "expandedLegendNodes" ) ).toStringList() );

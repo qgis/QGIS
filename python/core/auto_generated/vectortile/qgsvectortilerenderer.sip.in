@@ -85,7 +85,7 @@ For rendering it is expected that client code calls:
 
     const QString type = sipCpp->type();
 
-    if ( type == QStringLiteral( "basic" ) )
+    if ( type == QLatin1String( "basic" ) )
       sipType = sipType_QgsVectorTileBasicRenderer;
     else
       sipType = 0;

@@ -532,7 +532,7 @@ QString QgsDataSourceUri::connectionInfo( bool expandAuthConfig ) const
     }
   }
 
-  return connectionItems.join( QStringLiteral( " " ) );
+  return connectionItems.join( QLatin1Char( ' ' ) );
 }
 
 QString QgsDataSourceUri::uri( bool expandAuthConfig ) const
@@ -546,7 +546,7 @@ QString QgsDataSourceUri::uri( bool expandAuthConfig ) const
 
   if ( mUseEstimatedMetadata )
   {
-    uri += QStringLiteral( " estimatedmetadata=true" );
+    uri += QLatin1String( " estimatedmetadata=true" );
   }
 
   if ( !mSrid.isEmpty() )
@@ -562,7 +562,7 @@ QString QgsDataSourceUri::uri( bool expandAuthConfig ) const
 
   if ( mSelectAtIdDisabled )
   {
-    uri += QStringLiteral( " selectatid=false" );
+    uri += QLatin1String( " selectatid=false" );
   }
 
   for ( QMap<QString, QString>::const_iterator it = mParams.begin(); it != mParams.end(); ++it )

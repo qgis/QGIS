@@ -1788,7 +1788,7 @@ void QgsGeoreferencerMainWindow::updateTransformParamLabel()
 // Gdal script
 void QgsGeoreferencerMainWindow::showGDALScript( const QStringList &commands )
 {
-  QString script = commands.join( QStringLiteral( "\n" ) ) + '\n';
+  QString script = commands.join( QLatin1Char( '\n' ) ) + '\n';
 
   // create window to show gdal script
   QDialogButtonBox *bbxGdalScript = new QDialogButtonBox( QDialogButtonBox::Cancel, Qt::Horizontal, this );
@@ -1838,7 +1838,7 @@ QString QgsGeoreferencerMainWindow::generateGDALtranslateCommand( bool generateT
   mTranslatedRasterFileName = QDir::tempPath() + '/' + rasterFileInfo.fileName();
   gdalCommand << QStringLiteral( "\"%1\"" ).arg( mRasterFileName ) << QStringLiteral( "\"%1\"" ).arg( mTranslatedRasterFileName );
 
-  return gdalCommand.join( QStringLiteral( " " ) );
+  return gdalCommand.join( QLatin1Char( ' ' ) );
 }
 
 QString QgsGeoreferencerMainWindow::generateGDALwarpCommand( const QString &resampling, const QString &compress,
@@ -1875,7 +1875,7 @@ QString QgsGeoreferencerMainWindow::generateGDALwarpCommand( const QString &resa
 
   gdalCommand << QStringLiteral( "\"%1\"" ).arg( mTranslatedRasterFileName ) << QStringLiteral( "\"%1\"" ).arg( mModifiedRasterFileName );
 
-  return gdalCommand.join( QStringLiteral( " " ) );
+  return gdalCommand.join( QLatin1Char( ' ' ) );
 }
 
 // Log

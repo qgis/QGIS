@@ -95,7 +95,7 @@ QTreeWidgetItem *QgsCustomizationDialog::item( const QString &path, QTreeWidgetI
   if ( pathCopy.startsWith( '/' ) )
     pathCopy = pathCopy.mid( 1 ); // remove '/'
   QStringList names = pathCopy.split( '/' );
-  pathCopy = QStringList( names.mid( 1 ) ).join( QStringLiteral( "/" ) );
+  pathCopy = QStringList( names.mid( 1 ) ).join( QLatin1Char( '/' ) );
 
   if ( ! widgetItem )
   {
@@ -843,7 +843,7 @@ void QgsCustomization::updateMainWindow( QMenu *toolBarMenu )
             continue;
           }
 
-          if ( action->metaObject()->className() == QStringLiteral( "QWidgetAction" ) )
+          if ( action->metaObject()->className() == QLatin1String( "QWidgetAction" ) )
           {
             mSettings->beginGroup( action->objectName() );
             QWidgetAction *widgetAction = qobject_cast<QWidgetAction *>( action );

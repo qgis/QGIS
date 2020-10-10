@@ -2106,16 +2106,16 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
       if ( res && !warnings.empty() )
       {
         QString message = QStringLiteral( "<p>%1</p>" ).arg( tr( "The following warnings were generated while converting the vector tile style:" ) );
-        message += QStringLiteral( "<ul>" );
+        message += QLatin1String( "<ul>" );
 
         std::sort( warnings.begin(), warnings.end() );
         warnings.erase( std::unique( warnings.begin(), warnings.end() ), warnings.end() );
 
         for ( const QString &w : qgis::as_const( warnings ) )
         {
-          message += QStringLiteral( "<li>%1</li>" ).arg( w.toHtmlEscaped().replace( '\n', QStringLiteral( "<br>" ) ) );
+          message += QStringLiteral( "<li>%1</li>" ).arg( w.toHtmlEscaped().replace( '\n', QLatin1String( "<br>" ) ) );
         }
-        message += QStringLiteral( "</ul>" );
+        message += QLatin1String( "</ul>" );
         showLayerLoadWarnings( tr( "Vector tiles" ), tr( "Style could not be completely converted" ),
                                message, Qgis::Warning );
       }
@@ -2137,7 +2137,7 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
         }
       }
     }
-    else if ( u.layerType == QStringLiteral( "project" ) )
+    else if ( u.layerType == QLatin1String( "project" ) )
     {
       openFile( u.uri, QStringLiteral( "project" ) );
     }
@@ -4173,7 +4173,7 @@ void QgisApp::setupConnections()
 
   connect( QgsProject::instance(), &QgsProject::missingDatumTransforms, this, [ = ]( const QStringList & transforms )
   {
-    QString message = tr( "Transforms are not installed: %1 " ).arg( transforms.join( QStringLiteral( " ," ) ) );
+    QString message = tr( "Transforms are not installed: %1 " ).arg( transforms.join( QLatin1String( " ," ) ) );
     messageBar()->pushWarning( tr( "Missing datum transforms" ), message );
   } );
 
@@ -5004,7 +5004,7 @@ void QgisApp::updateRecentProjectPaths()
     {
       QString path = storage->filePath( recentProject.path );
       // for geopackage projects, the path will be empty, if not valid
-      if ( storage->type() == QStringLiteral( "geopackage" ) && path.isEmpty() )
+      if ( storage->type() == QLatin1String( "geopackage" ) && path.isEmpty() )
       {
         action->setEnabled( false );
         action->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIndicatorBadLayer.svg" ) ) );
@@ -5507,7 +5507,7 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layerQStringList, const
     QgsDebugMsgLevel( "completeBaseName: " + baseName, 2 );
     const bool isVsiCurl { src.startsWith( QLatin1String( "/vsicurl" ), Qt::CaseInsensitive ) };
     const auto scheme { QUrl( src ).scheme() };
-    const bool isRemoteUrl { scheme.startsWith( QStringLiteral( "http" ) ) || scheme == QStringLiteral( "ftp" ) };
+    const bool isRemoteUrl { scheme.startsWith( QLatin1String( "http" ) ) || scheme == QLatin1String( "ftp" ) };
 
     // create the layer
     QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
@@ -6378,7 +6378,7 @@ void QgisApp::fileExit()
     else
     {
       if ( QMessageBox::question( this, tr( "Active Tasks" ),
-                                  tr( "The following tasks are currently running in the background:\n\n%1\n\nDo you want to try canceling these active tasks?" ).arg( tasks.join( QStringLiteral( "\n" ) ) ),
+                                  tr( "The following tasks are currently running in the background:\n\n%1\n\nDo you want to try canceling these active tasks?" ).arg( tasks.join( QLatin1Char( '\n' ) ) ),
                                   QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
       {
         QgsApplication::taskManager()->cancelAll();
@@ -6923,7 +6923,7 @@ void QgisApp::fileOpen()
     QString fullPath = QFileDialog::getOpenFileName( this,
                        tr( "Open Project" ),
                        lastUsedDir,
-                       fileFilters.join( QStringLiteral( ";;" ) ) );
+                       fileFilters.join( QLatin1String( ";;" ) ) );
     if ( fullPath.isNull() )
     {
       return;
@@ -7498,7 +7498,7 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
     QgsMbTiles reader( fileName );
     if ( reader.open() )
     {
-      if ( reader.metadataValue( "format" ) == QStringLiteral( "pbf" ) )
+      if ( reader.metadataValue( "format" ) == QLatin1String( "pbf" ) )
       {
         // these are vector tiles
         QUrlQuery uq;
@@ -7575,7 +7575,7 @@ void QgisApp::openFile( const QString &fileName, const QString &fileTypeHint )
 {
   // check to see if we are opening a project file
   QFileInfo fi( fileName );
-  if ( fileTypeHint == QStringLiteral( "project" ) || fi.suffix().compare( QLatin1String( "qgs" ), Qt::CaseInsensitive ) == 0 || fi.suffix().compare( QLatin1String( "qgz" ), Qt::CaseInsensitive ) == 0 )
+  if ( fileTypeHint == QLatin1String( "project" ) || fi.suffix().compare( QLatin1String( "qgs" ), Qt::CaseInsensitive ) == 0 || fi.suffix().compare( QLatin1String( "qgz" ), Qt::CaseInsensitive ) == 0 )
   {
     QgsDebugMsgLevel( "Opening project " + fileName, 2 );
     openProject( fileName );
@@ -8441,7 +8441,7 @@ void QgisApp::commitError( QgsVectorLayer *vlayer )
   mv->setWindowTitle( tr( "Commit Errors" ) );
   mv->setMessageAsPlainText( tr( "Could not commit changes to layer %1" ).arg( vlayer->name() )
                              + "\n\n"
-                             + tr( "Errors: %1\n" ).arg( commitErrors.join( QStringLiteral( "\n  " ) ) )
+                             + tr( "Errors: %1\n" ).arg( commitErrors.join( QLatin1String( "\n  " ) ) )
                            );
 
   QToolButton *showMore = new QToolButton();
@@ -8936,9 +8936,9 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
       if ( filename.isEmpty() )
         return;
 
-      if ( ! filename.endsWith( QStringLiteral( ".qml" ) ) )
+      if ( ! filename.endsWith( QLatin1String( ".qml" ) ) )
       {
-        filename += QStringLiteral( ".qml" );
+        filename += QLatin1String( ".qml" );
       }
 
       bool defaultLoadedFlag;
@@ -9573,7 +9573,7 @@ void QgisApp::setupLayoutManagerConnections()
       QgsMapLayerAction *action = mAtlasFeatureActions.value( pl );
       if ( action )
       {
-        action->setText( QString( tr( "Set as atlas feature for %1" ) ).arg( name ) );
+        action->setText( tr( "Set as atlas feature for %1" ).arg( name ) );
       }
     } );
 
@@ -9648,7 +9648,7 @@ void QgisApp::setupAtlasMapLayerAction( QgsPrintLayout *layout, bool enableActio
 
   if ( enableAction )
   {
-    action = new QgsMapLayerAction( QString( tr( "Set as Atlas Feature for %1" ) ).arg( layout->name() ),
+    action = new QgsMapLayerAction( tr( "Set as Atlas Feature for %1" ).arg( layout->name() ),
                                     this, layout->atlas()->coverageLayer(), QgsMapLayerAction::SingleFeature,
                                     QgsApplication::getThemeIcon( QStringLiteral( "/mIconAtlas.svg" ) ) );
     mAtlasFeatureActions.insert( layout, action );
@@ -11092,7 +11092,7 @@ void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerR
                           tr( "Could not %1 changes to layer %2\n\nErrors: %3\n" )
                           .arg( leaveEditable ? tr( "rollback" ) : tr( "cancel" ),
                                 vlayer->name(),
-                                vlayer->commitErrors().join( QStringLiteral( "\n  " ) ) ) );
+                                vlayer->commitErrors().join( QLatin1String( "\n  " ) ) ) );
   }
 
   if ( leaveEditable )
@@ -11301,7 +11301,7 @@ void QgisApp::layerSubsetString( QgsMapLayer *mapLayer )
            provider->supportsSubsetString() )
       {
         // PG raster is the only one for now
-        if ( provider->name() == QStringLiteral( "postgresraster" ) )
+        if ( provider->name() == QLatin1String( "postgresraster" ) )
         {
           // We need a vector for the sql editor
           QgsDataSourceUri vectorUri { provider->dataSourceUri() };
@@ -11460,7 +11460,7 @@ void QgisApp::projectTemporalRangeChanged()
       QVariantMap uri = metadata->decodeUri( currentLayer->dataProvider()->dataSourceUri() );
 
       if ( uri.contains( QStringLiteral( "temporalSource" ) ) &&
-           uri.value( QStringLiteral( "temporalSource" ) ).toString() == QStringLiteral( "project" ) )
+           uri.value( QStringLiteral( "temporalSource" ) ).toString() == QLatin1String( "project" ) )
       {
         QgsDateTimeRange range = QgsProject::instance()->timeSettings()->temporalRange();
         if ( range.begin().isValid() && range.end().isValid() )
@@ -11516,7 +11516,7 @@ void QgisApp::removeLayer()
   if ( !nonRemovableLayerNames.isEmpty() )
   {
     QMessageBox::warning( this, tr( "Required Layers" ),
-                          tr( "The following layers are marked as required by the project:\n\n%1\n\nPlease deselect them (or unmark as required) and retry." ).arg( nonRemovableLayerNames.join( QStringLiteral( "\n" ) ) ) );
+                          tr( "The following layers are marked as required by the project:\n\n%1\n\nPlease deselect them (or unmark as required) and retry." ).arg( nonRemovableLayerNames.join( QLatin1Char( '\n' ) ) ) );
     return;
   }
 
@@ -11544,7 +11544,7 @@ void QgisApp::removeLayer()
   if ( !activeTaskDescriptions.isEmpty() )
   {
     QMessageBox::warning( this, tr( "Active Tasks" ),
-                          tr( "The following tasks are currently running which depend on this layer:\n\n%1\n\nPlease cancel these tasks and retry." ).arg( activeTaskDescriptions.join( QStringLiteral( "\n" ) ) ) );
+                          tr( "The following tasks are currently running which depend on this layer:\n\n%1\n\nPlease cancel these tasks and retry." ).arg( activeTaskDescriptions.join( QLatin1Char( '\n' ) ) ) );
     return;
   }
 
@@ -13279,7 +13279,7 @@ bool QgisApp::checkTasksDependOnProject()
   if ( !activeTaskDescriptions.isEmpty() )
   {
     QMessageBox::warning( this, tr( "Active Tasks" ),
-                          tr( "The following tasks are currently running which depend on layers in this project:\n\n%1\n\nPlease cancel these tasks and retry." ).arg( qgis::setToList( activeTaskDescriptions ).join( QStringLiteral( "\n" ) ) ) );
+                          tr( "The following tasks are currently running which depend on layers in this project:\n\n%1\n\nPlease cancel these tasks and retry." ).arg( qgis::setToList( activeTaskDescriptions ).join( QLatin1Char( '\n' ) ) ) );
     return true;
   }
   return false;

@@ -240,7 +240,7 @@ void TestQgsOfflineEditing::removeConstraintsOnDefaultValues()
   QString name = gpkgLayer->name();
 
   //check constraints (not null and unique)
-  QgsFieldConstraints constraintsOfFidField = gpkgLayer->fields().at( gpkgLayer->fields().indexOf( QStringLiteral( "fid" ) ) ).constraints();
+  QgsFieldConstraints constraintsOfFidField = gpkgLayer->fields().at( gpkgLayer->fields().indexOf( QLatin1String( "fid" ) ) ).constraints();
   QVERIFY( constraintsOfFidField.constraints() & QgsFieldConstraints::ConstraintNotNull );
   QVERIFY( constraintsOfFidField.constraints() & QgsFieldConstraints::ConstraintUnique );
 
@@ -252,7 +252,7 @@ void TestQgsOfflineEditing::removeConstraintsOnDefaultValues()
 
   name = gpkgLayer->name();
   //check constraints (unique but not not null)
-  constraintsOfFidField = gpkgLayer->fields().at( gpkgLayer->fields().indexOf( QStringLiteral( "fid" ) ) ).constraints();
+  constraintsOfFidField = gpkgLayer->fields().at( gpkgLayer->fields().indexOf( QLatin1String( "fid" ) ) ).constraints();
   QVERIFY( !( constraintsOfFidField.constraints() & QgsFieldConstraints::ConstraintNotNull ) );
   QVERIFY( constraintsOfFidField.constraints() & QgsFieldConstraints::ConstraintUnique );
 
@@ -263,7 +263,7 @@ void TestQgsOfflineEditing::removeConstraintsOnDefaultValues()
 
   name = gpkgLayer->name();
   //check constraints (not null and unique)
-  constraintsOfFidField = gpkgLayer->fields().at( gpkgLayer->fields().indexOf( QStringLiteral( "fid" ) ) ).constraints();
+  constraintsOfFidField = gpkgLayer->fields().at( gpkgLayer->fields().indexOf( QLatin1String( "fid" ) ) ).constraints();
   QVERIFY( constraintsOfFidField.constraints() & QgsFieldConstraints::ConstraintNotNull );
   QVERIFY( constraintsOfFidField.constraints() & QgsFieldConstraints::ConstraintUnique );
 }

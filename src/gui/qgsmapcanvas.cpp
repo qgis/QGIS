@@ -2458,7 +2458,7 @@ void QgsMapCanvas::readProject( const QDomDocument &doc )
 
     QgsMapSettings tmpSettings;
     tmpSettings.readXml( node );
-    if ( objectName() != QStringLiteral( "theMapCanvas" ) )
+    if ( objectName() != QLatin1String( "theMapCanvas" ) )
     {
       // never manually set the crs for the main canvas - this is instead connected to the project CRS
       setDestinationCrs( tmpSettings.destinationCrs() );

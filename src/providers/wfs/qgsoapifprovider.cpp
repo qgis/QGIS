@@ -549,9 +549,9 @@ QString QgsOapifSharedData::translateNodeToServer(
         if ( i == 0 )
           untranslatedPart = QStringLiteral( "(" );
         else
-          untranslatedPart += QStringLiteral( " AND (" );
+          untranslatedPart += QLatin1String( " AND (" );
         untranslatedPart += topAndNodes[i]->dump();
-        untranslatedPart += QStringLiteral( ")" );
+        untranslatedPart += QLatin1Char( ')' );
       }
     }
   }

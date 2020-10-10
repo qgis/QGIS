@@ -273,7 +273,7 @@ QString QgsGeoPackageProjectStorage::encodeUri( const QgsGeoPackageProjectUri &g
 
   // Check for windows network shares: github issue #31310
   QString database { gpkgUri.database };
-  if ( database.startsWith( QStringLiteral( "//" ) ) )
+  if ( database.startsWith( QLatin1String( "//" ) ) )
   {
     u.setPath( database.replace( '/', '\\' ) );
   }
@@ -301,7 +301,7 @@ QgsGeoPackageProjectUri QgsGeoPackageProjectStorage::decodeUri( const QString &u
   const QRegularExpression winLocalPath { R"(^[A-Za-z]:)" };
   // Check for windows network shares: github issue #31310
   const QString path { ( winLocalPath.match( urlAsString ).hasMatch() ||
-                         urlAsString.startsWith( QStringLiteral( "//" ) ) ) ?
+                         urlAsString.startsWith( QLatin1String( "//" ) ) ) ?
                        urlAsString :
                        url.path() };
 

@@ -54,7 +54,7 @@ void QgsGdalItemGuiProvider::onDeleteLayer( QgsDataItemGuiContext context )
   QPointer< QgsDataItem > parent = data[QStringLiteral( "parentItem" )].value<QPointer< QgsDataItem >>();
 
   // Messages are different for files and tables
-  bool isPostgresRaster { uri.startsWith( QStringLiteral( "PG:" ) ) };
+  bool isPostgresRaster { uri.startsWith( QLatin1String( "PG:" ) ) };
   const QString title = isPostgresRaster  ?
                         tr( "Delete Table" ) :
                         tr( "Delete File" );
@@ -164,7 +164,7 @@ void QgsGdalItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu
   if ( QgsGdalLayerItem *layerItem = qobject_cast< QgsGdalLayerItem * >( item ) )
   {
     // Messages are different for files and tables
-    bool isPostgresRaster { layerItem->uri().startsWith( QStringLiteral( "PG:" ) ) };
+    bool isPostgresRaster { layerItem->uri().startsWith( QLatin1String( "PG:" ) ) };
     const QString message = isPostgresRaster  ?
                             QObject::tr( "Delete Table “%1”…" ).arg( layerItem->name() ) :
                             QObject::tr( "Delete File “%1”…" ).arg( layerItem->name() );

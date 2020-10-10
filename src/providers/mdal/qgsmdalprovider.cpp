@@ -508,7 +508,7 @@ void QgsMdalProvider::fileMeshFilters( QString &fileMeshFiltersString, QString &
 
     QString longName = MDAL_DR_longName( mdalDriver );
     QString driverFilters = MDAL_DR_filters( mdalDriver );
-    driverFilters = driverFilters.replace( QStringLiteral( ";;" ), QStringLiteral( " " ) );
+    driverFilters = driverFilters.replace( QLatin1String( ";;" ), QLatin1String( " " ) );
 
     bool isMeshDriver = MDAL_DR_meshLoadCapability( mdalDriver );
 
@@ -531,11 +531,11 @@ void QgsMdalProvider::fileMeshFilters( QString &fileMeshFiltersString, QString &
   // sort file filters alphabetically
   QStringList filters = fileMeshFiltersString.split( QStringLiteral( ";;" ), QString::SkipEmptyParts );
   filters.sort();
-  fileMeshFiltersString = filters.join( QStringLiteral( ";;" ) ) + ";;";
+  fileMeshFiltersString = filters.join( QLatin1String( ";;" ) ) + ";;";
 
   filters = fileMeshDatasetFiltersString.split( QStringLiteral( ";;" ), QString::SkipEmptyParts );
   filters.sort();
-  fileMeshDatasetFiltersString = filters.join( QStringLiteral( ";;" ) ) + ";;";
+  fileMeshDatasetFiltersString = filters.join( QLatin1String( ";;" ) ) + ";;";
 
   // can't forget the default case - first
   fileMeshFiltersString.prepend( QObject::tr( "All files" ) + " (*);;" );
@@ -597,8 +597,8 @@ void QgsMdalProvider::fileMeshExtensions( QStringList &fileMeshExtensions,
   fileMeshExtensions.erase( std::unique( fileMeshExtensions.begin(), fileMeshExtensions.end() ), fileMeshExtensions.end() );
   fileMeshDatasetExtensions.erase( std::unique( fileMeshDatasetExtensions.begin(), fileMeshDatasetExtensions.end() ), fileMeshDatasetExtensions.end() );
 
-  QgsDebugMsgLevel( "Mesh extensions list built: " + fileMeshExtensions.join( QStringLiteral( ";;" ) ), 2 );
-  QgsDebugMsgLevel( "Mesh dataset extensions list built: " + fileMeshDatasetExtensions.join( QStringLiteral( ";;" ) ), 2 );
+  QgsDebugMsgLevel( "Mesh extensions list built: " + fileMeshExtensions.join( QLatin1String( ";;" ) ), 2 );
+  QgsDebugMsgLevel( "Mesh dataset extensions list built: " + fileMeshDatasetExtensions.join( QLatin1String( ";;" ) ), 2 );
 }
 
 /*----------------------------------------------------------------------------------------------*/

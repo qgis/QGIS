@@ -337,7 +337,7 @@ void QgsRuleBasedRendererWidget::refineRuleScalesGui( const QModelIndexList &ind
     if ( ok )
       scales.append( scale );
     else
-      QMessageBox::information( this, tr( "Scale Refinement" ), QString( tr( "\"%1\" is not valid scale denominator, ignoring it." ) ).arg( item ) );
+      QMessageBox::information( this, tr( "Scale Refinement" ), tr( "\"%1\" is not valid scale denominator, ignoring it." ).arg( item ) );
   }
 
   for ( const QModelIndex &index : indexList )

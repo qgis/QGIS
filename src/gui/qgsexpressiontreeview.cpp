@@ -679,14 +679,14 @@ void QgsExpressionTreeView::loadExpressionsFromJson( const QJsonDocument &expres
     }
 
     // we want to import only items of type expression for now
-    if ( expressionObj["type"].toString() != QStringLiteral( "expression" ) )
+    if ( expressionObj["type"].toString() != QLatin1String( "expression" ) )
     {
       skippedExpressionLabels.append( expressionObj["name"].toString() );
       continue;
     }
 
     // we want to import only items of type expression for now
-    if ( expressionObj["group"].toString() != QStringLiteral( "user" ) )
+    if ( expressionObj["group"].toString() != QLatin1String( "user" ) )
     {
       skippedExpressionLabels.append( expressionObj["name"].toString() );
       continue;

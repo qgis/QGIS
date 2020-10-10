@@ -653,7 +653,7 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
       {
         whereClauses << whereClause( featureId, fields, conn, pkType, pkAttrs, sharedData );
       }
-      return whereClauses.isEmpty() ? QString() : whereClauses.join( QStringLiteral( " OR " ) ).prepend( '(' ).append( ')' );
+      return whereClauses.isEmpty() ? QString() : whereClauses.join( QLatin1String( " OR " ) ).prepend( '(' ).append( ')' );
     }
   }
   return QString(); //avoid warning
@@ -855,7 +855,7 @@ bool QgsPostgresProvider::loadFields()
         tableoidsList.append( QString::number( tableoid ) );
       }
 
-      QString tableoidsFilter = '(' + tableoidsList.join( QStringLiteral( "," ) ) + ')';
+      QString tableoidsFilter = '(' + tableoidsList.join( QLatin1Char( ',' ) ) + ')';
 
       // Collect formatted field types
       sql = QStringLiteral(
@@ -1214,15 +1214,15 @@ bool QgsPostgresProvider::loadFields()
     {
       const QString seqName { mTableName + '_' + fieldName + QStringLiteral( "_seq" ) };
       const QString seqSql { QStringLiteral( "SELECT c.oid "
-                                               "  FROM pg_class c "
-                                               "  LEFT JOIN pg_namespace n "
-                                               "    ON ( n.oid = c.relnamespace ) "
-                                               "  WHERE c.relkind = 'S' "
-                                               "    AND c.relname = %1 "
-                                               "    AND n.nspname = %2" )
-        .arg( quotedValue( seqName ) )
-        .arg( quotedValue( mSchemaName ) )
-      };
+                                             "  FROM pg_class c "
+                                             "  LEFT JOIN pg_namespace n "
+                                             "    ON ( n.oid = c.relnamespace ) "
+                                             "  WHERE c.relkind = 'S' "
+                                             "    AND c.relname = %1 "
+                                             "    AND n.nspname = %2" )
+                             .arg( quotedValue( seqName ) )
+                             .arg( quotedValue( mSchemaName ) )
+                           };
       QgsPostgresResult seqResult( connectionRO()->PQexec( seqSql ) );
       if ( seqResult.PQntuples() == 1 )
       {
@@ -2247,7 +2247,7 @@ QString QgsPostgresProvider::geomParam( int offset ) const
 
   if ( mSpatialColType == SctTopoGeometry )
   {
-    geometry += QStringLiteral( "toTopoGeom(" );
+    geometry += QLatin1String( "toTopoGeom(" );
   }
 
   if ( forceMulti )
@@ -3900,7 +3900,7 @@ bool QgsPostgresProvider::getGeometryDetails()
 
       QString dim = result.PQgetvalue( 0, 2 );
       if ( dim == QLatin1String( "3" ) && !detectedType.endsWith( 'M' ) )
-        detectedType += QLatin1String( "Z" );
+        detectedType += QLatin1Char( 'Z' );
       else if ( dim == QLatin1String( "4" ) )
         detectedType += QLatin1String( "ZM" );
 
@@ -4281,7 +4281,7 @@ void postgisGeometryType( QgsWkbTypes::Type wkbType, QString &geometryType, int 
   }
   else if ( QgsWkbTypes::hasM( wkbType ) )
   {
-    geometryType += QLatin1String( "M" );
+    geometryType += QLatin1Char( 'M' );
     dim = 3;
   }
   else if ( wkbType >= QgsWkbTypes::Point25D && wkbType <= QgsWkbTypes::MultiPolygon25D )
@@ -4458,8 +4458,8 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
 
       if ( i )
       {
-        pk  += QLatin1String( "," );
-        sql += QLatin1String( "," );
+        pk  += QLatin1Char( ',' );
+        sql += QLatin1Char( ',' );
       }
 
       pk += col;
@@ -5510,7 +5510,7 @@ QString QgsPostgresProviderMetadata::getStyleById( const QString &uri, QString s
     if ( result.PQntuples() == 1 )
       style = result.PQgetvalue( 0, 0 );
     else
-      errCause = QObject::tr( "Consistency error in table '%1'. Style id should be unique" ).arg( QStringLiteral( "layer_styles" ) );
+      errCause = QObject::tr( "Consistency error in table '%1'. Style id should be unique" ).arg( QLatin1String( "layer_styles" ) );
   }
   else
   {

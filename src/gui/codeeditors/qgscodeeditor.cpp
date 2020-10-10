@@ -296,7 +296,7 @@ void QgsCodeEditor::insertText( const QString &text )
 
 QColor QgsCodeEditor::defaultColor( QgsCodeEditorColorScheme::ColorRole role, const QString &theme )
 {
-  if ( theme.isEmpty() && QgsApplication::instance()->themeName() == QStringLiteral( "default" ) )
+  if ( theme.isEmpty() && QgsApplication::instance()->themeName() == QLatin1String( "default" ) )
   {
     // if using default theme, take certain colors from the palette
     QPalette pal = qApp->palette();

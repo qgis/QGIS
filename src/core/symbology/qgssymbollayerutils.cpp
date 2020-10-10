@@ -3074,7 +3074,7 @@ QgsSymbol *QgsSymbolLayerUtils::symbolFromMimeData( const QMimeData *data )
     {
       elem = doc.documentElement();
 
-      if ( elem.nodeName() != QStringLiteral( "symbol" ) )
+      if ( elem.nodeName() != QLatin1String( "symbol" ) )
         elem = elem.firstChildElement( QStringLiteral( "symbol" ) );
 
       return loadSymbol( elem, QgsReadWriteContext() );
@@ -3427,7 +3427,7 @@ QMimeData *QgsSymbolLayerUtils::colorListToMimeData( const QgsNamedColorList &co
   {
     colorListString << ( *colorIt ).first.name();
   }
-  mimeData->setText( colorListString.join( QStringLiteral( "\n" ) ) );
+  mimeData->setText( colorListString.join( QLatin1Char( '\n' ) ) );
 
   //set mime color data to first color
   if ( colorList.length() > 0 )

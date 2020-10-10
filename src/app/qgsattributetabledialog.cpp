@@ -603,7 +603,7 @@ void QgsAttributeTableDialog::mActionAddFeature_triggered()
 {
   QgsSettings s;
 
-  if ( s.value( QStringLiteral( "/qgis/attributeTableLastAddFeatureMethod" ) ) == QStringLiteral( "attributeForm" ) )
+  if ( s.value( QStringLiteral( "/qgis/attributeTableLastAddFeatureMethod" ) ) == QLatin1String( "attributeForm" ) )
     mActionAddFeatureViaAttributeForm_triggered();
   else
     mActionAddFeatureViaAttributeTable_triggered();

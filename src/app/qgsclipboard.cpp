@@ -93,8 +93,8 @@ void QgsClipboard::generateClipboardText( QString &textContent, QString &htmlCon
       // first do the field names
       if ( format == AttributesWithWKT )
       {
-        textFields += QStringLiteral( "wkt_geom" );
-        htmlFields += QStringLiteral( "<td>wkt_geom</td>" );
+        textFields += QLatin1String( "wkt_geom" );
+        htmlFields += QLatin1String( "<td>wkt_geom</td>" );
       }
 
       const auto constMFeatureFields = mFeatureFields;
@@ -103,7 +103,7 @@ void QgsClipboard::generateClipboardText( QString &textContent, QString &htmlCon
         textFields += field.name();
         htmlFields += QStringLiteral( "<td>%1</td>" ).arg( field.name() );
       }
-      textLines += textFields.join( QStringLiteral( "\t" ) );
+      textLines += textFields.join( QLatin1Char( '\t' ) );
       htmlLines += htmlFields.join( QString() );
       textFields.clear();
       htmlFields.clear();
@@ -133,24 +133,24 @@ void QgsClipboard::generateClipboardText( QString &textContent, QString &htmlCon
         {
           QString value = attributes.at( idx ).toString();
           if ( value.contains( '\n' ) || value.contains( '\t' ) )
-            textFields += '"' + value.replace( '"', QStringLiteral( "\"\"" ) ) + '\"';
+            textFields += '"' + value.replace( '"', QLatin1String( "\"\"" ) ) + '\"';
           else
           {
             textFields += value;
           }
           value = attributes.at( idx ).toString();
-          value.replace( '\n', QStringLiteral( "<br>" ) ).replace( '\t', QStringLiteral( "&emsp;" ) );
+          value.replace( '\n', QLatin1String( "<br>" ) ).replace( '\t', QLatin1String( "&emsp;" ) );
           htmlFields += QStringLiteral( "<td>%1</td>" ).arg( value );
         }
 
-        textLines += textFields.join( QStringLiteral( "\t" ) );
+        textLines += textFields.join( QLatin1Char( '\t' ) );
         htmlLines += htmlFields.join( QString() );
         textFields.clear();
         htmlFields.clear();
       }
 
       textContent = textLines.join( '\n' );
-      htmlContent = QStringLiteral( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr>" ) + htmlLines.join( QStringLiteral( "</tr><tr>" ) ) + QStringLiteral( "</tr></table></body></html>" );
+      htmlContent = QStringLiteral( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr>" ) + htmlLines.join( QLatin1String( "</tr><tr>" ) ) + QStringLiteral( "</tr></table></body></html>" );
       break;
     }
     case GeoJSON:

@@ -408,7 +408,7 @@ void QgsAuthOAuth2Method::onCloseBrowser()
     const QList<QWidget *> widgets = QgsApplication::topLevelWidgets();
     for ( QWidget *topwdgt : widgets )
     {
-      if ( topwdgt->objectName() == QStringLiteral( "MainWindow" ) )
+      if ( topwdgt->objectName() == QLatin1String( "MainWindow" ) )
       {
         topwdgt->raise();
         topwdgt->activateWindow();

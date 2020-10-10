@@ -257,11 +257,11 @@ const QString QgsServerOgcApiHandler::templatePath( const QgsServerApiContext &c
 {
   // resources/server/api + /ogc/templates/ + operationId + .html
   QString path { context.serverInterface()->serverSettings()->apiResourcesDirectory() };
-  path += QStringLiteral( "/ogc/templates" );
+  path += QLatin1String( "/ogc/templates" );
   path += context.apiRootPath();
   path += '/';
   path += QString::fromStdString( operationId() );
-  path += QStringLiteral( ".html" );
+  path += QLatin1String( ".html" );
   return path;
 }
 

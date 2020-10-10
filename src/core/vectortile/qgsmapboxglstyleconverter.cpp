@@ -1944,7 +1944,7 @@ QString QgsMapBoxGlStyleConverter::parsePointStops( double base, const QVariantL
                                       interpolateExpression( bz.toDouble(), tz.toDouble(), bv.toList().value( 0 ).toDouble(), tv.toList().value( 0 ).toDouble(), base, multiplier ),
                                       interpolateExpression( bz.toDouble(), tz.toDouble(), bv.toList().value( 1 ).toDouble(), tv.toList().value( 1 ).toDouble(), base, multiplier ) );
   }
-  caseString += QStringLiteral( "END" );
+  caseString += QLatin1String( "END" );
   return caseString;
 }
 
@@ -2289,7 +2289,7 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
     }
 
     if ( op == QLatin1String( "none" ) )
-      return QStringLiteral( "NOT (%1)" ).arg( parts.join( QStringLiteral( ") AND NOT (" ) ) );
+      return QStringLiteral( "NOT (%1)" ).arg( parts.join( QLatin1String( ") AND NOT (" ) ) );
 
     QString operatorString;
     if ( op == QLatin1String( "all" ) )
@@ -2345,9 +2345,9 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
       parts << part;
     }
     if ( op == QLatin1String( "in" ) )
-      return QStringLiteral( "%1 IN (%2)" ).arg( key, parts.join( QStringLiteral( ", " ) ) );
+      return QStringLiteral( "%1 IN (%2)" ).arg( key, parts.join( QLatin1String( ", " ) ) );
     else
-      return QStringLiteral( "(%1 IS NULL OR %1 NOT IN (%2))" ).arg( key, parts.join( QStringLiteral( ", " ) ) );
+      return QStringLiteral( "(%1 IS NULL OR %1 NOT IN (%2))" ).arg( key, parts.join( QLatin1String( ", " ) ) );
   }
   else if ( op == QLatin1String( "get" ) )
   {
@@ -2490,8 +2490,8 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64( const QVariant &value
         spriteProperty = QStringLiteral( "CASE" );
         spriteSizeProperty = QStringLiteral( "CASE" );
 
-        spriteName.replace( "(", QStringLiteral( "\\(" ) );
-        spriteName.replace( ")", QStringLiteral( "\\)" ) );
+        spriteName.replace( "(", QLatin1String( "\\(" ) );
+        spriteName.replace( ")", QLatin1String( "\\)" ) );
         spriteName.replace( fieldNameMatch, QStringLiteral( "([^\\/\\\\]+)" ) );
         QRegularExpression fieldValueMatch( spriteName );
         const QStringList spriteNames = context.spriteDefinitions().keys();
@@ -2518,8 +2518,8 @@ QString QgsMapBoxGlStyleConverter::retrieveSpriteAsBase64( const QVariant &value
           }
         }
 
-        spriteProperty += QStringLiteral( " END" );
-        spriteSizeProperty += QStringLiteral( " END" );
+        spriteProperty += QLatin1String( " END" );
+        spriteSizeProperty += QLatin1String( " END" );
       }
       else
       {

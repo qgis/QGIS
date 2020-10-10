@@ -251,7 +251,7 @@ namespace QgsWfs
       QgsAttributeList attrIndexes = vlayer->attributeList();
       const QgsFields fields = vlayer->fields();
       bool withGeom = true;
-      if ( !propertyList.isEmpty() && propertyList.first() != QStringLiteral( "*" ) )
+      if ( !propertyList.isEmpty() && propertyList.first() != QLatin1String( "*" ) )
       {
         withGeom = false;
         QStringList::const_iterator plstIt;
@@ -277,7 +277,7 @@ namespace QgsWfs
           {
             idxList.append( fieldNameIdx );
           }
-          else if ( fieldName == QStringLiteral( "geometry" ) )
+          else if ( fieldName == QLatin1String( "geometry" ) )
           {
             withGeom = true;
           }
@@ -578,7 +578,7 @@ namespace QgsWfs
         query.srsName = mWfsParameters.srsName();
 
         // Parse PropertyName
-        if ( propertyName != QStringLiteral( "*" ) )
+        if ( propertyName != QLatin1String( "*" ) )
         {
           QStringList propertyList;
 
@@ -653,7 +653,7 @@ namespace QgsWfs
       query.srsName = mWfsParameters.srsName();
 
       // Parse PropertyName
-      if ( propertyName != QStringLiteral( "*" ) )
+      if ( propertyName != QLatin1String( "*" ) )
       {
         QStringList propertyList;
 
@@ -1010,7 +1010,7 @@ namespace QgsWfs
         fcString = QStringLiteral( "{\"type\": \"FeatureCollection\",\n" );
         fcString += QStringLiteral( " \"timeStamp\": \"%1\"\n" ).arg( now.toString( Qt::ISODate ) );
         fcString += QStringLiteral( " \"numberOfFeatures\": %1\n" ).arg( QString::number( numberOfFeatures ) );
-        fcString += QLatin1String( "}" );
+        fcString += QLatin1Char( '}' );
       }
       else
       {
@@ -1069,7 +1069,7 @@ namespace QgsWfs
         fcString += "\n timeStamp=\"" + now.toString( Qt::ISODate ) + "\"";
         fcString += "\n numberOfFeatures=\"" + QString::number( numberOfFeatures ) + "\"";
         fcString += QLatin1String( ">\n" );
-        fcString += QStringLiteral( "</wfs:FeatureCollection>" );
+        fcString += QLatin1String( "</wfs:FeatureCollection>" );
       }
 
       response.write( fcString.toUtf8() );
@@ -1255,7 +1255,7 @@ namespace QgsWfs
       if ( format == QgsWfsParameters::Format::GeoJSON )
       {
         fcString += QLatin1String( " ]\n" );
-        fcString += QLatin1String( "}" );
+        fcString += QLatin1Char( '}' );
       }
       else
       {

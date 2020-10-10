@@ -122,7 +122,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
           if ( role == Qt::ToolTipRole )
           {
             QString tooltip = QStringLiteral( "<h3>%1</h3><p><i>%2</i>" ).arg( name,
-                              tags.count() > 0 ? tags.join( QStringLiteral( ", " ) ) : tr( "Not tagged" ) );
+                              tags.count() > 0 ? tags.join( QLatin1String( ", " ) ) : tr( "Not tagged" ) );
 
             switch ( entityType )
             {
@@ -216,7 +216,7 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
           }
         }
         case Tags:
-          return mStyle->tagsOfSymbol( entityType, name ).join( QStringLiteral( ", " ) );
+          return mStyle->tagsOfSymbol( entityType, name ).join( QLatin1String( ", " ) );
       }
       return QVariant();
     }

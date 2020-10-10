@@ -948,7 +948,7 @@ void QgsLayout::updateZValues( const bool addUndoCommands )
 
 bool QgsLayout::readXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context )
 {
-  if ( layoutElement.nodeName() != QStringLiteral( "Layout" ) )
+  if ( layoutElement.nodeName() != QLatin1String( "Layout" ) )
   {
     return false;
   }
@@ -1064,7 +1064,7 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
   for ( int i = 0; i < layoutItemList.size(); ++i )
   {
     const QDomElement currentItemElem = layoutItemList.at( i ).toElement();
-    if ( currentItemElem.nodeName() != QStringLiteral( "LayoutItem" ) )
+    if ( currentItemElem.nodeName() != QLatin1String( "LayoutItem" ) )
       continue;
 
     const int itemType = currentItemElem.attribute( QStringLiteral( "type" ) ).toInt();

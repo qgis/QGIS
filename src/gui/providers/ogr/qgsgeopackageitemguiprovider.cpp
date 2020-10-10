@@ -434,13 +434,13 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
       QString error;
       // Common checks for raster and vector
       // aspatial is treated like vector
-      if ( dropUri.layerType == QStringLiteral( "vector" ) )
+      if ( dropUri.layerType == QLatin1String( "vector" ) )
       {
         // open the source layer
         srcLayer = dropUri.vectorLayer( owner, error );
         isVector = true;
       }
-      else if ( dropUri.layerType == QStringLiteral( "mesh" ) )
+      else if ( dropUri.layerType == QLatin1String( "mesh" ) )
       {
         // unsupported
         hasError = true;
@@ -557,7 +557,7 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
   {
     QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
     output->setTitle( tr( "Import to GeoPackage database" ) );
-    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QStringLiteral( "\n" ) ), QgsMessageOutput::MessageText );
+    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QLatin1Char( '\n' ) ), QgsMessageOutput::MessageText );
     output->showMessage();
   }
   if ( ! importTasks.isEmpty() )

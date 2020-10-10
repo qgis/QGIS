@@ -102,7 +102,7 @@ void QgsWfsLayerItem::copyStyle()
   }
 
   QString url( connection->uri().encodedUri() );
-  QgsGeoNodeRequest geoNodeRequest( url.replace( QStringLiteral( "url=" ), QString() ), true );
+  QgsGeoNodeRequest geoNodeRequest( url.replace( QLatin1String( "url=" ), QString() ), true );
   QgsGeoNodeStyle style = geoNodeRequest.fetchDefaultStyleBlocking( this->name() );
   if ( style.name.isEmpty() )
   {

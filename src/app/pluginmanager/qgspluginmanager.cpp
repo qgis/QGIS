@@ -966,7 +966,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     {
       *tag = QStringLiteral( "<a href='rpc2://search.tag/%1/'>%1</a>" ).arg( ( *tag ).trimmed() );
     }
-    html += QStringLiteral( "<tr><td class='key'>%1 </td><td>%2</td></tr>" ).arg( tr( "Tags" ), tags.join( QStringLiteral( ", " ) ) );
+    html += QStringLiteral( "<tr><td class='key'>%1 </td><td>%2</td></tr>" ).arg( tr( "Tags" ), tags.join( QLatin1String( ", " ) ) );
   }
 
   if ( ! metadata->value( QStringLiteral( "homepage" ) ).isEmpty() || ! metadata->value( QStringLiteral( "tracker" ) ).isEmpty() || ! metadata->value( QStringLiteral( "code_repository" ) ).isEmpty() )
@@ -1026,7 +1026,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     if ( downloadUrl.contains( QStringLiteral( "plugins.qgis.org" ) ) )
     {
       // For the main repo, open the plugin version page instead of the download link. For other repositories the download link is the only known endpoint.
-      downloadUrl = downloadUrl.replace( QStringLiteral( "download/" ), QString() );
+      downloadUrl = downloadUrl.replace( QLatin1String( "download/" ), QString() );
     }
 
     QString dateUpdatedStr;
@@ -1050,7 +1050,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     if ( downloadUrl.contains( QStringLiteral( "plugins.qgis.org" ) ) )
     {
       // For the main repo, open the plugin version page instead of the download link. For other repositories the download link is the only known endpoint.
-      downloadUrl = downloadUrl.replace( QStringLiteral( "download/" ), QString() );
+      downloadUrl = downloadUrl.replace( QLatin1String( "download/" ), QString() );
     }
 
     QString dateUpdatedStr;

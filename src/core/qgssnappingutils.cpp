@@ -667,7 +667,7 @@ QString QgsSnappingUtils::dump()
         msg += QStringLiteral( "index : YES | %1 | %2 | %3\n" ).arg( cachedGeoms, extentStr, limit );
       }
       else
-        msg += QStringLiteral( "index : ???\n" ); // should not happen
+        msg += QLatin1String( "index : ???\n" ); // should not happen
     }
     else
       msg += QLatin1String( "index : NO\n" );

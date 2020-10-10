@@ -75,7 +75,7 @@ class CORE_EXPORT QgsVectorTileLabeling
 
     const QString type = sipCpp->type();
 
-    if ( type == QStringLiteral( "basic" ) )
+    if ( type == QLatin1String( "basic" ) )
       sipType = sipType_QgsVectorTileBasicLabeling;
     else
       sipType = 0;

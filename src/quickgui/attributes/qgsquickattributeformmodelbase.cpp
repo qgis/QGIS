@@ -185,7 +185,7 @@ QgsAttributeEditorContainer *QgsQuickAttributeFormModelBase::generateRootContain
   QgsFields fields = mLayer->fields();
   for ( int i = 0; i < fields.size(); ++i )
   {
-    if ( fields.at( i ).editorWidgetSetup().type() != QStringLiteral( "Hidden" ) )
+    if ( fields.at( i ).editorWidgetSetup().type() != QLatin1String( "Hidden" ) )
     {
       QgsAttributeEditorField *field = new QgsAttributeEditorField( fields.at( i ).name(), i, root );
       root->addChildElement( field );
@@ -201,7 +201,7 @@ QgsAttributeEditorContainer *QgsQuickAttributeFormModelBase::invisibleRootContai
 
 void QgsQuickAttributeFormModelBase::updateAttributeValue( QStandardItem *item )
 {
-  if ( item->data( QgsQuickAttributeFormModel::ElementType ) == QStringLiteral( "field" ) )
+  if ( item->data( QgsQuickAttributeFormModel::ElementType ) == QLatin1String( "field" ) )
   {
     item->setData( mAttributeModel->featureLayerPair().feature().attribute( item->data( QgsQuickAttributeFormModel::FieldIndex ).toInt() ), QgsQuickAttributeFormModel::AttributeValue );
   }

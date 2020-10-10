@@ -1278,7 +1278,7 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
 
   setCrs( mDataProvider->crs() );
 
-  if ( provider == QStringLiteral( "mesh_memory" ) )
+  if ( provider == QLatin1String( "mesh_memory" ) )
   {
     // required so that source differs between memory layers
     mDataSource = mDataSource + QStringLiteral( "&uid=%1" ).arg( QUuid::createUuid().toString() );

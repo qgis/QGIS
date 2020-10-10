@@ -100,7 +100,7 @@ void QgsLayoutToImageAlgorithm::initAlgorithm( const QVariantMap & )
       imageFilters.append( QStringLiteral( "%1 (%2 %3)" ).arg( longName, glob.toLower(), glob.toUpper() ) );
   }
 
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Image file" ), imageFilters.join( QStringLiteral( ";;" ) ) ) );
+  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Image file" ), imageFilters.join( QLatin1String( ";;" ) ) ) );
 }
 
 QgsProcessingAlgorithm::Flags QgsLayoutToImageAlgorithm::flags() const

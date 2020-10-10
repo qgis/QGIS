@@ -393,7 +393,7 @@ void QgsCompoundColorWidget::importPalette()
 bool QgsCompoundColorWidget::removeUserPalette( QgsUserColorScheme *scheme, QWidget *parent )
 {
   if ( QMessageBox::question( parent, tr( "Remove Color Palette" ),
-                              QString( tr( "Are you sure you want to remove %1?" ) ).arg( scheme->schemeName() ),
+                              tr( "Are you sure you want to remove %1?" ).arg( scheme->schemeName() ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
   {
     //user canceled

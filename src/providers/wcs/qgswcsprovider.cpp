@@ -1374,7 +1374,7 @@ QString QgsWcsProvider::htmlMetadata()
     metadata += tr( "And %1 more coverages" ).arg( mCapabilities.coverages().size() - count );
   }
 
-  metadata += QStringLiteral( "</table></div></td></tr>\n" );  // End nested table 1
+  metadata += QLatin1String( "</table></div></td></tr>\n" );  // End nested table 1
   return metadata;
 }
 

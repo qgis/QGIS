@@ -926,7 +926,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData *data, Qt::DropAction )
   if ( !errors.isEmpty() )
   {
     QgsMessageOutput::showMessage( tr( "Import to GRASS mapset" ),
-                                   tr( "Failed to import some layers!\n\n" ) + errors.join( QStringLiteral( "\n" ) ),
+                                   tr( "Failed to import some layers!\n\n" ) + errors.join( QLatin1Char( '\n' ) ),
                                    QgsMessageOutput::MessageText );
   }
 
