@@ -152,10 +152,10 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
     virtual QgsAbstractMaterialSettings *clone() const = 0 SIP_FACTORY;
 
     //! Reads settings from a DOM \a element
-    virtual void readXml( const QDomElement &element, const QgsReadWriteContext &context ) = 0;
+    virtual void readXml( const QDomElement &element, const QgsReadWriteContext & );
 
     //! Writes settings to a DOM \a element
-    virtual void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const = 0;
+    virtual void writeXml( QDomElement &element, const QgsReadWriteContext & ) const;
 
 #ifndef SIP_RUN
 
@@ -177,6 +177,16 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
      */
     virtual void addParametersToEffect( Qt3DRender::QEffect *effect ) const = 0;
 
+    //! Data definable properties.
+    enum Property
+    {
+      Diffuse, //!< diffuse color
+      Ambient, //!< ambient color (phong material)
+      Warm, //!< warm color (gooch material)
+      Cool,//!< cool color (gooch material)
+      Specular //!< specular color
+    };
+
     /**
      * Returns whether the material is data defined overrided
      * \since QGIS 3.18
@@ -184,19 +194,25 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
     virtual bool isDataDefined() const {return false;}
 
     /**
+     * Sets the material property collection, used for data defined overrides.
+     * \since QGIS 3.18
+     */
+    void setDataDefinedProperties( const QgsPropertyCollection &collection );
+
+    /**
     * Returns a the symbol material property collection, used for data defined overrides.
     * \since QGIS 3.18
     */
-    virtual QgsPropertyCollection dataDefinedProperties() const {return QgsPropertyCollection();}
+    QgsPropertyCollection dataDefinedProperties() const;
 
     /**
-    * Returns a the material properties definition, used for data defined overrides.
+    * Returns a reference to the material properties definition, used for data defined overrides.
     * \since QGIS 3.18
     */
-    virtual QgsPropertiesDefinition  propertiesDefinition() const {return QgsPropertiesDefinition();}
+    QgsPropertiesDefinition  &propertiesDefinition() const;
 
     /**
-     * Apply and the data defined override on the geometry by filling a specific vertex buffer that will be used by the shader
+     * Applies the data defined override on the geometry by filling a specific vertex buffer that will be used by the shader.
      * \since QGIS 3.18
      */
     virtual void applyDataDefinedToGeometry( Qt3DRender::QGeometry *, int, const QByteArray & ) const {}
@@ -215,6 +231,10 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
     virtual int dataDefinedByteStride() const {return 0;}
 #endif
 
+  private:
+    QgsPropertyCollection mDataDefinedProperties;
+    static QgsPropertiesDefinition sPropertyDefinitions;
+    void initPropertyDefinitions() const;
 };
 
 

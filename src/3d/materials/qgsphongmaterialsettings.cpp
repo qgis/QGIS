@@ -61,28 +61,24 @@ QgsPhongMaterialSettings *QgsPhongMaterialSettings::clone() const
   return new QgsPhongMaterialSettings( *this );
 }
 
-void QgsPhongMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext & )
+void QgsPhongMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   mAmbient = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "ambient" ), QStringLiteral( "25,25,25" ) ) );
   mDiffuse = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "diffuse" ), QStringLiteral( "178,178,178" ) ) );
   mSpecular = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "specular" ), QStringLiteral( "255,255,255" ) ) );
   mShininess = elem.attribute( QStringLiteral( "shininess" ) ).toFloat();
 
-  QDomElement elemDataDefinedProperties = elem.firstChildElement( QStringLiteral( "data-defined-properties" ) );
-  if ( !elemDataDefinedProperties.isNull() )
-    mDataDefinedProperties.readXml( elemDataDefinedProperties, propertiesDefinition() );
+  QgsAbstractMaterialSettings::readXml( elem, context );
 }
 
-void QgsPhongMaterialSettings::writeXml( QDomElement &elem, const QgsReadWriteContext & ) const
+void QgsPhongMaterialSettings::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
   elem.setAttribute( QStringLiteral( "ambient" ), QgsSymbolLayerUtils::encodeColor( mAmbient ) );
   elem.setAttribute( QStringLiteral( "diffuse" ), QgsSymbolLayerUtils::encodeColor( mDiffuse ) );
   elem.setAttribute( QStringLiteral( "specular" ), QgsSymbolLayerUtils::encodeColor( mSpecular ) );
   elem.setAttribute( QStringLiteral( "shininess" ), mShininess );
 
-  QDomElement elemDataDefinedProperties = elem.ownerDocument().createElement( QStringLiteral( "data-defined-properties" ) );
-  mDataDefinedProperties.writeXml( elemDataDefinedProperties, propertiesDefinition() );
-  elem.appendChild( elemDataDefinedProperties );
+  QgsAbstractMaterialSettings::writeXml( elem, context );
 }
 
 
@@ -149,21 +145,21 @@ void QgsPhongMaterialSettings::addParametersToEffect( Qt3DRender::QEffect *effec
 
 QByteArray QgsPhongMaterialSettings::dataDefinedVertexColorsAsByte( const QgsExpressionContext &expressionContext ) const
 {
-  QColor ambient = mDataDefinedProperties.valueAsColor( Ambient, expressionContext, mAmbient );
-  QColor diffuse = mDataDefinedProperties.valueAsColor( Diffuse, expressionContext, mDiffuse );
-  QColor specular = mDataDefinedProperties.valueAsColor( Specular, expressionContext, mSpecular );
+  QColor ambient = dataDefinedProperties().valueAsColor( Ambient, expressionContext, mAmbient );
+  QColor diffuse = dataDefinedProperties().valueAsColor( Diffuse, expressionContext, mDiffuse );
+  QColor specular = dataDefinedProperties().valueAsColor( Specular, expressionContext, mSpecular );
 
   QByteArray array;
   array.resize( sizeof( float ) * 9 );
   float *fptr = reinterpret_cast<float *>( array.data() );
 
-  *fptr++ = float( ambient.redF() );
-  *fptr++ = float( ambient.greenF() );
-  *fptr++ = float( ambient.blueF() );
-
   *fptr++ = float( diffuse.redF() );
   *fptr++ = float( diffuse.greenF() );
   *fptr++ = float( diffuse.blueF() );
+
+  *fptr++ = float( ambient.redF() );
+  *fptr++ = float( ambient.greenF() );
+  *fptr++ = float( ambient.blueF() );
 
   *fptr++ = float( specular.redF() );
   *fptr++ = float( specular.greenF() );
@@ -174,9 +170,9 @@ QByteArray QgsPhongMaterialSettings::dataDefinedVertexColorsAsByte( const QgsExp
 
 bool QgsPhongMaterialSettings::isDataDefined() const
 {
-  return mDataDefinedProperties.isActive( Ambient ) ||
-         mDataDefinedProperties.isActive( Diffuse ) ||
-         mDataDefinedProperties.isActive( Specular );
+  return dataDefinedProperties().isActive( Ambient ) ||
+         dataDefinedProperties().isActive( Diffuse ) ||
+         dataDefinedProperties().isActive( Specular );
 }
 
 int QgsPhongMaterialSettings::dataDefinedByteStride() const {return 9 * sizeof( float );}
@@ -189,17 +185,6 @@ void QgsPhongMaterialSettings::applyDataDefinedToGeometry( Qt3DRender::QGeometry
   Qt3DRender::QBuffer *dataBuffer = new Qt3DRender::QBuffer( geometry );
 #endif
 
-  Qt3DRender::QAttribute *ambiantAttribute = new Qt3DRender::QAttribute( geometry );
-  ambiantAttribute->setName( QStringLiteral( "dataDefinedAmbiantColor" ) );
-  ambiantAttribute->setVertexBaseType( Qt3DRender::QAttribute::Float );
-  ambiantAttribute->setVertexSize( 3 );
-  ambiantAttribute->setAttributeType( Qt3DRender::QAttribute::VertexAttribute );
-  ambiantAttribute->setBuffer( dataBuffer );
-  ambiantAttribute->setByteStride( 9 * sizeof( float ) );
-  ambiantAttribute->setByteOffset( 0 );
-  ambiantAttribute->setCount( vertexCount );
-  geometry->addAttribute( ambiantAttribute );
-
   Qt3DRender::QAttribute *diffuseAttribute = new Qt3DRender::QAttribute( geometry );
   diffuseAttribute->setName( QStringLiteral( "dataDefinedDiffuseColor" ) );
   diffuseAttribute->setVertexBaseType( Qt3DRender::QAttribute::Float );
@@ -207,10 +192,20 @@ void QgsPhongMaterialSettings::applyDataDefinedToGeometry( Qt3DRender::QGeometry
   diffuseAttribute->setAttributeType( Qt3DRender::QAttribute::VertexAttribute );
   diffuseAttribute->setBuffer( dataBuffer );
   diffuseAttribute->setByteStride( 9 * sizeof( float ) );
-  diffuseAttribute->setByteOffset( 3 * sizeof( float ) );
+  diffuseAttribute->setByteOffset( 0 );
   diffuseAttribute->setCount( vertexCount );
   geometry->addAttribute( diffuseAttribute );
 
+  Qt3DRender::QAttribute *ambiantAttribute = new Qt3DRender::QAttribute( geometry );
+  ambiantAttribute->setName( QStringLiteral( "dataDefinedAmbiantColor" ) );
+  ambiantAttribute->setVertexBaseType( Qt3DRender::QAttribute::Float );
+  ambiantAttribute->setVertexSize( 3 );
+  ambiantAttribute->setAttributeType( Qt3DRender::QAttribute::VertexAttribute );
+  ambiantAttribute->setBuffer( dataBuffer );
+  ambiantAttribute->setByteStride( 9 * sizeof( float ) );
+  ambiantAttribute->setByteOffset( 3 * sizeof( float ) );
+  ambiantAttribute->setCount( vertexCount );
+  geometry->addAttribute( ambiantAttribute );
 
   Qt3DRender::QAttribute *specularAttribute = new Qt3DRender::QAttribute( geometry );
   specularAttribute->setName( QStringLiteral( "dataDefinedSpecularColor" ) );
@@ -224,28 +219,6 @@ void QgsPhongMaterialSettings::applyDataDefinedToGeometry( Qt3DRender::QGeometry
   geometry->addAttribute( specularAttribute );
 
   dataBuffer->setData( data );
-}
-
-void QgsPhongMaterialSettings::initPropertyDefinitions() const
-{
-  if ( !mPropertyDefinitions.isEmpty() )
-    return;
-
-  QString origin = QStringLiteral( "phongMaterialSettings" );
-
-  mPropertyDefinitions = QgsPropertiesDefinition
-  {
-    { Ambient, QgsPropertyDefinition( "ambiant", QObject::tr( "Ambiant" ), QgsPropertyDefinition::ColorNoAlpha, origin ) },
-    { Diffuse, QgsPropertyDefinition( "diffuse", QObject::tr( "Diffuse" ), QgsPropertyDefinition::ColorNoAlpha, origin ) },
-    { Specular, QgsPropertyDefinition( "specular", QObject::tr( "Specular" ), QgsPropertyDefinition::ColorNoAlpha, origin ) }
-  };
-
-}
-
-QgsPropertiesDefinition QgsPhongMaterialSettings::propertiesDefinition() const
-{
-  initPropertyDefinitions();
-  return mPropertyDefinitions;
 }
 
 Qt3DRender::QMaterial *QgsPhongMaterialSettings::dataDefinedMaterial() const
