@@ -495,14 +495,16 @@ class Editor(QgsCodeEditorPython):
         self.ensureLineVisible(linenr)
         self.setFocus()
 
-    def syntaxCheck(self, filename=None, fromContextMenu=True):
+    def syntaxCheck(self):
         eline = None
         ecolumn = 0
         edescr = ''
         source = self.text()
         try:
+            filename = self.parent.tw.currentWidget().path
             if not filename:
-                filename = self.parent.tw.currentWidget().path
+                tmpFile = self.createTempFile()
+                filename = tmpFile
             # source = open(filename, 'r').read() + '\n'
             if isinstance(source, type("")):
                 source = source.encode('utf-8')
@@ -522,13 +524,15 @@ class Editor(QgsCodeEditorPython):
                 self.bufferMarkerLine.remove(markerLine)
             if (eline) not in self.bufferMarkerLine:
                 self.bufferMarkerLine.append(eline)
+
+            self.setMarginWidth(1, "0000")
             self.markerAdd(eline, self.MARKER_NUM)
-            loadFont = self.settings.value("pythonConsole/fontfamilytext",
-                                           "Monospace")
+            font = self.lexerFont()
+            font.setItalic(True)
             styleAnn = QsciStyle(-1, "Annotation",
                                  QColor(255, 0, 0),
                                  QColor(255, 200, 0),
-                                 QFont(loadFont, 8, -1, True),
+                                 font,
                                  True)
             self.annotate(eline, edescr, styleAnn)
             self.setCursorPosition(eline, ecolumn - 1)
@@ -537,6 +541,7 @@ class Editor(QgsCodeEditorPython):
             # self.ensureCursorVisible()
             return False
         else:
+            self.setMarginWidth(1, 0)
             self.markerDeleteAll()
             self.clearAnnotations()
             return True
