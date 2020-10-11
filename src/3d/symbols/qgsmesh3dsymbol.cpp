@@ -39,6 +39,7 @@ QgsMesh3DSymbol *QgsMesh3DSymbol::clone() const
   result->mWireframeEnabled = mWireframeEnabled;
   result->mWireframeLineWidth = mWireframeLineWidth;
   result->mWireframeLineColor = mWireframeLineColor;
+  result->mLevelOfDetailIndex = mLevelOfDetailIndex;
   result->mVerticalScale = mVerticalScale;
   result->mVerticalDatasetGroupIndex = mVerticalDatasetGroupIndex;
   result->mIsVerticalMagnitudeRelative = mIsVerticalMagnitudeRelative;
@@ -78,6 +79,7 @@ void QgsMesh3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &co
   elemAdvancedSettings.setAttribute( QStringLiteral( "wireframe-enabled" ), mWireframeEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elemAdvancedSettings.setAttribute( QStringLiteral( "wireframe-line-width" ), mWireframeLineWidth );
   elemAdvancedSettings.setAttribute( QStringLiteral( "wireframe-line-color" ), QgsSymbolLayerUtils::encodeColor( mWireframeLineColor ) );
+  elemAdvancedSettings.setAttribute( QStringLiteral( "level-of-detail" ), mLevelOfDetailIndex );
   elemAdvancedSettings.setAttribute( QStringLiteral( "vertical-scale" ), mVerticalScale );
   elemAdvancedSettings.setAttribute( QStringLiteral( "vertical-group-index" ), mVerticalDatasetGroupIndex );
   elemAdvancedSettings.setAttribute( QStringLiteral( "vertical-relative" ), mIsVerticalMagnitudeRelative ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
@@ -116,6 +118,7 @@ void QgsMesh3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContex
   mWireframeEnabled = elemAdvancedSettings.attribute( QStringLiteral( "wireframe-enabled" ) ).toInt();
   mWireframeLineWidth = elemAdvancedSettings.attribute( QStringLiteral( "wireframe-line-width" ) ).toDouble();
   mWireframeLineColor = QgsSymbolLayerUtils::decodeColor( elemAdvancedSettings.attribute( QStringLiteral( "wireframe-line-color" ) ) );
+  mLevelOfDetailIndex = elemAdvancedSettings.attribute( QStringLiteral( "level-of-detail" ) ).toInt();
   mVerticalScale = elemAdvancedSettings.attribute( "vertical-scale" ).toDouble();
   mVerticalDatasetGroupIndex = elemAdvancedSettings.attribute( "vertical-group-index" ).toInt();
   mIsVerticalMagnitudeRelative = elemAdvancedSettings.attribute( "vertical-relative" ).toInt();
@@ -271,6 +274,16 @@ bool QgsMesh3DSymbol::arrowsFixedSize() const
 void QgsMesh3DSymbol::setArrowsFixedSize( bool arrowsFixeSize )
 {
   mArrowsFixedSize = arrowsFixeSize;
+}
+
+int QgsMesh3DSymbol::levelOfDetailIndex() const
+{
+  return mLevelOfDetailIndex;
+}
+
+void QgsMesh3DSymbol::setLevelOfDetailIndex( int lod )
+{
+  mLevelOfDetailIndex = lod;
 }
 
 bool QgsMesh3DSymbol::isEnabled() const

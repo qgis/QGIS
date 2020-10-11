@@ -98,6 +98,7 @@ class QgsMeshDataset3dGeometry: public  QgsMesh3dGeometry
     int mVerticalGroupDatasetIndex;
     QgsDateTimeRange mTimeRange;
     QgsMapLayerRef mLayerRef;
+    int mLevelOfdetailIndex = 0;
 
     QgsMeshLayer *meshLayer() const;
 
@@ -116,6 +117,7 @@ class QgsMeshTerrain3dGeometry: public  QgsMesh3dGeometry
                                        QNode *parent );
   private:
     void init();
+    int mLevelOfDetailIndex = 0;
 };
 
 

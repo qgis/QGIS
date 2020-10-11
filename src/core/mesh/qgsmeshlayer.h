@@ -236,6 +236,26 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QgsTriangularMesh *triangularMesh( double minimumTriangleSize = 0 ) const SIP_SKIP;
 
     /**
+     * Returns the count of levels of detail of the mesh simplification
+     *
+     * \since QGIS 3.18
+     * \note Not available in Python bindings
+     */
+    int triangularMeshLevelOfDetailCount() const SIP_SKIP;
+
+    /**
+     * Returns triangular corresponding to the index of level of details.
+     * If \a lodIndex is greater than the count of levels of detail, returns the last one (with lesser triangles)
+     * If \a lodIndex is lesser or equal to 0, returns the original triangular mesh
+     *
+     * \param lodIndex the level od detail index
+     *
+     * \since QGIS 3.18
+     * \note Not available in Python bindings
+     */
+    QgsTriangularMesh *triangularMeshByLodIndex( int lodIndex ) const SIP_SKIP;
+
+    /**
      * Gets native mesh and updates (creates if it doesn't exist) the base triangular mesh
      *
      * \param transform Transformation from layer CRS to destination (e.g. map) CRS. With invalid transform, it keeps the native mesh CRS
