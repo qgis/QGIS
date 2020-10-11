@@ -702,7 +702,7 @@
            <item row="7" column="4">
             <widget class="QLabel" name="label_38">
              <property name="text">
-              <string>Edge</string>
+              <string>Edge/indentation guide</string>
              </property>
             </widget>
            </item>
