@@ -293,6 +293,11 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
     mSnappingMatches.append( QgsPointLocator::Match() );
 
   tracer->reportError( QgsTracer::ErrNone, true ); // clear messagebar if there was any error
+
+  // adjust last captured point
+  const QgsPoint lastPt = mCaptureCurve.endPoint();
+  mCaptureLastPoint = toMapCoordinates( qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() ), lastPt );
+
   return true;
 }
 
@@ -316,14 +321,12 @@ QgsMapToolCaptureRubberBand *QgsMapToolCapture::createCurveRubberBand() const
 
 QgsPoint QgsMapToolCapture::firstCapturedMapPoint()
 {
-  QgsPoint firstPt = mCaptureCurve.startPoint();
-  return toMapCoordinates( qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() ), firstPt ) ;
+  return mCaptureFirstPoint;
 }
 
 QgsPoint QgsMapToolCapture::lastCapturedMapPoint()
 {
-  QgsPoint firstPt = mCaptureCurve.endPoint();
-  return toMapCoordinates( qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() ), firstPt ) ;
+  return mCaptureLastPoint;
 }
 
 void QgsMapToolCapture::resetRubberBand()
@@ -395,7 +398,7 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
     {
       if ( mCaptureCurve.numPoints() > 0 )
       {
-        QgsPoint mapPt = lastCapturedMapPoint();
+        const QgsPoint mapPt = lastCapturedMapPoint();
 
         if ( mTempRubberBand )
         {
@@ -540,6 +543,11 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
   }
   else
   {
+    if ( mCaptureFirstPoint.isEmpty() )
+    {
+      mCaptureFirstPoint = mapPoint;
+    }
+
     if ( !mRubberBand )
       mRubberBand.reset( createRubberBand( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry ) );
 
@@ -584,7 +592,6 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
             mSnappingMatches.append( match );
           }
         }
-
         mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, mDigitizingType, firstCapturedMapPoint() );
       }
       else if ( mCaptureCurve.numPoints() == 0 )
@@ -601,7 +608,7 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
       }
 
       mTempRubberBand->addPoint( mapPoint );
-
+      mCaptureLastPoint = mapPoint;
     }
     else
     {
@@ -716,6 +723,8 @@ void QgsMapToolCapture::undo()
 
     if ( mCaptureCurve.numPoints() > 0 )
     {
+      const QgsPoint lastPt = mCaptureCurve.endPoint();
+      mCaptureLastPoint = toMapCoordinates( qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() ), lastPt );
       mTempRubberBand->addPoint( lastCapturedMapPoint() );
       mTempRubberBand->movePoint( lastPoint );
     }
@@ -762,6 +771,9 @@ void QgsMapToolCapture::stopCapturing()
   qDeleteAll( mGeomErrorMarkers );
   mGeomErrorMarkers.clear();
   mGeomErrors.clear();
+
+  mCaptureFirstPoint = QgsPoint();
+  mCaptureLastPoint = QgsPoint();
 
   mTracingStartPoint = QgsPointXY();
 

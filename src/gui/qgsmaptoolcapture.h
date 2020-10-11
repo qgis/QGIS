@@ -394,6 +394,9 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     //! Flag to indicate a map canvas capture operation is taking place
     bool mCapturing = false;
 
+    QgsPoint mCaptureFirstPoint;
+    QgsPoint mCaptureLastPoint;
+
     //! Rubber band for polylines and polygons
     QObjectUniquePtr<QgsRubberBand> mRubberBand;
 
