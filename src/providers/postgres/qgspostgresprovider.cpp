@@ -1213,7 +1213,7 @@ bool QgsPostgresProvider::loadFields()
          && defValMap[tableoid][attnum].isEmpty() )
     {
       const QString seqName { mTableName + '_' + fieldName + QStringLiteral( "_seq" ) };
-      const QString seqSql { QStringLiteral( "SELECT c.oid "
+      const QString seqSql = QStringLiteral( "SELECT c.oid "
                                              "  FROM pg_class c "
                                              "  LEFT JOIN pg_namespace n "
                                              "    ON ( n.oid = c.relnamespace ) "
@@ -1221,8 +1221,7 @@ bool QgsPostgresProvider::loadFields()
                                              "    AND c.relname = %1 "
                                              "    AND n.nspname = %2" )
                              .arg( quotedValue( seqName ) )
-                             .arg( quotedValue( mSchemaName ) )
-                           };
+                             .arg( quotedValue( mSchemaName ) );
       QgsPostgresResult seqResult( connectionRO()->PQexec( seqSql ) );
       if ( seqResult.PQntuples() == 1 )
       {
