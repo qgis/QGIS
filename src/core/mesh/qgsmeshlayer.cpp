@@ -271,7 +271,7 @@ QgsTriangularMesh *QgsMeshLayer::triangularMeshByLodIndex( int lodIndex ) const 
   if ( lodIndex < 0 )
     return mTriangularMeshes.front().get();
 
-  if ( lodIndex >= mTriangularMeshes.size() )
+  if ( lodIndex >= int( mTriangularMeshes.size() ) )
     return mTriangularMeshes.back().get();
 
   return mTriangularMeshes.at( lodIndex ).get();
