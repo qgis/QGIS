@@ -38,12 +38,14 @@ class QgsMemoryFeatureSource final: public QgsAbstractFeatureSource
 
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
+    QgsExpressionContext *expressionContext();
+
   private:
     QgsFields mFields;
     QgsFeatureMap mFeatures;
     std::unique_ptr< QgsSpatialIndex > mSpatialIndex;
     QString mSubsetString;
-    QgsExpressionContext mExpressionContext;
+    std::unique_ptr< QgsExpressionContext > mExpressionContext;
     QgsCoordinateReferenceSystem mCrs;
 
     friend class QgsMemoryFeatureIterator;
