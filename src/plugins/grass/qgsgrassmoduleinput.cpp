@@ -332,7 +332,7 @@ QVariant QgsGrassModuleInputModel::data( const QModelIndex &index, int role ) co
       QString mapset = QStandardItemModel::data( index, QgsGrassModuleInputModel::MapsetRole ).toString();
       if ( mapset != QgsGrass::getDefaultMapset() )
       {
-        data = data.toString() + "@" + mapset;
+        data = QString( data.toString() + "@" + mapset );
       }
     }
   }

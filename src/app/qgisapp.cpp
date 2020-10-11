@@ -1117,7 +1117,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mSaveRollbackInProgress = false;
 
   QString templateDirName = settings.value( QStringLiteral( "qgis/projectTemplateDir" ),
-                            QgsApplication::qgisSettingsDirPath() + "project_templates" ).toString();
+                            QString( QgsApplication::qgisSettingsDirPath() + "project_templates" ) ).toString();
   if ( !QFileInfo::exists( templateDirName ) )
   {
     // create default template directory
@@ -5049,7 +5049,7 @@ void QgisApp::saveRecentProjectPath( bool savePreviewImage, const QIcon &iconOve
   QgsRecentProjectItemsModel::RecentProjectData projectData;
   projectData.path = QgsProject::instance()->absoluteFilePath();
   QString templateDirName = QgsSettings().value( QStringLiteral( "qgis/projectTemplateDir" ),
-                            QgsApplication::qgisSettingsDirPath() + "project_templates" ).toString();
+                            QString( QgsApplication::qgisSettingsDirPath() + "project_templates" ) ).toString();
 
   // We don't want the template path to appear in the recent projects list. Never.
   if ( projectData.path.startsWith( templateDirName ) )
@@ -5160,7 +5160,7 @@ void QgisApp::updateProjectFromTemplates()
   // get list of project files in template dir
   QgsSettings settings;
   QString templateDirName = settings.value( QStringLiteral( "qgis/projectTemplateDir" ),
-                            QgsApplication::qgisSettingsDirPath() + "project_templates" ).toString();
+                            QString( QgsApplication::qgisSettingsDirPath() + "project_templates" ) ).toString();
   QDir templateDir( templateDirName );
   QStringList filters( QStringLiteral( "*.qgs" ) );
   filters << QStringLiteral( "*.qgz" );
@@ -6672,7 +6672,7 @@ void QgisApp::fileNewFromTemplateAction( QAction *qAction )
   {
     QgsSettings settings;
     QString templateDirName = settings.value( QStringLiteral( "qgis/projectTemplateDir" ),
-                              QgsApplication::qgisSettingsDirPath() + "project_templates" ).toString();
+                              QString( QgsApplication::qgisSettingsDirPath() + "project_templates" ) ).toString();
     fileNewFromTemplate( templateDirName + QDir::separator() + qAction->text() );
   }
 }
@@ -7243,7 +7243,7 @@ void QgisApp::fileSaveAs()
     // Retrieve last used project dir from persistent settings
     QgsSettings settings;
     defaultPath = settings.value( QStringLiteral( "UI/lastProjectDir" ), QDir::homePath() ).toString();
-    defaultPath += + '/' + QgsProject::instance()->title();
+    defaultPath += QString( '/' + QgsProject::instance()->title() );
   }
 
   const QString qgsExt = tr( "QGIS files" ) + " (*.qgs *.QGS)";
@@ -16484,7 +16484,7 @@ void QgisApp::populateProjectStorageMenu( QMenu *menu, const bool saving )
     {
       QgsSettings settings;
       QString templateDirName = settings.value( QStringLiteral( "qgis/projectTemplateDir" ),
-          QgsApplication::qgisSettingsDirPath() + "project_templates" ).toString();
+          QString( QgsApplication::qgisSettingsDirPath() + "project_templates" ) ).toString();
 
       const QString originalFilename = QgsProject::instance()->fileName();
       QString templateName = QFileInfo( originalFilename ).baseName();

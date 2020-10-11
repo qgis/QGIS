@@ -165,7 +165,7 @@ QVariant QgsGraduatedSymbolRendererModel::data( const QModelIndex &index, int ro
       {
         int decimalPlaces = mRenderer->classificationMethod()->labelPrecision() + 2;
         if ( decimalPlaces < 0 ) decimalPlaces = 0;
-        return QLocale().toString( range.lowerValue(), 'f', decimalPlaces ) + " - " + QLocale().toString( range.upperValue(), 'f', decimalPlaces );
+        return QString( QLocale().toString( range.lowerValue(), 'f', decimalPlaces ) + " - " + QLocale().toString( range.upperValue(), 'f', decimalPlaces ) );
       }
       case 2:
         return range.label();

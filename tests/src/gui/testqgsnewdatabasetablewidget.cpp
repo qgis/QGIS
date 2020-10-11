@@ -273,7 +273,7 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsGeopackage()
   QCOMPARE( w->table(), QString( "newTableName" ) );
   QCOMPARE( w->schema(), mGpkgPath );
   QCOMPARE( w->dataProviderKey(), QString( "ogr" ) );
-  QCOMPARE( w->uri(), mGpkgPath + QStringLiteral( "|layername=newTableName" ) );
+  QCOMPARE( w->uri(), QString( mGpkgPath + QStringLiteral( "|layername=newTableName" ) ) );
 #endif
 }
 

@@ -34,7 +34,7 @@ QgsTemplateProjectsModel::QgsTemplateProjectsModel( QObject *parent )
 {
   const QStringList paths = QStandardPaths::standardLocations( QStandardPaths::AppDataLocation );
   QString templateDirName = QgsSettings().value( QStringLiteral( "qgis/projectTemplateDir" ),
-                            QgsApplication::qgisSettingsDirPath() + QStringLiteral( "project_templates" ) ).toString();
+                            QString( QgsApplication::qgisSettingsDirPath() + QStringLiteral( "project_templates" ) ) ).toString();
 
   for ( const QString &templatePath : paths )
   {
