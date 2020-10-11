@@ -496,11 +496,11 @@ QgsPointXY QgsMapSettings::layerToMapCoordinates( const QgsMapLayer *layer, QgsP
   return point;
 }
 
-QgsPoint QgsMapSettings::layerToMapCoordinates( const QgsMapLayer *layer, QgsPoint point ) const
+QgsPoint QgsMapSettings::layerToMapCoordinates( const QgsMapLayer *layer, const QgsPoint &point ) const
 {
   double x = point.x();
   double y = point.y();
-  double z = point.z();
+  double z = !std::isnan( point.z() ) ? point.z() : 0.0;
 
   try
   {
@@ -513,7 +513,7 @@ QgsPoint QgsMapSettings::layerToMapCoordinates( const QgsMapLayer *layer, QgsPoi
     QgsMessageLog::logMessage( QObject::tr( "Transform error caught: %1" ).arg( cse.what() ), QObject::tr( "CRS" ) );
   }
 
-  return QgsPoint( x, y, z );
+  return QgsPoint( x, y, !std::isnan( point.z() ) ? z : point.z() );
 }
 
 
@@ -550,11 +550,11 @@ QgsPointXY QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer *layer, QgsP
   return point;
 }
 
-QgsPoint QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer *layer, QgsPoint point ) const
+QgsPoint QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer *layer, const QgsPoint &point ) const
 {
   double x = point.x();
   double y = point.y();
-  double z = point.z();
+  double z = !std::isnan( point.z() ) ? point.z() : 0.0;
 
   try
   {
@@ -567,7 +567,7 @@ QgsPoint QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer *layer, QgsPoi
     QgsMessageLog::logMessage( QObject::tr( "Transform error caught: %1" ).arg( cse.what() ), QObject::tr( "CRS" ) );
   }
 
-  return QgsPoint( x, y, z );
+  return QgsPoint( x, y, !std::isnan( point.z() ) ? z : point.z() );
 }
 
 
