@@ -56,6 +56,7 @@ Defines a color scheme for use in QgsCodeEditor widgets.
       Error,
       FoldIconForeground,
       FoldIconHalo,
+      IndentationGuide,
     };
 
     QgsCodeEditorColorScheme( const QString &id = QString(), const QString &name = QString() );

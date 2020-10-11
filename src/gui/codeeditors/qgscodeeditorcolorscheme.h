@@ -69,6 +69,7 @@ class GUI_EXPORT QgsCodeEditorColorScheme
       Error, //!< Error color
       FoldIconForeground, //!< Fold icon foreground color
       FoldIconHalo, //!< Fold icon halo color
+      IndentationGuide, //!< Indentation guide line
     };
 
     /**

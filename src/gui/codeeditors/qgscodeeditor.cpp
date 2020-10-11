@@ -63,6 +63,7 @@ QMap< QgsCodeEditorColorScheme::ColorRole, QString > QgsCodeEditor::sColorRoleTo
   {QgsCodeEditorColorScheme::ColorRole::Error, QStringLiteral( "stderrFontColor" ) },
   {QgsCodeEditorColorScheme::ColorRole::FoldIconForeground, QStringLiteral( "foldIconForeground" ) },
   {QgsCodeEditorColorScheme::ColorRole::FoldIconHalo, QStringLiteral( "foldIconHalo" ) },
+  {QgsCodeEditorColorScheme::ColorRole::IndentationGuide, QStringLiteral( "indentationGuide" ) },
 };
 
 
@@ -201,8 +202,8 @@ void QgsCodeEditor::runPostLexerConfigurationTasks()
   SendScintilla( SCI_MARKERSETBACK, SC_MARKNUM_FOLDEROPEN,  lexerColor( QgsCodeEditorColorScheme::ColorRole::FoldIconForeground ) );
   SendScintilla( SCI_MARKERSETFORE, SC_MARKNUM_FOLDER, lexerColor( QgsCodeEditorColorScheme::ColorRole::FoldIconHalo ) );
   SendScintilla( SCI_MARKERSETBACK, SC_MARKNUM_FOLDER,  lexerColor( QgsCodeEditorColorScheme::ColorRole::FoldIconForeground ) );
-  SendScintilla( SCI_STYLESETFORE, STYLE_INDENTGUIDE, lexerColor( QgsCodeEditorColorScheme::ColorRole::Edge ) );
-  SendScintilla( SCI_STYLESETBACK, STYLE_INDENTGUIDE,  lexerColor( QgsCodeEditorColorScheme::ColorRole::Edge ) );
+  SendScintilla( SCI_STYLESETFORE, STYLE_INDENTGUIDE, lexerColor( QgsCodeEditorColorScheme::ColorRole::IndentationGuide ) );
+  SendScintilla( SCI_STYLESETBACK, STYLE_INDENTGUIDE,  lexerColor( QgsCodeEditorColorScheme::ColorRole::IndentationGuide ) );
 }
 
 void QgsCodeEditor::setSciWidget()
@@ -353,6 +354,7 @@ QColor QgsCodeEditor::defaultColor( QgsCodeEditorColorScheme::ColorRole role, co
       {QgsCodeEditorColorScheme::ColorRole::Error, QStringLiteral( "stderrFontColor" ) },
       {QgsCodeEditorColorScheme::ColorRole::FoldIconForeground, QStringLiteral( "foldIconForeground" ) },
       {QgsCodeEditorColorScheme::ColorRole::FoldIconHalo, QStringLiteral( "foldIconHalo" ) },
+      {QgsCodeEditorColorScheme::ColorRole::IndentationGuide, QStringLiteral( "indentationGuide" ) },
     };
 
     const QgsCodeEditorColorScheme defaultScheme = QgsGui::codeEditorColorSchemeRegistry()->scheme( QStringLiteral( "default" ) );
