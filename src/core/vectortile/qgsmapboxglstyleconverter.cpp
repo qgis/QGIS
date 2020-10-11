@@ -2303,7 +2303,7 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
   {
     // ! inverts next expression's meaning
     QVariantList contraJsonExpr = expression.value( 1 ).toList();
-    contraJsonExpr[0] = op + contraJsonExpr[0].toString();
+    contraJsonExpr[0] = QString( op + contraJsonExpr[0].toString() );
     // ['!', ['has', 'level']] -> ['!has', 'level']
     return parseKey( contraJsonExpr );
   }

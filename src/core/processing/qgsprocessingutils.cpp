@@ -908,14 +908,14 @@ QVariant QgsProcessingUtils::generateIteratingDestination( const QVariant &input
     }
     else if ( res.startsWith( QLatin1String( "memory:" ) ) )
     {
-      return res + '_' + id.toString();
+      return QString( res + '_' + id.toString() );
     }
     else
     {
       // assume a filename type output for now
       // TODO - uris?
       int lastIndex = res.lastIndexOf( '.' );
-      return res.left( lastIndex ) + '_' + id.toString() + res.mid( lastIndex );
+      return QString( res.left( lastIndex ) + '_' + id.toString() + res.mid( lastIndex ) );
     }
   }
 }

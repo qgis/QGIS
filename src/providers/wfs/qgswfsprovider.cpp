@@ -185,7 +185,7 @@ void QgsWFSProviderSQLFunctionValidator::visit( const QgsSQLStatement::NodeFunct
     for ( const QgsWfsCapabilities::Function &f : constMSpatialPredicatesList )
     {
       if ( n.name().compare( f.name, Qt::CaseInsensitive ) == 0 ||
-           ( "ST_" + n.name() ).compare( f.name, Qt::CaseInsensitive ) == 0 )
+           QString( "ST_" + n.name() ).compare( f.name, Qt::CaseInsensitive ) == 0 )
       {
         foundMatch = true;
       }

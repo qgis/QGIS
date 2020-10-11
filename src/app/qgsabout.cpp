@@ -233,7 +233,7 @@ void QgsAbout::setWhatsNew()
   if ( !QFile::exists( QgsApplication::pkgDataPath() + "/doc/NEWS.html" ) )
     return;
 
-  txtWhatsNew->setSource( "file:///" + QgsApplication::pkgDataPath() + "/doc/NEWS.html" );
+  txtWhatsNew->setSource( QString( "file:///" + QgsApplication::pkgDataPath() + "/doc/NEWS.html" ) );
 }
 
 void QgsAbout::setPluginInfo()

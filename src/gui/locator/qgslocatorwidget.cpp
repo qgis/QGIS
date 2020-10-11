@@ -439,7 +439,7 @@ void QgsLocatorFilterFilter::fetchResults( const QString &string, const QgsLocat
     QgsLocatorResult result;
     result.displayString = filter->activePrefix();
     result.description = filter->displayName();
-    result.userData = filter->activePrefix() + ' ';
+    result.userData = QString( filter->activePrefix() + ' ' );
     result.icon = QgsApplication::getThemeIcon( QStringLiteral( "/search.svg" ) );
     emit resultFetched( result );
   }

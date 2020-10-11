@@ -287,7 +287,7 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
   {
     // Get the template directory and the file name
     QFileInfo pathInfo { path };
-    Environment env { ( pathInfo.dir().path() + QDir::separator() ).toStdString() };
+    Environment env { QString( pathInfo.dir().path() + QDir::separator() ).toStdString() };
 
     // For template debugging:
     env.add_callback( "json_dump", 0, [ = ]( Arguments & )

@@ -1144,10 +1144,10 @@ void TestProcessingGui::testFileWrapper()
     QWidget *w = wrapper.createWrappedWidget( context );
 
     QSignalSpy spy( &wrapper, &QgsProcessingFileWidgetWrapper::widgetValueHasChanged );
-    wrapper.setWidgetValue( TEST_DATA_DIR + QStringLiteral( "/points.shp" ), context );
+    wrapper.setWidgetValue( QString( TEST_DATA_DIR + QStringLiteral( "/points.shp" ) ), context );
     QCOMPARE( spy.count(), 1 );
-    QCOMPARE( wrapper.widgetValue().toString(),  TEST_DATA_DIR + QStringLiteral( "/points.shp" ) );
-    QCOMPARE( static_cast< QgsFileWidget * >( wrapper.wrappedWidget() )->filePath(),  TEST_DATA_DIR + QStringLiteral( "/points.shp" ) );
+    QCOMPARE( wrapper.widgetValue().toString(), QString( TEST_DATA_DIR + QStringLiteral( "/points.shp" ) ) );
+    QCOMPARE( static_cast< QgsFileWidget * >( wrapper.wrappedWidget() )->filePath(), QString( TEST_DATA_DIR + QStringLiteral( "/points.shp" ) ) );
     QCOMPARE( static_cast< QgsFileWidget * >( wrapper.wrappedWidget() )->filter(), QStringLiteral( "All files (*.*)" ) );
     QCOMPARE( static_cast< QgsFileWidget * >( wrapper.wrappedWidget() )->storageMode(),  QgsFileWidget::GetFile );
     wrapper.setWidgetValue( QString(), context );
@@ -3213,27 +3213,27 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->selectedOptions().size(), 1 );
   QCOMPARE( dlg->selectedOptions().at( 0 ).toString(), raster->source() );
   // existing value using full layer path not matching a project layer should work
-  dlg = qgis::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList() << raster->source() << QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif", QList<QgsProcessingModelChildParameterSource >() );
+  dlg = qgis::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList() << raster->source() << QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ), QList<QgsProcessingModelChildParameterSource >() );
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->rowCount(), 2 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "raster [EPSG:4326]" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), raster->source() );
-  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ) ).toString(), QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
-  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ), Qt::UserRole ).toString(), QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ) ).toString(), QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ), Qt::UserRole ).toString(), QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) );
   QCOMPARE( dlg->selectedOptions().size(), 2 );
   QCOMPARE( dlg->selectedOptions().at( 0 ).toString(), raster->source() );
-  QCOMPARE( dlg->selectedOptions().at( 1 ).toString(), QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
+  QCOMPARE( dlg->selectedOptions().at( 1 ).toString(), QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) );
 
   // should remember layer order
-  dlg = qgis::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList()  << QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" << raster->source(), QList<QgsProcessingModelChildParameterSource >() );
+  dlg = qgis::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList()  << QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) << raster->source(), QList<QgsProcessingModelChildParameterSource >() );
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->rowCount(), 2 );
-  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
-  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) );
+  QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ) ).toString(), QStringLiteral( "raster [EPSG:4326]" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 1, 0 ), Qt::UserRole ).toString(), raster->source() );
   QCOMPARE( dlg->selectedOptions().size(), 2 );
-  QCOMPARE( dlg->selectedOptions().at( 0 ).toString(), QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
+  QCOMPARE( dlg->selectedOptions().at( 0 ).toString(), QString( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" ) );
   QCOMPARE( dlg->selectedOptions().at( 1 ).toString(), raster->source() );
 
   // mesh
@@ -7866,7 +7866,7 @@ void TestProcessingGui::testOutputDefinitionWidget()
   v = panel.value();
   QVERIFY( v.canConvert< QgsProcessingOutputLayerDefinition>() );
   QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "utf8" ) );
-  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), TEST_DATA_DIR + QStringLiteral( "/test.shp" ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QString( TEST_DATA_DIR + QStringLiteral( "/test.shp" ) ) );
 
   // optional, test skipping
   sink.setFlags( sink.flags() | QgsProcessingParameterDefinition::FlagOptional );
@@ -8041,7 +8041,7 @@ void TestProcessingGui::testOutputDefinitionWidgetVectorOut()
   v = panel.value();
   QVERIFY( v.canConvert< QgsProcessingOutputLayerDefinition>() );
   QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "System" ) );
-  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), TEST_DATA_DIR + QStringLiteral( "/test.shp" ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QString( TEST_DATA_DIR + QStringLiteral( "/test.shp" ) ) );
 
   // optional, test skipping
   vector.setFlags( vector.flags() | QgsProcessingParameterDefinition::FlagOptional );
@@ -8154,7 +8154,7 @@ void TestProcessingGui::testOutputDefinitionWidgetRasterOut()
   v = panel.value();
   QVERIFY( v.canConvert< QgsProcessingOutputLayerDefinition>() );
   QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().createOptions.value( QStringLiteral( "fileEncoding" ) ).toString(), QStringLiteral( "System" ) );
-  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), TEST_DATA_DIR + QStringLiteral( "/test.tif" ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().sink.staticValue().toString(), QString( TEST_DATA_DIR + QStringLiteral( "/test.tif" ) ) );
 
   // optional, test skipping
   raster.setFlags( raster.flags() | QgsProcessingParameterDefinition::FlagOptional );
@@ -8260,7 +8260,7 @@ void TestProcessingGui::testOutputDefinitionWidgetFolder()
   settings.setValue( QStringLiteral( "/Processing/Configuration/OUTPUTS_FOLDER" ), TEST_DATA_DIR );
   panel.setValue( QStringLiteral( "mystuff" ) );
   v = panel.value();
-  QCOMPARE( v.toString(), TEST_DATA_DIR + QStringLiteral( "/mystuff" ) );
+  QCOMPARE( v.toString(), QString( TEST_DATA_DIR + QStringLiteral( "/mystuff" ) ) );
 
   // optional, test skipping
   folder.setFlags( folder.flags() | QgsProcessingParameterDefinition::FlagOptional );
@@ -8361,7 +8361,7 @@ void TestProcessingGui::testOutputDefinitionWidgetFileOut()
   settings.setValue( QStringLiteral( "/Processing/Configuration/OUTPUTS_FOLDER" ), TEST_DATA_DIR );
   panel.setValue( QStringLiteral( "test.tif" ) );
   v = panel.value();
-  QCOMPARE( v.toString(), TEST_DATA_DIR + QStringLiteral( "/test.tif" ) );
+  QCOMPARE( v.toString(), QString( TEST_DATA_DIR + QStringLiteral( "/test.tif" ) ) );
 
   // optional, test skipping
   file.setFlags( file.flags() | QgsProcessingParameterDefinition::FlagOptional );

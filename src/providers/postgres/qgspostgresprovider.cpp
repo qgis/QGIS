@@ -4935,9 +4935,9 @@ QList<QgsRelation> QgsPostgresProvider::discoverRelations( const QgsVectorLayer 
     "   FROM pg_constraint c "
     "   WHERE contype = 'f' "
     "     AND c.conrelid::regclass = " +
-    QgsPostgresConn::quotedValue( QgsPostgresConn::quotedIdentifier( mSchemaName ) +
+    QgsPostgresConn::quotedValue( QString( QgsPostgresConn::quotedIdentifier( mSchemaName ) +
                                   '.' +
-                                  QgsPostgresConn::quotedIdentifier( mTableName ) ) +
+                                  QgsPostgresConn::quotedIdentifier( mTableName ) ) ) +
     "::regclass ) "
     "SELECT fk.conname as constraint_name, "
     "       a.attname as column_name, "
