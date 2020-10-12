@@ -62,6 +62,7 @@ QMap< QgsCodeEditorColorScheme::ColorRole, QString > QgsCodeEditor::sColorRoleTo
   {QgsCodeEditorColorScheme::ColorRole::Edge, QStringLiteral( "edgeColor" ) },
   {QgsCodeEditorColorScheme::ColorRole::Fold, QStringLiteral( "foldColor" ) },
   {QgsCodeEditorColorScheme::ColorRole::Error, QStringLiteral( "stderrFontColor" ) },
+  {QgsCodeEditorColorScheme::ColorRole::ErrorBackground, QStringLiteral( "stderrBackgroundColor" ) },
   {QgsCodeEditorColorScheme::ColorRole::FoldIconForeground, QStringLiteral( "foldIconForeground" ) },
   {QgsCodeEditorColorScheme::ColorRole::FoldIconHalo, QStringLiteral( "foldIconHalo" ) },
   {QgsCodeEditorColorScheme::ColorRole::IndentationGuide, QStringLiteral( "indentationGuide" ) },
@@ -89,8 +90,6 @@ QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString &title, bool foldin
   SendScintilla( SCI_SETMULTIPASTE, 1 );
   SendScintilla( SCI_SETVIRTUALSPACEOPTIONS, SCVS_RECTANGULARSELECTION );
 
-  markerDefine( QgsApplication::getThemePixmap( "console/iconSyntaxErrorConsole.svg" ),
-                MARKER_NUMBER );
   SendScintilla( SCI_SETMARGINTYPEN, 3, SC_MARGIN_SYMBOL );
   SendScintilla( SCI_SETMARGINMASKN, 3, 1 << MARKER_NUMBER );
   setMarginWidth( 3, 0 );
@@ -248,6 +247,9 @@ void QgsCodeEditor::setSciWidget()
   // autocomplete
   setAutoCompletionThreshold( 2 );
   setAutoCompletionSource( QsciScintilla::AcsAPIs );
+
+  markerDefine( QgsApplication::getThemePixmap( "console/iconSyntaxErrorConsoleParams.svg", lexerColor( QgsCodeEditorColorScheme::ColorRole::Error ),
+                lexerColor( QgsCodeEditorColorScheme::ColorRole::ErrorBackground ), 16 ), MARKER_NUMBER );
 }
 
 void QgsCodeEditor::setTitle( const QString &title )
@@ -360,6 +362,7 @@ QColor QgsCodeEditor::defaultColor( QgsCodeEditorColorScheme::ColorRole role, co
       {QgsCodeEditorColorScheme::ColorRole::Edge, QStringLiteral( "edgeColor" ) },
       {QgsCodeEditorColorScheme::ColorRole::Fold, QStringLiteral( "foldColor" ) },
       {QgsCodeEditorColorScheme::ColorRole::Error, QStringLiteral( "stderrFontColor" ) },
+      {QgsCodeEditorColorScheme::ColorRole::ErrorBackground, QStringLiteral( "stderrBackground" ) },
       {QgsCodeEditorColorScheme::ColorRole::FoldIconForeground, QStringLiteral( "foldIconForeground" ) },
       {QgsCodeEditorColorScheme::ColorRole::FoldIconHalo, QStringLiteral( "foldIconHalo" ) },
       {QgsCodeEditorColorScheme::ColorRole::IndentationGuide, QStringLiteral( "indentationGuide" ) },
@@ -460,7 +463,7 @@ void QgsCodeEditor::addWarning( const int lineNumber, const QString &warning )
   font.setItalic( true );
   const QsciStyle styleAnn = QsciStyle( -1, QStringLiteral( "Annotation" ),
                                         lexerColor( QgsCodeEditorColorScheme::ColorRole::Error ),
-                                        QColor( 255, 200, 0 ), // TODO - expose as configurable color!
+                                        lexerColor( QgsCodeEditorColorScheme::ColorRole::ErrorBackground ),
                                         font,
                                         true );
   annotate( lineNumber, warning, styleAnn );
