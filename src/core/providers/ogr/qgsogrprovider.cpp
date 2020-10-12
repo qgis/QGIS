@@ -3473,9 +3473,9 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri )
 
   if ( path.contains( '|' ) )
   {
-    const QRegularExpression geometryTypeRegex( QStringLiteral( "\\|geometrytype=([a-zA-Z0-9]*)" ) );
-    const QRegularExpression layerNameRegex( QStringLiteral( "\\|layername=([^|]*)" ) );
-    const QRegularExpression layerIdRegex( QStringLiteral( "\\|layerid=([^|]*)" ) );
+    const QRegularExpression geometryTypeRegex( QStringLiteral( "\\|geometrytype=([a-zA-Z0-9]*)" ), QRegularExpression::PatternOption::CaseInsensitiveOption );
+    const QRegularExpression layerNameRegex( QStringLiteral( "\\|layername=([^|]*)" ), QRegularExpression::PatternOption::CaseInsensitiveOption );
+    const QRegularExpression layerIdRegex( QStringLiteral( "\\|layerid=([^|]*)" ), QRegularExpression::PatternOption::CaseInsensitiveOption );
     const QRegularExpression subsetRegex( QStringLiteral( "\\|subset=((?:.*[\r\n]*)*)\\Z" ) );
     const QRegularExpression openOptionRegex( QStringLiteral( "\\|option:([^|]*)" ) );
 
