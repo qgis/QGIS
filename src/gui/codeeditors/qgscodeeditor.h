@@ -135,6 +135,22 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      */
     void setCustomAppearance( const QString &scheme = QString(), const QMap< QgsCodeEditorColorScheme::ColorRole, QColor > &customColors = QMap< QgsCodeEditorColorScheme::ColorRole, QColor >(), const QString &fontFamily = QString(), int fontSize = 0 ) SIP_SKIP;
 
+    /**
+     * Adds a \a warning message and indicator to the specified a \a lineNumber.
+     *
+     * \see clearWarnings()
+     * \since QGIS 3.16
+     */
+    void addWarning( int lineNumber, const QString &warning );
+
+    /**
+     * Clears all warning messages from the editor.
+     *
+     * \see addWarning()
+     * \since QGIS 3.16
+     */
+    void clearWarnings();
+
   protected:
 
     bool isFixedPitch( const QFont &font );
@@ -188,7 +204,11 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     QString mFontFamily;
     int mFontSize = 0;
 
+    QVector< int > mWarningLines;
+
     static QMap< QgsCodeEditorColorScheme::ColorRole, QString > sColorRoleToSettingsKey;
+
+    static constexpr int MARKER_NUMBER = 6;
 };
 
 // clazy:excludeall=qstring-allocations

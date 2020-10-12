@@ -120,6 +120,24 @@ Returns the monospaced font to use for code editors.
 %End
 
 
+    void addWarning( int lineNumber, const QString &warning );
+%Docstring
+Adds a ``warning`` message and indicator to the specified a ``lineNumber``.
+
+.. seealso:: :py:func:`clearWarnings`
+
+.. versionadded:: 3.16
+%End
+
+    void clearWarnings();
+%Docstring
+Clears all warning messages from the editor.
+
+.. seealso:: :py:func:`addWarning`
+
+.. versionadded:: 3.16
+%End
+
   protected:
 
     bool isFixedPitch( const QFont &font );

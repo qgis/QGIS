@@ -27,6 +27,7 @@
 #include <QFontDatabase>
 #include <QDebug>
 #include <QFocusEvent>
+#include <Qsci/qscistyle.h>
 
 QMap< QgsCodeEditorColorScheme::ColorRole, QString > QgsCodeEditor::sColorRoleToSettingsKey
 {
@@ -86,6 +87,13 @@ QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString &title, bool foldin
   SendScintilla( SCI_SETADDITIONALSELECTIONTYPING, 1 );
   SendScintilla( SCI_SETMULTIPASTE, 1 );
   SendScintilla( SCI_SETVIRTUALSPACEOPTIONS, SCVS_RECTANGULARSELECTION );
+
+  markerDefine( QgsApplication::getThemePixmap( "console/iconSyntaxErrorConsole.svg" ),
+                MARKER_NUMBER );
+  SendScintilla( SCI_SETMARGINTYPEN, 3, SC_MARGIN_SYMBOL );
+  SendScintilla( SCI_SETMARGINMASKN, 3, 1 << MARKER_NUMBER );
+  setMarginWidth( 3, 0 );
+  setAnnotationDisplay( QsciScintilla::AnnotationBoxed );
 
   connect( QgsGui::instance(), &QgsGui::optionsChanged, this, [ = ]
   {
@@ -440,4 +448,30 @@ void QgsCodeEditor::setCustomAppearance( const QString &scheme, const QMap<QgsCo
 
   setSciWidget();
   initializeLexer();
+}
+
+void QgsCodeEditor::addWarning( const int lineNumber, const QString &warning )
+{
+  setMarginWidth( 3, "000" );
+  markerAdd( lineNumber, MARKER_NUMBER );
+  QFont font = lexerFont();
+  font.setItalic( true );
+  const QsciStyle styleAnn = QsciStyle( -1, QStringLiteral( "Annotation" ),
+                                        lexerColor( QgsCodeEditorColorScheme::ColorRole::Error ),
+                                        QColor( 255, 200, 0 ), // TODO - expose as configurable color!
+                                        font,
+                                        true );
+  annotate( lineNumber, warning, styleAnn );
+  mWarningLines.push_back( lineNumber );
+}
+
+void QgsCodeEditor::clearWarnings()
+{
+  for ( int line : mWarningLines )
+  {
+    markerDelete( line );
+    clearAnnotations( line );
+  }
+  setMarginWidth( 3, 0 );
+  mWarningLines.clear();
 }
