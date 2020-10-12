@@ -362,7 +362,7 @@ Helper to get a theme icon as a pixmap. It will fall back to the
 default theme if the active theme does not have the required icon.
 
 If ``foreColor`` or ``backColor`` are specified, then these colors will
-be used for parameterized colors in SVG files wherever available. If
+be used for parametrized colors in SVG files wherever available. If
 colors are specified then the ``size`` argument also must be set.
 %End
 
