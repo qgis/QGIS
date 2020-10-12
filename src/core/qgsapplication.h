@@ -382,7 +382,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * default theme if the active theme does not have the required icon.
      *
      * If \a foreColor or \a backColor are specified, then these colors will
-     * be used for parameterized colors in SVG files wherever available. If
+     * be used for parametrized colors in SVG files wherever available. If
      * colors are specified then the \a size argument also must be set.
      */
     static QPixmap getThemePixmap( const QString &name, const QColor &foreColor = QColor(), const QColor &backColor = QColor(), int size = 16 );
