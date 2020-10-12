@@ -297,13 +297,6 @@
            <bool>true</bool>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
-           <item row="9" column="5">
-            <widget class="QgsColorButton" name="mColorFold">
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
            <item row="9" column="3">
             <widget class="QgsColorButton" name="mColorMarginForeground">
              <property name="text">
@@ -479,13 +472,6 @@
              </property>
             </widget>
            </item>
-           <item row="10" column="5">
-            <widget class="QgsColorButton" name="mColorCaretLine">
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
            <item row="3" column="5">
             <widget class="QgsColorButton" name="mColorNumber">
              <property name="text">
@@ -535,13 +521,6 @@
              </property>
             </widget>
            </item>
-           <item row="7" column="4">
-            <widget class="QLabel" name="label_38">
-             <property name="text">
-              <string>Indentation guide</string>
-             </property>
-            </widget>
-           </item>
            <item row="0" column="1" colspan="5">
             <widget class="QComboBox" name="mColorSchemeComboBox"/>
            </item>
@@ -549,13 +528,6 @@
             <widget class="QLabel" name="label_2">
              <property name="text">
               <string>Color scheme</string>
-             </property>
-            </widget>
-           </item>
-           <item row="7" column="5">
-            <widget class="QgsColorButton" name="mColorIndentation">
-             <property name="text">
-              <string/>
              </property>
             </widget>
            </item>
@@ -577,13 +549,6 @@
             <widget class="QLabel" name="label_30">
              <property name="text">
               <string>Triple double quote</string>
-             </property>
-            </widget>
-           </item>
-           <item row="6" column="4">
-            <widget class="QLabel" name="label_21">
-             <property name="text">
-              <string>Comment line</string>
              </property>
             </widget>
            </item>
@@ -610,13 +575,6 @@
            </item>
            <item row="2" column="5">
             <widget class="QgsColorButton" name="mColorClass">
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item row="6" column="5">
-            <widget class="QgsColorButton" name="mColorCommentLine">
              <property name="text">
               <string/>
              </property>
@@ -661,13 +619,6 @@
             <widget class="QLabel" name="label_33">
              <property name="text">
               <string>Tag</string>
-             </property>
-            </widget>
-           </item>
-           <item row="9" column="4">
-            <widget class="QLabel" name="label_39">
-             <property name="text">
-              <string>Fold guide</string>
              </property>
             </widget>
            </item>
@@ -734,13 +685,6 @@
              </property>
             </widget>
            </item>
-           <item row="10" column="4">
-            <widget class="QLabel" name="label_22">
-             <property name="text">
-              <string>Caretline</string>
-             </property>
-            </widget>
-           </item>
            <item row="9" column="1">
             <widget class="QgsColorButton" name="mColorMarginBackground">
              <property name="text">
@@ -762,13 +706,6 @@
              </property>
             </widget>
            </item>
-           <item row="8" column="4">
-            <widget class="QLabel" name="label_40">
-             <property name="text">
-              <string>Edge guide</string>
-             </property>
-            </widget>
-           </item>
            <item row="3" column="0">
             <widget class="QLabel" name="label_23">
              <property name="text">
@@ -776,8 +713,85 @@
              </property>
             </widget>
            </item>
-           <item row="8" column="5">
+           <item row="11" column="4">
+            <widget class="QLabel" name="label_22">
+             <property name="text">
+              <string>Caretline</string>
+             </property>
+            </widget>
+           </item>
+           <item row="11" column="5">
+            <widget class="QgsColorButton" name="mColorCaretLine">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="10" column="4">
+            <widget class="QLabel" name="label_39">
+             <property name="text">
+              <string>Fold guide</string>
+             </property>
+            </widget>
+           </item>
+           <item row="10" column="5">
+            <widget class="QgsColorButton" name="mColorFold">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="4">
+            <widget class="QLabel" name="label_40">
+             <property name="text">
+              <string>Edge guide</string>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="5">
             <widget class="QgsColorButton" name="mColorEdge">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="4">
+            <widget class="QLabel" name="label_38">
+             <property name="text">
+              <string>Indentation guide</string>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="5">
+            <widget class="QgsColorButton" name="mColorIndentation">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="4">
+            <widget class="QLabel" name="label_21">
+             <property name="text">
+              <string>Comment line</string>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="5">
+            <widget class="QgsColorButton" name="mColorCommentLine">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="4">
+            <widget class="QLabel" name="label_34">
+             <property name="text">
+              <string>Error background</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="5">
+            <widget class="QgsColorButton" name="mColorErrorBackground">
              <property name="text">
               <string/>
              </property>
@@ -865,21 +879,22 @@
   <tabstop>mColorError</tabstop>
   <tabstop>mColorComment</tabstop>
   <tabstop>mColorCommentBlock</tabstop>
-  <tabstop>mColorCommentLine</tabstop>
+  <tabstop>mColorErrorBackground</tabstop>
   <tabstop>mColorSingleQuote</tabstop>
   <tabstop>mColorDoubleQuote</tabstop>
-  <tabstop>mColorIndentation</tabstop>
+  <tabstop>mColorCommentLine</tabstop>
   <tabstop>mColorTripleSingleQuote</tabstop>
   <tabstop>mColorTripleDoubleQuote</tabstop>
-  <tabstop>mColorEdge</tabstop>
+  <tabstop>mColorIndentation</tabstop>
   <tabstop>mColorMarginBackground</tabstop>
   <tabstop>mColorMarginForeground</tabstop>
-  <tabstop>mColorFold</tabstop>
+  <tabstop>mColorEdge</tabstop>
   <tabstop>mColorSelectionBackground</tabstop>
   <tabstop>mColorSelectionForeground</tabstop>
-  <tabstop>mColorCaretLine</tabstop>
+  <tabstop>mColorFold</tabstop>
   <tabstop>mColorBraceBackground</tabstop>
   <tabstop>mColorBraceForeground</tabstop>
+  <tabstop>mColorCaretLine</tabstop>
   <tabstop>mColorFoldIcon</tabstop>
   <tabstop>mColorFoldIconHalo</tabstop>
   <tabstop>mListLanguage</tabstop>
