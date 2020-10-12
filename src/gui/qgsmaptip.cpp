@@ -224,6 +224,12 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
     renderer.reset( vlayer->renderer()->clone() );
     renderer->startRender( renderCtx, vlayer->fields() );
     filter = renderer->capabilities() & QgsFeatureRenderer::Filter;
+
+    const QString filterExpression = renderer->filter( vlayer->fields() );
+    if ( ! filterExpression.isEmpty() )
+    {
+      request.setFilterExpression( filterExpression );
+    }
   }
 
   QgsFeatureIterator it = vlayer->getFeatures( request );
