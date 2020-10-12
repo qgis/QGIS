@@ -19,6 +19,7 @@
 #include <QApplication>
 #include <QEvent>
 #include <QStringList>
+#include <QColor>
 
 #include "qgis_sip.h"
 #include "qgsconfig.h"
@@ -379,8 +380,12 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Helper to get a theme icon as a pixmap. It will fall back to the
      * default theme if the active theme does not have the required icon.
+     *
+     * If \a foreColor or \a backColor are specified, then these colors will
+     * be used for parameterized colors in SVG files wherever available. If
+     * colors are specified then the \a size argument also must be set.
      */
-    static QPixmap getThemePixmap( const QString &name );
+    static QPixmap getThemePixmap( const QString &name, const QColor &foreColor = QColor(), const QColor &backColor = QColor(), int size = 16 );
 
     //! Returns the path to user's style.
     static QString userStylePath();

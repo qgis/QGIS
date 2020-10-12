@@ -715,20 +715,19 @@ QCursor QgsApplication::getThemeCursor( Cursor cursor )
 }
 
 // TODO: add some caching mechanism ?
-QPixmap QgsApplication::getThemePixmap( const QString &name )
+QPixmap QgsApplication::getThemePixmap( const QString &name, const QColor &foreColor, const QColor &backColor, const int size )
 {
-  QString myPreferredPath = activeThemePath() + QDir::separator() + name;
-  QString myDefaultPath = defaultThemePath() + QDir::separator() + name;
-  if ( QFile::exists( myPreferredPath ) )
+  const QString preferredPath = activeThemePath() + QDir::separator() + name;
+  const QString defaultPath = defaultThemePath() + QDir::separator() + name;
+  const QString path = QFile::exists( preferredPath ) ? preferredPath : defaultPath;
+  if ( foreColor.isValid() || backColor.isValid() )
   {
-    return QPixmap( myPreferredPath );
+    bool fitsInCache = false;
+    const QImage image = svgCache()->svgAsImage( path, size, backColor, foreColor, 1, 1, fitsInCache );
+    return QPixmap::fromImage( image );
   }
-  else
-  {
-    //could still return an empty icon if it
-    //doesn't exist in the default theme either!
-    return QPixmap( myDefaultPath );
-  }
+
+  return QPixmap( path );
 }
 
 void QgsApplication::setThemeName( const QString &themeName )
