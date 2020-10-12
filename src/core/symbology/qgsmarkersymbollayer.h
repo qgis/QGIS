@@ -633,7 +633,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
   private:
     double calculateSize( QgsSymbolRenderContext &context, bool &hasDataDefinedSize ) const;
-    void calculateOffsetAndRotation( QgsSymbolRenderContext &context, double scaledSize, QPointF &offset, double &angle ) const;
+    void calculateOffsetAndRotation( QgsSymbolRenderContext &context, double scaledWidth, double scaledHeight, QPointF &offset, double &angle ) const;
 
 };
 
