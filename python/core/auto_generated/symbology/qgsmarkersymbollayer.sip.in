@@ -683,13 +683,14 @@ Returns the units for the stroke width.
 
   protected:
 
-    double calculateAspectRatio( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedAspectRatio ) const;
+    double calculateAspectRatio( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedAspectRatio, double &scaledHeight ) const;
 %Docstring
 Calculates the marker aspect ratio between width and height.
 
 :param context: symbol render context
 :param scaledSize: size of symbol to render
 :param hasDataDefinedAspectRatio: will be set to ``True`` if marker has data defined aspectRatio
+:param scaledHeight: will be set to the resulting height taking size (i.e. width) and ratio into account
 %End
 
 

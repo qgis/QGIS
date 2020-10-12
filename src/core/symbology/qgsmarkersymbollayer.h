@@ -613,8 +613,9 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
      * \param context symbol render context
      * \param scaledSize size of symbol to render
      * \param hasDataDefinedAspectRatio will be set to TRUE if marker has data defined aspectRatio
+     * \param scaledHeight will be set to the resulting height taking size (i.e. width) and ratio into account
      */
-    double calculateAspectRatio( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedAspectRatio ) const;
+    double calculateAspectRatio( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedAspectRatio, double &scaledHeight ) const;
 
     QString mPath;
 
@@ -633,7 +634,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
   private:
     double calculateSize( QgsSymbolRenderContext &context, bool &hasDataDefinedSize ) const;
-    void calculateOffsetAndRotation( QgsSymbolRenderContext &context, double scaledSize, QPointF &offset, double &angle ) const;
+    void calculateOffsetAndRotation( QgsSymbolRenderContext &context, double scaledWidth, double scaledHeight, QPointF &offset, double &angle ) const;
 
 };
 
