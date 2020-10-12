@@ -71,6 +71,10 @@ QVariant QgsListWidgetWrapper::value() const
   QVariant::Type type = field().type();
   if ( !mWidget ) return QVariant( type );
   const QVariantList list = mWidget->list();
+  if ( list.size() == 0 && config( QStringLiteral( "EmptyIsNull" ) ).toBool() )
+  {
+    return QVariant( );
+  }
   if ( type == QVariant::StringList )
   {
     QStringList result;
@@ -80,14 +84,7 @@ QVariant QgsListWidgetWrapper::value() const
   }
   else
   {
-    if ( list.size() == 0 )
-    {
-      return QVariant( );
-    }
-    else
-    {
-      return list;
-    }
+    return list;
   }
 }
 
