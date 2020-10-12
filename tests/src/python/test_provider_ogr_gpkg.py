@@ -257,10 +257,25 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(components["path"], filename)
         self.assertEqual(components["layerName"], 'test')
 
+        uri = '{}|layerName=test'.format(filename)
+        components = registry.decodeUri('ogr', uri)
+        self.assertEqual(components["path"], filename)
+        self.assertEqual(components["layerName"], 'test')
+
         uri = '{}|layerid=0'.format(filename)
         components = registry.decodeUri('ogr', uri)
         self.assertEqual(components["path"], filename)
         self.assertEqual(components["layerId"], 0)
+
+        uri = '{}|layerId=0'.format(filename)
+        components = registry.decodeUri('ogr', uri)
+        self.assertEqual(components["path"], filename)
+        self.assertEqual(components["layerId"], 0)
+
+        uri = '{}|geometryType=POINT'.format(filename)
+        components = registry.decodeUri('ogr', uri)
+        self.assertEqual(components["path"], filename)
+        self.assertEqual(components["geometryType"], 'POINT')
 
     def testEncodeUri(self):
 
