@@ -155,6 +155,7 @@ SET(QGIS_GUI_SRCS
   editorwidgets/qgskeyvaluewidgetwrapper.cpp
   editorwidgets/qgslistwidgetfactory.cpp
   editorwidgets/qgslistwidgetwrapper.cpp
+  editorwidgets/qgslistconfigdlg.cpp
   editorwidgets/qgsmultiedittoolbutton.cpp
   editorwidgets/qgsrangeconfigdlg.cpp
   editorwidgets/qgsrangewidgetwrapper.cpp

@@ -15,7 +15,7 @@
 
 #include "qgslistwidgetfactory.h"
 #include "qgslistwidgetwrapper.h"
-#include "qgsdummyconfigdlg.h"
+#include "qgslistconfigdlg.h"
 #include "qgsfields.h"
 #include "qgsvectorlayer.h"
 #include "qgseditorwidgetregistry.h"
@@ -35,10 +35,7 @@ QgsEditorWidgetWrapper *QgsListWidgetFactory::create( QgsVectorLayer *vl, int fi
 
 QgsEditorConfigWidget *QgsListWidgetFactory::configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const
 {
-  Q_UNUSED( vl )
-  Q_UNUSED( fieldIdx )
-  Q_UNUSED( parent )
-  return new QgsDummyConfigDlg( vl, fieldIdx, parent, QObject::tr( "List field" ) );
+  return new QgsListConfigDlg( vl, fieldIdx, parent );
 }
 
 unsigned int QgsListWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
