@@ -1309,6 +1309,12 @@ QString QgsGdalProvider::generateBandName( int bandNumber ) const
   }
   QString generatedBandName = QgsRasterDataProvider::generateBandName( bandNumber );
   GDALRasterBandH myGdalBand = getBand( bandNumber );
+  if ( ! myGdalBand )
+  {
+    QgsLogger::warning( QStringLiteral( "Band %1 does not exist." ).arg( bandNumber ) );
+    return QString();
+  }
+
   QString gdalBandName( GDALGetDescription( myGdalBand ) );
   if ( !gdalBandName.isEmpty() )
   {
