@@ -665,7 +665,8 @@ int QgsRubberBand::numberOfVertices() const
   {
     for ( const QgsPolylineXY &ring : poly )
     {
-      count += ring.size();
+      if ( ring )
+        count += ring.size();
     }
   }
   return count;
