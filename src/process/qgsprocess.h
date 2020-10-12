@@ -25,6 +25,8 @@
 
 class QgsApplication;
 
+class QgsProcessingAlgorithm;
+
 class ConsoleFeedback : public QgsProcessingFeedback
 {
     Q_OBJECT
@@ -34,7 +36,7 @@ class ConsoleFeedback : public QgsProcessingFeedback
     /**
      * Constructor for QgsProcessingAlgorithmDialogFeedback.
      */
-    ConsoleFeedback();
+    ConsoleFeedback( bool useJson );
 
   public slots:
 
@@ -44,6 +46,7 @@ class ConsoleFeedback : public QgsProcessingFeedback
     void pushCommandInfo( const QString &info ) override;
     void pushDebugInfo( const QString &info ) override;
     void pushConsoleInfo( const QString &info ) override;
+    QVariantMap jsonLog() const;
 
   private slots:
     void showTerminalProgress( double progress );
@@ -51,6 +54,8 @@ class ConsoleFeedback : public QgsProcessingFeedback
   private:
     QElapsedTimer mTimer;
     int mLastTick = -1;
+    bool mUseJson = false;
+    QVariantMap mJsonLog;
 };
 
 
@@ -66,15 +71,20 @@ class QgsProcessingExec
 
     void showUsage( const QString &appName );
     void loadPlugins();
-    void listAlgorithms();
-    void listPlugins();
-    int showAlgorithmHelp( const QString &id );
+    void listAlgorithms( bool useJson );
+    void listPlugins( bool useJson );
+    int showAlgorithmHelp( const QString &id, bool useJson );
     int execute( const QString &algId,
                  const QVariantMap &parameters,
                  const QString &ellipsoid,
                  QgsUnitTypes::DistanceUnit distanceUnit,
                  QgsUnitTypes::AreaUnit areaUnit,
+                 bool useJson,
                  const QString &projectPath = QString() );
+
+    void addVersionInformation( QVariantMap &json );
+    void addAlgorithmInformation( QVariantMap &json, const QgsProcessingAlgorithm *algorithm );
+    void addProviderInformation( QVariantMap &json, QgsProcessingProvider *provider );
 
     std::unique_ptr< QgsPythonUtils > mPythonUtils;
     std::unique_ptr<QgsPythonUtils> loadPythonSupport();

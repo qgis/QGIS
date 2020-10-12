@@ -4,6 +4,7 @@
 SET(QGIS_PROCESS_SRCS
   main.cpp
   qgsprocess.cpp
+  ${CMAKE_SOURCE_DIR}/external/nlohmann/json_fwd.hpp
 )
 
 IF (UNIX AND NOT ANDROID)
@@ -23,6 +24,9 @@ INCLUDE_DIRECTORIES(
 INCLUDE_DIRECTORIES(SYSTEM
   ${QT_INCLUDE_DIR}
   ${QGIS_INCLUDE_DIR}
+  ${PROJ_INCLUDE_DIR}
+  ${GDAL_INCLUDE_DIR}
+  ${GEOS_INCLUDE_DIR}
 )
 
 IF (UNIX AND NOT ANDROID)
@@ -42,6 +46,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/analysis/processing
   ${CMAKE_SOURCE_DIR}/src/python
   ${CMAKE_SOURCE_DIR}/external/nlohmann
+  ${CMAKE_SOURCE_DIR}/external
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/python
@@ -67,6 +72,9 @@ TARGET_LINK_LIBRARIES(qgis_process
   qgis_core
   qgis_analysis
   ${Qt5Core_LIBRARIES}
+  ${PROJ_LIBRARY}
+  ${GEOS_LIBRARY}
+  ${GDAL_LIBRARY}
 )
 
 IF (WITH_3D)
