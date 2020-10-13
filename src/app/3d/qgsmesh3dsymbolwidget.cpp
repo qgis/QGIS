@@ -127,9 +127,15 @@ void QgsMesh3dSymbolWidget::setLayer( QgsMeshLayer *meshLayer, bool updateSymbol
     mComboBoxTriangleCount->setVisible( true );
     mLabelTriangleCount->setVisible( true );
     int lodCount = meshLayer->triangularMeshLevelOfDetailCount();
-    for ( int i = 0; i < lodCount; ++i )
+    int originalMeshTrianglesCount = meshLayer->triangularMeshByLodIndex( 0 )->triangles().count();
+    QString text = tr( "Original (%1 triangles)" ).arg( originalMeshTrianglesCount );
+    mComboBoxTriangleCount->addItem( text );
+    for ( int i = 1; i < lodCount; ++i )
     {
-      mComboBoxTriangleCount->addItem( QString::number( meshLayer->triangularMeshByLodIndex( i )->triangles().count() ) );
+      int triangleCount = meshLayer->triangularMeshByLodIndex( i )->triangles().count();
+      int reduction = originalMeshTrianglesCount / triangleCount;
+      text = tr( "1/%1 (%2 triangles)" ).arg( reduction ).arg( triangleCount );
+      mComboBoxTriangleCount->addItem( text );
     }
   }
   else
