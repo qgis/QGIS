@@ -230,9 +230,9 @@ void QgsCodeEditor::setSciWidget()
   setMatchedBraceBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MatchedBraceBackground ) );
 
   setLineNumbersVisible( false );
+  setFoldingVisible( false );
 
   setMarginWidth( QgsCodeEditor::MarginRole::ErrorIndicators, 0 );
-  setMarginWidth( QgsCodeEditor::MarginRole::FoldingControls, 0 );
 
   setMarginsForegroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginForeground ) );
   setMarginsBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginBackground ) );
@@ -311,11 +311,15 @@ void QgsCodeEditor::setFoldingVisible( bool folding )
   mFolding = folding;
   if ( folding )
   {
+    setMarginWidth( QgsCodeEditor::MarginRole::FoldingControls, "0" );
+    setMarginsForegroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginForeground ) );
+    setMarginsBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginBackground ) );
     setFolding( QsciScintilla::PlainFoldStyle );
   }
   else
   {
     setFolding( QsciScintilla::NoFoldStyle );
+    setMarginWidth( QgsCodeEditor::MarginRole::FoldingControls, 0 );
   }
 }
 

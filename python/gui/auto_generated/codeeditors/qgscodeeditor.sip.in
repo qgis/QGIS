@@ -96,11 +96,17 @@ Returns whether line numbers are visible in the editor.
 
     void setFoldingVisible( bool folding );
 %Docstring
-Set folding visible state
+Set whether the folding controls are visible in the editor.
 
-:param folding: Set folding in the editor
+.. seealso:: :py:func:`foldingVisible`
 %End
+
     bool foldingVisible();
+%Docstring
+Returns ``True`` if the folding controls are visible in the editor.
+
+.. seealso:: :py:func:`setFoldingVisible`
+%End
 
     void insertText( const QString &text );
 %Docstring

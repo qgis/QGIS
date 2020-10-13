@@ -203,7 +203,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
 
   setExpectedOutputFormat( QString() );
   mFunctionBuilderHelp->setLineNumbersVisible( false );
-  mFunctionBuilderHelp->setMarginWidth( QgsCodeEditor::MarginRole::FoldingControls, 0 );
+  mFunctionBuilderHelp->setFoldingVisible( false );
   mFunctionBuilderHelp->setEdgeMode( QsciScintilla::EdgeNone );
   mFunctionBuilderHelp->setEdgeColumn( 0 );
   mFunctionBuilderHelp->setReadOnly( true );

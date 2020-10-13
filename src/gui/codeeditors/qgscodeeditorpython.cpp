@@ -169,12 +169,6 @@ void QgsCodeEditorPython::initializeLexer()
   }
 
   setLineNumbersVisible( true );
-
-  // Margin 2 is used for the 'folding'
-  setMarginWidth( QgsCodeEditor::MarginRole::FoldingControls, "0" );
-  setMarginsForegroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginForeground ) );
-  setMarginsBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginBackground ) );
-
   setFoldingVisible( true );
   setIndentationsUseTabs( false );
   setIndentationGuides( true );

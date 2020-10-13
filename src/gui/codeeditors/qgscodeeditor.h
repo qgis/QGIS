@@ -107,10 +107,15 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     bool lineNumbersVisible() const;
 
     /**
-     * Set folding visible state
-     *  \param folding Set folding in the editor
+     * Set whether the folding controls are visible in the editor.
+     * \see foldingVisible()
      */
     void setFoldingVisible( bool folding );
+
+    /**
+     * Returns TRUE if the folding controls are visible in the editor.
+     * \see setFoldingVisible()
+     */
     bool foldingVisible() { return mFolding; }
 
     /**

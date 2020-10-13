@@ -107,6 +107,18 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
         self.newShortcutCAS.activated.connect(self.autoComplete)
         self.newShortcutCSS.activated.connect(self.showHistory)
 
+    def initializeLexer(self):
+        super().initializeLexer()
+        self.setCaretLineVisible(False)
+        self.setLineNumbersVisible(False)  # NO linenumbers for the input line
+        self.setFoldingVisible(False)
+        # Margin 1 is used for the '>>>' prompt (console input)
+        self.setMarginLineNumbers(1, True)
+        self.setMarginWidth(1, "00000")
+        self.setMarginType(1, 5)  # TextMarginRightJustified=5
+        self.setMarginsBackgroundColor(self.color(QgsCodeEditorColorScheme.ColorRole.Background))
+        self.setEdgeMode(QsciScintilla.EdgeNone)
+
     def _setMinimumHeight(self):
         font = self.lexer().defaultFont(0)
         fm = QFontMetrics(font)
@@ -119,17 +131,6 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
 
         # Sets minimum height for input area based of font metric
         self._setMinimumHeight()
-
-        self.setCaretLineVisible(False)
-        self.setLineNumbersVisible(False)  # NO linenumbers for the input line
-        self.setMarginWidth(QgsCodeEditor.FoldingControls, 0)
-        # Margin 1 is used for the '>>>' prompt (console input)
-        self.setMarginLineNumbers(1, True)
-        self.setMarginWidth(1, "00000")
-        self.setMarginType(1, 5)  # TextMarginRightJustified=5
-        self.setMarginsBackgroundColor(self.color(QgsCodeEditorColorScheme.ColorRole.Background))
-        self.setFoldingVisible(False)
-        self.setEdgeMode(QsciScintilla.EdgeNone)
 
     def showHistory(self):
         if not self.historyDlg.isVisible():
