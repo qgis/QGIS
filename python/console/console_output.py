@@ -149,15 +149,17 @@ class ShellOutputScintilla(QgsCodeEditorPython):
         else:
             self.setText(txtInit + '\n')
 
+    def initializeLexer(self):
+        super().initializeLexer()
+        self.setFoldingVisible(False)
+        self.setEdgeMode(QsciScintilla.EdgeNone)
+
     def refreshSettingsOutput(self):
         # Set Python lexer
         self.initializeLexer()
         self.setReadOnly(True)
 
         self.setCaretWidth(0)  # NO (blinking) caret in the output
-
-        self.setFoldingVisible(False)
-        self.setEdgeMode(QsciScintilla.EdgeNone)
 
     def clearConsole(self):
         self.setText('')
