@@ -818,7 +818,7 @@ Clear an authentication config from its associated authentication method cache
   protected:
 
 
-
+    explicit QgsAuthManager();
 };
 
 /************************************************************************
