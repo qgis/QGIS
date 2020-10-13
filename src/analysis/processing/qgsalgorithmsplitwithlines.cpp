@@ -109,7 +109,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
   QgsFeatureIterator splitLines = linesSource->getFeatures( request );
   QgsFeature aSplitFeature;
 
-  QgsSpatialIndex spatialIndex( splitLines, feedback, QgsSpatialIndex::FlagStoreFeatureGeometries );
+  const QgsSpatialIndex splitLinesIndex( splitLines, feedback, QgsSpatialIndex::FlagStoreFeatureGeometries );
 
   QgsFeature outFeat;
   QgsFeatureIterator features = source->getFeatures();
@@ -131,35 +131,35 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
       continue;
     }
 
-    QgsGeometry inGeom = inFeatureA.geometry();
+    const QgsGeometry originalGeometry = inFeatureA.geometry();
     outFeat.setAttributes( inFeatureA.attributes() );
 
-    QVector< QgsGeometry > inGeoms = inGeom.asGeometryCollection();
+    QVector< QgsGeometry > inGeoms = originalGeometry.asGeometryCollection();
 
-    const QgsFeatureIds lines = qgis::listToSet( spatialIndex.intersects( inGeom.boundingBox() ) );
-    if ( !lines.empty() ) // has intersection of bounding boxes
+    const QgsFeatureIds splitLineCandidates = qgis::listToSet( splitLinesIndex.intersects( originalGeometry.boundingBox() ) );
+    if ( !splitLineCandidates.empty() ) // has intersection of bounding boxes
     {
       QVector< QgsGeometry > splittingLines;
 
       // use prepared geometries for faster intersection tests
-      std::unique_ptr< QgsGeometryEngine > engine;
+      std::unique_ptr< QgsGeometryEngine > originalGeometryEngine;
 
-      for ( QgsFeatureId line : lines )
+      for ( QgsFeatureId splitLineCandidateId : splitLineCandidates )
       {
         // check if trying to self-intersect
-        if ( sameLayer && inFeatureA.id() == line )
+        if ( sameLayer && inFeatureA.id() == splitLineCandidateId )
           continue;
 
-        QgsGeometry splitGeom = spatialIndex.geometry( line );
-        if ( !engine )
+        const QgsGeometry splitLineCandidate = splitLinesIndex.geometry( splitLineCandidateId );
+        if ( !originalGeometryEngine )
         {
-          engine.reset( QgsGeometry::createGeometryEngine( inGeom.constGet() ) );
-          engine->prepareGeometry();
+          originalGeometryEngine.reset( QgsGeometry::createGeometryEngine( originalGeometry.constGet() ) );
+          originalGeometryEngine->prepareGeometry();
         }
 
-        if ( engine->intersects( splitGeom.constGet() ) )
+        if ( originalGeometryEngine->intersects( splitLineCandidate.constGet() ) )
         {
-          QVector< QgsGeometry > splitGeomParts = splitGeom.asGeometryCollection();
+          QVector< QgsGeometry > splitGeomParts = splitLineCandidate.asGeometryCollection();
           splittingLines.append( splitGeomParts );
         }
       }
