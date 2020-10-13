@@ -1897,7 +1897,7 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
         self.assertEqual(bytes(ctx.response().data()), b"Hello world")
 
         req = QgsBufferServerRequest(
-            'http://localhost:8000/project/7ecb/wfs3/collections/zg.grundnutzung.json')
+            'http://localhost:8000/project/7ecb/wfs3/collections/zg.grundnutzung.html')
         self.assertEqual(h3.contentTypeFromRequest(req), QgsServerOgcApi.HTML)
 
 
