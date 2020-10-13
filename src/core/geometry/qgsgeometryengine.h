@@ -253,18 +253,21 @@ class CORE_EXPORT QgsGeometryEngine
      * \param topological TRUE if topological editing is enabled
      * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
      * \param[out] errorMsg error messages emitted, if any
+     * \param skipIntersectionCheck set to TRUE to skip the potentially expensive initial intersection check. Only set this flag if an intersection
+     * test has already been performed by the caller!
      * \returns 0 in case of success, 1 if geometry has not been split, error else
     */
     virtual QgsGeometryEngine::EngineOperationResult splitGeometry( const QgsLineString &splitLine,
         QVector<QgsGeometry > &newGeometries SIP_OUT,
         bool topological,
-        QgsPointSequence &topologyTestPoints, QString *errorMsg = nullptr ) const
+        QgsPointSequence &topologyTestPoints, QString *errorMsg = nullptr, bool skipIntersectionCheck = false ) const
     {
       Q_UNUSED( splitLine )
       Q_UNUSED( newGeometries )
       Q_UNUSED( topological )
       Q_UNUSED( topologyTestPoints )
       Q_UNUSED( errorMsg )
+      Q_UNUSED( skipIntersectionCheck )
       return MethodNotImplemented;
     }
 

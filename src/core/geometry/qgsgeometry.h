@@ -899,6 +899,8 @@ class CORE_EXPORT QgsGeometry
      * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
      * \param splitFeature Set to True if you want to split a feature, otherwise set to False to split parts
      * fix this bug?
+     * \param skipIntersectionTest set to TRUE to skip the potentially expensive initial intersection check. Only set this flag if an intersection
+     * test has already been performed by the caller! Not available in Python bindings.
      * \returns OperationResult a result code: success or reason of failure
      *
      * Example:
@@ -910,7 +912,7 @@ class CORE_EXPORT QgsGeometry
      *  > LineStringZ (2749549.12 1262908.38 125.14, 2749557.82 1262920.06 200)
      * \endcode
      */
-    OperationResult splitGeometry( const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries SIP_OUT, bool topological, QgsPointSequence &topologyTestPoints SIP_OUT, bool splitFeature = true );
+    OperationResult splitGeometry( const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries SIP_OUT, bool topological, QgsPointSequence &topologyTestPoints SIP_OUT, bool splitFeature = true, bool skipIntersectionTest SIP_PYARGREMOVE = false );
 
     /**
      * Splits this geometry according to a given curve.
