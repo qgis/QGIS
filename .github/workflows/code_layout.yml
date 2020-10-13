@@ -8,10 +8,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Set up Python 3.7
+      - name: Set up Python 3.8
         uses: actions/setup-python@v1
         with:
-          python-version: 3.7
+          python-version: 3.8
       - name: Install Requirements
         run: |
           sudo apt install -y \
@@ -136,10 +136,10 @@ jobs:
   sip_check:
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Python 3.7
+      - name: Set up Python 3.8
         uses: actions/setup-python@v1
         with:
-          python-version: 3.7
+          python-version: 3.8
       - name: Install Requirements
         run: |
           sudo apt install -y \
