@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QApplication>
+#include <QDesktopWidget>
 #include <QMimeData>
 #include <QTextStream>
 
@@ -723,7 +725,10 @@ int QgsLayerTreeModel::scaleIconSize( int standardSize )
 {
   QFontMetrics fm( ( QFont() ) );
   const double scale = 1.1 * standardSize / 24;
-  return static_cast< int >( std::floor( std::max( Qgis::UI_SCALE_FACTOR * fm.height() * scale, static_cast< double >( standardSize ) ) ) );
+  int scaledIconSize = static_cast< int >( std::floor( std::max( Qgis::UI_SCALE_FACTOR * fm.height() * scale, static_cast< double >( standardSize ) ) ) );
+  if ( QApplication::desktop() )
+    scaledIconSize *= QApplication::desktop()->devicePixelRatio();
+  return scaledIconSize;
 }
 
 void QgsLayerTreeModel::nodeWillAddChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo )
