@@ -42,8 +42,9 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   uri.setEncodedUri( uriString );
 
   // Setup authentication
-  mAuth.mUserName = uri.username();
-  mAuth.mPassword = uri.password();
+  QUrlQuery query{ uriString };
+  mAuth.mUserName = query.queryItemValue( QStringLiteral( "username" ), QUrl::ComponentFormattingOption::FullyDecoded );
+  mAuth.mPassword = query.queryItemValue( QStringLiteral( "password" ), QUrl::ComponentFormattingOption::FullyDecoded );
 
   if ( !uri.authConfigId().isEmpty() )
   {
