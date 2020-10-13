@@ -715,6 +715,8 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
       throw QgsProcessingException( QObject::tr( "Could not create memory layer" ) );
     }
 
+    layer->setCustomProperty( QStringLiteral( "OnConvertFormatRegeneratePrimaryKey" ), static_cast< bool >( sinkFlags & QgsFeatureSink::RegeneratePrimaryKey ) );
+
     // update destination to layer ID
     destination = layer->id();
 
