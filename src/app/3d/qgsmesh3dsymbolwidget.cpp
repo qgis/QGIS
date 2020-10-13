@@ -41,8 +41,7 @@ QgsMesh3dSymbolWidget::QgsMesh3dSymbolWidget( QgsMeshLayer *meshLayer, QWidget *
   connect( mColorButtonWireframe, &QgsColorButton::colorChanged, this, &QgsMesh3dSymbolWidget::changed );
   connect( mSpinBoxWireframeLineWidth, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ),
            this, &QgsMesh3dSymbolWidget::changed );
-  connect( mComboBoxTriangleCount, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
-           this, &QgsMesh3dSymbolWidget::changed );
+  connect( mLodSlider, &QSlider::valueChanged, this, &QgsMesh3dSymbolWidget::changed );
 
   connect( mColorRampShaderMinMaxReloadButton, &QPushButton::clicked, this, &QgsMesh3dSymbolWidget::reloadColorRampShaderMinMax );
   connect( mColorRampShaderWidget, &QgsColorRampShaderWidget::widgetChanged, this, &QgsMesh3dSymbolWidget::changed );
@@ -80,7 +79,11 @@ void QgsMesh3dSymbolWidget::setSymbol( const QgsMesh3DSymbol *symbol )
   mGroupBoxWireframe->setChecked( symbol->wireframeEnabled() );
   mColorButtonWireframe->setColor( symbol->wireframeLineColor() );
   mSpinBoxWireframeLineWidth->setValue( symbol->wireframeLineWidth() );
-  mComboBoxTriangleCount->setCurrentIndex( symbol->levelOfDetailIndex() );
+  if ( mLayer )
+    mLodSlider->setValue( mLayer->triangularMeshLevelOfDetailCount() - symbol->levelOfDetailIndex() - 1 );
+  else
+    mLodSlider->setValue( mLodSlider->maximum() );
+
 
   mSpinBoxVerticaleScale->setValue( symbol->verticalScale() );
   mComboBoxTextureType->setCurrentIndex( mComboBoxTextureType->findData( symbol->renderingStyle() ) );
@@ -121,26 +124,17 @@ void QgsMesh3dSymbolWidget::setLayer( QgsMeshLayer *meshLayer, bool updateSymbol
 {
   mLayer = meshLayer;
 
-  mComboBoxTriangleCount->clear();
   if ( meshLayer && meshLayer->meshSimplificationSettings().isEnabled() )
   {
-    mComboBoxTriangleCount->setVisible( true );
+    mLodSlider->setVisible( true );
     mLabelTriangleCount->setVisible( true );
     int lodCount = meshLayer->triangularMeshLevelOfDetailCount();
-    int originalMeshTrianglesCount = meshLayer->triangularMeshByLodIndex( 0 )->triangles().count();
-    QString text = tr( "Original (%1 triangles)" ).arg( originalMeshTrianglesCount );
-    mComboBoxTriangleCount->addItem( text );
-    for ( int i = 1; i < lodCount; ++i )
-    {
-      int triangleCount = meshLayer->triangularMeshByLodIndex( i )->triangles().count();
-      int reduction = originalMeshTrianglesCount / triangleCount;
-      text = tr( "1/%1 (%2 triangles)" ).arg( reduction ).arg( triangleCount );
-      mComboBoxTriangleCount->addItem( text );
-    }
+    mLodSlider->setTickInterval( 1 );
+    mLodSlider->setMaximum( lodCount - 1 );
   }
   else
   {
-    mComboBoxTriangleCount->setVisible( false );
+    mLodSlider->setVisible( false );
     mLabelTriangleCount->setVisible( false );
   }
 
@@ -185,7 +179,11 @@ std::unique_ptr<QgsMesh3DSymbol> QgsMesh3dSymbolWidget::symbol() const
   sym->setWireframeEnabled( mGroupBoxWireframe->isChecked() );
   sym->setWireframeLineColor( mColorButtonWireframe->color() );
   sym->setWireframeLineWidth( mSpinBoxWireframeLineWidth->value() );
-  sym->setLevelOfDetailIndex( mComboBoxTriangleCount->currentIndex() );
+  if ( mLayer )
+    sym->setLevelOfDetailIndex( mLayer->triangularMeshLevelOfDetailCount() - mLodSlider->sliderPosition() - 1 );
+  else
+    sym->setLevelOfDetailIndex( 0 );
+
   sym->setVerticalScale( mSpinBoxVerticaleScale->value() );
   sym->setRenderingStyle( static_cast<QgsMesh3DSymbol::RenderingStyle>( mComboBoxTextureType->currentData().toInt() ) );
   sym->setSingleMeshColor( mMeshSingleColorButton->color() );
