@@ -360,7 +360,7 @@ class PythonConsoleWidget(QWidget):
         self.runButton = QAction(self)
         self.runButton.setCheckable(False)
         self.runButton.setEnabled(True)
-        self.runButton.setIcon(QgsApplication.getThemeIcon("console/mIconRunConsole.svg"))
+        self.runButton.setIcon(QgsApplication.getThemeIcon("mActionStart.svg"))
         self.runButton.setMenuRole(QAction.PreferencesRole)
         self.runButton.setIconVisibleInMenu(True)
         self.runButton.setToolTip(runBt)
