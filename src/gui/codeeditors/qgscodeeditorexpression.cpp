@@ -27,7 +27,6 @@ QgsCodeEditorExpression::QgsCodeEditorExpression( QWidget *parent )
   {
     setTitle( tr( "Expression Editor" ) );
   }
-  setMarginVisible( false );
   setFoldingVisible( false );
   setAutoCompletionCaseSensitivity( false );
   QgsCodeEditorExpression::initializeLexer(); // avoid cppcheck warning by explicitly specifying namespace

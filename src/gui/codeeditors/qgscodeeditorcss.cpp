@@ -29,7 +29,6 @@ QgsCodeEditorCSS::QgsCodeEditorCSS( QWidget *parent )
   {
     setTitle( tr( "CSS Editor" ) );
   }
-  setMarginVisible( false );
   setFoldingVisible( true );
   QgsCodeEditorCSS::initializeLexer();
 }

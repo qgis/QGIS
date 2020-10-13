@@ -33,6 +33,8 @@ import re
 import traceback
 
 from qgis.core import QgsApplication, QgsSettings, Qgis
+from qgis.gui import QgsCodeEditor
+
 from .ui_console_history_dlg import Ui_HistoryDialogPythonConsole
 
 _init_commands = ["import sys", "import os", "import re", "import math", "from qgis.core import *",
@@ -119,10 +121,8 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
         self._setMinimumHeight()
 
         self.setCaretLineVisible(False)
-        self.setMarginLineNumbers(0, False)  # NO linenumbers for the input line
-        self.setMarginWidth(0, 0)
-        # margin 2 is the folding
-        self.setMarginWidth(2, 0)
+        self.setLineNumbersVisible(False)  # NO linenumbers for the input line
+        self.setMarginWidth(QgsCodeEditor.FoldingControls, 0)
         # Margin 1 is used for the '>>>' prompt (console input)
         self.setMarginLineNumbers(1, True)
         self.setMarginWidth(1, "00000")

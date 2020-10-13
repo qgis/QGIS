@@ -29,7 +29,6 @@ QgsCodeEditorJavascript::QgsCodeEditorJavascript( QWidget *parent )
   {
     setTitle( tr( "JavaScript Editor" ) );
   }
-  setMarginVisible( false );
   setFoldingVisible( true );
   QgsCodeEditorJavascript::initializeLexer();
 }
