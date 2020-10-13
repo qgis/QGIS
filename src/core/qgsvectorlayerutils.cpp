@@ -735,13 +735,22 @@ void QgsVectorLayerUtils::matchAttributesToFields( QgsFeature &feature, const Qg
   feature.setFields( fields );
 }
 
-QgsFeatureList QgsVectorLayerUtils::makeFeatureCompatible( const QgsFeature &feature, const QgsVectorLayer *layer )
+QgsFeatureList QgsVectorLayerUtils::makeFeatureCompatible( const QgsFeature &feature, const QgsVectorLayer *layer, QgsFeatureSink::SinkFlags sinkFlags )
 {
   QgsWkbTypes::Type inputWkbType( layer->wkbType( ) );
   QgsFeatureList resultFeatures;
   QgsFeature newF( feature );
   // Fix attributes
   QgsVectorLayerUtils::matchAttributesToFields( newF, layer->fields( ) );
+
+  if ( sinkFlags & QgsFeatureSink::RegeneratePrimaryKey && layer->storageType() == QLatin1String( "GPKG" ) )
+  {
+    // drop incoming fid value, let it be regenerated
+    const int fidIndex = layer->fields().lookupField( QStringLiteral( "fid" ) );
+    if ( fidIndex >= 0 )
+      newF.setAttribute( fidIndex, QVariant() );
+  }
+
   // Does geometry need transformations?
   QgsWkbTypes::GeometryType newFGeomType( QgsWkbTypes::geometryType( newF.geometry().wkbType() ) );
   bool newFHasGeom = newFGeomType !=
@@ -785,12 +794,12 @@ QgsFeatureList QgsVectorLayerUtils::makeFeatureCompatible( const QgsFeature &fea
   return resultFeatures;
 }
 
-QgsFeatureList QgsVectorLayerUtils::makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer *layer )
+QgsFeatureList QgsVectorLayerUtils::makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer *layer, QgsFeatureSink::SinkFlags sinkFlags )
 {
   QgsFeatureList resultFeatures;
   for ( const QgsFeature &f : features )
   {
-    const QgsFeatureList features( makeFeatureCompatible( f, layer ) );
+    const QgsFeatureList features( makeFeatureCompatible( f, layer, sinkFlags ) );
     for ( const auto &_f : features )
     {
       resultFeatures.append( _f );

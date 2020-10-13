@@ -20,6 +20,7 @@
 #include "qgsgeometry.h"
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgssymbollayerreference.h"
+#include "qgsfeaturesink.h"
 
 class QgsFeatureRenderer;
 class QgsSymbolLayer;
@@ -264,9 +265,11 @@ class CORE_EXPORT QgsVectorLayerUtils
      * - drop Z/M
      * - convert multi part geometries to single part
      *
+     * Optionally, \a sinkFlags can be specified to further refine the compatibility logic.
+     *
      * \since QGIS 3.4
      */
-    static QgsFeatureList makeFeatureCompatible( const QgsFeature &feature, const QgsVectorLayer *layer );
+    static QgsFeatureList makeFeatureCompatible( const QgsFeature &feature, const QgsVectorLayer *layer, QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() );
 
     /**
      * Converts input \a features to be compatible with the given \a layer.
@@ -285,9 +288,11 @@ class CORE_EXPORT QgsVectorLayerUtils
      * - drop Z/M
      * - convert multi part geometries to single part
      *
+     * Optionally, \a sinkFlags can be specified to further refine the compatibility logic.
+     *
      * \since QGIS 3.4
      */
-    static QgsFeatureList makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer *layer );
+    static QgsFeatureList makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer *layer, QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() );
 
     /**
      * \return true if the \param feature field at index \param fieldIndex from \param layer
