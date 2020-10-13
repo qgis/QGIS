@@ -283,7 +283,7 @@ Emit this signal when the constraint result visibility changed.
 %Docstring
 Will be called when the feature changes
 
-Is forwarded to the slot setValues()
+Is forwarded to the slot :py:func:`~QgsEditorWidgetWrapper.setValues`
 
 :param feature: The new feature
 %End
@@ -301,7 +301,7 @@ to reflect the new values.
 
     void emitValueChanged();
 %Docstring
-Will call the value() method to determine the emitted value
+Will call the :py:func:`~QgsEditorWidgetWrapper.value` method to determine the emitted value
 %End
 
     virtual void parentFormValueChanged( const QString &attribute, const QVariant &value );

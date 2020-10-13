@@ -342,7 +342,6 @@ void MDAL::DriverUgrid::populateFaces( MDAL::Faces &faces )
 
   for ( size_t i = 0; i < faceCount; ++i )
   {
-    size_t nVertices = verticesInFace;
     std::vector<size_t> idxs;
 
     for ( size_t j = 0; j < verticesInFace; ++j )
@@ -353,8 +352,6 @@ void MDAL::DriverUgrid::populateFaces( MDAL::Faces &faces )
       if ( fillVal == val )
       {
         // found fill val
-        nVertices = j;
-        assert( nVertices > 1 );
         break;
       }
       else
@@ -368,7 +365,7 @@ void MDAL::DriverUgrid::populateFaces( MDAL::Faces &faces )
 
 void MDAL::DriverUgrid::addBedElevation( MDAL::MemoryMesh *mesh )
 {
-  if ( mNcFile->hasArr( nodeZVariableName() ) ) MDAL::addBedElevationDatasetGroup( mesh, mesh->vertices );
+  if ( mNcFile->hasArr( nodeZVariableName() ) ) MDAL::addBedElevationDatasetGroup( mesh, mesh->vertices() );
 }
 
 std::string MDAL::DriverUgrid::getCoordinateSystemVariableName()
@@ -491,10 +488,18 @@ void MDAL::DriverUgrid::ignore2DMeshVariables( const std::string &mesh, std::set
   ignoreVariables.insert( mNcFile->getAttrStr( mesh, "edge_face_connectivity" ) );
 }
 
-void MDAL::DriverUgrid::parseNetCDFVariableMetadata( int varid, const std::string &variableName, std::string &name, bool *isVector, bool *isX )
+void MDAL::DriverUgrid::parseNetCDFVariableMetadata( int varid,
+    std::string &variableName,
+    std::string &name,
+    bool *isVector,
+    bool *isPolar,
+    bool *invertedDirection,
+    bool *isX )
 {
   *isVector = false;
   *isX = true;
+  *isPolar = false;
+  *invertedDirection = false;
 
   std::string longName = mNcFile->getAttrStr( "long_name", varid );
   if ( longName.empty() )
@@ -506,6 +511,7 @@ void MDAL::DriverUgrid::parseNetCDFVariableMetadata( int varid, const std::strin
     }
     else
     {
+      variableName = standardName;
       if ( MDAL::contains( standardName, "_x_" ) )
       {
         *isVector = true;
@@ -517,6 +523,23 @@ void MDAL::DriverUgrid::parseNetCDFVariableMetadata( int varid, const std::strin
         *isX = false;
         name = MDAL::replace( standardName, "_y_", "" );
       }
+      else if ( MDAL::contains( standardName, "_from_direction" ) )
+      {
+        *isVector = true;
+        *isPolar = true;
+        *isX = false;
+        *invertedDirection = true;
+        name = MDAL::replace( standardName, "_speed", "_velocity" );
+        name = MDAL::replace( name, "_from_direction", "" );
+      }
+      else if ( MDAL::contains( standardName, "_to_direction" ) )
+      {
+        *isVector = true;
+        *isPolar = true;
+        *isX = false;
+        name = MDAL::replace( standardName, "_speed", "_velocity" );
+        name = MDAL::replace( name, "_to_direction", "" );
+      }
       else
       {
         name = standardName;
@@ -525,6 +548,7 @@ void MDAL::DriverUgrid::parseNetCDFVariableMetadata( int varid, const std::strin
   }
   else
   {
+    variableName = longName;
     if ( MDAL::contains( longName, ", x-component" ) || MDAL::contains( longName, "u component of " ) )
     {
       *isVector = true;
@@ -537,6 +561,29 @@ void MDAL::DriverUgrid::parseNetCDFVariableMetadata( int varid, const std::strin
       *isX = false;
       name = MDAL::replace( longName, ", y-component", "" );
       name = MDAL::replace( name, "v component of ", "" );
+    }
+    else if ( MDAL::contains( longName, " magnitude" ) )
+    {
+      *isVector = true;
+      *isPolar = true;
+      *isX = true;
+      name = MDAL::replace( longName, "speed", "velocity" );
+      name = MDAL::removeFrom( name, " magnitude" );
+    }
+    else if ( MDAL::contains( longName, "direction" ) )
+    {
+      *isVector = true;
+      *isPolar = true;
+      *isX = false;
+
+      // check from_/to_direction in standard_name
+      std::string standardName = mNcFile->getAttrStr( "standard_name", varid );
+      *invertedDirection = MDAL::contains( longName, "from direction" );
+
+      name = MDAL::replace( longName, "speed", "velocity" );
+      name = MDAL::removeFrom( name, " from direction" );
+      name = MDAL::removeFrom( name, " to direction" );
+      name = MDAL::removeFrom( name, " direction" );
     }
     else
     {
@@ -806,4 +853,41 @@ void MDAL::DriverUgrid::writeGlobals()
   mNcFile->putAttrStr( NC_GLOBAL, "source", "MDAL " + std::string( MDAL_Version() ) );
   mNcFile->putAttrStr( NC_GLOBAL, "date_created", MDAL::getCurrentTimeStamp() );
   mNcFile->putAttrStr( NC_GLOBAL, "Conventions", "CF-1.6 UGRID-1.0" );
+}
+
+std::vector<std::pair<double, double>> MDAL::DriverUgrid::parseClassification( int varid ) const
+{
+  std::vector<std::pair<double, double>> classes;
+  std::string flagBoundVarName = mNcFile->getAttrStr( "flag_bounds", varid );
+  if ( !flagBoundVarName.empty() )
+  {
+    try
+    {
+      int boundsVarId = mNcFile->getVarId( flagBoundVarName );
+      std::vector<size_t> classDims;
+      std::vector<int> classDimIds;
+      mNcFile->getDimensions( flagBoundVarName, classDims, classDimIds );
+      std::vector<double> boundValues = mNcFile->readDoubleArr( boundsVarId, 0, 0, classDims[0], classDims[1] );
+
+      if ( classDims[1] != 2 || classDims[0] <= 0 )
+        throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Invalid classification dimension" );
+
+      std::pair<std::string, std::string> classificationMeta;
+      classificationMeta.first = "classification";
+      std::string classification;
+      for ( size_t i = 0; i < classDims[0]; ++i )
+      {
+        std::pair<double, double> classBound;
+        classBound.first = boundValues[i * 2];
+        classBound.second = boundValues[i * 2 + 1];
+        classes.push_back( classBound );
+      }
+    }
+    catch ( MDAL::Error &err )
+    {
+      MDAL::Log::warning( err.status, err.driver, "Error when parsing class bounds: " + err.mssg + ", classification ignored" );
+    }
+  }
+
+  return classes;
 }

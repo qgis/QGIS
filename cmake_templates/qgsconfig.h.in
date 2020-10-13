@@ -43,7 +43,6 @@
 #endif
 
 #define QT_PLUGINS_DIR "${QT_PLUGINS_DIR}"
-#define OSG_PLUGINS_PATH "${OSG_PLUGINS_PATH}"
 
 #cmakedefine USING_NMAKE
 
@@ -55,8 +54,6 @@
 
 #cmakedefine HAVE_ORACLE
 
-#cmakedefine HAVE_OSGEARTHQT
-
 #cmakedefine SERVER_SKIP_ECW
 
 #cmakedefine HAVE_SERVER_PYTHON_PLUGINS
@@ -66,6 +63,8 @@
 #cmakedefine ENABLE_MODELTEST
 
 #cmakedefine HAVE_3D
+
+#cmakedefine HAVE_GEOREFERENCER
 
 #cmakedefine USE_THREAD_LOCAL
 

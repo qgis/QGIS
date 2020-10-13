@@ -6,6 +6,7 @@
 %Include auto_generated/qgsserverlogger.sip
 %Include auto_generated/qgsserverogcapi.sip
 %Include auto_generated/qgsserverogcapihandler.sip
+%Include auto_generated/qgsserverstatichandler.sip
 %Include auto_generated/qgsserverparameters.sip
 %Include auto_generated/qgsserverquerystringparameter.sip
 %Include auto_generated/qgsserversettings.sip

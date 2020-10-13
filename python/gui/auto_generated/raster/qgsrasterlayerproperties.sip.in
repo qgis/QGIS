@@ -36,13 +36,6 @@ Constructor
 :param fl: windows flag
 %End
 
-    void setCurrentPage( const QString &page );
-%Docstring
-Sets the dialog ``page`` (by object name) to show.
-
-.. versionadded:: 3.14
-%End
-
   protected slots:
 
 };

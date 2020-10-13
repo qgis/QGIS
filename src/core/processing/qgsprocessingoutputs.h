@@ -112,6 +112,21 @@ class CORE_EXPORT QgsProcessingOutputDefinition
      */
     void setDescription( const QString &description ) { mDescription = description; }
 
+    /**
+     * Sets whether an output was automatically created when adding a parameter.
+     * \param autoCreated set to TRUE if the output is to be considered as automatically created.
+     * \see autoCreated()
+     * \since QGIS 3.14
+     */
+    void setAutoCreated( bool autoCreated ) { mAutoCreated = autoCreated; }
+
+    /**
+     * Returns TRUE if the output was automatically created when adding a parameter.
+     * \see setAutoCreated()
+     * \since QGIS 3.14
+     */
+    bool autoCreated() const { return mAutoCreated; }
+
   protected:
 
     //! Output name
@@ -119,6 +134,8 @@ class CORE_EXPORT QgsProcessingOutputDefinition
 
     //! Output description
     QString mDescription;
+
+    bool mAutoCreated = false;
 
 };
 

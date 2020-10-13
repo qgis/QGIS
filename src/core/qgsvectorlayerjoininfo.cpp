@@ -22,10 +22,10 @@ QString QgsVectorLayerJoinInfo::prefixedFieldName( const QgsField &f ) const
 {
   QString name;
 
-  if ( joinLayer() )
+  if ( auto *lJoinLayer = joinLayer() )
   {
     if ( prefix().isNull() )
-      name = joinLayer()->name() + '_';
+      name = lJoinLayer->name() + '_';
     else
       name = prefix();
 
@@ -63,11 +63,11 @@ QgsFeature QgsVectorLayerJoinInfo::extractJoinedFeature( const QgsFeature &featu
 {
   QgsFeature joinFeature;
 
-  if ( joinLayer() )
+  if ( auto *lJoinLayer = joinLayer() )
   {
     const QVariant idFieldValue = feature.attribute( targetFieldName() );
-    joinFeature.initAttributes( joinLayer()->fields().count() );
-    joinFeature.setFields( joinLayer()->fields() );
+    joinFeature.initAttributes( lJoinLayer->fields().count() );
+    joinFeature.setFields( lJoinLayer->fields() );
     joinFeature.setAttribute( joinFieldName(), idFieldValue );
 
     const QgsFields joinFields = joinFeature.fields();
@@ -83,28 +83,32 @@ QgsFeature QgsVectorLayerJoinInfo::extractJoinedFeature( const QgsFeature &featu
   return joinFeature;
 }
 
-QStringList QgsVectorLayerJoinInfo::joinFieldNamesSubset( const QgsVectorLayerJoinInfo &info, bool blacklisted )
+QStringList QgsVectorLayerJoinInfo::joinFieldNamesSubset( const QgsVectorLayerJoinInfo &info, bool blocklisted )
 {
   QStringList fieldNames;
 
-  if ( blacklisted && !info.joinFieldNamesBlackList().isEmpty() )
+  if ( blocklisted && !info.joinFieldNamesBlockList().isEmpty() )
   {
     QStringList *lst = info.joinFieldNamesSubset();
     if ( lst )
     {
       for ( const QString &s : qgis::as_const( *lst ) )
       {
-        if ( !info.joinFieldNamesBlackList().contains( s ) )
+        if ( !info.joinFieldNamesBlockList().contains( s ) )
           fieldNames.append( s );
       }
     }
     else
     {
-      for ( const QgsField &f : info.joinLayer()->fields() )
+      if ( auto *lJoinLayer = info.joinLayer() )
       {
-        if ( !info.joinFieldNamesBlackList().contains( f.name() )
-             && f.name() != info.joinFieldName() )
-          fieldNames.append( f.name() );
+        const QgsFields fields { lJoinLayer->fields() };
+        for ( const QgsField &f : fields )
+        {
+          if ( !info.joinFieldNamesBlockList().contains( f.name() )
+               && f.name() != info.joinFieldName() )
+            fieldNames.append( f.name() );
+        }
       }
     }
   }
@@ -120,12 +124,12 @@ QStringList QgsVectorLayerJoinInfo::joinFieldNamesSubset( const QgsVectorLayerJo
   return fieldNames;
 }
 
-bool QgsVectorLayerJoinInfo::hasSubset( bool blacklisted ) const
+bool QgsVectorLayerJoinInfo::hasSubset( bool blocklisted ) const
 {
   bool subset = joinFieldNamesSubset();
 
-  if ( blacklisted )
-    subset |= !joinFieldNamesBlackList().isEmpty();
+  if ( blocklisted )
+    subset |= !joinFieldNamesBlockList().isEmpty();
 
   return subset;
 }

@@ -1,0 +1,89 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgslegendpatchshapewidget.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsLegendPatchShapeWidget : QgsPanelWidget
+{
+%Docstring
+Widget for configuring a custom legend patch shape.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgslegendpatchshapewidget.h"
+%End
+  public:
+
+    QgsLegendPatchShapeWidget( QWidget *parent /TransferThis/ = 0, const QgsLegendPatchShape &shape = QgsLegendPatchShape() );
+%Docstring
+Constructor for QgsLegendPatchShapeWidget, with the specified ``parent`` widget.
+%End
+
+    QgsLegendPatchShape shape() const;
+%Docstring
+Returns the legend patch shape as currently defined by the widget.
+
+.. seealso:: :py:func:`setShape`
+%End
+
+    void setShape( const QgsLegendPatchShape &shape );
+%Docstring
+Sets the shape to show in the widget.
+
+.. seealso:: :py:func:`shape`
+%End
+
+  signals:
+
+    void changed();
+%Docstring
+Emitted whenever the patch shape defined by the widget is changed.
+%End
+
+};
+
+class QgsLegendPatchShapeDialog : QDialog
+{
+%Docstring
+A dialog for configuring a custom legend patch shape.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgslegendpatchshapewidget.h"
+%End
+  public:
+
+    QgsLegendPatchShapeDialog( const QgsLegendPatchShape &shape, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsLegendPatchShapeDialog, initially showing the specified ``shape``.
+%End
+
+    QgsLegendPatchShape shape() const;
+%Docstring
+Returns the legend patch shape defined by the dialog.
+%End
+
+    QDialogButtonBox *buttonBox() const;
+%Docstring
+Returns a reference to the dialog's button box.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgslegendpatchshapewidget.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

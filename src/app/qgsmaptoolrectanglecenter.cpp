@@ -30,6 +30,7 @@ QgsMapToolRectangleCenter::QgsMapToolRectangleCenter( QgsMapToolCapture *parentT
     QgsMapCanvas *canvas, CaptureMode mode )
   : QgsMapToolAddRectangle( parentTool, canvas, mode )
 {
+  mToolName = tr( "Add rectangle from center and a point" );
 }
 
 void QgsMapToolRectangleCenter::cadCanvasReleaseEvent( QgsMapMouseEvent *e )

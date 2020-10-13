@@ -50,7 +50,7 @@ class TestQgsLayerTree(unittest.TestCase):
         prj.layerTreeRoot().setCustomLayerOrder([layer2, layer])
         self.assertEqual(len(layer_order_changed_spy), 1)
         prj.layerTreeRoot().setCustomLayerOrder([layer2, layer])
-        self.assertEqual(len(layer_order_changed_spy), 1) # no signal, order not changed
+        self.assertEqual(len(layer_order_changed_spy), 1)  # no signal, order not changed
 
         self.assertEqual(prj.layerTreeRoot().customLayerOrder(), [layer2, layer])
         prj.layerTreeRoot().setCustomLayerOrder([layer])
@@ -98,6 +98,36 @@ class TestQgsLayerTree(unittest.TestCase):
         self.assertEqual(len(layer_order_changed_spy), 3)
         layer_tree.removeChildNode(layer1_node)
         self.assertEqual(len(layer_order_changed_spy), 4)
+
+    def testNodeCustomProperties(self):
+        layer = QgsVectorLayer("Point?field=fldtxt:string",
+                               "layer1", "memory")
+        layer1_node = QgsLayerTreeLayer(layer)
+        spy = QSignalSpy(layer1_node.customPropertyChanged)
+
+        self.assertFalse(layer1_node.customProperty('test'))
+        self.assertNotIn('test', layer1_node.customProperties())
+
+        layer1_node.setCustomProperty('test', 'value')
+        self.assertEqual(len(spy), 1)
+        # set to same value, should be no extra signal
+        layer1_node.setCustomProperty('test', 'value')
+        self.assertEqual(len(spy), 1)
+        self.assertIn('test', layer1_node.customProperties())
+        self.assertEqual(layer1_node.customProperty('test'), 'value')
+        layer1_node.setCustomProperty('test', 'value2')
+        self.assertEqual(len(spy), 2)
+        self.assertIn('test', layer1_node.customProperties())
+        self.assertEqual(layer1_node.customProperty('test'), 'value2')
+
+        layer1_node.removeCustomProperty('test')
+        self.assertEqual(len(spy), 3)
+        self.assertFalse(layer1_node.customProperty('test'))
+        self.assertNotIn('test', layer1_node.customProperties())
+
+        # already removed, should be no extra signal
+        layer1_node.removeCustomProperty('test')
+        self.assertEqual(len(spy), 3)
 
 
 if __name__ == '__main__':

@@ -297,15 +297,15 @@ void TestQgsNewsFeedParser::testModel()
   loop.exec();
 
   QCOMPARE( model.rowCount(), 5 );
-  QVERIFY( model.data( model.index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString().startsWith( QStringLiteral( "<p>Rumors from a whistleblower revealed the next Windows release code nam" ) ) );
-  QVERIFY( model.data( model.index( 1, 0, QModelIndex() ), Qt::DisplayRole ).toString().startsWith( QStringLiteral( "<p>Tired with C++ intricacies, the core developers h" ) ) );
+  QVERIFY( model.data( model.index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString().startsWith( QLatin1String( "<p>Rumors from a whistleblower revealed the next Windows release code nam" ) ) );
+  QVERIFY( model.data( model.index( 1, 0, QModelIndex() ), Qt::DisplayRole ).toString().startsWith( QLatin1String( "<p>Tired with C++ intricacies, the core developers h" ) ) );
   QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "<p>Ciao from Italy!</p>" ) );
-  QVERIFY( model.data( model.index( 3, 0, QModelIndex() ), Qt::DisplayRole ).toString().startsWith( QStringLiteral( "<p>QGIS is finally part of the ESRI ecosystem, i" ) ) );
+  QVERIFY( model.data( model.index( 3, 0, QModelIndex() ), Qt::DisplayRole ).toString().startsWith( QLatin1String( "<p>QGIS is finally part of the ESRI ecosystem, i" ) ) );
   QCOMPARE( model.data( model.index( 4, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "<p>Let's dive in the ocean together!</p>" ) );
-  QVERIFY( model.data( model.index( 0, 0, QModelIndex() ), QgsNewsFeedModel::Content ).toString().startsWith( QStringLiteral( "<p>Rumors from a whistleblower revealed the next Windows release code nam" ) ) );
-  QVERIFY( model.data( model.index( 1, 0, QModelIndex() ), QgsNewsFeedModel::Content ).toString().startsWith( QStringLiteral( "<p>Tired with C++ intricacies, the core developers h" ) ) );
+  QVERIFY( model.data( model.index( 0, 0, QModelIndex() ), QgsNewsFeedModel::Content ).toString().startsWith( QLatin1String( "<p>Rumors from a whistleblower revealed the next Windows release code nam" ) ) );
+  QVERIFY( model.data( model.index( 1, 0, QModelIndex() ), QgsNewsFeedModel::Content ).toString().startsWith( QLatin1String( "<p>Tired with C++ intricacies, the core developers h" ) ) );
   QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), QgsNewsFeedModel::Content ).toString(), QStringLiteral( "<p>Ciao from Italy!</p>" ) );
-  QVERIFY( model.data( model.index( 3, 0, QModelIndex() ), QgsNewsFeedModel::Content ).toString().startsWith( QStringLiteral( "<p>QGIS is finally part of the ESRI ecosystem, i" ) ) );
+  QVERIFY( model.data( model.index( 3, 0, QModelIndex() ), QgsNewsFeedModel::Content ).toString().startsWith( QLatin1String( "<p>QGIS is finally part of the ESRI ecosystem, i" ) ) );
   QCOMPARE( model.data( model.index( 4, 0, QModelIndex() ), QgsNewsFeedModel::Content ).toString(), QStringLiteral( "<p>Let's dive in the ocean together!</p>" ) );
   QCOMPARE( model.data( model.index( 0, 0, QModelIndex() ), Qt::ToolTipRole ).toString(),  QStringLiteral( "Next Microsoft Windows code name revealed" ) );
   QCOMPARE( model.data( model.index( 1, 0, QModelIndex() ), Qt::ToolTipRole ).toString(), QStringLiteral( "QGIS core will be rewritten in Rust" ) );

@@ -1,4 +1,5 @@
 Merge Layers
+##known_issues
 shapes_tools
 QgsProcessingParameterMultipleLayers|INPUT|Input Layers|-1|None|True
 QgsProcessingParameterBoolean|SRCINFO|Add source information|True

@@ -18,6 +18,7 @@
 #include "qgslayertreeutils.h"
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
+#include "qgssymbollayerutils.h"
 
 
 QgsLayerTreeLayer::QgsLayerTreeLayer( QgsMapLayer *layer )
@@ -40,6 +41,8 @@ QgsLayerTreeLayer::QgsLayerTreeLayer( const QgsLayerTreeLayer &other )
   , mRef( other.mRef )
   , mLayerName( other.mLayerName )
   , mPatchShape( other.mPatchShape )
+  , mPatchSize( other.mPatchSize )
+  , mSplitBehavior( other.mSplitBehavior )
 {
   attachToLayer();
 }
@@ -130,6 +133,10 @@ QgsLayerTreeLayer *QgsLayerTreeLayer::readXml( QDomElement &element, const QgsRe
     nodeLayer->setPatchShape( patch );
   }
 
+  nodeLayer->setPatchSize( QgsSymbolLayerUtils::decodeSize( element.attribute( QStringLiteral( "patch_size" ) ) ) );
+
+  nodeLayer->setLegendSplitBehavior( static_cast< LegendNodesSplitBehavior >( element.attribute( QStringLiteral( "legend_split_behavior" ), QStringLiteral( "0" ) ).toInt() ) );
+
   return nodeLayer;
 }
 
@@ -164,6 +171,9 @@ void QgsLayerTreeLayer::writeXml( QDomElement &parentElement, const QgsReadWrite
     mPatchShape.writeXml( patchElem, doc, context );
     elem.appendChild( patchElem );
   }
+  elem.setAttribute( QStringLiteral( "patch_size" ), QgsSymbolLayerUtils::encodeSize( mPatchSize ) );
+
+  elem.setAttribute( QStringLiteral( "legend_split_behavior" ), mSplitBehavior );
 
   writeCommonXml( elem );
 

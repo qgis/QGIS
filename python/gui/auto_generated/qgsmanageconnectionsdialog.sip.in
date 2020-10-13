@@ -34,7 +34,8 @@ class QgsManageConnectionsDialog : QDialog
       GeoNode,
       XyzTiles,
       ArcgisMapServer,
-      ArcgisFeatureServer
+      ArcgisFeatureServer,
+      VectorTile
     };
 
     QgsManageConnectionsDialog( QWidget *parent /TransferThis/ = 0, Mode mode = Export, Type type = WMS, const QString &fileName = QString() );

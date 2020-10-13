@@ -254,32 +254,53 @@ QgsCallout::LabelAnchorPoint QgsCallout::decodeLabelAnchorPoint( const QString &
   return LabelPointOnExterior;
 }
 
-QgsGeometry QgsCallout::labelAnchorGeometry( QRectF rect, const double, LabelAnchorPoint anchor ) const
+QgsGeometry QgsCallout::labelAnchorGeometry( QRectF rect, const double angle, LabelAnchorPoint anchor ) const
 {
-  QgsGeometry label( QgsGeometry::fromRect( rect ) );
+  QgsGeometry label;
   switch ( anchor )
   {
     case LabelPointOnExterior:
-      return label;
+      label = QgsGeometry::fromRect( rect );
+      break;
+
     case LabelCentroid:
-      return label.centroid();
+      label = QgsGeometry::fromRect( rect ).centroid();
+      break;
+
     case LabelTopLeft:
-      return QgsGeometry::fromPointXY( QgsPointXY( rect.bottomLeft() ) );
+      label = QgsGeometry::fromPointXY( QgsPointXY( rect.bottomLeft() ) );
+      break;
+
     case LabelTopMiddle:
-      return QgsGeometry::fromPointXY( QgsPointXY( ( rect.left() + rect.right() ) / 2.0, rect.bottom() ) );
+      label = QgsGeometry::fromPointXY( QgsPointXY( ( rect.left() + rect.right() ) / 2.0, rect.bottom() ) );
+      break;
+
     case LabelTopRight:
-      return QgsGeometry::fromPointXY( QgsPointXY( rect.bottomRight() ) );
+      label = QgsGeometry::fromPointXY( QgsPointXY( rect.bottomRight() ) );
+      break;
+
     case LabelMiddleLeft:
-      return QgsGeometry::fromPointXY( QgsPointXY( rect.left(), ( rect.top() + rect.bottom() ) / 2.0 ) );
+      label = QgsGeometry::fromPointXY( QgsPointXY( rect.left(), ( rect.top() + rect.bottom() ) / 2.0 ) );
+      break;
+
     case LabelMiddleRight:
-      return QgsGeometry::fromPointXY( QgsPointXY( rect.right(), ( rect.top() + rect.bottom() ) / 2.0 ) );
+      label = QgsGeometry::fromPointXY( QgsPointXY( rect.right(), ( rect.top() + rect.bottom() ) / 2.0 ) );
+      break;
+
     case LabelBottomLeft:
-      return QgsGeometry::fromPointXY( QgsPointXY( rect.topLeft() ) );
+      label = QgsGeometry::fromPointXY( QgsPointXY( rect.topLeft() ) );
+      break;
+
     case LabelBottomMiddle:
-      return QgsGeometry::fromPointXY( QgsPointXY( ( rect.left() + rect.right() ) / 2.0, rect.top() ) );
+      label = QgsGeometry::fromPointXY( QgsPointXY( ( rect.left() + rect.right() ) / 2.0, rect.top() ) );
+      break;
+
     case LabelBottomRight:
-      return QgsGeometry::fromPointXY( QgsPointXY( rect.topRight() ) );
+      label = QgsGeometry::fromPointXY( QgsPointXY( rect.topRight() ) );
+      break;
   }
+
+  label.rotate( angle, rect.topLeft() );
   return label;
 }
 

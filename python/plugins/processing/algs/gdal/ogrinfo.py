@@ -21,7 +21,6 @@ __author__ = 'Victor Olaya'
 __date__ = 'November 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-
 from qgis.core import (QgsProcessingException,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterBoolean,
@@ -31,7 +30,6 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 
 
 class ogrinfo(GdalAlgorithm):
-
     INPUT = 'INPUT'
     SUMMARY_ONLY = 'SUMMARY_ONLY'
     NO_METADATA = 'NO_METADATA'

@@ -96,6 +96,7 @@ class CORE_EXPORT QgsMimeDataUtils
        * Type of URI.
        *
        * Recognized types include
+       *
        * - "vector": vector layers
        * - "raster": raster layers
        * - "mesh": mesh layers

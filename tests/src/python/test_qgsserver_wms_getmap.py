@@ -26,6 +26,7 @@ import urllib.error
 
 from qgis.testing import unittest
 from qgis.PyQt.QtCore import QSize
+from qgis.PyQt.QtGui import QImage
 
 import osgeo.gdal  # NOQA
 
@@ -34,14 +35,14 @@ from utilities import unitTestDataPath
 from qgis.core import QgsProject
 
 # Strip path and content length because path may vary
-RE_STRIP_UNCHECKABLE = b'MAP=[^"]+|Content-Length: \d+'
-RE_ATTRIBUTES = b'[^>\s]+=[^>\s]+'
+RE_STRIP_UNCHECKABLE = br'MAP=[^"]+|Content-Length: \d+'
+RE_ATTRIBUTES = br'[^>\s]+=[^>\s]+'
 
 
 class TestQgsServerWMSGetMap(QgsServerTestBase):
     """QGIS Server WMS Tests for GetMap request"""
 
-    #regenerate_reference = True
+    # regenerate_reference = True
 
     def test_wms_getmap_basic_mode(self):
         # 1 bits
@@ -97,6 +98,24 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Mode_16bit", 20000)
+
+        # webp
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country",
+            "STYLES": "",
+            "FORMAT": "image/webp",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Mode_16bit", 20000, outputFormat='WEBP')
 
     def test_wms_getmap_basic(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -239,6 +258,30 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Basic5")
+        img = QImage.fromData(r, "PNG")
+        self.assertEqual(round(img.dotsPerMeterX() / 39.37, 1), 112.5)
+        self.assertEqual(round(img.dotsPerMeterY() / 39.37, 1), 112.5)
+
+    def test_wms_getmap_dpi_png_8bit(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country",
+            "STYLES": "",
+            "FORMAT": "image/png; mode=8bit",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "DPI": "112.5"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        img = QImage.fromData(r, "PNG")
+        self.assertEqual(round(img.dotsPerMeterX() / 39.37, 1), 112.5)
+        self.assertEqual(round(img.dotsPerMeterY() / 39.37, 1), 112.5)
 
     def test_wms_getmap_invalid_parameters(self):
         # invalid format
@@ -903,7 +946,8 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
             "FILTER": "Country,Country_Diagrams: \"name\" IN ( 'africa , 'eurasia' );Hello: \"color\" IN ( 'magenta' , 'cerese' )"
         }.items())])
 
-        expected = self.strip_version_xmlns(b'<ServiceExceptionReport  >\n <ServiceException code="Security">The filter string  "name" IN ( \'africa , \'eurasia\' ) has been rejected because of security reasons. Note: Text strings have to be enclosed in single or double quotes. A space between each word / special character is mandatory. Allowed Keywords and special characters are  IS,NOT,NULL,AND,OR,IN,=,&lt;,>=,>,>=,!=,\',\',(,),DMETAPHONE,SOUNDEX. Not allowed are semicolons in the filter expression.</ServiceException>\n</ServiceExceptionReport>\n')
+        expected = self.strip_version_xmlns(
+            b'<ServiceExceptionReport  >\n <ServiceException code="Security">The filter string  "name" IN ( \'africa , \'eurasia\' ) has been rejected because of security reasons. Note: Text strings have to be enclosed in single or double quotes. A space between each word / special character is mandatory. Allowed Keywords and special characters are  IS,NOT,NULL,AND,OR,IN,=,&lt;,>=,>,>=,!=,\',\',(,),DMETAPHONE,SOUNDEX. Not allowed are semicolons in the filter expression.</ServiceException>\n</ServiceExceptionReport>\n')
         r, h = self._result(self._execute_request(qs))
 
         self.assertEqual(self.strip_version_xmlns(r), expected)
@@ -1293,7 +1337,8 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
             "REQUEST": "GetMap",
             "VERSION": "1.1.1",
             "SERVICE": "WMS",
-            "SLD": "http://localhost:" + str(port) + "/qgis_local_server/db_point.sld",
+            "SLD": "http://localhost:" + str(
+                port) + "/qgis_local_server/db_point.sld",
             "BBOX": "-16817707,-4710778,5696513,14587125",
             "WIDTH": "500",
             "HEIGHT": "500",
@@ -1329,7 +1374,8 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
             "REQUEST": "GetMap",
             "VERSION": "1.1.1",
             "SERVICE": "WMS",
-            "SLD": "http://localhost:" + str(port) + "/qgis_local_server/db_point_svg.sld",
+            "SLD": "http://localhost:" + str(
+                port) + "/qgis_local_server/db_point_svg.sld",
             "BBOX": "-16817707,-4710778,5696513,14587125",
             "WIDTH": "500",
             "HEIGHT": "500",
@@ -1479,7 +1525,8 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         f.close()
         #"""
 
-        self.assertEqual(r_individual, r_group, 'Individual layers query and group layers query results should be identical')
+        self.assertEqual(r_individual, r_group,
+                         'Individual layers query and group layers query results should be identical')
 
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectGroupsPath),
@@ -1497,7 +1544,8 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         r_group, _ = self._result(self._execute_request(qs))
 
-        self.assertEqual(r_individual, r_group, 'Individual layers query and group layers query with short name results should be identical')
+        self.assertEqual(r_individual, r_group,
+                         'Individual layers query and group layers query with short name results should be identical')
 
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectGroupsPath),
@@ -1514,14 +1562,16 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         }.items())])
 
         r_group_sld, _ = self._result(self._execute_request(qs))
-        self.assertEqual(r_individual, r_group_sld, 'Individual layers query and SLD group layers query results should be identical')
+        self.assertEqual(r_individual, r_group_sld,
+                         'Individual layers query and SLD group layers query results should be identical')
 
     def test_wms_getmap_group_regression_20810(self):
         """A WMS shall render the requested layers by drawing the leftmost in the list
         bottommost, the next one over that, and so on. Even if the layers are inside groups."""
 
         qs = "?" + "&".join(["%s=%s" % i for i in list({
-            "MAP": urllib.parse.quote(os.path.join(self.testdata_path, 'test_project_wms_grouped_layers.qgs')),
+            "MAP": urllib.parse.quote(os.path.join(self.testdata_path,
+                                                   'test_project_wms_grouped_layers.qgs')),
             "SERVICE": "WMS",
             "VERSION": "1.3.0",
             "REQUEST": "GetMap",
@@ -1541,7 +1591,8 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         self._img_diff_error(r, h, "WMS_GetMap_GroupedLayersUp")
 
         qs = "?" + "&".join(["%s=%s" % i for i in list({
-            "MAP": urllib.parse.quote(os.path.join(self.testdata_path, 'test_project_wms_grouped_layers.qgs')),
+            "MAP": urllib.parse.quote(os.path.join(self.testdata_path,
+                                                   'test_project_wms_grouped_layers.qgs')),
             "SERVICE": "WMS",
             "VERSION": "1.3.0",
             "REQUEST": "GetMap",
@@ -1563,7 +1614,8 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
     def test_wms_getmap_datasource_error(self):
         """Must throw a server exception if datasource if not available"""
         qs = "?" + "&".join(["%s=%s" % i for i in list({
-            "MAP": urllib.parse.quote(os.path.join(self.testdata_path, 'test_project_wms_invalid_layers.qgs')),
+            "MAP": urllib.parse.quote(os.path.join(self.testdata_path,
+                                                   'test_project_wms_invalid_layers.qgs')),
             "SERVICE": "WMS",
             "VERSION": "1.3.0",
             "REQUEST": "GetMap",
@@ -1583,14 +1635,16 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         self.assertTrue('ServerException' in str(r))
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Can\'t rely on external resources for continuous integration')
+    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true',
+                     'Can\'t rely on external resources for continuous integration')
     def test_wms_getmap_external(self):
         # 1 bits
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "REQUEST": "GetMap",
-            "LAYERS": "EXTERNAL_WMS:landsat",
+            "LAYERS": "EXTERNAL_WMS:landsat,Country",
+            "OPACITIES": "255,150",
             "landsat:layers": "GEBCO_LATEST",
             "landsat:dpiMode": "7",
             "landsat:url": "https://www.gebco.net/data_and_products/gebco_web_services/web_map_service/mapserv",
@@ -1613,7 +1667,8 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         """When drawing root layer, custom layer order order should be respected."""
 
         qs = "?" + "&".join(["%s=%s" % i for i in list({
-            "MAP": urllib.parse.quote(os.path.join(self.testdata_path, 'bug_21917_root_layer_order.qgs')),
+            "MAP": urllib.parse.quote(os.path.join(self.testdata_path,
+                                                   'bug_21917_root_layer_order.qgs')),
             "SERVICE": "WMS",
             "VERSION": "1.3.0",
             "REQUEST": "GetMap",
@@ -1634,7 +1689,8 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         # Check with root_layer
         qs = "?" + "&".join(["%s=%s" % i for i in list({
-            "MAP": urllib.parse.quote(os.path.join(self.testdata_path, 'bug_21917_root_layer_order.qgs')),
+            "MAP": urllib.parse.quote(os.path.join(self.testdata_path,
+                                                   'bug_21917_root_layer_order.qgs')),
             "SERVICE": "WMS",
             "VERSION": "1.3.0",
             "REQUEST": "GetMap",
@@ -1658,7 +1714,8 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         # Check without tiled parameters (default is false)
         qs = "?" + "&".join(["%s=%s" % i for i in list({
-            "MAP": urllib.parse.quote(os.path.join(self.testdata_path, 'wms_tile_buffer.qgs')),
+            "MAP": urllib.parse.quote(
+                os.path.join(self.testdata_path, 'wms_tile_buffer.qgs')),
             "SERVICE": "WMS",
             "VERSION": "1.3.0",
             "REQUEST": "GetMap",
@@ -1675,7 +1732,8 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         # Check with tiled=false
         qs = "?" + "&".join(["%s=%s" % i for i in list({
-            "MAP": urllib.parse.quote(os.path.join(self.testdata_path, 'wms_tile_buffer.qgs')),
+            "MAP": urllib.parse.quote(
+                os.path.join(self.testdata_path, 'wms_tile_buffer.qgs')),
             "SERVICE": "WMS",
             "VERSION": "1.3.0",
             "REQUEST": "GetMap",
@@ -1693,7 +1751,8 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         # Check with tiled=true
         qs = "?" + "&".join(["%s=%s" % i for i in list({
-            "MAP": urllib.parse.quote(os.path.join(self.testdata_path, 'wms_tile_buffer.qgs')),
+            "MAP": urllib.parse.quote(
+                os.path.join(self.testdata_path, 'wms_tile_buffer.qgs')),
             "SERVICE": "WMS",
             "VERSION": "1.3.0",
             "REQUEST": "GetMap",
@@ -1710,10 +1769,10 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         self._img_diff_error(r, h, "WMS_GetMap_Tiled_True")
 
     def test_mode8bit_with_transparency(self):
-
         # 8 bits
         qs = "?" + "&".join(["%s=%s" % i for i in list({
-            "MAP": urllib.parse.quote(self.testdata_path + 'test_project_wms_8bit_with_transparency.qgs'),
+            "MAP": urllib.parse.quote(
+                self.testdata_path + 'test_project_wms_8bit_with_transparency.qgs'),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetMap",
@@ -1731,9 +1790,9 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         self._img_diff_error(r, h, "WMS_GetMap_Mode_8bit_with_transparency")
 
     def test_multiple_layers_with_equal_name(self):
-
         qs = "?" + "&".join(["%s=%s" % i for i in list({
-            "MAP": urllib.parse.quote(os.path.join(self.testdata_path, 'test_project_wms_duplicate_names.qgz')),
+            "MAP": urllib.parse.quote(os.path.join(self.testdata_path,
+                                                   'test_project_wms_duplicate_names.qgz')),
             "SERVICE": "WMS",
             "VERSION": "1.3.0",
             "REQUEST": "GetMap",

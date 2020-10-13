@@ -58,6 +58,7 @@ class TestQgsGdalProvider : public QObject
     void bandNameWithDescription(); // test band name for when description available (#16047)
     void interactionBetweenRasterChangeAndCache(); // test that updading a raster invalidates the GDAL dataset cache (#20104)
     void scale0(); //test when data has scale 0 (#20493)
+    void transformCoordinates();
 
   private:
     QString mTestDataDir;
@@ -367,6 +368,35 @@ void TestQgsGdalProvider::scale0()
   QCOMPARE( rp->bandScale( 1 ), 1.0 );
   QCOMPARE( rp->bandOffset( 1 ), 0.0 );
   delete provider;
+}
+
+void TestQgsGdalProvider::transformCoordinates()
+{
+  // Test implementation of QgsRasterDataProvider::transformCoordinates()
+  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/float1-16.tif";
+  QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
+  QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
+  QVERIFY( rp );
+  QVERIFY( rp->isValid() );
+
+  // forward transform - image coordinates to georeferenced coordinates
+  QgsPoint pt1Layer = rp->transformCoordinates( QgsPoint( 0, 0 ), QgsRasterDataProvider::TransformImageToLayer ); // bottom-left corner
+  QgsPoint pt2Layer = rp->transformCoordinates( QgsPoint( 4, 0 ), QgsRasterDataProvider::TransformImageToLayer );
+  QgsPoint pt3Layer = rp->transformCoordinates( QgsPoint( 4, 4 ), QgsRasterDataProvider::TransformImageToLayer ); // top-right corner
+
+  QCOMPARE( pt1Layer, QgsPoint( 106.0, -7.0, 0 ) );
+  QCOMPARE( pt2Layer, QgsPoint( 106.8, -7.0, 0 ) );
+  QCOMPARE( pt3Layer, QgsPoint( 106.8, -6.2, 0 ) );
+
+  // inverse transform - georeferenced coordinates to image coordinates
+  QgsPoint pt1Image = rp->transformCoordinates( QgsPoint( 106.0, -7.0 ), QgsRasterDataProvider::TransformLayerToImage ); // bottom-left corner
+  QgsPoint pt2Image = rp->transformCoordinates( QgsPoint( 106.8, -7.0 ), QgsRasterDataProvider::TransformLayerToImage );
+  QgsPoint pt3Image = rp->transformCoordinates( QgsPoint( 106.8, -6.2 ), QgsRasterDataProvider::TransformLayerToImage ); // top-right corner
+
+  QCOMPARE( pt1Image, QgsPoint( 0, 0, 0 ) );
+  QCOMPARE( pt2Image, QgsPoint( 4, 0, 0 ) );
+  QCOMPARE( pt3Image, QgsPoint( 4, 4, 0 ) );
+
 }
 
 QGSTEST_MAIN( TestQgsGdalProvider )

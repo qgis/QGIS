@@ -50,7 +50,6 @@ from qgis.testing import (
     unittest,
 )
 
-
 __author__ = 'Alessandro Pasotti'
 __date__ = '03/11/2017'
 __copyright__ = 'Copyright 2017, The QGIS Project'

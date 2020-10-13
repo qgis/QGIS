@@ -49,12 +49,12 @@ class QgsTransaction;
 #include "qgsdatasourceuri.h"
 
 /**
-  \class QgsSpatiaLiteProvider
-  \brief Data provider for SQLite/SpatiaLite layers.
-
-  This provider implements the
-  interface defined in the QgsDataProvider class to provide access to spatial
-  data residing in a SQLite/SpatiaLite enabled database.
+ * \class QgsSpatiaLiteProvider
+ * \brief Data provider for SQLite/SpatiaLite layers.
+ *
+ * This provider implements the
+ * interface defined in the QgsDataProvider class to provide access to spatial
+ * data residing in a SQLite/SpatiaLite enabled database.
   */
 class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
 {
@@ -82,7 +82,7 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
      * \param uri uniform resource locator (URI) for a dataset
      * \param options generic data provider options
      */
-    explicit QgsSpatiaLiteProvider( QString const &uri, const QgsDataProvider::ProviderOptions &providerOptions );
+    explicit QgsSpatiaLiteProvider( QString const &uri, const QgsDataProvider::ProviderOptions &providerOptions, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     ~ QgsSpatiaLiteProvider() override;
 
@@ -116,7 +116,7 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
 
     bool isValid() const override;
     bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
-    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool truncate() override;
     bool addAttributes( const QList<QgsField> &attributes ) override;
@@ -317,7 +317,7 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
     //! this Geometry is supported by an MBR cache spatial index
     bool mSpatialIndexMbrCache = false;
 
-    QgsVectorDataProvider::Capabilities mEnabledCapabilities = nullptr;
+    QgsVectorDataProvider::Capabilities mEnabledCapabilities = QgsVectorDataProvider::Capabilities();
 
     QgsField field( int index ) const;
 
@@ -406,6 +406,8 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
      */
     sqlite3 *sqliteHandle( ) const;
 
+    static QString createIndexName( QString tableName, QString field );
+
     friend class QgsSpatiaLiteFeatureSource;
 
     // QgsVectorDataProvider interface
@@ -428,7 +430,7 @@ class QgsSpatiaLiteProviderMetadata final: public QgsProviderMetadata
                     QStringList &descriptions, QString &errCause ) override;
     QVariantMap decodeUri( const QString &uri ) override;
     QString encodeUri( const QVariantMap &parts ) override;
-    QgsSpatiaLiteProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QgsSpatiaLiteProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
 
     QgsVectorLayerExporter::ExportError createEmptyLayer( const QString &uri, const QgsFields &fields,
         QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs,

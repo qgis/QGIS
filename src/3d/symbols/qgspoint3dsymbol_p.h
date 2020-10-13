@@ -27,15 +27,17 @@
 // version without notice, or even be removed.
 //
 
+#define SIP_NO_FILE
 
 #include "qgsfeature3dhandler_p.h"
 
 class QgsPoint3DSymbol;
+class QgsAbstract3DSymbol;
 
 namespace Qgs3DSymbolImpl
 {
   //! factory method for QgsLine3DSymbol
-  QgsFeature3DHandler *handlerForPoint3DSymbol( QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol );
+  QgsFeature3DHandler *handlerForPoint3DSymbol( QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol );
 
   //! convenience function to create a complete entity from QgsPolygon3DSymbol (will run getFeatures() on the layer)
   Qt3DCore::QEntity *entityForPoint3DSymbol( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol );

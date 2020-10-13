@@ -27,6 +27,7 @@
 #include "qgsrasteriterator.h"
 #include "qgsapplication.h"
 #include "qgsdataprovider.h"
+#include "qgsinterval.h"
 
 
 class QNetworkReply;
@@ -203,6 +204,15 @@ struct QgsWmsDimensionProperty
 
     return QgsDateTimeRange();
   }
+
+  bool operator== ( const QgsWmsDimensionProperty &other ) const
+  {
+    return name == other.name && units == other.units &&
+           unitSymbol == other.unitSymbol && defaultValue == other.defaultValue &&
+           extent == other.extent && multipleValues == other.multipleValues &&
+           nearestValue == other.nearestValue && current == other.current;
+  }
+
 };
 
 //! Logo URL Property structure
@@ -346,6 +356,8 @@ struct QgsWmsLayerProperty
       return false;
     if ( !( abstract == layerProperty.abstract ) )
       return false;
+    if ( !( dimensions == layerProperty.dimensions ) )
+      return false;
 
     return true;
   }
@@ -365,6 +377,24 @@ struct QgsWmsLayerProperty
     }
 
     return false;
+  }
+
+  /**
+   * Attempts to return a preferred CRS from the list of available CRS definitions.
+   *
+   * Prioritizes the first listed CRS, unless it's a block listed value.
+   */
+  QString preferredAvailableCrs() const
+  {
+    static QSet< QString > sSkipList { QStringLiteral( "EPSG:900913" ) };
+    for ( const QString &candidate : crs )
+    {
+      if ( sSkipList.contains( candidate ) )
+        continue;
+
+      return candidate;
+    }
+    return crs.value( 0 );
   }
 };
 
@@ -405,6 +435,26 @@ struct QgsWmstResolution
   int hour = -1;
   int minutes = -1;
   int seconds = -1;
+
+  long long interval()
+  {
+    long long secs = 0.0;
+
+    if ( year != -1 )
+      secs += year * QgsInterval::YEARS ;
+    if ( month != -1 )
+      secs += month * QgsInterval::MONTHS;
+    if ( day != -1 )
+      secs += day * QgsInterval::DAY;
+    if ( hour != -1 )
+      secs += hour * QgsInterval::HOUR;
+    if ( minutes != -1 )
+      secs += minutes * QgsInterval::MINUTE;
+    if ( seconds != -1 )
+      secs += seconds;
+
+    return secs;
+  }
 
   bool active()
   {
@@ -719,7 +769,7 @@ struct QgsWmsAuthorization
 
     if ( !mReferer.isEmpty() )
     {
-      request.setRawHeader( "Referer", QStringLiteral( "%1" ).arg( mReferer ).toLatin1() );
+      request.setRawHeader( "Referer", mReferer.toLatin1() );
     }
     return true;
   }
@@ -763,35 +813,56 @@ class QgsWmsSettings
      * Parse the given string extent into a well defined dates and resolution structures.
      * The string extent comes from WMS-T dimension capabilities.
      *
-     * \since 3.14
+     * \since QGIS 3.14
      */
     QgsWmstDimensionExtent parseTemporalExtent( QString extent );
 
     /**
+     * Sets the dimension extent property
+     *
+     * \see timeDimensionExtent()
+     * \since QGIS 3.14
+     */
+    void setTimeDimensionExtent( QgsWmstDimensionExtent timeDimensionExtent );
+
+    /**
+     * Returns the dimension extent property.
+     *
+     * \see setTimeDimensionExtent()
+     * \since QGIS 3.14
+     */
+    QgsWmstDimensionExtent timeDimensionExtent() const;
+
+    /**
      * Parse the given string item into a resolution structure.
      *
-     * \since 3.14
+     * \since QGIS 3.14
      */
     QgsWmstResolution parseWmstResolution( QString item );
 
     /**
      * Parse the given string item into QDateTime instant.
      *
-     * \since 3.14
+     * \since QGIS 3.14
      */
     QDateTime parseWmstDateTimes( QString item );
 
-    QList<QDateTime> dateTimesFromExtent( QgsWmstDimensionExtent dimensionExtent );
-
+    /**
+     * Returns the datetime with the sum of passed \a dateTime and the \a resolution time.
+     *
+     * \since QGIS 3.14
+     */
     QDateTime addTime( QDateTime dateTime, QgsWmstResolution resolution );
 
     /**
-     * Finds the least closest datetime from list of available datetimes
+     * Finds the least closest datetime from list of available dimension temporal ranges
      * with the given \a dateTime.
      *
-     * Returns the passed \a dateTime if it is found in the available datetimes.
+     * \note It works with wms-t capabilities that provide time dimension with temporal ranges only.
+     *
+     * \since QGIS 3.14
      */
-    QDateTime findLeastClosestDateTime( QDateTime dateTime ) const;
+    QDateTime findLeastClosestDateTime( QDateTime dateTime, bool dateOnly = false ) const;
 
   protected:
     QgsWmsParserSettings    mParserSettings;
@@ -815,9 +886,6 @@ class QgsWmsSettings
 
     //! Fixed reference temporal range for the data provider
     QgsDateTimeRange mFixedReferenceRange;
-
-    //! List of all available datetimes.
-    QList<QDateTime> mDateTimes;
 
     //! Stores WMS-T time dimension extent dates
     QgsWmstDimensionExtent mTimeDimensionExtent;
@@ -894,7 +962,7 @@ class QgsWmsCapabilities
     /**
      * Constructs a QgsWmsCapabilities object with the given \a coordinateTransformContext
      */
-    QgsWmsCapabilities( const QgsCoordinateTransformContext &coordinateTransformContext = QgsCoordinateTransformContext() );
+    QgsWmsCapabilities( const QgsCoordinateTransformContext &coordinateTransformContext = QgsCoordinateTransformContext(), const QString &baseUrl = QString() );
 
     bool isValid() const { return mValid; }
 
@@ -953,6 +1021,7 @@ class QgsWmsCapabilities
     void parseCapability( const QDomElement &element, QgsWmsCapabilityProperty &capabilityProperty );
     void parseRequest( const QDomElement &element, QgsWmsRequestProperty &requestProperty );
     void parseDimension( const QDomElement &element, QgsWmsDimensionProperty &dimensionProperty );
+    void parseExtent( const QDomElement &element, QVector<QgsWmsDimensionProperty> &dimensionProperties );
     void parseLegendUrl( const QDomElement &element, QgsWmsLegendUrlProperty &legendUrlProperty );
     void parseMetadataUrl( const QDomElement &element, QgsWmsMetadataUrlProperty &metadataUrlProperty );
     void parseLayer( const QDomElement &element, QgsWmsLayerProperty &layerProperty, QgsWmsLayerProperty *parentProperty = nullptr );
@@ -1032,8 +1101,10 @@ class QgsWmsCapabilities
   private:
 
     QgsCoordinateTransformContext mCoordinateTransformContext;
+    QString mBaseUrl;
 
     friend class QgsWmsProvider;
+    friend class TestQgsWmsCapabilities;
 };
 
 

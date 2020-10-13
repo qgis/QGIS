@@ -48,7 +48,7 @@ bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
   if ( !verifiedProvider || !verifiedProvider->isValid() )
   {
     error( QStringLiteral( "Cannot load provider %1 with URI: %2" ).arg( verifiedKey, verifiedUri ), mReport );
-    ok = false;
+    return false;
   }
 
   //QgsRasterDataProvider* expectedProvider = QgsRasterLayer::loadProvider( expectedKey, expectedUri );
@@ -56,10 +56,8 @@ bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
   if ( !expectedProvider || !expectedProvider->isValid() )
   {
     error( QStringLiteral( "Cannot load provider %1 with URI: %2" ).arg( expectedKey, expectedUri ), mReport );
-    ok = false;
+    return false;
   }
-
-  if ( !ok ) return false;
 
   mReport += QStringLiteral( "Verified URI: %1<br>" ).arg( verifiedUri.replace( '&', QLatin1String( "&amp;" ) ) );
   mReport += QStringLiteral( "Expected URI: %1<br>" ).arg( expectedUri.replace( '&', QLatin1String( "&amp;" ) ) );
@@ -167,7 +165,7 @@ bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
         QString valStr;
         if ( compare( verifiedVal, expectedVal, 0 ) )
         {
-          valStr = QStringLiteral( "%1" ).arg( verifiedVal );
+          valStr = QString::number( verifiedVal );
         }
         else
         {

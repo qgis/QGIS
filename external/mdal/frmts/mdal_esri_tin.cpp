@@ -61,17 +61,17 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverEsriTin::load( const std::string &uri, c
     inMsx.seekg( -4, std::ios::end );
     int32_t mskBegin;
     if ( ! readValue( mskBegin, inMsx, true ) )
-      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to find the beggining of data in msk file" );
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to find the beginning of data in tmsx.adf file" );
 
     //read information in mskFile
     inMsk.seekg( -mskBegin * 2, std::ios::end );
     int32_t maskIntergerCount;
     if ( ! readValue( maskIntergerCount, inMsk, true ) )
-      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to read information in msk file" );
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to read information in tmsk.adf file" );
     inMsk.ignore( 4 ); //unused 4 bytes
     int32_t maskBitsCount;
     if ( ! readValue( maskBitsCount, inMsk, true ) )
-      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to read information in msk file" );
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to read information in tmsk.adf file" );
 
     int c = 0;
     int32_t maskInt = 0;
@@ -80,7 +80,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverEsriTin::load( const std::string &uri, c
       //read mask file
       if ( c % 32 == 0 && c < maskBitsCount ) //first bit in the mask array have to be used-->read next maskInt
         if ( ! readValue( maskInt, inMsk, true ) )
-          throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to read information in mask file" );
+          throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to read information in tmsk.adf file" );
 
       Face f;
       for ( int i = 0; i < 3; ++i )
@@ -96,7 +96,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverEsriTin::load( const std::string &uri, c
         break;
 
       if ( f.size() < 3 ) //that's mean the face is not complete
-        throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to read information in mask file, face is not complete" );
+        throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to read information in tnod.adf file, face is not complete" );
 
       //exclude masked face
       if ( !( maskInt & 0x01 ) )
@@ -176,21 +176,17 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverEsriTin::load( const std::string &uri, c
     std::unique_ptr< MemoryMesh > mesh(
       new MemoryMesh(
         name(),
-        vertices.size(),
-        0,
-        faces.size(),
         3,
-        computeExtent( vertices ),
         uri
       )
     );
 
     //move the faces and the vertices in the mesh
-    mesh->faces = std::move( faces );
-    mesh->vertices = std::move( vertices );
+    mesh->setFaces( std::move( faces ) );
+    mesh->setVertices( std::move( vertices ) );
 
     //create the "Altitude" dataset
-    addBedElevationDatasetGroup( mesh.get(), mesh->vertices );
+    addBedElevationDatasetGroup( mesh.get(), mesh->vertices() );
     mesh->datasetGroups.back()->setName( "Altitude" );
 
     std::string crs = getCrsWkt( uri );

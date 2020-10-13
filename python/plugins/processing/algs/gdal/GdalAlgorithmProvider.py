@@ -27,7 +27,8 @@ from osgeo import gdal
 
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsApplication,
-                       QgsProcessingProvider)
+                       QgsProcessingProvider,
+                       QgsRuntimeProfiler)
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from .GdalUtils import GdalUtils
 
@@ -103,11 +104,12 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
         QgsApplication.processingRegistry().addAlgorithmAlias('qgis:buildvirtualvector', 'gdal:buildvirtualvector')
 
     def load(self):
-        ProcessingConfig.settingIcons[self.name()] = self.icon()
-        ProcessingConfig.addSetting(Setting(self.name(), 'ACTIVATE_GDAL',
-                                            self.tr('Activate'), True))
-        ProcessingConfig.readSettings()
-        self.refreshAlgorithms()
+        with QgsRuntimeProfiler.profile('GDAL Provider'):
+            ProcessingConfig.settingIcons[self.name()] = self.icon()
+            ProcessingConfig.addSetting(Setting(self.name(), 'ACTIVATE_GDAL',
+                                                self.tr('Activate'), True))
+            ProcessingConfig.readSettings()
+            self.refreshAlgorithms()
         return True
 
     def unload(self):

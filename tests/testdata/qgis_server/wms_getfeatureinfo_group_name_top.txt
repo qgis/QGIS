@@ -18,7 +18,7 @@ Content-Type: application/json; charset=utf-8
     },
     {
       "geometry": null,
-      "id": "as_areas.18",
+      "id": "as-areas-short-name.18",
       "properties": {
         "bearbeiter": "scholle-b",
         "bemerkung": "",
@@ -47,7 +47,7 @@ Content-Type: application/json; charset=utf-8
     },
     {
       "geometry": null,
-      "id": "as_areas_query_copy.18",
+      "id": "as-areas-short-name-query-copy.18",
       "properties": {
         "bearbeiter": "scholle-b",
         "bemerkung": "",

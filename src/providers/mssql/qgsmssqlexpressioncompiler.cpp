@@ -18,52 +18,78 @@
 
 QgsMssqlExpressionCompiler::QgsMssqlExpressionCompiler( QgsMssqlFeatureSource *source )
   : QgsSqlExpressionCompiler( source->mFields,
-                              QgsSqlExpressionCompiler::LikeIsCaseInsensitive | QgsSqlExpressionCompiler::CaseInsensitiveStringMatch | QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger )
+                              QgsSqlExpressionCompiler::LikeIsCaseInsensitive |
+                              QgsSqlExpressionCompiler::CaseInsensitiveStringMatch |
+                              QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger )
 {
-
 }
 
 QgsSqlExpressionCompiler::Result QgsMssqlExpressionCompiler::compileNode( const QgsExpressionNode *node, QString &result )
 {
-  if ( node->nodeType() == QgsExpressionNode::ntBinaryOperator )
+  switch ( node->nodeType() )
   {
-    const QgsExpressionNodeBinaryOperator *bin( static_cast<const QgsExpressionNodeBinaryOperator *>( node ) );
-    switch ( bin->op() )
+    case QgsExpressionNode::ntBinaryOperator:
     {
-      // special handling
-      case QgsExpressionNodeBinaryOperator::boPow:
-      case QgsExpressionNodeBinaryOperator::boRegexp:
-      case QgsExpressionNodeBinaryOperator::boConcat:
-        break;
+      const QgsExpressionNodeBinaryOperator *bin( static_cast<const QgsExpressionNodeBinaryOperator *>( node ) );
+      switch ( bin->op() )
+      {
+        // special handling
+        case QgsExpressionNodeBinaryOperator::boPow:
+        case QgsExpressionNodeBinaryOperator::boRegexp:
+        case QgsExpressionNodeBinaryOperator::boConcat:
+          break;
 
-      default:
-        // fallback to default handling
-        return QgsSqlExpressionCompiler::compileNode( node, result );;
+        default:
+          // fallback to default handling
+          return QgsSqlExpressionCompiler::compileNode( node, result );
+      }
+
+      QString op1, op2;
+
+      Result result1 = compileNode( bin->opLeft(), op1 );
+      Result result2 = compileNode( bin->opRight(), op2 );
+      if ( result1 == Fail || result2 == Fail )
+        return Fail;
+
+      switch ( bin->op() )
+      {
+        case QgsExpressionNodeBinaryOperator::boPow:
+          result = QStringLiteral( "power(%1,%2)" ).arg( op1, op2 );
+          return result1 == Partial || result2 == Partial ? Partial : Complete;
+
+        case QgsExpressionNodeBinaryOperator::boRegexp:
+          return Fail; //not supported, regexp syntax is too different to Qt
+
+        case QgsExpressionNodeBinaryOperator::boConcat:
+          result = QStringLiteral( "%1 + %2" ).arg( op1, op2 );
+          return result1 == Partial || result2 == Partial ? Partial : Complete;
+
+        default:
+          break;
+      }
+
+      break;
     }
 
-    QString op1, op2;
-
-    Result result1 = compileNode( bin->opLeft(), op1 );
-    Result result2 = compileNode( bin->opRight(), op2 );
-    if ( result1 == Fail || result2 == Fail )
-      return Fail;
-
-    switch ( bin->op() )
+    case QgsExpressionNode::ntFunction:
     {
-      case QgsExpressionNodeBinaryOperator::boPow:
-        result = QStringLiteral( "power(%1,%2)" ).arg( op1, op2 );
-        return result1 == Partial || result2 == Partial ? Partial : Complete;
+      const QgsExpressionNodeFunction *n = static_cast<const QgsExpressionNodeFunction *>( node );
+      QgsExpressionFunction *fd = QgsExpression::Functions()[n->fnIndex()];
 
-      case QgsExpressionNodeBinaryOperator::boRegexp:
-        return Fail; //not supported, regexp syntax is too different to Qt
-
-      case QgsExpressionNodeBinaryOperator::boConcat:
-        result = QStringLiteral( "%1 + %2" ).arg( op1, op2 );
-        return result1 == Partial || result2 == Partial ? Partial : Complete;
-
-      default:
-        break;
+      if ( fd->name() == QLatin1String( "make_datetime" ) || fd->name() == QLatin1String( "make_date" ) || fd->name() == QLatin1String( "make_time" ) )
+      {
+        const auto constList = n->args()->list();
+        for ( const QgsExpressionNode *ln : constList )
+        {
+          if ( ln->nodeType() != QgsExpressionNode::ntLiteral )
+            return Fail;
+        }
+      }
+      return QgsSqlExpressionCompiler::compileNode( node, result );
     }
+
+    default:
+      break;
   }
 
   //fallback to default handling
@@ -94,8 +120,8 @@ QString QgsMssqlExpressionCompiler::quotedValue( const QVariant &value, bool &ok
 QString QgsMssqlExpressionCompiler::quotedIdentifier( const QString &identifier )
 {
   QString quoted = identifier;
-  quoted.replace( '[', QStringLiteral( "[[" ) );
-  quoted.replace( ']', QStringLiteral( "]]" ) );
+  quoted.replace( '[', QLatin1String( "[[" ) );
+  quoted.replace( ']', QLatin1String( "]]" ) );
   quoted = quoted.prepend( '[' ).append( ']' );
   return quoted;
 }
@@ -138,9 +164,39 @@ static const QMap<QString, QString> FUNCTION_NAMES_SQL_FUNCTIONS_MAP
   { "trim", "trim" },
   { "lower", "lower" },
   { "upper", "upper" },
+  { "make_datetime", "" },
+  { "make_date", "" },
+  { "make_time", "" },
 };
 
 QString QgsMssqlExpressionCompiler::sqlFunctionFromFunctionName( const QString &fnName ) const
 {
   return FUNCTION_NAMES_SQL_FUNCTIONS_MAP.value( fnName, QString() );
+}
+
+QStringList QgsMssqlExpressionCompiler::sqlArgumentsFromFunctionName( const QString &fnName, const QStringList &fnArgs ) const
+{
+  QStringList args( fnArgs );
+  if ( fnName == QLatin1String( "make_datetime" ) )
+  {
+    args = QStringList( QStringLiteral( "'%1-%2-%3T%4:%5:%6Z'" ).arg( args[0].rightJustified( 4, '0' ) )
+                        .arg( args[1].rightJustified( 2, '0' ) )
+                        .arg( args[2].rightJustified( 2, '0' ) )
+                        .arg( args[3].rightJustified( 2, '0' ) )
+                        .arg( args[4].rightJustified( 2, '0' ) )
+                        .arg( args[5].rightJustified( 2, '0' ) ) );
+  }
+  else if ( fnName == QLatin1String( "make_date" ) )
+  {
+    args = QStringList( QStringLiteral( "'%1-%2-%3'" ).arg( args[0].rightJustified( 4, '0' ) )
+                        .arg( args[1].rightJustified( 2, '0' ) )
+                        .arg( args[2].rightJustified( 2, '0' ) ) );
+  }
+  else if ( fnName == QLatin1String( "make_time" ) )
+  {
+    args = QStringList( QStringLiteral( "'%1:%2:%3'" ).arg( args[0].rightJustified( 2, '0' ) )
+                        .arg( args[1].rightJustified( 2, '0' ) )
+                        .arg( args[2].rightJustified( 2, '0' ) ) );
+  }
+  return args;
 }

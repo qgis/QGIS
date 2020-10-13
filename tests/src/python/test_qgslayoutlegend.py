@@ -37,6 +37,7 @@ from qgis.core import (QgsPrintLayout,
                        QgsMapThemeCollection,
                        QgsCategorizedSymbolRenderer,
                        QgsRendererCategory,
+                       QgsFillSymbol,
                        QgsApplication)
 from qgis.testing import (start_app,
                           unittest
@@ -56,14 +57,13 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
     @classmethod
     def setUpClass(cls):
         cls.item_class = QgsLayoutItemLegend
+        cls.report = "<h1>Python QgsLayoutItemLegend Tests</h1>\n"
 
-    def setUp(self):
-        self.report = "<h1>Python QgsLayoutItemLegend Tests</h1>\n"
-
-    def tearDown(self):
+    @classmethod
+    def tearDownClass(cls):
         report_file_path = "%s/qgistest.html" % QDir.tempPath()
         with open(report_file_path, 'a') as report_file:
-            report_file.write(self.report)
+            report_file.write(cls.report)
 
     def testInitialSizeSymbolMapUnits(self):
         """Test initial size of legend with a symbol size in map units"""
@@ -74,7 +74,8 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         QgsProject.instance().clear()
         QgsProject.instance().addMapLayers([point_layer])
 
-        marker_symbol = QgsMarkerSymbol.createSimple({'color': '#ff0000', 'outline_style': 'no', 'size': '5', 'size_unit': 'MapUnit'})
+        marker_symbol = QgsMarkerSymbol.createSimple(
+            {'color': '#ff0000', 'outline_style': 'no', 'size': '5', 'size_unit': 'MapUnit'})
 
         point_layer.setRenderer(QgsSingleSymbolRenderer(marker_symbol))
 
@@ -104,7 +105,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
             'composer_legend_mapunits', layout)
         checker.setControlPathPrefix("composer_legend")
         result, message = checker.testLayout()
-        self.report += checker.report()
+        TestQgsLayoutItemLegend.report += checker.report()
         self.assertTrue(result, message)
 
         # resize with non-top-left reference point
@@ -162,10 +163,51 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
             'composer_legend_size_content', layout)
         checker.setControlPathPrefix("composer_legend")
         result, message = checker.testLayout()
-        self.report += checker.report()
+        TestQgsLayoutItemLegend.report += checker.report()
         self.assertTrue(result, message)
 
         QgsProject.instance().removeMapLayers([point_layer.id()])
+
+    def testResizeWithMapContentNoDoublePaint(self):
+        """Test test legend resizes to match map content"""
+        poly_path = os.path.join(TEST_DATA_DIR, 'polys.shp')
+        poly_layer = QgsVectorLayer(poly_path, 'polys', 'ogr')
+        p = QgsProject()
+        p.addMapLayers([poly_layer])
+
+        fill_symbol = QgsFillSymbol.createSimple({'color': '255,0,0,125', 'outline_style': 'no'})
+        poly_layer.setRenderer(QgsSingleSymbolRenderer(fill_symbol))
+
+        s = QgsMapSettings()
+        s.setLayers([poly_layer])
+        layout = QgsLayout(p)
+        layout.initializeDefaults()
+
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(20, 20, 80, 80))
+        map.setFrameEnabled(True)
+        map.setLayers([poly_layer])
+        layout.addLayoutItem(map)
+        map.setExtent(poly_layer.extent())
+
+        legend = QgsLayoutItemLegend(layout)
+        legend.setTitle("Legend")
+        legend.attemptSetSceneRect(QRectF(120, 20, 80, 80))
+        legend.setFrameEnabled(True)
+        legend.setFrameStrokeWidth(QgsLayoutMeasurement(2))
+        legend.setBackgroundEnabled(False)
+        legend.setTitle('')
+        layout.addLayoutItem(legend)
+        legend.setLinkedMap(map)
+
+        map.setExtent(QgsRectangle(-102.51, 41.16, -102.36, 41.30))
+
+        checker = QgsLayoutChecker(
+            'composer_legend_size_content_no_double_paint', layout)
+        checker.setControlPathPrefix("composer_legend")
+        result, message = checker.testLayout()
+        TestQgsLayoutItemLegend.report += checker.report()
+        self.assertTrue(result, message)
 
     def testResizeDisabled(self):
         """Test that test legend does not resize if auto size is disabled"""
@@ -206,7 +248,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
             'composer_legend_noresize', layout)
         checker.setControlPathPrefix("composer_legend")
         result, message = checker.testLayout()
-        self.report += checker.report()
+        TestQgsLayoutItemLegend.report += checker.report()
         self.assertTrue(result, message)
 
         QgsProject.instance().removeMapLayers([point_layer.id()])
@@ -250,7 +292,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
             'composer_legend_noresize_crop', layout)
         checker.setControlPathPrefix("composer_legend")
         result, message = checker.testLayout()
-        self.report += checker.report()
+        TestQgsLayoutItemLegend.report += checker.report()
         self.assertTrue(result, message)
 
         QgsProject.instance().removeMapLayers([point_layer.id()])
@@ -360,10 +402,12 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
         group = legend.model().rootGroup().addGroup("Group [% 1 + 5 %] [% @layout_name %]")
         layer_tree_layer = group.addLayer(point_layer)
-        layer_tree_layer.setCustomProperty("legend/title-label", 'bbbb [% 1+2 %] xx [% @layout_name %] [% @layer_name %]')
+        layer_tree_layer.setCustomProperty("legend/title-label",
+                                           'bbbb [% 1+2 %] xx [% @layout_name %] [% @layer_name %]')
         QgsMapLayerLegendUtils.setLegendNodeUserLabel(layer_tree_layer, 0, 'xxxx')
         legend.model().refreshLayerLegend(layer_tree_layer)
-        legend.model().layerLegendNodes(layer_tree_layer)[0].setUserLabel('bbbb [% 1+2 %] xx [% @layout_name %] [% @layer_name %]')
+        legend.model().layerLegendNodes(layer_tree_layer)[0].setUserLabel(
+            'bbbb [% 1+2 %] xx [% @layout_name %] [% @layer_name %]')
 
         layout.addLayoutItem(legend)
         legend.setLinkedMap(map)
@@ -374,7 +418,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
             'composer_legend_expressions', layout)
         checker.setControlPathPrefix("composer_legend")
         result, message = checker.testLayout()
-        self.report += checker.report()
+        TestQgsLayoutItemLegend.report += checker.report()
         self.assertTrue(result, message)
 
         QgsProject.instance().removeMapLayers([point_layer.id()])
@@ -409,8 +453,8 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         label2 = legendnodes[1].evaluateLabel()
         label3 = legendnodes[2].evaluateLabel()
         self.assertEqual(label1, '0')
-        #self.assertEqual(label2, '5')
-        #self.assertEqual(label3, '12')
+        # self.assertEqual(label2, '5')
+        # self.assertEqual(label3, '12')
 
         legendlayer.setLabelExpression("Concat(@symbol_label, @symbol_id)")
 
@@ -419,8 +463,8 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         label3 = legendnodes[2].evaluateLabel()
 
         self.assertEqual(label1, ' @symbol_id 0')
-        #self.assertEqual(label2, '@symbol_count 1')
-        #self.assertEqual(label3, 'sum("Pilots") 2')
+        # self.assertEqual(label2, '@symbol_count 1')
+        # self.assertEqual(label3, 'sum("Pilots") 2')
 
         QgsProject.instance().clear()
 
@@ -463,7 +507,8 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         layer_tree_layer = group.addLayer(point_layer)
         counterTask = point_layer.countSymbolFeatures()
         counterTask.waitForFinished()
-        layer_tree_layer.setCustomProperty("legend/title-label", 'bbbb [% 1+2 %] xx [% @layout_name %] [% @layer_name %]')
+        layer_tree_layer.setCustomProperty("legend/title-label",
+                                           'bbbb [% 1+2 %] xx [% @layout_name %] [% @layer_name %]')
         QgsMapLayerLegendUtils.setLegendNodeUserLabel(layer_tree_layer, 0, 'xxxx')
         legend.model().refreshLayerLegend(layer_tree_layer)
         layer_tree_layer.setLabelExpression('Concat(@symbol_id, @symbol_label, count("Class"))')
@@ -549,11 +594,14 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         QgsProject.instance().mapThemeCollection().insert('red', red_record)
 
         marker_symbol1 = QgsMarkerSymbol.createSimple({'color': '#0000ff', 'outline_style': 'no', 'size': '5'})
-        marker_symbol2 = QgsMarkerSymbol.createSimple({'color': '#0000ff', 'name': 'diamond', 'outline_style': 'no', 'size': '5'})
-        marker_symbol3 = QgsMarkerSymbol.createSimple({'color': '#0000ff', 'name': 'rectangle', 'outline_style': 'no', 'size': '5'})
+        marker_symbol2 = QgsMarkerSymbol.createSimple(
+            {'color': '#0000ff', 'name': 'diamond', 'outline_style': 'no', 'size': '5'})
+        marker_symbol3 = QgsMarkerSymbol.createSimple(
+            {'color': '#0000ff', 'name': 'rectangle', 'outline_style': 'no', 'size': '5'})
 
         point_layer.setRenderer(QgsCategorizedSymbolRenderer('Class', [QgsRendererCategory('B52', marker_symbol1, ''),
-                                                                       QgsRendererCategory('Biplane', marker_symbol2, ''),
+                                                                       QgsRendererCategory('Biplane', marker_symbol2,
+                                                                                           ''),
                                                                        QgsRendererCategory('Jet', marker_symbol3, ''),
                                                                        ]))
         point_layer.styleManager().addStyleFromLayer("blue")
@@ -618,7 +666,67 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
             'composer_legend_theme', layout)
         checker.setControlPathPrefix("composer_legend")
         result, message = checker.testLayout()
-        self.report += checker.report()
+        TestQgsLayoutItemLegend.report += checker.report()
+        self.assertTrue(result, message)
+
+        QgsProject.instance().clear()
+
+    def testLegendRenderLinkedMapScale(self):
+        """Test rendering legends linked to maps follow scale correctly"""
+        QgsProject.instance().removeAllMapLayers()
+
+        line_path = os.path.join(TEST_DATA_DIR, 'lines.shp')
+        line_layer = QgsVectorLayer(line_path, 'lines', 'ogr')
+        QgsProject.instance().clear()
+        QgsProject.instance().addMapLayers([line_layer])
+
+        line_symbol = QgsLineSymbol.createSimple({'color': '#ff0000', 'width_unit': 'mapunits', 'width': '0.0001'})
+        line_layer.setRenderer(QgsSingleSymbolRenderer(line_symbol))
+
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+
+        map1 = QgsLayoutItemMap(layout)
+        map1.attemptSetSceneRect(QRectF(20, 20, 80, 80))
+        map1.setFrameEnabled(True)
+        map1.setLayers([line_layer])
+        layout.addLayoutItem(map1)
+        map1.setExtent(line_layer.extent())
+        map1.setScale(2000)
+
+        map2 = QgsLayoutItemMap(layout)
+        map2.attemptSetSceneRect(QRectF(20, 120, 80, 80))
+        map2.setFrameEnabled(True)
+        map2.setLayers([line_layer])
+        layout.addLayoutItem(map2)
+        map2.setExtent(line_layer.extent())
+        map2.setScale(5000)
+
+        legend = QgsLayoutItemLegend(layout)
+        legend.setTitle("Legend")
+        legend.attemptSetSceneRect(QRectF(120, 20, 80, 80))
+        legend.setFrameEnabled(True)
+        legend.setFrameStrokeWidth(QgsLayoutMeasurement(2))
+        legend.setBackgroundColor(QColor(200, 200, 200))
+        legend.setTitle('')
+        layout.addLayoutItem(legend)
+        legend.setLinkedMap(map1)
+
+        legend2 = QgsLayoutItemLegend(layout)
+        legend2.setTitle("Legend")
+        legend2.attemptSetSceneRect(QRectF(120, 120, 80, 80))
+        legend2.setFrameEnabled(True)
+        legend2.setFrameStrokeWidth(QgsLayoutMeasurement(2))
+        legend2.setBackgroundColor(QColor(200, 200, 200))
+        legend2.setTitle('')
+        layout.addLayoutItem(legend2)
+        legend2.setLinkedMap(map2)
+
+        checker = QgsLayoutChecker(
+            'composer_legend_scale_map', layout)
+        checker.setControlPathPrefix("composer_legend")
+        result, message = checker.testLayout()
+        TestQgsLayoutItemLegend.report += checker.report()
         self.assertTrue(result, message)
 
         QgsProject.instance().clear()

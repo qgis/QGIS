@@ -434,14 +434,24 @@ bool QgsLineString::fromWkt( const QString &wkt )
     return false;
   mWkbType = parts.first;
 
-  if ( parts.second == "EMPTY" )
+  QString secondWithoutParentheses = parts.second;
+  secondWithoutParentheses = secondWithoutParentheses.remove( '(' ).remove( ')' ).simplified().remove( ' ' );
+  parts.second = parts.second.remove( '(' ).remove( ')' );
+  if ( ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 ) ||
+       secondWithoutParentheses.isEmpty() )
     return true;
 
-  setPoints( QgsGeometryUtils::pointsFromWKT( parts.second, is3D(), isMeasure() ) );
+  QgsPointSequence points = QgsGeometryUtils::pointsFromWKT( parts.second, is3D(), isMeasure() );
+  // There is a non number in the coordinates sequence
+  // LineString ( A b, 1 2)
+  if ( points.isEmpty() )
+    return false;
+
+  setPoints( points );
   return true;
 }
 
-QByteArray QgsLineString::asWkb() const
+QByteArray QgsLineString::asWkb( WkbFlags ) const
 {
   int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
   binarySize += numPoints() * ( 2 + is3D() + isMeasure() ) * sizeof( double );
@@ -468,7 +478,7 @@ QString QgsLineString::asWkt( int precision ) const
   QString wkt = wktTypeStr() + ' ';
 
   if ( isEmpty() )
-    wkt += QStringLiteral( "EMPTY" );
+    wkt += QLatin1String( "EMPTY" );
   else
   {
     QgsPointSequence pts;
@@ -890,26 +900,20 @@ QgsLineString *QgsLineString::reversed() const
   return copy;
 }
 
-QgsPoint *QgsLineString::interpolatePoint( const double distance ) const
+void QgsLineString::visitPointsByRegularDistance( const double distance, const std::function<bool ( double, double, double, double, double, double, double, double, double, double, double, double )> &visitPoint ) const
 {
   if ( distance < 0 )
-    return nullptr;
+    return;
 
   double distanceTraversed = 0;
   const int totalPoints = numPoints();
   if ( totalPoints == 0 )
-    return nullptr;
+    return;
 
   const double *x = mX.constData();
   const double *y = mY.constData();
   const double *z = is3D() ? mZ.constData() : nullptr;
   const double *m = isMeasure() ? mM.constData() : nullptr;
-
-  QgsWkbTypes::Type pointType = QgsWkbTypes::Point;
-  if ( is3D() )
-    pointType = QgsWkbTypes::PointZ;
-  if ( isMeasure() )
-    pointType = QgsWkbTypes::addM( pointType );
 
   double prevX = *x++;
   double prevY = *y++;
@@ -918,9 +922,13 @@ QgsPoint *QgsLineString::interpolatePoint( const double distance ) const
 
   if ( qgsDoubleNear( distance, 0.0 ) )
   {
-    return new QgsPoint( pointType, prevX, prevY, prevZ, prevM );
+    visitPoint( prevX, prevY, prevZ, prevM, prevX, prevY, prevZ, prevM, prevX, prevY, prevZ, prevM );
+    return;
   }
 
+  double pZ = std::numeric_limits<double>::quiet_NaN();
+  double pM = std::numeric_limits<double>::quiet_NaN();
+  double nextPointDistance = distance;
   for ( int i = 1; i < totalPoints; ++i )
   {
     double thisX = *x++;
@@ -929,17 +937,19 @@ QgsPoint *QgsLineString::interpolatePoint( const double distance ) const
     double thisM = m ? *m++ : 0.0;
 
     const double segmentLength = std::sqrt( ( thisX - prevX ) * ( thisX - prevX ) + ( thisY - prevY ) * ( thisY - prevY ) );
-    if ( distance < distanceTraversed + segmentLength || qgsDoubleNear( distance, distanceTraversed + segmentLength ) )
+    while ( nextPointDistance < distanceTraversed + segmentLength || qgsDoubleNear( nextPointDistance, distanceTraversed + segmentLength ) )
     {
       // point falls on this segment - truncate to segment length if qgsDoubleNear test was actually > segment length
-      const double distanceToPoint = std::min( distance - distanceTraversed, segmentLength );
+      const double distanceToPoint = std::min( nextPointDistance - distanceTraversed, segmentLength );
       double pX, pY;
-      double pZ = 0;
-      double pM = 0;
       QgsGeometryUtils::pointOnLineWithDistance( prevX, prevY, thisX, thisY, distanceToPoint, pX, pY,
           z ? &prevZ : nullptr, z ? &thisZ : nullptr, z ? &pZ : nullptr,
           m ? &prevM : nullptr, m ? &thisM : nullptr, m ? &pM : nullptr );
-      return new QgsPoint( pointType, pX, pY, pZ, pM );
+
+      if ( !visitPoint( pX, pY, pZ, pM, prevX, prevY, prevZ, prevM, thisX, thisY, thisZ, thisM ) )
+        return;
+
+      nextPointDistance += distance;
     }
 
     distanceTraversed += segmentLength;
@@ -948,8 +958,26 @@ QgsPoint *QgsLineString::interpolatePoint( const double distance ) const
     prevZ = thisZ;
     prevM = thisM;
   }
+}
 
-  return nullptr;
+QgsPoint *QgsLineString::interpolatePoint( const double distance ) const
+{
+  if ( distance < 0 )
+    return nullptr;
+
+  QgsWkbTypes::Type pointType = QgsWkbTypes::Point;
+  if ( is3D() )
+    pointType = QgsWkbTypes::PointZ;
+  if ( isMeasure() )
+    pointType = QgsWkbTypes::addM( pointType );
+
+  std::unique_ptr< QgsPoint > res;
+  visitPointsByRegularDistance( distance, [ & ]( double x, double y, double z, double m, double, double, double, double, double, double, double, double )->bool
+  {
+    res = qgis::make_unique< QgsPoint >( pointType, x, y, z, m );
+    return false;
+  } );
+  return res.release();
 }
 
 QgsLineString *QgsLineString::curveSubstring( double startDistance, double endDistance ) const

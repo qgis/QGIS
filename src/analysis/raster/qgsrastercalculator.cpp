@@ -153,7 +153,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
     return CreateOutputError;
   }
 
-  GDALSetProjection( outputDataset.get(), mOutputCrs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ).toLocal8Bit().data() );
+  GDALSetProjection( outputDataset.get(), mOutputCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ).toLocal8Bit().data() );
   GDALRasterBandH outputRasterBand = GDALGetRasterBand( outputDataset.get(), 1 );
 
   float outputNodataValue = -FLT_MAX;
@@ -487,10 +487,10 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
     {
       inputDesc.append( QStringLiteral( "  // %1 = %2" ).arg( ref.varName ).arg( ref.name ) );
     }
-    programTemplate = programTemplate.replace( QStringLiteral( "##INPUT_DESC##" ), inputDesc.join( '\n' ) );
-    programTemplate = programTemplate.replace( QStringLiteral( "##INPUT##" ), !inputArgs.isEmpty() ? ( inputArgs.join( ',' ).append( ',' ) ) : QChar( ' ' ) );
-    programTemplate = programTemplate.replace( QStringLiteral( "##EXPRESSION##" ), cExpression );
-    programTemplate = programTemplate.replace( QStringLiteral( "##EXPRESSION_ORIGINAL##" ), calcNode->toString( ) );
+    programTemplate = programTemplate.replace( QLatin1String( "##INPUT_DESC##" ), inputDesc.join( '\n' ) );
+    programTemplate = programTemplate.replace( QLatin1String( "##INPUT##" ), !inputArgs.isEmpty() ? ( inputArgs.join( ',' ).append( ',' ) ) : QChar( ' ' ) );
+    programTemplate = programTemplate.replace( QLatin1String( "##EXPRESSION##" ), cExpression );
+    programTemplate = programTemplate.replace( QLatin1String( "##EXPRESSION_ORIGINAL##" ), calcNode->toString( ) );
 
     // qDebug() << programTemplate;
 
@@ -529,7 +529,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
       return CreateOutputError;
     }
 
-    GDALSetProjection( outputDataset.get(), mOutputCrs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ).toLocal8Bit().data() );
+    GDALSetProjection( outputDataset.get(), mOutputCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ).toLocal8Bit().data() );
 
 
     GDALRasterBandH outputRasterBand = GDALGetRasterBand( outputDataset.get(), 1 );

@@ -81,8 +81,8 @@ QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QSt
     if ( values.size() == 0 )
     {
       QString ownerName = index.sibling( index.row(), QgsOracleTableModel::DbtmOwner ).data( Qt::DisplayRole ).toString();
-      if ( conn() )
-        values = conn()->pkCandidates( ownerName, tableName );
+      if ( auto *lConn = conn() )
+        values = lConn->pkCandidates( ownerName, tableName );
     }
 
     if ( values.size() == 0 )
@@ -124,7 +124,7 @@ void QgsOracleSourceSelectDelegate::setEditorData( QWidget *editor, const QModel
   if ( le )
   {
     bool ok;
-    value.toInt( &ok );
+    ( void )value.toInt( &ok );
     if ( index.column() == QgsOracleTableModel::DbtmSrid && !ok )
       value.clear();
 
@@ -246,7 +246,7 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags f
 
   populateConnectionList();
 }
-//! Autoconnected SLOTS *
+//! Autoconnected SLOTS
 // Slot for adding a new connection
 void QgsOracleSourceSelect::on_btnNew_clicked()
 {
@@ -309,7 +309,7 @@ void QgsOracleSourceSelect::on_btnEdit_clicked()
   delete nc;
 }
 
-//! End Autoconnected SLOTS *
+//! End Autoconnected SLOTS
 
 // Remember which database is selected
 void QgsOracleSourceSelect::on_cmbConnections_currentIndexChanged( const QString &text )

@@ -42,7 +42,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class rasterize_over(GdalAlgorithm):
-
     INPUT = 'INPUT'
     FIELD = 'FIELD'
     INPUT_RASTER = 'INPUT_RASTER'

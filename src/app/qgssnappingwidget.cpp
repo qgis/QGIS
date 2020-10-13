@@ -44,6 +44,22 @@
 #include "qgsscalewidget.h"
 
 
+class SnapTypeMenu: public QMenu
+{
+  public:
+    SnapTypeMenu( const QString &title, QWidget *parent = nullptr )
+      : QMenu( title, parent ) {}
+
+    void mouseReleaseEvent( QMouseEvent *e )
+    {
+      QAction *action = activeAction();
+      if ( action )
+        action->trigger();
+      else
+        QMenu::mouseReleaseEvent( e );
+    }
+};
+
 QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas, QWidget *parent )
   : QWidget( parent )
   , mProject( project )
@@ -76,7 +92,6 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   connect( model, &QgsSnappingLayerTreeModel::rowsInserted, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
   connect( model, &QgsSnappingLayerTreeModel::modelReset, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
   connect( model, &QgsSnappingLayerTreeModel::rowsRemoved, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
-  connect( mProject, &QgsProject::readProject, this, [ = ] {model->resetLayerTreeModel();} );
   connect( mProject, &QObject::destroyed, this, [ = ] {mLayerTreeView->setModel( nullptr );} );
   // model->setFlags( 0 );
   mLayerTreeView->setModel( model );
@@ -162,7 +177,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mTypeButton = new QToolButton();
   mTypeButton->setToolTip( tr( "Snapping Type" ) );
   mTypeButton->setPopupMode( QToolButton::InstantPopup );
-  QMenu *typeMenu = new QMenu( tr( "Set Snapping Mode" ), this );
+  SnapTypeMenu *typeMenu = new SnapTypeMenu( tr( "Set Snapping Mode" ), this );
   mVertexAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingVertex.svg" ) ), tr( "Vertex" ), typeMenu );
   mSegmentAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingSegment.svg" ) ), tr( "Segment" ), typeMenu );
   mAreaAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingArea.svg" ) ), tr( "Area" ), typeMenu );
@@ -193,35 +208,6 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mToleranceSpinBox->setToolTip( tr( "Snapping Tolerance in Defined Units" ) );
   mToleranceSpinBox->setObjectName( QStringLiteral( "SnappingToleranceSpinBox" ) );
   connect( mToleranceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSnappingWidget::changeTolerance );
-
-  mMinScaleWidget = new QgsScaleWidget();
-  mMinScaleWidget->setToolTip( tr( "Minimum scale from which snapping is enabled" ) );
-  mMinScaleWidget->setObjectName( QStringLiteral( "SnappingMinScaleSpinBox" ) );
-  connect( mMinScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsSnappingWidget::changeMinScale );
-
-  mMaxScaleWidget = new QgsScaleWidget();
-  mMaxScaleWidget->setToolTip( tr( "Maximum scale up to which snapping is enabled" ) );
-  mMaxScaleWidget->setObjectName( QStringLiteral( "SnappingMaxScaleSpinBox" ) );
-  connect( mMaxScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsSnappingWidget::changeMaxScale );
-
-
-  mSnappingScaleModeButton = new QToolButton();
-  mSnappingScaleModeButton->setToolTip( tr( "Snapping scale mode" ) );
-  mSnappingScaleModeButton->setPopupMode( QToolButton::InstantPopup );
-  QMenu *scaleModeMenu = new QMenu( tr( "Set snapping scale mode" ), this );
-  mDefaultSnappingScaleAct = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingOnScale.svg" ) ), tr( "Disabled" ), scaleModeMenu );
-  mDefaultSnappingScaleAct->setToolTip( tr( "Scale dependency disabled" ) );
-  mGlobalSnappingScaleAct = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingOnScale.svg" ) ), tr( "Global" ), scaleModeMenu );
-  mGlobalSnappingScaleAct->setToolTip( tr( "Scale dependency global" ) );
-  mPerLayerSnappingScaleAct = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingOnScale.svg" ) ), tr( "Per layer" ), scaleModeMenu );
-  mPerLayerSnappingScaleAct->setToolTip( tr( "Scale dependency per layer" ) );
-  scaleModeMenu->addAction( mDefaultSnappingScaleAct );
-  scaleModeMenu->addAction( mGlobalSnappingScaleAct );
-  scaleModeMenu->addAction( mPerLayerSnappingScaleAct );
-  mSnappingScaleModeButton->setMenu( scaleModeMenu );
-  mSnappingScaleModeButton->setObjectName( QStringLiteral( "SnappingScaleModeButton" ) );
-  mSnappingScaleModeButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
-  connect( mSnappingScaleModeButton, &QToolButton::triggered, this, &QgsSnappingWidget::snappingScaleModeTriggered );
 
   // units
   mUnitsComboBox = new QComboBox();
@@ -287,6 +273,14 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   tracingMenu->addAction( widgetAction );
   mEnableTracingAction->setMenu( tracingMenu );
 
+  // self-snapping button
+  mSelfSnappingAction = new QAction( tr( "Self-snapping" ), this );
+  mSelfSnappingAction->setCheckable( true );
+  mSelfSnappingAction->setIcon( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingSelf.svg" ) ) );
+  mSelfSnappingAction->setToolTip( tr( "If self snapping is enabled, snapping will also take the current state of the digitized feature into consideration." ) );
+  mSelfSnappingAction->setObjectName( QStringLiteral( "SelfSnappingAction" ) );
+  connect( mSelfSnappingAction, &QAction::toggled, this, &QgsSnappingWidget::enableSelfSnapping );
+
   // layout
   if ( mDisplayMode == ToolBar )
   {
@@ -316,9 +310,38 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
     mAvoidIntersectionsModeAction = tb->addWidget( mAvoidIntersectionsModeButton );
     tb->addAction( mIntersectionSnappingAction );
     tb->addAction( mEnableTracingAction );
+    tb->addAction( mSelfSnappingAction );
   }
   else
   {
+    mMinScaleWidget = new QgsScaleWidget();
+    mMinScaleWidget->setToolTip( tr( "Minimum scale from which snapping is enabled (i.e. most \"zoomed out\" scale)" ) );
+    mMinScaleWidget->setObjectName( QStringLiteral( "SnappingMinScaleSpinBox" ) );
+    connect( mMinScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsSnappingWidget::changeMinScale );
+
+    mMaxScaleWidget = new QgsScaleWidget();
+    mMaxScaleWidget->setToolTip( tr( "Maximum scale up to which snapping is enabled (i.e. most \"zoomed in\" scale)" ) );
+    mMaxScaleWidget->setObjectName( QStringLiteral( "SnappingMaxScaleSpinBox" ) );
+    connect( mMaxScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsSnappingWidget::changeMaxScale );
+
+    mSnappingScaleModeButton = new QToolButton();
+    mSnappingScaleModeButton->setToolTip( tr( "Snapping scale mode" ) );
+    mSnappingScaleModeButton->setPopupMode( QToolButton::InstantPopup );
+    QMenu *scaleModeMenu = new QMenu( tr( "Set snapping scale mode" ), this );
+    mDefaultSnappingScaleAct = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingOnScale.svg" ) ), tr( "Disabled" ), scaleModeMenu );
+    mDefaultSnappingScaleAct->setToolTip( tr( "Scale dependency disabled" ) );
+    mGlobalSnappingScaleAct = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingOnScale.svg" ) ), tr( "Global" ), scaleModeMenu );
+    mGlobalSnappingScaleAct->setToolTip( tr( "Scale dependency global" ) );
+    mPerLayerSnappingScaleAct = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingOnScale.svg" ) ), tr( "Per layer" ), scaleModeMenu );
+    mPerLayerSnappingScaleAct->setToolTip( tr( "Scale dependency per layer" ) );
+    scaleModeMenu->addAction( mDefaultSnappingScaleAct );
+    scaleModeMenu->addAction( mGlobalSnappingScaleAct );
+    scaleModeMenu->addAction( mPerLayerSnappingScaleAct );
+    mSnappingScaleModeButton->setMenu( scaleModeMenu );
+    mSnappingScaleModeButton->setObjectName( QStringLiteral( "SnappingScaleModeButton" ) );
+    mSnappingScaleModeButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
+    connect( mSnappingScaleModeButton, &QToolButton::triggered, this, &QgsSnappingWidget::snappingScaleModeTriggered );
+
     // mode = widget
     QHBoxLayout *layout = new QHBoxLayout();
 
@@ -349,6 +372,12 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
     interButton->setDefaultAction( mIntersectionSnappingAction );
     interButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
     layout->addWidget( interButton );
+
+    QToolButton *selfsnapButton = new QToolButton();
+    selfsnapButton->addAction( mSelfSnappingAction );
+    selfsnapButton->setDefaultAction( mSelfSnappingAction );
+    selfsnapButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
+    layout->addWidget( selfsnapButton );
 
     layout->setContentsMargins( 0, 0, 0, 0 );
     layout->setAlignment( Qt::AlignRight );
@@ -460,25 +489,25 @@ void QgsSnappingWidget::projectSnapSettingsChanged()
     mToleranceSpinBox->setValue( config.tolerance() );
   }
 
-  if ( mMinScaleWidget->scale() != config.minimumScale() )
+  if ( mMinScaleWidget && mMinScaleWidget->scale() != config.minimumScale() )
   {
     mMinScaleWidget->setScale( config.minimumScale() );
   }
 
-  if ( mMaxScaleWidget->scale() != config.maximumScale() )
+  if ( mMaxScaleWidget && mMaxScaleWidget->scale() != config.maximumScale() )
   {
     mMaxScaleWidget->setScale( config.maximumScale() );
   }
 
-  if ( config.scaleDependencyMode() == QgsSnappingConfig::Disabled )
+  if ( mSnappingScaleModeButton && config.scaleDependencyMode() == QgsSnappingConfig::Disabled )
   {
     mSnappingScaleModeButton->setDefaultAction( mDefaultSnappingScaleAct );
   }
-  else if ( config.scaleDependencyMode() == QgsSnappingConfig::Global )
+  else if ( mSnappingScaleModeButton && config.scaleDependencyMode() == QgsSnappingConfig::Global )
   {
     mSnappingScaleModeButton->setDefaultAction( mGlobalSnappingScaleAct );
   }
-  else if ( config.scaleDependencyMode() == QgsSnappingConfig::PerLayer )
+  else if ( mSnappingScaleModeButton && config.scaleDependencyMode() == QgsSnappingConfig::PerLayer )
   {
     mSnappingScaleModeButton->setDefaultAction( mPerLayerSnappingScaleAct );
   }
@@ -486,6 +515,11 @@ void QgsSnappingWidget::projectSnapSettingsChanged()
   if ( config.intersectionSnapping() != mIntersectionSnappingAction->isChecked() )
   {
     mIntersectionSnappingAction->setChecked( config.intersectionSnapping() );
+  }
+
+  if ( config.selfSnapping() != mSelfSnappingAction->isChecked() )
+  {
+    mSelfSnappingAction->setChecked( config.selfSnapping() );
   }
 
   toggleSnappingWidgets( config.enabled() );
@@ -537,9 +571,12 @@ void QgsSnappingWidget::toggleSnappingWidgets( bool enabled )
   mModeButton->setEnabled( enabled );
   mTypeButton->setEnabled( enabled );
   mToleranceSpinBox->setEnabled( enabled );
-  mSnappingScaleModeButton->setEnabled( enabled );
-  mMinScaleWidget->setEnabled( enabled && mConfig.scaleDependencyMode() == QgsSnappingConfig::Global );
-  mMaxScaleWidget->setEnabled( enabled && mConfig.scaleDependencyMode() == QgsSnappingConfig::Global );
+  if ( mSnappingScaleModeButton )
+    mSnappingScaleModeButton->setEnabled( enabled );
+  if ( mMinScaleWidget )
+    mMinScaleWidget->setEnabled( enabled && mConfig.scaleDependencyMode() == QgsSnappingConfig::Global );
+  if ( mMaxScaleWidget )
+    mMaxScaleWidget->setEnabled( enabled && mConfig.scaleDependencyMode() == QgsSnappingConfig::Global );
   mUnitsComboBox->setEnabled( enabled );
 
   if ( mEditAdvancedConfigAction )
@@ -552,6 +589,7 @@ void QgsSnappingWidget::toggleSnappingWidgets( bool enabled )
     mAdvancedConfigWidget->setEnabled( enabled );
   }
   mIntersectionSnappingAction->setEnabled( enabled );
+  mSelfSnappingAction->setEnabled( enabled );
   mEnableTracingAction->setEnabled( enabled );
 }
 
@@ -590,6 +628,12 @@ void QgsSnappingWidget::enableTopologicalEditing( bool enabled )
 void QgsSnappingWidget::enableIntersectionSnapping( bool enabled )
 {
   mConfig.setIntersectionSnapping( enabled );
+  mProject->setSnappingConfig( mConfig );
+}
+
+void QgsSnappingWidget::enableSelfSnapping( bool enabled )
+{
+  mConfig.setSelfSnapping( enabled );
   mProject->setSnappingConfig( mConfig );
 }
 
@@ -707,6 +751,8 @@ void QgsSnappingWidget::snappingScaleModeTriggered( QAction *action )
   mMaxScaleWidget->setEnabled( mode == QgsSnappingConfig::Global );
   mConfig.setScaleDependencyMode( mode );
   mProject->setSnappingConfig( mConfig );
+
+  mLayerTreeView->reset();
 }
 
 void QgsSnappingWidget::updateToleranceDecimals()
@@ -750,9 +796,12 @@ void QgsSnappingWidget::modeChanged()
     {
       mAdvancedConfigWidget->setVisible( advanced );
     }
-    mSnappingScaleModeButton->setVisible( advanced );
-    mMinScaleWidget->setVisible( advanced );
-    mMaxScaleWidget->setVisible( advanced );
+    if ( mSnappingScaleModeButton )
+      mSnappingScaleModeButton->setVisible( advanced );
+    if ( mMinScaleWidget )
+      mMinScaleWidget->setVisible( advanced );
+    if ( mMaxScaleWidget )
+      mMaxScaleWidget->setVisible( advanced );
   }
 }
 

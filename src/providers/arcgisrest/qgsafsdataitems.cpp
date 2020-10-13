@@ -29,7 +29,7 @@
 
 
 QgsAfsRootItem::QgsAfsRootItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "AFS" ) )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "AFS" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconAfs.svg" );
@@ -52,7 +52,7 @@ QVector<QgsDataItem *> QgsAfsRootItem::createChildren()
 #ifdef HAVE_GUI
 QWidget *QgsAfsRootItem::paramWidget()
 {
-  QgsAfsSourceSelect *select = new QgsAfsSourceSelect( nullptr, nullptr, QgsProviderRegistry::WidgetMode::Manager );
+  QgsAfsSourceSelect *select = new QgsAfsSourceSelect( nullptr, Qt::WindowFlags(), QgsProviderRegistry::WidgetMode::Manager );
   connect( select, &QgsArcGisServiceSourceSelect::connectionsChanged, this, &QgsAfsRootItem::onConnectionsChanged );
   return select;
 }
@@ -309,7 +309,7 @@ QgsDataItem *QgsAfsDataItemProvider::createDataItem( const QString &path, QgsDat
 {
   if ( path.isEmpty() )
   {
-    return new QgsAfsRootItem( parentItem, QStringLiteral( "ArcGisFeatureServer" ), QStringLiteral( "arcgisfeatureserver:" ) );
+    return new QgsAfsRootItem( parentItem, QObject::tr( "ArcGIS Feature Service" ), QStringLiteral( "arcgisfeatureserver:" ) );
   }
 
   // path schema: afs:/connection name (used by OWS)

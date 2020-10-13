@@ -27,6 +27,7 @@
 #include "qgis_analysis.h"
 #include "qgsfeedback.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsfields.h"
 
 class QgsGeometry;
 class QgsVectorLayer;
@@ -35,6 +36,8 @@ class QgsRasterInterface;
 class QgsRasterDataProvider;
 class QgsRectangle;
 class QgsField;
+class QgsFeatureSink;
+class QgsFeatureSource;
 
 /**
  * \ingroup analysis
@@ -62,6 +65,18 @@ class ANALYSIS_EXPORT QgsZonalStatistics
       All = Count | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | Variance
     };
     Q_DECLARE_FLAGS( Statistics, Statistic )
+
+    //! Error codes for calculation
+    enum Result
+    {
+      Success = 0, //!< Success
+      LayerTypeWrong = 1, //!< Layer is not a polygon layer
+      LayerInvalid, //!< Layer is invalid
+      RasterInvalid, //!< Raster layer is invalid
+      RasterBandInvalid, //!< The raster band does not exist on the raster layer
+      FailedToCreateField = 8, //!< Output fields could not be created
+      Canceled = 9 //!< Algorithm was canceled
+    };
 
     /**
      * Convenience constructor for QgsZonalStatistics, using an input raster layer.
@@ -112,11 +127,11 @@ class ANALYSIS_EXPORT QgsZonalStatistics
                         int rasterBand = 1,
                         QgsZonalStatistics::Statistics stats = QgsZonalStatistics::Statistics( QgsZonalStatistics::Count | QgsZonalStatistics::Sum | QgsZonalStatistics::Mean ) );
 
+
     /**
-     * Starts the calculation
-     * \returns 0 in case of success
-    */
-    int calculateStatistics( QgsFeedback *feedback );
+     * Runs the calculation.
+     */
+    QgsZonalStatistics::Result calculateStatistics( QgsFeedback *feedback );
 
     /**
      * Returns the friendly display name for a \a statistic.
@@ -131,6 +146,16 @@ class ANALYSIS_EXPORT QgsZonalStatistics
      * \since QGIS 3.12
      */
     static QString shortName( QgsZonalStatistics::Statistic statistic );
+
+    /**
+     * Calculates the specified \a statistics for the pixels of \a rasterBand
+     * in \a rasterInterface (a raster layer dataProvider() ) within polygon \a geometry.
+     *
+     * Returns a map of statistic to result value.
+     *
+     * \since QGIS 3.16
+     */
+    static QMap<QgsZonalStatistics::Statistic, QVariant> calculateStatistics( QgsRasterInterface *rasterInterface, const QgsGeometry &geometry, double cellSizeX, double cellSizeY, int rasterBand, QgsZonalStatistics::Statistics statistics );
 
   private:
     QgsZonalStatistics() = default;

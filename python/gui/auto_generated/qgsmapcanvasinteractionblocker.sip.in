@@ -1,0 +1,45 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmapcanvasinteractionblocker.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsMapCanvasInteractionBlocker
+{
+%Docstring
+An interface for objects which block interactions with a QgsMapCanvas.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsmapcanvasinteractionblocker.h"
+%End
+  public:
+
+    enum class Interaction
+    {
+      MapPanOnSingleClick,
+    };
+
+    virtual ~QgsMapCanvasInteractionBlocker();
+
+    virtual bool blockCanvasInteraction( Interaction interaction ) const = 0;
+%Docstring
+Returns ``True`` if the specified ``interaction`` should be blocked.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmapcanvasinteractionblocker.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

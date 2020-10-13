@@ -98,6 +98,7 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
   mFileWidget->setDialogTitle( tr( "Choose a Delimited Text File to Open" ) );
   mFileWidget->setFilter( tr( "Text files" ) + QStringLiteral( " (*.txt *.csv *.dat *.wkt);;" ) + tr( "All files" ) + QStringLiteral( " (* *.*)" ) );
   mFileWidget->setSelectedFilter( settings.value( mSettingsKey + QStringLiteral( "/file_filter" ), QString() ).toString() );
+  mMaxFields = settings.value( mSettingsKey + QStringLiteral( "/max_fields" ), DEFAULT_MAX_FIELDS ).toInt();
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, &QgsDelimitedTextSourceSelect::updateFileName );
 }
 
@@ -403,6 +404,7 @@ bool QgsDelimitedTextSourceSelect::loadDelimitedFileDefinition()
   mFile->setUseHeader( cbxUseHeader->isChecked() );
   mFile->setDiscardEmptyFields( cbxSkipEmptyFields->isChecked() );
   mFile->setTrimFields( cbxTrimFields->isChecked() );
+  mFile->setMaxFields( mMaxFields );
   return mFile->isValid();
 }
 
@@ -410,7 +412,7 @@ bool QgsDelimitedTextSourceSelect::loadDelimitedFileDefinition()
 void QgsDelimitedTextSourceSelect::updateFieldLists()
 {
   // Update the x and y field drop-down boxes
-  QgsDebugMsg( QStringLiteral( "Updating field lists" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Updating field lists" ), 3 );
 
   disconnect( cmbXField, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsDelimitedTextSourceSelect::enableAccept );
   disconnect( cmbYField, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsDelimitedTextSourceSelect::enableAccept );
@@ -507,7 +509,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
           }
           else
           {
-            value.toDouble( &ok );
+            ( void )value.toDouble( &ok );
           }
           isValidCoordinate[i] = ok;
         }

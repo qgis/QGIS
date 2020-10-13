@@ -11,11 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="1">
-    <widget class="QSpinBox" name="mDecimalsSpinBox">
+    <widget class="QgsSpinBox" name="mDecimalsSpinBox">
      <property name="value">
       <number>6</number>
      </property>

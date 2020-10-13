@@ -39,6 +39,12 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &co
   connect( cb_trustedConnection, &QCheckBox::clicked, this, &QgsMssqlNewConnection::cb_trustedConnection_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsMssqlNewConnection::showHelp );
 
+  buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
+  connect( txtName, &QLineEdit::textChanged, this, &QgsMssqlNewConnection::updateOkButtonState );
+  connect( txtService, &QLineEdit::textChanged, this, &QgsMssqlNewConnection::updateOkButtonState );
+  connect( txtHost, &QLineEdit::textChanged, this, &QgsMssqlNewConnection::updateOkButtonState );
+  connect( listDatabase, &QListWidget::currentItemChanged, this, &QgsMssqlNewConnection::updateOkButtonState );
+
   lblWarning->hide();
 
   if ( !connName.isEmpty() )
@@ -75,7 +81,7 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &co
   txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]+" ), txtName ) );
   cb_trustedConnection_clicked();
 }
-//! Autoconnected SLOTS *
+//! Autoconnected SLOTS
 void QgsMssqlNewConnection::accept()
 {
   QgsSettings settings;
@@ -151,7 +157,7 @@ void QgsMssqlNewConnection::cb_trustedConnection_clicked()
   }
 }
 
-//! End  Autoconnected SLOTS *
+//! End  Autoconnected SLOTS
 
 bool QgsMssqlNewConnection::testConnection( const QString &testDatabase )
 {
@@ -242,4 +248,11 @@ void QgsMssqlNewConnection::listDatabases()
 void QgsMssqlNewConnection::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#connecting-to-mssql-spatial" ) );
+}
+
+void QgsMssqlNewConnection::updateOkButtonState()
+{
+  QListWidgetItem *item = listDatabase->currentItem();
+  bool disabled = txtName->text().isEmpty() || ( txtService->text().isEmpty() && txtHost->text().isEmpty() ) || !item;
+  buttonBox->button( QDialogButtonBox::Ok )->setDisabled( disabled );
 }

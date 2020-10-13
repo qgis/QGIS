@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="leftMargin">
@@ -93,6 +93,11 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mBandComboBox</tabstop>
+  <tabstop>mMinLineEdit</tabstop>
+  <tabstop>mMaxLineEdit</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

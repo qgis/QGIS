@@ -76,7 +76,7 @@ QVariantMap QgsRepairShapefileAlgorithm::processAlgorithm( const QVariantMap &pa
   const QString path = parameterAsFile( parameters, QStringLiteral( "INPUT" ), context );
 
   if ( !QFile::exists( path ) )
-    throw QgsProcessingException( QObject::tr( "Could not load source layer for %1." ).arg( QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( QObject::tr( "Could not load source layer for %1." ).arg( QLatin1String( "INPUT" ) ) );
 
   CPLSetConfigOption( "SHAPE_RESTORE_SHX", "YES" );
 

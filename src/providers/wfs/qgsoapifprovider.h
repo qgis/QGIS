@@ -38,7 +38,7 @@ class QgsOapifProvider final: public QgsVectorDataProvider
     static const QString OAPIF_PROVIDER_KEY;
     static const QString OAPIF_PROVIDER_DESCRIPTION;
 
-    explicit QgsOapifProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
+    explicit QgsOapifProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
     ~QgsOapifProvider() override;
 
     /* Inherited from QgsVectorDataProvider */
@@ -119,10 +119,10 @@ class QgsOapifProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsOapifProviderMetadata();
-    QgsOapifProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QgsOapifProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
 };
 
-// !Class shared between provider and feature source
+//! Class shared between provider and feature source
 class QgsOapifSharedData final: public QObject, public QgsBackgroundCachedSharedData
 {
     Q_OBJECT
@@ -135,7 +135,7 @@ class QgsOapifSharedData final: public QObject, public QgsBackgroundCachedShared
 
     bool hasGeometry() const override { return mWKBType != QgsWkbTypes::Unknown; }
 
-    std::unique_ptr<QgsFeatureDownloaderImpl> newFeatureDownloaderImpl( QgsFeatureDownloader * ) override;
+    std::unique_ptr<QgsFeatureDownloaderImpl> newFeatureDownloaderImpl( QgsFeatureDownloader *, bool requestFromMainThread ) override;
 
     bool isRestrictedToRequestBBOX() const override;
 
@@ -160,6 +160,9 @@ class QgsOapifSharedData final: public QObject, public QgsBackgroundCachedShared
     //! Page size. 0 = disabled
     int mPageSize = 0;
 
+    //! Extra query parameters from the URI, to append to other requests
+    QString mExtraQueryParameters;
+
     //! Url to /collections/{collectionId}
     QString mCollectionUrl;
 
@@ -171,6 +174,9 @@ class QgsOapifSharedData final: public QObject, public QgsBackgroundCachedShared
 
     //! Translation state of filter to server-side filter.
     QgsOapifProvider::FilterTranslationState mFilterTranslationState = QgsOapifProvider::FilterTranslationState::FULLY_CLIENT;
+
+    //! Append extra query parameters if needed
+    QString appendExtraQueryParameters( const QString &url ) const;
 
   private:
 
@@ -214,7 +220,7 @@ class QgsOapifFeatureDownloaderImpl final: public QObject, public QgsFeatureDown
     void updateProgress( int totalFeatureCount );
 
   public:
-    QgsOapifFeatureDownloaderImpl( QgsOapifSharedData *shared, QgsFeatureDownloader *downloader );
+    QgsOapifFeatureDownloaderImpl( QgsOapifSharedData *shared, QgsFeatureDownloader *downloader, bool requestMadeFromMainThread );
     ~QgsOapifFeatureDownloaderImpl() override;
 
     void run( bool serializeFeatures, int maxFeatures ) override;

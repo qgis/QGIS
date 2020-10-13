@@ -589,7 +589,7 @@ class CORE_EXPORT QgsSymbol
      * clockwise for exterior rings and counter-clockwise for interior rings.
      *
      */
-    static void _getPolygon( QPolygonF &pts, QList<QPolygonF> &holes, QgsRenderContext &context, const QgsPolygon &polygon, bool clipToExtent = true, bool correctRingOrientation = false );
+    static void _getPolygon( QPolygonF &pts, QVector<QPolygonF> &holes, QgsRenderContext &context, const QgsPolygon &polygon, bool clipToExtent = true, bool correctRingOrientation = false );
 
     /**
      * Retrieve a cloned list of all layers that make up this symbol.
@@ -620,7 +620,7 @@ class CORE_EXPORT QgsSymbol
     //! Symbol opacity (in the range 0 - 1)
     qreal mOpacity = 1.0;
 
-    RenderHints mRenderHints = nullptr;
+    RenderHints mRenderHints;
     bool mClipFeaturesToExtent = true;
     bool mForceRHR = false;
 
@@ -695,7 +695,7 @@ class CORE_EXPORT QgsSymbolRenderContext
      * \param fields
      * \param mapUnitScale
      */
-    QgsSymbolRenderContext( QgsRenderContext &c, QgsUnitTypes::RenderUnit u, qreal opacity = 1.0, bool selected = false, QgsSymbol::RenderHints renderHints = nullptr, const QgsFeature *f = nullptr, const QgsFields &fields = QgsFields(), const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
+    QgsSymbolRenderContext( QgsRenderContext &c, QgsUnitTypes::RenderUnit u, qreal opacity = 1.0, bool selected = false, QgsSymbol::RenderHints renderHints = QgsSymbol::RenderHints(), const QgsFeature *f = nullptr, const QgsFields &fields = QgsFields(), const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
 
     ~QgsSymbolRenderContext();
 
@@ -1140,6 +1140,14 @@ class CORE_EXPORT QgsLineSymbol : public QgsSymbol
     void setWidth( double width );
 
     /**
+     * Sets the width units for the whole symbol (including all symbol layers).
+     * \param unit size units
+     * \since QGIS 3.16
+     */
+    void setWidthUnit( QgsUnitTypes::RenderUnit unit );
+
+
+    /**
      * Returns the estimated width for the whole symbol, which is the maximum width of
      * all marker symbol layers in the symbol.
      *
@@ -1242,17 +1250,17 @@ class CORE_EXPORT QgsFillSymbol : public QgsSymbol
      * If \a selected is true then the symbol will be drawn using the "selected feature"
      * style and colors instead of the symbol's normal style.
      */
-    void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
+    void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
 
     QgsFillSymbol *clone() const override SIP_FACTORY;
 
   private:
 
-    void renderPolygonUsingLayer( QgsSymbolLayer *layer, const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
+    void renderPolygonUsingLayer( QgsSymbolLayer *layer, const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
     //! Calculates the bounds of a polygon including rings
-    QRectF polygonBounds( const QPolygonF &points, const QList<QPolygonF> *rings ) const;
+    QRectF polygonBounds( const QPolygonF &points, const QVector<QPolygonF> *rings ) const;
     //! Translates the rings in a polygon by a set distance
-    QList<QPolygonF> *translateRings( const QList<QPolygonF> *rings, double dx, double dy ) const;
+    QVector<QPolygonF> *translateRings( const QVector<QPolygonF> *rings, double dx, double dy ) const;
 };
 
 #endif

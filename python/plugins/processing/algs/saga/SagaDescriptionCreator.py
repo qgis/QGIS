@@ -85,7 +85,6 @@ class SagaDescriptionCreator(object):
 
 
 def main():
-
     SagaDescriptionCreator().create()
 
 

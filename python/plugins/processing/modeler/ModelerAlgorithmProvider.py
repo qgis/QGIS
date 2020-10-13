@@ -27,7 +27,8 @@ from qgis.core import (Qgis,
                        QgsApplication,
                        QgsProcessingProvider,
                        QgsMessageLog,
-                       QgsProcessingModelAlgorithm)
+                       QgsProcessingModelAlgorithm,
+                       QgsRuntimeProfiler)
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 
@@ -65,14 +66,16 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
         self.refreshAlgorithms()
 
     def load(self):
-        ProcessingConfig.settingIcons[self.name()] = self.icon()
-        ProcessingConfig.addSetting(Setting(self.name(),
-                                            ModelerUtils.MODELS_FOLDER, self.tr('Models folder', 'ModelerAlgorithmProvider'),
-                                            ModelerUtils.defaultModelsFolder(), valuetype=Setting.MULTIPLE_FOLDERS))
-        ProviderActions.registerProviderActions(self, self.actions)
-        ProviderContextMenuActions.registerProviderContextMenuActions(self.contextMenuActions)
-        ProcessingConfig.readSettings()
-        self.refreshAlgorithms()
+        with QgsRuntimeProfiler.profile('Model Provider'):
+            ProcessingConfig.settingIcons[self.name()] = self.icon()
+            ProcessingConfig.addSetting(Setting(self.name(),
+                                                ModelerUtils.MODELS_FOLDER, self.tr('Models folder', 'ModelerAlgorithmProvider'),
+                                                ModelerUtils.defaultModelsFolder(), valuetype=Setting.MULTIPLE_FOLDERS))
+            ProviderActions.registerProviderActions(self, self.actions)
+            ProviderContextMenuActions.registerProviderContextMenuActions(self.contextMenuActions)
+            ProcessingConfig.readSettings()
+            self.refreshAlgorithms()
+
         return True
 
     def unload(self):
@@ -98,16 +101,17 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
         return True
 
     def loadAlgorithms(self):
-        if self.isLoading:
-            return
-        self.isLoading = True
-        self.algs = []
-        folders = ModelerUtils.modelsFolders()
-        for f in folders:
-            self.loadFromFolder(f)
-        for a in self.algs:
-            self.addAlgorithm(a)
-        self.isLoading = False
+        with QgsRuntimeProfiler.profile('Load model algorithms'):
+            if self.isLoading:
+                return
+            self.isLoading = True
+            self.algs = []
+            folders = ModelerUtils.modelsFolders()
+            for f in folders:
+                self.loadFromFolder(f)
+            for a in self.algs:
+                self.addAlgorithm(a)
+            self.isLoading = False
 
     def loadFromFolder(self, folder):
         if not os.path.exists(folder):

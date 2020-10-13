@@ -152,8 +152,7 @@ class TestQgsServerAccessControlWFS(TestQgsServerAccessControl):
             str(response).find("<qgs:pk>1</qgs:pk>") != -1,
             "Unexpected result in GetFeature\n%s" % response)  # spellok
 
-
-# # Subset String # #
+    # # Subset String # #
 
     def test_wfs_getfeature_subsetstring(self):
         data = """<?xml version="1.0" encoding="UTF-8"?>

@@ -21,7 +21,7 @@
 
 #include <QWidget>
 
-#include "qgstextrenderer.h"
+#include "qgstextformat.h"
 #include "qgis_gui.h"
 
 class QLabel;

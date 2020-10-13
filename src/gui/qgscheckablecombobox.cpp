@@ -76,9 +76,10 @@ void QgsCheckBoxDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
 
 QgsCheckableComboBox::QgsCheckableComboBox( QWidget *parent )
   : QComboBox( parent )
+  , mModel( new QgsCheckableItemModel( this ) )
   , mSeparator( QStringLiteral( ", " ) )
 {
-  setModel( new QgsCheckableItemModel( this ) );
+  setModel( mModel );
   setItemDelegate( new QgsCheckBoxDelegate( this ) );
 
   QLineEdit *lineEdit = new QLineEdit( this );
@@ -87,6 +88,9 @@ QgsCheckableComboBox::QgsCheckableComboBox( QWidget *parent )
   pal.setBrush( QPalette::Base, pal.button() );
   lineEdit->setPalette( pal );
   setLineEdit( lineEdit );
+  lineEdit->installEventFilter( this );
+  lineEdit->setContextMenuPolicy( Qt::CustomContextMenu );
+  connect( lineEdit, &QAbstractItemView::customContextMenuRequested, this, &QgsCheckableComboBox::showContextMenu );
 
   mContextMenu = new QMenu( this );
   mSelectAllAction = mContextMenu->addAction( tr( "Select All" ) );
@@ -131,14 +135,20 @@ void QgsCheckableComboBox::setDefaultText( const QString &text )
   }
 }
 
+void QgsCheckableComboBox::addItemWithCheckState( const QString &text, Qt::CheckState state, const QVariant &userData )
+{
+  QComboBox::addItem( text, userData );
+  setItemCheckState( count() - 1, state );
+}
+
 QStringList QgsCheckableComboBox::checkedItems() const
 {
   QStringList items;
 
-  if ( model() )
+  if ( auto *lModel = model() )
   {
-    QModelIndex index = model()->index( 0, modelColumn(), rootModelIndex() );
-    QModelIndexList indexes = model()->match( index, Qt::CheckStateRole, Qt::Checked, -1, Qt::MatchExactly );
+    QModelIndex index = lModel->index( 0, modelColumn(), rootModelIndex() );
+    QModelIndexList indexes = lModel->match( index, Qt::CheckStateRole, Qt::Checked, -1, Qt::MatchExactly );
     const auto constIndexes = indexes;
     for ( const QModelIndex &index : constIndexes )
     {
@@ -153,10 +163,10 @@ QVariantList QgsCheckableComboBox::checkedItemsData() const
 {
   QVariantList data;
 
-  if ( model() )
+  if ( auto *lModel = model() )
   {
-    QModelIndex index = model()->index( 0, modelColumn(), rootModelIndex() );
-    QModelIndexList indexes = model()->match( index, Qt::CheckStateRole, Qt::Checked, -1, Qt::MatchExactly );
+    QModelIndex index = lModel->index( 0, modelColumn(), rootModelIndex() );
+    QModelIndexList indexes = lModel->match( index, Qt::CheckStateRole, Qt::Checked, -1, Qt::MatchExactly );
     const auto constIndexes = indexes;
     for ( const QModelIndex &index : constIndexes )
     {
@@ -227,8 +237,16 @@ void QgsCheckableComboBox::deselectAllOptions()
 
 bool QgsCheckableComboBox::eventFilter( QObject *object, QEvent *event )
 {
-  if ( ( event->type() == QEvent::MouseButtonPress || event->type() == QEvent::MouseButtonRelease )
-       && object == view()->viewport() )
+  if ( object == lineEdit() )
+  {
+    if ( event->type() == QEvent::MouseButtonPress && static_cast<QMouseEvent *>( event )->button() == Qt::LeftButton && object == lineEdit() )
+    {
+      mSkipHide = true;
+      showPopup();
+    }
+  }
+  else if ( ( event->type() == QEvent::MouseButtonPress || event->type() == QEvent::MouseButtonRelease )
+            && object == view()->viewport() )
   {
     mSkipHide = true;
 
@@ -295,3 +313,4 @@ void QgsCheckableComboBox::updateDisplayText()
   text = fontMetrics.elidedText( text, Qt::ElideRight, rect.width() );
   setEditText( text );
 }
+

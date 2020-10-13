@@ -174,8 +174,8 @@ void QgsPluginSortFilterProxyModel::sortPluginsByDateUpdated()
 bool QgsPluginSortFilterProxyModel::lessThan( const QModelIndex &source_left, const QModelIndex &source_right ) const
 {
   // Always move deprecated plugins to bottom, regardless of the sort order.
-  const bool isLeftDepreciated = sourceModel()->data( source_left, PLUGIN_ISDEPRECATED_ROLE ).toString() == QStringLiteral( "true" );
-  const bool isRightDepreciated = sourceModel()->data( source_right, PLUGIN_ISDEPRECATED_ROLE ).toString() == QStringLiteral( "true" );
+  const bool isLeftDepreciated = sourceModel()->data( source_left, PLUGIN_ISDEPRECATED_ROLE ).toString() == QLatin1String( "true" );
+  const bool isRightDepreciated = sourceModel()->data( source_right, PLUGIN_ISDEPRECATED_ROLE ).toString() == QLatin1String( "true" );
   if ( isRightDepreciated && !isLeftDepreciated )
   {
     return sortOrder() == Qt::AscendingOrder ? true : false;

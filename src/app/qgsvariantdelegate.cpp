@@ -334,7 +334,7 @@ QString QgsVariantDelegate::displayText( const QVariant &value )
       return QStringLiteral( "(%1,%2)" ).arg( size.width() ).arg( size.height() );
     }
     case QVariant::StringList:
-      return value.toStringList().join( QStringLiteral( "," ) );
+      return value.toStringList().join( QLatin1Char( ',' ) );
     case QVariant::Time:
       return value.toTime().toString( Qt::ISODate );
     default:
@@ -361,12 +361,12 @@ QVariant::Type QgsVariantDelegate::type( const QVariant &value )
 
     // is this an int?
     // perhaps we should treat as double for more flexibility
-    str.toInt( &ok );
+    ( void ) str.toInt( &ok );
     if ( ok )
       return QVariant::Int;
 
     // is this a double?
-    str.toDouble( &ok );
+    ( void ) str.toDouble( &ok );
     if ( ok )
       return QVariant::Double;
 

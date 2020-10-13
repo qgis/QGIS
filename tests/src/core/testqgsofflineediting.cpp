@@ -26,6 +26,7 @@
 #include "qgstest.h"
 #include "qgsvectorlayerref.h"
 #include "qgslayertree.h"
+#include "qgsmaplayerstylemanager.h"
 
 /**
  * \ingroup UnitTests
@@ -164,6 +165,10 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
   QgsLayerTreeLayer *layerTreelayer = QgsProject::instance()->layerTreeRoot()->findLayer( mpLayer->id() );
   layerTreelayer->setCustomProperty( QStringLiteral( "showFeatureCount" ), 1 );
   layerTreelayer->setItemVisibilityChecked( false );
+  QgsMapLayerStyle style;
+  style.readFromLayer( mpLayer );
+
+  mpLayer->styleManager()->addStyle( QStringLiteral( "testStyle" ), style );
 
   //convert
   mOfflineEditing->convertToOfflineProject( offlineDataPath, offlineDbFile, layerIds, false, QgsOfflineEditing::GPKG );
@@ -177,6 +182,7 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
   layerTreelayer = QgsProject::instance()->layerTreeRoot()->findLayer( mpLayer->id() );
   QCOMPARE( layerTreelayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt(), 1 );
   QCOMPARE( layerTreelayer->isVisible(), false );
+  QVERIFY( mpLayer->styleManager()->styles().contains( QStringLiteral( "testStyle" ) ) );
 
   QgsFeature firstFeatureInAction;
   it = mpLayer->getFeatures();
@@ -234,7 +240,7 @@ void TestQgsOfflineEditing::removeConstraintsOnDefaultValues()
   QString name = gpkgLayer->name();
 
   //check constraints (not null and unique)
-  QgsFieldConstraints constraintsOfFidField = gpkgLayer->fields().at( gpkgLayer->fields().indexOf( QStringLiteral( "fid" ) ) ).constraints();
+  QgsFieldConstraints constraintsOfFidField = gpkgLayer->fields().at( gpkgLayer->fields().indexOf( QLatin1String( "fid" ) ) ).constraints();
   QVERIFY( constraintsOfFidField.constraints() & QgsFieldConstraints::ConstraintNotNull );
   QVERIFY( constraintsOfFidField.constraints() & QgsFieldConstraints::ConstraintUnique );
 
@@ -246,7 +252,7 @@ void TestQgsOfflineEditing::removeConstraintsOnDefaultValues()
 
   name = gpkgLayer->name();
   //check constraints (unique but not not null)
-  constraintsOfFidField = gpkgLayer->fields().at( gpkgLayer->fields().indexOf( QStringLiteral( "fid" ) ) ).constraints();
+  constraintsOfFidField = gpkgLayer->fields().at( gpkgLayer->fields().indexOf( QLatin1String( "fid" ) ) ).constraints();
   QVERIFY( !( constraintsOfFidField.constraints() & QgsFieldConstraints::ConstraintNotNull ) );
   QVERIFY( constraintsOfFidField.constraints() & QgsFieldConstraints::ConstraintUnique );
 
@@ -257,7 +263,7 @@ void TestQgsOfflineEditing::removeConstraintsOnDefaultValues()
 
   name = gpkgLayer->name();
   //check constraints (not null and unique)
-  constraintsOfFidField = gpkgLayer->fields().at( gpkgLayer->fields().indexOf( QStringLiteral( "fid" ) ) ).constraints();
+  constraintsOfFidField = gpkgLayer->fields().at( gpkgLayer->fields().indexOf( QLatin1String( "fid" ) ) ).constraints();
   QVERIFY( constraintsOfFidField.constraints() & QgsFieldConstraints::ConstraintNotNull );
   QVERIFY( constraintsOfFidField.constraints() & QgsFieldConstraints::ConstraintUnique );
 }

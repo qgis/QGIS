@@ -148,19 +148,15 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverXmsTin::load( const std::string &meshFil
   std::unique_ptr< MemoryMesh > mesh(
     new MemoryMesh(
       DRIVER_NAME,
-      vertices.size(),
-      0,
-      faces.size(),
       MAX_VERTICES_PER_FACE_TIN,
-      computeExtent( vertices ),
       meshFile
     )
   );
-  mesh->faces = faces;
-  mesh->vertices = vertices;
+  mesh->setFaces( std::move( faces ) );
+  mesh->setVertices( std::move( vertices ) );
 
   // Add Bed Elevation
-  MDAL::addBedElevationDatasetGroup( mesh.get(), vertices );
+  MDAL::addBedElevationDatasetGroup( mesh.get(), mesh->vertices() );
 
   return std::unique_ptr<Mesh>( mesh.release() );
 }

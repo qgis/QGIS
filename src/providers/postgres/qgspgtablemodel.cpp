@@ -105,7 +105,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
       QString commentText { layerProperty.tableComment };
       commentText.replace( QRegularExpression( QStringLiteral( "^\n*" ) ), QString() );
       commentItem->setText( commentText );
-      commentItem->setToolTip( QStringLiteral( "<span>%1</span>" ).arg( commentText.replace( '\n', QStringLiteral( "<br/>" ) ) ) );
+      commentItem->setToolTip( QStringLiteral( "<span>%1</span>" ).arg( commentText.replace( '\n', QLatin1String( "<br/>" ) ) ) );
       commentItem->setTextAlignment( Qt::AlignTop );
     }
     QStandardItem *geomItem  = new QStandardItem( layerProperty.geometryColName );
@@ -249,6 +249,7 @@ void QgsPgTableModel::setSql( const QModelIndex &index, const QString &sql )
   QModelIndex schemaSibling = index.sibling( index.row(), DbtmSchema );
   QModelIndex tableSibling = index.sibling( index.row(), DbtmTable );
   QModelIndex geomSibling = index.sibling( index.row(), DbtmGeomCol );
+  QModelIndex geomTypeSibling = index.sibling( index.row(), DbtmType );
 
   if ( !schemaSibling.isValid() || !tableSibling.isValid() || !geomSibling.isValid() )
   {
@@ -258,6 +259,7 @@ void QgsPgTableModel::setSql( const QModelIndex &index, const QString &sql )
   QString schemaName = itemFromIndex( schemaSibling )->text();
   QString tableName = itemFromIndex( tableSibling )->text();
   QString geomName = itemFromIndex( geomSibling )->text();
+  QString geomType = itemFromIndex( geomTypeSibling )->text();
 
   QList<QStandardItem *> schemaItems = findItems( schemaName, Qt::MatchExactly, DbtmSchema );
   if ( schemaItems.empty() )
@@ -288,7 +290,15 @@ void QgsPgTableModel::setSql( const QModelIndex &index, const QString &sql )
       continue;
     }
 
-    if ( itemFromIndex( currentTableIndex )->text() == tableName && itemFromIndex( currentGeomIndex )->text() == geomName )
+    QModelIndex currentGeomType = currentChildIndex.sibling( i, DbtmType );
+    if ( !currentGeomType.isValid() )
+    {
+      continue;
+    }
+
+    if ( itemFromIndex( currentTableIndex )->text() == tableName
+         && itemFromIndex( currentGeomIndex )->text() == geomName
+         && itemFromIndex( currentGeomType )->text() == geomType )
     {
       QModelIndex sqlIndex = currentChildIndex.sibling( i, DbtmSql );
       if ( sqlIndex.isValid() )
@@ -343,8 +353,8 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
     QStringList pkCols = idx.sibling( idx.row(), DbtmPkCol ).data( Qt::UserRole + 1 ).toStringList();
     if ( tip.isEmpty() && !pkCols.isEmpty() )
     {
-      QSet<QString> s0( idx.sibling( idx.row(), DbtmPkCol ).data( Qt::UserRole + 2 ).toStringList().toSet() );
-      QSet<QString> s1( pkCols.toSet() );
+      QSet<QString> s0( qgis::listToSet( idx.sibling( idx.row(), DbtmPkCol ).data( Qt::UserRole + 2 ).toStringList() ) );
+      QSet<QString> s1( qgis::listToSet( pkCols ) );
       if ( !s0.intersects( s1 ) )
         tip = tr( "Select columns in the '%1' column that uniquely identify features of this layer" ).arg( tr( "Feature id" ) );
     }
@@ -420,8 +430,8 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
   }
 
   QStandardItem *pkItem = itemFromIndex( index.sibling( index.row(), DbtmPkCol ) );
-  QSet<QString> s0( pkItem->data( Qt::UserRole + 1 ).toStringList().toSet() );
-  QSet<QString> s1( pkItem->data( Qt::UserRole + 2 ).toStringList().toSet() );
+  QSet<QString> s0( qgis::listToSet( pkItem->data( Qt::UserRole + 1 ).toStringList() ) );
+  QSet<QString> s1( qgis::listToSet( pkItem->data( Qt::UserRole + 2 ).toStringList() ) );
   if ( !s0.isEmpty() && !s0.intersects( s1 ) )
   {
     // no valid primary candidate selected
@@ -440,7 +450,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
 
     srid = index.sibling( index.row(), DbtmSrid ).data( Qt::DisplayRole ).toString();
     bool ok;
-    srid.toInt( &ok );
+    ( void )srid.toInt( &ok );
     if ( !ok )
     {
       QgsDebugMsg( QStringLiteral( "srid not numeric" ) );
@@ -461,7 +471,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
     cols << QgsPostgresConn::quotedIdentifier( col );
   }
 
-  QgsSettings().setValue( QStringLiteral( "/PostgreSQL/connections/%1/keys/%2/%3" ).arg( mConnName, schemaName, tableName ), QVariant( s1.toList() ) );
+  QgsSettings().setValue( QStringLiteral( "/PostgreSQL/connections/%1/keys/%2/%3" ).arg( mConnName, schemaName, tableName ), QVariant( qgis::setToList( s1 ) ) );
 
   uri.setDataSource( schemaName, tableName, geomColumnName, sql, cols.join( ',' ) );
   uri.setUseEstimatedMetadata( useEstimatedMetadata );

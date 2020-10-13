@@ -18,6 +18,7 @@
 #include "qgsapplication.h"
 #include "qgssettings.h"
 #include "qgsexpression.h"
+#include "qgsrendercontext.h"
 
 #include <QVBoxLayout>
 #include <QTreeWidget>
@@ -28,7 +29,7 @@
 #include <QPushButton>
 #include <QHeaderView>
 #include <QMessageBox>
-
+#include <QClipboard>
 
 //
 // QgsVariableEditorWidget
@@ -485,23 +486,15 @@ void QgsVariableEditorTree::drawRow( QPainter *painter, const QStyleOptionViewIt
     QColor baseColor = item->data( 0, RowBaseColor ).value<QColor>();
     if ( index.row() % 2 == 1 )
     {
-      baseColor = baseColor.lighter( 110 );
+      baseColor.setAlpha( 59 );
     }
     painter->fillRect( option.rect, baseColor );
-
-    //declare custom text color since we've overwritten default background color
-    QPalette pal = opt.palette;
-    pal.setColor( QPalette::Active, QPalette::Text, Qt::black );
-    pal.setColor( QPalette::Inactive, QPalette::Text, Qt::black );
-    pal.setColor( QPalette::Disabled, QPalette::Text, Qt::gray );
-    opt.palette = pal;
   }
   QTreeWidget::drawRow( painter, opt, index );
   QColor color = static_cast<QRgb>( QApplication::style()->styleHint( QStyle::SH_Table_GridLineColor, &opt ) );
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   painter->setPen( QPen( color ) );
   painter->drawLine( opt.rect.x(), opt.rect.bottom(), opt.rect.right(), opt.rect.bottom() );
-  painter->restore();
 }
 
 QColor QgsVariableEditorTree::rowColor( int index ) const
@@ -511,18 +504,18 @@ QColor QgsVariableEditorTree::rowColor( int index ) const
   switch ( colorIdx )
   {
     case 0:
-      return QColor( 255, 220, 167 );
+      return QColor( 255, 163, 0, 89 );
     case 1:
-      return QColor( 255, 255, 191 );
+      return QColor( 255, 255, 77, 89 );
     case 2:
-      return QColor( 191, 255, 191 );
+      return QColor( 0, 255, 77, 89 );
     case 3:
-      return QColor( 199, 255, 255 );
+      return QColor( 0, 255, 255, 89 );
     case 4:
-      return QColor( 234, 191, 255 );
+      return QColor( 196, 125, 255, 89 );
     case 5:
     default:
-      return QColor( 255, 191, 239 );
+      return QColor( 255, 125, 225, 89 );
   }
 }
 
@@ -627,6 +620,25 @@ void QgsVariableEditorTree::keyPressEvent( QKeyEvent *event )
     default:
       break;
   }
+
+  if ( event == QKeySequence::Copy )
+  {
+    QList<QTreeWidgetItem *> selected = selectedItems();
+    if ( selected.size() > 0 )
+    {
+      QString text = selected.at( 0 )->text( 0 );
+      QString varName = variableNameFromItem( selected.at( 0 ) );
+      QgsExpressionContextScope *scope = scopeFromItem( selected.at( 0 ) );
+      if ( !varName.isEmpty() && scope )
+        text = scope->variable( varName ).toString();
+
+      QClipboard *clipboard = QApplication::clipboard();
+      clipboard->setText( text );
+      event->accept();
+      return;
+    }
+  }
+
   QTreeWidget::keyPressEvent( event );
 }
 

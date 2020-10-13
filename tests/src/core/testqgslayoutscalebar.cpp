@@ -69,6 +69,7 @@ class TestQgsLayoutScaleBar : public QObject
     void steppedLine();
     void hollow();
     void hollowDefaults();
+    void tickSubdivisions();
 
   private:
     QString mReport;
@@ -137,6 +138,7 @@ void TestQgsLayoutScaleBar::singleBox()
   scalebar->setNumberOfSegmentsLeft( 0 );
   scalebar->setNumberOfSegments( 2 );
   scalebar->setHeight( 5 );
+  scalebar->setSubdivisionsHeight( 25 ); //ensure subdivisionsHeight is non used in non tick-style scalebars
   Q_NOWARN_DEPRECATED_PUSH
   scalebar->setLineWidth( 1.0 );
   Q_NOWARN_DEPRECATED_POP
@@ -330,6 +332,7 @@ void TestQgsLayoutScaleBar::doubleBox()
   scalebar->setNumberOfSegmentsLeft( 0 );
   scalebar->setNumberOfSegments( 2 );
   scalebar->setHeight( 5 );
+  scalebar->setSubdivisionsHeight( 25 ); //ensure subdivisionsHeight is non used in non tick-style scalebars
   Q_NOWARN_DEPRECATED_PUSH
   scalebar->setLineWidth( 1.0 );
   scalebar->setFillColor( Qt::black );
@@ -494,6 +497,7 @@ void TestQgsLayoutScaleBar::numeric()
   scalebar->setNumberOfSegmentsLeft( 0 );
   scalebar->setNumberOfSegments( 2 );
   scalebar->setHeight( 5 );
+  scalebar->setSubdivisionsHeight( 25 ); //ensure subdivisionsHeight is non used in non tick-style scalebars
   Q_NOWARN_DEPRECATED_PUSH
   scalebar->setLineWidth( 1.0 );
   Q_NOWARN_DEPRECATED_POP
@@ -579,7 +583,11 @@ void TestQgsLayoutScaleBar::tickLineSymbol()
   lineSymbolLayer->setColor( QColor( 255, 255, 0 ) );
   lineSymbol->appendSymbolLayer( lineSymbolLayer.release() );
 
-  scalebar->setLineSymbol( lineSymbol.release() );
+  scalebar->setLineSymbol( lineSymbol->clone() );
+
+  dynamic_cast< QgsLineSymbolLayer * >( lineSymbol->symbolLayer( 0 ) )->setWidth( 5 );
+  dynamic_cast< QgsLineSymbolLayer * >( lineSymbol->symbolLayer( 0 ) )->setColor( QColor( 0, 255, 0 ) );
+  scalebar->setDivisionLineSymbol( lineSymbol->clone() );
 
   dynamic_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
 
@@ -755,6 +763,7 @@ void TestQgsLayoutScaleBar::steppedLine()
   scalebar->setNumberOfSegmentsLeft( 2 );
   scalebar->setNumberOfSegments( 2 );
   scalebar->setHeight( 20 );
+  scalebar->setSubdivisionsHeight( 25 ); //ensure subdivisionsHeight is non used in non tick-style scalebars
 
   std::unique_ptr< QgsLineSymbol > lineSymbol = qgis::make_unique< QgsLineSymbol >();
   std::unique_ptr< QgsSimpleLineSymbolLayer > lineSymbolLayer = qgis::make_unique< QgsSimpleLineSymbolLayer >();
@@ -799,6 +808,7 @@ void TestQgsLayoutScaleBar::hollow()
   scalebar->setNumberOfSegmentsLeft( 2 );
   scalebar->setNumberOfSegments( 2 );
   scalebar->setHeight( 20 );
+  scalebar->setSubdivisionsHeight( 25 ); //ensure subdivisionsHeight is non used in non tick-style scalebars
 
   std::unique_ptr< QgsLineSymbol > lineSymbol = qgis::make_unique< QgsLineSymbol >();
   std::unique_ptr< QgsSimpleLineSymbolLayer > lineSymbolLayer = qgis::make_unique< QgsSimpleLineSymbolLayer >();
@@ -882,6 +892,61 @@ void TestQgsLayoutScaleBar::hollowDefaults()
   // stroke should be unchanged
   QCOMPARE( dynamic_cast< QgsSimpleLineSymbolLayer * >( scalebar->lineSymbol()->symbolLayer( 0 ) )->color(), QColor( 255, 0, 0 ) );
 
+}
+
+void TestQgsLayoutScaleBar::tickSubdivisions()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 20, 20, 150, 150 ) );
+  map->setFrameEnabled( true );
+  l.addLayoutItem( map );
+  map->setExtent( QgsRectangle( 17.923, 30.160, 18.023, 30.260 ) );
+
+  QgsLayoutItemScaleBar *scalebar = new QgsLayoutItemScaleBar( &l );
+  scalebar->attemptSetSceneRect( QRectF( 20, 180, 50, 20 ) );
+  l.addLayoutItem( scalebar );
+  scalebar->setLinkedMap( map );
+  scalebar->setTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() ) );
+  scalebar->setUnits( QgsUnitTypes::DistanceMeters );
+  scalebar->setUnitsPerSegment( 2000 );
+  scalebar->setNumberOfSegmentsLeft( 0 );
+  scalebar->setNumberOfSegments( 2 );
+  scalebar->setHeight( 5 );
+  scalebar->setNumberOfSubdivisions( 4 );
+  scalebar->setSubdivisionsHeight( 3 );
+
+
+  std::unique_ptr< QgsLineSymbol > lineSymbol = qgis::make_unique< QgsLineSymbol >();
+  std::unique_ptr< QgsSimpleLineSymbolLayer > lineSymbolLayer = qgis::make_unique< QgsSimpleLineSymbolLayer >();
+  lineSymbolLayer->setWidth( 4 );
+  lineSymbolLayer->setWidthUnit( QgsUnitTypes::RenderMillimeters );
+  lineSymbolLayer->setColor( QColor( 255, 0, 0 ) );
+  lineSymbol->changeSymbolLayer( 0, lineSymbolLayer.release() );
+
+  lineSymbolLayer = qgis::make_unique< QgsSimpleLineSymbolLayer >();
+  lineSymbolLayer->setWidth( 2 );
+  lineSymbolLayer->setWidthUnit( QgsUnitTypes::RenderMillimeters );
+  lineSymbolLayer->setColor( QColor( 255, 255, 0 ) );
+  lineSymbol->appendSymbolLayer( lineSymbolLayer.release() );
+
+  scalebar->setLineSymbol( lineSymbol->clone() );
+
+  dynamic_cast< QgsLineSymbolLayer * >( lineSymbol->symbolLayer( 0 ) )->setWidth( 5 );
+  dynamic_cast< QgsLineSymbolLayer * >( lineSymbol->symbolLayer( 0 ) )->setColor( QColor( 0, 255, 0 ) );
+  scalebar->setDivisionLineSymbol( lineSymbol->clone() );
+
+  dynamic_cast< QgsLineSymbolLayer * >( lineSymbol->symbolLayer( 0 ) )->setWidth( 6 );
+  dynamic_cast< QgsLineSymbolLayer * >( lineSymbol->symbolLayer( 0 ) )->setColor( QColor( 0, 0, 255 ) );
+  scalebar->setSubdivisionLineSymbol( lineSymbol->clone() );
+
+  dynamic_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
+
+  scalebar->setStyle( QStringLiteral( "Line Ticks Middle" ) );
+  QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_tick_subdivisions" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
+  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
 }
 
 

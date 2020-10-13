@@ -660,7 +660,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QSpinBox" name="rowCounter">
+             <widget class="QgsSpinBox" name="rowCounter">
               <property name="minimumSize">
                <size>
                 <width>0</width>
@@ -1406,6 +1406,11 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>

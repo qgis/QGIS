@@ -34,7 +34,6 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 
 
 class ClipVectorByExtent(GdalAlgorithm):
-
     INPUT = 'INPUT'
     EXTENT = 'EXTENT'
     OPTIONS = 'OPTIONS'

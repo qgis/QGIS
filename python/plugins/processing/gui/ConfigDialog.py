@@ -56,7 +56,6 @@ from processing.core.Processing import Processing
 from processing.gui.DirectorySelectorDialog import DirectorySelectorDialog
 from processing.gui.menus import defaultMenuEntries, menusSettingsGroup
 
-
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -190,7 +189,7 @@ class ConfigDialog(BASE, WIDGET):
             emptyItem.setEditable(False)
 
             rootItem.insertRow(0, [groupItem, emptyItem])
-            if not group in settings:
+            if group not in settings:
                 continue
 
             # add menu item only if it has any search matches
@@ -367,15 +366,15 @@ class SettingDelegate(QStyledItemDelegate):
     def createEditor(self, parent, options, index):
         setting = index.model().data(index, Qt.UserRole)
         if setting.valuetype == Setting.FOLDER:
-            return FileDirectorySelector(parent)
+            return FileDirectorySelector(parent, placeholder=setting.placeholder)
         elif setting.valuetype == Setting.FILE:
-            return FileDirectorySelector(parent, True)
+            return FileDirectorySelector(parent, True, setting.placeholder)
         elif setting.valuetype == Setting.SELECTION:
             combo = QComboBox(parent)
             combo.addItems(setting.options)
             return combo
         elif setting.valuetype == Setting.MULTIPLE_FOLDERS:
-            return MultipleDirectorySelector(parent)
+            return MultipleDirectorySelector(parent, setting.placeholder)
         else:
             value = self.convertValue(index.model().data(index, Qt.EditRole))
             if isinstance(value, int):
@@ -388,7 +387,9 @@ class SettingDelegate(QStyledItemDelegate):
                 spnBox.setDecimals(6)
                 return spnBox
             elif isinstance(value, str):
-                return QLineEdit(parent)
+                lineEdit = QLineEdit(parent)
+                lineEdit.setPlaceholderText(setting.placeholder)
+                return lineEdit
 
     def setEditorData(self, editor, index):
         value = self.convertValue(index.model().data(index, Qt.EditRole))
@@ -434,13 +435,14 @@ class SettingDelegate(QStyledItemDelegate):
 
 class FileDirectorySelector(QWidget):
 
-    def __init__(self, parent=None, selectFile=False):
+    def __init__(self, parent=None, selectFile=False, placeholder=""):
         QWidget.__init__(self, parent)
 
         # create gui
         self.btnSelect = QToolButton()
         self.btnSelect.setText('…')
         self.lineEdit = QLineEdit()
+        self.lineEdit.setPlaceholderText(placeholder)
         self.hbl = QHBoxLayout()
         self.hbl.setMargin(0)
         self.hbl.setSpacing(0)
@@ -481,13 +483,14 @@ class FileDirectorySelector(QWidget):
 
 class MultipleDirectorySelector(QWidget):
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, placeholder=""):
         QWidget.__init__(self, parent)
 
         # create gui
         self.btnSelect = QToolButton()
         self.btnSelect.setText('…')
         self.lineEdit = QLineEdit()
+        self.lineEdit.setPlaceholderText(placeholder)
         self.hbl = QHBoxLayout()
         self.hbl.setMargin(0)
         self.hbl.setSpacing(0)

@@ -1,7 +1,8 @@
 #############################################################
 # CMake settings
-CMAKE_MINIMUM_REQUIRED(VERSION 3.1.0)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.10.0)
 SET(CMAKE_COLOR_MAKEFILE ON)
+SET(CMAKE_AUTORCC ON)
 # set path to additional CMake modules
 SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 # POLICIES
@@ -15,7 +16,7 @@ SET(CMAKE_LINK_DEPENDS_NO_SHARED ON)
 #############################################################
 # Project and version
 SET(CPACK_PACKAGE_VERSION_MAJOR "3")
-SET(CPACK_PACKAGE_VERSION_MINOR "13")
+SET(CPACK_PACKAGE_VERSION_MINOR "15")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 SET(RELEASE_NAME "Master")
@@ -203,6 +204,10 @@ IF(WITH_CORE)
     MESSAGE(FATAL_ERROR "Desktop cannot be built without analysis")
   ENDIF()
 
+  IF ( WITH_QGIS_PROCESS AND NOT WITH_ANALYSIS )
+    MESSAGE(FATAL_ERROR "Process tool cannot be built without analysis")
+  ENDIF()
+
   IF ( WITH_DESKTOP )
     # The qgis_desktop target is meant to build a minimal but complete running QGIS during development
     # This should help to reduce compile time while still having a "complete enough" QGIS for most of the development
@@ -241,16 +246,6 @@ IF(WITH_CORE)
   SET (WITH_QTMOBILITY ${DEFAULT_WITH_QTMOBILITY} CACHE BOOL "Determines if QtMobility related code should be build (for example internal GPS)")
 
   SET (WITH_GEOREFERENCER TRUE CACHE BOOL "Determines whether GeoReferencer plugin should be built")
-
-  SET (WITH_GLOBE FALSE CACHE BOOL "Determines whether Globe plugin should be built")
-  IF (WITH_GLOBE)
-    SET(QT_USE_QTOPENGL 1)
-    FIND_PACKAGE(OSGEARTH REQUIRED)
-    IF (OSGEARTHQT_LIBRARY)
-      # following variable is used in qgsconfig.h
-      SET(HAVE_OSGEARTHQT TRUE)
-    ENDIF (OSGEARTHQT_LIBRARY)
-  ENDIF (WITH_GLOBE)
 
   SET (WITH_THREAD_LOCAL TRUE CACHE BOOL "Determines whether std::thread_local should be used")
   MARK_AS_ADVANCED(WITH_THREAD_LOCAL)
@@ -389,53 +384,40 @@ IF(WITH_CORE)
   # Use Qt5SerialPort optionally for GPS
   SET (WITH_QT5SERIALPORT TRUE CACHE BOOL "Determines whether Qt5SerialPort should be tried for GPS positioning")
   IF (WITH_QT5SERIALPORT)
-      FIND_PACKAGE(Qt5SerialPort REQUIRED)
+      FIND_PACKAGE(Qt5 COMPONENTS SerialPort REQUIRED)
       # following variable is used in qgsconfig.h
       SET (HAVE_QT5SERIALPORT TRUE)
   ENDIF(WITH_QT5SERIALPORT)
 
-  FIND_PACKAGE(Qt5Core QUIET)
-  FIND_PACKAGE(Qt5Gui REQUIRED)
-  FIND_PACKAGE(Qt5Widgets REQUIRED)
-  FIND_PACKAGE(Qt5Network REQUIRED)
-  FIND_PACKAGE(Qt5Xml REQUIRED)
-  FIND_PACKAGE(Qt5Svg REQUIRED)
-  FIND_PACKAGE(Qt5Concurrent REQUIRED)
+  FIND_PACKAGE(Qt5 COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test UiTools Sql REQUIRED)
   IF (NOT IOS)
-    FIND_PACKAGE(Qt5PrintSupport REQUIRED)
+    FIND_PACKAGE(Qt5 COMPONENTS PrintSupport REQUIRED)
   ELSE(NOT IOS)
     ADD_DEFINITIONS(-DQT_NO_PRINTER)
   ENDIF(NOT IOS)
-  FIND_PACKAGE(Qt5Positioning)
+  FIND_PACKAGE(Qt5 COMPONENTS Positioning)
   IF (WITH_QTWEBKIT)
     FIND_PACKAGE(Qt5WebKit REQUIRED)
     FIND_PACKAGE(Qt5WebKitWidgets REQUIRED)
   ENDIF(WITH_QTWEBKIT)
-  FIND_PACKAGE(Qt5Test REQUIRED)
-  FIND_PACKAGE(Qt5UiTools REQUIRED)
-  FIND_PACKAGE(Qt5Sql REQUIRED)
   IF (WITH_3D)
-    FIND_PACKAGE(Qt53DCore REQUIRED)
-    FIND_PACKAGE(Qt53DRender REQUIRED)
-    FIND_PACKAGE(Qt53DInput REQUIRED)
-    FIND_PACKAGE(Qt53DLogic REQUIRED)
-    FIND_PACKAGE(Qt53DExtras REQUIRED)
+    FIND_PACKAGE(Qt5 COMPONENTS 3DCore 3DRender 3DInput 3DLogic 3DExtras REQUIRED)
     SET(HAVE_3D TRUE)  # used in qgsconfig.h
   ENDIF (WITH_3D)
   IF (APPLE)
-    FIND_PACKAGE(Qt5MacExtras REQUIRED)
+    FIND_PACKAGE(Qt5 COMPONENTS MacExtras REQUIRED)
   ENDIF (APPLE)
 
   # get the Qt plugins directory
   GET_TARGET_PROPERTY(QMAKE_EXECUTABLE Qt5::qmake LOCATION)
-  EXEC_PROGRAM(${QMAKE_EXECUTABLE} ARGS "-query QT_INSTALL_PLUGINS" RETURN_VALUE return_code OUTPUT_VARIABLE QT_PLUGINS_DIR )
+  EXEC_PROGRAM(${QMAKE_EXECUTABLE} ARGS "-query QT_INSTALL_PLUGINS" RETURN_VALUE return_code OUTPUT_VARIABLE DEFAULT_QT_PLUGINS_DIR )
+  SET (QT_PLUGINS_DIR ${DEFAULT_QT_PLUGINS_DIR} CACHE STRING "Path to installation directory for Qt Plugins. Defaults to Qt native plugin directory")
 
   MESSAGE(STATUS "Found Qt version: ${Qt5Core_VERSION_STRING}")
   IF (WITH_QUICK)
-    FIND_PACKAGE(Qt5Qml REQUIRED)
-    FIND_PACKAGE(Qt5Quick REQUIRED)
+    FIND_PACKAGE(Qt5 COMPONENTS Qml Quick REQUIRED)
     IF(${CMAKE_SYSTEM_NAME} MATCHES "Android")
-        FIND_PACKAGE(Qt5AndroidExtras)
+        FIND_PACKAGE(Qt5 COMPONENTS AndroidExtras)
     ELSE(${CMAKE_SYSTEM_NAME} MATCHES "Android")
         FIND_PACKAGE(QtQmlTools)
     ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Android")
@@ -488,7 +470,7 @@ ENDIF(WITH_CORE)
 SET(CMAKE_AUTOMOC ON)
 
 # build our version of astyle
-SET (WITH_ASTYLE FALSE CACHE BOOL "If you plan to contribute you should reindent with scripts/prepare-commit.sh (using 'our' astyle)")
+SET (WITH_ASTYLE FALSE CACHE BOOL "If you plan to contribute you should reindent with scripts/prepare_commit.sh (using 'our' astyle)")
 
 # QML
 SET(QML_IMPORT_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" CACHE PATH "QML directory for QML autocomplete")
@@ -590,7 +572,7 @@ IF (PEDANTIC)
     # ADD_DEFINITIONS( -fstrict-aliasing -Wstrict-aliasing=1 -Wredundant-decls )
 
     IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-      SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-return-type-c-linkage -Wno-overloaded-virtual -Wimplicit-fallthrough")
+       SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-return-type-c-linkage -Wno-overloaded-virtual -Wimplicit-fallthrough")
     ENDIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
 
     # add any extra CXXFLAGS flags set by user. can be -D CXX_EXTRA_FLAGS or environment variable
@@ -641,6 +623,14 @@ ENDIF(MSVC)
 ADD_DEFINITIONS(-DQT_DEPRECATED_WARNINGS)
 # Unfortunately Qwt uses deprecated QString::null in headers, preventing this being raised above 5.8
 ADD_DEFINITIONS(-DQT_DISABLE_DEPRECATED_BEFORE=0x050800)
+
+# For fast string concatenation
+ADD_DEFINITIONS(-DQT_USE_QSTRINGBUILDER)
+
+IF (WITH_GEOREFERENCER)
+  FIND_PACKAGE(GSL REQUIRED)
+  SET(HAVE_GEOREFERENCER TRUE)
+ENDIF (WITH_GEOREFERENCER)
 
 IF(ENABLE_COVERAGE)
   INCLUDE("cmake/modules/coverage/CodeCoverage.cmake")
@@ -741,9 +731,6 @@ IF (WITH_CORE)
       # path for framework references when running from build directory
       # changed later to reference in-app resources upon install
       SET (CMAKE_INSTALL_NAME_DIR ${CMAKE_BINARY_DIR}/output/lib)
-      IF (WITH_GLOBE)
-        SET (OSG_PLUGINS_PATH "" CACHE PATH "Path to OSG plugins for bundling")
-      ENDIF (WITH_GLOBE)
       # recent cmakes force SDKs, recent SDKs don't have user symlinks
       # need to find non-system frameworks
       # cmake bug #0007250 - CMAKE_SHARED_LINKER_FLAGS ignored when creating
@@ -887,7 +874,7 @@ IF (WITH_CORE AND WITH_BINDINGS)
   INCLUDE(SIPMacros)
 
   SET(SIP_INCLUDES ${PYQT_SIP_DIR} ${CMAKE_SOURCE_DIR}/python)
-  SET(SIP_CONCAT_PARTS 4)
+  SET(SIP_CONCAT_PARTS 11)
 
   IF (NOT BINDINGS_GLOBAL_INSTALL)
     SET(PYTHON_SITE_PACKAGES_DIR ${QGIS_DATA_DIR}/python)

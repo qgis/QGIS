@@ -17,7 +17,7 @@ class QgsGeometryCheckRegistry
 This class manages all known geometry check factories.
 
 QgsGeometryCheckRegistry is not usually directly created, but rather accessed through
-:py:func:`QgsAnalysis.geometryCheckRegistry()`
+:py:func:`QgsAnalysis.geometryCheckRegistry()`.
 
 .. note::
 
@@ -34,7 +34,7 @@ QgsGeometryCheckRegistry is not usually directly created, but rather accessed th
     QgsGeometryCheckRegistry();
 %Docstring
 Constructor for QgsGeometryCheckRegistry. QgsGeometryCheckRegistry is not usually directly created, but rather accessed through
-:py:func:`QgsAnalysis.geometryCheckRegistry()`
+:py:func:`QgsAnalysis.geometryCheckRegistry()`.
 %End
 
     ~QgsGeometryCheckRegistry();
@@ -48,7 +48,7 @@ Ownership is transferred to the caller.
 .. versionadded:: 3.4
 %End
 
-    QList<QgsGeometryCheckFactory *> geometryCheckFactories( QgsVectorLayer *layer,  QgsGeometryCheck::CheckType type, QgsGeometryCheck::Flags flags = 0 ) const;
+    QList<QgsGeometryCheckFactory *> geometryCheckFactories( QgsVectorLayer *layer,  QgsGeometryCheck::CheckType type, QgsGeometryCheck::Flags flags = QgsGeometryCheck::Flags() ) const;
 %Docstring
 Returns all geometry check factories that are compatible with ``layer`` and have all of the ``flags`` set.
 

@@ -149,7 +149,6 @@ class TableDataModel(BaseTableModel):
 
 
 class SqlResultModelAsync(QObject):
-
     done = pyqtSignal()
 
     def __init__(self):
@@ -302,7 +301,7 @@ class TableFieldsModel(SimpleTableModel):
 
         fld.notNull = self.data(self.index(row, 2), Qt.CheckStateRole) == Qt.Unchecked
         fld.primaryKey = self.data(self.index(row, 1), Qt.UserRole)
-        fld.comment = self.data(self.index(row, 4), Qt.UserRole)
+        fld.comment = self.data(self.index(row, 4))
         return fld
 
     def getFields(self):

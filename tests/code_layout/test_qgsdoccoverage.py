@@ -76,14 +76,14 @@ class TestQgsDocCoverage(unittest.TestCase):
         if parser.classes_missing_group:
             print("---------------------------------")
             print('\n')
-            print((colored('{} classes have been added without Doxygen group tag ("\ingroup"):'.format(len(parser.classes_missing_group)), 'yellow')))
+            print((colored('{} classes have been added without Doxygen group tag ("\\ingroup"):'.format(len(parser.classes_missing_group)), 'yellow')))
             print('')
             print(('  ' + '\n  '.join([colored(cls, 'yellow', attrs=['bold']) for cls in parser.classes_missing_group])))
 
         if parser.classes_missing_version_added:
             print("---------------------------------")
             print('\n')
-            print((colored('{} classes have been added without a version added doxygen note ("\since QGIS x.xx"):'.format(len(parser.classes_missing_version_added)), 'yellow')))
+            print((colored('{} classes have been added without a version added doxygen note ("\\since QGIS x.xx"):'.format(len(parser.classes_missing_version_added)), 'yellow')))
             print('')
             print(('  ' + '\n  '.join([colored(cls, 'yellow', attrs=['bold']) for cls in parser.classes_missing_version_added])))
 

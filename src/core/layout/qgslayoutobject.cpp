@@ -78,6 +78,14 @@ void QgsLayoutObject::initPropertyDefinitions()
     { QgsLayoutObject::MapGridCrossSize, QgsPropertyDefinition( "dataDefinedMapGridCrossSize", QObject::tr( "Grid cross size" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsLayoutObject::MapGridFrameMargin, QgsPropertyDefinition( "dataDefinedMapGridFrameMargin", QObject::tr( "Grid frame margin" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsLayoutObject::MapGridLabelDistance, QgsPropertyDefinition( "dataDefinedMapGridLabelDistance", QObject::tr( "Grid label distance" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::MapGridAnnotationDisplayLeft, QgsPropertyDefinition( "dataDefinedMapGridAnnotationDisplayLeft", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map grid annotation display left" ), QObject::tr( "string " ) + QLatin1String( "[<b>all</b>|<b>x_only</b>|<b>y_only</b>|<b>disabled</b>]" ) ) },
+    { QgsLayoutObject::MapGridAnnotationDisplayRight, QgsPropertyDefinition( "dataDefinedMapGridAnnotationDisplayRight", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map grid annotation display right" ), QObject::tr( "string " ) + QLatin1String( "[<b>all</b>|<b>x_only</b>|<b>y_only</b>|<b>disabled</b>]" ) ) },
+    { QgsLayoutObject::MapGridAnnotationDisplayTop, QgsPropertyDefinition( "dataDefinedMapGridAnnotationDisplayTop", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map grid annotation display top" ), QObject::tr( "string " ) + QLatin1String( "[<b>all</b>|<b>x_only</b>|<b>y_only</b>|<b>disabled</b>]" ) ) },
+    { QgsLayoutObject::MapGridAnnotationDisplayBottom, QgsPropertyDefinition( "dataDefinedMapGridAnnotationDisplayBottom", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map grid annotation display bottom" ), QObject::tr( "string " ) + QLatin1String( "[<b>all</b>|<b>x_only</b>|<b>y_only</b>|<b>disabled</b>]" ) ) },
+    { QgsLayoutObject::MapGridFrameDivisionsLeft, QgsPropertyDefinition( "dataDefinedMapGridFrameDivisionsLeft", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map grid frme divisions display left" ), QObject::tr( "string " ) + QLatin1String( "[<b>all</b>|<b>x_only</b>|<b>y_only</b>|<b>disabled</b>]" ) ) },
+    { QgsLayoutObject::MapGridFrameDivisionsRight, QgsPropertyDefinition( "dataDefinedMapGridFrameDivisionsRight", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map grid frme divisions display right" ), QObject::tr( "string " ) + QLatin1String( "[<b>all</b>|<b>x_only</b>|<b>y_only</b>|<b>disabled</b>]" ) ) },
+    { QgsLayoutObject::MapGridFrameDivisionsTop, QgsPropertyDefinition( "dataDefinedMapGridFrameDivisionsTop", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map grid frme divisions display top" ), QObject::tr( "string " ) + QLatin1String( "[<b>all</b>|<b>x_only</b>|<b>y_only</b>|<b>disabled</b>]" ) ) },
+    { QgsLayoutObject::MapGridFrameDivisionsBottom, QgsPropertyDefinition( "dataDefinedMapGridFrameDivisionsBottom", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map grid frme divisions display bottom" ), QObject::tr( "string " ) + QLatin1String( "[<b>all</b>|<b>x_only</b>|<b>y_only</b>|<b>disabled</b>]" ) ) },
     { QgsLayoutObject::PictureSource, QgsPropertyDefinition( "dataDefinedSource", QObject::tr( "Picture source (URL)" ), QgsPropertyDefinition::String ) },
     { QgsLayoutObject::SourceUrl, QgsPropertyDefinition( "dataDefinedSourceUrl", QObject::tr( "Source URL" ), QgsPropertyDefinition::String ) },
     { QgsLayoutObject::PictureSvgBackgroundColor, QgsPropertyDefinition( "dataDefinedSvgBackgroundColor", QObject::tr( "SVG background color" ), QgsPropertyDefinition::ColorWithAlpha ) },
@@ -91,6 +99,8 @@ void QgsLayoutObject::initPropertyDefinitions()
     { QgsLayoutObject::ScalebarLineWidth, QgsPropertyDefinition( "dataDefinedScalebarLineWidth", QObject::tr( "Line width" ), QgsPropertyDefinition::StrokeWidth ) },
     { QgsLayoutObject::AttributeTableSourceLayer, QgsPropertyDefinition( "dataDefinedAttributeTableSourceLayer", QObject::tr( "Table source layer" ), QgsPropertyDefinition::String ) },
     { QgsLayoutObject::MapCrs, QgsPropertyDefinition( "dataDefinedCrs", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map CRS" ), QObject::tr( "string representing a CRS, either an authority/id pair (e.g. \"EPSG:4326\"), a proj string prefixes by \"PROJ:\" (e.g. \"PROJ: +proj=...\") or a WKT string prefixed by \"WKT:\" (e.g. \"WKT:GEOGCS[\"WGS 84\"...)" ) ) },
+    { QgsLayoutObject::StartDateTime, QgsPropertyDefinition( "dataDefinedStartDateTime", QObject::tr( "Temporal range start date / time" ), QgsPropertyDefinition::DateTime ) },
+    { QgsLayoutObject::EndDateTime, QgsPropertyDefinition( "dataDefinedEndDateTime", QObject::tr( "Temporal range end date / time" ), QgsPropertyDefinition::DateTime ) },
   };
 }
 

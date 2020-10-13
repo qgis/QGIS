@@ -714,7 +714,7 @@ void QgsGrassVectorMapLayer::addColumn( const QgsField &field, QString &error )
           }
           if ( errors.size() > 5 )
           {
-            error = tr( "Errors updating restored column, update interrupted" ) + " : " + errors.join( QStringLiteral( "; " ) );
+            error = tr( "Errors updating restored column, update interrupted" ) + " : " + errors.join( QLatin1String( "; " ) );
             break;
           }
         }
@@ -757,7 +757,7 @@ void QgsGrassVectorMapLayer::deleteColumn( const QgsField &field, QString &error
     }
     QStringList queries;
     queries << QStringLiteral( "BEGIN TRANSACTION" );
-    queries << QStringLiteral( "CREATE TEMPORARY TABLE %1_tmp_drop_column AS SELECT %2 FROM %1" ).arg( mFieldInfo->table, columns.join( QStringLiteral( "," ) ) );
+    queries << QStringLiteral( "CREATE TEMPORARY TABLE %1_tmp_drop_column AS SELECT %2 FROM %1" ).arg( mFieldInfo->table, columns.join( QLatin1Char( ',' ) ) );
     queries << QStringLiteral( "DROP TABLE %1" ).arg( mFieldInfo->table );
     queries << QStringLiteral( "CREATE TABLE %1 AS SELECT * FROM %1_tmp_drop_column" ).arg( mFieldInfo->table );
     queries << QStringLiteral( "DROP TABLE %1_tmp_drop_column" ).arg( mFieldInfo->table );
@@ -873,7 +873,7 @@ void QgsGrassVectorMapLayer::insertAttributes( int cat, const QgsFeature &featur
   }
 
   QString query = QStringLiteral( "INSERT INTO %1 ( %2 ) VALUES ( %3 )" ).arg( mFieldInfo->table,
-                  names.join( QStringLiteral( ", " ) ), values.join( QStringLiteral( "," ) ) );
+                  names.join( QLatin1String( ", " ) ), values.join( QLatin1Char( ',' ) ) );
   executeSql( query, error );
   if ( error.isEmpty() )
   {
@@ -920,7 +920,7 @@ void QgsGrassVectorMapLayer::reinsertAttributes( int cat, QString &error )
       }
     }
 
-    QString query = QStringLiteral( "INSERT INTO %1 ( %2 ) VALUES ( %3 )" ).arg( mFieldInfo->table, names.join( QStringLiteral( ", " ) ), values.join( QStringLiteral( "," ) ) );
+    QString query = QStringLiteral( "INSERT INTO %1 ( %2 ) VALUES ( %3 )" ).arg( mFieldInfo->table, names.join( QLatin1String( ", " ) ), values.join( QLatin1Char( ',' ) ) );
     executeSql( query, error );
   }
   else
@@ -993,7 +993,7 @@ void QgsGrassVectorMapLayer::updateAttributes( int cat, QgsFeature &feature, QSt
   }
 
   QString query = QStringLiteral( "UPDATE %1 SET %2 WHERE %3 = %4" ).arg( mFieldInfo->table,
-                  updates.join( QStringLiteral( ", " ) ), mFieldInfo->key ).arg( cat );
+                  updates.join( QLatin1String( ", " ) ), mFieldInfo->key ).arg( cat );
 
   executeSql( query, error );
   if ( error.isEmpty() )
@@ -1106,7 +1106,7 @@ void QgsGrassVectorMapLayer::changeAttributeValue( int cat, const QgsField &fiel
     names << field.name();
     values << quotedValue( value );
     query = QStringLiteral( "INSERT INTO %1 ( %2 ) VALUES ( %3 )" ).arg( mFieldInfo->table,
-            names.join( QStringLiteral( ", " ) ), values.join( QStringLiteral( "," ) ) );
+            names.join( QLatin1String( ", " ) ), values.join( QLatin1Char( ',' ) ) );
   }
 
   QgsDebugMsg( QString( "query: %1" ).arg( query ) );

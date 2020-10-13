@@ -14,7 +14,7 @@ class QgsProjectStorageRegistry
 {
 %Docstring
 Registry of storage backends that QgsProject may use.
-This is a singleton that should be accessed through :py:func:`QgsApplication.projectStorageRegistry()`
+This is a singleton that should be accessed through :py:func:`QgsApplication.projectStorageRegistry()`.
 
 .. versionadded:: 3.2
 %End

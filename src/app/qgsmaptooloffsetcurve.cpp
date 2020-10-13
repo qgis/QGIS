@@ -36,7 +36,9 @@
 QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
   , mSnapIndicator( qgis::make_unique< QgsSnapIndicator >( canvas ) )
-{}
+{
+  mToolName = tr( "Map tool offset curve" );
+}
 
 QgsMapToolOffsetCurve::~QgsMapToolOffsetCurve()
 {
@@ -84,11 +86,11 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
               QgsPointLocator::Types( QgsPointLocator::Edge | QgsPointLocator::Area ) );
     }
 
-    if ( match.layer() )
+    if ( auto *lLayer = match.layer() )
     {
-      mSourceLayer = match.layer();
+      mSourceLayer = lLayer;
       QgsFeature fet;
-      if ( match.layer()->getFeatures( QgsFeatureRequest( match.featureId() ) ).nextFeature( fet ) )
+      if ( lLayer->getFeatures( QgsFeatureRequest( match.featureId() ) ).nextFeature( fet ) )
       {
         mSourceFeature = fet;
         mCtrlHeldOnFirstClick = ( e->modifiers() & Qt::ControlModifier ); //no geometry modification if ctrl is pressed
@@ -96,7 +98,7 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
         mRubberBand = createRubberBand();
         if ( mRubberBand )
         {
-          mRubberBand->setToGeometry( mManipulatedGeometry, match.layer() );
+          mRubberBand->setToGeometry( mManipulatedGeometry, lLayer );
         }
         mModifiedFeature = fet.id();
         createUserInputWidget();
@@ -530,7 +532,7 @@ void QgsMapToolOffsetCurve::prepareGeometry( const QgsPointLocator::Match &match
       int vertex = match.vertexIndex();
       QgsVertexId vertexId;
       geom.vertexIdFromVertexNr( vertex, vertexId );
-      QgsDebugMsg( QStringLiteral( "%1" ).arg( vertexId.ring ) );
+      QgsDebugMsgLevel( QString::number( vertexId.ring ), 2 );
 
       if ( !geom.isMultipart() )
       {

@@ -31,6 +31,7 @@ QgsFeatureListComboBox::QgsFeatureListComboBox( QWidget *parent )
 {
   mCompleter->setCaseSensitivity( Qt::CaseInsensitive );
   mCompleter->setFilterMode( Qt::MatchContains );
+  setEditable( true );
   setCompleter( mCompleter );
   mCompleter->setWidget( this );
   connect( mModel, &QgsFeatureFilterModel::sourceLayerChanged, this, &QgsFeatureListComboBox::sourceLayerChanged );
@@ -41,7 +42,7 @@ QgsFeatureListComboBox::QgsFeatureListComboBox( QWidget *parent )
   connect( mModel, &QgsFeatureFilterModel::allowNullChanged, this, &QgsFeatureListComboBox::allowNullChanged );
   connect( mModel, &QgsFeatureFilterModel::extraIdentifierValueChanged, this, &QgsFeatureListComboBox::identifierValueChanged );
   connect( mModel, &QgsFeatureFilterModel::extraIdentifierValueIndexChanged, this, &QgsFeatureListComboBox::setCurrentIndex );
-  connect( mModel, &QgsFeatureFilterModel::identifierFieldChanged, this, &QgsFeatureListComboBox::identifierFieldChanged );
+  connect( mModel, &QgsFeatureFilterModel::identifierFieldsChanged, this, &QgsFeatureListComboBox::identifierFieldChanged );
   connect( mCompleter, static_cast<void( QCompleter::* )( const QModelIndex & )>( &QCompleter::highlighted ), this, &QgsFeatureListComboBox::onItemSelected );
   connect( mCompleter, static_cast<void( QCompleter::* )( const QModelIndex & )>( &QCompleter::activated ), this, &QgsFeatureListComboBox::onActivated );
   connect( mModel, &QgsFeatureFilterModel::beginUpdate, this, &QgsFeatureListComboBox::storeLineEditState );
@@ -55,7 +56,6 @@ QgsFeatureListComboBox::QgsFeatureListComboBox( QWidget *parent )
   mLineEdit->setSelectOnFocus( true );
   mLineEdit->setShowClearButton( true );
 
-  setEditable( true );
   setLineEdit( mLineEdit );
   setModel( mModel );
 
@@ -122,7 +122,7 @@ void QgsFeatureListComboBox::onItemSelected( const QModelIndex &index )
 
 void QgsFeatureListComboBox::onCurrentIndexChanged( int i )
 {
-  if ( !mHasStoredEditState )
+  if ( !mLineEdit->hasStateStored() )
     mIsCurrentlyEdited = false;
   QModelIndex modelIndex = mModel->index( i, 0, QModelIndex() );
   mModel->setExtraIdentifierValues( mModel->data( modelIndex, QgsFeatureFilterModel::IdentifierValuesRole ).toList() );
@@ -143,8 +143,7 @@ void QgsFeatureListComboBox::storeLineEditState()
 {
   if ( mIsCurrentlyEdited )
   {
-    mHasStoredEditState = true;
-    mLineEditState.store( mLineEdit );
+    mLineEdit->storeState( );
   }
 }
 
@@ -152,8 +151,7 @@ void QgsFeatureListComboBox::restoreLineEditState()
 {
   if ( mIsCurrentlyEdited )
   {
-    mHasStoredEditState = false;
-    mLineEditState.restore( mLineEdit );
+    mLineEdit->restoreState( );
   }
 }
 
@@ -242,7 +240,7 @@ void QgsFeatureListComboBox::setAllowNull( bool allowNull )
 QVariant QgsFeatureListComboBox::identifierValue() const
 {
   Q_NOWARN_DEPRECATED_PUSH
-  return mModel->extraIdentifierValue();
+  return mModel->extraIdentifierValues().value( 0 );
   Q_NOWARN_DEPRECATED_POP
 }
 
@@ -263,7 +261,7 @@ void QgsFeatureListComboBox::setIdentifierValues( const QVariantList &identifier
 
 void QgsFeatureListComboBox::setIdentifierValuesToNull()
 {
-  mModel->setExtraIdentifierValuesToNull();
+  mModel->setExtraIdentifierValueToNull();
 }
 
 QgsFeatureRequest QgsFeatureListComboBox::currentFeatureRequest() const
@@ -288,7 +286,7 @@ QgsFeatureRequest QgsFeatureListComboBox::currentFeatureRequest() const
         filtersAttrs << QgsExpression::createFieldEqualityExpression( identifierFields.at( i ), values.at( i ) );
       }
     }
-    const QString expression = filtersAttrs.join( QStringLiteral( " AND " ) );
+    const QString expression = filtersAttrs.join( QLatin1String( " AND " ) );
     return QgsFeatureRequest().setFilterExpression( expression );
   }
 }
@@ -301,21 +299,4 @@ QString QgsFeatureListComboBox::filterExpression() const
 void QgsFeatureListComboBox::setFilterExpression( const QString &filterExpression )
 {
   mModel->setFilterExpression( filterExpression );
-}
-
-void QgsFeatureListComboBox::LineEditState::store( QLineEdit *lineEdit )
-{
-  text = lineEdit->text();
-  selectionStart = lineEdit->selectionStart();
-  selectionLength = lineEdit->selectedText().length();
-  cursorPosition = lineEdit->cursorPosition();
-
-}
-
-void QgsFeatureListComboBox::LineEditState::restore( QLineEdit *lineEdit ) const
-{
-  lineEdit->setText( text );
-  lineEdit->setCursorPosition( cursorPosition );
-  if ( selectionStart > -1 )
-    lineEdit->setSelection( selectionStart, selectionLength );
 }

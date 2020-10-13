@@ -142,8 +142,8 @@ void QgsAuthPkcs12Edit::loadConfig( const QgsStringMap &configmap )
   mConfigMap = configmap;
   lePkcs12Bundle->setText( configmap.value( QStringLiteral( "bundlepath" ) ) );
   lePkcs12KeyPass->setText( configmap.value( QStringLiteral( "bundlepass" ) ) );
-  cbAddCas->setChecked( configmap.value( QStringLiteral( "addcas" ), QStringLiteral( "false " ) ) == QStringLiteral( "true" ) );
-  cbAddRootCa->setChecked( configmap.value( QStringLiteral( "addrootca" ), QStringLiteral( "false " ) ) == QStringLiteral( "true" ) );
+  cbAddCas->setChecked( configmap.value( QStringLiteral( "addcas" ), QStringLiteral( "false " ) ) == QLatin1String( "true" ) );
+  cbAddRootCa->setChecked( configmap.value( QStringLiteral( "addrootca" ), QStringLiteral( "false " ) ) == QLatin1String( "true" ) );
 
   validateConfig();
 }

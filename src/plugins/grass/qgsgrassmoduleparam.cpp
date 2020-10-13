@@ -654,7 +654,7 @@ QString QgsGrassModuleOption::value()
         values.append( mValues[i] );
       }
     }
-    value = values.join( QStringLiteral( "," ) );
+    value = values.join( QLatin1Char( ',' ) );
   }
   return value;
 }
@@ -1148,7 +1148,7 @@ QStringList QgsGrassModuleVectorField::options()
 
   if ( !valueList.isEmpty() )
   {
-    QString opt = mKey + "=" + valueList.join( QStringLiteral( "," ) );
+    QString opt = mKey + "=" + valueList.join( QLatin1Char( ',' ) );
     list << opt;
   }
 
@@ -1364,7 +1364,7 @@ void QgsGrassModuleSelection::onLayerSelectionChanged()
     {
       if ( !list.isEmpty() )
       {
-        list += QLatin1String( "," );
+        list += QLatin1Char( ',' );
       }
       list += QString::number( cat );
     }
@@ -1476,7 +1476,7 @@ void QgsGrassModuleFile::browse()
 
     lastDir = QFileInfo( files[0] ).absolutePath();
 
-    mLineEdit->setText( files.join( QStringLiteral( "," ) ) );
+    mLineEdit->setText( files.join( QLatin1Char( ',' ) ) );
   }
   else
   {

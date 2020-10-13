@@ -362,10 +362,12 @@ void QgsHighlight::paint( QPainter *p )
       // coefficient to subtract alpha using green (temporary fill)
       double k = ( 255. - mBrush.color().alpha() ) / 255.;
       QRgb *line = nullptr;
-      for ( int r = 0; r < image.height(); r++ )
+      const int height = image.height();
+      const int width = image.width();
+      for ( int r = 0; r < height; r++ )
       {
         line = reinterpret_cast<QRgb *>( image.scanLine( r ) );
-        for ( int c = 0; c < image.width(); c++ )
+        for ( int c = 0; c < width; c++ )
         {
           int alpha = qAlpha( line[c] );
           if ( alpha > 0 )

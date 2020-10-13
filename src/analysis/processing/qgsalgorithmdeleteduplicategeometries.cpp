@@ -164,7 +164,7 @@ QVariantMap QgsDeleteDuplicateGeometriesAlgorithm::processAlgorithm( const QVari
 
   // now, fetch all the feature attributes for the unique features only
   // be super-smart and don't re-fetch geometries
-  QSet< QgsFeatureId > outputFeatureIds = uniqueFeatures.keys().toSet();
+  QSet< QgsFeatureId > outputFeatureIds = qgis::listToSet( uniqueFeatures.keys() );
   outputFeatureIds.unite( nullGeometryFeatures );
   step = outputFeatureIds.empty() ? 1 : 100.0 / outputFeatureIds.size();
 

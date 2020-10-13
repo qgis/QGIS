@@ -19,6 +19,7 @@
 #include <qgsapplication.h>
 #include <qgsmultirenderchecker.h>
 #include <qgsrasterlayer.h>
+#include <qgsproviderregistry.h>
 
 /**
  * \ingroup UnitTests
@@ -100,6 +101,27 @@ class TestQgsWmsProvider: public QObject
                                          "STYLES=&FORMAT=&TRANSPARENT=TRUE" ) );
     }
 
+    void noCrsSpecified()
+    {
+      QgsWmsProvider provider( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=&format=image/jpg" ), QgsDataProvider::ProviderOptions(), mCapabilities );
+      QCOMPARE( provider.crs().authid(), QStringLiteral( "EPSG:2056" ) );
+      QgsWmsProvider provider2( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=&format=image/jpg&crs=EPSG:4326" ), QgsDataProvider::ProviderOptions(), mCapabilities );
+      QCOMPARE( provider2.crs().authid(), QStringLiteral( "EPSG:4326" ) );
+
+      QFile file( QStringLiteral( TEST_DATA_DIR ) + "/provider/GetCapabilities2.xml" );
+      QVERIFY( file.open( QIODevice::ReadOnly | QIODevice::Text ) );
+      const QByteArray content = file.readAll();
+      QVERIFY( content.size() > 0 );
+      const QgsWmsParserSettings config;
+
+      QgsWmsCapabilities capabilities;
+      QVERIFY( capabilities.parseResponse( content, config ) );
+      QgsWmsProvider provider3( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=&format=image/jpg&crs=EPSG:4326" ), QgsDataProvider::ProviderOptions(), &capabilities );
+      QCOMPARE( provider3.crs().authid(), QStringLiteral( "EPSG:4326" ) );
+      QgsWmsProvider provider4( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=agri_zones&styles=&format=image/jpg" ), QgsDataProvider::ProviderOptions(), &capabilities );
+      QCOMPARE( provider4.crs().authid(), QStringLiteral( "EPSG:3857" ) );
+    }
+
     void testMBTiles()
     {
       QString dataDir( TEST_DATA_DIR );
@@ -117,6 +139,32 @@ class TestQgsWmsProvider: public QObject
       QVERIFY( layer.isValid() );
 
       QVERIFY( imageCheck( "mbtiles_1", &layer, layer.extent() ) );
+    }
+
+    void providerUriUpdates()
+    {
+      QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( "wms" );
+      QString uriString = QStringLiteral( "crs=EPSG:4326&dpiMode=7&"
+                                          "layers=testlayer&styles&"
+                                          "url=http://localhost:8380/mapserv&"
+                                          "testParam=true" );
+      QVariantMap parts = metadata->decodeUri( uriString );
+      QVariantMap expectedParts { { QString( "crs" ), QVariant( "EPSG:4326" ) },  { QString( "dpiMode" ), QVariant( "7" ) },
+        { QString( "testParam" ), QVariant( "true" ) },  { QString( "layers" ), QVariant( "testlayer" ) },
+        { QString( "styles" ), QString() },  { QString( "url" ), QVariant( "http://localhost:8380/mapserv" ) } };
+      QCOMPARE( parts, expectedParts );
+
+      parts["testParam"] = QVariant( "false" );
+
+      QCOMPARE( parts["testParam"], QVariant( "false" ) );
+
+      QString updatedUri = metadata->encodeUri( parts );
+      QString expectedUri = QStringLiteral( "crs=EPSG:4326&dpiMode=7&"
+                                            "layers=testlayer&styles&"
+                                            "testParam=false&"
+                                            "url=http://localhost:8380/mapserv" );
+      QCOMPARE( updatedUri, expectedUri );
+
     }
 
 

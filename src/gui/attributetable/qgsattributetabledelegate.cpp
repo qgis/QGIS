@@ -202,10 +202,9 @@ void QgsAttributeTableDelegate::paint( QPainter *painter, const QStyleOptionView
     {
       QRect r = option.rect.adjusted( 1, 1, -1, -1 );
       QPen p( QBrush( QColor( 0, 255, 127 ) ), 2 );
-      painter->save();
+      QgsScopedQPainterState painterState( painter );
       painter->setPen( p );
       painter->drawRect( r );
-      painter->restore();
     }
   }
 }

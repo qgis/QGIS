@@ -56,13 +56,15 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
 
     /**
      * Construct a new QgsVectorLayerSaveAsDialog
+     *
+     * \deprecated since QGIS 3.14 - will be removed in QGIS 4.0
      */
-    QgsVectorLayerSaveAsDialog( long srsid, QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr );
+    Q_DECL_DEPRECATED QgsVectorLayerSaveAsDialog( long srsid, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
 
     /**
      * Construct a new QgsVectorLayerSaveAsDialog
      */
-    QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, int options = AllOptions, QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr );
+    QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, int options = AllOptions, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
 
     /**
      * The format in which the export should be written.
@@ -100,8 +102,15 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     /**
      * Returns the internal CRS ID.
      * \see QgsCoordinateReferenceSystem::srsid()
+     * \deprecated since QGIS 3.14 - will be removed in QGIS 4.0. Use crsObject() instead.
      */
-    long crs() const;
+    Q_DECL_DEPRECATED long crs() const;
+
+    /**
+     * Returns the CRS chosen for export
+     * \since QGIS 3.14
+     */
+    QgsCoordinateReferenceSystem crsObject() const;
 
     /**
      * Returns a list of attributes which are selected for saving.
@@ -127,9 +136,10 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
 
     /**
      * Returns type of symbology export.
-        0: No symbology
-        1: Feature symbology
-        2: Symbol level symbology*/
+     * 0: No symbology
+     * 1: Feature symbology
+     * 2: Symbol level symbology
+     */
     int symbologyExport() const;
 
     /**
@@ -221,7 +231,7 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     void setup();
     QList< QPair< QLabel *, QWidget * > > createControls( const QMap<QString, QgsVectorFileWriter::Option *> &options );
 
-    long mCRS;
+    QgsCoordinateReferenceSystem mSelectedCrs;
 
     QgsRectangle mLayerExtent;
     QgsCoordinateReferenceSystem mLayerCrs;

@@ -43,7 +43,8 @@ namespace QgsWms
     PNG8,
     PNG16,
     PNG1,
-    JPEG
+    JPEG,
+    WEBP
   };
 
   /**

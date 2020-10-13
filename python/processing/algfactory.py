@@ -50,6 +50,7 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterMatrix,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterPoint,
+                       QgsProcessingParameterGeometry,
                        QgsProcessingParameterRange,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterVectorLayer,
@@ -326,6 +327,7 @@ class ProcessingAlgFactory():
     FIELD = "FIELD",
     MATRIX = "MATRIX",
     POINT = "POINT",
+    GEOMETRY = "GEOMETRY",
     RANGE = "RANGE",
     AUTH_CFG = "AUTH_CFG"
     SCALE = "SCALE"
@@ -462,6 +464,7 @@ class ProcessingAlgFactory():
             alg.MATRIX: QgsProcessingParameterMatrix
             alg.MULTILAYER: QgsProcessingParameterMultipleLayers
             alg.POINT: QgsProcessingParameterPoint
+            alg.GEOMETRY: QgsProcessingParameterGeometry
             alg.RANGE: QgsProcessingParameterRange
             alg.VECTOR_LAYER: QgsProcessingParameterVectorLayer
             alg.AUTH_CFG: QgsProcessingParameterAuthConfig
@@ -519,6 +522,7 @@ input_type_mapping = {
     ProcessingAlgFactory.MATRIX: QgsProcessingParameterMatrix,
     ProcessingAlgFactory.MULTILAYER: QgsProcessingParameterMultipleLayers,
     ProcessingAlgFactory.POINT: QgsProcessingParameterPoint,
+    ProcessingAlgFactory.GEOMETRY: QgsProcessingParameterGeometry,
     ProcessingAlgFactory.RANGE: QgsProcessingParameterRange,
     ProcessingAlgFactory.VECTOR_LAYER: QgsProcessingParameterVectorLayer,
     ProcessingAlgFactory.AUTH_CFG: QgsProcessingParameterAuthConfig,

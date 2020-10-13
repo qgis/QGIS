@@ -36,7 +36,6 @@ from processing.tools.system import isWindows
 
 
 class gdalcalc(GdalAlgorithm):
-
     INPUT_A = 'INPUT_A'
     INPUT_B = 'INPUT_B'
     INPUT_C = 'INPUT_C'

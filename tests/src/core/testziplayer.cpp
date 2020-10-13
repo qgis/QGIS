@@ -155,7 +155,7 @@ bool TestZipLayer::testZipItem( const QString &myFileName, const QString &myChil
   QgsZipItem *myZipItem = new QgsZipItem( nullptr, myFileInfo.fileName(), myFileName );
   myZipItem->populate();
   // wait until populated in separate thread
-  QTime time;
+  QElapsedTimer time;
   time.start();
   while ( myZipItem->state() != QgsDataItem::Populated && time.elapsed() < 5000 )
   {

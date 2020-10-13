@@ -160,8 +160,13 @@ bool QgsProcessingModelChildAlgorithm::loadVariant( const QVariant &child )
   QVariantMap map = child.toMap();
 
   mId = map.value( QStringLiteral( "id" ) ).toString();
+  if ( mId.isEmpty() )
+    return false;
+
   mConfiguration = map.value( QStringLiteral( "alg_config" ) ).toMap();
   setAlgorithmId( map.value( QStringLiteral( "alg_id" ) ).toString() );
+  if ( algorithmId().isEmpty() )
+    return false;
   mActive = map.value( QStringLiteral( "active" ) ).toBool();
 
   mDependencies.clear();

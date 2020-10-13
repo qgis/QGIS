@@ -99,6 +99,7 @@ done:
 %Import QtWidgets/QtWidgetsmod.sip
 
 %Feature ANDROID
+%Feature VECTOR_MAPPED_TYPE
 
 %Include conversions.sip
 %Include qgsexception.sip

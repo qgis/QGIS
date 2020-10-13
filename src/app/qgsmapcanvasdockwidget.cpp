@@ -44,7 +44,6 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   setAttribute( Qt::WA_DeleteOnClose );
 
   mContents->layout()->setContentsMargins( 0, 0, 0, 0 );
-  mContents->layout()->setMargin( 0 );
   static_cast< QVBoxLayout * >( mContents->layout() )->setSpacing( 0 );
 
   setWindowTitle( name );
@@ -67,7 +66,6 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
 
   mMainWidget->setLayout( new QVBoxLayout() );
   mMainWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
-  mMainWidget->layout()->setMargin( 0 );
 
   mMainWidget->layout()->addWidget( mMapCanvas );
 
@@ -227,6 +225,8 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
     if ( mSyncExtentRadio->isChecked() )
       syncViewCenter( mMainCanvas );
   } );
+
+  connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemeRenamed, this, &QgsMapCanvasDockWidget::currentMapThemeRenamed );
 }
 
 void QgsMapCanvasDockWidget::setMainCanvas( QgsMapCanvas *canvas )
@@ -439,6 +439,14 @@ void QgsMapCanvasDockWidget::menuAboutToShow()
     mMenuPresetActions.append( a );
   }
   mMenu->addActions( mMenuPresetActions );
+}
+
+void QgsMapCanvasDockWidget::currentMapThemeRenamed( const QString &theme, const QString &newTheme )
+{
+  if ( theme == mMapCanvas->theme() )
+  {
+    mMapCanvas->setTheme( newTheme );
+  }
 }
 
 void QgsMapCanvasDockWidget::settingsMenuAboutToShow()

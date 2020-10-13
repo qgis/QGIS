@@ -13,8 +13,8 @@ class QgsTileXYZ
 {
 %Docstring
 Stores coordinates of a tile in a tile matrix set. Tile matrix is identified
-by the zoomLevel(), and the position within tile matrix is given by column()
-and row().
+by the :py:func:`~zoomLevel`, and the position within tile matrix is given by :py:func:`~column`
+and :py:func:`~row`.
 
 .. versionadded:: 3.14
 %End
@@ -111,6 +111,31 @@ Please note that we follow the XYZ convention of X/Y axes, i.e. top-left tile ha
     static QgsTileMatrix fromWebMercator( int mZoomLevel );
 %Docstring
 Returns a tile matrix for the usual web mercator
+%End
+
+    int zoomLevel() const;
+%Docstring
+Returns zoom level of the tile matrix
+%End
+
+    int matrixWidth() const;
+%Docstring
+Returns number of columns of the tile matrix
+%End
+
+    int matrixHeight() const;
+%Docstring
+Returns number of rows of the tile matrix
+%End
+
+    QgsRectangle extent() const;
+%Docstring
+Returns extent of the tile matrix
+%End
+
+    double scale() const;
+%Docstring
+Returns scale denominator of the tile matrix
 %End
 
     QgsRectangle tileExtent( QgsTileXYZ id ) const;

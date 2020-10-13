@@ -29,7 +29,7 @@ Renderer for multiband images with the color components
     virtual QgsMultiBandColorRenderer *clone() const /Factory/;
 
 %Docstring
-QgsMultiBandColorRenderer cannot be copied. Use clone() instead.
+QgsMultiBandColorRenderer cannot be copied. Use :py:func:`~QgsMultiBandColorRenderer.clone` instead.
 %End
 
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) /Factory/;

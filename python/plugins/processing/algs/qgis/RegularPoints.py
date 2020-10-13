@@ -49,7 +49,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class RegularPoints(QgisAlgorithm):
-
     EXTENT = 'EXTENT'
     SPACING = 'SPACING'
     INSET = 'INSET'

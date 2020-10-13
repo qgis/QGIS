@@ -80,13 +80,49 @@ QList<QgsMeshDriverMetadata> QgsProviderMetadata::meshDriversMetadata()
   return QList<QgsMeshDriverMetadata>();
 }
 
-QgsDataProvider *QgsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
+QgsDataProvider *QgsProviderMetadata::createProvider( const QString &uri,
+    const QgsDataProvider::ProviderOptions &options,
+    QgsDataProvider::ReadFlags flags )
 {
   if ( mCreateFunction )
   {
-    return mCreateFunction( uri, options );
+    return mCreateFunction( uri, options, flags );
   }
   return nullptr;
+}
+
+void QgsProviderMetadata::setBoolParameter( QVariantMap &uri, const QString &parameter, const QVariant &value )
+{
+  if ( value.toString().compare( QStringLiteral( "yes" ), Qt::CaseInsensitive ) == 0 ||
+       value.toString().compare( QStringLiteral( "1" ), Qt::CaseInsensitive ) == 0 ||
+       value.toString().compare( QStringLiteral( "true" ), Qt::CaseInsensitive ) == 0 )
+  {
+    uri[ parameter ] = true;
+  }
+  else if ( value.toString().compare( QStringLiteral( "no" ), Qt::CaseInsensitive ) == 0 ||
+            value.toString().compare( QStringLiteral( "0" ), Qt::CaseInsensitive ) == 0 ||
+            value.toString().compare( QStringLiteral( "false" ), Qt::CaseInsensitive ) == 0 )
+  {
+    uri[ parameter ] = false;
+  }
+}
+
+bool QgsProviderMetadata::boolParameter( const QVariantMap &uri, const QString &parameter, bool defaultValue )
+{
+  if ( uri.value( parameter, QString() ).toString().compare( QStringLiteral( "yes" ), Qt::CaseInsensitive ) == 0 ||
+       uri.value( parameter, QString() ).toString().compare( QStringLiteral( "1" ), Qt::CaseInsensitive ) == 0 ||
+       uri.value( parameter, QString() ).toString().compare( QStringLiteral( "true" ), Qt::CaseInsensitive ) == 0 )
+  {
+    return true;
+  }
+  else if ( uri.value( parameter, QString() ).toString().compare( QStringLiteral( "no" ), Qt::CaseInsensitive ) == 0 ||
+            uri.value( parameter, QString() ).toString().compare( QStringLiteral( "0" ), Qt::CaseInsensitive ) == 0 ||
+            uri.value( parameter, QString() ).toString().compare( QStringLiteral( "false" ), Qt::CaseInsensitive ) == 0 )
+  {
+    return false;
+  }
+
+  return defaultValue;
 }
 
 QVariantMap QgsProviderMetadata::decodeUri( const QString & )
@@ -117,6 +153,15 @@ QgsRasterDataProvider *QgsProviderMetadata::createRasterDataProvider(
   const QStringList & )
 {
   return nullptr;
+}
+
+bool QgsProviderMetadata::createMeshData(
+  const QgsMesh &,
+  const QString,
+  const QString &,
+  const QgsCoordinateReferenceSystem & ) const
+{
+  return false;
 }
 
 QList<QPair<QString, QString> > QgsProviderMetadata::pyramidResamplingMethods()
@@ -257,8 +302,8 @@ QMap<QString, T *> QgsProviderMetadata::connections( bool cached )
 
 QgsMeshDriverMetadata::QgsMeshDriverMetadata() = default;
 
-QgsMeshDriverMetadata::QgsMeshDriverMetadata( const QString &name, const QString &description, const MeshDriverCapabilities &capabilities )
-  : mName( name ), mDescription( description ), mCapabilities( capabilities )
+QgsMeshDriverMetadata::QgsMeshDriverMetadata( const QString &name, const QString &description, const MeshDriverCapabilities &capabilities, const QString &writeDatasetOnfileSuffix )
+  : mName( name ), mDescription( description ), mCapabilities( capabilities ), mWriteDatasetOnFileSuffix( writeDatasetOnfileSuffix )
 {
 }
 
@@ -275,4 +320,9 @@ QString QgsMeshDriverMetadata::name() const
 QString QgsMeshDriverMetadata::description() const
 {
   return mDescription;
+}
+
+QString QgsMeshDriverMetadata::writeDatasetOnFileSuffix() const
+{
+  return mWriteDatasetOnFileSuffix;
 }

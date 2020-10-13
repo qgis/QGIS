@@ -34,7 +34,6 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 
 class VectorLayerScatterplot3D(QgisAlgorithm):
-
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     XFIELD = 'XFIELD'
@@ -42,10 +41,10 @@ class VectorLayerScatterplot3D(QgisAlgorithm):
     ZFIELD = 'ZFIELD'
 
     def group(self):
-        return self.tr('Graphics')
+        return self.tr('Plots')
 
     def groupId(self):
-        return 'graphics'
+        return 'plots'
 
     def __init__(self):
         super().__init__()

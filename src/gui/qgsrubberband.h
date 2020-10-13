@@ -20,7 +20,7 @@
 #include "qgsgeometry.h"
 
 #include <QBrush>
-#include <QList>
+#include <QVector>
 #include <QPen>
 #include <QPolygon>
 #include <QObject>
@@ -243,42 +243,45 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      *  \param p             The vertex/point to add
      *  \param doUpdate      Should the map canvas be updated immediately?
      *  \param geometryIndex The index of the feature part (in case of multipart geometries)
+     *  \param ringIndex     The index of the polygon ring (in case of polygons with holes)
      */
-    void addPoint( const QgsPointXY &p, bool doUpdate = true, int geometryIndex = 0 );
+    void addPoint( const QgsPointXY &p, bool doUpdate = true, int geometryIndex = 0, int ringIndex = 0 );
 
     /**
      * Ensures that a polygon geometry is closed and that the last vertex equals the
      * first vertex.
      * \param doUpdate set to TRUE to update the map canvas immediately
-     * \param geometryIndex index of the feature part (in case of multipart geometries)
+     * \param geometryIndex The index of the feature part (in case of multipart geometries)
+     * \param ringIndex     The index of the polygon ring (in case of polygons with holes)
      * \since QGIS 2.16
      */
-    void closePoints( bool doUpdate = true, int geometryIndex = 0 );
+    void closePoints( bool doUpdate = true, int geometryIndex = 0, int ringIndex = 0 );
 
     /**
      * Removes a vertex from the rubberband and (optionally) updates canvas.
      * \param index The index of the vertex/point to remove, negative indexes start at end
      * \param doUpdate Should the map canvas be updated immediately?
      * \param geometryIndex The index of the feature part (in case of multipart geometries)
+     * \param ringIndex     The index of the polygon ring (in case of polygons with holes)
      */
-    void removePoint( int index = 0, bool doUpdate = true, int geometryIndex = 0 );
+    void removePoint( int index = 0, bool doUpdate = true, int geometryIndex = 0, int ringIndex = 0 );
 
     /**
      * Removes the last point. Most useful in connection with undo operations
      */
-    void removeLastPoint( int geometryIndex = 0, bool doUpdate = true );
+    void removeLastPoint( int geometryIndex = 0, bool doUpdate = true, int ringIndex = 0 );
 
     /**
      * Moves the rubber band point specified by index. Note that if the rubber band is
      * not used to track the last mouse position, the first point of the rubber band has two vertices
      */
-    void movePoint( const QgsPointXY &p, int geometryIndex = 0 );
+    void movePoint( const QgsPointXY &p, int geometryIndex = 0, int ringIndex = 0 );
 
     /**
      * Moves the rubber band point specified by index. Note that if the rubber band is
      * not used to track the last mouse position, the first point of the rubber band has two vertices
      */
-    void movePoint( int index, const QgsPointXY &p, int geometryIndex = 0 );
+    void movePoint( int index, const QgsPointXY &p, int geometryIndex = 0, int ringIndex = 0 );
 
     /**
      * Returns number of vertices in feature part
@@ -356,12 +359,16 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      */
     int numberOfVertices() const;
 
+    // TODO QGIS 4: rename i to geometryIndex, j to vertexIndex
+    // TODO QGIS 4: reorder parameters to geom, ring, ring
+
     /**
      * Returns a vertex
      *  \param i   The geometry index
-     *  \param j   The vertex index within geometry i
+     *  \param j   The vertex index within ring ringIndex
+     *  \param ringIndex   The ring index within geometry i
      */
-    const QgsPointXY *getPoint( int i, int j = 0 ) const;
+    const QgsPointXY *getPoint( int i, int j = 0, int ringIndex = 0 ) const;
 
     /**
      * Returns the rubberband as a Geometry
@@ -386,6 +393,13 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      */
     void drawShape( QPainter *p, const QVector<QPointF> &pts );
 
+    /**
+     * Draws shape of the rubber band.
+     *  \param p The QPainter object
+     *  \param rings A list of points used to draw the shape
+     */
+    void drawShape( QPainter *p, const QVector<QPolygonF> &rings );
+
     //! Recalculates needed rectangle
     void updateRect();
 
@@ -405,14 +419,12 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     /**
      * Nested lists used for multitypes
      */
-    QList< QList <QgsPointXY> > mPoints;
+    QVector< QVector< QVector <QgsPointXY> > > mPoints;
     QgsWkbTypes::GeometryType mGeometryType = QgsWkbTypes::PolygonGeometry;
     double mTranslationOffsetX = 0.0;
     double mTranslationOffsetY = 0.0;
 
     QgsRubberBand();
-
-    static QgsPolylineXY getPolyline( const QList<QgsPointXY> &points );
 
 };
 

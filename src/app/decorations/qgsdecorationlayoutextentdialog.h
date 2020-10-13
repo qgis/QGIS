@@ -21,7 +21,7 @@
 #include "ui_qgsdecorationlayoutextentdialog.h"
 #include <QDialog>
 #include "qgis_app.h"
-#include "qgstextrenderer.h"
+#include "qgstextformat.h"
 #include "qgshelp.h"
 #include <memory>
 

@@ -15,8 +15,8 @@ Content-Type: text/xml; charset=utf-8
    <ContactPersonPrimary>
     <ContactPerson>Alessandro Pasotti</ContactPerson>
     <ContactOrganization>QGIS dev team</ContactOrganization>
-    <ContactPosition>originator</ContactPosition>
    </ContactPersonPrimary>
+   <ContactPosition>originator</ContactPosition>
    <ContactElectronicMailAddress>elpaso@itopen.it</ContactElectronicMailAddress>
   </ContactInformation>
   <Fees>conditions unknown</Fees>
@@ -123,8 +123,12 @@ Content-Type: text/xml; charset=utf-8
    </inspire_common:ResponseLanguage>
   </inspire_vs:ExtendedCapabilities>
   <Layer queryable="1">
+   <Name>QGIS Test Project</Name>
    <Title>QGIS Test Project</Title>
    <Abstract>QGIS Test Project</Abstract>
+   <KeywordList>
+    <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
+   </KeywordList>
    <CRS>CRS:84</CRS>
    <CRS>EPSG:4326</CRS>
    <CRS>EPSG:3857</CRS>
@@ -136,10 +140,6 @@ Content-Type: text/xml; charset=utf-8
    </EX_GeographicBoundingBox>
    <BoundingBox maxy="5606043.446" maxx="913283.462" miny="5605986.581" CRS="EPSG:3857" minx="913170.942"/>
    <BoundingBox maxy="8.204165" maxx="44.901599" miny="8.203154" CRS="EPSG:4326" minx="44.901236"/>
-   <Name>QGIS Test Project</Name>
-   <KeywordList>
-    <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
-   </KeywordList>
    <Layer queryable="1">
     <Name>testlayer èé</Name>
     <Title>A test vector layer</Title>

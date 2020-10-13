@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
@@ -26,7 +26,7 @@
    <property name="bottomMargin">
     <number>3</number>
    </property>
-   <item row="3" column="0" colspan="3">
+   <item row="4" column="0" colspan="3">
     <widget class="QTreeWidget" name="mColormapTreeWidget">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -40,11 +40,11 @@
        <height>250</height>
       </size>
      </property>
-     <attribute name="headerDefaultSectionSize">
-      <number>70</number>
-     </attribute>
      <attribute name="headerMinimumSectionSize">
       <number>10</number>
+     </attribute>
+     <attribute name="headerDefaultSectionSize">
+      <number>70</number>
      </attribute>
      <attribute name="headerStretchLastSection">
       <bool>true</bool>
@@ -64,13 +64,6 @@
        <string>Label</string>
       </property>
      </column>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="mColorInterpolationLabel_2">
-     <property name="text">
-      <string>Color ramp</string>
-     </property>
     </widget>
    </item>
    <item row="1" column="1" colspan="2">
@@ -95,9 +88,6 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="1" colspan="2">
-    <widget class="QComboBox" name="mColorInterpolationComboBox"/>
-   </item>
    <item row="0" column="0">
     <widget class="QLabel" name="mColorInterpolationLabel">
      <property name="text">
@@ -106,6 +96,62 @@
     </widget>
    </item>
    <item row="5" column="0" colspan="3">
+    <layout class="QHBoxLayout" name="horizontalLayout_5">
+     <item>
+      <widget class="QLabel" name="mClassificationModeLabel">
+       <property name="text">
+        <string>Mode</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="mClassificationModeComboBox"/>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_4">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="mNumberOfEntriesLabel">
+       <property name="text">
+        <string>Classes</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsSpinBox" name="mNumberOfEntriesSpinBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimum">
+        <number>2</number>
+       </property>
+       <property name="maximum">
+        <number>255</number>
+       </property>
+       <property name="value">
+        <number>5</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="1" colspan="2">
+    <widget class="QComboBox" name="mColorInterpolationComboBox"/>
+   </item>
+   <item row="6" column="0" colspan="3">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <widget class="QPushButton" name="mClassifyButton">
@@ -184,7 +230,7 @@
      </item>
     </layout>
    </item>
-   <item row="6" column="0" colspan="3">
+   <item row="7" column="0" colspan="3">
     <widget class="QCheckBox" name="mClipCheckBox">
      <property name="toolTip">
       <string>If checked, any pixels with a value out of range will not be rendered</string>
@@ -193,59 +239,6 @@
       <string>Clip out of range values</string>
      </property>
     </widget>
-   </item>
-   <item row="4" column="0" colspan="3">
-    <layout class="QHBoxLayout" name="horizontalLayout_5">
-     <item>
-      <widget class="QLabel" name="mClassificationModeLabel">
-       <property name="text">
-        <string>Mode</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="mClassificationModeComboBox"/>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_4">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QLabel" name="mNumberOfEntriesLabel">
-       <property name="text">
-        <string>Classes</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QSpinBox" name="mNumberOfEntriesSpinBox">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimum">
-        <number>2</number>
-       </property>
-       <property name="maximum">
-        <number>255</number>
-       </property>
-       <property name="value">
-        <number>5</number>
-       </property>
-      </widget>
-     </item>
-    </layout>
    </item>
    <item row="2" column="1" colspan="2">
     <widget class="QLineEdit" name="mUnitLineEdit">
@@ -257,14 +250,53 @@
    <item row="2" column="0">
     <widget class="QLabel" name="mUnitLabel">
      <property name="text">
-      <string>Label unit
-suffix</string>
+      <string>Label unit suffix</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="mColorInterpolationLabel_2">
+     <property name="text">
+      <string>Color ramp</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Label precision</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1" colspan="2">
+    <widget class="QgsSpinBox" name="mLabelPrecisionSpinBox">
+     <property name="toolTip">
+      <string>Precision of upper and lower values in label text.
+Positive is number of decimal places
+Negative rounds to powers of 10</string>
+     </property>
+     <property name="minimum">
+      <number>-10</number>
+     </property>
+     <property name="maximum">
+      <number>16</number>
+     </property>
+     <property name="value">
+      <number>4</number>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
   <customwidget>
    <class>QgsColorRampButton</class>
    <extends>QToolButton</extends>
@@ -288,34 +320,6 @@ suffix</string>
   <tabstop>mClipCheckBox</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>

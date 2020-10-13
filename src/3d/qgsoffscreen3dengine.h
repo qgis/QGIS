@@ -48,6 +48,7 @@ namespace Qt3DLogic
   class QLogicAspect;
 }
 
+#define SIP_NO_FILE
 
 /**
  * \ingroup 3d
@@ -55,6 +56,8 @@ namespace Qt3DLogic
  *
  * \note While the on-screen 3D engine also allows capturing of images, its limitation is that
  * the captured images are of the size of the on-screen window.
+ *
+ * \note Not available in Python bindings
  *
  * \since QGIS 3.4
  */

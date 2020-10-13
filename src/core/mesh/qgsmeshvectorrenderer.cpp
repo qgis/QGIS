@@ -32,6 +32,10 @@
 
 ///@cond PRIVATE
 
+#ifndef M_DEG2RAD
+#define M_DEG2RAD 0.0174532925
+#endif
+
 inline double mag( double input )
 {
   if ( input < 0.0 )
@@ -82,7 +86,7 @@ QgsMeshVectorArrowRenderer::QgsMeshVectorArrowRenderer(
   mBufferedExtent.setYMinimum( mBufferedExtent.yMinimum() - extension );
   mBufferedExtent.setYMaximum( mBufferedExtent.yMaximum() + extension );
 
-  mVectorColoring.reset( new QgsMeshVectorColoring( settings ) );
+  mVectorColoring = settings.vectorStrokeColoring();
 }
 
 QgsMeshVectorArrowRenderer::~QgsMeshVectorArrowRenderer() = default;
@@ -91,9 +95,9 @@ void QgsMeshVectorArrowRenderer::draw()
 {
   // Set up the render configuration options
   QPainter *painter = mContext.painter();
-  painter->save();
-  if ( mContext.flags() & QgsRenderContext::Antialiasing )
-    painter->setRenderHint( QPainter::Antialiasing, true );
+
+  QgsScopedQPainterState painterState( painter );
+  mContext.setPainterFlagsUsingContext( painter );
 
   QPen pen = painter->pen();
   pen.setCapStyle( Qt::FlatCap );
@@ -120,8 +124,6 @@ void QgsMeshVectorArrowRenderer::draw()
   {
     drawVectorDataOnEdges( );
   }
-
-  painter->restore();
 }
 
 bool QgsMeshVectorArrowRenderer::calcVectorLineEnd(
@@ -148,7 +150,8 @@ bool QgsMeshVectorArrowRenderer::calcVectorLineEnd(
 
   // Determine the angle of the vector, counter-clockwise, from east
   // (and associated trigs)
-  double vectorAngle = -1.0 * atan( ( -1.0 * yVal ) / xVal );
+  double vectorAngle = -1.0 * atan( ( -1.0 * yVal ) / xVal ) - mContext.mapToPixel().mapRotation() * M_DEG2RAD;
+
   cosAlpha = cos( vectorAngle ) * mag( xVal );
   sinAlpha = sin( vectorAngle ) * mag( xVal );
 
@@ -455,7 +458,7 @@ void QgsMeshVectorArrowRenderer::drawVectorArrow( const QgsPointXY &lineStart, d
 
   // Now actually draw the vector
   QPen pen( mContext.painter()->pen() );
-  pen.setColor( mVectorColoring->color( magnitude ) );
+  pen.setColor( mVectorColoring.color( magnitude ) );
   mContext.painter()->setPen( pen );
   mContext.painter()->drawLine( lineStart.toQPointF(), lineEnd.toQPointF() );
   mContext.painter()->drawPolygon( finalVectorHeadPoints );
@@ -489,7 +492,8 @@ QgsMeshVectorRenderer *QgsMeshVectorRenderer::makeVectorRenderer(
         datasetMagMinimumValue,
         dataType,
         settings,
-        context, size );
+        context,
+        size );
       break;
     case QgsMeshRendererVectorSettings::Streamlines:
       renderer = new QgsMeshVectorStreamlineRenderer(
@@ -518,47 +522,5 @@ QgsMeshVectorRenderer *QgsMeshVectorRenderer::makeVectorRenderer(
   return renderer;
 }
 
-QgsMeshVectorColoring::QgsMeshVectorColoring( const QgsMeshRendererVectorSettings &settings )
-{
-  switch ( settings.coloringMethod() )
-  {
-    case QgsMeshRendererVectorSettings::SingleColor:
-      setColor( settings.color() );
-      break;
-    case QgsMeshRendererVectorSettings::ColorRamp:
-      setColor( settings.colorRampShader() );
-      break;
-  }
-}
-
-void QgsMeshVectorColoring::setColor( const QgsColorRampShader &colorRampShader )
-{
-  mColorRampShader = colorRampShader;
-}
-
-void QgsMeshVectorColoring::setColor( const QColor &color )
-{
-  mColorRampShader = QgsColorRampShader();
-  mSingleColor = color;
-}
-
-QColor QgsMeshVectorColoring::color( double magnitude ) const
-{
-  if ( mColorRampShader.sourceColorRamp() )
-  {
-    if ( mColorRampShader.isEmpty() )
-      return mColorRampShader.sourceColorRamp()->color( 0 );
-
-    int r, g, b, a;
-    if ( mColorRampShader.shade( magnitude, &r, &g, &b, &a ) )
-      return QColor( r, g, b, a );
-    else
-      return QColor( 0, 0, 0, 0 );
-  }
-  else
-  {
-    return mSingleColor;
-  }
-}
 
 ///@endcond

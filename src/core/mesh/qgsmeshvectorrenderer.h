@@ -31,7 +31,7 @@
 #include "qgspointxy.h"
 
 class QgsRenderContext;
-class QgsMeshVectorColoring;
+class QgsInterpolatedLineColor;
 ///@cond PRIVATE
 
 
@@ -135,42 +135,11 @@ class QgsMeshVectorArrowRenderer : public QgsMeshVectorRenderer
     QgsRectangle mBufferedExtent;
     QPen mPen;
 
-    std::unique_ptr<QgsMeshVectorColoring> mVectorColoring;
+    QgsInterpolatedLineColor mVectorColoring;
 
 };
 
-/**
- * \ingroup core
- *
- * Class for coloring vector datasets
- *
- * \note not available in Python bindings
- * \since QGIS 3.14
- */
 
-class QgsMeshVectorColoring
-{
-  public:
-    //! Default constructor
-    QgsMeshVectorColoring() = default;
-    //! Constructor
-    QgsMeshVectorColoring( const QgsMeshRendererVectorSettings &settings );
-
-    //! Sets the color ramp to define the coloring
-    void setColor( const QgsColorRampShader &colorRampShader );
-
-    //! Sets the single color to define the coloring
-    void setColor( const QColor &color );
-
-    //! Returns the color corresponding to the magnitude
-    QColor color( double magnitude ) const;
-
-  private:
-
-    QgsColorRampShader mColorRampShader;
-    QColor mSingleColor = Qt::black;
-
-};
 
 ///@endcond
 

@@ -15,8 +15,9 @@
 
 #include "qgsmodelinputreorderwidget.h"
 #include "qgsgui.h"
+#include "qgsprocessingmodelalgorithm.h"
 #include <QDialogButtonBox>
-#include <QStringListModel>
+#include <QStandardItemModel>
 ///@cond NOT_STABLE
 
 QgsModelInputReorderWidget::QgsModelInputReorderWidget( QWidget *parent )
@@ -24,53 +25,60 @@ QgsModelInputReorderWidget::QgsModelInputReorderWidget( QWidget *parent )
 {
   setupUi( this );
 
-  mModel = new QStringListModel( this );
-  mInputsList->setModel( mModel );
+  mItemModel = new QStandardItemModel( 0, 1, this );
+  mInputsList->setModel( mItemModel );
+
+  mInputsList->setDropIndicatorShown( true );
+  mInputsList->setDragDropOverwriteMode( false );
+  mInputsList->setDragEnabled( true );
+  mInputsList->setDragDropMode( QAbstractItemView::InternalMove );
 
   connect( mButtonUp, &QPushButton::clicked, this, [ = ]
   {
-    int currentRow = mInputsList->currentIndex().row() - 1;
-    if ( currentRow == -1 )
+    int currentRow = mInputsList->currentIndex().row();
+    if ( currentRow == 0 )
       return;
 
-    mModel->moveRow( QModelIndex(), currentRow, QModelIndex(), currentRow + 2 );
+    mItemModel->insertRow( currentRow - 1, mItemModel->takeRow( currentRow ) );
+    mInputsList->setCurrentIndex( mItemModel->index( currentRow - 1, 0 ) );
   } );
 
   connect( mButtonDown, &QPushButton::clicked, this, [ = ]
   {
     int currentRow = mInputsList->currentIndex().row();
-    if ( currentRow == mModel->rowCount() - 1 )
+    if ( currentRow == mItemModel->rowCount() - 1 )
       return;
 
-    mModel->moveRow( QModelIndex(), currentRow, QModelIndex(), currentRow + 2 );
+    mItemModel->insertRow( currentRow + 1, mItemModel->takeRow( currentRow ) );
+    mInputsList->setCurrentIndex( mItemModel->index( currentRow + 1, 0 ) );
   } );
 
 }
 
-void QgsModelInputReorderWidget::setInputs( const QList<QgsProcessingModelParameter> &inputs )
+void QgsModelInputReorderWidget::setModel( QgsProcessingModelAlgorithm *model )
 {
-  mParameters = inputs;
+  mModel = model;
+  mParameters = mModel->orderedParameters();
   QStringList res;
-  for ( const QgsProcessingModelParameter &param : inputs )
-    res << param.description();
-  mModel->setStringList( res );
+  mItemModel->clear();
+  for ( const QgsProcessingModelParameter &param : qgis::as_const( mParameters ) )
+  {
+    QStandardItem *item = new QStandardItem( mModel->parameterDefinition( param.parameterName() )->description() );
+    item->setData( param.parameterName() );
+    item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled );
+    mItemModel->appendRow( item );
+  }
 }
 
 QStringList QgsModelInputReorderWidget::inputOrder() const
 {
-  const QStringList order = mModel->stringList();
-  QStringList res;
-  for ( const QString &description : order )
+  QStringList order;
+  order.reserve( mItemModel->rowCount( ) );
+  for ( int row = 0; row < mItemModel->rowCount(); ++row )
   {
-    for ( auto it = mParameters.constBegin(); it != mParameters.constEnd(); ++it )
-    {
-      if ( it->description() == description )
-      {
-        res << it->parameterName();
-      }
-    }
+    order << mItemModel->data( mItemModel->index( row, 0 ), Qt::UserRole + 1 ).toString();
   }
-  return res;
+  return order;
 }
 
 
@@ -88,9 +96,9 @@ QgsModelInputReorderDialog::QgsModelInputReorderDialog( QWidget *parent )
   setLayout( vl );
 }
 
-void QgsModelInputReorderDialog::setInputs( const QList<QgsProcessingModelParameter> &inputs )
+void QgsModelInputReorderDialog::setModel( QgsProcessingModelAlgorithm *model )
 {
-  mWidget->setInputs( inputs );
+  mWidget->setModel( model );
 }
 
 QStringList QgsModelInputReorderDialog::inputOrder() const

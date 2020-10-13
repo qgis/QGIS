@@ -2017,7 +2017,7 @@ bool DRW_Header::parseDwg( DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbu
   if ( version < DRW::AC1015 )  //pre 2000
   {
     t = buf->getBitShort();
-    QgsDebugMsg( QString( "Unknown short (0): %1" ).arg( t ) );;
+    QgsDebugMsg( QString( "Unknown short (0): %1" ).arg( t ) );
   }
 
   if ( version < DRW::AC1018 )  //pre 2004

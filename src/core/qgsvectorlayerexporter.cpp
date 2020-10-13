@@ -82,7 +82,7 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
 
   mAttributeCount++;
 
-  QgsDebugMsg( QStringLiteral( "Created empty layer" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Created empty layer" ), 2 );
 
   QString uriUpdated( uri );
   // HACK sorry...
@@ -188,6 +188,11 @@ bool QgsVectorLayerExporter::addFeature( QgsFeature &feat, Flags )
   return true;
 }
 
+QString QgsVectorLayerExporter::lastError() const
+{
+  return mErrorMessage;
+}
+
 bool QgsVectorLayerExporter::flushBuffer()
 {
   if ( mFeatureBuffer.count() <= 0 )
@@ -201,7 +206,7 @@ bool QgsVectorLayerExporter::flushBuffer()
     mErrorMessage = QObject::tr( "Creation error for features from #%1 to #%2. Provider errors was: \n%3" )
                     .arg( mFeatureBuffer.first().id() )
                     .arg( mFeatureBuffer.last().id() )
-                    .arg( errors.join( QStringLiteral( "\n" ) ) );
+                    .arg( errors.join( QLatin1Char( '\n' ) ) );
 
     mError = ErrFeatureWriteFailed;
     mErrorCount += mFeatureBuffer.count();

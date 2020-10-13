@@ -218,10 +218,11 @@ void QgsSymbolsListWidget::saveSymbol()
   QStringList symbolTags = saveDlg.tags().split( ',' );
 
   // add new symbol to style and re-populate the list
-  mStyle->addSymbol( saveDlg.name(), mSymbol->clone() );
+  QgsSymbol *newSymbol = mSymbol->clone();
+  mStyle->addSymbol( saveDlg.name(), newSymbol );
 
   // make sure the symbol is stored
-  mStyle->saveSymbol( saveDlg.name(), mSymbol->clone(), saveDlg.isFavorite(), symbolTags );
+  mStyle->saveSymbol( saveDlg.name(), newSymbol, saveDlg.isFavorite(), symbolTags );
 }
 
 void QgsSymbolsListWidget::clipFeaturesToggled( bool checked )
@@ -363,8 +364,8 @@ void QgsSymbolsListWidget::updateSymbolColor()
 
 QgsExpressionContext QgsSymbolsListWidget::createExpressionContext() const
 {
-  if ( mContext.expressionContext() )
-    return QgsExpressionContext( *mContext.expressionContext() );
+  if ( auto *lExpressionContext = mContext.expressionContext() )
+    return QgsExpressionContext( *lExpressionContext );
 
   //otherwise create a default symbol context
   QgsExpressionContext expContext( mContext.globalProjectAtlasMapLayerScopes( layer() ) );
@@ -379,7 +380,8 @@ QgsExpressionContext QgsSymbolsListWidget::createExpressionContext() const
   expContext.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_ORIGINAL_VALUE << QgsExpressionContext::EXPR_SYMBOL_COLOR
                                       << QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT << QgsExpressionContext::EXPR_GEOMETRY_PART_NUM
                                       << QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT << QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM
-                                      << QgsExpressionContext::EXPR_CLUSTER_COLOR << QgsExpressionContext::EXPR_CLUSTER_SIZE );
+                                      << QgsExpressionContext::EXPR_CLUSTER_COLOR << QgsExpressionContext::EXPR_CLUSTER_SIZE
+                                      << QStringLiteral( "symbol_layer_count" ) << QStringLiteral( "symbol_layer_index" ) );
 
   return expContext;
 }

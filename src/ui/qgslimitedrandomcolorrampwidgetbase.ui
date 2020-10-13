@@ -24,7 +24,7 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QSpinBox" name="spinHue1">
+      <widget class="QgsSpinBox" name="spinHue1">
        <property name="maximum">
         <number>359</number>
        </property>
@@ -38,7 +38,7 @@
       </widget>
      </item>
      <item row="0" column="3">
-      <widget class="QSpinBox" name="spinHue2">
+      <widget class="QgsSpinBox" name="spinHue2">
        <property name="maximum">
         <number>359</number>
        </property>
@@ -48,7 +48,7 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QSpinBox" name="spinSat1">
+      <widget class="QgsSpinBox" name="spinSat1">
        <property name="maximum">
         <number>255</number>
        </property>
@@ -69,7 +69,7 @@
       </widget>
      </item>
      <item row="1" column="3">
-      <widget class="QSpinBox" name="spinSat2">
+      <widget class="QgsSpinBox" name="spinSat2">
        <property name="maximum">
         <number>255</number>
        </property>
@@ -79,7 +79,7 @@
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QSpinBox" name="spinVal1">
+      <widget class="QgsSpinBox" name="spinVal1">
        <property name="maximum">
         <number>255</number>
        </property>
@@ -100,7 +100,7 @@
       </widget>
      </item>
      <item row="2" column="3">
-      <widget class="QSpinBox" name="spinVal2">
+      <widget class="QgsSpinBox" name="spinVal2">
        <property name="maximum">
         <number>255</number>
        </property>
@@ -117,7 +117,7 @@
       </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QSpinBox" name="spinCount">
+      <widget class="QgsSpinBox" name="spinCount">
        <property name="minimum">
         <number>1</number>
        </property>
@@ -166,6 +166,11 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
   <customwidget>
    <class>QgsPanelWidget</class>
    <extends>QWidget</extends>

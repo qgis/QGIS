@@ -1,14 +1,1 @@
-<?xml version="1.0" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20001102//EN" "http://www.w3.org/TR/2000/CR-SVG-20001102/DTD/svg-20001102.dtd">
-<svg xmlns="http://www.w3.org/2000/svg" width="500" x="0" y="0" height="500" id="/putrela0/mpasol/blazek/inst/qgiscvs07/plugins/grass/modules/v.overlay.and.3" >
- <rect width="500" x="0" y="0" height="500" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(255,255,255);" />
- <g style="stroke:rgb(0,0,0);stroke-width:0.9;fill:none;" >
-  <clipPath id="clip1" >
-   <rect width="500" x="0" y="0" height="500" />
-  </clipPath>
-  <g style="clip-path:url(#clip1)" >
-   <polygon points="279 150 294 165 309 191 309 207 302 233 297 277 297 310 294 338 278 373 239 385 230 385 227 384 208 351 205 330 197 295 183 260 174 221 175 171 186 135 220 111 224 109 229 113 257 131 279 150" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(170,255,255);" />
-   <polygon points="279 150 294 165 309 191 309 207 302 233 297 277 297 310 294 338 278 373 239 385 230 385 227 384 208 351 205 330 197 295 183 260 174 221 175 171 186 135 220 111 224 109 229 113 257 131 279 150" style="stroke:rgb(0,0,255);stroke-width:15;fill:none;" />
-  </g>
- </g>
-</svg>
+<svg height="500" width="500" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><clipPath id="a"><path d="m0 0h500v500h-500z"/></clipPath><path d="m0 0h500v500h-500z" fill="#fff"/><g clip-path="url(#a)" fill="none" stroke="#000" stroke-width=".9"><path d="m279 150 15 15 15 26v16l-7 26-5 44v33l-3 28-16 35-39 12h-9l-3-1-19-33-3-21-8-35-14-35-9-39 1-50 11-36 34-24 4-2 5 4 28 18z" fill="#aff" stroke="none"/><path d="m279 150 15 15 15 26v16l-7 26-5 44v33l-3 28-16 35-39 12h-9l-3-1-19-33-3-21-8-35-14-35-9-39 1-50 11-36 34-24 4-2 5 4 28 18z" fill="none" stroke="#00f" stroke-width="15"/></g></svg>

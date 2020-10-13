@@ -139,7 +139,7 @@ Sets the FileOpen event receiver
 Set the active theme to the specified theme.
 The theme name should be a single word e.g. 'default','classic'.
 The theme search path usually will be pkgDataPath + "/themes/" + themName + "/"
-but plugin writers etc can use themeName() as a basis for searching
+but plugin writers etc can use :py:func:`~QgsApplication.themeName` as a basis for searching
 for resources in their own datastores e.g. a Qt4 resource bundle.
 
 .. note::
@@ -167,7 +167,7 @@ for resources in their own datastores e.g. a Qt4 resource bundle.
 
     static void setUITheme( const QString &themeName );
 %Docstring
-Set the current UI theme used to style the interface.  Use uiThemes() to
+Set the current UI theme used to style the interface.  Use :py:func:`~QgsApplication.uiThemes` to
 find valid themes to use. Variables found in variables.qss will be added to the stylesheet
 on load.
 
@@ -199,7 +199,7 @@ Returns the path to the authors file.
 %Docstring
 Returns the path to the contributors file.
 Contributors are people who have submitted patches
-but don't have commit access. *
+but don't have commit access.
 %End
 
     static QString developersMapFilePath();
@@ -356,10 +356,14 @@ Cursors are automatically scaled to look like a 16px cursor on 96dpi
 screens.
 %End
 
-    static QPixmap getThemePixmap( const QString &name );
+    static QPixmap getThemePixmap( const QString &name, const QColor &foreColor = QColor(), const QColor &backColor = QColor(), int size = 16 );
 %Docstring
 Helper to get a theme icon as a pixmap. It will fall back to the
 default theme if the active theme does not have the required icon.
+
+If ``foreColor`` or ``backColor`` are specified, then these colors will
+be used for parametrized colors in SVG files wherever available. If
+colors are specified then the ``size`` argument also must be set.
 %End
 
     static QString userStylePath();
@@ -515,8 +519,8 @@ Returns a css style sheet for reports, the ``styleSheetType`` argument
 determines what type of stylesheet is supported by the widget.
 
 Typically you will use this method by doing:
-QString myStyle = QgsApplication.reportStyleSheet();
-textBrowserReport->document()->setDefaultStyleSheet(myStyle);
+QString myStyle = :py:func:`QgsApplication.reportStyleSheet()`;
+textBrowserReport->:py:func:`~QgsApplication.document`->setDefaultStyleSheet(myStyle);
 if you are using a QgsWebView you will need to manually inject
 the CSS into a head -> script tag instead.
 
@@ -531,7 +535,7 @@ the CSS into a head -> script tag instead.
     static QString showSettings();
 %Docstring
 Convenience function to get a summary of the paths used in this
-application instance useful for debugging mainly.*
+application instance useful for debugging mainly.
 %End
 
     static void registerOgrDrivers();
@@ -697,6 +701,13 @@ Returns the application's image cache, used for caching resampled versions of ra
 .. versionadded:: 3.6
 %End
 
+    static QgsSourceCache *sourceCache();
+%Docstring
+Returns the application's source cache, used for caching embedded and remote source strings as local files
+
+.. versionadded:: 3.16
+%End
+
     static QgsNetworkContentFetcherRegistry *networkContentFetcherRegistry() /KeepReference/;
 %Docstring
 Returns the application's network content registry used for fetching temporary files during QGIS session
@@ -732,6 +743,13 @@ Returns the application's layout item registry, used for layout item types.
 .. versionadded:: 3.0
 %End
 
+    static QgsAnnotationItemRegistry *annotationItemRegistry() /KeepReference/;
+%Docstring
+Returns the application's annotation item registry, used for annotation item types.
+
+.. versionadded:: 3.16
+%End
+
     static QgsGpsConnectionRegistry *gpsConnectionRegistry() /KeepReference/;
 %Docstring
 Returns the application's GPS connection registry, used for managing GPS connections.
@@ -762,7 +780,7 @@ Returns the application's bookmark manager, used for storing installation-wide b
 
     static QgsStyleModel *defaultStyleModel();
 %Docstring
-Returns a shared QgsStyleModel containing the default style library (see QgsStyle.defaultStyle()).
+Returns a shared QgsStyleModel containing the default style library (see :py:func:`QgsStyle.defaultStyle()`).
 
 Using this shared model instead of creating a new QgsStyleModel improves performance.
 
@@ -845,6 +863,13 @@ Returns registry of available 3D renderers.
 .. versionadded:: 3.0
 %End
 
+    static Qgs3DSymbolRegistry *symbol3DRegistry() /KeepReference/;
+%Docstring
+Returns registry of available 3D symbols.
+
+.. versionadded:: 3.16
+%End
+
     static QgsScaleBarRendererRegistry *scaleBarRendererRegistry() /KeepReference/;
 %Docstring
 Gets the registry of available scalebar renderers.
@@ -859,6 +884,17 @@ Returns registry of available project storage implementations.
 .. versionadded:: 3.2
 %End
 
+    static QgsLocalizedDataPathRegistry *localizedDataPathRegistry() /KeepReference/;
+%Docstring
+Returns the registry of data repositories
+These are used as paths for basemaps, logos, etc. which can be referenced
+differently across work stations.
+
+.. seealso:: :py:class:`QgsLocalizedDataPathRegistry`
+
+.. versionadded:: 3.14
+%End
+
     static QString nullRepresentation();
 %Docstring
 This string is used to represent the value `NULL` throughout QGIS.
@@ -871,7 +907,7 @@ in a widget or sending it to a web browser.
 
     static void setNullRepresentation( const QString &nullRepresentation );
 %Docstring
-\copydoc nullRepresentation()
+\copydoc :py:func:`~QgsApplication.nullRepresentation`
 %End
 
     static QVariantMap customVariables();
@@ -944,7 +980,7 @@ Emitted whenever a custom global variable changes.
 
     void nullRepresentationChanged();
 %Docstring
-\copydoc nullRepresentation()
+\copydoc :py:func:`~QgsApplication.nullRepresentation`
 %End
 
     void requestForTranslatableObjects( QgsTranslationContext *translationContext );

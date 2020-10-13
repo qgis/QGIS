@@ -43,7 +43,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class merge(GdalAlgorithm):
-
     INPUT = 'INPUT'
     PCT = 'PCT'
     SEPARATE = 'SEPARATE'

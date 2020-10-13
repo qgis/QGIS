@@ -291,7 +291,7 @@ the target filename if the auxiliary storage is opened in copy mode.
     QString errorString() const;
 %Docstring
 Returns the underlying error string describing potential errors
-happening in saveAs(). Empty by default.
+happening in :py:func:`~QgsAuxiliaryStorage.saveAs`. Empty by default.
 
 .. versionadded:: 3.4
 %End

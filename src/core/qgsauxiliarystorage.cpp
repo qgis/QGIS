@@ -79,7 +79,7 @@ QgsAuxiliaryLayer::QgsAuxiliaryLayer( const QString &pkField, const QString &fil
   mJoinInfo.setEditable( true );
   mJoinInfo.setUpsertOnEdit( true );
   mJoinInfo.setCascadedDelete( true );
-  mJoinInfo.setJoinFieldNamesBlackList( QStringList() << QStringLiteral( "rowid" ) ); // introduced by ogr provider
+  mJoinInfo.setJoinFieldNamesBlockList( QStringList() << QStringLiteral( "rowid" ) ); // introduced by ogr provider
 }
 
 QgsAuxiliaryLayer *QgsAuxiliaryLayer::clone( QgsVectorLayer *target ) const
@@ -847,7 +847,7 @@ QgsDataSourceUri QgsAuxiliaryStorage::parseOgrUri( const QgsDataSourceUri &uri )
   if ( tableParts.count() < 1 )
     return newUri;
 
-  const QString tableName = tableParts[0].replace( QStringLiteral( "layername=" ), QString() );
+  const QString tableName = tableParts[0].replace( QLatin1String( "layername=" ), QString() );
 
   newUri.setDataSource( QString(), tableName, QString() );
   newUri.setDatabase( databasePath );

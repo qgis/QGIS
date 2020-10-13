@@ -373,6 +373,24 @@
              <string>Label Settings</string>
             </attribute>
            </widget>
+           <widget class="QWidget" name="tabLegendPatchShapes">
+            <attribute name="icon">
+             <iconset resource="../../images/images.qrc">
+              <normaloff>:/images/themes/default/legend.svg</normaloff>:/images/themes/default/legend.svg</iconset>
+            </attribute>
+            <attribute name="title">
+             <string>Legend Patch Shapes</string>
+            </attribute>
+           </widget>
+           <widget class="QWidget" name="tab3DSymbols">
+            <attribute name="icon">
+             <iconset resource="../../images/images.qrc">
+              <normaloff>:/images/themes/default/3d.svg</normaloff>:/images/themes/default/3d.svg</iconset>
+            </attribute>
+            <attribute name="title">
+             <string>3D Symbols</string>
+            </attribute>
+           </widget>
           </widget>
          </item>
          <item>

@@ -18,10 +18,14 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
+#include <QPointer>
+
 #include "qgspanelwidget.h"
 #include "ui_qgsmaskingwidgetbase.h"
 #include "qgis_sip.h"
 #include "qgis_gui.h"
+
+class QgsMessageBarItem;
 
 /**
  * \ingroup gui
@@ -43,14 +47,31 @@ class GUI_EXPORT QgsMaskingWidget: public QgsPanelWidget, private Ui::QgsMasking
     //! Applies the changes
     void apply();
 
+    //! Widget has been populated or not
+    bool hasBeenPopulated();
+
   signals:
     //! Emitted when a change is performed
     void widgetChanged();
+
+  protected:
+
+    void showEvent( QShowEvent * ) override;
+
+  private slots:
+
+    /**
+     * Called whenever mask sources or targets selection has changed
+     */
+    void onSelectionChanged();
 
   private:
     QgsVectorLayer *mLayer = nullptr;
     //! Populate the mask source and target widgets
     void populate();
+
+    QPointer<QgsMessageBarItem> mMessageBarItem;
+    bool mMustPopulate = false;
 };
 
 #endif

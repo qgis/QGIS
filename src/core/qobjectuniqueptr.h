@@ -245,7 +245,7 @@ template<typename T>
 QObjectUniquePtr<T>
 QObjectUniquePtrFromVariant( const QVariant &variant )
 {
-  return QObjectUniquePtr<T>( qobject_cast<T *>( QtSharedPointer::weakPointerFromVariant_internal( variant ).data() ) );
+  return QObjectUniquePtr<T>( qobject_cast<T *>( QtSharedPointer::weakPointerFromVariant_internal( variant ).toStrongRef().data() ) );
 }
 
 #endif // QOBJECTUNIQUEPTR_H

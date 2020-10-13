@@ -337,7 +337,7 @@ void QgsRuleBasedRendererWidget::refineRuleScalesGui( const QModelIndexList &ind
     if ( ok )
       scales.append( scale );
     else
-      QMessageBox::information( this, tr( "Scale Refinement" ), QString( tr( "\"%1\" is not valid scale denominator, ignoring it." ) ).arg( item ) );
+      QMessageBox::information( this, tr( "Scale Refinement" ), tr( "\"%1\" is not valid scale denominator, ignoring it." ).arg( item ) );
   }
 
   for ( const QModelIndex &index : indexList )
@@ -479,7 +479,7 @@ void QgsRuleBasedRendererWidget::restoreSectionWidths()
 void QgsRuleBasedRendererWidget::copy()
 {
   QModelIndexList indexlist = viewRules->selectionModel()->selectedRows();
-  QgsDebugMsg( QStringLiteral( "%1" ).arg( indexlist.count() ) );
+  QgsDebugMsgLevel( QString::number( indexlist.count() ), 2 );
 
   if ( indexlist.isEmpty() )
     return;
@@ -699,7 +699,6 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Ru
   , mContext( context )
 {
   setupUi( this );
-  layout()->setMargin( 0 );
   layout()->setContentsMargins( 0, 0, 0, 0 );
 
   mElseRadio->setChecked( mRule->isElse() );
@@ -762,6 +761,7 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Ru
 
   QVBoxLayout *layout = new QVBoxLayout( this );
   QgsVScrollArea *scrollArea = new QgsVScrollArea( this );
+  scrollArea->setFrameShape( QFrame::NoFrame );
   layout->addWidget( scrollArea );
 
   buttonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok );
@@ -1028,7 +1028,7 @@ QVariant QgsRuleBasedRendererModel::headerData( int section, Qt::Orientation ori
   if ( orientation == Qt::Horizontal && role == Qt::DisplayRole && section >= 0 && section < 7 )
   {
     QStringList lst;
-    lst << tr( "Label" ) << tr( "Rule" ) << tr( "Min. scale" ) << tr( "Max. scale" ) << tr( "Count" ) << tr( "Duplicate count" );
+    lst << tr( "Label" ) << tr( "Rule" ) << tr( "Min. Scale" ) << tr( "Max. Scale" ) << tr( "Count" ) << tr( "Duplicate Count" );
     return lst[section];
   }
   else if ( orientation == Qt::Horizontal && role == Qt::ToolTipRole )

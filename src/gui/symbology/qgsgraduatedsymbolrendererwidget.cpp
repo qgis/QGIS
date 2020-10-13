@@ -51,7 +51,7 @@
 #include "qgsprocessingguiregistry.h"
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingwidgetwrapper.h"
-
+#include "qgstemporalcontroller.h"
 
 
 
@@ -165,7 +165,7 @@ QVariant QgsGraduatedSymbolRendererModel::data( const QModelIndex &index, int ro
       {
         int decimalPlaces = mRenderer->classificationMethod()->labelPrecision() + 2;
         if ( decimalPlaces < 0 ) decimalPlaces = 0;
-        return QLocale().toString( range.lowerValue(), 'f', decimalPlaces ) + " - " + QLocale().toString( range.upperValue(), 'f', decimalPlaces );
+        return QString( QLocale().toString( range.lowerValue(), 'f', decimalPlaces ) + " - " + QLocale().toString( range.upperValue(), 'f', decimalPlaces ) );
       }
       case 2:
         return range.label();
@@ -419,18 +419,22 @@ QgsExpressionContext QgsGraduatedSymbolRendererWidget::createExpressionContext()
              << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
              << QgsExpressionContextUtils::atlasScope( nullptr );
 
-  if ( mContext.mapCanvas() )
+  if ( auto *lMapCanvas = mContext.mapCanvas() )
   {
-    expContext << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )
-               << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
+    expContext << QgsExpressionContextUtils::mapSettingsScope( lMapCanvas->mapSettings() )
+               << new QgsExpressionContextScope( lMapCanvas->expressionContextScope() );
+    if ( const QgsExpressionContextScopeGenerator *generator = dynamic_cast< const QgsExpressionContextScopeGenerator * >( lMapCanvas->temporalController() ) )
+    {
+      expContext << generator->createExpressionContextScope();
+    }
   }
   else
   {
     expContext << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
   }
 
-  if ( vectorLayer() )
-    expContext << QgsExpressionContextUtils::layerScope( vectorLayer() );
+  if ( auto *lVectorLayer = vectorLayer() )
+    expContext << QgsExpressionContextUtils::layerScope( lVectorLayer );
 
   // additional scopes
   const auto constAdditionalExpressionContextScopes = mContext.additionalExpressionContextScopes();
@@ -931,7 +935,7 @@ void QgsGraduatedSymbolRendererWidget::applyChangeToSymbol()
 
   QItemSelectionModel *m = viewGraduated->selectionModel();
   QModelIndexList selectedIndexes = m->selectedRows( 1 );
-  if ( m && !selectedIndexes.isEmpty() )
+  if ( !selectedIndexes.isEmpty() )
   {
     const auto constSelectedIndexes = selectedIndexes;
     for ( const QModelIndex &idx : constSelectedIndexes )
@@ -1022,7 +1026,7 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
 
   // If complexity >= oN^2, warn for big dataset (more than 50k records)
   // and give the user the chance to cancel
-  if ( method && method->codeComplexity() > 1 && mLayer->featureCount() > 50000 )
+  if ( method->codeComplexity() > 1 && mLayer->featureCount() > 50000 )
   {
     if ( QMessageBox::Cancel == QMessageBox::question( this, tr( "Apply Classification" ), tr( "Natural break classification (Jenks) is O(n2) complexity, your classification may take a long time.\nPress cancel to abort breaks calculation or OK to continue." ), QMessageBox::Cancel, QMessageBox::Ok ) )
     {
@@ -1300,7 +1304,7 @@ QList<QgsSymbol *> QgsGraduatedSymbolRendererWidget::selectedSymbols()
 
   QItemSelectionModel *m = viewGraduated->selectionModel();
   QModelIndexList selectedIndexes = m->selectedRows( 1 );
-  if ( m && !selectedIndexes.isEmpty() )
+  if ( !selectedIndexes.isEmpty() )
   {
     const QgsRangeList &ranges = mRenderer->ranges();
     QModelIndexList::const_iterator indexIt = selectedIndexes.constBegin();

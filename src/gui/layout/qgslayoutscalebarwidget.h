@@ -51,12 +51,16 @@ class GUI_EXPORT QgsLayoutScaleBarWidget: public QgsLayoutItemBaseWidget, public
 
   private slots:
     void lineSymbolChanged();
+    void divisionSymbolChanged();
+    void subdivisionSymbolChanged();
     void fillSymbol1Changed();
     void fillSymbol2Changed();
     void mHeightSpinBox_valueChanged( double d );
     void mSegmentSizeSpinBox_valueChanged( double d );
     void mSegmentsLeftSpinBox_valueChanged( int i );
     void mNumberOfSegmentsSpinBox_valueChanged( int i );
+    void mNumberOfSubdivisionsSpinBox_valueChanged( int i );
+    void mSubdivisionsHeightSpinBox_valueChanged( double d );
     void mUnitLabelLineEdit_textChanged( const QString &text );
     void mMapUnitsPerBarUnitSpinBox_valueChanged( double d );
     void mStyleComboBox_currentIndexChanged( const QString &text );

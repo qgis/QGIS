@@ -34,7 +34,7 @@ class QgsRenderContext;
  * \ingroup core
  * \class QgsPieDiagram
  */
-class CORE_EXPORT QgsPieDiagram: public QgsDiagram
+class CORE_EXPORT QgsPieDiagram: public QgsDiagram SIP_NODEFAULTCTORS
 {
   public:
     QgsPieDiagram();

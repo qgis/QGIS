@@ -115,19 +115,21 @@ class CORE_EXPORT QgsProviderRegistry
      * \param providerKey identifier of the provider
      * \param dataSource  string containing data source for the provider
      * \param options provider options
+     * \param flags provider flags since QGIS 3.16
      * \returns new instance of provider or NULLPTR on error
      *
      * \see createRasterDataProvider()
      */
     QgsDataProvider *createProvider( const QString &providerKey,
                                      const QString &dataSource,
-                                     const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() ) SIP_FACTORY;
+                                     const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions(),
+                                     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) SIP_FACTORY;
 
     /**
      * Returns the provider capabilities
-        \param providerKey identifier of the provider
-        \since QGIS 2.6
-        \deprecated QGIS 3.10 (use instead capabilities() method of individual data item provider)
+     * \param providerKey identifier of the provider
+     * \since QGIS 2.6
+     * \deprecated QGIS 3.10 (use instead capabilities() method of individual data item provider)
      */
     Q_DECL_DEPRECATED int providerCapabilities( const QString &providerKey ) const SIP_DEPRECATED;
 
@@ -281,59 +283,59 @@ class CORE_EXPORT QgsProviderRegistry
 
     /**
      * Returns vector file filter string
-
-      Returns a string suitable for a QFileDialog of vector file formats
-      supported by all data providers.
-
-      This walks through all data providers appending calls to their
-      fileVectorFilters to a string, which is then returned.
-
-      \note
-
-      It'd be nice to eventually be raster/vector neutral.
+     *
+     * Returns a string suitable for a QFileDialog of vector file formats
+     * supported by all data providers.
+     *
+     * This walks through all data providers appending calls to their
+     * fileVectorFilters to a string, which is then returned.
+     *
+     * \note
+     *
+     * It'd be nice to eventually be raster/vector neutral.
      */
     virtual QString fileVectorFilters() const;
 
     /**
      * Returns raster file filter string
-
-      Returns a string suitable for a QFileDialog of raster file formats
-      supported by all data providers.
-
-      This walks through all data providers appending calls to their
-      buildSupportedRasterFileFilter to a string, which is then returned.
-
-      \note This replaces QgsRasterLayer::buildSupportedRasterFileFilter()
+     *
+     * Returns a string suitable for a QFileDialog of raster file formats
+     * supported by all data providers.
+     *
+     * This walks through all data providers appending calls to their
+     * buildSupportedRasterFileFilter to a string, which is then returned.
+     *
+     * \note This replaces QgsRasterLayer::buildSupportedRasterFileFilter()
      */
     virtual QString fileRasterFilters() const;
 
     /**
      * Returns mesh file filter string
-
-      Returns a string suitable for a QFileDialog of mesh file formats
-      supported by all data providers.
-
-      This walks through all data providers appending calls to their
-      fileMeshFilters to a string, which is then returned.
-
-      \see fileMeshDatasetFilters()
-
-      \since QGIS 3.6
+     *
+     * Returns a string suitable for a QFileDialog of mesh file formats
+     * supported by all data providers.
+     *
+     * This walks through all data providers appending calls to their
+     * fileMeshFilters to a string, which is then returned.
+     *
+     * \see fileMeshDatasetFilters()
+     *
+     * \since QGIS 3.6
      */
     virtual QString fileMeshFilters() const;
 
     /**
      * Returns mesh's dataset file filter string
-
-      Returns a string suitable for a QFileDialog of mesh datasets file formats
-      supported by all data providers.
-
-      This walks through all data providers appending calls to their
-      fileMeshFilters to a string, which is then returned.
-
-      \see fileMeshFilters()
-
-      \since QGIS 3.6
+     *
+     * Returns a string suitable for a QFileDialog of mesh datasets file formats
+     * supported by all data providers.
+     *
+     * This walks through all data providers appending calls to their
+     * fileMeshFilters to a string, which is then returned.
+     *
+     * \see fileMeshFilters()
+     *
+     * \since QGIS 3.6
      */
     virtual QString fileMeshDatasetFilters() const;
 

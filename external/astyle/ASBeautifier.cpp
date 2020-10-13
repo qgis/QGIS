@@ -3048,7 +3048,7 @@ void ASBeautifier::parseCurrentLine(const string& line)
 
 				isInHeader = true;
 
-				vector<const string*>* lastTempStack = nullptr;;
+				vector<const string*>* lastTempStack = nullptr;
 				if (!tempStacks->empty())
 					lastTempStack = tempStacks->back();
 

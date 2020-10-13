@@ -292,7 +292,7 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
     // uses QJsonDocument which doesn't recognise this as valid JSON although it technically is
     if ( field().displayString( val ).isEmpty() )
     {
-      if ( val.type() == QVariant::String && val.toString() != QStringLiteral( "\"\"" ) )
+      if ( val.type() == QVariant::String && val.toString() != QLatin1String( "\"\"" ) )
       {
         v = val.toString().append( "\"" ).insert( 0, "\"" );
       }

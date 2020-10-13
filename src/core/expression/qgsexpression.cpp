@@ -105,7 +105,7 @@ QString QgsExpression::quotedValue( const QVariant &value, QVariant::Type type )
       {
         quotedValues += quotedValue( v );
       }
-      return QStringLiteral( "array( %1 )" ).arg( quotedValues.join( QStringLiteral( ", " ) ) );
+      return QStringLiteral( "array( %1 )" ).arg( quotedValues.join( QLatin1String( ", " ) ) );
     }
 
     default:
@@ -159,13 +159,16 @@ QgsExpression::QgsExpression( const QgsExpression &other )
 
 QgsExpression &QgsExpression::operator=( const QgsExpression &other )
 {
-  if ( !d->ref.deref() )
+  if ( this != &other )
   {
-    delete d;
-  }
+    if ( !d->ref.deref() )
+    {
+      delete d;
+    }
 
-  d = other.d;
-  d->ref.ref();
+    d = other.d;
+    d->ref.ref();
+  }
   return *this;
 }
 
@@ -247,7 +250,7 @@ QSet<int> QgsExpression::referencedAttributeIndexes( const QgsFields &fields ) c
   {
     if ( fieldName == QgsFeatureRequest::ALL_ATTRIBUTES )
     {
-      referencedIndexes = fields.allAttributesList().toSet();
+      referencedIndexes = qgis::listToSet( fields.allAttributesList() );
       break;
     }
     const int idx = fields.lookupField( fieldName );
@@ -272,15 +275,11 @@ void QgsExpression::initGeomCalculator( const QgsExpressionContext *context )
   // Set the geometry calculator from the context if it has not been set by setGeomCalculator()
   if ( context && ! d->mCalc )
   {
-    QString ellipsoid = context->variable( QStringLiteral( "project_ellipsoid" ) ).toString();
-    QgsCoordinateReferenceSystem crs = context->variable( QStringLiteral( "_layer_crs" ) ).value<QgsCoordinateReferenceSystem>();
-    QgsCoordinateTransformContext tContext = context->variable( QStringLiteral( "_project_transform_context" ) ).value<QgsCoordinateTransformContext>();
-    if ( crs.isValid() )
-    {
-      d->mCalc = std::shared_ptr<QgsDistanceArea>( new QgsDistanceArea() );
-      d->mCalc->setEllipsoid( ellipsoid.isEmpty() ? geoNone() : ellipsoid );
-      d->mCalc->setSourceCrs( crs, tContext );
-    }
+    // actually don't do it right away, cos it's expensive to create and only a very small number of expression
+    // functions actually require it. Let's lazily construct it when needed
+    d->mDaEllipsoid = context->variable( QStringLiteral( "project_ellipsoid" ) ).toString();
+    d->mDaCrs = context->variable( QStringLiteral( "_layer_crs" ) ).value<QgsCoordinateReferenceSystem>();
+    d->mDaTransformContext = context->variable( QStringLiteral( "_project_transform_context" ) ).value<QgsCoordinateTransformContext>();
   }
 
   // Set the distance units from the context if it has not been set by setDistanceUnits()
@@ -397,6 +396,14 @@ QString QgsExpression::dump() const
 
 QgsDistanceArea *QgsExpression::geomCalculator()
 {
+  if ( !d->mCalc && d->mDaCrs.isValid() )
+  {
+    // calculator IS required, so initialize it now...
+    d->mCalc = std::shared_ptr<QgsDistanceArea>( new QgsDistanceArea() );
+    d->mCalc->setEllipsoid( d->mDaEllipsoid.isEmpty() ? geoNone() : d->mDaEllipsoid );
+    d->mCalc->setSourceCrs( d->mDaCrs, d->mDaTransformContext );
+  }
+
   return d->mCalc.get();
 }
 
@@ -584,7 +591,7 @@ QString QgsExpression::helpText( QString name )
             if ( a.mOptional )
             {
               hasOptionalArgs = true;
-              helpContents += QStringLiteral( "[" );
+              helpContents += QLatin1Char( '[' );
             }
 
             helpContents += delim;
@@ -594,7 +601,7 @@ QString QgsExpression::helpText( QString name )
                             );
 
             if ( a.mOptional )
-              helpContents += QStringLiteral( "]" );
+              helpContents += QLatin1Char( ']' );
           }
           delim = QStringLiteral( "," );
         }
@@ -710,6 +717,7 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "project_abstract" ), QCoreApplication::translate( "variable_help", "Project abstract, taken from project metadata." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "project_creation_date" ), QCoreApplication::translate( "variable_help", "Project creation date, taken from project metadata." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "project_identifier" ), QCoreApplication::translate( "variable_help", "Project identifier, taken from project metadata." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "project_last_saved" ), QCoreApplication::translate( "variable_help", "Date/time when project was last saved." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "project_keywords" ), QCoreApplication::translate( "variable_help", "Project keywords, taken from project metadata." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "project_area_units" ), QCoreApplication::translate( "variable_help", "Area unit for current project, used when calculating areas of geometries." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "project_distance_units" ), QCoreApplication::translate( "variable_help", "Distance unit for current project, used when calculating lengths of geometries." ) );
@@ -728,6 +736,7 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "layout_page" ), QCoreApplication::translate( "variable_help", "Current page number in composition." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "layout_pageheight" ), QCoreApplication::translate( "variable_help", "Composition page height in mm." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "layout_pagewidth" ), QCoreApplication::translate( "variable_help", "Composition page width in mm." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "layout_pageoffsets" ), QCoreApplication::translate( "variable_help", "Array of Y coordinate of the top of each page." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "layout_dpi" ), QCoreApplication::translate( "variable_help", "Composition resolution (DPI)." ) );
 
   //atlas variables
@@ -742,7 +751,7 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "atlas_geometry" ), QCoreApplication::translate( "variable_help", "Current atlas feature geometry." ) );
 
   //layout item variables
-  sVariableHelpTexts()->insert( QStringLiteral( "item_id" ), QCoreApplication::translate( "variable_help", "Layout item user ID (not necessarily unique)." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "item_id" ), QCoreApplication::translate( "variable_help", "Layout item user-assigned ID (not necessarily unique)." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "item_uuid" ), QCoreApplication::translate( "variable_help", "layout item unique ID." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "item_left" ), QCoreApplication::translate( "variable_help", "Left position of layout item (in mm)." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "item_top" ), QCoreApplication::translate( "variable_help", "Top position of layout item (in mm)." ) );
@@ -772,12 +781,21 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "map_end_time" ), QCoreApplication::translate( "variable_help", "End of the map's temporal time range (as a datetime value)" ) );
   sVariableHelpTexts()->insert( QStringLiteral( "map_interval" ), QCoreApplication::translate( "variable_help", "Duration of the map's temporal time range (as an interval value)" ) );
 
+  sVariableHelpTexts()->insert( QStringLiteral( "frame_rate" ), QCoreApplication::translate( "variable_help", "Number of frames per second during animation playback" ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "frame_number" ), QCoreApplication::translate( "variable_help", "Current frame number during animation playback" ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "frame_duration" ), QCoreApplication::translate( "variable_help", "Temporal duration of each animation frame (as an interval value)" ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "animation_start_time" ), QCoreApplication::translate( "variable_help", "Start of the animation's overall temporal time range (as a datetime value)" ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "animation_end_time" ), QCoreApplication::translate( "variable_help", "End of the animation's overall temporal time range (as a datetime value)" ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "animation_interval" ), QCoreApplication::translate( "variable_help", "Duration of the animation's overall temporal time range (as an interval value)" ) );
+
   // vector tile layer variables
   sVariableHelpTexts()->insert( QStringLiteral( "zoom_level" ), QCoreApplication::translate( "variable_help", "Zoom level of the tile that is being rendered (derived from the current map scale). Normally in interval [0, 20]." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "vector_tile_zoom" ), QCoreApplication::translate( "variable_help", "Exact zoom level of the tile that is being rendered (derived from the current map scale). Normally in interval [0, 20]. Unlike @zoom_level, this variable is a floating point value which can be used to interpolated values between two integer zoom levels." ) );
 
   sVariableHelpTexts()->insert( QStringLiteral( "row_number" ), QCoreApplication::translate( "variable_help", "Stores the number of the current row." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "grid_number" ), QCoreApplication::translate( "variable_help", "Current grid annotation value." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "grid_axis" ), QCoreApplication::translate( "variable_help", "Current grid annotation axis (e.g., 'x' for longitude, 'y' for latitude)." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "column_number" ), QCoreApplication::translate( "variable_help", "Stores the number of the current column." ) );
 
   // map canvas item variables
   sVariableHelpTexts()->insert( QStringLiteral( "canvas_cursor_point" ), QCoreApplication::translate( "variable_help", "Last cursor position on the canvas in the project's geographical coordinates." ) );
@@ -814,6 +832,10 @@ void QgsExpression::initVariableHelp()
 
   sVariableHelpTexts()->insert( QStringLiteral( "symbol_color" ), QCoreApplication::translate( "symbol_color", "Color of symbol used to render the feature." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "symbol_angle" ), QCoreApplication::translate( "symbol_angle", "Angle of symbol used to render the feature (valid for marker symbols only)." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "symbol_layer_count" ), QCoreApplication::translate( "symbol_layer_count", "Total number of symbol layers in the symbol." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "symbol_layer_index" ), QCoreApplication::translate( "symbol_layer_index", "Current symbol layer index." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "symbol_marker_row" ), QCoreApplication::translate( "symbol_marker_row", "Row number for marker (valid for point pattern fills only)." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "symbol_marker_column" ), QCoreApplication::translate( "symbol_marker_column", "Column number for marker (valid for point pattern fills only)." ) );
 
   sVariableHelpTexts()->insert( QStringLiteral( "symbol_label" ), QCoreApplication::translate( "symbol_label", "Label for the symbol (either a user defined label or the default autogenerated label)." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "symbol_id" ), QCoreApplication::translate( "symbol_id", "Internal ID of the symbol." ) );
@@ -952,9 +974,23 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
   }
   else if ( value.canConvert< QgsInterval >() )
   {
-    //result is a feature
     QgsInterval interval = value.value<QgsInterval>();
-    return startToken + tr( "interval: %1 days" ).arg( interval.days() ) + endToken;
+    if ( interval.days() > 1 )
+    {
+      return startToken + tr( "interval: %1 days" ).arg( interval.days() ) + endToken;
+    }
+    else if ( interval.hours() > 1 )
+    {
+      return startToken + tr( "interval: %1 hours" ).arg( interval.hours() ) + endToken;
+    }
+    else if ( interval.minutes() > 1 )
+    {
+      return startToken + tr( "interval: %1 minutes" ).arg( interval.minutes() ) + endToken;
+    }
+    else
+    {
+      return startToken + tr( "interval: %1 seconds" ).arg( interval.seconds() ) + endToken;
+    }
   }
   else if ( value.canConvert< QgsGradientColorRamp >() )
   {
@@ -1006,8 +1042,8 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
       }
     }
     if ( !map.empty() )
-      mapStr += QStringLiteral( " " );
-    mapStr += QStringLiteral( "}" );
+      mapStr += QLatin1Char( ' ' );
+    mapStr += QLatin1Char( '}' );
     return mapStr;
   }
   else if ( value.type() == QVariant::List || value.type() == QVariant::StringList )
@@ -1030,8 +1066,8 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
       }
     }
     if ( !list.empty() )
-      listStr += QStringLiteral( " " );
-    listStr += QStringLiteral( "]" );
+      listStr += QLatin1Char( ' ' );
+    listStr += QLatin1Char( ']' );
     return listStr;
   }
   else

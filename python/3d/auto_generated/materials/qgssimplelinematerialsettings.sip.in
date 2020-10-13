@@ -1,0 +1,85 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/materials/qgssimplelinematerialsettings.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsSimpleLineMaterialSettings : QgsAbstractMaterialSettings
+{
+%Docstring
+Basic shading material used for rendering simple lines as solid line components.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+   exposed to the Python bindings as a tech preview only.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgssimplelinematerialsettings.h"
+%End
+  public:
+
+    QgsSimpleLineMaterialSettings();
+%Docstring
+Constructor for QgsSimpleLineMaterialSettings.
+%End
+
+    virtual QString type() const;
+
+
+    static bool supportsTechnique( QgsMaterialSettingsRenderingTechnique technique );
+%Docstring
+Returns ``True`` if the specified ``technique`` is supported by the material.
+%End
+
+    static QgsAbstractMaterialSettings *create() /Factory/;
+%Docstring
+Returns a new instance of QgsSimpleLineMaterialSettings.
+%End
+
+    virtual QgsSimpleLineMaterialSettings *clone() const /Factory/;
+
+
+    QColor ambient() const;
+%Docstring
+Returns the ambient color component.
+
+.. seealso:: :py:func:`setAmbient`
+%End
+
+    void setAmbient( const QColor &ambient );
+%Docstring
+Sets the ``ambient`` color component.
+
+.. seealso:: :py:func:`ambient`
+%End
+
+    virtual QMap<QString, QString> toExportParameters() const;
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+    virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+
+
+    bool operator==( const QgsSimpleLineMaterialSettings &other ) const;
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/3d/materials/qgssimplelinematerialsettings.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

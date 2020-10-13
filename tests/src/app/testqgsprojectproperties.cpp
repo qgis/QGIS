@@ -24,6 +24,8 @@
 #include "qgsbearingnumericformat.h"
 #include "qgsrasterlayer.h"
 #include "qgsprojecttimesettings.h"
+#include "qgsmaplayertemporalproperties.h"
+#include "qgsrasterlayertemporalproperties.h"
 
 /**
  * \ingroup UnitTests
@@ -280,11 +282,11 @@ void TestQgsProjectProperties::testTimeSettings()
                                 QDateTime( QDate( 2020, 2, 28 ), QTime(), Qt::UTC ) );
 
   firstLayer->temporalProperties()->setIsActive( true );
-  firstLayer->temporalProperties()->setFixedTemporalRange( firstRange );
+  qobject_cast< QgsRasterLayerTemporalProperties * >( firstLayer->temporalProperties() )->setFixedTemporalRange( firstRange );
   secondLayer->temporalProperties()->setIsActive( true );
-  secondLayer->temporalProperties()->setFixedTemporalRange( secondRange );
+  qobject_cast< QgsRasterLayerTemporalProperties * >( secondLayer->temporalProperties() )->setFixedTemporalRange( secondRange );
   thirdLayer->temporalProperties()->setIsActive( true );
-  thirdLayer->temporalProperties()->setFixedTemporalRange( thirdRange );
+  qobject_cast< QgsRasterLayerTemporalProperties * >( thirdLayer->temporalProperties() )->setFixedTemporalRange( thirdRange );
 
   QgsProject::instance()->addMapLayers( { firstLayer, secondLayer, thirdLayer } );
 

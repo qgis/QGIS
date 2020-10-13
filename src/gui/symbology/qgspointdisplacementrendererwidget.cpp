@@ -80,7 +80,7 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   blockAllSignals( true );
 
   mPlacementComboBox->addItem( tr( "Ring" ), QgsPointDisplacementRenderer::Ring );
-  mPlacementComboBox->addItem( tr( "Concentric rings" ), QgsPointDisplacementRenderer::ConcentricRings );
+  mPlacementComboBox->addItem( tr( "Concentric Rings" ), QgsPointDisplacementRenderer::ConcentricRings );
   mPlacementComboBox->addItem( tr( "Grid" ), QgsPointDisplacementRenderer::Grid );
 
   //insert attributes into combo box
@@ -205,8 +205,8 @@ void QgsPointDisplacementRendererWidget::setContext( const QgsSymbolWidgetContex
 QgsExpressionContext QgsPointDisplacementRendererWidget::createExpressionContext() const
 {
   QgsExpressionContext context;
-  if ( mContext.expressionContext() )
-    context = *mContext.expressionContext();
+  if ( auto *lExpressionContext = mContext.expressionContext() )
+    context = *lExpressionContext;
   else
     context.appendScopes( mContext.globalProjectAtlasMapLayerScopes( mLayer ) );
   QgsExpressionContextScope scope;

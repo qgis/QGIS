@@ -37,7 +37,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class gdalinfo(GdalAlgorithm):
-
     INPUT = 'INPUT'
     MIN_MAX = 'MIN_MAX'
     STATS = 'STATS'

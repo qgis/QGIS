@@ -285,7 +285,7 @@ QList<QDomElement> QgsGmlSchema::domElements( const QDomElement &element, const 
         }
         else
         {
-          list.append( domElements( el, names.join( QStringLiteral( "." ) ) ) );
+          list.append( domElements( el, names.join( QLatin1Char( '.' ) ) ) );
         }
       }
     }
@@ -357,7 +357,7 @@ void QgsGmlSchema::startElement( const XML_Char *el, const XML_Char **attr )
   }
 
   mParsePathStack.append( elementName );
-  QString path = mParsePathStack.join( QStringLiteral( "." ) );
+  QString path = mParsePathStack.join( QLatin1Char( '.' ) );
 
   QStringList splitName = elementName.split( NS_SEPARATOR );
   QString localName = splitName.last();
@@ -514,7 +514,7 @@ void QgsGmlSchema::addAttribute( const QString &name, const QString &value )
 {
   // It is not geometry attribute -> analyze value
   bool ok;
-  value.toInt( &ok );
+  ( void ) value.toInt( &ok );
   QVariant::Type type = QVariant::String;
   if ( ok )
   {
@@ -522,7 +522,7 @@ void QgsGmlSchema::addAttribute( const QString &name, const QString &value )
   }
   else
   {
-    value.toDouble( &ok );
+    ( void ) value.toDouble( &ok );
     if ( ok )
     {
       type = QVariant::Double;

@@ -20,6 +20,7 @@
 #include <QWidget>
 #include <QStringList>
 #include "qgis_gui.h"
+#include "qgis.h"
 
 #define SIP_NO_FILE
 
@@ -51,7 +52,7 @@ namespace QgsGuiUtils
    * Qt::WindowMaximizeButtonHint is included but will be ignored if
    * the dialog is a fixed size and does not have a size grip.
    */
-  static const Qt::WindowFlags ModalDialogFlags = nullptr;
+  static const Qt::WindowFlags ModalDialogFlags = Qt::WindowFlags();
 
   /**
    * Minimum magnification level allowed in map canvases.
@@ -69,26 +70,26 @@ namespace QgsGuiUtils
   constexpr double CANVAS_MAGNIFICATION_MAX = 16.0;
 
   /**
-    Open files, preferring to have the default file selector be the
-    last one used, if any; also, prefer to start in the last directory
-    associated with filterName.
-
-    \param filterName the name of the filter; used for persistent store key
-    \param filters    the file filters used for QFileDialog
-    \param selectedFiles string list of selected files; will be empty if none selected
-    \param enc        encoding?
-    \param title      the title for the dialog
-    \param cancelAll  add button to cancel further requests
-    \note
-
-    Stores persistent settings under /UI/.  The sub-keys will be
-    filterName and filterName + "Dir".
-
-    Opens dialog on last directory associated with the filter name, or
-    the current working directory if this is the first time invoked
-    with the current filter name.
-
-    This method returns true if cancel all was clicked, otherwise false
+   * Open files, preferring to have the default file selector be the
+   * last one used, if any; also, prefer to start in the last directory
+   * associated with filterName.
+   *
+   * \param filterName the name of the filter; used for persistent store key
+   * \param filters    the file filters used for QFileDialog
+   * \param selectedFiles string list of selected files; will be empty if none selected
+   * \param enc        encoding?
+   * \param title      the title for the dialog
+   * \param cancelAll  add button to cancel further requests
+   * \note
+   *
+   * Stores persistent settings under /UI/.  The sub-keys will be
+   * filterName and filterName + "Dir".
+   *
+   * Opens dialog on last directory associated with the filter name, or
+   * the current working directory if this is the first time invoked
+   * with the current filter name.
+   *
+   * This method returns true if cancel all was clicked, otherwise false
   */
 
   bool GUI_EXPORT openFilesRememberingFilter( QString const &filterName,
@@ -189,6 +190,23 @@ namespace QgsGuiUtils
    * \since QGIS 3.8
    */
   QSize GUI_EXPORT panelIconSize( QSize size );
+
+  /**
+   * Returns a localized string representation of the \a value with the appropriate number of
+   * decimals supported by the \a rasterDataType.
+   * Note that for floating point types the number of decimals may exceed the actual internal
+   * precision because the precision is always calculated on the mantissa and the conversion to
+   * string interprets the precision as decimal places.
+   * \since QGIS 3.16
+   */
+  QString displayValueWithMaximumDecimals( const Qgis::DataType rasterDataType, const double value );
+
+  /**
+   * Returns the maximum number of significant digits a for the given \a rasterDataType.
+   * \since QGIS 3.16
+   */
+  int significantDigits( const Qgis::DataType rasterDataType );
+
 }
 
 /**

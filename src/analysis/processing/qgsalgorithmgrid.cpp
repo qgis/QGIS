@@ -286,7 +286,7 @@ void QgsGridAlgorithm::createLineGrid( std::unique_ptr< QgsFeatureSink > &sink, 
 
   while ( x <= mGridExtent.xMaximum() )
   {
-    if ( feedback && feedback->isCanceled() )
+    if ( feedback->isCanceled() )
       break;
 
     QgsPoint pt1 = QgsPoint( x, mGridExtent.yMaximum() );

@@ -107,7 +107,7 @@ bool QgsAbstractReportSection::writeXml( QDomElement &parentElement, QDomDocumen
 
 bool QgsAbstractReportSection::readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
-  if ( element.nodeName() != QStringLiteral( "Section" ) )
+  if ( element.nodeName() != QLatin1String( "Section" ) )
   {
     return false;
   }
@@ -135,7 +135,7 @@ bool QgsAbstractReportSection::readXml( const QDomElement &element, const QDomDo
   for ( int i = 0; i < sectionItemList.size(); ++i )
   {
     const QDomElement currentSectionElem = sectionItemList.at( i ).toElement();
-    if ( currentSectionElem.nodeName() != QStringLiteral( "Section" ) )
+    if ( currentSectionElem.nodeName() != QLatin1String( "Section" ) )
       continue;
 
     const QString sectionType = currentSectionElem.attribute( QStringLiteral( "type" ) );
@@ -248,112 +248,101 @@ bool QgsAbstractReportSection::next()
 {
   mSectionNumber++;
 
-  switch ( mNextSection )
+  if ( mNextSection == Header )
   {
-    case Header:
-    {
-      // regardless of whether we have a header or not, the next section will be the body
-      mNextSection = Body;
+    // regardless of whether we have a header or not, the next section will be the body
+    mNextSection = Body;
 
-      // if we have a header, then the current section will be the header
-      if ( mHeaderEnabled && mHeader )
+    // if we have a header, then the current section will be the header
+    if ( mHeaderEnabled && mHeader )
+    {
+      if ( prepareHeader() )
       {
-        if ( prepareHeader() )
+        mCurrentLayout = mHeader.get();
+        return true;
+      }
+    }
+
+    // but if not, then the current section is a body
+    mNextSection = Body;
+  }
+
+  if ( mNextSection == Body )
+  {
+    mNextSection = Children;
+
+    bool ok = false;
+    // if we have a next body available, use it
+    QgsLayout *body = nextBody( ok );
+    if ( body )
+    {
+      mNextChild = 0;
+      mCurrentLayout = body;
+      return true;
+    }
+  }
+
+  if ( mNextSection == Children )
+  {
+    bool bodiesAvailable = false;
+    do
+    {
+      // we iterate through all the section's children...
+      while ( mNextChild < mChildren.count() )
+      {
+        // ... staying on the current child only while it still has content for us
+        if ( mChildren.at( mNextChild )->next() )
         {
-          mCurrentLayout = mHeader.get();
+          mCurrentLayout = mChildren.at( mNextChild )->layout();
           return true;
+        }
+        else
+        {
+          // no more content for this child, so move to next child
+          mNextChild++;
         }
       }
 
-      // but if not, then the current section is a body
-      mNextSection = Body;
-      FALLTHROUGH
-    }
-
-    case Body:
-    {
-      mNextSection = Children;
-
-      bool ok = false;
+      // used up all the children
       // if we have a next body available, use it
-      QgsLayout *body = nextBody( ok );
-      if ( body )
+      QgsLayout *body = nextBody( bodiesAvailable );
+      if ( bodiesAvailable )
       {
         mNextChild = 0;
+
+        for ( QgsAbstractReportSection *section : qgis::as_const( mChildren ) )
+        {
+          section->reset();
+        }
+      }
+      if ( body )
+      {
         mCurrentLayout = body;
         return true;
       }
-
-      FALLTHROUGH
     }
+    while ( bodiesAvailable );
 
-    case Children:
+    // all children and bodies have spent their content, so move to the footer
+    mNextSection = Footer;
+  }
+
+  if ( mNextSection == Footer )
+  {
+    // regardless of whether we have a footer or not, this is the last section
+    mNextSection = End;
+
+    // if we have a footer, then the current section will be the footer
+    if ( mFooterEnabled && mFooter )
     {
-      bool bodiesAvailable = false;
-      do
+      if ( prepareFooter() )
       {
-        // we iterate through all the section's children...
-        while ( mNextChild < mChildren.count() )
-        {
-          // ... staying on the current child only while it still has content for us
-          if ( mChildren.at( mNextChild )->next() )
-          {
-            mCurrentLayout = mChildren.at( mNextChild )->layout();
-            return true;
-          }
-          else
-          {
-            // no more content for this child, so move to next child
-            mNextChild++;
-          }
-        }
-
-        // used up all the children
-        // if we have a next body available, use it
-        QgsLayout *body = nextBody( bodiesAvailable );
-        if ( bodiesAvailable )
-        {
-          mNextChild = 0;
-
-          for ( QgsAbstractReportSection *section : qgis::as_const( mChildren ) )
-          {
-            section->reset();
-          }
-        }
-        if ( body )
-        {
-          mCurrentLayout = body;
-          return true;
-        }
+        mCurrentLayout = mFooter.get();
+        return true;
       }
-      while ( bodiesAvailable );
-
-      // all children and bodies have spent their content, so move to the footer
-      mNextSection = Footer;
-      FALLTHROUGH
     }
 
-    case Footer:
-    {
-      // regardless of whether we have a footer or not, this is the last section
-      mNextSection = End;
-
-      // if we have a footer, then the current section will be the footer
-      if ( mFooterEnabled && mFooter )
-      {
-        if ( prepareFooter() )
-        {
-          mCurrentLayout = mFooter.get();
-          return true;
-        }
-      }
-
-      // if not, then we're all done
-      FALLTHROUGH
-    }
-
-    case End:
-      break;
+    // if not, then we're all done
   }
 
   mCurrentLayout = nullptr;

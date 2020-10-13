@@ -428,7 +428,11 @@ void QgsPalettedRendererWidget::classify()
 
     mGatherer = new QgsPalettedRendererClassGatherer( mRasterLayer, mBandComboBox->currentBand(), mModel->classData(), btnColorRamp->colorRamp() );
 
-    connect( mGatherer, &QgsPalettedRendererClassGatherer::progressChanged, mCalculatingProgressBar, &QProgressBar::setValue );
+    connect( mGatherer, &QgsPalettedRendererClassGatherer::progressChanged, mCalculatingProgressBar, [ = ]( int progress )
+    {
+      mCalculatingProgressBar->setValue( progress );
+    } );
+
     mCalculatingProgressBar->show();
     mCancelButton->show();
     connect( mCancelButton, &QPushButton::clicked, mGatherer, &QgsPalettedRendererClassGatherer::stop );
@@ -693,7 +697,7 @@ Qt::ItemFlags QgsPalettedRendererModel::flags( const QModelIndex &index ) const
       f = f | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
       break;
   }
-  return f | Qt::ItemIsEnabled | Qt::ItemIsSelectable;;
+  return f | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
 bool QgsPalettedRendererModel::removeRows( int row, int count, const QModelIndex &parent )
@@ -727,7 +731,7 @@ bool QgsPalettedRendererModel::insertRows( int row, int count, const QModelIndex
   beginInsertRows( QModelIndex(), row, row + count - 1 );
   for ( int i = row; i < row + count; ++i, ++nextValue )
   {
-    mData.insert( i, QgsPalettedRasterRenderer::Class( nextValue, QColor( 200, 200, 200 ), QString::number( nextValue ) ) );
+    mData.insert( i, QgsPalettedRasterRenderer::Class( nextValue, QColor( 200, 200, 200 ), QLocale().toString( nextValue ) ) );
   }
   endInsertRows();
   emit classesChanged();
@@ -828,6 +832,8 @@ void QgsPalettedRendererClassGatherer::run()
 
   // combine existing classes with new classes
   QgsPalettedRasterRenderer::ClassData::iterator classIt = newClasses.begin();
+  emit progressChanged( 0 );
+  qlonglong i = 0;
   for ( ; classIt != newClasses.end(); ++classIt )
   {
     // check if existing classes contains this same class
@@ -840,6 +846,8 @@ void QgsPalettedRendererClassGatherer::run()
         break;
       }
     }
+    i ++;
+    emit progressChanged( 100 * ( i / static_cast<float>( newClasses.count() ) ) );
   }
   mClasses = newClasses;
 

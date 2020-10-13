@@ -1,6 +1,7 @@
 {
   "name": "from_json",
   "type": "function",
+  "groups": ["Maps"],
   "description": "Loads a JSON formatted string.",
   "arguments": [
     {"arg":"string", "description":"JSON string"}],

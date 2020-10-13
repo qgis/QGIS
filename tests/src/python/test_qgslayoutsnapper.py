@@ -288,7 +288,7 @@ class TestQgsLayoutSnapper(unittest.TestCase):
         l = QgsLayout(p)
         page = QgsLayoutItemPage(l)
         page.setPageSize('A4')
-        #l.pageCollection().addPage(page)
+        # l.pageCollection().addPage(page)
         s = QgsLayoutSnapper(l)
         guides = l.guides()
 
@@ -339,7 +339,7 @@ class TestQgsLayoutSnapper(unittest.TestCase):
         self.assertTrue(snapped)
         self.assertEqual(point, 22)
 
-        #snap to top
+        # snap to top
         point, snapped = s.snapPointToItems(7.5, Qt.Vertical, 1, [], line)
         self.assertTrue(snapped)
         self.assertEqual(point, 8)
@@ -380,7 +380,7 @@ class TestQgsLayoutSnapper(unittest.TestCase):
         l = QgsLayout(p)
         page = QgsLayoutItemPage(l)
         page.setPageSize('A4')
-        #l.pageCollection().addPage(page)
+        # l.pageCollection().addPage(page)
         s = QgsLayoutSnapper(l)
         guides = l.guides()
 
@@ -437,7 +437,7 @@ class TestQgsLayoutSnapper(unittest.TestCase):
         self.assertTrue(snapped)
         self.assertEqual(point, -0.5)
 
-        #snap to top
+        # snap to top
         point, snapped = s.snapPointsToItems([7.5], Qt.Vertical, 1, [], line)
         self.assertTrue(snapped)
         self.assertEqual(point, 0.5)

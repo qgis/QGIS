@@ -37,6 +37,12 @@ QString QgsNetworkAnalysisAlgorithmBase::groupId() const
   return QStringLiteral( "networkanalysis" );
 }
 
+QgsProcessingAlgorithm::Flags QgsNetworkAnalysisAlgorithmBase::flags() const
+{
+  // TODO -- remove the dependency on the project from these algorithms, it shouldn't be required
+  return QgsProcessingAlgorithm::flags() | FlagRequiresProject;
+}
+
 void QgsNetworkAnalysisAlgorithmBase::addCommonParams()
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Vector layer representing network" ), QList< int >() << QgsProcessing::TypeVectorLine ) );

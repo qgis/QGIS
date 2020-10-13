@@ -9,6 +9,282 @@
 
 
 
+class QgsLayoutItemMapAtlasClippingSettings : QObject
+{
+%Docstring
+Contains settings relating to clipping a layout map by the current atlas feature.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgslayoutitemmap.h"
+%End
+  public:
+
+    QgsLayoutItemMapAtlasClippingSettings( QgsLayoutItemMap *map /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsLayoutItemMapAtlasClippingSettings, with the specified ``map`` parent.
+%End
+
+    bool enabled() const;
+%Docstring
+Returns ``True`` if the map content should be clipped to the current atlas feature.
+
+.. seealso:: :py:func:`setEnabled`
+%End
+
+    void setEnabled( bool enabled );
+%Docstring
+Sets whether the map content should be clipped to the current atlas feature.
+
+.. seealso:: :py:func:`enabled`
+%End
+
+    QgsMapClippingRegion::FeatureClippingType featureClippingType() const;
+%Docstring
+Returns the feature clipping type to apply when clipping to the current atlas feature.
+
+.. seealso:: :py:func:`setFeatureClippingType`
+%End
+
+    void setFeatureClippingType( QgsMapClippingRegion::FeatureClippingType type );
+%Docstring
+Sets the feature clipping ``type`` to apply when clipping to the current atlas feature.
+
+.. seealso:: :py:func:`featureClippingType`
+%End
+
+    bool forceLabelsInsideFeature() const;
+%Docstring
+Returns ``True`` if labels should only be placed inside the atlas feature geometry.
+
+.. seealso:: :py:func:`setForceLabelsInsideFeature`
+%End
+
+    void setForceLabelsInsideFeature( bool forceInside );
+%Docstring
+Sets whether labels should only be placed inside the atlas feature geometry.
+
+.. seealso:: :py:func:`forceLabelsInsideFeature`
+%End
+
+    bool restrictToLayers() const;
+%Docstring
+Returns ``True`` if clipping should be restricted to a subset of layers.
+
+.. seealso:: :py:func:`layersToClip`
+
+.. seealso:: :py:func:`setRestrictToLayers`
+%End
+
+    void setRestrictToLayers( bool enabled );
+%Docstring
+Sets whether clipping should be restricted to a subset of layers.
+
+.. seealso:: :py:func:`setLayersToClip`
+
+.. seealso:: :py:func:`restrictToLayers`
+%End
+
+    QList< QgsMapLayer * > layersToClip() const;
+%Docstring
+Returns the list of map layers to clip to the atlas feature.
+
+.. note::
+
+   This setting is only used if :py:func:`~QgsLayoutItemMapAtlasClippingSettings.restrictToLayers` is ``True``.
+
+.. seealso:: :py:func:`restrictToLayers`
+
+.. seealso:: :py:func:`setLayersToClip`
+%End
+
+    void setLayersToClip( const QList< QgsMapLayer * > &layers );
+%Docstring
+Sets the list of map ``layers`` to clip to the atlas feature.
+
+.. note::
+
+   This setting is only used if :py:func:`~QgsLayoutItemMapAtlasClippingSettings.restrictToLayers` is ``True``.
+
+.. seealso:: :py:func:`restrictToLayers`
+
+.. seealso:: :py:func:`layersToClip`
+%End
+
+    bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+%Docstring
+Stores settings in a DOM element, where ``element`` is the DOM element
+corresponding to a 'LayoutMap' tag.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+    bool readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context );
+%Docstring
+Sets the setting's state from a DOM document, where ``element`` is the DOM
+node corresponding to a 'LayoutMap' tag.
+
+.. seealso:: :py:func:`writeXml`
+%End
+
+  signals:
+
+    void changed();
+%Docstring
+Emitted when the atlas clipping settings are changed.
+%End
+
+};
+
+
+class QgsLayoutItemMapItemClipPathSettings : QObject
+{
+%Docstring
+Contains settings relating to clipping a layout map by another layout item.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgslayoutitemmap.h"
+%End
+  public:
+
+    QgsLayoutItemMapItemClipPathSettings( QgsLayoutItemMap *map /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsLayoutItemMapItemClipPathSettings, with the specified ``map`` parent.
+%End
+
+    bool isActive() const;
+%Docstring
+Returns ``True`` if the item clipping is enabled and set to a valid source item.
+
+.. seealso:: :py:func:`enabled`
+
+.. seealso:: :py:func:`sourceItem`
+%End
+
+    bool enabled() const;
+%Docstring
+Returns ``True`` if the map content should be clipped to the associated item.
+
+.. seealso:: :py:func:`setEnabled`
+%End
+
+    void setEnabled( bool enabled );
+%Docstring
+Sets whether the map content should be clipped to the associated item.
+
+.. seealso:: :py:func:`enabled`
+%End
+
+    QgsGeometry clippedMapExtent() const;
+%Docstring
+Returns the geometry to use for clipping the parent map, in the map item's CRS.
+
+.. seealso:: :py:func:`clipPathInMapItemCoordinates`
+%End
+
+    QgsGeometry clipPathInMapItemCoordinates() const;
+%Docstring
+Returns the clipping path geometry, in the map item's coordinate space.
+
+.. warning::
+
+   The return path is not in geographic coordinates, rather the map
+   layout item's QGraphicsItem coordinate space. Use :py:func:`~QgsLayoutItemMapItemClipPathSettings.clippedMapExtent` to retrieve
+   the clip path in the map's CRS.
+
+.. seealso:: :py:func:`clippedMapExtent`
+%End
+
+    QgsMapClippingRegion toMapClippingRegion() const;
+%Docstring
+Returns the clip path as a map clipping region.
+%End
+
+    void setSourceItem( QgsLayoutItem *item );
+%Docstring
+Sets the source ``item`` which will provide the clipping path for the map.
+
+The specified ``item`` must return the QgsLayoutItem.FlagProvidesClipPath flag.
+
+.. seealso:: :py:func:`sourceItem`
+%End
+
+    QgsLayoutItem *sourceItem();
+%Docstring
+Returns the source item which will provide the clipping path for the map, or ``None``
+if no item is set.
+
+.. seealso:: :py:func:`setSourceItem`
+%End
+
+    QgsMapClippingRegion::FeatureClippingType featureClippingType() const;
+%Docstring
+Returns the feature clipping type to apply when clipping to the associated item.
+
+.. seealso:: :py:func:`setFeatureClippingType`
+%End
+
+    void setFeatureClippingType( QgsMapClippingRegion::FeatureClippingType type );
+%Docstring
+Sets the feature clipping ``type`` to apply when clipping to the associated item.
+
+.. seealso:: :py:func:`featureClippingType`
+%End
+
+    bool forceLabelsInsideClipPath() const;
+%Docstring
+Returns ``True`` if labels should only be placed inside the clip path geometry.
+
+.. seealso:: :py:func:`setForceLabelsInsideClipPath`
+%End
+
+    void setForceLabelsInsideClipPath( bool forceInside );
+%Docstring
+Sets whether labels should only be placed inside the clip path geometry.
+
+.. seealso:: :py:func:`forceLabelsInsideClipPath`
+%End
+
+    bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+%Docstring
+Stores settings in a DOM element, where ``element`` is the DOM element
+corresponding to a 'LayoutMap' tag.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+    bool readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context );
+%Docstring
+Sets the setting's state from a DOM document, where ``element`` is the DOM
+node corresponding to a 'LayoutMap' tag.
+
+.. seealso:: :py:func:`writeXml`
+
+.. seealso:: :py:func:`finalizeRestoreFromXml`
+%End
+
+    void finalizeRestoreFromXml();
+%Docstring
+To be called after all pending items have been restored from XML.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+  signals:
+
+    void changed();
+%Docstring
+Emitted when the item clipping settings are changed.
+%End
+
+};
+
+
 class QgsLayoutItemMap : QgsLayoutItem, QgsTemporalRangeObject
 {
 %Docstring
@@ -72,7 +348,7 @@ Sets the map item's ``flags``, which control how the map content is drawn.
 
     void assignFreeId();
 %Docstring
-Sets the map id() to a number not yet used in the layout. The existing id() is kept if it is not in use.
+Sets the map :py:func:`~QgsLayoutItemMap.id` to a number not yet used in the layout. The existing :py:func:`~QgsLayoutItemMap.id` is kept if it is not in use.
 %End
 
     virtual QString displayName() const;
@@ -164,7 +440,7 @@ If the map rotation is 0, the result is the same as currentMapExtent
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
 Returns coordinate reference system used for rendering the map.
-This will match the presetCrs() if that is set, or if a preset
+This will match the :py:func:`~QgsLayoutItemMap.presetCrs` if that is set, or if a preset
 CRS is not set then the map's CRS will follow the composition's
 project's CRS.
 
@@ -201,7 +477,7 @@ setting. If the CRS is not valid then the project CRS will be used to render the
 Returns whether a stored layer set should be used
 or the current layer set from the project associated with the layout. This is just a GUI flag,
 and itself does not change which layers are rendered in the map.
-Instead, use setLayers() to control which layers are rendered.
+Instead, use :py:func:`~QgsLayoutItemMap.setLayers` to control which layers are rendered.
 
 .. seealso:: :py:func:`setKeepLayerSet`
 
@@ -213,7 +489,7 @@ Instead, use setLayers() to control which layers are rendered.
 Sets whether the stored layer set should be used
 or the current layer set of the associated project. This is just a GUI flag,
 and itself does not change which layers are rendered in the map.
-Instead, use setLayers() to control which layers are rendered.
+Instead, use :py:func:`~QgsLayoutItemMap.setLayers` to control which layers are rendered.
 
 .. seealso:: :py:func:`keepLayerSet`
 
@@ -276,10 +552,10 @@ Stores the current project layer styles into style overrides.
     bool followVisibilityPreset() const;
 %Docstring
 Returns whether the map should follow a map theme. If ``True``, the layers and layer styles
-will be used from given preset name (configured with setFollowVisibilityPresetName() method).
+will be used from given preset name (configured with :py:func:`~QgsLayoutItemMap.setFollowVisibilityPresetName` method).
 This means when preset's settings are changed, the new settings are automatically
 picked up next time when rendering, without having to explicitly update them.
-At most one of the flags keepLayerSet() and followVisibilityPreset() should be enabled
+At most one of the flags :py:func:`~QgsLayoutItemMap.keepLayerSet` and :py:func:`~QgsLayoutItemMap.followVisibilityPreset` should be enabled
 at any time since they are alternative approaches - if both are enabled,
 following map theme has higher priority. If neither is enabled (or if preset name is not set),
 map will use the same configuration as the map canvas uses.
@@ -287,13 +563,13 @@ map will use the same configuration as the map canvas uses.
 
     void setFollowVisibilityPreset( bool follow );
 %Docstring
-Sets whether the map should follow a map theme. See followVisibilityPreset() for more details.
+Sets whether the map should follow a map theme. See :py:func:`~QgsLayoutItemMap.followVisibilityPreset` for more details.
 %End
 
     QString followVisibilityPresetName() const;
 %Docstring
 Preset name that decides which layers and layer styles are used for map rendering. It is only
-used when followVisibilityPreset() returns ``True``.
+used when :py:func:`~QgsLayoutItemMap.followVisibilityPreset` returns ``True``.
 
 .. seealso:: :py:func:`setFollowVisibilityPresetName`
 
@@ -302,7 +578,7 @@ used when followVisibilityPreset() returns ``True``.
 
     void setFollowVisibilityPresetName( const QString &name );
 %Docstring
-Sets preset name for map rendering. See followVisibilityPresetName() for more details.
+Sets preset name for map rendering. See :py:func:`~QgsLayoutItemMap.followVisibilityPresetName` for more details.
 
 .. seealso:: :py:func:`followVisibilityPresetName`
 
@@ -398,7 +674,7 @@ is enabled.
 
 .. note::
 
-   this parameter is only used if atlasDriven() is ``True``
+   this parameter is only used if :py:func:`~QgsLayoutItemMap.atlasDriven` is ``True``
 
 .. seealso:: :py:func:`setAtlasScalingMode`
 
@@ -415,7 +691,7 @@ is enabled.
 
 .. note::
 
-   this parameter is only used if atlasDriven() is ``True``
+   this parameter is only used if :py:func:`~QgsLayoutItemMap.atlasDriven` is ``True``
 
 .. seealso:: :py:func:`atlasScalingMode`
 
@@ -434,7 +710,7 @@ Returns the margin size (percentage) used when the map is in atlas mode.
 
 .. note::
 
-   this is only used if atlasScalingMode() is Auto.
+   this is only used if :py:func:`~QgsLayoutItemMap.atlasScalingMode` is Auto.
 
 .. seealso:: :py:func:`atlasScalingMode`
 
@@ -449,7 +725,7 @@ Sets the margin size (percentage) used when the map is in atlas mode.
 
 .. note::
 
-   this is only used if atlasScalingMode() is Auto.
+   this is only used if :py:func:`~QgsLayoutItemMap.atlasScalingMode` is Auto.
 
 .. seealso:: :py:func:`atlasScalingMode`
 
@@ -601,7 +877,7 @@ Adds a rendered feature ``handler`` to use while rendering the map.
 Ownership of ``handler`` is NOT transferred, and it is the caller's responsibility to ensure
 that the handler exists for as long as it is registered with the map item.
 
-Callers should call removeRenderedFeatureHandler() to remove the handler before
+Callers should call :py:func:`~QgsLayoutItemMap.removeRenderedFeatureHandler` to remove the handler before
 destroying the ``handler``.
 
 .. seealso:: :py:func:`removeRenderedFeatureHandler`
@@ -623,6 +899,20 @@ Removes a previously added rendered feature ``handler``.
 Creates a transform from layout coordinates to map coordinates.
 %End
 
+    QgsLayoutItemMapAtlasClippingSettings *atlasClippingSettings();
+%Docstring
+Returns the map's atlas clipping settings.
+
+.. versionadded:: 3.16
+%End
+
+    QgsLayoutItemMapItemClipPathSettings *itemClippingSettings();
+%Docstring
+Returns the map's item based clip path settings.
+
+.. versionadded:: 3.16
+%End
+
   protected:
 
     virtual void draw( QgsLayoutItemRenderContext &context );
@@ -630,6 +920,8 @@ Creates a transform from layout coordinates to map coordinates.
     virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
     virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
+
+    virtual QPainterPath framePath() const;
 
 
     bool isDrawing() const;

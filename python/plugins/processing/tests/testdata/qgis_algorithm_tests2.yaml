@@ -2,185 +2,208 @@
 
 tests:
 
+  - algorithm: qgis:tininterpolation
+    name: TIN interpolation using attribute
+    params:
+      EXTENT: 0.000000000,8.000000000,-5.000000000,3.000000000 [EPSG:4326]
+      INTERPOLATION_DATA:
+        name: pointsz.gml::~::0::~::1::~::0
+        type: interpolation
+      METHOD: 0
+      PIXEL_SIZE: 0.1
+    results:
+      OUTPUT:
+        hash:
+          - bfb3616a73065c0cb41eb1c5c1e9e8812fe1c63019a6177adb1dfe3e
+          - 19bbd79d15b0ba7dbde05665d559e9806fdb1cd579df9222f9cc4d92
+          - 3dfa1e041f33a72abf72d2d706c03e11fa5274f152dec1db1661b8e0
+        type: rasterhash
+
+  - algorithm: qgis:tininterpolation
+    name: TIN interpolation using Z value
+    params:
+      EXTENT: 0.000000000,8.000000000,-5.000000000,3.000000000 [EPSG:4326]
+      INTERPOLATION_DATA:
+        name: pointsz.gml::~::1::~::-1::~::0
+        type: interpolation
+      METHOD: 0
+      PIXEL_SIZE: 0.1
+    results:
+      OUTPUT:
+        hash:
+          - bfb3616a73065c0cb41eb1c5c1e9e8812fe1c63019a6177adb1dfe3e
+          - 19bbd79d15b0ba7dbde05665d559e9806fdb1cd579df9222f9cc4d92
+          - 3dfa1e041f33a72abf72d2d706c03e11fa5274f152dec1db1661b8e0
+        type: rasterhash
+
+  - algorithm: qgis:tininterpolation
+    name: TIN interpolation with breaklines
+    params:
+      EXTENT: 0.000000000,8.000000000,-5.000000000,3.000000000 [EPSG:4326]
+      INTERPOLATION_DATA:
+        name: pointsz.gml::~::1::~::-1::~::0::|::breaklines.gml::~::0::~::1::~::2
+        type: interpolation
+      METHOD: 0
+      PIXEL_SIZE: 0.1
+    results:
+      OUTPUT:
+        hash:
+          - b8e49813c507b73cb39a5ad904b2d302ccb25c591a2e577b6405f982
+          - 19bbd79d15b0ba7dbde05665d559e9806fdb1cd579df9222f9cc4d92
+          - 3dfa1e041f33a72abf72d2d706c03e11fa5274f152dec1db1661b8e0
+        type: rasterhash
+
+  - algorithm: qgis:tininterpolation
+    name: TIN interpolation using attribute (old parameters)
+    params:
+      EXTENT: 0.000000000,8.000000000,-5.000000000,3.000000000 [EPSG:4326]
+      INTERPOLATION_DATA:
+        name: pointsz.gml::~::0::~::1::~::0
+        type: interpolation
+      METHOD: 0
+      COLUMNS: 80
+      ROWS: 80
+    results:
+      OUTPUT:
+        hash:
+          - bfb3616a73065c0cb41eb1c5c1e9e8812fe1c63019a6177adb1dfe3e
+          - 19bbd79d15b0ba7dbde05665d559e9806fdb1cd579df9222f9cc4d92
+          - 3dfa1e041f33a72abf72d2d706c03e11fa5274f152dec1db1661b8e0
+        type: rasterhash
+
+  - algorithm: qgis:tininterpolation
+    name: TIN interpolation using Z value (old parameters)
+    params:
+      EXTENT: 0.000000000,8.000000000,-5.000000000,3.000000000 [EPSG:4326]
+      INTERPOLATION_DATA:
+        name: pointsz.gml::~::1::~::-1::~::0
+        type: interpolation
+      METHOD: 0
+      COLUMNS: 80
+      ROWS: 80
+    results:
+      OUTPUT:
+        hash:
+          - bfb3616a73065c0cb41eb1c5c1e9e8812fe1c63019a6177adb1dfe3e
+          - 19bbd79d15b0ba7dbde05665d559e9806fdb1cd579df9222f9cc4d92
+          - 3dfa1e041f33a72abf72d2d706c03e11fa5274f152dec1db1661b8e0
+        type: rasterhash
+
+  - algorithm: qgis:tininterpolation
+    name: TIN interpolation with breaklines (old parameters)
+    params:
+      EXTENT: 0.000000000,8.000000000,-5.000000000,3.000000000 [EPSG:4326]
+      INTERPOLATION_DATA:
+        name: pointsz.gml::~::1::~::-1::~::0::|::breaklines.gml::~::0::~::1::~::2
+        type: interpolation
+      METHOD: 0
+      COLUMNS: 80
+      ROWS: 80
+    results:
+      OUTPUT:
+        hash:
+          - b8e49813c507b73cb39a5ad904b2d302ccb25c591a2e577b6405f982
+          - 19bbd79d15b0ba7dbde05665d559e9806fdb1cd579df9222f9cc4d92
+          - 3dfa1e041f33a72abf72d2d706c03e11fa5274f152dec1db1661b8e0
+        type: rasterhash
+
   - algorithm: qgis:idwinterpolation
     name: IDW interpolation using attribute
     params:
       DISTANCE_COEFFICIENT: 2.0
-      EXTENT: 0.0,8.0,-5.0,3.0 [EPSG:4326]
+      EXTENT: 0.000000000,8.000000000,-5.000000000,3.000000000 [EPSG:4326]
       INTERPOLATION_DATA:
         name: pointsz.gml::~::0::~::1::~::0
         type: interpolation
-      PIXEL_SIZE: 0.026667
+      PIXEL_SIZE: 0.1
     results:
       OUTPUT:
         hash:
-          - 76d59e1a9905e97fde7da598022d50ec7de15994e61a59e2b6dc952f
-          - 6d2da87e58dfe8fdfb3a1b66543bc68870f7e3292a9ca2674ea3a523
+          - 55dfd0e0e5ea300d2314785ab6aa1f4d941a4506e63d0d9e2b84e959
+          - b5fc06549f1b0ce3261f9fb8868bb6d082edcbfe409c89a82e2b7e7a
         type: rasterhash
 
   - algorithm: qgis:idwinterpolation
     name: IDW interpolation using Z value
     params:
       DISTANCE_COEFFICIENT: 2.0
-      EXTENT: 0.0,8.0,-5.0,3.0 [EPSG:4326]
-      INTERPOLATION_DATA:
-        name: pointsz.gml::~::1::~::1::~::0
-        type: interpolation
-      PIXEL_SIZE: 0.026667
-    results:
-      OUTPUT:
-        hash:
-          - 76d59e1a9905e97fde7da598022d50ec7de15994e61a59e2b6dc952f
-          - 6d2da87e58dfe8fdfb3a1b66543bc68870f7e3292a9ca2674ea3a523
-        type: rasterhash
-
-  - algorithm: qgis:tininterpolation
-    name: TIN interpolation using attribute
-    params:
-      EXTENT: 0.0,8.0,-5.0,3.0 [EPSG:4326]
-      INTERPOLATION_DATA:
-        name: pointsz.gml::~::0::~::1::~::0
-        type: interpolation
-      METHOD: 0
-      PIXEL_SIZE: 0.026667
-    results:
-      OUTPUT:
-        hash:
-          - 1e07ea5c90a16f87df812042d3e89dd5b1216defa7714921f306de94
-          - 6e533a4c2c2e8ef5ca62814a7ad6dd29cb0f0f6eea85baf2a2802870
-        type: rasterhash
-      #TRIANGULATION_FILE:
-      #  name: expected/triangulation.gml
-      #  type: vector
-
-  - algorithm: qgis:tininterpolation
-    name: TIN interpolation using Z value
-    params:
-      EXTENT: 0.0,8.0,-5.0,3.0 [EPSG:4326]
+      EXTENT: 0.000000000,8.000000000,-5.000000000,3.000000000 [EPSG:4326]
       INTERPOLATION_DATA:
         name: pointsz.gml::~::1::~::-1::~::0
         type: interpolation
-      METHOD: 0
-      PIXEL_SIZE: 0.026667
-    results:
-      OUTPUT:
-        hash:
-          - 1e07ea5c90a16f87df812042d3e89dd5b1216defa7714921f306de94
-          - 6d2da87e58dfe8fdfb3a1b66543bc68870f7e3292a9ca2674ea3a523
-          - 6e533a4c2c2e8ef5ca62814a7ad6dd29cb0f0f6eea85baf2a2802870
-        type: rasterhash
-      #TRIANULATION_FILE:
-      #  name: expected/triangulation.gml
-      #  type: vector
-
-  - algorithm: qgis:tininterpolation
-    name: TIN interpolation with breaklines
-    params:
-      EXTENT: -0.4450000000000012,8.445,-5.2,3.2 [EPSG:4326]
-      INTERPOLATION_DATA:
-        name: pointsz.gml::~::1::~::-1::~::0::|::breaklines.gml::~::0::~::1::~::2
-        type: interpolation
-      METHOD: 0
       PIXEL_SIZE: 0.1
     results:
       OUTPUT:
         hash:
-        - 34ebe51b4ff75e2eb80746571ac4b72709d200f5d36a1d367d7b0b32
-        - d2529829631d5b816dba56305736ed7e6961bc63f224f351be719c78
+          - 55dfd0e0e5ea300d2314785ab6aa1f4d941a4506e63d0d9e2b84e959
+          - b5fc06549f1b0ce3261f9fb8868bb6d082edcbfe409c89a82e2b7e7a
+        type: rasterhash
+
+  - algorithm: qgis:idwinterpolation
+    name: IDW interpolation with breaklines
+    params:
+      DISTANCE_COEFFICIENT: 2.0
+      EXTENT: 0.000000000,8.000000000,-5.000000000,3.000000000 [EPSG:4326]
+      INTERPOLATION_DATA:
+        name: pointsz.gml::~::1::~::-1::~::0::|::breaklines.gml::~::0::~::1::~::2
+        type: interpolation
+      PIXEL_SIZE: 0.1
+    results:
+      OUTPUT:
+        hash:
+          - d53cd7327d53bd4b8fb2de8b206e5aa0a1366963f2b63f58c2b7926e
+          - b5fc06549f1b0ce3261f9fb8868bb6d082edcbfe409c89a82e2b7e7a
         type: rasterhash
 
   - algorithm: qgis:idwinterpolation
     name: IDW interpolation using attribute (old parameters)
     params:
-      COLUMNS: 300
       DISTANCE_COEFFICIENT: 2.0
-      EXTENT: 0, 8, -5, 3
+      EXTENT: 0.000000000,8.000000000,-5.000000000,3.000000000 [EPSG:4326]
       INTERPOLATION_DATA:
         name: pointsz.gml::~::0::~::1::~::0
         type: interpolation
-      ROWS: 300
+      COLUMNS: 80
+      ROWS: 80
     results:
       OUTPUT:
         hash:
-          - 56d2671d50444f8571affba3f9e585830b82af5e380394178f521065
-          - 2ae62aca803e6864ac75e47b4357292b0637d811cb510ed19471f422
-          - 3851b5d5f4030513003883150a64c83ec5d63709a6a5866867440309
+          - 55dfd0e0e5ea300d2314785ab6aa1f4d941a4506e63d0d9e2b84e959
+          - b5fc06549f1b0ce3261f9fb8868bb6d082edcbfe409c89a82e2b7e7a
         type: rasterhash
 
   - algorithm: qgis:idwinterpolation
     name: IDW interpolation using Z value (old parameters)
     params:
-      COLUMNS: 300
       DISTANCE_COEFFICIENT: 2.0
-      EXTENT: 0, 8, -5, 3
+      EXTENT: 0.000000000,8.000000000,-5.000000000,3.000000000 [EPSG:4326]
       INTERPOLATION_DATA:
         name: pointsz.gml::~::1::~::-1::~::0
         type: interpolation
-      ROWS: 300
+      COLUMNS: 80
+      ROWS: 80
     results:
       OUTPUT:
         hash:
-          - 56d2671d50444f8571affba3f9e585830b82af5e380394178f521065
-          - 2ae62aca803e6864ac75e47b4357292b0637d811cb510ed19471f422
-          - 3851b5d5f4030513003883150a64c83ec5d63709a6a5866867440309
+          - 55dfd0e0e5ea300d2314785ab6aa1f4d941a4506e63d0d9e2b84e959
+          - b5fc06549f1b0ce3261f9fb8868bb6d082edcbfe409c89a82e2b7e7a
         type: rasterhash
-
-  - algorithm: qgis:tininterpolation
-    name: TIN interpolation using attribute (old parameters)
-    params:
-      COLUMNS: 300
-      EXTENT: 0, 8, -5, 3
-      INTERPOLATION_DATA:
-        name: pointsz.gml::~::0::~::1::~::0
-        type: interpolation
-      METHOD: '0'
-      ROWS: 300
-    results:
-      OUTPUT:
-        hash:
-          - 87f40be6ec08f3fcbb5707762de71f6be35bb265c61f594335562a26
-          - a31f0faf918ebe0902e5c9c5c8cf606d30f52eb4094bf24e4f8ac67a
-          - de8de3914164770865c0045b19cb9bd68531d74e7ceb9794a5f4989d
-        type: rasterhash
-      #TRIANGULATION_FILE:
-      #  name: expected/triangulation.gml
-      #  type: vector
-
-  - algorithm: qgis:tininterpolation
-    name: TIN interpolation using Z value (old parameters)
-    params:
-      COLUMNS: 300
-      EXTENT: 0, 8, -5, 3
-      INTERPOLATION_DATA:
-        name: pointsz.gml::~::1::~::-1::~::0
-        type: interpolation
-      METHOD: '1'
-      ROWS: 300
-    results:
-      OUTPUT:
-        hash:
-          - 5e14dd0b879884b8b8da56c082947dad681feb4e9f1137f5cda126f8
-          - b8389559d6a85e7a672d72254228473fae71af2d89e5a5dd73d1b0d7
-          - caeb23e86e710ab0e5555eb8508e9b07b162706bda7fa4faeb94cd7b
-        type: rasterhash
-      #TRIANULATION_FILE:
-      #  name: expected/triangulation.gml
-      #  type: vector
 
   - algorithm: qgis:idwinterpolation
-    name: IDW interpolation with breakline
+    name: IDW interpolation with breaklines (old parameters)
     params:
       DISTANCE_COEFFICIENT: 2.0
-      EXTENT: -0.4450000000000012,8.445,-5.2,3.2 [EPSG:4326]
+      EXTENT: 0.000000000,8.000000000,-5.000000000,3.000000000 [EPSG:4326]
       INTERPOLATION_DATA:
         name: pointsz.gml::~::1::~::-1::~::0::|::breaklines.gml::~::0::~::1::~::2
         type: interpolation
-      PIXEL_SIZE: 0.1
+      COLUMNS: 80
+      ROWS: 80
     results:
       OUTPUT:
         hash:
-        - 56ecc53f6c66a21dd0379170a833c87337932160767cdf9cc47695a8
-        - f096ffa048892c87eae61ddd4253501f1236ad785a9b084a2badf051
+          - d53cd7327d53bd4b8fb2de8b206e5aa0a1366963f2b63f58c2b7926e
+          - b5fc06549f1b0ce3261f9fb8868bb6d082edcbfe409c89a82e2b7e7a
         type: rasterhash
 
   - algorithm: native:removenullgeometries
@@ -495,9 +518,10 @@ tests:
         name: expected/geometry_by_expression_line.gml
         type: vector
 
-  - algorithm: qgis:snapgeometries
+  - algorithm: native:snapgeometries
     name: Snap lines to lines
     params:
+      BEHAVIOR: '0'
       INPUT:
         name: snap_lines.gml
         type: vector
@@ -510,9 +534,10 @@ tests:
         name: expected/snap_lines_to_lines.gml
         type: vector
 
-  - algorithm: qgis:snapgeometries
+  - algorithm: native:snapgeometries
     name: Snap polygons to polygons
     params:
+      BEHAVIOR: '0'
       INPUT:
         name: snap_polys.gml
         type: vector
@@ -525,9 +550,10 @@ tests:
         name: expected/snap_polys_to_polys.gml
         type: vector
 
-  - algorithm: qgis:snapgeometries
+  - algorithm: native:snapgeometries
     name: Snap points to points
     params:
+      BEHAVIOR: '0'
       INPUT:
         name: snap_points.gml
         type: vector
@@ -540,7 +566,7 @@ tests:
         name: expected/snap_points_to_points.gml
         type: vector
 
-  - algorithm: qgis:snapgeometries
+  - algorithm: native:snapgeometries
     name: Snap points to lines (prefer nodes)
     params:
       BEHAVIOR: '0'
@@ -556,7 +582,7 @@ tests:
         name: expected/snap_point_to_lines_prefer_nodes.gml
         type: vector
 
-  - algorithm: qgis:snapgeometries
+  - algorithm: native:snapgeometries
     name: Snap points to lines (prefer closest)
     params:
       BEHAVIOR: '1'
@@ -572,7 +598,7 @@ tests:
         name: expected/snap_point_to_lines_prefer_closest.gml
         type: vector
 
-  - algorithm: qgis:snapgeometries
+  - algorithm: native:snapgeometries
     name: Snap internal
     params:
       BEHAVIOR: '0'
@@ -588,7 +614,7 @@ tests:
         name: expected/snap_internal.gml
         type: vector
 
-  - algorithm: qgis:snapgeometries
+  - algorithm: native:snapgeometries
     name: Test Snap Geometries (to each other)
     params:
       BEHAVIOR: '7'
@@ -1574,6 +1600,19 @@ tests:
           - expected/points_to_path_grouped2.gml
         type: vector
 
+  - algorithm: qgis:pointstopath
+    name: Points to path (close path)
+    params:
+      ORDER_FIELD: id
+      CLOSE_PATH: true
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/points_to_path_close_path.gml
+        type: vector
+
   - algorithm: native:joinattributestable
     name: join the attribute table by common field (one-to-one)
     params:
@@ -1881,6 +1920,54 @@ tests:
             start: skip
             end: skip
 
+  - algorithm: native:serviceareafrompoint
+    name: Service area from point (fastest, old parameter)
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 50.0
+      INCLUDE_BOUNDS: false
+      INPUT:
+        name: roads.gml|layername=roads
+        type: vector
+      START_POINT: 1002424.321122,6221845.996330 [EPSG:32733]
+      STRATEGY: 1
+      TOLERANCE: 0.0
+      TRAVEL_COST: 36
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT:
+        name: expected/service_area_fastest_nodes.gml
+        type: vector
+      OUTPUT_LINES:
+        name: expected/service_area_fastests_lines.gml
+        type: vector
+
+  - algorithm: native:serviceareafrompoint
+    name: Service area from point (fastest, new parameter)
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 50.0
+      INCLUDE_BOUNDS: false
+      INPUT:
+        name: roads.gml|layername=roads
+        type: vector
+      START_POINT: 1002424.321122,6221845.996330 [EPSG:32733]
+      STRATEGY: 1
+      TOLERANCE: 0.0
+      TRAVEL_COST2: 0.01
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT:
+        name: expected/service_area_fastest_nodes.gml
+        type: vector
+      OUTPUT_LINES:
+        name: expected/service_area_fastests_lines.gml
+        type: vector
+
   - algorithm: native:serviceareafromlayer
     name: Service area from layer (shortest, nodes)
     params:
@@ -1936,8 +2023,12 @@ tests:
       VALUE_FORWARD: ''
     results:
       OUTPUT:
-        name: expected/service_area_from_layer_nodes_bounds.gml
+        name: expected/service_area_from_layer_nodes_bounds.shp
         type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
 
   - algorithm: native:serviceareafromlayer
     name: Service area from layer (shortest, lines)

@@ -50,7 +50,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class CheckValidity(QgisAlgorithm):
-
     INPUT_LAYER = 'INPUT_LAYER'
     METHOD = 'METHOD'
     VALID_OUTPUT = 'VALID_OUTPUT'

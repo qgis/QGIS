@@ -34,6 +34,7 @@ class QgsMeshLayer;
 #include "qgssymbol.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshtracerenderer.h"
+#include "qgsmapclippingregion.h"
 
 class QgsRenderContext;
 
@@ -77,6 +78,7 @@ struct CORE_NO_EXPORT QgsMeshLayerRendererCache
   QgsMeshDatasetGroupMetadata::DataType mVectorDataType = QgsMeshDatasetGroupMetadata::DataType::DataOnVertices;
   std::unique_ptr<QgsMesh3dAveragingMethod> mVectorAveragingMethod;
 };
+
 
 ///@endcond
 
@@ -144,6 +146,8 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
 
     // copy of rendering settings
     QgsMeshRendererSettings mRendererSettings;
+
+    QList< QgsMapClippingRegion > mClippingRegions;
 
     // output screen size
     QSize mOutputSize;

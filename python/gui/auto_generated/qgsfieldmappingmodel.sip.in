@@ -66,7 +66,7 @@ Returns ``True`` if the destination fields are editable
 Sets the destination fields editable state to ``editable``
 %End
 
-    const QMap<QVariant::Type, QString> dataTypes() const;
+    static const QMap<QVariant::Type, QString> dataTypes();
 %Docstring
 Returns a static map of supported data types
 %End
@@ -124,6 +124,12 @@ Set source fields to ``sourceFields``
     QgsExpressionContextGenerator *contextGenerator() const;
 %Docstring
 Returns the context generator with the source fields
+%End
+
+    void setBaseExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
+%Docstring
+Sets the base expression context ``generator``, which will generate the expression
+contexts for expression based widgets used by the model.
 %End
 
     void setDestinationFields( const QgsFields &destinationFields,

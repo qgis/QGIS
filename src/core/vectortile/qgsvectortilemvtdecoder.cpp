@@ -18,6 +18,7 @@
 #include "qgsvectortilemvtdecoder.h"
 
 #include "qgsvectortilelayerrenderer.h"
+#include "qgsvectortilemvtutils.h"
 #include "qgsvectortileutils.h"
 
 #include "qgslogger.h"
@@ -26,26 +27,6 @@
 #include "qgsmultilinestring.h"
 #include "qgsmultipolygon.h"
 #include "qgspolygon.h"
-
-
-inline bool _isExteriorRing( const QVector<QgsPoint> &pts )
-{
-  // Exterior rings have POSITIVE area while interior rings have NEGATIVE area
-  // when calculated with https://en.wikipedia.org/wiki/Shoelace_formula
-  // The orientation of axes is that X grows to the right and Y grows to the bottom.
-  // the input data are expected to form a closed ring, i.e. first pt == last pt.
-
-  double total = 0.0;
-  const QgsPoint *ptsPtr = pts.constData();
-  int count = pts.count();
-  for ( int i = 0; i < count - 1; i++ )
-  {
-    double val = ( pts[i + 1].x() - ptsPtr[i].x() ) * ( ptsPtr[i + 1].y() + pts[i].y() );
-    //double val = ptsPtr[i].x() * (-ptsPtr[i+1].y()) - ptsPtr[i+1].x() * (-ptsPtr[i].y());  // gives the same result
-    total += val;
-  }
-  return total >= 0;
-}
 
 
 QgsVectorTileMVTDecoder::QgsVectorTileMVTDecoder() = default;
@@ -96,7 +77,7 @@ QStringList QgsVectorTileMVTDecoder::layerFieldNames( const QString &layerName )
   return fieldNames;
 }
 
-QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString, QgsFields> &perLayerFields, const QgsCoordinateTransform &ct ) const
+QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString, QgsFields> &perLayerFields, const QgsCoordinateTransform &ct, const QSet<QString> *layerSubset ) const
 {
   QgsVectorTileFeatures features;
 
@@ -112,7 +93,10 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
   {
     const ::vector_tile::Tile_Layer &layer = tile.layers( layerNum );
 
-    QString layerName = layer.name().c_str();
+    const QString layerName = layer.name().c_str();
+    if ( layerSubset && !layerSubset->contains( QString() ) && !layerSubset->contains( layerName ) )
+      continue;
+
     QVector<QgsFeature> layerFeatures;
     QgsFields layerFields = perLayerFields[layerName];
 
@@ -130,7 +114,21 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
     {
       const ::vector_tile::Tile_Feature &feature = layer.features( featureNum );
 
-      QgsFeature f( layerFields, static_cast<QgsFeatureId>( feature.id() ) );
+      QgsFeatureId fid;
+      if ( feature.has_id() )
+        fid = static_cast<QgsFeatureId>( feature.id() );
+      else
+      {
+        // There is no assigned ID, but some parts of QGIS do not work correctly if all IDs are zero
+        // (e.g. labeling will not register two features with the same FID within a single layer),
+        // so let's generate some pseudo-unique FIDs to keep those bits happy
+        fid = featureNum;
+        fid |= ( layerNum & 0xff ) << 24;
+        fid |= ( static_cast<QgsFeatureId>( mTileID.row() ) & 0xff ) << 32;
+        fid |= ( static_cast<QgsFeatureId>( mTileID.column() ) & 0xff ) << 40;
+      }
+
+      QgsFeature f( layerFields, fid );
 
       //
       // parse attributes
@@ -195,6 +193,12 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
             QgsDebugMsg( QStringLiteral( "Malformed geometry: invalid cmdCount" ) );
             break;
           }
+
+          if ( feature.type() == vector_tile::Tile_GeomType_POINT )
+            outputPoints.reserve( outputPoints.size() + cmdCount );
+          else
+            tmpPoints.reserve( tmpPoints.size() + cmdCount );
+
           for ( unsigned j = 0; j < cmdCount; j++ )
           {
             unsigned v = feature.geometry( i + 1 );
@@ -233,6 +237,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
             QgsDebugMsg( QStringLiteral( "Malformed geometry: invalid cmdCount" ) );
             break;
           }
+          tmpPoints.reserve( tmpPoints.size() + cmdCount );
           for ( unsigned j = 0; j < cmdCount; j++ )
           {
             unsigned v = feature.geometry( i + 1 );
@@ -254,26 +259,27 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
           {
             tmpPoints.append( tmpPoints.first() );  // close the ring
 
-            if ( _isExteriorRing( tmpPoints ) )
+            std::unique_ptr<QgsLineString> ring( new QgsLineString( tmpPoints ) );
+            tmpPoints.clear();
+
+            if ( QgsVectorTileMVTUtils::isExteriorRing( ring.get() ) )
             {
               // start a new polygon
               QgsPolygon *p = new QgsPolygon;
-              p->setExteriorRing( new QgsLineString( tmpPoints ) );
+              p->setExteriorRing( ring.release() );
               outputPolygons.append( p );
-              tmpPoints.clear();
             }
             else
             {
               // interior ring (hole)
               if ( outputPolygons.count() != 0 )
               {
-                outputPolygons[outputPolygons.count() - 1]->addInteriorRing( new QgsLineString( tmpPoints ) );
+                outputPolygons[outputPolygons.count() - 1]->addInteriorRing( ring.release() );
               }
               else
               {
                 QgsDebugMsg( QStringLiteral( "Malformed geometry: first ring of a polygon is interior ring" ) );
               }
-              tmpPoints.clear();
             }
           }
 
@@ -289,10 +295,11 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
       {
         geomType = QStringLiteral( "Point" );
         if ( outputPoints.count() == 1 )
-          f.setGeometry( QgsGeometry( outputPoints[0] ) );
+          f.setGeometry( QgsGeometry( outputPoints.at( 0 ) ) );
         else
         {
           QgsMultiPoint *mp = new QgsMultiPoint;
+          mp->reserve( outputPoints.count() );
           for ( int k = 0; k < outputPoints.count(); ++k )
             mp->addGeometry( outputPoints[k] );
           f.setGeometry( QgsGeometry( mp ) );
@@ -306,10 +313,11 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
         outputLinestrings.append( new QgsLineString( tmpPoints ) );
 
         if ( outputLinestrings.count() == 1 )
-          f.setGeometry( QgsGeometry( outputLinestrings[0] ) );
+          f.setGeometry( QgsGeometry( outputLinestrings.at( 0 ) ) );
         else
         {
           QgsMultiLineString *mls = new QgsMultiLineString;
+          mls->reserve( outputLinestrings.size() );
           for ( int k = 0; k < outputLinestrings.count(); ++k )
             mls->addGeometry( outputLinestrings[k] );
           f.setGeometry( QgsGeometry( mls ) );
@@ -320,10 +328,11 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
         geomType = QStringLiteral( "Polygon" );
 
         if ( outputPolygons.count() == 1 )
-          f.setGeometry( QgsGeometry( outputPolygons[0] ) );
+          f.setGeometry( QgsGeometry( outputPolygons.at( 0 ) ) );
         else
         {
           QgsMultiPolygon *mpl = new QgsMultiPolygon;
+          mpl->reserve( outputPolygons.size() );
           for ( int k = 0; k < outputPolygons.count(); ++k )
             mpl->addGeometry( outputPolygons[k] );
           f.setGeometry( QgsGeometry( mpl ) );

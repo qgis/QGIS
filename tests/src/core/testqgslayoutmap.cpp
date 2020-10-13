@@ -33,6 +33,11 @@
 #include "qgsrenderedfeaturehandlerinterface.h"
 #include "qgspallabeling.h"
 #include "qgsvectorlayerlabeling.h"
+#include "qgstemporalrangeobject.h"
+#include "qgsfontutils.h"
+#include "qgsannotationlayer.h"
+#include "qgsannotationmarkeritem.h"
+
 #include <QObject>
 #include "qgstest.h"
 
@@ -57,6 +62,7 @@ class TestQgsLayoutMap : public QObject
     void dataDefinedLayers(); //test data defined layer string
     void dataDefinedStyles(); //test data defined styles
     void dataDefinedCrs(); //test data defined crs
+    void dataDefinedTemporalRange(); //test data defined temporal range's start and end values
     void rasterized();
     void layersToRender();
     void mapRotation();
@@ -82,6 +88,8 @@ void TestQgsLayoutMap::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
+
+  QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Bold" ) );
 
   //create maplayers from testdata and add to layer registry
   QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
@@ -421,32 +429,32 @@ void TestQgsLayoutMap::dataDefinedStyles()
   // test following of preset
   map->setFollowVisibilityPreset( true );
   map->setFollowVisibilityPresetName( QStringLiteral( "test preset" ) );
-  QSet<QgsMapLayer *> result = map->layersToRender().toSet();
+  QSet<QgsMapLayer *> result = qgis::listToSet( map->layersToRender() );
   QCOMPARE( result.count(), 2 );
   map->setFollowVisibilityPresetName( QString() );
 
   //test malformed style string
   map->dataDefinedProperties().setProperty( QgsLayoutObject::MapStylePreset, QgsProperty::fromExpression( QStringLiteral( "5" ) ) );
-  result = map->layersToRender().toSet();
-  QCOMPARE( result, layers.toSet() );
+  result = qgis::listToSet( map->layersToRender() );
+  QCOMPARE( result, qgis::listToSet( layers ) );
 
   //test valid preset
   map->dataDefinedProperties().setProperty( QgsLayoutObject::MapStylePreset, QgsProperty::fromExpression( QStringLiteral( "'test preset'" ) ) );
-  result = map->layersToRender().toSet();
+  result = qgis::listToSet( map->layersToRender() );
   QCOMPARE( result.count(), 2 );
   QVERIFY( result.contains( mLinesLayer ) );
   QVERIFY( result.contains( mPointsLayer ) );
 
   //test non-existent preset
   map->dataDefinedProperties().setProperty( QgsLayoutObject::MapStylePreset, QgsProperty::fromExpression( QStringLiteral( "'bad preset'" ) ) );
-  result = map->layersToRender().toSet();
-  QCOMPARE( result, layers.toSet() );
+  result = qgis::listToSet( map->layersToRender() );
+  QCOMPARE( result, qgis::listToSet( layers ) );
 
   //test that dd layer set overrides style layers
   map->dataDefinedProperties().setProperty( QgsLayoutObject::MapStylePreset, QgsProperty::fromExpression( QStringLiteral( "'test preset'" ) ) );
   map->dataDefinedProperties().setProperty( QgsLayoutObject::MapLayers, QgsProperty::fromExpression(
         QStringLiteral( "'%1'" ).arg( mPolysLayer->name() ) ) );
-  result = map->layersToRender().toSet();
+  result = qgis::listToSet( map->layersToRender() );
   QCOMPARE( result.count(), 1 );
   QVERIFY( result.contains( mPolysLayer ) );
   map->dataDefinedProperties().setProperty( QgsLayoutObject::MapLayers, QgsProperty() );
@@ -482,8 +490,37 @@ void TestQgsLayoutMap::dataDefinedCrs()
   //test proj string variable
   map->dataDefinedProperties().setProperty( QgsLayoutObject::MapCrs, QgsProperty::fromValue( QStringLiteral( "PROJ4: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs" ) ) );
   map->refreshDataDefinedProperty( QgsLayoutObject::MapCrs );
+#if PROJ_VERSION_MAJOR>=6
+  QCOMPARE( map->crs().toProj(), QStringLiteral( "+proj=merc +a=6378137 +b=6378137 +lat_ts=0 +lon_0=0 +x_0=0 +y_0=0 +k=1 +units=m +nadgrids=@null +wktext +no_defs" ) );
+#else
   QCOMPARE( map->crs().toProj(), QStringLiteral( "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs" ) );
+#endif
+}
 
+void TestQgsLayoutMap::dataDefinedTemporalRange()
+{
+  QList<QgsMapLayer *> layers = QList<QgsMapLayer *>() << mRasterLayer << mPolysLayer << mPointsLayer << mLinesLayer;
+
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptMove( QgsLayoutPoint( 20, 20 ) );
+  map->attemptResize( QgsLayoutSize( 200, 100 ) );
+  map->setFrameEnabled( true );
+  map->setLayers( layers );
+  l.addLayoutItem( map );
+
+  QDateTime dt1 = QDateTime( QDate( 2010, 1, 1 ), QTime( 0, 0, 0 ) );
+  QDateTime dt2 = QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) );
+  map->setIsTemporal( true );
+  map->dataDefinedProperties().setProperty( QgsLayoutObject::StartDateTime, QgsProperty::fromValue( dt1 ) );
+  map->dataDefinedProperties().setProperty( QgsLayoutObject::EndDateTime, QgsProperty::fromValue( dt2 ) );
+  map->refreshDataDefinedProperty( QgsLayoutObject::StartDateTime );
+  map->refreshDataDefinedProperty( QgsLayoutObject::EndDateTime );
+  QCOMPARE( map->temporalRange(), QgsDateTimeRange( dt1, dt2 ) );
+  QgsMapSettings ms = map->mapSettings( map->extent(), map->rect().size(), 300, false );
+  QCOMPARE( ms.temporalRange(), QgsDateTimeRange( dt1, dt2 ) );
 }
 
 void TestQgsLayoutMap::rasterized()
@@ -524,6 +561,7 @@ void TestQgsLayoutMap::rasterized()
   QgsLayoutItemMapGrid *grid = new QgsLayoutItemMapGrid( "test", map );
   grid->setIntervalX( 10 );
   grid->setIntervalY( 10 );
+  grid->setAnnotationTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   grid->setBlendMode( QPainter::CompositionMode_Darken );
   grid->setAnnotationEnabled( true );
   grid->setAnnotationDisplay( QgsLayoutItemMapGrid::ShowAll, QgsLayoutItemMapGrid::Left );
@@ -1806,6 +1844,63 @@ void TestQgsLayoutMap::testLayeredExportLabelsByLayer()
   QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
   QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
   QVERIFY( map->nextExportPart() );
+  // labels
+  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1: points (Labels)" ) );
+  QCOMPARE( map->exportLayerDetails().mapLayerId, pointsLayer->id() );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  QVERIFY( map->nextExportPart() );
+  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1: lines (Labels)" ) );
+  QCOMPARE( map->exportLayerDetails().mapLayerId, linesLayer->id() );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  QVERIFY( map->nextExportPart() );
+  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1: Frame" ) );
+  QVERIFY( map->exportLayerDetails().mapLayerId.isEmpty() );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+
+  // main annotation layer for project has content, so should be included too
+  p.mainAnnotationLayer()->addItem( new QgsAnnotationMarkerItem( QgsPoint( 1, 2 ) ) );
+
+  map->startLayeredExport();
+  QVERIFY( map->nextExportPart() );
+  map->createStagedRenderJob( map->extent(), QSize( 512, 512 ), 72 );
+  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1: points" ) );
+  QCOMPARE( map->exportLayerDetails().mapLayerId, pointsLayer->id() );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  QVERIFY( map->nextExportPart() );
+  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1: lines" ) );
+  QCOMPARE( map->exportLayerDetails().mapLayerId, linesLayer->id() );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  QVERIFY( map->nextExportPart() );
+  // annotations
+  QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1: Annotations" ) );
+  QCOMPARE( map->exportLayerDetails().mapLayerId, p.mainAnnotationLayer()->id() );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Grid ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::OverviewMapExtent ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Frame ) );
+  QVERIFY( !map->shouldDrawPart( QgsLayoutItemMap::Background ) );
+  QVERIFY( map->shouldDrawPart( QgsLayoutItemMap::Layer ) );
+  QVERIFY( map->nextExportPart() );
+
   // labels
   QCOMPARE( map->exportLayerDetails().name, QStringLiteral( "Map 1: points (Labels)" ) );
   QCOMPARE( map->exportLayerDetails().mapLayerId, pointsLayer->id() );

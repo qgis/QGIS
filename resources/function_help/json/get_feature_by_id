@@ -1,6 +1,7 @@
 {
   "name": "get_feature_by_id",
   "type": "function",
+  "groups": ["Record and Attributes"],
   "description": "Returns the feature with an id on a layer.",
   "arguments": [ {"arg":"layer","description":"layer, layer name or layer id"},
                  {"arg":"feature_id","description":"the id of the feature which should be returned"}],

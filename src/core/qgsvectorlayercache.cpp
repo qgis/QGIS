@@ -161,7 +161,7 @@ bool QgsVectorLayerCache::featureAtId( QgsFeatureId featureId, QgsFeature &featu
   else if ( mLayer->getFeatures( QgsFeatureRequest()
                                  .setFilterFid( featureId )
                                  .setSubsetOfAttributes( mCachedAttributes )
-                                 .setFlags( !mCacheGeometry ? QgsFeatureRequest::NoGeometry : QgsFeatureRequest::Flags( nullptr ) ) )
+                                 .setFlags( !mCacheGeometry ? QgsFeatureRequest::NoGeometry : QgsFeatureRequest::Flags() ) )
             .nextFeature( feature ) )
   {
     cacheFeature( feature );
@@ -353,7 +353,7 @@ bool QgsVectorLayerCache::canUseCacheForRequest( const QgsFeatureRequest &featur
     }
     case QgsFeatureRequest::FilterFids:
     {
-      if ( mCache.keys().toSet().contains( featureRequest.filterFids() ) )
+      if ( qgis::listToSet( mCache.keys() ).contains( featureRequest.filterFids() ) )
       {
         it = QgsFeatureIterator( new QgsCachedFeatureIterator( this, featureRequest ) );
         return true;
@@ -412,8 +412,8 @@ QgsFeatureIterator QgsVectorLayerCache::getFeatures( const QgsFeatureRequest &fe
       myRequest.setFlags( featureRequest.flags() & ~QgsFeatureRequest::NoGeometry );
 
     // Make sure, all the cached attributes are requested as well
-    QSet<int> attrs = featureRequest.subsetOfAttributes().toSet() + mCachedAttributes.toSet();
-    myRequest.setSubsetOfAttributes( attrs.toList() );
+    QSet<int> attrs = qgis::listToSet( featureRequest.subsetOfAttributes() ) + qgis::listToSet( mCachedAttributes );
+    myRequest.setSubsetOfAttributes( qgis::setToList( attrs ) );
 
     it = QgsFeatureIterator( new QgsCachedFeatureWriterIterator( this, myRequest ) );
   }

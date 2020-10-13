@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsMultiSurface: QgsGeometryCollection
 {
 %Docstring
@@ -20,8 +22,35 @@ Multi surface geometry collection.
 #include "qgsmultisurface.h"
 %End
   public:
-    QgsMultiSurface();
-    virtual QString geometryType() const;
+
+    QgsMultiSurface() /HoldGIL/;
+%Docstring
+Constructor for an empty multisurface geometry.
+%End
+
+
+    SIP_PYOBJECT surfaceN( int index ) /TypeHint="QgsSurface"/;
+%Docstring
+Returns the surface with the specified ``index``.
+
+An IndexError will be raised if no surface with the specified index exists.
+
+.. versionadded:: 3.16
+%End
+%MethodCode
+    if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      return sipConvertFromType( sipCpp->surfaceN( a0 ), sipType_QgsSurface, NULL );
+    }
+%End
+
+
+    virtual QString geometryType() const /HoldGIL/;
 
     virtual void clear();
 

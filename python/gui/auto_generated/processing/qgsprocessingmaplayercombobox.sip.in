@@ -47,7 +47,7 @@ be represented as a map layer.
 
 .. warning::
 
-   Prefer calling value() instead, as it correctly encapsulates all valid
+   Prefer calling :py:func:`~QgsProcessingMapLayerComboBox.value` instead, as it correctly encapsulates all valid
    values which can be represented by the widget.
 
 .. seealso:: :py:func:`currentText`
@@ -59,7 +59,7 @@ Returns the current text of the selected item in the combobox.
 
 .. warning::
 
-   Prefer calling value() instead, as it correctly encapsulates all valid
+   Prefer calling :py:func:`~QgsProcessingMapLayerComboBox.value` instead, as it correctly encapsulates all valid
    values which can be represented by the widget.
 
 .. seealso:: :py:func:`currentLayer`

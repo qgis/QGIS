@@ -29,24 +29,30 @@ from functools import cmp_to_key
 from qgis.PyQt.QtCore import (
     QRegExp,
     QFile,
-    QCoreApplication,
-    QVariant
+    QVariant,
+    QDateTime,
+    QTime,
+    QDate,
+    Qt,
 )
 from qgis.core import (
     Qgis,
-    QgsCredentials,
+    QgsCoordinateReferenceSystem,
     QgsVectorLayer,
     QgsDataSourceUri,
     QgsProviderRegistry,
     QgsProviderConnectionException,
+    QgsFeedback,
 )
 
 from ..connector import DBConnector
-from ..plugin import ConnectionError, DbError, Table
+from ..plugin import DbError, Table
 
 import os
+import re
 import psycopg2
 import psycopg2.extensions
+
 # use unicode!
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
@@ -60,16 +66,17 @@ class CursorAdapter():
 
     def _debug(self, msg):
         pass
-        #print("XXX CursorAdapter[" + hex(id(self)) + "]: " + msg)
+        # print("XXX CursorAdapter[" + hex(id(self)) + "]: " + msg)
 
-    def __init__(self, connection, sql=None):
+    def __init__(self, connection, sql=None, feedback=None):
         self._debug("Created with sql: " + str(sql))
         self.connection = connection
         self.sql = sql
         self.result = None
         self.cursor = 0
+        self.feedback = feedback
         self.closed = False
-        if (self.sql != None):
+        if (self.sql is not None):
             self._execute()
 
     def _toStrResultSet(self, res):
@@ -77,59 +84,82 @@ class CursorAdapter():
         for rec in res:
             newrec = []
             for col in rec:
-                if type(col) == type(QVariant(None)):
+                if type(col) == type(QVariant(None)):  # noqa
                     if (str(col) == 'NULL'):
                         col = None
                     else:
-                        col = str(col) # force to string
+                        col = str(col)  # force to string
+                if isinstance(col, QDateTime) or isinstance(col, QDate) or isinstance(col, QTime):
+                    col = col.toString(Qt.ISODate)
                 newrec.append(col)
             newres.append(newrec)
         return newres
 
     def _execute(self, sql=None):
-        if self.sql == sql and self.result != None:
+        if self.sql == sql and self.result is not None:
             return
-        if (sql != None):
+        if (sql is not None):
             self.sql = sql
-        if (self.sql == None):
+        if (self.sql is None):
             return
         self._debug("execute called with sql " + self.sql)
         try:
-            self.result = self._toStrResultSet(self.connection.executeSql(self.sql))
+            self.result = self._toStrResultSet(self.connection.executeSql(self.sql, feedback=self.feedback))
         except QgsProviderConnectionException as e:
             raise DbError(e, self.sql)
         self._debug("execute returned " + str(len(self.result)) + " rows")
         self.cursor = 0
 
-        self._description = None # reset description
+        self._description = None  # reset description
 
     @property
     def description(self):
 
         if self._description is None:
 
-            uri = QgsDataSourceUri(self.connection.uri())
-
-            # TODO: make this part provider-agnostic
-            uri.setTable('(SELECT row_number() OVER () AS __rid__, * FROM (' + self.sql + ') as foo)')
-            uri.setKeyColumn('__rid__')
-            # TODO: fetch provider name from connection (QgsAbstractConnectionProvider)
-            # TODO: re-use the VectorLayer for fetching rows in batch mode
-            vl = QgsVectorLayer(uri.uri(False), 'dbmanager_cursor', 'postgres')
-
-            fields = vl.fields()
             self._description = []
-            for i in range(1, len(fields)): # skip first field (__rid__)
-                f = fields[i]
-                self._description.append([
-                    f.name(),                         # name
-                    f.type(),                         # type_code
-                    f.length(),                       # display_size
-                    f.length(),                       # internal_size
-                    f.precision(),                    # precision
-                    None,                             # scale
-                    True                              # null_ok
-                ])
+
+            if re.match('^SHOW', self.sql.strip().upper()):
+                try:
+                    count = len(self.connection.executeSql(self.sql)[0])
+                except QgsProviderConnectionException:
+                    count = 1
+                for i in range(count):
+                    self._description.append([
+                        '',  # name
+                        '',  # type_code
+                        -1,  # display_size
+                        -1,  # internal_size
+                        -1,  # precision
+                        None,  # scale
+                        True  # null_ok
+                    ])
+            else:
+                uri = QgsDataSourceUri(self.connection.uri())
+
+                # TODO: make this part provider-agnostic
+                sql = self.sql if self.sql.upper().find(' LIMIT ') >= 0 else self.sql + ' LIMIT 1 '
+                uri.setTable('(SELECT row_number() OVER () AS __rid__, * FROM (' + sql + ') as foo)')
+                uri.setKeyColumn('__rid__')
+                uri.setParam('checkPrimaryKeyUnicity', '0')
+                # TODO: fetch provider name from connection (QgsAbstractConnectionProvider)
+                # TODO: re-use the VectorLayer for fetching rows in batch mode
+                vl = QgsVectorLayer(uri.uri(False), 'dbmanager_cursor', 'postgres')
+
+                fields = vl.fields()
+
+                for i in range(1, len(fields)):  # skip first field (__rid__)
+                    f = fields[i]
+                    self._description.append([
+                        f.name(),  # name
+                        f.type(),  # type_code
+                        f.length(),  # display_size
+                        f.length(),  # internal_size
+                        f.precision(),  # precision
+                        None,  # scale
+                        True  # null_ok
+                    ])
+
             self._debug("get_description returned " + str(len(self._description)) + " cols")
 
         return self._description
@@ -200,9 +230,9 @@ class PostGisDBConnector(DBConnector):
             self.dbname = uri.database() or os.environ.get('PGDATABASE') or username
             uri.setDatabase(self.dbname)
 
-        #self.connName = connName
-        #self.user = uri.username() or os.environ.get('USER')
-        #self.passwd = uri.password()
+        # self.connName = connName
+        # self.user = uri.username() or os.environ.get('USER')
+        # self.passwd = uri.password()
         self.host = uri.host()
 
         md = QgsProviderRegistry.instance().providerMetadata(connection.providerName())
@@ -219,6 +249,8 @@ class PostGisDBConnector(DBConnector):
         self._checkRaster()
         self._checkGeometryColumnsTable()
         self._checkRasterColumnsTable()
+
+        self.feedback = None
 
     def _connectionInfo(self):
         return str(self.uri().connectionInfo(True))
@@ -298,6 +330,8 @@ class PostGisDBConnector(DBConnector):
     def cancel(self):
         if self.connection:
             self.connection.cancel()
+        if self.core_connection:
+            self.feedback.cancel()
 
     def getInfo(self):
         c = self._execute(None, u"SELECT version()")
@@ -347,7 +381,7 @@ class PostGisDBConnector(DBConnector):
             "real", "double precision", "numeric",  # floats
             "varchar", "varchar(255)", "char(20)", "text",  # strings
             "date", "time", "timestamp",  # date/time
-            "boolean" # bool
+            "boolean"  # bool
         ]
 
     def getDatabasePrivileges(self):
@@ -652,12 +686,15 @@ class PostGisDBConnector(DBConnector):
         version_number = int(self.getInfo()[0].split(' ')[1].split('.')[0])
         con_col_name = 'consrc' if version_number < 12 else 'conbin'
 
+        # In the query below, we exclude rows where pg_constraint.contype whose values are equal to 't'
+        # because 't' describes a CONSTRAINT TRIGGER, which is not really a constraint in the traditional
+        # sense, but a special type of trigger, and an extension to the SQL standard.
         sql = u"""SELECT c.conname, c.contype, c.condeferrable, c.condeferred, array_to_string(c.conkey, ' '), c.%s,
                          t2.relname, c.confupdtype, c.confdeltype, c.confmatchtype, array_to_string(c.confkey, ' ') FROM pg_constraint c
                   LEFT JOIN pg_class t ON c.conrelid = t.oid
                         LEFT JOIN pg_class t2 ON c.confrelid = t2.oid
                         JOIN pg_namespace nsp ON t.relnamespace = nsp.oid
-                        WHERE t.relname = %s %s """ % (con_col_name, self.quoteString(tablename), schema_where)
+                        WHERE c.contype <> 't' AND t.relname = %s %s """ % (con_col_name, self.quoteString(tablename), schema_where)
 
         c = self._execute(None, sql)
         res = self._fetchall(c)
@@ -883,6 +920,13 @@ class PostGisDBConnector(DBConnector):
                 self.quoteString(new_table), self.quoteString(tablename), schema_where)
             self._executeSql(sql)
 
+    def renameSchema(self, schema, new_schema):
+        try:
+            self.core_connection.renameSchema(schema, new_schema)
+            return True
+        except QgsProviderConnectionException:
+            return False
+
     def commentTable(self, schema, tablename, comment=None):
         if comment is None:
             self._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS NULL;'.format(schema, tablename))
@@ -895,14 +939,14 @@ class PostGisDBConnector(DBConnector):
         sql_cpt = "Select count(*) from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (tablename, field)
         # SQL Query that return the comment of the field
         sql = "Select pd.description from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (tablename, field)
-        c = self._execute(None, sql_cpt) # Execute Check query
-        res = self._fetchone(c)[0] # Store result
+        c = self._execute(None, sql_cpt)  # Execute Check query
+        res = self._fetchone(c)[0]  # Store result
         if res == 1:
             # When a comment exists
-            c = self._execute(None, sql) # Execute query
-            res = self._fetchone(c)[0] # Store result
-            self._close_cursor(c) # Close cursor
-            return res # Return comment
+            c = self._execute(None, sql)  # Execute query
+            res = self._fetchone(c)[0]  # Store result
+            self._close_cursor(c)  # Close cursor
+            return res  # Return comment
         else:
             return ''
 
@@ -1045,7 +1089,7 @@ class PostGisDBConnector(DBConnector):
                 sql += u" %s %s," % (alter_col_str, a)
             self._execute(c, sql[:-1])
 
-        #Renames the column
+        # Renames the column
         if new_name is not None and new_name != column:
             sql = u"ALTER TABLE %s RENAME  %s TO %s" % (
                 self.quoteId(table), self.quoteId(column), self.quoteId(new_name))
@@ -1152,16 +1196,17 @@ class PostGisDBConnector(DBConnector):
         return psycopg2.InterfaceError, psycopg2.OperationalError
 
     def _execute(self, cursor, sql):
-        if cursor != None:
+        if cursor is not None:
             cursor._execute(sql)
             return cursor
-        return CursorAdapter(self.core_connection, sql)
+        self.feedback = QgsFeedback()
+        return CursorAdapter(self.core_connection, sql, feedback=self.feedback)
 
     def _executeSql(self, sql):
         return self.core_connection.executeSql(sql)
 
     def _get_cursor(self, name=None):
-        #if name is not None:
+        # if name is not None:
         #   print("XXX _get_cursor called with a Name: " + name)
         return CursorAdapter(self.core_connection, name)
 

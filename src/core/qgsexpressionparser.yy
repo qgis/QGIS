@@ -97,6 +97,7 @@ void addParserLocation(YYLTYPE* yyloc, QgsExpressionNode *node)
   QgsExpressionNode::NamedNode* namednode;
   double numberFloat;
   int    numberInt;
+  qlonglong numberInt64;
   bool   boolVal;
   QString* text;
   QgsExpressionNodeBinaryOperator::BinaryOperator b_op;
@@ -120,6 +121,7 @@ void addParserLocation(YYLTYPE* yyloc, QgsExpressionNode *node)
 // literals
 %token <numberFloat> NUMBER_FLOAT
 %token <numberInt> NUMBER_INT
+%token <numberInt64> NUMBER_INT64
 %token <boolVal> BOOLEAN
 %token NULLVALUE
 
@@ -326,6 +328,7 @@ expression:
     //  literals
     | NUMBER_FLOAT                { $$ = new QgsExpressionNodeLiteral( QVariant($1) ); }
     | NUMBER_INT                  { $$ = new QgsExpressionNodeLiteral( QVariant($1) ); }
+    | NUMBER_INT64                { $$ = new QgsExpressionNodeLiteral( QVariant($1) ); }
     | BOOLEAN                     { $$ = new QgsExpressionNodeLiteral( QVariant($1) ); }
     | STRING                      { $$ = new QgsExpressionNodeLiteral( QVariant(*$1) ); delete $1; }
     | NULLVALUE                   { $$ = new QgsExpressionNodeLiteral( QVariant() ); }

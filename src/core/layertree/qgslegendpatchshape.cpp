@@ -19,6 +19,7 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsmultilinestring.h"
 #include "qgslinestring.h"
 #include "qgspolygon.h"
+#include "qgsstyle.h"
 
 QgsLegendPatchShape::QgsLegendPatchShape( QgsSymbol::SymbolType type, const QgsGeometry &geometry, bool preserveAspectRatio )
   : mSymbolType( type )
@@ -83,7 +84,7 @@ QPolygonF curveToPolygonF( const QgsCurve *curve )
 QList<QList<QPolygonF> > QgsLegendPatchShape::toQPolygonF( QgsSymbol::SymbolType type, QSizeF size ) const
 {
   if ( isNull() || type != mSymbolType )
-    return defaultPatch( type, size );
+    return QgsStyle::defaultStyle()->defaultPatchAsQPolygonF( type, size );
 
   // scale and translate to desired size
 
@@ -105,11 +106,24 @@ QList<QList<QPolygonF> > QgsLegendPatchShape::toQPolygonF( QgsSymbol::SymbolType
                              << QPointF( dx + size.width(), dy + size.height() )
                              << QPointF( dx + size.width(), dy )
                              << QPointF( dx, dy );
-  QPolygonF patchRectPoly = QPolygonF( bounds );
-  //workaround QT Bug #21329
-  patchRectPoly.pop_back();
   QTransform t;
-  QTransform::quadToQuad( patchRectPoly, targetRectPoly, t );
+
+  if ( bounds.width() > 0 && bounds.height() > 0 )
+  {
+    QPolygonF patchRectPoly = QPolygonF( bounds );
+    //workaround QT Bug #21329
+    patchRectPoly.pop_back();
+
+    QTransform::quadToQuad( patchRectPoly, targetRectPoly, t );
+  }
+  else if ( bounds.width() > 0 )
+  {
+    t = QTransform::fromScale( size.width() / bounds.width(), 1 ).translate( -bounds.left(), size.height() / 2 - bounds.y() );
+  }
+  else if ( bounds.height() > 0 )
+  {
+    t = QTransform::fromScale( 1, size.height() / bounds.height() ).translate( size.width() / 2 - bounds.x(), -bounds.top() );
+  }
 
   QgsGeometry geom = mGeometry;
   geom.transform( t );
@@ -128,7 +142,7 @@ QList<QList<QPolygonF> > QgsLegendPatchShape::toQPolygonF( QgsSymbol::SymbolType
       }
       else
       {
-        points << QPointF( size.width() / 2, size.height() / 2 );
+        points << QPointF( static_cast< int >( size.width() ) / 2, static_cast< int >( size.height() ) / 2 );
       }
       return QList< QList<QPolygonF> >() << ( QList< QPolygonF >() << points );
     }
@@ -168,29 +182,6 @@ QList<QList<QPolygonF> > QgsLegendPatchShape::toQPolygonF( QgsSymbol::SymbolType
 
       return res;
     }
-
-    case QgsSymbol::Hybrid:
-      return QList< QList<QPolygonF> >();
-  }
-
-  return QList< QList<QPolygonF> >();
-}
-
-QList<QList<QPolygonF> > QgsLegendPatchShape::defaultPatch( QgsSymbol::SymbolType type, QSizeF size )
-{
-  switch ( type )
-  {
-    case QgsSymbol::Marker:
-      return QList< QList< QPolygonF > >() << ( QList< QPolygonF >() << ( QPolygonF() << QPointF( static_cast< int >( size.width() ) / 2,
-             static_cast< int >( size.height() ) / 2 ) ) );
-
-    case QgsSymbol::Line:
-      // we're adding 0.5 to get rid of blurred preview:
-      // drawing antialiased lines of width 1 at (x,0)-(x,100) creates 2px line
-      return QList< QList<QPolygonF> >() << ( QList< QPolygonF >() << ( QPolygonF()  << QPointF( 0, static_cast< int >( size.height() ) / 2 + 0.5 ) << QPointF( size.width(), static_cast< int >( size.height() ) / 2 + 0.5 ) ) );
-
-    case QgsSymbol::Fill:
-      return QList< QList<QPolygonF> >() << ( QList< QPolygonF> () << ( QRectF( QPointF( 0, 0 ), QPointF( static_cast< int >( size.width() ), static_cast< int >( size.height() ) ) ) ) );
 
     case QgsSymbol::Hybrid:
       return QList< QList<QPolygonF> >();

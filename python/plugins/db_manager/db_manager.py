@@ -362,8 +362,13 @@ class DBManager(QMainWindow):
     def close_tab(self, index):
         widget = self.tabs.widget(index)
         if widget not in [self.info, self.table, self.preview]:
-            self.tabs.removeTab(index)
-            widget.deleteLater()
+            if hasattr(widget, "close"):
+                if widget.close():
+                    self.tabs.removeTab(index)
+                    widget.deleteLater()
+            else:
+                self.tabs.removeTab(index)
+                widget.deleteLater()
 
     def toolBarOrientation(self):
         button_style = Qt.ToolButtonIconOnly
@@ -474,9 +479,9 @@ class DBManager(QMainWindow):
                                                      QApplication.translate("DBManager", "&Export to File…"),
                                                      self.exportActionSlot)
         self.menuTable.addSeparator()
-        #self.actionShowSystemTables = self.menuTable.addAction(self.tr("Show system tables/views"), self.showSystemTables)
-        #self.actionShowSystemTables.setCheckable(True)
-        #self.actionShowSystemTables.setChecked(True)
+        # self.actionShowSystemTables = self.menuTable.addAction(self.tr("Show system tables/views"), self.showSystemTables)
+        # self.actionShowSystemTables.setCheckable(True)
+        # self.actionShowSystemTables.setChecked(True)
         actionMenuTable.setVisible(False)
 
         # add actions to the toolbar

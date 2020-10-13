@@ -1,0 +1,14 @@
+{
+  "name": "make_time",
+  "type": "function",
+  "groups": ["Date and Time"],
+  "description": "Creates a time value from hour, minute and second numbers.",
+  "arguments": [
+    {"arg":"hour", "description":"Hour number"},
+    {"arg":"minute", "description":"Minutes"},
+    {"arg":"second", "description":"Seconds (fractional values include milliseconds)"}    
+  ],
+  "examples": [
+    { "expression":"make_time(13,45,30.5)", "returns":"time value 13:45:30.500"}
+  ]
+}

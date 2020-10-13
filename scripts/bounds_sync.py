@@ -1,4 +1,3 @@
-
 import os
 import sys
 import sqlite3 as sqlite
@@ -33,9 +32,9 @@ def gen():
     srsdb = sqlite.connect("./resources/srs.db")
     srsdb.execute("DELETE FROM tbl_bounds")
     data = list(rows)
-    srsdb.executemany("""insert into tbl_bounds(srid, west_bound_lon, 
-    north_bound_lat, 
-    east_bound_lon, 
+    srsdb.executemany("""insert into tbl_bounds(srid, west_bound_lon,
+    north_bound_lat,
+    east_bound_lon,
     south_bound_lat) values (?,?,?,?,?)""", data)
     srsdb.commit()
 

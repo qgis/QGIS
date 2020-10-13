@@ -63,7 +63,7 @@ class SERVER_EXPORT QgsServerLogger : public QgsMessageLogConsole
 
     /**
      * Activates logging to stderr.
-     * \since QGIS 3.4.
+     * \since QGIS 3.4
      */
     void setLogStderr();
 

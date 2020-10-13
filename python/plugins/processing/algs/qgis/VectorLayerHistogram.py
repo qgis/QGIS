@@ -35,17 +35,16 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 
 class VectorLayerHistogram(QgisAlgorithm):
-
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     FIELD = 'FIELD'
     BINS = 'BINS'
 
     def group(self):
-        return self.tr('Graphics')
+        return self.tr('Plots')
 
     def groupId(self):
-        return 'graphics'
+        return 'plots'
 
     def __init__(self):
         super().__init__()

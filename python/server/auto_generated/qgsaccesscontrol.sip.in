@@ -38,6 +38,7 @@ Constructor
 
     ~QgsAccessControl();
 
+
     void resolveFilterFeatures( const QList<QgsMapLayer *> &layers );
 %Docstring
 Resolve features' filter of layers

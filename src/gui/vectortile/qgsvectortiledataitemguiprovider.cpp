@@ -17,6 +17,7 @@
 
 #include "qgsvectortiledataitems.h"
 #include "qgsvectortileconnectiondialog.h"
+#include "qgsarcgisvectortileconnectiondialog.h"
 #include "qgsvectortileconnection.h"
 #include "qgsmanageconnectionsdialog.h"
 
@@ -40,9 +41,15 @@ void QgsVectorTileDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
 
   if ( QgsVectorTileRootItem *rootItem = qobject_cast< QgsVectorTileRootItem * >( item ) )
   {
-    QAction *actionNew = new QAction( tr( "New Connection…" ), this );
+    QAction *actionNew = new QAction( tr( "New Generic Connection…" ), this );
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
     menu->addAction( actionNew );
+
+    QAction *actionNewArcGISConnection = new QAction( tr( "New ArcGIS Vector Tile Service Connection…" ), this );
+    connect( actionNewArcGISConnection, &QAction::triggered, this, [rootItem] { newArcGISConnection( rootItem ); } );
+    menu->addAction( actionNewArcGISConnection );
+
+    menu->addSeparator();
 
     QAction *actionSaveXyzTilesServers = new QAction( tr( "Save Connections…" ), this );
     connect( actionSaveXyzTilesServers, &QAction::triggered, this, [] { saveXyzTilesServers(); } );
@@ -56,15 +63,39 @@ void QgsVectorTileDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
 
 void QgsVectorTileDataItemGuiProvider::editConnection( QgsDataItem *item )
 {
-  QgsVectorTileConnectionDialog dlg;
-  QString uri = QgsVectorTileProviderConnection::encodedUri( QgsVectorTileProviderConnection::connection( item->name() ) );
-  dlg.setConnection( item->name(), uri );
-  if ( !dlg.exec() )
-    return;
+  const QgsVectorTileProviderConnection::Data connection = QgsVectorTileProviderConnection::connection( item->name() );
+  QString uri = QgsVectorTileProviderConnection::encodedUri( connection );
 
-  QgsVectorTileProviderConnection::deleteConnection( item->name() );
-  QgsVectorTileProviderConnection::Data conn = QgsVectorTileProviderConnection::decodedUri( dlg.connectionUri() );
-  QgsVectorTileProviderConnection::addConnection( dlg.connectionName(), conn );
+  switch ( connection.serviceType )
+  {
+    case QgsVectorTileProviderConnection::Generic:
+    {
+      QgsVectorTileConnectionDialog dlg;
+
+      dlg.setConnection( item->name(), uri );
+      if ( !dlg.exec() )
+        return;
+
+      QgsVectorTileProviderConnection::deleteConnection( item->name() );
+      QgsVectorTileProviderConnection::Data conn = QgsVectorTileProviderConnection::decodedUri( dlg.connectionUri() );
+      QgsVectorTileProviderConnection::addConnection( dlg.connectionName(), conn );
+      break;
+    }
+
+    case QgsVectorTileProviderConnection::ArcgisVectorTileService:
+    {
+      QgsArcgisVectorTileConnectionDialog dlg;
+
+      dlg.setConnection( item->name(), uri );
+      if ( !dlg.exec() )
+        return;
+
+      QgsVectorTileProviderConnection::deleteConnection( item->name() );
+      QgsVectorTileProviderConnection::Data conn = QgsVectorTileProviderConnection::decodedUri( dlg.connectionUri() );
+      QgsVectorTileProviderConnection::addConnection( dlg.connectionName(), conn );
+      break;
+    }
+  }
 
   item->parent()->refreshConnections();
 }
@@ -92,9 +123,21 @@ void QgsVectorTileDataItemGuiProvider::newConnection( QgsDataItem *item )
   item->refreshConnections();
 }
 
+void QgsVectorTileDataItemGuiProvider::newArcGISConnection( QgsDataItem *item )
+{
+  QgsArcgisVectorTileConnectionDialog dlg;
+  if ( !dlg.exec() )
+    return;
+
+  QgsVectorTileProviderConnection::Data conn = QgsVectorTileProviderConnection::decodedUri( dlg.connectionUri() );
+  QgsVectorTileProviderConnection::addConnection( dlg.connectionName(), conn );
+
+  item->refreshConnections();
+}
+
 void QgsVectorTileDataItemGuiProvider::saveXyzTilesServers()
 {
-  QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Export, QgsManageConnectionsDialog::XyzTiles );
+  QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Export, QgsManageConnectionsDialog::VectorTile );
   dlg.exec();
 }
 
@@ -107,9 +150,9 @@ void QgsVectorTileDataItemGuiProvider::loadXyzTilesServers( QgsDataItem *item )
     return;
   }
 
-  QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::XyzTiles, fileName );
-  dlg.exec();
-  item->refreshConnections();
+  QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::VectorTile, fileName );
+  if ( dlg.exec() == QDialog::Accepted )
+    item->refreshConnections();
 }
 
 ///@endcond

@@ -154,13 +154,10 @@ Returns a textual description for the authority id
 
 
 
-    void addWmsListRow( const QDomElement &item, int row );
+    virtual void enableLayersForCrs( QTreeWidgetItem *item );
 %Docstring
 layer name derived from latest layer selection (updated as long it's not edited manually)
 %End
-    void addWmsListItem( const QDomElement &el, int row, int column );
-
-    virtual void enableLayersForCrs( QTreeWidgetItem *item );
 
     QString selectedFormat();
 %Docstring

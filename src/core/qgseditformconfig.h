@@ -173,7 +173,8 @@ class CORE_EXPORT QgsEditFormConfig
     /**
      * Set the editor widget config for a widget which is not for a simple field.
      *
-     * Example:
+     * ### Example
+     *
      * \code{.py}
      *   editFormConfig = layer.editFormConfig()
      *   editFormConfig.setWidgetConfig( 'relation_id', { 'nm-rel': 'other_relation' } )
@@ -346,6 +347,12 @@ class CORE_EXPORT QgsEditFormConfig
      * Will be called by friend class QgsVectorLayer
      */
     void onRelationsLoaded();
+
+    /**
+     * Used for the backwards compatibility of the api, on setting nmrel or force-suppress-popup for relations.
+     * Returns true when a relation instance (the first one found) has been updated.
+     */
+    bool legacyUpdateRelationWidgetInTabs( QgsAttributeEditorContainer *container,  const QString &widgetName, const QVariantMap &config );
 
   private:
     QExplicitlySharedDataPointer<QgsEditFormConfigPrivate> d;

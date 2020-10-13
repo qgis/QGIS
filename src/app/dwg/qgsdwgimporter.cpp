@@ -77,7 +77,7 @@ QgsDwgImporter::QgsDwgImporter( const QString &database, const QgsCoordinateRefe
 {
   QgsDebugCall;
 
-  QString crswkt( crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) );
+  QString crswkt( crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL ) );
   mCrsH = OSRNewSpatialReference( crswkt.toLocal8Bit().constData() );
   QgsDebugMsg( QStringLiteral( "CRS %1[%2]: %3" ).arg( mCrs ).arg( ( qint64 ) mCrsH, 0, 16 ).arg( crswkt ) );
 }
@@ -834,7 +834,11 @@ void QgsDwgImporter::addLType( const DRW_LType &data )
   setString( dfn, f.get(), QStringLiteral( "name" ), name );
   SETSTRINGPTR( desc );
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
   QVector<double> path( QVector<double>::fromStdVector( data.path ) );
+#else
+  QVector<double> path( data.path.begin(), data.path.end() );
+#endif
   OGR_F_SetFieldDoubleList( f.get(), OGR_FD_GetFieldIndex( dfn, "path" ), path.size(), path.data() );
 
   QVector<double> upath;
@@ -878,7 +882,7 @@ void QgsDwgImporter::addLType( const DRW_LType &data )
     if ( upath.size() % 2 == 1 )
       l << QStringLiteral( "0" );
 
-    dash = l.join( QStringLiteral( ";" ) ).toUtf8().constData();
+    dash = l.join( QLatin1Char( ';' ) ).toUtf8().constData();
   }
   mLinetype.insert( name.toLower(), dash );
 
@@ -1470,7 +1474,7 @@ bool QgsDwgImporter::curveFromLWPolyline( const DRW_LWPolyline &data, QgsCompoun
 
   QgsPointSequence s;
   bool hadBulge( data.vertlist[0]->bulge != 0.0 );
-  std::vector<DRW_Vertex2D *>::size_type n = data.flags & 1 ? vertexnum + 1 : vertexnum;
+  std::vector<DRW_Vertex2D *>::size_type n = ( data.flags & 1 ) ? vertexnum + 1 : vertexnum;
   for ( std::vector<DRW_Vertex2D *>::size_type i = 0; i < n; i++ )
   {
     size_t i0 = i % vertexnum;
@@ -1539,7 +1543,7 @@ void QgsDwgImporter::addLWPolyline( const DRW_LWPolyline &data )
   double width = -1.0; // width is set to correct value during first loop
   bool hadBulge( false );
 
-  std::vector<DRW_Vertex2D *>::size_type n = data.flags & 1 ? vertexnum : vertexnum - 1;
+  std::vector<DRW_Vertex2D *>::size_type n = ( data.flags & 1 ) ? vertexnum : vertexnum - 1;
   for ( std::vector<DRW_Vertex2D *>::size_type i = 0; i < n; i++ )
   {
     size_t i0 = i % vertexnum;
@@ -1739,7 +1743,7 @@ void QgsDwgImporter::addPolyline( const DRW_Polyline &data )
   double width = -1.0; // width is set to correct value during first loop
   bool hadBulge( false );
 
-  std::vector<DRW_Vertex *>::size_type n = data.flags & 1 ? vertexnum : vertexnum - 1;
+  std::vector<DRW_Vertex *>::size_type n = ( data.flags & 1 ) ? vertexnum : vertexnum - 1;
   for ( std::vector<DRW_Vertex *>::size_type i = 0; i < n; i++ )
   {
     size_t i0 = i % vertexnum;

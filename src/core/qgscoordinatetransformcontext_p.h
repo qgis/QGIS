@@ -76,8 +76,10 @@ class QgsCoordinateTransformContextPrivate : public QSharedData
 #endif
 
     //! Mutex for making QgsCoordinateTransformContextPrivate thread safe
-    mutable QReadWriteLock mLock;
+    mutable QReadWriteLock mLock{};
 
+  private:
+    QgsCoordinateTransformContextPrivate &operator= ( const QgsCoordinateTransformContextPrivate & ) = delete;
 };
 
 

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -159,9 +159,11 @@
  </customwidgets>
  <tabstops>
   <tabstop>editLabel</tabstop>
+  <tabstop>mFilterRadio</tabstop>
   <tabstop>editFilter</tabstop>
   <tabstop>btnExpressionBuilder</tabstop>
   <tabstop>btnTestFilter</tabstop>
+  <tabstop>mElseRadio</tabstop>
   <tabstop>editDescription</tabstop>
   <tabstop>groupScale</tabstop>
   <tabstop>groupSymbol</tabstop>

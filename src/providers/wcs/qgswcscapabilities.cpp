@@ -68,11 +68,10 @@ QgsWcsCapabilities::QgsWcsCapabilities( const QgsWcsCapabilities &other )
   , mServiceExceptionReportDom( other.mServiceExceptionReportDom )
   , mCapabilities( other.mCapabilities )
   , mCoveragesSupported( other.mCoveragesSupported )
-    // intentionally omitted:
-    // - mCapabilitiesReply
-    // - mErrorTitle
-    // - mError
-    // - mErrorFormat
+  , mCapabilitiesReply( nullptr ) // not copied from other
+  , mErrorTitle() // not copied from other
+  , mError() // not copied from other
+  , mErrorFormat() // not copied from other
   , mCoverageCount( other.mCoverageCount )
   , mCoverageParents( other.mCoverageParents )
   , mCoverageParentIdentifiers( other.mCoverageParentIdentifiers )
@@ -607,7 +606,7 @@ QList<QDomElement> QgsWcsCapabilities::domElements( const QDomElement &element, 
         }
         else
         {
-          list.append( domElements( nodeElement, names.join( QStringLiteral( "." ) ) ) );
+          list.append( domElements( nodeElement, names.join( QLatin1Char( '.' ) ) ) );
         }
       }
     }
@@ -641,7 +640,7 @@ QDomElement QgsWcsCapabilities::domElement( const QDomElement &element, const QS
     return firstChildElement;
   }
   names.removeFirst();
-  return domElement( firstChildElement, names.join( QStringLiteral( "." ) ) );
+  return domElement( firstChildElement, names.join( QLatin1Char( '.' ) ) );
 }
 
 QString QgsWcsCapabilities::domElementText( const QDomElement &element, const QString &path )
@@ -1123,7 +1122,7 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
   }
   if ( !authids.isEmpty() )
   {
-    coverage->supportedCrs = authids.toList();
+    coverage->supportedCrs = qgis::setToList( authids );
   }
 
   coverage->described = true;

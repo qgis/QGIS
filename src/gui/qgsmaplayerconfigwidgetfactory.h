@@ -90,6 +90,20 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
     virtual bool supportLayerPropertiesDialog() const { return false; }
 
     /**
+     * Returns a tab name hinting at where this page should be inserted into the
+     * layer properties tab list.
+     *
+     * If the returned string is non-empty, the config widget page will be inserted
+     * before the existing page with matching object name.
+     *
+     * The default implementation returns an empty string, which causes the widget
+     * to be placed at the end of the dialog page list.
+     *
+     * \since QGIS 3.14
+     */
+    virtual QString layerPropertiesPagePositionHint() const;
+
+    /**
      * Set support flag for style dock
      * \param supports TRUE if this widget is supported in the style dock.
      */

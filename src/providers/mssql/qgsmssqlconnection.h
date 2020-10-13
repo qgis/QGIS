@@ -22,6 +22,7 @@
 #include <QMutex>
 
 #include "qgsdatasourceuri.h"
+#include "qgsvectordataprovider.h"
 
 class QString;
 class QSqlDatabase;
@@ -162,6 +163,12 @@ class QgsMssqlConnection
      * Reads MSSQL connections from the settings and return a list of connection names
      */
     static QStringList connectionList();
+
+    /**
+     * Returns the list of native types
+     * \since QGIS 3.16
+     */
+    static QList<QgsVectorDataProvider::NativeType> nativeTypes();
 
 
   private:

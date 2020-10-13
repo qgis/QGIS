@@ -138,6 +138,7 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateTransform &o 
 #ifdef QGISDEBUG
   , mHasContext( o.mHasContext )
 #endif
+  , mLastError()
 {
   d = o.d;
 }
@@ -149,6 +150,7 @@ QgsCoordinateTransform &QgsCoordinateTransform::operator=( const QgsCoordinateTr
   mHasContext = o.mHasContext;
 #endif
   mContext = o.mContext;
+  mLastError = QString();
   return *this;
 }
 
@@ -948,9 +950,9 @@ bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &s
     return false;
 
   const QString sourceKey = src.authid().isEmpty() ?
-                            src.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) : src.authid();
+                            src.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) : src.authid();
   const QString destKey = dest.authid().isEmpty() ?
-                          dest.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) : dest.authid();
+                          dest.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) : dest.authid();
 
   if ( sourceKey.isEmpty() || destKey.isEmpty() )
     return false;
@@ -1034,9 +1036,9 @@ void QgsCoordinateTransform::addToCache()
     return;
 
   const QString sourceKey = d->mSourceCRS.authid().isEmpty() ?
-                            d->mSourceCRS.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) : d->mSourceCRS.authid();
+                            d->mSourceCRS.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) : d->mSourceCRS.authid();
   const QString destKey = d->mDestCRS.authid().isEmpty() ?
-                          d->mDestCRS.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) : d->mDestCRS.authid();
+                          d->mDestCRS.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) : d->mDestCRS.authid();
 
   if ( sourceKey.isEmpty() || destKey.isEmpty() )
     return;
@@ -1045,7 +1047,7 @@ void QgsCoordinateTransform::addToCache()
   if ( sDisableCache )
     return;
 
-  sTransforms.insertMulti( qMakePair( sourceKey, destKey ), *this );
+  sTransforms.insert( qMakePair( sourceKey, destKey ), *this );
 }
 
 int QgsCoordinateTransform::sourceDatumTransformId() const
@@ -1103,6 +1105,7 @@ void QgsCoordinateTransform::removeFromCacheObjectsBelongingToCurrentThread( voi
     return;
 
   QgsReadWriteLocker locker( sCacheLock, QgsReadWriteLocker::Write );
+  // cppcheck-suppress identicalConditionAfterEarlyExit
   if ( sDisableCache )
     return;
 

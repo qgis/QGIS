@@ -356,17 +356,17 @@ QgsGeoNodeRequest::ServiceLayerDetail QgsGeoNodeRequest::parseOwsUrl( QgsGeoNode
     const QVariantMap linkMap = link.toMap();
     if ( linkMap.contains( QStringLiteral( "link_type" ) ) )
     {
-      if ( linkMap.value( QStringLiteral( "link_type" ) ) == QStringLiteral( "OGC:WMS" ) )
+      if ( linkMap.value( QStringLiteral( "link_type" ) ) == QLatin1String( "OGC:WMS" ) )
       {
         urlFound = layerStruct.wmsURL = linkMap.value( QStringLiteral( "url" ) ).toString();
       }
-      else if ( linkMap.value( QStringLiteral( "link_type" ) ) == QStringLiteral( "OGC:WFS" ) )
+      else if ( linkMap.value( QStringLiteral( "link_type" ) ) == QLatin1String( "OGC:WFS" ) )
       {
         urlFound = layerStruct.wfsURL = linkMap.value( QStringLiteral( "url" ) ).toString();
       }
-      else if ( linkMap.value( QStringLiteral( "link_type" ) ) == QStringLiteral( "image" ) )
+      else if ( linkMap.value( QStringLiteral( "link_type" ) ) == QLatin1String( "image" ) )
       {
-        if ( linkMap.contains( QStringLiteral( "name" ) ) && linkMap.value( QStringLiteral( "name" ) ) == QStringLiteral( "Tiles" ) )
+        if ( linkMap.contains( QStringLiteral( "name" ) ) && linkMap.value( QStringLiteral( "name" ) ) == QLatin1String( "Tiles" ) )
         {
           urlFound = layerStruct.xyzURL = linkMap.value( QStringLiteral( "url" ) ).toString();
         }

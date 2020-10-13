@@ -178,12 +178,12 @@ void TestQgsGpsInformationWidget::testStorePreferredFields()
   std::unique_ptr<QgsGpsInformationWidget> widget = prepareWidget();
   QgsMapCanvas *canvas = mQgisApp->mapCanvas();
   canvas->setCurrentLayer( tempLayerDateTime );
-  int fieldIdx = tempLayerDateTime->fields().indexOf( QStringLiteral( "datetimef" ) );
+  int fieldIdx = tempLayerDateTime->fields().indexOf( QLatin1String( "datetimef" ) );
   QVERIFY( fieldIdx != -1 );
   widget->mCboTimestampField->setCurrentIndex( widget->mCboTimestampField->findText( QStringLiteral( "datetimef" ) ) );
 
   canvas->setCurrentLayer( tempLayerString );
-  fieldIdx = tempLayerString->fields().indexOf( QStringLiteral( "stringf" ) );
+  fieldIdx = tempLayerString->fields().indexOf( QLatin1String( "stringf" ) );
   QVERIFY( fieldIdx != -1 );
   widget->mCboTimestampField->setCurrentIndex( widget->mCboTimestampField->findText( QStringLiteral( "stringf" ) ) );
 
@@ -208,7 +208,7 @@ void TestQgsGpsInformationWidget::testTimestamp()
   // Test datetime layer
   canvas->setCurrentLayer( tempLayerDateTime );
 
-  int fieldIdx { tempLayerDateTime->fields().indexOf( QStringLiteral( "datetimef" ) ) };
+  int fieldIdx { tempLayerDateTime->fields().indexOf( QLatin1String( "datetimef" ) ) };
   widget->mCboTimestampField->setCurrentIndex( widget->mCboTimestampField->findText( QStringLiteral( "datetimef" ) ) );
   QVERIFY( fieldIdx != -1 );
   // UTC
@@ -230,7 +230,7 @@ void TestQgsGpsInformationWidget::testTimestamp()
   ///////////////////////////////////////////
   // Test string
   canvas->setCurrentLayer( tempLayerString );
-  fieldIdx = tempLayerString->fields().indexOf( QStringLiteral( "stringf" ) );
+  fieldIdx = tempLayerString->fields().indexOf( QLatin1String( "stringf" ) );
   widget->mCboTimestampField->setCurrentIndex( widget->mCboTimestampField->findText( QStringLiteral( "stringf" ) ) );
 
   // UTC
@@ -270,14 +270,14 @@ void TestQgsGpsInformationWidget::testTimestampWrite()
   QCOMPARE( _testWrite( tempLayerString, widget.get(), QStringLiteral( "stringf" ),  Qt::TimeSpec::TimeZone ).toString( Qt::DateFormat::ISODate ),  tzTime.toString( Qt::DateFormat::ISODate ) );
 
   // Test write on line string field
-  widget->mCaptureList.push_back( QgsPointXY( 1, 2 ) );
-  widget->mCaptureList.push_back( QgsPointXY( 3, 4 ) );
+  widget->mCaptureList.push_back( QgsPoint( 1, 2 ) );
+  widget->mCaptureList.push_back( QgsPoint( 3, 4 ) );
   QCOMPARE( _testWrite( tempLayerLineString, widget.get(), QStringLiteral( "stringf" ),  Qt::TimeSpec::UTC ).toString( Qt::DateFormat::ISODate ), dateTime.toString( Qt::DateFormat::ISODate ) );
-  widget->mCaptureList.push_back( QgsPointXY( 1, 2 ) );
-  widget->mCaptureList.push_back( QgsPointXY( 3, 4 ) );
+  widget->mCaptureList.push_back( QgsPoint( 1, 2 ) );
+  widget->mCaptureList.push_back( QgsPoint( 3, 4 ) );
   QCOMPARE( _testWrite( tempLayerLineString, widget.get(), QStringLiteral( "stringf" ),  Qt::TimeSpec::LocalTime ).toString( Qt::DateFormat::ISODate ), localTime.toString( Qt::DateFormat::ISODate ) );
-  widget->mCaptureList.push_back( QgsPointXY( 1, 2 ) );
-  widget->mCaptureList.push_back( QgsPointXY( 3, 4 ) );
+  widget->mCaptureList.push_back( QgsPoint( 1, 2 ) );
+  widget->mCaptureList.push_back( QgsPoint( 3, 4 ) );
   QCOMPARE( _testWrite( tempLayerLineString, widget.get(), QStringLiteral( "stringf" ),  Qt::TimeSpec::TimeZone ).toString( Qt::DateFormat::ISODate ),  tzTime.toString( Qt::DateFormat::ISODate ) );
 
   // Write on GPKG

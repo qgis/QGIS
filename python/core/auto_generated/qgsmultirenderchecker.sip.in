@@ -18,8 +18,8 @@ Its main purpose is for the unit testing framework.
 
 It will either
 <ul>
-<li>take an externally rendered image (setRenderedImage())</li>
-<li>render the image based on provided mapSettings (setMapSettings())</li>
+<li>take an externally rendered image (:py:func:`~setRenderedImage`)</li>
+<li>render the image based on provided mapSettings (:py:func:`~setMapSettings`)</li>
 </ul>
 
 This image will then be compared against one or several images in a folder inside
@@ -80,7 +80,7 @@ Set the map settings to use to render the image
 
     void setColorTolerance( unsigned int colorTolerance );
 %Docstring
-Set tolerance for color components used by runTest()
+Set tolerance for color components used by :py:func:`~QgsMultiRenderChecker.runTest`
 Default value is 0.
 
 :param colorTolerance: The maximum difference for each color component

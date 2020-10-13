@@ -11,6 +11,8 @@
 
 
 
+
+
 class QgsMapToolCapture : QgsMapToolAdvancedDigitizing
 {
 
@@ -27,12 +29,26 @@ class QgsMapToolCapture : QgsMapToolAdvancedDigitizing
       CapturePolygon
     };
 
+    enum Capability
+    {
+      NoCapabilities,
+      SupportsCurves,
+    };
+
+    typedef QFlags<QgsMapToolCapture::Capability> Capabilities;
+
+
     QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode );
 %Docstring
 constructor
 %End
 
     ~QgsMapToolCapture();
+
+    virtual QgsMapToolCapture::Capabilities capabilities() const;
+%Docstring
+Returns flags containing the supported capabilities
+%End
 
     virtual void activate();
 
@@ -100,6 +116,12 @@ Returns the rubberBand currently owned by this map tool and
 transfers ownership to the caller.
 
 .. versionadded:: 3.8
+%End
+
+  public slots:
+    void setCircularDigitizingEnabled( bool enable );
+%Docstring
+Enable the digitizing with curve
 %End
 
   protected:
@@ -265,6 +287,9 @@ Stop capturing
 %End
 
 };
+
+QFlags<QgsMapToolCapture::Capability> operator|(QgsMapToolCapture::Capability f1, QFlags<QgsMapToolCapture::Capability> f2);
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

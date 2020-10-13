@@ -19,10 +19,15 @@
 #include <QWidget>
 #include <QAbstractTableModel>
 #include <QStyledItemDelegate>
+#include <QPointer>
 
 #include "qgis_gui.h"
-#include "ui_qgsfieldmappingwidget.h"
 #include "qgsfieldmappingmodel.h"
+#include "qgspanelwidget.h"
+
+class QTableView;
+class QItemSelectionModel;
+class QgsVectorLayer;
 
 /**
  * \ingroup gui
@@ -31,7 +36,7 @@
  * "destination" fields.
  * \since QGIS 3.14
  */
-class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget, private Ui::QgsFieldMappingWidget
+class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget
 {
     Q_OBJECT
 
@@ -83,6 +88,22 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget, private Ui::QgsF
     void setSourceFields( const QgsFields &sourceFields );
 
     /**
+     * Sets a source \a layer to use when generating expression previews in the widget.
+     *
+     * \since QGIS 3.16
+     */
+    void setSourceLayer( QgsVectorLayer *layer );
+
+    /**
+     * Returns the source layer for use when generating expression previews.
+     *
+     * Returned value may be NULLPTR.
+     *
+     * \since QGIS 3.16
+     */
+    QgsVectorLayer *sourceLayer();
+
+    /**
      * Set destination fields to \a destinationFields in the underlying model,
      * initial values for the expressions can be optionally specified through
      * \a expressions which is a map from the original field name to the
@@ -96,6 +117,19 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget, private Ui::QgsF
      */
     void scrollTo( const QModelIndex &index ) const;
 
+    /**
+     * Register an expression context \a generator class that will be used to retrieve
+     * an expression context for the widget.
+     */
+    void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
+
+  signals:
+
+    /**
+     *Emitted when the fields defined in the widget are changed.
+     */
+    void changed();
+
   public slots:
 
     //! Appends a new \a field to the model, with an optional \a expression
@@ -104,15 +138,18 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget, private Ui::QgsF
     //! Removes the currently selected field from the model
     bool removeSelectedFields( );
 
-    //! Moves down currently selected field
+    //! Moves up currently selected field
     bool moveSelectedFieldsUp( );
 
-    //! Moves up the currently selected field
+    //! Moves down the currently selected field
     bool moveSelectedFieldsDown( );
 
   private:
 
-    QAbstractTableModel *mModel;
+    QTableView *mTableView = nullptr;
+    QAbstractTableModel *mModel = nullptr;
+
+    QPointer< QgsVectorLayer > mSourceLayer;
     void updateColumns();
     //! Returns selected row indexes in ascending order
     std::list<int> selectedRows( );
@@ -142,6 +179,8 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget, private Ui::QgsF
         void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
         void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
     };
+
+    friend class QgsAggregateMappingWidget;
 
 };
 

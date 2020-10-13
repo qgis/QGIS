@@ -84,7 +84,7 @@ void TestQgsTextEditWrapper::testWithJsonInPostgres()
   QgsProject::instance()->addMapLayer( vl_json, false, false );
   QCOMPARE( vl_json->fields().at( 1 ).type(), QVariant::Map );
 
-  QgsTextEditWrapper w_json( vl_json, vl_json->fields().indexOf( QStringLiteral( "jvalue" ) ), nullptr, nullptr );
+  QgsTextEditWrapper w_json( vl_json, vl_json->fields().indexOf( QLatin1String( "jvalue" ) ), nullptr, nullptr );
   QLineEdit *widget = qobject_cast< QLineEdit * >( w_json.widget() );
   w_json.setEnabled( true );
 
@@ -188,7 +188,7 @@ void TestQgsTextEditWrapper::testWithJsonBInPostgres()
   QgsProject::instance()->addMapLayer( vl_json, false, false );
   QCOMPARE( vl_json->fields().at( 1 ).type(), QVariant::Map );
 
-  QgsTextEditWrapper w_json( vl_json, vl_json->fields().indexOf( QStringLiteral( "jbvalue" ) ), nullptr, nullptr );
+  QgsTextEditWrapper w_json( vl_json, vl_json->fields().indexOf( QLatin1String( "jbvalue" ) ), nullptr, nullptr );
   QLineEdit *widget = qobject_cast< QLineEdit * >( w_json.widget() );
   w_json.setEnabled( true );
 

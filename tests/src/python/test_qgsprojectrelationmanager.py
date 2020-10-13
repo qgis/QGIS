@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""QGIS Unit tests for QgsRelationManager 
+"""QGIS Unit tests for QgsRelationManager
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 
 start_app()
+
 
 #
 # Check consistency of relations when getting manager from project
@@ -54,7 +55,7 @@ class TestQgsProjectRelationManager(unittest.TestCase):
         self.project.addMapLayers([self.referencedLayer, self.referencingLayer])
 
     def test_addRelation(self):
-        """ test adding relations to a manager 
+        """ test adding relations to a manager
         """
         manager = self.project.relationManager()
         relations = manager.relations()

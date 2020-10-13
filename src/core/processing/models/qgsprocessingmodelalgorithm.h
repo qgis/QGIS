@@ -489,7 +489,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      *
      * \since QGIS 3.14
      */
-    QVariantMap designerParameterValues() const { return mDesignerParameterValues; }
+    QVariantMap designerParameterValues() const;
 
     /**
      * Sets the parameter \a values to use as default values when running this model through the

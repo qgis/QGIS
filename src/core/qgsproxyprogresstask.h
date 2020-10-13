@@ -98,6 +98,8 @@ class CORE_EXPORT QgsScopedProxyProgressTask
 
     QgsProxyProgressTask *mTask = nullptr;
 
+    // SIP generates .cpp code that doesn't compile if commenting out the legit following line.
+    // Q_DISABLE_COPY( QgsScopedProxyProgressTask )
 };
 
 #endif // QGSPROXYPROGRESSTASK_H

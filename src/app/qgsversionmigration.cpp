@@ -89,7 +89,7 @@ bool Qgs2To3Migration::requiresMigration()
     {
       QStringList parts = line.split( '=' );
       mMigrationFileVersion = parts.at( 1 ).toInt();
-      QgsDebugMsg( QStringLiteral( "File version is=%1" ).arg( mMigrationFileVersion ) );
+      QgsDebugMsgLevel( QStringLiteral( "File version is=%1" ).arg( mMigrationFileVersion ), 2 );
     }
     migrationFile.close();
   }
@@ -107,7 +107,7 @@ QgsError Qgs2To3Migration::migrateStyles()
   QgsError error;
   QString oldHome = QStringLiteral( "%1/.qgis2" ).arg( QDir::homePath() );
   QString oldStyleFile = QStringLiteral( "%1/symbology-ng-style.db" ).arg( oldHome );
-  QgsDebugMsg( QStringLiteral( "OLD STYLE FILE %1" ).arg( oldStyleFile ) );
+  QgsDebugMsgLevel( QStringLiteral( "OLD STYLE FILE %1" ).arg( oldStyleFile ), 2 );
   QSqlDatabase db = QSqlDatabase::addDatabase( "QSQLITE", "migration" );
   db.setDatabaseName( oldStyleFile );
   if ( !db.open() )
@@ -150,7 +150,7 @@ QgsError Qgs2To3Migration::migrateStyles()
       }
 
       QDomElement symElement = doc.documentElement();
-      QgsDebugMsg( QStringLiteral( "MIGRATION: Importing %1" ).arg( name ) );
+      QgsDebugMsgLevel( QStringLiteral( "MIGRATION: Importing %1" ).arg( name ), 2 );
       QgsSymbol *symbol = QgsSymbolLayerUtils::loadSymbol( symElement, QgsReadWriteContext() );
       tags << "QGIS 2";
       if ( style->symbolId( name ) == 0 )
@@ -160,7 +160,7 @@ QgsError Qgs2To3Migration::migrateStyles()
     }
   }
 
-  QgsDebugMsg( oldStyleFile );
+  QgsDebugMsgLevel( oldStyleFile, 2 );
   return error;
 }
 
@@ -234,7 +234,7 @@ QgsError Qgs2To3Migration::migrateSettings()
 
   if ( keys.count() > 0 )
   {
-    QgsDebugMsg( QStringLiteral( "MIGRATION: Translating settings keys" ) );
+    QgsDebugMsgLevel( QStringLiteral( "MIGRATION: Translating settings keys" ), 2 );
     QList<QPair<QString, QString>>::iterator i;
     for ( i = keys.begin(); i != keys.end(); ++i )
     {
@@ -245,7 +245,7 @@ QgsError Qgs2To3Migration::migrateSettings()
 
       if ( oldKey.contains( oldKey ) )
       {
-        QgsDebugMsg( QStringLiteral( " -> %1 -> %2" ).arg( oldKey, newKey ) );
+        QgsDebugMsgLevel( QStringLiteral( " -> %1 -> %2" ).arg( oldKey, newKey ), 2 );
         newSettings.setValue( newKey, mOldSettings->value( oldKey ) );
       }
     }
@@ -276,7 +276,7 @@ QgsError Qgs2To3Migration::migrateAuthDb()
     {
       if ( oldDbFile.copy( newAuthDbFilePath ) )
       {
-        QgsDebugMsg( QStringLiteral( "Old auth DB successfully copied to %1" ).arg( newAuthDbFilePath ) );
+        QgsDebugMsgLevel( QStringLiteral( "Old auth DB successfully copied to %1" ).arg( newAuthDbFilePath ), 2 );
       }
       else
       {
@@ -321,7 +321,7 @@ QPair<QString, QString> Qgs2To3Migration::transformKey( QString fullOldKey, QStr
   QString newKey = newKeyPart;
   QString oldKey = fullOldKey;
 
-  if ( newKeyPart == QStringLiteral( "*" ) )
+  if ( newKeyPart == QLatin1String( "*" ) )
   {
     newKey = fullOldKey;
   }

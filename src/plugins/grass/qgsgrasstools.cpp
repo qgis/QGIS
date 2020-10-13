@@ -209,7 +209,7 @@ void QgsGrassTools::runModule( QString name, bool direct )
     QApplication::restoreOverrideCursor();
     if ( !gmod->errors().isEmpty() )
     {
-      QgsGrass::warning( gmod->errors().join( QStringLiteral( "\n" ) ) );
+      QgsGrass::warning( gmod->errors().join( QLatin1Char( '\n' ) ) );
     }
     m = qobject_cast<QWidget *>( gmod );
   }
@@ -365,7 +365,7 @@ void QgsGrassTools::addModules( QStandardItem *parent, QDomElement &element, QSt
         if ( !errors.isEmpty() )
         {
           QString label = e.attribute( QStringLiteral( "label" ) ) + e.attribute( QStringLiteral( "name" ) ); // one should be non empty
-          label += "\n  ERROR:\t" + errors.join( QStringLiteral( "\n\t" ) );
+          label += "\n  ERROR:\t" + errors.join( QLatin1String( "\n\t" ) );
           QStandardItem *item = new QStandardItem( label );
           item->setData( label, Qt::UserRole + Label );
           item->setData( label, Qt::UserRole + Search );

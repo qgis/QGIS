@@ -18,7 +18,8 @@ from qgis.core import QgsGeometry, QgsPoint, QgsPointXY, QgsCircle, QgsCircularS
     QgsCurvePolygon, QgsEllipse, QgsLineString, QgsMultiCurve, QgsRectangle, QgsExpression, QgsField, QgsError,\
     QgsMimeDataUtils, QgsVector, QgsVector3D, QgsVectorLayer, QgsReferencedPointXY, QgsReferencedRectangle,\
     QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsProject, QgsClassificationRange, QgsBookmark, \
-    QgsLayoutMeasurement, QgsLayoutPoint, QgsLayoutSize, QgsUnitTypes, QgsConditionalStyle, QgsTableCell, QgsProperty
+    QgsLayoutMeasurement, QgsLayoutPoint, QgsLayoutSize, QgsUnitTypes, QgsConditionalStyle, QgsTableCell, QgsProperty, \
+    QgsVertexId, QgsReferencedGeometry
 
 start_app()
 
@@ -137,6 +138,10 @@ class TestPython__repr__(unittest.TestCase):
         r = QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:4326'))
         self.assertEqual(r.__repr__(), '<QgsReferencedRectangle: 1 2, 3 4 (EPSG:4326)>')
 
+    def testQgsReferencedGeometryRepr(self):
+        g = QgsReferencedGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)), QgsCoordinateReferenceSystem('EPSG:4326'))
+        self.assertEqual(g.__repr__(), '<QgsReferencedGeometry: Point (1 2) (EPSG:4326)>')
+
     def testQgsCoordinateReferenceSystem(self):
         crs = QgsCoordinateReferenceSystem('EPSG:4326')
         self.assertEqual(crs.__repr__(), '<QgsCoordinateReferenceSystem: EPSG:4326>')
@@ -240,6 +245,14 @@ class TestPython__repr__(unittest.TestCase):
         self.assertEqual(p.__repr__(), '<QgsProperty: INACTIVE expression (5*5 || \'a\')>')
         p = QgsProperty()
         self.assertEqual(p.__repr__(), '<QgsProperty: invalid>')
+
+    def testQgsVertexId(self):
+        v = QgsVertexId()
+        self.assertEqual(v.__repr__(), '<QgsVertexId: -1,-1,-1>')
+        v = QgsVertexId(1, 2, 3)
+        self.assertEqual(v.__repr__(), '<QgsVertexId: 1,2,3>')
+        v = QgsVertexId(1, 2, 3, _type=QgsVertexId.CurveVertex)
+        self.assertEqual(v.__repr__(), '<QgsVertexId: 1,2,3 CurveVertex>')
 
 
 if __name__ == "__main__":

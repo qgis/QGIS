@@ -17,7 +17,7 @@ This class keeps a list of source select providers that may add items to the Qgs
 When created, it automatically adds providers from data provider plugins (e.g. PostGIS, WMS, ...)
 
 QgsSourceSelectProviderRegistry is not usually directly created, but rather accessed through
-:py:func:`QgsGui.sourceSelectProviderRegistry()`
+:py:func:`QgsGui.sourceSelectProviderRegistry()`.
 
 .. versionadded:: 3.0
 %End
@@ -75,7 +75,7 @@ Returns a (possibly empty) list of providers by data ``providerkey``
 %Docstring
 Gets select widget from provider with ``name``
 
-The function is replacement of  QgsProviderRegistry.createSelectionWidget() from QGIS 3.8
+The function is replacement of  :py:func:`QgsProviderRegistry.createSelectionWidget()` from QGIS 3.8
 
 .. versionadded:: 3.10
 %End

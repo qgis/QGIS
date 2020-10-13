@@ -29,6 +29,9 @@
 #include "qgscolorramp.h"
 #include "qgscolorrampbutton.h"
 #include "qgscolordialog.h"
+#include "qgsrasterrendererutils.h"
+#include "qgsfileutils.h"
+#include "qgsguiutils.h"
 
 #include <QCursor>
 #include <QPushButton>
@@ -99,6 +102,10 @@ QgsColorRampShaderWidget::QgsColorRampShaderWidget( QWidget *parent )
   connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsColorRampShaderWidget::applyColorRamp );
   connect( mNumberOfEntriesSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsColorRampShaderWidget::classify );
   connect( mClipCheckBox, &QAbstractButton::toggled, this, &QgsColorRampShaderWidget::widgetChanged );
+  connect( mLabelPrecisionSpinBox, qgis::overload<int>::of( &QSpinBox::valueChanged ), this, [ = ]( int )
+  {
+    autoLabel();
+  } );
 }
 
 void QgsColorRampShaderWidget::initializeForUseWithRasterLayer()
@@ -116,6 +123,12 @@ void QgsColorRampShaderWidget::setRasterDataProvider( QgsRasterDataProvider *dp 
 void QgsColorRampShaderWidget::setRasterBand( int band )
 {
   mBand = band;
+  // Set the maximum number of digits in the precision spin box
+  if ( mRasterDataProvider )
+  {
+    const int maxDigits { QgsGuiUtils::significantDigits( mRasterDataProvider->dataType( mBand ) ) };
+    mLabelPrecisionSpinBox->setMaximum( maxDigits );
+  }
 }
 
 void QgsColorRampShaderWidget::setExtent( const QgsRectangle &extent )
@@ -142,7 +155,7 @@ QgsColorRampShader QgsColorRampShaderWidget::shader() const
       continue;
     }
     QgsColorRampShader::ColorRampItem newColorRampItem;
-    newColorRampItem.value = currentItem->text( ValueColumn ).toDouble();
+    newColorRampItem.value = QLocale().toDouble( currentItem->text( ValueColumn ) );
     newColorRampItem.color = currentItem->data( ColorColumn, Qt::EditRole ).value<QColor>();
     newColorRampItem.label = currentItem->text( LabelColumn );
     colorRampItems.append( newColorRampItem );
@@ -165,6 +178,19 @@ void QgsColorRampShaderWidget::autoLabel()
   QString unit = mUnitLineEdit->text();
   QString label;
   int topLevelItemCount = mColormapTreeWidget->topLevelItemCount();
+
+  auto applyPrecision = [ = ]( const QString & value )
+  {
+    double val { QLocale().toDouble( value ) };
+    if ( mLabelPrecisionSpinBox->value() <  0 )
+    {
+      const double factor = std::pow( 10, - mLabelPrecisionSpinBox->value() );
+      val = static_cast<qlonglong>( val / factor ) * factor;
+      return QLocale().toString( val, 'f', 0 );
+    }
+    return QLocale().toString( val, 'f', mLabelPrecisionSpinBox->value() );
+  };
+
   QTreeWidgetItem *currentItem = nullptr;
   for ( int i = 0; i < topLevelItemCount; ++i )
   {
@@ -179,20 +205,20 @@ void QgsColorRampShaderWidget::autoLabel()
     {
       if ( i == 0 )
       {
-        label = "<= " + currentItem->text( ValueColumn ) + unit;
+        label = "<= " + applyPrecision( currentItem->text( ValueColumn ) ) + unit;
       }
-      else if ( currentItem->text( ValueColumn ).toDouble() == std::numeric_limits<double>::infinity() )
+      else if ( QLocale().toDouble( currentItem->text( ValueColumn ) ) == std::numeric_limits<double>::infinity() )
       {
-        label = "> " + mColormapTreeWidget->topLevelItem( i - 1 )->text( ValueColumn ) + unit;
+        label = "> " + applyPrecision( mColormapTreeWidget->topLevelItem( i - 1 )->text( ValueColumn ) ) + unit;
       }
       else
       {
-        label = mColormapTreeWidget->topLevelItem( i - 1 )->text( ValueColumn ) + " - " + currentItem->text( ValueColumn ) + unit;
+        label = applyPrecision( mColormapTreeWidget->topLevelItem( i - 1 )->text( ValueColumn ) ) + " - " + applyPrecision( currentItem->text( ValueColumn ) ) + unit;
       }
     }
     else
     {
-      label = currentItem->text( ValueColumn ) + unit;
+      label = applyPrecision( currentItem->text( ValueColumn ) ) + unit;
     }
 
     if ( currentItem->text( LabelColumn ).isEmpty() || currentItem->text( LabelColumn ) == label || currentItem->foreground( LabelColumn ).color() == QColor( Qt::gray ) )
@@ -330,7 +356,7 @@ void QgsColorRampShaderWidget::classify()
   for ( ; it != colorRampItemList.end(); ++it )
   {
     QgsTreeWidgetItemObject *newItem = new QgsTreeWidgetItemObject( mColormapTreeWidget );
-    newItem->setText( ValueColumn, QString::number( it->value, 'g', 15 ) );
+    newItem->setText( ValueColumn, QLocale().toString( it->value, 'g', 15 ) );
     newItem->setData( ColorColumn, Qt::EditRole, it->color );
     newItem->setText( LabelColumn, QString() ); // Labels will be populated in autoLabel()
     newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
@@ -376,6 +402,18 @@ void QgsColorRampShaderWidget::applyColorRamp()
   int topLevelItemCount = mColormapTreeWidget->topLevelItemCount();
   if ( topLevelItemCount > 0 )
   {
+    // We need to have valid min/max values here. If we haven't, load from colormap
+    double min, max;
+    if ( std::isnan( mMin ) || std::isnan( mMax ) )
+    {
+      colormapMinMax( min, max );
+    }
+    else
+    {
+      min = mMin;
+      max = mMax;
+    }
+
     // if the list values has been customized, maintain pre-existing values
     QTreeWidgetItem *currentItem = nullptr;
     for ( int i = 0; i < topLevelItemCount; ++i )
@@ -386,8 +424,8 @@ void QgsColorRampShaderWidget::applyColorRamp()
         continue;
       }
 
-      double value = currentItem->text( ValueColumn ).toDouble();
-      double position = ( value - mMin ) / ( mMax - mMin );
+      double value = QLocale().toDouble( currentItem->text( ValueColumn ) );
+      double position = ( value - min ) / ( max - min );
       whileBlocking( static_cast<QgsTreeWidgetItemObject *>( currentItem ) )->setData( ColorColumn, Qt::EditRole, ramp->color( position ) );
     }
 
@@ -406,7 +444,7 @@ void QgsColorRampShaderWidget::populateColormapTreeWidget( const QList<QgsColorR
   for ( ; it != colorRampItems.constEnd(); ++it )
   {
     QgsTreeWidgetItemObject *newItem = new QgsTreeWidgetItemObject( mColormapTreeWidget );
-    newItem->setText( ValueColumn, QString::number( it->value, 'g', 15 ) );
+    newItem->setText( ValueColumn, QLocale().toString( it->value, 'g', 15 ) );
     newItem->setData( ColorColumn, Qt::EditRole, it->color );
     newItem->setText( LabelColumn, it->label );
     newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
@@ -437,91 +475,37 @@ void QgsColorRampShaderWidget::mLoadFromBandButton_clicked()
 
 void QgsColorRampShaderWidget::mLoadFromFileButton_clicked()
 {
-  int lineCounter = 0;
-  bool importError = false;
-  QString badLines;
   QgsSettings settings;
   QString lastDir = settings.value( QStringLiteral( "lastColorMapDir" ), QDir::homePath() ).toString();
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Color Map from File" ), lastDir, tr( "Textfile (*.txt)" ) );
-  QFile inputFile( fileName );
-  if ( inputFile.open( QFile::ReadOnly ) )
+  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Color Map from File" ), lastDir, tr( "Textfile (*.txt)" ) );
+  if ( fileName.isEmpty() )
+    return;
+
+  QList<QgsColorRampShader::ColorRampItem> colorRampItems;
+  QgsColorRampShader::Type type = QgsColorRampShader::Interpolated;
+  QStringList errors;
+  if ( QgsRasterRendererUtils::parseColorMapFile( fileName, colorRampItems, type, errors ) )
   {
     //clear the current tree
     mColormapTreeWidget->clear();
 
-    QTextStream inputStream( &inputFile );
-    QString inputLine;
-    QStringList inputStringComponents;
-    QList<QgsColorRampShader::ColorRampItem> colorRampItems;
+    mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findData( type ) );
 
-    //read through the input looking for valid data
-    while ( !inputStream.atEnd() )
-    {
-      lineCounter++;
-      inputLine = inputStream.readLine();
-      if ( !inputLine.isEmpty() )
-      {
-        if ( !inputLine.simplified().startsWith( '#' ) )
-        {
-          if ( inputLine.contains( QLatin1String( "INTERPOLATION" ), Qt::CaseInsensitive ) )
-          {
-            inputStringComponents = inputLine.split( ':' );
-            if ( inputStringComponents.size() == 2 )
-            {
-              if ( inputStringComponents[1].trimmed().toUpper().compare( QLatin1String( "INTERPOLATED" ), Qt::CaseInsensitive ) == 0 )
-              {
-                mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findData( QgsColorRampShader::Interpolated ) );
-              }
-              else if ( inputStringComponents[1].trimmed().toUpper().compare( QLatin1String( "DISCRETE" ), Qt::CaseInsensitive ) == 0 )
-              {
-                mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findData( QgsColorRampShader::Discrete ) );
-              }
-              else
-              {
-                mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findData( QgsColorRampShader::Exact ) );
-              }
-            }
-            else
-            {
-              importError = true;
-              badLines = badLines + QString::number( lineCounter ) + ":\t[" + inputLine + "]\n";
-            }
-          }
-          else
-          {
-            inputStringComponents = inputLine.split( ',' );
-            if ( inputStringComponents.size() == 6 )
-            {
-              QgsColorRampShader::ColorRampItem currentItem( inputStringComponents[0].toDouble(),
-                  QColor::fromRgb( inputStringComponents[1].toInt(), inputStringComponents[2].toInt(),
-                                   inputStringComponents[3].toInt(), inputStringComponents[4].toInt() ),
-                  inputStringComponents[5] );
-              colorRampItems.push_back( currentItem );
-            }
-            else
-            {
-              importError = true;
-              badLines = badLines + QString::number( lineCounter ) + ":\t[" + inputLine + "]\n";
-            }
-          }
-        }
-      }
-      lineCounter++;
-    }
     populateColormapTreeWidget( colorRampItems );
 
-    QFileInfo fileInfo( fileName );
-    settings.setValue( QStringLiteral( "lastColorMapDir" ), fileInfo.absoluteDir().absolutePath() );
-
-    if ( importError )
+    if ( !errors.empty() )
     {
-      QMessageBox::warning( this, tr( "Load Color Map from File" ), tr( "The following lines contained errors\n\n" ) + badLines );
+      QMessageBox::warning( this, tr( "Load Color Map from File" ), tr( "The following lines contained errors\n\n" ) +  errors.join( '\n' ) );
     }
   }
-  else if ( !fileName.isEmpty() )
+  else
   {
-    QMessageBox::warning( this, tr( "Load Color Map from File" ), tr( "Read access denied. Adjust the file permissions and try again.\n\n" ) );
+    const QString error = tr( "An error occurred while reading the color map\n\n" ) + errors.join( '\n' );
+    QMessageBox::warning( this, tr( "Load Color Map from File" ), error );
   }
+
+  QFileInfo fileInfo( fileName );
+  settings.setValue( QStringLiteral( "lastColorMapDir" ), fileInfo.absoluteDir().absolutePath() );
 
   loadMinimumMaximumFromTree();
   emit widgetChanged();
@@ -532,66 +516,35 @@ void QgsColorRampShaderWidget::mExportToFileButton_clicked()
   QgsSettings settings;
   QString lastDir = settings.value( QStringLiteral( "lastColorMapDir" ), QDir::homePath() ).toString();
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Save Color Map as File" ), lastDir, tr( "Textfile (*.txt)" ) );
-  if ( !fileName.isEmpty() )
+  if ( fileName.isEmpty() )
+    return;
+
+  fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, QStringList() << QStringLiteral( "txt" ) );
+
+  QList<QgsColorRampShader::ColorRampItem> colorRampItems;
+  int topLevelItemCount = mColormapTreeWidget->topLevelItemCount();
+  for ( int i = 0; i < topLevelItemCount; ++i )
   {
-    if ( !fileName.endsWith( QLatin1String( ".txt" ), Qt::CaseInsensitive ) )
+    QTreeWidgetItem *currentItem = mColormapTreeWidget->topLevelItem( i );
+    if ( !currentItem )
     {
-      fileName = fileName + ".txt";
+      continue;
     }
 
-    QFile outputFile( fileName );
-    if ( outputFile.open( QFile::WriteOnly | QIODevice::Truncate ) )
-    {
-      QTextStream outputStream( &outputFile );
-      outputStream << "# " << tr( "QGIS Generated Color Map Export File" ) << '\n';
-      outputStream << "INTERPOLATION:";
-      QgsColorRampShader::Type interpolation = static_cast< QgsColorRampShader::Type >( mColorInterpolationComboBox->currentData().toInt() );
-      switch ( interpolation )
-      {
-        case QgsColorRampShader::Interpolated:
-          outputStream << "INTERPOLATED\n";
-          break;
-        case QgsColorRampShader::Discrete:
-          outputStream << "DISCRETE\n";
-          break;
-        case QgsColorRampShader::Exact:
-          outputStream << "EXACT\n";
-          break;
-      }
-
-      int topLevelItemCount = mColormapTreeWidget->topLevelItemCount();
-      QTreeWidgetItem *currentItem = nullptr;
-      QColor color;
-      for ( int i = 0; i < topLevelItemCount; ++i )
-      {
-        currentItem = mColormapTreeWidget->topLevelItem( i );
-        if ( !currentItem )
-        {
-          continue;
-        }
-        color = currentItem->data( ColorColumn, Qt::EditRole ).value<QColor>();
-        outputStream << currentItem->text( ValueColumn ).toDouble() << ',';
-        outputStream << color.red() << ',' << color.green() << ',' << color.blue() << ',' << color.alpha() << ',';
-        if ( currentItem->text( LabelColumn ).isEmpty() )
-        {
-          outputStream << "Color entry " << i + 1 << '\n';
-        }
-        else
-        {
-          outputStream << currentItem->text( LabelColumn ) << '\n';
-        }
-      }
-      outputStream.flush();
-      outputFile.close();
-
-      QFileInfo fileInfo( fileName );
-      settings.setValue( QStringLiteral( "lastColorMapDir" ), fileInfo.absoluteDir().absolutePath() );
-    }
-    else
-    {
-      QMessageBox::warning( this, tr( "Save Color Map as File" ), tr( "Write access denied. Adjust the file permissions and try again.\n\n" ) );
-    }
+    QgsColorRampShader::ColorRampItem item;
+    item.value = QLocale().toDouble( currentItem->text( ValueColumn ) );
+    item.color = currentItem->data( ColorColumn, Qt::EditRole ).value<QColor>();
+    item.label = currentItem->text( LabelColumn );
+    colorRampItems << item;
   }
+
+  if ( !QgsRasterRendererUtils::saveColorMapFile( fileName, colorRampItems, static_cast< QgsColorRampShader::Type >( mColorInterpolationComboBox->currentData().toInt() ) ) )
+  {
+    QMessageBox::warning( this, tr( "Save Color Map as File" ), tr( "Write access denied. Adjust the file permissions and try again.\n\n" ) );
+  }
+
+  QFileInfo fileInfo( fileName );
+  settings.setValue( QStringLiteral( "lastColorMapDir" ), fileInfo.absoluteDir().absolutePath() );
 }
 
 void QgsColorRampShaderWidget::mColormapTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column )
@@ -644,8 +597,6 @@ void QgsColorRampShaderWidget::mColormapTreeWidget_itemEdited( QTreeWidgetItem *
 
 void QgsColorRampShaderWidget::setFromShader( const QgsColorRampShader &colorRampShader )
 {
-  populateColormapTreeWidget( colorRampShader.colorRampItemList() );
-
   // Those objects are connected to classify() the color ramp shader if they change, or call widget change
   // need to block them to avoid to classify and to alter the color ramp, or to call duplicate widget change
   whileBlocking( mClipCheckBox )->setChecked( colorRampShader.clip() );
@@ -665,6 +616,8 @@ void QgsColorRampShaderWidget::setFromShader( const QgsColorRampShader &colorRam
     QString defaultPalette = settings.value( QStringLiteral( "/Raster/defaultPalette" ), "Spectral" ).toString();
     btnColorRamp->setColorRampFromName( defaultPalette );
   }
+
+  populateColormapTreeWidget( colorRampShader.colorRampItemList() );
 
   emit widgetChanged();
 }
@@ -727,19 +680,28 @@ double QgsColorRampShaderWidget::maximum() const
   return mMax;
 }
 
-
-
-void QgsColorRampShaderWidget::loadMinimumMaximumFromTree()
+bool QgsColorRampShaderWidget::colormapMinMax( double &min, double &max ) const
 {
   QTreeWidgetItem *item = mColormapTreeWidget->topLevelItem( 0 );
   if ( !item )
   {
-    return;
+    return false;
   }
 
-  double min = item->text( ValueColumn ).toDouble();
+  min = QLocale().toDouble( item->text( ValueColumn ) );
   item = mColormapTreeWidget->topLevelItem( mColormapTreeWidget->topLevelItemCount() - 1 );
-  double max = item->text( ValueColumn ).toDouble();
+  max = QLocale().toDouble( item->text( ValueColumn ) );
+
+  return true;
+}
+
+void QgsColorRampShaderWidget::loadMinimumMaximumFromTree()
+{
+  double min = 0, max = 0;
+  if ( ! colormapMinMax( min, max ) )
+  {
+    return;
+  }
 
   if ( !qgsDoubleNear( mMin, min ) || !qgsDoubleNear( mMax, max ) )
   {

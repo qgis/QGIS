@@ -49,7 +49,7 @@ class APP_EXPORT QgsProjectLayerGroupDialog: public QDialog, private Ui::QgsProj
     Q_OBJECT
   public:
     //! Constructor. If a project file is given, the groups/layers are displayed directly and the file selection hidden
-    QgsProjectLayerGroupDialog( QWidget *parent = nullptr, const QString &projectFile = QString(), Qt::WindowFlags f = nullptr );
+    QgsProjectLayerGroupDialog( QWidget *parent = nullptr, const QString &projectFile = QString(), Qt::WindowFlags f = Qt::WindowFlags() );
     ~QgsProjectLayerGroupDialog() override;
 
     QStringList selectedGroups() const;

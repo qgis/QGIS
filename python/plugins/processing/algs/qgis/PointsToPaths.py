@@ -35,6 +35,7 @@ from qgis.core import (QgsFeature,
                        QgsWkbTypes,
                        QgsFeatureRequest,
                        QgsProcessingException,
+                       QgsProcessingParameterBoolean,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
                        QgsProcessingParameterString,
@@ -47,8 +48,8 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class PointsToPaths(QgisAlgorithm):
-
     INPUT = 'INPUT'
+    CLOSE_PATH = 'CLOSE_PATH'
     GROUP_FIELD = 'GROUP_FIELD'
     ORDER_FIELD = 'ORDER_FIELD'
     DATE_FORMAT = 'DATE_FORMAT'
@@ -70,6 +71,8 @@ class PointsToPaths(QgisAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input point layer'), [QgsProcessing.TypeVectorPoint]))
+        self.addParameter(QgsProcessingParameterBoolean(self.CLOSE_PATH,
+                                                        self.tr('Close path'), defaultValue=False))
         self.addParameter(QgsProcessingParameterField(self.ORDER_FIELD,
                                                       self.tr('Order field'), parentLayerParameterName=self.INPUT))
         self.addParameter(QgsProcessingParameterField(self.GROUP_FIELD,
@@ -93,6 +96,7 @@ class PointsToPaths(QgisAlgorithm):
         if source is None:
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
+        close_path = self.parameterAsBool(parameters, self.CLOSE_PATH, context)
         group_field_name = self.parameterAsString(parameters, self.GROUP_FIELD, context)
         order_field_name = self.parameterAsString(parameters, self.ORDER_FIELD, context)
         date_format = self.parameterAsString(parameters, self.DATE_FORMAT, context)
@@ -157,7 +161,7 @@ class PointsToPaths(QgisAlgorithm):
 
         da = QgsDistanceArea()
         da.setSourceCrs(source.sourceCrs(), context.transformContext())
-        da.setEllipsoid(context.project().ellipsoid())
+        da.setEllipsoid(context.ellipsoid())
 
         current = 0
         total = 100.0 / len(points) if points else 1
@@ -173,6 +177,10 @@ class PointsToPaths(QgisAlgorithm):
             attributes.extend([vertices[0][0], vertices[-1][0]])
             f.setAttributes(attributes)
             line = [node[1] for node in vertices]
+
+            if close_path is True:
+                if line[0] != line[-1]:
+                    line.append(line[0])
 
             if text_dir:
                 fileName = os.path.join(text_dir, '%s.txt' % group)

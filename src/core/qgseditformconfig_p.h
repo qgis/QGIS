@@ -40,6 +40,7 @@ class QgsEditFormConfigPrivate : public QSharedData
       , mEditorLayout( o.mEditorLayout )
       , mUiFormPath( o.mUiFormPath )
       , mInitFunction( o.mInitFunction )
+      , mInitFilePath( o.mInitFilePath )
       , mInitCodeSource( o.mInitCodeSource )
       , mInitCode( o.mInitCode )
       , mSuppressForm( o.mSuppressForm )
@@ -96,6 +97,8 @@ class QgsEditFormConfigPrivate : public QSharedData
 
     QgsFields mFields;
 
+  private:
+    QgsEditFormConfigPrivate &operator= ( const QgsEditFormConfigPrivate & ) = delete;
 };
 
 

@@ -694,7 +694,7 @@ bool QgsCompositionConverter::readPictureXml( QgsLayoutItemPicture *layoutItem, 
   layoutItem->mNorthArrowHandler->setNorthOffset( itemElem.attribute( QStringLiteral( "northOffset" ), QStringLiteral( "0" ) ).toDouble() );
 
   QString rotationMapId = itemElem.attribute( QStringLiteral( "mapId" ), QStringLiteral( "-1" ) );
-  if ( rotationMapId != QStringLiteral( "-1" ) )
+  if ( rotationMapId != QLatin1String( "-1" ) )
   {
     // Find uuid for map with given id
     QgsLayoutItemMap *mapInstance = qobject_cast<QgsLayoutItemMap *>( layoutItem->layout()->itemByUuid( mapId2Uuid[ rotationMapId ] ) );
@@ -913,7 +913,7 @@ bool QgsCompositionConverter::readMapXml( QgsLayoutItemMap *layoutItem, const QD
     std::unique_ptr<QgsLayoutItemMapOverview> mapOverview( new QgsLayoutItemMapOverview( mapOverviewElem.attribute( QStringLiteral( "name" ) ), layoutItem ) );
     mapOverview->readXml( mapOverviewElem, doc, context );
     QString frameMapId = mapOverviewElem.attribute( QStringLiteral( "frameMap" ), QStringLiteral( "-1" ) );
-    if ( frameMapId != QStringLiteral( "-1" ) && mapId2Uuid.contains( frameMapId ) )
+    if ( frameMapId != QLatin1String( "-1" ) && mapId2Uuid.contains( frameMapId ) )
     {
       QgsLayoutItemMap *mapInstance = qobject_cast<QgsLayoutItemMap *>( layoutItem->layout()->itemByUuid( mapId2Uuid[ frameMapId ] ) );
       if ( mapInstance )
@@ -984,8 +984,21 @@ bool QgsCompositionConverter::readMapXml( QgsLayoutItemMap *layoutItem, const QD
       mapGrid->setAnnotationFrameDistance( annotationElem.attribute( QStringLiteral( "frameDistance" ), QStringLiteral( "0" ) ).toDouble() );
       QFont annotationFont;
       annotationFont.fromString( annotationElem.attribute( QStringLiteral( "font" ), QString() ) );
-      mapGrid->setAnnotationFont( annotationFont );
-      mapGrid->setAnnotationFontColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "fontColor" ), QStringLiteral( "0,0,0,255" ) ) ) );
+
+      QgsTextFormat annotationFormat = mapGrid->annotationTextFormat();
+      annotationFormat.setFont( annotationFont );
+      if ( annotationFont.pointSizeF() > 0 )
+      {
+        annotationFormat.setSize( annotationFont.pointSizeF() );
+        annotationFormat.setSizeUnit( QgsUnitTypes::RenderPoints );
+      }
+      else if ( annotationFont.pixelSize() > 0 )
+      {
+        annotationFormat.setSize( annotationFont.pixelSize() );
+        annotationFormat.setSizeUnit( QgsUnitTypes::RenderPixels );
+      }
+      annotationFormat.setColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "fontColor" ), QStringLiteral( "0,0,0,255" ) ) ) );
+      mapGrid->setAnnotationTextFormat( annotationFormat );
 
       mapGrid->setAnnotationPrecision( annotationElem.attribute( QStringLiteral( "precision" ), QStringLiteral( "3" ) ).toInt() );
     }
@@ -1118,6 +1131,8 @@ bool QgsCompositionConverter::readScaleBarXml( QgsLayoutItemScaleBar *layoutItem
     lineSymbolLayer->setColor( QColor( itemElem.attribute( QStringLiteral( "penColor" ), QStringLiteral( "#000000" ) ) ) );
   }
   lineSymbol->changeSymbolLayer( 0, lineSymbolLayer.release() );
+  layoutItem->setDivisionLineSymbol( lineSymbol->clone() );
+  layoutItem->setSubdivisionLineSymbol( lineSymbol->clone() );
   layoutItem->setLineSymbol( lineSymbol.release() );
 
   //font color
@@ -1181,7 +1196,7 @@ bool QgsCompositionConverter::readScaleBarXml( QgsLayoutItemScaleBar *layoutItem
 
   //composer map: use uuid
   QString mapId = itemElem.attribute( QStringLiteral( "mapId" ), QStringLiteral( "-1" ) );
-  if ( mapId != QStringLiteral( "-1" ) && mapId2Uuid.contains( mapId ) )
+  if ( mapId != QLatin1String( "-1" ) && mapId2Uuid.contains( mapId ) )
   {
     QgsLayoutItemMap *mapInstance = qobject_cast<QgsLayoutItemMap *>( layoutItem->layout()->itemByUuid( mapId2Uuid[ mapId ] ) );
     if ( mapInstance )
@@ -1206,7 +1221,7 @@ bool QgsCompositionConverter::readLegendXml( QgsLayoutItemLegend *layoutItem, co
 
   //composer map: use uuid
   QString mapId = itemElem.attribute( QStringLiteral( "map" ), QStringLiteral( "-1" ) );
-  if ( mapId != QStringLiteral( "-1" ) && mapId2Uuid.contains( mapId ) )
+  if ( mapId != QLatin1String( "-1" ) && mapId2Uuid.contains( mapId ) )
   {
     QgsLayoutItemMap *mapInstance = qobject_cast<QgsLayoutItemMap *>( layoutItem->layout()->itemByUuid( mapId2Uuid[ mapId ] ) );
     if ( mapInstance )
@@ -1406,18 +1421,48 @@ bool QgsCompositionConverter::readTableXml( QgsLayoutItemAttributeTable *layoutI
   layoutItem->setEmptyTableBehavior( static_cast<QgsLayoutTable::EmptyTableMode>( itemElem.attribute( QStringLiteral( "emptyTableMode" ), QStringLiteral( "0" ) ).toInt() ) );
   layoutItem->setEmptyTableMessage( itemElem.attribute( QStringLiteral( "emptyTableMessage" ), QObject::tr( "No matching records" ) ) );
   layoutItem->setShowEmptyRows( itemElem.attribute( QStringLiteral( "showEmptyRows" ), QStringLiteral( "0" ) ).toInt() );
-  if ( !QgsFontUtils::setFromXmlChildNode( layoutItem->mHeaderFont, itemElem, QStringLiteral( "headerFontProperties" ) ) )
+  QFont headerFont;
+  if ( !QgsFontUtils::setFromXmlChildNode( headerFont, itemElem, QStringLiteral( "headerFontProperties" ) ) )
   {
-    layoutItem->mHeaderFont.fromString( itemElem.attribute( QStringLiteral( "headerFont" ), QString() ) );
+    headerFont.fromString( itemElem.attribute( QStringLiteral( "headerFont" ), QString() ) );
   }
-  layoutItem->setHeaderFontColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "headerFontColor" ), QStringLiteral( "0,0,0,255" ) ) ) );
+  QgsTextFormat headerFormat = layoutItem->headerTextFormat();
+  headerFormat.setFont( headerFont );
+  if ( headerFont.pointSizeF() > 0 )
+  {
+    headerFormat.setSize( headerFont.pointSizeF() );
+    headerFormat.setSizeUnit( QgsUnitTypes::RenderPoints );
+  }
+  else if ( headerFont.pixelSize() > 0 )
+  {
+    headerFormat.setSize( headerFont.pixelSize() );
+    headerFormat.setSizeUnit( QgsUnitTypes::RenderPixels );
+  }
+  headerFormat.setColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "headerFontColor" ), QStringLiteral( "0,0,0,255" ) ) ) );
+  layoutItem->setHeaderTextFormat( headerFormat );
   layoutItem->setHeaderHAlignment( static_cast<QgsLayoutTable::HeaderHAlignment>( itemElem.attribute( QStringLiteral( "headerHAlignment" ), QStringLiteral( "0" ) ).toInt() ) ) ;
   layoutItem->setHeaderMode( static_cast<QgsLayoutTable::HeaderMode>( itemElem.attribute( QStringLiteral( "headerMode" ), QStringLiteral( "0" ) ).toInt() ) );
-  if ( !QgsFontUtils::setFromXmlChildNode( layoutItem->mContentFont, itemElem, QStringLiteral( "contentFontProperties" ) ) )
+
+  QFont contentFont;
+  if ( !QgsFontUtils::setFromXmlChildNode( contentFont, itemElem, QStringLiteral( "contentFontProperties" ) ) )
   {
-    layoutItem->mContentFont.fromString( itemElem.attribute( QStringLiteral( "contentFont" ), QString() ) );
+    contentFont.fromString( itemElem.attribute( QStringLiteral( "contentFont" ), QString() ) );
   }
-  layoutItem->setContentFontColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "contentFontColor" ), QStringLiteral( "0,0,0,255" ) ) ) );
+  QgsTextFormat contentFormat = layoutItem->contentTextFormat();
+  contentFormat.setFont( contentFont );
+  if ( contentFont.pointSizeF() > 0 )
+  {
+    contentFormat.setSize( contentFont.pointSizeF() );
+    contentFormat.setSizeUnit( QgsUnitTypes::RenderPoints );
+  }
+  else if ( contentFont.pixelSize() > 0 )
+  {
+    contentFormat.setSize( contentFont.pixelSize() );
+    contentFormat.setSizeUnit( QgsUnitTypes::RenderPixels );
+  }
+  contentFormat.setColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "contentFontColor" ), QStringLiteral( "0,0,0,255" ) ) ) );
+  layoutItem->setContentTextFormat( contentFormat );
+
   layoutItem->setCellMargin( itemElem.attribute( QStringLiteral( "cellMargin" ), QStringLiteral( "1.0" ) ).toDouble() );
   layoutItem->setGridStrokeWidth( itemElem.attribute( QStringLiteral( "gridStrokeWidth" ), QStringLiteral( "0.5" ) ).toDouble() );
   layoutItem->setHorizontalGrid( itemElem.attribute( QStringLiteral( "horizontalGrid" ), QStringLiteral( "1" ) ).toInt() );
@@ -1429,6 +1474,8 @@ bool QgsCompositionConverter::readTableXml( QgsLayoutItemAttributeTable *layoutI
 
   //restore column specifications
   layoutItem->mColumns.clear();
+  layoutItem->mSortColumns.clear();
+
   QDomNodeList columnsList = itemElem.elementsByTagName( QStringLiteral( "displayColumns" ) );
   if ( !columnsList.isEmpty() )
   {
@@ -1437,14 +1484,14 @@ bool QgsCompositionConverter::readTableXml( QgsLayoutItemAttributeTable *layoutI
     for ( int i = 0; i < columnEntryList.size(); ++i )
     {
       QDomElement columnElem = columnEntryList.at( i ).toElement();
-      QgsLayoutTableColumn *column = new QgsLayoutTableColumn;
-      column->mHAlignment = static_cast< Qt::AlignmentFlag >( columnElem.attribute( QStringLiteral( "hAlignment" ), QString::number( Qt::AlignLeft ) ).toInt() );
-      column->mVAlignment = static_cast< Qt::AlignmentFlag >( columnElem.attribute( QStringLiteral( "vAlignment" ), QString::number( Qt::AlignVCenter ) ).toInt() );
-      column->mHeading = columnElem.attribute( QStringLiteral( "heading" ), QString() );
-      column->mAttribute = columnElem.attribute( QStringLiteral( "attribute" ), QString() );
-      column->mSortByRank = columnElem.attribute( QStringLiteral( "sortByRank" ), QStringLiteral( "0" ) ).toInt();
-      column->mSortOrder = static_cast< Qt::SortOrder >( columnElem.attribute( QStringLiteral( "sortOrder" ), QString::number( Qt::AscendingOrder ) ).toInt() );
-      column->mWidth = columnElem.attribute( QStringLiteral( "width" ), QStringLiteral( "0.0" ) ).toDouble();
+      QgsLayoutTableColumn column;
+      column.mHAlignment = static_cast< Qt::AlignmentFlag >( columnElem.attribute( QStringLiteral( "hAlignment" ), QString::number( Qt::AlignLeft ) ).toInt() );
+      column.mVAlignment = static_cast< Qt::AlignmentFlag >( columnElem.attribute( QStringLiteral( "vAlignment" ), QString::number( Qt::AlignVCenter ) ).toInt() );
+      column.mHeading = columnElem.attribute( QStringLiteral( "heading" ), QString() );
+      column.mAttribute = columnElem.attribute( QStringLiteral( "attribute" ), QString() );
+      column.mSortByRank = columnElem.attribute( QStringLiteral( "sortByRank" ), QStringLiteral( "0" ) ).toInt();
+      column.mSortOrder = static_cast< Qt::SortOrder >( columnElem.attribute( QStringLiteral( "sortOrder" ), QString::number( Qt::AscendingOrder ) ).toInt() );
+      column.mWidth = columnElem.attribute( QStringLiteral( "width" ), QStringLiteral( "0.0" ) ).toDouble();
 
       QDomNodeList bgColorList = columnElem.elementsByTagName( QStringLiteral( "backgroundColor" ) );
       if ( !bgColorList.isEmpty() )
@@ -1458,10 +1505,17 @@ bool QgsCompositionConverter::readTableXml( QgsLayoutItemAttributeTable *layoutI
         bgAlpha = bgColorElem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
         if ( redOk && greenOk && blueOk && alphaOk )
         {
-          column->mBackgroundColor = QColor( bgRed, bgGreen, bgBlue, bgAlpha );
+          column.mBackgroundColor = QColor( bgRed, bgGreen, bgBlue, bgAlpha );
         }
       }
       layoutItem->mColumns.append( column );
+
+      // sorting columns are now (QGIS 3.14+) handled in a dedicated list
+      // copy the display columns if sortByRank > 0 and then, sort them by rank
+      Q_NOWARN_DEPRECATED_PUSH
+      std::copy_if( layoutItem->mColumns.begin(), layoutItem->mColumns.end(), std::back_inserter( layoutItem->mSortColumns ), []( const QgsLayoutTableColumn & col ) {return col.sortByRank() > 0;} );
+      std::sort( layoutItem->mSortColumns.begin(), layoutItem->mSortColumns.end(), []( const QgsLayoutTableColumn & a, const QgsLayoutTableColumn & b ) {return a.sortByRank() < b.sortByRank();} );
+      Q_NOWARN_DEPRECATED_POP
     }
   }
 
@@ -1563,7 +1617,7 @@ bool QgsCompositionConverter::readXml( QgsLayoutItem *layoutItem, const QDomElem
   layoutItem->setLocked( positionLock.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 );
 
   //visibility
-  layoutItem->setVisibility( itemElem.attribute( QStringLiteral( "visibility" ), QStringLiteral( "1" ) ) != QStringLiteral( "0" ) );
+  layoutItem->setVisibility( itemElem.attribute( QStringLiteral( "visibility" ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
 
   layoutItem->mParentGroupUuid = itemElem.attribute( QStringLiteral( "groupUuid" ) );
   if ( !layoutItem->mParentGroupUuid.isEmpty() )

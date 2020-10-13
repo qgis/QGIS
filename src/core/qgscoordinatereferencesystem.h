@@ -75,12 +75,11 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  *
  * Most commonly one comes across two types of coordinate systems:
  *
- * 1. **Geographic coordinate systems** - based on a geodetic datum, normally with coordinates being
- *    latitude/longitude in degrees. The most common one is World Geodetic System 84 (WGS84).
- *
- * 2. **Projected coordinate systems** - based on a geodetic datum with coordinates projected to a plane,
- *    typically using meters or feet as units. Common projected coordinate systems are Universal
- *    Transverse Mercator or Albers Equal Area.
+ * - Geographic coordinate systems: based on a geodetic datum, normally with coordinates being
+ *   latitude/longitude in degrees. The most common one is World Geodetic System 84 (WGS84).
+ * - Projected coordinate systems: based on a geodetic datum with coordinates projected to a plane,
+ *   typically using meters or feet as units. Common projected coordinate systems are Universal
+ *   Transverse Mercator or Albers Equal Area.
  *
  * Internally QGIS uses proj library for all the math behind coordinate transformations, so in case
  * of any troubles with projections it is best to examine the PROJ representation within the object,
@@ -109,54 +108,54 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  * CRS PROJ text: +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 [output trimmed]
  * \endcode
  *
- * CRS Definition Formats
- * ======================
+ * \section crs_def_formats CRS Definition Formats
  *
  * This section gives an overview of various supported CRS definition formats:
  *
- * 1. **Authority and Code.** Also referred to as OGC WMS format within QGIS as they have been widely
- *    used in OGC standards. These are encoded as `<auth>:<code>`, for example `EPSG:4326` refers
- *    to WGS84 system. EPSG is the most commonly used authority that covers a wide range
- *    of coordinate systems around the world.
+ * - Authority and Code: Also referred to as OGC WMS format within QGIS as they have been widely
+ *   used in OGC standards. These are encoded as `<auth>:<code>`, for example `EPSG:4326` refers
+ *   to WGS84 system. EPSG is the most commonly used authority that covers a wide range
+ *   of coordinate systems around the world.
  *
- *    An extended variant of this format is OGC URN. Syntax of URN for CRS definition is
- *    `urn:ogc:def:crs:<auth>:[<version>]:<code>`. This class can also parse URNs (versions
- *    are currently ignored). For example, WGS84 may be encoded as `urn:ogc:def:crs:OGC:1.3:CRS84`.
+ *   An extended variant of this format is OGC URN. Syntax of URN for CRS definition is
+ *   `urn:ogc:def:crs:<auth>:[<version>]:<code>`. This class can also parse URNs (versions
+ *   are currently ignored). For example, WGS84 may be encoded as `urn:ogc:def:crs:OGC:1.3:CRS84`.
  *
- *    QGIS adds support for "USER" authority that refers to IDs used internally in QGIS. This variant
- *    is best avoided or used with caution as the IDs are not permanent and they refer to different CRS
- *    on different machines or user profiles.
+ *   QGIS adds support for "USER" authority that refers to IDs used internally in QGIS. This variant
+ *   is best avoided or used with caution as the IDs are not permanent and they refer to different CRS
+ *   on different machines or user profiles.
  *
  *    \see authid()
- *    \see createFromOgcWmsCrs()
+ *   \see createFromOgcWmsCrs()
  *
- * 2. **PROJ string.** This is a string consisting of a series of key/value pairs in the following
- *    format: `+param1=value1 +param2=value2 [...]`. This is the format natively used by the
- *    underlying proj library. For example, the definition of WGS84 looks like this:
+ * - PROJ string: This is a string consisting of a series of key/value pairs in the following
+ *   format: `+param1=value1 +param2=value2 [...]`. This is the format natively used by the
+ *   underlying proj library. For example, the definition of WGS84 looks like this:
  *
- *    \code
- *    +proj=longlat +datum=WGS84 +no_defs
- *    \endcode
+ *   \code
+ *   +proj=longlat +datum=WGS84 +no_defs
+ *   \endcode
  *
- *    \see toProj()
- *    \see createFromProj()
+ *   \see toProj()
+ *   \see createFromProj()
  *
- * 3. **Well-known text (WKT).** Defined by Open Geospatial Consortium (OGC), this is another common
- *    format to define CRS. For WGS84 the OGC WKT definition is the following:
+ * - Well-known text (WKT): Defined by Open Geospatial Consortium (OGC), this is another common
+ *   format to define CRS. For WGS84 the OGC WKT definition is the following:
  *
- *        GEOGCS["WGS 84",
- *               DATUM["WGS_1984",
- *                 SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],
- *                 AUTHORITY["EPSG","6326"]],
- *               PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],
- *               UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],
- *               AUTHORITY["EPSG","4326"]]
+ *   \code
+ *       GEOGCS["WGS 84",
+ *              DATUM["WGS_1984",
+ *                SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],
+ *                AUTHORITY["EPSG","6326"]],
+ *              PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],
+ *              UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],
+ *              AUTHORITY["EPSG","4326"]]
+ *   \endcode
  *
- *    \see toWkt()
- *    \see createFromWkt()
+ *   \see toWkt()
+ *   \see createFromWkt()
  *
- * CRS Database and Custom CRS
- * ===========================
+ * \section crs_db_and_custom CRS Database and Custom CRS
  *
  * The database of CRS shipped with QGIS is stored in a SQLite database (see QgsApplication::srsDatabaseFilePath())
  * and it is based on the data files maintained by GDAL project (a variety of .csv and .wkt files).
@@ -172,8 +171,7 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  * The local CRS databases should never be accessed directly with SQLite functions, instead
  * you should use QgsCoordinateReferenceSystem API for CRS lookups and for managements of custom CRS.
  *
- * Validation
- * ==========
+ * \section validation Validation
  *
  * In some cases (most prominently when loading a map layer), QGIS will try to ensure
  * that the given map layer CRS is valid using validate() call. If not, a custom
@@ -183,8 +181,7 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  * (WGS84). QGIS application registers its validation function that will act according
  * to user's settings (either show CRS selector dialog or use project/custom CRS).
  *
- * Object Construction and Copying  {#crs_construct_and_copy}
- * ===============================
+ * \section crs_construct_and_copy Object Construction and Copying
  *
  * The easiest way of creating CRS instances is to use QgsCoordinateReferenceSystem(const QString&)
  * constructor that automatically recognizes definition format from the given string.
@@ -196,8 +193,7 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  *
  * Since QGIS 2.16 QgsCoordinateReferenceSystem objects are implicitly shared.
  *
- * Caveats
- * =======
+ * \section caveats Caveats
  *
  * There are two different flavors of WKT: one is defined by OGC, the other is the standard
  * used by ESRI. They look very similar, but they are not the same. QGIS is able to consume
@@ -451,18 +447,27 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * - if none of the above match, use the Proj string to create the CRS and do not associated an internal CRS ID to it.
      *
      * \param projString A Proj format string
+     * \param identify if FALSE, no attempts will be made to match the proj string against known CRS authorities. This is much
+     * faster, but should only ever be used when it is known in advance that the definition does not correspond to a known or user CRS. This
+     * argument is not available in Python.
+     *
      * \returns TRUE on success else FALSE
      * \note Some members may be left blank if no match can be found in CRS database.
      * \note This method uses an internal cache. Call invalidateCache() to clear the cache.
      * \see fromProj()
      * \since QGIS 3.10.3
      */
+#ifndef SIP_RUN
+    bool createFromProj( const QString &projString, bool identify = true );
+#else
     bool createFromProj( const QString &projString );
+#endif
 
     /**
      * Set up this CRS from a string definition.
      *
      * It supports the following formats:
+     *
      * - "EPSG:<code>" - handled with createFromOgcWms()
      * - "POSTGIS:<srid>" - handled with createFromSrid()
      * - "INTERNAL:<srsid>" - handled with createFromSrsId()
@@ -484,7 +489,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * ESRI::[WKT string] (directly or in a file), "IGNF:xxx"
      *
      * For more details on supported formats see OGRSpatialReference::SetFromUserInput()
-     * ( http://www.gdal.org/ogr/classOGRSpatialReference.html#aec3c6a49533fe457ddc763d699ff8796 )
+     * ( https://gdal.org/doxygen/classOGRSpatialReference.html#aec3c6a49533fe457ddc763d699ff8796 )
      * \param definition A String containing a coordinate reference system definition.
      * \returns TRUE on success else FALSE
      * \note this function generates a WKT string using OSRSetFromUserInput() and
@@ -651,7 +656,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /**
      * Returns the ellipsoid acronym for the ellipsoid used by the CRS.
-     * \returns the official authority:code identifier for the ellipoid, or PARAMETER:MAJOR:MINOR for custom ellipsoids
+     * \returns the official authority:code identifier for the ellipsoid, or PARAMETER:MAJOR:MINOR for custom ellipsoids
      * \note an empty string will be returned if the ellipsoidAcronym is not available for the CRS
      * \see projectionAcronym()
      */
@@ -664,8 +669,14 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
       WKT1_ESRI, //!< WKT1 as traditionally output by ESRI software, deriving from OGC 99-049.
       WKT2_2015, //!< Full WKT2 string, conforming to ISO 19162:2015(E) / OGC 12-063r5 with all possible nodes and new keyword names.
       WKT2_2015_SIMPLIFIED, //!< Same as WKT2_2015 with the following exceptions: UNIT keyword used. ID node only on top element. No ORDER element in AXIS element. PRIMEM node omitted if it is Greenwich.  ELLIPSOID.UNIT node omitted if it is UnitOfMeasure::METRE. PARAMETER.UNIT / PRIMEM.UNIT omitted if same as AXIS. AXIS.UNIT omitted and replaced by a common GEODCRS.UNIT if they are all the same on all axis.
-      WKT2_2018, //!< Full WKT2 string, conforming to ISO 19162:2018 / OGC 18-010, with all possible nodes and new keyword names. Non-normative list of differences: WKT2_2018 uses GEOGCRS / BASEGEOGCRS keywords for GeographicCRS.
-      WKT2_2018_SIMPLIFIED, //!< WKT2_2018 with the simplification rule of WKT2_SIMPLIFIED
+      WKT2_2018, //!< Alias for WKT2_2019
+      WKT2_2018_SIMPLIFIED, //!< Alias for WKT2_2019_SIMPLIFIED
+      WKT2_2019 = WKT2_2018, //!< Full WKT2 string, conforming to ISO 19162:2019 / OGC 18-010, with all possible nodes and new keyword names. Non-normative list of differences: WKT2_2019 uses GEOGCRS / BASEGEOGCRS keywords for GeographicCRS.
+      WKT2_2019_SIMPLIFIED = WKT2_2018_SIMPLIFIED, //!< WKT2_2019 with the simplification rule of WKT2_SIMPLIFIED
+
+      WKT_PREFERRED = WKT2_2019, //!< Preferred format, matching the most recent WKT ISO standard. Currently an alias to WKT2_2019, but may change in future versions.
+      WKT_PREFERRED_SIMPLIFIED = WKT2_2019_SIMPLIFIED, //!< Preferred simplified format, matching the most recent WKT ISO standard. Currently an alias to WKT2_2019_SIMPLIFIED, but may change in future versions.
+      WKT_PREFERRED_GDAL = WKT2_2019, //!< Preferred format for conversion of CRS to WKT for use with the GDAL library.
     };
 
     /**
@@ -916,6 +927,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * using first CRS entry where expression = 'value'
      */
     bool loadFromDatabase( const QString &db, const QString &expression, const QString &value );
+
+    bool createFromWktInternal( const QString &wkt, const QString &description );
 
 #if PROJ_VERSION_MAJOR<6 // not used for proj >= 6.0
     static bool loadIds( QHash<int, QString> &wkts );

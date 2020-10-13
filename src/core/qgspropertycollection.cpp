@@ -27,6 +27,18 @@ QgsAbstractPropertyCollection::QgsAbstractPropertyCollection( const QString &nam
 
 }
 
+QDateTime QgsAbstractPropertyCollection::valueAsDateTime( int key, const QgsExpressionContext &context, const QDateTime &defaultDateTime, bool *ok ) const
+{
+  if ( ok )
+    *ok = false;
+
+  QgsProperty prop = property( key );
+  if ( !prop || !prop.isActive() )
+    return defaultDateTime;
+
+  return prop.valueAsDateTime( context, defaultDateTime, ok );
+}
+
 QString QgsAbstractPropertyCollection::valueAsString( int key, const QgsExpressionContext &context, const QString &defaultString, bool *ok ) const
 {
   if ( ok )
@@ -130,6 +142,16 @@ QgsPropertyCollection &QgsPropertyCollection::operator=( const QgsPropertyCollec
   mHasDynamicProperties = other.mHasDynamicProperties;
   mCount = other.mCount;
   return *this;
+}
+
+bool QgsPropertyCollection::operator==( const QgsPropertyCollection &other ) const
+{
+  return mProperties == other.mProperties;
+}
+
+bool QgsPropertyCollection::operator!=( const QgsPropertyCollection &other ) const
+{
+  return !( *this == other );
 }
 
 int QgsPropertyCollection::count() const
@@ -368,7 +390,7 @@ QgsPropertyCollectionStack::~QgsPropertyCollectionStack()
 }
 
 QgsPropertyCollectionStack::QgsPropertyCollectionStack( const QgsPropertyCollectionStack &other )
-  : QgsAbstractPropertyCollection( other )
+  : QgsAbstractPropertyCollection( other ), mStack()
 {
   clear();
 

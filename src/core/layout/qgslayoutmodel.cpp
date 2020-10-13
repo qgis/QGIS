@@ -170,7 +170,7 @@ QVariant QgsLayoutModel::data( const QModelIndex &index, int role ) const
       return item->uuid();
     case Qt::UserRole+1:
       //user role stores reference in column object
-      return qVariantFromValue( qobject_cast<QObject *>( item ) );
+      return QVariant::fromValue( qobject_cast<QObject *>( item ) );
 
     case Qt::TextAlignmentRole:
       return Qt::AlignLeft & Qt::AlignVCenter;
@@ -244,11 +244,11 @@ QVariant QgsLayoutModel::headerData( int section, Qt::Orientation orientation, i
     {
       if ( section == Visibility )
       {
-        return qVariantFromValue( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayersGray.svg" ) ) );
+        return QVariant::fromValue( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayersGray.svg" ) ) );
       }
       else if ( section == LockStatus )
       {
-        return qVariantFromValue( QgsApplication::getThemeIcon( QStringLiteral( "/lockedGray.svg" ) ) );
+        return QVariant::fromValue( QgsApplication::getThemeIcon( QStringLiteral( "/lockedGray.svg" ) ) );
       }
 
       return QVariant();
@@ -308,7 +308,7 @@ bool zOrderDescending( QgsLayoutItem *item1, QgsLayoutItem *item2 )
 bool QgsLayoutModel::dropMimeData( const QMimeData *data,
                                    Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
-  if ( column != ItemId )
+  if ( column != ItemId && column != -1 )
   {
     return false;
   }
@@ -362,7 +362,7 @@ bool QgsLayoutModel::dropMimeData( const QMimeData *data,
   int destPos = 0;
   if ( beginRow < rowCount() )
   {
-    QgsLayoutItem *itemBefore = mItemsInScene.at( beginRow );
+    QgsLayoutItem *itemBefore = mItemsInScene.at( beginRow - 1 );
     destPos = mItemZList.indexOf( itemBefore );
   }
   else
@@ -1000,6 +1000,17 @@ bool QgsLayoutProxyModel::allowEmptyItem() const
   return mAllowEmpty;
 }
 
+void QgsLayoutProxyModel::setItemFlags( QgsLayoutItem::Flags flags )
+{
+  mItemFlags = flags;
+  invalidateFilter();
+}
+
+QgsLayoutItem::Flags QgsLayoutProxyModel::itemFlags() const
+{
+  return mItemFlags;
+}
+
 void QgsLayoutProxyModel::setFilterType( QgsLayoutItemRegistry::ItemType filter )
 {
   mItemTypeFilter = filter;
@@ -1032,6 +1043,10 @@ bool QgsLayoutProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &so
   if ( mItemTypeFilter != QgsLayoutItemRegistry::LayoutItem && item->type() != mItemTypeFilter )
     return false;
 
+  if ( mItemFlags && !( item->itemFlags() & mItemFlags ) )
+  {
+    return false;
+  }
+
   return true;
 }
-

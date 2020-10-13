@@ -148,32 +148,48 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
     /**
      * Sets a list of fields to ignore whatever happens.
      *
-     * \since QGIS 3.0
+     * \deprecated use setJoinFieldNamesBlockList() instead
      */
-    void setJoinFieldNamesBlackList( const QStringList &blackList ) { mBlackList = blackList; }
+    Q_DECL_DEPRECATED void setJoinFieldNamesBlackList( const QStringList &blackList ) SIP_DEPRECATED { mBlockList = blackList; }
 
     /**
      * Returns the list of fields to ignore.
      *
-     * \since QGIS 3.0
+     * \deprecated use joinFieldNamesBlockList() instead
      */
-    QStringList joinFieldNamesBlackList() const { return mBlackList; }
+    Q_DECL_DEPRECATED QStringList joinFieldNamesBlackList() const SIP_DEPRECATED { return mBlockList; }
 
     /**
-     * Returns TRUE if blacklisted fields is not empty or if a subset of names
+     * Sets a \a list of fields to ignore whatever happens.
+     *
+     * \see joinFieldNamesBlockList()
+     * \since QGIS 3.14
+     */
+    void setJoinFieldNamesBlockList( const QStringList &list ) { mBlockList = list; }
+
+    /**
+     * Returns the list of fields to ignore.
+     *
+     * \see setJoinFieldNamesBlockList()
+     * \since QGIS 3.14
+     */
+    QStringList joinFieldNamesBlockList() const { return mBlockList; }
+
+    /**
+     * Returns TRUE if blocklisted fields is not empty or if a subset of names
      * has been set.
      *
      * \since QGIS 3.0
      */
-    bool hasSubset( bool blacklisted = true ) const;
+    bool hasSubset( bool blocklisted = true ) const;
 
     /**
      * Returns the list of field names to use for joining considering
-     * blacklisted fields and subset.
+     * blocklisted fields and subset.
      *
      * \since QGIS 3.0
      */
-    static QStringList joinFieldNamesSubset( const QgsVectorLayerJoinInfo &info, bool blacklisted = true );
+    static QStringList joinFieldNamesSubset( const QgsVectorLayerJoinInfo &info, bool blocklisted = true );
 
     bool operator==( const QgsVectorLayerJoinInfo &other ) const
     {
@@ -242,7 +258,7 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
 
     bool mCascadedDelete = false;
 
-    QStringList mBlackList;
+    QStringList mBlockList;
 
     //! Cache for joined attributes to provide fast lookup (size is 0 if no memory caching)
     QHash< QString, QgsAttributes> cachedAttributes;

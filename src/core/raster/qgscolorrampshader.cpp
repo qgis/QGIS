@@ -51,16 +51,16 @@ QgsColorRampShader::QgsColorRampShader( const QgsColorRampShader &other )
   , mLUTInitialized( other.mLUTInitialized )
   , mClip( other.mClip )
 {
-  if ( other.sourceColorRamp() )
-    mSourceColorRamp.reset( other.sourceColorRamp()->clone() );
+  if ( auto *lSourceColorRamp = other.sourceColorRamp() )
+    mSourceColorRamp.reset( lSourceColorRamp->clone() );
   mColorRampItemList = other.mColorRampItemList;
 }
 
 QgsColorRampShader &QgsColorRampShader::operator=( const QgsColorRampShader &other )
 {
   QgsRasterShaderFunction::operator=( other );
-  if ( other.sourceColorRamp() )
-    mSourceColorRamp.reset( other.sourceColorRamp()->clone() );
+  if ( auto *lSourceColorRamp = other.sourceColorRamp() )
+    mSourceColorRamp.reset( lSourceColorRamp->clone() );
   else
     mSourceColorRamp.reset();
 
@@ -204,11 +204,12 @@ void QgsColorRampShader::classifyColorRamp( const int classes, const int band, c
     {
       // Quantile
       if ( band < 0 || !input )
-        return; // quantile classificationr requires a valid band, minMaxOrigin, and input
+        return; // quantile classification requires a valid band, minMaxOrigin, and input
 
       double cut1 = std::numeric_limits<double>::quiet_NaN();
       double cut2 = std::numeric_limits<double>::quiet_NaN();
-      int sampleSize = 250000;
+      // Note: the sample size in other parts of QGIS appears to be 25000, it is ten times here.
+      const int sampleSize = 250000 * 10;
 
       // set min and max from histogram, used later to calculate number of decimals to display
       input->cumulativeCut( band, 0.0, 1.0, min, max, extent, sampleSize );
@@ -403,13 +404,45 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
 
   const QgsColorRampShader::ColorRampItem &currentColorRampItem = colorRampItems[idx];
 
-  if ( colorRampType() == Interpolated )
+  switch ( colorRampType() )
   {
-    // Interpolate the color between two class breaks linearly.
-    if ( idx < 1 || overflow || currentColorRampItem.value - DOUBLE_DIFF_THRESHOLD <= value )
+    case Interpolated:
     {
-      if ( mClip && ( overflow
-                      || currentColorRampItem.value - DOUBLE_DIFF_THRESHOLD > value ) )
+      // Interpolate the color between two class breaks linearly.
+      if ( idx < 1 || overflow || currentColorRampItem.value - DOUBLE_DIFF_THRESHOLD <= value )
+      {
+        if ( mClip && ( overflow
+                        || currentColorRampItem.value - DOUBLE_DIFF_THRESHOLD > value ) )
+        {
+          return false;
+        }
+        *returnRedValue   = currentColorRampItem.color.red();
+        *returnGreenValue = currentColorRampItem.color.green();
+        *returnBlueValue  = currentColorRampItem.color.blue();
+        *returnAlphaValue = currentColorRampItem.color.alpha();
+        return true;
+      }
+
+      const QgsColorRampShader::ColorRampItem &previousColorRampItem = colorRampItems[idx - 1];
+
+      float currentRampRange = currentColorRampItem.value - previousColorRampItem.value;
+      float offsetInRange = value - previousColorRampItem.value;
+      float scale = offsetInRange / currentRampRange;
+      const QRgb c1 = previousColorRampItem.color.rgba();
+      const QRgb c2 = currentColorRampItem.color.rgba();
+
+      *returnRedValue   = qRed( c1 )   + static_cast< int >( ( qRed( c2 )   - qRed( c1 ) )   * scale );
+      *returnGreenValue = qGreen( c1 ) + static_cast< int >( ( qGreen( c2 ) - qGreen( c1 ) ) * scale );
+      *returnBlueValue  = qBlue( c1 )  + static_cast< int >( ( qBlue( c2 )  - qBlue( c1 ) )  * scale );
+      *returnAlphaValue = qAlpha( c1 ) + static_cast< int >( ( qAlpha( c2 ) - qAlpha( c1 ) ) * scale );
+      return true;
+    };
+    case Discrete:
+    {
+      // Assign the color of the higher class for every pixel between two class breaks.
+      // NOTE: The implementation has always been different than the documentation,
+      //       which said lower class before, see https://github.com/qgis/QGIS/issues/22009
+      if ( overflow )
       {
         return false;
       }
@@ -418,53 +451,25 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
       *returnBlueValue  = currentColorRampItem.color.blue();
       *returnAlphaValue = currentColorRampItem.color.alpha();
       return true;
-    }
-
-    const QgsColorRampShader::ColorRampItem &previousColorRampItem = colorRampItems[idx - 1];
-
-    float currentRampRange = currentColorRampItem.value - previousColorRampItem.value;
-    float offsetInRange = value - previousColorRampItem.value;
-    float scale = offsetInRange / currentRampRange;
-    const QRgb c1 = previousColorRampItem.color.rgba();
-    const QRgb c2 = currentColorRampItem.color.rgba();
-
-    *returnRedValue   = qRed( c1 )   + static_cast< int >( ( qRed( c2 )   - qRed( c1 ) )   * scale );
-    *returnGreenValue = qGreen( c1 ) + static_cast< int >( ( qGreen( c2 ) - qGreen( c1 ) ) * scale );
-    *returnBlueValue  = qBlue( c1 )  + static_cast< int >( ( qBlue( c2 )  - qBlue( c1 ) )  * scale );
-    *returnAlphaValue = qAlpha( c1 ) + static_cast< int >( ( qAlpha( c2 ) - qAlpha( c1 ) ) * scale );
-    return true;
-  }
-  else if ( colorRampType() == Discrete )
-  {
-    // Assign the color of the higher class for every pixel between two class breaks.
-    // NOTE: The implementation has always been different than the documentation,
-    //       which said lower class before, see https://github.com/qgis/QGIS/issues/22009
-    if ( overflow )
+    };
+    case Exact:
     {
-      return false;
-    }
-    *returnRedValue   = currentColorRampItem.color.red();
-    *returnGreenValue = currentColorRampItem.color.green();
-    *returnBlueValue  = currentColorRampItem.color.blue();
-    *returnAlphaValue = currentColorRampItem.color.alpha();
-    return true;
-  }
-  else // EXACT
-  {
-    // Assign the color of the exact matching value in the color ramp item list
-    if ( !overflow && currentColorRampItem.value - DOUBLE_DIFF_THRESHOLD <= value )
-    {
-      *returnRedValue   = currentColorRampItem.color.red();
-      *returnGreenValue = currentColorRampItem.color.green();
-      *returnBlueValue  = currentColorRampItem.color.blue();
-      *returnAlphaValue = currentColorRampItem.color.alpha();
-      return true;
-    }
-    else
-    {
-      return false;
+      // Assign the color of the exact matching value in the color ramp item list
+      if ( !overflow && currentColorRampItem.value - DOUBLE_DIFF_THRESHOLD <= value )
+      {
+        *returnRedValue   = currentColorRampItem.color.red();
+        *returnGreenValue = currentColorRampItem.color.green();
+        *returnBlueValue  = currentColorRampItem.color.blue();
+        *returnAlphaValue = currentColorRampItem.color.alpha();
+        return true;
+      }
+      else
+      {
+        return false;
+      }
     }
   }
+  return false;
 }
 
 bool QgsColorRampShader::shade( double redValue, double greenValue,

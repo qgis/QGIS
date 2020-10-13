@@ -26,7 +26,8 @@ import os
 from qgis.core import (Qgis,
                        QgsMessageLog,
                        QgsApplication,
-                       QgsProcessingProvider)
+                       QgsProcessingProvider,
+                       QgsRuntimeProfiler)
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 
@@ -58,18 +59,19 @@ class ScriptAlgorithmProvider(QgsProcessingProvider):
                                    DeleteScriptAction()]
 
     def load(self):
-        ProcessingConfig.settingIcons[self.name()] = self.icon()
-        ProcessingConfig.addSetting(Setting(self.name(),
-                                            ScriptUtils.SCRIPTS_FOLDERS,
-                                            self.tr("Scripts folder(s)"),
-                                            ScriptUtils.defaultScriptsFolder(),
-                                            valuetype=Setting.MULTIPLE_FOLDERS))
+        with QgsRuntimeProfiler.profile('Script Provider'):
+            ProcessingConfig.settingIcons[self.name()] = self.icon()
+            ProcessingConfig.addSetting(Setting(self.name(),
+                                                ScriptUtils.SCRIPTS_FOLDERS,
+                                                self.tr("Scripts folder(s)"),
+                                                ScriptUtils.defaultScriptsFolder(),
+                                                valuetype=Setting.MULTIPLE_FOLDERS))
 
-        ProviderActions.registerProviderActions(self, self.actions)
-        ProviderContextMenuActions.registerProviderContextMenuActions(self.contextMenuActions)
+            ProviderActions.registerProviderActions(self, self.actions)
+            ProviderContextMenuActions.registerProviderContextMenuActions(self.contextMenuActions)
 
-        ProcessingConfig.readSettings()
-        self.refreshAlgorithms()
+            ProcessingConfig.readSettings()
+            self.refreshAlgorithms()
 
         return True
 

@@ -84,7 +84,7 @@ Returns the matching data from the most recently snapped point.
 .. note::
 
    This method returns the most recent snap match. It must
-   follow a call to snapPoint() in order to have a recent snap result available.
+   follow a call to :py:func:`~QgsMapMouseEvent.snapPoint` in order to have a recent snap result available.
 
 .. versionadded:: 2.14
 %End
@@ -114,7 +114,7 @@ The snapped mouse cursor in pixel coordinates.
     QPoint originalPixelPoint() const;
 %Docstring
 The unsnapped, real mouse cursor position in pixel coordinates.
-Alias to pos()
+Alias to :py:func:`~QgsMapMouseEvent.pos`
 
 :return: Mouse position in pixel coordinates
 %End

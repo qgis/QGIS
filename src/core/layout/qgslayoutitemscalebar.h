@@ -83,6 +83,42 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     void setNumberOfSegmentsLeft( int segments );
 
     /**
+     * Returns the number of subdivisions for segments included in the right part of the scalebar (only used for some scalebar types).
+     *
+     * \note The number of subdivisions represents the number of subdivision segments, not the number of subdivision lines. E.g.
+     * if the number is 1 then NO subdivision lines will be shown.
+     *
+     * \see setNumberOfSubdivisions()
+     * \since QGIS 3.14
+     */
+    int numberOfSubdivisions()  const { return mSettings.numberOfSubdivisions(); }
+
+    /**
+     * Sets the number of \a subdivisions for segments included in the right part of the scalebar (only used for some scalebar types).
+     *
+     * \note The number of subdivisions represents the number of subdivision segments, not the number of subdivision lines. E.g.
+     * if the number is 1 then NO subdivision lines will be shown.
+     *
+     * \see numberOfSubdivisions()
+     * \since QGIS 3.14
+     */
+    void setNumberOfSubdivisions( int subdivisions ) { mSettings.setNumberOfSubdivisions( subdivisions ); }
+
+    /**
+     * Returns the scalebar subdivisions height (in millimeters) for segments included in the right part of the scalebar (only used for some scalebar types).
+     * \see setSubdivisionsHeight()
+     * \since QGIS 3.14
+     */
+    double subdivisionsHeight() const { return mSettings.subdivisionsHeight(); }
+
+    /**
+     * Sets the scalebar subdivisions \a height (in millimeters) for segments included in the right part of the scalebar (only used for some scalebar types).
+     * \see subdivisionsHeight()
+     * \since QGIS 3.14
+     */
+    void setSubdivisionsHeight( double height ) { mSettings.setSubdivisionsHeight( height ); }
+
+    /**
      * Returns the number of scalebar units per segment.
      * \see setUnitsPerSegment()
      */
@@ -188,12 +224,15 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
      */
     void setTextFormat( const QgsTextFormat &format );
 
+
     /**
      * Returns the line symbol used to render the scalebar (only used for some scalebar types).
      *
      * Ownership is not transferred.
      *
      * \see setLineSymbol()
+     * \see divisionLineSymbol()
+     * \see subdivisionLineSymbol()
      * \since QGIS 3.14
      */
     QgsLineSymbol *lineSymbol() const;
@@ -203,9 +242,57 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
      * transferred to the scalebar.
      *
      * \see lineSymbol()
+     * \see setDivisionLineSymbol()
+     * \see setSubdivisionLineSymbol()
      * \since QGIS 3.14
      */
     void setLineSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns the line symbol used to render the scalebar divisions (only used for some scalebar types).
+     *
+     * Ownership is not transferred.
+     *
+     * \see setDivisionLineSymbol()
+     * \see lineSymbol()
+     * \see subdivisionLineSymbol()
+     * \since QGIS 3.14
+     */
+    QgsLineSymbol *divisionLineSymbol() const;
+
+    /**
+     * Sets the line \a symbol used to render the scalebar divisions (only used for some scalebar types). Ownership of \a symbol is
+     * transferred to the scalebar.
+     *
+     * \see divisionLineSymbol()
+     * \see setLineSymbol()
+     * \see setSubdivisionLineSymbol()
+     * \since QGIS 3.14
+     */
+    void setDivisionLineSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
+
+    /**
+     * Returns the line symbol used to render the scalebar subdivisions (only used for some scalebar types).
+     *
+     * Ownership is not transferred.
+     *
+     * \see setSubdivisionLineSymbol()
+     * \see lineSymbol()
+     * \see divisionLineSymbol()
+     * \since QGIS 3.14
+     */
+    QgsLineSymbol *subdivisionLineSymbol() const;
+
+    /**
+     * Sets the line \a symbol used to render the scalebar subdivisions (only used for some scalebar types). Ownership of \a symbol is
+     * transferred to the scalebar.
+     *
+     * \see subdivisionLineSymbol()
+     * \see setLineSymbol()
+     * \see setDivisionLineSymbol()
+     * \since QGIS 3.14
+     */
+    void setSubdivisionLineSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
 
     /**
      * Returns the primary fill symbol used to render the scalebar (only used for some scalebar types).

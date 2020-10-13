@@ -499,7 +499,7 @@ void QgsGrassModule::run()
       if ( outsideRegion.size() > 0 )
       {
         QMessageBox questionBox( QMessageBox::Question, tr( "Warning" ),
-                                 tr( "Input %1 outside current region!" ).arg( outsideRegion.join( QStringLiteral( "," ) ) ),
+                                 tr( "Input %1 outside current region!" ).arg( outsideRegion.join( QLatin1Char( ',' ) ) ),
                                  QMessageBox::Ok | QMessageBox::Cancel );
         QPushButton *resetButton = nullptr;
         if ( QgsGrass::versionMajor() > 6 || ( QgsGrass::versionMajor() == 6 && QgsGrass::versionMinor() >= 1 ) )
@@ -532,7 +532,7 @@ void QgsGrassModule::run()
       if ( outputExists.size() > 0 )
       {
         QMessageBox::StandardButton ret = QMessageBox::question( nullptr, QStringLiteral( "Warning" ),
-                                          tr( "Output %1 exists! Overwrite?" ).arg( outputExists.join( QStringLiteral( "," ) ) ),
+                                          tr( "Output %1 exists! Overwrite?" ).arg( outputExists.join( QLatin1Char( ',' ) ) ),
                                           QMessageBox::Ok | QMessageBox::Cancel );
 
         if ( ret == QMessageBox::Cancel )
@@ -579,7 +579,7 @@ void QgsGrassModule::run()
      * if  G_get_gisrc_mode() == G_GISRC_MODE_FILE. Because QGIS GRASS provider starts drivers in
      * G_GISRC_MODE_MEMORY mode, the variable remains set in variable when a module is run
      * -> unset GISRC_MODE_MEMORY. Remove later once 6.1.x / 6.0.1 is widespread.
-    *   */
+    */
     putenv( ( char * ) "GISRC_MODE_MEMORY" ); // unset
 
     mOutputTextBrowser->clear();
@@ -626,7 +626,7 @@ void QgsGrassModule::run()
       }
     }
 
-    QString commandHtml = mXName + " " + argumentsHtml.join( QStringLiteral( " " ) );
+    QString commandHtml = mXName + " " + argumentsHtml.join( QLatin1Char( ' ' ) );
 
     QgsDebugMsg( "command: " + commandHtml );
     commandHtml.replace( QLatin1String( "&" ), QLatin1String( "&amp;" ) );

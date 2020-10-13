@@ -20,6 +20,7 @@
 
 #include <QString>
 #include <QDateTime>
+#include <QElapsedTimer>
 
 #include "qgis.h"
 #include "qgsdataprovider.h"
@@ -114,7 +115,7 @@ QgsGrassProvider::QgsGrassProvider( const QString &uri )
     return;
   }
 
-  QTime time;
+  QElapsedTimer time;
   time.start();
 
   mPoints = Vect_new_line_struct();
@@ -953,8 +954,7 @@ QgsAttributeMap *QgsGrassProvider::attributes( int field, int cat )
 
   dbString dbstr;
   db_init_string( &dbstr );
-  QString query;
-  query.sprintf( "select * from %s where %s = %d", fi->table, fi->key, cat );
+  QString query = QStringLiteral( "select * from %1 where %2=%3" ).arg( fi->table, fi->key ).arg( cat );
   db_set_string( &dbstr, query.toUtf8().constData() );
 
   QgsDebugMsg( QString( "SQL: %1" ).arg( db_get_string( &dbstr ) ) );
@@ -2042,7 +2042,9 @@ QgsGrassVectorMapLayer *QgsGrassProvider::openLayer() const
 struct Map_info *QgsGrassProvider::map() const
 {
   Q_ASSERT( mLayer );
+  // cppcheck-suppress assertWithSideEffect
   Q_ASSERT( mLayer->map() );
+  // cppcheck-suppress assertWithSideEffect
   Q_ASSERT( mLayer->map()->map() );
   return mLayer->map()->map();
 }

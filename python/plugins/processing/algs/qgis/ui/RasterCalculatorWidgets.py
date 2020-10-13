@@ -121,7 +121,6 @@ WIDGET, BASE = uic.loadUiType(
 
 
 class ExpressionWidget(BASE, WIDGET):
-
     _expressions = {"NDVI": "([NIR] - [Red]) / ([NIR] + [Red])"}
 
     def __init__(self, options):
@@ -189,7 +188,7 @@ class ExpressionWidget(BASE, WIDGET):
         used = [v for v in self.options.values() if v in exp]
 
         for i, v in enumerate(used):
-            exp = exp.replace(v, chr(97 + i))
+            exp = exp.replace(v, f'[{chr(97 + i)}]')
 
         dlg = AddNewExpressionDialog(exp)
         dlg.exec_()

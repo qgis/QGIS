@@ -23,9 +23,7 @@ SET (topol_RCCS  topol.qrc)
 
 QT5_WRAP_UI (topol_UIS_H  ${topol_UIS})
 
-QT5_ADD_RESOURCES(topol_RCC_SRCS ${topol_RCCS})
-
-ADD_LIBRARY (topolplugin MODULE ${topol_SRCS} ${topol_RCC_SRCS} ${topol_UIS_H})
+ADD_LIBRARY (topolplugin MODULE ${topol_SRCS} ${topol_RCCS} ${topol_UIS_H})
 
 INCLUDE_DIRECTORIES(SYSTEM
   ${GEOS_INCLUDE_DIR}

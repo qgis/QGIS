@@ -200,7 +200,7 @@ QString QgsRuleBasedRenderer::Rule::dump( int indent ) const
   {
     lst.append( rule->dump( indent + 2 ) );
   }
-  msg += lst.join( QStringLiteral( "\n" ) );
+  msg += lst.join( QLatin1Char( '\n' ) );
   return msg;
 }
 
@@ -463,7 +463,7 @@ bool QgsRuleBasedRenderer::Rule::startRender( QgsRenderContext &context, const Q
         }
         else if ( subf.count( ) == 2 )
         {
-          return subf.join( QStringLiteral( ") OR (" ) ).prepend( '(' ).append( ')' );
+          return subf.join( QLatin1String( ") OR (" ) ).prepend( '(' ).append( ')' );
         }
         else
         {
@@ -475,7 +475,7 @@ bool QgsRuleBasedRenderer::Rule::startRender( QgsRenderContext &context, const Q
     }
     else
     {
-      sf = subfilters.join( QStringLiteral( ") OR (" ) ).prepend( '(' ).append( ')' );
+      sf = subfilters.join( QLatin1String( ") OR (" ) ).prepend( '(' ).append( ')' );
     }
   }
 
@@ -951,7 +951,7 @@ void QgsRuleBasedRenderer::startRender( QgsRenderContext &context, const QgsFiel
   mRootRule->startRender( context, fields, mFilter );
 
   QSet<int> symbolZLevelsSet = mRootRule->collectZLevels();
-  QList<int> symbolZLevels = symbolZLevelsSet.toList();
+  QList<int> symbolZLevels = qgis::setToList( symbolZLevelsSet );
   std::sort( symbolZLevels.begin(), symbolZLevels.end() );
 
   // create mapping from unnormalized levels [unlimited range] to normalized levels [0..N-1]

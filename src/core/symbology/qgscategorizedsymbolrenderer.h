@@ -17,16 +17,16 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
-#include "qgssymbol.h"
 #include "qgsrenderer.h"
-#include "qgsexpression.h"
-#include "qgscolorramp.h"
-#include "qgsdatadefinedsizelegend.h"
 
 #include <QHash>
 
 class QgsVectorLayer;
 class QgsStyle;
+class QgsDataDefinedSizeLegend;
+class QgsSymbol;
+class QgsExpression;
+class QgsColorRamp;
 
 /**
  * \ingroup core
@@ -161,6 +161,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
      * can be added later by calling addCategory().
      */
     QgsCategorizedSymbolRenderer( const QString &attrName = QString(), const QgsCategoryList &categories = QgsCategoryList() );
+    ~QgsCategorizedSymbolRenderer() override;
 
     QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
     QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;

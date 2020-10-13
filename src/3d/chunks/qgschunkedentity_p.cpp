@@ -70,11 +70,12 @@ static float screenSpaceError( QgsChunkNode *node, const QgsChunkedEntity::Scene
   return sse;
 }
 
-QgsChunkedEntity::QgsChunkedEntity( const QgsAABB &rootBbox, float rootError, float tau, int maxLevel, QgsChunkLoaderFactory *loaderFactory, Qt3DCore::QNode *parent )
+QgsChunkedEntity::QgsChunkedEntity( const QgsAABB &rootBbox, float rootError, float tau, int maxLevel, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
   , mTau( tau )
   , mMaxLevel( maxLevel )
   , mChunkLoaderFactory( loaderFactory )
+  , mOwnsFactory( ownsFactory )
 {
   mRootNode = new QgsChunkNode( 0, 0, 0, rootBbox, rootError );
   mChunkLoaderQueue = new QgsChunkList;
@@ -116,19 +117,24 @@ QgsChunkedEntity::~QgsChunkedEntity()
   delete mReplacementQueue;
   delete mRootNode;
 
-  // TODO: shall we own the factory or not?
-  //delete chunkLoaderFactory;
+  if ( mOwnsFactory )
+  {
+    delete mChunkLoaderFactory;
+  }
 }
 
 
 void QgsChunkedEntity::update( const SceneState &state )
 {
+  if ( !mIsValid )
+    return;
+
   QElapsedTimer t;
   t.start();
 
   int oldJobsCount = pendingJobsCount();
 
-  QSet<QgsChunkNode *> activeBefore = QSet<QgsChunkNode *>::fromList( mActiveNodes );
+  QSet<QgsChunkNode *> activeBefore = qgis::listToSet( mActiveNodes );
   mActiveNodes.clear();
   mFrustumCulled = 0;
   mCurrentTime = QTime::currentTime();

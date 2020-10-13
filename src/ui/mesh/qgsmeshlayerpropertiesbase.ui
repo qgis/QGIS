@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>815</width>
-    <height>777</height>
+    <height>557</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -20,6 +20,12 @@
    <string>Raster Layer Properties</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
    <item>
     <widget class="QSplitter" name="mOptionsSplitter">
      <property name="orientation">
@@ -124,15 +130,6 @@
          </item>
          <item>
           <property name="text">
-           <string>3D View</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../../images/images.qrc">
-            <normaloff>:/images/themes/default/3d.svg</normaloff>:/images/themes/default/3d.svg</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
            <string>Rendering</string>
           </property>
           <property name="icon">
@@ -143,6 +140,9 @@
          <item>
           <property name="text">
            <string>Temporal</string>
+          </property>
+          <property name="toolTip">
+           <string>Temporal Settings</string>
           </property>
           <property name="icon">
            <iconset resource="../../../images/images.qrc">
@@ -191,10 +191,22 @@
           <enum>QFrame::Plain</enum>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>3</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_20">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
            <item>
             <widget class="QTextBrowser" name="mInformationTextBrowser"/>
            </item>
@@ -227,11 +239,23 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>643</width>
-                <height>727</height>
+                <width>662</width>
+                <height>512</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_4">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_14">
                  <item>
@@ -306,27 +330,35 @@ border-radius: 2px;</string>
                 </layout>
                </item>
                <item>
-                <widget class="QPushButton" name="mAddDatasetButton">
-                 <property name="text">
-                  <string>Assign Extra Dataset to Mesh</string>
-                 </property>
-                </widget>
+                <widget class="QgsMeshDatasetGroupTreeWidget" name="mDatasetGroupTreeWidget" native="true"/>
                </item>
                <item>
                 <widget class="QCheckBox" name="mTemporalStaticDatasetCheckBox">
+                 <property name="toolTip">
+                  <string>Static dataset even if the temporal navigation is on</string>
+                 </property>
                  <property name="text">
-                  <string>Static Dataset</string>
+                  <string>Force Static Dataset with Temporal Navigation</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="QgsMeshStaticDatasetWidget" name="mStaticScalarWidget" native="true">
-                 <property name="minimumSize">
-                  <size>
-                   <width>0</width>
-                   <height>0</height>
-                  </size>
+                <widget class="QgsCollapsibleGroupBoxBasic" name="mStaticDatasetGroupBox">
+                 <property name="title">
+                  <string>Static Dataset</string>
                  </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_7">
+                  <item>
+                   <widget class="QgsMeshStaticDatasetWidget" name="mStaticDatasetWidget" native="true">
+                    <property name="minimumSize">
+                     <size>
+                      <width>0</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
                 </widget>
                </item>
                <item>
@@ -337,7 +369,7 @@ border-radius: 2px;</string>
                  <property name="sizeHint" stdset="0">
                   <size>
                    <width>20</width>
-                   <height>415</height>
+                   <height>40</height>
                   </size>
                  </property>
                 </spacer>
@@ -379,15 +411,39 @@ border-radius: 2px;</string>
                 <height>30</height>
                </rect>
               </property>
-              <layout class="QVBoxLayout" name="verticalLayout_10"/>
+              <layout class="QVBoxLayout" name="verticalLayout_10">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+              </layout>
              </widget>
             </widget>
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mOptsPage_3DView"/>
          <widget class="QWidget" name="mOptsPage_Rendering">
           <layout class="QVBoxLayout" name="verticalLayout_5">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
            <item>
             <widget class="QgsCollapsibleGroupBox" name="mSimplifyMeshGroupBox">
              <property name="title">
@@ -415,7 +471,7 @@ border-radius: 2px;</string>
                </widget>
               </item>
               <item row="1" column="2">
-               <widget class="QSpinBox" name="mSimplifyMeshResolutionSpinBox">
+               <widget class="QgsSpinBox" name="mSimplifyMeshResolutionSpinBox">
                 <property name="suffix">
                  <string> pixels/triangle</string>
                 </property>
@@ -431,7 +487,7 @@ border-radius: 2px;</string>
                </widget>
               </item>
               <item row="0" column="2">
-               <widget class="QDoubleSpinBox" name="mSimplifyReductionFactorSpinBox">
+               <widget class="QgsDoubleSpinBox" name="mSimplifyReductionFactorSpinBox">
                 <property name="decimals">
                  <number>1</number>
                 </property>
@@ -466,21 +522,30 @@ border-radius: 2px;</string>
          </widget>
          <widget class="QWidget" name="mOptsPage_Temporal">
           <layout class="QGridLayout" name="gridLayout_3">
-           <item row="1" column="3">
-            <widget class="QDateTimeEdit" name="mTemporalDateTimeStart">
-             <property name="enabled">
-              <bool>false</bool>
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item row="4" column="2">
+            <spacer name="verticalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
              </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
              </property>
-             <property name="readOnly">
-              <bool>true</bool>
-             </property>
-             <property name="buttonSymbols">
-              <enum>QAbstractSpinBox::NoButtons</enum>
-             </property>
-            </widget>
+            </spacer>
            </item>
            <item row="0" column="4">
             <widget class="QPushButton" name="mTemporalReloadButton">
@@ -502,47 +567,11 @@ border-radius: 2px;</string>
              </property>
             </widget>
            </item>
-           <item row="0" column="2">
-            <widget class="QLabel" name="label_3">
-             <property name="text">
-              <string>Layer Time Reference</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="2" colspan="7">
-            <widget class="QGroupBox" name="groupBox_2">
-             <property name="title">
-              <string>Provider Time Settings</string>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_5">
-              <item row="0" column="2">
-               <spacer name="horizontalSpacer_4">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_12">
-                <property name="text">
-                 <string>Time unit</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QComboBox" name="mTemporalProviderTimeUnitComboBox"/>
-              </item>
-             </layout>
-            </widget>
-           </item>
            <item row="0" column="3">
             <widget class="QDateTimeEdit" name="mTemporalDateTimeReference">
+             <property name="toolTip">
+              <string>Reference time used to render mesh dataset when using temporal range or temporal animation</string>
+             </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
              </property>
@@ -551,6 +580,22 @@ border-radius: 2px;</string>
              </property>
              <property name="timeSpec">
               <enum>Qt::UTC</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="3">
+            <widget class="QDateTimeEdit" name="mTemporalDateTimeStart">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::NoButtons</enum>
              </property>
             </widget>
            </item>
@@ -567,11 +612,47 @@ border-radius: 2px;</string>
              </property>
             </spacer>
            </item>
-           <item row="1" column="4" colspan="2">
-            <widget class="QLabel" name="label_4">
+           <item row="1" column="2">
+            <widget class="QLabel" name="label_6">
              <property name="text">
-              <string>Layer End Time</string>
+              <string>Layer Start Time</string>
              </property>
+            </widget>
+           </item>
+           <item row="3" column="2" colspan="7">
+            <widget class="QGroupBox" name="groupBox_2">
+             <property name="title">
+              <string>Provider Time Settings</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_5">
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_12">
+                <property name="text">
+                 <string>Time Unit</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <spacer name="horizontalSpacer_4">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="1" column="1">
+               <widget class="QComboBox" name="mTemporalProviderTimeUnitComboBox">
+                <property name="toolTip">
+                 <string>Default time unit of mesh data provider is hour, change to override the time unit</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </widget>
            </item>
            <item row="1" column="6">
@@ -605,23 +686,31 @@ border-radius: 2px;</string>
              </property>
             </widget>
            </item>
-           <item row="3" column="2">
-            <spacer name="verticalSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="1" column="2">
-            <widget class="QLabel" name="label_6">
+           <item row="0" column="2">
+            <widget class="QLabel" name="label_3">
              <property name="text">
-              <string>Layer Start Time</string>
+              <string>Layer Reference Time</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="4" colspan="2">
+            <widget class="QLabel" name="label_4">
+             <property name="text">
+              <string>Layer End Time</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="2">
+            <widget class="QLabel" name="label_10">
+             <property name="text">
+              <string>Dataset Matching Method</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="3" colspan="4">
+            <widget class="QComboBox" name="mComboBoxTemporalDatasetMatchingMethod">
+             <property name="toolTip">
+              <string>Method for selection of temporal mesh dataset from a range time</string>
              </property>
             </widget>
            </item>
@@ -683,6 +772,16 @@ border-radius: 2px;</string>
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
@@ -703,6 +802,18 @@ border-radius: 2px;</string>
    <class>QgsMeshStaticDatasetWidget</class>
    <extends>QWidget</extends>
    <header>qgsmeshstaticdatasetwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMeshDatasetGroupTreeWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsmeshdatasetgrouptreewidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -51,7 +51,7 @@ QPolygon QgsVectorTileUtils::tilePolygon( QgsTileXYZ id, const QgsCoordinateTran
 QgsFields QgsVectorTileUtils::makeQgisFields( QSet<QString> flds )
 {
   QgsFields fields;
-  QStringList fieldsSorted = flds.toList();
+  QStringList fieldsSorted = qgis::setToList( flds );
   std::sort( fieldsSorted.begin(), fieldsSorted.end() );
   for ( const QString &fieldName : qgis::as_const( fieldsSorted ) )
   {
@@ -60,13 +60,17 @@ QgsFields QgsVectorTileUtils::makeQgisFields( QSet<QString> flds )
   return fields;
 }
 
-
-int QgsVectorTileUtils::scaleToZoomLevel( double mapScale, int sourceMinZoom, int sourceMaxZoom )
+double QgsVectorTileUtils::scaleToZoom( double mapScale )
 {
   double s0 = 559082264.0287178;   // scale denominator at zoom level 0 of GoogleCRS84Quad
   double tileZoom2 = log( s0 / mapScale ) / log( 2 );
   tileZoom2 -= 1;   // TODO: it seems that map scale is double (is that because of high-dpi screen?)
-  int tileZoom = static_cast<int>( round( tileZoom2 ) );
+  return tileZoom2;
+}
+
+int QgsVectorTileUtils::scaleToZoomLevel( double mapScale, int sourceMinZoom, int sourceMaxZoom )
+{
+  int tileZoom = static_cast<int>( floor( scaleToZoom( mapScale ) ) );
 
   if ( tileZoom < sourceMinZoom )
     tileZoom = sourceMinZoom;
@@ -80,7 +84,7 @@ QgsVectorLayer *QgsVectorTileUtils::makeVectorLayerForTile( QgsVectorTileLayer *
 {
   QgsVectorTileMVTDecoder decoder;
   decoder.decode( tileID, mvt->getRawTile( tileID ) );
-  QSet<QString> fieldNames = QSet<QString>::fromList( decoder.layerFieldNames( layerName ) );
+  QSet<QString> fieldNames = qgis::listToSet( decoder.layerFieldNames( layerName ) );
   fieldNames << QStringLiteral( "_geom_type" );
   QMap<QString, QgsFields> perLayerFields;
   QgsFields fields = QgsVectorTileUtils::makeQgisFields( fieldNames );
@@ -108,6 +112,7 @@ QgsVectorLayer *QgsVectorTileUtils::makeVectorLayerForTile( QgsVectorTileLayer *
   vl->dataProvider()->addAttributes( fields.toList() );
   vl->updateFields();
   bool res = vl->dataProvider()->addFeatures( featuresList );
+  Q_UNUSED( res );
   Q_ASSERT( res );
   Q_ASSERT( featuresList.count() == vl->featureCount() );
   vl->updateExtents();
@@ -116,22 +121,28 @@ QgsVectorLayer *QgsVectorTileUtils::makeVectorLayerForTile( QgsVectorTileLayer *
 }
 
 
-QString QgsVectorTileUtils::formatXYZUrlTemplate( const QString &url, QgsTileXYZ tile )
+QString QgsVectorTileUtils::formatXYZUrlTemplate( const QString &url, QgsTileXYZ tile, const QgsTileMatrix &tileMatrix )
 {
   QString turl( url );
 
   turl.replace( QLatin1String( "{x}" ), QString::number( tile.column() ), Qt::CaseInsensitive );
-  // TODO: inverted Y axis
-//  if ( turl.contains( QLatin1String( "{-y}" ) ) )
-//  {
-//    turl.replace( QLatin1String( "{-y}" ), QString::number( tm.matrixHeight - tile.tileRow - 1 ), Qt::CaseInsensitive );
-//  }
-//  else
+  if ( turl.contains( QLatin1String( "{-y}" ) ) )
+  {
+    turl.replace( QLatin1String( "{-y}" ), QString::number( tileMatrix.matrixHeight() - tile.row() - 1 ), Qt::CaseInsensitive );
+  }
+  else
   {
     turl.replace( QLatin1String( "{y}" ), QString::number( tile.row() ), Qt::CaseInsensitive );
   }
   turl.replace( QLatin1String( "{z}" ), QString::number( tile.zoomLevel() ), Qt::CaseInsensitive );
   return turl;
+}
+
+bool QgsVectorTileUtils::checkXYZUrlTemplate( const QString &url )
+{
+  return url.contains( QStringLiteral( "{x}" ) ) &&
+         ( url.contains( QStringLiteral( "{y}" ) ) || url.contains( QStringLiteral( "{-y}" ) ) ) &&
+         url.contains( QStringLiteral( "{z}" ) );
 }
 
 //! a helper class for ordering tile requests according to the distance from view center

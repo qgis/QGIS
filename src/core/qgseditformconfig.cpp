@@ -22,6 +22,7 @@
 #include "qgslogger.h"
 #include "qgsxmlutils.h"
 #include "qgsapplication.h"
+#include "qgsmessagelog.h"
 
 QgsAttributeEditorContainer::~QgsAttributeEditorContainer()
 {
@@ -88,12 +89,56 @@ void QgsEditFormConfig::onRelationsLoaded()
   }
 }
 
+bool QgsEditFormConfig::legacyUpdateRelationWidgetInTabs( QgsAttributeEditorContainer *container,  const QString &widgetName, const QVariantMap &config )
+{
+  const QList<QgsAttributeEditorElement *> children = container->children();
+  for ( QgsAttributeEditorElement *child : children )
+  {
+    if ( child->type() ==  QgsAttributeEditorElement::AeTypeContainer )
+    {
+      QgsAttributeEditorContainer *container = dynamic_cast<QgsAttributeEditorContainer *>( child );
+      if ( legacyUpdateRelationWidgetInTabs( container, widgetName, config ) )
+      {
+        //return when a relation has been set in a child or child child...
+        return true;
+      }
+    }
+    else if ( child->type() ==  QgsAttributeEditorElement::AeTypeRelation )
+    {
+      QgsAttributeEditorRelation *relation = dynamic_cast< QgsAttributeEditorRelation * >( child );
+      if ( relation )
+      {
+        if ( relation->relation().id() == widgetName )
+        {
+          if ( config.contains( QStringLiteral( "nm-rel" ) ) )
+          {
+            relation->setNmRelationId( config[QStringLiteral( "nm-rel" )] );
+          }
+          if ( config.contains( QStringLiteral( "force-suppress-popup" ) ) )
+          {
+            relation->setForceSuppressFormPopup( config[QStringLiteral( "force-suppress-popup" )].toBool() );
+          }
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
 bool QgsEditFormConfig::setWidgetConfig( const QString &widgetName, const QVariantMap &config )
 {
   if ( d->mFields.indexOf( widgetName ) != -1 )
   {
     QgsDebugMsg( QStringLiteral( "Trying to set a widget config for a field on QgsEditFormConfig. Use layer->setEditorWidgetSetup() instead." ) );
     return false;
+  }
+
+  //for legacy use it writes the relation editor configuration into the first instance of the widget
+  if ( config.contains( QStringLiteral( "force-suppress-popup" ) ) || config.contains( QStringLiteral( "nm-rel" ) ) )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Deprecation Warning: Trying to set a relation config directly on the relation %1. Relation settings should be done for the specific widget instance instead. Use attributeEditorRelation->setNmRelationId() or attributeEditorRelation->setForceSuppressFormPopup() instead." ).arg( widgetName ) );
+    legacyUpdateRelationWidgetInTabs( d->mInvisibleRootContainer, widgetName, config );
   }
 
   d.detach();
@@ -615,9 +660,44 @@ QgsAttributeEditorElement *QgsEditFormConfig::attributeEditorElementFromDomEleme
     // At this time, the relations are not loaded
     // So we only grab the id and delegate the rest to onRelationsLoaded()
     QgsAttributeEditorRelation *relElement = new QgsAttributeEditorRelation( elem.attribute( QStringLiteral( "relation" ), QStringLiteral( "[None]" ) ), parent );
-    relElement->setShowLinkButton( elem.attribute( QStringLiteral( "showLinkButton" ), QStringLiteral( "1" ) ).toInt() );
-    relElement->setShowUnlinkButton( elem.attribute( QStringLiteral( "showUnlinkButton" ), QStringLiteral( "1" ) ).toInt() );
-    relElement->setShowSaveChildEditsButton( elem.attribute( QStringLiteral( "showSaveChildEditsButton" ), QStringLiteral( "1" ) ).toInt() );
+    if ( elem.hasAttribute( "buttons" ) )
+    {
+      QString buttonString = elem.attribute( QStringLiteral( "buttons" ), qgsFlagValueToKeys( QgsAttributeEditorRelation::Button::AllButtons ) );
+      relElement->setVisibleButtons( qgsFlagKeysToValue( buttonString, QgsAttributeEditorRelation::Button::AllButtons ) );
+    }
+    else
+    {
+      // pre QGIS 3.16 compatibility
+      QgsAttributeEditorRelation::Buttons buttons = QgsAttributeEditorRelation::Button::AllButtons;
+      buttons.setFlag( QgsAttributeEditorRelation::Button::Link, elem.attribute( QStringLiteral( "showLinkButton" ), QStringLiteral( "1" ) ).toInt() );
+      buttons.setFlag( QgsAttributeEditorRelation::Button::Unlink, elem.attribute( QStringLiteral( "showUnlinkButton" ), QStringLiteral( "1" ) ).toInt() );
+      buttons.setFlag( QgsAttributeEditorRelation::Button::SaveChildEdits, elem.attribute( QStringLiteral( "showSaveChildEditsButton" ), QStringLiteral( "1" ) ).toInt() );
+      relElement->setVisibleButtons( buttons );
+    }
+    if ( elem.hasAttribute( QStringLiteral( "forceSuppressFormPopup" ) ) )
+    {
+      relElement->setForceSuppressFormPopup( elem.attribute( QStringLiteral( "forceSuppressFormPopup" ) ).toInt() );
+    }
+    else
+    {
+      // pre QGIS 3.16 compatibility - the widgets section is read before
+      relElement->setForceSuppressFormPopup( widgetConfig( elem.attribute( QStringLiteral( "relation" ) ) ).value( QStringLiteral( "force-suppress-popup" ), false ).toBool() );
+    }
+
+    if ( elem.hasAttribute( QStringLiteral( "nmRelationId" ) ) )
+    {
+      relElement->setNmRelationId( elem.attribute( QStringLiteral( "nmRelationId" ) ) );
+    }
+    else
+    {
+      // pre QGIS 3.16 compatibility - the widgets section is read before
+      relElement->setNmRelationId( widgetConfig( elem.attribute( QStringLiteral( "relation" ) ) ).value( QStringLiteral( "nm-rel" ) ) );
+    }
+    if ( elem.hasAttribute( "label" ) )
+    {
+      QString label = elem.attribute( QStringLiteral( "label" ) );
+      relElement->setLabel( label );
+    }
     newElement = relElement;
   }
   else if ( elem.tagName() == QLatin1String( "attributeEditorQmlElement" ) )

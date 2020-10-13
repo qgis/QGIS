@@ -17,6 +17,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsfileutils.h"
+#include "qgsfocuskeeper.h"
 #include "qgssettings.h"
 #include "qgsmessagebar.h"
 #include "qgsapplication.h"
@@ -59,7 +60,6 @@ QWidget *QgsBinaryWidgetWrapper::createWidget( QWidget *parent )
   QWidget *container = new QWidget( parent );
   QHBoxLayout *layout = new QHBoxLayout();
   container->setLayout( layout );
-  layout->setMargin( 0 );
   layout->setContentsMargins( 0, 0, 0, 0 );
 
   QLabel *label = new QLabel();
@@ -135,10 +135,16 @@ void QgsBinaryWidgetWrapper::updateValues( const QVariant &value, const QVariant
 void QgsBinaryWidgetWrapper::saveContent()
 {
   QgsSettings s;
-  QString file = QFileDialog::getSaveFileName( nullptr,
-                 tr( "Save Contents to File" ),
-                 defaultPath(),
-                 tr( "All files" ) + " (*.*)" );
+
+  QString file;
+  {
+    QgsFocusKeeper focusKeeper;
+
+    file = QFileDialog::getSaveFileName( nullptr,
+                                         tr( "Save Contents to File" ),
+                                         defaultPath(),
+                                         tr( "All files" ) + " (*.*)" );
+  }
   if ( file.isEmpty() )
   {
     return;
@@ -160,10 +166,17 @@ void QgsBinaryWidgetWrapper::saveContent()
 void QgsBinaryWidgetWrapper::setContent()
 {
   QgsSettings s;
-  QString file = QFileDialog::getOpenFileName( nullptr,
-                 tr( "Embed File" ),
-                 defaultPath(),
-                 tr( "All files" ) + " (*.*)" );
+
+  QString file;
+  {
+    QgsFocusKeeper focusKeeper;
+
+    file = QFileDialog::getOpenFileName( nullptr,
+                                         tr( "Embed File" ),
+                                         defaultPath(),
+                                         tr( "All files" ) + " (*.*)" );
+  }
+
   QFileInfo fi( file );
   if ( file.isEmpty() || !fi.exists() )
   {
@@ -184,8 +197,11 @@ void QgsBinaryWidgetWrapper::setContent()
 
 void QgsBinaryWidgetWrapper::clear()
 {
-  if ( QMessageBox::question( nullptr, tr( "Clear Contents" ), tr( "Are you sure you want the clear this field's content?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
-    return;
+  {
+    QgsFocusKeeper focusKeeper;
+    if ( QMessageBox::question( nullptr, tr( "Clear Contents" ), tr( "Are you sure you want the clear this field's content?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+      return;
+  }
 
   updateValues( QByteArray() );
   emitValueChanged();

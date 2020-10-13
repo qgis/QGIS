@@ -108,8 +108,8 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
       QgsAttributeList attrs = mRequest.subsetOfAttributes();
       //ensure that all fields required for filter expressions are prepared
       QSet<int> attributeIndexes = request.filterExpression()->referencedAttributeIndexes( mSource->mFields );
-      attributeIndexes += attrs.toSet();
-      mRequest.setSubsetOfAttributes( attributeIndexes.toList() );
+      attributeIndexes += qgis::listToSet( attrs );
+      mRequest.setSubsetOfAttributes( qgis::setToList( attributeIndexes ) );
     }
     mFilterRequiresGeometry = request.filterExpression()->needsGeometry();
 
@@ -199,11 +199,11 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     if ( !mOrderByCompiled )
       limitAtProvider = false;
 
-    bool success = declareCursor( whereClause, limitAtProvider ? mRequest.limit() : -1, false, orderByParts.join( QStringLiteral( "," ) ) );
+    bool success = declareCursor( whereClause, limitAtProvider ? mRequest.limit() : -1, false, orderByParts.join( QLatin1Char( ',' ) ) );
     if ( !success && useFallbackWhereClause )
     {
       //try with the fallback where clause, e.g., for cases when using compiled expression failed to prepare
-      success = declareCursor( fallbackWhereClause, -1, false, orderByParts.join( QStringLiteral( "," ) ) );
+      success = declareCursor( fallbackWhereClause, -1, false, orderByParts.join( QLatin1Char( ',' ) ) );
       if ( success )
       {
         mExpressionCompiled = false;
@@ -611,6 +611,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString &whereClause, long
       break;
 
     case PktInt:
+    case PktInt64:
     case PktUint64:
       query += delim + QgsPostgresConn::quotedIdentifier( mSource->mFields.at( mSource->mPrimaryKeyAttrs.at( 0 ) ).name() );
       delim = ',';
@@ -662,7 +663,6 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString &whereClause, long
   mLastFetch = false;
   return true;
 }
-
 
 bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int row, QgsFeature &feature )
 {
@@ -744,20 +744,37 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
       break;
 
     case PktInt:
-    case PktUint64:
       fid = mConn->getBinaryInt( queryResult, row, col++ );
       if ( !subsetOfAttributes || fetchAttributes.contains( mSource->mPrimaryKeyAttrs.at( 0 ) ) )
       {
         feature.setAttribute( mSource->mPrimaryKeyAttrs[0], fid );
       }
-      if ( mSource->mPrimaryKeyType == PktInt )
-      {
-        // NOTE: this needs be done _after_ the setAttribute call
-        // above as we want the attribute value to be 1:1 with
-        // database value
-        fid = QgsPostgresUtils::int32pk_to_fid( fid );
-      }
+      // NOTE: this needs be done _after_ the setAttribute call
+      // above as we want the attribute value to be 1:1 with
+      // database value
+      fid = QgsPostgresUtils::int32pk_to_fid( fid );
       break;
+
+    case PktUint64:
+    case PktInt64:
+    {
+      QVariantList pkVal;
+
+      int idx = mSource->mPrimaryKeyAttrs.at( 0 );
+      QgsField fld = mSource->mFields.at( idx );
+
+      QVariant v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), QString::number( mConn->getBinaryInt( queryResult, row, col ) ), fld.typeName() );
+      pkVal << v;
+
+      if ( !subsetOfAttributes || fetchAttributes.contains( idx ) )
+      {
+        feature.setAttribute( idx, v );
+      }
+      col++;
+
+      fid = mSource->mShared->lookupFid( pkVal );
+    }
+    break;
 
     case PktFidMap:
     {
@@ -766,8 +783,16 @@ bool QgsPostgresFeatureIterator::getFeature( QgsPostgresResult &queryResult, int
       Q_FOREACH ( int idx, mSource->mPrimaryKeyAttrs )
       {
         QgsField fld = mSource->mFields.at( idx );
+        QVariant v;
 
-        QVariant v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), queryResult.PQgetvalue( row, col ), fld.typeName() );
+        if ( fld.type() == QVariant::LongLong )
+        {
+          v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), QString::number( mConn->getBinaryInt( queryResult, row, col ) ), fld.typeName() );
+        }
+        else
+        {
+          v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), queryResult.PQgetvalue( row, col ), fld.typeName() );
+        }
         primaryKeyVals << v;
 
         if ( !subsetOfAttributes || fetchAttributes.contains( idx ) )
@@ -837,6 +862,18 @@ void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult
           v = QByteArray( reinterpret_cast<const char *>( data ), int( returnedLength ) );
         }
         ::PQfreemem( data );
+      }
+      break;
+    }
+    case QVariant::LongLong:
+    {
+      if ( ::PQgetisnull( queryResult.result(), row, col ) )
+      {
+        v = QVariant( QVariant::LongLong );
+      }
+      else
+      {
+        v = QgsPostgresProvider::convertValue( fld.type(), fld.subType(), QString::number( mConn->getBinaryInt( queryResult, row, col ) ), fld.typeName() );
       }
       break;
     }

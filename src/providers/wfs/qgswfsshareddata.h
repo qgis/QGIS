@@ -23,7 +23,7 @@
 #include "qgsbackgroundcachedshareddata.h"
 #include "qgsbackgroundcachedfeatureiterator.h"
 
-// !Class shared between provider and feature source
+//! Class shared between provider and feature source
 class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
 {
     Q_OBJECT
@@ -40,7 +40,7 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     //! Return provider geometry attribute name
     const QString &geometryAttribute() const { return mGeometryAttribute; }
 
-    std::unique_ptr<QgsFeatureDownloaderImpl> newFeatureDownloaderImpl( QgsFeatureDownloader * ) override;
+    std::unique_ptr<QgsFeatureDownloaderImpl> newFeatureDownloaderImpl( QgsFeatureDownloader *, bool requestFromMainThread ) override;
 
     bool isRestrictedToRequestBBOX() const override;
 
@@ -85,7 +85,8 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
 
     /**
      * If the server (typically MapServer WFS 1.1) honours EPSG axis order, but returns
-        EPSG:XXXX srsName and not EPSG urns */
+     * EPSG:XXXX srsName and not EPSG urns
+    */
     bool mGetFeatureEPSGDotHonoursEPSGOrder = false;
 
     //! Geometry type of the features in this layer
@@ -138,7 +139,8 @@ class QgsWFSFeatureHitsRequest: public QgsWfsRequest
 
 /**
  * Utility class to issue a GetFeature requets with maxfeatures/count=1
- * Used by QgsWFSSharedData::endOfDownload() when capabilities extent are likely wrong */
+ * Used by QgsWFSSharedData::endOfDownload() when capabilities extent are likely wrong
+*/
 class QgsWFSSingleFeatureRequest: public QgsWfsRequest
 {
     Q_OBJECT

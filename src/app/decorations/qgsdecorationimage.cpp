@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsdecorationimage.h"
-
 #include "qgsdecorationimagedialog.h"
 
 #include "qgisapp.h"
@@ -43,30 +42,32 @@ QgsDecorationImage::QgsDecorationImage( QObject *parent )
   mPlacement = BottomLeft;
   mMarginUnit = QgsUnitTypes::RenderMillimeters;
 
-  setName( "Image" );
+  setDisplayName( tr( "Image" ) );
+  mConfigurationName = QStringLiteral( "Image" );
+
   projectRead();
 }
 
 void QgsDecorationImage::projectRead()
 {
   QgsDecorationItem::projectRead();
-  mColor = QgsSymbolLayerUtils::decodeColor( QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/Color" ), QStringLiteral( "#000000" ) ) );
-  mOutlineColor = QgsSymbolLayerUtils::decodeColor( QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/OutlineColor" ), QStringLiteral( "#FFFFFF" ) ) );
-  mSize = QgsProject::instance()->readDoubleEntry( mNameConfig, QStringLiteral( "/Size" ), 16.0 );
-  setImagePath( QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/ImagePath" ), QString() ) );
-  mMarginHorizontal = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/MarginH" ), 0 );
-  mMarginVertical = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/MarginV" ), 0 );
+  mColor = QgsSymbolLayerUtils::decodeColor( QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Color" ), QStringLiteral( "#000000" ) ) );
+  mOutlineColor = QgsSymbolLayerUtils::decodeColor( QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/OutlineColor" ), QStringLiteral( "#FFFFFF" ) ) );
+  mSize = QgsProject::instance()->readDoubleEntry( mConfigurationName, QStringLiteral( "/Size" ), 16.0 );
+  setImagePath( QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/ImagePath" ), QString() ) );
+  mMarginHorizontal = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/MarginH" ), 0 );
+  mMarginVertical = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/MarginV" ), 0 );
 }
 
 void QgsDecorationImage::saveToProject()
 {
   QgsDecorationItem::saveToProject();
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Color" ), QgsSymbolLayerUtils::encodeColor( mColor ) );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/OutlineColor" ), QgsSymbolLayerUtils::encodeColor( mOutlineColor ) );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Size" ), mSize );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/ImagePath" ), QgsProject::instance()->pathResolver().writePath( mImagePath ) );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginH" ), mMarginHorizontal );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginV" ), mMarginVertical );
+  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Color" ), QgsSymbolLayerUtils::encodeColor( mColor ) );
+  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/OutlineColor" ), QgsSymbolLayerUtils::encodeColor( mOutlineColor ) );
+  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Size" ), mSize );
+  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/ImagePath" ), QgsProject::instance()->pathResolver().writePath( mImagePath ) );
+  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/MarginH" ), mMarginHorizontal );
+  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/MarginV" ), mMarginVertical );
 }
 
 // Slot called when the buffer menu item is activated
@@ -198,7 +199,7 @@ void QgsDecorationImage::render( const QgsMapSettings &mapSettings, QgsRenderCon
       return;
   }
 
-  context.painter()->save();
+  QgsScopedQPainterState painterState( context.painter() );
 
   // need width/height of paint device
   QPaintDevice *device = context.painter()->device();
@@ -275,6 +276,4 @@ void QgsDecorationImage::render( const QgsMapSettings &mapSettings, QgsRenderCon
       // nothing happening here, function already returned in the first switch
       break;
   }
-
-  context.painter()->restore();
 }

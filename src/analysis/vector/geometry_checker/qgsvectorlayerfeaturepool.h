@@ -38,8 +38,8 @@ class ANALYSIS_EXPORT QgsVectorLayerFeaturePool : public QObject, public QgsFeat
      */
     QgsVectorLayerFeaturePool( QgsVectorLayer *layer );
 
-    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = nullptr ) override;
-    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
+    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     void updateFeature( QgsFeature &feature ) override;
     void deleteFeature( QgsFeatureId fid ) override;
 

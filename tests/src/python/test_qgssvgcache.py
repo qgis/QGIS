@@ -69,7 +69,6 @@ class TestQgsSvgCache(unittest.TestCase):
         while not self.fetched:
             QCoreApplication.processEvents()
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Failing on Travis')
     def testRemoteSVG(self):
         """Test fetching remote svg."""
         url = 'http://localhost:{}/qgis_local_server/sample_svg.svg'.format(str(TestQgsSvgCache.port))
@@ -84,7 +83,9 @@ class TestQgsSvgCache(unittest.TestCase):
                                                                strokeWidth=0.1, widthScaleFactor=1)
         self.assertTrue(self.imageCheck('Remote SVG', 'remote_svg', image))
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Failing on Travis')
+        for i in range(1000):
+            QCoreApplication.processEvents()
+
     def testRemoteSvgAsText(self):
         """Test fetching remote svg with text mime format - e.g. github raw svgs"""
         url = 'http://localhost:{}/qgis_local_server/svg_as_text.txt'.format(str(TestQgsSvgCache.port))
@@ -101,6 +102,9 @@ class TestQgsSvgCache(unittest.TestCase):
         # first should be waiting image
         self.assertTrue(self.imageCheck('Remote SVG as Text', 'remote_svg', image))
 
+        for i in range(1000):
+            QCoreApplication.processEvents()
+
     def testRemoteSvgBadMime(self):
         """Test fetching remote svg with bad mime type"""
         url = 'http://localhost:{}/qgis_local_server/logo.png'.format(str(TestQgsSvgCache.port))
@@ -115,6 +119,9 @@ class TestQgsSvgCache(unittest.TestCase):
                                                                strokeWidth=0.1, widthScaleFactor=1)
         self.assertTrue(self.imageCheck('Remote SVG bad MIME type', 'bad_svg', image))
 
+        for i in range(1000):
+            QCoreApplication.processEvents()
+
     def testRemoteSvgMissing(self):
         """Test fetching remote svg with bad url"""
         url = 'http://localhost:{}/qgis_local_server/xxx.svg'.format(str(TestQgsSvgCache.port))  # oooo naughty
@@ -122,6 +129,9 @@ class TestQgsSvgCache(unittest.TestCase):
                                                                strokeWidth=0.1, widthScaleFactor=1)
 
         self.assertTrue(self.imageCheck('Remote SVG missing', 'waiting_svg', image))
+
+        for i in range(1000):
+            QCoreApplication.processEvents()
 
     def testRemoteSVGBlocking(self):
         """Test fetching remote svg."""
@@ -145,6 +155,9 @@ class TestQgsSvgCache(unittest.TestCase):
                                                                strokeWidth=0.1, widthScaleFactor=1, blocking=1)
 
         self.assertTrue(self.imageCheck('Remote SVG missing', 'waiting_svg', image))
+
+        for i in range(1000):
+            QCoreApplication.processEvents()
 
     def imageCheck(self, name, reference_image, image):
         self.report += "<h2>Render {}</h2>\n".format(name)

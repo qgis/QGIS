@@ -87,6 +87,7 @@ QgsProcessing::SourceType QgsSumLineLengthAlgorithm::outputLayerType() const
 QgsCoordinateReferenceSystem QgsSumLineLengthAlgorithm::outputCrs( const QgsCoordinateReferenceSystem &inputCrs ) const
 {
   mCrs = inputCrs;
+  mDa.setSourceCrs( mCrs, mTransformContext );
   return mCrs;
 }
 
@@ -127,11 +128,8 @@ bool QgsSumLineLengthAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
   if ( mLinesSource->hasSpatialIndex() == QgsFeatureSource::SpatialIndexNotPresent )
     feedback->reportError( QObject::tr( "No spatial index exists for lines layer, performance will be severely degraded" ) );
 
-  if ( context.project() )
-  {
-    mDa.setEllipsoid( context.project()->ellipsoid() );
-  }
-  mDa.setSourceCrs( mCrs, context.transformContext() );
+  mDa.setEllipsoid( context.ellipsoid() );
+  mTransformContext = context.transformContext();
 
   return true;
 }

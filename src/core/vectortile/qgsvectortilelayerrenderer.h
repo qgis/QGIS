@@ -25,14 +25,16 @@ class QgsVectorTileRawData;
 class QgsVectorTileLabelProvider;
 
 #include "qgsvectortilerenderer.h"
+#include "qgsmapclippingregion.h"
 
 /**
  * \ingroup core
  * This class provides map rendering functionality for vector tile layers.
  * In render() function (assumed to be run in a worker thread) it will:
- * 1. fetch vector tiles using QgsVectorTileLoader
- * 2. decode raw tiles into QgsFeature objects using QgsVectorTileDecoder
- * 3. render tiles using a class derived from QgsVectorTileRenderer
+ *
+ * # fetch vector tiles using QgsVectorTileLoader
+ * # decode raw tiles into QgsFeature objects using QgsVectorTileDecoder
+ * # render tiles using a class derived from QgsVectorTileRenderer
  *
  * \since QGIS 3.14
  */
@@ -54,6 +56,10 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
     QString mSourceType;
     //! Path/URL of the source. Format depends on source type
     QString mSourcePath;
+
+    QString mAuthCfg;
+    QString mReferer;
+
     //! Minimum zoom level at which source has any valid tiles (negative = unconstrained)
     int mSourceMinZoom = -1;
     //! Maximum zoom level at which source has any valid tiles (negative = unconstrained)
@@ -82,10 +88,16 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
     QgsTileRange mTileRange;
     //! Cached QgsFields object for each sub-layer that will be rendered
     QMap<QString, QgsFields> mPerLayerFields;
+
+    //! Cached list of layers required for renderer and labeling
+    QSet< QString > mRequiredLayers;
+
     //! Counter of total elapsed time to decode tiles (ms)
     int mTotalDecodeTime = 0;
     //! Counter of total elapsed time to render tiles (ms)
     int mTotalDrawTime = 0;
+
+    QList< QgsMapClippingRegion > mClippingRegions;
 };
 
 

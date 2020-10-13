@@ -16,7 +16,7 @@ class QgsEditorWidgetRegistry : QObject
 This class manages all known edit widget factories.
 
 QgsEditorWidgetRegistry is not usually directly created, but rather accessed through
-:py:func:`QgsGui.editorWidgetRegistry()`
+:py:func:`QgsGui.editorWidgetRegistry()`.
 %End
 
 %TypeHeaderCode
@@ -27,7 +27,7 @@ QgsEditorWidgetRegistry is not usually directly created, but rather accessed thr
     QgsEditorWidgetRegistry();
 %Docstring
 Constructor for QgsEditorWidgetRegistry. QgsEditorWidgetRegistry is not usually directly created, but rather accessed through
-:py:func:`QgsGui.editorWidgetRegistry()`
+:py:func:`QgsGui.editorWidgetRegistry()`.
 %End
 
     void initEditors( QgsMapCanvas *mapCanvas = 0, QgsMessageBar *messageBar = 0 );

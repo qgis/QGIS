@@ -33,6 +33,7 @@ import os
 
 current_path = os.path.dirname(__file__)
 
+
 # The load function is called when the "db" database or either one of its
 # children db objects (table o schema) is selected by the user.
 # @param db is the selected database

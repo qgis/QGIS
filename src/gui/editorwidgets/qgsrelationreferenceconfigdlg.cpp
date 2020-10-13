@@ -21,6 +21,7 @@
 #include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontextutils.h"
 
 QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )
@@ -41,9 +42,9 @@ QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer *vl
       mComboRelation->addItem( QStringLiteral( "%1 (%2)" ).arg( relation.id(), relation.referencedLayerId() ), relation.id() );
     else
       mComboRelation->addItem( QStringLiteral( "%1 (%2)" ).arg( relation.name(), relation.referencedLayerId() ), relation.id() );
-    if ( relation.referencedLayer() )
+    if ( auto *lReferencedLayer = relation.referencedLayer() )
     {
-      mExpressionWidget->setField( relation.referencedLayer()->displayExpression() );
+      mExpressionWidget->setField( lReferencedLayer->displayExpression() );
     }
   }
 
@@ -59,6 +60,34 @@ QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer *vl
   connect( mFilterFieldsList, &QListWidget::itemChanged, this, &QgsEditorConfigWidget::changed );
   connect( mCbxChainFilters, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
   connect( mExpressionWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsEditorConfigWidget::changed );
+  connect( mEditExpression, &QAbstractButton::clicked, this, &QgsRelationReferenceConfigDlg::mEditExpression_clicked );
+  connect( mFilterExpression, &QTextEdit::textChanged, this, &QgsEditorConfigWidget::changed );
+}
+
+void QgsRelationReferenceConfigDlg::mEditExpression_clicked()
+{
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer() );
+  if ( !vl )
+    return;
+
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( vl ) );
+  context << QgsExpressionContextUtils::formScope( );
+  context << QgsExpressionContextUtils::parentFormScope( );
+
+  context.setHighlightedFunctions( QStringList() << QStringLiteral( "current_value" ) << QStringLiteral( "current_parent_value" ) );
+  context.setHighlightedVariables( QStringList() << QStringLiteral( "current_geometry" )
+                                   << QStringLiteral( "current_feature" )
+                                   << QStringLiteral( "form_mode" )
+                                   << QStringLiteral( "current_parent_geometry" )
+                                   << QStringLiteral( "current_parent_feature" ) );
+
+  QgsExpressionBuilderDialog dlg( vl, mFilterExpression->toPlainText(), this, QStringLiteral( "generic" ), context );
+  dlg.setWindowTitle( tr( "Edit Filter Expression" ) );
+
+  if ( dlg.exec() == QDialog::Accepted )
+  {
+    mFilterExpression->setPlainText( dlg.expressionBuilder()->expressionText() );
+  }
 }
 
 void QgsRelationReferenceConfigDlg::setConfig( const QVariantMap &config )
@@ -77,6 +106,7 @@ void QgsRelationReferenceConfigDlg::setConfig( const QVariantMap &config )
   mCbxMapIdentification->setChecked( config.value( QStringLiteral( "MapIdentification" ), false ).toBool() );
   mCbxAllowAddFeatures->setChecked( config.value( QStringLiteral( "AllowAddFeatures" ), false ).toBool() );
   mCbxReadOnly->setChecked( config.value( QStringLiteral( "ReadOnly" ), false ).toBool() );
+  mFilterExpression->setPlainText( config.value( QStringLiteral( "FilterExpression" ) ).toString() );
 
   if ( config.contains( QStringLiteral( "FilterFields" ) ) )
   {
@@ -149,6 +179,7 @@ QVariantMap QgsRelationReferenceConfigDlg::config()
     myConfig.insert( QStringLiteral( "FilterFields" ), filterFields );
 
     myConfig.insert( QStringLiteral( "ChainFilters" ), mCbxChainFilters->isChecked() );
+    myConfig.insert( QStringLiteral( "FilterExpression" ), mFilterExpression->toPlainText() );
   }
 
   if ( mReferencedLayer )

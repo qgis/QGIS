@@ -179,7 +179,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * subset of useful cases. Examples of these are:
      *
      * - computing distance between Linestrings that are roughly parallel to each other,
-     * and roughly equal in length. This occurs in matching linear networks.
+     *   and roughly equal in length. This occurs in matching linear networks.
      * - Testing similarity of geometries.
      *
      * If the default approximate provided by this method is insufficient, use hausdorffDistanceDensify() instead.

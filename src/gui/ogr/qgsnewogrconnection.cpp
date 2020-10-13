@@ -41,6 +41,12 @@ QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString &connTy
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewOgrConnection::showHelp );
   Q_NOWARN_DEPRECATED_POP
 
+  buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
+  connect( txtName, &QLineEdit::textChanged, this, &QgsNewOgrConnection::updateOkButtonState );
+  connect( txtHost, &QLineEdit::textChanged, this, &QgsNewOgrConnection::updateOkButtonState );
+  connect( txtDatabase, &QLineEdit::textChanged, this, &QgsNewOgrConnection::updateOkButtonState );
+  connect( txtPort, &QLineEdit::textChanged, this, &QgsNewOgrConnection::updateOkButtonState );
+
   QgsSettings settings;
 
   //add database drivers
@@ -115,7 +121,14 @@ void QgsNewOgrConnection::showHelp()
   QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#creating-a-stored-connection" ) );
 }
 
-//! Autoconnected SLOTS *
+void QgsNewOgrConnection::updateOkButtonState()
+{
+  bool enabled = !txtName->text().isEmpty();
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
+}
+
+
+//! Autoconnected SLOTS
 void QgsNewOgrConnection::accept()
 {
   QgsSettings settings;
@@ -157,4 +170,4 @@ void QgsNewOgrConnection::btnConnect_clicked()
   testConnection();
 }
 
-//! End  Autoconnected SLOTS *
+//! End  Autoconnected SLOTS

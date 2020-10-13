@@ -26,9 +26,10 @@ class QgsMessageBarItem;
 /**
  * \ingroup gui
  * Extension of QgsTracer that provides extra functionality:
- *  - automatic updates of own configuration based on canvas settings
- *  - reporting of issues to the user via message bar
- *  - determines whether tracing is currently enabled by the user
+ *
+ * - automatic updates of own configuration based on canvas settings
+ * - reporting of issues to the user via message bar
+ * - determines whether tracing is currently enabled by the user
  *
  * A simple registry of tracer instances associated to map canvas instances
  * is kept for convenience. (Map tools do not need to create their local

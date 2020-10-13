@@ -33,7 +33,11 @@
 class CORE_EXPORT QgsTriangle : public QgsPolygon
 {
   public:
-    QgsTriangle();
+
+    /**
+     * Constructor for an empty triangle geometry.
+     */
+    QgsTriangle() SIP_HOLDGIL;
 
     /**
      * Construct a QgsTriangle from three QgsPointV2.
@@ -41,7 +45,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      * \param p2 second point
      * \param p3 third point
      */
-    QgsTriangle( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3 );
+    QgsTriangle( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3 ) SIP_HOLDGIL;
 
     /**
      * Construct a QgsTriangle from three QgsPoint.
@@ -49,7 +53,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      * \param p2 second point
      * \param p3 third point
      */
-    explicit QgsTriangle( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3 );
+    explicit QgsTriangle( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3 ) SIP_HOLDGIL;
 
     /**
      * Construct a QgsTriangle from three QPointF.
@@ -57,12 +61,12 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      * \param p2 second point
      * \param p3 third point
      */
-    explicit QgsTriangle( QPointF p1, QPointF p2, QPointF p3 );
+    explicit QgsTriangle( QPointF p1, QPointF p2, QPointF p3 ) SIP_HOLDGIL;
 
-    bool operator==( const QgsTriangle &other ) const;
-    bool operator!=( const QgsTriangle &other ) const;
+    bool operator==( const QgsTriangle &other ) const SIP_HOLDGIL;
+    bool operator!=( const QgsTriangle &other ) const SIP_HOLDGIL;
 
-    QString geometryType() const override;
+    QString geometryType() const override SIP_HOLDGIL;
     QgsTriangle *clone() const override SIP_FACTORY;
     void clear() override;
 
@@ -101,15 +105,17 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
     /**
      *  Returns coordinates of a vertex.
      *  \param atVertex index of the vertex
-     *  \returns Coordinates of the vertex or QgsPoint(0,0) on error (\a atVertex < 0 or > 3).
+     *  \returns Coordinates of the vertex or empty QgsPoint() on error (\a atVertex < 0 or > 3).
      */
-    QgsPoint vertexAt( int atVertex ) const;
+    QgsPoint vertexAt( int atVertex ) const SIP_HOLDGIL;
 
     /**
      * Returns the three lengths of the triangle.
      * \returns Lengths of triangle ABC where [AB] is at 0, [BC] is at 1, [CA] is at 2.
      * An empty list is returned for empty triangle.
-     * * Example:
+     *
+     * ### Example
+     *
      * \code{.py}
      *   tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
      *   tri.lengths()
@@ -118,13 +124,15 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # []
      * \endcode
      */
-    QVector<double> lengths() const;
+    QVector<double> lengths() const SIP_HOLDGIL;
 
     /**
      * Returns the three angles of the triangle.
      * \returns Angles in radians of triangle ABC where angle BAC is at 0, angle ABC is at 1, angle BCA is at 2.
      * An empty list is returned for empty triangle.
-     * * Example:
+     *
+     * ### Example
+     *
      * \code{.py}
      *   tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
      *   [math.degrees(i) for i in tri.angles()]
@@ -133,12 +141,14 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # []
      * \endcode
      */
-    QVector<double> angles() const;
+    QVector<double> angles() const SIP_HOLDGIL;
 
     /**
      * Convenient method checking if the geometry is degenerate (have duplicate or colinear point(s)).
      * \returns TRUE if the triangle is degenerate or empty, otherwise FALSE.
-     * Example:
+     *
+     * ### Example
+     *
      * \code{.py}
      *   tri = QgsTriangle()
      *   tri.isDegenerate()
@@ -154,13 +164,15 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # True
      *  \endcode
      */
-    bool isDegenerate();
+    bool isDegenerate() SIP_HOLDGIL;
 
     /**
      * Is the triangle isocele (two sides with the same length)?
      * \param lengthTolerance The tolerance to use
      * \returns TRUE or FALSE. Always FALSE for empty triangle.
-     * * Example:
+     *
+     * ### Example
+     *
      * \code{.py}
      *   tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
      *   tri.lengths()
@@ -172,13 +184,15 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # False
      * \endcode
      */
-    bool isIsocele( double lengthTolerance = 0.0001 ) const;
+    bool isIsocele( double lengthTolerance = 0.0001 ) const SIP_HOLDGIL;
 
     /**
      * Is the triangle equilateral (three sides with the same length)?
      * \param lengthTolerance The tolerance to use
      * \returns TRUE or FALSE. Always FALSE for empty triangle.
-     * * Example:
+     *
+     * ### Example
+     *
      * \code{.py}
      *   tri = QgsTriangle( QgsPoint( 10, 10 ), QgsPoint( 16, 10 ), QgsPoint( 13, 15.1962 ) )
      *   tri.lengths()
@@ -190,13 +204,15 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # False
      * \endcode
      */
-    bool isEquilateral( double lengthTolerance = 0.0001 ) const;
+    bool isEquilateral( double lengthTolerance = 0.0001 ) const SIP_HOLDGIL;
 
     /**
      * Is the triangle right-angled?
      * \param angleTolerance The tolerance to use
      * \returns TRUE or FALSE. Always FALSE for empty triangle.
-     * * Example:
+     *
+     * ### Example
+     *
      * \code{.py}
      *   tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
      *   [math.degrees(i) for i in tri.angles()]
@@ -208,13 +224,15 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # False
      * \endcode
      */
-    bool isRight( double angleTolerance = 0.0001 ) const;
+    bool isRight( double angleTolerance = 0.0001 ) const SIP_HOLDGIL;
 
     /**
      * Is the triangle scalene (all sides have different lengths)?
      * \param lengthTolerance The tolerance to use
      * \returns TRUE or FALSE. Always FALSE for empty triangle.
-     * * Example:
+     *
+     * ### Example
+     *
      * \code{.py}
      *   tri = QgsTriangle( QgsPoint( 7.2825, 4.2368 ), QgsPoint( 13.0058, 3.3218 ), QgsPoint( 9.2145, 6.5242 ) )
      *   tri.lengths()
@@ -226,13 +244,15 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # False
      * \endcode
      */
-    bool isScalene( double lengthTolerance = 0.0001 ) const;
+    bool isScalene( double lengthTolerance = 0.0001 ) const SIP_HOLDGIL;
 
     /**
      * An altitude is a segment (defined by a QgsLineString) from a vertex to the opposite side (or, if necessary, to the extension of the opposite side).
      * \returns Three altitudes from this triangle.
      * An empty list is returned for empty triangle.
-     * * Example:
+     *
+     * ### Example
+     *
      * \code{.py}
      *   tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
      *   [alt.asWkt() for alt in tri.altitudes()]
@@ -241,13 +261,15 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # []
      * \endcode
      */
-    QVector<QgsLineString> altitudes() const;
+    QVector<QgsLineString> altitudes() const SIP_HOLDGIL;
 
     /**
      * A median is a segment (defined by a QgsLineString) from a vertex to the midpoint of the opposite side.
      * \returns Three medians from this triangle.
      * An empty list is returned for empty triangle.
-     * * Example:
+     *
+     * ### Example
+     *
      * \code{.py}
      *   tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
      *   [med.asWkt() for med in tri.medians()]
@@ -256,14 +278,16 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # []
      * \endcode
      */
-    QVector<QgsLineString> medians() const;
+    QVector<QgsLineString> medians() const SIP_HOLDGIL;
 
     /**
      * The segment (defined by a QgsLineString) returned bisect the angle of a vertex to the opposite side.
      * \param lengthTolerance The tolerance to use.
      * \returns Three angle bisector from this triangle.
      * An empty list is returned for empty triangle.
-     * * Example:
+     *
+     * ### Example
+     *
      * \code{.py}
      *   tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
      *   [bis.asWkt() for bis in tri.bisectors()]
@@ -272,13 +296,15 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # []
      * \endcode
      */
-    QVector<QgsLineString> bisectors( double lengthTolerance = 0.0001 ) const;
+    QVector<QgsLineString> bisectors( double lengthTolerance = 0.0001 ) const SIP_HOLDGIL;
 
     /**
      * Medial (or midpoint) triangle of a triangle ABC is the triangle with vertices at the midpoints of the triangle's sides.
      * \returns The medial from this triangle.
      * An empty triangle is returned for empty triangle.
-     * * Example:
+     *
+     * ### Example
+     *
      * \code{.py}
      *   tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
      *   tri.medial().asWkt()
@@ -287,14 +313,16 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # 'Triangle ( )'
      * \endcode
      */
-    QgsTriangle medial() const;
+    QgsTriangle medial() const SIP_HOLDGIL;
 
     /**
      * An orthocenter is the point of intersection of the altitudes of a triangle.
      * \param lengthTolerance The tolerance to use
      * \returns The orthocenter of the triangle.
      * An empty point is returned for empty triangle.
-     * * Example:
+     *
+     * ### Example
+     *
      * \code{.py}
      *   tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
      *   tri.orthocenter().asWkt()
@@ -303,13 +331,15 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # 'Point (0 0)'
      * \endcode
      */
-    QgsPoint orthocenter( double lengthTolerance = 0.0001 ) const;
+    QgsPoint orthocenter( double lengthTolerance = 0.0001 ) const SIP_HOLDGIL;
 
     /**
      * Center of the circumscribed circle of the triangle.
      * \returns The center of the circumscribed circle of the triangle.
      * An empty point is returned for empty triangle.
-     * * Example:
+     *
+     * ### Example
+     *
      * \code{.py}
      *   tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
      *   tri.circumscribedCenter().asWkt()
@@ -318,13 +348,15 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # 'Point (0 0)'
      * \endcode
      */
-    QgsPoint circumscribedCenter() const;
+    QgsPoint circumscribedCenter() const SIP_HOLDGIL;
 
     /**
      * Radius of the circumscribed circle of the triangle.
      * \returns The radius of the circumscribed circle of the triangle.
      * 0.0 is returned for empty triangle.
-     * * Example:
+     *
+     * ### Example
+     *
      * \code{.py}
      *   tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
      *   tri.circumscribedRadius()
@@ -333,13 +365,15 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # 0.0
      * \endcode
      */
-    double circumscribedRadius() const;
+    double circumscribedRadius() const SIP_HOLDGIL;
 
     /**
      * Circumscribed circle of the triangle.
      * \returns The circumbscribed of the triangle with a QgsCircle.
      * An empty circle is returned for empty triangle.
-     * Example:
+     *
+     * ### Example
+     *
      * \code{.py}
      *   tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
      *   tri.circumscribedCircle()
@@ -348,14 +382,16 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # QgsCircle()
      * \endcode
      */
-    QgsCircle circumscribedCircle() const;
+    QgsCircle circumscribedCircle() const SIP_HOLDGIL;
 
     /**
      * Center of the inscribed circle of the triangle. Z dimension is
      * supported and is retrieved from the first 3D point amongst vertices.
      * \returns The center of the inscribed circle of the triangle.
      * An empty point is returned for empty triangle.
-     * * Example:
+     *
+     * ### Example
+     *
      * \code{.py}
      *   tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
      *   tri.inscribedCenter().asWkt()
@@ -364,13 +400,15 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # 'Point (0 0)'
      * \endcode
      */
-    QgsPoint inscribedCenter() const;
+    QgsPoint inscribedCenter() const SIP_HOLDGIL;
 
     /**
      * Radius of the inscribed circle of the triangle.
      * \returns The radius of the inscribed circle of the triangle.
      * 0.0 is returned for empty triangle.
-     * * Example:
+     *
+     * ### Example
+     *
      * \code{.py}
      *   tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
      *   tri.inscribedRadius()
@@ -379,13 +417,15 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # 0.0
      * \endcode
      */
-    double inscribedRadius() const;
+    double inscribedRadius() const SIP_HOLDGIL;
 
     /**
      * Inscribed circle of the triangle.
      * \returns The inscribed of the triangle with a QgsCircle.
      * An empty circle is returned for empty triangle.
-     * Example:
+     *
+     * ### Example
+     *
      * \code{.py}
      *   tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
      *   tri.inscribedCircle()
@@ -394,7 +434,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      *   # QgsCircle()
      * \endcode
      */
-    QgsCircle inscribedCircle() const;
+    QgsCircle inscribedCircle() const SIP_HOLDGIL;
 
 #ifndef SIP_RUN
 

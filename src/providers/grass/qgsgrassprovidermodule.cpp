@@ -926,7 +926,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData *data, Qt::DropAction )
   if ( !errors.isEmpty() )
   {
     QgsMessageOutput::showMessage( tr( "Import to GRASS mapset" ),
-                                   tr( "Failed to import some layers!\n\n" ) + errors.join( QStringLiteral( "\n" ) ),
+                                   tr( "Failed to import some layers!\n\n" ) + errors.join( QLatin1Char( '\n' ) ),
                                    QgsMessageOutput::MessageText );
   }
 
@@ -1034,9 +1034,9 @@ QgsGrassVectorItem::~QgsGrassVectorItem()
 
 void QgsGrassVectorItem::onDirectoryChanged()
 {
-  if ( parent() )
+  if ( auto *lParent = parent() )
   {
-    parent()->refresh();
+    lParent->refresh();
   }
 }
 
@@ -1290,9 +1290,10 @@ class QgsGrassProviderMetadata: public QgsProviderMetadata
 {
   public:
     QgsGrassProviderMetadata(): QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION ) {}
-    QgsGrassProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override
+    QgsGrassProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override
     {
       Q_UNUSED( options );
+      Q_UNUSED( flags );
       return new QgsGrassProvider( uri );
     }
     QList< QgsDataItemProvider * > dataItemProviders() const override

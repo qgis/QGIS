@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -171,7 +171,7 @@
          </widget>
         </item>
         <item row="3" column="2">
-         <widget class="QSpinBox" name="mColorizeStrengthSpinBox">
+         <widget class="QgsSpinBox" name="mColorizeStrengthSpinBox">
           <property name="suffix">
            <string>%</string>
           </property>
@@ -300,6 +300,11 @@
    <class>QgsEffectDrawModeComboBox</class>
    <extends>QComboBox</extends>
    <header>qgseffectdrawmodecombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsOpacityWidget</class>

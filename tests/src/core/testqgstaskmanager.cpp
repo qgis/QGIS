@@ -412,7 +412,7 @@ void TestQgsTaskManager::task()
   QCOMPARE( task->status(), QgsTask::Terminated );
 
   // test flags
-  task.reset( new TestTask( QStringLiteral( "test_task_6" ), nullptr ) );
+  task.reset( new TestTask( QStringLiteral( "test_task_6" ), QgsTask::Flags() ) );
   QVERIFY( !task->canCancel() );
   QVERIFY( !( task->flags() & QgsTask::CanCancel ) );
   task.reset( new TestTask( QStringLiteral( "test_task_7" ), QgsTask::CanCancel ) );
@@ -1215,7 +1215,7 @@ void TestQgsTaskManager::activeTasks()
     QCoreApplication::processEvents();
   }
   flushEvents();
-  QCOMPARE( manager.activeTasks().toSet(), ( QList< QgsTask * >() << task ).toSet() );
+  QCOMPARE( qgis::listToSet( manager.activeTasks() ), qgis::listToSet( QList< QgsTask * >() << task ) );
   QCOMPARE( manager.countActiveTasks(), 1 );
   QCOMPARE( spy.count(), 1 );
   QCOMPARE( spy.last().at( 0 ).toInt(), 1 );
@@ -1225,7 +1225,7 @@ void TestQgsTaskManager::activeTasks()
     QCoreApplication::processEvents();
   }
   flushEvents();
-  QCOMPARE( manager.activeTasks().toSet(), ( QList< QgsTask * >() << task << task2 ).toSet() );
+  QCOMPARE( qgis::listToSet( manager.activeTasks() ), qgis::listToSet( QList< QgsTask * >() << task << task2 ) );
   QCOMPARE( manager.countActiveTasks(), 2 );
   QCOMPARE( spy.count(), 2 );
   QCOMPARE( spy.last().at( 0 ).toInt(), 2 );
@@ -1235,7 +1235,7 @@ void TestQgsTaskManager::activeTasks()
     QCoreApplication::processEvents();
   }
   flushEvents();
-  QCOMPARE( manager.activeTasks().toSet(), ( QList< QgsTask * >() << task2 ).toSet() );
+  QCOMPARE( qgis::listToSet( manager.activeTasks() ), qgis::listToSet( QList< QgsTask * >() << task2 ) );
   QCOMPARE( manager.countActiveTasks(), 1 );
   QCOMPARE( spy.count(), 3 );
   QCOMPARE( spy.last().at( 0 ).toInt(), 1 );

@@ -45,7 +45,7 @@ information for an HTTP Server for WMS, etc.
                           QgsNewHttpConnection::ConnectionTypes types = ConnectionWms,
                           const QString &baseKey = "qgis/connections-wms/",
                           const QString &connectionName = QString(),
-                          QgsNewHttpConnection::Flags flags = 0,
+                          QgsNewHttpConnection::Flags flags = QgsNewHttpConnection::Flags(),
                           Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
 Constructor for QgsNewHttpConnection.

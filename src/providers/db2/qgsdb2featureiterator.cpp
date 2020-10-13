@@ -89,8 +89,8 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   {
     //ensure that all fields required for filter expressions are prepared
     QSet<int> attributeIndexes = request.filterExpression()->referencedAttributeIndexes( mSource->mFields );
-    attributeIndexes += attrs.toSet();
-    attrs = attributeIndexes.toList();
+    attributeIndexes += qgis::listToSet( attrs );
+    attrs = qgis::setToList( attributeIndexes );
   }
 
   const auto constAttrs = attrs;
@@ -269,7 +269,7 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
 
   if ( !orderByParts.isEmpty() )
   {
-    mOrderByClause = QStringLiteral( " ORDER BY %1" ).arg( orderByParts.join( QStringLiteral( "," ) ) );
+    mOrderByClause = QStringLiteral( " ORDER BY %1" ).arg( orderByParts.join( QLatin1Char( ',' ) ) );
     mStatement += mOrderByClause;
   }
 

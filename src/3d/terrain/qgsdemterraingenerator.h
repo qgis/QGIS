@@ -28,9 +28,14 @@ class QgsDemHeightMapGenerator;
 
 #include "qgsmaplayerref.h"
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup 3d
  * Implementation of terrain generator that uses a raster layer with DEM to build terrain.
+ *
+ * \note Not available in Python bindings
+ *
  * \since QGIS 3.0
  */
 class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator

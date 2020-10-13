@@ -61,7 +61,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsRasterRendererCreateSld(unittest.TestCase):
-
     """
      This class tests the creation of SLD from QGis raster layers
     """
@@ -98,7 +97,8 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
         colorRampShaderFcn.setClip(True)
         items = []
         for index in range(10):
-            items.append(QgsColorRampShader.ColorRampItem(index, QColor('#{0:02d}{0:02d}{0:02d}'.format(index)), "{}".format(index)))
+            items.append(QgsColorRampShader.ColorRampItem(index, QColor('#{0:02d}{0:02d}{0:02d}'.format(index)),
+                                                          "{}".format(index)))
         colorRampShaderFcn.setColorRampItemList(items)
         shader.setRasterShaderFunction(colorRampShaderFcn)
         # create instance to test
@@ -137,7 +137,8 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
         colorRampShaderFcn.setClip(True)
         items = []
         for index in range(10):
-            items.append(QgsColorRampShader.ColorRampItem(index, QColor('#{0:02d}{0:02d}{0:02d}'.format(index)), "{}".format(index)))
+            items.append(QgsColorRampShader.ColorRampItem(index, QColor('#{0:02d}{0:02d}{0:02d}'.format(index)),
+                                                          "{}".format(index)))
         colorRampShaderFcn.setColorRampItemList(items)
         shader.setRasterShaderFunction(colorRampShaderFcn)
         # create instance to test
@@ -176,7 +177,8 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
         colorRampShaderFcn.setClip(True)
         items = []
         for index in range(10):
-            items.append(QgsColorRampShader.ColorRampItem(index, QColor('#{0:02d}{0:02d}{0:02d}'.format(index)), "{}".format(index)))
+            items.append(QgsColorRampShader.ColorRampItem(index, QColor('#{0:02d}{0:02d}{0:02d}'.format(index)),
+                                                          "{}".format(index)))
         colorRampShaderFcn.setColorRampItemList(items)
         shader.setRasterShaderFunction(colorRampShaderFcn)
         # create instance to test
@@ -211,7 +213,8 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
         colorRampShaderFcn.setClip(True)
         items = []
         for index in range(255):
-            items.append(QgsColorRampShader.ColorRampItem(index, QColor.fromHsv(index, 255, 255, 255), "{}".format(index)))
+            items.append(
+                QgsColorRampShader.ColorRampItem(index, QColor.fromHsv(index, 255, 255, 255), "{}".format(index)))
         colorRampShaderFcn.setColorRampItemList(items)
         shader.setRasterShaderFunction(colorRampShaderFcn)
         # create instance to test
@@ -223,7 +226,7 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
 
     def testPalettedRasterRenderer(self):
         # create 10 color classes
-        #classesString = '122 0 0 0 255 122\n123 1 1 1 255 123\n124 2 2 2 255 124\n125 3 3 3 255 125\n126 4 4 4 255 126\n127 5 5 5 255 127\n128 6 6 6 255 128\n129 7 7 7 255 129\n130 8 8 8 255 130'
+        # classesString = '122 0 0 0 255 122\n123 1 1 1 255 123\n124 2 2 2 255 124\n125 3 3 3 255 125\n126 4 4 4 255 126\n127 5 5 5 255 127\n128 6 6 6 255 128\n129 7 7 7 255 129\n130 8 8 8 255 130'
         classesString = ''
         for index in range(10):
             classesString += '{0} {0} {0} {0} 255 {0}\n'.format(index)
@@ -546,7 +549,8 @@ class TestQgsRasterRendererCreateSld(unittest.TestCase):
             elif (vendorOption.attributes().namedItem('name').nodeValue() == 'maxValue'):
                 self.assertEqual(expectedMax, vendorOption.firstChild().nodeValue())
             else:
-                self.fail('Unrecognised vendorOption name {}'.format(vendorOption.attributes().namedItem('name').nodeValue()))
+                self.fail(
+                    'Unrecognised vendorOption name {}'.format(vendorOption.attributes().namedItem('name').nodeValue()))
 
     def assertChannelBand(self, root, bandTag, expectedValue, index=0):
         channelSelection = root.elementsByTagName('sld:ChannelSelection').item(index)

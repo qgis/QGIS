@@ -20,9 +20,9 @@ class QgsDevToolWidgetFactory;
 #include <memory>
 
 /**
- * \ingroup core
+ * \ingroup app
  *
- * Manages lifetime of a QgsScopedDevToolWidgetFactory, automatically
+ * Manages lifetime of a QgsDevToolWidgetFactory, automatically
  * registering and unregistering it as required.
  *
  * \since QGIS 3.14

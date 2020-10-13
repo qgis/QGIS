@@ -1,0 +1,51 @@
+{
+  "name": "overlay_within",
+  "type": "function",
+  "groups": ["GeometryGroup"],
+  "description": "Performs a spatial join of type WITHIN. This returns an array of results of an expression evaluated on features from a different layer that are WITHIN the current feature, or, if no expression if provided, simply returns whether at least one feature from the other layer is WITHIN the current feature.",
+  "arguments": [
+    {
+      "arg": "layer",
+      "description": "the other layer"
+    },
+    {
+      "arg": "expression",
+      "description": "an optional expression to evaluate on the features from the other layer (if not set, the function will just return a boolean indicating whether there is at least one match)",
+      "optional": true
+    },
+    {
+      "arg": "filter",
+      "description": "an optional expression to filter the matching features (if not set, all features will be returned)",
+      "optional": true
+    },
+    {
+      "arg": "limit",
+      "description": "an optional integer to limit the number of matching features (if not set, all features will be returned)",
+      "optional": true
+    },
+    {
+      "arg": "cache",
+      "description": "set this to true to build a local spatial index (most of the time, this is unwanted, unless you are working with a particularly slow data provider)",
+      "optional": true,
+      "default": false
+    }
+  ],
+  "examples": [
+    {
+      "expression": "overlay_within('regions')",
+      "returns": "True"
+    },
+    {
+      "expression": "overlay_within('regions', name)",
+      "returns": "['South Africa', 'Africa', 'World']"
+    },
+    {
+      "expression": "overlay_within('regions', name, name != 'World')",
+      "returns": "['South Africa', 'Africa']"
+    },
+    {
+      "expression": "overlay_within('regions', name, limit:=1)",
+      "returns": "['South Africa']"
+    }
+  ]
+}

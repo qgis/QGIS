@@ -35,7 +35,7 @@ class CORE_EXPORT QgsLabeling
     /**
      * Line placement flags, which control how candidates are generated for a linear feature.
      */
-    enum class LinePlacementFlag : int
+    enum LinePlacementFlag
     {
       OnLine    = 1,      //!< Labels can be placed directly over a line feature.
       AboveLine = 2,      //!< Labels can be placed above a line feature. Unless MapOrientation is also specified this mode respects the direction of the line feature, so a line from right to left labels will have labels placed placed below the line feature.
@@ -44,8 +44,21 @@ class CORE_EXPORT QgsLabeling
     };
     Q_DECLARE_FLAGS( LinePlacementFlags, LinePlacementFlag )
 
+    /**
+     * Polygon placement flags, which control how candidates are generated for a polygon feature.
+     *
+     * \since QGIS 3.14
+     */
+    enum PolygonPlacementFlag
+    {
+      AllowPlacementOutsideOfPolygon = 1 << 0, //!< Labels can be placed outside of a polygon feature
+      AllowPlacementInsideOfPolygon = 1 << 1, //!< Labels can be placed inside a polygon feature
+    };
+    Q_DECLARE_FLAGS( PolygonPlacementFlags, PolygonPlacementFlag )
+
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLabeling::LinePlacementFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLabeling::PolygonPlacementFlags )
 
 #endif // QGSLABELING_H

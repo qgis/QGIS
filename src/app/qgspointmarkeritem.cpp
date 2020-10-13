@@ -166,9 +166,16 @@ QgsMapCanvasLineSymbolItem::QgsMapCanvasLineSymbolItem( QgsMapCanvas *canvas )
   setSymbol( qgis::make_unique< QgsLineSymbol >() );
 }
 
-void QgsMapCanvasLineSymbolItem::setLine( const QLineF &line )
+void QgsMapCanvasLineSymbolItem::setLine( const QPolygonF &line )
 {
   mLine = line;
+  update();
+}
+
+void QgsMapCanvasLineSymbolItem::setLine( const QLineF &line )
+{
+  mLine.clear();
+  mLine << line.p1() << line.p2();
   update();
 }
 
@@ -179,9 +186,7 @@ QRectF QgsMapCanvasLineSymbolItem::boundingRect() const
 
 void QgsMapCanvasLineSymbolItem::renderSymbol( QgsRenderContext &context, const QgsFeature &feature )
 {
-  QPolygonF points;
-  points << mLine.p1() << mLine.p2();
-  lineSymbol()->renderPolyline( points, &feature, context );
+  lineSymbol()->renderPolyline( mLine, &feature, context );
 }
 
 QgsLineSymbol *QgsMapCanvasLineSymbolItem::lineSymbol()

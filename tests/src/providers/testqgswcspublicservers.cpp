@@ -388,7 +388,7 @@ void TestQgsWcsPublicServers::test()
         myLog << "describeCoverageUrl:" + myCapabilities.getDescribeCoverageUrl( myCoverage.identifier );
         // Test time
         //myLog << "date:" + QString( "%1").arg( QDateTime::currentDateTime().toTime_t() );
-        myLog << "date:" + QStringLiteral( "%1" ).arg( QDateTime::currentDateTime().toString() );
+        myLog << "date:" + QDateTime::currentDateTime().toString();
 
         int myWidth = 100;
         int myHeight = 100;
@@ -404,7 +404,7 @@ void TestQgsWcsPublicServers::test()
 
         Q_FOREACH ( const QString &provider, providers )
         {
-          QTime time;
+          QElapsedTimer time;
           time.start();
           QString uri;
           if ( provider == QLatin1String( "wcs" ) )
@@ -514,7 +514,7 @@ void TestQgsWcsPublicServers::test()
 
         Q_ASSERT( myLogFile.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) );
         QTextStream myStream( &myLogFile );
-        myStream << myLog.join( QStringLiteral( "\n" ) );
+        myStream << myLog.join( QLatin1Char( '\n' ) );
 
         myLogFile.close();
         QgsProject::instance()->removeAllMapLayers();
@@ -526,13 +526,13 @@ void TestQgsWcsPublicServers::test()
       QFile myVersionLogFile( myVersionLogPath );
       Q_ASSERT( myVersionLogFile.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) );
       QTextStream myVersionStream( &myVersionLogFile );
-      myVersionStream << myVersionLog.join( QStringLiteral( "\n" ) );
+      myVersionStream << myVersionLog.join( QLatin1Char( '\n' ) );
       myVersionLogFile.close();
     }
     QFile myServerLogFile( myServerLogPath );
     Q_ASSERT( myServerLogFile.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) );
     QTextStream myServerStream( &myServerLogFile );
-    myServerStream << myServerLog.join( QStringLiteral( "\n" ) );
+    myServerStream << myServerLog.join( QLatin1Char( '\n' ) );
     myServerLogFile.close();
   }
 }
@@ -638,7 +638,7 @@ void TestQgsWcsPublicServers::report()
           myValues.clear();
 
           QStringList issues = issueDescriptions( myServerLog.value( QStringLiteral( "server" ) ), myLog.value( QStringLiteral( "identifier" ) ), myLog.value( QStringLiteral( "version" ) ) );
-          QString issuesString = issues.join( QStringLiteral( "<br>" ) );
+          QString issuesString = issues.join( QLatin1String( "<br>" ) );
 
           QStringList providers;
           providers << QStringLiteral( "wcs" ) << QStringLiteral( "gdal" );

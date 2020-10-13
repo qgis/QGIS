@@ -288,7 +288,7 @@ class CORE_EXPORT QgsSnappingConfig
     void setTolerance( double tolerance );
 
     /**
-     * Returns the min scale
+     * Returns the min scale (i.e. most \"zoomed out\" scale)
      * \since QGIS 3.14
      */
     double minimumScale() const;
@@ -300,7 +300,7 @@ class CORE_EXPORT QgsSnappingConfig
     void setMinimumScale( double minScale );
 
     /**
-     * Returns the max scale
+     * Returns the max scale (i.e. most \"zoomed in\" scale)
      * \since QGIS 3.14
      */
     double maximumScale() const;
@@ -334,6 +334,20 @@ class CORE_EXPORT QgsSnappingConfig
 
     //! Sets if the snapping on intersection is enabled
     void setIntersectionSnapping( bool enabled );
+
+    /**
+     * Returns if self snapping (snapping to the currently digitized feature) is enabled
+     *
+     * \since QGIS 3.14
+     */
+    bool selfSnapping() const;
+
+    /**
+     * Sets if self snapping (snapping to the currently digitized feature) is enabled
+     *
+     * \since QGIS 3.14
+     */
+    void setSelfSnapping( bool enabled );
 
     //! Returns individual snapping settings for all layers
 #ifndef SIP_RUN
@@ -386,6 +400,13 @@ class CORE_EXPORT QgsSnappingConfig
 
     //! Sets individual layer snappings settings (applied if mode is AdvancedConfiguration)
     void setIndividualLayerSettings( QgsVectorLayer *vl, const QgsSnappingConfig::IndividualLayerSettings &individualLayerSettings );
+
+    /**
+     * Removes all individual layer snapping settings
+     *
+     * \since QGIS 3.16
+     */
+    void clearIndividualLayerSettings();
 
     /**
      * Compare this configuration to other.
@@ -458,6 +479,7 @@ class CORE_EXPORT QgsSnappingConfig
     double mMaximumScale = 0.0;
     QgsTolerance::UnitType mUnits = QgsTolerance::ProjectUnits;
     bool mIntersectionSnapping = false;
+    bool mSelfSnapping = false;
 
     QHash<QgsVectorLayer *, IndividualLayerSettings> mIndividualLayerSettings;
 

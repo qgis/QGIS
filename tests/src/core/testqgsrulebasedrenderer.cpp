@@ -160,7 +160,7 @@ class TestQgsRuleBasedRenderer: public QObject
         RRule *rootRule = new RRule( nullptr );
         for ( int i = 0; i < rc; i++ )
         {
-          rootRule->appendChild( new RRule( nullptr, 0, 0, QStringLiteral( "%1" ).arg( i ) ) );
+          rootRule->appendChild( new RRule( nullptr, 0, 0, QString::number( i ) ) );
         }
         QgsRuleBasedRenderer r( rootRule );
         r.startRender( ctx, layer->fields() );

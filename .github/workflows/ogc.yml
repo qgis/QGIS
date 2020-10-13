@@ -1,0 +1,42 @@
+name: OGC tests for QGIS Server
+
+on:
+  push:
+    branches:
+      - master
+      - release-**
+  pull_request:
+    branches:
+      - master
+      - release-**
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Setup build dependencies
+        run: |
+          docker build -t qgis_server_deps -f .ci/ogc/Dockerfile .ci/ogc/
+
+      - name: Run build
+        run: |
+          docker run -v $(pwd):/usr/src/qgis qgis_server_deps /usr/src/qgis/.ci/ogc/build.sh
+
+      - name: Install pyogctest
+        run: |
+          sudo apt-get install python3-virtualenv virtualenv git
+          git clone https://github.com/pblottiere/pyogctest
+          cd pyogctest && git checkout 1.0.1 && cd -
+          virtualenv -p /usr/bin/python3 venv && source venv/bin/activate && pip install -e pyogctest/
+
+      - name: Download WMS 1.3.0 dataset
+        run: |
+          source venv/bin/activate && ./pyogctest/pyogctest.py -s wms130 -w
+
+      - name: Run WMS 1.3.0 OGC tests
+        run: |
+          docker-compose -f .ci/ogc/docker-compose.yml up -d
+          source venv/bin/activate && ./pyogctest/pyogctest.py -n ogc_qgis -s wms130 -v -u http://$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' qgis_server_nginx)/qgisserver

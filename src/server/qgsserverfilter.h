@@ -35,10 +35,10 @@ class QgsServerInterface;
  * implemented in plugins.
  *
  * Filters can define any (or none) of the following hooks:
- *  * requestReady() - called when request is ready
- *  * responseComplete() - called when the response is complete
- *    after core services have returned to main loop
- *  * sendResponse() - called just before sending output to FGCI
+ *
+ * - requestReady() - called when request is ready
+ * - responseComplete() - called when the response is complete after core services have returned to main loop
+ * - sendResponse() - called just before sending output to FGCI
  */
 class SERVER_EXPORT QgsServerFilter
 {
@@ -59,7 +59,8 @@ class SERVER_EXPORT QgsServerFilter
 
     /**
      * Method called when the QgsRequestHandler is ready and populated with
-    * parameters, just before entering the main switch for core services.*/
+    * parameters, just before entering the main switch for core services.
+    */
     virtual void requestReady();
 
     /**

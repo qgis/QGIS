@@ -29,6 +29,8 @@
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsauxiliarystorage.h"
 #include "qgsgui.h"
+#include "qgstextrenderer.h"
+
 
 #include <QMouseEvent>
 
@@ -510,11 +512,19 @@ bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess
     return false;
   }
 
-  QgsAttributes attributes = f.attributes();
-  if ( !attributes.at( xCol ).isNull() )
-    x = attributes.at( xCol ).toDouble( &xSuccess );
-  if ( !attributes.at( yCol ).isNull() )
-    y = attributes.at( yCol ).toDouble( &ySuccess );
+  if ( mCurrentLabel.pos.isUnplaced )
+  {
+    xSuccess = false;
+    ySuccess = false;
+  }
+  else
+  {
+    QgsAttributes attributes = f.attributes();
+    if ( !attributes.at( xCol ).isNull() )
+      x = attributes.at( xCol ).toDouble( &xSuccess );
+    if ( !attributes.at( yCol ).isNull() )
+      y = attributes.at( yCol ).toDouble( &ySuccess );
+  }
 
   return true;
 }
@@ -798,7 +808,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexe
     {
       index = vlayer->fields().lookupField( prop.field() );
     }
-    else if ( prop.propertyType() != QgsProperty::ExpressionBasedProperty || ( prop.propertyType() == QgsProperty::ExpressionBasedProperty && overwriteExpression ) )
+    else if ( prop.propertyType() != QgsProperty::ExpressionBasedProperty || overwriteExpression )
     {
       index = QgsAuxiliaryLayer::createProperty( p, vlayer );
       changed = true;
@@ -850,7 +860,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIn
     {
       index = vlayer->fields().lookupField( prop.field() );
     }
-    else if ( prop.propertyType() != QgsProperty::ExpressionBasedProperty || ( prop.propertyType() == QgsProperty::ExpressionBasedProperty && overwriteExpression ) )
+    else if ( prop.propertyType() != QgsProperty::ExpressionBasedProperty || overwriteExpression )
     {
       index = QgsAuxiliaryLayer::createProperty( p, vlayer );
       changed = true;

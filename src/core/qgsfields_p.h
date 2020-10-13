@@ -61,6 +61,8 @@ class QgsFieldsPrivate : public QSharedData
     //! map for quick resolution of name to index
     QHash<QString, int> nameToIndex;
 
+  private:
+    QgsFieldsPrivate &operator= ( const QgsFieldsPrivate & ) = delete;
 };
 
 /// @endcond

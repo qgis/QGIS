@@ -194,6 +194,26 @@ void QgsLayoutItemScaleBar::setLineSymbol( QgsLineSymbol *symbol )
   mSettings.setLineSymbol( symbol );
 }
 
+QgsLineSymbol *QgsLayoutItemScaleBar::divisionLineSymbol() const
+{
+  return mSettings.divisionLineSymbol();
+}
+
+void QgsLayoutItemScaleBar::setDivisionLineSymbol( QgsLineSymbol *symbol )
+{
+  mSettings.setDivisionLineSymbol( symbol );
+}
+
+QgsLineSymbol *QgsLayoutItemScaleBar::subdivisionLineSymbol() const
+{
+  return mSettings.subdivisionLineSymbol();
+}
+
+void QgsLayoutItemScaleBar::setSubdivisionLineSymbol( QgsLineSymbol *symbol )
+{
+  mSettings.setSubdivisionLineSymbol( symbol );
+}
+
 QgsFillSymbol *QgsLayoutItemScaleBar::fillSymbol() const
 {
   return mSettings.fillSymbol();
@@ -366,6 +386,7 @@ QgsScaleBarRenderer::ScaleBarContext QgsLayoutItemScaleBar::createScaleContext()
   scaleContext.size = rect().size();
   scaleContext.segmentWidth = mSegmentMillimeters;
   scaleContext.scale = mMap ? mMap->scale() : 1.0;
+  scaleContext.flags = mStyle->flags();
   return scaleContext;
 }
 
@@ -577,7 +598,11 @@ void QgsLayoutItemScaleBar::update()
 void QgsLayoutItemScaleBar::updateScale()
 {
   refreshSegmentMillimeters();
-  resizeToMinimumWidth();
+  //Don't adjust box size for numeric scale bars:
+  if ( mStyle && mStyle->id() != QLatin1String( "Numeric" ) )
+  {
+    resizeToMinimumWidth();
+  }
   update();
 }
 
@@ -726,6 +751,8 @@ bool QgsLayoutItemScaleBar::writePropertiesToElement( QDomElement &composerScale
   composerScaleBarElem.setAttribute( QStringLiteral( "boxContentSpace" ), QString::number( mSettings.boxContentSpace() ) );
   composerScaleBarElem.setAttribute( QStringLiteral( "numSegments" ), mSettings.numberOfSegments() );
   composerScaleBarElem.setAttribute( QStringLiteral( "numSegmentsLeft" ), mSettings.numberOfSegmentsLeft() );
+  composerScaleBarElem.setAttribute( QStringLiteral( "numSubdivisions" ), mSettings.numberOfSubdivisions() );
+  composerScaleBarElem.setAttribute( QStringLiteral( "subdivisionsHeight" ), mSettings.subdivisionsHeight() );
   composerScaleBarElem.setAttribute( QStringLiteral( "numUnitsPerSegment" ), QString::number( mSettings.unitsPerSegment() ) );
   composerScaleBarElem.setAttribute( QStringLiteral( "segmentSizeMode" ), mSettings.segmentSizeMode() );
   composerScaleBarElem.setAttribute( QStringLiteral( "minBarWidth" ), mSettings.minimumBarWidth() );
@@ -807,6 +834,22 @@ bool QgsLayoutItemScaleBar::writePropertiesToElement( QDomElement &composerScale
   lineSymbol.appendChild( symbolElem );
   composerScaleBarElem.appendChild( lineSymbol );
 
+  QDomElement divisionSymbol = doc.createElement( QStringLiteral( "divisionLineSymbol" ) );
+  const QDomElement divisionSymbolElem = QgsSymbolLayerUtils::saveSymbol( QString(),
+                                         mSettings.divisionLineSymbol(),
+                                         doc,
+                                         rwContext );
+  divisionSymbol.appendChild( divisionSymbolElem );
+  composerScaleBarElem.appendChild( divisionSymbol );
+
+  QDomElement subdivisionSymbol = doc.createElement( QStringLiteral( "subdivisionLineSymbol" ) );
+  const QDomElement subdivisionSymbolElem = QgsSymbolLayerUtils::saveSymbol( QString(),
+      mSettings.subdivisionLineSymbol(),
+      doc,
+      rwContext );
+  subdivisionSymbol.appendChild( subdivisionSymbolElem );
+  composerScaleBarElem.appendChild( subdivisionSymbol );
+
   QDomElement fillSymbol1Elem = doc.createElement( QStringLiteral( "fillSymbol1" ) );
   const QDomElement symbol1Elem = QgsSymbolLayerUtils::saveSymbol( QString(),
                                   mSettings.fillSymbol(),
@@ -833,6 +876,8 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
   mSettings.setBoxContentSpace( itemElem.attribute( QStringLiteral( "boxContentSpace" ), QStringLiteral( "1.0" ) ).toDouble() );
   mSettings.setNumberOfSegments( itemElem.attribute( QStringLiteral( "numSegments" ), QStringLiteral( "2" ) ).toInt() );
   mSettings.setNumberOfSegmentsLeft( itemElem.attribute( QStringLiteral( "numSegmentsLeft" ), QStringLiteral( "0" ) ).toInt() );
+  mSettings.setNumberOfSubdivisions( itemElem.attribute( QStringLiteral( "numSubdivisions" ), QStringLiteral( "1" ) ).toInt() );
+  mSettings.setSubdivisionsHeight( itemElem.attribute( QStringLiteral( "subdivisionsHeight" ), QStringLiteral( "1.5" ) ).toDouble() );
   mSettings.setUnitsPerSegment( itemElem.attribute( QStringLiteral( "numUnitsPerSegment" ), QStringLiteral( "1.0" ) ).toDouble() );
   mSettings.setSegmentSizeMode( static_cast<QgsScaleBarSettings::SegmentSizeMode>( itemElem.attribute( QStringLiteral( "segmentSizeMode" ), QStringLiteral( "0" ) ).toInt() ) );
   mSettings.setMinimumBarWidth( itemElem.attribute( QStringLiteral( "minBarWidth" ), QStringLiteral( "50" ) ).toDouble() );
@@ -852,6 +897,35 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
       foundLineSymbol = true;
     }
   }
+  QDomElement divisionSymbolElem = itemElem.firstChildElement( QStringLiteral( "divisionLineSymbol" ) );
+  if ( !divisionSymbolElem.isNull() )
+  {
+    QDomElement symbolElem = divisionSymbolElem.firstChildElement( QStringLiteral( "symbol" ) );
+    std::unique_ptr< QgsLineSymbol > lineSymbol( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( symbolElem, context ) );
+    if ( lineSymbol )
+    {
+      mSettings.setDivisionLineSymbol( lineSymbol.release() );
+    }
+  }
+  else if ( foundLineSymbol )
+  {
+    mSettings.setDivisionLineSymbol( mSettings.lineSymbol()->clone() );
+  }
+  QDomElement subdivisionSymbolElem = itemElem.firstChildElement( QStringLiteral( "subdivisionLineSymbol" ) );
+  if ( !subdivisionSymbolElem.isNull() )
+  {
+    QDomElement symbolElem = subdivisionSymbolElem.firstChildElement( QStringLiteral( "symbol" ) );
+    std::unique_ptr< QgsLineSymbol > lineSymbol( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( symbolElem, context ) );
+    if ( lineSymbol )
+    {
+      mSettings.setSubdivisionLineSymbol( lineSymbol.release() );
+    }
+  }
+  else if ( foundLineSymbol )
+  {
+    mSettings.setSubdivisionLineSymbol( mSettings.lineSymbol()->clone() );
+  }
+
   if ( !foundLineSymbol )
   {
     // old project compatibility
@@ -893,7 +967,9 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
     dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarLineColor, QgsProperty() );
 
     lineSymbol->changeSymbolLayer( 0, lineSymbolLayer.release() );
-    mSettings.setLineSymbol( lineSymbol.release() );
+    mSettings.setLineSymbol( lineSymbol->clone() );
+    mSettings.setDivisionLineSymbol( lineSymbol->clone() );
+    mSettings.setSubdivisionLineSymbol( lineSymbol.release() );
   }
 
   mSettings.setUnitLabel( itemElem.attribute( QStringLiteral( "unitLabel" ) ) );
@@ -1062,6 +1138,9 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
 
   //style
   setStyle( itemElem.attribute( QStringLiteral( "style" ), QString() ) );
+
+  //call attemptResize after setStyle to ensure the appropriate size limitations are applied
+  attemptResize( QgsLayoutSize::decodeSize( itemElem.attribute( QStringLiteral( "size" ) ) ) );
 
   if ( itemElem.attribute( QStringLiteral( "unitType" ) ).isEmpty() )
   {

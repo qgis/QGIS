@@ -87,7 +87,7 @@ QString QgsValueRelationFieldFormatter::representValue( QgsVectorLayer *layer, i
       }
     }
 
-    return valueList.join( QStringLiteral( ", " ) ).prepend( '{' ).append( '}' );
+    return valueList.join( QLatin1String( ", " ) ).prepend( '{' ).append( '}' );
   }
   else
   {
@@ -110,7 +110,7 @@ QString QgsValueRelationFieldFormatter::representValue( QgsVectorLayer *layer, i
 
 QVariant QgsValueRelationFieldFormatter::sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {
-  return representValue( layer, fieldIndex, config, cache, value );
+  return value.isNull() ? QString() : representValue( layer, fieldIndex, config, cache, value );
 }
 
 QVariant QgsValueRelationFieldFormatter::createCache( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const
@@ -147,7 +147,7 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
   descriptionExpression.prepare( &context );
   subsetOfAttributes += descriptionExpression.referencedAttributeIndexes( layer->fields() );
-  request.setSubsetOfAttributes( subsetOfAttributes.toList() );
+  request.setSubsetOfAttributes( qgis::setToList( subsetOfAttributes ) );
 
   const QString filterExpression = config.value( QStringLiteral( "FilterExpression" ) ).toString();
 
@@ -213,13 +213,13 @@ QVariantList QgsValueRelationFieldFormatter::availableValues( const QVariantMap 
 {
   QVariantList values;
 
-  if ( context.project() )
+  if ( auto *lProject = context.project() )
   {
-    const QgsVectorLayer *referencedLayer = qobject_cast<QgsVectorLayer *>( context.project()->mapLayer( config[QStringLiteral( "Layer" )].toString() ) );
+    const QgsVectorLayer *referencedLayer = qobject_cast<QgsVectorLayer *>( lProject->mapLayer( config[QStringLiteral( "Layer" )].toString() ) );
     if ( referencedLayer )
     {
       int fieldIndex = referencedLayer->fields().indexOf( config.value( QStringLiteral( "Key" ) ).toString() );
-      values = referencedLayer->uniqueValues( fieldIndex, countLimit ).toList();
+      values = qgis::setToList( referencedLayer->uniqueValues( fieldIndex, countLimit ) );
     }
   }
   return values;
@@ -291,7 +291,7 @@ QStringList QgsValueRelationFieldFormatter::valueToStringList( const QVariant &v
 QSet<QString> QgsValueRelationFieldFormatter::expressionFormVariables( const QString &expression )
 {
   std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::formScope() );
-  QSet< QString > formVariables = scope->variableNames().toSet();
+  QSet< QString > formVariables = qgis::listToSet( scope->variableNames() );
   const QSet< QString > usedVariables = QgsExpression( expression ).referencedVariables();
   formVariables.intersect( usedVariables );
   return formVariables;
@@ -300,7 +300,7 @@ QSet<QString> QgsValueRelationFieldFormatter::expressionFormVariables( const QSt
 QSet<QString> QgsValueRelationFieldFormatter::expressionParentFormVariables( const QString &expression )
 {
   std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::parentFormScope() );
-  QSet< QString > formVariables = scope->variableNames().toSet();
+  QSet< QString > formVariables = qgis::listToSet( scope->variableNames() );
   const QSet< QString > usedVariables = QgsExpression( expression ).referencedVariables();
   formVariables.intersect( usedVariables );
   return formVariables;
@@ -322,8 +322,7 @@ QSet<QString> QgsValueRelationFieldFormatter::expressionParentFormAttributes( co
   QgsExpression exp( expression );
   std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::parentFormScope() );
   // List of form function names used in the expression
-  const QSet<QString> formFunctions( scope->functionNames()
-                                     .toSet()
+  const QSet<QString> formFunctions( qgis::listToSet( scope->functionNames() )
                                      .intersect( exp.referencedFunctions( ) ) );
   const QList<const QgsExpressionNodeFunction *> expFunctions( exp.findNodes<QgsExpressionNodeFunction>() );
   QgsExpressionContext context;
@@ -347,8 +346,7 @@ QSet<QString> QgsValueRelationFieldFormatter::expressionFormAttributes( const QS
   QgsExpression exp( expression );
   std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::formScope() );
   // List of form function names used in the expression
-  const QSet<QString> formFunctions( scope->functionNames()
-                                     .toSet()
+  const QSet<QString> formFunctions( qgis::listToSet( scope->functionNames() )
                                      .intersect( exp.referencedFunctions( ) ) );
   const QList<const QgsExpressionNodeFunction *> expFunctions( exp.findNodes<QgsExpressionNodeFunction>() );
   QgsExpressionContext context;

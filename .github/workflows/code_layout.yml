@@ -1,0 +1,196 @@
+name: Code Layout
+
+on: [push, pull_request]
+
+jobs:
+  documentation_checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+      - name: Install Requirements
+        run: |
+          sudo apt install -y \
+              doxygen \
+              cpanminus \
+              libyaml-tiny-perl \
+              libio-socket-ssl-perl \
+              libhttp-date-perl \
+              libgetopt-long-descriptive-perl \
+              libmoo-perl \
+              libnamespace-clean-perl \
+              libpath-tiny-perl \
+              libpod-constants-perl \
+              libscalar-list-utils-perl \
+              libsort-key-perl \
+              libstrictures-perl \
+              libstring-escape-perl \
+              libtry-tiny-perl \
+              expect
+            cpanm --notest App::Licensecheck
+          python -m pip install --upgrade pip
+          pip install autopep8 nose2 mock termcolor
+      - name: Make
+        run: |
+         mkdir build
+         cd build
+         cmake -DWITH_SERVER=ON -DUSE_CCACHE=OFF -DWITH_CORE=OFF -DWITH_APIDOC=ON -DWITH_ASTYLE=ON -DENABLE_TESTS=ON -DWITH_DOT=NO ..
+          make -j3
+      - name: Run Tests
+        run: cd build && ctest -V -R PyQgsDocCoverage
+
+  license_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install Requirements
+        run: |
+          sudo apt install -y \
+              cpanminus
+            cpanm --notest App::Licensecheck
+
+      - name: Run License Check
+        run: ./tests/code_layout/test_licenses.sh
+
+  shell_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install Requirements
+        run: |
+            sudo apt install -y \
+              shellcheck
+
+      - name: Run Shellcheck
+        run: ./tests/code_layout/test_shellcheck.sh
+
+  banned_keywords_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Run Banned Keywords Test
+        run: ./tests/code_layout/test_banned_keywords.sh
+
+  def_window_title_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Def Window Title Test
+        run: ./tests/code_layout/test_defwindowtitle.sh
+
+  doxygen_layout_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install Requirements
+        run: |
+          sudo apt install -y \
+              expect
+      - name: Doxygen Layout Test
+        run: ./tests/code_layout/test_doxygen_layout.sh
+
+  indentation_check:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 100
+      - name: Install Requirements
+        run: |
+          sudo apt install -y \
+              astyle \
+              python-autopep8 \
+              flip
+      - name: Indentation Test
+        run: ./scripts/verify_indentation.sh HEAD~1
+
+  spell_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install Requirements
+        run: |
+          sudo apt install -y \
+              expect \
+              silversearcher-ag
+      - uses: trilom/file-changes-action@v1.2.4
+        id: changed_files
+        with:
+          output: ' '
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+      - name: Spell Test
+        run: ./scripts/spell_check/check_spelling.sh -r ${{ steps.changed_files.outputs.files_modified }} ${{ steps.changed_files.outputs.files_added }}
+
+  sip_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+      - name: Install Requirements
+        run: |
+          sudo apt install -y \
+              cpanminus \
+              libyaml-tiny-perl \
+              libio-socket-ssl-perl \
+              libhttp-date-perl \
+              libgetopt-long-descriptive-perl \
+              libmoo-perl \
+              libnamespace-clean-perl \
+              libpath-tiny-perl \
+              libpod-constants-perl \
+              libscalar-list-utils-perl \
+              libsort-key-perl \
+              libstrictures-perl \
+              libstring-escape-perl \
+              libtry-tiny-perl \
+              expect
+          python -m pip install --upgrade pip
+          pip install autopep8 nose2 mock termcolor
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Sip Checks
+        run: ./tests/code_layout/test_sipify.sh
+      - name: Sip Include Test
+        run: ./tests/code_layout/test_sip_include.sh
+      - name: Sip Files Up To Date
+        run: ./tests/code_layout/test_sipfiles.sh
+
+  cppcheck_16_04:
+    runs-on: ubuntu-16.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install Requirements
+        run: |
+          sudo apt install -y cppcheck
+
+      - name: Run cppcheck test
+        run: ./scripts/cppcheck.sh
+
+  cppcheck_18_04:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install Requirements
+        run: |
+          sudo apt install -y cppcheck
+
+      - name: Run cppcheck test
+        run: ./scripts/cppcheck.sh

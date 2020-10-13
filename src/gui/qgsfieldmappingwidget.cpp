@@ -17,6 +17,11 @@
 #include "qgsfieldmappingwidget.h"
 #include "qgsfieldexpressionwidget.h"
 #include "qgsexpression.h"
+#include "qgsprocessingaggregatewidgets.h"
+#include "qgsvectorlayer.h"
+
+#include <QTableView>
+#include <QVBoxLayout>
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -28,8 +33,11 @@ QgsFieldMappingWidget::QgsFieldMappingWidget( QWidget *parent,
     const QMap<QString, QString> &expressions )
   : QgsPanelWidget( parent )
 {
-
-  setupUi( this );
+  QVBoxLayout *verticalLayout = new QVBoxLayout();
+  verticalLayout->setContentsMargins( 0, 0, 0, 0 );
+  mTableView = new QTableView();
+  verticalLayout->addWidget( mTableView );
+  setLayout( verticalLayout );
 
   mModel = new QgsFieldMappingModel( sourceFields, destinationFields, expressions, this );
 
@@ -38,12 +46,16 @@ QgsFieldMappingWidget::QgsFieldMappingWidget( QWidget *parent,
 #endif
 
   mTableView->setModel( mModel );
-  mTableView->setItemDelegateForColumn( static_cast<int>( QgsFieldMappingModel::ColumnDataIndex::SourceExpression ), new ExpressionDelegate( mTableView ) );
+  mTableView->setItemDelegateForColumn( static_cast<int>( QgsFieldMappingModel::ColumnDataIndex::SourceExpression ), new ExpressionDelegate( this ) );
   mTableView->setItemDelegateForColumn( static_cast<int>( QgsFieldMappingModel::ColumnDataIndex::DestinationType ), new TypeDelegate( mTableView ) );
   updateColumns();
   // Make sure columns are updated when rows are added
   connect( mModel, &QgsFieldMappingModel::rowsInserted, this, [ = ] { updateColumns(); } );
   connect( mModel, &QgsFieldMappingModel::modelReset, this, [ = ] { updateColumns(); } );
+  connect( mModel, &QgsFieldMappingModel::dataChanged, this, &QgsFieldMappingWidget::changed );
+  connect( mModel, &QgsFieldMappingModel::rowsInserted, this, &QgsFieldMappingWidget::changed );
+  connect( mModel, &QgsFieldMappingModel::rowsRemoved, this, &QgsFieldMappingWidget::changed );
+  connect( mModel, &QgsFieldMappingModel::modelReset, this, &QgsFieldMappingWidget::changed );
 }
 
 void QgsFieldMappingWidget::setDestinationEditable( bool editable )
@@ -87,6 +99,16 @@ void QgsFieldMappingWidget::setSourceFields( const QgsFields &sourceFields )
   model()->setSourceFields( sourceFields );
 }
 
+void QgsFieldMappingWidget::setSourceLayer( QgsVectorLayer *layer )
+{
+  mSourceLayer = layer;
+}
+
+QgsVectorLayer *QgsFieldMappingWidget::sourceLayer()
+{
+  return mSourceLayer;
+}
+
 void QgsFieldMappingWidget::setDestinationFields( const QgsFields &destinationFields, const QMap<QString, QString> &expressions )
 {
   model()->setDestinationFields( destinationFields, expressions );
@@ -95,6 +117,11 @@ void QgsFieldMappingWidget::setDestinationFields( const QgsFields &destinationFi
 void QgsFieldMappingWidget::scrollTo( const QModelIndex &index ) const
 {
   mTableView->scrollTo( index );
+}
+
+void QgsFieldMappingWidget::registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator )
+{
+  model()->setBaseExpressionContextGenerator( generator );
 }
 
 void QgsFieldMappingWidget::appendField( const QgsField &field, const QString &expression )
@@ -182,6 +209,15 @@ std::list<int> QgsFieldMappingWidget::selectedRows()
   return rows;
 }
 
+//
+// ExpressionDelegate
+//
+
+QgsFieldMappingWidget::ExpressionDelegate::ExpressionDelegate( QObject *parent )
+  : QStyledItemDelegate( parent )
+{
+}
+
 void QgsFieldMappingWidget::ExpressionDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
   QgsFieldExpressionWidget *editorWidget { qobject_cast<QgsFieldExpressionWidget *>( editor ) };
@@ -218,10 +254,32 @@ QWidget *QgsFieldMappingWidget::ExpressionDelegate::createEditor( QWidget *paren
   editor->setAutoFillBackground( true );
   editor->setAllowEvalErrors( false );
   editor->setAllowEmptyFieldName( true );
-  const QgsFieldMappingModel *model { qobject_cast<const QgsFieldMappingModel *>( index.model() ) };
-  Q_ASSERT( model );
-  editor->registerExpressionContextGenerator( model->contextGenerator() );
-  editor->setFields( model->sourceFields() );
+  if ( const QgsFieldMappingModel *model = qobject_cast<const QgsFieldMappingModel *>( index.model() ) )
+  {
+    editor->registerExpressionContextGenerator( model->contextGenerator() );
+    editor->setFields( model->sourceFields() );
+  }
+  else if ( const QgsAggregateMappingModel *model = qobject_cast<const QgsAggregateMappingModel *>( index.model() ) )
+  {
+    editor->registerExpressionContextGenerator( model->contextGenerator() );
+    editor->setFields( model->sourceFields() );
+  }
+  else
+  {
+    Q_ASSERT( false );
+  }
+
+  if ( QgsFieldMappingWidget *mappingWidget = qobject_cast< QgsFieldMappingWidget *>( ExpressionDelegate::parent() ) )
+  {
+    if ( mappingWidget->sourceLayer() )
+      editor->setLayer( mappingWidget->sourceLayer() );
+  }
+  else if ( QgsAggregateMappingWidget *aggregateWidget = qobject_cast< QgsAggregateMappingWidget *>( ExpressionDelegate::parent() ) )
+  {
+    if ( aggregateWidget->sourceLayer() )
+      editor->setLayer( aggregateWidget->sourceLayer() );
+  }
+
   editor->setField( index.model()->data( index, Qt::DisplayRole ).toString() );
   connect( editor,
            qgis::overload<const  QString &, bool >::of( &QgsFieldExpressionWidget::fieldChanged ),
@@ -235,10 +293,10 @@ QWidget *QgsFieldMappingWidget::ExpressionDelegate::createEditor( QWidget *paren
   return editor;
 }
 
-QgsFieldMappingWidget::ExpressionDelegate::ExpressionDelegate( QObject *parent )
-  : QStyledItemDelegate( parent )
-{
-}
+
+//
+// TypeDelegate
+//
 
 QgsFieldMappingWidget::TypeDelegate::TypeDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
@@ -249,9 +307,8 @@ QWidget *QgsFieldMappingWidget::TypeDelegate::createEditor( QWidget *parent, con
 {
   Q_UNUSED( option )
   QComboBox *editor = new QComboBox( parent );
-  const QgsFieldMappingModel *model { qobject_cast<const QgsFieldMappingModel *>( index.model() ) };
-  Q_ASSERT( model );
-  const QMap<QVariant::Type, QString> typeList { model->dataTypes() };
+
+  const QMap<QVariant::Type, QString> typeList { QgsFieldMappingModel::dataTypes() };
   int i = 0;
   for ( auto it = typeList.constBegin(); it != typeList.constEnd(); ++it )
   {
@@ -259,7 +316,10 @@ QWidget *QgsFieldMappingWidget::TypeDelegate::createEditor( QWidget *parent, con
     editor->setItemData( i, static_cast<int>( it.key() ), Qt::UserRole );
     ++i;
   }
-  if ( ! model->destinationEditable() )
+
+  const QgsFieldMappingModel *model { qobject_cast<const QgsFieldMappingModel *>( index.model() ) };
+
+  if ( model && !model->destinationEditable() )
   {
     editor->setEnabled( false );
   }

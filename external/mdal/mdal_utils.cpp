@@ -11,7 +11,6 @@
 #include <sstream>
 #include <math.h>
 #include <assert.h>
-#include <cmath>
 #include <string.h>
 #include <stdio.h>
 #include <ctime>
@@ -290,6 +289,18 @@ std::string MDAL::replace( const std::string &str, const std::string &substr, co
   return res;
 }
 
+std::string MDAL::removeFrom( const std::string &str, const std::string &substr )
+{
+  std::string res( str );
+  size_t pos = res.rfind( substr );
+  if ( pos != std::string::npos )
+  {
+    res = res.substr( 0, pos );
+  }
+  return res;
+
+}
+
 // http://www.cplusplus.com/faq/sequences/strings/trim/
 std::string MDAL::trim( const std::string &s, const std::string &delimiters )
 {
@@ -355,11 +366,6 @@ MDAL::BBox MDAL::computeExtent( const MDAL::Vertices &vertices )
     if ( n.y < b.minY ) b.minY = n.y;
   }
   return b;
-}
-
-bool MDAL::equals( double val1, double val2, double eps )
-{
-  return fabs( val1 - val2 ) < eps;
 }
 
 double MDAL::safeValue( double val, double nodata, double eps )
@@ -628,7 +634,6 @@ bool MDAL::isNativeLittleEndian()
 
 std::string MDAL::coordinateToString( double coordinate, int precision )
 {
-
   std::ostringstream oss;
   oss.setf( std::ios::fixed );
   if ( fabs( coordinate ) > 180 )

@@ -101,7 +101,7 @@ Handles storage of information regarding WKB types and their properties.
       NullGeometry
     };
 
-    static Type singleType( Type type );
+    static Type singleType( Type type ) /HoldGIL/;
 %Docstring
 Returns the single type for a WKB type. For example, for MultiPolygon WKB types the single type would be Polygon.
 
@@ -114,7 +114,7 @@ Returns the single type for a WKB type. For example, for MultiPolygon WKB types 
 .. seealso:: :py:func:`flatType`
 %End
 
-    static Type multiType( Type type );
+    static Type multiType( Type type ) /HoldGIL/;
 %Docstring
 Returns the multi type for a WKB type. For example, for Polygon WKB types the multi type would be MultiPolygon.
 
@@ -128,13 +128,15 @@ Returns the multi type for a WKB type. For example, for Polygon WKB types the mu
 %End
 
 
-    static Type curveType( Type type );
+    static Type curveType( Type type ) /HoldGIL/;
 %Docstring
 Returns the curve type for a WKB type. For example, for Polygon WKB types the curve type would be CurvePolygon.
 
 .. note::
 
    Returns `CompoundCurve` for `CircularString` (and its Z/M variants)
+
+.. seealso:: :py:func:`linearType`
 
 .. seealso:: :py:func:`isMultiType`
 
@@ -150,7 +152,26 @@ Returns the curve type for a WKB type. For example, for Polygon WKB types the cu
 .. versionadded:: 3.10
 %End
 
-    static Type flatType( Type type );
+    static Type linearType( Type type ) /HoldGIL/;
+%Docstring
+Returns the linear type for a WKB type. For example, for a CompoundCurve, the linear type would be LineString.
+
+.. seealso:: :py:func:`curveType`
+
+.. seealso:: :py:func:`isMultiType`
+
+.. seealso:: :py:func:`isCurvedType`
+
+.. seealso:: :py:func:`singleType`
+
+.. seealso:: :py:func:`flatType`
+
+.. seealso:: :py:func:`multiType`
+
+.. versionadded:: 3.14
+%End
+
+    static Type flatType( Type type ) /HoldGIL/;
 %Docstring
 Returns the flat type for a WKB type. This is the WKB type minus any Z or M dimensions.
 For example, for PolygonZM WKB types the single type would be Polygon.
@@ -162,7 +183,7 @@ For example, for PolygonZM WKB types the single type would be Polygon.
 .. seealso:: :py:func:`curveType`
 %End
 
-    static Type zmType( Type type, bool hasZ, bool hasM );
+    static Type zmType( Type type, bool hasZ, bool hasM ) /HoldGIL/;
 %Docstring
 Returns the modified input geometry type according to hasZ / hasM
 %End
@@ -174,7 +195,7 @@ Attempts to extract the WKB type from a WKT string.
 :param wktStr: a valid WKT string
 %End
 
-    static bool isSingleType( Type type );
+    static bool isSingleType( Type type ) /HoldGIL/;
 %Docstring
 Returns ``True`` if the WKB type is a single type.
 
@@ -183,7 +204,7 @@ Returns ``True`` if the WKB type is a single type.
 .. seealso:: :py:func:`singleType`
 %End
 
-    static bool isMultiType( Type type );
+    static bool isMultiType( Type type ) /HoldGIL/;
 %Docstring
 Returns ``True`` if the WKB type is a multi type.
 
@@ -192,14 +213,14 @@ Returns ``True`` if the WKB type is a multi type.
 .. seealso:: :py:func:`multiType`
 %End
 
-    static bool isCurvedType( Type type );
+    static bool isCurvedType( Type type ) /HoldGIL/;
 %Docstring
 Returns ``True`` if the WKB type is a curved type or can contain curved geometries.
 
 .. versionadded:: 2.14
 %End
 
-    static int wkbDimensions( Type type );
+    static int wkbDimensions( Type type ) /HoldGIL/;
 %Docstring
 Returns the inherent dimension of the geometry type as an integer. Returned value will
 always be less than or equal to the coordinate dimension.
@@ -210,7 +231,7 @@ always be less than or equal to the coordinate dimension.
 .. seealso:: :py:func:`coordDimensions`
 %End
 
-    static int coordDimensions( Type type );
+    static int coordDimensions( Type type ) /HoldGIL/;
 %Docstring
 Returns the coordinate dimension of the geometry type as an integer. Returned value will
 be between 2-4, depending on whether the geometry type contains the Z or M dimensions.
@@ -221,19 +242,19 @@ Invalid geometry types will return a dimension of 0.
 .. versionadded:: 2.14
 %End
 
-    static GeometryType geometryType( Type type );
+    static GeometryType geometryType( Type type ) /HoldGIL/;
 %Docstring
 Returns the geometry type for a WKB type, e.g., both MultiPolygon and CurvePolygon would have a
 PolygonGeometry geometry type.
 GeometryCollections are reported as QgsWkbTypes.UnknownGeometry.
 %End
 
-    static QString displayString( Type type );
+    static QString displayString( Type type ) /HoldGIL/;
 %Docstring
 Returns a display string type for a WKB type, e.g., the geometry name used in WKT geometry representations.
 %End
 
-    static QString geometryDisplayString( GeometryType type );
+    static QString geometryDisplayString( GeometryType type ) /HoldGIL/;
 %Docstring
 Returns a display string for a geometry type.
 
@@ -249,7 +270,7 @@ This will return one of the following strings:
 .. versionadded:: 3.0
 %End
 
-    static bool hasZ( Type type );
+    static bool hasZ( Type type ) /HoldGIL/;
 %Docstring
 Tests whether a WKB type contains the z-dimension.
 
@@ -260,7 +281,7 @@ Tests whether a WKB type contains the z-dimension.
 .. seealso:: :py:func:`hasM`
 %End
 
-    static bool hasM( Type type );
+    static bool hasM( Type type ) /HoldGIL/;
 %Docstring
 Tests whether a WKB type contains m values.
 
@@ -271,7 +292,7 @@ Tests whether a WKB type contains m values.
 .. seealso:: :py:func:`hasZ`
 %End
 
-    static Type addZ( Type type );
+    static Type addZ( Type type ) /HoldGIL/;
 %Docstring
 Adds the z dimension to a WKB type and returns the new type
 
@@ -286,7 +307,7 @@ Adds the z dimension to a WKB type and returns the new type
 .. versionadded:: 2.12
 %End
 
-    static Type addM( Type type );
+    static Type addM( Type type ) /HoldGIL/;
 %Docstring
 Adds the m dimension to a WKB type and returns the new type
 
@@ -301,7 +322,7 @@ Adds the m dimension to a WKB type and returns the new type
 .. versionadded:: 2.12
 %End
 
-    static Type dropZ( Type type );
+    static Type dropZ( Type type ) /HoldGIL/;
 %Docstring
 Drops the z dimension (if present) for a WKB type and returns the new type.
 
@@ -314,7 +335,7 @@ Drops the z dimension (if present) for a WKB type and returns the new type.
 .. versionadded:: 2.14
 %End
 
-    static Type dropM( Type type );
+    static Type dropM( Type type ) /HoldGIL/;
 %Docstring
 Drops the m dimension (if present) for a WKB type and returns the new type.
 
@@ -327,7 +348,7 @@ Drops the m dimension (if present) for a WKB type and returns the new type.
 .. versionadded:: 2.14
 %End
 
-    static Type to25D( Type type );
+    static Type to25D( Type type ) /HoldGIL/;
 %Docstring
 Will convert the 25D version of the flat type if supported or Unknown if not supported.
 

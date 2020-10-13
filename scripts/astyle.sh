@@ -105,7 +105,7 @@ astyleit() {
 
 for f in "$@"; do
 	case "$f" in
-                src/plugins/grass/qtermwidget/*|external/o2/*|external/qt-unix-signals/*|external/rtree/*|external/astyle/*|external/kdbush/*|external/poly2tri/*|external/wintoast/*|external/qt3dextra-headers/*|external/meshOptimizer/*|external/mapbox-vector-tile/*|python/ext-libs/*|ui_*.py|*.astyle|tests/testdata/*|editors/*)
+                src/plugins/grass/qtermwidget/*|external/qwt*|external/o2/*|external/qt-unix-signals/*|external/rtree/*|external/astyle/*|external/kdbush/*|external/poly2tri/*|external/wintoast/*|external/qt3dextra-headers/*|external/meshOptimizer/*|external/mapbox-vector-tile/*|python/ext-libs/*|ui_*.py|*.astyle|tests/testdata/*|editors/*)
 			echo -ne "$f skipped $elcr"
 			continue
 			;;
@@ -117,7 +117,7 @@ for f in "$@"; do
 			cmd=astyleit
 			;;
 
-		*.ui|*.qgm|*.txt|*.t2t|resources/context_help/*)
+		*.ui|*.qgm|*.txt|resources/context_help/*)
 			cmd=:
 			;;
 

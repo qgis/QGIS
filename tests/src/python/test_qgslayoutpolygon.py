@@ -12,16 +12,20 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.PyQt.QtGui import QPolygonF
-from qgis.PyQt.QtCore import QPointF
+from qgis.PyQt.QtGui import QPolygonF, QPainter, QImage
+from qgis.PyQt.QtCore import QPointF, QRectF
 from qgis.PyQt.QtXml import QDomDocument
+from qgis.PyQt.QtTest import QSignalSpy
 
 from qgis.core import (QgsLayoutItemPolygon,
                        QgsLayoutItemRegistry,
                        QgsLayout,
                        QgsFillSymbol,
                        QgsProject,
-                       QgsReadWriteContext)
+                       QgsReadWriteContext,
+                       QgsLayoutItem,
+                       QgsLayoutItemRenderContext,
+                       QgsLayoutUtils)
 from qgis.testing import (start_app,
                           unittest
                           )
@@ -270,7 +274,7 @@ class TestQgsLayoutPolygon(unittest.TestCase, LayoutItemTestCase):
         style = QgsFillSymbol.createSimple(props)
         shape.setSymbol(style)
 
-        #save original item to xml
+        # save original item to xml
         doc = QDomDocument("testdoc")
         elem = doc.createElement("test")
         self.assertTrue(shape.writeXml(elem, doc, QgsReadWriteContext()))
@@ -316,6 +320,48 @@ class TestQgsLayoutPolygon(unittest.TestCase, LayoutItemTestCase):
         self.assertEqual(bounds.right(), 153.0)
         self.assertEqual(bounds.top(), -3.0)
         self.assertEqual(bounds.bottom(), 93.0)
+
+    def testClipPath(self):
+        pr = QgsProject()
+        l = QgsLayout(pr)
+
+        p = QPolygonF()
+        p.append(QPointF(50.0, 30.0))
+        p.append(QPointF(100.0, 10.0))
+        p.append(QPointF(200.0, 100.0))
+        shape = QgsLayoutItemPolygon(p, l)
+
+        # must be a closed polygon, in scene coordinates!
+        self.assertEqual(shape.clipPath().asWkt(), 'Polygon ((50 30, 100 10, 200 100, 50 30))')
+        self.assertTrue(int(shape.itemFlags() & QgsLayoutItem.FlagProvidesClipPath))
+
+        spy = QSignalSpy(shape.clipPathChanged)
+        self.assertTrue(shape.addNode(QPointF(150, 110), False))
+        self.assertEqual(shape.clipPath().asWkt(), 'Polygon ((50 30, 100 10, 200 100, 150 110, 50 30))')
+        self.assertEqual(len(spy), 1)
+
+        shape.removeNode(3)
+        self.assertEqual(len(spy), 2)
+        self.assertEqual(shape.clipPath().asWkt(), 'Polygon ((50 30, 100 10, 200 100, 50 30))')
+
+        shape.moveNode(2, QPointF(180, 100))
+        self.assertEqual(len(spy), 3)
+        self.assertEqual(shape.clipPath().asWkt(), 'Polygon ((50 30, 100 10, 180 100, 50 30))')
+
+        shape.setNodes(p)
+        self.assertEqual(len(spy), 4)
+        self.assertEqual(shape.clipPath().asWkt(), 'Polygon ((100 40, 150 20, 250 110, 100 40))')
+
+        shape.attemptSetSceneRect(QRectF(30, 10, 100, 200))
+        self.assertEqual(shape.clipPath().asWkt(), 'Polygon ((30 30, 80 10, 180 100, 30 30))')
+        # bit gross - this needs fixing in the item. It shouldn't rely on a draw operation to update the
+        # path as a result of a move/resize
+        im = QImage()
+        p = QPainter(im)
+        rc = QgsLayoutUtils.createRenderContextForLayout(l, p)
+        shape.draw(QgsLayoutItemRenderContext(rc))
+        p.end()
+        self.assertEqual(len(spy), 5)
 
 
 if __name__ == '__main__':

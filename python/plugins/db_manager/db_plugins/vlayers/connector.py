@@ -124,6 +124,7 @@ class VLayerConnector(DBConnector):
 
             def close(self):
                 pass
+
         return DummyCursor(sql)
 
     def _get_cursor(self, name=None):

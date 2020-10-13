@@ -52,10 +52,10 @@ QgsVectorLayerSaveStyleDialog::QgsVectorLayerSaveStyleDialog( QgsVectorLayer *la
     mFileWidget->setFilter( type == QgsVectorLayerProperties::QML ? tr( "QGIS Layer Style File (*.qml)" ) : tr( "SLD File (*.sld)" ) );
     updateSaveButtonState();
   } );
-  mStyleTypeComboBox->addItem( tr( "As QGIS QML style file" ), QgsVectorLayerProperties::QML );
-  mStyleTypeComboBox->addItem( tr( "As SLD style file" ), QgsVectorLayerProperties::SLD );
+  mStyleTypeComboBox->addItem( tr( "As QGIS QML Style File" ), QgsVectorLayerProperties::QML );
+  mStyleTypeComboBox->addItem( tr( "As SLD Style File" ), QgsVectorLayerProperties::SLD );
   if ( mLayer->dataProvider()->isSaveAndLoadStyleToDatabaseSupported() )
-    mStyleTypeComboBox->addItem( tr( "In database (%1)" ).arg( providerName ), QgsVectorLayerProperties::DB );
+    mStyleTypeComboBox->addItem( tr( "In Database (%1)" ).arg( providerName ), QgsVectorLayerProperties::DB );
 
   // Save to DB setup
   connect( mDbStyleNameEdit, &QLineEdit::textChanged, this, &QgsVectorLayerSaveStyleDialog::updateSaveButtonState );
@@ -79,7 +79,7 @@ QgsVectorLayerSaveStyleDialog::QgsVectorLayerSaveStyleDialog( QgsVectorLayer *la
   } );
 
   // fill style categories
-  mModel = new QgsMapLayerStyleCategoriesModel( this );
+  mModel = new QgsMapLayerStyleCategoriesModel( mLayer->type(), this );
   QgsMapLayer::StyleCategories lastStyleCategories = settings.flagValue( QStringLiteral( "style/lastStyleCategories" ), QgsMapLayer::AllStyleCategories );
   mModel->setCategories( lastStyleCategories );
   mStyleCategoriesListView->setModel( mModel );

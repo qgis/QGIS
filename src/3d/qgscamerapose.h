@@ -20,10 +20,12 @@
 
 #include "qgsvector3d.h"
 
+#ifndef SIP_RUN
 namespace Qt3DRender
 {
   class QCamera;
 }
+#endif
 
 class QDomDocument;
 class QDomElement;
@@ -31,6 +33,7 @@ class QDomElement;
 /**
  * \ingroup 3d
  * Class that encapsulates camera pose in a 3D scene. The pose is defined with the following parameters:
+ *
  * - center point - towards which point the camera is looking
  * - distance from the center point - how far is the camera from the point towards which it is looking
  * - pitch angle - vertical rotation of the camera (0 degrees = camera looking down, 90 degrees = camera looking from the side)
@@ -63,7 +66,7 @@ class _3D_EXPORT QgsCameraPose
     void setHeadingAngle( float heading ) { mHeadingAngle = heading; }
 
     //! Update Qt3D camera view matrix based on the pose
-    void updateCamera( Qt3DRender::QCamera *camera );
+    void updateCamera( Qt3DRender::QCamera *camera ) SIP_SKIP;
 
     //! Writes configuration to a new DOM element and returns it
     QDomElement writeXml( QDomDocument &doc ) const;

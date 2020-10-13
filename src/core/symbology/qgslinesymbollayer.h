@@ -68,7 +68,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
     void stopRender( QgsSymbolRenderContext &context ) override;
     void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
     //overridden so that clip path can be set when using draw inside polygon option
-    void renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
+    void renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
     QgsStringMap properties() const override;
     QgsSimpleLineSymbolLayer *clone() const override SIP_FACTORY;
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
@@ -195,6 +195,78 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
     void setCustomDashVector( const QVector<qreal> &vector ) { mCustomDashVector = vector; }
 
     /**
+     * Returns the dash pattern offset, which dictates how far along the dash pattern
+     * the pattern should start rendering at.
+     *
+     * Offset units can be retrieved by calling dashPatternOffsetUnit().
+     *
+     * \see setDashPatternOffset()
+     * \see dashPatternOffsetUnit()
+     * \see dashPatternOffsetMapUnitScale()
+     *
+     * \since QGIS 3.16
+     */
+    double dashPatternOffset() const { return mDashPatternOffset; }
+
+    /**
+     * Sets the dash pattern \a offset, which dictates how far along the dash pattern
+     * the pattern should start rendering at.
+     *
+     * Offset units are set via setDashPatternOffsetUnit().
+     *
+     * \see dashPatternOffset()
+     * \see setDashPatternOffsetUnit()
+     * \see setDashPatternOffsetMapUnitScale()
+     *
+     * \since QGIS 3.16
+     */
+    void setDashPatternOffset( double offset ) { mDashPatternOffset = offset; }
+
+    /**
+     * Sets the \a unit for the dash pattern offset.
+     *
+     * \see dashPatternOffsetUnit()
+     * \see setDashPatternOffset()
+     * \see setDashPatternOffsetMapUnitScale()
+     *
+     * \since QGIS 3.16
+    */
+    void setDashPatternOffsetUnit( QgsUnitTypes::RenderUnit unit ) { mDashPatternOffsetUnit = unit; }
+
+    /**
+     * Returns the units for the dash pattern offset.
+     *
+     * \see setDashPatternOffsetUnit()
+     * \see dashPatternOffset()
+     * \see dashPatternOffsetMapUnitScale()
+     *
+     * \since QGIS 3.16
+    */
+    QgsUnitTypes::RenderUnit dashPatternOffsetUnit() const { return mDashPatternOffsetUnit; }
+
+    /**
+     * Returns the map unit scale the dash pattern offset value.
+     *
+     * \see setDashPatternOffsetMapUnitScale()
+     * \see dashPatternOffsetUnit()
+     * \see dashPatternOffset()
+     *
+     * \since QGIS 3.16
+    */
+    const QgsMapUnitScale &dashPatternOffsetMapUnitScale() const { return mDashPatternOffsetMapUnitScale; }
+
+    /**
+     * Sets the map unit \a scale for the dash pattern offset.
+     *
+     * \see dashPatternOffsetMapUnitScale()
+     * \see setDashPatternOffset()
+     * \see setDashPatternOffsetUnit()
+     *
+     * \since QGIS 3.16
+    */
+    void setDashPatternOffsetMapUnitScale( const QgsMapUnitScale &scale ) { mDashPatternOffsetMapUnitScale = scale; }
+
+    /**
      * Returns TRUE if the line should only be drawn inside polygons, and any portion
      * of the line which falls outside the polygon should be clipped away.
      *
@@ -216,6 +288,52 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
      */
     void setDrawInsidePolygon( bool drawInsidePolygon ) { mDrawInsidePolygon = drawInsidePolygon; }
 
+    /**
+     * Returns TRUE if dash patterns should be aligned to the start and end of lines, by
+     * applying subtle tweaks to the pattern sizing in order to ensure that the end of
+     * a line is represented by a complete dash element.
+     *
+     * \see setAlignDashPattern()
+     * \see tweakDashPatternOnCorners()
+     * \since QGIS 3.16
+     */
+    bool alignDashPattern() const;
+
+    /**
+     * Sets whether dash patterns should be aligned to the start and end of lines, by
+     * applying subtle tweaks to the pattern sizing in order to ensure that the end of
+     * a line is represented by a complete dash element.
+     *
+     * \see alignDashPattern()
+     * \see setTweakDashPatternOnCorners()
+     * \since QGIS 3.16
+     */
+    void setAlignDashPattern( bool enabled );
+
+    /**
+     * Returns TRUE if dash patterns tweaks should be applied on sharp corners, to ensure
+     * that a double-length dash is drawn running into and out of the corner.
+     *
+     * \note This setting is only applied if alignDashPattern() is TRUE.
+     *
+     * \see setTweakDashPatternOnCorners()
+     * \see alignDashPattern()
+     * \since QGIS 3.16
+     */
+    bool tweakDashPatternOnCorners() const;
+
+    /**
+     * Sets whether dash patterns tweaks should be applied on sharp corners, to ensure
+     * that a double-length dash is drawn running into and out of the corner.
+     *
+     * \note This setting is only applied if alignDashPattern() is TRUE.
+     *
+     * \see tweakDashPatternOnCorners()
+     * \see setAlignDashPattern()
+     * \since QGIS 3.16
+     */
+    void setTweakDashPatternOnCorners( bool enabled );
+
   private:
 
     Qt::PenStyle mPenStyle = Qt::SolidLine;
@@ -228,13 +346,21 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
     QgsUnitTypes::RenderUnit mCustomDashPatternUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mCustomDashPatternMapUnitScale;
 
+    double mDashPatternOffset = 0;
+    QgsUnitTypes::RenderUnit mDashPatternOffsetUnit = QgsUnitTypes::RenderMillimeters;
+    QgsMapUnitScale mDashPatternOffsetMapUnitScale;
+
     //! Vector with an even number of entries for the
     QVector<qreal> mCustomDashVector;
+
+    bool mAlignDashPattern = false;
+    bool mPatternCartographicTweakOnSharpCorners = false;
 
     bool mDrawInsidePolygon = false;
 
     //helper functions for data defined symbology
     void applyDataDefinedSymbology( QgsSymbolRenderContext &context, QPen &pen, QPen &selPen, double &offset );
+    void drawPathWithDashPatternTweaks( QPainter *painter, const QPolygonF &points, QPen pen ) const;
 };
 
 /////////
@@ -467,7 +593,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     const QgsMapUnitScale &averageAngleMapUnitScale() const { return mAverageAngleLengthMapUnitScale; }
 
     void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) FINAL;
-    void renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) FINAL;
+    void renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) FINAL;
     QgsUnitTypes::RenderUnit outputUnit() const FINAL;
     void setMapUnitScale( const QgsMapUnitScale &scale ) FINAL;
     QgsMapUnitScale mapUnitScale() const FINAL;

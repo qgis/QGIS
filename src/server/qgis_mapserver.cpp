@@ -205,12 +205,6 @@ int main( int argc, char *argv[] )
   else
   {
     const int port { tcpServer.serverPort() };
-    std::cout << QObject::tr( "QGIS Development Server listening on http://%1:%2" )
-              .arg( ipAddress ).arg( port ).toStdString() << std::endl;
-
-#ifndef Q_OS_WIN
-    std::cout << QObject::tr( "CTRL+C to exit" ).toStdString() << std::endl;
-#endif
 
     QAtomicInt connCounter { 0 };
 
@@ -239,12 +233,21 @@ int main( int argc, char *argv[] )
     server.initPython();
 #endif
 
+    std::cout << QObject::tr( "QGIS Development Server listening on http://%1:%2" )
+              .arg( ipAddress ).arg( port ).toStdString() << std::endl;
+#ifndef Q_OS_WIN
+    std::cout << QObject::tr( "CTRL+C to exit" ).toStdString() << std::endl;
+#endif
+
+
     // Starts HTTP loop with a poor man's HTTP parser
     tcpServer.connect( &tcpServer, &QTcpServer::newConnection, [ & ]
     {
       QTcpSocket *clientConnection = tcpServer.nextPendingConnection();
 
       connCounter++;
+
+      QString *incomingData = new QString();
 
       //qDebug() << "Active connections: " << connCounter;
 
@@ -256,34 +259,31 @@ int main( int argc, char *argv[] )
       {
         clientConnection->deleteLater();
         connCounter--;
+        delete incomingData;
       };
 
       // This will delete the connection when disconnected before ready read is called
-      clientConnection->connect( clientConnection, &QAbstractSocket::disconnected, context, connectionDeleter );
+      clientConnection->connect( clientConnection, &QAbstractSocket::disconnected, context, connectionDeleter, Qt::QueuedConnection );
 
       // Incoming connection parser
       clientConnection->connect( clientConnection, &QIODevice::readyRead, context, [ =, &server, &connCounter ] {
 
-        // Disconnect the lambdas
-        delete context;
-
         // Read all incoming data
-        QString incomingData;
         while ( clientConnection->bytesAvailable() > 0 )
         {
-          incomingData += clientConnection->readAll();
+          incomingData->append( clientConnection->readAll() );
         }
 
         try
         {
           // Parse protocol and URL GET /path HTTP/1.1
-          int firstLinePos { incomingData.indexOf( "\r\n" ) };
+          int firstLinePos { incomingData->indexOf( "\r\n" ) };
           if ( firstLinePos == -1 )
           {
             throw HttpException( QStringLiteral( "HTTP error finding protocol header" ) );
           }
 
-          const QString firstLine { incomingData.left( firstLinePos ) };
+          const QString firstLine { incomingData->left( firstLinePos ) };
           const QStringList firstLinePieces { firstLine.split( ' ' ) };
           if ( firstLinePieces.size() != 3 )
           {
@@ -322,31 +322,22 @@ int main( int argc, char *argv[] )
             throw HttpException( QStringLiteral( "HTTP error unsupported method: %1" ).arg( methodString ) );
           }
 
-          // Build URL from env ...
-          QString url { qgetenv( "REQUEST_URI" ) };
-          // ... or from server ip/port and request path
-          if ( url.isEmpty() )
-          {
-            const QString path { firstLinePieces.at( 1 )};
-            url = QStringLiteral( "http://%1:%2%3" ).arg( ipAddress ).arg( port ).arg( path );
-          }
-
           const QString protocol { firstLinePieces.at( 2 )};
-          if ( protocol != QStringLiteral( "HTTP/1.0" ) && protocol != QStringLiteral( "HTTP/1.1" ) )
+          if ( protocol != QLatin1String( "HTTP/1.0" ) && protocol != QLatin1String( "HTTP/1.1" ) )
           {
             throw HttpException( QStringLiteral( "HTTP error unsupported protocol: %1" ).arg( protocol ) );
           }
 
           // Headers
           QgsBufferServerRequest::Headers headers;
-          int endHeadersPos { incomingData.indexOf( "\r\n\r\n" ) };
+          int endHeadersPos { incomingData->indexOf( "\r\n\r\n" ) };
 
           if ( endHeadersPos == -1 )
           {
             throw HttpException( QStringLiteral( "HTTP error finding headers" ) );
           }
 
-          const QStringList httpHeaders { incomingData.mid( firstLinePos + 2, endHeadersPos - firstLinePos ).split( "\r\n" ) };
+          const QStringList httpHeaders { incomingData->mid( firstLinePos + 2, endHeadersPos - firstLinePos ).split( "\r\n" ) };
 
           for ( const auto &headerLine : httpHeaders )
           {
@@ -357,8 +348,42 @@ int main( int argc, char *argv[] )
             }
           }
 
+          const int headersSize { endHeadersPos + 4 };
+
+          // Check for content length and if we have got all data
+          if ( headers.contains( QStringLiteral( "Content-Length" ) ) )
+          {
+            bool ok;
+            const int contentLength { headers.value( QStringLiteral( "Content-Length" ) ).toInt( &ok ) };
+            if ( ok && contentLength > incomingData->length() - headersSize )
+            {
+              return;
+            }
+          }
+
+          // At this point we should have read all data:
+          // disconnect the lambdas
+          delete context;
+
+          // Build URL from env ...
+          QString url { qgetenv( "REQUEST_URI" ) };
+          // ... or from server ip/port and request path
+          if ( url.isEmpty() )
+          {
+            const QString path { firstLinePieces.at( 1 )};
+            // Take Host header if defined
+            if ( headers.contains( QStringLiteral( "Host" ) ) )
+            {
+              url = QStringLiteral( "http://%1%2" ).arg( headers.value( QStringLiteral( "Host" ) ) ).arg( path );
+            }
+            else
+            {
+              url = QStringLiteral( "http://%1:%2%3" ).arg( ipAddress ).arg( port ).arg( path );
+            }
+          }
+
           // Inefficient copy :(
-          QByteArray data { incomingData.mid( endHeadersPos + 4 ).toUtf8() };
+          QByteArray data { incomingData->mid( headersSize ).toUtf8() };
 
           auto start = std::chrono::steady_clock::now();
 
@@ -372,12 +397,13 @@ int main( int argc, char *argv[] )
           if ( clientConnection->state() == QAbstractSocket::SocketState::ConnectedState )
           {
             clientConnection->connect( clientConnection, &QAbstractSocket::disconnected,
-                                       clientConnection, connectionDeleter );
+                                       clientConnection, connectionDeleter, Qt::QueuedConnection );
           }
           else
           {
             connCounter --;
             clientConnection->deleteLater();
+            delete incomingData;
             return;
           }
 
@@ -425,6 +451,7 @@ int main( int argc, char *argv[] )
           {
             connCounter --;
             clientConnection->deleteLater();
+            delete incomingData;
             return;
           }
 
@@ -442,7 +469,7 @@ int main( int argc, char *argv[] )
           clientConnection->disconnectFromHost();
         }
 
-      } );
+      }, Qt::QueuedConnection );
 
     } );
 

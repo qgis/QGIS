@@ -127,11 +127,6 @@ class CORE_EXPORT QgsLegendPatchShape
     QList< QList< QPolygonF > > toQPolygonF( QgsSymbol::SymbolType type, QSizeF size ) const;
 
     /**
-     * Returns the default patch geometry for the given symbol \a type and \a size as a set of QPolygonF objects (parts and rings).
-     */
-    static QList< QList< QPolygonF > > defaultPatch( QgsSymbol::SymbolType type, QSizeF size );
-
-    /**
      * Read settings from a DOM \a element.
      * \see writeXml()
      */

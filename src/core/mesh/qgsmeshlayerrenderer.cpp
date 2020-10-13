@@ -39,6 +39,7 @@
 #include "qgssettings.h"
 #include "qgsstyle.h"
 #include "qgsmeshdataprovidertemporalcapabilities.h"
+#include "qgsmapclippingutils.h"
 
 QgsMeshLayerRenderer::QgsMeshLayerRenderer(
   QgsMeshLayer *layer,
@@ -48,9 +49,13 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer(
   , mRendererSettings( layer->rendererSettings() )
 {
   // make copies for mesh data
+  // cppcheck-suppress assertWithSideEffect
   Q_ASSERT( layer->nativeMesh() );
+  // cppcheck-suppress assertWithSideEffect
   Q_ASSERT( layer->triangularMesh() );
+  // cppcheck-suppress assertWithSideEffect
   Q_ASSERT( layer->rendererCache() );
+  // cppcheck-suppress assertWithSideEffect
   Q_ASSERT( layer->dataProvider() );
 
   // copy native mesh
@@ -65,6 +70,8 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer(
   copyVectorDatasetValues( layer );
 
   calculateOutputSize();
+
+  mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );
 }
 
 void QgsMeshLayerRenderer::copyTriangularMeshes( QgsMeshLayer *layer, QgsRenderContext &context )
@@ -92,12 +99,11 @@ void QgsMeshLayerRenderer::calculateOutputSize()
 {
   // figure out image size
   QgsRenderContext &context = *renderContext();
-  QgsRectangle extent = context.mapExtent();
-  QgsMapToPixel mapToPixel = context.mapToPixel();
-  QgsPointXY topleft = mapToPixel.transform( extent.xMinimum(), extent.yMaximum() );
-  QgsPointXY bottomright = mapToPixel.transform( extent.xMaximum(), extent.yMinimum() );
-  int width = int( bottomright.x() - topleft.x() );
-  int height = int( bottomright.y() - topleft.y() );
+  const QgsRectangle extent = context.mapExtent();
+  const QgsMapToPixel mapToPixel = context.mapToPixel();
+  const QgsRectangle screenBBox = QgsMeshLayerUtils::boundingBoxToScreenRectangle( mapToPixel, extent );
+  int width = int( screenBBox.width() );
+  int height = int( screenBBox.height() );
   mOutputSize = QSize( width, height );
 }
 
@@ -110,7 +116,7 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
     datasetIndex = layer->staticScalarDatasetIndex();
 
   // Find out if we can use cache up to date. If yes, use it and return
-  const int datasetGroupCount = layer->dataProvider()->datasetGroupCount();
+  const int datasetGroupCount = layer->datasetGroupCount();
   const QgsMeshRendererScalarSettings::DataResamplingMethod method = mRendererSettings.scalarSettings( datasetIndex.group() ).dataResamplingMethod();
   QgsMeshLayerRendererCache *cache = layer->rendererCache();
   if ( ( cache->mDatasetGroupsCount == datasetGroupCount ) &&
@@ -130,7 +136,7 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
   // Cache is not up-to-date, gather data
   if ( datasetIndex.isValid() )
   {
-    const QgsMeshDatasetGroupMetadata metadata = layer->dataProvider()->datasetGroupMetadata( datasetIndex.group() );
+    const QgsMeshDatasetGroupMetadata metadata = layer->datasetGroupMetadata( datasetIndex.group() );
     mScalarDataType = QgsMeshLayerUtils::datasetValuesType( metadata.dataType() );
 
     // populate scalar values
@@ -152,7 +158,7 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
     }
 
     // populate face active flag, always defined on faces
-    mScalarActiveFaceFlagValues = layer->dataProvider()->areFacesActive(
+    mScalarActiveFaceFlagValues = layer->areFacesActive(
                                     datasetIndex,
                                     0,
                                     mNativeMesh.faces.count() );
@@ -185,7 +191,7 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
 
     }
 
-    const QgsMeshDatasetMetadata datasetMetadata = layer->dataProvider()->datasetMetadata( datasetIndex );
+    const QgsMeshDatasetMetadata datasetMetadata = layer->datasetMetadata( datasetIndex );
     mScalarDatasetMinimum = datasetMetadata.minimum();
     mScalarDatasetMaximum = datasetMetadata.maximum();
   }
@@ -212,7 +218,7 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
     datasetIndex = layer->staticVectorDatasetIndex();
 
   // Find out if we can use cache up to date. If yes, use it and return
-  const int datasetGroupCount = layer->dataProvider()->datasetGroupCount();
+  const int datasetGroupCount = layer->datasetGroupCount();
   QgsMeshLayerRendererCache *cache = layer->rendererCache();
   if ( ( cache->mDatasetGroupsCount == datasetGroupCount ) &&
        ( cache->mActiveVectorDatasetIndex == datasetIndex ) &&
@@ -232,7 +238,7 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
   // Cache is not up-to-date, gather data
   if ( datasetIndex.isValid() )
   {
-    const QgsMeshDatasetGroupMetadata metadata = layer->dataProvider()->datasetGroupMetadata( datasetIndex );
+    const QgsMeshDatasetGroupMetadata metadata = layer->datasetGroupMetadata( datasetIndex );
 
     bool isScalar = metadata.isScalar();
     if ( isScalar )
@@ -258,7 +264,7 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
       else
         mVectorDatasetValuesMag = QVector<double>( count, std::numeric_limits<double>::quiet_NaN() );
 
-      const QgsMeshDatasetMetadata datasetMetadata = layer->dataProvider()->datasetMetadata( datasetIndex );
+      const QgsMeshDatasetMetadata datasetMetadata = layer->datasetMetadata( datasetIndex );
       mVectorDatasetMagMinimum = datasetMetadata.minimum();
       mVectorDatasetMagMaximum = datasetMetadata.maximum();
     }
@@ -279,9 +285,19 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
 
 bool QgsMeshLayerRenderer::render()
 {
+  QgsScopedQPainterState painterState( renderContext()->painter() );
+  if ( !mClippingRegions.empty() )
+  {
+    bool needsPainterClipPath = false;
+    const QPainterPath path = QgsMapClippingUtils::calculatePainterClipRegion( mClippingRegions, *renderContext(), QgsMapLayerType::MeshLayer, needsPainterClipPath );
+    if ( needsPainterClipPath )
+      renderContext()->painter()->setClipPath( path, Qt::IntersectClip );
+  }
+
   renderScalarDataset();
   renderMesh();
   renderVectorDataset();
+
   return true;
 }
 
@@ -326,9 +342,9 @@ static QPainter *_painterForMeshFrame( QgsRenderContext &context, const QgsMeshR
 {
   // Set up the render configuration options
   QPainter *painter = context.painter();
+
   painter->save();
-  if ( context.flags() & QgsRenderContext::Antialiasing )
-    painter->setRenderHint( QPainter::Antialiasing, true );
+  context.setPainterFlagsUsingContext( painter );
 
   QPen pen = painter->pen();
   pen.setCapStyle( Qt::FlatCap );
@@ -456,29 +472,16 @@ void QgsMeshLayerRenderer::renderScalarDataset()
 void QgsMeshLayerRenderer::renderScalarDatasetOnEdges( const QgsMeshRendererScalarSettings &scalarSettings )
 {
   QgsRenderContext &context = *renderContext();
-  QPainter *painter = context.painter();
-  painter->save();
-  if ( context.flags() & QgsRenderContext::Antialiasing )
-    painter->setRenderHint( QPainter::Antialiasing, true );
-
-  QPen pen = painter->pen();
-  pen.setCapStyle( Qt::PenCapStyle::RoundCap );
-  pen.setJoinStyle( Qt::MiterJoin );
-
-  double lineWidth = scalarSettings.edgeWidth();
-  double penWidth = context.convertToPainterUnits( lineWidth,
-                    scalarSettings.edgeWidthUnit() );
-  pen.setWidthF( penWidth );
-  painter->setPen( pen );
-
   const QVector<QgsMeshEdge> edges = mTriangularMesh.edges();
   const QVector<QgsMeshVertex> vertices = mTriangularMesh.vertices();
   const QList<int> egdesInExtent = mTriangularMesh.edgeIndexesForRectangle( context.mapExtent() );
   const QSet<int> nativeEdgesInExtent = QgsMeshUtils::nativeEdgesFromEdges( egdesInExtent,
                                         mTriangularMesh.edgesToNativeEdges() );
-  std::unique_ptr<QgsColorRampShader> shader( new QgsColorRampShader( scalarSettings.colorRampShader() ) );
-  QList<QgsColorRampShader::ColorRampItem> colorRampItemList = shader->colorRampItemList();
-  const QgsColorRampShader::Type classificationType = shader->colorRampType();
+
+  QgsInterpolatedLineRenderer edgePlotter;
+  edgePlotter.setInterpolatedColor( QgsInterpolatedLineColor( scalarSettings.colorRampShader() ) );
+  edgePlotter.setInterpolatedWidth( QgsInterpolatedLineWidth( scalarSettings.edgeStrokeWidth() ) );
+  edgePlotter.setWidthUnit( scalarSettings.edgeStrokeWidthUnit() );
 
   for ( const int i : egdesInExtent )
   {
@@ -497,113 +500,16 @@ void QgsMeshLayerRenderer::renderScalarDatasetOnEdges( const QgsMeshRendererScal
 
     const QgsMeshVertex &startVertex = vertices[startVertexIndex];
     const QgsMeshVertex &endVertex = vertices[endVertexIndex];
-    const QgsPointXY lineStart = context.mapToPixel().transform( startVertex.x(), startVertex.y() );
-    const QgsPointXY lineEnd = context.mapToPixel().transform( endVertex.x(), endVertex.y() );
 
     if ( mScalarDataType == QgsMeshDatasetGroupMetadata::DataType::DataOnEdges )
     {
-      QColor edgeColor = colorAt( shader.get(),  mScalarDatasetValues[i] );
-      pen.setColor( edgeColor );
-      painter->setPen( pen );
-      painter->drawLine( lineStart.toQPointF(), lineEnd.toQPointF() );
+      edgePlotter.render( mScalarDatasetValues[i], mScalarDatasetValues[i], startVertex, endVertex, context );
     }
     else
     {
-      double valVertexStart = mScalarDatasetValues[startVertexIndex];
-      double valVertexEnd = mScalarDatasetValues[endVertexIndex];
-      if ( std::isnan( valVertexStart ) || std::isnan( valVertexEnd ) )
-        continue;
-      double valDiff = ( valVertexEnd - valVertexStart );
-
-      if ( qgsDoubleNear( valDiff, 0.0 ) )
-      {
-        QColor edgeColor = colorAt( shader.get(),  valVertexStart );
-        pen.setColor( edgeColor );
-        painter->setPen( pen );
-        painter->drawLine( lineStart.toQPointF(), lineEnd.toQPointF() );
-      }
-      else
-      {
-        if ( classificationType == QgsColorRampShader::Type::Exact )
-        {
-          Q_ASSERT( ! qgsDoubleNear( valDiff, 0.0 ) );
-          for ( int i = 0; i < colorRampItemList.size(); ++i )
-          {
-            const QgsColorRampShader::ColorRampItem &item = colorRampItemList.at( i );
-            if ( !std::isnan( item.value ) )
-            {
-              double fraction = ( item.value - valVertexStart ) / valDiff;
-              if ( ( fraction > 0.0 ) && ( fraction < 1.0 ) )
-              {
-                QgsPointXY point = fractionPoint( lineStart, lineEnd, fraction );
-                pen.setColor( item.color );
-                painter->setPen( pen );
-                painter->drawPoint( point.toQPointF() );
-              }
-            }
-          }
-        }
-        else if ( classificationType == QgsColorRampShader::Type::Discrete )
-        {
-          QgsPointXY startPoint = lineStart;
-          QColor color = colorAt( shader.get(), valVertexStart );
-          Q_ASSERT( ! qgsDoubleNear( valDiff, 0.0 ) );
-          for ( int i = 0; i < colorRampItemList.size() - 1; ++i )
-          {
-            const QgsColorRampShader::ColorRampItem &item = colorRampItemList.at( i );
-            if ( !std::isnan( item.value ) )
-            {
-              double fraction = ( item.value - valVertexStart ) / valDiff;
-              if ( ( fraction > 0.0 ) && ( fraction < 1.0 ) )
-              {
-                QgsPointXY endPoint = fractionPoint( lineStart, lineEnd, fraction );
-                pen.setColor( color );
-                painter->setPen( pen );
-                painter->drawLine( startPoint.toQPointF(), endPoint.toQPointF() );
-                color = item.color;
-                startPoint = endPoint;
-              }
-            }
-          }
-          pen.setColor( colorAt( shader.get(), valVertexEnd ) );
-          painter->setPen( pen );
-          painter->drawLine( startPoint.toQPointF(), lineEnd.toQPointF() );
-        }
-        else if ( classificationType == QgsColorRampShader::Type::Interpolated )
-        {
-          QLinearGradient gradient( lineStart.toQPointF(), lineEnd.toQPointF() );
-          gradient.setColorAt( 0.0, colorAt( shader.get(), valVertexStart ) );
-          gradient.setColorAt( 1.0, colorAt( shader.get(), valVertexEnd ) );
-          gradient.setSpread( gradient.ReflectSpread );
-
-          Q_ASSERT( ! qgsDoubleNear( valDiff, 0.0 ) );
-
-          for ( int i = 0; i < colorRampItemList.size(); ++i )
-          {
-            const QgsColorRampShader::ColorRampItem &item = colorRampItemList.at( i );
-            if ( !std::isnan( item.value ) )
-            {
-              double fraction = ( item.value - valVertexStart ) / valDiff;
-              if ( ( fraction > 0.0 ) && ( fraction < 1.0 ) )
-              {
-                gradient.setColorAt( fraction, colorAt( shader.get(), item.value ) );
-              }
-            }
-            QBrush brush( gradient );
-            pen.setBrush( brush );
-            painter->setPen( pen );
-            painter->drawLine( lineStart.toQPointF(), lineEnd.toQPointF() );
-          }
-        }
-        else
-        {
-          // no other option possible
-          Q_ASSERT( false );
-        }
-      }
+      edgePlotter.render( mScalarDatasetValues[startVertexIndex], mScalarDatasetValues[endVertexIndex], startVertex, endVertex, context );
     }
   }
-  painter->restore();
 }
 
 QColor QgsMeshLayerRenderer::colorAt( QgsColorRampShader *shader, double val ) const
@@ -660,6 +566,9 @@ void QgsMeshLayerRenderer::renderVectorDataset()
   if ( std::isnan( mVectorDatasetMagMinimum ) || std::isnan( mVectorDatasetMagMaximum ) )
     return; // only NODATA values
 
+  if ( !( mVectorDatasetMagMaximum > 0 ) )
+    return; //all vector are null vector
+
   std::unique_ptr<QgsMeshVectorRenderer> renderer( QgsMeshVectorRenderer::makeVectorRenderer(
         mTriangularMesh,
         mVectorDatasetValues,
@@ -676,3 +585,4 @@ void QgsMeshLayerRenderer::renderVectorDataset()
   if ( renderer )
     renderer->draw();
 }
+

@@ -24,12 +24,12 @@ Renderer for paletted raster images.
 
     struct Class
     {
-      Class( int value, const QColor &color = QColor(), const QString &label = QString() );
+      Class( double value, const QColor &color = QColor(), const QString &label = QString() );
 %Docstring
 Constructor for Class
 %End
 
-      int value;
+      double value;
 
       QColor color;
       QString label;
@@ -46,7 +46,7 @@ Constructor for QgsPalettedRasterRenderer.
     virtual QgsPalettedRasterRenderer *clone() const /Factory/;
 
 %Docstring
-QgsPalettedRasterRenderer cannot be copied. Use clone() instead.
+QgsPalettedRasterRenderer cannot be copied. Use :py:func:`~QgsPalettedRasterRenderer.clone` instead.
 %End
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) /Factory/;
 
@@ -63,14 +63,14 @@ Returns number of colors
 Returns a map of value to classes (colors) used by the renderer.
 %End
 
-    QString label( int idx ) const;
+    QString label( double idx ) const;
 %Docstring
 Returns optional category label
 
 .. versionadded:: 2.1
 %End
 
-    void setLabel( int idx, const QString &label );
+    void setLabel( double idx, const QString &label );
 %Docstring
 Set category label
 

@@ -204,11 +204,11 @@ QString QgsDefaultSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper:
       if ( flags & EqualTo || flags & NotEqualTo )
       {
         if ( mCheckbox && mCheckbox->isChecked() )
-          return fieldName + ( flags & EqualTo ? "=" : "<>" )
+          return fieldName + ( ( flags & EqualTo ) ? "=" : "<>" )
                  + QgsExpression::quotedString( mLineEdit->text() );
         else
           return QStringLiteral( "lower(%1)" ).arg( fieldName )
-                 + ( flags & EqualTo ? "=" : "<>" ) +
+                 + ( ( flags & EqualTo ) ? "=" : "<>" ) +
                  QStringLiteral( "lower(%1)" ).arg( QgsExpression::quotedString( mLineEdit->text() ) );
       }
       else if ( flags & Contains || flags & DoesNotContain || flags & StartsWith || flags & EndsWith )
@@ -255,7 +255,6 @@ void QgsDefaultSearchWidgetWrapper::initWidget( QWidget *widget )
 {
   mContainer = widget;
   mContainer->setLayout( new QHBoxLayout() );
-  mContainer->layout()->setMargin( 0 );
   mContainer->layout()->setContentsMargins( 0, 0, 0, 0 );
   QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
 

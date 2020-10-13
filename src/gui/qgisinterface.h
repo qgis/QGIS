@@ -57,12 +57,15 @@ class QgsPluginManagerInterface;
 class QgsRasterLayer;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
+class QgsVectorTileLayer;
 class QgsOptionsWidgetFactory;
 class QgsLocatorFilter;
 class QgsStatusBar;
 class QgsMeshLayer;
 class QgsBrowserGuiModel;
 class QgsDevToolWidgetFactory;
+class QgsGpsConnection;
+class QgsApplicationExitBlockerInterface;
 
 
 /**
@@ -332,6 +335,12 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QToolBar *attributesToolBar() = 0;
 
     /**
+     * Returns a reference to the main window "Selection" toolbar.
+     * \since QGIS 3.14
+     */
+    virtual QToolBar *selectionToolBar() = 0;
+
+    /**
      * Returns a reference to the main window "Plugin" toolbar.
      */
     virtual QToolBar *pluginToolBar() = 0;
@@ -481,10 +490,16 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionAddWmsLayer() = 0;
 
     /**
-     * Returns the native Add XYZ layer action.
+     * Returns the native Add XYZ Layer action.
      * \since QGIS 3.14
      */
     virtual QAction *actionAddXyzLayer() = 0;
+
+    /**
+     * Returns the native Add Vector Tile Layer action.
+     * \since QGIS 3.14
+     */
+    virtual QAction *actionAddVectorTileLayer() = 0;
     //! Returns the native Add ArcGIS FeatureServer action.
     virtual QAction *actionAddAfsLayer() = 0;
     //! Returns the native Add ArcGIS MapServer action.
@@ -668,6 +683,12 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual QgsMeshLayer *addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) = 0;
 
+    /**
+     * Adds a vector tile layer to the current project.
+     * \since QGIS 3.14
+     */
+    virtual QgsVectorTileLayer *addVectorTileLayer( const QString &url, const QString &baseName ) = 0;
+
     //! Adds (opens) a project
     virtual bool addProject( const QString &project ) = 0;
 
@@ -829,6 +850,13 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void showOptionsDialog( QWidget *parent = nullptr, const QString &currentPage = QString() ) = 0;
 
     /**
+     * Opens the project properties dialog. The \a currentPage argument can be used to force
+     * the dialog to open at a specific page.
+     * \since QGIS 3.16
+     */
+    virtual void showProjectPropertiesDialog( const QString &currentPage = QString() ) = 0;
+
+    /**
      * Generate stylesheet
      * \param opts generated default option values, or a changed copy of them
      */
@@ -876,9 +904,26 @@ class GUI_EXPORT QgisInterface : public QObject
     /**
      * Adds a \a dock widget to the main window, in the specified dock \a area.
      *
+     * \see addTabifiedDockWidget()
      * \see removeDockWidget()
      */
     virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget ) = 0;
+
+    /**
+     * Add a dock widget to the given area and tabify it (if other dock widgets
+     * exist in the same \a area). The new tab will be below other tabs unless
+     * \a raiseTab is passed as true.
+     *
+     * \a tabifyWith is a list of dock widget object names, ordered by
+     * priority, with which the new dock widget should be tabified. Only the
+     * first matching object name will be picked. If none of the given object
+     * names is found in that \a area (or if \a tabifyWith is not given at
+     * all), the new dock widget will be created anyways, but its location
+     * within that \a area will be unpredictable.
+     *
+     * \since QGIS 3.14
+     */
+    virtual void addTabifiedDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget, const QStringList &tabifyWith = QStringList(), bool raiseTab = false ) = 0;
 
     /**
      * Removes the specified \a dock widget from main window (without deleting it).
@@ -912,7 +957,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual bool unregisterMainWindowAction( QAction *action ) = 0;
 
     /**
-     * Register a new tab in the vector layer properties dialog.
+     * Register a new tab in the map layer properties dialog.
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
      * \see QgsMapLayerConfigWidgetFactory
@@ -922,7 +967,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
 
     /**
-     * Unregister a previously registered tab in the vector layer properties dialog.
+     * Unregister a previously registered tab in the map layer properties dialog.
      * \see QgsMapLayerConfigWidgetFactory
      * \see registerMapLayerConfigWidgetFactory()
      * \since QGIS 2.16
@@ -948,6 +993,24 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 
     /**
+     * Register a new tab in the project properties dialog.
+     * \note Ownership of the factory is not transferred, and the factory must
+     *       be unregistered when plugin is unloaded.
+     * \see QgsOptionsWidgetFactory
+     * \see unregisterProjectPropertiesWidgetFactory()
+     * \since QGIS 3.16
+     */
+    virtual void registerProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
+
+    /**
+     * Unregister a previously registered tab in the options dialog.
+     * \see QgsOptionsWidgetFactory
+     * \see registerProjectPropertiesWidgetFactory()
+     * \since QGIS 3.16
+    */
+    virtual void unregisterProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
+
+    /**
      * Register a new tool in the development/debugging tools dock.
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
@@ -962,6 +1025,25 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.14
     */
     virtual void unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) = 0;
+
+    /**
+     * Register a new application exit blocker, which can be used to prevent the QGIS application
+     * from exiting while a plugin or script has unsaved changes.
+     *
+     * \note Ownership of \a blocker is not transferred, and the blocker must
+     *       be unregistered when plugin is unloaded.
+     *
+     * \see unregisterApplicationExitBlocker()
+     * \since QGIS 3.16
+     */
+    virtual void registerApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) = 0;
+
+    /**
+     * Unregister a previously registered application exit \a blocker.
+     * \see registerApplicationExitBlocker()
+     * \since QGIS 3.16
+    */
+    virtual void unregisterApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) = 0;
 
     /**
      * Register a new custom drop \a handler.
@@ -1120,6 +1202,16 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.4
      */
     virtual QgsBrowserGuiModel *browserModel() = 0;
+
+    /**
+     * Sets a GPS \a connection to use within the GPS Panel widget.
+     *
+     * Any existing GPS connection used by the widget will be disconnect and replaced with this connection. The connection
+     * is automatically registered within the QgsApplication::gpsConnectionRegistry().
+     *
+     * \since QGIS 3.16
+     */
+    virtual void setGpsPanelConnection( QgsGpsConnection *connection ) = 0;
 
   signals:
 

@@ -94,6 +94,16 @@ Set the filter mode the filter will use.
 :param filterMode: Sets the current mode of the filter
 %End
 
+    void disconnectFilterModeConnections();
+%Docstring
+Disconnect the connections set for the current filterMode
+%End
+
+    void connectFilterModeConnections( FilterMode filterMode );
+%Docstring
+Disconnect the connections set for the new ``filterMode``
+%End
+
     FilterMode filterMode();
 %Docstring
 The current filterModel
@@ -214,6 +224,16 @@ Emitted whenever the sort column is changed
 
 :param column: The sort column
 :param order: The sort order
+%End
+
+    void featuresFiltered();
+%Docstring
+Emitted when the filtering of the features has been done
+%End
+
+    void visibleReloaded();
+%Docstring
+Emitted when the the visible features on extend are reloaded (the list is created)
 %End
 
   protected:

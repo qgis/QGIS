@@ -29,6 +29,7 @@
 #include "qgsapplication.h"
 #include "qgsmultipoint.h"
 #include "qgslegendpatchshape.h"
+#include "qgsstyle.h"
 
 #include <QSize>
 #include <QPainter>
@@ -83,6 +84,8 @@ void QgsSymbolLayer::initPropertyDefinitions()
     { QgsSymbolLayer::PropertyDistanceY, QgsPropertyDefinition( "distanceY", QObject::tr( "Vertical distance between markers" ), QgsPropertyDefinition::DoublePositive, origin )},
     { QgsSymbolLayer::PropertyDisplacementX, QgsPropertyDefinition( "displacementX", QObject::tr( "Horizontal displacement between rows" ), QgsPropertyDefinition::DoublePositive, origin )},
     { QgsSymbolLayer::PropertyDisplacementY, QgsPropertyDefinition( "displacementY", QObject::tr( "Vertical displacement between columns" ), QgsPropertyDefinition::DoublePositive, origin )},
+    { QgsSymbolLayer::PropertyOffsetX, QgsPropertyDefinition( "offsetX", QObject::tr( "Horizontal offset" ), QgsPropertyDefinition::Double, origin )},
+    { QgsSymbolLayer::PropertyOffsetY, QgsPropertyDefinition( "offsetY", QObject::tr( "Vertical offset" ), QgsPropertyDefinition::Double, origin )},
     { QgsSymbolLayer::PropertyOpacity, QgsPropertyDefinition( "alpha", QObject::tr( "Opacity" ), QgsPropertyDefinition::Opacity, origin )},
     { QgsSymbolLayer::PropertyCustomDash, QgsPropertyDefinition( "customDash", QgsPropertyDefinition::DataTypeString, QObject::tr( "Custom dash pattern" ), QObject::tr( "[<b><dash>;<space></b>] e.g. '8;2;1;2'" ), origin )},
     { QgsSymbolLayer::PropertyCapStyle, QgsPropertyDefinition( "capStyle", QObject::tr( "Line cap style" ), QgsPropertyDefinition::CapStyle, origin )},
@@ -103,6 +106,7 @@ void QgsSymbolLayer::initPropertyDefinitions()
     { QgsSymbolLayer::PropertyRandomSeed, QgsPropertyDefinition( "randomSeed", QgsPropertyDefinition::DataTypeNumeric, QObject::tr( "Random number seed" ), QObject::tr( "integer > 0, or 0 for completely random sequence" ), origin )},
     { QgsSymbolLayer::PropertyClipPoints, QgsPropertyDefinition( "clipPoints", QObject::tr( "Clip markers" ), QgsPropertyDefinition::Boolean, origin )},
     { QgsSymbolLayer::PropertyClipPoints, QgsPropertyDefinition( "densityArea", QObject::tr( "Density area" ), QgsPropertyDefinition::DoublePositive, origin )},
+    { QgsSymbolLayer::PropertyDashPatternOffset, QgsPropertyDefinition( "dashPatternOffset", QObject::tr( "Dash pattern offset" ), QgsPropertyDefinition::DoublePositive, origin )},
   };
 }
 
@@ -242,7 +246,10 @@ int QgsSymbolLayer::renderingPass() const
 
 QSet<QString> QgsSymbolLayer::usedAttributes( const QgsRenderContext &context ) const
 {
-  QSet<QString> columns = mDataDefinedProperties.referencedFields( context.expressionContext() );
+  // calling referencedFields() with ignoreContext=true because in our expression context
+  // we do not have valid QgsFields yet - because of that the field names from expressions
+  // wouldn't get reported
+  QSet<QString> columns = mDataDefinedProperties.referencedFields( context.expressionContext(), true );
   return columns;
 }
 
@@ -453,7 +460,7 @@ void QgsMarkerSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSi
   QgsPaintEffect *effect = paintEffect();
 
   QPolygonF points = context.patchShape() ? context.patchShape()->toQPolygonF( QgsSymbol::Marker, size ).value( 0 ).value( 0 )
-                     : QgsLegendPatchShape::defaultPatch( QgsSymbol::Marker, size ).value( 0 ).value( 0 );
+                     : QgsStyle::defaultStyle()->defaultPatchAsQPolygonF( QgsSymbol::Marker, size ).value( 0 ).value( 0 );
 
   std::unique_ptr< QgsEffectPainter > effectPainter;
   if ( effect && effect->enabled() )
@@ -526,7 +533,21 @@ void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext &context, double
   }
 
   double anchorPointCorrectionX = context.renderContext().convertToPainterUnits( width, widthUnit, widthMapUnitScale ) / 2.0;
+  if ( widthUnit == QgsUnitTypes::RenderMetersInMapUnits && context.renderContext().flags() & QgsRenderContext::RenderSymbolPreview )
+  {
+    // rendering for symbol previews -- an size in meters in map units can't be calculated, so treat the size as millimeters
+    // and clamp it to a reasonable range. It's the best we can do in this situation!
+    anchorPointCorrectionX = std::min( std::max( context.renderContext().convertToPainterUnits( width, QgsUnitTypes::RenderMillimeters ), 3.0 ), 100.0 ) / 2.0;
+  }
+
   double anchorPointCorrectionY = context.renderContext().convertToPainterUnits( height, heightUnit, heightMapUnitScale ) / 2.0;
+  if ( heightUnit == QgsUnitTypes::RenderMetersInMapUnits && context.renderContext().flags() & QgsRenderContext::RenderSymbolPreview )
+  {
+    // rendering for symbol previews -- an size in meters in map units can't be calculated, so treat the size as millimeters
+    // and clamp it to a reasonable range. It's the best we can do in this situation!
+    anchorPointCorrectionY = std::min( std::max( context.renderContext().convertToPainterUnits( height, QgsUnitTypes::RenderMillimeters ), 3.0 ), 100.0 ) / 2.0;
+  }
+
   if ( horizontalAnchorPoint == Left )
   {
     offsetX += anchorPointCorrectionX;
@@ -640,7 +661,7 @@ QgsMapUnitScale QgsLineSymbolLayer::mapUnitScale() const
 void QgsLineSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize size )
 {
   const QList< QList< QPolygonF > > points = context.patchShape() ? context.patchShape()->toQPolygonF( QgsSymbol::Line, size )
-      : QgsLegendPatchShape::defaultPatch( QgsSymbol::Line, size );
+      : QgsStyle::defaultStyle()->defaultPatchAsQPolygonF( QgsSymbol::Line, size );
   startRender( context );
   QgsPaintEffect *effect = paintEffect();
 
@@ -656,7 +677,7 @@ void QgsLineSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize
   stopRender( context );
 }
 
-void QgsLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context )
+void QgsLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )
 {
   switch ( mRingFilter )
   {
@@ -700,7 +721,7 @@ double QgsLineSymbolLayer::dxfWidth( const QgsDxfExport &e, QgsSymbolRenderConte
 void QgsFillSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize size )
 {
   const QList< QList< QPolygonF > > polys = context.patchShape() ? context.patchShape()->toQPolygonF( QgsSymbol::Fill, size )
-      : QgsLegendPatchShape::defaultPatch( QgsSymbol::Fill, size );
+      : QgsStyle::defaultStyle()->defaultPatchAsQPolygonF( QgsSymbol::Fill, size );
 
   startRender( context );
   QgsPaintEffect *effect = paintEffect();
@@ -711,7 +732,7 @@ void QgsFillSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize
 
   for ( const QList< QPolygonF > &poly : polys )
   {
-    QList< QPolygonF > rings;
+    QVector< QPolygonF > rings;
     for ( int i = 1; i < poly.size(); ++i )
       rings << poly.at( i );
     renderPolygon( poly.value( 0 ), &rings, context );
@@ -722,7 +743,7 @@ void QgsFillSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize
   stopRender( context );
 }
 
-void QgsFillSymbolLayer::_renderPolygon( QPainter *p, const QPolygonF &points, const QList<QPolygonF> *rings, QgsSymbolRenderContext &context )
+void QgsFillSymbolLayer::_renderPolygon( QPainter *p, const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )
 {
   if ( !p )
   {
@@ -756,8 +777,7 @@ void QgsFillSymbolLayer::_renderPolygon( QPainter *p, const QPolygonF &points, c
 
     if ( rings )
     {
-      QList<QPolygonF>::const_iterator it = rings->constBegin();
-      for ( ; it != rings->constEnd(); ++it )
+      for ( auto it = rings->constBegin(); it != rings->constEnd(); ++it )
       {
         QPolygonF ring = *it;
         path.addPolygon( ring );

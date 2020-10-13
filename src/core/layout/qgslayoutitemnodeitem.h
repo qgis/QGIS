@@ -184,7 +184,8 @@ class CORE_EXPORT QgsLayoutNodesItem: public QgsLayoutItem
 
     /**
      * This tag is used to indicate if we have to draw nodes or not during
-     * the painting. */
+     * the painting.
+    */
     bool mDrawNodes = false;
 
     //! Draw nodes

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout" columnstretch="0,1,0,0,0">
    <item row="9" column="0">
@@ -79,7 +79,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QSpinBox" name="mSpinBlurRadius">
+      <widget class="QgsSpinBox" name="mSpinBlurRadius">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
          <horstretch>1</horstretch>
@@ -178,13 +178,6 @@
       </widget>
      </item>
     </layout>
-   </item>
-   <item row="10" column="0">
-    <widget class="QLabel" name="label_6">
-     <property name="text">
-      <string>Offset</string>
-     </property>
-    </widget>
    </item>
    <item row="9" column="4">
     <widget class="QgsPropertyOverrideButton" name="mBlurRadiusDDBtn">
@@ -290,15 +283,8 @@
    </item>
    <item row="10" column="1" colspan="3">
     <layout class="QGridLayout" name="gridLayout_2">
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>x</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QgsDoubleSpinBox" name="spinOffsetX">
+     <item row="1" column="0">
+      <widget class="QgsDoubleSpinBox" name="spinOffsetY">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>1</horstretch>
@@ -319,22 +305,15 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="2" rowspan="2">
+     <item row="0" column="1" rowspan="2">
       <widget class="QgsUnitSelectionWidget" name="mOffsetUnitWidget" native="true">
        <property name="focusPolicy">
         <enum>Qt::StrongFocus</enum>
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_5">
-       <property name="text">
-        <string>y</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QgsDoubleSpinBox" name="spinOffsetY">
+     <item row="0" column="0">
+      <widget class="QgsDoubleSpinBox" name="spinOffsetX">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>1</horstretch>
@@ -407,10 +386,41 @@
      </property>
     </spacer>
    </item>
+   <item row="10" column="0">
+    <layout class="QGridLayout" name="gridLayout_3" columnstretch="1,0">
+     <item row="0" column="1">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>x</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>y</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0" rowspan="2">
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>Offset</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="10" column="4">
+    <widget class="QgsPropertyOverrideButton" name="mOffsetDDBtn">
+     <property name="text">
+      <string>…</string>
+     </property>
+    </widget>
+   </item>
   </layout>
   <zorder>btnColorRamp</zorder>
   <zorder>label</zorder>
-  <zorder>label_6</zorder>
   <zorder>label_2</zorder>
   <zorder>radioTwoColor</zorder>
   <zorder>radioColorRamp</zorder>
@@ -423,6 +433,7 @@
   <zorder>mShadeDistanceDDBtn</zorder>
   <zorder>mIgnoreRingsDDBtn</zorder>
   <zorder>mBlurRadiusDDBtn</zorder>
+  <zorder>mOffsetDDBtn</zorder>
  </widget>
  <customwidgets>
   <customwidget>
@@ -446,6 +457,11 @@
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsColorRampButton</class>

@@ -16,6 +16,7 @@
 #include "qgslegendsettings.h"
 #include "qgsexpressioncontext.h"
 #include "qgsexpression.h"
+#include "qgsrendercontext.h"
 
 #include <QPainter>
 
@@ -37,6 +38,36 @@ QgsLegendSettings::QgsLegendSettings()
   rstyle( QgsLegendStyle::SymbolLabel ).rfont().setPointSizeF( 12.0 );
 }
 
+double QgsLegendSettings::mmPerMapUnit() const
+{
+  return mMmPerMapUnit;
+}
+
+void QgsLegendSettings::setMmPerMapUnit( double mmPerMapUnit )
+{
+  mMmPerMapUnit = mmPerMapUnit;
+}
+
+bool QgsLegendSettings::useAdvancedEffects() const
+{
+  return mUseAdvancedEffects;
+}
+
+void QgsLegendSettings::setUseAdvancedEffects( bool use )
+{
+  mUseAdvancedEffects = use;
+}
+
+double QgsLegendSettings::mapScale() const
+{
+  return mMapScale;
+}
+
+void QgsLegendSettings::setMapScale( double scale )
+{
+  mMapScale = scale;
+}
+
 double QgsLegendSettings::mapUnitsPerPixel() const
 {
   return 1 / ( mMmPerMapUnit * ( mDpi / 25.4 ) );
@@ -47,21 +78,36 @@ void QgsLegendSettings::setMapUnitsPerPixel( double mapUnitsPerPixel )
   mMmPerMapUnit = 1 / mapUnitsPerPixel / ( mDpi / 25.4 );
 }
 
+int QgsLegendSettings::dpi() const
+{
+  return mDpi;
+}
+
+void QgsLegendSettings::setDpi( int dpi )
+{
+  mDpi = dpi;
+}
+
 QStringList QgsLegendSettings::evaluateItemText( const QString &text, const QgsExpressionContext &context ) const
 {
   const QString textToRender = QgsExpression::replaceExpressionText( text, &context );
   return splitStringForWrapping( textToRender );
 }
 
-QStringList QgsLegendSettings::splitStringForWrapping( const QString &stringToSplt ) const
+QStringList QgsLegendSettings::splitStringForWrapping( const QString &stringToSplit ) const
 {
-  QStringList list;
+  const QStringList lines = stringToSplit.split( '\n' );
+
   // If the string contains nothing then just return the string without splitting.
-  if ( wrapChar().count() == 0 )
-    list << stringToSplt;
-  else
-    list = stringToSplt.split( wrapChar() );
-  return list;
+  if ( wrapChar().isEmpty() )
+    return lines;
+
+  QStringList res;
+  for ( const QString &line : lines )
+  {
+    res.append( line.split( wrapChar() ) );
+  }
+  return res;
 }
 
 #define FONT_WORKAROUND_SCALE 10 //scale factor for upscaling fontsize and downscaling painter
@@ -71,12 +117,11 @@ void QgsLegendSettings::drawText( QPainter *p, double x, double y, const QString
 {
   QFont textFont = scaledFontPixelSize( font );
 
-  p->save();
+  QgsScopedQPainterState painterState( p );
   p->setFont( textFont );
   double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
   p->scale( scaleFactor, scaleFactor );
   p->drawText( QPointF( x * FONT_WORKAROUND_SCALE, y * FONT_WORKAROUND_SCALE ), text );
-  p->restore();
 }
 
 
@@ -87,12 +132,11 @@ void QgsLegendSettings::drawText( QPainter *p, const QRectF &rect, const QString
   QRectF scaledRect( rect.x() * FONT_WORKAROUND_SCALE, rect.y() * FONT_WORKAROUND_SCALE,
                      rect.width() * FONT_WORKAROUND_SCALE, rect.height() * FONT_WORKAROUND_SCALE );
 
-  p->save();
+  QgsScopedQPainterState painterState( p );
   p->setFont( textFont );
   double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
   p->scale( scaleFactor, scaleFactor );
   p->drawText( scaledRect, halignment | valignment | flags, text );
-  p->restore();
 }
 
 
@@ -113,7 +157,11 @@ double QgsLegendSettings::textWidthMillimeters( const QFont &font, const QString
 {
   QFont metricsFont = scaledFontPixelSize( font );
   QFontMetricsF fontMetrics( metricsFont );
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   return ( fontMetrics.width( text ) / FONT_WORKAROUND_SCALE );
+#else
+  return ( fontMetrics.horizontalAdvance( text ) / FONT_WORKAROUND_SCALE );
+#endif
 }
 
 double QgsLegendSettings::fontHeightCharacterMM( const QFont &font, QChar c ) const

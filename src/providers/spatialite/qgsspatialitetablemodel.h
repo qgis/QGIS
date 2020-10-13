@@ -38,7 +38,8 @@ class QgsSpatiaLiteTableModel: public QStandardItemModel
 
     /**
      * Sets one or more geometry types to a row. In case of several types, additional rows are inserted.
-       This is for tables where the type is detected later by thread*/
+     * This is for tables where the type is detected later by thread.
+    */
     void setGeometryTypesForTable( const QString &table, const QString &attribute, const QString &type );
     //! Returns the number of tables in the model
     int tableCount() const

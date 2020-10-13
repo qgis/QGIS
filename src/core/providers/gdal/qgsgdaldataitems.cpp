@@ -18,7 +18,7 @@
 ///@cond PRIVATE
 #include "qgsgdalprovider.h"
 #include "qgslogger.h"
-#include "qgsmbtilesreader.h"
+#include "qgsmbtiles.h"
 #include "qgssettings.h"
 #include "qgsogrutils.h"
 #include "qgsproject.h"
@@ -61,7 +61,7 @@ bool QgsGdalLayerItem::setCrs( const QgsCoordinateReferenceSystem &crs )
   if ( !hDS )
     return false;
 
-  QString wkt = crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 );
+  QString wkt = crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED_GDAL );
   if ( GDALSetProjection( hDS.get(), wkt.toLocal8Bit().data() ) != CE_None )
   {
     QgsDebugMsg( QStringLiteral( "Could not set CRS" ) );
@@ -263,12 +263,12 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
 #endif
   }
 
-  if ( suffix == QStringLiteral( "mbtiles" ) )
+  if ( suffix == QLatin1String( "mbtiles" ) )
   {
-    QgsMBTilesReader reader( path );
+    QgsMbTiles reader( path );
     if ( reader.open() )
     {
-      if ( reader.metadataValue( "format" ) == QStringLiteral( "pbf" ) )
+      if ( reader.metadataValue( "format" ) == QLatin1String( "pbf" ) )
       {
         // these are vector tiles
         QUrlQuery uq;

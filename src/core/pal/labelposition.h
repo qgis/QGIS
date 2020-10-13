@@ -190,7 +190,8 @@ namespace pal
 
       /**
        * Set problem feature ID and assigned label candidate ID.
-       *  called from pal.cpp during extraction */
+       * called from pal.cpp during extraction.
+      */
       void setProblemIds( int probFid, int lpId )
       {
         probFeat = probFid;
@@ -351,6 +352,7 @@ namespace pal
       bool isInConflictSinglePart( const LabelPosition *lp ) const;
       bool isInConflictMultiPart( const LabelPosition *lp ) const;
 
+      LabelPosition &operator=( const LabelPosition & ) = delete;
   };
 
 } // end namespace

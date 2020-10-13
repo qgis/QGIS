@@ -23,6 +23,7 @@
 #include "qgslayertreelayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsstyle.h"
 
 QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget *parent,
     const QgsPropertyDefinition &definition, const QgsProperty &initialState,
@@ -34,7 +35,6 @@ QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget *parent,
   setupUi( this );
 
   layout()->setContentsMargins( 0, 0, 0, 0 );
-  layout()->setMargin( 0 );
 
   setPanelTitle( mDefinition.description() );
 
@@ -48,16 +48,16 @@ QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget *parent,
   mExpressionWidget->setFilters( QgsFieldProxyModel::Numeric );
   mExpressionWidget->setField( initialState.propertyType() == QgsProperty::ExpressionBasedProperty ? initialState.expressionString() : initialState.field() );
 
-  if ( initialState.transformer() )
+  if ( auto *lTransformer = initialState.transformer() )
   {
-    minValueSpinBox->setValue( initialState.transformer()->minValue() );
-    maxValueSpinBox->setValue( initialState.transformer()->maxValue() );
+    minValueSpinBox->setValue( lTransformer->minValue() );
+    maxValueSpinBox->setValue( lTransformer->maxValue() );
 
-    if ( initialState.transformer()->curveTransform() )
+    if ( lTransformer->curveTransform() )
     {
       mTransformCurveCheckBox->setChecked( true );
       mTransformCurveCheckBox->setCollapsed( false );
-      mCurveEditor->setCurve( *initialState.transformer()->curveTransform() );
+      mCurveEditor->setCurve( *lTransformer->curveTransform() );
     }
   }
 
@@ -74,7 +74,6 @@ QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget *parent,
   mLegendPreview->expandAll();
   mLegendVerticalFrame->setLayout( new QVBoxLayout() );
   mLegendVerticalFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
-  mLegendVerticalFrame->layout()->setMargin( 0 );
   mLegendVerticalFrame->hide();
 
   switch ( definition.standardTemplate() )
@@ -336,7 +335,6 @@ QgsPropertySizeAssistantWidget::QgsPropertySizeAssistantWidget( QWidget *parent,
   setupUi( this );
 
   layout()->setContentsMargins( 0, 0, 0, 0 );
-  layout()->setMargin( 0 );
 
   if ( definition.standardTemplate() == QgsPropertyDefinition::Size )
   {
@@ -453,7 +451,6 @@ QgsPropertyColorAssistantWidget::QgsPropertyColorAssistantWidget( QWidget *paren
   setupUi( this );
 
   layout()->setContentsMargins( 0, 0, 0, 0 );
-  layout()->setMargin( 0 );
 
   bool supportsAlpha = definition.standardTemplate() == QgsPropertyDefinition::ColorWithAlpha;
   mNullColorButton->setAllowOpacity( supportsAlpha );
@@ -529,7 +526,6 @@ QgsPropertyGenericNumericAssistantWidget::QgsPropertyGenericNumericAssistantWidg
   setupUi( this );
 
   layout()->setContentsMargins( 0, 0, 0, 0 );
-  layout()->setMargin( 0 );
 
   nullOutputSpinBox->setShowClearButton( false );
 

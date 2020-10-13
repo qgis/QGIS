@@ -24,9 +24,13 @@ This class allows the creation of simple quadrilateral (which does not self-inte
 #include "qgsquadrilateral.h"
 %End
   public:
-    QgsQuadrilateral();
 
-    QgsQuadrilateral( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 );
+    QgsQuadrilateral() /HoldGIL/;
+%Docstring
+Constructor for an empty quadrilateral geometry.
+%End
+
+    QgsQuadrilateral( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 ) /HoldGIL/;
 %Docstring
 Construct a QgsQuadrilateral from four :py:class:`QgsPoint`.
 
@@ -38,7 +42,7 @@ Construct a QgsQuadrilateral from four :py:class:`QgsPoint`.
 .. seealso:: :py:func:`setPoints`
 %End
 
-    explicit QgsQuadrilateral( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3, const QgsPointXY &p4 );
+    explicit QgsQuadrilateral( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3, const QgsPointXY &p4 ) /HoldGIL/;
 %Docstring
 Construct a QgsQuadrilateral from four :py:class:`QgsPointXY`.
 
@@ -57,7 +61,7 @@ Construct a QgsQuadrilateral from four :py:class:`QgsPointXY`.
       Projected,
     };
 
-    static QgsQuadrilateral rectangleFrom3Points( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, ConstructionOption mode );
+    static QgsQuadrilateral rectangleFrom3Points( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, ConstructionOption mode ) /HoldGIL/;
 %Docstring
 Construct a QgsQuadrilateral as a Rectangle from 3 points.
 In the case where one of the points is of type PointZ. The other points
@@ -74,7 +78,7 @@ Polygon or LineString.
 .. seealso:: ConstructionOption
 %End
 
-    static QgsQuadrilateral rectangleFromExtent( const QgsPoint &p1, const QgsPoint &p2 );
+    static QgsQuadrilateral rectangleFromExtent( const QgsPoint &p1, const QgsPoint &p2 ) /HoldGIL/;
 %Docstring
 Construct a QgsQuadrilateral as a rectangle from an extent, defined by
 two opposite corner points.
@@ -85,7 +89,7 @@ Z is taken from point ``p1``.
 %End
 
 
-    static QgsQuadrilateral squareFromDiagonal( const QgsPoint &p1, const QgsPoint &p2 );
+    static QgsQuadrilateral squareFromDiagonal( const QgsPoint &p1, const QgsPoint &p2 ) /HoldGIL/;
 %Docstring
 Construct a QgsQuadrilateral as a square from a diagonal.
 Z is taken from point ``p1``.
@@ -94,7 +98,7 @@ Z is taken from point ``p1``.
 :param p2: second point
 %End
 
-    static QgsQuadrilateral rectangleFromCenterPoint( const QgsPoint &center, const QgsPoint &point );
+    static QgsQuadrilateral rectangleFromCenterPoint( const QgsPoint &center, const QgsPoint &point ) /HoldGIL/;
 %Docstring
 Construct a QgsQuadrilateral as a rectangle from center point ``center``
 and another point ``point``.
@@ -104,7 +108,7 @@ Z is taken from ``center`` point.
 :param point: corner point
 %End
 
-    static QgsQuadrilateral fromRectangle( const QgsRectangle &rectangle );
+    static QgsQuadrilateral fromRectangle( const QgsRectangle &rectangle ) /HoldGIL/;
 %Docstring
 Construct a QgsQuadrilateral as a rectangle from a :py:class:`QgsRectangle`.
 
@@ -112,17 +116,17 @@ Construct a QgsQuadrilateral as a rectangle from a :py:class:`QgsRectangle`.
 %End
 
 
-    bool equals( const QgsQuadrilateral &other, double epsilon = 4 * DBL_EPSILON ) const;
+    bool equals( const QgsQuadrilateral &other, double epsilon = 4 * DBL_EPSILON ) const /HoldGIL/;
 %Docstring
 Compares two QgsQuadrilateral, allowing specification of the maximum allowable difference between points.
 
 :param other: the QgsQuadrilateral to compare
 :param epsilon: the maximum difference allowed / tolerance
 %End
-    bool operator==( const QgsQuadrilateral &other ) const;
-    bool operator!=( const QgsQuadrilateral &other ) const;
+    bool operator==( const QgsQuadrilateral &other ) const /HoldGIL/;
+    bool operator!=( const QgsQuadrilateral &other ) const /HoldGIL/;
 
-    bool isValid() const;
+    bool isValid() const /HoldGIL/;
 %Docstring
 Convenient method to determine if a QgsQuadrilateral is valid.
 A QgsQuadrilateral must be simple (not self-intersecting) and
@@ -137,7 +141,7 @@ cannot have collinear points.
       Point4,
     };
 
-    bool setPoint( const QgsPoint &newPoint, Point index );
+    bool setPoint( const QgsPoint &newPoint, Point index ) /HoldGIL/;
 %Docstring
 Sets the point ``newPoint`` at the ``index``.
 Returns ``False`` if the QgsQuadrilateral is not valid.
@@ -145,10 +149,11 @@ Returns ``False`` if the QgsQuadrilateral is not valid.
 .. seealso:: Point
 %End
 
-    bool setPoints( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 );
+    bool setPoints( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 ) /HoldGIL/;
 %Docstring
 Set all points
 Returns ``False`` if the QgsQuadrilateral is not valid:
+
 - The points do not have the same type
 - The quadrilateral would have auto intersections
 - The quadrilateral has double points
@@ -176,12 +181,12 @@ Returns a string representation of the quadrilateral.
 Members will be truncated to the specified precision.
 %End
 
-    double area() const;
+    double area() const /HoldGIL/;
 %Docstring
 Returns the area of the quadrilateral, or 0 if the quadrilateral is empty.
 %End
 
-    double perimeter() const;
+    double perimeter() const /HoldGIL/;
 %Docstring
 Returns the perimeter of the quadrilateral, or 0 if the quadrilateral is empty.
 %End

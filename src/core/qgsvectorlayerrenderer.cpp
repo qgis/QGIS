@@ -38,6 +38,8 @@
 #include "qgssettings.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsrenderedfeaturehandlerinterface.h"
+#include "qgsvectorlayertemporalproperties.h"
+#include "qgsmapclippingutils.h"
 
 #include <QPicture>
 
@@ -59,6 +61,13 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   mGeometryType = layer->geometryType();
 
   mFeatureBlendMode = layer->featureBlendMode();
+
+  if ( context.isTemporal() )
+  {
+    QgsVectorLayerTemporalContext temporalContext;
+    temporalContext.setLayer( layer );
+    mTemporalFilter = qobject_cast< const QgsVectorLayerTemporalProperties * >( layer->temporalProperties() )->createFilterString( temporalContext, context.temporalRange() );
+  }
 
   // if there's already a simplification method specified via the context, we respect that. Otherwise, we fall back
   // to the layer's individual setting
@@ -116,8 +125,9 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   //register label and diagram layer to the labeling engine
   prepareLabeling( layer, mAttrNames );
   prepareDiagrams( layer, mAttrNames );
-}
 
+  mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( context, layer );
+}
 
 QgsVectorLayerRenderer::~QgsVectorLayerRenderer()
 {
@@ -141,7 +151,7 @@ bool QgsVectorLayerRenderer::render()
     return false;
   }
 
-  if ( mRenderer->type() == QStringLiteral( "nullSymbol" ) )
+  if ( mRenderer->type() == QLatin1String( "nullSymbol" ) )
   {
     // a little shortcut for the null symbol renderer - most of the time it is not going to render anything
     // so we can even skip the whole loop to fetch features
@@ -150,6 +160,8 @@ bool QgsVectorLayerRenderer::render()
   }
 
   QgsRenderContext &context = *renderContext();
+
+  QgsScopedQPainterState painterState( context.painter() );
 
   // MUST be created in the thread doing the rendering
   mInterruptionChecker = qgis::make_unique< QgsVectorLayerRendererInterruptionChecker >( context );
@@ -173,6 +185,23 @@ bool QgsVectorLayerRenderer::render()
   QString rendererFilter = mRenderer->filter( mFields );
 
   QgsRectangle requestExtent = context.extent();
+  if ( !mClippingRegions.empty() )
+  {
+    mClipFilterGeom = QgsMapClippingUtils::calculateFeatureRequestGeometry( mClippingRegions, context, mApplyClipFilter );
+    requestExtent = requestExtent.intersect( mClipFilterGeom.boundingBox() );
+
+    mClipFeatureGeom = QgsMapClippingUtils::calculateFeatureIntersectionGeometry( mClippingRegions, context, mApplyClipGeometries );
+
+    bool needsPainterClipPath = false;
+    const QPainterPath path = QgsMapClippingUtils::calculatePainterClipRegion( mClippingRegions, context, QgsMapLayerType::VectorLayer, needsPainterClipPath );
+    if ( needsPainterClipPath )
+      context.painter()->setClipPath( path, Qt::IntersectClip );
+
+    mLabelClipFeatureGeom = QgsMapClippingUtils::calculateLabelIntersectionGeometry( mClippingRegions, context, mApplyLabelClipGeometries );
+
+    if ( mDiagramProvider )
+      mDiagramProvider->setClipFeatureGeometry( mLabelClipFeatureGeom );
+  }
   mRenderer->modifyRequestExtent( requestExtent, context );
 
   QgsFeatureRequest featureRequest = QgsFeatureRequest()
@@ -192,6 +221,10 @@ bool QgsVectorLayerRenderer::render()
   if ( !rendererFilter.isEmpty() && rendererFilter != QLatin1String( "TRUE" ) )
   {
     featureRequest.combineFilterExpression( rendererFilter );
+  }
+  if ( !mTemporalFilter.isEmpty() )
+  {
+    featureRequest.combineFilterExpression( mTemporalFilter );
   }
 
   // enable the simplification of the geometries (Using the current map2pixel context) before send it to renderer engine.
@@ -302,6 +335,13 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator &fit )
   QgsRenderContext &context = *renderContext();
   context.expressionContext().appendScope( symbolScope );
 
+  std::unique_ptr< QgsGeometryEngine > clipEngine;
+  if ( mApplyClipFilter )
+  {
+    clipEngine.reset( QgsGeometry::createGeometryEngine( mClipFilterGeom.constGet() ) );
+    clipEngine->prepareGeometry();
+  }
+
   QgsFeature fet;
   while ( fit.nextFeature( fet ) )
   {
@@ -315,6 +355,12 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator &fit )
 
       if ( !fet.hasGeometry() || fet.geometry().isEmpty() )
         continue; // skip features without geometry
+
+      if ( clipEngine && !clipEngine->intersects( fet.geometry().constGet() ) )
+        continue; // skip features outside of clipping region
+
+      if ( mApplyClipGeometries )
+        context.setFeatureClipGeometry( mClipFeatureGeom );
 
       context.expressionContext().setFeature( fet );
 
@@ -344,6 +390,9 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator &fit )
             QgsExpressionContextUtils::updateSymbolScope( symbol, symbolScope );
           }
 
+          if ( mApplyLabelClipGeometries )
+            context.setFeatureClipGeometry( mLabelClipFeatureGeom );
+
           if ( mLabelProvider )
           {
             mLabelProvider->registerFeature( fet, context, obstacleGeometry, symbol );
@@ -352,6 +401,9 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator &fit )
           {
             mDiagramProvider->registerFeature( fet, context, obstacleGeometry );
           }
+
+          if ( mApplyLabelClipGeometries )
+            context.setFeatureClipGeometry( QgsGeometry() );
         }
       }
     }
@@ -385,6 +437,17 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
   QgsExpressionContextScope *symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );
   std::unique_ptr< QgsExpressionContextScopePopper > scopePopper = qgis::make_unique< QgsExpressionContextScopePopper >( context.expressionContext(), symbolScope );
 
+
+  std::unique_ptr< QgsGeometryEngine > clipEngine;
+  if ( mApplyClipFilter )
+  {
+    clipEngine.reset( QgsGeometry::createGeometryEngine( mClipFilterGeom.constGet() ) );
+    clipEngine->prepareGeometry();
+  }
+
+  if ( mApplyLabelClipGeometries )
+    context.setFeatureClipGeometry( mLabelClipFeatureGeom );
+
   // 1. fetch features
   QgsFeature fet;
   while ( fit.nextFeature( fet ) )
@@ -398,6 +461,9 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
 
     if ( !fet.hasGeometry() )
       continue; // skip features without geometry
+
+    if ( clipEngine && !clipEngine->intersects( fet.geometry().constGet() ) )
+      continue; // skip features outside of clipping region
 
     context.expressionContext().setFeature( fet );
     QgsSymbol *sym = mRenderer->symbolForFeature( fet, context );
@@ -440,6 +506,9 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
     }
   }
 
+  if ( mApplyLabelClipGeometries )
+    context.setFeatureClipGeometry( QgsGeometry() );
+
   scopePopper.reset();
 
   if ( features.empty() )
@@ -466,6 +535,9 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
       levels[level].append( item );
     }
   }
+
+  if ( mApplyClipGeometries )
+    context.setFeatureClipGeometry( mClipFeatureGeom );
 
   // 2. draw features in correct order
   for ( int l = 0; l < levels.count(); l++ )

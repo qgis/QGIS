@@ -41,7 +41,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class rearrange_bands(GdalAlgorithm):
-
     INPUT = 'INPUT'
     BANDS = 'BANDS'
     OPTIONS = 'OPTIONS'

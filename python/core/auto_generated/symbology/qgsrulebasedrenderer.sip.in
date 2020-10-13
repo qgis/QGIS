@@ -38,14 +38,17 @@ the rules and draws features with symbols from rules that match.
 
     struct RenderJob
     {
-      RenderJob( QgsRuleBasedRenderer::FeatureToRender &_ftr, QgsSymbol *_s );
+        RenderJob( QgsRuleBasedRenderer::FeatureToRender &_ftr, QgsSymbol *_s );
 
-      QgsRuleBasedRenderer::FeatureToRender &ftr;
+        QgsRuleBasedRenderer::FeatureToRender &ftr;
 %Docstring
 Feature to render
 %End
 
-      QgsSymbol *symbol;
+        QgsSymbol *symbol;
+
+      private:
+        RenderJob &operator=( const RenderJob & );
     };
 
     struct RenderLevel

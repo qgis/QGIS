@@ -66,7 +66,7 @@ Clears all stored transform information from the context.
  QMap< QPair< QString, QString>, QgsDatumTransform::TransformPair > sourceDestinationDatumTransforms() const /Deprecated/;
 %Docstring
 Returns the stored mapping for source to destination CRS pairs to associated datum transforms to use.
-The map keys will be :py:func:`QgsCoordinateReferenceSystems.authid()`s.
+The map keys will be QgsCoordinateReferenceSystems.authid()s.
 
 If either the source transform ID or destination transform ID is -1, then no datum transform is
 required for transformations for that source or destination.
@@ -74,7 +74,7 @@ required for transformations for that source or destination.
 .. warning::
 
    This method should not be used to calculate the corresponding datum transforms
-   to use for a coordinate transform. Instead, always use calculateDatumTransforms()
+   to use for a coordinate transform. Instead, always use :py:func:`~QgsCoordinateTransformContext.calculateDatumTransforms`
    to determine this.
 
 .. seealso:: :py:func:`addSourceDestinationDatumTransform`
@@ -87,12 +87,12 @@ required for transformations for that source or destination.
     QMap< QPair< QString, QString>, QString > coordinateOperations() const;
 %Docstring
 Returns the stored mapping for source to destination CRS pairs to associated coordinate operation to use
-(as a proj string). The map keys will be :py:func:`QgsCoordinateReferenceSystems.authid()`s.
+(as a proj string). The map keys will be QgsCoordinateReferenceSystems.authid()s.
 
 .. warning::
 
    This method should not be used to calculate the corresponding coordinate operation
-   to use for a coordinate transform. Instead, always use calculateCoordinateOperation()
+   to use for a coordinate transform. Instead, always use :py:func:`~QgsCoordinateTransformContext.calculateCoordinateOperation`
    to determine this.
 
 .. seealso:: :py:func:`addCoordinateOperation`
@@ -101,7 +101,7 @@ Returns the stored mapping for source to destination CRS pairs to associated coo
 .. note::
 
    Requires Proj 6.0 or later. Builds based on earlier Proj versions will always return an empty list,
-   and the deprecated sourceDestinationDatumTransforms() method must be used instead.
+   and the deprecated :py:func:`~QgsCoordinateTransformContext.sourceDestinationDatumTransforms` method must be used instead.
 
 
 .. versionadded:: 3.8
@@ -137,7 +137,7 @@ will be used when transforming between the coordinate reference systems.
 If ``allowFallback`` is ``True`` (since QGIS 3.12), then "ballpark" fallback transformations
 will be used in the case that the specified coordinate operation fails (such as when
 coordinates from outside a required grid shift file are transformed). See
-QgsCoordinateTransform.fallbackOperationOccurred() for further details. Note that if an
+:py:func:`QgsCoordinateTransform.fallbackOperationOccurred()` for further details. Note that if an
 existing ``sourceCrs`` and ``destinationCrs`` pair are added with a different ``allowFallback``
 value, that value will replace the existing one (i.e. each combination of ``sourceCrs`` and
 ``destinationCrs`` must be unique).
@@ -159,7 +159,7 @@ Returns ``True`` if the new coordinate operation was added successfully.
 .. note::
 
    Requires Proj 6.0 or later. Builds based on earlier Proj versions will ignore this setting,
-   and the deprecated addSourceDestinationDatumTransform() method must be used instead.
+   and the deprecated :py:func:`~QgsCoordinateTransformContext.addSourceDestinationDatumTransform` method must be used instead.
 
 
 .. versionadded:: 3.8
@@ -226,12 +226,12 @@ be used.
 .. note::
 
    Requires Proj 6.0 or later. Builds based on earlier Proj versions will always return
-   an empty string, and the deprecated calculateDatumTransforms() method should be used instead.
+   an empty string, and the deprecated :py:func:`~QgsCoordinateTransformContext.calculateDatumTransforms` method should be used instead.
 
 
 .. warning::
 
-   Always check the result of mustReverseCoordinateOperation() in order to determine if the
+   Always check the result of :py:func:`~QgsCoordinateTransformContext.mustReverseCoordinateOperation` in order to determine if the
    proj coordinate operation string returned by this method corresponds to the reverse operation, and
    must be manually flipped when calculating coordinate transforms.
 
@@ -245,14 +245,14 @@ Returns ``True`` if approximate "ballpark" transforms may be used when transform
 between a ``source`` and ``destination`` CRS pair, in the case that the preferred
 coordinate operation fails (such as when
 coordinates from outside a required grid shift file are transformed). See
-QgsCoordinateTransform.fallbackOperationOccurred() for further details.
+:py:func:`QgsCoordinateTransform.fallbackOperationOccurred()` for further details.
 
 .. versionadded:: 3.12
 %End
 
     bool mustReverseCoordinateOperation( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const;
 %Docstring
-Returns ``True`` if the coordinate operation returned by calculateCoordinateOperation() for the ``source`` to ``destination`` pair
+Returns ``True`` if the coordinate operation returned by :py:func:`~QgsCoordinateTransformContext.calculateCoordinateOperation` for the ``source`` to ``destination`` pair
 must be inverted.
 
 .. versionadded:: 3.10.2

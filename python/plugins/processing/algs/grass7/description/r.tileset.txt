@@ -11,4 +11,4 @@ QgsProcessingParameterNumber|overlap|Number of cells tiles should overlap in eac
 QgsProcessingParameterString|separator|Output field separator|pipe|False|True
 *QgsProcessingParameterBoolean|-g|Produces shell script output|False
 *QgsProcessingParameterBoolean|-w|Produces web map server query string output|False
-QgsProcessingParameterFileDestination|output|Tileset|Txt files (*.txt)|None|False
+QgsProcessingParameterFileDestination|html|Tileset|HTML files (*.html)|None|False

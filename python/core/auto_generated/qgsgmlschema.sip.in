@@ -77,7 +77,7 @@ Gets list of geometry attributes for type/class name
 
     QgsError error() const;
 %Docstring
-Gets error if parseXSD() or guessSchema() failed
+Gets error if :py:func:`~QgsGmlSchema.parseXSD` or :py:func:`~QgsGmlSchema.guessSchema` failed
 %End
 
 };

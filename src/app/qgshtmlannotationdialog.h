@@ -25,7 +25,7 @@ class APP_EXPORT QgsHtmlAnnotationDialog: public QDialog, private Ui::QgsFormAnn
 {
     Q_OBJECT
   public:
-    QgsHtmlAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
+    QgsHtmlAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
 
   private:
     QgsMapCanvasAnnotationItem *mItem = nullptr;

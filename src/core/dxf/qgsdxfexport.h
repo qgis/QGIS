@@ -24,6 +24,7 @@
 #include "qgsgeometry.h"
 #include "qgssymbol.h" // for OutputUnit enum
 #include "qgsmapsettings.h"
+#include "qgslabelsink.h"
 
 #include <QColor>
 #include <QList>
@@ -54,8 +55,13 @@ namespace pal // SIP_SKIP
  * \ingroup core
  * \class QgsDxfExport
  */
+#ifdef SIP_RUN
 class CORE_EXPORT QgsDxfExport
 {
+#else
+class CORE_EXPORT QgsDxfExport : public QgsLabelSink
+{
+#endif
   public:
 
     /**
@@ -167,7 +173,7 @@ class CORE_EXPORT QgsDxfExport
      */
     QgsDxfExport();
 
-    ~QgsDxfExport();
+    ~QgsDxfExport() override;
 
     /**
      * Set map settings and assign layer name attributes
@@ -505,22 +511,21 @@ class CORE_EXPORT QgsDxfExport
     static QStringList encodings();
 
     /**
-     * Output the label
-     * \param layerId id of the layer
-     * \param context render context
-     * \param label position of label
-     * \param settings label settings
+     * Add a label to the dxf output.
+     *
      * \note not available in Python bindings
      */
-    void drawLabel( const QString &layerId, QgsRenderContext &context, pal::LabelPosition *label, const QgsPalLayerSettings &settings ) SIP_SKIP;
+    void drawLabel( const QString &layerId, QgsRenderContext &context, pal::LabelPosition *label, const QgsPalLayerSettings &settings ) SIP_SKIP override;
 
     /**
      * Register name of layer for feature
      * \param layerId id of layer
      * \param fid id of feature
      * \param layer dxf layer of feature
+     *
+     * \deprecated Will be made private in QGIS 4
      */
-    void registerDxfLayer( const QString &layerId, QgsFeatureId fid, const QString &layer );
+    Q_DECL_DEPRECATED void registerDxfLayer( const QString &layerId, QgsFeatureId fid, const QString &layer );
 
   private:
 
@@ -612,7 +617,7 @@ class CORE_EXPORT QgsDxfExport
     double mFactor = 1.0;
     bool mForce2d = false;
 
-    QgsDxfExport::Flags mFlags = nullptr;
+    QgsDxfExport::Flags mFlags = QgsDxfExport::Flags();
 
     void appendCurve( const QgsCurve &c, QVector<QgsPoint> &points, QVector<double> &bulges );
     void appendLineString( const QgsLineString &ls, QVector<QgsPoint> &points, QVector<double> &bulges );

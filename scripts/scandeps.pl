@@ -33,14 +33,15 @@ close I;
 
 die "no dists" unless @dists;
 
-open I, "doc/linux.t2t";
-open O, ">doc/linux.t2t.new";
+open I, "doc/INSTALL.md";
+open O, ">doc/INSTALL.md.new";
 while(<I>) {
-	last if /^\|\| Distribution \| install command for packages \|\n$/;
+	last if /^\|Distribution\|Install command for packages\|\n$/;
 	print O;
 }
 
-print O "|| Distribution | install command for packages |\n";
+print O "|Distribution|Install command for packages|\n";
+print O "|------------|----------------------------|\n";
 
 for my $dist (@dists) {
 	system("git checkout debian/control" )==0 or die "git checkout failed: $!";
@@ -127,7 +128,5 @@ while(<I>) {
 close O;
 close I;
 
-rename "doc/linux.t2t", "doc/linux.t2t.orig";
-rename "doc/linux.t2t.new", "doc/linux.t2t";
-my $time = time;
-utime $time, $time, "doc/INSTALL.t2t";
+rename "doc/INSTALL.md", "doc/INSTALL.md.orig";
+rename "doc/INSTALL.md.new", "doc/INSTALL.md";

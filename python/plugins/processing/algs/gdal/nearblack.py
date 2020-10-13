@@ -41,7 +41,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class nearblack(GdalAlgorithm):
-
     INPUT = 'INPUT'
     NEAR = 'NEAR'
     WHITE = 'WHITE'

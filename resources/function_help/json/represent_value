@@ -1,6 +1,7 @@
 {
   "name": "represent_value",
   "type": "function",
+  "groups": ["Record and Attributes"],
   "description": "Returns the configured representation value for a field value. It depends on the configured widget type. Often, this is useful for 'Value Map' widgets.",
   "arguments": [
     {"arg":"value", "description": "The value which should be resolved. Most likely a field." },

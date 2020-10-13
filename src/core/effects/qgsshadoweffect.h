@@ -31,7 +31,7 @@
  * \since QGIS 2.9
  */
 
-class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
+class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
 {
 
   public:
@@ -251,7 +251,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
  *
  * \since QGIS 2.9
  */
-class CORE_EXPORT QgsDropShadowEffect : public QgsShadowEffect
+class CORE_EXPORT QgsDropShadowEffect : public QgsShadowEffect SIP_NODEFAULTCTORS
 {
 
   public:
@@ -282,7 +282,7 @@ class CORE_EXPORT QgsDropShadowEffect : public QgsShadowEffect
  *
  * \since QGIS 2.9
  */
-class CORE_EXPORT QgsInnerShadowEffect : public QgsShadowEffect
+class CORE_EXPORT QgsInnerShadowEffect : public QgsShadowEffect SIP_NODEFAULTCTORS
 {
 
   public:

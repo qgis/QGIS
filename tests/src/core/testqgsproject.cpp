@@ -150,7 +150,7 @@ void TestQgsProject::testPathResolver()
   QVERIFY( testFile.open( QIODevice::WriteOnly | QIODevice::Text ) );
   testFile.close();
   QVERIFY( QFile::exists( fi.path() + QStringLiteral( "/file1.txt" ) ) );
-  QCOMPARE( tempRel.readPath( "file1.txt" ), fi.path() + QStringLiteral( "/file1.txt" ) );
+  QCOMPARE( tempRel.readPath( "file1.txt" ), QString( fi.path() + QStringLiteral( "/file1.txt" ) ) );
 
   QgsPathResolver resolverAbs;
   QCOMPARE( resolverAbs.writePath( "/home/qgis/file1.txt" ), QString( "/home/qgis/file1.txt" ) );
@@ -269,7 +269,7 @@ void TestQgsProject::testPathResolverSvg()
   project.write( projectFilename );
 
   // make sure the path resolver works with relative paths (enabled by default)
-  QCOMPARE( project.pathResolver().readPath( "./a.txt" ), dirPath + "/a.txt" );
+  QCOMPARE( project.pathResolver().readPath( "./a.txt" ), QString( dirPath + "/a.txt" ) );
   QCOMPARE( project.pathResolver().writePath( dirPath + "/a.txt" ), QString( "./a.txt" ) );
 
   // check that the saved paths are relative
@@ -506,6 +506,7 @@ void TestQgsProject::projectSaveUser()
   QgsProject p;
   QVERIFY( p.saveUser().isEmpty() );
   QVERIFY( p.saveUserFullName().isEmpty() );
+  QVERIFY( !p.lastSaveDateTime().isValid() );
 
   QTemporaryFile f;
   QVERIFY( f.open() );
@@ -515,6 +516,8 @@ void TestQgsProject::projectSaveUser()
 
   QCOMPARE( p.saveUser(), QgsApplication::userLoginName() );
   QCOMPARE( p.saveUserFullName(), QgsApplication::userFullName() );
+  QCOMPARE( p.lastSaveDateTime().date(), QDateTime::currentDateTime().date() );
+  QCOMPARE( p.lastSaveVersion().text(), QgsProjectVersion( Qgis::version() ).text() );
 
   QgsSettings s;
   s.setValue( QStringLiteral( "projects/anonymize_saved_projects" ), true, QgsSettings::Core );
@@ -523,12 +526,20 @@ void TestQgsProject::projectSaveUser()
 
   QVERIFY( p.saveUser().isEmpty() );
   QVERIFY( p.saveUserFullName().isEmpty() );
+  QVERIFY( !p.lastSaveDateTime().isValid() );
 
   s.setValue( QStringLiteral( "projects/anonymize_saved_projects" ), false, QgsSettings::Core );
 
   p.write();
   QCOMPARE( p.saveUser(), QgsApplication::userLoginName() );
   QCOMPARE( p.saveUserFullName(), QgsApplication::userFullName() );
+  QCOMPARE( p.lastSaveDateTime().date(), QDateTime::currentDateTime().date() );
+
+  QgsProject p2;
+  QVERIFY( p2.read( QString( TEST_DATA_DIR ) + QStringLiteral( "/embedded_groups/project1.qgs" ) ) );
+  QCOMPARE( p2.lastSaveVersion().text(), QStringLiteral( "2.99.0-Master" ) );
+  p2.clear();
+  QVERIFY( p2.lastSaveVersion().isNull() );
 }
 
 void TestQgsProject::testSetGetCrs()

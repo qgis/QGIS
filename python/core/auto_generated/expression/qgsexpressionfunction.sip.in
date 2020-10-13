@@ -188,7 +188,7 @@ are also static.
 
     virtual bool prepare( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const;
 %Docstring
-This will be called during the prepare step() of an expression if it is not static.
+This will be called during the prepare :py:func:`~QgsExpressionFunction.step` of an expression if it is not static.
 
 This can be used by functions to do any preparation steps that might help to speedup the upcoming
 evaluation.
@@ -227,7 +227,7 @@ Returns the first group which the function belongs to.
 
 .. note::
 
-   consider using groups() instead, as some functions naturally belong in multiple groups
+   consider using :py:func:`~QgsExpressionFunction.groups` instead, as some functions naturally belong in multiple groups
 %End
 
     QStringList groups() const;
@@ -259,7 +259,7 @@ Returns result of evaluating the function.
     virtual QVariant run( QgsExpressionNode::NodeList *args, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node );
 %Docstring
 Evaluates the function, first evaluating all required arguments before passing them to the
-function's func() method.
+function's :py:func:`~QgsExpressionFunction.func` method.
 %End
 
     bool operator==( const QgsExpressionFunction &other ) const;

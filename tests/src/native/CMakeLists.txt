@@ -60,7 +60,7 @@ ENDIF (APPLE)
 MACRO (ADD_QGIS_TEST testname testsrc)
   SET(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
   SET(qgis_${testname}_MOC_CPPS ${testsrc})
-  ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS} ${IMAGE_RCC_SRCS})
+  ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS})
   TARGET_LINK_LIBRARIES(qgis_${testname}
     ${Qt5Core_LIBRARIES}
     ${Qt5Test_LIBRARIES}

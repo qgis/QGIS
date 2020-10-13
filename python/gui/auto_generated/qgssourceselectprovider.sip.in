@@ -44,7 +44,7 @@ Source select provider name, this is useful to retrieve
 a particular source select in case the provider has more
 than one, it should be unique among all providers.
 
-The default implementation returns the providerKey()
+The default implementation returns the :py:func:`~QgsSourceSelectProvider.providerKey`
 %End
 
     virtual QString text() const = 0;

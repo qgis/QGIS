@@ -38,7 +38,7 @@ class QgsRasterLayerSaveAsDialog: QDialog
                                 const QgsCoordinateReferenceSystem &layerCrs,
                                 const QgsCoordinateReferenceSystem &currentCrs,
                                 QWidget *parent /TransferThis/ = 0,
-                                Qt::WindowFlags f = 0 );
+                                Qt::WindowFlags f = Qt::WindowFlags() );
 %Docstring
 Constructor for QgsRasterLayerSaveAsDialog
 %End

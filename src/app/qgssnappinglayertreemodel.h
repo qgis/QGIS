@@ -40,6 +40,9 @@ class APP_EXPORT QgsSnappingLayerDelegate : public QItemDelegate
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
 
+  private slots:
+    void onScaleChanged();
+
   private:
     QgsMapCanvas *mCanvas = nullptr;
 };
@@ -95,9 +98,8 @@ class APP_EXPORT QgsSnappingLayerTreeModel : public QSortFilterProxyModel
     QString mFilterText;
     QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> mIndividualLayerSettings;
     QgsLayerTreeModel *mLayerTreeModel = nullptr;
-    bool mEnableMinMaxColumn = true;
 
-    void hasRowchanged( QgsLayerTreeNode *node, const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> &oldSettings, bool forceRefresh );
+    void hasRowchanged( QgsLayerTreeNode *node, const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> &oldSettings );
 };
 
 #endif // QGSSNAPPINGLAYERTREEVIEW_H

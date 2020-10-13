@@ -51,18 +51,23 @@ class CORE_EXPORT QgsRenderedFeatureHandlerInterface
     struct CORE_EXPORT RenderedFeatureContext
     {
 
-      /**
-       * Constructor for RenderedFeatureContext.
-       * \param renderContext The render context which was used while rendering feature.
-       */
-      RenderedFeatureContext( const QgsRenderContext &renderContext )
-        : renderContext( renderContext )
-      {}
+        /**
+         * Constructor for RenderedFeatureContext.
+         * \param renderContext The render context which was used while rendering feature.
+         */
+        RenderedFeatureContext( const QgsRenderContext &renderContext )
+          : renderContext( renderContext )
+        {}
 
-      /**
-       * The render context which was used while rendering feature.
-       */
-      const QgsRenderContext &renderContext;
+        /**
+         * The render context which was used while rendering feature.
+         */
+        const QgsRenderContext &renderContext;
+
+      private:
+#ifdef SIP_RUN
+        RenderedFeatureContext &operator=( const RenderedFeatureContext & );
+#endif
     };
 
     /**

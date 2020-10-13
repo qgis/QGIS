@@ -40,7 +40,8 @@ from qgis.core import (QgsMessageLog,
                        QgsProcessingOutputRasterLayer,
                        QgsProcessingOutputMapLayer,
                        QgsProcessingOutputMultipleLayers,
-                       QgsProcessingFeedback)
+                       QgsProcessingFeedback,
+                       QgsRuntimeProfiler)
 
 import processing
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -51,17 +52,30 @@ from processing.gui.AlgorithmExecutor import execute
 from processing.script import ScriptUtils
 from processing.tools import dataobjects
 
-from processing.algs.qgis.QgisAlgorithmProvider import QgisAlgorithmProvider  # NOQA
-from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider
-from processing.algs.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider  # NOQA
-from processing.algs.otb.OtbAlgorithmProvider import OtbAlgorithmProvider  # NOQA
-from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider  # NOQA
-from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider  # NOQA
-#from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider  # NOQA
+with QgsRuntimeProfiler.profile('Import QGIS Provider'):
+    from processing.algs.qgis.QgisAlgorithmProvider import QgisAlgorithmProvider  # NOQA
+
+with QgsRuntimeProfiler.profile('Import GRASS Provider'):
+    from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider
+
+with QgsRuntimeProfiler.profile('Import GDAL Provider'):
+    from processing.algs.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider  # NOQA
+
+with QgsRuntimeProfiler.profile('Import OTB Provider'):
+    from processing.algs.otb.OtbAlgorithmProvider import OtbAlgorithmProvider  # NOQA
+
+with QgsRuntimeProfiler.profile('Import SAGA Provider'):
+    from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider  # NOQA
+
+with QgsRuntimeProfiler.profile('Import Script Provider'):
+    from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider  # NOQA
+
+
+# from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider  # NOQA
 
 # should be loaded last - ensures that all dependent algorithms are available when loading models
 from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider  # NOQA
-from processing.modeler.ProjectProvider import ProjectProvider # NOQA
+from processing.modeler.ProjectProvider import ProjectProvider  # NOQA
 
 
 class Processing(object):
@@ -83,24 +97,26 @@ class Processing(object):
     def initialize():
         if "model" in [p.id() for p in QgsApplication.processingRegistry().providers()]:
             return
-        # Add the basic providers
-        for c in [
-            QgisAlgorithmProvider,
-            Grass7AlgorithmProvider,
-            GdalAlgorithmProvider,
-            OtbAlgorithmProvider,
-            SagaAlgorithmProvider,
-            ScriptAlgorithmProvider,
-            ModelerAlgorithmProvider,
-            ProjectProvider
-        ]:
-            p = c()
-            if QgsApplication.processingRegistry().addProvider(p):
-                Processing.BASIC_PROVIDERS.append(p)
-        # And initialize
-        ProcessingConfig.initialize()
-        ProcessingConfig.readSettings()
-        RenderingStyles.loadStyles()
+
+        with QgsRuntimeProfiler.profile('Initialize'):
+            # Add the basic providers
+            for c in [
+                QgisAlgorithmProvider,
+                Grass7AlgorithmProvider,
+                GdalAlgorithmProvider,
+                OtbAlgorithmProvider,
+                SagaAlgorithmProvider,
+                ScriptAlgorithmProvider,
+                ModelerAlgorithmProvider,
+                ProjectProvider
+            ]:
+                p = c()
+                if QgsApplication.processingRegistry().addProvider(p):
+                    Processing.BASIC_PROVIDERS.append(p)
+            # And initialize
+            ProcessingConfig.initialize()
+            ProcessingConfig.readSettings()
+            RenderingStyles.loadStyles()
 
     @staticmethod
     def deinitialize():
@@ -140,7 +156,7 @@ class Processing(object):
             feedback.pushInfo(
                 Processing.tr('Warning: Not all input layers use the same CRS.\nThis can cause unexpected results.'))
 
-        ret, results = execute(alg, parameters, context, feedback)
+        ret, results = execute(alg, parameters, context, feedback, catch_exceptions=False)
         if ret:
             feedback.pushInfo(
                 Processing.tr('Results: {}').format(results))
@@ -156,16 +172,16 @@ class Processing(object):
                     if isinstance(out, (QgsProcessingOutputVectorLayer, QgsProcessingOutputRasterLayer, QgsProcessingOutputMapLayer)):
                         result = results[out.name()]
                         if not isinstance(result, QgsMapLayer):
-                            layer = context.takeResultLayer(result) # transfer layer ownership out of context
+                            layer = context.takeResultLayer(result)  # transfer layer ownership out of context
                             if layer:
-                                results[out.name()] = layer # replace layer string ref with actual layer (+ownership)
+                                results[out.name()] = layer  # replace layer string ref with actual layer (+ownership)
                     elif isinstance(out, QgsProcessingOutputMultipleLayers):
                         result = results[out.name()]
                         if result:
                             layers_result = []
                             for l in result:
                                 if not isinstance(result, QgsMapLayer):
-                                    layer = context.takeResultLayer(l) # transfer layer ownership out of context
+                                    layer = context.takeResultLayer(l)  # transfer layer ownership out of context
                                     if layer:
                                         layers_result.append(layer)
                                     else:
@@ -173,7 +189,8 @@ class Processing(object):
                                 else:
                                     layers_result.append(l)
 
-                            results[out.name()] = layers_result # replace layers strings ref with actual layers (+ownership)
+                            results[
+                                out.name()] = layers_result  # replace layers strings ref with actual layers (+ownership)
 
         else:
             msg = Processing.tr("There were errors executing the algorithm.")

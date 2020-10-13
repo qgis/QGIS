@@ -16,7 +16,9 @@
 #ifndef QGSPOSTGRESRASTERUTILS_H
 #define QGSPOSTGRESRASTERUTILS_H
 
+#include "qgis.h"
 #include <QVariantMap>
+
 
 //! Raster utility functions
 struct QgsPostgresRasterUtils
@@ -25,6 +27,7 @@ struct QgsPostgresRasterUtils
   /**
    * Parses a \a wkb raster hex and returns information as a variant map
    * for a particular \a bandNo or for all bands if bandNo is 0
+   * See: https://git.osgeo.org/gitea/postgis/postgis/src/branch/master/raster/doc/RFC2-WellKnownBinaryFormat
    */
   static QVariantMap parseWkb( const QByteArray &wkb, int bandNo = 0 );
 

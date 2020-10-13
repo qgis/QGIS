@@ -40,13 +40,16 @@ QgsRasterMatrix::~QgsRasterMatrix()
 
 QgsRasterMatrix &QgsRasterMatrix::operator=( const QgsRasterMatrix &m )
 {
-  delete[] mData;
-  mColumns = m.nColumns();
-  mRows = m.nRows();
-  int nEntries = mColumns * mRows;
-  mData = new double[nEntries];
-  memcpy( mData, m.mData, sizeof( double ) * nEntries );
-  mNodataValue = m.nodataValue();
+  if ( this != &m )
+  {
+    delete[] mData;
+    mColumns = m.nColumns();
+    mRows = m.nRows();
+    int nEntries = mColumns * mRows;
+    mData = new double[nEntries];
+    memcpy( mData, m.mData, sizeof( double ) * nEntries );
+    mNodataValue = m.nodataValue();
+  }
   return *this;
 }
 

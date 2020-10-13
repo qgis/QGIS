@@ -116,7 +116,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
   // SSL Extra CAs
   QString caparam;
   QList<QSslCertificate> cas;
-  if ( sslMode.startsWith( QStringLiteral( "verify-" ) ) )
+  if ( sslMode.startsWith( QLatin1String( "verify-" ) ) )
   {
     cas = QgsApplication::authManager()->trustedCaCerts();
     // save CAs to temp file
@@ -131,7 +131,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
   }
 
   // Branch for OGR
-  if ( dataprovider == QStringLiteral( "ogr" ) || dataprovider == QStringLiteral( "gdal" ) )
+  if ( dataprovider == QLatin1String( "ogr" ) || dataprovider == QLatin1String( "gdal" ) )
   {
     if ( ! password.isEmpty() )
     {
@@ -154,13 +154,8 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
             uri.chop( 1 );
             chopped = true;
           }
-          if ( !username.isEmpty() )
-          {
-            uri += QStringLiteral( " user='%1'" ).arg( username );
-
-            if ( !password.isEmpty() )
-              uri += QStringLiteral( " password='%1'" ).arg( password );
-          }
+          uri += QStringLiteral( " user='%1'" ).arg( username );
+          uri += QStringLiteral( " password='%1'" ).arg( password );
           // add extra CAs
           if ( ! caparam.isEmpty() )
           {
@@ -182,46 +177,34 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
             chopped = true;
           }
           uri += QStringLiteral( " user=%1" ).arg( username );
-          if ( !password.isEmpty() )
-            uri += QStringLiteral( " pass=%1" ).arg( password );
+          uri += QStringLiteral( " pass=%1" ).arg( password );
           if ( chopped )
             uri += '"';
         }
         else if ( uri.startsWith( QLatin1String( "@driver=ingres" ) ) )
         {
           uri += QStringLiteral( ",userid=%1" ).arg( username );
-          if ( !password.isEmpty() )
-            uri += QStringLiteral( ",password=%1" ).arg( password );
+          uri += QStringLiteral( ",password=%1" ).arg( password );
         }
         else if ( uri.startsWith( QLatin1String( "MySQL:" ) ) )
         {
           uri += QStringLiteral( ",user=%1" ).arg( username );
-          if ( !password.isEmpty() )
-            uri += QStringLiteral( ",password=%1" ).arg( password );
+          uri += QStringLiteral( ",password=%1" ).arg( password );
         }
         else if ( uri.startsWith( QLatin1String( "MSSQL:" ) ) )
         {
           uri += QStringLiteral( ";uid=%1" ).arg( username );
           uri = uri.replace( QLatin1String( ";trusted_connection=yes" ), QString() );
-
-          if ( !password.isEmpty() )
-            uri += QStringLiteral( ";pwd=%1" ).arg( password );
+          uri += QStringLiteral( ";pwd=%1" ).arg( password );
         }
         else if ( uri.startsWith( QLatin1String( "OCI:" ) ) )
         {
           // OCI:userid/password@database_instance:table,table
-          uri = uri.replace( QStringLiteral( "OCI:/" ),  QStringLiteral( "OCI:%1/%2" ).arg( username, password ) );
+          uri = uri.replace( QLatin1String( "OCI:/" ),  QStringLiteral( "OCI:%1/%2" ).arg( username, password ) );
         }
         else if ( uri.startsWith( QLatin1String( "ODBC:" ) ) )
         {
-          if ( password.isEmpty() )
-          {
-            uri = uri.replace( QRegExp( "^ODBC:@?" ),  "ODBC:" + username + '@' );
-          }
-          else
-          {
-            uri = uri.replace( QRegExp( "^ODBC:@?" ), "ODBC:" + username + '/' + password + '@' );
-          }
+          uri = uri.replace( QRegExp( "^ODBC:@?" ), "ODBC:" + username + '/' + password + '@' );
         }
         else if ( uri.startsWith( QLatin1String( "couchdb" ) )
                   || uri.startsWith( QLatin1String( "DODS" ) )
@@ -233,7 +216,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
                   || uri.startsWith( "/vsicurl/ftp://" )
                 )
         {
-          uri = uri.replace( QStringLiteral( "://" ), QStringLiteral( "://%1:%2@" ).arg( username, password ) );
+          uri = uri.replace( QLatin1String( "://" ), QStringLiteral( "://%1:%2@" ).arg( username, password ) );
         }
       }
       // Handle sub-layers

@@ -20,6 +20,7 @@
 #include <QVariantList>
 
 #include "qgis_core.h"
+#include "qgis.h"
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -164,7 +165,7 @@ class CORE_EXPORT QgsStringStatisticalSummary
      * Returns the set of distinct string values.
      * \see countDistinct()
      */
-    QSet< QString > distinctValues() const { return QSet<QString>::fromList( mValues.keys() ); }
+    QSet< QString > distinctValues() const { return qgis::listToSet( mValues.keys() ); }
 
     /**
      * Returns the number of missing (null) string values.

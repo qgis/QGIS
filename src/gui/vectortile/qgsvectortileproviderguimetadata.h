@@ -30,7 +30,7 @@ class QgsVectorTileProviderGuiMetadata: public QgsProviderGuiMetadata
     QgsVectorTileProviderGuiMetadata();
 
     QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override;
-
+    QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
 };
 
 ///@endcond

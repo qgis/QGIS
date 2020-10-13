@@ -33,6 +33,7 @@
 #include "qgsproject.h"
 #include "qgssymbollayerutils.h"
 #include "qgsreadwritecontext.h"
+#include "qgstextrenderer.h"
 
 #include <QPainter>
 
@@ -42,7 +43,9 @@ QgsDecorationLayoutExtent::QgsDecorationLayoutExtent( QObject *parent )
   mPlacement = BottomRight;
   mMarginUnit = QgsUnitTypes::RenderMillimeters;
 
-  setName( "Layout Extent" );
+  setDisplayName( tr( "Layout Extent" ) );
+  mConfigurationName = QStringLiteral( "LayoutExtent" );
+
   projectRead();
 }
 
@@ -54,7 +57,7 @@ void QgsDecorationLayoutExtent::projectRead()
   QDomElement elem;
   QgsReadWriteContext rwContext;
   rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
-  QString xml = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/Symbol" ) );
+  QString xml = QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Symbol" ) );
   mSymbol.reset( nullptr );
   if ( !xml.isEmpty() )
   {
@@ -69,14 +72,14 @@ void QgsDecorationLayoutExtent::projectRead()
     mSymbol->changeSymbolLayer( 0, layer );
   }
 
-  QString textXml = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/Font" ) );
+  QString textXml = QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Font" ) );
   if ( !textXml.isEmpty() )
   {
     doc.setContent( textXml );
     elem = doc.documentElement();
     mTextFormat.readXml( elem, rwContext );
   }
-  mLabelExtents = QgsProject::instance()->readBoolEntry( mNameConfig, QStringLiteral( "/Labels" ), true );
+  mLabelExtents = QgsProject::instance()->readBoolEntry( mConfigurationName, QStringLiteral( "/Labels" ), true );
 }
 
 void QgsDecorationLayoutExtent::saveToProject()
@@ -92,14 +95,14 @@ void QgsDecorationLayoutExtent::saveToProject()
     elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "Symbol" ), mSymbol.get(), doc, rwContext );
     doc.appendChild( elem );
     // FIXME this works, but XML will not be valid as < is replaced by &lt;
-    QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Symbol" ), doc.toString() );
+    QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Symbol" ), doc.toString() );
   }
 
   QDomDocument textDoc;
   QDomElement textElem = mTextFormat.writeXml( textDoc, rwContext );
   textDoc.appendChild( textElem );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Font" ), textDoc.toString() );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Labels" ), mLabelExtents );
+  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Font" ), textDoc.toString() );
+  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Labels" ), mLabelExtents );
 }
 
 void QgsDecorationLayoutExtent::run()
@@ -117,8 +120,9 @@ void QgsDecorationLayoutExtent::render( const QgsMapSettings &mapSettings, QgsRe
   if ( !mSymbol )
     return;
 
-  context.painter()->save();
-  context.painter()->setRenderHint( QPainter::Antialiasing, true );
+  QgsScopedQPainterState painterState( context.painter() );
+  context.setPainterFlagsUsingContext();
+
   mSymbol->startRender( context );
 
   const QgsMapToPixel &m2p = mapSettings.mapToPixel();
@@ -168,7 +172,6 @@ void QgsDecorationLayoutExtent::render( const QgsMapSettings &mapSettings, QgsRe
     }
   }
   mSymbol->stopRender( context );
-  context.painter()->restore();
 }
 
 bool QgsDecorationLayoutExtent::labelExtents() const

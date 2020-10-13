@@ -116,7 +116,7 @@ Remove rows
 %Docstring
 Resets the model
 
-Alias to loadLayer()
+Alias to :py:func:`~QgsAttributeTableModel.loadLayer`
 %End
 
     int idToRow( QgsFeatureId id ) const;

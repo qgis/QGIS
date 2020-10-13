@@ -29,7 +29,8 @@ const QList<QString> QgsLocator::CORE_FILTERS = QList<QString>() << QStringLiter
     <<  QStringLiteral( "calculator" )
     <<  QStringLiteral( "bookmarks" )
     <<  QStringLiteral( "optionpages" )
-    <<  QStringLiteral( "edit_features" );
+    <<  QStringLiteral( "edit_features" )
+    <<  QStringLiteral( "goto" );
 
 QgsLocator::QgsLocator( QObject *parent )
   : QObject( parent )
@@ -77,7 +78,11 @@ QMap<QString, QgsLocatorFilter *> QgsLocator::prefixedFilters() const
   {
     if ( !filter->activePrefix().isEmpty() && filter->enabled() )
     {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
       filters.insertMulti( filter->activePrefix(), filter );
+#else
+      filters.insert( filter->activePrefix(), filter );
+#endif
     }
   }
   return filters;
@@ -123,6 +128,8 @@ void QgsLocator::registerFilter( QgsLocatorFilter *filter )
 
 void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c, QgsFeedback *feedback )
 {
+  mAutocompletionList.clear();
+
   QgsLocatorContext context( c );
   // ideally this should not be required, as well behaved callers
   // will NOT fire up a new fetchResults call while an existing one is
@@ -181,7 +188,15 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
       result.filter = filter;
       filterSentResult( result );
     } );
-    clone->prepare( searchString, context );
+    QStringList autoCompleteList = clone->prepare( searchString, context );
+    if ( context.usingPrefix )
+    {
+      for ( int i = 0; i < autoCompleteList.length(); i++ )
+      {
+        autoCompleteList[i].prepend( QStringLiteral( "%1 " ).arg( prefix ) );
+      }
+    }
+    mAutocompletionList.append( autoCompleteList );
 
     if ( clone->flags() & QgsLocatorFilter::FlagFast )
     {
@@ -190,7 +205,6 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
     }
     else
     {
-      // run filter in background
       threadedFilters.append( clone.release() );
     }
   }
@@ -218,6 +232,8 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
     connect( thread, &QThread::finished, thread, &QThread::deleteLater );
     thread->start();
   }
+
+  emit searchPrepared();
 
   if ( mActiveThreads.empty() )
     emit finished();

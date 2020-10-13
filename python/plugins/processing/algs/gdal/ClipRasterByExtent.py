@@ -37,12 +37,10 @@ from qgis.core import (QgsRasterFileWriter,
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
-
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class ClipRasterByExtent(GdalAlgorithm):
-
     INPUT = 'INPUT'
     EXTENT = 'PROJWIN'
     NODATA = 'NODATA'

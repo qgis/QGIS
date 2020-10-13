@@ -138,7 +138,9 @@ If ``ui`` is a URL, a local copy of the file will be made and will be used to cr
 %Docstring
 Set the editor widget config for a widget which is not for a simple field.
 
-Example:
+Example
+-------
+
 .. code-block:: python
 
        editFormConfig = layer.editFormConfig()
@@ -205,7 +207,7 @@ Labeling on top leaves more horizontal space for the widget itself.
 Gets Python function for edit form initialization.
 Will be looked up in a Python file relative to the project folder if it
 includes a module name or if it's a pure function name it will searched
-in the Python code set with setInitCode().
+in the Python code set with :py:func:`~QgsEditFormConfig.setInitCode`.
 %End
 
     void setInitFunction( const QString &function );
@@ -213,7 +215,7 @@ in the Python code set with setInitCode().
 Set Python function for edit form initialization.
 Will be looked up in a Python file relative to the project folder if it
 includes a module name or if it's a pure function name it will searched
-in the Python code set with setInitCode().
+in the Python code set with :py:func:`~QgsEditFormConfig.setInitCode`.
 %End
 
     QString initCode() const;
@@ -225,7 +227,7 @@ Gets Python code for edit form initialization.
 %Docstring
 Set Python code for edit form initialization.
 Make sure that you also set the appropriate function name in
-setInitFunction().
+:py:func:`~QgsEditFormConfig.setInitFunction`.
 %End
 
     QString initFilePath() const;
@@ -237,7 +239,7 @@ Gets Python external file path for edit form initialization.
 %Docstring
 Set Python external file path for edit form initialization.
 Make sure that you also set the appropriate function name in
-setInitFunction().
+:py:func:`~QgsEditFormConfig.setInitFunction`.
 %End
 
     PythonInitCodeSource initCodeSource() const;

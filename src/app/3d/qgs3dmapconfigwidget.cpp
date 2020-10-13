@@ -28,6 +28,10 @@
 #include "qgsmeshlayer.h"
 #include "qgsproject.h"
 #include "qgsmesh3dsymbolwidget.h"
+#include "qgsskyboxrenderingsettingswidget.h"
+#include "qgsshadowrenderingsettingswidget.h"
+#include "qgs3dmapcanvas.h"
+#include "qgs3dmapscene.h"
 
 Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas *mainCanvas, QWidget *parent )
   : QWidget( parent )
@@ -53,8 +57,8 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   cboTerrainLayer->setAllowEmptyLayer( true );
   cboTerrainLayer->setFilters( QgsMapLayerProxyModel::RasterLayer );
 
-  cboTerrainType->addItem( tr( "Flat terrain" ), QgsTerrainGenerator::Flat );
-  cboTerrainType->addItem( tr( "DEM (Raster layer)" ), QgsTerrainGenerator::Dem );
+  cboTerrainType->addItem( tr( "Flat Terrain" ), QgsTerrainGenerator::Flat );
+  cboTerrainType->addItem( tr( "DEM (Raster Layer)" ), QgsTerrainGenerator::Dem );
   cboTerrainType->addItem( tr( "Online" ), QgsTerrainGenerator::Online );
   cboTerrainType->addItem( tr( "Mesh" ), QgsTerrainGenerator::Mesh );
 
@@ -83,7 +87,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
     cboTerrainLayer->setLayer( meshTerrain->meshLayer() );
     mMeshSymbolWidget->setLayer( meshTerrain->meshLayer(), false );
     mMeshSymbolWidget->setSymbol( meshTerrain->symbol() );
-    spinTerrainScale->setValue( meshTerrain->symbol().verticalScale() );
+    spinTerrainScale->setValue( meshTerrain->symbol()->verticalScale() );
   }
   else
   {
@@ -102,22 +106,36 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   chkShowTileInfo->setChecked( mMap->showTerrainTilesInfo() );
   chkShowBoundingBoxes->setChecked( mMap->showTerrainBoundingBoxes() );
   chkShowCameraViewCenter->setChecked( mMap->showCameraViewCenter() );
+  chkShowLightSourceOrigins->setChecked( mMap->showLightSourceOrigins() );
 
   groupTerrainShading->setChecked( mMap->isTerrainShadingEnabled() );
-  widgetTerrainMaterial->setDiffuseVisible( false );
-  widgetTerrainMaterial->setMaterial( mMap->terrainShadingMaterial() );
+  widgetTerrainMaterial->setTechnique( QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture );
+  QgsPhongMaterialSettings terrainShadingMaterial = mMap->terrainShadingMaterial();
+  widgetTerrainMaterial->setSettings( &terrainShadingMaterial, nullptr );
 
   widgetLights->setPointLights( mMap->pointLights() );
+  widgetLights->setDirectionalLights( mMap->directionalLights() );
 
   connect( cboTerrainType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::onTerrainTypeChanged );
   connect( cboTerrainLayer, static_cast<void ( QComboBox::* )( int )>( &QgsMapLayerComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::onTerrainLayerChanged );
   connect( spinMapResolution, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &Qgs3DMapConfigWidget::updateMaxZoomLevel );
   connect( spinGroundError, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DMapConfigWidget::updateMaxZoomLevel );
 
-
   groupMeshTerrainShading->layout()->addWidget( mMeshSymbolWidget );
 
   onTerrainTypeChanged();
+
+  mSkyboxSettingsWidget = new QgsSkyboxRenderingSettingsWidget( this );
+  mSkyboxSettingsWidget->setSkyboxSettings( map->skyboxSettings() );
+  groupSkyboxSettings->layout()->addWidget( mSkyboxSettingsWidget );
+  groupSkyboxSettings->setChecked( mMap->isSkyboxEnabled() );
+
+  mShadowSetiingsWidget = new QgsShadowRenderingSettingsWidget( this );
+  mShadowSetiingsWidget->onDirectionalLightsCountChanged( widgetLights->directionalLights().count() );
+  mShadowSetiingsWidget->setShadowSettings( map->shadowSettings() );
+  groupShadowRendering->layout()->addWidget( mShadowSetiingsWidget );
+  QObject::connect( widgetLights, &QgsLightsWidget::directionalLightsCountChanged, mShadowSetiingsWidget, &QgsShadowRenderingSettingsWidget::onDirectionalLightsCountChanged );
+  groupShadowRendering->setChecked( map->shadowSettings().renderShadows() );
 }
 
 void Qgs3DMapConfigWidget::apply()
@@ -192,9 +210,9 @@ void Qgs3DMapConfigWidget::apply()
       QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( cboTerrainLayer->currentLayer() );
       QgsMeshTerrainGenerator *newTerrainGenerator = new QgsMeshTerrainGenerator;
       newTerrainGenerator->setLayer( meshLayer );
-      QgsMesh3DSymbol symbol = mMeshSymbolWidget->symbol();
-      symbol.setVerticalScale( spinTerrainScale->value() );
-      newTerrainGenerator->setSymbol( symbol );
+      std::unique_ptr< QgsMesh3DSymbol > symbol = mMeshSymbolWidget->symbol();
+      symbol->setVerticalScale( spinTerrainScale->value() );
+      newTerrainGenerator->setSymbol( symbol.release() );
       mMap->setTerrainGenerator( newTerrainGenerator );
       needsUpdateOrigin = true;
     }
@@ -221,11 +239,20 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setShowTerrainTilesInfo( chkShowTileInfo->isChecked() );
   mMap->setShowTerrainBoundingBoxes( chkShowBoundingBoxes->isChecked() );
   mMap->setShowCameraViewCenter( chkShowCameraViewCenter->isChecked() );
-
+  mMap->setShowLightSourceOrigins( chkShowLightSourceOrigins->isChecked() );
   mMap->setTerrainShadingEnabled( groupTerrainShading->isChecked() );
-  mMap->setTerrainShadingMaterial( widgetTerrainMaterial->material() );
+
+  std::unique_ptr< QgsAbstractMaterialSettings > terrainMaterial( widgetTerrainMaterial->settings() );
+  if ( QgsPhongMaterialSettings *phongMaterial = dynamic_cast< QgsPhongMaterialSettings * >( terrainMaterial.get() ) )
+    mMap->setTerrainShadingMaterial( *phongMaterial );
 
   mMap->setPointLights( widgetLights->pointLights() );
+  mMap->setDirectionalLights( widgetLights->directionalLights() );
+  mMap->setIsSkyboxEnabled( groupSkyboxSettings->isChecked() );
+  mMap->setSkyboxSettings( mSkyboxSettingsWidget->toSkyboxSettings() );
+  QgsShadowSettings shadowSettings = mShadowSetiingsWidget->toShadowSettings();
+  shadowSettings.setRenderShadows( groupShadowRendering->isChecked() );
+  mMap->setShadowSettings( shadowSettings );
 }
 
 void Qgs3DMapConfigWidget::onTerrainTypeChanged()
@@ -305,3 +332,4 @@ void Qgs3DMapConfigWidget::updateMaxZoomLevel()
   int zoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, spinMapResolution->value(), spinGroundError->value() );
   labelZoomLevels->setText( QStringLiteral( "0 - %1" ).arg( zoomLevel ) );
 }
+

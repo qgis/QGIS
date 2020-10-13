@@ -1,0 +1,904 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsCodeEditorSettingsBase</class>
+ <widget class="QWidget" name="QgsCodeEditorSettingsBase">
+  <property name="modal" stdset="0">
+   <bool>false</bool>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>677</width>
+    <height>827</height>
+   </rect>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_6">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QSplitter" name="mSplitter">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <widget class="QGroupBox" name="groupBox">
+      <property name="title">
+       <string>Preview</string>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1">
+       <item>
+        <widget class="QListWidget" name="mListLanguage"/>
+       </item>
+       <item>
+        <widget class="QStackedWidget" name="mPreviewStackedWidget">
+         <property name="currentIndex">
+          <number>4</number>
+         </property>
+         <widget class="QWidget" name="page">
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QgsCodeEditorPython" name="mPythonPreview" native="true">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>100</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="page_3">
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QgsCodeEditorExpression" name="mExpressionPreview" native="true">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>100</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="page_2">
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QgsCodeEditorSQL" name="mSQLPreview" native="true">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>100</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="page_4">
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QgsCodeEditorHTML" name="mHtmlPreview" native="true">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>100</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="page_5">
+          <layout class="QVBoxLayout" name="verticalLayout_4">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QgsCodeEditorCSS" name="mCssPreview" native="true">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>100</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="page_6">
+          <layout class="QVBoxLayout" name="verticalLayout_5">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QgsCodeEditorJavascript" name="mJsPreview" native="true">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>100</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QScrollArea" name="scrollArea">
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
+      </property>
+      <property name="widgetResizable">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="scrollAreaWidgetContents">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>663</width>
+         <height>549</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="gridLayout">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QGroupBox" name="mOverrideFontGroupBox">
+          <property name="title">
+           <string>Override Code Editor Font</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,5,0,1">
+           <item>
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>Font</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QFontComboBox" name="mFontComboBox">
+             <property name="insertPolicy">
+              <enum>QComboBox::NoInsert</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_3">
+             <property name="text">
+              <string>Size</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QgsSpinBox" name="mSizeSpin">
+             <property name="minimum">
+              <number>6</number>
+             </property>
+             <property name="maximum">
+              <number>99</number>
+             </property>
+             <property name="value">
+              <number>10</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QGroupBox" name="groupBoxFontColor">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="title">
+           <string>Colors</string>
+          </property>
+          <property name="collapsed" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="saveCollapsedState" stdset="0">
+           <bool>true</bool>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_8">
+           <item row="9" column="3">
+            <widget class="QgsColorButton" name="mColorMarginForeground">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="0">
+            <widget class="QLabel" name="label_19">
+             <property name="text">
+              <string>Comment</string>
+             </property>
+            </widget>
+           </item>
+           <item row="11" column="3">
+            <widget class="QgsColorButton" name="mColorBraceForeground">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="11" column="1">
+            <widget class="QgsColorButton" name="mColorBraceBackground">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="5">
+            <widget class="QgsColorButton" name="mColorError">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="3">
+            <widget class="QgsColorButton" name="mColorQuotedOperator">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="10" column="1">
+            <widget class="QgsColorButton" name="mColorSelectionBackground">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QgsColorButton" name="mColorFunction">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="4">
+            <widget class="QLabel" name="label_18">
+             <property name="text">
+              <string>Decorator</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="1">
+            <widget class="QgsColorButton" name="mColorComment">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="3">
+            <widget class="QgsColorButton" name="mColorQuotedIdentifier">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="11" column="0">
+            <widget class="QLabel" name="label_50">
+             <property name="text">
+              <string>Brace background</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="5">
+            <widget class="QgsColorButton" name="mColorCursor">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="2">
+            <widget class="QLabel" name="label_20">
+             <property name="text">
+              <string>Comment block</string>
+             </property>
+            </widget>
+           </item>
+           <item row="10" column="3">
+            <widget class="QgsColorButton" name="mColorSelectionForeground">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1">
+            <widget class="QgsColorButton" name="mColorIdentifier">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="2">
+            <widget class="QLabel" name="label_25">
+             <property name="text">
+              <string>Quoted operator</string>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="1">
+            <widget class="QgsColorButton" name="mColorSingleQuote">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_16">
+             <property name="text">
+              <string>Default</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="1">
+            <widget class="QgsColorButton" name="mColorTag">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="3">
+            <widget class="QgsColorButton" name="mColorBackground">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="2">
+            <widget class="QLabel" name="label_43">
+             <property name="text">
+              <string>Margin foreground</string>
+             </property>
+            </widget>
+           </item>
+           <item row="10" column="0">
+            <widget class="QLabel" name="label_48">
+             <property name="text">
+              <string>Selection background</string>
+             </property>
+            </widget>
+           </item>
+           <item row="10" column="2">
+            <widget class="QLabel" name="label_49">
+             <property name="text">
+              <string>Selection foreground</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="2">
+            <widget class="QLabel" name="label_73">
+             <property name="text">
+              <string>Unknown tag</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="5">
+            <widget class="QgsColorButton" name="mColorNumber">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="5">
+            <widget class="QgsColorButton" name="mColorDecorator">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QgsColorButton" name="mColorOperator">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="12" column="3">
+            <widget class="QgsColorButton" name="mColorFoldIconHalo">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="12" column="1">
+            <widget class="QgsColorButton" name="mColorFoldIcon">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="3">
+            <widget class="QgsColorButton" name="mColorKeyword">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="2">
+            <widget class="QLabel" name="label_32">
+             <property name="text">
+              <string>Quoted identifier</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1" colspan="5">
+            <widget class="QComboBox" name="mColorSchemeComboBox"/>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_2">
+             <property name="text">
+              <string>Color scheme</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="4">
+            <widget class="QLabel" name="label_26">
+             <property name="text">
+              <string>Class name</string>
+             </property>
+            </widget>
+           </item>
+           <item row="12" column="0">
+            <widget class="QLabel" name="label_51">
+             <property name="text">
+              <string>Fold icon</string>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="2">
+            <widget class="QLabel" name="label_30">
+             <property name="text">
+              <string>Triple double quote</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="3">
+            <widget class="QgsColorButton" name="mColorUnknownTag">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="0">
+            <widget class="QLabel" name="label_28">
+             <property name="text">
+              <string>Single quote</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="4">
+            <widget class="QLabel" name="label_14">
+             <property name="text">
+              <string>Error</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="5">
+            <widget class="QgsColorButton" name="mColorClass">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_13">
+             <property name="text">
+              <string>Function</string>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="3">
+            <widget class="QgsColorButton" name="mColorTripleDoubleQuote">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="2">
+            <widget class="QLabel" name="label_15">
+             <property name="text">
+              <string>Background</string>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="1">
+            <widget class="QgsColorButton" name="mColorTripleSingleQuote">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLabel" name="label_27">
+             <property name="text">
+              <string>Identifier</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="0">
+            <widget class="QLabel" name="label_33">
+             <property name="text">
+              <string>Tag</string>
+             </property>
+            </widget>
+           </item>
+           <item row="12" column="2">
+            <widget class="QLabel" name="label_52">
+             <property name="text">
+              <string>Fold icon halo</string>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="0">
+            <widget class="QLabel" name="label_42">
+             <property name="text">
+              <string>Margin background</string>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="0">
+            <widget class="QLabel" name="label_29">
+             <property name="text">
+              <string>Triple single quote</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="3">
+            <widget class="QgsColorButton" name="mColorCommentBlock">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="3">
+            <widget class="QgsColorButton" name="mColorDoubleQuote">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="2">
+            <widget class="QLabel" name="label_17">
+             <property name="text">
+              <string>Keyword</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="4">
+            <widget class="QLabel" name="label_24">
+             <property name="text">
+              <string>Cursor</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QgsColorButton" name="mColorDefault">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="2">
+            <widget class="QLabel" name="label_31">
+             <property name="text">
+              <string>Double quote</string>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="1">
+            <widget class="QgsColorButton" name="mColorMarginBackground">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="11" column="2">
+            <widget class="QLabel" name="label_60">
+             <property name="text">
+              <string>Brace foreground</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="4">
+            <widget class="QLabel" name="label_55">
+             <property name="text">
+              <string>Number</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="label_23">
+             <property name="text">
+              <string>Operator</string>
+             </property>
+            </widget>
+           </item>
+           <item row="11" column="4">
+            <widget class="QLabel" name="label_22">
+             <property name="text">
+              <string>Caretline</string>
+             </property>
+            </widget>
+           </item>
+           <item row="11" column="5">
+            <widget class="QgsColorButton" name="mColorCaretLine">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="10" column="4">
+            <widget class="QLabel" name="label_39">
+             <property name="text">
+              <string>Fold guide</string>
+             </property>
+            </widget>
+           </item>
+           <item row="10" column="5">
+            <widget class="QgsColorButton" name="mColorFold">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="4">
+            <widget class="QLabel" name="label_40">
+             <property name="text">
+              <string>Edge guide</string>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="5">
+            <widget class="QgsColorButton" name="mColorEdge">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="4">
+            <widget class="QLabel" name="label_38">
+             <property name="text">
+              <string>Indentation guide</string>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="5">
+            <widget class="QgsColorButton" name="mColorIndentation">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="4">
+            <widget class="QLabel" name="label_21">
+             <property name="text">
+              <string>Comment line</string>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="5">
+            <widget class="QgsColorButton" name="mColorCommentLine">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="4">
+            <widget class="QLabel" name="label_34">
+             <property name="text">
+              <string>Error background</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="5">
+            <widget class="QgsColorButton" name="mColorErrorBackground">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QPushButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCodeEditorPython</class>
+   <extends>QWidget</extends>
+   <header>qgscodeeditorpython.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCodeEditorExpression</class>
+   <extends>QWidget</extends>
+   <header>qgscodeeditorexpression.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCodeEditorSQL</class>
+   <extends>QWidget</extends>
+   <header>qgscodeeditorsql.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCodeEditorHTML</class>
+   <extends>QWidget</extends>
+   <header>qgscodeeditorhtml.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCodeEditorCSS</class>
+   <extends>QWidget</extends>
+   <header>qgscodeeditorcss.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCodeEditorJavascript</class>
+   <extends>QWidget</extends>
+   <header>qgscodeeditorjs.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>mOverrideFontGroupBox</tabstop>
+  <tabstop>mFontComboBox</tabstop>
+  <tabstop>mSizeSpin</tabstop>
+  <tabstop>mColorSchemeComboBox</tabstop>
+  <tabstop>mColorDefault</tabstop>
+  <tabstop>mColorBackground</tabstop>
+  <tabstop>mColorCursor</tabstop>
+  <tabstop>mColorFunction</tabstop>
+  <tabstop>mColorKeyword</tabstop>
+  <tabstop>mColorClass</tabstop>
+  <tabstop>mColorOperator</tabstop>
+  <tabstop>mColorQuotedOperator</tabstop>
+  <tabstop>mColorNumber</tabstop>
+  <tabstop>mColorIdentifier</tabstop>
+  <tabstop>mColorQuotedIdentifier</tabstop>
+  <tabstop>mColorDecorator</tabstop>
+  <tabstop>mColorTag</tabstop>
+  <tabstop>mColorUnknownTag</tabstop>
+  <tabstop>mColorError</tabstop>
+  <tabstop>mColorComment</tabstop>
+  <tabstop>mColorCommentBlock</tabstop>
+  <tabstop>mColorErrorBackground</tabstop>
+  <tabstop>mColorSingleQuote</tabstop>
+  <tabstop>mColorDoubleQuote</tabstop>
+  <tabstop>mColorCommentLine</tabstop>
+  <tabstop>mColorTripleSingleQuote</tabstop>
+  <tabstop>mColorTripleDoubleQuote</tabstop>
+  <tabstop>mColorIndentation</tabstop>
+  <tabstop>mColorMarginBackground</tabstop>
+  <tabstop>mColorMarginForeground</tabstop>
+  <tabstop>mColorEdge</tabstop>
+  <tabstop>mColorSelectionBackground</tabstop>
+  <tabstop>mColorSelectionForeground</tabstop>
+  <tabstop>mColorFold</tabstop>
+  <tabstop>mColorBraceBackground</tabstop>
+  <tabstop>mColorBraceForeground</tabstop>
+  <tabstop>mColorCaretLine</tabstop>
+  <tabstop>mColorFoldIcon</tabstop>
+  <tabstop>mColorFoldIconHalo</tabstop>
+  <tabstop>mListLanguage</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

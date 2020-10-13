@@ -44,7 +44,7 @@ picture.
 %Docstring
 Sets the spread distance for drawing the glow effect.
 
-:param spread: spread distance. Units are specified via setSpreadUnit()
+:param spread: spread distance. Units are specified via :py:func:`~QgsGlowEffect.setSpreadUnit`
 
 .. seealso:: :py:func:`spread`
 
@@ -57,7 +57,7 @@ Sets the spread distance for drawing the glow effect.
 %Docstring
 Returns the spread distance used for drawing the glow effect.
 
-:return: spread distance. Units are retrieved via spreadUnit()
+:return: spread distance. Units are retrieved via :py:func:`~QgsGlowEffect.spreadUnit`
 
 .. seealso:: :py:func:`setSpread`
 
@@ -227,7 +227,7 @@ Returns the opacity for the effect.
 
     void setColor( const QColor &color );
 %Docstring
-Sets the color for the glow. This only applies if the colorType()
+Sets the color for the glow. This only applies if the :py:func:`~QgsGlowEffect.colorType`
 is set to SingleColor. The glow will fade between the specified color and
 a totally transparent version of the color.
 
@@ -240,7 +240,7 @@ a totally transparent version of the color.
 
     QColor color() const;
 %Docstring
-Returns the color for the glow. This only applies if the colorType()
+Returns the color for the glow. This only applies if the :py:func:`~QgsGlowEffect.colorType`
 is set to SingleColor. The glow will fade between the specified color and
 a totally transparent version of the color.
 
@@ -253,7 +253,7 @@ a totally transparent version of the color.
 
     void setRamp( QgsColorRamp *ramp /Transfer/ );
 %Docstring
-Sets the color ramp for the glow. This only applies if the colorType()
+Sets the color ramp for the glow. This only applies if the :py:func:`~QgsGlowEffect.colorType`
 is set to ColorRamp. The glow will utilize colors from the ramp.
 
 :param ramp: color ramp for glow. Ownership of the ramp is transferred to the effect.
@@ -265,7 +265,7 @@ is set to ColorRamp. The glow will utilize colors from the ramp.
 
     QgsColorRamp *ramp() const;
 %Docstring
-Returns the color ramp used for the glow. This only applies if the colorType()
+Returns the color ramp used for the glow. This only applies if the :py:func:`~QgsGlowEffect.colorType`
 is set to ColorRamp. The glow will utilize colors from the ramp.
 
 :return: color ramp for glow

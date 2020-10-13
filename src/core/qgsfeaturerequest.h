@@ -33,6 +33,7 @@
  * \ingroup core
  * This class wraps a request for features to a vector layer (or directly its vector data provider).
  * The request may apply a filter to fetch only a particular subset of features. Currently supported filters:
+ *
  * - no filter - all features are returned
  * - feature id - only feature that matches given feature id is returned
  * - feature ids - only features that match any of the given feature ids are returned
@@ -44,6 +45,7 @@
  * ExactIntersect that makes sure that only intersecting features will be returned.
  *
  * For efficiency, it is also possible to tell provider that some data is not required:
+ *
  * - NoGeometry flag
  * - SubsetOfAttributes flag
  * - SimplifyMethod for geometries to fetch
@@ -68,6 +70,7 @@
  *   # fetch only one feature
  *   QgsFeatureRequest().setFilterFid(45)
  * \endcode
+ *
  */
 class CORE_EXPORT QgsFeatureRequest
 {
@@ -711,7 +714,7 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeatureIds mFilterFids;
     std::unique_ptr< QgsExpression > mFilterExpression;
     QgsExpressionContext mExpressionContext;
-    Flags mFlags;
+    Flags mFlags = Flags();
     QgsAttributeList mAttrs;
     QgsSimplifyMethod mSimplifyMethod;
     long mLimit = -1;

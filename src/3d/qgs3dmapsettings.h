@@ -27,8 +27,11 @@
 #include "qgsmesh3dsymbol.h"
 #include "qgsphongmaterialsettings.h"
 #include "qgspointlightsettings.h"
+#include "qgsdirectionallightsettings.h"
 #include "qgsterraingenerator.h"
 #include "qgsvector3d.h"
+#include "qgsskyboxsettings.h"
+#include "qgsshadowsettings.h"
 
 class QgsMapLayer;
 class QgsRasterLayer;
@@ -40,7 +43,6 @@ class QgsReadWriteContext;
 class QgsProject;
 
 class QDomElement;
-
 
 /**
  * \ingroup 3d
@@ -58,6 +60,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     //! Copy constructor
     Qgs3DMapSettings( const Qgs3DMapSettings &other );
     ~Qgs3DMapSettings() override;
+
+    Qgs3DMapSettings &operator=( Qgs3DMapSettings const & ) = delete;
 
     //! Reads configuration from a DOM element previously written by writeXml()
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
@@ -152,9 +156,63 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     //! Returns color used for selected features
     QColor selectionColor() const;
 
+    /**
+     * Sets the list of 3D map \a layers to be rendered in the scene.
+     *
+     * This setting dictates which layers are to be rendered using their 3D rendering configuration, if available.
+     *
+     * \note Layers which are rendered as part of the map terrain are specified via \a setTerrainLayers().
+     *
+     * \see layers()
+     * \see layersChanged()
+     * \see setTerrainLayers()
+     */
+    void setLayers( const QList<QgsMapLayer *> &layers );
+
+    /**
+     * Returns the list of 3D map layers to be rendered in the scene.
+     *
+     * This setting dictates which layers are to be rendered using their 3D rendering configuration, if available.
+     *
+     * \note Layers which are rendered as part of the map terrain are retrieved via \a terrainLayers().
+     *
+     * \see setLayers()
+     * \see layersChanged()
+     * \see terrainLayers()
+     */
+    QList<QgsMapLayer *> layers() const;
+
     //
     // terrain related config
     //
+
+    /**
+     * Sets the list of 2d map \a layers to be rendered in the terrain.
+     *
+     * \note Layers which are rendered as 3D layers as part of the scene are specified via \a setLayers().
+     *
+     * \note If terrainMapTheme() is set, it has a priority over the list of layers specified here.
+     *
+     * \see terrainLayers()
+     * \see terrainLayersChanged()
+     * \see setLayers()
+     * \since QGIS 3.16
+     */
+    void setTerrainLayers( const QList<QgsMapLayer *> &layers );
+
+    /**
+     * Returns the list of map layers to be rendered as a texture of the terrain.
+     *
+     * \note Layers which are rendered as 3D layers as part of the scene are retrieved via \a layers().
+     *
+     * \note If terrainMapTheme() is set, it has a priority over the list of layers returned here.
+     *
+     * \see setTerrainLayers()
+     * \see terrainLayersChanged()
+     * \see layers()
+     * \since QGIS 3.16
+     */
+    QList<QgsMapLayer *> terrainLayers() const;
 
     /**
      * Sets vertical scale (exaggeration) of terrain
@@ -163,18 +221,6 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void setTerrainVerticalScale( double zScale );
     //! Returns vertical scale (exaggeration) of terrain
     double terrainVerticalScale() const;
-
-    /**
-     * Sets the list of map layers to be rendered as a texture of the terrain
-     * \note If terrain map theme is set, it has a priority over the list of layers specified here.
-     */
-    void setLayers( const QList<QgsMapLayer *> &layers );
-
-    /**
-     * Returns the list of map layers to be rendered as a texture of the terrain
-     * \note If terrain map theme is set, it has a priority over the list of layers specified here.
-     */
-    QList<QgsMapLayer *> layers() const;
 
     /**
      * Sets resolution (in pixels) of the texture of a terrain tile
@@ -221,9 +267,9 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * Sets terrain generator. It takes care of producing terrain tiles from the input data.
      * Takes ownership of the generator
      */
-    void setTerrainGenerator( QgsTerrainGenerator *gen SIP_TRANSFER );
+    void setTerrainGenerator( QgsTerrainGenerator *gen SIP_TRANSFER ) SIP_SKIP;
     //! Returns terrain generator. It takes care of producing terrain tiles from the input data.
-    QgsTerrainGenerator *terrainGenerator() const { return mTerrainGenerator.get(); }
+    QgsTerrainGenerator *terrainGenerator() const SIP_SKIP { return mTerrainGenerator.get(); }
 
     /**
      * Sets whether terrain shading is enabled.
@@ -278,20 +324,6 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     //! Returns list of extra 3D renderers
     QList<QgsAbstract3DRenderer *> renderers() const { return mRenderers; }
 
-    /**
-     * Sets skybox configuration. When enabled, map scene will try to load six texture files
-     * using the following syntax of filenames: "[base]_[side][extension]" where [side] is one
-     * of the following: posx/posy/posz/negx/negy/negz and [base] and [extension] are the arguments
-     * passed this method.
-     */
-    void setSkybox( bool enabled, const QString &fileBase = QString(), const QString &fileExtension = QString() );
-    //! Returns whether skybox is enabled
-    bool hasSkyboxEnabled() const { return mSkyboxEnabled; }
-    //! Returns base part of filenames of skybox (see setSkybox())
-    QString skyboxFileBase() const { return mSkyboxFileBase; }
-    //! Returns extension part of filenames of skybox (see setSkybox())
-    QString skyboxFileExtension() const { return mSkyboxFileExtension; }
-
     //! Sets whether to display bounding boxes of terrain tiles (for debugging)
     void setShowTerrainBoundingBoxes( bool enabled );
     //! Returns whether to display bounding boxes of terrain tiles (for debugging)
@@ -312,6 +344,19 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * \since QGIS 3.4
      */
     bool showCameraViewCenter() const { return mShowCameraViewCenter; }
+
+    /**
+     * Sets whether to show light source origins as a sphere (for debugging)
+     * \since QGIS 3.16
+     */
+    void setShowLightSourceOrigins( bool enabled );
+
+    /**
+     * Returns whether to show light source origins as a sphere (for debugging)
+     * \since QGIS 3.16
+     */
+    bool showLightSourceOrigins() const { return mShowLightSources; }
+
     //! Sets whether to display labels on terrain tiles
     void setShowLabels( bool enabled );
     //! Returns whether to display labels on terrain tiles
@@ -324,10 +369,22 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     QList<QgsPointLightSettings> pointLights() const { return mPointLights; }
 
     /**
+     * Returns list of directional lights defined in the scene
+     * \since QGIS 3.16
+     */
+    QList<QgsDirectionalLightSettings> directionalLights() const { return mDirectionalLights; }
+
+    /**
      * Sets list of point lights defined in the scene
      * \since QGIS 3.6
      */
     void setPointLights( const QList<QgsPointLightSettings> &pointLights );
+
+    /**
+     * Sets list of directional lights defined in the scene
+     * \since QGIS 3.16
+     */
+    void setDirectionalLights( const QList<QgsDirectionalLightSettings> &directionalLights );
 
     /**
      * Returns the camera lens' field of view
@@ -356,13 +413,70 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     double outputDpi() const { return mDpi; }
 
+    /**
+     * Returns the current configuration of the skybox
+     * \since QGIS 3.16
+     */
+    QgsSkyboxSettings skyboxSettings() const SIP_SKIP { return mSkyboxSettings; }
+
+    /**
+     * Returns the current configuration of shadows
+     * \return QGIS 3.16
+     */
+    QgsShadowSettings shadowSettings() const SIP_SKIP { return mShadowSettings; }
+
+    /**
+     * Sets the current configuration of the skybox
+     * \since QGIS 3.16
+     */
+    void setSkyboxSettings( const QgsSkyboxSettings &skyboxSettings ) SIP_SKIP;
+
+    /**
+     * Sets the current configuration of shadow rendering
+     * \since QGIS 3.16
+     */
+    void setShadowSettings( const QgsShadowSettings &shadowSettings ) SIP_SKIP;
+
+    /**
+     * Returns whether the skybox is enabled.
+     * \see setIsSkyboxEnabled()
+     * \since QGIS 3.16
+     */
+    bool isSkyboxEnabled() const { return mIsSkyboxEnabled; }
+
+    /**
+     * Sets whether the skybox is enabled.
+     * \see isSkyboxEnabled()
+     * \since QGIS 3.16
+     */
+    void setIsSkyboxEnabled( bool enabled ) { mIsSkyboxEnabled = enabled; }
+
   signals:
     //! Emitted when the background color has changed
     void backgroundColorChanged();
     //! Emitted when the selection color has changed
     void selectionColorChanged();
-    //! Emitted when the list of map layers for terrain texture has changed
+
+    /**
+     * Emitted when the list of map layers for 3d rendering has changed.
+     *
+     * \see setLayers()
+     * \see layers()
+     * \see terrainLayersChanged()
+     */
     void layersChanged();
+
+    /**
+     * Emitted when the list of map layers for terrain texture has changed.
+     *
+     * \see terrainLayers()
+     * \see setTerrainLayers()
+     * \see layersChanged()
+     *
+     * \since QGIS 3.16
+     */
+    void terrainLayersChanged();
+
     //! Emitted when the terrain generator has changed
     void terrainGeneratorChanged();
     //! Emitted when the vertical scale of the terrain has changed
@@ -402,6 +516,13 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * \since QGIS 3.4
      */
     void showCameraViewCenterChanged();
+
+    /**
+     * Emitted when the flag whether light source origins are shown has changed.
+     * \since QGIS 3.15
+     */
+    void showLightSourceOriginsChanged();
+
     //! Emitted when the flag whether labels are displayed on terrain tiles has changed
     void showLabelsChanged();
 
@@ -412,10 +533,33 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void pointLightsChanged();
 
     /**
+     * Emitted when the list of directional lights changes
+     * \since QGIS 3.16
+     */
+    void directionalLightsChanged();
+
+    /**
      * Emitted when the camera lens field of view changes
      * \since QGIS 3.8
      */
     void fieldOfViewChanged();
+
+    /**
+     * Emitted when skybox settings are changed
+     * \since QGIS 3.16
+     */
+    void skyboxSettingsChanged();
+
+    /**
+     * Emitted when shadow rendering settings are changed
+     * \since QGIS 3.16
+     */
+    void shadowSettingsChanged();
+
+  private:
+#ifdef SIP_RUN
+    Qgs3DMapSettings &operator=( const Qgs3DMapSettings & );
+#endif
 
   private:
     //! Offset in map CRS coordinates at which our 3D world has origin (0,0,0)
@@ -434,19 +578,23 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     bool mShowTerrainBoundingBoxes = false;  //!< Whether to show bounding boxes of entities - useful for debugging
     bool mShowTerrainTileInfo = false;  //!< Whether to draw extra information about terrain tiles to the textures - useful for debugging
     bool mShowCameraViewCenter = false;  //!< Whether to show camera view center as a sphere - useful for debugging
+    bool mShowLightSources = false; //!< Whether to show the origin of light sources
     bool mShowLabels = false; //!< Whether to display labels on terrain tiles
-    QList<QgsPointLightSettings> mPointLights;  //!< List of lights defined for the scene
+    QList<QgsPointLightSettings> mPointLights;  //!< List of point lights defined for the scene
+    QList<QgsDirectionalLightSettings> mDirectionalLights;  //!< List of directional lights defined for the scene
     float mFieldOfView = 45.0f; //<! Camera lens field of view value
     QList<QgsMapLayerRef> mLayers;   //!< Layers to be rendered
+    QList<QgsMapLayerRef> mTerrainLayers;   //!< Terrain layers to be rendered
     QList<QgsAbstract3DRenderer *> mRenderers;  //!< Extra stuff to render as 3D object
-    bool mSkyboxEnabled = false;  //!< Whether to render skybox
-    QString mSkyboxFileBase; //!< Base part of the files with skybox textures
-    QString mSkyboxFileExtension; //!< Extension part of the files with skybox textures
     //! Coordinate transform context
     QgsCoordinateTransformContext mTransformContext;
     QgsPathResolver mPathResolver;
     QgsMapThemeCollection *mMapThemes = nullptr;   //!< Pointer to map themes (e.g. from the current project) to resolve map theme content from the name
     double mDpi = 96;  //!< Dot per inch value for the screen / painter
+
+    bool mIsSkyboxEnabled = false;  //!< Whether the skybox is enabled
+    QgsSkyboxSettings mSkyboxSettings; //!< Skybox related configuration
+    QgsShadowSettings mShadowSettings; //!< Shadow rendering related settings
 };
 
 

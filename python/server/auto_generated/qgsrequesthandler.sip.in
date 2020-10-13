@@ -11,9 +11,6 @@
 
 
 
-typedef QList< QPair<QRgb, int> > QgsColorBox; //Color / number of pixels
-typedef QMultiMap< int, QgsColorBox > QgsColorBoxMap; // sum of pixels / color box
-
 class QgsRequestHandler
 {
 %Docstring
@@ -121,6 +118,13 @@ Returns the request POST data (can be null)
 Returns the request url
 %End
 
+    QString path() const;
+%Docstring
+Returns the path component of the request URL
+
+.. versionadded:: 3.16
+%End
+
     void setStatusCode( int code );
 %Docstring
 Sets response http status code
@@ -164,6 +168,8 @@ Returns the requested format string
 Returns ``True`` if the HTTP headers were already sent to the client
 %End
 
+  private:
+    QgsRequestHandler &operator=( const QgsRequestHandler & );
 };
 
 /************************************************************************

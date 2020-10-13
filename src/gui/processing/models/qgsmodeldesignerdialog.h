@@ -56,7 +56,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     Q_OBJECT
   public:
 
-    QgsModelDesignerDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = nullptr );
+    QgsModelDesignerDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
     ~QgsModelDesignerDialog() override;
 
     void closeEvent( QCloseEvent *event ) override;
@@ -95,10 +95,12 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
 
   protected:
 
+    // cppcheck-suppress pureVirtualCall
     virtual void repaintModel( bool showControls = true ) = 0;
     virtual void addAlgorithm( const QString &algorithmId, const QPointF &pos ) = 0;
     virtual void addInput( const QString &inputId, const QPointF &pos ) = 0;
     virtual void exportAsScriptAlgorithm() = 0;
+    // cppcheck-suppress pureVirtualCall
     virtual void saveModel( bool saveAs = false ) = 0;
 
     QToolBar *toolbar() { return mToolbar; }

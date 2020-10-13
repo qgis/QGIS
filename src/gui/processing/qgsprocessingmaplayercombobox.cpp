@@ -42,7 +42,6 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
   , mParameter( parameter->clone() )
 {
   QHBoxLayout *layout = new QHBoxLayout();
-  layout->setMargin( 0 );
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->setSpacing( 6 );
 
@@ -106,12 +105,11 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
   }
 
   QVBoxLayout *vl = new QVBoxLayout();
-  vl->setMargin( 0 );
   vl->setContentsMargins( 0, 0, 0, 0 );
   vl->setSpacing( 6 );
   vl->addLayout( layout );
 
-  QgsMapLayerProxyModel::Filters filters = nullptr;
+  QgsMapLayerProxyModel::Filters filters = QgsMapLayerProxyModel::Filters();
 
   if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() && type == QgsProcessingGui::Standard )
   {
@@ -298,11 +296,6 @@ void QgsProcessingMapLayerComboBox::setValue( const QVariant &value, QgsProcessi
   if ( !found )
   {
     const QString string = val.toString();
-    if ( mUseSelectionCheckBox )
-    {
-      mUseSelectionCheckBox->setChecked( false );
-      mUseSelectionCheckBox->setEnabled( false );
-    }
     if ( mIterateButton )
       mIterateButton->setChecked( iterate );
 
@@ -316,6 +309,11 @@ void QgsProcessingMapLayerComboBox::setValue( const QVariant &value, QgsProcessi
         mCombo->setAdditionalItems( additional );
       }
       mCombo->setCurrentIndex( mCombo->findText( string ) ); // this may or may not throw a signal, so let's block it..
+      if ( mUseSelectionCheckBox )
+      {
+        mUseSelectionCheckBox->setChecked( false );
+        mUseSelectionCheckBox->setEnabled( false );
+      }
       mBlockChangedSignal--;
       if ( !mBlockChangedSignal )
         emit valueChanged(); // and ensure we only ever raise one
@@ -323,6 +321,11 @@ void QgsProcessingMapLayerComboBox::setValue( const QVariant &value, QgsProcessi
     else if ( mParameter->flags() & QgsProcessingParameterDefinition::FlagOptional )
     {
       mCombo->setLayer( nullptr );
+      if ( mUseSelectionCheckBox )
+      {
+        mUseSelectionCheckBox->setChecked( false );
+        mUseSelectionCheckBox->setEnabled( false );
+      }
     }
   }
 }

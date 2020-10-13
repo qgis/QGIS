@@ -25,17 +25,6 @@ custom labeling.
 %End
   public:
 
-    struct ScaleBarContext
-    {
-
-      double segmentWidth;
-
-      QSizeF size;
-
-      double scale;
-
-    };
-
     enum class Flag
     {
       FlagUsesLineSymbol,
@@ -49,9 +38,26 @@ custom labeling.
       FlagUsesLabelVerticalPlacement,
       FlagUsesLabelHorizontalPlacement,
       FlagUsesAlignment,
+      FlagUsesSubdivisions,
+      FlagUsesDivisionSymbol,
+      FlagUsesSubdivisionSymbol,
+      FlagUsesSubdivisionsHeight,
     };
     typedef QFlags<QgsScaleBarRenderer::Flag> Flags;
 
+
+    struct ScaleBarContext
+    {
+
+      double segmentWidth;
+
+      QSizeF size;
+
+      double scale;
+
+      Flags flags;
+
+    };
 
     QgsScaleBarRenderer();
 %Docstring
@@ -92,7 +98,7 @@ Returns the scalebar rendering flags, which dictates the renderer's behavior.
 %Docstring
 Returns a sorting key value, where renderers with a lower sort key will be shown earlier in lists.
 
-Generally, subclasses should return QgsScaleBarRenderer.sortKey() as their sorting key.
+Generally, subclasses should return :py:func:`QgsScaleBarRenderer.sortKey()` as their sorting key.
 %End
 
     virtual QgsScaleBarRenderer *clone() const = 0 /Factory/;

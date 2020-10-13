@@ -46,6 +46,9 @@ QgsLabelingWidget::QgsLabelingWidget( QgsVectorLayer *layer, QgsMapCanvas *canva
 
   connect( mLabelModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLabelingWidget::labelModeChanged );
   setLayer( layer );
+
+  const int iconSize16 = QgsGuiUtils::scaleIconSize( 16 );
+  mEngineSettingsButton->setIconSize( QSize( iconSize16, iconSize16 ) );
 }
 
 QgsLabelingGui *QgsLabelingWidget::labelingGui()

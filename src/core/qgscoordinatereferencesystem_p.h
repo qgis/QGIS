@@ -67,12 +67,18 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
       , mSRID( other.mSRID )
       , mAuthId( other.mAuthId )
       , mIsValid( other.mIsValid )
-#if PROJ_VERSION_MAJOR<6
+#if PROJ_VERSION_MAJOR >= 6
+      , mPj()
+#else
       , mCRS( nullptr )
 #endif
       , mProj4( other.mProj4 )
+      , mWktPreferred( other.mWktPreferred )
       , mAxisInvertedDirty( other.mAxisInvertedDirty )
       , mAxisInverted( other.mAxisInverted )
+#if PROJ_VERSION_MAJOR >= 6
+      , mProjObjects()
+#endif
     {
 #if PROJ_VERSION_MAJOR<6
       if ( mIsValid )
@@ -105,7 +111,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     //! The official proj4 acronym for the projection family
     QString mProjectionAcronym;
 
-    //! The official proj4 acronym for the ellipoid
+    //! The official proj4 acronym for the ellipsoid
     QString mEllipsoidAcronym;
 
     //! Whether this is a geographic or projected coordinate system
@@ -173,10 +179,12 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     }
 
 #else
-    OGRSpatialReferenceH mCRS;
+    OGRSpatialReferenceH mCRS = nullptr;
 #endif
 
     mutable QString mProj4;
+
+    mutable QString mWktPreferred;
 
     //! True if presence of an inverted axis needs to be recalculated
     mutable bool mAxisInvertedDirty = false;
@@ -186,8 +194,8 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
 
 #if PROJ_VERSION_MAJOR>=6
   private:
-    mutable QReadWriteLock mProjLock;
-    mutable QMap < PJ_CONTEXT *, PJ * > mProjObjects;
+    mutable QReadWriteLock mProjLock{};
+    mutable QMap < PJ_CONTEXT *, PJ * > mProjObjects{};
 
   public:
 
@@ -235,6 +243,8 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     }
 #endif
 
+  private:
+    QgsCoordinateReferenceSystemPrivate &operator= ( const QgsCoordinateReferenceSystemPrivate & ) = delete;
 
 };
 

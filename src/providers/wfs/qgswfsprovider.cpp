@@ -121,11 +121,21 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
   //Failed to detect feature type from describeFeatureType -> get first feature from layer to detect type
   if ( mShared->mWKBType == QgsWkbTypes::Unknown )
   {
+    const bool requestMadeFromMainThread = QThread::currentThread() == QApplication::instance()->thread();
     auto downloader = qgis::make_unique<QgsFeatureDownloader>();
-    downloader->setImpl( qgis::make_unique<QgsWFSFeatureDownloaderImpl>( mShared.get(), downloader.get() ) );
+    downloader->setImpl( qgis::make_unique<QgsWFSFeatureDownloaderImpl>( mShared.get(), downloader.get(), requestMadeFromMainThread ) );
     connect( downloader.get(),
              qgis::overload < QVector<QgsFeatureUniqueIdPair> >::of( &QgsFeatureDownloader::featureReceived ),
              this, &QgsWFSProvider::featureReceivedAnalyzeOneFeature );
+    if ( requestMadeFromMainThread )
+    {
+      auto processEvents = []()
+      {
+        QgsApplication::instance()->processEvents();
+      };
+      connect( downloader.get(), &QgsFeatureDownloader::resumeMainThread,
+               this, processEvents );
+    }
     downloader->run( false, /* serialize features */
                      1 /* maxfeatures */ );
   }
@@ -175,7 +185,7 @@ void QgsWFSProviderSQLFunctionValidator::visit( const QgsSQLStatement::NodeFunct
     for ( const QgsWfsCapabilities::Function &f : constMSpatialPredicatesList )
     {
       if ( n.name().compare( f.name, Qt::CaseInsensitive ) == 0 ||
-           ( "ST_" + n.name() ).compare( f.name, Qt::CaseInsensitive ) == 0 )
+           QString( "ST_" + n.name() ).compare( f.name, Qt::CaseInsensitive ) == 0 )
       {
         foundMatch = true;
       }
@@ -298,7 +308,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
       else if ( part.startsWith( QLatin1String( " expecting " ) ) )
         newPart = tr( "%1 is expected instead." ).arg( part.mid( QStringLiteral( " expecting " ).size() ) );
       if ( !parserErrorString.isEmpty() )
-        parserErrorString += QLatin1String( " " );
+        parserErrorString += QLatin1Char( ' ' );
       parserErrorString += newPart;
     }
     parserErrorString.replace( QLatin1String( " or " ), tr( "%1 or %2" ).arg( QString(), QString() ) );
@@ -419,7 +429,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
   for ( const QString &typeName : qgis::as_const( typenameList ) )
   {
     if ( !concatenatedTypenames.isEmpty() )
-      concatenatedTypenames += QLatin1String( "," );
+      concatenatedTypenames += QLatin1Char( ',' );
     concatenatedTypenames += typeName;
   }
 
@@ -1078,9 +1088,7 @@ QString QgsWFSProvider::convertToXML( const QVariant &value )
     QDateTime dt = value.toDateTime().toUTC();
     if ( !dt.isNull() )
     {
-      valueStr.sprintf( "%04d-%02d-%02dT%02d:%02d:%02d.%03dZ",
-                        dt.date().year(), dt.date().month(), dt.date().day(),
-                        dt.time().hour(), dt.time().minute(), dt.time().second(), dt.time().msec() );
+      valueStr = dt.toString( QStringLiteral( "yyyy-MM-ddThh:mm:ss.zzzZ" ) );
     }
     else
     {
@@ -1503,7 +1511,7 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
       foundGeometryAttribute = true;
       geometryAttribute = name;
       // We have a choice parent element we cannot assume any valid information over the geometry type
-      if ( attributeElement.parentNode().nodeName() == QStringLiteral( "choice" ) && ! attributeElement.nextSibling().isNull() )
+      if ( attributeElement.parentNode().nodeName() == QLatin1String( "choice" ) && ! attributeElement.nextSibling().isNull() )
         geomType = QgsWkbTypes::Unknown;
       else
         geomType = geomTypeFromPropertyType( geometryAttribute, gmlPT.cap( 1 ) );
@@ -1855,8 +1863,9 @@ void QgsWFSProvider::handleException( const QDomDocument &serverResponse )
   pushError( tr( "Unhandled response: %1" ).arg( exceptionElem.tagName() ) );
 }
 
-QgsWFSProvider *QgsWfsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
+QgsWFSProvider *QgsWfsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
+  Q_UNUSED( flags );
   return new QgsWFSProvider( uri, options );
 }
 

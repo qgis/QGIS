@@ -43,11 +43,23 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
 
   QString firstLabel = firstLabelString( settings );
   QFontMetricsF fontMetrics = QgsTextRenderer::fontMetrics( context, format );
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   double xOffset = fontMetrics.width( firstLabel ) / 2.0;
+#else
+  double xOffset = fontMetrics.horizontalAdvance( firstLabel ) / 2.0;
+#endif
 
   double scaledBoxContentSpace = context.convertToPainterUnits( settings.boxContentSpace(), QgsUnitTypes::RenderMillimeters );
   double scaledLabelBarSpace = context.convertToPainterUnits( settings.labelBarSpace(), QgsUnitTypes::RenderMillimeters );
-  double scaledHeight = context.convertToPainterUnits( settings.height(), QgsUnitTypes::RenderMillimeters );
+  double scaledHeight;
+  if ( ( scaleContext.flags & Flag::FlagUsesSubdivisionsHeight ) && ( settings.numberOfSubdivisions() > 1 ) && ( settings.subdivisionsHeight() > settings.height() ) )
+  {
+    scaledHeight = context.convertToPainterUnits( settings.subdivisionsHeight(), QgsUnitTypes::RenderMillimeters );
+  }
+  else
+  {
+    scaledHeight = context.convertToPainterUnits( settings.height(), QgsUnitTypes::RenderMillimeters );
+  }
 
   double currentLabelNumber = 0.0;
 
@@ -88,7 +100,7 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
     }
 
     //don't draw label for intermediate left segments or the zero label when it needs to be skipped
-    if ( ( segmentCounter == 0 || segmentCounter >= nSegmentsLeft ) && ( currentNumericLabel != QStringLiteral( "0" ) || drawZero ) )
+    if ( ( segmentCounter == 0 || segmentCounter >= nSegmentsLeft ) && ( currentNumericLabel != QLatin1String( "0" ) || drawZero ) )
     {
       scaleScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "scale_value" ), currentNumericLabel, true, false ) );
       QPointF pos;
@@ -136,8 +148,13 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
     }
     else
     {
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
       pos.setX( context.convertToPainterUnits( positions.at( positions.size() - 1 ) + scaleContext.segmentWidth, QgsUnitTypes::RenderMillimeters ) + xOffset
                 - fontMetrics.width( currentNumericLabel ) / 2.0 );
+#else
+      pos.setX( context.convertToPainterUnits( positions.at( positions.size() - 1 ) + scaleContext.segmentWidth, QgsUnitTypes::RenderMillimeters ) + xOffset
+                - fontMetrics.horizontalAdvance( currentNumericLabel ) / 2.0 );
+#endif
       QgsTextRenderer::drawText( pos, 0, QgsTextRenderer::AlignLeft, QStringList() << ( currentNumericLabel + ' ' + settings.unitLabel() ), context, format );
     }
   }
@@ -147,7 +164,7 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
 
 QgsScaleBarRenderer::Flags QgsScaleBarRenderer::flags() const
 {
-  return nullptr;
+  return QgsScaleBarRenderer::Flags();
 }
 
 int QgsScaleBarRenderer::sortKey() const
@@ -214,10 +231,10 @@ QSizeF QgsScaleBarRenderer::calculateBoxSize( const QgsScaleBarSettings &setting
 
 QSizeF QgsScaleBarRenderer::calculateBoxSize( QgsRenderContext &context, const QgsScaleBarSettings &settings, const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const
 {
-  QFont font = settings.textFormat().toQFont();
-
+  const double painterToMm = 1.0 / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
   //consider centered first label
-  double firstLabelWidth = QgsLayoutUtils::textWidthMM( font, firstLabelString( settings ) );
+  double firstLabelWidth = QgsTextRenderer::textWidth( context, settings.textFormat(), QStringList() << firstLabelString( settings ) ) * painterToMm;
+
   if ( settings.labelHorizontalPlacement() == QgsScaleBarSettings::LabelCenteredSegment )
   {
     if ( firstLabelWidth > scaleContext.segmentWidth )
@@ -241,7 +258,8 @@ QSizeF QgsScaleBarRenderer::calculateBoxSize( QgsRenderContext &context, const Q
   double largestLabelWidth;
   if ( settings.labelHorizontalPlacement() == QgsScaleBarSettings::LabelCenteredSegment )
   {
-    largestLabelWidth = QgsLayoutUtils::textWidthMM( font, largestLabel );
+    largestLabelWidth = QgsTextRenderer::textWidth( context, settings.textFormat(), QStringList() << largestLabel ) * painterToMm;
+
     if ( largestLabelWidth > scaleContext.segmentWidth )
     {
       largestLabelWidth = ( largestLabelWidth - scaleContext.segmentWidth ) / 2;
@@ -253,7 +271,8 @@ QSizeF QgsScaleBarRenderer::calculateBoxSize( QgsRenderContext &context, const Q
   }
   else
   {
-    largestLabelWidth = QgsLayoutUtils::textWidthMM( font, largestLabel ) - QgsLayoutUtils::textWidthMM( font, largestNumberLabel ) / 2;
+    largestLabelWidth =  QgsTextRenderer::textWidth( context, settings.textFormat(), QStringList() << largestLabel ) * painterToMm
+                         -  QgsTextRenderer::textWidth( context, settings.textFormat(), QStringList() << largestNumberLabel ) * painterToMm / 2;
   }
 
   double totalBarLength = scaleContext.segmentWidth * ( settings.numberOfSegments() + ( settings.numberOfSegmentsLeft() > 0 ? 1 : 0 ) );
@@ -263,7 +282,18 @@ QSizeF QgsScaleBarRenderer::calculateBoxSize( QgsRenderContext &context, const Q
   lineWidth /= context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
 
   double width = firstLabelWidth + totalBarLength + 2 * lineWidth + largestLabelWidth + 2 * settings.boxContentSpace();
-  double height = settings.height() + settings.labelBarSpace() + 2 * settings.boxContentSpace() + QgsLayoutUtils::fontAscentMM( font );
+  double height;
+  if ( ( scaleContext.flags & Flag::FlagUsesSubdivisionsHeight ) && ( settings.numberOfSubdivisions() > 1 ) && ( settings.subdivisionsHeight() > settings.height() ) )
+  {
+    height = settings.subdivisionsHeight();
+  }
+  else
+  {
+    height = settings.height();
+  }
+
+  // TODO -- we technically should check the height of ALL labels here and take the maximum
+  height += settings.labelBarSpace() + 2 * settings.boxContentSpace() + QgsTextRenderer::textHeight( context, settings.textFormat(), QStringList() << largestLabel ) * painterToMm;
 
   return QSizeF( width, height );
 }

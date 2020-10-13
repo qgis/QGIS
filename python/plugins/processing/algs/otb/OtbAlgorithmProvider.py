@@ -27,7 +27,11 @@ import os
 import re
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (Qgis, QgsApplication, QgsProcessingProvider, QgsMessageLog)
+from qgis.core import (Qgis,
+                       QgsApplication,
+                       QgsProcessingProvider,
+                       QgsMessageLog,
+                       QgsRuntimeProfiler)
 from qgis import utils
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
@@ -40,48 +44,50 @@ class OtbAlgorithmProvider(QgsProcessingProvider):
     def __init__(self):
         super().__init__()
         self.algs = []
-        #!hack for 6.6!#
+        # !hack for 6.6!#
         self.version = '6.6.0'
 
     def load(self):
-        group = self.name()
-        ProcessingConfig.settingIcons[group] = self.icon()
-        ProcessingConfig.addSetting(Setting(group, OtbUtils.ACTIVATE, self.tr('Activate'), True))
-        ProcessingConfig.addSetting(Setting(group, OtbUtils.FOLDER,
-                                            self.tr("OTB folder"),
-                                            OtbUtils.otbFolder(),
-                                            valuetype=Setting.FOLDER,
-                                            validator=self.validateOtbFolder
-                                            ))
-        ProcessingConfig.addSetting(Setting(group, OtbUtils.APP_FOLDER,
-                                            self.tr("OTB application folder"),
-                                            OtbUtils.appFolder(),
-                                            valuetype=Setting.MULTIPLE_FOLDERS,
-                                            validator=self.validateAppFolders
-                                            ))
-        ProcessingConfig.addSetting(Setting(group, OtbUtils.SRTM_FOLDER,
-                                            self.tr("SRTM tiles folder"),
-                                            OtbUtils.srtmFolder(),
-                                            valuetype=Setting.FOLDER
-                                            ))
-        ProcessingConfig.addSetting(Setting(group, OtbUtils.GEOID_FILE,
-                                            self.tr("Geoid file"),
-                                            OtbUtils.geoidFile(),
-                                            valuetype=Setting.FOLDER
-                                            ))
-        ProcessingConfig.addSetting(Setting(group, OtbUtils.MAX_RAM_HINT,
-                                            self.tr("Maximum RAM to use"),
-                                            OtbUtils.maxRAMHint(),
-                                            valuetype=Setting.STRING
-                                            ))
-        ProcessingConfig.addSetting(Setting(group, OtbUtils.LOGGER_LEVEL,
-                                            self.tr("Logger level"),
-                                            OtbUtils.loggerLevel(),
-                                            valuetype=Setting.STRING,
-                                            validator=self.validateLoggerLevel
-                                            ))
-        ProcessingConfig.readSettings()
-        self.refreshAlgorithms()
+        with QgsRuntimeProfiler.profile('OTB Provider'):
+            group = self.name()
+            ProcessingConfig.settingIcons[group] = self.icon()
+            ProcessingConfig.addSetting(Setting(group, OtbUtils.ACTIVATE, self.tr('Activate'), True))
+            ProcessingConfig.addSetting(Setting(group, OtbUtils.FOLDER,
+                                                self.tr("OTB folder"),
+                                                OtbUtils.otbFolder(),
+                                                valuetype=Setting.FOLDER,
+                                                validator=self.validateOtbFolder
+                                                ))
+            ProcessingConfig.addSetting(Setting(group, OtbUtils.APP_FOLDER,
+                                                self.tr("OTB application folder"),
+                                                OtbUtils.appFolder(),
+                                                valuetype=Setting.MULTIPLE_FOLDERS,
+                                                validator=self.validateAppFolders
+                                                ))
+            ProcessingConfig.addSetting(Setting(group, OtbUtils.SRTM_FOLDER,
+                                                self.tr("SRTM tiles folder"),
+                                                OtbUtils.srtmFolder(),
+                                                valuetype=Setting.FOLDER
+                                                ))
+            ProcessingConfig.addSetting(Setting(group, OtbUtils.GEOID_FILE,
+                                                self.tr("Geoid file"),
+                                                OtbUtils.geoidFile(),
+                                                valuetype=Setting.FOLDER
+                                                ))
+            ProcessingConfig.addSetting(Setting(group, OtbUtils.MAX_RAM_HINT,
+                                                self.tr("Maximum RAM to use"),
+                                                OtbUtils.maxRAMHint(),
+                                                valuetype=Setting.STRING
+                                                ))
+            ProcessingConfig.addSetting(Setting(group, OtbUtils.LOGGER_LEVEL,
+                                                self.tr("Logger level"),
+                                                OtbUtils.loggerLevel(),
+                                                valuetype=Setting.STRING,
+                                                validator=self.validateLoggerLevel
+                                                ))
+            ProcessingConfig.readSettings()
+            self.refreshAlgorithms()
+
         return True
 
     def unload(self):
@@ -110,7 +116,7 @@ class OtbAlgorithmProvider(QgsProcessingProvider):
                     group, name = str(data[0]), str(data[1])
                     if name not in alg_names:
                         algs.append(OtbAlgorithm(group, name, descriptionFile))
-                        #avoid duplicate algorithms from algs.txt file (possible but rare)
+                        # avoid duplicate algorithms from algs.txt file (possible but rare)
                         alg_names.append(name)
                     line = lines.readline().strip('\n').strip()
         except Exception as e:
@@ -172,7 +178,7 @@ class OtbAlgorithmProvider(QgsProcessingProvider):
             self.setActive(False)
             raise ValueError(self.tr("'{}' does not exist. OTB provider will be disabled".format(v)))
 
-        #isValid is True if there is at least one valid otb application is given path
+        # isValid is True if there is at least one valid otb application is given path
         isValid = False
         descr_folder = self.descrFolder(folder)
         for app_dir in otb_app_dirs:
@@ -221,7 +227,7 @@ class OtbAlgorithmProvider(QgsProcessingProvider):
         return os.path.join(self.descrFolder(d), 'algs.txt')
 
     def descrFolder(self, d):
-        #!hack for 6.6!#
+        # !hack for 6.6!#
         if os.path.exists(os.path.join(d, 'description')):
             return os.path.join(d, 'description')
         else:

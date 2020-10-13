@@ -1,6 +1,6 @@
 [general]
 name=DB Manager
-description=Manage your databases within Qgis
+description=Manage your databases within QGIS
 category=Database
 version=0.1.20
 qgisMinimumVersion=3.0

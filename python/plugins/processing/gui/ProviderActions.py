@@ -38,7 +38,6 @@ class ProviderActions(object):
 
 
 class ProviderContextMenuActions(object):
-
     # All the registered context menu actions for the toolbox
     actions = []
 

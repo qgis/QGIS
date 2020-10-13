@@ -254,7 +254,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -301,9 +301,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-188</y>
-                <width>629</width>
-                <height>914</height>
+                <y>0</y>
+                <width>325</width>
+                <height>978</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -377,6 +377,26 @@ border-radius: 2px;</string>
                   <bool>true</bool>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_15">
+                  <item row="0" column="0" colspan="3">
+                   <widget class="QLabel" name="mLabel">
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1" rowspan="2" colspan="2">
+                   <widget class="QComboBox" name="mFetchModeComboBox"/>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QCheckBox" name="mDisableTime">
+                    <property name="text">
+                     <string>Use dates only</string>
+                    </property>
+                   </widget>
+                  </item>
                   <item row="1" column="0">
                    <widget class="QLabel" name="label_16">
                     <property name="text">
@@ -384,105 +404,7 @@ border-radius: 2px;</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="6" column="0" colspan="3">
-                   <widget class="QLabel" name="label_10">
-                    <property name="text">
-                     <string>Note:  If the capabilities of this layer move out of this time range, the range will be reset to layer's advertised  default layer time range.</string>
-                    </property>
-                    <property name="wordWrap">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="5" column="0" colspan="3">
-                   <widget class="QFrame" name="mStaticWmstFrame">
-                    <property name="enabled">
-                     <bool>false</bool>
-                    </property>
-                    <property name="frameShape">
-                     <enum>QFrame::NoFrame</enum>
-                    </property>
-                    <property name="frameShadow">
-                     <enum>QFrame::Raised</enum>
-                    </property>
-                    <layout class="QGridLayout" name="gridLayout_16">
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
-                      <number>0</number>
-                     </property>
-                     <item row="2" column="1" colspan="2">
-                      <widget class="QPushButton" name="mSetEndAsStartStaticButton">
-                       <property name="text">
-                        <string>Set end same as start</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="0">
-                      <widget class="QLabel" name="label_13">
-                       <property name="text">
-                        <string>Start date</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="1" colspan="2">
-                      <widget class="QgsDateTimeEdit" name="mEndStaticDateTimeEdit">
-                       <property name="displayFormat">
-                        <string>M/d/yyyy H:mm:ss AP</string>
-                       </property>
-                       <property name="timeSpec">
-                        <enum>Qt::UTC</enum>
-                       </property>
-                       <property name="allowNull" stdset="0">
-                        <bool>false</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="0">
-                      <widget class="QLabel" name="label_4">
-                       <property name="text">
-                        <string>End date</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="3" column="1" colspan="2">
-                      <widget class="QCheckBox" name="mDisableTime">
-                       <property name="text">
-                        <string>Use dates only</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="1" colspan="2">
-                      <widget class="QgsDateTimeEdit" name="mStartStaticDateTimeEdit">
-                       <property name="dateTime">
-                        <datetime>
-                         <hour>2</hour>
-                         <minute>3</minute>
-                         <second>57</second>
-                         <year>2020</year>
-                         <month>4</month>
-                         <day>30</day>
-                        </datetime>
-                       </property>
-                       <property name="currentSection">
-                        <enum>QDateTimeEdit::MonthSection</enum>
-                       </property>
-                       <property name="displayFormat">
-                        <string>M/d/yyyy H:mm:ss AP</string>
-                       </property>
-                       <property name="timeSpec">
-                        <enum>Qt::UTC</enum>
-                       </property>
-                       <property name="allowNull" stdset="0">
-                        <bool>false</bool>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                  <item row="9" column="0">
+                  <item row="8" column="0">
                    <widget class="QFrame" name="mWmstReferenceTimeFrame">
                     <property name="enabled">
                      <bool>false</bool>
@@ -497,11 +419,18 @@ border-radius: 2px;</string>
                      <property name="topMargin">
                       <number>0</number>
                      </property>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="mReferenceTimeLabel">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
                      <item row="0" column="0">
                       <widget class="QgsDateTimeEdit" name="mReferenceDateTimeEdit">
                        <property name="dateTime">
                         <datetime>
-                         <hour>16</hour>
+                         <hour>6</hour>
                          <minute>20</minute>
                          <second>36</second>
                          <year>2020</year>
@@ -533,18 +462,11 @@ border-radius: 2px;</string>
                        </property>
                       </widget>
                      </item>
-                     <item row="1" column="0">
-                      <widget class="QLabel" name="mReferenceTimeLabel">
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
                     </layout>
                    </widget>
                   </item>
-                  <item row="0" column="0" colspan="3">
-                   <widget class="QLabel" name="mLabel">
+                  <item row="4" column="0" colspan="3">
+                   <widget class="QLabel" name="mWmstOptionsLabel">
                     <property name="text">
                      <string/>
                     </property>
@@ -553,28 +475,144 @@ border-radius: 2px;</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="1" rowspan="2" colspan="2">
-                   <widget class="QComboBox" name="mFetchModeComboBox"/>
-                  </item>
-                  <item row="4" column="0" colspan="3">
-                   <widget class="QRadioButton" name="mStaticTemporalRange">
-                    <property name="text">
-                     <string>Use static WMS-T temporal range</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="7" column="0" colspan="3">
-                   <widget class="QRadioButton" name="mProjectTemporalRange">
-                    <property name="text">
-                     <string>Pass project temporal range to provider</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="8" column="0" colspan="3">
+                  <item row="7" column="0">
                    <widget class="QCheckBox" name="mReferenceTime">
                     <property name="text">
                      <string>Reference time</string>
                     </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="0" colspan="3">
+                   <widget class="QFrame" name="mWmstOptions">
+                    <property name="frameShape">
+                     <enum>QFrame::NoFrame</enum>
+                    </property>
+                    <property name="frameShadow">
+                     <enum>QFrame::Raised</enum>
+                    </property>
+                    <layout class="QVBoxLayout" name="verticalLayout_22">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <widget class="QRadioButton" name="mStaticTemporalRange">
+                       <property name="text">
+                        <string>Use static WMS-T temporal range</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QFrame" name="mStaticWmstFrame">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                       <property name="frameShape">
+                        <enum>QFrame::NoFrame</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Raised</enum>
+                       </property>
+                       <layout class="QGridLayout" name="gridLayout_16">
+                        <property name="topMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="bottomMargin">
+                         <number>0</number>
+                        </property>
+                        <item row="2" column="1" colspan="2">
+                         <widget class="QPushButton" name="mSetEndAsStartStaticButton">
+                          <property name="text">
+                           <string>Set end same as start</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="0" column="0">
+                         <widget class="QLabel" name="label_13">
+                          <property name="text">
+                           <string>Start date</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="1" column="1" colspan="2">
+                         <widget class="QgsDateTimeEdit" name="mEndStaticDateTimeEdit">
+                          <property name="displayFormat">
+                           <string>M/d/yyyy H:mm:ss AP</string>
+                          </property>
+                          <property name="timeSpec">
+                           <enum>Qt::UTC</enum>
+                          </property>
+                          <property name="allowNull" stdset="0">
+                           <bool>false</bool>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="1" column="0">
+                         <widget class="QLabel" name="label_4">
+                          <property name="text">
+                           <string>End date</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="0" column="1" colspan="2">
+                         <widget class="QgsDateTimeEdit" name="mStartStaticDateTimeEdit">
+                          <property name="dateTime">
+                           <datetime>
+                            <hour>9</hour>
+                            <minute>3</minute>
+                            <second>57</second>
+                            <year>2020</year>
+                            <month>4</month>
+                            <day>29</day>
+                           </datetime>
+                          </property>
+                          <property name="currentSection">
+                           <enum>QDateTimeEdit::MonthSection</enum>
+                          </property>
+                          <property name="displayFormat">
+                           <string>M/d/yyyy H:mm:ss AP</string>
+                          </property>
+                          <property name="timeSpec">
+                           <enum>Qt::UTC</enum>
+                          </property>
+                          <property name="allowNull" stdset="0">
+                           <bool>false</bool>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="label_10">
+                       <property name="text">
+                        <string>Note:  If the capabilities of this layer move out of this time range, the range will be reset to layer's advertised  default layer time range.</string>
+                       </property>
+                       <property name="wordWrap">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="mProjectTemporalRangeLabel">
+                       <property name="text">
+                        <string/>
+                       </property>
+                       <property name="wordWrap">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QRadioButton" name="mProjectTemporalRange">
+                       <property name="text">
+                        <string>Pass project temporal range to provider</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
                    </widget>
                   </item>
                  </layout>
@@ -688,8 +726,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>470</width>
-                <height>514</height>
+                <width>643</width>
+                <height>682</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -771,42 +809,10 @@ border-radius: 2px;</string>
                   <bool>true</bool>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_2">
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="labelSaturation">
-                    <property name="text">
-                     <string>Saturation</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="0">
+                  <item row="4" column="0">
                    <widget class="QLabel" name="label_3">
                     <property name="text">
                      <string>Hue</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="1">
-                   <widget class="QSlider" name="sliderSaturation">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                     <size>
-                      <width>75</width>
-                      <height>0</height>
-                     </size>
-                    </property>
-                    <property name="minimum">
-                     <number>-100</number>
-                    </property>
-                    <property name="maximum">
-                     <number>100</number>
-                    </property>
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
                     </property>
                    </widget>
                   </item>
@@ -850,7 +856,7 @@ border-radius: 2px;</string>
                    </widget>
                   </item>
                   <item row="1" column="2">
-                   <widget class="QSpinBox" name="mBrightnessSpinBox">
+                   <widget class="QgsSpinBox" name="mBrightnessSpinBox">
                     <property name="minimum">
                      <number>-255</number>
                     </property>
@@ -889,7 +895,7 @@ border-radius: 2px;</string>
                    </widget>
                   </item>
                   <item row="1" column="6">
-                   <widget class="QSpinBox" name="mContrastSpinBox">
+                   <widget class="QgsSpinBox" name="mContrastSpinBox">
                     <property name="minimum">
                      <number>-100</number>
                     </property>
@@ -898,7 +904,7 @@ border-radius: 2px;</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="3">
+                  <item row="3" column="3">
                    <widget class="Line" name="line_2">
                     <property name="orientation">
                      <enum>Qt::Vertical</enum>
@@ -912,30 +918,14 @@ border-radius: 2px;</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="4">
+                  <item row="3" column="4">
                    <widget class="QLabel" name="labelGrayscale">
                     <property name="text">
                      <string>Grayscale</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="2">
-                   <widget class="QSpinBox" name="spinBoxSaturation">
-                    <property name="minimum">
-                     <number>-100</number>
-                    </property>
-                    <property name="maximum">
-                     <number>100</number>
-                    </property>
-                    <property name="value">
-                     <number>0</number>
-                    </property>
-                    <property name="decimals" stdset="0">
-                     <number>0</number>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="1" colspan="6">
+                  <item row="4" column="1" colspan="6">
                    <layout class="QHBoxLayout" name="horizontalLayout_12">
                     <item>
                      <widget class="QCheckBox" name="mColorizeCheck">
@@ -984,7 +974,7 @@ border-radius: 2px;</string>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QSpinBox" name="spinColorizeStrength">
+                     <widget class="QgsSpinBox" name="spinColorizeStrength">
                       <property name="suffix">
                        <string>%</string>
                       </property>
@@ -1011,24 +1001,7 @@ border-radius: 2px;</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="6">
-                   <widget class="QToolButton" name="mResetColorRenderingBtn">
-                    <property name="toolTip">
-                     <string>Reset all color rendering options to default</string>
-                    </property>
-                    <property name="text">
-                     <string>Reset</string>
-                    </property>
-                    <property name="icon">
-                     <iconset resource="../../images/images.qrc">
-                      <normaloff>:/images/themes/default/mActionUndo.svg</normaloff>:/images/themes/default/mActionUndo.svg</iconset>
-                    </property>
-                    <property name="toolButtonStyle">
-                     <enum>Qt::ToolButtonTextBesideIcon</enum>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="5" colspan="2">
+                  <item row="3" column="5" colspan="2">
                    <widget class="QComboBox" name="comboGrayscale">
                     <item>
                      <property name="text">
@@ -1050,6 +1023,123 @@ border-radius: 2px;</string>
                       <string>By average</string>
                      </property>
                     </item>
+                   </widget>
+                  </item>
+                  <item row="0" column="6">
+                   <widget class="QToolButton" name="mResetColorRenderingBtn">
+                    <property name="toolTip">
+                     <string>Reset all color rendering options to default</string>
+                    </property>
+                    <property name="text">
+                     <string>Reset</string>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/mActionUndo.svg</normaloff>:/images/themes/default/mActionUndo.svg</iconset>
+                    </property>
+                    <property name="toolButtonStyle">
+                     <enum>Qt::ToolButtonTextBesideIcon</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="label_15">
+                    <property name="text">
+                     <string>Gamma</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QSlider" name="mSliderGamma">
+                    <property name="minimum">
+                     <number>10</number>
+                    </property>
+                    <property name="maximum">
+                     <number>1000</number>
+                    </property>
+                    <property name="singleStep">
+                     <number>10</number>
+                    </property>
+                    <property name="pageStep">
+                     <number>100</number>
+                    </property>
+                    <property name="value">
+                     <number>100</number>
+                    </property>
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="2">
+                   <widget class="QgsDoubleSpinBox" name="mGammaSpinBox">
+                    <property name="minimum">
+                     <double>0.100000000000000</double>
+                    </property>
+                    <property name="maximum">
+                     <double>10.000000000000000</double>
+                    </property>
+                    <property name="singleStep">
+                     <double>0.100000000000000</double>
+                    </property>
+                    <property name="value">
+                     <double>1.000000000000000</double>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="3">
+                   <widget class="Line" name="line_3">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="4">
+                   <widget class="QLabel" name="labelSaturation">
+                    <property name="text">
+                     <string>Saturation</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="5">
+                   <widget class="QSlider" name="sliderSaturation">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>75</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="minimum">
+                     <number>-100</number>
+                    </property>
+                    <property name="maximum">
+                     <number>100</number>
+                    </property>
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="6">
+                   <widget class="QgsSpinBox" name="spinBoxSaturation">
+                    <property name="minimum">
+                     <number>-100</number>
+                    </property>
+                    <property name="maximum">
+                     <number>100</number>
+                    </property>
+                    <property name="value">
+                     <number>0</number>
+                    </property>
+                    <property name="decimals" stdset="0">
+                     <number>0</number>
+                    </property>
                    </widget>
                   </item>
                  </layout>
@@ -1101,7 +1191,14 @@ border-radius: 2px;</string>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QDoubleSpinBox" name="mMaximumOversamplingSpinBox"/>
+                   <widget class="QgsDoubleSpinBox" name="mMaximumOversamplingSpinBox"/>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="mCbEarlyResampling">
+                    <property name="text">
+                     <string>Early resampling</string>
+                    </property>
+                   </widget>
                   </item>
                   <item>
                    <spacer name="horizontalSpacer">
@@ -1288,8 +1385,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>332</width>
-                <height>477</height>
+                <width>330</width>
+                <height>446</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1642,7 +1739,7 @@ border-radius: 2px;</string>
                 <x>0</x>
                 <y>0</y>
                 <width>98</width>
-                <height>45</height>
+                <height>42</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -1746,7 +1843,7 @@ border-radius: 2px;</string>
               </widget>
              </item>
              <item>
-              <widget class="QDoubleSpinBox" name="mRefreshLayerIntervalSpinBox">
+              <widget class="QgsDoubleSpinBox" name="mRefreshLayerIntervalSpinBox">
                <property name="toolTip">
                 <string>Higher values result in more simplification</string>
                </property>
@@ -1859,8 +1956,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>531</width>
-                <height>205</height>
+                <width>535</width>
+                <height>193</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1929,8 +2026,8 @@ border-radius: 2px;</string>
                        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Cantarell'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Cantarell';&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Cantarell'; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
                     </item>
@@ -2051,7 +2148,7 @@ p, li { white-space: pre-wrap; }
            <item>
             <widget class="QGroupBox" name="groupBox">
              <property name="title">
-              <string>Embedded widgets in legend</string>
+              <string>Embedded Widgets in Legend</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_17">
               <item>
@@ -2089,8 +2186,8 @@ p, li { white-space: pre-wrap; }
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>325</width>
-                <height>667</height>
+                <width>306</width>
+                <height>616</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_12">
@@ -2541,6 +2638,11 @@ p, li { white-space: pre-wrap; }
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
@@ -2567,6 +2669,11 @@ p, li { white-space: pre-wrap; }
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qgsfilterlineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsOpacityWidget</class>
@@ -2627,6 +2734,8 @@ p, li { white-space: pre-wrap; }
   <tabstop>mBrightnessSpinBox</tabstop>
   <tabstop>mSliderContrast</tabstop>
   <tabstop>mContrastSpinBox</tabstop>
+  <tabstop>mSliderGamma</tabstop>
+  <tabstop>mGammaSpinBox</tabstop>
   <tabstop>sliderSaturation</tabstop>
   <tabstop>spinBoxSaturation</tabstop>
   <tabstop>comboGrayscale</tabstop>
@@ -2676,10 +2785,22 @@ p, li { white-space: pre-wrap; }
   <tabstop>mWMSPrintLayerLineEdit</tabstop>
   <tabstop>mPublishDataSourceUrlCheckBox</tabstop>
   <tabstop>mBackgroundLayerCheckBox</tabstop>
+  <tabstop>scrollArea_3</tabstop>
+  <tabstop>mWmstGroup</tabstop>
+  <tabstop>mFetchModeComboBox</tabstop>
+  <tabstop>mDisableTime</tabstop>
+  <tabstop>mReferenceDateTimeEdit</tabstop>
+  <tabstop>mReferenceTime</tabstop>
+  <tabstop>mStaticTemporalRange</tabstop>
+  <tabstop>mSetEndAsStartStaticButton</tabstop>
+  <tabstop>mEndStaticDateTimeEdit</tabstop>
+  <tabstop>mStartStaticDateTimeEdit</tabstop>
+  <tabstop>mProjectTemporalRange</tabstop>
+  <tabstop>mPostgresRasterTemporalGroup</tabstop>
+  <tabstop>mPostgresRasterTemporalFieldComboBox</tabstop>
+  <tabstop>mPostgresRasterDefaultTime</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

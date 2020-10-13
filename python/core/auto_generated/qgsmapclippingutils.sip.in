@@ -1,0 +1,95 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmapclippingutils.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsMapClippingUtils
+{
+%Docstring
+
+Utility functions for use when clipping map renders.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsmapclippingutils.h"
+%End
+  public:
+
+    static QList< QgsMapClippingRegion > collectClippingRegionsForLayer( const QgsRenderContext &context, const QgsMapLayer *layer );
+%Docstring
+Collects the list of map clipping regions from a ``context`` which apply to a map ``layer``.
+%End
+
+    static QgsGeometry calculateFeatureRequestGeometry( const QList< QgsMapClippingRegion > &regions, const QgsRenderContext &context, bool &shouldFilter );
+%Docstring
+Returns the geometry representing the intersection of clipping ``regions`` from ``context``.
+
+The returned geometry will be automatically reprojected into the same CRS as the source layer, ready for use for filtering
+a feature request.
+
+:param regions: list of clip regions which apply to the layer
+:param context: a render context
+:param shouldFilter: will be set to ``True`` if layer's features should be filtered, i.e. one or more clipping regions applies to the layer
+
+:return: combined clipping region for use when filtering features to render
+%End
+
+    static QgsGeometry calculateFeatureIntersectionGeometry( const QList< QgsMapClippingRegion > &regions, const QgsRenderContext &context, bool &shouldClip );
+%Docstring
+Returns the geometry representing the intersection of clipping ``regions`` from ``context`` which should be used to clip individual
+feature geometries prior to rendering.
+
+The returned geometry will be automatically reprojected into the same CRS as the source layer, ready for use for clipping features.
+
+:param regions: list of clip regions which apply to the layer
+:param context: a render context
+:param shouldClip: will be set to ``True`` if layer's features should be filtered, i.e. one or more clipping regions applies to the layer
+
+:return: combined clipping region for use when rendering features
+%End
+
+    static QPainterPath calculatePainterClipRegion( const QList< QgsMapClippingRegion > &regions, const QgsRenderContext &context, QgsMapLayerType layerType, bool &shouldClip );
+%Docstring
+Returns a QPainterPath representing the intersection of clipping ``regions`` from ``context`` which should be used to clip the painter
+during rendering of a layer of the specified ``layerType``.
+
+The returned coordinates are in painter coordinates for the destination ``context``.
+
+:param regions: list of clip regions which apply to the layer
+:param context: a render context
+:param shouldClip: will be set to ``True`` if the clipping path should be applied
+
+:return: combined painter clipping region for use when rendering maps
+%End
+
+    static QgsGeometry calculateLabelIntersectionGeometry( const QList< QgsMapClippingRegion > &regions, const QgsRenderContext &context, bool &shouldClip );
+%Docstring
+Returns the geometry representing the intersection of clipping ``regions`` from ``context`` which should be used to clip individual
+feature geometries while registering them with labeling engines.
+
+The returned geometry will be automatically reprojected into the same CRS as the source layer, ready for use for clipping features.
+
+:param regions: list of clip regions which apply to the layer
+:param context: a render context
+:param shouldClip: will be set to ``True`` if layer's features should be clipped for labeling, i.e. one or more clipping regions applies to the layer
+
+:return: combined clipping region for use when labeling features
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmapclippingutils.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

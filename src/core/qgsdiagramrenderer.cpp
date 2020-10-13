@@ -976,8 +976,8 @@ QList< QgsLayerTreeModelLegendNode * > QgsLinearlyInterpolatedDiagramRenderer::l
     const auto constLegendSymbolList = ddSizeLegend.legendSymbolList();
     for ( const QgsLegendSymbolItem &si : constLegendSymbolList )
     {
-      if ( si.dataDefinedSizeLegendSettings() )
-        nodes << new QgsDataDefinedSizeLegendNode( nodeLayer, *si.dataDefinedSizeLegendSettings() );
+      if ( auto *lDataDefinedSizeLegendSettings = si.dataDefinedSizeLegendSettings() )
+        nodes << new QgsDataDefinedSizeLegendNode( nodeLayer, *lDataDefinedSizeLegendSettings );
       else
         nodes << new QgsSymbolLegendNode( nodeLayer, si );
     }

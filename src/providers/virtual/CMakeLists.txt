@@ -2,7 +2,7 @@
 ########################################################
 # Files
 
-QT5_ADD_RESOURCES(QGIS_VLAYER_SQL_FUNCTIONS_RCC sqlfunctionslist.qrc)
+SET (QGIS_VLAYER_SQL_FUNCTIONS_RCCS  sqlfunctionslist.qrc)
 
 SET(QGIS_VLAYER_PROVIDER_HDRS
   qgsvirtuallayerprovider.h
@@ -40,8 +40,10 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/effects
+  ${CMAKE_SOURCE_DIR}/src/core/textrenderer
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/auth
+  ${CMAKE_SOURCE_DIR}/src/gui/codeeditors
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann
 
@@ -73,7 +75,7 @@ ADD_LIBRARY(virtuallayerprovider MODULE
   ${QGIS_VLAYER_PROVIDER_SRCS}
   ${QGIS_VLAYER_PROVIDER_HDRS}
   ${vlayer_provider_UI_H}
-  ${QGIS_VLAYER_SQL_FUNCTIONS_RCC}
+  ${QGIS_VLAYER_SQL_FUNCTIONS_RCCS}
 )
 
 TARGET_LINK_LIBRARIES( virtuallayerprovider

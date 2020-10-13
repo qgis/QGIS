@@ -41,11 +41,11 @@ class QgsAfsProvider : public QgsVectorDataProvider
     static const QString AFS_PROVIDER_KEY;
     static const QString AFS_PROVIDER_DESCRIPTION;
 
-    QgsAfsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
+    QgsAfsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     /* Inherited from QgsVectorDataProvider */
     QgsAbstractFeatureSource *featureSource() const override;
-    QString storageType() const override { return QStringLiteral( "ESRI ArcGIS Feature Server" ); }
+    QString storageType() const override { return QStringLiteral( "ArcGIS Feature Service" ); }
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
     QgsWkbTypes::Type wkbType() const override;
     long featureCount() const override;
@@ -102,7 +102,7 @@ class QgsAfsProviderMetadata: public QgsProviderMetadata
     QList<QgsDataItemProvider *> dataItemProviders() const override;
     QVariantMap decodeUri( const QString &uri ) override;
     QString encodeUri( const QVariantMap &parts ) override;
-    QgsAfsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QgsAfsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
 
 };
 

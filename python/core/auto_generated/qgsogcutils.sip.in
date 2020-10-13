@@ -17,6 +17,7 @@ The QgsOgcUtils class provides various utility functions for conversion between
 OGC (Open Geospatial Consortium) standards and QGIS internal representations.
 
 Currently supported standards:
+
 - GML2 - Geography Markup Language (import, export)
 %End
 
@@ -25,6 +26,17 @@ Currently supported standards:
 %End
   public:
 
+    struct Context
+    {
+
+      Context( const QgsMapLayer *layer = 0, const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() );
+%Docstring
+Constructs a Context from ``layer`` and ``transformContext``
+%End
+      const QgsMapLayer *layer;
+      QgsCoordinateTransformContext transformContext;
+    };
+
     enum GMLVersion
     {
       GML_2_1_2,
@@ -32,16 +44,17 @@ Currently supported standards:
       GML_3_2_1,
     };
 
-    static QgsGeometry geometryFromGML( const QString &xmlString );
+    static QgsGeometry geometryFromGML( const QString &xmlString, const QgsOgcUtils::Context &context = QgsOgcUtils::Context() );
 %Docstring
 Static method that creates geometry from GML
 
 :param xmlString: xml representation of the geometry. GML elements are expected to be
                   in default namespace (\verbatim {<Point>...</Point> \endverbatim) or in
                   "gml" namespace (\verbatim <gml:Point>...</gml:Point> \endverbatim)
+:param context: QgsOgcUtils context
 %End
 
-    static QgsGeometry geometryFromGML( const QDomNode &geometryNode );
+    static QgsGeometry geometryFromGML( const QDomNode &geometryNode, const QgsOgcUtils::Context &context = QgsOgcUtils::Context() );
 %Docstring
 Static method that creates geometry from GML
 %End

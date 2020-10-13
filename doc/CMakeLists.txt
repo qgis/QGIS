@@ -1,33 +1,13 @@
 # include doxygen documentation
 SET (WITH_APIDOC FALSE CACHE BOOL "Determines whether the QGIS API doxygen documentation should be built")
 
-# include doxygen documentation
-SET (WITH_TXT2TAGS_PDF FALSE CACHE BOOL "Determines whether PDF should be generate for the txt2tags documentation")
-
 # include Qt documentation
 SET (QT_DOC_URL "https://doc.qt.io/qt-5/" CACHE STRING "URL for Qt docs")
 
-INCLUDE(Txt2Tags)
-FIND_TXT2TAGS()
-
-IF(TXT2TAGS_EXECUTABLE)
-  ADD_TXT2TAGS_FILES(QGIS_DOC_FILES INSTALL.t2t NEWS.t2t)
-  IF(WITH_TXT2TAGS_PDF)
-    ADD_TXT2TAGS_PDFS(QGIS_DOC_FILES INSTALL.t2t NEWS.t2t)
-  ENDIF(WITH_TXT2TAGS_PDF)
-  FILE(GLOB t2tfiles doc/*.t2t)
-  ADD_CUSTOM_TARGET (t2tdoc ALL DEPENDS ${QGIS_DOC_FILES} ${t2tfiles})
-ELSE(TXT2TAGS_EXECUTABLE)
-  SET(QGIS_DOC_FILES
-    ../INSTALL
-    ../NEWS
-    INSTALL.html
-    NEWS.html
-  )
-ENDIF(TXT2TAGS_EXECUTABLE)
-
 SET(QGIS_DOC_FILES
-  ${QGIS_DOC_FILES}
+  ../INSTALL.md
+  ../NEWS.md
+  NEWS.html
   index.html
   developersmap.html
   nohelp.html
@@ -98,12 +78,14 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/raster
       ${CMAKE_SOURCE_DIR}/src/core/scalebar
       ${CMAKE_SOURCE_DIR}/src/core/symbology
+      ${CMAKE_SOURCE_DIR}/src/core/textrenderer
       ${CMAKE_SOURCE_DIR}/src/core/validity
       ${CMAKE_SOURCE_DIR}/src/core/vectortile
       ${CMAKE_SOURCE_DIR}/src/gui
       ${CMAKE_SOURCE_DIR}/src/gui/auth
       ${CMAKE_SOURCE_DIR}/src/gui/attributetable
       ${CMAKE_SOURCE_DIR}/src/gui/callouts
+      ${CMAKE_SOURCE_DIR}/src/gui/codeeditors
       ${CMAKE_SOURCE_DIR}/src/gui/devtools
       ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
       ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
@@ -129,6 +111,7 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/analysis/vector/geometry_checker
       ${CMAKE_SOURCE_DIR}/src/3d
       ${CMAKE_SOURCE_DIR}/src/3d/chunks
+      ${CMAKE_SOURCE_DIR}/src/3d/materials
       ${CMAKE_SOURCE_DIR}/src/3d/symbols
       ${CMAKE_SOURCE_DIR}/src/3d/terrain
       ${CMAKE_SOURCE_DIR}/src/plugins
@@ -180,6 +163,8 @@ IF(WITH_APIDOC)
     IF(GENERATE_QHP)
       INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/api/qch/qgis.qch DESTINATION ${QGIS_DATA_DIR}/doc/api)
     ENDIF(GENERATE_QHP)
+    SET(WITH_DOT YES CACHE STRING "Determines if the dot application should be used to generate class diagrams for the documentation")
+    MARK_AS_ADVANCED(WITH_DOT)
   ELSE(DOXYGEN_FOUND)
     MESSAGE(STATUS "QGIS api documentation not built - Doxygen not found")
   ENDIF(DOXYGEN_FOUND)

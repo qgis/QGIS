@@ -122,6 +122,22 @@ void QgsMapToolSelect::deactivate()
   QgsMapTool::deactivate();
 }
 
+QgsMapTool::Flags QgsMapToolSelect::flags() const
+{
+  switch ( mSelectionHandler->selectionMode() )
+  {
+    case QgsMapToolSelectionHandler::SelectPolygon:
+      break;
+
+    case QgsMapToolSelectionHandler::SelectSimple:
+    case QgsMapToolSelectionHandler::SelectFreehand:
+    case QgsMapToolSelectionHandler::SelectRadius:
+      return QgsMapTool::flags() | QgsMapTool::ShowContextMenu;
+  }
+
+  return QgsMapTool::flags();
+}
+
 void QgsMapToolSelect::selectFeatures( Qt::KeyboardModifiers modifiers )
 {
   if ( mSelectionHandler->selectionMode() == QgsMapToolSelectionHandler::SelectSimple &&

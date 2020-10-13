@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0" colspan="2">
@@ -52,7 +52,7 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QSpinBox" name="precisionSpinBox">
+       <widget class="QgsSpinBox" name="precisionSpinBox">
         <property name="toolTip">
          <string>Number of decimal places</string>
         </property>
@@ -108,7 +108,7 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QSpinBox" name="minimumSpinBox"/>
+        <widget class="QgsSpinBox" name="minimumSpinBox"/>
        </item>
        <item row="1" column="0">
         <widget class="QLabel" name="maximumLabel">
@@ -118,7 +118,7 @@
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QSpinBox" name="maximumSpinBox"/>
+        <widget class="QgsSpinBox" name="maximumSpinBox"/>
        </item>
        <item row="2" column="0">
         <widget class="QLabel" name="stepLabel">
@@ -128,7 +128,7 @@
         </widget>
        </item>
        <item row="2" column="1">
-        <widget class="QSpinBox" name="stepSpinBox"/>
+        <widget class="QgsSpinBox" name="stepSpinBox"/>
        </item>
       </layout>
      </widget>
@@ -159,13 +159,13 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QDoubleSpinBox" name="minimumDoubleSpinBox"/>
+        <widget class="QgsDoubleSpinBox" name="minimumDoubleSpinBox"/>
        </item>
        <item row="1" column="1">
-        <widget class="QDoubleSpinBox" name="maximumDoubleSpinBox"/>
+        <widget class="QgsDoubleSpinBox" name="maximumDoubleSpinBox"/>
        </item>
        <item row="2" column="1">
-        <widget class="QDoubleSpinBox" name="stepDoubleSpinBox">
+        <widget class="QgsDoubleSpinBox" name="stepDoubleSpinBox">
          <property name="value">
           <double>1.000000000000000</double>
          </property>
@@ -185,6 +185,16 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>

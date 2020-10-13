@@ -130,6 +130,11 @@ bool QgsRemappingProxyFeatureSink::addFeatures( QgsFeatureIterator &iterator, Qg
   return res;
 }
 
+QString QgsRemappingProxyFeatureSink::lastError() const
+{
+  return mSink->lastError();
+}
+
 QVariant QgsRemappingSinkDefinition::toVariant() const
 {
   QVariantMap map;
@@ -139,8 +144,8 @@ QVariant QgsRemappingSinkDefinition::toVariant() const
   for ( const QgsField &field : mDestinationFields )
     fieldNames << field.name();
   map.insert( QStringLiteral( "destination_field_names" ), fieldNames );
-  map.insert( QStringLiteral( "transform_source" ), mSourceCrs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) );
-  map.insert( QStringLiteral( "transform_dest" ), mDestinationCrs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) );
+  map.insert( QStringLiteral( "transform_source" ), mSourceCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
+  map.insert( QStringLiteral( "transform_dest" ), mDestinationCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
 
   QVariantMap fieldMap;
   for ( auto it = mFieldMap.constBegin(); it != mFieldMap.constEnd(); ++it )

@@ -35,7 +35,7 @@ QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
   setAutoFillBackground( true );
 
   QGridLayout *layout = new QGridLayout();
-  layout->setMargin( 0 );
+  layout->setContentsMargins( 0, 0, 0, 0 );
 
   mFileWidget = new QgsFileWidget( this );
   layout->addWidget( mFileWidget, 0, 0 );
@@ -55,17 +55,6 @@ QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
 
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, &QgsExternalResourceWidget::loadDocument );
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, &QgsExternalResourceWidget::valueChanged );
-  connect( mFileWidget, &QgsFileWidget::blockEvents, this, [this]( bool block )
-  {
-    if ( block )
-    {
-      installEventFilter( this );
-    }
-    else
-    {
-      removeEventFilter( this );
-    }
-  } );
 }
 
 QVariant QgsExternalResourceWidget::documentPath( QVariant::Type type ) const
@@ -110,7 +99,9 @@ QgsExternalResourceWidget::DocumentViewerContent QgsExternalResourceWidget::docu
 void QgsExternalResourceWidget::setDocumentViewerContent( QgsExternalResourceWidget::DocumentViewerContent content )
 {
   mDocumentViewerContent = content;
-  updateDocumentViewer();
+  if ( mDocumentViewerContent != Image )
+    updateDocumentViewer();
+  loadDocument( mFileWidget->filePath() );
 }
 
 int QgsExternalResourceWidget::documentViewerHeight() const
@@ -203,15 +194,6 @@ void QgsExternalResourceWidget::setDefaultRoot( const QString &defaultRoot )
 {
   mFileWidget->setDefaultRoot( defaultRoot );
   mDefaultRoot = defaultRoot;
-}
-
-bool QgsExternalResourceWidget::eventFilter( QObject *watched, QEvent *event )
-{
-  if ( watched == this && event && ( event->type() == QEvent::FocusOut ||  event->type() == QEvent::FocusAboutToChange ) )
-  {
-    return true;
-  }
-  return QWidget::eventFilter( watched, event );
 }
 
 QgsFileWidget::RelativeStorage QgsExternalResourceWidget::relativeStorage() const

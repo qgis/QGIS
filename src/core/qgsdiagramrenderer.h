@@ -30,7 +30,6 @@
 #include "qgssymbol.h"
 #include "qgsproperty.h"
 #include "qgspropertycollection.h"
-#include "qgsdatadefinedsizelegend.h"
 
 #include "diagram/qgsdiagram.h"
 #include "qgsreadwritecontext.h"
@@ -45,6 +44,7 @@ class QgsVectorLayer;
 class QgsLayerTreeModelLegendNode;
 class QgsLayerTreeLayer;
 class QgsPaintEffect;
+class QgsDataDefinedSizeLegend;
 
 namespace pal { class Layer; } SIP_SKIP
 
@@ -685,9 +685,9 @@ class CORE_EXPORT QgsDiagramRenderer
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( sipCpp->rendererName() == QStringLiteral( "SingleCategory" ) )
+    if ( sipCpp->rendererName() == QLatin1String( "SingleCategory" ) )
       sipType = sipType_QgsSingleCategoryDiagramRenderer;
-    else if ( sipCpp->rendererName() == QStringLiteral( "LinearlyInterpolated" ) )
+    else if ( sipCpp->rendererName() == QLatin1String( "LinearlyInterpolated" ) )
       sipType = sipType_QgsLinearlyInterpolatedDiagramRenderer;
     else
       sipType = NULL;
@@ -704,7 +704,8 @@ class CORE_EXPORT QgsDiagramRenderer
 
     /**
      * Returns new instance that is equivalent to this one
-     * \since QGIS 2.4 */
+     * \since QGIS 2.4
+    */
     virtual QgsDiagramRenderer *clone() const = 0 SIP_FACTORY;
 
     //! Returns size of the diagram for a feature in map units. Returns an invalid QSizeF in case of error
@@ -932,6 +933,8 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
 
     //! Stores more settings about how legend for varying size of symbols should be rendered
     QgsDataDefinedSizeLegend *mDataDefinedSizeLegend = nullptr;
+
+    QgsLinearlyInterpolatedDiagramRenderer &operator=( const QgsLinearlyInterpolatedDiagramRenderer & ) = delete;
 };
 
 #endif // QGSDIAGRAMRENDERER_H

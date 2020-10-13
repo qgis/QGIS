@@ -26,7 +26,9 @@
 QgsMapToolPointSymbol::QgsMapToolPointSymbol( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
   , mFeatureNumber( -1 )
-{}
+{
+  mToolName = tr( "Map tool point symbol" );
+}
 
 void QgsMapToolPointSymbol::canvasPressEvent( QgsMapMouseEvent *e )
 {

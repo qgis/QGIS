@@ -30,6 +30,7 @@
 QgsMapToolFillRing::QgsMapToolFillRing( QgsMapCanvas *canvas )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CapturePolygon )
 {
+  mToolName = tr( "Fill ring" );
 }
 
 void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )

@@ -54,6 +54,7 @@ class TestQgsArcGisRestUtils : public QObject
     void testParseRendererSimple();
     void testParseRendererCategorized();
     void testParseLabeling();
+    void testParseCompoundCurve();
 
   private:
 
@@ -84,7 +85,7 @@ void TestQgsArcGisRestUtils::testMapEsriFieldType()
   QCOMPARE( QgsArcGisRestUtils::mapEsriFieldType( QStringLiteral( "esriFieldTypeDouble" ) ), QVariant::Double );
   QCOMPARE( QgsArcGisRestUtils::mapEsriFieldType( QStringLiteral( "esriFieldTypeSingle" ) ), QVariant::Double );
   QCOMPARE( QgsArcGisRestUtils::mapEsriFieldType( QStringLiteral( "esriFieldTypeString" ) ), QVariant::String );
-  QCOMPARE( QgsArcGisRestUtils::mapEsriFieldType( QStringLiteral( "esriFieldTypeDate" ) ), QVariant::Date );
+  QCOMPARE( QgsArcGisRestUtils::mapEsriFieldType( QStringLiteral( "esriFieldTypeDate" ) ), QVariant::DateTime );
   QCOMPARE( QgsArcGisRestUtils::mapEsriFieldType( QStringLiteral( "esriFieldTypeOID" ) ), QVariant::LongLong );
   QCOMPARE( QgsArcGisRestUtils::mapEsriFieldType( QStringLiteral( "esriFieldTypeBlob" ) ), QVariant::ByteArray );
   QCOMPARE( QgsArcGisRestUtils::mapEsriFieldType( QStringLiteral( "esriFieldTypeGlobalID" ) ), QVariant::String );
@@ -605,6 +606,15 @@ QVariantMap TestQgsArcGisRestUtils::jsonStringToMap( const QString &string ) con
     return QVariantMap();
   }
   return doc.object().toVariantMap();
+}
+
+void TestQgsArcGisRestUtils::testParseCompoundCurve()
+{
+  QVariantMap map = jsonStringToMap( "{\"curvePaths\": [[[6,3],[5,3],{\"c\": [[3,3],[1,4]]}]]}" );
+  std::unique_ptr< QgsMultiCurve > curve( QgsArcGisRestUtils::parseEsriGeometryPolyline( map, QgsWkbTypes::Point ) );
+  QVERIFY( curve );
+  // FIXME: the final linestring with one single point (1 4) is wrong !
+  QCOMPARE( curve->asWkt(), QStringLiteral( "MultiCurve (CompoundCurve ((6 3, 5 3),CircularString (5 3, 3 3, 1 4),(1 4)))" ) );
 }
 
 QGSTEST_MAIN( TestQgsArcGisRestUtils )

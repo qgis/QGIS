@@ -255,7 +255,7 @@ void QgsGpsPlugin::importGPSFile( const QString &inputFileName, QgsBabelFormat *
   QgsDebugMsg( QStringLiteral( "Import command: " ) + babelArgs.join( "|" ) );
 
   QProcess babelProcess;
-  babelProcess.start( babelArgs.join( QStringLiteral( " " ) ) );
+  babelProcess.start( babelArgs.value( 0 ), babelArgs.mid( 1 ) );
   if ( !babelProcess.waitForStarted() )
   {
     QMessageBox::warning( nullptr, tr( "Import GPS File" ),
@@ -334,7 +334,7 @@ void QgsGpsPlugin::convertGPSFile( const QString &inputFileName,
   QgsDebugMsg( QStringLiteral( "Conversion command: " ) + babelArgs.join( "|" ) );
 
   QProcess babelProcess;
-  babelProcess.start( babelArgs.join( QStringLiteral( " " ) ) );
+  babelProcess.start( babelArgs.value( 0 ), babelArgs.mid( 1 ) );
   if ( !babelProcess.waitForStarted() )
   {
     QMessageBox::warning( nullptr, tr( "Convert GPS File" ),
@@ -425,7 +425,7 @@ void QgsGpsPlugin::downloadFromGPS( const QString &device, const QString &port,
   QgsDebugMsg( QStringLiteral( "Download command: " ) + babelArgs.join( "|" ) );
 
   QProcess babelProcess;
-  babelProcess.start( babelArgs.join( QStringLiteral( " " ) ) );
+  babelProcess.start( babelArgs.value( 0 ), babelArgs.mid( 1 ) );
   if ( !babelProcess.waitForStarted() )
   {
     QMessageBox::warning( nullptr, tr( "Download from GPS" ),
@@ -515,7 +515,7 @@ void QgsGpsPlugin::uploadToGPS( QgsVectorLayer *gpxLayer, const QString &device,
   QgsDebugMsg( QStringLiteral( "Upload command: " ) + babelArgs.join( "|" ) );
 
   QProcess babelProcess;
-  babelProcess.start( babelArgs.join( QStringLiteral( " " ) ) );
+  babelProcess.start( babelArgs.value( 0 ), babelArgs.mid( 1 ) );
   if ( !babelProcess.waitForStarted() )
   {
     QMessageBox::warning( nullptr, tr( "Upload to GPS" ),

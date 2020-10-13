@@ -23,9 +23,13 @@
 #include "qgsmarkersymbollayer.h"
 #include "qgs3dmapsettings.h"
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup 3d
  * Material of the billboard rendering for points in 3D map view.
+ *
+ * \note Not available in Python bindings
  *
  * \since QGIS 3.10
  */

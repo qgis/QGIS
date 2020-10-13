@@ -132,7 +132,7 @@ bool QgsBackgroundCachedSharedData::getUserVisibleIdFromSpatialiteId( QgsFeature
   // Retrieve the user-visible id from the Spatialite cache database Id
   if ( mCacheIdDb.get() )
   {
-    auto sql = QgsSqlite3Mprintf( "SELECT qgisId FROM id_cache WHERE dbId = %lld", dbId );
+    QString sql = qgs_sqlite3_mprintf( "SELECT qgisId FROM id_cache WHERE dbId = %lld", dbId );
     int resultCode;
     auto stmt = mCacheIdDb.prepare( sql, resultCode );
     if ( stmt.step() == SQLITE_ROW )
@@ -183,7 +183,7 @@ bool QgsBackgroundCachedSharedData::createCache()
     int counter = 2;
     while ( setSQLiteColumnNameUpperCase.find( sqliteFieldName.toUpper() ) != setSQLiteColumnNameUpperCase.end() )
     {
-      sqliteFieldName = field.name() + QStringLiteral( "%1" ).arg( counter );
+      sqliteFieldName = field.name() + QString::number( counter );
       counter++;
     }
     setSQLiteColumnNameUpperCase.insert( sqliteFieldName.toUpper() );
@@ -198,24 +198,28 @@ bool QgsBackgroundCachedSharedData::createCache()
   if ( mDistinctSelect )
     cacheFields.append( QgsField( QgsBackgroundCachedFeatureIteratorConstants::FIELD_MD5, QVariant::String, QStringLiteral( "string" ) ) );
 
+  const auto logMessageWithReason = [this]( const QString & reason )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "%1: %2" ).arg( QObject::tr( "Cannot create temporary SpatiaLite cache." ) ).arg( reason ), mComponentTranslated );
+  };
+
   // Creating a SpatiaLite database can be quite slow on some file systems
   // so we create a GDAL in-memory file, and then copy it on
   // the file system.
   GDALDriverH hDrv = GDALGetDriverByName( "SQLite" );
   if ( !hDrv )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Cannot create temporary SpatiaLite cache." ), mComponentTranslated );
+    logMessageWithReason( QStringLiteral( "GDAL SQLite driver not available" ) );
     return false;
   }
-  QString vsimemFilename;
-  vsimemFilename.sprintf( "/vsimem/qgis_cache_template_%p/features.sqlite", this );
+  const QString vsimemFilename = QStringLiteral( "/vsimem/qgis_cache_template_%1/features.sqlite" ).arg( reinterpret_cast< quintptr >( this ), QT_POINTER_SIZE * 2, 16, QLatin1Char( '0' ) );
   mCacheTablename = CPLGetBasename( vsimemFilename.toStdString().c_str() );
   VSIUnlink( vsimemFilename.toStdString().c_str() );
   const char *apszOptions[] = { "INIT_WITH_EPSG=NO", "SPATIALITE=YES", nullptr };
   GDALDatasetH hDS = GDALCreate( hDrv, vsimemFilename.toUtf8().constData(), 0, 0, 0, GDT_Unknown, const_cast<char **>( apszOptions ) );
   if ( !hDS )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Cannot create temporary SpatiaLite cache." ), mComponentTranslated );
+    logMessageWithReason( QStringLiteral( "GDALCreate() failed: %1" ).arg( CPLGetLastErrorMsg() ) );
     return false;
   }
   GDALClose( hDS );
@@ -224,7 +228,7 @@ bool QgsBackgroundCachedSharedData::createCache()
   vsi_l_offset nLength = 0;
   GByte *pabyData = VSIGetMemFileBuffer( vsimemFilename.toStdString().c_str(), &nLength, TRUE );
   Q_ASSERT( !QFile::exists( mCacheDbname ) );
-  VSILFILE *fp = VSIFOpenL( mCacheDbname.toStdString().c_str(), "wb " );
+  VSILFILE *fp = VSIFOpenL( mCacheDbname.toStdString().c_str(), "wb" );
   if ( fp )
   {
     VSIFWriteL( pabyData, 1, nLength, fp );
@@ -234,7 +238,7 @@ bool QgsBackgroundCachedSharedData::createCache()
   else
   {
     CPLFree( pabyData );
-    QgsMessageLog::logMessage( QObject::tr( "Cannot create temporary SpatiaLite cache" ), mComponentTranslated );
+    logMessageWithReason( QStringLiteral( "Cannot copy file to %1: %2" ).arg( mCacheDbname ).arg( CPLGetLastErrorMsg() ) );
     return false;
   }
 
@@ -245,6 +249,7 @@ bool QgsBackgroundCachedSharedData::createCache()
   spatialite_database_unique_ptr database;
   bool ret = true;
   int rc = database.open( mCacheDbname );
+  QString failedSql;
   if ( rc == SQLITE_OK )
   {
     QString sql;
@@ -272,11 +277,12 @@ bool QgsBackgroundCachedSharedData::createCache()
 
       sql += QStringLiteral( ", %1 %2" ).arg( quotedIdentifier( field.name() ), type );
     }
-    sql += QLatin1String( ")" );
+    sql += QLatin1Char( ')' );
     rc = sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr );
     if ( rc != SQLITE_OK )
     {
       QgsDebugMsg( QStringLiteral( "%1 failed" ).arg( sql ) );
+      if ( failedSql.isEmpty() ) failedSql = sql;
       ret = false;
     }
 
@@ -285,6 +291,7 @@ bool QgsBackgroundCachedSharedData::createCache()
     if ( rc != SQLITE_OK )
     {
       QgsDebugMsg( QStringLiteral( "%1 failed" ).arg( sql ) );
+      if ( failedSql.isEmpty() ) failedSql = sql;
       ret = false;
     }
 
@@ -293,6 +300,7 @@ bool QgsBackgroundCachedSharedData::createCache()
     if ( rc != SQLITE_OK )
     {
       QgsDebugMsg( QStringLiteral( "%1 failed" ).arg( sql ) );
+      if ( failedSql.isEmpty() ) failedSql = sql;
       ret = false;
     }
 
@@ -304,6 +312,7 @@ bool QgsBackgroundCachedSharedData::createCache()
     if ( rc != SQLITE_OK )
     {
       QgsDebugMsg( QStringLiteral( "%1 failed" ).arg( sql ) );
+      if ( failedSql.isEmpty() ) failedSql = sql;
       ret = false;
     }
 
@@ -314,6 +323,7 @@ bool QgsBackgroundCachedSharedData::createCache()
       if ( rc != SQLITE_OK )
       {
         QgsDebugMsg( QStringLiteral( "%1 failed" ).arg( sql ) );
+        if ( failedSql.isEmpty() ) failedSql = sql;
         ret = false;
       }
     }
@@ -326,7 +336,7 @@ bool QgsBackgroundCachedSharedData::createCache()
   }
   if ( !ret )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Cannot create temporary SpatiaLite cache" ), mComponentTranslated );
+    logMessageWithReason( QStringLiteral( "SQL request %1 failed" ).arg( failedSql ) );
     return false;
   }
 
@@ -648,8 +658,8 @@ void QgsBackgroundCachedSharedData::serializeFeatures( QVector<QgsFeatureUniqueI
       {
         QString errorMsg;
 
-        auto sql = QgsSqlite3Mprintf( "SELECT qgisId, dbId FROM id_cache WHERE uniqueId = '%q'",
-                                      uniqueId.toUtf8().constData() );
+        QString sql = qgs_sqlite3_mprintf( "SELECT qgisId, dbId FROM id_cache WHERE uniqueId = '%q'",
+                                           uniqueId.toUtf8().constData() );
         auto stmt = mCacheIdDb.prepare( sql, resultCode );
         Q_ASSERT( resultCode == SQLITE_OK );
         if ( stmt.step() == SQLITE_ROW )
@@ -658,16 +668,16 @@ void QgsBackgroundCachedSharedData::serializeFeatures( QVector<QgsFeatureUniqueI
           QgsFeatureId oldDbId = stmt.columnAsInt64( 1 );
           if ( dbId != oldDbId )
           {
-            sql = QgsSqlite3Mprintf( "UPDATE id_cache SET dbId = NULL WHERE dbId = %lld",
-                                     dbId );
+            sql = qgs_sqlite3_mprintf( "UPDATE id_cache SET dbId = NULL WHERE dbId = %lld",
+                                       dbId );
             if ( mCacheIdDb.exec( sql, errorMsg ) != SQLITE_OK )
             {
               QgsMessageLog::logMessage( QObject::tr( "Problem when updating id cache: %1 -> %2" ).arg( sql ).arg( errorMsg ), mComponentTranslated );
             }
 
-            sql = QgsSqlite3Mprintf( "UPDATE id_cache SET dbId = %lld WHERE uniqueId = '%q'",
-                                     dbId,
-                                     uniqueId.toUtf8().constData() );
+            sql = qgs_sqlite3_mprintf( "UPDATE id_cache SET dbId = %lld WHERE uniqueId = '%q'",
+                                       dbId,
+                                       uniqueId.toUtf8().constData() );
             if ( mCacheIdDb.exec( sql, errorMsg ) != SQLITE_OK )
             {
               QgsMessageLog::logMessage( QObject::tr( "Problem when updating id cache: %1 -> %2" ).arg( sql ).arg( errorMsg ), mComponentTranslated );
@@ -676,8 +686,8 @@ void QgsBackgroundCachedSharedData::serializeFeatures( QVector<QgsFeatureUniqueI
         }
         else
         {
-          sql = QgsSqlite3Mprintf( "UPDATE id_cache SET dbId = NULL WHERE dbId = %lld",
-                                   dbId );
+          sql = qgs_sqlite3_mprintf( "UPDATE id_cache SET dbId = NULL WHERE dbId = %lld",
+                                     dbId );
           if ( mCacheIdDb.exec( sql, errorMsg ) != SQLITE_OK )
           {
             QgsMessageLog::logMessage( QObject::tr( "Problem when updating id cache: %1 -> %2" ).arg( sql ).arg( errorMsg ), mComponentTranslated );
@@ -685,10 +695,10 @@ void QgsBackgroundCachedSharedData::serializeFeatures( QVector<QgsFeatureUniqueI
 
           qgisId = mNextCachedIdQgisId;
           mNextCachedIdQgisId ++;
-          sql = QgsSqlite3Mprintf( "INSERT INTO id_cache (uniqueId, dbId, qgisId) VALUES ('%q', %lld, %lld)",
-                                   uniqueId.toUtf8().constData(),
-                                   dbId,
-                                   qgisId );
+          sql = qgs_sqlite3_mprintf( "INSERT INTO id_cache (uniqueId, dbId, qgisId) VALUES ('%q', %lld, %lld)",
+                                     uniqueId.toUtf8().constData(),
+                                     dbId,
+                                     qgisId );
           if ( mCacheIdDb.exec( sql, errorMsg ) != SQLITE_OK )
           {
             QgsMessageLog::logMessage( QObject::tr( "Problem when updating id cache: %1 -> %2" ).arg( sql ).arg( errorMsg ), mComponentTranslated );
@@ -899,19 +909,19 @@ QSet<QString> QgsBackgroundCachedSharedData::getExistingCachedMD5( const QVector
   for ( int i = 0; i < featureList.size(); i ++ )
   {
     if ( !first )
-      expr += QLatin1String( "," );
+      expr += QLatin1Char( ',' );
     else
     {
       expr = QgsBackgroundCachedFeatureIteratorConstants::FIELD_MD5 + " IN (";
       first = false;
     }
-    expr += QLatin1String( "'" );
+    expr += QLatin1Char( '\'' );
     expr += getMD5( featureList[i].first );
-    expr += QLatin1String( "'" );
+    expr += QLatin1Char( '\'' );
 
     if ( ( i > 0 && ( i % 1000 ) == 0 ) || i + 1 == featureList.size() )
     {
-      expr += QLatin1String( ")" );
+      expr += QLatin1Char( ')' );
 
       QgsFeatureRequest request;
       request.setFilterExpression( expr );
@@ -942,7 +952,7 @@ QString QgsBackgroundCachedSharedData::findUniqueId( QgsFeatureId fid ) const
   if ( !mCacheIdDb )
     return QString();
 
-  auto sql = QgsSqlite3Mprintf( "SELECT uniqueId FROM id_cache WHERE qgisId = %lld", fid );
+  QString sql = qgs_sqlite3_mprintf( "SELECT uniqueId FROM id_cache WHERE qgisId = %lld", fid );
   int resultCode;
   auto stmt = mCacheIdDb.prepare( sql, resultCode );
   Q_ASSERT( resultCode == SQLITE_OK );
@@ -1024,7 +1034,7 @@ bool QgsBackgroundCachedSharedData::changeGeometryValues( const QgsGeometryMap &
   QgsChangedAttributesMap newChangedAttrMap;
   for ( QgsGeometryMap::const_iterator iter = geometry_map.constBegin(); iter != geometry_map.constEnd(); ++iter )
   {
-    auto sql = QgsSqlite3Mprintf( "SELECT dbId FROM id_cache WHERE qgisId = %lld", iter.key() );
+    QString sql = qgs_sqlite3_mprintf( "SELECT dbId FROM id_cache WHERE qgisId = %lld", iter.key() );
     int resultCode;
     auto stmt = mCacheIdDb.prepare( sql, resultCode );
     Q_ASSERT( resultCode == SQLITE_OK );
@@ -1069,7 +1079,7 @@ bool QgsBackgroundCachedSharedData::changeAttributeValues( const QgsChangedAttri
   QgsChangedAttributesMap newMap;
   for ( QgsChangedAttributesMap::const_iterator iter = attr_map.begin(); iter != attr_map.end(); ++iter )
   {
-    auto sql = QgsSqlite3Mprintf( "SELECT dbId FROM id_cache WHERE qgisId = %lld", iter.key() );
+    QString sql = qgs_sqlite3_mprintf( "SELECT dbId FROM id_cache WHERE qgisId = %lld", iter.key() );
     int resultCode;
     auto stmt = mCacheIdDb.prepare( sql, resultCode );
     Q_ASSERT( resultCode == SQLITE_OK );

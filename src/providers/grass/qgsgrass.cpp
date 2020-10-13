@@ -54,6 +54,7 @@
 #include <QTemporaryFile>
 #include <QHash>
 #include <QTextCodec>
+#include <QElapsedTimer>
 
 
 extern "C"
@@ -882,7 +883,7 @@ QString QgsGrass::openMapset( const QString &gisdbase,
   QString lockProgram( gisbase() + "/etc/lock" );
   QStringList lockArguments;
   lockArguments << lock << QString::number( pid );
-  QString lockCommand = lockProgram + " " + lockArguments.join( QStringLiteral( " " ) ); // for debug
+  QString lockCommand = lockProgram + " " + lockArguments.join( QLatin1Char( ' ' ) ); // for debug
   QgsDebugMsg( "lock command: " + lockCommand );
 
   process.start( lockProgram, lockArguments );
@@ -1478,7 +1479,7 @@ QStringList QgsGrass::elements( const QString  &mapsetPath, const QString  &elem
 QStringList QgsGrass::grassObjects( const QgsGrassObject &mapsetObject, QgsGrassObject::Type type )
 {
   QgsDebugMsg( "mapsetPath = " + mapsetObject.mapsetPath() + " type = " +  QgsGrassObject::elementShort( type ) );
-  QTime time;
+  QElapsedTimer time;
   time.start();
   QStringList list;
   if ( !QDir( mapsetObject.mapsetPath() ).isReadable() )
@@ -1908,7 +1909,7 @@ QString QgsGrass::findModule( QString module )
     const auto constPaths = paths;
     for ( const QString &path : constPaths )
     {
-      QString full = module + ext;;
+      QString full = module + ext;
       if ( !path.isEmpty() )
       {
         full.prepend( path + "/" );
@@ -1952,7 +1953,7 @@ QProcess *QgsGrass::startModule( const QString &gisdbase, const QString  &locati
     throw QgsGrass::Exception( QObject::tr( "Cannot open GISRC file" ) );
   }
 
-  QString error = tr( "Cannot start module" ) + "\n" + tr( "command: %1 %2" ).arg( module, arguments.join( QStringLiteral( " " ) ) );
+  QString error = tr( "Cannot start module" ) + "\n" + tr( "command: %1 %2" ).arg( module, arguments.join( QLatin1Char( ' ' ) ) );
 
   QTextStream out( &gisrcFile );
   out << "GISDBASE: " << gisdbase << "\n";
@@ -1997,7 +1998,7 @@ QByteArray QgsGrass::runModule( const QString &gisdbase, const QString  &locatio
                                 const QStringList &arguments, int timeOut, bool qgisModule )
 {
   QgsDebugMsg( QString( "gisdbase = %1 location = %2 timeOut = %3" ).arg( gisdbase, location ).arg( timeOut ) );
-  QTime time;
+  QElapsedTimer time;
   time.start();
 
   QTemporaryFile gisrcFile;
@@ -2010,7 +2011,7 @@ QByteArray QgsGrass::runModule( const QString &gisdbase, const QString  &locatio
 
     throw QgsGrass::Exception( QObject::tr( "Cannot run module" ) + "\n"
                                + QObject::tr( "command: %1 %2\nstdout: %3\nstderr: %4" )
-                               .arg( moduleName, arguments.join( QStringLiteral( " " ) ),
+                               .arg( moduleName, arguments.join( QLatin1Char( ' ' ) ),
                                      process->readAllStandardOutput().constData(),
                                      process->readAllStandardError().constData() ) );
   }
@@ -2409,7 +2410,7 @@ void QgsGrass::createTable( dbDriver *driver, const QString &tableName, const Qg
     }
     fieldsStringList <<  name + " " + typeName;
   }
-  QString sql = QStringLiteral( "create table %1 (%2);" ).arg( tableName, fieldsStringList.join( QStringLiteral( ", " ) ) );
+  QString sql = QStringLiteral( "create table %1 (%2);" ).arg( tableName, fieldsStringList.join( QLatin1String( ", " ) ) );
 
   dbString dbstr;
   db_init_string( &dbstr );
@@ -2472,7 +2473,7 @@ void QgsGrass::insertRow( dbDriver *driver, const QString &tableName,
 
     valuesStringList <<  valueString;
   }
-  QString sql = QStringLiteral( "insert into %1 values (%2);" ).arg( tableName, valuesStringList.join( QStringLiteral( ", " ) ) );
+  QString sql = QStringLiteral( "insert into %1 values (%2);" ).arg( tableName, valuesStringList.join( QLatin1String( ", " ) ) );
 
   dbString dbstr;
   db_init_string( &dbstr );
@@ -2867,7 +2868,6 @@ void QgsGrass::vectDestroyMapStruct( struct Map_info *map )
   // call G_fatal_error, otherwise check and remove use of vectDestroyMapStruct from G_CATCH blocks
   QgsDebugMsg( QString( "free map = %1" ).arg( ( quint64 )map ) );
   qgsFree( map );
-  map = nullptr;
 }
 
 void QgsGrass::sleep( int ms )
@@ -2889,7 +2889,7 @@ QgsGrass::ModuleOutput QgsGrass::parseModuleOutput( const QString &input, QStrin
   for ( int i = 0; i < input.size(); i++ )
   {
     int c = input.at( i ).toLatin1();
-    ascii += QString().sprintf( "%2x ", c );
+    ascii += QStringLiteral( "%1 " ).arg( c, 0, 16 );
   }
   QgsDebugMsg( "ascii = " + ascii );
 #endif

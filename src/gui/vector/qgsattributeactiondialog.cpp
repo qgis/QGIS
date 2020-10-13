@@ -133,9 +133,9 @@ void QgsAttributeActionDialog::insertRow( int row, const QgsAction &action )
   // Scopes
   item = new QTableWidgetItem();
   item->setFlags( item->flags() & ~( Qt::ItemIsEditable ) );
-  QStringList actionScopes = action.actionScopes().toList();
+  QStringList actionScopes = qgis::setToList( action.actionScopes() );
   std::sort( actionScopes.begin(), actionScopes.end() );
-  item->setText( actionScopes.join( QStringLiteral( ", " ) ) );
+  item->setText( actionScopes.join( QLatin1String( ", " ) ) );
   item->setData( Qt::UserRole, QVariant::fromValue<QSet<QString>>( action.actionScopes() ) );
   mAttributeActionTable->setItem( row, ActionScopes, item );
 
@@ -355,9 +355,9 @@ void QgsAttributeActionDialog::itemDoubleClicked( QTableWidgetItem *item )
     mAttributeActionTable->item( row, EnabledOnlyWhenEditable )->setCheckState( actionProperties.isEnabledOnlyWhenEditable() ? Qt::Checked : Qt::Unchecked );
 
     QTableWidgetItem *item = mAttributeActionTable->item( row, ActionScopes );
-    QStringList actionScopes = actionProperties.actionScopes().toList();
+    QStringList actionScopes = qgis::setToList( actionProperties.actionScopes() );
     std::sort( actionScopes.begin(), actionScopes.end() );
-    item->setText( actionScopes.join( QStringLiteral( ", " ) ) );
+    item->setText( actionScopes.join( QLatin1String( ", " ) ) );
     item->setData( Qt::UserRole, QVariant::fromValue<QSet<QString>>( actionProperties.actionScopes() ) );
 
     mAttributeActionTable->verticalHeaderItem( row )->setData( Qt::UserRole, actionProperties.iconPath() );

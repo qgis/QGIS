@@ -39,14 +39,19 @@ QString QgsAuthCertUtils::getSslProtocolName( QSsl::SslProtocol protocol )
   {
     case QSsl::SecureProtocols:
       return QObject::tr( "SecureProtocols" );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     case QSsl::TlsV1SslV3:
       return QObject::tr( "TlsV1SslV3" );
+#endif
     case QSsl::TlsV1_0:
       return QObject::tr( "TlsV1" );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+    // not supported by Qt 5.15+
     case QSsl::SslV3:
       return QObject::tr( "SslV3" );
     case QSsl::SslV2:
       return QObject::tr( "SslV2" );
+#endif
     default:
       return QString();
   }
@@ -566,7 +571,7 @@ QByteArray QgsAuthCertUtils::certsToPemText( const QList<QSslCertificate> &certs
     {
       certslist << cert.toPem();
     }
-    capem = certslist.join( QStringLiteral( "\n" ) ).toLatin1(); //+ "\n";
+    capem = certslist.join( QLatin1Char( '\n' ) ).toLatin1(); //+ "\n";
   }
   return capem;
 }
@@ -709,7 +714,7 @@ QString QgsAuthCertUtils::getCertDistinguishedName( const QSslCertificate &qcert
     dirname, QStringLiteral( "C" ), issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::CountryName )
     : SSL_SUBJECT_INFO( qcert, QSslCertificate::CountryName ) );
 
-  return dirname.join( QStringLiteral( "," ) );
+  return dirname.join( QLatin1Char( ',' ) );
 }
 
 QString QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::CertTrustPolicy trust )
@@ -737,7 +742,7 @@ QString QgsAuthCertUtils::getColonDelimited( const QString &txt )
   {
     sl << txt.mid( i, ( i + 2 > txt.size() ) ? -1 : 2 );
   }
-  return sl.join( QStringLiteral( ":" ) );
+  return sl.join( QLatin1Char( ':' ) );
 }
 
 QString QgsAuthCertUtils::shaHexForCert( const QSslCertificate &cert, bool formatted )
@@ -1326,7 +1331,7 @@ QList<QSslError> QgsAuthCertUtils::validateCertChain( const QList<QSslCertificat
     }
   }
 
-  // Check that no certs in the chain are expired or not yet valid or blacklisted
+  // Check that no certs in the chain are expired or not yet valid or blocklisted
   const QList<QSslCertificate> constTrustedChain( trustedChain );
   for ( const auto &cert : constTrustedChain )
   {

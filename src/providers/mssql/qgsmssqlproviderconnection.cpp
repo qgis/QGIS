@@ -37,6 +37,7 @@ const QStringList QgsMssqlProviderConnection::EXTRA_CONNECTION_PARAMETERS
 QgsMssqlProviderConnection::QgsMssqlProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
 {
+  mProviderKey = QStringLiteral( "mssql" );
   // Remove the sql and table empty parts
   setUri( QgsMssqlConnection::connUri( name ).uri() );
   setDefaultCapabilities();
@@ -45,6 +46,7 @@ QgsMssqlProviderConnection::QgsMssqlProviderConnection( const QString &name )
 QgsMssqlProviderConnection::QgsMssqlProviderConnection( const QString &uri, const QVariantMap &configuration ):
   QgsAbstractDatabaseProviderConnection( QString(), configuration )
 {
+  mProviderKey = QStringLiteral( "mssql" );
   // Additional connection information
   const QgsDataSourceUri inputUri( uri );
   QgsDataSourceUri currentUri { QgsDataSourceUri( uri ).connectionInfo( false ) };
@@ -81,7 +83,16 @@ void QgsMssqlProviderConnection::setDefaultCapabilities()
     Capability::Tables,
     Capability::Schemas,
     Capability::Spatial,
-    Capability::TableExists
+    Capability::TableExists,
+    Capability::DeleteField,
+    Capability::DeleteFieldCascade,
+    Capability::AddField
+  };
+  mGeometryColumnCapabilities =
+  {
+    GeometryColumnCapability::Z,
+    GeometryColumnCapability::M,
+    GeometryColumnCapability::Curves
   };
 }
 
@@ -202,16 +213,23 @@ void QgsMssqlProviderConnection::dropSchema( const QString &schemaName,  bool fo
                      .arg( QgsMssqlProvider::quotedIdentifier( schemaName ) ) );
 }
 
-QList<QVariantList> QgsMssqlProviderConnection::executeSql( const QString &sql ) const
+QList<QVariantList> QgsMssqlProviderConnection::executeSql( const QString &sql, QgsFeedback *feedback ) const
 {
   checkCapability( Capability::ExecuteSql );
-  return executeSqlPrivate( sql );
+  return executeSqlPrivate( sql, true, feedback );
 }
 
-QList<QVariantList> QgsMssqlProviderConnection::executeSqlPrivate( const QString &sql, bool resolveTypes ) const
+QList<QVariantList> QgsMssqlProviderConnection::executeSqlPrivate( const QString &sql, bool resolveTypes, QgsFeedback *feedback ) const
 {
-  const QgsDataSourceUri dsUri { uri() };
   QList<QVariantList> results;
+
+  if ( feedback && feedback->isCanceled() )
+  {
+    return results;
+  }
+
+  const QgsDataSourceUri dsUri { uri() };
+
   // connect to database
   QSqlDatabase db = QgsMssqlConnection::getDatabase( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password() );
 
@@ -223,6 +241,12 @@ QList<QVariantList> QgsMssqlProviderConnection::executeSqlPrivate( const QString
   }
   else
   {
+
+    if ( feedback && feedback->isCanceled() )
+    {
+      return results;
+    }
+
     //qDebug() << "MSSQL QUERY:" << sql;
     QSqlQuery q = QSqlQuery( db );
     q.setForwardOnly( true );
@@ -240,7 +264,7 @@ QList<QVariantList> QgsMssqlProviderConnection::executeSqlPrivate( const QString
     {
       const QSqlRecord rec { q.record() };
       const int numCols { rec.count() };
-      while ( q.next() )
+      while ( q.next() && ( ! feedback || ! feedback->isCanceled() ) )
       {
         QVariantList row;
         for ( int col = 0; col < numCols; ++col )
@@ -483,3 +507,8 @@ QIcon QgsMssqlProviderConnection::icon() const
   return QgsApplication::getThemeIcon( QStringLiteral( "mIconMssql.svg" ) );
 }
 
+
+QList<QgsVectorDataProvider::NativeType> QgsMssqlProviderConnection::nativeTypes() const
+{
+  return QgsMssqlConnection::nativeTypes();
+}

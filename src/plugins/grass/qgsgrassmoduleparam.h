@@ -127,7 +127,8 @@ class QgsGrassModuleParam
 
     /**
      * Find list of elements in GRASS module description by option type.
-     *  Option type is identified by gisprompt prompt. Only few types are supported */
+     *  Option type is identified by gisprompt prompt. Only few types are supported
+    */
     static QList<QDomNode> nodesByType( QDomElement descDomElement, STD_OPT optionType, const QString &age = QString() );
 
   protected:
@@ -228,6 +229,9 @@ class QgsGrassModuleMultiParam : public QgsGrassModuleGroupBoxItem
 
     // Parameters layout
     QVBoxLayout *mButtonsLayout = nullptr;
+
+    QgsGrassModuleMultiParam( const QgsGrassModuleMultiParam & ) = delete;
+    QgsGrassModuleMultiParam &operator=( const QgsGrassModuleMultiParam & ) = delete;
 };
 
 /****************** QgsGrassModuleOption ************************/
@@ -494,7 +498,7 @@ class QgsGrassModuleVectorField : public QgsGrassModuleMultiParam
     //! Pointer to layer input
     QgsGrassModuleInput *mLayerInput = nullptr;
 
-    // ! Field type (integer,double,string,datetime)
+    //! Field type (integer,double,string,datetime)
     QString mType;
 
     //! List of ComboBoxes for QGIS layer fields
@@ -564,7 +568,7 @@ class QgsGrassModuleSelection : public QgsGrassModuleGroupBoxItem
     //! Currently connected layer
     QgsVectorLayer *mVectorLayer = nullptr;
 
-    // ! Field type (integer,double,string,datetime)
+    //! Field type (integer,double,string,datetime)
     QString mType;
 
     //! Line
@@ -572,6 +576,9 @@ class QgsGrassModuleSelection : public QgsGrassModuleGroupBoxItem
 
     // selection mode
     QComboBox *mModeComboBox = nullptr;
+
+    QgsGrassModuleSelection( const QgsGrassModuleSelection & ) = delete;
+    QgsGrassModuleSelection &operator = ( const QgsGrassModuleSelection & ) = delete;
 };
 
 /*********************** QgsGrassModuleFile **********************/
@@ -609,10 +616,10 @@ class QgsGrassModuleFile : public QgsGrassModuleGroupBoxItem
     void browse();
 
   private:
-    // ! File type (New, Old)
+    //! File type (New, Old)
     int mType;
 
-    // ! Optionally split file to dir and file path
+    //! Optionally split file to dir and file path
     QString mFileOption;
 
     //! Line
@@ -623,6 +630,9 @@ class QgsGrassModuleFile : public QgsGrassModuleGroupBoxItem
 
     //! File filters
     QString mFilters;
+
+    QgsGrassModuleFile( const QgsGrassModuleFile & ) = delete;
+    QgsGrassModuleFile &operator = ( const QgsGrassModuleFile & ) = delete;
 };
 
 #endif // QGSGRASSMODULEPARAM_H

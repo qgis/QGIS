@@ -43,6 +43,7 @@ class TestQgsLayoutGeoPdfExport : public QObject
     void cleanup();// will be called after every testfunction.
     void testCollectingFeatures();
     void skipLayers();
+    void layerOrder();
 
   private:
 
@@ -299,7 +300,7 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   vectorDetail = QgsAbstractGeoPdfExporter::VectorComponentDetail();
   for ( const auto &it : geoPdfExporter2.mVectorComponents )
   {
-    if ( it.mapLayerId == linesLayer->id() && it.group == QStringLiteral( "test preset2" ) )
+    if ( it.mapLayerId == linesLayer->id() && it.group == QLatin1String( "test preset2" ) )
       vectorDetail = it;
   }
 
@@ -311,7 +312,7 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   vectorDetail = QgsAbstractGeoPdfExporter::VectorComponentDetail();
   for ( const auto &it : geoPdfExporter2.mVectorComponents )
   {
-    if ( it.mapLayerId == linesLayer->id() && it.group == QStringLiteral( "test preset" ) )
+    if ( it.mapLayerId == linesLayer->id() && it.group == QLatin1String( "test preset" ) )
       vectorDetail = it;
   }
 
@@ -323,7 +324,7 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   vectorDetail = QgsAbstractGeoPdfExporter::VectorComponentDetail();
   for ( const auto &it :  geoPdfExporter2.mVectorComponents )
   {
-    if ( it.mapLayerId == pointsLayer->id() && it.group == QStringLiteral( "test preset2" ) )
+    if ( it.mapLayerId == pointsLayer->id() && it.group == QLatin1String( "test preset2" ) )
       vectorDetail = it;
   }
   layer2 = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "%1|layername=%2" ).arg( vectorDetail.sourceVectorPath, vectorDetail.sourceVectorLayer ),
@@ -343,7 +344,7 @@ void TestQgsLayoutGeoPdfExport::testCollectingFeatures()
   vectorDetail = QgsAbstractGeoPdfExporter::VectorComponentDetail();
   for ( const auto &it :  geoPdfExporter2.mVectorComponents )
   {
-    if ( it.mapLayerId == polygonLayer->id() && it.group == QStringLiteral( "test preset3" ) )
+    if ( it.mapLayerId == polygonLayer->id() && it.group == QLatin1String( "test preset3" ) )
       vectorDetail = it;
   }
   layer3 = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "%1|layername=%2" ).arg( vectorDetail.sourceVectorPath, vectorDetail.sourceVectorLayer ),
@@ -403,6 +404,46 @@ void TestQgsLayoutGeoPdfExport::skipLayers()
   QCOMPARE( pointFeatures.count(), 15 ); // should be features, layer was set to export
   QgsFeatureList polyFeatures = geoPdfExporter.mCollatedFeatures.value( QString() ).value( polygonLayer->id() );
   QCOMPARE( polyFeatures.count(), 10 ); // should be features, layer did not have any setting set
+}
+
+void TestQgsLayoutGeoPdfExport::layerOrder()
+{
+  QgsVectorLayer *linesLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/lines.shp" ),
+      QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
+  QVERIFY( linesLayer->isValid() );
+  QgsVectorLayer *pointsLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/points.shp" ),
+      QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
+  QVERIFY( pointsLayer->isValid() );
+  QgsVectorLayer *polygonLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/polys.shp" ),
+      QStringLiteral( "polys" ), QStringLiteral( "ogr" ) );
+  QVERIFY( polygonLayer->isValid() );
+  pointsLayer->setDisplayExpression( QStringLiteral( "Staff" ) );
+
+  QgsProject p;
+  p.addMapLayer( linesLayer );
+  p.addMapLayer( pointsLayer );
+  p.addMapLayer( polygonLayer );
+
+  QgsLayout l( &p );
+  l.initializeDefaults();
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
+  map->setFrameEnabled( true );
+  map->setLayers( QList<QgsMapLayer *>() << linesLayer << pointsLayer );
+  map->setCrs( linesLayer->crs() );
+  map->zoomToExtent( linesLayer->extent() );
+  map->setBackgroundColor( QColor( 200, 220, 230 ) );
+  map->setBackgroundEnabled( true );
+  l.addLayoutItem( map );
+
+  QgsLayoutGeoPdfExporter geoPdfExporter( &l );
+  // by default we should follow project layer order
+  QCOMPARE( geoPdfExporter.layerOrder(), QStringList() << polygonLayer->id() << pointsLayer->id() << linesLayer->id() );
+
+  // but if a custom order is specified, respected that
+  l.setCustomProperty( QStringLiteral( "pdfLayerOrder" ), QStringLiteral( "%1~~~%2" ).arg( linesLayer->id(), polygonLayer->id() ) );
+  QgsLayoutGeoPdfExporter geoPdfExporter2( &l );
+  QCOMPARE( geoPdfExporter2.layerOrder(), QStringList() << linesLayer->id() << polygonLayer->id() << pointsLayer->id() );
 }
 
 QGSTEST_MAIN( TestQgsLayoutGeoPdfExport )

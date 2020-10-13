@@ -70,18 +70,20 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       wheres << subset;
     }
 
+    QVariantList binded;
     if ( !mSource->mDefinition.uid().isNull() )
     {
       // filters are only available when a column with unique id exists
       if ( mSource->mDefinition.hasDefinedGeometry() && !mFilterRect.isNull() )
       {
         bool do_exact = request.flags() & QgsFeatureRequest::ExactIntersect;
-        QString mbr = QStringLiteral( "%1,%2,%3,%4" ).arg( mFilterRect.xMinimum() ).arg( mFilterRect.yMinimum() ).arg( mFilterRect.xMaximum() ).arg( mFilterRect.yMaximum() );
         wheres << quotedColumn( mSource->mDefinition.geometryField() ) + " is not null";
-        wheres <<  QStringLiteral( "%1Intersects(%2,BuildMbr(%3))" )
+        wheres <<  QStringLiteral( "%1Intersects(%2,BuildMbr(?,?,?,?))" )
                .arg( do_exact ? "" : "Mbr",
-                     quotedColumn( mSource->mDefinition.geometryField() ),
-                     mbr );
+                     quotedColumn( mSource->mDefinition.geometryField() ) );
+
+        binded << mFilterRect.xMinimum() << mFilterRect.yMinimum()
+               << mFilterRect.xMaximum() << mFilterRect.yMaximum();
       }
       else if ( request.filterType() == QgsFeatureRequest::FilterFid )
       {
@@ -98,12 +100,12 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
         {
           if ( !first )
           {
-            values += QLatin1String( "," );
+            values += QLatin1Char( ',' );
           }
           first = false;
           values += QString::number( v );
         }
-        values += QLatin1String( ")" );
+        values += QLatin1Char( ')' );
         wheres << values;
       }
     }
@@ -183,7 +185,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       const auto constMAttributes = mAttributes;
       for ( int i : constMAttributes )
       {
-        columns += QLatin1String( "," );
+        columns += QLatin1Char( ',' );
         QString cname = mSource->mFields.at( i ).name().toLower();
         columns += quotedColumn( cname );
       }
@@ -199,7 +201,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
     mSqlQuery = "SELECT " + columns + " FROM " + tableName;
     if ( !wheres.isEmpty() )
     {
-      mSqlQuery += " WHERE " + wheres.join( QStringLiteral( " AND " ) );
+      mSqlQuery += " WHERE " + wheres.join( QLatin1String( " AND " ) );
     }
 
     if ( !offset.isEmpty() )
@@ -208,6 +210,10 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
     }
 
     mQuery.reset( new Sqlite::Query( mSource->mSqlite, mSqlQuery ) );
+    for ( QVariant toBind : binded )
+    {
+      mQuery->bind( toBind );
+    }
 
     mFid = 0;
   }

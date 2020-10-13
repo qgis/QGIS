@@ -211,7 +211,7 @@ QgsLayoutItem::ExportLayerBehavior QgsLayoutItemPage::exportLayerBehavior() cons
 
 bool QgsLayoutItemPage::accept( QgsStyleEntityVisitorInterface *visitor ) const
 {
-  QgsStyleSymbolEntity entity( pageStyleSymbol() );
+  QgsStyleSymbolEntity entity( mPageStyleSymbol.get() );
   if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, QStringLiteral( "page" ), QObject::tr( "Page" ) ) ) )
     return false;
   return true;
@@ -236,7 +236,7 @@ void QgsLayoutItemPage::draw( QgsLayoutItemRenderContext &context )
   context.renderContext().setExpressionContext( expressionContext );
 
   QPainter *painter = context.renderContext().painter();
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
 
   if ( mLayout->renderContext().isPreviewRender() )
   {
@@ -280,13 +280,11 @@ void QgsLayoutItemPage::draw( QgsLayoutItemRenderContext &context )
     // round up
     QPolygonF pagePolygon = QPolygonF( QRectF( maxBleedPixels, maxBleedPixels,
                                        std::ceil( rect().width() * scale ) - 2 * maxBleedPixels, std::ceil( rect().height() * scale ) - 2 * maxBleedPixels ) );
-    QList<QPolygonF> rings; //empty list
+    QVector<QPolygonF> rings; //empty list
 
     symbol->renderPolygon( pagePolygon, &rings, nullptr, context.renderContext() );
     symbol->stopRender( context.renderContext() );
   }
-
-  painter->restore();
 }
 
 void QgsLayoutItemPage::drawFrame( QgsRenderContext & )
@@ -360,7 +358,7 @@ void QgsLayoutItemPageGrid::paint( QPainter *painter, const QStyleOptionGraphics
   double currentYCoord;
   double minYCoord = gridOffset.y() - gridMultiplyY * gridResolution;
 
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   //turn of antialiasing so grid is nice and sharp
   painter->setRenderHint( QPainter::Antialiasing, false );
 
@@ -415,7 +413,6 @@ void QgsLayoutItemPageGrid::paint( QPainter *painter, const QStyleOptionGraphics
       break;
     }
   }
-  painter->restore();
 }
 
 ///@endcond
