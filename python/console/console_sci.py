@@ -598,6 +598,10 @@ class HistoryDialog(QDialog, Ui_HistoryDialogPythonConsole):
             item = itemsSelected[0].row()
             # Remove item from the command history (just for the current session)
             self.parent.history.pop(item)
-            self.parent.historyIndex -= 1
+            self.parent.softHistory.pop(item)
+            if item < self.parent.softHistoryIndex:
+                self.parent.softHistoryIndex -= 1
+            self.parent.setText(self.parent.softHistory[self.parent.softHistoryIndex])
+            self.parent.move_cursor_to_end()
             # Remove row from the command history dialog
             self.model.removeRow(item)
