@@ -43,6 +43,8 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
   setupUi( this );
   setupButtons( buttonBox );
 
+  mQueryEdit->setLineNumbersVisible( true );
+
   connect( mTestButton, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::testQuery );
   connect( mBrowseCRSBtn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::browseCRS );
   connect( mAddLayerBtn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::addLayer );
@@ -156,7 +158,9 @@ void QgsVirtualLayerSourceSelect::browseCRS()
   QgsCoordinateReferenceSystem crs( mSrid );
   Q_NOWARN_DEPRECATED_POP
   crsSelector.setCrs( crs );
-  crsSelector.setMessage( QString() );
+  if ( !crs.isValid() )
+    crsSelector.showNoCrsForLayerMessage();
+
   if ( crsSelector.exec() )
   {
     mCRS->setText( crsSelector.crs().authid() );

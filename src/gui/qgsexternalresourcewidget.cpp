@@ -35,7 +35,7 @@ QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
   setAutoFillBackground( true );
 
   QGridLayout *layout = new QGridLayout();
-  layout->setMargin( 0 );
+  layout->setContentsMargins( 0, 0, 0, 0 );
 
   mFileWidget = new QgsFileWidget( this );
   layout->addWidget( mFileWidget, 0, 0 );
@@ -99,7 +99,9 @@ QgsExternalResourceWidget::DocumentViewerContent QgsExternalResourceWidget::docu
 void QgsExternalResourceWidget::setDocumentViewerContent( QgsExternalResourceWidget::DocumentViewerContent content )
 {
   mDocumentViewerContent = content;
-  updateDocumentViewer();
+  if ( mDocumentViewerContent != Image )
+    updateDocumentViewer();
+  loadDocument( mFileWidget->filePath() );
 }
 
 int QgsExternalResourceWidget::documentViewerHeight() const

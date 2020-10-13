@@ -1,6 +1,7 @@
 {
   "name": "eval",
   "type": "function",
+  "groups": ["General"],
   "description": "Evaluates an expression which is passed in a string. Useful to expand dynamic parameters passed as context variables or fields.",
   "arguments": [ {"arg":"expression","description":"an expression string"}],
   "examples": [

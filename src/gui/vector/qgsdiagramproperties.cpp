@@ -261,7 +261,30 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   mPaintEffect.reset( QgsPaintEffectRegistry::defaultStack() );
   mPaintEffect->setEnabled( false );
 
-  const QgsDiagramRenderer *dr = layer->diagramRenderer();
+  syncToLayer();
+
+  connect( mAddAttributeExpression, &QPushButton::clicked, this, &QgsDiagramProperties::showAddAttributeExpressionDialog );
+  registerDataDefinedButton( mBackgroundColorDDBtn, QgsDiagramLayerSettings::BackgroundColor );
+  registerDataDefinedButton( mLineColorDDBtn, QgsDiagramLayerSettings::StrokeColor );
+  registerDataDefinedButton( mLineWidthDDBtn, QgsDiagramLayerSettings::StrokeWidth );
+  registerDataDefinedButton( mCoordXDDBtn, QgsDiagramLayerSettings::PositionX );
+  registerDataDefinedButton( mCoordYDDBtn, QgsDiagramLayerSettings::PositionY );
+  registerDataDefinedButton( mDistanceDDBtn, QgsDiagramLayerSettings::Distance );
+  registerDataDefinedButton( mPriorityDDBtn, QgsDiagramLayerSettings::Priority );
+  registerDataDefinedButton( mZOrderDDBtn, QgsDiagramLayerSettings::ZIndex );
+  registerDataDefinedButton( mShowDiagramDDBtn, QgsDiagramLayerSettings::Show );
+  registerDataDefinedButton( mAlwaysShowDDBtn, QgsDiagramLayerSettings::AlwaysShow );
+  registerDataDefinedButton( mIsObstacleDDBtn, QgsDiagramLayerSettings::IsObstacle );
+  registerDataDefinedButton( mStartAngleDDBtn, QgsDiagramLayerSettings::StartAngle );
+
+  connect( mButtonSizeLegendSettings, &QPushButton::clicked, this, &QgsDiagramProperties::showSizeLegendDialog );
+}
+
+void QgsDiagramProperties::syncToLayer()
+{
+  mDiagramAttributesTreeWidget->clear();
+
+  const QgsDiagramRenderer *dr = mLayer->diagramRenderer();
   if ( !dr ) //no diagram renderer yet, insert reasonable default
   {
     mDiagramTypeComboBox->blockSignals( true );
@@ -277,12 +300,12 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
     mIncreaseMinimumSizeSpinBox->setEnabled( false );
     mIncreaseMinimumSizeLabel->setEnabled( false );
     mBarWidthSpinBox->setValue( 5 );
-    mScaleVisibilityGroupBox->setChecked( layer->hasScaleBasedVisibility() );
-    mScaleRangeWidget->setScaleRange( layer->minimumScale(), layer->maximumScale() );
+    mScaleVisibilityGroupBox->setChecked( mLayer->hasScaleBasedVisibility() );
+    mScaleRangeWidget->setScaleRange( mLayer->minimumScale(), mLayer->maximumScale() );
     mShowAllCheckBox->setChecked( true );
     mCheckBoxAttributeLegend->setChecked( true );
 
-    switch ( layerType )
+    switch ( mLayer->geometryType() )
     {
       case QgsWkbTypes::PointGeometry:
         radAroundPoint->setChecked( true );
@@ -298,6 +321,9 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
 
       case QgsWkbTypes::PolygonGeometry:
         radOverCentroid->setChecked( true );
+        mDiagramDistanceLabel->setEnabled( false );
+        mDiagramDistanceSpinBox->setEnabled( false );
+        mDistanceDDBtn->setEnabled( false );
         break;
 
       case QgsWkbTypes::UnknownGeometry:
@@ -336,8 +362,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
       mDiagramPenColorButton->setColor( settingList.at( 0 ).penColor );
       mPenWidthSpinBox->setValue( settingList.at( 0 ).penWidth );
       mDiagramSizeSpinBox->setValue( ( size.width() + size.height() ) / 2.0 );
-      mScaleRangeWidget->setScaleRange( ( settingList.at( 0 ).minimumScale > 0 ? settingList.at( 0 ).minimumScale : layer->minimumScale() ),
-                                        ( settingList.at( 0 ).maximumScale > 0 ? settingList.at( 0 ).maximumScale : layer->maximumScale() ) );
+      mScaleRangeWidget->setScaleRange( ( settingList.at( 0 ).minimumScale > 0 ? settingList.at( 0 ).minimumScale : mLayer->minimumScale() ),
+                                        ( settingList.at( 0 ).maximumScale > 0 ? settingList.at( 0 ).maximumScale : mLayer->maximumScale() ) );
       mScaleVisibilityGroupBox->setChecked( settingList.at( 0 ).scaleBasedVisibility );
       mDiagramUnitComboBox->setUnit( settingList.at( 0 ).sizeType );
       mDiagramUnitComboBox->setMapUnitScale( settingList.at( 0 ).sizeScale );
@@ -448,7 +474,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
       }
     }
 
-    const QgsDiagramLayerSettings *dls = layer->diagramLayerSettings();
+    const QgsDiagramLayerSettings *dls = mLayer->diagramLayerSettings();
     if ( dls )
     {
       mDiagramDistanceSpinBox->setValue( dls->distance() );
@@ -511,22 +537,6 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
     }
   }
   mPaintEffectWidget->setPaintEffect( mPaintEffect.get() );
-
-  connect( mAddAttributeExpression, &QPushButton::clicked, this, &QgsDiagramProperties::showAddAttributeExpressionDialog );
-  registerDataDefinedButton( mBackgroundColorDDBtn, QgsDiagramLayerSettings::BackgroundColor );
-  registerDataDefinedButton( mLineColorDDBtn, QgsDiagramLayerSettings::StrokeColor );
-  registerDataDefinedButton( mLineWidthDDBtn, QgsDiagramLayerSettings::StrokeWidth );
-  registerDataDefinedButton( mCoordXDDBtn, QgsDiagramLayerSettings::PositionX );
-  registerDataDefinedButton( mCoordYDDBtn, QgsDiagramLayerSettings::PositionY );
-  registerDataDefinedButton( mDistanceDDBtn, QgsDiagramLayerSettings::Distance );
-  registerDataDefinedButton( mPriorityDDBtn, QgsDiagramLayerSettings::Priority );
-  registerDataDefinedButton( mZOrderDDBtn, QgsDiagramLayerSettings::ZIndex );
-  registerDataDefinedButton( mShowDiagramDDBtn, QgsDiagramLayerSettings::Show );
-  registerDataDefinedButton( mAlwaysShowDDBtn, QgsDiagramLayerSettings::AlwaysShow );
-  registerDataDefinedButton( mIsObstacleDDBtn, QgsDiagramLayerSettings::IsObstacle );
-  registerDataDefinedButton( mStartAngleDDBtn, QgsDiagramLayerSettings::StartAngle );
-
-  connect( mButtonSizeLegendSettings, &QPushButton::clicked, this, &QgsDiagramProperties::showSizeLegendDialog );
 }
 
 QgsDiagramProperties::~QgsDiagramProperties()
@@ -946,7 +956,7 @@ void QgsDiagramProperties::apply()
     qFatal( "Invalid settings" );
   }
 
-  QgsDiagramLayerSettings::LinePlacementFlags flags = nullptr;
+  QgsDiagramLayerSettings::LinePlacementFlags flags = QgsDiagramLayerSettings::LinePlacementFlags();
   if ( chkLineAbove->isChecked() )
     flags |= QgsDiagramLayerSettings::AboveLine;
   if ( chkLineBelow->isChecked() )

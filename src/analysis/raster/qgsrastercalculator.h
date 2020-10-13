@@ -180,17 +180,20 @@ class ANALYSIS_EXPORT QgsRasterCalculator
 
     /**
      * Opens the output driver and tests if it supports the creation of a new dataset
-      \returns nullptr on error and the driver handle on success*/
+     * \returns nullptr on error and the driver handle on success
+    */
     GDALDriverH openOutputDriver();
 
     /**
      * Opens the output file and sets the same geotransform and CRS as the input data
-      \returns the output dataset or nullptr in case of error*/
+     * \returns the output dataset or nullptr in case of error
+    */
     gdal::dataset_unique_ptr openOutputFile( GDALDriverH outputDriver );
 
     /**
      * Sets gdal 6 parameters array from mOutputRectangle, mNumOutputColumns, mNumOutputRows
-      \param transform double[6] array that receives the GDAL parameters*/
+     * \param transform double[6] array that receives the GDAL parameters
+    */
     void outputGeoTransform( double *transform ) const;
 
     //! Execute calculations on GPU

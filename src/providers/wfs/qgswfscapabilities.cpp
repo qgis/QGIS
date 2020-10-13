@@ -132,13 +132,15 @@ class CPLXMLTreeUniquePointer
     /**
      * Returns the node pointer/
      * Modifying the contents pointed to by the return is allowed.
-     * \return the node pointer */
+     * \return the node pointer
+    */
     CPLXMLNode *get() const { return the_data_; }
 
     /**
      * Returns the node pointer/
      * Modifying the contents pointed to by the return is allowed.
-     * \return the node pointer */
+     * \return the node pointer
+    */
     CPLXMLNode *operator->() const { return get(); }
 
   private:
@@ -389,7 +391,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
   bool updateCap = false;
   bool deleteCap = false;
   // WFS < 2
-  if ( mCaps.version.startsWith( QLatin1String( "1" ) ) )
+  if ( mCaps.version.startsWith( QLatin1Char( '1' ) ) )
   {
     parseSupportedOperations( featureTypeListElem.firstChildElement( QStringLiteral( "Operations" ) ),
                               insertCap,

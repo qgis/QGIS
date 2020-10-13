@@ -60,6 +60,11 @@ class GUI_EXPORT QgsRelationReferenceSearchWidgetWrapper : public QgsSearchWidge
     QString expression() const override;
     bool valid() const override;
     QgsSearchWidgetWrapper::FilterFlags supportedFlags() const override;
+
+    /**
+     * Returns the default flags (equalTo)
+     */
+    QgsSearchWidgetWrapper::FilterFlags defaultFlags() const override;
     QString createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const override;
 
   public slots:

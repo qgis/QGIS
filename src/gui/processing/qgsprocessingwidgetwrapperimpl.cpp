@@ -30,6 +30,7 @@
 #include "qgssettings.h"
 #include "qgsexpressionlineedit.h"
 #include "qgsfieldexpressionwidget.h"
+#include "qgsexpressionbuilderwidget.h"
 #include "qgsprocessingmultipleselectiondialog.h"
 #include "qgslayoutmanager.h"
 #include "qgsproject.h"
@@ -82,7 +83,6 @@ QgsProcessingBooleanParameterDefinitionWidget::QgsProcessingBooleanParameterDefi
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   mDefaultCheckBox = new QCheckBox( tr( "Checked" ) );
@@ -245,7 +245,6 @@ QgsProcessingCrsParameterDefinitionWidget::QgsProcessingCrsParameterDefinitionWi
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
@@ -303,7 +302,6 @@ QWidget *QgsProcessingCrsWidgetWrapper::createWidget()
       w->setToolTip( parameterDefinition()->toolTip() );
 
       QVBoxLayout *vl = new QVBoxLayout();
-      vl->setMargin( 0 );
       vl->setContentsMargins( 0, 0, 0, 0 );
       w->setLayout( vl );
 
@@ -405,7 +403,6 @@ QgsProcessingStringParameterDefinitionWidget::QgsProcessingStringParameterDefini
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
@@ -620,7 +617,6 @@ QgsProcessingNumberParameterDefinitionWidget::QgsProcessingNumberParameterDefini
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Number type" ) ) );
@@ -914,7 +910,6 @@ QgsProcessingDistanceParameterDefinitionWidget::QgsProcessingDistanceParameterDe
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Linked input" ) ) );
@@ -925,13 +920,13 @@ QgsProcessingDistanceParameterDefinitionWidget::QgsProcessingDistanceParameterDe
   if ( const QgsProcessingParameterDistance *distParam = dynamic_cast<const QgsProcessingParameterDistance *>( definition ) )
     initialParent = distParam->parentParameterName();
 
-  if ( widgetContext.model() )
+  if ( auto *lModel = widgetContext.model() )
   {
     // populate combo box with other model input choices
-    const QMap<QString, QgsProcessingModelParameter> components = widgetContext.model()->parameterComponents();
+    const QMap<QString, QgsProcessingModelParameter> components = lModel->parameterComponents();
     for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
     {
-      if ( const QgsProcessingParameterFeatureSource *definition = dynamic_cast< const QgsProcessingParameterFeatureSource * >( widgetContext.model()->parameterDefinition( it.value().parameterName() ) ) )
+      if ( const QgsProcessingParameterFeatureSource *definition = dynamic_cast< const QgsProcessingParameterFeatureSource * >( lModel->parameterDefinition( it.value().parameterName() ) ) )
       {
         mParentLayerComboBox-> addItem( definition->description(), definition->name() );
         if ( !initialParent.isEmpty() && initialParent == definition->name() )
@@ -939,7 +934,7 @@ QgsProcessingDistanceParameterDefinitionWidget::QgsProcessingDistanceParameterDe
           mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
         }
       }
-      else if ( const QgsProcessingParameterVectorLayer *definition = dynamic_cast< const QgsProcessingParameterVectorLayer * >( widgetContext.model()->parameterDefinition( it.value().parameterName() ) ) )
+      else if ( const QgsProcessingParameterVectorLayer *definition = dynamic_cast< const QgsProcessingParameterVectorLayer * >( lModel->parameterDefinition( it.value().parameterName() ) ) )
       {
         mParentLayerComboBox-> addItem( definition->description(), definition->name() );
         if ( !initialParent.isEmpty() && initialParent == definition->name() )
@@ -947,7 +942,7 @@ QgsProcessingDistanceParameterDefinitionWidget::QgsProcessingDistanceParameterDe
           mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
         }
       }
-      else if ( const QgsProcessingParameterMapLayer *definition = dynamic_cast< const QgsProcessingParameterMapLayer * >( widgetContext.model()->parameterDefinition( it.value().parameterName() ) ) )
+      else if ( const QgsProcessingParameterMapLayer *definition = dynamic_cast< const QgsProcessingParameterMapLayer * >( lModel->parameterDefinition( it.value().parameterName() ) ) )
       {
         mParentLayerComboBox-> addItem( definition->description(), definition->name() );
         if ( !initialParent.isEmpty() && initialParent == definition->name() )
@@ -955,7 +950,7 @@ QgsProcessingDistanceParameterDefinitionWidget::QgsProcessingDistanceParameterDe
           mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
         }
       }
-      else if ( const QgsProcessingParameterCrs *definition = dynamic_cast< const QgsProcessingParameterCrs * >( widgetContext.model()->parameterDefinition( it.value().parameterName() ) ) )
+      else if ( const QgsProcessingParameterCrs *definition = dynamic_cast< const QgsProcessingParameterCrs * >( lModel->parameterDefinition( it.value().parameterName() ) ) )
       {
         mParentLayerComboBox-> addItem( definition->description(), definition->name() );
         if ( !initialParent.isEmpty() && initialParent == definition->name() )
@@ -1070,7 +1065,6 @@ QWidget *QgsProcessingDistanceWidgetWrapper::createWidget()
       // instead of outside it
       mWarningLabel = new QWidget();
       QHBoxLayout *warningLayout = new QHBoxLayout();
-      warningLayout->setMargin( 0 );
       warningLayout->setContentsMargins( 0, 0, 0, 0 );
       QLabel *warning = new QLabel();
       QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "mIconWarning.svg" ) );
@@ -1083,7 +1077,6 @@ QWidget *QgsProcessingDistanceWidgetWrapper::createWidget()
       layout->insertWidget( 4, mWarningLabel );
 
       QWidget *w = new QWidget();
-      layout->setMargin( 0 );
       layout->setContentsMargins( 0, 0, 0, 0 );
       w->setLayout( layout );
 
@@ -1198,7 +1191,6 @@ QgsProcessingScaleParameterDefinitionWidget::QgsProcessingScaleParameterDefiniti
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
@@ -1309,7 +1301,6 @@ QgsProcessingRangeParameterDefinitionWidget::QgsProcessingRangeParameterDefiniti
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Number type" ) ) );
@@ -1352,7 +1343,7 @@ QgsProcessingParameterDefinition *QgsProcessingRangeParameterDefinitionWidget::c
 
   if ( mMaxLineEdit->text().isEmpty() )
   {
-    defaultValue += QStringLiteral( ",None" );
+    defaultValue += QLatin1String( ",None" );
   }
   else
   {
@@ -1400,7 +1391,6 @@ QWidget *QgsProcessingRangeWidgetWrapper::createWidget()
       layout->addWidget( mMaxSpinBox, 1 );
 
       QWidget *w = new QWidget();
-      layout->setMargin( 0 );
       layout->setContentsMargins( 0, 0, 0, 0 );
       w->setLayout( layout );
 
@@ -1517,10 +1507,10 @@ QVariant QgsProcessingRangeWidgetWrapper::widgetValue() const
     if ( qgsDoubleNear( mMinSpinBox->value(), mMinSpinBox->minimum() ) )
       value = QStringLiteral( "None" );
     else
-      value = QStringLiteral( "%1" ).arg( mMinSpinBox->value() );
+      value = QString::number( mMinSpinBox->value() );
 
     if ( qgsDoubleNear( mMaxSpinBox->value(), mMaxSpinBox->minimum() ) )
-      value += QStringLiteral( ",None" );
+      value += QLatin1String( ",None" );
     else
       value += QStringLiteral( ",%1" ).arg( mMaxSpinBox->value() );
 
@@ -1571,7 +1561,6 @@ QgsProcessingMatrixParameterDefinitionWidget::QgsProcessingMatrixParameterDefini
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   mMatrixWidget = new QgsProcessingMatrixModelerWidget();
@@ -1676,7 +1665,6 @@ QgsProcessingFileParameterDefinitionWidget::QgsProcessingFileParameterDefinition
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Type" ) ) );
@@ -1852,7 +1840,6 @@ QgsProcessingExpressionParameterDefinitionWidget::QgsProcessingExpressionParamet
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
@@ -1871,13 +1858,13 @@ QgsProcessingExpressionParameterDefinitionWidget::QgsProcessingExpressionParamet
   if ( const QgsProcessingParameterExpression *expParam = dynamic_cast<const QgsProcessingParameterExpression *>( definition ) )
     initialParent = expParam->parentLayerParameterName();
 
-  if ( widgetContext.model() )
+  if ( auto *lModel = widgetContext.model() )
   {
     // populate combo box with other model input choices
-    const QMap<QString, QgsProcessingModelParameter> components = widgetContext.model()->parameterComponents();
+    const QMap<QString, QgsProcessingModelParameter> components = lModel->parameterComponents();
     for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
     {
-      if ( const QgsProcessingParameterFeatureSource *definition = dynamic_cast< const QgsProcessingParameterFeatureSource * >( widgetContext.model()->parameterDefinition( it.value().parameterName() ) ) )
+      if ( const QgsProcessingParameterFeatureSource *definition = dynamic_cast< const QgsProcessingParameterFeatureSource * >( lModel->parameterDefinition( it.value().parameterName() ) ) )
       {
         mParentLayerComboBox-> addItem( definition->description(), definition->name() );
         if ( !initialParent.isEmpty() && initialParent == definition->name() )
@@ -1885,7 +1872,7 @@ QgsProcessingExpressionParameterDefinitionWidget::QgsProcessingExpressionParamet
           mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
         }
       }
-      else if ( const QgsProcessingParameterVectorLayer *definition = dynamic_cast< const QgsProcessingParameterVectorLayer * >( widgetContext.model()->parameterDefinition( it.value().parameterName() ) ) )
+      else if ( const QgsProcessingParameterVectorLayer *definition = dynamic_cast< const QgsProcessingParameterVectorLayer * >( lModel->parameterDefinition( it.value().parameterName() ) ) )
       {
         mParentLayerComboBox-> addItem( definition->description(), definition->name() );
         if ( !initialParent.isEmpty() && initialParent == definition->name() )
@@ -1943,15 +1930,30 @@ QWidget *QgsProcessingExpressionWidgetWrapper::createWidget()
       }
       else
       {
-        mFieldExpWidget = new QgsFieldExpressionWidget();
-        mFieldExpWidget->setToolTip( parameterDefinition()->toolTip() );
-        mFieldExpWidget->setExpressionDialogTitle( parameterDefinition()->description() );
-        mFieldExpWidget->registerExpressionContextGenerator( this );
-        connect( mFieldExpWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged ), this, [ = ]( const QString & )
+        if ( expParam->metadata().value( QStringLiteral( "inlineEditor" ) ).toBool() )
         {
-          emit widgetValueHasChanged( this );
-        } );
-        return mFieldExpWidget;
+          mExpBuilderWidget = new QgsExpressionBuilderWidget();
+          mExpBuilderWidget->setToolTip( parameterDefinition()->toolTip() );
+          mExpBuilderWidget->init( createExpressionContext() );
+          connect( mExpBuilderWidget, &QgsExpressionBuilderWidget::expressionParsed, this, [ = ]( bool changed )
+          {
+            Q_UNUSED( changed );
+            emit widgetValueHasChanged( this );
+          } );
+          return mExpBuilderWidget;
+        }
+        else
+        {
+          mFieldExpWidget = new QgsFieldExpressionWidget();
+          mFieldExpWidget->setToolTip( parameterDefinition()->toolTip() );
+          mFieldExpWidget->setExpressionDialogTitle( parameterDefinition()->description() );
+          mFieldExpWidget->registerExpressionContextGenerator( this );
+          connect( mFieldExpWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged ), this, [ = ]( const QString & )
+          {
+            emit widgetValueHasChanged( this );
+          } );
+          return mFieldExpWidget;
+        }
       }
     }
   }
@@ -2005,6 +2007,8 @@ void QgsProcessingExpressionWidgetWrapper::setParentLayerWrapperValue( const Qgs
   {
     if ( mFieldExpWidget )
       mFieldExpWidget->setLayer( nullptr );
+    else if ( mExpBuilderWidget )
+      mExpBuilderWidget->setLayer( nullptr );
     else if ( mExpLineEdit )
       mExpLineEdit->setLayer( nullptr );
     return;
@@ -2025,6 +2029,8 @@ void QgsProcessingExpressionWidgetWrapper::setParentLayerWrapperValue( const Qgs
 
   if ( mFieldExpWidget )
     mFieldExpWidget->setLayer( layer );
+  if ( mExpBuilderWidget )
+    mExpBuilderWidget->setLayer( layer );
   else if ( mExpLineEdit )
     mExpLineEdit->setLayer( layer );
 }
@@ -2034,6 +2040,8 @@ void QgsProcessingExpressionWidgetWrapper::setWidgetValue( const QVariant &value
   const QString v = QgsProcessingParameters::parameterAsString( parameterDefinition(), value, context );
   if ( mFieldExpWidget )
     mFieldExpWidget->setExpression( v );
+  else if ( mExpBuilderWidget )
+    mExpBuilderWidget->setExpressionText( v );
   else if ( mExpLineEdit )
     mExpLineEdit->setExpression( v );
 }
@@ -2042,6 +2050,8 @@ QVariant QgsProcessingExpressionWidgetWrapper::widgetValue() const
 {
   if ( mFieldExpWidget )
     return mFieldExpWidget->expression();
+  if ( mExpBuilderWidget )
+    return mExpBuilderWidget->expressionText();
   else if ( mExpLineEdit )
     return mExpLineEdit->expression();
   else
@@ -2076,6 +2086,9 @@ const QgsVectorLayer *QgsProcessingExpressionWidgetWrapper::linkedVectorLayer() 
   if ( mFieldExpWidget && mFieldExpWidget->layer() )
     return mFieldExpWidget->layer();
 
+  if ( mExpBuilderWidget && mExpBuilderWidget->layer() )
+    return mExpBuilderWidget->layer();
+
   return QgsAbstractProcessingParameterWidgetWrapper::linkedVectorLayer();
 }
 
@@ -2105,7 +2118,6 @@ QgsProcessingEnumPanelWidget::QgsProcessingEnumPanelWidget( QWidget *parent, con
   , mParam( param )
 {
   QHBoxLayout *hl = new QHBoxLayout();
-  hl->setMargin( 0 );
   hl->setContentsMargins( 0, 0, 0, 0 );
 
   mLineEdit = new QLineEdit();
@@ -2169,7 +2181,7 @@ void QgsProcessingEnumPanelWidget::showDialog()
   }
   else
   {
-    QgsProcessingMultipleSelectionDialog dlg( availableOptions, mValue, this, nullptr );
+    QgsProcessingMultipleSelectionDialog dlg( availableOptions, mValue, this, Qt::WindowFlags() );
 
     dlg.setValueFormatter( [options]( const QVariant & v ) -> QString
     {
@@ -2203,7 +2215,6 @@ QgsProcessingEnumCheckboxPanelWidget::QgsProcessingEnumCheckboxPanelWidget( QWid
 
   QGridLayout *l = new QGridLayout();
   l->setContentsMargins( 0, 0, 0, 0 );
-  l->setMargin( 0 );
 
   int rows = static_cast< int >( std::ceil( mParam->options().count() / static_cast< double >( mColumns ) ) );
   for ( int i = 0; i < mParam->options().count(); ++i )
@@ -2316,7 +2327,6 @@ QgsProcessingEnumParameterDefinitionWidget::QgsProcessingEnumParameterDefinition
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   mEnumWidget = new QgsProcessingEnumModelerWidget();
@@ -2510,13 +2520,21 @@ QWidget *QgsProcessingLayoutWidgetWrapper::createWidget()
 
     case QgsProcessingGui::Modeler:
     {
-      mLineEdit = new QLineEdit();
-      mLineEdit->setToolTip( tr( "Name of an existing print layout" ) );
-      connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & )
+      mPlainComboBox = new QComboBox();
+      mPlainComboBox->setEditable( true );
+      mPlainComboBox->setToolTip( tr( "Name of an existing print layout" ) );
+      if ( widgetContext().project() )
+      {
+        const QList< QgsPrintLayout * > layouts = widgetContext().project()->layoutManager()->printLayouts();
+        for ( const QgsPrintLayout *layout : layouts )
+          mPlainComboBox->addItem( layout->name() );
+      }
+
+      connect( mPlainComboBox, &QComboBox::currentTextChanged, this, [ = ]( const QString & )
       {
         emit widgetValueHasChanged( this );
       } );
-      return mLineEdit;
+      return mPlainComboBox;
     }
   }
   return nullptr;
@@ -2536,10 +2554,10 @@ void QgsProcessingLayoutWidgetWrapper::setWidgetValue( const QVariant &value, Qg
         mComboBox->setCurrentLayout( nullptr );
     }
   }
-  else if ( mLineEdit )
+  else if ( mPlainComboBox )
   {
     const QString v = QgsProcessingParameters::parameterAsString( parameterDefinition(), value, context );
-    mLineEdit->setText( v );
+    mPlainComboBox->setCurrentText( v );
   }
 }
 
@@ -2550,10 +2568,21 @@ QVariant QgsProcessingLayoutWidgetWrapper::widgetValue() const
     const QgsMasterLayoutInterface *l = mComboBox->currentLayout();
     return l ? l->name() : QVariant();
   }
-  else if ( mLineEdit )
-    return mLineEdit->text().isEmpty() ? QVariant() : mLineEdit->text();
+  else if ( mPlainComboBox )
+    return mPlainComboBox->currentText().isEmpty() ? QVariant() : mPlainComboBox->currentText();
   else
     return QVariant();
+}
+
+void QgsProcessingLayoutWidgetWrapper::setWidgetContext( const QgsProcessingParameterWidgetContext &context )
+{
+  QgsAbstractProcessingParameterWidgetWrapper::setWidgetContext( context );
+  if ( mPlainComboBox && context.project() )
+  {
+    const QList< QgsPrintLayout * > layouts = widgetContext().project()->layoutManager()->printLayouts();
+    for ( const QgsPrintLayout *layout : layouts )
+      mPlainComboBox->addItem( layout->name() );
+  }
 }
 
 QStringList QgsProcessingLayoutWidgetWrapper::compatibleParameterTypes() const
@@ -2596,7 +2625,6 @@ QgsProcessingLayoutItemParameterDefinitionWidget::QgsProcessingLayoutItemParamet
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Parent layout" ) ) );
@@ -2606,13 +2634,13 @@ QgsProcessingLayoutItemParameterDefinitionWidget::QgsProcessingLayoutItemParamet
   if ( const QgsProcessingParameterLayoutItem *itemParam = dynamic_cast<const QgsProcessingParameterLayoutItem *>( definition ) )
     initialParent = itemParam->parentLayoutParameterName();
 
-  if ( widgetContext.model() )
+  if ( auto *lModel = widgetContext.model() )
   {
     // populate combo box with other model input choices
-    const QMap<QString, QgsProcessingModelParameter> components = widgetContext.model()->parameterComponents();
+    const QMap<QString, QgsProcessingModelParameter> components = lModel->parameterComponents();
     for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
     {
-      if ( const QgsProcessingParameterLayout *definition = dynamic_cast< const QgsProcessingParameterLayout * >( widgetContext.model()->parameterDefinition( it.value().parameterName() ) ) )
+      if ( const QgsProcessingParameterLayout *definition = dynamic_cast< const QgsProcessingParameterLayout * >( lModel->parameterDefinition( it.value().parameterName() ) ) )
       {
         mParentLayoutComboBox-> addItem( definition->description(), definition->name() );
         if ( !initialParent.isEmpty() && initialParent == definition->name() )
@@ -2860,7 +2888,6 @@ QgsProcessingPointPanel::QgsProcessingPointPanel( QWidget *parent )
 {
   QHBoxLayout *l = new QHBoxLayout();
   l->setContentsMargins( 0, 0, 0, 0 );
-  l->setMargin( 0 );
   mLineEdit = new QgsFilterLineEdit( );
   mLineEdit->setShowClearButton( false );
   l->addWidget( mLineEdit, 1 );
@@ -2950,7 +2977,6 @@ QgsProcessingPointParameterDefinitionWidget::QgsProcessingPointParameterDefiniti
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
@@ -3115,6 +3141,121 @@ QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingPointWidgetWrapper:
 }
 
 
+//
+// QgsProcessingGeometryWidgetWrapper
+//
+
+
+QgsProcessingGeometryParameterDefinitionWidget::QgsProcessingGeometryParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
+
+  mDefaultLineEdit = new QLineEdit();
+  mDefaultLineEdit->setToolTip( tr( "Geometry as WKT" ) );
+  mDefaultLineEdit->setPlaceholderText( tr( "Geometry as WKT" ) );
+  if ( const QgsProcessingParameterGeometry *geometryParam = dynamic_cast<const QgsProcessingParameterGeometry *>( definition ) )
+  {
+    QgsGeometry g = QgsProcessingParameters::parameterAsGeometry( geometryParam, geometryParam->defaultValue(), context );
+    if ( !g.isNull() )
+      mDefaultLineEdit->setText( g.asWkt() );
+  }
+
+  vlayout->addWidget( mDefaultLineEdit );
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingGeometryParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  auto param = qgis::make_unique< QgsProcessingParameterGeometry >( name, description, mDefaultLineEdit->text() );
+  param->setFlags( flags );
+  return param.release();
+}
+
+QgsProcessingGeometryWidgetWrapper::QgsProcessingGeometryWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingGeometryWidgetWrapper::createWidget()
+{
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Modeler:
+    case QgsProcessingGui::Batch:
+    {
+      mLineEdit = new QLineEdit();
+      mLineEdit->setToolTip( parameterDefinition()->toolTip() );
+      connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]
+      {
+        emit widgetValueHasChanged( this );
+      } );
+      return mLineEdit;
+    }
+  }
+  return nullptr;
+}
+
+void QgsProcessingGeometryWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  if ( mLineEdit )
+  {
+    QgsGeometry g = QgsProcessingParameters::parameterAsGeometry( parameterDefinition(), value, context );
+    if ( !g.isNull() )
+      mLineEdit->setText( g.asWkt() );
+    else
+      mLineEdit->clear();
+  }
+}
+
+QVariant QgsProcessingGeometryWidgetWrapper::widgetValue() const
+{
+  if ( mLineEdit )
+    return mLineEdit->text().isEmpty() ? QVariant() : mLineEdit->text();
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingGeometryWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterGeometry::typeName()
+         << QgsProcessingParameterString::typeName()
+         << QgsProcessingParameterPoint::typeName()
+         << QgsProcessingParameterExtent::typeName();
+}
+
+QStringList QgsProcessingGeometryWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputString::typeName();
+}
+
+QString QgsProcessingGeometryWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "string in the Well-Known-Text format or a geometry value" );
+}
+
+QString QgsProcessingGeometryWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterGeometry::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingGeometryWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingGeometryWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingGeometryWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingGeometryParameterDefinitionWidget( context, widgetContext, definition, algorithm );
+}
+
 
 //
 // QgsProcessingColorWidgetWrapper
@@ -3125,7 +3266,6 @@ QgsProcessingColorParameterDefinitionWidget::QgsProcessingColorParameterDefiniti
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
@@ -3270,7 +3410,6 @@ QgsProcessingCoordinateOperationParameterDefinitionWidget::QgsProcessingCoordina
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
@@ -3296,10 +3435,10 @@ QgsProcessingCoordinateOperationParameterDefinitionWidget::QgsProcessingCoordina
 
   mSourceParamComboBox->addItem( QString(), QString() );
   mDestParamComboBox->addItem( QString(), QString() );
-  if ( widgetContext.model() )
+  if ( auto *lModel = widgetContext.model() )
   {
     // populate combo box with other model input choices
-    const QMap<QString, QgsProcessingModelParameter> components = widgetContext.model()->parameterComponents();
+    const QMap<QString, QgsProcessingModelParameter> components = lModel->parameterComponents();
     for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
     {
       if ( definition && it->parameterName() == definition->name() )
@@ -3416,7 +3555,7 @@ QWidget *QgsProcessingCoordinateOperationWidgetWrapper::createWidget()
       button->setText( QString( QChar( 0x2026 ) ) );
       connect( button, &QToolButton::clicked, this, [ = ]
       {
-        QgsDatumTransformDialog dlg( mSourceCrs, mDestCrs, false, false, false, qMakePair( -1, -1 ), button, nullptr, mLineEdit->text(), mCanvas );
+        QgsDatumTransformDialog dlg( mSourceCrs, mDestCrs, false, false, false, qMakePair( -1, -1 ), button, Qt::WindowFlags(), mLineEdit->text(), mCanvas );
         if ( dlg.exec() )
         {
           mLineEdit->setText( dlg.selectedDatumTransform().proj );
@@ -3426,7 +3565,6 @@ QWidget *QgsProcessingCoordinateOperationWidgetWrapper::createWidget()
       layout->addWidget( button );
 
       QWidget *w = new QWidget();
-      layout->setMargin( 0 );
       layout->setContentsMargins( 0, 0, 0, 0 );
       w->setLayout( layout );
       return w;
@@ -3596,7 +3734,6 @@ QgsProcessingFieldPanelWidget::QgsProcessingFieldPanelWidget( QWidget *parent, c
   , mParam( param )
 {
   QHBoxLayout *hl = new QHBoxLayout();
-  hl->setMargin( 0 );
   hl->setContentsMargins( 0, 0, 0, 0 );
 
   mLineEdit = new QLineEdit();
@@ -3663,7 +3800,7 @@ void QgsProcessingFieldPanelWidget::showDialog()
   }
   else
   {
-    QgsProcessingMultipleSelectionDialog dlg( availableOptions, mValue, this, nullptr );
+    QgsProcessingMultipleSelectionDialog dlg( availableOptions, mValue, this, Qt::WindowFlags() );
 
     dlg.setValueFormatter( []( const QVariant & v ) -> QString
     {
@@ -3691,7 +3828,6 @@ QgsProcessingFieldParameterDefinitionWidget::QgsProcessingFieldParameterDefiniti
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Parent layer" ) ) );
@@ -3701,13 +3837,13 @@ QgsProcessingFieldParameterDefinitionWidget::QgsProcessingFieldParameterDefiniti
   if ( const QgsProcessingParameterField *fieldParam = dynamic_cast<const QgsProcessingParameterField *>( definition ) )
     initialParent = fieldParam->parentLayerParameterName();
 
-  if ( widgetContext.model() )
+  if ( auto *lModel = widgetContext.model() )
   {
     // populate combo box with other model input choices
-    const QMap<QString, QgsProcessingModelParameter> components = widgetContext.model()->parameterComponents();
+    const QMap<QString, QgsProcessingModelParameter> components = lModel->parameterComponents();
     for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
     {
-      if ( const QgsProcessingParameterFeatureSource *definition = dynamic_cast< const QgsProcessingParameterFeatureSource * >( widgetContext.model()->parameterDefinition( it.value().parameterName() ) ) )
+      if ( const QgsProcessingParameterFeatureSource *definition = dynamic_cast< const QgsProcessingParameterFeatureSource * >( lModel->parameterDefinition( it.value().parameterName() ) ) )
       {
         mParentLayerComboBox-> addItem( definition->description(), definition->name() );
         if ( !initialParent.isEmpty() && initialParent == definition->name() )
@@ -3715,7 +3851,7 @@ QgsProcessingFieldParameterDefinitionWidget::QgsProcessingFieldParameterDefiniti
           mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
         }
       }
-      else if ( const QgsProcessingParameterVectorLayer *definition = dynamic_cast< const QgsProcessingParameterVectorLayer * >( widgetContext.model()->parameterDefinition( it.value().parameterName() ) ) )
+      else if ( const QgsProcessingParameterVectorLayer *definition = dynamic_cast< const QgsProcessingParameterVectorLayer * >( lModel->parameterDefinition( it.value().parameterName() ) ) )
       {
         mParentLayerComboBox-> addItem( definition->description(), definition->name() );
         if ( !initialParent.isEmpty() && initialParent == definition->name() )
@@ -4103,7 +4239,6 @@ QgsProcessingMapThemeParameterDefinitionWidget::QgsProcessingMapThemeParameterDe
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
@@ -4261,7 +4396,6 @@ QgsProcessingDateTimeParameterDefinitionWidget::QgsProcessingDateTimeParameterDe
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Type" ) ) );
@@ -4441,7 +4575,6 @@ QgsProcessingProviderConnectionParameterDefinitionWidget::QgsProcessingProviderC
   const QgsProcessingParameterProviderConnection *connectionParam = dynamic_cast< const QgsProcessingParameterProviderConnection *>( definition );
 
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Provider" ) ) );
@@ -4596,7 +4729,6 @@ QgsProcessingDatabaseSchemaParameterDefinitionWidget::QgsProcessingDatabaseSchem
   const QgsProcessingParameterDatabaseSchema *schemaParam = dynamic_cast< const QgsProcessingParameterDatabaseSchema *>( definition );
 
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   mConnectionParamComboBox = new QComboBox();
@@ -4606,16 +4738,16 @@ QgsProcessingDatabaseSchemaParameterDefinitionWidget::QgsProcessingDatabaseSchem
     initialConnection = schemaParam->parentConnectionParameterName();
   }
 
-  if ( widgetContext.model() )
+  if ( auto *lModel = widgetContext.model() )
   {
     // populate combo box with other model input choices
-    const QMap<QString, QgsProcessingModelParameter> components = widgetContext.model()->parameterComponents();
+    const QMap<QString, QgsProcessingModelParameter> components = lModel->parameterComponents();
     for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
     {
       if ( definition && it->parameterName() == definition->name() )
         continue;
 
-      if ( !dynamic_cast< const QgsProcessingParameterProviderConnection * >( widgetContext.model()->parameterDefinition( it->parameterName() ) ) )
+      if ( !dynamic_cast< const QgsProcessingParameterProviderConnection * >( lModel->parameterDefinition( it->parameterName() ) ) )
         continue;
 
       mConnectionParamComboBox->addItem( it->parameterName(), it->parameterName() );
@@ -4831,7 +4963,6 @@ QgsProcessingDatabaseTableParameterDefinitionWidget::QgsProcessingDatabaseTableP
   const QgsProcessingParameterDatabaseTable *tableParam = dynamic_cast< const QgsProcessingParameterDatabaseTable *>( definition );
 
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   mConnectionParamComboBox = new QComboBox();
@@ -4844,16 +4975,16 @@ QgsProcessingDatabaseTableParameterDefinitionWidget::QgsProcessingDatabaseTableP
     initialSchema = tableParam->parentSchemaParameterName();
   }
 
-  if ( widgetContext.model() )
+  if ( auto *lModel = widgetContext.model() )
   {
     // populate combo box with other model input choices
-    const QMap<QString, QgsProcessingModelParameter> components = widgetContext.model()->parameterComponents();
+    const QMap<QString, QgsProcessingModelParameter> components = lModel->parameterComponents();
     for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
     {
       if ( definition && it->parameterName() == definition->name() )
         continue;
 
-      if ( dynamic_cast< const QgsProcessingParameterProviderConnection * >( widgetContext.model()->parameterDefinition( it->parameterName() ) ) )
+      if ( dynamic_cast< const QgsProcessingParameterProviderConnection * >( lModel->parameterDefinition( it->parameterName() ) ) )
       {
         mConnectionParamComboBox->addItem( it->parameterName(), it->parameterName() );
         if ( !initialConnection.isEmpty() && initialConnection == it->parameterName() )
@@ -4861,7 +4992,7 @@ QgsProcessingDatabaseTableParameterDefinitionWidget::QgsProcessingDatabaseTableP
           mConnectionParamComboBox->setCurrentIndex( mConnectionParamComboBox->count() - 1 );
         }
       }
-      else if ( dynamic_cast< const QgsProcessingParameterDatabaseSchema * >( widgetContext.model()->parameterDefinition( it->parameterName() ) ) )
+      else if ( dynamic_cast< const QgsProcessingParameterDatabaseSchema * >( lModel->parameterDefinition( it->parameterName() ) ) )
       {
         mSchemaParamComboBox->addItem( it->parameterName(), it->parameterName() );
         if ( !initialConnection.isEmpty() && initialConnection == it->parameterName() )
@@ -5119,7 +5250,6 @@ QgsProcessingExtentParameterDefinitionWidget::QgsProcessingExtentParameterDefini
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
@@ -5237,7 +5367,7 @@ void QgsProcessingExtentWidgetWrapper::setWidgetValue( const QVariant &value, Qg
       QgsRectangle r = QgsProcessingParameters::parameterAsExtent( parameterDefinition(), value, context );
       QgsCoordinateReferenceSystem crs = QgsProcessingParameters::parameterAsPointCrs( parameterDefinition(), value, context );
       mExtentWidget->setCurrentExtent( r, crs );
-      mExtentWidget->setOutputExtentFromCurrent();
+      mExtentWidget->setOutputExtentFromUser( r, crs );
     }
   }
 }
@@ -5312,7 +5442,6 @@ QgsProcessingMapLayerParameterDefinitionWidget::QgsProcessingMapLayerParameterDe
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Layer type" ) ) );
@@ -5516,7 +5645,6 @@ QgsProcessingVectorLayerParameterDefinitionWidget::QgsProcessingVectorLayerParam
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Geometry type" ) ) );
@@ -5615,7 +5743,6 @@ QgsProcessingFeatureSourceParameterDefinitionWidget::QgsProcessingFeatureSourceP
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Geometry type" ) ) );
@@ -5773,7 +5900,6 @@ QgsProcessingRasterBandPanelWidget::QgsProcessingRasterBandPanelWidget( QWidget 
   , mParam( param )
 {
   QHBoxLayout *hl = new QHBoxLayout();
-  hl->setMargin( 0 );
   hl->setContentsMargins( 0, 0, 0, 0 );
 
   mLineEdit = new QLineEdit();
@@ -5846,7 +5972,7 @@ void QgsProcessingRasterBandPanelWidget::showDialog()
   }
   else
   {
-    QgsProcessingMultipleSelectionDialog dlg( availableOptions, mValue, this, nullptr );
+    QgsProcessingMultipleSelectionDialog dlg( availableOptions, mValue, this, Qt::WindowFlags() );
 
     dlg.setValueFormatter( [this]( const QVariant & v ) -> QString
     {
@@ -5876,7 +6002,6 @@ QgsProcessingBandParameterDefinitionWidget::QgsProcessingBandParameterDefinition
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
@@ -5903,13 +6028,13 @@ QgsProcessingBandParameterDefinitionWidget::QgsProcessingBandParameterDefinition
   if ( const QgsProcessingParameterBand *bandParam = dynamic_cast<const QgsProcessingParameterBand *>( definition ) )
     initialParent = bandParam->parentLayerParameterName();
 
-  if ( widgetContext.model() )
+  if ( auto *lModel = widgetContext.model() )
   {
     // populate combo box with other model input choices
-    const QMap<QString, QgsProcessingModelParameter> components = widgetContext.model()->parameterComponents();
+    const QMap<QString, QgsProcessingModelParameter> components = lModel->parameterComponents();
     for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
     {
-      if ( const QgsProcessingParameterRasterLayer *definition = dynamic_cast< const QgsProcessingParameterRasterLayer * >( widgetContext.model()->parameterDefinition( it.value().parameterName() ) ) )
+      if ( const QgsProcessingParameterRasterLayer *definition = dynamic_cast< const QgsProcessingParameterRasterLayer * >( lModel->parameterDefinition( it.value().parameterName() ) ) )
       {
         mParentLayerComboBox-> addItem( definition->description(), definition->name() );
         if ( !initialParent.isEmpty() && initialParent == definition->name() )
@@ -6220,7 +6345,6 @@ QgsProcessingMultipleLayerPanelWidget::QgsProcessingMultipleLayerPanelWidget( QW
   , mParam( param )
 {
   QHBoxLayout *hl = new QHBoxLayout();
-  hl->setMargin( 0 );
   hl->setContentsMargins( 0, 0, 0, 0 );
 
   mLineEdit = new QLineEdit();
@@ -6277,6 +6401,7 @@ void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorith
                       << QgsProcessingParameterFile::typeName(),
                       QStringList() << QgsProcessingOutputFile::typeName()
                       << QgsProcessingOutputRasterLayer::typeName()
+                      << QgsProcessingOutputMapLayer::typeName()
                       << QgsProcessingOutputMultipleLayers::typeName() );
       break;
     }
@@ -6287,6 +6412,7 @@ void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorith
                       << QgsProcessingParameterMultipleLayers::typeName()
                       << QgsProcessingParameterFile::typeName(),
                       QStringList() << QgsProcessingOutputFile::typeName()
+                      << QgsProcessingOutputMapLayer::typeName()
                       << QgsProcessingOutputMultipleLayers::typeName() );
       break;
     }
@@ -6299,6 +6425,7 @@ void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorith
                       << QgsProcessingParameterMultipleLayers::typeName(),
                       QStringList() << QgsProcessingOutputFile::typeName()
                       << QgsProcessingOutputVectorLayer::typeName()
+                      << QgsProcessingOutputMapLayer::typeName()
                       << QgsProcessingOutputMultipleLayers::typeName(),
                       QList< int >() << QgsProcessing::TypeVector );
       break;
@@ -6312,6 +6439,7 @@ void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorith
                       << QgsProcessingParameterMultipleLayers::typeName(),
                       QStringList() << QgsProcessingOutputFile::typeName()
                       << QgsProcessingOutputVectorLayer::typeName()
+                      << QgsProcessingOutputMapLayer::typeName()
                       << QgsProcessingOutputMultipleLayers::typeName() );
       break;
     }
@@ -6324,6 +6452,7 @@ void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorith
                       << QgsProcessingParameterMultipleLayers::typeName(),
                       QStringList() << QgsProcessingOutputFile::typeName()
                       << QgsProcessingOutputVectorLayer::typeName()
+                      << QgsProcessingOutputMapLayer::typeName()
                       << QgsProcessingOutputMultipleLayers::typeName(),
                       QList< int >() << QgsProcessing::TypeVectorAnyGeometry << QgsProcessing::TypeVectorPoint );
       break;
@@ -6337,6 +6466,7 @@ void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorith
                       << QgsProcessingParameterMultipleLayers::typeName(),
                       QStringList() << QgsProcessingOutputFile::typeName()
                       << QgsProcessingOutputVectorLayer::typeName()
+                      << QgsProcessingOutputMapLayer::typeName()
                       << QgsProcessingOutputMultipleLayers::typeName(),
                       QList< int >() << QgsProcessing::TypeVectorAnyGeometry << QgsProcessing::TypeVectorLine );
       break;
@@ -6350,7 +6480,8 @@ void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorith
                       << QgsProcessingParameterMultipleLayers::typeName(),
                       QStringList() << QgsProcessingOutputFile::typeName()
                       << QgsProcessingOutputVectorLayer::typeName()
-                      << QgsProcessingOutputMultipleLayers::typeName(),
+                      << QgsProcessingOutputMultipleLayers::typeName()
+                      << QgsProcessingOutputMapLayer::typeName(),
                       QList< int >() << QgsProcessing::TypeVectorAnyGeometry << QgsProcessing::TypeVectorPolygon );
       break;
     }
@@ -6364,6 +6495,7 @@ void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorith
                       << QgsProcessingParameterFile::typeName()
                       << QgsProcessingParameterMultipleLayers::typeName(),
                       QStringList() << QgsProcessingOutputFile::typeName()
+                      << QgsProcessingOutputMapLayer::typeName()
                       << QgsProcessingOutputVectorLayer::typeName()
                       << QgsProcessingOutputRasterLayer::typeName()
                       // << QgsProcessingOutputMeshLayer::typeName()
@@ -6390,7 +6522,7 @@ void QgsProcessingMultipleLayerPanelWidget::showDialog()
   }
   else
   {
-    QgsProcessingMultipleInputDialog dlg( mParam, mValue, mModelSources, mModel, this, nullptr );
+    QgsProcessingMultipleInputDialog dlg( mParam, mValue, mModelSources, mModel, this, Qt::WindowFlags() );
     dlg.setProject( mProject );
     if ( dlg.exec() )
     {
@@ -6413,7 +6545,6 @@ QgsProcessingMultipleLayerParameterDefinitionWidget::QgsProcessingMultipleLayerP
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Allowed layer type" ) ) );
@@ -6514,6 +6645,7 @@ QStringList QgsProcessingMultipleLayerWidgetWrapper::compatibleParameterTypes() 
          << QgsProcessingParameterMapLayer::typeName()
          << QgsProcessingParameterVectorLayer::typeName()
          << QgsProcessingParameterMeshLayer::typeName()
+         << QgsProcessingParameterFeatureSource::typeName()
          << QgsProcessingParameterRasterLayer::typeName()
          << QgsProcessingParameterFile::typeName()
          << QgsProcessingParameterString::typeName();

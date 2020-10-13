@@ -332,3 +332,8 @@ void QgsMaskingWidget::apply()
     layer->triggerRepaint();
   }
 }
+
+bool QgsMaskingWidget::hasBeenPopulated()
+{
+  return !mMustPopulate;
+}

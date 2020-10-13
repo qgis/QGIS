@@ -22,9 +22,14 @@ Polygon geometry type.
 #include "qgspolygon.h"
 %End
   public:
-    QgsPolygon();
 
-    QgsPolygon( QgsLineString *exterior /Transfer/, const QList< QgsLineString * > &rings /Transfer/ = QList< QgsLineString * >() );
+
+    QgsPolygon() /HoldGIL/;
+%Docstring
+Constructor for an empty polygon geometry.
+%End
+
+    QgsPolygon( QgsLineString *exterior /Transfer/, const QList< QgsLineString * > &rings /Transfer/ = QList< QgsLineString * >() ) /HoldGIL/;
 %Docstring
 Constructor for QgsPolygon, with the specified ``exterior`` ring and interior ``rings``.
 
@@ -33,7 +38,7 @@ Ownership of ``exterior`` and ``rings`` is transferred to the polygon.
 .. versionadded:: 3.14
 %End
 
-    virtual QString geometryType() const;
+    virtual QString geometryType() const /HoldGIL/;
 
     virtual QgsPolygon *clone() const /Factory/;
 
@@ -41,7 +46,7 @@ Ownership of ``exterior`` and ``rings`` is transferred to the polygon.
 
     virtual bool fromWkb( QgsConstWkbPtr &wkb );
 
-    virtual QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = 0 ) const;
+    virtual QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
 
     virtual QgsPolygon *surfaceToPolygon() const /Factory/;
 
@@ -51,7 +56,7 @@ Ownership of ``exterior`` and ``rings`` is transferred to the polygon.
 %Docstring
 Returns the geometry converted to the more generic curve type :py:class:`QgsCurvePolygon`
 
-:return: the converted geometry. Caller takes ownership*
+:return: the converted geometry. Caller takes ownership
 %End
 
     virtual void addInteriorRing( QgsCurve *ring /Transfer/ );

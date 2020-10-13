@@ -29,13 +29,17 @@
 #include "nmeatime.h"
 
 #ifdef NMEA_WIN
+#ifdef _MSC_VER
 #   pragma warning(disable: 4201)
 #   pragma warning(disable: 4214)
 #   pragma warning(disable: 4115)
+#endif
 #   include <windows.h>
+#ifdef _MSC_VER
 #   pragma warning(default: 4201)
 #   pragma warning(default: 4214)
 #   pragma warning(default: 4115)
+#endif
 #else
 #   include <time.h>
 #endif

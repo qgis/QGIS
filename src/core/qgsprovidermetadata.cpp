@@ -80,11 +80,13 @@ QList<QgsMeshDriverMetadata> QgsProviderMetadata::meshDriversMetadata()
   return QList<QgsMeshDriverMetadata>();
 }
 
-QgsDataProvider *QgsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
+QgsDataProvider *QgsProviderMetadata::createProvider( const QString &uri,
+    const QgsDataProvider::ProviderOptions &options,
+    QgsDataProvider::ReadFlags flags )
 {
   if ( mCreateFunction )
   {
-    return mCreateFunction( uri, options );
+    return mCreateFunction( uri, options, flags );
   }
   return nullptr;
 }
@@ -151,6 +153,15 @@ QgsRasterDataProvider *QgsProviderMetadata::createRasterDataProvider(
   const QStringList & )
 {
   return nullptr;
+}
+
+bool QgsProviderMetadata::createMeshData(
+  const QgsMesh &,
+  const QString,
+  const QString &,
+  const QgsCoordinateReferenceSystem & ) const
+{
+  return false;
 }
 
 QList<QPair<QString, QString> > QgsProviderMetadata::pyramidResamplingMethods()
@@ -291,8 +302,8 @@ QMap<QString, T *> QgsProviderMetadata::connections( bool cached )
 
 QgsMeshDriverMetadata::QgsMeshDriverMetadata() = default;
 
-QgsMeshDriverMetadata::QgsMeshDriverMetadata( const QString &name, const QString &description, const MeshDriverCapabilities &capabilities )
-  : mName( name ), mDescription( description ), mCapabilities( capabilities )
+QgsMeshDriverMetadata::QgsMeshDriverMetadata( const QString &name, const QString &description, const MeshDriverCapabilities &capabilities, const QString &writeDatasetOnfileSuffix )
+  : mName( name ), mDescription( description ), mCapabilities( capabilities ), mWriteDatasetOnFileSuffix( writeDatasetOnfileSuffix )
 {
 }
 
@@ -309,4 +320,9 @@ QString QgsMeshDriverMetadata::name() const
 QString QgsMeshDriverMetadata::description() const
 {
   return mDescription;
+}
+
+QString QgsMeshDriverMetadata::writeDatasetOnFileSuffix() const
+{
+  return mWriteDatasetOnFileSuffix;
 }

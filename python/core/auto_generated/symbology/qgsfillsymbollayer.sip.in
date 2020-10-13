@@ -79,7 +79,26 @@ Caller takes ownership of the returned symbol layer.
     void setPenJoinStyle( Qt::PenJoinStyle style );
 
     void setOffset( QPointF offset );
+%Docstring
+Sets an ``offset`` by which polygons will be translated during rendering.
+
+Units are specified by :py:func:`~QgsSimpleFillSymbolLayer.offsetUnit`.
+
+.. seealso:: :py:func:`offset`
+
+.. seealso:: :py:func:`setOffsetUnit`
+%End
+
     QPointF offset();
+%Docstring
+Returns the offset by which polygons will be translated during rendering.
+
+Units are specified by :py:func:`~QgsSimpleFillSymbolLayer.offsetUnit`.
+
+.. seealso:: :py:func:`setOffset`
+
+.. seealso:: :py:func:`offsetUnit`
+%End
 
     void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
@@ -102,9 +121,9 @@ Returns the units for the width of the fill's stroke.
 
     void setOffsetUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
-Sets the units for the fill's offset.
+Sets the ``unit`` for the fill's offset.
 
-:param unit: offset units
+.. seealso:: :py:func:`offset`
 
 .. seealso:: :py:func:`offsetUnit`
 %End
@@ -114,10 +133,27 @@ Sets the units for the fill's offset.
 Returns the units for the fill's offset.
 
 .. seealso:: :py:func:`setOffsetUnit`
+
+.. seealso:: :py:func:`offset`
 %End
 
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the fill's offset.
+
+.. seealso:: :py:func:`setOffset`
+
+.. seealso:: :py:func:`offsetMapUnitScale`
+%End
+
     const QgsMapUnitScale &offsetMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the fill's offset.
+
+.. seealso:: :py:func:`offset`
+
+.. seealso:: :py:func:`setOffsetMapUnitScale`
+%End
 
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
 
@@ -304,18 +340,61 @@ Sets the end point of the gradient to be the feature centroid
 
     void setOffset( QPointF offset );
 %Docstring
-Offset for gradient fill
+Sets an ``offset`` by which polygons will be translated during rendering.
+
+Units are specified by :py:func:`~QgsGradientFillSymbolLayer.offsetUnit`.
+
+.. seealso:: :py:func:`offset`
+
+.. seealso:: :py:func:`setOffsetUnit`
 %End
+
     QPointF offset() const;
+%Docstring
+Returns the offset by which polygons will be translated during rendering.
+
+Units are specified by :py:func:`~QgsGradientFillSymbolLayer.offsetUnit`.
+
+.. seealso:: :py:func:`setOffset`
+
+.. seealso:: :py:func:`offsetUnit`
+%End
 
     void setOffsetUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
-Units for gradient fill offset
+Sets the ``unit`` for the fill's offset.
+
+.. seealso:: :py:func:`offset`
+
+.. seealso:: :py:func:`offsetUnit`
 %End
+
     QgsUnitTypes::RenderUnit offsetUnit() const;
+%Docstring
+Returns the units for the fill's offset.
+
+.. seealso:: :py:func:`setOffsetUnit`
+
+.. seealso:: :py:func:`offset`
+%End
 
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the fill's offset.
+
+.. seealso:: :py:func:`setOffset`
+
+.. seealso:: :py:func:`offsetMapUnitScale`
+%End
+
     const QgsMapUnitScale &offsetMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the fill's offset.
+
+.. seealso:: :py:func:`offset`
+
+.. seealso:: :py:func:`setOffsetMapUnitScale`
+%End
 
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
 
@@ -677,7 +756,7 @@ Returns the units used for the offset of the shapeburst fill.
 class QgsImageFillSymbolLayer: QgsFillSymbolLayer
 {
 %Docstring
-Base class for polygon renderers generating texture images*
+Base class for polygon renderers generating texture images
 %End
 
 %TypeHeaderCode
@@ -759,6 +838,13 @@ Returns the stroke width map unit scale.
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context );
 %Docstring
 Custom stroke
+%End
+
+    virtual bool applyBrushTransformFromContext() const;
+%Docstring
+Returns ``True`` if the image brush should be transformed using the render context's texture origin.
+
+.. versionadded:: 3.16
 %End
 
   private:
@@ -1041,6 +1127,7 @@ Returns the map unit scale for the image's width.
 
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext &context );
 
+    virtual bool applyBrushTransformFromContext() const;
 
 };
 

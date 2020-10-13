@@ -1,6 +1,7 @@
 {
   "name": "log",
   "type": "function",
+  "groups": ["Math"],
   "description": "Returns the value of the logarithm of the passed value and base.",
   "arguments": [
 	{"arg":"base","description":"any positive number"},

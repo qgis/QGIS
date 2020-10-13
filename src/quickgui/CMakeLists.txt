@@ -18,7 +18,7 @@ SET(QGIS_QUICK_GUI_MOC_HDRS
   qgsquickscalebarkit.h
   qgsquicksimulatedpositionsource.h
   qgsquickutils.h
-  qgsquickvaluerelationlistmodel.h
+  qgsquickfeatureslistmodel.h
 )
 
 SET(QGIS_QUICK_GUI_HDRS
@@ -44,7 +44,7 @@ SET(QGIS_QUICK_GUI_SRC
   qgsquickscalebarkit.cpp
   qgsquicksimulatedpositionsource.cpp
   qgsquickutils.cpp
-  qgsquickvaluerelationlistmodel.cpp
+  qgsquickfeatureslistmodel.cpp
 )
 
 INCLUDE_DIRECTORIES(

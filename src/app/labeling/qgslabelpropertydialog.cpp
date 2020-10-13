@@ -203,6 +203,9 @@ void QgsLabelPropertyDialog::init( const QString &layerId, const QString &provid
     case QgsPalLayerSettings::MultiRight:
       defaultMultilineAlign = QStringLiteral( "right" );
       break;
+    case QgsPalLayerSettings::MultiJustify:
+      defaultMultilineAlign = QStringLiteral( "justify" );
+      break;
     case QgsPalLayerSettings::MultiFollowPlacement:
       defaultMultilineAlign = QStringLiteral( "follow label placement" );
       break;
@@ -592,6 +595,7 @@ void QgsLabelPropertyDialog::fillMultiLineAlignComboBox()
   mMultiLineAlignComboBox->addItem( tr( "Left" ), "Left" );
   mMultiLineAlignComboBox->addItem( tr( "Center" ), "Center" );
   mMultiLineAlignComboBox->addItem( tr( "Right" ), "Right" );
+  mMultiLineAlignComboBox->addItem( tr( "Justify" ), "Justify" );
 }
 
 void QgsLabelPropertyDialog::fillHaliComboBox()

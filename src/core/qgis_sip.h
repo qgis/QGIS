@@ -152,6 +152,11 @@
 #define SIP_RELEASEGIL
 
 /*
+ * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html?highlight=keepreference#function-annotation-HoldGIL
+ */
+#define SIP_HOLDGIL
+
+/*
  * Will insert a `%Feature feature` directive in sip files
  */
 #define SIP_FEATURE(feature)

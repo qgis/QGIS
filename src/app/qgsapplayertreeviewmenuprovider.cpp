@@ -274,7 +274,9 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       if ( vlayer || rlayer )
       {
 
-        QAction *a = new QAction( tr( "Change Data Source…" ), menu );
+        QAction *a = new QAction( layer->isValid() ? tr( "Change Data Source…" ) : tr( "Repair Data Source…" ), menu );
+        if ( !layer->isValid() )
+          a->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconWarning.svg" ) ) );
         // Disable when layer is editable
         if ( layer->isEditable() )
         {
@@ -328,15 +330,74 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         if ( !layer->isInScaleRange( mCanvas->scale() ) )
           menu->addAction( tr( "Zoom to &Visible Scale" ), QgisApp::instance(), &QgisApp::zoomToLayerScale );
 
-        QMenu *menuSetCRS = new QMenu( tr( "Set CRS" ), menu );
+        QMenu *menuSetCRS = new QMenu( tr( "Layer CRS" ), menu );
+
+        const QList<QgsLayerTreeNode *> selectedNodes = mView->selectedNodes();
+        QgsCoordinateReferenceSystem layerCrs;
+        bool firstLayer = true;
+        bool allSameCrs = true;
+        for ( QgsLayerTreeNode *node : selectedNodes )
+        {
+          if ( QgsLayerTree::isLayer( node ) )
+          {
+            QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
+            if ( nodeLayer->layer() )
+            {
+              if ( firstLayer )
+              {
+                layerCrs = nodeLayer->layer()->crs();
+                firstLayer = false;
+              }
+              else if ( nodeLayer->layer()->crs() != layerCrs )
+              {
+                allSameCrs = false;
+                break;
+              }
+            }
+          }
+        }
+
+        QAction *actionCurrentCrs = new QAction( !allSameCrs ? tr( "Mixed CRS" )
+            : layer->crs().isValid() ? layer->crs().userFriendlyIdentifier()
+            : tr( "No CRS" ), menuSetCRS );
+        actionCurrentCrs->setEnabled( false );
+        menuSetCRS->addAction( actionCurrentCrs );
+
+        if ( allSameCrs && layerCrs.isValid() )
+        {
+          // assign layer crs to project
+          QAction *actionSetProjectCrs = new QAction( tr( "Set &Project CRS from Layer" ), menuSetCRS );
+          connect( actionSetProjectCrs, &QAction::triggered, QgisApp::instance(), &QgisApp::setProjectCrsFromLayer );
+          menuSetCRS->addAction( actionSetProjectCrs );
+        }
+
+        const QList< QgsCoordinateReferenceSystem> recentProjections = QgsCoordinateReferenceSystem::recentCoordinateReferenceSystems();
+        if ( !recentProjections.isEmpty() )
+        {
+          menuSetCRS->addSeparator();
+          int i = 0;
+          for ( const QgsCoordinateReferenceSystem &crs : recentProjections )
+          {
+            if ( crs == layer->crs() )
+              continue;
+
+            QAction *action = menuSetCRS->addAction( tr( "Set to %1" ).arg( crs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ) ) );
+            connect( action, &QAction::triggered, this, [ = ]
+            {
+              setLayerCrs( crs );
+            } );
+
+            i++;
+            if ( i == 5 )
+              break;
+          }
+        }
+
         // set layer crs
+        menuSetCRS->addSeparator();
         QAction *actionSetLayerCrs = new QAction( tr( "Set Layer CRS…" ), menuSetCRS );
         connect( actionSetLayerCrs, &QAction::triggered, QgisApp::instance(), &QgisApp::setLayerCrs );
         menuSetCRS->addAction( actionSetLayerCrs );
-        // assign layer crs to project
-        QAction *actionSetProjectCrs = new QAction( tr( "Set &Project CRS from Layer" ), menuSetCRS );
-        connect( actionSetProjectCrs, &QAction::triggered, QgisApp::instance(), &QgisApp::setProjectCrsFromLayer );
-        menuSetCRS->addAction( actionSetProjectCrs );
 
         menu->addMenu( menuSetCRS );
       }
@@ -406,7 +467,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         {
           QMenu *copyStyleMenu = menuStyleManager->addMenu( tr( "Copy Style" ) );
           copyStyleMenu->setToolTipsVisible( true );
-          QgsMapLayerStyleCategoriesModel *model = new QgsMapLayerStyleCategoriesModel( copyStyleMenu );
+          QgsMapLayerStyleCategoriesModel *model = new QgsMapLayerStyleCategoriesModel( layer->type(), copyStyleMenu );
           model->setShowAllCategories( true );
           for ( int row = 0; row < model->rowCount(); ++row )
           {
@@ -445,7 +506,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
                 QgsMapLayer::StyleCategories sourceCategories = QgsXmlUtils::readFlagAttribute( myRoot, QStringLiteral( "styleCategories" ), QgsMapLayer::AllStyleCategories );
 
-                QgsMapLayerStyleCategoriesModel *model = new QgsMapLayerStyleCategoriesModel( pasteStyleMenu );
+                QgsMapLayerStyleCategoriesModel *model = new QgsMapLayerStyleCategoriesModel( layer->type(), pasteStyleMenu );
                 model->setShowAllCategories( true );
                 for ( int row = 0; row < model->rowCount(); ++row )
                 {
@@ -996,4 +1057,21 @@ bool QgsAppLayerTreeViewMenuProvider::removeActionEnabled()
       return false;
   }
   return true;
+}
+
+void QgsAppLayerTreeViewMenuProvider::setLayerCrs( const QgsCoordinateReferenceSystem &crs )
+{
+  const auto constSelectedNodes = mView->selectedNodes();
+  for ( QgsLayerTreeNode *node : constSelectedNodes )
+  {
+    if ( QgsLayerTree::isLayer( node ) )
+    {
+      QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
+      if ( nodeLayer->layer() )
+      {
+        nodeLayer->layer()->setCrs( crs, true );
+        nodeLayer->layer()->triggerRepaint();
+      }
+    }
+  }
 }

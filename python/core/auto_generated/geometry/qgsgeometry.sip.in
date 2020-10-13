@@ -80,7 +80,7 @@ raw geometry primitive, such as the point, line, polygon, curve or other geometr
       SplitCannotSplitPoint,
     };
 
-    QgsGeometry();
+    QgsGeometry() /HoldGIL/;
 %Docstring
 Constructor
 %End
@@ -102,7 +102,7 @@ geom is transferred.
 
     virtual ~QgsGeometry();
 
-    const QgsAbstractGeometry *constGet() const;
+    const QgsAbstractGeometry *constGet() const /HoldGIL/;
 %Docstring
 Returns a non-modifiable (const) reference to the underlying abstract geometry primitive.
 
@@ -158,7 +158,7 @@ Sets the underlying geometry store. Ownership of geometry is transferred.
 .. versionadded:: 3.0
 %End
 
-    bool isNull() const;
+    bool isNull() const /HoldGIL/;
 %Docstring
 Returns ``True`` if the geometry is null (ie, contains no underlying geometry
 accessible via :py:func:`~QgsGeometry.geometry` ).
@@ -174,7 +174,7 @@ accessible via :py:func:`~QgsGeometry.geometry` ).
 %Docstring
 Creates a new geometry from a WKT string
 %End
-    static QgsGeometry fromPointXY( const QgsPointXY &point );
+    static QgsGeometry fromPointXY( const QgsPointXY &point ) /HoldGIL/;
 %Docstring
 Creates a new geometry from a QgsPointXY object
 %End
@@ -222,7 +222,7 @@ Creates a new geometry from a :py:class:`QgsPolygon`
 %Docstring
 Creates a new geometry from a :py:class:`QgsMultiPolygon`
 %End
-    static QgsGeometry fromRect( const QgsRectangle &rect );
+    static QgsGeometry fromRect( const QgsRectangle &rect ) /HoldGIL/;
 %Docstring
 Creates a new geometry from a :py:class:`QgsRectangle`
 %End
@@ -257,14 +257,14 @@ Set the geometry, feeding in the buffer containing OGC Well-Known Binary
 .. versionadded:: 3.0
 %End
 
-    QgsWkbTypes::Type wkbType() const;
+    QgsWkbTypes::Type wkbType() const /HoldGIL/;
 %Docstring
 Returns type of the geometry as a WKB type (point / linestring / polygon etc.)
 
 .. seealso:: :py:func:`type`
 %End
 
-    QgsWkbTypes::GeometryType type() const;
+    QgsWkbTypes::GeometryType type() const /HoldGIL/;
 %Docstring
 Returns type of the geometry as a QgsWkbTypes.GeometryType
 
@@ -280,7 +280,7 @@ return ``True`` for :py:func:`~QgsGeometry.isEmpty`.
 .. seealso:: :py:func:`isNull`
 %End
 
-    bool isMultipart() const;
+    bool isMultipart() const /HoldGIL/;
 %Docstring
 Returns ``True`` if WKB of the geometry is of WKBMulti* type
 %End
@@ -332,7 +332,7 @@ by :py:func:`~QgsGeometry.equals` instead.
     typedef QFlags<QgsGeometry::ValidityFlag> ValidityFlags;
 
 
-    bool isGeosValid( QgsGeometry::ValidityFlags flags = 0 ) const;
+    bool isGeosValid( QgsGeometry::ValidityFlags flags = QgsGeometry::ValidityFlags() ) const;
 %Docstring
 Checks validity of the geometry using GEOS.
 
@@ -556,14 +556,12 @@ Returns the vertex closest to the given point, the corresponding vertex index, s
 and the indices of the vertices before and after the closest vertex.
 
 :param point: point to search for
-:param beforeVertex: will be set to the vertex index of the previous vertex from the closest one. Will be set to -1 if
-                     not present.
-:param afterVertex: will be set to the vertex index of the next vertex after the closest one. Will be set to -1 if
-                    not present.
-:param sqrDist: will be set to the square distance between the closest vertex and the specified point
 
 :return: - closest point in geometry. If not found (empty geometry), returns null point and sqrDist is negative.
          - atVertex: will be set to the vertex index of the closest found vertex
+         - beforeVertex: will be set to the vertex index of the previous vertex from the closest one. Will be set to -1 if not present.
+         - afterVertex: will be set to the vertex index of the next vertex after the closest one. Will be set to -1 if not present.
+         - sqrDist: will be set to the square distance between the closest vertex and the specified point
 %End
 
     double distanceToVertex( int vertex ) const;
@@ -724,14 +722,12 @@ Searches for the closest vertex in this geometry to the given point.
 Searches for the closest segment of geometry to the given point
 
 :param point: Specifies the point for search
-:param afterVertex: Receives index of the vertex after the closest segment. The vertex
-                    before the closest segment is always afterVertex - 1
-:param leftOf: Out: Returns if the point lies on the left of left side of the geometry ( < 0 means left, > 0 means right, 0 indicates
-               that the test was unsuccessful, e.g. for a point exactly on the line)
 :param epsilon: epsilon for segment snapping
 
 :return: - The squared Cartesian distance is also returned in sqrDist, negative number on error
          - minDistPoint: Receives the nearest point on the segment
+         - afterVertex: Receives index of the vertex after the closest segment. The vertex before the closest segment is always afterVertex - 1
+         - leftOf: Out: Returns if the point lies on the left of left side of the geometry ( < 0 means left, > 0 means right, 0 indicates that the test was unsuccessful, e.g. for a point exactly on the line)
 %End
 
     OperationResult addRing( const QVector<QgsPointXY> &ring );
@@ -874,7 +870,7 @@ Splits this geometry according to a given line.
 
 :return: OperationResult a result code: success or reason of failure
 
-* Example:
+Example:
 .. code-block:: python
 
       geometry = QgsGeometry.fromWkt('CompoundCurveZ ((2749546.2003820720128715 1262904.45356595050543547 100, 2749557.82053794478997588 1262920.05570670193992555 200))')
@@ -882,6 +878,22 @@ Splits this geometry according to a given line.
       result, new_geometries, point_xy = geometry.splitGeometry(split_line, False)
       print(geometry.asWkt(2))
       > LineStringZ (2749549.12 1262908.38 125.14, 2749557.82 1262920.06 200)
+%End
+
+    OperationResult splitGeometry( const QgsCurve *curve,  QVector<QgsGeometry> &newGeometries /Out/, bool preserveCircular, bool topological, QgsPointSequence &topologyTestPoints /Out/, bool splitFeature = true );
+%Docstring
+Splits this geometry according to a given curve.
+
+:param curve: the curve that splits the geometry
+\param[out] newGeometries list of new geometries that have been created with the ``splitLine``. If the geometry is 3D, a linear interpolation of the z value is performed on the geometry at split points, see example.
+:param preserveCircular: whether if circular strings are preserved after splitting
+:param topological: ``True`` if topological editing is enabled
+\param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
+:param splitFeature: Set to True if you want to split a feature, otherwise set to False to split parts
+
+:return: OperationResult a result code: success or reason of failure
+
+.. versionadded:: 3.16
 %End
 
     OperationResult reshapeGeometry( const QgsLineString &reshapeLineString );
@@ -917,6 +929,9 @@ Returns the oriented minimum bounding box for the geometry, which is the smalles
 rotated rectangle which fully encompasses the geometry. The area, angle (clockwise in degrees from North),
 width and height of the rotated bounding box will also be returned.
 
+If an error was encountered while creating the result, more information can be retrieved
+by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
+
 .. seealso:: :py:func:`boundingBox`
 
 .. versionadded:: 3.0
@@ -927,11 +942,11 @@ width and height of the rotated bounding box will also be returned.
 %Docstring
 Returns the minimal enclosing circle for the geometry.
 
-:param radius: Radius of the minimal enclosing circle returned
 :param segments: Number of segments used to segment geometry. :py:func:`QgsEllipse.toPolygon`
 
 :return: - the minimal enclosing circle as a QGIS geometry
          - center: Center of the minimal enclosing circle returneds
+         - radius: Radius of the minimal enclosing circle returned
 
 .. versionadded:: 3.0
 %End
@@ -1530,14 +1545,14 @@ is null, a ValueError will be raised.
     }
     else
     {
-      const sipMappedType *qvector_type = sipFindMappedType( "QVector<QgsPointXY>" );
+      const sipTypeDef *qvector_type = sipFindType( "QVector<QgsPointXY>" );
       sipRes = sipConvertFromNewType( new QVector< QgsPointXY >( sipCpp->randomPointsInPolygon( a0, a1 ) ), qvector_type, Py_None );
     }
 %End
 
 
 
-    QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = 0 ) const;
+    QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
 %Docstring
 Export the geometry to WKB
 
@@ -1678,7 +1693,7 @@ will be raised.
     }
     else
     {
-      const sipMappedType *qvector_type = sipFindMappedType( "QVector< QgsPointXY >" );
+      const sipTypeDef *qvector_type = sipFindType( "QVector< QgsPointXY >" );
       sipRes = sipConvertFromNewType( new QgsPolylineXY( sipCpp->asPolyline() ), qvector_type, Py_None );
     }
 %End
@@ -1709,7 +1724,7 @@ will be raised.
     }
     else
     {
-      const sipMappedType *qvector_type = sipFindMappedType( "QVector<QVector<QgsPointXY>>" );
+      const sipTypeDef *qvector_type = sipFindType( "QVector<QVector<QgsPointXY>>" );
       sipRes = sipConvertFromNewType( new QgsPolygonXY( sipCpp->asPolygon() ), qvector_type, Py_None );
     }
 %End
@@ -1739,7 +1754,7 @@ will be raised.
     }
     else
     {
-      const sipMappedType *qvector_type = sipFindMappedType( "QVector< QgsPointXY >" );
+      const sipTypeDef *qvector_type = sipFindType( "QVector< QgsPointXY >" );
       sipRes = sipConvertFromNewType( new QgsPolylineXY( sipCpp->asMultiPoint() ), qvector_type, Py_None );
     }
 %End
@@ -1770,7 +1785,7 @@ will be raised.
     }
     else
     {
-      const sipMappedType *qvector_type = sipFindMappedType( "QVector<QVector<QgsPointXY>>" );
+      const sipTypeDef *qvector_type = sipFindType( "QVector<QVector<QgsPointXY>>" );
       sipRes = sipConvertFromNewType( new QgsMultiPolylineXY( sipCpp->asMultiPolyline() ), qvector_type, Py_None );
     }
 %End
@@ -1801,7 +1816,7 @@ will be raised.
     }
     else
     {
-      const sipMappedType *qvector_type = sipFindMappedType( "QVector<QVector<QVector<QgsPointXY>>>" );
+      const sipTypeDef *qvector_type = sipFindType( "QVector<QVector<QVector<QgsPointXY>>>" );
       sipRes = sipConvertFromNewType( new QgsMultiPolygonXY( sipCpp->asMultiPolygon() ), qvector_type, Py_None );
     }
 %End
@@ -1813,7 +1828,7 @@ Returns contents of the geometry as a list of geometries
 .. versionadded:: 1.1
 %End
 
-    QPointF asQPointF() const;
+    QPointF asQPointF() const /HoldGIL/;
 %Docstring
 Returns contents of the geometry as a QPointF if wkbType is WKBPoint,
 otherwise returns a null QPointF.
@@ -1821,11 +1836,16 @@ otherwise returns a null QPointF.
 .. versionadded:: 2.7
 %End
 
-    QPolygonF asQPolygonF() const;
+    QPolygonF asQPolygonF() const /HoldGIL/;
 %Docstring
-Returns contents of the geometry as a QPolygonF. If geometry is a linestring,
-then the result will be an open QPolygonF. If the geometry is a polygon,
-then the result will be a closed QPolygonF of the geometry's exterior ring.
+Returns contents of the geometry as a QPolygonF.
+
+If geometry is a linestring, then the result will be an open QPolygonF.
+If the geometry is a polygon, then the result will be a closed QPolygonF
+of the geometry's exterior ring.
+
+If the geometry is a multi-part geometry, then only the first part will
+be considered when converting to a QPolygonF.
 
 .. versionadded:: 2.7
 %End
@@ -1972,7 +1992,7 @@ The coordinates at which the error is located and should be visualized.
       ValidatorGeos,
     };
 
-    void validateGeometry( QVector<QgsGeometry::Error> &errors /Out/, ValidationMethod method = ValidatorQgisInternal, QgsGeometry::ValidityFlags flags = 0 ) const;
+    void validateGeometry( QVector<QgsGeometry::Error> &errors /Out/, ValidationMethod method = ValidatorQgisInternal, QgsGeometry::ValidityFlags flags = QgsGeometry::ValidityFlags() ) const;
 %Docstring
 Validates geometry and produces a list of geometry errors.
 The ``method`` argument dictates which validator to utilize.
@@ -2067,7 +2087,7 @@ Returns -1 if a corresponding vertex could not be found.
 .. versionadded:: 2.10
 %End
 
-    QString lastError() const;
+    QString lastError() const /HoldGIL/;
 %Docstring
 Returns an error string referring to the last error encountered
 either when this geometry was created or when an operation
@@ -2078,7 +2098,7 @@ was performed on the geometry.
 
 
 
-    static QgsGeometry fromQPointF( QPointF point );
+    static QgsGeometry fromQPointF( QPointF point ) /HoldGIL/;
 %Docstring
 Construct geometry from a QPointF
 

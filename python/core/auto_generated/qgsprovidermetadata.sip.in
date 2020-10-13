@@ -34,6 +34,7 @@ Holds metadata about mesh driver
       CanWriteFaceDatasets,
       CanWriteVertexDatasets,
       CanWriteEdgeDatasets,
+      CanWriteMeshData,
     };
 
     typedef QFlags<QgsMeshDriverMetadata::MeshDriverCapability> MeshDriverCapabilities;
@@ -46,7 +47,8 @@ Constructs default metadata without any capabilities
 
     QgsMeshDriverMetadata( const QString &name,
                            const QString &description,
-                           const MeshDriverCapabilities &capabilities );
+                           const MeshDriverCapabilities &capabilities,
+                           const QString &writeDatasetOnFileSuffix );
 %Docstring
 Constructs driver metadata with selected capabilities
 
@@ -68,6 +70,11 @@ Returns the name (key) for this driver.
     QString description() const;
 %Docstring
 Returns the description for this driver.
+%End
+
+    QString writeDatasetOnFileSuffix() const;
+%Docstring
+Returns the suffix used to write datasets on file
 %End
 
 };
@@ -174,9 +181,15 @@ Builds the list of available mesh drivers metadata
 .. versionadded:: 3.12
 %End
 
-    virtual QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) /Factory/;
+    virtual QgsDataProvider *createProvider( const QString &uri,
+        const QgsDataProvider::ProviderOptions &options,
+        QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) /Factory/;
 %Docstring
 Class factory to return a pointer to a newly created QgsDataProvider object
+
+:param uri: the datasource uri
+:param options: creation options
+:param flags: creation flags, sing QGIS 3.16
 
 .. versionadded:: 3.10
 %End
@@ -213,6 +226,17 @@ eg. "yes" value will be returned as true, 0 will be returned as false
 Creates a new instance of the raster data provider.
 
 .. versionadded:: 3.10
+%End
+
+    virtual bool createMeshData(
+      const QgsMesh &mesh,
+      const QString uri,
+      const QString &driverName,
+      const QgsCoordinateReferenceSystem &crs ) const;
+%Docstring
+Creates mesh data source, that is the mesh frame stored in file, memory or with other way (depending of the provider)
+
+.. versionadded:: 3.16
 %End
 
     virtual QList<QPair<QString, QString> > pyramidResamplingMethods();

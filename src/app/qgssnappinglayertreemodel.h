@@ -40,6 +40,9 @@ class APP_EXPORT QgsSnappingLayerDelegate : public QItemDelegate
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
 
+  private slots:
+    void onScaleChanged();
+
   private:
     QgsMapCanvas *mCanvas = nullptr;
 };

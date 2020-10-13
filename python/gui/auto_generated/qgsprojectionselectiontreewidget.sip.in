@@ -77,6 +77,14 @@ option is selected, calling :py:func:`~QgsProjectionSelectionTreeWidget.crs` wil
 .. versionadded:: 3.0
 %End
 
+    void setNotSetText( const QString &text );
+%Docstring
+Sets the text to show for the not set option. Note that this option is not shown
+by default and must be set visible by calling :py:func:`~QgsProjectionSelectionTreeWidget.setShowNoProjection`.
+
+.. versionadded:: 3.16
+%End
+
     bool showBoundsMap() const;
 %Docstring
 Returns whether the bounds preview map is shown.

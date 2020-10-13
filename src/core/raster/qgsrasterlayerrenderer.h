@@ -20,6 +20,7 @@
 
 #include "qgsmaplayerrenderer.h"
 #include "qgsrasterdataprovider.h"
+#include "qgsmapclippingregion.h"
 
 class QPainter;
 
@@ -85,6 +86,8 @@ class CORE_EXPORT QgsRasterLayerRenderer : public QgsMapLayerRenderer
 
     //! feedback class for cancellation and preview generation
     QgsRasterLayerRendererFeedback *mFeedback = nullptr;
+
+    QList< QgsMapClippingRegion > mClippingRegions;
 
     friend class QgsRasterLayerRendererFeedback;
 };

@@ -1,0 +1,538 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vectortile/qgsmapboxglstyleconverter.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsMapBoxGlStyleConversionContext
+{
+%Docstring
+Context for a MapBox GL style conversion operation.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsmapboxglstyleconverter.h"
+%End
+  public:
+
+    void pushWarning( const QString &warning );
+%Docstring
+Pushes a ``warning`` message generated during the conversion.
+%End
+
+    QStringList warnings() const;
+%Docstring
+Returns a list of warning messages generated during the conversion.
+%End
+
+    void clearWarnings();
+%Docstring
+Clears the list of warning messages.
+%End
+
+    QgsUnitTypes::RenderUnit targetUnit() const;
+%Docstring
+Returns the target unit type.
+
+By default this is QgsUnitTypes.RenderPixels in order to exactly match the original
+style rendering. But rendering in pixels can cause issues on hidpi displays or with print
+layouts, so setting a target unit of QgsUnitTypes.Millimeters or another real-world unit
+type is often more appropriate.
+
+.. seealso:: :py:func:`setTargetUnit`
+%End
+
+    void setTargetUnit( QgsUnitTypes::RenderUnit targetUnit );
+%Docstring
+Sets the target unit type.
+
+By default this is QgsUnitTypes.RenderPixels in order to exactly match the original
+style rendering. But rendering in pixels can cause issues on hidpi displays or with print
+layouts, so setting a target unit of QgsUnitTypes.Millimeters or another real-world unit
+type is often more appropriate.
+
+If setting to a non-pixel unit, be sure to call :py:func:`~QgsMapBoxGlStyleConversionContext.setPixelSizeConversionFactor` in order
+to setup an appropriate pixel-to-unit conversion factor to scale converted sizes
+using. E.g. if the target unit is millimeters, the size conversion factor should be
+set to a pixel-to-millimeter value.
+
+.. seealso:: :py:func:`targetUnit`
+%End
+
+    double pixelSizeConversionFactor() const;
+%Docstring
+Returns the pixel size conversion factor, used to scale the original pixel sizes
+when converting styles.
+
+.. seealso:: :py:func:`setPixelSizeConversionFactor`
+%End
+
+    void setPixelSizeConversionFactor( double sizeConversionFactor );
+%Docstring
+Sets the pixel size conversion factor, used to scale the original pixel sizes
+when converting styles.
+
+.. seealso:: :py:func:`pixelSizeConversionFactor`
+%End
+
+    QImage spriteImage() const;
+%Docstring
+Returns the sprite image to use during conversion, or an invalid image if this is not set.
+
+.. seealso:: :py:func:`spriteDefinitions`
+
+.. seealso:: :py:func:`setSprites`
+%End
+
+    QVariantMap spriteDefinitions() const;
+%Docstring
+Returns the sprite definitions to use during conversion.
+
+.. seealso:: :py:func:`spriteImage`
+
+.. seealso:: :py:func:`setSprites`
+%End
+
+    void setSprites( const QImage &image, const QVariantMap &definitions );
+%Docstring
+Sets the sprite ``image`` and ``definitions`` JSON to use during conversion.
+
+.. seealso:: :py:func:`spriteImage`
+
+.. seealso:: :py:func:`spriteDefinitions`
+%End
+
+    void setSprites( const QImage &image, const QString &definitions );
+%Docstring
+Sets the sprite ``image`` and ``definitions`` JSON string to use during conversion.
+
+.. seealso:: :py:func:`spriteImage`
+
+.. seealso:: :py:func:`spriteDefinitions`
+%End
+
+    QString layerId() const;
+%Docstring
+Returns the layer ID of the layer currently being converted.
+
+.. seealso:: :py:func:`setLayerId`
+%End
+
+    void setLayerId( const QString &value );
+%Docstring
+Sets the layer ID of the layer currently being converted.
+
+.. seealso:: :py:func:`layerId`
+%End
+
+};
+
+class QgsMapBoxGlStyleConverter
+{
+%Docstring
+Handles conversion of MapBox GL styles to QGIS vector tile renderers and labeling
+settings.
+
+Conversions are performed by calling :py:func:`~QgsMapBoxGlStyleConversionContext.convert` with either a JSON map or JSON
+string value, and then retrieving the results by calling :py:func:`~QgsMapBoxGlStyleConversionContext.renderer` or :py:func:`~QgsMapBoxGlStyleConversionContext.labeling`
+respectively.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsmapboxglstyleconverter.h"
+%End
+  public:
+
+    QgsMapBoxGlStyleConverter();
+%Docstring
+Constructor for QgsMapBoxGlStyleConverter.
+%End
+
+
+    ~QgsMapBoxGlStyleConverter();
+
+    enum Result
+    {
+      Success,
+      NoLayerList,
+    };
+
+    Result convert( const QVariantMap &style, QgsMapBoxGlStyleConversionContext *context = 0 );
+%Docstring
+Converts a JSON ``style`` map, and returns the resultant status of the conversion.
+
+If an error occurs during conversion then a descriptive error message can be retrieved
+by calling :py:func:`~QgsMapBoxGlStyleConverter.errorMessage`.
+
+After conversion, the resultant labeling and style rules can be retrieved by calling
+:py:func:`~QgsMapBoxGlStyleConverter.renderer` or :py:func:`~QgsMapBoxGlStyleConverter.labeling` respectively.
+
+The optional ``context`` argument can be set to use a specific context during the conversion.
+%End
+
+    Result convert( const QString &style, QgsMapBoxGlStyleConversionContext *context = 0 );
+%Docstring
+Converts a JSON ``style`` string, and returns the resultant status of the conversion.
+
+If an error occurs during conversion then a descriptive error message can be retrieved
+by calling :py:func:`~QgsMapBoxGlStyleConverter.errorMessage`.
+
+After conversion, the resultant labeling and style rules can be retrieved by calling
+:py:func:`~QgsMapBoxGlStyleConverter.renderer` or :py:func:`~QgsMapBoxGlStyleConverter.labeling` respectively.
+
+The optional ``context`` argument can be set to use a specific context during the conversion.
+%End
+
+    QString errorMessage() const;
+%Docstring
+Returns a descriptive error message if an error was encountered during the style conversion,
+or an empty string if no error was encountered.
+
+.. seealso:: :py:func:`warnings`
+%End
+
+    QStringList warnings() const;
+%Docstring
+Returns a list of user-friendly warnings generated during the conversion, e.g. as a result
+of MapBox GL style settings which cannot be translated to QGIS styles.
+
+.. seealso:: :py:func:`errorMessage`
+%End
+
+    QgsVectorTileRenderer *renderer() const /Factory/;
+%Docstring
+Returns a new instance of a vector tile renderer representing the converted style,
+or ``None`` if the style could not be converted successfully.
+%End
+
+    QgsVectorTileLabeling *labeling() const /Factory/;
+%Docstring
+Returns a new instance of a vector tile labeling representing the converted style,
+or ``None`` if the style could not be converted successfully.
+%End
+
+  protected:
+
+    enum PropertyType
+    {
+      Color,
+      Numeric,
+      Opacity,
+      Point,
+    };
+
+    void parseLayers( const QVariantList &layers, QgsMapBoxGlStyleConversionContext *context = 0 );
+%Docstring
+Parse list of ``layers`` from JSON.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+%End
+
+    static bool parseFillLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style /Out/, QgsMapBoxGlStyleConversionContext &context );
+%Docstring
+Parses a fill layer.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+
+:param jsonLayer: fill layer to parse
+:param context: conversion context
+
+:return: - ``True`` if the layer was successfully parsed.
+         - style: generated QGIS vector tile style
+%End
+
+    static bool parseLineLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style /Out/, QgsMapBoxGlStyleConversionContext &context );
+%Docstring
+Parses a line layer.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+
+:param jsonLayer: fill layer to parse
+:param context: conversion context
+
+:return: - ``True`` if the layer was successfully parsed.
+         - style: generated QGIS vector tile style
+%End
+
+    static void parseSymbolLayer( const QVariantMap &jsonLayer,
+                                  QgsVectorTileBasicRendererStyle &rendererStyle /Out/,
+                                  bool &hasRenderer /Out/,
+                                  QgsVectorTileBasicLabelingStyle &labelingStyle /Out/,
+                                  bool &hasLabeling /Out/, QgsMapBoxGlStyleConversionContext &context );
+%Docstring
+Parses a symbol layer as renderer or labeling.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+
+:param jsonLayer: fill layer to parse
+:param rendererStyle: generated QGIS vector tile style
+:param hasRenderer: will be set to ``True`` if symbol layer generated a renderer style
+:param labelingStyle: generated QGIS vector tile labeling
+:param context: conversion context
+%End
+
+    static bool parseSymbolLayerAsRenderer( const QVariantMap &jsonLayer,
+                                            QgsVectorTileBasicRendererStyle &rendererStyle /Out/, QgsMapBoxGlStyleConversionContext &context );
+%Docstring
+Parses a symbol layer as a renderer
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+
+:param jsonLayer: fill layer to parse
+:param context: conversion context
+
+
+:return: - ``True`` if symbol layer was converted to renderer
+         - rendererStyle: generated QGIS vector tile style
+%End
+
+    static QgsProperty parseInterpolateColorByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, QColor *defaultColor /Out/ = 0 );
+%Docstring
+Parses a color value which is interpolated by zoom range.
+
+:param json: definition of color interpolation
+:param context: conversion context
+
+:return: - QgsProperty representing interpolation settings
+         - defaultColor: storage for a reasonable "default" color representing the overall property.
+%End
+
+    static QgsProperty parseInterpolateByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, double *defaultNumber /Out/ = 0 );
+%Docstring
+Parses a numeric value which is interpolated by zoom range.
+
+:param json: definition of interpolation
+:param context: conversion context
+:param multiplier: optional multiplication factor
+
+:return: - QgsProperty representing interpolation settings
+         - defaultNumber: storage for a reasonable "default" number representing the overall property.
+%End
+
+    static QgsProperty parseInterpolateOpacityByZoom( const QVariantMap &json, int maxOpacity );
+%Docstring
+Interpolates opacity with either :py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or :py:func:`~QgsMapBoxGlStyleConverter.scale_exp` (depending on base value).
+For ``json`` with intermediate stops it uses :py:func:`~QgsMapBoxGlStyleConverter.parseOpacityStops` function.
+It uses QGIS :py:func:`~QgsMapBoxGlStyleConverter.set_color_part` function to set alpha component of color.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+%End
+
+    static QString parseOpacityStops( double base, const QVariantList &stops, int maxOpacity );
+%Docstring
+Takes values from stops and uses either :py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or :py:func:`~QgsMapBoxGlStyleConverter.scale_exp` functions
+to interpolate alpha component of color.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+%End
+
+    static QgsProperty parseInterpolatePointByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1, QPointF *defaultPoint /Out/ = 0 );
+%Docstring
+Interpolates a point/offset with either :py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or :py:func:`~QgsMapBoxGlStyleConverter.scale_exp` (depending on base value).
+For ``json`` with intermediate stops it uses :py:func:`~QgsMapBoxGlStyleConverter.parsePointStops` function.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+%End
+
+    static QgsProperty parseInterpolateStringByZoom( const QVariantMap &json, QgsMapBoxGlStyleConversionContext &context,
+        const QVariantMap &conversionMap,
+        QString *defaultString /Out/ = 0 );
+%Docstring
+Interpolates a string by zoom.
+For ``json`` with intermediate stops it uses :py:func:`~QgsMapBoxGlStyleConverter.parseStringStops` function.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+%End
+
+
+    static QString parsePointStops( double base, const QVariantList &stops, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1 );
+%Docstring
+Takes values from stops and uses either :py:func:`~QgsMapBoxGlStyleConverter.scale_linear` or :py:func:`~QgsMapBoxGlStyleConverter.scale_exp` functions
+to interpolate point/offset values.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+%End
+
+    static QString parseStops( double base, const QVariantList &stops, double multiplier, QgsMapBoxGlStyleConversionContext &context );
+%Docstring
+Parses a list of interpolation stops
+
+:param base: interpolation exponent base
+:param stops: definition of interpolation stops
+:param multiplier: optional multiplication factor
+:param context: conversion context
+%End
+
+    static QString parseStringStops( const QVariantList &stops, QgsMapBoxGlStyleConversionContext &context,
+                                     const QVariantMap &conversionMap,
+                                     QString *defaultString /Out/ = 0 );
+%Docstring
+Parses a list of interpolation stops containing string values.
+
+:param stops: definition of interpolation stops
+:param context: conversion context
+:param conversionMap: map of input string to output expression value
+
+:return: - converted expression
+         - defaultString: reasonable default value taken from stops
+%End
+
+
+    static QgsProperty parseValueList( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1,
+                                       int maxOpacity = 255, QColor *defaultColor /Out/ = 0, double *defaultNumber /Out/ = 0 );
+%Docstring
+Parses and converts a value list (e.g. an interpolate list).
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+%End
+
+
+    static QgsProperty parseMatchList( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1,
+                                       int maxOpacity = 255, QColor *defaultColor /Out/ = 0, double *defaultNumber /Out/ = 0 );
+%Docstring
+Parses and converts a match function value list.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+%End
+
+    static QgsProperty parseInterpolateListByZoom( const QVariantList &json, PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier = 1,
+        int maxOpacity = 255, QColor *defaultColor /Out/ = 0, double *defaultNumber /Out/ = 0 );
+%Docstring
+Interpolates a list which starts with the interpolate function.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+%End
+
+    static QColor parseColor( const QVariant &color, QgsMapBoxGlStyleConversionContext &context );
+%Docstring
+Parses a ``color`` in one of these supported formats:
+
+- #fff or #ffffff
+- hsl(30, 19%, 90%) or hsla(30, 19%, 90%, 0.4)
+- rgb(10, 20, 30) or rgba(10, 20, 30, 0.5)
+
+Returns an invalid color if the color could not be parsed.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+%End
+
+    static void colorAsHslaComponents( const QColor &color, int &hue, int &saturation, int &lightness, int &alpha );
+%Docstring
+Takes a QColor object and returns HSLA components in required format for QGIS :py:func:`~QgsMapBoxGlStyleConverter.color_hsla` expression function.
+
+:param color: input color
+:param hue: an integer value from 0 to 360
+:param saturation: an integer value from 0 to 100
+:param lightness: an integer value from 0 to 100
+:param alpha: an integer value from 0 (completely transparent) to 255 (opaque).
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+%End
+
+    static QString interpolateExpression( double zoomMin, double zoomMax, double valueMin, double valueMax, double base, double multiplier = 1 );
+%Docstring
+Generates an interpolation for values between ``valueMin`` and ``valueMax``, scaled between the
+ranges ``zoomMin`` to ``zoomMax``.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+%End
+
+    static Qt::PenCapStyle parseCapStyle( const QString &style );
+%Docstring
+Converts a value to Qt.PenCapStyle enum from JSON value.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+%End
+
+    static Qt::PenJoinStyle parseJoinStyle( const QString &style );
+%Docstring
+Converts a value to Qt.PenJoinStyle enum from JSON value.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+%End
+
+    static QString parseExpression( const QVariantList &expression, QgsMapBoxGlStyleConversionContext &context );
+%Docstring
+Converts a MapBox GL expression to a QGIS expression.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+%End
+
+    static QImage retrieveSprite( const QString &name, QgsMapBoxGlStyleConversionContext &context, QSize &spriteSize );
+%Docstring
+Retrieves the sprite image with the specified ``name``, taken from the specified ``context``.
+
+The ``context`` must have valid sprite definitions and images set via :py:func:`QgsMapBoxGlStyleConversionContext.setSprites()`
+prior to conversion.
+%End
+
+    static QString retrieveSpriteAsBase64( const QVariant &value, QgsMapBoxGlStyleConversionContext &context, QSize &spriteSize, QString &spriteProperty, QString &spriteSizeProperty );
+%Docstring
+Retrieves the sprite image with the specified ``name``, taken from the specified ``context`` as a base64 encoded value
+
+The ``context`` must have valid sprite definitions and images set via :py:func:`QgsMapBoxGlStyleConversionContext.setSprites()`
+prior to conversion.
+%End
+
+  private:
+    QgsMapBoxGlStyleConverter( const QgsMapBoxGlStyleConverter &other );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/vectortile/qgsmapboxglstyleconverter.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

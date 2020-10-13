@@ -60,7 +60,6 @@ QWidget *QgsBinaryWidgetWrapper::createWidget( QWidget *parent )
   QWidget *container = new QWidget( parent );
   QHBoxLayout *layout = new QHBoxLayout();
   container->setLayout( layout );
-  layout->setMargin( 0 );
   layout->setContentsMargins( 0, 0, 0, 0 );
 
   QLabel *label = new QLabel();

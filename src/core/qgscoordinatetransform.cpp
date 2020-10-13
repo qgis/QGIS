@@ -1047,7 +1047,7 @@ void QgsCoordinateTransform::addToCache()
   if ( sDisableCache )
     return;
 
-  sTransforms.insertMulti( qMakePair( sourceKey, destKey ), *this );
+  sTransforms.insert( qMakePair( sourceKey, destKey ), *this );
 }
 
 int QgsCoordinateTransform::sourceDatumTransformId() const

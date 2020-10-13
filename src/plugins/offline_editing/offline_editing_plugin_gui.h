@@ -40,7 +40,7 @@ class QgsOfflineEditingPluginGui : public QDialog, private Ui::QgsOfflineEditing
     Q_OBJECT
 
   public:
-    QgsOfflineEditingPluginGui( QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr );
+    QgsOfflineEditingPluginGui( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
     ~QgsOfflineEditingPluginGui() override;
 
     QString offlineDataPath();

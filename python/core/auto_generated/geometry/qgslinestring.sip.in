@@ -25,9 +25,13 @@ Line string geometry type, with support for z-dimension and m-values.
 #include "qgslinestring.h"
 %End
   public:
-    QgsLineString();
 
-    QgsLineString( const QVector<QgsPoint> &points );
+    QgsLineString() /HoldGIL/;
+%Docstring
+Constructor for an empty linestring geometry.
+%End
+
+    QgsLineString( const QVector<QgsPoint> &points ) /HoldGIL/;
 %Docstring
 Construct a linestring from a vector of points.
 Z and M type will be set based on the type of the first point
@@ -38,7 +42,7 @@ in the vector.
 
     QgsLineString( const QVector<double> &x, const QVector<double> &y,
                    const QVector<double> &z = QVector<double>(),
-                   const QVector<double> &m = QVector<double>(), bool is25DType = false );
+                   const QVector<double> &m = QVector<double>(), bool is25DType = false ) /HoldGIL/;
 %Docstring
 Construct a linestring from arrays of coordinates. If the z or m
 arrays are non-empty then the resultant linestring will have
@@ -55,14 +59,14 @@ LineString will be LineStringZ (or LineStringZM) type.
 .. versionadded:: 3.0
 %End
 
-    QgsLineString( const QgsPoint &p1, const QgsPoint &p2 );
+    QgsLineString( const QgsPoint &p1, const QgsPoint &p2 ) /HoldGIL/;
 %Docstring
 Constructs a linestring with a single segment from ``p1`` to ``p2``.
 
 .. versionadded:: 3.2
 %End
 
-    QgsLineString( const QVector<QgsPointXY> &points );
+    QgsLineString( const QVector<QgsPointXY> &points ) /HoldGIL/;
 %Docstring
 Construct a linestring from list of points.
 This constructor is more efficient then calling :py:func:`~QgsLineString.setPoints`
@@ -71,7 +75,7 @@ or repeatedly calling :py:func:`~QgsLineString.addVertex`
 .. versionadded:: 3.0
 %End
 
-    explicit QgsLineString( const QgsLineSegment2D &segment );
+    explicit QgsLineString( const QgsLineSegment2D &segment ) /HoldGIL/;
 %Docstring
 Construct a linestring from a single 2d line segment.
 
@@ -388,7 +392,7 @@ Closes the line string by appending the first point to the end of the line, if i
 %Docstring
 Returns the geometry converted to the more generic curve type :py:class:`QgsCompoundCurve`
 
-:return: the converted geometry. Caller takes ownership*
+:return: the converted geometry. Caller takes ownership
 %End
 
     void extend( double startDistance, double endDistance );
@@ -402,15 +406,15 @@ segment in the line.
 
 
 
-    virtual QString geometryType() const;
+    virtual QString geometryType() const /HoldGIL/;
 
-    virtual int dimension() const;
+    virtual int dimension() const /HoldGIL/;
 
     virtual QgsLineString *clone() const /Factory/;
 
     virtual void clear();
 
-    virtual bool isEmpty() const;
+    virtual bool isEmpty() const /HoldGIL/;
 
     virtual QgsLineString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;
 
@@ -424,7 +428,7 @@ segment in the line.
     virtual bool fromWkt( const QString &wkt );
 
 
-    virtual QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = 0 ) const;
+    virtual QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
 
     virtual QString asWkt( int precision = 17 ) const;
 
@@ -435,10 +439,10 @@ segment in the line.
     virtual QString asKml( int precision = 17 ) const;
 
 
-    virtual double length() const;
+    virtual double length() const /HoldGIL/;
 
 
-    double length3D() const;
+    double length3D() const /HoldGIL/;
 %Docstring
 Returns the length in 3D world of the line string.
 If it is not a 3D line string, return its 2D length.
@@ -447,9 +451,9 @@ If it is not a 3D line string, return its 2D length.
 
 .. versionadded:: 3.10
 %End
-    virtual QgsPoint startPoint() const;
+    virtual QgsPoint startPoint() const /HoldGIL/;
 
-    virtual QgsPoint endPoint() const;
+    virtual QgsPoint endPoint() const /HoldGIL/;
 
 
     virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const  /Factory/;
@@ -459,12 +463,12 @@ Returns a new line string geometry corresponding to a segmentized approximation
 of the curve.
 
 :param tolerance: segmentation tolerance
-:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve*
+:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve
 %End
 
-    virtual int numPoints() const;
+    virtual int numPoints() const /HoldGIL/;
 
-    virtual int nCoordinates() const;
+    virtual int nCoordinates() const /HoldGIL/;
 
     virtual void points( QgsPointSequence &pt /Out/ ) const;
 

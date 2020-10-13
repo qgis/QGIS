@@ -34,7 +34,7 @@ Encapsulates settings relating to a feature source input to a processing algorit
 
 
     QgsProcessingFeatureSourceDefinition( const QString &source = QString(), bool selectedFeaturesOnly = false, long long featureLimit = -1,
-                                          QgsProcessingFeatureSourceDefinition::Flags flags = 0, QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid );
+                                          QgsProcessingFeatureSourceDefinition::Flags flags = QgsProcessingFeatureSourceDefinition::Flags(), QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid );
 %Docstring
 Constructor for QgsProcessingFeatureSourceDefinition, accepting a static string ``source``.
 
@@ -50,7 +50,7 @@ the default geometry check method (as dictated by :py:class:`QgsProcessingContex
 %End
 
     QgsProcessingFeatureSourceDefinition( const QgsProperty &source, bool selectedFeaturesOnly = false, long long featureLimit = -1,
-                                          QgsProcessingFeatureSourceDefinition::Flags flags = 0, QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid );
+                                          QgsProcessingFeatureSourceDefinition::Flags flags = QgsProcessingFeatureSourceDefinition::Flags(), QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid );
 %Docstring
 Constructor for QgsProcessingFeatureSourceDefinition, accepting a QgsProperty source.
 
@@ -95,9 +95,9 @@ You can use QgsXmlUtils.readVariant to load it from an XML document.
 .. versionadded:: 3.14
 %End
 
-    bool operator==( const QgsProcessingFeatureSourceDefinition &other );
+    bool operator==( const QgsProcessingFeatureSourceDefinition &other ) const;
 
-    bool operator!=( const QgsProcessingFeatureSourceDefinition &other );
+    bool operator!=( const QgsProcessingFeatureSourceDefinition &other ) const;
 
     operator QVariant() const;
 
@@ -235,6 +235,8 @@ their acceptable ranges, defaults, etc.
       sipType = sipType_QgsProcessingParameterExtent;
     else if ( sipCpp->type() == QgsProcessingParameterPoint::typeName() )
       sipType = sipType_QgsProcessingParameterPoint;
+    else if ( sipCpp->type() == QgsProcessingParameterGeometry::typeName() )
+      sipType = sipType_QgsProcessingParameterGeometry;
     else if ( sipCpp->type() == QgsProcessingParameterFile::typeName() )
       sipType = sipType_QgsProcessingParameterFile;
     else if ( sipCpp->type() == QgsProcessingParameterMatrix::typeName() )
@@ -299,6 +301,8 @@ their acceptable ranges, defaults, etc.
       sipType = sipType_QgsProcessingParameterDatabaseTable;
     else if ( sipCpp->type() == QgsProcessingParameterFieldMapping::typeName() )
       sipType = sipType_QgsProcessingParameterFieldMapping;
+    else if ( sipCpp->type() == QgsProcessingParameterTinInputLayers::typeName() )
+      sipType = sipType_QgsProcessingParameterTinInputLayers;
     else
       sipType = nullptr;
 %End
@@ -315,7 +319,7 @@ their acceptable ranges, defaults, etc.
 
 
     QgsProcessingParameterDefinition( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
-                                      bool optional = false );
+                                      bool optional = false, const QString &help = QString() );
 %Docstring
 Constructor for QgsProcessingParameterDefinition.
 %End
@@ -369,6 +373,30 @@ Sets the ``description`` for the parameter. This is the user-visible string
 used to identify this parameter.
 
 .. seealso:: :py:func:`description`
+%End
+
+    QString help() const;
+%Docstring
+Returns the help for the parameter.
+
+This is a descriptive (possibly lengthy), translated string explaining
+the parameter's behavior and use in depth.
+
+.. seealso:: :py:func:`setHelp`
+
+.. versionadded:: 3.16
+%End
+
+    void setHelp( const QString &help );
+%Docstring
+Sets the ``help`` for the parameter.
+
+The ``help`` string should be a descriptive, translated string explaining
+the parameter's behavior and use in depth.
+
+.. seealso:: :py:func:`help`
+
+.. versionadded:: 3.16
 %End
 
     QVariant defaultValue() const;
@@ -620,6 +648,7 @@ The ``variables`` list should contain the variable names only, without the usual
 
 
 
+
 };
 
 QFlags<QgsProcessingParameterDefinition::Flag> operator|(QgsProcessingParameterDefinition::Flag f1, QFlags<QgsProcessingParameterDefinition::Flag> f2);
@@ -837,7 +866,7 @@ Evaluates the parameter with matching ``definition`` and ``value`` to a static b
 
     static QgsFeatureSink *parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters,
                                             const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
-                                            QgsProcessingContext &context, QString &destinationIdentifier /Out/, QgsFeatureSink::SinkFlags sinkFlags = 0 ) /Factory/;
+                                            QgsProcessingContext &context, QString &destinationIdentifier /Out/, QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(), const QVariantMap &createOptions = QVariantMap(), const QStringList &datasourceOptions = QStringList(), const QStringList &layerOptions = QStringList() ) /Factory/;
 %Docstring
 Evaluates the parameter with matching ``definition`` to a feature sink.
 
@@ -849,12 +878,16 @@ providers and stored temporarily in the ``context``. The ``destinationIdentifier
 argument will be set to a string which can be used to retrieve the layer corresponding
 to the sink, e.g. via calling :py:func:`QgsProcessingUtils.mapLayerFromString()`.
 
+The ``createOptions`` argument is used to pass on creation options such as layer name.
+
+The ``datasourceOptions`` and ``layerOptions`` arguments is used to pass on GDAL-specific format driver options.
+
 This function creates a new object and the caller takes responsibility for deleting the returned object.
 %End
 
     static QgsFeatureSink *parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariant &value,
                                             const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
-                                            QgsProcessingContext &context, QString &destinationIdentifier /Out/, QgsFeatureSink::SinkFlags sinkFlags = 0 ) throw( QgsProcessingException ) /Factory/;
+                                            QgsProcessingContext &context, QString &destinationIdentifier /Out/, QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(), const QVariantMap &createOptions = QVariantMap(), const QStringList &datasourceOptions = QStringList(), const QStringList &layerOptions = QStringList() ) throw( QgsProcessingException ) /Factory/;
 %Docstring
 Evaluates the parameter with matching ``definition`` and ``value`` to a feature sink.
 
@@ -865,6 +898,10 @@ Sinks will either be taken from ``context``'s active project, or created from ex
 providers and stored temporarily in the ``context``. The ``destinationIdentifier``
 argument will be set to a string which can be used to retrieve the layer corresponding
 to the sink, e.g. via calling :py:func:`QgsProcessingUtils.mapLayerFromString()`.
+
+The ``createOptions`` argument is used to pass on creation options such as layer name.
+
+The ``datasourceOptions`` and ``layerOptions`` arguments is used to pass on GDAL-specific format driver options.
 
 This function creates a new object and the caller takes responsibility for deleting the returned object.
 
@@ -1160,6 +1197,38 @@ Returns the coordinate reference system associated with an point parameter value
 .. seealso:: :py:func:`parameterAsPoint`
 
 .. versionadded:: 3.8
+%End
+
+    static QgsGeometry parameterAsGeometry( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+%Docstring
+Evaluates the parameter with matching ``definition`` to a geometry.
+
+.. versionadded:: 3.16
+%End
+
+    static QgsGeometry parameterAsGeometry( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a geometry.
+
+.. versionadded:: 3.16
+%End
+
+    static QgsCoordinateReferenceSystem parameterAsGeometryCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+%Docstring
+Returns the coordinate reference system associated with a geometry parameter value.
+
+.. seealso:: :py:func:`parameterAsGeometry`
+
+.. versionadded:: 3.16
+%End
+
+    static QgsCoordinateReferenceSystem parameterAsGeometryCrs( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+%Docstring
+Returns the coordinate reference system associated with an point parameter value.
+
+.. seealso:: :py:func:`parameterAsGeometry`
+
+.. versionadded:: 3.16
 %End
 
     static QString parameterAsFile( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
@@ -1517,6 +1586,68 @@ Creates a new parameter using the definition from a script code.
 
 };
 
+class QgsProcessingParameterGeometry : QgsProcessingParameterDefinition
+{
+%Docstring
+A geometry parameter for processing algorithms.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterGeometry( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), bool optional = false, const QList< int > &geometryTypes = QList< int >() );
+%Docstring
+Constructor for QgsProcessingParameterGeometry.
+
+The ``geometryTypes`` argument allows for specifying a list of geometry types (see QgsWkbTypes.GeometryType) acceptable for this
+parameter. Passing a empty list will allow for any type of geometry.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
+    virtual QString type() const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QString asScriptCode() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+
+    QList<int>  geometryTypes() const;
+%Docstring
+Returns the parameter allowed geometries, as a list of QgsWkbTypes.GeometryType values.
+
+.. seealso:: :py:func:`setGeometryTypes`
+%End
+
+    void setGeometryTypes( const QList<int> &geometryTypes );
+%Docstring
+Sets the allowed  ``geometryTypes``, as a list of QgsWkbTypes.GeometryType values.
+
+.. seealso:: :py:func:`geometryTypes`
+%End
+
+    static QgsProcessingParameterGeometry *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+%Docstring
+Creates a new parameter using the definition from a script code.
+%End
+
+};
+
 class QgsProcessingParameterFile : QgsProcessingParameterDefinition
 {
 %Docstring
@@ -1823,7 +1954,7 @@ shown in the parameter's widget can be specified by setting the parameter's meta
 
 .. code-block:: python
 
-       param = QgsProcessingParameterNumber( 'VAL', 'Threshold', type=QgsProcessingParameter.Double)
+       param = QgsProcessingParameterNumber( 'VAL', 'Threshold', type=QgsProcessingParameterNumber.Double)
        # only show two decimal places in parameter's widgets, not 6:
        param.setMetadata( {'widget_wrapper':
          { 'decimals': 2 }

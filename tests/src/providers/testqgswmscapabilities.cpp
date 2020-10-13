@@ -79,6 +79,23 @@ class TestQgsWmsCapabilities: public QObject
                 QString( "http://www.example.com/fb.png" ) );
     }
 
+    void guessCrs()
+    {
+      QgsWmsCapabilities capabilities;
+
+      QFile file( QStringLiteral( TEST_DATA_DIR ) + "/provider/GetCapabilities2.xml" );
+      QVERIFY( file.open( QIODevice::ReadOnly | QIODevice::Text ) );
+      const QByteArray content = file.readAll();
+      QVERIFY( content.size() > 0 );
+      const QgsWmsParserSettings config;
+
+      QVERIFY( capabilities.parseResponse( content, config ) );
+      QCOMPARE( capabilities.supportedLayers().size(), 5 );
+
+      QCOMPARE( capabilities.supportedLayers().at( 0 ).preferredAvailableCrs(), QStringLiteral( "EPSG:3857" ) );
+
+    }
+
     void wmstSettings()
     {
       QgsWmsSettings settings = QgsWmsSettings();
@@ -230,6 +247,164 @@ class TestQgsWmsCapabilities: public QObject
       cap.parseDimension( doc.documentElement(), dimensionProperty );
 
       QCOMPARE( dimensionProperty.extent, extent );
+    }
+
+    void wmsLayerProperty_data()
+    {
+      QTest::addColumn<QString>( "firstLayer" );
+      QTest::addColumn<QString>( "secondLayer" );
+      QTest::addColumn<bool>( "result" );
+
+      QTest::newRow( "equal properties" ) << R"""(<Layer queryable="0" opaque="0" cascaded="0">
+                                             <Name>Test</Name>
+                                             <Title>Test</Title>
+                                             <Abstract>Test</Abstract>
+                                             <SRS>EPSG:4326</SRS>
+                                             <LatLonBoundingBox minx="-180" miny="-90" maxx="180" maxy="90" />
+                                             <BoundingBox SRS="EPSG:4326"
+                                                         minx="-180" miny="-90" maxx="180" maxy="90" />
+                                             <Dimension name="time" units="ISO8601">
+                                             2020-01-01
+                                             </Dimension>
+                                             </Layer>)"""
+                                          << R"""(<Layer queryable="0" opaque="0" cascaded="0">
+                                             <Name>Test</Name>
+                                             <Title>Test</Title>
+                                             <Abstract>Test</Abstract>
+                                             <SRS>EPSG:4326</SRS>
+                                             <LatLonBoundingBox minx="-180" miny="-90" maxx="180" maxy="90" />
+                                             <BoundingBox SRS="EPSG:4326"
+                                                         minx="-180" miny="-90" maxx="180" maxy="90" />
+                                             <Dimension name="time" units="ISO8601">
+                                             2020-01-01
+                                             </Dimension>
+                                             </Layer>)"""
+                                          << true;
+
+      QTest::newRow( "different names" ) << R"""(<Layer queryable="0" opaque="0" cascaded="0">
+                                            <Name>Test</Name>
+                                            <Title>Test</Title>
+                                            <Abstract>Test</Abstract>
+                                            <SRS>EPSG:4326</SRS>
+                                            <LatLonBoundingBox minx="-180" miny="-90" maxx="180" maxy="90" />
+                                            <BoundingBox SRS="EPSG:4326"
+                                                        minx="-180" miny="-90" maxx="180" maxy="90" />
+                                            <Dimension name="time" units="ISO8601">
+                                            2020-01-01
+                                            </Dimension>
+                                            </Layer>)"""
+                                         << R"""(<Layer queryable="0" opaque="0" cascaded="0">
+                                            <Name>Test2</Name>
+                                            <Title>Test</Title>
+                                            <Abstract>Test</Abstract>
+                                            <SRS>EPSG:4326</SRS>
+                                            <LatLonBoundingBox minx="-180" miny="-90" maxx="180" maxy="90" />
+                                            <BoundingBox SRS="EPSG:4326"
+                                                        minx="-180" miny="-90" maxx="180" maxy="90" />
+                                            <Dimension name="time" units="ISO8601">
+                                            2020-01-01
+                                            </Dimension>
+                                            </Layer>)"""
+                                         << false;
+
+      QTest::newRow( "different titles" ) << R"""(<Layer queryable="0" opaque="0" cascaded="0">
+                                             <Name>Test</Name>
+                                             <Title>Test</Title>
+                                             <SRS>EPSG:4326</SRS>
+                                             <LatLonBoundingBox minx="-180" miny="-90" maxx="180" maxy="90" />
+                                             <BoundingBox SRS="EPSG:4326"
+                                                         minx="-180" miny="-90" maxx="180" maxy="90" />
+                                             <Dimension name="time" units="ISO8601">
+                                             2020-01-01
+                                             </Dimension>
+                                             </Layer>)"""
+                                          << R"""(<Layer queryable="0" opaque="0" cascaded="0">
+                                             <Name>Test</Name>
+                                             <Title>Test2</Title>
+                                             <SRS>EPSG:4326</SRS>
+                                             <LatLonBoundingBox minx="-180" miny="-90" maxx="180" maxy="90" />
+                                             <BoundingBox SRS="EPSG:4326"
+                                                         minx="-180" miny="-90" maxx="180" maxy="90" />
+                                             <Dimension name="time" units="ISO8601">
+                                             2020-01-01
+                                             </Dimension>
+                                             </Layer>)"""
+                                          << false;
+
+      QTest::newRow( "different abstract" ) << R"""(<Layer queryable="0" opaque="0" cascaded="0">
+                                             <Name>Test</Name>
+                                             <Title>Test</Title>
+                                             <Abstract>Test</Abstract>
+                                             <SRS>EPSG:4326</SRS>
+                                             <LatLonBoundingBox minx="-180" miny="-90" maxx="180" maxy="90" />
+                                             <BoundingBox SRS="EPSG:4326"
+                                                         minx="-180" miny="-90" maxx="180" maxy="90" />
+                                             <Dimension name="time" units="ISO8601">
+                                             2020-01-01
+                                             </Dimension>
+                                             </Layer>)"""
+                                            << R"""(<Layer queryable="0" opaque="0" cascaded="0">
+                                             <Name>Test</Name>
+                                             <Title>Test2</Title>
+                                             <Abstract>Test2</Abstract>
+                                             <SRS>EPSG:4326</SRS>
+                                             <LatLonBoundingBox minx="-180" miny="-90" maxx="180" maxy="90" />
+                                             <BoundingBox SRS="EPSG:4326"
+                                                         minx="-180" miny="-90" maxx="180" maxy="90" />
+                                             <Dimension name="time" units="ISO8601">
+                                             2020-01-01
+                                             </Dimension>
+                                             </Layer>)"""
+                                            << false;
+
+      QTest::newRow( "different dimension extent" ) << R"""(<Layer queryable="0" opaque="0" cascaded="0">
+                                                       <Name>Test</Name>
+                                                       <Title>Test</Title>
+                                                       <Abstract>Test</Abstract>
+                                                       <SRS>EPSG:4326</SRS>
+                                                       <LatLonBoundingBox minx="-180" miny="-90" maxx="180" maxy="90" />
+                                                       <BoundingBox SRS="EPSG:4326"
+                                                                   minx="-180" miny="-90" maxx="180" maxy="90" />
+                                                       <Dimension name="time" units="ISO8601">
+                                                       2020-01-01
+                                                       </Dimension>
+                                                       </Layer>)"""
+          << R"""(<Layer queryable="0" opaque="0" cascaded="0">
+                                                       <Name>Test</Name>
+                                                       <Title>Test</Title>
+                                                       <Abstract>Test</Abstract>
+                                                       <SRS>EPSG:4326</SRS>
+                                                       <LatLonBoundingBox minx="-180" miny="-90" maxx="180" maxy="90" />
+                                                       <BoundingBox SRS="EPSG:4326"
+                                                                   minx="-180" miny="-90" maxx="180" maxy="90" />
+                                                       <Dimension name="time" units="ISO8601">
+                                                       2020-01-01/2020-12-31/P1M
+                                                       </Dimension>
+                                                       </Layer>)"""
+          << false;
+    }
+
+    void wmsLayerProperty()
+    {
+      QFETCH( QString, firstLayer );
+      QFETCH( QString, secondLayer );
+      QFETCH( bool, result );
+
+      QDomDocument doc;
+      doc.setContent( firstLayer );
+
+      QDomDocument doc2;
+      doc2.setContent( secondLayer );
+
+      QgsWmsCapabilities cap;
+      QgsWmsLayerProperty firstLayerProp;
+      QgsWmsLayerProperty secondLayerProp;
+
+      cap.parseLayer( doc.documentElement(), firstLayerProp );
+      cap.parseLayer( doc2.documentElement(), secondLayerProp );
+
+      QCOMPARE( firstLayerProp.equal( secondLayerProp ), result );
+
     }
 
 };

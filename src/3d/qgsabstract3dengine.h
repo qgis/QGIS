@@ -35,6 +35,7 @@ namespace Qt3DRender
 {
   class QRenderSettings;
   class QCamera;
+  class QFrameGraphNode;
 }
 
 /**
@@ -57,6 +58,11 @@ class _3D_EXPORT QgsAbstract3DEngine : public QObject
 {
     Q_OBJECT
   public:
+
+    /**
+     * Constructor for QgsAbstract3DEngine with the specified \a parent object.
+     */
+    QgsAbstract3DEngine( QObject *parent = nullptr );
 
     //! Sets background color of the scene
     virtual void setClearColor( const QColor &color ) = 0;

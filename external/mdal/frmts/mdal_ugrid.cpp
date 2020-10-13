@@ -365,7 +365,7 @@ void MDAL::DriverUgrid::populateFaces( MDAL::Faces &faces )
 
 void MDAL::DriverUgrid::addBedElevation( MDAL::MemoryMesh *mesh )
 {
-  if ( mNcFile->hasArr( nodeZVariableName() ) ) MDAL::addBedElevationDatasetGroup( mesh, mesh->vertices );
+  if ( mNcFile->hasArr( nodeZVariableName() ) ) MDAL::addBedElevationDatasetGroup( mesh, mesh->vertices() );
 }
 
 std::string MDAL::DriverUgrid::getCoordinateSystemVariableName()
@@ -493,12 +493,13 @@ void MDAL::DriverUgrid::parseNetCDFVariableMetadata( int varid,
     std::string &name,
     bool *isVector,
     bool *isPolar,
+    bool *invertedDirection,
     bool *isX )
 {
-
   *isVector = false;
   *isX = true;
   *isPolar = false;
+  *invertedDirection = false;
 
   std::string longName = mNcFile->getAttrStr( "long_name", varid );
   if ( longName.empty() )
@@ -522,6 +523,23 @@ void MDAL::DriverUgrid::parseNetCDFVariableMetadata( int varid,
         *isX = false;
         name = MDAL::replace( standardName, "_y_", "" );
       }
+      else if ( MDAL::contains( standardName, "_from_direction" ) )
+      {
+        *isVector = true;
+        *isPolar = true;
+        *isX = false;
+        *invertedDirection = true;
+        name = MDAL::replace( standardName, "_speed", "_velocity" );
+        name = MDAL::replace( name, "_from_direction", "" );
+      }
+      else if ( MDAL::contains( standardName, "_to_direction" ) )
+      {
+        *isVector = true;
+        *isPolar = true;
+        *isX = false;
+        name = MDAL::replace( standardName, "_speed", "_velocity" );
+        name = MDAL::replace( name, "_to_direction", "" );
+      }
       else
       {
         name = standardName;
@@ -544,19 +562,28 @@ void MDAL::DriverUgrid::parseNetCDFVariableMetadata( int varid,
       name = MDAL::replace( longName, ", y-component", "" );
       name = MDAL::replace( name, "v component of ", "" );
     }
-    else if ( MDAL::contains( longName, "velocity magnitude" ) )
+    else if ( MDAL::contains( longName, " magnitude" ) )
     {
       *isVector = true;
       *isPolar = true;
       *isX = true;
-      name = MDAL::replace( longName, " magnitude", "" );
+      name = MDAL::replace( longName, "speed", "velocity" );
+      name = MDAL::removeFrom( name, " magnitude" );
     }
-    else if ( MDAL::contains( longName, "velocity direction" ) )
+    else if ( MDAL::contains( longName, "direction" ) )
     {
       *isVector = true;
       *isPolar = true;
       *isX = false;
-      name = MDAL::replace( longName, " direction", "" );
+
+      // check from_/to_direction in standard_name
+      std::string standardName = mNcFile->getAttrStr( "standard_name", varid );
+      *invertedDirection = MDAL::contains( longName, "from direction" );
+
+      name = MDAL::replace( longName, "speed", "velocity" );
+      name = MDAL::removeFrom( name, " from direction" );
+      name = MDAL::removeFrom( name, " to direction" );
+      name = MDAL::removeFrom( name, " direction" );
     }
     else
     {

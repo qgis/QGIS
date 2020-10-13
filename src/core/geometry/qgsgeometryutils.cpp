@@ -915,7 +915,7 @@ bool QgsGeometryUtils::pointContinuesArc( const QgsPoint &a1, const QgsPoint &a2
     double angle2 = arcAngle( a2, a3, b );
 
     // Is the sweep angle similar to the previous one?
-    // We only consider a segment replacable by an arc if the points within
+    // We only consider a segment replaceable by an arc if the points within
     // it are regularly spaced
     diff = std::fabs( angle1 - angle2 );
     if ( diff > pointSpacingAngleTolerance )
@@ -1100,15 +1100,22 @@ QgsPointSequence QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateLi
 {
   int dim = 2 + is3D + isMeasure;
   QgsPointSequence points;
+
   const QStringList coordList = wktCoordinateList.split( ',', QString::SkipEmptyParts );
 
   //first scan through for extra unexpected dimensions
   bool foundZ = false;
   bool foundM = false;
   QRegularExpression rx( QStringLiteral( "\\s" ) );
+  QRegularExpression rxIsNumber( QStringLiteral( "^[+-]?(\\d\\.?\\d*[Ee][+\\-]?\\d+|(\\d+\\.\\d*|\\d*\\.\\d+)|\\d+)$" ) );
   for ( const QString &pointCoordinates : coordList )
   {
     QStringList coordinates = pointCoordinates.split( rx, QString::SkipEmptyParts );
+
+    // exit with an empty set if one list contains invalid value.
+    if ( coordinates.filter( rxIsNumber ).size() != coordinates.size() )
+      return points;
+
     if ( coordinates.size() == 3 && !foundZ && !foundM && !is3D && !isMeasure )
     {
       // 3 dimensional coordinates, but not specifically marked as such. We allow this
@@ -1313,6 +1320,14 @@ QPair<QgsWkbTypes::Type, QString> QgsGeometryUtils::wktReadBlock( const QString 
   }
   else
   {
+    const int openedParenthesisCount = wktParsed.count( '(' );
+    const int closedParenthesisCount = wktParsed.count( ')' );
+    // closes missing parentheses
+    for ( int i = 0 ;  i < openedParenthesisCount - closedParenthesisCount; ++i )
+      wktParsed.push_back( ')' );
+    // removes extra parentheses
+    wktParsed.truncate( wktParsed.size() - ( closedParenthesisCount - openedParenthesisCount ) );
+
     QRegularExpression cooRegEx( QStringLiteral( "^[^\\(]*\\((.*)\\)[^\\)]*$" ) );
     cooRegEx.setPatternOptions( QRegularExpression::DotMatchesEverythingOption );
     QRegularExpressionMatch match = cooRegEx.match( wktParsed );

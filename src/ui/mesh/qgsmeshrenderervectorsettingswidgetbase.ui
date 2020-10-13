@@ -252,7 +252,7 @@
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QSpinBox" name="mYSpacingSpinBox">
+         <widget class="QgsSpinBox" name="mYSpacingSpinBox">
           <property name="suffix">
            <string> px</string>
           </property>
@@ -519,7 +519,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QDoubleSpinBox" name="mStreamlinesDensitySpinBox">
+            <widget class="QgsDoubleSpinBox" name="mStreamlinesDensitySpinBox">
              <property name="suffix">
               <string>%</string>
              </property>
@@ -561,7 +561,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="mTracesParticlesCountSpinBox">
+         <widget class="QgsSpinBox" name="mTracesParticlesCountSpinBox">
           <property name="maximum">
            <number>1000000</number>
           </property>
@@ -588,7 +588,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="mTracesMaxLengthSpinBox">
+         <widget class="QgsDoubleSpinBox" name="mTracesMaxLengthSpinBox">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -653,7 +653,7 @@
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
-   <extends>QWidget</extends>
+   <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>

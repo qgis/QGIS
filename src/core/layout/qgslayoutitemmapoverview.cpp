@@ -105,12 +105,12 @@ void QgsLayoutItemMapOverview::draw( QPainter *painter )
   QgsExpressionContext expressionContext = createExpressionContext();
   context.setExpressionContext( expressionContext );
 
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
+  context.setPainterFlagsUsingContext( painter );
+
   painter->setCompositionMode( mBlendMode );
   painter->translate( mMap->mXOffset, mMap->mYOffset );
   painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
-  if ( context.flags() & QgsRenderContext::Antialiasing )
-    painter->setRenderHint( QPainter::Antialiasing );
 
   mFrameSymbol->startRender( context );
 
@@ -151,7 +151,6 @@ void QgsLayoutItemMapOverview::draw( QPainter *painter )
   }
 
   mFrameSymbol->stopRender( context );
-  painter->restore();
 }
 
 bool QgsLayoutItemMapOverview::writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const

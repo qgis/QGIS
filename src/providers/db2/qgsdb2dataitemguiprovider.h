@@ -37,6 +37,8 @@ class QgsDb2DataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
     static void editConnection( QgsDataItem *item );
     static void deleteConnection( QgsDataItem *item );
     static void refreshConnection( QgsDataItem *item );
+    static void saveConnections();
+    static void loadConnections( QgsDataItem *item );
 };
 
 #endif // QGSDB2DATAITEMGUIPROVIDER_H

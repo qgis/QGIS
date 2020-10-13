@@ -65,10 +65,9 @@ void QgsBlurEffect::drawBlurredImage( QgsRenderContext &context, QImage &image )
   QgsImageOperation::multiplyOpacity( image, mOpacity );
 
   QPainter *painter = context.painter();
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   painter->setCompositionMode( mBlendMode );
   painter->drawImage( imageOffset( context ), image );
-  painter->restore();
 }
 
 QgsStringMap QgsBlurEffect::properties() const

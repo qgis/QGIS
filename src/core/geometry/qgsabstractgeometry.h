@@ -16,6 +16,7 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSABSTRACTGEOMETRYV2
 #define QGSABSTRACTGEOMETRYV2
 
+#include <array>
 #include <functional>
 #include <QString>
 
@@ -42,6 +43,7 @@ class QDomElement;
 class QgsGeometryPartIterator;
 class QgsGeometryConstPartIterator;
 class QgsConstWkbPtr;
+class QPainterPath;
 
 typedef QVector< QgsPoint > QgsPointSequence;
 #ifndef SIP_RUN
@@ -114,12 +116,14 @@ class CORE_EXPORT QgsAbstractGeometry
 
       /**
        * Maximum angle between generating radii (lines from arc center
-       * to output vertices) */
+       * to output vertices)
+      */
       MaximumAngle = 0,
 
       /**
        * Maximum distance between an arbitrary point on the original
-       * curve and closest point on its approximation. */
+       * curve and closest point on its approximation.
+      */
       MaximumDifference
     };
     Q_ENUM( SegmentationToleranceType )
@@ -186,7 +190,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \see geometryType
      * \see wktTypeStr
      */
-    inline QgsWkbTypes::Type wkbType() const { return mWkbType; }
+    inline QgsWkbTypes::Type wkbType() const SIP_HOLDGIL { return mWkbType; }
 
     /**
      * Returns the WKT type string of the geometry.
@@ -199,7 +203,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * Returns TRUE if the geometry is 3D and contains a z-value.
      * \see isMeasure
      */
-    bool is3D() const
+    bool is3D() const SIP_HOLDGIL
     {
       return QgsWkbTypes::hasZ( mWkbType );
     }
@@ -208,7 +212,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * Returns TRUE if the geometry contains m values.
      * \see is3D
      */
-    bool isMeasure() const
+    bool isMeasure() const SIP_HOLDGIL
     {
       return QgsWkbTypes::hasM( mWkbType );
     }
@@ -259,7 +263,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \see asJson()
      * \since QGIS 3.0
      */
-    virtual QByteArray asWkb( WkbFlags flags = nullptr ) const = 0;
+    virtual QByteArray asWkb( WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const = 0;
 
     /**
      * Returns a WKT representation of the geometry.
@@ -355,6 +359,16 @@ class CORE_EXPORT QgsAbstractGeometry
      * \param p destination QPainter
      */
     virtual void draw( QPainter &p ) const = 0;
+
+    /**
+     * Returns the geometry represented as a QPainterPath.
+     *
+     * \warning not all geometry subclasses can be represented by a QPainterPath, e.g.
+     * points and multipoint geometries will return an empty path.
+     *
+     * \since QGIS 3.16
+     */
+    virtual QPainterPath asQPainterPath() const = 0;
 
     /**
      * Returns the vertex number corresponding to a vertex \a id.
@@ -535,10 +549,10 @@ class CORE_EXPORT QgsAbstractGeometry
      * It may generate an invalid geometry (in some corner cases).
      * It can also be thought as rounding the edges and it may be useful for removing errors.
      *
-     * ### Example
+     * Example:
      *
-     * \code{.cpp}
-     * geometry->snappedToGrid(1, 1);
+     * \code{.py}
+     *   geometry.snappedToGrid(1, 1)
      * \endcode
      *
      * In this case we use a 2D grid of 1x1 to gridify.
@@ -842,10 +856,12 @@ class CORE_EXPORT QgsAbstractGeometry
         {
           const QgsAbstractGeometry *g = nullptr;  //!< Current geometry
           int index = 0;               //!< Ptr in the current geometry
+
+          bool operator==( const Level &other ) const;
         };
 
-        Level levels[3];  //!< Stack of levels - three levels should be sufficient (e.g. part index, ring index, vertex index)
-        int depth = -1;        //!< At what depth level are we right now
+        std::array<Level, 3> levels;  //!< Stack of levels - three levels should be sufficient (e.g. part index, ring index, vertex index)
+        int depth = -1;               //!< At what depth level are we right now
 
         void digDown();   //!< Prepare the stack of levels so that it points to a leaf child geometry
 
@@ -906,7 +922,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * Returns Java-style iterator for traversal of parts of the geometry. This iterator
      * can safely be used to modify parts of the geometry.
      *
-     * ### Example
+     * Example
      *
      * \code{.py}
      *   # print the WKT representation of each part in a multi-point geometry
@@ -944,7 +960,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \warning The iterator returns a copy of individual vertices, and accordingly geometries cannot be
      * modified using the iterator. See transformVertices() for a safe method to modify vertices "in-place".
      *
-     * ### Example
+     * Example
      *
      * \code{.py}
      *   # print the x and y coordinate for each vertex in a LineString
@@ -1032,55 +1048,87 @@ class CORE_EXPORT QgsAbstractGeometry
  */
 struct CORE_EXPORT QgsVertexId
 {
+
+  /**
+   * Type of vertex
+   */
   enum VertexType
   {
-    SegmentVertex = 1, //start / endpoint of a segment
-    CurveVertex
+    SegmentVertex = 1, //!< The actual start or end point of a segment
+    CurveVertex, //!< An intermediate point on a segment defining the curvature of the segment
   };
 
-  explicit QgsVertexId( int _part = -1, int _ring = -1, int _vertex = -1, VertexType _type = SegmentVertex )
-    : part( _part )
-    , ring( _ring )
-    , vertex( _vertex )
-    , type( _type )
+  /**
+   * Constructor for QgsVertexId.
+   */
+  explicit QgsVertexId( int _part = -1, int _ring = -1, int _vertex = -1, VertexType _type = SegmentVertex ) SIP_HOLDGIL
+: part( _part )
+  , ring( _ring )
+  , vertex( _vertex )
+  , type( _type )
   {}
 
   /**
    * Returns TRUE if the vertex id is valid
    */
-  bool isValid() const { return part >= 0 && ring >= 0 && vertex >= 0; }
+  bool isValid() const  SIP_HOLDGIL { return part >= 0 && ring >= 0 && vertex >= 0; }
 
-  bool operator==( QgsVertexId other ) const
+  bool operator==( QgsVertexId other ) const SIP_HOLDGIL
   {
     return part == other.part && ring == other.ring && vertex == other.vertex;
   }
-  bool operator!=( QgsVertexId other ) const
+  bool operator!=( QgsVertexId other ) const SIP_HOLDGIL
   {
     return part != other.part || ring != other.ring || vertex != other.vertex;
   }
-  bool partEqual( QgsVertexId o ) const
+
+  /**
+   * Returns TRUE if this vertex ID belongs to the same part as another vertex ID.
+   */
+  bool partEqual( QgsVertexId o ) const SIP_HOLDGIL
   {
     return part >= 0 && o.part == part;
   }
-  bool ringEqual( QgsVertexId o ) const
+
+  /**
+   * Returns TRUE if this vertex ID belongs to the same ring as another vertex ID (i.e. the part
+   * and ring number are equal).
+   */
+  bool ringEqual( QgsVertexId o ) const SIP_HOLDGIL
   {
     return partEqual( o ) && ( ring >= 0 && o.ring == ring );
   }
-  bool vertexEqual( QgsVertexId o ) const
+
+  /**
+   * Returns TRUE if this vertex ID corresponds to the same vertex as another vertex ID (i.e. the part,
+   * ring number and vertex number are equal).
+   */
+  bool vertexEqual( QgsVertexId o ) const SIP_HOLDGIL
   {
     return ringEqual( o ) && ( vertex >= 0 && o.ring == ring );
   }
-  bool isValid( const QgsAbstractGeometry *geom ) const
+
+  /**
+   * Returns TRUE if this vertex ID is valid for the specified \a geom.
+   */
+  bool isValid( const QgsAbstractGeometry *geom ) const SIP_HOLDGIL
   {
     return ( part >= 0 && part < geom->partCount() ) &&
            ( ring < geom->ringCount( part ) ) &&
            ( vertex < 0 || vertex < geom->vertexCount( part, ring ) );
   }
 
-  int part;
-  int ring;
-  int vertex;
-  VertexType type;
+  //! Part number
+  int part = -1;
+
+  //! Ring number
+  int ring = -1;
+
+  //! Vertex number
+  int vertex = -1;
+
+  //! Vertex type
+  VertexType type = SegmentVertex;
 
 #ifdef SIP_RUN
   SIP_PYOBJECT __repr__();
@@ -1173,7 +1221,7 @@ class CORE_EXPORT QgsGeometryPartIterator
     }
 
     //! Find out whether there are more parts
-    bool hasNext() const
+    bool hasNext() const SIP_HOLDGIL
     {
       return g && g->parts_end() != i;
     }
@@ -1223,7 +1271,7 @@ class CORE_EXPORT QgsGeometryConstPartIterator
     }
 
     //! Find out whether there are more parts
-    bool hasNext() const
+    bool hasNext() const SIP_HOLDGIL
     {
       return g && g->const_parts_end() != i;
     }

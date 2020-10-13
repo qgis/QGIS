@@ -107,7 +107,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
      * \see userPatchSize()
      * \since QGIS 3.14
      */
-    virtual void setUserPatchSize( QSizeF size ) { mUserSize = size; }
+    virtual void setUserPatchSize( QSizeF size );
 
     /**
      * Sets whether a forced column break should occur before the node.
@@ -129,7 +129,8 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 
     /**
      * Notification from model that information from associated map view has changed.
-     *  Default implementation does nothing. */
+     *  Default implementation does nothing.
+    */
     virtual void invalidateMapBasedData() {}
 
     struct ItemContext
@@ -253,6 +254,13 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
   signals:
     //! Emitted on internal data change so the layer tree model can forward the signal to views
     void dataChanged();
+
+    /**
+     * Emitted when the size of this node changes.
+     *
+     * \since QGIS 3.16
+     */
+    void sizeChanged();
 
   protected:
     //! Construct the node with pointer to its parent layer node

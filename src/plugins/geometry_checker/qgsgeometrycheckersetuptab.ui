@@ -353,7 +353,7 @@
               <number>2</number>
              </property>
              <item row="1" column="2">
-              <widget class="QDoubleSpinBox" name="doubleSpinBoxAngle">
+              <widget class="QgsDoubleSpinBox" name="doubleSpinBoxAngle">
                <property name="decimals">
                 <number>6</number>
                </property>
@@ -377,7 +377,7 @@
               </widget>
              </item>
              <item row="2" column="2">
-              <widget class="QDoubleSpinBox" name="doubleSpinBoxArea">
+              <widget class="QgsDoubleSpinBox" name="doubleSpinBoxArea">
                <property name="decimals">
                 <number>6</number>
                </property>
@@ -387,7 +387,7 @@
               </widget>
              </item>
              <item row="0" column="2">
-              <widget class="QDoubleSpinBox" name="doubleSpinBoxSegmentLength">
+              <widget class="QgsDoubleSpinBox" name="doubleSpinBoxSegmentLength">
                <property name="decimals">
                 <number>6</number>
                </property>
@@ -432,7 +432,7 @@
                  <number>0</number>
                 </property>
                 <item row="1" column="2">
-                 <widget class="QDoubleSpinBox" name="doubleSpinBoxSliverArea">
+                 <widget class="QgsDoubleSpinBox" name="doubleSpinBoxSliverArea">
                   <property name="enabled">
                    <bool>false</bool>
                   </property>
@@ -471,7 +471,7 @@
                  </widget>
                 </item>
                 <item row="0" column="2">
-                 <widget class="QDoubleSpinBox" name="doubleSpinBoxSliverThinness">
+                 <widget class="QgsDoubleSpinBox" name="doubleSpinBoxSliverThinness">
                   <property name="decimals">
                    <number>0</number>
                   </property>
@@ -531,7 +531,7 @@
               </widget>
              </item>
              <item row="3" column="1">
-              <widget class="QDoubleSpinBox" name="doubleSpinBoxGapArea">
+              <widget class="QgsDoubleSpinBox" name="doubleSpinBoxGapArea">
                <property name="decimals">
                 <number>6</number>
                </property>
@@ -568,7 +568,7 @@
               </widget>
              </item>
              <item row="2" column="1">
-              <widget class="QDoubleSpinBox" name="doubleSpinBoxOverlapArea">
+              <widget class="QgsDoubleSpinBox" name="doubleSpinBoxOverlapArea">
                <property name="decimals">
                 <number>6</number>
                </property>
@@ -664,7 +664,7 @@
              <number>2</number>
             </property>
             <item row="0" column="1">
-             <widget class="QSpinBox" name="spinBoxTolerance">
+             <widget class="QgsSpinBox" name="spinBoxTolerance">
               <property name="prefix">
                <string notr="true">1E-</string>
               </property>
@@ -892,6 +892,16 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
   <customwidget>
    <class>QgsVScrollArea</class>
    <extends>QScrollArea</extends>

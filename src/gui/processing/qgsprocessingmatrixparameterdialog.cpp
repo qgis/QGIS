@@ -148,7 +148,6 @@ QgsProcessingMatrixParameterPanel::QgsProcessingMatrixParameterPanel( QWidget *p
   , mParam( param )
 {
   QHBoxLayout *hl = new QHBoxLayout();
-  hl->setMargin( 0 );
   hl->setContentsMargins( 0, 0, 0, 0 );
 
   mLineEdit = new QLineEdit();

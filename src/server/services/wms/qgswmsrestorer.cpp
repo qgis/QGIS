@@ -33,20 +33,6 @@ QgsLayerRestorer::QgsLayerRestorer( const QList<QgsMapLayer *> &layers )
 
     settings.mNamedStyle = layer->styleManager()->currentStyle();
 
-    // set a custom property allowing to keep in memory if a SLD file has
-    // been loaded for rendering
-    layer->setCustomProperty( "readSLD", false );
-
-    QString errMsg;
-    QDomDocument styleDoc( QStringLiteral( "style" ) );
-    QDomElement styleXml = styleDoc.createElement( QStringLiteral( "style" ) );
-    styleDoc.appendChild( styleXml );
-    if ( !layer->writeStyle( styleXml, styleDoc, errMsg, QgsReadWriteContext() ) )
-    {
-      QgsMessageLog::logMessage( QStringLiteral( "QGIS Style has not been added to layer restorer for layer %1: %2" ).arg( layer->name(), errMsg ) );
-    }
-    ( void )settings.mQgisStyle.setContent( styleDoc.toString() );
-
     switch ( layer->type() )
     {
       case QgsMapLayerType::VectorLayer:
@@ -75,6 +61,7 @@ QgsLayerRestorer::QgsLayerRestorer( const QList<QgsMapLayer *> &layers )
       case QgsMapLayerType::MeshLayer:
       case QgsMapLayerType::VectorTileLayer:
       case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::AnnotationLayer:
         break;
     }
 
@@ -91,17 +78,12 @@ QgsLayerRestorer::~QgsLayerRestorer()
     layer->setName( mLayerSettings[layer].name );
 
     // if a SLD file has been loaded for rendering, we restore the previous style
-    if ( layer->customProperty( "readSLD", false ).toBool() )
+    const QString sldStyleName { layer->customProperty( "sldStyleName", "" ).toString() };
+    if ( !sldStyleName.isEmpty() )
     {
-      QString errMsg;
-      QDomElement root = settings.mQgisStyle.documentElement();
-      QgsReadWriteContext context = QgsReadWriteContext();
-      if ( !layer->readStyle( root, errMsg, context ) )
-      {
-        QgsMessageLog::logMessage( QStringLiteral( "QGIS Style has not been read from layer restorer for layer %1: %2" ).arg( layer->name(), errMsg ) );
-      }
+      layer->styleManager()->removeStyle( sldStyleName );
+      layer->removeCustomProperty( "sldStyleName" );
     }
-    layer->removeCustomProperty( "readSLD" );
 
     switch ( layer->type() )
     {
@@ -131,6 +113,7 @@ QgsLayerRestorer::~QgsLayerRestorer()
       case QgsMapLayerType::MeshLayer:
       case QgsMapLayerType::VectorTileLayer:
       case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::AnnotationLayer:
         break;
     }
   }

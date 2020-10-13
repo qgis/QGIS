@@ -257,11 +257,11 @@ const QString QgsServerOgcApiHandler::templatePath( const QgsServerApiContext &c
 {
   // resources/server/api + /ogc/templates/ + operationId + .html
   QString path { context.serverInterface()->serverSettings()->apiResourcesDirectory() };
-  path += QStringLiteral( "/ogc/templates" );
+  path += QLatin1String( "/ogc/templates" );
   path += context.apiRootPath();
   path += '/';
   path += QString::fromStdString( operationId() );
-  path += QStringLiteral( ".html" );
+  path += QLatin1String( ".html" );
   return path;
 }
 
@@ -287,7 +287,7 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
   {
     // Get the template directory and the file name
     QFileInfo pathInfo { path };
-    Environment env { ( pathInfo.dir().path() + QDir::separator() ).toStdString() };
+    Environment env { QString( pathInfo.dir().path() + QDir::separator() ).toStdString() };
 
     // For template debugging:
     env.add_callback( "json_dump", 0, [ = ]( Arguments & )
@@ -405,7 +405,13 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
     env.add_callback( "static", 1, [ = ]( Arguments & args )
     {
       auto asset( args.at( 0 )->get<std::string>( ) );
-      return context.matchedPath().toStdString() + "/static/" + asset;
+      QString matchedPath { context.matchedPath() };
+      // If its the root path '/' strip it!
+      if ( matchedPath == '/' )
+      {
+        matchedPath.clear();
+      }
+      return matchedPath.toStdString() + "/static/" + asset;
     } );
 
     context.response()->write( env.render_file( pathInfo.fileName().toStdString(), data ) );

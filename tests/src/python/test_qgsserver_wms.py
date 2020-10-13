@@ -57,7 +57,7 @@ class TestQgsServerWMSTestBase(QgsServerTestBase):
         header, body = self._execute_request(query_string)
         return (header, body, query_string)
 
-    def wms_request_compare(self, request, extra=None, reference_file=None, project='test_project.qgs', version='1.3.0', ignoreExtent=False, normalizeJson=False):
+    def wms_request_compare(self, request, extra=None, reference_file=None, project='test_project.qgs', version='1.3.0', ignoreExtent=False, normalizeJson=False, raw=False):
         response_header, response_body, query_string = self.wms_request(request, extra, project, version)
         response = response_header + response_body
         reference_path = os.path.join(self.testdata_path, (request.lower() if not reference_file else reference_file) + '.txt')
@@ -85,7 +85,7 @@ class TestQgsServerWMSTestBase(QgsServerTestBase):
             expected = re.sub(RE_STRIP_EXTENTS, b'*****', expected)
 
         msg = "request %s failed.\nQuery: %s\nExpected file: %s\nResponse:\n%s" % (query_string, request, reference_path, response.decode('utf-8'))
-        self.assertXMLEqual(response, expected, msg=msg)
+        self.assertXMLEqual(response, expected, msg=msg, raw=raw)
 
 
 class TestQgsServerWMS(TestQgsServerWMSTestBase):

@@ -133,12 +133,28 @@ Will call clearPreviousResults on all filters
 .. versionadded:: 3.2
 %End
 
+    QStringList completionList() const;
+%Docstring
+Returns the list for auto completion
+This list is updated when preparing the search
+
+.. versionadded:: 3.16
+%End
+
   signals:
 
     void foundResult( const QgsLocatorResult &result );
 %Docstring
 Emitted whenever a filter encounters a matching ``result`` after the :py:func:`~QgsLocator.fetchResults` method
 is called.
+%End
+
+    void searchPrepared();
+%Docstring
+Emitted when locator has prepared the search (:py:func:`QgsLocatorFilter.prepare`)
+before the search is actually performed
+
+.. versionadded:: 3.16
 %End
 
     void finished();

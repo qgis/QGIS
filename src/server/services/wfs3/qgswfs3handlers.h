@@ -90,28 +90,6 @@ class QgsWfs3APIHandler: public QgsWfs3AbstractItemsHandler
 
 
 /**
- * The StaticHandler class Wfs3 serves static files from the static path (resources/server/api/wfs3/static)
- * \see staticPath()
- */
-class QgsWfs3StaticHandler: public QgsServerOgcApiHandler
-{
-  public:
-
-    QgsWfs3StaticHandler( );
-
-    void handleRequest( const QgsServerApiContext &context ) const override;
-
-    // QgsServerOgcApiHandler interface
-    QRegularExpression path() const override { return QRegularExpression( R"re(/static/(?<staticFilePath>.*)$)re" ); }
-    std::string operationId() const override { return "static"; }
-    std::string summary() const override { return "Serves static files"; }
-    std::string description() const override { return "Serves static files"; }
-    std::string linkTitle() const override { return "Serves static files"; }
-    QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::data; }
-
-};
-
-/**
  * The QgsWfs3LandingPageHandler is the landing page handler.
  */
 class QgsWfs3LandingPageHandler: public QgsServerOgcApiHandler

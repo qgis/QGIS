@@ -45,7 +45,7 @@ QString QgsGdalItemGuiProvider::name()
   return QStringLiteral( "gdal_items" );
 }
 
-void QgsGdalItemGuiProvider::onDeleteLayer()
+void QgsGdalItemGuiProvider::onDeleteLayer( QgsDataItemGuiContext context )
 {
   QAction *s = qobject_cast<QAction *>( sender() );
   QVariantMap data = s->data().toMap();
@@ -54,7 +54,7 @@ void QgsGdalItemGuiProvider::onDeleteLayer()
   QPointer< QgsDataItem > parent = data[QStringLiteral( "parentItem" )].value<QPointer< QgsDataItem >>();
 
   // Messages are different for files and tables
-  bool isPostgresRaster { uri.startsWith( QStringLiteral( "PG:" ) ) };
+  bool isPostgresRaster { uri.startsWith( QLatin1String( "PG:" ) ) };
   const QString title = isPostgresRaster  ?
                         tr( "Delete Table" ) :
                         tr( "Delete File" );
@@ -125,26 +125,26 @@ void QgsGdalItemGuiProvider::onDeleteLayer()
 
       if ( deleted )
       {
-        QMessageBox::information( nullptr, title, tr( "Table deleted successfully." ) );
+        notify( title, tr( "Table deleted successfully." ), context, Qgis::MessageLevel::Success );
         if ( parent )
           parent->refresh();
       }
       else
       {
-        QMessageBox::warning( nullptr, title, errorMessage.isEmpty() ?
-                              tr( "Could not delete table." ) :
-                              tr( "Could not delete table, reason: %1." ).arg( errorMessage ) );
+        notify( title, errorMessage.isEmpty() ?
+                tr( "Could not delete table." ) :
+                tr( "Could not delete table, reason: %1." ).arg( errorMessage ), context, Qgis::MessageLevel::Warning );
       }
     }
     else
     {
       if ( !QFile::remove( path ) )
       {
-        QMessageBox::warning( nullptr, title, tr( "Could not delete file." ) );
+        notify( title, tr( "Could not delete file." ), context, Qgis::MessageLevel::Warning );
       }
       else
       {
-        QMessageBox::information( nullptr, title, tr( "File deleted successfully." ) );
+        notify( title, tr( "File deleted successfully." ), context, Qgis::MessageLevel::Success );
         if ( parent )
           parent->refresh();
       }
@@ -152,20 +152,19 @@ void QgsGdalItemGuiProvider::onDeleteLayer()
   }
   else
   {
-    QMessageBox::warning( nullptr, title, QObject::tr( "The layer “%1” cannot be deleted because it is in the current project as “%2”,"
-                          " remove it from the project and retry." ).arg( path, projectLayer->name() ) );
+    notify( title, tr( "The layer “%1” cannot be deleted because it is in the current project as “%2”,"
+                       " remove it from the project and retry." ).arg( path, projectLayer->name() ), context, Qgis::MessageLevel::Warning );
   }
 }
 
 void QgsGdalItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context )
 {
   Q_UNUSED( selectedItems );
-  Q_UNUSED( context );
 
   if ( QgsGdalLayerItem *layerItem = qobject_cast< QgsGdalLayerItem * >( item ) )
   {
     // Messages are different for files and tables
-    bool isPostgresRaster { layerItem->uri().startsWith( QStringLiteral( "PG:" ) ) };
+    bool isPostgresRaster { layerItem->uri().startsWith( QLatin1String( "PG:" ) ) };
     const QString message = isPostgresRaster  ?
                             QObject::tr( "Delete Table “%1”…" ).arg( layerItem->name() ) :
                             QObject::tr( "Delete File “%1”…" ).arg( layerItem->name() );
@@ -175,7 +174,7 @@ void QgsGdalItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu
     data.insert( QStringLiteral( "path" ), isPostgresRaster ? layerItem->name() : layerItem->path() );
     data.insert( QStringLiteral( "parentItem" ), QVariant::fromValue( QPointer< QgsDataItem >( layerItem->parent() ) ) );
     actionDeleteLayer->setData( data );
-    connect( actionDeleteLayer, &QAction::triggered, this, &QgsGdalItemGuiProvider::onDeleteLayer );
+    connect( actionDeleteLayer, &QAction::triggered, this, [ = ] { onDeleteLayer( context ); } );
     menu->addAction( actionDeleteLayer );
   }
 }

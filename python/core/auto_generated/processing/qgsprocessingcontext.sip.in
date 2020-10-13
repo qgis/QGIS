@@ -73,8 +73,8 @@ Returns the project in which the algorithm is being executed.
 %Docstring
 Sets the ``project`` in which the algorithm will be executed.
 
-This also automatically sets the :py:func:`~QgsProcessingContext.transformContext` to match
-the project's transform context.
+This also automatically sets the :py:func:`~QgsProcessingContext.transformContext`, :py:func:`~QgsProcessingContext.ellipsoid`, :py:func:`~QgsProcessingContext.distanceUnit` and
+:py:func:`~QgsProcessingContext.areaUnit` to match the project's settings.
 
 .. seealso:: :py:func:`project`
 %End
@@ -107,6 +107,74 @@ context.
 .. seealso:: :py:func:`transformContext`
 %End
 
+    QString ellipsoid() const;
+%Docstring
+Returns the ellipsoid to use for distance and area calculations.
+
+.. seealso:: :py:func:`setEllipsoid`
+
+.. versionadded:: 3.16
+%End
+
+    void setEllipsoid( const QString &ellipsoid );
+%Docstring
+Sets a specified ``ellipsoid`` to use for distance and area calculations.
+
+If not explicitly set, the ellipsoid will default to the :py:func:`~QgsProcessingContext.project`'s ellipsoid setting.
+
+.. seealso:: :py:func:`ellipsoid`
+
+.. versionadded:: 3.16
+%End
+
+    QgsUnitTypes::DistanceUnit distanceUnit() const;
+%Docstring
+Returns the distance unit to use for distance calculations.
+
+.. seealso:: :py:func:`setDistanceUnit`
+
+.. seealso:: :py:func:`areaUnit`
+
+.. versionadded:: 3.16
+%End
+
+    void setDistanceUnit( QgsUnitTypes::DistanceUnit unit );
+%Docstring
+Sets the ``unit`` to use for distance calculations.
+
+If not explicitly set, the unit will default to the :py:func:`~QgsProcessingContext.project`'s distance unit setting.
+
+.. seealso:: :py:func:`distanceUnit`
+
+.. seealso:: :py:func:`setAreaUnit`
+
+.. versionadded:: 3.16
+%End
+
+    QgsUnitTypes::AreaUnit areaUnit() const;
+%Docstring
+Returns the area unit to use for area calculations.
+
+.. seealso:: :py:func:`setAreaUnit`
+
+.. seealso:: :py:func:`distanceUnit`
+
+.. versionadded:: 3.16
+%End
+
+    void setAreaUnit( QgsUnitTypes::AreaUnit areaUnit );
+%Docstring
+Sets the ``unit`` to use for area calculations.
+
+If not explicitly set, the unit will default to the :py:func:`~QgsProcessingContext.project`'s area unit setting.
+
+.. seealso:: :py:func:`areaUnit`
+
+.. seealso:: :py:func:`setDistanceUnit`
+
+.. versionadded:: 3.16
+%End
+
     QgsMapLayerStore *temporaryLayerStore();
 %Docstring
 Returns a reference to the layer store used for storing temporary layers during
@@ -137,6 +205,8 @@ Default constructor
 %End
 
         QString name;
+
+        bool forceName;
 
         QString outputName;
 

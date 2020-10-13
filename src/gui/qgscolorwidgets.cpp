@@ -1284,7 +1284,7 @@ QgsColorSliderWidget::QgsColorSliderWidget( QWidget *parent, const ColorComponen
 
 {
   QHBoxLayout *hLayout = new QHBoxLayout();
-  hLayout->setMargin( 0 );
+  hLayout->setContentsMargins( 0, 0, 0, 0 );
   hLayout->setSpacing( 5 );
 
   mRampWidget = new QgsColorRampWidget( nullptr, component );
@@ -1415,7 +1415,7 @@ QgsColorTextWidget::QgsColorTextWidget( QWidget *parent )
   : QgsColorWidget( parent )
 {
   QHBoxLayout *hLayout = new QHBoxLayout();
-  hLayout->setMargin( 0 );
+  hLayout->setContentsMargins( 0, 0, 0, 0 );
   hLayout->setSpacing( 0 );
 
   mLineEdit = new QLineEdit( nullptr );
@@ -1469,10 +1469,10 @@ void QgsColorTextWidget::updateText()
       mLineEdit->setText( mCurrentColor.name() + QStringLiteral( "%1" ).arg( mCurrentColor.alpha(), 2, 16, QChar( '0' ) ) );
       break;
     case Rgb:
-      mLineEdit->setText( QString( tr( "rgb( %1, %2, %3 )" ) ).arg( mCurrentColor.red() ).arg( mCurrentColor.green() ).arg( mCurrentColor.blue() ) );
+      mLineEdit->setText( tr( "rgb( %1, %2, %3 )" ).arg( mCurrentColor.red() ).arg( mCurrentColor.green() ).arg( mCurrentColor.blue() ) );
       break;
     case Rgba:
-      mLineEdit->setText( QString( tr( "rgba( %1, %2, %3, %4 )" ) ).arg( mCurrentColor.red() ).arg( mCurrentColor.green() ).arg( mCurrentColor.blue() ).arg( QString::number( mCurrentColor.alphaF(), 'f', 2 ) ) );
+      mLineEdit->setText( tr( "rgba( %1, %2, %3, %4 )" ).arg( mCurrentColor.red() ).arg( mCurrentColor.green() ).arg( mCurrentColor.blue() ).arg( QString::number( mCurrentColor.alphaF(), 'f', 2 ) ) );
       break;
   }
 }

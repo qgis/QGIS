@@ -62,7 +62,7 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
     Q_OBJECT
   public:
     //! Constructs a chunked entity
-    QgsChunkedEntity( const QgsAABB &rootBbox, float rootError, float mTau, int mMaxLevel, QgsChunkLoaderFactory *loaderFactory, Qt3DCore::QNode *parent = nullptr );
+    QgsChunkedEntity( const QgsAABB &rootBbox, float rootError, float mTau, int mMaxLevel, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, Qt3DCore::QNode *parent = nullptr );
     ~QgsChunkedEntity() override;
 
     //! Records some bits about the scene (context for update() method)
@@ -148,6 +148,8 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
     int mMaxLevel;
     //! factory that creates loaders for individual chunk nodes
     QgsChunkLoaderFactory *mChunkLoaderFactory = nullptr;
+    //! True if entity owns the factory
+    bool mOwnsFactory = true;
     //! queue of chunks to be loaded
     QgsChunkList *mChunkLoaderQueue = nullptr;
     //! queue of chunk to be eventually replaced

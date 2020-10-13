@@ -134,6 +134,7 @@ class CORE_EXPORT QgsVectorTileBasicRenderer : public QgsVectorTileRenderer
     QgsVectorTileBasicRenderer *clone() const override SIP_FACTORY;
     void startRender( QgsRenderContext &context, int tileZoom, const QgsTileRange &tileRange ) override;
     QMap<QString, QSet<QString> > usedAttributes( const QgsRenderContext & ) override SIP_SKIP;
+    QSet< QString > requiredLayers( QgsRenderContext &context, int tileZoom ) const override;
     void stopRender( QgsRenderContext &context ) override;
     void renderTile( const QgsVectorTileRendererData &tile, QgsRenderContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;

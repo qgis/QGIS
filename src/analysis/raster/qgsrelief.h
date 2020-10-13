@@ -33,7 +33,8 @@ class QgsFeedback;
 
 /**
  * \ingroup analysis
- * Produces colored relief rasters from DEM*/
+ * Produces colored relief rasters from DEM.
+*/
 class ANALYSIS_EXPORT QgsRelief
 {
   public:
@@ -55,8 +56,9 @@ class ANALYSIS_EXPORT QgsRelief
 
     /**
      * Starts the calculation, reads from mInputFile and stores the result in mOutputFile
-      \param feedback feedback object that receives update and that is checked for cancellation.
-      \returns 0 in case of success*/
+     * \param feedback feedback object that receives update and that is checked for cancellation.
+     * \returns 0 in case of success
+    */
     int processRaster( QgsFeedback *feedback = nullptr );
 
     double zFactor() const { return mZFactor; }
@@ -69,7 +71,8 @@ class ANALYSIS_EXPORT QgsRelief
 
     /**
      * Calculates class breaks according with the method of Buenzli (2011) using an iterative algorithm for segmented regression
-      \returns true in case of success*/
+     * \returns true in case of success
+    */
     QList< QgsRelief::ReliefColor > calculateOptimizedReliefClasses();
 
     //! Write frequency of elevation values to file for manual inspection
@@ -110,12 +113,14 @@ class ANALYSIS_EXPORT QgsRelief
 
     /**
      * Opens the output driver and tests if it supports the creation of a new dataset
-      \returns nullptr on error and the driver handle on success*/
+     * \returns nullptr on error and the driver handle on success
+    */
     GDALDriverH openOutputDriver();
 
     /**
      * Opens the output file and sets the same geotransform and CRS as the input data
-      \returns the output dataset or nullptr in case of error*/
+     * \returns the output dataset or nullptr in case of error
+    */
     gdal::dataset_unique_ptr openOutputFile( GDALDatasetH inputDataset, GDALDriverH outputDriver );
 
     //! Sets elevation color
@@ -126,16 +131,17 @@ class ANALYSIS_EXPORT QgsRelief
 
     /**
      * Returns class (0-255) for an elevation value
-      \returns elevation class or -1 in case of error*/
+     * \returns elevation class or -1 in case of error
+    */
     int frequencyClassForElevation( double elevation, double minElevation, double elevationClassRange );
     //! Do one iteration of class break optimisation (algorithm from Garcia and Rodriguez)
     void optimiseClassBreaks( QList<int> &breaks, double *frequencies );
 
     /**
      * Calculates coefficients a and b
-      \param input data points ( elevation class / frequency )
-      \param a slope
-      \param b y value for x=0
+     * \param input data points ( elevation class / frequency )
+     * \param a slope
+     * \param b y value for x=0
      */
     bool calculateRegression( const QList< QPair < int, double > > &input, double &a, double &b );
 

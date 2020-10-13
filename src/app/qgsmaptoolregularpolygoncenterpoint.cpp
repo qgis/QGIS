@@ -25,6 +25,7 @@ QgsMapToolRegularPolygonCenterPoint::QgsMapToolRegularPolygonCenterPoint( QgsMap
     QgsMapCanvas *canvas, CaptureMode mode )
   : QgsMapToolAddRegularPolygon( parentTool, canvas, mode )
 {
+  mToolName = tr( "Add regular polygon from center and a point " );
 }
 
 QgsMapToolRegularPolygonCenterPoint::~QgsMapToolRegularPolygonCenterPoint()

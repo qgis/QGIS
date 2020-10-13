@@ -82,6 +82,13 @@ Returns the global numeric format gui registry, used for registering the GUI wid
 .. versionadded:: 3.12
 %End
 
+    static QgsCodeEditorColorSchemeRegistry *codeEditorColorSchemeRegistry() /KeepReference/;
+%Docstring
+Returns the global code editor color scheme registry, used for registering the color schemes for QgsCodeEditor widgets.
+
+.. versionadded:: 3.16
+%End
+
     static QgsProcessingRecentAlgorithmLog *processingRecentAlgorithmLog();
 %Docstring
 Returns the global processing recent algorithm log, used for tracking recently used processing algorithms.
@@ -166,6 +173,21 @@ Returns the screen at the given global ``point`` (pixel).
 .. versionadded:: 3.10
 %End
 
+
+
+  signals:
+
+    void optionsChanged();
+%Docstring
+This signal is emitted whenever the application options have been changed.
+
+This signal is a "blanket" signal, and will be emitted whenever the options dialog
+has been accepted regardless of whether or not individual settings are changed.
+It is designed as a "last resort" fallback only, allowing widgets to respond
+to possible settings changes.
+
+.. versionadded:: 3.16
+%End
 
   private:
     QgsGui( const QgsGui &other );

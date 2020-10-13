@@ -564,7 +564,7 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
     {
       entry->mFileModifiedCheckTimeout = mFileModifiedCheckTimeout;
 
-      if ( !entry->path.startsWith( QStringLiteral( "base64:" ) ) )
+      if ( !entry->path.startsWith( QLatin1String( "base64:" ) ) )
       {
         entry->fileModified = QFileInfo( entry->path ).lastModified();
         entry->fileModifiedLastCheckTimer.start();

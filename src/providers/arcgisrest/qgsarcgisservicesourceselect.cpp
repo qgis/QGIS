@@ -303,10 +303,10 @@ void QgsArcGisServiceSourceSelect::addButtonClicked()
   //prepare canvas extent info for layers with "cache features" option not set
   QgsRectangle extent;
   QgsCoordinateReferenceSystem canvasCrs;
-  if ( mapCanvas() )
+  if ( auto *lMapCanvas = mapCanvas() )
   {
-    extent = mapCanvas()->extent();
-    canvasCrs = mapCanvas()->mapSettings().destinationCrs();
+    extent = lMapCanvas->extent();
+    canvasCrs = lMapCanvas->mapSettings().destinationCrs();
   }
   //does canvas have "on the fly" reprojection set?
   if ( pCrs.isValid() && canvasCrs.isValid() )

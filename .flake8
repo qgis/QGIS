@@ -9,6 +9,7 @@ exclude =
 	# There is simply too much in here, somebody will need to check these manually
 	src/plugins/grass/scripts,
 	# Generated code, hacking allowed. Feel free to go over it
+	python/3d/auto_additions/,
 	python/core/auto_additions/,
 	python/analysis/auto_additions/,
 	python/gui/auto_additions/,

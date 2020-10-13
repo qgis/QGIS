@@ -142,6 +142,11 @@ class APP_EXPORT QgsMapCanvasLineSymbolItem: public QgsMapCanvasSymbolItem
 
     /**
      * Sets the line to draw (in map coordinates)
+     */
+    void setLine( const QPolygonF &line );
+
+    /**
+     * Sets the line to draw (in map coordinates)
     */
     void setLine( const QLineF &line );
 
@@ -151,7 +156,7 @@ class APP_EXPORT QgsMapCanvasLineSymbolItem: public QgsMapCanvasSymbolItem
 
   private:
 
-    QLineF mLine;
+    QPolygonF mLine;
 
     QgsLineSymbol *lineSymbol();
 };

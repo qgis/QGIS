@@ -185,9 +185,10 @@ class CORE_EXPORT QgsSymbolLayer
       PropertyPointCount, //!< Point count
       PropertyRandomSeed, //!< Random number seed
       PropertyClipPoints, //!< Whether markers should be clipped to polygon boundaries
-      PropertyDensityArea, //<! Density area
+      PropertyDensityArea, //!< Density area
       PropertyFontFamily, //!< Font family
       PropertyFontStyle, //!< Font style
+      PropertyDashPatternOffset, //!< Dash pattern offset
     };
 
     /**
@@ -232,22 +233,26 @@ class CORE_EXPORT QgsSymbolLayer
 
     /**
      * Set stroke color. Supported by marker and fill layers.
-     * \since QGIS 2.1 */
+     * \since QGIS 2.1
+    */
     virtual void setStrokeColor( const QColor &color ) { Q_UNUSED( color ) }
 
     /**
      * Gets stroke color. Supported by marker and fill layers.
-     * \since QGIS 2.1 */
+     * \since QGIS 2.1
+    */
     virtual QColor strokeColor() const { return QColor(); }
 
     /**
      * Set fill color. Supported by marker and fill layers.
-     * \since QGIS 2.1 */
+     * \since QGIS 2.1
+    */
     virtual void setFillColor( const QColor &color ) { Q_UNUSED( color ) }
 
     /**
      * Gets fill color. Supported by marker and fill layers.
-     * \since QGIS 2.1 */
+     * \since QGIS 2.1
+    */
     virtual QColor fillColor() const { return QColor(); }
 
     /**
@@ -360,10 +365,11 @@ class CORE_EXPORT QgsSymbolLayer
 
     /**
      * Returns the estimated maximum distance which the layer style will bleed outside
-      the drawn shape when drawn in the specified /a context. For example, polygons
-      drawn with an stroke will draw half the width
-      of the stroke outside of the polygon. This amount is estimated, since it may
-      be affected by data defined symbology rules.*/
+     * the drawn shape when drawn in the specified /a context. For example, polygons
+     * drawn with an stroke will draw half the width
+     * of the stroke outside of the polygon. This amount is estimated, since it may
+     * be affected by data defined symbology rules.
+    */
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const { Q_UNUSED( context ) return 0; }
 
     /**

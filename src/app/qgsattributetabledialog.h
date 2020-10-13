@@ -171,6 +171,8 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      * add feature
      */
     void mActionAddFeature_triggered();
+    void mActionAddFeatureViaAttributeTable_triggered();
+    void mActionAddFeatureViaAttributeForm_triggered();
 
     void mActionExpressionSelect_triggered();
 
@@ -235,7 +237,7 @@ class QgsAttributeTableDock : public QgsDockWidget
     Q_OBJECT
 
   public:
-    QgsAttributeTableDock( const QString &title, QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
+    QgsAttributeTableDock( const QString &title, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
 
     void closeEvent( QCloseEvent *ev ) override;
 };

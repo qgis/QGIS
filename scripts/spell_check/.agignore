@@ -64,10 +64,10 @@ src/server/qgis_wms.xmi
 src/plugins/grass/modules/v.generalize.qgm
 tests/testdata/qgis_server_accesscontrol/Hello.qml
 tests/testdata/qgis_server_accesscontrol/project.qgs
-tests/testdata/qgis_server/ets-wms13/project.qgs
 tests/testdata/qgis_server/test_project_contextual_legend.qgs
 tests/testdata/layouts/sample_project.qgs
 tests/testdata/layouts/2x_template_attributetable.qpt
 tests/testdata/plugindependencies_data.json
 tests/testdata/projects/test-project-with-relations.qgs
+tests/testdata/provider/testdata_pg_relations.sql
 mac/development.md

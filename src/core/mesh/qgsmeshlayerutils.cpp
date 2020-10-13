@@ -68,17 +68,17 @@ QgsMeshDataBlock QgsMeshLayerUtils::datasetValues(
   if ( !meshLayer )
     return block;
 
-  const QgsMeshDataProvider *provider = meshLayer->dataProvider();
-  if ( !provider )
+
+  if ( !meshLayer->datasetCount( index ) )
     return block;
 
   if ( !index.isValid() )
     return block;
 
-  const QgsMeshDatasetGroupMetadata meta = meshLayer->dataProvider()->datasetGroupMetadata( index.group() );
+  const QgsMeshDatasetGroupMetadata meta = meshLayer->datasetGroupMetadata( index.group() );
   if ( meta.dataType() != QgsMeshDatasetGroupMetadata::DataType::DataOnVolumes )
   {
-    block = provider->datasetValues( index, valueIndex, count );
+    block = meshLayer->datasetValues( index, valueIndex, count );
     if ( block.isValid() )
       return block;
   }
@@ -88,7 +88,7 @@ QgsMeshDataBlock QgsMeshLayerUtils::datasetValues(
     if ( !averagingMethod )
       return block;
 
-    QgsMesh3dDataBlock block3d = provider->dataset3dValues( index, valueIndex, count );
+    QgsMesh3dDataBlock block3d = meshLayer->dataset3dValues( index, valueIndex, count );
     if ( !block3d.isValid() )
       return block;
 
@@ -115,7 +115,7 @@ QVector<QgsVector> QgsMeshLayerUtils::griddedVectorValues( const QgsMeshLayer *m
   if ( !triangularMesh || !nativeMesh )
     return vectors;
 
-  QgsMeshDatasetGroupMetadata meta = meshLayer->dataProvider()->datasetGroupMetadata( index );
+  QgsMeshDatasetGroupMetadata meta = meshLayer->datasetGroupMetadata( index );
   if ( !meta.isVector() )
     return vectors;
 
@@ -124,7 +124,7 @@ QVector<QgsVector> QgsMeshLayerUtils::griddedVectorValues( const QgsMeshLayer *m
   int datacount = vectorDataOnVertices ? nativeMesh->vertices.count() : nativeMesh->faces.count();
   const QgsMeshDataBlock vals = QgsMeshLayerUtils::datasetValues( meshLayer, index, 0, datacount );
 
-  const QgsMeshDataBlock isFacesActive = meshLayer->dataProvider()->areFacesActive( index, 0, nativeMesh->faceCount() );
+  const QgsMeshDataBlock isFacesActive = meshLayer->areFacesActive( index, 0, nativeMesh->faceCount() );
   const QgsMeshDatasetGroupMetadata::DataType dataType = meta.dataType();
 
   if ( dataType == QgsMeshDatasetGroupMetadata::DataOnEdges )
@@ -197,20 +197,40 @@ QVector<double> QgsMeshLayerUtils::calculateMagnitudes( const QgsMeshDataBlock &
   return ret;
 }
 
-void QgsMeshLayerUtils::boundingBoxToScreenRectangle( const QgsMapToPixel &mtp,
-    const QSize &outputSize,
-    const QgsRectangle &bbox,
-    int &leftLim,
-    int &rightLim,
-    int &topLim,
-    int &bottomLim )
+QgsRectangle QgsMeshLayerUtils::boundingBoxToScreenRectangle(
+  const QgsMapToPixel &mtp,
+  const QgsRectangle &bbox
+)
 {
-  QgsPointXY ll = mtp.transform( bbox.xMinimum(), bbox.yMinimum() );
-  QgsPointXY ur = mtp.transform( bbox.xMaximum(), bbox.yMaximum() );
-  topLim = std::max( int( ur.y() ), 0 );
-  bottomLim = std::min( int( ll.y() ), outputSize.height() - 1 );
-  leftLim = std::max( int( ll.x() ), 0 );
-  rightLim = std::min( int( ur.x() ), outputSize.width() - 1 );
+  const QgsPointXY topLeft = mtp.transform( bbox.xMinimum(), bbox.yMaximum() );
+  const QgsPointXY topRight = mtp.transform( bbox.xMaximum(), bbox.yMaximum() );
+  const QgsPointXY bottomLeft = mtp.transform( bbox.xMinimum(), bbox.yMinimum() );
+  const QgsPointXY bottomRight = mtp.transform( bbox.xMaximum(), bbox.yMinimum() );
+
+  double xMin = std::min( {topLeft.x(), topRight.x(), bottomLeft.x(), bottomRight.x()} );
+  double xMax = std::max( {topLeft.x(), topRight.x(), bottomLeft.x(), bottomRight.x()} );
+  double yMin = std::min( {topLeft.y(), topRight.y(), bottomLeft.y(), bottomRight.y()} );
+  double yMax = std::max( {topLeft.y(), topRight.y(), bottomLeft.y(), bottomRight.y()} );
+
+  QgsRectangle ret( xMin, yMin, xMax, yMax );
+  return ret;
+}
+
+void QgsMeshLayerUtils::boundingBoxToScreenRectangle(
+  const QgsMapToPixel &mtp,
+  const QSize &outputSize,
+  const QgsRectangle &bbox,
+  int &leftLim,
+  int &rightLim,
+  int &bottomLim,
+  int &topLim )
+{
+  const QgsRectangle screenBBox = boundingBoxToScreenRectangle( mtp, bbox );
+
+  bottomLim = std::max( int( screenBBox.yMinimum() ), 0 );
+  topLim = std::min( int( screenBBox.yMaximum() ), outputSize.height() - 1 );
+  leftLim = std::max( int( screenBBox.xMinimum() ), 0 );
+  rightLim = std::min( int( screenBBox.xMaximum() ), outputSize.width() - 1 );
 }
 
 static void lamTol( double &lam )
@@ -418,7 +438,7 @@ QVector<double> QgsMeshLayerUtils::calculateMagnitudeOnVertices( const QgsMeshLa
   if ( !triangularMesh || !nativeMesh )
     return ret;
 
-  const QgsMeshDatasetGroupMetadata metadata = meshLayer->dataProvider()->datasetGroupMetadata( index );
+  const QgsMeshDatasetGroupMetadata metadata = meshLayer->datasetGroupMetadata( index );
   bool scalarDataOnVertices = metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
 
   // populate scalar values
@@ -491,7 +511,7 @@ QString QgsMeshLayerUtils::formatTime( double hours, const QDateTime &referenceT
     format = format.trimmed();
     int totalHours = static_cast<int>( hours );
 
-    if ( format == QStringLiteral( "hh:mm:ss.zzz" ) )
+    if ( format == QLatin1String( "hh:mm:ss.zzz" ) )
     {
       int ms = static_cast<int>( hours * 3600.0 * 1000 );
       int seconds = ms / 1000;
@@ -506,7 +526,7 @@ QString QgsMeshLayerUtils::formatTime( double hours, const QDateTime &referenceT
             arg( s, 2, 10, QLatin1Char( '0' ) ).
             arg( z, 3, 10, QLatin1Char( '0' ) );
     }
-    else if ( format == QStringLiteral( "hh:mm:ss" ) )
+    else if ( format == QLatin1String( "hh:mm:ss" ) )
     {
       int seconds = static_cast<int>( hours * 3600.0 );
       int m = seconds / 60;
@@ -519,7 +539,7 @@ QString QgsMeshLayerUtils::formatTime( double hours, const QDateTime &referenceT
             arg( s, 2, 10, QLatin1Char( '0' ) );
 
     }
-    else if ( format == QStringLiteral( "d hh:mm:ss" ) )
+    else if ( format == QLatin1String( "d hh:mm:ss" ) )
     {
       int seconds = static_cast<int>( hours * 3600.0 );
       int m = seconds / 60;
@@ -534,7 +554,7 @@ QString QgsMeshLayerUtils::formatTime( double hours, const QDateTime &referenceT
             arg( m, 2, 10, QLatin1Char( '0' ) ).
             arg( s, 2, 10, QLatin1Char( '0' ) );
     }
-    else if ( format == QStringLiteral( "d hh" ) )
+    else if ( format == QLatin1String( "d hh" ) )
     {
       int d = totalHours / 24;
       int h = totalHours % 24;
@@ -542,19 +562,19 @@ QString QgsMeshLayerUtils::formatTime( double hours, const QDateTime &referenceT
             arg( d ).
             arg( h );
     }
-    else if ( format == QStringLiteral( "d" ) )
+    else if ( format == QLatin1String( "d" ) )
     {
       int d = totalHours / 24;
-      ret = QStringLiteral( "%1" ).arg( d );
+      ret = QString::number( d );
     }
-    else if ( format == QStringLiteral( "ss" ) )
+    else if ( format == QLatin1String( "ss" ) )
     {
       int seconds = static_cast<int>( hours * 3600.0 );
-      ret = QStringLiteral( "%1" ).arg( seconds );
+      ret = QString::number( seconds );
     }
     else     // "hh"
     {
-      ret = QStringLiteral( "%1" ).arg( hours );
+      ret = QString::number( hours );
     }
   }
   return ret;

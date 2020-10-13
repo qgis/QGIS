@@ -28,7 +28,7 @@ from hashlib import md5
 
 import os
 
-from qgis.PyQt.QtCore import Qt, pyqtSignal, QDir
+from qgis.PyQt.QtCore import Qt, pyqtSignal, QDir, QCoreApplication
 from qgis.PyQt.QtWidgets import (QDialog,
                                  QWidget,
                                  QAction,
@@ -381,6 +381,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
     def executeSqlCanceled(self):
         self.btnCancel.setEnabled(False)
+        self.btnCancel.setText(QCoreApplication.translate("DlgSqlWindow", "Canceling…"))
         self.modelAsync.cancel()
 
     def executeSqlCompleted(self):
@@ -405,6 +406,8 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
                 DlgDbError.showError(self.modelAsync.error, self)
                 self.uniqueModel.clear()
                 self.geomCombo.clear()
+
+            self.btnCancel.setText(self.tr("Cancel"))
 
     def executeSql(self):
         sql = self._getExecutableSqlQuery()

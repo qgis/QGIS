@@ -550,7 +550,7 @@ void QgsServerParameters::load( const QUrlQuery &query )
 {
   // clean query string first
   QUrlQuery cleanQuery( query );
-  cleanQuery.setQuery( query.query().replace( '+', QStringLiteral( "%20" ) ) );
+  cleanQuery.setQuery( query.query().replace( '+', QLatin1String( "%20" ) ) );
 
   // load parameters
   for ( const auto &item : cleanQuery.queryItems( QUrl::FullyDecoded ) )

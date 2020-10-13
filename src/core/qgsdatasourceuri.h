@@ -38,7 +38,7 @@ class CORE_EXPORT QgsDataSourceUri
   public:
 
     /**
-     * Available SSQL connection modes.
+     * Available SSL connection modes.
      */
     enum SslMode
     {
@@ -345,7 +345,7 @@ class CORE_EXPORT QgsDataSourceUri
     //! SRID or a null string if not specified
     QString mSrid;
     //! Generic params store
-    QMap<QString, QString> mParams;
+    QMultiMap<QString, QString> mParams;
 };
 
 #endif //QGSDATASOURCEURI_H

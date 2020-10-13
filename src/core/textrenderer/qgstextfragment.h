@@ -19,6 +19,7 @@
 #include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgstextcharacterformat.h"
+#include "qgsstringutils.h"
 
 class QTextFragment;
 
@@ -79,8 +80,20 @@ class CORE_EXPORT QgsTextFragment
      *
      * Set \a fontHasBeenUpdatedForFragment to TRUE if \a font already represents the character
      * format for this fragment.
+     *
+     * The optional \a scaleFactor parameter can specify a font size scaling factor. It is recommended to set this to
+     * QgsTextRenderer::FONT_WORKAROUND_SCALE and then manually calculations
+     * based on the resultant font metrics. Failure to do so will result in poor quality text rendering
+     * at small font sizes.
      */
-    double horizontalAdvance( const QFont &font, bool fontHasBeenUpdatedForFragment = false ) const;
+    double horizontalAdvance( const QFont &font, bool fontHasBeenUpdatedForFragment = false, double scaleFactor = 1.0 ) const;
+
+    /**
+     * Applies a \a capitalization style to the fragment's text.
+     *
+     * \since QGIS 3.16
+     */
+    void applyCapitalization( QgsStringUtils::Capitalization capitalization );
 
   private:
 

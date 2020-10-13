@@ -68,13 +68,15 @@ of feature and attribute information from a spatial datasource.
       UnknownCount,
     };
 
-    QgsVectorDataProvider( const QString &uri = QString(), const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions() );
+    QgsVectorDataProvider( const QString &uri = QString(),
+                           const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions(),
+                           QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 %Docstring
 Constructor for a vector data provider.
 
 The ``uri`` argument specifies the uniform resource locator (URI) for the associated dataset.
 
-Additional creation options are specified within the ``options`` value.
+Additional creation options are specified within the ``options`` value and since QGIS 3.16 creation flags are specified within the ``flags`` value.
 %End
 
     virtual QgsAbstractFeatureSource *featureSource() const = 0 /Factory/;
@@ -232,7 +234,9 @@ or if the given attribute is not an enum type.
 :param index: the index of the attribute
 %End
 
-    virtual bool addFeatures( QgsFeatureList &flist /In,Out/, QgsFeatureSink::Flags flags = 0 );
+    virtual bool addFeatures( QgsFeatureList &flist /In,Out/, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
+
+    virtual QString lastError() const;
 
 
     virtual bool deleteFeatures( const QgsFeatureIds &id );

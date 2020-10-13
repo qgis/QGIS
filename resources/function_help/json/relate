@@ -1,6 +1,7 @@
 {
   "name": "relate",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Tests the Dimensional Extended 9 Intersection Model (DE-9IM) representation of the relationship between two geometries.",
   "variants": [
   { "variant": "Relationship variant",

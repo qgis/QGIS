@@ -42,11 +42,11 @@ QgsExpressionContext QgsHeatmapRendererWidget::createExpressionContext() const
              << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
              << QgsExpressionContextUtils::atlasScope( nullptr );
 
-  if ( mContext.mapCanvas() )
+  if ( auto *lMapCanvas = mContext.mapCanvas() )
   {
-    expContext << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )
-               << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
-    if ( const QgsExpressionContextScopeGenerator *generator = dynamic_cast< const QgsExpressionContextScopeGenerator * >( mContext.mapCanvas()->temporalController() ) )
+    expContext << QgsExpressionContextUtils::mapSettingsScope( lMapCanvas->mapSettings() )
+               << new QgsExpressionContextScope( lMapCanvas->expressionContextScope() );
+    if ( const QgsExpressionContextScopeGenerator *generator = dynamic_cast< const QgsExpressionContextScopeGenerator * >( lMapCanvas->temporalController() ) )
     {
       expContext << generator->createExpressionContextScope();
     }
@@ -56,8 +56,8 @@ QgsExpressionContext QgsHeatmapRendererWidget::createExpressionContext() const
     expContext << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
   }
 
-  if ( vectorLayer() )
-    expContext << QgsExpressionContextUtils::layerScope( vectorLayer() );
+  if ( auto *lVectorLayer = vectorLayer() )
+    expContext << QgsExpressionContextUtils::layerScope( lVectorLayer );
 
   // additional scopes
   const auto constAdditionalExpressionContextScopes = mContext.additionalExpressionContextScopes();
@@ -149,8 +149,8 @@ QgsFeatureRenderer *QgsHeatmapRendererWidget::renderer()
 void QgsHeatmapRendererWidget::setContext( const QgsSymbolWidgetContext &context )
 {
   QgsRendererWidget::setContext( context );
-  if ( context.mapCanvas() )
-    mRadiusUnitWidget->setMapCanvas( context.mapCanvas() );
+  if ( auto *lMapCanvas = context.mapCanvas() )
+    mRadiusUnitWidget->setMapCanvas( lMapCanvas );
 }
 
 void QgsHeatmapRendererWidget::applyColorRamp()

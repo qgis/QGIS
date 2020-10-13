@@ -664,6 +664,10 @@ QRadioButton::indicator:checked:disabled {
     image: url(@theme_path/icons/qradiobox-checked-disabled.svg);
 }
 
+QRadioButton:disabled {
+    background-color: transparent;
+}
+
 /* ==================================================================================== */
 /* CHECKBOX                                                                             */
 /* ==================================================================================== */
@@ -689,6 +693,10 @@ QCheckBox::indicator:checked {
 
 QCheckBox::indicator:checked:disabled {
     image: url(@theme_path/icons/qcheckbox-checked-disabled.svg);
+}
+
+QCheckBox:disabled {
+    background-color: transparent;
 }
 
 /* ==================================================================================== */
@@ -760,6 +768,15 @@ QAbstractItemView:disabled, QListView:disabled
 QAbstractItemView::selected, QListView::selected {
     border: 0px;
     outline: none;
+}
+
+QAbstractItemView::indicator:checked, QListView::indicator:checked {
+    border: 1px solid @background;
+    image: url(@theme_path/icons/qcheckbox-checked.svg) !important;
+}
+QAbstractItemView::indicator:unchecked, QListView::indicator:unchecked {
+    border: 1px solid @background;
+    image: url(@theme_path/icons/qcheckbox-unchecked.svg);
 }
 
 /* ==================================================================================== */

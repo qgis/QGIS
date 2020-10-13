@@ -287,19 +287,19 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     return new QgsLayoutShapeWidget( qobject_cast< QgsLayoutItemShape * >( item ) );
   };
 
-  registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutShape, QObject::tr( "Rectangle" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ), createShapeWidget, createRubberBand, QStringLiteral( "shapes" ), false, nullptr, []( QgsLayout * layout )->QgsLayoutItem*
+  registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutShape, QObject::tr( "Rectangle" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ), createShapeWidget, createRubberBand, QStringLiteral( "shapes" ), false, QgsLayoutItemAbstractGuiMetadata::Flags(), []( QgsLayout * layout )->QgsLayoutItem*
   {
     std::unique_ptr< QgsLayoutItemShape > shape = qgis::make_unique< QgsLayoutItemShape >( layout );
     shape->setShapeType( QgsLayoutItemShape::Rectangle );
     return shape.release();
   } ) );
-  registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutShape, QObject::tr( "Ellipse" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicCircle.svg" ) ), createShapeWidget, createEllipseBand, QStringLiteral( "shapes" ), false, nullptr, []( QgsLayout * layout )->QgsLayoutItem*
+  registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutShape, QObject::tr( "Ellipse" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicCircle.svg" ) ), createShapeWidget, createEllipseBand, QStringLiteral( "shapes" ), false, QgsLayoutItemAbstractGuiMetadata::Flags(), []( QgsLayout * layout )->QgsLayoutItem*
   {
     std::unique_ptr< QgsLayoutItemShape > shape = qgis::make_unique< QgsLayoutItemShape >( layout );
     shape->setShapeType( QgsLayoutItemShape::Ellipse );
     return shape.release();
   } ) );
-  registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutShape, QObject::tr( "Triangle" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicTriangle.svg" ) ), createShapeWidget, createTriangleBand, QStringLiteral( "shapes" ), false, nullptr, []( QgsLayout * layout )->QgsLayoutItem*
+  registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutShape, QObject::tr( "Triangle" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicTriangle.svg" ) ), createShapeWidget, createTriangleBand, QStringLiteral( "shapes" ), false, QgsLayoutItemAbstractGuiMetadata::Flags(), []( QgsLayout * layout )->QgsLayoutItem*
   {
     std::unique_ptr< QgsLayoutItemShape > shape = qgis::make_unique< QgsLayoutItemShape >( layout );
     shape->setShapeType( QgsLayoutItemShape::Triangle );
@@ -411,6 +411,21 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
       }
     }
 
+    //set default table fonts from settings
+    QgsSettings settings;
+    const QString defaultFontString = settings.value( QStringLiteral( "LayoutDesigner/defaultFont" ), QVariant(), QgsSettings::Gui ).toString();
+    if ( !defaultFontString.isEmpty() )
+    {
+      QgsTextFormat format;
+      QFont f = format.font();
+      f.setFamily( defaultFontString );
+      format.setFont( f );
+      tableMultiFrame->setContentTextFormat( format );
+      f.setBold( true );
+      format.setFont( f );
+      tableMultiFrame->setHeaderTextFormat( format );
+    }
+
     layout->addMultiFrame( tableMultiFrame.release() );
     std::unique_ptr< QgsLayoutFrame > frame = qgis::make_unique< QgsLayoutFrame >( layout, table );
     QgsLayoutFrame *f = frame.get();
@@ -436,6 +451,21 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     contents << ( QgsTableRow() << QgsTableCell() << QgsTableCell() );
     contents << ( QgsTableRow() << QgsTableCell() << QgsTableCell() );
     table->setTableContents( contents );
+
+    //set default table fonts from settings
+    QgsSettings settings;
+    const QString defaultFontString = settings.value( QStringLiteral( "LayoutDesigner/defaultFont" ), QVariant(), QgsSettings::Gui ).toString();
+    if ( !defaultFontString.isEmpty() )
+    {
+      QgsTextFormat format;
+      QFont f = format.font();
+      f.setFamily( defaultFontString );
+      format.setFont( f );
+      tableMultiFrame->setContentTextFormat( format );
+      f.setBold( true );
+      format.setFont( f );
+      tableMultiFrame->setHeaderTextFormat( format );
+    }
 
     layout->addMultiFrame( tableMultiFrame.release() );
 

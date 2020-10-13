@@ -25,6 +25,7 @@
 #include <QSqlQuery>
 #include <QSet>
 #include <QCoreApplication>
+#include <QFile>
 
 int QgsMssqlConnection::sConnectionId = 0;
 QMutex QgsMssqlConnection::sMutex{ QMutex::Recursive };
@@ -97,6 +98,16 @@ QSqlDatabase QgsMssqlConnection::getDatabase( const QString &service, const QStr
   {
 #ifdef Q_OS_WIN
     connectionString = "driver={SQL Server}";
+#elif defined (Q_OS_MAC)
+    QString freeTDSDriver( QCoreApplication::applicationDirPath().append( "/lib/libtdsodbc.so" ) );
+    if ( QFile::exists( freeTDSDriver ) )
+    {
+      connectionString = QStringLiteral( "driver=%1;port=1433;TDS_Version=auto" ).arg( freeTDSDriver );
+    }
+    else
+    {
+      connectionString = QStringLiteral( "driver={FreeTDS};port=1433;TDS_Version=auto" );
+    }
 #else
     // It seems that FreeTDS driver by default uses an ancient TDS protocol version (4.2) to communicate with MS SQL
     // which was causing various data corruption errors, for example:
@@ -363,7 +374,6 @@ bool QgsMssqlConnection::isSystemSchema( const QString &schema )
 
 QgsDataSourceUri QgsMssqlConnection::connUri( const QString &connName )
 {
-
   QgsSettings settings;
 
   const QString key = "/MSSQL/connections/" + connName;
@@ -421,6 +431,36 @@ QStringList QgsMssqlConnection::connectionList()
   QgsSettings settings;
   settings.beginGroup( QStringLiteral( "MSSQL/connections" ) );
   return settings.childGroups();
+}
+
+QList<QgsVectorDataProvider::NativeType> QgsMssqlConnection::nativeTypes()
+{
+  return QList<QgsVectorDataProvider::NativeType>()
+         // integer types
+         << QgsVectorDataProvider::NativeType( QObject::tr( "8 Bytes integer" ), QStringLiteral( "bigint" ), QVariant::Int )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "4 Bytes integer" ), QStringLiteral( "int" ), QVariant::Int )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "2 Bytes integer" ), QStringLiteral( "smallint" ), QVariant::Int )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "1 Bytes integer" ), QStringLiteral( "tinyint" ), QVariant::Int )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal number (numeric)" ), QStringLiteral( "numeric" ), QVariant::Double, 1, 20, 0, 20 )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal number (decimal)" ), QStringLiteral( "decimal" ), QVariant::Double, 1, 20, 0, 20 )
+
+         // floating point
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal number (real)" ), QStringLiteral( "real" ), QVariant::Double )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal number (double)" ), QStringLiteral( "float" ), QVariant::Double )
+
+         // date/time types
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Date" ), QStringLiteral( "date" ), QVariant::Date, -1, -1, -1, -1 )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Time" ), QStringLiteral( "time" ), QVariant::Time, -1, -1, -1, -1 )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Date & Time" ), QStringLiteral( "datetime" ), QVariant::DateTime, -1, -1, -1, -1 )
+
+         // string types
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, fixed length (char)" ), QStringLiteral( "char" ), QVariant::String, 1, 255 )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, limited variable length (varchar)" ), QStringLiteral( "varchar" ), QVariant::String, 1, 255 )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, fixed length unicode (nchar)" ), QStringLiteral( "nchar" ), QVariant::String, 1, 255 )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, limited variable length unicode (nvarchar)" ), QStringLiteral( "nvarchar" ), QVariant::String, 1, 255 )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, unlimited length (text)" ), QStringLiteral( "text" ), QVariant::String )
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, unlimited length unicode (ntext)" ), QStringLiteral( "text" ), QVariant::String )
+         ;
 }
 
 QString QgsMssqlConnection::dbConnectionName( const QString &name )

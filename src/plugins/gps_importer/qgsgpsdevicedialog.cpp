@@ -140,17 +140,17 @@ void QgsGpsDeviceDialog::slotSelectionChanged( QListWidgetItem *current )
     leDeviceName->setText( devName );
     QgsGpsDevice *device = mDevices[devName];
     leWptDown->setText( device->
-                        importCommand( QStringLiteral( "%babel" ), QStringLiteral( "-w" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QStringLiteral( " " ) ) );
+                        importCommand( QStringLiteral( "%babel" ), QStringLiteral( "-w" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) ) );
     leWptUp->setText( device->
-                      exportCommand( QStringLiteral( "%babel" ), QStringLiteral( "-w" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QStringLiteral( " " ) ) );
+                      exportCommand( QStringLiteral( "%babel" ), QStringLiteral( "-w" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) ) );
     leRteDown->setText( device->
-                        importCommand( QStringLiteral( "%babel" ), QStringLiteral( "-r" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QStringLiteral( " " ) ) );
+                        importCommand( QStringLiteral( "%babel" ), QStringLiteral( "-r" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) ) );
     leRteUp->setText( device->
-                      exportCommand( QStringLiteral( "%babel" ), QStringLiteral( "-r" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QStringLiteral( " " ) ) );
+                      exportCommand( QStringLiteral( "%babel" ), QStringLiteral( "-r" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) ) );
     leTrkDown->setText( device->
-                        importCommand( QStringLiteral( "%babel" ), QStringLiteral( "-t" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QStringLiteral( " " ) ) );
+                        importCommand( QStringLiteral( "%babel" ), QStringLiteral( "-t" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) ) );
     leTrkUp->setText( device->
-                      exportCommand( QStringLiteral( "%babel" ), QStringLiteral( "-t" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QStringLiteral( " " ) ) );
+                      exportCommand( QStringLiteral( "%babel" ), QStringLiteral( "-t" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) ) );
   }
 }
 
@@ -167,17 +167,17 @@ void QgsGpsDeviceDialog::writeDeviceSettings()
   {
     deviceNames.append( iter->first );
     QString wptDownload =
-      iter->second->importCommand( QStringLiteral( "%babel" ), QStringLiteral( "-w" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QStringLiteral( " " ) );
+      iter->second->importCommand( QStringLiteral( "%babel" ), QStringLiteral( "-w" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
     QString wptUpload =
-      iter->second->exportCommand( QStringLiteral( "%babel" ), QStringLiteral( "-w" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QStringLiteral( " " ) );
+      iter->second->exportCommand( QStringLiteral( "%babel" ), QStringLiteral( "-w" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
     QString rteDownload =
-      iter->second->importCommand( QStringLiteral( "%babel" ), QStringLiteral( "-r" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QStringLiteral( " " ) );
+      iter->second->importCommand( QStringLiteral( "%babel" ), QStringLiteral( "-r" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
     QString rteUpload =
-      iter->second->exportCommand( QStringLiteral( "%babel" ), QStringLiteral( "-r" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QStringLiteral( " " ) );
+      iter->second->exportCommand( QStringLiteral( "%babel" ), QStringLiteral( "-r" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
     QString trkDownload =
-      iter->second->importCommand( QStringLiteral( "%babel" ), QStringLiteral( "-t" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QStringLiteral( " " ) );
+      iter->second->importCommand( QStringLiteral( "%babel" ), QStringLiteral( "-t" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
     QString trkUpload =
-      iter->second->exportCommand( QStringLiteral( "%babel" ), QStringLiteral( "-t" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QStringLiteral( " " ) );
+      iter->second->exportCommand( QStringLiteral( "%babel" ), QStringLiteral( "-t" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
     settings.setValue( devPath.arg( iter->first ) + "/wptdownload",
                        wptDownload );
     settings.setValue( devPath.arg( iter->first ) + "/wptupload", wptUpload );

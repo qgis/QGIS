@@ -44,7 +44,7 @@ class CORE_EXPORT QgsEllipse
     /**
      * Constructor for QgsEllipse.
      */
-    QgsEllipse() = default;
+    QgsEllipse() SIP_HOLDGIL = default;
 
     virtual ~QgsEllipse() = default;
 
@@ -55,7 +55,7 @@ class CORE_EXPORT QgsEllipse
      * \param semiMinorAxis Semi-minor axis of the ellipse.
      * \param azimuth Angle in degrees started from the North to the first quadrant.
      */
-    QgsEllipse( const QgsPoint &center, double semiMajorAxis, double semiMinorAxis, double azimuth = 90 );
+    QgsEllipse( const QgsPoint &center, double semiMajorAxis, double semiMinorAxis, double azimuth = 90 ) SIP_HOLDGIL;
 
     /**
      * Constructs an ellipse by foci (\a pt1 and \a pt2) and a point \a pt3.
@@ -68,7 +68,7 @@ class CORE_EXPORT QgsEllipse
      * \param pt2 Second focus.
      * \param pt3 A point to calculate the axes.
      */
-    static QgsEllipse fromFoci( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3 );
+    static QgsEllipse fromFoci( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3 ) SIP_HOLDGIL;
 
     /**
      * Constructs an ellipse by an extent (aka bounding box / QgsRectangle).
@@ -80,7 +80,7 @@ class CORE_EXPORT QgsEllipse
      * \param pt1 First corner.
      * \param pt2 Second corner.
      */
-    static QgsEllipse fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 );
+    static QgsEllipse fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 ) SIP_HOLDGIL;
 
     /**
      * Constructs an ellipse by a center point and a another point.
@@ -92,7 +92,7 @@ class CORE_EXPORT QgsEllipse
      * \param ptc Center point.
      * \param pt1 First point.
      */
-    static QgsEllipse fromCenterPoint( const QgsPoint &ptc, const QgsPoint &pt1 );
+    static QgsEllipse fromCenterPoint( const QgsPoint &ptc, const QgsPoint &pt1 ) SIP_HOLDGIL;
 
     /**
      * Constructs an ellipse by a central point and two other points.
@@ -105,38 +105,38 @@ class CORE_EXPORT QgsEllipse
      * \param pt1 First point.
      * \param pt2 Second point.
      */
-    static QgsEllipse fromCenter2Points( const QgsPoint &ptc, const QgsPoint &pt1, const QgsPoint &pt2 );
+    static QgsEllipse fromCenter2Points( const QgsPoint &ptc, const QgsPoint &pt1, const QgsPoint &pt2 ) SIP_HOLDGIL;
 
     virtual bool operator ==( const QgsEllipse &elp ) const;
     virtual bool operator !=( const QgsEllipse &elp ) const;
 
     //! An ellipse is empty if axes are equal to 0
-    virtual bool isEmpty() const;
+    virtual bool isEmpty() const SIP_HOLDGIL;
 
     /**
      * Returns the center point.
      * \see setCenter()
      * \see rcenter()
      */
-    QgsPoint center() const {return mCenter; }
+    QgsPoint center() const SIP_HOLDGIL {return mCenter; }
 
     /**
      * Returns the semi-major axis.
      * \see setSemiMajorAxis()
      */
-    double semiMajorAxis() const {return mSemiMajorAxis; }
+    double semiMajorAxis() const SIP_HOLDGIL {return mSemiMajorAxis; }
 
     /**
      * Returns the semi-minor axis.
      * \see setSemiMinorAxis()
      */
-    double semiMinorAxis() const {return mSemiMinorAxis; }
+    double semiMinorAxis() const SIP_HOLDGIL {return mSemiMinorAxis; }
 
     /**
      * Returns the azimuth.
      * \see setAzimuth()
      */
-    double azimuth() const {return mAzimuth; }
+    double azimuth() const SIP_HOLDGIL {return mAzimuth; }
 
     /**
      * Returns a reference to the center point of this ellipse.
@@ -152,25 +152,25 @@ class CORE_EXPORT QgsEllipse
      * \see center()
      * \see rcenter()
      */
-    void setCenter( const QgsPoint &center ) {mCenter = center; }
+    void setCenter( const QgsPoint &center ) SIP_HOLDGIL {mCenter = center; }
 
     /**
      * Sets the semi-major axis.
      * \see semiMajorAxis()
      */
-    virtual void setSemiMajorAxis( double semiMajorAxis );
+    virtual void setSemiMajorAxis( double semiMajorAxis ) SIP_HOLDGIL;
 
     /**
      * Sets the semi-minor axis.
      * \see semiMinorAxis()
      */
-    virtual void setSemiMinorAxis( double semiMinorAxis );
+    virtual void setSemiMinorAxis( double semiMinorAxis ) SIP_HOLDGIL;
 
     /**
      * Sets the azimuth (orientation).
      * \see azimuth()
      */
-    void setAzimuth( double azimuth );
+    void setAzimuth( double azimuth ) SIP_HOLDGIL;
 
     /**
      * The distance between the center and each foci.
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsEllipse
      * \see foci()
      * \return The distance between the center and each foci.
      */
-    virtual double focusDistance() const;
+    virtual double focusDistance() const SIP_HOLDGIL;
 
     /**
      * Two foci of the ellipse. The axes are oriented by the azimuth and are on the semi-major axis.
@@ -192,11 +192,11 @@ class CORE_EXPORT QgsEllipse
      * The eccentricity of the ellipse.
      * nan is returned if the ellipse is empty.
      */
-    virtual double eccentricity() const;
+    virtual double eccentricity() const SIP_HOLDGIL;
     //! The area of the ellipse.
-    virtual double area() const;
+    virtual double area() const SIP_HOLDGIL;
     //! The circumference of the ellipse using first approximation of Ramanujan.
-    virtual double perimeter() const;
+    virtual double perimeter() const SIP_HOLDGIL;
 
     /**
      * The four quadrants of the ellipse.

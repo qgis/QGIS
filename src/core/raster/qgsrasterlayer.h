@@ -63,10 +63,8 @@ typedef QList < QPair< QString, QColor > > QgsLegendColorList;
  *
  *  Sample usage of the QgsRasterLayer class:
  *
- * \code{.cpp}
- *     QString myFileNameQString = "/path/to/file";
- *     QString myBaseNameQString = "my layer";
- *     QgsRasterLayer *myRasterLayer = new QgsRasterLayer(myFileNameQString, myBaseNameQString);
+ * \code{.py}
+ *     my_raster_layer = QgsRasterLayer("/path/to/file.tif", "my layer")
  * \endcode
  */
 class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
@@ -210,9 +208,10 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * Set the data provider.
      * \param provider provider key string, must match a valid QgsRasterDataProvider key. E.g. "gdal", "wms", etc.
      * \param options provider options
+     * \param flags provider flags since QGIS 3.16
      * \since QGIS 3.2
      */
-    void setDataProvider( const QString &provider, const QgsDataProvider::ProviderOptions &options );
+    void setDataProvider( const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     /**
      * Updates the data source of the layer. The layer's renderer and legend will be preserved only
@@ -269,6 +268,24 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * \see brightnessFilter()
      */
     QgsHueSaturationFilter *hueSaturationFilter() const { return mPipe.hueSaturationFilter(); }
+
+    /**
+     * Select which stage of the pipe should apply resampling.
+     *
+     * \see QgsRasterPipe::setResamplingStage()
+     *
+     * \since QGIS 3.16
+     */
+    void setResamplingStage( QgsRasterPipe::ResamplingStage stage );
+
+    /**
+     * Returns which stage of the pipe should apply resampling.
+     *
+     * \see QgsRasterPipe::resamplingStage()
+     *
+     * \since QGIS 3.16
+     */
+    QgsRasterPipe::ResamplingStage resamplingStage() const { return mPipe.resamplingStage(); }
 
     /**
      * Returns the raster pipe.
@@ -360,9 +377,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      *  \param limits Limits
      *  \param extent Extent used to calculate limits, if empty, use full layer extent
      *  \param sampleSize Size of data sample to calculate limits, if 0, use full resolution
-     *  \param generateLookupTableFlag Generate lookup table. */
-
-
+     *  \param generateLookupTableFlag Generate lookup table.
+    */
     void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
                                  QgsRasterMinMaxOrigin::Limits limits = QgsRasterMinMaxOrigin::MinMax,
                                  const QgsRectangle &extent = QgsRectangle(),
@@ -413,7 +429,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /**
      * \brief Draws a preview of the rasterlayer into a QImage
-     \since QGIS 2.4 */
+     * \since QGIS 2.4
+    */
     QImage previewAsImage( QSize size, const QColor &bgColor = Qt::white,
                            QImage::Format format = QImage::Format_ARGB32_Premultiplied );
 

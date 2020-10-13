@@ -20,6 +20,8 @@
 #include "qgsrasterviewport.h"
 #include "qgssymbollayerutils.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgsmessagelog.h"
+#include "qgsrasteriterator.h"
 
 #include <QColor>
 #include <QDomDocument>
@@ -27,6 +29,9 @@
 #include <QImage>
 #include <QVector>
 #include <memory>
+#include <set>
+
+const int QgsPalettedRasterRenderer::MAX_FLOAT_CLASSES = 65536;
 
 QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterInterface *input, int bandNumber, const ClassData &classes )
   : QgsRasterRenderer( input, QStringLiteral( "paletted" ) )
@@ -69,11 +74,11 @@ QgsRasterRenderer *QgsPalettedRasterRenderer::create( const QDomElement &elem, Q
       QColor color;
       QString label;
       entryElem = paletteEntries.at( i ).toElement();
-      value = static_cast<int>( entryElem.attribute( QStringLiteral( "value" ), QStringLiteral( "0" ) ).toDouble() );
-      QgsDebugMsgLevel( entryElem.attribute( "color", "#000000" ), 4 );
+      value = entryElem.attribute( QStringLiteral( "value" ), QStringLiteral( "0" ) ).toDouble();
       color = QColor( entryElem.attribute( QStringLiteral( "color" ), QStringLiteral( "#000000" ) ) );
       color.setAlpha( entryElem.attribute( QStringLiteral( "alpha" ), QStringLiteral( "255" ) ).toInt() );
       label = entryElem.attribute( QStringLiteral( "label" ) );
+      QgsDebugMsgLevel( QStringLiteral( "Value: %1, label: %2, color: %3" ).arg( value ).arg( label, entryElem.attribute( QStringLiteral( "color" ) ) ), 4 );
       classData << Class( value, color, label );
     }
   }
@@ -96,7 +101,7 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classes() const
   return mClassData;
 }
 
-QString QgsPalettedRasterRenderer::label( int idx ) const
+QString QgsPalettedRasterRenderer::label( double idx ) const
 {
   const auto constMClassData = mClassData;
   for ( const Class &c : constMClassData )
@@ -108,7 +113,7 @@ QString QgsPalettedRasterRenderer::label( int idx ) const
   return QString();
 }
 
-void QgsPalettedRasterRenderer::setLabel( int idx, const QString &label )
+void QgsPalettedRasterRenderer::setLabel( double idx, const QString &label )
 {
   ClassData::iterator cIt = mClassData.begin();
   for ( ; cIt != mClassData.end(); ++cIt )
@@ -179,8 +184,7 @@ QgsRasterBlock *QgsPalettedRasterRenderer::block( int, QgsRectangle  const &exte
       outputData[i] = myDefaultColor;
       continue;
     }
-    int val = static_cast< int >( value );
-    if ( !mColors.contains( val ) )
+    if ( !mColors.contains( value ) )
     {
       outputData[i] = myDefaultColor;
       continue;
@@ -188,21 +192,21 @@ QgsRasterBlock *QgsPalettedRasterRenderer::block( int, QgsRectangle  const &exte
 
     if ( !hasTransparency )
     {
-      outputData[i] = mColors.value( val );
+      outputData[i] = mColors.value( value );
     }
     else
     {
       currentOpacity = mOpacity;
       if ( mRasterTransparency )
       {
-        currentOpacity = mRasterTransparency->alphaValue( val, mOpacity * 255 ) / 255.0;
+        currentOpacity = mRasterTransparency->alphaValue( value, mOpacity * 255 ) / 255.0;
       }
       if ( mAlphaBand > 0 )
       {
         currentOpacity *= alphaBlock->value( i ) / 255.0;
       }
 
-      QRgb c = mColors.value( val );
+      QRgb c = mColors.value( value );
       outputData[i] = qRgba( currentOpacity * qRed( c ), currentOpacity * qGreen( c ), currentOpacity * qBlue( c ), currentOpacity * qAlpha( c ) );
     }
   }
@@ -472,37 +476,104 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromRas
   if ( !raster )
     return ClassData();
 
-  // get min and max value from raster
-  QgsRasterBandStats stats = raster->bandStatistics( bandNumber, QgsRasterBandStats::Min | QgsRasterBandStats::Max, QgsRectangle(), 0, feedback );
-  if ( feedback && feedback->isCanceled() )
-    return ClassData();
-
-  double min = stats.minimumValue;
-  double max = stats.maximumValue;
-  // need count of every individual value
-  int bins = std::ceil( max - min ) + 1;
-  if ( bins <= 0 )
-    return ClassData();
-
-  QgsRasterHistogram histogram = raster->histogram( bandNumber, bins, min, max, QgsRectangle(), 0, false, feedback );
-  if ( feedback && feedback->isCanceled() )
-    return ClassData();
-
-  double interval = ( histogram.maximum - histogram.minimum + 1 ) / histogram.binCount;
-
   ClassData data;
+  qlonglong numClasses = 0;
 
-  double currentValue = histogram.minimum;
-  double presentValues = 0;
-  for ( int idx = 0; idx < histogram.binCount; ++idx )
+  if ( feedback )
+    feedback->setProgress( 0 );
+
+  // Collect unique values for float rasters
+  if ( raster->dataType( bandNumber ) == Qgis::DataType::Float32 || raster->dataType( bandNumber ) == Qgis::DataType::Float64 )
   {
-    int count = histogram.histogramVector.at( idx );
-    if ( count > 0 )
+
+    if ( feedback && feedback->isCanceled() )
     {
-      data << Class( currentValue, QColor(), QString::number( currentValue ) );
-      presentValues++;
+      return data;
     }
-    currentValue += interval;
+
+    std::set<double> values;
+
+    int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
+    int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
+
+    QgsRasterIterator iter( raster );
+    iter.startRasterRead( bandNumber, raster->xSize(), raster->ySize(), raster->extent(), feedback );
+
+    int nbBlocksWidth = static_cast< int >( std::ceil( 1.0 * raster->ySize() / maxWidth ) );
+    int nbBlocksHeight = static_cast< int >( std::ceil( 1.0 * raster->ySize() / maxHeight ) );
+    int nbBlocks = nbBlocksWidth * nbBlocksHeight;
+
+    int iterLeft = 0;
+    int iterTop = 0;
+    int iterCols = 0;
+    int iterRows = 0;
+    std::unique_ptr< QgsRasterBlock > rasterBlock;
+    QgsRectangle blockExtent;
+    bool isNoData = false;
+    while ( iter.readNextRasterPart( bandNumber, iterCols, iterRows, rasterBlock, iterLeft, iterTop, &blockExtent ) )
+    {
+      if ( feedback )
+        feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
+
+      if ( feedback && feedback->isCanceled() )
+        break;
+
+      for ( int row = 0; row < iterRows; row++ )
+      {
+        if ( feedback && feedback->isCanceled() )
+          break;
+
+        for ( int column = 0; column < iterCols; column++ )
+        {
+          if ( feedback && feedback->isCanceled() )
+            break;
+
+          const double currentValue = rasterBlock->valueAndNoData( row, column, isNoData );
+          if ( numClasses >= MAX_FLOAT_CLASSES )
+          {
+            QgsMessageLog::logMessage( QStringLiteral( "Number of classes exceeded maximum (%1)." ).arg( MAX_FLOAT_CLASSES ), QStringLiteral( "Raster" ) );
+            break;
+          }
+          if ( !isNoData && values.find( currentValue ) == values.end() )
+          {
+            values.insert( currentValue );
+            data.push_back( Class( currentValue, QColor(), QLocale().toString( currentValue ) ) );
+            numClasses++;
+          }
+        }
+      }
+    }
+  }
+  else
+  {
+    // get min and max value from raster
+    QgsRasterBandStats stats = raster->bandStatistics( bandNumber, QgsRasterBandStats::Min | QgsRasterBandStats::Max, QgsRectangle(), 0, feedback );
+    if ( feedback && feedback->isCanceled() )
+      return ClassData();
+
+    double min = stats.minimumValue;
+    double max = stats.maximumValue;
+    // need count of every individual value
+    int bins = std::ceil( max - min ) + 1;
+    if ( bins <= 0 )
+      return ClassData();
+
+    QgsRasterHistogram histogram = raster->histogram( bandNumber, bins, min, max, QgsRectangle(), 0, false, feedback );
+    if ( feedback && feedback->isCanceled() )
+      return ClassData();
+
+    double interval = ( histogram.maximum - histogram.minimum + 1 ) / histogram.binCount;
+    double currentValue = histogram.minimum;
+    for ( int idx = 0; idx < histogram.binCount; ++idx )
+    {
+      int count = histogram.histogramVector.at( idx );
+      if ( count > 0 )
+      {
+        data << Class( currentValue, QColor(), QLocale().toString( currentValue ) );
+        numClasses++;
+      }
+      currentValue += interval;
+    }
   }
 
   // assign colors from ramp
@@ -517,13 +588,18 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromRas
       randomRamp->setTotalColorCount( data.count() );
     }
 
-    if ( presentValues > 1 )
-      presentValues -= 1; //avoid duplicate first color
+    if ( numClasses > 1 )
+      numClasses -= 1; //avoid duplicate first color
 
     QgsPalettedRasterRenderer::ClassData::iterator cIt = data.begin();
     for ( ; cIt != data.end(); ++cIt )
     {
-      cIt->color = ramp->color( i / presentValues );
+      if ( feedback )
+      {
+        // Show no less than 1%, then the max between class fill and real progress
+        feedback->setProgress( std::max<int>( 1, 100 * ( i + 1 ) / numClasses ) );
+      }
+      cIt->color = ramp->color( i / static_cast<double>( numClasses ) );
       i++;
     }
   }

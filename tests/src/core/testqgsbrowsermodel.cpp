@@ -201,7 +201,7 @@ static int testRootItemCount( QgsBrowserModel &model )
   int count = 0;
   for ( int i = 0; i < model.rowCount(); ++i )
   {
-    if ( model.data( model.index( i, 0 ) ).toString() == QStringLiteral( "test-root-item" ) )
+    if ( model.data( model.index( i, 0 ) ).toString() == QLatin1String( "test-root-item" ) )
       ++count;
   }
   return count;

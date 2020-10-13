@@ -23,6 +23,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/vectortile
   ${CMAKE_SOURCE_DIR}/src/ui
   ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/codeeditors
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
   ${CMAKE_SOURCE_DIR}/src/gui/attributetable
@@ -133,6 +134,7 @@ ADD_QGIS_TEST(maptoolellipsetest testqgsmaptoolellipse.cpp)
 ADD_QGIS_TEST(maptoolrectangletest testqgsmaptoolrectangle.cpp)
 ADD_QGIS_TEST(maptoolregularpolygontest testqgsmaptoolregularpolygon.cpp)
 ADD_QGIS_TEST(maptoolsplitpartstest testqgsmaptoolsplitparts.cpp)
+ADD_QGIS_TEST(maptoolsplitfeaturestest testqgsmaptoolsplitfeatures.cpp)
 ADD_QGIS_TEST(measuretool testqgsmeasuretool.cpp)
 ADD_QGIS_TEST(vertextool testqgsvertextool.cpp)
 ADD_QGIS_TEST(vectorlayersaveasdialogtest testqgsvectorlayersaveasdialog.cpp)
@@ -141,6 +143,5 @@ ADD_QGIS_TEST(maptooltrimextendfeaturetest testqgsmaptooltrimextendfeature.cpp)
 ADD_QGIS_TEST(projectproperties testqgsprojectproperties.cpp)
 ADD_QGIS_TEST(layoutvaliditychecks testqgsapplayoutvaliditychecks.cpp)
 ADD_QGIS_TEST(meshcalculator testqgsmeshcalculatordialog.cpp)
-ADD_QGIS_TEST(meshlayerpropertiesdialog testqgsmeshlayerpropertiesdialog.cpp)
 ADD_QGIS_TEST(gpsinformationwidget testqgsgpsinformationwidget.cpp)
 ADD_QGIS_TEST(labelpropertydialog testqgslabelpropertydialog.cpp)

@@ -1,0 +1,115 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/annotations/qgsannotationitem.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsAnnotationItem
+{
+%Docstring
+Abstract base class for annotation items which are drawn with QgsAnnotationLayers.
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsannotationitem.h"
+%End
+%ConvertToSubClassCode
+    if ( sipCpp->type() == QLatin1String( "marker" ) )
+    {
+      sipType = sipType_QgsAnnotationMarkerItem;
+    }
+    else if ( sipCpp->type() == QLatin1String( "linestring" ) )
+    {
+      sipType = sipType_QgsAnnotationLineItem;
+    }
+    else if ( sipCpp->type() == QLatin1String( "polygon" ) )
+    {
+      sipType = sipType_QgsAnnotationPolygonItem;
+    }
+    else if ( sipCpp->type() == QLatin1String( "pointtext" ) )
+    {
+      sipType = sipType_QgsAnnotationPointTextItem;
+    }
+    else
+    {
+      sipType = 0;
+    }
+%End
+  public:
+
+    QgsAnnotationItem();
+%Docstring
+Constructor for an annotation item.
+%End
+
+
+    virtual ~QgsAnnotationItem();
+
+    virtual QgsAnnotationItem *clone() = 0 /Factory/;
+%Docstring
+Returns a clone of the item. Ownership is transferred to the caller.
+%End
+
+    virtual QString type() const = 0;
+%Docstring
+Returns a unique (untranslated) string identifying the type of item.
+%End
+
+    virtual QgsRectangle boundingBox() const = 0;
+%Docstring
+Returns the bounding box of the item's geographic location, in the parent layer's coordinate reference system.
+%End
+
+    virtual void render( QgsRenderContext &context, QgsFeedback *feedback ) = 0;
+%Docstring
+Renders the item to the specified render ``context``.
+
+The ``feedback`` argument can be used to detect render cancellations during expensive
+render operations.
+%End
+
+    virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const = 0;
+%Docstring
+Writes the item's state into an XML ``element``.
+%End
+
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) = 0;
+%Docstring
+Reads the item's state from the given DOM ``element``.
+%End
+
+    int zIndex() const;
+%Docstring
+Returns the item's z index, which controls the order in which annotation items
+are rendered in the layer.
+
+.. seealso:: :py:func:`setZIndex`
+%End
+
+    void setZIndex( int index );
+%Docstring
+Sets the item's z ``index``, which controls the order in which annotation items
+are rendered in the layer.
+
+.. seealso:: :py:func:`zIndex`
+%End
+
+  private:
+    QgsAnnotationItem( const QgsAnnotationItem &other );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/annotations/qgsannotationitem.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

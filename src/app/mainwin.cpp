@@ -47,14 +47,13 @@ std::string moduleExeBaseName( void )
   }
 
   std::string basename( filepath.get() );
-  basename.resize( basename.length() - 4 );
   return basename;
 }
 
-
 int CALLBACK WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
 {
-  std::string basename( moduleExeBaseName() );
+  std::string exename( moduleExeBaseName() );
+  std::string basename( exename.substr( 0, exename.size() - 4 ) );
 
   if ( getenv( "OSGEO4W_ROOT" ) && __argc == 2 && strcmp( __argv[1], "--postinstall" ) == 0 )
   {
@@ -129,6 +128,34 @@ int CALLBACK WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     showError( message, "Error loading QGIS" );
     return EXIT_FAILURE;
   }
+
+  HINSTANCE hKernelDLL = LoadLibrary( "kernel32.dll" );
+  BOOL ( *SetDefaultDllDirectories )( DWORD ) = hKernelDLL ? reinterpret_cast<BOOL( * )( DWORD )>( GetProcAddress( hKernelDLL, "SetDefaultDllDirectories" ) ) : 0;
+  DLL_DIRECTORY_COOKIE( *AddDllDirectory )( PCWSTR ) = hKernelDLL ? reinterpret_cast<DLL_DIRECTORY_COOKIE( * )( PCWSTR )>( GetProcAddress( hKernelDLL, "AddDllDirectory" ) ) : 0;
+
+  if ( SetDefaultDllDirectories && AddDllDirectory )
+  {
+    SetDefaultDllDirectories( LOAD_LIBRARY_SEARCH_DEFAULT_DIRS );
+
+    wchar_t windir[MAX_PATH];
+    GetWindowsDirectoryW( windir, MAX_PATH );
+    wchar_t systemdir[MAX_PATH];
+    GetSystemDirectoryW( systemdir, MAX_PATH );
+
+    wchar_t *path = wcsdup( _wgetenv( L"PATH" ) );
+
+    for ( wchar_t *p = wcstok( path, L";" ); p; p = wcstok( NULL, L";" ) )
+    {
+      if ( wcsicmp( p, windir ) == 0 )
+        continue;
+      if ( wcsicmp( p, systemdir ) == 0 )
+        continue;
+      AddDllDirectory( p );
+    }
+
+    free( path );
+  }
+
 
 #ifdef _MSC_VER
   HINSTANCE hGetProcIDDLL = LoadLibrary( "qgis_app.dll" );

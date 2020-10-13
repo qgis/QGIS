@@ -446,7 +446,7 @@ QDomElement QgsMeshRendererSettings::writeXml( QDomDocument &doc ) const
   if ( mAveragingMethod )
   {
     QDomElement elemAveraging = doc.createElement( QStringLiteral( "averaging-3d" ) );
-    elemAveraging.setAttribute( QStringLiteral( "method" ), QStringLiteral( "%1" ).arg( mAveragingMethod->method() ) ) ;
+    elemAveraging.setAttribute( QStringLiteral( "method" ), QString::number( mAveragingMethod->method() ) ) ;
     QDomElement elemAveragingParams = mAveragingMethod->writeXml( doc );
     elemAveraging.appendChild( elemAveragingParams );
     elem.appendChild( elemAveraging );

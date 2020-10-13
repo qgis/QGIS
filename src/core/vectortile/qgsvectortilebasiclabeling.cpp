@@ -143,6 +143,19 @@ QMap<QString, QSet<QString> > QgsVectorTileBasicLabelProvider::usedAttributes( c
   return requiredFields;
 }
 
+QSet<QString> QgsVectorTileBasicLabelProvider::requiredLayers( QgsRenderContext &, int tileZoom ) const
+{
+  QSet< QString > res;
+  for ( const QgsVectorTileBasicLabelingStyle &layerStyle : qgis::as_const( mStyles ) )
+  {
+    if ( layerStyle.isActive( tileZoom ) )
+    {
+      res.insert( layerStyle.layerName() );
+    }
+  }
+  return res;
+}
+
 void QgsVectorTileBasicLabelProvider::setFields( const QMap<QString, QgsFields> &perLayerFields )
 {
   mPerLayerFields = perLayerFields;

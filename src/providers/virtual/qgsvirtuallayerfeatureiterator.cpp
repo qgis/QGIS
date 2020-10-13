@@ -100,12 +100,12 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
         {
           if ( !first )
           {
-            values += QLatin1String( "," );
+            values += QLatin1Char( ',' );
           }
           first = false;
           values += QString::number( v );
         }
-        values += QLatin1String( ")" );
+        values += QLatin1Char( ')' );
         wheres << values;
       }
     }
@@ -185,7 +185,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       const auto constMAttributes = mAttributes;
       for ( int i : constMAttributes )
       {
-        columns += QLatin1String( "," );
+        columns += QLatin1Char( ',' );
         QString cname = mSource->mFields.at( i ).name().toLower();
         columns += quotedColumn( cname );
       }
@@ -201,7 +201,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
     mSqlQuery = "SELECT " + columns + " FROM " + tableName;
     if ( !wheres.isEmpty() )
     {
-      mSqlQuery += " WHERE " + wheres.join( QStringLiteral( " AND " ) );
+      mSqlQuery += " WHERE " + wheres.join( QLatin1String( " AND " ) );
     }
 
     if ( !offset.isEmpty() )

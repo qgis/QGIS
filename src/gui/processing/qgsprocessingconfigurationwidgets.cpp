@@ -152,7 +152,7 @@ void QgsFilterAlgorithmConfigurationWidget::addOutput()
 
 QgsProcessingAlgorithmConfigurationWidget *QgsFilterAlgorithmConfigurationWidgetFactory::create( const QgsProcessingAlgorithm *algorithm ) const
 {
-  if ( algorithm->name() == QStringLiteral( "filter" ) )
+  if ( algorithm->name() == QLatin1String( "filter" ) )
     return new QgsFilterAlgorithmConfigurationWidget();
   else
     return nullptr;
@@ -160,7 +160,7 @@ QgsProcessingAlgorithmConfigurationWidget *QgsFilterAlgorithmConfigurationWidget
 
 bool QgsFilterAlgorithmConfigurationWidgetFactory::canCreateFor( const QgsProcessingAlgorithm *algorithm ) const
 {
-  return algorithm->name() == QStringLiteral( "filter" );
+  return algorithm->name() == QLatin1String( "filter" );
 }
 
 
@@ -281,7 +281,7 @@ void QgsConditionalBranchAlgorithmConfigurationWidget::addCondition()
 
 QgsConditionalBranchAlgorithmConfigurationWidget *QgsConditionalBranchAlgorithmConfigurationWidgetFactory::create( const QgsProcessingAlgorithm *algorithm ) const
 {
-  if ( algorithm->name() == QStringLiteral( "condition" ) )
+  if ( algorithm->name() == QLatin1String( "condition" ) )
     return new QgsConditionalBranchAlgorithmConfigurationWidget();
   else
     return nullptr;
@@ -289,7 +289,7 @@ QgsConditionalBranchAlgorithmConfigurationWidget *QgsConditionalBranchAlgorithmC
 
 bool QgsConditionalBranchAlgorithmConfigurationWidgetFactory::canCreateFor( const QgsProcessingAlgorithm *algorithm ) const
 {
-  return algorithm->name() == QStringLiteral( "condition" );
+  return algorithm->name() == QLatin1String( "condition" );
 }
 
 

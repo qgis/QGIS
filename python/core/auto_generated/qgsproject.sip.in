@@ -13,6 +13,7 @@
 
 
 
+
 class QgsProject : QObject, QgsExpressionContextGenerator, QgsExpressionContextScopeGenerator, QgsProjectTranslator
 {
 %Docstring
@@ -38,6 +39,7 @@ open within the main QGIS application.
     {
       FlagDontResolveLayers,
       FlagDontLoadLayouts,
+      FlagTrustLayerMetadata,
     };
     typedef QFlags<QgsProject::ReadFlag> ReadFlags;
 
@@ -66,6 +68,24 @@ open within the main QGIS application.
 %Docstring
 Returns the QgsProject singleton instance
 %End
+
+    static void setInstance( QgsProject *project );
+%Docstring
+Set the current project singleton instance to ``project``
+
+.. note::
+
+   this method is provided mainly for the server, which caches the projects and (potentially) needs to switch the current instance on every request.
+
+.. warning::
+
+   calling this method can have serious, unintended consequences, including instability, data loss and undefined behavior. Use with EXTREME caution!
+
+.. seealso:: :py:func:`instance`
+
+.. versionadded:: 3.10.11
+%End
+
 
     explicit QgsProject( QObject *parent /TransferThis/ = 0 );
 %Docstring
@@ -123,6 +143,13 @@ Returns the full user name that did the last save.
     QDateTime lastSaveDateTime() const;
 %Docstring
 Returns the date and time when the project was last saved.
+
+.. versionadded:: 3.14
+%End
+
+    QgsProjectVersion lastSaveVersion() const;
+%Docstring
+Returns the QGIS version which the project was last saved using.
 
 .. versionadded:: 3.14
 %End
@@ -317,7 +344,7 @@ Clears the project, removing all settings and resetting it back to an empty, def
 .. versionadded:: 2.4
 %End
 
-    bool read( const QString &filename, QgsProject::ReadFlags flags = 0 );
+    bool read( const QString &filename, QgsProject::ReadFlags flags = QgsProject::ReadFlags() );
 %Docstring
 Reads given project file from the given file.
 
@@ -327,7 +354,7 @@ Reads given project file from the given file.
 :return: ``True`` if project file has been read successfully
 %End
 
-    bool read( QgsProject::ReadFlags flags = 0 );
+    bool read( QgsProject::ReadFlags flags = QgsProject::ReadFlags() );
 %Docstring
 Reads the project from its currently associated file (see :py:func:`~QgsProject.fileName` ).
 
@@ -525,7 +552,7 @@ Returns project file path if layer is embedded from other project file. Returns 
 %End
 
 
-    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, QgsProject::ReadFlags flags = 0 );
+    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, QgsProject::ReadFlags flags = QgsProject::ReadFlags() );
 %Docstring
 Create layer group instance defined in an arbitrary project file.
 
@@ -1069,6 +1096,19 @@ the layer and is responsible for deleting it.
 .. seealso:: :py:func:`removeMapLayer`
 
 .. versionadded:: 3.0
+%End
+
+    QgsAnnotationLayer *mainAnnotationLayer();
+%Docstring
+Returns the main annotation layer associated with the project.
+
+This layer is always present in projects, and will always be rendered
+above any other map layers during map render jobs.
+
+It forms the default location to place new annotation items which
+should appear above all map layers.
+
+.. versionadded:: 3.16
 %End
 
     void removeAllMapLayers();

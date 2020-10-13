@@ -34,7 +34,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
   public:
 
     DummyAlgorithm( const QString &name, const QString &group,
-                    QgsProcessingAlgorithm::Flags flags = 0,
+                    QgsProcessingAlgorithm::Flags flags = QgsProcessingAlgorithm::Flags(),
                     const QString &tags = QString(),
                     const QString &shortDescription = QString(),
                     const QString &displayName = QString() )
@@ -61,7 +61,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
     QString mName;
     QString mDisplayName;
     QString mGroup;
-    QgsProcessingAlgorithm::Flags mFlags = nullptr;
+    QgsProcessingAlgorithm::Flags mFlags = QgsProcessingAlgorithm::Flags();
     QStringList mTags;
     QString mShortDescription;
 
@@ -446,7 +446,7 @@ void TestQgsProcessingModel::testProxyModel()
   QCOMPARE( model.data( model.index( 0, 0, group1Index ), Qt::DisplayRole ).toString(), QStringLiteral( "a1" ) );
 
   // test filter strings
-  model.setFilters( nullptr );
+  model.setFilters( QgsProcessingToolboxProxyModel::Filters() );
   // filter by algorithm id
   model.setFilterString( "a1" );
   QCOMPARE( model.rowCount(), 2 );
@@ -615,7 +615,7 @@ void TestQgsProcessingModel::testView()
   QCOMPARE( view.model()->rowCount( group2Index ), 1 );
   QCOMPARE( view.algorithmForIndex( view.model()->index( 0, 0, group2Index ) )->id(), QStringLiteral( "p1:a2" ) );
 
-  view.setFilters( nullptr );
+  view.setFilters( QgsProcessingToolboxProxyModel::Filters() );
   QCOMPARE( view.filters(), QgsProcessingToolboxProxyModel::Filters() );
   // test filter strings
   view.setFilterString( "a1" );
@@ -662,7 +662,7 @@ void TestQgsProcessingModel::testKnownIssues()
   QgsProcessingRecentAlgorithmLog recentLog;
   QgsProcessingToolboxModel model( nullptr, &registry, &recentLog );
   DummyAlgorithm *a1 = new DummyAlgorithm( "a1", "group1", QgsProcessingAlgorithm::FlagKnownIssues, QStringLiteral( "tag1,tag2" ), QStringLiteral( "short desc a" ) );
-  DummyAlgorithm *a2 = new DummyAlgorithm( "b1", "group1", nullptr, QStringLiteral( "tag1,tag2" ), QStringLiteral( "short desc b" ) );
+  DummyAlgorithm *a2 = new DummyAlgorithm( "b1", "group1", QgsProcessingAlgorithm::Flags(), QStringLiteral( "tag1,tag2" ), QStringLiteral( "short desc b" ) );
   DummyProvider *p = new DummyProvider( "p3", "provider3", QList< QgsProcessingAlgorithm * >() << a1 << a2 );
   registry.addProvider( p );
 

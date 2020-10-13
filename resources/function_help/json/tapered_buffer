@@ -1,6 +1,7 @@
 {
   "name": "tapered_buffer",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Creates a buffer along a line geometry where the buffer diameter varies evenly over the length of the line.",
   "arguments": [ {"arg":"geometry","description":"input geometry. Must be a (multi)line geometry."},
                  {"arg":"start_width","description":"width of buffer at start of line,"},

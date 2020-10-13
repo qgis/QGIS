@@ -185,6 +185,14 @@ sub processDoxygenLine {
     # replace nullptr with None (nullptr means nothing to Python devs)
     $line =~ s/\bnullptr\b/None/g;
 
+    if ( $line =~ m/^\\(?<SUB>sub)?section/) {
+      my $sep = "-";
+      $sep = "~" if defined $+{SUB};
+      $line =~ s/^\\(sub)?section \w+ //;
+      my $sep_line = $line =~ s/[\w ()]/$sep/gr;
+      $line .= "\n".$sep_line;
+    }
+
     # convert ### style headings
     if ( $line =~ m/^###\s+(.*)$/) {
       $line = "$1\n".('-' x length($1));
@@ -414,12 +422,18 @@ sub fix_annotations {
 
     # get removed params to be able to drop them out of the API doc
     if ( $line =~ m/(\w+)\s+SIP_PYARGREMOVE/ ){
-      push @SKIPPED_PARAMS_REMOVE, $1;
-      dbg_info("caught removed param: $SKIPPED_PARAMS_REMOVE[$#SKIPPED_PARAMS_REMOVE]");
+      my @removed_params = $line =~ m/(\w+)\s+SIP_PYARGREMOVE/g;
+      foreach ( @removed_params ) {
+        push @SKIPPED_PARAMS_REMOVE, $_;
+        dbg_info("caught removed param: $SKIPPED_PARAMS_REMOVE[$#SKIPPED_PARAMS_REMOVE]");
+      }
     }
     if ( $line =~ m/(\w+)\s+SIP_OUT/ ){
-      push @SKIPPED_PARAMS_OUT, $1;
-      dbg_info("caught removed param: $SKIPPED_PARAMS_OUT[$#SKIPPED_PARAMS_OUT]");
+      my @out_params = $line =~ m/(\w+)\s+SIP_OUT/g;
+      foreach ( @out_params ) {
+        push @SKIPPED_PARAMS_OUT, $_;
+        dbg_info("caught removed param: $SKIPPED_PARAMS_OUT[$#SKIPPED_PARAMS_OUT]");
+      }
     }
 
     # printed annotations
@@ -438,6 +452,7 @@ sub fix_annotations {
     $line =~ s/\bSIP_NODEFAULTCTORS\b/\/NoDefaultCtors\//;
     $line =~ s/\bSIP_OUT\b/\/Out\//g;
     $line =~ s/\bSIP_RELEASEGIL\b/\/ReleaseGIL\//;
+    $line =~ s/\bSIP_HOLDGIL\b/\/HoldGIL\//;    
     $line =~ s/\bSIP_TRANSFER\b/\/Transfer\//g;
     $line =~ s/\bSIP_TRANSFERBACK\b/\/TransferBack\//;
     $line =~ s/\bSIP_TRANSFERTHIS\b/\/TransferThis\//;
@@ -449,9 +464,9 @@ sub fix_annotations {
     $line =~ s/SIP_THROW\(\s*(\w+)\s*\)/throw\( $1 \)/;
 
     # combine multiple annotations
-    # https://regex101.com/r/uvCt4M/4
+    # https://regex101.com/r/uvCt4M/5
     do {no warnings 'uninitialized';
-        $line =~ s/\/([\w,]+(=\w+)?)\/\s*\/([\w,]+(=\w+)?)\//\/$1,$3\//;
+        $line =~ s/\/([\w,]+(=\"?\w+\"?)?)\/\s*\/([\w,]+(=\"?\w+\"?)?)\//\/$1,$3\//;
         (! $3) or dbg_info("combine multiple annotations -- works only for 2");
     };
 
@@ -1288,6 +1303,7 @@ while ($LINE_IDX < $LINE_COUNT){
         else {
             dbg_info('writing comment');
             if ( $COMMENT !~ m/^\s*$/ ){
+                dbg_info('comment non-empty');
                 my $doc_prepend = "";
                 $doc_prepend = "\@DOCSTRINGSTEMPLATE\@" if $COMMENT_TEMPLATE_DOCSTRING == 1;
                 write_output("CM1", "$doc_prepend%Docstring\n");
@@ -1296,6 +1312,20 @@ while ($LINE_IDX < $LINE_COUNT){
                 my @out_params = ();
                 my $waiting_for_return_to_end = 0;
                 foreach my $comment_line (@comment_lines) {
+
+                  if ( ( $comment_line =~ m/versionadded:/ || $comment_line =~ m/deprecated:/ ) && $#out_params >= 0 ){
+                    dbg_info('out style parameters remain to flush!');
+                    # member has /Out/ parameters, but no return type, so flush out out_params docs now
+                    my $first_out_param = shift(@out_params);
+                    write_output("CM7", "$doc_prepend:return: - $first_out_param\n");
+
+                    foreach my $out_param (@out_params) {
+                      write_output("CM7", "$doc_prepend         - $out_param\n");
+                    }
+                    write_output("CM7", "$doc_prepend\n");
+                    @out_params = ();
+                  }
+
                   # if ( $RETURN_TYPE ne '' && $comment_line =~ m/^\s*\.\. \w/ ){
                   #     # return type must be added before any other paragraph-level markup
                   #     write_output("CM5", ":rtype: $RETURN_TYPE\n\n");

@@ -25,6 +25,10 @@ corresponding to the provider type, and passes it the url. The data provider
 connects to the data source.
 
 Sample usage of the QgsRasterLayer class:
+
+.. code-block:: python
+
+         my_raster_layer = QgsRasterLayer("/path/to/file.tif", "my layer")
 %End
 
 %TypeHeaderCode
@@ -137,12 +141,13 @@ Set the data provider.
    Use the version with ProviderOptions instead.
 %End
 
-    void setDataProvider( const QString &provider, const QgsDataProvider::ProviderOptions &options );
+    void setDataProvider( const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 %Docstring
 Set the data provider.
 
 :param provider: provider key string, must match a valid QgsRasterDataProvider key. E.g. "gdal", "wms", etc.
 :param options: provider options
+:param flags: provider flags since QGIS 3.16
 
 .. versionadded:: 3.2
 %End
@@ -209,6 +214,24 @@ Returns the raster's hue/saturation filter.
 .. seealso:: :py:func:`resampleFilter`
 
 .. seealso:: :py:func:`brightnessFilter`
+%End
+
+    void setResamplingStage( QgsRasterPipe::ResamplingStage stage );
+%Docstring
+Select which stage of the pipe should apply resampling.
+
+.. seealso:: :py:func:`QgsRasterPipe.setResamplingStage`
+
+.. versionadded:: 3.16
+%End
+
+    QgsRasterPipe::ResamplingStage resamplingStage() const;
+%Docstring
+Returns which stage of the pipe should apply resampling.
+
+.. seealso:: :py:func:`QgsRasterPipe.resamplingStage`
+
+.. versionadded:: 3.16
 %End
 
     QgsRasterPipe *pipe();
@@ -309,8 +332,6 @@ In a world file, this is normally the first row (without the sign).
 .. seealso:: :py:func:`rasterUnitsPerPixelX`
 %End
 
-
-
     void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
                                  QgsRasterMinMaxOrigin::Limits limits = QgsRasterMinMaxOrigin::MinMax,
                                  const QgsRectangle &extent = QgsRectangle(),
@@ -323,7 +344,7 @@ Set contrast enhancement algorithm
 :param limits: Limits
 :param extent: Extent used to calculate limits, if empty, use full layer extent
 :param sampleSize: Size of data sample to calculate limits, if 0, use full resolution
-:param generateLookupTableFlag: Generate lookup table. *
+:param generateLookupTableFlag: Generate lookup table.
 %End
 
 

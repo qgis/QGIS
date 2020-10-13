@@ -395,7 +395,7 @@ QFont QgsFontUtils::fromMimeData( const QMimeData *data, bool *ok )
     {
       elem = doc.documentElement();
 
-      if ( elem.nodeName() != QStringLiteral( "font" ) )
+      if ( elem.nodeName() != QLatin1String( "font" ) )
         elem = elem.firstChildElement( QStringLiteral( "font" ) );
 
       if ( setFromXmlElement( font, elem ) )
@@ -431,18 +431,27 @@ static QMap<QString, QString> createTranslatedStyleMap()
 
 QString QgsFontUtils::translateNamedStyle( const QString &namedStyle )
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList words = namedStyle.split( ' ', QString::SkipEmptyParts );
+#else
+  QStringList words = namedStyle.split( ' ', Qt::SkipEmptyParts );
+#endif
   for ( int i = 0, n = words.length(); i < n; ++i )
   {
     words[i] = QCoreApplication::translate( "QFontDatabase", words[i].toLocal8Bit().constData() );
   }
-  return words.join( QStringLiteral( " " ) );
+  return words.join( QLatin1Char( ' ' ) );
 }
 
 QString QgsFontUtils::untranslateNamedStyle( const QString &namedStyle )
 {
   static QMap<QString, QString> translatedStyleMap = createTranslatedStyleMap();
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList words = namedStyle.split( ' ', QString::SkipEmptyParts );
+#else
+  QStringList words = namedStyle.split( ' ', Qt::SkipEmptyParts );
+#endif
+
   for ( int i = 0, n = words.length(); i < n; ++i )
   {
     if ( translatedStyleMap.contains( words[i] ) )
@@ -454,7 +463,7 @@ QString QgsFontUtils::untranslateNamedStyle( const QString &namedStyle )
       QgsDebugMsgLevel( QStringLiteral( "Warning: style map does not contain %1" ).arg( words[i] ), 2 );
     }
   }
-  return words.join( QStringLiteral( " " ) );
+  return words.join( QLatin1Char( ' ' ) );
 }
 
 QString QgsFontUtils::asCSS( const QFont &font, double pointToPixelScale )

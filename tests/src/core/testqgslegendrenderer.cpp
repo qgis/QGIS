@@ -141,6 +141,7 @@ class TestQgsLegendRenderer : public QObject
     void testSpacing();
     void testEffects();
     void testBigMarker();
+    void testBigMarkerMaxSize();
     void testOverrideSymbol();
 
     void testRightAlignText();
@@ -491,6 +492,24 @@ void TestQgsLegendRenderer::testBigMarker()
   QgsLayerTreeModel legendModel( mRoot );
 
   QgsLegendSettings settings;
+  _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
+  _renderLegend( testName, &legendModel, settings );
+  QVERIFY( _verifyImage( testName, mReport ) );
+}
+
+void TestQgsLegendRenderer::testBigMarkerMaxSize()
+{
+  QString testName = QStringLiteral( "legend_big_marker_max_size" );
+  QgsMarkerSymbol *sym = new QgsMarkerSymbol();
+  sym->setColor( Qt::red );
+  sym->setSize( sym->size() * 6 );
+  QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
+  QVERIFY( catRenderer );
+  catRenderer->updateCategorySymbol( 0, sym );
+
+  QgsLayerTreeModel legendModel( mRoot );
+  QgsLegendSettings settings;
+  settings.setMaximumSymbolSize( 5 ); //restrict maximum size to 5 mm
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
   _renderLegend( testName, &legendModel, settings );
   QVERIFY( _verifyImage( testName, mReport ) );
@@ -915,6 +934,8 @@ void TestQgsLegendRenderer::testColumns_data()
   QTest::newRow( "5 items, 3 columns" ) << "legend_5_by_3" << 5 << 3;
   QTest::newRow( "6 items, 3 columns" ) << "legend_6_by_3" << 6 << 3;
   QTest::newRow( "7 items, 3 columns" ) << "legend_7_by_3" << 7 << 3;
+  QTest::newRow( "27 items, 3 columns" ) << "legend_27_by_3" << 27 << 3;
+  QTest::newRow( "27 items, 9 columns" ) << "legend_27_by_9" << 27 << 9;
 }
 
 void TestQgsLegendRenderer::testColumns()

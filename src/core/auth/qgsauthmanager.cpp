@@ -32,6 +32,10 @@
 #include <QVariant>
 #include <QSqlDriver>
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+#include <QRandomGenerator>
+#endif
+
 #include <QtCrypto>
 
 #ifndef QT_NO_SSL
@@ -847,21 +851,35 @@ const QString QgsAuthManager::uniqueConfigId() const
   QTimer::singleShot( 3, &loop, &QEventLoop::quit );
   loop.exec();
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   uint seed = static_cast< uint >( QTime::currentTime().msec() );
   qsrand( seed );
+#endif
 
   while ( true )
   {
     id.clear();
     for ( int i = 0; i < len; i++ )
     {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
       switch ( qrand() % 2 )
+#else
+      switch ( QRandomGenerator::system()->generate() % 2 )
+#endif
       {
         case 0:
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
           id += ( '0' + qrand() % 10 );
+#else
+          id += ( '0' + QRandomGenerator::system()->generate() % 10 );
+#endif
           break;
         case 1:
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
           id += ( 'a' + qrand() % 26 );
+#else
+          id += ( 'a' + QRandomGenerator::system()->generate() % 26 );
+#endif
           break;
       }
     }
@@ -997,7 +1015,7 @@ QString QgsAuthManager::configAuthMethodKey( const QString &authcfg ) const
 
 QStringList QgsAuthManager::authMethodsKeys( const QString &dataprovider )
 {
-  return authMethodsMap( dataprovider.toLower() ).uniqueKeys();
+  return authMethodsMap( dataprovider.toLower() ).keys();
 }
 
 QgsAuthMethod *QgsAuthManager::authMethod( const QString &authMethodKey )
@@ -1041,14 +1059,14 @@ QWidget *QgsAuthManager::authMethodEditWidget( const QString &authMethodKey, QWi
 QgsAuthMethod::Expansions QgsAuthManager::supportedAuthMethodExpansions( const QString &authcfg )
 {
   if ( isDisabled() )
-    return QgsAuthMethod::Expansions( nullptr );
+    return QgsAuthMethod::Expansions();
 
   QgsAuthMethod *authmethod = configAuthMethod( authcfg );
   if ( authmethod )
   {
     return authmethod->supportedExpansions();
   }
-  return QgsAuthMethod::Expansions( nullptr );
+  return QgsAuthMethod::Expansions();
 }
 
 bool QgsAuthManager::storeAuthenticationConfig( QgsAuthMethodConfig &mconfig )
@@ -2966,7 +2984,11 @@ void QgsAuthManager::writeToConsole( const QString &message,
   msg += message;
 
   QTextStream out( stdout, QIODevice::WriteOnly );
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
   out << msg << endl;
+#else
+  out << msg << Qt::endl;
+#endif
 }
 
 void QgsAuthManager::tryToStartDbErase()

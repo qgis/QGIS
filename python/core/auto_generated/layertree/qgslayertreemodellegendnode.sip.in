@@ -119,7 +119,7 @@ Returns whether a forced column break should occur before the node.
     virtual void invalidateMapBasedData();
 %Docstring
 Notification from model that information from associated map view has changed.
-Default implementation does nothing. *
+Default implementation does nothing.
 %End
 
     struct ItemContext
@@ -207,6 +207,13 @@ Draws label on the right side of the item
     void dataChanged();
 %Docstring
 Emitted on internal data change so the layer tree model can forward the signal to views
+%End
+
+    void sizeChanged();
+%Docstring
+Emitted when the size of this node changes.
+
+.. versionadded:: 3.16
 %End
 
   protected:

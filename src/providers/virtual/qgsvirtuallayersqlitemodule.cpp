@@ -219,13 +219,17 @@ struct VTable
       }
 
       QgsVectorDataProvider *provider = mLayer ? mLayer->dataProvider() : mProvider;
-      if ( provider->wkbType() != QgsWkbTypes::NoGeometry )
+
+      // spatialite doesn't support curved geometries, it will be converted to linear in qgsGeometryToSpatialiteBlob
+      QgsWkbTypes::Type layerType = QgsWkbTypes::linearType( provider->wkbType() );
+
+      if ( layerType != QgsWkbTypes::NoGeometry )
       {
         // we have here a convenient hack
         // the type of a column can be declared with two numeric arguments, usually for setting numeric precision
         // we are using them to set the geometry type and srid
         // these will be reused by the provider when it will introspect the query to detect types
-        sqlFields << QStringLiteral( "geometry geometry(%1,%2)" ).arg( provider->wkbType() ).arg( provider->crs().postgisSrid() );
+        sqlFields << QStringLiteral( "geometry geometry(%1,%2)" ).arg( layerType ).arg( provider->crs().postgisSrid() );
 
         // add a hidden field for rtree filtering
         sqlFields << QStringLiteral( "_search_frame_ HIDDEN BLOB" );
@@ -237,7 +241,7 @@ struct VTable
         mPkColumn = pkAttributeIndexes.at( 0 );
       }
 
-      mCreationStr = "CREATE TABLE vtable (" + sqlFields.join( QStringLiteral( "," ) ) + ")";
+      mCreationStr = "CREATE TABLE vtable (" + sqlFields.join( QLatin1Char( ',' ) ) + ")";
 
       mCrs = provider->crs().postgisSrid();
     }
@@ -692,6 +696,7 @@ int vtableColumn( sqlite3_vtab_cursor *cursor, sqlite3_context *ctxt, int idx )
     {
       case QVariant::Int:
       case QVariant::UInt:
+      case QVariant::Bool:
         sqlite3_result_int( ctxt, v.toInt() );
         break;
       case QVariant::LongLong:
@@ -882,7 +887,7 @@ void registerQgisFunctions( sqlite3 *db )
     {
       if ( reservedFunctions.contains( name ) ) // reserved keyword
         name = "_" + name;
-      if ( name.startsWith( QLatin1String( "$" ) ) )
+      if ( name.startsWith( QLatin1Char( '$' ) ) )
         continue;
 
       // register the function and pass the pointer to the Function* as user data

@@ -263,12 +263,12 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
 #endif
   }
 
-  if ( suffix == QStringLiteral( "mbtiles" ) )
+  if ( suffix == QLatin1String( "mbtiles" ) )
   {
     QgsMbTiles reader( path );
     if ( reader.open() )
     {
-      if ( reader.metadataValue( "format" ) == QStringLiteral( "pbf" ) )
+      if ( reader.metadataValue( "format" ) == QLatin1String( "pbf" ) )
       {
         // these are vector tiles
         QUrlQuery uq;

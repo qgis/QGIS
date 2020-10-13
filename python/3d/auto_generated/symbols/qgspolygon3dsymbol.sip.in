@@ -10,7 +10,8 @@
 
 
 
-class QgsPolygon3DSymbol : QgsAbstract3DSymbol
+
+class QgsPolygon3DSymbol : QgsAbstract3DSymbol /NoDefaultCtors/
 {
 %Docstring
 3D symbol that draws polygon geometries as planar polygons, optionally extruded (with added walls).
@@ -31,6 +32,7 @@ class QgsPolygon3DSymbol : QgsAbstract3DSymbol
 %Docstring
 Constructor for QgsPolygon3DSymbol
 %End
+    ~QgsPolygon3DSymbol();
 
     virtual QString type() const;
     virtual QgsAbstract3DSymbol *clone() const /Factory/;
@@ -40,6 +42,15 @@ Constructor for QgsPolygon3DSymbol
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
+    virtual QList< QgsWkbTypes::GeometryType > compatibleGeometryTypes() const;
+
+
+    static QgsAbstract3DSymbol *create() /Factory/;
+%Docstring
+Creates a new QgsPolygon3DSymbol.
+
+Caller takes ownership of the returned symbol.
+%End
 
     Qgs3DTypes::AltitudeClamping altitudeClamping() const;
 %Docstring
@@ -77,13 +88,16 @@ Returns extrusion height (in map units)
 Sets extrusion height (in map units)
 %End
 
-    QgsPhongMaterialSettings material() const;
+    QgsAbstractMaterialSettings *material() const;
 %Docstring
 Returns material used for shading of the symbol
 %End
-    void setMaterial( const QgsPhongMaterialSettings &material );
+
+    void setMaterial( QgsAbstractMaterialSettings *material /Transfer/ );
 %Docstring
-Sets material used for shading of the symbol
+Sets the ``material`` settings used for shading of the symbol.
+
+Ownership of ``material`` is transferred to the symbol.
 %End
 
     Qgs3DTypes::CullingMode cullingMode() const;
@@ -159,6 +173,21 @@ Sets edge lines color
 
 .. versionadded:: 3.8
 %End
+
+    void setRenderedFacade( int side );
+%Docstring
+Sets which facade of the buildings is rendered (0 for None, 1 for Walls, 2 for Roofs, 3 for WallsAndRoofs)
+
+.. versionadded:: 3.16
+%End
+
+    int renderedFacade() const;
+%Docstring
+Returns which facade of the buildings is rendered (0 for None, 1 for Walls, 2 for Roofs, 3 for WallsAndRoofs)
+
+.. versionadded:: 3.16
+%End
+
 
 };
 

@@ -121,6 +121,11 @@ QString QgsRequestHandler::url() const
   return mRequest.url().toString();
 }
 
+QString QgsRequestHandler::path() const
+{
+  return mRequest.url().path();
+}
+
 void QgsRequestHandler::setStatusCode( int code )
 {
   mResponse.setStatusCode( code );
@@ -250,7 +255,7 @@ void QgsRequestHandler::parseInput()
 
           mRequest.setParameter( attrName.toUpper(), attr.value() );
         }
-        mRequest.setParameter( QStringLiteral( "REQUEST_BODY" ), inputString.replace( '+', QStringLiteral( "%2B" ) ) );
+        mRequest.setParameter( QStringLiteral( "REQUEST_BODY" ), inputString.replace( '+', QLatin1String( "%2B" ) ) );
       }
     }
   }

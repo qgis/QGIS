@@ -22,10 +22,15 @@
 #include "qgsmbtiles.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsvectortileutils.h"
+#include "qgsapplication.h"
+#include "qgsauthmanager.h"
+#include "qgsmessagelog.h"
 
-QgsVectorTileLoader::QgsVectorTileLoader( const QString &uri, const QgsTileMatrix &tileMatrix, const QgsTileRange &range, const QPointF &viewCenter, QgsFeedback *feedback )
+QgsVectorTileLoader::QgsVectorTileLoader( const QString &uri, const QgsTileMatrix &tileMatrix, const QgsTileRange &range, const QPointF &viewCenter, const QString &authid, const QString &referer, QgsFeedback *feedback )
   : mEventLoop( new QEventLoop )
   , mFeedback( feedback )
+  , mAuthCfg( authid )
+  , mReferer( referer )
 {
   if ( feedback )
   {
@@ -89,6 +94,14 @@ void QgsVectorTileLoader::loadFromNetworkAsync( const QgsTileXYZ &id, const QgsT
   request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
+  if ( !mReferer.isEmpty() )
+    request.setRawHeader( "Referer", mReferer.toUtf8() );
+
+  if ( !mAuthCfg.isEmpty() &&  !QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg ) )
+  {
+    QgsMessageLog::logMessage( tr( "network request update failed for authentication config" ), tr( "Network" ) );
+  }
+
   QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
   connect( reply, &QNetworkReply::finished, this, &QgsVectorTileLoader::tileReplyFinished );
 
@@ -143,15 +156,16 @@ void QgsVectorTileLoader::canceled()
 
 //////
 
-QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const QString &sourceType, const QString &sourcePath, const QgsTileMatrix &tileMatrix, const QPointF &viewCenter, const QgsTileRange &range )
+QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const QString &sourceType, const QString &sourcePath, const QgsTileMatrix &tileMatrix, const QPointF &viewCenter, const QgsTileRange &range, const QString &authid, const QString &referer )
 {
   QList<QgsVectorTileRawData> rawTiles;
 
   QgsMbTiles mbReader( sourcePath );
-  bool isUrl = ( sourceType == QStringLiteral( "xyz" ) );
+  bool isUrl = ( sourceType == QLatin1String( "xyz" ) );
   if ( !isUrl )
   {
     bool res = mbReader.open();
+    Q_UNUSED( res );
     Q_ASSERT( res );
   }
 
@@ -159,7 +173,7 @@ QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const
   QgsVectorTileUtils::sortTilesByDistanceFromCenter( tiles, viewCenter );
   for ( QgsTileXYZ id : qgis::as_const( tiles ) )
   {
-    QByteArray rawData = isUrl ? loadFromNetwork( id, tileMatrix, sourcePath ) : loadFromMBTiles( id, mbReader );
+    QByteArray rawData = isUrl ? loadFromNetwork( id, tileMatrix, sourcePath, authid, referer ) : loadFromMBTiles( id, mbReader );
     if ( !rawData.isEmpty() )
     {
       rawTiles.append( QgsVectorTileRawData( id, rawData ) );
@@ -168,12 +182,17 @@ QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const
   return rawTiles;
 }
 
-QByteArray QgsVectorTileLoader::loadFromNetwork( const QgsTileXYZ &id, const QgsTileMatrix &tileMatrix, const QString &requestUrl )
+QByteArray QgsVectorTileLoader::loadFromNetwork( const QgsTileXYZ &id, const QgsTileMatrix &tileMatrix, const QString &requestUrl, const QString &authid, const QString &referer )
 {
   QString url = QgsVectorTileUtils::formatXYZUrlTemplate( requestUrl, id, tileMatrix );
   QNetworkRequest nr;
   nr.setUrl( QUrl( url ) );
+
+  if ( !referer.isEmpty() )
+    nr.setRawHeader( "Referer", referer.toUtf8() );
+
   QgsBlockingNetworkRequest req;
+  req.setAuthCfg( authid );
   QgsDebugMsgLevel( QStringLiteral( "Blocking request: " ) + url, 2 );
   QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr );
   if ( errCode != QgsBlockingNetworkRequest::NoError )

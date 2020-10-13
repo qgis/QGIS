@@ -25,6 +25,7 @@
 
 #include <cmath>
 #include <QPainter>
+#include <QPainterPath>
 #include <QRegularExpression>
 #include <QJsonObject>
 #include <QJsonArray>
@@ -168,11 +169,31 @@ bool QgsPoint::fromWkt( const QString &wkt )
     return false;
   mWkbType = parts.first;
 
-  if ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 )
+  QString secondWithoutParentheses = parts.second;
+  secondWithoutParentheses = secondWithoutParentheses.remove( '(' ).remove( ')' ).simplified().remove( ' ' );
+  parts.second = parts.second.remove( '(' ).remove( ')' );
+  if ( ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 ) ||
+       secondWithoutParentheses.isEmpty() )
     return true;
 
   QRegularExpression rx( QStringLiteral( "\\s" ) );
   QStringList coordinates = parts.second.split( rx, QString::SkipEmptyParts );
+
+  // So far the parser hasn't looked at the coordinates. We'll avoid having anything but numbers and return NULL instead of 0 as a coordinate.
+  // Without this check, "POINT (a, b)" or "POINT (( 4, 3 ))" returned "POINT (0 ,0)"
+  // And some strange conversion...
+  // .. python:
+  // p = QgsPoint()
+  // p.fromWkt("POINT (-3.12, -4.2")
+  // False
+  // p.fromWkt( "POINT (-5.1234, -1.4321)" )
+  // True
+  // p.asWkt()
+  // 'Point (0 -1.43209999999999993)'
+  QRegularExpression rxIsNumber( QStringLiteral( "^[+-]?(\\d\\.?\\d*[Ee][+\\-]?\\d+|(\\d+\\.\\d*|\\d*\\.\\d+)|\\d+)$" ) );
+  if ( coordinates.filter( rxIsNumber ).size() != coordinates.size() )
+    return false;
+
   if ( coordinates.size() < 2 )
   {
     clear();
@@ -236,7 +257,7 @@ QString QgsPoint::asWkt( int precision ) const
   QString wkt = wktTypeStr();
 
   if ( isEmpty() )
-    wkt += QStringLiteral( " EMPTY" );
+    wkt += QLatin1String( " EMPTY" );
   else
   {
     wkt += QLatin1String( " (" );
@@ -319,6 +340,11 @@ QString QgsPoint::asKml( int precision ) const
 void QgsPoint::draw( QPainter &p ) const
 {
   p.drawRect( QRectF( mX - 2, mY - 2, 4, 4 ) );
+}
+
+QPainterPath QgsPoint::asQPainterPath() const
+{
+  return QPainterPath();
 }
 
 void QgsPoint::clear()

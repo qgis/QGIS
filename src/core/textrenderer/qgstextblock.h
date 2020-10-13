@@ -19,6 +19,7 @@
 #include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgstextfragment.h"
+#include "qgsstringutils.h"
 #include <QVector>
 
 /**
@@ -47,6 +48,13 @@ class CORE_EXPORT QgsTextBlock
     explicit QgsTextBlock( const QgsTextFragment &fragment );
 
     /**
+     * Converts the block to plain text.
+     *
+     * \since QGIS 3.16
+     */
+    QString toPlainText() const;
+
+    /**
      * Appends a \a fragment to the block.
      */
     void append( const QgsTextFragment &fragment );
@@ -70,6 +78,13 @@ class CORE_EXPORT QgsTextBlock
      * Returns the number of fragments in the block.
      */
     int size() const;
+
+    /**
+     * Applies a \a capitalization style to the block's text.
+     *
+     * \since QGIS 3.16
+     */
+    void applyCapitalization( QgsStringUtils::Capitalization capitalization );
 
 #ifdef SIP_RUN
     int __len__() const;

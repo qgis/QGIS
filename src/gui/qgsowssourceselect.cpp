@@ -389,13 +389,16 @@ void QgsOWSSourceSelect::mChangeCRSButton_clicked()
   }
 
   QgsProjectionSelectionDialog *mySelector = new QgsProjectionSelectionDialog( this );
-  mySelector->setMessage( QString() );
   mySelector->setOgcWmsCrsFilter( mSelectedLayersCRSs );
 
   QgsCoordinateReferenceSystem defaultCRS = QgsProject::instance()->crs();
   if ( defaultCRS.isValid() )
   {
     mySelector->setCrs( defaultCRS );
+  }
+  else
+  {
+    mySelector->showNoCrsForLayerMessage();
   }
 
   if ( !mySelector->exec() )

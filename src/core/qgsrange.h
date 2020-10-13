@@ -458,6 +458,11 @@ class QgsTemporalRange
              mIncludeUpper == other.includeEnd();
     }
 
+    bool operator!=( const QgsTemporalRange<T> &other ) const
+    {
+      return ( ! operator==( other ) );
+    }
+
   private:
 
     T mLower;

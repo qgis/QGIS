@@ -77,8 +77,9 @@ class QgsWFSSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsWFS
 
     /**
      * Stores the available CRS for a server connections.
-     The first string is the typename, the corresponding list
-    stores the CRS for the typename in the form 'EPSG:XXXX'*/
+     * The first string is the typename, the corresponding list
+     * stores the CRS for the typename in the form 'EPSG:XXXX'
+    */
     QMap<QString, QStringList > mAvailableCRS;
     std::unique_ptr<QgsWfsCapabilities> mCapabilities;
     std::unique_ptr<QgsOapifLandingPageRequest> mOAPIFLandingPage;
@@ -95,10 +96,11 @@ class QgsWFSSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsWFS
 
     /**
      * Returns the best suited CRS from a set of authority ids
-       1. project CRS if contained in the set
-       2. WGS84 if contained in the set
-       3. the first entry in the set else
-    \returns the authority id of the crs or an empty string in case of error*/
+     * 1. project CRS if contained in the set
+     * 2. WGS84 if contained in the set
+     * 3. the first entry in the set else
+     * \returns the authority id of the crs or an empty string in case of error
+    */
     QString getPreferredCrs( const QSet<QString> &crsSet ) const;
 
     void showHelp();

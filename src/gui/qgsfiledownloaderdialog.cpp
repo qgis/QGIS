@@ -41,7 +41,7 @@ QgsFileDownloaderDialog::QgsFileDownloaderDialog( const QUrl &url, const QString
 
 void QgsFileDownloaderDialog::onError( const QStringList &errors )
 {
-  QMessageBox::warning( nullptr, tr( "Download File" ), errors.join( QStringLiteral( "<br>" ) ) );
+  QMessageBox::warning( nullptr, tr( "Download File" ), errors.join( QLatin1String( "<br>" ) ) );
 }
 
 void QgsFileDownloaderDialog::onDownloadProgress( qint64 bytesReceived, qint64 bytesTotal )

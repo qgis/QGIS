@@ -60,8 +60,9 @@ namespace MDAL
     };
     std::string name; //!< Dataset group name
     CFDimensions::Type outputType;
-    bool is_vector;
-    bool is_polar;
+    bool isVector;
+    bool isPolar;
+    bool isInvertedDirection;
     TimeLocation timeLocation;
     size_t nTimesteps;
     size_t nValues;
@@ -133,6 +134,7 @@ namespace MDAL
           std::string &name,
           bool *is_vector,
           bool *isPolar,
+          bool *invertedDirection,
           bool *is_x ) = 0;
       virtual std::vector<std::pair<double, double> > parseClassification( int varid ) const = 0;
       virtual std::string getTimeVariableName() const = 0;

@@ -59,8 +59,8 @@ struct QgsOgrLayerReleaser
 using QgsOgrLayerUniquePtr = std::unique_ptr< QgsOgrLayer, QgsOgrLayerReleaser>;
 
 /**
-  \class QgsOgrProvider
-  \brief Data provider for OGR datasources
+ * \class QgsOgrProvider
+ * \brief Data provider for OGR datasources
   */
 class QgsOgrProvider final: public QgsVectorDataProvider
 {
@@ -86,7 +86,8 @@ class QgsOgrProvider final: public QgsVectorDataProvider
      * \param options generic data provider options
      */
     explicit QgsOgrProvider( QString const &uri,
-                             const QgsDataProvider::ProviderOptions &providerOptions );
+                             const QgsDataProvider::ProviderOptions &providerOptions,
+                             QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     ~QgsOgrProvider() override;
 
@@ -121,7 +122,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     QString defaultValueClause( int fieldIndex ) const override;
     bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const override;
     void updateExtents() override;
-    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool addAttributes( const QList<QgsField> &attributes ) override;
     bool deleteAttributes( const QgsAttributeIds &attributes ) override;
@@ -230,7 +231,8 @@ class QgsOgrProvider final: public QgsVectorDataProvider
 
     /**
      * This member variable receives the same value as extent_
-     in the method QgsOgrProvider::extent(). The purpose is to prevent a memory leak*/
+     * in the method QgsOgrProvider::extent(). The purpose is to prevent a memory leak.
+    */
     mutable QgsRectangle mExtentRect;
 
     /**
@@ -256,13 +258,17 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     //! layer index
     int mLayerIndex = 0;
 
+    //! open options
+    QStringList mOpenOptions;
+
     //! was a sub layer requested?
     bool mIsSubLayer = false;
 
     /**
      * Optional geometry type for layers with multiple geometries,
-     *  otherwise wkbUnknown. This type is always flatten (2D) and single, it means
-     *  that 2D, 25D, single and multi types are mixed in one sublayer */
+     * otherwise wkbUnknown. This type is always flatten (2D) and single, it means
+     * that 2D, 25D, single and multi types are mixed in one sublayer.
+    */
     OGRwkbGeometryType mOgrGeometryTypeFilter = wkbUnknown;
 
     //! current spatial filter
@@ -316,7 +322,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
 
     void computeCapabilities();
 
-    QgsVectorDataProvider::Capabilities mCapabilities = nullptr;
+    QgsVectorDataProvider::Capabilities mCapabilities = QgsVectorDataProvider::Capabilities();
 
     bool doInitialActionsForEdition();
 
@@ -343,8 +349,8 @@ using QgsOgrDatasetSharedPtr = std::shared_ptr< QgsOgrDataset>;
 
 
 /**
-  \class QgsOgrProviderUtils
-  \brief Utility class with static methods
+ * \class QgsOgrProviderUtils
+ * \brief Utility class with static methods
   */
 class CORE_EXPORT QgsOgrProviderUtils
 {
@@ -519,8 +525,8 @@ class CORE_EXPORT QgsOgrProviderUtils
 
 
 /**
-  \class QgsOgrDataset
-  \brief Wrap a GDALDatasetH object in a thread-safe way
+ * \class QgsOgrDataset
+ * \brief Wrap a GDALDatasetH object in a thread-safe way
   */
 class QgsOgrDataset
 {
@@ -547,9 +553,9 @@ class QgsOgrDataset
 
 
 /**
-  \class QgsOgrFeatureDefn
-  \brief Wrap a OGRFieldDefnH object in a thread-safe way
-  */
+ * \class QgsOgrFeatureDefn
+ * \brief Wrap a OGRFieldDefnH object in a thread-safe way
+ */
 class QgsOgrFeatureDefn
 {
     friend class QgsOgrLayer;
@@ -589,8 +595,8 @@ class QgsOgrFeatureDefn
 
 
 /**
-  \class QgsOgrLayer
-  \brief Wrap a OGRLayerH object in a thread-safe way
+ * \class QgsOgrLayer
+ * \brief Wrap a OGRLayerH object in a thread-safe way
   */
 class QgsOgrLayer
 {
@@ -740,7 +746,7 @@ class QgsOgrProviderMetadata final: public QgsProviderMetadata
     void initProvider() override;
     void cleanupProvider() override;
     QList< QgsDataItemProvider * > dataItemProviders() const override;
-    QgsOgrProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QgsOgrProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QVariantMap decodeUri( const QString &uri ) override;
     QString encodeUri( const QVariantMap &parts ) override;
     QString filters( FilterType type ) override;

@@ -237,11 +237,11 @@ QString Qgs3DUtils::cullingModeToString( Qgs3DTypes::CullingMode mode )
 
 Qgs3DTypes::CullingMode Qgs3DUtils::cullingModeFromString( const QString &str )
 {
-  if ( str == QStringLiteral( "front" ) )
+  if ( str == QLatin1String( "front" ) )
     return Qgs3DTypes::Front;
-  else if ( str == QStringLiteral( "back" ) )
+  else if ( str == QLatin1String( "back" ) )
     return Qgs3DTypes::Back;
-  else if ( str == QStringLiteral( "front-and-back" ) )
+  else if ( str == QLatin1String( "front-and-back" ) )
     return Qgs3DTypes::FrontAndBack;
   else
     return Qgs3DTypes::NoCulling;
@@ -548,21 +548,6 @@ void Qgs3DUtils::estimateVectorLayerZRange( QgsVectorLayer *layer, double &zMin,
   }
 }
 
-std::unique_ptr<QgsAbstract3DSymbol> Qgs3DUtils::symbolForGeometryType( QgsWkbTypes::GeometryType geomType )
-{
-  switch ( geomType )
-  {
-    case QgsWkbTypes::PointGeometry:
-      return std::unique_ptr<QgsAbstract3DSymbol>( new QgsPoint3DSymbol );
-    case QgsWkbTypes::LineGeometry:
-      return std::unique_ptr<QgsAbstract3DSymbol>( new QgsLine3DSymbol );
-    case QgsWkbTypes::PolygonGeometry:
-      return std::unique_ptr<QgsAbstract3DSymbol>( new QgsPolygon3DSymbol );
-    default:
-      return nullptr;
-  }
-}
-
 QgsExpressionContext Qgs3DUtils::globalProjectLayerExpressionContext( QgsVectorLayer *layer )
 {
   QgsExpressionContext exprContext;
@@ -572,12 +557,12 @@ QgsExpressionContext Qgs3DUtils::globalProjectLayerExpressionContext( QgsVectorL
   return exprContext;
 }
 
-Qt3DExtras::QPhongMaterial *Qgs3DUtils::phongMaterial( const QgsPhongMaterialSettings &settings )
+QgsPhongMaterialSettings Qgs3DUtils::phongMaterialFromQt3DComponent( Qt3DExtras::QPhongMaterial *material )
 {
-  Qt3DExtras::QPhongMaterial *phong = new Qt3DExtras::QPhongMaterial;
-  phong->setAmbient( settings.ambient() );
-  phong->setDiffuse( settings.diffuse() );
-  phong->setSpecular( settings.specular() );
-  phong->setShininess( settings.shininess() );
-  return phong;
+  QgsPhongMaterialSettings settings;
+  settings.setAmbient( material->ambient() );
+  settings.setDiffuse( material->diffuse() );
+  settings.setSpecular( material->specular() );
+  settings.setShininess( material->shininess() );
+  return settings;
 }

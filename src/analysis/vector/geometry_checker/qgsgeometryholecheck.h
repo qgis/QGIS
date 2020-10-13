@@ -25,6 +25,7 @@
  */
 class ANALYSIS_EXPORT QgsGeometryHoleCheck : public QgsGeometryCheck
 {
+    Q_DECLARE_TR_FUNCTIONS( QgsGeometryHoleCheck )
   public:
     explicit QgsGeometryHoleCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
       : QgsGeometryCheck( context, configuration ) {}

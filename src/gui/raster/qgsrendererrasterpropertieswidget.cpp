@@ -27,9 +27,6 @@
 #include "qgsmultibandcolorrendererwidget.h"
 #include "qgspalettedrendererwidget.h"
 #include "qgshillshaderendererwidget.h"
-#include "qgsrasterresamplefilter.h"
-#include "qgsbilinearrasterresampler.h"
-#include "qgscubicrasterresampler.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgssinglebandgrayrenderer.h"
 #include "qgsapplication.h"
@@ -57,10 +54,8 @@ static void _initRendererWidgetFunctions()
 
 QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
-
+  , mRasterLayer( qobject_cast<QgsRasterLayer *>( layer ) )
 {
-  mRasterLayer = qobject_cast<QgsRasterLayer *>( layer );
-
   if ( !mRasterLayer )
     return;
 
@@ -69,11 +64,7 @@ QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapLaye
 
   _initRendererWidgetFunctions();
 
-  mZoomedInResamplingComboBox->insertItem( 0, tr( "Nearest neighbour" ) );
-  mZoomedInResamplingComboBox->insertItem( 1, tr( "Bilinear" ) );
-  mZoomedInResamplingComboBox->insertItem( 2, tr( "Cubic" ) );
-  mZoomedOutResamplingComboBox->insertItem( 0, tr( "Nearest neighbour" ) );
-  mZoomedOutResamplingComboBox->insertItem( 1, tr( "Average" ) );
+  mResamplingUtils.initWidgets( mRasterLayer, mZoomedInResamplingComboBox, mZoomedOutResamplingComboBox, mMaximumOversamplingSpinBox, mCbEarlyResampling );
 
   connect( cboRenderers, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRendererRasterPropertiesWidget::rendererChanged );
 
@@ -82,6 +73,9 @@ QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapLaye
 
   connect( mSliderContrast, &QAbstractSlider::valueChanged, mContrastSpinBox, &QSpinBox::setValue );
   connect( mContrastSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), mSliderContrast, &QAbstractSlider::setValue );
+
+  connect( mSliderGamma, &QAbstractSlider::valueChanged, this, &QgsRendererRasterPropertiesWidget::updateGammaSpinBox );
+  connect( mGammaSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRendererRasterPropertiesWidget::updateGammaSlider );
 
   // Connect saturation slider and spin box
   connect( sliderSaturation, &QAbstractSlider::valueChanged, spinBoxSaturation, &QSpinBox::setValue );
@@ -100,6 +94,7 @@ QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapLaye
   // Just connect the spin boxes because the sliders update the spinners
   connect( mBrightnessSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
   connect( mContrastSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
+  connect( mGammaSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
   connect( spinBoxSaturation, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
   connect( spinColorizeStrength, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
   connect( btnColorizeColor, &QgsColorButton::colorChanged, this, &QgsPanelWidget::widgetChanged );
@@ -108,6 +103,7 @@ QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapLaye
   connect( mZoomedInResamplingComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
   connect( mZoomedOutResamplingComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
   connect( mMaximumOversamplingSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
+  connect( mCbEarlyResampling,  &QAbstractButton::toggled, this, &QgsPanelWidget::widgetChanged );
 
   // finally sync to the layer - even though some actions may emit widgetChanged signal,
   // this is not a problem - nobody is listening to our signals yet
@@ -134,6 +130,7 @@ void QgsRendererRasterPropertiesWidget::apply()
   {
     brightnessFilter->setBrightness( mSliderBrightness->value() );
     brightnessFilter->setContrast( mSliderContrast->value() );
+    brightnessFilter->setGamma( mGammaSpinBox->value() );
   }
 
   if ( QgsRasterRendererWidget *rendererWidget = dynamic_cast<QgsRasterRendererWidget *>( stackedWidget->currentWidget() ) )
@@ -160,33 +157,7 @@ void QgsRendererRasterPropertiesWidget::apply()
     hueSaturationFilter->setColorizeStrength( sliderColorizeStrength->value() );
   }
 
-  if ( QgsRasterResampleFilter *resampleFilter = mRasterLayer->resampleFilter() )
-  {
-    QgsRasterResampler *zoomedInResampler = nullptr;
-    QString zoomedInResamplingMethod = mZoomedInResamplingComboBox->currentText();
-    if ( zoomedInResamplingMethod == tr( "Bilinear" ) )
-    {
-      zoomedInResampler = new QgsBilinearRasterResampler();
-    }
-    else if ( zoomedInResamplingMethod == tr( "Cubic" ) )
-    {
-      zoomedInResampler = new QgsCubicRasterResampler();
-    }
-
-    resampleFilter->setZoomedInResampler( zoomedInResampler );
-
-    //raster resampling
-    QgsRasterResampler *zoomedOutResampler = nullptr;
-    QString zoomedOutResamplingMethod = mZoomedOutResamplingComboBox->currentText();
-    if ( zoomedOutResamplingMethod == tr( "Average" ) )
-    {
-      zoomedOutResampler = new QgsBilinearRasterResampler();
-    }
-
-    resampleFilter->setZoomedOutResampler( zoomedOutResampler );
-
-    resampleFilter->setMaxOversampling( mMaximumOversamplingSpinBox->value() );
-  }
+  mResamplingUtils.refreshLayerFromWidgets();
 
   mRasterLayer->setBlendMode( mBlendModeComboBox->blendMode() );
 }
@@ -222,6 +193,7 @@ void QgsRendererRasterPropertiesWidget::syncToLayer( QgsRasterLayer *layer )
   {
     mSliderBrightness->setValue( brightnessFilter->brightness() );
     mSliderContrast->setValue( brightnessFilter->contrast() );
+    mGammaSpinBox->setValue( brightnessFilter->gamma() );
   }
 
   btnColorizeColor->setColorDialogTitle( tr( "Select Color" ) );
@@ -248,39 +220,7 @@ void QgsRendererRasterPropertiesWidget::syncToLayer( QgsRasterLayer *layer )
   mBlendModeComboBox->setBlendMode( mRasterLayer->blendMode() );
 
   //set combo boxes to current resampling types
-  if ( const QgsRasterResampleFilter *resampleFilter = mRasterLayer->resampleFilter() )
-  {
-    const QgsRasterResampler *zoomedInResampler = resampleFilter->zoomedInResampler();
-    if ( zoomedInResampler )
-    {
-      if ( zoomedInResampler->type() == QLatin1String( "bilinear" ) )
-      {
-        mZoomedInResamplingComboBox->setCurrentIndex( 1 );
-      }
-      else if ( zoomedInResampler->type() == QLatin1String( "cubic" ) )
-      {
-        mZoomedInResamplingComboBox->setCurrentIndex( 2 );
-      }
-    }
-    else
-    {
-      mZoomedInResamplingComboBox->setCurrentIndex( 0 );
-    }
-
-    const QgsRasterResampler *zoomedOutResampler = resampleFilter->zoomedOutResampler();
-    if ( zoomedOutResampler )
-    {
-      if ( zoomedOutResampler->type() == QLatin1String( "bilinear" ) ) //bilinear resampler does averaging when zooming out
-      {
-        mZoomedOutResamplingComboBox->setCurrentIndex( 1 );
-      }
-    }
-    else
-    {
-      mZoomedOutResamplingComboBox->setCurrentIndex( 0 );
-    }
-    mMaximumOversamplingSpinBox->setValue( resampleFilter->maxOversampling() );
-  }
+  mResamplingUtils.refreshWidgetsFromLayer();
 }
 
 void QgsRendererRasterPropertiesWidget::mResetColorRenderingBtn_clicked()
@@ -288,6 +228,7 @@ void QgsRendererRasterPropertiesWidget::mResetColorRenderingBtn_clicked()
   mBlendModeComboBox->setBlendMode( QPainter::CompositionMode_SourceOver );
   mSliderBrightness->setValue( 0 );
   mSliderContrast->setValue( 0 );
+  mGammaSpinBox->setValue( 1.0 );
   sliderSaturation->setValue( 0 );
   comboGrayscale->setCurrentIndex( ( int ) QgsHueSaturationFilter::GrayscaleOff );
   mColorizeCheck->setChecked( false );
@@ -432,4 +373,14 @@ void QgsRendererRasterPropertiesWidget::refreshAfterStyleChanged()
       }
     }
   }
+}
+
+void QgsRendererRasterPropertiesWidget::updateGammaSpinBox( int value )
+{
+  mGammaSpinBox->setValue( value / 100.0 );
+}
+
+void QgsRendererRasterPropertiesWidget::updateGammaSlider( double value )
+{
+  mSliderGamma->setValue( value * 100 );
 }

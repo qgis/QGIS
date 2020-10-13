@@ -127,6 +127,18 @@
          </item>
          <item>
           <property name="text">
+           <string>Transformations</string>
+          </property>
+          <property name="toolTip">
+           <string>Coordinate transformations and operations</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/transformation.svg</normaloff>:/images/themes/default/transformation.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Default Styles</string>
           </property>
           <property name="toolTip">
@@ -245,7 +257,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>8</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mProjOptsGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -274,8 +286,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>590</width>
-                <height>828</height>
+                <width>671</width>
+                <height>865</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout">
@@ -666,7 +678,7 @@
                       </widget>
                      </item>
                      <item>
-                      <widget class="QSpinBox" name="spinBoxDP">
+                      <widget class="QgsSpinBox" name="spinBoxDP">
                        <property name="toolTip">
                         <string>The number of decimal places for the manual option</string>
                        </property>
@@ -897,8 +909,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>603</width>
-                <height>161</height>
+                <width>337</width>
+                <height>74</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -917,13 +929,51 @@
                  </layout>
                 </widget>
                </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="mProjTransformations">
+          <layout class="QVBoxLayout" name="verticalLayout_8">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QgsScrollArea" name="scrollArea_3">
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="scrollAreaWidgetContents_3">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>604</width>
+                <height>105</height>
+               </rect>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_9">
                <item>
-                <widget class="QgsCollapsibleGroupBox" name="mDatumTransformGroupBox">
+                <widget class="QGroupBox" name="mDatumTransformGroupBox">
                  <property name="title">
                   <string>Datum Transformations</string>
                  </property>
-                 <layout class="QGridLayout" name="gridLayout_2">
-                  <item row="0" column="0">
+                 <layout class="QVBoxLayout" name="verticalLayout_10">
+                  <item>
                    <widget class="QCheckBox" name="mShowDatumTransformDialogCheckBox">
                     <property name="enabled">
                      <bool>false</bool>
@@ -933,7 +983,7 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="0">
+                  <item>
                    <widget class="QgsDatumTransformTableWidget" name="mDatumTransformTableWidget" native="true"/>
                   </item>
                  </layout>
@@ -972,8 +1022,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>290</width>
-                <height>543</height>
+                <width>291</width>
+                <height>563</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1392,7 +1442,7 @@
            <item row="0" column="0" colspan="2">
             <widget class="QCheckBox" name="mAutoTransaction">
              <property name="toolTip">
-              <string>When enabled, layers from the same database connection will be put into a transaction group. Their edit state will be synchronized and changes to these layers will be sent to the provider immediately. Only supported on postgres provider.</string>
+              <string>When enabled, layers from the same database connection will be put into a transaction group. Their edit state will be synchronized and changes to these layers will be sent to the provider immediately. Only supported for postgres, GPKG, spatialite and oracle.</string>
              </property>
              <property name="text">
               <string>Automatically create transaction groups where possible</string>
@@ -1402,7 +1452,7 @@
            <item row="1" column="0" colspan="2">
             <widget class="QCheckBox" name="mEvaluateDefaultValues">
              <property name="toolTip">
-              <string>When enabled, default values will be evaluated as early as possible. This will fill default values in the add feature form already and not only create them on commit. Only supported for postgres provider.</string>
+              <string>When enabled, default values will be evaluated as early as possible. This will fill default values in the add feature form already and not only create them on commit. Only supported for postgres, GPKG, spatialite and oracle.</string>
              </property>
              <property name="text">
               <string>Evaluate default values on provider side</string>
@@ -1548,8 +1598,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>178</width>
-                <height>54</height>
+                <width>179</width>
+                <height>56</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -1610,8 +1660,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>671</width>
-                <height>3090</height>
+                <width>653</width>
+                <height>3187</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1698,8 +1748,8 @@
                      </widget>
                     </item>
                     <item row="0" column="1">
-                     <widget class="QgsPropertyOverrideButton" name="mWMSOnlineResourceExpressionButton" native="true">
-                      <property name="text" stdset="0">
+                     <widget class="QgsPropertyOverrideButton" name="mWMSOnlineResourceExpressionButton">
+                      <property name="text">
                        <string>...</string>
                       </property>
                      </widget>
@@ -2120,7 +2170,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QSpinBox" name="mWMSMaxAtlasFeaturesSpinBox">
+                     <widget class="QgsSpinBox" name="mWMSMaxAtlasFeaturesSpinBox">
                       <property name="maximum">
                        <number>9999999</number>
                       </property>
@@ -2148,7 +2198,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QSpinBox" name="mWMSPrecisionSpinBox">
+                     <widget class="QgsSpinBox" name="mWMSPrecisionSpinBox">
                       <property name="minimum">
                        <number>1</number>
                       </property>
@@ -2517,7 +2567,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QSpinBox" name="mWMSImageQualitySpinBox">
+                     <widget class="QgsSpinBox" name="mWMSImageQualitySpinBox">
                       <property name="minimum">
                        <number>10</number>
                       </property>
@@ -2547,7 +2597,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QSpinBox" name="mWMSTileBufferSpinBox"/>
+                     <widget class="QgsSpinBox" name="mWMSTileBufferSpinBox"/>
                     </item>
                    </layout>
                   </item>
@@ -2576,7 +2626,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QSpinBox" name="mWMTSMinScaleLineEdit">
+                     <widget class="QgsSpinBox" name="mWMTSMinScaleLineEdit">
                       <property name="minimum">
                        <number>1</number>
                       </property>
@@ -3054,20 +3104,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsFilterLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgsfilterlineedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsVariableEditorWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsvariableeditorwidget.h</header>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -3077,39 +3116,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDateTimeEdit</class>
-   <extends>QDateTimeEdit</extends>
-   <header>qgsdatetimeedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsOpacityWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsopacitywidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorSchemeList</class>
-   <extends>QWidget</extends>
-   <header location="global">qgscolorschemelist.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDatumTransformTableWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsdatumtransformtablewidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsCodeEditorPython</class>
-   <extends>QWidget</extends>
-   <header>qgscodeeditorpython.h</header>
-   <container>1</container>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
   </customwidget>
   <customwidget>
    <class>QgsProjectionSelectionTreeWidget</class>
@@ -3119,8 +3128,54 @@
   </customwidget>
   <customwidget>
    <class>QgsPropertyOverrideButton</class>
-   <extends>QWidget</extends>
+   <extends>QToolButton</extends>
    <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorSchemeList</class>
+   <extends>QWidget</extends>
+   <header location="global">qgscolorschemelist.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsVariableEditorWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">qgsvariableeditorwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDatumTransformTableWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsdatumtransformtablewidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDateTimeEdit</class>
+   <extends>QDateTimeEdit</extends>
+   <header>qgsdatetimeedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCodeEditorPython</class>
+   <extends>QWidget</extends>
+   <header>qgscodeeditorpython.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -3151,7 +3206,6 @@
   <tabstop>pbnExportScales</tabstop>
   <tabstop>lstScales</tabstop>
   <tabstop>scrollArea</tabstop>
-  <tabstop>mShowDatumTransformDialogCheckBox</tabstop>
   <tabstop>scrollArea_4</tabstop>
   <tabstop>cboStyleMarker</tabstop>
   <tabstop>pbtnStyleMarker</tabstop>

@@ -53,7 +53,7 @@ Called when a rubber band should be updated to reflect a temporary
 ending ``position`` (in layout coordinate space).
 %End
 
-    virtual QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = 0 ) = 0;
+    virtual QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = Qt::KeyboardModifiers() ) = 0;
 %Docstring
 Called when a rubber band use has finished and the rubber
 band is no longer required.
@@ -159,7 +159,7 @@ Constructor for QgsLayoutViewRectangularRubberBand.
 
     virtual void update( QPointF position, Qt::KeyboardModifiers modifiers );
 
-    virtual QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = 0 );
+    virtual QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = Qt::KeyboardModifiers() );
 
 
 };
@@ -190,7 +190,7 @@ Constructor for QgsLayoutViewEllipticalRubberBand.
 
     virtual void update( QPointF position, Qt::KeyboardModifiers modifiers );
 
-    virtual QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = 0 );
+    virtual QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = Qt::KeyboardModifiers() );
 
 
 };
@@ -221,7 +221,7 @@ Constructor for QgsLayoutViewTriangleRubberBand.
 
     virtual void update( QPointF position, Qt::KeyboardModifiers modifiers );
 
-    virtual QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = 0 );
+    virtual QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = Qt::KeyboardModifiers() );
 
 
 };

@@ -110,7 +110,7 @@ Sets geometry calculator used in distance/area calculations.
 %Docstring
 Gets the expression string that has been set in the expression area.
 
-:return: The expression as a string. *
+:return: The expression as a string.
 %End
 
     void setExpressionText( const QString &expression );

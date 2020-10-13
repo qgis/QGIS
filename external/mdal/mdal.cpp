@@ -21,7 +21,7 @@ static const char *EMPTY_STR = "";
 
 const char *MDAL_Version()
 {
-  return "0.6.1";
+  return "0.7.1";
 }
 
 MDAL_Status MDAL_LastStatus()
@@ -826,6 +826,7 @@ bool MDAL_G_isInEditMode( MDAL_DatasetGroupH group )
 
 void MDAL_G_closeEditMode( MDAL_DatasetGroupH group )
 {
+  MDAL::Log::resetLastStatus();
   if ( !group )
   {
     MDAL::Log::error( MDAL_Status::Err_IncompatibleDataset, "Dataset Group is not valid (null)" );
@@ -870,7 +871,19 @@ const char *MDAL_G_referenceTime( MDAL_DatasetGroupH group )
     return EMPTY_STR;
   }
   MDAL::DatasetGroup *g = static_cast< MDAL::DatasetGroup * >( group );
-  return _return_str( g->referenceTime().toStandartCalendarISO8601() );
+  return _return_str( g->referenceTime().toStandardCalendarISO8601() );
+}
+
+void MDAL_G_setReferenceTime( MDAL_DatasetGroupH group, const char *referenceTimeISO8601 )
+{
+  if ( !group )
+  {
+    MDAL::Log::error( MDAL_Status::Err_IncompatibleDataset, "Dataset Group is not valid (null)" );
+    return;
+  }
+  MDAL::DatasetGroup *g = static_cast< MDAL::DatasetGroup * >( group );
+  const std::string datetime( referenceTimeISO8601 );
+  g->setReferenceTime( MDAL::DateTime( datetime ) );
 }
 
 void MDAL_G_setMetadata( MDAL_DatasetGroupH group, const char *key, const char *val )
@@ -1178,4 +1191,97 @@ bool MDAL_G_isTemporal( MDAL_DatasetGroupH group )
   }
   MDAL::DatasetGroup *g = static_cast< MDAL::DatasetGroup * >( group );
   return g->datasets.size() > 1;
+}
+
+const char *MDAL_G_uri( MDAL_DatasetGroupH group )
+{
+  if ( !group )
+  {
+    MDAL::Log::error( MDAL_Status::Err_IncompatibleDataset, "Dataset Group is not valid (null)" );
+    return EMPTY_STR;
+  }
+  MDAL::DatasetGroup *g = static_cast< MDAL::DatasetGroup * >( group );
+  return _return_str( g->uri() );
+}
+const char *MDAL_DR_writeDatasetsSuffix( MDAL_DriverH driver )
+{
+  if ( !driver )
+  {
+    MDAL::Log::error( MDAL_Status::Err_MissingDriver, "Driver is not valid (null)" );
+    return EMPTY_STR;
+  }
+
+  MDAL::Driver *d = static_cast< MDAL::Driver * >( driver );
+  return _return_str( d->writeDatasetOnFileSuffix() );
+}
+
+MDAL_MeshH MDAL_CreateMesh( MDAL_DriverH driver )
+{
+  if ( !driver )
+  {
+    MDAL::Log::error( MDAL_Status::Err_MissingDriver, "Driver is not valid (null)" );
+    return nullptr;
+  }
+
+  MDAL::Driver *d =  static_cast<MDAL::Driver *>( driver );
+  return new MDAL::MemoryMesh( d->name(),
+                               0, // empty mesh, so faceVerticesMaximumCount=0, this attribute will be updated if faces are added
+                               "" );
+}
+
+void MDAL_M_addVertices( MDAL_MeshH mesh, int vertexCount, double *coordinates )
+{
+  MDAL::Log::resetLastStatus();
+  if ( !mesh )
+  {
+    MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, "Mesh is not valid (null)" );
+    return;
+  }
+
+  MDAL::Mesh *m = static_cast<MDAL::Mesh *>( mesh );
+
+  if ( ! m->isEditable() )
+  {
+    MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, "Mesh is not editable" );
+  }
+
+  m->datasetGroups.clear();
+  m->addVertices( vertexCount, coordinates );
+}
+
+void MDAL_M_addFaces( MDAL_MeshH mesh, int faceCount, int *faceSizes, int *vertexIndices )
+{
+  MDAL::Log::resetLastStatus();
+  if ( !mesh )
+  {
+    MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, "Mesh is not valid (null)" );
+    return;
+  }
+
+  MDAL::Mesh *m = static_cast<MDAL::Mesh *>( mesh );
+
+  if ( ! m->isEditable() )
+  {
+    MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, "Mesh is not editable" );
+  }
+
+  m->datasetGroups.clear();
+  std::shared_ptr<MDAL::Driver> driver = MDAL::DriverManager::instance().driver( m->driverName() );
+  int maxVerticesPerFace = std::numeric_limits<int>::max();
+  if ( driver )
+    maxVerticesPerFace = driver->faceVerticesMaximumCount();
+
+  m->addFaces( faceCount, maxVerticesPerFace, faceSizes, vertexIndices );
+}
+
+void MDAL_M_setProjection( MDAL_MeshH mesh, const char *projection )
+{
+  MDAL::Log::resetLastStatus();
+  if ( !mesh )
+  {
+    MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, "Mesh is not valid (null)" );
+    return;
+  }
+
+  static_cast<MDAL::Mesh *>( mesh )->setSourceCrsFromWKT( std::string( projection ) );
 }

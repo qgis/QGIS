@@ -33,7 +33,12 @@ class QgsLineString;
 class CORE_EXPORT QgsPolygon: public QgsCurvePolygon
 {
   public:
-    QgsPolygon();
+
+
+    /**
+     * Constructor for an empty polygon geometry.
+     */
+    QgsPolygon() SIP_HOLDGIL;
 
     /**
      * Constructor for QgsPolygon, with the specified \a exterior ring and interior \a rings.
@@ -42,18 +47,19 @@ class CORE_EXPORT QgsPolygon: public QgsCurvePolygon
      *
      * \since QGIS 3.14
      */
-    QgsPolygon( QgsLineString *exterior SIP_TRANSFER, const QList< QgsLineString * > &rings SIP_TRANSFER = QList< QgsLineString * >() );
+    QgsPolygon( QgsLineString *exterior SIP_TRANSFER, const QList< QgsLineString * > &rings SIP_TRANSFER = QList< QgsLineString * >() ) SIP_HOLDGIL;
 
-    QString geometryType() const override;
+    QString geometryType() const override SIP_HOLDGIL;
     QgsPolygon *clone() const override SIP_FACTORY;
     void clear() override;
     bool fromWkb( QgsConstWkbPtr &wkb ) override;
-    QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = nullptr ) const override;
+    QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const override;
     QgsPolygon *surfaceToPolygon() const override SIP_FACTORY;
 
     /**
      * Returns the geometry converted to the more generic curve type QgsCurvePolygon
-     \returns the converted geometry. Caller takes ownership*/
+     * \returns the converted geometry. Caller takes ownership
+    */
     QgsCurvePolygon *toCurveType() const override SIP_FACTORY;
 
     void addInteriorRing( QgsCurve *ring SIP_TRANSFER ) override;

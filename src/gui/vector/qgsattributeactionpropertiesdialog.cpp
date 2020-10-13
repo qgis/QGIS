@@ -167,7 +167,7 @@ void QgsAttributeActionPropertiesDialog::chooseIcon()
   for ( const QByteArray &format : constList )
     formatList << QStringLiteral( "*.%1" ).arg( QString( format ) );
 
-  QString filter = tr( "Images( %1 ); All( *.* )" ).arg( formatList.join( QStringLiteral( " " ) ) );
+  QString filter = tr( "Images( %1 ); All( *.* )" ).arg( formatList.join( QLatin1Char( ' ' ) ) );
   QString icon = QFileDialog::getOpenFileName( this, tr( "Choose Icon…" ), mActionIcon->text(), filter );
 
   if ( !icon.isNull() )
@@ -207,7 +207,7 @@ void QgsAttributeActionPropertiesDialog::init( const QSet<QString> &actionScopes
       tooltip += QLatin1String( "<br><br>" );
       tooltip += tr( "Additional variables" );
       tooltip += QLatin1String( "<ul><li>" );
-      tooltip += variables.join( QStringLiteral( "</li><li>" ) );
+      tooltip += variables.join( QLatin1String( "</li><li>" ) );
       tooltip += QLatin1String( "</ul></li>" );
     }
     actionScopeCheckBox->setToolTip( tooltip );

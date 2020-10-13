@@ -93,7 +93,7 @@ bool QgsRelationAggregateSearchWidgetWrapper::eventFilter( QObject *watched, QEv
     mAttributeForm->setMode( QgsAttributeEditorContext::AggregateSearchMode );
     QGridLayout *glayout = new QGridLayout();
     mContainerWidget->setLayout( glayout );
-    glayout->setMargin( 0 );
+    glayout->setContentsMargins( 0, 0, 0, 0 );
     glayout->addWidget( mAttributeForm );
   }
   return rv;

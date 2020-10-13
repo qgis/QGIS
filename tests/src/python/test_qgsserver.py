@@ -64,7 +64,7 @@ class QgsServerTestBase(unittest.TestCase):
     # Set to True in child classes to re-generate reference files for this class
     regenerate_reference = False
 
-    def assertXMLEqual(self, response, expected, msg=''):
+    def assertXMLEqual(self, response, expected, msg='', raw=False):
         """Compare XML line by line and sorted attributes"""
         response_lines = response.splitlines()
         expected_lines = expected.splitlines()
@@ -80,7 +80,7 @@ class QgsServerTestBase(unittest.TestCase):
             response_line = response_lines[line_no - 1].strip()
             response_line = response_line.replace(b'e+6', br'e+06')
             # Compare tag
-            if re.match(RE_ELEMENT, expected_line):
+            if re.match(RE_ELEMENT, expected_line) and not raw:
                 expected_elements = re.findall(RE_ELEMENT, expected_line)
                 response_elements = re.findall(RE_ELEMENT, response_line)
                 self.assertEqual(expected_elements[0],
@@ -136,6 +136,18 @@ class QgsServerTestBase(unittest.TestCase):
             except KeyError:
                 pass
         self.server = QgsServer()
+
+        # Disable landing page API to test standard legacy XML responses in case of errors
+        os.environ["QGIS_SERVER_DISABLED_APIS"] = "Landing Page"
+
+    def tearDown(self):
+        """"Cleanup env"""
+
+        super().tearDown()
+        try:
+            del os.environ["QGIS_SERVER_DISABLED_APIS"]
+        except KeyError:
+            pass
 
     def strip_version_xmlns(self, text):
         """Order of attributes is random, strip version and xmlns"""

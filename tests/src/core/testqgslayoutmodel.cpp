@@ -23,6 +23,7 @@
 #include "qgsproject.h"
 #include "qgslayoutitemlabel.h"
 #include "qgslayoutitemgroup.h"
+#include "qgslayoutitemshape.h"
 #include <QObject>
 #include "qgstest.h"
 #include <QList>
@@ -50,6 +51,7 @@ class TestQgsLayoutModel : public QObject
     void reorderDown(); //test reordering an item down
     void reorderTop(); //test reordering an item to top
     void reorderBottom(); //test reordering an item to bottom
+    void moveItem(); //test move an item in the item tree
     void findItemAbove(); //test getting composer item above
     void findItemBelow(); //test getting composer item below
     void setItemRemoved(); //test setting an item as removed
@@ -560,6 +562,60 @@ void TestQgsLayoutModel::reorderBottom()
   delete label;
 }
 
+void TestQgsLayoutModel::moveItem()
+{
+  QgsLayout layout( QgsProject::instance() );
+
+  //some items in layout
+  QgsLayoutItem *item1 = new QgsLayoutItemMap( &layout );
+  layout.addLayoutItem( item1 );
+  item1->setId( QStringLiteral( "i1" ) );
+  QgsLayoutItem *item2 = new QgsLayoutItemMap( &layout );
+  layout.addLayoutItem( item2 );
+  item2->setId( QStringLiteral( "i2" ) );
+  QgsLayoutItem *item3 = new QgsLayoutItemMap( &layout );
+  layout.addLayoutItem( item3 );
+  item3->setId( QStringLiteral( "i3" ) );
+
+  // start with an empty model
+  layout.itemsModel()->clear();
+
+  layout.itemsModel()->rebuildZList();
+
+  //check z list
+  QCOMPARE( layout.itemsModel()->zOrderListSize(), 3 );
+  QCOMPARE( layout.itemsModel()->zOrderList().at( 0 ), item3 );
+  QCOMPARE( layout.itemsModel()->zOrderList().at( 1 ), item2 );
+  QCOMPARE( layout.itemsModel()->zOrderList().at( 2 ), item1 );
+
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 0, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QString() );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
+
+  QgsLayoutModel *model = layout.itemsModel();
+  QMimeData *mimedata = model->mimeData( QModelIndexList() << model->index( 2, 2 ) ); // get i2
+  model->dropMimeData( mimedata, Qt::MoveAction, 1, 2, QModelIndex() ); // move i2 at the top
+
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
+
+  mimedata = model->mimeData( QModelIndexList() << model->index( 1, 2 ) ); // get i2
+  model->dropMimeData( mimedata, Qt::MoveAction, -1, -1, QModelIndex() ); // move i2 at the bottom
+
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
+
+  mimedata = model->mimeData( QModelIndexList() << model->index( 3, 2 ) ); // get i2
+  model->dropMimeData( mimedata, Qt::MoveAction, 2, 2, QModelIndex() ); // move i2 between i3 and i1
+
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
+  QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
+}
+
 void TestQgsLayoutModel::findItemAbove()
 {
   QgsLayout layout( QgsProject::instance() );
@@ -967,17 +1023,27 @@ void TestQgsLayoutModel::proxy()
   QgsLayoutItemLabel *item3 = new QgsLayoutItemLabel( layout );
   item3->setId( QStringLiteral( "a" ) );
   layout->addLayoutItem( item3 );
-  QCOMPARE( proxy->rowCount( QModelIndex() ), 3 );
+  QgsLayoutItemShape *item4 = new QgsLayoutItemShape( layout );
+  item4->setId( QStringLiteral( "d" ) );
+  layout->addLayoutItem( item4 );
+  QgsLayoutItemShape *item5 = new QgsLayoutItemShape( layout );
+  item5->setId( QStringLiteral( "e" ) );
+  layout->addLayoutItem( item5 );
+  QCOMPARE( proxy->rowCount( QModelIndex() ), 5 );
   QCOMPARE( proxy->data( proxy->index( 0, 2, QModelIndex() ) ).toString(), QStringLiteral( "a" ) );
   QCOMPARE( proxy->data( proxy->index( 1, 2, QModelIndex() ) ).toString(), QStringLiteral( "b" ) );
   QCOMPARE( proxy->data( proxy->index( 2, 2, QModelIndex() ) ).toString(), QStringLiteral( "c" ) );
+  QCOMPARE( proxy->data( proxy->index( 3, 2, QModelIndex() ) ).toString(), QStringLiteral( "d" ) );
+  QCOMPARE( proxy->data( proxy->index( 4, 2, QModelIndex() ) ).toString(), QStringLiteral( "e" ) );
 
   proxy->setAllowEmptyItem( true );
-  QCOMPARE( proxy->rowCount( QModelIndex() ), 4 );
+  QCOMPARE( proxy->rowCount( QModelIndex() ), 6 );
   QCOMPARE( proxy->data( proxy->index( 0, 2, QModelIndex() ) ).toString(), QString() );
   QCOMPARE( proxy->data( proxy->index( 1, 2, QModelIndex() ) ).toString(), QStringLiteral( "a" ) );
   QCOMPARE( proxy->data( proxy->index( 2, 2, QModelIndex() ) ).toString(), QStringLiteral( "b" ) );
   QCOMPARE( proxy->data( proxy->index( 3, 2, QModelIndex() ) ).toString(), QStringLiteral( "c" ) );
+  QCOMPARE( proxy->data( proxy->index( 4, 2, QModelIndex() ) ).toString(), QStringLiteral( "d" ) );
+  QCOMPARE( proxy->data( proxy->index( 5, 2, QModelIndex() ) ).toString(), QStringLiteral( "e" ) );
 
   proxy->setFilterType( QgsLayoutItemRegistry::LayoutMap );
   QCOMPARE( proxy->rowCount( QModelIndex() ), 3 );
@@ -993,6 +1059,16 @@ void TestQgsLayoutModel::proxy()
   proxy->setFilterType( QgsLayoutItemRegistry::LayoutScaleBar );
   QCOMPARE( proxy->rowCount( QModelIndex() ), 1 );
   QCOMPARE( proxy->data( proxy->index( 0, 2, QModelIndex() ) ).toString(), QString() );
+
+  proxy->setAllowEmptyItem( false );
+  proxy->setFilterType( QgsLayoutItemRegistry::LayoutItem );
+  QCOMPARE( proxy->rowCount( QModelIndex() ), 5 );
+  proxy->setItemFlags( QgsLayoutItem::FlagProvidesClipPath );
+  QCOMPARE( proxy->rowCount( QModelIndex() ), 2 );
+  QCOMPARE( proxy->data( proxy->index( 0, 2, QModelIndex() ) ).toString(), QStringLiteral( "d" ) );
+  QCOMPARE( proxy->data( proxy->index( 1, 2, QModelIndex() ) ).toString(), QStringLiteral( "e" ) );
+  proxy->setItemFlags( QgsLayoutItem::Flags() );
+  QCOMPARE( proxy->rowCount( QModelIndex() ), 5 );
 }
 
 void TestQgsLayoutModel::proxyCrash()

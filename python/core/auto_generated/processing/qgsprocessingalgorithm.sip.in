@@ -49,6 +49,8 @@ Abstract base class for processing algorithms.
       FlagCustomException,
       FlagPruneModelBranchesBasedOnAlgorithmResults,
       FlagSkipGenericModelLogging,
+      FlagNotAvailableInStandaloneTool,
+      FlagRequiresProject,
       FlagDeprecated,
     };
     typedef QFlags<QgsProcessingAlgorithm::Flag> Flags;
@@ -335,7 +337,8 @@ is passed in order to make a best guess determination of the output properties.
 .. versionadded:: 3.14
 %End
 
-    QVariantMap run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok /Out/ = 0, const QVariantMap &configuration = QVariantMap() ) const;
+    QVariantMap run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok /Out/ = 0, const QVariantMap &configuration = QVariantMap(),
+                     bool catchExceptions = true ) const throw( QgsProcessingException );
 %Docstring
 Executes the algorithm using the specified ``parameters``. This method internally
 creates a copy of the algorithm before running it, so it is safe to call
@@ -346,6 +349,9 @@ The ``context`` argument specifies the context in which the algorithm is being r
 Algorithm progress should be reported using the supplied ``feedback`` object.
 
 If specified, ``ok`` will be set to ``True`` if algorithm was successfully run.
+
+If ``catchExceptions`` is set to ``False``, then QgsProcessingExceptions raised during
+the algorithm run will not be automatically caught and will be raised instead.
 
 :return: A map of algorithm outputs. These may be output layer references, or calculated
          values such as statistical calculations.
@@ -662,7 +668,7 @@ Evaluates the parameter with matching ``name`` to a static boolean value.
 %End
 
     QgsFeatureSink *parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QString &destinationIdentifier /Out/,
-                                     const QgsFields &fields, QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), QgsFeatureSink::SinkFlags sinkFlags = 0 ) const throw( QgsProcessingException ) /Factory/;
+                                     const QgsFields &fields, QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(), const QVariantMap &createOptions = QVariantMap(), const QStringList &datasourceOptions = QStringList(), const QStringList &layerOptions = QStringList() ) const throw( QgsProcessingException ) /Factory/;
 %Docstring
 Evaluates the parameter with matching ``name`` to a feature sink.
 
@@ -674,6 +680,10 @@ of the resulting feature sink.
 
 The ``destinationIdentifier`` argument will be set to a string which can be used to retrieve the layer corresponding
 to the sink, e.g. via calling :py:func:`QgsProcessingUtils.mapLayerFromString()`.
+
+The ``createOptions`` argument is used to pass on creation options such as layer name.
+
+The ``datasourceOptions`` and ``layerOptions`` arguments is used to pass on GDAL-specific format driver options.
 
 This function creates a new object and the caller takes responsibility for deleting the returned object.
 
@@ -844,6 +854,26 @@ Returns the coordinate reference system associated with an point parameter value
 
 .. seealso:: :py:func:`parameterAsPoint`
 %End
+
+    QgsGeometry parameterAsGeometry( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context,
+                                     const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() ) const;
+%Docstring
+Evaluates the parameter with matching ``name`` to a geometry.
+
+If ``crs`` is set then the geometry will be automatically
+reprojected so that it is in the specified ``crs``.
+
+.. seealso:: :py:func:`parameterAsGeometryCrs`
+%End
+
+    QgsCoordinateReferenceSystem parameterAsGeometryCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+%Docstring
+Returns the coordinate reference system associated with a geometry parameter value.
+
+.. seealso:: :py:func:`parameterAsGeometry`
+%End
+
+
 
     QString parameterAsFile( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 %Docstring

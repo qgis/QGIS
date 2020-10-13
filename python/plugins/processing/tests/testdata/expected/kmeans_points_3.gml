@@ -17,6 +17,7 @@
       <ogr:id>1</ogr:id>
       <ogr:id2>2</ogr:id2>
       <ogr:CLUSTER_ID>2</ogr:CLUSTER_ID>
+      <ogr:CLUSTER_SIZE>6</ogr:CLUSTER_SIZE>
     </ogr:kmeans_points_3>
   </gml:featureMember>
   <gml:featureMember>
@@ -25,6 +26,7 @@
       <ogr:id>2</ogr:id>
       <ogr:id2>1</ogr:id2>
       <ogr:CLUSTER_ID>2</ogr:CLUSTER_ID>
+      <ogr:CLUSTER_SIZE>6</ogr:CLUSTER_SIZE>
     </ogr:kmeans_points_3>
   </gml:featureMember>
   <gml:featureMember>
@@ -33,6 +35,7 @@
       <ogr:id>3</ogr:id>
       <ogr:id2>0</ogr:id2>
       <ogr:CLUSTER_ID>2</ogr:CLUSTER_ID>
+      <ogr:CLUSTER_SIZE>6</ogr:CLUSTER_SIZE>
     </ogr:kmeans_points_3>
   </gml:featureMember>
   <gml:featureMember>
@@ -41,6 +44,7 @@
       <ogr:id>4</ogr:id>
       <ogr:id2>2</ogr:id2>
       <ogr:CLUSTER_ID>2</ogr:CLUSTER_ID>
+      <ogr:CLUSTER_SIZE>6</ogr:CLUSTER_SIZE>
     </ogr:kmeans_points_3>
   </gml:featureMember>
   <gml:featureMember>
@@ -49,6 +53,7 @@
       <ogr:id>5</ogr:id>
       <ogr:id2>1</ogr:id2>
       <ogr:CLUSTER_ID>2</ogr:CLUSTER_ID>
+      <ogr:CLUSTER_SIZE>6</ogr:CLUSTER_SIZE>
     </ogr:kmeans_points_3>
   </gml:featureMember>
   <gml:featureMember>
@@ -57,6 +62,7 @@
       <ogr:id>6</ogr:id>
       <ogr:id2>0</ogr:id2>
       <ogr:CLUSTER_ID>1</ogr:CLUSTER_ID>
+      <ogr:CLUSTER_SIZE>1</ogr:CLUSTER_SIZE>
     </ogr:kmeans_points_3>
   </gml:featureMember>
   <gml:featureMember>
@@ -65,6 +71,7 @@
       <ogr:id>7</ogr:id>
       <ogr:id2>0</ogr:id2>
       <ogr:CLUSTER_ID>0</ogr:CLUSTER_ID>
+      <ogr:CLUSTER_SIZE>2</ogr:CLUSTER_SIZE>
     </ogr:kmeans_points_3>
   </gml:featureMember>
   <gml:featureMember>
@@ -73,6 +80,7 @@
       <ogr:id>8</ogr:id>
       <ogr:id2>0</ogr:id2>
       <ogr:CLUSTER_ID>0</ogr:CLUSTER_ID>
+      <ogr:CLUSTER_SIZE>2</ogr:CLUSTER_SIZE>
     </ogr:kmeans_points_3>
   </gml:featureMember>
   <gml:featureMember>
@@ -81,6 +89,7 @@
       <ogr:id>9</ogr:id>
       <ogr:id2>0</ogr:id2>
       <ogr:CLUSTER_ID>2</ogr:CLUSTER_ID>
+      <ogr:CLUSTER_SIZE>6</ogr:CLUSTER_SIZE>
     </ogr:kmeans_points_3>
   </gml:featureMember>
 </ogr:FeatureCollection>

@@ -61,7 +61,11 @@ QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
   setItemDelegate( new QgsLayerTreeViewItemDelegate( this ) );
   setStyle( new QgsLayerTreeViewProxyStyle( this ) );
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   setLayerMarkWidth( static_cast< int >( QFontMetricsF( font() ).width( 'l' ) * Qgis::UI_SCALE_FACTOR ) );
+#else
+  setLayerMarkWidth( static_cast< int >( QFontMetricsF( font() ).horizontalAdvance( 'l' ) * Qgis::UI_SCALE_FACTOR ) );
+#endif
 
   connect( this, &QTreeView::collapsed, this, &QgsLayerTreeView::updateExpandedStateToNode );
   connect( this, &QTreeView::expanded, this, &QgsLayerTreeView::updateExpandedStateToNode );
@@ -76,28 +80,31 @@ QgsLayerTreeView::~QgsLayerTreeView()
 
 void QgsLayerTreeView::setModel( QAbstractItemModel *model )
 {
-  if ( !qobject_cast<QgsLayerTreeModel *>( model ) )
+  QgsLayerTreeModel *layerTreeModel = qobject_cast<QgsLayerTreeModel *>( model );
+  if ( !layerTreeModel )
     return;
 
   connect( model, &QAbstractItemModel::rowsInserted, this, &QgsLayerTreeView::modelRowsInserted );
   connect( model, &QAbstractItemModel::rowsRemoved, this, &QgsLayerTreeView::modelRowsRemoved );
 
   if ( mMessageBar )
-    connect( layerTreeModel(), &QgsLayerTreeModel::messageEmitted,
+    connect( layerTreeModel, &QgsLayerTreeModel::messageEmitted,
              [ = ]( const QString & message, Qgis::MessageLevel level = Qgis::Info, int duration = 5 )
   {mMessageBar->pushMessage( message, level, duration );}
          );
 
   QTreeView::setModel( model );
 
-  connect( layerTreeModel()->rootGroup(), &QgsLayerTreeNode::expandedChanged, this, &QgsLayerTreeView::onExpandedChanged );
-  connect( layerTreeModel()->rootGroup(), &QgsLayerTreeNode::customPropertyChanged, this, &QgsLayerTreeView::onCustomPropertyChanged );
+  connect( layerTreeModel->rootGroup(), &QgsLayerTreeNode::expandedChanged, this, &QgsLayerTreeView::onExpandedChanged );
+  connect( layerTreeModel->rootGroup(), &QgsLayerTreeNode::customPropertyChanged, this, &QgsLayerTreeView::onCustomPropertyChanged );
 
   connect( selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsLayerTreeView::onCurrentChanged );
 
-  connect( layerTreeModel(), &QAbstractItemModel::modelReset, this, &QgsLayerTreeView::onModelReset );
+  connect( layerTreeModel, &QAbstractItemModel::modelReset, this, &QgsLayerTreeView::onModelReset );
 
-  updateExpandedStateFromNode( layerTreeModel()->rootGroup() );
+  connect( layerTreeModel, &QgsLayerTreeModel::dataChanged, this, &QgsLayerTreeView::onDataChanged );
+
+  updateExpandedStateFromNode( layerTreeModel->rootGroup() );
 }
 
 QgsLayerTreeModel *QgsLayerTreeView::layerTreeModel() const
@@ -296,7 +303,7 @@ void QgsLayerTreeView::onExpandedChanged( QgsLayerTreeNode *node, bool expanded 
 
 void QgsLayerTreeView::onCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key )
 {
-  if ( key != QStringLiteral( "expandedLegendNodes" ) || !QgsLayerTree::isLayer( node ) )
+  if ( key != QLatin1String( "expandedLegendNodes" ) || !QgsLayerTree::isLayer( node ) )
     return;
 
   QSet<QString> expandedLegendNodes = qgis::listToSet( node->customProperty( QStringLiteral( "expandedLegendNodes" ) ).toStringList() );
@@ -585,4 +592,17 @@ void QgsLayerTreeView::onHorizontalScroll( int value )
 {
   Q_UNUSED( value )
   viewport()->update();
+}
+
+void QgsLayerTreeView::onDataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles )
+{
+  Q_UNUSED( topLeft )
+  Q_UNUSED( bottomRight )
+
+  // If an item is resized asynchronously (e.g. wms legend)
+  // The items below will need to be shifted vertically.
+  // This doesn't happen automatically, unless the viewport update is triggered.
+
+  if ( roles.contains( Qt::SizeHintRole ) )
+    viewport()->update();
 }

@@ -105,7 +105,7 @@ QString QgsExpression::quotedValue( const QVariant &value, QVariant::Type type )
       {
         quotedValues += quotedValue( v );
       }
-      return QStringLiteral( "array( %1 )" ).arg( quotedValues.join( QStringLiteral( ", " ) ) );
+      return QStringLiteral( "array( %1 )" ).arg( quotedValues.join( QLatin1String( ", " ) ) );
     }
 
     default:
@@ -591,7 +591,7 @@ QString QgsExpression::helpText( QString name )
             if ( a.mOptional )
             {
               hasOptionalArgs = true;
-              helpContents += QStringLiteral( "[" );
+              helpContents += QLatin1Char( '[' );
             }
 
             helpContents += delim;
@@ -601,7 +601,7 @@ QString QgsExpression::helpText( QString name )
                             );
 
             if ( a.mOptional )
-              helpContents += QStringLiteral( "]" );
+              helpContents += QLatin1Char( ']' );
           }
           delim = QStringLiteral( "," );
         }
@@ -736,6 +736,7 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "layout_page" ), QCoreApplication::translate( "variable_help", "Current page number in composition." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "layout_pageheight" ), QCoreApplication::translate( "variable_help", "Composition page height in mm." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "layout_pagewidth" ), QCoreApplication::translate( "variable_help", "Composition page width in mm." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "layout_pageoffsets" ), QCoreApplication::translate( "variable_help", "Array of Y coordinate of the top of each page." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "layout_dpi" ), QCoreApplication::translate( "variable_help", "Composition resolution (DPI)." ) );
 
   //atlas variables
@@ -750,7 +751,7 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "atlas_geometry" ), QCoreApplication::translate( "variable_help", "Current atlas feature geometry." ) );
 
   //layout item variables
-  sVariableHelpTexts()->insert( QStringLiteral( "item_id" ), QCoreApplication::translate( "variable_help", "Layout item user ID (not necessarily unique)." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "item_id" ), QCoreApplication::translate( "variable_help", "Layout item user-assigned ID (not necessarily unique)." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "item_uuid" ), QCoreApplication::translate( "variable_help", "layout item unique ID." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "item_left" ), QCoreApplication::translate( "variable_help", "Left position of layout item (in mm)." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "item_top" ), QCoreApplication::translate( "variable_help", "Top position of layout item (in mm)." ) );
@@ -789,10 +790,12 @@ void QgsExpression::initVariableHelp()
 
   // vector tile layer variables
   sVariableHelpTexts()->insert( QStringLiteral( "zoom_level" ), QCoreApplication::translate( "variable_help", "Zoom level of the tile that is being rendered (derived from the current map scale). Normally in interval [0, 20]." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "vector_tile_zoom" ), QCoreApplication::translate( "variable_help", "Exact zoom level of the tile that is being rendered (derived from the current map scale). Normally in interval [0, 20]. Unlike @zoom_level, this variable is a floating point value which can be used to interpolated values between two integer zoom levels." ) );
 
   sVariableHelpTexts()->insert( QStringLiteral( "row_number" ), QCoreApplication::translate( "variable_help", "Stores the number of the current row." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "grid_number" ), QCoreApplication::translate( "variable_help", "Current grid annotation value." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "grid_axis" ), QCoreApplication::translate( "variable_help", "Current grid annotation axis (e.g., 'x' for longitude, 'y' for latitude)." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "column_number" ), QCoreApplication::translate( "variable_help", "Stores the number of the current column." ) );
 
   // map canvas item variables
   sVariableHelpTexts()->insert( QStringLiteral( "canvas_cursor_point" ), QCoreApplication::translate( "variable_help", "Last cursor position on the canvas in the project's geographical coordinates." ) );
@@ -971,9 +974,23 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
   }
   else if ( value.canConvert< QgsInterval >() )
   {
-    //result is a feature
     QgsInterval interval = value.value<QgsInterval>();
-    return startToken + tr( "interval: %1 days" ).arg( interval.days() ) + endToken;
+    if ( interval.days() > 1 )
+    {
+      return startToken + tr( "interval: %1 days" ).arg( interval.days() ) + endToken;
+    }
+    else if ( interval.hours() > 1 )
+    {
+      return startToken + tr( "interval: %1 hours" ).arg( interval.hours() ) + endToken;
+    }
+    else if ( interval.minutes() > 1 )
+    {
+      return startToken + tr( "interval: %1 minutes" ).arg( interval.minutes() ) + endToken;
+    }
+    else
+    {
+      return startToken + tr( "interval: %1 seconds" ).arg( interval.seconds() ) + endToken;
+    }
   }
   else if ( value.canConvert< QgsGradientColorRamp >() )
   {
@@ -1025,8 +1042,8 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
       }
     }
     if ( !map.empty() )
-      mapStr += QStringLiteral( " " );
-    mapStr += QStringLiteral( "}" );
+      mapStr += QLatin1Char( ' ' );
+    mapStr += QLatin1Char( '}' );
     return mapStr;
   }
   else if ( value.type() == QVariant::List || value.type() == QVariant::StringList )
@@ -1049,8 +1066,8 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
       }
     }
     if ( !list.empty() )
-      listStr += QStringLiteral( " " );
-    listStr += QStringLiteral( "]" );
+      listStr += QLatin1Char( ' ' );
+    listStr += QLatin1Char( ']' );
     return listStr;
   }
   else

@@ -178,7 +178,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     //grass provider has its own mechanism of feature addition
     if ( provider->capabilities() & QgsVectorDataProvider::AddFeatures )
     {
-      QgsFeature f( vlayer->fields(), 0 );
+      QgsFeature f( vlayer->fields() );
 
       QgsGeometry g;
       if ( layerWKBType == QgsWkbTypes::Point )

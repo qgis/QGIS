@@ -68,7 +68,7 @@ struct MVTGeometryWriter
     qint32 vy = pt.y() - cursor.y();
 
     // (quint32)(-(qint32)((quint32)vx >> 31)) is a C/C++ compliant way
-    // of doing vx >> 31, which is undefined behaviour since vx is signed
+    // of doing vx >> 31, which is undefined behavior since vx is signed
     feature->add_geometry( ( ( quint32 )vx << 1 ) ^ ( ( quint32 )( -( qint32 )( ( quint32 )vx >> 31 ) ) ) );
     feature->add_geometry( ( ( quint32 )vy << 1 ) ^ ( ( quint32 )( -( qint32 )( ( quint32 )vy >> 31 ) ) ) );
 
@@ -336,7 +336,7 @@ void QgsVectorTileMVTEncoder::addFeature( vector_tile::Tile_Layer *tileLayer, co
       const QgsMultiPoint *mpt = static_cast<const QgsMultiPoint *>( geom );
       geomWriter.addMoveTo( mpt->numGeometries() );
       for ( int i = 0; i < mpt->numGeometries(); ++i )
-        geomWriter.addPoint( *static_cast<const QgsPoint *>( mpt->geometryN( i ) ) );
+        geomWriter.addPoint( *mpt->pointN( i ) );
     }
     break;
 
@@ -345,7 +345,7 @@ void QgsVectorTileMVTEncoder::addFeature( vector_tile::Tile_Layer *tileLayer, co
       const QgsMultiLineString *mls = qgsgeometry_cast<const QgsMultiLineString *>( geom );
       for ( int i = 0; i < mls->numGeometries(); ++i )
       {
-        encodeLineString( qgsgeometry_cast<const QgsLineString *>( mls->geometryN( i ) ), true, false, geomWriter );
+        encodeLineString( mls->lineStringN( i ), true, false, geomWriter );
       }
     }
     break;
@@ -355,7 +355,7 @@ void QgsVectorTileMVTEncoder::addFeature( vector_tile::Tile_Layer *tileLayer, co
       const QgsMultiPolygon *mp = qgsgeometry_cast<const QgsMultiPolygon *>( geom );
       for ( int i = 0; i < mp->numGeometries(); ++i )
       {
-        encodePolygon( static_cast<const QgsPolygon *>( mp->geometryN( i ) ), geomWriter );
+        encodePolygon( mp->polygonN( i ), geomWriter );
       }
     }
     break;

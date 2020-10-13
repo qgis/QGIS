@@ -50,6 +50,7 @@ class TestQgsLayoutLabel : public QObject
     void featureEvaluationUsingContext();
     // test page expressions
     void pageEvaluation();
+    void pageSizeEvaluation();
     void marginMethods(); //tests getting/setting margins
     void render();
     void renderAsHtml();
@@ -132,7 +133,7 @@ void TestQgsLayoutLabel::evaluation()
     QDate now = QDate::currentDate();
     int dd = now.day();
 
-    QString expected = "__" + QStringLiteral( "%1" ).arg( dd + 1 ) + "(ok)__";
+    QString expected = "__" + QString::number( dd + 1 ) + "(ok)__";
     label->setText( QStringLiteral( "__[%$CURRENT_DATE(dd) + 1%](ok)__" ) );
     QString evaluated = label->currentText();
     QCOMPARE( evaluated, expected );
@@ -232,6 +233,34 @@ void TestQgsLayoutLabel::pageEvaluation()
     // move to the second page and re-evaluate
     label->attemptMove( QgsLayoutPoint( 0, 320 ) );
     QCOMPARE( label->currentText(), QString( "2/2" ) );
+  }
+}
+
+void TestQgsLayoutLabel::pageSizeEvaluation()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+
+  QgsLayoutItemLabel *label = new QgsLayoutItemLabel( &l );
+  label->setMargin( 1 );
+  label->setText( QStringLiteral( "[%array_to_string(@layout_pageoffsets)%]" ) );
+  l.addLayoutItem( label );
+
+  {
+    QString evaluated = label->currentText();
+    QString expected = QStringLiteral( "0" );
+    QCOMPARE( evaluated, expected );
+  }
+
+  // add a page and re-evaluate
+  QgsLayoutItemPage *page2 = new QgsLayoutItemPage( &l );
+  page2->setPageSize( "A4", QgsLayoutItemPage::Landscape );
+  l.pageCollection()->addPage( page2 );
+
+  {
+    QString evaluated = label->currentText();
+    QString expected = QStringLiteral( "0,220" );
+    QCOMPARE( evaluated, expected );
   }
 }
 

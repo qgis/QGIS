@@ -97,8 +97,10 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     Q_OBJECT
     Q_PROPERTY( QgsDualView::ViewMode viewMode READ viewMode WRITE setViewMode )
     Q_PROPERTY( bool showLabel READ showLabel WRITE setShowLabel )
+    Q_PROPERTY( QgsAttributeEditorRelation::Buttons visibleButtons READ visibleButtons WRITE setVisibleButtons )
 
   public:
+
 
     /**
      * \param parent parent widget
@@ -167,45 +169,96 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
 
     /**
      * Determines if the "link feature" button should be shown
-     *
      * \since QGIS 2.18
+     * \deprecated since QGIS 3.16 use visibleButtons() instead
      */
-    bool showLinkButton() const;
+    Q_DECL_DEPRECATED bool showLinkButton() const SIP_DEPRECATED;
 
     /**
      * Determines if the "link feature" button should be shown
-     *
      * \since QGIS 2.18
+     * \deprecated since QGIS 3.16 use setVisibleButtons() instead
      */
-    void setShowLinkButton( bool showLinkButton );
+    Q_DECL_DEPRECATED void setShowLinkButton( bool showLinkButton ) SIP_DEPRECATED;
 
     /**
      * Determines if the "unlink feature" button should be shown
-     *
      * \since QGIS 2.18
+     * \deprecated since QGIS 3.16 use visibleButtons() instead
      */
-    bool showUnlinkButton() const;
+    Q_DECL_DEPRECATED bool showUnlinkButton() const SIP_DEPRECATED;
 
     /**
      * Determines if the "unlink feature" button should be shown
-     *
      * \since QGIS 2.18
+     * \deprecated since QGIS 3.16 use setVisibleButtons() instead
      */
-    void setShowUnlinkButton( bool showUnlinkButton );
+    Q_DECL_DEPRECATED void setShowUnlinkButton( bool showUnlinkButton ) SIP_DEPRECATED;
 
     /**
      * Determines if the "Save child layer edits" button should be shown
-     *
      * \since QGIS 3.14
+     * \deprecated since QGIS 3.16 use setVisibleButtons() instead
      */
-    void setShowSaveChildEditsButton( bool showChildEdits );
+    Q_DECL_DEPRECATED void setShowSaveChildEditsButton( bool showChildEdits ) SIP_DEPRECATED;
 
     /**
      * Determines if the "Save child layer edits" button should be shown
-     *
      * \since QGIS 3.14
+     * \deprecated since QGIS 3.16 use visibleButtons() instead
      */
-    bool showSaveChildEditsButton() const;
+    Q_DECL_DEPRECATED bool showSaveChildEditsButton() const SIP_DEPRECATED;
+
+    /**
+     * Defines the buttons which are shown
+     * \since QGIS 3.16
+     */
+    void setVisibleButtons( const QgsAttributeEditorRelation::Buttons &buttons );
+
+    /**
+     * Returns the buttons which are shown
+     * \since QGIS 3.16
+     */
+    QgsAttributeEditorRelation::Buttons visibleButtons() const;
+
+    /**
+       * Determines the force suppress form popup status that is configured for this widget
+       * \since QGIS 3.16
+       */
+    bool forceSuppressFormPopup() const;
+
+    /**
+     * Sets force suppress form popup status with \a forceSuppressFormPopup
+     * configured for this widget
+     * \since QGIS 3.16
+     */
+    void setForceSuppressFormPopup( bool forceSuppressFormPopup );
+
+    /**
+    * Determines the relation id of the second relation involved in an N:M relation.
+    * \since QGIS 3.16
+    */
+    QVariant nmRelationId() const;
+
+    /**
+     * Sets \a nmRelationId for the relation id of the second relation involved in an N:M relation.
+     * If it's empty, then it's considered as a 1:M relationship.
+     * \since QGIS 3.16
+     */
+    void setNmRelationId( const QVariant &nmRelationId = QVariant() );
+
+    /**
+     * Determines the label of this element
+     * \since QGIS 3.16
+     */
+    QString label() const;
+
+    /**
+     * Sets \a label for this element
+     * If it's empty it takes the relation id as label
+     * \since QGIS 3.16
+     */
+    void setLabel( const QString &label = QString() );
 
     /**
      * Returns the widget's current feature
@@ -276,8 +329,14 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     QObjectUniquePtr<QgsMapToolDigitizeFeature> mMapToolDigitize;
     QButtonGroup *mViewModeButtonGroup = nullptr;
 
+    QgsAttributeEditorRelation::Buttons mButtonsVisibility = QgsAttributeEditorRelation::Button::AllButtons;
     bool mShowLabel = true;
     bool mVisible = false;
+    bool mLayerInSameTransactionGroup = false;
+
+    bool mForceSuppressFormPopup = false;
+    QVariant mNmRelationId;
+    QString mLabel;
 
     /**
      * Deletes the features
@@ -293,5 +352,6 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
      */
     void unlinkFeatures( const QgsFeatureIds &featureids );
 };
+
 
 #endif // QGSRELATIONEDITOR_H

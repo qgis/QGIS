@@ -26,6 +26,9 @@
 #define strcasecmp(a,b) stricmp(a,b)
 #endif
 
+const QString QgsSpatiaLiteConnection::SPATIALITE_ARRAY_PREFIX = QStringLiteral( "json" );
+const QString QgsSpatiaLiteConnection::SPATIALITE_ARRAY_SUFFIX = QStringLiteral( "list" );
+
 QStringList QgsSpatiaLiteConnection::connectionList()
 {
   QgsSettings settings;
@@ -103,6 +106,21 @@ bool QgsSpatiaLiteConnection::updateStatistics()
   return ret;
 }
 
+QList<QgsVectorDataProvider::NativeType> QgsSpatiaLiteConnection::nativeTypes()
+{
+  return QList<QgsVectorDataProvider::NativeType>()
+         << QgsVectorDataProvider::NativeType( tr( "Binary object (BLOB)" ), QStringLiteral( "BLOB" ), QVariant::ByteArray )
+         << QgsVectorDataProvider::NativeType( tr( "Text" ), QStringLiteral( "TEXT" ), QVariant::String )
+         << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), QStringLiteral( "FLOAT" ), QVariant::Double )
+         << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), QStringLiteral( "INTEGER" ), QVariant::LongLong )
+         << QgsVectorDataProvider::NativeType( tr( "Date" ), QStringLiteral( "DATE" ), QVariant::Date )
+         << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), QStringLiteral( "TIMESTAMP" ), QVariant::DateTime )
+
+         << QgsVectorDataProvider::NativeType( tr( "Array of text" ), SPATIALITE_ARRAY_PREFIX.toUpper() + "TEXT" + SPATIALITE_ARRAY_SUFFIX.toUpper(), QVariant::StringList, 0, 0, 0, 0, QVariant::String )
+         << QgsVectorDataProvider::NativeType( tr( "Array of decimal numbers (double)" ), SPATIALITE_ARRAY_PREFIX.toUpper() + "REAL" + SPATIALITE_ARRAY_SUFFIX.toUpper(), QVariant::List, 0, 0, 0, 0, QVariant::Double )
+         << QgsVectorDataProvider::NativeType( tr( "Array of whole numbers (integer)" ), SPATIALITE_ARRAY_PREFIX.toUpper() + "INTEGER" + SPATIALITE_ARRAY_SUFFIX.toUpper(), QVariant::List, 0, 0, 0, 0, QVariant::LongLong );
+}
+
 int QgsSpatiaLiteConnection::checkHasMetadataTables( sqlite3 *handle )
 {
   bool gcSpatiaLite = false;
@@ -134,7 +152,7 @@ int QgsSpatiaLiteConnection::checkHasMetadataTables( sqlite3 *handle )
   ret = sqlite3_get_table( handle, "PRAGMA table_info(geometry_columns)", &results, &rows, &columns, &errMsg );
   if ( ret != SQLITE_OK )
   {
-    mErrorMsg = tr( "table info on %1 failed" ).arg( QStringLiteral( "geometry_columns" ) );
+    mErrorMsg = tr( "table info on %1 failed" ).arg( QLatin1String( "geometry_columns" ) );
     goto error;
   }
   if ( rows < 1 )
@@ -170,7 +188,7 @@ int QgsSpatiaLiteConnection::checkHasMetadataTables( sqlite3 *handle )
   ret = sqlite3_get_table( handle, "PRAGMA table_info(spatial_ref_sys)", &results, &rows, &columns, &errMsg );
   if ( ret != SQLITE_OK )
   {
-    mErrorMsg = tr( "table info on %1 failed" ).arg( QStringLiteral( "spatial_ref_sys" ) );
+    mErrorMsg = tr( "table info on %1 failed" ).arg( QLatin1String( "spatial_ref_sys" ) );
     goto error;
   }
   if ( rows < 1 )

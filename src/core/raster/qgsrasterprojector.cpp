@@ -119,7 +119,12 @@ ProjectorData::ProjectorData( const QgsRectangle &extent, int width, int height,
     QgsRasterDataProvider *provider = dynamic_cast<QgsRasterDataProvider *>( input->sourceInput() );
     if ( provider )
     {
-      if ( provider->capabilities() & QgsRasterDataProvider::Size )
+      // If provider-side resampling is possible, we will get a much better looking
+      // result by not requesting at the maximum resolution and then doing nearest
+      // resampling here. A real fix would be to do resampling during reprojection
+      // however.
+      if ( !( provider->providerCapabilities() & QgsRasterDataProvider::ProviderHintCanPerformProviderResampling ) &&
+           ( provider->capabilities() & QgsRasterDataProvider::Size ) )
       {
         mMaxSrcXRes = provider->extent().width() / provider->xSize();
         mMaxSrcYRes = provider->extent().height() / provider->ySize();

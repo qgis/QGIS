@@ -1,6 +1,7 @@
 {
   "name": "hstore_to_map",
   "type": "function",
+  "groups": ["Maps"],
   "description": "Creates a map from a hstore-formatted string.",
   "arguments": [
     {"arg":"string", "description":"the input string"}],

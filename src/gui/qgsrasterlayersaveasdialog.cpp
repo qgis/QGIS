@@ -217,7 +217,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
           break;
 
         if ( QMessageBox::warning( this, tr( "Save Raster Layer" ),
-                                   tr( "The directory %1 contains files which will be overwritten: %2" ).arg( dir.absolutePath(), files.join( QStringLiteral( ", " ) ) ),
+                                   tr( "The directory %1 contains files which will be overwritten: %2" ).arg( dir.absolutePath(), files.join( QLatin1String( ", " ) ) ),
                                    QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
           break;
 
@@ -263,12 +263,12 @@ void QgsRasterLayerSaveAsDialog::insertAvailableOutputFormats()
           // skip GDAL vrt driver, since we handle that format manually
           continue;
         }
-        else if ( driverShortName == QStringLiteral( "GTiff" ) )
+        else if ( driverShortName == QLatin1String( "GTiff" ) )
         {
           // always list geotiff first
           topPriorityDrivers.insert( 1, qMakePair( driverLongName, driverShortName ) );
         }
-        else if ( driverShortName == QStringLiteral( "GPKG" ) )
+        else if ( driverShortName == QLatin1String( "GPKG" ) )
         {
           // and gpkg second
           topPriorityDrivers.insert( 2, qMakePair( driverLongName, driverShortName ) );
@@ -320,15 +320,15 @@ void QgsRasterLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( const QStr
   else
   {
     filter = QStringLiteral( "%1 (*.%2);;%3" ).arg( mFormatComboBox->currentText(),
-             extensions.join( QStringLiteral( " *." ) ),
+             extensions.join( QLatin1String( " *." ) ),
              tr( "All files (*.*)" ) );
   }
   mFilename->setFilter( filter );
 
   // Disable mTileModeCheckBox for GeoPackages
-  mTileModeCheckBox->setEnabled( outputFormat() != QStringLiteral( "GPKG" ) );
-  mFilename->setConfirmOverwrite( outputFormat() != QStringLiteral( "GPKG" ) );
-  mLayerName->setEnabled( outputFormat() == QStringLiteral( "GPKG" ) );
+  mTileModeCheckBox->setEnabled( outputFormat() != QLatin1String( "GPKG" ) );
+  mFilename->setConfirmOverwrite( outputFormat() != QLatin1String( "GPKG" ) );
+  mLayerName->setEnabled( outputFormat() == QLatin1String( "GPKG" ) );
   if ( mLayerName->isEnabled() )
   {
     QString layerName = QFileInfo( mFilename->filePath() ).baseName();
@@ -412,7 +412,7 @@ QString QgsRasterLayerSaveAsDialog::outputFileName() const
 
 QString QgsRasterLayerSaveAsDialog::outputLayerName() const
 {
-  if ( mLayerName->text().isEmpty() && outputFormat() == QStringLiteral( "GPKG" ) && !mTileModeCheckBox->isChecked() )
+  if ( mLayerName->text().isEmpty() && outputFormat() == QLatin1String( "GPKG" ) && !mTileModeCheckBox->isChecked() )
   {
     // Always return layer name for GeoPackages
     return QFileInfo( mFilename->filePath() ).baseName();
@@ -431,7 +431,7 @@ QString QgsRasterLayerSaveAsDialog::outputFormat() const
 QStringList QgsRasterLayerSaveAsDialog::createOptions() const
 {
   QStringList options = mCreateOptionsGroupBox->isChecked() ? mCreateOptionsWidget->options() : QStringList();
-  if ( outputFormat() == QStringLiteral( "GPKG" ) )
+  if ( outputFormat() == QLatin1String( "GPKG" ) )
   {
     // Overwrite the GPKG table options
     int indx = options.indexOf( QRegularExpression( "^RASTER_TABLE=.*", QRegularExpression::CaseInsensitiveOption | QRegularExpression::MultilineOption ) );
@@ -921,7 +921,7 @@ bool QgsRasterLayerSaveAsDialog::outputLayerExists() const
 {
   QString vectorUri;
   QString rasterUri;
-  if ( outputFormat() == QStringLiteral( "GPKG" ) )
+  if ( outputFormat() == QLatin1String( "GPKG" ) )
   {
     rasterUri = QStringLiteral( "GPKG:%1:%2" ).arg( outputFileName(), outputLayerName() );
     vectorUri = QStringLiteral( "%1|layername=%2" ).arg( outputFileName(), outputLayerName() );
@@ -950,7 +950,7 @@ void QgsRasterLayerSaveAsDialog::accept()
     return;
   }
 
-  if ( outputFormat() == QStringLiteral( "GPKG" ) && outputLayerExists() &&
+  if ( outputFormat() == QLatin1String( "GPKG" ) && outputLayerExists() &&
        QMessageBox::warning( this, tr( "Save Raster Layer" ),
                              tr( "The layer %1 already exists in the target file, and overwriting layers in GeoPackage is not supported. "
                                  "Do you want to overwrite the whole file?" ).arg( outputLayerName() ),

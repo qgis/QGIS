@@ -347,14 +347,14 @@ Sets if the snapping on intersection is enabled
 
     bool selfSnapping() const;
 %Docstring
-Returns if self snapping (snapping to the currently digitised feature) is enabled
+Returns if self snapping (snapping to the currently digitized feature) is enabled
 
 .. versionadded:: 3.14
 %End
 
     void setSelfSnapping( bool enabled );
 %Docstring
-Sets if self snapping (snapping to the currently digitised feature) is enabled
+Sets if self snapping (snapping to the currently digitized feature) is enabled
 
 .. versionadded:: 3.14
 %End
@@ -411,6 +411,13 @@ Returns individual layer snappings settings (applied if mode is AdvancedConfigur
     void setIndividualLayerSettings( QgsVectorLayer *vl, const QgsSnappingConfig::IndividualLayerSettings &individualLayerSettings );
 %Docstring
 Sets individual layer snappings settings (applied if mode is AdvancedConfiguration)
+%End
+
+    void clearIndividualLayerSettings();
+%Docstring
+Removes all individual layer snapping settings
+
+.. versionadded:: 3.16
 %End
 
     bool operator!= ( const QgsSnappingConfig &other ) const;

@@ -91,6 +91,9 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
 
     void deactivate() override;
 
+    //! Clean drawings on map canvas
+    void clean() override;
+
     void keyPressEvent( QKeyEvent *e ) override;
 
     QgsGeometry cachedGeometry( const QgsVectorLayer *layer, QgsFeatureId fid );

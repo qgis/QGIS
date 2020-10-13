@@ -15,10 +15,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QToolButton>
 #include <QClipboard>
+#include <QMap>
+#include <QSpinBox>
+#include <QString>
+#include <QToolButton>
+#include <QUrl>
 
 #include "qgsapplication.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
+#include "qgscoordinateutils.h"
 #include "qgsinbuiltlocatorfilters.h"
 #include "qgsproject.h"
 #include "qgslayertree.h"
@@ -30,6 +37,8 @@
 #include "qgsfeatureaction.h"
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgssettings.h"
+#include "qgslocatorwidget.h"
 
 
 QgsLayerTreeLocatorFilter::QgsLayerTreeLocatorFilter( QObject *parent )
@@ -193,9 +202,9 @@ void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *pare
     {
       tooltip = match.captured( 1 );
     }
-    tooltip.replace( QStringLiteral( "..." ), QString() );
+    tooltip.replace( QLatin1String( "..." ), QString() );
     tooltip.replace( QString( QChar( 0x2026 ) ), QString() );
-    searchText.replace( QStringLiteral( "..." ), QString() );
+    searchText.replace( QLatin1String( "..." ), QString() );
     searchText.replace( QString( QChar( 0x2026 ) ), QString() );
     bool uniqueTooltip = searchText.trimmed().compare( tooltip.trimmed(), Qt::CaseInsensitive ) != 0;
     if ( action->isChecked() )
@@ -236,32 +245,99 @@ QgsActiveLayerFeaturesLocatorFilter *QgsActiveLayerFeaturesLocatorFilter::clone(
   return new QgsActiveLayerFeaturesLocatorFilter();
 }
 
-void QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string, const QgsLocatorContext &context )
+QString QgsActiveLayerFeaturesLocatorFilter::fieldRestriction( QString &searchString, bool *isRestricting )
 {
-  // Normally skip very short search strings, unless when specifically searching using this filter
-  if ( string.length() < 3 && !context.usingPrefix )
-    return;
+  QString _fieldRestriction;
+  searchString = searchString.trimmed();
+  if ( isRestricting )
+    *isRestricting = searchString.startsWith( '@' );
+  if ( searchString.startsWith( '@' ) )
+  {
+    _fieldRestriction = searchString.left( std::min( searchString.indexOf( ' ' ), searchString.length() ) ).remove( 0, 1 );
+    searchString = searchString.mid( _fieldRestriction.length() + 2 );
+  }
+  return _fieldRestriction;
+}
 
-  bool allowNumeric = false;
-  double numericalValue = string.toDouble( &allowNumeric );
+QStringList QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string, const QgsLocatorContext &context )
+{
+  mFieldsCompletion.clear();
+
+  // Normally skip very short search strings, unless when specifically searching using this filter or try to match fields
+  if ( string.length() < 3 && !context.usingPrefix && !string.startsWith( '@' ) )
+    return QStringList();
+
+  QgsSettings settings;
+  mMaxTotalResults = settings.value( QStringLiteral( "locator_filters/active_layer_features/limit_global" ), 30, QgsSettings::App ).toInt();
 
   QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( QgisApp::instance()->activeLayer() );
   if ( !layer )
-    return;
+    return QStringList();
 
   mDispExpression = QgsExpression( layer->displayExpression() );
   mContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
   mDispExpression.prepare( &mContext );
 
+  // determine if search is restricted to a specific field
+  QString searchString = string;
+  bool isRestricting = false;
+  QString _fieldRestriction = fieldRestriction( searchString, &isRestricting );
+  bool allowNumeric = false;
+  double numericalValue = searchString.toDouble( &allowNumeric );
+
+  // search in display expression if no field restriction
+  if ( !isRestricting )
+  {
+    QgsFeatureRequest req;
+    req.setSubsetOfAttributes( qgis::setToList( mDispExpression.referencedAttributeIndexes( layer->fields() ) ) );
+    if ( !mDispExpression.needsGeometry() )
+      req.setFlags( QgsFeatureRequest::NoGeometry );
+    QString enhancedSearch = searchString;
+    enhancedSearch.replace( ' ', '%' );
+    req.setFilterExpression( QStringLiteral( "%1 ILIKE '%%2%'" )
+                             .arg( layer->displayExpression(), enhancedSearch ) );
+    req.setLimit( mMaxTotalResults );
+    mDisplayTitleIterator = layer->getFeatures( req );
+  }
+  else
+  {
+    mDisplayTitleIterator = QgsFeatureIterator();
+  }
+
   // build up request expression
   QStringList expressionParts;
+  QStringList completionList;
   const QgsFields fields = layer->fields();
+  QgsAttributeList subsetOfAttributes = qgis::setToList( mDispExpression.referencedAttributeIndexes( layer->fields() ) );
   for ( const QgsField &field : fields )
   {
+    if ( field.configurationFlags().testFlag( QgsField::ConfigurationFlag::NotSearchable ) )
+      continue;
+
+    if ( isRestricting && !field.name().startsWith( _fieldRestriction ) )
+      continue;
+
+    if ( isRestricting )
+    {
+      int index = layer->fields().indexFromName( field.name() );
+      if ( !subsetOfAttributes.contains( index ) )
+        subsetOfAttributes << index;
+    }
+
+    // if we are trying to find a field (and not searching anything yet)
+    // keep the list of matching fields to display them as results
+    if ( isRestricting && searchString.isEmpty() && _fieldRestriction != field.name() )
+    {
+      mFieldsCompletion << field.name();
+    }
+
+    // the completion list (returned by the current method) is used by the locator line edit directly
+    completionList.append( QStringLiteral( "@%1 " ).arg( field.name() ) );
+
     if ( field.type() == QVariant::String )
     {
       expressionParts << QStringLiteral( "%1 ILIKE '%%2%'" ).arg( QgsExpression::quotedColumnRef( field.name() ),
-                      string );
+                      searchString );
     }
     else if ( allowNumeric && field.isNumeric() )
     {
@@ -269,13 +345,17 @@ void QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string, const 
     }
   }
 
-  QString expression = QStringLiteral( "(%1)" ).arg( expressionParts.join( QStringLiteral( " ) OR ( " ) ) );
+  QString expression = QStringLiteral( "(%1)" ).arg( expressionParts.join( QLatin1String( " ) OR ( " ) ) );
 
   QgsFeatureRequest req;
-  req.setFlags( QgsFeatureRequest::NoGeometry );
+  if ( !mDispExpression.needsGeometry() )
+    req.setFlags( QgsFeatureRequest::NoGeometry );
   req.setFilterExpression( expression );
-  req.setLimit( 30 );
-  mIterator = layer->getFeatures( req );
+  if ( isRestricting )
+    req.setSubsetOfAttributes( subsetOfAttributes );
+
+  req.setLimit( mMaxTotalResults );
+  mFieldIterator = layer->getFeatures( req );
 
   mLayerId = layer->id();
   mLayerIcon = QgsMapLayerModel::iconForLayer( layer );
@@ -284,17 +364,68 @@ void QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string, const 
   {
     mAttributeAliases.append( layer->attributeDisplayName( idx ) );
   }
+
+  return completionList;
 }
 
 void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback *feedback )
 {
-  int found = 0;
+  QgsFeatureIds featuresFound;
   QgsFeature f;
+  QString searchString = string;
+  fieldRestriction( searchString );
 
-  while ( mIterator.nextFeature( f ) )
+  // propose available fields for restriction
+  for ( const QString &field : qgis::as_const( mFieldsCompletion ) )
+  {
+    QgsLocatorResult result;
+    result.displayString = QStringLiteral( "@%1" ).arg( field );
+    result.description = tr( "Limit the search to the field '%1'" ).arg( field );
+    result.userData = QVariantMap( {{QStringLiteral( "type" ), QVariant::fromValue( ResultType::FieldRestriction )},
+      {QStringLiteral( "search_text" ), QStringLiteral( "%1 @%2 " ).arg( prefix(), field ) } } );
+    result.score = 1;
+    emit resultFetched( result );
+  }
+
+  // search in display title
+  if ( mDisplayTitleIterator.isValid() )
+  {
+    while ( mDisplayTitleIterator.nextFeature( f ) )
+    {
+      if ( feedback->isCanceled() )
+        return;
+
+      mContext.setFeature( f );
+
+      QgsLocatorResult result;
+
+      result.displayString =  mDispExpression.evaluate( &mContext ).toString();
+      result.userData = QVariantMap(
+      {
+        {QStringLiteral( "type" ), QVariant::fromValue( ResultType::Feature )},
+        {QStringLiteral( "feature_id" ), f.id()},
+        {QStringLiteral( "layer_id" ), mLayerId}
+      } );
+      result.icon = mLayerIcon;
+      result.score = static_cast< double >( searchString.length() ) / result.displayString.size();
+      emit resultFetched( result );
+
+      featuresFound << f.id();
+
+      if ( featuresFound.count() >= mMaxTotalResults )
+        break;
+    }
+  }
+
+  // search in fields
+  while ( mFieldIterator.nextFeature( f ) )
   {
     if ( feedback->isCanceled() )
       return;
+
+    // do not display twice the same feature
+    if ( featuresFound.contains( f.id() ) )
+      continue;
 
     QgsLocatorResult result;
 
@@ -306,7 +437,7 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
     for ( const QVariant &var : attributes )
     {
       QString attrString = var.toString();
-      if ( attrString.contains( string, Qt::CaseInsensitive ) )
+      if ( attrString.contains( searchString, Qt::CaseInsensitive ) )
       {
         if ( idx < mAttributeAliases.count() )
           result.displayString = QStringLiteral( "%1 (%2)" ).arg( attrString, mAttributeAliases[idx] );
@@ -320,28 +451,70 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
       continue; //not sure how this result slipped through...
 
     result.description = mDispExpression.evaluate( &mContext ).toString();
-
-    result.userData = QVariantList() << f.id() << mLayerId;
+    result.userData = QVariantMap(
+    {
+      {QStringLiteral( "type" ), QVariant::fromValue( ResultType::Feature )},
+      {QStringLiteral( "feature_id" ), f.id()},
+      {QStringLiteral( "layer_id" ), mLayerId}
+    } );
     result.icon = mLayerIcon;
-    result.score = static_cast< double >( string.length() ) / result.displayString.size();
+    result.score = static_cast< double >( searchString.length() ) / result.displayString.size();
     emit resultFetched( result );
 
-    found++;
-    if ( found >= 30 )
+    featuresFound << f.id();
+    if ( featuresFound.count() >= mMaxTotalResults )
       break;
   }
 }
 
 void QgsActiveLayerFeaturesLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
-  QVariantList dataList = result.userData.toList();
-  QgsFeatureId id = dataList.at( 0 ).toLongLong();
-  QString layerId = dataList.at( 1 ).toString();
-  QgsVectorLayer *layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( layerId );
-  if ( !layer )
-    return;
+  QVariantMap data = result.userData.value<QVariantMap>();
+  switch ( data.value( QStringLiteral( "type" ) ).value<ResultType>() )
+  {
+    case ResultType::Feature:
+    {
+      QgsVectorLayer *layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( data.value( QStringLiteral( "layer_id" ) ).toString() );
+      if ( layer )
+      {
+        QgsFeatureId fid = data.value( QStringLiteral( "feature_id" ) ).value<QgsFeatureId>();
+        QgisApp::instance()->mapCanvas()->zoomToFeatureIds( layer, QgsFeatureIds() << fid );
+        QgisApp::instance()->mapCanvas()->flashFeatureIds( layer, QgsFeatureIds() << fid );
+      }
+      break;
+    }
+    case ResultType::FieldRestriction:
+    {
+      // this is a field restriction
+      QgisApp::instance()->locatorWidget()->search( data.value( QStringLiteral( "search_text" ) ).toString() );
+      break;
+    }
+  }
+}
 
-  QgisApp::instance()->mapCanvas()->zoomToFeatureIds( layer, QgsFeatureIds() << id );
+void QgsActiveLayerFeaturesLocatorFilter::openConfigWidget( QWidget *parent )
+{
+  QString key = "locator_filters/active_layer_features";
+  QgsSettings settings;
+  std::unique_ptr<QDialog> dlg( new QDialog( parent ) );
+  dlg->restoreGeometry( settings.value( QStringLiteral( "Windows/%1/geometry" ).arg( key ) ).toByteArray() );
+  dlg->setWindowTitle( "All layers features locator filter" );
+  QFormLayout *formLayout = new QFormLayout;
+  QSpinBox *globalLimitSpinBox = new QSpinBox( dlg.get() );
+  globalLimitSpinBox->setValue( settings.value( QStringLiteral( "%1/limit_global" ).arg( key ), 30, QgsSettings::App ).toInt() );
+  globalLimitSpinBox->setMinimum( 1 );
+  globalLimitSpinBox->setMaximum( 200 );
+  formLayout->addRow( tr( "&Maximum number of results:" ), globalLimitSpinBox );
+  QDialogButtonBox *buttonbBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, dlg.get() );
+  formLayout->addRow( buttonbBox );
+  dlg->setLayout( formLayout );
+  connect( buttonbBox, &QDialogButtonBox::accepted, [&]()
+  {
+    settings.setValue( QStringLiteral( "%1/limit_global" ).arg( key ), globalLimitSpinBox->value(), QgsSettings::App );
+    dlg->accept();
+  } );
+  connect( buttonbBox, &QDialogButtonBox::rejected, dlg.get(), &QDialog::reject );
+  dlg->exec();
 }
 
 //
@@ -359,11 +532,15 @@ QgsAllLayersFeaturesLocatorFilter *QgsAllLayersFeaturesLocatorFilter::clone() co
   return new QgsAllLayersFeaturesLocatorFilter();
 }
 
-void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const QgsLocatorContext &context )
+QStringList QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const QgsLocatorContext &context )
 {
   // Normally skip very short search strings, unless when specifically searching using this filter
   if ( string.length() < 3 && !context.usingPrefix )
-    return;
+    return QStringList();
+
+  QgsSettings settings;
+  mMaxTotalResults = settings.value( "locator_filters/all_layers_features/limit_global", 15, QgsSettings::App ).toInt();
+  mMaxResultsPerLayer = settings.value( "locator_filters/all_layers_features/limit_per_layer", 8, QgsSettings::App ).toInt();
 
   mPreparedLayers.clear();
   const QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
@@ -405,6 +582,8 @@ void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const Qg
 
     mPreparedLayers.append( preparedLayer );
   }
+
+  return QStringList();
 }
 
 void QgsAllLayersFeaturesLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback *feedback )
@@ -517,8 +696,41 @@ void QgsAllLayersFeaturesLocatorFilter::triggerResultFromAction( const QgsLocato
   else
   {
     QgisApp::instance()->mapCanvas()->zoomToFeatureIds( layer, QgsFeatureIds() << fid );
+    QgisApp::instance()->mapCanvas()->flashFeatureIds( layer, QgsFeatureIds() << fid );
   }
 }
+
+void QgsAllLayersFeaturesLocatorFilter::openConfigWidget( QWidget *parent )
+{
+  QString key = "locator_filters/all_layers_features";
+  QgsSettings settings;
+  std::unique_ptr<QDialog> dlg( new QDialog( parent ) );
+  dlg->restoreGeometry( settings.value( QStringLiteral( "Windows/%1/geometry" ).arg( key ) ).toByteArray() );
+  dlg->setWindowTitle( "All layers features locator filter" );
+  QFormLayout *formLayout = new QFormLayout;
+  QSpinBox *globalLimitSpinBox = new QSpinBox( dlg.get() );
+  globalLimitSpinBox->setValue( settings.value( QStringLiteral( "%1/limit_global" ).arg( key ), 15, QgsSettings::App ).toInt() );
+  globalLimitSpinBox->setMinimum( 1 );
+  globalLimitSpinBox->setMaximum( 200 );
+  formLayout->addRow( tr( "&Maximum number of results:" ), globalLimitSpinBox );
+  QSpinBox *perLayerLimitSpinBox = new QSpinBox( dlg.get() );
+  perLayerLimitSpinBox->setValue( settings.value( QStringLiteral( "%1/limit_per_layer" ).arg( key ), 8, QgsSettings::App ).toInt() );
+  perLayerLimitSpinBox->setMinimum( 1 );
+  perLayerLimitSpinBox->setMaximum( 200 );
+  formLayout->addRow( tr( "&Maximum number of results per layer:" ), perLayerLimitSpinBox );
+  QDialogButtonBox *buttonbBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, dlg.get() );
+  formLayout->addRow( buttonbBox );
+  dlg->setLayout( formLayout );
+  connect( buttonbBox, &QDialogButtonBox::accepted, [&]()
+  {
+    settings.setValue( QStringLiteral( "%1/limit_global" ).arg( key ), globalLimitSpinBox->value(), QgsSettings::App );
+    settings.setValue( QStringLiteral( "%1/limit_per_layer" ).arg( key ), perLayerLimitSpinBox->value(), QgsSettings::App );
+    dlg->accept();
+  } );
+  connect( buttonbBox, &QDialogButtonBox::rejected, dlg.get(), &QDialog::reject );
+  dlg->exec();
+}
+
 
 //
 // QgsExpressionCalculatorLocatorFilter
@@ -614,7 +826,7 @@ void QgsSettingsLocatorFilter::fetchResults( const QString &string, const QgsLoc
       continue;
     }
 
-    result.score = fuzzyScore( result.displayString, string );;
+    result.score = fuzzyScore( result.displayString, string );
 
     if ( result.score > 0 )
       emit resultFetched( result );
@@ -701,4 +913,238 @@ void QgsBookmarkLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
   QModelIndex index = qvariant_cast<QModelIndex>( result.userData );
   QgisApp::instance()->zoomToBookmarkIndex( index );
+}
+
+//
+// QgsGotoLocatorFilter
+//
+
+QgsGotoLocatorFilter::QgsGotoLocatorFilter( QObject *parent )
+  : QgsLocatorFilter( parent )
+{}
+
+QgsGotoLocatorFilter *QgsGotoLocatorFilter::clone() const
+{
+  return new QgsGotoLocatorFilter();
+}
+
+void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback *feedback )
+{
+  if ( feedback->isCanceled() )
+    return;
+
+  const QgsCoordinateReferenceSystem currentCrs = QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs();
+  const QgsCoordinateReferenceSystem wgs84Crs( QStringLiteral( "EPSG:4326" ) );
+
+  bool okX = false;
+  bool okY = false;
+  double posX = 0.0;
+  double posY = 0.0;
+  bool posIsDms = false;
+  QLocale locale;
+
+  // Coordinates such as 106.8468,-6.3804
+  QRegularExpression separatorRx( QStringLiteral( "^([0-9\\-\\%1\\%2]*)[\\s%3]*([0-9\\-\\%1\\%2]*)$" ).arg( locale.decimalPoint(),
+                                  locale.groupSeparator(),
+                                  locale.decimalPoint() != ',' && locale.groupSeparator() != ',' ? QStringLiteral( "\\," ) : QString() ) );
+  QRegularExpressionMatch match = separatorRx.match( string.trimmed() );
+  if ( match.hasMatch() )
+  {
+    posX = locale.toDouble( match.captured( 1 ), &okX );
+    posY = locale.toDouble( match.captured( 2 ), &okY );
+  }
+
+  if ( !match.hasMatch() || !okX || !okY )
+  {
+    // Digit detection using user locale failed, use default C decimal separators
+    separatorRx = QRegularExpression( QStringLiteral( "^([0-9\\-\\.]*)[\\s\\,]*([0-9\\-\\.]*)$" ) );
+    match = separatorRx.match( string.trimmed() );
+    if ( match.hasMatch() )
+    {
+      posX = match.captured( 1 ).toDouble( &okX );
+      posY = match.captured( 2 ).toDouble( &okY );
+    }
+  }
+
+  if ( !match.hasMatch() )
+  {
+    // Check if the string is a pair of degree minute second
+    separatorRx = QRegularExpression( QStringLiteral( "^((?:([-+nsew])\\s*)?\\d{1,3}(?:[^0-9.]+[0-5]?\\d)?[^0-9.]+[0-5]?\\d(?:\\.\\d+)?[^0-9.]*[-+nsew]?)\\s+((?:([-+nsew])\\s*)?\\d{1,3}(?:[^0-9.]+[0-5]?\\d)?[^0-9.]+[0-5]?\\d(?:\\.\\d+)?[^0-9.]*[-+nsew]?)$" ) );
+    match = separatorRx.match( string.trimmed() );
+    if ( match.hasMatch() )
+    {
+      posIsDms = true;
+      posX = QgsCoordinateUtils::dmsToDecimal( match.captured( 1 ), &okX );
+      posY = QgsCoordinateUtils::dmsToDecimal( match.captured( 3 ), &okY );
+    }
+  }
+
+  if ( okX && okY )
+  {
+    QVariantMap data;
+    QgsPointXY point( posX, posY );
+    data.insert( QStringLiteral( "point" ), point );
+
+    bool withinWgs84 = wgs84Crs.bounds().contains( point );
+    if ( !posIsDms && currentCrs != wgs84Crs )
+    {
+      QgsLocatorResult result;
+      result.filter = this;
+      result.displayString = tr( "Go to %1 %2 (Map CRS, %3)" ).arg( locale.toString( point.x(), 'g', 10 ), locale.toString( point.y(), 'g', 10 ), currentCrs.userFriendlyIdentifier() );
+      result.userData = data;
+      result.score = 0.9;
+      emit resultFetched( result );
+    }
+
+    if ( withinWgs84 )
+    {
+      if ( currentCrs != wgs84Crs )
+      {
+        QgsCoordinateTransform transform( wgs84Crs, currentCrs, QgsProject::instance()->transformContext() );
+        QgsPointXY transformedPoint;
+        try
+        {
+          transformedPoint = transform.transform( point );
+        }
+        catch ( const QgsException &e )
+        {
+          Q_UNUSED( e )
+          return;
+        }
+        data[QStringLiteral( "point" )] = transformedPoint;
+      }
+
+      QgsLocatorResult result;
+      result.filter = this;
+      result.displayString = tr( "Go to %1° %2° (%3)" ).arg( locale.toString( point.x(), 'g', 10 ), locale.toString( point.y(), 'g', 10 ), wgs84Crs.userFriendlyIdentifier() );
+      result.userData = data;
+      result.score = 1.0;
+      emit resultFetched( result );
+    }
+    return;
+  }
+
+  QMap<int, double> scales;
+  scales[0] = 739571909;
+  scales[1] = 369785954;
+  scales[2] = 184892977;
+  scales[3] = 92446488;
+  scales[4] = 46223244;
+  scales[5] = 23111622;
+  scales[6] = 11555811;
+  scales[7] = 5777905;
+  scales[8] = 2888952;
+  scales[9] = 1444476;
+  scales[10] = 722238;
+  scales[11] = 361119;
+  scales[12] = 180559;
+  scales[13] = 90279;
+  scales[14] = 45139;
+  scales[15] = 22569;
+  scales[16] = 11284;
+  scales[17] = 5642;
+  scales[18] = 2821;
+  scales[19] = 1500;
+  scales[20] = 1000;
+
+  QUrl url( string );
+  if ( url.isValid() )
+  {
+    double scale = 0.0;
+    okX = false;
+    okY = false;
+    posX = 0.0;
+    posY = 0.0;
+    if ( url.hasFragment() )
+    {
+      // Check for OSM/Leaflet/OpenLayers pattern (e.g. http://www.openstreetmap.org/#map=6/46.423/4.746)
+      QStringList fragments = url.fragment().split( '&' );
+      for ( const QString &fragment : fragments )
+      {
+        if ( fragment.startsWith( QLatin1String( "map=" ) ) )
+        {
+          QStringList params = fragment.mid( 4 ).split( '/' );
+          if ( params.size() >= 3 )
+          {
+            if ( scales.contains( params.at( 0 ).toInt() ) )
+            {
+              scale = scales.value( params.at( 0 ).toInt() );
+            }
+            posX = params.at( 2 ).toDouble( &okX );
+            posY = params.at( 1 ).toDouble( &okY );
+          }
+          break;
+        }
+      }
+    }
+
+    if ( !okX && !okY )
+    {
+      QRegularExpression locationRx( QStringLiteral( "google.*\\/@([0-9\\-\\.\\,]*)z" ) );
+      match = locationRx.match( string );
+      if ( match.hasMatch() )
+      {
+        QStringList params = match.captured( 1 ).split( ',' );
+        if ( params.size() == 3 )
+        {
+          if ( scales.contains( params.at( 2 ).toInt() ) )
+          {
+            scale = scales.value( params.at( 2 ).toInt() );
+          }
+          posX = params.at( 1 ).toDouble( &okX );
+          posY = params.at( 0 ).toDouble( &okY );
+        }
+      }
+    }
+
+    if ( okX && okY )
+    {
+      QVariantMap data;
+      if ( scale > 0.0 )
+      {
+        data.insert( QStringLiteral( "scale" ), scale );
+      }
+
+      QgsPointXY point( posX, posY );
+      bool withinWgs84 = wgs84Crs.bounds().contains( point );
+      if ( withinWgs84 && currentCrs != wgs84Crs )
+      {
+        QgsCoordinateTransform transform( wgs84Crs, currentCrs, QgsProject::instance()->transformContext() );
+        QgsPointXY transformedPoint = transform.transform( point );
+        data.insert( QStringLiteral( "point" ), transformedPoint );
+      }
+      else
+      {
+        data.insert( QStringLiteral( "point" ), point );
+      }
+
+      QgsLocatorResult result;
+      result.filter = this;
+      result.displayString = tr( "Go to %1° %2° %3(%4)" ).arg( locale.toString( point.x(), 'g', 10 ), locale.toString( point.y(), 'g', 10 ),
+                             scale > 0.0 ? tr( "at scale 1:%1 " ).arg( scale ) : QString(),
+                             wgs84Crs.userFriendlyIdentifier() );
+      result.userData = data;
+      result.score = 1.0;
+      emit resultFetched( result );
+    }
+  }
+}
+
+void QgsGotoLocatorFilter::triggerResult( const QgsLocatorResult &result )
+{
+  QgsMapCanvas *mapCanvas = QgisApp::instance()->mapCanvas();
+
+  QVariantMap data = result.userData.toMap();
+  QgsPointXY point = data[QStringLiteral( "point" )].value<QgsPointXY>();
+  mapCanvas->setCenter( point );
+  if ( data.contains( QStringLiteral( "scale" ) ) )
+  {
+    mapCanvas->zoomScale( data[QStringLiteral( "scale" )].toDouble() );
+  }
+  else
+  {
+    mapCanvas->refresh();
+  }
+
+  mapCanvas->flashGeometries( QList< QgsGeometry >() << QgsGeometry::fromPointXY( point ) );
 }

@@ -155,7 +155,7 @@ Qt::ItemFlags QgsLayerCapabilitiesModel::flags( const QModelIndex &idx ) const
       }
       else
       {
-        return nullptr;
+        return Qt::ItemFlags();
       }
     }
     else if ( idx.column() == ReadOnlyColumn )
@@ -166,7 +166,7 @@ Qt::ItemFlags QgsLayerCapabilitiesModel::flags( const QModelIndex &idx ) const
       }
       else
       {
-        return nullptr;
+        return Qt::ItemFlags();
       }
     }
     else if ( idx.column() == SearchableColumn )
@@ -177,7 +177,7 @@ Qt::ItemFlags QgsLayerCapabilitiesModel::flags( const QModelIndex &idx ) const
       }
       else
       {
-        return nullptr;
+        return Qt::ItemFlags();
       }
     }
     else if ( idx.column() == RequiredColumn )
@@ -185,7 +185,7 @@ Qt::ItemFlags QgsLayerCapabilitiesModel::flags( const QModelIndex &idx ) const
       return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
     }
   }
-  return nullptr;
+  return Qt::ItemFlags();
 }
 
 QgsMapLayer *QgsLayerCapabilitiesModel::mapLayer( const QModelIndex &idx ) const

@@ -123,12 +123,12 @@ void QgsNewOgrConnection::showHelp()
 
 void QgsNewOgrConnection::updateOkButtonState()
 {
-  bool enabled = !txtName->text().isEmpty() && !txtHost->text().isEmpty() && !txtDatabase->text().isEmpty() && !txtPort->text().isEmpty();
+  bool enabled = !txtName->text().isEmpty();
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
 }
 
 
-//! Autoconnected SLOTS *
+//! Autoconnected SLOTS
 void QgsNewOgrConnection::accept()
 {
   QgsSettings settings;
@@ -170,4 +170,4 @@ void QgsNewOgrConnection::btnConnect_clicked()
   testConnection();
 }
 
-//! End  Autoconnected SLOTS *
+//! End  Autoconnected SLOTS

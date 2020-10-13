@@ -19,12 +19,23 @@ from datetime import datetime
 
 from osgeo import gdal, ogr  # NOQA
 from qgis.PyQt.QtCore import QVariant, QByteArray
-from qgis.core import (NULL,
-                       QgsApplication,
-                       QgsRectangle,
-                       QgsProviderRegistry,
-                       QgsFeature, QgsFeatureRequest, QgsField, QgsSettings, QgsDataProvider,
-                       QgsVectorDataProvider, QgsVectorLayer, QgsWkbTypes, QgsNetworkAccessManager)
+from qgis.core import (
+    NULL,
+    QgsApplication,
+    QgsProject,
+    QgsField,
+    QgsFields,
+    QgsRectangle,
+    QgsProviderRegistry,
+    QgsFeature,
+    QgsFeatureRequest,
+    QgsSettings,
+    QgsDataProvider,
+    QgsVectorDataProvider,
+    QgsVectorLayer,
+    QgsWkbTypes,
+    QgsNetworkAccessManager
+)
 from qgis.testing import start_app, unittest
 
 from utilities import unitTestDataPath
@@ -526,7 +537,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertIsInstance(features[2]['DATA'], QByteArray)
         self.assertEqual(hashlib.md5(features[2]['DATA'].data()).hexdigest(), '4b952b80e4288ca5111be2f6dd5d6809')
 
-    @unittest.skip(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 4, 0))
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 4, 0), "GDAL 2.4 required")
     def testStringListField(self):
         source = os.path.join(TEST_DATA_DIR, 'stringlist.gml')
         vl = QgsVectorLayer(source)
@@ -729,6 +740,89 @@ class PyQgsOGRProvider(unittest.TestCase):
                                                                            ['rectangle', '2']])
 
         self.assertCountEqual([f.attributes() for f in vl.getFeatures(request)], [['rectangle', '1']])
+
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 2, 0), "GDAL 3.2 required")
+    def testFieldAliases(self):
+        """
+        Test that field aliases are taken from OGR where available (requires GDAL 3.2 or later)
+        """
+        datasource = os.path.join(unitTestDataPath(), 'field_alias.gdb')
+        vl = QgsVectorLayer(datasource, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+
+        fields = vl.fields()
+
+        # proprietary FileGDB driver doesn't have the raster column
+        if 'raster' not in set(f.name() for f in fields):
+            expected_fieldnames = ['OBJECTID', 'text', 'short_int', 'long_int', 'float', 'double', 'date', 'blob', 'guid', 'SHAPE_Length', 'SHAPE_Area']
+            expected_alias = ['', 'My Text Field', 'My Short Int Field', 'My Long Int Field', 'My Float Field', 'My Double Field', 'My Date Field', 'My Blob Field', 'My GUID field', '', '']
+        else:
+            expected_fieldnames = ['OBJECTID', 'text', 'short_int', 'long_int', 'float', 'double', 'date', 'blob', 'guid', 'raster', 'SHAPE_Length', 'SHAPE_Area']
+            expected_alias = ['', 'My Text Field', 'My Short Int Field', 'My Long Int Field', 'My Float Field', 'My Double Field', 'My Date Field', 'My Blob Field', 'My GUID field', 'My Raster Field', '', '']
+
+        self.assertEqual([f.name() for f in fields], expected_fieldnames)
+        self.assertEqual([f.alias() for f in fields], expected_alias)
+
+    def testOpenOptions(self):
+
+        filename = os.path.join(tempfile.gettempdir(), "testOpenOptions.gpkg")
+        if os.path.exists(filename):
+            os.remove(filename)
+        ds = ogr.GetDriverByName("GPKG").CreateDataSource(filename)
+        lyr = ds.CreateLayer("points", geom_type=ogr.wkbPoint)
+        ds.ExecuteSQL("CREATE TABLE foo(id INTEGER PRIMARY KEY, name TEXT)")
+        ds.ExecuteSQL("INSERT INTO foo VALUES(1, 'bar');")
+        ds = None
+
+        vl = QgsVectorLayer(filename + "|option:LIST_ALL_TABLES=NO", 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.dataProvider().subLayers()), 1)
+        del vl
+
+        vl = QgsVectorLayer(filename + "|option:LIST_ALL_TABLES=YES", 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.dataProvider().subLayers()), 2)
+        del vl
+
+        vl = QgsVectorLayer(filename + "|layername=foo|option:LIST_ALL_TABLES=YES", 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len([f for f in vl.getFeatures()]), 1)
+        del vl
+
+        os.remove(filename)
+
+    def testTransactionGroupExpressionFields(self):
+        """Test issue GH #39230, this is not really specific to GPKG"""
+
+        project = QgsProject()
+        project.setAutoTransaction(True)
+        tmpfile = os.path.join(
+            self.basetestpath, 'tempGeoPackageTransactionExpressionFields.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint)
+        lyr.CreateField(ogr.FieldDefn('str_field', ogr.OFTString))
+
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT (1 1)'))
+        f.SetField('str_field', 'one')
+        lyr.CreateFeature(f)
+
+        del lyr
+        del ds
+
+        vl = QgsVectorLayer(tmpfile + '|layername=test', 'test', 'ogr')
+        f = QgsField('expression_field', QVariant.Int)
+        idx = vl.addExpressionField('123', f)
+        self.assertEqual(vl.fields().fieldOrigin(idx), QgsFields.OriginExpression)
+
+        project.addMapLayers([vl])
+
+        feature = next(vl.getFeatures())
+        feature.setAttributes([None, 'two', 123])
+
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.addFeature(feature))
+        self.assertFalse(vl.dataProvider().hasErrors())
 
 
 if __name__ == '__main__':
