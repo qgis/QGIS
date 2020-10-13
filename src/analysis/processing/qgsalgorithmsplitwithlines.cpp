@@ -209,12 +209,14 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
 
               // splitGeometry: If there are several intersections
               // between geometry and splitLine, only the first one is considered.
-              if ( result == QgsGeometry::Success ) // split occurred
+              if ( result == QgsGeometry::Success )
               {
-                if ( inGeom.isGeosEqual( before ) )
+                // sometimes the resultant geometry has changed from the input, but only because of numerical precision issues.
+                // and is effectively indistinguishable from the input. By testing the Hausdorff distance is less than this threshold
+                // we are checking that the maximum "change" between the result and the input is actually significant enough to be meaningful...
+                if ( inGeom.hausdorffDistance( before ) < 1e-12 )
                 {
-                  // bug in splitGeometry: sometimes it returns 0 but
-                  // the geometry is unchanged
+                  // effectively no change!!
                   outGeoms.append( inGeom );
                 }
                 else
