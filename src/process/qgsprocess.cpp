@@ -287,9 +287,18 @@ int QgsProcessingExec::run( const QStringList &constArgs )
     QgsUnitTypes::AreaUnit areaUnit = QgsUnitTypes::AreaUnknownUnit;
     QString projectPath;
     QVariantMap params;
-    for ( int i = 3; i < args.count(); i++ )
+    bool paramsEnded = false;
+    int i = 3;
+    for ( ; i < args.count(); i++ )
     {
       QString arg = args.at( i );
+
+      if ( arg == QLatin1String( "--" ) )
+      {
+        paramsEnded = true;
+        break;
+      }
+
       if ( arg.startsWith( QLatin1String( "--" ) ) )
         arg = arg.mid( 2 );
 
@@ -322,8 +331,21 @@ int QgsProcessingExec::run( const QStringList &constArgs )
       }
       else
       {
-        std::cerr << QStringLiteral( "Invalid parameter value %1. Parameter values must be of the form \"--NAME=VALUE\"\n" ).arg( arg ).toLocal8Bit().constData();
+        std::cerr << QStringLiteral( "Invalid parameter value %1. Parameter values must be entered after \"--\" e.g.\n  Example:\n    qgis_process run algorithm_name -- PARAM1=VALUE PARAM2=42\"\n" ).arg( arg ).toLocal8Bit().constData();
         return 1;
+      }
+    }
+
+    // After '--' we only have params
+    for ( ; i < args.count(); i++ )
+    {
+      const QString arg = args.at( i );
+      const QStringList parts = arg.split( '=' );
+      if ( parts.count() >= 2 )
+      {
+        const QString name = parts.first();
+        const QString value = parts.mid( 1 ).join( '=' );
+        params.insert( name, value );
       }
     }
 
@@ -349,7 +371,7 @@ void QgsProcessingExec::showUsage( const QString &appName )
       << "\tplugins\tlist available and active plugins\n"
       << "\tlist\tlist all available processing algorithms\n"
       << "\thelp\tshow help for an algorithm. The algorithm id or a path to a model file must be specified.\n"
-      << "\trun\truns an algorithm. The algorithm id or a path to a model file and parameter values must be specified. Parameter values are specified via the --PARAMETER=VALUE syntax.\n"
+      << "\trun\truns an algorithm. The algorithm id or a path to a model file and parameter values must be specified. Parameter values are specified after -- with PARAMETER=VALUE syntax.\n"
       << "\t\tIf required, the ellipsoid to use for distance and area calculations can be specified via the \"--ELLIPSOID=name\" argument.\n"
       << "\t\tIf required, an existing QGIS project to use during the algorithm execution can be specified via the \"--PROJECT_PATH=path\" argument.\n";
 
