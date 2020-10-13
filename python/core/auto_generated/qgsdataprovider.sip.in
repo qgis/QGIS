@@ -61,14 +61,25 @@ Abstract base class for spatial data provider implementations.
 
     struct ProviderOptions
     {
+
       QgsCoordinateTransformContext transformContext;
+
     };
 
-    QgsDataProvider( const QString &uri = QString(), const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions() );
+    enum ReadFlag
+    {
+      FlagTrustDataSource,
+    };
+    typedef QFlags<QgsDataProvider::ReadFlag> ReadFlags;
+
+
+    QgsDataProvider( const QString &uri = QString(),
+                     const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions(),
+                     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 %Docstring
 Create a new dataprovider with the specified in the ``uri``.
 
-Additional creation options are specified within the ``options`` value.
+Additional creation options are specified within the ``options`` value and since QGIS 3.16 creation flags are specified within the ``flags`` value.
 %End
 
     virtual QgsCoordinateReferenceSystem crs() const = 0;
@@ -477,7 +488,10 @@ Add error message
 Sets error message
 %End
 
+
 };
+
+QFlags<QgsDataProvider::ReadFlag> operator|(QgsDataProvider::ReadFlag f1, QFlags<QgsDataProvider::ReadFlag> f2);
 
 
 /************************************************************************

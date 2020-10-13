@@ -402,7 +402,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     /**
      * Create ogr feature style string for brush
-     \param fillColr fill color*/
+     * \param fillColr fill color
+    */
     static QString ogrFeatureStyleBrush( const QColor &fillColr );
 
     static void createRotationElement( QDomDocument &doc, QDomElement &element, const QString &rotationFunc );
@@ -591,7 +592,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     /**
      * Attempts to parse a string as a color using a variety of common formats, including hex
-     * codes, rgb and rgba strings.
+     * codes, rgb and rgba, hsl and hsla strings.
      * \param colorStr string representing the color
      * \param containsAlpha if colorStr contains an explicit alpha value then containsAlpha will be set to TRUE
      * \param strictEval set to TRUE for stricter color parsing rules
@@ -647,6 +648,38 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     //! Calculate whether a point is within of a QPolygonF
     static bool pointInPolygon( const QPolygonF &points, QPointF point );
+
+    /**
+     * Returns the substring of a \a polyline which starts at \a startOffset from the beginning of the line
+     * and ends at \a endOffset from the start of the line.
+     *
+     * If \a startOffset is less than 0, then the start point will be calculated by subtracting that distance
+     * from the end of the line. Similarly, if \a endOffset is less than zero then the end point will be subtracted
+     * from the end of the line.
+     *
+     * May return an empty linestring if the substring is zero length.
+     *
+     * \since QGIS 3.16
+     */
+    static QPolygonF polylineSubstring( const QPolygonF &polyline, double startOffset, double endOffset );
+
+    /**
+     * Returns TRUE if the angle formed by the line \a p1 - \a p2 - \a p3 forms a "sharp" corner.
+     *
+     * Sharp corners form an angle which exceeds a 45 degree threshold.
+     *
+     * \since QGIS 3.16
+     */
+    static bool isSharpCorner( QPointF p1, QPointF p2, QPointF p3 );
+
+    /**
+     * Appends a polyline \a line to an existing \a target polyline.
+     *
+     * Any duplicate points at the start \a line which match the end point from \a target will be skipped.
+     *
+     * \since QGIS 3.16
+     */
+    static void appendPolyline( QPolygonF &target, const QPolygonF &line );
 
     /**
      * Returns a new valid expression instance for given field or expression string.
@@ -728,6 +761,18 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \since QGIS 3.12
      */
     static QSet<const QgsSymbolLayer *> toSymbolLayerPointers( QgsFeatureRenderer *renderer, const QSet<QgsSymbolLayerId> &symbolLayerIds );
+
+    /**
+     * \brief Creates a new symbol with size restricted to min/max size if original size is out of min/max range
+     * \param s the original symbol
+     * \param minSize the minimum size in mm
+     * \param maxSize the maximum size in mm
+     * \param context the render context
+     * \param width expected width, can be changed by the function
+     * \param height expected height, can be changed by this function
+     * \return 0 if size is within minSize/maxSize range. New symbol if size was out of min/max range. Caller takes ownership
+     */
+    static QgsSymbol *restrictedSizeSymbol( const QgsSymbol *s, double minSize, double maxSize, QgsRenderContext *context, double &width, double &height );
 };
 
 class QPolygonF;

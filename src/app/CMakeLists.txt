@@ -125,7 +125,6 @@ SET(QGIS_APP_SRCS
   qgsmeasuredialog.cpp
   qgsmeasuretool.cpp
   qgsmergeattributesdialog.cpp
-  qgsoptions.cpp
   qgspointmarkeritem.cpp
   qgspointrotationitem.cpp
   qgspluginmetadata.cpp
@@ -198,6 +197,11 @@ SET(QGIS_APP_SRCS
   locator/qgsinbuiltlocatorfilters.cpp
   locator/qgslocatoroptionswidget.cpp
 
+  options/qgsadvancedoptions.cpp
+  options/qgscodeeditoroptions.cpp
+  options/qgsoptions.cpp
+  options/qgsoptionsutils.cpp
+
   gps/qgsgpsbearingitem.cpp
   gps/qgsgpsinformationwidget.cpp
   gps/qgsgpsmarker.cpp
@@ -217,18 +221,7 @@ SET(QGIS_APP_SRCS
   qgsvariantdelegate.cpp
   qgscrashhandler.cpp
 
-  mesh/qgsmeshlayerproperties.cpp
-  mesh/qgsrenderermeshpropertieswidget.cpp
-  mesh/qgsmeshdatasetgrouptreewidget.cpp
-  mesh/qgsmeshrenderer3daveragingwidget.cpp
-  mesh/qgsmeshrenderermeshsettingswidget.cpp
-  mesh/qgsmeshrendererscalarsettingswidget.cpp
-  mesh/qgsmeshrenderervectorsettingswidget.cpp
-  mesh/qgsmeshrendereractivedatasetwidget.cpp
-  mesh/qgsmeshdatasetgrouptreeview.cpp
   mesh/qgsmeshcalculatordialog.cpp
-  mesh/qgsmeshstaticdatasetwidget.cpp
-  mesh/qgsmeshvariablestrokewidthwidget.cpp
 )
 
 IF (WITH_GEOREFERENCER)
@@ -261,6 +254,8 @@ IF (WITH_3D)
     ${QGIS_APP_SRCS}
     3d/qgs3danimationwidget.cpp
     3d/qgs3danimationexportdialog.cpp
+    3d/qgs3dapputils.cpp
+    3d/qgs3dicongenerator.cpp
     3d/qgs3dmapcanvas.cpp
     3d/qgs3dmapcanvasdockwidget.cpp
     3d/qgs3dmapconfigwidget.cpp
@@ -268,19 +263,27 @@ IF (WITH_3D)
     3d/qgs3dmaptoolidentify.cpp
     3d/qgs3dmaptoolmeasureline.cpp
     3d/qgs3dmeasuredialog.cpp
+    3d/qgs3dmodelsourcelineedit.cpp
     3d/qgs3dnavigationwidget.cpp
+    3d/qgsgoochmaterialwidget.cpp
     3d/qgslightswidget.cpp
     3d/qgsline3dsymbolwidget.cpp
+    3d/qgsmaterialwidget.cpp
     3d/qgsmesh3dsymbolwidget.cpp
     3d/qgspoint3dsymbolwidget.cpp
     3d/qgspolygon3dsymbolwidget.cpp
     3d/qgsphongmaterialwidget.cpp
+    3d/qgsphongtexturedmaterialwidget.cpp
     3d/qgsrulebased3drendererwidget.cpp
+    3d/qgssimplelinematerialwidget.cpp
     3d/qgssymbol3dwidget.cpp
     3d/qgsvectorlayer3dpropertieswidget.cpp
     3d/qgsvectorlayer3drendererwidget.cpp
     3d/qgsmeshlayer3drendererwidget.cpp
+    3d/qgsmap3dexportwidget.cpp
     layout/qgslayout3dmapwidget.cpp
+    3d/qgsskyboxrenderingsettingswidget.cpp
+    3d/qgsshadowrenderingsettingswidget.cpp
   )
 ENDIF (WITH_3D)
 
@@ -447,8 +450,10 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/symbology
   ${CMAKE_SOURCE_DIR}/src/gui/attributetable
   ${CMAKE_SOURCE_DIR}/src/gui/auth
+  ${CMAKE_SOURCE_DIR}/src/gui/codeeditors
   ${CMAKE_SOURCE_DIR}/src/gui/devtools
   ${CMAKE_SOURCE_DIR}/src/gui/labeling
+  ${CMAKE_SOURCE_DIR}/src/gui/mesh
   ${CMAKE_SOURCE_DIR}/src/gui/numericformats
   ${CMAKE_SOURCE_DIR}/src/gui/ogr
   ${CMAKE_SOURCE_DIR}/src/gui/numericformats
@@ -478,8 +483,9 @@ IF (WITH_3D)
     ${CMAKE_SOURCE_DIR}/src/app/3d
     ${CMAKE_SOURCE_DIR}/src/core/3d
     ${CMAKE_SOURCE_DIR}/src/3d
-    ${CMAKE_SOURCE_DIR}/src/3d/symbols
+    ${CMAKE_SOURCE_DIR}/src/3d/materials
     ${CMAKE_SOURCE_DIR}/src/3d/mesh
+    ${CMAKE_SOURCE_DIR}/src/3d/symbols
     ${CMAKE_SOURCE_DIR}/src/3d/terrain
     ${CMAKE_SOURCE_DIR}/src/3d/chunks
     ${CMAKE_BINARY_DIR}/src/3d

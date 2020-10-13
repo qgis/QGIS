@@ -988,6 +988,14 @@ the dialog to open at a specific page.
 .. versionadded:: 3.0
 %End
 
+    virtual void showProjectPropertiesDialog( const QString &currentPage = QString() ) = 0;
+%Docstring
+Opens the project properties dialog. The ``currentPage`` argument can be used to force
+the dialog to open at a specific page.
+
+.. versionadded:: 3.16
+%End
+
     virtual void buildStyleSheet( const QMap<QString, QVariant> &opts ) = 0;
 %Docstring
 Generate stylesheet
@@ -1178,6 +1186,33 @@ Unregister a previously registered tab in the options dialog.
 .. versionadded:: 3.0
 %End
 
+    virtual void registerProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
+%Docstring
+Register a new tab in the project properties dialog.
+
+.. note::
+
+   Ownership of the factory is not transferred, and the factory must
+   be unregistered when plugin is unloaded.
+
+.. seealso:: :py:class:`QgsOptionsWidgetFactory`
+
+.. seealso:: :py:func:`unregisterProjectPropertiesWidgetFactory`
+
+.. versionadded:: 3.16
+%End
+
+    virtual void unregisterProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
+%Docstring
+Unregister a previously registered tab in the options dialog.
+
+.. seealso:: :py:class:`QgsOptionsWidgetFactory`
+
+.. seealso:: :py:func:`registerProjectPropertiesWidgetFactory`
+
+.. versionadded:: 3.16
+%End
+
     virtual void registerDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) = 0;
 %Docstring
 Register a new tool in the development/debugging tools dock.
@@ -1199,6 +1234,30 @@ Unregister a previously registered tool factory from the development/debugging t
 .. seealso:: :py:func:`registerDevToolWidgetFactory`
 
 .. versionadded:: 3.14
+%End
+
+    virtual void registerApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) = 0;
+%Docstring
+Register a new application exit blocker, which can be used to prevent the QGIS application
+from exiting while a plugin or script has unsaved changes.
+
+.. note::
+
+   Ownership of ``blocker`` is not transferred, and the blocker must
+   be unregistered when plugin is unloaded.
+
+.. seealso:: :py:func:`unregisterApplicationExitBlocker`
+
+.. versionadded:: 3.16
+%End
+
+    virtual void unregisterApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) = 0;
+%Docstring
+Unregister a previously registered application exit ``blocker``.
+
+.. seealso:: :py:func:`registerApplicationExitBlocker`
+
+.. versionadded:: 3.16
 %End
 
     virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
@@ -1395,6 +1454,16 @@ Returns the application browser model. Using this shared model is more efficient
 creating a new browser model for every use.
 
 .. versionadded:: 3.4
+%End
+
+    virtual void setGpsPanelConnection( QgsGpsConnection *connection ) = 0;
+%Docstring
+Sets a GPS ``connection`` to use within the GPS Panel widget.
+
+Any existing GPS connection used by the widget will be disconnect and replaced with this connection. The connection
+is automatically registered within the :py:func:`QgsApplication.gpsConnectionRegistry()`.
+
+.. versionadded:: 3.16
 %End
 
   signals:

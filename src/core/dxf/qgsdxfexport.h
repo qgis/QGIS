@@ -617,7 +617,7 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
     double mFactor = 1.0;
     bool mForce2d = false;
 
-    QgsDxfExport::Flags mFlags = nullptr;
+    QgsDxfExport::Flags mFlags = QgsDxfExport::Flags();
 
     void appendCurve( const QgsCurve &c, QVector<QgsPoint> &points, QVector<double> &bulges );
     void appendLineString( const QgsLineString &ls, QVector<QgsPoint> &points, QVector<double> &bulges );

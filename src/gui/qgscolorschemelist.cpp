@@ -723,7 +723,7 @@ void QgsColorSwatchDelegate::paint( QPainter *painter, const QStyleOptionViewIte
   rect.setSize( QSize( iconSize, iconSize ) );
   rect.adjust( 0, 1, 0, 1 );
   //create an icon pixmap
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   painter->setRenderHint( QPainter::Antialiasing );
   painter->setPen( Qt::NoPen );
   if ( color.alpha() < 255 )
@@ -737,7 +737,6 @@ void QgsColorSwatchDelegate::paint( QPainter *painter, const QStyleOptionViewIte
   //draw semi-transparent color on top
   painter->setBrush( color );
   painter->drawRoundedRect( rect, cornerSize, cornerSize );
-  painter->restore();
 }
 
 QPixmap QgsColorSwatchDelegate::transparentBackground() const

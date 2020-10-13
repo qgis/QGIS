@@ -78,13 +78,15 @@ Sets library directory where to search for plugins
 
     QgsDataProvider *createProvider( const QString &providerKey,
                                      const QString &dataSource,
-                                     const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() ) /Factory/;
+                                     const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions(),
+                                     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) /Factory/;
 %Docstring
 Creates a new instance of a provider.
 
 :param providerKey: identifier of the provider
 :param dataSource: string containing data source for the provider
 :param options: provider options
+:param flags: provider flags since QGIS 3.16
 
 :return: new instance of provider or ``None`` on error
 

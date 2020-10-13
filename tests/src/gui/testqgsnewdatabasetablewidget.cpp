@@ -134,9 +134,17 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsPostgres()
   QCOMPARE( w->mBrowserModel->data( index, Qt::DisplayRole ).toString(), QString( "PostGIS" ) );
   QRect rect = w->mBrowserTreeView->visualRect( w->mBrowserProxyModel.mapFromSource( index ) );
   QVERIFY( rect.isValid() );
-  QTest::mouseClick( w->mBrowserTreeView->viewport(), Qt::LeftButton, 0, rect.topLeft() );
+  QTest::mouseClick( w->mBrowserTreeView->viewport(), Qt::LeftButton, Qt::KeyboardModifiers(), rect.topLeft() );
 
   QVERIFY( ! w->isValid() );
+
+  /*
+  QDialog d;
+  QVBoxLayout l;
+  l.addWidget( w.get() );
+  d.setLayout( &l );
+  d.exec();
+  //*/
 
   QCOMPARE( providerSpy.count(), 1 );
   QCOMPARE( uriSpy.count(), 0 );
@@ -152,7 +160,7 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsPostgres()
   w->mBrowserTreeView->scrollTo( w->mBrowserProxyModel.mapFromSource( index ) );
   rect = w->mBrowserTreeView->visualRect( w->mBrowserProxyModel.mapFromSource( index ) );
   QVERIFY( rect.isValid() );
-  QTest::mouseClick( w->mBrowserTreeView->viewport(), Qt::LeftButton, 0, rect.center() );
+  QTest::mouseClick( w->mBrowserTreeView->viewport(), Qt::LeftButton, Qt::KeyboardModifiers(), rect.center() );
 
   QVERIFY( ! w->isValid() );
 
@@ -195,7 +203,7 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsPostgres()
   w->mBrowserTreeView->scrollTo( w->mBrowserProxyModel.mapFromSource( index ) );
   rect = w->mBrowserTreeView->visualRect( w->mBrowserProxyModel.mapFromSource( index ) );
   QVERIFY( rect.isValid() );
-  QTest::mouseClick( w->mBrowserTreeView->viewport(), Qt::LeftButton, 0, rect.center() );
+  QTest::mouseClick( w->mBrowserTreeView->viewport(), Qt::LeftButton, Qt::KeyboardModifiers(), rect.center() );
   QCOMPARE( w->schema(), QString( "public" ) );
   QVERIFY( w->isValid() );
   QCOMPARE( validationSpy.count(), 1 );
@@ -245,7 +253,7 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsGeopackage()
   w->mBrowserTreeView->scrollTo( w->mBrowserProxyModel.mapFromSource( index ) );
   auto rect = w->mBrowserTreeView->visualRect( w->mBrowserProxyModel.mapFromSource( index ) );
   QVERIFY( rect.isValid() );
-  QTest::mouseClick( w->mBrowserTreeView->viewport(), Qt::LeftButton, 0, rect.center() );
+  QTest::mouseClick( w->mBrowserTreeView->viewport(), Qt::LeftButton, Qt::KeyboardModifiers(), rect.center() );
 
   QVERIFY( ! w->isValid() );
   QCOMPARE( schemaSpy.count(), 1 );
@@ -265,7 +273,7 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsGeopackage()
   QCOMPARE( w->table(), QString( "newTableName" ) );
   QCOMPARE( w->schema(), mGpkgPath );
   QCOMPARE( w->dataProviderKey(), QString( "ogr" ) );
-  QCOMPARE( w->uri(), mGpkgPath + QStringLiteral( "|layername=newTableName" ) );
+  QCOMPARE( w->uri(), QString( mGpkgPath + QStringLiteral( "|layername=newTableName" ) ) );
 #endif
 }
 

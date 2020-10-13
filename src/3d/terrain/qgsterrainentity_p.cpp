@@ -60,7 +60,7 @@ class TerrainMapUpdateJobFactory : public QgsChunkQueueJobFactory
 QgsTerrainEntity::QgsTerrainEntity( int maxLevel, const Qgs3DMapSettings &map, Qt3DCore::QNode *parent )
   : QgsChunkedEntity( map.terrainGenerator()->rootChunkBbox( map ),
                       map.terrainGenerator()->rootChunkError( map ),
-                      map.maxTerrainScreenError(), maxLevel, map.terrainGenerator(), parent )
+                      map.maxTerrainScreenError(), maxLevel, map.terrainGenerator(), false, parent )
   , mMap( map )
 {
   map.terrainGenerator()->setTerrain( this );
@@ -69,7 +69,7 @@ QgsTerrainEntity::QgsTerrainEntity( int maxLevel, const Qgs3DMapSettings &map, Q
   connect( &map, &Qgs3DMapSettings::showTerrainBoundingBoxesChanged, this, &QgsTerrainEntity::onShowBoundingBoxesChanged );
   connect( &map, &Qgs3DMapSettings::showTerrainTilesInfoChanged, this, &QgsTerrainEntity::invalidateMapImages );
   connect( &map, &Qgs3DMapSettings::showLabelsChanged, this, &QgsTerrainEntity::invalidateMapImages );
-  connect( &map, &Qgs3DMapSettings::layersChanged, this, &QgsTerrainEntity::onLayersChanged );
+  connect( &map, &Qgs3DMapSettings::terrainLayersChanged, this, &QgsTerrainEntity::onLayersChanged );
   connect( &map, &Qgs3DMapSettings::backgroundColorChanged, this, &QgsTerrainEntity::invalidateMapImages );
   connect( &map, &Qgs3DMapSettings::terrainMapThemeChanged, this, &QgsTerrainEntity::invalidateMapImages );
 
@@ -175,7 +175,7 @@ void QgsTerrainEntity::connectToLayersRepaintRequest()
     disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsTerrainEntity::invalidateMapImages );
   }
 
-  mLayers = mMap.layers();
+  mLayers = mMap.terrainLayers();
 
   Q_FOREACH ( QgsMapLayer *layer, mLayers )
   {

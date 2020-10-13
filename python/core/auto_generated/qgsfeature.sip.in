@@ -136,14 +136,14 @@ geometry and a list of field/values attributes.
       sipCpp->deleteAttribute( fieldIdx );
 %End
 
-    QgsFeature( qint64 id = 0 );
+    QgsFeature( qint64 id = FID_NULL );
 %Docstring
 Constructor for QgsFeature
 
 :param id: feature id
 %End
 
-    QgsFeature( const QgsFields &fields, qint64 id = 0 );
+    QgsFeature( const QgsFields &fields, qint64 id = FID_NULL );
 %Docstring
 Constructor for QgsFeature
 

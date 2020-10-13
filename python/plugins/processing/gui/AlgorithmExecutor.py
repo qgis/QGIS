@@ -45,7 +45,7 @@ from processing.tools import dataobjects
 from qgis.utils import iface
 
 
-def execute(alg, parameters, context=None, feedback=None):
+def execute(alg, parameters, context=None, feedback=None, catch_exceptions=True):
     """Executes a given algorithm, showing its progress in the
     progress object passed along.
 
@@ -58,14 +58,18 @@ def execute(alg, parameters, context=None, feedback=None):
     if context is None:
         context = dataobjects.createContext(feedback)
 
-    try:
-        results, ok = alg.run(parameters, context, feedback)
+    if catch_exceptions:
+        try:
+            results, ok = alg.run(parameters, context, feedback)
+            return ok, results
+        except QgsProcessingException as e:
+            QgsMessageLog.logMessage(str(sys.exc_info()[0]), 'Processing', Qgis.Critical)
+            if feedback is not None:
+                feedback.reportError(e.msg)
+            return False, {}
+    else:
+        results, ok = alg.run(parameters, context, feedback, {}, False)
         return ok, results
-    except QgsProcessingException as e:
-        QgsMessageLog.logMessage(str(sys.exc_info()[0]), 'Processing', Qgis.Critical)
-        if feedback is not None:
-            feedback.reportError(e.msg)
-        return False, {}
 
 
 def execute_in_place_run(alg, parameters, context=None, feedback=None, raise_exceptions=False):
@@ -153,7 +157,7 @@ def execute_in_place_run(alg, parameters, context=None, feedback=None, raise_exc
         if hasattr(alg, 'processFeature'):  # in-place feature editing
             # Make a clone or it will crash the second time the dialog
             # is opened and run
-            alg = alg.create()
+            alg = alg.create({'IN_PLACE': True})
             if not alg.prepare(parameters, context, feedback):
                 raise QgsProcessingException(tr("Could not prepare selected algorithm."))
             # Check again for compatibility after prepare
@@ -207,7 +211,7 @@ def execute_in_place_run(alg, parameters, context=None, feedback=None, raise_exc
 
                 feedback.setProgress(int((current + 1) * step))
 
-            results, ok = {}, True
+            results, ok = {'__count': current + 1}, True
 
         else:  # Traditional 'run' with delete and add features cycle
 
@@ -218,7 +222,7 @@ def execute_in_place_run(alg, parameters, context=None, feedback=None, raise_exc
             else:
                 selected_ids = []
 
-            results, ok = alg.run(parameters, context, feedback)
+            results, ok = alg.run(parameters, context, feedback, configuration={'IN_PLACE': True})
 
             if ok:
                 result_layer = QgsProcessingUtils.mapLayerFromString(results['OUTPUT'], context)
@@ -246,6 +250,7 @@ def execute_in_place_run(alg, parameters, context=None, feedback=None, raise_exc
                     raise QgsProcessingException(tr("Error adding processed features back into the layer."))
                 new_ids = set([f.id() for f in active_layer.getFeatures(req)])
                 new_feature_ids += list(new_ids - old_ids)
+                results['__count'] = len(new_feature_ids)
 
         active_layer.endEditCommand()
 

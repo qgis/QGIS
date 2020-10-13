@@ -91,7 +91,7 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   treeView->setItemDelegate( mItemDelegate );
 
   QgsSettings settings;
-  QgsDebugMsg( QStringLiteral( "restoring settings" ) );
+  QgsDebugMsgLevel( QStringLiteral( "restoring settings" ), 3 );
   cbxUseTitleLayerName->setChecked( settings.value( QStringLiteral( "Windows/WFSSourceSelect/UseTitleLayerName" ), false ).toBool() );
   cbxFeatureCurrentViewExtent->setChecked( settings.value( QStringLiteral( "Windows/WFSSourceSelect/FeatureCurrentViewExtent" ), true ).toBool() );
   mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "Windows/WFSSourceSelect/HoldDialogOpen" ), false ).toBool() );
@@ -116,7 +116,7 @@ QgsWFSSourceSelect::~QgsWFSSourceSelect()
   QApplication::restoreOverrideCursor();
 
   QgsSettings settings;
-  QgsDebugMsg( QStringLiteral( "saving settings" ) );
+  QgsDebugMsgLevel( QStringLiteral( "saving settings" ), 3 );
   settings.setValue( QStringLiteral( "Windows/WFSSourceSelect/UseTitleLayerName" ), cbxUseTitleLayerName->isChecked() );
   settings.setValue( QStringLiteral( "Windows/WFSSourceSelect/FeatureCurrentViewExtent" ), cbxFeatureCurrentViewExtent->isChecked() );
   settings.setValue( QStringLiteral( "Windows/WFSSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
@@ -513,7 +513,7 @@ void QgsWFSSourceSelect::addButtonClicked()
     {
       layerName = titleName;
     }
-    QgsDebugMsg( "Layer " + typeName + " SQL is " + sql );
+    QgsDebugMsgLevel( "Layer " + typeName + " SQL is " + sql, 3 );
 
     mUri = QgsWFSDataSourceURI::build( connection.uri().uri( false ), typeName,
                                        pCrsString,
@@ -796,7 +796,7 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex &index )
 
 void QgsWFSSourceSelect::updateSql()
 {
-  QgsDebugMsg( QStringLiteral( "updateSql called" ) );
+  QgsDebugMsgLevel( QStringLiteral( "updateSql called" ), 2 );
   Q_ASSERT( mSQLComposerDialog );
 
   const QString typeName = mSQLIndex.sibling( mSQLIndex.row(), MODEL_IDX_NAME ).data().toString();
@@ -811,7 +811,7 @@ void QgsWFSSourceSelect::updateSql()
   QString allSql( "SELECT * FROM " + QgsSQLStatement::quotedIdentifierIfNeeded( displayedTypeName ) );
   if ( sql == allSql )
     sql.clear();
-  QgsDebugMsg( "SQL text = " + sql );
+  QgsDebugMsgLevel( "SQL text = " + sql, 2 );
   mModelProxy->setData( filterIndex, QVariant( sql ) );
 }
 
@@ -826,13 +826,13 @@ void QgsWFSSourceSelect::changeCRS()
 
 void QgsWFSSourceSelect::changeCRSFilter()
 {
-  QgsDebugMsg( QStringLiteral( "changeCRSFilter called" ) );
+  QgsDebugMsgLevel( QStringLiteral( "changeCRSFilter called" ), 2 );
   //evaluate currently selected typename and set the CRS filter in mProjectionSelector
   QModelIndex currentIndex = treeView->selectionModel()->currentIndex();
   if ( currentIndex.isValid() )
   {
     QString currentTypename = currentIndex.sibling( currentIndex.row(), MODEL_IDX_NAME ).data().toString();
-    QgsDebugMsg( QStringLiteral( "the current typename is: %1" ).arg( currentTypename ) );
+    QgsDebugMsgLevel( QStringLiteral( "the current typename is: %1" ).arg( currentTypename ), 2 );
 
     QMap<QString, QStringList >::const_iterator crsIterator = mAvailableCRS.constFind( currentTypename );
     if ( crsIterator != mAvailableCRS.constEnd() )
@@ -891,14 +891,14 @@ void QgsWFSSourceSelect::btnLoad_clicked()
 
 void QgsWFSSourceSelect::treeWidgetItemDoubleClicked( const QModelIndex &index )
 {
-  QgsDebugMsg( QStringLiteral( "double-click called" ) );
+  QgsDebugMsgLevel( QStringLiteral( "double-click called" ), 2 );
   buildQuery( index );
 }
 
 void QgsWFSSourceSelect::treeWidgetCurrentRowChanged( const QModelIndex &current, const QModelIndex &previous )
 {
   Q_UNUSED( previous )
-  QgsDebugMsg( QStringLiteral( "treeWidget_currentRowChanged called" ) );
+  QgsDebugMsgLevel( QStringLiteral( "treeWidget_currentRowChanged called" ), 2 );
   changeCRSFilter();
   mBuildQueryButton->setEnabled( current.isValid() );
   emit enableButtons( current.isValid() );
@@ -906,13 +906,13 @@ void QgsWFSSourceSelect::treeWidgetCurrentRowChanged( const QModelIndex &current
 
 void QgsWFSSourceSelect::buildQueryButtonClicked()
 {
-  QgsDebugMsg( QStringLiteral( "mBuildQueryButton click called" ) );
+  QgsDebugMsgLevel( QStringLiteral( "mBuildQueryButton click called" ), 2 );
   buildQuery( treeView->selectionModel()->currentIndex() );
 }
 
 void QgsWFSSourceSelect::filterChanged( const QString &text )
 {
-  QgsDebugMsg( "WFS FeatureType filter changed to :" + text );
+  QgsDebugMsgLevel( "WFS FeatureType filter changed to :" + text, 2 );
   QRegExp::PatternSyntax mySyntax = QRegExp::PatternSyntax( QRegExp::RegExp );
   Qt::CaseSensitivity myCaseSensitivity = Qt::CaseInsensitive;
   QRegExp myRegExp( text, myCaseSensitivity, mySyntax );

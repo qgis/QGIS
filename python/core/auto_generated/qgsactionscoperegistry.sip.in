@@ -17,9 +17,9 @@ at runtime by plugins or custom applications.
 
 To get access use the QgsApplication:
 
-```
-:py:func:`QgsApplication.actionScopeRegistry()`
-```
+.. code-block:: python
+
+     QgsApplication.actionScopeRegistry()
 
 .. versionadded:: 3.0
 %End

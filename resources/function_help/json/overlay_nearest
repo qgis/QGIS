@@ -1,0 +1,56 @@
+{
+  "name": "overlay_nearest",
+  "type": "function",
+  "groups": ["GeometryGroup"],
+  "description": "This returns an array of results of an expression evaluated on features from a different layer ordered BY DISTANCE to the current feature, or, if no expression if provided, simply returns whether at least one feature from the other layer was found. Note : this function can be slow and consume a lot of memory for large layers.",
+  "arguments": [
+    {
+      "arg": "layer",
+      "description": "the other layer"
+    },
+    {
+      "arg": "expression",
+      "description": "an optional expression to evaluate on the features from the other layer (if not set, the function will just return a boolean indicating whether there is at least one match)",
+      "optional": true
+    },
+    {
+      "arg": "filter",
+      "description": "an optional expression to filter the matching features (if not set, all features will be returned)",
+      "optional": true
+    },
+    {
+      "arg": "limit",
+      "description": "an optional integer to limit the number of matching features (if not set, only the nearest feature will be returned)",
+      "optional": true
+    },
+    {
+      "arg": "max_distance",
+      "description": "an optional maximum distance to limit the number of matching features (if not set, only the nearest feature will be returned)",
+      "optional": true
+    },
+    {
+      "arg": "cache",
+      "description": "set this to true to build a local spatial index (most of the time, this is unwanted, unless you are working with a particularly slow data provider)",
+      "optional": true,
+      "default": false
+    }
+  ],
+  "examples": [
+    {
+      "expression": "overlay_nearest('regions')",
+      "returns": "True"
+    },
+    {
+      "expression": "overlay_nearest('regions', name)",
+      "returns": "['South Africa', 'Africa', 'World']"
+    },
+    {
+      "expression": "overlay_nearest('regions', name, name != 'World')",
+      "returns": "['South Africa', 'Africa']"
+    },
+    {
+      "expression": "overlay_nearest('regions', name, limit:=1)",
+      "returns": "['South Africa']"
+    }
+  ]
+}

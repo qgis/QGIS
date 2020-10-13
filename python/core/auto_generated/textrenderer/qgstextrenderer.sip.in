@@ -44,7 +44,33 @@ and background shapes.
       AlignLeft,
       AlignCenter,
       AlignRight,
+      AlignJustify,
     };
+
+    static HAlignment convertQtHAlignment( Qt::Alignment alignment );
+%Docstring
+Converts a Qt horizontal ``alignment`` flag to a QgsTextRenderer.HAlignment value.
+
+.. seealso:: :py:func:`convertQtVAlignment`
+
+.. versionadded:: 3.16
+%End
+
+    enum VAlignment
+    {
+      AlignTop,
+      AlignVCenter,
+      AlignBottom,
+    };
+
+    static VAlignment convertQtVAlignment( Qt::Alignment alignment );
+%Docstring
+Converts a Qt vertical ``alignment`` flag to a QgsTextRenderer.VAlignment value.
+
+.. seealso:: :py:func:`convertQtHAlignment`
+
+.. versionadded:: 3.16
+%End
 
     static int sizeToPixel( double size, const QgsRenderContext &c, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
 %Docstring
@@ -61,7 +87,7 @@ Calculates pixel size (considering output size should be in pixel or map units, 
 
     static void drawText( const QRectF &rect, double rotation, HAlignment alignment, const QStringList &textLines,
                           QgsRenderContext &context, const QgsTextFormat &format,
-                          bool drawAsOutlines = true );
+                          bool drawAsOutlines = true, VAlignment vAlignment = AlignTop );
 %Docstring
 Draws text within a rectangle using the specified settings.
 
@@ -75,6 +101,7 @@ Draws text within a rectangle using the specified settings.
                        formats like SVG to maintain text as text objects, but at the cost of degraded
                        rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
                        as of QGIS 3.4.3 and the text format should be set using :py:func:`QgsRenderContext.setTextRenderFormat()` instead.
+:param vAlignment: vertical alignment (since QGIS 3.16)
 %End
 
     static void drawText( QPointF point, double rotation, HAlignment alignment, const QStringList &textLines,
@@ -143,11 +170,16 @@ Draws a single component of rendered text using the specified settings.
    Private API only, will be removed in 4.0
 %End
 
-    static QFontMetricsF fontMetrics( QgsRenderContext &context, const QgsTextFormat &format );
+    static QFontMetricsF fontMetrics( QgsRenderContext &context, const QgsTextFormat &format, double scaleFactor = 1.0 );
 %Docstring
 Returns the font metrics for the given text ``format``, when rendered
 in the specified render ``context``. The font metrics will take into account
 all scaling required by the render context.
+
+The optional ``scaleFactor`` argument can specify a font size scaling factor. It is recommended to set this to
+QgsTextRenderer.FONT_WORKAROUND_SCALE and then manually scale painter devices or calculations
+based on the resultant font metrics. Failure to do so will result in poor quality text rendering
+at small font sizes.
 
 .. versionadded:: 3.2
 %End
@@ -174,6 +206,21 @@ Returns the height of a text based on a given format.
 :param mode: draw mode
 :param fontMetrics: font metrics
 %End
+
+    static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, QChar character, bool includeEffects = false );
+%Docstring
+Returns the height of a character when rendered with the specified text ``format``.
+
+:param context: render context
+:param format: text format
+:param character: character to determine height of. If ``character`` is invalid, then the maximum character height will be returned.
+:param includeEffects: if ``True``, then the size of formatting effects such as buffers and shadows will be considered in the
+                       returned height. If ``False``, then the returned size considers the character only.
+
+.. versionadded:: 3.16
+%End
+
+    static const double FONT_WORKAROUND_SCALE;
 
 };
 

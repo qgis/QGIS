@@ -67,12 +67,12 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
     /**
      * Returns TRUE if the curve is closed.
      */
-    virtual bool isClosed() const;
+    virtual bool isClosed() const SIP_HOLDGIL;
 
     /**
      * Returns TRUE if the curve is a ring.
      */
-    virtual bool isRing() const;
+    virtual bool isRing() const SIP_HOLDGIL;
 
     /**
      * Returns a new line string geometry corresponding to a segmentized approximation
@@ -89,6 +89,7 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
      * Adds a curve to a painter path.
      */
     virtual void addToPainterPath( QPainterPath &path ) const = 0;
+    QPainterPath asQPainterPath() const override;
 
     /**
      * Draws the curve as a polygon on the specified QPainter.
@@ -154,7 +155,8 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
     /**
      * Returns a geometry without curves. Caller takes ownership
      * \param tolerance segmentation tolerance
-     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
+     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve
+    */
     QgsCurve *segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
 
     int vertexCount( int part = 0, int ring = 0 ) const override;

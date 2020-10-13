@@ -298,7 +298,7 @@ int QgsDxfExport::writeHandle( int code, int handle )
 
   Q_ASSERT_X( handle < DXF_HANDMAX, "QgsDxfExport::writeHandle(int, int)", "DXF handle too large" );
 
-  writeGroup( code, QStringLiteral( "%1" ).arg( handle, 0, 16 ) );
+  writeGroup( code, QString::number( handle, 16 ) );
   return handle;
 }
 
@@ -551,7 +551,7 @@ void QgsDxfExport::writeBlocks()
   {
     writeGroup( 0, QStringLiteral( "BLOCK" ) );
     writeHandle();
-    writeGroup( 330, QStringLiteral( "%1" ).arg( mBlockHandles[ block ], 0, 16 ) );
+    writeGroup( 330, QString::number( mBlockHandles[ block ], 16 ) );
     writeGroup( 100, QStringLiteral( "AcDbEntity" ) );
     writeGroup( 8, QStringLiteral( "0" ) );
     writeGroup( 100, QStringLiteral( "AcDbBlockBegin" ) );
@@ -592,7 +592,7 @@ void QgsDxfExport::writeBlocks()
     }
 
     QString block( QStringLiteral( "symbolLayer%1" ).arg( mBlockCounter++ ) );
-    mBlockHandle = QStringLiteral( "%1" ).arg( mBlockHandles[ block ], 0, 16 );
+    mBlockHandle = QString::number( mBlockHandles[ block ], 16 );
 
     writeGroup( 0, QStringLiteral( "BLOCK" ) );
     writeHandle();
@@ -631,12 +631,12 @@ void QgsDxfExport::writeEntities()
   startSection();
   writeGroup( 2, QStringLiteral( "ENTITIES" ) );
 
-  mBlockHandle = QStringLiteral( "%1" ).arg( mBlockHandles[ QStringLiteral( "*Model_Space" )], 0, 16 );
+  mBlockHandle = QString::number( mBlockHandles[ QStringLiteral( "*Model_Space" )], 16 );
 
   // iterate through the maplayers
   for ( DxfLayerJob *job : qgis::as_const( mJobs ) )
   {
-    QgsSymbolRenderContext sctx( mRenderContext, QgsUnitTypes::RenderMillimeters, 1.0, false, nullptr, nullptr );
+    QgsSymbolRenderContext sctx( mRenderContext, QgsUnitTypes::RenderMillimeters, 1.0, false, QgsSymbol::RenderHints(), nullptr );
 
     if ( mSymbologyExport == QgsDxfExport::SymbolLayerSymbology &&
          ( job->renderer->capabilities() & QgsFeatureRenderer::SymbolLevels ) &&
@@ -794,7 +794,7 @@ void QgsDxfExport::writeEntitiesSymbolLevels( DxfLayerJob *job )
   const QList<QgsExpressionContextScope *> scopes = job->renderContext.expressionContext().scopes();
   for ( QgsExpressionContextScope *scope : scopes )
     ctx.expressionContext().appendScope( new QgsExpressionContextScope( *scope ) );
-  QgsSymbolRenderContext sctx( ctx, QgsUnitTypes::RenderMillimeters, 1.0, false, nullptr, nullptr );
+  QgsSymbolRenderContext sctx( ctx, QgsUnitTypes::RenderMillimeters, 1.0, false, QgsSymbol::RenderHints(), nullptr );
 
   // get iterator
   QgsFeatureRequest req;
@@ -2271,40 +2271,45 @@ void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context,
   QString wrapchr = tmpLyr.wrapChar.isEmpty() ? QStringLiteral( "\n" ) : tmpLyr.wrapChar;
 
   //add the direction symbol if needed
-  if ( !txt.isEmpty() && tmpLyr.placement == QgsPalLayerSettings::Line && tmpLyr.addDirectionSymbol )
+  if ( !txt.isEmpty() && tmpLyr.placement == QgsPalLayerSettings::Line && tmpLyr.lineSettings().addDirectionSymbol() )
   {
     bool prependSymb = false;
-    QString symb = tmpLyr.rightDirectionSymbol;
+    QString symb = tmpLyr.lineSettings().rightDirectionSymbol();
 
     if ( label->getReversed() )
     {
       prependSymb = true;
-      symb = tmpLyr.leftDirectionSymbol;
+      symb = tmpLyr.lineSettings().leftDirectionSymbol();
     }
 
-    if ( tmpLyr.reverseDirectionSymbol )
+    if ( tmpLyr.lineSettings().reverseDirectionSymbol() )
     {
-      if ( symb == tmpLyr.rightDirectionSymbol )
+      if ( symb == tmpLyr.lineSettings().rightDirectionSymbol() )
       {
         prependSymb = true;
-        symb = tmpLyr.leftDirectionSymbol;
+        symb = tmpLyr.lineSettings().leftDirectionSymbol();
       }
       else
       {
         prependSymb = false;
-        symb = tmpLyr.rightDirectionSymbol;
+        symb = tmpLyr.lineSettings().rightDirectionSymbol();
       }
     }
 
-    if ( tmpLyr.placeDirectionSymbol == QgsPalLayerSettings::SymbolAbove )
+    switch ( tmpLyr.lineSettings().directionSymbolPlacement() )
     {
-      prependSymb = true;
-      symb = symb + wrapchr;
-    }
-    else if ( tmpLyr.placeDirectionSymbol == QgsPalLayerSettings::SymbolBelow )
-    {
-      prependSymb = false;
-      symb = wrapchr + symb;
+      case QgsLabelLineSettings::DirectionSymbolPlacement::SymbolAbove:
+        prependSymb = true;
+        symb = symb + wrapchr;
+        break;
+
+      case QgsLabelLineSettings::DirectionSymbolPlacement::SymbolBelow:
+        prependSymb = false;
+        symb = wrapchr + symb;
+        break;
+
+      case QgsLabelLineSettings::DirectionSymbolPlacement::SymbolLeftRight:
+        break;
     }
 
     if ( prependSymb )

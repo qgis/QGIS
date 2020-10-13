@@ -687,6 +687,25 @@ tests:
             path: skip
 
   - algorithm: native:mergevectorlayers
+    name: Merge points with mixed attribute types
+    params:
+      LAYERS:
+        params:
+        - name: custom/points.shp
+          type: vector
+        - name: custom/points_alt.shp
+          type: vector
+        type: multi
+    results:
+      OUTPUT:
+        name: expected/merged_points_mixed.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+            path: skip
+
+  - algorithm: native:mergevectorlayers
     name: Merge polygons
     params:
       LAYERS:

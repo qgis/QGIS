@@ -33,6 +33,7 @@ length, and if applicable, precision.
 
   public:
 
+
     QgsField( const QString &name = QString(),
               QVariant::Type type = QVariant::Invalid,
               const QString &typeName = QString(),
@@ -283,10 +284,14 @@ Sets the alias for the field (the friendly displayed name of the field ).
 .. versionadded:: 3.0
 %End
 
+
+
     QString displayString( const QVariant &v ) const;
 %Docstring
 Formats string for display
 %End
+
+
 
     bool convertCompatible( QVariant &v ) const;
 %Docstring
@@ -307,11 +312,12 @@ Converts the provided variant to a compatible format
       if ( sipParseArgs( &sipParseErr, sipArgs, "BJ1", &sipSelf, sipType_QgsField, &sipCpp, sipType_QVariant, &a0, &a0State ) )
       {
         bool sipRes;
+        QString errorMessage;
 
         Py_BEGIN_ALLOW_THREADS
         try
         {
-          sipRes = sipCpp->convertCompatible( *a0 );
+          sipRes = sipCpp->convertCompatible( *a0, &errorMessage );
         }
         catch ( ... )
         {
@@ -324,24 +330,28 @@ Converts the provided variant to a compatible format
 
         Py_END_ALLOW_THREADS
 
-        PyObject *res = sipConvertFromType( a0, sipType_QVariant, NULL );
-        sipReleaseType( a0, sipType_QVariant, a0State );
-
         if ( !sipRes )
         {
           PyErr_SetString( PyExc_ValueError,
-                           QString( "Value %1 (%2) could not be converted to field type %3." ).arg( a0->toString(), a0->typeName() ).arg( sipCpp->type() ).toUtf8().constData() );
-          sipError = sipErrorFail;
+                           QString( "Value could not be converted to field type %1: %2" ).arg( QMetaType::typeName( sipCpp->type() ), errorMessage ).toUtf8().constData() );
+          sipIsErr = 1;
         }
+        else
+        {
+          PyObject *res = sipConvertFromType( a0, sipType_QVariant, NULL );
+          sipReleaseType( a0, sipType_QVariant, a0State );
+          return res;
+        }
+      }
+      else
+      {
+        // Raise an exception if the arguments couldn't be parsed.
+        sipNoMethod( sipParseErr, sipName_QgsField, sipName_convertCompatible, doc_QgsField_convertCompatible );
 
-        return res;
+        return nullptr;
       }
     }
 
-    // Raise an exception if the arguments couldn't be parsed.
-    sipNoMethod( sipParseErr, sipName_QgsField, sipName_convertCompatible, doc_QgsField_convertCompatible );
-
-    return nullptr;
 %End
 
     operator QVariant() const;

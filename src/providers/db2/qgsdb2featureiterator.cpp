@@ -269,7 +269,7 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
 
   if ( !orderByParts.isEmpty() )
   {
-    mOrderByClause = QStringLiteral( " ORDER BY %1" ).arg( orderByParts.join( QStringLiteral( "," ) ) );
+    mOrderByClause = QStringLiteral( " ORDER BY %1" ).arg( orderByParts.join( QLatin1Char( ',' ) ) );
     mStatement += mOrderByClause;
   }
 

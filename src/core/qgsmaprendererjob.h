@@ -167,11 +167,11 @@ struct LabelRenderJob
  *
  * Common use case:
  *
- * # prepare QgsMapSettings with rendering configuration (extent, layer, map size, ...)
- * # create QgsMapRendererJob subclass with QgsMapSettings instance
- * # connect to job's finished() signal
- * # call start(). Map rendering will start in background, the function immediately returns
- * # at some point, slot connected to finished() signal is called, map rendering is done
+ * 1. Prepare QgsMapSettings with rendering configuration (extent, layer, map size, ...)
+ * 2. Create QgsMapRendererJob subclass with QgsMapSettings instance
+ * 3. Connect to job's finished() signal
+ * 4. Call start(). Map rendering will start in background, the function immediately returns
+ * 5. At some point, slot connected to finished() signal is called, map rendering is done
  *
  * It is possible to cancel the rendering job while it is active by calling cancel() function.
  *
@@ -408,8 +408,12 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      * Convenience function to project an extent into the layer source
      * CRS, but also split it into two extents if it crosses
      * the +/- 180 degree line. Modifies the given extent to be in the
-     * source CRS coordinates, and if it was split, returns TRUE, and
-     * also sets the contents of the r2 parameter
+     * source CRS coordinates, and if it was split also sets the contents
+     * of the r2 parameter.
+     *
+     * If FALSE is returned then the extent could not be accurately
+     * transformed to the layer's CRS, and a "full globe" extent
+     * was used instead.
      */
     static bool reprojectToLayerExtent( const QgsMapLayer *ml, const QgsCoordinateTransform &ct, QgsRectangle &extent, QgsRectangle &r2 );
 

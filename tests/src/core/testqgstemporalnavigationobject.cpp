@@ -143,12 +143,12 @@ void TestQgsTemporalNavigationObject::temporalExtents()
 void TestQgsTemporalNavigationObject::navigationMode()
 {
   QgsDateTimeRange range = QgsDateTimeRange(
-                             QDateTime( QDate( 2010, 1, 1 ) ),
-                             QDateTime( QDate( 2020, 1, 1 ) ) );
+                             QDateTime( QDate( 2010, 1, 1 ), QTime( 0, 0, 0 ) ),
+                             QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) ) );
 
   QgsDateTimeRange range2 = QgsDateTimeRange(
-                              QDateTime( QDate( 2015, 1, 1 ) ),
-                              QDateTime( QDate( 2020, 1, 1 ) ) );
+                              QDateTime( QDate( 2015, 1, 1 ), QTime( 0, 0, 0 ) ),
+                              QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 0, 0 ) ) );
 
   QgsDateTimeRange check;
   auto checkUpdateTemporalRange = [&check]( const QgsDateTimeRange range )

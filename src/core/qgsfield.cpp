@@ -45,8 +45,7 @@ QgsField::QgsField( QString nam, QString typ, int len, int prec, bool num,
 }
 #endif
 QgsField::QgsField( const QString &name, QVariant::Type type,
-                    const QString &typeName, int len, int prec, const QString &comment,
-                    QVariant::Type subType )
+                    const QString &typeName, int len, int prec, const QString &comment, QVariant::Type subType )
 {
   d = new QgsFieldPrivate( name, type, subType, typeName, len, prec, comment );
 }
@@ -236,6 +235,16 @@ void QgsField::setAlias( const QString &alias )
   d->alias = alias;
 }
 
+QgsField::ConfigurationFlags QgsField::configurationFlags() const
+{
+  return d->flags;
+}
+
+void QgsField::setConfigurationFlags( QgsField::ConfigurationFlags flags )
+{
+  d->flags = flags;
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests in testqgsfield.cpp.
@@ -252,6 +261,13 @@ QString QgsField::displayString( const QVariant &v ) const
   // Special treatment for numeric types if group separator is set or decimalPoint is not a dot
   if ( d->type == QVariant::Double )
   {
+    // if value doesn't contain a double (a default value expression for instance),
+    // apply no transformation
+    bool ok;
+    v.toDouble( &ok );
+    if ( !ok )
+      return v.toString();
+
     // Locales with decimal point != '.' or that require group separator: use QLocale
     if ( QLocale().decimalPoint() != '.' ||
          !( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator ) )
@@ -330,14 +346,34 @@ QString QgsField::displayString( const QVariant &v ) const
   return v.toString();
 }
 
+QString QgsField::readableConfigurationFlag( QgsField::ConfigurationFlag flag )
+{
+  switch ( flag )
+  {
+    case ConfigurationFlag::None:
+      return QObject::tr( "None" );
+    case ConfigurationFlag::NotSearchable:
+      return QObject::tr( "Not searchable" );
+    case ConfigurationFlag::HideFromWms:
+      return QStringLiteral( "Do not expose via WMS" );
+    case ConfigurationFlag::HideFromWfs:
+      return QStringLiteral( "Do not expose via WFS" );
+  }
+  return QString();
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests in testqgsfield.cpp.
  * See details in QEP #17
  ****************************************************************************/
 
-bool QgsField::convertCompatible( QVariant &v ) const
+bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
 {
+  const QVariant original = v;
+  if ( errorMessage )
+    errorMessage->clear();
+
   if ( v.isNull() )
   {
     v.convert( d->type );
@@ -347,6 +383,8 @@ bool QgsField::convertCompatible( QVariant &v ) const
   if ( d->type == QVariant::Int && v.toInt() != v.toLongLong() )
   {
     v = QVariant( d->type );
+    if ( errorMessage )
+      *errorMessage = QObject::tr( "Value \"%1\" is too large for integer field" ).arg( original.toLongLong() );
     return false;
   }
 
@@ -422,6 +460,10 @@ bool QgsField::convertCompatible( QVariant &v ) const
     {
       //couldn't convert to number
       v = QVariant( d->type );
+
+      if ( errorMessage )
+        *errorMessage = QObject::tr( "Value \"%1\" is not a number" ).arg( original.toString() );
+
       return false;
     }
 
@@ -430,6 +472,10 @@ bool QgsField::convertCompatible( QVariant &v ) const
     {
       //double too large to fit in int
       v = QVariant( d->type );
+
+      if ( errorMessage )
+        *errorMessage = QObject::tr( "Value \"%1\" is too large for integer field" ).arg( original.toDouble() );
+
       return false;
     }
     v = QVariant( static_cast< int >( std::round( dbl ) ) );
@@ -450,14 +496,22 @@ bool QgsField::convertCompatible( QVariant &v ) const
       {
         //couldn't convert to number
         v = QVariant( d->type );
+
+        if ( errorMessage )
+          *errorMessage = QObject::tr( "Value \"%1\" is not a number" ).arg( original.toString() );
+
         return false;
       }
 
       double round = std::round( dbl );
-      if ( round  > std::numeric_limits<long long>::max() || round < -std::numeric_limits<long long>::max() )
+      if ( round  > static_cast<double>( std::numeric_limits<long long>::max() ) || round < static_cast<double>( -std::numeric_limits<long long>::max() ) )
       {
         //double too large to fit in longlong
         v = QVariant( d->type );
+
+        if ( errorMessage )
+          *errorMessage = QObject::tr( "Value \"%1\" is too large for long long field" ).arg( original.toDouble() );
+
         return false;
       }
       v = QVariant( static_cast< long long >( std::round( dbl ) ) );
@@ -468,6 +522,10 @@ bool QgsField::convertCompatible( QVariant &v ) const
   if ( !v.convert( d->type ) )
   {
     v = QVariant( d->type );
+
+    if ( errorMessage )
+      *errorMessage = QObject::tr( "Could not convert value \"%1\" to target type" ).arg( original.toString() );
+
     return false;
   }
 
@@ -481,7 +539,12 @@ bool QgsField::convertCompatible( QVariant &v ) const
 
   if ( d->type == QVariant::String && d->length > 0 && v.toString().length() > d->length )
   {
+    const int length = v.toString().length();
     v = v.toString().left( d->length );
+
+    if ( errorMessage )
+      *errorMessage = QObject::tr( "String of length %1 exceeds maximum field length (%2)" ).arg( length ).arg( d->length );
+
     return false;
   }
 

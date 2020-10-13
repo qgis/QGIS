@@ -44,7 +44,6 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   setAttribute( Qt::WA_DeleteOnClose );
 
   mContents->layout()->setContentsMargins( 0, 0, 0, 0 );
-  mContents->layout()->setMargin( 0 );
   static_cast< QVBoxLayout * >( mContents->layout() )->setSpacing( 0 );
 
   setWindowTitle( name );
@@ -67,7 +66,6 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
 
   mMainWidget->setLayout( new QVBoxLayout() );
   mMainWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
-  mMainWidget->layout()->setMargin( 0 );
 
   mMainWidget->layout()->addWidget( mMapCanvas );
 

@@ -25,6 +25,7 @@
 #include "qgstransformsettingsdialog.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 
 QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, const QString &output,
     int countGCPpoints, QWidget *parent )
@@ -124,6 +125,7 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
   cbxLoadInQgisWhenDone->setChecked( settings.value( QStringLiteral( "/Plugin-GeoReferencer/loadinqgis" ), false ).toBool() );
   saveGcpCheckBox->setChecked( settings.value( QStringLiteral( "/Plugin-GeoReferencer/save_gcp_points" ), false ).toBool() );
 
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsTransformSettingsDialog::showHelp );
 }
 
 void QgsTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::TransformParametrisation &tp,
@@ -309,4 +311,9 @@ QIcon QgsTransformSettingsDialog::getThemeIcon( const QString &name )
       return QIcon( ":/icons/default" + name );
     }
   }
+}
+
+void QgsTransformSettingsDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_raster/georeferencer.html#defining-the-transformation-settings" ) );
 }

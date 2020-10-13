@@ -7,6 +7,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/external/kdbush/include
   ${CMAKE_SOURCE_DIR}/external/nlohmann
   ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/3d
   ${CMAKE_SOURCE_DIR}/src/core/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/callouts
@@ -86,6 +87,7 @@ ENDMACRO (ADD_QGIS_TEST)
 
 SET(TESTS
  testqgs25drenderer.cpp
+ testqgsannotationitemregistry.cpp
  testqgsapplication.cpp
  testqgsauthcrypto.cpp
  testqgsauthcertutils.cpp
@@ -117,6 +119,7 @@ SET(TESTS
  testqgsexpressioncontext.cpp
  testqgssqliteexpressioncompiler.cpp
  testqgsexpression.cpp
+ testqgsoverlayexpression.cpp
  testqgsfeature.cpp
  testqgsfields.cpp
  testqgsfield.cpp
@@ -218,6 +221,7 @@ SET(TESTS
  testqgsrelationreferencefieldformatter.cpp
  testqgsrenderers.cpp
  testqgsrulebasedrenderer.cpp
+ testqgsruntimeprofiler.cpp
  testqgssettings.cpp
  testqgsshapeburst.cpp
  testqgssimplemarker.cpp

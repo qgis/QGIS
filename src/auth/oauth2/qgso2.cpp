@@ -64,7 +64,7 @@ void QgsO2::initOAuthConfig()
   }
 
   // common properties to all grant flows
-  QString localpolicy = QStringLiteral( "http://127.0.0.1:% 1/%1" ).arg( mOAuth2Config->redirectUrl() ).replace( QStringLiteral( "% 1" ), QStringLiteral( "%1" ) );
+  QString localpolicy = QStringLiteral( "http://127.0.0.1:% 1/%1" ).arg( mOAuth2Config->redirectUrl() ).replace( QLatin1String( "% 1" ), QLatin1String( "%1" ) );
   QgsDebugMsg( QStringLiteral( "localpolicy(w/port): %1" ).arg( localpolicy.arg( mOAuth2Config->redirectPort() ) ) );
   setLocalhostPolicy( localpolicy );
   setLocalPort( mOAuth2Config->redirectPort() );
@@ -133,7 +133,7 @@ void QgsO2::setVerificationResponseContent()
 bool QgsO2::isLocalHost( const QUrl redirectUrl ) const
 {
   QString hostName = redirectUrl.host();
-  if ( hostName == QStringLiteral( "localhost" ) || hostName == QStringLiteral( "127.0.0.1" ) || hostName == QStringLiteral( "[::1]" ) )
+  if ( hostName == QLatin1String( "localhost" ) || hostName == QLatin1String( "127.0.0.1" ) || hostName == QLatin1String( "[::1]" ) )
   {
     return true;
   }

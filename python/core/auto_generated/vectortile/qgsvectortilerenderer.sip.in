@@ -85,7 +85,7 @@ For rendering it is expected that client code calls:
 
     const QString type = sipCpp->type();
 
-    if ( type == QStringLiteral( "basic" ) )
+    if ( type == QLatin1String( "basic" ) )
       sipType = sipType_QgsVectorTileBasicRenderer;
     else
       sipType = 0;
@@ -108,6 +108,18 @@ Returns a clone of the renderer
 Initializes rendering. It should be paired with a :py:func:`~QgsVectorTileRenderer.stopRender` call.
 %End
 
+
+
+    virtual QSet< QString > requiredLayers( QgsRenderContext &context, int tileZoom ) const;
+%Docstring
+Returns a list of the layers required for rendering.
+
+Only layers which are visible at the specified ``tileZoom`` should be included in this list.
+
+An empty string present in the list indicates that all layer in the tiles are required.
+
+.. versionadded:: 3.16
+%End
 
     virtual void stopRender( QgsRenderContext &context ) = 0;
 %Docstring

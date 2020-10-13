@@ -75,7 +75,8 @@ Base class for raster data providers.
       NoProviderCapabilities,
       ReadLayerMetadata,
       WriteLayerMetadata,
-      ProviderHintBenefitsFromResampling
+      ProviderHintBenefitsFromResampling,
+      ProviderHintCanPerformProviderResampling
     };
 
     typedef QFlags<QgsRasterDataProvider::ProviderCapability> ProviderCapabilities;
@@ -83,17 +84,19 @@ Base class for raster data providers.
 
     QgsRasterDataProvider();
 
-    QgsRasterDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions() );
+    QgsRasterDataProvider( const QString &uri,
+                           const QgsDataProvider::ProviderOptions &providerOptions = QgsDataProvider::ProviderOptions(),
+                           QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 %Docstring
 Constructor for QgsRasterDataProvider.
 
 The ``uri`` argument gives a provider-specific uri indicating the underlying data
 source and it's parameters.
 
-The ``options`` argument specifies generic provider options.
+The ``options`` argument specifies generic provider options and since QGIS 3.16 creation flags are specified within the ``flags`` value.
 %End
 
-    virtual QgsRasterInterface *clone() const = 0;
+    virtual QgsRasterDataProvider *clone() const = 0;
 
 
     virtual QgsRasterDataProvider::ProviderCapabilities providerCapabilities() const;
@@ -516,6 +519,96 @@ does not support this functionality), an empty point is returned.
 .. versionadded:: 3.14
 %End
 
+
+    virtual bool enableProviderResampling( bool enable );
+%Docstring
+Enable or disable provider-level resampling.
+
+:return: true if success
+
+.. versionadded:: 3.16
+%End
+
+    bool isProviderResamplingEnabled() const;
+%Docstring
+Returns whether provider-level resampling is enabled.
+
+.. note::
+
+   Resampling is effective only if :py:func:`~QgsRasterDataProvider.zoomedInResamplingMethod` and/or
+   :py:func:`~QgsRasterDataProvider.zoomedOutResamplingMethod` return non-nearest resampling.
+
+.. seealso:: :py:func:`zoomedInResamplingMethod`
+
+.. seealso:: :py:func:`zoomedOutResamplingMethod`
+
+.. seealso:: :py:func:`maxOversampling`
+
+
+.. versionadded:: 3.16
+%End
+
+    enum class ResamplingMethod
+    {
+      Nearest,
+      Bilinear,
+      Cubic,
+    };
+
+    virtual bool setZoomedInResamplingMethod( ResamplingMethod method );
+%Docstring
+Set resampling method to apply for zoomed-in operations.
+
+:return: true if success
+
+.. versionadded:: 3.16
+%End
+
+    ResamplingMethod zoomedInResamplingMethod() const;
+%Docstring
+Returns resampling method for zoomed-in operations.
+
+.. versionadded:: 3.16
+%End
+
+    virtual bool setZoomedOutResamplingMethod( ResamplingMethod method );
+%Docstring
+Set resampling method to apply for zoomed-out operations.
+
+:return: true if success
+
+.. versionadded:: 3.16
+%End
+
+    ResamplingMethod zoomedOutResamplingMethod() const;
+%Docstring
+Returns resampling method for zoomed-out operations.
+
+.. versionadded:: 3.16
+%End
+
+    virtual bool setMaxOversampling( double factor );
+%Docstring
+Sets maximum oversampling factor for zoomed-out operations.
+
+:return: true if success
+
+.. versionadded:: 3.16
+%End
+
+    double maxOversampling() const;
+%Docstring
+Returns maximum oversampling factor for zoomed-out operations.
+
+.. versionadded:: 3.16
+%End
+
+    virtual void readXml( const QDomElement &filterElem );
+
+
+    virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
+
+
   signals:
 
     void statusChanged( const QString & ) const;
@@ -538,6 +631,10 @@ Returns ``True`` if user no data contains value
 %Docstring
 Copy member variables from other raster data provider. Useful for implementation of :py:func:`~QgsRasterDataProvider.clone` method in subclasses
 %End
+
+
+
+
 
 
 

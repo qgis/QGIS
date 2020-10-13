@@ -81,7 +81,7 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &co
   txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]+" ), txtName ) );
   cb_trustedConnection_clicked();
 }
-//! Autoconnected SLOTS *
+//! Autoconnected SLOTS
 void QgsMssqlNewConnection::accept()
 {
   QgsSettings settings;
@@ -157,7 +157,7 @@ void QgsMssqlNewConnection::cb_trustedConnection_clicked()
   }
 }
 
-//! End  Autoconnected SLOTS *
+//! End  Autoconnected SLOTS
 
 bool QgsMssqlNewConnection::testConnection( const QString &testDatabase )
 {
@@ -253,6 +253,6 @@ void QgsMssqlNewConnection::showHelp()
 void QgsMssqlNewConnection::updateOkButtonState()
 {
   QListWidgetItem *item = listDatabase->currentItem();
-  bool enabled = !txtName->text().isEmpty() && !txtService->text().isEmpty() && !txtHost->text().isEmpty() && item;
-  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
+  bool disabled = txtName->text().isEmpty() || ( txtService->text().isEmpty() && txtHost->text().isEmpty() ) || !item;
+  buttonBox->button( QDialogButtonBox::Ok )->setDisabled( disabled );
 }

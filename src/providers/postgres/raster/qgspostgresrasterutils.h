@@ -16,7 +16,9 @@
 #ifndef QGSPOSTGRESRASTERUTILS_H
 #define QGSPOSTGRESRASTERUTILS_H
 
+#include "qgis.h"
 #include <QVariantMap>
+
 
 //! Raster utility functions
 struct QgsPostgresRasterUtils

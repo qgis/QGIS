@@ -389,6 +389,9 @@ Copy constructor.
 %End
 
 
+    bool operator==( const QgsPropertyCollection &other ) const;
+    bool operator!=( const QgsPropertyCollection &other ) const;
+
     int count() const;
 %Docstring
 Returns the number of properties contained within the collection.

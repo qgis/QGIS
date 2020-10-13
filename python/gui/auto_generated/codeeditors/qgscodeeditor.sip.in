@@ -1,0 +1,232 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/codeeditors/qgscodeeditor.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+
+class QgsCodeEditor : QsciScintilla
+{
+%Docstring
+A text editor based on QScintilla2.
+
+.. note::
+
+   may not be available in Python bindings, depending on platform support
+
+.. versionadded:: 2.6
+%End
+
+%TypeHeaderCode
+#include "qgscodeeditor.h"
+%End
+  public:
+
+    enum MarginRole
+    {
+      LineNumbers,
+      ErrorIndicators,
+      FoldingControls,
+    };
+
+    QgsCodeEditor( QWidget *parent /TransferThis/ = 0, const QString &title = QString(), bool folding = false, bool margin = false );
+%Docstring
+Construct a new code editor.
+
+:param parent: The parent QWidget
+:param title: The title to show in the code editor dialog
+:param folding: ``False``: Enable folding for code editor
+:param margin: ``False``: Enable margin for code editor (deprecated)
+
+.. versionadded:: 2.6
+%End
+
+    void setTitle( const QString &title );
+%Docstring
+Set the widget title
+
+:param title: widget title
+%End
+
+ void setMarginVisible( bool margin ) /Deprecated/;
+%Docstring
+Set margin visible state
+
+:param margin: Set margin in the editor
+
+.. deprecated::
+   Use base class methods for individual margins instead, or setLineNumbersVisible()
+%End
+
+ bool marginVisible() /Deprecated/;
+%Docstring
+Returns whether margins are in a visible state
+
+.. deprecated::
+   Use base class methods for individual margins instead, or lineNumbersVisible()
+%End
+
+    void setLineNumbersVisible( bool visible );
+%Docstring
+Sets whether line numbers should be visible in the editor.
+
+Defaults to ``False``.
+
+.. seealso:: :py:func:`lineNumbersVisible`
+
+.. versionadded:: 3.16
+%End
+
+    bool lineNumbersVisible() const;
+%Docstring
+Returns whether line numbers are visible in the editor.
+
+.. seealso:: :py:func:`setLineNumbersVisible`
+
+.. versionadded:: 3.16
+%End
+
+    void setFoldingVisible( bool folding );
+%Docstring
+Set whether the folding controls are visible in the editor.
+
+.. seealso:: :py:func:`foldingVisible`
+%End
+
+    bool foldingVisible();
+%Docstring
+Returns ``True`` if the folding controls are visible in the editor.
+
+.. seealso:: :py:func:`setFoldingVisible`
+%End
+
+    void insertText( const QString &text );
+%Docstring
+Insert text at cursor position, or replace any selected text if user has
+made a selection.
+
+:param text: The text to be inserted
+%End
+
+    static QColor defaultColor( QgsCodeEditorColorScheme::ColorRole role, const QString &theme = QString() );
+%Docstring
+Returns the default color for the specified ``role``.
+
+The optional ``theme`` argument can be used to specify a color ``theme``. A blank
+``theme`` indicates the default color scheme.
+
+Available themes are stored in QgsCodeEditorColorSchemeRegistry, and can be retrieved
+via :py:func:`QgsGui.codeEditorColorSchemeRegistry()`.
+
+.. versionadded:: 3.16
+%End
+
+    static QColor color( QgsCodeEditorColorScheme::ColorRole role );
+%Docstring
+Returns the color to use in the editor for the specified ``role``.
+
+This color will be the default theme color for the role, unless the user has manually
+selected a custom color scheme for the editor.
+
+.. seealso:: :py:func:`setColor`
+
+.. versionadded:: 3.16
+%End
+
+    static void setColor( QgsCodeEditorColorScheme::ColorRole role, const QColor &color );
+%Docstring
+Sets the ``color`` to use in the editor for the specified ``role``.
+
+This color will be stored as the new default color for the role, to be used for all code editors.
+
+Set ``color`` to an invalid QColor in order to clear the stored color value and reset it to
+the default color.
+
+.. seealso:: :py:func:`color`
+
+.. versionadded:: 3.16
+%End
+
+    static QFont getMonospaceFont();
+%Docstring
+Returns the monospaced font to use for code editors.
+
+.. versionadded:: 3.16
+%End
+
+
+    void addWarning( int lineNumber, const QString &warning );
+%Docstring
+Adds a ``warning`` message and indicator to the specified a ``lineNumber``.
+
+.. seealso:: :py:func:`clearWarnings`
+
+.. versionadded:: 3.16
+%End
+
+    void clearWarnings();
+%Docstring
+Clears all warning messages from the editor.
+
+.. seealso:: :py:func:`addWarning`
+
+.. versionadded:: 3.16
+%End
+
+  protected:
+
+    bool isFixedPitch( const QFont &font );
+
+    virtual void focusOutEvent( QFocusEvent *event );
+
+    virtual void keyPressEvent( QKeyEvent *event );
+
+
+    virtual void initializeLexer();
+%Docstring
+Called when the dialect specific code lexer needs to be initialized (or reinitialized).
+
+The default implementation does nothing.
+
+.. versionadded:: 3.16
+%End
+
+    QColor lexerColor( QgsCodeEditorColorScheme::ColorRole role ) const;
+%Docstring
+Returns the color to use in the lexer for the specified ``role``.
+
+.. versionadded:: 3.16
+%End
+
+    QFont lexerFont() const;
+%Docstring
+Returns the font to use in the lexer.
+
+.. versionadded:: 3.16
+%End
+
+    void runPostLexerConfigurationTasks();
+%Docstring
+Performs tasks which must be run after a lexer has been set for the widget.
+
+.. versionadded:: 3.16
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/codeeditors/qgscodeeditor.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

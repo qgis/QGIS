@@ -14,7 +14,7 @@ import qgis  # NOQA
 
 import os
 
-from qgis.PyQt.QtCore import QFileInfo, QRectF, QDir
+from qgis.PyQt.QtCore import QFileInfo, QRectF, QDir, QCoreApplication, QEvent
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.PyQt.QtGui import QPainter, QColor
 from qgis.PyQt.QtTest import QSignalSpy
@@ -40,7 +40,14 @@ from qgis.core import (QgsLayoutItemMap,
                        QgsUnitTypes,
                        QgsLayoutObject,
                        QgsProperty,
-                       QgsReadWriteContext)
+                       QgsReadWriteContext,
+                       QgsFillSymbol,
+                       QgsSingleSymbolRenderer,
+                       QgsGeometry,
+                       QgsLayoutItemShape,
+                       QgsMapClippingRegion,
+                       QgsLayoutItemMapOverview,
+                       QgsAnnotationPolygonItem)
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -56,14 +63,13 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
     @classmethod
     def setUpClass(cls):
         cls.item_class = QgsLayoutItemMap
+        cls.report = "<h1>Python QgsLayoutItemMap Tests</h1>\n"
 
-    def setUp(self):
-        self.report = "<h1>Python QgsLayoutItemMap Tests</h1>\n"
-
-    def tearDown(self):
+    @classmethod
+    def tearDownClass(cls):
         report_file_path = "%s/qgistest.html" % QDir.tempPath()
         with open(report_file_path, 'a') as report_file:
-            report_file.write(self.report)
+            report_file.write(cls.report)
 
     def __init__(self, methodName):
         """Run once on class initialization."""
@@ -123,7 +129,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         checker = QgsLayoutChecker('composermap_crs3857', layout)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testLayout()
-        self.report += checker.report()
+        TestQgsLayoutMap.report += checker.report()
         self.assertTrue(result, message)
 
         # overwrite CRS
@@ -135,7 +141,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         checker = QgsLayoutChecker('composermap_crs4326', layout)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testLayout()
-        self.report += checker.report()
+        TestQgsLayoutMap.report += checker.report()
         self.assertTrue(result, message)
 
         # change back to project CRS
@@ -221,21 +227,21 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         checker = QgsLayoutChecker('composermap_label_nomargin', layout)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testLayout()
-        self.report += checker.report()
+        TestQgsLayoutMap.report += checker.report()
         self.assertTrue(result, message)
 
         map.setLabelMargin(QgsLayoutMeasurement(15, QgsUnitTypes.LayoutMillimeters))
         checker = QgsLayoutChecker('composermap_label_margin', layout)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testLayout()
-        self.report += checker.report()
+        TestQgsLayoutMap.report += checker.report()
         self.assertTrue(result, message)
 
         map.setLabelMargin(QgsLayoutMeasurement(3, QgsUnitTypes.LayoutCentimeters))
         checker = QgsLayoutChecker('composermap_label_cm_margin', layout)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testLayout()
-        self.report += checker.report()
+        TestQgsLayoutMap.report += checker.report()
         self.assertTrue(result, message)
 
         map.setMapRotation(45)
@@ -244,7 +250,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         checker = QgsLayoutChecker('composermap_rotated_label_margin', layout)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testLayout()
-        self.report += checker.report()
+        TestQgsLayoutMap.report += checker.report()
         self.assertTrue(result, message)
 
         # data defined
@@ -255,7 +261,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         checker = QgsLayoutChecker('composermap_dd_label_margin', layout)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testLayout()
-        self.report += checker.report()
+        TestQgsLayoutMap.report += checker.report()
         self.assertTrue(result, message)
 
     def testPartialLabels(self):
@@ -310,7 +316,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         checker = QgsLayoutChecker('composermap_label_nomargin', layout)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testLayout()
-        self.report += checker.report()
+        TestQgsLayoutMap.report += checker.report()
         self.assertTrue(result, message)
 
         # showing partial labels
@@ -318,7 +324,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         checker = QgsLayoutChecker('composermap_show_partial_labels', layout)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testLayout()
-        self.report += checker.report()
+        TestQgsLayoutMap.report += checker.report()
         self.assertTrue(result, message)
 
     def testBlockingItems(self):
@@ -385,7 +391,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         checker = QgsLayoutChecker('composermap_label_blockers', layout)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testLayout()
-        self.report += checker.report()
+        TestQgsLayoutMap.report += checker.report()
         self.assertTrue(result, message)
 
         doc = QDomDocument("testdoc")
@@ -455,6 +461,366 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         map.refresh()
         self.assertEqual(len(spy), 6)
         self.assertEqual(spy[-1][0], 'theme6')
+
+    def testClipping(self):
+        format = QgsTextFormat()
+        format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        format.setSize(30)
+        format.setNamedStyle("Bold")
+        format.setColor(QColor(0, 0, 0))
+        settings = QgsPalLayerSettings()
+        settings.setFormat(format)
+        settings.fieldName = "'XXXX'"
+        settings.isExpression = True
+        settings.placement = QgsPalLayerSettings.OverPoint
+
+        vl = QgsVectorLayer("Polygon?crs=epsg:4326&field=id:integer", "vl", "memory")
+
+        props = {"color": "127,255,127", 'outline_style': 'solid', 'outline_width': '1', 'outline_color': '0,0,255'}
+        fillSymbol = QgsFillSymbol.createSimple(props)
+        renderer = QgsSingleSymbolRenderer(fillSymbol)
+        vl.setRenderer(renderer)
+
+        f = QgsFeature(vl.fields(), 1)
+        for x in range(0, 15, 3):
+            for y in range(0, 15, 3):
+                f.setGeometry(QgsGeometry(QgsPoint(x, y)).buffer(1, 3))
+                vl.dataProvider().addFeature(f)
+
+        vl.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+        vl.setLabelsEnabled(True)
+
+        p = QgsProject()
+
+        p.addMapLayer(vl)
+        layout = QgsLayout(p)
+        layout.initializeDefaults()
+        p.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+        map.setFrameEnabled(False)
+        map.zoomToExtent(vl.extent())
+        map.setLayers([vl])
+        layout.addLayoutItem(map)
+
+        shape = QgsLayoutItemShape(layout)
+        layout.addLayoutItem(shape)
+        shape.setShapeType(QgsLayoutItemShape.Ellipse)
+        shape.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+        props = {"color": "0,0,0,0", 'outline_style': 'no'}
+        fillSymbol = QgsFillSymbol.createSimple(props)
+        shape.setSymbol(fillSymbol)
+
+        map.itemClippingSettings().setEnabled(True)
+        map.itemClippingSettings().setSourceItem(shape)
+        map.itemClippingSettings().setForceLabelsInsideClipPath(False)
+        map.itemClippingSettings().setFeatureClippingType(QgsMapClippingRegion.FeatureClippingType.ClipToIntersection)
+
+        checker = QgsLayoutChecker('composermap_itemclip', layout)
+        checker.setControlPathPrefix("composer_map")
+        result, message = checker.testLayout()
+        TestQgsLayoutMap.report += checker.report()
+        self.assertTrue(result, message)
+
+    def testClippingForceLabelsInside(self):
+        format = QgsTextFormat()
+        format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        format.setSize(30)
+        format.setNamedStyle("Bold")
+        format.setColor(QColor(0, 0, 0))
+        settings = QgsPalLayerSettings()
+        settings.setFormat(format)
+        settings.fieldName = "'XXXX'"
+        settings.isExpression = True
+        settings.placement = QgsPalLayerSettings.OverPoint
+
+        vl = QgsVectorLayer("Polygon?crs=epsg:4326&field=id:integer", "vl", "memory")
+
+        props = {"color": "127,255,127", 'outline_style': 'solid', 'outline_width': '1', 'outline_color': '0,0,255'}
+        fillSymbol = QgsFillSymbol.createSimple(props)
+        renderer = QgsSingleSymbolRenderer(fillSymbol)
+        vl.setRenderer(renderer)
+
+        f = QgsFeature(vl.fields(), 1)
+        for x in range(0, 15, 3):
+            for y in range(0, 15, 3):
+                f.setGeometry(QgsGeometry(QgsPoint(x, y)).buffer(1, 3))
+                vl.dataProvider().addFeature(f)
+
+        vl.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+        vl.setLabelsEnabled(True)
+
+        p = QgsProject()
+
+        p.addMapLayer(vl)
+        layout = QgsLayout(p)
+        layout.initializeDefaults()
+        p.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+        map.setFrameEnabled(False)
+        map.zoomToExtent(vl.extent())
+        map.setLayers([vl])
+        layout.addLayoutItem(map)
+
+        shape = QgsLayoutItemShape(layout)
+        layout.addLayoutItem(shape)
+        shape.setShapeType(QgsLayoutItemShape.Ellipse)
+        shape.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+        props = {"color": "0,0,0,0", 'outline_style': 'no'}
+        fillSymbol = QgsFillSymbol.createSimple(props)
+        shape.setSymbol(fillSymbol)
+
+        map.itemClippingSettings().setEnabled(True)
+        map.itemClippingSettings().setSourceItem(shape)
+        map.itemClippingSettings().setForceLabelsInsideClipPath(True)
+        map.itemClippingSettings().setFeatureClippingType(QgsMapClippingRegion.FeatureClippingType.ClipPainterOnly)
+
+        checker = QgsLayoutChecker('composermap_itemclip_force_labels_inside', layout)
+        checker.setControlPathPrefix("composer_map")
+        result, message = checker.testLayout()
+        TestQgsLayoutMap.report += checker.report()
+        self.assertTrue(result, message)
+
+    def testClippingOverview(self):
+        format = QgsTextFormat()
+        format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        format.setSize(30)
+        format.setNamedStyle("Bold")
+        format.setColor(QColor(0, 0, 0))
+        settings = QgsPalLayerSettings()
+        settings.setFormat(format)
+        settings.fieldName = "'XXXX'"
+        settings.isExpression = True
+        settings.placement = QgsPalLayerSettings.OverPoint
+
+        vl = QgsVectorLayer("Polygon?crs=epsg:4326&field=id:integer", "vl", "memory")
+
+        props = {"color": "127,255,127", 'outline_style': 'solid', 'outline_width': '1', 'outline_color': '0,0,255'}
+        fillSymbol = QgsFillSymbol.createSimple(props)
+        renderer = QgsSingleSymbolRenderer(fillSymbol)
+        vl.setRenderer(renderer)
+
+        f = QgsFeature(vl.fields(), 1)
+        for x in range(0, 15, 3):
+            for y in range(0, 15, 3):
+                f.setGeometry(QgsGeometry(QgsPoint(x, y)).buffer(1, 3))
+                vl.dataProvider().addFeature(f)
+
+        vl.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+        vl.setLabelsEnabled(True)
+
+        vl2 = vl.clone()
+        vl2.setLabelsEnabled(False)
+
+        p = QgsProject()
+
+        p.addMapLayer(vl)
+        p.addMapLayer(vl2)
+        layout = QgsLayout(p)
+        layout.initializeDefaults()
+        p.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+        map.setFrameEnabled(False)
+        map.zoomToExtent(vl.extent())
+        map.setLayers([vl])
+        layout.addLayoutItem(map)
+
+        map2 = QgsLayoutItemMap(layout)
+        map2.attemptSetSceneRect(QRectF(160, 150, 70, 70))
+        map2.setFrameEnabled(True)
+        map2extent = vl.extent()
+        map2extent.grow(3)
+        map2.zoomToExtent(map2extent)
+        map2.setLayers([vl2])
+        layout.addLayoutItem(map2)
+        overview = QgsLayoutItemMapOverview("t", map2)
+        overview.setLinkedMap(map)
+        props = {"color": "0,0,0,0", 'outline_style': 'solid', 'outline_width': '1', 'outline_color': '0,0,255'}
+        fillSymbol = QgsFillSymbol.createSimple(props)
+        overview.setFrameSymbol(fillSymbol)
+
+        map2.overviews().addOverview(overview)
+
+        shape = QgsLayoutItemShape(layout)
+        layout.addLayoutItem(shape)
+        shape.setShapeType(QgsLayoutItemShape.Ellipse)
+        shape.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+        props = {"color": "0,0,0,0", 'outline_style': 'no'}
+        fillSymbol = QgsFillSymbol.createSimple(props)
+        shape.setSymbol(fillSymbol)
+
+        map.itemClippingSettings().setEnabled(True)
+        map.itemClippingSettings().setSourceItem(shape)
+        map.itemClippingSettings().setForceLabelsInsideClipPath(False)
+        map.itemClippingSettings().setFeatureClippingType(QgsMapClippingRegion.FeatureClippingType.ClipToIntersection)
+
+        checker = QgsLayoutChecker('composermap_itemclip_overview', layout)
+        checker.setControlPathPrefix("composer_map")
+        result, message = checker.testLayout()
+        TestQgsLayoutMap.report += checker.report()
+        self.assertTrue(result, message)
+
+    def testClippingHideClipSource(self):
+        """
+        When an item is set to be the clip source, it shouldn't render anything itself
+        """
+        format = QgsTextFormat()
+        format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        format.setSize(30)
+        format.setNamedStyle("Bold")
+        format.setColor(QColor(0, 0, 0))
+        settings = QgsPalLayerSettings()
+        settings.setFormat(format)
+        settings.fieldName = "'XXXX'"
+        settings.isExpression = True
+        settings.placement = QgsPalLayerSettings.OverPoint
+
+        vl = QgsVectorLayer("Polygon?crs=epsg:4326&field=id:integer", "vl", "memory")
+
+        props = {"color": "127,255,127", 'outline_style': 'solid', 'outline_width': '1', 'outline_color': '0,0,255'}
+        fillSymbol = QgsFillSymbol.createSimple(props)
+        renderer = QgsSingleSymbolRenderer(fillSymbol)
+        vl.setRenderer(renderer)
+
+        f = QgsFeature(vl.fields(), 1)
+        for x in range(0, 15, 3):
+            for y in range(0, 15, 3):
+                f.setGeometry(QgsGeometry(QgsPoint(x, y)).buffer(1, 3))
+                vl.dataProvider().addFeature(f)
+
+        vl.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+        vl.setLabelsEnabled(True)
+
+        p = QgsProject()
+
+        p.addMapLayer(vl)
+        layout = QgsLayout(p)
+        layout.initializeDefaults()
+        p.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+        map.setFrameEnabled(False)
+        map.zoomToExtent(vl.extent())
+        map.setLayers([vl])
+        layout.addLayoutItem(map)
+
+        shape = QgsLayoutItemShape(layout)
+        layout.addLayoutItem(shape)
+        shape.setShapeType(QgsLayoutItemShape.Ellipse)
+        shape.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+
+        map.itemClippingSettings().setEnabled(True)
+        map.itemClippingSettings().setSourceItem(shape)
+        map.itemClippingSettings().setForceLabelsInsideClipPath(False)
+        map.itemClippingSettings().setFeatureClippingType(QgsMapClippingRegion.FeatureClippingType.ClipToIntersection)
+
+        checker = QgsLayoutChecker('composermap_itemclip_nodrawsource', layout)
+        checker.setControlPathPrefix("composer_map")
+        result, message = checker.testLayout()
+        TestQgsLayoutMap.report += checker.report()
+        self.assertTrue(result, message)
+
+    def testClippingBackgroundFrame(self):
+        """
+        Make sure frame/background are also clipped
+        """
+        vl = QgsVectorLayer("Polygon?crs=epsg:4326&field=id:integer", "vl", "memory")
+
+        props = {"color": "127,255,127", 'outline_style': 'solid', 'outline_width': '1', 'outline_color': '0,0,255'}
+        fillSymbol = QgsFillSymbol.createSimple(props)
+        renderer = QgsSingleSymbolRenderer(fillSymbol)
+        vl.setRenderer(renderer)
+
+        f = QgsFeature(vl.fields(), 1)
+        for x in range(0, 15, 3):
+            for y in range(0, 15, 3):
+                f.setGeometry(QgsGeometry(QgsPoint(x, y)).buffer(1, 3))
+                vl.dataProvider().addFeature(f)
+
+        p = QgsProject()
+
+        p.addMapLayer(vl)
+        layout = QgsLayout(p)
+        layout.initializeDefaults()
+        p.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+        map.setFrameEnabled(True)
+        map.setFrameStrokeWidth(QgsLayoutMeasurement(2, QgsUnitTypes.LayoutMillimeters))
+        map.setBackgroundEnabled(True)
+        map.setBackgroundColor(QColor(200, 255, 200))
+        map.zoomToExtent(vl.extent())
+        map.setLayers([vl])
+        layout.addLayoutItem(map)
+
+        shape = QgsLayoutItemShape(layout)
+        layout.addLayoutItem(shape)
+        shape.setShapeType(QgsLayoutItemShape.Ellipse)
+        shape.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+
+        map.itemClippingSettings().setEnabled(True)
+        map.itemClippingSettings().setSourceItem(shape)
+        map.itemClippingSettings().setFeatureClippingType(QgsMapClippingRegion.FeatureClippingType.ClipPainterOnly)
+
+        checker = QgsLayoutChecker('composermap_itemclip_background', layout)
+        checker.setControlPathPrefix("composer_map")
+        result, message = checker.testLayout()
+        TestQgsLayoutMap.report += checker.report()
+        self.assertTrue(result, message)
+
+    def testMainAnnotationLayer(self):
+        """
+        Make sure main annotation layer is rendered in maps above all other layers
+        """
+        p = QgsProject()
+
+        vl = QgsVectorLayer("Polygon?crs=epsg:4326&field=fldtxt:string",
+                            "layer", "memory")
+        sym3 = QgsFillSymbol.createSimple({'color': '#b200b2'})
+        vl.renderer().setSymbol(sym3)
+
+        p.addMapLayer(vl)
+        layout = QgsLayout(p)
+        layout.initializeDefaults()
+        p.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+        map.setFrameEnabled(True)
+        map.setFrameStrokeWidth(QgsLayoutMeasurement(2, QgsUnitTypes.LayoutMillimeters))
+        map.setBackgroundEnabled(True)
+        map.setBackgroundColor(QColor(200, 255, 200))
+        map.zoomToExtent(QgsRectangle(10, 30, 20, 35))
+        map.setLayers([vl])
+        layout.addLayoutItem(map)
+
+        # add polygon to layer
+        f = QgsFeature()
+        f.setGeometry(QgsGeometry.fromRect(QgsRectangle(5, 25, 25, 45)))
+        self.assertTrue(vl.dataProvider().addFeatures([f]))
+
+        # no annotation yet...
+        checker = QgsLayoutChecker('composermap_annotation_empty', layout)
+        checker.setControlPathPrefix("composer_map")
+        result, message = checker.testLayout()
+        TestQgsLayoutMap.report += checker.report()
+        self.assertTrue(result, message)
+
+        annotation_layer = p.mainAnnotationLayer()
+        annotation_layer.setCrs(QgsCoordinateReferenceSystem(4326))
+        annotation_geom = QgsGeometry.fromRect(QgsRectangle(12, 30, 18, 33))
+        annotation = QgsAnnotationPolygonItem(annotation_geom.constGet().clone())
+        sym3 = QgsFillSymbol.createSimple({'color': '#ff0000', 'outline_style': 'no'})
+        annotation.setSymbol(sym3)
+        annotation_layer.addItem(annotation)
+
+        # annotation must be drawn above map layers
+        checker = QgsLayoutChecker('composermap_annotation_item', layout)
+        checker.setControlPathPrefix("composer_map")
+        result, message = checker.testLayout()
+        TestQgsLayoutMap.report += checker.report()
+        self.assertTrue(result, message)
 
 
 if __name__ == '__main__':

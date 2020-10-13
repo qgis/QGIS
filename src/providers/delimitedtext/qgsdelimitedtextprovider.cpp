@@ -29,6 +29,7 @@
 #include <QUrlQuery>
 
 #include "qgsapplication.h"
+#include "qgscoordinateutils.h"
 #include "qgsdataprovider.h"
 #include "qgsexpression.h"
 #include "qgsfeature.h"
@@ -58,8 +59,8 @@ static const int SUBSET_ID_THRESHOLD_FACTOR = 10;
 QRegExp QgsDelimitedTextProvider::sWktPrefixRegexp( "^\\s*(?:\\d+\\s+|SRID\\=\\d+\\;)", Qt::CaseInsensitive );
 QRegExp QgsDelimitedTextProvider::sCrdDmsRegexp( "^\\s*(?:([-+nsew])\\s*)?(\\d{1,3})(?:[^0-9.]+([0-5]?\\d))?[^0-9.]+([0-5]?\\d(?:\\.\\d+)?)[^0-9.]*([-+nsew])?\\s*$", Qt::CaseInsensitive );
 
-QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const ProviderOptions &options )
-  : QgsVectorDataProvider( uri, options )
+QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+  : QgsVectorDataProvider( uri, options, flags )
 {
 
   // Add supported types to enable creating expression fields in field calculator
@@ -651,8 +652,46 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
 
       if ( couldBeTime[i] && !couldBeDateTime[i] )
       {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
         QTime t = QTime::fromString( value );
         couldBeTime[i] = t.isValid();
+#else
+        // Accept 12:34, 12:34:56 or 12:34:56.789
+        // We do not use QTime::fromString() with Qt < 5.14 as it accepts
+        // strings like 01/03/2004 as valid times
+        couldBeTime[i] = value.length() >= 5 &&
+                         value[0] >= '0' && value[0] <= '2' &&
+                         value[1] >= '0' && value[1] <= '9' &&
+                         value[2] == ':' &&
+                         value[3] >= '0' && value[3] <= '5' &&
+                         value[4] >= '0' && value[4] <= '9';
+        if ( couldBeTime[i] && value.length() == 5 )
+        {
+          // ok
+        }
+        else if ( couldBeTime[i] && value.length() >= 8 )
+        {
+          couldBeTime[i] = value[5] == ':' &&
+                           value[6] >= '0' && value[6] <= '6' &&
+                           value[7] >= '0' && value[7] <= '9';
+          if ( couldBeTime[i] && value.length() == 8 )
+          {
+            // ok
+          }
+          else if ( couldBeTime[i] && value.length() >= 9 )
+          {
+            couldBeTime[i] = value[8] == '.';
+          }
+          else
+          {
+            couldBeTime[i] = false;
+          }
+        }
+        else
+        {
+          couldBeTime[i] = false;
+        }
+#endif
       }
     }
   }
@@ -709,28 +748,28 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
       }
     }
 
-    if ( typeName == QStringLiteral( "integer" ) )
+    if ( typeName == QLatin1String( "integer" ) )
     {
       fieldType = QVariant::Int;
     }
-    else if ( typeName == QStringLiteral( "longlong" ) )
+    else if ( typeName == QLatin1String( "longlong" ) )
     {
       fieldType = QVariant::LongLong;
     }
-    else if ( typeName == QStringLiteral( "real" ) || typeName == QStringLiteral( "double" ) )
+    else if ( typeName == QLatin1String( "real" ) || typeName == QLatin1String( "double" ) )
     {
       typeName = QStringLiteral( "double" );
       fieldType = QVariant::Double;
     }
-    else if ( typeName == QStringLiteral( "datetime" ) )
+    else if ( typeName == QLatin1String( "datetime" ) )
     {
       fieldType = QVariant::DateTime;
     }
-    else if ( typeName == QStringLiteral( "date" ) )
+    else if ( typeName == QLatin1String( "date" ) )
     {
       fieldType = QVariant::Date;
     }
-    else if ( typeName == QStringLiteral( "time" ) )
+    else if ( typeName == QLatin1String( "time" ) )
     {
       fieldType = QVariant::Time;
     }
@@ -902,45 +941,6 @@ QgsGeometry QgsDelimitedTextProvider::geomFromWkt( QString &sWkt, bool wktHasPre
   return geom;
 }
 
-double QgsDelimitedTextProvider::dmsStringToDouble( const QString &sX, bool *xOk )
-{
-  static QString negative( QStringLiteral( "swSW-" ) );
-  QRegExp re( sCrdDmsRegexp );
-  double x = 0.0;
-
-  *xOk = re.indexIn( sX ) == 0;
-  if ( ! *xOk )
-    return 0.0;
-  QString dms1 = re.capturedTexts().at( 2 );
-  QString dms2 = re.capturedTexts().at( 3 );
-  QString dms3 = re.capturedTexts().at( 4 );
-  x = dms3.toDouble( xOk );
-  // Allow for Degrees/minutes format as well as DMS
-  if ( ! dms2.isEmpty() )
-  {
-    x = dms2.toInt( xOk ) + x / 60.0;
-  }
-  x = dms1.toInt( xOk ) + x / 60.0;
-  QString sign1 = re.capturedTexts().at( 1 );
-  QString sign2 = re.capturedTexts().at( 5 );
-
-  if ( sign1.isEmpty() )
-  {
-    if ( ! sign2.isEmpty() && negative.contains( sign2 ) )
-      x = -x;
-  }
-  else if ( sign2.isEmpty() )
-  {
-    if ( ! sign1.isEmpty() && negative.contains( sign1 ) )
-      x = -x;
-  }
-  else
-  {
-    *xOk = false;
-  }
-  return x;
-}
-
 void QgsDelimitedTextProvider::appendZM( QString &sZ, QString &sM, QgsPoint &point, const QString &decimalPoint )
 {
   if ( ! decimalPoint.isEmpty() )
@@ -977,8 +977,8 @@ bool QgsDelimitedTextProvider::pointFromXY( QString &sX, QString &sY, QgsPoint &
   double x, y;
   if ( xyDms )
   {
-    x = dmsStringToDouble( sX, &xOk );
-    y = dmsStringToDouble( sY, &yOk );
+    x = QgsCoordinateUtils::dmsToDecimal( sX, &xOk );
+    y = QgsCoordinateUtils::dmsToDecimal( sY, &yOk );
   }
   else
   {
@@ -1272,9 +1272,9 @@ QString QgsDelimitedTextProviderMetadata::encodeUri( const QVariantMap &parts )
   return QStringLiteral( "file://%1" ).arg( parts.value( QStringLiteral( "path" ) ).toString() );
 }
 
-QgsDataProvider *QgsDelimitedTextProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
+QgsDataProvider *QgsDelimitedTextProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
-  return new QgsDelimitedTextProvider( uri, options );
+  return new QgsDelimitedTextProvider( uri, options, flags );
 }
 
 

@@ -32,12 +32,13 @@ class QgsVectorLayer;
 class QgsFeatureStore;
 
 /**
-  \brief Map tool for identifying features layers and showing results
-
-  after selecting a point shows dialog with identification results
-  - for raster layers shows value of underlying pixel
-  - for vector layers shows feature attributes within search radius
-    (allows editing values when vector layer is in editing mode)
+ * \brief Map tool for identifying features layers and showing results
+ *
+ * after selecting a point shows dialog with identification results
+ *
+ * - for raster layers shows value of underlying pixel
+ * - for vector layers shows feature attributes within search radius
+ *   (allows editing values when vector layer is in editing mode)
 */
 class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
 {

@@ -41,6 +41,7 @@ class QgsAuthConfigSelect;
 class QgsProcessingMatrixParameterPanel;
 class QgsFileWidget;
 class QgsFieldExpressionWidget;
+class QgsExpressionBuilderWidget;
 class QgsExpressionLineEdit;
 class QgsProcessingParameterEnum;
 class QgsLayoutComboBox;
@@ -677,6 +678,7 @@ class GUI_EXPORT QgsProcessingExpressionWidgetWrapper : public QgsAbstractProces
   private:
 
     QgsFieldExpressionWidget *mFieldExpWidget = nullptr;
+    QgsExpressionBuilderWidget *mExpBuilderWidget = nullptr;
     QgsExpressionLineEdit *mExpLineEdit = nullptr;
     std::unique_ptr< QgsVectorLayer > mParentLayer;
 
@@ -825,6 +827,7 @@ class GUI_EXPORT QgsProcessingLayoutWidgetWrapper : public QgsAbstractProcessing
 
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
+    void setWidgetContext( const QgsProcessingParameterWidgetContext &context ) override;
 
     QStringList compatibleParameterTypes() const override;
 
@@ -834,7 +837,7 @@ class GUI_EXPORT QgsProcessingLayoutWidgetWrapper : public QgsAbstractProcessing
   private:
 
     QgsLayoutComboBox *mComboBox = nullptr;
-    QLineEdit *mLineEdit = nullptr;
+    QComboBox *mPlainComboBox = nullptr;
 
     friend class TestProcessingGui;
 };
@@ -1019,8 +1022,59 @@ class GUI_EXPORT QgsProcessingPointWidgetWrapper : public QgsAbstractProcessingP
     friend class TestProcessingGui;
 };
 
+class GUI_EXPORT QgsProcessingGeometryParameterDefinitionWidget : public QgsProcessingAbstractParameterDefinitionWidget
+{
+    Q_OBJECT
+  public:
 
+    QgsProcessingGeometryParameterDefinitionWidget( QgsProcessingContext &context,
+        const QgsProcessingParameterWidgetContext &widgetContext,
+        const QgsProcessingParameterDefinition *definition = nullptr,
+        const QgsProcessingAlgorithm *algorithm = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsProcessingParameterDefinition *createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const override;
 
+  private:
+
+    QLineEdit *mDefaultLineEdit = nullptr;
+
+};
+
+class GUI_EXPORT QgsProcessingGeometryWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
+{
+    Q_OBJECT
+
+  public:
+
+    QgsProcessingGeometryWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
+                                        QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
+
+    // QgsProcessingParameterWidgetFactoryInterface
+    QString parameterType() const override;
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override;
+    QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget(
+      QgsProcessingContext &context,
+      const QgsProcessingParameterWidgetContext &widgetContext,
+      const QgsProcessingParameterDefinition *definition = nullptr,
+      const QgsProcessingAlgorithm *algorithm = nullptr ) override;
+
+    // QgsProcessingParameterWidgetWrapper interface
+    QWidget *createWidget() override SIP_FACTORY;
+
+  protected:
+
+    void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
+    QVariant widgetValue() const override;
+
+    QStringList compatibleParameterTypes() const override;
+
+    QStringList compatibleOutputTypes() const override;
+    QString modelerExpressionFormatString() const override;
+  private:
+
+    QLineEdit *mLineEdit = nullptr;
+
+    friend class TestProcessingGui;
+};
 
 class GUI_EXPORT QgsProcessingExtentParameterDefinitionWidget : public QgsProcessingAbstractParameterDefinitionWidget
 {

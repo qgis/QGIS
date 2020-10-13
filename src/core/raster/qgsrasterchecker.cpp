@@ -165,7 +165,7 @@ bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
         QString valStr;
         if ( compare( verifiedVal, expectedVal, 0 ) )
         {
-          valStr = QStringLiteral( "%1" ).arg( verifiedVal );
+          valStr = QString::number( verifiedVal );
         }
         else
         {

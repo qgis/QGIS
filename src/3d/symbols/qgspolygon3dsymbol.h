@@ -19,10 +19,11 @@
 #include "qgis_3d.h"
 
 #include "qgsabstract3dsymbol.h"
-#include "qgsphongmaterialsettings.h"
 #include "qgs3dtypes.h"
 
 #include <Qt3DRender/QCullFace>
+
+class QgsAbstractMaterialSettings;
 
 /**
  * \ingroup 3d
@@ -33,17 +34,26 @@
  *
  * \since QGIS 3.0
  */
-class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol
+class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTORS
 {
   public:
     //! Constructor for QgsPolygon3DSymbol
-    QgsPolygon3DSymbol() = default;
+    QgsPolygon3DSymbol();
+    ~QgsPolygon3DSymbol() override;
 
     QString type() const override { return "polygon"; }
     QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
+    QList< QgsWkbTypes::GeometryType > compatibleGeometryTypes() const override;
+
+    /**
+     * Creates a new QgsPolygon3DSymbol.
+     *
+     * Caller takes ownership of the returned symbol.
+     */
+    static QgsAbstract3DSymbol *create() SIP_FACTORY;
 
     //! Returns method that determines altitude (whether to clamp to feature to terrain)
     Qgs3DTypes::AltitudeClamping altitudeClamping() const { return mAltClamping; }
@@ -66,9 +76,14 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol
     void setExtrusionHeight( float extrusionHeight ) { mExtrusionHeight = extrusionHeight; }
 
     //! Returns material used for shading of the symbol
-    QgsPhongMaterialSettings material() const { return mMaterial; }
-    //! Sets material used for shading of the symbol
-    void setMaterial( const QgsPhongMaterialSettings &material ) { mMaterial = material; }
+    QgsAbstractMaterialSettings *material() const;
+
+    /**
+     * Sets the \a material settings used for shading of the symbol.
+     *
+     * Ownership of \a material is transferred to the symbol.
+     */
+    void setMaterial( QgsAbstractMaterialSettings *material SIP_TRANSFER );
 
     //! Returns front/back culling mode
     Qgs3DTypes::CullingMode cullingMode() const { return mCullingMode; }
@@ -128,6 +143,25 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol
      */
     void setEdgeColor( const QColor &color ) { mEdgeColor = color; }
 
+    /**
+     * Sets which facade of the buildings is rendered (0 for None, 1 for Walls, 2 for Roofs, 3 for WallsAndRoofs)
+     * \since QGIS 3.16
+     */
+    void setRenderedFacade( int side ) { mRenderedFacade = side; }
+
+    /**
+     * Returns which facade of the buildings is rendered (0 for None, 1 for Walls, 2 for Roofs, 3 for WallsAndRoofs)
+     * \since QGIS 3.16
+     */
+    int renderedFacade() const { return mRenderedFacade; }
+
+    /**
+     * Exports the geometries contained within the hierarchy of entity.
+     * Returns whether any objects were exported
+     * \since QGIS 3.16
+     */
+    bool exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore::QEntity *entity, const QString &objectNamePrefix ) const override SIP_SKIP;
+
   private:
     //! how to handle altitude of vector features
     Qgs3DTypes::AltitudeClamping mAltClamping = Qgs3DTypes::AltClampRelative;
@@ -136,10 +170,11 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol
 
     float mHeight = 0.0f;           //!< Base height of polygons
     float mExtrusionHeight = 0.0f;  //!< How much to extrude (0 means no walls)
-    QgsPhongMaterialSettings mMaterial;  //!< Defines appearance of objects
+    std::unique_ptr< QgsAbstractMaterialSettings > mMaterial; //!< Defines appearance of objects
     Qgs3DTypes::CullingMode mCullingMode = Qgs3DTypes::NoCulling;  //!< Front/back culling mode
     bool mInvertNormals = false;
     bool mAddBackFaces = false;
+    int mRenderedFacade = 3;
 
     bool mEdgesEnabled = false;  //!< Whether to highlight edges
     float mEdgeWidth = 1.f;  //!< Width of edges in pixels

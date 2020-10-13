@@ -155,8 +155,9 @@ bool QgsAbstractGeoPdfExporter::compositionModeSupported( QPainter::CompositionM
       return true;
 
     default:
-      return false;
+      break;
   }
+
   return false;
 }
 
@@ -407,16 +408,16 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
   // pages
   QDomElement page = doc.createElement( QStringLiteral( "Page" ) );
   QDomElement dpi = doc.createElement( QStringLiteral( "DPI" ) );
-  dpi.appendChild( doc.createTextNode( QString::number( details.dpi ) ) );
+  dpi.appendChild( doc.createTextNode( qgsDoubleToString( details.dpi ) ) );
   page.appendChild( dpi );
   // assumes DPI of 72, which is an assumption on GDALs/PDF side. It's only related to the PDF coordinate space and doesn't affect the actual output DPI!
   QDomElement width = doc.createElement( QStringLiteral( "Width" ) );
   const double pageWidthPdfUnits = std::ceil( details.pageSizeMm.width() / 25.4 * 72 );
-  width.appendChild( doc.createTextNode( QString::number( pageWidthPdfUnits ) ) );
+  width.appendChild( doc.createTextNode( qgsDoubleToString( pageWidthPdfUnits ) ) );
   page.appendChild( width );
   QDomElement height = doc.createElement( QStringLiteral( "Height" ) );
   const double pageHeightPdfUnits = std::ceil( details.pageSizeMm.height() / 25.4 * 72 );
-  height.appendChild( doc.createTextNode( QString::number( pageHeightPdfUnits ) ) );
+  height.appendChild( doc.createTextNode( qgsDoubleToString( pageHeightPdfUnits ) ) );
   page.appendChild( height );
 
 
@@ -474,20 +475,20 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
         the whole PDF page will be assumed to be georeferenced.
         */
       QDomElement boundingBox = doc.createElement( QStringLiteral( "BoundingBox" ) );
-      boundingBox.setAttribute( QStringLiteral( "x1" ), QString::number( section.pageBoundsMm.xMinimum() / 25.4 * 72 ) );
-      boundingBox.setAttribute( QStringLiteral( "y1" ), QString::number( section.pageBoundsMm.yMinimum() / 25.4 * 72 ) );
-      boundingBox.setAttribute( QStringLiteral( "x2" ), QString::number( section.pageBoundsMm.xMaximum() / 25.4 * 72 ) );
-      boundingBox.setAttribute( QStringLiteral( "y2" ), QString::number( section.pageBoundsMm.yMaximum() / 25.4 * 72 ) );
+      boundingBox.setAttribute( QStringLiteral( "x1" ), qgsDoubleToString( section.pageBoundsMm.xMinimum() / 25.4 * 72 ) );
+      boundingBox.setAttribute( QStringLiteral( "y1" ), qgsDoubleToString( section.pageBoundsMm.yMinimum() / 25.4 * 72 ) );
+      boundingBox.setAttribute( QStringLiteral( "x2" ), qgsDoubleToString( section.pageBoundsMm.xMaximum() / 25.4 * 72 ) );
+      boundingBox.setAttribute( QStringLiteral( "y2" ), qgsDoubleToString( section.pageBoundsMm.yMaximum() / 25.4 * 72 ) );
       georeferencing.appendChild( boundingBox );
     }
 
     for ( const ControlPoint &point : section.controlPoints )
     {
       QDomElement cp1 = doc.createElement( QStringLiteral( "ControlPoint" ) );
-      cp1.setAttribute( QStringLiteral( "x" ), QString::number( point.pagePoint.x() / 25.4 * 72 ) );
-      cp1.setAttribute( QStringLiteral( "y" ), QString::number( ( details.pageSizeMm.height() - point.pagePoint.y() ) / 25.4 * 72 ) );
-      cp1.setAttribute( QStringLiteral( "GeoX" ), QString::number( point.geoPoint.x() ) );
-      cp1.setAttribute( QStringLiteral( "GeoY" ), QString::number( point.geoPoint.y() ) );
+      cp1.setAttribute( QStringLiteral( "x" ), qgsDoubleToString( point.pagePoint.x() / 25.4 * 72 ) );
+      cp1.setAttribute( QStringLiteral( "y" ), qgsDoubleToString( ( details.pageSizeMm.height() - point.pagePoint.y() ) / 25.4 * 72 ) );
+      cp1.setAttribute( QStringLiteral( "GeoX" ), qgsDoubleToString( point.geoPoint.x() ) );
+      cp1.setAttribute( QStringLiteral( "GeoY" ), qgsDoubleToString( point.geoPoint.y() ) );
       georeferencing.appendChild( cp1 );
     }
 
@@ -627,10 +628,10 @@ QString QgsAbstractGeoPdfExporter::compositionModeToString( QPainter::Compositio
       return QStringLiteral( "Exclusion" );
 
     default:
-      QgsDebugMsg( QStringLiteral( "Unsupported PDF blend mode %1" ).arg( mode ) );
-      return QStringLiteral( "Normal" );
-
+      break;
   }
-  return QString();
+
+  QgsDebugMsg( QStringLiteral( "Unsupported PDF blend mode %1" ).arg( mode ) );
+  return QStringLiteral( "Normal" );
 }
 

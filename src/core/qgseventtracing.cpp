@@ -107,7 +107,7 @@ bool QgsEventTracing::writeTrace( const QString &fileName )
 
     // for instant events we always set them as global (currently not supporting instant events at thread scope)
     if ( item.type == Instant )
-      msg += QStringLiteral( ", \"s\": \"g\"" );
+      msg += QLatin1String( ", \"s\": \"g\"" );
 
     // async events also need to have ID associated
     if ( item.type == AsyncBegin || item.type == AsyncEnd )

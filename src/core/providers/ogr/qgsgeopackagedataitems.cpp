@@ -67,7 +67,7 @@ QgsDataItem *QgsGeoPackageDataItemProvider::createDataItem( const QString &path,
 }
 
 QgsGeoPackageRootItem::QgsGeoPackageRootItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "GPKG" ) )
+  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "GPKG" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mGeoPackage.svg" );
@@ -315,7 +315,16 @@ QgsGeoPackageCollectionItem *QgsGeoPackageAbstractLayerItem::collection() const
 QgsGeoPackageVectorLayerItem::QgsGeoPackageVectorLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType )
   : QgsGeoPackageAbstractLayerItem( parent, name, path, uri, layerType, QStringLiteral( "ogr" ) )
 {
-  mCapabilities |= Rename;
+  mCapabilities |= ( Rename | Fertile );
+  setState( QgsDataItem::State::NotPopulated );
+}
+
+
+QVector<QgsDataItem *> QgsGeoPackageVectorLayerItem::createChildren()
+{
+  QVector<QgsDataItem *> children;
+  children.push_back( new QgsFieldsItem( this, collection()->path() + QStringLiteral( "/columns/ " ), collection()->path(), providerKey(), QString(), name() ) );
+  return children;
 }
 
 
@@ -384,4 +393,18 @@ bool QgsGeoPackageVectorLayerItem::executeDeleteLayer( QString &errCause )
 bool QgsGeoPackageCollectionItem::layerCollection() const
 {
   return true;
+}
+
+bool QgsGeoPackageCollectionItem::hasDragEnabled() const
+{
+  return true;
+}
+
+QgsMimeDataUtils::Uri QgsGeoPackageCollectionItem::mimeUri() const
+{
+  QgsMimeDataUtils::Uri u;
+  u.providerKey = QStringLiteral( "ogr" );
+  u.uri = path();
+  u.layerType = QStringLiteral( "vector" );
+  return u;
 }

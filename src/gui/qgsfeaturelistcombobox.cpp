@@ -31,6 +31,7 @@ QgsFeatureListComboBox::QgsFeatureListComboBox( QWidget *parent )
 {
   mCompleter->setCaseSensitivity( Qt::CaseInsensitive );
   mCompleter->setFilterMode( Qt::MatchContains );
+  setEditable( true );
   setCompleter( mCompleter );
   mCompleter->setWidget( this );
   connect( mModel, &QgsFeatureFilterModel::sourceLayerChanged, this, &QgsFeatureListComboBox::sourceLayerChanged );
@@ -55,7 +56,6 @@ QgsFeatureListComboBox::QgsFeatureListComboBox( QWidget *parent )
   mLineEdit->setSelectOnFocus( true );
   mLineEdit->setShowClearButton( true );
 
-  setEditable( true );
   setLineEdit( mLineEdit );
   setModel( mModel );
 
@@ -286,7 +286,7 @@ QgsFeatureRequest QgsFeatureListComboBox::currentFeatureRequest() const
         filtersAttrs << QgsExpression::createFieldEqualityExpression( identifierFields.at( i ), values.at( i ) );
       }
     }
-    const QString expression = filtersAttrs.join( QStringLiteral( " AND " ) );
+    const QString expression = filtersAttrs.join( QLatin1String( " AND " ) );
     return QgsFeatureRequest().setFilterExpression( expression );
   }
 }

@@ -172,7 +172,10 @@ An individual grid which is drawn above the map content in a
       Horizontal,
       Vertical,
       VerticalDescending,
-      BoundaryDirection
+      BoundaryDirection,
+      AboveTick,
+      OnTick,
+      UnderTick,
     };
 
     enum AnnotationFormat
@@ -193,7 +196,7 @@ An individual grid which is drawn above the map content in a
       Left,
       Right,
       Bottom,
-      Top
+      Top,
     };
 
     enum FrameStyle
@@ -206,6 +209,12 @@ An individual grid which is drawn above the map content in a
       LineBorder,
       LineBorderNautical,
       ZebraNautical,
+    };
+
+    enum TickLengthMode
+    {
+      OrthogonalTicks,
+      NormalizedTicks,
     };
 
     enum FrameSideFlag
@@ -565,32 +574,66 @@ Returns whether annotations are shown for the grid.
 .. seealso:: :py:func:`setAnnotationEnabled`
 %End
 
-    void setAnnotationFont( const QFont &font );
+    void setAnnotationTextFormat( const QgsTextFormat &format );
+%Docstring
+Sets the text ``format`` to use when rendering grid annotations.
+
+.. seealso:: :py:func:`annotationTextFormat`
+
+.. versionadded:: 3.16
+%End
+
+    QgsTextFormat annotationTextFormat() const;
+%Docstring
+Returns the text format used when rendering grid annotations.
+
+.. seealso:: :py:func:`setAnnotationTextFormat`
+
+.. versionadded:: 3.16
+%End
+
+ void setAnnotationFont( const QFont &font ) /Deprecated/;
 %Docstring
 Sets the ``font`` used for drawing grid annotations.
+Shortcut for :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat`.setFont().
 
 .. seealso:: :py:func:`annotationFont`
+
+.. deprecated::
+   use setAnnotationTextFormat() instead
 %End
 
-    QFont annotationFont() const;
+ QFont annotationFont() const /Deprecated/;
 %Docstring
 Returns the font used for drawing grid annotations.
+Shortcut for :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat`.font().
 
 .. seealso:: :py:func:`setAnnotationFont`
+
+.. deprecated::
+   use annotationTextFormat() instead
 %End
 
-    void setAnnotationFontColor( const QColor &color );
+ void setAnnotationFontColor( const QColor &color ) /Deprecated/;
 %Docstring
 Sets the font ``color`` used for drawing grid annotations.
+Shortcut for :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat`.setColor() and :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat`.setOpacity().
 
 .. seealso:: :py:func:`annotationFontColor`
+
+.. deprecated::
+   use setAnnotationTextFormat() instead
 %End
 
-    QColor annotationFontColor() const;
+ QColor annotationFontColor() const /Deprecated/;
 %Docstring
 Returns the font color used for drawing grid annotations.
+Shortcut for :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat`.color() and :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat`.opacity().
 
 .. seealso:: :py:func:`setAnnotationFontColor`
+
+.. deprecated::
+   use annotationTextFormat() instead
 %End
 
     void setAnnotationPrecision( const int precision );
@@ -816,6 +859,150 @@ framePenSize method.
 .. seealso:: :py:func:`setFrameWidth`
 %End
 
+    void setRotatedTicksEnabled( const bool state );
+%Docstring
+Enable/disable ticks rotation for rotated or reprojected grids.
+
+.. seealso:: :py:func:`rotatedTicksEnabled`
+
+.. versionadded:: 3.16
+%End
+
+    double rotatedTicksEnabled() const;
+%Docstring
+Gets whether ticks rotation for rotated or reprojected grids is enabled.
+
+.. seealso:: :py:func:`setRotatedTicksEnabled`
+
+.. versionadded:: 3.16
+%End
+
+    void setRotatedTicksLengthMode( const TickLengthMode mode );
+%Docstring
+Sets the tick length calculation mode.
+
+.. seealso:: :py:func:`rotatedTicksLengthMode`
+
+.. versionadded:: 3.16
+%End
+
+    TickLengthMode rotatedTicksLengthMode() const;
+%Docstring
+Returns the grid frame style.
+
+.. seealso:: :py:func:`setRotatedTicksLengthMode`
+
+.. versionadded:: 3.16
+%End
+
+    void setRotatedTicksMinimumAngle( const double angle );
+%Docstring
+Sets the ``minimum`` angle (in degrees) below which ticks are not drawn.
+
+.. seealso:: :py:func:`rotatedTicksMinimumAngle`
+
+.. versionadded:: 3.16
+%End
+
+    double rotatedTicksMinimumAngle() const;
+%Docstring
+Gets the ``minimum`` angle (in degrees) below which ticks are not drawn.
+
+.. seealso:: :py:func:`setRotatedTicksMinimumAngle`
+
+.. versionadded:: 3.16
+%End
+
+    void setRotatedTicksMarginToCorner( const double margin );
+%Docstring
+Sets the ``margin`` to corners (in canvas units) below which outwards facing ticks are not drawn.
+
+.. seealso:: :py:func:`rotatedTicksMarginToCorner`
+
+.. versionadded:: 3.16
+%End
+
+    double rotatedTicksMarginToCorner() const;
+%Docstring
+Gets the ``margin`` to corners (in canvas units) below which outwards facing ticks are not drawn.
+
+.. seealso:: :py:func:`setRotatedTicksMarginToCorner`
+
+.. versionadded:: 3.16
+%End
+
+    void setRotatedAnnotationsEnabled( const bool state );
+%Docstring
+Enable/disable annotations rotation for rotated or reprojected grids.
+
+.. seealso:: :py:func:`rotatedAnnotationsEnabled`
+
+.. versionadded:: 3.16
+%End
+
+    double rotatedAnnotationsEnabled() const;
+%Docstring
+Gets whether annotations rotation for rotated or reprojected grids is enabled.
+
+.. seealso:: :py:func:`setRotatedAnnotationsEnabled`
+
+.. versionadded:: 3.16
+%End
+
+    void setRotatedAnnotationsLengthMode( const TickLengthMode mode );
+%Docstring
+Sets the annotation length calculation mode.
+
+.. seealso:: :py:func:`rotatedAnnotationsLengthMode`
+
+.. versionadded:: 3.16
+%End
+
+    TickLengthMode rotatedAnnotationsLengthMode() const;
+%Docstring
+Returns the grid frame style.
+
+.. seealso:: :py:func:`setRotatedAnnotationsLengthMode`
+
+.. versionadded:: 3.16
+%End
+
+    void setRotatedAnnotationsMinimumAngle( const double angle );
+%Docstring
+Sets the ``minimum`` angle (in degrees) below which annotated are not drawn.
+
+.. seealso:: :py:func:`rotatedAnnotationsMinimumAngle`
+
+.. versionadded:: 3.16
+%End
+
+    double rotatedAnnotationsMinimumAngle() const;
+%Docstring
+Gets the ``minimum`` angle (in degrees) below which annotated are not drawn.
+
+.. seealso:: :py:func:`setRotatedAnnotationsMinimumAngle`
+
+.. versionadded:: 3.16
+%End
+
+    void setRotatedAnnotationsMarginToCorner( const double margin );
+%Docstring
+Sets the ``margin`` to corners (in canvas units) below which outwards facing ticks are not drawn.
+
+.. seealso:: :py:func:`rotatedAnnotationsMarginToCorner`
+
+.. versionadded:: 3.16
+%End
+
+    double rotatedAnnotationsMarginToCorner() const;
+%Docstring
+Gets the ``margin`` to corners (in canvas units) below which outwards facing ticks are not drawn.
+
+.. seealso:: :py:func:`setRotatedAnnotationsMarginToCorner`
+
+.. versionadded:: 3.16
+%End
+
     void setFrameMargin( const double margin );
 %Docstring
 Sets the grid frame margin (in layout units).
@@ -931,7 +1118,6 @@ Retrieves the second fill color for the grid frame.
     virtual void refresh();
 
 
-      public:
 };
 
 QFlags<QgsLayoutItemMapGrid::FrameSideFlag> operator|(QgsLayoutItemMapGrid::FrameSideFlag f1, QFlags<QgsLayoutItemMapGrid::FrameSideFlag> f2);

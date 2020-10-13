@@ -199,7 +199,7 @@ Returns the path to the authors file.
 %Docstring
 Returns the path to the contributors file.
 Contributors are people who have submitted patches
-but don't have commit access. *
+but don't have commit access.
 %End
 
     static QString developersMapFilePath();
@@ -356,10 +356,14 @@ Cursors are automatically scaled to look like a 16px cursor on 96dpi
 screens.
 %End
 
-    static QPixmap getThemePixmap( const QString &name );
+    static QPixmap getThemePixmap( const QString &name, const QColor &foreColor = QColor(), const QColor &backColor = QColor(), int size = 16 );
 %Docstring
 Helper to get a theme icon as a pixmap. It will fall back to the
 default theme if the active theme does not have the required icon.
+
+If ``foreColor`` or ``backColor`` are specified, then these colors will
+be used for parametrized colors in SVG files wherever available. If
+colors are specified then the ``size`` argument also must be set.
 %End
 
     static QString userStylePath();
@@ -531,7 +535,7 @@ the CSS into a head -> script tag instead.
     static QString showSettings();
 %Docstring
 Convenience function to get a summary of the paths used in this
-application instance useful for debugging mainly.*
+application instance useful for debugging mainly.
 %End
 
     static void registerOgrDrivers();
@@ -697,6 +701,13 @@ Returns the application's image cache, used for caching resampled versions of ra
 .. versionadded:: 3.6
 %End
 
+    static QgsSourceCache *sourceCache();
+%Docstring
+Returns the application's source cache, used for caching embedded and remote source strings as local files
+
+.. versionadded:: 3.16
+%End
+
     static QgsNetworkContentFetcherRegistry *networkContentFetcherRegistry() /KeepReference/;
 %Docstring
 Returns the application's network content registry used for fetching temporary files during QGIS session
@@ -730,6 +741,13 @@ Returns the application's callout registry, used for managing callout types.
 Returns the application's layout item registry, used for layout item types.
 
 .. versionadded:: 3.0
+%End
+
+    static QgsAnnotationItemRegistry *annotationItemRegistry() /KeepReference/;
+%Docstring
+Returns the application's annotation item registry, used for annotation item types.
+
+.. versionadded:: 3.16
 %End
 
     static QgsGpsConnectionRegistry *gpsConnectionRegistry() /KeepReference/;
@@ -843,6 +861,13 @@ Gets the registry of available field formatters.
 Returns registry of available 3D renderers.
 
 .. versionadded:: 3.0
+%End
+
+    static Qgs3DSymbolRegistry *symbol3DRegistry() /KeepReference/;
+%Docstring
+Returns registry of available 3D symbols.
+
+.. versionadded:: 3.16
 %End
 
     static QgsScaleBarRendererRegistry *scaleBarRendererRegistry() /KeepReference/;

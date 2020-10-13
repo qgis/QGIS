@@ -445,6 +445,11 @@ void QgisAppInterface::showOptionsDialog( QWidget *parent, const QString &curren
   return qgis->showOptionsDialog( parent, currentPage );
 }
 
+void QgisAppInterface::showProjectPropertiesDialog( const QString &currentPage )
+{
+  return qgis->showProjectProperties( currentPage );
+}
+
 QMap<QString, QVariant> QgisAppInterface::defaultStyleSheetOptions()
 {
   return qgis->styleSheetBuilder()->defaultOptions();
@@ -546,6 +551,16 @@ void QgisAppInterface::unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *
   qgis->unregisterOptionsWidgetFactory( factory );
 }
 
+void QgisAppInterface::registerProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory )
+{
+  qgis->registerProjectPropertiesWidgetFactory( factory );
+}
+
+void QgisAppInterface::unregisterProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory )
+{
+  qgis->unregisterProjectPropertiesWidgetFactory( factory );
+}
+
 void QgisAppInterface::registerDevToolWidgetFactory( QgsDevToolWidgetFactory *factory )
 {
   qgis->registerDevToolFactory( factory );
@@ -554,6 +569,16 @@ void QgisAppInterface::registerDevToolWidgetFactory( QgsDevToolWidgetFactory *fa
 void QgisAppInterface::unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *factory )
 {
   qgis->unregisterDevToolFactory( factory );
+}
+
+void QgisAppInterface::registerApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker )
+{
+  qgis->registerApplicationExitBlocker( blocker );
+}
+
+void QgisAppInterface::unregisterApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker )
+{
+  qgis->unregisterApplicationExitBlocker( blocker );
 }
 
 void QgisAppInterface::registerCustomDropHandler( QgsCustomDropHandler *handler )
@@ -755,16 +780,10 @@ bool QgisAppInterface::openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f, b
 
 void QgisAppInterface::preloadForm( const QString &uifile )
 {
-  QSignalMapper *signalMapper = new QSignalMapper( this );
-  mTimer = new QTimer( this );
-
-  connect( mTimer, SIGNAL( timeout() ), signalMapper, SLOT( map() ) );
-  connect( signalMapper, SIGNAL( mapped( QString ) ), mTimer, SLOT( stop() ) );
-  connect( signalMapper, SIGNAL( mapped( QString ) ), this, SLOT( cacheloadForm( QString ) ) );
-
-  signalMapper->setMapping( mTimer, uifile );
-
-  mTimer->start( 0 );
+  QTimer::singleShot( 0, this, [ = ]
+  {
+    cacheloadForm( uifile );
+  } );
 }
 
 void QgisAppInterface::cacheloadForm( const QString &uifile )
@@ -859,4 +878,9 @@ QgsBrowserGuiModel *QgisAppInterface::browserModel()
 QgsLayerTreeRegistryBridge::InsertionPoint QgisAppInterface::layerTreeInsertionPoint()
 {
   return qgis->layerTreeInsertionPoint();
+}
+
+void QgisAppInterface::setGpsPanelConnection( QgsGpsConnection *connection )
+{
+  qgis->setGpsPanelConnection( connection );
 }

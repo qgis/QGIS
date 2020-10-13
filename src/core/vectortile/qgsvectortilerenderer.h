@@ -93,7 +93,7 @@ class CORE_EXPORT QgsVectorTileRenderer
 
     const QString type = sipCpp->type();
 
-    if ( type == QStringLiteral( "basic" ) )
+    if ( type == QLatin1String( "basic" ) )
       sipType = sipType_QgsVectorTileBasicRenderer;
     else
       sipType = 0;
@@ -114,6 +114,19 @@ class CORE_EXPORT QgsVectorTileRenderer
 
     //! Returns field names of sub-layers that will be used for rendering. Must be called between startRender/stopRender.
     virtual QMap<QString, QSet<QString> > usedAttributes( const QgsRenderContext & ) SIP_SKIP { return QMap<QString, QSet<QString> >(); }
+
+    //TODO QGIS 4.0 -- make pure virtual
+
+    /**
+     * Returns a list of the layers required for rendering.
+     *
+     * Only layers which are visible at the specified \a tileZoom should be included in this list.
+     *
+     * An empty string present in the list indicates that all layer in the tiles are required.
+     *
+     * \since QGIS 3.16
+     */
+    virtual QSet< QString > requiredLayers( QgsRenderContext &context, int tileZoom ) const { Q_UNUSED( context ); Q_UNUSED( tileZoom ); return QSet< QString >() << QString(); }
 
     //! Finishes rendering and cleans up any resources
     virtual void stopRender( QgsRenderContext &context ) = 0;

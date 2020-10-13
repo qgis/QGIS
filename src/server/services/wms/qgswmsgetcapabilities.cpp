@@ -230,7 +230,7 @@ namespace QgsWms
     wmsCapabilitiesElement.appendChild( getServiceElement( doc, project, version, request ) );
 
     //wms:Capability element
-    QDomElement capabilityElement = getCapabilityElement( doc, project, version, request, projectSettings );
+    QDomElement capabilityElement = getCapabilityElement( doc, project, version, request, projectSettings, serverIface );
     wmsCapabilitiesElement.appendChild( capabilityElement );
 
     if ( projectSettings )
@@ -431,7 +431,7 @@ namespace QgsWms
 
   QDomElement getCapabilityElement( QDomDocument &doc, const QgsProject *project,
                                     const QString &version, const QgsServerRequest &request,
-                                    bool projectSettings )
+                                    bool projectSettings, QgsServerInterface *serverIface )
   {
     QgsServerRequest::Parameters parameters = request.parameters();
 
@@ -534,7 +534,8 @@ namespace QgsWms
     elem.appendChild( dcpTypeElem.cloneNode().toElement() ); //this is the same as for 'GetCapabilities'
     requestElem.appendChild( elem );
 
-    if ( projectSettings ) //remove composer templates from GetCapabilities in the long term
+    if ( ( !serverIface->serverSettings() || !serverIface->serverSettings()->getPrintDisabled() ) &&
+         projectSettings ) //remove composer templates from GetCapabilities in the long term
     {
       //wms:GetPrint
       elem = doc.createElement( QStringLiteral( "GetPrint" ) /*wms:GetPrint*/ );
@@ -913,6 +914,7 @@ namespace QgsWms
         if ( projectSettings )
         {
           layerElem.setAttribute( QStringLiteral( "visible" ), treeNode->isVisible() );
+          layerElem.setAttribute( QStringLiteral( "visibilityChecked" ), treeNode->itemVisibilityChecked() );
           layerElem.setAttribute( QStringLiteral( "expanded" ), treeNode->isExpanded() );
         }
 
@@ -988,7 +990,7 @@ namespace QgsWms
         {
           QgsLayerTreeLayer *treeLayer = static_cast<QgsLayerTreeLayer *>( treeNode );
           QgsMapLayer *l = treeLayer->layer();
-          if ( restrictedLayers.contains( l->name() ) ) //unpublished layer
+          if ( !l || restrictedLayers.contains( l->name() ) ) //unpublished layer
           {
             continue;
           }
@@ -1291,7 +1293,7 @@ namespace QgsWms
               {
                 strValues << v.toString();
               }
-              QDomText dimValuesText = doc.createTextNode( strValues.join( QStringLiteral( ", " ) ) );
+              QDomText dimValuesText = doc.createTextNode( strValues.join( QLatin1String( ", " ) ) );
               dimElem.appendChild( dimValuesText );
               layerElem.appendChild( dimElem );
             }
@@ -1860,7 +1862,6 @@ namespace QgsWms
         case QgsMapLayerType::VectorLayer:
         {
           QgsVectorLayer *vLayer = static_cast<QgsVectorLayer *>( currentLayer );
-          const QSet<QString> &excludedAttributes = vLayer->excludeAttributesWms();
 
           int displayFieldIdx = -1;
           QString displayField = QStringLiteral( "maptip" );
@@ -1877,7 +1878,7 @@ namespace QgsWms
           for ( int idx = 0; idx < layerFields.count(); ++idx )
           {
             QgsField field = layerFields.at( idx );
-            if ( excludedAttributes.contains( field.name() ) )
+            if ( field.configurationFlags().testFlag( QgsField::ConfigurationFlag::HideFromWms ) )
             {
               continue;
             }
@@ -1982,6 +1983,7 @@ namespace QgsWms
         case QgsMapLayerType::MeshLayer:
         case QgsMapLayerType::VectorTileLayer:
         case QgsMapLayerType::PluginLayer:
+        case QgsMapLayerType::AnnotationLayer:
           break;
       }
     }

@@ -25,6 +25,7 @@
  */
 class ANALYSIS_EXPORT QgsGeometryPointCoveredByLineCheck : public QgsGeometryCheck
 {
+    Q_DECLARE_TR_FUNCTIONS( QgsGeometryPointCoveredByLineCheck )
   public:
     QgsGeometryPointCoveredByLineCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
       : QgsGeometryCheck( context, configuration )

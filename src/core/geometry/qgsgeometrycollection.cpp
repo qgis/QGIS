@@ -308,6 +308,18 @@ void QgsGeometryCollection::draw( QPainter &p ) const
   }
 }
 
+QPainterPath QgsGeometryCollection::asQPainterPath() const
+{
+  QPainterPath p;
+  for ( const QgsAbstractGeometry *geom : mGeometries )
+  {
+    QPainterPath partPath = geom->asQPainterPath();
+    if ( !partPath.isEmpty() )
+      p.addPath( partPath );
+  }
+  return p;
+}
+
 bool QgsGeometryCollection::fromWkb( QgsConstWkbPtr &wkbPtr )
 {
   if ( !wkbPtr )
@@ -389,7 +401,7 @@ QString QgsGeometryCollection::asWkt( int precision ) const
   QString wkt = wktTypeStr();
 
   if ( isEmpty() )
-    wkt += QStringLiteral( " EMPTY" );
+    wkt += QLatin1String( " EMPTY" );
   else
   {
     wkt += QLatin1String( " (" );
@@ -686,7 +698,10 @@ bool QgsGeometryCollection::fromCollectionWkt( const QString &wkt, const QVector
   }
   mWkbType = parts.first;
 
-  if ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 )
+  QString secondWithoutParentheses = parts.second;
+  secondWithoutParentheses = secondWithoutParentheses.remove( '(' ).remove( ')' ).simplified().remove( ' ' );
+  if ( ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 ) ||
+       secondWithoutParentheses.isEmpty() )
     return true;
 
   QString defChildWkbType = QStringLiteral( "%1%2%3 " ).arg( defaultChildWkbType, is3D() ? QStringLiteral( "Z" ) : QString(), isMeasure() ? QStringLiteral( "M" ) : QString() );

@@ -56,7 +56,7 @@ class GUI_EXPORT QgsLayoutPdfExportOptionsDialog: public QDialog, private Ui::Qg
                                      bool allowGeoPdfExport = true,
                                      const QString &geoPdfReason = QString(),
                                      const QStringList &geoPdfLayerOrder = QStringList(),
-                                     Qt::WindowFlags flags = nullptr );
+                                     Qt::WindowFlags flags = Qt::WindowFlags() );
 
     //! Sets the text render format
     void setTextRenderFormat( QgsRenderContext::TextRenderFormat format );
@@ -84,6 +84,11 @@ class GUI_EXPORT QgsLayoutPdfExportOptionsDialog: public QDialog, private Ui::Qg
     void setGeometriesSimplified( bool enabled );
     //! Returns whether geometry simplification is enabled
     bool geometriesSimplified() const;
+
+    //! Sets whether to use lossless image compression
+    void setLosslessImageExport( bool enabled );
+    //! Returns whether lossless image compression is enabled
+    bool losslessImageExport() const;
 
     //! Sets whether to export a Geo-PDF
     void setExportGeoPdf( bool enabled );

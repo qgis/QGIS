@@ -68,7 +68,7 @@ class EliminateSelection(QgisAlgorithm):
         super().__init__()
 
     def flags(self):
-        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading | QgsProcessingAlgorithm.FlagNotAvailableInStandaloneTool
 
     def initAlgorithm(self, config=None):
         self.modes = [self.tr('Largest Area'),
@@ -115,6 +115,8 @@ class EliminateSelection(QgisAlgorithm):
             else:
                 # write the others to output
                 sink.addFeature(aFeat, QgsFeatureSink.FastInsert)
+
+        del sink
 
         # Delete all features to eliminate in processLayer
         processLayer = QgsProcessingUtils.mapLayerFromString(dest_id, context)
@@ -229,6 +231,6 @@ class EliminateSelection(QgisAlgorithm):
             if feedback.isCanceled():
                 break
 
-            sink.addFeature(feature, QgsFeatureSink.FastInsert)
+            processLayer.dataProvider().addFeature(feature, QgsFeatureSink.FastInsert)
 
         return {self.OUTPUT: dest_id}

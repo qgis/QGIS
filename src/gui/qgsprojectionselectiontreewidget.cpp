@@ -87,6 +87,9 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
       mFrameProjections->setDisabled( checked );
     }
   } );
+
+  QgsSettings settings;
+  mSplitter->restoreState( settings.value( QStringLiteral( "Windows/ProjectionSelector/splitterState" ) ).toByteArray() );
 }
 
 QgsProjectionSelectionTreeWidget::~QgsProjectionSelectionTreeWidget()
@@ -100,6 +103,9 @@ QgsProjectionSelectionTreeWidget::~QgsProjectionSelectionTreeWidget()
   long crsId = selectedCrsId();
   if ( crsId == 0 )
     return;
+
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/ProjectionSelector/splitterState" ), mSplitter->saveState() );
 
   QgsCoordinateReferenceSystem::pushRecentCoordinateReferenceSystem( crs() );
 }
@@ -192,7 +198,7 @@ QString QgsProjectionSelectionTreeWidget::ogcWmsCrsFilterAsSqlExpression( QSet<Q
       sqlExpression += QStringLiteral( "%1(upper(auth_name)='%2' AND upper(auth_id) IN ('%3'))" )
                        .arg( prefix,
                              it.key(),
-                             it.value().join( QStringLiteral( "','" ) ) );
+                             it.value().join( QLatin1String( "','" ) ) );
       prefix = QStringLiteral( " OR " );
     }
     sqlExpression += ')';
@@ -425,6 +431,11 @@ void QgsProjectionSelectionTreeWidget::setShowBoundsMap( bool show )
 bool QgsProjectionSelectionTreeWidget::showNoProjection() const
 {
   return !mCheckBoxNoProjection->isHidden();
+}
+
+void QgsProjectionSelectionTreeWidget::setNotSetText( const QString &text )
+{
+  mCheckBoxNoProjection->setText( text );
 }
 
 bool QgsProjectionSelectionTreeWidget::showBoundsMap() const
@@ -687,7 +698,7 @@ void QgsProjectionSelectionTreeWidget::loadUnknownCrs( const QgsCoordinateRefere
 {
   if ( !mUnknownList )
   {
-    mUnknownList = new QTreeWidgetItem( lstCoordinateSystems, QStringList( tr( "Unknown Coordinate Systems" ) ) );
+    mUnknownList = new QTreeWidgetItem( lstCoordinateSystems, QStringList( tr( "Custom Coordinate Systems" ) ) );
     QFont fontTemp = mUnknownList->font( 0 );
     fontTemp.setItalic( true );
     fontTemp.setBold( true );
@@ -695,7 +706,7 @@ void QgsProjectionSelectionTreeWidget::loadUnknownCrs( const QgsCoordinateRefere
     mUnknownList->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/user.svg" ) ) );
   }
 
-  QTreeWidgetItem *newItem = new QTreeWidgetItem( mUnknownList, QStringList( QObject::tr( "Unknown CRS" ) ) );
+  QTreeWidgetItem *newItem = new QTreeWidgetItem( mUnknownList, QStringList( crs.description().isEmpty() ? QObject::tr( "Custom CRS" ) : crs.description() ) );
   newItem->setData( 0, RoleWkt, crs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED ) );
   newItem->setData( 0, RoleProj, crs.toProj() );
 
@@ -965,7 +976,7 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
   }
 
   const QString extentHtml = QStringLiteral( "<dt><b>%1</b></dt><dd>%2</dd>" ).arg( tr( "Extent" ), extentString );
-  const QString wktString = tr( "<dt><b>%1</b></dt><dd><code>%2</code></dd>" ).arg( tr( "WKT" ), currentCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, true ).replace( '\n', QStringLiteral( "<br>" ) ).replace( ' ', QStringLiteral( "&nbsp;" ) ) );
+  const QString wktString = tr( "<dt><b>%1</b></dt><dd><code>%2</code></dd>" ).arg( tr( "WKT" ), currentCrs.toWkt( QgsCoordinateReferenceSystem::WKT_PREFERRED, true ).replace( '\n', QLatin1String( "<br>" ) ).replace( ' ', QLatin1String( "&nbsp;" ) ) );
   const QString proj4String = tr( "<dt><b>%1</b></dt><dd><code>%2</code></dd>" ).arg( tr( "Proj4" ), currentCrs.toProj() );
 
 #ifdef Q_OS_WIN

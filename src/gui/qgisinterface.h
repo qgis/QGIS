@@ -64,6 +64,8 @@ class QgsStatusBar;
 class QgsMeshLayer;
 class QgsBrowserGuiModel;
 class QgsDevToolWidgetFactory;
+class QgsGpsConnection;
+class QgsApplicationExitBlockerInterface;
 
 
 /**
@@ -848,6 +850,13 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void showOptionsDialog( QWidget *parent = nullptr, const QString &currentPage = QString() ) = 0;
 
     /**
+     * Opens the project properties dialog. The \a currentPage argument can be used to force
+     * the dialog to open at a specific page.
+     * \since QGIS 3.16
+     */
+    virtual void showProjectPropertiesDialog( const QString &currentPage = QString() ) = 0;
+
+    /**
      * Generate stylesheet
      * \param opts generated default option values, or a changed copy of them
      */
@@ -984,6 +993,24 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 
     /**
+     * Register a new tab in the project properties dialog.
+     * \note Ownership of the factory is not transferred, and the factory must
+     *       be unregistered when plugin is unloaded.
+     * \see QgsOptionsWidgetFactory
+     * \see unregisterProjectPropertiesWidgetFactory()
+     * \since QGIS 3.16
+     */
+    virtual void registerProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
+
+    /**
+     * Unregister a previously registered tab in the options dialog.
+     * \see QgsOptionsWidgetFactory
+     * \see registerProjectPropertiesWidgetFactory()
+     * \since QGIS 3.16
+    */
+    virtual void unregisterProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
+
+    /**
      * Register a new tool in the development/debugging tools dock.
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
@@ -998,6 +1025,25 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.14
     */
     virtual void unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) = 0;
+
+    /**
+     * Register a new application exit blocker, which can be used to prevent the QGIS application
+     * from exiting while a plugin or script has unsaved changes.
+     *
+     * \note Ownership of \a blocker is not transferred, and the blocker must
+     *       be unregistered when plugin is unloaded.
+     *
+     * \see unregisterApplicationExitBlocker()
+     * \since QGIS 3.16
+     */
+    virtual void registerApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) = 0;
+
+    /**
+     * Unregister a previously registered application exit \a blocker.
+     * \see registerApplicationExitBlocker()
+     * \since QGIS 3.16
+    */
+    virtual void unregisterApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) = 0;
 
     /**
      * Register a new custom drop \a handler.
@@ -1156,6 +1202,16 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.4
      */
     virtual QgsBrowserGuiModel *browserModel() = 0;
+
+    /**
+     * Sets a GPS \a connection to use within the GPS Panel widget.
+     *
+     * Any existing GPS connection used by the widget will be disconnect and replaced with this connection. The connection
+     * is automatically registered within the QgsApplication::gpsConnectionRegistry().
+     *
+     * \since QGIS 3.16
+     */
+    virtual void setGpsPanelConnection( QgsGpsConnection *connection ) = 0;
 
   signals:
 

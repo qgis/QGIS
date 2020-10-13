@@ -20,6 +20,7 @@
 #include "qgsprocessingfeedback.h"
 #include "qgspythonrunner.h"
 #include "qgspythonutils.h"
+#include "qgsunittypes.h"
 #include <QElapsedTimer>
 
 class QgsApplication;
@@ -68,9 +69,15 @@ class QgsProcessingExec
     void listAlgorithms();
     void listPlugins();
     int showAlgorithmHelp( const QString &id );
-    int execute( const QString &algId, const QVariantMap &parameters );
+    int execute( const QString &algId,
+                 const QVariantMap &parameters,
+                 const QString &ellipsoid,
+                 QgsUnitTypes::DistanceUnit distanceUnit,
+                 QgsUnitTypes::AreaUnit areaUnit,
+                 const QString &projectPath = QString() );
 
     std::unique_ptr< QgsPythonUtils > mPythonUtils;
+    std::unique_ptr<QgsPythonUtils> loadPythonSupport();
 };
 
 #endif // QGSPROCESS_H

@@ -91,26 +91,28 @@ QgsVectorLayerDigitizingPropertiesPage::QgsVectorLayerDigitizingPropertiesPage( 
       cb->setChecked( activeChecks.contains( factory->id() ) );
       mGeometryCheckFactoriesGroupBoxes.insert( cb, factory->id() );
       topologyCheckLayout->addWidget( cb );
-      if ( factory->id() == QStringLiteral( "QgsGeometryGapCheck" ) )
+      if ( factory->id() == QLatin1String( "QgsGeometryGapCheck" ) )
       {
         const QVariantMap gapCheckConfig = vlayer->geometryOptions()->checkConfiguration( QStringLiteral( "QgsGeometryGapCheck" ) );
 
         mGapCheckAllowExceptionsActivatedCheckBox = new QgsCollapsibleGroupBox( tr( "Allowed Gaps" ) );
         mGapCheckAllowExceptionsActivatedCheckBox->setCheckable( true );
         mGapCheckAllowExceptionsActivatedCheckBox->setChecked( gapCheckConfig.value( QStringLiteral( "allowedGapsEnabled" ), false ).toBool() );
-        QFormLayout *layout = new QFormLayout();
+        QGridLayout *layout = new QGridLayout();
         mGapCheckAllowExceptionsActivatedCheckBox->setLayout( layout );
         topologyCheckLayout->addWidget( mGapCheckAllowExceptionsActivatedCheckBox );
         mGapCheckAllowExceptionsLayerComboBox = new QgsMapLayerComboBox();
         mGapCheckAllowExceptionsLayerComboBox->setFilters( QgsMapLayerProxyModel::PolygonLayer );
         mGapCheckAllowExceptionsLayerComboBox->setExceptedLayerList( QList<QgsMapLayer *> { vlayer } );
         mGapCheckAllowExceptionsLayerComboBox->setLayer( QgsProject::instance()->mapLayer( gapCheckConfig.value( QStringLiteral( "allowedGapsLayer" ) ).toString() ) );
-        layout->addRow( new QLabel( tr( "Layer" ) ), mGapCheckAllowExceptionsLayerComboBox );
+        layout->addWidget( new QLabel( tr( "Layer" ) ), 0, 0 );
+        layout->addWidget( mGapCheckAllowExceptionsLayerComboBox, 0, 1 );
         mGapCheckAllowExceptionsBufferSpinBox = new QgsDoubleSpinBox();
         mGapCheckAllowExceptionsBufferSpinBox->setInputMethodHints( Qt::ImhFormattedNumbersOnly );
         mGapCheckAllowExceptionsBufferSpinBox->setSuffix( QgsUnitTypes::toAbbreviatedString( vlayer->crs().mapUnits() ) );
         mGapCheckAllowExceptionsBufferSpinBox->setValue( gapCheckConfig.value( QStringLiteral( "allowedGapsBuffer" ) ).toDouble() );
-        layout->addRow( new QLabel( tr( "Buffer" ) ), mGapCheckAllowExceptionsBufferSpinBox );
+        layout->addWidget( new QLabel( tr( "Buffer" ) ), 0, 2 );
+        layout->addWidget( mGapCheckAllowExceptionsBufferSpinBox, 0, 3 );
       }
     }
     mTopologyChecksGroupBox->setLayout( topologyCheckLayout );

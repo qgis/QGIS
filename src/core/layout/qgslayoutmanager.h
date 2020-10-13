@@ -113,7 +113,7 @@ class CORE_EXPORT QgsLayoutManager : public QObject
     /**
      * Duplicates an existing \a layout from the manager. The new
      * layout will automatically be stored in the manager.
-     * Returns new the layout if duplication was successful.
+     * Returns the new layout if duplication was successful.
      */
     QgsMasterLayoutInterface *duplicateLayout( const QgsMasterLayoutInterface *layout, const QString &newName );
 

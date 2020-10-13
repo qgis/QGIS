@@ -36,6 +36,9 @@ class APP_EXPORT QgsMapToolAddCircularString: public QgsMapToolCapture
 
     void activate() override;
 
+    //! Clean drawings on map canvas
+    void clean() override;
+
     /*private slots:
       void setParentTool( QgsMapTool *newTool, QgsMapTool *oldTool );*/
 

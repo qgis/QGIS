@@ -1,11 +1,13 @@
 // Include auto-generated SIP files
 %Include auto_generated/qgisinterface.sip
+%Include auto_generated/qgs3dsymbolwidget.sip
 %Include auto_generated/qgsabstractdatasourcewidget.sip
 %Include auto_generated/qgsactionmenu.sip
 %Include auto_generated/qgsadvanceddigitizingdockwidget.sip
 %Include auto_generated/qgsadvanceddigitizingfloater.sip
 %Include auto_generated/qgsaggregatetoolbutton.sip
 %Include auto_generated/qgsalignmentcombobox.sip
+%Include auto_generated/qgsapplicationexitblockerinterface.sip
 %Include auto_generated/qgsattributedialog.sip
 %Include auto_generated/qgsattributeeditorcontext.sip
 %Include auto_generated/qgsattributeform.sip
@@ -21,27 +23,6 @@
 %Include auto_generated/qgsbusyindicatordialog.sip
 %Include auto_generated/qgscharacterselectordialog.sip
 %Include auto_generated/qgscheckablecombobox.sip
-%If ( HAVE_QSCI_SIP )
-%Include auto_generated/qgscodeeditor.sip
-%End
-%If ( HAVE_QSCI_SIP )
-%Include auto_generated/qgscodeeditorcss.sip
-%End
-%If ( HAVE_QSCI_SIP )
-%Include auto_generated/qgscodeeditorexpression.sip
-%End
-%If ( HAVE_QSCI_SIP )
-%Include auto_generated/qgscodeeditorhtml.sip
-%End
-%If ( HAVE_QSCI_SIP )
-%Include auto_generated/qgscodeeditorjs.sip
-%End
-%If ( HAVE_QSCI_SIP )
-%Include auto_generated/qgscodeeditorpython.sip
-%End
-%If ( HAVE_QSCI_SIP )
-%Include auto_generated/qgscodeeditorsql.sip
-%End
 %Include auto_generated/qgscollapsiblegroupbox.sip
 %Include auto_generated/qgscolorbrewercolorrampdialog.sip
 %Include auto_generated/qgscolorbutton.sip
@@ -70,6 +51,7 @@
 %Include auto_generated/qgsdial.sip
 %Include auto_generated/qgsdialog.sip
 %Include auto_generated/qgsdockwidget.sip
+%Include auto_generated/qgsdoublevalidator.sip
 %Include auto_generated/qgsencodingfiledialog.sip
 %Include auto_generated/qgserrordialog.sip
 %Include auto_generated/qgsexpressionbuilderdialog.sip
@@ -155,6 +137,7 @@
 %Include auto_generated/qgsnewauxiliaryfielddialog.sip
 %Include auto_generated/qgsnewauxiliarylayerdialog.sip
 %Include auto_generated/qgsnewgeopackagelayerdialog.sip
+%Include auto_generated/qgsnewvectortabledialog.sip
 %Include auto_generated/qgsnewhttpconnection.sip
 %Include auto_generated/qgsnewmemorylayerdialog.sip
 %Include auto_generated/qgsnewnamedialog.sip
@@ -255,6 +238,29 @@
 %Include auto_generated/auth/qgsauthsslimportdialog.sip
 %Include auto_generated/auth/qgsauthtrustedcasdialog.sip
 %Include auto_generated/callouts/qgscalloutwidget.sip
+%If ( HAVE_QSCI_SIP )
+%Include auto_generated/codeeditors/qgscodeeditor.sip
+%End
+%Include auto_generated/codeeditors/qgscodeeditorcolorscheme.sip
+%Include auto_generated/codeeditors/qgscodeeditorcolorschemeregistry.sip
+%If ( HAVE_QSCI_SIP )
+%Include auto_generated/codeeditors/qgscodeeditorcss.sip
+%End
+%If ( HAVE_QSCI_SIP )
+%Include auto_generated/codeeditors/qgscodeeditorexpression.sip
+%End
+%If ( HAVE_QSCI_SIP )
+%Include auto_generated/codeeditors/qgscodeeditorhtml.sip
+%End
+%If ( HAVE_QSCI_SIP )
+%Include auto_generated/codeeditors/qgscodeeditorjs.sip
+%End
+%If ( HAVE_QSCI_SIP )
+%Include auto_generated/codeeditors/qgscodeeditorpython.sip
+%End
+%If ( HAVE_QSCI_SIP )
+%Include auto_generated/codeeditors/qgscodeeditorsql.sip
+%End
 %Include auto_generated/devtools/qgsdevtoolwidget.sip
 %Include auto_generated/devtools/qgsdevtoolwidgetfactory.sip
 %Include auto_generated/editorwidgets/core/qgseditorconfigwidget.sip
@@ -284,6 +290,7 @@
 %Include auto_generated/effects/qgseffectstackpropertieswidget.sip
 %Include auto_generated/effects/qgspainteffectpropertieswidget.sip
 %Include auto_generated/effects/qgspainteffectwidget.sip
+%Include auto_generated/labeling/qgslabellineanchorwidget.sip
 %Include auto_generated/labeling/qgslabelobstaclesettingswidget.sip
 %Include auto_generated/labeling/qgslabelsettingswidgetbase.sip
 %Include auto_generated/layertree/qgscustomlayerorderwidget.sip
@@ -317,6 +324,7 @@
 %Include auto_generated/layout/qgslayoutviewtooltemporarymousepan.sip
 %Include auto_generated/layout/qgslayoutviewtoolzoom.sip
 %Include auto_generated/locator/qgslocatorwidget.sip
+%Include auto_generated/mesh/qgsmeshlayerproperties.sip
 %Include auto_generated/numericformats/qgsnumericformatselectorwidget.sip
 %Include auto_generated/numericformats/qgsnumericformatwidget.sip
 %Include auto_generated/numericformats/qgsnumericformatguiregistry.sip

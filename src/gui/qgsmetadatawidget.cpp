@@ -220,7 +220,7 @@ void QgsMetadataWidget::addVocabulary()
   QTableWidgetItem *pCell = nullptr;
 
   // Vocabulary
-  pCell = new QTableWidgetItem( QString( tr( "undefined %1" ) ).arg( row + 1 ) );
+  pCell = new QTableWidgetItem( tr( "undefined %1" ).arg( row + 1 ) );
   tabKeywords->setItem( row, 0, pCell );
 
   // Keywords
@@ -288,8 +288,8 @@ void QgsMetadataWidget::removeSelectedRight()
 void QgsMetadataWidget::addConstraint()
 {
   int row = mConstraintsModel->rowCount();
-  mConstraintsModel->setItem( row, 0, new QStandardItem( QString( tr( "undefined %1" ) ).arg( row + 1 ) ) );
-  mConstraintsModel->setItem( row, 1, new QStandardItem( QString( tr( "undefined %1" ) ).arg( row + 1 ) ) );
+  mConstraintsModel->setItem( row, 0, new QStandardItem( tr( "undefined %1" ).arg( row + 1 ) ) );
+  mConstraintsModel->setItem( row, 1, new QStandardItem( tr( "undefined %1" ).arg( row + 1 ) ) );
 }
 
 void QgsMetadataWidget::removeSelectedConstraint()
@@ -340,7 +340,7 @@ void QgsMetadataWidget::addAddress()
   QTableWidgetItem *pCell = nullptr;
 
   // Type
-  pCell = new QTableWidgetItem( QString( tr( "postal" ) ) );
+  pCell = new QTableWidgetItem( tr( "postal" ) );
   tabAddresses->setItem( row, 0, pCell );
 
   // Address
@@ -384,7 +384,7 @@ void QgsMetadataWidget::fillCrsFromProvider()
 void QgsMetadataWidget::addLink()
 {
   int row = mLinksModel->rowCount();
-  mLinksModel->setItem( row, 0, new QStandardItem( QString( tr( "undefined %1" ) ).arg( row + 1 ) ) );
+  mLinksModel->setItem( row, 0, new QStandardItem( tr( "undefined %1" ).arg( row + 1 ) ) );
   mLinksModel->setItem( row, 1, new QStandardItem() );
   mLinksModel->setItem( row, 2, new QStandardItem() );
   mLinksModel->setItem( row, 3, new QStandardItem() );
@@ -511,7 +511,7 @@ void QgsMetadataWidget::setUiFromMetadata()
     addVocabulary();
     int currentRow = tabKeywords->rowCount() - 1;
     tabKeywords->item( currentRow, 0 )->setText( i.key() );
-    tabKeywords->item( currentRow, 1 )->setText( i.value().join( QStringLiteral( "," ) ) );
+    tabKeywords->item( currentRow, 1 )->setText( i.value().join( QLatin1Char( ',' ) ) );
   }
 
   if ( QgsLayerMetadata *layerMetadata = dynamic_cast< QgsLayerMetadata * >( mMetadata.get() ) )
@@ -542,6 +542,7 @@ void QgsMetadataWidget::setUiFromMetadata()
     mRightsModel->setStringList( layerMetadata->rights() );
 
     // Constraints
+    mConstraintsModel->clear();
     const QList<QgsLayerMetadata::Constraint> &constraints = layerMetadata->constraints();
     for ( const QgsLayerMetadata::Constraint &constraint : constraints )
     {
@@ -799,14 +800,14 @@ bool QgsMetadataWidget::checkMetadata()
       errors += QLatin1String( "<b>" ) % result.section;
       if ( ! result._identifier().isNull() )
       {
-        errors += QLatin1String( " " ) % QVariant( result._identifier().toInt() + 1 ).toString();
+        errors += QLatin1Char( ' ' ) % QVariant( result._identifier().toInt() + 1 ).toString();
       }
       errors += QLatin1String( "</b>: " ) % result.note % QLatin1String( "<br />" );
     }
   }
   else
   {
-    errors = QString( tr( "Ok, it seems valid according to the QGIS Schema." ) );
+    errors = tr( "Ok, it seems valid according to the QGIS Schema." );
   }
 
   QString myStyle = QgsApplication::reportStyleSheet();
@@ -1010,7 +1011,7 @@ void QgsMetadataWidget::syncFromCategoriesTabToKeywordsTab()
       row = tabKeywords->rowCount() - 1;
       tabKeywords->item( row, 0 )->setText( QStringLiteral( "gmd:topicCategory" ) );
     }
-    tabKeywords->item( row, 1 )->setText( mCategoriesModel->stringList().join( QStringLiteral( "," ) ) );
+    tabKeywords->item( row, 1 )->setText( mCategoriesModel->stringList().join( QLatin1Char( ',' ) ) );
   }
 }
 
@@ -1018,7 +1019,7 @@ void QgsMetadataWidget::updatePanel()
 {
   int index = tabWidget->currentIndex();
   QString currentTabText = tabWidget->widget( index )->objectName();
-  if ( currentTabText == QStringLiteral( "tabCategoriesDialog" ) )
+  if ( currentTabText == QLatin1String( "tabCategoriesDialog" ) )
   {
     // Categories tab
     // We need to take keywords and insert them into the list
@@ -1033,13 +1034,13 @@ void QgsMetadataWidget::updatePanel()
       mCategoriesModel->setStringList( QStringList() );
     }
   }
-  else if ( currentTabText == QStringLiteral( "tabKeywordsDialog" ) )
+  else if ( currentTabText == QLatin1String( "tabKeywordsDialog" ) )
   {
     // Keywords tab
     // We need to take categories and insert them into the table
     syncFromCategoriesTabToKeywordsTab();
   }
-  else if ( currentTabText == QStringLiteral( "tabValidationDialog" ) )
+  else if ( currentTabText == QLatin1String( "tabValidationDialog" ) )
   {
     checkMetadata();
   }

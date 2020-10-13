@@ -204,7 +204,7 @@ QWidget *QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
   {
     container = new QWidget();
     container->setLayout( new QHBoxLayout() );
-    container->layout()->setMargin( 0 );
+    container->layout()->setContentsMargins( 0, 0, 0, 0 );
   }
 
   QList< QAction * > actionList;

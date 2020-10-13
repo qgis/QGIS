@@ -11,7 +11,7 @@ QgsProcessingParameterEnum|sort|Sort output statistics by cell counts|asc;desc|F
 QgsProcessingParameterBoolean|-h|Suppress page headers|False|True
 QgsProcessingParameterBoolean|-f|Use formfeeds between pages|False|True
 QgsProcessingParameterBoolean|-e|Scientific format|False|True
-QgsProcessingParameterBoolean|-n|Do not report no data cells|False[True
+QgsProcessingParameterBoolean|-n|Do not report no data cells|False|True
 QgsProcessingParameterBoolean|-a|Do not report cells where all maps have no data|False|True
 QgsProcessingParameterBoolean|-c|Report for cats floating-point ranges (floating-point maps only)|False|True
 QgsProcessingParameterBoolean|-i|Read floating-point map as integer (use map's quant rules)|False|True

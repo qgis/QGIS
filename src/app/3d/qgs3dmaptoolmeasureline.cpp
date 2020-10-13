@@ -88,6 +88,7 @@ void Qgs3DMapToolMeasureLine::activate()
     // Initialize the line layer
     QString mapCRS = mCanvas->map()->crs().authid();
     mMeasurementLayer = new QgsVectorLayer( QStringLiteral( "LineStringZ?crs=" ) + mapCRS, QStringLiteral( "Measurement" ), QStringLiteral( "memory" ) );
+    QgsProject::instance()->addMapLayer( mMeasurementLayer );
 
     // Add feature to layer
     mMeasurementLayer->startEditing();
@@ -206,6 +207,7 @@ void Qgs3DMapToolMeasureLine::updateMeasurementLayer()
   QgsGeometryMap geometryMap;
   geometryMap.insert( 1, lineGeometry );
   mMeasurementLayer->dataProvider()->changeGeometryValues( geometryMap );
+  mMeasurementLayer->reload();
   mCanvas->map()->setRenderers( QList<QgsAbstract3DRenderer *>() << mMeasurementLayer->renderer3D()->clone() );
 }
 
@@ -219,13 +221,13 @@ void Qgs3DMapToolMeasureLine::updateSettings()
   lineSymbol->setWidth( 4 );
   lineSymbol->setAltitudeClamping( Qgs3DTypes::AltClampAbsolute );
 
-  QgsPhongMaterialSettings phongMaterial;
+  std::unique_ptr< QgsPhongMaterialSettings > phongMaterial = qgis::make_unique< QgsPhongMaterialSettings >();
   QgsSettings settings;
   int myRed = settings.value( QStringLiteral( "qgis/default_measure_color_red" ), 222 ).toInt();
   int myGreen = settings.value( QStringLiteral( "qgis/default_measure_color_green" ), 155 ).toInt();
   int myBlue = settings.value( QStringLiteral( "qgis/default_measure_color_blue" ), 67 ).toInt();
-  phongMaterial.setAmbient( QColor( myRed, myGreen, myBlue ) );
-  lineSymbol->setMaterial( phongMaterial );
+  phongMaterial->setAmbient( QColor( myRed, myGreen, myBlue ) );
+  lineSymbol->setMaterial( phongMaterial.release() );
 
   // Set renderer
   QgsVectorLayer3DRenderer *lineSymbolRenderer = new QgsVectorLayer3DRenderer( lineSymbol );

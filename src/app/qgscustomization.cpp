@@ -95,7 +95,7 @@ QTreeWidgetItem *QgsCustomizationDialog::item( const QString &path, QTreeWidgetI
   if ( pathCopy.startsWith( '/' ) )
     pathCopy = pathCopy.mid( 1 ); // remove '/'
   QStringList names = pathCopy.split( '/' );
-  pathCopy = QStringList( names.mid( 1 ) ).join( QStringLiteral( "/" ) );
+  pathCopy = QStringList( names.mid( 1 ) ).join( QLatin1Char( '/' ) );
 
   if ( ! widgetItem )
   {
@@ -440,6 +440,26 @@ QTreeWidgetItem *QgsCustomizationDialog::readWidgetsXmlNode( const QDomNode &nod
   return myItem;
 }
 
+QAction *QgsCustomizationDialog::findAction( QToolButton *toolbutton )
+{
+  if ( !toolbutton->parent() )
+    return toolbutton->defaultAction();
+
+  // We need to find the QAction that was returned from the call of "QToolBar::addWidget".
+  // This is a defaultAction in most cases. But when QToolButton is composed of multiple actions,
+  // (e.g. "Select Features by ..." button) we need to go through the parent widget to search for the
+  // parent action name.
+  const QList<QWidgetAction *> tbWidgetActions = toolbutton->parent()->findChildren<QWidgetAction *>( QString(), Qt::FindDirectChildrenOnly );
+  for ( QWidgetAction *act : tbWidgetActions )
+  {
+    QWidget *widget = act->defaultWidget();
+    if ( widget == toolbutton )
+      return act;
+  }
+
+  return toolbutton->defaultAction();
+}
+
 bool QgsCustomizationDialog::switchWidget( QWidget *widget, QMouseEvent *e )
 {
   Q_UNUSED( e )
@@ -465,7 +485,7 @@ bool QgsCustomizationDialog::switchWidget( QWidget *widget, QMouseEvent *e )
     else if ( widget->inherits( "QToolButton" ) )
     {
       QToolButton *toolbutton = qobject_cast<QToolButton *>( widget );
-      QAction *action = toolbutton->defaultAction();
+      QAction *action = findAction( toolbutton );
       if ( !action )
         return false;
       QString toolbarName = widget->parent()->objectName();
@@ -723,7 +743,7 @@ void QgsCustomization::createTreeItemBrowser()
     if ( capabilities != QgsDataProvider::NoDataCapabilities )
     {
       QStringList item;
-      item << QStringLiteral( "%1" ).arg( pr->name() ) << QObject::tr( "Data Item Provider: %1" ).arg( pr->name() );
+      item << pr->name() << QObject::tr( "Data Item Provider: %1" ).arg( pr->name() );
       items << item;
     }
   }
@@ -823,7 +843,7 @@ void QgsCustomization::updateMainWindow( QMenu *toolBarMenu )
             continue;
           }
 
-          if ( action->metaObject()->className() == QStringLiteral( "QWidgetAction" ) )
+          if ( action->metaObject()->className() == QLatin1String( "QWidgetAction" ) )
           {
             mSettings->beginGroup( action->objectName() );
             QWidgetAction *widgetAction = qobject_cast<QWidgetAction *>( action );

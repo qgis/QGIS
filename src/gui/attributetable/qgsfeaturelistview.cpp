@@ -162,11 +162,7 @@ void QgsFeatureListView::editSelectionChanged( const QItemSelection &deselected,
     QItemSelection localSelected = mModel->mapSelectionFromMaster( selected );
     viewport()->update( visualRegionForSelection( localDeselected ) | visualRegionForSelection( localSelected ) );
   }
-  updateEditSelectionDependencies();
-}
 
-void QgsFeatureListView::updateEditSelectionDependencies()
-{
   QItemSelection currentSelection = mCurrentEditSelectionModel->selection();
   if ( currentSelection.size() == 1 )
   {
@@ -193,18 +189,27 @@ void QgsFeatureListView::selectAll()
 void QgsFeatureListView::setEditSelection( const QgsFeatureIds &fids )
 {
   QItemSelection selection;
+  QModelIndex firstModelIdx;
 
   const auto constFids = fids;
   for ( QgsFeatureId fid : constFids )
   {
-    selection.append( QItemSelectionRange( mModel->mapToMaster( mModel->fidToIdx( fid ) ) ) );
+    QModelIndex modelIdx = mModel->fidToIdx( fid );
+
+    if ( ! firstModelIdx.isValid() )
+      firstModelIdx = modelIdx;
+
+    selection.append( QItemSelectionRange( mModel->mapToMaster( modelIdx ) ) );
   }
 
   bool ok = true;
   emit aboutToChangeEditSelection( ok );
 
   if ( ok )
+  {
     mCurrentEditSelectionModel->select( selection, QItemSelectionModel::ClearAndSelect );
+    scrollTo( firstModelIdx );
+  }
 }
 
 void QgsFeatureListView::setEditSelection( const QModelIndex &index, QItemSelectionModel::SelectionFlags command )
@@ -216,7 +221,10 @@ void QgsFeatureListView::setEditSelection( const QModelIndex &index, QItemSelect
   Q_ASSERT( index.model() == mModel->masterModel() || !index.isValid() );
 
   if ( ok )
+  {
     mCurrentEditSelectionModel->select( index, command );
+    scrollTo( index );
+  }
 }
 
 void QgsFeatureListView::repaintRequested( const QModelIndexList &indexes )
@@ -235,18 +243,25 @@ void QgsFeatureListView::repaintRequested()
 
 void QgsFeatureListView::mouseMoveEvent( QMouseEvent *event )
 {
-  QPoint pos = event->pos();
-
-  QModelIndex index = indexAt( pos );
-
-  if ( mEditSelectionDrag )
+  if ( mModel )
   {
-    if ( index.isValid() )
-      setEditSelection( mModel->mapToMaster( index ), QItemSelectionModel::ClearAndSelect );
+    QPoint pos = event->pos();
+
+    QModelIndex index = indexAt( pos );
+
+    if ( mEditSelectionDrag )
+    {
+      if ( index.isValid() )
+        setEditSelection( mModel->mapToMaster( index ), QItemSelectionModel::ClearAndSelect );
+    }
+    else
+    {
+      selectRow( index, false );
+    }
   }
   else
   {
-    selectRow( index, false );
+    QgsDebugMsg( QStringLiteral( "No model assigned to this view" ) );
   }
 }
 
@@ -468,7 +483,6 @@ void QgsFeatureListView::ensureEditSelection( bool inSelection )
     }
     mUpdateEditSelectionTimer.start();
   }
-  updateEditSelectionDependencies();
 }
 
 void QgsFeatureListView::setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager )

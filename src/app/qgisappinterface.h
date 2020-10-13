@@ -115,6 +115,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QList<QgsLayoutDesignerInterface *> openLayoutDesigners() override;
     QgsLayoutDesignerInterface *openLayoutDesigner( QgsMasterLayoutInterface *layout ) override;
     void showOptionsDialog( QWidget *parent = nullptr, const QString &currentPage = QString() ) override;
+    void showProjectPropertiesDialog( const QString &currentPage = QString() ) override;
     QMap<QString, QVariant> defaultStyleSheetOptions() override;
     void buildStyleSheet( const QMap<QString, QVariant> &opts ) override;
     void saveStyleSheetOptions( const QMap<QString, QVariant> &opts ) override;
@@ -145,8 +146,12 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) override;
     void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) override;
     void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) override;
+    void registerProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory ) override;
+    void unregisterProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory ) override;
     void registerDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) override;
     void unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) override;
+    void registerApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) override;
+    void unregisterApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) override;
     void registerCustomDropHandler( QgsCustomDropHandler *handler ) override;
     void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) override;
     void registerCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler ) override;
@@ -309,18 +314,16 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void takeAppScreenShots( const QString &saveDirectory, const int categories = 0 ) override;
     QgsBrowserGuiModel *browserModel() override;
     QgsLayerTreeRegistryBridge::InsertionPoint layerTreeInsertionPoint() override;
-
+    void setGpsPanelConnection( QgsGpsConnection *connection ) override;
 
   private slots:
 
-    void cacheloadForm( const QString &uifile );
+    void cacheloadForm( const QString &uifile = QString() );
 
   private:
 
     //! Pointer to the QgisApp object
     QgisApp *qgis = nullptr;
-
-    QTimer *mTimer = nullptr;
 
     //! Pointer to the PluginManagerInterface object
     QgsAppPluginManagerInterface pluginManagerIface;

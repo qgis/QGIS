@@ -6,42 +6,28 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>381</width>
-    <height>173</height>
+    <width>283</width>
+    <height>278</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>gsCollapsibleGroupBox</string>
+   <string>QgsCollapsibleGroupBox</string>
   </property>
   <property name="title">
    <string>Widget Display</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="0">
-    <widget class="QCheckBox" name="mRelationShowLinkCheckBox">
-     <property name="text">
-      <string>Show link button</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
+   <item row="2" column="0">
     <widget class="QCheckBox" name="mShowLabelCheckBox">
      <property name="text">
       <string>Show label</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QCheckBox" name="mRelationShowUnlinkCheckBox">
-     <property name="text">
-      <string>Show unlink button</string>
-     </property>
-    </widget>
-   </item>
    <item row="3" column="0">
-    <widget class="QCheckBox" name="mRelationShowSaveChildEditsCheckBox">
-     <property name="text">
-      <string>Show save child layer edits button</string>
+    <widget class="QgsCollapsibleGroupBox" name="mWidgetSpecificConfigGroupBox">
+     <property name="title">
+      <string>GroupBox</string>
      </property>
     </widget>
    </item>

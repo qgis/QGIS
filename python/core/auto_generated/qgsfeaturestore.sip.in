@@ -55,9 +55,9 @@ Sets the store's ``crs``.
 .. seealso:: :py:func:`crs`
 %End
 
-    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 );
+    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 
-    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 );
+    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 
 
     int count() const;

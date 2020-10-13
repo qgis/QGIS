@@ -23,28 +23,24 @@
 const QString QgsFeatureRequest::ALL_ATTRIBUTES = QStringLiteral( "#!allattributes!#" );
 
 QgsFeatureRequest::QgsFeatureRequest()
-  : mFlags( nullptr )
 {
 }
 
 QgsFeatureRequest::QgsFeatureRequest( QgsFeatureId fid )
   : mFilter( FilterFid )
   , mFilterFid( fid )
-  , mFlags( nullptr )
 {
 }
 
 QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureIds &fids )
   : mFilter( FilterFids )
   , mFilterFids( fids )
-  , mFlags( nullptr )
 {
 
 }
 
 QgsFeatureRequest::QgsFeatureRequest( const QgsRectangle &rect )
   : mFilterRect( rect )
-  , mFlags( nullptr )
 {
 }
 
@@ -52,7 +48,6 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsExpression &expr, const QgsExpres
   : mFilter( FilterExpression )
   , mFilterExpression( new QgsExpression( expr ) )
   , mExpressionContext( context )
-  , mFlags( nullptr )
 {
 }
 
@@ -528,5 +523,5 @@ QString QgsFeatureRequest::OrderBy::dump() const
     results << clause.dump();
   }
 
-  return results.join( QStringLiteral( ", " ) );
+  return results.join( QLatin1String( ", " ) );
 }

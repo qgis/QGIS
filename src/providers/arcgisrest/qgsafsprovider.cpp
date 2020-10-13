@@ -23,13 +23,14 @@
 #include "qgslogger.h"
 #include "qgsdataitemprovider.h"
 #include "qgsapplication.h"
+#include "qgsruntimeprofiler.h"
 
 const QString QgsAfsProvider::AFS_PROVIDER_KEY = QStringLiteral( "arcgisfeatureserver" );
 const QString QgsAfsProvider::AFS_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS Feature Service data provider" );
 
 
-QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &options )
-  : QgsVectorDataProvider( uri, options )
+QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+  : QgsVectorDataProvider( uri, options, flags )
 {
   mSharedData.reset( new QgsAfsSharedData() );
   mSharedData->mGeometryType = QgsWkbTypes::Unknown;
@@ -46,6 +47,10 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   const QString referer = mSharedData->mDataSource.param( QStringLiteral( "referer" ) );
   if ( !referer.isEmpty() )
     mRequestHeaders[ QStringLiteral( "Referer" )] = referer;
+
+  std::unique_ptr< QgsScopedRuntimeProfile > profile;
+  if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
+    profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Retrieve service definition" ), QStringLiteral( "projectload" ) );
 
   const QVariantMap layerData = QgsArcGisRestUtils::getLayerInfo( mSharedData->mDataSource.param( QStringLiteral( "url" ) ),
                                 authcfg, errorTitle, errorMessage, mRequestHeaders );
@@ -132,6 +137,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   {
     const QVariantMap fieldDataMap = fieldData.toMap();
     const QString fieldName = fieldDataMap[QStringLiteral( "name" )].toString();
+    const QString fieldAlias = fieldDataMap[QStringLiteral( "alias" )].toString();
     const QString fieldTypeString = fieldDataMap[QStringLiteral( "type" )].toString();
     QVariant::Type type = QgsArcGisRestUtils::mapEsriFieldType( fieldTypeString );
     if ( fieldName == QLatin1String( "geometry" ) || fieldTypeString == QLatin1String( "esriFieldTypeGeometry" ) )
@@ -149,8 +155,10 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
       continue;
     }
     QgsField field( fieldName, type, fieldDataMap[QStringLiteral( "type" )].toString(), fieldDataMap[QStringLiteral( "length" )].toInt() );
+    if ( !fieldAlias.isEmpty() && fieldAlias != fieldName )
+      field.setAlias( fieldAlias );
 
-    if ( fieldDataMap.contains( QStringLiteral( "domain" ) ) && fieldDataMap.value( QStringLiteral( "domain" ) ).toMap().value( QStringLiteral( "type" ) ).toString() == QStringLiteral( "codedValue" ) )
+    if ( fieldDataMap.contains( QStringLiteral( "domain" ) ) && fieldDataMap.value( QStringLiteral( "domain" ) ).toMap().value( QStringLiteral( "type" ) ).toString() == QLatin1String( "codedValue" ) )
     {
       const QVariantList values = fieldDataMap.value( QStringLiteral( "domain" ) ).toMap().value( QStringLiteral( "codedValues" ) ).toList();
       QVariantList valueConfig;
@@ -213,6 +221,9 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
           QgsArcGisRestUtils::parseDateTime( extent.at( 1 ) ) ) );
     }
   }
+
+  if ( profile )
+    profile->switchTask( tr( "Retrieve object IDs" ) );
 
   // Read OBJECTIDs of all features: these may not be a continuous sequence,
   // and we need to store these to iterate through the features. This query
@@ -451,9 +462,9 @@ QString QgsAfsProviderMetadata::encodeUri( const QVariantMap &parts )
   return dsUri.uri();
 }
 
-QgsAfsProvider *QgsAfsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
+QgsAfsProvider *QgsAfsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
-  return new QgsAfsProvider( uri, options );
+  return new QgsAfsProvider( uri, options, flags );
 }
 
 

@@ -129,6 +129,7 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
   {
     QgsScaleWidget *minLimitSp = new QgsScaleWidget( parent );
     minLimitSp->setToolTip( tr( "Minimum scale from which snapping is enabled (i.e. most \"zoomed out\" scale)" ) );
+    connect( minLimitSp, &QgsScaleWidget::scaleChanged, this, &QgsSnappingLayerDelegate::onScaleChanged );
     return minLimitSp;
   }
 
@@ -136,10 +137,16 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
   {
     QgsScaleWidget *maxLimitSp = new QgsScaleWidget( parent );
     maxLimitSp->setToolTip( tr( "Maximum scale up to which snapping is enabled (i.e. most \"zoomed in\" scale)" ) );
+    connect( maxLimitSp, &QgsScaleWidget::scaleChanged, this, &QgsSnappingLayerDelegate::onScaleChanged );
     return maxLimitSp;
   }
 
   return nullptr;
+}
+
+void QgsSnappingLayerDelegate::onScaleChanged()
+{
+  emit commitData( qobject_cast<QgsScaleWidget *>( sender() ) );
 }
 
 void QgsSnappingLayerDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
@@ -669,7 +676,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
       {
         if ( ls.minimumScale() <= 0.0 )
         {
-          return QString( tr( "not set" ) );
+          return tr( "not set" );
         }
         else
         {
@@ -689,7 +696,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
       {
         if ( ls.maximumScale() <= 0.0 )
         {
-          return QString( tr( "not set" ) );
+          return tr( "not set" );
         }
         else
         {

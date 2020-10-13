@@ -264,11 +264,20 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
 {
   QSet< QString > toExecute;
   QMap< QString, QgsProcessingModelChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
+  QSet< QString > broken;
   for ( ; childIt != mChildAlgorithms.constEnd(); ++childIt )
   {
-    if ( childIt->isActive() && childIt->algorithm() )
-      toExecute.insert( childIt->childId() );
+    if ( childIt->isActive() )
+    {
+      if ( childIt->algorithm() )
+        toExecute.insert( childIt->childId() );
+      else
+        broken.insert( childIt->childId() );
+    }
   }
+
+  if ( !broken.empty() )
+    throw QgsProcessingException( QCoreApplication::translate( "QgsProcessingModelAlgorithm", "Cannot run model, the following algorithms are not available on this system: %1" ).arg( broken.values().join( QLatin1String( ", " ) ) ) );
 
   QElapsedTimer totalTime;
   totalTime.start();
@@ -338,7 +347,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       if ( feedback && !skipGenericLogging )
       {
         feedback->pushInfo( QObject::tr( "Input Parameters:" ) );
-        feedback->pushCommandInfo( QStringLiteral( "{ %1 }" ).arg( params.join( QStringLiteral( ", " ) ) ) );
+        feedback->pushCommandInfo( QStringLiteral( "{ %1 }" ).arg( params.join( QLatin1String( ", " ) ) ) );
       }
 
       QElapsedTimer childTime;
@@ -842,6 +851,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
       << QgsProcessingParameterCrs::typeName()
       << QgsProcessingParameterRange::typeName()
       << QgsProcessingParameterPoint::typeName()
+      << QgsProcessingParameterGeometry::typeName()
       << QgsProcessingParameterFile::typeName()
       << QgsProcessingParameterFolderDestination::typeName()
       << QgsProcessingParameterBand::typeName()
@@ -1933,4 +1943,3 @@ QVariantMap QgsProcessingModelAlgorithm::designerParameterValues() const
 }
 
 ///@endcond
-

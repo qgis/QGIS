@@ -711,9 +711,36 @@ class OverrideCursor():
     def __exit__(self, exc_type, exc_val, exc_tb):
         QApplication.restoreOverrideCursor()
 
+
 #######################
 # IMPORT wrapper
 
+if os.name == 'nt' and sys.version_info < (3, 8):
+    import ctypes
+    from ctypes import windll, wintypes
+
+    kernel32 = ctypes.WinDLL('kernel32', use_last_error=True)
+
+    _hasAddDllDirectory = hasattr(kernel32, 'AddDllDirectory')
+    if _hasAddDllDirectory:
+        _import_path = os.environ['PATH']
+        _import_paths = {}
+
+        def _errcheck_zero(result, func, args):
+            if not result:
+                raise ctypes.WinError(ctypes.get_last_error())
+            return args
+
+        DLL_DIRECTORY_COOKIE = wintypes.LPVOID
+
+        _AddDllDirectory = kernel32.AddDllDirectory
+        _AddDllDirectory.errcheck = _errcheck_zero
+        _AddDllDirectory.restype = DLL_DIRECTORY_COOKIE
+        _AddDllDirectory.argtypes = (wintypes.LPCWSTR,)
+
+        _RemoveDllDirectory = kernel32.RemoveDllDirectory
+        _RemoveDllDirectory.errcheck = _errcheck_zero
+        _RemoveDllDirectory.argtypes = (DLL_DIRECTORY_COOKIE,)
 
 _uses_builtins = True
 try:
@@ -739,6 +766,28 @@ def _import(name, globals={}, locals={}, fromlist=[], level=None):
         msg = 'PyQt4 classes cannot be imported in QGIS 3.x.\n' \
               'Use {} or the version independent {} import instead.'.format(name.replace('PyQt4', 'PyQt5'), name.replace('PyQt4', 'qgis.PyQt'))
         raise ImportError(msg)
+
+    if os.name == 'nt' and sys.version_info < (3, 8):
+        global _hasAddDllDirectory
+        if _hasAddDllDirectory:
+            global _import_path
+            global _import_paths
+
+            old_path = _import_path
+            new_path = os.environ['PATH']
+            if old_path != new_path:
+                global _AddDllDirectory
+                global _RemoveDllDirectory
+
+                for p in set(new_path.split(';')) - set(old_path.split(';')):
+                    if p is not None and p not in _import_path:
+                        _import_paths[p] = _AddDllDirectory(p)
+
+                for p in set(old_path.split(';')) - set(new_path.split(';')):
+                    if p in _import_paths:
+                        _RemoveDllDirectory(_import_paths.pop(p))
+
+                _import_path = new_path
 
     mod = _builtin_import(name, globals, locals, fromlist, level)
 
@@ -777,7 +826,7 @@ def run_script_from_file(filepath):
     from qgis.processing import alg
     try:
         from qgis.core import QgsApplication, QgsProcessingAlgorithm, QgsProcessingFeatureBasedAlgorithm
-        from processing.gui.AlgorithmDialog import AlgorithmDialog
+        from qgis.processing import execAlgorithmDialog
         _locals = {}
         exec(open(filepath.replace("\\\\", "/").encode(sys.getfilesystemencoding())).read(), _locals)
         alginstance = None
@@ -791,7 +840,6 @@ def run_script_from_file(filepath):
         if alginstance:
             alginstance.setProvider(QgsApplication.processingRegistry().providerById("script"))
             alginstance.initAlgorithm()
-            dlg = AlgorithmDialog(alginstance)
-            dlg.show()
+            execAlgorithmDialog(alginstance)
     except ImportError:
         pass

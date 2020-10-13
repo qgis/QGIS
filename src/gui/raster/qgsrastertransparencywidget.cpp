@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 #include <QWidget>
-#include <QDoubleValidator>
 #include <QIntValidator>
 #include <QFile>
 #include <QTextStream>
@@ -33,6 +32,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsrasteridentifyresult.h"
 #include "qgsmultibandcolorrenderer.h"
+#include "qgsdoublevalidator.h"
 
 
 QgsRasterTransparencyWidget::QgsRasterTransparencyWidget( QgsRasterLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
@@ -120,7 +120,8 @@ void QgsRasterTransparencyWidget::syncToLayer()
   QgsDebugMsg( QStringLiteral( "noDataRangeList.size = %1" ).arg( noDataRangeList.size() ) );
   if ( !noDataRangeList.isEmpty() )
   {
-    leNoDataValue->setText( QgsRasterBlock::printValue( noDataRangeList.value( 0 ).min() ) );
+    double v = QgsRasterBlock::printValue( noDataRangeList.value( 0 ).min() ).toDouble();
+    leNoDataValue->setText( QLocale().toString( v ) );
   }
   else
   {
@@ -395,7 +396,7 @@ void QgsRasterTransparencyWidget::apply()
   if ( "" != leNoDataValue->text() )
   {
     bool myDoubleOk = false;
-    double myNoDataValue = leNoDataValue->text().toDouble( &myDoubleOk );
+    double myNoDataValue = QgsDoubleValidator::toDouble( leNoDataValue->text(), &myDoubleOk );
     if ( myDoubleOk )
     {
       QgsRasterRange myNoDataRange( myNoDataValue, myNoDataValue );
@@ -635,10 +636,11 @@ void QgsRasterTransparencyWidget::setTransparencyCell( int row, int column, doub
     {
       case Qgis::Float32:
       case Qgis::Float64:
-        lineEdit->setValidator( new QDoubleValidator( nullptr ) );
+        lineEdit->setValidator( new QgsDoubleValidator( nullptr ) );
         if ( !std::isnan( value ) )
         {
-          valueString = QgsRasterBlock::printValue( value );
+          double v = QgsRasterBlock::printValue( value ).toDouble();
+          valueString = QLocale().toString( v );
         }
         break;
       default:
@@ -690,6 +692,6 @@ double QgsRasterTransparencyWidget::transparencyCellValue( int row, int column )
   {
     return std::numeric_limits<double>::quiet_NaN();
   }
-  return lineEdit->text().toDouble();
+  return QgsDoubleValidator::toDouble( lineEdit->text() );
 
 }

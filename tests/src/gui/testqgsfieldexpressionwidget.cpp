@@ -136,6 +136,8 @@ void TestQgsFieldExpressionWidget::testRemoveJoin()
 void TestQgsFieldExpressionWidget::asExpression()
 {
   QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "point?field=fld:int&field=fld2:int&field=fld3:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  layer->dataProvider()->addAttributes( QList< QgsField >() << QgsField( QStringLiteral( "a space" ), QVariant::String ) );
+  layer->updateFields();
   QgsProject::instance()->addMapLayer( layer );
 
   std::unique_ptr< QgsFieldExpressionWidget > widget( new QgsFieldExpressionWidget() );
@@ -194,6 +196,31 @@ void TestQgsFieldExpressionWidget::asExpression()
   QVERIFY( spy.constLast().at( 0 ).toString().isEmpty() );
   QCOMPARE( spy2.count(), 6 );
   QVERIFY( spy2.constLast().at( 0 ).toString().isEmpty() );
+  QVERIFY( spy2.constLast().at( 1 ).toBool() );
+
+  // field name with space
+  widget->setField( QStringLiteral( "a space" ) );
+  QCOMPARE( widget->asExpression(), QStringLiteral( "\"a space\"" ) );
+  bool isExpression = true;
+  QCOMPARE( widget->currentField( &isExpression ), QStringLiteral( "a space" ) );
+  QVERIFY( !isExpression );
+  QCOMPARE( spy.count(), 7 );
+  QCOMPARE( spy.constLast().at( 0 ).toString(), QStringLiteral( "a space" ) );
+  QCOMPARE( spy2.count(), 7 );
+  QCOMPARE( spy2.constLast().at( 0 ).toString(), QStringLiteral( "a space" ) );
+  QVERIFY( spy2.constLast().at( 1 ).toBool() );
+
+  widget->setField( QString() );
+  QVERIFY( widget->asExpression().isEmpty() );
+  widget->setExpression( QStringLiteral( "\"a space\"" ) );
+  QCOMPARE( widget->asExpression(), QStringLiteral( "\"a space\"" ) );
+  isExpression = true;
+  QCOMPARE( widget->currentField( &isExpression ), QStringLiteral( "a space" ) );
+  QVERIFY( !isExpression );
+  QCOMPARE( spy.count(), 9 );
+  QCOMPARE( spy.constLast().at( 0 ).toString(), QStringLiteral( "a space" ) );
+  QCOMPARE( spy2.count(), 9 );
+  QCOMPARE( spy2.constLast().at( 0 ).toString(), QStringLiteral( "a space" ) );
   QVERIFY( spy2.constLast().at( 1 ).toBool() );
 
   QgsProject::instance()->removeMapLayer( layer );

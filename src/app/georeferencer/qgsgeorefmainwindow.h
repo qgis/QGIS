@@ -46,7 +46,7 @@ class QgsGeorefDockWidget : public QgsDockWidget
 {
     Q_OBJECT
   public:
-    QgsGeorefDockWidget( const QString &title, QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
+    QgsGeorefDockWidget( const QString &title, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
 };
 
 class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPluginGuiBase
@@ -54,7 +54,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     Q_OBJECT
 
   public:
-    QgsGeoreferencerMainWindow( QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr );
+    QgsGeoreferencerMainWindow( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
     ~QgsGeoreferencerMainWindow() override;
 
   protected:
@@ -100,9 +100,6 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     // settings
     void showRasterPropertiesDialog();
     void showGeorefConfigDialog();
-
-    // plugin info
-    void showHelp();
 
     // comfort
     void jumpToGCP( uint theGCPIndex );
@@ -166,9 +163,12 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     // gdal script
     void showGDALScript( const QStringList &commands );
     QString generateGDALtranslateCommand( bool generateTFW = true );
-    /* Generate command-line for gdalwarp based on current GCPs and given parameters.
+
+    /**
+     * Generate command-line for gdalwarp based on current GCPs and given parameters.
      * For values in the range 1 to 3, the parameter "order" prescribes the degree of the interpolating polynomials to use,
-     * a value of -1 indicates that thin plate spline interpolation should be used for warping.*/
+     * a value of -1 indicates that thin plate spline interpolation should be used for warping.
+    */
     QString generateGDALwarpCommand( const QString &resampling, const QString &compress, bool useZeroForTrans, int order,
                                      double targetResX, double targetResY );
 
@@ -205,8 +205,6 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     QMenu *mPanelMenu = nullptr;
     QMenu *mToolbarMenu = nullptr;
 
-    QAction *mActionHelp = nullptr;
-
     QgsGCPListWidget *mGCPListWidget = nullptr;
     QLineEdit *mScaleEdit = nullptr;
     QLabel *mScaleLabel = nullptr;
@@ -240,6 +238,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     QgsMapTool *mToolZoomIn = nullptr;
     QgsMapTool *mToolZoomOut = nullptr;
     QgsMapTool *mToolPan = nullptr;
+    QgsMapTool *mPrevQgisMapTool = nullptr;
     QgsGeorefToolAddPoint *mToolAddPoint = nullptr;
     QgsGeorefToolDeletePoint *mToolDeletePoint = nullptr;
     QgsGeorefToolMovePoint *mToolMovePoint = nullptr;

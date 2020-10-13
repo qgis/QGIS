@@ -586,40 +586,63 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextLine( QString &buffer, bo
     // Identify position of \r , \n or \r\n
     // We should rather use mStream->readLine(), but it fails to detect \r
     // line endings.
-    int eolPos = mBuffer.indexOf( '\r', mPosInBuffer );
-    int nextPos = 0;
-    if ( eolPos >= 0 )
+    int eolPos = -1;
     {
-      nextPos = eolPos + 1;
-      // Check if there is a \n just afterwards
-      if ( eolPos + 1 < mBuffer.size() )
+      if ( mLineNumber == 0 )
       {
-        if ( mBuffer[eolPos + 1] == '\n' )
+        // For the first line we don't know yet the end of line character, so
+        // manually scan for the first we find
+        const QChar *charBuffer = mBuffer.constData();
+        const int bufferSize = mBuffer.size();
+        for ( int pos = mPosInBuffer; pos < bufferSize; ++pos )
         {
-          nextPos = eolPos + 2;
+          if ( charBuffer[pos] == '\r' || charBuffer[pos] == '\n' )
+          {
+            mFirstEOLChar = charBuffer[pos];
+            eolPos = pos;
+            break;
+          }
         }
       }
       else
       {
-        // If we are just at the end of the buffer, read an extra character
-        // from the stream
-        QString newChar = mStream->read( 1 );
-        mBuffer += newChar;
-        if ( newChar == '\n' )
+        // Once we know the end of line character, use optimized indexOf()
+        eolPos = mBuffer.indexOf( mFirstEOLChar, mPosInBuffer );
+      }
+    }
+    if ( eolPos >= 0 )
+    {
+      int nextPos = eolPos + 1;
+      if ( mBuffer[eolPos] == '\r' )
+      {
+        // Check if there is a \n just afterwards
+        if ( eolPos + 1 < mBuffer.size() )
         {
-          nextPos = eolPos + 2;
+          if ( mBuffer[eolPos + 1] == '\n' )
+          {
+            nextPos = eolPos + 2;
+          }
+        }
+        else
+        {
+          // If we are just at the end of the buffer, read an extra character
+          // from the stream
+          QString newChar = mStream->read( 1 );
+          mBuffer += newChar;
+          if ( newChar == '\n' )
+          {
+            nextPos = eolPos + 2;
+          }
         }
       }
+
+      // Extract the current line from the buffer
+      buffer = mBuffer.mid( mPosInBuffer, eolPos - mPosInBuffer );
+      // Update current position in buffer to be the one next to the end of
+      // line character(s)
+      mPosInBuffer = nextPos;
     }
     else
-    {
-      eolPos = mBuffer.indexOf( '\n', mPosInBuffer );
-      if ( eolPos >= 0 )
-      {
-        nextPos = eolPos + 1;
-      }
-    }
-    if ( eolPos < 0 )
     {
       if ( mPosInBuffer == 0 )
       {
@@ -639,14 +662,6 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextLine( QString &buffer, bo
         mPosInBuffer = 0;
         continue;
       }
-    }
-    else
-    {
-      // Extract the current line from the buffer
-      buffer = mBuffer.mid( mPosInBuffer, eolPos - mPosInBuffer );
-      // Update current position in buffer to be the one next to the end of
-      // line character(s)
-      mPosInBuffer = nextPos;
     }
     mLineNumber++;
     if ( skipBlank && buffer.isEmpty() ) continue;
@@ -764,11 +779,8 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QString &buffer,
 
   while ( true )
   {
-    QChar c = buffer[cp];
-    cp++;
-
     // If end of line then if escaped or buffered then try to get more...
-    if ( cp > cpmax )
+    if ( cp >= cpmax )
     {
       if ( quoted || escaped )
       {
@@ -786,6 +798,9 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QString &buffer,
       }
       break;
     }
+
+    QChar c = buffer[cp];
+    cp++;
 
     // If escaped, then just append the character
     if ( escaped )

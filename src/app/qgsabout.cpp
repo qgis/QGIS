@@ -233,7 +233,7 @@ void QgsAbout::setWhatsNew()
   if ( !QFile::exists( QgsApplication::pkgDataPath() + "/doc/NEWS.html" ) )
     return;
 
-  txtWhatsNew->setSource( "file:///" + QgsApplication::pkgDataPath() + "/doc/NEWS.html" );
+  txtWhatsNew->setSource( QString( "file:///" + QgsApplication::pkgDataPath() + "/doc/NEWS.html" ) );
 }
 
 void QgsAbout::setPluginInfo()
@@ -248,12 +248,12 @@ void QgsAbout::setPluginInfo()
   myString += "<b>" + tr( "Available Qt Database Plugins" ) + "</b><br>";
   myString += QLatin1String( "<ol>\n<li>\n" );
   QStringList myDbDriverList = QSqlDatabase::drivers();
-  myString += myDbDriverList.join( QStringLiteral( "</li>\n<li>" ) );
+  myString += myDbDriverList.join( QLatin1String( "</li>\n<li>" ) );
   myString += QLatin1String( "</li>\n</ol>\n" );
   //qt image plugins
   myString += "<b>" + tr( "Available Qt Image Plugins" ) + "</b><br>";
   myString += tr( "Qt Image Plugin Search Paths <br>" );
-  myString += QApplication::libraryPaths().join( QStringLiteral( "<br>" ) );
+  myString += QApplication::libraryPaths().join( QLatin1String( "<br>" ) );
   myString += QLatin1String( "<ol>\n<li>\n" );
   QList<QByteArray> myImageFormats = QImageReader::supportedImageFormats();
   QList<QByteArray>::const_iterator myIterator = myImageFormats.constBegin();

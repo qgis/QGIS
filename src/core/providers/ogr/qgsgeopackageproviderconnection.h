@@ -38,22 +38,25 @@ class QgsGeoPackageProviderConnection : public QgsAbstractDatabaseProviderConnec
     void dropVectorTable( const QString &schema, const QString &name ) const override;
     void dropRasterTable( const QString &schema, const QString &name ) const override;
     void renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const override;
-    QList<QList<QVariant>> executeSql( const QString &sql ) const override;
+    QList<QList<QVariant>> executeSql( const QString &sql, QgsFeedback *feedback = nullptr ) const override;
     void vacuum( const QString &schema, const QString &name ) const override;
     void createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options = QgsAbstractDatabaseProviderConnection::SpatialIndexOptions() ) const override;
     bool spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const override;
     void deleteSpatialIndex( const QString &schema, const QString &name, const QString &geometryColumn ) const override;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(),
-        const TableFlags &flags = nullptr ) const override;
+        const TableFlags &flags = TableFlags() ) const override;
     QIcon icon() const override;
+    QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
 
   private:
 
     void setDefaultCapabilities();
     //! Use GDAL to execute SQL
-    QList<QVariantList> executeGdalSqlPrivate( const QString &sql ) const;
+    QList<QVariantList> executeGdalSqlPrivate( const QString &sql, QgsFeedback *feedback = nullptr ) const;
 
 };
+
+
 
 ///@endcond
 #endif // QGSGEOPACKAGEPROVIDERCONNECTION_H

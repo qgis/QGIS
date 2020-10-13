@@ -139,6 +139,14 @@ Replaces the headers in the table with a specified list of :py:class:`QgsLayoutT
 
     virtual bool calculateMaxRowHeights();
 
+    virtual QgsTextFormat textFormatForHeader( int column ) const;
+
+    virtual QgsTextFormat textFormatForCell( int row, int column ) const;
+
+    virtual Qt::Alignment horizontalAlignmentForCell( int row, int column ) const;
+
+    virtual Qt::Alignment verticalAlignmentForCell( int row, int column ) const;
+
 
 };
 

@@ -53,11 +53,6 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
             if self.activateSetting:
                 ProcessingConfig.addSetting(Setting(self.name(), self.activateSetting,
                                                     self.tr('Activate'), True))
-            if isMac():
-                ProcessingConfig.addSetting(Setting(
-                    self.name(),
-                    Grass7Utils.GRASS_FOLDER, self.tr('GRASS7 folder'),
-                    Grass7Utils.grassPath(), valuetype=Setting.FOLDER))
             ProcessingConfig.addSetting(Setting(
                 self.name(),
                 Grass7Utils.GRASS_LOG_COMMANDS,
@@ -94,8 +89,6 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
     def unload(self):
         if self.activateSetting:
             ProcessingConfig.removeSetting(self.activateSetting)
-        if isMac():
-            ProcessingConfig.removeSetting(Grass7Utils.GRASS_FOLDER)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_COMMANDS)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_CONSOLE)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_HELP_PATH)
@@ -128,6 +121,12 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
         return algs
 
     def loadAlgorithms(self):
+        version = Grass7Utils.installedVersion(True)
+        if version is None:
+            QgsMessageLog.logMessage(self.tr('Problem with GRASS installation: GRASS was not found or is not correctly installed'),
+                                     self.tr('Processing'), Qgis.Critical)
+            return
+
         self.algs = self.createAlgsList()
         for a in self.algs:
             self.addAlgorithm(a)

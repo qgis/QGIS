@@ -83,21 +83,33 @@ Constructs a new vector tile layer
 
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
 
+
     virtual bool readXml( const QDomNode &layerNode, QgsReadWriteContext &context );
+
 
     virtual bool writeXml( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
-    virtual bool readSymbology( const QDomNode &node, QString &errorMessage,
-                                QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
 
-    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
-                                 StyleCategories categories = AllStyleCategories ) const;
+     virtual bool readSymbology( const QDomNode &node, QString &errorMessage,
+                        QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
+
+     virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
+                         StyleCategories categories = AllStyleCategories ) const;
 
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );
+
+    virtual QString loadDefaultStyle( bool &resultFlag /Out/ );
+
+
+
+    virtual QString loadDefaultMetadata( bool &resultFlag /Out/ );
+
 
     virtual QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const ${SIP_FINAL};
 
     virtual QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const ${SIP_FINAL};
+
+    virtual QString htmlMetadata() const;
 
 
 

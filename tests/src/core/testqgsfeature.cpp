@@ -32,6 +32,7 @@ class TestQgsFeature: public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void attributesTest(); //test QgsAttributes
+    void constructorTest(); //test default constructors
     void attributesToMap();
     void create();//test creating a feature
     void copy();// test cpy destruction (double delete)
@@ -118,6 +119,18 @@ void TestQgsFeature::attributesTest()
   //constructed with size
   QgsAttributes attr7( 5 );
   QCOMPARE( attr7.size(), 5 );
+}
+
+void TestQgsFeature::constructorTest()
+{
+  QgsFeature f;
+  QVERIFY( FID_IS_NULL( f.id() ) );
+  QgsFeature f2 { QgsFields() };
+  QVERIFY( FID_IS_NULL( f2.id() ) );
+  QgsFeature f3 { 1234 };
+  QVERIFY( ! FID_IS_NULL( f3.id() ) );
+  QgsFeature f4 { QgsFields(), 1234 };
+  QVERIFY( ! FID_IS_NULL( f4.id() ) );
 }
 
 void TestQgsFeature::attributesToMap()

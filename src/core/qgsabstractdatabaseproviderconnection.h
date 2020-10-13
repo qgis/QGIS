@@ -21,8 +21,11 @@
 #include "qgis_core.h"
 #include "qgsfields.h"
 #include "qgsexception.h"
+#include "qgsvectordataprovider.h"
 
 #include <QObject>
+
+class QgsFeedback;
 
 /**
  * The QgsAbstractDatabaseProviderConnection class provides common functionality
@@ -271,7 +274,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     };
 
     /**
-     * The Capability enum represent the operations supported by the connection
+     * The Capability enum represents the operations supported by the connection
      */
     enum Capability
     {
@@ -293,11 +296,29 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       CreateSpatialIndex = 1 << 16, //!< The connection can create spatial indices
       SpatialIndexExists = 1 << 17, //!< The connection can determine if a spatial index exists
       DeleteSpatialIndex = 1 << 18, //!< The connection can delete spatial indices for tables
+      DeleteField = 1 << 19,        //!< Can delete an existing field/column
+      DeleteFieldCascade = 1 << 20, //!< Can delete an existing field/column with cascade
+      AddField = 1 << 21,           //!< Can add a new field/column
     };
-
     Q_ENUM( Capability )
     Q_DECLARE_FLAGS( Capabilities, Capability )
     Q_FLAG( Capabilities )
+
+    /**
+     * The GeometryColumnCapability enum represents the geomery column features supported by the connection
+     * \since QGIS 3.16
+     */
+    enum GeometryColumnCapability
+    {
+      Z = 1 << 1,                    //! Supports Z dimension
+      M = 1 << 2,                    //! Supports M dimension
+      SinglePart = 1 << 3,           //! Multi and single part types are distinct types
+      Curves = 1 << 4                //! Supports curves
+    };
+
+    Q_ENUM( GeometryColumnCapability )
+    Q_DECLARE_FLAGS( GeometryColumnCapabilities, GeometryColumnCapability )
+    Q_FLAG( GeometryColumnCapabilities )
 
     /**
      * Creates a new connection with \a name by reading its configuration from the settings.
@@ -319,6 +340,12 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * Returns connection capabilities
      */
     Capabilities capabilities() const;
+
+    /**
+     * Returns connection geomerty column capabilities (Z, M, SinglePart, Curves)
+     * \since QGIS 3.16
+     */
+    virtual GeometryColumnCapabilities geometryColumnCapabilities();
 
     // Operations interface
 
@@ -393,6 +420,32 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual void dropSchema( const QString &name, bool force = false ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
+     * Deletes the field with the specified name.
+     * Raises a QgsProviderConnectionException if any errors are encountered.
+     * \param fieldName name of the field to be deleted
+     * \param schema name of the schema (schema is ignored if not supported by the backend).
+     * \param tableName name of the table
+     * \param force if TRUE, a DROP CASCADE will drop all related objects
+     * \note it is responsibility of the caller to handle open layers and registry entries.
+     * \throws QgsProviderConnectionException
+     * \since QGIS 3.16
+     */
+    virtual void deleteField( const QString &fieldName, const QString &schema, const QString &tableName, bool force = false ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Adds a field
+     * Raises a QgsProviderConnectionException if any errors are encountered.
+     * \param field specification of the new field
+     * \param schema name of the schema (schema is ignored if not supported by the backend).
+     * \param tableName name of the table
+     * \note it is responsibility of the caller to handle open layers and registry entries.
+     * \throws QgsProviderConnectionException
+     * \since QGIS 3.16
+     */
+    virtual void addField( const QgsField &field, const QString &schema, const QString &tableName ) const SIP_THROW( QgsProviderConnectionException );
+
+
+    /**
      * Renames a schema with the specified \a name.
      * Raises a QgsProviderConnectionException if any errors are encountered.
      * \note it is responsibility of the caller to handle open layers and registry entries.
@@ -401,11 +454,11 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual void renameSchema( const QString &name, const QString &newName ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Executes raw \a sql and returns the (possibly empty) list of results in a multi-dimensional array.
+     * Executes raw \a sql and returns the (possibly empty) list of results in a multi-dimensional array, optionally \a feedback can be provided.
      * Raises a QgsProviderConnectionException if any errors are encountered.
      * \throws QgsProviderConnectionException
      */
-    virtual QList<QList<QVariant>> executeSql( const QString &sql ) const SIP_THROW( QgsProviderConnectionException );
+    virtual QList<QList<QVariant>> executeSql( const QString &sql, QgsFeedback *feedback = nullptr ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Vacuum the database table with given \a schema and \a name (schema is ignored if not supported by the backend).
@@ -464,7 +517,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \throws QgsProviderConnectionException
      * \note Not available in Python bindings
      */
-    virtual QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(), const QgsAbstractDatabaseProviderConnection::TableFlags &flags = nullptr ) const SIP_SKIP;
+    virtual QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(), const QgsAbstractDatabaseProviderConnection::TableFlags &flags = QgsAbstractDatabaseProviderConnection::TableFlags() ) const SIP_SKIP;
 
     /**
      * Returns information on a \a table in the given \a schema.
@@ -473,7 +526,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \note Not available in Python bindings
      * \since QGIS 3.12
      */
-    virtual QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table ) const;
+    virtual QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Returns information on the tables in the given schema.
@@ -494,6 +547,29 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      */
     virtual QStringList schemas() const SIP_THROW( QgsProviderConnectionException );
 
+    /**
+     * Returns the fields of a \a table and \a schema.
+     * Raises a QgsProviderConnectionException if any errors are encountered.
+     * \note the default implementation creates a temporary vector layer, providers may
+     * choose to override this method for a greater efficiency.
+     * \since QGIS 3.16
+     * \throws QgsProviderConnectionException
+     */
+    virtual QgsFields fields( const QString &schema, const QString &table ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Returns a list of native types supported by the connection.
+     * \since QGIS 3.16
+     * \throws QgsProviderConnectionException
+     */
+    virtual QList< QgsVectorDataProvider::NativeType > nativeTypes() const SIP_THROW( QgsProviderConnectionException ) = 0;
+
+    /**
+     * Returns the provider key
+     * \since QGIS 3.16
+     */
+    QString providerKey() const;
+
   protected:
 
 ///@cond PRIVATE
@@ -505,7 +581,9 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     void checkCapability( Capability capability ) const;
 ///@endcond
 
-    Capabilities mCapabilities = nullptr SIP_SKIP;
+    Capabilities mCapabilities = Capabilities() SIP_SKIP;
+    GeometryColumnCapabilities mGeometryColumnCapabilities = GeometryColumnCapabilities() SIP_SKIP;
+    QString mProviderKey;
 
 };
 

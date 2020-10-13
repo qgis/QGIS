@@ -146,12 +146,11 @@ void QgsResidualPlotItem::paint( QPainter *painter, const QStyleOptionGraphicsIt
 
   if ( frameEnabled() )
   {
-    painter->save();
+    QgsScopedQPainterState painterState( painter );
     painter->setPen( pen() );
     painter->setBrush( Qt::NoBrush );
     painter->setRenderHint( QPainter::Antialiasing, true );
     painter->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
-    painter->restore();
   }
 }
 
@@ -178,7 +177,11 @@ double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint *p
   if ( residual.y() > 0 )
   {
     QLineF lowerFrameLine( 0, rect().height(), rect().width(), rect().height() );
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     if ( residualLine.intersect( lowerFrameLine, &intersectionPoint ) != QLineF::NoIntersection )
+#else
+    if ( residualLine.intersects( lowerFrameLine, &intersectionPoint ) != QLineF::NoIntersection )
+#endif
     {
       upDownDist = dist( QPointF( pixelXMM, pixelYMM ), intersectionPoint );
     }
@@ -186,7 +189,11 @@ double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint *p
   else if ( residual.y() < 0 )
   {
     QLineF upperFrameLine( 0, 0, mExtent.xMaximum(), 0 );
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     if ( residualLine.intersect( upperFrameLine, &intersectionPoint ) != QLineF::NoIntersection )
+#else
+    if ( residualLine.intersects( upperFrameLine, &intersectionPoint ) != QLineF::NoIntersection )
+#endif
     {
       upDownDist = dist( QPointF( pixelXMM, pixelYMM ), intersectionPoint );
     }
@@ -196,7 +203,11 @@ double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint *p
   if ( residual.x() > 0 )
   {
     QLineF rightFrameLine( rect().width(), 0, rect().width(), rect().height() );
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     if ( residualLine.intersect( rightFrameLine, &intersectionPoint ) != QLineF::NoIntersection )
+#else
+    if ( residualLine.intersects( rightFrameLine, &intersectionPoint ) != QLineF::NoIntersection )
+#endif
     {
       leftRightDist = dist( QPointF( pixelXMM, pixelYMM ), intersectionPoint );
     }
@@ -204,7 +215,11 @@ double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint *p
   else if ( residual.x() < 0 )
   {
     QLineF leftFrameLine( 0, 0, 0, rect().height() );
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     if ( residualLine.intersect( leftFrameLine, &intersectionPoint ) != QLineF::NoIntersection )
+#else
+    if ( residualLine.intersects( leftFrameLine, &intersectionPoint ) != QLineF::NoIntersection )
+#endif
     {
       leftRightDist = dist( QPointF( pixelXMM, pixelYMM ), intersectionPoint );
     }
@@ -252,7 +267,7 @@ void QgsResidualPlotItem::drawArrowHead( QPainter *p, const double x, const doub
   arrowHeadPoly << QPointF( middlePoint.x() + p1Rotated.x(), middlePoint.y() + p1Rotated.y() );
   arrowHeadPoly << QPointF( middlePoint.x() + p2Rotated.x(), middlePoint.y() + p2Rotated.y() );
 
-  p->save();
+  QgsScopedQPainterState painterState( p );
 
   QPen arrowPen = p->pen();
   arrowPen.setJoinStyle( Qt::RoundJoin );
@@ -262,8 +277,6 @@ void QgsResidualPlotItem::drawArrowHead( QPainter *p, const double x, const doub
   p->setBrush( arrowBrush );
   arrowBrush.setStyle( Qt::SolidPattern );
   p->drawPolygon( arrowHeadPoly );
-
-  p->restore();
 }
 
 double QgsResidualPlotItem::angle( QPointF p1, QPointF p2 )

@@ -204,6 +204,15 @@ struct QgsWmsDimensionProperty
 
     return QgsDateTimeRange();
   }
+
+  bool operator== ( const QgsWmsDimensionProperty &other ) const
+  {
+    return name == other.name && units == other.units &&
+           unitSymbol == other.unitSymbol && defaultValue == other.defaultValue &&
+           extent == other.extent && multipleValues == other.multipleValues &&
+           nearestValue == other.nearestValue && current == other.current;
+  }
+
 };
 
 //! Logo URL Property structure
@@ -347,6 +356,8 @@ struct QgsWmsLayerProperty
       return false;
     if ( !( abstract == layerProperty.abstract ) )
       return false;
+    if ( !( dimensions == layerProperty.dimensions ) )
+      return false;
 
     return true;
   }
@@ -366,6 +377,24 @@ struct QgsWmsLayerProperty
     }
 
     return false;
+  }
+
+  /**
+   * Attempts to return a preferred CRS from the list of available CRS definitions.
+   *
+   * Prioritizes the first listed CRS, unless it's a block listed value.
+   */
+  QString preferredAvailableCrs() const
+  {
+    static QSet< QString > sSkipList { QStringLiteral( "EPSG:900913" ) };
+    for ( const QString &candidate : crs )
+    {
+      if ( sSkipList.contains( candidate ) )
+        continue;
+
+      return candidate;
+    }
+    return crs.value( 0 );
   }
 };
 
@@ -740,7 +769,7 @@ struct QgsWmsAuthorization
 
     if ( !mReferer.isEmpty() )
     {
-      request.setRawHeader( "Referer", QStringLiteral( "%1" ).arg( mReferer ).toLatin1() );
+      request.setRawHeader( "Referer", mReferer.toLatin1() );
     }
     return true;
   }
@@ -933,7 +962,7 @@ class QgsWmsCapabilities
     /**
      * Constructs a QgsWmsCapabilities object with the given \a coordinateTransformContext
      */
-    QgsWmsCapabilities( const QgsCoordinateTransformContext &coordinateTransformContext = QgsCoordinateTransformContext() );
+    QgsWmsCapabilities( const QgsCoordinateTransformContext &coordinateTransformContext = QgsCoordinateTransformContext(), const QString &baseUrl = QString() );
 
     bool isValid() const { return mValid; }
 
@@ -1072,6 +1101,7 @@ class QgsWmsCapabilities
   private:
 
     QgsCoordinateTransformContext mCoordinateTransformContext;
+    QString mBaseUrl;
 
     friend class QgsWmsProvider;
     friend class TestQgsWmsCapabilities;

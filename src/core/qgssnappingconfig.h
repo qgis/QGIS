@@ -336,14 +336,14 @@ class CORE_EXPORT QgsSnappingConfig
     void setIntersectionSnapping( bool enabled );
 
     /**
-     * Returns if self snapping (snapping to the currently digitised feature) is enabled
+     * Returns if self snapping (snapping to the currently digitized feature) is enabled
      *
      * \since QGIS 3.14
      */
     bool selfSnapping() const;
 
     /**
-     * Sets if self snapping (snapping to the currently digitised feature) is enabled
+     * Sets if self snapping (snapping to the currently digitized feature) is enabled
      *
      * \since QGIS 3.14
      */
@@ -400,6 +400,13 @@ class CORE_EXPORT QgsSnappingConfig
 
     //! Sets individual layer snappings settings (applied if mode is AdvancedConfiguration)
     void setIndividualLayerSettings( QgsVectorLayer *vl, const QgsSnappingConfig::IndividualLayerSettings &individualLayerSettings );
+
+    /**
+     * Removes all individual layer snapping settings
+     *
+     * \since QGIS 3.16
+     */
+    void clearIndividualLayerSettings();
 
     /**
      * Compare this configuration to other.

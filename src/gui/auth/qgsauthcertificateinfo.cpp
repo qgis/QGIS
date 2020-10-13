@@ -595,7 +595,7 @@ void QgsAuthCertInfo::populateInfoDetailsSection()
     altslist << dns + dnss.join( '\n' + dns );
   }
   addFieldItem( mGrpSubj, tr( "Alternate names" ),
-                altslist.join( QStringLiteral( "\n" ) ),
+                altslist.join( QLatin1Char( '\n' ) ),
                 TextEdit );
 
   // Issuer Info
@@ -677,21 +677,21 @@ void QgsAuthCertInfo::populateInfoDetailsSection()
   if ( !crllocs.isEmpty() )
   {
     addFieldItem( mGrpCert, tr( "CRL locations" ),
-                  crllocs.join( QStringLiteral( "\n" ) ),
+                  crllocs.join( QLatin1Char( '\n' ) ),
                   TextEdit );
   }
   QStringList issulocs( mCurrentACert.issuerLocations() );
   if ( !issulocs.isEmpty() )
   {
     addFieldItem( mGrpCert, tr( "Issuer locations" ),
-                  issulocs.join( QStringLiteral( "\n" ) ),
+                  issulocs.join( QLatin1Char( '\n' ) ),
                   TextEdit );
   }
   QStringList ocsplocs( mCurrentACert.ocspLocations() );
   if ( !ocsplocs.isEmpty() )
   {
     addFieldItem( mGrpCert, tr( "OCSP locations" ),
-                  ocsplocs.join( QStringLiteral( "\n" ) ),
+                  ocsplocs.join( QLatin1Char( '\n' ) ),
                   TextEdit );
   }
 
@@ -764,7 +764,7 @@ void QgsAuthCertInfo::populateInfoDetailsSection()
     if ( !usage.isEmpty() )
     {
       addFieldItem( mGrpPkey, tr( "Key usage" ),
-                    usage.join( QStringLiteral( ", " ) ),
+                    usage.join( QLatin1String( ", " ) ),
                     LineEdit );
     }
   }
@@ -774,7 +774,7 @@ void QgsAuthCertInfo::populateInfoDetailsSection()
   basicconst << tr( "Certificate Authority: %1" ).arg( mCurrentACert.isCA() ? tr( "Yes" ) : tr( "No" ) )
              << tr( "Chain Path Limit: %1" ).arg( mCurrentACert.pathLimit() );
   addFieldItem( mGrpExts, tr( "Basic constraints" ),
-                basicconst.join( QStringLiteral( "\n" ) ),
+                basicconst.join( QLatin1Char( '\n' ) ),
                 TextEdit );
 
   QStringList keyusage;
@@ -795,13 +795,13 @@ void QgsAuthCertInfo::populateInfoDetailsSection()
   if ( !keyusage.isEmpty() )
   {
     addFieldItem( mGrpExts, tr( "Key usage" ),
-                  keyusage.join( QStringLiteral( "\n" ) ),
+                  keyusage.join( QLatin1Char( '\n' ) ),
                   TextEdit );
   }
   if ( !extkeyusage.isEmpty() )
   {
     addFieldItem( mGrpExts, tr( "Extended key usage" ),
-                  extkeyusage.join( QStringLiteral( "\n" ) ),
+                  extkeyusage.join( QLatin1Char( '\n' ) ),
                   TextEdit );
   }
 
@@ -917,7 +917,7 @@ QgsAuthCertInfoDialog::QgsAuthCertInfoDialog( const QSslCertificate &cert,
 {
   setWindowTitle( tr( "Certificate Information" ) );
   QVBoxLayout *layout = new QVBoxLayout( this );
-  layout->setMargin( 6 );
+  layout->setContentsMargins( 6, 6, 6, 6 );
 
   mCertInfoWdgt = new QgsAuthCertInfo( cert, manageCertTrust, this, connectionCAs );
   layout->addWidget( mCertInfoWdgt );

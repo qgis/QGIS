@@ -161,7 +161,7 @@ bool QgsVectorLayerCache::featureAtId( QgsFeatureId featureId, QgsFeature &featu
   else if ( mLayer->getFeatures( QgsFeatureRequest()
                                  .setFilterFid( featureId )
                                  .setSubsetOfAttributes( mCachedAttributes )
-                                 .setFlags( !mCacheGeometry ? QgsFeatureRequest::NoGeometry : QgsFeatureRequest::Flags( nullptr ) ) )
+                                 .setFlags( !mCacheGeometry ? QgsFeatureRequest::NoGeometry : QgsFeatureRequest::Flags() ) )
             .nextFeature( feature ) )
   {
     cacheFeature( feature );

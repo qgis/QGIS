@@ -36,9 +36,9 @@ QgsWFSSharedData::~QgsWFSSharedData()
   cleanup();
 }
 
-std::unique_ptr<QgsFeatureDownloaderImpl> QgsWFSSharedData::newFeatureDownloaderImpl( QgsFeatureDownloader *downloader )
+std::unique_ptr<QgsFeatureDownloaderImpl> QgsWFSSharedData::newFeatureDownloaderImpl( QgsFeatureDownloader *downloader, bool requestMadeFromMainThread )
 {
-  return std::unique_ptr<QgsFeatureDownloaderImpl>( new QgsWFSFeatureDownloaderImpl( this, downloader ) );
+  return std::unique_ptr<QgsFeatureDownloaderImpl>( new QgsWFSFeatureDownloaderImpl( this, downloader, requestMadeFromMainThread ) );
 }
 
 bool QgsWFSSharedData::isRestrictedToRequestBBOX() const
@@ -115,7 +115,7 @@ bool QgsWFSSharedData::computeFilter( QString &errorMsg )
     for ( QgsSQLStatement::NodeColumnSorted *columnSorted : constOrderBy )
     {
       if ( !mSortBy.isEmpty() )
-        mSortBy += QLatin1String( "," );
+        mSortBy += QLatin1Char( ',' );
       mSortBy += columnSorted->column()->name();
       if ( !columnSorted->ascending() )
       {

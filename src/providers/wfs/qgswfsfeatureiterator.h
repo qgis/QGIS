@@ -78,7 +78,7 @@ class QgsWFSFeatureDownloaderImpl final: public QgsWfsRequest, public QgsFeature
     void updateProgress( int totalFeatureCount );
 
   public:
-    QgsWFSFeatureDownloaderImpl( QgsWFSSharedData *shared, QgsFeatureDownloader *downloader );
+    QgsWFSFeatureDownloaderImpl( QgsWFSSharedData *shared, QgsFeatureDownloader *downloader, bool requestMadeFromMainThread );
     ~QgsWFSFeatureDownloaderImpl() override;
 
     void run( bool serializeFeatures, int maxFeatures ) override;

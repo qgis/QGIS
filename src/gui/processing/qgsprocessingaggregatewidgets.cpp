@@ -34,7 +34,7 @@
 QgsAggregateMappingModel::QgsAggregateMappingModel( const QgsFields &sourceFields,
     QObject *parent )
   : QAbstractTableModel( parent )
-  , mExpressionContextGenerator( new QgsFieldMappingModel::ExpressionContextGenerator( &sourceFields ) )
+  , mExpressionContextGenerator( new QgsFieldMappingModel::ExpressionContextGenerator( sourceFields ) )
 {
   setSourceFields( sourceFields );
 }
@@ -257,6 +257,9 @@ bool QgsAggregateMappingModel::moveUpOrDown( const QModelIndex &index, bool up )
 void QgsAggregateMappingModel::setSourceFields( const QgsFields &sourceFields )
 {
   mSourceFields = sourceFields;
+  if ( mExpressionContextGenerator )
+    mExpressionContextGenerator->setSourceFields( mSourceFields );
+
   QStringList usedFields;
   beginResetModel();
   mMapping.clear();
@@ -356,7 +359,7 @@ QgsAggregateMappingWidget::QgsAggregateMappingWidget( QWidget *parent,
 
   mModel = new QgsAggregateMappingModel( sourceFields, this );
   mTableView->setModel( mModel );
-  mTableView->setItemDelegateForColumn( static_cast<int>( QgsAggregateMappingModel::ColumnDataIndex::SourceExpression ), new QgsFieldMappingWidget::ExpressionDelegate( mTableView ) );
+  mTableView->setItemDelegateForColumn( static_cast<int>( QgsAggregateMappingModel::ColumnDataIndex::SourceExpression ), new QgsFieldMappingWidget::ExpressionDelegate( this ) );
   mTableView->setItemDelegateForColumn( static_cast<int>( QgsAggregateMappingModel::ColumnDataIndex::Aggregate ), new QgsAggregateMappingWidget::AggregateDelegate( mTableView ) );
   mTableView->setItemDelegateForColumn( static_cast<int>( QgsAggregateMappingModel::ColumnDataIndex::DestinationType ), new QgsFieldMappingWidget::TypeDelegate( mTableView ) );
   updateColumns();
@@ -392,6 +395,16 @@ QItemSelectionModel *QgsAggregateMappingWidget::selectionModel()
 void QgsAggregateMappingWidget::setSourceFields( const QgsFields &sourceFields )
 {
   model()->setSourceFields( sourceFields );
+}
+
+void QgsAggregateMappingWidget::setSourceLayer( QgsVectorLayer *layer )
+{
+  mSourceLayer = layer;
+}
+
+QgsVectorLayer *QgsAggregateMappingWidget::sourceLayer()
+{
+  return mSourceLayer;
 }
 
 void QgsAggregateMappingWidget::scrollTo( const QModelIndex &index ) const

@@ -52,7 +52,7 @@ class GUI_EXPORT QgsLayoutAddPagesDialog : public QDialog, private Ui::QgsLayout
     /**
      * Constructor for QgsLayoutAddPagesDialog.
      */
-    QgsLayoutAddPagesDialog( QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
+    QgsLayoutAddPagesDialog( QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
 
     /**
      * Sets the \a layout associated with the dialog. This allows the dialog

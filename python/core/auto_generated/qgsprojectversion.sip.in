@@ -9,7 +9,6 @@
 
 
 
-
 class QgsProjectVersion
 {
 %Docstring
@@ -28,12 +27,35 @@ of QGIS is greater than the one used to create a project file.
 Creates a new NULL version
 %End
 
-    QgsProjectVersion( int major, int minor, int sub, const QString &name = "" );
+    QgsProjectVersion( int major, int minor, int sub, const QString &name = QString() );
+%Docstring
+Constructor for QgsProjectVersion, with the specified ``major``, ``minor`` and ``sub`` version numbers.
+%End
+
     QgsProjectVersion( const QString &string );
-    int majorVersion();
-    int minorVersion();
-    int subVersion();
-    QString text();
+%Docstring
+Constructor for QgsProjectVersion, which parses the version number from a ``string``.
+%End
+
+    int majorVersion() const;
+%Docstring
+Returns the major version number.
+%End
+
+    int minorVersion() const;
+%Docstring
+Returns the minor version number.
+%End
+
+    int subVersion() const;
+%Docstring
+Returns the sub version number.
+%End
+
+    QString text() const;
+%Docstring
+Returns a string representation of the version.
+%End
 
     bool isNull() const;
 %Docstring
@@ -49,7 +71,6 @@ Returns ``True`` if this is a NULL project version.
     bool operator>( const QgsProjectVersion &other ) const;
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

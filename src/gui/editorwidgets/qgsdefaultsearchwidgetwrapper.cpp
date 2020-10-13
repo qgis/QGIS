@@ -255,7 +255,6 @@ void QgsDefaultSearchWidgetWrapper::initWidget( QWidget *widget )
 {
   mContainer = widget;
   mContainer->setLayout( new QHBoxLayout() );
-  mContainer->layout()->setMargin( 0 );
   mContainer->layout()->setContentsMargins( 0, 0, 0, 0 );
   QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
 

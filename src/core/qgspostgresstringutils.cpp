@@ -136,8 +136,8 @@ QString QgsPostgresStringUtils::buildArray( const QVariantList &list )
         }
         else
         {
-          newS.replace( '\\', QStringLiteral( R"(\\)" ) );
-          newS.replace( '\"', QStringLiteral( R"(\")" ) );
+          newS.replace( '\\', QLatin1String( R"(\\)" ) );
+          newS.replace( '\"', QLatin1String( R"(\")" ) );
           sl.push_back( "\"" + newS + "\"" );
         }
         break;

@@ -267,6 +267,20 @@ bool QgsProcessingAlgorithm::validateInputCrs( const QVariantMap &parameters, Qg
         crs = pointCrs;
       }
     }
+    else if ( def->type() == QgsProcessingParameterGeometry::typeName() )
+    {
+      QgsCoordinateReferenceSystem geomCrs = QgsProcessingParameters::parameterAsGeometryCrs( def, parameters, context );
+      if ( foundCrs && geomCrs.isValid() && crs != geomCrs )
+      {
+        return false;
+      }
+      else if ( !foundCrs && geomCrs.isValid() )
+      {
+        foundCrs = true;
+        crs = geomCrs;
+      }
+    }
+
   }
   return true;
 }
@@ -420,7 +434,7 @@ bool QgsProcessingAlgorithm::hasHtmlOutputs() const
 {
   for ( const QgsProcessingOutputDefinition *def : mOutputs )
   {
-    if ( def->type() == QStringLiteral( "outputHtml" ) )
+    if ( def->type() == QLatin1String( "outputHtml" ) )
       return true;
   }
   return false;
@@ -431,7 +445,7 @@ QgsProcessingAlgorithm::VectorProperties QgsProcessingAlgorithm::sinkProperties(
   return VectorProperties();
 }
 
-QVariantMap QgsProcessingAlgorithm::run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok, const QVariantMap &configuration ) const
+QVariantMap QgsProcessingAlgorithm::run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok, const QVariantMap &configuration, bool catchExceptions ) const
 {
   std::unique_ptr< QgsProcessingAlgorithm > alg( create( configuration ) );
   if ( ok )
@@ -448,6 +462,9 @@ QVariantMap QgsProcessingAlgorithm::run( const QVariantMap &parameters, QgsProce
   }
   catch ( QgsProcessingException &e )
   {
+    if ( !catchExceptions )
+      throw e;
+
     QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), Qgis::Critical );
     feedback->reportError( e.what() );
     return QVariantMap();
@@ -610,12 +627,12 @@ bool QgsProcessingAlgorithm::parameterAsBoolean( const QVariantMap &parameters, 
   return QgsProcessingParameters::parameterAsBool( parameterDefinition( name ), parameters, context );
 }
 
-QgsFeatureSink *QgsProcessingAlgorithm::parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QString &destinationIdentifier, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, QgsFeatureSink::SinkFlags sinkFlags ) const
+QgsFeatureSink *QgsProcessingAlgorithm::parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QString &destinationIdentifier, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, QgsFeatureSink::SinkFlags sinkFlags, const QVariantMap &createOptions, const QStringList &datasourceOptions, const QStringList &layerOptions ) const
 {
   if ( !parameterDefinition( name ) )
     throw QgsProcessingException( QObject::tr( "No parameter definition for the sink '%1'" ).arg( name ) );
 
-  return QgsProcessingParameters::parameterAsSink( parameterDefinition( name ), parameters, fields, geometryType, crs, context, destinationIdentifier, sinkFlags );
+  return QgsProcessingParameters::parameterAsSink( parameterDefinition( name ), parameters, fields, geometryType, crs, context, destinationIdentifier, sinkFlags, createOptions, datasourceOptions, layerOptions );
 }
 
 QgsProcessingFeatureSource *QgsProcessingAlgorithm::parameterAsSource( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
@@ -691,6 +708,16 @@ QgsPointXY QgsProcessingAlgorithm::parameterAsPoint( const QVariantMap &paramete
 QgsCoordinateReferenceSystem QgsProcessingAlgorithm::parameterAsPointCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
 {
   return QgsProcessingParameters::parameterAsPointCrs( parameterDefinition( name ), parameters, context );
+}
+
+QgsGeometry QgsProcessingAlgorithm::parameterAsGeometry( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, const QgsCoordinateReferenceSystem &crs ) const
+{
+  return QgsProcessingParameters::parameterAsGeometry( parameterDefinition( name ), parameters, context, crs );
+}
+
+QgsCoordinateReferenceSystem QgsProcessingAlgorithm::parameterAsGeometryCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
+{
+  return QgsProcessingParameters::parameterAsGeometryCrs( parameterDefinition( name ), parameters, context );
 }
 
 QString QgsProcessingAlgorithm::parameterAsFile( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
@@ -914,7 +941,7 @@ QgsProcessingFeatureSource::Flag QgsProcessingFeatureBasedAlgorithm::sourceFlags
 
 QgsFeatureSink::SinkFlags QgsProcessingFeatureBasedAlgorithm::sinkFlags() const
 {
-  return nullptr;
+  return QgsFeatureSink::SinkFlags();
 }
 
 QgsWkbTypes::Type QgsProcessingFeatureBasedAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
@@ -1044,7 +1071,7 @@ void QgsProcessingFeatureBasedAlgorithm::prepareSource( const QVariantMap &param
 QgsProcessingAlgorithm::VectorProperties QgsProcessingFeatureBasedAlgorithm::sinkProperties( const QString &sink, const QVariantMap &parameters, QgsProcessingContext &context, const QMap<QString, QgsProcessingAlgorithm::VectorProperties> &sourceProperties ) const
 {
   QgsProcessingAlgorithm::VectorProperties result;
-  if ( sink == QStringLiteral( "OUTPUT" ) )
+  if ( sink == QLatin1String( "OUTPUT" ) )
   {
     if ( sourceProperties.value( QStringLiteral( "INPUT" ) ).availability == QgsProcessingAlgorithm::Available )
     {

@@ -374,7 +374,7 @@ Updates model when node's name has changed
 emit :py:func:`~QgsLayerTreeModel.dataChanged` for layer tree node items
 %End
 
-    void refreshScaleBasedLayers( const QModelIndex &index = QModelIndex() );
+    void refreshScaleBasedLayers( const QModelIndex &index = QModelIndex(), double previousScale = 0.0 );
 %Docstring
 Updates layer data for scale dependent layers, should be called when map scale changes.
 Emits :py:func:`~QgsLayerTreeModel.dataChanged` for all scale dependent layers.
@@ -404,6 +404,7 @@ Filter nodes from QgsMapLayerLegend according to the current filtering rules
     void legendInvalidateMapBasedData();
 
   protected:
+
 
 
 

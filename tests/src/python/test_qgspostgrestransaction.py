@@ -104,6 +104,27 @@ class TestQgsPostgresTransaction(unittest.TestCase):
         self.assertIsNone(noTg)
         self.rollbackTransaction()
 
+    def test_transactionGroupEditingStatus(self):
+        """Not particularly related to PG but it fits here nicely: test GH #39282"""
+
+        project = QgsProject()
+        project.setAutoTransaction(True)
+
+        vl_b = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."books" sql=', 'books',
+                              'postgres')
+        vl_a = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."authors" sql=',
+                              'authors', 'postgres')
+
+        project.addMapLayers([vl_a, vl_b])
+
+        vl_a.startEditing()
+        self.assertTrue(vl_a.isEditable())
+        self.assertTrue(vl_b.isEditable())
+
+        self.assertTrue(vl_a.commitChanges(False))
+        self.assertTrue(vl_a.isEditable())
+        self.assertTrue(vl_b.isEditable())
+
 
 if __name__ == '__main__':
     unittest.main()

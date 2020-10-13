@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmkmeansclustering.h"
+#include <unordered_map>
 
 ///@cond PRIVATE
 
@@ -52,8 +53,16 @@ void QgsKMeansClusteringAlgorithm::initAlgorithm( const QVariantMap & )
                 QObject::tr( "Input layer" ), QList< int >() << QgsProcessing::TypeVectorAnyGeometry ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "CLUSTERS" ), QObject::tr( "Number of clusters" ),
                 QgsProcessingParameterNumber::Integer, 5, false, 1 ) );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "FIELD_NAME" ),
-                QObject::tr( "Cluster field name" ), QStringLiteral( "CLUSTER_ID" ) ) );
+
+  auto fieldNameParam = qgis::make_unique<QgsProcessingParameterString>( QStringLiteral( "FIELD_NAME" ),
+                        QObject::tr( "Cluster field name" ), QStringLiteral( "CLUSTER_ID" ) );
+  fieldNameParam->setFlags( fieldNameParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  addParameter( fieldNameParam.release() );
+  auto sizeFieldNameParam = qgis::make_unique<QgsProcessingParameterString>( QStringLiteral( "SIZE_FIELD_NAME" ),
+                            QObject::tr( "Cluster size field name" ), QStringLiteral( "CLUSTER_SIZE" ) );
+  sizeFieldNameParam->setFlags( sizeFieldNameParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  addParameter( sizeFieldNameParam.release() );
+
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Clusters" ), QgsProcessing::TypeVectorAnyGeometry ) );
 }
 
@@ -77,9 +86,11 @@ QVariantMap QgsKMeansClusteringAlgorithm::processAlgorithm( const QVariantMap &p
   int k = parameterAsInt( parameters, QStringLiteral( "CLUSTERS" ), context );
 
   QgsFields outputFields = source->fields();
-  const QString clusterFieldName = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
   QgsFields newFields;
+  const QString clusterFieldName = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
   newFields.append( QgsField( clusterFieldName, QVariant::Int ) );
+  const QString clusterSizeFieldName = parameterAsString( parameters, QStringLiteral( "SIZE_FIELD_NAME" ), context );
+  newFields.append( QgsField( clusterSizeFieldName, QVariant::Int ) );
   outputFields = QgsProcessingUtils::combineFields( outputFields, newFields );
 
   QString dest;
@@ -92,6 +103,7 @@ QVariantMap QgsKMeansClusteringAlgorithm::processAlgorithm( const QVariantMap &p
   double step = source->featureCount() > 0 ? 50.0 / source->featureCount() : 1;
   int i = 0;
   int n = 0;
+  int featureWithGeometryCount = 0;
   QgsFeature feat;
 
   std::vector< Feature > clusterFeatures;
@@ -108,6 +120,7 @@ QVariantMap QgsKMeansClusteringAlgorithm::processAlgorithm( const QVariantMap &p
     feedback->setProgress( i * step );
     if ( !feat.hasGeometry() )
       continue;
+    featureWithGeometryCount++;
 
     QgsPointXY point;
     if ( QgsWkbTypes::flatType( feat.geometry().wkbType() ) == QgsWkbTypes::Point )
@@ -123,7 +136,7 @@ QVariantMap QgsKMeansClusteringAlgorithm::processAlgorithm( const QVariantMap &p
 
     n++;
 
-    idToObj.insert( feat.id(), clusterFeatures.size() );
+    idToObj[ feat.id() ] = clusterFeatures.size();
     clusterFeatures.emplace_back( Feature( point ) );
   }
 
@@ -144,6 +157,11 @@ QVariantMap QgsKMeansClusteringAlgorithm::processAlgorithm( const QVariantMap &p
     calculateKMeans( clusterFeatures, centers, k, feedback );
   }
 
+  // cluster size
+  std::unordered_map< int, int> clusterSize;
+  for ( int obj : idToObj )
+    clusterSize[ clusterFeatures[ obj ].cluster ]++;
+
   features = source->getFeatures();
   i = 0;
   while ( features.nextFeature( feat ) )
@@ -156,21 +174,19 @@ QVariantMap QgsKMeansClusteringAlgorithm::processAlgorithm( const QVariantMap &p
 
     feedback->setProgress( 50 + i * step );
     QgsAttributes attr = feat.attributes();
-    if ( !feat.hasGeometry() )
+    auto obj = idToObj.find( feat.id() );
+    if ( !feat.hasGeometry() || obj == idToObj.end() )
     {
-      attr << QVariant();
+      attr << QVariant() << QVariant();
     }
     else if ( k <= 1 )
     {
-      attr << 0;
-    }
-    else if ( !idToObj.contains( feat.id() ) )
-    {
-      attr << QVariant();
+      attr << 0 << featureWithGeometryCount;
     }
     else
     {
-      attr << clusterFeatures[ idToObj.value( feat.id() ) ].cluster;
+      int cluster = clusterFeatures[ *obj ].cluster;
+      attr << cluster << clusterSize[ cluster ];
     }
     feat.setAttributes( attr );
     sink->addFeature( feat, QgsFeatureSink::FastInsert );

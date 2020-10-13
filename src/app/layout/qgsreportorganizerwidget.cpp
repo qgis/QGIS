@@ -49,7 +49,7 @@ QgsReportOrganizerWidget::QgsReportOrganizerWidget( QWidget *parent, QgsLayoutDe
 #endif
 
   QVBoxLayout *vLayout = new QVBoxLayout();
-  vLayout->setMargin( 0 );
+  vLayout->setContentsMargins( 0, 0, 0, 0 );
   vLayout->setSpacing( 0 );
   mSettingsFrame->setLayout( vLayout );
 

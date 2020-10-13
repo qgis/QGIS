@@ -257,10 +257,25 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(components["path"], filename)
         self.assertEqual(components["layerName"], 'test')
 
+        uri = '{}|layerName=test'.format(filename)
+        components = registry.decodeUri('ogr', uri)
+        self.assertEqual(components["path"], filename)
+        self.assertEqual(components["layerName"], 'test')
+
         uri = '{}|layerid=0'.format(filename)
         components = registry.decodeUri('ogr', uri)
         self.assertEqual(components["path"], filename)
         self.assertEqual(components["layerId"], 0)
+
+        uri = '{}|layerId=0'.format(filename)
+        components = registry.decodeUri('ogr', uri)
+        self.assertEqual(components["path"], filename)
+        self.assertEqual(components["layerId"], 0)
+
+        uri = '{}|geometryType=POINT'.format(filename)
+        components = registry.decodeUri('ogr', uri)
+        self.assertEqual(components["path"], filename)
+        self.assertEqual(components["geometryType"], 'POINT')
 
     def testEncodeUri(self):
 
@@ -320,7 +335,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         vl.dataProvider().addFeatures([f])
         got = [feat for feat in vl.getFeatures()][0]
         got_geom = got.geometry()
-        reference = QgsGeometry.fromWkt('CurvePolygon (((0 0, 0 1, 1 1, 0 0)))')
+        reference = QgsGeometry.fromWkt('CurvePolygon ((0 0, 0 1, 1 1, 0 0))')
         # The geometries must be binarily identical
         self.assertEqual(got_geom.asWkb(), reference.asWkb(),
                          'Expected {}, got {}'.format(reference.asWkt(), got_geom.asWkt()))
@@ -389,7 +404,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
     def testBug15351_commit_closeIter_closeProvider(self):
         self.internalTestBug15351('commit_closeIter_closeProvider')
 
-    @unittest.skip(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 1, 2))
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 1, 2), 'GDAL 2.1.2 required')
     def testGeopackageExtentUpdate(self):
         ''' test https://github.com/qgis/QGIS/issues/23209 '''
         tmpfile = os.path.join(self.basetestpath, 'testGeopackageExtentUpdate.gpkg')
@@ -1207,7 +1222,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
 
         testPath = tmpfile + '|layername=bug_17795'
         subSetString = '"name" = \'int\''
-        subSet = '|layername=bug_17795|subset=%s' % subSetString
+        subSet = '|subset=%s' % subSetString
 
         # unfiltered
         vl = QgsVectorLayer(testPath, 'test', 'ogr')
@@ -1728,7 +1743,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(f.id(), 123)
 
     def testTransactionGroup(self):
-        """Issue https://github.com/qgis/QGIS/issues/36525"""
+        """Test issue GH #36525"""
 
         project = QgsProject()
         project.setAutoTransaction(True)
@@ -1767,6 +1782,74 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertTrue(vl2_2.isEditable())
         self.assertFalse(vl1_1.isEditable())
         self.assertFalse(vl1_2.isEditable())
+
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 3, 0), "GDAL 2.3 required")
+    def testTransactionGroupIterator(self):
+        """Test issue GH #39178: the bug is that this test hangs
+        forever in an endless loop"""
+
+        project = QgsProject()
+        project.setAutoTransaction(True)
+        tmpfile = os.path.join(
+            self.basetestpath, 'tempGeoPackageTransactionGroupIterator.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint)
+        lyr.CreateField(ogr.FieldDefn('str_field', ogr.OFTString))
+
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT (1 1)'))
+        f.SetField('str_field', 'one')
+        lyr.CreateFeature(f)
+
+        del lyr
+        del ds
+
+        vl = QgsVectorLayer(tmpfile + '|layername=test', 'test', 'ogr')
+        project.addMapLayers([vl])
+
+        self.assertTrue(vl.startEditing())
+
+        for f in vl.getFeatures():
+            self.assertTrue(vl.changeAttributeValue(1, 1, 'new value'))
+
+        # Test that QGIS sees the new changes
+        self.assertEqual(next(vl.getFeatures()).attribute(1), 'new value')
+
+    def testTransactionGroupCrash(self):
+        """Test issue GH #39265 segfault"""
+
+        project = QgsProject()
+        project.setAutoTransaction(True)
+        tmpfile = os.path.join(
+            self.basetestpath, 'tempGeoPackageTransactionCrash.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint)
+        lyr.CreateField(ogr.FieldDefn('str_field', ogr.OFTString))
+
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT (1 1)'))
+        f.SetField('str_field', 'one')
+        lyr.CreateFeature(f)
+
+        del lyr
+        del ds
+
+        vl = QgsVectorLayer(tmpfile + '|layername=test', 'test', 'ogr')
+
+        project.addMapLayers([vl])
+
+        feature = next(vl.getFeatures())
+        feature.setAttributes([None, 'two'])
+
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.addFeature(feature))
+
+        # Save without leaving editing
+        self.assertTrue(vl.commitChanges(False))
+
+        # Now add another one
+        feature.setAttributes([None, 'three'])
+        self.assertTrue(vl.addFeature(feature))
 
 
 if __name__ == '__main__':

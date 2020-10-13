@@ -40,6 +40,9 @@ void QgsMapRendererAbstractCustomPainterJob::preparePainter( QPainter *painter, 
   painter->fillRect( 0, 0, mSettings.deviceOutputSize().width(), mSettings.deviceOutputSize().height(), backgroundColor );
 
   painter->setRenderHint( QPainter::Antialiasing, mSettings.testFlag( QgsMapSettings::Antialiasing ) );
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+  painter->setRenderHint( QPainter::LosslessImageRendering, mSettings.testFlag( QgsMapSettings::LosslessImageRendering ) );
+#endif
 
 #ifndef QT_NO_DEBUG
   QPaintDevice *paintDevice = painter->device();

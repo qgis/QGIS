@@ -1,6 +1,7 @@
 {
   "name": "line_interpolate_point",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Returns the point interpolated by a specified distance along a linestring geometry.",
   "arguments": [ {"arg":"geometry","description":"a linestring geometry"},
                  {"arg":"distance","description":"distance along line to interpolate"}],

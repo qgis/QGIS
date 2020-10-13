@@ -351,7 +351,7 @@ QString QgsGeometrySelfIntersectionCheck::factoryDescription()
 
 QgsGeometryCheck::Flags QgsGeometrySelfIntersectionCheck::factoryFlags()
 {
-  return nullptr;
+  return QgsGeometryCheck::Flags();
 }
 
 QString QgsGeometrySelfIntersectionCheck::factoryId()

@@ -129,7 +129,9 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
   //adjust box if width or height is too small
   if ( mSizeToContents )
   {
-    QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, painter );
+    QgsRenderContext context = mMap ? QgsLayoutUtils::createRenderContextForMap( mMap, painter )
+                               : QgsLayoutUtils::createRenderContextForLayout( mLayout, painter );
+
     QSizeF size = legendRenderer.minimumSize( &context );
     if ( mForceResize )
     {
@@ -175,10 +177,14 @@ void QgsLayoutItemLegend::refresh()
 void QgsLayoutItemLegend::draw( QgsLayoutItemRenderContext &context )
 {
   QPainter *painter = context.renderContext().painter();
-  painter->save();
+
+  QgsRenderContext rc = mMap ? QgsLayoutUtils::createRenderContextForMap( mMap, painter, context.renderContext().scaleFactor() * 25.4 )
+                        : QgsLayoutUtils::createRenderContextForLayout( mLayout, painter, context.renderContext().scaleFactor() * 25.4 );
+
+  QgsScopedQPainterState painterState( painter );
 
   // painter is scaled to dots, so scale back to layout units
-  painter->scale( context.renderContext().scaleFactor(), context.renderContext().scaleFactor() );
+  painter->scale( rc.scaleFactor(), rc.scaleFactor() );
 
   painter->setPen( QPen( QColor( 0, 0, 0 ) ) );
 
@@ -197,12 +203,13 @@ void QgsLayoutItemLegend::draw( QgsLayoutItemRenderContext &context )
     Q_NOWARN_DEPRECATED_POP
   }
 
+
+
+
   QgsLegendRenderer legendRenderer( mLegendModel.get(), mSettings );
   legendRenderer.setLegendSize( rect().size() );
 
-  legendRenderer.drawLegend( context.renderContext() );
-
-  painter->restore();
+  legendRenderer.drawLegend( rc );
 }
 
 void QgsLayoutItemLegend::adjustBoxSize()
@@ -219,7 +226,9 @@ void QgsLayoutItemLegend::adjustBoxSize()
     return;
   }
 
-  QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, nullptr );
+  QgsRenderContext context = mMap ? QgsLayoutUtils::createRenderContextForMap( mMap, nullptr ) :
+                             QgsLayoutUtils::createRenderContextForLayout( mLayout, nullptr );
+
   QgsLegendRenderer legendRenderer( mLegendModel.get(), mSettings );
   QSizeF size = legendRenderer.minimumSize( &context );
   QgsDebugMsg( QStringLiteral( "width = %1 height = %2" ).arg( size.width() ).arg( size.height() ) );
@@ -394,6 +403,26 @@ void QgsLayoutItemLegend::setSymbolWidth( double w )
   mSettings.setSymbolSize( QSizeF( w, mSettings.symbolSize().height() ) );
 }
 
+double QgsLayoutItemLegend::maximumSymbolSize() const
+{
+  return mSettings.maximumSymbolSize();
+}
+
+void QgsLayoutItemLegend::setMaximumSymbolSize( double size )
+{
+  mSettings.setMaximumSymbolSize( size );
+}
+
+double QgsLayoutItemLegend::minimumSymbolSize() const
+{
+  return mSettings.minimumSymbolSize();
+}
+
+void QgsLayoutItemLegend::setMinimumSymbolSize( double size )
+{
+  mSettings.setMinimumSymbolSize( size );
+}
+
 void QgsLayoutItemLegend::setSymbolAlignment( Qt::AlignmentFlag alignment )
 {
   mSettings.setSymbolAlignment( alignment );
@@ -526,6 +555,8 @@ bool QgsLayoutItemLegend::writePropertiesToElement( QDomElement &legendElem, QDo
 
   legendElem.setAttribute( QStringLiteral( "symbolWidth" ), QString::number( mSettings.symbolSize().width() ) );
   legendElem.setAttribute( QStringLiteral( "symbolHeight" ), QString::number( mSettings.symbolSize().height() ) );
+  legendElem.setAttribute( QStringLiteral( "maxSymbolSize" ), QString::number( mSettings.maximumSymbolSize() ) );
+  legendElem.setAttribute( QStringLiteral( "minSymbolSize" ), QString::number( mSettings.minimumSymbolSize() ) );
 
   legendElem.setAttribute( QStringLiteral( "symbolAlignment" ), mSettings.symbolAlignment() );
 
@@ -620,6 +651,9 @@ bool QgsLayoutItemLegend::readPropertiesFromElement( const QDomElement &itemElem
 
   mSettings.setSymbolSize( QSizeF( itemElem.attribute( QStringLiteral( "symbolWidth" ), QStringLiteral( "7.0" ) ).toDouble(), itemElem.attribute( QStringLiteral( "symbolHeight" ), QStringLiteral( "14.0" ) ).toDouble() ) );
   mSettings.setSymbolAlignment( static_cast< Qt::AlignmentFlag >( itemElem.attribute( QStringLiteral( "symbolAlignment" ), QString::number( Qt::AlignLeft ) ).toInt() ) );
+
+  mSettings.setMaximumSymbolSize( itemElem.attribute( QStringLiteral( "maxSymbolSize" ), QStringLiteral( "0.0" ) ).toDouble() );
+  mSettings.setMinimumSymbolSize( itemElem.attribute( QStringLiteral( "minSymbolSize" ), QStringLiteral( "0.0" ) ).toDouble() );
 
   mSettings.setWmsLegendSize( QSizeF( itemElem.attribute( QStringLiteral( "wmsLegendWidth" ), QStringLiteral( "50" ) ).toDouble(), itemElem.attribute( QStringLiteral( "wmsLegendHeight" ), QStringLiteral( "25" ) ).toDouble() ) );
   mSettings.setLineSpacing( itemElem.attribute( QStringLiteral( "lineSpacing" ), QStringLiteral( "1.0" ) ).toDouble() );

@@ -335,7 +335,7 @@ namespace QgsWms
       }
 
       int maxAtlasFeatures = QgsServerProjectUtils::wmsMaxAtlasFeatures( *mProject );
-      if ( atlasPk.size() == 1 && atlasPk.at( 0 ) == QStringLiteral( "*" ) )
+      if ( atlasPk.size() == 1 && atlasPk.at( 0 ) == QLatin1String( "*" ) )
       {
         atlas->setFilterFeatures( false );
         atlas->updateFeatures();
@@ -604,7 +604,7 @@ namespace QgsWms
 
       if ( !map->keepLayerSet() )
       {
-        if ( cMapParams.mLayers.isEmpty() && cMapParams.mExternalLayers.isEmpty() )
+        if ( cMapParams.mLayers.isEmpty() )
         {
           map->setLayers( mapSettings.layers() );
         }
@@ -648,7 +648,6 @@ namespace QgsWms
             }
           }
 
-          layerSet << externalLayers( cMapParams.mExternalLayers );
           layerSet << highlightLayers( cMapParams.mHighlightLayers );
           std::reverse( layerSet.begin(), layerSet.end() );
           map->setLayers( layerSet );
@@ -1448,7 +1447,6 @@ namespace QgsWms
     const QgsFields fields = layer->fields();
     bool addWktGeometry = ( QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( *mProject ) && mWmsParameters.withGeometry() );
     bool segmentizeWktGeometry = QgsServerProjectUtils::wmsFeatureInfoSegmentizeWktGeometry( *mProject );
-    const QSet<QString> &excludedAttributes = layer->excludeAttributesWms();
 
     bool hasGeometry = QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( *mProject ) || addWktGeometry || featureBBox || layerFilterGeom;
     fReq.setFlags( ( ( hasGeometry ) ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) | QgsFeatureRequest::ExactIntersect );
@@ -1569,7 +1567,7 @@ namespace QgsWms
         for ( int i = 0; i < featureAttributes.count(); ++i )
         {
           //skip attribute if it is explicitly excluded from WMS publication
-          if ( excludedAttributes.contains( fields.at( i ).name() ) )
+          if ( fields.at( i ).configurationFlags().testFlag( QgsField::ConfigurationFlag::HideFromWms ) )
           {
             continue;
           }
@@ -1684,10 +1682,10 @@ namespace QgsWms
       return false;
     }
 
-    const QgsRaster::IdentifyFormat identifyFormat { static_cast<bool>( layer->dataProvider()->capabilities() &
-        QgsRasterDataProvider::IdentifyFeature ) ?
-        QgsRaster::IdentifyFormat::IdentifyFormatFeature :
-        QgsRaster::IdentifyFormat::IdentifyFormatValue };
+    const QgsRaster::IdentifyFormat identifyFormat(
+      static_cast<bool>( layer->dataProvider()->capabilities() & QgsRasterDataProvider::IdentifyFeature )
+      ? QgsRaster::IdentifyFormat::IdentifyFormatFeature
+      : QgsRaster::IdentifyFormat::IdentifyFormatValue );
 
     QgsRasterIdentifyResult identifyResult;
     if ( layer->crs() != mapSettings.destinationCrs() )
@@ -1776,7 +1774,14 @@ namespace QgsWms
         {
           QDomElement attributeElement = infoDocument.createElement( QStringLiteral( "Attribute" ) );
           attributeElement.setAttribute( QStringLiteral( "name" ), layer->bandName( it.key() ) );
-          attributeElement.setAttribute( QStringLiteral( "value" ), QString::number( it.value().toDouble() ) );
+
+          QString value;
+          if ( ! it.value().isNull() )
+          {
+            value  = QString::number( it.value().toDouble() );
+          }
+
+          attributeElement.setAttribute( QStringLiteral( "value" ), value );
           layerElement.appendChild( attributeElement );
         }
       }
@@ -2121,8 +2126,13 @@ namespace QgsWms
         for ( int j = 0; j < attributeNodeList.size(); ++j )
         {
           QDomElement attributeElement = attributeNodeList.at( j ).toElement();
+          QString value = attributeElement.attribute( QStringLiteral( "value" ) );
+          if ( value.isEmpty() )
+          {
+            value = QStringLiteral( "no data" );
+          }
           featureInfoString.append( "<TR><TH>" + attributeElement.attribute( QStringLiteral( "name" ) ) +
-                                    "</TH><TD>" + attributeElement.attribute( QStringLiteral( "value" ) ) + "</TD></TR>\n" );
+                                    "</TH><TD>" + value + "</TD></TR>\n" );
         }
       }
 
@@ -2179,8 +2189,13 @@ namespace QgsWms
         for ( int j = 0; j < attributeNodeList.size(); ++j )
         {
           QDomElement attributeElement = attributeNodeList.at( j ).toElement();
+          QString value = attributeElement.attribute( QStringLiteral( "value" ) );
+          if ( value.isEmpty() )
+          {
+            value = QStringLiteral( "no data" );
+          }
           featureInfoString.append( attributeElement.attribute( QStringLiteral( "name" ) ) + " = '" +
-                                    attributeElement.attribute( QStringLiteral( "value" ) ) + "'\n" );
+                                    value + "'\n" );
         }
       }
 
@@ -2291,7 +2306,13 @@ namespace QgsWms
         {
           const QDomElement attrElmt = attributesNode.at( j ).toElement();
           const QString name = attrElmt.attribute( QStringLiteral( "name" ) );
-          const QString value = attrElmt.attribute( QStringLiteral( "value" ) );
+
+          QString value = attrElmt.attribute( QStringLiteral( "value" ) );
+          if ( value.isEmpty() )
+          {
+            value = QStringLiteral( "null" );
+          }
+
           properties[name.toStdString()] = value.toStdString();
         }
 
@@ -2418,7 +2439,7 @@ namespace QgsWms
     {
       QString attributeName = fields.at( i ).name();
       //skip attribute if it is explicitly excluded from WMS publication
-      if ( layer && layer->excludeAttributesWms().contains( attributeName ) )
+      if ( fields.at( i ).configurationFlags().testFlag( QgsField::ConfigurationFlag::HideFromWms ) )
       {
         continue;
       }
@@ -2463,7 +2484,7 @@ namespace QgsWms
     QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
     QString value( fieldFormatter->representValue( vl, idx, setup.config(), QVariant(), attributeVal ) );
 
-    if ( setup.config().value( QStringLiteral( "AllowMulti" ) ).toBool() && value.startsWith( QLatin1String( "{" ) ) && value.endsWith( QLatin1String( "}" ) ) )
+    if ( setup.config().value( QStringLiteral( "AllowMulti" ) ).toBool() && value.startsWith( QLatin1Char( '{' ) ) && value.endsWith( QLatin1Char( '}' ) ) )
     {
       value = value.mid( 1, value.size() - 2 );
     }
@@ -2581,7 +2602,7 @@ namespace QgsWms
           {
             placement = QgsPalLayerSettings::AroundPoint;
             palSettings.dist = 2; // in mm
-            palSettings.placementFlags = 0;
+            palSettings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlags() );
             break;
           }
           case QgsWkbTypes::PolygonGeometry:
@@ -2611,7 +2632,7 @@ namespace QgsWms
           {
             placement = QgsPalLayerSettings::Line;
             palSettings.dist = 2;
-            palSettings.placementFlags = 10;
+            palSettings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine | QgsLabeling::LinePlacementFlag::MapOrientation );
             break;
           }
         }
@@ -2674,25 +2695,6 @@ namespace QgsWms
     return highlightLayers;
   }
 
-  QList<QgsMapLayer *> QgsRenderer::externalLayers( const QList<QgsWmsParametersExternalLayer> &params )
-  {
-    QList<QgsMapLayer *> layers;
-
-    for ( const QgsWmsParametersExternalLayer &param : params )
-    {
-      std::unique_ptr<QgsMapLayer> layer = qgis::make_unique< QgsRasterLayer >( param.mUri, param.mName, QStringLiteral( "wms" ) );
-
-      if ( layer->isValid() )
-      {
-        // to delete later
-        mTemporaryLayers.append( layer.release() );
-        layers << mTemporaryLayers.last();
-      }
-    }
-
-    return layers;
-  }
-
   void QgsRenderer::removeTemporaryLayers()
   {
     qDeleteAll( mTemporaryLayers );
@@ -2753,6 +2755,7 @@ namespace QgsWms
         case QgsMapLayerType::MeshLayer:
         case QgsMapLayerType::VectorTileLayer:
         case QgsMapLayerType::PluginLayer:
+        case QgsMapLayerType::AnnotationLayer:
           break;
       }
     }
@@ -2821,7 +2824,7 @@ namespace QgsWms
       }
       else if ( expList.size() > 1 )
       {
-        exp = QStringLiteral( "( %1 )" ).arg( expList.join( QStringLiteral( " ) AND ( " ) ) );
+        exp = QStringLiteral( "( %1 )" ).arg( expList.join( QLatin1String( " ) AND ( " ) ) );
       }
       if ( !exp.isEmpty() )
       {
@@ -3009,7 +3012,7 @@ namespace QgsWms
         }
         else if ( dimExplist.size() > 1 )
         {
-          expList << QStringLiteral( "( %1 )" ).arg( dimExplist.join( QStringLiteral( " ) OR ( " ) ) );
+          expList << QStringLiteral( "( %1 )" ).arg( dimExplist.join( QLatin1String( " ) OR ( " ) ) );
         }
       }
     }
@@ -3117,6 +3120,11 @@ namespace QgsWms
         continue;
       }
 
+      if ( mContext.isExternalLayer( param.mNickname ) )
+      {
+        continue;
+      }
+
       if ( useSld )
       {
         setLayerSld( layer, mContext.sld( *layer ) );
@@ -3156,11 +3164,6 @@ namespace QgsWms
     {
       layers = highlightLayers( mWmsParameters.highlightLayersParameters() ) << layers;
     }
-
-    if ( mContext.testFlag( QgsWmsRenderContext::AddExternalLayers ) )
-    {
-      layers = externalLayers( mWmsParameters.externalLayersParameters() ) << layers;
-    }
   }
 
   void QgsRenderer::setLayerStyle( QgsMapLayer *layer, const QString &style ) const
@@ -3181,8 +3184,17 @@ namespace QgsWms
   void QgsRenderer::setLayerSld( QgsMapLayer *layer, const QDomElement &sld ) const
   {
     QString err;
+    // Defined sld style name
+    const QStringList styles = layer->styleManager()->styles();
+    QString sldStyleName = "__sld_style";
+    while ( styles.contains( sldStyleName ) )
+    {
+      sldStyleName.append( '@' );
+    }
+    layer->styleManager()->addStyleFromLayer( sldStyleName );
+    layer->styleManager()->setCurrentStyle( sldStyleName );
     layer->readSld( sld, err );
-    layer->setCustomProperty( "readSLD", true );
+    layer->setCustomProperty( "sldStyleName", sldStyleName );
   }
 
   QgsLegendSettings QgsRenderer::legendSettings() const

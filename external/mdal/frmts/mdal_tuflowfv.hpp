@@ -129,6 +129,7 @@ namespace MDAL
                                         std::string &name,
                                         bool *is_vector,
                                         bool *isPolar,
+                                        bool *invertedDirection,
                                         bool *is_x ) override;
       std::vector<std::pair<double, double>> parseClassification( int varid ) const override;
       std::string getTimeVariableName() const override;

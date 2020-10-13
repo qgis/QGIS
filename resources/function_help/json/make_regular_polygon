@@ -1,8 +1,8 @@
 {
   "name": "make_regular_polygon",
   "type": "function",
+  "groups": ["GeometryGroup"],
   "description": "Creates a regular polygon.",
-  "variableLenArguments": true,
   "arguments": [
     {"arg":"center", "description": "center of the regular polygon"},
     {"arg":"radius", "description": "second point. The first if the regular polygon is inscribed. The midpoint of the first side if the regular polygon is circumscribed."},

@@ -48,7 +48,8 @@ class QColor;
 /**
  * A dock widget that displays information from a GPS device and
  * allows the user to capture features using gps readings to
- * specify the geometry.*/
+ * specify the geometry.
+*/
 class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCanvasInteractionBlocker, private Ui::QgsGpsInformationWidgetBase
 {
     Q_OBJECT
@@ -57,6 +58,14 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     ~QgsGpsInformationWidget() override;
 
     bool blockCanvasInteraction( Interaction interaction ) const override;
+
+    /**
+     * Sets a GPS \a connection to use within the GPS Panel widget.
+     *
+     * Any existing GPS connection used by the widget will be disconnect and replaced with this connection. The connection
+     * is automatically registered within the QgsApplication::gpsConnectionRegistry().
+     */
+    void setConnection( QgsGpsConnection *connection );
 
   public slots:
     void tapAndHold( const QgsPointXY &mapPoint, QTapAndHoldGesture *gesture );
@@ -127,7 +136,7 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
 #endif
     void createRubberBand();
 
-    void updateGpsDistanceStatusMessage();
+    void updateGpsDistanceStatusMessage( bool forceDisplay );
 
     QgsCoordinateReferenceSystem mWgs84CRS;
     QgsCoordinateTransform mCanvasToWgs84Transform;
@@ -136,6 +145,7 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
 // not used    QPointF gpsToPixelPosition( const QgsPoint& point );
     QgsRubberBand *mRubberBand = nullptr;
     QgsPointXY mLastGpsPosition;
+    QgsPointXY mSecondLastGpsPosition;
     QVector<QgsPoint> mCaptureList;
     double mLastElevation = 0.0;
     FixStatus mLastFixStatus;
@@ -160,6 +170,7 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     std::unique_ptr< QgsBearingNumericFormat > mBearingNumericFormat;
 
     QElapsedTimer mLastRotateTimer;
+    QElapsedTimer mLastForcedStatusUpdate;
 
     friend class TestQgsGpsInformationWidget;
 };

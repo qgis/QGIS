@@ -76,7 +76,7 @@ Returns ``True`` if the current selection has a mix of numeric formats.
 .. seealso:: :py:func:`selectionNumericFormat`
 %End
 
-    QColor selectionForegroundColor();
+ QColor selectionForegroundColor() /Deprecated/;
 %Docstring
 Returns the foreground color for the currently selected cells.
 
@@ -86,6 +86,9 @@ invalid color will be returned.
 .. seealso:: :py:func:`setSelectionForegroundColor`
 
 .. seealso:: :py:func:`selectionBackgroundColor`
+
+.. deprecated::
+   use selectionTextFormat() instead.
 %End
 
     QColor selectionBackgroundColor();
@@ -98,6 +101,45 @@ invalid color will be returned.
 .. seealso:: :py:func:`setSelectionBackgroundColor`
 
 .. seealso:: :py:func:`selectionForegroundColor`
+%End
+
+    Qt::Alignment selectionHorizontalAlignment();
+%Docstring
+Returns the horizontal alignment for the currently selected cells.
+
+If the returned value contains both horizontal and vertical alignment flags, then
+the selected cells have a mix of different horizontal alignments.
+
+.. seealso:: :py:func:`selectionVerticalAlignment`
+%End
+
+    Qt::Alignment selectionVerticalAlignment();
+%Docstring
+Returns the horizontal alignment for the currently selected cells.
+
+If the returned value contains both horizontal and vertical alignment flags, then
+the selected cells have a mix of different vertical alignments.
+
+.. seealso:: :py:func:`selectionVerticalAlignment`
+%End
+
+    QgsProperty selectionCellProperty();
+%Docstring
+Returns the QgsProperty used for the contents of the currently selected cells.
+
+If the returned value is a default constructed :py:class:`QgsProperty`, then the selected
+cells have a mix of different properties.
+
+.. versionadded:: 3.16
+%End
+
+    QgsTextFormat selectionTextFormat();
+%Docstring
+Returns the text format for the currently selected cells.
+
+Returns an invalid QgsTextFormat if the selection has mixed text format.
+
+.. versionadded:: 3.16
 %End
 
     double selectionRowHeight();
@@ -239,13 +281,16 @@ current selected cells.
 Clears the contents of the currently selected cells.
 %End
 
-    void setSelectionForegroundColor( const QColor &color );
+ void setSelectionForegroundColor( const QColor &color ) /Deprecated/;
 %Docstring
 Sets the foreground color for the currently selected cells.
 
 .. seealso:: :py:func:`selectionForegroundColor`
 
 .. seealso:: :py:func:`setSelectionBackgroundColor`
+
+.. deprecated::
+   Use setSelectionTextFormat() instead.
 %End
 
     void setSelectionBackgroundColor( const QColor &color );
@@ -255,6 +300,42 @@ Sets the background color for the currently selected cells.
 .. seealso:: :py:func:`selectionBackgroundColor`
 
 .. seealso:: :py:func:`setSelectionForegroundColor`
+%End
+
+    void setSelectionHorizontalAlignment( Qt::Alignment alignment );
+%Docstring
+Sets the horizontal alignment for the currently selected cells.
+
+.. seealso:: :py:func:`selectionHorizontalAlignment`
+
+.. seealso:: :py:func:`setSelectionVerticalAlignment`
+
+.. versionadded:: 3.16
+%End
+
+    void setSelectionVerticalAlignment( Qt::Alignment alignment );
+%Docstring
+Sets the vertical alignment for the currently selected cells.
+
+.. seealso:: :py:func:`selectionVerticalAlignment`
+
+.. seealso:: :py:func:`setSelectionHorizontalAlignment`
+
+.. versionadded:: 3.16
+%End
+
+    void setSelectionCellProperty( const QgsProperty &property );
+%Docstring
+Sets the cell contents QgsProperty for the currently selected cells.
+
+.. versionadded:: 3.16
+%End
+
+    void setSelectionTextFormat( const QgsTextFormat &format );
+%Docstring
+Sets the text ``format`` for the selected cells.
+
+.. versionadded:: 3.16
 %End
 
     void setSelectionRowHeight( double height );

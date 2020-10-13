@@ -431,6 +431,53 @@ class CORE_EXPORT QgsLabelFeature
     void setOverrunSmoothDistance( double distance );
 
     /**
+     * Returns the percent along the line at which labels should be placed, for line labels only.
+     *
+     * By default, this is 0.5 which indicates that labels should be placed as close to the
+     * center of the line as possible. A value of 0.0 indicates that the labels should be placed
+     * as close to the start of the line as possible, while a value of 1.0 pushes labels towards
+     * the end of the line.
+     *
+     * \see setLineAnchorPercent()
+     * \see lineAnchorType()
+     * \since QGIS 3.16
+     */
+    double lineAnchorPercent() const { return mLineAnchorPercent; }
+
+    /**
+     * Sets the \a percent along the line at which labels should be placed, for line labels only.
+     *
+     * By default, this is 0.5 which indicates that labels should be placed as close to the
+     * center of the line as possible. A value of 0.0 indicates that the labels should be placed
+     * as close to the start of the line as possible, while a value of 1.0 pushes labels towards
+     * the end of the line.
+     *
+     * \see lineAnchorPercent()
+     * \see setLineAnchorType()
+     * \since QGIS 3.16
+     */
+    void setLineAnchorPercent( double percent ) { mLineAnchorPercent = percent; }
+
+
+    /**
+     * Returns the line anchor type, which dictates how the lineAnchorPercent() setting is
+     * handled.
+     *
+     * \see setLineAnchorType()
+     * \see lineAnchorPercent()
+     */
+    QgsLabelLineSettings::AnchorType lineAnchorType() const { return mLineAnchorType; }
+
+    /**
+     * Sets the line anchor \a type, which dictates how the lineAnchorPercent() setting is
+     * handled.
+     *
+     * \see lineAnchorType()
+     * \see setLineAnchorPercent()
+     */
+    void setLineAnchorType( QgsLabelLineSettings::AnchorType type ) { mLineAnchorType = type; }
+
+    /**
      * Returns TRUE if all parts of the feature should be labeled.
      * \see setLabelAllParts()
      * \since QGIS 3.10
@@ -523,7 +570,7 @@ class CORE_EXPORT QgsLabelFeature
     //! Distance to smooth angle of line start and end when calculating overruns
     double mOverrunSmoothDistance = 0;
 
-    QgsLabeling::LinePlacementFlags mArrangementFlags = nullptr;
+    QgsLabeling::LinePlacementFlags mArrangementFlags = QgsLabeling::LinePlacementFlags();
     QgsLabeling::PolygonPlacementFlags mPolygonPlacementFlags = QgsLabeling::PolygonPlacementFlag::AllowPlacementInsideOfPolygon;
 
   private:
@@ -543,6 +590,9 @@ class CORE_EXPORT QgsLabelFeature
     QgsLabelObstacleSettings mObstacleSettings{};
 
     QgsPointXY mAnchorPosition;
+
+    double mLineAnchorPercent = 0.5;
+    QgsLabelLineSettings::AnchorType mLineAnchorType = QgsLabelLineSettings::AnchorType::HintOnly;
 };
 
 #endif // QGSLABELFEATURE_H

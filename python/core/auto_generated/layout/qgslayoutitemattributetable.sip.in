@@ -291,6 +291,8 @@ be replaced by a line break.
 
     virtual QgsConditionalStyle conditionalCellStyle( int row, int column ) const;
 
+    virtual QgsExpressionContextScope *scopeForCell( int row, int column ) const /Factory/;
+
 
     virtual QgsExpressionContext createExpressionContext() const;
 

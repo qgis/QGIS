@@ -135,7 +135,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
         if ( !whereClause.isEmpty() )
         {
           useFallbackWhereClause = true;
-          fallbackWhereClause = whereClauses.join( QStringLiteral( " AND " ) );
+          fallbackWhereClause = whereClauses.join( QLatin1String( " AND " ) );
           whereClauses.append( whereClause );
           //if only partial success when compiling expression, we need to double-check results using QGIS' expressions
           mExpressionCompiled = ( result == QgsSqlExpressionCompiler::Complete );
@@ -156,7 +156,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
 
   if ( !mClosed )
   {
-    whereClause = whereClauses.join( QStringLiteral( " AND " ) );
+    whereClause = whereClauses.join( QLatin1String( " AND " ) );
 
     // Setup the order by
     QStringList orderByParts;
@@ -216,12 +216,12 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
     }
 
     // preparing the SQL statement
-    bool success = prepareStatement( whereClause, limitAtProvider ? mRequest.limit() : -1, orderByParts.join( QStringLiteral( "," ) ) );
+    bool success = prepareStatement( whereClause, limitAtProvider ? mRequest.limit() : -1, orderByParts.join( QLatin1Char( ',' ) ) );
     if ( !success && useFallbackWhereClause )
     {
       //try with the fallback where clause, e.g., for cases when using compiled expression failed to prepare
       mExpressionCompiled = false;
-      success = prepareStatement( fallbackWhereClause, -1, orderByParts.join( QStringLiteral( "," ) ) );
+      success = prepareStatement( fallbackWhereClause, -1, orderByParts.join( QLatin1Char( ',' ) ) );
       mCompileFailed = true;
     }
 

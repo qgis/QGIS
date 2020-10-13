@@ -81,7 +81,7 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
      * the default geometry check method (as dictated by QgsProcessingContext) for this source.
      */
     QgsProcessingFeatureSourceDefinition( const QString &source = QString(), bool selectedFeaturesOnly = false, long long featureLimit = -1,
-                                          QgsProcessingFeatureSourceDefinition::Flags flags = nullptr, QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid )
+                                          QgsProcessingFeatureSourceDefinition::Flags flags = QgsProcessingFeatureSourceDefinition::Flags(), QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid )
       : source( QgsProperty::fromValue( source ) )
       , selectedFeaturesOnly( selectedFeaturesOnly )
       , featureLimit( featureLimit )
@@ -103,7 +103,7 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
      * the default geometry check method (as dictated by QgsProcessingContext) for this source.
      */
     QgsProcessingFeatureSourceDefinition( const QgsProperty &source, bool selectedFeaturesOnly = false, long long featureLimit = -1,
-                                          QgsProcessingFeatureSourceDefinition::Flags flags = nullptr, QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid )
+                                          QgsProcessingFeatureSourceDefinition::Flags flags = QgsProcessingFeatureSourceDefinition::Flags(), QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid )
       : source( source )
       , selectedFeaturesOnly( selectedFeaturesOnly )
       , featureLimit( featureLimit )
@@ -134,7 +134,7 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
      *
      * \since QGIS 3.14
      */
-    Flags flags = nullptr;
+    Flags flags = Flags();
 
     /**
      * Geometry check method to apply to this source. This setting is only
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
      */
     bool loadVariant( const QVariantMap &map );
 
-    bool operator==( const QgsProcessingFeatureSourceDefinition &other )
+    bool operator==( const QgsProcessingFeatureSourceDefinition &other ) const
     {
       return source == other.source
              && selectedFeaturesOnly == other.selectedFeaturesOnly
@@ -171,7 +171,7 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
              && geometryCheck == other.geometryCheck;
     }
 
-    bool operator!=( const QgsProcessingFeatureSourceDefinition &other )
+    bool operator!=( const QgsProcessingFeatureSourceDefinition &other ) const
     {
       return !( *this == other );
     }
@@ -342,6 +342,8 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterExtent;
     else if ( sipCpp->type() == QgsProcessingParameterPoint::typeName() )
       sipType = sipType_QgsProcessingParameterPoint;
+    else if ( sipCpp->type() == QgsProcessingParameterGeometry::typeName() )
+      sipType = sipType_QgsProcessingParameterGeometry;
     else if ( sipCpp->type() == QgsProcessingParameterFile::typeName() )
       sipType = sipType_QgsProcessingParameterFile;
     else if ( sipCpp->type() == QgsProcessingParameterMatrix::typeName() )
@@ -406,6 +408,8 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterDatabaseTable;
     else if ( sipCpp->type() == QgsProcessingParameterFieldMapping::typeName() )
       sipType = sipType_QgsProcessingParameterFieldMapping;
+    else if ( sipCpp->type() == QgsProcessingParameterTinInputLayers::typeName() )
+      sipType = sipType_QgsProcessingParameterTinInputLayers;
     else
       sipType = nullptr;
     SIP_END
@@ -427,7 +431,7 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      * Constructor for QgsProcessingParameterDefinition.
      */
     QgsProcessingParameterDefinition( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
-                                      bool optional = false );
+                                      bool optional = false, const QString &help = QString() );
 
     virtual ~QgsProcessingParameterDefinition() = default;
 
@@ -475,6 +479,28 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      * \see description()
      */
     void setDescription( const QString &description ) { mDescription = description; }
+
+    /**
+     * Returns the help for the parameter.
+     *
+     * This is a descriptive (possibly lengthy), translated string explaining
+     * the parameter's behavior and use in depth.
+     *
+     * \see setHelp()
+     * \since QGIS 3.16
+     */
+    QString help() const { return mHelp; }
+
+    /**
+     * Sets the \a help for the parameter.
+     *
+     * The \a help string should be a descriptive, translated string explaining
+     * the parameter's behavior and use in depth.
+     *
+     * \see help()
+     * \since QGIS 3.16
+     */
+    void setHelp( const QString &help ) { mHelp = help; }
 
     /**
      * Returns the default value for the parameter.
@@ -696,6 +722,9 @@ class CORE_EXPORT QgsProcessingParameterDefinition
 
     //! Parameter description
     QString mDescription;
+
+    //! Parameter help
+    QString mHelp;
 
     //! Default value for parameter
     QVariant mDefault;
@@ -933,11 +962,15 @@ class CORE_EXPORT QgsProcessingParameters
      * argument will be set to a string which can be used to retrieve the layer corresponding
      * to the sink, e.g. via calling QgsProcessingUtils::mapLayerFromString().
      *
+     * The \a createOptions argument is used to pass on creation options such as layer name.
+     *
+     * The \a datasourceOptions and \a layerOptions arguments is used to pass on GDAL-specific format driver options.
+     *
      * This function creates a new object and the caller takes responsibility for deleting the returned object.
      */
     static QgsFeatureSink *parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters,
                                             const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
-                                            QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT, QgsFeatureSink::SinkFlags sinkFlags = nullptr ) SIP_FACTORY;
+                                            QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT, QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(), const QVariantMap &createOptions = QVariantMap(), const QStringList &datasourceOptions = QStringList(), const QStringList &layerOptions = QStringList() ) SIP_FACTORY;
 
     /**
      * Evaluates the parameter with matching \a definition and \a value to a feature sink.
@@ -950,13 +983,17 @@ class CORE_EXPORT QgsProcessingParameters
      * argument will be set to a string which can be used to retrieve the layer corresponding
      * to the sink, e.g. via calling QgsProcessingUtils::mapLayerFromString().
      *
+     * The \a createOptions argument is used to pass on creation options such as layer name.
+     *
+     * The \a datasourceOptions and \a layerOptions arguments is used to pass on GDAL-specific format driver options.
+     *
      * This function creates a new object and the caller takes responsibility for deleting the returned object.
      * \throws QgsProcessingException
      * \since QGIS 3.4
      */
     static QgsFeatureSink *parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariant &value,
                                             const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
-                                            QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT, QgsFeatureSink::SinkFlags sinkFlags = nullptr ) SIP_THROW( QgsProcessingException ) SIP_FACTORY;
+                                            QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT, QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(), const QVariantMap &createOptions = QVariantMap(), const QStringList &datasourceOptions = QStringList(), const QStringList &layerOptions = QStringList() ) SIP_THROW( QgsProcessingException ) SIP_FACTORY;
 
     /**
      * Evaluates the parameter with matching \a definition to a feature source.
@@ -1236,6 +1273,36 @@ class CORE_EXPORT QgsProcessingParameters
      * \since QGIS 3.8
      */
     static QgsCoordinateReferenceSystem parameterAsPointCrs( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition to a geometry.
+     *
+     * \since QGIS 3.16
+     */
+    static QgsGeometry parameterAsGeometry( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+
+    /**
+     * Evaluates the parameter with matching \a definition and \a value to a geometry.
+     *
+     * \since QGIS 3.16
+     */
+    static QgsGeometry parameterAsGeometry( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+
+    /**
+     * Returns the coordinate reference system associated with a geometry parameter value.
+     *
+     * \see parameterAsGeometry()
+     * \since QGIS 3.16
+     */
+    static QgsCoordinateReferenceSystem parameterAsGeometryCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+
+    /**
+     * Returns the coordinate reference system associated with an point parameter value.
+     *
+     * \see parameterAsGeometry()
+     * \since QGIS 3.16
+     */
+    static QgsCoordinateReferenceSystem parameterAsGeometryCrs( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
 
     /**
      * Evaluates the parameter with matching \a definition to a file/folder name.
@@ -1559,6 +1626,60 @@ class CORE_EXPORT QgsProcessingParameterPoint : public QgsProcessingParameterDef
 };
 
 /**
+ * \class QgsProcessingParameterGeometry
+ * \ingroup core
+ * A geometry parameter for processing algorithms.
+  * \since QGIS 3.16
+ */
+class CORE_EXPORT QgsProcessingParameterGeometry : public QgsProcessingParameterDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterGeometry.
+     *
+     * The \a geometryTypes argument allows for specifying a list of geometry types (see QgsWkbTypes::GeometryType) acceptable for this
+     * parameter. Passing a empty list will allow for any type of geometry.
+     */
+    QgsProcessingParameterGeometry( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(), bool optional = false, const QList< int > &geometryTypes = QList< int >() );
+
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "geometry" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
+    QString type() const override { return typeName(); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString asScriptCode() const override;
+    QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+    /**
+     * Returns the parameter allowed geometries, as a list of QgsWkbTypes::GeometryType values.
+     * \see setGeometryTypes()
+     */
+    QList<int>  geometryTypes() const { return mGeomTypes; }
+
+    /**
+     * Sets the allowed  \a geometryTypes, as a list of QgsWkbTypes::GeometryType values.
+     * \see geometryTypes()
+     */
+    void setGeometryTypes( const QList<int> &geometryTypes ) { mGeomTypes = geometryTypes; }
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterGeometry *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
+  private:
+
+    QList<int> mGeomTypes;
+
+};
+
+/**
  * \class QgsProcessingParameterFile
  * \ingroup core
  * An input file or folder parameter for processing algorithms.
@@ -1826,7 +1947,7 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
  * shown in the parameter's widget can be specified by setting the parameter's metadata. For example:
  *
  * \code{.py}
- *   param = QgsProcessingParameterNumber( 'VAL', 'Threshold', type=QgsProcessingParameter.Double)
+ *   param = QgsProcessingParameterNumber( 'VAL', 'Threshold', type=QgsProcessingParameterNumber.Double)
  *   # only show two decimal places in parameter's widgets, not 6:
  *   param.setMetadata( {'widget_wrapper':
  *     { 'decimals': 2 }

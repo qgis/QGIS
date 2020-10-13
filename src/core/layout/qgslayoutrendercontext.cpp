@@ -61,11 +61,13 @@ bool QgsLayoutRenderContext::testFlag( const QgsLayoutRenderContext::Flag flag )
 
 QgsRenderContext::Flags QgsLayoutRenderContext::renderContextFlags() const
 {
-  QgsRenderContext::Flags flags = nullptr;
+  QgsRenderContext::Flags flags = QgsRenderContext::Flags();
   if ( mFlags & FlagAntialiasing )
     flags = flags | QgsRenderContext::Antialiasing;
   if ( mFlags & FlagUseAdvancedEffects )
     flags = flags | QgsRenderContext::UseAdvancedEffects;
+  if ( mFlags & FlagLosslessImageRendering )
+    flags = flags | QgsRenderContext::LosslessImageRendering;
 
   // TODO - expose as layout context flag?
   flags |= QgsRenderContext::ForceVectorOutput;

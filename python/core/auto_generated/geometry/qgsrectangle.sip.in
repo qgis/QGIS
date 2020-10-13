@@ -29,22 +29,22 @@ Examples are storing a layer extent or the current view extent of a map
 
     QgsRectangle(); // optimised constructor for null rectangle - no need to call normalize here
 
-    explicit QgsRectangle( double xMin, double yMin = 0, double xMax = 0, double yMax = 0 );
+    explicit QgsRectangle( double xMin, double yMin = 0, double xMax = 0, double yMax = 0 ) /HoldGIL/;
 %Docstring
 Constructor
 %End
 
-    QgsRectangle( const QgsPointXY &p1, const QgsPointXY &p2 );
+    QgsRectangle( const QgsPointXY &p1, const QgsPointXY &p2 ) /HoldGIL/;
 %Docstring
 Construct a rectangle from two points. The rectangle is normalized after construction.
 %End
 
-    QgsRectangle( const QRectF &qRectF );
+    QgsRectangle( const QRectF &qRectF ) /HoldGIL/;
 %Docstring
 Construct a rectangle from a QRectF. The rectangle is normalized after construction.
 %End
 
-    QgsRectangle( const QgsRectangle &other );
+    QgsRectangle( const QgsRectangle &other ) /HoldGIL/;
 %Docstring
 Copy constructor
 %End
@@ -79,48 +79,48 @@ Sets the rectangle from four points. The rectangle is
 normalised after construction.
 %End
 
-    void setXMinimum( double x );
+    void setXMinimum( double x ) /HoldGIL/;
 %Docstring
 Set the minimum x value.
 %End
 
-    void setXMaximum( double x );
+    void setXMaximum( double x ) /HoldGIL/;
 %Docstring
 Set the maximum x value.
 %End
 
-    void setYMinimum( double y );
+    void setYMinimum( double y ) /HoldGIL/;
 %Docstring
 Set the minimum y value.
 %End
 
-    void setYMaximum( double y );
+    void setYMaximum( double y ) /HoldGIL/;
 %Docstring
 Set the maximum y value.
 %End
 
-    void setMinimal();
+    void setMinimal() /HoldGIL/;
 %Docstring
 Set a rectangle so that min corner is at max
 and max corner is at min. It is NOT normalized.
 %End
 
-    double xMaximum() const;
+    double xMaximum() const /HoldGIL/;
 %Docstring
 Returns the x maximum value (right side of rectangle).
 %End
 
-    double xMinimum() const;
+    double xMinimum() const /HoldGIL/;
 %Docstring
 Returns the x minimum value (left side of rectangle).
 %End
 
-    double yMaximum() const;
+    double yMaximum() const /HoldGIL/;
 %Docstring
 Returns the y maximum value (top side of rectangle).
 %End
 
-    double yMinimum() const;
+    double yMinimum() const /HoldGIL/;
 %Docstring
 Returns the y minimum value (bottom side of rectangle).
 %End
@@ -130,7 +130,7 @@ Returns the y minimum value (bottom side of rectangle).
 Normalize the rectangle so it has non-negative width/height.
 %End
 
-    double width() const;
+    double width() const /HoldGIL/;
 %Docstring
 Returns the width of the rectangle.
 
@@ -139,7 +139,7 @@ Returns the width of the rectangle.
 .. seealso:: :py:func:`area`
 %End
 
-    double height() const;
+    double height() const /HoldGIL/;
 %Docstring
 Returns the height of the rectangle.
 
@@ -148,7 +148,7 @@ Returns the height of the rectangle.
 .. seealso:: :py:func:`area`
 %End
 
-    double area() const;
+    double area() const /HoldGIL/;
 %Docstring
 Returns the area of the rectangle.
 
@@ -161,7 +161,7 @@ Returns the area of the rectangle.
 .. versionadded:: 3.0
 %End
 
-    double perimeter() const;
+    double perimeter() const /HoldGIL/;
 %Docstring
 Returns the perimeter of the rectangle.
 
@@ -170,7 +170,7 @@ Returns the perimeter of the rectangle.
 .. versionadded:: 3.0
 %End
 
-    QgsPointXY center() const;
+    QgsPointXY center() const /HoldGIL/;
 %Docstring
 Returns the center point of the rectangle.
 %End

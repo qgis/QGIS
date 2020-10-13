@@ -44,9 +44,26 @@ const QgsProject *QgsConfigCache::project( const QString &path, QgsServerSetting
   if ( ! mProjectCache[ path ] )
   {
     std::unique_ptr<QgsProject> prj( new QgsProject() );
+
     QgsStoreBadLayerInfo *badLayerHandler = new QgsStoreBadLayerInfo();
     prj->setBadLayerHandler( badLayerHandler );
-    if ( prj->read( path ) )
+
+    QgsProject::ReadFlags readFlags = QgsProject::ReadFlag();
+    if ( settings )
+    {
+      // Activate trust layer metadata flag
+      if ( settings->trustLayerMetadata() )
+      {
+        readFlags |= QgsProject::ReadFlag::FlagTrustLayerMetadata;
+      }
+      // Activate don't load layouts flag
+      if ( settings->getPrintDisabled() )
+      {
+        readFlags |= QgsProject::ReadFlag::FlagDontLoadLayouts;
+      }
+    }
+
+    if ( prj->read( path, readFlags ) )
     {
       if ( !badLayerHandler->badLayers().isEmpty() )
       {
@@ -73,14 +90,14 @@ const QgsProject *QgsConfigCache::project( const QString &path, QgsServerSetting
           if ( ! settings || ! settings->ignoreBadLayers() )
           {
             QgsMessageLog::logMessage(
-              QStringLiteral( "Error, Layer(s) %1 not valid in project %2" ).arg( unrestrictedBadLayers.join( QStringLiteral( ", " ) ), path ),
+              QStringLiteral( "Error, Layer(s) %1 not valid in project %2" ).arg( unrestrictedBadLayers.join( QLatin1String( ", " ) ), path ),
               QStringLiteral( "Server" ), Qgis::Critical );
             throw QgsServerException( QStringLiteral( "Layer(s) not valid" ) );
           }
           else
           {
             QgsMessageLog::logMessage(
-              QStringLiteral( "Warning, Layer(s) %1 not valid in project %2" ).arg( unrestrictedBadLayers.join( QStringLiteral( ", " ) ), path ),
+              QStringLiteral( "Warning, Layer(s) %1 not valid in project %2" ).arg( unrestrictedBadLayers.join( QLatin1String( ", " ) ), path ),
               QStringLiteral( "Server" ), Qgis::Warning );
           }
         }
@@ -95,7 +112,6 @@ const QgsProject *QgsConfigCache::project( const QString &path, QgsServerSetting
         QStringLiteral( "Server" ), Qgis::Critical );
     }
   }
-  QgsProject::setInstance( mProjectCache[ path ] );
   return mProjectCache[ path ];
 
 }

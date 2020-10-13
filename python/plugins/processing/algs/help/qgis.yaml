@@ -114,9 +114,6 @@ qgis:extractbyexpression: >
 
   For more information about expressions see the <a href ="{qgisdocs}/user_manual/working_with_vector/expression.html">user manual</a>
 
-qgis:fieldcalculator: >
-  This algorithm computes a new vector layer with the same features of the input layer, but with an additional attribute. The values of this new attribute are computed from each feature using a mathematical formula, based on the properties and attributes of the feature.
-
 qgis:findprojection: >
   This algorithm allows creation of a shortlist of possible candidate coordinate reference systems for a layer with an unknown projection.
 
@@ -299,11 +296,6 @@ qgis:rasterlayerhistogram: >
   This algorithm generates a histogram with the values of a raster layer.
 
   The raster layer must have a single band.
-
-qgis:rastersampling: >
-  This algorithm creates a new vector layer with the same attributes of the input layer and the raster values corresponding on the point location.
-
-  If the raster layer has more than one band, all the band values are sampled.
 
 qgis:regularpoints: >
   This algorithm creates a point layer with a given number of regular points, all of them within a given extent.

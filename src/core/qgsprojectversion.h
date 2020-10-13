@@ -28,7 +28,6 @@
  * Used in places where you need to check if the current version
  * of QGIS is greater than the one used to create a project file.
  */
-
 class CORE_EXPORT QgsProjectVersion
 {
 
@@ -39,12 +38,35 @@ class CORE_EXPORT QgsProjectVersion
      */
     QgsProjectVersion() = default;
 
-    QgsProjectVersion( int major, int minor, int sub, const QString &name = "" );
+    /**
+     * Constructor for QgsProjectVersion, with the specified \a major, \a minor and \a sub version numbers.
+     */
+    QgsProjectVersion( int major, int minor, int sub, const QString &name = QString() );
+
+    /**
+     * Constructor for QgsProjectVersion, which parses the version number from a \a string.
+     */
     QgsProjectVersion( const QString &string );
-    int majorVersion() { return mMajor;}
-    int minorVersion() { return mMinor;}
-    int subVersion()   { return mSub;}
-    QString text();
+
+    /**
+     * Returns the major version number.
+     */
+    int majorVersion() const { return mMajor;}
+
+    /**
+     * Returns the minor version number.
+     */
+    int minorVersion() const { return mMinor;}
+
+    /**
+     * Returns the sub version number.
+     */
+    int subVersion() const { return mSub;}
+
+    /**
+     * Returns a string representation of the version.
+     */
+    QString text() const;
 
     /**
      * Returns TRUE if this is a NULL project version.
@@ -77,7 +99,5 @@ class CORE_EXPORT QgsProjectVersion
     int mSub = 0;
     QString mName;
 };
-
-// clazy:excludeall=qstring-allocations
 
 #endif // QGSPROJECTVERSION_H

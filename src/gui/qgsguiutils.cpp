@@ -131,7 +131,7 @@ namespace QgsGuiUtils
     QString outputFileName;
     QString ext;
 #if defined(Q_OS_WIN) || defined(Q_OS_MAC) || defined(Q_OS_LINUX)
-    outputFileName = QFileDialog::getSaveFileName( parent, message, initialPath, QStringList( filterMap.keys() ).join( QStringLiteral( ";;" ) ), &selectedFilter );
+    outputFileName = QFileDialog::getSaveFileName( parent, message, initialPath, QStringList( filterMap.keys() ).join( QLatin1String( ";;" ) ), &selectedFilter );
 
     if ( !outputFileName.isNull() )
     {
@@ -274,6 +274,47 @@ namespace QgsGuiUtils
       adjustedSize = 24;
     }
     return QSize( adjustedSize, adjustedSize );
+  }
+
+  QString displayValueWithMaximumDecimals( const Qgis::DataType rasterDataType, const double value )
+  {
+    const int precision { significantDigits( rasterDataType ) };
+    // Reduce
+    return QLocale().toString( value, 'f', precision );
+  }
+
+  int significantDigits( const Qgis::DataType rasterDataType )
+  {
+    switch ( rasterDataType )
+    {
+      case Qgis::DataType::Int16:
+      case Qgis::DataType::UInt16:
+      case Qgis::DataType::Int32:
+      case Qgis::DataType::UInt32:
+      case Qgis::DataType::Byte:
+      case Qgis::DataType::CInt16:
+      case Qgis::DataType::CInt32:
+      case Qgis::DataType::ARGB32:
+      case Qgis::DataType::ARGB32_Premultiplied:
+      {
+        return 0;
+      }
+      case Qgis::DataType::Float32:
+      case Qgis::DataType::CFloat32:
+      {
+        return std::numeric_limits<float>::digits10 + 1;
+      }
+      case Qgis::DataType::Float64:
+      case Qgis::DataType::CFloat64:
+      {
+        return std::numeric_limits<double>::digits10 + 1;
+      }
+      case Qgis::DataType::UnknownDataType:
+      {
+        return std::numeric_limits<double>::digits10 + 1;
+      }
+    }
+    return 0;
   }
 }
 

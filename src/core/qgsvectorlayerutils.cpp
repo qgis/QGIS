@@ -573,7 +573,8 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
 
       // 4. provider side default literal
       // note - deliberately not using else if!
-      if ( ( v.isNull() || ( checkUnique && hasUniqueConstraint
+      if ( ( v.isNull() || ( checkUnique
+                             && hasUniqueConstraint
                              && checkUniqueValue( idx, v ) ) )
            && fields.fieldOrigin( idx ) == QgsFields::OriginProvider )
       {

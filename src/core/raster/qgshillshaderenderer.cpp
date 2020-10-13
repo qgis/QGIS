@@ -218,7 +218,7 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
 
       if ( inputBlock->dataType() != Qgis::DataType::Float32 )
       {
-        source.replace( QStringLiteral( "__global float *scanLine" ), QStringLiteral( "__global %1 *scanLine" ).arg( typeName ) );
+        source.replace( QLatin1String( "__global float *scanLine" ), QStringLiteral( "__global %1 *scanLine" ).arg( typeName ) );
       }
 
       // Data type for input is Float32 (4 bytes)

@@ -37,13 +37,18 @@
 #include "processing/qgsprojectstylealgorithms.h"
 #include "qgsstylemanagerdialog.h"
 #include "qgsproviderregistry.h"
+#include "qgsaddattrdialog.h"
+#include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsprovidermetadata.h"
+#include "qgsnewvectortabledialog.h"
+#include "qgsdataitemproviderregistry.h"
 
 #include <QFileInfo>
 #include <QMenu>
 #include <QInputDialog>
-#include <QMessageBox>
 #include <QDesktopServices>
 #include <QFileDialog>
+#include <QMessageBox>
 
 QString QgsAppDirectoryItemGuiProvider::name()
 {
@@ -72,11 +77,11 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
       QDir dir( directoryItem->dirPath() );
       if ( QFileInfo::exists( dir.absoluteFilePath( name ) ) )
       {
-        QMessageBox::critical( QgisApp::instance(), tr( "Create Directory" ), tr( "The path “%1” already exists." ).arg( QDir::toNativeSeparators( dir.absoluteFilePath( name ) ) ) );
+        notify( tr( "Create Directory" ), tr( "The path “%1” already exists." ).arg( QDir::toNativeSeparators( dir.absoluteFilePath( name ) ) ), context, Qgis::MessageLevel::Warning );
       }
       else if ( !dir.mkdir( name ) )
       {
-        QMessageBox::critical( QgisApp::instance(), tr( "Create Directory" ), tr( "Could not create directory “%1”." ).arg( QDir::toNativeSeparators( dir.absoluteFilePath( name ) ) ) );
+        notify( tr( "Create Directory" ), tr( "Could not create directory “%1”." ).arg( QDir::toNativeSeparators( dir.absoluteFilePath( name ) ) ), context, Qgis::MessageLevel::Critical );
       }
       else
       {
@@ -136,7 +141,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   {
     // only non-root directories can be added as favorites
     QAction *addAsFavorite = new QAction( tr( "Add as a Favorite" ), menu );
-    addAsFavorite->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFavourites.svg" ) ) );
+    addAsFavorite->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFavorites.svg" ) ) );
     menu->addAction( addAsFavorite );
     connect( addAsFavorite, &QAction::triggered, this, [ = ]
     {
@@ -168,6 +173,57 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
     hideDirectory( directoryItem );
   } );
   menu->addAction( hideAction );
+
+  QMenu *hiddenMenu = new QMenu( tr( "Hidden Items" ), menu );
+  int count = 0;
+  const QStringList hiddenPathList = settings.value( QStringLiteral( "/browser/hiddenPaths" ) ).toStringList();
+  static int MAX_HIDDEN_ENTRIES = 5;
+  for ( const QString &path : hiddenPathList )
+  {
+    QAction *action = new QAction( QDir::toNativeSeparators( path ), hiddenMenu );
+    connect( action, &QAction::triggered, this, [ = ]
+    {
+      QgsSettings s;
+      QStringList pathsList = s.value( QStringLiteral( "/browser/hiddenPaths" ) ).toStringList();
+      pathsList.removeAll( path );
+      s.setValue( QStringLiteral( "/browser/hiddenPaths" ), pathsList );
+
+      // get parent path and refresh corresponding node
+      int idx = path.lastIndexOf( QLatin1Char( '/' ) );
+      if ( idx != -1 && path.count( QStringLiteral( "/" ) ) > 1 )
+      {
+        QString parentPath = path.left( idx );
+        QgisApp::instance()->browserModel()->refresh( parentPath );
+      }
+      else
+      {
+        // top-level (drive or root) node
+        QgisApp::instance()->browserModel()->refreshDrives();
+      }
+    } );
+    hiddenMenu->addAction( action );
+    count += 1;
+    if ( count == MAX_HIDDEN_ENTRIES )
+    {
+      break;
+    }
+  }
+
+  if ( hiddenPathList.size() > MAX_HIDDEN_ENTRIES )
+  {
+    hiddenMenu->addSeparator();
+
+    QAction *moreAction = new QAction( tr( "Show More…" ), hiddenMenu );
+    connect( moreAction, &QAction::triggered, this, [ = ]
+    {
+      QgisApp::instance()->showOptionsDialog( QgisApp::instance(), QStringLiteral( "mOptionsPageDataSources" ) );
+    } );
+    hiddenMenu->addAction( moreAction );
+  }
+  if ( count > 0 )
+  {
+    menu->addMenu( hiddenMenu );
+  }
 
   QAction *fastScanAction = new QAction( tr( "Fast Scan this Directory" ), menu );
   connect( fastScanAction, &QAction::triggered, this, [ = ]
@@ -446,6 +502,7 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
         }
 
         case QgsMapLayerType::PluginLayer:
+        case QgsMapLayerType::AnnotationLayer:
         case QgsMapLayerType::MeshLayer:
         case QgsMapLayerType::VectorTileLayer:
           break;
@@ -471,8 +528,8 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
         selectedDeletableItemPaths.append( qobject_cast<QgsLayerItem *>( selectedItem )->uri() );
     }
 
-    const QString deleteText = selectedDeletableItemPaths.count() == 1 ? tr( "Delete Layer" )
-                               : tr( "Delete Selected Layers" );
+    const QString deleteText = selectedDeletableItemPaths.count() == 1 ? tr( "Delete Layer…" )
+                               : tr( "Delete Selected Layers…" );
     QAction *deleteAction = new QAction( deleteText, menu );
     connect( deleteAction, &QAction::triggered, this, [ = ]
     {
@@ -494,9 +551,9 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
     if ( layerItem )
     {
       // Also check for postgres layers (rasters are handled by GDAL)
-      isFile = ( layerItem->providerKey() == QStringLiteral( "ogr" ) ||
-                 layerItem->providerKey() == QStringLiteral( "gdal" ) ) &&
-               ! layerItem->uri().startsWith( QStringLiteral( "PG:" ) );
+      isFile = ( layerItem->providerKey() == QLatin1String( "ogr" ) ||
+                 layerItem->providerKey() == QLatin1String( "gdal" ) ) &&
+               ! layerItem->uri().startsWith( QLatin1String( "PG:" ) );
     }
     else
     {
@@ -594,7 +651,7 @@ void QgsLayerItemGuiProvider::deleteLayers( const QStringList &itemPaths, QgsDat
       Q_NOWARN_DEPRECATED_POP
 
       if ( !res )
-        QMessageBox::information( QgisApp::instance(), tr( "Delete Layer" ), tr( "Item Layer %1 cannot be deleted." ).arg( item->name() ) );
+        notify( tr( "Delete Layer" ), tr( "Item Layer %1 cannot be deleted." ).arg( item->name() ), context, Qgis::MessageLevel::Warning );
     }
   }
 }
@@ -648,7 +705,7 @@ void QgsProjectItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
       {
         p.accept( &visitor );
         override.release();
-        QgsStyleManagerDialog dlg( &style, QgisApp::instance(), nullptr, true );
+        QgsStyleManagerDialog dlg( &style, QgisApp::instance(), Qt::WindowFlags(), true );
         dlg.setFavoritesGroupVisible( false );
         dlg.setSmartGroupsVisible( false );
         QFileInfo fi( projectPath );
@@ -686,5 +743,251 @@ bool QgsProjectItemGuiProvider::handleDoubleClick( QgsDataItem *item, QgsDataIte
   else
   {
     return false;
+  }
+}
+
+QString QgsFieldsItemGuiProvider::name()
+{
+  return QStringLiteral( "fields_item" );
+}
+
+void QgsFieldsItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context )
+{
+  Q_UNUSED( selectedItems )
+
+  if ( !item || item->type() != QgsDataItem::Type::Fields )
+    return;
+
+
+  if ( QgsFieldsItem *fieldsItem = qobject_cast<QgsFieldsItem *>( item ) )
+  {
+    QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( fieldsItem->providerKey() ) };
+    if ( md )
+    {
+      std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( fieldsItem->connectionUri(), {} ) ) };
+      // Check if it is supported
+      if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::AddField ) )
+      {
+        QAction *addColumnAction = new QAction( tr( "Add New Field…" ), menu );
+        QPointer<QgsDataItem>itemPtr { item };
+        const QString itemName { item->name() };
+
+        connect( addColumnAction, &QAction::triggered, fieldsItem, [ md, fieldsItem, context, itemPtr, menu ]
+        {
+          std::unique_ptr<QgsVectorLayer> layer { fieldsItem->layer() };
+          if ( layer )
+          {
+            QgsAddAttrDialog dialog( layer.get(), menu );
+            if ( dialog.exec() == QDialog::Accepted )
+            {
+              std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2 { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( fieldsItem->connectionUri(), {} ) ) };
+              try
+              {
+                conn2->addField( dialog.field(), fieldsItem->schema(), fieldsItem->tableName() );
+                if ( itemPtr )
+                  itemPtr->refresh();
+              }
+              catch ( const QgsProviderConnectionException &ex )
+              {
+                notify( tr( "New Field" ), tr( "Failed to add the new field to '%1': %2" ).arg( fieldsItem->tableName(), ex.what() ), context, Qgis::MessageLevel::Critical );
+              }
+            }
+          }
+          else
+          {
+            notify( tr( "New Field" ), tr( "Failed to load layer '%1'. Check application logs and user permissions." ).arg( fieldsItem->tableName() ), context, Qgis::MessageLevel::Critical );
+          }
+        } );
+        menu->addAction( addColumnAction );
+      }
+    }
+  }
+}
+
+QString QgsFieldItemGuiProvider::name()
+{
+  return QStringLiteral( "field_item" );
+}
+
+void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context )
+{
+  Q_UNUSED( selectedItems )
+
+  if ( !item || item->type() != QgsDataItem::Type::Field )
+    return;
+
+  if ( QgsFieldItem *fieldItem = qobject_cast<QgsFieldItem *>( item ) )
+  {
+    // Retrieve the connection from the parent
+    QgsFieldsItem *fieldsItem { static_cast<QgsFieldsItem *>( fieldItem->parent() ) };
+    if ( fieldsItem )
+    {
+      // Check if it is supported
+      QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( fieldsItem->providerKey() ) };
+      if ( md )
+      {
+        std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( fieldsItem->connectionUri(), {} ) ) };
+        if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::DeleteField ) )
+        {
+          QAction *deleteFieldAction = new QAction( tr( "Delete Field…" ), menu );
+          const bool supportsCascade { conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::DeleteFieldCascade ) };
+          const QString itemName { item->name() };
+
+          connect( deleteFieldAction, &QAction::triggered, fieldsItem, [ md, fieldsItem, itemName, context, supportsCascade ]
+          {
+            // Confirmation dialog
+            QString message {  tr( "Delete '%1' permanently?" ).arg( itemName ) };
+            if ( fieldsItem->tableProperty() && fieldsItem->tableProperty()->primaryKeyColumns().contains( itemName ) )
+            {
+              message.append( tr( "\nThis field is part of a primary key, its removal may make the table unusable by QGIS!" ) );
+            }
+            if ( fieldsItem->tableProperty() && fieldsItem->tableProperty()->geometryColumn() == itemName )
+            {
+              message.append( tr( "\nThis field is a geometry column, its removal may make the table unusable by QGIS!" ) );
+            }
+            QMessageBox msgbox{QMessageBox::Icon::Question, tr( "Delete Field" ), message, QMessageBox::Ok | QMessageBox::Cancel };
+            QCheckBox *cb = new QCheckBox( tr( "Delete all related objects (CASCADE)?" ) );
+            msgbox.setCheckBox( cb );
+            msgbox.setDefaultButton( QMessageBox::Cancel );
+
+            if ( ! supportsCascade )
+            {
+              cb->hide();
+            }
+
+            if ( msgbox.exec() == QMessageBox::Ok )
+            {
+              std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2 { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( fieldsItem->connectionUri(), {} ) ) };
+              try
+              {
+                conn2->deleteField( itemName, fieldsItem->schema(), fieldsItem->tableName(), supportsCascade && cb->isChecked() );
+                fieldsItem->refresh();
+              }
+              catch ( const QgsProviderConnectionException &ex )
+              {
+                notify( tr( "Delete Field" ), tr( "Failed to delete field '%1': %2" ).arg( itemName, ex.what() ), context, Qgis::MessageLevel::Critical );
+              }
+            }
+          } );
+          menu->addAction( deleteFieldAction );
+        }
+      }
+    }
+    else
+    {
+      // This should never happen!
+      QgsDebugMsg( QStringLiteral( "Error getting parent fields for %1" ).arg( item->name() ) );
+    }
+  }
+}
+
+QString QgsDatabaseItemGuiProvider::name()
+{
+  return QStringLiteral( "database" );
+}
+
+void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context )
+{
+  Q_UNUSED( selectedItems )
+  // Add create new table for collection items but not not if it is a root item
+  if ( ! qobject_cast<QgsConnectionsRootItem *>( item ) )
+  {
+    if ( QgsDataCollectionItem * collectionItem { qobject_cast<QgsDataCollectionItem *>( item ) } )
+    {
+      // This is super messy: we need the QgsDataProvider key and NOT the QgsDataItemProvider key!
+      const QString dataProviderKey { QgsApplication::dataItemProviderRegistry()->dataProviderKey( collectionItem->providerKey() ) };
+      QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( dataProviderKey ) };
+      if ( md )
+      {
+        // Note: we could have used layerCollection() but casting to QgsDatabaseSchemaItem is more explicit
+        const bool isSchema { qobject_cast<QgsDatabaseSchemaItem *>( item ) != nullptr };
+        const QString connectionName { isSchema ? collectionItem->parent()->name() : collectionItem->name() };
+        // Not all data providers implement the connections API, let's try ...
+        try
+        {
+          std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionName ) ) );
+          if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::CreateVectorTable ) )
+          {
+            QAction *newTableAction = new QAction( QObject::tr( "New Table…" ), menu );
+            QObject::connect( newTableAction, &QAction::triggered, collectionItem, [ collectionItem, connectionName, md, isSchema, context]
+            {
+              std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2 { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionName ) ) };
+              QgsNewVectorTableDialog dlg { conn2.get(), nullptr };
+              dlg.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
+              if ( isSchema )
+              {
+                dlg.setSchemaName( collectionItem->name() );
+              }
+              if ( dlg.exec() == QgsNewVectorTableDialog::DialogCode::Accepted )
+              {
+                const QgsFields fields { dlg.fields() };
+                const QString tableName { dlg.tableName() };
+                const QString schemaName { dlg.schemaName() };
+                const QString geometryColumn { dlg.geometryColumnName() };
+                const QgsWkbTypes::Type geometryType { dlg.geometryType() };
+                const bool createSpatialIndex { dlg.createSpatialIndex() &&
+                                                geometryType != QgsWkbTypes::NoGeometry &&
+                                                geometryType != QgsWkbTypes::Unknown };
+                const QgsCoordinateReferenceSystem crs { dlg.crs( ) };
+                // This flag tells to the provider that field types do not need conversion
+                QMap<QString, QVariant> options { { QStringLiteral( "skipConvertFields" ), true } };
+
+                if ( ! geometryColumn.isEmpty() )
+                {
+                  options[ QStringLiteral( "geometryColumn" ) ] = geometryColumn;
+                }
+
+                try
+                {
+                  conn2->createVectorTable( schemaName, tableName, fields, geometryType, crs, true, &options );
+                  if ( createSpatialIndex && conn2->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::CreateSpatialIndex ) )
+                  {
+                    try
+                    {
+                      conn2->createSpatialIndex( schemaName, tableName );
+                    }
+                    catch ( QgsProviderConnectionException &ex )
+                    {
+                      notify( QObject::tr( "Create Spatial Index" ), QObject::tr( "Could not create spatial index for table '%1':%2." ).arg( tableName, ex.what() ), context, Qgis::MessageLevel::Warning );
+                    }
+                  }
+                  // Ok, here is the trick: we cannot refresh the connection item because the refresh is not
+                  // recursive.
+                  // So, we check if the item is a schema or not, if it's not it means we initiated the new table from
+                  // the parent connection item, hence we search for the schema item and refresh it instead of refreshing
+                  // the connection item (the parent) with no effects.
+                  if ( ! isSchema && conn2->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) )
+                  {
+                    const auto constChildren { collectionItem->children() };
+                    for ( const auto &c : constChildren )
+                    {
+                      if ( c->name() == schemaName )
+                      {
+                        c->refresh();
+                      }
+                    }
+                  }
+                  else
+                  {
+                    collectionItem->refresh( );
+                  }
+                  notify( QObject::tr( "New Table Created" ), QObject::tr( "Table '%1' was created successfully." ).arg( tableName ), context, Qgis::MessageLevel::Success );
+                }
+                catch ( QgsProviderConnectionException &ex )
+                {
+                  notify( QObject::tr( "New Table Creation Error" ), QObject::tr( "Error creating new table '%1': %2" ).arg( tableName, ex.what() ), context, Qgis::MessageLevel::Critical );
+                }
+
+              }
+            } );
+            menu->addAction( newTableAction );
+          }
+        }
+        catch ( QgsProviderConnectionException &ex )
+        {
+          // This is expected and it is not an error in case the provider does not implement the connections API
+        }
+      }
+    }
   }
 }

@@ -20,7 +20,8 @@ enum class QgsMapLayerType
   RasterLayer,
   PluginLayer,
   MeshLayer,
-  VectorTileLayer
+  VectorTileLayer,
+  AnnotationLayer,
 };
 
 class QgsMapLayer : QObject
@@ -56,6 +57,9 @@ This is the base class for all map layer types (vector, raster).
           break;
         case QgsMapLayerType::VectorTileLayer:
           sipType = sipType_QgsVectorTileLayer;
+          break;
+        case QgsMapLayerType::AnnotationLayer:
+          sipType = sipType_QgsAnnotationLayer;
           break;
         default:
           sipType = nullptr;
@@ -97,6 +101,7 @@ This is the base class for all map layer types (vector, raster).
       GeometryOptions,
       Relations,
       Temporal,
+      Legend,
       AllStyleCategories
     };
     typedef QFlags<QgsMapLayer::StyleCategory> StyleCategories;
@@ -523,8 +528,9 @@ Returns ``True`` if the layer is considered a spatial layer, ie it has some form
 %Docstring
 Returns ``True`` if the layer is considered a temporary layer.
 
-These include memory-only layers such as those created by the "memory" data provider, or layers
-stored inside a local temporary folder (such as the "/tmp" folder on Linux).
+These include memory-only layers such as those created by the "memory" data provider, layers
+stored inside a local temporary folder (such as the "/tmp" folder on Linux)
+or layer with temporary data (as temporary mesh layer dataset)
 
 .. versionadded:: 3.10.1
 %End
@@ -532,11 +538,12 @@ stored inside a local temporary folder (such as the "/tmp" folder on Linux).
     enum ReadFlag
     {
       FlagDontResolveLayers,
+      FlagTrustLayerMetadata,
     };
     typedef QFlags<QgsMapLayer::ReadFlag> ReadFlags;
 
 
-    bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context, QgsMapLayer::ReadFlags flags = 0 );
+    bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context, QgsMapLayer::ReadFlags flags = QgsMapLayer::ReadFlags() );
 %Docstring
 Sets state from DOM document
 
@@ -737,7 +744,7 @@ record in the users style table in their personal qgis.db)
 .. versionadded:: 3.0
 %End
 
-    QString loadDefaultMetadata( bool &resultFlag );
+    virtual QString loadDefaultMetadata( bool &resultFlag );
 %Docstring
 Retrieve the default metadata for this layer if one
 exists (either as a .qmd file on disk or as a
@@ -1579,6 +1586,13 @@ Emitted when a style has been loaded
 .. versionadded:: 3.12
 %End
 
+    void isValidChanged();
+%Docstring
+Emitted when the validity of this layer changed.
+
+.. versionadded:: 3.16
+%End
+
 
   protected:
 
@@ -1598,7 +1612,7 @@ Sets the extent
 
     void setValid( bool valid );
 %Docstring
-Sets whether layer is valid or not - should be used in constructor.
+Sets whether layer is valid or not
 %End
 
     virtual bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context );
@@ -1647,7 +1661,7 @@ passwords or drivers prefixes ("HDF5:")
 Read custom properties from project file.
 
 :param layerNode: note to read from
-:param keyStartsWith: reads only properties starting with the specified string (or all if the string is empty)*
+:param keyStartsWith: reads only properties starting with the specified string (or all if the string is empty)
 %End
 
     void writeCustomProperties( QDomNode &layerNode, QDomDocument &doc ) const;

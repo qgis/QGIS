@@ -168,7 +168,7 @@
        <number>3</number>
       </property>
       <item row="5" column="3">
-       <widget class="QSpinBox" name="mOutputFieldPrecisionSpinBox">
+       <widget class="QgsSpinBox" name="mOutputFieldPrecisionSpinBox">
         <property name="toolTip">
          <string>Maximum number of digits after the decimal place. For example 123.45 requires a field precision of 2.</string>
         </property>
@@ -204,7 +204,7 @@
        <widget class="QComboBox" name="mOutputFieldTypeComboBox"/>
       </item>
       <item row="5" column="1">
-       <widget class="QSpinBox" name="mOutputFieldWidthSpinBox">
+       <widget class="QgsSpinBox" name="mOutputFieldWidthSpinBox">
         <property name="toolTip">
          <string>Total length of field (including the number of digits after the decimal place for decimal fields).&lt;br&gt;For example 123.45 requires a decimal field length of 5, and 123456 requires an integer field length of 6.</string>
         </property>
@@ -258,6 +258,11 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
   <customwidget>
    <class>QgsExpressionBuilderWidget</class>
    <extends>QWidget</extends>

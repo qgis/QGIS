@@ -80,10 +80,10 @@ void QgsLayoutItemPolygon::createDefaultPolygonStyleSymbol()
 
 void QgsLayoutItemPolygon::refreshSymbol()
 {
-  if ( layout() )
+  if ( auto *lLayout = layout() )
   {
-    QgsRenderContext rc = QgsLayoutUtils::createRenderContextForLayout( layout(), nullptr, layout()->renderContext().dpi() );
-    mMaxSymbolBleed = ( 25.4 / layout()->renderContext().dpi() ) * QgsSymbolLayerUtils::estimateMaxSymbolBleed( mPolygonStyleSymbol.get(), rc );
+    QgsRenderContext rc = QgsLayoutUtils::createRenderContextForLayout( lLayout, nullptr, lLayout->renderContext().dpi() );
+    mMaxSymbolBleed = ( 25.4 / lLayout->renderContext().dpi() ) * QgsSymbolLayerUtils::estimateMaxSymbolBleed( mPolygonStyleSymbol.get(), rc );
   }
 
   updateSceneRect();
@@ -109,6 +109,22 @@ bool QgsLayoutItemPolygon::accept( QgsStyleEntityVisitorInterface *visitor ) con
   }
 
   return true;
+}
+
+QgsLayoutItem::Flags QgsLayoutItemPolygon::itemFlags() const
+{
+  QgsLayoutItem::Flags flags = QgsLayoutNodesItem::itemFlags();
+  flags |= QgsLayoutItem::FlagProvidesClipPath;
+  return flags;
+}
+
+QgsGeometry QgsLayoutItemPolygon::clipPath() const
+{
+  QPolygonF path = mapToScene( mPolygon );
+  // ensure polygon is closed
+  if ( path.at( 0 ) != path.constLast() )
+    path << path.at( 0 );
+  return QgsGeometry::fromQPolygonF( path );
 }
 
 void QgsLayoutItemPolygon::_draw( QgsLayoutItemRenderContext &context, const QStyleOptionGraphicsItem * )

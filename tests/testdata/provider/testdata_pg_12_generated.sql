@@ -16,3 +16,7 @@ CREATE TABLE qgis_test.test_gen_geog_col (
   poly_area FLOAT NOT NULL GENERATED ALWAYS AS ( st_area(geog) ) STORED
 );
 
+CREATE TABLE qgis_test.generated_columns(
+  pk INTEGER PRIMARY KEY,
+  generated_field varchar(30) GENERATED ALWAYS AS ('test:' || "pk"::varchar) STORED);
+INSERT INTO qgis_test.generated_columns ("pk") VALUES(1);

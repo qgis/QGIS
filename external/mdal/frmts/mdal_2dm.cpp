@@ -22,19 +22,11 @@
 
 #define DRIVER_NAME "2DM"
 
-MDAL::Mesh2dm::Mesh2dm( size_t verticesCount,
-                        size_t edgesCount,
-                        size_t facesCount,
-                        size_t faceVerticesMaximumCount,
-                        MDAL::BBox extent,
+MDAL::Mesh2dm::Mesh2dm( size_t faceVerticesMaximumCount,
                         const std::string &uri,
                         const std::map<size_t, size_t> vertexIDtoIndex )
   : MemoryMesh( DRIVER_NAME,
-                verticesCount,
-                edgesCount,
-                facesCount,
                 faceVerticesMaximumCount,
-                extent,
                 uri )
   , mVertexIDtoIndex( vertexIDtoIndex )
 {
@@ -125,6 +117,8 @@ std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, 
   size_t faceCount = 0;
   size_t vertexCount = 0;
   size_t edgesCount = 0;
+  size_t materialCount = 0;
+  bool hasMaterialsDefinitionsForElements = false;
 
   // Find out how many nodes and elements are contained in the .2dm mesh file
   while ( std::getline( in, line ) )
@@ -150,6 +144,12 @@ std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, 
       MDAL::Log::warning( MDAL_Status::Err_UnsupportedElement, name(),  "found unsupported element" );
       return nullptr;
     }
+    // If specified, update the number of materials of the mesh
+    else if ( startsWith( line, "NUM_MATERIALS_PER_ELEM" ) )
+    {
+      hasMaterialsDefinitionsForElements = true;
+      materialCount = MDAL::toSizeT( split( line, ' ' )[1] );
+    }
   }
 
   // Allocate memory
@@ -157,8 +157,8 @@ std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, 
   Edges edges( edgesCount );
   Faces faces( faceCount );
 
-  // Basement 3.x supports definition of elevation for cell centers
-  std::vector<double> elementCenteredElevation;
+  // .2dm mesh files may have any number of material ID columns
+  std::vector<std::vector<double>> faceMaterials;
 
   in.clear();
   in.seekg( 0, std::ios::beg );
@@ -187,7 +187,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, 
       face.resize( faceVertexCount );
 
       // chunks format here
-      // E** id vertex_id1, vertex_id2, ... material_id (elevation - optional)
+      // E** id vertex_id1, vertex_id2, vertex_id3, material_id [, aux_column_1, aux_column_2, ...]
       // vertex ids are numbered from 1
       // Right now we just store node IDs here - we will convert them to node indices afterwards
       assert( chunks.size() > faceVertexCount + 1 );
@@ -195,18 +195,38 @@ std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, 
       for ( size_t i = 0; i < faceVertexCount; ++i )
         face[i] = MDAL::toSizeT( chunks[i + 2] ) - 1; // 2dm is numbered from 1
 
-      // OK, now find out if there is optional cell elevation (BASEMENT 3.x)
-      if ( chunks.size() == faceVertexCount + 4 )
+      // NUM_MATERIALS_PER_ELEM tag provided, use new MATID parser
+      if ( hasMaterialsDefinitionsForElements )
       {
+        // This assertion will fail if a mesh has fewer material ID columns than
+        // promised by the NUM_MATERIAL_PER_ELEM tag.
+        assert( chunks.size() - 5 >= materialCount );
 
-        // initialize dataset if it is still empty
-        if ( elementCenteredElevation.empty() )
+        if ( faceMaterials.empty() ) // Initialize dataset if still empty
         {
-          elementCenteredElevation = std::vector<double>( faceCount, std::numeric_limits<double>::quiet_NaN() );
+          faceMaterials = std::vector<std::vector<double>>( materialCount, std::vector<double>(
+                            faceCount, std::numeric_limits<double>::quiet_NaN() ) );
         }
 
-        // add Bed Elevation (Face) value
-        elementCenteredElevation[faceIndex] = MDAL::toDouble( chunks[ faceVertexCount + 3 ] );
+        // Add material ID values
+        for ( size_t i = 0; i < materialCount; ++i )
+        {
+          // Offset of 2 for E** tag and element ID
+          faceMaterials[i][faceIndex] = MDAL::toDouble( chunks[ faceVertexCount + 2 + i] );
+        }
+      }
+
+      // No NUM_MATERIALS_PER_ELEM tag provided, use legacy MATID parser
+      else if ( chunks.size() == faceVertexCount + 4 )
+      {
+        if ( faceMaterials.empty() ) // Initialize dataset if still empty
+        {
+          // Add a single vector dataset for the "Bed Elevation (Face)" dataset
+          faceMaterials = std::vector<std::vector<double>>( 1, std::vector<double>(
+                            faceCount, std::numeric_limits<double>::quiet_NaN() ) );
+        }
+
+        faceMaterials[0][faceIndex] = MDAL::toDouble( chunks[ faceVertexCount + 3 ] );
       }
 
       faceIndex++;
@@ -276,22 +296,39 @@ std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, 
 
   std::unique_ptr< Mesh2dm > mesh(
     new Mesh2dm(
-      vertices.size(),
-      edges.size(),
-      faces.size(),
       MAX_VERTICES_PER_FACE_2DM,
-      computeExtent( vertices ),
       mMeshFile,
       vertexIDtoIndex
     )
   );
-  mesh->faces = faces;
-  mesh->vertices = vertices;
-  mesh->edges = edges;
+  mesh->setFaces( std::move( faces ) );
+  mesh->setVertices( std::move( vertices ) );
+  mesh->setEdges( std::move( edges ) );
 
-  // Add Bed Elevations
-  MDAL::addFaceScalarDatasetGroup( mesh.get(), elementCenteredElevation, "Bed Elevation (Face)" );
-  MDAL::addBedElevationDatasetGroup( mesh.get(), vertices );
+  // Add Bed Elevation
+  MDAL::addBedElevationDatasetGroup( mesh.get(), mesh->vertices() );
+
+  // Add material IDs
+  if ( hasMaterialsDefinitionsForElements )
+  {
+    // New MATID parser: Add all MATID dataset groups
+    std::string dataSetName;
+    for ( size_t i = 0; i < materialCount; ++i )
+    {
+      // The first two columns get special names for convenience
+      if ( i == 0 ) dataSetName = "Material ID";
+      else if ( i == 1 ) dataSetName = "Bed Elevation (Face)";
+      else dataSetName = "Auxiliary Material ID " + std::to_string( i - 1 );
+
+      MDAL::addFaceScalarDatasetGroup( mesh.get(), faceMaterials[i], dataSetName );
+    }
+  }
+  // Add "Bed Elevation (Face)"
+  else if ( !faceMaterials.empty() )
+  {
+    // Legacy MATID parser: "Bed Elevation (Face)" dataset group only
+    MDAL::addFaceScalarDatasetGroup( mesh.get(), faceMaterials[0], "Bed Elevation (Face)" );
+  }
 
   return std::unique_ptr<Mesh>( mesh.release() );
 }

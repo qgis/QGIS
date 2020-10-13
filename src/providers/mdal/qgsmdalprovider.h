@@ -31,7 +31,7 @@ class QgsCoordinateTransform;
 class QgsCoordinateReferenceSystem;
 
 /**
-  \brief Data provider for MDAL layers.
+ * \brief Data provider for MDAL layers.
 */
 class QgsMdalProvider : public QgsMeshDataProvider
 {
@@ -48,7 +48,7 @@ class QgsMdalProvider : public QgsMeshDataProvider
      * \param uri file name
      * \param options generic provider options
      */
-    QgsMdalProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
+    QgsMdalProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
     ~QgsMdalProvider() override;
 
     bool isValid() const override;
@@ -84,6 +84,12 @@ class QgsMdalProvider : public QgsMeshDataProvider
                               const QVector<QgsMeshDataBlock> &datasetValues,
                               const QVector<QgsMeshDataBlock> &datasetActive,
                               const QVector<double> &times
+                            ) override;
+
+    bool persistDatasetGroup( const QString &outputFilePath,
+                              const QString &outputDriver,
+                              QgsMeshDatasetSourceInterface *source,
+                              int datasetGroupIndex
                             ) override;
 
     /**
@@ -131,8 +137,12 @@ class QgsMdalProviderMetadata: public QgsProviderMetadata
     QgsMdalProviderMetadata();
     QString filters( FilterType type ) override;
     QList<QgsMeshDriverMetadata> meshDriversMetadata() override;
-    QgsMdalProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
+    QgsMdalProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QList<QgsDataItemProvider *> dataItemProviders() const override;
+    bool createMeshData( const QgsMesh &mesh,
+                         const QString uri,
+                         const QString &driverName,
+                         const QgsCoordinateReferenceSystem &crs ) const override;
 };
 
 #endif //QGSMDALPROVIDER_H

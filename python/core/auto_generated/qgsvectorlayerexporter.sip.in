@@ -77,7 +77,7 @@ Writes the contents of vector layer to a different datasource.
                             const QgsCoordinateReferenceSystem &crs,
                             bool overwrite = false,
                             const QMap<QString, QVariant> &options = QMap<QString, QVariant>(),
-                            QgsFeatureSink::SinkFlags sinkFlags = 0 );
+                            QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() );
 %Docstring
 Constructor for QgsVectorLayerExporter.
 
@@ -120,9 +120,11 @@ Returns the number of error messages encountered during the export.
 .. seealso:: :py:func:`errorCode`
 %End
 
-    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 );
+    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 
-    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 );
+    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
+
+    virtual QString lastError() const;
 
 
     ~QgsVectorLayerExporter();

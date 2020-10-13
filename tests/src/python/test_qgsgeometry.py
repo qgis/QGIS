@@ -39,8 +39,8 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsProject
 )
-from qgis.PyQt.QtCore import QDir, QPointF
-from qgis.PyQt.QtGui import QImage, QPainter, QPen, QColor, QBrush, QPainterPath, QPolygonF
+from qgis.PyQt.QtCore import QDir, QPointF, QRectF
+from qgis.PyQt.QtGui import QImage, QPainter, QPen, QColor, QBrush, QPainterPath, QPolygonF, QTransform
 
 from qgis.testing import (
     start_app,
@@ -444,12 +444,12 @@ class TestQgsGeometry(unittest.TestCase):
         g = QgsGeometryCollection()
         self.assertTrue(bool(g))
         self.assertEqual(len(g), 0)
-        g = QgsGeometryCollection()
-        g.fromWkt('GeometryCollection( Point(1  2), Point(11 12))')
+        g = QgsMultiPoint()
+        g.fromWkt('MultiPoint( (1  2), (11 12))')
         self.assertTrue(bool(g))
         self.assertEqual(len(g), 2)
 
-        # pointN
+        # geometryN
         with self.assertRaises(IndexError):
             g.geometryN(-1)
         with self.assertRaises(IndexError):
@@ -457,7 +457,16 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(g.geometryN(0), QgsPoint(1, 2))
         self.assertEqual(g.geometryN(1), QgsPoint(11, 12))
 
+        # pointN
+        with self.assertRaises(IndexError):
+            g.pointN(-1)
+        with self.assertRaises(IndexError):
+            g.pointN(2)
+        self.assertEqual(g.pointN(0), QgsPoint(1, 2))
+        self.assertEqual(g.pointN(1), QgsPoint(11, 12))
+
         # removeGeometry
+        g = QgsGeometryCollection()
         g.fromWkt('GeometryCollection( Point(1  2), Point(11 12), Point(33 34))')
         with self.assertRaises(IndexError):
             g.removeGeometry(-1)
@@ -507,6 +516,51 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertFalse([p for p in g])
         g.fromWkt('GeometryCollection( Point(1 2), Point(11 12), LineString(33 34, 44 45))')
         self.assertEqual([p.asWkt() for p in g], ['Point (1 2)', 'Point (11 12)', 'LineString (33 34, 44 45)'])
+
+        g = QgsGeometryCollection()
+        g.fromWkt('GeometryCollection( Point(1  2), Point(11 12))')
+        self.assertTrue(bool(g))
+        self.assertEqual(len(g), 2)
+
+        # lineStringN
+        g = QgsMultiLineString()
+        g.fromWkt('MultiLineString( (1  2, 3 4), (11 12, 13 14))')
+        with self.assertRaises(IndexError):
+            g.lineStringN(-1)
+        with self.assertRaises(IndexError):
+            g.lineStringN(2)
+        self.assertEqual(g.lineStringN(0).asWkt(), 'LineString (1 2, 3 4)')
+        self.assertEqual(g.lineStringN(1).asWkt(), 'LineString (11 12, 13 14)')
+
+        # curveN
+        g = QgsMultiCurve()
+        g.fromWkt('MultiCurve( LineString(1  2, 3 4), LineString(11 12, 13 14))')
+        with self.assertRaises(IndexError):
+            g.curveN(-1)
+        with self.assertRaises(IndexError):
+            g.curveN(2)
+        self.assertEqual(g.curveN(0).asWkt(), 'LineString (1 2, 3 4)')
+        self.assertEqual(g.curveN(1).asWkt(), 'LineString (11 12, 13 14)')
+
+        # polygonN
+        g = QgsMultiPolygon()
+        g.fromWkt('MultiPolygon( ((1  2, 3 4, 3 6, 1 2)), ((11 12, 13 14, 13 16, 11 12)))')
+        with self.assertRaises(IndexError):
+            g.polygonN(-1)
+        with self.assertRaises(IndexError):
+            g.polygonN(2)
+        self.assertEqual(g.polygonN(0).asWkt(), 'Polygon ((1 2, 3 4, 3 6, 1 2))')
+        self.assertEqual(g.polygonN(1).asWkt(), 'Polygon ((11 12, 13 14, 13 16, 11 12))')
+
+        # surfaceN
+        g = QgsMultiSurface()
+        g.fromWkt('MultiSurface( Polygon((1  2, 3 4, 3 6, 1 2)), Polygon((11 12, 13 14, 13 16, 11 12)))')
+        with self.assertRaises(IndexError):
+            g.surfaceN(-1)
+        with self.assertRaises(IndexError):
+            g.surfaceN(2)
+        self.assertEqual(g.surfaceN(0).asWkt(), 'Polygon ((1 2, 3 4, 3 6, 1 2))')
+        self.assertEqual(g.surfaceN(1).asWkt(), 'Polygon ((11 12, 13 14, 13 16, 11 12))')
 
     def testCurvePolygonPythonAdditions(self):
         """
@@ -788,7 +842,7 @@ class TestQgsGeometry(unittest.TestCase):
                                        "Perimeter {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result))
 
     def testCollection(self):
-        g = QgsGeometry.fromWkt('MultiLineString()')
+        g = QgsGeometry.fromWkt('MultiLineString EMPTY')
         self.assertEqual(len(g.get()), 0)
         self.assertTrue(g.get())
         g = QgsGeometry.fromWkt('MultiLineString((0 0, 1 1),(13 2, 14 1))')
@@ -1937,6 +1991,13 @@ class TestQgsGeometry(unittest.TestCase):
         wkt = g1.nearestPoint(g2).asWkt()
         self.assertTrue(compareWkt(expWkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
 
+        # trivial point case
+        expWkt = 'Point (3 4)'
+        wkt = QgsGeometry.fromWkt('Point(3 4)').nearestPoint(QgsGeometry.fromWkt('Point(-1 -8)')).asWkt()
+        self.assertTrue(compareWkt(expWkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
+        wkt = QgsGeometry.fromWkt('Point(3 4)').nearestPoint(QgsGeometry.fromWkt('LineString( 1 1, 5 1, 5 5 )')).asWkt()
+        self.assertTrue(compareWkt(expWkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
+
     def testShortestLine(self):
         # test with empty geometries
         g1 = QgsGeometry()
@@ -1966,6 +2027,11 @@ class TestQgsGeometry(unittest.TestCase):
         g2 = QgsGeometry.fromWkt('Point( 2 3 )')
         expWkt = 'LineString( 2 3, 2 3 )'
         wkt = g1.shortestLine(g2).asWkt()
+        self.assertTrue(compareWkt(expWkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
+
+        # trivial point to point case
+        expWkt = 'LineString (3 4, -1 -8)'
+        wkt = QgsGeometry.fromWkt('Point(3 4)').shortestLine(QgsGeometry.fromWkt('Point(-1 -8)')).asWkt()
         self.assertTrue(compareWkt(expWkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
 
     def testBoundingBox(self):
@@ -4190,42 +4256,42 @@ class TestQgsGeometry(unittest.TestCase):
 
     def testDeleteVertexCircularString(self):
 
-        wkt = "CircularString ((0 0,1 1,2 0))"
+        wkt = "CircularString (0 0,1 1,2 0)"
         geom = QgsGeometry.fromWkt(wkt)
         assert geom.deleteVertex(0)
         self.assertEqual(geom.asWkt(), QgsCircularString().asWkt())
 
-        wkt = "CircularString ((0 0,1 1,2 0,3 -1,4 0))"
+        wkt = "CircularString (0 0,1 1,2 0,3 -1,4 0)"
         geom = QgsGeometry.fromWkt(wkt)
         assert geom.deleteVertex(0)
         expected_wkt = "CircularString (2 0, 3 -1, 4 0)"
         self.assertEqual(geom.asWkt(), QgsGeometry.fromWkt(expected_wkt).asWkt())
 
-        wkt = "CircularString ((0 0,1 1,2 0,3 -1,4 0))"
+        wkt = "CircularString (0 0,1 1,2 0,3 -1,4 0)"
         geom = QgsGeometry.fromWkt(wkt)
         assert geom.deleteVertex(1)
         expected_wkt = "CircularString (0 0, 3 -1, 4 0)"
         self.assertEqual(geom.asWkt(), QgsGeometry.fromWkt(expected_wkt).asWkt())
 
-        wkt = "CircularString ((0 0,1 1,2 0,3 -1,4 0))"
+        wkt = "CircularString (0 0,1 1,2 0,3 -1,4 0)"
         geom = QgsGeometry.fromWkt(wkt)
         assert geom.deleteVertex(2)
         expected_wkt = "CircularString (0 0, 1 1, 4 0)"
         self.assertEqual(geom.asWkt(), QgsGeometry.fromWkt(expected_wkt).asWkt())
 
-        wkt = "CircularString ((0 0,1 1,2 0,3 -1,4 0))"
+        wkt = "CircularString (0 0,1 1,2 0,3 -1,4 0)"
         geom = QgsGeometry.fromWkt(wkt)
         assert geom.deleteVertex(3)
         expected_wkt = "CircularString (0 0, 1 1, 4 0)"
         self.assertEqual(geom.asWkt(), QgsGeometry.fromWkt(expected_wkt).asWkt())
 
-        wkt = "CircularString ((0 0,1 1,2 0,3 -1,4 0))"
+        wkt = "CircularString (0 0,1 1,2 0,3 -1,4 0)"
         geom = QgsGeometry.fromWkt(wkt)
         assert geom.deleteVertex(4)
         expected_wkt = "CircularString (0 0,1 1,2 0)"
         self.assertEqual(geom.asWkt(), QgsGeometry.fromWkt(expected_wkt).asWkt())
 
-        wkt = "CircularString ((0 0,1 1,2 0,3 -1,4 0))"
+        wkt = "CircularString (0 0,1 1,2 0,3 -1,4 0)"
         geom = QgsGeometry.fromWkt(wkt)
         assert not geom.deleteVertex(-1)
         assert not geom.deleteVertex(5)
@@ -4474,7 +4540,7 @@ class TestQgsGeometry(unittest.TestCase):
         """
         Test curve straightDistance2d() and sinuosity()
         """
-        linestring = QgsGeometry.fromWkt('LineString()')
+        linestring = QgsGeometry.fromWkt('LineString EMPTY')
         self.assertTrue(math.isnan(linestring.constGet().straightDistance2d()))
         self.assertTrue(math.isnan(linestring.constGet().sinuosity()))
         linestring = QgsGeometry.fromWkt('LineString(0 0, 10 0)')
@@ -4790,7 +4856,7 @@ class TestQgsGeometry(unittest.TestCase):
         empty = QgsGeometry()
         o = QgsGeometry.polygonize([empty])
         self.assertFalse(o)
-        line = QgsGeometry.fromWkt('LineString()')
+        line = QgsGeometry.fromWkt('LineString EMPTY')
         o = QgsGeometry.polygonize([line])
         self.assertFalse(o)
 
@@ -4819,7 +4885,7 @@ class TestQgsGeometry(unittest.TestCase):
         empty = QgsGeometry()
         o = empty.delaunayTriangulation()
         self.assertFalse(o)
-        line = QgsGeometry.fromWkt('LineString()')
+        line = QgsGeometry.fromWkt('LineString EMPTY')
         o = line.delaunayTriangulation()
         self.assertFalse(o)
 
@@ -4898,7 +4964,7 @@ class TestQgsGeometry(unittest.TestCase):
         empty = QgsGeometry()
         o = empty.voronoiDiagram()
         self.assertFalse(o)
-        line = QgsGeometry.fromWkt('LineString()')
+        line = QgsGeometry.fromWkt('LineString EMPTY')
         o = line.voronoiDiagram()
         self.assertFalse(o)
 
@@ -5141,7 +5207,7 @@ class TestQgsGeometry(unittest.TestCase):
                  ["LINESTRING (10 10, 10 10)", "POINT (10 10)"],  # zero length line
                  ["MULTILINESTRING ((10 10, 10 10), (20 20, 20 20))", "POINT (15 15)"],  # zero length multiline
                  ["LINESTRING (60 180, 120 100, 180 180)", "POINT (120 140)"],
-                 ["LINESTRING (80 0, 80 120, 120 120, 120 0))", "POINT (100 68.57142857142857)"],
+                 ["LINESTRING (80 0, 80 120, 120 120, 120 0)", "POINT (100 68.57142857142857)"],
                  ["MULTILINESTRING ((0 0, 0 100), (100 0, 100 100))", "POINT (50 50)"],
                  [" MULTILINESTRING ((0 0, 0 200, 200 200, 200 0, 0 0),(60 180, 20 180, 20 140, 60 140, 60 180))",
                   "POINT (90 110)"],
@@ -5732,24 +5798,24 @@ class TestQgsGeometry(unittest.TestCase):
             coerce_to_wkt('MultiPolygon(((1 1, 2 2, 3 3, 1 1)), ((1 1, 2 2, 3 3, 1 1)))', QgsWkbTypes.MultiPolygon),
             ['MultiPolygon (((1 1, 2 2, 3 3, 1 1)),((1 1, 2 2, 3 3, 1 1)))'])
 
-        self.assertEqual(coerce_to_wkt('LineString((1 1, 2 2, 3 3, 1 1))', QgsWkbTypes.LineString),
-                         ['LineString (0 1, 2 2, 3 3, 1 0)'])
-        self.assertEqual(coerce_to_wkt('LineString z ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', QgsWkbTypes.LineString),
-                         ['LineString (0 1, 2 2, 3 3, 1 1)'])
-        self.assertEqual(coerce_to_wkt('LineString z ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', QgsWkbTypes.LineStringZ),
-                         ['LineStringZ (0 1 1, 2 2 2, 3 3 3, 1 1 0)'])
-        self.assertEqual(coerce_to_wkt('LineString m ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', QgsWkbTypes.LineString),
-                         ['LineString (0 1, 2 2, 3 3, 1 1)'])
-        self.assertEqual(coerce_to_wkt('LineString m ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', QgsWkbTypes.LineStringM),
-                         ['LineStringM (0 1 1, 2 2 2, 3 3 3, 1 1 0)'])
+        self.assertEqual(coerce_to_wkt('LineString(1 1, 2 2, 3 3, 1 1)', QgsWkbTypes.LineString),
+                         ['LineString (1 1, 2 2, 3 3, 1 1)'])
+        self.assertEqual(coerce_to_wkt('LineString z (1 1 1, 2 2 2, 3 3 3, 1 1 1)', QgsWkbTypes.LineString),
+                         ['LineString (1 1, 2 2, 3 3, 1 1)'])
+        self.assertEqual(coerce_to_wkt('LineString z (1 1 1, 2 2 2, 3 3 3, 1 1 1)', QgsWkbTypes.LineStringZ),
+                         ['LineStringZ (1 1 1, 2 2 2, 3 3 3, 1 1 1)'])
+        self.assertEqual(coerce_to_wkt('LineString m (1 1 1, 2 2 2, 3 3 3, 1 1 1)', QgsWkbTypes.LineString),
+                         ['LineString (1 1, 2 2, 3 3, 1 1)'])
+        self.assertEqual(coerce_to_wkt('LineString m (1 1 1, 2 2 2, 3 3 3, 1 1 1)', QgsWkbTypes.LineStringM),
+                         ['LineStringM (1 1 1, 2 2 2, 3 3 3, 1 1 1)'])
 
         # Adding Z back
-        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3, 1 1))', QgsWkbTypes.LineStringZ),
-                         ['LineStringZ (1 1 0, 2 2 0, 3 3 0, 1 0 0)'])
+        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3, 1 1)', QgsWkbTypes.LineStringZ),
+                         ['LineStringZ (1 1 0, 2 2 0, 3 3 0, 1 1 0)'])
 
         # Adding M back
-        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3, 1 1))', QgsWkbTypes.LineStringM),
-                         ['LineStringM (1 1 0, 2 2 0, 3 3 0, 1 0 0)'])
+        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3, 1 1)', QgsWkbTypes.LineStringM),
+                         ['LineStringM (1 1 0, 2 2 0, 3 3 0, 1 1 0)'])
 
         self.assertEqual(coerce_to_wkt('LineString(1 1, 2 2, 3 3, 1 1)', QgsWkbTypes.MultiLineString),
                          ['MultiLineString ((1 1, 2 2, 3 3, 1 1))'])
@@ -5902,13 +5968,163 @@ class TestQgsGeometry(unittest.TestCase):
                 rendered_image = self.renderGeometry(geom, False, True)
                 assert self.imageCheck(test['name'] + '_aspolygon', test['as_polygon_reference_image'], rendered_image)
 
-    def imageCheck(self, name, reference_image, image):
+    def testGeometryAsQPainterPath(self):
+        '''Tests conversion of different geometries to QPainterPath, including bad/odd geometries.'''
+
+        empty_multipolygon = QgsMultiPolygon()
+        empty_multipolygon.addGeometry(QgsPolygon())
+        empty_polygon = QgsPolygon()
+        empty_linestring = QgsLineString()
+
+        tests = [{'name': 'LineString',
+                  'wkt': 'LineString (0 0,3 4,4 3)',
+                  'reference_image': 'linestring'},
+                 {'name': 'Empty LineString',
+                  'geom': QgsGeometry(empty_linestring),
+                  'reference_image': 'empty'},
+                 {'name': 'MultiLineString',
+                  'wkt': 'MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 0), (3 1, 5 1, 5 0, 6 0))',
+                  'reference_image': 'multilinestring'},
+                 {'name': 'Polygon',
+                  'wkt': 'Polygon ((0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5))',
+                  'reference_image': 'polygon'},
+                 {'name': 'Empty Polygon',
+                  'geom': QgsGeometry(empty_polygon),
+                  'reference_image': 'empty'},
+                 {'name': 'MultiPolygon',
+                  'wkt': 'MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))',
+                  'reference_image': 'multipolygon'},
+                 {'name': 'Empty MultiPolygon',
+                  'geom': QgsGeometry(empty_multipolygon),
+                  'reference_image': 'empty'},
+                 {'name': 'CircularString',
+                  'wkt': 'CIRCULARSTRING(268 415,227 505,227 406)',
+                  'reference_image': 'circular_string'},
+                 {'name': 'CompoundCurve',
+                  'wkt': 'COMPOUNDCURVE((5 3, 5 13), CIRCULARSTRING(5 13, 7 15, 9 13), (9 13, 9 3), CIRCULARSTRING(9 3, 7 1, 5 3))',
+                  'reference_image': 'compound_curve'},
+                 {'name': 'CurvePolygon',
+                  'wkt': 'CURVEPOLYGON(CIRCULARSTRING(1 3, 3 5, 4 7, 7 3, 1 3))',
+                  'reference_image': 'curve_polygon'},
+                 {'name': 'MultiCurve',
+                  'wkt': 'MultiCurve((5 5,3 5,3 3,0 3),CIRCULARSTRING(0 0, 2 1,2 2))',
+                  'reference_image': 'multicurve'},
+                 {'name': 'CurvePolygon_no_arc',  # refs #14028
+                  'wkt': 'CURVEPOLYGON(LINESTRING(1 3, 3 5, 4 7, 7 3, 1 3))',
+                  'reference_image': 'curve_polygon_no_arc'},
+                 {'name': 'CurvePolygonInteriorRings',
+                  'wkt': 'CurvePolygon(CircularString (20 30, 50 30, 50 90, 10 50, 20 30),LineString(30 45, 55 45, 30 75, 30 45))',
+                  'reference_image': 'curvepolygon_circularstring_interiorrings'},
+                 {'name': 'CompoundCurve With Line',
+                  'wkt': 'CompoundCurve(CircularString (20 30, 50 30, 50 90),LineString(50 90, 10 90))',
+                  'reference_image': 'compoundcurve_with_line'},
+                 {'name': 'Collection LineString',
+                  'wkt': 'GeometryCollection( LineString (0 0,3 4,4 3) )',
+                  'reference_image': 'collection_linestring'},
+                 {'name': 'Collection MultiLineString',
+                  'wkt': 'GeometryCollection (LineString(0 0, 1 0, 1 1, 2 1, 2 0), LineString(3 1, 5 1, 5 0, 6 0))',
+                  'reference_image': 'collection_multilinestring'},
+                 {'name': 'Collection Polygon',
+                  'wkt': 'GeometryCollection(Polygon ((0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5)))',
+                  'reference_image': 'collection_polygon'},
+                 {'name': 'Collection MultiPolygon',
+                  'wkt': 'GeometryCollection( Polygon((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),Polygon((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))',
+                  'reference_image': 'collection_multipolygon'},
+                 {'name': 'Collection CircularString',
+                  'wkt': 'GeometryCollection(CIRCULARSTRING(268 415,227 505,227 406))',
+                  'reference_image': 'collection_circular_string'},
+                 {'name': 'Collection CompoundCurve',
+                  'wkt': 'GeometryCollection(COMPOUNDCURVE((5 3, 5 13), CIRCULARSTRING(5 13, 7 15, 9 13), (9 13, 9 3), CIRCULARSTRING(9 3, 7 1, 5 3)))',
+                  'reference_image': 'collection_compound_curve'},
+                 {'name': 'Collection CurvePolygon',
+                  'wkt': 'GeometryCollection(CURVEPOLYGON(CIRCULARSTRING(1 3, 3 5, 4 7, 7 3, 1 3)))',
+                  'reference_image': 'collection_curve_polygon'},
+                 {'name': 'Collection CurvePolygon_no_arc',  # refs #14028
+                  'wkt': 'GeometryCollection(CURVEPOLYGON(LINESTRING(1 3, 3 5, 4 7, 7 3, 1 3)))',
+                  'reference_image': 'collection_curve_polygon_no_arc'},
+                 {'name': 'Collection Mixed',
+                  'wkt': 'GeometryCollection(Point(1 2), MultiPoint(3 3, 2 3), LineString (0 0,3 4,4 3), MultiLineString((3 1, 3 2, 4 2)), Polygon((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)), MultiPolygon(((4 0, 5 0, 5 1, 6 1, 6 2, 4 2, 4 0)),(( 1 4, 2 4, 1 5, 1 4))))',
+                  'reference_image': 'collection_mixed'},
+                 {'name': 'MultiCurvePolygon',
+                  'wkt': 'MultiSurface (CurvePolygon (CompoundCurve (CircularString (-12942312 4593500, -11871048 5481118, -11363838 5065730, -11551856 4038191, -12133399 4130014),(-12133399 4130014, -12942312 4593500)),(-12120281 5175043, -12456964 4694067, -11752991 4256817, -11569346 4943300, -12120281 5175043)),Polygon ((-10856627 5625411, -11083997 4995770, -10887235 4357384, -9684796 4851477, -10069576 5428648, -10856627 5625411)))',
+                  'reference_image': 'multicurvepolygon_with_rings'}
+                 ]
+
+        for test in tests:
+
+            def get_geom():
+                if 'geom' not in test:
+                    geom = QgsGeometry.fromWkt(test['wkt'])
+                    assert geom and not geom.isNull(), 'Could not create geometry {}'.format(test['wkt'])
+                else:
+                    geom = test['geom']
+                return geom
+
+            geom = get_geom()
+            rendered_image = self.renderGeometryUsingPath(geom)
+            self.assertTrue(self.imageCheck(test['name'], test['reference_image'], rendered_image, control_path="geometry_path"), test['name'])
+
+            # Note - each test is repeated with the same geometry and reference image, but with added
+            # z and m dimensions. This tests that presence of the dimensions does not affect rendering
+
+            # test with Z
+            geom_z = get_geom()
+            geom_z.get().addZValue(5)
+            rendered_image = self.renderGeometryUsingPath(geom_z)
+            assert self.imageCheck(test['name'] + 'Z', test['reference_image'], rendered_image, control_path="geometry_path")
+
+            # test with ZM
+            geom_z.get().addMValue(15)
+            rendered_image = self.renderGeometryUsingPath(geom_z)
+            assert self.imageCheck(test['name'] + 'ZM', test['reference_image'], rendered_image, control_path="geometry_path")
+
+            # test with M
+            geom_m = get_geom()
+            geom_m.get().addMValue(15)
+            rendered_image = self.renderGeometryUsingPath(geom_m)
+            assert self.imageCheck(test['name'] + 'M', test['reference_image'], rendered_image, control_path="geometry_path")
+
+    def renderGeometryUsingPath(self, geom):
+        image = QImage(200, 200, QImage.Format_RGB32)
+        dest_bounds = image.rect()
+
+        geom = QgsGeometry(geom)
+
+        src_bounds = geom.buffer(geom.boundingBox().width() / 10, 5).boundingBox()
+        if src_bounds.width() and src_bounds.height():
+            scale = min(dest_bounds.width() / src_bounds.width(), dest_bounds.height() / src_bounds.height())
+            t = QTransform.fromScale(scale, -scale)
+            geom.transform(t)
+
+        src_bounds = geom.buffer(geom.boundingBox().width() / 10, 5).boundingBox()
+        t = QTransform.fromTranslate(-src_bounds.xMinimum(), -src_bounds.yMinimum())
+        geom.transform(t)
+
+        path = geom.constGet().asQPainterPath()
+
+        painter = QPainter()
+        painter.begin(image)
+        pen = QPen(QColor(0, 255, 255))
+        pen.setWidth(6)
+        painter.setPen(pen)
+        painter.setBrush(QBrush(QColor(255, 255, 0)))
+        try:
+            image.fill(QColor(0, 0, 0))
+
+            painter.drawPath(path)
+
+        finally:
+            painter.end()
+
+        return image
+
+    def imageCheck(self, name, reference_image, image, control_path="geometry"):
         self.report += "<h2>Render {}</h2>\n".format(name)
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'geometry_' + name + ".png"
         image.save(file_name, "PNG")
         checker = QgsRenderChecker()
-        checker.setControlPathPrefix("geometry")
+        checker.setControlPathPrefix(control_path)
         checker.setControlName("expected_" + reference_image)
         checker.setRenderedImage(file_name)
         checker.setColorTolerance(2)

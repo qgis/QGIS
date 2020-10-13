@@ -92,10 +92,9 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
   }
 
   QPainter *painter = context.painter();
-  painter->save();
+  QgsScopedQPainterState painterState( painter );
   painter->setCompositionMode( mBlendMode );
   painter->drawImage( imageOffset( context ), im );
-  painter->restore();
 }
 
 QgsStringMap QgsGlowEffect::properties() const
@@ -116,7 +115,11 @@ QgsStringMap QgsGlowEffect::properties() const
 
   if ( mRamp )
   {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     props.unite( mRamp->properties() );
+#else
+    props.insert( mRamp->properties() );
+#endif
   }
 
   return props;
@@ -179,7 +182,7 @@ void QgsGlowEffect::readProperties( const QgsStringMap &props )
 
 //attempt to create color ramp from props
   delete mRamp;
-  if ( props.contains( QStringLiteral( "rampType" ) ) && props[QStringLiteral( "rampType" )] == QStringLiteral( "cpt-city" ) )
+  if ( props.contains( QStringLiteral( "rampType" ) ) && props[QStringLiteral( "rampType" )] == QLatin1String( "cpt-city" ) )
   {
     mRamp = QgsCptCityColorRamp::create( props );
   }

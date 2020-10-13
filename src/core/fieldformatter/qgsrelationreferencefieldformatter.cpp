@@ -176,6 +176,13 @@ QVariant QgsRelationReferenceFieldFormatter::createCache( QgsVectorLayer *layer,
 
 QList<QgsVectorLayerRef> QgsRelationReferenceFieldFormatter::layerDependencies( const QVariantMap &config ) const
 {
+  // Old projects, create before the weak relations were introduced and stored with the
+  // widget configuration do not have the referenced layer details but only the "Relation" id,
+  // for these projects automatic loading of broken references is not supported.
+  if ( config.value( QStringLiteral( "ReferencedLayerId" ) ).toString().isEmpty() )
+  {
+    return {};
+  }
 
   const QList<QgsVectorLayerRef> result {{
       QgsVectorLayerRef(
@@ -190,12 +197,12 @@ QList<QgsVectorLayerRef> QgsRelationReferenceFieldFormatter::layerDependencies( 
 QVariantList QgsRelationReferenceFieldFormatter::availableValues( const QVariantMap &config, int countLimit, const QgsFieldFormatterContext &context ) const
 {
   QVariantList values;
-  if ( context.project() )
+  if ( auto *lProject = context.project() )
   {
-    const QgsVectorLayer *referencedLayer = context.project()->relationManager()->relation( config[QStringLiteral( "Relation" )].toString() ).referencedLayer();
+    const QgsVectorLayer *referencedLayer = lProject->relationManager()->relation( config[QStringLiteral( "Relation" )].toString() ).referencedLayer();
     if ( referencedLayer )
     {
-      int fieldIndex =  context.project()->relationManager()->relation( config[QStringLiteral( "Relation" )].toString() ).referencedFields().first();
+      int fieldIndex =  lProject->relationManager()->relation( config[QStringLiteral( "Relation" )].toString() ).referencedFields().first();
       values = qgis::setToList( referencedLayer->uniqueValues( fieldIndex, countLimit ) );
     }
   }

@@ -182,14 +182,53 @@ class QgsServerAPITestBase(QgsServerTestBase):
         result.append(bytes(response.body()).decode('utf8'))
         return '\n'.join(result)
 
-    def compareApi(self, request, project, reference_file):
+    def assertLinesEqual(self, actual, expected, reference_file):
+        """Break on first different line"""
+
+        actual_lines = actual.split('\n')
+        expected_lines = expected.split('\n')
+        for i in range(len(actual_lines)):
+            self.assertEqual(actual_lines[i], expected_lines[i], "File: %s\nLine: %s\nActual  : %s\nExpected: %s" % (
+                reference_file, i, actual_lines[i], expected_lines[i]))
+
+    def normalize_json(self, content):
+        """Normalize a json string"""
+
+        reference_content = content.split('\n')
+        j = ''.join(reference_content[reference_content.index('') + 1:])
+        # Do not test timeStamp
+        j = json.loads(j)
+        try:
+            j['timeStamp'] = '2019-07-05T12:27:07Z'
+        except:
+            pass
+        # Fix coordinate precision differences in Travis
+        try:
+            bbox = j['extent']['spatial']['bbox'][0]
+            bbox = [round(c, 4) for c in bbox]
+            j['extent']['spatial']['bbox'][0] = bbox
+        except:
+            pass
+        json_content = json.dumps(j, indent=4)
+        # Rounding errors
+        json_content = re.sub(r'(\d{5})\d+\.\d+', r'\1', json_content)
+        json_content = re.sub(r'(\d+\.\d{4})\d+', r'\1', json_content)
+        # Poject hash
+        json_content = re.sub(r'[a-f0-9]{32}', r'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF', json_content)
+        headers_content = '\n'.join(
+            reference_content[:reference_content.index('') + 1])
+        return headers_content + '\n' + json_content
+
+    def compareApi(self, request, project, reference_file, subdir='api'):
         response = QgsBufferServerResponse()
         # Add json to accept it reference_file is JSON
         if reference_file.endswith('.json'):
             request.setHeader('Accept', 'application/json')
         self.server.handleRequest(request, response, project)
-        result = bytes(response.body()).decode('utf8') if reference_file.endswith('html') else self.dump(response)
-        path = unitTestDataPath('qgis_server') + '/api/' + reference_file
+        result = bytes(response.body()).decode(
+            'utf8') if reference_file.endswith('html') else self.dump(response)
+        path = os.path.join(unitTestDataPath(
+            'qgis_server'), subdir, reference_file)
         if self.regeregenerate_api_reference:
             # Try to change timestamp
             try:
@@ -197,7 +236,8 @@ class QgsServerAPITestBase(QgsServerTestBase):
                 j = ''.join(content[content.index('') + 1:])
                 j = json.loads(j)
                 j['timeStamp'] = '2019-07-05T12:27:07Z'
-                result = '\n'.join(content[:2]) + '\n' + json.dumps(j, ensure_ascii=False, indent=2)
+                result = '\n'.join(content[:2]) + '\n' + \
+                    json.dumps(j, ensure_ascii=False, indent=2)
             except:
                 pass
             f = open(path.encode('utf8'), 'w+', encoding='utf8')
@@ -205,29 +245,10 @@ class QgsServerAPITestBase(QgsServerTestBase):
             f.close()
             print("Reference file %s regenerated!" % path.encode('utf8'))
 
-        def __normalize_json(content):
-            reference_content = content.split('\n')
-            j = ''.join(reference_content[reference_content.index('') + 1:])
-            # Do not test timeStamp
-            j = json.loads(j)
-            try:
-                j['timeStamp'] = '2019-07-05T12:27:07Z'
-            except:
-                pass
-            # Fix coordinate precision differences in Travis
-            try:
-                bbox = j['extent']['spatial']['bbox'][0]
-                bbox = [round(c, 4) for c in bbox]
-                j['extent']['spatial']['bbox'][0] = bbox
-            except:
-                pass
-            json_content = json.dumps(j)
-            headers_content = '\n'.join(reference_content[:reference_content.index('') + 1])
-            return headers_content + '\n' + json_content
-
         with open(path.encode('utf8'), 'r', encoding='utf8') as f:
             if reference_file.endswith('json'):
-                self.assertEqual(__normalize_json(result), __normalize_json(f.read()))
+                self.assertLinesEqual(self.normalize_json(
+                    result), self.normalize_json(f.read()), path.encode('utf8'))
             else:
                 self.assertEqual(f.read(), result)
 
@@ -956,6 +977,35 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.server.handleRequest(request, response, project)
         self.assertEqual(response.statusCode(), 200)
         self.compareApi(request, project, 'test_wfs3_collections_items_layer1_with_short_name_eq_two.json')
+
+    def test_wfs3_sorting(self):
+        """Test sorting"""
+        project = QgsProject()
+        project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
+        # Check not published
+        response = QgsBufferServerResponse()
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/layer1_with_short_name/items?sortby=does_not_exist')
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 400)  # Bad request
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/layer1_with_short_name/items?sortby=name')
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 200)
+        self.compareApi(
+            request, project, 'test_wfs3_collections_items_layer1_with_short_name_sort_by_name.json')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/layer1_with_short_name/items?sortby=name&sortdesc=1')
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 200)
+        self.compareApi(
+            request, project, 'test_wfs3_collections_items_layer1_with_short_name_sort_by_name_desc.json')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/layer1_with_short_name/items?sortby=name&sortdesc=0')
+        self.server.handleRequest(request, response, project)
+        self.assertEqual(response.statusCode(), 200)
+        self.compareApi(
+            request, project, 'test_wfs3_collections_items_layer1_with_short_name_sort_by_name_asc.json')
 
     def test_wfs3_collection_items_properties(self):
         """Test WFS3 API items"""

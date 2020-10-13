@@ -1,6 +1,7 @@
 {
   "name": "left",
   "type": "function",
+  "groups": ["String"],
   "description": "Returns a substring that contains the <i>n</i> leftmost characters of the string.",
   "arguments": [
 	{"arg":"string","description":"a string"},

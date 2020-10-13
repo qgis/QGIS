@@ -39,6 +39,9 @@ Copy constructor.
 
     ~QgsTextBufferSettings();
 
+    bool operator==( const QgsTextBufferSettings &other ) const;
+    bool operator!=( const QgsTextBufferSettings &other ) const;
+
     bool enabled() const;
 %Docstring
 Returns whether the buffer is enabled.
@@ -223,7 +226,7 @@ Write settings into a DOM element.
 .. seealso:: :py:func:`readXml`
 %End
 
-    QgsPaintEffect *paintEffect() const;
+    const QgsPaintEffect *paintEffect() const;
 %Docstring
 Returns the current paint effect for the buffer.
 

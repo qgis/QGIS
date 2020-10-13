@@ -44,6 +44,7 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
     void cmbTransformType_currentIndexChanged( const QString &text );
     void mWorldFileCheckBox_stateChanged( int state );
     QIcon getThemeIcon( const QString &name );
+    void showHelp();
 
   private:
     bool checkGCPpoints( int count, int &minGCPpoints );

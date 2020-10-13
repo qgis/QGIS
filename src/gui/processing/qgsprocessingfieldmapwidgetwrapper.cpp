@@ -69,6 +69,7 @@ void QgsProcessingFieldMapPanelWidget::setLayer( QgsVectorLayer *layer )
     return;
 
   mLayer = layer;
+  mFieldsView->setSourceLayer( mLayer );
   if ( mModel->rowCount() == 0 )
   {
     loadFieldsFromLayer();
@@ -191,7 +192,6 @@ QgsProcessingFieldMapParameterDefinitionWidget::QgsProcessingFieldMapParameterDe
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Parent layer" ) ) );
@@ -203,13 +203,13 @@ QgsProcessingFieldMapParameterDefinitionWidget::QgsProcessingFieldMapParameterDe
   if ( const QgsProcessingParameterFieldMapping *mapParam = dynamic_cast<const QgsProcessingParameterFieldMapping *>( definition ) )
     initialParent = mapParam->parentLayerParameterName();
 
-  if ( widgetContext.model() )
+  if ( auto *lModel = widgetContext.model() )
   {
     // populate combo box with other model input choices
-    const QMap<QString, QgsProcessingModelParameter> components = widgetContext.model()->parameterComponents();
+    const QMap<QString, QgsProcessingModelParameter> components = lModel->parameterComponents();
     for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
     {
-      if ( const QgsProcessingParameterFeatureSource *definition = dynamic_cast< const QgsProcessingParameterFeatureSource * >( widgetContext.model()->parameterDefinition( it.value().parameterName() ) ) )
+      if ( const QgsProcessingParameterFeatureSource *definition = dynamic_cast< const QgsProcessingParameterFeatureSource * >( lModel->parameterDefinition( it.value().parameterName() ) ) )
       {
         mParentLayerComboBox-> addItem( definition->description(), definition->name() );
         if ( !initialParent.isEmpty() && initialParent == definition->name() )
@@ -217,7 +217,7 @@ QgsProcessingFieldMapParameterDefinitionWidget::QgsProcessingFieldMapParameterDe
           mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
         }
       }
-      else if ( const QgsProcessingParameterVectorLayer *definition = dynamic_cast< const QgsProcessingParameterVectorLayer * >( widgetContext.model()->parameterDefinition( it.value().parameterName() ) ) )
+      else if ( const QgsProcessingParameterVectorLayer *definition = dynamic_cast< const QgsProcessingParameterVectorLayer * >( lModel->parameterDefinition( it.value().parameterName() ) ) )
       {
         mParentLayerComboBox-> addItem( definition->description(), definition->name() );
         if ( !initialParent.isEmpty() && initialParent == definition->name() )

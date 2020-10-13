@@ -85,6 +85,7 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/gui/auth
       ${CMAKE_SOURCE_DIR}/src/gui/attributetable
       ${CMAKE_SOURCE_DIR}/src/gui/callouts
+      ${CMAKE_SOURCE_DIR}/src/gui/codeeditors
       ${CMAKE_SOURCE_DIR}/src/gui/devtools
       ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
       ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
@@ -110,6 +111,7 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/analysis/vector/geometry_checker
       ${CMAKE_SOURCE_DIR}/src/3d
       ${CMAKE_SOURCE_DIR}/src/3d/chunks
+      ${CMAKE_SOURCE_DIR}/src/3d/materials
       ${CMAKE_SOURCE_DIR}/src/3d/symbols
       ${CMAKE_SOURCE_DIR}/src/3d/terrain
       ${CMAKE_SOURCE_DIR}/src/plugins

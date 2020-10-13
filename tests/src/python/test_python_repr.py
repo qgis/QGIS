@@ -19,7 +19,7 @@ from qgis.core import QgsGeometry, QgsPoint, QgsPointXY, QgsCircle, QgsCircularS
     QgsMimeDataUtils, QgsVector, QgsVector3D, QgsVectorLayer, QgsReferencedPointXY, QgsReferencedRectangle,\
     QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsProject, QgsClassificationRange, QgsBookmark, \
     QgsLayoutMeasurement, QgsLayoutPoint, QgsLayoutSize, QgsUnitTypes, QgsConditionalStyle, QgsTableCell, QgsProperty, \
-    QgsVertexId
+    QgsVertexId, QgsReferencedGeometry
 
 start_app()
 
@@ -137,6 +137,10 @@ class TestPython__repr__(unittest.TestCase):
     def testQgsReferencedRectangleRepr(self):
         r = QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:4326'))
         self.assertEqual(r.__repr__(), '<QgsReferencedRectangle: 1 2, 3 4 (EPSG:4326)>')
+
+    def testQgsReferencedGeometryRepr(self):
+        g = QgsReferencedGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)), QgsCoordinateReferenceSystem('EPSG:4326'))
+        self.assertEqual(g.__repr__(), '<QgsReferencedGeometry: Point (1 2) (EPSG:4326)>')
 
     def testQgsCoordinateReferenceSystem(self):
         crs = QgsCoordinateReferenceSystem('EPSG:4326')

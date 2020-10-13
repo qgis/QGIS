@@ -62,7 +62,6 @@ class ScriptEditorDialog(BASE, WIDGET):
 
         QgsGui.instance().enableAutoGeometryRestore(self)
 
-        self.editor.initLexer()
         self.searchWidget.setVisible(False)
 
         if iface is not None:

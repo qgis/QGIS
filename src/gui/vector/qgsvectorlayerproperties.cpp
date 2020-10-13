@@ -60,7 +60,7 @@
 #include "qgssymbollayer.h"
 #include "qgsgeometryoptions.h"
 #include "qgsvectorlayersavestyledialog.h"
-#include "qgsvectorlayerloadstyledialog.h"
+#include "qgsmaplayerloadstyledialog.h"
 #include "qgsmessagebar.h"
 #include "qgssymbolwidgetcontext.h"
 #include "qgsexpressioncontextutils.h"
@@ -388,7 +388,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
       dependencySources << layer;
   }
 
-  mLayersDependenciesTreeModel = new DependenciesLayerTreeModel( mLayer, this );
+  mLayersDependenciesTreeModel = new QgsLayerTreeFilterProxyModel( this );
   mLayersDependenciesTreeModel->setLayerTreeModel( new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot(), mLayersDependenciesTreeModel ) );
   mLayersDependenciesTreeModel->setCheckedLayers( dependencySources );
   connect( QgsProject::instance(), &QObject::destroyed, this, [ = ] {mLayersDependenciesTreeView->setModel( nullptr );} );
@@ -578,6 +578,9 @@ void QgsVectorLayerProperties::syncToLayer()
   // set initial state for variable editor
   updateVariableEditor();
 
+  if ( diagramPropertiesDialog )
+    diagramPropertiesDialog->syncToLayer();
+
   // sync all plugin dialogs
   const auto constMLayerPropertiesPages = mLayerPropertiesPages;
   for ( QgsMapLayerConfigWidget *page : constMLayerPropertiesPages )
@@ -589,7 +592,9 @@ void QgsVectorLayerProperties::syncToLayer()
 
   mTemporalWidget->syncToLayer();
 
-} // syncToLayer()
+  mLegendWidget->setLayer( mLayer );
+
+}
 
 void QgsVectorLayerProperties::apply()
 {
@@ -607,7 +612,7 @@ void QgsVectorLayerProperties::apply()
   mMetadataFilled = false;
 
   // save masking settings
-  if ( mMaskingWidget )
+  if ( mMaskingWidget && mMaskingWidget->hasBeenPopulated() )
     mMaskingWidget->apply();
 
   //
@@ -637,7 +642,7 @@ void QgsVectorLayerProperties::apply()
     }
   }
 
-  mLayer->setDisplayExpression( mDisplayExpressionWidget->currentField() );
+  mLayer->setDisplayExpression( mDisplayExpressionWidget->asExpression() );
   mLayer->setMapTipTemplate( mMapTipWidget->text() );
 
   mLayer->actions()->clearActions();
@@ -1290,7 +1295,7 @@ void QgsVectorLayerProperties::loadStyle()
 
   //get the list of styles in the db
   int sectionLimit = mLayer->listStylesInDatabase( ids, names, descriptions, errorMsg );
-  QgsVectorLayerLoadStyleDialog dlg( mLayer );
+  QgsMapLayerLoadStyleDialog dlg( mLayer );
   dlg.initializeLists( ids, names, descriptions, sectionLimit );
 
   if ( dlg.exec() )
@@ -1538,7 +1543,7 @@ void QgsVectorLayerProperties::addJoinToTreeWidget( const QgsVectorLayerJoinInfo
   childFields->setText( 0, QStringLiteral( "Joined fields" ) );
   const QStringList *list = join.joinFieldNamesSubset();
   if ( list )
-    childFields->setText( 1, QStringLiteral( "%1" ).arg( list->count() ) );
+    childFields->setText( 1, QString::number( list->count() ) );
   else
     childFields->setText( 1, tr( "all" ) );
   joinItem->addChild( childFields );
@@ -1765,10 +1770,10 @@ void QgsVectorLayerProperties::updateSymbologyPage()
 
   if ( mRendererDialog )
   {
-    mRendererDialog->layout()->setMargin( 0 );
+    mRendererDialog->layout()->setContentsMargins( 0, 0, 0, 0 );
     widgetStackRenderers->addWidget( mRendererDialog );
     widgetStackRenderers->setCurrentWidget( mRendererDialog );
-    widgetStackRenderers->currentWidget()->layout()->setMargin( 0 );
+    widgetStackRenderers->currentWidget()->layout()->setContentsMargins( 0, 0, 0, 0 );
   }
 }
 
@@ -2056,7 +2061,7 @@ void QgsVectorLayerProperties::deleteAuxiliaryField( int index )
   {
     const QString title = QObject::tr( "Delete Auxiliary Field" );
     const int timeout = QgsSettings().value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
-    const QString errors = mLayer->auxiliaryLayer()->commitErrors().join( QStringLiteral( "\n  " ) );
+    const QString errors = mLayer->auxiliaryLayer()->commitErrors().join( QLatin1String( "\n  " ) );
     const QString msg = QObject::tr( "Unable to remove auxiliary field (%1)" ).arg( errors );
     mMessageBar->pushMessage( title, msg, Qgis::Warning, timeout );
   }

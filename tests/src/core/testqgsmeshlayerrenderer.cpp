@@ -65,11 +65,12 @@ class TestQgsMeshRenderer : public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init(); // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
-    bool imageCheck( const QString &testType, QgsMeshLayer *layer );
+    bool imageCheck( const QString &testType, QgsMeshLayer *layer, double rotation = 0.0 );
     QString readFile( const QString &fname ) const;
 
 
     void test_native_mesh_rendering();
+    void test_native_mesh_renderingWithClipping();
     void test_triangular_mesh_rendering();
     void test_edge_mesh_rendering();
 
@@ -227,12 +228,14 @@ QString TestQgsMeshRenderer::readFile( const QString &fname ) const
   return uri;
 }
 
-bool TestQgsMeshRenderer::imageCheck( const QString &testType, QgsMeshLayer *layer )
+bool TestQgsMeshRenderer::imageCheck( const QString &testType, QgsMeshLayer *layer, double rotation )
 {
   mReport += "<h2>" + testType + "</h2>\n";
-  mMapSettings->setExtent( layer->extent() );
   mMapSettings->setDestinationCrs( layer->crs() );
+  mMapSettings->setExtent( layer->extent() );
+  mMapSettings->setRotation( rotation );
   mMapSettings->setOutputDpi( 96 );
+
   QgsRenderChecker myChecker;
   myChecker.setControlPathPrefix( QStringLiteral( "mesh" ) );
   myChecker.setControlName( "expected_" + testType );
@@ -252,6 +255,29 @@ void TestQgsMeshRenderer::test_native_mesh_rendering()
   rendererSettings.setNativeMeshSettings( settings );
   mMemoryLayer->setRendererSettings( rendererSettings );
   QVERIFY( imageCheck( "quad_and_triangle_native_mesh", mMemoryLayer ) );
+  QVERIFY( imageCheck( "quad_and_triangle_native_mesh_rotated_45", mMemoryLayer, 45.0 ) );
+}
+
+void TestQgsMeshRenderer::test_native_mesh_renderingWithClipping()
+{
+  QgsMeshRendererSettings rendererSettings = mMemoryLayer->rendererSettings();
+  QgsMeshRendererMeshSettings settings = rendererSettings.nativeMeshSettings();
+  settings.setEnabled( true );
+  settings.setLineWidth( 1. );
+  rendererSettings.setNativeMeshSettings( settings );
+  mMemoryLayer->setRendererSettings( rendererSettings );
+
+  QgsMapClippingRegion region( QgsGeometry::fromWkt( "Polygon ((1706.47279549718587077 2907.78611632270212795, 1306.56660412757969425 2480.30018761726114462, 1665.10318949343354689 2123.73358348968167775, 2360.5065666041273289 2060.6941838649163401, 2640.24390243902416842 2669.41838649155761232, 2228.51782363977508794 2874.29643527204552811, 1706.47279549718587077 2907.78611632270212795))" ) );
+  region.setFeatureClip( QgsMapClippingRegion::FeatureClippingType::ClipPainterOnly );
+  QgsMapClippingRegion region2( QgsGeometry::fromWkt( "Polygon ((1966.51031894934340016 2925.51594746716773443, 1801.03189493433410462 2452.7204502814265652, 2057.12945590994377199 2027.20450281425951289, 2457.03564727954972113 2033.11444652908130593, 2380.20637898686709377 2957.03564727955017588, 1966.51031894934340016 2925.51594746716773443))" ) );
+  region2.setFeatureClip( QgsMapClippingRegion::FeatureClippingType::ClipToIntersection );
+  mMapSettings->addClippingRegion( region );
+  mMapSettings->addClippingRegion( region2 );
+
+  const bool res = imageCheck( "painterclip_region", mMemoryLayer );
+
+  mMapSettings->setClippingRegions( QList< QgsMapClippingRegion >() );
+  QVERIFY( res );
 }
 
 void TestQgsMeshRenderer::test_triangular_mesh_rendering()
@@ -264,6 +290,7 @@ void TestQgsMeshRenderer::test_triangular_mesh_rendering()
   rendererSettings.setTriangularMeshSettings( settings );
   mMemoryLayer->setRendererSettings( rendererSettings );
   QVERIFY( imageCheck( "quad_and_triangle_triangular_mesh", mMemoryLayer ) );
+  QVERIFY( imageCheck( "quad_and_triangle_triangular_mesh_rotated_45", mMemoryLayer, 45.0 ) );
 }
 
 void TestQgsMeshRenderer::test_edge_mesh_rendering()
@@ -296,6 +323,7 @@ void TestQgsMeshRenderer::test_1d_vertex_scalar_dataset_rendering()
   mMemory1DLayer->setStaticScalarDatasetIndex( ds );
 
   QVERIFY( imageCheck( "lines_vertex_scalar_dataset", mMemory1DLayer ) );
+  QVERIFY( imageCheck( "lines_vertex_scalar_dataset_rotated_45", mMemory1DLayer, 45 ) );
 }
 
 void TestQgsMeshRenderer::test_1d_vertex_vector_dataset_rendering()
@@ -314,6 +342,7 @@ void TestQgsMeshRenderer::test_1d_vertex_vector_dataset_rendering()
   mMemory1DLayer->setStaticVectorDatasetIndex( ds );
 
   QVERIFY( imageCheck( "lines_vertex_vector_dataset", mMemory1DLayer ) );
+  QVERIFY( imageCheck( "lines_vertex_vector_dataset_rotated_45", mMemory1DLayer, 45 ) );
 }
 
 void TestQgsMeshRenderer::test_1d_edge_scalar_dataset_rendering()
@@ -334,6 +363,7 @@ void TestQgsMeshRenderer::test_1d_edge_scalar_dataset_rendering()
   mMemory1DLayer->setStaticScalarDatasetIndex( ds );
 
   QVERIFY( imageCheck( "lines_edge_scalar_dataset", mMemory1DLayer ) );
+  QVERIFY( imageCheck( "lines_edge_scalar_dataset_rotated_45", mMemory1DLayer, 45 ) );
 }
 
 void TestQgsMeshRenderer::test_1d_edge_vector_dataset_rendering()
@@ -347,6 +377,7 @@ void TestQgsMeshRenderer::test_1d_edge_vector_dataset_rendering()
   mMemory1DLayer->setStaticVectorDatasetIndex( ds );
 
   QVERIFY( imageCheck( "lines_edge_vector_dataset", mMemory1DLayer ) );
+  QVERIFY( imageCheck( "lines_edge_vector_dataset_rotated_45", mMemory1DLayer, 45 ) );
 }
 
 void TestQgsMeshRenderer::test_vertex_scalar_dataset_rendering()
@@ -360,6 +391,7 @@ void TestQgsMeshRenderer::test_vertex_scalar_dataset_rendering()
   mMemoryLayer->setStaticScalarDatasetIndex( ds );
 
   QVERIFY( imageCheck( "quad_and_triangle_vertex_scalar_dataset", mMemoryLayer ) );
+  QVERIFY( imageCheck( "quad_and_triangle_vertex_scalar_dataset_rotated_45", mMemoryLayer, 45.0 ) );
 }
 
 void TestQgsMeshRenderer::test_vertex_vector_dataset_rendering()
@@ -378,6 +410,7 @@ void TestQgsMeshRenderer::test_vertex_vector_dataset_rendering()
   mMemoryLayer->setStaticVectorDatasetIndex( ds );
 
   QVERIFY( imageCheck( "quad_and_triangle_vertex_vector_dataset", mMemoryLayer ) );
+  QVERIFY( imageCheck( "quad_and_triangle_vertex_vector_dataset_rotated_45", mMemoryLayer, 45.0 ) );
 }
 
 void TestQgsMeshRenderer::test_vertex_vector_dataset_colorRamp_rendering()
@@ -410,6 +443,7 @@ void TestQgsMeshRenderer::test_face_scalar_dataset_rendering()
   mMemoryLayer->setStaticScalarDatasetIndex( ds );
 
   QVERIFY( imageCheck( "quad_and_triangle_face_scalar_dataset", mMemoryLayer ) );
+  QVERIFY( imageCheck( "quad_and_triangle_face_scalar_dataset_rotated_45", mMemoryLayer, 45.0 ) );
 }
 
 void TestQgsMeshRenderer::test_face_scalar_dataset_interpolated_neighbour_average_rendering()
@@ -440,6 +474,7 @@ void TestQgsMeshRenderer::test_face_vector_dataset_rendering()
   mMemoryLayer->setStaticVectorDatasetIndex( ds );
 
   QVERIFY( imageCheck( "quad_and_triangle_face_vector_dataset", mMemoryLayer ) );
+  QVERIFY( imageCheck( "quad_and_triangle_face_vector_dataset_rotated_45", mMemoryLayer, 45.0 ) );
 }
 
 void TestQgsMeshRenderer::test_vertex_scalar_dataset_with_inactive_face_rendering()
@@ -473,6 +508,7 @@ void TestQgsMeshRenderer::test_face_vector_on_user_grid()
   mMemoryLayer->setStaticVectorDatasetIndex( ds );
 
   QVERIFY( imageCheck( "quad_and_triangle_face_vector_user_grid_dataset", mMemoryLayer ) );
+  QVERIFY( imageCheck( "quad_and_triangle_face_vector_user_grid_dataset_rotated_45", mMemoryLayer, 45.0 ) );
 }
 
 void TestQgsMeshRenderer::test_face_vector_on_user_grid_streamlines()
@@ -493,6 +529,7 @@ void TestQgsMeshRenderer::test_face_vector_on_user_grid_streamlines()
   mMemoryLayer->setStaticVectorDatasetIndex( ds );
 
   QVERIFY( imageCheck( "quad_and_triangle_face_vector_user_grid_dataset_streamlines", mMemoryLayer ) );
+  QVERIFY( imageCheck( "quad_and_triangle_face_vector_user_grid_dataset_streamlines_rotated_45", mMemoryLayer, 45.0 ) );
 }
 
 void TestQgsMeshRenderer::test_vertex_vector_on_user_grid()
@@ -514,6 +551,7 @@ void TestQgsMeshRenderer::test_vertex_vector_on_user_grid()
   mMemoryLayer->setStaticVectorDatasetIndex( ds );
 
   QVERIFY( imageCheck( "quad_and_triangle_vertex_vector_user_grid_dataset", mMemoryLayer ) );
+  QVERIFY( imageCheck( "quad_and_triangle_vertex_vector_user_grid_dataset_rotated_45", mMemoryLayer, 45.0 ) );
 }
 
 void TestQgsMeshRenderer::test_vertex_vector_on_user_grid_streamlines()
@@ -535,6 +573,7 @@ void TestQgsMeshRenderer::test_vertex_vector_on_user_grid_streamlines()
   mMemoryLayer->setStaticVectorDatasetIndex( ds );
 
   QVERIFY( imageCheck( "quad_and_triangle_vertex_vector_user_grid_dataset_streamlines", mMemoryLayer ) );
+  QVERIFY( imageCheck( "quad_and_triangle_vertex_vector_user_grid_dataset_streamlines_rotated_45", mMemoryLayer, 45.0 ) );
 }
 
 void TestQgsMeshRenderer::test_vertex_vector_on_user_grid_streamlines_colorRamp()
@@ -583,6 +622,7 @@ void TestQgsMeshRenderer::test_vertex_vector_traces()
   mMemoryLayer->setStaticVectorDatasetIndex( ds );
 
   QVERIFY( imageCheck( "quad_and_triangle_vertex_vector_traces", mMemoryLayer ) );
+  QVERIFY( imageCheck( "quad_and_triangle_vertex_vector_traces_rotated_45", mMemoryLayer, 45.0 ) );
 }
 
 void TestQgsMeshRenderer::test_vertex_vector_traces_colorRamp()

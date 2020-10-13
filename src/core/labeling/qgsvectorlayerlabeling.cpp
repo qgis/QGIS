@@ -269,15 +269,18 @@ void QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
   }
   else
   {
-    if ( font.capitalization() == QFont::AllUppercase )
+    QgsStringUtils::Capitalization capitalization = format.capitalization();
+    if ( capitalization == QgsStringUtils::MixedCase && font.capitalization() != QFont::MixedCase )
+      capitalization = static_cast< QgsStringUtils::Capitalization >( font.capitalization() );
+    if ( capitalization == QgsStringUtils::AllUppercase )
     {
       appendSimpleFunction( doc, labelElement, QStringLiteral( "strToUpperCase" ), settings.fieldName );
     }
-    else if ( font.capitalization() == QFont::AllLowercase )
+    else if ( capitalization == QgsStringUtils::AllLowercase )
     {
       appendSimpleFunction( doc, labelElement, QStringLiteral( "strToLowerCase" ), settings.fieldName );
     }
-    else if ( font.capitalization() == QFont::Capitalize )
+    else if ( capitalization == QgsStringUtils::ForceFirstLetterToCapital )
     {
       appendSimpleFunction( doc, labelElement, QStringLiteral( "strCapitalize" ), settings.fieldName );
     }
@@ -500,7 +503,7 @@ void QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
     QDomElement vo =  QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "forceLeftToRight" ), QStringLiteral( "false" ) );
     textSymbolizerElement.appendChild( vo );
   }
-  if ( settings.mergeLines )
+  if ( settings.lineSettings().mergeLines() )
   {
     QDomElement vo =  QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "group" ), QStringLiteral( "yes" ) );
     textSymbolizerElement.appendChild( vo );

@@ -39,8 +39,11 @@ bool MDAL::DriverGdalNetCDF::parseBandInfo( const MDAL::GdalDataset *cfGDALDatas
   metadata_hash::const_iterator iter;
 
   iter = metadata.find( "netcdf_dim_time" );
-  if ( iter == metadata.end() ) return true; //FAILURE, skip no-time bands
-  *time = MDAL::RelativeTimestamp( parseMetadataTime( iter->second ), mTimeUnit );
+
+  if ( iter == metadata.end() )
+    *time = MDAL::RelativeTimestamp();
+  else
+    *time = MDAL::RelativeTimestamp( parseMetadataTime( iter->second ), mTimeUnit );
 
   // NAME
   iter = metadata.find( "long_name" );

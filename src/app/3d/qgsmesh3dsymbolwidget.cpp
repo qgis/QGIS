@@ -69,27 +69,27 @@ QgsMesh3dSymbolWidget::QgsMesh3dSymbolWidget( QgsMeshLayer *meshLayer, QWidget *
   onColoringTypeChanged();
 }
 
-void QgsMesh3dSymbolWidget::setSymbol( const QgsMesh3DSymbol &symbol )
+void QgsMesh3dSymbolWidget::setSymbol( const QgsMesh3DSymbol *symbol )
 {
-  mSymbol = symbol;
-  mChkSmoothTriangles->setChecked( symbol.smoothedTriangles() );
-  mChkWireframe->setChecked( symbol.wireframeEnabled() );
-  mColorButtonWireframe->setColor( symbol.wireframeLineColor() );
-  mSpinBoxWireframeLineWidth->setValue( symbol.wireframeLineWidth() );
-  mSpinBoxVerticaleScale->setValue( symbol.verticalScale() );
-  mComboBoxTextureType->setCurrentIndex( mComboBoxTextureType->findData( symbol.renderingStyle() ) );
-  mMeshSingleColorButton->setColor( symbol.singleMeshColor() );
-  mColorRampShaderWidget->setFromShader( symbol.colorRampShader() );
-  mColorRampShaderWidget->setMinimumMaximumAndClassify( symbol.colorRampShader().minimumValue(),
-      symbol.colorRampShader().maximumValue() );
+  mSymbol.reset( symbol->clone() );
+  mChkSmoothTriangles->setChecked( symbol->smoothedTriangles() );
+  mChkWireframe->setChecked( symbol->wireframeEnabled() );
+  mColorButtonWireframe->setColor( symbol->wireframeLineColor() );
+  mSpinBoxWireframeLineWidth->setValue( symbol->wireframeLineWidth() );
+  mSpinBoxVerticaleScale->setValue( symbol->verticalScale() );
+  mComboBoxTextureType->setCurrentIndex( mComboBoxTextureType->findData( symbol->renderingStyle() ) );
+  mMeshSingleColorButton->setColor( symbol->singleMeshColor() );
+  mColorRampShaderWidget->setFromShader( symbol->colorRampShader() );
+  mColorRampShaderWidget->setMinimumMaximumAndClassify( symbol->colorRampShader().minimumValue(),
+      symbol->colorRampShader().maximumValue() );
 
-  setColorRampMinMax( symbol.colorRampShader().minimumValue(), symbol.colorRampShader().maximumValue() );
-  mComboBoxDatasetVertical->setCurrentIndex( symbol.verticalDatasetGroupIndex() );
-  mCheckBoxVerticalMagnitudeRelative->setChecked( symbol.isVerticalMagnitudeRelative() );
+  setColorRampMinMax( symbol->colorRampShader().minimumValue(), symbol->colorRampShader().maximumValue() );
+  mComboBoxDatasetVertical->setCurrentIndex( symbol->verticalDatasetGroupIndex() );
+  mCheckBoxVerticalMagnitudeRelative->setChecked( symbol->isVerticalMagnitudeRelative() );
 
-  mGroupBoxArrowsSettings->setChecked( symbol.arrowsEnabled() );
-  mArrowsSpacingSpinBox->setValue( symbol.arrowsSpacing() );
-  mArrowsFixedSizeCheckBox->setChecked( symbol.arrowsFixedSize() );
+  mGroupBoxArrowsSettings->setChecked( symbol->arrowsEnabled() );
+  mArrowsSpacingSpinBox->setValue( symbol->arrowsSpacing() );
+  mArrowsFixedSizeCheckBox->setChecked( symbol->arrowsFixedSize() );
 }
 
 void QgsMesh3dSymbolWidget::configureForTerrain()
@@ -122,12 +122,12 @@ void QgsMesh3dSymbolWidget::setLayer( QgsMeshLayer *meshLayer, bool updateSymbol
     {
       if ( renderer->symbol() &&  renderer->symbol()->type() == QLatin1String( "mesh" ) )
       {
-        setSymbol( *static_cast<const QgsMesh3DSymbol *>( renderer->symbol() ) );
+        setSymbol( static_cast<const QgsMesh3DSymbol *>( renderer->symbol() ) );
         return;
       }
     }
   }
-  setSymbol( QgsMesh3DSymbol() );
+  setSymbol( new QgsMesh3DSymbol() );
   reloadColorRampShaderMinMax(); //As the symbol is new, the Color ramp shader needs to be initialized with min max value
 }
 
@@ -143,26 +143,26 @@ double QgsMesh3dSymbolWidget::lineEditValue( const QLineEdit *lineEdit ) const
   return lineEdit->text().toDouble();
 }
 
-QgsMesh3DSymbol QgsMesh3dSymbolWidget::symbol() const
+std::unique_ptr<QgsMesh3DSymbol> QgsMesh3dSymbolWidget::symbol() const
 {
-  QgsMesh3DSymbol sym = mSymbol;
+  std::unique_ptr< QgsMesh3DSymbol > sym( mSymbol->clone() );
 
-  sym.setSmoothedTriangles( mChkSmoothTriangles->isChecked() );
-  sym.setWireframeEnabled( mChkWireframe->isChecked() );
-  sym.setWireframeLineColor( mColorButtonWireframe->color() );
-  sym.setWireframeLineWidth( mSpinBoxWireframeLineWidth->value() );
-  sym.setVerticalScale( mSpinBoxVerticaleScale->value() );
-  sym.setRenderingStyle( static_cast<QgsMesh3DSymbol::RenderingStyle>( mComboBoxTextureType->currentData().toInt() ) );
-  sym.setSingleMeshColor( mMeshSingleColorButton->color() );
-  sym.setVerticalDatasetGroupIndex( mComboBoxDatasetVertical->currentIndex() );
-  sym.setIsVerticalMagnitudeRelative( mCheckBoxVerticalMagnitudeRelative->isChecked() );
+  sym->setSmoothedTriangles( mChkSmoothTriangles->isChecked() );
+  sym->setWireframeEnabled( mChkWireframe->isChecked() );
+  sym->setWireframeLineColor( mColorButtonWireframe->color() );
+  sym->setWireframeLineWidth( mSpinBoxWireframeLineWidth->value() );
+  sym->setVerticalScale( mSpinBoxVerticaleScale->value() );
+  sym->setRenderingStyle( static_cast<QgsMesh3DSymbol::RenderingStyle>( mComboBoxTextureType->currentData().toInt() ) );
+  sym->setSingleMeshColor( mMeshSingleColorButton->color() );
+  sym->setVerticalDatasetGroupIndex( mComboBoxDatasetVertical->currentIndex() );
+  sym->setIsVerticalMagnitudeRelative( mCheckBoxVerticalMagnitudeRelative->isChecked() );
 
-  if ( sym.renderingStyle() == QgsMesh3DSymbol::ColorRamp )
-    sym.setColorRampShader( mColorRampShaderWidget->shader() );
+  if ( sym->renderingStyle() == QgsMesh3DSymbol::ColorRamp )
+    sym->setColorRampShader( mColorRampShaderWidget->shader() );
 
-  sym.setArrowsEnabled( mGroupBoxArrowsSettings->isChecked() );
-  sym.setArrowsSpacing( mArrowsSpacingSpinBox->value() );
-  sym.setArrowsFixedSize( mArrowsFixedSizeCheckBox->isChecked() );
+  sym->setArrowsEnabled( mGroupBoxArrowsSettings->isChecked() );
+  sym->setArrowsSpacing( mArrowsSpacingSpinBox->value() );
+  sym->setArrowsFixedSize( mArrowsFixedSizeCheckBox->isChecked() );
 
   return sym;
 }

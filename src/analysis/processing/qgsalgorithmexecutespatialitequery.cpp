@@ -72,9 +72,9 @@ QVariantMap QgsExecuteSpatialiteQueryAlgorithm::processAlgorithm( const QVariant
   if ( uri.database().isEmpty() )
   {
     if ( databaseUri.contains( QStringLiteral( "|layername" ), Qt::CaseInsensitive ) )
-      databaseUri = databaseUri.left( databaseUri.indexOf( QStringLiteral( "|layername" ) ) );
+      databaseUri = databaseUri.left( databaseUri.indexOf( QLatin1String( "|layername" ) ) );
     else if ( databaseUri.contains( QStringLiteral( "|layerid" ), Qt::CaseInsensitive ) )
-      databaseUri = databaseUri.left( databaseUri.indexOf( QStringLiteral( "|layerid" ) ) );
+      databaseUri = databaseUri.left( databaseUri.indexOf( QLatin1String( "|layerid" ) ) );
 
     uri = QgsDataSourceUri( QStringLiteral( "dbname='%1'" ).arg( databaseUri ) );
   }

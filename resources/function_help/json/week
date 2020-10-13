@@ -1,6 +1,7 @@
 {
   "name": "week",
   "type": "function",
+  "groups": ["Date and Time"],
   "description": "Extracts the week number from a date, or the number of weeks from an interval.",
   "variants": [
   { "variant": "Date variant",

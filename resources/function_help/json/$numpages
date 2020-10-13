@@ -1,7 +1,0 @@
-{
-  "name": "$numpages",
-  "type": "function",
-  "description": "Returns the total number of pages in the composition.",
-  "examples": [ { "expression":"$numpages", "returns":"42"}
-  ]
-}

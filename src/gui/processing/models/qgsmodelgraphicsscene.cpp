@@ -183,11 +183,11 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
             addItem( arrow );
           }
         }
+        if ( parameter->isDestination() )
+          bottomIdx++;
+        else
+          topIdx++;
       }
-      if ( parameter->isDestination() )
-        bottomIdx++;
-      else
-        topIdx++;
     }
     const QList< QgsProcessingModelChildDependency > dependencies = it.value().dependencies();
     for ( const QgsProcessingModelChildDependency &depend : dependencies )
@@ -201,13 +201,18 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
         // find branch link point
         const QgsProcessingOutputDefinitions outputs = model->childAlgorithm( depend.childId ).algorithm()->outputDefinitions();
         int i = 0;
+        bool found = false;
         for ( const QgsProcessingOutputDefinition *output : outputs )
         {
           if ( output->name() == depend.conditionalBranch )
+          {
+            found = true;
             break;
+          }
           i++;
         }
-        addItem( new QgsModelArrowItem( mChildAlgorithmItems.value( depend.childId ), Qt::BottomEdge, i, QgsModelArrowItem::Marker::Circle, mChildAlgorithmItems.value( it.value().childId() ), QgsModelArrowItem::Marker::ArrowHead ) );
+        if ( found )
+          addItem( new QgsModelArrowItem( mChildAlgorithmItems.value( depend.childId ), Qt::BottomEdge, i, QgsModelArrowItem::Marker::Circle, mChildAlgorithmItems.value( it.value().childId() ), QgsModelArrowItem::Marker::ArrowHead ) );
       }
     }
   }

@@ -23,7 +23,7 @@
 #include "qgis_analysis.h"
 
 class QgsFeatureSink;
-class Triangulation;
+class QgsTriangulation;
 class TriangleInterpolator;
 class QgsFeature;
 class QgsFeedback;
@@ -76,7 +76,7 @@ class ANALYSIS_EXPORT QgsTinInterpolator: public QgsInterpolator
     void setTriangulationSink( QgsFeatureSink *sink );
 
   private:
-    Triangulation *mTriangulation = nullptr;
+    QgsTriangulation *mTriangulation = nullptr;
     TriangleInterpolator *mTriangleInterpolator = nullptr;
     bool mIsInitialized;
     QgsFeedback *mFeedback = nullptr;
