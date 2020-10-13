@@ -102,7 +102,6 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
-  QMap< QgsFeatureId, QgsGeometry > splitGeoms;
   QgsFeatureRequest request;
   request.setNoAttributes();
   request.setDestinationCrs( source->sourceCrs(), context.transformContext() );
@@ -110,16 +109,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
   QgsFeatureIterator splitLines = linesSource->getFeatures( request );
   QgsFeature aSplitFeature;
 
-  QgsSpatialIndex spatialIndex( splitLines, [&]( const QgsFeature & aSplitFeature )-> bool
-  {
-    if ( feedback->isCanceled() )
-    {
-      return false;
-    }
-
-    splitGeoms.insert( aSplitFeature.id(), aSplitFeature.geometry() );
-    return true;
-  } );
+  QgsSpatialIndex spatialIndex( splitLines, feedback, QgsSpatialIndex::FlagStoreFeatureGeometries );
 
   QgsFeature outFeat;
   QgsFeatureIterator features = source->getFeatures();
@@ -160,7 +150,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
         if ( sameLayer && inFeatureA.id() == line )
           continue;
 
-        QgsGeometry splitGeom = splitGeoms.value( line );
+        QgsGeometry splitGeom = spatialIndex.geometry( line );
         if ( !engine )
         {
           engine.reset( QgsGeometry::createGeometryEngine( inGeom.constGet() ) );
