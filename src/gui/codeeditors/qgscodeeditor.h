@@ -45,12 +45,26 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
   public:
 
     /**
+     * Margin roles.
+     *
+     * This enum contains the roles which the different numbered margins are used for.
+     *
+     * \since QGIS 3.16
+     */
+    enum MarginRole
+    {
+      LineNumbers = 0, //!< Line numbers
+      ErrorIndicators = 1, //!< Error indicators
+      FoldingControls = 2, //!< Folding controls
+    };
+
+    /**
      * Construct a new code editor.
      *
      * \param parent The parent QWidget
      * \param title The title to show in the code editor dialog
      * \param folding FALSE: Enable folding for code editor
-     * \param margin FALSE: Enable margin for code editor
+     * \param margin FALSE: Enable margin for code editor (deprecated)
      * \since QGIS 2.6
      */
     QgsCodeEditor( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &title = QString(), bool folding = false, bool margin = false );
@@ -63,10 +77,34 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
 
     /**
      * Set margin visible state
-     *  \param margin Set margin in the editor
+     * \param margin Set margin in the editor
+     * \deprecated Use base class methods for individual margins instead, or setLineNumbersVisible()
      */
-    void setMarginVisible( bool margin );
-    bool marginVisible() { return mMargin; }
+    Q_DECL_DEPRECATED void setMarginVisible( bool margin ) SIP_DEPRECATED;
+
+    /**
+     * Returns whether margins are in a visible state
+     * \deprecated Use base class methods for individual margins instead, or lineNumbersVisible()
+     */
+    Q_DECL_DEPRECATED bool marginVisible() SIP_DEPRECATED { return mMargin; }
+
+    /**
+     * Sets whether line numbers should be visible in the editor.
+     *
+     * Defaults to FALSE.
+     *
+     * \see lineNumbersVisible()
+     * \since QGIS 3.16
+     */
+    void setLineNumbersVisible( bool visible );
+
+    /**
+     * Returns whether line numbers are visible in the editor.
+     *
+     * \see setLineNumbersVisible()
+     * \since QGIS 3.16
+     */
+    bool lineNumbersVisible() const;
 
     /**
      * Set folding visible state

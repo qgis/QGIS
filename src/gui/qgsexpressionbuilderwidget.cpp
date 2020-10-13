@@ -202,7 +202,8 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   txtExpressionString->setCallTipsVisible( 0 );
 
   setExpectedOutputFormat( QString() );
-  mFunctionBuilderHelp->setMarginVisible( false );
+  mFunctionBuilderHelp->setLineNumbersVisible( false );
+  mFunctionBuilderHelp->setMarginWidth( QgsCodeEditor::MarginRole::FoldingControls, 0 );
   mFunctionBuilderHelp->setEdgeMode( QsciScintilla::EdgeNone );
   mFunctionBuilderHelp->setEdgeColumn( 0 );
   mFunctionBuilderHelp->setReadOnly( true );

@@ -30,6 +30,13 @@ A text editor based on QScintilla2.
 %End
   public:
 
+    enum MarginRole
+    {
+      LineNumbers,
+      ErrorIndicators,
+      FoldingControls,
+    };
+
     QgsCodeEditor( QWidget *parent /TransferThis/ = 0, const QString &title = QString(), bool folding = false, bool margin = false );
 %Docstring
 Construct a new code editor.
@@ -37,7 +44,7 @@ Construct a new code editor.
 :param parent: The parent QWidget
 :param title: The title to show in the code editor dialog
 :param folding: ``False``: Enable folding for code editor
-:param margin: ``False``: Enable margin for code editor
+:param margin: ``False``: Enable margin for code editor (deprecated)
 
 .. versionadded:: 2.6
 %End
@@ -49,13 +56,43 @@ Set the widget title
 :param title: widget title
 %End
 
-    void setMarginVisible( bool margin );
+ void setMarginVisible( bool margin ) /Deprecated/;
 %Docstring
 Set margin visible state
 
 :param margin: Set margin in the editor
+
+.. deprecated::
+   Use base class methods for individual margins instead, or setLineNumbersVisible()
 %End
-    bool marginVisible();
+
+ bool marginVisible() /Deprecated/;
+%Docstring
+Returns whether margins are in a visible state
+
+.. deprecated::
+   Use base class methods for individual margins instead, or lineNumbersVisible()
+%End
+
+    void setLineNumbersVisible( bool visible );
+%Docstring
+Sets whether line numbers should be visible in the editor.
+
+Defaults to ``False``.
+
+.. seealso:: :py:func:`lineNumbersVisible`
+
+.. versionadded:: 3.16
+%End
+
+    bool lineNumbersVisible() const;
+%Docstring
+Returns whether line numbers are visible in the editor.
+
+.. seealso:: :py:func:`setLineNumbersVisible`
+
+.. versionadded:: 3.16
+%End
 
     void setFoldingVisible( bool folding );
 %Docstring

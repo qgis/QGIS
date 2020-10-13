@@ -30,7 +30,6 @@ QgsCodeEditorHTML::QgsCodeEditorHTML( QWidget *parent )
   {
     setTitle( tr( "HTML Editor" ) );
   }
-  setMarginVisible( false );
   setFoldingVisible( true );
   QgsCodeEditorHTML::initializeLexer();
 }
