@@ -149,7 +149,7 @@ std::string QgsServerOgcApiHandler::href( const QgsServerApiContext &context, co
   }
 
   // Remove any existing extension
-  const auto suffixLength { QFileInfo( url.path() ).completeSuffix().length() };
+  const auto suffixLength { QFileInfo( url.path() ).suffix().length() };
   if ( suffixLength > 0 )
   {
     auto path {url.path()};
@@ -429,7 +429,7 @@ QgsServerOgcApi::ContentType QgsServerOgcApiHandler::contentTypeFromRequest( con
   QgsServerOgcApi::ContentType result { defaultContentType() };
   bool found { false };
   // First file extension ...
-  const QString extension { QFileInfo( request->url().path() ).completeSuffix().toUpper() };
+  const QString extension { QFileInfo( request->url().path() ).suffix().toUpper() };
   if ( ! extension.isEmpty() )
   {
     static QMetaEnum metaEnum { QMetaEnum::fromType<QgsServerOgcApi::ContentType>() };
