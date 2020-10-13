@@ -2284,8 +2284,8 @@ void QgisApp::resolveVectorLayerDependencies( QgsVectorLayer *vl, QgsMapLayer::S
     const auto constDependencies { findBrokenLayerDependencies( vl, categories ) };
     for ( const QgsVectorLayerRef &dependency : constDependencies )
     {
-      // Temporary check for projects that were created before commit 7e8c7b3d0e094737336ff4834ea2af625d2921bf
-      if ( QgsProject::instance()->mapLayer( dependency.layerId ) )
+      // Check for projects without layer dependencies (see 7e8c7b3d0e094737336ff4834ea2af625d2921bf)
+      if ( QgsProject::instance()->mapLayer( dependency.layerId ) || ( dependency.name.isEmpty() && dependency.source.isEmpty() ) )
       {
         continue;
       }
