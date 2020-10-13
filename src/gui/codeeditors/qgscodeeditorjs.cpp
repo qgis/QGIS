@@ -60,5 +60,6 @@ void QgsCodeEditorJavascript::initializeLexer()
   lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Identifier ), QsciLexerJavaScript::Identifier );
 
   setLexer( lexer );
+  setLineNumbersVisible( true );
   runPostLexerConfigurationTasks();
 }
