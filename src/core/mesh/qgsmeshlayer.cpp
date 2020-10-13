@@ -295,6 +295,8 @@ void  QgsMeshLayer::updateTriangularMesh( const QgsCoordinateTransform &transfor
 
   if ( mTriangularMeshes[0].get()->update( mNativeMesh.get(), transform ) )
     mTriangularMeshes.resize( 1 ); //if the base triangular mesh is effectivly updated, remove simplified meshes
+
+  createSimplifiedMeshes();
 }
 
 QgsMeshLayerRendererCache *QgsMeshLayer::rendererCache()

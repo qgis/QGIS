@@ -327,7 +327,7 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
     void setArrowsFixedSize( bool arrowsFixedSize );
 
     /**
-     * Returns the level of detail index for rendering the mesh
+     * Returns the index of the level of detail of the mesh that is the position of the simplified mesh that will be rendered (0 is the original mesh)
      * \see QgsMeshSimplificationSettings
      *
      * \since QGIS 3.18
@@ -335,7 +335,7 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
     int levelOfDetailIndex() const;
 
     /**
-     * Returns the level of detail index for rendering the mesh
+     * Returns the index of the level of detail of the mesh that is the position of the simplified mesh that will be rendered (0 is the original mesh)
      * \see QgsMeshSimplificationSettings
      *
      * \since QGIS 3.18
