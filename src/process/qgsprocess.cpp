@@ -363,7 +363,7 @@ void QgsProcessingExec::loadPlugins()
   const QStringList plugins = mPythonUtils->pluginList();
   for ( const QString &plugin : plugins )
   {
-    if ( mPythonUtils->isPluginEnabled( plugin ) && mPythonUtils->pluginHasProcessingProvider( plugin ) )
+    if ( plugin == QLatin1String( "processing" ) || ( mPythonUtils->isPluginEnabled( plugin ) && mPythonUtils->pluginHasProcessingProvider( plugin ) ) )
     {
       if ( !mPythonUtils->loadPlugin( plugin ) )
       {
