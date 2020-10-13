@@ -240,7 +240,7 @@ Determines whether the geometry is simple (according to OGC definition).
     virtual QgsGeometryEngine::EngineOperationResult splitGeometry( const QgsLineString &splitLine,
         QVector<QgsGeometry > &newGeometries /Out/,
         bool topological,
-        QgsPointSequence &topologyTestPoints, QString *errorMsg = 0 ) const;
+        QgsPointSequence &topologyTestPoints, QString *errorMsg = 0, bool skipIntersectionCheck = false ) const;
 %Docstring
 Splits this geometry according to a given line.
 
@@ -249,6 +249,8 @@ Splits this geometry according to a given line.
 :param topological: ``True`` if topological editing is enabled
 \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
 \param[out] errorMsg error messages emitted, if any
+:param skipIntersectionCheck: set to ``True`` to skip the potentially expensive initial intersection check. Only set this flag if an intersection
+                              test has already been performed by the caller!
 
 :return: 0 in case of success, 1 if geometry has not been split, error else
 %End

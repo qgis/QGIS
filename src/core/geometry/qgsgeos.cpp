@@ -620,7 +620,7 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitGeometry( const QgsLineSt
     QVector<QgsGeometry> &newGeometries,
     bool topological,
     QgsPointSequence &topologyTestPoints,
-    QString *errorMsg ) const
+    QString *errorMsg, bool skipIntersectionCheck ) const
 {
 
   EngineOperationResult returnCode = Success;
@@ -678,11 +678,11 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitGeometry( const QgsLineSt
     //call split function depending on geometry type
     if ( mGeometry->dimension() == 1 )
     {
-      returnCode = splitLinearGeometry( splitLineGeos.get(), newGeometries );
+      returnCode = splitLinearGeometry( splitLineGeos.get(), newGeometries, skipIntersectionCheck );
     }
     else if ( mGeometry->dimension() == 2 )
     {
-      returnCode = splitPolygonGeometry( splitLineGeos.get(), newGeometries );
+      returnCode = splitPolygonGeometry( splitLineGeos.get(), newGeometries, skipIntersectionCheck );
     }
     else
     {
@@ -817,7 +817,7 @@ geos::unique_ptr QgsGeos::linePointDifference( GEOSGeometry *GEOSsplitPoint ) co
   return asGeos( &lines, mPrecision );
 }
 
-QgsGeometryEngine::EngineOperationResult QgsGeos::splitLinearGeometry( GEOSGeometry *splitLine, QVector<QgsGeometry> &newGeometries ) const
+QgsGeometryEngine::EngineOperationResult QgsGeos::splitLinearGeometry( GEOSGeometry *splitLine, QVector<QgsGeometry> &newGeometries, bool skipIntersectionCheck ) const
 {
   if ( !splitLine )
     return InvalidInput;
@@ -826,7 +826,7 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitLinearGeometry( GEOSGeome
     return InvalidBaseGeometry;
 
   //first test if linestring intersects geometry. If not, return straight away
-  if ( !GEOSIntersects_r( geosinit()->ctxt, splitLine, mGeos.get() ) )
+  if ( !skipIntersectionCheck && !GEOSIntersects_r( geosinit()->ctxt, splitLine, mGeos.get() ) )
     return NothingHappened;
 
   //check that split line has no linear intersection
@@ -872,7 +872,7 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitLinearGeometry( GEOSGeome
   return Success;
 }
 
-QgsGeometryEngine::EngineOperationResult QgsGeos::splitPolygonGeometry( GEOSGeometry *splitLine, QVector<QgsGeometry> &newGeometries ) const
+QgsGeometryEngine::EngineOperationResult QgsGeos::splitPolygonGeometry( GEOSGeometry *splitLine, QVector<QgsGeometry> &newGeometries, bool skipIntersectionCheck ) const
 {
   if ( !splitLine )
     return InvalidInput;
@@ -886,7 +886,7 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitPolygonGeometry( GEOSGeom
     return EngineError;
 
   //first test if linestring intersects geometry. If not, return straight away
-  if ( !GEOSPreparedIntersects_r( geosinit()->ctxt, mGeosPrepared.get(), splitLine ) )
+  if ( !skipIntersectionCheck && !GEOSPreparedIntersects_r( geosinit()->ctxt, mGeosPrepared.get(), splitLine ) )
     return NothingHappened;
 
   //first union all the polygon rings together (to get them noded, see JTS developer guide)

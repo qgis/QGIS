@@ -215,7 +215,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
 
               QVector< QgsGeometry > newGeometries;
               QgsPointSequence topologyTestPoints;
-              QgsGeometry::OperationResult result = inGeom.splitGeometry( splitterPList, newGeometries, false, topologyTestPoints );
+              QgsGeometry::OperationResult result = inGeom.splitGeometry( splitterPList, newGeometries, false, topologyTestPoints, true );
 
               // splitGeometry: If there are several intersections
               // between geometry and splitLine, only the first one is considered.

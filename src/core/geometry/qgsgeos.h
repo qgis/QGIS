@@ -227,7 +227,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
                                          QVector<QgsGeometry> &newGeometries,
                                          bool topological,
                                          QgsPointSequence &topologyTestPoints,
-                                         QString *errorMsg = nullptr ) const override;
+                                         QString *errorMsg = nullptr, bool skipIntersectionCheck = false ) const override;
 
     QgsAbstractGeometry *offsetCurve( double distance, int segments, int joinStyle, double miterLimit, QString *errorMsg = nullptr ) const override;
 
@@ -406,8 +406,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     //utils for geometry split
     bool topologicalTestPointsSplit( const GEOSGeometry *splitLine, QgsPointSequence &testPoints, QString *errorMsg = nullptr ) const;
     geos::unique_ptr linePointDifference( GEOSGeometry *GEOSsplitPoint ) const;
-    EngineOperationResult splitLinearGeometry( GEOSGeometry *splitLine, QVector<QgsGeometry > &newGeometries ) const;
-    EngineOperationResult splitPolygonGeometry( GEOSGeometry *splitLine, QVector<QgsGeometry > &newGeometries ) const;
+    EngineOperationResult splitLinearGeometry( GEOSGeometry *splitLine, QVector<QgsGeometry > &newGeometries, bool skipIntersectionCheck ) const;
+    EngineOperationResult splitPolygonGeometry( GEOSGeometry *splitLine, QVector<QgsGeometry > &newGeometries, bool skipIntersectionCheck ) const;
 
     //utils for reshape
     static geos::unique_ptr reshapeLine( const GEOSGeometry *line, const GEOSGeometry *reshapeLineGeos, double precision );
