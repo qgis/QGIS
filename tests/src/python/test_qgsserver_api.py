@@ -49,13 +49,15 @@ class QgsServerAPIUtilsTest(QgsServerTestBase):
     """ QGIS API server utils tests"""
 
     def test_parse_bbox(self):
-        bbox = QgsServerApiUtils.parseBbox('8.203495,44.901482,8.203497,44.901484')
+        bbox = QgsServerApiUtils.parseBbox(
+            '8.203495,44.901482,8.203497,44.901484')
         self.assertEquals(bbox.xMinimum(), 8.203495)
         self.assertEquals(bbox.yMinimum(), 44.901482)
         self.assertEquals(bbox.xMaximum(), 8.203497)
         self.assertEquals(bbox.yMaximum(), 44.901484)
 
-        bbox = QgsServerApiUtils.parseBbox('8.203495,44.901482,100,8.203497,44.901484,120')
+        bbox = QgsServerApiUtils.parseBbox(
+            '8.203495,44.901482,100,8.203497,44.901484,120')
         self.assertEquals(bbox.xMinimum(), 8.203495)
         self.assertEquals(bbox.yMinimum(), 44.901482)
         self.assertEquals(bbox.xMaximum(), 8.203497)
@@ -63,7 +65,8 @@ class QgsServerAPIUtilsTest(QgsServerTestBase):
 
         bbox = QgsServerApiUtils.parseBbox('something_wrong_here')
         self.assertTrue(bbox.isEmpty())
-        bbox = QgsServerApiUtils.parseBbox('8.203495,44.901482,8.203497,something_wrong_here')
+        bbox = QgsServerApiUtils.parseBbox(
+            '8.203495,44.901482,8.203497,something_wrong_here')
         self.assertTrue(bbox.isEmpty())
 
     def test_published_crs(self):
@@ -73,35 +76,46 @@ class QgsServerAPIUtilsTest(QgsServerTestBase):
         project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
         crss = QgsServerApiUtils.publishedCrsList(project)
         self.assertTrue('http://www.opengis.net/def/crs/OGC/1.3/CRS84' in crss)
-        self.assertTrue('http://www.opengis.net/def/crs/EPSG/9.6.2/3857' in crss)
-        self.assertTrue('http://www.opengis.net/def/crs/EPSG/9.6.2/4326' in crss)
+        self.assertTrue(
+            'http://www.opengis.net/def/crs/EPSG/9.6.2/3857' in crss)
+        self.assertTrue(
+            'http://www.opengis.net/def/crs/EPSG/9.6.2/4326' in crss)
 
     def test_parse_crs(self):
-        crs = QgsServerApiUtils.parseCrs('http://www.opengis.net/def/crs/OGC/1.3/CRS84')
+        crs = QgsServerApiUtils.parseCrs(
+            'http://www.opengis.net/def/crs/OGC/1.3/CRS84')
         self.assertTrue(crs.isValid())
 
-        crs = QgsServerApiUtils.parseCrs('http://www.opengis.net/def/crs/EPSG/9.6.2/4326')
+        crs = QgsServerApiUtils.parseCrs(
+            'http://www.opengis.net/def/crs/EPSG/9.6.2/4326')
         self.assertEquals(crs.postgisSrid(), 4326)
 
-        crs = QgsServerApiUtils.parseCrs('http://www.opengis.net/def/crs/EPSG/9.6.2/3857')
+        crs = QgsServerApiUtils.parseCrs(
+            'http://www.opengis.net/def/crs/EPSG/9.6.2/3857')
         self.assertTrue(crs.isValid())
         self.assertEquals(crs.postgisSrid(), 3857)
 
-        crs = QgsServerApiUtils.parseCrs('http://www.opengis.net/something_wrong_here')
+        crs = QgsServerApiUtils.parseCrs(
+            'http://www.opengis.net/something_wrong_here')
         self.assertFalse(crs.isValid())
 
     def test_append_path(self):
-        path = QgsServerApiUtils.appendMapParameter('/wfs3', QtCore.QUrl('https://www.qgis.org/wfs3?MAP=/some/path'))
+        path = QgsServerApiUtils.appendMapParameter(
+            '/wfs3', QtCore.QUrl('https://www.qgis.org/wfs3?MAP=/some/path'))
         self.assertEqual(path, '/wfs3?MAP=/some/path')
 
     def test_temporal_extent(self):
         project = QgsProject()
 
         tempDir = QtCore.QTemporaryDir()
-        source_project_path = unitTestDataPath('qgis_server') + '/test_project_api_timefilters.qgs'
-        source_data_path = unitTestDataPath('qgis_server') + '/test_project_api_timefilters.gpkg'
-        dest_project_path = os.path.join(tempDir.path(), 'test_project_api_timefilters.qgs')
-        dest_data_path = os.path.join(tempDir.path(), 'test_project_api_timefilters.gpkg')
+        source_project_path = unitTestDataPath(
+            'qgis_server') + '/test_project_api_timefilters.qgs'
+        source_data_path = unitTestDataPath(
+            'qgis_server') + '/test_project_api_timefilters.gpkg'
+        dest_project_path = os.path.join(
+            tempDir.path(), 'test_project_api_timefilters.qgs')
+        dest_data_path = os.path.join(
+            tempDir.path(), 'test_project_api_timefilters.gpkg')
         shutil.copy(source_data_path, dest_data_path)
         shutil.copy(source_project_path, dest_project_path)
         project.read(dest_project_path)
@@ -112,31 +126,36 @@ class QgsServerAPIUtilsTest(QgsServerTestBase):
         layer.serverProperties().removeWmsDimension('time')
         self.assertTrue(layer.serverProperties().addWmsDimension(
             QgsVectorLayerServerProperties.WmsDimensionInfo('time', 'updated_string')))
-        self.assertEqual(QgsServerApiUtils.temporalExtent(layer), [['2010-01-01T01:01:01', '2020-01-01T01:01:01']])
+        self.assertEqual(QgsServerApiUtils.temporalExtent(layer), [
+                         ['2010-01-01T01:01:01', '2020-01-01T01:01:01']])
 
         layer.serverProperties().removeWmsDimension('date')
         layer.serverProperties().removeWmsDimension('time')
         self.assertTrue(layer.serverProperties().addWmsDimension(
             QgsVectorLayerServerProperties.WmsDimensionInfo('date', 'created')))
-        self.assertEqual(QgsServerApiUtils.temporalExtent(layer), [['2010-01-01T00:00:00', '2019-01-01T00:00:00']])
+        self.assertEqual(QgsServerApiUtils.temporalExtent(layer), [
+                         ['2010-01-01T00:00:00', '2019-01-01T00:00:00']])
 
         layer.serverProperties().removeWmsDimension('date')
         layer.serverProperties().removeWmsDimension('time')
         self.assertTrue(layer.serverProperties().addWmsDimension(
             QgsVectorLayerServerProperties.WmsDimensionInfo('date', 'created_string')))
-        self.assertEqual(QgsServerApiUtils.temporalExtent(layer), [['2010-01-01T00:00:00', '2019-01-01T00:00:00']])
+        self.assertEqual(QgsServerApiUtils.temporalExtent(layer), [
+                         ['2010-01-01T00:00:00', '2019-01-01T00:00:00']])
 
         layer.serverProperties().removeWmsDimension('date')
         layer.serverProperties().removeWmsDimension('time')
         self.assertTrue(layer.serverProperties().addWmsDimension(
             QgsVectorLayerServerProperties.WmsDimensionInfo('time', 'updated')))
-        self.assertEqual(QgsServerApiUtils.temporalExtent(layer), [['2010-01-01T01:01:01', '2022-01-01T01:01:01']])
+        self.assertEqual(QgsServerApiUtils.temporalExtent(layer), [
+                         ['2010-01-01T01:01:01', '2022-01-01T01:01:01']])
 
         layer.serverProperties().removeWmsDimension('date')
         layer.serverProperties().removeWmsDimension('time')
         self.assertTrue(layer.serverProperties().addWmsDimension(
             QgsVectorLayerServerProperties.WmsDimensionInfo('date', 'begin', 'end')))
-        self.assertEqual(QgsServerApiUtils.temporalExtent(layer), [['2010-01-01T00:00:00', '2022-01-01T00:00:00']])
+        self.assertEqual(QgsServerApiUtils.temporalExtent(layer), [
+                         ['2010-01-01T00:00:00', '2022-01-01T00:00:00']])
 
 
 class API(QgsServerApi):
@@ -214,7 +233,8 @@ class QgsServerAPITestBase(QgsServerTestBase):
         json_content = re.sub(r'(\d{5})\d+\.\d+', r'\1', json_content)
         json_content = re.sub(r'(\d+\.\d{4})\d+', r'\1', json_content)
         # Poject hash
-        json_content = re.sub(r'[a-f0-9]{32}', r'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF', json_content)
+        json_content = re.sub(
+            r'[a-f0-9]{32}', r'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF', json_content)
         headers_content = '\n'.join(
             reference_content[:reference_content.index('') + 1])
         return headers_content + '\n' + json_content
@@ -341,18 +361,24 @@ class QgsServerAPITest(QgsServerAPITestBase):
         """Test content-type negotiation and conflicts"""
 
         # Default: json
-        self.compareContentType('http://server.qgis.org/wfs3', {}, 'application/json')
+        self.compareContentType(
+            'http://server.qgis.org/wfs3', {}, 'application/json')
         # Explicit request
         self.compareContentType('http://server.qgis.org/wfs3',
                                 {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'},
                                 'text/html')
-        self.compareContentType('http://server.qgis.org/wfs3', {'Accept': 'application/json'}, 'application/json')
+        self.compareContentType('http://server.qgis.org/wfs3',
+                                {'Accept': 'application/json'}, 'application/json')
         # File suffix
-        self.compareContentType('http://server.qgis.org/wfs3.json', {}, 'application/json')
-        self.compareContentType('http://server.qgis.org/wfs3.html', {}, 'text/html')
+        self.compareContentType(
+            'http://server.qgis.org/wfs3.json', {}, 'application/json')
+        self.compareContentType(
+            'http://server.qgis.org/wfs3.html', {}, 'text/html')
         # File extension must take precedence over Accept header
-        self.compareContentType('http://server.qgis.org/wfs3.html', {'Accept': 'application/json'}, 'text/html')
-        self.compareContentType('http://server.qgis.org/wfs3.json', {'Accept': 'text/html'}, 'application/json')
+        self.compareContentType(
+            'http://server.qgis.org/wfs3.html', {'Accept': 'application/json'}, 'text/html')
+        self.compareContentType(
+            'http://server.qgis.org/wfs3.json', {'Accept': 'text/html'}, 'application/json')
         # Alias request (we ask for json but we get geojson)
         project = QgsProject()
         project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
@@ -384,39 +410,47 @@ class QgsServerAPITest(QgsServerAPITestBase):
         """Test WFS3 API"""
 
         # No project: error
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/api.openapi3')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/api.openapi3')
         self.compareApi(request, None, 'test_wfs3_api.json')
 
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/api.openapi3')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/api.openapi3')
         project = QgsProject()
         project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
         self.compareApi(request, project, 'test_wfs3_api_project.json')
 
     def test_wfs3_conformance(self):
         """Test WFS3 API"""
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/conformance')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/conformance')
         self.compareApi(request, None, 'test_wfs3_conformance.json')
 
     def test_wfs3_collections_empty(self):
         """Test WFS3 collections API"""
 
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections')
         self.compareApi(request, None, 'test_wfs3_collections_empty.json')
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections.json')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections.json')
         self.compareApi(request, None, 'test_wfs3_collections_empty.json')
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections.html')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections.html')
         self.compareApi(request, None, 'test_wfs3_collections_empty.html')
 
     def test_wfs3_collections_json(self):
         """Test WFS3 API collections in json format"""
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections.json')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections.json')
         project = QgsProject()
         project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
         self.compareApi(request, project, 'test_wfs3_collections_project.json')
 
     def test_wfs3_collections_html(self):
         """Test WFS3 API collections in html format"""
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections.html')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections.html')
         project = QgsProject()
         project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
         self.compareApi(request, project, 'test_wfs3_collections_project.html')
@@ -424,14 +458,16 @@ class QgsServerAPITest(QgsServerAPITestBase):
     def test_wfs3_collections_content_type(self):
         """Test WFS3 API collections in html format with Accept header"""
 
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections')
         request.setHeader('Accept', 'text/html')
         project = QgsProject()
         project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, project)
         self.assertEqual(response.headers()['Content-Type'], 'text/html')
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections')
         request.setHeader('Accept', 'text/html')
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, project)
@@ -441,79 +477,103 @@ class QgsServerAPITest(QgsServerAPITestBase):
         """Test WFS3 API collection"""
         project = QgsProject()
         project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer%20èé')
-        self.compareApi(request, project, 'test_wfs3_collection_testlayer_èé.json')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/testlayer%20èé')
+        self.compareApi(request, project,
+                        'test_wfs3_collection_testlayer_èé.json')
 
     def test_wfs3_collection_temporal_extent_json(self):
         """Test collection with timefilter"""
         project = QgsProject()
         tempDir = QtCore.QTemporaryDir()
-        source_project_path = unitTestDataPath('qgis_server') + '/test_project_api_timefilters.qgs'
-        source_data_path = unitTestDataPath('qgis_server') + '/test_project_api_timefilters.gpkg'
-        dest_project_path = os.path.join(tempDir.path(), 'test_project_api_timefilters.qgs')
-        dest_data_path = os.path.join(tempDir.path(), 'test_project_api_timefilters.gpkg')
+        source_project_path = unitTestDataPath(
+            'qgis_server') + '/test_project_api_timefilters.qgs'
+        source_data_path = unitTestDataPath(
+            'qgis_server') + '/test_project_api_timefilters.gpkg'
+        dest_project_path = os.path.join(
+            tempDir.path(), 'test_project_api_timefilters.qgs')
+        dest_data_path = os.path.join(
+            tempDir.path(), 'test_project_api_timefilters.gpkg')
         shutil.copy(source_data_path, dest_data_path)
         shutil.copy(source_project_path, dest_project_path)
         project.read(dest_project_path)
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/points')
-        self.compareApi(request, project, 'test_wfs3_collection_points_timefilters.json')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/points')
+        self.compareApi(request, project,
+                        'test_wfs3_collection_points_timefilters.json')
 
     def test_wfs3_collection_html(self):
         """Test WFS3 API collection"""
         project = QgsProject()
         project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer%20èé.html')
-        self.compareApi(request, project, 'test_wfs3_collection_testlayer_èé.html')
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer%20èé/')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/testlayer%20èé.html')
+        self.compareApi(request, project,
+                        'test_wfs3_collection_testlayer_èé.html')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/testlayer%20èé/')
         request.setHeader('Accept', 'text/html')
-        self.compareApi(request, project, 'test_wfs3_collection_testlayer_èé.html')
+        self.compareApi(request, project,
+                        'test_wfs3_collection_testlayer_èé.html')
 
     def test_wfs3_collection_items(self):
         """Test WFS3 API items"""
         project = QgsProject()
         project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer%20èé/items')
-        self.compareApi(request, project, 'test_wfs3_collections_items_testlayer_èé.json')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/testlayer%20èé/items')
+        self.compareApi(request, project,
+                        'test_wfs3_collections_items_testlayer_èé.json')
 
     def test_wfs3_collection_items_crs(self):
         """Test WFS3 API items with CRS"""
         project = QgsProject()
         project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
-        encoded_crs = parse.quote('http://www.opengis.net/def/crs/EPSG/9.6.2/3857', safe='')
+        encoded_crs = parse.quote(
+            'http://www.opengis.net/def/crs/EPSG/9.6.2/3857', safe='')
         request = QgsBufferServerRequest(
             'http://server.qgis.org/wfs3/collections/testlayer%20èé/items?crs={}'.format(encoded_crs))
-        self.compareApi(request, project, 'test_wfs3_collections_items_testlayer_èé_crs_3857.json')
+        self.compareApi(
+            request, project, 'test_wfs3_collections_items_testlayer_èé_crs_3857.json')
 
     def test_wfs3_collection_items_as_areas_crs_4326(self):
         """Test WFS3 API items with CRS"""
         project = QgsProject()
-        project.read(unitTestDataPath('qgis_server') + '/test_project_wms_grouped_nested_layers.qgs')
-        encoded_crs = parse.quote('http://www.opengis.net/def/crs/EPSG/9.6.2/4326', safe='')
+        project.read(unitTestDataPath('qgis_server') +
+                     '/test_project_wms_grouped_nested_layers.qgs')
+        encoded_crs = parse.quote(
+            'http://www.opengis.net/def/crs/EPSG/9.6.2/4326', safe='')
         request = QgsBufferServerRequest(
             'http://server.qgis.org/wfs3/collections/as-areas-short-name/items?crs={}'.format(encoded_crs))
-        self.compareApi(request, project, 'test_wfs3_collections_items_as-areas-short-name_4326.json')
+        self.compareApi(
+            request, project, 'test_wfs3_collections_items_as-areas-short-name_4326.json')
 
     def test_wfs3_collection_items_as_areas_crs_3857(self):
         """Test WFS3 API items with CRS"""
         project = QgsProject()
-        project.read(unitTestDataPath('qgis_server') + '/test_project_wms_grouped_nested_layers.qgs')
-        encoded_crs = parse.quote('http://www.opengis.net/def/crs/EPSG/9.6.2/3857', safe='')
+        project.read(unitTestDataPath('qgis_server') +
+                     '/test_project_wms_grouped_nested_layers.qgs')
+        encoded_crs = parse.quote(
+            'http://www.opengis.net/def/crs/EPSG/9.6.2/3857', safe='')
         request = QgsBufferServerRequest(
             'http://server.qgis.org/wfs3/collections/as-areas-short-name/items?crs={}'.format(encoded_crs))
-        self.compareApi(request, project, 'test_wfs3_collections_items_as-areas-short-name_3857.json')
+        self.compareApi(
+            request, project, 'test_wfs3_collections_items_as-areas-short-name_3857.json')
 
     def test_invalid_args(self):
         """Test wrong args"""
         project = QgsProject()
         project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer%20èé/items?limit=-1')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/testlayer%20èé/items?limit=-1')
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, project)
         self.assertEqual(response.statusCode(), 400)  # Bad request
         self.assertEqual(response.body(),
                          b'[{"code":"Bad request error","description":"Argument \'limit\' is not valid. Number of features to retrieve [0-10000]"}]')  # Bad request
 
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer%20èé/items?limit=10001')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/testlayer%20èé/items?limit=10001')
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, project)
         self.assertEqual(response.statusCode(), 400)  # Bad request
@@ -524,8 +584,10 @@ class QgsServerAPITest(QgsServerAPITestBase):
         """Test WFS3 API item limits"""
         project = QgsProject()
         project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer%20èé/items?limit=1')
-        self.compareApi(request, project, 'test_wfs3_collections_items_testlayer_èé_limit_1.json')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/testlayer%20èé/items?limit=1')
+        self.compareApi(
+            request, project, 'test_wfs3_collections_items_testlayer_èé_limit_1.json')
 
     def test_wfs3_collection_items_limit_offset(self):
         """Test WFS3 API offset"""
@@ -533,7 +595,8 @@ class QgsServerAPITest(QgsServerAPITestBase):
         project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
         request = QgsBufferServerRequest(
             'http://server.qgis.org/wfs3/collections/testlayer%20èé/items?limit=1&offset=1')
-        self.compareApi(request, project, 'test_wfs3_collections_items_testlayer_èé_limit_1_offset_1.json')
+        self.compareApi(
+            request, project, 'test_wfs3_collections_items_testlayer_èé_limit_1_offset_1.json')
         request = QgsBufferServerRequest(
             'http://server.qgis.org/wfs3/collections/testlayer%20èé/items?limit=1&offset=-1')
         response = QgsBufferServerResponse()
@@ -555,18 +618,22 @@ class QgsServerAPITest(QgsServerAPITestBase):
         project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
         request = QgsBufferServerRequest(
             'http://server.qgis.org/wfs3/collections/testlayer%20èé/items?bbox=8.203495,44.901482,8.203497,44.901484')
-        self.compareApi(request, project, 'test_wfs3_collections_items_testlayer_èé_bbox.json')
+        self.compareApi(request, project,
+                        'test_wfs3_collections_items_testlayer_èé_bbox.json')
 
         # Test with a different CRS
-        encoded_crs = parse.quote('http://www.opengis.net/def/crs/EPSG/9.6.2/3857', safe='')
+        encoded_crs = parse.quote(
+            'http://www.opengis.net/def/crs/EPSG/9.6.2/3857', safe='')
         request = QgsBufferServerRequest(
             'http://server.qgis.org/wfs3/collections/testlayer%20èé/items?bbox=913191,5606014,913234,5606029&bbox-crs={}'.format(
                 encoded_crs))
-        self.compareApi(request, project, 'test_wfs3_collections_items_testlayer_èé_bbox_3857.json')
+        self.compareApi(
+            request, project, 'test_wfs3_collections_items_testlayer_èé_bbox_3857.json')
 
     def test_wfs3_static_handler(self):
         """Test static handler"""
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/static/style.css')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/static/style.css')
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, None)
         body = bytes(response.body()).decode('utf8')
@@ -574,7 +641,8 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.assertEqual(response.headers()['Content-Type'], 'text/css')
         self.assertTrue(len(body) > 0)
 
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/static/does_not_exists.css')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/static/does_not_exists.css')
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, None)
         body = bytes(response.body()).decode('utf8')
@@ -647,7 +715,8 @@ class QgsServerAPITest(QgsServerAPITestBase):
         req = QgsFeatureRequest()
         order_by_clause = QgsFeatureRequest.OrderByClause('$id', False)
         req.setOrderBy(QgsFeatureRequest.OrderBy([order_by_clause]))
-        feature = next(project.mapLayersByName('test layer èé 3857 published insert')[0].getFeatures(req))
+        feature = next(project.mapLayersByName(
+            'test layer èé 3857 published insert')[0].getFeatures(req))
         self.assertEqual(response.headers()['Location'],
                          'http://server.qgis.org/wfs3/collections/%s/items/%s' % (insert_layer, feature.id()))
         self.assertEqual(feature.attribute('text_1'), 'Text 1')
@@ -656,7 +725,8 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.assertEqual(feature.attribute('float_1'), 12345.678)
         self.assertEqual(feature.attribute('bool_1'), True)
         self.assertEqual(bytes(feature.attribute('blob_1')), b"test")
-        self.assertEqual(re.sub(r'\.\d+', '', feature.geometry().asWkt().upper()), 'MULTIPOINT ((806732 5592286))')
+        self.assertEqual(re.sub(
+            r'\.\d+', '', feature.geometry().asWkt().upper()), 'MULTIPOINT ((806732 5592286))')
 
     def test_wfs3_collection_items_put(self):
         """Test WFS3 API items PUT"""
@@ -740,14 +810,16 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.assertEqual(j['properties']['blob_1'], "dGVzdA==")
         self.assertEqual(j['geometry']['coordinates'], [[7.247, 44.814]])
 
-        feature = project.mapLayersByName('test layer èé 3857 published update')[0].getFeature(1)
+        feature = project.mapLayersByName('test layer èé 3857 published update')[
+            0].getFeature(1)
         self.assertEqual(feature.attribute('text_1'), 'Text 1')
         self.assertEqual(feature.attribute('text_2'), 'Text 2')
         self.assertEqual(feature.attribute('int_1'), 123)
         self.assertEqual(feature.attribute('float_1'), 12345.678)
         self.assertEqual(feature.attribute('bool_1'), True)
         self.assertEqual(bytes(feature.attribute('blob_1')), b"test")
-        self.assertEqual(re.sub(r'\.\d+', '', feature.geometry().asWkt().upper()), 'MULTIPOINT ((806732 5592286))')
+        self.assertEqual(re.sub(
+            r'\.\d+', '', feature.geometry().asWkt().upper()), 'MULTIPOINT ((806732 5592286))')
 
         # Test with partial and unordered properties
         data = """{
@@ -783,14 +855,16 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.assertEqual(j['properties']['blob_1'], "dGVzdA==")
         self.assertEqual(j['geometry']['coordinates'], [[8.247, 45.814]])
 
-        feature = project.mapLayersByName('test layer èé 3857 published update')[0].getFeature(1)
+        feature = project.mapLayersByName('test layer èé 3857 published update')[
+            0].getFeature(1)
         self.assertEqual(feature.attribute('text_1'), 'Text 1-bis')
         self.assertEqual(feature.attribute('text_2'), 'Text 2-bis')
         self.assertEqual(feature.attribute('int_1'), 1234)
         self.assertEqual(feature.attribute('float_1'), 12345.678)
         self.assertEqual(feature.attribute('bool_1'), False)
         self.assertEqual(bytes(feature.attribute('blob_1')), b"test")
-        self.assertEqual(re.sub(r'\.\d+', '', feature.geometry().asWkt().upper()), 'MULTIPOINT ((918051 5750592))')
+        self.assertEqual(re.sub(
+            r'\.\d+', '', feature.geometry().asWkt().upper()), 'MULTIPOINT ((918051 5750592))')
 
         # Try to update a forbidden (unpublished) field
         data = """{
@@ -851,7 +925,8 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.assertEqual(response.statusCode(), 200)
 
         # Check that it was really deleted
-        layer = project.mapLayersByName('test layer èé 3857 published delete')[0]
+        layer = project.mapLayersByName(
+            'test layer èé 3857 published delete')[0]
         self.assertFalse(1 in layer.allFeatureIds())
 
     def test_wfs3_collection_items_patch(self):
@@ -944,14 +1019,16 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.assertEqual(j['properties']['blob_1'], "dGVzdA==")
         self.assertEqual(j['geometry']['coordinates'], [[7.227328, 44.820762]])
 
-        feature = project.mapLayersByName('test layer èé 3857 published update')[0].getFeature(1)
+        feature = project.mapLayersByName('test layer èé 3857 published update')[
+            0].getFeature(1)
         self.assertEqual(feature.attribute('text_1'), 'Torre Pellice 1')
         self.assertEqual(feature.attribute('text_2'), 'A new text 2')
         self.assertEqual(feature.attribute('int_1'), 7)
         self.assertEqual(feature.attribute('float_1'), 1234.567)
         self.assertEqual(feature.attribute('bool_1'), True)
         self.assertEqual(bytes(feature.attribute('blob_1')), b"test")
-        self.assertEqual(re.sub(r'\.\d+', '', feature.geometry().asWkt().upper()), 'MULTIPOINT ((804542 5593348))')
+        self.assertEqual(re.sub(
+            r'\.\d+', '', feature.geometry().asWkt().upper()), 'MULTIPOINT ((804542 5593348))')
 
         # Try to update a forbidden (unpublished) field
         request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/%s/items/1' % hidden_text_2_layer,
@@ -969,14 +1046,16 @@ class QgsServerAPITest(QgsServerAPITestBase):
         project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
         # Check not published
         response = QgsBufferServerResponse()
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer3/items?name=two')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/testlayer3/items?name=two')
         self.server.handleRequest(request, response, project)
         self.assertEqual(response.statusCode(), 404)  # Not found
         request = QgsBufferServerRequest(
             'http://server.qgis.org/wfs3/collections/layer1_with_short_name/items?name=two')
         self.server.handleRequest(request, response, project)
         self.assertEqual(response.statusCode(), 200)
-        self.compareApi(request, project, 'test_wfs3_collections_items_layer1_with_short_name_eq_two.json')
+        self.compareApi(
+            request, project, 'test_wfs3_collections_items_layer1_with_short_name_eq_two.json')
 
     def test_wfs3_sorting(self):
         """Test sorting"""
@@ -1013,7 +1092,8 @@ class QgsServerAPITest(QgsServerAPITestBase):
         project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
 
         # Invalid request
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer%20èé/items?properties')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/testlayer%20èé/items?properties')
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, project)
         self.assertEqual(bytes(response.body()).decode('utf8'),
@@ -1021,7 +1101,8 @@ class QgsServerAPITest(QgsServerAPITestBase):
 
         # Valid request
         response = QgsBufferServerResponse()
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer%20èé/items?properties=name')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/testlayer%20èé/items?properties=name')
         self.server.handleRequest(request, response, project)
         j = json.loads(bytes(response.body()).decode('utf8'))
         self.assertTrue('name' in j['features'][0]['properties'])
@@ -1036,7 +1117,8 @@ class QgsServerAPITest(QgsServerAPITestBase):
         self.assertTrue('id' in j['features'][0]['properties'])
 
         response = QgsBufferServerResponse()
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer%20èé/items?properties=id')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/testlayer%20èé/items?properties=id')
         self.server.handleRequest(request, response, project)
         j = json.loads(bytes(response.body()).decode('utf8'))
         self.assertFalse('name' in j['features'][0]['properties'])
@@ -1056,8 +1138,10 @@ class QgsServerAPITest(QgsServerAPITestBase):
         """Test excluded attributes"""
         project = QgsProject()
         project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/exclude_attribute/items/0.geojson')
-        response = self.compareApi(request, project, 'test_wfs3_collections_items_exclude_attribute_0.json')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/exclude_attribute/items/0.geojson')
+        response = self.compareApi(
+            request, project, 'test_wfs3_collections_items_exclude_attribute_0.json')
         self.assertEqual(response.statusCode(), 200)
 
     def test_wfs3_time_filters_ranges(self):
@@ -1066,10 +1150,14 @@ class QgsServerAPITest(QgsServerAPITestBase):
         project = QgsProject()
 
         tempDir = QtCore.QTemporaryDir()
-        source_project_path = unitTestDataPath('qgis_server') + '/test_project_api_timefilters.qgs'
-        source_data_path = unitTestDataPath('qgis_server') + '/test_project_api_timefilters.gpkg'
-        dest_project_path = os.path.join(tempDir.path(), 'test_project_api_timefilters.qgs')
-        dest_data_path = os.path.join(tempDir.path(), 'test_project_api_timefilters.gpkg')
+        source_project_path = unitTestDataPath(
+            'qgis_server') + '/test_project_api_timefilters.qgs'
+        source_data_path = unitTestDataPath(
+            'qgis_server') + '/test_project_api_timefilters.gpkg'
+        dest_project_path = os.path.join(
+            tempDir.path(), 'test_project_api_timefilters.qgs')
+        dest_data_path = os.path.join(
+            tempDir.path(), 'test_project_api_timefilters.gpkg')
         shutil.copy(source_data_path, dest_data_path)
         shutil.copy(source_project_path, dest_project_path)
         project.read(dest_project_path)
@@ -1080,8 +1168,10 @@ class QgsServerAPITest(QgsServerAPITestBase):
         layer.serverProperties().removeWmsDimension('date')
         layer.serverProperties().removeWmsDimension('time')
         self.assertEqual(len(layer.serverProperties().wmsDimensions()), 0)
-        self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 0)
-        none_path = os.path.join(tempDir.path(), 'test_project_api_timefilters_none.qgs')
+        self.assertEqual(len(project.mapLayersByName('points')[
+                         0].serverProperties().wmsDimensions()), 0)
+        none_path = os.path.join(
+            tempDir.path(), 'test_project_api_timefilters_none.qgs')
         project.write(none_path)
 
         layer = list(project.mapLayers().values())[0]
@@ -1089,64 +1179,78 @@ class QgsServerAPITest(QgsServerAPITestBase):
         layer.serverProperties().removeWmsDimension('time')
         self.assertTrue(layer.serverProperties().addWmsDimension(
             QgsVectorLayerServerProperties.WmsDimensionInfo('date', 'created')))
-        created_path = os.path.join(tempDir.path(), 'test_project_api_timefilters_created.qgs')
+        created_path = os.path.join(
+            tempDir.path(), 'test_project_api_timefilters_created.qgs')
         project.write(created_path)
         project.read(created_path)
-        self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 1)
+        self.assertEqual(len(project.mapLayersByName('points')[
+                         0].serverProperties().wmsDimensions()), 1)
 
         layer = list(project.mapLayers().values())[0]
         layer.serverProperties().removeWmsDimension('date')
         layer.serverProperties().removeWmsDimension('time')
         self.assertTrue(layer.serverProperties().addWmsDimension(
             QgsVectorLayerServerProperties.WmsDimensionInfo('date', 'created_string')))
-        created_string_path = os.path.join(tempDir.path(), 'test_project_api_timefilters_created_string.qgs')
+        created_string_path = os.path.join(
+            tempDir.path(), 'test_project_api_timefilters_created_string.qgs')
         project.write(created_string_path)
         project.read(created_string_path)
-        self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 1)
+        self.assertEqual(len(project.mapLayersByName('points')[
+                         0].serverProperties().wmsDimensions()), 1)
 
         layer = list(project.mapLayers().values())[0]
         layer.serverProperties().removeWmsDimension('date')
         layer.serverProperties().removeWmsDimension('time')
         self.assertTrue(layer.serverProperties().addWmsDimension(
             QgsVectorLayerServerProperties.WmsDimensionInfo('time', 'updated_string')))
-        updated_string_path = os.path.join(tempDir.path(), 'test_project_api_timefilters_updated_string.qgs')
+        updated_string_path = os.path.join(
+            tempDir.path(), 'test_project_api_timefilters_updated_string.qgs')
         project.write(updated_string_path)
         project.read(updated_string_path)
-        self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 1)
+        self.assertEqual(len(project.mapLayersByName('points')[
+                         0].serverProperties().wmsDimensions()), 1)
 
         layer = list(project.mapLayers().values())[0]
         layer.serverProperties().removeWmsDimension('date')
         layer.serverProperties().removeWmsDimension('time')
-        self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 0)
+        self.assertEqual(len(project.mapLayersByName('points')[
+                         0].serverProperties().wmsDimensions()), 0)
         self.assertTrue(layer.serverProperties().addWmsDimension(
             QgsVectorLayerServerProperties.WmsDimensionInfo('time', 'updated')))
-        updated_path = os.path.join(tempDir.path(), 'test_project_api_timefilters_updated.qgs')
+        updated_path = os.path.join(
+            tempDir.path(), 'test_project_api_timefilters_updated.qgs')
         project.write(updated_path)
         project.read(updated_path)
-        self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 1)
+        self.assertEqual(len(project.mapLayersByName('points')[
+                         0].serverProperties().wmsDimensions()), 1)
 
         layer = list(project.mapLayers().values())[0]
         layer.serverProperties().removeWmsDimension('date')
         layer.serverProperties().removeWmsDimension('time')
-        self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 0)
+        self.assertEqual(len(project.mapLayersByName('points')[
+                         0].serverProperties().wmsDimensions()), 0)
         self.assertTrue(layer.serverProperties().addWmsDimension(
             QgsVectorLayerServerProperties.WmsDimensionInfo('time', 'updated')))
         self.assertTrue(layer.serverProperties().addWmsDimension(
             QgsVectorLayerServerProperties.WmsDimensionInfo('date', 'created')))
-        both_path = os.path.join(tempDir.path(), 'test_project_api_timefilters_both.qgs')
+        both_path = os.path.join(
+            tempDir.path(), 'test_project_api_timefilters_both.qgs')
         project.write(both_path)
         project.read(both_path)
-        self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 2)
+        self.assertEqual(len(project.mapLayersByName('points')[
+                         0].serverProperties().wmsDimensions()), 2)
 
         layer = list(project.mapLayers().values())[0]
         layer.serverProperties().removeWmsDimension('date')
         layer.serverProperties().removeWmsDimension('time')
         self.assertTrue(layer.serverProperties().addWmsDimension(
             QgsVectorLayerServerProperties.WmsDimensionInfo('date', 'begin', 'end')))
-        date_range_path = os.path.join(tempDir.path(), 'test_project_api_timefilters_date_range.qgs')
+        date_range_path = os.path.join(
+            tempDir.path(), 'test_project_api_timefilters_date_range.qgs')
         project.write(date_range_path)
         project.read(date_range_path)
-        self.assertEqual(len(project.mapLayersByName('points')[0].serverProperties().wmsDimensions()), 1)
+        self.assertEqual(len(project.mapLayersByName('points')[
+                         0].serverProperties().wmsDimensions()), 1)
 
         '''
         Test data
@@ -1185,7 +1289,8 @@ class QgsServerAPITest(QgsServerAPITestBase):
             return QgsServerApiUtils.temporalFilterExpression(layer, interval).expression()
 
         # Bad request
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/points/items?datetime=bad timing!')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/points/items?datetime=bad timing!')
         response = QgsBufferServerResponse()
         project.read(created_path)
         self.server.handleRequest(request, response, project)
@@ -1322,119 +1427,185 @@ class QgsServerAPITest(QgsServerAPITestBase):
         ##################################################################################
         # Test "created" date field
         # Test exact
-        _date_tester(created_path, '2017-01-01', ['bricherasio'], ['luserna', 'torre'])
+        _date_tester(created_path, '2017-01-01',
+                     ['bricherasio'], ['luserna', 'torre'])
         # Test datetime field exact (test that we can use a time on a date type field)
-        _date_tester(created_path, '2017-01-01T01:01:01', ['bricherasio'], ['luserna', 'torre'])
+        _date_tester(created_path, '2017-01-01T01:01:01',
+                     ['bricherasio'], ['luserna', 'torre'])
         # Test exact no match
-        _date_tester(created_path, '2000-05-06', [], ['luserna', 'bricherasio', 'torre'])
+        _date_tester(created_path, '2000-05-06', [],
+                     ['luserna', 'bricherasio', 'torre'])
 
         ##################################################################################
         # Test "updated" datetime field
         # Test exact
-        _date_tester(updated_path, '2019-01-01T01:01:01', ['bricherasio'], ['luserna', 'torre'])
+        _date_tester(updated_path, '2019-01-01T01:01:01',
+                     ['bricherasio'], ['luserna', 'torre'])
         # Test date field exact (test that we can also use a date on a datetime type field)
-        _date_tester(updated_path, '2019-01-01', ['bricherasio'], ['luserna', 'torre'])
+        _date_tester(updated_path, '2019-01-01',
+                     ['bricherasio'], ['luserna', 'torre'])
         # Test exact no match
-        _date_tester(updated_path, '2017-01-01T05:05:05', [], ['luserna', 'bricherasio', 'torre'])
+        _date_tester(updated_path, '2017-01-01T05:05:05',
+                     [], ['luserna', 'bricherasio', 'torre'])
 
         ##################################################################################
         # Test both
         # Test exact
-        _date_tester(both_path, '2010-01-01T01:01:01', ['villar'], ['torre', 'bricherasio', 'luserna'])
+        _date_tester(both_path, '2010-01-01T01:01:01',
+                     ['villar'], ['torre', 'bricherasio', 'luserna'])
         # Test date field exact (test that we can use a date on a datetime type field)
-        _date_tester(both_path, '2010-01-01', ['villar'], ['luserna', 'bricherasio', 'torre'])
+        _date_tester(both_path, '2010-01-01',
+                     ['villar'], ['luserna', 'bricherasio', 'torre'])
         # Test exact no match
-        _date_tester(both_path, '2020-05-06T05:05:05', [], ['luserna', 'bricherasio', 'torre', 'villar'])
+        _date_tester(both_path, '2020-05-06T05:05:05', [],
+                     ['luserna', 'bricherasio', 'torre', 'villar'])
 
         # Test intervals
 
         ##################################################################################
         # Test "created" date field
-        _date_tester(created_path, '2016-05-04/2018-05-06', ['bricherasio', 'torre'], ['luserna', 'villar'])
-        _date_tester(created_path, '2016-05-04/..', ['bricherasio', 'torre', 'luserna'], ['villar'])
-        _date_tester(created_path, '2016-05-04/', ['bricherasio', 'torre', 'luserna'], ['villar'])
-        _date_tester(created_path, '2100-05-04/', [], ['luserna', 'bricherasio', 'torre', 'villar'])
-        _date_tester(created_path, '2100-05-04/..', [], ['luserna', 'bricherasio', 'torre', 'villar'])
-        _date_tester(created_path, '/2018-05-06', ['bricherasio', 'torre', 'villar'], ['luserna'])
-        _date_tester(created_path, '../2018-05-06', ['bricherasio', 'torre', 'villar'], ['luserna'])
+        _date_tester(created_path, '2016-05-04/2018-05-06',
+                     ['bricherasio', 'torre'], ['luserna', 'villar'])
+        _date_tester(created_path, '2016-05-04/..',
+                     ['bricherasio', 'torre', 'luserna'], ['villar'])
+        _date_tester(created_path, '2016-05-04/',
+                     ['bricherasio', 'torre', 'luserna'], ['villar'])
+        _date_tester(created_path, '2100-05-04/', [],
+                     ['luserna', 'bricherasio', 'torre', 'villar'])
+        _date_tester(created_path, '2100-05-04/..', [],
+                     ['luserna', 'bricherasio', 'torre', 'villar'])
+        _date_tester(created_path, '/2018-05-06',
+                     ['bricherasio', 'torre', 'villar'], ['luserna'])
+        _date_tester(created_path, '../2018-05-06',
+                     ['bricherasio', 'torre', 'villar'], ['luserna'])
 
         # Test datetimes on "created" date field
         _date_tester(created_path, '2016-05-04T01:01:01/2018-05-06T01:01:01', ['bricherasio', 'torre'],
                      ['luserna', 'villar'])
-        _date_tester(created_path, '2016-05-04T01:01:01/..', ['bricherasio', 'torre', 'luserna'], ['villar'])
-        _date_tester(created_path, '2016-05-04T01:01:01/', ['bricherasio', 'torre', 'luserna'], ['villar'])
-        _date_tester(created_path, '2100-05-04T01:01:01/', [], ['luserna', 'bricherasio', 'torre', 'villar'])
-        _date_tester(created_path, '2100-05-04T01:01:01/..', [], ['luserna', 'bricherasio', 'torre', 'villar'])
-        _date_tester(created_path, '/2018-05-06T01:01:01', ['bricherasio', 'torre', 'villar'], ['luserna'])
-        _date_tester(created_path, '../2018-05-06T01:01:01', ['bricherasio', 'torre', 'villar'], ['luserna'])
+        _date_tester(created_path, '2016-05-04T01:01:01/..',
+                     ['bricherasio', 'torre', 'luserna'], ['villar'])
+        _date_tester(created_path, '2016-05-04T01:01:01/',
+                     ['bricherasio', 'torre', 'luserna'], ['villar'])
+        _date_tester(created_path, '2100-05-04T01:01:01/', [],
+                     ['luserna', 'bricherasio', 'torre', 'villar'])
+        _date_tester(created_path, '2100-05-04T01:01:01/..', [],
+                     ['luserna', 'bricherasio', 'torre', 'villar'])
+        _date_tester(created_path, '/2018-05-06T01:01:01',
+                     ['bricherasio', 'torre', 'villar'], ['luserna'])
+        _date_tester(created_path, '../2018-05-06T01:01:01',
+                     ['bricherasio', 'torre', 'villar'], ['luserna'])
 
         ##################################################################################
         # Test "updated" date field
-        _date_tester(updated_path, '2020-05-04/2022-12-31', ['torre', 'luserna'], ['bricherasio', 'villar'])
-        _date_tester(updated_path, '2020-05-04/..', ['torre', 'luserna'], ['bricherasio', 'villar'])
-        _date_tester(updated_path, '2020-05-04/', ['torre', 'luserna'], ['bricherasio', 'villar'])
-        _date_tester(updated_path, '2019-01-01/', ['torre', 'luserna', 'bricherasio'], ['villar'])
-        _date_tester(updated_path, '2019-01-01/..', ['torre', 'luserna', 'bricherasio'], ['villar'])
-        _date_tester(updated_path, '/2020-02-02', ['villar', 'bricherasio'], ['torre', 'luserna'])
-        _date_tester(updated_path, '../2020-02-02', ['villar', 'bricherasio'], ['torre', 'luserna'])
+        _date_tester(updated_path, '2020-05-04/2022-12-31',
+                     ['torre', 'luserna'], ['bricherasio', 'villar'])
+        _date_tester(updated_path, '2020-05-04/..',
+                     ['torre', 'luserna'], ['bricherasio', 'villar'])
+        _date_tester(updated_path, '2020-05-04/',
+                     ['torre', 'luserna'], ['bricherasio', 'villar'])
+        _date_tester(updated_path, '2019-01-01/',
+                     ['torre', 'luserna', 'bricherasio'], ['villar'])
+        _date_tester(updated_path, '2019-01-01/..',
+                     ['torre', 'luserna', 'bricherasio'], ['villar'])
+        _date_tester(updated_path, '/2020-02-02',
+                     ['villar', 'bricherasio'], ['torre', 'luserna'])
+        _date_tester(updated_path, '../2020-02-02',
+                     ['villar', 'bricherasio'], ['torre', 'luserna'])
 
         # Test datetimes on "updated" datetime field
         _date_tester(updated_path, '2020-05-04T01:01:01/2022-12-31T01:01:01', ['torre', 'luserna'],
                      ['bricherasio', 'villar'])
-        _date_tester(updated_path, '2020-05-04T01:01:01/..', ['torre', 'luserna'], ['bricherasio', 'villar'])
-        _date_tester(updated_path, '2020-05-04T01:01:01/', ['torre', 'luserna'], ['bricherasio', 'villar'])
-        _date_tester(updated_path, '2019-01-01T01:01:01/', ['torre', 'luserna', 'bricherasio'], ['villar'])
-        _date_tester(updated_path, '2019-01-01T01:01:01/..', ['torre', 'luserna', 'bricherasio'], ['villar'])
-        _date_tester(updated_path, '/2020-02-02T01:01:01', ['villar', 'bricherasio'], ['torre', 'luserna'])
-        _date_tester(updated_path, '../2020-02-02T01:01:01', ['villar', 'bricherasio'], ['torre', 'luserna'])
+        _date_tester(updated_path, '2020-05-04T01:01:01/..',
+                     ['torre', 'luserna'], ['bricherasio', 'villar'])
+        _date_tester(updated_path, '2020-05-04T01:01:01/',
+                     ['torre', 'luserna'], ['bricherasio', 'villar'])
+        _date_tester(updated_path, '2019-01-01T01:01:01/',
+                     ['torre', 'luserna', 'bricherasio'], ['villar'])
+        _date_tester(updated_path, '2019-01-01T01:01:01/..',
+                     ['torre', 'luserna', 'bricherasio'], ['villar'])
+        _date_tester(updated_path, '/2020-02-02T01:01:01',
+                     ['villar', 'bricherasio'], ['torre', 'luserna'])
+        _date_tester(updated_path, '../2020-02-02T01:01:01',
+                     ['villar', 'bricherasio'], ['torre', 'luserna'])
 
         ##################################################################################
         # Test both
-        _date_tester(both_path, '2010-01-01', ['villar'], ['luserna', 'bricherasio'])
-        _date_tester(both_path, '2010-01-01/2010-01-01', ['villar'], ['luserna', 'bricherasio'])
-        _date_tester(both_path, '2017-01-01/2021-01-01', ['torre', 'bricherasio'], ['luserna', 'villar'])
-        _date_tester(both_path, '../2021-01-01', ['torre', 'bricherasio', 'villar'], ['luserna'])
-        _date_tester(both_path, '2019-01-01/..', ['luserna'], ['torre', 'bricherasio', 'villar'])
+        _date_tester(both_path, '2010-01-01',
+                     ['villar'], ['luserna', 'bricherasio'])
+        _date_tester(both_path, '2010-01-01/2010-01-01',
+                     ['villar'], ['luserna', 'bricherasio'])
+        _date_tester(both_path, '2017-01-01/2021-01-01',
+                     ['torre', 'bricherasio'], ['luserna', 'villar'])
+        _date_tester(both_path, '../2021-01-01',
+                     ['torre', 'bricherasio', 'villar'], ['luserna'])
+        _date_tester(both_path, '2019-01-01/..',
+                     ['luserna'], ['torre', 'bricherasio', 'villar'])
 
         ##################################################################################
         # Test none path (should take the first date/datetime field, that is "created")
 
-        _date_tester(none_path, '2016-05-04/2018-05-06', ['bricherasio', 'torre'], ['luserna', 'villar'])
-        _date_tester(none_path, '2016-05-04/..', ['bricherasio', 'torre', 'luserna'], ['villar'])
-        _date_tester(none_path, '2016-05-04/', ['bricherasio', 'torre', 'luserna'], ['villar'])
-        _date_tester(none_path, '2100-05-04/', [], ['luserna', 'bricherasio', 'torre', 'villar'])
-        _date_tester(none_path, '2100-05-04/..', [], ['luserna', 'bricherasio', 'torre', 'villar'])
-        _date_tester(none_path, '/2018-05-06', ['bricherasio', 'torre', 'villar'], ['luserna'])
-        _date_tester(none_path, '../2018-05-06', ['bricherasio', 'torre', 'villar'], ['luserna'])
+        _date_tester(none_path, '2016-05-04/2018-05-06',
+                     ['bricherasio', 'torre'], ['luserna', 'villar'])
+        _date_tester(none_path, '2016-05-04/..',
+                     ['bricherasio', 'torre', 'luserna'], ['villar'])
+        _date_tester(none_path, '2016-05-04/',
+                     ['bricherasio', 'torre', 'luserna'], ['villar'])
+        _date_tester(none_path, '2100-05-04/', [],
+                     ['luserna', 'bricherasio', 'torre', 'villar'])
+        _date_tester(none_path, '2100-05-04/..', [],
+                     ['luserna', 'bricherasio', 'torre', 'villar'])
+        _date_tester(none_path, '/2018-05-06',
+                     ['bricherasio', 'torre', 'villar'], ['luserna'])
+        _date_tester(none_path, '../2018-05-06',
+                     ['bricherasio', 'torre', 'villar'], ['luserna'])
 
         # Test datetimes on "created" date field
         _date_tester(none_path, '2016-05-04T01:01:01/2018-05-06T01:01:01', ['bricherasio', 'torre'],
                      ['luserna', 'villar'])
-        _date_tester(none_path, '2016-05-04T01:01:01/..', ['bricherasio', 'torre', 'luserna'], ['villar'])
-        _date_tester(none_path, '2016-05-04T01:01:01/', ['bricherasio', 'torre', 'luserna'], ['villar'])
-        _date_tester(none_path, '2100-05-04T01:01:01/', [], ['luserna', 'bricherasio', 'torre', 'villar'])
-        _date_tester(none_path, '2100-05-04T01:01:01/..', [], ['luserna', 'bricherasio', 'torre', 'villar'])
-        _date_tester(none_path, '/2018-05-06T01:01:01', ['bricherasio', 'torre', 'villar'], ['luserna'])
-        _date_tester(none_path, '../2018-05-06T01:01:01', ['bricherasio', 'torre', 'villar'], ['luserna'])
+        _date_tester(none_path, '2016-05-04T01:01:01/..',
+                     ['bricherasio', 'torre', 'luserna'], ['villar'])
+        _date_tester(none_path, '2016-05-04T01:01:01/',
+                     ['bricherasio', 'torre', 'luserna'], ['villar'])
+        _date_tester(none_path, '2100-05-04T01:01:01/', [],
+                     ['luserna', 'bricherasio', 'torre', 'villar'])
+        _date_tester(none_path, '2100-05-04T01:01:01/..', [],
+                     ['luserna', 'bricherasio', 'torre', 'villar'])
+        _date_tester(none_path, '/2018-05-06T01:01:01',
+                     ['bricherasio', 'torre', 'villar'], ['luserna'])
+        _date_tester(none_path, '../2018-05-06T01:01:01',
+                     ['bricherasio', 'torre', 'villar'], ['luserna'])
 
         #####################################################################################################
         # Test ranges
-        _date_tester(date_range_path, '2000-05-05T01:01:01', [], ['bricherasio', 'villar', 'luserna', 'torre'])
-        _date_tester(date_range_path, '2020-05-05T01:01:01', ['luserna', 'torre'], ['bricherasio', 'villar'])
-        _date_tester(date_range_path, '../2000-05-05T01:01:01', [], ['luserna', 'torre', 'bricherasio', 'villar'])
-        _date_tester(date_range_path, '../2017-05-05T01:01:01', ['bricherasio', 'villar'], ['luserna', 'torre'])
-        _date_tester(date_range_path, '../2050-05-05T01:01:01', ['bricherasio', 'villar', 'luserna', 'torre'], [])
-        _date_tester(date_range_path, '2020-05-05T01:01:01/', ['luserna', 'torre'], ['bricherasio', 'villar'])
+        _date_tester(date_range_path, '2000-05-05T01:01:01', [],
+                     ['bricherasio', 'villar', 'luserna', 'torre'])
+        _date_tester(date_range_path, '2020-05-05T01:01:01',
+                     ['luserna', 'torre'], ['bricherasio', 'villar'])
+        _date_tester(date_range_path, '../2000-05-05T01:01:01', [],
+                     ['luserna', 'torre', 'bricherasio', 'villar'])
+        _date_tester(date_range_path, '../2017-05-05T01:01:01',
+                     ['bricherasio', 'villar'], ['luserna', 'torre'])
+        _date_tester(date_range_path, '../2050-05-05T01:01:01',
+                     ['bricherasio', 'villar', 'luserna', 'torre'], [])
+        _date_tester(date_range_path, '2020-05-05T01:01:01/',
+                     ['luserna', 'torre'], ['bricherasio', 'villar'])
 
-        _date_tester(date_range_path, '2000-05-05', [], ['bricherasio', 'villar', 'luserna', 'torre'])
-        _date_tester(date_range_path, '2020-05-05', ['luserna', 'torre'], ['bricherasio', 'villar'])
-        _date_tester(date_range_path, '../2000-05-05', [], ['luserna', 'torre', 'bricherasio', 'villar'])
-        _date_tester(date_range_path, '../2017-05-05', ['bricherasio', 'villar'], ['luserna', 'torre'])
-        _date_tester(date_range_path, '../2050-05-05', ['bricherasio', 'villar', 'luserna', 'torre'], [])
-        _date_tester(date_range_path, '2020-05-05/', ['luserna', 'torre'], ['bricherasio', 'villar'])
+        _date_tester(date_range_path, '2000-05-05', [],
+                     ['bricherasio', 'villar', 'luserna', 'torre'])
+        _date_tester(date_range_path, '2020-05-05',
+                     ['luserna', 'torre'], ['bricherasio', 'villar'])
+        _date_tester(date_range_path, '../2000-05-05', [],
+                     ['luserna', 'torre', 'bricherasio', 'villar'])
+        _date_tester(date_range_path, '../2017-05-05',
+                     ['bricherasio', 'villar'], ['luserna', 'torre'])
+        _date_tester(date_range_path, '../2050-05-05',
+                     ['bricherasio', 'villar', 'luserna', 'torre'], [])
+        _date_tester(date_range_path, '2020-05-05/',
+                     ['luserna', 'torre'], ['bricherasio', 'villar'])
 
         # Test bad requests
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/points/items?datetime=bad timing!')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/points/items?datetime=bad timing!')
         response = QgsBufferServerResponse()
         project.read(created_path)
         self.server.handleRequest(request, response, project)
@@ -1500,7 +1671,8 @@ class Handler2(QgsServerOgcApiHandler):
 
     def parameters(self, context):
         return [
-            QgsServerQueryStringParameter('value1', True, QgsServerQueryStringParameter.Type.Double, 'a double value'),
+            QgsServerQueryStringParameter(
+                'value1', True, QgsServerQueryStringParameter.Type.Double, 'a double value'),
             QgsServerQueryStringParameter('value2', False, QgsServerQueryStringParameter.Type.String,
                                           'a string value'), ]
 
@@ -1555,7 +1727,8 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
     def testOgcApi(self):
         """Test OGC API"""
 
-        api = QgsServerOgcApi(self.server.serverInterface(), '/api1', 'apione', 'an api', '1.1')
+        api = QgsServerOgcApi(self.server.serverInterface(),
+                              '/api1', 'apione', 'an api', '1.1')
         self.assertEqual(api.name(), 'apione')
         self.assertEqual(api.description(), 'an api')
         self.assertEqual(api.version(), '1.1')
@@ -1566,23 +1739,30 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
         self.assertEqual(api.sanitizeUrl(QtCore.QUrl('/path//double//slashes//#fr')).toString(),
                          '/path/double/slashes#fr')
         self.assertEqual(api.relToString(QgsServerOgcApi.data), 'data')
-        self.assertEqual(api.relToString(QgsServerOgcApi.alternate), 'alternate')
+        self.assertEqual(api.relToString(
+            QgsServerOgcApi.alternate), 'alternate')
         self.assertEqual(api.contentTypeToString(QgsServerOgcApi.JSON), 'JSON')
-        self.assertEqual(api.contentTypeToStdString(QgsServerOgcApi.JSON), 'JSON')
-        self.assertEqual(api.contentTypeToExtension(QgsServerOgcApi.JSON), 'json')
-        self.assertEqual(api.contentTypeToExtension(QgsServerOgcApi.GEOJSON), 'geojson')
+        self.assertEqual(api.contentTypeToStdString(
+            QgsServerOgcApi.JSON), 'JSON')
+        self.assertEqual(api.contentTypeToExtension(
+            QgsServerOgcApi.JSON), 'json')
+        self.assertEqual(api.contentTypeToExtension(
+            QgsServerOgcApi.GEOJSON), 'geojson')
 
     def testOgcApiHandler(self):
         """Test OGC API Handler"""
 
         project = QgsProject()
         project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
-        request = QgsBufferServerRequest('http://server.qgis.org/wfs3/collections/testlayer%20èé/items?limit=-1')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/testlayer%20èé/items?limit=-1')
         response = QgsBufferServerResponse()
 
-        ctx = QgsServerApiContext('/services/api1', request, response, project, self.server.serverInterface())
+        ctx = QgsServerApiContext(
+            '/services/api1', request, response, project, self.server.serverInterface())
         h = Handler1()
-        self.assertTrue(h.staticPath(ctx).endswith('/resources/server/api/ogc/static'))
+        self.assertTrue(h.staticPath(ctx).endswith(
+            '/resources/server/api/ogc/static'))
         self.assertEqual(h.path(), QtCore.QRegularExpression("/handlerone"))
         self.assertEqual(h.description(), 'The first handler ever')
         self.assertEqual(h.operationId(), 'handlerOne')
@@ -1591,18 +1771,22 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
         self.assertEqual(h.linkType(), QgsServerOgcApi.data)
         with self.assertRaises(QgsServerApiBadRequestException) as ex:
             h.handleRequest(ctx)
-        self.assertEqual(str(ex.exception), 'Missing required argument: \'value1\'')
+        self.assertEqual(str(ex.exception),
+                         'Missing required argument: \'value1\'')
 
         r = ctx.response()
         self.assertEqual(r.data(), '')
 
         with self.assertRaises(QgsServerApiBadRequestException) as ex:
             h.values(ctx)
-        self.assertEqual(str(ex.exception), 'Missing required argument: \'value1\'')
+        self.assertEqual(str(ex.exception),
+                         'Missing required argument: \'value1\'')
 
         # Add handler to API and test for /api2
-        ctx = QgsServerApiContext('/services/api2', request, response, project, self.server.serverInterface())
-        api = QgsServerOgcApi(self.server.serverInterface(), '/api2', 'apitwo', 'a second api', '1.2')
+        ctx = QgsServerApiContext(
+            '/services/api2', request, response, project, self.server.serverInterface())
+        api = QgsServerOgcApi(self.server.serverInterface(),
+                              '/api2', 'apitwo', 'a second api', '1.2')
         api.registerHandler(h)
         # Add a second handler (will be tested later)
         h2 = Handler2()
@@ -1611,39 +1795,49 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
         ctx.request().setUrl(QtCore.QUrl('http://www.qgis.org/services/api1'))
         with self.assertRaises(QgsServerApiBadRequestException) as ex:
             api.executeRequest(ctx)
-        self.assertEqual(str(ex.exception), 'Requested URI does not match any registered API handler')
+        self.assertEqual(
+            str(ex.exception), 'Requested URI does not match any registered API handler')
 
         ctx.request().setUrl(QtCore.QUrl('http://www.qgis.org/services/api2'))
         with self.assertRaises(QgsServerApiBadRequestException) as ex:
             api.executeRequest(ctx)
-        self.assertEqual(str(ex.exception), 'Requested URI does not match any registered API handler')
+        self.assertEqual(
+            str(ex.exception), 'Requested URI does not match any registered API handler')
 
         ctx.request().setUrl(QtCore.QUrl('http://www.qgis.org/services/api2/handlerone'))
         with self.assertRaises(QgsServerApiBadRequestException) as ex:
             api.executeRequest(ctx)
-        self.assertEqual(str(ex.exception), 'Missing required argument: \'value1\'')
+        self.assertEqual(str(ex.exception),
+                         'Missing required argument: \'value1\'')
 
-        ctx.request().setUrl(QtCore.QUrl('http://www.qgis.org/services/api2/handlerone?value1=not+a+double'))
+        ctx.request().setUrl(QtCore.QUrl(
+            'http://www.qgis.org/services/api2/handlerone?value1=not+a+double'))
         with self.assertRaises(QgsServerApiBadRequestException) as ex:
             api.executeRequest(ctx)
-        self.assertEqual(str(ex.exception), 'Argument \'value1\' could not be converted to Double')
+        self.assertEqual(
+            str(ex.exception), 'Argument \'value1\' could not be converted to Double')
 
-        ctx.request().setUrl(QtCore.QUrl('http://www.qgis.org/services/api2/handlerone?value1=1.2345'))
+        ctx.request().setUrl(QtCore.QUrl(
+            'http://www.qgis.org/services/api2/handlerone?value1=1.2345'))
         params = h.values(ctx)
         self.assertEqual(params, {'value1': 1.2345})
         api.executeRequest(ctx)
-        self.assertEqual(json.loads(bytes(ctx.response().data()))['value1'], 1.2345)
+        self.assertEqual(json.loads(bytes(ctx.response().data()))[
+                         'value1'], 1.2345)
 
         # Test path fragments extraction
-        ctx.request().setUrl(QtCore.QUrl('http://www.qgis.org/services/api2/handlertwo/00/555?value1=1.2345'))
+        ctx.request().setUrl(QtCore.QUrl(
+            'http://www.qgis.org/services/api2/handlertwo/00/555?value1=1.2345'))
         params = h2.values(ctx)
-        self.assertEqual(params, {'code1': '00', 'value1': 1.2345, 'value2': None})
+        self.assertEqual(
+            params, {'code1': '00', 'value1': 1.2345, 'value2': None})
 
         # Test string encoding
         ctx.request().setUrl(
             QtCore.QUrl('http://www.qgis.org/services/api2/handlertwo/00/555?value1=1.2345&value2=a%2Fstring%20some'))
         params = h2.values(ctx)
-        self.assertEqual(params, {'code1': '00', 'value1': 1.2345, 'value2': 'a/string some'})
+        self.assertEqual(
+            params, {'code1': '00', 'value1': 1.2345, 'value2': 'a/string some'})
 
         # Test links
         self.assertEqual(h2.href(ctx),
@@ -1662,21 +1856,27 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
 
         project = QgsProject()
         project.read(unitTestDataPath('qgis_server') + '/test_project_api.qgs')
-        request = QgsBufferServerRequest('http://server.qgis.org/api3/handlerthree?value1=9.5')
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/api3/handlerthree?value1=9.5')
         response = QgsBufferServerResponse()
 
         # Add handler to API and test for /api3
-        ctx = QgsServerApiContext('/services/api3', request, response, project, self.server.serverInterface())
-        api = QgsServerOgcApi(self.server.serverInterface(), '/api3', 'apithree', 'a third api', '1.2')
+        ctx = QgsServerApiContext(
+            '/services/api3', request, response, project, self.server.serverInterface())
+        api = QgsServerOgcApi(self.server.serverInterface(),
+                              '/api3', 'apithree', 'a third api', '1.2')
         h3 = Handler3()
         api.registerHandler(h3)
 
-        ctx = QgsServerApiContext('/services/api3/', request, response, project, self.server.serverInterface())
+        ctx = QgsServerApiContext(
+            '/services/api3/', request, response, project, self.server.serverInterface())
         api.executeRequest(ctx)
-        self.assertEqual(json.loads(bytes(ctx.response().data()))['value1'], 9.5)
+        self.assertEqual(json.loads(
+            bytes(ctx.response().data()))['value1'], 9.5)
 
         # Call HTML
-        ctx.request().setUrl(QtCore.QUrl('http://server.qgis.org/api3/handlerthree.html?value1=9.5'))
+        ctx.request().setUrl(QtCore.QUrl(
+            'http://server.qgis.org/api3/handlerthree.html?value1=9.5'))
         with self.assertRaises(QgsServerApiBadRequestException) as ex:
             api.executeRequest(ctx)
         self.assertEqual(str(ex.exception), 'Unsupported Content-Type: HTML')
@@ -1684,7 +1884,8 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
         h3.setContentTypes([QgsServerOgcApi.HTML])
         with self.assertRaises(QgsServerApiBadRequestException) as ex:
             api.executeRequest(ctx)
-        self.assertEqual(str(ex.exception), 'Template not found: handlerThree.html')
+        self.assertEqual(str(ex.exception),
+                         'Template not found: handlerThree.html')
 
         # Define a template path
         tmpDir = QtCore.QTemporaryDir()
@@ -1694,6 +1895,10 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
         ctx.response().clear()
         api.executeRequest(ctx)
         self.assertEqual(bytes(ctx.response().data()), b"Hello world")
+
+        req = QgsBufferServerRequest(
+            'http://localhost:8000/project/7ecb/wfs3/collections/zg.grundnutzung.json')
+        self.assertEqual(h3.contentTypeFromRequest(req), QgsServerOgcApi.HTML)
 
 
 if __name__ == '__main__':
