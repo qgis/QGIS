@@ -39,8 +39,8 @@ struct QgsLandingPageUtils
   /**
    * Returns a list of available projects from various sources:
    *
-   * - QGIS_SERVER_PROJECTS_DIRECTORIES directories
-   * - QGIS_SERVER_PROJECTS_PG_CONNECTIONS postgres connections
+   * - QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES directories
+   * - QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS postgres connections
    *
    * Multiple paths and connections may be separated by two pipe chars: '||'
    *
