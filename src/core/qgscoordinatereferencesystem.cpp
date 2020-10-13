@@ -2067,6 +2067,15 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
 
       const QString wkt = srsNode.namedItem( QStringLiteral( "wkt" ) ).toElement().text();
       initialized = createFromWktInternal( wkt, description );
+
+      // the wkt can be a valid crs description but it can be an invalid crs
+      // this depends on the proj4 version
+      // a wkt provided by proj4 version >= 6 can be invalid for proj4 <= 5
+      // but the proj4 string provides a valid crs
+      if ( initialized && !isValid() )
+      {
+        initialized = false;
+      }
     }
 
     if ( !initialized )
