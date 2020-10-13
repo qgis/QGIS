@@ -752,7 +752,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      */
     static QgsAuthManager *instance() SIP_SKIP;
 
-    explicit QgsAuthManager() SIP_SKIP;
+    explicit QgsAuthManager();
 
   private:
 
