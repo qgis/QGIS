@@ -646,6 +646,16 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
     return;
   }
 
+  std::vector< int > zNanPositions;
+  for ( int i = 0; i < numPoints; i++ )
+  {
+    if ( std::isnan( z[i] ) )
+    {
+      zNanPositions.push_back( i );
+      z[i] = 0.0;
+    }
+  }
+
 #if PROJ_VERSION_MAJOR>=6
   std::vector< double > xprev( numPoints );
   memcpy( xprev.data(), x, sizeof( double ) * numPoints );
@@ -795,6 +805,12 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
     }
   }
 #endif
+
+  for ( const int &pos : zNanPositions )
+  {
+    z[pos] = std::numeric_limits<double>::quiet_NaN();
+  }
+
   if ( projResult != 0 )
   {
     //something bad happened....
