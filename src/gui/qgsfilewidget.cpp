@@ -92,14 +92,8 @@ QStringList QgsFileWidget::splitFilePaths( const QString &path )
 
 void QgsFileWidget::setFilePath( QString path )
 {
-  if ( path == QgsApplication::nullRepresentation() )
-  {
-    path.clear();
-  }
-
   //will trigger textEdited slot
   mLineEdit->setValue( path );
-
 }
 
 void QgsFileWidget::setReadOnly( bool readOnly )
