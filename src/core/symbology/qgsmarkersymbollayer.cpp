@@ -2502,6 +2502,7 @@ QRectF QgsSvgMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &c
            context.renderContext().pathResolver() );
     if ( path != mPath && qgsDoubleNear( aspectRatio, 0.0 ) && !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyHeight ) )
     {
+      // need to get colors to take advantage of cached SVGs
       QColor fillColor = mColor;
       if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFillColor ) )
       {
