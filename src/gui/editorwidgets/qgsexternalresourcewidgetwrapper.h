@@ -90,6 +90,9 @@ class GUI_EXPORT QgsExternalResourceWidgetWrapper : public QgsEditorWidgetWrappe
     QLabel *mLabel = nullptr;
     QgsAttributeForm *mForm = nullptr;
     QgsExternalResourceWidget *mQgsWidget = nullptr;
+
+    friend class TestQgsExternalResourceWidgetWrapper;
+
 };
 
 #endif // QGSEXTERNALRESOURCEWIDGETWRAPPER_H

@@ -17,6 +17,7 @@
 #include "qgsexternalresourcewidget.h"
 #include "qgspixmaplabel.h"
 #include "qgsproject.h"
+#include "qgsapplication.h"
 
 #include <QDir>
 #include <QGridLayout>
@@ -60,7 +61,7 @@ QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
 QVariant QgsExternalResourceWidget::documentPath( QVariant::Type type ) const
 {
   QString path = mFileWidget->filePath();
-  if ( path.isEmpty() )
+  if ( path.isEmpty() || path == QgsApplication::nullRepresentation() )
   {
     return QVariant( type );
   }
