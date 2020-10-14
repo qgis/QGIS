@@ -89,7 +89,7 @@ void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionVie
     sDeselectedIcon = QgsApplication::getThemePixmap( QStringLiteral( "/mIconDeselected.svg" ) );
 
   QString text = index.model()->data( index, Qt::EditRole ).toString();
-  QgsFeatureListModel::FeatureInfo featInfo = index.model()->data( index, Qt::UserRole ).value<QgsFeatureListModel::FeatureInfo>();
+  const QgsFeatureListModel::FeatureInfo featInfo = index.model()->data( index, QgsFeatureListModel::Role::FeatureInfoRole ).value<QgsFeatureListModel::FeatureInfo>();
 
   // Icon layout options
   QStyleOptionViewItem iconOption;
