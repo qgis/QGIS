@@ -323,12 +323,23 @@ class CORE_EXPORT QgsVectorLayerUtils
     static QString getFeatureDisplayString( const QgsVectorLayer *layer, const QgsFeature &feature );
 
     /**
+     * Flags that can be used when determining cascaded features.
+     *
+     * \since QGIS 3.4
+     */
+    enum CascadedFeatureFlag
+    {
+      IgnoreAuxiliaryLayers = 1 << 1, //!< Ignore auxiliary layers
+    };
+    Q_DECLARE_FLAGS( CascadedFeatureFlags, CascadedFeatureFlag )
+
+    /**
      * \returns TRUE if at least one feature of the \a fids on \a layer is connected as parent in at
      * least one composition relation of the \a project or contains joins, where cascade delete is set.
      * Details about cascading effects will be written to \a context.
      * \since QGIS 3.14
      */
-    static bool impactsCascadeFeatures( const QgsVectorLayer *layer, const QgsFeatureIds &fids, const QgsProject *project, QgsDuplicateFeatureContext &context SIP_OUT );
+    static bool impactsCascadeFeatures( const QgsVectorLayer *layer, const QgsFeatureIds &fids, const QgsProject *project, QgsDuplicateFeatureContext &context SIP_OUT, CascadedFeatureFlags flags = CascadedFeatureFlags() );
 
 };
 

@@ -5614,12 +5614,15 @@ void QgsVectorLayer::onDirtyTransaction( const QString &sql, const QString &name
   }
 }
 
-QList<QgsVectorLayer *> QgsVectorLayer::DeleteContext::handledLayers() const
+QList<QgsVectorLayer *> QgsVectorLayer::DeleteContext::handledLayers( bool includeAuxiliaryLayers ) const
 {
   QList<QgsVectorLayer *> layers;
   QMap<QgsVectorLayer *, QgsFeatureIds>::const_iterator i;
   for ( i = mHandledFeatures.begin(); i != mHandledFeatures.end(); ++i )
-    layers.append( i.key() );
+  {
+    if ( includeAuxiliaryLayers || !qobject_cast< QgsAuxiliaryLayer * >( i.key() ) )
+      layers.append( i.key() );
+  }
   return layers;
 }
 

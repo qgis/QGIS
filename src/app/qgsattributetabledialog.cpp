@@ -926,7 +926,7 @@ void QgsAttributeTableDialog::deleteFeature( const QgsFeatureId fid )
   QgsDebugMsg( QStringLiteral( "Delete %1" ).arg( fid ) );
 
   QgsVectorLayerUtils::QgsDuplicateFeatureContext infoContext;
-  if ( QgsVectorLayerUtils::impactsCascadeFeatures( mLayer, QgsFeatureIds() << fid, QgsProject::instance(), infoContext ) )
+  if ( QgsVectorLayerUtils::impactsCascadeFeatures( mLayer, QgsFeatureIds() << fid, QgsProject::instance(), infoContext, QgsVectorLayerUtils::IgnoreAuxiliaryLayers ) )
   {
     QString childrenInfo;
     int childrenCount = 0;
@@ -947,7 +947,7 @@ void QgsAttributeTableDialog::deleteFeature( const QgsFeatureId fid )
 
   QgsVectorLayer::DeleteContext context( true, QgsProject::instance() );
   mLayer->deleteFeature( fid, &context );
-  const auto contextLayers = context.handledLayers();
+  const QList<QgsVectorLayer *> contextLayers = context.handledLayers( false );
   //if it effected more than one layer, print feedback for all descendants
   if ( contextLayers.size() > 1 )
   {
