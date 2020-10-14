@@ -466,8 +466,10 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
   for ( auto part = straightGeom.const_parts_begin(); part != straightGeom.const_parts_end(); ++part )
   {
     // Checking for invalid linestrings
-    // A linestring should/(must?) have at least two points
-    if ( qgsgeometry_cast<QgsLineString *>( *part )->numPoints() < 2 )
+    // A linestring should/(must?) have at least two points.
+    QgsCurve *curve = qgsgeometry_cast<QgsCurve *>( *part );
+    Q_ASSERT( !curve->hasCurvedSegments() );
+    if ( curve->numPoints() < 2 )
       continue;
 
     QgsAbstractGeometry::vertex_iterator it = ( *part )->vertices_begin();
