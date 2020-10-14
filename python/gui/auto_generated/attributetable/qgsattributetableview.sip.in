@@ -70,6 +70,14 @@ Returns the selected features in the attribute table in table sorted order.
 %End
 
 
+    void scrollToFeature( const QgsFeatureId &fid, int col = -1 );
+%Docstring
+Scroll to a feature with a given ``fid`` and select ``col`` if exists
+
+.. versionadded:: 3.18
+%End
+
+
   protected:
 
     virtual void mousePressEvent( QMouseEvent *event );

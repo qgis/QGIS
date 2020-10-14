@@ -89,6 +89,13 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     QList<QgsFeatureId> selectedFeaturesIds() const;
 
 
+    /**
+     * Scroll to a feature with a given \a fid and select \a col if exists
+     * \since QGIS 3.18
+     */
+    void scrollToFeature( const QgsFeatureId &fid, int col = -1 );
+
+
   protected:
 
     /**
