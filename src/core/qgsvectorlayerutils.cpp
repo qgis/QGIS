@@ -40,6 +40,7 @@
 #include "qgssymbollayer.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgsstyle.h"
+#include "qgsauxiliarystorage.h"
 
 QgsFeatureIterator QgsVectorLayerUtils::getValuesIterator( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly )
 {
@@ -971,7 +972,7 @@ QString QgsVectorLayerUtils::getFeatureDisplayString( const QgsVectorLayer *laye
   return displayString;
 }
 
-bool QgsVectorLayerUtils::impactsCascadeFeatures( const QgsVectorLayer *layer, const QgsFeatureIds &fids, const QgsProject *project, QgsDuplicateFeatureContext &context )
+bool QgsVectorLayerUtils::impactsCascadeFeatures( const QgsVectorLayer *layer, const QgsFeatureIds &fids, const QgsProject *project, QgsDuplicateFeatureContext &context, CascadedFeatureFlags flags )
 {
   if ( !layer )
     return false;
@@ -1015,9 +1016,12 @@ bool QgsVectorLayerUtils::impactsCascadeFeatures( const QgsVectorLayer *layer, c
 
   if ( layer->joinBuffer()->containsJoins() )
   {
-    const auto constVectorJoins = layer->joinBuffer()->vectorJoins();
-    for ( const QgsVectorLayerJoinInfo &info : constVectorJoins )
+    const QgsVectorJoinList joins = layer->joinBuffer()->vectorJoins();
+    for ( const QgsVectorLayerJoinInfo &info : joins )
     {
+      if ( qobject_cast< QgsAuxiliaryLayer * >( info.joinLayer() ) && flags & IgnoreAuxiliaryLayers )
+        continue;
+
       if ( info.isEditable() && info.hasCascadedDelete() )
       {
         QgsFeatureIds joinFeatureIds;

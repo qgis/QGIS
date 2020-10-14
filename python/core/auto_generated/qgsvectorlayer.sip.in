@@ -391,8 +391,18 @@ Constructor for LayerOptions.
 Constructor for DeleteContext.
 %End
 
-      QList<QgsVectorLayer *> handledLayers() const;
+      QList<QgsVectorLayer *> handledLayers( bool includeAuxiliaryLayers = true ) const;
+%Docstring
+Returns a list of all layers affected by the delete operation.
+
+If ``includeAuxiliaryLayers`` is ``False`` then auxiliary layers will not be included in the
+returned list.
+%End
+
       QgsFeatureIds handledFeatures( QgsVectorLayer *layer ) const;
+%Docstring
+Returns a list of feature IDs from the specified ``layer`` affected by the delete operation.
+%End
 
       bool cascade;
       QgsProject *project;

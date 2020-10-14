@@ -9245,7 +9245,7 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *parent, bool checkFea
   }
 
   QgsVectorLayerUtils::QgsDuplicateFeatureContext infoContext;
-  if ( QgsVectorLayerUtils::impactsCascadeFeatures( vlayer, vlayer->selectedFeatureIds(), QgsProject::instance(), infoContext ) )
+  if ( QgsVectorLayerUtils::impactsCascadeFeatures( vlayer, vlayer->selectedFeatureIds(), QgsProject::instance(), infoContext, QgsVectorLayerUtils::IgnoreAuxiliaryLayers ) )
   {
     QString childrenInfo;
     int childrenCount = 0;
@@ -9275,8 +9275,8 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *parent, bool checkFea
   }
   else
   {
-    const auto contextLayers = context.handledLayers();
-    // if it affects more than one layer, print feedback for all descendants
+    const QList<QgsVectorLayer *> contextLayers = context.handledLayers( false );
+    // if it affects more than one non-auxiliary layer, print feedback for all descendants
     if ( contextLayers.size() > 1 )
     {
       deletedCount = 0;
