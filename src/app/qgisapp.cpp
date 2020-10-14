@@ -2907,21 +2907,28 @@ void QgisApp::createActions()
   connect( mActionSplitFeatures, &QAction::toggled, this, &QgisApp::enableDigitizeWithCurveAction );
 
   // we can't set the shortcut these actions, because we need to restrict their context to the canvas and it's children..
-  QShortcut *copyShortcut = new QShortcut( QKeySequence::Copy, mMapCanvas );
-  copyShortcut->setContext( Qt::WidgetWithChildrenShortcut );
-  connect( copyShortcut, &QShortcut::activated, this, [ = ] { copySelectionToClipboard(); } );
+  for ( QWidget *widget :
+        {
+          static_cast< QWidget * >( mMapCanvas ),
+          static_cast< QWidget * >( mLayerTreeView )
+        } )
+  {
+    QShortcut *copyShortcut = new QShortcut( QKeySequence::Copy, widget );
+    copyShortcut->setContext( Qt::WidgetWithChildrenShortcut );
+    connect( copyShortcut, &QShortcut::activated, this, [ = ] { copySelectionToClipboard(); } );
 
-  QShortcut *cutShortcut = new QShortcut( QKeySequence::Cut, mMapCanvas );
-  cutShortcut->setContext( Qt::WidgetWithChildrenShortcut );
-  connect( cutShortcut, &QShortcut::activated, this, [ = ] { cutSelectionToClipboard(); } );
+    QShortcut *cutShortcut = new QShortcut( QKeySequence::Cut, widget );
+    cutShortcut->setContext( Qt::WidgetWithChildrenShortcut );
+    connect( cutShortcut, &QShortcut::activated, this, [ = ] { cutSelectionToClipboard(); } );
 
-  QShortcut *pasteShortcut = new QShortcut( QKeySequence::Paste, mMapCanvas );
-  pasteShortcut->setContext( Qt::WidgetWithChildrenShortcut );
-  connect( pasteShortcut, &QShortcut::activated, this, [ = ] { pasteFromClipboard(); } );
+    QShortcut *pasteShortcut = new QShortcut( QKeySequence::Paste, widget );
+    pasteShortcut->setContext( Qt::WidgetWithChildrenShortcut );
+    connect( pasteShortcut, &QShortcut::activated, this, [ = ] { pasteFromClipboard(); } );
 
-  QShortcut *selectAllShortcut = new QShortcut( QKeySequence::SelectAll, mMapCanvas );
-  selectAllShortcut->setContext( Qt::WidgetWithChildrenShortcut );
-  connect( selectAllShortcut, &QShortcut::activated, this, &QgisApp::selectAll );
+    QShortcut *selectAllShortcut = new QShortcut( QKeySequence::SelectAll, widget );
+    selectAllShortcut->setContext( Qt::WidgetWithChildrenShortcut );
+    connect( selectAllShortcut, &QShortcut::activated, this, &QgisApp::selectAll );
+  }
 
 #ifndef HAVE_POSTGRESQL
   delete mActionAddPgLayer;
