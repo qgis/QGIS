@@ -45,7 +45,7 @@
                         "returns": "[ 'Valmiera', 'Chugiak' ]"
                 },
                 {
-                        "expression": "array_slice(array_slice(array('Dufour','Valmiera','Chugiak','Brighton'),-2,-1)",
+                        "expression": "array_slice(array('Dufour','Valmiera','Chugiak','Brighton'),-2,-1)",
                         "returns": "[ 'Chugiak', 'Brighton' ]"
                 }
         ]
