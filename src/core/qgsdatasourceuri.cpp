@@ -614,7 +614,11 @@ void QgsDataSourceUri::setEncodedUri( const QByteArray &uri )
   QUrl url;
   url.setEncodedQuery( uri );
 
+<<<<<<< HEAD
   const auto constQueryItems = url.queryItems();
+=======
+  const auto constQueryItems = query.queryItems( QUrl::ComponentFormattingOption::FullyDecoded );
+>>>>>>> 2659c411a6... Merge pull request #39347 from elpaso/bugfix-gh39243-wms-auth-basic-decode
   for ( const QPair<QString, QString> &item : constQueryItems )
   {
     if ( item.first == QLatin1String( "username" ) )
