@@ -339,7 +339,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      * Details about cascading effects will be written to \a context.
      * \since QGIS 3.14
      */
-    static bool impactsCascadeFeatures( const QgsVectorLayer *layer, const QgsFeatureIds &fids, const QgsProject *project, QgsDuplicateFeatureContext &context SIP_OUT, CascadedFeatureFlags flags = CascadedFeatureFlags() );
+    static bool impactsCascadeFeatures( const QgsVectorLayer *layer, const QgsFeatureIds &fids, const QgsProject *project, QgsDuplicateFeatureContext &context SIP_OUT, QgsVectorLayerUtils::CascadedFeatureFlags flags = QgsVectorLayerUtils::CascadedFeatureFlags() );
 
 };
 
