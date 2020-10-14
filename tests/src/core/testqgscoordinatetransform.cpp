@@ -43,6 +43,7 @@ class TestQgsCoordinateTransform: public QObject
     void transform();
     void transformLKS();
     void transformContextNormalize();
+    void transform2DPoint();
     void transformErrorMultiplePoints();
     void transformErrorOnePoint();
     void testDeprecated4240to4326();
@@ -486,6 +487,22 @@ void TestQgsCoordinateTransform::transformContextNormalize()
 #endif
 }
 
+void TestQgsCoordinateTransform::transform2DPoint()
+{
+  // Check that we properly handle 2D point transform
+  QgsCoordinateTransformContext context;
+  QgsCoordinateTransform ct( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsCoordinateReferenceSystem::fromEpsgId( 3857 ), context );
+  QVERIFY( ct.isValid() );
+  QgsPoint pt( 0.0, 0.0 );
+  double x = pt.x();
+  double y = pt.y();
+  double z = pt.z();
+  ct.transformInPlace( x, y, z );
+
+  QGSCOMPARENEAR( x, 0.0, 0.01 );
+  QGSCOMPARENEAR( y, 0.0, 0.01 );
+  QGSCOMPARENEAR( z, pt.z(), 0.01 );
+}
 
 void TestQgsCoordinateTransform::transformErrorMultiplePoints()
 {
