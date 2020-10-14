@@ -689,7 +689,7 @@ void QgisApp::onActiveLayerChanged( QgsMapLayer *layer )
     }
     else
     {
-      mUndoWidget->destroyStack();
+      mUndoWidget->unsetStack();
     }
     updateUndoActions();
   }

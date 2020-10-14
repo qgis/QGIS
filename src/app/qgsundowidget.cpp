@@ -23,52 +23,79 @@
 QgsUndoWidget::QgsUndoWidget( QWidget *parent, QgsMapCanvas *mapCanvas )
   : QgsPanelWidget( parent )
 {
-  setupUi( this );
+  setObjectName( QStringLiteral( "UndoWidget" ) );
+  resize( 200, 223 );
+  setMinimumSize( QSize( 200, 220 ) );
+  mDockWidgetContents = new QWidget( this );
+  mDockWidgetContents->setObjectName( QStringLiteral( "dockWidgetContents" ) );
+  mGridLayout = new QGridLayout( mDockWidgetContents );
+  mGridLayout->setObjectName( QStringLiteral( "gridLayout" ) );
+  mGridLayout->setContentsMargins( 0, 0, 0, 0 );
+  QSpacerItem *spacerItem = new QSpacerItem( 20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding );
 
-  connect( undoButton, &QAbstractButton::clicked, this, &QgsUndoWidget::undo );
-  connect( redoButton, &QAbstractButton::clicked, this, &QgsUndoWidget::redo );
+  mGridLayout->addItem( spacerItem, 0, 0, 1, 1 );
 
-  undoButton->setDisabled( true );
-  redoButton->setDisabled( true );
+  mUndoButton = new QPushButton( mDockWidgetContents );
+  mUndoButton->setObjectName( QStringLiteral( "undoButton" ) );
+  mUndoButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionUndo.svg" ) ) );
+
+  mGridLayout->addWidget( mUndoButton, 1, 0, 1, 1 );
+
+  mRedoButton = new QPushButton( mDockWidgetContents );
+  mRedoButton->setObjectName( QStringLiteral( "redoButton" ) );
+  mRedoButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionRedo.svg" ) ) );
+
+  mGridLayout->addWidget( mRedoButton, 1, 1, 1, 1 );
+
+  QSpacerItem *spacerItem1 = new QSpacerItem( 20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding );
+
+  mGridLayout->addItem( spacerItem1, 0, 1, 1, 1 );
+
+  setLayout( mGridLayout );
+
+  setWindowTitle( QApplication::translate( "UndoWidget", "Undo/Redo" ) );
+  mUndoButton->setText( QApplication::translate( "UndoWidget", "Undo" ) );
+  mRedoButton->setText( QApplication::translate( "UndoWidget", "Redo" ) );
+
+  connect( mUndoButton, &QAbstractButton::clicked, this, &QgsUndoWidget::undo );
+  connect( mRedoButton, &QAbstractButton::clicked, this, &QgsUndoWidget::redo );
+
+  mUndoButton->setDisabled( true );
+  mRedoButton->setDisabled( true );
   mMapCanvas = mapCanvas;
   mUndoView = new QUndoView( this );
-  gridLayout->addWidget( mUndoView, 0, 0, 1, 2 );
-  mUndoStack = nullptr;
-  mPreviousIndex = 0;
-  mPreviousCount = 0;
+  mGridLayout->addWidget( mUndoView, 0, 0, 1, 2 );
 }
 
 void QgsUndoWidget::setButtonsVisible( bool show )
 {
-  undoButton->setVisible( show );
-  redoButton->setVisible( show );
+  mUndoButton->setVisible( show );
+  mRedoButton->setVisible( show );
 }
 
-void QgsUndoWidget::destroyStack()
+void QgsUndoWidget::unsetStack()
 {
-  if ( mUndoStack )
-  {
-    // do not clear undo stack here, just null pointer
-    mUndoStack = nullptr;
-  }
+  // we don't have ownership of the stack, don't delete it!
+  mUndoStack = nullptr;
+
   if ( mUndoView )
   {
     mUndoView->close();
     delete mUndoView;
-    mUndoView = new QUndoView( dockWidgetContents );
-    gridLayout->addWidget( mUndoView, 0, 0, 1, 2 );
+    mUndoView = new QUndoView( mDockWidgetContents );
+    mGridLayout->addWidget( mUndoView, 0, 0, 1, 2 );
   }
 }
 
 void QgsUndoWidget::undoChanged( bool value )
 {
-  undoButton->setDisabled( !value );
+  mUndoButton->setDisabled( !value );
   emit undoStackChanged();
 }
 
 void QgsUndoWidget::redoChanged( bool value )
 {
-  redoButton->setDisabled( !value );
+  mRedoButton->setDisabled( !value );
   emit undoStackChanged();
 }
 
@@ -138,10 +165,10 @@ void QgsUndoWidget::setUndoStack( QUndoStack *undoStack )
   mPreviousIndex = mUndoStack->index();
   mPreviousCount = mUndoStack->count();
 
-  mUndoView = new QUndoView( dockWidgetContents );
+  mUndoView = new QUndoView( mDockWidgetContents );
   mUndoView->setStack( undoStack );
   mUndoView->setObjectName( QStringLiteral( "undoView" ) );
-  gridLayout->addWidget( mUndoView, 0, 0, 1, 2 );
+  mGridLayout->addWidget( mUndoView, 0, 0, 1, 2 );
 //  setWidget( dockWidgetContents );
   connect( mUndoStack, &QUndoStack::canUndoChanged, this, &QgsUndoWidget::undoChanged );
   connect( mUndoStack, &QUndoStack::canRedoChanged, this, &QgsUndoWidget::redoChanged );
@@ -149,55 +176,7 @@ void QgsUndoWidget::setUndoStack( QUndoStack *undoStack )
   // gets triggered also when a new command is added to stack, and twice when clicking a command in QUndoView
   connect( mUndoStack, &QUndoStack::indexChanged, this, &QgsUndoWidget::indexChanged );
 
-  undoButton->setDisabled( !mUndoStack->canUndo() );
-  redoButton->setDisabled( !mUndoStack->canRedo() );
-}
-
-
-
-void QgsUndoWidget::setupUi( QWidget *UndoWidget )
-{
-  if ( UndoWidget->objectName().isEmpty() )
-    UndoWidget->setObjectName( QStringLiteral( "UndoWidget" ) );
-  UndoWidget->resize( 200, 223 );
-  UndoWidget->setMinimumSize( QSize( 200, 220 ) );
-  dockWidgetContents = new QWidget( UndoWidget );
-  dockWidgetContents->setObjectName( QStringLiteral( "dockWidgetContents" ) );
-  gridLayout = new QGridLayout( dockWidgetContents );
-  gridLayout->setObjectName( QStringLiteral( "gridLayout" ) );
-  gridLayout->setContentsMargins( 0, 0, 0, 0 );
-  spacerItem = new QSpacerItem( 20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding );
-
-  gridLayout->addItem( spacerItem, 0, 0, 1, 1 );
-
-  undoButton = new QPushButton( dockWidgetContents );
-  undoButton->setObjectName( QStringLiteral( "undoButton" ) );
-  undoButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionUndo.svg" ) ) );
-
-  gridLayout->addWidget( undoButton, 1, 0, 1, 1 );
-
-  redoButton = new QPushButton( dockWidgetContents );
-  redoButton->setObjectName( QStringLiteral( "redoButton" ) );
-  redoButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionRedo.svg" ) ) );
-
-  gridLayout->addWidget( redoButton, 1, 1, 1, 1 );
-
-  spacerItem1 = new QSpacerItem( 20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding );
-
-  gridLayout->addItem( spacerItem1, 0, 1, 1, 1 );
-
-  UndoWidget->setLayout( gridLayout );
-
-  retranslateUi( UndoWidget );
-
-  QMetaObject::connectSlotsByName( UndoWidget );
-} // setupUi
-
-void QgsUndoWidget::retranslateUi( QWidget *UndoWidget )
-{
-  UndoWidget->setWindowTitle( QApplication::translate( "UndoWidget", "Undo/Redo" ) );
-  undoButton->setText( QApplication::translate( "UndoWidget", "Undo" ) );
-  redoButton->setText( QApplication::translate( "UndoWidget", "Redo" ) );
-  Q_UNUSED( UndoWidget )
+  mUndoButton->setDisabled( !mUndoStack->canUndo() );
+  mRedoButton->setDisabled( !mUndoStack->canRedo() );
 }
 
