@@ -621,6 +621,10 @@ SET(QGIS_CORE_SRCS
   mesh/qgsmeshcalcutils.cpp
   mesh/qgsmeshvirtualdatasetgroup.cpp
 
+  pointcloud/qgspointcloudlayer.cpp
+  pointcloud/qgspointcloudrenderer.cpp
+  pointcloud/qgspointcloudindex.cpp
+
   labeling/qgslabelfeature.cpp
   labeling/qgslabelingengine.cpp
   labeling/qgslabelingenginesettings.cpp
@@ -1289,6 +1293,10 @@ SET(QGIS_CORE_HDRS
   mesh/qgsmeshcalculator.h
   mesh/qgsmeshcalcutils.h
   mesh/qgsmeshvirtualdatasetgroup.h
+
+  pointcloud/qgspointcloudlayer.h
+  pointcloud/qgspointcloudrenderer.h
+  pointcloud/qgspointcloudindex.h
 
   metadata/qgsabstractmetadatabase.h
   metadata/qgslayermetadata.h
