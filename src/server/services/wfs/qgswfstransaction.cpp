@@ -711,7 +711,7 @@ namespace QgsWfs
       QgsFeatureList featureList;
       try
       {
-        featureList = featuresFromGML( action.featureNodeList, provider );
+        featureList = featuresFromGML( action.featureNodeList, vlayer );
       }
       catch ( QgsOgcServiceException &ex )
       {
@@ -786,10 +786,12 @@ namespace QgsWfs
     filterRestorer.reset();
   }
 
-  QgsFeatureList featuresFromGML( QDomNodeList featureNodeList, QgsVectorDataProvider *provider )
+  QgsFeatureList featuresFromGML( QDomNodeList featureNodeList, QgsVectorLayer *layer )
   {
     // Store the inserted features
     QgsFeatureList featList;
+
+    const QgsVectorDataProvider *provider { layer->dataProvider() };
 
     // Get Layer Field Information
     QgsFields fields = provider->fields();
@@ -839,7 +841,8 @@ namespace QgsWfs
           }
           else //a geometry attribute
           {
-            QgsGeometry g = QgsOgcUtils::geometryFromGML( currentAttributeElement );
+            const QgsOgcUtils::Context context { layer, provider->transformContext() };
+            QgsGeometry g = QgsOgcUtils::geometryFromGML( currentAttributeElement, context );
             if ( g.isNull() )
             {
               throw QgsRequestNotWellFormedException( QStringLiteral( "Geometry from GML error on layer insert" ) );
