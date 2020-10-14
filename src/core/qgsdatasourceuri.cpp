@@ -613,8 +613,10 @@ void QgsDataSourceUri::setEncodedUri( const QByteArray &uri )
 
   QUrl url;
   url.setEncodedQuery( uri );
+  url.setQuery( QString::fromLatin1( uri ) );
+  const QUrlQuery query( url );
 
-  const auto constQueryItems = url.queryItems();
+  const auto constQueryItems = query.queryItems( QUrl::ComponentFormattingOption::FullyDecoded );
   for ( const QPair<QString, QString> &item : constQueryItems )
   {
     if ( item.first == QLatin1String( "username" ) )
