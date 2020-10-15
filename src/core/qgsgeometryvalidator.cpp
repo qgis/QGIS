@@ -243,15 +243,15 @@ void QgsGeometryValidator::validatePolygon( int idx, const QgsPolygon *polygon )
 void QgsGeometryValidator::run()
 {
   mErrorCount = 0;
+  if ( mGeometry.isNull() )
+  {
+    return;
+  }
+
   switch ( mMethod )
   {
     case QgsGeometry::ValidatorGeos:
     {
-      if ( mGeometry.isNull() )
-      {
-        return;
-      }
-
       // avoid calling geos for trivial point geometries
       if ( QgsWkbTypes::geometryType( mGeometry.wkbType() ) == QgsWkbTypes::PointGeometry )
       {
