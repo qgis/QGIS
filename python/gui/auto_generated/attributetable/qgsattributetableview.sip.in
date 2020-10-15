@@ -76,7 +76,7 @@ Scroll to a feature with a given ``fid``.
 
 Optionally a ``column`` can be specified, which will also bring that column into view.
 
-.. versionadded:: 3.18
+.. versionadded:: 3.16
 %End
 
 
