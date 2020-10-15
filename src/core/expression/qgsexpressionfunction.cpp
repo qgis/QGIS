@@ -674,6 +674,7 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
     {
       return context->cachedValue( cacheKey );
     }
+
     QgsExpressionContext subContext( *context );
     QgsExpressionContextScope *subScope = new QgsExpressionContextScope();
     subScope->setVariable( QStringLiteral( "parent" ), context->feature() );
@@ -921,6 +922,9 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
   bool ok = false;
 
   QgsExpressionContext subContext( *context );
+  QgsExpressionContextScope *subScope = new QgsExpressionContextScope();
+  subScope->setVariable( QStringLiteral( "parent" ), context->feature() );
+  subContext.appendScope( subScope );
   result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok );
 
   if ( !ok )
