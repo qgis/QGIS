@@ -63,6 +63,7 @@ void QgsLayerTreeViewTemporalIndicatorProvider::onIndicatorClicked( const QModel
     case QgsMapLayerType::PluginLayer:
     case QgsMapLayerType::VectorTileLayer:
     case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::PointCloudLayer:
       break;
   }
 }

@@ -193,6 +193,7 @@
      <addaction name="mActionAddWfsLayer"/>
      <addaction name="mActionAddAfsLayer"/>
      <addaction name="mActionAddVectorTileLayer"/>
+     <addaction name="mActionAddPointCloudLayer"/>
     </widget>
     <addaction name="mActionDataSourceManager"/>
     <addaction name="mNewLayerMenu"/>
@@ -3394,6 +3395,15 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+G</string>
+   </property>
+  </action>
+  <action name="mActionAddPointCloudLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddPointCloudLayer.svg</normaloff>:/images/themes/default/mActionAddPointCloudLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Point Cloud Layer...</string>
    </property>
   </action>
  </widget>

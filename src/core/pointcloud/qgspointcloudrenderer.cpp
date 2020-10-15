@@ -16,4 +16,31 @@
  ***************************************************************************/
 
 #include "qgspointcloudrenderer.h"
+#include "qgspointcloudlayer.h"
+#include "qgsrendercontext.h"
 
+QgsPointCloudRenderer::QgsPointCloudRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context )
+  : QgsMapLayerRenderer( layer->id(), &context )
+  , mLayer( layer )
+{
+
+}
+
+bool QgsPointCloudRenderer::render()
+{
+  return true;
+}
+
+
+QgsPointCloudRenderer::~QgsPointCloudRenderer() = default;
+
+
+void QgsPointCloudRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
+{
+
+}
+
+void QgsPointCloudRenderer::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
+{
+
+}

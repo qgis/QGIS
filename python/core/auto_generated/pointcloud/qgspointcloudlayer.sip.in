@@ -1,0 +1,93 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointcloudlayer.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsPointCloudLayer : QgsMapLayer
+{
+%Docstring
+
+Represents a map layer supporting display of point clouds
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudlayer.h"
+%End
+  public:
+
+    explicit QgsPointCloudLayer( const QString &path = QString(), const QString &baseName = QString() );
+%Docstring
+Constructor - creates a point cloud layer
+%End
+
+    ~QgsPointCloudLayer();
+
+
+    virtual QgsPointCloudLayer *clone() const /Factory/;
+
+%Docstring
+QgsPointCloudLayer cannot be copied.
+%End
+    virtual QgsRectangle extent() const;
+
+    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
+
+
+    virtual bool readXml( const QDomNode &layerNode, QgsReadWriteContext &context );
+
+
+    virtual bool writeXml( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+
+     virtual bool readSymbology( const QDomNode &node, QString &errorMessage,
+                        QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
+
+     virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
+                         StyleCategories categories = AllStyleCategories ) const;
+
+    virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );
+
+    virtual QString loadDefaultStyle( bool &resultFlag /Out/ );
+
+
+
+    void setRenderer( QgsPointCloudRenderer *r /Transfer/ );
+%Docstring
+Sets renderer for the map layer.
+
+.. note::
+
+   Takes ownership of the passed renderer
+%End
+    QgsPointCloudRenderer *renderer() const;
+%Docstring
+Returns currently assigned renderer
+%End
+
+
+  private: // Private methods
+    QgsPointCloudLayer( const QgsPointCloudLayer &rhs );
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointcloudlayer.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

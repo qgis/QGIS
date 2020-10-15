@@ -432,6 +432,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/mesh
+  ${CMAKE_SOURCE_DIR}/src/core/pointcloud
   ${CMAKE_SOURCE_DIR}/src/core/numericformats
   ${CMAKE_SOURCE_DIR}/src/core/labeling
   ${CMAKE_SOURCE_DIR}/src/core/layertree
@@ -458,6 +459,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/ogr
   ${CMAKE_SOURCE_DIR}/src/gui/numericformats
   ${CMAKE_SOURCE_DIR}/src/gui/processing
+  ${CMAKE_SOURCE_DIR}/src/gui/pointcloud
   ${CMAKE_SOURCE_DIR}/src/gui/raster
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core

@@ -505,6 +505,7 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
         case QgsMapLayerType::AnnotationLayer:
         case QgsMapLayerType::MeshLayer:
         case QgsMapLayerType::VectorTileLayer:
+        case QgsMapLayerType::PointCloudLayer:
           break;
       }
     } );

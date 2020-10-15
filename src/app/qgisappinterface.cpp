@@ -167,6 +167,11 @@ QgsVectorTileLayer *QgisAppInterface::addVectorTileLayer( const QString &url, co
   return qgis->addVectorTileLayer( url, baseName );
 }
 
+QgsPointCloudLayer *QgisAppInterface::addPointCloudLayer( const QString &url, const QString &baseName )
+{
+  return qgis->addPointCloudLayer( url, baseName );
+}
+
 bool QgisAppInterface::addProject( const QString &projectName )
 {
   return qgis->addProject( projectName );
@@ -727,6 +732,7 @@ QAction *QgisAppInterface::actionAddPgLayer() { return qgis->actionAddPgLayer();
 QAction *QgisAppInterface::actionAddWmsLayer() { return qgis->actionAddWmsLayer(); }
 QAction *QgisAppInterface::actionAddXyzLayer() { return qgis->actionAddXyzLayer(); }
 QAction *QgisAppInterface::actionAddVectorTileLayer() { return qgis->actionAddVectorTileLayer(); }
+QAction *QgisAppInterface::actionAddPointCloudLayer() { return qgis->actionAddPointCloudLayer(); }
 QAction *QgisAppInterface::actionAddAfsLayer() { return qgis->actionAddAfsLayer(); }
 QAction *QgisAppInterface::actionAddAmsLayer() { return qgis->actionAddAmsLayer(); }
 QAction *QgisAppInterface::actionCopyLayerStyle() { return qgis->actionCopyLayerStyle(); }

@@ -18,11 +18,14 @@
 #ifndef QGSPOINTCLOUDLAYER_H
 #define QGSPOINTCLOUDLAYER_H
 
+class QgsPointCloudIndex;
+class QgsPointCloudRenderer;
+
 #include "qgsmaplayer.h"
+#include "qgis_core.h"
 
 #include <QString>
-
-class QgsPointCloudIndex;
+#include <memory>
 
 /**
  * \ingroup core
@@ -54,12 +57,33 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     QgsRectangle extent() const override;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
 
-    //! Returns the provider type for this layer
-    QString providerType() const;
+    bool readXml( const QDomNode &layerNode, QgsReadWriteContext &context ) override;
+
+    bool writeXml( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
+
+    bool readSymbology( const QDomNode &node, QString &errorMessage,
+                        QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) override;
+
+    bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
+                         StyleCategories categories = AllStyleCategories ) const override;
+
+    void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
+    QString loadDefaultStyle( bool &resultFlag SIP_OUT ) override;
+
+
+    /**
+     * Sets renderer for the map layer.
+     * \note Takes ownership of the passed renderer
+     */
+    void setRenderer( QgsPointCloudRenderer *r SIP_TRANSFER );
+    //! Returns currently assigned renderer
+    QgsPointCloudRenderer *renderer() const;
 
     QgsPointCloudIndex *pointCloudIndex() const SIP_SKIP;
 
   private: // Private methods
+    bool loadDataSource();
+
     /**
      * Returns TRUE if the provider is in read-only mode
      */
@@ -69,7 +93,10 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     QgsPointCloudLayer( const QgsPointCloudLayer &rhs );
 #endif
 
-    QgsPointCloudIndex* mPointCloudIndex = nullptr;
+    QgsPointCloudIndex *mPointCloudIndex = nullptr;
+
+    //! Renderer assigned to the layer to draw map
+    std::unique_ptr<QgsPointCloudRenderer> mRenderer;
 };
 
 

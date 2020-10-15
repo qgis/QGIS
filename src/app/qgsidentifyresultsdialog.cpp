@@ -511,6 +511,7 @@ void QgsIdentifyResultsDialog::addFeature( const QgsMapToolIdentify::IdentifyRes
 
     case QgsMapLayerType::PluginLayer:
     case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::PointCloudLayer:
       break;
   }
 }

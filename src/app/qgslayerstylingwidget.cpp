@@ -105,7 +105,8 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBa
                            | QgsMapLayerProxyModel::Filter::RasterLayer
                            | QgsMapLayerProxyModel::Filter::PluginLayer
                            | QgsMapLayerProxyModel::Filter::MeshLayer
-                           | QgsMapLayerProxyModel::Filter::VectorTileLayer );
+                           | QgsMapLayerProxyModel::Filter::VectorTileLayer
+                           | QgsMapLayerProxyModel::Filter::PointCloudLayer );
 
   mStackedWidget->setCurrentIndex( 0 );
 }
@@ -247,6 +248,11 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
       labelItem->setData( Qt::UserRole, VectorLabeling );
       labelItem->setToolTip( tr( "Labels" ) );
       mOptionsListWidget->addItem( labelItem );
+      break;
+    }
+
+    case QgsMapLayerType::PointCloudLayer:
+    {
       break;
     }
 

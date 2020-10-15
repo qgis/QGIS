@@ -1296,6 +1296,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/processing/models
   ${CMAKE_SOURCE_DIR}/src/gui/providers/gdal
   ${CMAKE_SOURCE_DIR}/src/gui/providers/ogr
+  ${CMAKE_SOURCE_DIR}/src/gui/pointcloud
   ${CMAKE_SOURCE_DIR}/src/gui/raster
   ${CMAKE_SOURCE_DIR}/src/gui/vector
   ${CMAKE_SOURCE_DIR}/src/gui/vectortile
@@ -1316,6 +1317,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/processing/models
   ${CMAKE_SOURCE_DIR}/src/core/mesh
+  ${CMAKE_SOURCE_DIR}/src/core/pointcloud
   ${CMAKE_SOURCE_DIR}/src/core/pal
   ${CMAKE_SOURCE_DIR}/src/core/providers/memory
   ${CMAKE_SOURCE_DIR}/src/core/providers/gdal

@@ -279,6 +279,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsmessagebaritem.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerproperties.h"
+#include "qgspointcloudlayer.h"
 #include "qgsmemoryproviderutils.h"
 #include "qgsmimedatautils.h"
 #include "qgsmessagelog.h"
@@ -5702,6 +5703,11 @@ QgsVectorTileLayer *QgisApp::addVectorTileLayer( const QString &url, const QStri
   return addVectorTileLayerPrivate( url, baseName );
 }
 
+QgsPointCloudLayer *QgisApp::addPointCloudLayer( const QString &url, const QString &baseName )
+{
+  return addPointCloudLayerPrivate( url, baseName );
+}
+
 QgsVectorTileLayer *QgisApp::addVectorTileLayerPrivate( const QString &url, const QString &baseName, const bool guiWarning )
 {
   QgsCanvasRefreshBlocker refreshBlocker;
@@ -5724,6 +5730,48 @@ QgsVectorTileLayer *QgisApp::addVectorTileLayerPrivate( const QString &url, cons
     if ( guiWarning )
     {
       QString msg = tr( "%1 is not a valid or recognized data source." ).arg( url );
+      visibleMessageBar()->pushMessage( tr( "Invalid Data Source" ), msg, Qgis::Critical, messageTimeout() );
+    }
+
+    // since the layer is bad, stomp on it
+    return nullptr;
+  }
+  bool ok = false;
+  QString error = layer->loadDefaultStyle( ok );
+  if ( !ok )
+    visibleMessageBar()->pushMessage( tr( "Error loading style" ), error, Qgis::Warning, messageTimeout() );
+  error = layer->loadDefaultMetadata( ok );
+  if ( !ok )
+    visibleMessageBar()->pushMessage( tr( "Error loading layer metadata" ), error, Qgis::Warning, messageTimeout() );
+
+  QgsProject::instance()->addMapLayer( layer.get() );
+  activateDeactivateLayerRelatedActions( activeLayer() );
+
+  return layer.release();
+}
+
+QgsPointCloudLayer *QgisApp::addPointCloudLayerPrivate( const QString &uri, const QString &baseName, bool guiWarning )
+{
+  QgsCanvasRefreshBlocker refreshBlocker;
+  QgsSettings settings;
+
+  QString base( baseName );
+
+  if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
+  {
+    base = QgsMapLayer::formatLayerName( base );
+  }
+
+  QgsDebugMsgLevel( "completeBaseName: " + base, 2 );
+
+  // create the layer
+  std::unique_ptr<QgsPointCloudLayer> layer( new QgsPointCloudLayer( uri, base ) );
+
+  if ( !layer || !layer->isValid() )
+  {
+    if ( guiWarning )
+    {
+      QString msg = tr( "%1 is not a valid or recognized data source." ).arg( uri );
       visibleMessageBar()->pushMessage( tr( "Invalid Data Source" ), msg, Qgis::Critical, messageTimeout() );
     }
 
@@ -8793,6 +8841,7 @@ QString QgisApp::saveAsFile( QgsMapLayer *layer, const bool onlySelected, const 
     case QgsMapLayerType::VectorTileLayer:
     case QgsMapLayerType::PluginLayer:
     case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::PointCloudLayer:
       return QString();
   }
   return QString();
@@ -15035,6 +15084,71 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       enableDigitizeWithCurveAction( false );
       break;
 
+    case QgsMapLayerType::PointCloudLayer:
+      mActionLocalHistogramStretch->setEnabled( false );
+      mActionFullHistogramStretch->setEnabled( false );
+      mActionLocalCumulativeCutStretch->setEnabled( false );
+      mActionFullCumulativeCutStretch->setEnabled( false );
+      mActionIncreaseBrightness->setEnabled( false );
+      mActionDecreaseBrightness->setEnabled( false );
+      mActionIncreaseContrast->setEnabled( false );
+      mActionDecreaseContrast->setEnabled( false );
+      mActionIncreaseGamma->setEnabled( false );
+      mActionDecreaseGamma->setEnabled( false );
+      mActionLayerSubsetString->setEnabled( false );
+      mActionFeatureAction->setEnabled( false );
+      mActionSelectFeatures->setEnabled( false );
+      mActionSelectPolygon->setEnabled( false );
+      mActionSelectFreehand->setEnabled( false );
+      mActionSelectRadius->setEnabled( false );
+      mActionZoomActualSize->setEnabled( false );
+      mActionZoomToLayer->setEnabled( true );
+      mActionZoomToSelected->setEnabled( false );
+      mActionOpenTable->setEnabled( false );
+      mActionSelectAll->setEnabled( false );
+      mActionReselect->setEnabled( false );
+      mActionInvertSelection->setEnabled( false );
+      mActionSelectByExpression->setEnabled( false );
+      mActionSelectByForm->setEnabled( false );
+      mActionOpenFieldCalc->setEnabled( false );
+      mActionToggleEditing->setEnabled( false );
+      mActionToggleEditing->setChecked( false );
+      mActionSaveLayerEdits->setEnabled( false );
+      mUndoDock->widget()->setEnabled( false );
+      mActionUndo->setEnabled( false );
+      mActionRedo->setEnabled( false );
+      mActionSaveLayerDefinition->setEnabled( true );
+      mActionLayerSaveAs->setEnabled( false );
+      mActionAddFeature->setEnabled( false );
+      mActionCircularStringCurvePoint->setEnabled( false );
+      mActionCircularStringRadius->setEnabled( false );
+      mActionDeleteSelected->setEnabled( false );
+      mActionAddRing->setEnabled( false );
+      mActionFillRing->setEnabled( false );
+      mActionAddPart->setEnabled( false );
+      mActionVertexTool->setEnabled( false );
+      mActionVertexToolActiveLayer->setEnabled( false );
+      mActionMoveFeature->setEnabled( false );
+      mActionMoveFeatureCopy->setEnabled( false );
+      mActionRotateFeature->setEnabled( false );
+      mActionOffsetCurve->setEnabled( false );
+      mActionCopyFeatures->setEnabled( false );
+      mActionCutFeatures->setEnabled( false );
+      mActionPasteFeatures->setEnabled( false );
+      mActionRotatePointSymbols->setEnabled( false );
+      mActionOffsetPointSymbol->setEnabled( false );
+      mActionDeletePart->setEnabled( false );
+      mActionDeleteRing->setEnabled( false );
+      mActionSimplifyFeature->setEnabled( false );
+      mActionReshapeFeatures->setEnabled( false );
+      mActionSplitFeatures->setEnabled( false );
+      mActionSplitParts->setEnabled( false );
+      mActionLabeling->setEnabled( false );
+      mActionDiagramProperties->setEnabled( false );
+      mActionIdentify->setEnabled( true );
+      enableDigitizeWithCurveAction( false );
+      break;
+
     case QgsMapLayerType::PluginLayer:
     case QgsMapLayerType::AnnotationLayer:
       break;
@@ -16024,6 +16138,11 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
         mMapStyleWidget->updateCurrentWidgetLayer();
       }
       mMapStyleWidget->blockUpdates( false ); // delete since dialog cannot be reused without updating code
+      break;
+    }
+
+    case QgsMapLayerType::PointCloudLayer:
+    {
       break;
     }
 
