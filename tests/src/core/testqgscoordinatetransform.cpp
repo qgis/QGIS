@@ -501,7 +501,7 @@ void TestQgsCoordinateTransform::transform2DPoint()
 
   QGSCOMPARENEAR( x, 0.0, 0.01 );
   QGSCOMPARENEAR( y, 0.0, 0.01 );
-  QGSCOMPARENEAR( z, pt.z(), 0.01 );
+  QVERIFY( std::isnan( z ) );
 }
 
 void TestQgsCoordinateTransform::transformErrorMultiplePoints()
