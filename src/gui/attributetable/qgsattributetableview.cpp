@@ -507,7 +507,7 @@ void QgsAttributeTableView::scrollToFeature( const QgsFeatureId &fid, int col )
 
   scrollTo( index );
 
-  QModelIndex selectionIndex = index.siblingAtColumn( col );
+  QModelIndex selectionIndex = index.sibling( index.row(), col );
 
   if ( !selectionIndex.isValid() )
     return;
