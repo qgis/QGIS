@@ -888,11 +888,32 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
       parameters.filter = groupByClause;
   }
 
-  QString cacheKey = QStringLiteral( "agg:%1:%2:%3:%4:%5" ).arg( vl->id(),
-                     QString::number( static_cast< int >( aggregate ) ),
-                     subExpression,
-                     parameters.filter,
-                     orderBy );
+  QgsExpression subExp( subExpression );
+  QgsExpression filterExp( parameters.filter );
+
+  bool isStatic = true;
+  const QSet<QString> refVars = filterExp.referencedVariables() + subExp.referencedVariables();
+  for ( const QString &varName : refVars )
+  {
+    const QgsExpressionContextScope *scope = context->activeScopeForVariable( varName );
+    if ( scope && !scope->isStatic( varName ) )
+    {
+      isStatic = false;
+      break;
+    }
+  }
+
+  QString cacheKey;
+  if ( !isStatic )
+  {
+    cacheKey = QStringLiteral( "aggfcn:%1:%2:%3:%4:%5%6:%7" ).arg( vl->id(), QString::number( aggregate ), subExpression, parameters.filter,
+               QString::number( context->feature().id() ), QString( qHash( context->feature() ) ), orderBy );
+  }
+  else
+  {
+    cacheKey = QStringLiteral( "agg:%1:%2:%3:%4:%5" ).arg( vl->id(), QString::number( aggregate ), subExpression, parameters.filter, orderBy );
+  }
+
   if ( context->hasCachedValue( cacheKey ) )
     return context->cachedValue( cacheKey );
 
