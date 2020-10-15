@@ -521,7 +521,8 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
       Table,
       Plugin,    //!< Added in 2.10
       Mesh,      //!< Added in 3.2
-      VectorTile //!< Added in 3.14
+      VectorTile, //!< Added in 3.14
+      PointCloud //!< Added in 3.18
     };
 
     Q_ENUM( LayerType )

@@ -140,8 +140,8 @@ void QgsProviderRegistry::init()
   }
   {
     QgsScopedRuntimeProfile profile( QObject::tr( "Create point cloud provider" ) );
-    QgsProviderMetadata *vt = new QgsPointCloudProviderMetadata();
-    mProviders[ vt->key() ] = vt;
+    QgsProviderMetadata *pc = new QgsPointCloudProviderMetadata();
+    mProviders[ pc->key() ] = pc;
   }
 #ifdef HAVE_STATIC_PROVIDERS
   mProviders[ QgsWmsProvider::providerKey() ] = new QgsWmsProviderMetadata();
