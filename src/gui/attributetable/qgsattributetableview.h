@@ -94,7 +94,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
 
       Optionally a \a column can be specified, which will also bring that column into view.
 
-     * \since QGIS 3.18
+     * \since QGIS 3.16
      */
     void scrollToFeature( const QgsFeatureId &fid, int column = -1 );
 
