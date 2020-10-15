@@ -90,10 +90,13 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
 
 
     /**
-     * Scroll to a feature with a given \a fid and select \a col if exists
+     * Scroll to a feature with a given \a fid.
+
+      Optionally a \a column can be specified, which will also bring that column into view.
+
      * \since QGIS 3.18
      */
-    void scrollToFeature( const QgsFeatureId &fid, int col = -1 );
+    void scrollToFeature( const QgsFeatureId &fid, int column = -1 );
 
 
   protected:
