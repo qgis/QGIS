@@ -421,9 +421,9 @@ segment in the line.
     virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
 
 
-    bool hasDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false ) const;
+    QVector< QgsVertexId > collectDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false ) const;
 %Docstring
-Returns ``True`` if the linestring contains duplicate nodes within the specified tolerance.
+Returns a list of any duplicate nodes contained in the geometry, within the specified tolerance.
 
 If ``useZValues`` is ``True`` then z values will also be considered when testing for duplicates.
 
