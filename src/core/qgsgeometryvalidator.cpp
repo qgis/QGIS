@@ -117,44 +117,55 @@ void QgsGeometryValidator::validatePolyline( int i, const QgsLineString *line, b
   }
 
   int j = 0;
-  std::unique_ptr< QgsLineString > noDupes( line->clone() );
-  while ( j < noDupes->numPoints() - 1 )
+  std::unique_ptr< QgsLineString > noDupes;
+
+  // QgsLineString::hasDuplicateNodes() is much more efficient then the duplicate
+  // point detection/removal code below, so assume the
+  // most likely situation that a linestring DOESN'T have duplicate nodes
+  // and defer the expensive duplicate point emission/removal to only if
+  // we really need to do it
+  if ( line->hasDuplicateNodes( 1E-8 ) )
   {
-    int n = 0;
-    QgsPointXY dupeLocation;
-    while ( j < noDupes->numPoints() - 1 && qgsDoubleNear( noDupes->xAt( j ), noDupes->xAt( j + 1 ), 1E-8 ) && qgsDoubleNear( noDupes->yAt( j ), noDupes->yAt( j + 1 ), 1E-8 ) )
+    noDupes.reset( line->clone() );
+    while ( j < noDupes->numPoints() - 1 )
     {
-      dupeLocation = QgsPointXY( noDupes->pointN( j ) );
-      noDupes->deleteVertex( QgsVertexId( -1, -1, j ) );
-      n++;
-    }
+      int n = 0;
+      QgsPointXY dupeLocation;
+      while ( j < noDupes->numPoints() - 1 && qgsDoubleNear( noDupes->xAt( j ), noDupes->xAt( j + 1 ), 1E-8 ) && qgsDoubleNear( noDupes->yAt( j ), noDupes->yAt( j + 1 ), 1E-8 ) )
+      {
+        dupeLocation = QgsPointXY( noDupes->pointN( j ) );
+        noDupes->deleteVertex( QgsVertexId( -1, -1, j ) );
+        n++;
+      }
 
-    if ( n > 0 )
-    {
-      QString msg = QObject::tr( "line %1 contains %n duplicate node(s) at %2", "number of duplicate nodes", n ).arg( i ).arg( j );
-      QgsDebugMsgLevel( msg, 2 );
-      emit errorFound( QgsGeometry::Error( msg, dupeLocation ) );
-      mErrorCount++;
-    }
+      if ( n > 0 )
+      {
+        QString msg = QObject::tr( "line %1 contains %n duplicate node(s) at %2", "number of duplicate nodes", n ).arg( i ).arg( j );
+        QgsDebugMsgLevel( msg, 2 );
+        emit errorFound( QgsGeometry::Error( msg, dupeLocation ) );
+        mErrorCount++;
+      }
 
-    j++;
+      j++;
+    }
+    line = noDupes.get();
   }
 
-  for ( j = 0; !mStop && j < noDupes->numPoints() - 3; j++ )
+  for ( j = 0; !mStop && j < line->numPoints() - 3; j++ )
   {
-    const double xAtJ = noDupes->xAt( j );
-    const double yAtJ = noDupes->yAt( j );
-    QgsVector v( noDupes->xAt( j + 1 ) - xAtJ, noDupes->yAt( j + 1 ) - yAtJ );
+    const double xAtJ = line->xAt( j );
+    const double yAtJ = line->yAt( j );
+    QgsVector v( line->xAt( j + 1 ) - xAtJ, line->yAt( j + 1 ) - yAtJ );
     double vl = v.length();
 
-    int n = ( j == 0 && ring ) ? noDupes->numPoints() - 2 : noDupes->numPoints() - 1;
+    int n = ( j == 0 && ring ) ? line->numPoints() - 2 : line->numPoints() - 1;
 
     for ( int k = j + 2; !mStop && k < n; k++ )
     {
-      const double xAtK = noDupes->xAt( k );
-      const double yAtK = noDupes->yAt( k );
+      const double xAtK = line->xAt( k );
+      const double yAtK = line->yAt( k );
 
-      QgsVector w( noDupes->xAt( k + 1 ) - xAtK, noDupes->yAt( k + 1 ) - yAtK );
+      QgsVector w( line->xAt( k + 1 ) - xAtK, line->yAt( k + 1 ) - yAtK );
 
       double sX;
       double sY;
