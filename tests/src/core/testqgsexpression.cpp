@@ -2045,6 +2045,11 @@ class TestQgsExpression: public QObject
         QgsExpression exp( QString( "with_variable('my_var',\"col1\", aggregate(layer:='aggregate_layer', aggregate:='concatenate_unique', expression:=\"col2\", filter:=\"col1\"=@my_var))" ) );
         QString res = exp.evaluate( &context ).toString();
         QCOMPARE( res, f.attribute( "col2" ) );
+
+        // also test for generic aggregates
+        exp = QString( "with_variable('my_var',\"col1\", sum(expression:=\"col1\", filter:=\"col1\"=@my_var))" );
+        res = exp.evaluate( &context ).toInt();
+        QCOMPARE( res, f.attribute( "col1" ).toInt() );
       }
     }
 
