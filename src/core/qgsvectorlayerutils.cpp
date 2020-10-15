@@ -743,12 +743,15 @@ QgsFeatureList QgsVectorLayerUtils::makeFeatureCompatible( const QgsFeature &fea
   // Fix attributes
   QgsVectorLayerUtils::matchAttributesToFields( newF, layer->fields( ) );
 
-  if ( sinkFlags & QgsFeatureSink::RegeneratePrimaryKey && layer->storageType() == QLatin1String( "GPKG" ) )
+  if ( sinkFlags & QgsFeatureSink::RegeneratePrimaryKey )
   {
-    // drop incoming fid value, let it be regenerated
-    const int fidIndex = layer->fields().lookupField( QStringLiteral( "fid" ) );
-    if ( fidIndex >= 0 )
-      newF.setAttribute( fidIndex, QVariant() );
+    // drop incoming primary key values, let them be regenerated
+    const QgsAttributeList pkIndexes = layer->dataProvider()->pkAttributeIndexes();
+    for ( int index : pkIndexes )
+    {
+      if ( index >= 0 )
+        newF.setAttribute( index, QVariant() );
+    }
   }
 
   // Does geometry need transformations?
