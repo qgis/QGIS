@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgspointcloudindex.h
+                         qgspointclouddataitems.h
                          --------------------
     begin                : October 2020
     copyright            : (C) 2020 by Peter Petrik
@@ -15,33 +15,38 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSPOINTCLOUDINDEX_H
-#define QGSPOINTCLOUDINDEX_H
+#ifndef QGSPOINTCLOUDDATAITEMS_H
+#define QGSPOINTCLOUDDATAITEMS_H
 
-#include <QObject>
-#include <QString>
+#include "qgsdataitem.h"
+#include "qgsdataitemprovider.h"
 
-#include "qgis_core.h"
+///@cond PRIVATE
+#define SIP_NO_FILE
 
-/**
- * \ingroup core
- *
- * Represents a indexed point clouds data in octree
- *
- * \note The API is considered EXPERIMENTAL and can be changed without a notice
- *
- * \since QGIS 3.18
- */
-class CORE_EXPORT QgsPointCloudIndex: public QObject
+class CORE_EXPORT QgsPointCloudLayerItem : public QgsLayerItem
 {
     Q_OBJECT
   public:
+    QgsPointCloudLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri );
+    QString layerName() const override;
 
-    explicit QgsPointCloudIndex();
-    ~QgsPointCloudIndex();
-
-    void load( const QString &fileName );
 };
 
+//! Provider for MDAL data items
+class QgsPointCloudDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    QString name() override;
 
-#endif // QGSPOINTCLOUDINDEX_H
+    int capabilities() const override;
+
+    QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
+};
+
+///@endcond
+
+#endif // QGSPOINTCLOUDDATAITEMS_H
+
+
+

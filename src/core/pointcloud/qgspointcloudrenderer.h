@@ -1,9 +1,9 @@
 /***************************************************************************
-                         QgsPointCloudIndex.h
+                         qgspointcloudrenderer.h
                          --------------------
     begin                : October 2020
-    copyright            : (C) 2020 by Martin Dobias and Peter Petrik
-    email                : wonder dot sk at gmail dot com, zilolv at gmail dot com
+    copyright            : (C) 2020 by Peter Petrik
+    email                : zilolv at gmail dot com
  ***************************************************************************/
 
 /***************************************************************************

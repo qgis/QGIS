@@ -207,6 +207,9 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         case QgsMapLayerType::VectorTileLayer:
           return QgsLayerItem::iconVectorTile();
 
+        case QgsMapLayerType::PointCloudLayer:
+          return QgsLayerItem::iconPointCloudLayer();
+
         case QgsMapLayerType::VectorLayer:
         case QgsMapLayerType::PluginLayer:
         case QgsMapLayerType::AnnotationLayer:

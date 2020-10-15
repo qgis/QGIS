@@ -31,6 +31,7 @@
 #include "qgsprovidermetadata.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectortileprovidermetadata.h"
+#include "qgspointcloudprovidermetadata.h"
 #include "qgsproject.h"
 #include "providers/memory/qgsmemoryprovider.h"
 #include "providers/gdal/qgsgdalprovider.h"
@@ -135,6 +136,11 @@ void QgsProviderRegistry::init()
   {
     QgsScopedRuntimeProfile profile( QObject::tr( "Create vector tile provider" ) );
     QgsProviderMetadata *vt = new QgsVectorTileProviderMetadata();
+    mProviders[ vt->key() ] = vt;
+  }
+  {
+    QgsScopedRuntimeProfile profile( QObject::tr( "Create point cloud provider" ) );
+    QgsProviderMetadata *vt = new QgsPointCloudProviderMetadata();
     mProviders[ vt->key() ] = vt;
   }
 #ifdef HAVE_STATIC_PROVIDERS

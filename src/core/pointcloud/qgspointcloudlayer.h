@@ -2,8 +2,8 @@
                          qgspointcloudlayer.h
                          --------------------
     begin                : October 2020
-    copyright            : (C) 2020 by Martin Dobias and Peter Petrik
-    email                : wonder dot sk at gmail dot com, zilolv at gmail dot com
+    copyright            : (C) 2020 by Peter Petrik
+    email                : zilolv at gmail dot com
  ***************************************************************************/
 
 /***************************************************************************
@@ -69,15 +69,6 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
 
     void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
     QString loadDefaultStyle( bool &resultFlag SIP_OUT ) override;
-
-
-    /**
-     * Sets renderer for the map layer.
-     * \note Takes ownership of the passed renderer
-     */
-    void setRenderer( QgsPointCloudRenderer *r SIP_TRANSFER );
-    //! Returns currently assigned renderer
-    QgsPointCloudRenderer *renderer() const;
 
     QgsPointCloudIndex *pointCloudIndex() const SIP_SKIP;
 

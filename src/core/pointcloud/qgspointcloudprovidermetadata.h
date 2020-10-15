@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgspointcloudindex.h
+                         qgspointcloudprovidermetadata.h
                          --------------------
     begin                : October 2020
     copyright            : (C) 2020 by Peter Petrik
@@ -15,33 +15,27 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSPOINTCLOUDINDEX_H
-#define QGSPOINTCLOUDINDEX_H
+#ifndef QGSPOINTCLOUDPROVIDERMETADATA_H
+#define QGSPOINTCLOUDPROVIDERMETADATA_H
 
-#include <QObject>
-#include <QString>
 
-#include "qgis_core.h"
+#include "qgsprovidermetadata.h"
+
+///@cond PRIVATE
+#define SIP_NO_FILE
 
 /**
- * \ingroup core
- *
- * Represents a indexed point clouds data in octree
- *
- * \note The API is considered EXPERIMENTAL and can be changed without a notice
- *
- * \since QGIS 3.18
+ * This metadata class does not support creation of provider instances, because
+ * vector tile layer currently does not have a concept of data providers. This class
+ * is only used to create data item provider (for browser integration).
  */
-class CORE_EXPORT QgsPointCloudIndex: public QObject
+class QgsPointCloudProviderMetadata : public QgsProviderMetadata
 {
-    Q_OBJECT
   public:
-
-    explicit QgsPointCloudIndex();
-    ~QgsPointCloudIndex();
-
-    void load( const QString &fileName );
+    QgsPointCloudProviderMetadata();
+    QList< QgsDataItemProvider * > dataItemProviders() const override;
 };
 
+///@endcond
 
-#endif // QGSPOINTCLOUDINDEX_H
+#endif // QGSPOINTCLOUDPROVIDERMETADATA_H

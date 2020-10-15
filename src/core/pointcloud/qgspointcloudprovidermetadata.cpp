@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgspointcloudindex.h
+                         qgspointcloudprovidermetadata.cpp
                          --------------------
     begin                : October 2020
     copyright            : (C) 2020 by Peter Petrik
@@ -15,33 +15,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSPOINTCLOUDINDEX_H
-#define QGSPOINTCLOUDINDEX_H
+#include "qgspointcloudprovidermetadata.h"
+#include "qgspointclouddataitems.h"
 
-#include <QObject>
-#include <QString>
+///@cond PRIVATE
 
-#include "qgis_core.h"
+#define PROVIDER_KEY QStringLiteral( "pointcloud" )
+#define PROVIDER_DESCRIPTION QStringLiteral( "Point cloud provider" )
 
-/**
- * \ingroup core
- *
- * Represents a indexed point clouds data in octree
- *
- * \note The API is considered EXPERIMENTAL and can be changed without a notice
- *
- * \since QGIS 3.18
- */
-class CORE_EXPORT QgsPointCloudIndex: public QObject
+QgsPointCloudProviderMetadata::QgsPointCloudProviderMetadata()
+  : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
 {
-    Q_OBJECT
-  public:
+}
 
-    explicit QgsPointCloudIndex();
-    ~QgsPointCloudIndex();
+QList<QgsDataItemProvider *> QgsPointCloudProviderMetadata::dataItemProviders() const
+{
+  QList< QgsDataItemProvider * > providers;
+  providers << new QgsPointCloudDataItemProvider;
+  return providers;
+}
 
-    void load( const QString &fileName );
-};
-
-
-#endif // QGSPOINTCLOUDINDEX_H
+///@endcond
