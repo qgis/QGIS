@@ -74,6 +74,7 @@ class CORE_EXPORT QgsProcessingContext
       mTransformContext = other.mTransformContext;
       mExpressionContext = other.mExpressionContext;
       mInvalidGeometryCallback = other.mInvalidGeometryCallback;
+      mUseDefaultInvalidGeometryCallback = other.mUseDefaultInvalidGeometryCallback;
       mInvalidGeometryCheck = other.mInvalidGeometryCheck;
       mTransformErrorCallback = other.mTransformErrorCallback;
       mDefaultEncoding = other.mDefaultEncoding;
@@ -389,7 +390,7 @@ class CORE_EXPORT QgsProcessingContext
      * \since QGIS 3.0
      */
 #ifndef SIP_RUN
-    void setInvalidGeometryCallback( const std::function< void( const QgsFeature & ) > &callback ) { mInvalidGeometryCallback = callback; }
+    void setInvalidGeometryCallback( const std::function< void( const QgsFeature & ) > &callback ) { mInvalidGeometryCallback = callback; mUseDefaultInvalidGeometryCallback = false; }
 #else
     void setInvalidGeometryCallback( SIP_PYCALLABLE / AllowNone / );
     % MethodCode
@@ -413,14 +414,14 @@ class CORE_EXPORT QgsProcessingContext
      * \see setInvalidGeometryCallback()
      * \since QGIS 3.0
      */
-    SIP_SKIP std::function< void( const QgsFeature & ) > invalidGeometryCallback() const { return mInvalidGeometryCallback; }
+    SIP_SKIP std::function< void( const QgsFeature & ) > invalidGeometryCallback( QgsFeatureSource *source = nullptr ) const;
 
     /**
      * Returns the default callback function to use for a particular invalid geometry \a check
      * \note not available in Python bindings
      * \since QGIS 3.14
      */
-    SIP_SKIP std::function< void( const QgsFeature & ) > defaultInvalidGeometryCallbackForCheck( QgsFeatureRequest::InvalidGeometryCheck check ) const;
+    SIP_SKIP std::function< void( const QgsFeature & ) > defaultInvalidGeometryCallbackForCheck( QgsFeatureRequest::InvalidGeometryCheck check, QgsFeatureSource *source = nullptr ) const;
 
     /**
      * Sets a callback function to use when encountering a transform error when iterating
@@ -621,8 +622,11 @@ class CORE_EXPORT QgsProcessingContext
     //! Temporary project owned by the context, used for storing temporarily loaded map layers
     QgsMapLayerStore tempLayerStore;
     QgsExpressionContext mExpressionContext;
+
     QgsFeatureRequest::InvalidGeometryCheck mInvalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck;
+    bool mUseDefaultInvalidGeometryCallback = true;
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
+
     std::function< void( const QgsFeature & ) > mTransformErrorCallback;
     QString mDefaultEncoding;
     QMap< QString, LayerDetails > mLayersToLoadOnCompletion;
