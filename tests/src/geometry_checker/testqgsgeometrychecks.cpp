@@ -99,6 +99,7 @@ class TestQgsGeometryChecks: public QObject
     void testSelfIntersectionCheck();
     void testSliverPolygonCheck();
     void testGapCheckPointInPoly();
+    void testOverlapCheckToleranceBug();
 };
 
 void TestQgsGeometryChecks::initTestCase()
@@ -1203,6 +1204,54 @@ void TestQgsGeometryChecks::testGapCheckPointInPoly()
   // Ensure it worked on geom
   testContext.second[layers["gap_layer_point_in_poly.shp"]]->getFeature( 1, f );
   QVERIFY( f.geometry().area() > areaOld );
+
+  cleanupTestContext( testContext );
+}
+
+void TestQgsGeometryChecks::testOverlapCheckToleranceBug()
+{
+  // The overlap (intersection) was computed with a different tolerance when collecting errors
+  // than when fixing them, leading to failures to fix the issue esp. with big coordinates.
+
+  QTemporaryDir dir;
+  QMap<QString, QString> layers;
+  layers.insert( "overlap_layer_tolerance_bug.shp", "" );
+  auto testContext = createTestContext( dir, layers );
+
+  // Test detection
+  QList<QgsGeometryCheckError *> checkErrors;
+  QStringList messages;
+
+  QVariantMap configuration;
+  configuration.insert( "gapThreshold", 1000.0 );
+
+  QgsProject::instance()->setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 2056 ) );
+
+  QgsGeometryOverlapCheck check( testContext.first, configuration );
+  QgsFeedback feedback;
+  check.collectErrors( testContext.second, checkErrors, messages, &feedback );
+  listErrors( checkErrors, messages );
+
+  QCOMPARE( checkErrors.size(), 1 );
+
+  QgsGeometryCheckError *error = checkErrors.first();
+
+  // Test fixes
+  QgsFeature f;
+  testContext.second[layers["overlap_layer_tolerance_bug.shp"]]->getFeature( 0, f );
+  double areaOld = f.geometry().area();
+  QCOMPARE( areaOld, 10442.710061549426 );
+
+  QgsGeometryCheck::Changes changes;
+  QMap<QString, int> mergeAttrs;
+  error->check()->fixError( testContext.second, error, QgsGeometryOverlapCheck::Subtract, mergeAttrs, changes );
+
+  // Ensure it worked
+  QCOMPARE( error->status(), QgsGeometryCheckError::StatusFixed );
+
+  // Ensure it actually worked
+  testContext.second[layers["overlap_layer_tolerance_bug.shp"]]->getFeature( 0, f );
+  QVERIFY( f.geometry().area() < areaOld );
 
   cleanupTestContext( testContext );
 }
