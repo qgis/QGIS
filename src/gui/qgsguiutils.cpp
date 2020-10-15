@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include "qgsguiutils.h"
 
+#include "qgsapplication.h"
 #include "qgssettings.h"
 #include "qgsencodingfiledialog.h"
 #include "qgslogger.h"
@@ -243,9 +244,7 @@ namespace QgsGuiUtils
 
   int scaleIconSize( int standardSize )
   {
-    QFontMetrics fm( ( QFont() ) );
-    const double scale = 1.1 * standardSize / 24;
-    return static_cast< int >( std::floor( std::max( Qgis::UI_SCALE_FACTOR * fm.height() * scale, static_cast< double >( standardSize ) ) ) );
+    return QgsApplication::scaleIconSize( standardSize );
   }
 
   QSize iconSize( bool dockableToolbar )

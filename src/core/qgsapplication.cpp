@@ -75,6 +75,8 @@
 
 #include "layout/qgspagesizeregistry.h"
 
+#include <QApplication>
+#include <QDesktopWidget>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -1276,7 +1278,6 @@ void QgsApplication::initQgis()
 
 }
 
-
 QgsAuthManager *QgsApplication::authManager()
 {
   if ( auto *lInstance = instance() )
@@ -1819,6 +1820,16 @@ void QgsApplication::setCustomVariable( const QString &name, const QVariant &val
   settings.setValue( QStringLiteral( "variables/" ) + name, value );
 
   emit instance()->customVariablesChanged();
+}
+
+int QgsApplication::scaleIconSize( int standardSize )
+{
+  QFontMetrics fm( ( QFont() ) );
+  const double scale = 1.1 * standardSize / 24;
+  int scaledIconSize = static_cast< int >( std::floor( std::max( Qgis::UI_SCALE_FACTOR * fm.height() * scale, static_cast< double >( standardSize ) ) ) );
+  if ( QApplication::desktop() )
+    scaledIconSize *= QApplication::desktop()->devicePixelRatio();
+  return scaledIconSize;
 }
 
 int QgsApplication::maxConcurrentConnectionsPerPool() const
