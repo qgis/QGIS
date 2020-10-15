@@ -25,6 +25,7 @@
 #include <QWidget>
 #include <QUndoView>
 #include <QUndoStack>
+#include <QPointer>
 
 #include "qgspanelwidget.h"
 #include "qgis_app.h"
@@ -101,7 +102,7 @@ class APP_EXPORT QgsUndoWidget : public QgsPanelWidget
 
   private:
     QUndoView *mUndoView = nullptr;
-    QUndoStack *mUndoStack = nullptr;
+    QPointer< QUndoStack > mUndoStack;
     QgsMapCanvas *mMapCanvas = nullptr;
 
     int mPreviousIndex;
