@@ -18,92 +18,6 @@
 #include "qgis.h"
 #include "qgsexception.h"
 
-QgsVector::QgsVector( double x, double y )
-  : mX( x )
-  , mY( y )
-{
-}
-
-QgsVector QgsVector::operator-() const
-{
-  return QgsVector( -mX, -mY );
-}
-
-QgsVector QgsVector::operator*( double scalar ) const
-{
-  return QgsVector( mX * scalar, mY * scalar );
-}
-
-QgsVector QgsVector::operator/( double scalar ) const
-{
-  return *this * ( 1.0 / scalar );
-}
-
-double QgsVector::operator*( QgsVector v ) const
-{
-  return mX * v.mX + mY * v.mY;
-}
-
-QgsVector QgsVector::operator+( QgsVector other ) const
-{
-  return QgsVector( mX + other.mX, mY + other.mY );
-}
-
-QgsVector &QgsVector::operator+=( QgsVector other )
-{
-  mX += other.mX;
-  mY += other.mY;
-  return *this;
-}
-
-QgsVector QgsVector::operator-( QgsVector other ) const
-{
-  return QgsVector( mX - other.mX, mY - other.mY );
-}
-
-QgsVector &QgsVector::operator-=( QgsVector other )
-{
-  mX -= other.mX;
-  mY -= other.mY;
-  return *this;
-}
-
-double QgsVector::length() const
-{
-  return std::sqrt( mX * mX + mY * mY );
-}
-
-double QgsVector::x() const
-{
-  return mX;
-}
-
-double QgsVector::y() const
-{
-  return mY;
-}
-
-QgsVector QgsVector::perpVector() const
-{
-  return QgsVector( -mY, mX );
-}
-
-double QgsVector::angle() const
-{
-  double angle = std::atan2( mY, mX );
-  return angle < 0.0 ? angle + 2.0 * M_PI : angle;
-}
-
-double QgsVector::angle( QgsVector v ) const
-{
-  return v.angle() - angle();
-}
-
-double QgsVector::crossProduct( QgsVector v ) const
-{
-  return mX * v.y() - mY * v.x();
-}
-
 QgsVector QgsVector::rotateBy( double rot ) const
 {
   double angle = std::atan2( mY, mX ) + rot;
@@ -121,14 +35,4 @@ QgsVector QgsVector::normalized() const
   }
 
   return *this / len;
-}
-
-bool QgsVector::operator==( QgsVector other ) const
-{
-  return qgsDoubleNear( mX, other.mX ) && qgsDoubleNear( mY, other.mY );
-}
-
-bool QgsVector::operator!=( QgsVector other ) const
-{
-  return !qgsDoubleNear( mX, other.mX ) || !qgsDoubleNear( mY, other.mY );
 }
