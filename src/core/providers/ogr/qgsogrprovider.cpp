@@ -1413,8 +1413,7 @@ QString QgsOgrProvider::defaultValueClause( int fieldIndex ) const
 bool QgsOgrProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value ) const
 {
   Q_UNUSED( constraint )
-  // If the field is a fid, skip in case it's the default value
-  if ( fieldIndex == 0 && mFirstFieldIsFid )
+  if ( providerProperty( EvaluateDefaultValues, false ).toBool() )
   {
     return ! mDefaultValues.value( fieldIndex ).isEmpty();
   }
