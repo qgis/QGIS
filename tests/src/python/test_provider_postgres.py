@@ -554,7 +554,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         expected_area = 43069568296.34387
 
         assert compareWkt(generated_geometry, expected_geometry), "Geometry mismatch! Expected:\n{}\nGot:\n{}\n".format(expected_geometry, generated_geometry)
-        self.assertEqual(f2['poly_area'], expected_area)
+        self.assertEqual(round(f2['poly_area'], 4), round(expected_area, 4))
         self.assertEqual(f2['name'], 'QGIS-3')
 
         # Checking if we can correctly change values of an existing feature.
@@ -582,7 +582,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         # reading back
         vl2 = QgsVectorLayer('{} table="qgis_test"."{}" (geom) srid=4326 type=POLYGON key="id" sql='.format(self.dbconn, "test_gen_col"), "test_gen_col", "postgres")
         f2 = next(vl2.getFeatures(QgsFeatureRequest()))
-        self.assertEqual(f2['poly_area'], expected_area)
+        self.assertEqual(round(f2['poly_area'], 4), round(expected_area, 4))
 
         # now, getting a brand new QgsVectorLayer to check if changes (UPDATE) in the geometry are reflected in the generated fields
         vl = QgsVectorLayer('{} table="qgis_test"."{}" (geom) srid=4326 type=POLYGON key="id" sql='.format(self.dbconn, "test_gen_col"), "test_gen_col", "postgres")
@@ -603,7 +603,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         expected_area = 67718478405.28429
 
         assert compareWkt(generated_geometry, expected_geometry), "Geometry mismatch! Expected:\n{}\nGot:\n{}\n".format(expected_geometry, generated_geometry)
-        self.assertEqual(f2['poly_area'], expected_area)
+        self.assertEqual(round(f2['poly_area'], 4), round(expected_area, 4))
         self.assertEqual(f2['name'], 'New')
 
         # Geography columns
