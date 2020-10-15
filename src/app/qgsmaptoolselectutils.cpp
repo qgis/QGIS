@@ -263,12 +263,24 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
     if ( doContains )
     {
       if ( !selectGeomTrans.contains( g ) )
-        continue;
+      {
+        // if we get an error from the contains check then it indicates that the geometry is invalid and GEOS choked on it.
+        // in this case we consider the bounding box intersection check which has already been performed by the iterator as sufficient and
+        // allow the feature to be selected
+        if ( selectGeomTrans.lastError().isEmpty() )
+          continue;
+      }
     }
     else
     {
       if ( !selectGeomTrans.intersects( g ) )
-        continue;
+      {
+        // if we get an error from the contains check then it indicates that the geometry is invalid and GEOS choked on it.
+        // in this case we consider the bounding box intersection check which has already been performed by the iterator as sufficient and
+        // allow the feature to be selected
+        if ( selectGeomTrans.lastError().isEmpty() )
+          continue;
+      }
     }
     if ( singleSelect )
     {
