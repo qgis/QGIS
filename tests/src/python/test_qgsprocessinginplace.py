@@ -915,6 +915,7 @@ class TestQgsProcessingInPlace(unittest.TestCase):
 
     def test_regenerate_fid(self):
         """Test RegeneratePrimaryKey flag"""
+
         temp_dir = QTemporaryDir()
         temp_path = temp_dir.path()
         gpkg_name = 'bug_31634_Multi_to_Singleparts_FID.gpkg'
