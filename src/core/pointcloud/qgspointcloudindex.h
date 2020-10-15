@@ -18,7 +18,10 @@
 #ifndef QGSPOINTCLOUDINDEX_H
 #define QGSPOINTCLOUDINDEX_H
 
+#include <QObject>
 #include <QString>
+
+#include "qgis_core.h"
 
 /**
  * \ingroup core
@@ -29,15 +32,15 @@
  *
  * \since QGIS 3.18
  */
-class CORE_EXPORT QgsPointCloudIndex
+class CORE_EXPORT QgsPointCloudIndex: public QObject
 {
     Q_OBJECT
   public:
 
     explicit QgsPointCloudIndex();
-     ~QgsPointCloudIndex();
+    ~QgsPointCloudIndex();
 
-    void load(const QString& fileName);
+    void load( const QString &fileName );
 };
 
 

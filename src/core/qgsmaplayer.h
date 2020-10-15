@@ -72,6 +72,7 @@ enum class QgsMapLayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayer, LayerT
   MeshLayer,      //!< Added in 3.2
   VectorTileLayer, //!< Added in 3.14
   AnnotationLayer, //!< Contains freeform, georeferenced annotations. Added in QGIS 3.16
+  PointCloudLayer, //!< Added in 3.18
 };
 
 /**
@@ -117,6 +118,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
           break;
         case QgsMapLayerType::AnnotationLayer:
           sipType = sipType_QgsAnnotationLayer;
+          break;
+        case QgsMapLayerType::PointCloudLayer:
+          sipType = sipType_QgsPointCloudLayer;
           break;
         default:
           sipType = nullptr;

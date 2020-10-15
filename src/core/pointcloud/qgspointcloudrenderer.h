@@ -18,7 +18,15 @@
 #ifndef QGSPOINTCLOUDRENDERER_H
 #define QGSPOINTCLOUDRENDERER_H
 
+#include "qgis_core.h"
+#include "qgsmaplayerrenderer.h"
+#include "qgsreadwritecontext.h"
+
+#include <QDomElement>
 #include <QString>
+
+class QgsRenderContext;
+class QgsPointCloudLayer;
 
 /**
  * \ingroup core
@@ -29,13 +37,20 @@
  *
  * \since QGIS 3.18
  */
-class CORE_EXPORT QgsPointCloudRenderer
+class CORE_EXPORT QgsPointCloudRenderer: public QgsMapLayerRenderer
 {
-    Q_OBJECT
   public:
 
-    explicit QgsPointCloudRenderer();
-     ~QgsPointCloudRenderer();
+    explicit QgsPointCloudRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context );
+    ~QgsPointCloudRenderer();
+
+    bool render() override;
+
+    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+  protected:
+    QgsPointCloudLayer *mLayer = nullptr;
 };
 
 

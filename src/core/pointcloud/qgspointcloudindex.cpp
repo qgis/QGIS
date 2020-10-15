@@ -17,3 +17,7 @@
 
 #include "qgspointcloudindex.h"
 
+
+QgsPointCloudIndex::QgsPointCloudIndex() = default;
+
+QgsPointCloudIndex::~QgsPointCloudIndex() = default;

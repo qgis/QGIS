@@ -124,6 +124,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/processing/models
   ${CMAKE_SOURCE_DIR}/src/core/providers
+  ${CMAKE_SOURCE_DIR}/src/core/pointcloud
   ${CMAKE_SOURCE_DIR}/src/core/providers/memory
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/scalebar
@@ -161,6 +162,7 @@ IF (WITH_GUI)
     ${CMAKE_SOURCE_DIR}/src/gui/locator
     ${CMAKE_SOURCE_DIR}/src/gui/numericformats
     ${CMAKE_SOURCE_DIR}/src/gui/processing
+    ${CMAKE_SOURCE_DIR}/src/gui/pointcloud
     ${CMAKE_SOURCE_DIR}/src/gui/processing/models
     ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
     ${CMAKE_SOURCE_DIR}/src/gui/vector

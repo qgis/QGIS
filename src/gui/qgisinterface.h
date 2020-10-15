@@ -59,6 +59,7 @@ class QgsRasterLayer;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
 class QgsVectorTileLayer;
+class QgsPointCloudLayer;
 class QgsOptionsWidgetFactory;
 class QgsLocatorFilter;
 class QgsStatusBar;
@@ -68,7 +69,6 @@ class QgsDevToolWidgetFactory;
 class QgsGpsConnection;
 class QgsApplicationExitBlockerInterface;
 class QgsAbstractMapToolHandler;
-
 
 /**
  * \ingroup gui
@@ -512,6 +512,13 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.14
      */
     virtual QAction *actionAddVectorTileLayer() = 0;
+
+    /**
+     * Returns the native Add Point Cloud Layer action.
+     * \since QGIS 3.18
+     */
+    virtual QAction *actionAddPointCloudLayer() = 0;
+
     //! Returns the native Add ArcGIS FeatureServer action.
     virtual QAction *actionAddAfsLayer() = 0;
     //! Returns the native Add ArcGIS MapServer action.
@@ -700,6 +707,12 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.14
      */
     virtual QgsVectorTileLayer *addVectorTileLayer( const QString &url, const QString &baseName ) = 0;
+
+    /**
+     * Adds a point cloud layer to the current project.
+     * \since QGIS 3.18
+     */
+    virtual QgsPointCloudLayer *addPointCloudLayer( const QString &url, const QString &baseName ) = 0;
 
     //! Adds (opens) a project
     virtual bool addProject( const QString &project ) = 0;
