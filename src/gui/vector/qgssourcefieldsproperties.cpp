@@ -198,21 +198,7 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
 {
   QTableWidgetItem *dataItem = new QTableWidgetItem();
   dataItem->setData( Qt::DisplayRole, idx );
-
-  switch ( mLayer->fields().fieldOrigin( idx ) )
-  {
-    case QgsFields::OriginExpression:
-      dataItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
-      break;
-
-    case QgsFields::OriginJoin:
-      dataItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/join.svg" ) ) );
-      break;
-
-    default:
-      dataItem->setIcon( mLayer->fields().iconForField( idx ) );
-      break;
-  }
+  dataItem->setIcon( mLayer->fields().iconForField( idx, true ) );
   mFieldsList->setItem( row, AttrIdCol, dataItem );
 
   // in case we insert and not append reindex remaining widgets by 1
