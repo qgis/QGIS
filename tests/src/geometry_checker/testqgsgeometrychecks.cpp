@@ -1212,6 +1212,9 @@ void TestQgsGeometryChecks::testOverlapCheckToleranceBug()
 {
   // The overlap (intersection) was computed with a different tolerance when collecting errors
   // than when fixing them, leading to failures to fix the issue esp. with big coordinates.
+  //
+  // Also, it used to offset unaffected points (far from the actual overlap) on the affected
+  // feature, leading to both unwanted shifts and remaining slivers.
 
   QTemporaryDir dir;
   QMap<QString, QString> layers;
@@ -1240,7 +1243,11 @@ void TestQgsGeometryChecks::testOverlapCheckToleranceBug()
   QgsFeature f;
   testContext.second[layers["overlap_layer_tolerance_bug.shp"]]->getFeature( 0, f );
   double areaOld = f.geometry().area();
+  QgsPoint pointOld_1 = f.geometry().vertexAt( 1 );
+  QgsPoint pointOld_2 = f.geometry().vertexAt( 2 );
   QCOMPARE( areaOld, 10442.710061549426 );
+  QCOMPARE( pointOld_1, QgsPoint( 2537221.53079314017668366, 1152360.02460834058001637 ) );
+  QCOMPARE( pointOld_2, QgsPoint( 2537366.84566075634211302, 1152360.28978145681321621 ) );
 
   QgsGeometryCheck::Changes changes;
   QMap<QString, int> mergeAttrs;
@@ -1252,6 +1259,9 @@ void TestQgsGeometryChecks::testOverlapCheckToleranceBug()
   // Ensure it actually worked
   testContext.second[layers["overlap_layer_tolerance_bug.shp"]]->getFeature( 0, f );
   QVERIFY( f.geometry().area() < areaOld );
+  // And that we don't have unexpected changes on unaffected points
+  QCOMPARE( f.geometry().vertexAt( 1 ), pointOld_1 );
+  QCOMPARE( f.geometry().vertexAt( 2 ), pointOld_2 );
 
   cleanupTestContext( testContext );
 }
