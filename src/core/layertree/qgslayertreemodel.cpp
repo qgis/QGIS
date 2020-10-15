@@ -13,18 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QApplication>
-#include <QDesktopWidget>
 #include <QMimeData>
 #include <QTextStream>
 
 #include "qgslayertreemodel.h"
 
+#include "qgsapplication.h"
 #include "qgslayertree.h"
 #include "qgslayertreeutils.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgsproject.h"
-#include "qgsapplication.h"
 #include "qgsdataitem.h"
 #include "qgsmaphittest.h"
 #include "qgsmaplayer.h"
@@ -723,12 +721,7 @@ void QgsLayerTreeModel::setLayerStyleOverrides( const QMap<QString, QString> &ov
 
 int QgsLayerTreeModel::scaleIconSize( int standardSize )
 {
-  QFontMetrics fm( ( QFont() ) );
-  const double scale = 1.1 * standardSize / 24;
-  int scaledIconSize = static_cast< int >( std::floor( std::max( Qgis::UI_SCALE_FACTOR * fm.height() * scale, static_cast< double >( standardSize ) ) ) );
-  if ( QApplication::desktop() )
-    scaledIconSize *= QApplication::desktop()->devicePixelRatio();
-  return scaledIconSize;
+  return QgsApplication::scaleIconSize( standardSize );
 }
 
 void QgsLayerTreeModel::nodeWillAddChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo )

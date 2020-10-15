@@ -872,6 +872,17 @@ class CORE_EXPORT QgsApplication : public QApplication
     static void setCustomVariable( const QString &name, const QVariant &value );
 
     /**
+     * Scales an icon size to compensate for display pixel density, making the icon
+     * size hi-dpi friendly, whilst still resulting in pixel-perfect sizes for low-dpi
+     * displays.
+     *
+     * \a standardSize should be set to a standard icon size, e.g. 16, 24, 48, etc.
+     *
+     * \since QGIS 3.16
+     */
+    static int scaleIconSize( int standardSize );
+
+    /**
      * The maximum number of concurrent connections per connections pool.
      *
      * \note QGIS may in some situations allocate more than this amount
