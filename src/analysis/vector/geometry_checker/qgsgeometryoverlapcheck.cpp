@@ -153,7 +153,9 @@ void QgsGeometryOverlapCheck::fixError( const QMap<QString, QgsFeaturePool *> &f
   }
   else if ( method == Subtract )
   {
-    std::unique_ptr< QgsAbstractGeometry > diff1( geomEngineA->difference( interPart, &errMsg ) );
+    std::unique_ptr< QgsGeometryEngine > geomEngineDiffA = QgsGeometryCheckerUtils::createGeomEngine( geometryA.constGet(), 0 );
+    geomEngineDiffA->prepareGeometry();
+    std::unique_ptr< QgsAbstractGeometry > diff1( geomEngineDiffA->difference( interPart, &errMsg ) );
     if ( !diff1 || diff1->isEmpty() )
     {
       diff1.reset();
@@ -162,9 +164,9 @@ void QgsGeometryOverlapCheck::fixError( const QMap<QString, QgsFeaturePool *> &f
     {
       QgsGeometryCheckerUtils::filter1DTypes( diff1.get() );
     }
-    std::unique_ptr< QgsGeometryEngine > geomEngineB = QgsGeometryCheckerUtils::createGeomEngine( geometryB.constGet(), mContext->reducedTolerance );
-    geomEngineB->prepareGeometry();
-    std::unique_ptr< QgsAbstractGeometry > diff2( geomEngineB->difference( interPart, &errMsg ) );
+    std::unique_ptr< QgsGeometryEngine > geomEngineDiffB = QgsGeometryCheckerUtils::createGeomEngine( geometryB.constGet(), 0 );
+    geomEngineDiffB->prepareGeometry();
+    std::unique_ptr< QgsAbstractGeometry > diff2( geomEngineDiffB->difference( interPart, &errMsg ) );
     if ( !diff2 || diff2->isEmpty() )
     {
       diff2.reset();
