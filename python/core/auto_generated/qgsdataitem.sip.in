@@ -490,7 +490,8 @@ Item that represents a layer that can be opened with one of the providers
       Table,
       Plugin,
       Mesh,
-      VectorTile
+      VectorTile,
+      PointCloud
     };
 
 
