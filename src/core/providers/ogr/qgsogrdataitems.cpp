@@ -624,11 +624,17 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
       QStringLiteral( "kml" ),
       QStringLiteral( "osm" ),
       QStringLiteral( "mdb" ),
+      QStringLiteral( "accdb" ),
+      QStringLiteral( "xls" ),
+      QStringLiteral( "xlsx" ),
+      QStringLiteral( "gpx" ),
       QStringLiteral( "pdf" ),
       QStringLiteral( "pbf" ) };
   static QStringList sOgrSupportedDbDriverNames { QStringLiteral( "GPKG" ),
       QStringLiteral( "db" ),
       QStringLiteral( "gdb" ),
+      QStringLiteral( "xlsx" ),
+      QStringLiteral( "xls" ),
       QStringLiteral( "pgdb" )};
 
   // these extensions are trivial to read, so there's no need to rely on
