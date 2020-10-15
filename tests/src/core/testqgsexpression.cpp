@@ -2194,6 +2194,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "group by and filter named" ) << "sum(expression:=\"col1\", group_by:=\"col3\", filter:=\"col1\">=3)" << false << QVariant( 7 );
       QTest::newRow( "group by expression" ) << "sum(\"col1\", \"col1\" % 2)" << false << QVariant( 14 );
       QTest::newRow( "group by with null value" ) << "sum(\"col1\", \"col4\")" << false << QVariant( 8 );
+
+      QTest::newRow( "filter by @parent attribute in generic aggregate" ) << "maximum(\"col1\", filter:=\"col1\"<attribute(@parent,'col1'))" << false << QVariant( 3 );
     }
 
     void maptip_display_data()
