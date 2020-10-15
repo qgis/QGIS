@@ -279,6 +279,10 @@ SET(QGIS_GUI_SRCS
   mesh/qgsmeshstaticdatasetwidget.cpp
   mesh/qgsmeshvariablestrokewidthwidget.cpp
 
+  pointcloud/qgspointcloudsourceselect.cpp
+  pointcloud/qgspointcloudproviderguimetadata.cpp
+  pointcloud/qgspointclouddataitemguiprovider.cpp
+
   numericformats/qgsnumericformatselectorwidget.cpp
   numericformats/qgsnumericformatwidget.cpp
   numericformats/qgsnumericformatguiregistry.cpp
@@ -1031,6 +1035,10 @@ SET(QGIS_GUI_HDRS
   mesh/qgsmeshrendereractivedatasetwidget.h
   mesh/qgsmeshstaticdatasetwidget.h
   mesh/qgsmeshvariablestrokewidthwidget.h
+
+  pointcloud/qgspointcloudsourceselect.h
+  pointcloud/qgspointcloudproviderguimetadata.h
+  pointcloud/qgspointclouddataitemguiprovider.h
 
   numericformats/qgsnumericformatselectorwidget.h
   numericformats/qgsnumericformatwidget.h

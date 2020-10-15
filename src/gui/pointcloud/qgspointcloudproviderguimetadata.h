@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgspointcloudindex.h
+                         qgspointcloudproviderguimetadata.h
                          --------------------
     begin                : October 2020
     copyright            : (C) 2020 by Peter Petrik
@@ -15,33 +15,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSPOINTCLOUDINDEX_H
-#define QGSPOINTCLOUDINDEX_H
+#ifndef QGSPOINTCLOUDPROVIDERGUIMETADATA_H
+#define QGSPOINTCLOUDPROVIDERGUIMETADATA_H
 
-#include <QObject>
-#include <QString>
+///@cond PRIVATE
+#define SIP_NO_FILE
 
-#include "qgis_core.h"
+#include <QList>
+#include <QMainWindow>
 
-/**
- * \ingroup core
- *
- * Represents a indexed point clouds data in octree
- *
- * \note The API is considered EXPERIMENTAL and can be changed without a notice
- *
- * \since QGIS 3.18
- */
-class CORE_EXPORT QgsPointCloudIndex: public QObject
+#include "qgsproviderguimetadata.h"
+
+class QgsPointCloudProviderGuiMetadata: public QgsProviderGuiMetadata
 {
-    Q_OBJECT
   public:
+    QgsPointCloudProviderGuiMetadata();
 
-    explicit QgsPointCloudIndex();
-    ~QgsPointCloudIndex();
-
-    void load( const QString &fileName );
+    QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override;
+    QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
 };
 
+///@endcond
 
-#endif // QGSPOINTCLOUDINDEX_H
+#endif // QGSPOINTCLOUDPROVIDERGUIMETADATA_H

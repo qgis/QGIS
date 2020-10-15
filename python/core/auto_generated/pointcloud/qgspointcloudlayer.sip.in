@@ -65,20 +65,6 @@ QgsPointCloudLayer cannot be copied.
 
 
 
-    void setRenderer( QgsPointCloudRenderer *r /Transfer/ );
-%Docstring
-Sets renderer for the map layer.
-
-.. note::
-
-   Takes ownership of the passed renderer
-%End
-    QgsPointCloudRenderer *renderer() const;
-%Docstring
-Returns currently assigned renderer
-%End
-
-
   private: // Private methods
     QgsPointCloudLayer( const QgsPointCloudLayer &rhs );
 };

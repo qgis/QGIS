@@ -589,7 +589,10 @@ Returns icon for mesh layer type
 %Docstring
 Returns icon for vector tile layer
 %End
-
+    static QIcon iconPointCloudLayer();
+%Docstring
+Returns icon for point cloud layer
+%End
     virtual QString layerName() const;
 %Docstring
 

@@ -101,6 +101,13 @@ Emitted when a vector tile layer has been selected for addition.
 .. versionadded:: 3.14
 %End
 
+    void addPointCloudLayer( const QString &url, const QString &baseName );
+%Docstring
+Emitted when a point cloud layer has been selected for addition.
+
+.. versionadded:: 3.18
+%End
+
     void addVectorLayers( const QStringList &layerList, const QString &encoding, const QString &dataSourceType );
 %Docstring
 Emitted when one or more OGR supported layers are selected for addition

@@ -623,6 +623,8 @@ SET(QGIS_CORE_SRCS
   pointcloud/qgspointcloudlayer.cpp
   pointcloud/qgspointcloudrenderer.cpp
   pointcloud/qgspointcloudindex.cpp
+  pointcloud/qgspointclouddataitems.cpp
+  pointcloud/qgspointcloudprovidermetadata.cpp
 
   labeling/qgslabelfeature.cpp
   labeling/qgslabelingengine.cpp
@@ -1296,6 +1298,8 @@ SET(QGIS_CORE_HDRS
   pointcloud/qgspointcloudlayer.h
   pointcloud/qgspointcloudrenderer.h
   pointcloud/qgspointcloudindex.h
+  pointcloud/qgspointclouddataitems.h
+  pointcloud/qgspointcloudprovidermetadata.h
 
   metadata/qgsabstractmetadatabase.h
   metadata/qgslayermetadata.h
@@ -1567,6 +1571,7 @@ INCLUDE_DIRECTORIES(
   locator
   mesh
   metadata
+  pointcloud
   numericformats
   pal
   processing

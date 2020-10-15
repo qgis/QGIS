@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgspointcloudindex.h
+                         qgspointcloudsourceselect.h
                          --------------------
     begin                : October 2020
     copyright            : (C) 2020 by Peter Petrik
@@ -14,34 +14,33 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#ifndef QGSPOINTCLOUDSOURCESELECT_H
+#define QGSPOINTCLOUDSOURCESELECT_H
 
-#ifndef QGSPOINTCLOUDINDEX_H
-#define QGSPOINTCLOUDINDEX_H
+#include "ui_qgspointcloudsourceselectbase.h"
+#include "qgsabstractdatasourcewidget.h"
+#include "qgis_gui.h"
 
-#include <QObject>
-#include <QString>
-
-#include "qgis_core.h"
 
 /**
- * \ingroup core
- *
- * Represents a indexed point clouds data in octree
- *
- * \note The API is considered EXPERIMENTAL and can be changed without a notice
- *
- * \since QGIS 3.18
+ * \class QgsPointCloudSourceSelect
+ * \brief Dialog to select point cloud supported sources
  */
-class CORE_EXPORT QgsPointCloudIndex: public QObject
+class QgsPointCloudSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsPointCloudSourceSelectBase
 {
     Q_OBJECT
+
   public:
+    //! Constructor
+    QgsPointCloudSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
-    explicit QgsPointCloudIndex();
-    ~QgsPointCloudIndex();
+  public slots:
+    //! Determines the tables the user selected and closes the dialog
+    void addButtonClicked() override;
 
-    void load( const QString &fileName );
+  private:
+    QString mPath;
+
 };
 
-
-#endif // QGSPOINTCLOUDINDEX_H
+#endif // QGSPOINTCLOUDSOURCESELECT_H

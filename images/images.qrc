@@ -537,6 +537,7 @@
         <file>themes/default/mIconTreeView.svg</file>
         <file>themes/default/mIconVector.svg</file>
         <file>themes/default/mIconVectorTileLayer.svg</file>
+        <file>themes/default/mIconPointCloudLayer.svg</file>
         <file>themes/default/mIconVirtualLayer.svg</file>
         <file>themes/default/mIconWcs.svg</file>
         <file>themes/default/mIconWfs.svg</file>
