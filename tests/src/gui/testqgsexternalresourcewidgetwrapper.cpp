@@ -82,8 +82,8 @@ void TestQgsExternalResourceWidgetWrapper::test_setNullValues()
   QSignalSpy spy( &ww, &QgsExternalResourceWidgetWrapper::valuesChanged );
 
   ww.updateValues( QStringLiteral( "test" ) );
-  QCOMPARE( ww.mLineEdit->text(), "test" );
-  QCOMPARE( ww.mQgsWidget->documentPath(), QStringLiteral( "test" ) );
+  QCOMPARE( ww.mLineEdit->text(), QStringLiteral( "test" ) );
+  QCOMPARE( ww.mQgsWidget->documentPath(), QVariant( "test" ) );
   QCOMPARE( spy.count(), 1 );
 
   ww.updateValues( QVariant() );
