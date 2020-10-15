@@ -2048,8 +2048,8 @@ class TestQgsExpression: public QObject
 
         // also test for generic aggregates
         exp = QString( "with_variable('my_var',\"col1\", sum(expression:=\"col1\", filter:=\"col1\"=@my_var))" );
-        res = exp.evaluate( &context ).toInt();
-        QCOMPARE( res, f.attribute( "col1" ).toInt() );
+        int res2 = exp.evaluate( &context ).toInt();
+        QCOMPARE( res2, f.attribute( "col1" ).toInt() );
       }
     }
 
