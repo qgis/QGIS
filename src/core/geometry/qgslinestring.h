@@ -590,13 +590,13 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
 
     /**
-     * Returns TRUE if the linestring contains duplicate nodes within the specified tolerance.
+     * Returns a list of any duplicate nodes contained in the geometry, within the specified tolerance.
      *
      * If \a useZValues is TRUE then z values will also be considered when testing for duplicates.
      *
      * \since QGIS 3.16
      */
-    bool hasDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) const;
+    QVector< QgsVertexId > collectDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) const;
 
     QPolygonF asQPolygonF() const override;
 

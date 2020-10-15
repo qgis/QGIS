@@ -363,10 +363,11 @@ bool QgsLineString::removeDuplicateNodes( double epsilon, bool useZValues )
   return result;
 }
 
-bool QgsLineString::hasDuplicateNodes( double epsilon, bool useZValues ) const
+QVector< QgsVertexId > QgsLineString::collectDuplicateNodes( double epsilon, bool useZValues ) const
 {
+  QVector< QgsVertexId > res;
   if ( mX.count() <= 1 )
-    return false;
+    return res;
 
   const double *x = mX.constData();
   const double *y = mY.constData();
@@ -377,6 +378,8 @@ bool QgsLineString::hasDuplicateNodes( double epsilon, bool useZValues ) const
   double prevX = *x++;
   double prevY = *y++;
   double prevZ = z ? *z++ : 0;
+
+  QgsVertexId id;
   for ( int i = 1; i < mX.count(); ++i )
   {
     double currentX = *x++;
@@ -386,7 +389,8 @@ bool QgsLineString::hasDuplicateNodes( double epsilon, bool useZValues ) const
          qgsDoubleNear( currentY, prevY, epsilon ) &&
          ( !useZ || qgsDoubleNear( currentZ, prevZ, epsilon ) ) )
     {
-      return true;
+      id.vertex = i;
+      res << id;
     }
     else
     {
@@ -395,7 +399,7 @@ bool QgsLineString::hasDuplicateNodes( double epsilon, bool useZValues ) const
       prevZ = currentZ;
     }
   }
-  return false;
+  return res;
 }
 
 QPolygonF QgsLineString::asQPolygonF() const
