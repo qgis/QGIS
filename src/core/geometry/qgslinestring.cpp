@@ -363,6 +363,41 @@ bool QgsLineString::removeDuplicateNodes( double epsilon, bool useZValues )
   return result;
 }
 
+bool QgsLineString::hasDuplicateNodes( double epsilon, bool useZValues ) const
+{
+  if ( mX.count() <= 1 )
+    return false;
+
+  const double *x = mX.constData();
+  const double *y = mY.constData();
+  bool hasZ = is3D();
+  bool useZ = hasZ && useZValues;
+  const double *z = useZ ? mZ.constData() : nullptr;
+
+  double prevX = *x++;
+  double prevY = *y++;
+  double prevZ = z ? *z++ : 0;
+  for ( int i = 1; i < mX.count(); ++i )
+  {
+    double currentX = *x++;
+    double currentY = *y++;
+    double currentZ = useZ ? *z++ : 0;
+    if ( qgsDoubleNear( currentX, prevX, epsilon ) &&
+         qgsDoubleNear( currentY, prevY, epsilon ) &&
+         ( !useZ || qgsDoubleNear( currentZ, prevZ, epsilon ) ) )
+    {
+      return true;
+    }
+    else
+    {
+      prevX = currentX;
+      prevY = currentY;
+      prevZ = currentZ;
+    }
+  }
+  return false;
+}
+
 QPolygonF QgsLineString::asQPolygonF() const
 {
   const int nb = mX.size();
