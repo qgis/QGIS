@@ -2029,6 +2029,25 @@ class TestQgsExpression: public QObject
       QCOMPARE( res.toInt(), 1 );
     }
 
+    void test_aggregate_with_variable()
+    {
+      // this checks that a variable can be non static in a aggregate, i.e. the result will change across the fetched features
+      // see https://github.com/qgis/QGIS/issues/33382
+      QgsExpressionContext context;
+      context.appendScope( QgsExpressionContextUtils::layerScope( mAggregatesLayer ) );
+      QgsFeature f;
+
+      QgsFeatureIterator it = mAggregatesLayer->getFeatures();
+
+      while ( it.nextFeature( f ) )
+      {
+        context.setFeature( f );
+        QgsExpression exp( QString( "with_variable('my_var',\"col1\", aggregate(layer:='aggregate_layer', aggregate:='concatenate_unique', expression:=\"col2\", filter:=\"col1\"=@my_var))" ) );
+        QString res = exp.evaluate( &context ).toString();
+        QCOMPARE( res, f.attribute( "col2" ) );
+      }
+    }
+
     void aggregate_data()
     {
       QTest::addColumn<QString>( "string" );

@@ -637,10 +637,30 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
     QString cacheKey;
     QgsExpression subExp( subExpression );
     QgsExpression filterExp( parameters.filter );
+
+    bool isStatic = true;
     if ( filterExp.referencedVariables().contains( QStringLiteral( "parent" ) )
          || filterExp.referencedVariables().contains( QString() )
          || subExp.referencedVariables().contains( QStringLiteral( "parent" ) )
          || subExp.referencedVariables().contains( QString() ) )
+    {
+      isStatic = false;
+    }
+    else
+    {
+      const QSet<QString> refVars = filterExp.referencedVariables() + subExp.referencedVariables();
+      for ( const QString &varName : refVars )
+      {
+        const QgsExpressionContextScope *scope = context->activeScopeForVariable( varName );
+        if ( scope && !scope->isStatic( varName ) )
+        {
+          isStatic = false;
+          break;
+        }
+      }
+    }
+
+    if ( !isStatic )
     {
       cacheKey = QStringLiteral( "aggfcn:%1:%2:%3:%4:%5%6:%7" ).arg( vl->id(), QString::number( aggregate ), subExpression, parameters.filter,
                  QString::number( context->feature().id() ), QString( qHash( context->feature() ) ), orderBy );
@@ -651,8 +671,9 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
     }
 
     if ( context && context->hasCachedValue( cacheKey ) )
+    {
       return context->cachedValue( cacheKey );
-
+    }
     QgsExpressionContext subContext( *context );
     QgsExpressionContextScope *subScope = new QgsExpressionContextScope();
     subScope->setVariable( QStringLiteral( "parent" ), context->feature() );
