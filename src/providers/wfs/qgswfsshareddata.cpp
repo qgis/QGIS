@@ -27,6 +27,7 @@ QgsWFSSharedData::QgsWFSSharedData( const QString &uri )
   , mURI( uri )
 {
   mHideProgressDialog = mURI.hideDownloadProgressDialog();
+  mServerPrefersCoordinatesForTransactions_1_1 = uri.contains( QLatin1String( "/arcgis/" ), Qt::CaseSensitivity::CaseInsensitive );
 }
 
 QgsWFSSharedData::~QgsWFSSharedData()
