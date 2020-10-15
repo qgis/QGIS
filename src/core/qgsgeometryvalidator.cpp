@@ -45,20 +45,25 @@ void QgsGeometryValidator::checkRingIntersections( int p0, int i0, const QgsLine
 {
   for ( int i = 0; !mStop && i < ring0->numPoints() - 1; i++ )
   {
-    QgsVector v( ring0->xAt( i + 1 ) - ring0->xAt( i ), ring0->yAt( i + 1 ) - ring0->yAt( i ) );
+    const double ring0XAti = ring0->xAt( i );
+    const double ring0YAti = ring0->yAt( i );
+    QgsVector v( ring0->xAt( i + 1 ) - ring0XAti, ring0->yAt( i + 1 ) - ring0YAti );
 
     for ( int j = 0; !mStop && j < ring1->numPoints() - 1; j++ )
     {
-      QgsVector w( ring1->xAt( j + 1 ) - ring1->xAt( j ), ring1->yAt( j + 1 ) - ring1->yAt( j ) );
+      const double ring1XAtj = ring1->xAt( j );
+      const double ring1YAtj = ring1->yAt( j );
+      QgsVector w( ring1->xAt( j + 1 ) - ring1XAtj, ring1->yAt( j + 1 ) - ring1YAtj );
 
-      QgsPoint s;
-      if ( intersectLines( ring0->xAt( i ), ring0->yAt( i ), v, ring1->xAt( j ), ring1->yAt( j ), w, s ) )
+      double sX;
+      double sY;
+      if ( intersectLines( ring0XAti, ring0YAti, v, ring1XAtj, ring1YAtj, w, sX, sY ) )
       {
-        double d = -distLine2Point( ring0->xAt( i ), ring0->yAt( i ), v.perpVector(), s );
+        double d = -distLine2Point( ring0XAti, ring0YAti, v.perpVector(), sX, sY );
 
         if ( d >= 0 && d <= v.length() )
         {
-          d = -distLine2Point( ring1->xAt( j ), ring1->yAt( j ), w.perpVector(), s );
+          d = -distLine2Point( ring1XAtj, ring1YAtj, w.perpVector(), sX, sY );
           if ( d > 0 && d < w.length() &&
                ring0[i + 1] != ring1[j + 1] && ring0[i + 1] != ring1[j] &&
                ring0[i + 0] != ring1[j + 1] && ring0[i + 0] != ring1[j] )
@@ -66,9 +71,9 @@ void QgsGeometryValidator::checkRingIntersections( int p0, int i0, const QgsLine
             QString msg = QObject::tr( "segment %1 of ring %2 of polygon %3 intersects segment %4 of ring %5 of polygon %6 at %7, %8" )
                           .arg( i0 ).arg( i ).arg( p0 )
                           .arg( i1 ).arg( j ).arg( p1 )
-                          .arg( s.x() ).arg( s.y() );
+                          .arg( sX ).arg( sY );
             QgsDebugMsg( msg );
-            emit errorFound( QgsGeometry::Error( msg, s ) );
+            emit errorFound( QgsGeometry::Error( msg, QgsPointXY( sX, sY ) ) );
             mErrorCount++;
           }
         }
@@ -137,24 +142,29 @@ void QgsGeometryValidator::validatePolyline( int i, const QgsLineString *line, b
 
   for ( j = 0; !mStop && j < noDupes->numPoints() - 3; j++ )
   {
-    QgsVector v( noDupes->xAt( j + 1 ) - noDupes->xAt( j ), noDupes->yAt( j + 1 ) - noDupes->yAt( j ) );
+    const double xAtJ = noDupes->xAt( j );
+    const double yAtJ = noDupes->yAt( j );
+    QgsVector v( noDupes->xAt( j + 1 ) - xAtJ, noDupes->yAt( j + 1 ) - yAtJ );
     double vl = v.length();
 
     int n = ( j == 0 && ring ) ? noDupes->numPoints() - 2 : noDupes->numPoints() - 1;
 
     for ( int k = j + 2; !mStop && k < n; k++ )
     {
-      QgsVector w( noDupes->xAt( k + 1 ) - noDupes->xAt( k ), noDupes->yAt( k + 1 ) - noDupes->yAt( k ) );
+      const double xAtK = noDupes->xAt( k );
+      const double yAtK = noDupes->yAt( k );
 
-      QgsPoint s;
-      if ( !intersectLines( noDupes->xAt( j ), noDupes->yAt( j ), v,
-                            noDupes->xAt( k ), noDupes->yAt( k ), w, s ) )
+      QgsVector w( noDupes->xAt( k + 1 ) - xAtK, noDupes->yAt( k + 1 ) - yAtK );
+
+      double sX;
+      double sY;
+      if ( !intersectLines( xAtJ, yAtJ, v, xAtK, yAtK, w, sX, sY ) )
         continue;
 
       double d = 0.0;
       try
       {
-        d = -distLine2Point( noDupes->xAt( j ), noDupes->yAt( j ), v.perpVector(), s );
+        d = -distLine2Point( xAtJ, yAtJ, v.perpVector(), sX, sY );
       }
       catch ( QgsException &e )
       {
@@ -167,7 +177,7 @@ void QgsGeometryValidator::validatePolyline( int i, const QgsLineString *line, b
 
       try
       {
-        d = -distLine2Point( noDupes->xAt( k ), noDupes->yAt( k ), w.perpVector(), s );
+        d = -distLine2Point( xAtK, yAtK, w.perpVector(), sX, sY );
       }
       catch ( QgsException &e )
       {
@@ -179,9 +189,9 @@ void QgsGeometryValidator::validatePolyline( int i, const QgsLineString *line, b
       if ( d <= 0 || d >= w.length() )
         continue;
 
-      QString msg = QObject::tr( "segments %1 and %2 of line %3 intersect at %4, %5" ).arg( j ).arg( k ).arg( i ).arg( s.x() ).arg( s.y() );
+      QString msg = QObject::tr( "segments %1 and %2 of line %3 intersect at %4, %5" ).arg( j ).arg( k ).arg( i ).arg( sX ).arg( sY );
       QgsDebugMsgLevel( msg, 2 );
-      emit errorFound( QgsGeometry::Error( msg, s ) );
+      emit errorFound( QgsGeometry::Error( msg, QgsPointXY( sX, sY ) ) );
       mErrorCount++;
     }
   }
@@ -373,17 +383,18 @@ void QgsGeometryValidator::validateGeometry( const QgsGeometry &geometry, QVecto
 // return >0  => q lies left of the line
 //        <0  => q lies right of the line
 //
-double QgsGeometryValidator::distLine2Point( double px, double py, QgsVector v, const QgsPoint &q )
+double QgsGeometryValidator::distLine2Point( double px, double py, QgsVector v, double qX, double qY )
 {
-  if ( qgsDoubleNear( v.length(), 0 ) )
+  const double l = v.length();
+  if ( qgsDoubleNear( l, 0 ) )
   {
     throw QgsException( QObject::tr( "invalid line" ) );
   }
 
-  return ( v.x() * ( q.y() - py ) - v.y() * ( q.x() - px ) ) / v.length();
+  return ( v.x() * ( qY - py ) - v.y() * ( qX - px ) ) / l;
 }
 
-bool QgsGeometryValidator::intersectLines( double px, double py, QgsVector v, double qx, double qy, QgsVector w, QgsPoint &s )
+bool QgsGeometryValidator::intersectLines( double px, double py, QgsVector v, double qx, double qy, QgsVector w, double &sX, double &sY )
 {
   double d = v.y() * w.x() - v.x() * w.y();
 
@@ -394,14 +405,15 @@ bool QgsGeometryValidator::intersectLines( double px, double py, QgsVector v, do
   double dy = qy - py;
   double k = ( dy * w.x() - dx * w.y() ) / d;
 
-  s = QgsPoint( px  + v.x() * k, py + v.y() * k );
+  sX = px  + v.x() * k;
+  sY = py + v.y() * k;
 
   return true;
 }
 
-bool QgsGeometryValidator::pointInRing( const QgsLineString *ring, const QgsPoint &p )
+bool QgsGeometryValidator::pointInRing( const QgsLineString *ring, double pX, double pY )
 {
-  if ( !ring->boundingBox().contains( p ) )
+  if ( !ring->boundingBox().contains( QgsPointXY( pX, pY ) ) )
     return false;
 
   bool inside = false;
@@ -409,13 +421,18 @@ bool QgsGeometryValidator::pointInRing( const QgsLineString *ring, const QgsPoin
 
   for ( int i = 0; !mStop && i < ring->numPoints(); i++ )
   {
-    if ( qgsDoubleNear( ring->xAt( i ), p.x() ) && qgsDoubleNear( ring->yAt( i ), p.y() ) )
+    const double xAti = ring->xAt( i );
+    const double yAti = ring->yAt( i );
+    const double xAtj = ring->xAt( j );
+    const double yAtj = ring->yAt( j );
+
+    if ( qgsDoubleNear( xAti, pX ) && qgsDoubleNear( yAti, pY ) )
       return true;
 
-    if ( ( ring->yAt( i ) < p.y() && ring->yAt( j ) >= p.y() ) ||
-         ( ring->yAt( j ) < p.y() && ring->yAt( i ) >= p.y() ) )
+    if ( ( yAti < pY && yAtj >= pY ) ||
+         ( yAtj < pY && yAti >= pY ) )
     {
-      if ( ring->xAt( i ) + ( p.y() - ring->yAt( i ) ) / ( ring->yAt( j ) - ring->yAt( i ) ) * ( ring->xAt( j ) - ring->xAt( i ) ) <= p.x() )
+      if ( xAti + ( pY - yAti ) / ( yAtj - yAti ) * ( xAtj - xAti ) <= pX )
         inside = !inside;
     }
 
@@ -432,7 +449,7 @@ bool QgsGeometryValidator::ringInRing( const QgsLineString *inside, const QgsLin
 
   for ( int i = 0; !mStop && i < inside->numPoints(); i++ )
   {
-    if ( !pointInRing( outside, inside->pointN( i ) ) )
+    if ( !pointInRing( outside, inside->xAt( i ), inside->yAt( i ) ) )
       return false;
   }
 
