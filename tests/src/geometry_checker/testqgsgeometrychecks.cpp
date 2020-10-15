@@ -98,6 +98,7 @@ class TestQgsGeometryChecks: public QObject
     void testSelfContactCheck();
     void testSelfIntersectionCheck();
     void testSliverPolygonCheck();
+    void testGapCheckPointInPoly();
 };
 
 void TestQgsGeometryChecks::initTestCase()
@@ -1152,6 +1153,56 @@ void TestQgsGeometryChecks::testSliverPolygonCheck()
   QVERIFY( searchCheckErrors( checkErrors, layers["polygon_layer.shp"], 11, QgsPointXY(), QgsVertexId( 0 ) ).size() == 1 );
 
   // The fix methods are exactely the same as in QgsGeometryAreaCheck, no point repeating...
+
+  cleanupTestContext( testContext );
+}
+
+void TestQgsGeometryChecks::testGapCheckPointInPoly()
+{
+  // The case where the gap was containing a point that was lying inside (or on the edge)
+  // of a neighbouring polygon used to fail, as we were using that neighbour's points to
+  // snap to (since it was also at distance 0). This was leading to flaky wrong results.
+
+  QTemporaryDir dir;
+  QMap<QString, QString> layers;
+  layers.insert( "gap_layer_point_in_poly.shp", "" );
+  auto testContext = createTestContext( dir, layers );
+
+  // Test detection
+  QList<QgsGeometryCheckError *> checkErrors;
+  QStringList messages;
+
+  QVariantMap configuration;
+
+  QgsProject::instance()->setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 2056 ) );
+
+  QgsGeometryGapCheck check( testContext.first, configuration );
+  QgsFeedback feedback;
+  check.collectErrors( testContext.second, checkErrors, messages, &feedback );
+  listErrors( checkErrors, messages );
+
+  QCOMPARE( checkErrors.size(), 1 );
+
+  QgsGeometryCheckError *error = checkErrors.first();
+  QCOMPARE( error->contextBoundingBox().snappedToGrid( 100.0 ), QgsRectangle( 2.5372e+06, 1.1522e+06, 2.5375e+06, 1.1524e+06 ) );
+  QCOMPARE( error->affectedAreaBBox().snappedToGrid( 100.0 ), QgsRectangle( 2.5373e+06, 1.1523e+06, 2.5375e+06, 1.1523e+06 ) );
+
+  // Test fixes
+  QgsFeature f;
+  testContext.second[layers["gap_layer_point_in_poly.shp"]]->getFeature( 1, f );
+  double areaOld = f.geometry().area();
+  QCOMPARE( areaOld, 19913.135772452362 );
+
+  QgsGeometryCheck::Changes changes;
+  QMap<QString, int> mergeAttrs;
+  error->check()->fixError( testContext.second, error, QgsGeometryGapCheck::MergeLongestEdge, mergeAttrs, changes );
+
+  // Ensure it worked
+  QCOMPARE( error->status(), QgsGeometryCheckError::StatusFixed );
+
+  // Ensure it worked on geom
+  testContext.second[layers["gap_layer_point_in_poly.shp"]]->getFeature( 1, f );
+  QVERIFY( f.geometry().area() > areaOld );
 
   cleanupTestContext( testContext );
 }

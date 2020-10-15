@@ -367,8 +367,6 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
     return false;
   }
 
-  QgsSpatialIndex neighbourIndex( QgsSpatialIndex::Flag::FlagStoreFeatureGeometries );
-  neighbourIndex.addFeatures( neighbours );
 
   QgsPolyline snappedRing;
   QgsVertexIterator iterator = errGeometry->vertices();
@@ -376,10 +374,32 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
   {
     QgsPoint pt = iterator.next();
     QgsVertexId id;
-    QgsGeometry closestGeom = neighbourIndex.geometry( neighbourIndex.nearestNeighbor( QgsPointXY( pt ) ).first() );
-    if ( !closestGeom.isEmpty() )
+
+    // We iterate through all neighbours points to find the closest one.
+    // Note that we cannot use a nearestNeighbour as it's not guaranteed to return the feature
+    // with the closest vertex (distance can be 0 if we are lying inside the feature, even if far
+    // from any vertex)
+    double nearestDist = -1;
+    QgsPoint closestPoint;
+    QListIterator<QgsFeature> neighboursIt( neighbours );
+    while ( neighboursIt.hasNext() )
     {
-      QgsPoint closestPoint = QgsGeometryUtils::closestVertex( *closestGeom.constGet(), pt, id );
+      QgsGeometry neighbourGeom = neighboursIt.next().geometry();
+      QgsVertexIterator neighbourIterator = neighbourGeom.vertices();
+      while ( neighbourIterator.hasNext() )
+      {
+        QgsPoint neighbourPt = neighbourIterator.next();
+        double dist = pt.distance( neighbourPt );
+        if ( nearestDist == -1 || dist < nearestDist )
+        {
+          nearestDist = dist;
+          closestPoint = neighbourPt;
+        }
+      }
+    }
+
+    if ( nearestDist != -1 )
+    {
       snappedRing.append( closestPoint );
     }
   }
