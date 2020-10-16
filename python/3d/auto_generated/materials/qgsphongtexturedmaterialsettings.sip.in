@@ -81,7 +81,7 @@ If the texture scale is less than 1 the texture will be stretched
 
     bool requiresTextureCoordinates() const;
 %Docstring
-Returns true if the material requires texture coordinates to be generated
+Returns ``True`` if the material requires texture coordinates to be generated
 during triangulation.quiresTextureCoordinates
 %End
 

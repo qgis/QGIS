@@ -39,7 +39,7 @@ Joins another vector layer to this layer
 %Docstring
 Removes a vector layer join
 
-:return: true if join was found and successfully removed
+:return: ``True`` if join was found and successfully removed
 %End
 
     void updateFields( QgsFields &fields );

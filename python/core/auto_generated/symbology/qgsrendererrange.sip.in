@@ -31,7 +31,7 @@ Creates a renderer symbol range
 
 :param range: The classification range
 :param symbol: The symbol for this renderer range
-:param render: If true, it will be renderered
+:param render: If ``True``, it will be renderered
 %End
     QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol /Transfer/, const QString &label, bool render = true );
     QgsRendererRange( const QgsRendererRange &range );

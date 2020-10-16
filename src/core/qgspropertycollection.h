@@ -232,7 +232,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
     /**
      * Returns the set of any fields referenced by the active properties from the collection.
      * \param context expression context the properties will be evaluated against.
-     * \param ignoreContext This parameter has been added in QGIS 3.14. When set to true, even fields not set
+     * \param ignoreContext This parameter has been added in QGIS 3.14. When set to TRUE, even fields not set
      *                      in context's fields() will be reported - this is useful e.g. with vector tiles
      *                      where the actual available field names may not be known beforehand.
      */
@@ -506,7 +506,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
     /**
      * Returns the set of any fields referenced by the active properties from the stack.
      * \param context expression context the properties will be evaluated against.
-     * \param ignoreContext This parameter has been added in QGIS 3.14. When set to true, even fields not set
+     * \param ignoreContext This parameter has been added in QGIS 3.14. When set to TRUE, even fields not set
      *                      in context's fields() will be reported - this is useful e.g. with vector tiles
      *                      where the actual available field names may not be known beforehand.
      */

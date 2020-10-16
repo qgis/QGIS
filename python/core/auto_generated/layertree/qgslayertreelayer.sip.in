@@ -80,8 +80,8 @@ Sets the layer's name.
 
     void setUseLayerName( bool use = true );
 %Docstring
-Uses the layer's name if ``use`` is true, or the name manually set if
-false.
+Uses the layer's name if ``use`` is ``True``, or the name manually set if
+``False``.
 
 .. versionadded:: 3.8
 %End

@@ -149,7 +149,7 @@ class CORE_EXPORT QgsVectorTileWriter
 
     /**
      * Writes vector tiles according to the configuration.
-     * Returns true on success (upon failure one can get error cause using errorMessage())
+     * Returns TRUE on success (upon failure one can get error cause using errorMessage())
      *
      * If a pointer to a feedback object is provided, it can be used to track progress or
      * provide cancellation functionality.

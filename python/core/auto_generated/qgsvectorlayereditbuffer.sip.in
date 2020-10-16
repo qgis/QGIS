@@ -32,7 +32,7 @@ Adds a feature
 
 :param f: feature to add
 
-:return: ``True`` in case of success and False in case of error
+:return: ``True`` in case of success and ``False`` in case of error
 %End
 
     virtual bool addFeatures( QgsFeatureList &features );

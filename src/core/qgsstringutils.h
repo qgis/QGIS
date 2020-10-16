@@ -280,7 +280,7 @@ class CORE_EXPORT QgsStringUtils
      * Automatically wraps a \a string by inserting new line characters at appropriate locations in the string.
      *
      * The \a length argument specifies either the minimum or maximum length of lines desired, depending
-     * on whether \a useMaxLineLength is true. If \a useMaxLineLength is TRUE, then the string will be wrapped
+     * on whether \a useMaxLineLength is TRUE. If \a useMaxLineLength is TRUE, then the string will be wrapped
      * so that each line ideally will not exceed \a length of characters. If \a useMaxLineLength is FALSE, then
      * the string will be wrapped so that each line will ideally exceed \a length of characters.
      *

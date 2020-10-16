@@ -175,7 +175,7 @@ class CORE_EXPORT QgsMeshDataBlock
      *
      * If the data provider/datasets does not have active
      * flag capability (== all values are valid), just
-     * set block validity by setValid( true )
+     * set block validity by setValid( TRUE )
      *
      * \param vals value vector with size count()
      *

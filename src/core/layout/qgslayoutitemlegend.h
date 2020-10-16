@@ -57,7 +57,7 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
 
     /**
      * Returns filtered list of active legend nodes attached to a particular layer node
-     * (by default it returns also legend node embedded in parent layer node (if any) unless skipNodeEmbeddedInParent is true)
+     * (by default it returns also legend node embedded in parent layer node (if any) unless skipNodeEmbeddedInParent is TRUE)
      * \note Parameter skipNodeEmbeddedInParent added in QGIS 2.18
      * \note Not available in Python bindings
      * \see layerOriginalLegendNodes()

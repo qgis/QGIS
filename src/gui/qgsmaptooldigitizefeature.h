@@ -72,13 +72,13 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCapture
   protected:
 
     /**
-     * Check if CaptureMode matches layer type. Default is true.
+     * Check if CaptureMode matches layer type. Default is TRUE.
      * \since QGIS 3.0
      */
     bool checkGeometryType() const;
 
     /**
-     * Check if CaptureMode matches layer type. Default is true.
+     * Check if CaptureMode matches layer type. Default is TRUE.
      * \since QGIS 3.0
      */
     void setCheckGeometryType( bool checkGeometryType );
@@ -104,7 +104,7 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCapture
     QgsMapLayer *mCurrentLayer = nullptr;
 
     /**
-     * Check if CaptureMode matches layer type. Default is true.
+     * Check if CaptureMode matches layer type. Default is TRUE.
      * \since QGIS 2.12
     */
     bool mCheckGeometryType;

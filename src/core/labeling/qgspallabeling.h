@@ -1165,7 +1165,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
     /**
      * Checks if a feature is larger than a minimum size (in mm)
-     * \returns true if above size, false if below
+     * \returns TRUE if above size, FALSE if below
     */
     bool checkMinimumSizeMM( const QgsRenderContext &ct, const QgsGeometry &geom, double minSize ) const;
 

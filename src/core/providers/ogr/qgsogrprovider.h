@@ -417,7 +417,7 @@ class CORE_EXPORT QgsOgrProviderUtils
      * \param format data format (e.g. "ESRI Shapefile")
      * \param vectortype point/line/polygon or multitypes
      * \param attributes a list of name/type pairs for the initial attributes
-     * \return true in case of success
+     * \return TRUE in case of success
      */
     static bool createEmptyDataSource( const QString &uri,
                                        const QString &format,

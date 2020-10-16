@@ -552,7 +552,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual QList< double > nativeResolutions() const;
 
     /**
-     * Returns true if the extents reported by the data provider are not reliable
+     * Returns TRUE if the extents reported by the data provider are not reliable
      * and it's possible that there is renderable content outside of these extents.
      *
      * \since QGIS 3.10.0
@@ -587,7 +587,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /**
      * Enable or disable provider-level resampling.
      *
-     * \return true if success
+     * \return TRUE if success
      * \since QGIS 3.16
      */
     virtual bool enableProviderResampling( bool enable ) { Q_UNUSED( enable ); return false; }
@@ -620,7 +620,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /**
      * Set resampling method to apply for zoomed-in operations.
      *
-     * \return true if success
+     * \return TRUE if success
      * \since QGIS 3.16
      */
     virtual bool setZoomedInResamplingMethod( ResamplingMethod method ) { Q_UNUSED( method ); return false; }
@@ -634,7 +634,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /**
      * Set resampling method to apply for zoomed-out operations.
      *
-     * \return true if success
+     * \return TRUE if success
      * \since QGIS 3.16
      */
     virtual bool setZoomedOutResamplingMethod( ResamplingMethod method ) { Q_UNUSED( method ); return false; }
@@ -648,7 +648,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /**
      * Sets maximum oversampling factor for zoomed-out operations.
      *
-     * \return true if success
+     * \return TRUE if success
      * \since QGIS 3.16
      */
     virtual bool setMaxOversampling( double factor ) { Q_UNUSED( factor ); return false; }

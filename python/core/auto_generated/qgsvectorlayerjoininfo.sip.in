@@ -81,7 +81,7 @@ Sets whether values from the joined layer should be cached in memory to speed up
     bool isUsingMemoryCache() const;
 %Docstring
 Returns whether values from the joined layer should be cached in memory to speed up lookups.
-Will return false if upsertOnEdit is enabled.
+Will return ``False`` if upsertOnEdit is enabled.
 %End
 
     bool isDynamicFormEnabled() const;

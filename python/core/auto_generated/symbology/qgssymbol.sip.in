@@ -435,7 +435,7 @@ extent. If this option is enabled then features which are partially outside the 
 will be clipped. This speeds up rendering of the feature, but may have undesirable
 side effects for certain symbol types.
 
-:param clipFeaturesToExtent: set to true to enable clipping (defaults to ``True``)
+:param clipFeaturesToExtent: set to ``True`` to enable clipping (defaults to ``True``)
 
 .. seealso:: :py:func:`clipFeaturesToExtent`
 
@@ -1053,7 +1053,7 @@ If only a single symbol layer from the symbol should be rendered, it should be s
 in the ``layer`` argument. A ``layer`` of -1 indicates that all symbol layers should be
 rendered.
 
-If ``selected`` is true then the symbol will be drawn using the "selected feature"
+If ``selected`` is ``True`` then the symbol will be drawn using the "selected feature"
 style and colors instead of the symbol's normal style.
 %End
 
@@ -1180,7 +1180,7 @@ If only a single symbol layer from the symbol should be rendered, it should be s
 in the ``layer`` argument. A ``layer`` of -1 indicates that all symbol layers should be
 rendered.
 
-If ``selected`` is true then the symbol will be drawn using the "selected feature"
+If ``selected`` is ``True`` then the symbol will be drawn using the "selected feature"
 style and colors instead of the symbol's normal style.
 %End
 
@@ -1229,7 +1229,7 @@ If only a single symbol layer from the symbol should be rendered, it should be s
 in the ``layer`` argument. A ``layer`` of -1 indicates that all symbol layers should be
 rendered.
 
-If ``selected`` is true then the symbol will be drawn using the "selected feature"
+If ``selected`` is ``True`` then the symbol will be drawn using the "selected feature"
 style and colors instead of the symbol's normal style.
 %End
 

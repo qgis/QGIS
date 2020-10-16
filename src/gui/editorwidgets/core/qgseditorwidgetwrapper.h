@@ -186,7 +186,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     bool isValidConstraint() const;
 
     /**
-     * Returns true if the widget is preventing the feature from being committed. This may be TRUE as a result
+     * Returns TRUE if the widget is preventing the feature from being committed. This may be TRUE as a result
      * of attribute values failing enforced field constraints.
      * \see isValidConstraint()
      * \since QGIS 3.0

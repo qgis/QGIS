@@ -121,7 +121,7 @@ namespace pal
        * Solves the labeling problem, selecting the best candidate locations for all labels and returns a list of these
        * calculated label positions.
        *
-       * If \a returnInactive is true, then the best positions for ALL labels will be returned, regardless of whether these
+       * If \a returnInactive is TRUE, then the best positions for ALL labels will be returned, regardless of whether these
        * labels overlap other labels.
        *
        * If the optional \a unlabeled list is specified, it will be filled with a list of all feature labels which could

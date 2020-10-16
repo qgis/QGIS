@@ -33,7 +33,7 @@ QgsClassificationMethodRegistry is not usually directly created, but rather acce
     bool addMethod( QgsClassificationMethod *method /Transfer/ );
 %Docstring
 Adds a method to the registry
-Returns false if a method with same id already exists.
+Returns ``False`` if a method with same id already exists.
 %End
 
     QgsClassificationMethod *method( const QString &id ) /Factory/;

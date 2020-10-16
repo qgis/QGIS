@@ -89,7 +89,7 @@ namespace QgsGuiUtils
    * the current working directory if this is the first time invoked
    * with the current filter name.
    *
-   * This method returns true if cancel all was clicked, otherwise false
+   * This method returns TRUE if cancel all was clicked, otherwise FALSE
   */
 
   bool GUI_EXPORT openFilesRememberingFilter( QString const &filterName,
@@ -177,7 +177,7 @@ namespace QgsGuiUtils
 
   /**
    * Returns the user-preferred size of a window's toolbar icons.
-   * \param dockableToolbar If set to true, the icon size will be returned for dockable window panel's toolbars.
+   * \param dockableToolbar If set to TRUE, the icon size will be returned for dockable window panel's toolbars.
    * \returns a QSize object representing an icon's width and height.
    * \since QGIS 3.8
    */

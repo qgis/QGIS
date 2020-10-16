@@ -350,7 +350,7 @@ class CORE_EXPORT QgsEditFormConfig
 
     /**
      * Used for the backwards compatibility of the api, on setting nmrel or force-suppress-popup for relations.
-     * Returns true when a relation instance (the first one found) has been updated.
+     * Returns TRUE when a relation instance (the first one found) has been updated.
      */
     bool legacyUpdateRelationWidgetInTabs( QgsAttributeEditorContainer *container,  const QString &widgetName, const QVariantMap &config );
 

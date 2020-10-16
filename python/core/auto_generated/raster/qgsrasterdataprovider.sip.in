@@ -493,7 +493,7 @@ Resolutions are calculated in the provider's :py:func:`~QgsRasterDataProvider.cr
 
     virtual bool ignoreExtents() const;
 %Docstring
-Returns true if the extents reported by the data provider are not reliable
+Returns ``True`` if the extents reported by the data provider are not reliable
 and it's possible that there is renderable content outside of these extents.
 
 .. versionadded:: 3.10.0
@@ -524,7 +524,7 @@ does not support this functionality), an empty point is returned.
 %Docstring
 Enable or disable provider-level resampling.
 
-:return: true if success
+:return: ``True`` if success
 
 .. versionadded:: 3.16
 %End
@@ -559,7 +559,7 @@ Returns whether provider-level resampling is enabled.
 %Docstring
 Set resampling method to apply for zoomed-in operations.
 
-:return: true if success
+:return: ``True`` if success
 
 .. versionadded:: 3.16
 %End
@@ -575,7 +575,7 @@ Returns resampling method for zoomed-in operations.
 %Docstring
 Set resampling method to apply for zoomed-out operations.
 
-:return: true if success
+:return: ``True`` if success
 
 .. versionadded:: 3.16
 %End
@@ -591,7 +591,7 @@ Returns resampling method for zoomed-out operations.
 %Docstring
 Sets maximum oversampling factor for zoomed-out operations.
 
-:return: true if success
+:return: ``True`` if success
 
 .. versionadded:: 3.16
 %End

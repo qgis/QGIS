@@ -219,7 +219,7 @@ class CORE_EXPORT QgsGeometryEngine
     virtual double length( QString *errorMsg = nullptr ) const = 0;
 
     /**
-     * Returns true if the geometry is valid.
+     * Returns TRUE if the geometry is valid.
      *
      * If the geometry is invalid, \a errorMsg will be filled with the reported geometry error.
      *

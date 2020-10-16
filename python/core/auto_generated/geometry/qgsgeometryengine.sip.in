@@ -210,7 +210,7 @@ pattern.
 
     virtual bool isValid( QString *errorMsg = 0, bool allowSelfTouchingHoles = false, QgsGeometry *errorLoc = 0 ) const = 0;
 %Docstring
-Returns true if the geometry is valid.
+Returns ``True`` if the geometry is valid.
 
 If the geometry is invalid, ``errorMsg`` will be filled with the reported geometry error.
 

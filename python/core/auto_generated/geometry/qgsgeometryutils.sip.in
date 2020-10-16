@@ -111,7 +111,7 @@ Compute the intersection between two segments
 :param q1: Second segment start point
 :param q2: Second segment end point
 :param tolerance: The tolerance to use
-:param acceptImproperIntersection: By default, this method returns true only if segments have proper intersection. If set true, returns also ``True`` if segments have improper intersection (end of one segment on other segment ; continuous segments).
+:param acceptImproperIntersection: By default, this method returns ``True`` only if segments have proper intersection. If set true, returns also ``True`` if segments have improper intersection (end of one segment on other segment ; continuous segments).
 
 :return: - Whether the segments intersect
          - intersectionPoint: Output parameter, the intersection point
@@ -360,7 +360,7 @@ Convert circular arc defined by p1, p2, p3 (p1/p3 being start resp. end point, p
     static bool pointContinuesArc( const QgsPoint &a1, const QgsPoint &a2, const QgsPoint &a3, const QgsPoint &b, double distanceTolerance,
                                    double pointSpacingAngleTolerance ) /HoldGIL/;
 %Docstring
-Returns true if point ``b`` is on the arc formed by points ``a1``, ``a2``, and ``a3``, but not within
+Returns ``True`` if point ``b`` is on the arc formed by points ``a1``, ``a2``, and ``a3``, but not within
 that arc portion already described by ``a1``, ``a2`` and ``a3``.
 
 The ``distanceTolerance`` specifies the maximum deviation allowed between the original location

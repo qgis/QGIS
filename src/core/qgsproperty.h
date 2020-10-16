@@ -351,7 +351,7 @@ class CORE_EXPORT QgsProperty
     /**
      * Returns the set of any fields referenced by the property for a specified
      * expression context.
-     * \note The optional argument ignoreContext has been added in QGIS 3.14. When set to true,
+     * \note The optional argument ignoreContext has been added in QGIS 3.14. When set to TRUE,
      * even fields not set in context's fields() will be reported - this is useful e.g. with vector tiles
      * where the actual available field names may not be known beforehand.
      */

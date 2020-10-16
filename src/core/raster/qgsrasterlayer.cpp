@@ -1760,7 +1760,7 @@ QImage QgsRasterLayer::previewAsImage( QSize size, const QColor &bgColor, QImage
 /*
  * \param QDomNode node that will contain the symbology definition for this layer.
  * \param errorMessage reference to string that will be updated with any error messages
- * \return true in case of success.
+ * \return TRUE in case of success.
  */
 bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMessage,
                                     QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )

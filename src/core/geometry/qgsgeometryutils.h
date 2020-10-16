@@ -114,7 +114,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param intersectionPoint Output parameter, the intersection point
      * \param isIntersection Output parameter, return TRUE if an intersection is found
      * \param tolerance The tolerance to use
-     * \param acceptImproperIntersection By default, this method returns true only if segments have proper intersection. If set true, returns also TRUE if segments have improper intersection (end of one segment on other segment ; continuous segments).
+     * \param acceptImproperIntersection By default, this method returns TRUE only if segments have proper intersection. If set true, returns also TRUE if segments have improper intersection (end of one segment on other segment ; continuous segments).
      * \returns  Whether the segments intersect
      *
      * ### Example
@@ -375,7 +375,7 @@ class CORE_EXPORT QgsGeometryUtils
                                bool hasZ = false, bool hasM = false );
 
     /**
-     * Returns true if point \a b is on the arc formed by points \a a1, \a a2, and \a a3, but not within
+     * Returns TRUE if point \a b is on the arc formed by points \a a1, \a a2, and \a a3, but not within
      * that arc portion already described by \a a1, \a a2 and \a a3.
      *
      * The \a distanceTolerance specifies the maximum deviation allowed between the original location

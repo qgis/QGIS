@@ -192,7 +192,7 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
      * Note that the RMSE measure is adjusted for the degrees of freedom of the
      * used polynomial transform.
      * \param error out: the mean error
-     * \returns true in case of success
+     * \returns TRUE in case of success
      */
     bool calculateMeanError( double &error ) const;
 

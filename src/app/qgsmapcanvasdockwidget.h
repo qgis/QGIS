@@ -62,13 +62,13 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     void setViewCenterSynchronized( bool enabled );
 
     /**
-     * Returns true if the view extent is synchronized with the main canvas extent.
+     * Returns TRUE if the view extent is synchronized with the main canvas extent.
      * \see setViewCenterSynchronized()
      */
     bool isViewCenterSynchronized() const;
 
     /**
-     * Returns true if the view is synchronized with the selection on the main canvas.
+     * Returns TRUE if the view is synchronized with the selection on the main canvas.
      * \see setAutoZoomToSelected()
      */
     bool isAutoZoomToSelected() const;
@@ -86,7 +86,7 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     void setCursorMarkerVisible( bool visible );
 
     /**
-     * Returns true if the cursor position marker is visible.
+     * Returns TRUE if the cursor position marker is visible.
      * \see setCursorMarkerVisible()
      */
     bool isCursorMarkerVisible() const;
@@ -98,7 +98,7 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     void setMainCanvasExtentVisible( bool visible );
 
     /**
-     * Returns true if the main canvas extent is visible.
+     * Returns TRUE if the main canvas extent is visible.
      * \see setMainCanvasExtentVisible()
      */
     bool isMainCanvasExtentVisible() const;
@@ -125,7 +125,7 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     void setViewScaleSynchronized( bool enabled );
 
     /**
-     * Returns true if the view scale is synchronized with the main canvas extent.
+     * Returns TRUE if the view scale is synchronized with the main canvas extent.
      * \see setViewScaleSynchronized()
      * \see scaleFactor()
      */
