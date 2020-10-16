@@ -1513,14 +1513,19 @@ static QVariant fcnRegexpSubstr( const QVariantList &values, const QgsExpression
 
 static QVariant fcnUuid( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * )
 {
-  QUuid::StringFormat stringFormat = QUuid::StringFormat::WithBraces;
-
+  QString uuid = QUuid::createUuid().toString();
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   if ( values.at( 0 ).toString().compare( QStringLiteral( "WithoutBraces" ), Qt::CaseInsensitive ) == 0 )
-    stringFormat = QUuid::StringFormat::WithoutBraces;
+    uuid.remove( QRegExp( "[{}]" ) );
   else if ( values.at( 0 ).toString().compare( QStringLiteral( "Id128" ), Qt::CaseInsensitive ) == 0 )
-    stringFormat = QUuid::StringFormat::Id128;
-
-  return QUuid::createUuid().toString( stringFormat );
+    uuid.remove( QRegExp( "[{}-]" ) );
+#else
+  if ( values.at( 0 ).toString().compare( QStringLiteral( "WithoutBraces" ), Qt::CaseInsensitive ) == 0 )
+    uuid = QUuid::createUuid().toString( QUuid::StringFormat::WithoutBraces );
+  else if ( values.at( 0 ).toString().compare( QStringLiteral( "Id128" ), Qt::CaseInsensitive ) == 0 )
+    uuid = QUuid::createUuid().toString( QUuid::StringFormat::Id128 );
+#endif
+  return uuid;
 }
 
 static QVariant fcnSubstr( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
