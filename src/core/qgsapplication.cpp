@@ -75,7 +75,6 @@
 
 #include "layout/qgspagesizeregistry.h"
 
-#include <QApplication>
 #include <QDesktopWidget>
 #include <QDir>
 #include <QFile>
@@ -1822,12 +1821,12 @@ void QgsApplication::setCustomVariable( const QString &name, const QVariant &val
   emit instance()->customVariablesChanged();
 }
 
-int QgsApplication::scaleIconSize( int standardSize )
+int QgsApplication::scaleIconSize( int standardSize, bool applyDevicePixelRatio )
 {
   QFontMetrics fm( ( QFont() ) );
   const double scale = 1.1 * standardSize / 24;
   int scaledIconSize = static_cast< int >( std::floor( std::max( Qgis::UI_SCALE_FACTOR * fm.height() * scale, static_cast< double >( standardSize ) ) ) );
-  if ( QApplication::desktop() )
+  if ( applyDevicePixelRatio && QApplication::desktop() )
     scaledIconSize *= QApplication::desktop()->devicePixelRatio();
   return scaledIconSize;
 }

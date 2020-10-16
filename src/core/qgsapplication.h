@@ -880,7 +880,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      *
      * \since QGIS 3.16
      */
-    static int scaleIconSize( int standardSize );
+    static int scaleIconSize( int standardSize, bool applyDevicePixelRatio = false );
 
     /**
      * The maximum number of concurrent connections per connections pool.

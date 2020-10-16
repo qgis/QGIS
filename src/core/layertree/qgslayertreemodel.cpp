@@ -721,7 +721,7 @@ void QgsLayerTreeModel::setLayerStyleOverrides( const QMap<QString, QString> &ov
 
 int QgsLayerTreeModel::scaleIconSize( int standardSize )
 {
-  return QgsApplication::scaleIconSize( standardSize );
+  return QgsApplication::scaleIconSize( standardSize, true );
 }
 
 void QgsLayerTreeModel::nodeWillAddChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo )
