@@ -431,7 +431,7 @@ void QgsServerParameters::save( const QgsServerParameter &parameter )
 void QgsServerParameters::add( const QString &key, const QString &value )
 {
   QUrlQuery query;
-  query.addQueryItem( key, value );
+  query.addQueryItem( key, QUrl::toPercentEncoding( value ) );
   load( query );
 }
 
@@ -446,7 +446,7 @@ QUrlQuery QgsServerParameters::urlQuery() const
     const auto constMap( toMap().toStdMap() );
     for ( const auto &param : constMap )
     {
-      query.addQueryItem( param.first, param.second );
+      query.addQueryItem( param.first, QUrl::toPercentEncoding( param.second ) );
     }
   }
 
