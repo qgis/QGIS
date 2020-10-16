@@ -32,9 +32,9 @@ class QgsVectorLayer;
 
 /**
 * \ingroup gui
-* A widget for setting up the definition of a new field in a vector layer. 
+* A widget for setting up the definition of a new field in a vector layer.
 * \note unstable API (will likely change)
-* \since QGIS 3.16
+* \since QGIS 3.18
 */
 class GUI_EXPORT QgsFieldDefinitionWidget : public QWidget, private Ui::QgsFieldDefinitionWidgetBase
 {

@@ -25,7 +25,7 @@
  * \ingroup core
  * A parameter for creating or reusing existing layer fields.
  *
- * \since QGIS 3.16
+ * \since QGIS 3.18
  */
 class CORE_EXPORT QgsProcessingParameterFieldDefinition : public QgsProcessingParameterDefinition
 {
@@ -63,12 +63,13 @@ class CORE_EXPORT QgsProcessingParameterFieldDefinition : public QgsProcessingPa
 };
 
 ///@cond PRIVATE
+
 /**
  * Parameter type definition for QgsProcessingParameterFieldDefinition.
  *
  * \ingroup core
  * \note This class is not a part of public API.
- * \since QGIS 3.16
+ * \since QGIS 3.18
  */
 class CORE_EXPORT QgsProcessingParameterTypeFieldDefinition : public QgsProcessingParameterType
 {

@@ -53,7 +53,7 @@ class GUI_EXPORT QgsProcessingFieldDefinitionWidgetWrapper : public QgsAbstractP
   public:
 
     QgsProcessingFieldDefinitionWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
-                                         QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
+        QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
 
     QString parameterType() const override;
     QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override SIP_FACTORY;

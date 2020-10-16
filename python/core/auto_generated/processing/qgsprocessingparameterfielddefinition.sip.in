@@ -14,7 +14,7 @@ class QgsProcessingParameterFieldDefinition : QgsProcessingParameterDefinition
 %Docstring
 A parameter for creating or reusing existing layer fields.
 
-.. versionadded:: 3.16
+.. versionadded:: 3.18
 %End
 
 %TypeHeaderCode
@@ -64,6 +64,7 @@ Sets the ``name`` of the parent layer parameter. Use an empty string if this is 
 
 };
 
+
 class QgsProcessingParameterTypeFieldDefinition : QgsProcessingParameterType
 {
 %Docstring
@@ -73,7 +74,7 @@ Parameter type definition for QgsProcessingParameterFieldDefinition.
 
    This class is not a part of public API.
 
-.. versionadded:: 3.16
+.. versionadded:: 3.18
 %End
 
 %TypeHeaderCode
