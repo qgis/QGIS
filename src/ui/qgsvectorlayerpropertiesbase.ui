@@ -664,21 +664,9 @@ border-radius: 2px;</string>
                    </spacer>
                   </item>
                   <item row="0" column="0" colspan="2">
-                   <widget class="QTextEdit" name="txtSubsetSQL">
-                    <property name="enabled">
-                     <bool>false</bool>
-                    </property>
-                    <property name="acceptDrops">
-                     <bool>false</bool>
-                    </property>
-                    <property name="acceptRichText">
-                     <bool>false</bool>
-                    </property>
-                   </widget>
+                   <widget class="QgsCodeEditorSQL" name="txtSubsetSQL" native="true"/>
                   </item>
                  </layout>
-                 <zorder>txtSubsetSQL</zorder>
-                 <zorder>pbnQueryBuilder</zorder>
                 </widget>
                </item>
                <item>
@@ -2537,6 +2525,12 @@ border-radius: 2px;</string>
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsCodeEditorSQL</class>
+   <extends>QWidget</extends>
+   <header>qgscodeeditorsql.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
