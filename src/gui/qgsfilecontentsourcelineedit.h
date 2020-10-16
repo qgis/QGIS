@@ -24,6 +24,7 @@
 class QgsFilterLineEdit;
 class QToolButton;
 class QgsMessageBar;
+class QgsPropertyOverrideButton;
 
 /**
  * \ingroup gui
@@ -36,13 +37,8 @@ class QgsMessageBar;
  *
  * \since QGIS 3.6
  */
-#ifndef SIP_RUN
-class GUI_EXPORT QgsAbstractFileContentSourceLineEdit : public QWidget
-{
-#else
 class GUI_EXPORT QgsAbstractFileContentSourceLineEdit : public QWidget SIP_ABSTRACT
 {
-#endif
     Q_OBJECT
     Q_PROPERTY( QString source READ source WRITE setSource NOTIFY sourceChanged )
 
@@ -78,6 +74,12 @@ class GUI_EXPORT QgsAbstractFileContentSourceLineEdit : public QWidget SIP_ABSTR
      * used path for the file source.
      */
     void setLastPathSettingsKey( const QString &key );
+
+    /**
+     * Returns the file tool button
+     * \since QGIS 3.16
+     */
+    QgsPropertyOverrideButton *fileToolButton() const {return mFileToolButton;}
 
   public slots:
 
@@ -156,7 +158,7 @@ class GUI_EXPORT QgsAbstractFileContentSourceLineEdit : public QWidget SIP_ABSTR
     Mode mMode = ModeFile;
 
     QgsFilterLineEdit *mFileLineEdit = nullptr;
-    QToolButton *mFileToolButton = nullptr;
+    QgsPropertyOverrideButton *mFileToolButton = nullptr;
     QString mLastPathKey;
     QString mBase64;
     QgsMessageBar *mMessageBar = nullptr;

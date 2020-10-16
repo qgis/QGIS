@@ -61,6 +61,13 @@ Sets a specific settings ``key`` to use when storing the last
 used path for the file source.
 %End
 
+    QgsPropertyOverrideButton *fileToolButton() const;
+%Docstring
+Returns the file tool button
+
+.. versionadded:: 3.16
+%End
+
   public slots:
 
     void setSource( const QString &source );

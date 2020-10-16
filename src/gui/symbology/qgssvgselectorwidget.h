@@ -262,6 +262,12 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
 
     QString currentSvgPath() const;
 
+    /**
+     * Returns the source line edit
+     * \since QGIS 3.16
+     */
+    QgsSvgSourceLineEdit *sourceLineEdit() const {return mSvgSourceLineEdit;}
+
   public slots:
     //! Accepts absolute paths
     void setSvgPath( const QString &svgPath );

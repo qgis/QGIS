@@ -17,6 +17,7 @@
 #include "qgssettings.h"
 #include "qgsmessagebar.h"
 #include "qgsfilterlineedit.h"
+#include "qgspropertyoverridebutton.h"
 #include <QMenu>
 #include <QLineEdit>
 #include <QToolButton>
@@ -35,7 +36,7 @@ QgsAbstractFileContentSourceLineEdit::QgsAbstractFileContentSourceLineEdit( QWid
   layout->setContentsMargins( 0, 0, 0, 0 );
   mFileLineEdit = new QgsFilterLineEdit( this );
   mFileLineEdit->setShowClearButton( true );
-  mFileToolButton = new QToolButton( this );
+  mFileToolButton = new QgsPropertyOverrideButton( this );
   mFileToolButton->setText( QString( QChar( 0x2026 ) ) );
   layout->addWidget( mFileLineEdit, 1 );
   layout->addWidget( mFileToolButton );

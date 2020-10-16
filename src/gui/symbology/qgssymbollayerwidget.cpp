@@ -2314,9 +2314,9 @@ QgsSvgMarkerSymbolLayerWidget::QgsSvgMarkerSymbolLayerWidget( QgsVectorLayer *vl
 
   setupUi( this );
 
-  mSvgSourceLineEdit->setLastPathSettingsKey( QStringLiteral( "/UI/lastSVGMarkerDir" ) );
+  mSvgSelectorWidget->sourceLineEdit()->setLastPathSettingsKey( QStringLiteral( "/UI/lastSVGMarkerDir" ) );
 
-  connect( mSvgSourceLineEdit, &QgsSvgSourceLineEdit::sourceChanged, this, &QgsSvgMarkerSymbolLayerWidget::svgSourceChanged );
+  connect( mSvgSelectorWidget->sourceLineEdit(), &QgsSvgSourceLineEdit::sourceChanged, this, &QgsSvgMarkerSymbolLayerWidget::svgSourceChanged );
   connect( mChangeColorButton, &QgsColorButton::colorChanged, this, &QgsSvgMarkerSymbolLayerWidget::mChangeColorButton_colorChanged );
   connect( mChangeStrokeColorButton, &QgsColorButton::colorChanged, this, &QgsSvgMarkerSymbolLayerWidget::mChangeStrokeColorButton_colorChanged );
   connect( mStrokeWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSvgMarkerSymbolLayerWidget::mStrokeWidthSpinBox_valueChanged );
@@ -2353,7 +2353,7 @@ QgsSvgMarkerSymbolLayerWidget::QgsSvgMarkerSymbolLayerWidget( QgsVectorLayer *vl
   connect( spinOffsetY, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSvgMarkerSymbolLayerWidget::setOffset );
   connect( this, &QgsSymbolLayerWidget::changed, this, &QgsSvgMarkerSymbolLayerWidget::updateAssistantSymbol );
 
-  connect( mSvgBrowser, &QgsSvgBrowserWidget::pathChanged, this, &QgsSvgMarkerSymbolLayerWidget::setSvgPath );
+  connect( mSvgSelectorWidget, &QgsSvgSelectorWidget::svgSelected, this, &QgsSvgMarkerSymbolLayerWidget::setSvgPath );
 
 
   //make a temporary symbol for the size assistant preview
@@ -2420,7 +2420,7 @@ void QgsSvgMarkerSymbolLayerWidget::setGuiForSvg( const QgsSvgMarkerSymbolLayer 
     mChangeStrokeColorButton->setColor( stroke );
   }
 
-  whileBlocking( mSvgSourceLineEdit )->setSource( layer->path() );
+  whileBlocking( mSvgSelectorWidget->sourceLineEdit() )->setSource( layer->path() );
 
   mStrokeWidthSpinBox->blockSignals( true );
   mStrokeWidthSpinBox->setValue( hasDefaultStrokeWidth ? defaultStrokeWidth : layer->strokeWidth() );
@@ -2468,7 +2468,7 @@ void QgsSvgMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   mLayer = static_cast<QgsSvgMarkerSymbolLayer *>( layer );
 
   // set values
-  mSvgBrowser->setPath( mLayer->path() );
+  mSvgSelectorWidget->setSvgPath( mLayer->path() );
 
   spinWidth->blockSignals( true );
   spinWidth->setValue( mLayer->size() );
@@ -2513,11 +2513,12 @@ void QgsSvgMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   registerDataDefinedButton( mStrokeWidthDDBtn, QgsSymbolLayer::PropertyStrokeWidth );
   registerDataDefinedButton( mAngleDDBtn, QgsSymbolLayer::PropertyAngle );
   registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
-  registerDataDefinedButton( mFilenameDDBtn, QgsSymbolLayer::PropertyName );
   registerDataDefinedButton( mFillColorDDBtn, QgsSymbolLayer::PropertyFillColor );
   registerDataDefinedButton( mStrokeColorDDBtn, QgsSymbolLayer::PropertyStrokeColor );
   registerDataDefinedButton( mHorizontalAnchorDDBtn, QgsSymbolLayer::PropertyHorizontalAnchor );
   registerDataDefinedButton( mVerticalAnchorDDBtn, QgsSymbolLayer::PropertyVerticalAnchor );
+
+  registerDataDefinedButton( mSvgSelectorWidget->sourceLineEdit()->fileToolButton(), QgsSymbolLayer::PropertyVerticalAnchor );
 
   updateAssistantSymbol();
 }
@@ -2530,13 +2531,13 @@ QgsSymbolLayer *QgsSvgMarkerSymbolLayerWidget::symbolLayer()
 void QgsSvgMarkerSymbolLayerWidget::setContext( const QgsSymbolWidgetContext &context )
 {
   QgsSymbolLayerWidget::setContext( context );
-  mSvgSourceLineEdit->setMessageBar( context.messageBar() );
+  mSvgSelectorWidget->sourceLineEdit()->setMessageBar( context.messageBar() );
 }
 
 void QgsSvgMarkerSymbolLayerWidget::setSvgPath( const QString &name )
 {
   mLayer->setPath( name );
-  whileBlocking( mSvgSourceLineEdit )->setSource( name );
+  whileBlocking( mSvgSelectorWidget->sourceLineEdit() )->setSource( name );
 
   setGuiForSvg( mLayer );
   emit changed();

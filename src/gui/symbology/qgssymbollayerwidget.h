@@ -603,8 +603,8 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, pr
 
 
   protected:
-    // TODO QGIS 4: make private
-    void populateList() {mSvgBrowser->populateList();}
+    // TODO QGIS 4: remove
+    Q_DECL_DEPRECATED void populateList() {};
 
     /**
      * Updates the GUI to reflect the SVG marker symbol \a layer.
