@@ -83,7 +83,7 @@ class PointsToPaths(QgisAlgorithm):
         order_field_param.setFlags(order_field_param.flags() | QgsProcessingParameterDefinition.FlagHidden)
         self.addParameter(order_field_param)
         self.addParameter(QgsProcessingParameterExpression(self.ORDER_EXPRESSION,
-                                                           self.tr('Order expression'), parentLayerParameterName=self.INPUT))
+                                                           self.tr('Order expression'), parentLayerParameterName=self.INPUT, optional=True))
         self.addParameter(QgsProcessingParameterField(self.GROUP_FIELD,
                                                       self.tr('Group field'), parentLayerParameterName=self.INPUT, optional=True))
         self.addParameter(QgsProcessingParameterString(self.DATE_FORMAT,
@@ -121,6 +121,9 @@ class PointsToPaths(QgisAlgorithm):
 
         if order_field_name:
             order_expression = QgsExpression.quotedColumnRef(order_field_name)
+
+        if not order_expression:
+            raise QgsProcessingException(self.tr('ORDER_EXPRESSION parameter is missing.'))
 
         expression_context = self.createExpressionContext(parameters, context, source)
         expression = QgsExpression(order_expression)
