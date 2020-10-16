@@ -11,6 +11,7 @@
 
 
 
+
 class QgsPointCloudRenderer: QgsMapLayerRenderer
 {
 %Docstring
@@ -38,7 +39,6 @@ Represents a 2D renderer of point cloud data
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
-  protected:
 };
 
 

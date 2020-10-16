@@ -21,12 +21,15 @@
 #include "qgis_core.h"
 #include "qgsmaplayerrenderer.h"
 #include "qgsreadwritecontext.h"
+#include "qgspointcloudindex.h"
 
 #include <QDomElement>
 #include <QString>
+#include <QImage>
 
 class QgsRenderContext;
 class QgsPointCloudLayer;
+
 
 /**
  * \ingroup core
@@ -49,8 +52,19 @@ class CORE_EXPORT QgsPointCloudRenderer: public QgsMapLayerRenderer
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
-  protected:
+  private:
     QgsPointCloudLayer *mLayer = nullptr;
+
+    QImage img;
+    int imgW, imgH;
+    QgsPointCloudDataBounds mBounds;
+
+    // some stats
+    int nodesDrawn = 0;
+    int pointsDrawn = 0;
+    int drawingTime = 0;  // in msec
+
+    void drawData( const QVector<qint32> &data );
 };
 
 

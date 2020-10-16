@@ -626,6 +626,7 @@ SET(QGIS_CORE_SRCS
   pointcloud/qgspointcloudindex.cpp
   pointcloud/qgspointclouddataitems.cpp
   pointcloud/qgspointcloudprovidermetadata.cpp
+  pointcloud/qgspointclouddecoder.cpp
 
   labeling/qgslabelfeature.cpp
   labeling/qgslabelingengine.cpp
@@ -1301,6 +1302,7 @@ SET(QGIS_CORE_HDRS
   pointcloud/qgspointcloudindex.h
   pointcloud/qgspointclouddataitems.h
   pointcloud/qgspointcloudprovidermetadata.h
+  pointcloud/qgspointclouddecoder.h
 
   metadata/qgsabstractmetadatabase.h
   metadata/qgslayermetadata.h
@@ -1612,6 +1614,8 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${Qt5SerialPort_INCLUDE_DIRS}
   ${Protobuf_INCLUDE_DIRS}
   ${ZLIB_INCLUDE_DIRS}
+  ${ZSTD_INCLUDE_DIR}
+  ${LazPerf_INCLUDE_DIR}
 )
 
 
@@ -1748,6 +1752,7 @@ TARGET_LINK_LIBRARIES(qgis_core
   ${SQLITE3_LIBRARY}
   ${SPATIALITE_LIBRARY}
   ${LIBZIP_LIBRARY}
+  ${ZSTD_LIBRARY}
   ${Protobuf_LITE_LIBRARY}
   ${ZLIB_LIBRARIES}
 )

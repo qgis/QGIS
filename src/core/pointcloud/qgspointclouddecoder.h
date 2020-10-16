@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgspointcloudsourceselect.h
+                         qgspointclouddecoder.h
                          --------------------
     begin                : October 2020
     copyright            : (C) 2020 by Peter Petrik
@@ -14,39 +14,28 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSPOINTCLOUDSOURCESELECT_H
-#define QGSPOINTCLOUDSOURCESELECT_H
 
-///@cond PRIVATE
+#ifndef QGSPOINTCLOUDDECODER_H
+#define QGSPOINTCLOUDDECODER_H
+
+
+#include "qgis_core.h"
 #include "qgis_sip.h"
+
 #define SIP_NO_FILE
 
-#include "ui_qgspointcloudsourceselectbase.h"
-#include "qgsabstractdatasourcewidget.h"
-#include "qgis_gui.h"
+#include <QVector>
+#include <QString>
 
+class QgsPointCloudDataBounds;
+class QgsVector3D;
 
-/**
- * \class QgsPointCloudSourceSelect
- * \brief Dialog to select point cloud supported sources
- */
-class QgsPointCloudSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsPointCloudSourceSelectBase
+namespace QgsPointCloudDecoder
 {
-    Q_OBJECT
-
-  public:
-    //! Constructor
-    QgsPointCloudSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
-
-  public slots:
-    //! Determines the tables the user selected and closes the dialog
-    void addButtonClicked() override;
-
-  private:
-    QString mPath;
-
+  QVector<qint32> decompressBinary(const QString& filename, QgsPointCloudDataBounds &db);
+  QVector<qint32> decompressZStandard(const QString& filename, QgsPointCloudDataBounds &db);
+  QVector<qint32> decompressLaz(const QString& filename, QgsPointCloudDataBounds &db);
 };
 
-///@endcond
-///
-#endif // QGSPOINTCLOUDSOURCESELECT_H
+
+#endif // QGSPOINTCLOUDDECODER_H

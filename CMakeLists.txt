@@ -350,6 +350,9 @@ IF(WITH_CORE)
   FIND_PACKAGE(ZLIB REQUIRED)       # for decompression of vector tiles in MBTiles file
   MESSAGE(STATUS "Found zlib: ${ZLIB_LIBRARIES}")
 
+  FIND_PACKAGE(ZSTD REQUIRED) # for decompression of point clouds
+  FIND_PACKAGE(LazPerf REQUIRED) # for decompression of point clouds
+
   # optional
   IF (WITH_POSTGRESQL)
     FIND_PACKAGE(Postgres) # PostgreSQL provider

@@ -84,7 +84,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     QgsPointCloudLayer( const QgsPointCloudLayer &rhs );
 #endif
 
-    QgsPointCloudIndex *mPointCloudIndex = nullptr;
+    std::unique_ptr<QgsPointCloudIndex> mPointCloudIndex;
 
     //! Renderer assigned to the layer to draw map
     std::unique_ptr<QgsPointCloudRenderer> mRenderer;
