@@ -556,6 +556,7 @@ SET(QGIS_GUI_SRCS
   qgsstyleitemslistwidget.cpp
   qgssublayersdialog.cpp
   qgssubstitutionlistwidget.cpp
+  qgssvgbrowserwidget.cpp
   qgssqlcomposerdialog.cpp
   qgsstatusbar.cpp
   qgssymbolbutton.cpp
@@ -795,6 +796,7 @@ SET(QGIS_GUI_HDRS
   qgsstyleitemslistwidget.h
   qgssublayersdialog.h
   qgssubstitutionlistwidget.h
+  qgssvgbrowserwidget.h
   qgssymbolbutton.h
   qgssymbollayerselectionwidget.h
   qgstablewidgetbase.h

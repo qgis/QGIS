@@ -598,9 +598,13 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, pr
 
     void setContext( const QgsSymbolWidgetContext &context ) override;
 
-  protected:
+  public slots:
+    void setSvgPath( const QString &name );
 
-    void populateList();
+
+  protected:
+    // TODO QGIS 4: make private
+    void populateList() {mSvgBrowser->populateList();}
 
     /**
      * Updates the GUI to reflect the SVG marker symbol \a layer.
@@ -613,8 +617,6 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, pr
     QgsSvgMarkerSymbolLayer *mLayer = nullptr;
 
   private slots:
-    void setName( const QModelIndex &idx );
-    void populateIcons( const QModelIndex &idx );
     void svgSourceChanged( const QString &text );
     void mChangeColorButton_colorChanged( const QColor &color );
     void mChangeStrokeColorButton_colorChanged( const QColor &color );
@@ -634,7 +636,6 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, pr
   private:
 
     std::shared_ptr< QgsMarkerSymbol > mAssistantPreviewSymbol;
-    int mIconSize = 30;
 
 };
 

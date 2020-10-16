@@ -449,8 +449,11 @@ Creates a new QgsSvgMarkerSymbolLayerWidget.
     virtual void setContext( const QgsSymbolWidgetContext &context );
 
 
-  protected:
+  public slots:
+    void setSvgPath( const QString &name );
 
+
+  protected:
     void populateList();
 
     void setGuiForSvg( const QgsSvgMarkerSymbolLayer *layer, bool skipDefaultColors = false );
