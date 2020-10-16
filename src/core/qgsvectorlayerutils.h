@@ -295,8 +295,8 @@ class CORE_EXPORT QgsVectorLayerUtils
     static QgsFeatureList makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer *layer, QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() );
 
     /**
-     * \return true if the \param feature field at index \param fieldIndex from \param layer
-     * is editable, false if the field is readonly
+     * \return TRUE if the \param feature field at index \param fieldIndex from \param layer
+     * is editable, FALSE if the field is readonly
      *
      * \since QGIS 3.10
      */

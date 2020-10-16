@@ -71,7 +71,7 @@ class ANALYSIS_EXPORT QgsRelief
 
     /**
      * Calculates class breaks according with the method of Buenzli (2011) using an iterative algorithm for segmented regression
-     * \returns true in case of success
+     * \returns TRUE in case of success
     */
     QList< QgsRelief::ReliefColor > calculateOptimizedReliefClasses();
 

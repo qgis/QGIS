@@ -77,7 +77,7 @@ Remove all vertices, edges and faces
 
   static bool compareFaces( const QgsMeshFace &face1, const QgsMeshFace &face2 );
 %Docstring
-Compare two faces, return true if they are equivalent : same indexes and same clock wise
+Compare two faces, return ``True`` if they are equivalent : same indexes and same clock wise
 
 .. versionadded:: 3.16
 %End

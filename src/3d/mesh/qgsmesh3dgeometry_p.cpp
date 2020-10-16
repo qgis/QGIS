@@ -254,7 +254,7 @@ class MeshDatasetVertexBufferFunctor : public QBufferDataGenerator
   public:
 
     /**
-     * verticalRelative parameter is true when the vertical magnitude provides from the sum of the z vertices and the scalar dataset chosen
+     * verticalRelative parameter is TRUE when the vertical magnitude provides from the sum of the z vertices and the scalar dataset chosen
      * for rendering the vertical component.
      */
     explicit MeshDatasetVertexBufferFunctor( const QgsTriangularMesh &mesh,

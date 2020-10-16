@@ -146,7 +146,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     /**
      * Shows the configuration widget for the specified layout \a item.
      *
-     * If \a bringPanelToFront is true, then the item properties panel will be automatically
+     * If \a bringPanelToFront is TRUE, then the item properties panel will be automatically
      * shown and raised to the top of the interface.
      */
     void showItemOptions( QgsLayoutItem *item, bool bringPanelToFront = true );

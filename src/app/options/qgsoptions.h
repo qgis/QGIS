@@ -62,7 +62,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
      * Constructor
      * \param parent Parent widget (usually a QgisApp)
      * \param name name for the widget
-     * \param modal true for modal dialog
+     * \param modal TRUE for modal dialog
      * \param optionsFactories factories for additional option pages
      */
     QgsOptions( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
@@ -113,7 +113,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     /**
      * Returns the desired state of newly added layers. If a layer
      * is to be drawn when added to the map, this function returns
-     * true.
+     * TRUE.
      */
     bool newVisible();
 

@@ -50,7 +50,7 @@ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
     bool isNull() const;
 %Docstring
-Returns true if the combo box is currently set to a "null" value.
+Returns ``True`` if the combo box is currently set to a "null" value.
 
 .. seealso:: :py:func:`setAllowNull`
 
@@ -148,7 +148,7 @@ Except for 0 which is always allowed.
 %Docstring
 Sets the combo box to the null value.
 
-This only has an effect if :py:func:`~QgsScaleComboBox.allowNull` is true.
+This only has an effect if :py:func:`~QgsScaleComboBox.allowNull` is ``True``.
 
 .. seealso:: :py:func:`allowNull`
 

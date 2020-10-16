@@ -91,7 +91,7 @@ class APP_EXPORT QgsClipboard : public QObject
     void insert( const QgsFeature &feature );
 
     /**
-     *  Returns true if the internal clipboard is empty, else false.
+     *  Returns TRUE if the internal clipboard is empty, else FALSE.
      */
     bool isEmpty() const;
 

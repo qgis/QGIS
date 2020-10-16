@@ -79,7 +79,7 @@ class _3D_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialSe
     float textureScale() const { return mTextureScale; }
 
     /**
-     * Returns true if the material requires texture coordinates to be generated
+     * Returns TRUE if the material requires texture coordinates to be generated
      * during triangulation.quiresTextureCoordinates
      */
     bool requiresTextureCoordinates() const { return !mDiffuseTexturePath.isEmpty(); }

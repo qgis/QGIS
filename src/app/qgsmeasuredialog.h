@@ -90,7 +90,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 
     /**
      * Resets the units combo box to display either distance or area units
-     * \param isArea set to true to populate with areal units, or false to show distance units
+     * \param isArea set to TRUE to populate with areal units, or FALSE to show distance units
      */
     void repopulateComboBoxUnits( bool isArea );
 

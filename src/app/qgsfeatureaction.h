@@ -50,13 +50,13 @@ class APP_EXPORT QgsFeatureAction : public QAction
      *
      * \param defaultAttributes  Provide some default attributes here if desired.
      *
-     * \returns true if feature was added if showModal is true. If showModal is false, returns true in every case
+     * \returns TRUE if feature was added if showModal is true. If showModal is FALSE, returns TRUE in every case
      */
     bool addFeature( const QgsAttributeMap &defaultAttributes = QgsAttributeMap(), bool showModal = true, QgsExpressionContextScope *scope = nullptr );
 
     /**
      * Sets whether to force suppression of the attribute form popup after creating a new feature.
-     * If \a force is true, then regardless of any user settings, form settings, etc, the attribute
+     * If \a force is TRUE, then regardless of any user settings, form settings, etc, the attribute
      * form will ALWAYS be suppressed.
      */
     void setForceSuppressFormPopup( bool force );

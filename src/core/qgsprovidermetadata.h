@@ -251,7 +251,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
 
     /**
      * Sets the \a value into the \a uri \a parameter as a bool.
-     * eg. "yes" value will be saved as true, 0 will be saved as false
+     * eg. "yes" value will be saved as TRUE, 0 will be saved as FALSE
      *
      * \since QGIS 3.14
      */
@@ -259,7 +259,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
 
     /**
      * Returns the \a parameter value in the \a uri as a bool.
-     * eg. "yes" value will be returned as true, 0 will be returned as false
+     * eg. "yes" value will be returned as TRUE, 0 will be returned as FALSE
      *
      * \since QGIS 3.14
      */

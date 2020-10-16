@@ -690,7 +690,7 @@ If only a single symbol layer from the symbol should be rendered, it should be s
 in the ``layer`` argument. A ``layer`` of -1 indicates that all symbol layers should be
 rendered.
 
-If ``selected`` is true then the symbol will be drawn using the "selected feature"
+If ``selected`` is ``True`` then the symbol will be drawn using the "selected feature"
 style and colors instead of the symbol's normal style.
 %End
 

@@ -1207,7 +1207,7 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
 /**
  * \param bandNumber the number of the band for which you want a color table
  * \param list a pointer the object that will hold the color table
- * \return true of a color table was able to be read, false otherwise
+ * \return TRUE if a color table was able to be read, FALSE otherwise
  */
 QList<QgsColorRampShader::ColorRampItem> QgsGdalProvider::colorTable( int bandNumber )const
 {

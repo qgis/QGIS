@@ -212,7 +212,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * Open a raster layer for the given file
-     * \returns false if unable to open a raster layer for rasterFile
+     * \returns FALSE if unable to open a raster layer for rasterFile
      * \note This is essentially a simplified version of the above
      */
     QgsRasterLayer *addRasterLayer( const QString &rasterFile, const QString &baseName, bool guiWarning = true );
@@ -232,9 +232,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /**
      * Open a raster or vector file; ignore other files.
      * Used to process a commandline argument, FileOpen or Drop event.
-     * Set \a allowInteractive to true if it is OK to ask the user for information (mostly for
+     * Set \a allowInteractive to TRUE if it is OK to ask the user for information (mostly for
      * when a vector layer has sublayers and we want to ask which sublayers to use).
-     * \returns true if the file is successfully opened
+     * \returns TRUE if the file is successfully opened
      */
     bool openLayer( const QString &fileName, bool allowInteractive = false );
 
@@ -259,7 +259,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * Opens a QGIS project file
-     * \returns false if unable to open the project
+     * \returns FALSE if unable to open the project
      */
     bool addProject( const QString &projectFile );
 
@@ -299,7 +299,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void closeAdditionalMapCanvases();
 
     /**
-     * Freezes all map canvases (or thaws them if the \a frozen argument is false).
+     * Freezes all map canvases (or thaws them if the \a frozen argument is FALSE).
      */
     void freezeCanvases( bool frozen = true );
 
@@ -350,7 +350,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /**
      * Add a dock widget to the given area and tabify it (if other dock widgets
      * exist in the same \a area). The new tab will be below other tabs unless
-     * \a raiseTab is passed as true.
+     * \a raiseTab is passed as TRUE.
      *
      * \a tabifyWith is a list of dock widget object names, ordered by
      * priority, with which the new dock widget should be tabified. Only the
@@ -401,11 +401,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      *
      * The \a title argument will be filled with the new layout title.
      *
-     * If \a acceptEmpty is true then empty titles will be acceptable (one will be generated).
+     * If \a acceptEmpty is TRUE then empty titles will be acceptable (one will be generated).
      *
      * The \a currentTitle argument specifies a base name for initial title choice.
      *
-     * \returns true if user did not cancel the dialog.
+     * \returns TRUE if user did not cancel the dialog.
      */
     bool uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmpty, QgsMasterLayoutInterface::Type type, const QString &currentTitle = QString() );
 
@@ -454,7 +454,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      *
      * \param title
      * \param message
-     * \param replaceExisting set to true to replace any existing notifications, or false to add a new notification
+     * \param replaceExisting set to TRUE to replace any existing notifications, or FALSE to add a new notification
      */
     void showSystemNotification( const QString &title, const QString &message, bool replaceExisting = true );
 
@@ -802,7 +802,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsMapLayer *activeLayer();
 
     /**
-     * Returns the toolbar icon size. If \a dockedToolbar is true, the icon size
+     * Returns the toolbar icon size. If \a dockedToolbar is TRUE, the icon size
      * for toolbars contained within docks is returned.
      */
     QSize iconSize( bool dockedToolbar = false ) const;
@@ -810,7 +810,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /**
       * Checks available datum transforms and ask user if several are available and none
       * is chosen. Dialog is shown only if global option is set accordingly.
-      * \returns true if a datum transform has been specifically chosen by user or only one is available.
+      * \returns TRUE if a datum transform has been specifically chosen by user or only one is available.
       * \since 3.0
       */
     bool askUserForDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsMapLayer *layer = nullptr );
@@ -1141,7 +1141,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * file names instead of prompting user with a dialog.
      * \param enc encoding type for the layer
      * \param dataSourceType type of ogr datasource
-     * \returns true if successfully added layer
+     * \returns TRUE if successfully added layer
      */
     bool addVectorLayers( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType );
 
@@ -1149,7 +1149,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Overloaded version of the private addRasterLayer()
      * Method that takes a list of file names instead of prompting
      * user with a dialog.
-     * \returns true if successfully added layer(s)
+     * \returns TRUE if successfully added layer(s)
      */
     bool addRasterLayers( const QStringList &layerQStringList, bool guiWarning = true );
 
@@ -2017,7 +2017,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * This method will open a dialog so the user can select GDAL sublayers to load
-     * \returns true if any items were loaded
+     * \returns TRUE if any items were loaded
      */
     bool askUserForZipItemLayers( const QString &path );
 
@@ -2071,7 +2071,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      *  pass settings by reference since creating more than one
      * instance simultaneously results in data loss.
      *
-     * \param savePreviewImage Set to false when the preview image should not be saved. E.g. project load.
+     * \param savePreviewImage Set to FALSE when the preview image should not be saved. E.g. project load.
      * \param iconOverlay optional icon to overlay when saving a preview image
      */
     void saveRecentProjectPath( bool savePreviewImage = true, const QIcon &iconOverlay = QIcon() );
@@ -2086,7 +2086,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * Check to see if the current project file is dirty and if so, prompt the user to save it.
-     * \returns true if saved or discarded, false if canceled
+     * \returns TRUE if saved or discarded, FALSE if canceled
      */
     bool saveDirty();
 
@@ -2094,8 +2094,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Checks for unsaved changes in open layers and prompts the user to save
      * or discard these changes for each layer.
      *
-     * Returns true if there are no unsaved layer edits remaining, or the user
-     * opted to discard them all. Returns false if the user opted to cancel
+     * Returns TRUE if there are no unsaved layer edits remaining, or the user
+     * opted to discard them all. Returns FALSE if the user opted to cancel
      * on any layer.
      */
     bool checkUnsavedLayerEdits();
@@ -2105,8 +2105,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * shows a warning to users that their contents will be lost on
      * project unload.
      *
-     * Returns true if there are no memory layers present, or if the
-     * user opted to discard their contents. Returns false if there
+     * Returns TRUE if there are no memory layers present, or if the
+     * user opted to discard their contents. Returns FALSE if there
      * are memory layers present and the user clicked 'Cancel' on
      * the warning dialog.
      */

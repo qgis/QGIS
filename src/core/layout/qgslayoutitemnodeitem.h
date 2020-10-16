@@ -49,7 +49,7 @@ class CORE_EXPORT QgsLayoutNodesItem: public QgsLayoutItem
      * \param point is the location of the new node (in scene coordinates)
      * \param checkArea is a flag to indicate if there's a space constraint.
      * \param radius is the space contraint and is used only if checkArea is
-     * true. Typically, if this flag is TRUE, the new node has to be nearer
+     * TRUE. Typically, if this flag is TRUE, the new node has to be nearer
      * than radius to the shape to be added.
      */
     bool addNode( QPointF point, bool checkArea = true, double radius = 10 );

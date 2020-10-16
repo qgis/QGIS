@@ -46,7 +46,7 @@ class CORE_EXPORT QgsTileCache
 
     /**
      * Try to access a tile and load it into "image" argument
-     * \returns true if the tile exists in the cache
+     * \returns TRUE if the tile exists in the cache
      */
     static bool tile( const QUrl &url, QImage &image );
 

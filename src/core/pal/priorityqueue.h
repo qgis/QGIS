@@ -57,7 +57,7 @@ namespace pal
        * \brief Create a priority queue of max size n
        * \\param n max size of the queuet
        * \\param p external vector representing the priority
-       * \\param min best element has the smalest p when min is True ans has the biggest when min is false
+       * \\param min best element has the smallest p when min is TRUE and has the biggest when min is FALSE
        */
       PriorityQueue( int n, int maxId, bool min );
       ~PriorityQueue();

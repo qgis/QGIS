@@ -628,7 +628,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
      * in the \a layer argument. A \a layer of -1 indicates that all symbol layers should be
      * rendered.
      *
-     * If \a selected is true then the symbol will be drawn using the "selected feature"
+     * If \a selected is TRUE then the symbol will be drawn using the "selected feature"
      * style and colors instead of the symbol's normal style.
      */
     virtual void renderSymbol( const QPointF &point, const QgsFeature *feature, QgsRenderContext &context, int layer = -1, bool selected = false ) = 0;

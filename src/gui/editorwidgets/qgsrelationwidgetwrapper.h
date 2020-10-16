@@ -114,7 +114,7 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
 
     /**
      * Sets force suppress form popup status to \a forceSuppressFormPopup for this widget
-     * and for the vectorLayerTools (if true).
+     * and for the vectorLayerTools (if TRUE).
      * This flag will override the layer and general settings regarding the automatic
      * opening of the attribute form dialog when digitizing is completed.
      * \since QGIS 3.16

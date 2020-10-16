@@ -468,7 +468,7 @@ class CORE_EXPORT QgsSymbol
      * extent. If this option is enabled then features which are partially outside the extent
      * will be clipped. This speeds up rendering of the feature, but may have undesirable
      * side effects for certain symbol types.
-     * \param clipFeaturesToExtent set to true to enable clipping (defaults to TRUE)
+     * \param clipFeaturesToExtent set to TRUE to enable clipping (defaults to TRUE)
      * \see clipFeaturesToExtent
      * \since QGIS 2.9
      */
@@ -1081,7 +1081,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * in the \a layer argument. A \a layer of -1 indicates that all symbol layers should be
      * rendered.
      *
-     * If \a selected is true then the symbol will be drawn using the "selected feature"
+     * If \a selected is TRUE then the symbol will be drawn using the "selected feature"
      * style and colors instead of the symbol's normal style.
      */
     void renderPoint( QPointF point, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
@@ -1197,7 +1197,7 @@ class CORE_EXPORT QgsLineSymbol : public QgsSymbol
      * in the \a layer argument. A \a layer of -1 indicates that all symbol layers should be
      * rendered.
      *
-     * If \a selected is true then the symbol will be drawn using the "selected feature"
+     * If \a selected is TRUE then the symbol will be drawn using the "selected feature"
      * style and colors instead of the symbol's normal style.
      */
     void renderPolyline( const QPolygonF &points, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
@@ -1247,7 +1247,7 @@ class CORE_EXPORT QgsFillSymbol : public QgsSymbol
      * in the \a layer argument. A \a layer of -1 indicates that all symbol layers should be
      * rendered.
      *
-     * If \a selected is true then the symbol will be drawn using the "selected feature"
+     * If \a selected is TRUE then the symbol will be drawn using the "selected feature"
      * style and colors instead of the symbol's normal style.
      */
     void renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );

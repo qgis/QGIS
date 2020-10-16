@@ -885,7 +885,7 @@ class CORE_EXPORT QgsGeometry
      * \param[out] newGeometries list of new geometries that have been created with the split
      * \param topological TRUE if topological editing is enabled
      * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
-     * \param splitFeature Set to True if you want to split a feature, otherwise set to False to split parts
+     * \param splitFeature Set to TRUE if you want to split a feature, otherwise set to FALSE to split parts
      * \returns OperationResult a result code: success or reason of failure
      * \deprecated since QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
      */
@@ -897,7 +897,7 @@ class CORE_EXPORT QgsGeometry
      * \param[out] newGeometries list of new geometries that have been created with the ``splitLine``. If the geometry is 3D, a linear interpolation of the z value is performed on the geometry at split points, see example.
      * \param topological TRUE if topological editing is enabled
      * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
-     * \param splitFeature Set to True if you want to split a feature, otherwise set to False to split parts
+     * \param splitFeature Set to TRUE if you want to split a feature, otherwise set to FALSE to split parts
      * fix this bug?
      * \param skipIntersectionTest set to TRUE to skip the potentially expensive initial intersection check. Only set this flag if an intersection
      * test has already been performed by the caller! Not available in Python bindings.
@@ -921,7 +921,7 @@ class CORE_EXPORT QgsGeometry
      * \param preserveCircular whether if circular strings are preserved after splitting
      * \param topological TRUE if topological editing is enabled
      * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
-     * \param splitFeature Set to True if you want to split a feature, otherwise set to False to split parts
+     * \param splitFeature Set to TRUE if you want to split a feature, otherwise set to FALSE to split parts
      * \returns OperationResult a result code: success or reason of failure
      * \since QGIS 3.16
      */

@@ -56,7 +56,7 @@ class GUI_EXPORT QgsSourceFieldsProperties : public QWidget, private Ui_QgsSourc
     /**
      * Adds an attribute to the table (but does not commit it yet)
      * \param field the field to add
-     * \returns false in case of a name conflict, true in case of success
+     * \returns FALSE in case of a name conflict, TRUE in case of success
     */
     bool addAttribute( const QgsField &field );
 

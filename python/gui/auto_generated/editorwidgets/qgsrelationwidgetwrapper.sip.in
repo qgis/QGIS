@@ -123,7 +123,7 @@ Determines the force suppress form popup status that is configured for this widg
     void setForceSuppressFormPopup( bool forceSuppressFormPopup );
 %Docstring
 Sets force suppress form popup status to ``forceSuppressFormPopup`` for this widget
-and for the vectorLayerTools (if true).
+and for the vectorLayerTools (if ``True``).
 This flag will override the layer and general settings regarding the automatic
 opening of the attribute form dialog when digitizing is completed.
 

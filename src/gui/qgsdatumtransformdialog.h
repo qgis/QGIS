@@ -125,7 +125,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
     void setOKButtonEnabled();
 
     /**
-     * Returns true if the dialog should be shown and the user prompted to make the transformation selection.
+     * Returns TRUE if the dialog should be shown and the user prompted to make the transformation selection.
      *
      * \see defaultDatumTransform()
      */

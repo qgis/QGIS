@@ -172,7 +172,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
      * in the constructor. if TRUE, index building will be done in another thread and init() method returns
      * immediately. initFinished() signal will be emitted once the initialization is over.
      *
-     * Returns false if the creation of index is blocking and has been prematurely stopped due to the limit of features, otherwise true
+     * Returns FALSE if the creation of index is blocking and has been prematurely stopped due to the limit of features, otherwise TRUE
      *
      * \see QgsPointLocator()
      */

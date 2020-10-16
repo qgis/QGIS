@@ -53,7 +53,7 @@ Starts the calculation, reads from mInputFile and stores the result in mOutputFi
 %Docstring
 Calculates class breaks according with the method of Buenzli (2011) using an iterative algorithm for segmented regression
 
-:return: true in case of success
+:return: ``True`` in case of success
 %End
 
     bool exportFrequencyDistributionToCsv( const QString &file );

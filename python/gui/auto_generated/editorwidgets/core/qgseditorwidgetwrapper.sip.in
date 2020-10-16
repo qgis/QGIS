@@ -180,7 +180,7 @@ Gets the current constraint status.
 
     bool isBlockingCommit() const;
 %Docstring
-Returns true if the widget is preventing the feature from being committed. This may be ``True`` as a result
+Returns ``True`` if the widget is preventing the feature from being committed. This may be ``True`` as a result
 of attribute values failing enforced field constraints.
 
 .. seealso:: :py:func:`isValidConstraint`
