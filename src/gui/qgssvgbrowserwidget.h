@@ -40,18 +40,20 @@ class GUI_EXPORT QgsSvgBrowserWidget : public QWidget, private Ui::QgsSvgBrowser
     //! Constructor
     explicit QgsSvgBrowserWidget( QWidget *parent = nullptr );
 
+    //! Sets the current path of SVG
     void setPath( const QString &path );
 
+    //! Returns the current path
     QString path() const {return mPath;}
 
-    void showEvent( QShowEvent *event ) override;
-
-    // TODO QGIS 4: make private
-    void populateList() SIP_SKIP;
-
+    //! Populates the list of SVG locations
+    void populateList() SIP_SKIP; // TODO QGIS 4: make private
 
   signals:
     void pathChanged( const QString &path );
+
+  protected:
+    void showEvent( QShowEvent *event ) override;
 
   private slots:
     void onSelectionChange( const QModelIndex index );
@@ -60,15 +62,11 @@ class GUI_EXPORT QgsSvgBrowserWidget : public QWidget, private Ui::QgsSvgBrowser
     void updateSelection();
     void populateIcons( const QModelIndex &idx );
 
-
     // store the path to be used to update selection
     QString mPath;
     bool mListPopulated = false;
     bool mSelectionDirty = true;
     int mIconSize = 30;
-
-  signals:
-
 
 };
 
