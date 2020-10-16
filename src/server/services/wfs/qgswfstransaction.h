@@ -112,7 +112,7 @@ namespace QgsWfs
   /**
    * Transform GML feature nodes to features
    */
-  QgsFeatureList featuresFromGML( QDomNodeList featureNodeList, QgsVectorDataProvider *provider );
+  QgsFeatureList featuresFromGML( QDomNodeList featureNodeList, QgsVectorLayer *layer );
 
   /**
    * Perform the transaction
