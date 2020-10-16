@@ -5728,13 +5728,6 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   QVariant limitValue = node->eval( parent, context );
   ENSURE_NO_EVAL_ERROR
   qlonglong limit = QgsExpressionUtils::getIntValue( limitValue, parent );
-  if ( ! isNearestFunc )
-  {
-    // for all functions but nearest_neighbour, the limit parameters limits queryset.
-    // (for nearest_neighbour, it will be used by the spatial index below, which will limit
-    // but taking distance into account)
-    request.setLimit( limit );
-  }
 
   // Fifth parameter (for nearest only) is the max distance
   double max_distance = 0;
@@ -5865,16 +5858,18 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
 
 
   bool found = false;
+  int foundCount = 0;
   QVariantList results;
 
   QListIterator<QgsFeature> i( features );
-  while ( i.hasNext() )
+  while ( i.hasNext() && ( limit == -1 || foundCount < limit ) )
   {
     QgsFeature feat2 = i.next();
 
     if ( ! relationFunction || ( geometry.*relationFunction )( feat2.geometry() ) ) // Calls the method provided as template argument for the function (e.g. QgsGeometry::intersects)
     {
       found = true;
+      foundCount++;
 
       // We just want a single boolean result if there is any intersect: finish and return true
       if ( testOnly )
