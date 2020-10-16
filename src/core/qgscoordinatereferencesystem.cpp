@@ -276,7 +276,7 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString &definition )
     {
       // found a match in the cache
       *this = crsIt.value();
-      return true;
+      return d->mIsValid;
     }
   }
   locker.unlock();
@@ -386,7 +386,7 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
     {
       // found a match in the cache
       *this = crsIt.value();
-      return true;
+      return d->mIsValid;
     }
   }
   locker.unlock();
@@ -410,8 +410,13 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
     {
       locker.changeMode( QgsReadWriteLocker::Write );
       if ( !sDisableOgcCache )
+<<<<<<< HEAD
         sOgcCache.insert( crs, *this );
       return true;
+=======
+        sOgcCache()->insert( crs, *this );
+      return d->mIsValid;
+>>>>>>> ae27767cc8... FIX: QgsCoordinateReferenceSystem::createFrom* has to return CRS's validity
     }
   }
 
@@ -429,8 +434,13 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
       {
         locker.changeMode( QgsReadWriteLocker::Write );
         if ( !sDisableOgcCache )
+<<<<<<< HEAD
           sOgcCache.insert( crs, *this );
         return true;
+=======
+          sOgcCache()->insert( crs, *this );
+        return d->mIsValid;
+>>>>>>> ae27767cc8... FIX: QgsCoordinateReferenceSystem::createFrom* has to return CRS's validity
       }
     }
   }
@@ -440,8 +450,13 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
   {
     locker.changeMode( QgsReadWriteLocker::Write );
     if ( !sDisableOgcCache )
+<<<<<<< HEAD
       sOgcCache.insert( crs, *this );
     return true;
+=======
+      sOgcCache()->insert( crs, *this );
+    return d->mIsValid;
+>>>>>>> ae27767cc8... FIX: QgsCoordinateReferenceSystem::createFrom* has to return CRS's validity
   }
 
   // NAD27
@@ -479,8 +494,13 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
 
   locker.changeMode( QgsReadWriteLocker::Write );
   if ( !sDisableOgcCache )
+<<<<<<< HEAD
     sOgcCache.insert( crs, QgsCoordinateReferenceSystem() );
   return false;
+=======
+    sOgcCache()->insert( crs, QgsCoordinateReferenceSystem() );
+  return d->mIsValid;
+>>>>>>> ae27767cc8... FIX: QgsCoordinateReferenceSystem::createFrom* has to return CRS's validity
 }
 
 // Misc helper functions -----------------------
@@ -511,7 +531,7 @@ bool QgsCoordinateReferenceSystem::createFromPostgisSrid( const long id )
     {
       // found a match in the cache
       *this = crsIt.value();
-      return true;
+      return d->mIsValid;
     }
   }
   locker.unlock();
@@ -531,7 +551,7 @@ bool QgsCoordinateReferenceSystem::createFromPostgisSrid( const long id )
         if ( !sDisableSrIdCache )
           sSrIdCache.insert( id, *this );
 
-        return true;
+        return d->mIsValid;
       }
     }
   }
@@ -556,7 +576,7 @@ bool QgsCoordinateReferenceSystem::createFromSrsId( const long id )
     {
       // found a match in the cache
       *this = crsIt.value();
-      return true;
+      return d->mIsValid;
     }
   }
   locker.unlock();
@@ -574,8 +594,13 @@ bool QgsCoordinateReferenceSystem::createFromSrsId( const long id )
       {
         locker.changeMode( QgsReadWriteLocker::Write );
         if ( !sDisableSrsIdCache )
+<<<<<<< HEAD
           sSrsIdCache.insert( id, *this );
         return true;
+=======
+          sSrsIdCache()->insert( id, *this );
+        return d->mIsValid;
+>>>>>>> ae27767cc8... FIX: QgsCoordinateReferenceSystem::createFrom* has to return CRS's validity
       }
     }
   }
@@ -836,7 +861,19 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
     {
       // found a match in the cache
       *this = crsIt.value();
+<<<<<<< HEAD
       return true;
+=======
+
+      if ( !description.isEmpty() && d->mDescription.isEmpty() )
+      {
+        // now we have a name for a previously unknown CRS! Update the cached CRS accordingly, so that we use the name from now on...
+        d->mDescription = description;
+        locker.changeMode( QgsReadWriteLocker::Write );
+        sWktCache()->insert( wkt, *this );
+      }
+      return d->mIsValid;
+>>>>>>> ae27767cc8... FIX: QgsCoordinateReferenceSystem::createFrom* has to return CRS's validity
     }
   }
   locker.unlock();
@@ -914,7 +951,7 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString )
     {
       // found a match in the cache
       *this = crsIt.value();
-      return true;
+      return d->mIsValid;
     }
   }
   locker.unlock();
@@ -946,10 +983,21 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString )
       const QString authid = QStringLiteral( "%1:%2" ).arg( authName, authCode );
       if ( createFromOgcWmsCrs( authid ) )
       {
+<<<<<<< HEAD
         locker.changeMode( QgsReadWriteLocker::Write );
         if ( !sDisableProj4Cache )
           sProj4Cache.insert( projString, *this );
         return true;
+=======
+        const QString authid = QStringLiteral( "%1:%2" ).arg( authName, authCode );
+        if ( createFromOgcWmsCrs( authid ) )
+        {
+          locker.changeMode( QgsReadWriteLocker::Write );
+          if ( !sDisableProjCache )
+            sProj4Cache()->insert( projString, *this );
+          return d->mIsValid;
+        }
+>>>>>>> ae27767cc8... FIX: QgsCoordinateReferenceSystem::createFrom* has to return CRS's validity
       }
     }
   }
@@ -1601,8 +1649,13 @@ bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt, bool allowP
       {
         locker.changeMode( QgsReadWriteLocker::Write );
         if ( !sDisableWktCache )
+<<<<<<< HEAD
           sWktCache.insert( wkt, *this );
         return true;
+=======
+          sWktCache()->insert( wkt, *this );
+        return d->mIsValid;
+>>>>>>> ae27767cc8... FIX: QgsCoordinateReferenceSystem::createFrom* has to return CRS's validity
       }
     }
     else
