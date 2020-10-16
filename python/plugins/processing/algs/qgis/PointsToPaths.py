@@ -44,7 +44,8 @@ from qgis.core import (QgsExpression,
                        QgsProcessingFeatureSource,
                        QgsProcessing,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterFolderDestination)
+                       QgsProcessingParameterFolderDestination,
+                       QgsProcessingParameterDefinition)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from PyQt5.QtCore import QVariant
@@ -55,6 +56,7 @@ class PointsToPaths(QgisAlgorithm):
     CLOSE_PATH = 'CLOSE_PATH'
     GROUP_FIELD = 'GROUP_FIELD'
     ORDER_FIELD = 'ORDER_FIELD'
+    ORDER_EXPRESSION = 'ORDER_EXPRESSION'
     DATE_FORMAT = 'DATE_FORMAT'
     OUTPUT = 'OUTPUT'
     OUTPUT_TEXT_DIR = 'OUTPUT_TEXT_DIR'
@@ -76,7 +78,11 @@ class PointsToPaths(QgisAlgorithm):
                                                               self.tr('Input point layer'), [QgsProcessing.TypeVectorPoint]))
         self.addParameter(QgsProcessingParameterBoolean(self.CLOSE_PATH,
                                                         self.tr('Close path'), defaultValue=False))
-        self.addParameter(QgsProcessingParameterExpression(self.ORDER_FIELD,
+        order_field_param = QgsProcessingParameterField(self.ORDER_FIELD,
+                                                        self.tr('Order field'), parentLayerParameterName=self.INPUT, optional=True)
+        order_field_param.setFlags(order_field_param.flags() | QgsProcessingParameterDefinition.FlagHidden)
+        self.addParameter(order_field_param)
+        self.addParameter(QgsProcessingParameterExpression(self.ORDER_EXPRESSION,
                                                            self.tr('Order expression'), parentLayerParameterName=self.INPUT))
         self.addParameter(QgsProcessingParameterField(self.GROUP_FIELD,
                                                       self.tr('Group field'), parentLayerParameterName=self.INPUT, optional=True))
@@ -101,7 +107,8 @@ class PointsToPaths(QgisAlgorithm):
 
         close_path = self.parameterAsBool(parameters, self.CLOSE_PATH, context)
         group_field_name = self.parameterAsString(parameters, self.GROUP_FIELD, context)
-        order_expression = self.parameterAsString(parameters, self.ORDER_FIELD, context)
+        order_field_name = self.parameterAsString(parameters, self.ORDER_FIELD, context)
+        order_expression = self.parameterAsString(parameters, self.ORDER_EXPRESSION, context)
         date_format = self.parameterAsString(parameters, self.DATE_FORMAT, context)
         text_dir = self.parameterAsString(parameters, self.OUTPUT_TEXT_DIR, context)
 
@@ -111,6 +118,9 @@ class PointsToPaths(QgisAlgorithm):
             group_field_def = source.fields().at(group_field_index)
         else:
             group_field_def = None
+
+        if order_field_name:
+            order_expression = QgsExpression.quotedColumnRef(order_field_name)
 
         expression_context = self.createExpressionContext(parameters, context, source)
         expression = QgsExpression(order_expression)
