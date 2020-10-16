@@ -367,40 +367,33 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
     return false;
   }
 
+  // Create an index of all neighbouring vertices
+  QgsSpatialIndex neighbourVerticesIndex( QgsSpatialIndex::Flag::FlagStoreFeatureGeometries );
+  int id = 0;
+  for ( const QgsFeature &neighbour : neighbours )
+  {
+    QgsVertexIterator vit = neighbour.geometry().vertices();
+    while ( vit.hasNext() )
+    {
+      QgsPoint pt = vit.next();
+      QgsFeature f;
+      f.setId( id ); // required for SpatialIndex to return the correct result
+      f.setGeometry( QgsGeometry( pt.clone() ) );
+      neighbourVerticesIndex.addFeature( f );
+      id++;
+    }
+  }
 
+  // Snap to the closest vertex
   QgsPolyline snappedRing;
   QgsVertexIterator iterator = errGeometry->vertices();
   while ( iterator.hasNext() )
   {
     QgsPoint pt = iterator.next();
-    QgsVertexId id;
-
-    // We iterate through all neighbours points to find the closest one.
-    // Note that we cannot use a nearestNeighbour as it's not guaranteed to return the feature
-    // with the closest vertex (distance can be 0 if we are lying inside the feature, even if far
-    // from any vertex)
-    double nearestDist = -1;
-    QgsPoint closestPoint;
-    QListIterator<QgsFeature> neighboursIt( neighbours );
-    while ( neighboursIt.hasNext() )
+    QgsGeometry closestGeom = neighbourVerticesIndex.geometry( neighbourVerticesIndex.nearestNeighbor( QgsPointXY( pt ) ).first() );
+    if ( !closestGeom.isEmpty() )
     {
-      QgsGeometry neighbourGeom = neighboursIt.next().geometry();
-      QgsVertexIterator neighbourIterator = neighbourGeom.vertices();
-      while ( neighbourIterator.hasNext() )
-      {
-        QgsPoint neighbourPt = neighbourIterator.next();
-        double dist = pt.distanceSquared( neighbourPt );
-        if ( nearestDist == -1 || dist < nearestDist )
-        {
-          nearestDist = dist;
-          closestPoint = neighbourPt;
-        }
-      }
-    }
-
-    if ( nearestDist != -1 )
-    {
-      snappedRing.append( closestPoint );
+      snappedRing.append( QgsPoint( closestGeom.vertexAt( 0 ) ) );
     }
   }
 
