@@ -97,7 +97,7 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
   for ( int i = 0; i < fields.size(); ++i )
   {
     const QgsField field = fields.at( i );
-    DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Field, field.name(), field.name(), QColor() );
+    DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Field, field.name(), field.name() );
     itemData.setShowLabel( true );
 
     FieldConfig cfg( mLayer, i );
