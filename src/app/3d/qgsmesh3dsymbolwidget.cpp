@@ -65,8 +65,6 @@ QgsMesh3dSymbolWidget::QgsMesh3dSymbolWidget( QgsMeshLayer *meshLayer, QWidget *
            this, &QgsMesh3dSymbolWidget::changed );
 
   connect( mArrowsFixedSizeCheckBox, &QCheckBox::clicked, this, &QgsMesh3dSymbolWidget::changed );
-
-  onColoringTypeChanged();
 }
 
 void QgsMesh3dSymbolWidget::setSymbol( const QgsMesh3DSymbol *symbol )
@@ -97,6 +95,8 @@ void QgsMesh3dSymbolWidget::configureForTerrain()
   mComboBoxTextureType->addItem( tr( "Color Ramp Shader" ), QgsMesh3DSymbol::ColorRamp );
   enableVerticalSetting( false );
   enableArrowSettings( false );
+
+  onColoringTypeChanged();
 }
 
 void QgsMesh3dSymbolWidget::configureForDataset()
@@ -105,6 +105,8 @@ void QgsMesh3dSymbolWidget::configureForDataset()
   mGroupBoxColorRampShader->hide();
   enableVerticalSetting( true );
   enableArrowSettings( true );
+
+  onColoringTypeChanged();
 }
 
 void QgsMesh3dSymbolWidget::setLayer( QgsMeshLayer *meshLayer, bool updateSymbol )
