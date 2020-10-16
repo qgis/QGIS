@@ -282,7 +282,7 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString &definition )
     {
       // found a match in the cache
       *this = crsIt.value();
-      return true;
+      return d->mIsValid;
     }
   }
   locker.unlock();
@@ -398,7 +398,7 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
     {
       // found a match in the cache
       *this = crsIt.value();
-      return true;
+      return d->mIsValid;
     }
   }
   locker.unlock();
@@ -423,7 +423,7 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
       locker.changeMode( QgsReadWriteLocker::Write );
       if ( !sDisableOgcCache )
         sOgcCache()->insert( crs, *this );
-      return true;
+      return d->mIsValid;
     }
   }
 
@@ -442,7 +442,7 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
         locker.changeMode( QgsReadWriteLocker::Write );
         if ( !sDisableOgcCache )
           sOgcCache()->insert( crs, *this );
-        return true;
+        return d->mIsValid;
       }
     }
   }
@@ -453,7 +453,7 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
     locker.changeMode( QgsReadWriteLocker::Write );
     if ( !sDisableOgcCache )
       sOgcCache()->insert( crs, *this );
-    return true;
+    return d->mIsValid;
   }
 
   // NAD27
@@ -492,7 +492,7 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
   locker.changeMode( QgsReadWriteLocker::Write );
   if ( !sDisableOgcCache )
     sOgcCache()->insert( crs, QgsCoordinateReferenceSystem() );
-  return false;
+  return d->mIsValid;
 }
 
 // Misc helper functions -----------------------
@@ -523,7 +523,7 @@ bool QgsCoordinateReferenceSystem::createFromPostgisSrid( const long id )
     {
       // found a match in the cache
       *this = crsIt.value();
-      return true;
+      return d->mIsValid;
     }
   }
   locker.unlock();
@@ -543,7 +543,7 @@ bool QgsCoordinateReferenceSystem::createFromPostgisSrid( const long id )
         if ( !sDisableSrIdCache )
           sSrIdCache()->insert( id, *this );
 
-        return true;
+        return d->mIsValid;
       }
     }
   }
@@ -568,7 +568,7 @@ bool QgsCoordinateReferenceSystem::createFromSrsId( const long id )
     {
       // found a match in the cache
       *this = crsIt.value();
-      return true;
+      return d->mIsValid;
     }
   }
   locker.unlock();
@@ -587,7 +587,7 @@ bool QgsCoordinateReferenceSystem::createFromSrsId( const long id )
         locker.changeMode( QgsReadWriteLocker::Write );
         if ( !sDisableSrsIdCache )
           sSrsIdCache()->insert( id, *this );
-        return true;
+        return d->mIsValid;
       }
     }
   }
@@ -869,7 +869,7 @@ bool QgsCoordinateReferenceSystem::createFromWktInternal( const QString &wkt, co
         locker.changeMode( QgsReadWriteLocker::Write );
         sWktCache()->insert( wkt, *this );
       }
-      return true;
+      return d->mIsValid;
     }
   }
   locker.unlock();
@@ -954,7 +954,7 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString, co
     {
       // found a match in the cache
       *this = crsIt.value();
-      return true;
+      return d->mIsValid;
     }
   }
   locker.unlock();
@@ -991,7 +991,7 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString, co
           locker.changeMode( QgsReadWriteLocker::Write );
           if ( !sDisableProjCache )
             sProj4Cache()->insert( projString, *this );
-          return true;
+          return d->mIsValid;
         }
       }
     }
@@ -1654,7 +1654,7 @@ bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt, bool allowP
         locker.changeMode( QgsReadWriteLocker::Write );
         if ( !sDisableWktCache )
           sWktCache()->insert( wkt, *this );
-        return true;
+        return d->mIsValid;
       }
     }
     else
