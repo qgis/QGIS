@@ -599,12 +599,18 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, pr
     void setContext( const QgsSymbolWidgetContext &context ) override;
 
   public slots:
+    //! Sets the SVG path
     void setSvgPath( const QString &name );
 
 
   protected:
     // TODO QGIS 4: remove
-    Q_DECL_DEPRECATED void populateList() {};
+
+    /**
+     * This method does nothing anymore, the loading is automatic
+     * \deprecated since QGIS 3.16
+     */
+    Q_DECL_DEPRECATED void populateList() SIP_DEPRECATED {}
 
     /**
      * Updates the GUI to reflect the SVG marker symbol \a layer.
