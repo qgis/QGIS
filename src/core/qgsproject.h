@@ -500,9 +500,32 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     QStringList readListEntry( const QString &scope, const QString &key, const QStringList &def = QStringList(), bool *ok = nullptr ) const;
 
+    /**
+     * \returns entry value as string from \a scope given its \a key
+     * \param def returned value if key doesn't exist
+     * \param ok set to TRUE if key exists and has been successfully retrieved
+     */
     QString readEntry( const QString &scope, const QString &key, const QString &def = QString(), bool *ok = nullptr ) const;
+
+    /**
+     * \returns entry value as integer from \a scope given its \a key
+     * \param def returned value if key doesn't exist
+     * \param ok set to TRUE if key exists and has been successfully retrieved
+     */
     int readNumEntry( const QString &scope, const QString &key, int def = 0, bool *ok = nullptr ) const;
+
+    /**
+     * \returns entry value as double from \a scope given its \a key
+     * \param def returned value if key doesn't exist
+     * \param ok set to TRUE if key exists and has been successfully retrieved
+     */
     double readDoubleEntry( const QString &scope, const QString &key, double def = 0, bool *ok = nullptr ) const;
+
+    /**
+     * \returns entry value as boolean from \a scope given its \a key
+     * \param def returned value if key doesn't exist
+     * \param ok set to TRUE if key exists and has been successfully retrieved
+     */
     bool readBoolEntry( const QString &scope, const QString &key, bool def = false, bool *ok = nullptr ) const;
 
     //! Remove the given key

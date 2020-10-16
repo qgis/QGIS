@@ -484,9 +484,40 @@ implying a hierarchy of keys and corresponding values
 %End
 
     QString readEntry( const QString &scope, const QString &key, const QString &def = QString(), bool *ok = 0 ) const;
+%Docstring
+
+:return: entry value as string from ``scope`` given its ``key``
+
+:param def: returned value if key doesn't exist
+:param ok: set to ``True`` if key exists and has been successfully retrieved
+%End
+
     int readNumEntry( const QString &scope, const QString &key, int def = 0, bool *ok = 0 ) const;
+%Docstring
+
+:return: entry value as integer from ``scope`` given its ``key``
+
+:param def: returned value if key doesn't exist
+:param ok: set to ``True`` if key exists and has been successfully retrieved
+%End
+
     double readDoubleEntry( const QString &scope, const QString &key, double def = 0, bool *ok = 0 ) const;
+%Docstring
+
+:return: entry value as double from ``scope`` given its ``key``
+
+:param def: returned value if key doesn't exist
+:param ok: set to ``True`` if key exists and has been successfully retrieved
+%End
+
     bool readBoolEntry( const QString &scope, const QString &key, bool def = false, bool *ok = 0 ) const;
+%Docstring
+
+:return: entry value as boolean from ``scope`` given its ``key``
+
+:param def: returned value if key doesn't exist
+:param ok: set to ``True`` if key exists and has been successfully retrieved
+%End
 
     bool removeEntry( const QString &scope, const QString &key );
 %Docstring

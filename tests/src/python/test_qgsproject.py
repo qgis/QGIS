@@ -191,9 +191,16 @@ class TestQgsProject(unittest.TestCase):
         prj.read(os.path.join(TEST_DATA_DIR, 'labeling/test-labeling.qgs'))
 
         # valid key, valid int value
-        self.assertEqual(prj.readNumEntry("SpatialRefSys", "/ProjectionsEnabled", -1)[0], 0)
+        self.assertEqual(prj.readNumEntry("SpatialRefSys", "/ProjectionsEnabled", -1), (0, True))
+        self.assertEqual(prj.readEntry("SpatialRefSys", "/ProjectCrs"), ("EPSG:32613", True))
+        self.assertEqual(prj.readBoolEntry("PAL", "/ShowingCandidates"), (False, True))
+        self.assertEqual(prj.readNumEntry("PAL", "/CandidatesPolygon"), (8., True))
+
         # invalid key
-        self.assertEqual(prj.readNumEntry("SpatialRefSys", "/InvalidKey", -1)[0], -1)
+        self.assertEqual(prj.readNumEntry("SpatialRefSys", "/InvalidKey", -1), (-1, False))
+        self.assertEqual(prj.readEntry("SpatialRefSys", "/InvalidKey", "wrong"), ("wrong", False))
+        self.assertEqual(prj.readBoolEntry("PAL", "/InvalidKey", True), (True, False))
+        self.assertEqual(prj.readDoubleEntry("PAL", "/InvalidKey", 42.), (42., False))
 
     def testEmbeddedGroup(self):
         testdata_path = unitTestDataPath('embedded_groups') + '/'

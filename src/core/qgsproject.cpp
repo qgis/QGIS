@@ -2540,6 +2540,8 @@ QString QgsProject::readEntry( const QString &scope,
     if ( valid )
       return value.toString();
   }
+  else if ( ok )
+    *ok = false;
 
   return def;
 }
@@ -2587,6 +2589,8 @@ double QgsProject::readDoubleEntry( const QString &scope, const QString &key,
     if ( valid )
       return value.toDouble();
   }
+  else if ( ok )
+    *ok = false;
 
   return def;
 }
@@ -2607,6 +2611,8 @@ bool QgsProject::readBoolEntry( const QString &scope, const QString &key, bool d
     if ( valid )
       return value.toBool();
   }
+  else if ( ok )
+    *ok = false;
 
   return def;
 }
