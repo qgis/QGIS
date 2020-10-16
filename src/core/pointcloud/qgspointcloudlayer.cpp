@@ -23,7 +23,7 @@
 QgsPointCloudLayer::QgsPointCloudLayer( const QString &path, const QString &baseName )
   : QgsMapLayer( QgsMapLayerType::PointCloudLayer, path, baseName )
 {
-
+  setValid( loadDataSource() );
 }
 
 QgsPointCloudLayer::~QgsPointCloudLayer() = default;
@@ -95,10 +95,11 @@ QString QgsPointCloudLayer::loadDefaultStyle( bool &resultFlag )
 
 QgsPointCloudIndex *QgsPointCloudLayer::pointCloudIndex() const
 {
-  return mPointCloudIndex;
+  return mPointCloudIndex.get();
 }
 
 bool QgsPointCloudLayer::loadDataSource()
 {
-  return false;
+  mPointCloudIndex.reset( new QgsPointCloudIndex() );
+  return mPointCloudIndex->load( source() );
 }

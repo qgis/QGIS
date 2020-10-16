@@ -439,7 +439,6 @@
 %Include auto_generated/mesh/qgsmeshcalculator.sip
 %Include auto_generated/pointcloud/qgspointcloudlayer.sip
 %Include auto_generated/pointcloud/qgspointcloudrenderer.sip
-%Include auto_generated/pointcloud/qgspointcloudindex.sip
 %Include auto_generated/metadata/qgsabstractmetadatabase.sip
 %Include auto_generated/metadata/qgslayermetadata.sip
 %Include auto_generated/metadata/qgslayermetadataformatter.sip
