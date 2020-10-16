@@ -806,7 +806,10 @@ QDomElement QgsWFSProvider::geometryElement( const QgsGeometry &geometry, QDomDo
     {
       gmlVersion = QgsOgcUtils::GML_2_1_2;
     }
-    applyAxisInversion = ( crs().hasAxisInverted() && ! mShared->mURI.ignoreAxisOrientation() )
+    // For servers like Geomedia and QGIS Server that advertise EPSG:XXXX in capabilities even in WFS 1.1 or 2.0
+    // cpabilities useEPSGColumnFormat is set.
+    // We follow GeoServer convention here which is to treat EPSG:4326 as lon/lat
+    applyAxisInversion = ( crs().hasAxisInverted() && ! mShared->mURI.ignoreAxisOrientation() && ! mShared->mCaps.useEPSGColumnFormat )
                          || mShared->mURI.invertAxisOrientation();
   }
   else // 1.0
