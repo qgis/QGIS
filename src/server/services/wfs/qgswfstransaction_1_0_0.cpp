@@ -461,7 +461,9 @@ namespace QgsWfs
 
           if ( !geometryElem.isNull() )
           {
-            QgsGeometry g = QgsOgcUtils::geometryFromGML( geometryElem );
+            const QgsOgcUtils::Context context { vlayer, provider->transformContext() };
+            QgsGeometry g = QgsOgcUtils::geometryFromGML( geometryElem, context );
+
             if ( g.isNull() )
             {
               action.error = true;
