@@ -1245,9 +1245,11 @@ void TestQgsGeometryChecks::testOverlapCheckToleranceBug()
   double areaOld = f.geometry().area();
   QgsPoint pointOld_1 = f.geometry().vertexAt( 1 );
   QgsPoint pointOld_2 = f.geometry().vertexAt( 2 );
+
+  // Just making sure we've got the right feature/point
   QCOMPARE( areaOld, 10442.710061549426 );
-  QCOMPARE( pointOld_1, QgsPoint( 2537221.53079314017668366, 1152360.02460834058001637 ) );
-  QCOMPARE( pointOld_2, QgsPoint( 2537366.84566075634211302, 1152360.28978145681321621 ) );
+  QGSCOMPARENEARPOINT( pointOld_1, QgsPoint( 2537221.53079314017668366, 1152360.02460834058001637 ), 0.00001 );
+  QGSCOMPARENEARPOINT( pointOld_2, QgsPoint( 2537366.84566075634211302, 1152360.28978145681321621 ), 0.00001 );
 
   QgsGeometryCheck::Changes changes;
   QMap<QString, int> mergeAttrs;

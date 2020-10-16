@@ -389,7 +389,7 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
       while ( neighbourIterator.hasNext() )
       {
         QgsPoint neighbourPt = neighbourIterator.next();
-        double dist = pt.distance( neighbourPt );
+        double dist = pt.distanceSquared( neighbourPt );
         if ( nearestDist == -1 || dist < nearestDist )
         {
           nearestDist = dist;
