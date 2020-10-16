@@ -1241,7 +1241,7 @@ void QgsRuleBasedRenderer::refineRuleRanges( QgsRuleBasedRenderer::Rule *initial
                      QString::number( rng.lowerValue(), 'f', 4 ),
                      QString::number( rng.upperValue(), 'f', 4 ) );
     firstRange = false;
-    QString label = filter;
+    QString label =  rng.label().isEmpty() ? filter : rng.label();
     initialRule->appendChild( new Rule( rng.symbol()->clone(), 0, 0, filter, label ) );
   }
 }
