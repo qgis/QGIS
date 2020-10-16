@@ -287,7 +287,6 @@ int QgsProcessingExec::run( const QStringList &constArgs )
     QgsUnitTypes::AreaUnit areaUnit = QgsUnitTypes::AreaUnknownUnit;
     QString projectPath;
     QVariantMap params;
-    bool paramsEnded = false;
     int i = 3;
     for ( ; i < args.count(); i++ )
     {
@@ -295,7 +294,6 @@ int QgsProcessingExec::run( const QStringList &constArgs )
 
       if ( arg == QLatin1String( "--" ) )
       {
-        paramsEnded = true;
         break;
       }
 
