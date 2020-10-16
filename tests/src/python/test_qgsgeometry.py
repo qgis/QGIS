@@ -37,7 +37,8 @@ from qgis.core import (
     QgsTriangle,
     QgsRenderChecker,
     QgsCoordinateReferenceSystem,
-    QgsProject
+    QgsProject,
+    QgsVertexId
 )
 from qgis.PyQt.QtCore import QDir, QPointF, QRectF
 from qgis.PyQt.QtGui import QImage, QPainter, QPen, QColor, QBrush, QPainterPath, QPolygonF, QTransform
@@ -5697,6 +5698,30 @@ class TestQgsGeometry(unittest.TestCase):
             self.assertEqual(res, t[3],
                              "mismatch for {}, expected:\n{}\nGot:\n{}\n".format(t[0], t[3],
                                                                                  res[0].where() if res else ''))
+
+    def testCollectDuplicateNodes(self):
+        g = QgsGeometry.fromWkt("LineString (1 1, 1 1, 1 1, 1 2, 1 3, 1 3, 1 3, 1 4, 1 5, 1 6, 1 6)")
+        res = g.constGet().collectDuplicateNodes()
+        self.assertCountEqual(res, [QgsVertexId(-1, -1, 1), QgsVertexId(-1, -1, 2), QgsVertexId(-1, -1, 5), QgsVertexId(-1, -1, 6), QgsVertexId(-1, -1, 10)])
+
+        g = QgsGeometry.fromWkt("LineString (1 1, 1 2, 1 3, 1 4, 1 5, 1 6)")
+        res = g.constGet().collectDuplicateNodes()
+        self.assertFalse(res)
+
+        g = QgsGeometry.fromWkt("LineStringZ (1 1 1, 1 1 2, 1 1 3, 1 2 1, 1 3 1, 1 3 1, 1 3 2, 1 4 1, 1 5 1, 1 6 1, 1 6 2)")
+        res = g.constGet().collectDuplicateNodes()
+        self.assertCountEqual(res, [QgsVertexId(-1, -1, 1), QgsVertexId(-1, -1, 2), QgsVertexId(-1, -1, 5), QgsVertexId(-1, -1, 6), QgsVertexId(-1, -1, 10)])
+
+        # consider z values
+        res = g.constGet().collectDuplicateNodes(useZValues=True)
+        self.assertEqual(res, [QgsVertexId(-1, -1, 5)])
+
+        # tolerance
+        g = QgsGeometry.fromWkt("LineString (1 1, 1 1.1, 1 2, 1 3, 1 3, 1 4, 1 5)")
+        res = g.constGet().collectDuplicateNodes()
+        self.assertCountEqual(res, [QgsVertexId(-1, -1, 4)])
+        res = g.constGet().collectDuplicateNodes(epsilon=0.5)
+        self.assertCountEqual(res, [QgsVertexId(-1, -1, 1), QgsVertexId(-1, -1, 4)])
 
     def testRandomPoints(self):
         """
