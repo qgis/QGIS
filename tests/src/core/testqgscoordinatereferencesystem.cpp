@@ -345,7 +345,7 @@ void TestQgsCoordinateReferenceSystem::ogcWmsCrsCache()
   QVERIFY( QgsCoordinateReferenceSystem::ogcCache().contains( QStringLiteral( "not a CRS" ) ) );
   // a second time, so invalid crs is fetched from cache
   QgsCoordinateReferenceSystem crs4;
-  QVERIFY( crs4.createFromOgcWmsCrs( QStringLiteral( "not a CRS" ) ) );
+  QVERIFY( !crs4.createFromOgcWmsCrs( QStringLiteral( "not a CRS" ) ) );
   QVERIFY( !crs4.isValid() );
 
   QgsCoordinateReferenceSystem::invalidateCache();
