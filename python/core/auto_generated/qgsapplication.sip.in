@@ -937,7 +937,7 @@ Set a single custom expression variable.
 .. versionadded:: 3.0
 %End
 
-    static int scaleIconSize( int standardSize );
+    static int scaleIconSize( int standardSize, bool applyDevicePixelRatio = false );
 %Docstring
 Scales an icon size to compensate for display pixel density, making the icon
 size hi-dpi friendly, whilst still resulting in pixel-perfect sizes for low-dpi
