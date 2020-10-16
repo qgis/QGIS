@@ -24,7 +24,8 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 import os
 from datetime import datetime
 
-from qgis.core import (QgsFeature,
+from qgis.core import (QgsExpression,
+                       QgsFeature,
                        QgsFeatureSink,
                        QgsFields,
                        QgsField,
@@ -38,6 +39,7 @@ from qgis.core import (QgsFeature,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
+                       QgsProcessingParameterExpression,
                        QgsProcessingParameterString,
                        QgsProcessingFeatureSource,
                        QgsProcessing,
@@ -45,6 +47,7 @@ from qgis.core import (QgsFeature,
                        QgsProcessingParameterFolderDestination)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+from PyQt5.QtCore import QVariant
 
 
 class PointsToPaths(QgisAlgorithm):
@@ -73,8 +76,8 @@ class PointsToPaths(QgisAlgorithm):
                                                               self.tr('Input point layer'), [QgsProcessing.TypeVectorPoint]))
         self.addParameter(QgsProcessingParameterBoolean(self.CLOSE_PATH,
                                                         self.tr('Close path'), defaultValue=False))
-        self.addParameter(QgsProcessingParameterField(self.ORDER_FIELD,
-                                                      self.tr('Order field'), parentLayerParameterName=self.INPUT))
+        self.addParameter(QgsProcessingParameterExpression(self.ORDER_FIELD,
+                                                           self.tr('Order expression'), parentLayerParameterName=self.INPUT))
         self.addParameter(QgsProcessingParameterField(self.GROUP_FIELD,
                                                       self.tr('Group field'), parentLayerParameterName=self.INPUT, optional=True))
         self.addParameter(QgsProcessingParameterString(self.DATE_FORMAT,
@@ -98,27 +101,29 @@ class PointsToPaths(QgisAlgorithm):
 
         close_path = self.parameterAsBool(parameters, self.CLOSE_PATH, context)
         group_field_name = self.parameterAsString(parameters, self.GROUP_FIELD, context)
-        order_field_name = self.parameterAsString(parameters, self.ORDER_FIELD, context)
+        order_expression = self.parameterAsString(parameters, self.ORDER_FIELD, context)
         date_format = self.parameterAsString(parameters, self.DATE_FORMAT, context)
         text_dir = self.parameterAsString(parameters, self.OUTPUT_TEXT_DIR, context)
 
         group_field_index = source.fields().lookupField(group_field_name)
-        order_field_index = source.fields().lookupField(order_field_name)
 
         if group_field_index >= 0:
             group_field_def = source.fields().at(group_field_index)
         else:
             group_field_def = None
-        order_field_def = source.fields().at(order_field_index)
+
+        expression_context = self.createExpressionContext(parameters, context, source)
+        expression = QgsExpression(order_expression)
+        if expression.hasParserError():
+            raise QgsProcessingException(expression.parserErrorString())
+        expression.prepare(expression_context)
 
         fields = QgsFields()
         if group_field_def is not None:
             fields.append(group_field_def)
-        begin_field = QgsField(order_field_def)
-        begin_field.setName('begin')
+        begin_field = QgsField('begin', QVariant.String)
         fields.append(begin_field)
-        end_field = QgsField(order_field_def)
-        end_field.setName('end')
+        end_field = QgsField('end', QVariant.String)
         fields.append(end_field)
 
         output_wkb = QgsWkbTypes.LineString
@@ -133,7 +138,9 @@ class PointsToPaths(QgisAlgorithm):
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         points = dict()
-        features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([group_field_index, order_field_index]), QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)
+        required_fields = expression.referencedColumns()
+        required_fields.add(group_field_name)
+        features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes(required_fields, source.fields()), QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)
         total = 100.0 / source.featureCount() if source.featureCount() else 0
         for current, f in enumerate(features):
             if feedback.isCanceled():
@@ -147,7 +154,8 @@ class PointsToPaths(QgisAlgorithm):
                 group = f[group_field_index]
             else:
                 group = 1
-            order = f[order_field_index]
+            expression_context.setFeature(f)
+            order = expression.evaluate(expression_context)
             if date_format != '':
                 order = datetime.strptime(str(order), date_format)
             if group in points:
