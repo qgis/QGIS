@@ -321,9 +321,11 @@ class CORE_EXPORT  QgsFields
 
     /**
      * Returns an icon corresponding to a field index, based on the field's type and source
+     * \param fieldIdx the field index
+     * \param considerOrigin if TRUE the icon will the origin of the field
      * \since QGIS 2.14
      */
-    QIcon iconForField( int fieldIdx ) const SIP_FACTORY;
+    QIcon iconForField( int fieldIdx, bool considerOrigin = false ) const SIP_FACTORY;
 #ifdef SIP_RUN
     % MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )

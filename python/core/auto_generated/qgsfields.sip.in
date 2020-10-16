@@ -291,9 +291,12 @@ Utility function to return a list of QgsField instances
     bool operator==( const QgsFields &other ) const;
     bool operator!=( const QgsFields &other ) const;
 
-    QIcon iconForField( int fieldIdx ) const /Factory/;
+    QIcon iconForField( int fieldIdx, bool considerOrigin = false ) const /Factory/;
 %Docstring
 Returns an icon corresponding to a field index, based on the field's type and source
+
+:param fieldIdx: the field index
+:param considerOrigin: if ``True`` the icon will the origin of the field
 
 .. versionadded:: 2.14
 %End

@@ -272,9 +272,24 @@ QgsFields::iterator QgsFields::end()
   return iterator( &d->fields.last() + 1 );
 }
 
-QIcon QgsFields::iconForField( int fieldIdx ) const
+QIcon QgsFields::iconForField( int fieldIdx, bool considerOrigin ) const
 {
-  return QgsFields::iconForFieldType( d->fields.at( fieldIdx ).field.type() );
+  if ( considerOrigin )
+  {
+    switch ( fieldOrigin( fieldIdx ) )
+    {
+      case QgsFields::OriginExpression:
+        return QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) );
+        break;
+
+      case QgsFields::OriginJoin:
+        return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/join.svg" ) );
+
+      default:
+        return iconForFieldType( d->fields.at( fieldIdx ).field.type() );
+    }
+  }
+  return iconForFieldType( d->fields.at( fieldIdx ).field.type() );
 }
 
 QIcon QgsFields::iconForFieldType( const QVariant::Type &type )

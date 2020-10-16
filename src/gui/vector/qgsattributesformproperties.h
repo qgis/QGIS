@@ -273,7 +273,7 @@ class GUI_EXPORT QgsAttributesDnDTree : public QTreeWidget
      * Adds a new item to a \a parent. If \a index is -1, the item is added to the end of the parent's existing children.
      * Otherwise it is inserted at the specified \a index.
      */
-    QTreeWidgetItem *addItem( QTreeWidgetItem *parent, QgsAttributesFormProperties::DnDTreeItemData data, int index = -1 );
+    QTreeWidgetItem *addItem( QTreeWidgetItem *parent, QgsAttributesFormProperties::DnDTreeItemData data, int index = -1, const QIcon &icon = QIcon() );
     QTreeWidgetItem *addContainer( QTreeWidgetItem *parent, const QString &title, int columnCount );
 
     enum Type
