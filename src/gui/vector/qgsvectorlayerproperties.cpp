@@ -207,8 +207,10 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     labelingDialog = nullptr;
     mOptsPage_Labels->setEnabled( false ); // disable labeling item
     mOptsPage_Masks->setEnabled( false ); // disable masking item
-    mGeometryGroupBox->setEnabled( false );
-    mGeometryGroupBox->setVisible( false );
+    mGeomGroupBox->setEnabled( false );
+    mGeomGroupBox->setVisible( false );
+    mCrsGroupBox->setEnabled( false );
+    mCrsGroupBox->setVisible( false );
   }
 
   // Create the Actions dialog tab

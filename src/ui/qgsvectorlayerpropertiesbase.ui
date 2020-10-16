@@ -556,12 +556,12 @@ border-radius: 2px;</string>
                 </widget>
                </item>
                <item>
-                <widget class="QgsCollapsibleGroupBox" name="mGeometryGroupBox">
+                <widget class="QgsCollapsibleGroupBox" name="mCrsGroupBox">
                  <property name="focusPolicy">
                   <enum>Qt::StrongFocus</enum>
                  </property>
                  <property name="title">
-                  <string>Geometry and Coordinate Reference System</string>
+                  <string>Assigned Coordinate Reference System (CRS)</string>
                  </property>
                  <property name="checkable">
                   <bool>false</bool>
@@ -574,13 +574,6 @@ border-radius: 2px;</string>
                    <number>6</number>
                   </property>
                   <item>
-                   <widget class="QLabel" name="label_5">
-                    <property name="text">
-                     <string>Set source coordinate reference system</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
                    <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
                     <property name="focusPolicy">
                      <enum>Qt::StrongFocus</enum>
@@ -588,7 +581,48 @@ border-radius: 2px;</string>
                    </widget>
                   </item>
                   <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_10">
+                   <widget class="QLabel" name="label_7">
+                    <property name="text">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Changing this option does not modify the original data source or perform any reprojection of features. Rather, it can be used to override the layer's CRS within this project if it could not be detected or has been incorrectly detected.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;The Processing “&lt;span style=&quot; font-style:italic;&quot;&gt;Reproject Layer&lt;/span&gt;” tool should be used to reproject features and permanently change a data source's CRS.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
+                    <property name="textFormat">
+                     <enum>Qt::RichText</enum>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="Line" name="line_2">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QgsCollapsibleGroupBox" name="mGeomGroupBox">
+                 <property name="focusPolicy">
+                  <enum>Qt::StrongFocus</enum>
+                 </property>
+                 <property name="title">
+                  <string>Geometry </string>
+                 </property>
+                 <property name="checkable">
+                  <bool>false</bool>
+                 </property>
+                 <property name="syncGroup" stdset="0">
+                  <string notr="true">vectorgeneral</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_31">
+                  <property name="spacing">
+                   <number>6</number>
+                  </property>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_11">
                     <item>
                      <widget class="QPushButton" name="pbnIndex">
                       <property name="text">
@@ -604,7 +638,7 @@ border-radius: 2px;</string>
                      </widget>
                     </item>
                     <item>
-                     <spacer name="horizontalSpacer_6">
+                     <spacer name="horizontalSpacer_10">
                       <property name="orientation">
                        <enum>Qt::Horizontal</enum>
                       </property>
@@ -619,7 +653,7 @@ border-radius: 2px;</string>
                    </layout>
                   </item>
                   <item>
-                   <widget class="Line" name="line_2">
+                   <widget class="Line" name="line_3">
                     <property name="orientation">
                      <enum>Qt::Vertical</enum>
                     </property>
