@@ -819,7 +819,7 @@ QDomElement QgsWFSProvider::geometryElement( const QgsGeometry &geometry, QDomDo
               geometry,
               transactionDoc,
               gmlVersion,
-              crs().authid(),
+              mShared->srsName(),
               applyAxisInversion,
               QString()
             );
