@@ -27,14 +27,11 @@
 #include <QVector>
 #include <QString>
 
-class QgsPointCloudDataBounds;
-class QgsVector3D;
-
 namespace QgsPointCloudDecoder
 {
-  QVector<qint32> decompressBinary(const QString& filename, QgsPointCloudDataBounds &db);
-  QVector<qint32> decompressZStandard(const QString& filename, QgsPointCloudDataBounds &db);
-  QVector<qint32> decompressLaz(const QString& filename, QgsPointCloudDataBounds &db);
+  QVector<qint32> decompressBinary( const QString &filename );
+  QVector<qint32> decompressZStandard( const QString &filename );
+  QVector<qint32> decompressLaz( const QString &filename );
 };
 
 

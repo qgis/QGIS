@@ -25,7 +25,7 @@
 
 #include <QDomElement>
 #include <QString>
-#include <QImage>
+#include <QPainter>
 
 class QgsRenderContext;
 class QgsPointCloudLayer;
@@ -55,16 +55,14 @@ class CORE_EXPORT QgsPointCloudRenderer: public QgsMapLayerRenderer
   private:
     QgsPointCloudLayer *mLayer = nullptr;
 
-    QImage img;
-    int imgW, imgH;
-    QgsPointCloudDataBounds mBounds;
+    // int imgW, imgH; // DO WE NEED AT ALL?
+    // QgsPointCloudDataBounds mBounds; // DO WE NEED AT ALL?
 
     // some stats
     int nodesDrawn = 0;
     int pointsDrawn = 0;
-    int drawingTime = 0;  // in msec
 
-    void drawData( const QVector<qint32> &data );
+    void drawData( QPainter *painter, const QVector<qint32> &data );
 };
 
 
