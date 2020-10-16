@@ -787,6 +787,46 @@ void QgsWFSProvider::reloadProviderData()
   mShared->invalidateCache();
 }
 
+QDomElement QgsWFSProvider::geometryElement( const QgsGeometry &geometry, QDomDocument &transactionDoc )
+{
+  QDomElement gmlElem;
+
+  // Determine axis orientation and gml version
+  bool applyAxisInversion;
+  QgsOgcUtils::GMLVersion gmlVersion;
+
+  if ( mShared->mWFSVersion.startsWith( QLatin1String( "1.1" ) ) )
+  {
+    // WFS 1.1.0 uses preferably GML 3, but ESRI mapserver in 2020 doesn't like it so we stick to GML2
+    if ( ! mShared->mServerPrefersCoordinatesForTransactions_1_1 )
+    {
+      gmlVersion = QgsOgcUtils::GML_3_1_0;
+    }
+    else
+    {
+      gmlVersion = QgsOgcUtils::GML_2_1_2;
+    }
+    applyAxisInversion = ( crs().hasAxisInverted() && ! mShared->mURI.ignoreAxisOrientation() )
+                         || mShared->mURI.invertAxisOrientation();
+  }
+  else // 1.0
+  {
+    gmlVersion = QgsOgcUtils::GML_2_1_2;
+    applyAxisInversion = mShared->mURI.invertAxisOrientation();
+  }
+
+  gmlElem = QgsOgcUtils::geometryToGML(
+              geometry,
+              transactionDoc,
+              gmlVersion,
+              crs().authid(),
+              applyAxisInversion,
+              QString()
+            );
+
+  return gmlElem;
+}
+
 QgsWkbTypes::Type QgsWFSProvider::wkbType() const
 {
   return mShared->mWKBType;
@@ -877,19 +917,10 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       {
         the_geom.convertToMultiType();
       }
-      QDomElement gmlElem;
-      // WFS 1.1.0 uses preferably GML 3, but ESRI mapserver in 2020 doesn't like it so we stick to GML2
-      if ( mShared->mWFSVersion == QStringLiteral( "1.1.0" ) && ! mShared->mServerPrefersCoordinatesForTransactions_1_1 )
+
+      const QDomElement gmlElem { geometryElement( the_geom, transactionDoc ) };
+      if ( ! gmlElem.isNull() )
       {
-        gmlElem = QgsOgcUtils::geometryToGML( the_geom, transactionDoc, QLatin1String( "GML3" ) );
-      }
-      else
-      {
-        gmlElem = QgsOgcUtils::geometryToGML( the_geom, transactionDoc, QLatin1String( "GML2" ) );
-      }
-      if ( !gmlElem.isNull() )
-      {
-        gmlElem.setAttribute( QStringLiteral( "srsName" ), crs().authid() );
         geomElem.appendChild( gmlElem );
         featureElem.appendChild( geomElem );
       }
@@ -1054,18 +1085,9 @@ bool QgsWFSProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
     nameElem.appendChild( nameText );
     propertyElem.appendChild( nameElem );
     QDomElement valueElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Value" ) );
-    QDomElement gmlElem;
-    // WFS 1.1.0 uses preferably GML 3, but ESRI mapserver in 2020 doesn't like it so we stick to GML2
-    if ( mShared->mWFSVersion == QStringLiteral( "1.1.0" ) && ! mShared->mServerPrefersCoordinatesForTransactions_1_1 )
-    {
-      gmlElem = QgsOgcUtils::geometryToGML( geomIt.value(), transactionDoc, QLatin1String( "GML3" ) );
-    }
-    else
-    {
-      gmlElem = QgsOgcUtils::geometryToGML( geomIt.value(), transactionDoc,  QLatin1String( "GML2" ) );
-    }
-    gmlElem.setAttribute( QStringLiteral( "srsName" ), crs().authid() );
-    valueElem.appendChild( gmlElem );
+
+    valueElem.appendChild( geometryElement( geomIt.value(), transactionDoc ) );
+
     propertyElem.appendChild( valueElem );
     updateElem.appendChild( propertyElem );
 

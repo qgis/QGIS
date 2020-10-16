@@ -376,7 +376,8 @@ bool QgsWFSDataSourceURI::hideDownloadProgressDialog() const
 
 bool QgsWFSDataSourceURI::preferCoordinatesForWfst11() const
 {
-  return mURI.hasParam( QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES );
+  return mURI.hasParam( QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES ) &&
+         mURI.param( QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES ).toUpper() == QLatin1String( "TRUE" );
 }
 
 QString QgsWFSDataSourceURI::build( const QString &baseUri,
