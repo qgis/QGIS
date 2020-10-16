@@ -19,8 +19,11 @@
 #include <QStringList>
 
 //qgis includes...
+#include "qgsrequesthandler.h"
 #include "qgsserverquerystringparameter.h"
 #include "qgsserverapicontext.h"
+#include "qgsbufferserverrequest.h"
+#include "qgsbufferserverresponse.h"
 #include "qgsserverrequest.h"
 #include "qgsserverexception.h"
 
@@ -56,6 +59,9 @@ class TestQgsServerQueryStringParameter : public QObject
 
     // Test default values
     void testDefaultValues();
+
+    // Test QgsRequestHandler::parseInput (i.e. POST requests) with special chars
+    void testParseInput();
 };
 
 
@@ -172,6 +178,24 @@ void TestQgsServerQueryStringParameter::testDefaultValues()
   request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=501" ) );
   QCOMPARE( p2.value( ctx ).toInt(), 501 );
 
+}
+
+void TestQgsServerQueryStringParameter::testParseInput()
+{
+  // Request with layers "a", "b", "c" and "äös + %&#"
+  QByteArray data( "SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&LAYERS=a%2Cb%2Cc%2C%C3%A4%C3%B6s+%2B+%25%26%23" );
+  QgsBufferServerRequest request( QStringLiteral( "http://localhost/wms/test" ), QgsServerRequest::PostMethod, QgsServerRequest::Headers(), &data );
+  QgsBufferServerResponse response;
+
+  QgsRequestHandler requestHandler( request, response );
+  requestHandler.parseInput();
+
+  QgsServerParameters params = request.serverParameters();
+  QMap<QString, QString> paramsMap = params.toMap();
+  QCOMPARE( paramsMap["SERVICE"], QStringLiteral( "WMS" ) );
+  QCOMPARE( paramsMap["VERSION"], QStringLiteral( "1.3.0" ) );
+  QCOMPARE( paramsMap["REQUEST"], QStringLiteral( "GetMap" ) );
+  QCOMPARE( paramsMap["LAYERS"], QStringLiteral( "a,b,c,äös + %&#" ) );
 }
 
 QGSTEST_MAIN( TestQgsServerQueryStringParameter )
