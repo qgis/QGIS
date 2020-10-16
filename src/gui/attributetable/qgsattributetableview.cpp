@@ -497,3 +497,20 @@ void QgsAttributeTableView::recreateActionWidgets()
   }
   mActionWidgets.clear();
 }
+
+void QgsAttributeTableView::scrollToFeature( const QgsFeatureId &fid, int col )
+{
+  QModelIndex index = mFilterModel->fidToIndex( fid );
+
+  if ( !index.isValid() )
+    return;
+
+  scrollTo( index );
+
+  QModelIndex selectionIndex = index.sibling( index.row(), col );
+
+  if ( !selectionIndex.isValid() )
+    return;
+
+  selectionModel()->setCurrentIndex( index, QItemSelectionModel::SelectCurrent );
+}
