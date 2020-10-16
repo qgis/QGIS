@@ -21,7 +21,7 @@
 #include "qgsrectangle.h"
 
 QgsPointCloudLayer::QgsPointCloudLayer( const QString &path, const QString &baseName )
-  : QgsMapLayer( QgsMapLayerType::PointCloudLayer, path, baseName )
+  : QgsMapLayer( QgsMapLayerType::PointCloudLayer, baseName, path )
 {
   setValid( loadDataSource() );
 }
@@ -37,7 +37,19 @@ QgsPointCloudLayer *QgsPointCloudLayer::clone() const
 
 QgsRectangle QgsPointCloudLayer::extent() const
 {
-  return QgsRectangle();
+  if ( !mPointCloudIndex )
+    return QgsRectangle();
+
+  QgsPointCloudDataBounds bounds = mPointCloudIndex->nodeBounds( mPointCloudIndex->root() );
+  QgsVector3D offset = mPointCloudIndex->offset();
+  QgsVector3D scale = mPointCloudIndex->scale();
+
+  double xMin = offset.x() + scale.x() * bounds.xMin();
+  double yMin = offset.y() + scale.y() * bounds.yMin();
+  double xMax = offset.x() + scale.x() * bounds.xMax();
+  double yMax = offset.y() + scale.y() * bounds.yMax();
+
+  return QgsRectangle( xMin, yMin, xMax, yMax );
 }
 
 QgsMapLayerRenderer *QgsPointCloudLayer::createMapRenderer( QgsRenderContext &rendererContext )
@@ -101,5 +113,10 @@ QgsPointCloudIndex *QgsPointCloudLayer::pointCloudIndex() const
 bool QgsPointCloudLayer::loadDataSource()
 {
   mPointCloudIndex.reset( new QgsPointCloudIndex() );
-  return mPointCloudIndex->load( source() );
+  bool success = mPointCloudIndex->load( source() );
+
+  if ( success )
+    setCrs( QgsCoordinateReferenceSystem::fromWkt( mPointCloudIndex->wkt() ) );
+
+  return success;
 }

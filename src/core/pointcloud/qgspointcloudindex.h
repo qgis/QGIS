@@ -107,9 +107,14 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
 
     QList<IndexedPointCloudNode> children( const IndexedPointCloudNode &n );
 
-    QVector<qint32> nodePositionDataAsInt32( const IndexedPointCloudNode &n, QgsVector3D scale, QgsVector3D offset, QgsPointCloudDataBounds &db );
+    QVector<qint32> nodePositionDataAsInt32( const IndexedPointCloudNode &n );
 
     QgsPointCloudDataBounds nodeBounds( const IndexedPointCloudNode &n );
+    QString wkt() const;
+
+    QgsVector3D scale() const;
+
+    QgsVector3D offset() const;
 
   private:
     QString mDirectory;
@@ -120,6 +125,8 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     QgsVector3D mOffset; //!< Offset of our int32 coordinates compared to CRS coords
     QgsPointCloudDataBounds mRootBounds;  //!< Bounds of the root node's cube (in int32 coordinates)
     int mSpan;  //!< Number of points in one direction in a single node
+
+    QString mWkt;
 };
 
 

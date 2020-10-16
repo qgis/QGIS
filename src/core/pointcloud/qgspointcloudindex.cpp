@@ -116,6 +116,7 @@ bool QgsPointCloudIndex::load( const QString &fileName )
     return false;
 
   const QDir directory = QFileInfo( fileName ).absoluteDir();
+  mDirectory = directory.absolutePath();
 
   QByteArray dataJson = f.readAll();
   QJsonParseError err;
@@ -133,7 +134,16 @@ bool QgsPointCloudIndex::load( const QString &fileName )
 
   mSpan = doc["span"].toInt();
 
+  // WKT
+  QJsonObject srs = doc["srs"].toObject();
+  mWkt = srs["wkt"].toString();
+
+  // rectangular
   QJsonArray bounds = doc["bounds"].toArray();
+  if ( bounds.size() != 6 )
+    return false;
+
+  QJsonArray bounds_conforming = doc["boundsConforming"].toArray();
   if ( bounds.size() != 6 )
     return false;
 
@@ -201,7 +211,7 @@ bool QgsPointCloudIndex::load( const QString &fileName )
 
   // load hierarchy
 
-  QFile fH( directory.filePath( "/ept-hierarchy/0-0-0-0.json" ) );
+  QFile fH( QStringLiteral( "%1/ept-hierarchy/0-0-0-0.json" ).arg( mDirectory ) );
   if ( !fH.open( QIODevice::ReadOnly ) )
     return false;
 
@@ -242,28 +252,28 @@ QList<IndexedPointCloudNode> QgsPointCloudIndex::children( const IndexedPointClo
   return lst;
 }
 
-QVector<qint32> QgsPointCloudIndex::nodePositionDataAsInt32( const IndexedPointCloudNode &n, QgsVector3D, QgsVector3D, QgsPointCloudDataBounds &db )
+QVector<qint32> QgsPointCloudIndex::nodePositionDataAsInt32( const IndexedPointCloudNode &n )
 {
   Q_ASSERT( mHierarchy.contains( n ) );
-  int count = mHierarchy[n];
+  // int count = mHierarchy[n];
 
   if ( mDataType == "binary" )
   {
     QString filename = QString( "%1/ept-data/%2.bin" ).arg( mDirectory ).arg( n.toString() );
     Q_ASSERT( QFile::exists( filename ) );
-    return QgsPointCloudDecoder::decompressBinary( filename, db );
+    return QgsPointCloudDecoder::decompressBinary( filename );
   }
   else if ( mDataType == "zstandard" )
   {
     QString filename = QString( "%1/ept-data/%2.zst" ).arg( mDirectory ).arg( n.toString() );
     Q_ASSERT( QFile::exists( filename ) );
-    return QgsPointCloudDecoder::decompressBinary( filename, db );
+    return QgsPointCloudDecoder::decompressBinary( filename );
   }
   else     // if ( mDataType == "laz" )
   {
     QString filename = QString( "%1/ept-data/%2.laz" ).arg( mDirectory ).arg( n.toString() );
     Q_ASSERT( QFile::exists( filename ) );
-    return QgsPointCloudDecoder::decompressBinary( filename, db );
+    return QgsPointCloudDecoder::decompressBinary( filename );
   }
 }
 
@@ -284,4 +294,19 @@ QgsPointCloudDataBounds QgsPointCloudIndex::nodeBounds( const IndexedPointCloudN
 
   QgsPointCloudDataBounds db( xMin, xMax, yMin, yMax, zMin, zMax );
   return db;
+}
+
+QString QgsPointCloudIndex::wkt() const
+{
+  return mWkt;
+}
+
+QgsVector3D QgsPointCloudIndex::scale() const
+{
+  return mScale;
+}
+
+QgsVector3D QgsPointCloudIndex::offset() const
+{
+  return mOffset;
 }
