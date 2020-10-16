@@ -2,7 +2,22 @@
   "name": "uuid",
   "type": "function",
   "groups": ["Record and Attributes"],
-  "description": "Generates a Universally Unique Identifier (UUID) for each row using the Qt <a href='https://doc.qt.io/qt-5/quuid.html#createUuid'>QUuid::createUuid</a> method. Each UUID is 38 characters long.",
-  "examples": [ { "expression":"uuid()", "returns":"'{0bd2f60f-f157-4a6d-96af-d4ba4cb366a1}'"}
+  "description": "Generates a Universally Unique Identifier (UUID) for each row using the Qt <a href='https://doc.qt.io/qt-5/quuid.html#createUuid'>QUuid::createUuid</a> method.",
+  "variants": [
+    {
+      "variant": "No parameters",
+      "variant_description": "If called with no parameters, the function will generate the UUID with the default string format 'WithBraces'. Each UUID is 38 characters long.",
+      "arguments": [],
+      "examples": [ { "expression":"uuid()", "returns":"'{0bd2f60f-f157-4a6d-96af-d4ba4cb366a1}'" } ]
+    },
+    {
+      "variant": "A 'stringFormat' parameter",
+      "variant_description": "If called with a 'stringFormat' parameter, the function will generate the UUID and format it accordingly using Qt <a href='https://doc.qt.io/qt-5/quuid.html#StringFormat-enum'>QUuid::StringFormat</a>",
+      "arguments": [ { "arg": "stringFormat", "description": "The string format of the UUID. This can be 'WithBraces' to format with curly braces, 'WithoutBraces' to format without braces or 'Id128' to format only with hex digits, without braces or dashes." } ],
+      "examples": [
+        { "expression": "uuid('WithoutBraces')", "returns": "'0bd2f60f-f157-4a6d-96af-d4ba4cb366a1'" },
+        { "expression": "uuid('Id128')", "returns": "'0bd2f60ff1574a6d96afd4ba4cb366a1'" }
+      ]
+    }
   ]
 }
