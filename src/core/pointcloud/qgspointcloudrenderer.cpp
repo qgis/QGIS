@@ -21,23 +21,36 @@
 #include "qgspointcloudlayer.h"
 #include "qgsrendercontext.h"
 #include "qgspointcloudindex.h"
+#include "qgsstyle.h"
+#include "qgscolorramp.h"
 
 QgsPointCloudRenderer::QgsPointCloudRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
   , mLayer( layer )
 {
+  // TODO: we must not keep pointer to mLayer (it's dangerous) - we must copy anything we need for rendering
+  // or use some locking to prevent read/write from multiple threads
 
+  // TODO: use config from layer
+  mConfig.penWidth = context.convertToPainterUnits( 1, QgsUnitTypes::RenderUnit::RenderMillimeters );
+  mConfig.zMin = 400;
+  mConfig.zMax = 600;
+  mConfig.colorRamp.reset( QgsStyle::defaultStyle()->colorRamp( "Viridis" ) );
 }
 
-static QList<IndexedPointCloudNode> _traverseTree( QgsPointCloudIndex *pc, IndexedPointCloudNode n, int maxDepth )
+static QList<IndexedPointCloudNode> _traverseTree( QgsPointCloudIndex *pc, const QgsRectangle &extent, IndexedPointCloudNode n, int maxDepth )
 {
   QList<IndexedPointCloudNode> nodes;
+
+  if ( !extent.intersects( pc->nodeMapExtent( n ) ) )
+    return nodes;
+
   nodes.append( n );
 
   for ( auto nn : pc->children( n ) )
   {
     if ( maxDepth > 0 )
-      nodes += _traverseTree( pc, nn, maxDepth - 1 );
+      nodes += _traverseTree( pc, extent, nn, maxDepth - 1 );
   }
 
   return nodes;
@@ -56,27 +69,24 @@ bool QgsPointCloudRenderer::render()
   painter->save();
   context.setPainterFlagsUsingContext( painter );
 
-  QPen pen = painter->pen();
-  pen.setCapStyle( Qt::FlatCap );
-  pen.setJoinStyle( Qt::MiterJoin );
-
-  double penWidth = context.convertToPainterUnits( 1, QgsUnitTypes::RenderUnit::RenderMillimeters );
-  pen.setWidthF( penWidth );
-  pen.setColor( Qt::black );
-  painter->setPen( pen );
-
   QgsPointCloudDataBounds db;
 
   QElapsedTimer t;
   t.start();
 
-  // TODO: traverse with spatial filter
-  QList<IndexedPointCloudNode> nodes = _traverseTree( pc, pc->root(), 4 );
+  // TODO: set depth based on map units per pixel
+  int depth = 3;
+  QList<IndexedPointCloudNode> nodes = _traverseTree( pc, context.mapExtent(), pc->root(), depth );
 
   // drawing
   for ( auto n : nodes )
   {
-    drawData( painter, pc->nodePositionDataAsInt32( n ) );
+    if ( context.renderingStopped() )
+    {
+      qDebug() << "canceled";
+      break;
+    }
+    drawData( painter, pc->nodePositionDataAsInt32( n ), mConfig );
   }
 
   qDebug() << "totals:" << nodesDrawn << "nodes | " << pointsDrawn << " points | " << t.elapsed() << "ms";
@@ -100,11 +110,18 @@ void QgsPointCloudRenderer::readXml( const QDomElement &elem, const QgsReadWrite
 
 }
 
-void QgsPointCloudRenderer::drawData( QPainter *painter, const QVector<qint32> &data )
+void QgsPointCloudRenderer::drawData( QPainter *painter, const QVector<qint32> &data, const QgsPointCloudRendererConfig &config )
 {
   const QgsMapToPixel mapToPixel = renderContext()->mapToPixel();
   const QgsVector3D scale = mLayer->pointCloudIndex()->scale();
   const QgsVector3D offset = mLayer->pointCloudIndex()->offset();
+
+  QgsRectangle mapExtent = renderContext()->mapExtent();
+
+  QPen pen;
+  pen.setWidth( config.penWidth );
+  pen.setCapStyle( Qt::FlatCap );
+  //pen.setJoinStyle( Qt::MiterJoin );
 
   const qint32 *ptr = data.constData();
   int count = data.count() / 3;
@@ -112,14 +129,19 @@ void QgsPointCloudRenderer::drawData( QPainter *painter, const QVector<qint32> &
   {
     qint32 ix = ptr[i * 3 + 0];
     qint32 iy = ptr[i * 3 + 1];
-    // qint32 iz = ptr[i * 3 + 2];
+    qint32 iz = ptr[i * 3 + 2];
 
     double x = offset.x() + scale.x() * ix;
     double y = offset.y() + scale.y() * iy;
-    // double z = offset.z() + scale.z() * iz;
-    mapToPixel.transformInPlace( x, y );
+    if ( mapExtent.contains( QgsPointXY( x, y ) ) )
+    {
+      double z = offset.z() + scale.z() * iz;
+      mapToPixel.transformInPlace( x, y );
 
-    painter->drawPoint( QPointF( x, y ) );
+      pen.setColor( config.colorRamp->color( ( z - config.zMin ) / ( config.zMax - config.zMin ) ) );
+      painter->setPen( pen );
+      painter->drawPoint( QPointF( x, y ) );
+    }
   }
 
   // stats

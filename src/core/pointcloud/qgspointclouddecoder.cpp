@@ -138,4 +138,5 @@ QVector<qint32> QgsPointCloudDecoder::decompressLaz( const QString &filename )
   }
   float t = common::since( start );
   std::cout << "LAZ-PERF Read through the points in " << t << " seconds." << std::endl;
+  return data;
 }

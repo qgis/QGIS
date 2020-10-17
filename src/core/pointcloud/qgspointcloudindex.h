@@ -26,6 +26,7 @@
 #include <QList>
 
 #include "qgis_core.h"
+#include "qgsrectangle.h"
 #include "qgsvector3d.h"
 #include "qgis_sip.h"
 
@@ -66,23 +67,26 @@ class CORE_EXPORT QgsPointCloudDataBounds
 {
   public:
     QgsPointCloudDataBounds(); // invalid
-    QgsPointCloudDataBounds( qint32 xmin, qint32 ymin, qint32 xmax, qint32 ymax, qint32 zmin, qint32 zmax );
+    QgsPointCloudDataBounds( qint32 xmin, qint32 ymin, qint32 zmin, qint32 xmax, qint32 ymax, qint32 zmax );
     QgsPointCloudDataBounds( const QgsPointCloudDataBounds &obj );
 
     qint32 xMin() const;
 
     qint32 yMin() const;
 
+    qint32 zMin() const;
+
     qint32 xMax() const;
 
     qint32 yMax() const;
 
-    qint32 zMin() const;
-
     qint32 zMax() const;
 
+    //! Returns 2D rectangle in map coordinates
+    QgsRectangle mapExtent( const QgsVector3D &offset, const QgsVector3D &scale ) const;
+
   private:
-    qint32 mXMin, mYMin, mXMax, mYMax, mZMin, mZMax;
+    qint32 mXMin, mYMin, mZMin, mXMax, mYMax, mZMax;
 };
 
 /**
@@ -109,7 +113,11 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
 
     QVector<qint32> nodePositionDataAsInt32( const IndexedPointCloudNode &n );
 
+    QgsRectangle extent() const { return mExtent; }
+    double zMin() const { return mZMin; }
+    double zMax() const { return mZMax; }
     QgsPointCloudDataBounds nodeBounds( const IndexedPointCloudNode &n );
+    QgsRectangle nodeMapExtent( const IndexedPointCloudNode &n );
     QString wkt() const;
 
     QgsVector3D scale() const;
@@ -120,6 +128,8 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     QString mDirectory;
     QString mDataType;
 
+    QgsRectangle mExtent;  //!< 2D extent of data
+    double mZMin = 0, mZMax = 0;   //!< Vertical extent of data
     QHash<IndexedPointCloudNode, int> mHierarchy;
     QgsVector3D mScale; //!< Scale of our int32 coordinates compared to CRS coords
     QgsVector3D mOffset; //!< Offset of our int32 coordinates compared to CRS coords

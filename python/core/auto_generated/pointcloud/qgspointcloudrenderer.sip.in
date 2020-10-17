@@ -12,6 +12,8 @@
 
 
 
+
+
 class QgsPointCloudRenderer: QgsMapLayerRenderer
 {
 %Docstring

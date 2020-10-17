@@ -19,6 +19,7 @@
 #define QGSPOINTCLOUDRENDERER_H
 
 #include "qgis_core.h"
+#include "qgscolorramp.h"
 #include "qgsmaplayerrenderer.h"
 #include "qgsreadwritecontext.h"
 #include "qgspointcloudindex.h"
@@ -27,8 +28,21 @@
 #include <QString>
 #include <QPainter>
 
+
 class QgsRenderContext;
 class QgsPointCloudLayer;
+
+#ifndef SIP_RUN
+
+class QgsPointCloudRendererConfig
+{
+  public:
+    double zMin = 0, zMax = 0;
+    int penWidth = 1;
+    std::unique_ptr<QgsColorRamp> colorRamp;
+};
+
+#endif
 
 
 /**
@@ -55,6 +69,8 @@ class CORE_EXPORT QgsPointCloudRenderer: public QgsMapLayerRenderer
   private:
     QgsPointCloudLayer *mLayer = nullptr;
 
+    QgsPointCloudRendererConfig mConfig;
+
     // int imgW, imgH; // DO WE NEED AT ALL?
     // QgsPointCloudDataBounds mBounds; // DO WE NEED AT ALL?
 
@@ -62,7 +78,7 @@ class CORE_EXPORT QgsPointCloudRenderer: public QgsMapLayerRenderer
     int nodesDrawn = 0;
     int pointsDrawn = 0;
 
-    void drawData( QPainter *painter, const QVector<qint32> &data );
+    void drawData( QPainter *painter, const QVector<qint32> &data, const QgsPointCloudRendererConfig &config );
 };
 
 

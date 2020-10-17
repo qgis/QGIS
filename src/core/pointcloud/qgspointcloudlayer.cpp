@@ -40,16 +40,7 @@ QgsRectangle QgsPointCloudLayer::extent() const
   if ( !mPointCloudIndex )
     return QgsRectangle();
 
-  QgsPointCloudDataBounds bounds = mPointCloudIndex->nodeBounds( mPointCloudIndex->root() );
-  QgsVector3D offset = mPointCloudIndex->offset();
-  QgsVector3D scale = mPointCloudIndex->scale();
-
-  double xMin = offset.x() + scale.x() * bounds.xMin();
-  double yMin = offset.y() + scale.y() * bounds.yMin();
-  double xMax = offset.x() + scale.x() * bounds.xMax();
-  double yMax = offset.y() + scale.y() * bounds.yMax();
-
-  return QgsRectangle( xMin, yMin, xMax, yMax );
+  return mPointCloudIndex->extent();
 }
 
 QgsMapLayerRenderer *QgsPointCloudLayer::createMapRenderer( QgsRenderContext &rendererContext )
