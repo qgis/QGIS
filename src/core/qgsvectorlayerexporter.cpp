@@ -56,7 +56,6 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
     QgsFeatureSink::SinkFlags sinkFlags )
   : mErrorCount( 0 )
   , mAttributeCount( -1 )
-  , mFeatureSizeBuffer( 200 ) // Default value. May be overridden below
 
 {
   mProvider = nullptr;
@@ -68,7 +67,6 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
        ( options[ QStringLiteral( "driverName" ) ].toString().compare( QLatin1String( "GPKG" ), Qt::CaseInsensitive ) == 0 ||
          options[ QStringLiteral( "driverName" ) ].toString().compare( QLatin1String( "SQLite" ), Qt::CaseInsensitive ) == 0 ) )
   {
-    mFeatureSizeBuffer = 10 * 1000; // Aggressively bump to reduce the number of SQLite transactions
     if ( geometryType != QgsWkbTypes::NoGeometry )
     {
       // For GPKG/Spatialite, we explicitly ask not to create a spatial index at
@@ -228,10 +226,9 @@ bool QgsVectorLayerExporter::addFeature( QgsFeature &feat, Flags )
   }
 
   mFeatureBuffer.append( newFeat );
+  mFeatureBufferMemoryUsage += newFeat.approximateMemoryUsage();
 
-  // A better strategy would be to use an hypothetical QgsFeature::RAMUsage()
-  // method to decide when to flush.
-  if ( mFeatureBuffer.count() >= mFeatureSizeBuffer )
+  if ( mFeatureBufferMemoryUsage >= 100 * 1000 * 1000 )
   {
     return flushBuffer();
   }
@@ -246,6 +243,7 @@ QString QgsVectorLayerExporter::lastError() const
 
 bool QgsVectorLayerExporter::flushBuffer()
 {
+  mFeatureBufferMemoryUsage = 0;
   if ( mFeatureBuffer.count() <= 0 )
     return true;
 

@@ -163,10 +163,9 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
     int mAttributeCount;
 
     QgsFeatureList mFeatureBuffer;
+    int mFeatureBufferMemoryUsage = 0;
 
     bool mCreateSpatialIndex = true;
-
-    int mFeatureSizeBuffer;
 
 #ifdef SIP_RUN
     QgsVectorLayerExporter( const QgsVectorLayerExporter &rh );
