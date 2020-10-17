@@ -536,6 +536,17 @@ class CORE_EXPORT QgsFeature
      */
     int fieldNameIndex( const QString &fieldName ) const;
 
+    /**
+     * Returns the approximate RAM usage of the feature, in bytes.
+     *
+     * This method takes into account the size of variable elements (strings,
+     * geometry, ...), but the value returned should be considered as a lower
+     * bound estimation.
+     *
+     * \since QGIS 3.16
+     */
+    int approximateMemoryUsage() const;
+
     //! Allows direct construction of QVariants from features.
     operator QVariant() const
     {

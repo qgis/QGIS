@@ -124,6 +124,7 @@ void TestQgsFeature::attributesTest()
 void TestQgsFeature::constructorTest()
 {
   QgsFeature f;
+  QVERIFY( f.approximateMemoryUsage() > 0 );
   QVERIFY( FID_IS_NULL( f.id() ) );
   QgsFeature f2 { QgsFields() };
   QVERIFY( FID_IS_NULL( f2.id() ) );
@@ -222,6 +223,7 @@ void TestQgsFeature::attributes()
   feature.setAttributes( mAttrs );
   QCOMPARE( feature.attributes(), mAttrs );
   QCOMPARE( feature.attributes(), mAttrs );
+  QVERIFY( feature.approximateMemoryUsage() > QgsFeature().approximateMemoryUsage() );
 
   //test implicit sharing detachment
   QgsFeature copy( feature );
@@ -286,6 +288,7 @@ void TestQgsFeature::geometry()
   //test no double delete of geometry when setting:
   feature.setGeometry( QgsGeometry( mGeometry2 ) );
   QVERIFY( feature.hasGeometry() );
+  QVERIFY( feature.approximateMemoryUsage() > QgsFeature().approximateMemoryUsage() );
   feature.setGeometry( QgsGeometry( mGeometry ) );
   QCOMPARE( feature.geometry().asWkb(), mGeometry.asWkb() );
 
@@ -355,6 +358,8 @@ void TestQgsFeature::fields()
   QVERIFY( original.fields().isEmpty() );
   original.setFields( mFields );
   QCOMPARE( original.fields(), mFields );
+  QVERIFY( original.approximateMemoryUsage() > QgsFeature().approximateMemoryUsage() );
+
   QgsFeature copy( original );
   QCOMPARE( copy.fields(), original.fields() );
 

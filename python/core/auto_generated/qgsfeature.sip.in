@@ -549,6 +549,17 @@ before this method can be used.
 .. seealso:: :py:func:`setFields`
 %End
 
+    int approximateMemoryUsage() const;
+%Docstring
+Returns the approximate RAM usage of the feature, in bytes.
+
+This method takes into account the size of variable elements (strings,
+geometry, ...), but the value returned should be considered as a lower
+bound estimation.
+
+.. versionadded:: 3.16
+%End
+
     operator QVariant() const;
 
 }; // class QgsFeature
