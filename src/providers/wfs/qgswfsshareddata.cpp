@@ -27,6 +27,7 @@ QgsWFSSharedData::QgsWFSSharedData( const QString &uri )
   , mURI( uri )
 {
   mHideProgressDialog = mURI.hideDownloadProgressDialog();
+  mServerPrefersCoordinatesForTransactions_1_1 = mURI.preferCoordinatesForWfst11();
 }
 
 QgsWFSSharedData::~QgsWFSSharedData()

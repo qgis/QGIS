@@ -113,6 +113,9 @@ class QgsWFSDataSourceURI
     //! Whether to hide download progress dialog in QGIS main app. Defaults to false
     bool hideDownloadProgressDialog() const;
 
+    //! Whether to use "coordinates" instead of "pos" and "posList" for WFS-T 1.1 transactions (ESRI mapserver)
+    bool preferCoordinatesForWfst11() const;
+
     //! Returns authorization parameters
     const QgsAuthorizationSettings &auth() const { return mAuth; }
 

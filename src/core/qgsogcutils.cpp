@@ -1173,7 +1173,8 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry, QDomDocumen
   return geometryToGML( geometry, doc, ( format == QLatin1String( "GML2" ) ) ? GML_2_1_2 : GML_3_2_1, QString(), false, QString(), precision );
 }
 
-QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry, QDomDocument &doc,
+QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
+                                        QDomDocument &doc,
                                         GMLVersion gmlVersion,
                                         const QString &srsName,
                                         bool invertAxisOrientation,

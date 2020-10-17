@@ -89,6 +89,11 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     */
     bool mGetFeatureEPSGDotHonoursEPSGOrder = false;
 
+    /**
+     * If the server (typically ESRI with WFS-T 1.1 in 2020) does not like "pos" and "posList", and requires "coordinates" for WFS 1.1 transactions
+     */
+    bool mServerPrefersCoordinatesForTransactions_1_1 = false;
+
     //! Geometry type of the features in this layer
     QgsWkbTypes::Type mWKBType = QgsWkbTypes::Unknown;
 

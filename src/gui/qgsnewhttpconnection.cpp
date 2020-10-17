@@ -166,6 +166,7 @@ void QgsNewHttpConnection::wfsVersionCurrentIndexChanged( int index )
   txtPageSize->setEnabled( cbxWfsFeaturePaging->isChecked() && ( index == WFS_VERSION_MAX || index >= WFS_VERSION_1_1 ) );
   cbxWfsIgnoreAxisOrientation->setEnabled( index != WFS_VERSION_1_0 && index != WFS_VERSION_API_FEATURES_1_0 );
   cbxWfsInvertAxisOrientation->setEnabled( index != WFS_VERSION_API_FEATURES_1_0 );
+  wfsUseGml2EncodingForTransactions()->setEnabled( index == WFS_VERSION_1_1 );
 }
 
 void QgsNewHttpConnection::wfsFeaturePagingStateChanged( int state )
@@ -256,6 +257,11 @@ QCheckBox *QgsNewHttpConnection::wfsPagingEnabledCheckBox()
   return cbxWfsFeaturePaging;
 }
 
+QCheckBox *QgsNewHttpConnection::wfsUseGml2EncodingForTransactions()
+{
+  return cbxWfsUseGml2EncodingForTransactions;
+}
+
 QLineEdit *QgsNewHttpConnection::wfsPageSizeLineEdit()
 {
   return txtPageSize;
@@ -281,6 +287,8 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
   cbxWmsIgnoreReportedLayerExtents->setChecked( settings.value( wmsKey + QStringLiteral( "/ignoreReportedLayerExtents" ), false ).toBool() );
   cbxWfsIgnoreAxisOrientation->setChecked( settings.value( wfsKey + "/ignoreAxisOrientation", false ).toBool() );
   cbxWfsInvertAxisOrientation->setChecked( settings.value( wfsKey + "/invertAxisOrientation", false ).toBool() );
+  cbxWfsUseGml2EncodingForTransactions->setChecked( settings.value( wfsKey + "/preferCoordinatesForWfsT11", false ).toBool() );
+
   cbxWmsIgnoreAxisOrientation->setChecked( settings.value( wmsKey + "/ignoreAxisOrientation", false ).toBool() );
   cbxWmsInvertAxisOrientation->setChecked( settings.value( wmsKey + "/invertAxisOrientation", false ).toBool() );
   cbxIgnoreGetFeatureInfoURI->setChecked( settings.value( wmsKey + "/ignoreGetFeatureInfoURI", false ).toBool() );
@@ -463,6 +471,7 @@ void QgsNewHttpConnection::accept()
   {
     settings.setValue( wfsKey + "/ignoreAxisOrientation", cbxWfsIgnoreAxisOrientation->isChecked() );
     settings.setValue( wfsKey + "/invertAxisOrientation", cbxWfsInvertAxisOrientation->isChecked() );
+    settings.setValue( wfsKey + "/preferCoordinatesForWfsT11", cbxWfsUseGml2EncodingForTransactions->isChecked() );
   }
   if ( mTypes & ConnectionWms || mTypes & ConnectionWcs )
   {

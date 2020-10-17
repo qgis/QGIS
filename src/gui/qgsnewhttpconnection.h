@@ -151,6 +151,12 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
     QCheckBox *wfsPagingEnabledCheckBox() SIP_SKIP;
 
     /**
+     * Returns the "Use GML2 encoding for transactions" checkbox
+     * \since QGIS 3.16
+     */
+    QCheckBox *wfsUseGml2EncodingForTransactions() SIP_SKIP;
+
+    /**
      * Returns the "WFS page size" edit
      * \since QGIS 3.2
      */
