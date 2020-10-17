@@ -1764,11 +1764,12 @@ void TestQgsProcessing::parseDestinationString()
   QCOMPARE( providerKey, QStringLiteral( "ogr" ) );
   QCOMPARE( uri, QStringLiteral( "d:/test.shp" ) );
   QCOMPARE( options.value( QStringLiteral( "update" ) ).toBool(), true );
+  QCOMPARE( options.value( QStringLiteral( "driverName" ) ).toString(), QStringLiteral( "ESRI Shapefile" ) );
   QVERIFY( !options.contains( QStringLiteral( "layerName" ) ) );
   QVERIFY( !useWriter );
   QCOMPARE( extension, QStringLiteral( "shp" ) );
 
-// full uri geopackage output
+  // full uri geopackage output
   options.clear();
   destination = QStringLiteral( "ogr:d:/test.gpkg" );
   QgsProcessingUtils::parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter, extension );
@@ -1776,10 +1777,11 @@ void TestQgsProcessing::parseDestinationString()
   QCOMPARE( uri, QStringLiteral( "d:/test.gpkg" ) );
   QCOMPARE( options.value( QStringLiteral( "update" ) ).toBool(), true );
   QVERIFY( !options.contains( QStringLiteral( "layerName" ) ) );
+  QCOMPARE( options.value( QStringLiteral( "driverName" ) ).toString(), QStringLiteral( "GPKG" ) );
   QVERIFY( !useWriter );
   QCOMPARE( extension, QStringLiteral( "gpkg" ) );
 
-// full uri geopackage table output with layer name
+  // full uri geopackage table output with layer name
   options.clear();
   destination = QStringLiteral( "ogr:dbname='d:/package.gpkg' table=\"mylayer\" (geom) sql=" );
   QgsProcessingUtils::parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter, extension );
@@ -1787,6 +1789,7 @@ void TestQgsProcessing::parseDestinationString()
   QCOMPARE( uri, QStringLiteral( "d:/package.gpkg" ) );
   QCOMPARE( options.value( QStringLiteral( "update" ) ).toBool(), true );
   QCOMPARE( options.value( QStringLiteral( "layerName" ) ).toString(), QStringLiteral( "mylayer" ) );
+  QCOMPARE( options.value( QStringLiteral( "driverName" ) ).toString(), QStringLiteral( "GPKG" ) );
   QVERIFY( !useWriter );
   QCOMPARE( extension, QStringLiteral( "gpkg" ) );
 }

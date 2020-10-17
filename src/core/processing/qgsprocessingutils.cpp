@@ -657,10 +657,12 @@ void QgsProcessingUtils::parseDestinationString( QString &destination, QString &
         uri = dsUri.database();
         extension = QFileInfo( uri ).completeSuffix();
         format = QgsVectorFileWriter::driverForExtension( extension );
+        options.insert( QStringLiteral( "driverName" ), format );
       }
       else
       {
         extension = QFileInfo( uri ).completeSuffix();
+        options.insert( QStringLiteral( "driverName" ), QgsVectorFileWriter::driverForExtension( extension ) );
       }
       options.insert( QStringLiteral( "update" ), true );
     }
