@@ -134,6 +134,11 @@ class QgsWFSProvider : public QgsVectorDataProvider
 
     friend class QgsWFSFeatureSource;
 
+    /**
+     * Create the geometry element
+     */
+    QDomElement geometryElement( const QgsGeometry &geometry, QDomDocument &transactionDoc );
+
   protected:
 
     //! String used to define a subset of the layer

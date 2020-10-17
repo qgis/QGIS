@@ -54,8 +54,13 @@ QgsWFSSharedData::QgsWFSSharedData( const QString &uri )
   , mTotalFeaturesAttemptedToBeCached( 0 )
   , mTryFetchingOneFeature( false )
 {
+<<<<<<< HEAD
   // Needed because used by a signal
   qRegisterMetaType< QVector<QgsWFSFeatureGmlIdPair> >( "QVector<QgsWFSFeatureGmlIdPair>" );
+=======
+  mHideProgressDialog = mURI.hideDownloadProgressDialog();
+  mServerPrefersCoordinatesForTransactions_1_1 = mURI.preferCoordinatesForWfst11();
+>>>>>>> a0711d710d... Merge pull request #39368 from elpaso/wfs-t-1.1
 }
 
 QgsWFSSharedData::~QgsWFSSharedData()

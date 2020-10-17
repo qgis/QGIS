@@ -63,9 +63,12 @@ qgis_app = start_app()
 
 class TestWFST(unittest.TestCase):
 
+    VERSION = '1.0.0'
+
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+
         cls.port = QGIS_SERVER_PORT
         # Create tmp folder
         cls.temp_path = tempfile.mkdtemp()
@@ -95,11 +98,13 @@ class TestWFST(unittest.TestCase):
         cls.port = int(re.findall(b':(\d+)', line)[0])
         assert cls.port != 0
         # Wait for the server process to start
-        assert waitServer('http://127.0.0.1:%s' % cls.port), "Server is not responding!"
+        assert waitServer('http://127.0.0.1:%s' %
+                          cls.port), "Server is not responding!"
 
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
+
         cls.server.terminate()
         cls.server.wait()
         del cls.server
@@ -110,10 +115,12 @@ class TestWFST(unittest.TestCase):
 
     def setUp(self):
         """Run before each test."""
+
         pass
 
     def tearDown(self):
         """Run after each test."""
+
         pass
 
     @classmethod
@@ -121,6 +128,7 @@ class TestWFST(unittest.TestCase):
         """
         Delete all features from a vector layer
         """
+
         layer = cls._getLayer(layer_name)
         layer.startEditing()
         layer.deleteFeatures([f.id() for f in layer.getFeatures()])
@@ -132,6 +140,7 @@ class TestWFST(unittest.TestCase):
         """
         OGR Layer factory
         """
+
         path = cls.testdata_path + layer_name + '.shp'
         layer = QgsVectorLayer(path, layer_name, "ogr")
         assert layer.isValid()
@@ -142,6 +151,7 @@ class TestWFST(unittest.TestCase):
         """
         WFS layer factory
         """
+
         if layer_name is None:
             layer_name = 'wfs_' + type_name
         parms = {
@@ -149,7 +159,7 @@ class TestWFST(unittest.TestCase):
             'typename': type_name,
             'url': 'http://127.0.0.1:%s/?map=%s' % (cls.port,
                                                     cls.project_path),
-            'version': 'auto',
+            'version': cls.VERSION,
             'table': '',
             #'sql': '',
         }
@@ -163,6 +173,7 @@ class TestWFST(unittest.TestCase):
         """
         Find the feature and return it, raise exception if not found
         """
+
         request = QgsFeatureRequest(QgsExpression("%s=%s" % (attr_name,
                                                              attr_value)))
         try:
@@ -175,21 +186,36 @@ class TestWFST(unittest.TestCase):
         """
         Check features were added
         """
+
         wfs_layer.dataProvider().addFeatures(features)
         layer = self._getLayer(layer.name())
         self.assertTrue(layer.isValid())
         self.assertEqual(layer.featureCount(), len(features))
-        self.assertEqual(wfs_layer.dataProvider().featureCount(), len(features))
+        self.assertEqual(
+            wfs_layer.dataProvider().featureCount(), len(features))
+
+        ogr_features = [f for f in layer.dataProvider().getFeatures()]
+
+        # Verify features from the layers
+        for f in ogr_features:
+            geom = next(wfs_layer.dataProvider().getFeatures(QgsFeatureRequest(
+                QgsExpression('"id" = %s' % f.attribute('id'))))).geometry()
+            self.assertEqual(geom.boundingBox(), f.geometry().boundingBox())
 
     def _checkUpdateFeatures(self, wfs_layer, old_features, new_features):
         """
         Check features can be updated
         """
+
         for i in range(len(old_features)):
-            f = self._getFeatureByAttribute(wfs_layer, 'id', old_features[i]['id'])
-            self.assertTrue(wfs_layer.dataProvider().changeGeometryValues({f.id(): new_features[i].geometry()}))
-            self.assertTrue(wfs_layer.dataProvider().changeAttributeValues({f.id(): {0: new_features[i]['id']}}))
-            self.assertTrue(wfs_layer.dataProvider().changeAttributeValues({f.id(): {1: new_features[i]['name']}}))
+            f = self._getFeatureByAttribute(
+                wfs_layer, 'id', old_features[i]['id'])
+            self.assertTrue(wfs_layer.dataProvider().changeGeometryValues(
+                {f.id(): new_features[i].geometry()}))
+            self.assertTrue(wfs_layer.dataProvider().changeAttributeValues(
+                {f.id(): {0: new_features[i]['id']}}))
+            self.assertTrue(wfs_layer.dataProvider().changeAttributeValues(
+                {f.id(): {1: new_features[i]['name']}}))
 
     def _checkMatchFeatures(self, wfs_layer, features):
         """
@@ -205,6 +231,7 @@ class TestWFST(unittest.TestCase):
         """
         Delete features
         """
+
         ids = []
         for f in features:
             wf = self._getFeatureByAttribute(layer, 'id', f['id'])
@@ -215,6 +242,7 @@ class TestWFST(unittest.TestCase):
         """
         Perform all test steps on the layer.
         """
+
         self.assertEqual(wfs_layer.featureCount(), 0)
         self._checkAddFeatures(wfs_layer, layer, old_features)
         self._checkMatchFeatures(wfs_layer, old_features)
@@ -229,6 +257,7 @@ class TestWFST(unittest.TestCase):
         """
         Adds some points, then check and clear all
         """
+
         layer_name = 'test_point'
         layer = self._getLayer(layer_name)
         wfs_layer = self._getWFSLayer(layer_name)
@@ -251,6 +280,7 @@ class TestWFST(unittest.TestCase):
         Adds some points, then check.
         Modify 2 points, then checks and clear all
         """
+
         layer_name = 'test_point'
         layer = self._getLayer(layer_name)
         wfs_layer = self._getWFSLayer(layer_name)
@@ -279,15 +309,18 @@ class TestWFST(unittest.TestCase):
         """
         Adds some polygons, then check and clear all
         """
+
         layer_name = 'test_polygon'
         layer = self._getLayer(layer_name)
         wfs_layer = self._getWFSLayer(layer_name)
         feat1 = QgsFeature(wfs_layer.fields())
         feat1['id'] = 11
         feat1['name'] = 'name 11'
-        feat1.setGeometry(QgsGeometry.fromRect(QgsRectangle(QgsPointXY(9, 45), QgsPointXY(10, 46))))
+        feat1.setGeometry(QgsGeometry.fromRect(
+            QgsRectangle(QgsPointXY(9, 45), QgsPointXY(10, 46))))
         feat2 = QgsFeature(wfs_layer.fields())
-        feat2.setGeometry(QgsGeometry.fromRect(QgsRectangle(QgsPointXY(9.5, 45.5), QgsPointXY(10.5, 46.5))))
+        feat2.setGeometry(QgsGeometry.fromRect(QgsRectangle(
+            QgsPointXY(9.5, 45.5), QgsPointXY(10.5, 46.5))))
         feat2['id'] = 12
         feat2['name'] = 'name 12'
         old_features = [feat1, feat2]
@@ -295,7 +328,8 @@ class TestWFST(unittest.TestCase):
         new_feat1 = QgsFeature(wfs_layer.fields())
         new_feat1['id'] = 121
         new_feat1['name'] = 'name 121'
-        new_feat1.setGeometry(QgsGeometry.fromRect(QgsRectangle(QgsPointXY(10, 46), QgsPointXY(11.5, 47.5))))
+        new_feat1.setGeometry(QgsGeometry.fromRect(
+            QgsRectangle(QgsPointXY(10, 46), QgsPointXY(11.5, 47.5))))
         new_features = [new_feat1, feat2]
         self._testLayer(wfs_layer, layer, old_features, new_features)
 
@@ -303,15 +337,18 @@ class TestWFST(unittest.TestCase):
         """
         Adds some lines, then check and clear all
         """
+
         layer_name = 'test_linestring'
         layer = self._getLayer(layer_name)
         wfs_layer = self._getWFSLayer(layer_name)
         feat1 = QgsFeature(wfs_layer.fields())
         feat1['id'] = 11
         feat1['name'] = 'name 11'
-        feat1.setGeometry(QgsGeometry.fromPolylineXY([QgsPointXY(9, 45), QgsPointXY(10, 46)]))
+        feat1.setGeometry(QgsGeometry.fromPolylineXY(
+            [QgsPointXY(9, 45), QgsPointXY(10, 46)]))
         feat2 = QgsFeature(wfs_layer.fields())
-        feat2.setGeometry(QgsGeometry.fromPolylineXY([QgsPointXY(9.5, 45.5), QgsPointXY(10.5, 46.5)]))
+        feat2.setGeometry(QgsGeometry.fromPolylineXY(
+            [QgsPointXY(9.5, 45.5), QgsPointXY(10.5, 46.5)]))
         feat2['id'] = 12
         feat2['name'] = 'name 12'
         old_features = [feat1, feat2]
@@ -319,9 +356,16 @@ class TestWFST(unittest.TestCase):
         new_feat1 = QgsFeature(wfs_layer.fields())
         new_feat1['id'] = 121
         new_feat1['name'] = 'name 121'
-        new_feat1.setGeometry(QgsGeometry.fromPolylineXY([QgsPointXY(9.8, 45.8), QgsPointXY(10.8, 46.8)]))
+        new_feat1.setGeometry(QgsGeometry.fromPolylineXY(
+            [QgsPointXY(9.8, 45.8), QgsPointXY(10.8, 46.8)]))
         new_features = [new_feat1, feat2]
         self._testLayer(wfs_layer, layer, old_features, new_features)
+
+
+class TestWFST11(TestWFST):
+    """Same tests for WFS 1.1"""
+
+    VERSION = '1.1.0'
 
 
 if __name__ == '__main__':

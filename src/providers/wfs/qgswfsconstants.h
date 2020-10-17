@@ -48,6 +48,7 @@ struct QgsWFSConstants
   static const QString URI_PARAM_HIDEDOWNLOADPROGRESSDIALOG;
   static const QString URI_PARAM_PAGING_ENABLED;
   static const QString URI_PARAM_PAGE_SIZE;
+  static const QString URI_PARAM_WFST_1_1_PREFER_COORDINATES;
 
   //
   static const QString VERSION_AUTO;
@@ -58,12 +59,16 @@ struct QgsWFSConstants
   static const QString SETTINGS_MAXNUMFEATURES;
   static const QString SETTINGS_PAGING_ENABLED;
   static const QString SETTINGS_PAGE_SIZE;
+<<<<<<< HEAD
 
   // Special fields of the cache
   static const QString FIELD_GEN_COUNTER;
   static const QString FIELD_GMLID;
   static const QString FIELD_HEXWKB_GEOM;
   static const QString FIELD_MD5;
+=======
+  static const QString SETTINGS_WFST_1_1_PREFER_COORDINATES;
+>>>>>>> a0711d710d... Merge pull request #39368 from elpaso/wfs-t-1.1
 };
 
 #endif // QGSWFSCONSTANTS_H
