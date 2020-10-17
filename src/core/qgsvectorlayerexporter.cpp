@@ -34,8 +34,6 @@
 
 #include <QProgressDialog>
 
-#define FEATURE_BUFFER_SIZE 200
-
 typedef QgsVectorLayerExporter::ExportError createEmptyLayer_t(
   const QString &uri,
   const QgsFields &fields,
@@ -58,49 +56,53 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
     QgsFeatureSink::SinkFlags sinkFlags )
   : mErrorCount( 0 )
   , mAttributeCount( -1 )
+  , mFeatureSizeBuffer( 200 ) // Default value. May be overridden below
 
 {
   mProvider = nullptr;
 
   QMap<QString, QVariant> modifiedOptions( options );
 
-  // For GPKG/Spatialite, we explicitly ask not to create a spatial index at
-  // layer creation since this would slow down inserts. Defer its creation
-  // to end of exportLayer() or destruction of this object.
-  if ( geometryType != QgsWkbTypes::NoGeometry  &&
-       providerKey == QLatin1String( "ogr" ) &&
+  if ( providerKey == QLatin1String( "ogr" ) &&
        options.contains( QStringLiteral( "driverName" ) ) &&
        ( options[ QStringLiteral( "driverName" ) ].toString().compare( QLatin1String( "GPKG" ), Qt::CaseInsensitive ) == 0 ||
          options[ QStringLiteral( "driverName" ) ].toString().compare( QLatin1String( "SQLite" ), Qt::CaseInsensitive ) == 0 ) )
   {
-    QStringList modifiedLayerOptions;
-    if ( options.contains( QStringLiteral( "layerOptions" ) ) )
+    mFeatureSizeBuffer = 10 * 1000; // Aggressively bump to reduce the number of SQLite transactions
+    if ( geometryType != QgsWkbTypes::NoGeometry )
     {
-      QStringList layerOptions = options.value( QStringLiteral( "layerOptions" ) ).toStringList();
-      for ( const QString &layerOption : layerOptions )
+      // For GPKG/Spatialite, we explicitly ask not to create a spatial index at
+      // layer creation since this would slow down inserts. Defer its creation
+      // to end of exportLayer() or destruction of this object.
+      QStringList modifiedLayerOptions;
+      if ( options.contains( QStringLiteral( "layerOptions" ) ) )
       {
-        if ( layerOption.compare( QLatin1String( "SPATIAL_INDEX=YES" ), Qt::CaseInsensitive ) == 0 ||
-             layerOption.compare( QLatin1String( "SPATIAL_INDEX=ON" ), Qt::CaseInsensitive ) == 0 ||
-             layerOption.compare( QLatin1String( "SPATIAL_INDEX=TRUE" ), Qt::CaseInsensitive ) == 0 ||
-             layerOption.compare( QLatin1String( "SPATIAL_INDEX=1" ), Qt::CaseInsensitive ) == 0 )
+        QStringList layerOptions = options.value( QStringLiteral( "layerOptions" ) ).toStringList();
+        for ( const QString &layerOption : layerOptions )
         {
-          // do nothing
-        }
-        else if ( layerOption.compare( QLatin1String( "SPATIAL_INDEX=NO" ), Qt::CaseInsensitive ) == 0 ||
-                  layerOption.compare( QLatin1String( "SPATIAL_INDEX=OFF" ), Qt::CaseInsensitive ) == 0 ||
-                  layerOption.compare( QLatin1String( "SPATIAL_INDEX=FALSE" ), Qt::CaseInsensitive ) == 0 ||
-                  layerOption.compare( QLatin1String( "SPATIAL_INDEX=0" ), Qt::CaseInsensitive ) == 0 )
-        {
-          mCreateSpatialIndex = false;
-        }
-        else
-        {
-          modifiedLayerOptions << layerOption;
+          if ( layerOption.compare( QLatin1String( "SPATIAL_INDEX=YES" ), Qt::CaseInsensitive ) == 0 ||
+               layerOption.compare( QLatin1String( "SPATIAL_INDEX=ON" ), Qt::CaseInsensitive ) == 0 ||
+               layerOption.compare( QLatin1String( "SPATIAL_INDEX=TRUE" ), Qt::CaseInsensitive ) == 0 ||
+               layerOption.compare( QLatin1String( "SPATIAL_INDEX=1" ), Qt::CaseInsensitive ) == 0 )
+          {
+            // do nothing
+          }
+          else if ( layerOption.compare( QLatin1String( "SPATIAL_INDEX=NO" ), Qt::CaseInsensitive ) == 0 ||
+                    layerOption.compare( QLatin1String( "SPATIAL_INDEX=OFF" ), Qt::CaseInsensitive ) == 0 ||
+                    layerOption.compare( QLatin1String( "SPATIAL_INDEX=FALSE" ), Qt::CaseInsensitive ) == 0 ||
+                    layerOption.compare( QLatin1String( "SPATIAL_INDEX=0" ), Qt::CaseInsensitive ) == 0 )
+          {
+            mCreateSpatialIndex = false;
+          }
+          else
+          {
+            modifiedLayerOptions << layerOption;
+          }
         }
       }
+      modifiedLayerOptions << QStringLiteral( "SPATIAL_INDEX=FALSE" );
+      modifiedOptions[ QStringLiteral( "layerOptions" ) ] = modifiedLayerOptions;
     }
-    modifiedLayerOptions << QStringLiteral( "SPATIAL_INDEX=FALSE" );
-    modifiedOptions[ QStringLiteral( "layerOptions" ) ] = modifiedLayerOptions;
   }
 
   // create an empty layer
@@ -227,7 +229,9 @@ bool QgsVectorLayerExporter::addFeature( QgsFeature &feat, Flags )
 
   mFeatureBuffer.append( newFeat );
 
-  if ( mFeatureBuffer.count() >= FEATURE_BUFFER_SIZE )
+  // A better strategy would be to use an hypothetical QgsFeature::RAMUsage()
+  // method to decide when to flush.
+  if ( mFeatureBuffer.count() >= mFeatureSizeBuffer )
   {
     return flushBuffer();
   }
