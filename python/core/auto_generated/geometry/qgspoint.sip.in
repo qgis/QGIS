@@ -369,6 +369,8 @@ Example
 
     virtual bool fromWkt( const QString &wkt );
 
+    virtual int wkbSize( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
+
     virtual QByteArray asWkb( QgsAbstractGeometry::WkbFlags = QgsAbstractGeometry::WkbFlags() ) const;
 
     virtual QString asWkt( int precision = 17 ) const;

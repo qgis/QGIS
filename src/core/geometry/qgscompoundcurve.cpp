@@ -227,27 +227,27 @@ bool QgsCompoundCurve::fromWkt( const QString &wkt )
   return true;
 }
 
-QByteArray QgsCompoundCurve::asWkb( WkbFlags flags ) const
+int QgsCompoundCurve::wkbSize( QgsAbstractGeometry::WkbFlags flags ) const
 {
   int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
-  QVector<QByteArray> wkbForCurves;
-  wkbForCurves.reserve( mCurves.size() );
   for ( const QgsCurve *curve : mCurves )
   {
-    QByteArray wkbForCurve = curve->asWkb( flags );
-    binarySize += wkbForCurve.length();
-    wkbForCurves << wkbForCurve;
+    binarySize += curve->wkbSize( flags );
   }
+  return binarySize;
+}
 
+QByteArray QgsCompoundCurve::asWkb( WkbFlags flags ) const
+{
   QByteArray wkbArray;
-  wkbArray.resize( binarySize );
+  wkbArray.resize( QgsCompoundCurve::wkbSize( flags ) );
   QgsWkbPtr wkb( wkbArray );
   wkb << static_cast<char>( QgsApplication::endian() );
   wkb << static_cast<quint32>( wkbType() );
   wkb << static_cast<quint32>( mCurves.size() );
-  for ( const QByteArray &wkbForCurve : qgis::as_const( wkbForCurves ) )
+  for ( const QgsCurve *curve : mCurves )
   {
-    wkb << wkbForCurve;
+    wkb << curve->asWkb( flags );
   }
   return wkbArray;
 }

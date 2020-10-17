@@ -253,6 +253,15 @@ class CORE_EXPORT QgsAbstractGeometry
     Q_DECLARE_FLAGS( WkbFlags, WkbFlag )
 
     /**
+     * Returns the length of the QByteArray returned by asWkb()
+     *
+     * The optional \a flags argument specifies flags controlling WKB export behavior
+     *
+     * \since QGIS 3.16
+     */
+    virtual int wkbSize( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const = 0;
+
+    /**
      * Returns a WKB representation of the geometry.
      *
      * The optional \a flags argument specifies flags controlling WKB export behavior (since QGIS 3.14).

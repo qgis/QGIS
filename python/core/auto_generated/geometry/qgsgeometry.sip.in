@@ -1552,6 +1552,15 @@ is null, a ValueError will be raised.
 
 
 
+    int wkbSize( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
+%Docstring
+Returns the length of the QByteArray returned by :py:func:`~QgsGeometry.asWkb`
+
+The optional ``flags`` argument specifies flags controlling WKB export behavior
+
+.. versionadded:: 3.16
+%End
+
     QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
 %Docstring
 Export the geometry to WKB
