@@ -230,13 +230,17 @@ bool QgsPoint::fromWkt( const QString &wkt )
  * See details in QEP #17
  ****************************************************************************/
 
-QByteArray QgsPoint::asWkb( WkbFlags ) const
+int QgsPoint::wkbSize( WkbFlags ) const
 {
   int binarySize = sizeof( char ) + sizeof( quint32 );
   binarySize += ( 2 + is3D() + isMeasure() ) * sizeof( double );
+  return binarySize;
+}
 
+QByteArray QgsPoint::asWkb( WkbFlags flags ) const
+{
   QByteArray wkbArray;
-  wkbArray.resize( binarySize );
+  wkbArray.resize( QgsPoint::wkbSize( flags ) );
   QgsWkbPtr wkb( wkbArray );
   wkb << static_cast<char>( QgsApplication::endian() );
   wkb << static_cast<quint32>( wkbType() );

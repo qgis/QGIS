@@ -802,6 +802,7 @@ void TestQgsGeometry::point()
   //to/from WKB
   QgsPoint p12( QgsWkbTypes::PointZM, 1.0, 2.0, 3.0, -4.0 );
   QByteArray wkb12 = p12.asWkb();
+  QCOMPARE( wkb12.size(), p12.wkbSize() );
   QgsPoint p13;
   QgsConstWkbPtr wkb12ptr( wkb12 );
   p13.fromWkb( wkb12ptr );
@@ -815,6 +816,7 @@ void TestQgsGeometry::point()
   QgsLineString line;
   p13 = QgsPoint( 1, 2 );
   QByteArray wkbLine = line.asWkb();
+  QCOMPARE( wkbLine.size(), line.wkbSize() );
   QgsConstWkbPtr wkbLinePtr( wkbLine );
   QVERIFY( !p13.fromWkb( wkbLinePtr ) );
   QCOMPARE( p13.wkbType(), QgsWkbTypes::Point );
@@ -1802,6 +1804,7 @@ void TestQgsGeometry::circularString()
                  << QgsPoint( QgsWkbTypes::PointZM, 11, 22, 21, 24 )
                  << QgsPoint( QgsWkbTypes::PointZM, 1, 22, 31, 34 ) );
   QByteArray wkb15 = l15.asWkb();
+  QCOMPARE( wkb15.size(), l15.wkbSize() );
   QgsCircularString l16;
   QgsConstWkbPtr wkb15ptr( wkb15 );
   l16.fromWkb( wkb15ptr );
@@ -3769,6 +3772,7 @@ void TestQgsGeometry::lineString()
                  << QgsPoint( QgsWkbTypes::PointZM, 11, 22, 21, 24 )
                  << QgsPoint( QgsWkbTypes::PointZM, 1, 22, 31, 34 ) );
   QByteArray wkb15 = l15.asWkb();
+  QCOMPARE( wkb15.size(), l15.wkbSize() );
   QgsLineString l16;
   QgsConstWkbPtr wkb15ptr( wkb15 );
   l16.fromWkb( wkb15ptr );
@@ -5639,6 +5643,7 @@ void TestQgsGeometry::polygon()
                    << QgsPoint( QgsWkbTypes::Point, 9, 1 ) << QgsPoint( QgsWkbTypes::Point, 1, 1 ) );
   p16.addInteriorRing( ring );
   QByteArray wkb16 = p16.asWkb();
+  QCOMPARE( wkb16.size(), p16.wkbSize() );
   QgsPolygon p17;
   QgsConstWkbPtr wkb16ptr( wkb16 );
   p17.fromWkb( wkb16ptr );
@@ -5657,6 +5662,7 @@ void TestQgsGeometry::polygon()
                    << QgsPoint( QgsWkbTypes::PointZ, 9, 1, 4 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 1 ) );
   p16.addInteriorRing( ring );
   wkb16 = p16.asWkb();
+  QCOMPARE( wkb16.size(), p16.wkbSize() );
   QgsConstWkbPtr wkb16ptr2( wkb16 );
   p17.fromWkb( wkb16ptr2 );
   QCOMPARE( p16, p17 );
@@ -7220,6 +7226,7 @@ void TestQgsGeometry::triangle()
 
   // WKB
   QByteArray wkb = t5.asWkb();
+  QCOMPARE( wkb.size(), t5.wkbSize() );
   t6.clear();
   QgsConstWkbPtr wkb16ptr5( wkb );
   t6.fromWkb( wkb16ptr5 );
@@ -9035,6 +9042,7 @@ void TestQgsGeometry::curvePolygon()
                    << QgsPoint( 0.1, 0.05 ) << QgsPoint( 0, 0 ) );
   p16.addInteriorRing( ring );
   QByteArray wkb16 = p16.asWkb();
+  QCOMPARE( wkb16.size(), p16.wkbSize() );
   QgsCurvePolygon p17;
   QgsConstWkbPtr wkb16ptr( wkb16 );
   p17.fromWkb( wkb16ptr );
@@ -9064,6 +9072,7 @@ void TestQgsGeometry::curvePolygon()
   cCurve->addCurve( ext );
   p16.addInteriorRing( cCurve );
   wkb16 = p16.asWkb();
+  QCOMPARE( wkb16.size(), p16.wkbSize() );
   QgsConstWkbPtr wkb16ptr3( wkb16 );
   p17.fromWkb( wkb16ptr3 );
   QCOMPARE( p16, p17 );
@@ -10407,6 +10416,7 @@ void TestQgsGeometry::compoundCurve()
                  << QgsPoint( QgsWkbTypes::PointZM, 1, 22, 31, 34 ) );
   c15.addCurve( l15.clone() );
   QByteArray wkb15 = c15.asWkb();
+  QCOMPARE( wkb15.size(), c15.wkbSize() );
   QgsCompoundCurve c16;
   QgsConstWkbPtr wkb15ptr( wkb15 );
   c16.fromWkb( wkb15ptr );
@@ -14753,6 +14763,7 @@ void TestQgsGeometry::multiPolygon()
   part.setExteriorRing( ring.clone() );
   c16.addGeometry( part.clone() );
   QByteArray wkb16 = c16.asWkb();
+  QCOMPARE( wkb16.size(), c16.wkbSize() );
   QgsMultiPolygon c17;
   QgsConstWkbPtr wkb16ptr( wkb16 );
   c17.fromWkb( wkb16ptr );
@@ -15391,6 +15402,7 @@ void TestQgsGeometry::geometryCollection()
                    << QgsPoint( QgsWkbTypes::Point, 9, 1 ) << QgsPoint( QgsWkbTypes::Point, 1, 1 ) );
   c16.addGeometry( part2.clone() );
   QByteArray wkb16 = c16.asWkb();
+  QCOMPARE( wkb16.size(), c16.wkbSize() );
   QgsGeometryCollection c17;
   QgsConstWkbPtr wkb16ptr( wkb16 );
   c17.fromWkb( wkb16ptr );

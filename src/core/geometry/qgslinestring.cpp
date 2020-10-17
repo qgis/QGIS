@@ -490,13 +490,17 @@ bool QgsLineString::fromWkt( const QString &wkt )
   return true;
 }
 
-QByteArray QgsLineString::asWkb( WkbFlags ) const
+int QgsLineString::wkbSize( QgsAbstractGeometry::WkbFlags ) const
 {
   int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
   binarySize += numPoints() * ( 2 + is3D() + isMeasure() ) * sizeof( double );
+  return binarySize;
+}
 
+QByteArray QgsLineString::asWkb( WkbFlags flags ) const
+{
   QByteArray wkbArray;
-  wkbArray.resize( binarySize );
+  wkbArray.resize( QgsLineString::wkbSize( flags ) );
   QgsWkbPtr wkb( wkbArray );
   wkb << static_cast<char>( QgsApplication::endian() );
   wkb << static_cast<quint32>( wkbType() );

@@ -196,6 +196,15 @@ Sets the geometry from a WKT string.
     typedef QFlags<QgsAbstractGeometry::WkbFlag> WkbFlags;
 
 
+    virtual int wkbSize( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const = 0;
+%Docstring
+Returns the length of the QByteArray returned by :py:func:`~QgsAbstractGeometry.asWkb`
+
+The optional ``flags`` argument specifies flags controlling WKB export behavior
+
+.. versionadded:: 3.16
+%End
+
     virtual QByteArray asWkb( WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const = 0;
 %Docstring
 Returns a WKB representation of the geometry.
