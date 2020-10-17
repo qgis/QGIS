@@ -2710,13 +2710,21 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds &id )
     returnvalue = false;
   }
 
-  if ( mFeaturesCounted != QgsVectorDataProvider::Uncounted &&
-       mFeaturesCounted != QgsVectorDataProvider::UnknownCount )
+  if ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) )
   {
-    if ( returnvalue )
-      mFeaturesCounted -= id.size();
-    else
-      recalculateFeatureCount();
+    // Shapefile behaves in a special way due to possible recompaction
+    recalculateFeatureCount();
+  }
+  else
+  {
+    if ( mFeaturesCounted != QgsVectorDataProvider::Uncounted &&
+         mFeaturesCounted != QgsVectorDataProvider::UnknownCount )
+    {
+      if ( returnvalue )
+        mFeaturesCounted -= id.size();
+      else
+        recalculateFeatureCount();
+    }
   }
 
   clearMinMaxCache();
