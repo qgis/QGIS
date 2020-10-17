@@ -1851,6 +1851,79 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         feature.setAttributes([None, 'three'])
         self.assertTrue(vl.addFeature(feature))
 
+    def _testVectorLayerExporterDeferredSpatialIndex(self, layerOptions, expectSpatialIndex):
+        """ Internal method """
+
+        tmpfile = '/vsimem/_testVectorLayerExporterDeferredSpatialIndex.gpkg'
+        options = {}
+        options['driverName'] = 'GPKG'
+        options['layerName'] = 'table1'
+        if layerOptions:
+            options['layerOptions'] = layerOptions
+        exporter = QgsVectorLayerExporter(tmpfile, "ogr", QgsFields(), QgsWkbTypes.Polygon,
+                                          QgsCoordinateReferenceSystem(3111), False, options)
+        self.assertFalse(exporter.errorCode(),
+                         'unexpected export error {}: {}'.format(exporter.errorCode(), exporter.errorMessage()))
+
+        # Check that at that point the rtree is *not* created
+        ds = ogr.Open(tmpfile)
+        sql_lyr = ds.ExecuteSQL("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'gpkg_extensions'")
+        assert sql_lyr.GetNextFeature() is None
+        ds.ReleaseResultSet(sql_lyr)
+        del ds
+
+        del exporter
+
+        ds = gdal.OpenEx(tmpfile, gdal.OF_VECTOR)
+        if expectSpatialIndex:
+            # Check that at that point the rtree is created
+            sql_lyr = ds.ExecuteSQL("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'gpkg_extensions'")
+            assert sql_lyr.GetNextFeature() is not None
+            ds.ReleaseResultSet(sql_lyr)
+            sql_lyr = ds.ExecuteSQL("SELECT 1 FROM gpkg_extensions WHERE table_name = 'table1' AND extension_name = 'gpkg_rtree_index'")
+            assert sql_lyr.GetNextFeature() is not None
+            ds.ReleaseResultSet(sql_lyr)
+        else:
+            # Check that at that point the rtree is *still not* created
+            sql_lyr = ds.ExecuteSQL("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'gpkg_extensions'")
+            assert sql_lyr.GetNextFeature() is None
+            ds.ReleaseResultSet(sql_lyr)
+        return ds
+
+    def testVectorLayerExporterDeferredSpatialIndexNoLayerOptions(self):
+        """ Check that a deferred spatial index is created when no layer creation options is provided """
+
+        ds = self._testVectorLayerExporterDeferredSpatialIndex(None, True)
+        filename = ds.GetDescription()
+        del ds
+        gdal.Unlink(filename)
+
+    def testVectorLayerExporterDeferredSpatialIndexLayerOptions(self):
+        """ Check that a deferred spatial index is created when other layer creations options is provided """
+
+        ds = self._testVectorLayerExporterDeferredSpatialIndex(['GEOMETRY_NAME=my_geom'], True)
+        lyr = ds.GetLayer(0)
+        self.assertEqual(lyr.GetGeometryColumn(), 'my_geom')
+        filename = ds.GetDescription()
+        del ds
+        gdal.Unlink(filename)
+
+    def testVectorLayerExporterDeferredSpatialIndexExplicitSpatialIndexAsked(self):
+        """ Check that a deferred spatial index is created when explicit asked """
+
+        ds = self._testVectorLayerExporterDeferredSpatialIndex(['SPATIAL_INDEX=YES'], True)
+        filename = ds.GetDescription()
+        del ds
+        gdal.Unlink(filename)
+
+    def testVectorLayerExporterDeferredSpatialIndexSpatialIndexDisallowed(self):
+        """ Check that a deferred spatial index is NOT created when explicit disallowed """
+
+        ds = self._testVectorLayerExporterDeferredSpatialIndex(['SPATIAL_INDEX=NO'], False)
+        filename = ds.GetDescription()
+        del ds
+        gdal.Unlink(filename)
+
 
 if __name__ == '__main__':
     unittest.main()
