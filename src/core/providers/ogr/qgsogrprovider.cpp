@@ -1874,7 +1874,14 @@ bool QgsOgrProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     returnvalue = false;
   }
 
-  recalculateFeatureCount();
+  if ( mFeaturesCounted != QgsVectorDataProvider::Uncounted &&
+       mFeaturesCounted != QgsVectorDataProvider::UnknownCount )
+  {
+    if ( returnvalue )
+      mFeaturesCounted += flist.size();
+    else
+      recalculateFeatureCount();
+  }
 
   if ( returnvalue )
     clearMinMaxCache();
@@ -2702,7 +2709,14 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds &id )
     returnvalue = false;
   }
 
-  recalculateFeatureCount();
+  if ( mFeaturesCounted != QgsVectorDataProvider::Uncounted &&
+       mFeaturesCounted != QgsVectorDataProvider::UnknownCount )
+  {
+    if ( returnvalue )
+      mFeaturesCounted -= id.size();
+    else
+      recalculateFeatureCount();
+  }
 
   clearMinMaxCache();
 
