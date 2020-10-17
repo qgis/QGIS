@@ -53,12 +53,12 @@ uint qHash( const IndexedPointCloudNode &id )
 
 QgsPointCloudDataBounds::QgsPointCloudDataBounds() = default;
 
-QgsPointCloudDataBounds::QgsPointCloudDataBounds( qint32 xmin, qint32 ymin, qint32 xmax, qint32 ymax, qint32 zmin, qint32 zmax )
+QgsPointCloudDataBounds::QgsPointCloudDataBounds( qint32 xmin, qint32 ymin, qint32 zmin, qint32 xmax, qint32 ymax, qint32 zmax )
   : mXMin( xmin )
   , mYMin( ymin )
+  , mZMin( zmin )
   , mXMax( xmax )
   , mYMax( ymax )
-  , mZMin( zmin )
   , mZMax( zmax )
 {
 
@@ -67,9 +67,9 @@ QgsPointCloudDataBounds::QgsPointCloudDataBounds( qint32 xmin, qint32 ymin, qint
 QgsPointCloudDataBounds::QgsPointCloudDataBounds( const QgsPointCloudDataBounds &obj )
   : mXMin( obj.xMin() )
   , mYMin( obj.yMin() )
+  , mZMin( obj.zMin() )
   , mXMax( obj.xMax() )
   , mYMax( obj.yMax() )
-  , mZMin( obj.zMin() )
   , mZMax( obj.zMax() )
 {
 }
@@ -102,6 +102,14 @@ qint32 QgsPointCloudDataBounds::zMin() const
 qint32 QgsPointCloudDataBounds::zMax() const
 {
   return mZMax;
+}
+
+QgsRectangle QgsPointCloudDataBounds::mapExtent( const QgsVector3D &offset, const QgsVector3D &scale ) const
+{
+  return QgsRectangle(
+           mXMin * scale.x() + offset.x(), mYMin * scale.y() + offset.y(),
+           mXMax * scale.x() + offset.x(), mYMax * scale.y() + offset.y()
+         );
 }
 
 QgsPointCloudIndex::QgsPointCloudIndex() = default;
@@ -146,6 +154,10 @@ bool QgsPointCloudIndex::load( const QString &fileName )
   QJsonArray bounds_conforming = doc["boundsConforming"].toArray();
   if ( bounds.size() != 6 )
     return false;
+  mExtent.set( bounds_conforming[0].toDouble(), bounds_conforming[1].toDouble(),
+               bounds_conforming[3].toDouble(), bounds_conforming[4].toDouble() );
+  mZMin = bounds_conforming[2].toDouble();
+  mZMax = bounds_conforming[5].toDouble();
 
   QJsonArray schemaArray = doc["schema"].toArray();
 
@@ -195,10 +207,10 @@ bool QgsPointCloudIndex::load( const QString &fileName )
 
   mRootBounds = QgsPointCloudDataBounds(
                   ( xmin - mOffset.x() ) / mScale.x(),
-                  ( xmax - mOffset.x() ) / mScale.x(),
                   ( ymin - mOffset.y() ) / mScale.y(),
-                  ( ymax - mOffset.y() ) / mScale.y(),
                   ( zmin - mOffset.z() ) / mScale.z(),
+                  ( xmax - mOffset.x() ) / mScale.x(),
+                  ( ymax - mOffset.y() ) / mScale.y(),
                   ( zmax - mOffset.z() ) / mScale.z()
                 );
 
@@ -267,13 +279,17 @@ QVector<qint32> QgsPointCloudIndex::nodePositionDataAsInt32( const IndexedPointC
   {
     QString filename = QString( "%1/ept-data/%2.zst" ).arg( mDirectory ).arg( n.toString() );
     Q_ASSERT( QFile::exists( filename ) );
-    return QgsPointCloudDecoder::decompressBinary( filename );
+    return QgsPointCloudDecoder::decompressZStandard( filename );
   }
-  else     // if ( mDataType == "laz" )
+  else if ( mDataType == "laszip" )
   {
     QString filename = QString( "%1/ept-data/%2.laz" ).arg( mDirectory ).arg( n.toString() );
     Q_ASSERT( QFile::exists( filename ) );
-    return QgsPointCloudDecoder::decompressBinary( filename );
+    return QgsPointCloudDecoder::decompressLaz( filename );
+  }
+  else
+  {
+    Q_ASSERT( false );  // unsupported
   }
 }
 
@@ -292,8 +308,13 @@ QgsPointCloudDataBounds QgsPointCloudIndex::nodeBounds( const IndexedPointCloudN
   zMin = round( mRootBounds.zMin() + dLevel * n.z );
   zMax = round( mRootBounds.zMin() + dLevel * ( n.z + 1 ) );
 
-  QgsPointCloudDataBounds db( xMin, xMax, yMin, yMax, zMin, zMax );
+  QgsPointCloudDataBounds db( xMin, yMin, zMin, xMax, yMax, zMax );
   return db;
+}
+
+QgsRectangle QgsPointCloudIndex::nodeMapExtent( const IndexedPointCloudNode &n )
+{
+  return nodeBounds( n ).mapExtent( mOffset, mScale );
 }
 
 QString QgsPointCloudIndex::wkt() const
