@@ -179,7 +179,7 @@
           <number>0</number>
          </property>
          <widget class="QWidget" name="mPageTerrain">
-          <layout class="QVBoxLayout" name="verticalLayout_6">
+	  <layout class="QVBoxLayout" name="verticalLayout_61">
            <item>
             <widget class="QgsScrollArea" name="scrollAreaTerrain">
              <property name="frameShape">
@@ -361,7 +361,7 @@
           </layout>
          </widget>
          <widget class="QWidget" name="mPageLight">
-          <layout class="QVBoxLayout" name="verticalLayout_6">
+	  <layout class="QVBoxLayout" name="verticalLayout_64">
            <item>
             <widget class="QgsScrollArea" name="scrollAreaLight">
              <property name="frameShape">
@@ -397,7 +397,7 @@
                  <property name="title">
                   <string>Lights</string>
                  </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_3">
+		 <layout class="QVBoxLayout" name="verticalLayout_31">
                   <property name="leftMargin">
                    <number>0</number>
                   </property>
@@ -517,7 +517,7 @@
           </layout>
          </widget>
          <widget class="QWidget" name="mPageCameraSkybox">
-          <layout class="QVBoxLayout" name="verticalLayout_6">
+	  <layout class="QVBoxLayout" name="verticalLayout_62">
            <item>
             <widget class="QgsScrollArea" name="scrollAreaCameraSkybox">
              <property name="frameShape">
@@ -608,7 +608,7 @@
           </layout>
          </widget>
          <widget class="QWidget" name="mPageAdvanced">
-          <layout class="QVBoxLayout" name="verticalLayout_6">
+	  <layout class="QVBoxLayout" name="verticalLayout_63">
            <item>
             <widget class="QgsScrollArea" name="scrollAreaAdvanced">
              <property name="frameShape">
@@ -644,7 +644,7 @@
                  <property name="title">
                   <string>Advanced Settings</string>
                  </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_3">
+		 <layout class="QVBoxLayout" name="verticalLayout_32">
                   <item>
                    <layout class="QGridLayout" name="gridLayoutAdvanced">
                     <item row="4" column="0" colspan="2">
