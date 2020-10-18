@@ -850,22 +850,4 @@
  <resources>
   <include location="../../../images/images.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>m3DOptionsListWidget</sender>
-   <signal>currentRowChanged(int)</signal>
-   <receiver>m3DOptionsStackedWidget</receiver>
-   <slot>setCurrentIndex(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>34</x>
-     <y>599</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>633</x>
-     <y>411</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
 </ui>
