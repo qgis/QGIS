@@ -226,7 +226,7 @@ Context menu for the listItems ( symbols list )
 %End
 
   protected slots:
-    bool addColorRamp( QAction *action );
+    bool addColorRamp( const QString &type = QString() );
     void addFavoriteSelectedSymbols();
 %Docstring
 Add selected symbols to favorites
@@ -288,10 +288,6 @@ Populates the list view with color ramps of the current type with the given name
     bool addSymbol( int symbolType = -1 );
 %Docstring
 add a new symbol to style
-%End
-    bool addColorRamp();
-%Docstring
-add a new color ramp to style
 %End
 
     bool editSymbol();
