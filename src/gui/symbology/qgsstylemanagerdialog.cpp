@@ -528,7 +528,7 @@ void QgsStyleManagerDialog::tabItemType_currentChanged( int )
   {
     btnAddItem->setMenu( mMenuBtnAddItemColorRamp );
   }
-  if ( !mReadOnly && isLegendPatchShape ) // legend patch shape tab
+  else if ( !mReadOnly && isLegendPatchShape ) // legend patch shape tab
   {
     btnAddItem->setMenu( mMenuBtnAddItemLegendPatchShape );
   }
