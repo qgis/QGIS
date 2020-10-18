@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>593</width>
-    <height>623</height>
+    <width>775</width>
+    <height>620</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -179,7 +179,7 @@
           <number>0</number>
          </property>
          <widget class="QWidget" name="mPageTerrain">
-	  <layout class="QVBoxLayout" name="verticalLayout_61">
+          <layout class="QVBoxLayout" name="verticalLayout_61">
            <item>
             <widget class="QgsScrollArea" name="scrollAreaTerrain">
              <property name="frameShape">
@@ -294,22 +294,19 @@
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="groupMeshTerrainShading">
-                 <property name="title">
-                  <string>Mesh Terrain Settings</string>
-                 </property>
+                <widget class="QFrame" name="groupMeshTerrainShading">
                  <layout class="QVBoxLayout" name="verticalLayout">
                   <property name="leftMargin">
-                   <number>9</number>
+                   <number>0</number>
                   </property>
                   <property name="topMargin">
-                   <number>9</number>
+                   <number>0</number>
                   </property>
                   <property name="rightMargin">
-                   <number>9</number>
+                   <number>0</number>
                   </property>
                   <property name="bottomMargin">
-                   <number>9</number>
+                   <number>0</number>
                   </property>
                  </layout>
                 </widget>
@@ -361,7 +358,7 @@
           </layout>
          </widget>
          <widget class="QWidget" name="mPageLight">
-	  <layout class="QVBoxLayout" name="verticalLayout_64">
+          <layout class="QVBoxLayout" name="verticalLayout_64">
            <item>
             <widget class="QgsScrollArea" name="scrollAreaLight">
              <property name="frameShape">
@@ -375,7 +372,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>98</width>
+                <width>71</width>
                 <height>47</height>
                </rect>
               </property>
@@ -397,7 +394,7 @@
                  <property name="title">
                   <string>Lights</string>
                  </property>
-		 <layout class="QVBoxLayout" name="verticalLayout_31">
+                 <layout class="QVBoxLayout" name="verticalLayout_31">
                   <property name="leftMargin">
                    <number>0</number>
                   </property>
@@ -450,7 +447,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>174</width>
+                <width>177</width>
                 <height>47</height>
                </rect>
               </property>
@@ -517,7 +514,7 @@
           </layout>
          </widget>
          <widget class="QWidget" name="mPageCameraSkybox">
-	  <layout class="QVBoxLayout" name="verticalLayout_62">
+          <layout class="QVBoxLayout" name="verticalLayout_62">
            <item>
             <widget class="QgsScrollArea" name="scrollAreaCameraSkybox">
              <property name="frameShape">
@@ -531,7 +528,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>173</width>
+                <width>175</width>
                 <height>132</height>
                </rect>
               </property>
@@ -608,7 +605,7 @@
           </layout>
          </widget>
          <widget class="QWidget" name="mPageAdvanced">
-	  <layout class="QVBoxLayout" name="verticalLayout_63">
+          <layout class="QVBoxLayout" name="verticalLayout_63">
            <item>
             <widget class="QgsScrollArea" name="scrollAreaAdvanced">
              <property name="frameShape">
@@ -622,7 +619,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>302</width>
+                <width>304</width>
                 <height>330</height>
                </rect>
               </property>
@@ -644,7 +641,7 @@
                  <property name="title">
                   <string>Advanced Settings</string>
                  </property>
-		 <layout class="QVBoxLayout" name="verticalLayout_32">
+                 <layout class="QVBoxLayout" name="verticalLayout_32">
                   <item>
                    <layout class="QGridLayout" name="gridLayoutAdvanced">
                     <item row="4" column="0" colspan="2">
@@ -790,10 +787,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsScrollArea</class>
@@ -802,9 +798,10 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsPhongMaterialWidget</class>
@@ -850,4 +847,5 @@
  <resources>
   <include location="../../../images/images.qrc"/>
  </resources>
+ <connections/>
 </ui>
