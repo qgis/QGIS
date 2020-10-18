@@ -73,7 +73,7 @@ class ANALYSIS_EXPORT QgsMeshTriangulation : public QObject
     bool addBreakLines( QgsFeatureIterator &lineFeatureIterator, int valueAttribute, const QgsCoordinateTransform &transformContext, QgsFeedback *feedback = nullptr, long featureCount = 1 );
 
     //! Returns the triangulated mesh
-    QgsMesh triangulatedMesh() const;
+    QgsMesh triangulatedMesh( QgsFeedback *feedBack = nullptr ) const;
 
     //! Sets the coordinate reference system used for the triangulation
     void setCrs( const QgsCoordinateReferenceSystem &crs );

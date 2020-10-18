@@ -3264,6 +3264,9 @@ QgsMesh QgsDualEdgeTriangulation::triangulationToMesh( QgsFeedback *feedBack ) c
 {
   QVector<bool> alreadyVisitedEdges( mHalfEdge.count(), false );
 
+  if ( feedBack )
+    feedBack->setProgress( 0 );
+
   QVector< bool> edgeToTreat( mHalfEdge.count(), true );
   QHash<HalfEdge *, int > edgesHash;
   for ( int i = 0; i < mHalfEdge.count(); ++i )
@@ -3277,7 +3280,8 @@ QgsMesh QgsDualEdgeTriangulation::triangulationToMesh( QgsFeedback *feedBack ) c
     mesh.vertices.append( *point );
   }
 
-  for ( int i = 0 ; i < edgeToTreat.count(); ++i )
+  int edgeCount = edgeToTreat.count();
+  for ( int i = 0 ; i < edgeCount; ++i )
   {
     bool containVirtualPoint = false;
     if ( edgeToTreat[i] )
@@ -3295,6 +3299,10 @@ QgsMesh QgsDualEdgeTriangulation::triangulationToMesh( QgsFeedback *feedBack ) c
       while ( currentEdge != firstEdge && !containVirtualPoint && ( !feedBack || !feedBack->isCanceled() ) );
       if ( !containVirtualPoint )
         mesh.faces.append( face );
+    }
+    if ( feedBack )
+    {
+      feedBack->setProgress( ( 100 *  i ) / edgeCount ) ;
     }
   }
 
