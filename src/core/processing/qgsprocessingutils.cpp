@@ -798,7 +798,11 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
 
         // use destination string as layer name (eg "postgis:..." )
         if ( !layerName.isEmpty() )
-          uri += QStringLiteral( "|layername=%1" ).arg( layerName );
+        {
+          QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( providerKey, uri );
+          parts.insert( QStringLiteral( "layerName" ), layerName );
+          uri = QgsProviderRegistry::instance()->encodeUri( providerKey, parts );
+        }
 
         std::unique_ptr< QgsVectorLayer > layer = qgis::make_unique<QgsVectorLayer>( uri, destination, providerKey, layerOptions );
         // update destination to layer ID
@@ -829,11 +833,9 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
         // use destination string as layer name (eg "postgis:..." )
         if ( !layerName.isEmpty() )
           uri += QStringLiteral( "|layername=%1" ).arg( layerName );
-        std::unique_ptr< QgsVectorLayer > layer = qgis::make_unique<QgsVectorLayer>( uri, destination, providerKey, layerOptions );
-        // update destination to layer ID
-        destination = layer->id();
+        // update destination to generated URI
+        destination = uri;
 
-        context.temporaryLayerStore()->addMapLayer( layer.release() );
         return new QgsProcessingFeatureSink( exporter.release(), destination, context, true );
       }
     }
