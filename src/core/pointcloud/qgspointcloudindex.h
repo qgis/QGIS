@@ -130,6 +130,7 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
 
     QgsRectangle mExtent;  //!< 2D extent of data
     double mZMin = 0, mZMax = 0;   //!< Vertical extent of data
+    int mPointRecordSize = 0;  //!< Size of one point record in bytes (only relevant for "binary" and "zstandard" data type)
     QHash<IndexedPointCloudNode, int> mHierarchy;
     QgsVector3D mScale; //!< Scale of our int32 coordinates compared to CRS coords
     QgsVector3D mOffset; //!< Offset of our int32 coordinates compared to CRS coords

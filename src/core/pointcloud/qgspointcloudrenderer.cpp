@@ -33,8 +33,12 @@ QgsPointCloudRenderer::QgsPointCloudRenderer( QgsPointCloudLayer *layer, QgsRend
 
   // TODO: use config from layer
   mConfig.penWidth = context.convertToPainterUnits( 1, QgsUnitTypes::RenderUnit::RenderMillimeters );
+  // good range for 26850_12580.laz
   mConfig.zMin = 400;
   mConfig.zMax = 600;
+  // good range for Trencin castle
+  //mConfig.zMin = 150;
+  //mConfig.zMax = 350;
   mConfig.colorRamp.reset( QgsStyle::defaultStyle()->colorRamp( "Viridis" ) );
 }
 
