@@ -29,8 +29,8 @@
 
 namespace QgsPointCloudDecoder
 {
-  QVector<qint32> decompressBinary( const QString &filename );
-  QVector<qint32> decompressZStandard( const QString &filename );
+  QVector<qint32> decompressBinary( const QString &filename, int pointRecordSize );
+  QVector<qint32> decompressZStandard( const QString &filename, int pointRecordSize );
   QVector<qint32> decompressLaz( const QString &filename );
 };
 

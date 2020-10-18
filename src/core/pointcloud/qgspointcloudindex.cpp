@@ -161,12 +161,15 @@ bool QgsPointCloudIndex::load( const QString &fileName )
 
   QJsonArray schemaArray = doc["schema"].toArray();
 
+  mPointRecordSize = 0;
   for ( QJsonValue schemaItem : schemaArray )
   {
     QJsonObject schemaObj = schemaItem.toObject();
     QString name = schemaObj["name"].toString();
     QString type = schemaObj["type"].toString();
+
     int size = schemaObj["size"].toInt();
+    mPointRecordSize += size;
 
     float scale = 1.f;
     if ( schemaObj.contains( "scale" ) )
@@ -194,6 +197,10 @@ bool QgsPointCloudIndex::load( const QString &fileName )
 
     // TODO: can parse also stats: "count", "minimum", "maximum", "mean", "stddev", "variance"
   }
+
+  // There seems to be a bug in Entwine: https://github.com/connormanning/entwine/issues/240
+  // point records for X,Y,Z seem to be written as 64-bit doubles even if schema says they are 32-bit ints
+  mPointRecordSize += 3 * 4;
 
   // save mRootBounds
 
@@ -273,13 +280,13 @@ QVector<qint32> QgsPointCloudIndex::nodePositionDataAsInt32( const IndexedPointC
   {
     QString filename = QString( "%1/ept-data/%2.bin" ).arg( mDirectory ).arg( n.toString() );
     Q_ASSERT( QFile::exists( filename ) );
-    return QgsPointCloudDecoder::decompressBinary( filename );
+    return QgsPointCloudDecoder::decompressBinary( filename, mPointRecordSize );
   }
   else if ( mDataType == "zstandard" )
   {
     QString filename = QString( "%1/ept-data/%2.zst" ).arg( mDirectory ).arg( n.toString() );
     Q_ASSERT( QFile::exists( filename ) );
-    return QgsPointCloudDecoder::decompressZStandard( filename );
+    return QgsPointCloudDecoder::decompressZStandard( filename, mPointRecordSize );
   }
   else if ( mDataType == "laszip" )
   {

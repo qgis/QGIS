@@ -26,7 +26,7 @@
 #include "laz-perf/io.hpp"
 #include "laz-perf/common/common.hpp"
 
-QVector<qint32> QgsPointCloudDecoder::decompressBinary( const QString &filename )
+QVector<qint32> QgsPointCloudDecoder::decompressBinary( const QString &filename, int pointRecordSize )
 {
   Q_ASSERT( QFile::exists( filename ) );
 
@@ -34,15 +34,14 @@ QVector<qint32> QgsPointCloudDecoder::decompressBinary( const QString &filename 
   bool r = f.open( QIODevice::ReadOnly );
   Q_ASSERT( r );
 
-  // WHY??? per-record should be 18 based on schema, not 46
-  int stride = 46; //18;
-  int count = f.size() / stride;
+  int count = f.size() / pointRecordSize;
   QVector<qint32> data( count * 3 );
   for ( int i = 0; i < count; ++i )
   {
-    QByteArray bytes = f.read( stride );
+    QByteArray bytes = f.read( pointRecordSize );
     // WHY??? X,Y,Z are int32 values stored as doubles
     double *bytesD = ( double * ) bytes.constData();
+    // TODO: we should respect the schema (offset and data type of X,Y,Z)
     data[i * 3 + 0] = ( bytesD[0] );
     data[i * 3 + 1] = ( bytesD[1] );
     data[i * 3 + 2] = ( bytesD[2] );
@@ -80,7 +79,7 @@ QByteArray decompressZtdStream( const QByteArray &dataCompressed )
   return dataUncompressed;
 }
 
-QVector<qint32> QgsPointCloudDecoder::decompressZStandard( const QString &filename )
+QVector<qint32> QgsPointCloudDecoder::decompressZStandard( const QString &filename, int pointRecordSize )
 {
   Q_ASSERT( QFile::exists( filename ) );
 
@@ -93,17 +92,15 @@ QVector<qint32> QgsPointCloudDecoder::decompressZStandard( const QString &filena
 
   // from here it's the same as "binary"
 
-  // WHY??? per-record should be 18 based on schema, not 46
-  int stride = 46; //18;
-  int count = dataUncompressed.size() / stride;
-
+  int count = dataUncompressed.size() / pointRecordSize;
 
   QVector<qint32> data( count * 3 );
   const char *ptr = dataUncompressed.constData();
   for ( int i = 0; i < count; ++i )
   {
     // WHY??? X,Y,Z are int32 values stored as doubles
-    double *bytesD = ( double * )( ptr + stride * i );
+    double *bytesD = ( double * )( ptr + pointRecordSize * i );
+    // TODO: we should respect the schema (offset and data type of X,Y,Z)
     data[i * 3 + 0] = ( bytesD[0] );
     data[i * 3 + 1] = ( bytesD[1] );
     data[i * 3 + 2] = ( bytesD[2] );
