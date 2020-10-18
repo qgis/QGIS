@@ -295,6 +295,7 @@ void Qgs3DMapConfigWidget::onTerrainTypeChanged()
   labelTerrainLayer->setVisible( genType == QgsTerrainGenerator::Dem || genType == QgsTerrainGenerator::Mesh );
   cboTerrainLayer->setVisible( genType == QgsTerrainGenerator::Dem || genType == QgsTerrainGenerator::Mesh );
   groupMeshTerrainShading->setVisible( genType == QgsTerrainGenerator::Mesh );
+  groupTerrainShading->setVisible( genType != QgsTerrainGenerator::Mesh );
 
   QgsMapLayer *oldTerrainLayer = cboTerrainLayer->currentLayer();
   if ( cboTerrainType->currentData() == QgsTerrainGenerator::Dem )
