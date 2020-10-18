@@ -121,6 +121,9 @@ QgsLimitedRandomColorRampDialog::QgsLimitedRandomColorRampDialog( const QgsLimit
 {
   QVBoxLayout *vLayout = new QVBoxLayout();
   mWidget = new QgsLimitedRandomColorRampWidget( ramp );
+
+  connect( mWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );
+
   vLayout->addWidget( mWidget );
   mButtonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok, Qt::Horizontal );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
