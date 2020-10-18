@@ -62,6 +62,13 @@ const double Qgis::UI_SCALE_FACTOR = 1.5;
 const double Qgis::UI_SCALE_FACTOR = 1;
 #endif
 
+QMap<Qgis::ReleaseType, QString> Qgis::sReleaseType
+{
+  {Qgis::ReleaseType::Regular, QStringLiteral( "REGULAR" ) },
+  {Qgis::ReleaseType::LongTerm, QStringLiteral( "LONGTERM" ) },
+  {Qgis::ReleaseType::Development, QStringLiteral( "DEVELOPMENT" ) }
+};
+
 double qgsPermissiveToDouble( QString string, bool &ok )
 {
   //remove any thousands separators
@@ -288,6 +295,11 @@ int Qgis::versionInt()
 QString Qgis::releaseName()
 {
   return QString::fromUtf8( RELEASE_NAME );
+}
+
+Qgis::ReleaseType Qgis::releaseType()
+{
+  return sReleaseType.key( RELEASE_TYPE );
 }
 
 QString Qgis::devVersion()

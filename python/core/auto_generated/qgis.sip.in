@@ -54,6 +54,20 @@ Release name
 .. versionadded:: 3.12
 %End
 
+    enum ReleaseType
+    {
+      Regular,
+      LongTerm,
+      Development,
+    };
+
+    static ReleaseType releaseType();
+%Docstring
+Returns the release type of QGIS
+
+.. versionadded:: 3.16
+%End
+
     static const char *QGIS_DEV_VERSION;
 
     static QString devVersion();
@@ -126,6 +140,7 @@ A string with default project scales.
 
 .. versionadded:: 3.12
 %End
+
 };
 
 

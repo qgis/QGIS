@@ -68,6 +68,25 @@ class CORE_EXPORT Qgis
      */
     static QString releaseName();
 
+    /**
+     * QGIS release type
+     * \since QGIS 3.16
+     */
+    enum ReleaseType
+    {
+      Regular = 0, //!< Regular release or point release
+      LongTerm = 1, //!< Long term release
+      Development = 2, //!< Development release
+    };
+    Q_ENUM( ReleaseType )
+
+    /**
+     * Returns the release type of QGIS
+     *
+     * \since QGIS 3.16
+     */
+    static ReleaseType releaseType();
+
     //! The development version
     static const char *QGIS_DEV_VERSION;
 
@@ -199,6 +218,10 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.12
      */
     static QString defaultProjectScales();
+
+  private:
+
+    static QMap<Qgis::ReleaseType, QString> sReleaseType;
 };
 
 // hack to workaround warnings when casting void pointers
