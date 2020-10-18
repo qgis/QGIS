@@ -453,6 +453,7 @@
         <file>themes/default/mActionFirst.svg</file>
         <file>themes/default/mIconAtlas.svg</file>
         <file>themes/default/mIconAutoPlacementSettings.svg</file>
+        <file>themes/default/mIconCamera.svg</file>
         <file>themes/default/mIconCertificate.svg</file>
         <file>themes/default/mIconCertificateMissing.svg</file>
         <file>themes/default/mIconCertificateTrusted.svg</file>
@@ -523,6 +524,7 @@
         <file>themes/default/mIconRasterGroup.svg</file>
         <file>themes/default/mIconRasterLink.svg</file>
         <file>themes/default/mIconRasterLayer.svg</file>
+        <file>themes/default/mIconShadow.svg</file>
         <file>themes/default/mIconSelectAdd.svg</file>
         <file>themes/default/mIconSelected.svg</file>
         <file>themes/default/mIconSelectIntersect.svg</file>
