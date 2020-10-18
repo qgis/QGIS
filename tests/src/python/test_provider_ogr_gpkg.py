@@ -1924,6 +1924,44 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         del ds
         gdal.Unlink(filename)
 
+    def testRollback(self):
+        """ Test that a failed operation is properly rolled back """
+        tmpfile = os.path.join(self.basetestpath, 'testRollback.gpkg')
+
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint, options=['SPATIAL_INDEX=NO'])
+        # Ugly hack to be able to create a column with unique constraint with GDAL < 3.2
+        ds.ExecuteSQL('CREATE TABLE test2 ("fid" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "geom" POINT, v INTEGER, v_unique INTEGER UNIQUE)')
+        ds.ExecuteSQL("UPDATE gpkg_contents SET table_name = 'test2'")
+        ds.ExecuteSQL("UPDATE gpkg_geometry_columns SET table_name = 'test2'")
+        ds.ExecuteSQL('INSERT INTO test2 (fid, geom, v, v_unique) VALUES (1, NULL, -1, 123)')
+        ds = None
+
+        vl = QgsVectorLayer(u'{}'.format(tmpfile), 'test', u'ogr')
+        self.assertTrue(vl.isValid())
+
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 1)
+        self.assertEqual(features[0].attributes(), [1, -1, 123])
+
+        f = QgsFeature()
+        # violates unique constraint
+        f.setAttributes([None, -2, 123])
+        f2 = QgsFeature()
+        f2.setAttributes([None, -3, 124])
+        ret, _ = vl.dataProvider().addFeatures([f, f2])
+        self.assertFalse(ret)
+
+        f = QgsFeature()
+        f.setAttributes([None, -4, 125])
+        ret, _ = vl.dataProvider().addFeatures([f])
+        self.assertTrue(ret)
+
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 2)
+        self.assertEqual(features[0].attributes(), [1, -1, 123])
+        self.assertEqual(features[1].attributes(), [2, -4, 125])
+
 
 if __name__ == '__main__':
     unittest.main()
