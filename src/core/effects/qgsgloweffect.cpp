@@ -180,9 +180,9 @@ void QgsGlowEffect::readProperties( const QgsStringMap &props )
     mColor = QgsSymbolLayerUtils::decodeColor( props.value( QStringLiteral( "single_color" ) ) );
   }
 
-//attempt to create color ramp from props
+  //attempt to create color ramp from props
   delete mRamp;
-  if ( props.contains( QStringLiteral( "rampType" ) ) && props[QStringLiteral( "rampType" )] == QLatin1String( "cpt-city" ) )
+  if ( props.contains( QStringLiteral( "rampType" ) ) && props[QStringLiteral( "rampType" )] == QgsCptCityColorRamp::typeString() )
   {
     mRamp = QgsCptCityColorRamp::create( props );
   }
