@@ -3193,46 +3193,48 @@ bool QgsVectorLayer::deleteFeatureCascade( QgsFeatureId fid, QgsVectorLayer::Del
 
   if ( context && context->cascade )
   {
-    if ( context->mHandledFeatures.contains( this ) )
+    const QList<QgsRelation> relations = context->project->relationManager()->referencedRelations( this );
+    const bool hasRelationsOrJoins = !relations.empty() || mJoinBuffer->containsJoins();
+    if ( hasRelationsOrJoins )
     {
-      QgsFeatureIds handledFeatureIds = context->mHandledFeatures.value( this );
-      if ( handledFeatureIds.contains( fid ) )
+      if ( context->mHandledFeatures.contains( this ) )
       {
-        // avoid endless recursion
-        return false;
+        QgsFeatureIds &handledFeatureIds = context->mHandledFeatures[ this  ];
+        if ( handledFeatureIds.contains( fid ) )
+        {
+          // avoid endless recursion
+          return false;
+        }
+        else
+        {
+          // add feature id
+          handledFeatureIds << fid;
+        }
       }
       else
       {
-        // add feature id
-        handledFeatureIds << fid;
-        context->mHandledFeatures.insert( this, handledFeatureIds );
+        // add layer and feature id
+        context->mHandledFeatures.insert( this, QgsFeatureIds() << fid );
       }
-    }
-    else
-    {
-      // add layer and feature id
-      context->mHandledFeatures.insert( this, QgsFeatureIds() << fid );
-    }
 
-    const QList<QgsRelation> relations = context->project->relationManager()->referencedRelations( this );
-
-    for ( const QgsRelation &relation : relations )
-    {
-      //check if composition (and not association)
-      if ( relation.strength() == QgsRelation::Composition )
+      for ( const QgsRelation &relation : relations )
       {
-        //get features connected over this relation
-        QgsFeatureIterator relatedFeaturesIt = relation.getRelatedFeatures( getFeature( fid ) );
-        QgsFeatureIds childFeatureIds;
-        QgsFeature childFeature;
-        while ( relatedFeaturesIt.nextFeature( childFeature ) )
+        //check if composition (and not association)
+        if ( relation.strength() == QgsRelation::Composition )
         {
-          childFeatureIds.insert( childFeature.id() );
-        }
-        if ( childFeatureIds.count() > 0 )
-        {
-          relation.referencingLayer()->startEditing();
-          relation.referencingLayer()->deleteFeatures( childFeatureIds, context );
+          //get features connected over this relation
+          QgsFeatureIterator relatedFeaturesIt = relation.getRelatedFeatures( getFeature( fid ) );
+          QgsFeatureIds childFeatureIds;
+          QgsFeature childFeature;
+          while ( relatedFeaturesIt.nextFeature( childFeature ) )
+          {
+            childFeatureIds.insert( childFeature.id() );
+          }
+          if ( childFeatureIds.count() > 0 )
+          {
+            relation.referencingLayer()->startEditing();
+            relation.referencingLayer()->deleteFeatures( childFeatureIds, context );
+          }
         }
       }
     }
