@@ -346,12 +346,19 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
     connect( item, &QAction::triggered, this, [ = ]( bool ) { addSymbol( QgsSymbol::Fill ); } );
     mMenuBtnAddItemAll->addAction( item );
     mMenuBtnAddItemAll->addSeparator();
-    for ( const QString &rampType : qgis::as_const( rampTypes ) )
+    for ( const std::pair< QString, QString > &rampType :
+  {
+    std::pair< QString, QString > { tr( "Gradient…" ), tr( "Gradient" ) },
+    std::pair< QString, QString > { tr( "Color presets…" ), tr( "Color presets" ) },
+    std::pair< QString, QString > { tr( "Random…" ), tr( "Random" ) },
+    std::pair< QString, QString > { tr( "Catalog: cpt-city…" ), tr( "Catalog: cpt-city" ) },
+    std::pair< QString, QString > { tr( "Catalog: ColorBrewer…" ), tr( "Catalog: ColorBrewer" ) }
+  } )
     {
-      item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "styleicons/color.svg" ) ), rampType, this );
-      connect( item, &QAction::triggered, this, [ = ]( bool ) { addColorRamp( item ); } );
+      item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "styleicons/color.svg" ) ), rampType.first, this );
+      connect( item, &QAction::triggered, this, [ = ]( bool ) { addColorRamp( rampType.second ); } );
       mMenuBtnAddItemAll->addAction( item );
-      mMenuBtnAddItemColorRamp->addAction( new QAction( rampType, this ) );
+      mMenuBtnAddItemColorRamp->addAction( new QAction( rampType.first, this ) );
     }
     mMenuBtnAddItemAll->addSeparator();
     item = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mIconFieldText.svg" ) ), tr( "Text Format…" ), this );
@@ -400,7 +407,7 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
     mMenuBtnAddItemSymbol3D->addAction( item );
 
     connect( mMenuBtnAddItemColorRamp, &QMenu::triggered,
-             this, static_cast<bool ( QgsStyleManagerDialog::* )( QAction * )>( &QgsStyleManagerDialog::addColorRamp ) );
+    this, [ = ]( QAction * action ) { addColorRamp( action->data().toString() ); } );
   }
 
   // Context menu for symbols/colorramps. The menu entries for every group are created when displaying the menu.
@@ -1519,16 +1526,10 @@ void QgsStyleManagerDialog::activate()
   activateWindow();
 }
 
-bool QgsStyleManagerDialog::addColorRamp()
-{
-  return addColorRamp( nullptr );
-}
-
-bool QgsStyleManagerDialog::addColorRamp( QAction *action )
+bool QgsStyleManagerDialog::addColorRamp( const QString &type )
 {
   // pass the action text, which is the color ramp type
-  QString rampName = addColorRampStatic( this, mStyle,
-                                         action ? action->text() : QString() );
+  QString rampName = addColorRampStatic( this, mStyle, type );
   if ( !rampName.isEmpty() )
   {
     mModified = true;

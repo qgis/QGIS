@@ -254,7 +254,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     void listitemsContextMenu( QPoint );
 
   protected slots:
-    bool addColorRamp( QAction *action );
+    bool addColorRamp( const QString &type = QString() );
     //! Add selected symbols to favorites
     void addFavoriteSelectedSymbols();
     //! Remove selected symbols from favorites
@@ -300,8 +300,6 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
 
     //! add a new symbol to style
     bool addSymbol( int symbolType = -1 );
-    //! add a new color ramp to style
-    bool addColorRamp();
 
     bool editSymbol();
     bool editColorRamp();
