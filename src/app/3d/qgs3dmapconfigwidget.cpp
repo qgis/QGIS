@@ -22,12 +22,14 @@
 #include "qgsmeshterraingenerator.h"
 #include "qgs3dutils.h"
 
+#include "qgsguiutils.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapthemecollection.h"
 #include "qgsrasterlayer.h"
 #include "qgsmeshlayer.h"
 #include "qgsproject.h"
 #include "qgsmesh3dsymbolwidget.h"
+#include "qgssettings.h"
 #include "qgsskyboxrenderingsettingswidget.h"
 #include "qgsshadowrenderingsettingswidget.h"
 #include "qgs3dmapcanvas.h"
@@ -42,6 +44,24 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
 
   Q_ASSERT( map );
   Q_ASSERT( mainCanvas );
+
+  QgsSettings settings;
+
+  const int iconSize = QgsGuiUtils::scaleIconSize( 20 );
+  m3DOptionsListWidget->setIconSize( QSize( iconSize, iconSize ) ) ;
+
+  // get rid of annoying outer focus rect on Mac
+  m3DOptionsListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
+  m3DOptionsListWidget->setCurrentRow( settings.value( QStringLiteral( "Windows/3DMapConfig/Tab" ), 0 ).toInt() );
+
+  if ( !settings.contains( QStringLiteral( "Windows/3DMapConfig/OptionsSplitState" ) ) )
+  {
+    // set left list widget width on initial showing
+    QList<int> splitsizes;
+    splitsizes << 115;
+    m3DOptionsSplitter->setSizes( splitsizes );
+  }
+  m3DOptionsSplitter->restoreState( settings.value( QStringLiteral( "Windows/3DMapConfig/OptionsSplitState" ) ).toByteArray() );
 
   mMeshSymbolWidget = new QgsMesh3dSymbolWidget( nullptr, groupMeshTerrainShading );
   mMeshSymbolWidget->configureForTerrain();
@@ -136,6 +156,13 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   groupShadowRendering->layout()->addWidget( mShadowSetiingsWidget );
   QObject::connect( widgetLights, &QgsLightsWidget::directionalLightsCountChanged, mShadowSetiingsWidget, &QgsShadowRenderingSettingsWidget::onDirectionalLightsCountChanged );
   groupShadowRendering->setChecked( map->shadowSettings().renderShadows() );
+}
+
+Qgs3DMapConfigWidget::~Qgs3DMapConfigWidget()
+{
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/3DMapConfig/OptionsSplitState" ), m3DOptionsSplitter->saveState() );
+  settings.setValue( QStringLiteral( "Windows/3DMapConfig/Tab" ), m3DOptionsListWidget->currentRow() );
 }
 
 void Qgs3DMapConfigWidget::apply()
