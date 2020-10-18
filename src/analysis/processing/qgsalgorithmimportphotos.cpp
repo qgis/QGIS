@@ -236,13 +236,17 @@ class SetEditorWidgetForPhotoAttributePostProcessor : public QgsProcessingLayerP
         // photo field shows picture viewer
         config.insert( QStringLiteral( "DocumentViewer" ), 1 );
         config.insert( QStringLiteral( "FileWidget" ), true );
-        vl->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "ExternalResource" ), config ) );
+        config.insert( QStringLiteral( "UseLink" ), true );
+        config.insert( QStringLiteral( "FullUrl" ), true );
+        vl->setEditorWidgetSetup( vl->fields().lookupField( QStringLiteral( "photo" ) ), QgsEditorWidgetSetup( QStringLiteral( "ExternalResource" ), config ) );
 
         config.clear();
         // path field is a directory link
         config.insert( QStringLiteral( "FileWidgetButton" ), true );
         config.insert( QStringLiteral( "StorageMode" ), 1 );
-        vl->setEditorWidgetSetup( 2, QgsEditorWidgetSetup( QStringLiteral( "ExternalResource" ), config ) );
+        config.insert( QStringLiteral( "UseLink" ), true );
+        config.insert( QStringLiteral( "FullUrl" ), true );
+        vl->setEditorWidgetSetup( vl->fields().lookupField( QStringLiteral( "directory" ) ), QgsEditorWidgetSetup( QStringLiteral( "ExternalResource" ), config ) );
       }
     }
 };
