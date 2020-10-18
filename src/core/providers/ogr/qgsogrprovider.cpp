@@ -1866,7 +1866,10 @@ bool QgsOgrProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
   if ( inTransaction )
   {
-    commitTransaction();
+    if ( returnvalue )
+      returnvalue = commitTransaction();
+    else
+      rollbackTransaction();
   }
 
   if ( !syncToDisc() )
@@ -2172,6 +2175,17 @@ bool QgsOgrProvider::commitTransaction()
   if ( mOgrLayer->CommitTransaction() != OGRERR_NONE )
   {
     pushError( tr( "OGR error committing transaction: %1" ).arg( CPLGetLastErrorMsg() ) );
+    return false;
+  }
+  return true;
+}
+
+
+bool QgsOgrProvider::rollbackTransaction()
+{
+  if ( mOgrLayer->RollbackTransaction() != OGRERR_NONE )
+  {
+    pushError( tr( "OGR error rolling back transaction: %1" ).arg( CPLGetLastErrorMsg() ) );
     return false;
   }
   return true;
@@ -2487,7 +2501,10 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 
   if ( inTransaction )
   {
-    if ( ! commitTransaction() ) return false;
+    if ( returnValue )
+      returnValue = commitTransaction();
+    else
+      rollbackTransaction();
   }
 
   if ( mTransaction )
@@ -2526,6 +2543,7 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
   }
 #endif
 
+  bool returnvalue = true;
   for ( QgsGeometryMap::const_iterator it = geometry_map.constBegin(); it != geometry_map.constEnd(); ++it )
   {
     gdal::ogr_feature_unique_ptr theOGRFeature( mOgrLayer->GetFeature( FID_TO_NUMBER( it.key() ) ) );
@@ -2581,6 +2599,7 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
     if ( mOgrLayer->SetFeature( theOGRFeature.get() ) != OGRERR_NONE )
     {
       pushError( tr( "OGR error setting feature %1: %2" ).arg( it.key() ).arg( CPLGetLastErrorMsg() ) );
+      returnvalue = false;
       continue;
     }
     mShapefileMayBeCorrupted = true;
@@ -2590,14 +2609,21 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 
   if ( inTransaction )
   {
-    if ( ! commitTransaction() ) return false;
+    if ( returnvalue )
+      returnvalue = commitTransaction();
+    else
+      rollbackTransaction();
   }
 
   if ( mTransaction )
     mTransaction->dirtyLastSavePoint();
 
+  if ( mOgrLayer->SyncToDisk() != OGRERR_NONE )
+  {
+    pushError( tr( "OGR error syncing to disk: %1" ).arg( CPLGetLastErrorMsg() ) );
+  }
   QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ), mShareSameDatasetAmongLayers ) );
-  return syncToDisc();
+  return returnvalue;
 }
 
 bool QgsOgrProvider::createSpatialIndex()
@@ -2698,7 +2724,10 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds &id )
 
   if ( inTransaction )
   {
-    if ( ! commitTransaction() ) return false;
+    if ( returnvalue )
+      returnvalue = commitTransaction();
+    else
+      rollbackTransaction();
   }
 
   if ( mTransaction )
