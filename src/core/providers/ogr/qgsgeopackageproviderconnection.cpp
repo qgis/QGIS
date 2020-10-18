@@ -435,11 +435,11 @@ QList<QgsVectorDataProvider::NativeType> QgsGeoPackageProviderConnection::native
   QgsVectorLayer::LayerOptions options { false, true };
   options.skipCrsValidation = true;
   const QgsVectorLayer vl { uri(), QStringLiteral( "temp_layer" ), QStringLiteral( "ogr" ), options };
-  if ( ! vl.isValid() || ! vl.dataProvider())
+  if ( ! vl.isValid() || ! vl.dataProvider() )
   {
-    const QString errorCause { vl.dataProvider() && vl.dataProvider()->hasErrors() ?
-            vl.dataProvider()->errors().join( '\n' ) :
-            QObject::tr( "unknown error" ) };
+    const QString errorCause { vl.dataProvider() &&vl.dataProvider()->hasErrors() ?
+                               vl.dataProvider()->errors().join( '\n' ) :
+                               QObject::tr( "unknown error" ) };
     throw QgsProviderConnectionException( QObject::tr( "Error retrieving native types for %1: %2" ).arg( uri() ).arg( errorCause ) );
   }
   return vl.dataProvider()->nativeTypes();
