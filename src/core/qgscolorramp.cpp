@@ -160,6 +160,11 @@ QColor QgsGradientColorRamp::color( double value ) const
   }
 }
 
+QString QgsGradientColorRamp::type() const
+{
+  return QgsGradientColorRamp::typeString();
+}
+
 void QgsGradientColorRamp::invert()
 {
   QgsGradientStopsList newStops;
@@ -354,6 +359,11 @@ QColor QgsLimitedRandomColorRamp::color( double value ) const
   return QColor();
 }
 
+QString QgsLimitedRandomColorRamp::type() const
+{
+  return QgsLimitedRandomColorRamp::typeString();
+}
+
 QgsLimitedRandomColorRamp *QgsLimitedRandomColorRamp::clone() const
 {
   return new QgsLimitedRandomColorRamp( mCount, mHueMin, mHueMax, mSatMin, mSatMax, mValMin, mValMax );
@@ -478,7 +488,7 @@ void QgsRandomColorRamp::setTotalColorCount( const int colorCount )
 
 QString QgsRandomColorRamp::type() const
 {
-  return QStringLiteral( "randomcolors" );
+  return QgsRandomColorRamp::typeString();
 }
 
 QgsRandomColorRamp *QgsRandomColorRamp::clone() const
@@ -629,6 +639,11 @@ QgsColorRamp *QgsCptCityColorRamp::create( const QgsStringMap &props )
     inverted = props[QStringLiteral( "inverted" )].toInt();
 
   return new QgsCptCityColorRamp( schemeName, variantName, inverted );
+}
+
+QString QgsCptCityColorRamp::type() const
+{
+  return QgsCptCityColorRamp::typeString();
 }
 
 void QgsCptCityColorRamp::invert()
@@ -878,6 +893,11 @@ QColor QgsPresetSchemeColorRamp::color( double value ) const
   return QColor();
 }
 
+QString QgsPresetSchemeColorRamp::type() const
+{
+  return QgsPresetSchemeColorRamp::typeString();
+}
+
 void QgsPresetSchemeColorRamp::invert()
 {
   QgsNamedColorList tmpColors;
@@ -914,4 +934,16 @@ int QgsPresetSchemeColorRamp::count() const
 QgsNamedColorList QgsPresetSchemeColorRamp::fetchColors( const QString &, const QColor & )
 {
   return mColors;
+}
+
+QList<QPair<QString, QString> > QgsColorRamp::rampTypes()
+{
+  return QList<QPair<QString, QString> >
+  {
+    qMakePair( QgsGradientColorRamp::typeString(), QObject::tr( "Gradient" ) ),
+    qMakePair( QgsPresetSchemeColorRamp::typeString(), QObject::tr( "Color Presets" ) ),
+    qMakePair( QgsLimitedRandomColorRamp::typeString(), QObject::tr( "Random" ) ),
+    qMakePair( QgsCptCityColorRamp::typeString(), QObject::tr( "Catalog: cpt-city" ) ),
+    qMakePair( QgsColorBrewerColorRamp::typeString(), QObject::tr( "Catalog: ColorBrewer" ) )
+  };
 }

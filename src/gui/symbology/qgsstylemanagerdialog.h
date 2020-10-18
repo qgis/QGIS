@@ -80,11 +80,15 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     QgsStyleManagerDialog( QgsStyle *style, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::WindowFlags(),
                            bool readOnly = false );
 
+    // TODO QGIS 4.0 -- rename "RampType" to "rampType".
+
     /**
      * Opens the add color ramp dialog, returning the new color ramp's name if the ramp has been added.
+     *
+     * The \a RampType argument should be set to a string representing a valid QgsColorRamp::type() value.
      */
     static QString addColorRampStatic( QWidget *parent, QgsStyle *style,
-                                       QString RampType = QString() );
+                                       const QString &RampType = QString() );
 
     /**
      * Sets whether the favorites group should be shown. The default is to show the group.
@@ -254,7 +258,16 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     void listitemsContextMenu( QPoint );
 
   protected slots:
+
+    /**
+     * Triggers adding a new color ramp.
+     *
+     * If \a type is set to a string representing a valid QgsColorRamp::type() value then a new ramp
+     * of that type will be created. If \a type is empty, then the user will be prompted to select
+     * the color ramp type.
+     */
     bool addColorRamp( const QString &type = QString() );
+
     //! Add selected symbols to favorites
     void addFavoriteSelectedSymbols();
     //! Remove selected symbols from favorites

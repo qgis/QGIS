@@ -567,7 +567,7 @@ QgsSymbolLayer *QgsGradientFillSymbolLayer::create( const QgsStringMap &props )
 
   //attempt to create color ramp from props
   QgsColorRamp *gradientRamp = nullptr;
-  if ( props.contains( QStringLiteral( "rampType" ) ) && props[QStringLiteral( "rampType" )] == QLatin1String( "cpt-city" ) )
+  if ( props.contains( QStringLiteral( "rampType" ) ) && props[QStringLiteral( "rampType" )] == QgsCptCityColorRamp::typeString() )
   {
     gradientRamp = QgsCptCityColorRamp::create( props );
   }
@@ -848,7 +848,7 @@ void QgsGradientFillSymbolLayer::applyGradient( const QgsSymbolRenderContext &co
 
   //add stops to gradient
   if ( gradientColorType == QgsGradientFillSymbolLayer::ColorRamp && gradientRamp &&
-       ( gradientRamp->type() == QLatin1String( "gradient" ) || gradientRamp->type() == QLatin1String( "cpt-city" ) ) )
+       ( gradientRamp->type() == QgsGradientColorRamp::typeString() || gradientRamp->type() == QgsCptCityColorRamp::typeString() ) )
   {
     //color ramp gradient
     QgsGradientColorRamp *gradRamp = static_cast<QgsGradientColorRamp *>( gradientRamp );
@@ -1057,7 +1057,7 @@ QgsSymbolLayer *QgsShapeburstFillSymbolLayer::create( const QgsStringMap &props 
 
   //attempt to create color ramp from props
   QgsColorRamp *gradientRamp = nullptr;
-  if ( props.contains( QStringLiteral( "rampType" ) ) && props[QStringLiteral( "rampType" )] == QLatin1String( "cpt-city" ) )
+  if ( props.contains( QStringLiteral( "rampType" ) ) && props[QStringLiteral( "rampType" )] == QgsCptCityColorRamp::typeString() )
   {
     gradientRamp = QgsCptCityColorRamp::create( props );
   }

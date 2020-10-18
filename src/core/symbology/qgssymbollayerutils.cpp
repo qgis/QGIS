@@ -3091,15 +3091,15 @@ QgsColorRamp *QgsSymbolLayerUtils::loadColorRamp( QDomElement &element )
   // parse properties
   QgsStringMap props = QgsSymbolLayerUtils::parseProperties( element );
 
-  if ( rampType == QLatin1String( "gradient" ) )
+  if ( rampType == QgsGradientColorRamp::typeString() )
     return QgsGradientColorRamp::create( props );
-  else if ( rampType == QLatin1String( "random" ) )
+  else if ( rampType == QgsLimitedRandomColorRamp::typeString() )
     return QgsLimitedRandomColorRamp::create( props );
-  else if ( rampType == QLatin1String( "colorbrewer" ) )
+  else if ( rampType == QgsColorBrewerColorRamp::typeString() )
     return QgsColorBrewerColorRamp::create( props );
-  else if ( rampType == QLatin1String( "cpt-city" ) )
+  else if ( rampType == QgsCptCityColorRamp::typeString() )
     return QgsCptCityColorRamp::create( props );
-  else if ( rampType == QLatin1String( "preset" ) )
+  else if ( rampType == QgsPresetSchemeColorRamp::typeString() )
     return QgsPresetSchemeColorRamp::create( props );
   else
   {
@@ -3153,15 +3153,15 @@ QgsColorRamp *QgsSymbolLayerUtils::loadColorRamp( const QVariant &value )
     props.insert( property.key(), property.value().toString() );
   }
 
-  if ( rampType == QLatin1String( "gradient" ) )
+  if ( rampType == QgsGradientColorRamp::typeString() )
     return QgsGradientColorRamp::create( props );
-  else if ( rampType == QLatin1String( "random" ) )
+  else if ( rampType == QgsLimitedRandomColorRamp::typeString() )
     return QgsLimitedRandomColorRamp::create( props );
-  else if ( rampType == QLatin1String( "colorbrewer" ) )
+  else if ( rampType == QgsColorBrewerColorRamp::typeString() )
     return QgsColorBrewerColorRamp::create( props );
-  else if ( rampType == QLatin1String( "cpt-city" ) )
+  else if ( rampType == QgsCptCityColorRamp::typeString() )
     return QgsCptCityColorRamp::create( props );
-  else if ( rampType == QLatin1String( "preset" ) )
+  else if ( rampType == QgsPresetSchemeColorRamp::typeString() )
     return QgsPresetSchemeColorRamp::create( props );
   else
   {
