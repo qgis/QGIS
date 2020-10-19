@@ -138,7 +138,7 @@ class ANALYSIS_EXPORT QgsDualEdgeTriangulation: public QgsTriangulation
     //! Checks, if 'edge' has to be swapped because of the empty circle criterion. If so, doSwap(...) is called.
     bool checkSwapRecursively( unsigned int edge, unsigned int recursiveDeep );
     //! Return true if edge need to be swapped after Delaunay criteria control
-    bool isEdgeNeedSwap( unsigned int edge );
+    bool isEdgeNeedSwap( unsigned int edge ) const;
     //! Swaps 'edge' and test recursively for other swaps (delaunay criterion)
     void doSwapRecursively( unsigned int edge, unsigned int recursiveDeep );
     //! Swaps 'edge' and does no recursiv testing
