@@ -1500,7 +1500,7 @@ QString QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType styleSh
                    "}"
                    // Give some visual appearance to those ugly nested tables
                    ".tabular-view th, .tabular-view td { "
-                   "   border: solid 1px #eee;"
+                   "   border: 1px solid #eee;"
                    "}"
                  );
       break;
