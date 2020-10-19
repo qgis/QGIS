@@ -146,6 +146,8 @@ QgsMeshLayer cannot be copied.
 
     virtual QStringList subLayers() const;
 
+    virtual QString htmlMetadata() const;
+
 
     QString providerType() const;
 %Docstring
