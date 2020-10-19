@@ -236,6 +236,9 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
     selectGeomTrans = selectGeomTrans.buffer( 0, 1 );
   }
 
+  std::unique_ptr< QgsGeometryEngine > selectionGeometryEngine( QgsGeometry::createGeometryEngine( selectGeomTrans.constGet() ) );
+  selectionGeometryEngine->setLogErrors( false );
+
   QgsRenderContext context = QgsRenderContext::fromMapSettings( canvas->mapSettings() );
   context.expressionContext() << QgsExpressionContextUtils::layerScope( vlayer );
   std::unique_ptr< QgsFeatureRenderer > r;
@@ -267,14 +270,15 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
       continue;
 
     QgsGeometry g = f.geometry();
+    QString errorMessage;
     if ( doContains )
     {
       // if we get an error from the contains check then it indicates that the geometry is invalid and GEOS choked on it.
       // in this case we consider the bounding box intersection check which has already been performed by the iterator as sufficient and
       // allow the feature to be selected
-      if ( !selectGeomTrans.contains( g ) &&
-           !selectGeomTrans.lastError().isEmpty() && /* lastError will be non empty if geometry g is invalid */
-           !selectGeomTrans.contains( g.makeValid() ) /* second chance for invalid geometries, repair and re-test */
+      if ( !selectionGeometryEngine->contains( g.constGet(), &errorMessage ) &&
+           ( errorMessage.isEmpty() || /* message will be non empty if geometry g is invalid */
+             !selectionGeometryEngine->contains( g.makeValid().constGet() ) ) /* second chance for invalid geometries, repair and re-test */
          )
         continue;
     }
@@ -283,9 +287,9 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
       // if we get an error from the intersects check then it indicates that the geometry is invalid and GEOS choked on it.
       // in this case we consider the bounding box intersection check which has already been performed by the iterator as sufficient and
       // allow the feature to be selected
-      if ( !selectGeomTrans.intersects( g ) &&
-           !selectGeomTrans.lastError().isEmpty() && /* lastError will be non empty if geometry g is invalid */
-           !selectGeomTrans.intersects( g.makeValid() ) /* second chance for invalid geometries, repair and re-test */
+      if ( !selectionGeometryEngine->intersects( g.constGet(), &errorMessage ) &&
+           ( errorMessage.isEmpty() || /* message will be non empty if geometry g is invalid */
+             !selectionGeometryEngine->intersects( g.makeValid().constGet() ) ) /* second chance for invalid geometries, repair and re-test */
          )
         continue;
     }
