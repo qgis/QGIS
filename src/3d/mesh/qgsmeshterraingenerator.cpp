@@ -27,6 +27,7 @@
 #include "qgsmeshlayer3drenderer.h"
 #include "qgsterrainentity_p.h"
 #include "qgsterraintextureimage_p.h"
+#include "qgsmeshlayerutils.h"
 
 
 QgsMeshTerrainTileLoader::QgsMeshTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node, QgsMeshLayer *layer, const QgsMesh3DSymbol *symbol )
@@ -169,6 +170,27 @@ void QgsMeshTerrainGenerator::readXml( const QDomElement &elem )
   mLayer = QgsMapLayerRef( elem.attribute( QStringLiteral( "layer" ) ) );
   QgsReadWriteContext rwc;
   mSymbol->readXml( elem.firstChildElement( "symbol" ), rwc );
+}
+
+float QgsMeshTerrainGenerator::heightAt( double x, double y, const Qgs3DMapSettings &map ) const
+{
+  Q_UNUSED( map );
+  if ( !meshLayer()->triangularMesh() )
+    return std::numeric_limits<float>::quiet_NaN();
+
+  const QgsTriangularMesh triangularMesh = *meshLayer()->triangularMesh();
+  QgsPointXY point( x, y );
+  int faceIndex = triangularMesh.faceIndexForPoint( point );
+  if ( faceIndex < 0 || faceIndex >= triangularMesh.triangles().count() )
+    return std::numeric_limits<float>::quiet_NaN();
+
+  const QgsMeshFace &face = triangularMesh.triangles().at( faceIndex );
+
+  QgsPoint p1 = triangularMesh.vertices().at( face.at( 0 ) );
+  QgsPoint p2 = triangularMesh.vertices().at( face.at( 1 ) );
+  QgsPoint p3 = triangularMesh.vertices().at( face.at( 2 ) );
+
+  return QgsMeshLayerUtils::interpolateFromVerticesData( p1, p2, p3, p1.z(), p2.z(), p3.z(), point );
 }
 
 QgsMesh3DSymbol *QgsMeshTerrainGenerator::symbol() const

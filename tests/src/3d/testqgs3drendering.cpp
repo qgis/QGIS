@@ -350,6 +350,8 @@ void TestQgs3DRendering::testMeshTerrain()
 
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
   QVERIFY( renderCheck( "mesh_terrain_1", img, 40 ) );
+
+  QCOMPARE( meshTerrain->heightAt( 1500, 2200, *map ), 200 );
 }
 
 void TestQgs3DRendering::testExtrudedPolygons()
