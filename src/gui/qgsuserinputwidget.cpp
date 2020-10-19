@@ -23,6 +23,7 @@ QgsUserInputWidget::QgsUserInputWidget( QWidget *parent )
   //TODO add title tr( "User Input Panel" )
 
   QFrame *f = new QFrame();
+  f->setObjectName( QStringLiteral( "mUserInputContainer" ) );
 
   QPalette pal = palette();
   pal.setBrush( backgroundRole(), pal.window() );
