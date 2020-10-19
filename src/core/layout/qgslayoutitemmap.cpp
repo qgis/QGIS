@@ -458,8 +458,6 @@ bool QgsLayoutItemMap::requiresRasterization() const
   if ( !containsAdvancedEffects() )
     return false;
 
-  // TODO layer transparency is probably ok to allow without forcing rasterization
-
   if ( hasBackground() && qgsDoubleNear( backgroundColor().alphaF(), 1.0 ) )
     return false;
 

@@ -52,13 +52,8 @@ QStringList QgsMapSettingsUtils::containsAdvancedEffects( const QgsMapSettings &
         layers << layer->name();
       }
       // if vector layer, check labels and feature blend mode
-      QgsVectorLayer *currentVectorLayer = qobject_cast<QgsVectorLayer *>( layer );
-      if ( currentVectorLayer )
+      if ( QgsVectorLayer *currentVectorLayer = qobject_cast<QgsVectorLayer *>( layer ) )
       {
-        if ( !qgsDoubleNear( currentVectorLayer->opacity(), 1.0 ) && !( flags & EffectsCheckFlag::IgnoreGeoPdfSupportedEffects ) )
-        {
-          layers << layer->name();
-        }
         if ( currentVectorLayer->featureBlendMode() != QPainter::CompositionMode_SourceOver )
         {
           layers << layer->name();
