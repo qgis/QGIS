@@ -23,6 +23,7 @@
 #include "qgspointlightsettings.h"
 #include "qgsdirectionallightsettings.h"
 
+class QwtCompass;
 
 /**
  * Widget for configuration of lights in 3D map scene
@@ -53,6 +54,9 @@ class QgsLightsWidget : public QWidget, private Ui::QgsLightsWidget
     void updateCurrentDirectionalLightParameters();
     void onAddDirectionalLight();
     void onRemoveDirectionalLight();
+    void onSpinBoxDirectionChanged();
+    void onSpinBoxAzimuthChange();
+    void onSpinBoxAltitudeChange();
   private:
     void updateLightsList();
     void updateDirectionalLightsList();
@@ -60,6 +64,7 @@ class QgsLightsWidget : public QWidget, private Ui::QgsLightsWidget
   private:
     QList<QgsPointLightSettings> mPointLights;
     QList<QgsDirectionalLightSettings> mDirectionalLights;
+    QwtCompass *mDirectionCompass = nullptr;
 };
 
 #endif // QGSLIGHTSWIDGET_H
