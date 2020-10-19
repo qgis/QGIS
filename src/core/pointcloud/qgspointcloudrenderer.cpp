@@ -24,6 +24,56 @@
 #include "qgsstyle.h"
 #include "qgscolorramp.h"
 
+QgsPointCloudRendererConfig::QgsPointCloudRendererConfig() = default;
+
+QgsPointCloudRendererConfig::QgsPointCloudRendererConfig( const QgsPointCloudRendererConfig &other )
+{
+  mZMin = other.zMin();
+  mZMax = other.zMax();
+  mPenWidth = other.penWidth();
+  mColorRamp.reset( other.colorRamp()->clone() );
+}
+
+double QgsPointCloudRendererConfig::zMin() const
+{
+  return mZMin;
+}
+
+void QgsPointCloudRendererConfig::setZMin( double value )
+{
+  mZMin = value;
+}
+
+double QgsPointCloudRendererConfig::zMax() const
+{
+  return mZMax;
+}
+
+void QgsPointCloudRendererConfig::setZMax( double value )
+{
+  mZMax = value;
+}
+
+int QgsPointCloudRendererConfig::penWidth() const
+{
+  return mPenWidth;
+}
+
+void QgsPointCloudRendererConfig::setPenWidth( int value )
+{
+  mPenWidth = value;
+}
+
+QgsColorRamp *QgsPointCloudRendererConfig::colorRamp() const
+{
+  return mColorRamp.get();
+}
+
+void QgsPointCloudRendererConfig::setColorRamp( const QgsColorRamp *value )
+{
+  mColorRamp.reset( value->clone() );
+}
+
 QgsPointCloudRenderer::QgsPointCloudRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
   , mLayer( layer )
@@ -32,14 +82,14 @@ QgsPointCloudRenderer::QgsPointCloudRenderer( QgsPointCloudLayer *layer, QgsRend
   // or use some locking to prevent read/write from multiple threads
 
   // TODO: use config from layer
-  mConfig.penWidth = context.convertToPainterUnits( 1, QgsUnitTypes::RenderUnit::RenderMillimeters );
+  mConfig.setPenWidth( context.convertToPainterUnits( 1, QgsUnitTypes::RenderUnit::RenderMillimeters ) );
   // good range for 26850_12580.laz
-  mConfig.zMin = 400;
-  mConfig.zMax = 600;
+  mConfig.setZMin( 400 );
+  mConfig.setZMax( 600 );
   // good range for Trencin castle
   //mConfig.zMin = 150;
   //mConfig.zMax = 350;
-  mConfig.colorRamp.reset( QgsStyle::defaultStyle()->colorRamp( "Viridis" ) );
+  mConfig.setColorRamp( QgsStyle::defaultStyle()->colorRamp( "Viridis" ) );
 }
 
 static QList<IndexedPointCloudNode> _traverseTree( QgsPointCloudIndex *pc, const QgsRectangle &extent, IndexedPointCloudNode n, int maxDepth )
@@ -123,7 +173,7 @@ void QgsPointCloudRenderer::drawData( QPainter *painter, const QVector<qint32> &
   QgsRectangle mapExtent = renderContext()->mapExtent();
 
   QPen pen;
-  pen.setWidth( config.penWidth );
+  pen.setWidth( config.penWidth() );
   pen.setCapStyle( Qt::FlatCap );
   //pen.setJoinStyle( Qt::MiterJoin );
 
@@ -142,7 +192,7 @@ void QgsPointCloudRenderer::drawData( QPainter *painter, const QVector<qint32> &
       double z = offset.z() + scale.z() * iz;
       mapToPixel.transformInPlace( x, y );
 
-      pen.setColor( config.colorRamp->color( ( z - config.zMin ) / ( config.zMax - config.zMin ) ) );
+      pen.setColor( config.colorRamp()->color( ( z - config.zMin() ) / ( config.zMax() - config.zMin() ) ) );
       painter->setPen( pen );
       painter->drawPoint( QPointF( x, y ) );
     }

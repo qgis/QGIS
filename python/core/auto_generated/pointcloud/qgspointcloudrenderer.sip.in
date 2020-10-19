@@ -35,8 +35,12 @@ Represents a 2D renderer of point cloud data
     explicit QgsPointCloudRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context );
     ~QgsPointCloudRenderer();
 
+
     virtual bool render();
 
+%Docstring
+QgsPointCloudRenderer cannot be copied.
+%End
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
