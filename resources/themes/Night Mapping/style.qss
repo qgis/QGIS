@@ -869,6 +869,7 @@ QTreeView#viewGraduated::indicator:unchecked,
 QTreeView#viewCategories::indicator:unchecked,
 QTreeView#viewRules::indicator:unchecked 
 {
+    border: none;
     image: url(@theme_path/icons/eye-blocked.svg);
 }
 
@@ -877,6 +878,7 @@ QTreeView#viewGraduated::indicator:checked,
 QTreeView#viewCategories::indicator:checked, 
 QTreeView#viewRules::indicator:checked 
 {
+    border: none;
     image: url(@theme_path/icons/eye.svg);
 }
 
