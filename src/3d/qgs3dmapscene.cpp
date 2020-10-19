@@ -56,6 +56,8 @@
 #include "qgsmeshlayer3drenderer.h"
 #include "qgspoint3dsymbol.h"
 #include "qgsrulebased3drenderer.h"
+#include "qgspointcloudlayer.h"
+#include "qgspointcloudlayer3drenderer.h"
 #include "qgssourcecache.h"
 #include "qgsterrainentity_p.h"
 #include "qgsterraingenerator.h"
@@ -733,6 +735,11 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
       QgsMesh3DSymbol *sym = meshRenderer->symbol()->clone();
       sym->setMaximumTextureSize( maximumTextureSize() );
       meshRenderer->setSymbol( sym );
+    }
+    else if ( layer->type() == QgsMapLayerType::PointCloudLayer && renderer->type() == QLatin1String( "pointcloud" ) )
+    {
+      QgsPointCloudLayer3DRenderer *pointCloudRenderer = static_cast<QgsPointCloudLayer3DRenderer *>( renderer );
+      pointCloudRenderer->setLayer( static_cast<QgsPointCloudLayer *>( layer ) );
     }
 
     Qt3DCore::QEntity *newEntity = renderer->createEntity( mMap );

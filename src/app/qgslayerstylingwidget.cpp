@@ -659,6 +659,13 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
         break;
       }
 
+      case QgsMapLayerType::PointCloudLayer:
+      {
+        // TODO
+        mStackedWidget->setCurrentIndex( mNotSupportedPage );
+        break;
+      }
+
       case QgsMapLayerType::PluginLayer:
       case QgsMapLayerType::AnnotationLayer:
       {
@@ -788,6 +795,9 @@ bool QgsLayerStyleManagerWidgetFactory::supportsLayer( QgsMapLayer *layer ) cons
       return true;
 
     case QgsMapLayerType::VectorTileLayer:
+      return false;  // TODO
+
+    case QgsMapLayerType::PointCloudLayer:
       return false;  // TODO
 
     case QgsMapLayerType::PluginLayer:
