@@ -180,6 +180,15 @@
          </property>
          <widget class="QWidget" name="mPageTerrain">
           <layout class="QVBoxLayout" name="verticalLayout_61">
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
            <item>
             <widget class="QgsScrollArea" name="scrollAreaTerrain">
              <property name="frameShape">
@@ -193,8 +202,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>527</width>
-                <height>605</height>
+                <width>705</width>
+                <height>620</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutTerrain">
@@ -359,6 +368,15 @@
          </widget>
          <widget class="QWidget" name="mPageLight">
           <layout class="QVBoxLayout" name="verticalLayout_64">
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
            <item>
             <widget class="QgsScrollArea" name="scrollAreaLight">
              <property name="frameShape">
@@ -372,8 +390,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>71</width>
-                <height>47</height>
+                <width>705</width>
+                <height>620</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutLight">
@@ -434,6 +452,15 @@
          </widget>
          <widget class="QWidget" name="mPageShadow">
           <layout class="QVBoxLayout" name="verticalLayout_6">
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
            <item>
             <widget class="QgsScrollArea" name="scrollAreaShadow">
              <property name="frameShape">
@@ -447,8 +474,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>177</width>
-                <height>47</height>
+                <width>705</width>
+                <height>620</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutShadow">
@@ -515,6 +542,15 @@
          </widget>
          <widget class="QWidget" name="mPageCameraSkybox">
           <layout class="QVBoxLayout" name="verticalLayout_62">
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
            <item>
             <widget class="QgsScrollArea" name="scrollAreaCameraSkybox">
              <property name="frameShape">
@@ -528,8 +564,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>175</width>
-                <height>132</height>
+                <width>705</width>
+                <height>620</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutCameraSkybox">
@@ -606,6 +642,15 @@
          </widget>
          <widget class="QWidget" name="mPageAdvanced">
           <layout class="QVBoxLayout" name="verticalLayout_63">
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
            <item>
             <widget class="QgsScrollArea" name="scrollAreaAdvanced">
              <property name="frameShape">
@@ -619,8 +664,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>304</width>
-                <height>330</height>
+                <width>705</width>
+                <height>620</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutAdvanced">
