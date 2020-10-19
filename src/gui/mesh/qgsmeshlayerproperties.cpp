@@ -177,15 +177,6 @@ void QgsMeshLayerProperties::syncToLayer()
   leDisplayName->setText( mMeshLayer->name() );
   whileBlocking( mCrsSelector )->setCrs( mMeshLayer->crs() );
 
-  if ( mMeshLayer && mMeshLayer->dataProvider() )
-  {
-    mUriLabel->setText( mMeshLayer->dataProvider()->dataSourceUri() );
-  }
-  else
-  {
-    mUriLabel->setText( tr( "Not assigned" ) );
-  }
-
   if ( mMeshLayer )
     mDatasetGroupTreeWidget->syncToLayer( mMeshLayer );
 
