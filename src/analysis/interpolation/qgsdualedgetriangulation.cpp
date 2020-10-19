@@ -3260,12 +3260,12 @@ bool QgsDualEdgeTriangulation::saveTriangulation( QgsFeatureSink *sink, QgsFeedb
   return !feedback || !feedback->isCanceled();
 }
 
-QgsMesh QgsDualEdgeTriangulation::triangulationToMesh( QgsFeedback *feedBack ) const
+QgsMesh QgsDualEdgeTriangulation::triangulationToMesh( QgsFeedback *feedback ) const
 {
   QVector<bool> alreadyVisitedEdges( mHalfEdge.count(), false );
 
-  if ( feedBack )
-    feedBack->setProgress( 0 );
+  if ( feedback )
+    feedback->setProgress( 0 );
 
   QVector< bool> edgeToTreat( mHalfEdge.count(), true );
   QHash<HalfEdge *, int > edgesHash;
@@ -3296,13 +3296,13 @@ QgsMesh QgsDualEdgeTriangulation::triangulationToMesh( QgsFeedback *feedBack ) c
         containVirtualPoint |= currentEdge->getPoint() == -1;
         currentEdge = mHalfEdge.at( currentEdge->getNext() );
       }
-      while ( currentEdge != firstEdge && !containVirtualPoint && ( !feedBack || !feedBack->isCanceled() ) );
+      while ( currentEdge != firstEdge && !containVirtualPoint && ( !feedback || !feedback->isCanceled() ) );
       if ( !containVirtualPoint )
         mesh.faces.append( face );
     }
-    if ( feedBack )
+    if ( feedback )
     {
-      feedBack->setProgress( ( 100 *  i ) / edgeCount ) ;
+      feedback->setProgress( ( 100 *  i ) / edgeCount ) ;
     }
   }
 

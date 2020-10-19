@@ -94,9 +94,9 @@ bool QgsMeshTriangulation::addBreakLines( QgsFeatureIterator &lineFeatureIterato
   return true;
 }
 
-QgsMesh QgsMeshTriangulation::triangulatedMesh( QgsFeedback *feedBack ) const
+QgsMesh QgsMeshTriangulation::triangulatedMesh( QgsFeedback *feedback ) const
 {
-  return mTriangulation->triangulationToMesh( feedBack );
+  return mTriangulation->triangulationToMesh( feedback );
 }
 
 void QgsMeshTriangulation::setCrs( const QgsCoordinateReferenceSystem &crs )
