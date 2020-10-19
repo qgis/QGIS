@@ -494,7 +494,7 @@
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupShadowRendering">
                  <property name="title">
-                  <string>Shadow Rendering</string>
+                  <string>Show Shadows</string>
                  </property>
                  <property name="checkable">
                   <bool>true</bool>
@@ -610,7 +610,7 @@
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupSkyboxSettings">
                  <property name="title">
-                  <string>Skybox Rendering</string>
+                  <string>Show Skybox</string>
                  </property>
                  <property name="checkable">
                   <bool>true</bool>
