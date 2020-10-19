@@ -311,6 +311,7 @@ void Qgs3DMapConfigWidget::onTerrainTypeChanged()
     onTerrainLayerChanged();
 
   updateMaxZoomLevel();
+  validate();
 }
 
 void Qgs3DMapConfigWidget::onTerrainLayerChanged()
@@ -329,6 +330,7 @@ void Qgs3DMapConfigWidget::onTerrainLayerChanged()
         mMeshSymbolWidget->reloadColorRampShaderMinMax();
     }
   }
+  validate();
 }
 
 void Qgs3DMapConfigWidget::updateMaxZoomLevel()
@@ -361,5 +363,36 @@ void Qgs3DMapConfigWidget::updateMaxZoomLevel()
   double tile0width = std::max( te.width(), te.height() );
   int zoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, spinMapResolution->value(), spinGroundError->value() );
   labelZoomLevels->setText( QStringLiteral( "0 - %1" ).arg( zoomLevel ) );
+}
+
+void Qgs3DMapConfigWidget::validate()
+{
+  mMessageBar->clearWidgets();
+
+  bool valid = true;
+  switch ( static_cast<QgsTerrainGenerator::Type>( cboTerrainType->currentData().toInt() ) )
+  {
+    case QgsTerrainGenerator::Dem:
+      if ( ! cboTerrainLayer->currentLayer() )
+      {
+        valid = false;
+        mMessageBar->pushMessage( tr( "An elevation layer must be selected for a DEM terrain" ), Qgis::Warning, 0 );
+      }
+      break;
+
+    case QgsTerrainGenerator::Mesh:
+      if ( ! cboTerrainLayer->currentLayer() )
+      {
+        valid = false;
+        mMessageBar->pushMessage( tr( "An elevation layer must be selected for a mesh terrain" ), Qgis::Warning, 0 );
+      }
+      break;
+
+    case QgsTerrainGenerator::Online:
+    case QgsTerrainGenerator::Flat:
+      break;
+  }
+
+  emit isValidChanged( valid );
 }
 

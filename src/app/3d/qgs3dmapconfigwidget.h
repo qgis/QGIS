@@ -41,10 +41,14 @@ class Qgs3DMapConfigWidget : public QWidget, private Ui::Map3DConfigWidget
 
   signals:
 
+    void isValidChanged( bool valid );
+
   private slots:
     void onTerrainTypeChanged();
     void onTerrainLayerChanged();
     void updateMaxZoomLevel();
+
+    void validate();
 
   private:
     Qgs3DMapSettings *mMap = nullptr;
