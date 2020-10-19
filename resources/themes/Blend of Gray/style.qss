@@ -1032,3 +1032,7 @@ QWidget#QgsRendererMeshPropsWidgetBase QTabWidget#mStyleOptionsTab QTabBar::tab 
 QWidget#QgsRasterCalcDialogBase QWidget#mOperatorsGroupBox QPushButton {
     min-width:2.3em;
 }
+
+QFrame#mUserInputContainer { 
+    background-color: @background;
+}
