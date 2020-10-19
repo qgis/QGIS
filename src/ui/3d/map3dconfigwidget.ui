@@ -321,7 +321,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QgsCollapsibleGroupBox" name="groupTerrainShading">
+                <widget class="QGroupBox" name="groupTerrainShading">
                  <property name="title">
                   <string>Terrain Shading</string>
                  </property>
@@ -492,7 +492,7 @@
                 <number>0</number>
                </property>
                <item>
-                <widget class="QgsCollapsibleGroupBox" name="groupShadowRendering">
+                <widget class="QGroupBox" name="groupShadowRendering">
                  <property name="title">
                   <string>Show Shadows</string>
                  </property>
@@ -608,7 +608,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QgsCollapsibleGroupBox" name="groupSkyboxSettings">
+                <widget class="QGroupBox" name="groupSkyboxSettings">
                  <property name="title">
                   <string>Show Skybox</string>
                  </property>
