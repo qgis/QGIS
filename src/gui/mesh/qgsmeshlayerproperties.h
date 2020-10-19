@@ -86,6 +86,9 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
     void onTimeReferenceChange();
 
     void onStaticDatasetCheckBoxChanged();
+
+    void urlClicked( const QUrl &url );
+
   private:
     //! Pointer to the mesh styling widget
     QgsRendererMeshPropertiesWidget *mRendererMeshPropertiesWidget = nullptr;

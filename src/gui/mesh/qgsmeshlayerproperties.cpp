@@ -38,8 +38,10 @@
 #include "qgsproviderregistry.h"
 #include "qgsdatumtransformdialog.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
+#include "qgsgui.h"
+#include "qgsnative.h"
 
-
+#include <QDesktopServices>
 #include <QFileDialog>
 #include <QMessageBox>
 
@@ -159,22 +161,13 @@ void QgsMeshLayerProperties::syncToLayer()
   /*
   * Information Tab
   */
-  QString info;
-  if ( mMeshLayer->dataProvider() )
-  {
-    info += QLatin1String( "<table>" );
-    info += QStringLiteral( "<tr><td>%1: </td><td>%2</td><tr>" ).arg( tr( "Uri" ) ).arg( mMeshLayer->dataProvider()->dataSourceUri() );
-    info += QStringLiteral( "<tr><td>%1: </td><td>%2</td><tr>" ).arg( tr( "Vertex count" ) ).arg( mMeshLayer->dataProvider()->vertexCount() );
-    info += QStringLiteral( "<tr><td>%1: </td><td>%2</td><tr>" ).arg( tr( "Face count" ) ).arg( mMeshLayer->dataProvider()->faceCount() );
-    info += QStringLiteral( "<tr><td>%1: </td><td>%2</td><tr>" ).arg( tr( "Edge count" ) ).arg( mMeshLayer->dataProvider()->edgeCount() );
-    info += QStringLiteral( "<tr><td>%1: </td><td>%2</td><tr>" ).arg( tr( "Dataset groups count" ) ).arg( mMeshLayer->dataProvider()->datasetGroupCount() );
-    info += QLatin1String( "</table>" );
-  }
-  else
-  {
-    info += tr( "Invalid data provider" );
-  }
-  mInformationTextBrowser->setText( info );
+  QString myStyle = QgsApplication::reportStyleSheet();
+  myStyle.append( QStringLiteral( "body { margin: 10px; }\n " ) );
+  mInformationTextBrowser->clear();
+  mInformationTextBrowser->document()->setDefaultStyleSheet( myStyle );
+  mInformationTextBrowser->setHtml( mMeshLayer->htmlMetadata() );
+  mInformationTextBrowser->setOpenLinks( false );
+  connect( mInformationTextBrowser, &QTextBrowser::anchorClicked, this, &QgsMeshLayerProperties::urlClicked );
 
   QgsDebugMsgLevel( QStringLiteral( "populate source tab" ), 4 );
   /*
@@ -467,4 +460,13 @@ void QgsMeshLayerProperties::onTimeReferenceChange()
 void QgsMeshLayerProperties::onStaticDatasetCheckBoxChanged()
 {
   mStaticDatasetGroupBox->setCollapsed( !mTemporalStaticDatasetCheckBox->isChecked() && mIsMapSettingsTemporal );
+}
+
+void QgsMeshLayerProperties::urlClicked( const QUrl &url )
+{
+  QFileInfo file( url.toLocalFile() );
+  if ( file.exists() && !file.isDir() )
+    QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
+  else
+    QDesktopServices::openUrl( url );
 }

@@ -36,6 +36,7 @@
 #include "qgsstyle.h"
 #include "qgstriangularmesh.h"
 #include "qgsmesh3daveraging.h"
+#include "qgslayermetadataformatter.h"
 
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
@@ -1251,6 +1252,115 @@ QStringList QgsMeshLayer::subLayers() const
     return QStringList();
 }
 
+QString QgsMeshLayer::htmlMetadata() const
+{
+  QgsLayerMetadataFormatter htmlFormatter( metadata() );
+  QString myMetadata = QStringLiteral( "<html>\n<body>\n" );
+
+  // Begin Provider section
+  myMetadata += QStringLiteral( "<h1>" ) + tr( "Information from provider" ) + QStringLiteral( "</h1>\n<hr>\n" );
+  myMetadata += QLatin1String( "<table class=\"list-view\">\n" );
+
+  // name
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Name" ) + QStringLiteral( "</td><td>" ) + name() + QStringLiteral( "</td></tr>\n" );
+
+  // local path
+  QVariantMap uriComponents = QgsProviderRegistry::instance()->decodeUri( mProviderKey, publicSource() );
+  QString path;
+  if ( uriComponents.contains( QStringLiteral( "path" ) ) )
+  {
+    path = uriComponents[QStringLiteral( "path" )].toString();
+    if ( QFile::exists( path ) )
+      myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Path" ) + QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( path ).toString(), QDir::toNativeSeparators( path ) ) ) + QStringLiteral( "</td></tr>\n" );
+  }
+  if ( uriComponents.contains( QStringLiteral( "url" ) ) )
+  {
+    const QString url = uriComponents[QStringLiteral( "url" )].toString();
+    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "URL" ) + QStringLiteral( "</td><td>%1" ).arg( QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl( url ).toString(), url ) ) + QStringLiteral( "</td></tr>\n" );
+  }
+
+  // data source
+  if ( publicSource() != path )
+    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Source" ) + QStringLiteral( "</td><td>%1" ).arg( publicSource() ) + QStringLiteral( "</td></tr>\n" );
+
+  // EPSG
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "CRS" ) + QStringLiteral( "</td><td>" );
+  if ( crs().isValid() )
+  {
+    myMetadata += crs().userFriendlyIdentifier( QgsCoordinateReferenceSystem::FullString ) + QStringLiteral( " - " );
+    if ( crs().isGeographic() )
+      myMetadata += tr( "Geographic" );
+    else
+      myMetadata += tr( "Projected" );
+  }
+  myMetadata += QLatin1String( "</td></tr>\n" );
+
+  // Extent
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Extent" ) + QStringLiteral( "</td><td>" ) + extent().toString() + QStringLiteral( "</td></tr>\n" );
+
+  // unit
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Unit" ) + QStringLiteral( "</td><td>" ) + QgsUnitTypes::toString( crs().mapUnits() ) + QStringLiteral( "</td></tr>\n" );
+
+  // feature count
+  QLocale locale = QLocale();
+  locale.setNumberOptions( locale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
+
+  if ( dataProvider() )
+  {
+    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
+                  + tr( "Vertex count" ) + QStringLiteral( "</td><td>" )
+                  + ( locale.toString( static_cast<qlonglong>( dataProvider()->vertexCount() ) ) )
+                  + QStringLiteral( "</td></tr>\n" );
+    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
+                  + tr( "Face count" ) + QStringLiteral( "</td><td>" )
+                  + ( locale.toString( static_cast<qlonglong>( dataProvider()->faceCount() ) ) )
+                  + QStringLiteral( "</td></tr>\n" );
+    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
+                  + tr( "Edge count" ) + QStringLiteral( "</td><td>" )
+                  + ( locale.toString( static_cast<qlonglong>( dataProvider()->edgeCount() ) ) )
+                  + QStringLiteral( "</td></tr>\n" );
+    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
+                  + tr( "Dataset groups count" ) + QStringLiteral( "</td><td>" )
+                  + ( locale.toString( static_cast<qlonglong>( dataProvider()->datasetGroupCount() ) ) )
+                  + QStringLiteral( "</td></tr>\n" );
+  }
+
+  // End Provider section
+  myMetadata += QLatin1String( "</table>\n<br><br>" );
+
+  // identification section
+  myMetadata += QStringLiteral( "<h1>" ) + tr( "Identification" ) + QStringLiteral( "</h1>\n<hr>\n" );
+  myMetadata += htmlFormatter.identificationSectionHtml( );
+  myMetadata += QLatin1String( "<br><br>\n" );
+
+  // extent section
+  myMetadata += QStringLiteral( "<h1>" ) + tr( "Extent" ) + QStringLiteral( "</h1>\n<hr>\n" );
+  myMetadata += htmlFormatter.extentSectionHtml( isSpatial() );
+  myMetadata += QLatin1String( "<br><br>\n" );
+
+  // Start the Access section
+  myMetadata += QStringLiteral( "<h1>" ) + tr( "Access" ) + QStringLiteral( "</h1>\n<hr>\n" );
+  myMetadata += htmlFormatter.accessSectionHtml( );
+  myMetadata += QLatin1String( "<br><br>\n" );
+
+  // Start the contacts section
+  myMetadata += QStringLiteral( "<h1>" ) + tr( "Contacts" ) + QStringLiteral( "</h1>\n<hr>\n" );
+  myMetadata += htmlFormatter.contactsSectionHtml( );
+  myMetadata += QLatin1String( "<br><br>\n" );
+
+  // Start the links section
+  myMetadata += QStringLiteral( "<h1>" ) + tr( "Links" ) + QStringLiteral( "</h1>\n<hr>\n" );
+  myMetadata += htmlFormatter.linksSectionHtml( );
+  myMetadata += QLatin1String( "<br><br>\n" );
+
+  // Start the history section
+  myMetadata += QStringLiteral( "<h1>" ) + tr( "History" ) + QStringLiteral( "</h1>\n<hr>\n" );
+  myMetadata += htmlFormatter.historySectionHtml( );
+  myMetadata += QLatin1String( "<br><br>\n" );
+
+  myMetadata += QLatin1String( "\n</body>\n</html>\n" );
+  return myMetadata;
+}
 
 bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
