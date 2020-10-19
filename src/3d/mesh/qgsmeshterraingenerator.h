@@ -84,13 +84,13 @@ class _3D_EXPORT QgsMeshTerrainGenerator: public QgsTerrainGenerator
     QgsRectangle extent() const override;
     void writeXml( QDomElement &elem ) const override;
     void readXml( const QDomElement &elem ) override;
+    float heightAt( double x, double y, const Qgs3DMapSettings &map ) const override;
 
   private:
     QgsMapLayerRef mLayer;
     QgsCoordinateReferenceSystem mCrs;
     QgsCoordinateTransformContext mTransformContext;
     std::unique_ptr< QgsMesh3DSymbol > mSymbol;
-
 };
 
 #endif // QGSMESHTERRAINGENERATOR_H
