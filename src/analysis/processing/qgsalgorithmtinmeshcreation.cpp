@@ -133,7 +133,7 @@ QVariantMap QgsTinMeshCreationAlgorithm::processAlgorithm( const QVariantMap &pa
   triangulation.setCrs( destinationCrs );
 
   if ( !mVerticesLayer.isEmpty() && feedback )
-    feedback->setProgressText( QObject::tr( "Add vertices layer(s) to the triangulation" ) );
+    feedback->setProgressText( QObject::tr( "Adding vertices layer(s) to the triangulation" ) );
   for ( Layer &l : mVerticesLayer )
   {
     if ( feedback && feedback->isCanceled() )
@@ -142,7 +142,7 @@ QVariantMap QgsTinMeshCreationAlgorithm::processAlgorithm( const QVariantMap &pa
   }
 
   if ( !mBreakLinesLayer.isEmpty() && feedback )
-    feedback->setProgressText( QObject::tr( "Add break lines layer(s) to the triangulation" ) );
+    feedback->setProgressText( QObject::tr( "Adding break lines layer(s) to the triangulation" ) );
   for ( Layer &l : mBreakLinesLayer )
   {
     if ( feedback && feedback->isCanceled() )
@@ -157,7 +157,7 @@ QVariantMap QgsTinMeshCreationAlgorithm::processAlgorithm( const QVariantMap &pa
   int driverIndex = parameterAsEnum( parameters, QStringLiteral( "MESH_FORMAT" ), context );
   const QString driver = mAvailableFormat.at( driverIndex );
   if ( feedback )
-    feedback->setProgressText( QObject::tr( "Create mesh from triangulation" ) );
+    feedback->setProgressText( QObject::tr( "Creating mesh from triangulation" ) );
   const QgsMesh mesh = triangulation.triangulatedMesh( feedback );
 
   if ( feedback && feedback->isCanceled() )
@@ -166,7 +166,7 @@ QVariantMap QgsTinMeshCreationAlgorithm::processAlgorithm( const QVariantMap &pa
   const QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "mdal" ) );
 
   if ( feedback )
-    feedback->setProgressText( QObject::tr( "Save mesh to file" ) );
+    feedback->setProgressText( QObject::tr( "Saving mesh to file" ) );
   if ( providerMetadata )
     providerMetadata->createMeshData( mesh, fileName, driver, destinationCrs );
 
