@@ -57,7 +57,6 @@ static void throwGEOSException( const char *fmt, ... )
   vsnprintf( buffer, sizeof buffer, fmt, ap );
   va_end( ap );
 
-  qWarning( "GEOS exception: %s", buffer );
   QString message = QString::fromUtf8( buffer );
 
 #ifdef _MSC_VER
@@ -90,8 +89,6 @@ static void printGEOSNotice( const char *fmt, ... )
   va_start( ap, fmt );
   vsnprintf( buffer, sizeof buffer, fmt, ap );
   va_end( ap );
-
-  QgsDebugMsg( QStringLiteral( "GEOS notice: %1" ).arg( QString::fromUtf8( buffer ) ) );
 #else
   Q_UNUSED( fmt )
 #endif
@@ -238,6 +235,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::clip( const QgsRectangle &rect, QS
   }
   catch ( GEOSException &e )
   {
+    logError( QStringLiteral( "GEOS" ), e.what() );
     if ( errorMsg )
     {
       *errorMsg = e.what();
@@ -545,6 +543,7 @@ QString QgsGeos::relate( const QgsAbstractGeometry *geom, QString *errorMsg ) co
   }
   catch ( GEOSException &e )
   {
+    logError( QStringLiteral( "GEOS" ), e.what() );
     if ( errorMsg )
     {
       *errorMsg = e.what();
@@ -574,6 +573,7 @@ bool QgsGeos::relatePattern( const QgsAbstractGeometry *geom, const QString &pat
   }
   catch ( GEOSException &e )
   {
+    logError( QStringLiteral( "GEOS" ), e.what() );
     if ( errorMsg )
     {
       *errorMsg = e.what();
@@ -1446,6 +1446,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry
   }
   catch ( GEOSException &e )
   {
+    logError( QStringLiteral( "GEOS" ), e.what() );
     if ( errorMsg )
     {
       *errorMsg = e.what();
@@ -1530,6 +1531,7 @@ bool QgsGeos::relation( const QgsAbstractGeometry *geom, Relation r, QString *er
   }
   catch ( GEOSException &e )
   {
+    logError( QStringLiteral( "GEOS" ), e.what() );
     if ( errorMsg )
     {
       *errorMsg = e.what();
@@ -2241,6 +2243,7 @@ QgsGeometry QgsGeos::closestPoint( const QgsGeometry &other, QString *errorMsg )
   }
   catch ( GEOSException &e )
   {
+    logError( QStringLiteral( "GEOS" ), e.what() );
     if ( errorMsg )
     {
       *errorMsg = e.what();
@@ -2279,6 +2282,7 @@ QgsGeometry QgsGeos::shortestLine( const QgsGeometry &other, QString *errorMsg )
   }
   catch ( GEOSException &e )
   {
+    logError( QStringLiteral( "GEOS" ), e.what() );
     if ( errorMsg )
     {
       *errorMsg = e.what();
@@ -2312,6 +2316,7 @@ double QgsGeos::lineLocatePoint( const QgsPoint &point, QString *errorMsg ) cons
   }
   catch ( GEOSException &e )
   {
+    logError( QStringLiteral( "GEOS" ), e.what() );
     if ( errorMsg )
     {
       *errorMsg = e.what();
