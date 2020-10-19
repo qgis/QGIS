@@ -418,6 +418,7 @@ std::unique_ptr<LabelPosition> FeaturePart::createCandidatePointOnSurface( Point
   }
   catch ( GEOSException &e )
   {
+    qWarning( "GEOS exception: %s", e.what() );
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
     return nullptr;
   }
@@ -2216,6 +2217,7 @@ bool FeaturePart::isConnected( FeaturePart *p2 )
   }
   catch ( GEOSException &e )
   {
+    qWarning( "GEOS exception: %s", e.what() );
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
     return false;
   }
@@ -2256,6 +2258,7 @@ bool FeaturePart::mergeWithFeaturePart( FeaturePart *other )
   }
   catch ( GEOSException &e )
   {
+    qWarning( "GEOS exception: %s", e.what() );
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
     return false;
   }

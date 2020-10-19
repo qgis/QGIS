@@ -19,6 +19,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgis_core.h"
 #include "qgslinestring.h"
 #include "qgsgeometry.h"
+#include "qgslogger.h"
 
 #include <QVector>
 
@@ -273,8 +274,35 @@ class CORE_EXPORT QgsGeometryEngine
 
     virtual QgsAbstractGeometry *offsetCurve( double distance, int segments, int joinStyle, double miterLimit, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
 
+    /**
+     * Sets whether warnings and errors encountered during the geometry operations should be logged.
+     *
+     * By default these errors are logged to the console and in the QGIS UI. But for some operations errors are expected and logging
+     * these just results in noise. In this case setting \a enabled to FALSE will avoid the automatic error reporting.
+     *
+     * \since QGIS 3.16
+     */
+    void setLogErrors( bool enabled ) { mLogErrors = enabled; }
+
   protected:
     const QgsAbstractGeometry *mGeometry = nullptr;
+    bool mLogErrors = true;
+
+    /**
+     * Logs an error \a message encountered during an operation.
+     *
+     * \see setLogErrors()
+     *
+     * \since QGIS 3.16
+     */
+    void logError( const QString &engineName, const QString &message ) const
+    {
+      if ( mLogErrors )
+      {
+        QgsDebugMsg( QStringLiteral( "%1 notice: %2" ).arg( engineName, message ) );
+        qWarning( "%s exception: %s", engineName.toLocal8Bit().constData(), message.toLocal8Bit().constData() );
+      }
+    }
 
     QgsGeometryEngine( const QgsAbstractGeometry *geometry )
       : mGeometry( geometry )
@@ -282,3 +310,4 @@ class CORE_EXPORT QgsGeometryEngine
 };
 
 #endif // QGSGEOMETRYENGINE_H
+
