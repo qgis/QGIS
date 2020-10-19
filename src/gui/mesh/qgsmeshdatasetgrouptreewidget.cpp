@@ -32,12 +32,12 @@ QgsMeshDatasetGroupTreeWidget::QgsMeshDatasetGroupTreeWidget( QWidget *parent ):
 {
   setupUi( this );
 
-  connect( mAddDatasetButton, &QPushButton::clicked, this, &QgsMeshDatasetGroupTreeWidget::addDataset );
-  connect( mCollapseButton, &QPushButton::clicked, mDatasetGroupTreeView, &QTreeView::collapseAll );
-  connect( mExpandButton, &QPushButton::clicked, mDatasetGroupTreeView, &QTreeView::expandAll );
-  connect( mCheckAllButton, &QPushButton::clicked, mDatasetGroupTreeView, &QgsMeshDatasetGroupTreeView::selectAllGroups );
-  connect( mUnCheckAllButton, &QPushButton::clicked, mDatasetGroupTreeView, &QgsMeshDatasetGroupTreeView::deselectAllGroups );
-  connect( mResetDefaultButton, &QPushButton::clicked, this, [this]
+  connect( mAddDatasetButton, &QToolButton::clicked, this, &QgsMeshDatasetGroupTreeWidget::addDataset );
+  connect( mCollapseButton, &QToolButton::clicked, mDatasetGroupTreeView, &QTreeView::collapseAll );
+  connect( mExpandButton, &QToolButton::clicked, mDatasetGroupTreeView, &QTreeView::expandAll );
+  connect( mCheckAllButton, &QToolButton::clicked, mDatasetGroupTreeView, &QgsMeshDatasetGroupTreeView::selectAllGroups );
+  connect( mUnCheckAllButton, &QToolButton::clicked, mDatasetGroupTreeView, &QgsMeshDatasetGroupTreeView::deselectAllGroups );
+  connect( mResetDefaultButton, &QToolButton::clicked, this, [this]
   {
     this->mDatasetGroupTreeView->resetDefault( this->mMeshLayer );
   } );

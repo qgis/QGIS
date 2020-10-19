@@ -32,28 +32,19 @@
       <string>Available Datasets</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_7">
-      <property name="spacing">
-       <number>0</number>
-      </property>
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
       <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
        <number>0</number>
       </property>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <property name="spacing">
+         <number>0</number>
+        </property>
         <property name="topMargin">
          <number>0</number>
         </property>
         <item>
-         <widget class="QPushButton" name="mAddDatasetButton">
+         <widget class="QToolButton" name="mAddDatasetButton">
           <property name="toolTip">
            <string>Assign Extra Dataset to Mesh</string>
           </property>
@@ -70,10 +61,13 @@
             <height>20</height>
            </size>
           </property>
+          <property name="autoRaise">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="mCollapseButton">
+         <widget class="QToolButton" name="mCollapseButton">
           <property name="toolTip">
            <string>Collapse All</string>
           </property>
@@ -90,10 +84,13 @@
             <height>20</height>
            </size>
           </property>
+          <property name="autoRaise">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="mExpandButton">
+         <widget class="QToolButton" name="mExpandButton">
           <property name="toolTip">
            <string>Expand All</string>
           </property>
@@ -110,10 +107,13 @@
             <height>20</height>
            </size>
           </property>
+          <property name="autoRaise">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="mCheckAllButton">
+         <widget class="QToolButton" name="mCheckAllButton">
           <property name="toolTip">
            <string>Check All</string>
           </property>
@@ -130,10 +130,16 @@
             <height>20</height>
            </size>
           </property>
+          <property name="autoRaise">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="mUnCheckAllButton">
+         <widget class="QToolButton" name="mUnCheckAllButton">
+          <property name="toolTip">
+           <string>Uncheck All</string>
+          </property>
           <property name="text">
            <string/>
           </property>
@@ -147,12 +153,15 @@
             <height>20</height>
            </size>
           </property>
+          <property name="autoRaise">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="mResetDefaultButton">
+         <widget class="QToolButton" name="mResetDefaultButton">
           <property name="toolTip">
-           <string>Reset Default</string>
+           <string>Reset to Defaults</string>
           </property>
           <property name="text">
            <string/>
@@ -166,6 +175,9 @@
             <width>20</width>
             <height>20</height>
            </size>
+          </property>
+          <property name="autoRaise">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
