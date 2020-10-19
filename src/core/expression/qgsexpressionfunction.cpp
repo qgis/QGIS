@@ -6683,7 +6683,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     currentFeatureFunc->setIsStatic( false );
     functions << currentFeatureFunc;
 
-    QgsStaticExpressionFunction *uuidFunc = new QgsStaticExpressionFunction( QStringLiteral( "uuid" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "stringFormat" ), true, QStringLiteral( "WithBraces" ) ), fcnUuid, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "$uuid" ) );
+    QgsStaticExpressionFunction *uuidFunc = new QgsStaticExpressionFunction( QStringLiteral( "uuid" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "format" ), true, QStringLiteral( "WithBraces" ) ), fcnUuid, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "$uuid" ) );
     uuidFunc->setIsStatic( false );
     functions << uuidFunc;
 
