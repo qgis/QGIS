@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Configure 3D Map Rendering</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_4">
+  <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,1">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -26,6 +26,9 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
+   <item>
+    <widget class="QgsMessageBar" name="mMessageBar" native="true"/>
+   </item>
    <item>
     <widget class="QSplitter" name="m3DOptionsSplitter">
      <property name="orientation">
@@ -203,7 +206,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>705</width>
-                <height>620</height>
+                <height>604</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutTerrain">
@@ -843,12 +846,6 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsPhongMaterialWidget</class>
    <extends>QWidget</extends>
    <header>qgsphongmaterialwidget.h</header>
@@ -868,6 +865,12 @@
    <class>QgsLightsWidget</class>
    <extends>QWidget</extends>
    <header>qgslightswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMessageBar</class>
+   <extends>QWidget</extends>
+   <header>qgsmessagebar.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

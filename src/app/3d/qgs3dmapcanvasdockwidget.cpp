@@ -265,6 +265,11 @@ void Qgs3DMapCanvasDockWidget::configure()
   connect( buttons, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
   connect( buttons, &QDialogButtonBox::helpRequested, w, []() { QgsHelp::openHelp( QStringLiteral( "introduction/qgis_gui.html#scene-configuration" ) ); } );
 
+  connect( w, &Qgs3DMapConfigWidget::isValidChanged, this, [ = ]( bool valid )
+  {
+    buttons->button( QDialogButtonBox::Ok )->setEnabled( valid );
+  } );
+
   QVBoxLayout *layout = new QVBoxLayout( &dlg );
   layout->addWidget( w, 1 );
   layout->addWidget( buttons );
