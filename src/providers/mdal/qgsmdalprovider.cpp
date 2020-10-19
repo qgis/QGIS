@@ -967,6 +967,20 @@ bool QgsMdalProviderMetadata::createMeshData( const QgsMesh &mesh, const QString
   return true;
 }
 
+QVariantMap QgsMdalProviderMetadata::decodeUri( const QString &uri )
+{
+  const QString path = uri;
+  QVariantMap uriComponents;
+  uriComponents.insert( QStringLiteral( "path" ), path );
+  return uriComponents;
+}
+
+QString QgsMdalProviderMetadata::encodeUri( const QVariantMap &parts )
+{
+  const QString path = parts.value( QStringLiteral( "path" ) ).toString();
+  return path;
+}
+
 QString QgsMdalProviderMetadata::filters( FilterType type )
 {
   switch ( type )
