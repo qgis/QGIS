@@ -899,8 +899,8 @@ class EditorTabWidget(QTabWidget):
 
     def tabModified(self, tab, modified):
         index = self.indexOf(tab)
-        color = Qt.darkGray if modified else Qt.black
-        self.tabBar().setTabTextColor(index, color)
+        s = self.tabText(index)
+        self.setTabTitle(index, '*{}'.format(s) if modified else re.sub(r'^(\*)', '', s))
         self.parent.saveFileButton.setEnabled(modified)
 
     def closeTab(self, tab):
