@@ -432,10 +432,15 @@ QList<QVariantList> QgsGeoPackageProviderConnection::executeGdalSqlPrivate( cons
 QList<QgsVectorDataProvider::NativeType> QgsGeoPackageProviderConnection::nativeTypes() const
 {
   QList<QgsVectorDataProvider::NativeType> types;
-  QgsVectorLayer vl { uri(), QStringLiteral( "temp_layer" ), QStringLiteral( "ogr" ) };
+  QgsVectorLayer::LayerOptions options { false, true };
+  options.skipCrsValidation = true;
+  const QgsVectorLayer vl { uri(), QStringLiteral( "temp_layer" ), QStringLiteral( "ogr" ), options };
   if ( ! vl.isValid() || ! vl.dataProvider() )
   {
-    throw QgsProviderConnectionException( QObject::tr( "Error retrieving native types for %1: %2" ).arg( uri() ).arg( vl.dataProvider()->errors().join( '\n' ) ) );
+    const QString errorCause { vl.dataProvider() &&vl.dataProvider()->hasErrors() ?
+                               vl.dataProvider()->errors().join( '\n' ) :
+                               QObject::tr( "unknown error" ) };
+    throw QgsProviderConnectionException( QObject::tr( "Error retrieving native types for %1: %2" ).arg( uri() ).arg( errorCause ) );
   }
   return vl.dataProvider()->nativeTypes();
 }
