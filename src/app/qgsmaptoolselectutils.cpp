@@ -229,6 +229,13 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
   QgsDebugMsgLevel( "Selection polygon: " + selectGeomTrans.asWkt(), 3 );
   QgsDebugMsgLevel( "doContains: " + QString( doContains ? "T" : "F" ), 3 );
 
+  // make sure the selection geometry is valid, or intersection tests won't work correctly...
+  if ( !selectGeomTrans.isGeosValid( ) )
+  {
+    // a zero width buffer is safer than calling make valid here!
+    selectGeomTrans = selectGeomTrans.buffer( 0, 1 );
+  }
+
   QgsRenderContext context = QgsRenderContext::fromMapSettings( canvas->mapSettings() );
   context.expressionContext() << QgsExpressionContextUtils::layerScope( vlayer );
   std::unique_ptr< QgsFeatureRenderer > r;
@@ -262,25 +269,25 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
     QgsGeometry g = f.geometry();
     if ( doContains )
     {
-      if ( !selectGeomTrans.contains( g ) )
-      {
-        // if we get an error from the contains check then it indicates that the geometry is invalid and GEOS choked on it.
-        // in this case we consider the bounding box intersection check which has already been performed by the iterator as sufficient and
-        // allow the feature to be selected
-        if ( selectGeomTrans.lastError().isEmpty() )
-          continue;
-      }
+      // if we get an error from the contains check then it indicates that the geometry is invalid and GEOS choked on it.
+      // in this case we consider the bounding box intersection check which has already been performed by the iterator as sufficient and
+      // allow the feature to be selected
+      if ( !selectGeomTrans.contains( g ) &&
+           !selectGeomTrans.lastError().isEmpty() && /* lastError will be non empty if geometry g is invalid */
+           !selectGeomTrans.contains( g.makeValid() ) /* second chance for invalid geometries, repair and re-test */
+         )
+        continue;
     }
     else
     {
-      if ( !selectGeomTrans.intersects( g ) )
-      {
-        // if we get an error from the contains check then it indicates that the geometry is invalid and GEOS choked on it.
-        // in this case we consider the bounding box intersection check which has already been performed by the iterator as sufficient and
-        // allow the feature to be selected
-        if ( selectGeomTrans.lastError().isEmpty() )
-          continue;
-      }
+      // if we get an error from the intersects check then it indicates that the geometry is invalid and GEOS choked on it.
+      // in this case we consider the bounding box intersection check which has already been performed by the iterator as sufficient and
+      // allow the feature to be selected
+      if ( !selectGeomTrans.intersects( g ) &&
+           !selectGeomTrans.lastError().isEmpty() && /* lastError will be non empty if geometry g is invalid */
+           !selectGeomTrans.intersects( g.makeValid() ) /* second chance for invalid geometries, repair and re-test */
+         )
+        continue;
     }
     if ( singleSelect )
     {
