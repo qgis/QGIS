@@ -394,12 +394,35 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * keys would be the familiar QgsSettings-like '/' delimited entries,
      * implying a hierarchy of keys and corresponding values
      */
-    QStringList readListEntry( const QString &scope, const QString &key, const QStringList &def = QStringList(), bool *ok = nullptr ) const;
+    QStringList readListEntry( const QString &scope, const QString &key, const QStringList &def = QStringList(), bool *ok SIP_OUT = nullptr ) const;
 
-    QString readEntry( const QString &scope, const QString &key, const QString &def = QString(), bool *ok = nullptr ) const;
-    int readNumEntry( const QString &scope, const QString &key, int def = 0, bool *ok = nullptr ) const;
-    double readDoubleEntry( const QString &scope, const QString &key, double def = 0, bool *ok = nullptr ) const;
-    bool readBoolEntry( const QString &scope, const QString &key, bool def = false, bool *ok = nullptr ) const;
+    /**
+     * \param def returned value if key doesn't exist
+     * \param ok set to TRUE if key exists and has been successfully retrieved
+     * \returns entry value as string from \a scope given its \a key
+     */
+    QString readEntry( const QString &scope, const QString &key, const QString &def = QString(), bool *ok SIP_OUT = nullptr ) const;
+
+    /**
+     * \param def returned value if key doesn't exist
+     * \param ok set to TRUE if key exists and has been successfully retrieved
+     * \returns entry value as integer from \a scope given its \a key
+     */
+    int readNumEntry( const QString &scope, const QString &key, int def = 0, bool *ok SIP_OUT = nullptr ) const;
+
+    /**
+     * \param def returned value if key doesn't exist
+     * \param ok set to TRUE if key exists and has been successfully retrieved
+     * \returns entry value as double from \a scope given its \a key
+     */
+    double readDoubleEntry( const QString &scope, const QString &key, double def = 0, bool *ok SIP_OUT = nullptr ) const;
+
+    /**
+     * \param def returned value if key doesn't exist
+     * \param ok set to TRUE if key exists and has been successfully retrieved
+     * \returns entry value as boolean from \a scope given its \a key
+     */
+    bool readBoolEntry( const QString &scope, const QString &key, bool def = false, bool *ok SIP_OUT = nullptr ) const;
 
 
     //! Remove the given key
