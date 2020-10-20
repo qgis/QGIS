@@ -44,6 +44,7 @@ Compares region, size etc. not collected statistics
 
     int bandNumber;
 
+
     qgssize elementCount;
 
     double maximumValue;

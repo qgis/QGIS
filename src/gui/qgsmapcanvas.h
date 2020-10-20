@@ -929,6 +929,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     void canvasColorChanged();
 
+    // TODO: deprecate when decorations are reimplemented as map canvas items
+
     /**
      * Emitted when the canvas has rendered.
      * Passes a pointer to the painter on which the map was drawn. This is
@@ -936,11 +938,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * rendered.  Passing the painter allows plugins to work when the map is
      * being rendered onto a pixmap other than the mapCanvas own pixmap member.
      *
-     */
-
-    // TODO: deprecate when decorations are reimplemented as map canvas items
-
-    /**
      * - anything related to rendering progress is not visible outside of map canvas
      * - additional drawing shall be done directly within the renderer job or independently as a map canvas item
      */

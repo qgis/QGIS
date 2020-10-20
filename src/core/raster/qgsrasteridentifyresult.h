@@ -84,9 +84,10 @@ class CORE_EXPORT QgsRasterIdentifyResult
     //! \brief Results format
     QgsRaster::IdentifyFormat mFormat = QgsRaster::IdentifyFormatUndefined;
 
-    //! \brief Results
     // TODO: better hierarchy (sublayer multiple feature sets)?
     // TODO?: results are not consistent for different formats (per band x per sublayer)
+
+    //! \brief Results
     QMap<int, QVariant> mResults;
 
     //! \brief Additional params (e.g. request url used by WMS)

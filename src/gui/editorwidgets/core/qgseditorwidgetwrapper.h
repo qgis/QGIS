@@ -283,6 +283,8 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      */
     void setFeature( const QgsFeature &feature ) override;
 
+    // TODO Q_DECL_DEPRECATED
+
     /**
      * Is called, when the value of the widget needs to be changed. Update the widget representation
      * to reflect the new value.
@@ -290,7 +292,6 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * \param value The new value of the attribute
      * \deprecated since QGIS 3.10
      */
-    // TODO Q_DECL_DEPRECATED
     virtual void setValue( const QVariant &value ) SIP_DEPRECATED;
 
     /**

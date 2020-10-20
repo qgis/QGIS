@@ -514,6 +514,7 @@ If no prefix is specified, WKT definition is assumed.
 :return: ``True`` on success else ``False``
 %End
 
+
     bool createFromUserInput( const QString &definition );
 %Docstring
 Set up this CRS from various text formats.
@@ -534,7 +535,6 @@ For more details on supported formats see OGRSpatialReference.SetFromUserInput()
 
    this function generates a WKT string using OSRSetFromUserInput() and
    passes it to :py:func:`~QgsCoordinateReferenceSystem.createFromWkt` function.
-   /    // TODO QGIS3: rename to createFromStringOGR so it is clear it's similar to createFromString, just different backend
 %End
 
  static void setupESRIWktFix() /Deprecated/;

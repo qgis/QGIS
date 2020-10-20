@@ -161,7 +161,18 @@ If this is ``True``, then this search widget should take effect directly
 when its expression changes
 %End
 
+
     virtual QString createExpression( FilterFlags flags ) const;
+%Docstring
+Creates a filter expression based on the current state of the search widget
+and the specified filter flags.
+
+:param flags: filter flags
+
+:return: filter expression
+
+.. versionadded:: 2.16
+%End
 
     QString createFieldIdentifier() const;
 %Docstring

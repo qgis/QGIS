@@ -63,6 +63,7 @@ Display the blocking message to the user.
 %End
 
 
+
     static QgsMessageOutput *createMessageOutput();
 %Docstring
 function that returns new class derived from QgsMessageOutput

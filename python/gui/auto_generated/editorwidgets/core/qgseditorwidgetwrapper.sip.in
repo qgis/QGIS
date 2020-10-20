@@ -288,7 +288,17 @@ Is forwarded to the slot :py:func:`~QgsEditorWidgetWrapper.setValues`
 :param feature: The new feature
 %End
 
+
     virtual void setValue( const QVariant &value ) /Deprecated/;
+%Docstring
+Is called, when the value of the widget needs to be changed. Update the widget representation
+to reflect the new value.
+
+:param value: The new value of the attribute
+
+.. deprecated:: QGIS 3.10
+  
+%End
 
     void setValues( const QVariant &value, const QVariantList &additionalValues );
 %Docstring

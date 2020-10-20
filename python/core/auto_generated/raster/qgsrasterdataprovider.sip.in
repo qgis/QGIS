@@ -382,7 +382,11 @@ to overwrite data of the provider using :py:func:`~QgsRasterDataProvider.writeBl
 .. versionadded:: 3.0
 %End
 
+
     virtual bool write( void *data, int band, int width, int height, int xOffset, int yOffset );
+%Docstring
+Writes into the provider datasource
+%End
 
     bool writeBlock( QgsRasterBlock *block, int band, int xOffset = 0, int yOffset = 0 );
 %Docstring

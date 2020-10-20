@@ -56,10 +56,11 @@ class CORE_EXPORT QgsProviderRegistry
 
   public:
 
+    // TODO QGIS 4 - either move to QgsAbstractDataSourceWidget or remove altogether
+
     /**
      * Different ways a source select dialog can be used
      */
-    // TODO QGIS 4 - either move to QgsAbstractDataSourceWidget or remove altogether
     enum WidgetMode
     {
 

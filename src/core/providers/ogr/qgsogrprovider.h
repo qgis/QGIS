@@ -427,10 +427,6 @@ class CORE_EXPORT QgsOgrProviderUtils
                                        const QgsCoordinateReferenceSystem &srs,
                                        QString &errorMessage );
 
-    /**
-     * TODO
-     * \since QGIS 3.10
-     */
     static bool deleteLayer( const QString &uri, QString &errCause );
 
     //! Inject credentials into the dsName (if any)
