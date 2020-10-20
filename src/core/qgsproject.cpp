@@ -2515,6 +2515,9 @@ QStringList QgsProject::readListEntry( const QString &scope,
       return value.toStringList();
     }
   }
+  else if ( ok )
+    *ok = false;
+
 
   return def;
 }

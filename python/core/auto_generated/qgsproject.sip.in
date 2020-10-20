@@ -475,7 +475,7 @@ a hierarchy of keys and corresponding values
    The key string must be valid xml tag names in order to be saved to the file.
 %End
 
-    QStringList readListEntry( const QString &scope, const QString &key, const QStringList &def = QStringList(), bool *ok = 0 /Out/ ) const;
+    QStringList readListEntry( const QString &scope, const QString &key, const QStringList &def = QStringList(), bool *ok /Out/ = 0 ) const;
 %Docstring
 Key value accessors
 
@@ -483,40 +483,40 @@ keys would be the familiar QgsSettings-like '/' delimited entries,
 implying a hierarchy of keys and corresponding values
 %End
 
-    QString readEntry( const QString &scope, const QString &key, const QString &def = QString(), bool *ok = 0 /Out/ ) const;
+    QString readEntry( const QString &scope, const QString &key, const QString &def = QString(), bool *ok /Out/ = 0 ) const;
 %Docstring
 
 :param def: returned value if key doesn't exist
-:param ok: set to ``True`` if key exists and has been successfully retrieved
 
-:return: entry value as string from ``scope`` given its ``key``
+:return: - entry value as string from ``scope`` given its ``key``
+         - ok: set to ``True`` if key exists and has been successfully retrieved
 %End
 
-    int readNumEntry( const QString &scope, const QString &key, int def = 0, bool *ok = 0 /Out/ ) const;
+    int readNumEntry( const QString &scope, const QString &key, int def = 0, bool *ok /Out/ = 0 ) const;
 %Docstring
 
 :param def: returned value if key doesn't exist
-:param ok: set to ``True`` if key exists and has been successfully retrieved
 
-:return: entry value as integer from ``scope`` given its ``key``
+:return: - entry value as integer from ``scope`` given its ``key``
+         - ok: set to ``True`` if key exists and has been successfully retrieved
 %End
 
-    double readDoubleEntry( const QString &scope, const QString &key, double def = 0, bool *ok = 0 /Out/ ) const;
+    double readDoubleEntry( const QString &scope, const QString &key, double def = 0, bool *ok /Out/ = 0 ) const;
 %Docstring
 
 :param def: returned value if key doesn't exist
-:param ok: set to ``True`` if key exists and has been successfully retrieved
 
-:return: entry value as double from ``scope`` given its ``key``
+:return: - entry value as double from ``scope`` given its ``key``
+         - ok: set to ``True`` if key exists and has been successfully retrieved
 %End
 
-    bool readBoolEntry( const QString &scope, const QString &key, bool def = false, bool *ok = 0 /Out/ ) const;
+    bool readBoolEntry( const QString &scope, const QString &key, bool def = false, bool *ok /Out/ = 0 ) const;
 %Docstring
 
 :param def: returned value if key doesn't exist
-:param ok: set to ``True`` if key exists and has been successfully retrieved
 
-:return: entry value as boolean from ``scope`` given its ``key``
+:return: - entry value as boolean from ``scope`` given its ``key``
+         - ok: set to ``True`` if key exists and has been successfully retrieved
 %End
 
     bool removeEntry( const QString &scope, const QString &key );
