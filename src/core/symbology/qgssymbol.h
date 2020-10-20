@@ -370,14 +370,27 @@ class CORE_EXPORT QgsSymbol
     QImage asImage( QSize size, QgsRenderContext *customContext = nullptr );
 
     /**
+     * Flags for controlling how symbol preview images are generated.
+     *
+     * \since QGIS 3.16
+     */
+    enum PreviewFlag
+    {
+      FlagIncludeCrosshairsForMarkerSymbols = 1 << 0, //!< Include a crosshairs reference image in the background of marker symbol previews
+    };
+    Q_DECLARE_FLAGS( PreviewFlags, PreviewFlag )
+
+    /**
      * Returns a large (roughly 100x100 pixel) preview image for the symbol.
+     *
      * \param expressionContext optional expression context, for evaluation of
      * data defined symbol properties
+     * \param flags optional flags to control how preview image is generated
      *
      * \see asImage()
      * \see drawPreviewIcon()
      */
-    QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = nullptr );
+    QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = nullptr, QgsSymbol::PreviewFlags flags = QgsSymbol::FlagIncludeCrosshairsForMarkerSymbols );
 
     /**
      * Returns a string dump of the symbol's properties.
@@ -1262,6 +1275,8 @@ class CORE_EXPORT QgsFillSymbol : public QgsSymbol
     //! Translates the rings in a polygon by a set distance
     QVector<QPolygonF> *translateRings( const QVector<QPolygonF> *rings, double dx, double dy ) const;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsSymbol::PreviewFlags )
 
 #endif
 
