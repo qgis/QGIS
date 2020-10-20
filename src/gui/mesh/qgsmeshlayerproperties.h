@@ -32,6 +32,7 @@ class QgsMapLayerConfigWidget;
 class QgsMeshLayer3DRendererWidget;
 class QgsMeshStaticDatasetWidget;
 class QgsMapLayerConfigWidgetFactory;
+class QgsMetadataWidget;
 
 /**
  * Property sheet for a mesh map layer.
@@ -57,6 +58,9 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
      * \since QGIS 3.16
      */
     void addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory *factory );
+
+  protected slots:
+    void optionsStackedWidget_CurrentChanged( int index ) override SIP_SKIP ;
 
   private slots:
     //! Synchronizes widgets state with associated mesh layer
@@ -88,6 +92,8 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
     void onStaticDatasetCheckBoxChanged();
 
     void urlClicked( const QUrl &url );
+    void loadMetadata();
+    void saveMetadataAs();
 
   private:
     //! Pointer to the mesh styling widget
@@ -107,7 +113,13 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
     */
     QgsMapLayerStyle mOldStyle;
 
-    QgsMapCanvas *mCanvas;
+    QPushButton *mBtnStyle = nullptr;
+    QPushButton *mBtnMetadata = nullptr;
+    QAction *mActionLoadMetadata = nullptr;
+    QAction *mActionSaveMetadataAs = nullptr;
+
+    QgsMapCanvas *mCanvas = nullptr;
+    QgsMetadataWidget *mMetadataWidget = nullptr;
 
     bool mIsMapSettingsTemporal = false;
 

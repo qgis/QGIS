@@ -38,6 +38,8 @@ Adds properties page from a factory
 .. versionadded:: 3.16
 %End
 
+  protected slots:
+
 };
 
 
