@@ -1320,7 +1320,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
         delim = ',';
         kdelim = ',';
         fieldId << idx;
-        defaultValues << defaultValue( idx ).toString();
+        defaultValues << defaultValueClause( idx );
       }
 
       if ( !getfid.prepare( QStringLiteral( "SELECT %1 FROM %2 WHERE ROWID=?" ).arg( keys ).arg( mQuery ) ) )
@@ -1353,7 +1353,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
 
       insert += delim + quotedIdentifier( fld.name() );
 
-      QString defVal = defaultValue( idx ).toString();
+      QString defVal = defaultValueClause( idx );
 
       values += delim + '?';
       defaultValues.append( defVal );
