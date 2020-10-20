@@ -21,9 +21,6 @@
 
 #include <QMessageBox>
 
-#include "qwt_compass.h"
-#include "qwt_dial_needle.h"
-
 QgsLightsWidget::QgsLightsWidget( QWidget *parent )
   : QWidget( parent )
 {
@@ -32,17 +29,7 @@ QgsLightsWidget::QgsLightsWidget( QWidget *parent )
   btnAddLight->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
   btnRemoveLight->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.svg" ) ) );
 
-  mDirectionCompass = new QwtCompass( this );
-  QwtCompassScaleDraw *scaleDraw = new QwtCompassScaleDraw();
-  scaleDraw->enableComponent( QwtAbstractScaleDraw::Ticks, true );
-  scaleDraw->enableComponent( QwtAbstractScaleDraw::Backbone, false );
-  scaleDraw->setTickLength( QwtScaleDiv::MinorTick, 0 );
-  scaleDraw->setTickLength( QwtScaleDiv::MediumTick, 0 );
-  scaleDraw->setTickLength( QwtScaleDiv::MajorTick, 4 );
-  QwtScaleDiv scaleDiv = scaleDraw->scaleDiv();
-  mDirectionCompass->setScaleDraw( scaleDraw );
-  mDirectionCompass->setNeedle( new QwtDialSimpleNeedle( QwtDialSimpleNeedle::Ray, true, Qt::darkYellow, Qt::gray ) );
-  directionLightLayout->insertWidget( 3, mDirectionCompass );
+  dialAzimuth->setMaximum( 359 );
 
   connect( btnAddLight, &QToolButton::clicked, this, &QgsLightsWidget::onAddLight );
   connect( btnRemoveLight, &QToolButton::clicked, this, &QgsLightsWidget::onRemoveLight );
@@ -70,7 +57,7 @@ QgsLightsWidget::QgsLightsWidget( QWidget *parent )
   connect( spinDirectionalIntensity, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::updateCurrentDirectionalLightParameters );
   connect( btnDirectionalColor, &QgsColorButton::colorChanged, this, &QgsLightsWidget::updateCurrentDirectionalLightParameters );
 
-  connect( mDirectionCompass, &QwtCompass::valueChanged, spinBoxAzimuth, &QgsDoubleSpinBox::setValue );
+  connect( dialAzimuth, &QSlider::valueChanged, [this]( int value ) {spinBoxAzimuth->setValue( ( value + 180 ) % 360 );} );
   connect( spinBoxAzimuth, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::onSpinBoxAzimuthChange );
   connect( spinBoxAltitude, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::onSpinBoxAltitudeChange );
   connect( sliderAltitude, &QSlider::valueChanged, spinBoxAltitude, &QgsDoubleSpinBox::setValue );
@@ -251,7 +238,7 @@ void QgsLightsWidget::onSpinBoxDirectionChanged()
   }
 
 
-  mDirectionCompass->setValue( azimuthAngle );
+  dialAzimuth->setValue( int( azimuthAngle + 180 ) % 360 );
   spinBoxAzimuth->setValue( azimuthAngle );
 
   if ( horizontalVectorMagnitude == 0 )
@@ -275,7 +262,7 @@ void QgsLightsWidget::onSpinBoxAzimuthChange()
   x = -horizontalVectorMagnitude * sin( azimuthValue / 180 * M_PI );
   z = horizontalVectorMagnitude * cos( azimuthValue / 180 * M_PI );
 
-  whileBlocking( mDirectionCompass )->setValue( azimuthValue );
+  whileBlocking( dialAzimuth )->setValue( int( azimuthValue + 180 ) % 360 );
   whileBlocking( spinDirectionX )->setValue( x );
   whileBlocking( spinDirectionZ )->setValue( z );
 

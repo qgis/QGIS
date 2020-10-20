@@ -23,8 +23,6 @@
 #include "qgspointlightsettings.h"
 #include "qgsdirectionallightsettings.h"
 
-class QwtCompass;
-
 /**
  * Widget for configuration of lights in 3D map scene
  * \since QGIS 3.6
@@ -64,7 +62,7 @@ class QgsLightsWidget : public QWidget, private Ui::QgsLightsWidget
   private:
     QList<QgsPointLightSettings> mPointLights;
     QList<QgsDirectionalLightSettings> mDirectionalLights;
-    QwtCompass *mDirectionCompass = nullptr;
+//    QwtCompass *mDirectionCompass = nullptr;
 };
 
 #endif // QGSLIGHTSWIDGET_H
