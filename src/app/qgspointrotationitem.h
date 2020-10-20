@@ -62,6 +62,8 @@ class APP_EXPORT QgsPointRotationItem: public QgsMapCanvasItem
     //! Symbol pixmap
     QPixmap mPixmap;
     int mRotation;
+    QPainterPath mArrowPath;
+
 };
 
 #endif // QGSPOINTROTATIONITEM_H
