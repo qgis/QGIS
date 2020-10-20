@@ -35,6 +35,7 @@
 #include "qgsmaplayer.h"
 #include "qgsstyle.h"
 #include "qgsvectorlayer.h"
+#include "qgspointcloudlayer.h"
 #include "qgsvectortilelayer.h"
 #include "qgsvectortilebasiclabelingwidget.h"
 #include "qgsvectortilebasicrendererwidget.h"
@@ -56,6 +57,8 @@
 #ifdef HAVE_3D
 #include "qgsvectorlayer3drendererwidget.h"
 #include "qgsmeshlayer3drendererwidget.h"
+
+#include "qgspointcloudlayer3drenderer.h" // TODO remove
 #endif
 
 
@@ -142,6 +145,18 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
 {
   if ( layer == mCurrentLayer )
     return;
+
+#ifdef HAVE_3D
+  QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( layer );
+  if ( pcLayer )
+  {
+    //TODO remove this ugly hack!
+    QgsPointCloudLayer3DRenderer *r = new QgsPointCloudLayer3DRenderer();
+    r->setLayer( pcLayer );
+    r->resolveReferences( *QgsProject::instance() );
+    pcLayer->setRenderer3D( r );
+  }
+#endif
 
   // when current layer is changed, apply the main panel stack to allow it to gracefully clean up
   mWidgetStack->acceptAllPanels();
@@ -661,7 +676,8 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
 
       case QgsMapLayerType::PointCloudLayer:
       {
-        // TODO
+        QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( mCurrentLayer );
+        //TODO
         mStackedWidget->setCurrentIndex( mNotSupportedPage );
         break;
       }

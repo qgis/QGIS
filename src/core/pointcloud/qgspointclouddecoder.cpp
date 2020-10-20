@@ -49,6 +49,31 @@ QVector<qint32> QgsPointCloudDecoder::decompressBinary( const QString &filename,
   return data;
 }
 
+QVector<char> QgsPointCloudDecoder::decompressBinaryClasses( const QString &filename, int pointRecordSize )
+{
+  Q_ASSERT( QFile::exists( filename ) );
+
+  QFile f( filename );
+  bool r = f.open( QIODevice::ReadOnly );
+  Q_ASSERT( r );
+
+  int count = f.size() / pointRecordSize;
+  QVector<char> classes(count);
+  for ( int i = 0; i < count; ++i )
+  {
+    QByteArray bytes = f.read( pointRecordSize );
+
+    // qint32 x = *(double*)(ptData);
+    // qint32 y = *(double*)(ptData+8);
+    // qint32 z = *(double*)(ptData+16);
+    char cls = bytes[30];
+    // vertices.push_back( Point3D( x, y, z ) );
+    classes.push_back( cls );
+    //++count;
+  }
+  return classes;
+}
+
 /* *************************************************************************************** */
 
 QByteArray decompressZtdStream( const QByteArray &dataCompressed )

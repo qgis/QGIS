@@ -252,6 +252,24 @@ bool QgsPointCloudIndex::load( const QString &fileName )
   return true;
 }
 
+QList<IndexedPointCloudNode> QgsPointCloudIndex::traverseTree( const QgsRectangle &extent, IndexedPointCloudNode n, int maxDepth )
+{
+  QList<IndexedPointCloudNode> nodes;
+
+  if ( !extent.intersects( nodeMapExtent( n ) ) )
+    return nodes;
+
+  nodes.append( n );
+
+  for ( auto nn : children( n ) )
+  {
+    if ( maxDepth > 0 )
+      nodes += traverseTree( extent, nn, maxDepth - 1 );
+  }
+
+  return nodes;
+}
+
 QList<IndexedPointCloudNode> QgsPointCloudIndex::children( const IndexedPointCloudNode &n )
 {
   Q_ASSERT( mHierarchy.contains( n ) );
@@ -293,6 +311,34 @@ QVector<qint32> QgsPointCloudIndex::nodePositionDataAsInt32( const IndexedPointC
     QString filename = QString( "%1/ept-data/%2.laz" ).arg( mDirectory ).arg( n.toString() );
     Q_ASSERT( QFile::exists( filename ) );
     return QgsPointCloudDecoder::decompressLaz( filename );
+  }
+  else
+  {
+    Q_ASSERT( false );  // unsupported
+  }
+}
+
+QVector<char> QgsPointCloudIndex::nodeClassesDataAsChar( const IndexedPointCloudNode &n )
+{
+  Q_ASSERT( mHierarchy.contains( n ) );
+  // int count = mHierarchy[n];
+
+  if ( mDataType == "binary" )
+  {
+    // TODO: ugly me... reading same file twice :vomit:
+    QString filename = QString( "%1/ept-data/%2.bin" ).arg( mDirectory ).arg( n.toString() );
+    Q_ASSERT( QFile::exists( filename ) );
+    return QgsPointCloudDecoder::decompressBinaryClasses( filename, mPointRecordSize );
+  }
+  else if ( mDataType == "zstandard" )
+  {
+    //TODO
+    Q_ASSERT( false );
+  }
+  else if ( mDataType == "laszip" )
+  {
+    //TODO
+    Q_ASSERT( false );
   }
   else
   {

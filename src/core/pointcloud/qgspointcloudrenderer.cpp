@@ -94,20 +94,7 @@ QgsPointCloudRenderer::QgsPointCloudRenderer( QgsPointCloudLayer *layer, QgsRend
 
 static QList<IndexedPointCloudNode> _traverseTree( QgsPointCloudIndex *pc, const QgsRectangle &extent, IndexedPointCloudNode n, int maxDepth )
 {
-  QList<IndexedPointCloudNode> nodes;
-
-  if ( !extent.intersects( pc->nodeMapExtent( n ) ) )
-    return nodes;
-
-  nodes.append( n );
-
-  for ( auto nn : pc->children( n ) )
-  {
-    if ( maxDepth > 0 )
-      nodes += _traverseTree( pc, extent, nn, maxDepth - 1 );
-  }
-
-  return nodes;
+  return pc->traverseTree( extent, n, maxDepth );
 }
 
 bool QgsPointCloudRenderer::render()
