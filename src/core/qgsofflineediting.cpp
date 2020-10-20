@@ -675,7 +675,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
       char **options = nullptr;
 
       options = CSLSetNameValue( options, "OVERWRITE", "YES" );
-      options = CSLSetNameValue( options, "IDENTIFIER", layer->id().toUtf8().constData() );
+      options = CSLSetNameValue( options, "IDENTIFIER", tr( "%1 (offline)" ).arg( layer->id() ).toUtf8().constData() );
       options = CSLSetNameValue( options, "DESCRIPTION", layer->dataComment().toUtf8().constData() );
 
       //the FID-name should not exist in the original data
