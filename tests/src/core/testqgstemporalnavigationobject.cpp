@@ -203,7 +203,7 @@ void TestQgsTemporalNavigationObject::frameSettings()
 
   navigationObject->setCurrentFrameNumber( 1 );
   QCOMPARE( navigationObject->currentFrameNumber(), 1 );
-  QCOMPARE( temporalRangeSignal.count(), 2 );
+  QCOMPARE( temporalRangeSignal.count(), 3 );
 
   navigationObject->setFramesPerSecond( 1 );
   QCOMPARE( navigationObject->framesPerSecond(), 1.0 );
