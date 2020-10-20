@@ -856,6 +856,7 @@
         <file>themes/default/mIconModelInput.svg</file>
         <file>themes/default/mIndicatorTemporal.svg</file>
         <file>themes/default/mIndicatorTimeFromProject.svg</file>
+        <file>themes/default/mIndicatorOffline.svg</file>
         <file>themes/default/temporal_navigation/back.svg</file>
         <file>themes/default/temporal_navigation/forward.svg</file>
         <file>themes/default/temporal_navigation/next.svg</file>

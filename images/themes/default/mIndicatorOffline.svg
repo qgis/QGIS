@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   height="24"
+   width="24"
+   version="1.1"
+   id="svg38"
+   sodipodi:docname="mIndicatorOffline.svg"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)">
+  <metadata
+     id="metadata44">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs42">
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect888"
+       is_visible="true"
+       lpeversion="1" />
+  </defs>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="3440"
+     inkscape:window-height="1403"
+     id="namedview40"
+     showgrid="true"
+     inkscape:zoom="8.0000004"
+     inkscape:cx="30.138998"
+     inkscape:cy="9.1089956"
+     inkscape:window-x="1920"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg38"
+     inkscape:document-rotation="0">
+    <inkscape:grid
+       type="xygrid"
+       id="grid892" />
+  </sodipodi:namedview>
+  <g
+     id="g862">
+    <path
+       style="fill:#808080;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1"
+       d="M 11.877958,18.878006 3.6275974,13.768572 11.851737,7.2751549 20.420605,13.917718 Z"
+       id="path890" />
+    <g
+       transform="matrix(-1.07085,0,0,-1.07027,22.8,15.3)"
+       id="g12"
+       style="fill:none;fill-rule:evenodd;stroke-width:0.934">
+      <path
+         d="M 10.142,13.944 0,7.892 V 0.128 L 10.142,6.18 Z"
+         fill="#808080"
+         height="100%"
+         width="100%"
+         id="path2" />
+      <path
+         d="m 0.25,0.569 v 7.18 l 9.642,5.754 v -7.18 z"
+         stroke="#000000"
+         stroke-width="0.467"
+         id="path4" />
+      <g
+         transform="matrix(-1,0,0,1,30.425,0)"
+         id="g10">
+        <path
+           d="M 20.283,13.944 10.142,7.892 V 0.128 L 20.283,6.18 Z"
+           fill="#808080"
+           height="100%"
+           width="100%"
+           id="path6" />
+        <path
+           d="m 10.392,0.569 v 7.18 l 9.641,5.754 v -7.18 z"
+           stroke="#000000"
+           stroke-width="0.467"
+           id="path8" />
+      </g>
+    </g>
+    <g
+       id="g34"
+       style="fill:none;fill-rule:evenodd;stroke-width:0.934">
+      <path
+         d="m 11.942,13.8 v 9.093 L 1.234,15.997 V 7.152 Z"
+         fill="#A0A0A0"
+         id="path24" />
+      <path
+         d="m 11.942,13.793 v 9.1 L 22.651,15.997 V 7.152 Z"
+         fill="#C0C0C0"
+         id="path26" />
+      <g
+         stroke="#000000"
+         stroke-width="0.467"
+         transform="matrix(1.07085,0,0,1.07027,1.234,7.006)"
+         id="g32">
+        <path
+           d="m 10,6.75 v 7.77"
+           stroke-linecap="square"
+           id="path28" />
+        <path
+           d="M 0.015,0.232 V 8.403 L 10.037,14.669 20.078,8.403 V 0.232 L 10.047,6.339 Z"
+           id="path30" />
+      </g>
+    </g>
+  </g>
+  <style
+     type="text/css"
+     id="style2">
+	.st0{fill:#80CC28;}
+</style>
+  <g
+     id="g8-3"
+     transform="matrix(1.2279158,0,0,1.2279158,-344.77003,-305.42248)"
+     style="fill:none;stroke:#ffffff;stroke-width:26.0604;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+</svg>
