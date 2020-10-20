@@ -190,10 +190,22 @@ class TestQgsProject(unittest.TestCase):
         prj = QgsProject.instance()
         prj.read(os.path.join(TEST_DATA_DIR, 'labeling/test-labeling.qgs'))
 
-        # valid key, valid int value
-        self.assertEqual(prj.readNumEntry("SpatialRefSys", "/ProjectionsEnabled", -1)[0], 0)
+        # add a test entry list
+        prj.writeEntry("TestScope", "/TestListProperty", ["Entry1", "Entry2"])
+
+        # valid key, valid value
+        self.assertEqual(prj.readNumEntry("SpatialRefSys", "/ProjectionsEnabled", -1), (0, True))
+        self.assertEqual(prj.readEntry("SpatialRefSys", "/ProjectCrs"), ("EPSG:32613", True))
+        self.assertEqual(prj.readBoolEntry("PAL", "/ShowingCandidates"), (False, True))
+        self.assertEqual(prj.readNumEntry("PAL", "/CandidatesPolygon"), (8., True))
+        self.assertEqual(prj.readListEntry("TestScope", "/TestListProperty"), (["Entry1", "Entry2"], True))
+
         # invalid key
-        self.assertEqual(prj.readNumEntry("SpatialRefSys", "/InvalidKey", -1)[0], -1)
+        self.assertEqual(prj.readNumEntry("SpatialRefSys", "/InvalidKey", -1), (-1, False))
+        self.assertEqual(prj.readEntry("SpatialRefSys", "/InvalidKey", "wrong"), ("wrong", False))
+        self.assertEqual(prj.readBoolEntry("PAL", "/InvalidKey", True), (True, False))
+        self.assertEqual(prj.readDoubleEntry("PAL", "/InvalidKey", 42.), (42., False))
+        self.assertEqual(prj.readListEntry("TestScope", "/InvalidKey", ["Default1", "Default2"]), (["Default1", "Default2"], False))
 
     def testEmbeddedGroup(self):
         testdata_path = unitTestDataPath('embedded_groups') + '/'
