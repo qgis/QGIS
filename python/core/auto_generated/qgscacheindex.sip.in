@@ -29,7 +29,7 @@ Constructor for QgsAbstractCacheIndex.
 
     virtual void flushFeature( QgsFeatureId fid ) = 0;
 %Docstring
-Is called, whenever a feature is removed from the cache. You should update your indexes, so
+Is called whenever a feature is removed from the cache. You should update your indexes so
 they become invalid in case this feature was required to successfully answer a request.
 %End
 
@@ -51,7 +51,8 @@ Does nothing by default
 
     virtual bool getCacheIterator( QgsFeatureIterator &featureIterator, const QgsFeatureRequest &featureRequest ) = 0;
 %Docstring
-Is called, when a feature request is issued on a cached layer.
+Is called when a feature request is issued on a cached layer.
+
 If this cache index is able to completely answer the feature request, it will return ``True``
 and set the iterator to a valid iterator over the cached features. If it is not able
 it will return ``False``.

@@ -286,7 +286,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     // TODO Q_DECL_DEPRECATED
 
     /**
-     * Is called, when the value of the widget needs to be changed. Update the widget representation
+     * Is called when the value of the widget needs to be changed. Updates the widget representation
      * to reflect the new value.
      *
      * \param value The new value of the attribute
@@ -295,8 +295,8 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     virtual void setValue( const QVariant &value ) SIP_DEPRECATED;
 
     /**
-     * Is called, when the value of the widget or additional field values
-     * needs to be changed. Update the widget representation
+     * Is called when the value of the widget or additional field values
+     * needs to be changed. Updates the widget representation
      * to reflect the new values.
      * \since QGIS 3.10
      */
@@ -364,7 +364,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
   private:
 
     /**
-    * Is called, when the value of the widget needs to be changed. Update the widget representation
+    * Is called when the value of the widget needs to be changed. Updates the widget representation
     * to reflect the new value.
     *
     * \param value The new value of the attribute

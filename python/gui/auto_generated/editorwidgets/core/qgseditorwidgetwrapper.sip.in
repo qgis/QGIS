@@ -291,7 +291,7 @@ Is forwarded to the slot :py:func:`~QgsEditorWidgetWrapper.setValues`
 
     virtual void setValue( const QVariant &value ) /Deprecated/;
 %Docstring
-Is called, when the value of the widget needs to be changed. Update the widget representation
+Is called when the value of the widget needs to be changed. Updates the widget representation
 to reflect the new value.
 
 :param value: The new value of the attribute
@@ -302,8 +302,8 @@ to reflect the new value.
 
     void setValues( const QVariant &value, const QVariantList &additionalValues );
 %Docstring
-Is called, when the value of the widget or additional field values
-needs to be changed. Update the widget representation
+Is called when the value of the widget or additional field values
+needs to be changed. Updates the widget representation
 to reflect the new values.
 
 .. versionadded:: 3.10
