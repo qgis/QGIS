@@ -244,7 +244,7 @@ int main( int argc, char *argv[] )
 #endif
 
     // Poor man's synchronous HTTP handler
-    // The reason why this cannnot be implemented using signals is that
+    // The reason why this cannot be implemented using signals is that
     // WMS provider (and probably others) run its own event loop and this
     // crashes in case the project contains a WMS layer (aka: cascading)
     auto httpHandler = [ & ]( QTcpSocket * clientConnection )
