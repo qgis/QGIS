@@ -312,7 +312,7 @@
          <item row="0" column="0" colspan="2">
           <widget class="QLabel" name="label_11">
            <property name="text">
-            <string>Light direction</string>
+            <string>Light Direction</string>
            </property>
           </widget>
          </item>
@@ -362,6 +362,28 @@
             <widget class="QWidget" name="directionCmpassWidget" native="true"/>
            </item>
            <item>
+            <widget class="QDial" name="dialAzimuth">
+             <property name="minimum">
+              <number>0</number>
+             </property>
+             <property name="value">
+              <number>0</number>
+             </property>
+             <property name="sliderPosition">
+              <number>0</number>
+             </property>
+             <property name="wrapping">
+              <bool>true</bool>
+             </property>
+             <property name="notchTarget">
+              <double>10.000000000000000</double>
+             </property>
+             <property name="notchesVisible">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QLabel" name="altitudeSpinBox">
              <property name="text">
               <string>Altitude</string>
@@ -396,7 +418,7 @@
               <enum>Qt::Vertical</enum>
              </property>
              <property name="tickPosition">
-              <enum>QSlider::TicksBelow</enum>
+              <enum>QSlider::NoTicks</enum>
              </property>
              <property name="tickInterval">
               <number>2</number>
