@@ -51,16 +51,13 @@ QgsLightsWidget::QgsLightsWidget( QWidget *parent )
   connect( btnRemoveDirectionalLight, &QToolButton::clicked, this, &QgsLightsWidget::onRemoveDirectionalLight );
 
   connect( cboDirectionalLights, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsLightsWidget::onCurrentDirectionalLightChanged );
-  connect( spinDirectionX, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::onSpinBoxDirectionChanged );
-  connect( spinDirectionY, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::onSpinBoxDirectionChanged );
-  connect( spinDirectionZ, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::onSpinBoxDirectionChanged );
   connect( spinDirectionalIntensity, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::updateCurrentDirectionalLightParameters );
   connect( btnDirectionalColor, &QgsColorButton::colorChanged, this, &QgsLightsWidget::updateCurrentDirectionalLightParameters );
 
   connect( dialAzimuth, &QSlider::valueChanged, [this]( int value ) {spinBoxAzimuth->setValue( ( value + 180 ) % 360 );} );
-  connect( spinBoxAzimuth, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::onSpinBoxAzimuthChange );
-  connect( spinBoxAltitude, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::onSpinBoxAltitudeChange );
   connect( sliderAltitude, &QSlider::valueChanged, spinBoxAltitude, &QgsDoubleSpinBox::setValue );
+  connect( spinBoxAzimuth, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::onDirectionChange );
+  connect( spinBoxAltitude, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::onDirectionChange );
 
   tabWidget->setCurrentIndex( QgsSettings().value( QStringLiteral( "UI/last3DLightsTab" ), 1 ).toInt() );
 }
@@ -118,12 +115,12 @@ void QgsLightsWidget::onCurrentDirectionalLightChanged( int index )
     return;
 
   QgsDirectionalLightSettings light = mDirectionalLights.at( index );
-  whileBlocking( spinDirectionX )->setValue( light.direction().x() );
-  whileBlocking( spinDirectionY )->setValue( light.direction().y() );
-  whileBlocking( spinDirectionZ )->setValue( light.direction().z() );
+  mDirectionX = light.direction().x();
+  mDirectionY = light.direction().y();
+  mDirectionZ = light.direction().z();
   whileBlocking( btnDirectionalColor )->setColor( light.color() );
   whileBlocking( spinDirectionalIntensity )->setValue( light.intensity() );
-  onSpinBoxDirectionChanged();
+  setAzimuthAltitude();
 }
 
 
@@ -145,12 +142,16 @@ void QgsLightsWidget::updateCurrentLightParameters()
 
 void QgsLightsWidget::updateCurrentDirectionalLightParameters()
 {
+  labelX->setText( QString::number( mDirectionX, 'f', 2 ) );
+  labelY->setText( QString::number( mDirectionY, 'f', 2 ) );
+  labelZ->setText( QString::number( mDirectionZ, 'f', 2 ) );
+
   int index = cboDirectionalLights->currentIndex();
   if ( index < 0 || index >= cboDirectionalLights->count() )
     return;
 
   QgsDirectionalLightSettings light;
-  light.setDirection( QgsVector3D( spinDirectionX->value(), spinDirectionY->value(), spinDirectionZ->value() ) );
+  light.setDirection( QgsVector3D( mDirectionX, mDirectionY, mDirectionZ ) );
   light.setColor( btnDirectionalColor->color() );
   light.setIntensity( spinDirectionalIntensity->value() );
   mDirectionalLights[index] = light;
@@ -218,33 +219,30 @@ void QgsLightsWidget::onRemoveDirectionalLight()
   emit directionalLightsCountChanged( cboDirectionalLights->count() );
 }
 
-void QgsLightsWidget::onSpinBoxDirectionChanged()
+void QgsLightsWidget::setAzimuthAltitude()
 {
-  double x = spinDirectionX->value();
-  double y = spinDirectionY->value();
-  double z = spinDirectionZ->value();
   double azimuthAngle;
   double altitudeAngle;
 
-  double horizontalVectorMagnitude = sqrt( x * x + z * z );
+  double horizontalVectorMagnitude = sqrt( mDirectionX * mDirectionX + mDirectionZ * mDirectionZ );
+
   if ( horizontalVectorMagnitude == 0 )
     azimuthAngle = 0;
   else
   {
-    azimuthAngle = ( asin( -x / horizontalVectorMagnitude ) ) / M_PI * 180;
-    if ( z < 0 )
+    azimuthAngle = ( asin( -mDirectionX / horizontalVectorMagnitude ) ) / M_PI * 180;
+    if ( mDirectionZ < 0 )
       azimuthAngle = 180 - azimuthAngle;
     azimuthAngle = std::fmod( azimuthAngle + 360.0, 360.0 );
   }
-
 
   dialAzimuth->setValue( int( azimuthAngle + 180 ) % 360 );
   spinBoxAzimuth->setValue( azimuthAngle );
 
   if ( horizontalVectorMagnitude == 0 )
-    altitudeAngle = y >= 0 ? 90 : -90;
+    altitudeAngle = mDirectionY >= 0 ? 90 : -90;
   else
-    altitudeAngle = -atan( y / horizontalVectorMagnitude ) / M_PI * 180;
+    altitudeAngle = -atan( mDirectionY / horizontalVectorMagnitude ) / M_PI * 180;
 
   spinBoxAltitude->setValue( altitudeAngle );
   sliderAltitude->setValue( altitudeAngle );
@@ -252,54 +250,18 @@ void QgsLightsWidget::onSpinBoxDirectionChanged()
   updateCurrentDirectionalLightParameters();
 }
 
-void QgsLightsWidget::onSpinBoxAzimuthChange()
+void QgsLightsWidget::onDirectionChange()
 {
-  double x = spinDirectionX->value();
-  double z = spinDirectionZ->value();
-  double horizontalVectorMagnitude = sqrt( x * x + z * z );
-
-  double azimuthValue = spinBoxAzimuth->value();
-  x = -horizontalVectorMagnitude * sin( azimuthValue / 180 * M_PI );
-  z = horizontalVectorMagnitude * cos( azimuthValue / 180 * M_PI );
-
-  whileBlocking( dialAzimuth )->setValue( int( azimuthValue + 180 ) % 360 );
-  whileBlocking( spinDirectionX )->setValue( x );
-  whileBlocking( spinDirectionZ )->setValue( z );
-
-  updateCurrentDirectionalLightParameters();
-}
-
-void QgsLightsWidget::onSpinBoxAltitudeChange()
-{
-  double x = spinDirectionX->value();
-  double y = spinDirectionY->value();
-  double z = spinDirectionZ->value();
-  double horizontalVectorMagnitude = sqrt( x * x + z * z );
-  double vectorMagnitude = sqrt( x * x + y * y + z * z );
-
   double altitudeValue = spinBoxAltitude->value();
   double azimuthValue = spinBoxAzimuth->value();
-  if ( fabs( altitudeValue ) == 90 )
-  {
-    x = 0;
-    z = 0;
-    y = -vectorMagnitude * fabs( altitudeValue ) / altitudeValue;
-  }
-  else
-  {
-    if ( horizontalVectorMagnitude == 0 )
-      horizontalVectorMagnitude = vectorMagnitude * cos( altitudeValue / 180 * M_PI );;
 
-    x = -horizontalVectorMagnitude * sin( azimuthValue / 180 * M_PI );
-    z = horizontalVectorMagnitude * cos( azimuthValue / 180 * M_PI );
-    y = -tan( altitudeValue / 180 * M_PI ) * horizontalVectorMagnitude;
-  }
+  double horizontalVectorMagnitude = cos( altitudeValue / 180 * M_PI );
+  mDirectionX = -horizontalVectorMagnitude * sin( azimuthValue / 180 * M_PI );
+  mDirectionZ = horizontalVectorMagnitude * cos( azimuthValue / 180 * M_PI );
+  mDirectionY = -sin( altitudeValue / 180 * M_PI );
 
-  whileBlocking( spinDirectionX )->setValue( x );
-  whileBlocking( spinDirectionZ )->setValue( z );
-  whileBlocking( spinDirectionY )->setValue( y );
+
   whileBlocking( sliderAltitude )->setValue( altitudeValue );
-
   updateCurrentDirectionalLightParameters();
 }
 
