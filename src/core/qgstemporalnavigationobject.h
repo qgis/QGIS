@@ -222,6 +222,12 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
      */
     void temporalExtentsChanged( const QgsDateTimeRange &extent );
 
+    /**
+     * Emitted whenever the frameDuration \a interval of the controller changes.
+     */
+    void temporalFrameDurationChanged( const QgsInterval &interval );
+
+
   public slots:
 
     /**
