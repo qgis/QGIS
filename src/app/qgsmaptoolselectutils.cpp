@@ -30,6 +30,7 @@ email                : jpalmer at linz dot govt dot nz
 #include "qgis.h"
 #include "qgsproject.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsmessagelog.h"
 
 #include <QMouseEvent>
 #include <QApplication>
@@ -277,10 +278,17 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
       // if we get an error from the contains check then it indicates that the geometry is invalid and GEOS choked on it.
       // in this case we consider the bounding box intersection check which has already been performed by the iterator as sufficient and
       // allow the feature to be selected
-      if ( !selectionGeometryEngine->contains( g.constGet(), &errorMessage ) &&
-           ( errorMessage.isEmpty() || /* message will be non empty if geometry g is invalid */
-             !selectionGeometryEngine->contains( g.makeValid().constGet() ) ) /* second chance for invalid geometries, repair and re-test */
-         )
+      const bool notContained = !selectionGeometryEngine->contains( g.constGet(), &errorMessage ) &&
+                                ( errorMessage.isEmpty() || /* message will be non empty if geometry g is invalid */
+                                  !selectionGeometryEngine->contains( g.makeValid().constGet(), &errorMessage ) ); /* second chance for invalid geometries, repair and re-test */
+
+      if ( !errorMessage.isEmpty() )
+      {
+        // contains relation test still failed, even after trying to make valid!
+        QgsMessageLog::logMessage( QObject::tr( "Error determining selection: %1" ).arg( errorMessage ), QString(), Qgis::Warning );
+      }
+
+      if ( notContained )
         continue;
     }
     else
@@ -288,10 +296,17 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
       // if we get an error from the intersects check then it indicates that the geometry is invalid and GEOS choked on it.
       // in this case we consider the bounding box intersection check which has already been performed by the iterator as sufficient and
       // allow the feature to be selected
-      if ( !selectionGeometryEngine->intersects( g.constGet(), &errorMessage ) &&
-           ( errorMessage.isEmpty() || /* message will be non empty if geometry g is invalid */
-             !selectionGeometryEngine->intersects( g.makeValid().constGet() ) ) /* second chance for invalid geometries, repair and re-test */
-         )
+      const bool notIntersects = !selectionGeometryEngine->intersects( g.constGet(), &errorMessage ) &&
+                                 ( errorMessage.isEmpty() || /* message will be non empty if geometry g is invalid */
+                                   !selectionGeometryEngine->intersects( g.makeValid().constGet(), &errorMessage ) ); /* second chance for invalid geometries, repair and re-test */
+
+      if ( !errorMessage.isEmpty() )
+      {
+        // intersects relation test still failed, even after trying to make valid!
+        QgsMessageLog::logMessage( QObject::tr( "Error determining selection: %1" ).arg( errorMessage ), QString(), Qgis::Warning );
+      }
+
+      if ( notIntersects )
         continue;
     }
     if ( singleSelect )
