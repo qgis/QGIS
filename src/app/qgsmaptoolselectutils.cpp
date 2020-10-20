@@ -238,6 +238,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
 
   std::unique_ptr< QgsGeometryEngine > selectionGeometryEngine( QgsGeometry::createGeometryEngine( selectGeomTrans.constGet() ) );
   selectionGeometryEngine->setLogErrors( false );
+  selectionGeometryEngine->prepareGeometry();
 
   QgsRenderContext context = QgsRenderContext::fromMapSettings( canvas->mapSettings() );
   context.expressionContext() << QgsExpressionContextUtils::layerScope( vlayer );
