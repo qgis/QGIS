@@ -116,18 +116,11 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
                        mOptStackedWidget->indexOf( mOptsPage_Style ) );
   }
 
-  QString title = tr( "Layer Properties — %1" ).arg( lyr->name() );
-
-  if ( !mMeshLayer->styleManager()->isDefault( mMeshLayer->styleManager()->currentStyle() ) )
-    title += QStringLiteral( " (%1)" ).arg( mMeshLayer->styleManager()->currentStyle() );
-  restoreOptionsBaseUi( title );
-
   //Add help page references
   mOptsPage_Information->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#information-properties" ) );
   mOptsPage_Source->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#source-properties" ) );
   mOptsPage_Style->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#symbology-properties" ) );
   mOptsPage_Rendering->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#rendering-properties" ) );
-
 
   mBtnStyle = new QPushButton( tr( "Style" ) );
   QMenu *menuStyle = new QMenu( this );
@@ -147,6 +140,12 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   mActionSaveMetadataAs = menuMetadata->addAction( tr( "Save Metadata…" ), this, &QgsMeshLayerProperties::saveMetadataAs );
   mBtnMetadata->setMenu( menuMetadata );
   buttonBox->addButton( mBtnMetadata, QDialogButtonBox::ResetRole );
+
+  QString title = tr( "Layer Properties — %1" ).arg( lyr->name() );
+
+  if ( !mMeshLayer->styleManager()->isDefault( mMeshLayer->styleManager()->currentStyle() ) )
+    title += QStringLiteral( " (%1)" ).arg( mMeshLayer->styleManager()->currentStyle() );
+  restoreOptionsBaseUi( title );
 }
 
 void QgsMeshLayerProperties::addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory *factory )
