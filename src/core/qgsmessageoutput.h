@@ -66,11 +66,12 @@ class CORE_EXPORT QgsMessageOutput
      */
     static void showMessage( const QString &title, const QString &message, MessageType msgType );
 
+    // TODO: implementation where Python class could be passed
+
     /**
      * sets function that will be used to create message output
      * \note not available in Python bindings
      */
-    // TODO: implementation where Python class could be passed
     static void setMessageOutputCreator( MESSAGE_OUTPUT_CREATOR f ) SIP_SKIP;
 
     /**

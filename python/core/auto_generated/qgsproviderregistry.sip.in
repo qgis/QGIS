@@ -33,6 +33,7 @@ ogr and postgres.
 %End
   public:
 
+
     enum WidgetMode
     {
 

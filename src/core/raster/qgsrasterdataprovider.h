@@ -450,8 +450,9 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     virtual bool setEditable( bool enabled ) { Q_UNUSED( enabled ) return false; }
 
-    //! Writes into the provider datasource
     // TODO: add data type (may be different from band type)
+
+    //! Writes into the provider datasource
     virtual bool write( void *data, int band, int width, int height, int xOffset, int yOffset )
     {
       Q_UNUSED( data )

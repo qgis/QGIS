@@ -76,8 +76,9 @@ class CORE_EXPORT QgsRasterBandStats
     //! \brief The gdal band number (starts at 1)
     int bandNumber;
 
-    //! \brief The number of not no data cells in the band.
     // TODO: check if no data are excluded in stats calculation
+
+    //! \brief The number of not no data cells in the band.
     qgssize elementCount;
 
     /**
