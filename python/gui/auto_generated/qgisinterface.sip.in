@@ -1526,7 +1526,7 @@ Emitted when a project file is successfully read.
 .. note::
 
    This is useful for plugins that store properties with project files.
-   A plugin can connect to this signal. When it is emitted, the plugin
+   A plugin can connect to this signal. When it is emitted the plugin
    knows to then check the project properties for any relevant state.
 %End
 

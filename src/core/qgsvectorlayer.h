@@ -2392,7 +2392,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *   to do in order to be able to save the changes.
      * - to set the property back to TRUE, once the user has fixed his data.
      *
-     * When calling \see commitChanges(), this flag is checked just after the
+     * When calling \see commitChanges() this flag is checked just after the
      * \see beforeCommitChanges() signal is emitted, so it's possible to adjust it from there.
      *
      * \note Not available in Python bindings
@@ -2411,7 +2411,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *   to do in order to be able to save the changes.
      * - to set the property back to TRUE, once the user has fixed his data.
      *
-     * When calling \see commitChanges(), this flag is checked just after the
+     * When calling \see commitChanges() this flag is checked just after the
      * \see beforeCommitChanges() signal is emitted, so it's possible to adjust it from there.
      *
      * \note Not available in Python bindings

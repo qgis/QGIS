@@ -211,7 +211,7 @@ This method should initialize the editor widget with runtime data. Fill your com
 
     virtual void setFeature( const QgsFeature &feature ) = 0;
 %Docstring
-Is called, when the value of the widget needs to be changed. Update the widget representation
+Is called when the value of the widget needs to be changed. Updates the widget representation
 to reflect the new value.
 
 :param feature: The new feature
