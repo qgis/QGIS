@@ -881,10 +881,12 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
 
   if ( !layItem )
   {
-    layItem = new QTreeWidgetItem( QStringList() << QString::number( lstResults->topLevelItemCount() ) << layer->name() );
+    layItem = new QTreeWidgetItem( QStringList() << layer->name() << QString::number( lstResults->topLevelItemCount() ) );
     layItem->setData( 0, Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( layer ) ) );
-
     lstResults->addTopLevelItem( layItem );
+    QFont boldFont;
+    boldFont.setBold( true );
+    layItem->setFont( 0, boldFont );
 
     QComboBox *formatCombo = new QComboBox();
 
@@ -1122,10 +1124,13 @@ void QgsIdentifyResultsDialog::addFeature( QgsMeshLayer *layer,
 
   if ( !layItem )
   {
-    layItem = new QTreeWidgetItem( QStringList() << QString::number( lstResults->topLevelItemCount() ) << layer->name() );
+    layItem = new QTreeWidgetItem( QStringList() << layer->name() << QString::number( lstResults->topLevelItemCount() ) );
     layItem->setData( 0, Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( layer ) ) );
-
     lstResults->addTopLevelItem( layItem );
+    QFont boldFont;
+    boldFont.setBold( true );
+    layItem->setFont( 0, boldFont );
+
     connect( layer, &QObject::destroyed, this, &QgsIdentifyResultsDialog::layerDestroyed );
     connect( layer, &QgsMapLayer::crsChanged, this, &QgsIdentifyResultsDialog::layerDestroyed );
   }
