@@ -783,22 +783,7 @@ For example install Homebrew
 and these development/build tools
 
 ```bash
-    brew install git
-    brew install cmake
-    brew install ninja
-    brew install pkg-config
-    brew install wget
-    brew install bash-completion
-    brew install curl
-    brew install gnu-sed
-    brew install coreutils
-    brew install ccache
-    brew install libtool
-    brew install astyle
-    brew install help2man
-    brew install autoconf
-    brew install automake
-    brew install pandoc
+brew install git cmake ninja pkg-config wget bash-completion curl gnu-sed coreutils ccache libtool astyle help2man autoconf automake pandoc
 ```
 
 if you have these tools installed from MacPorts or Conda, it is the same, but we will need to be able to
