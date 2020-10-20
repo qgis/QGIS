@@ -7611,6 +7611,7 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
     }
   }
 
+
   CPLPopErrorHandler();
 
   // Try to load as mesh layer after raster & vector

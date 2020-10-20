@@ -35,8 +35,14 @@
 
 class Qgs3DMapSettings;
 class QgsPointCloudLayer;
+class IndexedPointCloudNode;
+class QgsPointCloudIndex;
 
 #include <QFutureWatcher>
+#include <Qt3DRender/QGeometry>
+#include <Qt3DRender/QBuffer>
+#include <QVector3D>
+
 
 class QgsPointCloud3DSymbolHandler // : public QgsFeature3DHandler
 {
@@ -44,11 +50,18 @@ class QgsPointCloud3DSymbolHandler // : public QgsFeature3DHandler
     QgsPointCloud3DSymbolHandler( );
 
     bool prepare( const Qgs3DRenderContext &context );// override;
-    void processFeature( const QVector3D &point, const Qgs3DRenderContext &context );// override;
+    void processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const Qgs3DRenderContext &context ); // override;
     void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context );// override;
 
     float zMinimum() const { return mZMin; }
     float zMaximum() const { return mZMax; }
+
+    //! temporary data we will pass to the tessellator
+    struct PointData
+    {
+      QVector<QVector3D> positions;  // contains triplets of float x,y,z for each point
+      QVector<char> classes;
+    };
 
   protected:
     float mZMin = std::numeric_limits<float>::max();
@@ -60,11 +73,7 @@ class QgsPointCloud3DSymbolHandler // : public QgsFeature3DHandler
     //static void addMeshEntities( const Qgs3DMapSettings &map, const QVector<QVector3D> &positions, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent, bool are_selected );
     //static Qt3DCore::QTransform *transform( QVector3D position, const QgsPoint3DSymbol *symbol );
 
-    //! temporary data we will pass to the tessellator
-    struct PointData
-    {
-      QVector<QVector3D> positions;  // contains triplets of float x,y,z for each point
-    };
+
 
     void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PointData &out, bool selected );
 
@@ -76,6 +85,20 @@ class QgsPointCloud3DSymbolHandler // : public QgsFeature3DHandler
     // outputs
     PointData outNormal;  //!< Features that are not selected
     // PointData outSelected;  //!< Features that are selected
+};
+
+class QgsPointCloud3DGeometry: public Qt3DRender::QGeometry
+{
+  public:
+    QgsPointCloud3DGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data );
+
+  private:
+    void makeVertexBuffer( const QgsPointCloud3DSymbolHandler::PointData &data );
+
+    Qt3DRender::QAttribute *mPositionAttribute = nullptr;
+    Qt3DRender::QAttribute *mClassAttribute = nullptr;
+    Qt3DRender::QBuffer *mVertexBuffer = nullptr;
+    int mVertexCount = 0;
 };
 
 /**

@@ -109,9 +109,30 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     bool load( const QString &fileName );
     IndexedPointCloudNode root() { return IndexedPointCloudNode( 0, 0, 0, 0 ); }
 
+
+    QList<IndexedPointCloudNode> traverseTree( const QgsRectangle &extent, IndexedPointCloudNode n, int maxDepth = 3 );
     QList<IndexedPointCloudNode> children( const IndexedPointCloudNode &n );
 
     QVector<qint32> nodePositionDataAsInt32( const IndexedPointCloudNode &n );
+
+    /*
+    Standard LIDAR classes:
+      0 Created, never classified
+      1 Unclassified
+      2 Ground
+      3 Low Vegetation
+      4 Medium Vegetation
+      5 High Vegetation
+      6 Building
+      7 Low Point (noise)
+      8 Model Key-point (mass point)
+      9 Water
+      10 Reserved for ASPRS Definition
+      11 Reserved for ASPRS Definition
+      12 Overlap Points
+      13-31 Reserved for ASPRS Definition
+    */
+    QVector<char> nodeClassesDataAsChar( const IndexedPointCloudNode &n );
 
     QgsRectangle extent() const { return mExtent; }
     double zMin() const { return mZMin; }
