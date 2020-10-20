@@ -252,7 +252,7 @@ void Qgs3DMapCanvasDockWidget::resetView()
 
 void Qgs3DMapCanvasDockWidget::configure()
 {
-  QDialog dlg;
+  QDialog dlg( this );
   dlg.setWindowTitle( tr( "3D Configuration" ) );
   dlg.setObjectName( QStringLiteral( "3DConfigurationDialog" ) );
   dlg.setMinimumSize( 600, 460 );
