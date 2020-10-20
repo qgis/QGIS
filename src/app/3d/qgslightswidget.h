@@ -52,9 +52,8 @@ class QgsLightsWidget : public QWidget, private Ui::QgsLightsWidget
     void updateCurrentDirectionalLightParameters();
     void onAddDirectionalLight();
     void onRemoveDirectionalLight();
-    void onSpinBoxDirectionChanged();
-    void onSpinBoxAzimuthChange();
-    void onSpinBoxAltitudeChange();
+    void setAzimuthAltitude();
+    void onDirectionChange();
   private:
     void updateLightsList();
     void updateDirectionalLightsList();
@@ -62,7 +61,9 @@ class QgsLightsWidget : public QWidget, private Ui::QgsLightsWidget
   private:
     QList<QgsPointLightSettings> mPointLights;
     QList<QgsDirectionalLightSettings> mDirectionalLights;
-//    QwtCompass *mDirectionCompass = nullptr;
+    double mDirectionX = 0;
+    double mDirectionY = -1;
+    double mDirectionZ = 0;
 };
 
 #endif // QGSLIGHTSWIDGET_H
