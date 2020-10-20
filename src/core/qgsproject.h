@@ -337,118 +337,158 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     bool write();
 
     /**
-     * Write a boolean entry to the project file.
+     * Write a boolean \a value to the project file.
      *
      * Keys are '/'-delimited entries, implying
      * a hierarchy of keys and corresponding values
      *
      * \note The key string must be valid xml tag names in order to be saved to the file.
      * \note available in Python bindings as writeEntryBool
+     *
+     * \see readBoolEntry()
      */
     bool writeEntry( const QString &scope, const QString &key, bool value ) SIP_PYNAME( writeEntryBool );
 
     /**
-     * Write a double entry to the project file.
+     * Write a double \a value to the project file.
      *
      * Keys are '/'-delimited entries, implying
      * a hierarchy of keys and corresponding values
      *
      * \note The key string must be valid xml tag names in order to be saved to the file.
      * \note available in Python bindings as writeEntryDouble
+     *
+     * \see readDoubleEntry()
      */
     bool writeEntry( const QString &scope, const QString &key, double value ) SIP_PYNAME( writeEntryDouble );
 
     /**
-     * Write an integer entry to the project file.
+     * Write an integer \a value to the project file.
      *
      * Keys are '/'-delimited entries, implying
      * a hierarchy of keys and corresponding values
      *
      * \note The key string must be valid xml tag names in order to be saved to the file.
+     *
+     * \see readNumEntry()
      */
     bool writeEntry( const QString &scope, const QString &key, int value );
 
     /**
-     * Write a string entry to the project file.
+     * Write a string \a value to the project file.
      *
      * Keys are '/'-delimited entries, implying
      * a hierarchy of keys and corresponding values
      *
      * \note The key string must be valid xml tag names in order to be saved to the file.
+     *
+     * \see readEntry()
      */
     bool writeEntry( const QString &scope, const QString &key, const QString &value );
 
     /**
-     * Write a string list entry to the project file.
+     * Write a string list \a value to the project file.
      *
      * Keys are '/'-delimited entries, implying
      * a hierarchy of keys and corresponding values
      *
      * \note The key string must be valid xml tag names in order to be saved to the file.
+     *
+     * \see readListEntry()
      */
     bool writeEntry( const QString &scope, const QString &key, const QStringList &value );
 
     /**
-     * Key value accessors
+     * Reads a string list from the specified \a scope and \a key.
      *
-     * keys would be the familiar QgsSettings-like '/' delimited entries,
-     * implying a hierarchy of keys and corresponding values
+     * \param scope entry scope (group) name
+     * \param key entry key name. Keys are '/'-delimited entries, implying a hierarchy of keys and corresponding values.
+     * \param def default value to return if the specified \a key does not exist within the \a scope.
+     * \param ok set to TRUE if key exists and has been successfully retrieved as a string list
+     *
+     * \returns entry value as a string list
      */
     QStringList readListEntry( const QString &scope, const QString &key, const QStringList &def = QStringList(), bool *ok SIP_OUT = nullptr ) const;
 
     /**
-     * \param def returned value if key doesn't exist
-     * \param ok set to TRUE if key exists and has been successfully retrieved
+     * Reads a string from the specified \a scope and \a key.
+     *
+     * \param scope entry scope (group) name
+     * \param key entry key name. Keys are '/'-delimited entries, implying a hierarchy of keys and corresponding values.
+     * \param def default value to return if the specified \a key does not exist within the \a scope.
+     * \param ok set to TRUE if key exists and has been successfully retrieved as a string value
+     *
      * \returns entry value as string from \a scope given its \a key
      */
     QString readEntry( const QString &scope, const QString &key, const QString &def = QString(), bool *ok SIP_OUT = nullptr ) const;
 
     /**
-     * \param def returned value if key doesn't exist
-     * \param ok set to TRUE if key exists and has been successfully retrieved
+     * Reads an integer from the specified \a scope and \a key.
+     *
+     * \param scope entry scope (group) name
+     * \param key entry key name. Keys are '/'-delimited entries, implying a hierarchy of keys and corresponding values.
+     * \param def default value to return if the specified \a key does not exist within the \a scope.
+     * \param ok set to TRUE if key exists and has been successfully retrieved as an integer
+     *
      * \returns entry value as integer from \a scope given its \a key
      */
     int readNumEntry( const QString &scope, const QString &key, int def = 0, bool *ok SIP_OUT = nullptr ) const;
 
     /**
-     * \param def returned value if key doesn't exist
-     * \param ok set to TRUE if key exists and has been successfully retrieved
+     * Reads a double from the specified \a scope and \a key.
+     *
+     * \param scope entry scope (group) name
+     * \param key entry key name. Keys are '/'-delimited entries, implying a hierarchy of keys and corresponding values.
+     * \param default value to return if the specified \a key does not exist within the \a scope.
+     * \param ok set to TRUE if key exists and has been successfully retrieved as a double
+     *
      * \returns entry value as double from \a scope given its \a key
      */
     double readDoubleEntry( const QString &scope, const QString &key, double def = 0, bool *ok SIP_OUT = nullptr ) const;
 
     /**
-     * \param def returned value if key doesn't exist
-     * \param ok set to TRUE if key exists and has been successfully retrieved
+     * Reads a boolean from the specified \a scope and \a key.
+     *
+     * \param scope entry scope (group) name
+     * \param key entry key name. Keys are '/'-delimited entries, implying a hierarchy of keys and corresponding values.
+     * \param default value to return if the specified \a key does not exist within the \a scope.
+     * \param ok set to TRUE if key exists and has been successfully retrieved as a boolean
+     *
      * \returns entry value as boolean from \a scope given its \a key
      */
     bool readBoolEntry( const QString &scope, const QString &key, bool def = false, bool *ok SIP_OUT = nullptr ) const;
 
-
-    //! Remove the given key
+    /**
+     * Remove the given \a key from the specified \a scope.
+     */
     bool removeEntry( const QString &scope, const QString &key );
 
-
     /**
-     * Returns keys with values -- do not return keys that contain other keys
+     * Returns a list of child keys with values which exist within the the specified \a scope and \a key.
+     *
+     * This method does not return keys that contain other keys. See subkeyList() to retrieve keys
+     * which contain other keys.
      *
      * \note equivalent to QgsSettings entryList()
      */
     QStringList entryList( const QString &scope, const QString &key ) const;
 
     /**
-     * Returns keys with keys -- do not return keys that contain only values
+     * Returns a list of child keys which contain other keys that exist within the the specified \a scope and \a key.
+     *
+     * This method only returns keys with keys, it will not return keys that contain only values. See
+     * entryList() to retrieve keys with values.
      *
      * \note equivalent to QgsSettings subkeyList()
      */
     QStringList subkeyList( const QString &scope, const QString &key ) const;
 
+    // TODO Now slightly broken since re-factoring.  Won't print out top-level key
+    //           and redundantly prints sub-keys.
 
     /**
      * Dump out current project properties to stderr
      */
-    // TODO Now slightly broken since re-factoring.  Won't print out top-level key
-    //           and redundantly prints sub-keys.
     void dumpProperties() const;
 
     /**
@@ -465,7 +505,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     */
     QString writePath( const QString &filename ) const;
 
-    //! Turn filename read from the project file to an absolute path
+    /**
+     * Transforms a \a filename read from the project file to an absolute path.
+     */
     QString readPath( const QString &filename ) const;
 
     //! Returns error message from previous read/write
@@ -477,7 +519,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void setBadLayerHandler( QgsProjectBadLayerHandler *handler SIP_TRANSFER );
 
-    //! Returns project file path if layer is embedded from other project file. Returns empty string if layer is not embedded
+    /**
+     * Returns the source project file path if the layer with matching \a id is embedded from other project file.
+     *
+     * Returns an empty string if the matching layer is not embedded.
+     */
     QString layerIsEmbedded( const QString &id ) const;
 
     /**
