@@ -26,7 +26,7 @@
 
 /**
  * This metadata class does not support creation of provider instances, because
- * vector tile layer currently does not have a concept of data providers. This class
+ * point cloud layer currently does not have a concept of data providers. This class
  * is only used to create data item provider (for browser integration).
  */
 class QgsPointCloudProviderMetadata : public QgsProviderMetadata
