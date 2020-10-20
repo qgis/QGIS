@@ -121,7 +121,8 @@ void TestQgsOfflineEditing::createSpatialiteAndSynchronizeBack_data()
   QTest::addColumn<QString>( "suffix_input" );
   QTest::addColumn<QString>( "suffix_result" );
 
-  QTest::newRow( "no suffix" ) << QString() << QStringLiteral( " (offline)" );
+  QTest::newRow( "no suffix" ) << QString( "no suffix" ) << QStringLiteral( " (offline)" );
+  QTest::newRow( "null suffix" ) << QString() << QString();
   QTest::newRow( "empty suffix" ) << QStringLiteral( "" ) << QStringLiteral( "" );
   QTest::newRow( "another suffix" ) << QStringLiteral( "another suffix" ) << QStringLiteral( "another suffix" );
 }
@@ -131,7 +132,8 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack_data()
   QTest::addColumn<QString>( "suffix_input" );
   QTest::addColumn<QString>( "suffix_result" );
 
-  QTest::newRow( "no suffix" ) << QString() << QStringLiteral( " (offline)" );
+  QTest::newRow( "no suffix" ) << QStringLiteral( "no suffix" ) << QStringLiteral( " (offline)" );
+  QTest::newRow( "null suffix" ) << QString() << QString();
   QTest::newRow( "empty suffix" ) << QStringLiteral( "" ) << QStringLiteral( "" );
   QTest::newRow( "another suffix" ) << QStringLiteral( "another suffix" ) << QStringLiteral( "another suffix" );
 }
@@ -152,8 +154,7 @@ void TestQgsOfflineEditing::createSpatialiteAndSynchronizeBack()
   layerTreelayer->setCustomProperty( QStringLiteral( "showFeatureCount" ), 1 );
 
   //convert
-
-  if ( suffix_input.isNull() )
+  if ( suffix_input.compare( QStringLiteral( "no suffix" ) ) == 0 )
     mOfflineEditing->convertToOfflineProject( offlineDataPath, offlineDbFile, layerIds, false, QgsOfflineEditing::SpatiaLite );
   else
     mOfflineEditing->convertToOfflineProject( offlineDataPath, offlineDbFile, layerIds, false, QgsOfflineEditing::SpatiaLite, suffix_input );
@@ -207,7 +208,7 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
   mpLayer->styleManager()->addStyle( QStringLiteral( "testStyle" ), style );
 
   //convert
-  if ( suffix_input.isNull() )
+  if ( suffix_input.compare( QStringLiteral( "no suffix" ) ) == 0 )
     mOfflineEditing->convertToOfflineProject( offlineDataPath, offlineDbFile, layerIds, false, QgsOfflineEditing::GPKG );
   else
     mOfflineEditing->convertToOfflineProject( offlineDataPath, offlineDbFile, layerIds, false, QgsOfflineEditing::GPKG, suffix_input );
