@@ -2518,7 +2518,7 @@ void QgsSvgMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   registerDataDefinedButton( mHorizontalAnchorDDBtn, QgsSymbolLayer::PropertyHorizontalAnchor );
   registerDataDefinedButton( mVerticalAnchorDDBtn, QgsSymbolLayer::PropertyVerticalAnchor );
 
-  registerDataDefinedButton( mSvgSelectorWidget->sourceLineEdit()->fileToolButton(), QgsSymbolLayer::PropertyVerticalAnchor );
+  registerDataDefinedButton( mSvgSelectorWidget->sourceLineEdit()->fileToolButton(), QgsSymbolLayer::PropertyName );
 
   updateAssistantSymbol();
 }
