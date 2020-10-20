@@ -208,6 +208,12 @@ Emitted whenever the navigation ``mode`` changes.
 Emitted whenever the temporalExtent ``extent`` changes.
 %End
 
+    void temporalFrameDurationChanged( const QgsInterval &interval );
+%Docstring
+Emitted whenever the frameDuration ``interval`` of the controller changes.
+%End
+
+
   public slots:
 
     void play();

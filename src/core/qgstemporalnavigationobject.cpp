@@ -178,8 +178,16 @@ long long QgsTemporalNavigationObject::currentFrameNumber() const
 
 void QgsTemporalNavigationObject::setFrameDuration( QgsInterval frameDuration )
 {
+  if ( mFrameDuration == frameDuration )
+  {
+    return;
+  }
   mFrameDuration = frameDuration;
+  emit temporalFrameDurationChanged( mFrameDuration );
   setCurrentFrameNumber( 0 );
+  // forcing an update of our views
+  QgsDateTimeRange range = dateTimeRangeForFrameNumber( mCurrentFrameNumber );
+  emit updateTemporalRange( range );
 }
 
 QgsInterval QgsTemporalNavigationObject::frameDuration() const
