@@ -7619,6 +7619,12 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
     ok = static_cast< bool >( addMeshLayerPrivate( fileName, fileInfo.completeBaseName(), QStringLiteral( "mdal" ), false ) );
   }
 
+  // Try to load as point cloud layer after raster & vector & mesh
+  if ( !ok )
+  {
+    ok = static_cast< bool >( addPointCloudLayerPrivate( fileName, fileInfo.completeBaseName(), false ) );
+  }
+
   if ( !ok )
   {
     // we have no idea what this file is...
