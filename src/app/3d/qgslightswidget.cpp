@@ -258,7 +258,6 @@ void QgsLightsWidget::onDirectionChange()
   mDirectionZ = horizontalVectorMagnitude * cos( azimuthValue / 180 * M_PI );
   mDirectionY = -sin( altitudeValue / 180 * M_PI );
 
-
   whileBlocking( sliderAltitude )->setValue( altitudeValue );
   updateCurrentDirectionalLightParameters();
 }
