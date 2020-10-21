@@ -109,7 +109,7 @@ int main( int argc, char *argv[] )
   QCoreApplication::setOrganizationName( QgsApplication::QGIS_ORGANIZATION_NAME );
   QCoreApplication::setOrganizationDomain( QgsApplication::QGIS_ORGANIZATION_DOMAIN );
   QCoreApplication::setApplicationName( "QGIS Development Server" );
-  QCoreApplication::setApplicationVersion( "1.0" );
+  QCoreApplication::setApplicationVersion( VERSION );
 
   if ( ! withDisplay )
   {
