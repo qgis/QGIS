@@ -28,6 +28,7 @@
 
 #include "qgsmaplayerref.h"
 #include "qgsmesh3dsymbol.h"
+#include "qgstriangularmesh.h"
 
 ///@cond PRIVATE
 
@@ -55,12 +56,9 @@ class QgsMeshLayer;
  */
 class QgsMesh3dGeometry: public  Qt3DRender::QGeometry
 {
-  public:
-    QgsMeshLayer *meshLayer() const;
-
   protected:
     //! Constructor
-    explicit QgsMesh3dGeometry( QgsMeshLayer *layer,
+    explicit QgsMesh3dGeometry( const QgsTriangularMesh &triangularMesh,
                                 const QgsVector3D &origin,
                                 const QgsMesh3DSymbol *symbol,
                                 QNode *parent );
@@ -71,10 +69,8 @@ class QgsMesh3dGeometry: public  Qt3DRender::QGeometry
 
     QgsVector3D mOrigin;
     float mVertScale;
+    QgsTriangularMesh mTriangulaMesh;
 
-  private:
-
-    QgsMapLayerRef mLayerRef;
 };
 
 /**
@@ -84,7 +80,8 @@ class QgsMeshDataset3dGeometry: public  QgsMesh3dGeometry
 {
   public:
     //! Constructs a mesh layer geometry from triangular mesh.
-    explicit QgsMeshDataset3dGeometry( QgsMeshLayer *layer,
+    explicit QgsMeshDataset3dGeometry( const QgsTriangularMesh &triangularMesh,
+                                       QgsMeshLayer *layer,
                                        const QgsDateTimeRange &timeRange,
                                        const QgsVector3D &origin,
                                        const QgsMesh3DSymbol *symbol,
@@ -100,6 +97,9 @@ class QgsMeshDataset3dGeometry: public  QgsMesh3dGeometry
     bool mIsVerticalMagnitudeRelative;
     int mVerticalGroupDatasetIndex;
     QgsDateTimeRange mTimeRange;
+    QgsMapLayerRef mLayerRef;
+
+    QgsMeshLayer *meshLayer() const;
 
 };
 
@@ -110,7 +110,7 @@ class QgsMeshTerrain3dGeometry: public  QgsMesh3dGeometry
 {
   public:
     //! Constructs a mesh layer geometry from triangular mesh.
-    explicit QgsMeshTerrain3dGeometry( QgsMeshLayer *layer,
+    explicit QgsMeshTerrain3dGeometry( const QgsTriangularMesh &triangularMesh,
                                        const QgsVector3D &origin,
                                        const QgsMesh3DSymbol *symbol,
                                        QNode *parent );

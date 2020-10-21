@@ -237,6 +237,7 @@ void Qgs3DMapConfigWidget::apply()
     {
       QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( cboTerrainLayer->currentLayer() );
       QgsMeshTerrainGenerator *newTerrainGenerator = new QgsMeshTerrainGenerator;
+      newTerrainGenerator->setCrs( mMap->crs(), QgsProject::instance()->transformContext() );
       newTerrainGenerator->setLayer( meshLayer );
       std::unique_ptr< QgsMesh3DSymbol > symbol = mMeshSymbolWidget->symbol();
       symbol->setVerticalScale( spinTerrainScale->value() );
