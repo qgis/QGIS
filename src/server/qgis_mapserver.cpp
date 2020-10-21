@@ -472,6 +472,7 @@ int main( int argc, char *argv[] )
         else
         {
           qApp->processEvents( );
+          std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
         }
       }
     } );
