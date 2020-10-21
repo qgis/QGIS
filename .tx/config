@@ -37,6 +37,7 @@ trans.pt_BR = i18n/qgis_pt_BR.ts
 trans.pt_PT = i18n/qgis_pt_PT.ts
 trans.ro = i18n/qgis_ro.ts
 trans.ru = i18n/qgis_ru.ts
+trans.sc = i18n/qgis_sc.ts
 trans.sk = i18n/qgis_sk.ts
 trans.sl = i18n/qgis_sl.ts
 trans.sr = i18n/qgis_sr.ts
