@@ -101,7 +101,7 @@ Emitted when a vector tile layer has been selected for addition.
 .. versionadded:: 3.14
 %End
 
-    void addPointCloudLayer( const QString &url, const QString &baseName );
+    void addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey );
 %Docstring
 Emitted when a point cloud layer has been selected for addition.
 

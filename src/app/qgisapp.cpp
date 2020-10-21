@@ -2096,7 +2096,7 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
     }
     else if ( u.layerType == QLatin1String( "pointcloud" ) )
     {
-      addPointCloudLayer( uri, u.name );
+      addPointCloudLayer( uri, u.name, u.providerKey );
     }
     else if ( u.layerType == QLatin1String( "vector-tile" ) )
     {
@@ -5709,9 +5709,9 @@ QgsVectorTileLayer *QgisApp::addVectorTileLayer( const QString &url, const QStri
   return addVectorTileLayerPrivate( url, baseName );
 }
 
-QgsPointCloudLayer *QgisApp::addPointCloudLayer( const QString &url, const QString &baseName )
+QgsPointCloudLayer *QgisApp::addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey )
 {
-  return addPointCloudLayerPrivate( url, baseName );
+  return addPointCloudLayerPrivate( url, baseName, providerKey );
 }
 
 QgsVectorTileLayer *QgisApp::addVectorTileLayerPrivate( const QString &url, const QString &baseName, const bool guiWarning )
@@ -5756,7 +5756,7 @@ QgsVectorTileLayer *QgisApp::addVectorTileLayerPrivate( const QString &url, cons
   return layer.release();
 }
 
-QgsPointCloudLayer *QgisApp::addPointCloudLayerPrivate( const QString &uri, const QString &baseName, bool guiWarning )
+QgsPointCloudLayer *QgisApp::addPointCloudLayerPrivate( const QString &uri, const QString &baseName, const QString &providerKey, bool guiWarning )
 {
   QgsCanvasRefreshBlocker refreshBlocker;
   QgsSettings settings;
@@ -5771,7 +5771,7 @@ QgsPointCloudLayer *QgisApp::addPointCloudLayerPrivate( const QString &uri, cons
   QgsDebugMsgLevel( "completeBaseName: " + base, 2 );
 
   // create the layer
-  std::unique_ptr<QgsPointCloudLayer> layer( new QgsPointCloudLayer( uri, base ) );
+  std::unique_ptr<QgsPointCloudLayer> layer( new QgsPointCloudLayer( uri, base, providerKey ) );
 
   if ( !layer || !layer->isValid() )
   {
@@ -7623,7 +7623,7 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
   // Try to load as point cloud layer after raster & vector & mesh
   if ( !ok )
   {
-    ok = static_cast< bool >( addPointCloudLayerPrivate( fileName, fileInfo.completeBaseName(), false ) );
+    ok = static_cast< bool >( addPointCloudLayerPrivate( fileName, fileInfo.completeBaseName(), QStringLiteral( "pointcloud" ), false ) );
   }
 
   if ( !ok )

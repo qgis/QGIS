@@ -100,7 +100,7 @@ static QList<IndexedPointCloudNode> _traverseTree( QgsPointCloudIndex *pc, const
 bool QgsPointCloudRenderer::render()
 {
   // TODO cache!?
-  QgsPointCloudIndex *pc = mLayer->pointCloudIndex();
+  QgsPointCloudIndex *pc = mLayer->dataProvider()->index();
 
   QgsRenderContext &context = *renderContext();
 
@@ -154,8 +154,8 @@ void QgsPointCloudRenderer::readXml( const QDomElement &elem, const QgsReadWrite
 void QgsPointCloudRenderer::drawData( QPainter *painter, const QVector<qint32> &data, const QgsPointCloudRendererConfig &config )
 {
   const QgsMapToPixel mapToPixel = renderContext()->mapToPixel();
-  const QgsVector3D scale = mLayer->pointCloudIndex()->scale();
-  const QgsVector3D offset = mLayer->pointCloudIndex()->offset();
+  const QgsVector3D scale = mLayer->dataProvider()->index()->scale();
+  const QgsVector3D offset = mLayer->dataProvider()->index()->offset();
 
   QgsRectangle mapExtent = renderContext()->mapExtent();
 

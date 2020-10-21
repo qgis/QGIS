@@ -18,9 +18,9 @@
 #ifndef QGSPOINTCLOUDLAYER_H
 #define QGSPOINTCLOUDLAYER_H
 
-class QgsPointCloudIndex;
 class QgsPointCloudRenderer;
 
+#include "qgspointclouddataprovider.h"
 #include "qgsmaplayer.h"
 #include "qgis_core.h"
 
@@ -42,9 +42,43 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
   public:
 
     /**
+     * Setting options for loading point cloud layers.
+     */
+    struct LayerOptions
+    {
+
+      /**
+       * Constructor for LayerOptions with optional \a transformContext.
+       * \note transformContext argument was added in QGIS 3.8
+       */
+      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext( ) )
+        : transformContext( transformContext )
+      {}
+
+      QgsCoordinateTransformContext transformContext;
+
+      /**
+       * Controls whether the layer is allowed to have an invalid/unknown CRS.
+       *
+       * If TRUE, then no validation will be performed on the layer's CRS and the layer
+       * layer's crs() may be invalid() (i.e. the layer will have no georeferencing available
+       * and will be treated as having purely numerical coordinates).
+       *
+       * If FALSE (the default), the layer's CRS will be validated using QgsCoordinateReferenceSystem::validate(),
+       * which may cause a blocking, user-facing dialog asking users to manually select the correct CRS for the
+       * layer.
+       */
+      bool skipCrsValidation = false;
+    };
+
+
+    /**
      * Constructor - creates a point cloud layer
      */
-    explicit QgsPointCloudLayer( const QString &path = QString(), const QString &baseName = QString() );
+    explicit QgsPointCloudLayer( const QString &path = QString(),
+                                 const QString &baseName = QString(),
+                                 const QString &providerLib = QStringLiteral( "pointcloud" ),
+                                 const QgsPointCloudLayer::LayerOptions &options = QgsPointCloudLayer::LayerOptions());
 
     ~QgsPointCloudLayer() override;
 
@@ -56,6 +90,9 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     QgsPointCloudLayer *clone() const override SIP_FACTORY;
     QgsRectangle extent() const override;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
+
+    QgsPointCloudDataProvider *dataProvider() override;
+    const QgsPointCloudDataProvider *dataProvider() const override SIP_SKIP;
 
     bool readXml( const QDomNode &layerNode, QgsReadWriteContext &context ) override;
 
@@ -70,8 +107,6 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
     QString loadDefaultStyle( bool &resultFlag SIP_OUT ) override;
 
-    QgsPointCloudIndex *pointCloudIndex() const SIP_SKIP;
-
   private: // Private methods
     bool loadDataSource();
 
@@ -84,7 +119,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     QgsPointCloudLayer( const QgsPointCloudLayer &rhs );
 #endif
 
-    std::unique_ptr<QgsPointCloudIndex> mPointCloudIndex;
+    std::unique_ptr<QgsPointCloudDataProvider> mDataProvider;
 
     //! Renderer assigned to the layer to draw map
     std::unique_ptr<QgsPointCloudRenderer> mRenderer;

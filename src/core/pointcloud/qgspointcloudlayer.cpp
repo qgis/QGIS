@@ -19,10 +19,16 @@
 #include "qgspointcloudrenderer.h"
 #include "qgspointcloudindex.h"
 #include "qgsrectangle.h"
+#include "qgspointclouddataprovider.h"
 
-QgsPointCloudLayer::QgsPointCloudLayer( const QString &path, const QString &baseName )
+QgsPointCloudLayer::QgsPointCloudLayer( const QString &path,
+                                        const QString &baseName,
+                                        const QString &providerLib,
+                                        const QgsPointCloudLayer::LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::PointCloudLayer, baseName, path )
 {
+  Q_UNUSED(providerLib)
+  Q_UNUSED(options)
   setValid( loadDataSource() );
 }
 
@@ -37,15 +43,25 @@ QgsPointCloudLayer *QgsPointCloudLayer::clone() const
 
 QgsRectangle QgsPointCloudLayer::extent() const
 {
-  if ( !mPointCloudIndex )
+  if ( !mDataProvider )
     return QgsRectangle();
 
-  return mPointCloudIndex->extent();
+  return mDataProvider->index()->extent();
 }
 
 QgsMapLayerRenderer *QgsPointCloudLayer::createMapRenderer( QgsRenderContext &rendererContext )
 {
   return new QgsPointCloudRenderer( this, rendererContext );
+}
+
+QgsPointCloudDataProvider *QgsPointCloudLayer::dataProvider()
+{
+  return mDataProvider.get();
+}
+
+const QgsPointCloudDataProvider *QgsPointCloudLayer::dataProvider() const
+{
+  return mDataProvider.get();
 }
 
 bool QgsPointCloudLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext &context )
@@ -96,18 +112,14 @@ QString QgsPointCloudLayer::loadDefaultStyle( bool &resultFlag )
   return QString();
 }
 
-QgsPointCloudIndex *QgsPointCloudLayer::pointCloudIndex() const
-{
-  return mPointCloudIndex.get();
-}
 
 bool QgsPointCloudLayer::loadDataSource()
 {
-  mPointCloudIndex.reset( new QgsPointCloudIndex() );
-  bool success = mPointCloudIndex->load( source() );
 
-  if ( success )
-    setCrs( QgsCoordinateReferenceSystem::fromWkt( mPointCloudIndex->wkt() ) );
+  mDataProvider.reset( new QgsPointCloudDataProvider( source(), QgsDataProvider::ProviderOptions() ) );
 
-  return success;
+  if ( mDataProvider->isValid() )
+    setCrs( mDataProvider->crs() );
+
+  return mDataProvider->isValid();
 }

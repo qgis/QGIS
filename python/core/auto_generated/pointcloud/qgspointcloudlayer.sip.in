@@ -47,6 +47,9 @@ QgsPointCloudLayer cannot be copied.
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
 
 
+    virtual QgsPointCloudDataProvider *dataProvider();
+
+
     virtual bool readXml( const QDomNode &layerNode, QgsReadWriteContext &context );
 
 
@@ -62,7 +65,6 @@ QgsPointCloudLayer cannot be copied.
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );
 
     virtual QString loadDefaultStyle( bool &resultFlag /Out/ );
-
 
 
   private: // Private methods

@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/pointcloud/qgspointcloudrenderer.h                          *
+ * src/core/pointcloud/qgspointclouddataprovider.h                      *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -10,15 +10,12 @@
 
 
 
-
-
-
-
-class QgsPointCloudRenderer: QgsMapLayerRenderer
+class QgsPointCloudDataProvider: QgsDataProvider
 {
 %Docstring
+Base class for providing data for QgsPointCloudLayer
 
-Represents a 2D renderer of point cloud data
+Responsible for reading native point cloud data and returning the indexed data?
 
 .. note::
 
@@ -28,26 +25,39 @@ Represents a 2D renderer of point cloud data
 %End
 
 %TypeHeaderCode
-#include "qgspointcloudrenderer.h"
+#include "qgspointclouddataprovider.h"
 %End
   public:
+    QgsPointCloudDataProvider( const QString &uri,
+                               const QgsDataProvider::ProviderOptions &providerOptions,
+                               QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+%Docstring
+Ctor
+%End
 
-    explicit QgsPointCloudRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context );
-    ~QgsPointCloudRenderer();
-
-    virtual bool render();
+    ~QgsPointCloudDataProvider();
+    virtual QgsCoordinateReferenceSystem crs() const;
 
 
-    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
-    void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+    virtual QgsRectangle extent() const;
+
+
+    virtual bool isValid() const;
+
+
+    virtual QString name() const;
+
+
+    virtual QString description() const;
+
+
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/pointcloud/qgspointcloudrenderer.h                          *
+ * src/core/pointcloud/qgspointclouddataprovider.h                      *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

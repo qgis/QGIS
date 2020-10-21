@@ -48,6 +48,6 @@ void QgsPointCloudSourceSelect::addButtonClicked()
 
   for ( const QString &path : QgsFileWidget::splitFilePaths( mPath ) )
   {
-    emit addPointCloudLayer( path, QFileInfo( path ).baseName() ) ;
+    emit addPointCloudLayer( path, QFileInfo( path ).baseName(), QStringLiteral( "pointcloud" ) ) ;
   }
 }

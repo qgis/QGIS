@@ -222,7 +222,7 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
   QgsPointCloud3DSymbolHandler *handler = new QgsPointCloud3DSymbolHandler;
   mHandler.reset( handler );
 
-  QgsPointCloudIndex *pc = layer->pointCloudIndex();
+  QgsPointCloudIndex *pc = layer->dataProvider()->index();
 
   //QgsExpressionContext exprContext( Qgs3DUtils::globalProjectLayerExpressionContext( layer ) );
   //exprContext.setFields( layer->fields() );

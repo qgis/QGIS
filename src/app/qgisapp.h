@@ -1165,7 +1165,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * in the Map Legend so it should be formed in a meaningful way.
      * \since QGIS 3.18
      */
-    QgsPointCloudLayer *addPointCloudLayer( const QString &url, const QString &baseName );
+    QgsPointCloudLayer *addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey );
 
     /**
      * \brief overloaded version of the private addLayer method that takes a list of
@@ -2095,7 +2095,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsVectorTileLayer *addVectorTileLayerPrivate( const QString &uri, const QString &baseName, bool guiWarning = true );
 
     //! Open a point cloyd layer - this is the generic function which takes all parameters
-    QgsPointCloudLayer *addPointCloudLayerPrivate( const QString &uri, const QString &baseName, bool guiWarning = true );
+    QgsPointCloudLayer *addPointCloudLayerPrivate( const QString &uri,
+        const QString &baseName,
+        const QString &providerKey,
+        bool guiWarning = true );
 
     bool addVectorLayersPrivate( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType, bool guiWarning = true );
     QgsVectorLayer *addVectorLayerPrivate( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey, bool guiWarning = true );
