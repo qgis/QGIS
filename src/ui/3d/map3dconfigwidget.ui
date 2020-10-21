@@ -179,7 +179,7 @@
        <item>
         <widget class="QStackedWidget" name="m3DOptionsStackedWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="mPageTerrain">
           <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -205,7 +205,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>705</width>
+                <width>703</width>
                 <height>604</height>
                </rect>
               </property>
@@ -393,8 +393,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>705</width>
-                <height>620</height>
+                <width>703</width>
+                <height>604</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutLight">
@@ -477,8 +477,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>705</width>
-                <height>620</height>
+                <width>151</width>
+                <height>47</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutShadow">
@@ -567,8 +567,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>705</width>
-                <height>620</height>
+                <width>175</width>
+                <height>132</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutCameraSkybox">
@@ -667,8 +667,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>705</width>
-                <height>620</height>
+                <width>304</width>
+                <height>330</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutAdvanced">
