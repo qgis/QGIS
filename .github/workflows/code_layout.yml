@@ -94,7 +94,8 @@ jobs:
       - name: Install Requirements
         run: |
           sudo apt install -y \
-              expect
+              expect \
+              silversearcher-ag
       - name: Doxygen Layout Test
         run: ./tests/code_layout/test_doxygen_layout.sh
 
