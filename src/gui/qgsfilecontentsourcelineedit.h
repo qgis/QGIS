@@ -76,10 +76,16 @@ class GUI_EXPORT QgsAbstractFileContentSourceLineEdit : public QWidget SIP_ABSTR
     void setLastPathSettingsKey( const QString &key );
 
     /**
-     * Returns the file tool button
+     * Returns the property override tool button
      * \since QGIS 3.16
      */
-    QgsPropertyOverrideButton *fileToolButton() const {return mFileToolButton;}
+    QgsPropertyOverrideButton *propertyOverrideToolButton() const {return mPropertyOverrideButton;}
+
+    /**
+     * Sets the visibility of the property override tool button
+     * \since QGIS 3.16
+     */
+    void setPropertyOverrideToolButtonVisible( bool visible );
 
   public slots:
 
@@ -156,9 +162,11 @@ class GUI_EXPORT QgsAbstractFileContentSourceLineEdit : public QWidget SIP_ABSTR
     };
 
     Mode mMode = ModeFile;
+    bool mPropertyOverrideButtonVisible = false;
 
     QgsFilterLineEdit *mFileLineEdit = nullptr;
-    QgsPropertyOverrideButton *mFileToolButton = nullptr;
+    QToolButton *mFileToolButton = nullptr;
+    QgsPropertyOverrideButton *mPropertyOverrideButton = nullptr;
     QString mLastPathKey;
     QString mBase64;
     QgsMessageBar *mMessageBar = nullptr;

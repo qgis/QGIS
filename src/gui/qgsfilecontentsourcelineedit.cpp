@@ -36,10 +36,12 @@ QgsAbstractFileContentSourceLineEdit::QgsAbstractFileContentSourceLineEdit( QWid
   layout->setContentsMargins( 0, 0, 0, 0 );
   mFileLineEdit = new QgsFilterLineEdit( this );
   mFileLineEdit->setShowClearButton( true );
-  mFileToolButton = new QgsPropertyOverrideButton( this );
+  mFileToolButton = new QToolButton( this );
   mFileToolButton->setText( QString( QChar( 0x2026 ) ) );
+  mPropertyOverrideButton = new QgsPropertyOverrideButton( this );
   layout->addWidget( mFileLineEdit, 1 );
   layout->addWidget( mFileToolButton );
+  layout->addWidget( mPropertyOverrideButton );
   setLayout( layout );
 
   QMenu *sourceMenu = new QMenu( mFileToolButton );
@@ -78,6 +80,8 @@ QgsAbstractFileContentSourceLineEdit::QgsAbstractFileContentSourceLineEdit( QWid
     emit sourceChanged( QString() );
   } );
 
+  mPropertyOverrideButton->setVisible( mPropertyOverrideButtonVisible );
+
 }
 
 QString QgsAbstractFileContentSourceLineEdit::source() const
@@ -97,6 +101,12 @@ QString QgsAbstractFileContentSourceLineEdit::source() const
 void QgsAbstractFileContentSourceLineEdit::setLastPathSettingsKey( const QString &key )
 {
   mLastPathKey = key;
+}
+
+void QgsAbstractFileContentSourceLineEdit::setPropertyOverrideToolButtonVisible( bool visible )
+{
+  mPropertyOverrideButtonVisible = visible;
+  mPropertyOverrideButton->setVisible( visible );
 }
 
 void QgsAbstractFileContentSourceLineEdit::setSource( const QString &source )
