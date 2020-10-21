@@ -50,7 +50,7 @@ class CORE_EXPORT QgsMbTiles
     /**
      * Creates a new MBTiles file and initializes it with metadata and tiles tables.
      * It is up to the caller to set appropriate metadata entries and add tiles afterwards.
-     * Returns true on success. If the file exists already, returns false.
+     * Returns TRUE on success. If the file exists already, returns FALSE.
      */
     bool create();
 

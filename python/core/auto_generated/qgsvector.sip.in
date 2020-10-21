@@ -33,30 +33,30 @@ Constructor for QgsVector taking x and y component values.
 :param y: y-component
 %End
 
-    QgsVector operator-() const;
+    QgsVector operator-() const /HoldGIL/;
 
-    QgsVector operator*( double scalar ) const;
+    QgsVector operator*( double scalar ) const /HoldGIL/;
 
-    QgsVector operator/( double scalar ) const;
+    QgsVector operator/( double scalar ) const /HoldGIL/;
 
-    double operator*( QgsVector v ) const;
+    double operator*( QgsVector v ) const /HoldGIL/;
 
-    QgsVector operator+( QgsVector other ) const;
+    QgsVector operator+( QgsVector other ) const /HoldGIL/;
 
-    QgsVector &operator+=( QgsVector other );
+    QgsVector &operator+=( QgsVector other ) /HoldGIL/;
 
-    QgsVector operator-( QgsVector other ) const;
+    QgsVector operator-( QgsVector other ) const /HoldGIL/;
 
-    QgsVector &operator-=( QgsVector other );
+    QgsVector &operator-=( QgsVector other ) /HoldGIL/;
 
-    double length() const;
+    double length() const /HoldGIL/;
 %Docstring
 Returns the length of the vector.
 
 .. seealso:: :py:func:`lengthSquared`
 %End
 
-    double lengthSquared() const;
+    double lengthSquared() const /HoldGIL/;
 %Docstring
 Returns the length of the vector.
 
@@ -65,36 +65,36 @@ Returns the length of the vector.
 .. versionadded:: 3.2
 %End
 
-    double x() const;
+    double x() const /HoldGIL/;
 %Docstring
 Returns the vector's x-component.
 
 .. seealso:: y
 %End
 
-    double y() const;
+    double y() const /HoldGIL/;
 %Docstring
 Returns the vector's y-component.
 
 .. seealso:: x
 %End
 
-    QgsVector perpVector() const;
+    QgsVector perpVector() const /HoldGIL/;
 %Docstring
 Returns the perpendicular vector to this vector (rotated 90 degrees counter-clockwise)
 %End
 
-    double angle() const;
+    double angle() const /HoldGIL/;
 %Docstring
 Returns the angle of the vector in radians.
 %End
 
-    double angle( QgsVector v ) const;
+    double angle( QgsVector v ) const /HoldGIL/;
 %Docstring
 Returns the angle between this vector and another vector in radians.
 %End
 
-    double crossProduct( QgsVector v ) const;
+    double crossProduct( QgsVector v ) const /HoldGIL/;
 %Docstring
 Returns the 2D cross product of this vector and another vector ``v``. (This is sometimes
 referred to as a "perpendicular dot product", and equals x1 * y1 - y1 * x2).
@@ -102,25 +102,25 @@ referred to as a "perpendicular dot product", and equals x1 * y1 - y1 * x2).
 .. versionadded:: 3.2
 %End
 
-    QgsVector rotateBy( double rot ) const;
+    QgsVector rotateBy( double rot ) const /HoldGIL/;
 %Docstring
 Rotates the vector by a specified angle.
 
 :param rot: angle in radians
 %End
 
-    QgsVector normalized() const;
+    QgsVector normalized() const throw( QgsException );
 %Docstring
 Returns the vector's normalized (or "unit") vector (ie same angle but length of 1.0).
-Will throw a QgsException if called on a vector with length of 0.
+
+:raises QgsException: if called on a vector with length of 0.
 %End
 
-    bool operator==( QgsVector other ) const;
+    bool operator==( QgsVector other ) const /HoldGIL/;
 
     bool operator!=( QgsVector other ) const;
 
-
-    QString toString( int precision = 17 ) const;
+    QString toString( int precision = 17 ) const /HoldGIL/;
 %Docstring
 Returns a string representation of the vector.
 Members will be truncated to the specified ``precision``.

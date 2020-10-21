@@ -498,7 +498,9 @@ void QgsVectorLayerProperties::syncToLayer()
   // using the query builder, either by typing it in by hand or using the buttons, etc
   // on the builder. If the ability to enter a query directly into the box is required,
   // a mechanism to check it must be implemented.
-  txtSubsetSQL->setEnabled( false );
+  txtSubsetSQL->setReadOnly( true );
+  txtSubsetSQL->setCaretWidth( 0 );
+  txtSubsetSQL->setCaretLineVisible( false );
   setPbnQueryBuilderEnabled();
 
   mMapTipWidget->setText( mLayer->mapTipTemplate() );
@@ -620,10 +622,10 @@ void QgsVectorLayerProperties::apply()
   //
   mSubsetGroupBox->setEnabled( true );
 
-  if ( txtSubsetSQL->toPlainText() != mLayer->subsetString() )
+  if ( txtSubsetSQL->text() != mLayer->subsetString() )
   {
     // set the subset sql for the layer
-    mLayer->setSubsetString( txtSubsetSQL->toPlainText() );
+    mLayer->setSubsetString( txtSubsetSQL->text() );
     mMetadataFilled = false;
   }
   mOriginalSubsetSQL = mLayer->subsetString();
@@ -843,7 +845,7 @@ void QgsVectorLayerProperties::pbnQueryBuilder_clicked()
 
   // Set the sql in the query builder to the same in the prop dialog
   // (in case the user has already changed it)
-  qb->setSql( txtSubsetSQL->toPlainText() );
+  qb->setSql( txtSubsetSQL->text() );
   // Open the query builder
   if ( qb->exec() )
   {
@@ -2061,7 +2063,7 @@ void QgsVectorLayerProperties::deleteAuxiliaryField( int index )
   {
     const QString title = QObject::tr( "Delete Auxiliary Field" );
     const int timeout = QgsSettings().value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
-    const QString errors = mLayer->auxiliaryLayer()->commitErrors().join( QStringLiteral( "\n  " ) );
+    const QString errors = mLayer->auxiliaryLayer()->commitErrors().join( QLatin1String( "\n  " ) );
     const QString msg = QObject::tr( "Unable to remove auxiliary field (%1)" ).arg( errors );
     mMessageBar->pushMessage( title, msg, Qgis::Warning, timeout );
   }

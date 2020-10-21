@@ -143,11 +143,11 @@ void TestQgsQuickUtils::formatDistance()
 void TestQgsQuickUtils::loadIcon()
 {
   QUrl url = utils.getThemeIcon( "ic_save_white" );
-  Q_ASSERT( url.toString() == QStringLiteral( "qrc:/ic_save_white.svg" ) );
+  Q_ASSERT( url.toString() == QLatin1String( "qrc:/ic_save_white.svg" ) );
 
   QFileInfo fileInfo( url.toString() );
   QString fileName( fileInfo.fileName() );
-  Q_ASSERT( fileName == QStringLiteral( "ic_save_white.svg" ) );
+  Q_ASSERT( fileName == QLatin1String( "ic_save_white.svg" ) );
 }
 
 void TestQgsQuickUtils::fileExists()

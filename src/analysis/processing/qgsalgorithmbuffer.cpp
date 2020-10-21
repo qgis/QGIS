@@ -183,7 +183,7 @@ QgsProcessingAlgorithm::Flags QgsBufferAlgorithm::flags() const
 QgsProcessingAlgorithm::VectorProperties QgsBufferAlgorithm::sinkProperties( const QString &sink, const QVariantMap &parameters, QgsProcessingContext &context, const QMap<QString, QgsProcessingAlgorithm::VectorProperties> &sourceProperties ) const
 {
   QgsProcessingAlgorithm::VectorProperties result;
-  if ( sink == QStringLiteral( "OUTPUT" ) )
+  if ( sink == QLatin1String( "OUTPUT" ) )
   {
     if ( sourceProperties.value( QStringLiteral( "INPUT" ) ).availability == QgsProcessingAlgorithm::Available )
     {

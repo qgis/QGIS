@@ -33,6 +33,8 @@ import re
 import traceback
 
 from qgis.core import QgsApplication, QgsSettings, Qgis
+from qgis.gui import QgsCodeEditor
+
 from .ui_console_history_dlg import Ui_HistoryDialogPythonConsole
 
 _init_commands = ["import sys", "import os", "import re", "import math", "from qgis.core import *",
@@ -105,6 +107,18 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
         self.newShortcutCAS.activated.connect(self.autoComplete)
         self.newShortcutCSS.activated.connect(self.showHistory)
 
+    def initializeLexer(self):
+        super().initializeLexer()
+        self.setCaretLineVisible(False)
+        self.setLineNumbersVisible(False)  # NO linenumbers for the input line
+        self.setFoldingVisible(False)
+        # Margin 1 is used for the '>>>' prompt (console input)
+        self.setMarginLineNumbers(1, True)
+        self.setMarginWidth(1, "00000")
+        self.setMarginType(1, 5)  # TextMarginRightJustified=5
+        self.setMarginsBackgroundColor(self.color(QgsCodeEditorColorScheme.ColorRole.Background))
+        self.setEdgeMode(QsciScintilla.EdgeNone)
+
     def _setMinimumHeight(self):
         font = self.lexer().defaultFont(0)
         fm = QFontMetrics(font)
@@ -117,19 +131,6 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
 
         # Sets minimum height for input area based of font metric
         self._setMinimumHeight()
-
-        self.setCaretLineVisible(False)
-        self.setMarginLineNumbers(0, False)  # NO linenumbers for the input line
-        self.setMarginWidth(0, 0)
-        # margin 2 is the folding
-        self.setMarginWidth(2, 0)
-        # Margin 1 is used for the '>>>' prompt (console input)
-        self.setMarginLineNumbers(1, True)
-        self.setMarginWidth(1, "00000")
-        self.setMarginType(1, 5)  # TextMarginRightJustified=5
-        self.setMarginsBackgroundColor(self.color(QgsCodeEditorColorScheme.ColorRole.Background))
-        self.setFoldingVisible(False)
-        self.setEdgeMode(QsciScintilla.EdgeNone)
 
     def showHistory(self):
         if not self.historyDlg.isVisible():
@@ -597,6 +598,10 @@ class HistoryDialog(QDialog, Ui_HistoryDialogPythonConsole):
             item = itemsSelected[0].row()
             # Remove item from the command history (just for the current session)
             self.parent.history.pop(item)
-            self.parent.historyIndex -= 1
+            self.parent.softHistory.pop(item)
+            if item < self.parent.softHistoryIndex:
+                self.parent.softHistoryIndex -= 1
+            self.parent.setText(self.parent.softHistory[self.parent.softHistoryIndex])
+            self.parent.move_cursor_to_end()
             # Remove row from the command history dialog
             self.model.removeRow(item)

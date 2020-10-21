@@ -159,7 +159,7 @@ Sets coordinate transform context for transforms between layers and tile matrix 
     bool writeTiles( QgsFeedback *feedback = 0 );
 %Docstring
 Writes vector tiles according to the configuration.
-Returns true on success (upon failure one can get error cause using :py:func:`~QgsVectorTileWriter.errorMessage`)
+Returns ``True`` on success (upon failure one can get error cause using :py:func:`~QgsVectorTileWriter.errorMessage`)
 
 If a pointer to a feedback object is provided, it can be used to track progress or
 provide cancellation functionality.

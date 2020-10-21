@@ -70,7 +70,7 @@ void QgsRuleBased3DRendererWidget::setLayer( QgsVectorLayer *layer )
   mLayer = layer;
 
   QgsAbstract3DRenderer *r = layer->renderer3D();
-  if ( r && r->type() == QStringLiteral( "rulebased" ) )
+  if ( r && r->type() == QLatin1String( "rulebased" ) )
   {
     QgsRuleBased3DRenderer *ruleRenderer = static_cast<QgsRuleBased3DRenderer *>( r );
     mRootRule = ruleRenderer->rootRule()->clone();

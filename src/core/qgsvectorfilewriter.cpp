@@ -427,7 +427,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   // consider spatial reference system of the layer
   if ( driverName == QLatin1String( "KML" ) || driverName == QLatin1String( "LIBKML" ) || driverName == QLatin1String( "GPX" ) )
   {
-    if ( srs.authid() != QStringLiteral( "EPSG:4326" ) )
+    if ( srs.authid() != QLatin1String( "EPSG:4326" ) )
     {
       // Those drivers outputs WGS84 geometries, let's align our output CRS to have QGIS take charge of geometry transformation
       QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromEpsgId( 4326 );
@@ -453,7 +453,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   OGRwkbGeometryType wkbType = ogrTypeFromWkbType( geometryType );
 
   // Remove FEATURE_DATASET layer option (used for ESRI File GDB driver) if its value is not set
-  int optIndex = layerOptions.indexOf( QStringLiteral( "FEATURE_DATASET=" ) );
+  int optIndex = layerOptions.indexOf( QLatin1String( "FEATURE_DATASET=" ) );
   if ( optIndex != -1 )
   {
     layerOptions.removeAt( optIndex );

@@ -28,7 +28,8 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsProject,
     QgsProcessingException,
-    QgsVectorLayer
+    QgsVectorLayer,
+    QgsFeatureSink
 )
 from processing.core.Processing import Processing
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -911,6 +912,27 @@ class TestQgsProcessingInPlace(unittest.TestCase):
             pks.add(f.attribute(0))
 
         self.assertTrue(gpkg_layer.commitChanges())
+
+    def test_regenerate_fid(self):
+        """Test RegeneratePrimaryKey flag"""
+
+        temp_dir = QTemporaryDir()
+        temp_path = temp_dir.path()
+        gpkg_name = 'bug_31634_Multi_to_Singleparts_FID.gpkg'
+        gpkg_path = os.path.join(temp_path, gpkg_name)
+        shutil.copyfile(os.path.join(unitTestDataPath(), gpkg_name), gpkg_path)
+
+        gpkg_layer = QgsVectorLayer(gpkg_path + '|layername=Multi_to_Singleparts_FID_bug', 'lyr', 'ogr')
+        self.assertTrue(gpkg_layer.isValid())
+
+        f = next(gpkg_layer.getFeatures())
+        self.assertEqual(f['fid'], 1)
+        res = QgsVectorLayerUtils.makeFeatureCompatible(f, gpkg_layer)
+        self.assertEqual([ff['fid'] for ff in res], [1])
+
+        # if RegeneratePrimaryKey set then we should discard fid field
+        res = QgsVectorLayerUtils.makeFeatureCompatible(f, gpkg_layer, QgsFeatureSink.RegeneratePrimaryKey)
+        self.assertEqual([ff['fid'] for ff in res], [None])
 
 
 if __name__ == '__main__':

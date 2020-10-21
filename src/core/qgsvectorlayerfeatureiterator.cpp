@@ -317,7 +317,7 @@ QgsVectorLayerFeatureIterator::~QgsVectorLayerFeatureIterator()
 /**
  * This class guards against infinite recursion.
  * The counter will be created per thread and hasStackOverflow will return
- * true if more than maxDepth instances are created in parallel in a thread.
+ * TRUE if more than maxDepth instances are created in parallel in a thread.
  */
 class QgsThreadStackOverflowGuard
 {

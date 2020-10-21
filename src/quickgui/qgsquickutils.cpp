@@ -167,7 +167,7 @@ const QUrl QgsQuickUtils::getEditorComponentSource( const QString &widgetName )
   }
   else
   {
-    return QUrl( path.arg( QStringLiteral( "textedit" ) ) );
+    return QUrl( path.arg( QLatin1String( "textedit" ) ) );
   }
 }
 

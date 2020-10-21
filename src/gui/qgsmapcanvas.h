@@ -303,7 +303,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * Centers canvas extent to feature ids
      * \param layer the vector layer
      * \param ids the feature ids
-     * \param alwaysRecenter if false, the canvas is recentered only if the bounding box is not contained within the current extent
+     * \param alwaysRecenter if FALSE, the canvas is recentered only if the bounding box is not contained within the current extent
      */
     void panToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids, bool alwaysRecenter = true );
 
@@ -1283,7 +1283,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * \param layer the layer
      * \param bbox out: bounding box
      * \param errorMsg error message in case of error
-     * \returns true in case of success
+     * \returns TRUE in case of success
     */
     bool boundingBoxOfFeatureIds( const QgsFeatureIds &ids, QgsVectorLayer *layer, QgsRectangle &bbox, QString &errorMsg ) const;
 

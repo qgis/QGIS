@@ -90,7 +90,7 @@ void QgsLayoutAtlasToImageAlgorithm::initAlgorithm( const QVariantMap & )
       continue;
     imageFormats << QString( format );
   }
-  std::unique_ptr< QgsProcessingParameterEnum > extensionParam = qgis::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "EXTENSION" ), QObject::tr( "Image format" ), imageFormats, false, imageFormats.indexOf( QStringLiteral( "png" ) ) );
+  std::unique_ptr< QgsProcessingParameterEnum > extensionParam = qgis::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "EXTENSION" ), QObject::tr( "Image format" ), imageFormats, false, imageFormats.indexOf( QLatin1String( "png" ) ) );
   extensionParam->setFlags( extensionParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( extensionParam.release() );
 

@@ -298,7 +298,7 @@ void QgsRelationReferenceWidget::setForeignKeys( const QVariantList &values )
       QStringList titleFields;
       for ( const QString &fieldName : qgis::as_const( mReferencedFields ) )
         titleFields << mFeature.attribute( fieldName ).toString();
-      title = titleFields.join( QStringLiteral( " " ) );
+      title = titleFields.join( QLatin1Char( ' ' ) );
     }
     mLineEdit->setText( title );
   }
@@ -772,7 +772,7 @@ void QgsRelationReferenceWidget::featureIdentified( const QgsFeature &feature )
       QStringList titleFields;
       for ( const QString &fieldName : qgis::as_const( mReferencedFields ) )
         titleFields << mFeature.attribute( fieldName ).toString();
-      title = titleFields.join( QStringLiteral( " " ) );
+      title = titleFields.join( QLatin1Char( ' ' ) );
     }
     mLineEdit->setText( title );
     mForeignKeys.clear();
@@ -927,10 +927,10 @@ void QgsRelationReferenceWidget::filterChanged()
 
           QString expression = filterExpression;
           if ( ! filterExpression.isEmpty() && ! filtersAttrs.values().isEmpty() )
-            expression += QStringLiteral( " AND " );
+            expression += QLatin1String( " AND " );
 
           expression += filtersAttrs.isEmpty() ? QString() : QStringLiteral( " ( " );
-          expression += filtersAttrs.values().join( QStringLiteral( " AND " ) );
+          expression += filtersAttrs.values().join( QLatin1String( " AND " ) );
           expression += filtersAttrs.isEmpty() ? QString() : QStringLiteral( " ) " );
 
           subset << mReferencedLayer->fields().lookupField( fieldName );
@@ -963,10 +963,10 @@ void QgsRelationReferenceWidget::filterChanged()
   }
 
   if ( ! filterExpression.isEmpty() && ! filters.values().isEmpty() )
-    filterExpression += QStringLiteral( " AND " );
+    filterExpression += QLatin1String( " AND " );
 
   filterExpression += filters.isEmpty() ? QString() : QStringLiteral( " ( " );
-  filterExpression += filters.values().join( QStringLiteral( " AND " ) );
+  filterExpression += filters.values().join( QLatin1String( " AND " ) );
   filterExpression += filters.isEmpty() ? QString() : QStringLiteral( " ) " );
 
   mComboBox->setFilterExpression( filterExpression );

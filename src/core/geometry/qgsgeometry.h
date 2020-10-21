@@ -885,7 +885,7 @@ class CORE_EXPORT QgsGeometry
      * \param[out] newGeometries list of new geometries that have been created with the split
      * \param topological TRUE if topological editing is enabled
      * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
-     * \param splitFeature Set to True if you want to split a feature, otherwise set to False to split parts
+     * \param splitFeature Set to TRUE if you want to split a feature, otherwise set to FALSE to split parts
      * \returns OperationResult a result code: success or reason of failure
      * \deprecated since QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
      */
@@ -897,8 +897,10 @@ class CORE_EXPORT QgsGeometry
      * \param[out] newGeometries list of new geometries that have been created with the ``splitLine``. If the geometry is 3D, a linear interpolation of the z value is performed on the geometry at split points, see example.
      * \param topological TRUE if topological editing is enabled
      * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
-     * \param splitFeature Set to True if you want to split a feature, otherwise set to False to split parts
+     * \param splitFeature Set to TRUE if you want to split a feature, otherwise set to FALSE to split parts
      * fix this bug?
+     * \param skipIntersectionTest set to TRUE to skip the potentially expensive initial intersection check. Only set this flag if an intersection
+     * test has already been performed by the caller! Not available in Python bindings.
      * \returns OperationResult a result code: success or reason of failure
      *
      * Example:
@@ -910,7 +912,7 @@ class CORE_EXPORT QgsGeometry
      *  > LineStringZ (2749549.12 1262908.38 125.14, 2749557.82 1262920.06 200)
      * \endcode
      */
-    OperationResult splitGeometry( const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries SIP_OUT, bool topological, QgsPointSequence &topologyTestPoints SIP_OUT, bool splitFeature = true );
+    OperationResult splitGeometry( const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries SIP_OUT, bool topological, QgsPointSequence &topologyTestPoints SIP_OUT, bool splitFeature = true, bool skipIntersectionTest SIP_PYARGREMOVE = false );
 
     /**
      * Splits this geometry according to a given curve.
@@ -919,7 +921,7 @@ class CORE_EXPORT QgsGeometry
      * \param preserveCircular whether if circular strings are preserved after splitting
      * \param topological TRUE if topological editing is enabled
      * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
-     * \param splitFeature Set to True if you want to split a feature, otherwise set to False to split parts
+     * \param splitFeature Set to TRUE if you want to split a feature, otherwise set to FALSE to split parts
      * \returns OperationResult a result code: success or reason of failure
      * \since QGIS 3.16
      */

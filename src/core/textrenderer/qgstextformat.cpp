@@ -407,7 +407,7 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
 {
   d->isValid = true;
   QDomElement textStyleElem;
-  if ( elem.nodeName() == QStringLiteral( "text-style" ) )
+  if ( elem.nodeName() == QLatin1String( "text-style" ) )
     textStyleElem = elem;
   else
     textStyleElem = elem.firstChildElement( QStringLiteral( "text-style" ) );

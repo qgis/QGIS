@@ -1225,23 +1225,23 @@ void TestQgsLayoutMapGrid::annotationFormats()
   QgsExpressionContext expressionContext = gridGeographic.createExpressionContext();
 
   //normal e/w
-  QCOMPARE( gridGeographic.gridAnnotationString( 90, QgsLayoutItemMapGrid::Longitude, expressionContext ), QString( "90.0" ) + QChar( 176 ) + QString( "E" ) );
+  QCOMPARE( gridGeographic.gridAnnotationString( 90, QgsLayoutItemMapGrid::Longitude, expressionContext ), QString( "90.0°E" ) );
   QCOMPARE( gridProjected.gridAnnotationString( 90, QgsLayoutItemMapGrid::Longitude, expressionContext ), QString( "90.0E" ) );
 
   //0 degrees
-  QCOMPARE( gridGeographic.gridAnnotationString( 0, QgsLayoutItemMapGrid::Longitude, expressionContext ), QString( "0.0" ) + QChar( 176 ) );
+  QCOMPARE( gridGeographic.gridAnnotationString( 0, QgsLayoutItemMapGrid::Longitude, expressionContext ), QString( "0.0°" ) );
   QCOMPARE( gridProjected.gridAnnotationString( 0, QgsLayoutItemMapGrid::Longitude, expressionContext ), QString( "0.0E" ) );
 
   //180 degrees
-  QCOMPARE( gridGeographic.gridAnnotationString( 180, QgsLayoutItemMapGrid::Longitude, expressionContext ), QString( "180.0" ) + QChar( 176 ) );
+  QCOMPARE( gridGeographic.gridAnnotationString( 180, QgsLayoutItemMapGrid::Longitude, expressionContext ), QString( "180.0°" ) );
   QCOMPARE( gridProjected.gridAnnotationString( 180, QgsLayoutItemMapGrid::Longitude, expressionContext ), QString( "180.0E" ) );
 
   //normal n/s
-  QCOMPARE( gridGeographic.gridAnnotationString( 45, QgsLayoutItemMapGrid::Latitude, expressionContext ), QString( "45.0" ) + QChar( 176 ) + QString( "N" ) );
+  QCOMPARE( gridGeographic.gridAnnotationString( 45, QgsLayoutItemMapGrid::Latitude, expressionContext ), QString( "45.0°N" ) );
   QCOMPARE( gridProjected.gridAnnotationString( 45, QgsLayoutItemMapGrid::Latitude, expressionContext ), QString( "45.0N" ) );
 
   //0 north/south
-  QCOMPARE( gridGeographic.gridAnnotationString( 0, QgsLayoutItemMapGrid::Latitude, expressionContext ), QString( "0.0" ) + QChar( 176 ) );
+  QCOMPARE( gridGeographic.gridAnnotationString( 0, QgsLayoutItemMapGrid::Latitude, expressionContext ), QString( "0.0°" ) );
   QCOMPARE( gridProjected.gridAnnotationString( 0, QgsLayoutItemMapGrid::Latitude, expressionContext ), QString( "0.0N" ) );
 
   //Custom format annotations

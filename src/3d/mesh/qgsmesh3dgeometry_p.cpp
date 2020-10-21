@@ -254,7 +254,7 @@ class MeshDatasetVertexBufferFunctor : public QBufferDataGenerator
   public:
 
     /**
-     * verticalRelative parameter is true when the vertical magnitude provides from the sum of the z vertices and the scalar dataset chosen
+     * verticalRelative parameter is TRUE when the vertical magnitude provides from the sum of the z vertices and the scalar dataset chosen
      * for rendering the vertical component.
      */
     explicit MeshDatasetVertexBufferFunctor( const QgsTriangularMesh &mesh,
@@ -416,7 +416,7 @@ int QgsMeshDataset3dGeometry::extractDataset( QVector<double> &verticalMagnitude
     //if invalid (for example, static mode) use the scalar dataset index
     int vertDataSetIndex = scalarDatasetIndex.dataset();
     vertDataSetIndex = std::min( vertDataSetIndex, layer->datasetCount( mVerticalGroupDatasetIndex ) - 1 );
-    verticalMagDatasetIndex = QgsMeshDatasetIndex( vertDataSetIndex, mVerticalGroupDatasetIndex );
+    verticalMagDatasetIndex = QgsMeshDatasetIndex( mVerticalGroupDatasetIndex, vertDataSetIndex );
   }
   //define the active face for vertical magnitude, the inactive faces will not be rendered
   // The active face flag values are defined based on the vertival magnitude dataset

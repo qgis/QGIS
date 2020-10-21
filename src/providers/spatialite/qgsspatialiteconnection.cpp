@@ -152,7 +152,7 @@ int QgsSpatiaLiteConnection::checkHasMetadataTables( sqlite3 *handle )
   ret = sqlite3_get_table( handle, "PRAGMA table_info(geometry_columns)", &results, &rows, &columns, &errMsg );
   if ( ret != SQLITE_OK )
   {
-    mErrorMsg = tr( "table info on %1 failed" ).arg( QStringLiteral( "geometry_columns" ) );
+    mErrorMsg = tr( "table info on %1 failed" ).arg( QLatin1String( "geometry_columns" ) );
     goto error;
   }
   if ( rows < 1 )
@@ -188,7 +188,7 @@ int QgsSpatiaLiteConnection::checkHasMetadataTables( sqlite3 *handle )
   ret = sqlite3_get_table( handle, "PRAGMA table_info(spatial_ref_sys)", &results, &rows, &columns, &errMsg );
   if ( ret != SQLITE_OK )
   {
-    mErrorMsg = tr( "table info on %1 failed" ).arg( QStringLiteral( "spatial_ref_sys" ) );
+    mErrorMsg = tr( "table info on %1 failed" ).arg( QLatin1String( "spatial_ref_sys" ) );
     goto error;
   }
   if ( rows < 1 )

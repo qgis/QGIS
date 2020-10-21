@@ -161,7 +161,7 @@ void TestQgsValueRelationWidgetWrapper::testDrillDown()
   QVERIFY( vl2.dataProvider()->addFeature( f3 ) );
 
   // build a value relation widget wrapper for municipality
-  QgsValueRelationWidgetWrapper w_municipality( &vl2, vl2.fields().indexOf( QStringLiteral( "fk_municipality" ) ), nullptr, nullptr );
+  QgsValueRelationWidgetWrapper w_municipality( &vl2, vl2.fields().indexOf( QLatin1String( "fk_municipality" ) ), nullptr, nullptr );
   QVariantMap cfg_municipality;
   cfg_municipality.insert( QStringLiteral( "Layer" ), vl1.id() );
   cfg_municipality.insert( QStringLiteral( "Key" ),  QStringLiteral( "pk" ) );
@@ -270,7 +270,7 @@ void TestQgsValueRelationWidgetWrapper::testDrillDownMulti()
   QVERIFY( vl2.dataProvider()->addFeature( f3 ) );
 
   // build a value relation widget wrapper for municipality
-  QgsValueRelationWidgetWrapper w_municipality( &vl2, vl2.fields().indexOf( QStringLiteral( "fk_municipality" ) ), nullptr, nullptr );
+  QgsValueRelationWidgetWrapper w_municipality( &vl2, vl2.fields().indexOf( QLatin1String( "fk_municipality" ) ), nullptr, nullptr );
   QVariantMap cfg_municipality;
   cfg_municipality.insert( QStringLiteral( "Layer" ), vl1.id() );
   cfg_municipality.insert( QStringLiteral( "Key" ),  QStringLiteral( "pk" ) );
@@ -374,7 +374,7 @@ void TestQgsValueRelationWidgetWrapper::testZeroIndexInRelatedTable()
   QVERIFY( vl2.dataProvider()->addFeature( f3 ) );
 
   // build a value relation widget wrapper for municipality
-  QgsValueRelationWidgetWrapper w_municipality( &vl2, vl2.fields().indexOf( QStringLiteral( "fk_municipality" ) ), nullptr, nullptr );
+  QgsValueRelationWidgetWrapper w_municipality( &vl2, vl2.fields().indexOf( QLatin1String( "fk_municipality" ) ), nullptr, nullptr );
   QVariantMap cfg_municipality;
   cfg_municipality.insert( QStringLiteral( "Layer" ), vl1.id() );
   cfg_municipality.insert( QStringLiteral( "Key" ),  QStringLiteral( "pk" ) );
@@ -415,7 +415,7 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInPostgres()
   QCOMPARE( vl_json->fields().at( 1 ).type(), QVariant::Map );
 
   // build a value relation widget wrapper for json field
-  QgsValueRelationWidgetWrapper w_favoriteauthors( vl_json, vl_json->fields().indexOf( QStringLiteral( "jvalue" ) ), nullptr, nullptr );
+  QgsValueRelationWidgetWrapper w_favoriteauthors( vl_json, vl_json->fields().indexOf( QLatin1String( "jvalue" ) ), nullptr, nullptr );
   QVariantMap cfg_favoriteauthors;
   cfg_favoriteauthors.insert( QStringLiteral( "Layer" ), vl_authors->id() );
   cfg_favoriteauthors.insert( QStringLiteral( "Key" ),  QStringLiteral( "pk" ) );
@@ -460,7 +460,7 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInPostgres()
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->checkState(), Qt::Unchecked );
 
   // build a value relation widget wrapper for jsonb field
-  QgsValueRelationWidgetWrapper w_favoriteauthors_b( vl_json, vl_json->fields().indexOf( QStringLiteral( "jbvalue" ) ), nullptr, nullptr );
+  QgsValueRelationWidgetWrapper w_favoriteauthors_b( vl_json, vl_json->fields().indexOf( QLatin1String( "jbvalue" ) ), nullptr, nullptr );
   QVariantMap cfg_favoriteauthors_b;
   cfg_favoriteauthors_b.insert( QStringLiteral( "Layer" ), vl_authors->id() );
   cfg_favoriteauthors_b.insert( QStringLiteral( "Key" ),  QStringLiteral( "pk" ) );
@@ -528,7 +528,7 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInGPKG()
   vl_json->startEditing();
 
   // build a value relation widget wrapper for authors
-  QgsValueRelationWidgetWrapper w_favoriteauthors( vl_json, vl_json->fields().indexOf( QStringLiteral( "json_content" ) ), nullptr, nullptr );
+  QgsValueRelationWidgetWrapper w_favoriteauthors( vl_json, vl_json->fields().indexOf( QLatin1String( "json_content" ) ), nullptr, nullptr );
   QVariantMap cfg_favoriteauthors;
   cfg_favoriteauthors.insert( QStringLiteral( "Layer" ), vl_authors->id() );
   cfg_favoriteauthors.insert( QStringLiteral( "Key" ),  QStringLiteral( "fid" ) );
@@ -656,7 +656,7 @@ void TestQgsValueRelationWidgetWrapper::testWithTextInGPKG()
   vl_text->startEditing();
 
   // build a value relation widget wrapper for authors
-  QgsValueRelationWidgetWrapper w_favoriteauthors( vl_text, vl_text->fields().indexOf( QStringLiteral( "PRFEDEA" ) ), nullptr, nullptr );
+  QgsValueRelationWidgetWrapper w_favoriteauthors( vl_text, vl_text->fields().indexOf( QLatin1String( "PRFEDEA" ) ), nullptr, nullptr );
   QVariantMap cfg_favoriteauthors;
   cfg_favoriteauthors.insert( QStringLiteral( "Layer" ), vl_authors->id() );
   cfg_favoriteauthors.insert( QStringLiteral( "Key" ),  QStringLiteral( "fid" ) );
@@ -787,7 +787,7 @@ void TestQgsValueRelationWidgetWrapper::testWithTextInGPKG()
   vl_text_reread->startEditing();
 
   // build a value relation widget wrapper for authors
-  QgsValueRelationWidgetWrapper w_favoriteauthors_reread( vl_text_reread, vl_text->fields().indexOf( QStringLiteral( "PRFEDEA" ) ), nullptr, nullptr );
+  QgsValueRelationWidgetWrapper w_favoriteauthors_reread( vl_text_reread, vl_text->fields().indexOf( QLatin1String( "PRFEDEA" ) ), nullptr, nullptr );
   w_favoriteauthors_reread.setConfig( cfg_favoriteauthors );
   w_favoriteauthors_reread.widget();
   w_favoriteauthors_reread.setEnabled( true );
@@ -828,7 +828,7 @@ void TestQgsValueRelationWidgetWrapper::testWithTextInGPKGTextFk()
   vl_text->startEditing();
 
   // build a value relation widget wrapper for authors
-  QgsValueRelationWidgetWrapper w_favoriteauthors( vl_text, vl_text->fields().indexOf( QStringLiteral( "PRFEDEA" ) ), nullptr, nullptr );
+  QgsValueRelationWidgetWrapper w_favoriteauthors( vl_text, vl_text->fields().indexOf( QLatin1String( "PRFEDEA" ) ), nullptr, nullptr );
   QVariantMap cfg_favoriteauthors;
   cfg_favoriteauthors.insert( QStringLiteral( "Layer" ), vl_authors->id() );
   cfg_favoriteauthors.insert( QStringLiteral( "Key" ),  QStringLiteral( "NAME" ) );
@@ -958,7 +958,7 @@ void TestQgsValueRelationWidgetWrapper::testWithTextInGPKGTextFk()
   vl_text_reread->startEditing();
 
   // build a value relation widget wrapper for authors
-  QgsValueRelationWidgetWrapper w_favoriteauthors_reread( vl_text_reread, vl_text_reread->fields().indexOf( QStringLiteral( "PRFEDEA" ) ), nullptr, nullptr );
+  QgsValueRelationWidgetWrapper w_favoriteauthors_reread( vl_text_reread, vl_text_reread->fields().indexOf( QLatin1String( "PRFEDEA" ) ), nullptr, nullptr );
   w_favoriteauthors_reread.setConfig( cfg_favoriteauthors );
   w_favoriteauthors_reread.widget();
   w_favoriteauthors_reread.setEnabled( true );
@@ -1015,7 +1015,7 @@ void TestQgsValueRelationWidgetWrapper::testWithTextInGPKGTextFk()
   vl_text_reread2->startEditing();
 
   // build a value relation widget wrapper for authors
-  QgsValueRelationWidgetWrapper w_favoriteauthors_reread2( vl_text_reread2, vl_text_reread2->fields().indexOf( QStringLiteral( "PRFEDEA" ) ), nullptr, nullptr );
+  QgsValueRelationWidgetWrapper w_favoriteauthors_reread2( vl_text_reread2, vl_text_reread2->fields().indexOf( QLatin1String( "PRFEDEA" ) ), nullptr, nullptr );
   w_favoriteauthors_reread2.setConfig( cfg_favoriteauthors );
   w_favoriteauthors_reread2.widget();
   w_favoriteauthors_reread2.setEnabled( true );
@@ -1055,7 +1055,7 @@ void TestQgsValueRelationWidgetWrapper::testWithTextInGPKGWeirdTextFk()
                myTempFileName );
   QFileInfo myMapFileInfoAuthor( myTempFileName );
   QgsVectorLayer *vl_authors = new QgsVectorLayer( QStringLiteral( R"(dbname='%1' table="%2")" )
-      .arg( myMapFileInfoAuthor.filePath() ).arg( QStringLiteral( "authors" ) ),
+      .arg( myMapFileInfoAuthor.filePath() ).arg( QLatin1String( "authors" ) ),
       QStringLiteral( "test" ),
       QStringLiteral( "spatialite" ) );
   QVERIFY( vl_authors->isValid() );
@@ -1065,7 +1065,7 @@ void TestQgsValueRelationWidgetWrapper::testWithTextInGPKGWeirdTextFk()
   vl_text->startEditing();
 
   // build a value relation widget wrapper for authors
-  QgsValueRelationWidgetWrapper w_favoriteauthors( vl_text, vl_text->fields().indexOf( QStringLiteral( "PRFEDEA" ) ), nullptr, nullptr );
+  QgsValueRelationWidgetWrapper w_favoriteauthors( vl_text, vl_text->fields().indexOf( QLatin1String( "PRFEDEA" ) ), nullptr, nullptr );
   QVariantMap cfg_favoriteauthors;
   cfg_favoriteauthors.insert( QStringLiteral( "Layer" ), vl_authors->id() );
   cfg_favoriteauthors.insert( QStringLiteral( "Key" ),  QStringLiteral( "pk_text" ) );
@@ -1194,7 +1194,7 @@ void TestQgsValueRelationWidgetWrapper::testWithTextInGPKGWeirdTextFk()
   vl_text_reread->startEditing();
 
   // build a value relation widget wrapper for authors
-  QgsValueRelationWidgetWrapper w_favoriteauthors_reread( vl_text_reread, vl_text_reread->fields().indexOf( QStringLiteral( "PRFEDEA" ) ), nullptr, nullptr );
+  QgsValueRelationWidgetWrapper w_favoriteauthors_reread( vl_text_reread, vl_text_reread->fields().indexOf( QLatin1String( "PRFEDEA" ) ), nullptr, nullptr );
   w_favoriteauthors_reread.setConfig( cfg_favoriteauthors );
   w_favoriteauthors_reread.widget();
   w_favoriteauthors_reread.setEnabled( true );
@@ -1230,11 +1230,11 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialite()
                myTempFileName );
   QFileInfo myMapFileInfo( myTempFileName );
   QgsVectorLayer *vl_json = new QgsVectorLayer( QStringLiteral( R"(dbname='%1' table="%2")" )
-      .arg( myMapFileInfo.filePath() ).arg( QStringLiteral( "json" ) ),
+      .arg( myMapFileInfo.filePath() ).arg( QLatin1String( "json" ) ),
       QStringLiteral( "test" ),
       QStringLiteral( "spatialite" ) );
   QgsVectorLayer *vl_authors = new QgsVectorLayer( QStringLiteral( R"(dbname='%1' table="%2")" )
-      .arg( myMapFileInfo.filePath() ).arg( QStringLiteral( "authors" ) ),
+      .arg( myMapFileInfo.filePath() ).arg( QLatin1String( "authors" ) ),
       QStringLiteral( "test" ),
       QStringLiteral( "spatialite" ) );
   const auto fk_field_idx { vl_json->fields().indexOf( fk_field ) };
@@ -1373,11 +1373,11 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialiteTextFk()
                myTempFileName );
   QFileInfo myMapFileInfo( myTempFileName );
   QgsVectorLayer *vl_json = new QgsVectorLayer( QStringLiteral( R"(dbname='%1' table="%2")" )
-      .arg( myMapFileInfo.filePath() ).arg( QStringLiteral( "json" ) ),
+      .arg( myMapFileInfo.filePath() ).arg( QLatin1String( "json" ) ),
       QStringLiteral( "test" ),
       QStringLiteral( "spatialite" ) );
   QgsVectorLayer *vl_authors = new QgsVectorLayer( QStringLiteral( R"(dbname='%1' table="%2")" )
-      .arg( myMapFileInfo.filePath() ).arg( QStringLiteral( "authors" ) ),
+      .arg( myMapFileInfo.filePath() ).arg( QLatin1String( "authors" ) ),
       QStringLiteral( "test" ),
       QStringLiteral( "spatialite" ) );
   const auto fk_field_idx { vl_json->fields().indexOf( fk_field ) };
@@ -1554,7 +1554,7 @@ void TestQgsValueRelationWidgetWrapper::testMatchLayerName()
   QVERIFY( vl2.dataProvider()->addFeature( f3 ) );
 
   // build a value relation widget wrapper for municipality
-  QgsValueRelationWidgetWrapper w_municipality( &vl2, vl2.fields().indexOf( QStringLiteral( "fk_municipality" ) ), nullptr, nullptr );
+  QgsValueRelationWidgetWrapper w_municipality( &vl2, vl2.fields().indexOf( QLatin1String( "fk_municipality" ) ), nullptr, nullptr );
   QVariantMap cfg_municipality;
   cfg_municipality.insert( QStringLiteral( "Layer" ), QStringLiteral( "wrong_id_here_hope_name_is_good" ) );
   cfg_municipality.insert( QStringLiteral( "LayerName" ), vl1.name() );

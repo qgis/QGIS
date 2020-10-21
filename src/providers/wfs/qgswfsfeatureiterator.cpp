@@ -124,7 +124,7 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, int maxFeatures, 
     Q_FOREACH ( const QgsOgcUtils::LayerProperties layerProperties, mShared->mLayerPropertiesList )
     {
       if ( !typenames.isEmpty() )
-        typenames += QLatin1String( "," );
+        typenames += QLatin1Char( ',' );
       typenames += layerProperties.mName;
     }
   }

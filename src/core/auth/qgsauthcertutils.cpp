@@ -571,7 +571,7 @@ QByteArray QgsAuthCertUtils::certsToPemText( const QList<QSslCertificate> &certs
     {
       certslist << cert.toPem();
     }
-    capem = certslist.join( QStringLiteral( "\n" ) ).toLatin1(); //+ "\n";
+    capem = certslist.join( QLatin1Char( '\n' ) ).toLatin1(); //+ "\n";
   }
   return capem;
 }
@@ -714,7 +714,7 @@ QString QgsAuthCertUtils::getCertDistinguishedName( const QSslCertificate &qcert
     dirname, QStringLiteral( "C" ), issuer ? SSL_ISSUER_INFO( qcert, QSslCertificate::CountryName )
     : SSL_SUBJECT_INFO( qcert, QSslCertificate::CountryName ) );
 
-  return dirname.join( QStringLiteral( "," ) );
+  return dirname.join( QLatin1Char( ',' ) );
 }
 
 QString QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::CertTrustPolicy trust )
@@ -742,7 +742,7 @@ QString QgsAuthCertUtils::getColonDelimited( const QString &txt )
   {
     sl << txt.mid( i, ( i + 2 > txt.size() ) ? -1 : 2 );
   }
-  return sl.join( QStringLiteral( ":" ) );
+  return sl.join( QLatin1Char( ':' ) );
 }
 
 QString QgsAuthCertUtils::shaHexForCert( const QSslCertificate &cert, bool formatted )

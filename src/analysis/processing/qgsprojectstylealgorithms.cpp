@@ -34,7 +34,7 @@ bool QgsSaveToStyleVisitor::visit( const QgsStyleEntityVisitorInterface::StyleLe
 {
   if ( mObjects.empty() || mObjects.contains( entity.entity->type() ) )
   {
-    const QString name = ( mParentNames.join( ' ' ) + ' ' + entity.description ).trimmed();
+    const QString name = QString( mParentNames.join( ' ' ) + ' ' + entity.description ).trimmed();
     QString candidate = name;
     int i = 1;
     bool exists = true;

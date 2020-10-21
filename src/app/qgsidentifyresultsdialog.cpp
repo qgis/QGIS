@@ -574,7 +574,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
 
     item = new QTableWidgetItem( QString::number( i ) );
     if ( fields.at( i ).name() == vlayer->displayField() )
-      item->setData( Qt::DisplayRole, vlayer->attributeDisplayName( i ) + " *" );
+      item->setData( Qt::DisplayRole, QString( vlayer->attributeDisplayName( i ) + " *" ) );
     else
       item->setData( Qt::DisplayRole, vlayer->attributeDisplayName( i ) );
     item->setData( Qt::UserRole, fields.at( i ).name() );

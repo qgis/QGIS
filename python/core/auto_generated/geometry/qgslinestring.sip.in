@@ -420,6 +420,16 @@ segment in the line.
 
     virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
 
+
+    QVector< QgsVertexId > collectDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false ) const;
+%Docstring
+Returns a list of any duplicate nodes contained in the geometry, within the specified tolerance.
+
+If ``useZValues`` is ``True`` then z values will also be considered when testing for duplicates.
+
+.. versionadded:: 3.16
+%End
+
     virtual QPolygonF asQPolygonF() const;
 
 

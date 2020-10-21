@@ -45,12 +45,26 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
   public:
 
     /**
+     * Margin roles.
+     *
+     * This enum contains the roles which the different numbered margins are used for.
+     *
+     * \since QGIS 3.16
+     */
+    enum MarginRole
+    {
+      LineNumbers = 0, //!< Line numbers
+      ErrorIndicators = 1, //!< Error indicators
+      FoldingControls = 2, //!< Folding controls
+    };
+
+    /**
      * Construct a new code editor.
      *
      * \param parent The parent QWidget
      * \param title The title to show in the code editor dialog
      * \param folding FALSE: Enable folding for code editor
-     * \param margin FALSE: Enable margin for code editor
+     * \param margin FALSE: Enable margin for code editor (deprecated)
      * \since QGIS 2.6
      */
     QgsCodeEditor( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &title = QString(), bool folding = false, bool margin = false );
@@ -63,16 +77,45 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
 
     /**
      * Set margin visible state
-     *  \param margin Set margin in the editor
+     * \param margin Set margin in the editor
+     * \deprecated Use base class methods for individual margins instead, or setLineNumbersVisible()
      */
-    void setMarginVisible( bool margin );
-    bool marginVisible() { return mMargin; }
+    Q_DECL_DEPRECATED void setMarginVisible( bool margin ) SIP_DEPRECATED;
 
     /**
-     * Set folding visible state
-     *  \param folding Set folding in the editor
+     * Returns whether margins are in a visible state
+     * \deprecated Use base class methods for individual margins instead, or lineNumbersVisible()
+     */
+    Q_DECL_DEPRECATED bool marginVisible() SIP_DEPRECATED { return mMargin; }
+
+    /**
+     * Sets whether line numbers should be visible in the editor.
+     *
+     * Defaults to FALSE.
+     *
+     * \see lineNumbersVisible()
+     * \since QGIS 3.16
+     */
+    void setLineNumbersVisible( bool visible );
+
+    /**
+     * Returns whether line numbers are visible in the editor.
+     *
+     * \see setLineNumbersVisible()
+     * \since QGIS 3.16
+     */
+    bool lineNumbersVisible() const;
+
+    /**
+     * Set whether the folding controls are visible in the editor.
+     * \see foldingVisible()
      */
     void setFoldingVisible( bool folding );
+
+    /**
+     * Returns TRUE if the folding controls are visible in the editor.
+     * \see setFoldingVisible()
+     */
     bool foldingVisible() { return mFolding; }
 
     /**
@@ -135,6 +178,22 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      */
     void setCustomAppearance( const QString &scheme = QString(), const QMap< QgsCodeEditorColorScheme::ColorRole, QColor > &customColors = QMap< QgsCodeEditorColorScheme::ColorRole, QColor >(), const QString &fontFamily = QString(), int fontSize = 0 ) SIP_SKIP;
 
+    /**
+     * Adds a \a warning message and indicator to the specified a \a lineNumber.
+     *
+     * \see clearWarnings()
+     * \since QGIS 3.16
+     */
+    void addWarning( int lineNumber, const QString &warning );
+
+    /**
+     * Clears all warning messages from the editor.
+     *
+     * \see addWarning()
+     * \since QGIS 3.16
+     */
+    void clearWarnings();
+
   protected:
 
     bool isFixedPitch( const QFont &font );
@@ -188,7 +247,11 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     QString mFontFamily;
     int mFontSize = 0;
 
+    QVector< int > mWarningLines;
+
     static QMap< QgsCodeEditorColorScheme::ColorRole, QString > sColorRoleToSettingsKey;
+
+    static constexpr int MARKER_NUMBER = 6;
 };
 
 // clazy:excludeall=qstring-allocations

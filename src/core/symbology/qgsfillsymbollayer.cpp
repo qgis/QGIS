@@ -567,7 +567,7 @@ QgsSymbolLayer *QgsGradientFillSymbolLayer::create( const QgsStringMap &props )
 
   //attempt to create color ramp from props
   QgsColorRamp *gradientRamp = nullptr;
-  if ( props.contains( QStringLiteral( "rampType" ) ) && props[QStringLiteral( "rampType" )] == QStringLiteral( "cpt-city" ) )
+  if ( props.contains( QStringLiteral( "rampType" ) ) && props[QStringLiteral( "rampType" )] == QLatin1String( "cpt-city" ) )
   {
     gradientRamp = QgsCptCityColorRamp::create( props );
   }
@@ -1057,7 +1057,7 @@ QgsSymbolLayer *QgsShapeburstFillSymbolLayer::create( const QgsStringMap &props 
 
   //attempt to create color ramp from props
   QgsColorRamp *gradientRamp = nullptr;
-  if ( props.contains( QStringLiteral( "rampType" ) ) && props[QStringLiteral( "rampType" )] == QStringLiteral( "cpt-city" ) )
+  if ( props.contains( QStringLiteral( "rampType" ) ) && props[QStringLiteral( "rampType" )] == QLatin1String( "cpt-city" ) )
   {
     gradientRamp = QgsCptCityColorRamp::create( props );
   }
@@ -2972,7 +2972,7 @@ QString QgsLinePatternFillSymbolLayer::ogrFeatureStyleWidth( double widthScaleFa
   QString featureStyle;
   featureStyle.append( "Brush(" );
   featureStyle.append( QStringLiteral( "fc:%1" ).arg( mColor.name() ) );
-  featureStyle.append( QStringLiteral( ",bc:%1" ).arg( QStringLiteral( "#00000000" ) ) ); //transparent background
+  featureStyle.append( QStringLiteral( ",bc:%1" ).arg( QLatin1String( "#00000000" ) ) ); //transparent background
   featureStyle.append( ",id:\"ogr-brush-2\"" );
   featureStyle.append( QStringLiteral( ",a:%1" ).arg( mLineAngle ) );
   featureStyle.append( QStringLiteral( ",s:%1" ).arg( mLineWidth * widthScaleFactor ) );

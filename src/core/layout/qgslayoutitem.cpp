@@ -690,7 +690,7 @@ bool QgsLayoutItem::writeXml( QDomElement &parentElement, QDomDocument &doc, con
 
 bool QgsLayoutItem::readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
-  if ( element.nodeName() != QStringLiteral( "LayoutItem" ) )
+  if ( element.nodeName() != QLatin1String( "LayoutItem" ) )
   {
     return false;
   }

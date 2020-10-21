@@ -2029,6 +2029,30 @@ class TestQgsExpression: public QObject
       QCOMPARE( res.toInt(), 1 );
     }
 
+    void test_aggregate_with_variable()
+    {
+      // this checks that a variable can be non static in a aggregate, i.e. the result will change across the fetched features
+      // see https://github.com/qgis/QGIS/issues/33382
+      QgsExpressionContext context;
+      context.appendScope( QgsExpressionContextUtils::layerScope( mAggregatesLayer ) );
+      QgsFeature f;
+
+      QgsFeatureIterator it = mAggregatesLayer->getFeatures();
+
+      while ( it.nextFeature( f ) )
+      {
+        context.setFeature( f );
+        QgsExpression exp( QString( "with_variable('my_var',\"col1\", aggregate(layer:='aggregate_layer', aggregate:='concatenate_unique', expression:=\"col2\", filter:=\"col1\"=@my_var))" ) );
+        QString res = exp.evaluate( &context ).toString();
+        QCOMPARE( res, f.attribute( "col2" ).toString() );
+
+        // also test for generic aggregates
+        exp = QString( "with_variable('my_var',\"col1\", sum(expression:=\"col1\", filter:=\"col1\"=@my_var))" );
+        int res2 = exp.evaluate( &context ).toInt();
+        QCOMPARE( res2, f.attribute( "col1" ).toInt() );
+      }
+    }
+
     void aggregate_data()
     {
       QTest::addColumn<QString>( "string" );
@@ -2170,6 +2194,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "group by and filter named" ) << "sum(expression:=\"col1\", group_by:=\"col3\", filter:=\"col1\">=3)" << false << QVariant( 7 );
       QTest::newRow( "group by expression" ) << "sum(\"col1\", \"col1\" % 2)" << false << QVariant( 14 );
       QTest::newRow( "group by with null value" ) << "sum(\"col1\", \"col4\")" << false << QVariant( 8 );
+
+      QTest::newRow( "filter by @parent attribute in generic aggregate" ) << "maximum(\"col1\", filter:=\"col1\"<attribute(@parent,'col1'))" << false << QVariant( 3 );
     }
 
     void maptip_display_data()

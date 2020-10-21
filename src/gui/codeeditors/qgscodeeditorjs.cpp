@@ -29,7 +29,6 @@ QgsCodeEditorJavascript::QgsCodeEditorJavascript( QWidget *parent )
   {
     setTitle( tr( "JavaScript Editor" ) );
   }
-  setMarginVisible( false );
   setFoldingVisible( true );
   QgsCodeEditorJavascript::initializeLexer();
 }
@@ -61,5 +60,6 @@ void QgsCodeEditorJavascript::initializeLexer()
   lexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::Identifier ), QsciLexerJavaScript::Identifier );
 
   setLexer( lexer );
+  setLineNumbersVisible( true );
   runPostLexerConfigurationTasks();
 }

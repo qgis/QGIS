@@ -687,9 +687,9 @@ QString QgsOgrProvider::ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const
   {
     geom = ogrWkbGeometryTypeName( wkbFlatten( type ) );
     if ( wkbHasZ( type ) )
-      geom += QLatin1String( "Z" );
+      geom += QLatin1Char( 'Z' );
     if ( wkbHasM( type ) )
-      geom += QLatin1String( "M" );
+      geom += QLatin1Char( 'M' );
     return geom;
   }
 
@@ -1441,11 +1441,11 @@ QVariant QgsOgrProvider::defaultValue( int fieldId ) const
     return QVariant();
 
   QVariant resultVar = defaultVal;
-  if ( defaultVal == QStringLiteral( "CURRENT_TIMESTAMP" ) )
+  if ( defaultVal == QLatin1String( "CURRENT_TIMESTAMP" ) )
     resultVar = QDateTime::currentDateTime();
-  else if ( defaultVal == QStringLiteral( "CURRENT_DATE" ) )
+  else if ( defaultVal == QLatin1String( "CURRENT_DATE" ) )
     resultVar = QDate::currentDate();
-  else if ( defaultVal == QStringLiteral( "CURRENT_TIME" ) )
+  else if ( defaultVal == QLatin1String( "CURRENT_TIME" ) )
     resultVar = QTime::currentTime();
 
   // Get next sequence value for sqlite in case we are inside a transaction
@@ -1519,8 +1519,7 @@ QString QgsOgrProvider::defaultValueClause( int fieldIndex ) const
 bool QgsOgrProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value ) const
 {
   Q_UNUSED( constraint )
-  // If the field is a fid, skip in case it's the default value
-  if ( fieldIndex == 0 && mFirstFieldIsFid )
+  if ( providerProperty( EvaluateDefaultValues, false ).toBool() )
   {
     return ! mDefaultValues.value( fieldIndex ).isEmpty();
   }
@@ -3363,7 +3362,7 @@ QString createFilters( const QString &type )
           {
             sExtensions << ext;
             if ( !glob.isEmpty() )
-              glob += QLatin1String( " " );
+              glob += QLatin1Char( ' ' );
             glob += "*." + ext;
           }
 
@@ -3396,7 +3395,7 @@ QString createFilters( const QString &type )
     QStringList filters = sFileFilters.split( QStringLiteral( ";;" ), Qt::SkipEmptyParts );
 #endif
     filters.sort();
-    sFileFilters = filters.join( QStringLiteral( ";;" ) ) + ";;";
+    sFileFilters = filters.join( QLatin1String( ";;" ) ) + ";;";
     QgsDebugMsgLevel( "myFileFilters: " + sFileFilters, 2 );
 
     // VSIFileHandler (.zip and .gz files) - second
@@ -3414,7 +3413,7 @@ QString createFilters( const QString &type )
     QStringList exts;
     for ( const QString &ext : qgis::as_const( sExtensions ) )
       exts << QStringLiteral( "*.%1 *.%2" ).arg( ext, ext.toUpper() );
-    sFileFilters.prepend( QObject::tr( "All supported files" ) + QStringLiteral( " (%1);;" ).arg( exts.join( QStringLiteral( " " ) ) ) );
+    sFileFilters.prepend( QObject::tr( "All supported files" ) + QStringLiteral( " (%1);;" ).arg( exts.join( QLatin1Char( ' ' ) ) ) );
 
     // can't forget the default case - first
     sFileFilters.prepend( QObject::tr( "All files" ) + " (*);;" );
@@ -3444,15 +3443,15 @@ QString createFilters( const QString &type )
   }
   if ( type == QLatin1String( "extensions" ) )
   {
-    return sExtensions.join( QStringLiteral( "|" ) );
+    return sExtensions.join( QLatin1Char( '|' ) );
   }
-  if ( type == QStringLiteral( "directory_extensions" ) )
+  if ( type == QLatin1String( "directory_extensions" ) )
   {
-    return sDirectoryExtensions.join( QStringLiteral( "|" ) );
+    return sDirectoryExtensions.join( QLatin1Char( '|' ) );
   }
   if ( type == QLatin1String( "wildcards" ) )
   {
-    return sWildcards.join( QStringLiteral( "|" ) );
+    return sWildcards.join( QLatin1Char( '|' ) );
   }
   else
   {
@@ -3473,9 +3472,9 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri )
 
   if ( path.contains( '|' ) )
   {
-    const QRegularExpression geometryTypeRegex( QStringLiteral( "\\|geometrytype=([a-zA-Z0-9]*)" ) );
-    const QRegularExpression layerNameRegex( QStringLiteral( "\\|layername=([^|]*)" ) );
-    const QRegularExpression layerIdRegex( QStringLiteral( "\\|layerid=([^|]*)" ) );
+    const QRegularExpression geometryTypeRegex( QStringLiteral( "\\|geometrytype=([a-zA-Z0-9]*)" ), QRegularExpression::PatternOption::CaseInsensitiveOption );
+    const QRegularExpression layerNameRegex( QStringLiteral( "\\|layername=([^|]*)" ), QRegularExpression::PatternOption::CaseInsensitiveOption );
+    const QRegularExpression layerIdRegex( QStringLiteral( "\\|layerid=([^|]*)" ), QRegularExpression::PatternOption::CaseInsensitiveOption );
     const QRegularExpression subsetRegex( QStringLiteral( "\\|subset=((?:.*[\r\n]*)*)\\Z" ) );
     const QRegularExpression openOptionRegex( QStringLiteral( "\\|option:([^|]*)" ) );
 
@@ -3582,7 +3581,7 @@ QString QgsOgrProviderMetadata::encodeUri( const QVariantMap &parts )
                 + ( !geometryType.isEmpty() ? QStringLiteral( "|geometrytype=%1" ).arg( geometryType ) : QString() );
   for ( const QString &openOption : openOptions )
   {
-    uri += QStringLiteral( "|option:" );
+    uri += QLatin1String( "|option:" );
     uri += openOption;
   }
   if ( !subset.isEmpty() )
@@ -4169,7 +4168,7 @@ QString QgsOgrProviderUtils::connectionPoolId( const QString &dataSourceURI, boo
     // Otherwise use the datasourceURI
     // Not completely sure about this logic. But at least, for GeoPackage this
     // works fine with multi layer datasets.
-    QString filePath = dataSourceURI.left( dataSourceURI.indexOf( QLatin1String( "|" ) ) );
+    QString filePath = dataSourceURI.left( dataSourceURI.indexOf( QLatin1Char( '|' ) ) );
     QFileInfo fi( filePath );
     if ( fi.isFile() )
       return filePath;
@@ -5817,7 +5816,7 @@ void QgsOgrProviderUtils::releaseDataset( QgsOgrDataset *&ds )
 
 bool QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( const QString &driverName )
 {
-  return driverName != QStringLiteral( "OSM" );
+  return driverName != QLatin1String( "OSM" );
 }
 
 bool QgsOgrProviderUtils::canDriverShareSameDatasetAmongLayers( const QString &driverName,

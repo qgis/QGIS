@@ -296,7 +296,7 @@ void QgsPostgresDataItemGuiProvider::deleteSchema( QgsPGSchemaItem *schemaItem, 
   int count = result.PQntuples();
   if ( count > 0 )
   {
-    QString objects = childObjects.join( QStringLiteral( "\n" ) );
+    QString objects = childObjects.join( QLatin1Char( '\n' ) );
     if ( count > maxListed )
     {
       objects += QStringLiteral( "\n[%1 additional objects not listed]" ).arg( count - maxListed );

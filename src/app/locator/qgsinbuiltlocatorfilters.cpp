@@ -202,9 +202,9 @@ void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *pare
     {
       tooltip = match.captured( 1 );
     }
-    tooltip.replace( QStringLiteral( "..." ), QString() );
+    tooltip.replace( QLatin1String( "..." ), QString() );
     tooltip.replace( QString( QChar( 0x2026 ) ), QString() );
-    searchText.replace( QStringLiteral( "..." ), QString() );
+    searchText.replace( QLatin1String( "..." ), QString() );
     searchText.replace( QString( QChar( 0x2026 ) ), QString() );
     bool uniqueTooltip = searchText.trimmed().compare( tooltip.trimmed(), Qt::CaseInsensitive ) != 0;
     if ( action->isChecked() )
@@ -345,7 +345,7 @@ QStringList QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string,
     }
   }
 
-  QString expression = QStringLiteral( "(%1)" ).arg( expressionParts.join( QStringLiteral( " ) OR ( " ) ) );
+  QString expression = QStringLiteral( "(%1)" ).arg( expressionParts.join( QLatin1String( " ) OR ( " ) ) );
 
   QgsFeatureRequest req;
   if ( !mDispExpression.needsGeometry() )
@@ -1061,7 +1061,7 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
       QStringList fragments = url.fragment().split( '&' );
       for ( const QString &fragment : fragments )
       {
-        if ( fragment.startsWith( QStringLiteral( "map=" ) ) )
+        if ( fragment.startsWith( QLatin1String( "map=" ) ) )
         {
           QStringList params = fragment.mid( 4 ).split( '/' );
           if ( params.size() >= 3 )

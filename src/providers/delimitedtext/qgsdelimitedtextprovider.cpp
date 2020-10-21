@@ -748,28 +748,28 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
       }
     }
 
-    if ( typeName == QStringLiteral( "integer" ) )
+    if ( typeName == QLatin1String( "integer" ) )
     {
       fieldType = QVariant::Int;
     }
-    else if ( typeName == QStringLiteral( "longlong" ) )
+    else if ( typeName == QLatin1String( "longlong" ) )
     {
       fieldType = QVariant::LongLong;
     }
-    else if ( typeName == QStringLiteral( "real" ) || typeName == QStringLiteral( "double" ) )
+    else if ( typeName == QLatin1String( "real" ) || typeName == QLatin1String( "double" ) )
     {
       typeName = QStringLiteral( "double" );
       fieldType = QVariant::Double;
     }
-    else if ( typeName == QStringLiteral( "datetime" ) )
+    else if ( typeName == QLatin1String( "datetime" ) )
     {
       fieldType = QVariant::DateTime;
     }
-    else if ( typeName == QStringLiteral( "date" ) )
+    else if ( typeName == QLatin1String( "date" ) )
     {
       fieldType = QVariant::Date;
     }
-    else if ( typeName == QStringLiteral( "time" ) )
+    else if ( typeName == QLatin1String( "time" ) )
     {
       fieldType = QVariant::Time;
     }

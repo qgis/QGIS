@@ -261,7 +261,7 @@ void TestQgsProcessingAlgs::saveFeaturesAlg()
   QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), dataDir + "/points.shp" );
+  parameters.insert( QStringLiteral( "INPUT" ), QString( dataDir + "/points.shp" ) );
   parameters.insert( QStringLiteral( "LAYER_NAME" ), layerName );
   parameters.insert( QStringLiteral( "LAYER_OPTIONS" ), QStringLiteral( "COORDINATE_PRECISION=1" ) );
   parameters.insert( QStringLiteral( "OUTPUT" ), outputGeoJson );
@@ -769,8 +769,8 @@ void TestQgsProcessingAlgs::categorizeByStyle()
 
   QCOMPARE( catRenderer->categories().count(), 3 );
   QCOMPARE( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "a" ) ) ).symbol()->color().name(), QStringLiteral( "#ff0000" ) );
-  QVERIFY( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "b" ) ) ).symbol()->color().name() != QStringLiteral( "#00ff00" ) );
-  QVERIFY( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "c " ) ) ).symbol()->color().name() != QStringLiteral( "#0000ff" ) );
+  QVERIFY( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "b" ) ) ).symbol()->color().name() != QLatin1String( "#00ff00" ) );
+  QVERIFY( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "c " ) ) ).symbol()->color().name() != QLatin1String( "#0000ff" ) );
   // reset renderer
   layer->setRenderer( new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) ) );
 
@@ -791,7 +791,7 @@ void TestQgsProcessingAlgs::categorizeByStyle()
   QCOMPARE( catRenderer->categories().count(), 3 );
   QCOMPARE( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "a" ) ) ).symbol()->color().name(), QStringLiteral( "#ff0000" ) );
   QCOMPARE( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "b" ) ) ).symbol()->color().name(), QStringLiteral( "#00ff00" ) );
-  QVERIFY( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "c " ) ) ).symbol()->color().name() != QStringLiteral( "#0000ff" ) );
+  QVERIFY( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "c " ) ) ).symbol()->color().name() != QLatin1String( "#0000ff" ) );
   // reset renderer
   layer->setRenderer( new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) ) );
 
@@ -813,7 +813,7 @@ void TestQgsProcessingAlgs::categorizeByStyle()
 
   QCOMPARE( catRenderer->categories().count(), 3 );
   QCOMPARE( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "a" ) ) ).symbol()->color().name(), QStringLiteral( "#ff0000" ) );
-  QVERIFY( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "b" ) ) ).symbol()->color().name() != QStringLiteral( "#00ff00" ) );
+  QVERIFY( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "b" ) ) ).symbol()->color().name() != QLatin1String( "#00ff00" ) );
   QCOMPARE( catRenderer->categories().at( catRenderer->categoryIndexForValue( QStringLiteral( "c " ) ) ).symbol()->color().name(), QStringLiteral( "#0000ff" ) );
   // reset renderer
   layer->setRenderer( new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) ) );
@@ -1667,7 +1667,7 @@ void TestQgsProcessingAlgs::fillNoData()
 
   QVariantMap parameters;
 
-  parameters.insert( QStringLiteral( "INPUT" ), myDataPath + inputRaster );
+  parameters.insert( QStringLiteral( "INPUT" ), QString( myDataPath + inputRaster ) );
   parameters.insert( QStringLiteral( "BAND" ), inputBand );
   parameters.insert( QStringLiteral( "FILL_VALUE" ), fillValue );
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
@@ -2337,7 +2337,7 @@ void TestQgsProcessingAlgs::cellStatistics()
   parameters.insert( QStringLiteral( "INPUT" ), inputDatasetPaths );
   parameters.insert( QStringLiteral( "STATISTIC" ), statistic );
   parameters.insert( QStringLiteral( "IGNORE_NODATA" ), ignoreNoData );
-  parameters.insert( QStringLiteral( "REFERENCE_LAYER" ), myDataPath + referenceLayer );
+  parameters.insert( QStringLiteral( "REFERENCE_LAYER" ), QString( myDataPath + referenceLayer ) );
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
 
   //prepare expectedRaster
@@ -2578,7 +2578,7 @@ void TestQgsProcessingAlgs::rasterFrequencyByComparisonOperator()
 
   QVariantMap parameters;
 
-  parameters.insert( QStringLiteral( "INPUT_VALUE_RASTER" ), myDataPath + inputValueRaster );
+  parameters.insert( QStringLiteral( "INPUT_VALUE_RASTER" ), QString( myDataPath + inputValueRaster ) );
   parameters.insert( QStringLiteral( "INPUT_VALUE_RASTER_BAND" ), inputValueRasterBand );
   parameters.insert( QStringLiteral( "INPUT_RASTERS" ), inputDatasetPaths );
   parameters.insert( QStringLiteral( "IGNORE_NODATA" ), ignoreNoData );
@@ -2724,7 +2724,7 @@ void TestQgsProcessingAlgs::rasterLocalPosition()
   QVariantMap parameters;
 
   parameters.insert( QStringLiteral( "INPUT_RASTERS" ), inputDatasetPaths );
-  parameters.insert( QStringLiteral( "REFERENCE_LAYER" ), myDataPath + referenceRaster );
+  parameters.insert( QStringLiteral( "REFERENCE_LAYER" ), QString( myDataPath + referenceRaster ) );
   parameters.insert( QStringLiteral( "IGNORE_NODATA" ), ignoreNoData );
   parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
 
@@ -2946,7 +2946,7 @@ void TestQgsProcessingAlgs::roundRasterValues()
 
   QVariantMap parameters;
 
-  parameters.insert( QStringLiteral( "INPUT" ), myDataPath + inputRaster );
+  parameters.insert( QStringLiteral( "INPUT" ), QString( myDataPath + inputRaster ) );
   parameters.insert( QStringLiteral( "BAND" ), inputBand );
   parameters.insert( QStringLiteral( "ROUNDING_DIRECTION" ), roundingDirection );
   parameters.insert( QStringLiteral( "DECIMAL_PLACES" ), decimals );
@@ -3084,14 +3084,14 @@ void TestQgsProcessingAlgs::layoutMapExtent()
   QVERIFY( it.nextFeature( f1 ) );
   QgsFeature f2;
   QVERIFY( it.nextFeature( f2 ) );
-  f = f1.attribute( 0 ).toString() == QStringLiteral( "m" ) ? f1 : f2;
+  f = f1.attribute( 0 ).toString() == QLatin1String( "m" ) ? f1 : f2;
   QCOMPARE( f.attribute( 0 ).toString(), QStringLiteral( "m" ) );
   QCOMPARE( f.attribute( 1 ).toDouble(), 150.0 );
   QCOMPARE( f.attribute( 2 ).toDouble(), 180.0 );
   QCOMPARE( f.attribute( 3 ).toDouble(), 10000.0 );
   QCOMPARE( f.attribute( 4 ).toDouble(), 45.0 );
   QCOMPARE( f.geometry().asWkt( 0 ), QStringLiteral( "Polygon ((12077408 -7108521, 12079627 -7107575, 12080760 -7110245, 12078540 -7111191, 12077408 -7108521))" ) );
-  f = f1.attribute( 0 ).toString() == QStringLiteral( "m" ) ? f2 : f1;
+  f = f1.attribute( 0 ).toString() == QLatin1String( "m" ) ? f2 : f1;
   QCOMPARE( f.attribute( 0 ).toString(), QStringLiteral( "m2" ) );
   QCOMPARE( f.attribute( 1 ).toDouble(), 50.0 );
   QCOMPARE( f.attribute( 2 ).toDouble(), 80.0 );
@@ -3113,14 +3113,14 @@ void TestQgsProcessingAlgs::layoutMapExtent()
   it = qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) )->getFeatures();
   QVERIFY( it.nextFeature( f1 ) );
   QVERIFY( it.nextFeature( f2 ) );
-  f = f1.attribute( 0 ).toString() == QStringLiteral( "m" ) ? f1 : f2;
+  f = f1.attribute( 0 ).toString() == QLatin1String( "m" ) ? f1 : f2;
   QCOMPARE( f.attribute( 0 ).toString(), QStringLiteral( "m" ) );
   QCOMPARE( f.attribute( 1 ).toDouble(), 150.0 );
   QCOMPARE( f.attribute( 2 ).toDouble(), 180.0 );
   QCOMPARE( f.attribute( 3 ).toDouble(), 10000.0 );
   QCOMPARE( f.attribute( 4 ).toDouble(), 45.0 );
   QCOMPARE( f.geometry().asWkt( 0 ), QStringLiteral( "Polygon ((33833 140106, 34894 141167, 36167 139894, 35106 138833, 33833 140106))" ) );
-  f = f1.attribute( 0 ).toString() == QStringLiteral( "m" ) ? f2 : f1;
+  f = f1.attribute( 0 ).toString() == QLatin1String( "m" ) ? f2 : f1;
   QCOMPARE( f.attribute( 0 ).toString(), QStringLiteral( "m2" ) );
   QCOMPARE( f.attribute( 1 ).toDouble(), 50.0 );
   QCOMPARE( f.attribute( 2 ).toDouble(), 80.0 );
@@ -3761,21 +3761,21 @@ void TestQgsProcessingAlgs::shapefileEncoding()
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
 
-  parameters.insert( QStringLiteral( "INPUT" ), QStringLiteral( TEST_DATA_DIR ) + "/shapefile/iso-8859-1.shp" );
+  parameters.insert( QStringLiteral( "INPUT" ), QString( QStringLiteral( TEST_DATA_DIR ) + "/shapefile/iso-8859-1.shp" ) );
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
   QCOMPARE( results.value( QStringLiteral( "ENCODING" ) ).toString(), QStringLiteral( "ISO-8859-1" ) );
   QCOMPARE( results.value( QStringLiteral( "CPG_ENCODING" ) ).toString(), QStringLiteral( "ISO-8859-1" ) );
   QCOMPARE( results.value( QStringLiteral( "LDID_ENCODING" ) ).toString(), QString() );
 
-  parameters.insert( QStringLiteral( "INPUT" ), QStringLiteral( TEST_DATA_DIR ) + "/shapefile/windows-1252_ldid.shp" );
+  parameters.insert( QStringLiteral( "INPUT" ), QString( QStringLiteral( TEST_DATA_DIR ) + "/shapefile/windows-1252_ldid.shp" ) );
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
   QCOMPARE( results.value( QStringLiteral( "ENCODING" ) ).toString(), QStringLiteral( "CP1252" ) );
   QCOMPARE( results.value( QStringLiteral( "CPG_ENCODING" ) ).toString(), QString() );
   QCOMPARE( results.value( QStringLiteral( "LDID_ENCODING" ) ).toString(), QStringLiteral( "CP1252" ) );
 
-  parameters.insert( QStringLiteral( "INPUT" ), QStringLiteral( TEST_DATA_DIR ) + "/shapefile/system_encoding.shp" );
+  parameters.insert( QStringLiteral( "INPUT" ), QString( QStringLiteral( TEST_DATA_DIR ) + "/shapefile/system_encoding.shp" ) );
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
   QCOMPARE( results.value( QStringLiteral( "ENCODING" ) ).toString(), QString() );
@@ -4722,7 +4722,7 @@ void TestQgsProcessingAlgs::exportAtlasLayoutPng()
   QVariantMap parameters;
   parameters.insert( QStringLiteral( "LAYOUT" ), QStringLiteral( "my layout" ) );
   parameters.insert( QStringLiteral( "COVERAGE_LAYER" ), QVariant::fromValue( polygonLayer ) );
-  parameters.insert( QStringLiteral( "FOLDER" ), QDir::tempPath() + "/my_atlas" );
+  parameters.insert( QStringLiteral( "FOLDER" ), QString( QDir::tempPath() + "/my_atlas" ) );
   parameters.insert( QStringLiteral( "FILENAME_EXPRESSION" ), QStringLiteral( "'export_'||@atlas_featurenumber" ) );
   parameters.insert( QStringLiteral( "DPI" ), 96 );
 
@@ -4774,7 +4774,7 @@ void TestQgsProcessingAlgs::tinMeshCreation()
 
   QVariantMap parameters;
   parameters.insert( QStringLiteral( "SOURCE_DATA" ), inputLayers );
-  parameters.insert( QStringLiteral( "OUTPUT_MESH" ), QDir::tempPath() + "/meshLayer.2dm" );
+  parameters.insert( QStringLiteral( "OUTPUT_MESH" ), QString( QDir::tempPath() + "/meshLayer.2dm" ) );
   parameters.insert( QStringLiteral( "MESH_FORMAT" ), 0 );
 
   std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();

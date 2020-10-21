@@ -43,8 +43,7 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
   setupUi( this );
   setupButtons( buttonBox );
 
-  mQueryEdit->setMarginWidth( 1, QStringLiteral( "000" ) );
-  mQueryEdit->setMarginLineNumbers( 1, true );
+  mQueryEdit->setLineNumbersVisible( true );
 
   connect( mTestButton, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::testQuery );
   connect( mBrowseCRSBtn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::browseCRS );

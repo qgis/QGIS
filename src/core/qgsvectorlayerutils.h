@@ -20,6 +20,7 @@
 #include "qgsgeometry.h"
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgssymbollayerreference.h"
+#include "qgsfeaturesink.h"
 
 class QgsFeatureRenderer;
 class QgsSymbolLayer;
@@ -264,9 +265,11 @@ class CORE_EXPORT QgsVectorLayerUtils
      * - drop Z/M
      * - convert multi part geometries to single part
      *
+     * Optionally, \a sinkFlags can be specified to further refine the compatibility logic.
+     *
      * \since QGIS 3.4
      */
-    static QgsFeatureList makeFeatureCompatible( const QgsFeature &feature, const QgsVectorLayer *layer );
+    static QgsFeatureList makeFeatureCompatible( const QgsFeature &feature, const QgsVectorLayer *layer, QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() );
 
     /**
      * Converts input \a features to be compatible with the given \a layer.
@@ -285,13 +288,15 @@ class CORE_EXPORT QgsVectorLayerUtils
      * - drop Z/M
      * - convert multi part geometries to single part
      *
+     * Optionally, \a sinkFlags can be specified to further refine the compatibility logic.
+     *
      * \since QGIS 3.4
      */
-    static QgsFeatureList makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer *layer );
+    static QgsFeatureList makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer *layer, QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() );
 
     /**
-     * \return true if the \param feature field at index \param fieldIndex from \param layer
-     * is editable, false if the field is readonly
+     * \return TRUE if the \param feature field at index \param fieldIndex from \param layer
+     * is editable, FALSE if the field is readonly
      *
      * \since QGIS 3.10
      */
@@ -323,12 +328,23 @@ class CORE_EXPORT QgsVectorLayerUtils
     static QString getFeatureDisplayString( const QgsVectorLayer *layer, const QgsFeature &feature );
 
     /**
+     * Flags that can be used when determining cascaded features.
+     *
+     * \since QGIS 3.4
+     */
+    enum CascadedFeatureFlag
+    {
+      IgnoreAuxiliaryLayers = 1 << 1, //!< Ignore auxiliary layers
+    };
+    Q_DECLARE_FLAGS( CascadedFeatureFlags, CascadedFeatureFlag )
+
+    /**
      * \returns TRUE if at least one feature of the \a fids on \a layer is connected as parent in at
      * least one composition relation of the \a project or contains joins, where cascade delete is set.
      * Details about cascading effects will be written to \a context.
      * \since QGIS 3.14
      */
-    static bool impactsCascadeFeatures( const QgsVectorLayer *layer, const QgsFeatureIds &fids, const QgsProject *project, QgsDuplicateFeatureContext &context SIP_OUT );
+    static bool impactsCascadeFeatures( const QgsVectorLayer *layer, const QgsFeatureIds &fids, const QgsProject *project, QgsDuplicateFeatureContext &context SIP_OUT, QgsVectorLayerUtils::CascadedFeatureFlags flags = QgsVectorLayerUtils::CascadedFeatureFlags() );
 
 };
 

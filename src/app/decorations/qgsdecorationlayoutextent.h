@@ -68,7 +68,7 @@ class APP_EXPORT QgsDecorationLayoutExtent : public QgsDecorationItem
     void setTextFormat( const QgsTextFormat &format ) { mTextFormat = format; }
 
     /**
-     * Returns true if layout extents should be labeled with the name of the associated layout & map.
+     * Returns TRUE if layout extents should be labeled with the name of the associated layout & map.
      * \see setLabelExtents()
      * \see textFormat()
      */

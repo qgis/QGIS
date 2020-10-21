@@ -265,7 +265,7 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
       if ( !singleOpDetails.remarks.isEmpty() )
       {
         if ( !text.isEmpty() )
-          text += QStringLiteral( "<br>" );
+          text += QLatin1String( "<br>" );
         text += QStringLiteral( "<b>%1</b>: %2" ).arg( tr( "Remarks" ), singleOpDetails.remarks );
         lastSingleOpRemarks = singleOpDetails.remarks;
       }
@@ -295,7 +295,7 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
     if ( !transform.remarks.isEmpty() && transform.remarks != lastSingleOpRemarks )
     {
       if ( !text.isEmpty() )
-        text += QStringLiteral( "<br>" );
+        text += QLatin1String( "<br>" );
       text += QStringLiteral( "<b>%1</b>: %2" ).arg( tr( "Remarks" ), transform.remarks );
     }
     if ( !text.isEmpty() )
@@ -325,8 +325,8 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
                             static_cast< int >( active.blue() * 0.6 + disabled.blue() * 0.4 ) );
     const QString toolTipString = QStringLiteral( "<b>%1</b>" ).arg( transform.name )
                                   + ( !opText.empty() ? ( opText.count() == 1 ? QStringLiteral( "<p>%1</p>" ).arg( opText.at( 0 ) ) : QStringLiteral( "<ul>%1</ul>" ).arg( opText.join( QString() ) ) ) : QString() )
-                                  + ( !areasOfUse.empty() ? QStringLiteral( "<p><b>%1</b>: %2</p>" ).arg( tr( "Area of use" ), areasOfUse.join( QStringLiteral( ", " ) ) ) : QString() )
-                                  + ( !authorityCodes.empty() ? QStringLiteral( "<p><b>%1</b>: %2</p>" ).arg( tr( "Identifiers" ), authorityCodes.join( QStringLiteral( ", " ) ) ) : QString() )
+                                  + ( !areasOfUse.empty() ? QStringLiteral( "<p><b>%1</b>: %2</p>" ).arg( tr( "Area of use" ), areasOfUse.join( QLatin1String( ", " ) ) ) : QString() )
+                                  + ( !authorityCodes.empty() ? QStringLiteral( "<p><b>%1</b>: %2</p>" ).arg( tr( "Identifiers" ), authorityCodes.join( QLatin1String( ", " ) ) ) : QString() )
                                   + ( !missingMessage.isEmpty() ? QStringLiteral( "<p><b style=\"color: red\">%1</b></p>" ).arg( missingMessage ) : QString() )
                                   + QStringLiteral( "<p><code style=\"color: %1\">%2</code></p>" ).arg( codeColor.name(), transform.proj );
 
@@ -348,7 +348,7 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
     // area of use column
     item = qgis::make_unique< QTableWidgetItem >();
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
-    item->setText( areasOfUse.join( QStringLiteral( ", " ) ) );
+    item->setText( areasOfUse.join( QLatin1String( ", " ) ) );
     item->setToolTip( toolTipString );
     if ( !transform.isAvailable )
     {

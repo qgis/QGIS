@@ -66,8 +66,10 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
     {QgsCodeEditorColorScheme::ColorRole::Edge, mColorEdge },
     {QgsCodeEditorColorScheme::ColorRole::Fold, mColorFold },
     {QgsCodeEditorColorScheme::ColorRole::Error, mColorError },
+    {QgsCodeEditorColorScheme::ColorRole::ErrorBackground, mColorErrorBackground },
     {QgsCodeEditorColorScheme::ColorRole::FoldIconForeground, mColorFoldIcon },
     {QgsCodeEditorColorScheme::ColorRole::FoldIconHalo, mColorFoldIconHalo },
+    {QgsCodeEditorColorScheme::ColorRole::IndentationGuide, mColorIndentation },
   };
 
   for ( auto it = mColorButtonMap.constBegin(); it != mColorButtonMap.constEnd(); ++it )
@@ -113,7 +115,7 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
   connect( mColorSchemeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]
   {
     const QString theme = mColorSchemeComboBox->currentData().toString();
-    if ( theme != QStringLiteral( "custom" ) )
+    if ( theme != QLatin1String( "custom" ) )
     {
       mBlockCustomColorChange = true;
       for ( auto it = mColorButtonMap.constBegin(); it != mColorButtonMap.constEnd(); ++it )
@@ -282,7 +284,7 @@ void QgsCodeEditorOptionsWidget::apply()
   const QString theme = mColorSchemeComboBox->currentData().toString();
 
   QgsSettings settings;
-  const bool customTheme = theme == QStringLiteral( "custom" );
+  const bool customTheme = theme == QLatin1String( "custom" );
   settings.setValue( QStringLiteral( "codeEditor/overrideColors" ), customTheme, QgsSettings::Gui );
   if ( !customTheme )
   {

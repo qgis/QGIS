@@ -66,11 +66,11 @@ QVector<QgsDataItem *> QgsOgrLayerItem::createChildren()
   QVector<QgsDataItem *> children;
   // Geopackage is handled by QgsGeoPackageVectorLayerItem and QgsGeoPackageRasterLayerItem
   // Proxy to spatialite provider data items because it implements the connections API
-  if ( mDriverName == QStringLiteral( "SQLite" ) )
+  if ( mDriverName == QLatin1String( "SQLite" ) )
   {
     children.push_back( new QgsFieldsItem( this,
                                            path() + QStringLiteral( "/columns/ " ),
-                                           QStringLiteral( R"(dbname="%1")" ).arg( parent()->path().replace( '"', QStringLiteral( R"(\")" ) ) ),
+                                           QStringLiteral( R"(dbname="%1")" ).arg( parent()->path().replace( '"', QLatin1String( R"(\")" ) ) ),
                                            QStringLiteral( "spatialite" ), QString(), name() ) );
   }
   return children;
@@ -372,7 +372,7 @@ QVector<QgsDataItem *> QgsOgrDataCollectionItem::createChildren()
 
   GDALDriverH hDriver = GDALGetDatasetDriver( hDataSource.get() );
   const QString driverName = QString::fromUtf8( GDALGetDriverShortName( hDriver ) );
-  if ( driverName == QStringLiteral( "SQLite" ) )
+  if ( driverName == QLatin1String( "SQLite" ) )
   {
     skippedLayerNames = QgsSqliteUtils::systemTables();
   }
@@ -396,7 +396,7 @@ QVector<QgsDataItem *> QgsOgrDataCollectionItem::createChildren()
       uniqueNames = false;
       break;
     }
-    if ( ( driverName == QStringLiteral( "SQLite" ) && layerName.contains( QRegularExpression( QStringLiteral( "idx_.*_geometry($|_.*)" ) ) ) )
+    if ( ( driverName == QLatin1String( "SQLite" ) && layerName.contains( QRegularExpression( QStringLiteral( "idx_.*_geometry($|_.*)" ) ) ) )
          || skippedLayerNames.contains( layerName ) )
     {
       skippedLayers << i;
@@ -624,11 +624,17 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
       QStringLiteral( "kml" ),
       QStringLiteral( "osm" ),
       QStringLiteral( "mdb" ),
+      QStringLiteral( "accdb" ),
+      QStringLiteral( "xls" ),
+      QStringLiteral( "xlsx" ),
+      QStringLiteral( "gpx" ),
       QStringLiteral( "pdf" ),
       QStringLiteral( "pbf" ) };
   static QStringList sOgrSupportedDbDriverNames { QStringLiteral( "GPKG" ),
       QStringLiteral( "db" ),
       QStringLiteral( "gdb" ),
+      QStringLiteral( "xlsx" ),
+      QStringLiteral( "xls" ),
       QStringLiteral( "pgdb" )};
 
   // these extensions are trivial to read, so there's no need to rely on

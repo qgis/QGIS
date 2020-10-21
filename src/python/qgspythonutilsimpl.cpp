@@ -99,7 +99,7 @@ bool QgsPythonUtilsImpl::checkSystemImports()
   newpaths << '"' + pythonPath() + '"';
   newpaths << homePythonPath();
   newpaths << pluginpaths;
-  runString( "sys.path = [" + newpaths.join( QStringLiteral( "," ) ) + "] + sys.path" );
+  runString( "sys.path = [" + newpaths.join( QLatin1Char( ',' ) ) + "] + sys.path" );
 
   // import SIP
   if ( !runString( QStringLiteral( "from qgis.PyQt import sip" ),

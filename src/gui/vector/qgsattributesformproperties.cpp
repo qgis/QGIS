@@ -102,7 +102,7 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
 
     FieldConfig cfg( mLayer, i );
 
-    QTreeWidgetItem *item = mAvailableWidgetsTree->addItem( catitem, itemData );
+    QTreeWidgetItem *item = mAvailableWidgetsTree->addItem( catitem, itemData, -1, fields.iconForField( i, true ) );
 
     item->setData( 0, FieldConfigRole, cfg );
     item->setData( 0, FieldNameRole, field.name() );
@@ -937,7 +937,7 @@ QgsAttributesDnDTree::QgsAttributesDnDTree( QgsVectorLayer *layer, QWidget *pare
   connect( this, &QTreeWidget::itemDoubleClicked, this, &QgsAttributesDnDTree::onItemDoubleClicked );
 }
 
-QTreeWidgetItem *QgsAttributesDnDTree::addItem( QTreeWidgetItem *parent, QgsAttributesFormProperties::DnDTreeItemData data, int index )
+QTreeWidgetItem *QgsAttributesDnDTree::addItem( QTreeWidgetItem *parent, QgsAttributesFormProperties::DnDTreeItemData data, int index, const QIcon &icon )
 {
   QTreeWidgetItem *newItem = new QTreeWidgetItem( QStringList() << data.name() );
 
@@ -961,6 +961,7 @@ QTreeWidgetItem *QgsAttributesDnDTree::addItem( QTreeWidgetItem *parent, QgsAttr
 
   newItem->setData( 0, QgsAttributesFormProperties::DnDTreeRole, data );
   newItem->setText( 0, data.displayName() );
+  newItem->setIcon( 0, icon );
 
   if ( index < 0 )
     parent->addChild( newItem );
@@ -1500,4 +1501,3 @@ void QgsAttributesFormProperties::DnDTreeItemData::setBackgroundColor( const QCo
 {
   mBackgroundColor = backgroundColor;
 }
-

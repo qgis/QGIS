@@ -41,7 +41,7 @@ void QgsProcessingFeedback::reportError( const QString &error, bool )
   if ( mLogFeedback )
     QgsMessageLog::logMessage( error, tr( "Processing" ), Qgis::Critical );
 
-  mHtmlLog.append( QStringLiteral( "<span style=\"color:red\">%1</span><br/>" ).arg( error.toHtmlEscaped() ).replace( '\n', QStringLiteral( "<br>" ) ) );
+  mHtmlLog.append( QStringLiteral( "<span style=\"color:red\">%1</span><br/>" ).arg( error.toHtmlEscaped() ).replace( '\n', QLatin1String( "<br>" ) ) );
   mTextLog.append( error + '\n' );
 }
 
@@ -50,7 +50,7 @@ void QgsProcessingFeedback::pushInfo( const QString &info )
   if ( mLogFeedback )
     QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
 
-  mHtmlLog.append( info.toHtmlEscaped().replace( '\n', QStringLiteral( "<br>" ) ) + QStringLiteral( "<br/>" ) );
+  mHtmlLog.append( info.toHtmlEscaped().replace( '\n', QLatin1String( "<br>" ) ) + QStringLiteral( "<br/>" ) );
   mTextLog.append( info + '\n' );
 }
 
@@ -59,7 +59,7 @@ void QgsProcessingFeedback::pushCommandInfo( const QString &info )
   if ( mLogFeedback )
     QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
 
-  mHtmlLog.append( QStringLiteral( "<code>%1</code><br/>" ).arg( info.toHtmlEscaped().replace( '\n', QStringLiteral( "<br>" ) ) ) );
+  mHtmlLog.append( QStringLiteral( "<code>%1</code><br/>" ).arg( info.toHtmlEscaped().replace( '\n', QLatin1String( "<br>" ) ) ) );
   mTextLog.append( info + '\n' );
 }
 
@@ -68,7 +68,7 @@ void QgsProcessingFeedback::pushDebugInfo( const QString &info )
   if ( mLogFeedback )
     QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
 
-  mHtmlLog.append( QStringLiteral( "<span style=\"color:#777\">%1</span><br/>" ).arg( info.toHtmlEscaped().replace( '\n', QStringLiteral( "<br>" ) ) ) );
+  mHtmlLog.append( QStringLiteral( "<span style=\"color:#777\">%1</span><br/>" ).arg( info.toHtmlEscaped().replace( '\n', QLatin1String( "<br>" ) ) ) );
   mTextLog.append( info + '\n' );
 }
 
@@ -77,7 +77,7 @@ void QgsProcessingFeedback::pushConsoleInfo( const QString &info )
   if ( mLogFeedback )
     QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
 
-  mHtmlLog.append( QStringLiteral( "<code style=\"color:#777\">%1</code><br/>" ).arg( info.toHtmlEscaped().replace( '\n', QStringLiteral( "<br>" ) ) ) );
+  mHtmlLog.append( QStringLiteral( "<code style=\"color:#777\">%1</code><br/>" ).arg( info.toHtmlEscaped().replace( '\n', QLatin1String( "<br>" ) ) ) );
   mTextLog.append( info + '\n' );
 }
 

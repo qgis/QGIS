@@ -1835,7 +1835,7 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
     if ( mDataSource.right( 10 ) == QLatin1String( "|layerid=0" ) )
       mDataSource.chop( 10 );
   }
-  else if ( provider == QStringLiteral( "memory" ) )
+  else if ( provider == QLatin1String( "memory" ) )
   {
     // required so that source differs between memory layers
     mDataSource = mDataSource + QStringLiteral( "&uid=%1" ).arg( QUuid::createUuid().toString() );
@@ -1947,13 +1947,13 @@ QString QgsVectorLayer::encodedSource( const QString &source, const QgsReadWrite
   {
     QStringList theURIParts = src.split( '|' );
     theURIParts[0] = context.pathResolver().writePath( theURIParts[0] );
-    src = theURIParts.join( QStringLiteral( "|" ) );
+    src = theURIParts.join( QLatin1Char( '|' ) );
   }
   else if ( providerType() == QLatin1String( "gpx" ) )
   {
     QStringList theURIParts = src.split( '?' );
     theURIParts[0] = context.pathResolver().writePath( theURIParts[0] );
-    src = theURIParts.join( QStringLiteral( "?" ) );
+    src = theURIParts.join( QLatin1Char( '?' ) );
   }
   else if ( providerType() == QLatin1String( "delimitedtext" ) )
   {
@@ -1998,7 +1998,7 @@ QString QgsVectorLayer::encodedSource( const QString &source, const QgsReadWrite
           theURIParts[1] = QUrl::toPercentEncoding( theURIParts[1] );
         }
 
-        queryItems[i].second =  theURIParts.join( QStringLiteral( ":" ) ) ;
+        queryItems[i].second =  theURIParts.join( QLatin1Char( ':' ) ) ;
       }
     }
 
@@ -2030,13 +2030,13 @@ QString QgsVectorLayer::decodedSource( const QString &source, const QString &pro
   {
     QStringList theURIParts = src.split( '|' );
     theURIParts[0] = context.pathResolver().readPath( theURIParts[0] );
-    src = theURIParts.join( QStringLiteral( "|" ) );
+    src = theURIParts.join( QLatin1Char( '|' ) );
   }
   else if ( provider == QLatin1String( "gpx" ) )
   {
     QStringList theURIParts = src.split( '?' );
     theURIParts[0] = context.pathResolver().readPath( theURIParts[0] );
-    src = theURIParts.join( QStringLiteral( "?" ) );
+    src = theURIParts.join( QLatin1Char( '?' ) );
   }
   else if ( provider == QLatin1String( "delimitedtext" ) )
   {
@@ -2071,7 +2071,7 @@ QString QgsVectorLayer::decodedSource( const QString &source, const QString &pro
         theURIParts = value.split( ':' );
         theURIParts[1] = QUrl::fromPercentEncoding( theURIParts[1].toUtf8() );
 
-        if ( theURIParts[0] == QStringLiteral( "delimitedtext" ) )
+        if ( theURIParts[0] == QLatin1String( "delimitedtext" ) )
         {
           QUrl urlSource = QUrl( theURIParts[1] );
 
@@ -2093,7 +2093,7 @@ QString QgsVectorLayer::decodedSource( const QString &source, const QString &pro
         }
 
         theURIParts[1] = QUrl::toPercentEncoding( theURIParts[1] );
-        queryItems[i].second =  theURIParts.join( QStringLiteral( ":" ) ) ;
+        queryItems[i].second =  theURIParts.join( QLatin1Char( ':' ) ) ;
       }
     }
 
@@ -2335,7 +2335,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
         const QDomElement cfgElem = fieldConfigElement.elementsByTagName( QStringLiteral( "config" ) ).at( 0 ).toElement();
         const QDomElement optionsElem = cfgElem.childNodes().at( 0 ).toElement();
         QVariantMap optionsMap = QgsXmlUtils::readVariant( optionsElem ).toMap();
-        if ( widgetType == QStringLiteral( "ValueRelation" ) )
+        if ( widgetType == QLatin1String( "ValueRelation" ) )
         {
           optionsMap[ QStringLiteral( "Value" ) ] = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:fields:%2:valuerelationvalue" ).arg( layerNode.namedItem( QStringLiteral( "id" ) ).toElement().text(), fieldName ), optionsMap[ QStringLiteral( "Value" ) ].toString() );
         }
@@ -3364,7 +3364,7 @@ bool QgsVectorLayer::commitChanges( bool stopEditing )
   }
   else
   {
-    QgsMessageLog::logMessage( tr( "Commit errors:\n  %1" ).arg( mCommitErrors.join( QStringLiteral( "\n  " ) ) ) );
+    QgsMessageLog::logMessage( tr( "Commit errors:\n  %1" ).arg( mCommitErrors.join( QLatin1String( "\n  " ) ) ) );
   }
 
   updateFields();
@@ -5120,7 +5120,7 @@ QString QgsVectorLayer::htmlMetadata() const
   myMetadata += htmlFormatter.historySectionHtml( );
   myMetadata += QLatin1String( "<br><br>\n" );
 
-  myMetadata += QStringLiteral( "\n</body>\n</html>\n" );
+  myMetadata += QLatin1String( "\n</body>\n</html>\n" );
   return myMetadata;
 }
 
@@ -5614,12 +5614,15 @@ void QgsVectorLayer::onDirtyTransaction( const QString &sql, const QString &name
   }
 }
 
-QList<QgsVectorLayer *> QgsVectorLayer::DeleteContext::handledLayers() const
+QList<QgsVectorLayer *> QgsVectorLayer::DeleteContext::handledLayers( bool includeAuxiliaryLayers ) const
 {
   QList<QgsVectorLayer *> layers;
   QMap<QgsVectorLayer *, QgsFeatureIds>::const_iterator i;
   for ( i = mHandledFeatures.begin(); i != mHandledFeatures.end(); ++i )
-    layers.append( i.key() );
+  {
+    if ( includeAuxiliaryLayers || !qobject_cast< QgsAuxiliaryLayer * >( i.key() ) )
+      layers.append( i.key() );
+  }
   return layers;
 }
 

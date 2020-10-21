@@ -214,8 +214,8 @@ QgsGdalProvider::QgsGdalProvider( const QgsGdalProvider &other )
   // so make sure to really use a single one.
   // The PostGISRaster driver internally uses a per-thread connection cache.
   // This can lead to crashes if two datasets created by the same thread are used at the same time.
-  bool forceUseSameDataset = ( mDriverName.toUpper() == QStringLiteral( "JP2OPENJPEG" ) ||
-                               mDriverName == QStringLiteral( "PostGISRaster" ) ||
+  bool forceUseSameDataset = ( mDriverName.toUpper() == QLatin1String( "JP2OPENJPEG" ) ||
+                               mDriverName == QLatin1String( "PostGISRaster" ) ||
                                CSLTestBoolean( CPLGetConfigOption( "QGIS_GDAL_FORCE_USE_SAME_DATASET", "FALSE" ) ) );
 
   if ( forceUseSameDataset )
@@ -588,7 +588,7 @@ QString QgsGdalProvider::htmlMetadata()
       QStringList categories = QgsOgrUtils::cStringListToQStringList( GDALcategories );
       myMetadata += QgsHtmlUtils::buildBulletList( categories );
     }
-    myMetadata += QStringLiteral( "</td></tr>" );
+    myMetadata += QLatin1String( "</td></tr>" );
   }
 
   // More information
@@ -626,7 +626,7 @@ QString QgsGdalProvider::htmlMetadata()
   }
 
   // End more information
-  myMetadata += QStringLiteral( "</td></tr>\n" );
+  myMetadata += QLatin1String( "</td></tr>\n" );
 
   // Dimensions
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Dimensions" ) + QStringLiteral( "</td><td>" );
@@ -634,7 +634,7 @@ QString QgsGdalProvider::htmlMetadata()
                 .arg( GDALGetRasterXSize( mGdalDataset ) )
                 .arg( GDALGetRasterYSize( mGdalDataset ) )
                 .arg( GDALGetRasterCount( mGdalDataset ) );
-  myMetadata += QStringLiteral( "</td></tr>\n" );
+  myMetadata += QLatin1String( "</td></tr>\n" );
 
   if ( GDALGetGeoTransform( mGdalDataset, mGeoTransform ) != CE_None )
   {
@@ -1207,7 +1207,7 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
 /**
  * \param bandNumber the number of the band for which you want a color table
  * \param list a pointer the object that will hold the color table
- * \return true of a color table was able to be read, false otherwise
+ * \return TRUE if a color table was able to be read, FALSE otherwise
  */
 QList<QgsColorRampShader::ColorRampItem> QgsGdalProvider::colorTable( int bandNumber )const
 {
@@ -1302,13 +1302,19 @@ QString QgsGdalProvider::generateBandName( int bandNumber ) const
         }
         if ( !bandNameValues.isEmpty() )
         {
-          return tr( "Band" ) + QStringLiteral( " %1: %2" ).arg( bandNumber, 1 + ( int ) std::log10( ( float ) bandCount() ), 10, QChar( '0' ) ).arg( bandNameValues.join( QStringLiteral( " / " ) ) );
+          return tr( "Band" ) + QStringLiteral( " %1: %2" ).arg( bandNumber, 1 + ( int ) std::log10( ( float ) bandCount() ), 10, QChar( '0' ) ).arg( bandNameValues.join( QLatin1String( " / " ) ) );
         }
       }
     }
   }
   QString generatedBandName = QgsRasterDataProvider::generateBandName( bandNumber );
   GDALRasterBandH myGdalBand = getBand( bandNumber );
+  if ( ! myGdalBand )
+  {
+    QgsLogger::warning( QStringLiteral( "Band %1 does not exist." ).arg( bandNumber ) );
+    return QString();
+  }
+
   QString gdalBandName( GDALGetDescription( myGdalBand ) );
   if ( !gdalBandName.isEmpty() )
   {
@@ -2325,7 +2331,7 @@ QVariantMap QgsGdalProviderMetadata::decodeUri( const QString &uri )
   if ( path.indexOf( ':' ) != -1 )
   {
     QStringList parts = path.split( ':' );
-    if ( parts[0].toLower() == QStringLiteral( "gpkg" ) )
+    if ( parts[0].toLower() == QLatin1String( "gpkg" ) )
     {
       parts.removeFirst();
       // Handle windows paths - which has an extra colon - and unix paths
@@ -2460,7 +2466,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
         // This hacking around that removes '/' is no longer necessary with GDAL 2.3
         extensions << QString( ext ).remove( '/' ).remove( '*' ).remove( '.' );
         if ( !glob.isEmpty() )
-          glob += QLatin1String( " " );
+          glob += QLatin1Char( ' ' );
         glob += "*." + QString( ext ).replace( '/', QLatin1String( " *." ) );
       }
 
@@ -2534,7 +2540,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
   QStringList filters = fileFiltersString.split( QStringLiteral( ";;" ), Qt::SkipEmptyParts );
 #endif
   filters.sort();
-  fileFiltersString = filters.join( QStringLiteral( ";;" ) ) + ";;";
+  fileFiltersString = filters.join( QLatin1String( ";;" ) ) + ";;";
 
   // VSIFileHandler (see qgsogrprovider.cpp) - second
   QgsSettings settings;
@@ -2548,7 +2554,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
   QStringList exts;
   for ( const QString &ext : qgis::as_const( extensions ) )
     exts << QStringLiteral( "*.%1 *.%2" ).arg( ext, ext.toUpper() );
-  fileFiltersString.prepend( QObject::tr( "All supported files" ) + QStringLiteral( " (%1);;" ).arg( exts.join( QStringLiteral( " " ) ) ) );
+  fileFiltersString.prepend( QObject::tr( "All supported files" ) + QStringLiteral( " (%1);;" ).arg( exts.join( QLatin1Char( ' ' ) ) ) );
 
   // can't forget the default case - first
   fileFiltersString.prepend( QObject::tr( "All files" ) + " (*);;" );

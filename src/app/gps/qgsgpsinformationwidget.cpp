@@ -1230,7 +1230,7 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
               tr( "Save Layer Edits" ),
               tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
               .arg( vlayer->name(),
-                    vlayer->commitErrors().join( QStringLiteral( "\n  " ) ) ) );
+                    vlayer->commitErrors().join( QLatin1String( "\n  " ) ) ) );
           }
 
           vlayer->startEditing();
@@ -1323,7 +1323,7 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
             QgisApp::instance()->messageBar()->pushCritical( tr( "Save Layer Edits" ),
                 tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
                 .arg( vlayer->name(),
-                      vlayer->commitErrors().join( QStringLiteral( "\n  " ) ) ) );
+                      vlayer->commitErrors().join( QLatin1String( "\n  " ) ) ) );
           }
 
           vlayer->startEditing();

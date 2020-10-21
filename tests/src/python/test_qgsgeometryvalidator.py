@@ -12,12 +12,18 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 
 from qgis.core import (
     QgsGeometry,
-    QgsGeometryValidator
+    QgsGeometryValidator,
+    QgsPointXY
 )
 
 from qgis.testing import (
-    unittest
+    unittest,
+    start_app
 )
+
+from qgis.PyQt.QtTest import QSignalSpy
+
+app = start_app()
 
 
 class TestQgsGeometryValidator(unittest.TestCase):
@@ -59,6 +65,23 @@ class TestQgsGeometryValidator(unittest.TestCase):
         self.assertTrue(g)
         # make sure validating this geometry doesn't crash QGIS
         QgsGeometryValidator.validateGeometry(g)
+
+    def test_linestring_duplicate_nodes(self):
+        g = QgsGeometry.fromWkt("LineString (1 1, 1 1, 1 1, 1 2, 1 3, 1 3, 1 3, 1 4, 1 5, 1 6, 1 6)")
+
+        validator = QgsGeometryValidator(g)
+        spy = QSignalSpy(validator.errorFound)
+        validator.run()
+
+        self.assertEqual(len(spy), 3)
+        self.assertEqual(spy[0][0].where(), QgsPointXY(1, 6))
+        self.assertEqual(spy[0][0].what(), 'line 1 contains 2 duplicate nodes starting at vertex 10')
+
+        self.assertEqual(spy[1][0].where(), QgsPointXY(1, 3))
+        self.assertEqual(spy[1][0].what(), 'line 1 contains 3 duplicate nodes starting at vertex 5')
+
+        self.assertEqual(spy[2][0].where(), QgsPointXY(1, 1))
+        self.assertEqual(spy[2][0].what(), 'line 1 contains 3 duplicate nodes starting at vertex 1')
 
 
 if __name__ == '__main__':

@@ -237,7 +237,7 @@ Finally, the feature's fields are set to ``fields``.
 .. versionadded:: 3.4
 %End
 
-    static QgsFeatureList makeFeatureCompatible( const QgsFeature &feature, const QgsVectorLayer *layer );
+    static QgsFeatureList makeFeatureCompatible( const QgsFeature &feature, const QgsVectorLayer *layer, QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() );
 %Docstring
 Converts input ``feature`` to be compatible with the given ``layer``.
 
@@ -255,10 +255,12 @@ The following operations will be performed to convert the input features:
 - drop Z/M
 - convert multi part geometries to single part
 
+Optionally, ``sinkFlags`` can be specified to further refine the compatibility logic.
+
 .. versionadded:: 3.4
 %End
 
-    static QgsFeatureList makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer *layer );
+    static QgsFeatureList makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer *layer, QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() );
 %Docstring
 Converts input ``features`` to be compatible with the given ``layer``.
 
@@ -276,14 +278,16 @@ The following operations will be performed to convert the input features:
 - drop Z/M
 - convert multi part geometries to single part
 
+Optionally, ``sinkFlags`` can be specified to further refine the compatibility logic.
+
 .. versionadded:: 3.4
 %End
 
     static bool fieldIsEditable( const QgsVectorLayer *layer, int fieldIndex, const QgsFeature &feature );
 %Docstring
 
-:return: true if the:param feature: field at index:param fieldIndex: from:param layer:
-          is editable, false if the field is readonly
+:return: ``True`` if the:param feature: field at index:param fieldIndex: from:param layer:
+          is editable, ``False`` if the field is readonly
 
 .. versionadded:: 3.10
 %End
@@ -299,7 +303,14 @@ The following operations will be performed to convert the input features:
 .. versionadded:: 3.12
 %End
 
-    static bool impactsCascadeFeatures( const QgsVectorLayer *layer, const QgsFeatureIds &fids, const QgsProject *project, QgsDuplicateFeatureContext &context /Out/ );
+    enum CascadedFeatureFlag
+    {
+      IgnoreAuxiliaryLayers,
+    };
+    typedef QFlags<QgsVectorLayerUtils::CascadedFeatureFlag> CascadedFeatureFlags;
+
+
+    static bool impactsCascadeFeatures( const QgsVectorLayer *layer, const QgsFeatureIds &fids, const QgsProject *project, QgsDuplicateFeatureContext &context /Out/, QgsVectorLayerUtils::CascadedFeatureFlags flags = QgsVectorLayerUtils::CascadedFeatureFlags() );
 %Docstring
 
 :return: ``True`` if at least one feature of the ``fids`` on ``layer`` is connected as parent in at

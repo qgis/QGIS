@@ -59,7 +59,7 @@ QgsGeometryCheckerFixSummaryDialog::QgsGeometryCheckerFixSummaryDialog( const St
   setupTable( ui.tableWidgetNotFixed );
   setupTable( ui.tableWidgetObsoleteErrors );
 
-  ui.plainTextEditMessages->setPlainText( checker->getMessages().join( QStringLiteral( "\n" ) ) );
+  ui.plainTextEditMessages->setPlainText( checker->getMessages().join( QLatin1Char( '\n' ) ) );
 
   ui.groupBoxFixedErrors->setVisible( !stats.fixedErrors.isEmpty() );
   ui.groupBoxNewErrors->setVisible( !stats.newErrors.isEmpty() );

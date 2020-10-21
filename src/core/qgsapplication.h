@@ -19,6 +19,7 @@
 #include <QApplication>
 #include <QEvent>
 #include <QStringList>
+#include <QColor>
 
 #include "qgis_sip.h"
 #include "qgsconfig.h"
@@ -379,8 +380,12 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Helper to get a theme icon as a pixmap. It will fall back to the
      * default theme if the active theme does not have the required icon.
+     *
+     * If \a foreColor or \a backColor are specified, then these colors will
+     * be used for parametrized colors in SVG files wherever available. If
+     * colors are specified then the \a size argument also must be set.
      */
-    static QPixmap getThemePixmap( const QString &name );
+    static QPixmap getThemePixmap( const QString &name, const QColor &foreColor = QColor(), const QColor &backColor = QColor(), int size = 16 );
 
     //! Returns the path to user's style.
     static QString userStylePath();
@@ -865,6 +870,17 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \since QGIS 3.0
      */
     static void setCustomVariable( const QString &name, const QVariant &value );
+
+    /**
+     * Scales an icon size to compensate for display pixel density, making the icon
+     * size hi-dpi friendly, whilst still resulting in pixel-perfect sizes for low-dpi
+     * displays.
+     *
+     * \a standardSize should be set to a standard icon size, e.g. 16, 24, 48, etc.
+     *
+     * \since QGIS 3.16
+     */
+    static int scaleIconSize( int standardSize, bool applyDevicePixelRatio = false );
 
     /**
      * The maximum number of concurrent connections per connections pool.

@@ -589,7 +589,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     query += sql;
   }
 
-  query += QStringLiteral( " ORDER BY 2,1,3" );
+  query += QLatin1String( " ORDER BY 2,1,3" );
 
 
   QgsDebugMsgLevel( "getting table info from layer registries: " + query, 2 );
@@ -655,7 +655,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     layerProperty.geometryColName = column;
     layerProperty.geometryColType = columnType;
     if ( dim == 3 && !type.endsWith( 'M' ) )
-      type += QLatin1String( "Z" );
+      type += QLatin1Char( 'Z' );
     else if ( dim == 4 )
       type += QLatin1String( "ZM" );
     layerProperty.types = QList<QgsWkbTypes::Type>() << ( QgsPostgresConn::wkbTypeFromPostgis( type ) );
@@ -849,7 +849,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     if ( !schema.isEmpty() )
       sql += QStringLiteral( " AND pg_namespace.nspname='%2'" ).arg( schema );
 
-    sql += QStringLiteral( " GROUP BY 1,2,3,4" );
+    sql += QLatin1String( " GROUP BY 1,2,3,4" );
 
     QgsDebugMsgLevel( "getting non-spatial table info: " + sql, 2 );
 
@@ -1181,7 +1181,7 @@ static QString quotedMap( const QVariantMap &map )
   {
     if ( !ret.isEmpty() )
     {
-      ret += QLatin1String( "," );
+      ret += QLatin1Char( ',' );
     }
     ret.append( doubleQuotedMapValue( i.key() ) + "=>" +
                 doubleQuotedMapValue( i.value().toString() ) );
@@ -1196,7 +1196,7 @@ static QString quotedList( const QVariantList &list )
   {
     if ( !ret.isEmpty() )
     {
-      ret += QLatin1String( "," );
+      ret += QLatin1Char( ',' );
     }
 
     QString inner = i->toString();
@@ -1890,7 +1890,7 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
       bool castToGeometry = layerProperty.geometryColType == SctGeography ||
                             layerProperty.geometryColType == SctPcPatch;
 
-      sql += QStringLiteral( "array_agg(DISTINCT " );
+      sql += QLatin1String( "array_agg(DISTINCT " );
 
       int srid = layerProperty.srids.value( 0, std::numeric_limits<int>::min() );
       if ( srid == std::numeric_limits<int>::min() )
@@ -1922,7 +1922,7 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
       }
 
 
-      sql += QStringLiteral( ") " );
+      sql += QLatin1String( ") " );
 
       sql += " FROM " + table;
 
@@ -2183,12 +2183,12 @@ void QgsPostgresConn::postgisWkbType( QgsWkbTypes::Type wkbType, QString &geomet
   }
   else if ( QgsWkbTypes::hasZ( wkbType ) )
   {
-    geometryType += QLatin1String( "Z" );
+    geometryType += QLatin1Char( 'Z' );
     dim = 3;
   }
   else if ( QgsWkbTypes::hasM( wkbType ) )
   {
-    geometryType += QLatin1String( "M" );
+    geometryType += QLatin1Char( 'M' );
     dim = 3;
   }
   else if ( wkbType >= QgsWkbTypes::Point25D && wkbType <= QgsWkbTypes::MultiPolygon25D )

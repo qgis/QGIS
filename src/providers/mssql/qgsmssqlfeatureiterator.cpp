@@ -112,7 +112,7 @@ QString QgsMssqlFeatureIterator::whereClauseFid( QgsFeatureId featureId )
           delim = QStringLiteral( " AND " );
         }
 
-        whereClause += QStringLiteral( ")" );
+        whereClause += QLatin1Char( ')' );
       }
       else
       {
@@ -222,7 +222,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
              << qgsDoubleToString( validLon( mFilterRect.xMinimum() ) ) << ' ' << qgsDoubleToString( validLat( mFilterRect.yMinimum() ) );
     }
 
-    mStatement += QStringLiteral( " WHERE " );
+    mStatement += QLatin1String( " WHERE " );
     if ( !mDisableInvalidGeometryHandling )
       mStatement += QStringLiteral( "[%1].STIsValid() = 1 AND " ).arg( mSource->mGeometryColName );
 
@@ -416,7 +416,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
 
   if ( !orderByParts.isEmpty() )
   {
-    mOrderByClause = QStringLiteral( " ORDER BY %1" ).arg( orderByParts.join( QStringLiteral( "," ) ) );
+    mOrderByClause = QStringLiteral( " ORDER BY %1" ).arg( orderByParts.join( QLatin1Char( ',' ) ) );
   }
 
   QgsDebugMsgLevel( mStatement + " " + mOrderByClause, 2 );

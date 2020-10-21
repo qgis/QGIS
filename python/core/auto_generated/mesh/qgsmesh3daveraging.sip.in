@@ -138,8 +138,8 @@ Constructs multi level averaging method
 
 :param startLevel: starting vertical level index numbered from 1
 :param endLevel: ending vertical level index numbered from 1 (higher or equal than startLevel)
-:param countedFromTop: if true, the startLevel index is counted from surface (index 1 is the top layer).
-                       if false, the startLevel index is counted from the bed level (index 1 is the bottom layer)
+:param countedFromTop: if ``True``, the startLevel index is counted from surface (index 1 is the top layer).
+                       if ``False``, the startLevel index is counted from the bed level (index 1 is the bottom layer)
 %End
 
     QgsMeshMultiLevelsAveragingMethod( int verticalLevel, bool countedFromTop );
@@ -147,8 +147,8 @@ Constructs multi level averaging method
 Constructs single level averaging method
 
 :param verticalLevel: vertical level index numbered from 1
-:param countedFromTop: if true, the startLevel index is counted from surface (index 1 is the top layer).
-                       if false, the startLevel index is counted from the bed level (index 1 is the bottom layer)
+:param countedFromTop: if ``True``, the startLevel index is counted from surface (index 1 is the top layer).
+                       if ``False``, the startLevel index is counted from the bed level (index 1 is the bottom layer)
 %End
 
     ~QgsMeshMultiLevelsAveragingMethod();
@@ -284,8 +284,8 @@ Constructs the depth/height averaging method
 
 :param startHeight: starting depth/height, higher or equal than 0
 :param endHeight: ending depth/height, higher or equal than startDepth
-:param countedFromTop: if true, the startLength and endLength is relative to surface (0 is surface level).
-                       if false, the startLength and endLength is relative to bed (0 is bed level).
+:param countedFromTop: if ``True``, the startLength and endLength is relative to surface (0 is surface level).
+                       if ``False``, the startLength and endLength is relative to bed (0 is bed level).
 %End
 
     ~QgsMeshRelativeHeightAveragingMethod();

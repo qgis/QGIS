@@ -285,7 +285,7 @@ links.
 Automatically wraps a ``string`` by inserting new line characters at appropriate locations in the string.
 
 The ``length`` argument specifies either the minimum or maximum length of lines desired, depending
-on whether ``useMaxLineLength`` is true. If ``useMaxLineLength`` is ``True``, then the string will be wrapped
+on whether ``useMaxLineLength`` is ``True``. If ``useMaxLineLength`` is ``True``, then the string will be wrapped
 so that each line ideally will not exceed ``length`` of characters. If ``useMaxLineLength`` is ``False``, then
 the string will be wrapped so that each line will ideally exceed ``length`` of characters.
 

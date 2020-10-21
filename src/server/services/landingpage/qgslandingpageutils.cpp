@@ -39,8 +39,8 @@ std::once_flag initDirWatcher;
 QMap<QString, QString> QgsLandingPageUtils::projects( const QgsServerSettings &settings )
 {
 
-  static QString QGIS_SERVER_PROJECTS_DIRECTORIES;
-  static QString QGIS_SERVER_PROJECTS_PG_CONNECTIONS;
+  static QString QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES;
+  static QString QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS;
 
   // Init directory watcher
   static QFileSystemWatcher dirWatcher;
@@ -56,10 +56,10 @@ QMap<QString, QString> QgsLandingPageUtils::projects( const QgsServerSettings &s
 
   const QString projectDir { settings.landingPageProjectsDirectories() };
 
-  // Clear cache if QGIS_SERVER_PROJECTS_DIRECTORIES has changed
-  if ( projectDir != QGIS_SERVER_PROJECTS_DIRECTORIES )
+  // Clear cache if QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES has changed
+  if ( projectDir != QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES )
   {
-    QGIS_SERVER_PROJECTS_DIRECTORIES = projectDir;
+    QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES = projectDir;
     AVAILABLE_PROJECTS.clear();
     const QStringList cWatchedDirs { dirWatcher.directories() };
     dirWatcher.removePaths( cWatchedDirs );
@@ -67,14 +67,14 @@ QMap<QString, QString> QgsLandingPageUtils::projects( const QgsServerSettings &s
 
   const QString pgConnections { settings.landingPageProjectsPgConnections() };
 
-  // Clear cache if QGIS_SERVER_PROJECTS_PG_CONNECTIONS has changed
-  if ( pgConnections != QGIS_SERVER_PROJECTS_PG_CONNECTIONS )
+  // Clear cache if QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS has changed
+  if ( pgConnections != QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS )
   {
-    QGIS_SERVER_PROJECTS_PG_CONNECTIONS = pgConnections;
+    QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS = pgConnections;
     AVAILABLE_PROJECTS.clear();
   }
 
-  // Scan QGIS_SERVER_PROJECTS_DIRECTORIES
+  // Scan QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES
   const QString envDirName = QgsServerSettings::name( QgsServerSettingsEnv::QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES );
   if ( AVAILABLE_PROJECTS.isEmpty() )
   {

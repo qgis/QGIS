@@ -75,6 +75,7 @@
 
 #include "layout/qgspagesizeregistry.h"
 
+#include <QDesktopWidget>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -715,20 +716,19 @@ QCursor QgsApplication::getThemeCursor( Cursor cursor )
 }
 
 // TODO: add some caching mechanism ?
-QPixmap QgsApplication::getThemePixmap( const QString &name )
+QPixmap QgsApplication::getThemePixmap( const QString &name, const QColor &foreColor, const QColor &backColor, const int size )
 {
-  QString myPreferredPath = activeThemePath() + QDir::separator() + name;
-  QString myDefaultPath = defaultThemePath() + QDir::separator() + name;
-  if ( QFile::exists( myPreferredPath ) )
+  const QString preferredPath = activeThemePath() + QDir::separator() + name;
+  const QString defaultPath = defaultThemePath() + QDir::separator() + name;
+  const QString path = QFile::exists( preferredPath ) ? preferredPath : defaultPath;
+  if ( foreColor.isValid() || backColor.isValid() )
   {
-    return QPixmap( myPreferredPath );
+    bool fitsInCache = false;
+    const QImage image = svgCache()->svgAsImage( path, size, backColor, foreColor, 1, 1, fitsInCache );
+    return QPixmap::fromImage( image );
   }
-  else
-  {
-    //could still return an empty icon if it
-    //doesn't exist in the default theme either!
-    return QPixmap( myDefaultPath );
-  }
+
+  return QPixmap( path );
 }
 
 void QgsApplication::setThemeName( const QString &themeName )
@@ -826,7 +826,7 @@ void QgsApplication::setUITheme( const QString &themeName )
 {
   // Loop all style sheets, find matching name, load it.
   QHash<QString, QString> themes = QgsApplication::uiThemes();
-  if ( themeName == QStringLiteral( "default" ) || !themes.contains( themeName ) )
+  if ( themeName == QLatin1String( "default" ) || !themes.contains( themeName ) )
   {
     setThemeName( QStringLiteral( "default" ) );
     qApp->setStyleSheet( QString() );
@@ -847,7 +847,7 @@ void QgsApplication::setUITheme( const QString &themeName )
   }
 
   QString styledata = file.readAll();
-  styledata.replace( QStringLiteral( "@theme_path" ), path );
+  styledata.replace( QLatin1String( "@theme_path" ), path );
 
   if ( variableInfo.exists() )
   {
@@ -1277,7 +1277,6 @@ void QgsApplication::initQgis()
 
 }
 
-
 QgsAuthManager *QgsApplication::authManager()
 {
   if ( auto *lInstance = instance() )
@@ -1460,7 +1459,7 @@ QString QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType styleSh
                    "  width: 95%;"
                    "}"
                    ".tabular-view th, .tabular-view td { "
-                   "  border:10px solid black;"
+                   "  border:1px solid black;"
                    "}" );
       break;
 
@@ -1585,7 +1584,7 @@ QString QgsApplication::absolutePathToRelativePath( const QString &aPath, const 
     aPathElems.insert( 0, QStringLiteral( "." ) );
   }
 
-  return aPathElems.join( QStringLiteral( "/" ) );
+  return aPathElems.join( QLatin1Char( '/' ) );
 }
 
 QString QgsApplication::relativePathToAbsolutePath( const QString &rpath, const QString &targetPath )
@@ -1628,7 +1627,7 @@ QString QgsApplication::relativePathToAbsolutePath( const QString &rpath, const 
 
   // resolve ..
   int pos;
-  while ( ( pos = targetElems.indexOf( QStringLiteral( ".." ) ) ) > 0 )
+  while ( ( pos = targetElems.indexOf( QLatin1String( ".." ) ) ) > 0 )
   {
     // remove preceding element and ..
     targetElems.removeAt( pos - 1 );
@@ -1640,7 +1639,7 @@ QString QgsApplication::relativePathToAbsolutePath( const QString &rpath, const 
   targetElems.prepend( QString() );
 #endif
 
-  return targetElems.join( QStringLiteral( "/" ) );
+  return targetElems.join( QLatin1Char( '/' ) );
 }
 
 QString QgsApplication::buildSourcePath()
@@ -1696,7 +1695,7 @@ void QgsApplication::setSkippedGdalDrivers( const QStringList &skippedGdalDriver
   *sDeferredSkippedGdalDrivers() = deferredSkippedGdalDrivers;
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "gdal/skipDrivers" ), skippedGdalDrivers.join( QStringLiteral( "," ) ) );
+  settings.setValue( QStringLiteral( "gdal/skipDrivers" ), skippedGdalDrivers.join( QLatin1Char( ',' ) ) );
 
   applyGdalSkippedDrivers();
 }
@@ -1820,6 +1819,16 @@ void QgsApplication::setCustomVariable( const QString &name, const QVariant &val
   settings.setValue( QStringLiteral( "variables/" ) + name, value );
 
   emit instance()->customVariablesChanged();
+}
+
+int QgsApplication::scaleIconSize( int standardSize, bool applyDevicePixelRatio )
+{
+  QFontMetrics fm( ( QFont() ) );
+  const double scale = 1.1 * standardSize / 24;
+  int scaledIconSize = static_cast< int >( std::floor( std::max( Qgis::UI_SCALE_FACTOR * fm.height() * scale, static_cast< double >( standardSize ) ) ) );
+  if ( applyDevicePixelRatio && QApplication::desktop() )
+    scaledIconSize *= QApplication::desktop()->devicePixelRatio();
+  return scaledIconSize;
 }
 
 int QgsApplication::maxConcurrentConnectionsPerPool() const

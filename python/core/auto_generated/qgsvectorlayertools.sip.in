@@ -83,7 +83,7 @@ Copy and move features with defined translation.
 :param request: The request for the features to be moved. It will be assigned to a new feature request with the newly copied features.
 :param dx: The translation on x
 :param dy: The translation on y
-:param topologicalEditing: If true, the function will perform topological
+:param topologicalEditing: If ``True``, the function will perform topological
                            editing of the vertices of ``layer`` on ``layer`` and ``topologicalLayer``
 :param topologicalLayer: The layer where vertices from the moved features of ``layer`` will be added
 

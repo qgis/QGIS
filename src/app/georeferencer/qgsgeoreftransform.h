@@ -107,7 +107,7 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
     /**
      * \brief Fits transformation parameters to the supplied ground control points.
      *
-     * \returns true on success, false on failure
+     * \returns TRUE on success, FALSE on failure
      */
     bool updateParametersFromGCPs( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &pixelCoords ) override;
 
@@ -139,8 +139,8 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
     bool transformWorldToRaster( const QgsPointXY &world, QgsPointXY &raster );
 
     /**
-     * \brief Transforms from raster to world if rasterToWorld is true,
-     * \brief or from world to raster when rasterToWorld is false.
+     * \brief Transforms from raster to world if rasterToWorld is TRUE,
+     * \brief or from world to raster when rasterToWorld is FALSE.
      *
      * \note Negative y-axis points down in raster CS.
      */

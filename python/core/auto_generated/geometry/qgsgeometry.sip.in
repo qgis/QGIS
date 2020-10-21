@@ -849,7 +849,7 @@ Splits this geometry according to a given line.
 \param[out] newGeometries list of new geometries that have been created with the split
 :param topological: ``True`` if topological editing is enabled
 \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
-:param splitFeature: Set to True if you want to split a feature, otherwise set to False to split parts
+:param splitFeature: Set to ``True`` if you want to split a feature, otherwise set to ``False`` to split parts
 
 :return: OperationResult a result code: success or reason of failure
 
@@ -857,7 +857,7 @@ Splits this geometry according to a given line.
    - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
 %End
 
-    OperationResult splitGeometry( const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries /Out/, bool topological, QgsPointSequence &topologyTestPoints /Out/, bool splitFeature = true );
+    OperationResult splitGeometry( const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries /Out/, bool topological, QgsPointSequence &topologyTestPoints /Out/, bool splitFeature = true);
 %Docstring
 Splits this geometry according to a given line.
 
@@ -865,7 +865,7 @@ Splits this geometry according to a given line.
 \param[out] newGeometries list of new geometries that have been created with the ``splitLine``. If the geometry is 3D, a linear interpolation of the z value is performed on the geometry at split points, see example.
 :param topological: ``True`` if topological editing is enabled
 \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
-:param splitFeature: Set to True if you want to split a feature, otherwise set to False to split parts
+:param splitFeature: Set to ``True`` if you want to split a feature, otherwise set to ``False`` to split parts
                      fix this bug?
 
 :return: OperationResult a result code: success or reason of failure
@@ -889,7 +889,7 @@ Splits this geometry according to a given curve.
 :param preserveCircular: whether if circular strings are preserved after splitting
 :param topological: ``True`` if topological editing is enabled
 \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
-:param splitFeature: Set to True if you want to split a feature, otherwise set to False to split parts
+:param splitFeature: Set to ``True`` if you want to split a feature, otherwise set to ``False`` to split parts
 
 :return: OperationResult a result code: success or reason of failure
 

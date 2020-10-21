@@ -28,7 +28,15 @@ from qgis.server import QgsServerRequest
 
 from qgis.testing import unittest
 from qgis.PyQt.QtCore import QSize
-from qgis.core import QgsVectorLayer
+from qgis.core import (
+    QgsVectorLayer,
+    QgsFeatureRequest,
+    QgsExpression,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
+    QgsCoordinateTransformContext,
+    QgsGeometry,
+)
 
 import osgeo.gdal  # NOQA
 
@@ -96,11 +104,13 @@ class TestQgsServerWFS(QgsServerTestBase):
 
     def test_project_wfs(self):
         """Test some WFS request"""
+
         for request in ('GetCapabilities', 'DescribeFeatureType'):
             self.wfs_request_compare(request)
             self.wfs_request_compare(request, '1.0.0')
 
     def wfs_getfeature_compare(self, requestid, request):
+
         project = self.testdata_path + "test_project_wfs.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
@@ -122,6 +132,7 @@ class TestQgsServerWFS(QgsServerTestBase):
         )
 
     def test_getfeature(self):
+
         tests = []
         tests.append(('nobbox', 'GetFeature&TYPENAME=testlayer'))
         tests.append(
@@ -139,6 +150,7 @@ class TestQgsServerWFS(QgsServerTestBase):
 
     def test_wfs_getcapabilities_100_url(self):
         """Check that URL in GetCapabilities response is complete"""
+
         # empty url in project
         project = os.path.join(
             self.testdata_path, "test_project_without_urls.qgs")
@@ -190,6 +202,7 @@ class TestQgsServerWFS(QgsServerTestBase):
                     "onlineResource=\"my_wfs_advertised_url\"" in item, True)
 
     def result_compare(self, file_name, error_msg_header, header, body):
+
         self.assert_headers(header, body)
         response = header + body
         reference_path = self.testdata_path + file_name
@@ -203,6 +216,7 @@ class TestQgsServerWFS(QgsServerTestBase):
                             (error_msg_header))
 
     def wfs_getfeature_post_compare(self, requestid, request):
+
         project = self.testdata_path + "test_project_wfs.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
@@ -488,6 +502,7 @@ class TestQgsServerWFS(QgsServerTestBase):
 
     def test_getFeatureFeatureId(self):
         """Test GetFeature with featureid"""
+
         self.wfs_request_compare(
             "GetFeature", '1.0.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&FEATUREID=testlayer.0", 'wfs_getFeature_1_0_0_featureid_0')
 
@@ -627,6 +642,65 @@ class TestQgsServerWFS(QgsServerTestBase):
                 ("OUTPUTFORMAT=%s" % ct)
                 + "&SRSNAME=EPSG:4326&TYPENAME=testlayer&FEATUREID=testlayer.0",
                 'wfs_getFeature_1_0_0_featureid_0_json')
+
+    def test_insert_srsName(self):
+        """Test srsName is respected when insering"""
+
+        post_data = """
+        <Transaction xmlns="http://www.opengis.net/wfs" xsi:schemaLocation="http://www.qgis.org/gml http://localhost:8000/?SERVICE=WFS&amp;REQUEST=DescribeFeatureType&amp;VERSION=1.0.0&amp;TYPENAME=as_symbols" service="WFS" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="{version}" xmlns:gml="http://www.opengis.net/gml">
+            <Insert xmlns="http://www.opengis.net/wfs">
+                <as_symbols xmlns="http://www.qgis.org/gml">
+                <name xmlns="http://www.qgis.org/gml">{name}</name>
+                <geometry xmlns="http://www.qgis.org/gml">
+                    <gml:Point srsName="{srsName}">
+                    <gml:coordinates cs="," ts=" ">{coordinates}</gml:coordinates>
+                    </gml:Point>
+                </geometry>
+                </as_symbols>
+            </Insert>
+        </Transaction>
+        """
+
+        project = self.testdata_path + \
+            "test_project_wms_grouped_layers.qgs"
+        assert os.path.exists(project), "Project file not found: " + project
+
+        query_string = '?SERVICE=WFS&MAP={}'.format(
+            urllib.parse.quote(project))
+        request = post_data.format(
+            name='4326-test1',
+            version='1.1.0',
+            srsName='EPSG:4326',
+            coordinates='10.67,52.48'
+        )
+        header, body = self._execute_request(
+            query_string, requestMethod=QgsServerRequest.PostMethod, data=request.encode('utf-8'))
+
+        # Verify
+        vl = QgsVectorLayer(self.testdata_path + 'test_project_wms_grouped_layers.gpkg|layername=as_symbols', 'as_symbols')
+        self.assertTrue(vl.isValid())
+        feature = next(vl.getFeatures(QgsFeatureRequest(QgsExpression('"name" = \'4326-test1\''))))
+        geom = feature.geometry()
+
+        tr = QgsCoordinateTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), vl.crs(), QgsCoordinateTransformContext())
+
+        geom_4326 = QgsGeometry.fromWkt('point( 10.67 52.48)')
+        geom_4326.transform(tr)
+        self.assertEqual(geom.asWkt(0), geom_4326.asWkt(0))
+
+        # Now: insert a feature in layer's CRS
+        request = post_data.format(
+            name='25832-test1',
+            version='1.1.0',
+            srsName='EPSG:25832',
+            coordinates='613412,5815738'
+        )
+        header, body = self._execute_request(
+            query_string, requestMethod=QgsServerRequest.PostMethod, data=request.encode('utf-8'))
+
+        feature = next(vl.getFeatures(QgsFeatureRequest(QgsExpression('"name" = \'25832-test1\''))))
+        geom = feature.geometry()
+        self.assertEqual(geom.asWkt(0), geom_4326.asWkt(0))
 
 
 if __name__ == '__main__':

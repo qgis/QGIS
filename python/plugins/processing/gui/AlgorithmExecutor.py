@@ -240,9 +240,13 @@ def execute_in_place_run(alg, parameters, context=None, feedback=None, raise_exc
 
                 active_layer.deleteFeatures(active_layer.selectedFeatureIds())
 
+                regenerate_primary_key = result_layer.customProperty('OnConvertFormatRegeneratePrimaryKey', False)
+                sink_flags = QgsFeatureSink.SinkFlags(QgsFeatureSink.RegeneratePrimaryKey) if regenerate_primary_key \
+                    else QgsFeatureSink.SinkFlags()
+
                 for f in result_layer.getFeatures():
                     new_features.extend(QgsVectorLayerUtils.
-                                        makeFeaturesCompatible([f], active_layer))
+                                        makeFeaturesCompatible([f], active_layer, sink_flags))
 
                 # Get the new ids
                 old_ids = set([f.id() for f in active_layer.getFeatures(req)])

@@ -676,7 +676,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
       {
         if ( ls.minimumScale() <= 0.0 )
         {
-          return QString( tr( "not set" ) );
+          return tr( "not set" );
         }
         else
         {
@@ -696,7 +696,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
       {
         if ( ls.maximumScale() <= 0.0 )
         {
-          return QString( tr( "not set" ) );
+          return tr( "not set" );
         }
         else
         {

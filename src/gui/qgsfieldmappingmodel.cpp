@@ -155,7 +155,7 @@ QVariant QgsFieldMappingModel::data( const QModelIndex &index, int role ) const
           {
             constraintDescription.push_back( tr( "Expression" ) );
           }
-          return constraintDescription.join( QStringLiteral( "<br>" ) );
+          return constraintDescription.join( QLatin1String( "<br>" ) );
         }
         break;
       }

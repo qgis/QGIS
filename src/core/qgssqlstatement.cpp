@@ -261,8 +261,8 @@ bool QgsSQLStatement::doBasicValidationChecks( QString &errorMsgOut ) const
     if ( !v.tableNamesDeclared.contains( pair.first ) )
     {
       if ( !errorMsgOut.isEmpty() )
-        errorMsgOut += QLatin1String( " " );
-      errorMsgOut += QString( tr( "Table %1 is referenced by column %2, but not selected in FROM / JOIN." ) ).arg( pair.first, pair.second );
+        errorMsgOut += QLatin1Char( ' ' );
+      errorMsgOut += tr( "Table %1 is referenced by column %2, but not selected in FROM / JOIN." ).arg( pair.first, pair.second );
     }
   }
 
@@ -683,7 +683,7 @@ QString QgsSQLStatement::NodeJoin::dump() const
   if ( mType != jtDefault )
   {
     ret += JOIN_TYPE_TEXT[mType];
-    ret += QLatin1String( " " );
+    ret += QLatin1Char( ' ' );
   }
   ret += QLatin1String( "JOIN " );
   ret += mTableDef->dump();
@@ -704,7 +704,7 @@ QString QgsSQLStatement::NodeJoin::dump() const
       first = false;
       ret += quotedIdentifierIfNeeded( column );
     }
-    ret += QLatin1String( ")" );
+    ret += QLatin1Char( ')' );
   }
   return ret;
 }

@@ -48,12 +48,12 @@ class QgsLandingPageApi: public QgsServerOgcApi
       // The plugin installation is optional so this won't be an issue in production.
       return ! qgetenv( "QGIS_SERVER_DISABLED_APIS" ).contains( name().toUtf8() ) && ( url.path().isEmpty()
              || url.path() == '/'
-             || url.path().startsWith( QStringLiteral( "/map/" ) )
-             || url.path().startsWith( QStringLiteral( "/index" ) )
+             || url.path().startsWith( QLatin1String( "/map/" ) )
+             || url.path().startsWith( QLatin1String( "/index" ) )
              // Static
-             || url.path().startsWith( QStringLiteral( "/css/" ) )
-             || url.path().startsWith( QStringLiteral( "/js/" ) )
-             || url.path() == QStringLiteral( "/favicon.ico" ) );
+             || url.path().startsWith( QLatin1String( "/css/" ) )
+             || url.path().startsWith( QLatin1String( "/js/" ) )
+             || url.path() == QLatin1String( "/favicon.ico" ) );
     }
 };
 
@@ -75,7 +75,7 @@ class QgsProjectLoaderFilter: public QgsServerFilter
     void requestReady() override
     {
       const auto handler { serverInterface()->requestHandler() };
-      if ( handler->path().startsWith( QStringLiteral( "/project/" ) ) )
+      if ( handler->path().startsWith( QLatin1String( "/project/" ) ) )
       {
         const QString projectPath { QgsLandingPageUtils::projectUriFromUrl( handler->url(), *serverInterface()->serverSettings() ) };
         if ( ! projectPath.isEmpty() )

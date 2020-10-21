@@ -354,7 +354,7 @@ bool QgsOracleConn::supportedLayers( QVector<QgsOracleLayerProperty> &layers, co
 
 QString QgsOracleConn::quotedIdentifier( QString ident )
 {
-  ident.replace( '"', QStringLiteral( "\"\"" ) );
+  ident.replace( '"', QLatin1String( "\"\"" ) );
   ident = ident.prepend( '\"' ).append( '\"' );
   return ident;
 }
@@ -406,8 +406,8 @@ QString QgsOracleConn::quotedValue( const QVariant &value, QVariant::Type type )
   }
 
   QString v = value.toString();
-  v.replace( '\'', QStringLiteral( "''" ) );
-  v.replace( QStringLiteral( "\\\"" ), QStringLiteral( "\\\\\"" ) );
+  v.replace( '\'', QLatin1String( "''" ) );
+  v.replace( QLatin1String( "\\\"" ), QLatin1String( "\\\\\"" ) );
   return v.prepend( '\'' ).append( '\'' );
 }
 
@@ -566,7 +566,7 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
   QString sql = QStringLiteral( "SELECT DISTINCT " );
   if ( detectedType == QgsWkbTypes::Unknown )
   {
-    sql += QStringLiteral( "t.%1.SDO_GTYPE" );
+    sql += QLatin1String( "t.%1.SDO_GTYPE" );
     if ( detectedSrid <= 0 )
     {
       sql += ',';
@@ -576,10 +576,10 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
 
   if ( detectedSrid <= 0 )
   {
-    sql += QStringLiteral( "t.%1.SDO_SRID" );
+    sql += QLatin1String( "t.%1.SDO_SRID" );
   }
 
-  sql += QStringLiteral( " FROM %2 t WHERE NOT t.%1 IS NULL%3" );
+  sql += QLatin1String( " FROM %2 t WHERE NOT t.%1 IS NULL%3" );
 
   if ( !exec( qry, sql
               .arg( quotedIdentifier( layerProperty.geometryColName ),

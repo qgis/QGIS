@@ -115,7 +115,7 @@ void QgsMeshRendererActiveDatasetWidget::updateMetadata()
           msg += metadata( mActiveScalarDatasetGroup );
           msg += QStringLiteral( "</p> <p> <h3> %1 </h3>" ).arg( tr( "Vector dataset" ) );
           msg += metadata( mActiveVectorDatasetGroup );
-          msg += QStringLiteral( "</p>" );
+          msg += QLatin1String( "</p>" );
         }
       }
       else
@@ -144,7 +144,7 @@ QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datase
 {
 
   QString msg;
-  msg += QStringLiteral( "<table>" );
+  msg += QLatin1String( "<table>" );
 
   QString definedOnMesh;
   if ( mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Face ) )
@@ -198,7 +198,7 @@ QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datase
   const auto options = gmeta.extraOptions();
   for ( auto it = options.constBegin(); it != options.constEnd(); ++it )
   {
-    if ( it.key() == QStringLiteral( "classification" ) )
+    if ( it.key() == QLatin1String( "classification" ) )
     {
       msg += QStringLiteral( "<tr><td>%1</td></tr>" ).arg( tr( "Classified values" ) );
       continue;
@@ -206,7 +206,7 @@ QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datase
     msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" ).arg( it.key() ).arg( it.value() );
   }
 
-  msg += QStringLiteral( "</table>" );
+  msg += QLatin1String( "</table>" );
 
   return msg;
 }

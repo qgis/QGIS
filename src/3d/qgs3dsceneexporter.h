@@ -67,7 +67,7 @@ class _3D_EXPORT Qgs3DSceneExporter : public Qt3DCore::QEntity
 
     /**
      * Creates necessary export objects from entity if it represents valid vector layer entity
-     * Returns false if the no 3D object was extracted from the vector layer
+     * Returns FALSE if the no 3D object was extracted from the vector layer
      */
     bool parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsVectorLayer *layer );
 

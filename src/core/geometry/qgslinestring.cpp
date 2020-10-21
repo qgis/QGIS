@@ -363,6 +363,45 @@ bool QgsLineString::removeDuplicateNodes( double epsilon, bool useZValues )
   return result;
 }
 
+QVector< QgsVertexId > QgsLineString::collectDuplicateNodes( double epsilon, bool useZValues ) const
+{
+  QVector< QgsVertexId > res;
+  if ( mX.count() <= 1 )
+    return res;
+
+  const double *x = mX.constData();
+  const double *y = mY.constData();
+  bool hasZ = is3D();
+  bool useZ = hasZ && useZValues;
+  const double *z = useZ ? mZ.constData() : nullptr;
+
+  double prevX = *x++;
+  double prevY = *y++;
+  double prevZ = z ? *z++ : 0;
+
+  QgsVertexId id;
+  for ( int i = 1; i < mX.count(); ++i )
+  {
+    double currentX = *x++;
+    double currentY = *y++;
+    double currentZ = useZ ? *z++ : 0;
+    if ( qgsDoubleNear( currentX, prevX, epsilon ) &&
+         qgsDoubleNear( currentY, prevY, epsilon ) &&
+         ( !useZ || qgsDoubleNear( currentZ, prevZ, epsilon ) ) )
+    {
+      id.vertex = i;
+      res << id;
+    }
+    else
+    {
+      prevX = currentX;
+      prevY = currentY;
+      prevZ = currentZ;
+    }
+  }
+  return res;
+}
+
 QPolygonF QgsLineString::asQPolygonF() const
 {
   const int nb = mX.size();
@@ -478,7 +517,7 @@ QString QgsLineString::asWkt( int precision ) const
   QString wkt = wktTypeStr() + ' ';
 
   if ( isEmpty() )
-    wkt += QStringLiteral( "EMPTY" );
+    wkt += QLatin1String( "EMPTY" );
   else
   {
     QgsPointSequence pts;

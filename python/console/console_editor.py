@@ -80,8 +80,6 @@ class KeyFilter(QObject):
 
 class Editor(QgsCodeEditorPython):
 
-    MARKER_NUM = 6
-
     def __init__(self, parent=None):
         super().__init__(parent)
         self.parent = parent
@@ -89,21 +87,10 @@ class Editor(QgsCodeEditorPython):
         self.lastModified = 0
         self.opening = ['(', '{', '[', "'", '"']
         self.closing = [')', '}', ']', "'", '"']
-
-        # List of marker line to be deleted from check syntax
-        self.bufferMarkerLine = []
-
         self.settings = QgsSettings()
 
-        self.markerDefine(QgsApplication.getThemePixmap("console/iconSyntaxErrorConsole.svg"),
-                          self.MARKER_NUM)
-
         self.setMinimumHeight(120)
-
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-
-        # Annotations
-        self.setAnnotationDisplay(QsciScintilla.ANNOTATION_BOXED)
 
         # Disable command key
         ctrl, shift = self.SCMOD_CTRL << 16, self.SCMOD_SHIFT << 16
@@ -160,9 +147,9 @@ class Editor(QgsCodeEditorPython):
             QCoreApplication.translate("PythonConsole", "Hide Editor"),
             self.hideEditor)
         menu.addSeparator()  # ------------------------------
-        syntaxCheck = menu.addAction(QgsApplication.getThemeIcon("console/iconSyntaxErrorConsole.svg"),
-                                     QCoreApplication.translate("PythonConsole", "Check Syntax"),
-                                     self.syntaxCheck, 'Ctrl+4')
+        syntaxCheckAction = menu.addAction(QgsApplication.getThemeIcon("console/iconSyntaxErrorConsole.svg"),
+                                           QCoreApplication.translate("PythonConsole", "Check Syntax"),
+                                           self.syntaxCheck, 'Ctrl+4')
         runSelected = menu.addAction(QgsApplication.getThemeIcon("console/mIconRunConsole.svg"),  # spellok
                                      QCoreApplication.translate("PythonConsole", "Run Selected"),
                                      self.runSelectedCode, 'Ctrl+E')  # spellok
@@ -218,7 +205,7 @@ class Editor(QgsCodeEditorPython):
         menu.addAction(QgsApplication.getThemeIcon("console/iconSettingsConsole.svg"),
                        QCoreApplication.translate("PythonConsole", "Options…"),
                        self.parent.pc.openSettings)
-        syntaxCheck.setEnabled(False)
+        syntaxCheckAction.setEnabled(False)
         pasteAction.setEnabled(False)
         pyQGISHelpAction.setEnabled(False)
         gist_menu.setEnabled(False)
@@ -237,7 +224,7 @@ class Editor(QgsCodeEditorPython):
             pyQGISHelpAction.setEnabled(True)
         if not self.text() == '':
             selectAllAction.setEnabled(True)
-            syntaxCheck.setEnabled(True)
+            syntaxCheckAction.setEnabled(True)
         if self.isUndoAvailable():
             undoAction.setEnabled(True)
         if self.isRedoAvailable():
@@ -461,7 +448,7 @@ class Editor(QgsCodeEditorPython):
                 self.parent.pc.callWidgetMessageBarEditor(msgEditorBlank, 0, True)
                 return
 
-        if self.syntaxCheck(fromContextMenu=False):
+        if self.syntaxCheck():
             if filename and self.isModified() and autoSave:
                 self.parent.save(filename)
             elif not filename or self.isModified():
@@ -495,15 +482,14 @@ class Editor(QgsCodeEditorPython):
         self.ensureLineVisible(linenr)
         self.setFocus()
 
-    def syntaxCheck(self, filename=None, fromContextMenu=True):
-        eline = None
-        ecolumn = 0
-        edescr = ''
+    def syntaxCheck(self):
         source = self.text()
+        self.clearWarnings()
         try:
+            filename = self.parent.tw.currentWidget().path
             if not filename:
-                filename = self.parent.tw.currentWidget().path
-            # source = open(filename, 'r').read() + '\n'
+                tmpFile = self.createTempFile()
+                filename = tmpFile
             if isinstance(source, type("")):
                 source = source.encode('utf-8')
             if isinstance(filename, type("")):
@@ -512,34 +498,16 @@ class Editor(QgsCodeEditorPython):
                 compile(source, filename, 'exec')
         except SyntaxError as detail:
             eline = detail.lineno and detail.lineno or 1
+            eline -= 1
             ecolumn = detail.offset and detail.offset or 1
             edescr = detail.msg
-        if eline is not None:
-            eline -= 1
-            for markerLine in self.bufferMarkerLine:
-                self.markerDelete(markerLine)
-                self.clearAnnotations(markerLine)
-                self.bufferMarkerLine.remove(markerLine)
-            if (eline) not in self.bufferMarkerLine:
-                self.bufferMarkerLine.append(eline)
-            self.markerAdd(eline, self.MARKER_NUM)
-            loadFont = self.settings.value("pythonConsole/fontfamilytext",
-                                           "Monospace")
-            styleAnn = QsciStyle(-1, "Annotation",
-                                 QColor(255, 0, 0),
-                                 QColor(255, 200, 0),
-                                 QFont(loadFont, 8, -1, True),
-                                 True)
-            self.annotate(eline, edescr, styleAnn)
+
+            self.addWarning(eline, edescr)
             self.setCursorPosition(eline, ecolumn - 1)
-            # self.setSelection(eline, ecolumn, eline, self.lineLength(eline)-1)
             self.ensureLineVisible(eline)
-            # self.ensureCursorVisible()
             return False
-        else:
-            self.markerDeleteAll()
-            self.clearAnnotations()
-            return True
+
+        return True
 
     def keyPressEvent(self, e):
         t = e.text()

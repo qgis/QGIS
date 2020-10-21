@@ -257,10 +257,25 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(components["path"], filename)
         self.assertEqual(components["layerName"], 'test')
 
+        uri = '{}|layerName=test'.format(filename)
+        components = registry.decodeUri('ogr', uri)
+        self.assertEqual(components["path"], filename)
+        self.assertEqual(components["layerName"], 'test')
+
         uri = '{}|layerid=0'.format(filename)
         components = registry.decodeUri('ogr', uri)
         self.assertEqual(components["path"], filename)
         self.assertEqual(components["layerId"], 0)
+
+        uri = '{}|layerId=0'.format(filename)
+        components = registry.decodeUri('ogr', uri)
+        self.assertEqual(components["path"], filename)
+        self.assertEqual(components["layerId"], 0)
+
+        uri = '{}|geometryType=POINT'.format(filename)
+        components = registry.decodeUri('ogr', uri)
+        self.assertEqual(components["path"], filename)
+        self.assertEqual(components["geometryType"], 'POINT')
 
     def testEncodeUri(self):
 
@@ -1728,7 +1743,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(f.id(), 123)
 
     def testTransactionGroup(self):
-        """Issue https://github.com/qgis/QGIS/issues/36525"""
+        """Test issue GH #36525"""
 
         project = QgsProject()
         project.setAutoTransaction(True)
@@ -1799,6 +1814,42 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
 
         # Test that QGIS sees the new changes
         self.assertEqual(next(vl.getFeatures()).attribute(1), 'new value')
+
+    def testTransactionGroupCrash(self):
+        """Test issue GH #39265 segfault"""
+
+        project = QgsProject()
+        project.setAutoTransaction(True)
+        tmpfile = os.path.join(
+            self.basetestpath, 'tempGeoPackageTransactionCrash.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint)
+        lyr.CreateField(ogr.FieldDefn('str_field', ogr.OFTString))
+
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT (1 1)'))
+        f.SetField('str_field', 'one')
+        lyr.CreateFeature(f)
+
+        del lyr
+        del ds
+
+        vl = QgsVectorLayer(tmpfile + '|layername=test', 'test', 'ogr')
+
+        project.addMapLayers([vl])
+
+        feature = next(vl.getFeatures())
+        feature.setAttributes([None, 'two'])
+
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.addFeature(feature))
+
+        # Save without leaving editing
+        self.assertTrue(vl.commitChanges(False))
+
+        # Now add another one
+        feature.setAttributes([None, 'three'])
+        self.assertTrue(vl.addFeature(feature))
 
 
 if __name__ == '__main__':

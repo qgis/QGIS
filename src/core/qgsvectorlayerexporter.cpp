@@ -206,7 +206,7 @@ bool QgsVectorLayerExporter::flushBuffer()
     mErrorMessage = QObject::tr( "Creation error for features from #%1 to #%2. Provider errors was: \n%3" )
                     .arg( mFeatureBuffer.first().id() )
                     .arg( mFeatureBuffer.last().id() )
-                    .arg( errors.join( QStringLiteral( "\n" ) ) );
+                    .arg( errors.join( QLatin1Char( '\n' ) ) );
 
     mError = ErrFeatureWriteFailed;
     mErrorCount += mFeatureBuffer.count();

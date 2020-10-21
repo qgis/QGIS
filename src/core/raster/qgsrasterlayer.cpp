@@ -466,7 +466,7 @@ QString QgsRasterLayer::htmlMetadata() const
       myMetadata += QString::number( dataProvider()->sourceNoDataValue( i ) );
     else
       myMetadata += tr( "n/a" );
-    myMetadata += QStringLiteral( "</td>" );
+    myMetadata += QLatin1String( "</td>" );
 
     if ( provider->hasStatistics( i ) )
     {
@@ -479,7 +479,7 @@ QString QgsRasterLayer::htmlMetadata() const
       myMetadata += QStringLiteral( "<td>" ) % tr( "n/a" ) % QStringLiteral( "</td><td>" ) % tr( "n/a" ) % QStringLiteral( "</td>" );
     }
 
-    myMetadata += QStringLiteral( "</tr>\n" );
+    myMetadata += QLatin1String( "</tr>\n" );
   }
 
   //close previous bands table
@@ -783,18 +783,18 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   {
     QgsSettings settings;
     QString resampling = settings.value( QStringLiteral( "/Raster/defaultZoomedInResampling" ), QStringLiteral( "nearest neighbour" ) ).toString();
-    if ( resampling == QStringLiteral( "bilinear" ) )
+    if ( resampling == QLatin1String( "bilinear" ) )
     {
       resampleFilter->setZoomedInResampler( new QgsBilinearRasterResampler() );
       mDataProvider->setZoomedInResamplingMethod( QgsRasterDataProvider::ResamplingMethod::Bilinear );
     }
-    else if ( resampling == QStringLiteral( "cubic" ) )
+    else if ( resampling == QLatin1String( "cubic" ) )
     {
       resampleFilter->setZoomedInResampler( new QgsCubicRasterResampler() );
       mDataProvider->setZoomedInResamplingMethod( QgsRasterDataProvider::ResamplingMethod::Cubic );
     }
     resampling = settings.value( QStringLiteral( "/Raster/defaultZoomedOutResampling" ), QStringLiteral( "nearest neighbour" ) ).toString();
-    if ( resampling == QStringLiteral( "bilinear" ) )
+    if ( resampling == QLatin1String( "bilinear" ) )
     {
       resampleFilter->setZoomedOutResampler( new QgsBilinearRasterResampler() );
       mDataProvider->setZoomedOutResamplingMethod( QgsRasterDataProvider::ResamplingMethod::Bilinear );
@@ -1760,7 +1760,7 @@ QImage QgsRasterLayer::previewAsImage( QSize size, const QColor &bgColor, QImage
 /*
  * \param QDomNode node that will contain the symbology definition for this layer.
  * \param errorMessage reference to string that will be updated with any error messages
- * \return true in case of success.
+ * \return TRUE in case of success.
  */
 bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMessage,
                                     QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )

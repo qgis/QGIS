@@ -818,7 +818,7 @@ QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::parameters(
       QgsServerQueryStringParameter properties { QStringLiteral( "properties" ), false,
           QgsServerQueryStringParameter::Type::List,
           QStringLiteral( "Comma separated list of feature property names to be added to the result. Valid values: %1" )
-          .arg( publishedFieldNames.join( QStringLiteral( "', '" ) )
+          .arg( publishedFieldNames.join( QLatin1String( "', '" ) )
                 .append( '\'' )
                 .prepend( '\'' ) ) };
 
@@ -1244,7 +1244,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
           if ( re2.match( it.value() ).hasMatch() )
           {
             QString val { it.value() };
-            expressions.push_back( QStringLiteral( "\"%1\" LIKE '%2'" ).arg( it.key() ).arg( val.replace( '%', QStringLiteral( "%%" ) ).replace( '*', '%' ) ) );
+            expressions.push_back( QStringLiteral( "\"%1\" LIKE '%2'" ).arg( it.key() ).arg( val.replace( '%', QLatin1String( "%%" ) ).replace( '*', '%' ) ) );
           }
           else
           {
@@ -1256,7 +1256,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       // Join all expression filters
       if ( ! expressions.isEmpty() )
       {
-        filterExpression = expressions.join( QStringLiteral( " AND " ) );
+        filterExpression = expressions.join( QLatin1String( " AND " ) );
         featureRequest.setFilterExpression( filterExpression );
         QgsDebugMsgLevel( QStringLiteral( "Filter expression: %1" ).arg( featureRequest.filterExpression()->expression() ), 4 );
       }

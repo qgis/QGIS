@@ -332,7 +332,7 @@ QVariant QgsGrassModuleInputModel::data( const QModelIndex &index, int role ) co
       QString mapset = QStandardItemModel::data( index, QgsGrassModuleInputModel::MapsetRole ).toString();
       if ( mapset != QgsGrass::getDefaultMapset() )
       {
-        data = data.toString() + "@" + mapset;
+        data = QString( data.toString() + "@" + mapset );
       }
     }
   }
@@ -1035,7 +1035,7 @@ QStringList QgsGrassModuleInput::options()
     {
       maps << mSelectedModel->item( i )->text();
     }
-    list << mKey + "=" + maps.join( QStringLiteral( "," ) );
+    list << mKey + "=" + maps.join( QLatin1Char( ',' ) );
   }
   else
   {
@@ -1058,7 +1058,7 @@ QStringList QgsGrassModuleInput::options()
     if ( !mGeometryTypeOption.isEmpty() )
     {
 
-      list << mGeometryTypeOption + "=" + currentGeometryTypeNames().join( QStringLiteral( "," ) );
+      list << mGeometryTypeOption + "=" + currentGeometryTypeNames().join( QLatin1Char( ',' ) );
     }
   }
 

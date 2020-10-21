@@ -147,7 +147,7 @@ class CORE_EXPORT QgsMeshCalcNode
 
     /**
      * Returns whether the calculation will leads to a non temporal dataset group result
-     * \returns true if the result will be non temporal
+     * \returns TRUE if the result will be non temporal
      */
     bool isNonTemporal() const;
 

@@ -185,7 +185,7 @@ void QgsWFSProviderSQLFunctionValidator::visit( const QgsSQLStatement::NodeFunct
     for ( const QgsWfsCapabilities::Function &f : constMSpatialPredicatesList )
     {
       if ( n.name().compare( f.name, Qt::CaseInsensitive ) == 0 ||
-           ( "ST_" + n.name() ).compare( f.name, Qt::CaseInsensitive ) == 0 )
+           QString( "ST_" + n.name() ).compare( f.name, Qt::CaseInsensitive ) == 0 )
       {
         foundMatch = true;
       }
@@ -308,7 +308,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
       else if ( part.startsWith( QLatin1String( " expecting " ) ) )
         newPart = tr( "%1 is expected instead." ).arg( part.mid( QStringLiteral( " expecting " ).size() ) );
       if ( !parserErrorString.isEmpty() )
-        parserErrorString += QLatin1String( " " );
+        parserErrorString += QLatin1Char( ' ' );
       parserErrorString += newPart;
     }
     parserErrorString.replace( QLatin1String( " or " ), tr( "%1 or %2" ).arg( QString(), QString() ) );
@@ -429,7 +429,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
   for ( const QString &typeName : qgis::as_const( typenameList ) )
   {
     if ( !concatenatedTypenames.isEmpty() )
-      concatenatedTypenames += QLatin1String( "," );
+      concatenatedTypenames += QLatin1Char( ',' );
     concatenatedTypenames += typeName;
   }
 
@@ -1511,7 +1511,7 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
       foundGeometryAttribute = true;
       geometryAttribute = name;
       // We have a choice parent element we cannot assume any valid information over the geometry type
-      if ( attributeElement.parentNode().nodeName() == QStringLiteral( "choice" ) && ! attributeElement.nextSibling().isNull() )
+      if ( attributeElement.parentNode().nodeName() == QLatin1String( "choice" ) && ! attributeElement.nextSibling().isNull() )
         geomType = QgsWkbTypes::Unknown;
       else
         geomType = geomTypeFromPropertyType( geometryAttribute, gmlPT.cap( 1 ) );

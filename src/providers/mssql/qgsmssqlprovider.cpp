@@ -299,7 +299,7 @@ void QgsMssqlProvider::loadMetadata()
     QString detectedType = query.value( 2 ).toString();
     QString dim = query.value( 3 ).toString();
     if ( dim == QLatin1String( "3" ) && !detectedType.endsWith( 'M' ) )
-      detectedType += QLatin1String( "Z" );
+      detectedType += QLatin1Char( 'Z' );
     else if ( dim == QLatin1String( "4" ) )
       detectedType += QLatin1String( "ZM" );
     mWkbType = getWkbType( detectedType );
@@ -389,7 +389,7 @@ void QgsMssqlProvider::loadFields()
           // Field length in chars is column 7 ("Length") of the sp_columns output,
           // except for uniqueidentifiers which must use column 6 ("Precision").
           int length = query.value( sqlTypeName.startsWith( QLatin1String( "uniqueidentifier" ), Qt::CaseInsensitive ) ? 6 : 7 ).toInt();
-          if ( sqlTypeName.startsWith( QLatin1String( "n" ) ) )
+          if ( sqlTypeName.startsWith( QLatin1Char( 'n' ) ) )
           {
             length = length / 2;
           }
@@ -1045,7 +1045,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     QString values;
     if ( !( flags & QgsFeatureSink::FastInsert ) )
     {
-      statement += QStringLiteral( "DECLARE @px TABLE (" );
+      statement += QLatin1String( "DECLARE @px TABLE (" );
 
       QString delim;
       for ( auto idx : mPrimaryKeyAttrs )
@@ -1112,7 +1112,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         first = false;
 
       statement += QStringLiteral( "[%1]" ).arg( fld.name() );
-      values += QStringLiteral( "?" );
+      values += QLatin1Char( '?' );
     }
 
     // append geometry column name
@@ -1141,10 +1141,10 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       }
     }
 
-    statement += QStringLiteral( ") " );
+    statement += QLatin1String( ") " );
     if ( !( flags & QgsFeatureSink::FastInsert ) && !mPrimaryKeyAttrs.isEmpty() )
     {
-      statement += QStringLiteral( " OUTPUT " );
+      statement += QLatin1String( " OUTPUT " );
 
       QString delim;
 
@@ -1155,14 +1155,14 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         delim = QStringLiteral( "," );
       }
 
-      statement += QStringLiteral( " INTO @px " );
+      statement += QLatin1String( " INTO @px " );
     }
 
     statement += QStringLiteral( " VALUES (" ) + values + ')';
 
     if ( !( flags & QgsFeatureSink::FastInsert && !mPrimaryKeyAttrs.isEmpty() ) )
     {
-      statement += QStringLiteral( "; SELECT * FROM @px;" );
+      statement += QLatin1String( "; SELECT * FROM @px;" );
     }
 
     // use prepared statement to prevent from sql injection
@@ -1968,7 +1968,7 @@ void QgsMssqlProvider::mssqlWkbTypeAndDimension( QgsWkbTypes::Type wkbType, QStr
   }
   else if ( QgsWkbTypes::hasM( wkbType ) )
   {
-    geometryType += QLatin1String( "M" );
+    geometryType += QLatin1Char( 'M' );
     dim = 3;
   }
   else if ( wkbType >= QgsWkbTypes::Point25D && wkbType <= QgsWkbTypes::MultiPolygon25D )
@@ -2856,7 +2856,7 @@ QString QgsMssqlProvider::whereClauseFid( QgsFeatureId featureId )
           delim = QStringLiteral( " AND " );
         }
 
-        whereClause += QStringLiteral( ")" );
+        whereClause += QLatin1Char( ')' );
       }
       else
       {

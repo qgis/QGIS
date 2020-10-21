@@ -347,7 +347,7 @@ void QgsVectorTileBasicRendererWidget::setLayer( QgsVectorTileLayer *layer )
 {
   mVTLayer = layer;
 
-  if ( layer && layer->renderer() && layer->renderer()->type() == QStringLiteral( "basic" ) )
+  if ( layer && layer->renderer() && layer->renderer()->type() == QLatin1String( "basic" ) )
   {
     mRenderer.reset( static_cast<QgsVectorTileBasicRenderer *>( layer->renderer()->clone() ) );
   }

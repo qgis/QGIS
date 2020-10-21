@@ -200,7 +200,7 @@ QString QgsRuleBasedRenderer::Rule::dump( int indent ) const
   {
     lst.append( rule->dump( indent + 2 ) );
   }
-  msg += lst.join( QStringLiteral( "\n" ) );
+  msg += lst.join( QLatin1Char( '\n' ) );
   return msg;
 }
 
@@ -463,7 +463,7 @@ bool QgsRuleBasedRenderer::Rule::startRender( QgsRenderContext &context, const Q
         }
         else if ( subf.count( ) == 2 )
         {
-          return subf.join( QStringLiteral( ") OR (" ) ).prepend( '(' ).append( ')' );
+          return subf.join( QLatin1String( ") OR (" ) ).prepend( '(' ).append( ')' );
         }
         else
         {
@@ -475,7 +475,7 @@ bool QgsRuleBasedRenderer::Rule::startRender( QgsRenderContext &context, const Q
     }
     else
     {
-      sf = subfilters.join( QStringLiteral( ") OR (" ) ).prepend( '(' ).append( ')' );
+      sf = subfilters.join( QLatin1String( ") OR (" ) ).prepend( '(' ).append( ')' );
     }
   }
 
@@ -1241,7 +1241,7 @@ void QgsRuleBasedRenderer::refineRuleRanges( QgsRuleBasedRenderer::Rule *initial
                      QString::number( rng.lowerValue(), 'f', 4 ),
                      QString::number( rng.upperValue(), 'f', 4 ) );
     firstRange = false;
-    QString label = filter;
+    QString label =  rng.label().isEmpty() ? filter : rng.label();
     initialRule->appendChild( new Rule( rng.symbol()->clone(), 0, 0, filter, label ) );
   }
 }

@@ -356,10 +356,14 @@ Cursors are automatically scaled to look like a 16px cursor on 96dpi
 screens.
 %End
 
-    static QPixmap getThemePixmap( const QString &name );
+    static QPixmap getThemePixmap( const QString &name, const QColor &foreColor = QColor(), const QColor &backColor = QColor(), int size = 16 );
 %Docstring
 Helper to get a theme icon as a pixmap. It will fall back to the
 default theme if the active theme does not have the required icon.
+
+If ``foreColor`` or ``backColor`` are specified, then these colors will
+be used for parametrized colors in SVG files wherever available. If
+colors are specified then the ``size`` argument also must be set.
 %End
 
     static QString userStylePath();
@@ -931,6 +935,17 @@ Do not include generated variables (like system name, user name etc.)
 Set a single custom expression variable.
 
 .. versionadded:: 3.0
+%End
+
+    static int scaleIconSize( int standardSize, bool applyDevicePixelRatio = false );
+%Docstring
+Scales an icon size to compensate for display pixel density, making the icon
+size hi-dpi friendly, whilst still resulting in pixel-perfect sizes for low-dpi
+displays.
+
+``standardSize`` should be set to a standard icon size, e.g. 16, 24, 48, etc.
+
+.. versionadded:: 3.16
 %End
 
     int maxConcurrentConnectionsPerPool() const;

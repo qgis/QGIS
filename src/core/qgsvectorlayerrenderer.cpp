@@ -151,7 +151,7 @@ bool QgsVectorLayerRenderer::render()
     return false;
   }
 
-  if ( mRenderer->type() == QStringLiteral( "nullSymbol" ) )
+  if ( mRenderer->type() == QLatin1String( "nullSymbol" ) )
   {
     // a little shortcut for the null symbol renderer - most of the time it is not going to render anything
     // so we can even skip the whole loop to fetch features

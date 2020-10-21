@@ -42,7 +42,7 @@ class APP_EXPORT QgsMapToolOffsetPointSymbol: public QgsMapToolPointSymbol
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
     /**
-     * Returns true if the symbols of a map layer can be offset. This means the layer
+     * Returns TRUE if the symbols of a map layer can be offset. This means the layer
      *  is a vector layer, has type point or multipoint and has at least one offset attribute in the renderer.
     */
     static bool layerIsOffsetable( QgsMapLayer *ml );

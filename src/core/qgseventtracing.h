@@ -93,17 +93,17 @@ class CORE_EXPORT QgsEventTracing
     };
 
     /**
-     * Starts tracing and clears buffers. Returns true on success (false if tracing is already running).
+     * Starts tracing and clears buffers. Returns TRUE on success (FALSE if tracing is already running).
      */
     static bool startTracing();
 
     /**
-     * Stops tracing. Returns true on success (false if tracing is already stopped).
+     * Stops tracing. Returns TRUE on success (FALSE if tracing is already stopped).
      */
     static bool stopTracing();
 
     /**
-     * Returns true if tracing is currently in progress.
+     * Returns TRUE if tracing is currently in progress.
      */
     static bool isTracingEnabled();
 

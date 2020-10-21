@@ -618,7 +618,7 @@ class PythonConsoleWidget(QWidget):
     def onClickGoToLine(self, item, column):
         tabEditor = self.tabEditorWidget.currentWidget().newEditor
         if item.text(1) == 'syntaxError':
-            check = tabEditor.syntaxCheck(fromContextMenu=False)
+            check = tabEditor.syntaxCheck()
             if check and not tabEditor.isReadOnly():
                 self.tabEditorWidget.currentWidget().save()
             return

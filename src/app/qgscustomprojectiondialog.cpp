@@ -584,7 +584,7 @@ static void proj_collecting_logger( void *user_data, int /*level*/, const char *
 {
   QStringList *dest = reinterpret_cast< QStringList * >( user_data );
   QString messageString( message );
-  messageString.replace( QStringLiteral( "internal_proj_create: " ), QString() );
+  messageString.replace( QLatin1String( "internal_proj_create: " ), QString() );
   dest->append( messageString );
 }
 
@@ -720,8 +720,8 @@ void QgsCustomProjectionDialog::formatChanged()
       {
         PJ_CONTEXT *pjContext = QgsProjContext::get();
         QString proj = teParameters->toPlainText();
-        proj.replace( QStringLiteral( "+type=crs" ), QString() );
-        proj += QStringLiteral( " +type=crs" );
+        proj.replace( QLatin1String( "+type=crs" ), QString() );
+        proj += QLatin1String( " +type=crs" );
         QgsProjUtils::proj_pj_unique_ptr crs( proj_create( QgsProjContext::get(), proj.toLatin1().constData() ) );
         if ( crs )
         {

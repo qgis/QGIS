@@ -842,7 +842,7 @@ tests:
 
   # case 2 split line layer with iself
   - algorithm: native:splitwithlines
-    name: Split lines with same lines
+    name: Split lines with same lines (2)
     params:
       INPUT:
         name: custom/lines2.gml

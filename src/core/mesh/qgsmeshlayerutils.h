@@ -287,7 +287,7 @@ class CORE_EXPORT QgsMeshLayerUtils
      * Calculates the normals on the vertices using vertical magnitudes instead Z value of vertices
      * \param triangularMesh the triangular mesh
      * \param verticalMagnitude the vertical magnitude values used instead Z value of vertices
-     * \param isRelative true if the vertical magnitude is relative to the Z value of vertices
+     * \param isRelative TRUE if the vertical magnitude is relative to the Z value of vertices
      * \returns normales (3D vector) on all the vertices
      * \since QGIS 3.14
      */

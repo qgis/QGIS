@@ -611,7 +611,7 @@ QUrl QgsLayoutItemLabel::createStylesheetUrl() const
 
   QByteArray ba;
   ba.append( stylesheet.toUtf8() );
-  QUrl cssFileURL = QUrl( "data:text/css;charset=utf-8;base64," + ba.toBase64() );
+  QUrl cssFileURL = QUrl( QString( "data:text/css;charset=utf-8;base64," + ba.toBase64() ) );
 
   return cssFileURL;
 }

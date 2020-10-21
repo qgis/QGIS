@@ -513,7 +513,7 @@ bool QgsLayoutMultiFrame::writeXml( QDomElement &parentElement, QDomDocument &do
 
 bool QgsLayoutMultiFrame::readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context, bool includeFrames )
 {
-  if ( element.nodeName() != QStringLiteral( "LayoutMultiFrame" ) )
+  if ( element.nodeName() != QLatin1String( "LayoutMultiFrame" ) )
   {
     return false;
   }

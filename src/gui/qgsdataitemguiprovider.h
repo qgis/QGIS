@@ -133,7 +133,7 @@ class GUI_EXPORT QgsDataItemGuiProvider
 
     /**
      * Tries to permanently delete map layer representing the given item.
-     * Returns true if the layer was successfully deleted.
+     * Returns TRUE if the layer was successfully deleted.
      *
      * Items which implement this method should return the QgsDataItem::Delete capability.
      *

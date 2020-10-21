@@ -603,7 +603,7 @@ void QgsAttributeTableDialog::mActionAddFeature_triggered()
 {
   QgsSettings s;
 
-  if ( s.value( QStringLiteral( "/qgis/attributeTableLastAddFeatureMethod" ) ) == QStringLiteral( "attributeForm" ) )
+  if ( s.value( QStringLiteral( "/qgis/attributeTableLastAddFeatureMethod" ) ) == QLatin1String( "attributeForm" ) )
     mActionAddFeatureViaAttributeForm_triggered();
   else
     mActionAddFeatureViaAttributeTable_triggered();
@@ -627,6 +627,7 @@ void QgsAttributeTableDialog::mActionAddFeatureViaAttributeTable_triggered()
   {
     masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
     mMainView->setCurrentEditSelection( QgsFeatureIds() << action.feature().id() );
+    mMainView->tableView()->scrollToFeature( action.feature().id(), 0 );
   }
 }
 
@@ -648,6 +649,7 @@ void QgsAttributeTableDialog::mActionAddFeatureViaAttributeForm_triggered()
   {
     masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
     mMainView->setCurrentEditSelection( QgsFeatureIds() << action.feature().id() );
+    mMainView->tableView()->scrollToFeature( action.feature().id(), 0 );
   }
 }
 
@@ -926,7 +928,7 @@ void QgsAttributeTableDialog::deleteFeature( const QgsFeatureId fid )
   QgsDebugMsg( QStringLiteral( "Delete %1" ).arg( fid ) );
 
   QgsVectorLayerUtils::QgsDuplicateFeatureContext infoContext;
-  if ( QgsVectorLayerUtils::impactsCascadeFeatures( mLayer, QgsFeatureIds() << fid, QgsProject::instance(), infoContext ) )
+  if ( QgsVectorLayerUtils::impactsCascadeFeatures( mLayer, QgsFeatureIds() << fid, QgsProject::instance(), infoContext, QgsVectorLayerUtils::IgnoreAuxiliaryLayers ) )
   {
     QString childrenInfo;
     int childrenCount = 0;
@@ -947,7 +949,7 @@ void QgsAttributeTableDialog::deleteFeature( const QgsFeatureId fid )
 
   QgsVectorLayer::DeleteContext context( true, QgsProject::instance() );
   mLayer->deleteFeature( fid, &context );
-  const auto contextLayers = context.handledLayers();
+  const QList<QgsVectorLayer *> contextLayers = context.handledLayers( false );
   //if it effected more than one layer, print feedback for all descendants
   if ( contextLayers.size() > 1 )
   {

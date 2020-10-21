@@ -127,7 +127,7 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
     QString datasource = node.namedItem( QStringLiteral( "datasource" ) ).toElement().text();
     QString provider = node.namedItem( QStringLiteral( "provider" ) ).toElement().text();
     QString vectorProvider = type == QLatin1String( "vector" ) ? provider : tr( "none" );
-    bool providerFileBased = ( provider == QStringLiteral( "gdal" ) || provider == QStringLiteral( "ogr" ) || provider == QStringLiteral( "mdal" ) );
+    bool providerFileBased = ( provider == QLatin1String( "gdal" ) || provider == QLatin1String( "ogr" ) || provider == QLatin1String( "mdal" ) );
     const QString basepath = QFileInfo( datasource ).absolutePath();
     mOriginalFileBase[name].append( basepath );
 
@@ -242,7 +242,7 @@ void QgsHandleBadLayers::setFilename( int row, const QString &filename )
     {
       QStringList theURIParts = datasource.split( '|' );
       theURIParts[0] = filename;
-      datasource = theURIParts.join( QStringLiteral( "|" ) );
+      datasource = theURIParts.join( QLatin1Char( '|' ) );
     }
     else if ( provider == QLatin1String( "delimitedtext" ) )
     {
@@ -578,11 +578,11 @@ void QgsHandleBadLayers::autoFind()
                                  QString::number( i + 1 ), QString::number( layersToFind.size() ) ) );
     progressDialog.open();
 
-    if ( provider.toLower() == QStringLiteral( "none" ) )
+    if ( provider.toLower() == QLatin1String( "none" ) )
     {
-      if ( fileType == QStringLiteral( "raster" ) )
+      if ( fileType == QLatin1String( "raster" ) )
         provider = QStringLiteral( "gdal" );
-      else if ( fileType == QStringLiteral( "vector" ) )
+      else if ( fileType == QLatin1String( "vector" ) )
         provider = QStringLiteral( "ogr" );
       else if ( fileType.contains( "mesh", Qt::CaseInsensitive ) )
         provider = QStringLiteral( "mdal" );

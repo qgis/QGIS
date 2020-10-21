@@ -135,7 +135,7 @@ void QgsOgrDbSourceSelect::cbxAllowGeometrylessTables_stateChanged( int )
 
 void QgsOgrDbSourceSelect::mTablesTreeView_clicked( const QModelIndex &index )
 {
-  mBuildQueryButton->setEnabled( index.parent().isValid() && mTablesTreeView->currentIndex().data( Qt::UserRole + 2 ) != QStringLiteral( "Raster" ) );
+  mBuildQueryButton->setEnabled( index.parent().isValid() && mTablesTreeView->currentIndex().data( Qt::UserRole + 2 ) != QLatin1String( "Raster" ) );
 }
 
 void QgsOgrDbSourceSelect::mTablesTreeView_doubleClicked( const QModelIndex &index )
@@ -348,7 +348,7 @@ void QgsOgrDbSourceSelect::btnConnect_clicked()
 
     for ( const QgsOgrDbLayerInfo *table : layers )
     {
-      if ( cbxAllowGeometrylessTables->isChecked() || table->geometryType() != QStringLiteral( "None" ) )
+      if ( cbxAllowGeometrylessTables->isChecked() || table->geometryType() != QLatin1String( "None" ) )
       {
         mTableModel.addTableEntry( table->layerType(), table->name(), table->uri(), table->geometryColumn(), table->geometryType(), QString() );
       }

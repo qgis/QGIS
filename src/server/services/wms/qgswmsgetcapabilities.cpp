@@ -1293,7 +1293,7 @@ namespace QgsWms
               {
                 strValues << v.toString();
               }
-              QDomText dimValuesText = doc.createTextNode( strValues.join( QStringLiteral( ", " ) ) );
+              QDomText dimValuesText = doc.createTextNode( strValues.join( QLatin1String( ", " ) ) );
               dimElem.appendChild( dimValuesText );
               layerElem.appendChild( dimElem );
             }

@@ -186,7 +186,7 @@ void QgsLayerPropertiesWidget::populateLayerTypes()
       if ( layerInfo->type() != QgsSymbol::Hybrid )
       {
         QString visibleName = layerInfo->visibleName();
-        QString name = QString( tr( "Outline: %1" ) ).arg( visibleName );
+        QString name = tr( "Outline: %1" ).arg( visibleName );
         cboLayerType->addItem( name, lineLayerId );
       }
     }

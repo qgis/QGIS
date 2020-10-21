@@ -133,7 +133,7 @@ void TestQgsGeoPdfExport::testCollectingFeatures()
   QgsAbstractGeoPdfExporter::VectorComponentDetail component;
   for ( const auto &it : qgis::as_const( geoPdfExporter.mVectorComponents ) )
   {
-    if ( it.mapLayerId == QStringLiteral( "layer1" ) )
+    if ( it.mapLayerId == QLatin1String( "layer1" ) )
     {
       component = it;
       break;
@@ -160,7 +160,7 @@ void TestQgsGeoPdfExport::testCollectingFeatures()
 
   for ( const auto &it : qgis::as_const( geoPdfExporter.mVectorComponents ) )
   {
-    if ( it.mapLayerId == QStringLiteral( "layer2" ) )
+    if ( it.mapLayerId == QLatin1String( "layer2" ) )
     {
       component = it;
       break;
@@ -211,12 +211,12 @@ void TestQgsGeoPdfExport::testComposition()
 
   for ( const auto &it : qgis::as_const( geoPdfExporter.mVectorComponents ) )
   {
-    if ( it.mapLayerId == QStringLiteral( "layer1" ) )
+    if ( it.mapLayerId == QLatin1String( "layer1" ) )
     {
       layer1Path = it.sourceVectorPath;
       layer1Layer = it.sourceVectorLayer;
     }
-    else if ( it.mapLayerId == QStringLiteral( "layer2" ) )
+    else if ( it.mapLayerId == QLatin1String( "layer2" ) )
     {
       layer2Path = it.sourceVectorPath;
       layer2Layer = it.sourceVectorLayer;
@@ -244,12 +244,12 @@ void TestQgsGeoPdfExport::testComposition()
   QDomNodeList ifLayerOnList = doc.elementsByTagName( QStringLiteral( "IfLayerOn" ) );
   QCOMPARE( ifLayerOnList.count(), 3 );
 
-  int layer1Idx = ifLayerOnList.at( 0 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QStringLiteral( "layer1" ) ? 0 :
-                  ifLayerOnList.at( 1 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QStringLiteral( "layer1" ) ? 1 : 2;
-  int layer2Idx = ifLayerOnList.at( 0 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QStringLiteral( "layer2" ) ? 0 :
-                  ifLayerOnList.at( 1 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QStringLiteral( "layer2" ) ? 1 : 2;
-  int layer3Idx = ifLayerOnList.at( 0 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QStringLiteral( "layer3" ) ? 0 :
-                  ifLayerOnList.at( 1 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QStringLiteral( "layer3" ) ? 1 : 2;
+  int layer1Idx = ifLayerOnList.at( 0 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QLatin1String( "layer1" ) ? 0 :
+                  ifLayerOnList.at( 1 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QLatin1String( "layer1" ) ? 1 : 2;
+  int layer2Idx = ifLayerOnList.at( 0 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QLatin1String( "layer2" ) ? 0 :
+                  ifLayerOnList.at( 1 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QLatin1String( "layer2" ) ? 1 : 2;
+  int layer3Idx = ifLayerOnList.at( 0 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QLatin1String( "layer3" ) ? 0 :
+                  ifLayerOnList.at( 1 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QLatin1String( "layer3" ) ? 1 : 2;
   QCOMPARE( ifLayerOnList.at( layer1Idx ).toElement().attribute( QStringLiteral( "layerId" ) ), QStringLiteral( "layer1" ) );
   QCOMPARE( ifLayerOnList.at( layer1Idx ).toElement().elementsByTagName( QStringLiteral( "Vector" ) ).at( 0 ).toElement().attribute( QStringLiteral( "dataset" ) ), layer1Path );
   QCOMPARE( ifLayerOnList.at( layer1Idx ).toElement().elementsByTagName( QStringLiteral( "Vector" ) ).at( 0 ).toElement().attribute( QStringLiteral( "layer" ) ), layer1Layer );
@@ -363,7 +363,7 @@ void TestQgsGeoPdfExport::testGeoref()
   {
     const QString x = cps.at( i ).toElement().attribute( QStringLiteral( "GeoX" ) ).left( 10 );
     const QString y = cps.at( i ).toElement().attribute( QStringLiteral( "GeoY" ) ).left( 10 );
-    if ( x == QStringLiteral( "-122.40000" ) && y == QStringLiteral( "53.6000000" ) )
+    if ( x == QLatin1String( "-122.40000" ) && y == QLatin1String( "53.6000000" ) )
     {
       cp1 = cps.at( i ).toElement();
       break;
@@ -409,7 +409,7 @@ void TestQgsGeoPdfExport::testGeorefPolygon()
   {
     const QString x = cps.at( i ).toElement().attribute( QStringLiteral( "GeoX" ) ).left( 10 );
     const QString y = cps.at( i ).toElement().attribute( QStringLiteral( "GeoY" ) ).left( 10 );
-    if ( x == QStringLiteral( "-122.40000" ) && y == QStringLiteral( "53.6000000" ) )
+    if ( x == QLatin1String( "-122.40000" ) && y == QLatin1String( "53.6000000" ) )
     {
       cp1 = cps.at( i ).toElement();
       break;
@@ -450,12 +450,12 @@ void TestQgsGeoPdfExport::testGroups()
 
   for ( const auto &it : qgis::as_const( geoPdfExporter.mVectorComponents ) )
   {
-    if ( it.mapLayerId == QStringLiteral( "layer1" ) )
+    if ( it.mapLayerId == QLatin1String( "layer1" ) )
     {
       layer1Path = it.sourceVectorPath;
       layer1Layer = it.sourceVectorLayer;
     }
-    else if ( it.mapLayerId == QStringLiteral( "layer2" ) )
+    else if ( it.mapLayerId == QLatin1String( "layer2" ) )
     {
       layer2Path = it.sourceVectorPath;
       layer2Layer = it.sourceVectorLayer;
@@ -472,7 +472,7 @@ void TestQgsGeoPdfExport::testGroups()
   QDomNodeList ifLayerOnList = doc.elementsByTagName( QStringLiteral( "IfLayerOn" ) );
   QCOMPARE( ifLayerOnList.count(), 2 );
 
-  int layer1Idx = ifLayerOnList.at( 0 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QStringLiteral( "layer1" ) ? 0 : 1;
+  int layer1Idx = ifLayerOnList.at( 0 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QLatin1String( "layer1" ) ? 0 : 1;
   int layer2Idx = layer1Idx == 0 ? 1 : 0;
   QCOMPARE( ifLayerOnList.at( layer1Idx ).toElement().attribute( QStringLiteral( "layerId" ) ), QStringLiteral( "layer1" ) );
   QCOMPARE( ifLayerOnList.at( layer1Idx ).toElement().elementsByTagName( QStringLiteral( "Vector" ) ).at( 0 ).toElement().attribute( QStringLiteral( "dataset" ) ), layer1Path );
@@ -492,7 +492,7 @@ void TestQgsGeoPdfExport::testGroups()
   QDomNodeList layerTreeList = doc.elementsByTagName( QStringLiteral( "LayerTree" ) ).at( 0 ).toElement().childNodes();
   QCOMPARE( layerTreeList.count(), 2 );
 
-  layer1Idx = layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "id" ) ) == QStringLiteral( "layer1" ) ? 0 : 1;
+  layer1Idx = layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "id" ) ) == QLatin1String( "layer1" ) ? 0 : 1;
   layer2Idx = layer1Idx == 0 ? 1 : 0;
   QCOMPARE( layerTreeList.at( layer1Idx ).toElement().attribute( QStringLiteral( "id" ) ), QStringLiteral( "layer1" ) );
   QCOMPARE( layerTreeList.at( layer1Idx ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "name layer1" ) );
@@ -531,12 +531,12 @@ void TestQgsGeoPdfExport::testCustomGroups()
 
   for ( const auto &it : qgis::as_const( geoPdfExporter.mVectorComponents ) )
   {
-    if ( it.mapLayerId == QStringLiteral( "layer1" ) )
+    if ( it.mapLayerId == QLatin1String( "layer1" ) )
     {
       layer1Path = it.sourceVectorPath;
       layer1Layer = it.sourceVectorLayer;
     }
-    else if ( it.mapLayerId == QStringLiteral( "layer2" ) )
+    else if ( it.mapLayerId == QLatin1String( "layer2" ) )
     {
       layer2Path = it.sourceVectorPath;
       layer2Layer = it.sourceVectorLayer;
@@ -557,7 +557,7 @@ void TestQgsGeoPdfExport::testCustomGroups()
   QDomNodeList layerTreeList = doc.elementsByTagName( QStringLiteral( "LayerTree" ) ).at( 0 ).toElement().childNodes();
   QCOMPARE( layerTreeList.count(), 2 );
 
-  int layer1Idx = layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "name" ) ) == QStringLiteral( "my group" ) ? 0 : 1;
+  int layer1Idx = layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "name" ) ) == QLatin1String( "my group" ) ? 0 : 1;
   int layer2Idx = layer1Idx == 0 ? 1 : 0;
 
   QString group1Id = layerTreeList.at( layer1Idx ).toElement().attribute( QStringLiteral( "id" ) );

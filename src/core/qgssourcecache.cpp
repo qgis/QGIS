@@ -86,7 +86,7 @@ QString QgsSourceCache::fetchSource( const QString &path, bool &isBroken, bool b
 {
   QString filePath;
 
-  if ( !path.startsWith( QStringLiteral( "base64:" ) ) && QFile::exists( path ) )
+  if ( !path.startsWith( QLatin1String( "base64:" ) ) && QFile::exists( path ) )
   {
     filePath = path;
   }

@@ -27,6 +27,7 @@
 #include "qgsterraingenerator.h"
 
 #include <Qt3DRender/QGeometryRenderer>
+#include <QMutexLocker>
 
 ///@cond PRIVATE
 
@@ -268,6 +269,18 @@ void QgsDemHeightMapGenerator::waitForFinished()
   }
 }
 
+void QgsDemHeightMapGenerator::lazyLoadDtmCoarseData( int res, const QgsRectangle &rect )
+{
+  QMutexLocker locker( &mLazyLoadDtmCoarseDataMutex );
+  if ( mDtmCoarseData.isEmpty() )
+  {
+    std::unique_ptr< QgsRasterBlock > block( mDtm->dataProvider()->block( 1, rect, res, res ) );
+    block->convert( Qgis::Float32 );
+    mDtmCoarseData = block->data();
+    mDtmCoarseData.detach();  // make a deep copy
+  }
+}
+
 float QgsDemHeightMapGenerator::heightAt( double x, double y )
 {
   if ( !mDtm )
@@ -276,13 +289,7 @@ float QgsDemHeightMapGenerator::heightAt( double x, double y )
   // TODO: this is quite a primitive implementation: better to use heightmaps currently in use
   int res = 1024;
   QgsRectangle rect = mDtm->extent();
-  if ( mDtmCoarseData.isEmpty() )
-  {
-    std::unique_ptr< QgsRasterBlock > block( mDtm->dataProvider()->block( 1, rect, res, res ) );
-    block->convert( Qgis::Float32 );
-    mDtmCoarseData = block->data();
-    mDtmCoarseData.detach();  // make a deep copy
-  }
+  lazyLoadDtmCoarseData( res, rect );
 
   int cellX = ( int )( ( x - rect.xMinimum() ) / rect.width() * res + .5f );
   int cellY = ( int )( ( rect.yMaximum() - y ) / rect.height() * res + .5f );

@@ -149,7 +149,7 @@ QVariant QgsLayoutAttributeTableColumnModelBase::data( const QModelIndex &index,
     {
       if ( role == Qt::DisplayRole )
       {
-        return column.width() <= 0 ? tr( "Automatic" ) : QString( tr( "%1 mm" ) ).arg( column.width(), 0, 'f', 2 );
+        return column.width() <= 0 ? tr( "Automatic" ) : tr( "%1 mm" ).arg( column.width(), 0, 'f', 2 );
       }
       else
       {

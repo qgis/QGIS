@@ -40,6 +40,7 @@
 #include "qgssymbollayer.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgsstyle.h"
+#include "qgsauxiliarystorage.h"
 
 QgsFeatureIterator QgsVectorLayerUtils::getValuesIterator( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly )
 {
@@ -734,13 +735,25 @@ void QgsVectorLayerUtils::matchAttributesToFields( QgsFeature &feature, const Qg
   feature.setFields( fields );
 }
 
-QgsFeatureList QgsVectorLayerUtils::makeFeatureCompatible( const QgsFeature &feature, const QgsVectorLayer *layer )
+QgsFeatureList QgsVectorLayerUtils::makeFeatureCompatible( const QgsFeature &feature, const QgsVectorLayer *layer, QgsFeatureSink::SinkFlags sinkFlags )
 {
   QgsWkbTypes::Type inputWkbType( layer->wkbType( ) );
   QgsFeatureList resultFeatures;
   QgsFeature newF( feature );
   // Fix attributes
   QgsVectorLayerUtils::matchAttributesToFields( newF, layer->fields( ) );
+
+  if ( sinkFlags & QgsFeatureSink::RegeneratePrimaryKey )
+  {
+    // drop incoming primary key values, let them be regenerated
+    const QgsAttributeList pkIndexes = layer->dataProvider()->pkAttributeIndexes();
+    for ( int index : pkIndexes )
+    {
+      if ( index >= 0 )
+        newF.setAttribute( index, QVariant() );
+    }
+  }
+
   // Does geometry need transformations?
   QgsWkbTypes::GeometryType newFGeomType( QgsWkbTypes::geometryType( newF.geometry().wkbType() ) );
   bool newFHasGeom = newFGeomType !=
@@ -784,12 +797,12 @@ QgsFeatureList QgsVectorLayerUtils::makeFeatureCompatible( const QgsFeature &fea
   return resultFeatures;
 }
 
-QgsFeatureList QgsVectorLayerUtils::makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer *layer )
+QgsFeatureList QgsVectorLayerUtils::makeFeaturesCompatible( const QgsFeatureList &features, const QgsVectorLayer *layer, QgsFeatureSink::SinkFlags sinkFlags )
 {
   QgsFeatureList resultFeatures;
   for ( const QgsFeature &f : features )
   {
-    const QgsFeatureList features( makeFeatureCompatible( f, layer ) );
+    const QgsFeatureList features( makeFeatureCompatible( f, layer, sinkFlags ) );
     for ( const auto &_f : features )
     {
       resultFeatures.append( _f );
@@ -971,7 +984,7 @@ QString QgsVectorLayerUtils::getFeatureDisplayString( const QgsVectorLayer *laye
   return displayString;
 }
 
-bool QgsVectorLayerUtils::impactsCascadeFeatures( const QgsVectorLayer *layer, const QgsFeatureIds &fids, const QgsProject *project, QgsDuplicateFeatureContext &context )
+bool QgsVectorLayerUtils::impactsCascadeFeatures( const QgsVectorLayer *layer, const QgsFeatureIds &fids, const QgsProject *project, QgsDuplicateFeatureContext &context, CascadedFeatureFlags flags )
 {
   if ( !layer )
     return false;
@@ -1015,9 +1028,12 @@ bool QgsVectorLayerUtils::impactsCascadeFeatures( const QgsVectorLayer *layer, c
 
   if ( layer->joinBuffer()->containsJoins() )
   {
-    const auto constVectorJoins = layer->joinBuffer()->vectorJoins();
-    for ( const QgsVectorLayerJoinInfo &info : constVectorJoins )
+    const QgsVectorJoinList joins = layer->joinBuffer()->vectorJoins();
+    for ( const QgsVectorLayerJoinInfo &info : joins )
     {
+      if ( qobject_cast< QgsAuxiliaryLayer * >( info.joinLayer() ) && flags & IgnoreAuxiliaryLayers )
+        continue;
+
       if ( info.isEditable() && info.hasCascadedDelete() )
       {
         QgsFeatureIds joinFeatureIds;

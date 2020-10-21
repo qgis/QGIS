@@ -62,7 +62,7 @@ void QgsFeatureFilterModel::requestToReloadCurrentFeature( QgsFeatureRequest &re
       conditions << QgsExpression::createFieldEqualityExpression( mIdentifierFields.at( i ), mExtraIdentifierValue.toList().at( i ) );
     }
   }
-  request.setFilterExpression( conditions.join( QStringLiteral( " AND " ) ) );
+  request.setFilterExpression( conditions.join( QLatin1String( " AND " ) ) );
 }
 
 QSet<QString> QgsFeatureFilterModel::requestedAttributes() const
@@ -83,7 +83,7 @@ QgsFeatureExpressionValuesGatherer::Entry QgsFeatureFilterModel::createEntry( co
   for ( const QVariant &v : constValues )
     values << QStringLiteral( "(%1)" ).arg( v.toString() );
 
-  return QgsFeatureExpressionValuesGatherer::Entry( constValues, values.join( QStringLiteral( " " ) ), QgsFeature( sourceLayer()->fields() ) );
+  return QgsFeatureExpressionValuesGatherer::Entry( constValues, values.join( QLatin1Char( ' ' ) ), QgsFeature( sourceLayer()->fields() ) );
 }
 
 bool QgsFeatureFilterModel::compareEntries( const QgsFeatureExpressionValuesGatherer::Entry &a, const QgsFeatureExpressionValuesGatherer::Entry &b ) const

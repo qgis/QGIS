@@ -54,7 +54,7 @@ class CORE_EXPORT QgsGeoPackageCollectionItem : public QgsDataCollectionItem
      * \param name DB connection name
      * \param path DB connection path
      * \param errCause contains the error message
-     * \return true on success
+     * \return TRUE on success
      */
     static bool vacuumGeoPackageDb( const QString &name, const QString &path, QString &errCause );
 

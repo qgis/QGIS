@@ -51,7 +51,7 @@ QgsSingleSymbol3DRendererWidget::QgsSingleSymbol3DRendererWidget( QgsVectorLayer
 void QgsSingleSymbol3DRendererWidget::setLayer( QgsVectorLayer *layer )
 {
   QgsAbstract3DRenderer *r = layer->renderer3D();
-  if ( r && r->type() == QStringLiteral( "vector" ) )
+  if ( r && r->type() == QLatin1String( "vector" ) )
   {
     QgsVectorLayer3DRenderer *vectorRenderer = static_cast<QgsVectorLayer3DRenderer *>( r );
     widgetSymbol->setSymbol( vectorRenderer->symbol(), layer );

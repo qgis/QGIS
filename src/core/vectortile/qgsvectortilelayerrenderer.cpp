@@ -103,7 +103,7 @@ bool QgsVectorTileLayerRenderer::render()
     return true;   // nothing to do
   }
 
-  bool isAsync = ( mSourceType == QStringLiteral( "xyz" ) );
+  bool isAsync = ( mSourceType == QLatin1String( "xyz" ) );
 
   std::unique_ptr<QgsVectorTileLoader> asyncLoader;
   QList<QgsVectorTileRawData> rawTiles;

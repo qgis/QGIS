@@ -912,7 +912,7 @@ class GUI_EXPORT QgisInterface : public QObject
     /**
      * Add a dock widget to the given area and tabify it (if other dock widgets
      * exist in the same \a area). The new tab will be below other tabs unless
-     * \a raiseTab is passed as true.
+     * \a raiseTab is passed as TRUE.
      *
      * \a tabifyWith is a list of dock widget object names, ordered by
      * priority, with which the new dock widget should be tabified. Only the
@@ -1117,7 +1117,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Opens a new feature form.
-     * Returns true if dialog was accepted (if shown modal, TRUE otherwise).
+     * Returns TRUE if dialog was accepted (if shown modal, TRUE otherwise).
      * \param l vector layer
      * \param f feature to show/modify
      * \param updateFeatureOnly only update the feature update (don't change any attributes of the layer) [UNUSED]

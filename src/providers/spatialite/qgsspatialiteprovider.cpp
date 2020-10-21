@@ -1059,11 +1059,11 @@ QVariant QgsSpatiaLiteProvider::defaultValue( int fieldId ) const
     return QVariant();
 
   QVariant resultVar = defaultVal;
-  if ( defaultVal == QStringLiteral( "CURRENT_TIMESTAMP" ) )
+  if ( defaultVal == QLatin1String( "CURRENT_TIMESTAMP" ) )
     resultVar = QDateTime::currentDateTime();
-  else if ( defaultVal == QStringLiteral( "CURRENT_DATE" ) )
+  else if ( defaultVal == QLatin1String( "CURRENT_DATE" ) )
     resultVar = QDate::currentDate();
-  else if ( defaultVal == QStringLiteral( "CURRENT_TIME" ) )
+  else if ( defaultVal == QLatin1String( "CURRENT_TIME" ) )
     resultVar = QTime::currentTime();
   else if ( defaultVal.startsWith( '\'' ) )
   {
@@ -6017,7 +6017,7 @@ bool QgsSpatiaLiteProviderMetadata::saveStyle( const QString &uri, const QString
   sqlite3 *sqliteHandle = handle->handle();
 
   // check if layer_styles table already exist
-  QString countIfExist = QStringLiteral( "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='%1';" ).arg( QStringLiteral( "layer_styles" ) );
+  QString countIfExist = QStringLiteral( "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='%1';" ).arg( QLatin1String( "layer_styles" ) );
 
   char **results = nullptr;
   int rows;
@@ -6255,7 +6255,7 @@ int QgsSpatiaLiteProviderMetadata::listStyles( const QString &uri, QStringList &
   sqlite3 *sqliteHandle = handle->handle();
 
   // check if layer_styles table already exist
-  QString countIfExist = QStringLiteral( "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='%1';" ).arg( QStringLiteral( "layer_styles" ) );
+  QString countIfExist = QStringLiteral( "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='%1';" ).arg( QLatin1String( "layer_styles" ) );
 
   char **results = nullptr;
   int rows;
@@ -6372,7 +6372,7 @@ QString QgsSpatiaLiteProviderMetadata::getStyleById( const QString &uri, QString
     if ( 1 == rows )
       style = QString::fromUtf8( results[( rows * columns ) + 0 ] );
     else
-      errCause = QObject::tr( "Consistency error in table '%1'. Style id should be unique" ).arg( QStringLiteral( "layer_styles" ) );
+      errCause = QObject::tr( "Consistency error in table '%1'. Style id should be unique" ).arg( QLatin1String( "layer_styles" ) );
   }
   else
   {

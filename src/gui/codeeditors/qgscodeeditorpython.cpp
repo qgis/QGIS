@@ -168,17 +168,10 @@ void QgsCodeEditorPython::initializeLexer()
       setAutoCompletionSource( AcsAPIs );
   }
 
-  setMarginVisible( true );
-
-  // Margin 2 is used for the 'folding'
-  setMarginWidth( 2, "0" );
-  setMarginsForegroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginForeground ) );
-  setMarginsBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginBackground ) );
-
+  setLineNumbersVisible( true );
   setFoldingVisible( true );
   setIndentationsUseTabs( false );
   setIndentationGuides( true );
-
 
   runPostLexerConfigurationTasks();
 }
@@ -235,7 +228,7 @@ void QgsCodeEditorPython::searchSelectedTextInPyQGISDocs()
     return;
 
   QString text = selectedText();
-  text = text.replace( QStringLiteral( ">>> " ), QString() ).replace( QStringLiteral( "... " ), QString() ).trimmed(); // removing prompts
+  text = text.replace( QLatin1String( ">>> " ), QString() ).replace( QLatin1String( "... " ), QString() ).trimmed(); // removing prompts
   const QString version = QString( Qgis::version() ).split( '.' ).mid( 0, 2 ).join( '.' );
   QDesktopServices::openUrl( QUrl( QStringLiteral( "https://qgis.org/pyqgis/%1/search.html?q=%2" ).arg( version, text ) ) );
 }

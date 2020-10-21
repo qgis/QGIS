@@ -317,7 +317,7 @@ QString QgsBench::serialize( const QMap<QString, QVariant> &map, int level )
     }
     ++i;
   }
-  return space + "{\n" +  list.join( QStringLiteral( ",\n" ) ) + '\n' + space + '}';
+  return space + "{\n" +  list.join( QLatin1String( ",\n" ) ) + '\n' + space + '}';
 }
 
 void QgsBench::saveLog( const QString &fileName )

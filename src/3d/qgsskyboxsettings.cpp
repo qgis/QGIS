@@ -24,9 +24,9 @@ void QgsSkyboxSettings::readXml( const QDomElement &element, const QgsReadWriteC
 {
   const QgsPathResolver &pathResolver = context.pathResolver();
   QString skyboxTypeStr = element.attribute( QStringLiteral( "skybox-type" ) );
-  if ( skyboxTypeStr == QStringLiteral( "Distinct Faces" ) )
+  if ( skyboxTypeStr == QLatin1String( "Distinct Faces" ) )
     mSkyboxType = QgsSkyboxEntity::DistinctTexturesSkybox;
-  else if ( skyboxTypeStr == QStringLiteral( "Panoramic Texture" ) )
+  else if ( skyboxTypeStr == QLatin1String( "Panoramic Texture" ) )
     mSkyboxType = QgsSkyboxEntity::PanoramicSkybox;
   mPanoramicTexturePath = pathResolver.readPath( element.attribute( QStringLiteral( "panoramic-texture-path" ) ) );
   mCubeMapFacesPaths.clear();

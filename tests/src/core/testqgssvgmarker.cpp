@@ -58,6 +58,7 @@ class TestQgsSvgMarkerSymbol : public QObject
     void bounds();
     void boundsWidth();
     void bench();
+    void anchor();
     void aspectRatio();
     void dynamicSizeWithAspectRatio();
     void dynamicWidthWithAspectRatio();
@@ -191,6 +192,22 @@ void TestQgsSvgMarkerSymbol::bench()
   QVERIFY( imageCheck( "svgmarker_bench" ) );
 }
 
+void TestQgsSvgMarkerSymbol::anchor()
+{
+  QString svgPath = QgsSymbolLayerUtils::svgSymbolNameToPath( QStringLiteral( "/backgrounds/background_square.svg" ), QgsPathResolver() );
+
+  mSvgMarkerLayer->setPath( svgPath );
+  mSvgMarkerLayer->setStrokeColor( Qt::black );
+  mSvgMarkerLayer->setColor( Qt::black );
+  mSvgMarkerLayer->setSize( 5 );
+  mSvgMarkerLayer->setFixedAspectRatio( 6 );
+  mSvgMarkerLayer->setStrokeWidth( 0.0 );
+  mSvgMarkerLayer->setVerticalAnchorPoint( QgsMarkerSymbolLayer::Bottom );
+  QVERIFY( imageCheck( "svgmarker_anchor" ) );
+  mSvgMarkerLayer->setFixedAspectRatio( 0.0 );
+  mSvgMarkerLayer->setVerticalAnchorPoint( QgsMarkerSymbolLayer::VCenter );
+}
+
 void TestQgsSvgMarkerSymbol::aspectRatio()
 {
   QString svgPath = QgsSymbolLayerUtils::svgSymbolNameToPath( QStringLiteral( "/amenity/amenity_bench.svg" ), QgsPathResolver() );
@@ -228,7 +245,7 @@ void TestQgsSvgMarkerSymbol::dynamicWidthWithAspectRatio()
   mSvgMarkerLayer->setStrokeColor( Qt::black );
   mSvgMarkerLayer->setColor( Qt::black );
   mSvgMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyWidth, QgsProperty::fromExpression( QStringLiteral( "max(\"importance\" * 5, 10)" ) ) );
-  mSvgMarkerLayer->setFixedAspectRatio( 0.5 );
+  mSvgMarkerLayer->setFixedAspectRatio( 0.2 );
   mSvgMarkerLayer->setStrokeWidth( 0.0 );
 
   bool result = imageCheck( QStringLiteral( "svgmarker_dynamicwidth_aspectratio" ) );

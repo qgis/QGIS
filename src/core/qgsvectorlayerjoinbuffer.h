@@ -49,7 +49,7 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
 
     /**
      * Removes a vector layer join
-     * \returns true if join was found and successfully removed
+     * \returns TRUE if join was found and successfully removed
     */
     bool removeJoin( const QString &joinLayerId );
 

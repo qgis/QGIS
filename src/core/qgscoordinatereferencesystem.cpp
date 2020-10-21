@@ -692,7 +692,12 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
     if ( !d->mIsValid )
     {
       if ( !wkt.isEmpty() )
+      {
         setWktString( wkt, false );
+        // set WKT string resets the description to that description embedded in the WKT, so manually overwrite this back to the
+        // value from the user DB
+        d->mDescription = statement.columnAsText( 1 );
+      }
       else
         setProjString( d->mProj4 );
     }
@@ -891,6 +896,10 @@ bool QgsCoordinateReferenceSystem::createFromWktInternal( const QString &wkt, co
   else
   {
     setWktString( wkt );
+    if ( !description.isEmpty() )
+    {
+      d->mDescription = description;
+    }
     if ( d->mSrsId == 0 )
     {
 #if PROJ_VERSION_MAJOR>=6
@@ -1520,7 +1529,7 @@ void QgsCoordinateReferenceSystem::setProjString( const QString &proj4String )
   QString trimmed = proj4String.trimmed();
 
 #if PROJ_VERSION_MAJOR>=6
-  trimmed += QStringLiteral( " +type=crs" );
+  trimmed += QLatin1String( " +type=crs" );
   PJ_CONTEXT *ctx = QgsProjContext::get();
 
   {
@@ -1652,6 +1661,7 @@ bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt, bool allowP
     {
       // Still a valid CRS, just not a known one
       d->mIsValid = true;
+      d->mDescription = QString( proj_get_name( d->threadLocalProjObject() ) );
     }
     setMapUnits();
   }
@@ -2478,7 +2488,7 @@ bool QgsCoordinateReferenceSystem::loadFromAuthCode( const QString &auth, const 
   crs = QgsProjUtils::crsToSingleCrs( crs.get() );
 
   QString proj4 = getFullProjString( crs.get() );
-  proj4.replace( QStringLiteral( "+type=crs" ), QString() );
+  proj4.replace( QLatin1String( "+type=crs" ), QString() );
   proj4 = proj4.trimmed();
 
   d->mIsValid = true;
@@ -2854,7 +2864,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
       crs = QgsProjUtils::crsToSingleCrs( crs.get() );
 
       QString proj4 = getFullProjString( crs.get() );
-      proj4.replace( QStringLiteral( "+type=crs" ), QString() );
+      proj4.replace( QLatin1String( "+type=crs" ), QString() );
       proj4 = proj4.trimmed();
 
       if ( proj4.isEmpty() )
