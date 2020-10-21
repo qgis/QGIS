@@ -589,7 +589,6 @@ Creates a new QgsSVGFillSymbolLayerWidget.
 
 
   protected:
-    void insertIcons();
 
     void updateParamGui( bool resetValues = true );
 %Docstring

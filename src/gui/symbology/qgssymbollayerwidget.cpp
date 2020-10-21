@@ -2714,8 +2714,11 @@ QgsSVGFillSymbolLayerWidget::QgsSVGFillSymbolLayerWidget( QgsVectorLayer *vl, QW
 {
   mLayer = nullptr;
   setupUi( this );
+
+  mSvgSelectorWidget->sourceLineEdit()->setPropertyOverrideToolButtonVisible( true );
+
   connect( mTextureWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSVGFillSymbolLayerWidget::mTextureWidthSpinBox_valueChanged );
-  connect( mSvgSourceLineEdit, &QgsSvgSourceLineEdit::sourceChanged, this, &QgsSVGFillSymbolLayerWidget::svgSourceChanged );
+  connect( mSvgSelectorWidget->sourceLineEdit(), &QgsSvgSourceLineEdit::sourceChanged, this, &QgsSVGFillSymbolLayerWidget::svgSourceChanged );
   connect( mRotationSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSVGFillSymbolLayerWidget::mRotationSpinBox_valueChanged );
   connect( mChangeColorButton, &QgsColorButton::colorChanged, this, &QgsSVGFillSymbolLayerWidget::mChangeColorButton_colorChanged );
   connect( mChangeStrokeColorButton, &QgsColorButton::colorChanged, this, &QgsSVGFillSymbolLayerWidget::mChangeStrokeColorButton_colorChanged );
@@ -2726,16 +2729,6 @@ QgsSVGFillSymbolLayerWidget::QgsSVGFillSymbolLayerWidget( QgsVectorLayer *vl, QW
                                      << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mSvgStrokeWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                        << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mSvgTreeView->setHeaderHidden( true );
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-  mIconSize = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 4 ) ) );
-#else
-  mIconSize = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 4 ) ) );
-#endif
-  mSvgListView->setGridSize( QSize( mIconSize * 1.2, mIconSize * 1.2 ) );
-
-  insertIcons();
 
   mRotationSpinBox->setClearValue( 0.0 );
 
@@ -2747,8 +2740,8 @@ QgsSVGFillSymbolLayerWidget::QgsSVGFillSymbolLayerWidget( QgsVectorLayer *vl, QW
   mFilColorDDBtn->registerLinkedWidget( mChangeColorButton );
   mStrokeColorDDBtn->registerLinkedWidget( mChangeStrokeColorButton );
 
-  connect( mSvgListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSVGFillSymbolLayerWidget::setFile );
-  connect( mSvgTreeView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSVGFillSymbolLayerWidget::populateIcons );
+  connect( mSvgSelectorWidget, &QgsSvgSelectorWidget::svgSelected, this, &QgsSVGFillSymbolLayerWidget::setFile );
+
 }
 
 void QgsSVGFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
@@ -2770,7 +2763,7 @@ void QgsSVGFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
     mTextureWidthSpinBox->blockSignals( true );
     mTextureWidthSpinBox->setValue( width );
     mTextureWidthSpinBox->blockSignals( false );
-    whileBlocking( mSvgSourceLineEdit )->setSource( mLayer->svgFilePath() );
+    whileBlocking( mSvgSelectorWidget->sourceLineEdit() )->setSource( mLayer->svgFilePath() );
     mRotationSpinBox->blockSignals( true );
     mRotationSpinBox->setValue( mLayer->angle() );
     mRotationSpinBox->blockSignals( false );
@@ -2795,11 +2788,12 @@ void QgsSVGFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   updateParamGui( false );
 
   registerDataDefinedButton( mTextureWidthDDBtn, QgsSymbolLayer::PropertyWidth );
-  registerDataDefinedButton( mSVGDDBtn, QgsSymbolLayer::PropertyFile );
   registerDataDefinedButton( mRotationDDBtn, QgsSymbolLayer::PropertyAngle );
   registerDataDefinedButton( mFilColorDDBtn, QgsSymbolLayer::PropertyFillColor );
   registerDataDefinedButton( mStrokeColorDDBtn, QgsSymbolLayer::PropertyStrokeColor );
   registerDataDefinedButton( mStrokeWidthDDBtn, QgsSymbolLayer::PropertyStrokeWidth );
+
+  registerDataDefinedButton( mSvgSelectorWidget->sourceLineEdit()->propertyOverrideToolButton(), QgsSymbolLayer::PropertyFile );
 }
 
 QgsSymbolLayer *QgsSVGFillSymbolLayerWidget::symbolLayer()
@@ -2810,7 +2804,7 @@ QgsSymbolLayer *QgsSVGFillSymbolLayerWidget::symbolLayer()
 void QgsSVGFillSymbolLayerWidget::setContext( const QgsSymbolWidgetContext &context )
 {
   QgsSymbolLayerWidget::setContext( context );
-  mSvgSourceLineEdit->setMessageBar( context.messageBar() );
+  mSvgSelectorWidget->sourceLineEdit()->setMessageBar( context.messageBar() );
 }
 
 void QgsSVGFillSymbolLayerWidget::mTextureWidthSpinBox_valueChanged( double d )
@@ -2834,46 +2828,13 @@ void QgsSVGFillSymbolLayerWidget::svgSourceChanged( const QString &text )
   emit changed();
 }
 
-void QgsSVGFillSymbolLayerWidget::setFile( const QModelIndex &item )
+void QgsSVGFillSymbolLayerWidget::setFile( const QString &name )
 {
-  QString file = item.data( Qt::UserRole ).toString();
-  mLayer->setSvgFilePath( file );
-  whileBlocking( mSvgSourceLineEdit )->setSource( file );
+  mLayer->setSvgFilePath( name );
+  whileBlocking( mSvgSelectorWidget->sourceLineEdit() )->setSource( name );
 
   updateParamGui();
   emit changed();
-}
-
-void QgsSVGFillSymbolLayerWidget::insertIcons()
-{
-  QAbstractItemModel *oldModel = mSvgTreeView->model();
-  QgsSvgSelectorGroupsModel *g = new QgsSvgSelectorGroupsModel( mSvgTreeView );
-  mSvgTreeView->setModel( g );
-  delete oldModel;
-
-  // Set the tree expanded at the first level
-  int rows = g->rowCount( g->indexFromItem( g->invisibleRootItem() ) );
-  for ( int i = 0; i < rows; i++ )
-  {
-    mSvgTreeView->setExpanded( g->indexFromItem( g->item( i ) ), true );
-  }
-
-  oldModel = mSvgListView->model();
-  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( mSvgListView, mIconSize );
-  mSvgListView->setModel( m );
-  delete oldModel;
-}
-
-void QgsSVGFillSymbolLayerWidget::populateIcons( const QModelIndex &idx )
-{
-  QString path = idx.data( Qt::UserRole + 1 ).toString();
-
-  QAbstractItemModel *oldModel = mSvgListView->model();
-  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( mSvgListView, path, mIconSize );
-  mSvgListView->setModel( m );
-  delete oldModel;
-
-  connect( mSvgListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSVGFillSymbolLayerWidget::setFile );
 }
 
 
@@ -2893,7 +2854,7 @@ void QgsSVGFillSymbolLayerWidget::updateParamGui( bool resetValues )
   QColor defaultFill, defaultStroke;
   double defaultStrokeWidth, defaultFillOpacity, defaultStrokeOpacity;
   bool hasDefaultFillColor, hasDefaultFillOpacity, hasDefaultStrokeColor, hasDefaultStrokeWidth, hasDefaultStrokeOpacity;
-  QgsApplication::svgCache()->containsParams( mSvgSourceLineEdit->source(), hasFillParam, hasDefaultFillColor, defaultFill,
+  QgsApplication::svgCache()->containsParams( mSvgSelectorWidget->sourceLineEdit()->source(), hasFillParam, hasDefaultFillColor, defaultFill,
       hasFillOpacityParam, hasDefaultFillOpacity, defaultFillOpacity,
       hasStrokeParam, hasDefaultStrokeColor, defaultStroke,
       hasStrokeWidthParam, hasDefaultStrokeWidth, defaultStrokeWidth,
