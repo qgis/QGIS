@@ -415,7 +415,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mCacheSize->setSingleStep( 1024 );
   qint64 cacheSize = mSettings->value( QStringLiteral( "cache/size" ), 50 * 1024 * 1024 ).toLongLong();
   mCacheSize->setValue( static_cast<int>( cacheSize / 1024 ) );
-  mCacheSize->setClearValue( static_cast<int>( cacheSize / 1024 ) );
+  mCacheSize->setClearValue( 50 * 1024 );
   connect( mBrowseCacheDirectory, &QAbstractButton::clicked, this, &QgsOptions::browseCacheDirectory );
   connect( mClearCache, &QAbstractButton::clicked, this, &QgsOptions::clearCache );
 
