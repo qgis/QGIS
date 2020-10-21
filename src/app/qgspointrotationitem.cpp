@@ -117,7 +117,7 @@ void QgsPointRotationItem::setSymbol( const QImage &symbolImage )
   }
 
   const double halfItemWidth = mPixmap.width() / 2.0;
-  mArrowPath.clear();
+  mArrowPath = QPainterPath();
   mArrowPath.moveTo( halfItemWidth, pixmapHeight );
   mArrowPath.lineTo( halfItemWidth, 0 );
   mArrowPath.moveTo( mPixmap.width() * 0.25, pixmapHeight * 0.25 );
