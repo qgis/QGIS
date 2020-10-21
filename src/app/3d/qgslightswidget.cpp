@@ -229,7 +229,7 @@ void QgsLightsWidget::setAzimuthAltitude()
   whileBlocking( spinBoxAzimuth )->setValue( azimuthAngle );
 
   if ( horizontalVectorMagnitude == 0 )
-    altitudeAngle = mDirectionY >= 0 ? -90 : 90;
+    altitudeAngle = 90;
   else
     altitudeAngle = -atan( mDirectionY / horizontalVectorMagnitude ) / M_PI * 180;
 

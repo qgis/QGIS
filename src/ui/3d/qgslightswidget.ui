@@ -64,7 +64,7 @@
    <item>
     <widget class="QStackedWidget" name="mStackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="page_2"/>
      <widget class="QWidget" name="page">
@@ -345,7 +345,7 @@
          <item>
           <widget class="QSlider" name="sliderAltitude">
            <property name="minimum">
-            <number>-90</number>
+            <number>0</number>
            </property>
            <property name="maximum">
             <number>90</number>
