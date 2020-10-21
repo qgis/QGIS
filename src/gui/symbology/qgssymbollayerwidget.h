@@ -787,7 +787,6 @@ class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerWidget, priv
 
   protected:
     QgsSVGFillSymbolLayer *mLayer = nullptr;
-    void insertIcons();
 
     /**
      * Enables or disables svg fill color, stroke color and stroke width based on whether the
@@ -800,17 +799,13 @@ class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerWidget, priv
   private slots:
     void mTextureWidthSpinBox_valueChanged( double d );
     void svgSourceChanged( const QString &text );
-    void setFile( const QModelIndex &item );
-    void populateIcons( const QModelIndex &item );
+    void setFile( const QString &name );
     void mRotationSpinBox_valueChanged( double d );
     void mChangeColorButton_colorChanged( const QColor &color );
     void mChangeStrokeColorButton_colorChanged( const QColor &color );
     void mStrokeWidthSpinBox_valueChanged( double d );
     void mTextureWidthUnitWidget_changed();
     void mSvgStrokeWidthUnitWidget_changed();
-
-  private:
-    int mIconSize = 30;
 };
 
 //////////
