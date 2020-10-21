@@ -32,9 +32,8 @@
 class QgsRenderContext;
 class QgsPointCloudLayer;
 
-#ifndef SIP_RUN
 
-class QgsPointCloudRendererConfig
+class CORE_EXPORT QgsPointCloudRendererConfig
 {
   public:
     QgsPointCloudRendererConfig();
@@ -60,7 +59,6 @@ class QgsPointCloudRendererConfig
     std::unique_ptr<QgsColorRamp> mColorRamp;
 };
 
-#endif
 
 
 /**
