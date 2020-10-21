@@ -139,7 +139,7 @@ int main( int argc, char *argv[] )
   }
 
   QCommandLineParser parser;
-  parser.setApplicationDescription( QObject::tr( "QGIS Development Server" ) );
+  parser.setApplicationDescription( QObject::tr( "QGIS Development Server %1" ).arg( VERSION ) );
   parser.addHelpOption();
   parser.addVersionOption();
   parser.addPositionalArgument( QStringLiteral( "addressAndPort" ),
