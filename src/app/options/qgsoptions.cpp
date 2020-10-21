@@ -442,7 +442,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mAttrTableViewComboBox->setCurrentIndex( mAttrTableViewComboBox->findData( mSettings->value( QStringLiteral( "/qgis/attributeTableView" ), -1 ).toInt() ) );
 
   spinBoxAttrTableRowCache->setValue( mSettings->value( QStringLiteral( "/qgis/attributeTableRowCache" ), 10000 ).toInt() );
-  spinBoxAttrTableRowCache->setClearValue ( 10000 );
+  spinBoxAttrTableRowCache->setClearValue( 10000 );
   spinBoxAttrTableRowCache->setSpecialValueText( tr( "All" ) );
 
   cmbPromptSublayers->clear();
