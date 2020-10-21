@@ -5554,10 +5554,7 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layerQStringList, const
       if ( sublayers.count() > 1 )
       {
         addedLayers.append( askUserForOGRSublayers( layer, sublayers ) );
-
-        // The first layer loaded is not useful in that case. The user can select it in
-        // the list if he wants to load it.
-        delete layer;
+        // layer is no longer valid and has been nullified
 
         for ( QgsMapLayer *l : addedLayers )
           askUserForDatumTransform( l->crs(), QgsProject::instance()->crs(), l );
@@ -6053,15 +6050,9 @@ QList< QgsMapLayer * > QgisApp::loadGDALSublayers( const QString &uri, const QSt
 
 // This method is the method that does the real job. If the layer given in
 // parameter is nullptr, then the method tries to act on the activeLayer.
-QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer, const QStringList &sublayers )
+QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *&parentLayer, const QStringList &sublayers )
 {
   QList<QgsMapLayer *> result;
-  if ( !layer )
-  {
-    layer = qobject_cast<QgsVectorLayer *>( activeLayer() );
-    if ( !layer || layer->providerType() != QLatin1String( "ogr" ) )
-      return result;
-  }
 
   QgsSublayersDialog::LayerDefinitionList list;
   QMap< QString, int > mapLayerNameToCount;
@@ -6102,7 +6093,7 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer, con
   // Check if the current layer uri contains the
 
   // We initialize a selection dialog and display it.
-  QgsSublayersDialog chooseSublayersDialog( QgsSublayersDialog::Ogr, QStringLiteral( "ogr" ), this, Qt::WindowFlags(), layer->dataProvider()->dataSourceUri() );
+  QgsSublayersDialog chooseSublayersDialog( QgsSublayersDialog::Ogr, QStringLiteral( "ogr" ), this, Qt::WindowFlags(), parentLayer->dataProvider()->dataSourceUri() );
   chooseSublayersDialog.setShowAddToGroupCheckbox( true );
   chooseSublayersDialog.populateLayerTable( list );
 
@@ -6111,10 +6102,10 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer, con
 
   const bool addToGroup = chooseSublayersDialog.addToGroupCheckbox();
 
-  QString name = layer->name();
+  QString name = parentLayer->name();
 
   auto uriParts = QgsProviderRegistry::instance()->decodeUri(
-                    layer->providerType(), layer->dataProvider()->dataSourceUri() );
+                    parentLayer->providerType(), parentLayer->dataProvider()->dataSourceUri() );
   QString uri( uriParts.value( QStringLiteral( "path" ) ).toString() );
   QStringList openOptions( uriParts.value( QStringLiteral( "openOptions" ) ).toStringList() );
 
@@ -6122,6 +6113,15 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer, con
   // going to load the sublayers.
   QString fileName = QFileInfo( uri ).baseName();
   const auto constSelection = chooseSublayersDialog.selection();
+  const QString providerType = parentLayer->providerType();
+
+  // We delete the parent layer now, to be sure in the GeoPackage case that
+  // when several sublayers are selected, they will use the same GDAL dataset
+  // This is critical to make project transactions work, as in
+  // https://github.com/qgis/QGIS/issues/39431#issuecomment-713460189
+  delete parentLayer;
+  parentLayer = nullptr;
+
   for ( const QgsSublayersDialog::LayerDefinition &def : constSelection )
   {
     QVariantMap newUriParts;
@@ -6147,7 +6147,7 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer, con
     }
 
     QString composedURI = QgsProviderRegistry::instance()->encodeUri(
-                            layer->providerType(), newUriParts );
+                            providerType, newUriParts );
     QgsDebugMsgLevel( "Creating new vector layer using " + composedURI, 2 );
 
     // if user has opted to add sublayers to a group, then we don't need to include the
@@ -12790,10 +12790,8 @@ QgsVectorLayer *QgisApp::addVectorLayerPrivate( const QString &vectorLayerPath, 
     if ( !layerIsSpecified && sublayers.count() > 1 )
     {
       QList< QgsMapLayer * > addedLayers = askUserForOGRSublayers( layer, sublayers );
+      // layer is no longer valid and has been nullified
 
-      // The first layer loaded is not useful in that case. The user can select it in
-      // the list if he wants to load it.
-      delete layer;
       layer = addedLayers.isEmpty() ? nullptr : qobject_cast< QgsVectorLayer * >( addedLayers.at( 0 ) );
       for ( QgsMapLayer *l : addedLayers )
         askUserForDatumTransform( l->crs(), QgsProject::instance()->crs(), l );
