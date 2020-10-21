@@ -90,7 +90,10 @@ class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui
     QgsMapLayerModel *mMapLayerModel = nullptr;
 
     void firstTemporalLayerLoaded( QgsMapLayer *layer );
-    void setTimeStep( const QgsInterval &timeStep );
+    void setTimeStep( const QgsInterval &timeStep, bool blocking = false );
+    void setTimeStepWithBlocking( const QgsInterval &timeStep );
+    QMap<double, int> prepareTimeStepValues( const QgsInterval &timeStep );
+    void saveTimeStepToProject();
 
   private slots:
 
