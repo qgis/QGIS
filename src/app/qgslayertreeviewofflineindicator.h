@@ -33,9 +33,10 @@ class QgsLayerTreeViewOfflineIndicatorProvider : public QgsLayerTreeViewIndicato
 
   protected:
     void connectSignals( QgsMapLayer *layer ) override;
+    void disconnectSignals( QgsMapLayer *layer ) override;
 
   protected slots:
-    void onLayerChanged( QgsMapLayer *layer );
+    void onLayerChanged();
 
   private:
     bool acceptLayer( QgsMapLayer *layer ) override;

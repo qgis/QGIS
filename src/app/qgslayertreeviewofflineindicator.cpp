@@ -30,7 +30,15 @@ void QgsLayerTreeViewOfflineIndicatorProvider::connectSignals( QgsMapLayer *laye
   if ( !layer )
     return;
 
-  connect( layer, &QgsMapLayer::customPropertyChanged, this, [ this, layer ]( ) { this->onLayerChanged( layer ); } );
+  connect( layer, &QgsMapLayer::customPropertyChanged, this, &QgsLayerTreeViewOfflineIndicatorProvider::onLayerChanged );
+}
+
+void QgsLayerTreeViewOfflineIndicatorProvider::disconnectSignals( QgsMapLayer *layer )
+{
+  if ( !layer )
+    return;
+
+  disconnect( layer, &QgsMapLayer::customPropertyChanged, this, &QgsLayerTreeViewOfflineIndicatorProvider::onLayerChanged );
 }
 
 bool QgsLayerTreeViewOfflineIndicatorProvider::acceptLayer( QgsMapLayer *layer )
@@ -50,9 +58,11 @@ QString QgsLayerTreeViewOfflineIndicatorProvider::tooltipText( QgsMapLayer *laye
   return tr( "<b>Offline layer</b>" );
 }
 
-void QgsLayerTreeViewOfflineIndicatorProvider::onLayerChanged( QgsMapLayer *layer )
+void QgsLayerTreeViewOfflineIndicatorProvider::onLayerChanged()
 {
+  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() );
   if ( !layer )
     return;
+
   updateLayerIndicator( layer );
 }
