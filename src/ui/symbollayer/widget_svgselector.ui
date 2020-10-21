@@ -26,13 +26,6 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item row="3" column="0" colspan="2">
-    <widget class="QgsSvgSourceLineEdit" name="mSvgSourceLineEdit" native="true">
-     <property name="focusPolicy">
-      <enum>Qt::StrongFocus</enum>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="0" colspan="2">
     <widget class="QgsCollapsibleGroupBox" name="groupBox">
      <property name="sizePolicy">
@@ -50,7 +43,7 @@
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <widget class="QWidget" name="">
+        <widget class="QWidget" name="layoutWidget">
          <layout class="QVBoxLayout" name="verticalLayout">
           <item>
            <widget class="QLabel" name="mGroupsLabel">
@@ -77,7 +70,7 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="">
+        <widget class="QWidget" name="layoutWidget">
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
            <widget class="QLabel" name="mImagesLabel">
@@ -139,7 +132,20 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="0">
+   <item row="2" column="0" colspan="2">
+    <widget class="QgsSvgSourceLineEdit" name="mSvgSourceLineEdit" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="2">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
