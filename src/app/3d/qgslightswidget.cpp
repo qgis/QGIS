@@ -37,7 +37,7 @@ QgsLightsWidget::QgsLightsWidget( QWidget *parent )
   spinDirectionX->setClearValue( 0.0 );
   spinDirectionY->setClearValue( -1.0 );
   spinDirectionZ->setClearValue( 0.0 );
-  spinDirectionalIntensity->setClearValue( 0.0 );
+  spinDirectionalIntensity->setClearValue( 0.5 );
 
   mLightsModel = new QgsLightsModel( this );
   mLightsListView->setModel( mLightsModel );
