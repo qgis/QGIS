@@ -63,6 +63,7 @@
 #include "qgsvectortilelayer.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsannotationlayer.h"
+#include "qgspointcloudlayer.h"
 
 #include <algorithm>
 #include <QApplication>
@@ -1150,6 +1151,10 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   else if ( type == QLatin1String( "vector-tile" ) )
   {
     mapLayer = qgis::make_unique<QgsVectorTileLayer>();
+  }
+  else if ( type == QLatin1String( "point-cloud" ) )
+  {
+    mapLayer = qgis::make_unique<QgsPointCloudLayer>();
   }
   else if ( type == QLatin1String( "plugin" ) )
   {

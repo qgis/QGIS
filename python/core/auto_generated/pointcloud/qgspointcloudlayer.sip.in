@@ -29,7 +29,28 @@ Represents a map layer supporting display of point clouds
 %End
   public:
 
-    explicit QgsPointCloudLayer( const QString &path = QString(), const QString &baseName = QString() );
+    struct LayerOptions
+    {
+
+      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext( ) );
+%Docstring
+Constructor for LayerOptions with optional ``transformContext``.
+
+.. note::
+
+   transformContext argument was added in QGIS 3.8
+%End
+
+      QgsCoordinateTransformContext transformContext;
+
+      bool skipCrsValidation;
+    };
+
+
+    explicit QgsPointCloudLayer( const QString &path = QString(),
+                                 const QString &baseName = QString(),
+                                 const QString &providerLib = QStringLiteral( "pointcloud" ),
+                                 const QgsPointCloudLayer::LayerOptions &options = QgsPointCloudLayer::LayerOptions());
 %Docstring
 Constructor - creates a point cloud layer
 %End
