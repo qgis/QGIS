@@ -333,8 +333,11 @@ void TestQgs3DRendering::testMeshTerrain()
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
 
   QgsMeshTerrainGenerator *meshTerrain = new QgsMeshTerrainGenerator;
+  meshTerrain->setCrs( mProject->crs(), mProject->transformContext() );
   meshTerrain->setLayer( mLayerMeshTerrain );
   map->setTerrainGenerator( meshTerrain );
+
+  QCOMPARE( meshTerrain->heightAt( 750, 2500, *map ), 500.0 );
 
   QgsOffscreen3DEngine engine;
   Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
@@ -350,8 +353,6 @@ void TestQgs3DRendering::testMeshTerrain()
 
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
   QVERIFY( renderCheck( "mesh_terrain_1", img, 40 ) );
-
-  QCOMPARE( meshTerrain->heightAt( 1500, 2200, *map ), 200 );
 }
 
 void TestQgs3DRendering::testExtrudedPolygons()
