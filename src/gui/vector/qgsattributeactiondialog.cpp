@@ -122,7 +122,9 @@ void QgsAttributeActionDialog::insertRow( int row, const QgsAction &action )
   mAttributeActionTable->setItem( row, ShortTitle, new QTableWidgetItem( action.shortTitle() ) );
 
   // Action text
-  mAttributeActionTable->setItem( row, ActionText, new QTableWidgetItem( action.command() ) );
+  item = new QTableWidgetItem( action.command().length() > 30 ? action.command().left( 27 ) + "…" : action.command() );
+  item->setData( Qt::UserRole, action.command() );
+  mAttributeActionTable->setItem( row, ActionText, item );
 
   // Capture output
   item = new QTableWidgetItem();
@@ -224,7 +226,7 @@ QgsAction QgsAttributeActionDialog::rowToAction( int row ) const
 {
   QgsAction action( static_cast<QgsAction::ActionType>( mAttributeActionTable->item( row, Type )->data( Qt::UserRole ).toInt() ),
                     mAttributeActionTable->item( row, Description )->text(),
-                    mAttributeActionTable->item( row, ActionText )->text(),
+                    mAttributeActionTable->item( row, ActionText )->data( Qt::UserRole ).toString(),
                     mAttributeActionTable->verticalHeaderItem( row )->data( Qt::UserRole ).toString(),
                     mAttributeActionTable->item( row, Capture )->checkState() == Qt::Checked,
                     mAttributeActionTable->item( row, ShortTitle )->text(),
@@ -333,7 +335,7 @@ void QgsAttributeActionDialog::itemDoubleClicked( QTableWidgetItem *item )
     mAttributeActionTable->item( row, Description )->text(),
     mAttributeActionTable->item( row, ShortTitle )->text(),
     mAttributeActionTable->verticalHeaderItem( row )->data( Qt::UserRole ).toString(),
-    mAttributeActionTable->item( row, ActionText )->text(),
+    mAttributeActionTable->item( row, ActionText )->data( Qt::UserRole ).toString(),
     mAttributeActionTable->item( row, Capture )->checkState() == Qt::Checked,
     mAttributeActionTable->item( row, ActionScopes )->data( Qt::UserRole ).value<QSet<QString>>(),
     mAttributeActionTable->item( row, NotificationMessage )->text(),
@@ -349,7 +351,8 @@ void QgsAttributeActionDialog::itemDoubleClicked( QTableWidgetItem *item )
     mAttributeActionTable->item( row, Type )->setText( textForType( actionProperties.type() ) );
     mAttributeActionTable->item( row, Description )->setText( actionProperties.description() );
     mAttributeActionTable->item( row, ShortTitle )->setText( actionProperties.shortTitle() );
-    mAttributeActionTable->item( row, ActionText )->setText( actionProperties.actionText() );
+    mAttributeActionTable->item( row, ActionText )->setText( actionProperties.actionText().length() > 30 ? actionProperties.actionText().left( 27 ) + "…" : actionProperties.actionText() );
+    mAttributeActionTable->item( row, ActionText )->setData( Qt::UserRole, actionProperties.actionText() );
     mAttributeActionTable->item( row, Capture )->setCheckState( actionProperties.capture() ? Qt::Checked : Qt::Unchecked );
     mAttributeActionTable->item( row, NotificationMessage )->setText( actionProperties.notificationMessage() );
     mAttributeActionTable->item( row, EnabledOnlyWhenEditable )->setCheckState( actionProperties.isEnabledOnlyWhenEditable() ? Qt::Checked : Qt::Unchecked );
