@@ -1353,7 +1353,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
 
       insert += delim + quotedIdentifier( fld.name() );
 
-      QString defVal = defaultValueClause( idx );
+      const QString defVal = defaultValueClause( idx );
 
       values += delim + '?';
       defaultValues.append( defVal );
