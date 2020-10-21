@@ -260,9 +260,42 @@ void Qgs3DMapCanvasDockWidget::configure()
 
   Qgs3DMapSettings *map = mCanvas->map();
   Qgs3DMapConfigWidget *w = new Qgs3DMapConfigWidget( map, mMainCanvas, &dlg );
-  QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help, &dlg );
+  QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Apply | QDialogButtonBox::Cancel | QDialogButtonBox::Help, &dlg );
+
+  auto applyConfig = [ = ]()
+  {
+    QgsVector3D oldOrigin = map->origin();
+    QgsCoordinateReferenceSystem oldCrs = map->crs();
+    QgsCameraPose oldCameraPose = mCanvas->cameraController()->cameraPose();
+    QgsVector3D oldLookingAt = oldCameraPose.centerPoint();
+
+    // update map
+    w->apply();
+
+    QgsVector3D p = Qgs3DUtils::transformWorldCoordinates(
+                      oldLookingAt,
+                      oldOrigin, oldCrs,
+                      map->origin(), map->crs(), QgsProject::instance()->transformContext() );
+
+    if ( p != oldLookingAt )
+    {
+      // apply() call has moved origin of the world so let's move camera so we look still at the same place
+      QgsCameraPose newCameraPose = oldCameraPose;
+      newCameraPose.setCenterPoint( p );
+      mCanvas->cameraController()->setCameraPose( newCameraPose );
+    }
+
+    // Disable map theme button if the terrain generator is a mesh
+    mBtnMapThemes->setDisabled( map->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
+  };
+
   connect( buttons, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
   connect( buttons, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
+  connect( buttons, &QDialogButtonBox::clicked, &dlg, [ = ]( QAbstractButton * button )
+  {
+    if ( buttons->buttonRole( button ) == QDialogButtonBox::ApplyRole )
+      applyConfig();
+  } );
   connect( buttons, &QDialogButtonBox::helpRequested, w, []() { QgsHelp::openHelp( QStringLiteral( "introduction/qgis_gui.html#scene-configuration" ) ); } );
 
   connect( w, &Qgs3DMapConfigWidget::isValidChanged, this, [ = ]( bool valid )
@@ -273,32 +306,10 @@ void Qgs3DMapCanvasDockWidget::configure()
   QVBoxLayout *layout = new QVBoxLayout( &dlg );
   layout->addWidget( w, 1 );
   layout->addWidget( buttons );
+
   if ( !dlg.exec() )
     return;
-
-  QgsVector3D oldOrigin = map->origin();
-  QgsCoordinateReferenceSystem oldCrs = map->crs();
-  QgsCameraPose oldCameraPose = mCanvas->cameraController()->cameraPose();
-  QgsVector3D oldLookingAt = oldCameraPose.centerPoint();
-
-  // update map
-  w->apply();
-
-  QgsVector3D p = Qgs3DUtils::transformWorldCoordinates(
-                    oldLookingAt,
-                    oldOrigin, oldCrs,
-                    map->origin(), map->crs(), QgsProject::instance()->transformContext() );
-
-  if ( p != oldLookingAt )
-  {
-    // apply() call has moved origin of the world so let's move camera so we look still at the same place
-    QgsCameraPose newCameraPose = oldCameraPose;
-    newCameraPose.setCenterPoint( p );
-    mCanvas->cameraController()->setCameraPose( newCameraPose );
-  }
-
-  // Disable map theme button if the terrain generator is a mesh
-  mBtnMapThemes->setDisabled( map->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
+  applyConfig();
 }
 
 void Qgs3DMapCanvasDockWidget::exportScene()
