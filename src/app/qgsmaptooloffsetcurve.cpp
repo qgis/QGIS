@@ -661,6 +661,7 @@ QgsOffsetUserWidget::QgsOffsetUserWidget( QWidget *parent )
   setupUi( this );
 
   mOffsetSpinBox->setDecimals( 6 );
+  mOffsetSpinBox->setClearValue( 0.0 );
 
   // fill comboboxes
   mJoinStyleComboBox->addItem( tr( "Round" ), QgsGeometry::JoinStyleRound );
@@ -678,7 +679,9 @@ QgsOffsetUserWidget::QgsOffsetUserWidget( QWidget *parent )
 
   mJoinStyleComboBox->setCurrentIndex( mJoinStyleComboBox->findData( joinStyle ) );
   mQuadrantSpinBox->setValue( quadSegments );
+  mQuadrantSpinBox->setClearValue( 8 );
   mMiterLimitSpinBox->setValue( miterLimit );
+  mMiterLimitSpinBox->setClearValue( 5.0 );
   mCapStyleComboBox->setCurrentIndex( mCapStyleComboBox->findData( capStyle ) );
 
   // connect signals

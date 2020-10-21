@@ -40,6 +40,14 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   spinRX->setClearValue( 0.0 );
   spinRY->setClearValue( 0.0 );
   spinRZ->setClearValue( 0.0 );
+  spinRadius->setClearValue( 10.0 );
+  spinMinorRadius->setClearValue( 5.0 );
+  spinTopRadius->setClearValue( 0.0 );
+  spinBottomRadius->setClearValue( 10.0 );
+  spinSize->setClearValue( 10.0 );
+  spinLength->setClearValue( 10.0 );
+  spinTopRadius->setClearValue( 0.0 );
+  spinBillboardHeight->setClearValue( 0.0 );
 
   cboShape->addItem( tr( "Sphere" ), QgsPoint3DSymbol::Sphere );
   cboShape->addItem( tr( "Cylinder" ), QgsPoint3DSymbol::Cylinder );
