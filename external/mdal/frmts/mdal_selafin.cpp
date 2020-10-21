@@ -1053,12 +1053,12 @@ std::string MDAL::DriverSelafin::writeDatasetOnFileSuffix() const
 // return false if fails
 static void streamToStream( std::ostream &destination,
                             std::ifstream &source,
-                            std::ios_base::streampos sourceStartPosition,
-                            std::ios_base::streamoff len,
-                            std::ios_base::streamoff maxBufferSize )
+                            std::streampos sourceStartPosition,
+                            std::streamoff len,
+                            std::streamoff maxBufferSize )
 {
   assert( maxBufferSize != 0 );
-  std::ios_base::streampos position = sourceStartPosition;
+  std::streampos position = sourceStartPosition;
   source.seekg( 0, source.end );
   std::streampos end = std::min( source.tellg(), sourceStartPosition + len );
   source.seekg( sourceStartPosition );
