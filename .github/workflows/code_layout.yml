@@ -38,7 +38,7 @@ jobs:
         run: |
          mkdir build
          cd build
-         cmake -DWITH_SERVER=ON -DUSE_CCACHE=OFF -DWITH_CORE=OFF -DWITH_APIDOC=ON -DWITH_ASTYLE=ON -DENABLE_TESTS=ON -DWITH_DOT=NO -DWERROR=ON ..
+         cmake -DWITH_SERVER=ON -DUSE_CCACHE=OFF -DWITH_CORE=OFF -DWITH_APIDOC=ON -DWITH_ASTYLE=ON -DENABLE_TESTS=ON -DWITH_DOT=NO -DPEDANTIC=ON ..
           make -j3
       - name: Run Tests
         run: cd build && ctest -V -R PyQgsDocCoverage
