@@ -30,8 +30,7 @@ void QgsLayerTreeViewOfflineIndicatorProvider::connectSignals( QgsMapLayer *laye
   if ( !layer )
     return;
 
-  //this has to be solved different
-  connect( mLayerTreeView->layerTreeModel()->rootGroup(), &QgsLayerTreeNode::customPropertyChanged, this, [ this, layer ]( ) { this->onLayerChanged( layer ); } );
+  connect( layer, &QgsMapLayer::customPropertyChanged, this, [ this, layer ]( ) { this->onLayerChanged( layer ); } );
 }
 
 bool QgsLayerTreeViewOfflineIndicatorProvider::acceptLayer( QgsMapLayer *layer )

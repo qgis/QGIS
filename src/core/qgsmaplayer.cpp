@@ -1707,7 +1707,11 @@ QStringList QgsMapLayer::customPropertyKeys() const
 
 void QgsMapLayer::setCustomProperty( const QString &key, const QVariant &value )
 {
-  mCustomProperties.setValue( key, value );
+  if ( !mCustomProperties.contains( key ) || mCustomProperties.value( key ) != value )
+  {
+    mCustomProperties.setValue( key, value );
+    emit customPropertyChanged( this, key );
+  }
 }
 
 void QgsMapLayer::setCustomProperties( const QgsObjectCustomProperties &properties )
@@ -1727,7 +1731,12 @@ QVariant QgsMapLayer::customProperty( const QString &value, const QVariant &defa
 
 void QgsMapLayer::removeCustomProperty( const QString &key )
 {
-  mCustomProperties.remove( key );
+
+  if ( mCustomProperties.contains( key ) )
+  {
+    mCustomProperties.remove( key );
+    emit customPropertyChanged( this, key );
+  }
 }
 
 QgsError QgsMapLayer::error() const

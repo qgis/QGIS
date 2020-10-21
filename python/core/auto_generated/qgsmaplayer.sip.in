@@ -1593,6 +1593,12 @@ Emitted when the validity of this layer changed.
 .. versionadded:: 3.16
 %End
 
+    void customPropertyChanged( QgsMapLayer *layer, const QString &key );
+%Docstring
+Emitted when a custom property of a node within the tree has been changed or removed
+
+.. versionadded:: 3.16
+%End
 
   protected:
 
