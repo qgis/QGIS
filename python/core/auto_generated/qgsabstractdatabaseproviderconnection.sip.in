@@ -532,18 +532,18 @@ Raises a QgsProviderConnectionException if any errors are encountered.
    the default implementation creates a temporary vector layer, providers may
    choose to override this method for a greater efficiency.
 
-.. versionadded:: 3.16
-
 :raises :: py:class:`QgsProviderConnectionException`
+
+.. versionadded:: 3.16
 %End
 
     virtual QList< QgsVectorDataProvider::NativeType > nativeTypes() const throw( QgsProviderConnectionException ) = 0;
 %Docstring
 Returns a list of native types supported by the connection.
 
-.. versionadded:: 3.16
-
 :raises :: py:class:`QgsProviderConnectionException`
+
+.. versionadded:: 3.16
 %End
 
     QString providerKey() const;
