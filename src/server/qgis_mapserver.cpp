@@ -24,6 +24,8 @@ while QGIS server internal logging is printed to stderr.
  *                                                                         *
  ***************************************************************************/
 
+#include <thread>
+
 //for CMAKE_INSTALL_PREFIX
 #include "qgsconfig.h"
 #include "qgsserver.h"
