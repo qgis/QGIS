@@ -31,7 +31,7 @@ QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidge
 
   mXSpacingSpinBox->setClearValue( 10.0 );
   mYSpacingSpinBox->setClearValue( 10.0 );
-  mStreamlinesDensitySpinBox->setClearValue( 5.0 );
+  mStreamlinesDensitySpinBox->setClearValue( 15.0 );
   mTracesParticlesCountSpinBox->setClearValue( 1000 );
   mTracesMaxLengthSpinBox->setClearValue( 100.0 );
 
