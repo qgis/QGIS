@@ -147,7 +147,7 @@ void QgsProcessingFieldMapPanelWidget::setValue( const QVariant &value )
       if ( constraints & QgsFieldConstraints::ConstraintUnique )
         fieldConstraints.setConstraint( QgsFieldConstraints::ConstraintUnique );
       if ( constraints & QgsFieldConstraints::ConstraintExpression )
-        fieldConstraints.setConstraint( QgsFieldConstraints::ConstraintUnique );
+        fieldConstraints.setConstraint( QgsFieldConstraints::ConstraintExpression );
 
       f.setConstraints( fieldConstraints );
     }
@@ -414,5 +414,4 @@ const QgsVectorLayer *QgsProcessingFieldMapWidgetWrapper::linkedVectorLayer() co
 }
 
 /// @endcond
-
 
