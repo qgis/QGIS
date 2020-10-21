@@ -5150,6 +5150,8 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
         return QCoreApplication::translate( "expressions", "Plugin" );
       case QgsMapLayerType::AnnotationLayer:
         return QCoreApplication::translate( "expressions", "Annotation" );
+      case QgsMapLayerType::PointCloudLayer:
+        return QCoreApplication::translate( "expressions", "Point Cloud" );
     }
   }
   else

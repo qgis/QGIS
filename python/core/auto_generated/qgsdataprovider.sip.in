@@ -33,6 +33,10 @@ Abstract base class for spatial data provider implementations.
     {
       sipType = sipType_QgsMeshDataProvider;
     }
+    else if ( qobject_cast<QgsPointCloudDataProvider *>( sipCpp ) )
+    {
+      sipType = sipType_QgsPointCloudDataProvider;
+    }
     else
     {
       sipType = 0;

@@ -123,6 +123,7 @@ bool QgsMapRendererJob::prepareLabelCache() const
       case QgsMapLayerType::AnnotationLayer:
       case QgsMapLayerType::PluginLayer:
       case QgsMapLayerType::MeshLayer:
+      case QgsMapLayerType::PointCloudLayer:
         break;
     }
 
@@ -960,6 +961,7 @@ bool QgsMapRendererJob::needTemporaryImage( QgsMapLayer *ml )
     }
 
     case QgsMapLayerType::MeshLayer:
+    case QgsMapLayerType::PointCloudLayer:
     case QgsMapLayerType::VectorTileLayer:
     case QgsMapLayerType::PluginLayer:
       break;
