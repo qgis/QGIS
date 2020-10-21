@@ -186,11 +186,10 @@ QgsFeatureList QgsFieldCalculatorAlgorithm::processFeature( const QgsFeature &fe
     }
 
     attributes[mFieldIdx] = value;
-    attributes.append( value );
   }
   else
   {
-    attributes.append( QVariant() );
+    attributes[mFieldIdx] = QVariant();
   }
 
   QgsFeature f = feature;
