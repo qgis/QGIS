@@ -228,7 +228,7 @@ class QgsPointLocator_VisitorNearestMiddleOfSegment: public IVisitor
       edgePoints[1] = geom->vertexAt( afterVertex );
       pt = QgsPointXY( ( edgePoints[0].x() + edgePoints[1].x() ) / 2.0, ( edgePoints[0].y() + edgePoints[1].y() ) / 2.0 );
 
-      QgsPointLocator::Match m( QgsPointLocator::MiddleOfSegment, mLocator->mLayer, id, std::sqrt( mSrcPoint.sqrDist( pt ) ), pt, -1 );
+      QgsPointLocator::Match m( QgsPointLocator::MiddleOfSegment, mLocator->mLayer, id, std::sqrt( mSrcPoint.sqrDist( pt ) ), pt, afterVertex - 1 );
       // in range queries the filter may reject some matches
       if ( mFilter && !mFilter->acceptMatch( m ) )
         return;
@@ -661,7 +661,7 @@ class QgsPointLocator_VisitorMiddlesInRect : public IVisitor
           QgsPointXY pt( ( ( *itPrevious ).x() + ( *it ).x() ) / 2.0, ( ( *itPrevious ).y() + ( *it ).y() ) / 2.0 );
           if ( mSrcRect.contains( pt ) )
           {
-            QgsPointLocator::Match m( QgsPointLocator::MiddleOfSegment, mLocator->mLayer, id, 0, pt, -1 );
+            QgsPointLocator::Match m( QgsPointLocator::MiddleOfSegment, mLocator->mLayer, id, 0, pt, geom->vertexNrFromVertexId( it.vertexId() ) );
 
             // in range queries the filter may reject some matches
             if ( mFilter && !mFilter->acceptMatch( m ) )

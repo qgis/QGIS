@@ -2080,6 +2080,10 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
 
   QgsPoint layerPoint = matchToLayerPoint( dragLayer, mapPoint, mapPointMatch );
 
+  // needed to get Z value
+  if ( mapPointMatch && mapPointMatch->layer() && QgsWkbTypes::hasZ( mapPointMatch->layer()->wkbType() ) && ( mapPointMatch->hasEdge() || mapPointMatch->hasMiddleSegment() ) )
+    layerPoint = mapPointMatch->interpolatedPoint();
+
   QgsVertexId vid;
   if ( !geom.vertexIdFromVertexNr( dragVertexId, vid ) )
   {
@@ -2130,7 +2134,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
 
   applyEditsToLayers( edits );
 
-  if ( QgsProject::instance()->topologicalEditing() && mapPointMatch->hasEdge() && mapPointMatch->layer() )
+  if ( QgsProject::instance()->topologicalEditing() && ( mapPointMatch->hasEdge() || mapPointMatch->hasMiddleSegment() ) && mapPointMatch->layer() )
   {
     // topo editing: add vertex to existing segments when moving/adding a vertex to such segment.
     // this requires that the snapping match is to a segment and the segment layer's CRS
