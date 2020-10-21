@@ -77,8 +77,8 @@ void QgsPointCloud3DGeometry::makeVertexBuffer( const QgsPointCloud3DSymbolHandl
   for ( int i = 0; i < data.positions.size(); ++i )
   {
     rawVertexArray[idx++] = data.positions.at( i ).x();
-    rawVertexArray[idx++] = data.positions.at( i ).z();
     rawVertexArray[idx++] = data.positions.at( i ).y();
+    rawVertexArray[idx++] = data.positions.at( i ).z();
     rawVertexArray[idx++] = data.classes.at( i );
   }
 
@@ -104,6 +104,8 @@ void QgsPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const In
   const QgsVector3D scale = pc->scale();
   const QgsVector3D offset = pc->offset();
 
+  //qDebug() << "  node " << data.count()/3 << " points";
+
   // QgsRectangle mapExtent = context.map().extent()???
 
   const qint32 *ptr = data.constData();
@@ -121,11 +123,11 @@ void QgsPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const In
     double z = offset.z() + scale.z() * iz;
     QVector3D point( x, y, z );
     QgsVector3D p = context.map().mapToWorldCoordinates( point );
-    outNormal.positions.push_back( QVector3D( p.x(), p.y(), p.z() ) );
+    outNormal.positions.push_back( QVector3D( p.x(), p.y() - 400, p.z() ) );
 
     // }
   }
-  outNormal.classes.append(classes);
+  outNormal.classes.append( classes );
 }
 
 void QgsPointCloud3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context )
@@ -141,7 +143,7 @@ void QgsPointCloud3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qg
   //mZMin += symbolHeight;
   //mZMax += symbolHeight;
 }
-
+#include <QPointSize>
 void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, QgsPointCloud3DSymbolHandler::PointData &out, bool selected )
 {
   if ( out.positions.empty() )
@@ -168,6 +170,10 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
 
   Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass( mat );
   renderPass->setShaderProgram( shaderProgram );
+
+  Qt3DRender::QPointSize *pointSize = new Qt3DRender::QPointSize( renderPass );
+  pointSize->setSizeMode( Qt3DRender::QPointSize::Programmable );  // supported since OpenGL 3.2
+  renderPass->addRenderState( pointSize );
 
   // without this filter the default forward renderer would not render this
   Qt3DRender::QFilterKey *filterKey = new Qt3DRender::QFilterKey;
@@ -208,6 +214,7 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
     QTimer::singleShot( 0, this, &QgsPointCloudLayerChunkLoader::finished );
     return;
   }
+  qDebug() << "creating entity!";
 
   QgsPointCloudLayer *layer = mFactory->mLayer;
   const Qgs3DMapSettings &map = mFactory->mMap;
@@ -315,8 +322,8 @@ QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( QgsPointCloudL
   : QgsChunkedEntity( Qgs3DUtils::layerToWorldExtent( vl->extent(), zMin, zMax, vl->crs(), map.origin(), map.crs(), map.transformContext() ),
                       -1, // rootError (negative error means that the node does not contain anything)
                       -1, // max. allowed screen error (negative tau means that we need to go until leaves are reached)
-                      QgsVectorLayer3DTilingSettings().zoomLevelsCount() - 1,
-                      new QgsPointCloudLayerChunkLoaderFactory( map, vl, QgsVectorLayer3DTilingSettings().zoomLevelsCount() - 1 ), true )
+                      0, //QgsVectorLayer3DTilingSettings().zoomLevelsCount() - 1,
+                      new QgsPointCloudLayerChunkLoaderFactory( map, vl, 0 /*QgsVectorLayer3DTilingSettings().zoomLevelsCount() - 1*/ ), true )
 {
   setShowBoundingBoxes( QgsVectorLayer3DTilingSettings().showBoundingBoxes() );
 }
