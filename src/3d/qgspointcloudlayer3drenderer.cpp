@@ -19,6 +19,7 @@
 #include "qgschunkedentity_p.h"
 #include "qgspointcloudlayerchunkloader_p.h"
 
+#include "qgspointcloudindex.h"
 #include "qgspointcloudlayer.h"
 #include "qgsxmlutils.h"
 #include "qgsapplication.h"
@@ -63,14 +64,13 @@ QgsPointCloudLayer3DRenderer *QgsPointCloudLayer3DRenderer::clone() const
 
 Qt3DCore::QEntity *QgsPointCloudLayer3DRenderer::createEntity( const Qgs3DMapSettings &map ) const
 {
-  QgsPointCloudLayer *vl = layer();
-  if ( !vl )
+  QgsPointCloudLayer *pcl = layer();
+  if ( !pcl || !pcl->dataProvider() )
     return nullptr;
 
-  double zMin, zMax;
-  //Qgs3DUtils::estimateVectorLayerZRange( vl, zMin, zMax );
+  QgsPointCloudIndex *index = pcl->dataProvider()->index();
 
-  return new QgsPointCloudLayerChunkedEntity( vl, zMin, zMax, map );
+  return new QgsPointCloudLayerChunkedEntity( pcl, index->zMin(), index->zMax(), map );
 }
 
 void QgsPointCloudLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const

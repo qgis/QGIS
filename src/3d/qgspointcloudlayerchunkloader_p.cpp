@@ -123,7 +123,7 @@ void QgsPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const In
     double z = offset.z() + scale.z() * iz;
     QVector3D point( x, y, z );
     QgsVector3D p = context.map().mapToWorldCoordinates( point );
-    outNormal.positions.push_back( QVector3D( p.x(), p.y() - 400, p.z() ) );
+    outNormal.positions.push_back( QVector3D( p.x(), p.y(), p.z() ) );
 
     // }
   }
@@ -325,7 +325,7 @@ QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( QgsPointCloudL
                       0, //QgsVectorLayer3DTilingSettings().zoomLevelsCount() - 1,
                       new QgsPointCloudLayerChunkLoaderFactory( map, vl, 0 /*QgsVectorLayer3DTilingSettings().zoomLevelsCount() - 1*/ ), true )
 {
-  setShowBoundingBoxes( QgsVectorLayer3DTilingSettings().showBoundingBoxes() );
+  setShowBoundingBoxes( true ); //QgsVectorLayer3DTilingSettings().showBoundingBoxes() );
 }
 
 QgsPointCloudLayerChunkedEntity::~QgsPointCloudLayerChunkedEntity()
