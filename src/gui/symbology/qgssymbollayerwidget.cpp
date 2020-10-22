@@ -1584,6 +1584,7 @@ QgsShapeburstFillSymbolLayerWidget::QgsShapeburstFillSymbolLayerWidget( QgsVecto
 
   spinOffsetX->setClearValue( 0.0 );
   spinOffsetY->setClearValue( 0.0 );
+  mSpinMaxDistance->setClearValue( 5.0 );
 
   btnColorRamp->setShowGradientOnly( true );
 

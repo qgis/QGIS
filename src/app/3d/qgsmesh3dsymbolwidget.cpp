@@ -25,6 +25,9 @@ QgsMesh3dSymbolWidget::QgsMesh3dSymbolWidget( QgsMeshLayer *meshLayer, QWidget *
   : QWidget( parent )
 {
   setupUi( this );
+  mSpinBoxWireframeLineWidth->setClearValue( 1.0 );
+  mSpinBoxVerticaleScale->setClearValue( 1.0 );
+  mArrowsSpacingSpinBox->setClearValue( 25.0 );
 
   mComboBoxTextureType->addItem( tr( "Single Color" ), QgsMesh3DSymbol::SingleColor );
   mComboBoxTextureType->setCurrentIndex( 0 );

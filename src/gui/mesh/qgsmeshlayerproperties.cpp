@@ -58,6 +58,9 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   mConfigWidgets << mRendererMeshPropertiesWidget;
   mOptsPage_StyleContent->layout()->addWidget( mRendererMeshPropertiesWidget );
 
+  mSimplifyReductionFactorSpinBox->setClearValue( 10.0 );
+  mSimplifyMeshResolutionSpinBox->setClearValue( 5 );
+
   mStaticDatasetWidget->setLayer( mMeshLayer );
   mIsMapSettingsTemporal = mMeshLayer && canvas && canvas->mapSettings().isTemporal();
 

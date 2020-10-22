@@ -82,7 +82,9 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
 
   //default values for field width and precision
   mOutputFieldWidthSpinBox->setValue( 10 );
+  mOutputFieldWidthSpinBox->setClearValue( 10 );
   mOutputFieldPrecisionSpinBox->setValue( 3 );
+  mOutputFieldPrecisionSpinBox->setClearValue( 3 );
   setPrecisionMinMax();
 
   if ( vl->providerType() == QLatin1String( "ogr" ) && vl->storageType() == QLatin1String( "ESRI Shapefile" ) )
