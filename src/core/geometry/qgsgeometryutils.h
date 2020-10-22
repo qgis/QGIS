@@ -674,6 +674,15 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static QgsLineString perpendicularSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 ) SIP_HOLDGIL;
 
+    /**
+     * \brief Create a perpendicular line segment to a given segment [segmentPoint1, segmentPoint2] with its center at centerPoint
+     * May be used to split geometries
+     * \param centerPoint Point where the center of the perpendicular should be located
+     * \param segmentPoint1 The segment's start point
+     * \param segmentPoint2 The segment's end point
+     * \returns A line (segment) centered in point p and perpendicular to segment [segmentPoint1, segmentPoint2]
+     */
+    static QgsLineString perpendicularCenterSegment(  const QgsPoint &point, const QgsPoint &segmentPoint1, const QgsPoint &segmentPoint2  ) SIP_HOLDGIL;
 
     /**
      * An algorithm to calculate the shortest distance between two skew lines.
