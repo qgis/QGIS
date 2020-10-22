@@ -53,7 +53,15 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   setWidgetStateFromNavigationMode( mNavigationObject->navigationMode() );
   connect( mNavigationObject, &QgsTemporalNavigationObject::navigationModeChanged, this, &QgsTemporalControllerWidget::setWidgetStateFromNavigationMode );
   connect( mNavigationObject, &QgsTemporalNavigationObject::temporalExtentsChanged, this, &QgsTemporalControllerWidget::setDates );
-  connect( mNavigationObject, &QgsTemporalNavigationObject::temporalFrameDurationChanged, this, &QgsTemporalControllerWidget::setTimeStep );
+  connect( mNavigationObject, &QgsTemporalNavigationObject::temporalFrameDurationChanged, this, [ = ]( const QgsInterval & timeStep )
+  {
+    if ( mBlockFrameDurationUpdates )
+      return;
+
+    mBlockFrameDurationUpdates++;
+    setTimeStep( timeStep );
+    mBlockFrameDurationUpdates--;
+  } );
   connect( mNavigationOff, &QPushButton::clicked, this, &QgsTemporalControllerWidget::mNavigationOff_clicked );
   connect( mNavigationFixedRange, &QPushButton::clicked, this, &QgsTemporalControllerWidget::mNavigationFixedRange_clicked );
   connect( mNavigationAnimated, &QPushButton::clicked, this, &QgsTemporalControllerWidget::mNavigationAnimated_clicked );
@@ -287,8 +295,10 @@ void QgsTemporalControllerWidget::updateFrameDuration()
   QgsProject::instance()->timeSettings()->setTimeStepUnit( static_cast< QgsUnitTypes::TemporalUnit>( mTimeStepsComboBox->currentData().toInt() ) );
   QgsProject::instance()->timeSettings()->setTimeStep( mStepSpinBox->value() );
 
-  mNavigationObject->setFrameDuration( QgsInterval( QgsProject::instance()->timeSettings()->timeStep(),
-                                       QgsProject::instance()->timeSettings()->timeStepUnit() ) );
+  if ( !mBlockFrameDurationUpdates )
+    mNavigationObject->setFrameDuration( QgsInterval( QgsProject::instance()->timeSettings()->timeStep(),
+                                         QgsProject::instance()->timeSettings()->timeStepUnit() ) );
+
   mSlider->setRange( 0, mNavigationObject->totalFrameCount() - 1 );
 }
 
