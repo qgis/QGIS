@@ -397,7 +397,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      * returns invalid block for DataOnFaces and DataOnVertices.
      *
      * \param index index of the dataset
-     * \param valueIndex index of the value
+     * \param faceIndex index of the face
      * \param count number of values to return
      *
      * \note indexes are used to distinguish all the dataset groups handled by the layer (from dataprovider, extra dataset group,...)
@@ -420,7 +420,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      * Returns whether the faces are active for particular dataset
      *
      * \param index index of the dataset
-     * \param valueIndex index of the value
+     * \param faceIndex index of the face
      * \param count number of values to return
      *
      * \note indexes are used to distinguish all the dataset groups handled by the layer (from dataprovider, extra dataset group,...)
@@ -501,6 +501,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
       * If the temporal properties is not active, returns invalid dataset index. This method is used for rendering mesh layer.
       *
       * \param timeRange the time range
+      * \param datasetGroupIndex the index of the dataset group
       * \returns dataset index
       *
       * \note the returned dataset index depends on the matching method, see setTemporalMatchingMethod()
@@ -517,6 +518,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
       * Dataset index is valid even the temporal properties is inactive. This method is used for calculation on mesh layer.
       *
       * \param relativeTime the relative from the mesh layer reference time
+      * \param datasetGroupIndex the index of the dataset group
       * \returns dataset index
       *
       * \note the returned dataset index depends on the matching method, see setTemporalMatchingMethod()

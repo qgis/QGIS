@@ -36,6 +36,7 @@ Constructor for QgsDoubleValidator.
 
 :param bottom: the minimal range limit accepted by the validator
 :param top: the maximal range limit accepted by the validator
+:param parent: parent object
 %End
 
     QgsDoubleValidator( double bottom, double top, QObject *parent );
@@ -44,6 +45,7 @@ Constructor for QgsDoubleValidator.
 
 :param bottom: the minimal range limit accepted by the validator
 :param top: the maximal range limit accepted by the validator
+:param parent: parent object
 %End
 
     QgsDoubleValidator( double bottom, double top, int decimal, QObject *parent );
@@ -53,6 +55,7 @@ Constructor for QgsDoubleValidator.
 :param bottom: the minimal range limit accepted by the validator
 :param top: the maximal range limit accepted by the validator
 :param decimal: the number of decimal accepted by the validator
+:param parent: parent object
 %End
 
 

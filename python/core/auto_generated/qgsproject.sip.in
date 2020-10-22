@@ -527,7 +527,7 @@ Reads a double from the specified ``scope`` and ``key``.
 
 :param scope: entry scope (group) name
 :param key: entry key name. Keys are '/'-delimited entries, implying a hierarchy of keys and corresponding values.
-:param default: value to return if the specified ``key`` does not exist within the ``scope``.
+:param def: default value to return if the specified ``key`` does not exist within the ``scope``.
 
 :return: - entry value as double from ``scope`` given its ``key``
          - ok: set to ``True`` if key exists and has been successfully retrieved as a double
@@ -539,7 +539,7 @@ Reads a boolean from the specified ``scope`` and ``key``.
 
 :param scope: entry scope (group) name
 :param key: entry key name. Keys are '/'-delimited entries, implying a hierarchy of keys and corresponding values.
-:param default: value to return if the specified ``key`` does not exist within the ``scope``.
+:param def: default value to return if the specified ``key`` does not exist within the ``scope``.
 
 :return: - entry value as boolean from ``scope`` given its ``key``
          - ok: set to ``True`` if key exists and has been successfully retrieved as a boolean

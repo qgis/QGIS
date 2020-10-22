@@ -82,6 +82,7 @@ class CORE_EXPORT QgsMapClippingUtils
      * \param regions list of clip regions which apply to the layer
      * \param context a render context
      * \param shouldClip will be set to TRUE if the clipping path should be applied
+     * \param layerType the layer type to filter
      *
      * \returns combined painter clipping region for use when rendering maps
      */

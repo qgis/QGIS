@@ -50,7 +50,7 @@ class GUI_EXPORT QgsNewVectorTableDialog : public QDialog, private Ui_QgsNewVect
 
     /**
      * QgsNewVectorTableDialog constructor
-     * \param connection DB connection, ownership is NOT transferred
+     * \param conn DB connection, ownership is NOT transferred
      * \param parent optional parent
      */
     QgsNewVectorTableDialog( QgsAbstractDatabaseProviderConnection *conn, QWidget *parent SIP_TRANSFERTHIS = nullptr );
