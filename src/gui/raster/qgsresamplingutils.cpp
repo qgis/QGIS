@@ -28,6 +28,8 @@
 #include <QDoubleSpinBox>
 #include <QCheckBox>
 
+/// @cond PRIVATE
+
 QgsResamplingUtils::QgsResamplingUtils() = default;
 
 void QgsResamplingUtils::initWidgets( QgsRasterLayer *rasterLayer,
@@ -172,3 +174,5 @@ void QgsResamplingUtils::refreshLayerFromWidgets()
     resampleFilter->setMaxOversampling( mMaximumOversamplingSpinBox->value() );
   }
 }
+
+/// @endcond PRIVATE

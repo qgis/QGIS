@@ -40,6 +40,8 @@
 #include <QStatusBar>
 
 
+///@cond PRIVATE
+
 QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode )
   : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
   , mCaptureMode( mode )
@@ -1192,3 +1194,5 @@ QgsCurve *QgsMapToolCaptureRubberBand::createCircularString()
   else
     return curve.release();
 }
+
+///@endcond PRIVATE

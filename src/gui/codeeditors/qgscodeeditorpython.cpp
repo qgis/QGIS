@@ -233,6 +233,7 @@ void QgsCodeEditorPython::searchSelectedTextInPyQGISDocs()
   QDesktopServices::openUrl( QUrl( QStringLiteral( "https://qgis.org/pyqgis/%1/search.html?q=%2" ).arg( version, text ) ) );
 }
 
+///@cond PRIVATE
 //
 // QgsQsciLexerPython
 //
@@ -253,3 +254,4 @@ const char *QgsQsciLexerPython::keywords( int set ) const
 
   return QsciLexerPython::keywords( set );
 }
+///@endcond PRIVATE
