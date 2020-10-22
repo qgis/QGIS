@@ -13049,9 +13049,8 @@ void QgisApp::new3DMapCanvas()
     flatTerrain->setExtent( fullExtent );
     map->setTerrainGenerator( flatTerrain );
 
-    QgsPointLightSettings defaultPointLight;
-    defaultPointLight.setConstantAttenuation( 0 );
-    map->setPointLights( QList<QgsPointLightSettings>() << defaultPointLight );
+    // new scenes default to a single directional light
+    map->setDirectionalLights( QList<QgsDirectionalLightSettings>() << QgsDirectionalLightSettings() );
     map->setOutputDpi( QgsApplication::desktop()->logicalDpiX() );
 
     dock->setMapSettings( map );
