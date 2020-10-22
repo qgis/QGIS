@@ -3261,23 +3261,26 @@ QMimeData *QgsSymbolLayerUtils::colorToMimeData( const QColor &color )
 
 QColor QgsSymbolLayerUtils::colorFromMimeData( const QMimeData *mimeData, bool &hasAlpha )
 {
-  if ( !mimeData->hasColor() )
-    return QColor();
-
   //attempt to read color data directly from mime
-  QColor mimeColor = mimeData->colorData().value<QColor>();
-  if ( mimeColor.isValid() )
+  if ( mimeData->hasColor() )
   {
-    hasAlpha = true;
-    return mimeColor;
+    QColor mimeColor = mimeData->colorData().value<QColor>();
+    if ( mimeColor.isValid() )
+    {
+      hasAlpha = true;
+      return mimeColor;
+    }
   }
 
   //attempt to intrepret a color from mime text data
-  hasAlpha = false;
-  QColor textColor = QgsSymbolLayerUtils::parseColorWithAlpha( mimeData->text(), hasAlpha );
-  if ( textColor.isValid() )
+  if ( mimeData->hasText() )
   {
-    return textColor;
+    hasAlpha = false;
+    QColor textColor = QgsSymbolLayerUtils::parseColorWithAlpha( mimeData->text(), hasAlpha );
+    if ( textColor.isValid() )
+    {
+      return textColor;
+    }
   }
 
   //could not get color from mime data
