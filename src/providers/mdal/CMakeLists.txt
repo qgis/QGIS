@@ -18,6 +18,10 @@ IF (WITH_GUI)
 ENDIF ()
 
 SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/external/mdal/cmake ${CMAKE_MODULE_PATH})
+IF(MSVC)
+  # HDF5 with enabled thread safety (HDF5_ENABLE_THREADSAFE=ON) on Windows needs Threads::Threads
+  FIND_PACKAGE(Threads)
+ENDIF(MSVC)
 FIND_PACKAGE(HDF5)
 FIND_PACKAGE(NetCDF)
 FIND_PACKAGE(LibXml2)
