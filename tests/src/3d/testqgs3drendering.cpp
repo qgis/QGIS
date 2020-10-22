@@ -306,6 +306,7 @@ void TestQgs3DRendering::testTerrainShading()
 
   QgsPointLightSettings defaultLight;
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setIntensity( 0.5 );
   map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
 
   QgsOffscreen3DEngine engine;
@@ -365,6 +366,7 @@ void TestQgs3DRendering::testExtrudedPolygons()
   map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings );
   map->setTerrainLayers( QList<QgsMapLayer *>() << mLayerRgb );
   QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
   map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
 
@@ -417,6 +419,7 @@ void TestQgs3DRendering::testPolygonsEdges()
 
   map->setLayers( QList<QgsMapLayer *>() << layer.get() );
   QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
   map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
 
@@ -517,6 +520,7 @@ void TestQgs3DRendering::testBufferedLineRendering()
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
   map->setLayers( QList<QgsMapLayer *>() << layerLines );
   QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
   map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
 
@@ -563,6 +567,7 @@ void TestQgs3DRendering::testBufferedLineRenderingWidth()
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
   map->setLayers( QList<QgsMapLayer *>() << layerLines );
   QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
   map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
 
@@ -632,6 +637,7 @@ void TestQgs3DRendering::testMesh()
   map->setLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
   map->setTerrainLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
   QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
   map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
 
@@ -684,6 +690,7 @@ void TestQgs3DRendering::testRuleBasedRenderer()
   map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings );
 
   QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
   map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
 
