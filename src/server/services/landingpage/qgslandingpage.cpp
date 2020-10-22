@@ -74,6 +74,9 @@ class QgsProjectLoaderFilter: public QgsServerFilter
 
     void requestReady() override
     {
+      // Always clear the environment
+      qputenv( "QGIS_PROJECT_FILE", "" );
+      serverInterface()->setConfigFilePath( QString() );
       const auto handler { serverInterface()->requestHandler() };
       if ( handler->path().startsWith( QLatin1String( "/project/" ) ) )
       {
