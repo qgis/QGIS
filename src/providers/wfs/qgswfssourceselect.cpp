@@ -170,7 +170,7 @@ void QgsWFSSourceSelect::populateConnectionList()
 
   QgsWfsConnection connection( cmbConnections->currentText() );
   delete mCapabilities;
-  mCapabilities = new QgsWfsCapabilities( connection.uri().uri() );
+  mCapabilities = new QgsWfsCapabilities( connection.uri().uri( false ) );
   connect( mCapabilities, &QgsWfsCapabilities::gotCapabilities, this, &QgsWFSSourceSelect::capabilitiesReplyFinished );
 }
 
@@ -503,7 +503,7 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex &index )
 
   //get available fields for wfs layer
   QgsWfsConnection connection( cmbConnections->currentText() );
-  QgsWFSDataSourceURI uri( connection.uri().uri() );
+  QgsWFSDataSourceURI uri( connection.uri().uri( false ) );
   uri.setTypeName( typeName );
 
   QgsDataProvider::ProviderOptions providerOptions;
@@ -714,7 +714,7 @@ void QgsWFSSourceSelect::cmbConnections_activated( int index )
   QgsWfsConnection connection( cmbConnections->currentText() );
 
   delete mCapabilities;
-  mCapabilities = new QgsWfsCapabilities( connection.uri().uri() );
+  mCapabilities = new QgsWfsCapabilities( connection.uri().uri( false ) );
   connect( mCapabilities, &QgsWfsCapabilities::gotCapabilities, this, &QgsWFSSourceSelect::capabilitiesReplyFinished );
 }
 
