@@ -753,7 +753,7 @@ WARN_NO_PARAMDOC       = NO
 # a warning is encountered.
 # The default value is: NO.
 
-WARN_AS_ERROR          = NO
+WARN_AS_ERROR          = @DOXYGEN_WARN_AS_ERROR@
 
 # The WARN_FORMAT tag determines the format of the warning messages that doxygen
 # can produce. The string should contain the $file, $line, and $text tags, which

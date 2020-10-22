@@ -142,9 +142,14 @@ IF(WITH_APIDOC)
 
     STRING(REPLACE ";" " " DOXYGEN_INPUT "${DOXYGEN_INPUT}")
 
+    IF(WERROR)
+      SET (DOXYGEN_WARN_AS_ERROR "YES")
+    ELSE(WERROR)
+      SET (DOXYGEN_WARN_AS_ERROR "NO")
+    ENDIF(WERROR)
     CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/cmake_templates/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
 
-    SET (DOXYGEN_ON_DEMAND FALSE CACHE BOOL "Determines whether the QGIS API doxygen documentation should be build on demand only")
+    SET (DOXYGEN_ON_DEMAND FALSE CACHE BOOL "Determines whether the QGIS API doxygen documentation should be built on demand through the target apidoc only. If set to false it is added to the target ALL.")
 
     IF(DOXYGEN_ON_DEMAND)
       ADD_CUSTOM_TARGET(apidoc DEPENDS ${QHP_FILES})
