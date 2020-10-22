@@ -637,7 +637,7 @@ void QgsRelationEditorWidget::duplicateFeature()
   while ( fit.nextFeature( f ) )
   {
     QgsVectorLayerUtils::QgsDuplicateFeatureContext duplicatedFeatureContext;
-    QgsVectorLayerUtils::duplicateFeature( layer, f, QgsProject::instance(), 0, duplicatedFeatureContext );
+    QgsVectorLayerUtils::duplicateFeature( layer, f, QgsProject::instance(), duplicatedFeatureContext );
   }
 }
 

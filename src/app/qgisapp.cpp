@@ -16400,7 +16400,7 @@ QgsFeature QgisApp::duplicateFeatures( QgsMapLayer *mlayer, const QgsFeature &fe
   {
     QgsVectorLayerUtils::QgsDuplicateFeatureContext duplicateFeatureContext;
 
-    QgsVectorLayerUtils::duplicateFeature( layer, f, QgsProject::instance(), 0, duplicateFeatureContext );
+    QgsVectorLayerUtils::duplicateFeature( layer, f, QgsProject::instance(), duplicateFeatureContext );
     featureCount += 1;
 
     const auto duplicatedFeatureContextLayers = duplicateFeatureContext.layers();
@@ -16451,7 +16451,7 @@ QgsFeature QgisApp::duplicateFeatureDigitized( QgsMapLayer *mlayer, const QgsFea
 
     QgsFeature newFeature = feature;
     newFeature.setGeometry( digitizedFeature.geometry() );
-    QgsVectorLayerUtils::duplicateFeature( layer, newFeature, QgsProject::instance(), 0, duplicateFeatureContext );
+    QgsVectorLayerUtils::duplicateFeature( layer, newFeature, QgsProject::instance(), duplicateFeatureContext );
 
     QString childrenInfo;
     const auto duplicateFeatureContextLayers = duplicateFeatureContext.layers();
