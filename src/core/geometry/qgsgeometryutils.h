@@ -675,14 +675,39 @@ class CORE_EXPORT QgsGeometryUtils
     static QgsLineString perpendicularSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 ) SIP_HOLDGIL;
 
     /**
-     * \brief Create a perpendicular line segment to a given segment [segmentPoint1, segmentPoint2] with its center at centerPoint
-     * May be used to split geometries
-     * \param centerPoint Point where the center of the perpendicular should be located
-     * \param segmentPoint1 The segment's start point
-     * \param segmentPoint2 The segment's end point
-     * \returns A line (segment) centered in point p and perpendicular to segment [segmentPoint1, segmentPoint2]
+     * \brief Create a perpendicular line segment to a given segment [\a segmentPoint1,\a segmentPoint2] with its center at \a centerPoint.
+     *
+     * May be used to split geometries. The new centered perpendicular line segment will have double the length of the input segment
+     *
+     * \param centerPointx x-coordinate of the point where the center of the perpendicular should be located
+     * \param centerPointy y-coordinate of the point where the center of the perpendicular should be located
+     *
+     * \param segmentPoint1x: x-coordinate of segmentPoint1, the segment's start point
+     * \param segmentPoint1y: y-coordinate of segmentPoint1, the segment's start point
+     * \param segmentPoint2x: x-coordinate of segmentPoint2, the segment's end point
+     * \param y2: y-coordinate of segmentPoint2, the segment's end point
+     *
+     * Result is a line (segment) centered in point p and perpendicular to segment [segmentPoint1, segmentPoint2]
+     *
+     * \param perpendicularSegmentPoint1x: x-coordinate of the perpendicularCenterSegment's start point
+     * \param perpendicularSegmentPoint1y: y-coordinate of the perpendicularCenterSegment's start point
+     * \param perpendicularSegmentPoint2x: x-coordinate of the perpendicularCenterSegment's end point
+     * \param perpendicularSegmentPoint2y: y-coordinate of the perpendicularCenterSegment's end point
+     *
+     * \param (optional parameter) segmentLength trims to given length. Default length is double the length of the input segment. Set to 0 for normalized length which is equal to 1.
+     *
+     *
+     * \since QGIS 3.17?
+     *
      */
-    static QgsLineString perpendicularCenterSegment(  const QgsPoint &point, const QgsPoint &segmentPoint1, const QgsPoint &segmentPoint2  ) SIP_HOLDGIL;
+
+    static void perpendicularCenterSegment(   double centerPointx, double centerPointy,
+                                              double segmentPoint1x, double segmentPoint1y,
+                                              double segmentPoint2x, double segmentPoint2y,
+                                              double &perpendicularSegmentPoint1x SIP_OUT, double &perpendicularSegmentPoint1y SIP_OUT,
+                                              double &perpendicularSegmentPoint2x SIP_OUT, double &perpendicularSegmentPoint2y SIP_OUT,
+                                              double *segmentLength=nullptr
+                                              ) SIP_HOLDGIL;
 
     /**
      * An algorithm to calculate the shortest distance between two skew lines.
