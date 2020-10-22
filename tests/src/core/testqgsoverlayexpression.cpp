@@ -222,6 +222,10 @@ void TestQgsOverlayExpression::testOverlayExpression_data()
 
   QTest::newRow( "nearest limited filtered" ) << "overlay_nearest('rectangles',id,id!=2,limit:=2)" << "POINT(-135 38)" << QVariantList { 1, 3 };
   QTest::newRow( "nearest limited filtered [cached]" ) << "overlay_nearest('rectangles',id,id!=2,limit:=2,cache:=true)" << "POINT(-135 38)" << QVariantList { 1, 3 };
+
+  // specific test for issue #39068
+  QTest::newRow( "intersects get ids limit 2 #39068" ) << "overlay_intersects('rectangles', id, limit:=2)" << "LINESTRING(-178 52, -133 33, -132 42, -64 46)" << QVariantList { 1, 3 };
+  QTest::newRow( "intersects get ids limit 2 #39068 [cached]" ) << "overlay_intersects('rectangles', id, limit:=2,cache:=true)" << "LINESTRING(-178 52, -133 33, -132 42, -64 46)" << QVariantList { 1, 3 };
 }
 
 

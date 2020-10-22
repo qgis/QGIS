@@ -120,6 +120,7 @@ void QgsProcessingFieldMapPanelWidget::setValue( const QVariant &value )
   QgsFields destinationFields;
   QMap<QString, QString> expressions;
 
+  const QgsFields layerFields = mLayer ? mLayer->fields() : QgsFields();
   const QVariantList fields = value.toList();
   for ( const QVariant &field : fields )
   {
@@ -129,6 +130,27 @@ void QgsProcessingFieldMapPanelWidget::setValue( const QVariant &value )
                 QVariant::typeToName( static_cast< QVariant::Type >( map.value( QStringLiteral( "type" ), QVariant::Invalid ).toInt() ) ),
                 map.value( QStringLiteral( "length" ), 0 ).toInt(),
                 map.value( QStringLiteral( "precision" ), 0 ).toInt() );
+
+    int layerFieldIdx = layerFields.indexFromName( f.name() );
+
+    if ( mLayer && layerFieldIdx >= 0 && ! map.contains( QStringLiteral( "constraints" ) ) )
+    {
+      f.setConstraints( layerFields.at( layerFieldIdx ).constraints() );
+    }
+    else
+    {
+      const QgsFieldConstraints::Constraints constraints = static_cast<QgsFieldConstraints::Constraints>( map.value( QStringLiteral( "constraints" ), 0 ).toInt() );
+      QgsFieldConstraints fieldConstraints;
+
+      if ( constraints & QgsFieldConstraints::ConstraintNotNull )
+        fieldConstraints.setConstraint( QgsFieldConstraints::ConstraintNotNull );
+      if ( constraints & QgsFieldConstraints::ConstraintUnique )
+        fieldConstraints.setConstraint( QgsFieldConstraints::ConstraintUnique );
+      if ( constraints & QgsFieldConstraints::ConstraintExpression )
+        fieldConstraints.setConstraint( QgsFieldConstraints::ConstraintExpression );
+
+      f.setConstraints( fieldConstraints );
+    }
 
     if ( !map.value( QStringLiteral( "expression" ) ).toString().isEmpty() )
     {
@@ -392,5 +414,4 @@ const QgsVectorLayer *QgsProcessingFieldMapWidgetWrapper::linkedVectorLayer() co
 }
 
 /// @endcond
-
 

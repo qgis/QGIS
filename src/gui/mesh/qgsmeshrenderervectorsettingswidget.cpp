@@ -29,6 +29,12 @@ QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidge
   mColoringMethodComboBox->addItem( tr( "Single Color" ), QgsInterpolatedLineColor::SingleColor );
   mColoringMethodComboBox->addItem( tr( "Color Ramp Shader" ), QgsInterpolatedLineColor::ColorRamp );
 
+  mXSpacingSpinBox->setClearValue( 10.0 );
+  mYSpacingSpinBox->setClearValue( 10.0 );
+  mStreamlinesDensitySpinBox->setClearValue( 15.0 );
+  mTracesParticlesCountSpinBox->setClearValue( 1000 );
+  mTracesMaxLengthSpinBox->setClearValue( 100.0 );
+
   connect( mColorWidget, &QgsColorButton::colorChanged, this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
   connect( mColoringMethodComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::onColoringMethodChanged );

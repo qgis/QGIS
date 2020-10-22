@@ -55,7 +55,9 @@ QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt:
 
   //default values for field width and precision
   mLength->setValue( 10 );
+  mLength->setClearValue( 10 );
   mPrec->setValue( 3 );
+  mPrec->setClearValue( 3 );
   mTypeBox_currentIndexChanged( 0 );
 
   if ( mIsShapeFile )

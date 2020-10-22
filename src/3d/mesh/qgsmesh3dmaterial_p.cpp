@@ -243,6 +243,9 @@ QgsMesh3dMaterial::QgsMesh3dMaterial( QgsMeshLayer *layer,
   Qt3DRender::QEffect *eff = new Qt3DRender::QEffect( this );
 
   configure();
+
+  // this method has to be called even if there isn't arrows (terrain) because it configures the parameter of shaders
+  // If al the parameters ("uniform" in shaders) are not defined in QGis, the shaders it happens the sahder doesn't work (depend on hardware?)
   configureArrows( layer, timeRange );
 
   eff->addTechnique( mTechnique );
@@ -316,25 +319,23 @@ void QgsMesh3dMaterial::configure()
 
 void QgsMesh3dMaterial::configureArrows( QgsMeshLayer *layer, const QgsDateTimeRange &timeRange )
 {
-  if ( !layer )
-    return;
+  QgsMeshDatasetIndex datasetIndex;
+  QColor arrowsColor;
+  QgsMeshDatasetGroupMetadata meta;
 
-  QgsMeshDatasetIndex datasetIndex = layer->activeVectorDatasetAtTime( timeRange );
-
-  mTechnique->addParameter( new Qt3DRender::QParameter( "arrowsSpacing", float( mSymbol->arrowsSpacing() ) ) ) ;
-  QColor arrowsColor = layer->rendererSettings().vectorSettings( datasetIndex.group() ).color();
-  mTechnique->addParameter( new Qt3DRender::QParameter( "arrowsColor", QVector4D( arrowsColor.redF(), arrowsColor.greenF(), arrowsColor.blueF(), 1.0f ) ) ) ;
-
-  QgsMeshDatasetGroupMetadata meta = layer->datasetGroupMetadata( datasetIndex );
+  if ( layer )
+    datasetIndex = layer->activeVectorDatasetAtTime( timeRange );
 
   QVector<QgsVector> vectors;
   QSize gridSize;
   QgsPointXY minCorner;
   std::unique_ptr< Qt3DRender::QParameter > arrowsEnabledParameter = qgis::make_unique< Qt3DRender::QParameter >( "arrowsEnabled", nullptr );
-  if ( mMagnitudeType != MagnitudeType::ScalarDataSet || !mSymbol->arrowsEnabled() || meta.isScalar() || !datasetIndex.isValid() )
+  if ( !layer || mMagnitudeType != MagnitudeType::ScalarDataSet || !mSymbol->arrowsEnabled() || meta.isScalar() || !datasetIndex.isValid() )
     arrowsEnabledParameter->setValue( false );
   else
   {
+    meta = layer->datasetGroupMetadata( datasetIndex );
+    arrowsColor = layer->rendererSettings().vectorSettings( datasetIndex.group() ).color();
     arrowsEnabledParameter->setValue( true );
     int maxSize = mSymbol->maximumTextureSize();
     // construct grid
@@ -384,6 +385,8 @@ void QgsMesh3dMaterial::configureArrows( QgsMeshLayer *layer, const QgsDateTimeR
   arrowTexture->addTextureImage( arrowTextureImage );
   arrowTexture->setMinificationFilter( Qt3DRender::QTexture2D::Nearest );
   arrowTexture->setMagnificationFilter( Qt3DRender::QTexture2D::Nearest );
+  mTechnique->addParameter( new Qt3DRender::QParameter( "arrowsColor", QVector4D( arrowsColor.redF(), arrowsColor.greenF(), arrowsColor.blueF(), 1.0f ) ) ) ;
+  mTechnique->addParameter( new Qt3DRender::QParameter( "arrowsSpacing", float( mSymbol->arrowsSpacing() ) ) ) ;
   mTechnique->addParameter( new Qt3DRender::QParameter( "arrowTexture", arrowTexture ) );
   mTechnique->addParameter( new Qt3DRender::QParameter( "arrowsGridTexture", arrowsGridTexture ) ) ;
   mTechnique->addParameter( new Qt3DRender::QParameter( "arrowsMinCorner", QVector2D( minCorner.x() - mOrigin.x(), -minCorner.y() + mOrigin.y() ) ) ) ;

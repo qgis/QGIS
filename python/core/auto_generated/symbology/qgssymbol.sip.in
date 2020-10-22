@@ -322,12 +322,20 @@ matches the settings from that context.
 .. seealso:: :py:func:`drawPreviewIcon`
 %End
 
-    QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = 0 );
+    enum PreviewFlag
+    {
+      FlagIncludeCrosshairsForMarkerSymbols,
+    };
+    typedef QFlags<QgsSymbol::PreviewFlag> PreviewFlags;
+
+
+    QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = 0, QgsSymbol::PreviewFlags flags = QgsSymbol::FlagIncludeCrosshairsForMarkerSymbols );
 %Docstring
 Returns a large (roughly 100x100 pixel) preview image for the symbol.
 
 :param expressionContext: optional expression context, for evaluation of
                           data defined symbol properties
+:param flags: optional flags to control how preview image is generated
 
 .. seealso:: :py:func:`asImage`
 
@@ -1237,6 +1245,9 @@ style and colors instead of the symbol's normal style.
 
 
 };
+
+QFlags<QgsSymbol::PreviewFlag> operator|(QgsSymbol::PreviewFlag f1, QFlags<QgsSymbol::PreviewFlag> f2);
+
 
 
 /************************************************************************

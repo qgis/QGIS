@@ -67,8 +67,7 @@ void QgsFieldCalculatorAlgorithm::initParameters( const QVariantMap &configurati
 
   QStringList fieldTypes = QStringList( {QObject::tr( "Float" ), QObject::tr( "Integer" ), QObject::tr( "String" ), QObject::tr( "Date" ) } );
 
-  std::unique_ptr< QgsProcessingParameterField > existingFieldName = qgis::make_unique< QgsProcessingParameterField > ( QStringLiteral( "EXISTING_FIELD_NAME" ), QObject::tr( "Result in existing field" ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, false, true );
-  std::unique_ptr< QgsProcessingParameterString > newFieldName = qgis::make_unique< QgsProcessingParameterString > ( QStringLiteral( "NEW_FIELD_NAME" ), QObject::tr( "Result in new field" ), QVariant(), false, true );
+  std::unique_ptr< QgsProcessingParameterString > fieldName = qgis::make_unique< QgsProcessingParameterString > ( QStringLiteral( "FIELD_NAME" ), QObject::tr( "Field name" ), QVariant(), false );
   std::unique_ptr< QgsProcessingParameterEnum > fieldType = qgis::make_unique< QgsProcessingParameterEnum > ( QStringLiteral( "FIELD_TYPE" ), QObject::tr( "Result field type" ), fieldTypes, false, 0 );
   std::unique_ptr< QgsProcessingParameterNumber > fieldLength = qgis::make_unique< QgsProcessingParameterNumber > ( QStringLiteral( "FIELD_LENGTH" ), QObject::tr( "Result field length" ), QgsProcessingParameterNumber::Integer, QVariant( 0 ), false, 0 );
   std::unique_ptr< QgsProcessingParameterNumber > fieldPrecision = qgis::make_unique< QgsProcessingParameterNumber > ( QStringLiteral( "FIELD_PRECISION" ), QObject::tr( "Result field precision" ), QgsProcessingParameterNumber::Integer, QVariant( 0 ), false, 0 );
@@ -76,8 +75,7 @@ void QgsFieldCalculatorAlgorithm::initParameters( const QVariantMap &configurati
 
   expression->setMetadata( QVariantMap( {{"inlineEditor", true}} ) );
 
-  addParameter( existingFieldName.release() );
-  addParameter( newFieldName.release() );
+  addParameter( fieldName.release() );
   addParameter( fieldType.release() );
   addParameter( fieldLength.release() );
   addParameter( fieldPrecision.release() );
@@ -94,8 +92,7 @@ QString QgsFieldCalculatorAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm computes a new vector layer with the same features of the input layer, "
                       "but either overwriting an existing attribute or adding an additional attribute. The values of this field "
                       "are computed from each feature using an expression, based on the properties and attributes of the feature. "
-                      "Note that selecting a value in \"Result in existing field\" will ignore all the rest of the "
-                      "field settings." );
+                      "Note that if \"Field name\" is an existing field in the layer then all the rest of the field settings are ignored." );
 }
 
 QgsFieldCalculatorAlgorithm *QgsFieldCalculatorAlgorithm::createInstance() const
@@ -117,22 +114,9 @@ bool QgsFieldCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &parameter
   const int fieldTypeIdx = parameterAsInt( parameters, QStringLiteral( "FIELD_TYPE" ), context );
   const int fieldLength = parameterAsInt( parameters, QStringLiteral( "FIELD_LENGTH" ), context );
   const int fieldPrecision = parameterAsInt( parameters, QStringLiteral( "FIELD_PRECISION" ), context );
-  const QString existingFieldName = parameterAsString( parameters, QStringLiteral( "EXISTING_FIELD_NAME" ), context );
-  const QString newFieldName = parameterAsString( parameters, QStringLiteral( "NEW_FIELD_NAME" ), context );
+  const QString fieldName = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
 
   QVariant::Type fieldType = fieldTypes[fieldTypeIdx];
-
-  // this is to keep backwards compatibility, "NEW_FIELD" flags what how "FIELD_NAME" should be treated
-  // since they are not defined parameters, they should be accessed directly from `parameters`
-  bool isNewField = parameters.value( QStringLiteral( "NEW_FIELD" ) ).toBool();
-  QString fieldName = parameters.value( QStringLiteral( "FIELD_NAME" ) ).toString();
-
-  // In a perfect universe there would be only "EXISTING_FIELD_NAME" and "NEW_FIELD_NAME"
-  if ( !parameters.contains( QStringLiteral( "NEW_FIELD" ) ) )
-  {
-    isNewField = existingFieldName.isEmpty();
-    fieldName = isNewField ? newFieldName : existingFieldName;
-  }
 
   if ( fieldName.isEmpty() )
     throw QgsProcessingException( QObject::tr( "Field name must not be an empty string" ) );
@@ -149,7 +133,7 @@ bool QgsFieldCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &parameter
 
   int fieldIdx = mFields.lookupField( field.name() );
 
-  if ( isNewField || fieldIdx < 0 )
+  if ( fieldIdx < 0 )
     mFields.append( field );
 
   QString dest;
@@ -202,11 +186,10 @@ QgsFeatureList QgsFieldCalculatorAlgorithm::processFeature( const QgsFeature &fe
     }
 
     attributes[mFieldIdx] = value;
-    attributes.append( value );
   }
   else
   {
-    attributes.append( QVariant() );
+    attributes[mFieldIdx] = QVariant();
   }
 
   QgsFeature f = feature;

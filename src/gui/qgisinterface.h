@@ -35,6 +35,7 @@ class QToolBar;
 class QDockWidget;
 class QMainWindow;
 class QWidget;
+class QActionGroup;
 
 class QgsAdvancedDigitizingDockWidget;
 class QgsAttributeDialog;
@@ -433,6 +434,16 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.6
     */
     virtual QAction *actionVertexToolActiveLayer() = 0;
+
+    /**
+     * Returns the action group for map tools.
+     *
+     * Any actions added by plugins for toggling a map tool should also be added to this action
+     * group so that they behave identically to the native, in-built map tool actions.
+     *
+     * \since QGIS 3.16
+     */
+    virtual QActionGroup *mapToolActionGroup() = 0;
 
     // View menu actions
     //! Returns the native pan action. Call trigger() on it to set the default pan map tool.

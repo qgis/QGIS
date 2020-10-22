@@ -69,10 +69,52 @@ bool QgsMapToolOffsetPointSymbol::layerIsOffsetable( QgsMapLayer *ml )
 
 void QgsMapToolOffsetPointSymbol::canvasPressEvent( QgsMapMouseEvent *e )
 {
-  mMarkerSymbol.reset( nullptr );
-  mClickedPoint = e->mapPoint();
-  mSymbolRotation = 0.0;
-  QgsMapToolPointSymbol::canvasPressEvent( e );
+  if ( !mOffsetting )
+  {
+    if ( e->button() != Qt::LeftButton )
+      return;
+
+    // first click -- starts offsetting
+    mMarkerSymbol.reset( nullptr );
+    mClickedPoint = e->mapPoint();
+    mSymbolRotation = 0.0;
+    QgsMapToolPointSymbol::canvasPressEvent( e );
+  }
+  else
+  {
+    // second click stops it.
+    // only left clicks "save" edits - right clicks discard them
+    if ( e->button() == Qt::LeftButton && mActiveLayer )
+    {
+      QMap<int, QVariant> attrs = calculateNewOffsetAttributes( mClickedPoint, e->mapPoint() );
+      mActiveLayer->beginEditCommand( tr( "Offset symbol" ) );
+      bool offsetSuccess = true;
+
+      //write offset to attributes
+      QMap<int, QVariant>::const_iterator it = attrs.constBegin();
+      for ( ; it != attrs.constEnd(); ++it )
+      {
+        if ( !mActiveLayer->changeAttributeValue( mFeatureNumber, it.key(), it.value() ) )
+        {
+          offsetSuccess = false;
+        }
+      }
+
+      if ( offsetSuccess )
+      {
+        mActiveLayer->endEditCommand();
+      }
+      else
+      {
+        mActiveLayer->destroyEditCommand();
+      }
+    }
+    mOffsetting = false;
+    delete mOffsetItem;
+    mOffsetItem = nullptr;
+    if ( mActiveLayer )
+      mActiveLayer->triggerRepaint();
+  }
 }
 
 void QgsMapToolOffsetPointSymbol::canvasPressOnFeature( QgsMapMouseEvent *e, const QgsFeature &feature, const QgsPointXY &snappedPoint )
@@ -130,40 +172,18 @@ void QgsMapToolOffsetPointSymbol::canvasMoveEvent( QgsMapMouseEvent *e )
   updateOffsetPreviewItem( mClickedPoint, e->mapPoint() );
 }
 
-void QgsMapToolOffsetPointSymbol::canvasReleaseEvent( QgsMapMouseEvent *e )
+void QgsMapToolOffsetPointSymbol::keyPressEvent( QKeyEvent *e )
 {
-  Q_UNUSED( e )
-
-  if ( mOffsetting && mActiveLayer )
+  if ( mOffsetting && e && e->key() == Qt::Key_Escape && !e->isAutoRepeat() )
   {
-    QMap<int, QVariant> attrs = calculateNewOffsetAttributes( mClickedPoint, e->mapPoint() );
-    mActiveLayer->beginEditCommand( tr( "Offset symbol" ) );
-    bool offsetSuccess = true;
-
-    //write offset to attributes
-    QMap<int, QVariant>::const_iterator it = attrs.constBegin();
-    for ( ; it != attrs.constEnd(); ++it )
-    {
-      if ( !mActiveLayer->changeAttributeValue( mFeatureNumber, it.key(), it.value() ) )
-      {
-        offsetSuccess = false;
-      }
-    }
-
-    if ( offsetSuccess )
-    {
-      mActiveLayer->endEditCommand();
-    }
-    else
-    {
-      mActiveLayer->destroyEditCommand();
-    }
+    mOffsetting = false;
+    delete mOffsetItem;
+    mOffsetItem = nullptr;
   }
-  mOffsetting = false;
-  delete mOffsetItem;
-  mOffsetItem = nullptr;
-  if ( mActiveLayer )
-    mActiveLayer->triggerRepaint();
+  else
+  {
+    QgsMapToolPointSymbol::keyPressEvent( e );
+  }
 }
 
 void QgsMapToolOffsetPointSymbol::createPreviewItem( QgsMarkerSymbol *markerSymbol )

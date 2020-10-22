@@ -96,7 +96,7 @@
        </widget>
       </item>
       <item row="3" column="2">
-       <widget class="QSpinBox" name="mSpinZMin">
+       <widget class="QgsSpinBox" name="mSpinZMin">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -113,7 +113,7 @@
        </widget>
       </item>
       <item row="4" column="2">
-       <widget class="QSpinBox" name="mSpinZMax">
+       <widget class="QgsSpinBox" name="mSpinZMax">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -176,6 +176,11 @@
    <extends>QWidget</extends>
    <header>auth/qgsauthsettingswidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

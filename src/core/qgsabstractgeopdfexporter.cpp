@@ -408,9 +408,10 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
   // pages
   QDomElement page = doc.createElement( QStringLiteral( "Page" ) );
   QDomElement dpi = doc.createElement( QStringLiteral( "DPI" ) );
-  dpi.appendChild( doc.createTextNode( qgsDoubleToString( details.dpi ) ) );
+  // hardcode DPI of 72 to get correct page sizes in outputs -- refs discussion in https://github.com/OSGeo/gdal/pull/2961
+  dpi.appendChild( doc.createTextNode( qgsDoubleToString( 72 ) ) );
   page.appendChild( dpi );
-  // assumes DPI of 72, which is an assumption on GDALs/PDF side. It's only related to the PDF coordinate space and doesn't affect the actual output DPI!
+  // assumes DPI of 72, as noted above.
   QDomElement width = doc.createElement( QStringLiteral( "Width" ) );
   const double pageWidthPdfUnits = std::ceil( details.pageSizeMm.width() / 25.4 * 72 );
   width.appendChild( doc.createTextNode( qgsDoubleToString( pageWidthPdfUnits ) ) );
