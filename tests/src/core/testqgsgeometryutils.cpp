@@ -21,8 +21,6 @@
 #include "qgslinestring.h"
 #include "qgspolygon.h"
 #include "qgsmultipolygon.h"
-#include <iostream>
-using namespace std;
 
 class TestQgsGeometryUtils: public QObject
 {
@@ -734,7 +732,7 @@ void TestQgsGeometryUtils::testPerpendicularCenterSegment()
     QgsPoint segmentPoint2(2,2);
 
     QgsGeometryUtils::perpendicularCenterSegment( centerPoint.x(),centerPoint.y(), segmentPoint1.x(), segmentPoint1.y(), segmentPoint2.x(), segmentPoint2.y(),
-                                                perpendicularSegmentPoint1x, perpendicularSegmentPoint1y, perpendicularSegmentPoint2x, perpendicularSegmentPoint2y);
+            perpendicularSegmentPoint1x, perpendicularSegmentPoint1y, perpendicularSegmentPoint2x, perpendicularSegmentPoint2y);
     QCOMPARE( perpendicularSegmentPoint1x, (3) );
     QCOMPARE( perpendicularSegmentPoint1y, (1.5) );
     QCOMPARE( perpendicularSegmentPoint2x, (1) );
@@ -743,7 +741,7 @@ void TestQgsGeometryUtils::testPerpendicularCenterSegment()
     // default case 1 with segmentLength
     segmentLength=3;
     QgsGeometryUtils::perpendicularCenterSegment( centerPoint.x(),centerPoint.y(), segmentPoint1.x(), segmentPoint1.y(), segmentPoint2.x(), segmentPoint2.y(),
-                                              perpendicularSegmentPoint1x, perpendicularSegmentPoint1y, perpendicularSegmentPoint2x, perpendicularSegmentPoint2y,&segmentLength);
+            perpendicularSegmentPoint1x, perpendicularSegmentPoint1y, perpendicularSegmentPoint2x, perpendicularSegmentPoint2y,&segmentLength);
     QCOMPARE( perpendicularSegmentPoint1x, (3.5) );
     QCOMPARE( perpendicularSegmentPoint1y, (1.5) );
     QCOMPARE( perpendicularSegmentPoint2x, (.5) );
@@ -755,7 +753,7 @@ void TestQgsGeometryUtils::testPerpendicularCenterSegment()
     segmentPoint1=QgsPoint( 2, 3 );
     segmentPoint2=QgsPoint( 7, 11 );
     QgsGeometryUtils::perpendicularCenterSegment( centerPoint.x(),centerPoint.y(), segmentPoint1.x(), segmentPoint1.y(), segmentPoint2.x(), segmentPoint2.y(),
-                                              perpendicularSegmentPoint1x, perpendicularSegmentPoint1y, perpendicularSegmentPoint2x, perpendicularSegmentPoint2y );
+            perpendicularSegmentPoint1x, perpendicularSegmentPoint1y, perpendicularSegmentPoint2x, perpendicularSegmentPoint2y );
     QCOMPARE( perpendicularSegmentPoint1x, (11) );
     QCOMPARE( perpendicularSegmentPoint1y, (8) );
     QCOMPARE( perpendicularSegmentPoint2x, (-5) );
@@ -766,7 +764,7 @@ void TestQgsGeometryUtils::testPerpendicularCenterSegment()
     segmentPoint2 = QgsPoint( 2, 3 );
     centerPoint = QgsPoint( 3, 13 );
     QgsGeometryUtils::perpendicularCenterSegment( centerPoint.x(),centerPoint.y(), segmentPoint1.x(), segmentPoint1.y(), segmentPoint2.x(), segmentPoint2.y(),
-                                              perpendicularSegmentPoint1x, perpendicularSegmentPoint1y, perpendicularSegmentPoint2x, perpendicularSegmentPoint2y );
+            perpendicularSegmentPoint1x, perpendicularSegmentPoint1y, perpendicularSegmentPoint2x, perpendicularSegmentPoint2y );
     QCOMPARE( perpendicularSegmentPoint1x, (3) );
     QCOMPARE( perpendicularSegmentPoint1y, (8) );
     QCOMPARE( perpendicularSegmentPoint2x, (3) );
@@ -777,7 +775,7 @@ void TestQgsGeometryUtils::testPerpendicularCenterSegment()
     segmentPoint2 = QgsPoint( 3, 3 );
     centerPoint = QgsPoint( -7, 8 );
     QgsGeometryUtils::perpendicularCenterSegment( centerPoint.x(),centerPoint.y(), segmentPoint1.x(), segmentPoint1.y(), segmentPoint2.x(), segmentPoint2.y(),
-                                              perpendicularSegmentPoint1x, perpendicularSegmentPoint1y, perpendicularSegmentPoint2x, perpendicularSegmentPoint2y );
+            perpendicularSegmentPoint1x, perpendicularSegmentPoint1y, perpendicularSegmentPoint2x, perpendicularSegmentPoint2y );
     QCOMPARE( perpendicularSegmentPoint1x, (-17) );
     QCOMPARE( perpendicularSegmentPoint1y, (8) );
     QCOMPARE( perpendicularSegmentPoint2x, (3) );
@@ -786,7 +784,7 @@ void TestQgsGeometryUtils::testPerpendicularCenterSegment()
     // vertical with normalization of segmentLength
     segmentLength=0;
     QgsGeometryUtils::perpendicularCenterSegment( centerPoint.x(),centerPoint.y(), segmentPoint1.x(), segmentPoint1.y(), segmentPoint2.x(), segmentPoint2.y(),
-                                                perpendicularSegmentPoint1x, perpendicularSegmentPoint1y, perpendicularSegmentPoint2x, perpendicularSegmentPoint2y,&segmentLength);
+            perpendicularSegmentPoint1x, perpendicularSegmentPoint1y, perpendicularSegmentPoint2x, perpendicularSegmentPoint2y,&segmentLength);
     QCOMPARE( perpendicularSegmentPoint1x, (-7.5) );
     QCOMPARE( perpendicularSegmentPoint1y, (8) );
     QCOMPARE( perpendicularSegmentPoint2x, (-6.5) );
