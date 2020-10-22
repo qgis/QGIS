@@ -187,6 +187,7 @@ void QgsLightsWidget::onAddLight()
 
   const QModelIndex newIndex = mLightsModel->addPointLight( QgsPointLightSettings() );
   mLightsListView->selectionModel()->select( newIndex, QItemSelectionModel::ClearAndSelect );
+  emit lightsAdded();
 }
 
 void QgsLightsWidget::onAddDirectionalLight()
@@ -199,6 +200,7 @@ void QgsLightsWidget::onAddDirectionalLight()
 
   const QModelIndex newIndex = mLightsModel->addDirectionalLight( QgsDirectionalLightSettings() );
   mLightsListView->selectionModel()->select( newIndex, QItemSelectionModel::ClearAndSelect );
+  emit lightsAdded();
 }
 
 void QgsLightsWidget::onRemoveLight()
@@ -210,11 +212,15 @@ void QgsLightsWidget::onRemoveLight()
   }
 
   const int directionalCount = mLightsModel->directionalLights().size();
+  const int pointCount = mLightsModel->pointLights().size();
 
   mLightsModel->removeRows( selected.indexes().at( 0 ).row(), 1 );
 
   if ( mLightsModel->directionalLights().size() != directionalCount )
     emit directionalLightsCountChanged( mLightsModel->directionalLights().size() );
+
+  if ( mLightsModel->rowCount( QModelIndex() ) != directionalCount + pointCount )
+    emit lightsRemoved();
 }
 
 void QgsLightsWidget::setAzimuthAltitude()
