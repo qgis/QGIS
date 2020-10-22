@@ -448,6 +448,16 @@ Returns the native "Vertex Tool for Active Layer" action.
 .. versionadded:: 3.6
 %End
 
+    virtual QActionGroup *mapToolActionGroup() = 0;
+%Docstring
+Returns the action group for map tools.
+
+Any actions added by plugins for toggling a map tool should also be added to this action
+group so that they behave identically to the native, in-built map tool actions.
+
+.. versionadded:: 3.16
+%End
+
     virtual QAction *actionPan() = 0;
 %Docstring
 Returns the native pan action. Call :py:func:`~QgisInterface.trigger` on it to set the default pan map tool.
