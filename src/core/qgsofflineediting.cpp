@@ -251,7 +251,8 @@ void QgsOfflineEditing::synchronize()
     QString remoteProvider = layer->customProperty( CUSTOM_PROPERTY_REMOTE_PROVIDER, "" ).toString();
     QString remoteName = layer->name();
     QString remoteNameSuffix = layer->customProperty( CUSTOM_PROPERTY_LAYERNAME_SUFFIX, " (offline)" ).toString();
-    remoteName.remove( remoteNameSuffix );
+    if ( remoteName.endsWith( remoteNameSuffix ) )
+      remoteName.chop( remoteNameSuffix.size() );
     const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
     QgsVectorLayer *remoteLayer = new QgsVectorLayer( remoteSource, remoteName, remoteProvider, options );
     if ( remoteLayer->isValid() )

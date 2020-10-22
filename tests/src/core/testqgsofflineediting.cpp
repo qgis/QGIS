@@ -121,9 +121,10 @@ void TestQgsOfflineEditing::createSpatialiteAndSynchronizeBack_data()
   QTest::addColumn<QString>( "suffix_input" );
   QTest::addColumn<QString>( "suffix_result" );
 
-  QTest::newRow( "no suffix" ) << QString( "no suffix" ) << QStringLiteral( " (offline)" );
+  QTest::newRow( "no suffix" ) << QString( "no suffix" ) << QStringLiteral( " (offline)" ); //default value expected
   QTest::newRow( "null suffix" ) << QString() << QString();
   QTest::newRow( "empty suffix" ) << QStringLiteral( "" ) << QStringLiteral( "" );
+  QTest::newRow( "part of name suffix" ) << QStringLiteral( "point" ) << QStringLiteral( "point" );
   QTest::newRow( "another suffix" ) << QStringLiteral( "another suffix" ) << QStringLiteral( "another suffix" );
 }
 
@@ -132,9 +133,10 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack_data()
   QTest::addColumn<QString>( "suffix_input" );
   QTest::addColumn<QString>( "suffix_result" );
 
-  QTest::newRow( "no suffix" ) << QStringLiteral( "no suffix" ) << QStringLiteral( " (offline)" );
+  QTest::newRow( "no suffix" ) << QStringLiteral( "no suffix" ) << QStringLiteral( " (offline)" ); //default value expected
   QTest::newRow( "null suffix" ) << QString() << QString();
   QTest::newRow( "empty suffix" ) << QStringLiteral( "" ) << QStringLiteral( "" );
+  QTest::newRow( "part of name suffix" ) << QStringLiteral( "point" ) << QStringLiteral( "point" );
   QTest::newRow( "another suffix" ) << QStringLiteral( "another suffix" ) << QStringLiteral( "another suffix" );
 }
 
