@@ -849,10 +849,10 @@ void QgsLayerTreeModel::layerFlagsChanged()
     return;
 
   QgsLayerTreeLayer *nodeLayer = mRootNode->findLayer( layer->id() );
-  if ( !nodeLayer || !nodeLayer->parent() )
+  if ( !nodeLayer )
     return;
 
-  QModelIndex index = node2index( nodeLayer->parent() );
+  QModelIndex index = node2index( nodeLayer );
   emit dataChanged( index, index );
 
 }
@@ -937,6 +937,8 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer *nodeLayer )
     connect( vl, &QgsVectorLayer::editingStopped, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
     connect( vl, &QgsVectorLayer::layerModified, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
   }
+
+  emit dataChanged( node2index( nodeLayer ), node2index( nodeLayer ) );
 }
 
 // try to find out if the layer ID is present in the tree multiple times

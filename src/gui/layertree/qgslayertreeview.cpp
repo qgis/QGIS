@@ -698,7 +698,6 @@ bool QgsLayerTreeProxyModel::nodeShown( QgsLayerTreeNode *node ) const
       return false;
     if ( ! mShowHidden && layer->flags().testFlag( QgsMapLayer::LayerFlag::Hidden ) )
     {
-      qDebug() << "Layer" << layer->name() << "hidden!" ;
       return false;
     }
     return true;
