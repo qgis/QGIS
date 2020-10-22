@@ -95,7 +95,7 @@ void QgsLayerTreeView::setModel( QAbstractItemModel *model )
          );
 
   mProxyModel = new QgsLayerTreeProxyModel( treeModel, this );
-  mProxyModel->setShowHidden( false );
+  mProxyModel->setShowHidden( mShowHidden );
   QTreeView::setModel( mProxyModel );
 
   connect( treeModel->rootGroup(), &QgsLayerTreeNode::expandedChanged, this, &QgsLayerTreeView::onExpandedChanged );
@@ -539,8 +539,13 @@ void QgsLayerTreeView::setMessageBar( QgsMessageBar *messageBar )
 
 void QgsLayerTreeView::setShowHidden( bool showHidden )
 {
-  mShowHidden = true;
+  mShowHidden = showHidden;
   mProxyModel->setShowHidden( showHidden );
+}
+
+bool QgsLayerTreeView::showHidden()
+{
+  return mShowHidden;
 }
 
 void QgsLayerTreeView::mouseReleaseEvent( QMouseEvent *event )
@@ -692,7 +697,10 @@ bool QgsLayerTreeProxyModel::nodeShown( QgsLayerTreeNode *node ) const
     if ( !mFilterText.isEmpty() && !layer->name().contains( mFilterText, Qt::CaseInsensitive ) )
       return false;
     if ( ! mShowHidden && layer->flags().testFlag( QgsMapLayer::LayerFlag::Hidden ) )
+    {
+      qDebug() << "Layer" << layer->name() << "hidden!" ;
       return false;
+    }
     return true;
   }
 }

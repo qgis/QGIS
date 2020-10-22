@@ -350,6 +350,7 @@ Updates model when node's name has changed
     void nodeLayerLoaded();
     void nodeLayerWillBeUnloaded();
     void layerLegendChanged();
+    void layerFlagsChanged();
 
     void layerNeedsUpdate();
 

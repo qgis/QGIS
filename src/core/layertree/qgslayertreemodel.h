@@ -313,6 +313,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     void nodeLayerLoaded();
     void nodeLayerWillBeUnloaded();
     void layerLegendChanged();
+    void layerFlagsChanged();
 
     void layerNeedsUpdate();
 

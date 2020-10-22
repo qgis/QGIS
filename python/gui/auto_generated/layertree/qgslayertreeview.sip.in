@@ -320,6 +320,13 @@ Set the show hidden layers to ``showHidden``
 .. versionadded:: 3.18
 %End
 
+    bool showHidden( );
+%Docstring
+Returns the show hidden status
+
+.. versionadded:: 3.18
+%End
+
   signals:
     void currentLayerChanged( QgsMapLayer *layer );
 %Docstring

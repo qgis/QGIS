@@ -37,6 +37,8 @@ class QgsLayerTreeFilterProxyModel;
 
 class GUI_EXPORT QgsLayerTreeProxyModel : public QSortFilterProxyModel
 {
+    Q_OBJECT
+
   public:
 
     QgsLayerTreeProxyModel( QgsLayerTreeModel *treeModel, QObject *parent );
@@ -299,6 +301,12 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
      * \since QGIS 3.18
      */
     void setShowHidden( bool showHidden );
+
+    /**
+     * Returns the show hidden status
+     * \since QGIS 3.18
+     */
+    bool showHidden( );
 
   signals:
     //! Emitted when a current layer is changed

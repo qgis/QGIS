@@ -839,6 +839,24 @@ void QgsLayerTreeModel::layerLegendChanged()
   refreshLayerLegend( nodeLayer );
 }
 
+void QgsLayerTreeModel::layerFlagsChanged()
+{
+  if ( !mRootNode )
+    return;
+
+  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() );
+  if ( !layer )
+    return;
+
+  QgsLayerTreeLayer *nodeLayer = mRootNode->findLayer( layer->id() );
+  if ( !nodeLayer || !nodeLayer->parent() )
+    return;
+
+  QModelIndex index = node2index( nodeLayer->parent() );
+  emit dataChanged( index, index );
+
+}
+
 void QgsLayerTreeModel::layerNeedsUpdate()
 {
   QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() );
@@ -907,6 +925,7 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer *nodeLayer )
 
   QgsMapLayer *layer = nodeLayer->layer();
   connect( layer, &QgsMapLayer::legendChanged, this, &QgsLayerTreeModel::layerLegendChanged, Qt::UniqueConnection );
+  connect( layer, &QgsMapLayer::flagsChanged, this, &QgsLayerTreeModel::layerFlagsChanged, Qt::UniqueConnection );
 
   if ( layer->type() == QgsMapLayerType::VectorLayer )
   {
