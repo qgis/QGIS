@@ -864,7 +864,7 @@ void QgsAttributeTableModel::executeMapLayerAction( QgsMapLayerAction *action, c
 
 QgsFeature QgsAttributeTableModel::feature( const QModelIndex &idx ) const
 {
-  QgsFeature f;
+  QgsFeature f( mLayerCache->layer()->fields() );
   f.initAttributes( mAttributes.size() );
   f.setId( rowToId( idx.row() ) );
   for ( int i = 0; i < mAttributes.size(); i++ )
