@@ -148,6 +148,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
       Identifiable = 1 << 0, //!< If the layer is identifiable using the identify map tool and as a WMS layer.
       Removable = 1 << 1,    //!< If the layer can be removed from the project. The layer will not be removable from the legend menu entry but can still be removed with an API call.
       Searchable = 1 << 2,   //!< Only for vector-layer, determines if the layer is used in the 'search all layers' locator.
+      Hidden = 1 << 3,       //!< Determines if the layer is visible in the layer legend tree.
     };
     Q_ENUM( LayerFlag )
     Q_DECLARE_FLAGS( LayerFlags, LayerFlag )

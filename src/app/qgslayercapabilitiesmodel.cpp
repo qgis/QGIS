@@ -32,6 +32,7 @@ QgsLayerCapabilitiesModel::QgsLayerCapabilitiesModel( QgsProject *project, QObje
     mSearchableLayers.insert( it.value(), it.value()->type() == QgsMapLayerType::VectorLayer && it.value()->flags().testFlag( QgsMapLayer::Searchable ) );
     mIdentifiableLayers.insert( it.value(), it.value()->flags().testFlag( QgsMapLayer::Identifiable ) );
     mRemovableLayers.insert( it.value(), it.value()->flags().testFlag( QgsMapLayer::Removable ) );
+    mHiddenLayers.insert( it.value(), it.value()->flags().testFlag( QgsMapLayer::Hidden ) );
   }
 }
 
@@ -76,6 +77,11 @@ bool QgsLayerCapabilitiesModel::removable( QgsMapLayer *layer ) const
   return mRemovableLayers.value( layer, true );
 }
 
+bool QgsLayerCapabilitiesModel::hidden( QgsMapLayer *layer ) const
+{
+  return mHiddenLayers.value( layer, true );
+}
+
 bool QgsLayerCapabilitiesModel::readOnly( QgsMapLayer *layer ) const
 {
   return mReadOnlyLayers.value( layer, true );
@@ -89,7 +95,7 @@ bool QgsLayerCapabilitiesModel::searchable( QgsMapLayer *layer ) const
 int QgsLayerCapabilitiesModel::columnCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent )
-  return 5;
+  return 6;
 }
 
 QVariant QgsLayerCapabilitiesModel::headerData( int section, Qt::Orientation orientation, int role ) const
@@ -110,6 +116,8 @@ QVariant QgsLayerCapabilitiesModel::headerData( int section, Qt::Orientation ori
           return tr( "Searchable" );
         case RequiredColumn:
           return tr( "Required" );
+        case HiddenColumn:
+          return tr( "Hidden" );
         default:
           return QVariant();
       }
@@ -125,6 +133,8 @@ QVariant QgsLayerCapabilitiesModel::headerData( int section, Qt::Orientation ori
           return QVariant();
         case RequiredColumn:
           return tr( "Layers which are protected from inadvertent removal from the project." );
+        case HiddenColumn:
+          return tr( "Layers which not shown in the legend." );
         default:
           return QVariant();
       }
@@ -181,6 +191,10 @@ Qt::ItemFlags QgsLayerCapabilitiesModel::flags( const QModelIndex &idx ) const
       }
     }
     else if ( idx.column() == RequiredColumn )
+    {
+      return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
+    }
+    else if ( idx.column() == HiddenColumn )
     {
       return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
     }
@@ -278,6 +292,9 @@ QVariant QgsLayerCapabilitiesModel::data( const QModelIndex &idx, int role ) con
 
         case RequiredColumn:
           return !mRemovableLayers.value( layer, true ) ? trueValue : falseValue;
+
+        case HiddenColumn:
+          return mHiddenLayers.value( layer, false ) ? trueValue : falseValue;
       }
     }
   }
@@ -344,6 +361,17 @@ bool QgsLayerCapabilitiesModel::setData( const QModelIndex &index, const QVarian
           if ( removable != mRemovableLayers.value( layer, true ) )
           {
             mRemovableLayers.insert( layer, removable );
+            emit dataChanged( index, index );
+            return true;
+          }
+          break;
+        }
+        case HiddenColumn:
+        {
+          const bool hidden = value == Qt::Checked;
+          if ( hidden != mHiddenLayers.value( layer, false ) )
+          {
+            mHiddenLayers.insert( layer, hidden );
             emit dataChanged( index, index );
             return true;
           }

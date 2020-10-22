@@ -1188,6 +1188,12 @@ void QgsProjectProperties::apply()
     else
       flags &= ~QgsMapLayer::Searchable;
 
+    if ( mLayerCapabilitiesModel->hidden( layer ) )
+      flags |= QgsMapLayer::Hidden;
+    else
+      flags &= ~QgsMapLayer::Hidden;
+
+
     layer->setFlags( flags );
 
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );

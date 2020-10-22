@@ -40,6 +40,7 @@ class APP_EXPORT QgsLayerCapabilitiesModel : public QSortFilterProxyModel
       ReadOnlyColumn,
       SearchableColumn,
       RequiredColumn,
+      HiddenColumn,
     };
 
     QgsLayerCapabilitiesModel( QgsProject *project, QObject *parent = nullptr );
@@ -48,6 +49,7 @@ class APP_EXPORT QgsLayerCapabilitiesModel : public QSortFilterProxyModel
     void setLayerTreeModel( QgsLayerTreeModel *layerTreeModel );
     bool identifiable( QgsMapLayer *layer ) const;
     bool removable( QgsMapLayer *layer ) const;
+    bool hidden( QgsMapLayer *layer ) const;
     bool readOnly( QgsMapLayer *layer ) const;
     bool searchable( QgsMapLayer *layer ) const;
     QgsMapLayer *mapLayer( const QModelIndex &idx ) const;
@@ -79,6 +81,7 @@ class APP_EXPORT QgsLayerCapabilitiesModel : public QSortFilterProxyModel
     QHash<QgsMapLayer *, bool> mSearchableLayers;
     QHash<QgsMapLayer *, bool> mIdentifiableLayers;
     QHash<QgsMapLayer *, bool> mRemovableLayers;
+    QHash<QgsMapLayer *, bool> mHiddenLayers;
 
     QgsLayerTreeModel *mLayerTreeModel = nullptr;
 };

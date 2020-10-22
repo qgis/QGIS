@@ -98,6 +98,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
       DeferredLegendInvalidation = 0x0008,  //!< Defer legend model invalidation
       UseEmbeddedWidgets         = 0x0010,  //!< Layer nodes may optionally include extra embedded widgets (if used in QgsLayerTreeView). Added in 2.16
       UseTextFormatting          = 0x0020,  //!< Layer nodes will alter text appearance based on layer properties, such as scale based visibility
+      ShowHidden                 = 0x0020,  //!< Display hidden layers
 
       // behavioral flags
       AllowNodeReorder           = 0x1000,  //!< Allow reordering with drag'n'drop
