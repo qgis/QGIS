@@ -64,7 +64,7 @@ class ANALYSIS_EXPORT QgsMeshTriangulation : public QObject
      * Adds break lines from a vector layer, return TRUE if successful.
      * \param lineFeatureIterator the feature iterator of break lines to insert
      * \param valueAttribute the index of the attribute that represents the value of vertices, if -1 uses Z coordinate of vertices
-     * \param transform the coordinates transform used to transform coordinates
+     * \param transformContext the coordinates transform context used to transform coordinates
      * \param feedback feedback argument may be specified to allow cancellation and progress reports
      * \param featureCount the count of feature to allow progress report of the feedback
      *

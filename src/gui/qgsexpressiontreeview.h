@@ -304,6 +304,7 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
      * \param sortOrder sort ranking for item
      * \param icon custom icon to show for item
      * \param tags tags to find function
+     * \param name name of the item
      */
     void registerItem( const QString &group, const QString &label, const QString &expressionText,
                        const QString &helpText = QString(),
