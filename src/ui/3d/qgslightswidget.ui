@@ -64,7 +64,7 @@
    <item>
     <widget class="QStackedWidget" name="mStackedWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="page_2"/>
      <widget class="QWidget" name="page">
@@ -111,10 +111,13 @@
        <item row="5" column="1">
         <widget class="QgsDoubleSpinBox" name="spinIntensity">
          <property name="decimals">
-          <number>1</number>
+          <number>2</number>
          </property>
          <property name="maximum">
           <double>999999.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.100000000000000</double>
          </property>
         </widget>
        </item>
@@ -382,10 +385,13 @@
        <item row="7" column="1">
         <widget class="QgsDoubleSpinBox" name="spinDirectionalIntensity">
          <property name="decimals">
-          <number>1</number>
+          <number>2</number>
          </property>
          <property name="maximum">
           <double>999999.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.100000000000000</double>
          </property>
         </widget>
        </item>
