@@ -95,6 +95,7 @@ void QgsLayerTreeView::setModel( QAbstractItemModel *model )
          );
 
   mProxyModel = new QgsLayerTreeProxyModel( treeModel, this );
+  mProxyModel->setShowHidden( false );
   QTreeView::setModel( mProxyModel );
 
   connect( treeModel->rootGroup(), &QgsLayerTreeNode::expandedChanged, this, &QgsLayerTreeView::onExpandedChanged );
@@ -536,6 +537,12 @@ void QgsLayerTreeView::setMessageBar( QgsMessageBar *messageBar )
          );
 }
 
+void QgsLayerTreeView::setShowHidden( bool showHidden )
+{
+  mShowHidden = true;
+  mProxyModel->setShowHidden( showHidden );
+}
+
 void QgsLayerTreeView::mouseReleaseEvent( QMouseEvent *event )
 {
   // we need to keep last mouse position in order to know whether to emit an indicator's clicked() signal
@@ -684,7 +691,19 @@ bool QgsLayerTreeProxyModel::nodeShown( QgsLayerTreeNode *node ) const
       return true;
     if ( !mFilterText.isEmpty() && !layer->name().contains( mFilterText, Qt::CaseInsensitive ) )
       return false;
-
+    if ( ! mShowHidden && layer->flags().testFlag( QgsMapLayer::LayerFlag::Hidden ) )
+      return false;
     return true;
   }
+}
+
+bool QgsLayerTreeProxyModel::showHidden() const
+{
+  return mShowHidden;
+}
+
+void QgsLayerTreeProxyModel::setShowHidden( bool showHidden )
+{
+  mShowHidden = showHidden;
+  invalidateFilter();
 }

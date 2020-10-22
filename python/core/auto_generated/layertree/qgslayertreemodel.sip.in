@@ -82,7 +82,6 @@ The root node is not transferred by the model.
       DeferredLegendInvalidation,
       UseEmbeddedWidgets,
       UseTextFormatting,
-      ShowHidden,
 
       // behavioral flags
       AllowNodeReorder,

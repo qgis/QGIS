@@ -43,6 +43,10 @@ class GUI_EXPORT QgsLayerTreeProxyModel : public QSortFilterProxyModel
 
     void setFilterText( const QString &filterText = QString() );
 
+    bool showHidden() const;
+
+    void setShowHidden( bool showHidden );
+
   protected:
 
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
@@ -53,6 +57,7 @@ class GUI_EXPORT QgsLayerTreeProxyModel : public QSortFilterProxyModel
 
     QgsLayerTreeModel *mLayerTreeModel = nullptr;
     QString mFilterText;
+    bool mShowHidden = false;
 };
 
 
@@ -289,6 +294,12 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
      */
     void setMessageBar( QgsMessageBar *messageBar );
 
+    /**
+     * Set the show hidden layers to \a showHidden
+     * \since QGIS 3.18
+     */
+    void setShowHidden( bool showHidden );
+
   signals:
     //! Emitted when a current layer is changed
     void currentLayerChanged( QgsMapLayer *layer );
@@ -344,6 +355,8 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     QgsLayerTreeProxyModel *mProxyModel = nullptr;
 
     QgsMessageBar *mMessageBar = nullptr;
+
+    bool mShowHidden = false;
 
     // friend so it can access viewOptions() method and mLastReleaseMousePos without making them public
     friend class QgsLayerTreeViewItemDelegate;

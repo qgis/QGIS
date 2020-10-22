@@ -1193,7 +1193,6 @@ void QgsProjectProperties::apply()
     else
       flags &= ~QgsMapLayer::Hidden;
 
-
     layer->setFlags( flags );
 
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );

@@ -39,6 +39,10 @@ the Free Software Foundation; either version 2 of the License, or     *
 
     void setFilterText( const QString &filterText = QString() );
 
+    bool showHidden() const;
+
+    void setShowHidden( bool showHidden );
+
   protected:
 
     virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
@@ -307,6 +311,13 @@ Set width of contextual menu mark, at right of layer node items.
 Set the message bar to display messages from the layer tree
 
 .. versionadded:: 3.14
+%End
+
+    void setShowHidden( bool showHidden );
+%Docstring
+Set the show hidden layers to ``showHidden``
+
+.. versionadded:: 3.18
 %End
 
   signals:
