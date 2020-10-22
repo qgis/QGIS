@@ -1425,7 +1425,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void isValidChanged();
 
     /**
-     * Emitted when a custom property of a node within the tree has been changed or removed
+     * Emitted when a custom property of the layer has been changed or removed.
      *
      * \since QGIS 3.16
      */
