@@ -60,7 +60,7 @@ class _3D_EXPORT QgsDirectionalLightSettings
   private:
     QgsVector3D mDirection { -0.32, -0.91, -0.27 };
     QColor mColor = Qt::white;
-    float mIntensity = 0.5;
+    float mIntensity = 1.0;
 };
 
 #endif // QGSDIRECTIONALLIGHTSETTINGS_H

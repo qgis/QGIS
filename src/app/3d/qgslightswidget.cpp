@@ -30,11 +30,11 @@ QgsLightsWidget::QgsLightsWidget( QWidget *parent )
   spinPositionX->setClearValue( 0.0 );
   spinPositionY->setClearValue( 1000.0 );
   spinPositionZ->setClearValue( 0.0 );
-  spinIntensity->setClearValue( 0.5 );
+  spinIntensity->setClearValue( 1.0 );
   spinA0->setClearValue( 0.0 );
   spinA1->setClearValue( 0.0 );
   spinA2->setClearValue( 0.0 );
-  spinDirectionalIntensity->setClearValue( 0.5 );
+  spinDirectionalIntensity->setClearValue( 1.0 );
 
   mLightsModel = new QgsLightsModel( this );
   mLightsListView->setModel( mLightsModel );
