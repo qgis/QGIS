@@ -1429,7 +1429,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *
      * \since QGIS 3.16
      */
-    void customPropertyChanged( QgsMapLayer *layer, const QString &key );
+    void customPropertyChanged( const QString &key );
 
   private slots:
 
