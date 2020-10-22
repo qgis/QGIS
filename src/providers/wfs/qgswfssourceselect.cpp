@@ -360,8 +360,24 @@ void QgsWFSSourceSelect::connectToServer()
   {
     mModel->removeRows( 0, mModel->rowCount() );
   }
+<<<<<<< HEAD
   if ( mCapabilities )
   {
+=======
+
+  QgsWfsConnection connection( cmbConnections->currentText() );
+
+  const QString uri = connection.uri().uri( false );
+  mVersion = QgsWFSDataSourceURI( uri ).version();
+  if ( mVersion == QLatin1String( "OGC_API_FEATURES" ) )
+  {
+    startOapifLandingPageRequest();
+  }
+  else
+  {
+    mCapabilities.reset( new QgsWfsCapabilities( uri ) );
+    connect( mCapabilities.get(), &QgsWfsCapabilities::gotCapabilities, this, &QgsWFSSourceSelect::capabilitiesReplyFinished );
+>>>>>>> ff1d21a320... [WFS provider] Fix connecting to a server with non-basic authentication
     const bool synchronous = false;
     const bool forceRefresh = true;
     mCapabilities->requestCapabilities( synchronous, forceRefresh );
