@@ -17,7 +17,7 @@ void main(void)
   else if ( abs( clsid - 12 ) < 0.1 )   // overlaps
   {
       color = vec4(1,0,0,1);
-      //discard;
+      discard;  // skip overlaps
   }
   else
   {

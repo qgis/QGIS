@@ -73,7 +73,7 @@ void QgsPointCloud3DGeometry::makeVertexBuffer( const QgsPointCloud3DSymbolHandl
   vertexBufferData.resize( data.positions.size() * 4 * sizeof( float ) );
   float *rawVertexArray = reinterpret_cast<float *>( vertexBufferData.data() );
   int idx = 0;
-  int i = 0;
+  Q_ASSERT( data.positions.count() == data.classes.count() );
   for ( int i = 0; i < data.positions.size(); ++i )
   {
     rawVertexArray[idx++] = data.positions.at( i ).x();

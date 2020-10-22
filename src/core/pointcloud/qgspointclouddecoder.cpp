@@ -68,7 +68,7 @@ QVector<char> QgsPointCloudDecoder::decompressBinaryClasses( const QString &file
     // qint32 z = *(double*)(ptData+16);
     char cls = bytes[30];
     // vertices.push_back( Point3D( x, y, z ) );
-    classes.push_back( cls );
+    classes[i] = cls;
     //++count;
   }
   return classes;
