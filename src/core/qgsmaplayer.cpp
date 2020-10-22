@@ -1710,7 +1710,7 @@ void QgsMapLayer::setCustomProperty( const QString &key, const QVariant &value )
   if ( !mCustomProperties.contains( key ) || mCustomProperties.value( key ) != value )
   {
     mCustomProperties.setValue( key, value );
-    emit customPropertyChanged( this, key );
+    emit customPropertyChanged( key );
   }
 }
 
@@ -1735,7 +1735,7 @@ void QgsMapLayer::removeCustomProperty( const QString &key )
   if ( mCustomProperties.contains( key ) )
   {
     mCustomProperties.remove( key );
-    emit customPropertyChanged( this, key );
+    emit customPropertyChanged( key );
   }
 }
 
