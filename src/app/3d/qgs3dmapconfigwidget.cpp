@@ -155,7 +155,11 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   mShadowSetiingsWidget->onDirectionalLightsCountChanged( widgetLights->directionalLights().count() );
   mShadowSetiingsWidget->setShadowSettings( map->shadowSettings() );
   groupShadowRendering->layout()->addWidget( mShadowSetiingsWidget );
-  QObject::connect( widgetLights, &QgsLightsWidget::directionalLightsCountChanged, mShadowSetiingsWidget, &QgsShadowRenderingSettingsWidget::onDirectionalLightsCountChanged );
+  connect( widgetLights, &QgsLightsWidget::directionalLightsCountChanged, mShadowSetiingsWidget, &QgsShadowRenderingSettingsWidget::onDirectionalLightsCountChanged );
+
+  connect( widgetLights, &QgsLightsWidget::lightsAdded, this, &Qgs3DMapConfigWidget::validate );
+  connect( widgetLights, &QgsLightsWidget::lightsRemoved, this, &Qgs3DMapConfigWidget::validate );
+
   groupShadowRendering->setChecked( map->shadowSettings().renderShadows() );
 }
 
@@ -376,7 +380,7 @@ void Qgs3DMapConfigWidget::validate()
       if ( ! cboTerrainLayer->currentLayer() )
       {
         valid = false;
-        mMessageBar->pushMessage( tr( "An elevation layer must be selected for a DEM terrain" ), Qgis::Warning, 0 );
+        mMessageBar->pushMessage( tr( "An elevation layer must be selected for a DEM terrain" ), Qgis::Critical, 0 );
       }
       break;
 
@@ -384,13 +388,18 @@ void Qgs3DMapConfigWidget::validate()
       if ( ! cboTerrainLayer->currentLayer() )
       {
         valid = false;
-        mMessageBar->pushMessage( tr( "An elevation layer must be selected for a mesh terrain" ), Qgis::Warning, 0 );
+        mMessageBar->pushMessage( tr( "An elevation layer must be selected for a mesh terrain" ), Qgis::Critical, 0 );
       }
       break;
 
     case QgsTerrainGenerator::Online:
     case QgsTerrainGenerator::Flat:
       break;
+  }
+
+  if ( valid && widgetLights->directionalLights().empty() && widgetLights->pointLights().empty() )
+  {
+    mMessageBar->pushMessage( tr( "No lights exist in the scene" ), Qgis::Warning, 0 );
   }
 
   emit isValidChanged( valid );

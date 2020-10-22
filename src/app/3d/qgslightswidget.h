@@ -82,6 +82,9 @@ class QgsLightsWidget : public QWidget, private Ui::QgsLightsWidget
 
   signals:
     void directionalLightsCountChanged( int count );
+    void lightsRemoved();
+    void lightsAdded();
+
   private slots:
     void selectedLightChanged( const QItemSelection &selected, const QItemSelection &deselected );
     void updateCurrentLightParameters();
