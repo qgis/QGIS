@@ -313,6 +313,11 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     void nodeLayerLoaded();
     void nodeLayerWillBeUnloaded();
     void layerLegendChanged();
+
+    /**
+     * Emitted when layer flags have changed.
+     * \since QGIS 3.18
+     */
     void layerFlagsChanged();
 
     void layerNeedsUpdate();

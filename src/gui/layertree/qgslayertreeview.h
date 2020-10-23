@@ -35,18 +35,40 @@ class QgsLayerTreeFilterProxyModel;
 
 #include <QSortFilterProxyModel>
 
+/**
+ * \ingroup gui
+ *
+ * The QgsLayerTreeProxyModel class is a proxy model for QgsLayerTreeModel, supports
+ * hidden layers and  text filtering.
+ *
+ * \since QGIS 3.18
+ */
 class GUI_EXPORT QgsLayerTreeProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
   public:
 
+    /**
+     * Constructs QgsLayerTreeProxyModel with source model \a treeModel and a \a parent
+     * @param treeModel
+     * @param parent
+     */
     QgsLayerTreeProxyModel( QgsLayerTreeModel *treeModel, QObject *parent );
 
+    /**
+     * Sets filter to \a filterText.
+     */
     void setFilterText( const QString &filterText = QString() );
 
+    /**
+     * Returns if hidden layers are shown.
+     */
     bool showHidden() const;
 
+    /**
+     * Determines if hidden layers are shown.
+     */
     void setShowHidden( bool showHidden );
 
   protected:

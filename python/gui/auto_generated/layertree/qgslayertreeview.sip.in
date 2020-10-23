@@ -14,20 +14,11 @@
 class QgsLayerTreeProxyModel : QSortFilterProxyModel
 {
 %Docstring
-*************************************************************************
-qgslayertreeview.h
---------------------------------------
-  Date                 : May 2014
-  Copyright            : (C) 2014 by Martin Dobias
-  Email                : wonder dot sk at gmail dot com
-  **************************************************************************
 
-This program is free software; you can redistribute it and/or modify  *
-it under the terms of the GNU General Public License as published by  *
-the Free Software Foundation; either version 2 of the License, or     *
-(at your option) any later version.                                   *
+The QgsLayerTreeProxyModel class is a proxy model for QgsLayerTreeModel, supports
+hidden layers and  text filtering.
 
-**************************************************************************
+.. versionadded:: 3.18
 %End
 
 %TypeHeaderCode
@@ -36,12 +27,26 @@ the Free Software Foundation; either version 2 of the License, or     *
   public:
 
     QgsLayerTreeProxyModel( QgsLayerTreeModel *treeModel, QObject *parent );
+%Docstring
+Constructs QgsLayerTreeProxyModel with source model ``treeModel`` and a ``parent``
+@param treeModel
+@param parent
+%End
 
     void setFilterText( const QString &filterText = QString() );
+%Docstring
+Sets filter to ``filterText``.
+%End
 
     bool showHidden() const;
+%Docstring
+Returns if hidden layers are shown.
+%End
 
     void setShowHidden( bool showHidden );
+%Docstring
+Determines if hidden layers are shown.
+%End
 
   protected:
 
