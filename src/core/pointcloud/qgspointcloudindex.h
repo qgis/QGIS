@@ -62,6 +62,7 @@ class CORE_EXPORT IndexedPointCloudNode
 
 uint qHash( const IndexedPointCloudNode &id );
 
+///@cond PRIVATE
 // what are the min/max to expect in the piece of data
 class CORE_EXPORT QgsPointCloudDataBounds
 {
@@ -88,6 +89,7 @@ class CORE_EXPORT QgsPointCloudDataBounds
   private:
     qint32 mXMin, mYMin, mZMin, mXMax, mYMax, mZMax;
 };
+///@endcond
 
 /**
  * \ingroup core
