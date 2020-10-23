@@ -359,6 +359,7 @@ SET(QGIS_GUI_SRCS
 
   qgisinterface.cpp
   qgs3dsymbolwidget.cpp
+  qgsabstractmaptoolhandler.cpp
   qgsactionmenu.cpp
   qgsaddattrdialog.cpp
   qgsaddtaborgroup.cpp
@@ -589,6 +590,7 @@ SET(QGIS_GUI_HDRS
 
   qgs3dsymbolwidget.h
   qgsabstractdatasourcewidget.h
+  qgsabstractmaptoolhandler.h
   qgsactionmenu.h
   qgsaddattrdialog.h
   qgsaddtaborgroup.h
