@@ -566,16 +566,14 @@ mime data's text with the color's hex code.
 .. versionadded:: 2.5
 %End
 
-    static QColor colorFromMimeData( const QMimeData *data, bool &hasAlpha );
+    static QColor colorFromMimeData( const QMimeData *data, bool &hasAlpha /Out/ );
 %Docstring
 Attempts to parse mime data as a color
 
 :param data: mime data to parse
-:param hasAlpha: will be set to ``True`` if mime data was interpreted as a color containing
-                 an explicit alpha value
 
-:return: valid color if mimedata could be interpreted as a color, otherwise an
-         invalid color
+:return: - valid color if mimedata could be interpreted as a color, otherwise an invalid color
+         - hasAlpha: will be set to ``True`` if mime data was interpreted as a color containing an explicit alpha value
 
 .. versionadded:: 2.5
 %End

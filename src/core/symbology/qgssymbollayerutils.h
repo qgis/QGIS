@@ -537,11 +537,10 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param data mime data to parse
      * \param hasAlpha will be set to TRUE if mime data was interpreted as a color containing
      * an explicit alpha value
-     * \returns valid color if mimedata could be interpreted as a color, otherwise an
-     * invalid color
+     * \returns valid color if mimedata could be interpreted as a color, otherwise an invalid color
      * \since QGIS 2.5
      */
-    static QColor colorFromMimeData( const QMimeData *data, bool &hasAlpha );
+    static QColor colorFromMimeData( const QMimeData *data, bool &hasAlpha SIP_OUT );
 
     /**
      * Attempts to parse mime data as a list of named colors
