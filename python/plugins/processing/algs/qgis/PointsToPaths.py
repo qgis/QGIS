@@ -130,13 +130,17 @@ class PointsToPaths(QgisAlgorithm):
         if expression.hasParserError():
             raise QgsProcessingException(expression.parserErrorString())
         expression.prepare(expression_context)
+        order_field_type = QVariant.String
+        if expression.isField():
+            field_name = next(iter(expression.referencedColumns()))
+            order_field_type = source.fields().field(field_name).type()
 
         fields = QgsFields()
         if group_field_def is not None:
             fields.append(group_field_def)
-        begin_field = QgsField('begin', QVariant.String)
+        begin_field = QgsField('begin', order_field_type)
         fields.append(begin_field)
-        end_field = QgsField('end', QVariant.String)
+        end_field = QgsField('end', order_field_type)
         fields.append(end_field)
 
         output_wkb = QgsWkbTypes.LineString
