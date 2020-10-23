@@ -103,6 +103,8 @@ bool QgsPointCloudLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
 
 bool QgsPointCloudLayer::readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
 {
+  Q_UNUSED( errorMessage )
+
   QDomElement elem = node.toElement();
 
   readCommonStyle( elem, context, categories );
@@ -113,7 +115,11 @@ bool QgsPointCloudLayer::readSymbology( const QDomNode &node, QString &errorMess
 bool QgsPointCloudLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
     const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
-
+  Q_UNUSED( errorMessage )
+  Q_UNUSED( context )
+  Q_UNUSED( categories )
+  Q_UNUSED( node )
+  Q_UNUSED( doc )
 }
 
 void QgsPointCloudLayer::setTransformContext( const QgsCoordinateTransformContext &transformContext )
@@ -123,6 +129,8 @@ void QgsPointCloudLayer::setTransformContext( const QgsCoordinateTransformContex
 
 QString QgsPointCloudLayer::loadDefaultStyle( bool &resultFlag )
 {
+  Q_UNUSED( resultFlag )
+
   return QString();
 }
 

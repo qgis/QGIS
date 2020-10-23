@@ -152,12 +152,14 @@ QgsPointCloudRenderer::~QgsPointCloudRenderer() = default;
 
 void QgsPointCloudRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
-
+  Q_UNUSED( elem )
+  Q_UNUSED( context )
 }
 
 void QgsPointCloudRenderer::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-
+  Q_UNUSED( elem )
+  Q_UNUSED( context )
 }
 
 void QgsPointCloudRenderer::drawData( QPainter *painter, const QVector<qint32> &data, const QgsPointCloudRendererConfig &config )
