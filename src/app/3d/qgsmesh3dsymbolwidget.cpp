@@ -127,7 +127,7 @@ void QgsMesh3dSymbolWidget::setLayer( QgsMeshLayer *meshLayer, bool updateSymbol
   if ( meshLayer && meshLayer->meshSimplificationSettings().isEnabled() )
   {
     mLodSlider->setVisible( true );
-    mLabelTriangleCount->setVisible( true );
+    mLabelLod->setVisible( true );
     int lodCount = meshLayer->triangularMeshLevelOfDetailCount();
     mLodSlider->setTickInterval( 1 );
     mLodSlider->setMaximum( lodCount - 1 );
@@ -135,7 +135,7 @@ void QgsMesh3dSymbolWidget::setLayer( QgsMeshLayer *meshLayer, bool updateSymbol
   else
   {
     mLodSlider->setVisible( false );
-    mLabelTriangleCount->setVisible( false );
+    mLabelLod->setVisible( false );
   }
 
   if ( !updateSymbol )

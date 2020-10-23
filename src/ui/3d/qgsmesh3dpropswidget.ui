@@ -32,10 +32,17 @@
       <string>Triangles Settings</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
-      <item row="1" column="0" colspan="2">
+      <item row="2" column="0">
+       <widget class="QLabel" name="mLabelLod">
+        <property name="text">
+         <string>Level Of Details</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="3">
        <widget class="QGroupBox" name="mGroupBoxWireframe">
         <property name="title">
-         <string>Show wireframe</string>
+         <string>Show Wireframe</string>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -80,10 +87,17 @@
         </layout>
        </widget>
       </item>
-      <item row="0" column="0" colspan="2">
+      <item row="0" column="0" colspan="3">
        <widget class="QCheckBox" name="mChkSmoothTriangles">
         <property name="text">
-         <string>Smooth triangles</string>
+         <string>Smooth Triangles</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="2">
+       <widget class="QSlider" name="mLodSlider">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
@@ -367,20 +381,20 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QgsDoubleSpinBox" name="mArrowsSpacingSpinBox" native="true">
+       <widget class="QgsDoubleSpinBox" name="mArrowsSpacingSpinBox">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="minimum" stdset="0">
+        <property name="minimum">
          <double>1.000000000000000</double>
         </property>
-        <property name="maximum" stdset="0">
+        <property name="maximum">
          <double>100000000000000000.000000000000000</double>
         </property>
-        <property name="value" stdset="0">
+        <property name="value">
          <double>25.000000000000000</double>
         </property>
        </widget>
