@@ -150,7 +150,7 @@ bool QgsPointCloudLayerRenderer::render()
 }
 
 
-QgsPointCloudRenderer::~QgsPointCloudRenderer() = default;
+QgsPointCloudLayerRenderer::~QgsPointCloudLayerRenderer() = default;
 
 
 void QgsPointCloudLayerRenderer::drawData( QPainter *painter, const QVector<qint32> &data, const QgsPointCloudRendererConfig &config )
