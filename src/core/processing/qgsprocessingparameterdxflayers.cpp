@@ -144,6 +144,6 @@ QVariantMap QgsProcessingParameterDxfLayers::layerAsVariantMap( const QgsDxfExpo
     return vm;
 
   vm[ QStringLiteral( "layer" )] = layer.layer()->id();
-  vm[ QStringLiteral( "attributeIndex" ) ] = layer. layerOutputAttributeIndex();
+  vm[ QStringLiteral( "attributeIndex" ) ] = layer.layerOutputAttributeIndex();
   return vm;
 }
