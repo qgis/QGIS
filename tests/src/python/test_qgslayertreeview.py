@@ -382,6 +382,70 @@ class TestQgsLayerTreeView(unittest.TestCase):
         view.setLayerVisible(self.layer2, True)
         self.assertTrue(self.project.layerTreeRoot().findLayer(self.layer2).itemVisibilityChecked())
 
+    def testProxyModel(self):
+        """Test proxy model filtering and hidden layers"""
+
+        view = QgsLayerTreeView()
+        view.setModel(self.model)
+        tree_model = view.layerTreeModel()
+        proxy_model = view.proxyModel()
+
+        self.assertEqual(tree_model.rowCount(), 3)
+        self.assertEqual(proxy_model.rowCount(), 3)
+
+        items = []
+        for r in range(tree_model.rowCount()):
+            items.append(tree_model.data(tree_model.index(r, 0)))
+
+        self.assertEqual(items, ['layer1', 'layer2', 'layer3'])
+
+        proxy_items = []
+        for r in range(proxy_model.rowCount()):
+            proxy_items.append(proxy_model.data(proxy_model.index(r, 0)))
+
+        self.assertEqual(proxy_items, ['layer1', 'layer2', 'layer3'])
+
+        self.layer.setFlags(self.layer.Hidden)
+        self.assertEqual(tree_model.rowCount(), 3)
+        self.assertEqual(proxy_model.rowCount(), 2)
+
+        proxy_items = []
+        for r in range(proxy_model.rowCount()):
+            proxy_items.append(proxy_model.data(proxy_model.index(r, 0)))
+
+        self.assertEqual(proxy_items, ['layer2', 'layer3'])
+
+        view.setShowHidden(True)
+
+        self.assertEqual(proxy_model.rowCount(), 3)
+
+        proxy_items = []
+        for r in range(proxy_model.rowCount()):
+            proxy_items.append(proxy_model.data(proxy_model.index(r, 0)))
+
+        self.assertEqual(proxy_items, ['layer1', 'layer2', 'layer3'])
+
+        view.setShowHidden(False)
+
+        self.assertEqual(proxy_model.rowCount(), 2)
+
+        proxy_items = []
+        for r in range(proxy_model.rowCount()):
+            proxy_items.append(proxy_model.data(proxy_model.index(r, 0)))
+
+        self.assertEqual(proxy_items, ['layer2', 'layer3'])
+
+        # Test filters
+        proxy_model.setFilterText('layer2')
+
+        self.assertEqual(proxy_model.rowCount(), 1)
+
+        proxy_items = []
+        for r in range(proxy_model.rowCount()):
+            proxy_items.append(proxy_model.data(proxy_model.index(r, 0)))
+
+        self.assertEqual(proxy_items, ['layer2'])
+
 
 if __name__ == '__main__':
     unittest.main()
