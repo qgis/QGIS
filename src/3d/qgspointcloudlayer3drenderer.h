@@ -27,6 +27,7 @@
 
 class QgsPointCloudLayer;
 
+#ifndef SIP_RUN
 
 /**
  * \ingroup core
@@ -46,6 +47,7 @@ class _3D_EXPORT QgsPointCloudLayer3DRendererMetadata : public Qgs3DRendererAbst
     QgsAbstract3DRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) override SIP_FACTORY;
 };
 
+#endif
 
 /**
  * \ingroup core
