@@ -12,33 +12,6 @@
 
 
 
-class QgsPointCloudLayer3DRendererMetadata : Qgs3DRendererAbstractMetadata
-{
-%Docstring
-Metadata for point cloud layer 3D renderer to allow creation of its instances from XML
-
-.. warning::
-
-   This is not considered stable API, and may change in future QGIS releases. It is
-   exposed to the Python bindings as a tech preview only.
-
-.. versionadded:: 3.18
-%End
-
-%TypeHeaderCode
-#include "qgspointcloudlayer3drenderer.h"
-%End
-  public:
-    QgsPointCloudLayer3DRendererMetadata();
-
-    virtual QgsAbstract3DRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) /Factory/;
-
-%Docstring
-Creates an instance of a 3D renderer based on a DOM element with renderer configuration
-%End
-};
-
-
 class QgsPointCloudLayer3DRenderer : QgsAbstract3DRenderer
 {
 %Docstring
