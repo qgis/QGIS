@@ -120,6 +120,7 @@ bool QgsPointCloudLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
   Q_UNUSED( categories )
   Q_UNUSED( node )
   Q_UNUSED( doc )
+  return false;
 }
 
 void QgsPointCloudLayer::setTransformContext( const QgsCoordinateTransformContext &transformContext )
