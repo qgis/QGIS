@@ -36,8 +36,8 @@ class QgsEptProvider: public QgsPointCloudDataProvider
     Q_OBJECT
   public:
     QgsEptProvider( const QString &uri,
-                        const QgsDataProvider::ProviderOptions &providerOptions,
-                        QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+                    const QgsDataProvider::ProviderOptions &providerOptions,
+                    QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     ~QgsEptProvider();
     QgsCoordinateReferenceSystem crs() const override;
@@ -61,6 +61,7 @@ class QgsEptProviderMetadata : public QgsProviderMetadata
 {
   public:
     QgsEptProviderMetadata();
+    QgsEptProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QList< QgsDataItemProvider * > dataItemProviders() const override;
 };
 

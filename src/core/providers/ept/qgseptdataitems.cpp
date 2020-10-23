@@ -25,8 +25,8 @@
 ///@cond PRIVATE
 
 QgsEptLayerItem::QgsEptLayerItem( QgsDataItem *parent,
-    const QString &name, const QString &path, const QString &uri )
-  : QgsLayerItem( parent, name, path, uri, QgsLayerItem::PointCloud, QStringLiteral( "pointcloud" ) )
+                                  const QString &name, const QString &path, const QString &uri )
+  : QgsLayerItem( parent, name, path, uri, QgsLayerItem::PointCloud, QStringLiteral( "ept" ) )
 {
   mToolTip = uri;
   setState( Populated );
@@ -59,7 +59,6 @@ QgsDataItem *QgsEptDataItemProvider::createDataItem( const QString &path, QgsDat
   // get suffix, removing .gz if present
   QFileInfo info( path );
   info.setFile( path );
-  QString name = info.fileName();
 
   // allow only normal files
   if ( !info.isFile() )
@@ -68,6 +67,8 @@ QgsDataItem *QgsEptDataItemProvider::createDataItem( const QString &path, QgsDat
   // Filter files by extension
   if ( !path.endsWith( QStringLiteral( "ept.json" ) ) )
     return nullptr;
+
+  QString name = info.dir().dirName();
 
   return new QgsEptLayerItem( parentItem, name, path, path );
 }
