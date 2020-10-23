@@ -24,6 +24,7 @@
 #include "qgsstyle.h"
 #include "qgscolorramp.h"
 
+///@cond PRIVATE
 QgsPointCloudRendererConfig::QgsPointCloudRendererConfig() = default;
 
 QgsPointCloudRendererConfig::QgsPointCloudRendererConfig( const QgsPointCloudRendererConfig &other )
@@ -82,6 +83,8 @@ void QgsPointCloudRendererConfig::setColorRamp( const QgsColorRamp *value )
 {
   mColorRamp.reset( value->clone() );
 }
+
+///@endcond
 
 QgsPointCloudRenderer::QgsPointCloudRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
