@@ -84,9 +84,6 @@ class CORE_EXPORT QgsPointCloudRenderer: public QgsMapLayerRenderer
 
     bool render() override;
 
-    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
-    void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
-
   private:
     QgsPointCloudLayer *mLayer = nullptr;
 

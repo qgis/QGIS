@@ -89,7 +89,6 @@ class CORE_EXPORT QgsPointCloudDataBounds
   private:
     qint32 mXMin, mYMin, mZMin, mXMax, mYMax, mZMax;
 };
-///@endcond
 
 /**
  * \ingroup core
