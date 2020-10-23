@@ -67,6 +67,7 @@ class QgsBrowserGuiModel;
 class QgsDevToolWidgetFactory;
 class QgsGpsConnection;
 class QgsApplicationExitBlockerInterface;
+class QgsAbstractMapToolHandler;
 
 
 /**
@@ -1055,6 +1056,27 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.16
     */
     virtual void unregisterApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) = 0;
+
+    /**
+     * Register a new application map tool \a handler, which can be used to automatically setup all connections
+     * and logic required to switch to a custom map tool whenever the state of the QGIS application
+     * permits.
+     *
+     * \note Ownership of \a handler is not transferred, and the handler must
+     *       be unregistered when plugin is unloaded.
+     *
+     * \see QgsAbstractMapToolHandler
+     * \see unregisterMapToolHandler()
+     * \since QGIS 3.16
+     */
+    virtual void registerMapToolHandler( QgsAbstractMapToolHandler *handler ) = 0;
+
+    /**
+     * Unregister a previously registered map tool \a handler.
+     * \see registerMapToolHandler()
+     * \since QGIS 3.16
+    */
+    virtual void unregisterMapToolHandler( QgsAbstractMapToolHandler *handler ) = 0;
 
     /**
      * Register a new custom drop \a handler.

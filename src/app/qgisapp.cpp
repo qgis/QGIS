@@ -163,6 +163,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgis.h"
 #include "qgisplugin.h"
 #include "qgsabout.h"
+#include "qgsabstractmaptoolhandler.h"
 #include "qgsalignrasterdialog.h"
 #include "qgsappauthrequesthandler.h"
 #include "qgsappbrowserproviders.h"
@@ -12703,6 +12704,65 @@ void QgisApp::unregisterApplicationExitBlocker( QgsApplicationExitBlockerInterfa
   mApplicationExitBlockers.removeAll( blocker );
 }
 
+void QgisApp::registerMapToolHandler( QgsAbstractMapToolHandler *handler )
+{
+  if ( !handler->action() || !handler->mapTool() )
+  {
+    QgsMessageLog::logMessage( tr( "Map tool handler is not properly constructed" ) );
+    return;
+  }
+
+  mMapToolHandlers << handler;
+
+  // do setup work
+  handler->action()->setCheckable( true );
+  handler->mapTool()->setAction( handler->action() );
+
+  connect( handler->action(), &QAction::triggered, this, &QgisApp::switchToMapToolViaHandler );
+  mMapToolGroup->addAction( handler->action() );
+  QgsAbstractMapToolHandler::Context context;
+  handler->action()->setEnabled( handler->isCompatibleWithLayer( activeLayer(), context ) );
+}
+
+void QgisApp::switchToMapToolViaHandler()
+{
+  QAction *sourceAction = qobject_cast< QAction * >( sender() );
+  if ( !sourceAction )
+    return;
+
+  QgsAbstractMapToolHandler *handler = nullptr;
+  for ( QgsAbstractMapToolHandler *h : qgis::as_const( mMapToolHandlers ) )
+  {
+    if ( h->action() == sourceAction )
+    {
+      handler = h;
+      break;
+    }
+  }
+
+  if ( !handler )
+    return;
+
+  if ( mMapCanvas->mapTool() == handler->mapTool() )
+    return; // nothing to do
+
+  handler->setLayerForTool( activeLayer() );
+  mMapCanvas->setMapTool( handler->mapTool() );
+}
+
+void QgisApp::unregisterMapToolHandler( QgsAbstractMapToolHandler *handler )
+{
+  mMapToolHandlers.removeAll( handler );
+
+  if ( !handler->action() || !handler->mapTool() )
+  {
+    return;
+  }
+
+  mMapToolGroup->removeAction( handler->action() );
+  disconnect( handler->action(), &QAction::triggered, this, &QgisApp::switchToMapToolViaHandler );
+}
+
 QgsMapLayer *QgisApp::activeLayer()
 {
   return mLayerTreeView ? mLayerTreeView->currentLayer() : nullptr;
@@ -14332,6 +14392,24 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
   mActionPasteAsNewMemoryVector->setEnabled( clipboard() && !clipboard()->isEmpty() );
 
   updateLayerModifiedActions();
+
+  QgsAbstractMapToolHandler::Context context;
+  for ( QgsAbstractMapToolHandler *handler : qgis::as_const( mMapToolHandlers ) )
+  {
+    handler->action()->setEnabled( handler->isCompatibleWithLayer( layer, context ) );
+    if ( handler->mapTool() == mMapCanvas->mapTool() )
+    {
+      if ( !handler->action()->isEnabled() )
+      {
+        mMapCanvas->unsetMapTool( handler->mapTool() );
+        mActionPan->trigger();
+      }
+      else
+      {
+        handler->setLayerForTool( layer );
+      }
+    }
+  }
 
   if ( !layer )
   {

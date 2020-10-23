@@ -152,6 +152,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) override;
     void registerApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) override;
     void unregisterApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) override;
+    void registerMapToolHandler( QgsAbstractMapToolHandler *handler ) override;
+    void unregisterMapToolHandler( QgsAbstractMapToolHandler *handler ) override;
     void registerCustomDropHandler( QgsCustomDropHandler *handler ) override;
     void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) override;
     void registerCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler ) override;
