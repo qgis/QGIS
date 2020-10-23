@@ -49,7 +49,6 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
 
       /**
        * Constructor for LayerOptions with optional \a transformContext.
-       * \note transformContext argument was added in QGIS 3.8
        */
       explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext( ) )
         : transformContext( transformContext )

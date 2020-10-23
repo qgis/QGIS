@@ -35,10 +35,6 @@ Represents a map layer supporting display of point clouds
       explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext( ) );
 %Docstring
 Constructor for LayerOptions with optional ``transformContext``.
-
-.. note::
-
-   transformContext argument was added in QGIS 3.8
 %End
 
       QgsCoordinateTransformContext transformContext;
