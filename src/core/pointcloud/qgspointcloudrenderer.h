@@ -64,14 +64,14 @@ class CORE_EXPORT QgsPointCloudRendererConfig
 };
 
 ///@endcond
-#endif
 
 /**
  * \ingroup core
  *
- * Represents a 2D renderer of point cloud data
+ * Implementation of threaded rendering for point cloud layers.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
+ * \note Not available in Python bindings
  *
  * \since QGIS 3.18
  */
@@ -98,6 +98,7 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
 
     void drawData( QPainter *painter, const QVector<qint32> &data, const QgsPointCloudRendererConfig &config );
 };
+#endif
 
 
 #endif // QGSPOINTCLOUDRENDERER_H

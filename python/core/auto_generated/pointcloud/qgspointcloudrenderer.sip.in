@@ -14,32 +14,6 @@
 
 
 
-class QgsPointCloudLayerRenderer: QgsMapLayerRenderer
-{
-%Docstring
-
-Represents a 2D renderer of point cloud data
-
-.. note::
-
-   The API is considered EXPERIMENTAL and can be changed without a notice
-
-.. versionadded:: 3.18
-%End
-
-%TypeHeaderCode
-#include "qgspointcloudrenderer.h"
-%End
-  public:
-
-    explicit QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context );
-    ~QgsPointCloudLayerRenderer();
-
-    virtual bool render();
-
-
-};
-
 
 /************************************************************************
  * This file has been generated automatically from                      *
