@@ -56,6 +56,11 @@ QgsPointCloudLayer *QgsPointCloudLayer3DRenderer::layer() const
   return qobject_cast<QgsPointCloudLayer *>( mLayerRef.layer );
 }
 
+QString QgsPointCloudLayer3DRenderer::type() const
+{
+  return QStringLiteral( "pointcloud" );
+}
+
 QgsPointCloudLayer3DRenderer *QgsPointCloudLayer3DRenderer::clone() const
 {
   QgsPointCloudLayer3DRenderer *r = new QgsPointCloudLayer3DRenderer;

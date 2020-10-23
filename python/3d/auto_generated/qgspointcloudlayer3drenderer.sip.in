@@ -39,6 +39,7 @@ Returns point cloud layer associated with the renderer
 %End
 
     virtual QString type() const;
+
     virtual QgsPointCloudLayer3DRenderer *clone() const /Factory/;
 
 

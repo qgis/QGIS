@@ -65,7 +65,7 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstract3DRenderer
     //! Returns point cloud layer associated with the renderer
     QgsPointCloudLayer *layer() const;
 
-    QString type() const override { return "pointcloud"; }
+    QString type() const override;
     QgsPointCloudLayer3DRenderer *clone() const override SIP_FACTORY;
     Qt3DCore::QEntity *createEntity( const Qgs3DMapSettings &map ) const override SIP_SKIP;
 
