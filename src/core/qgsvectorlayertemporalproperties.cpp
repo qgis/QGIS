@@ -441,7 +441,7 @@ QString QgsVectorLayerTemporalProperties::createFilterString( const QgsVectorLay
       else
       {
         // Working with features with events with a duration, so taking this duration into account (+ QgsInterval( -mFixedDuration, mDurationUnit ) ))
-        // Then we are NOT taking the range.includeBeginning() and range.includeEnd() into account (deliberatly, see #38468)
+        // Then we are NOT taking the range.includeBeginning() and range.includeEnd() into account (deliberately, see #38468)
         return QStringLiteral( "(%1 > %2 AND %1 < %3) OR %1 IS NULL" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
                dateTimeExpressionLiteral( range.begin() + QgsInterval( -mFixedDuration, mDurationUnit ) ),
                dateTimeExpressionLiteral( range.end() ) );
