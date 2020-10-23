@@ -677,24 +677,21 @@ class CORE_EXPORT QgsGeometryUtils
     /**
      * \brief Create a perpendicular line segment to a given segment [\a segmentPoint1,\a segmentPoint2] with its center at \a centerPoint.
      *
-     * May be used to split geometries. The new centered perpendicular line segment will have double the length of the input segment
+     * May be used to split geometries. Unless \a segmentLength is specified the new centered perpendicular line segment will have double the length of the input segment.
+     *
+     * The result is a line (segment) centered in point p and perpendicular to segment [segmentPoint1, segmentPoint2].
      *
      * \param centerPointx x-coordinate of the point where the center of the perpendicular should be located
      * \param centerPointy y-coordinate of the point where the center of the perpendicular should be located
-     *
      * \param segmentPoint1x: x-coordinate of segmentPoint1, the segment's start point
      * \param segmentPoint1y: y-coordinate of segmentPoint1, the segment's start point
      * \param segmentPoint2x: x-coordinate of segmentPoint2, the segment's end point
      * \param y2: y-coordinate of segmentPoint2, the segment's end point
-     *
-     * Result is a line (segment) centered in point p and perpendicular to segment [segmentPoint1, segmentPoint2]
-     *
      * \param perpendicularSegmentPoint1x: x-coordinate of the perpendicularCenterSegment's start point
      * \param perpendicularSegmentPoint1y: y-coordinate of the perpendicularCenterSegment's start point
      * \param perpendicularSegmentPoint2x: x-coordinate of the perpendicularCenterSegment's end point
      * \param perpendicularSegmentPoint2y: y-coordinate of the perpendicularCenterSegment's end point
-     *
-     * \param (optional parameter) segmentLength trims to given length. Default length is double the length of the input segment. Set to 0 for normalized length which is equal to 1.
+     * \param segmentLength trims to given length. Default length is double the length of the input segment. Set to 0 for normalized length which is equal to 1.
      *
      *
      * \since QGIS 3.17?
