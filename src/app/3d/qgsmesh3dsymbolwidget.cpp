@@ -37,7 +37,7 @@ QgsMesh3dSymbolWidget::QgsMesh3dSymbolWidget( QgsMeshLayer *meshLayer, QWidget *
   setLayer( meshLayer );
 
   connect( mChkSmoothTriangles, &QCheckBox::clicked, this, &QgsMesh3dSymbolWidget::changed );
-  connect( mChkWireframe, &QCheckBox::clicked, this, &QgsMesh3dSymbolWidget::changed );
+  connect( mGroupBoxWireframe, &QGroupBox::toggled, this, &QgsMesh3dSymbolWidget::changed );
   connect( mColorButtonWireframe, &QgsColorButton::colorChanged, this, &QgsMesh3dSymbolWidget::changed );
   connect( mSpinBoxWireframeLineWidth, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ),
            this, &QgsMesh3dSymbolWidget::changed );
@@ -75,7 +75,7 @@ void QgsMesh3dSymbolWidget::setSymbol( const QgsMesh3DSymbol *symbol )
 {
   mSymbol.reset( symbol->clone() );
   mChkSmoothTriangles->setChecked( symbol->smoothedTriangles() );
-  mChkWireframe->setChecked( symbol->wireframeEnabled() );
+  mGroupBoxWireframe->setChecked( symbol->wireframeEnabled() );
   mColorButtonWireframe->setColor( symbol->wireframeLineColor() );
   mSpinBoxWireframeLineWidth->setValue( symbol->wireframeLineWidth() );
   mSpinBoxVerticaleScale->setValue( symbol->verticalScale() );
@@ -154,7 +154,7 @@ std::unique_ptr<QgsMesh3DSymbol> QgsMesh3dSymbolWidget::symbol() const
   std::unique_ptr< QgsMesh3DSymbol > sym( mSymbol->clone() );
 
   sym->setSmoothedTriangles( mChkSmoothTriangles->isChecked() );
-  sym->setWireframeEnabled( mChkWireframe->isChecked() );
+  sym->setWireframeEnabled( mGroupBoxWireframe->isChecked() );
   sym->setWireframeLineColor( mColorButtonWireframe->color() );
   sym->setWireframeLineWidth( mSpinBoxWireframeLineWidth->value() );
   sym->setVerticalScale( mSpinBoxVerticaleScale->value() );
