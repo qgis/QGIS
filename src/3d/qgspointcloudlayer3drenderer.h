@@ -33,8 +33,7 @@ class QgsPointCloudLayer;
  * \ingroup core
  * Metadata for point cloud layer 3D renderer to allow creation of its instances from XML
  *
- * \warning This is not considered stable API, and may change in future QGIS releases. It is
- * exposed to the Python bindings as a tech preview only.
+ * \note Not available in Python bindings
  *
  * \since QGIS 3.18
  */
