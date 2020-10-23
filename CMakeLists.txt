@@ -351,7 +351,13 @@ IF(WITH_CORE)
   MESSAGE(STATUS "Found zlib: ${ZLIB_LIBRARIES}")
 
   FIND_PACKAGE(ZSTD REQUIRED) # for decompression of point clouds
+  IF (ZSTD_FOUND)
+    SET(HAVE_ZSTD TRUE)  # used in qgsconfig.h
+  ENDIF (ZSTD_FOUND)
   FIND_PACKAGE(LazPerf REQUIRED) # for decompression of point clouds
+  IF (LazPerf_FOUND)
+    SET(HAVE_LAZPERF TRUE)  # used in qgsconfig.h
+  ENDIF (LazPerf_FOUND)
 
   # optional
   IF (WITH_POSTGRESQL)
@@ -380,6 +386,7 @@ IF(WITH_CORE)
   ELSE (WITH_QTWEBKIT)
     MESSAGE(STATUS "Qt WebKit support DISABLED.")
   ENDIF(WITH_QTWEBKIT)
+
   #############################################################
   # search for Qt5
   SET(QT_MIN_VERSION 5.9.0)

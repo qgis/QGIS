@@ -76,5 +76,9 @@
 
 #cmakedefine HAVE_STATIC_PROVIDERS
 
+#cmakedefine HAVE_ZSTD
+
+#cmakedefine HAVE_LAZPERF
+
 #endif
 
