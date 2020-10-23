@@ -38,9 +38,6 @@ Represents a 2D renderer of point cloud data
     virtual bool render();
 
 
-    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
-    void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
-
 };
 
 
