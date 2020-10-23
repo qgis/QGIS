@@ -742,7 +742,7 @@ void TestQgsGeometryUtils::testPerpendicularCenterSegment()
 
     QgsGeometryUtils::perpendicularCenterSegment( centerPoint.x(),centerPoint.y(), segmentPoint1.x(), segmentPoint1.y(), segmentPoint2.x(), segmentPoint2.y(),
             perpendicularSegmentPoint1x, perpendicularSegmentPoint1y, perpendicularSegmentPoint2x, perpendicularSegmentPoint2y);
-    QCOMPARE( perpendicularSegmentPoint1x, (3) );
+    QCOMPARE( perpendicularSegmentPoint1x, 3.0 );
     QCOMPARE( perpendicularSegmentPoint1y, (1.5) );
     QCOMPARE( perpendicularSegmentPoint2x, (1) );
     QCOMPARE( perpendicularSegmentPoint2y, (1.5) );
