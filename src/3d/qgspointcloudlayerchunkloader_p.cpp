@@ -94,6 +94,7 @@ QgsPointCloud3DSymbolHandler::QgsPointCloud3DSymbolHandler()
 
 bool QgsPointCloud3DSymbolHandler::prepare( const Qgs3DRenderContext &context )
 {
+  Q_UNUSED( context )
   return true;
 }
 
@@ -146,6 +147,9 @@ void QgsPointCloud3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qg
 #include <QPointSize>
 void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, QgsPointCloud3DSymbolHandler::PointData &out, bool selected )
 {
+  Q_UNUSED( selected )
+  Q_UNUSED( context )
+
   if ( out.positions.empty() )
     return;
 
