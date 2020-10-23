@@ -196,6 +196,11 @@ SET(QGIS_CORE_SRCS
   providers/ogr/qgsogrdbconnection.cpp
   providers/ogr/qgsogrtransaction.cpp
 
+  providers/ept/qgseptdataitems.cpp
+  providers/ept/qgseptprovider.cpp
+  providers/ept/qgseptdecoder.cpp
+  providers/ept/qgseptpointcloudindex.cpp
+
   scalebar/qgsdoubleboxscalebarrenderer.cpp
   scalebar/qgshollowscalebarrenderer.cpp
   scalebar/qgsnumericscalebarrenderer.cpp
@@ -624,9 +629,6 @@ SET(QGIS_CORE_SRCS
   pointcloud/qgspointcloudlayer.cpp
   pointcloud/qgspointcloudrenderer.cpp
   pointcloud/qgspointcloudindex.cpp
-  pointcloud/qgspointclouddataitems.cpp
-  pointcloud/qgspointcloudprovidermetadata.cpp
-  pointcloud/qgspointclouddecoder.cpp
   pointcloud/qgspointclouddataprovider.cpp
 
   labeling/qgslabelfeature.cpp
@@ -1301,9 +1303,6 @@ SET(QGIS_CORE_HDRS
   pointcloud/qgspointcloudlayer.h
   pointcloud/qgspointcloudrenderer.h
   pointcloud/qgspointcloudindex.h
-  pointcloud/qgspointclouddataitems.h
-  pointcloud/qgspointcloudprovidermetadata.h
-  pointcloud/qgspointclouddecoder.h
   pointcloud/qgspointclouddataprovider.h
 
   metadata/qgsabstractmetadatabase.h
@@ -1363,6 +1362,10 @@ SET(QGIS_CORE_HDRS
   providers/ogr/qgsogrdbconnection.h
   providers/ogr/qgsogrprovider.h
   providers/ogr/qgsogrtransaction.h
+  providers/ept/qgseptdataitems.h
+  providers/ept/qgseptprovider.h
+  providers/ept/qgseptdecoder.h
+  providers/ept/qgseptpointcloudindex.h
 
   raster/qgsbilinearrasterresampler.h
   raster/qgsbrightnesscontrastfilter.h
@@ -1586,6 +1589,7 @@ INCLUDE_DIRECTORIES(
   providers/gdal
   providers/ogr
   providers/meshmemory
+  providers/ept
   raster
   renderer
   scalebar

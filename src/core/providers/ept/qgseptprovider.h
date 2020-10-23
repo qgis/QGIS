@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgspointclouddataprovider.h
+                         qgseptdataprovider.h
                          ---------------------
     begin                : October 2020
     copyright            : (C) 2020 by Peter Petrik
@@ -15,48 +15,54 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSPOINTCLOUDDATAPROVIDER_H
-#define QGSPOINTCLOUDDATAPROVIDER_H
+#ifndef QGSEPTPROVIDER_H
+#define QGSEPTPROVIDER_H
 
 #include "qgis_core.h"
-#include "qgsdataprovider.h"
+#include "qgspointclouddataprovider.h"
+#include "qgsprovidermetadata.h"
+
 #include <memory>
 
-class QgsPointCloudIndex;
+#include "qgis_sip.h"
 
-/**
- * \ingroup core
- * Base class for providing data for QgsPointCloudLayer
- *
- * Responsible for reading native point cloud data and returning the indexed data?
- *
- * \note The API is considered EXPERIMENTAL and can be changed without a notice
- *
- * \since QGIS 3.18
- */
-class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
+///@cond PRIVATE
+#define SIP_NO_FILE
+
+class QgsEptPointCloudIndex;
+
+class QgsEptProvider: public QgsPointCloudDataProvider
 {
     Q_OBJECT
   public:
-    //! Ctor
-    QgsPointCloudDataProvider( const QString &uri,
-                               const QgsDataProvider::ProviderOptions &providerOptions,
-                               QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+    QgsEptProvider( const QString &uri,
+                        const QgsDataProvider::ProviderOptions &providerOptions,
+                        QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
-    ~QgsPointCloudDataProvider() override;
+    ~QgsEptProvider();
+    QgsCoordinateReferenceSystem crs() const override;
 
     QgsRectangle extent() const override;
 
     bool isValid() const override;
 
-    virtual QString name() const override = 0;
-    virtual QgsCoordinateReferenceSystem crs() const override = 0;
-    virtual QString description() const override = 0;
+    QString name() const override;
 
-    virtual QgsPointCloudIndex *index() const SIP_SKIP {return nullptr;}
+    QString description() const override;
+
+    QgsPointCloudIndex *index() const override;
 
   private:
+    std::unique_ptr<QgsEptPointCloudIndex> mIndex;
     bool mIsValid = false;
 };
 
-#endif // QGSMESHDATAPROVIDER_H
+class QgsEptProviderMetadata : public QgsProviderMetadata
+{
+  public:
+    QgsEptProviderMetadata();
+    QList< QgsDataItemProvider * > dataItemProviders() const override;
+};
+
+///@endcond
+#endif // QGSEPTPROVIDER_H

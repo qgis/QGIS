@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgspointcloudsourceselect.h
+                         qgseptsourceselect.h
                          --------------------
     begin                : October 2020
     copyright            : (C) 2020 by Peter Petrik
@@ -14,8 +14,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSPOINTCLOUDSOURCESELECT_H
-#define QGSPOINTCLOUDSOURCESELECT_H
+#ifndef QGSEPTSOURCESELECT_H
+#define QGSEPTSOURCESELECT_H
 
 ///@cond PRIVATE
 #include "qgis_sip.h"
@@ -27,16 +27,18 @@
 
 
 /**
- * \class QgsPointCloudSourceSelect
- * \brief Dialog to select point cloud supported sources
+ * \class QgsEptSourceSelect
+ * \brief Dialog to select EPT point cloud supported sources
  */
-class QgsPointCloudSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsPointCloudSourceSelectBase
+class QgsEptSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsPointCloudSourceSelectBase
 {
     Q_OBJECT
 
   public:
     //! Constructor
-    QgsPointCloudSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    QgsEptSourceSelect( QWidget *parent = nullptr,
+                        Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
+                        QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
   public slots:
     //! Determines the tables the user selected and closes the dialog
@@ -49,4 +51,4 @@ class QgsPointCloudSourceSelect : public QgsAbstractDataSourceWidget, private Ui
 
 ///@endcond
 ///
-#endif // QGSPOINTCLOUDSOURCESELECT_H
+#endif // QGSEPTSOURCESELECT_H

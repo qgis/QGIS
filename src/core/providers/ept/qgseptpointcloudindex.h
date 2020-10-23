@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgspointclouddataitemguiprovider.cpp
+                         qgspointcloudindex.h
                          --------------------
     begin                : October 2020
     copyright            : (C) 2020 by Peter Petrik
@@ -15,16 +15,44 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgspointclouddataitemguiprovider.h"
+#ifndef QGSEPTPOINTCLOUDINDEX_H
+#define QGSEPTPOINTCLOUDINDEX_H
 
-#include "qgspointclouddataitems.h"
-#include <QFileDialog>
-#include <QMessageBox>
+#include <QObject>
+#include <QString>
+#include <QHash>
+#include <QStringList>
+#include <QVector>
+#include <QList>
+
+#include "qgspointcloudindex.h"
+#include "qgis_sip.h"
 
 ///@cond PRIVATE
+#define SIP_NO_FILE
 
-void QgsPointCloudDataItemGuiProvider::populateContextMenu( QgsDataItem *, QMenu *, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
+class QgsCoordinateReferenceSystem;
+
+class QgsEptPointCloudIndex: public QgsPointCloudIndex
 {
-}
+    Q_OBJECT
+  public:
+
+    explicit QgsEptPointCloudIndex();
+    ~QgsEptPointCloudIndex();
+
+    bool load( const QString &fileName ) override;
+
+    QVector<qint32> nodePositionDataAsInt32( const IndexedPointCloudNode &n ) override;
+    QVector<char> nodeClassesDataAsChar( const IndexedPointCloudNode &n ) override;
+
+    QgsCoordinateReferenceSystem crs() const;
+  private:
+    QString mDataType;
+    QString mDirectory;
+    QString mWkt;
+    int mPointRecordSize = 0;  //!< Size of one point record in bytes (only relevant for "binary" and "zstandard" data type)
+};
 
 ///@endcond
+#endif // QGSEPTPOINTCLOUDINDEX_H

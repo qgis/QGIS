@@ -34,6 +34,15 @@ QgsPointCloudRendererConfig::QgsPointCloudRendererConfig( const QgsPointCloudRen
   mColorRamp.reset( other.colorRamp()->clone() );
 }
 
+QgsPointCloudRendererConfig &QgsPointCloudRendererConfig::QgsPointCloudRendererConfig::operator =( const QgsPointCloudRendererConfig &other )
+{
+  mZMin = other.zMin();
+  mZMax = other.zMax();
+  mPenWidth = other.penWidth();
+  mColorRamp.reset( other.colorRamp()->clone() );
+  return *this;
+}
+
 double QgsPointCloudRendererConfig::zMin() const
 {
   return mZMin;

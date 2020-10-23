@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgspointcloudproviderguimetadata.cpp
+                         qgseptproviderguimetadata.cpp
                          --------------------
     begin                : October 2020
     copyright            : (C) 2020 by Peter Petrik
@@ -17,13 +17,13 @@
 
 #include "qgsapplication.h"
 #include "qgssourceselectprovider.h"
-#include "qgspointcloudsourceselect.h"
-#include "qgspointcloudproviderguimetadata.h"
-#include "qgspointclouddataitemguiprovider.h"
+#include "qgseptsourceselect.h"
+#include "qgseptproviderguimetadata.h"
+#include "qgseptdataitemguiprovider.h"
 
 ///@cond PRIVATE
 
-class QgsPointCloudSourceSelectProvider : public QgsSourceSelectProvider
+class QgsEptSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
 
@@ -33,25 +33,25 @@ class QgsPointCloudSourceSelectProvider : public QgsSourceSelectProvider
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddPointCloudLayer.svg" ) ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
-      return new QgsPointCloudSourceSelect( parent, fl, widgetMode );
+      return new QgsEptSourceSelect( parent, fl, widgetMode );
     }
 };
 
-QgsPointCloudProviderGuiMetadata::QgsPointCloudProviderGuiMetadata()
-  : QgsProviderGuiMetadata( QStringLiteral( "pointcloud" ) )
+QgsEptProviderGuiMetadata::QgsEptProviderGuiMetadata()
+  : QgsProviderGuiMetadata( QStringLiteral( "etp" ) )
 {
 }
 
-QList<QgsDataItemGuiProvider *> QgsPointCloudProviderGuiMetadata::dataItemGuiProviders()
+QList<QgsDataItemGuiProvider *> QgsEptProviderGuiMetadata::dataItemGuiProviders()
 {
   return QList<QgsDataItemGuiProvider *>()
-         << new QgsPointCloudDataItemGuiProvider;
+         << new QgsEptDataItemGuiProvider;
 }
 
-QList<QgsSourceSelectProvider *> QgsPointCloudProviderGuiMetadata::sourceSelectProviders()
+QList<QgsSourceSelectProvider *> QgsEptProviderGuiMetadata::sourceSelectProviders()
 {
   QList<QgsSourceSelectProvider *> providers;
-  providers << new QgsPointCloudSourceSelectProvider;
+  providers << new QgsEptSourceSelectProvider;
   return providers;
 }
 

@@ -36,8 +36,6 @@ Ctor
 %End
 
     ~QgsPointCloudDataProvider();
-    virtual QgsCoordinateReferenceSystem crs() const;
-
 
     virtual QgsRectangle extent() const;
 
@@ -45,11 +43,9 @@ Ctor
     virtual bool isValid() const;
 
 
-    virtual QString name() const;
-
-
-    virtual QString description() const;
-
+    virtual QString name() const = 0;
+    virtual QgsCoordinateReferenceSystem crs() const = 0;
+    virtual QString description() const = 0;
 
 
 };
