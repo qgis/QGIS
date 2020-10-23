@@ -691,20 +691,20 @@ class CORE_EXPORT QgsGeometryUtils
      * \param perpendicularSegmentPoint1y: y-coordinate of the perpendicularCenterSegment's start point
      * \param perpendicularSegmentPoint2x: x-coordinate of the perpendicularCenterSegment's end point
      * \param perpendicularSegmentPoint2y: y-coordinate of the perpendicularCenterSegment's end point
-     * \param segmentLength trims to given length. Default length is double the length of the input segment. Set to 0 for normalized length which is equal to 1.
+     * \param segmentLength (optional) Trims to given length. A segmentLength value of 0 refers to the default length which is double the length of the input segment. Set to 1 for a normalized length.
      *
      *
      * \since QGIS 3.17?
      *
      */
 
-    static void perpendicularCenterSegment(   double centerPointx, double centerPointy,
-                                              double segmentPoint1x, double segmentPoint1y,
-                                              double segmentPoint2x, double segmentPoint2y,
-                                              double &perpendicularSegmentPoint1x SIP_OUT, double &perpendicularSegmentPoint1y SIP_OUT,
-                                              double &perpendicularSegmentPoint2x SIP_OUT, double &perpendicularSegmentPoint2y SIP_OUT,
-                                              double *segmentLength=nullptr
-                                              ) SIP_HOLDGIL;
+    static void perpendicularCenterSegment( double centerPointx, double centerPointy,
+                                            double segmentPoint1x, double segmentPoint1y,
+                                            double segmentPoint2x, double segmentPoint2y,
+                                            double &perpendicularSegmentPoint1x SIP_OUT, double &perpendicularSegmentPoint1y SIP_OUT,
+                                            double &perpendicularSegmentPoint2x SIP_OUT, double &perpendicularSegmentPoint2y SIP_OUT,
+                                            double *segmentLength = nullptr
+                                          ) SIP_HOLDGIL;
 
     /**
      * An algorithm to calculate the shortest distance between two skew lines.
