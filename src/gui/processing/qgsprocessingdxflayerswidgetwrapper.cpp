@@ -102,6 +102,7 @@ QgsProcessingDxfLayersPanelWidget::QgsProcessingDxfLayersPanelWidget(
 
     QVariantMap vm;
     vm["layer"] = layer->id();
+    vm["attributeIndex"] = -1;
 
     QString title = layer->name();
     addOption( vm, title, false );
