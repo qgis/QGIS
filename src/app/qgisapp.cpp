@@ -2762,7 +2762,7 @@ void QgisApp::createActions()
   connect( mActionAddWmsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "wms" ) ); } );
   connect( mActionAddXyzLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "xyz" ) ); } );
   connect( mActionAddVectorTileLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "vectortile" ) ); } );
-  connect( mActionAddPointCloudLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "pointcloud" ) ); } );
+  connect( mActionAddPointCloudLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "ept" ) ); } );
   connect( mActionAddWcsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "wcs" ) ); } );
   connect( mActionAddWfsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "WFS" ) ); } );
   connect( mActionAddAfsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "arcgisfeatureserver" ) ); } );
@@ -7623,7 +7623,7 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
   // Try to load as point cloud layer after raster & vector & mesh
   if ( !ok )
   {
-    ok = static_cast< bool >( addPointCloudLayerPrivate( fileName, fileInfo.completeBaseName(), QStringLiteral( "pointcloud" ), false ) );
+    ok = static_cast< bool >( addPointCloudLayerPrivate( fileName, fileInfo.completeBaseName(), QStringLiteral( "ept" ), false ) );
   }
 
   if ( !ok )

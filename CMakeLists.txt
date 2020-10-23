@@ -350,11 +350,11 @@ IF(WITH_CORE)
   FIND_PACKAGE(ZLIB REQUIRED)       # for decompression of vector tiles in MBTiles file
   MESSAGE(STATUS "Found zlib: ${ZLIB_LIBRARIES}")
 
-  FIND_PACKAGE(ZSTD REQUIRED) # for decompression of point clouds
+  FIND_PACKAGE(ZSTD) # for decompression of point clouds
   IF (ZSTD_FOUND)
     SET(HAVE_ZSTD TRUE)  # used in qgsconfig.h
   ENDIF (ZSTD_FOUND)
-  FIND_PACKAGE(LazPerf REQUIRED) # for decompression of point clouds
+  FIND_PACKAGE(LazPerf) # for decompression of point clouds
   IF (LazPerf_FOUND)
     SET(HAVE_LAZPERF TRUE)  # used in qgsconfig.h
   ENDIF (LazPerf_FOUND)

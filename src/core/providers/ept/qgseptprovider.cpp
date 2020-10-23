@@ -72,6 +72,11 @@ QgsEptProviderMetadata::QgsEptProviderMetadata():
 {
 }
 
+QgsEptProvider *QgsEptProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+{
+  return new QgsEptProvider( uri, options, flags );
+}
+
 QList<QgsDataItemProvider *> QgsEptProviderMetadata::dataItemProviders() const
 {
   QList< QgsDataItemProvider * > providers;
