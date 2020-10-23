@@ -987,6 +987,7 @@ void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
       case QgsMapLayerType::MeshLayer:
       case QgsMapLayerType::VectorTileLayer:
       case QgsMapLayerType::AnnotationLayer:
+      case QgsMapLayerType::PointCloudLayer:
         notParsedLayers.push_back( layer->name() );
         break;
     }
