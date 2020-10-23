@@ -152,11 +152,11 @@ IF(WITH_APIDOC)
     SET (DOXYGEN_ON_DEMAND FALSE CACHE BOOL "Determines whether the QGIS API doxygen documentation should be built on demand through the target apidoc only. If set to false it is added to the target ALL.")
 
     IF(DOXYGEN_ON_DEMAND)
-      ADD_CUSTOM_TARGET(apidoc DEPENDS ${QHP_FILES})
+      ADD_CUSTOM_TARGET(apidoc DEPENDS ${QHP_FILES} version)
       INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api/html/ DESTINATION ${QGIS_DATA_DIR}/doc/api OPTIONAL)
     ELSE(DOXYGEN_ON_DEMAND)
       INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/api/html/ DESTINATION ${QGIS_DATA_DIR}/doc/api)
-      ADD_CUSTOM_TARGET(apidoc ALL DEPENDS ${QHP_FILES})
+      ADD_CUSTOM_TARGET(apidoc ALL DEPENDS ${QHP_FILES} version)
     ENDIF(DOXYGEN_ON_DEMAND)
     ADD_CUSTOM_COMMAND(
       OUTPUT ${QHP_FILES}
