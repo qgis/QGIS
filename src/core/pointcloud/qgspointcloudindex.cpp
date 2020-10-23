@@ -68,16 +68,6 @@ QgsPointCloudDataBounds::QgsPointCloudDataBounds( qint32 xmin, qint32 ymin, qint
 
 }
 
-QgsPointCloudDataBounds::QgsPointCloudDataBounds( const QgsPointCloudDataBounds &obj )
-  : mXMin( obj.xMin() )
-  , mYMin( obj.yMin() )
-  , mZMin( obj.zMin() )
-  , mXMax( obj.xMax() )
-  , mYMax( obj.yMax() )
-  , mZMax( obj.zMax() )
-{
-}
-
 qint32 QgsPointCloudDataBounds::xMin() const
 {
   return mXMin;

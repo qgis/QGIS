@@ -69,7 +69,6 @@ class CORE_EXPORT QgsPointCloudDataBounds
   public:
     QgsPointCloudDataBounds(); // invalid
     QgsPointCloudDataBounds( qint32 xmin, qint32 ymin, qint32 zmin, qint32 xmax, qint32 ymax, qint32 zmax );
-    QgsPointCloudDataBounds( const QgsPointCloudDataBounds &obj );
 
     qint32 xMin() const;
 
