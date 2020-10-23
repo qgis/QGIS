@@ -199,7 +199,8 @@ void QgsMeshRendererVectorSettingsWidget::syncToLayer( )
   const QgsMeshRendererSettings rendererSettings = mMeshLayer->rendererSettings();
   const QgsMeshRendererVectorSettings settings = rendererSettings.vectorSettings( mActiveDatasetGroup );
 
-  mSymbologyGroupBox->setVisible( hasFaces );
+  symbologyLabel->setVisible( hasFaces );
+  mSymbologyVectorComboBox->setVisible( hasFaces );
   mSymbologyVectorComboBox->setCurrentIndex( hasFaces ? settings.symbology() : 0 );
 
   // Arrow settings
@@ -263,7 +264,11 @@ void QgsMeshRendererVectorSettingsWidget::onSymbologyChanged( int currentIndex )
   mTracesGroupBox->setVisible( currentIndex == QgsMeshRendererVectorSettings::Traces );
 
   mDisplayVectorsOnGridGroupBox->setVisible( currentIndex != QgsMeshRendererVectorSettings::Traces );
-  mFilterByMagGroupBox->setVisible( currentIndex != QgsMeshRendererVectorSettings::Traces );
+  filterByMagnitudeLabel->setVisible( currentIndex != QgsMeshRendererVectorSettings::Traces );
+  minimumMagLabel->setVisible( currentIndex != QgsMeshRendererVectorSettings::Traces );
+  mMinMagLineEdit->setVisible( currentIndex != QgsMeshRendererVectorSettings::Traces );
+  maximumMagLabel->setVisible( currentIndex != QgsMeshRendererVectorSettings::Traces );
+  mMaxMagLineEdit->setVisible( currentIndex != QgsMeshRendererVectorSettings::Traces );
 
   mDisplayVectorsOnGridGroupBox->setEnabled(
     currentIndex == QgsMeshRendererVectorSettings::Arrows ||
@@ -284,7 +289,7 @@ void QgsMeshRendererVectorSettingsWidget::onColoringMethodChanged()
 {
   mColorRampShaderGroupBox->setVisible( mColoringMethodComboBox->currentData() == QgsInterpolatedLineColor::ColorRamp );
   mColorWidget->setVisible( mColoringMethodComboBox->currentData() == QgsInterpolatedLineColor::SingleColor );
-  mSimgleColorLabel->setVisible( mColoringMethodComboBox->currentData() == QgsInterpolatedLineColor::SingleColor );
+  mSingleColorLabel->setVisible( mColoringMethodComboBox->currentData() == QgsInterpolatedLineColor::SingleColor );
 
   if ( mColorRampShaderWidget->shader().colorRampItemList().isEmpty() )
     loadColorRampShader();
