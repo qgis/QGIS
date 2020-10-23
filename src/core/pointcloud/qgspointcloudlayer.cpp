@@ -124,7 +124,8 @@ bool QgsPointCloudLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
 
 void QgsPointCloudLayer::setTransformContext( const QgsCoordinateTransformContext &transformContext )
 {
-
+  if ( mDataProvider )
+    mDataProvider->setTransformContext( transformContext );
 }
 
 QString QgsPointCloudLayer::loadDefaultStyle( bool &resultFlag )
