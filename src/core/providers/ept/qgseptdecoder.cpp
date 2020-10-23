@@ -18,13 +18,19 @@
 #include "qgseptdecoder.h"
 #include "qgseptpointcloudindex.h"
 #include "qgsvector3d.h"
+#include "qgsconfig.h"
 
-#include <zstd.h>
 #include <QFile>
 #include <iostream>
 
+#if defined ( HAVE_ZSTD )
+#include <zstd.h>
+#endif
+
+#if defined ( HAVE_LAZPERF )
 #include "laz-perf/io.hpp"
 #include "laz-perf/common/common.hpp"
+#endif
 
 ///@cond PRIVATE
 
@@ -60,7 +66,7 @@ QVector<char> QgsEptDecoder::decompressBinaryClasses( const QString &filename, i
   Q_ASSERT( r );
 
   int count = f.size() / pointRecordSize;
-  QVector<char> classes(count);
+  QVector<char> classes( count );
   for ( int i = 0; i < count; ++i )
   {
     QByteArray bytes = f.read( pointRecordSize );
@@ -77,6 +83,8 @@ QVector<char> QgsEptDecoder::decompressBinaryClasses( const QString &filename, i
 }
 
 /* *************************************************************************************** */
+
+#if defined(HAVE_ZSTD)
 
 QByteArray decompressZtdStream( const QByteArray &dataCompressed )
 {
@@ -135,8 +143,18 @@ QVector<qint32> QgsEptDecoder::decompressZStandard( const QString &filename, int
   return data;
 }
 
+#else // defined(HAVE_ZSTD)
+QVector<qint32> QgsEptDecoder::decompressZStandard( const QString &filename, int pointRecordSize )
+{
+  //TODO graceful error
+  Q_ASSERT( false );
+}
+
+#endif // defined(HAVE_ZSTD)
+
 /* *************************************************************************************** */
 
+#if defined ( HAVE_LAZPERF )
 QVector<qint32> QgsEptDecoder::decompressLaz( const QString &filename )
 {
   std::ifstream file( filename.toLatin1().constData(), std::ios::binary );
@@ -164,5 +182,13 @@ QVector<qint32> QgsEptDecoder::decompressLaz( const QString &filename )
   std::cout << "LAZ-PERF Read through the points in " << t << " seconds." << std::endl;
   return data;
 }
+
+#else // defined ( HAVE_LAZPERF )
+QVector<qint32> QgsEptDecoder::decompressLaz( const QString &filename )
+{
+  //TODO graceful return and error message
+  Q_ASSERT( false );
+}
+#endif
 
 ///@endcond
