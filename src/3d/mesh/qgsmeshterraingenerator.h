@@ -92,6 +92,8 @@ class _3D_EXPORT QgsMeshTerrainGenerator: public QgsTerrainGenerator
     QgsCoordinateTransformContext mTransformContext;
     std::unique_ptr< QgsMesh3DSymbol > mSymbol;
     QgsTriangularMesh mTriangularMesh;
+
+    void updateTriangularMesh();
 };
 
 #endif // QGSMESHTERRAINGENERATOR_H

@@ -97,12 +97,7 @@ void QgsMeshTerrainGenerator::setLayer( QgsMeshLayer *layer )
   mLayer = QgsMapLayerRef( layer );
   mIsValid = layer != nullptr;
 
-  if ( layer )
-  {
-    QgsCoordinateTransform transform( mCrs, layer->crs(), mTransformContext );
-    layer->updateTriangularMesh( transform );
-    mTriangularMesh = *layer->triangularMesh();
-  }
+  updateTriangularMesh();
 }
 
 
@@ -182,6 +177,16 @@ float QgsMeshTerrainGenerator::heightAt( double x, double y, const Qgs3DMapSetti
   return QgsMeshLayerUtils::interpolateFromVerticesData( p1, p2, p3, p1.z(), p2.z(), p3.z(), point );
 }
 
+void QgsMeshTerrainGenerator::updateTriangularMesh()
+{
+  if ( meshLayer() )
+  {
+    QgsCoordinateTransform transform( mCrs, meshLayer()->crs(), mTransformContext );
+    meshLayer()->updateTriangularMesh( transform );
+    mTriangularMesh = *meshLayer()->triangularMeshByLodIndex( mSymbol->levelOfDetailIndex() );
+  }
+}
+
 QgsMesh3DSymbol *QgsMeshTerrainGenerator::symbol() const
 {
   return mSymbol.get();
@@ -190,6 +195,7 @@ QgsMesh3DSymbol *QgsMeshTerrainGenerator::symbol() const
 void QgsMeshTerrainGenerator::setSymbol( QgsMesh3DSymbol *symbol )
 {
   mSymbol.reset( symbol );
+  updateTriangularMesh();
 }
 
 void QgsMeshTerrainGenerator::setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context )
