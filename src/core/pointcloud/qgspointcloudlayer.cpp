@@ -63,7 +63,7 @@ QgsRectangle QgsPointCloudLayer::extent() const
 
 QgsMapLayerRenderer *QgsPointCloudLayer::createMapRenderer( QgsRenderContext &rendererContext )
 {
-  return new QgsPointCloudRenderer( this, rendererContext );
+  return new QgsPointCloudLayerRenderer( this, rendererContext );
 }
 
 QgsPointCloudDataProvider *QgsPointCloudLayer::dataProvider()

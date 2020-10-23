@@ -75,12 +75,12 @@ class CORE_EXPORT QgsPointCloudRendererConfig
  *
  * \since QGIS 3.18
  */
-class CORE_EXPORT QgsPointCloudRenderer: public QgsMapLayerRenderer
+class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
 {
   public:
 
-    explicit QgsPointCloudRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context );
-    ~QgsPointCloudRenderer();
+    explicit QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context );
+    ~QgsPointCloudLayerRenderer();
 
     bool render() override;
 
