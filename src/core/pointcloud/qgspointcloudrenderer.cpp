@@ -86,7 +86,7 @@ void QgsPointCloudRendererConfig::setColorRamp( const QgsColorRamp *value )
 
 ///@endcond
 
-QgsPointCloudRenderer::QgsPointCloudRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context )
+QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
   , mLayer( layer )
 {
@@ -109,7 +109,7 @@ static QList<IndexedPointCloudNode> _traverseTree( QgsPointCloudIndex *pc, const
   return pc->traverseTree( extent, n, maxDepth );
 }
 
-bool QgsPointCloudRenderer::render()
+bool QgsPointCloudLayerRenderer::render()
 {
   // TODO cache!?
   QgsPointCloudIndex *pc = mLayer->dataProvider()->index();
@@ -153,19 +153,7 @@ bool QgsPointCloudRenderer::render()
 QgsPointCloudRenderer::~QgsPointCloudRenderer() = default;
 
 
-void QgsPointCloudRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
-{
-  Q_UNUSED( elem )
-  Q_UNUSED( context )
-}
-
-void QgsPointCloudRenderer::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
-{
-  Q_UNUSED( elem )
-  Q_UNUSED( context )
-}
-
-void QgsPointCloudRenderer::drawData( QPainter *painter, const QVector<qint32> &data, const QgsPointCloudRendererConfig &config )
+void QgsPointCloudLayerRenderer::drawData( QPainter *painter, const QVector<qint32> &data, const QgsPointCloudRendererConfig &config )
 {
   const QgsMapToPixel mapToPixel = renderContext()->mapToPixel();
   const QgsVector3D scale = mLayer->dataProvider()->index()->scale();

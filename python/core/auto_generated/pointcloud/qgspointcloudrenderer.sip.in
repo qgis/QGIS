@@ -14,7 +14,7 @@
 
 
 
-class QgsPointCloudRenderer: QgsMapLayerRenderer
+class QgsPointCloudLayerRenderer: QgsMapLayerRenderer
 {
 %Docstring
 
@@ -32,8 +32,8 @@ Represents a 2D renderer of point cloud data
 %End
   public:
 
-    explicit QgsPointCloudRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context );
-    ~QgsPointCloudRenderer();
+    explicit QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context );
+    ~QgsPointCloudLayerRenderer();
 
     virtual bool render();
 

@@ -18,7 +18,7 @@
 #ifndef QGSPOINTCLOUDLAYER_H
 #define QGSPOINTCLOUDLAYER_H
 
-class QgsPointCloudRenderer;
+class QgsPointCloudLayerRenderer;
 
 #include "qgspointclouddataprovider.h"
 #include "qgsmaplayer.h"
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     std::unique_ptr<QgsPointCloudDataProvider> mDataProvider;
 
     //! Renderer assigned to the layer to draw map
-    std::unique_ptr<QgsPointCloudRenderer> mRenderer;
+    std::unique_ptr<QgsPointCloudLayerRenderer> mRenderer;
 };
 
 
