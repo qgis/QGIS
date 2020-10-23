@@ -38,6 +38,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
 
     def __init__(self, methodName):
         """Run once on class initialization."""
+
         unittest.TestCase.__init__(self, methodName)
 
         # setup a dummy project
@@ -56,8 +57,8 @@ class TestQgsLayerTreeView(unittest.TestCase):
         self.model = QgsLayerTreeModel(self.project.layerTreeRoot())
 
     def nodeOrder(self, group):
+
         nodeorder = []
-        layerTree = QgsLayerTree()
         for node in group:
             if QgsLayerTree.isGroup(node):
                 groupname = node.name()
@@ -69,6 +70,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
         return nodeorder
 
     def testSetModel(self):
+
         view = QgsLayerTreeView()
 
         # should not work
@@ -78,9 +80,10 @@ class TestQgsLayerTreeView(unittest.TestCase):
 
         # should work
         view.setModel(self.model)
-        self.assertEqual(view.model(), self.model)
+        self.assertEqual(view.layerTreeModel(), self.model)
 
     def testSetCurrentLayer(self):
+
         view = QgsLayerTreeView()
         view.setModel(self.model)
         current_layer_changed_spy = QSignalSpy(view.currentLayerChanged)
@@ -111,6 +114,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
 
     def testMoveOutOfGroupActionLayer(self):
         """Test move out of group action on layer"""
+
         view = QgsLayerTreeView()
         group = self.project.layerTreeRoot().addGroup("embeddedgroup")
         group.addLayer(self.layer4)
@@ -141,6 +145,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
 
     def testMoveToTopActionLayer(self):
         """Test move to top action on layer"""
+
         view = QgsLayerTreeView()
         view.setModel(self.model)
         actions = QgsLayerTreeViewDefaultActions(view)
@@ -152,6 +157,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
 
     def testMoveToTopActionGroup(self):
         """Test move to top action on group"""
+
         view = QgsLayerTreeView()
         group = self.project.layerTreeRoot().addGroup("embeddedgroup")
         group.addLayer(self.layer4)
@@ -168,7 +174,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
             groupname + '-' + self.layer5.name(),
         ])
 
-        nodeLayerIndex = self.model.node2index(group)
+        nodeLayerIndex = view.node2index(group)
         view.setCurrentIndex(nodeLayerIndex)
         movetotop = actions.actionMoveToTop()
         movetotop.trigger()
@@ -183,6 +189,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
 
     def testMoveToTopActionEmbeddedGroup(self):
         """Test move to top action on embeddedgroup layer"""
+
         view = QgsLayerTreeView()
         group = self.project.layerTreeRoot().addGroup("embeddedgroup")
         group.addLayer(self.layer4)
@@ -213,6 +220,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
 
     def testMoveToTopActionLayerAndGroup(self):
         """Test move to top action for a group and it's layer simultaneously"""
+
         view = QgsLayerTreeView()
         group = self.project.layerTreeRoot().addGroup("embeddedgroup")
         group.addLayer(self.layer4)
@@ -231,7 +239,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
 
         selectionMode = view.selectionMode()
         view.setSelectionMode(QgsLayerTreeView.MultiSelection)
-        nodeLayerIndex = self.model.node2index(group)
+        nodeLayerIndex = view.node2index(group)
         view.setCurrentIndex(nodeLayerIndex)
         view.setCurrentLayer(self.layer5)
         view.setSelectionMode(selectionMode)
@@ -248,6 +256,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
 
     def testMoveToBottomActionLayer(self):
         """Test move to bottom action on layer"""
+
         view = QgsLayerTreeView()
         view.setModel(self.model)
         actions = QgsLayerTreeViewDefaultActions(view)
@@ -259,6 +268,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
 
     def testMoveToBottomActionGroup(self):
         """Test move to bottom action on group"""
+
         view = QgsLayerTreeView()
         group = self.project.layerTreeRoot().insertGroup(0, "embeddedgroup")
         group.addLayer(self.layer4)
@@ -275,7 +285,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
             self.layer3.name(),
         ])
 
-        nodeLayerIndex = self.model.node2index(group)
+        nodeLayerIndex = view.node2index(group)
         view.setCurrentIndex(nodeLayerIndex)
         movetobottom = actions.actionMoveToBottom()
         movetobottom.trigger()
@@ -290,6 +300,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
 
     def testMoveToBottomActionEmbeddedGroup(self):
         """Test move to bottom action on embeddedgroup layer"""
+
         view = QgsLayerTreeView()
         group = self.project.layerTreeRoot().addGroup("embeddedgroup")
         group.addLayer(self.layer4)
@@ -320,6 +331,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
 
     def testMoveToBottomActionLayerAndGroup(self):
         """Test move to top action for a group and it's layer simultaneously"""
+
         view = QgsLayerTreeView()
         group = self.project.layerTreeRoot().insertGroup(0, "embeddedgroup")
         group.addLayer(self.layer4)
@@ -338,7 +350,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
 
         selectionMode = view.selectionMode()
         view.setSelectionMode(QgsLayerTreeView.MultiSelection)
-        nodeLayerIndex = self.model.node2index(group)
+        nodeLayerIndex = view.node2index(group)
         view.setCurrentIndex(nodeLayerIndex)
         view.setCurrentLayer(self.layer4)
         view.setSelectionMode(selectionMode)
@@ -354,6 +366,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
         ])
 
     def testSetLayerVisible(self):
+
         view = QgsLayerTreeView()
         view.setModel(self.model)
         self.project.layerTreeRoot().findLayer(self.layer).setItemVisibilityChecked(True)

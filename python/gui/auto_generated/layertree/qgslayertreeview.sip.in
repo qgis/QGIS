@@ -104,7 +104,7 @@ Returns the proxy model used by the view.
 
 This can be used to set filters controlling which layers are shown in the view.
 
-.. versionadded:: 3.16
+.. versionadded:: 3.18
 %End
 
     QgsLayerTreeNode *index2node( const QModelIndex &index ) const;
@@ -115,7 +115,7 @@ Returns ``None`` if index does not refer to a layer tree node (e.g. it is a lege
 Unlike :py:func:`QgsLayerTreeModel.index2Node()`, calling this method correctly accounts
 for mapping the view indexes through the view's proxy model to the source model.
 
-.. versionadded:: 3.16
+.. versionadded:: 3.18
 %End
 
     QModelIndex node2index( QgsLayerTreeNode *node ) const;
@@ -125,7 +125,7 @@ Returns index for a given node. If the node does not belong to the layer tree, t
 Unlike :py:func:`QgsLayerTreeModel.node2index()`, calling this method correctly accounts
 for mapping the view indexes through the view's proxy model to the source model.
 
-.. versionadded:: 3.16
+.. versionadded:: 3.18
 %End
 
     QgsLayerTreeModelLegendNode *index2legendNode( const QModelIndex &index ) const;
@@ -135,7 +135,7 @@ Returns legend node for given index. Returns ``None`` for invalid index
 Unlike :py:func:`QgsLayerTreeModel.index2legendNode()`, calling this method correctly accounts
 for mapping the view indexes through the view's proxy model to the source model.
 
-.. versionadded:: 3.16
+.. versionadded:: 3.18
 %End
 
     QModelIndex legendNode2index( QgsLayerTreeModelLegendNode *legendNode );
@@ -146,7 +146,7 @@ If the legend node is belongs to the tree but it is filtered out, invalid model 
 Unlike :py:func:`QgsLayerTreeModel.legendNode2index()`, calling this method correctly accounts
 for mapping the view indexes through the view's proxy model to the source model.
 
-.. versionadded:: 3.16
+.. versionadded:: 3.18
 %End
 
     QgsLayerTreeViewDefaultActions *defaultActions();

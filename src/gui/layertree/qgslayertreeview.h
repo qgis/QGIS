@@ -110,7 +110,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
      *
      * This can be used to set filters controlling which layers are shown in the view.
      *
-     * \since QGIS 3.16
+     * \since QGIS 3.18
      */
     QgsLayerTreeProxyModel *proxyModel() const;
 
@@ -121,7 +121,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
      * Unlike QgsLayerTreeModel::index2Node(), calling this method correctly accounts
      * for mapping the view indexes through the view's proxy model to the source model.
      *
-     * \since QGIS 3.16
+     * \since QGIS 3.18
      */
     QgsLayerTreeNode *index2node( const QModelIndex &index ) const;
 
@@ -131,7 +131,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
      * Unlike QgsLayerTreeModel::node2index(), calling this method correctly accounts
      * for mapping the view indexes through the view's proxy model to the source model.
      *
-     * \since QGIS 3.16
+     * \since QGIS 3.18
      */
     QModelIndex node2index( QgsLayerTreeNode *node ) const;
 
@@ -141,7 +141,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
      * Unlike QgsLayerTreeModel::index2legendNode(), calling this method correctly accounts
      * for mapping the view indexes through the view's proxy model to the source model.
      *
-     * \since QGIS 3.16
+     * \since QGIS 3.18
      */
     QgsLayerTreeModelLegendNode *index2legendNode( const QModelIndex &index ) const;
 
@@ -152,7 +152,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
      * Unlike QgsLayerTreeModel::legendNode2index(), calling this method correctly accounts
      * for mapping the view indexes through the view's proxy model to the source model.
      *
-     * \since QGIS 3.16
+     * \since QGIS 3.18
      */
     QModelIndex legendNode2index( QgsLayerTreeModelLegendNode *legendNode );
 
