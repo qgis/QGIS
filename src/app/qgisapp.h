@@ -112,6 +112,7 @@ class QgsHandleBadLayersHandler;
 class QgsNetworkAccessManager;
 class QgsGpsConnection;
 class QgsApplicationExitBlockerInterface;
+class QgsAbstractMapToolHandler;
 
 class QDomDocument;
 class QNetworkReply;
@@ -763,6 +764,25 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \see registerApplicationExitBlocker()
     */
     void unregisterApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker );
+
+    /**
+     * Register a new application map tool \a handler, which can be used to automatically setup all connections
+     * and logic required to switch to a custom map tool whenever the state of the QGIS application
+     * permits.
+     *
+     * \note Ownership of \a handler is not transferred, and the handler must
+     *       be unregistered when plugin is unloaded.
+     *
+     * \see QgsAbstractMapToolHandler
+     * \see unregisterMapToolHandler()
+     */
+    void registerMapToolHandler( QgsAbstractMapToolHandler *handler );
+
+    /**
+     * Unregister a previously registered map tool \a handler.
+     * \see registerMapToolHandler()
+    */
+    void unregisterMapToolHandler( QgsAbstractMapToolHandler *handler );
 
     //! Register a new custom drop handler.
     void registerCustomDropHandler( QgsCustomDropHandler *handler );
@@ -2167,6 +2187,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Configure layer tree view according to the user options from QgsSettings
     void setupLayerTreeViewFromSettings();
 
+    void switchToMapToolViaHandler();
+
     void readSettings();
     void writeSettings();
     void createActions();
@@ -2595,6 +2617,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QList<QgsDevToolWidgetFactory * > mDevToolFactories;
 
     QList<QgsApplicationExitBlockerInterface * > mApplicationExitBlockers;
+    QList<QgsAbstractMapToolHandler * > mMapToolHandlers;
 
     QVector<QPointer<QgsCustomDropHandler>> mCustomDropHandlers;
     QVector<QPointer<QgsCustomProjectOpenHandler>> mCustomProjectOpenHandlers;

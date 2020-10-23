@@ -59,12 +59,12 @@ class QgsLandingPageApi: public QgsServerOgcApi
 
 /**
  * Sets QGIS_PROJECT_FILE from /project/<hash>/ URL fragment
+ * This is used to set the QGIS_PROJECT_FILE environment variable for legacy SERVICEs (WFS, WMS etc.)
  * \since QGIS 3.16
  */
 class QgsProjectLoaderFilter: public QgsServerFilter
 {
 
-    // QgsServerFilter interface
   public:
 
     QgsProjectLoaderFilter( QgsServerInterface *serverIface )
@@ -72,14 +72,20 @@ class QgsProjectLoaderFilter: public QgsServerFilter
     {
     }
 
+    /**
+     * Read the project hash and set the QGIS_PROJECT_FILE environment variable
+     */
     void requestReady() override
     {
+      mEnvWasChanged = false;
       const auto handler { serverInterface()->requestHandler() };
       if ( handler->path().startsWith( QLatin1String( "/project/" ) ) )
       {
         const QString projectPath { QgsLandingPageUtils::projectUriFromUrl( handler->url(), *serverInterface()->serverSettings() ) };
         if ( ! projectPath.isEmpty() )
         {
+          mEnvWasChanged = true;
+          mOriginalProjectFromEnv = qgetenv( "QGIS_PROJECT_FILE" );
           qputenv( "QGIS_PROJECT_FILE", projectPath.toUtf8() );
           serverInterface()->setConfigFilePath( projectPath.toUtf8() );
           QgsMessageLog::logMessage( QStringLiteral( "Project from URL set to: %1" ).arg( projectPath ), QStringLiteral( "Landing Page Plugin" ), Qgis::MessageLevel::Info );
@@ -90,7 +96,24 @@ class QgsProjectLoaderFilter: public QgsServerFilter
         }
       }
     };
+
+    /**
+     * Restore original QGIS_PROJECT_FILE environment variable value
+     */
+    void responseComplete() override
+    {
+      if ( mEnvWasChanged )
+        qputenv( "QGIS_PROJECT_FILE", mOriginalProjectFromEnv.toUtf8() );
+    };
+
+
+  private:
+
+    QString mOriginalProjectFromEnv;
+    bool mEnvWasChanged = false;
+
 };
+
 
 /**
  * \class QgsLandingPageModule

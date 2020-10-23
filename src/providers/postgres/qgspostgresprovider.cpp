@@ -1146,6 +1146,12 @@ bool QgsPostgresProvider::loadFields()
           fieldType = QVariant::String;
           fieldSize = -1;
         }
+        else if ( fieldTypeName == QLatin1String( "unknown" ) )
+        {
+          // Assume it is convertible to text
+          fieldType = QVariant::String;
+          fieldSize = -1;
+        }
         else
         {
           QgsMessageLog::logMessage( tr( "Field %1 ignored, because of unsupported type %2" ).arg( fieldName, fieldTType ), tr( "PostGIS" ) );

@@ -1,0 +1,115 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsabstractmaptoolhandler.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsAbstractMapToolHandler
+{
+%Docstring
+An abstract base class for map tool handlers which automatically handle all the necessary
+logic for toggling the map tool and enabling/disabling the associated action
+when the QGIS application is in a state permissible for the tool.
+
+Creating these handlers avoids a lot of complex setup code and manual connections
+which are otherwise necessary to ensure that a map tool is correctly activated and
+deactivated when the state of the QGIS application changes (e.g. when the active
+layer is changed, when edit modes are toggled, when other map tools are switched
+to, etc).
+
+- ### Example
+
+.. code-block:: python
+
+       class MyMapTool(QgsMapTool):
+          ...
+
+       class MyMapToolHandler(QgsAbstractMapToolHandler):
+
+          def __init__(self, tool, action):
+              super().__init__(tool, action)
+
+          def isCompatibleWithLayer(self, layer, context):
+              # this tool can only be activated when an editable vector layer is selected
+              return isinstance(layer, QgsVectorLayer) and layer.isEditable()
+
+       my_tool = MyMapTool()
+       my_action = QAction('My Map Tool')
+
+       my_handler = MyMapToolHandler(my_tool, my_action)
+       iface.registerMapToolHandler(my_handler)
+
+.. versionadded:: 3.16
+%End
+
+%TypeHeaderCode
+#include "qgsabstractmaptoolhandler.h"
+%End
+  public:
+
+    struct Context
+    {
+      bool dummy;
+    };
+
+    QgsAbstractMapToolHandler( QgsMapTool *tool, QAction *action );
+%Docstring
+Constructor for a map tool handler for the specified ``tool``.
+
+The ``action`` argument must be set to the action associated with switching
+to the tool.
+
+The ownership of neither ``tool`` nor ``action`` is transferred, and the caller
+is responsible for ensuring that these objects exist for the lifetime of the
+handler.
+
+.. warning::
+
+   The handler will be responsible for creating the appropriate
+   connections between the ``action`` and the ``tool``. These should NOT be
+   manually connected elsewhere!
+%End
+
+    virtual ~QgsAbstractMapToolHandler();
+
+    QgsMapTool *mapTool();
+%Docstring
+Returns the tool associated with this handler.
+%End
+
+    QAction *action();
+%Docstring
+Returns the action associated with toggling the tool.
+%End
+
+    virtual bool isCompatibleWithLayer( QgsMapLayer *layer, const QgsAbstractMapToolHandler::Context &context ) = 0;
+%Docstring
+Returns ``True`` if the associated map tool is compatible with the specified ``layer``.
+
+Additional information is available through the ``context`` argument.
+%End
+
+    virtual void setLayerForTool( QgsMapLayer *layer );
+%Docstring
+Sets the ``layer`` to use for the tool.
+
+Called whenever a new layer should be associated with the tool, e.g. as a result of the
+user selecting a different active layer.
+
+The default implementation does nothing.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsabstractmaptoolhandler.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

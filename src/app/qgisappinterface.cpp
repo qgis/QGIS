@@ -581,6 +581,16 @@ void QgisAppInterface::unregisterApplicationExitBlocker( QgsApplicationExitBlock
   qgis->unregisterApplicationExitBlocker( blocker );
 }
 
+void QgisAppInterface::registerMapToolHandler( QgsAbstractMapToolHandler *handler )
+{
+  qgis->registerMapToolHandler( handler );
+}
+
+void QgisAppInterface::unregisterMapToolHandler( QgsAbstractMapToolHandler *handler )
+{
+  qgis->unregisterMapToolHandler( handler );
+}
+
 void QgisAppInterface::registerCustomDropHandler( QgsCustomDropHandler *handler )
 {
   qgis->registerCustomDropHandler( handler );
