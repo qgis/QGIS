@@ -127,6 +127,15 @@ an expression context for the widget.
                   create an expression context when required.
 %End
 
+    void setExpressionContext( QgsExpressionContext &context );
+%Docstring
+Set a default expression context. Will be used if no QgsEcpressionContextGenerator or layer is set.
+
+:param context: The QgsExpressionContext to use.
+
+.. versionadded:: 3.18
+%End
+
   signals:
 
     void expressionChanged( const QString &expression );

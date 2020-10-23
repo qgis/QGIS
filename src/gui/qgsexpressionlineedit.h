@@ -132,6 +132,13 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
      */
     void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
 
+    /**
+     * Set a default expression context. Will be used if no QgsEcpressionContextGenerator or layer is set.
+     * \param context The QgsExpressionContext to use.
+     * \since QGIS 3.18
+     */
+    void setExpressionContext( QgsExpressionContext &context ) { mExpressionContext = context; }
+
   signals:
 
     /**
