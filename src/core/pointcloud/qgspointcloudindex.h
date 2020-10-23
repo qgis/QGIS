@@ -106,14 +106,16 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     explicit QgsPointCloudIndex();
     ~QgsPointCloudIndex();
 
-    bool load( const QString &fileName );
+    virtual bool load( const QString &fileName ) = 0;
+
+
     IndexedPointCloudNode root() { return IndexedPointCloudNode( 0, 0, 0, 0 ); }
 
 
     QList<IndexedPointCloudNode> traverseTree( const QgsRectangle &extent, IndexedPointCloudNode n, int maxDepth = 3 );
     QList<IndexedPointCloudNode> children( const IndexedPointCloudNode &n );
 
-    QVector<qint32> nodePositionDataAsInt32( const IndexedPointCloudNode &n );
+    virtual QVector<qint32> nodePositionDataAsInt32( const IndexedPointCloudNode &n ) = 0;
 
     /*
     Standard LIDAR classes:
@@ -132,33 +134,26 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
       12 Overlap Points
       13-31 Reserved for ASPRS Definition
     */
-    QVector<char> nodeClassesDataAsChar( const IndexedPointCloudNode &n );
+    virtual QVector<char> nodeClassesDataAsChar( const IndexedPointCloudNode &n ) = 0;
 
     QgsRectangle extent() const { return mExtent; }
     double zMin() const { return mZMin; }
     double zMax() const { return mZMax; }
     QgsPointCloudDataBounds nodeBounds( const IndexedPointCloudNode &n );
     QgsRectangle nodeMapExtent( const IndexedPointCloudNode &n );
-    QString wkt() const;
-
     QgsVector3D scale() const;
-
     QgsVector3D offset() const;
 
-  private:
-    QString mDirectory;
-    QString mDataType;
-
+  protected: //TODO private
     QgsRectangle mExtent;  //!< 2D extent of data
     double mZMin = 0, mZMax = 0;   //!< Vertical extent of data
-    int mPointRecordSize = 0;  //!< Size of one point record in bytes (only relevant for "binary" and "zstandard" data type)
+
     QHash<IndexedPointCloudNode, int> mHierarchy;
     QgsVector3D mScale; //!< Scale of our int32 coordinates compared to CRS coords
     QgsVector3D mOffset; //!< Offset of our int32 coordinates compared to CRS coords
     QgsPointCloudDataBounds mRootBounds;  //!< Bounds of the root node's cube (in int32 coordinates)
-    int mSpan;  //!< Number of points in one direction in a single node
 
-    QString mWkt;
+    int mSpan;  //!< Number of points in one direction in a single node
 };
 
 

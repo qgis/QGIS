@@ -279,10 +279,6 @@ SET(QGIS_GUI_SRCS
   mesh/qgsmeshstaticdatasetwidget.cpp
   mesh/qgsmeshvariablestrokewidthwidget.cpp
 
-  pointcloud/qgspointcloudsourceselect.cpp
-  pointcloud/qgspointcloudproviderguimetadata.cpp
-  pointcloud/qgspointclouddataitemguiprovider.cpp
-
   numericformats/qgsnumericformatselectorwidget.cpp
   numericformats/qgsnumericformatwidget.cpp
   numericformats/qgsnumericformatguiregistry.cpp
@@ -348,6 +344,10 @@ SET(QGIS_GUI_SRCS
   providers/ogr/qgsgeopackageitemguiprovider.cpp
   providers/ogr/qgsogritemguiprovider.cpp
   providers/ogr/qgsgeopackageprojectstorageguiprovider.cpp
+
+  providers/ept/qgseptsourceselect.cpp
+  providers/ept/qgseptproviderguimetadata.cpp
+  providers/ept/qgseptdataitemguiprovider.cpp
 
   tableeditor/qgstableeditordialog.cpp
   tableeditor/qgstableeditorformattingwidget.cpp
@@ -1036,10 +1036,6 @@ SET(QGIS_GUI_HDRS
   mesh/qgsmeshstaticdatasetwidget.h
   mesh/qgsmeshvariablestrokewidthwidget.h
 
-  pointcloud/qgspointcloudsourceselect.h
-  pointcloud/qgspointcloudproviderguimetadata.h
-  pointcloud/qgspointclouddataitemguiprovider.h
-
   numericformats/qgsnumericformatselectorwidget.h
   numericformats/qgsnumericformatwidget.h
   numericformats/qgsnumericformatguiregistry.h
@@ -1105,6 +1101,10 @@ SET(QGIS_GUI_HDRS
   providers/ogr/qgsogrguiprovider.h
   providers/ogr/qgsogritemguiprovider.h
   providers/ogr/qgsogrsourceselect.h
+
+  providers/ept/qgseptsourceselect.h
+  providers/ept/qgseptproviderguimetadata.h
+  providers/ept/qgseptdataitemguiprovider.h
 
   raster/qgscolorrampshaderwidget.h
   raster/qgshillshaderendererwidget.h
@@ -1304,6 +1304,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/processing/models
   ${CMAKE_SOURCE_DIR}/src/gui/providers/gdal
   ${CMAKE_SOURCE_DIR}/src/gui/providers/ogr
+  ${CMAKE_SOURCE_DIR}/src/gui/providers/ept
   ${CMAKE_SOURCE_DIR}/src/gui/pointcloud
   ${CMAKE_SOURCE_DIR}/src/gui/raster
   ${CMAKE_SOURCE_DIR}/src/gui/vector

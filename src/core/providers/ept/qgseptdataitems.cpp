@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgspointclouddataitems.cpp
+                         qgseptdataitems.cpp
                          --------------------
     begin                : October 2020
     copyright            : (C) 2020 by Peter Petrik
@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgspointclouddataitems.h"
+#include "qgseptdataitems.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
 
@@ -24,7 +24,7 @@
 
 ///@cond PRIVATE
 
-QgsPointCloudLayerItem::QgsPointCloudLayerItem( QgsDataItem *parent,
+QgsEptLayerItem::QgsEptLayerItem( QgsDataItem *parent,
     const QString &name, const QString &path, const QString &uri )
   : QgsLayerItem( parent, name, path, uri, QgsLayerItem::PointCloud, QStringLiteral( "pointcloud" ) )
 {
@@ -32,24 +32,24 @@ QgsPointCloudLayerItem::QgsPointCloudLayerItem( QgsDataItem *parent,
   setState( Populated );
 }
 
-QString QgsPointCloudLayerItem::layerName() const
+QString QgsEptLayerItem::layerName() const
 {
   QFileInfo info( name() );
   return info.completeBaseName();
 }
 
 // ---------------------------------------------------------------------------
-QString QgsPointCloudDataItemProvider::name()
+QString QgsEptDataItemProvider::name()
 {
-  return QStringLiteral( "pointcloud" );
+  return QStringLiteral( "ept" );
 }
 
-int QgsPointCloudDataItemProvider::capabilities() const
+int QgsEptDataItemProvider::capabilities() const
 {
   return QgsDataProvider::File;
 }
 
-QgsDataItem *QgsPointCloudDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
+QgsDataItem *QgsEptDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
   if ( path.isEmpty() )
     return nullptr;
@@ -69,7 +69,7 @@ QgsDataItem *QgsPointCloudDataItemProvider::createDataItem( const QString &path,
   if ( !path.endsWith( QStringLiteral( "ept.json" ) ) )
     return nullptr;
 
-  return new QgsPointCloudLayerItem( parentItem, name, path, path );
+  return new QgsEptLayerItem( parentItem, name, path, path );
 }
 
 ///@endcond

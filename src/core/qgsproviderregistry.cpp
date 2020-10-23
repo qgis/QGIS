@@ -31,12 +31,12 @@
 #include "qgsprovidermetadata.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectortileprovidermetadata.h"
-#include "qgspointcloudprovidermetadata.h"
 #include "qgsproject.h"
 #include "providers/memory/qgsmemoryprovider.h"
 #include "providers/gdal/qgsgdalprovider.h"
 #include "providers/ogr/qgsogrprovider.h"
 #include "providers/meshmemory/qgsmeshmemorydataprovider.h"
+#include "providers/ept/qgseptprovider.h"
 #include "qgsruntimeprofiler.h"
 
 #ifdef HAVE_STATIC_PROVIDERS
@@ -139,8 +139,8 @@ void QgsProviderRegistry::init()
     mProviders[ vt->key() ] = vt;
   }
   {
-    QgsScopedRuntimeProfile profile( QObject::tr( "Create point cloud provider" ) );
-    QgsProviderMetadata *pc = new QgsPointCloudProviderMetadata();
+    QgsScopedRuntimeProfile profile( QObject::tr( "Create EPT point cloud provider" ) );
+    QgsProviderMetadata *pc = new QgsEptProviderMetadata();
     mProviders[ pc->key() ] = pc;
   }
 #ifdef HAVE_STATIC_PROVIDERS

@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgspointcloudproviderguimetadata.h
+                         qgseptdataitemguiprovider.h
                          --------------------
     begin                : October 2020
     copyright            : (C) 2020 by Peter Petrik
@@ -15,26 +15,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSPOINTCLOUDPROVIDERGUIMETADATA_H
-#define QGSPOINTCLOUDPROVIDERGUIMETADATA_H
+#ifndef QGSEPTDATAITEMGUIPROVIDER_H
+#define QGSEPTDATAITEMGUIPROVIDER_H
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
-#include <QList>
-#include <QMainWindow>
+#include "qgsdataitemguiprovider.h"
 
-#include "qgsproviderguimetadata.h"
 
-class QgsPointCloudProviderGuiMetadata: public QgsProviderGuiMetadata
+class QgsEptDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
+    Q_OBJECT
   public:
-    QgsPointCloudProviderGuiMetadata();
 
-    QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override;
-    QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
+    QString name() override { return QStringLiteral( "Point Cloud" ); }
+
+    void populateContextMenu( QgsDataItem *item, QMenu *menu,
+                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 };
 
 ///@endcond
 
-#endif // QGSPOINTCLOUDPROVIDERGUIMETADATA_H
+#endif // QGSEPTDATAITEMGUIPROVIDER_H

@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgspointcloudsourceselect.cpp
+                         qgseptsourceselect.cpp
                          --------------------
     begin                : October 2020
     copyright            : (C) 2020 by Peter Petrik
@@ -17,16 +17,16 @@
 
 #include <QMessageBox>
 
-#include "qgspointcloudsourceselect.h"
+#include "qgseptsourceselect.h"
 #include "qgsproviderregistry.h"
 
-QgsPointCloudSourceSelect::QgsPointCloudSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ):
+QgsEptSourceSelect::QgsEptSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ):
   QgsAbstractDataSourceWidget( parent, fl, widgetMode )
 {
   setupUi( this );
   setupButtons( buttonBox );
 
-  mFileWidget->setDialogTitle( tr( "Open Point Cloud Supported Dataset" ) );
+  mFileWidget->setDialogTitle( tr( "Open EPT Point Cloud Supported Dataset" ) );
   mFileWidget->setFilter( QgsProviderRegistry::instance()->fileMeshFilters() );
   mFileWidget->setStorageMode( QgsFileWidget::GetMultipleFiles );
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
@@ -36,18 +36,18 @@ QgsPointCloudSourceSelect::QgsPointCloudSourceSelect( QWidget *parent, Qt::Windo
   } );
 }
 
-void QgsPointCloudSourceSelect::addButtonClicked()
+void QgsEptSourceSelect::addButtonClicked()
 {
   if ( mPath.isEmpty() )
   {
     QMessageBox::information( this,
-                              tr( "Add point cloud layers" ),
+                              tr( "Add EPT point cloud layers" ),
                               tr( "No layers selected." ) );
     return;
   }
 
   for ( const QString &path : QgsFileWidget::splitFilePaths( mPath ) )
   {
-    emit addPointCloudLayer( path, QFileInfo( path ).baseName(), QStringLiteral( "pointcloud" ) ) ;
+    emit addPointCloudLayer( path, QFileInfo( path ).baseName(), QStringLiteral( "ept" ) ) ;
   }
 }

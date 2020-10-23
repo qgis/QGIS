@@ -37,28 +37,28 @@ class CORE_EXPORT QgsPointCloudRendererConfig
 {
   public:
     QgsPointCloudRendererConfig();
-    QgsPointCloudRendererConfig(const QgsPointCloudRendererConfig &other);
+    QgsPointCloudRendererConfig( const QgsPointCloudRendererConfig &other );
+    QgsPointCloudRendererConfig &operator= ( const QgsPointCloudRendererConfig &other );
 
     double zMin() const;
-    void setZMin(double value);
+    void setZMin( double value );
 
     double zMax() const;
-    void setZMax(double value);
+    void setZMax( double value );
 
     int penWidth() const;
-    void setPenWidth(int value);
+    void setPenWidth( int value );
 
-    QgsColorRamp* colorRamp() const;
+    QgsColorRamp *colorRamp() const;
 
     // TODO should it clone?
-    void setColorRamp(const QgsColorRamp* value);
+    void setColorRamp( const QgsColorRamp *value );
 
   private:
     double mZMin = 0, mZMax = 0;
     int mPenWidth = 1;
     std::unique_ptr<QgsColorRamp> mColorRamp;
 };
-
 
 
 /**

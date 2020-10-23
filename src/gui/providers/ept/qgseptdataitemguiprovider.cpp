@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgspointcloudprovidermetadata.h
+                         qgseptdataitemguiprovider.cpp
                          --------------------
     begin                : October 2020
     copyright            : (C) 2020 by Peter Petrik
@@ -15,27 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSPOINTCLOUDPROVIDERMETADATA_H
-#define QGSPOINTCLOUDPROVIDERMETADATA_H
+#include "qgseptdataitemguiprovider.h"
 
-
-#include "qgsprovidermetadata.h"
+#include <QFileDialog>
+#include <QMessageBox>
 
 ///@cond PRIVATE
-#define SIP_NO_FILE
 
-/**
- * This metadata class does not support creation of provider instances, because
- * point cloud layer currently does not have a concept of data providers. This class
- * is only used to create data item provider (for browser integration).
- */
-class QgsPointCloudProviderMetadata : public QgsProviderMetadata
+void QgsEptDataItemGuiProvider::populateContextMenu( QgsDataItem *, QMenu *, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
 {
-  public:
-    QgsPointCloudProviderMetadata();
-    QList< QgsDataItemProvider * > dataItemProviders() const override;
-};
+}
 
 ///@endcond
-
-#endif // QGSPOINTCLOUDPROVIDERMETADATA_H

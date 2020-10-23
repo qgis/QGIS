@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgspointclouddecoder.h"
-#include "qgspointcloudindex.h"
+#include "qgseptdecoder.h"
+#include "qgseptpointcloudindex.h"
 #include "qgsvector3d.h"
 
 #include <zstd.h>
@@ -26,7 +26,9 @@
 #include "laz-perf/io.hpp"
 #include "laz-perf/common/common.hpp"
 
-QVector<qint32> QgsPointCloudDecoder::decompressBinary( const QString &filename, int pointRecordSize )
+///@cond PRIVATE
+
+QVector<qint32> QgsEptDecoder::decompressBinary( const QString &filename, int pointRecordSize )
 {
   Q_ASSERT( QFile::exists( filename ) );
 
@@ -49,7 +51,7 @@ QVector<qint32> QgsPointCloudDecoder::decompressBinary( const QString &filename,
   return data;
 }
 
-QVector<char> QgsPointCloudDecoder::decompressBinaryClasses( const QString &filename, int pointRecordSize )
+QVector<char> QgsEptDecoder::decompressBinaryClasses( const QString &filename, int pointRecordSize )
 {
   Q_ASSERT( QFile::exists( filename ) );
 
@@ -104,7 +106,7 @@ QByteArray decompressZtdStream( const QByteArray &dataCompressed )
   return dataUncompressed;
 }
 
-QVector<qint32> QgsPointCloudDecoder::decompressZStandard( const QString &filename, int pointRecordSize )
+QVector<qint32> QgsEptDecoder::decompressZStandard( const QString &filename, int pointRecordSize )
 {
   Q_ASSERT( QFile::exists( filename ) );
 
@@ -135,7 +137,7 @@ QVector<qint32> QgsPointCloudDecoder::decompressZStandard( const QString &filena
 
 /* *************************************************************************************** */
 
-QVector<qint32> QgsPointCloudDecoder::decompressLaz( const QString &filename )
+QVector<qint32> QgsEptDecoder::decompressLaz( const QString &filename )
 {
   std::ifstream file( filename.toLatin1().constData(), std::ios::binary );
   Q_ASSERT( file.good() );
@@ -162,3 +164,5 @@ QVector<qint32> QgsPointCloudDecoder::decompressLaz( const QString &filename )
   std::cout << "LAZ-PERF Read through the points in " << t << " seconds." << std::endl;
   return data;
 }
+
+///@endcond

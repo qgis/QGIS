@@ -78,7 +78,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     explicit QgsPointCloudLayer( const QString &path = QString(),
                                  const QString &baseName = QString(),
                                  const QString &providerLib = QStringLiteral( "pointcloud" ),
-                                 const QgsPointCloudLayer::LayerOptions &options = QgsPointCloudLayer::LayerOptions());
+                                 const QgsPointCloudLayer::LayerOptions &options = QgsPointCloudLayer::LayerOptions() );
 
     ~QgsPointCloudLayer() override;
 
@@ -108,7 +108,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     QString loadDefaultStyle( bool &resultFlag SIP_OUT ) override;
 
   private: // Private methods
-    bool loadDataSource();
+    bool loadDataSource( const QString &providerLib, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags );
 
     /**
      * Returns TRUE if the provider is in read-only mode

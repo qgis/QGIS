@@ -20,6 +20,8 @@
 #include "qgspointcloudindex.h"
 #include "qgsrectangle.h"
 #include "qgspointclouddataprovider.h"
+#include "qgsproviderregistry.h"
+#include "qgslogger.h"
 
 QgsPointCloudLayer::QgsPointCloudLayer( const QString &path,
                                         const QString &baseName,
@@ -27,9 +29,19 @@ QgsPointCloudLayer::QgsPointCloudLayer( const QString &path,
                                         const QgsPointCloudLayer::LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::PointCloudLayer, baseName, path )
 {
-  Q_UNUSED(providerLib)
-  Q_UNUSED(options)
-  setValid( loadDataSource() );
+  Q_UNUSED( options )
+  bool ok = false;
+  if ( !path.isEmpty() && !providerLib.isEmpty() )
+  {
+    QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
+    QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+    if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
+    {
+      flags |= QgsDataProvider::FlagTrustDataSource;
+    }
+    ok = loadDataSource( providerLib, providerOptions, flags );
+  }
+  setValid( ok );
 }
 
 QgsPointCloudLayer::~QgsPointCloudLayer() = default;
@@ -66,7 +78,9 @@ const QgsPointCloudDataProvider *QgsPointCloudLayer::dataProvider() const
 
 bool QgsPointCloudLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext &context )
 {
-  setValid( loadDataSource() );
+  //TODO
+  setValid( false );
+  // setValid( loadDataSource() );
 
   QString errorMsg;
   if ( !readSymbology( layerNode, errorMsg, context ) )
@@ -113,13 +127,30 @@ QString QgsPointCloudLayer::loadDefaultStyle( bool &resultFlag )
 }
 
 
-bool QgsPointCloudLayer::loadDataSource()
+bool QgsPointCloudLayer::loadDataSource( const QString &providerLib, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
+  QString dataSource = mDataSource;
 
-  mDataProvider.reset( new QgsPointCloudDataProvider( source(), QgsDataProvider::ProviderOptions() ) );
+  mDataProvider.reset( qobject_cast<QgsPointCloudDataProvider *>( QgsProviderRegistry::instance()->createProvider( providerLib, dataSource, options, flags ) ) );
+  if ( !mDataProvider )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Unable to get point cloud data provider" ), 2 );
+    return false;
+  }
 
-  if ( mDataProvider->isValid() )
-    setCrs( mDataProvider->crs() );
+  mDataProvider->setParent( this );
+  QgsDebugMsgLevel( QStringLiteral( "Instantiated the point cloud data provider plugin" ), 2 );
 
-  return mDataProvider->isValid();
+  setValid( mDataProvider->isValid() );
+  if ( !isValid() )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Invalid point cloud provider plugin %1" ).arg( QString( mDataSource.toUtf8() ) ), 2 );
+    return false;
+  }
+
+  setCrs( mDataProvider->crs() );
+
+  connect( mDataProvider.get(), &QgsPointCloudDataProvider::dataChanged, this, &QgsPointCloudLayer::dataChanged );
+
+  return true;
 }

@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgspointclouddataitemguiprovider.h
+                         qgseptdataitems.h
                          --------------------
     begin                : October 2020
     copyright            : (C) 2020 by Peter Petrik
@@ -15,26 +15,38 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSPOINTCLOUDDATAITEMGUIPROVIDER_H
-#define QGSPOINTCLOUDDATAITEMGUIPROVIDER_H
+#ifndef QGSEPTDATAITEMS_H
+#define QGSEPTDATAITEMS_H
+
+#include "qgsdataitem.h"
+#include "qgsdataitemprovider.h"
+#include "qgsprovidermetadata.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
-#include "qgsdataitemguiprovider.h"
-
-
-class QgsPointCloudDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
+class CORE_EXPORT QgsEptLayerItem : public QgsLayerItem
 {
     Q_OBJECT
   public:
+    QgsEptLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri );
+    QString layerName() const override;
 
-    QString name() override { return QStringLiteral( "Point Cloud" ); }
+};
 
-    void populateContextMenu( QgsDataItem *item, QMenu *menu,
-                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+//! Provider for EPT data items
+class QgsEptDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    QString name() override;
+
+    int capabilities() const override;
+
+    QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
 };
 
 ///@endcond
+#endif // QGSEPTDATAITEMS_H
 
-#endif // QGSPOINTCLOUDDATAITEMGUIPROVIDER_H
+
+

@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgspointclouddataitems.h
+                         qgseptdecoder.h
                          --------------------
     begin                : October 2020
     copyright            : (C) 2020 by Peter Petrik
@@ -15,38 +15,28 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSPOINTCLOUDDATAITEMS_H
-#define QGSPOINTCLOUDDATAITEMS_H
+#ifndef QGSEPTDECODER_H
+#define QGSEPTDECODER_H
 
-#include "qgsdataitem.h"
-#include "qgsdataitemprovider.h"
+
+#include "qgis_core.h"
+#include "qgis_sip.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
-class CORE_EXPORT QgsPointCloudLayerItem : public QgsLayerItem
+#include <QVector>
+#include <QString>
+
+namespace QgsEptDecoder
 {
-    Q_OBJECT
-  public:
-    QgsPointCloudLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri );
-    QString layerName() const override;
+  // These two should be really merged to one function ....
+  QVector<qint32> decompressBinary( const QString &filename, int pointRecordSize );
+  QVector<char> decompressBinaryClasses( const QString &filename, int pointRecordSize );
 
-};
-
-//! Provider for MDAL data items
-class QgsPointCloudDataItemProvider : public QgsDataItemProvider
-{
-  public:
-    QString name() override;
-
-    int capabilities() const override;
-
-    QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
+  QVector<qint32> decompressZStandard( const QString &filename, int pointRecordSize );
+  QVector<qint32> decompressLaz( const QString &filename );
 };
 
 ///@endcond
-
-#endif // QGSPOINTCLOUDDATAITEMS_H
-
-
-
+#endif // QGSEPTDECODER_H

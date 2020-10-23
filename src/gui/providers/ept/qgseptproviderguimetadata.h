@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgspointcloudprovidermetadata.cpp
+                         qgseptproviderguimetadata.h
                          --------------------
     begin                : October 2020
     copyright            : (C) 2020 by Peter Petrik
@@ -15,24 +15,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgspointcloudprovidermetadata.h"
-#include "qgspointclouddataitems.h"
+#ifndef QGSEPTPROVIDERGUIMETADATA_H
+#define QGSEPTPROVIDERGUIMETADATA_H
 
 ///@cond PRIVATE
+#define SIP_NO_FILE
 
-#define PROVIDER_KEY QStringLiteral( "pointcloud" )
-#define PROVIDER_DESCRIPTION QStringLiteral( "Point cloud provider" )
+#include <QList>
+#include <QMainWindow>
 
-QgsPointCloudProviderMetadata::QgsPointCloudProviderMetadata()
-  : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
+#include "qgsproviderguimetadata.h"
+
+class QgsEptProviderGuiMetadata: public QgsProviderGuiMetadata
 {
-}
+  public:
+    QgsEptProviderGuiMetadata();
 
-QList<QgsDataItemProvider *> QgsPointCloudProviderMetadata::dataItemProviders() const
-{
-  QList< QgsDataItemProvider * > providers;
-  providers << new QgsPointCloudDataItemProvider;
-  return providers;
-}
+    QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override;
+    QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
+};
 
 ///@endcond
+
+#endif // QGSEPTPROVIDERGUIMETADATA_H
