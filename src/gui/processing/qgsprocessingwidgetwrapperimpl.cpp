@@ -1848,8 +1848,11 @@ QgsProcessingExpressionParameterDefinitionWidget::QgsProcessingExpressionParamet
   vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
 
   mDefaultLineEdit = new QgsExpressionLineEdit();
-  QgsExpressionContext expressionContext = createExpressionContext( context, algorithm );
-  mDefaultLineEdit->setExpressionContext( expressionContext );
+  if ( mModel )
+  {
+    QgsExpressionContext expressionContext = createExpressionContext( context, algorithm );
+    mDefaultLineEdit->setExpressionContext( expressionContext );
+  }
   if ( const QgsProcessingParameterExpression *expParam = dynamic_cast<const QgsProcessingParameterExpression *>( definition ) )
     mDefaultLineEdit->setExpression( QgsProcessingParameters::parameterAsExpression( expParam, expParam->defaultValue(), context ) );
   vlayout->addWidget( mDefaultLineEdit );
