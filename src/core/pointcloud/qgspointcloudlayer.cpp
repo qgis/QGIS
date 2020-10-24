@@ -40,7 +40,12 @@ QgsPointCloudLayer::~QgsPointCloudLayer() = default;
 
 QgsPointCloudLayer *QgsPointCloudLayer::clone() const
 {
-  QgsPointCloudLayer *layer = new QgsPointCloudLayer( source(), name() );
+  LayerOptions options;
+  options.loadDefaultStyle = false;
+  options.transformContext = transformContext();
+  options.skipCrsValidation = true;
+
+  QgsPointCloudLayer *layer = new QgsPointCloudLayer( source(), name(), mProviderKey, options );
   QgsMapLayer::clone( layer );
   return layer;
 }
