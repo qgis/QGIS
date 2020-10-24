@@ -22,12 +22,10 @@
 
 ///@cond PRIVATE
 
-QgsChunkNode::QgsChunkNode( int x, int y, int z, const QgsAABB &bbox, float error, QgsChunkNode *parent )
+QgsChunkNode::QgsChunkNode( const QgsChunkNodeId &nodeId, const QgsAABB &bbox, float error, QgsChunkNode *parent )
   : mBbox( bbox )
   , mError( error )
-  , mTileX( x )
-  , mTileY( y )
-  , mTileZ( z )
+  , mNodeId( nodeId )
   , mParent( parent )
   , mState( Skeleton )
   , mLoaderQueueEntry( nullptr )
@@ -77,16 +75,16 @@ void QgsChunkNode::ensureAllChildrenExist()
   float ymax = mBbox.yMax;
 
   if ( !mChildren[0] )
-    mChildren[0] = new QgsChunkNode( mTileX * 2 + 0, mTileY * 2 + 1, mTileZ + 1, QgsAABB( mBbox.xMin, ymin, mBbox.zMin, xc, ymax, zc ), childError, this );
+    mChildren[0] = new QgsChunkNode( QgsChunkNodeId( mNodeId.x * 2 + 0, mNodeId.y * 2 + 1, mNodeId.z + 1 ), QgsAABB( mBbox.xMin, ymin, mBbox.zMin, xc, ymax, zc ), childError, this );
 
   if ( !mChildren[1] )
-    mChildren[1] = new QgsChunkNode( mTileX * 2 + 0, mTileY * 2 + 0, mTileZ + 1, QgsAABB( mBbox.xMin, ymin, zc, xc, ymax, mBbox.zMax ), childError, this );
+    mChildren[1] = new QgsChunkNode( QgsChunkNodeId( mNodeId.x * 2 + 0, mNodeId.y * 2 + 0, mNodeId.z + 1 ), QgsAABB( mBbox.xMin, ymin, zc, xc, ymax, mBbox.zMax ), childError, this );
 
   if ( !mChildren[2] )
-    mChildren[2] = new QgsChunkNode( mTileX * 2 + 1, mTileY * 2 + 1, mTileZ + 1, QgsAABB( xc, ymin, mBbox.zMin, mBbox.xMax, ymax, zc ), childError, this );
+    mChildren[2] = new QgsChunkNode( QgsChunkNodeId( mNodeId.x * 2 + 1, mNodeId.y * 2 + 1, mNodeId.z + 1 ), QgsAABB( xc, ymin, mBbox.zMin, mBbox.xMax, ymax, zc ), childError, this );
 
   if ( !mChildren[3] )
-    mChildren[3] = new QgsChunkNode( mTileX * 2 + 1, mTileY * 2 + 0, mTileZ + 1, QgsAABB( xc, ymin, zc, mBbox.xMax, ymax, mBbox.zMax ), childError, this );
+    mChildren[3] = new QgsChunkNode( QgsChunkNodeId( mNodeId.x * 2 + 1, mNodeId.y * 2 + 0, mNodeId.z + 1 ), QgsAABB( xc, ymin, zc, mBbox.xMax, ymax, mBbox.zMax ), childError, this );
 }
 
 int QgsChunkNode::level() const

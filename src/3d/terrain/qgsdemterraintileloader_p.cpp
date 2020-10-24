@@ -77,7 +77,7 @@ QgsDemTerrainTileLoader::QgsDemTerrainTileLoader( QgsTerrainEntity *terrain, Qgs
 
   // get heightmap asynchronously
   connect( heightMapGenerator, &QgsDemHeightMapGenerator::heightMapReady, this, &QgsDemTerrainTileLoader::onHeightMapReady );
-  mHeightMapJobId = heightMapGenerator->render( node->tileX(), node->tileY(), node->tileZ() );
+  mHeightMapJobId = heightMapGenerator->render( node->tileId() );
   mResolution = heightMapGenerator->resolution();
 }
 
@@ -93,14 +93,15 @@ Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *par
   }
 
   const Qgs3DMapSettings &map = terrain()->map3D();
-  QgsRectangle extent = map.terrainGenerator()->tilingScheme().tileToExtent( mNode->tileX(), mNode->tileY(), mNode->tileZ() ); //node->extent;
+  QgsChunkNodeId nodeId = mNode->tileId();
+  QgsRectangle extent = map.terrainGenerator()->tilingScheme().tileToExtent( nodeId.x, nodeId.y, nodeId.z );
   double x0 = extent.xMinimum() - map.origin().x();
   double y0 = extent.yMinimum() - map.origin().y();
   double side = extent.width();
   double half = side / 2;
 
 
-  QgsTerrainTileEntity *entity = new QgsTerrainTileEntity( mNode->tileId() );
+  QgsTerrainTileEntity *entity = new QgsTerrainTileEntity( nodeId );
 
   // create geometry renderer
 
@@ -209,14 +210,12 @@ static QByteArray _readOnlineDtm( QgsTerrainDownloader *downloader, const QgsRec
   return downloader->getHeightMap( extent, res, destCrs );
 }
 
-int QgsDemHeightMapGenerator::render( int x, int y, int z )
+int QgsDemHeightMapGenerator::render( const QgsChunkNodeId &nodeId )
 {
-  QgsChunkNodeId tileId( x, y, z );
-
-  QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, QStringLiteral( "3D" ), QStringLiteral( "DEM" ), tileId.text() );
+  QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, QStringLiteral( "3D" ), QStringLiteral( "DEM" ), nodeId.text() );
 
   // extend the rect by half-pixel on each side? to get the values in "corners"
-  QgsRectangle extent = mTilingScheme.tileToExtent( x, y, z );
+  QgsRectangle extent = mTilingScheme.tileToExtent( nodeId.x, nodeId.y, nodeId.z );
   float mapUnitsPerPixel = extent.width() / mResolution;
   extent.grow( mapUnitsPerPixel / 2 );
   // but make sure not to go beyond the full extent (returns invalid values)
@@ -225,7 +224,7 @@ int QgsDemHeightMapGenerator::render( int x, int y, int z )
 
   JobData jd;
   jd.jobId = ++mLastJobId;
-  jd.tileId = tileId;
+  jd.tileId = nodeId;
   jd.extent = extent;
   jd.timer.start();
   // make a clone of the data provider so it is safe to use in worker thread

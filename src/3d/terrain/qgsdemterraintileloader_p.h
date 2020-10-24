@@ -90,7 +90,7 @@ class QgsDemHeightMapGenerator : public QObject
     ~QgsDemHeightMapGenerator() override;
 
     //! asynchronous terrain read for a tile (array of floats)
-    int render( int x, int y, int z );
+    int render( const QgsChunkNodeId &nodeId );
 
     //! Waits for the tile to finish rendering
     void waitForFinished();

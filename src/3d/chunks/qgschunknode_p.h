@@ -75,7 +75,7 @@ class QgsChunkNode
 {
   public:
     //! constructs a skeleton chunk
-    QgsChunkNode( int tileX, int tileY, int tileZ, const QgsAABB &bbox, float error, QgsChunkNode *parent = nullptr );
+    QgsChunkNode( const QgsChunkNodeId &nodeId, const QgsAABB &bbox, float error, QgsChunkNode *parent = nullptr );
 
     ~QgsChunkNode();
 
@@ -111,14 +111,8 @@ class QgsChunkNode
     QgsAABB bbox() const { return mBbox; }
     //! Returns measure geometric/texture error of the chunk (in world coordinates)
     float error() const { return mError; }
-    //! Returns chunk tile X coordinate of the tiling scheme
-    int tileX() const { return mTileX; }
-    //! Returns chunk tile Y coordinate of the tiling scheme
-    int tileY() const { return mTileY; }
-    //! Returns chunk tile Z coordinate of the tiling scheme
-    int tileZ() const { return mTileZ; }
     //! Returns chunk tile coordinates of the tiling scheme
-    QgsChunkNodeId tileId() const { return QgsChunkNodeId( mTileX, mTileY, mTileZ ); }
+    QgsChunkNodeId tileId() const { return mNodeId; }
     //! Returns pointer to the parent node. Parent is NULLPTR in the root node
     QgsChunkNode *parent() const { return mParent; }
     //! Returns array of the four children. Children may be NULLPTR if they were not created yet
@@ -198,7 +192,7 @@ class QgsChunkNode
     QgsAABB mBbox;      //!< Bounding box in world coordinates
     float mError;    //!< Error of the node in world coordinates (negative error means that chunk at this level has no data, but there may be children that do)
 
-    int mTileX, mTileY, mTileZ;  //!< Chunk coordinates (for use with a tiling scheme)
+    QgsChunkNodeId mNodeId;  //!< Chunk coordinates (for use with a tiling scheme)
 
     QgsChunkNode *mParent;        //!< TODO: should be shared pointer
     QgsChunkNode *mChildren[4];   //!< TODO: should be weak pointers. May be nullptr if not created yet or removed already
