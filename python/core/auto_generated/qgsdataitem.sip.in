@@ -1002,7 +1002,7 @@ Constructor for QgsFieldsItem, with the specified ``parent`` item.
 
 The ``path`` argument gives the item path in the browser tree. The ``path`` string can take any form,
 but QgsDataItem items pointing to different logical locations should always use a different item ``path``.
-The \connectionUri argument is the connection part of the layer URI that it is used internally to create
+The ``connectionUri`` argument is the connection part of the layer URI that it is used internally to create
 a connection and retrieve fields information.
 The ``providerKey`` string can be used to specify the key for the QgsDataItemProvider that created this item.
 The ``schema`` and ``tableName`` are used to retrieve the layer and field information from the ``connectionUri``.

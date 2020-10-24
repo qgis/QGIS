@@ -23,6 +23,8 @@
 #include "qgsmeshlayer.h"
 #include "qgis.h"
 
+///@cond PRIVATE
+
 QString QgsTinMeshCreationAlgorithm::group() const
 {
   return QObject::tr( "Mesh" );
@@ -206,3 +208,5 @@ bool QgsTinMeshCreationAlgorithm::canExecute( QString *errorMessage ) const
 
   return true;
 }
+
+///@endcond PRIVATE

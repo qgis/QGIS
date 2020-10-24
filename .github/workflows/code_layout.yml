@@ -38,8 +38,8 @@ jobs:
         run: |
          mkdir build
          cd build
-         cmake -DWITH_SERVER=ON -DUSE_CCACHE=OFF -DWITH_CORE=OFF -DWITH_APIDOC=ON -DWITH_ASTYLE=ON -DENABLE_TESTS=ON -DWITH_DOT=NO ..
-          make -j3
+         cmake -DWITH_SERVER=ON -DUSE_CCACHE=OFF -DWITH_CORE=OFF -DWITH_APIDOC=ON -DWITH_ASTYLE=ON -DENABLE_TESTS=ON -DWITH_DOT=NO -DWERROR=ON ..
+          make -j3 apidoc
       - name: Run Tests
         run: cd build && ctest -V -R PyQgsDocCoverage
 
@@ -94,7 +94,8 @@ jobs:
       - name: Install Requirements
         run: |
           sudo apt install -y \
-              expect
+              expect \
+              silversearcher-ag
       - name: Doxygen Layout Test
         run: ./tests/code_layout/test_doxygen_layout.sh
 

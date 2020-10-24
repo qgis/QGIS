@@ -984,7 +984,7 @@ class CORE_EXPORT QgsFieldsItem : public QgsDataItem
      *
      * The \a path argument gives the item path in the browser tree. The \a path string can take any form,
      * but QgsDataItem items pointing to different logical locations should always use a different item \a path.
-     * The \connectionUri argument is the connection part of the layer URI that it is used internally to create
+     * The \a connectionUri argument is the connection part of the layer URI that it is used internally to create
      * a connection and retrieve fields information.
      * The \a providerKey string can be used to specify the key for the QgsDataItemProvider that created this item.
      * The \a schema and \a tableName are used to retrieve the layer and field information from the \a connectionUri.

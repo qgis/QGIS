@@ -35,7 +35,7 @@ The actual creation of the table is delegated to the connections API method
 %Docstring
 QgsNewVectorTableDialog constructor
 
-:param connection: DB connection, ownership is NOT transferred
+:param conn: DB connection, ownership is NOT transferred
 :param parent: optional parent
 %End
 

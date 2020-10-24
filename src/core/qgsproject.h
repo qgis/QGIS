@@ -543,7 +543,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \param scope entry scope (group) name
      * \param key entry key name. Keys are '/'-delimited entries, implying a hierarchy of keys and corresponding values.
-     * \param default value to return if the specified \a key does not exist within the \a scope.
+     * \param def default value to return if the specified \a key does not exist within the \a scope.
      * \param ok set to TRUE if key exists and has been successfully retrieved as a double
      *
      * \returns entry value as double from \a scope given its \a key
@@ -555,7 +555,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \param scope entry scope (group) name
      * \param key entry key name. Keys are '/'-delimited entries, implying a hierarchy of keys and corresponding values.
-     * \param default value to return if the specified \a key does not exist within the \a scope.
+     * \param def default value to return if the specified \a key does not exist within the \a scope.
      * \param ok set to TRUE if key exists and has been successfully retrieved as a boolean
      *
      * \returns entry value as boolean from \a scope given its \a key

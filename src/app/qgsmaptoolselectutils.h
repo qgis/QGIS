@@ -74,8 +74,8 @@ namespace QgsMapToolSelectUtils
    * must be in terms of the canvas coordinate system.
    * \param modifiers Keyboard modifiers are used to determine the current selection
    * operations (add, subtract, contains)
-   * \since QGIS 2.16
    * \see selectSingleFeature()
+   * \since QGIS 2.16
   */
   void selectMultipleFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, Qt::KeyboardModifiers modifiers );
 

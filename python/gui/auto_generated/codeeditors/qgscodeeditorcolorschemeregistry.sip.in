@@ -53,7 +53,7 @@ Returns a list of the :py:func:`QgsCodeEditorColorScheme.id()` values for all re
 %Docstring
 Returns the color scheme with matching ``id``.
 
-If the specified scheme \id does not exist then the default scheme will be returned instead.
+If the specified scheme ``id`` does not exist then the default scheme will be returned instead.
 %End
 
 };

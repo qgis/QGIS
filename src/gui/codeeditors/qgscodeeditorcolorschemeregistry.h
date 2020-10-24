@@ -64,7 +64,7 @@ class GUI_EXPORT QgsCodeEditorColorSchemeRegistry
     /**
      * Returns the color scheme with matching \a id.
      *
-     * If the specified scheme \id does not exist then the default scheme will be returned instead.
+     * If the specified scheme \a id does not exist then the default scheme will be returned instead.
      */
     QgsCodeEditorColorScheme scheme( const QString &id ) const;
 
