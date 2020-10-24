@@ -20,7 +20,9 @@
 #include <QGridLayout>
 #include <QToolButton>
 
+Q_NOWARN_DEPRECATED_PUSH
 #include "qwt_compass.h"
+Q_NOWARN_DEPRECATED_POP
 
 #include "qgs3dmapcanvas.h"
 #include "qgscameracontroller.h"
