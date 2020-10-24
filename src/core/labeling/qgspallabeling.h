@@ -268,7 +268,7 @@ class CORE_EXPORT QgsPalLayerSettings
      *
      * \deprecated Use QgsLabeling::LinePlacementFlags instead
      */
-    enum Q_DECL_DEPRECATED LinePlacementFlags
+    enum LinePlacementFlags
     {
       OnLine    = 1,      //!< Labels can be placed directly over a line feature.
       AboveLine = 2,      /**< Labels can be placed above a line feature. Unless MapOrientation is also specified this mode
@@ -305,7 +305,7 @@ class CORE_EXPORT QgsPalLayerSettings
     //TODO QGIS 4.0 - Remove -- moved to QgsLabelEngineObstacleSettings
 
     //! \deprecated use QgsLabelLineSettings::DirectionSymbolPlacement instead
-    enum Q_DECL_DEPRECATED DirectionSymbols
+    enum DirectionSymbols
     {
       SymbolLeftRight, //!< Place direction symbols on left/right of label
       SymbolAbove, //!< Place direction symbols on above label
