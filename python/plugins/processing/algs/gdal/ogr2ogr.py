@@ -37,7 +37,7 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 class ogr2ogr(GdalAlgorithm):
     INPUT = 'INPUT'
     OPTIONS = 'OPTIONS'
-    LAYER = 'LAYER'
+    KEEP_LAYERS = 'LAYER'
     OUTPUT = 'OUTPUT'
 
     def __init__(self):
@@ -55,7 +55,7 @@ class ogr2ogr(GdalAlgorithm):
         options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(options_param)
 
-        options_param = QgsProcessingParameterBoolean(self.LAYER,
+        options_param = QgsProcessingParameterBoolean(self.KEEP_LAYERS,
                                                       self.tr('Keep all Layers'),
                                                       defaultValue=False)
         options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
@@ -99,7 +99,7 @@ class ogr2ogr(GdalAlgorithm):
 
         arguments.append(output)
         arguments.append(ogrLayer)
-        if not self.parameterAsBoolean(parameters, self.LAYER, context):
+        if not self.parameterAsBoolean(parameters, self.KEEP_LAYERS, context):
             arguments.append(layerName)
 
         return ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
