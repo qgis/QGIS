@@ -81,7 +81,15 @@ class CORE_EXPORT IndexedPointCloudNode
 //! Hash function for indexed nodes
 uint qHash( const IndexedPointCloudNode &id );
 
-//! what are the min/max to expect in the piece of data
+/**
+ * \ingroup core
+ *
+ * Represents packaged data bounds
+ *
+ * \note The API is considered EXPERIMENTAL and can be changed without a notice
+ *
+ * \since QGIS 3.18
+ */
 class CORE_EXPORT QgsPointCloudDataBounds
 {
   public:
@@ -145,6 +153,7 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     //! Returns all children of node
     QList<IndexedPointCloudNode> children( const IndexedPointCloudNode &n );
 
+    //! Returns node positions, needs to be scaled and offset applied to get coordinates
     virtual QVector<qint32> nodePositionDataAsInt32( const IndexedPointCloudNode &n ) = 0;
 
     /**

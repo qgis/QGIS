@@ -52,27 +52,27 @@ bool QgsEptPointCloudIndex::load( const QString &fileName )
   QJsonDocument doc = QJsonDocument::fromJson( dataJson, &err );
   if ( err.error != QJsonParseError::NoError )
     return false;
-
-  mDataType = doc["dataType"].toString();  // "binary" or "laszip"
+  QJsonObject result = doc.object();
+  mDataType = result.value( QLatin1String( "dataType" ) ).toString();  // "binary" or "laszip"
   if ( mDataType != "laszip" && mDataType != "binary" && mDataType != "zstandard" )
     return false;
 
-  QString hierarchyType = doc["hierarchyType"].toString();  // "json" or "gzip"
+  QString hierarchyType = result.value( QLatin1String( "hierarchyType" ) ).toString();  // "json" or "gzip"
   if ( hierarchyType != "json" )
     return false;
 
   mSpan = doc["span"].toInt();
 
   // WKT
-  QJsonObject srs = doc["srs"].toObject();
-  mWkt = srs["wkt"].toString();
+  QJsonObject srs = result.value( QLatin1String( "srs" ) ).toObject();
+  mWkt = srs.value( QLatin1String( "wkt" ) ).toString();
 
   // rectangular
-  QJsonArray bounds = doc["bounds"].toArray();
+  QJsonArray bounds = result.value( QLatin1String( "bounds" ) ).toArray();
   if ( bounds.size() != 6 )
     return false;
 
-  QJsonArray bounds_conforming = doc["boundsConforming"].toArray();
+  QJsonArray bounds_conforming = result.value( QLatin1String( "boundsConforming" ) ).toArray();
   if ( bounds.size() != 6 )
     return false;
   mExtent.set( bounds_conforming[0].toDouble(), bounds_conforming[1].toDouble(),
@@ -80,42 +80,41 @@ bool QgsEptPointCloudIndex::load( const QString &fileName )
   mZMin = bounds_conforming[2].toDouble();
   mZMax = bounds_conforming[5].toDouble();
 
-  QJsonArray schemaArray = doc["schema"].toArray();
+  QJsonArray schemaArray = result.value( QLatin1String( "schema" ) ).toArray();
 
   mPointRecordSize = 0;
   for ( QJsonValue schemaItem : schemaArray )
   {
     QJsonObject schemaObj = schemaItem.toObject();
-    QString name = schemaObj["name"].toString();
-    QString type = schemaObj["type"].toString();
+    QString name = schemaObj.value( QLatin1String( "name" ) ).toString();
+    QString type = schemaObj.value( QLatin1String( "type" ) ).toString();
 
-    int size = schemaObj["size"].toInt();
+    int size = schemaObj.value( QLatin1String( "size" ) ).toInt();
     mPointRecordSize += size;
 
     float scale = 1.f;
     if ( schemaObj.contains( "scale" ) )
-      scale = schemaObj["scale"].toDouble();
+      scale = schemaObj.value( QLatin1String( "scale" ) ).toDouble();
 
     float offset = 0.f;
     if ( schemaObj.contains( "offset" ) )
-      offset = schemaObj["offset"].toDouble();
+      offset = schemaObj.value( QLatin1String( "offset" ) ).toDouble();
 
-    if ( name == "X" )
+    if ( name == QLatin1String( "X" ) )
     {
       mOffset.set( offset, mOffset.y(), mOffset.z() );
       mScale.set( scale, mScale.y(), mScale.z() );
     }
-    else if ( name == "Y" )
+    else if ( name == QLatin1String( "Y" ) )
     {
       mOffset.set( mOffset.x(), offset, mOffset.z() );
       mScale.set( mScale.x(), scale, mScale.z() );
     }
-    else if ( name == "Z" )
+    else if ( name == QLatin1String( "Z" ) )
     {
       mOffset.set( mOffset.x(), mOffset.y(), offset );
       mScale.set( mScale.x(), mScale.y(), scale );
     }
-
     // TODO: can parse also stats: "count", "minimum", "maximum", "mean", "stddev", "variance"
   }
 
@@ -176,8 +175,6 @@ bool QgsEptPointCloudIndex::load( const QString &fileName )
 QVector<qint32> QgsEptPointCloudIndex::nodePositionDataAsInt32( const IndexedPointCloudNode &n )
 {
   Q_ASSERT( mHierarchy.contains( n ) );
-  // int count = mHierarchy[n];
-
   if ( mDataType == "binary" )
   {
     QString filename = QString( "%1/ept-data/%2.bin" ).arg( mDirectory ).arg( n.toString() );
@@ -200,6 +197,7 @@ QVector<qint32> QgsEptPointCloudIndex::nodePositionDataAsInt32( const IndexedPoi
   {
     Q_ASSERT( false );  // unsupported
   }
+  return QVector<qint32>();
 }
 
 QgsCoordinateReferenceSystem QgsEptPointCloudIndex::crs() const
@@ -233,6 +231,7 @@ QVector<char> QgsEptPointCloudIndex::nodeClassesDataAsChar( const IndexedPointCl
   {
     Q_ASSERT( false );  // unsupported
   }
+  return QVector<char>();
 }
 
 ///@endcond
