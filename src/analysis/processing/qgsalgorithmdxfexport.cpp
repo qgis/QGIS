@@ -3,7 +3,7 @@
   ---------------------
   Date                 : September 2020
   Copyright            : (C) 2020 by Alexander Bruy
-  Email                : alexamder dot bruy at gmail dot com
+  Email                : alexander dot bruy at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
