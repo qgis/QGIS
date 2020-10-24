@@ -26,5 +26,6 @@ MARK_AS_ADVANCED(LazPerf_INCLUDE_DIR)
 IF (LazPerf_FOUND)
   MESSAGE(STATUS "Found laz-perf: ${LazPerf_INCLUDE_DIR}")
 ELSE (LazPerf_FOUND)
-  MESSAGE(FATAL_ERROR "Could not find laz-perf")
+  # optional dependency only
+  MESSAGE(STATUS "Could not find laz-perf")
 ENDIF (LazPerf_FOUND)

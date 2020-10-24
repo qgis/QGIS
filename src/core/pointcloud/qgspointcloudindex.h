@@ -45,41 +45,67 @@
 class CORE_EXPORT IndexedPointCloudNode
 {
   public:
-    IndexedPointCloudNode();   // invalid node ID
+    //! Constructs invalid node
+    IndexedPointCloudNode();
+    //! Constructs valid node
     IndexedPointCloudNode( int _d, int _x, int _y, int _z );
 
-    bool isValid() const { return d >= 0; }
+    //! Returns whether node is valid
+    bool isValid() const { return mD >= 0; }
 
+    //! Compares nodes
     bool operator==( const IndexedPointCloudNode &other ) const;
 
+    //! Creates node from string
     static IndexedPointCloudNode fromString( const QString &str );
 
+    //! Encode node to string
     QString toString() const;
 
-    // TODO make private
-    int d = -1, x = -1, y = -1, z = -1;
+    //! Returns d
+    int d() const;
+
+    //! Returns x
+    int x() const;
+
+    //! Returns y
+    int y() const;
+
+    //! Returns z
+    int z() const;
+
+  private:
+    int mD = -1, mX = -1, mY = -1, mZ = -1;
 };
 
+//! Hash function for indexed nodes
 uint qHash( const IndexedPointCloudNode &id );
 
-///@cond PRIVATE
-// what are the min/max to expect in the piece of data
+//! what are the min/max to expect in the piece of data
 class CORE_EXPORT QgsPointCloudDataBounds
 {
   public:
-    QgsPointCloudDataBounds(); // invalid
+    //! Constructs invalid bounds
+    QgsPointCloudDataBounds();
+    //! Constructs bounds
     QgsPointCloudDataBounds( qint32 xmin, qint32 ymin, qint32 zmin, qint32 xmax, qint32 ymax, qint32 zmax );
 
+    //! Returns x min
     qint32 xMin() const;
 
+    //! Returns y min
     qint32 yMin() const;
 
+    //! Returns z min
     qint32 zMin() const;
 
+    //! Returns x max
     qint32 xMax() const;
 
+    //! Returns y max
     qint32 yMax() const;
 
+    //! Returns z max
     qint32 zMax() const;
 
     //! Returns 2D rectangle in map coordinates
@@ -102,22 +128,27 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
 {
     Q_OBJECT
   public:
-
+    //! Constructs index
     explicit QgsPointCloudIndex();
     ~QgsPointCloudIndex();
 
+    //! Loads the index from the file
     virtual bool load( const QString &fileName ) = 0;
 
-
+    //! Returns root node of the index
     IndexedPointCloudNode root() { return IndexedPointCloudNode( 0, 0, 0, 0 ); }
 
-
+    //! Traverses tree and returns all nodes in specified depth
     QList<IndexedPointCloudNode> traverseTree( const QgsRectangle &extent, IndexedPointCloudNode n, int maxDepth = 3 );
+
+    //! Returns all children of node
     QList<IndexedPointCloudNode> children( const IndexedPointCloudNode &n );
 
     virtual QVector<qint32> nodePositionDataAsInt32( const IndexedPointCloudNode &n ) = 0;
 
-    /*
+    /**
+     Loads classes data
+
     Standard LIDAR classes:
       0 Created, never classified
       1 Unclassified
@@ -136,25 +167,36 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     */
     virtual QVector<char> nodeClassesDataAsChar( const IndexedPointCloudNode &n ) = 0;
 
+    //! Returns extent of the data
     QgsRectangle extent() const { return mExtent; }
+
+    //! Returns z min
     double zMin() const { return mZMin; }
+    //! Returns z max
     double zMax() const { return mZMax; }
+
+    //! Returns bounds of particular node
     QgsPointCloudDataBounds nodeBounds( const IndexedPointCloudNode &n );
+
+    //! Returns node extent in map coordinates
     QgsRectangle nodeMapExtent( const IndexedPointCloudNode &n );
+
+    //! Returns scale
     QgsVector3D scale() const;
+
+    //! Returns offset
     QgsVector3D offset() const;
 
   protected: //TODO private
     QgsRectangle mExtent;  //!< 2D extent of data
     double mZMin = 0, mZMax = 0;   //!< Vertical extent of data
 
-    QHash<IndexedPointCloudNode, int> mHierarchy;
+    QHash<IndexedPointCloudNode, int> mHierarchy; //!< data hierarchy
     QgsVector3D mScale; //!< Scale of our int32 coordinates compared to CRS coords
     QgsVector3D mOffset; //!< Offset of our int32 coordinates compared to CRS coords
     QgsPointCloudDataBounds mRootBounds;  //!< Bounds of the root node's cube (in int32 coordinates)
 
     int mSpan;  //!< Number of points in one direction in a single node
 };
-
 
 #endif // QGSPOINTCLOUDINDEX_H

@@ -28,7 +28,7 @@ class QgsPointCloudIndex;
  * \ingroup core
  * Base class for providing data for QgsPointCloudLayer
  *
- * Responsible for reading native point cloud data and returning the indexed data?
+ * Responsible for reading native point cloud data and returning the indexed data.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *

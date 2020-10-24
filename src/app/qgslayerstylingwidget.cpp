@@ -678,8 +678,9 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
       {
         QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( mCurrentLayer );
         ( void )pcLayer;
-        //TODO
-        mStackedWidget->setCurrentIndex( mNotSupportedPage );
+
+          //TODO
+          mStackedWidget->setCurrentIndex( mNotSupportedPage );
         break;
       }
 

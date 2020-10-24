@@ -132,7 +132,6 @@ void QgsPointCloudLayer::setTransformContext( const QgsCoordinateTransformContex
 QString QgsPointCloudLayer::loadDefaultStyle( bool &resultFlag )
 {
   Q_UNUSED( resultFlag )
-
   return QString();
 }
 

@@ -84,7 +84,7 @@ QgsPointCloudLayer cannot be copied.
     virtual QString loadDefaultStyle( bool &resultFlag /Out/ );
 
 
-  private: // Private methods
+  private:
     QgsPointCloudLayer( const QgsPointCloudLayer &rhs );
 };
 

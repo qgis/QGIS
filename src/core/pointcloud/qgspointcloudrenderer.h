@@ -32,29 +32,43 @@
 class QgsRenderContext;
 class QgsPointCloudLayer;
 
-
 #ifndef SIP_RUN
 ///@cond PRIVATE
 
+/**
+ * Configuration of the 2d renderer
+ */
 class CORE_EXPORT QgsPointCloudRendererConfig
 {
   public:
+    //! Ctor
     QgsPointCloudRendererConfig();
+    //! Copy constructor
     QgsPointCloudRendererConfig( const QgsPointCloudRendererConfig &other );
+    //! Assigment contructor
     QgsPointCloudRendererConfig &operator= ( const QgsPointCloudRendererConfig &other );
 
+    //! Returns z min
     double zMin() const;
+    //! Sets z min
     void setZMin( double value );
 
+    //! Returns z max
     double zMax() const;
+
+    //! Sets z max
     void setZMax( double value );
 
+    //! Retuns pen width
     int penWidth() const;
+
+    //! Sets pen width
     void setPenWidth( int value );
 
+    //! Returns color ramp
     QgsColorRamp *colorRamp() const;
 
-    // TODO should it clone?
+    //! Sets color ramp
     void setColorRamp( const QgsColorRamp *value );
 
   private:
@@ -79,6 +93,7 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
 {
   public:
 
+    //! Ctor
     explicit QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context );
     ~QgsPointCloudLayerRenderer();
 

@@ -15,7 +15,7 @@ class QgsPointCloudDataProvider: QgsDataProvider
 %Docstring
 Base class for providing data for QgsPointCloudLayer
 
-Responsible for reading native point cloud data and returning the indexed data?
+Responsible for reading native point cloud data and returning the indexed data.
 
 .. note::
 
