@@ -45,6 +45,7 @@ class QgsChunkQueueJobFactory;
 #include <QTime>
 
 #include "qgsfeatureid.h"
+#include "qgschunknode_p.h"
 
 namespace Qt3DRender
 {
@@ -62,7 +63,7 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
     Q_OBJECT
   public:
     //! Constructs a chunked entity
-    QgsChunkedEntity( const QgsAABB &rootBbox, float rootError, float mTau, int mMaxLevel, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, Qt3DCore::QNode *parent = nullptr );
+    QgsChunkedEntity( QgsChunkNode::Type type, const QgsAABB &rootBbox, float rootError, float mTau, int mMaxLevel, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, Qt3DCore::QNode *parent = nullptr );
     ~QgsChunkedEntity() override;
 
     //! Records some bits about the scene (context for update() method)

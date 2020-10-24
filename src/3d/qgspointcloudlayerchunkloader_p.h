@@ -112,13 +112,13 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
 {
   public:
     //! Constructs the factory
-    QgsPointCloudLayerChunkLoaderFactory( const Qgs3DMapSettings &map, QgsPointCloudLayer *vl, int leafLevel );
+    QgsPointCloudLayerChunkLoaderFactory( const Qgs3DMapSettings &map, QgsPointCloudIndex *pc, int leafLevel );
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
     virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
 
     const Qgs3DMapSettings &mMap;
-    QgsPointCloudLayer *mLayer;
+    QgsPointCloudIndex *mPointCloudIndex;
     int mLeafLevel;
 };
 
@@ -164,7 +164,7 @@ class QgsPointCloudLayerChunkedEntity : public QgsChunkedEntity
 {
     Q_OBJECT
   public:
-    explicit QgsPointCloudLayerChunkedEntity( QgsPointCloudLayer *vl, double zMin, double zMax, const Qgs3DMapSettings &map );
+    explicit QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map );
 
     ~QgsPointCloudLayerChunkedEntity();
 };

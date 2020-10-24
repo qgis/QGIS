@@ -70,12 +70,10 @@ QgsPointCloudLayer3DRenderer *QgsPointCloudLayer3DRenderer::clone() const
 Qt3DCore::QEntity *QgsPointCloudLayer3DRenderer::createEntity( const Qgs3DMapSettings &map ) const
 {
   QgsPointCloudLayer *pcl = layer();
-  if ( !pcl || !pcl->dataProvider() )
+  if ( !pcl || !pcl->dataProvider() || !pcl->dataProvider()->index() )
     return nullptr;
 
-  QgsPointCloudIndex *index = pcl->dataProvider()->index();
-
-  return new QgsPointCloudLayerChunkedEntity( pcl, index->zMin(), index->zMax(), map );
+  return new QgsPointCloudLayerChunkedEntity( pcl->dataProvider()->index(), map );
 }
 
 void QgsPointCloudLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const

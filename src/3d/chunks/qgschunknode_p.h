@@ -44,17 +44,29 @@ class QgsChunkQueueJob;
 class QgsChunkQueueJobFactory;
 
 
-//! Helper class to store X,Y,Z integer coordinates of a node
+/**
+ * Helper class to store integer coordinates of a chunk node.
+ *
+ * - "d" is the depth of the tree
+ * - when used with a quadtree, "x" and "y" are the coordinates within the depth level of the tree ("z" coordinate is always -1)
+ * - when used with an octree, "x", "y" and "z" are the coordinates within the depth level of the tree
+ */
 struct QgsChunkNodeId
 {
   //! Constructs node ID
-  QgsChunkNodeId( int _x = -1, int _y = -1, int _z = -1 )
-    : x( _x ), y( _y ), z( _z ) {}
+  QgsChunkNodeId( int _d = -1, int _x = -1, int _y = -1, int _z = -1 )
+    : d( _d ), x( _x ), y( _y ), z( _z ) {}
 
-  int x, y, z;
+  int d, x, y, z;
 
   //! Returns textual representation of the node ID in form of "Z/X/Y"
-  QString text() const { return QStringLiteral( "%1/%2/%3" ).arg( z ).arg( x ).arg( y ); }
+  QString text() const
+  {
+    if ( z == -1 )
+      return QStringLiteral( "%1/%2/%3" ).arg( d ).arg( x ).arg( y );   // quadtree
+    else
+      return QStringLiteral( "%1/%2/%3/%4" ).arg( d ).arg( x ).arg( y ).arg( z );   // octree
+  }
 };
 
 /**
@@ -74,8 +86,15 @@ struct QgsChunkNodeId
 class QgsChunkNode
 {
   public:
+
+    enum Type
+    {
+      Quadtree,   //!< Tree where each node has up to 4 children, splitting along X and Y axes
+      Octree,     //!< Tree where each node has up to 8 children, splitting along all axes (X, Y and Z)
+    };
+
     //! constructs a skeleton chunk
-    QgsChunkNode( const QgsChunkNodeId &nodeId, const QgsAABB &bbox, float error, QgsChunkNode *parent = nullptr );
+    QgsChunkNode( Type type, const QgsChunkNodeId &nodeId, const QgsAABB &bbox, float error, QgsChunkNode *parent = nullptr );
 
     ~QgsChunkNode();
 
@@ -119,6 +138,8 @@ class QgsChunkNode
     QgsChunkNode *const *children() const { return mChildren; }
     //! Returns current state of the node
     State state() const { return mState; }
+    //! Returns type of the tree (quadtree or octree)
+    Type type() const { return mType; }
 
     //! Returns node's entry in the loader queue. Not NULLPTR only when in QueuedForLoad / QueuedForUpdate state
     QgsChunkListEntry *loaderQueueEntry() const { return mLoaderQueueEntry; }
@@ -189,13 +210,14 @@ class QgsChunkNode
     bool hasData() const { return mHasData; }
 
   private:
+    Type mType;      //!< Type of the tree this node belongs to
     QgsAABB mBbox;      //!< Bounding box in world coordinates
     float mError;    //!< Error of the node in world coordinates (negative error means that chunk at this level has no data, but there may be children that do)
 
     QgsChunkNodeId mNodeId;  //!< Chunk coordinates (for use with a tiling scheme)
 
     QgsChunkNode *mParent;        //!< TODO: should be shared pointer
-    QgsChunkNode *mChildren[4];   //!< TODO: should be weak pointers. May be nullptr if not created yet or removed already
+    QgsChunkNode *mChildren[8];   //!< TODO: should be weak pointers. May be nullptr if not created yet or removed already
 
     State mState;  //!< State of the node
 

@@ -187,7 +187,7 @@ QList<IndexedPointCloudNode> QgsPointCloudIndex::children( const IndexedPointClo
   return lst;
 }
 
-QgsPointCloudDataBounds QgsPointCloudIndex::nodeBounds( const IndexedPointCloudNode &n )
+QgsPointCloudDataBounds QgsPointCloudIndex::nodeBounds( const IndexedPointCloudNode &n ) const
 {
   qint32 xMin = -999999999, yMin = -999999999, zMin = -999999999;
   qint32 xMax = 999999999, yMax = 999999999, zMax = 999999999;
@@ -206,9 +206,15 @@ QgsPointCloudDataBounds QgsPointCloudIndex::nodeBounds( const IndexedPointCloudN
   return db;
 }
 
-QgsRectangle QgsPointCloudIndex::nodeMapExtent( const IndexedPointCloudNode &n )
+QgsRectangle QgsPointCloudIndex::nodeMapExtent( const IndexedPointCloudNode &n ) const
 {
   return nodeBounds( n ).mapExtent( mOffset, mScale );
+}
+
+float QgsPointCloudIndex::nodeError( const IndexedPointCloudNode &n ) const
+{
+  double w = nodeMapExtent( n ).width();
+  return w / mSpan;
 }
 
 QgsVector3D QgsPointCloudIndex::scale() const

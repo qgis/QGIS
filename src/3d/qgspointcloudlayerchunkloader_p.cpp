@@ -197,45 +197,38 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
   , mFactory( factory )
   , mContext( factory->mMap )
 {
-  if ( node->level() < mFactory->mLeafLevel )
+  QgsPointCloudIndex *pc = mFactory->mPointCloudIndex;
+  QgsChunkNodeId nodeId = node->tileId();
+  IndexedPointCloudNode pcNode( nodeId.d, nodeId.x, nodeId.y, nodeId.z );
+
+  if ( !pc->hasNode( pcNode ) )
   {
+    qDebug() << "child not exists" << pcNode.toString();
     QTimer::singleShot( 0, this, &QgsPointCloudLayerChunkLoader::finished );
     return;
   }
+
   qDebug() << "creating entity!";
 
-  QgsPointCloudLayer *layer = mFactory->mLayer;
-  const Qgs3DMapSettings &map = mFactory->mMap;
+  //const Qgs3DMapSettings &map = mFactory->mMap;
 
   QgsPointCloud3DSymbolHandler *handler = new QgsPointCloud3DSymbolHandler;
   mHandler.reset( handler );
 
-  QgsPointCloudIndex *pc = layer->dataProvider()->index();
-
-  // only a subset of data to be queried
-  QgsRectangle rect = Qgs3DUtils::worldToMapExtent( node->bbox(), map.origin() );
-  //req.setFilterRect( rect );
-
-  // TODO: set depth based on map units per pixel
-  int depth = 3;
-  QList<IndexedPointCloudNode> nodes = pc->traverseTree( rect, pc->root(), depth );
-
   //
   // this will be run in a background thread
   //
-  QFuture<void> future = QtConcurrent::run( [pc, nodes, this]
+  QFuture<void> future = QtConcurrent::run( [pc, pcNode, this]
   {
     QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "PC chunk load" ) );
 
-    for ( const IndexedPointCloudNode &n : nodes )
+    qDebug() << "loading " << pcNode.toString();
+    if ( mCanceled )
     {
-      if ( mCanceled )
-      {
-        qDebug() << "canceled";
-        break;
-      }
-      mHandler->processNode( pc, n, mContext );
+      qDebug() << "canceled";
+      return;
     }
+    mHandler->processNode( pc, pcNode, mContext );
   } );
 
   // emit finished() as soon as the handler is populated with features
@@ -261,7 +254,10 @@ void QgsPointCloudLayerChunkLoader::cancel()
 
 Qt3DCore::QEntity *QgsPointCloudLayerChunkLoader::createEntity( Qt3DCore::QEntity *parent )
 {
-  if ( mNode->level() < mFactory->mLeafLevel )
+  QgsPointCloudIndex *pc = mFactory->mPointCloudIndex;
+  QgsChunkNodeId nodeId = mNode->tileId();
+  IndexedPointCloudNode pcNode( nodeId.d, nodeId.x, nodeId.y, nodeId.z );
+  if ( !pc->hasNode( pcNode ) )
   {
     return new Qt3DCore::QEntity( parent );  // dummy entity
   }
@@ -275,9 +271,9 @@ Qt3DCore::QEntity *QgsPointCloudLayerChunkLoader::createEntity( Qt3DCore::QEntit
 ///////////////
 
 
-QgsPointCloudLayerChunkLoaderFactory::QgsPointCloudLayerChunkLoaderFactory( const Qgs3DMapSettings &map, QgsPointCloudLayer *vl, int leafLevel )
+QgsPointCloudLayerChunkLoaderFactory::QgsPointCloudLayerChunkLoaderFactory( const Qgs3DMapSettings &map, QgsPointCloudIndex *pc, int leafLevel )
   : mMap( map )
-  , mLayer( vl )
+  , mPointCloudIndex( pc )
   , mLeafLevel( leafLevel )
 {
 }
@@ -290,12 +286,26 @@ QgsChunkLoader *QgsPointCloudLayerChunkLoaderFactory::createChunkLoader( QgsChun
 
 ///////////////
 
-QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( QgsPointCloudLayer *vl, double zMin, double zMax, const Qgs3DMapSettings &map )
-  : QgsChunkedEntity( Qgs3DUtils::layerToWorldExtent( vl->extent(), zMin, zMax, vl->crs(), map.origin(), map.crs(), map.transformContext() ),
-                      -1, // rootError (negative error means that the node does not contain anything)
-                      -1, // max. allowed screen error (negative tau means that we need to go until leaves are reached)
-                      0,
-                      new QgsPointCloudLayerChunkLoaderFactory( map, vl, 0 ), true )
+
+QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset, QgsVector3D scale, const Qgs3DMapSettings &map )
+{
+  // TODO: reprojection from layer to map coordinates if needed
+  QgsVector3D extentMin3D( nodeBounds.xMin() * scale.x() + offset.x(), nodeBounds.yMin() * scale.y() + offset.y(), nodeBounds.zMin() * scale.z() + offset.z() );
+  QgsVector3D extentMax3D( nodeBounds.xMax() * scale.x() + offset.x(), nodeBounds.yMax() * scale.y() + offset.y(), nodeBounds.zMax() * scale.z() + offset.z() );
+  QgsVector3D worldExtentMin3D = Qgs3DUtils::mapToWorldCoordinates( extentMin3D, map.origin() );
+  QgsVector3D worldExtentMax3D = Qgs3DUtils::mapToWorldCoordinates( extentMax3D, map.origin() );
+  QgsAABB rootBbox( worldExtentMin3D.x(), worldExtentMin3D.y(), worldExtentMin3D.z(),
+                    worldExtentMax3D.x(), worldExtentMax3D.y(), worldExtentMax3D.z() );
+  return rootBbox;
+}
+
+QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map )
+  : QgsChunkedEntity( QgsChunkNode::Octree,
+                      nodeBoundsToAABB( pc->nodeBounds( IndexedPointCloudNode( 0, 0, 0, 0 ) ), pc->offset(), pc->scale(), map ),
+                      pc->nodeError( IndexedPointCloudNode( 0, 0, 0, 0 ) ), // rootError
+                      5, // max. allowed screen error (in pixels)  -- // TODO
+                      20, // max. number of levels  (TODO)
+                      new QgsPointCloudLayerChunkLoaderFactory( map, pc, 20 ), true )
 {
   setShowBoundingBoxes( true );
 }
