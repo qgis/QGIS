@@ -22,7 +22,6 @@
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudindex.h"
 #include "qgseventtracing.h"
-#include "qgsabstractvectorlayer3drenderer.h" // for QgsVectorLayer3DTilingSettings
 
 #include "qgspoint3dsymbol.h"
 #include "qgsphongmaterialsettings.h"
@@ -35,6 +34,7 @@
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QShaderProgram>
 #include <Qt3DRender/QGraphicsApiFilter>
+#include <QPointSize>
 
 ///@cond PRIVATE
 
@@ -105,10 +105,6 @@ void QgsPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const In
   const QgsVector3D scale = pc->scale();
   const QgsVector3D offset = pc->offset();
 
-  //qDebug() << "  node " << data.count()/3 << " points";
-
-  // QgsRectangle mapExtent = context.map().extent()???
-
   const qint32 *ptr = data.constData();
   int count = data.count() / 3;
   for ( int i = 0; i < count; ++i )
@@ -119,14 +115,10 @@ void QgsPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const In
 
     double x = offset.x() + scale.x() * ix;
     double y = offset.y() + scale.y() * iy;
-    // if ( mapExtent.contains( QgsPointXY( x, y ) ) )
-    // {
     double z = offset.z() + scale.z() * iz;
     QVector3D point( x, y, z );
     QgsVector3D p = context.map().mapToWorldCoordinates( point );
     outNormal.positions.push_back( QVector3D( p.x(), p.y(), p.z() ) );
-
-    // }
   }
   outNormal.classes.append( classes );
 }
@@ -134,17 +126,8 @@ void QgsPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const In
 void QgsPointCloud3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context )
 {
   makeEntity( parent, context, outNormal, false );
-  // makeEntity( parent, context, outSelected, true );
-
-  // updateZRangeFromPositions( outNormal.positions );
-  // updateZRangeFromPositions( outSelected.positions );
-
-  // the elevation offset is applied separately in QTransform added to sub-entities
-  //float symbolHeight = mSymbol->transform().data()[13];
-  //mZMin += symbolHeight;
-  //mZMax += symbolHeight;
 }
-#include <QPointSize>
+
 void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, QgsPointCloud3DSymbolHandler::PointData &out, bool selected )
 {
   Q_UNUSED( selected )
@@ -162,8 +145,6 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
 
   // Transform
   Qt3DCore::QTransform *tr = new Qt3DCore::QTransform;
-  // tr->setMatrix( symbol->transform() );
-  // tr->setTranslation( position + tr->translation() );
 
   // Material
   Qt3DRender::QMaterial *mat = new Qt3DRender::QMaterial;
@@ -211,7 +192,6 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
   : QgsChunkLoader( node )
   , mFactory( factory )
   , mContext( factory->mMap )
-    // , mSource( new QgsPointCloudLayerFeatureSource( factory->mLayer ) )
 {
   if ( node->level() < mFactory->mLeafLevel )
   {
@@ -227,22 +207,6 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
   mHandler.reset( handler );
 
   QgsPointCloudIndex *pc = layer->dataProvider()->index();
-
-  //QgsExpressionContext exprContext( Qgs3DUtils::globalProjectLayerExpressionContext( layer ) );
-  //exprContext.setFields( layer->fields() );
-  //mContext.setExpressionContext( exprContext );
-
-  //QSet<QString> attributeNames;
-  //if ( !mHandler->prepare( mContext, attributeNames ) )
-  // {
-  //  QgsDebugMsg( QStringLiteral( "Failed to prepare 3D feature handler!" ) );
-  //  return;
-  //}
-
-  // build the feature request
-  // QgsFeatureRequest req;
-  //req.setDestinationCrs( map.crs(), map.transformContext() );
-  //req.setSubsetOfAttributes( attributeNames, layer->fields() );
 
   // only a subset of data to be queried
   QgsRectangle rect = Qgs3DUtils::worldToMapExtent( node->bbox(), map.origin() );
@@ -326,10 +290,10 @@ QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( QgsPointCloudL
   : QgsChunkedEntity( Qgs3DUtils::layerToWorldExtent( vl->extent(), zMin, zMax, vl->crs(), map.origin(), map.crs(), map.transformContext() ),
                       -1, // rootError (negative error means that the node does not contain anything)
                       -1, // max. allowed screen error (negative tau means that we need to go until leaves are reached)
-                      0, //QgsVectorLayer3DTilingSettings().zoomLevelsCount() - 1,
-                      new QgsPointCloudLayerChunkLoaderFactory( map, vl, 0 /*QgsVectorLayer3DTilingSettings().zoomLevelsCount() - 1*/ ), true )
+                      0,
+                      new QgsPointCloudLayerChunkLoaderFactory( map, vl, 0 ), true )
 {
-  setShowBoundingBoxes( true ); //QgsVectorLayer3DTilingSettings().showBoundingBoxes() );
+  setShowBoundingBoxes( true );
 }
 
 QgsPointCloudLayerChunkedEntity::~QgsPointCloudLayerChunkedEntity()

@@ -81,6 +81,7 @@ QgsColorRamp *QgsPointCloudRendererConfig::colorRamp() const
 
 void QgsPointCloudRendererConfig::setColorRamp( const QgsColorRamp *value )
 {
+  // TODO should it clone?
   mColorRamp.reset( value->clone() );
 }
 
@@ -151,7 +152,6 @@ bool QgsPointCloudLayerRenderer::render()
 
 
 QgsPointCloudLayerRenderer::~QgsPointCloudLayerRenderer() = default;
-
 
 void QgsPointCloudLayerRenderer::drawData( QPainter *painter, const QVector<qint32> &data, const QgsPointCloudRendererConfig &config )
 {

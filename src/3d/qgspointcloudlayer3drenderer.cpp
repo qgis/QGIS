@@ -85,15 +85,6 @@ void QgsPointCloudLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWri
   QDomDocument doc = elem.ownerDocument();
 
   elem.setAttribute( QStringLiteral( "layer" ), mLayerRef.layerId );
-  /*
-    QDomElement elemSymbol = doc.createElement( QStringLiteral( "symbol" ) );
-    if ( mSymbol )
-    {
-      elemSymbol.setAttribute( QStringLiteral( "type" ), mSymbol->type() );
-      mSymbol->writeXml( elemSymbol, context );
-    }
-    elem.appendChild( elemSymbol );
-    */
 }
 
 void QgsPointCloudLayer3DRenderer::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
@@ -101,13 +92,6 @@ void QgsPointCloudLayer3DRenderer::readXml( const QDomElement &elem, const QgsRe
   Q_UNUSED( context )
 
   mLayerRef = QgsMapLayerRef( elem.attribute( QStringLiteral( "layer" ) ) );
-
-  /*
-  QDomElement elemSymbol = elem.firstChildElement( QStringLiteral( "symbol" ) );
-  QgsMesh3DSymbol *symbol = new QgsMesh3DSymbol;
-  symbol->readXml( elemSymbol, context );
-  mSymbol.reset( symbol );
-  */
 }
 
 void QgsPointCloudLayer3DRenderer::resolveReferences( const QgsProject &project )

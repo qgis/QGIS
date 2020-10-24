@@ -25,11 +25,24 @@
 #include <QTime>
 #include <QtDebug>
 
-IndexedPointCloudNode::IndexedPointCloudNode(): d( -1 ), x( 0 ), y( 0 ), z( 0 ) {}
+IndexedPointCloudNode::IndexedPointCloudNode():
+  mD( -1 ),
+  mX( 0 ),
+  mY( 0 ),
+  mZ( 0 )
+{}
 
-IndexedPointCloudNode::IndexedPointCloudNode( int _d, int _x, int _y, int _z ): d( _d ), x( _x ), y( _y ), z( _z ) {}
+IndexedPointCloudNode::IndexedPointCloudNode( int _d, int _x, int _y, int _z ):
+  mD( _d ),
+  mX( _x ),
+  mY( _y ),
+  mZ( _z )
+{}
 
-bool IndexedPointCloudNode::operator==( const IndexedPointCloudNode &other ) const { return d == other.d && x == other.x && y == other.y && z == other.z; }
+bool IndexedPointCloudNode::operator==( const IndexedPointCloudNode &other ) const
+{
+  return mD == other.d() && mX == other.x() && mY == other.y() && mZ == other.z();
+}
 
 IndexedPointCloudNode IndexedPointCloudNode::fromString( const QString &str )
 {
@@ -41,12 +54,32 @@ IndexedPointCloudNode IndexedPointCloudNode::fromString( const QString &str )
 
 QString IndexedPointCloudNode::toString() const
 {
-  return QString( "%1-%2-%3-%4" ).arg( d ).arg( x ).arg( y ).arg( z );
+  return QString( "%1-%2-%3-%4" ).arg( mD ).arg( mX ).arg( mY ).arg( mZ );
+}
+
+int IndexedPointCloudNode::d() const
+{
+  return mD;
+}
+
+int IndexedPointCloudNode::x() const
+{
+  return mX;
+}
+
+int IndexedPointCloudNode::y() const
+{
+  return mY;
+}
+
+int IndexedPointCloudNode::z() const
+{
+  return mZ;
 }
 
 uint qHash( const IndexedPointCloudNode &id )
 {
-  return id.d + id.x + id.y + id.z;
+  return id.d() + id.x() + id.y() + id.z();
 }
 
 ///@cond PRIVATE
@@ -139,10 +172,10 @@ QList<IndexedPointCloudNode> QgsPointCloudIndex::children( const IndexedPointClo
 {
   Q_ASSERT( mHierarchy.contains( n ) );
   QList<IndexedPointCloudNode> lst;
-  int d = n.d + 1;
-  int x = n.x * 2;
-  int y = n.y * 2;
-  int z = n.z * 2;
+  int d = n.d() + 1;
+  int x = n.x() * 2;
+  int y = n.y() * 2;
+  int z = n.z() * 2;
 
   for ( int i = 0; i < 8; ++i )
   {
@@ -160,14 +193,14 @@ QgsPointCloudDataBounds QgsPointCloudIndex::nodeBounds( const IndexedPointCloudN
   qint32 xMax = 999999999, yMax = 999999999, zMax = 999999999;
 
   int d = mRootBounds.xMax() - mRootBounds.xMin();
-  double dLevel = ( double )d / pow( 2, n.d );
+  double dLevel = ( double )d / pow( 2, n.d() );
 
-  xMin = round( mRootBounds.xMin() + dLevel * n.x );
-  xMax = round( mRootBounds.xMin() + dLevel * ( n.x + 1 ) );
-  yMin = round( mRootBounds.yMin() + dLevel * n.y );
-  yMax = round( mRootBounds.yMin() + dLevel * ( n.y + 1 ) );
-  zMin = round( mRootBounds.zMin() + dLevel * n.z );
-  zMax = round( mRootBounds.zMin() + dLevel * ( n.z + 1 ) );
+  xMin = round( mRootBounds.xMin() + dLevel * n.x() );
+  xMax = round( mRootBounds.xMin() + dLevel * ( n.x() + 1 ) );
+  yMin = round( mRootBounds.yMin() + dLevel * n.y() );
+  yMax = round( mRootBounds.yMin() + dLevel * ( n.y() + 1 ) );
+  zMin = round( mRootBounds.zMin() + dLevel * n.z() );
+  zMax = round( mRootBounds.zMin() + dLevel * ( n.z() + 1 ) );
 
   QgsPointCloudDataBounds db( xMin, yMin, zMin, xMax, yMax, zMax );
   return db;

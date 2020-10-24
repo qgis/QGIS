@@ -37,7 +37,7 @@ class QgsPointCloudLayer;
  *
  * \since QGIS 3.18
  */
-class _3D_EXPORT QgsPointCloudLayer3DRendererMetadata : public Qgs3DRendererAbstractMetadata
+class _3D_EXPORT QgsPointCloudLayer3DRendererMetadata : public Qgs3DRendererAbstractMetadata SIP_SKIP
 {
   public:
     QgsPointCloudLayer3DRendererMetadata();

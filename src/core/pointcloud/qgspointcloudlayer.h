@@ -106,7 +106,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
     void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
     QString loadDefaultStyle( bool &resultFlag SIP_OUT ) override;
 
-  private: // Private methods
+  private:
     bool loadDataSource( const QString &providerLib, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags );
 
     /**
