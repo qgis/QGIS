@@ -38,6 +38,7 @@ QgsTerrainTileLoader::QgsTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkN
   , mTerrain( terrain )
 {
   const Qgs3DMapSettings &map = mTerrain->map3D();
+  QgsChunkNodeId nodeId = node->tileId();
   int tx, ty, tz;
 #if 0
   if ( map.terrainGenerator->type() == TerrainGenerator::QuantizedMesh )
@@ -49,9 +50,9 @@ QgsTerrainTileLoader::QgsTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkN
   else
 #endif
   {
-    tx = node->tileX();
-    ty = node->tileY();
-    tz = node->tileZ();
+    tx = nodeId.x;
+    ty = nodeId.y;
+    tz = nodeId.z;
   }
 
   QgsRectangle extentTerrainCrs = map.terrainGenerator()->tilingScheme().tileToExtent( tx, ty, tz );

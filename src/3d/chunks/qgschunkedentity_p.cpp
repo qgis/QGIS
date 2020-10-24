@@ -77,7 +77,7 @@ QgsChunkedEntity::QgsChunkedEntity( const QgsAABB &rootBbox, float rootError, fl
   , mChunkLoaderFactory( loaderFactory )
   , mOwnsFactory( ownsFactory )
 {
-  mRootNode = new QgsChunkNode( 0, 0, 0, rootBbox, rootError );
+  mRootNode = new QgsChunkNode( QgsChunkNodeId( 0, 0, 0 ), rootBbox, rootError );
   mChunkLoaderQueue = new QgsChunkList;
   mReplacementQueue = new QgsChunkList;
 }
