@@ -78,9 +78,22 @@ const QgsPointCloudDataProvider *QgsPointCloudLayer::dataProvider() const
 
 bool QgsPointCloudLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext &context )
 {
-  //TODO
-  setValid( false );
-  // setValid( loadDataSource() );
+  // create provider
+  QDomNode pkeyNode = layerNode.namedItem( QStringLiteral( "provider" ) );
+  QString providerKey = pkeyNode.toElement().text();
+  QgsDataProvider::ProviderOptions providerOptions { context.transformContext() };
+  QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+  if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
+  {
+    flags |= QgsDataProvider::FlagTrustDataSource;
+  }
+  // TODO: support QgsMapLayer::FlagDontResolveLayers ?
+  bool ok = loadDataSource( providerKey, providerOptions, flags );
+  setValid( ok );
+  if ( !ok )
+  {
+    return false;
+  }
 
   QString errorMsg;
   if ( !readSymbology( layerNode, errorMsg, context ) )
@@ -94,6 +107,14 @@ bool QgsPointCloudLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
 {
   QDomElement mapLayerNode = layerNode.toElement();
   mapLayerNode.setAttribute( QStringLiteral( "type" ), QStringLiteral( "point-cloud" ) );
+
+  if ( mDataProvider )
+  {
+    QDomElement provider  = doc.createElement( QStringLiteral( "provider" ) );
+    QDomText providerText = doc.createTextNode( providerType() );
+    provider.appendChild( providerText );
+    layerNode.appendChild( provider );
+  }
 
   writeStyleManager( layerNode, doc );
 
