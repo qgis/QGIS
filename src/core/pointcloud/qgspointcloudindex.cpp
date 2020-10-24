@@ -49,6 +49,12 @@ uint qHash( const IndexedPointCloudNode &id )
   return id.d + id.x + id.y + id.z;
 }
 
+///@cond PRIVATE
+
+//
+// QgsPointCloudDataBounds
+//
+
 QgsPointCloudDataBounds::QgsPointCloudDataBounds() = default;
 
 QgsPointCloudDataBounds::QgsPointCloudDataBounds( qint32 xmin, qint32 ymin, qint32 zmin, qint32 xmax, qint32 ymax, qint32 zmax )
@@ -60,16 +66,6 @@ QgsPointCloudDataBounds::QgsPointCloudDataBounds( qint32 xmin, qint32 ymin, qint
   , mZMax( zmax )
 {
 
-}
-
-QgsPointCloudDataBounds::QgsPointCloudDataBounds( const QgsPointCloudDataBounds &obj )
-  : mXMin( obj.xMin() )
-  , mYMin( obj.yMin() )
-  , mZMin( obj.zMin() )
-  , mXMax( obj.xMax() )
-  , mYMax( obj.yMax() )
-  , mZMax( obj.zMax() )
-{
 }
 
 qint32 QgsPointCloudDataBounds::xMin() const
@@ -109,6 +105,13 @@ QgsRectangle QgsPointCloudDataBounds::mapExtent( const QgsVector3D &offset, cons
            mXMax * scale.x() + offset.x(), mYMax * scale.y() + offset.y()
          );
 }
+
+///@endcond
+
+
+//
+// QgsPointCloudIndex
+//
 
 QgsPointCloudIndex::QgsPointCloudIndex() = default;
 

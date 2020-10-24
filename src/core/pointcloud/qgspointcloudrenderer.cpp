@@ -24,6 +24,7 @@
 #include "qgsstyle.h"
 #include "qgscolorramp.h"
 
+///@cond PRIVATE
 QgsPointCloudRendererConfig::QgsPointCloudRendererConfig() = default;
 
 QgsPointCloudRendererConfig::QgsPointCloudRendererConfig( const QgsPointCloudRendererConfig &other )
@@ -83,7 +84,9 @@ void QgsPointCloudRendererConfig::setColorRamp( const QgsColorRamp *value )
   mColorRamp.reset( value->clone() );
 }
 
-QgsPointCloudRenderer::QgsPointCloudRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context )
+///@endcond
+
+QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
   , mLayer( layer )
 {
@@ -106,7 +109,7 @@ static QList<IndexedPointCloudNode> _traverseTree( QgsPointCloudIndex *pc, const
   return pc->traverseTree( extent, n, maxDepth );
 }
 
-bool QgsPointCloudRenderer::render()
+bool QgsPointCloudLayerRenderer::render()
 {
   // TODO cache!?
   QgsPointCloudIndex *pc = mLayer->dataProvider()->index();
@@ -147,20 +150,10 @@ bool QgsPointCloudRenderer::render()
 }
 
 
-QgsPointCloudRenderer::~QgsPointCloudRenderer() = default;
+QgsPointCloudLayerRenderer::~QgsPointCloudLayerRenderer() = default;
 
 
-void QgsPointCloudRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
-{
-
-}
-
-void QgsPointCloudRenderer::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
-{
-
-}
-
-void QgsPointCloudRenderer::drawData( QPainter *painter, const QVector<qint32> &data, const QgsPointCloudRendererConfig &config )
+void QgsPointCloudLayerRenderer::drawData( QPainter *painter, const QVector<qint32> &data, const QgsPointCloudRendererConfig &config )
 {
   const QgsMapToPixel mapToPixel = renderContext()->mapToPixel();
   const QgsVector3D scale = mLayer->dataProvider()->index()->scale();

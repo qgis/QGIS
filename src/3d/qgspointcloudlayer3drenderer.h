@@ -27,13 +27,13 @@
 
 class QgsPointCloudLayer;
 
+#ifndef SIP_RUN
 
 /**
  * \ingroup core
  * Metadata for point cloud layer 3D renderer to allow creation of its instances from XML
  *
- * \warning This is not considered stable API, and may change in future QGIS releases. It is
- * exposed to the Python bindings as a tech preview only.
+ * \note Not available in Python bindings
  *
  * \since QGIS 3.18
  */
@@ -46,6 +46,7 @@ class _3D_EXPORT QgsPointCloudLayer3DRendererMetadata : public Qgs3DRendererAbst
     QgsAbstract3DRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) override SIP_FACTORY;
 };
 
+#endif
 
 /**
  * \ingroup core
@@ -64,7 +65,7 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstract3DRenderer
     //! Returns point cloud layer associated with the renderer
     QgsPointCloudLayer *layer() const;
 
-    QString type() const override { return "pointcloud"; }
+    QString type() const override;
     QgsPointCloudLayer3DRenderer *clone() const override SIP_FACTORY;
     Qt3DCore::QEntity *createEntity( const Qgs3DMapSettings &map ) const override SIP_SKIP;
 

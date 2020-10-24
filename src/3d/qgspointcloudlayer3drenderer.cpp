@@ -56,6 +56,11 @@ QgsPointCloudLayer *QgsPointCloudLayer3DRenderer::layer() const
   return qobject_cast<QgsPointCloudLayer *>( mLayerRef.layer );
 }
 
+QString QgsPointCloudLayer3DRenderer::type() const
+{
+  return QStringLiteral( "pointcloud" );
+}
+
 QgsPointCloudLayer3DRenderer *QgsPointCloudLayer3DRenderer::clone() const
 {
   QgsPointCloudLayer3DRenderer *r = new QgsPointCloudLayer3DRenderer;
@@ -75,6 +80,8 @@ Qt3DCore::QEntity *QgsPointCloudLayer3DRenderer::createEntity( const Qgs3DMapSet
 
 void QgsPointCloudLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
+  Q_UNUSED( context )
+
   QDomDocument doc = elem.ownerDocument();
 
   elem.setAttribute( QStringLiteral( "layer" ), mLayerRef.layerId );
@@ -91,6 +98,8 @@ void QgsPointCloudLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWri
 
 void QgsPointCloudLayer3DRenderer::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
+  Q_UNUSED( context )
+
   mLayerRef = QgsMapLayerRef( elem.attribute( QStringLiteral( "layer" ) ) );
 
   /*

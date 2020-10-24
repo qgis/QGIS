@@ -33,6 +33,9 @@ class QgsRenderContext;
 class QgsPointCloudLayer;
 
 
+#ifndef SIP_RUN
+///@cond PRIVATE
+
 class CORE_EXPORT QgsPointCloudRendererConfig
 {
   public:
@@ -60,27 +63,26 @@ class CORE_EXPORT QgsPointCloudRendererConfig
     std::unique_ptr<QgsColorRamp> mColorRamp;
 };
 
+///@endcond
 
 /**
  * \ingroup core
  *
- * Represents a 2D renderer of point cloud data
+ * Implementation of threaded rendering for point cloud layers.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
+ * \note Not available in Python bindings
  *
  * \since QGIS 3.18
  */
-class CORE_EXPORT QgsPointCloudRenderer: public QgsMapLayerRenderer
+class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
 {
   public:
 
-    explicit QgsPointCloudRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context );
-    ~QgsPointCloudRenderer();
+    explicit QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context );
+    ~QgsPointCloudLayerRenderer();
 
     bool render() override;
-
-    void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
-    void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
   private:
     QgsPointCloudLayer *mLayer = nullptr;
@@ -96,6 +98,7 @@ class CORE_EXPORT QgsPointCloudRenderer: public QgsMapLayerRenderer
 
     void drawData( QPainter *painter, const QVector<qint32> &data, const QgsPointCloudRendererConfig &config );
 };
+#endif
 
 
 #endif // QGSPOINTCLOUDRENDERER_H

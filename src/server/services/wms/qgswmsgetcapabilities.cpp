@@ -1984,6 +1984,7 @@ namespace QgsWms
         case QgsMapLayerType::VectorTileLayer:
         case QgsMapLayerType::PluginLayer:
         case QgsMapLayerType::AnnotationLayer:
+        case QgsMapLayerType::PointCloudLayer:
           break;
       }
     }

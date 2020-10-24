@@ -44,15 +44,14 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
                                QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     ~QgsPointCloudDataProvider() override;
-
     QgsRectangle extent() const override;
-
     bool isValid() const override;
 
-    virtual QString name() const override = 0;
-    virtual QgsCoordinateReferenceSystem crs() const override = 0;
-    virtual QString description() const override = 0;
-
+    /**
+     * Returns the point cloud index associated with the provider.
+     *
+     * \note Not available in Python bindings
+     */
     virtual QgsPointCloudIndex *index() const SIP_SKIP {return nullptr;}
 
   private:

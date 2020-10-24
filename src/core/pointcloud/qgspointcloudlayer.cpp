@@ -63,7 +63,7 @@ QgsRectangle QgsPointCloudLayer::extent() const
 
 QgsMapLayerRenderer *QgsPointCloudLayer::createMapRenderer( QgsRenderContext &rendererContext )
 {
-  return new QgsPointCloudRenderer( this, rendererContext );
+  return new QgsPointCloudLayerRenderer( this, rendererContext );
 }
 
 QgsPointCloudDataProvider *QgsPointCloudLayer::dataProvider()
@@ -103,6 +103,8 @@ bool QgsPointCloudLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
 
 bool QgsPointCloudLayer::readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
 {
+  Q_UNUSED( errorMessage )
+
   QDomElement elem = node.toElement();
 
   readCommonStyle( elem, context, categories );
@@ -113,16 +115,24 @@ bool QgsPointCloudLayer::readSymbology( const QDomNode &node, QString &errorMess
 bool QgsPointCloudLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
     const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
-
+  Q_UNUSED( errorMessage )
+  Q_UNUSED( context )
+  Q_UNUSED( categories )
+  Q_UNUSED( node )
+  Q_UNUSED( doc )
+  return false;
 }
 
 void QgsPointCloudLayer::setTransformContext( const QgsCoordinateTransformContext &transformContext )
 {
-
+  if ( mDataProvider )
+    mDataProvider->setTransformContext( transformContext );
 }
 
 QString QgsPointCloudLayer::loadDefaultStyle( bool &resultFlag )
 {
+  Q_UNUSED( resultFlag )
+
   return QString();
 }
 
@@ -130,6 +140,7 @@ QString QgsPointCloudLayer::loadDefaultStyle( bool &resultFlag )
 bool QgsPointCloudLayer::loadDataSource( const QString &providerLib, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
   QString dataSource = mDataSource;
+  mProviderKey = providerLib;
 
   mDataProvider.reset( qobject_cast<QgsPointCloudDataProvider *>( QgsProviderRegistry::instance()->createProvider( providerLib, dataSource, options, flags ) ) );
   if ( !mDataProvider )

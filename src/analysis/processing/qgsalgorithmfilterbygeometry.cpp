@@ -305,6 +305,7 @@ QVariantMap QgsFilterByLayerTypeAlgorithm::processAlgorithm( const QVariantMap &
     case QgsMapLayerType::MeshLayer:
     case QgsMapLayerType::VectorTileLayer:
     case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::PointCloudLayer:
       break;
   }
 

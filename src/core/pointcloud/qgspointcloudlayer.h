@@ -18,7 +18,7 @@
 #ifndef QGSPOINTCLOUDLAYER_H
 #define QGSPOINTCLOUDLAYER_H
 
-class QgsPointCloudRenderer;
+class QgsPointCloudLayerRenderer;
 
 #include "qgspointclouddataprovider.h"
 #include "qgsmaplayer.h"
@@ -49,7 +49,6 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
 
       /**
        * Constructor for LayerOptions with optional \a transformContext.
-       * \note transformContext argument was added in QGIS 3.8
        */
       explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext( ) )
         : transformContext( transformContext )
@@ -121,8 +120,6 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
 
     std::unique_ptr<QgsPointCloudDataProvider> mDataProvider;
 
-    //! Renderer assigned to the layer to draw map
-    std::unique_ptr<QgsPointCloudRenderer> mRenderer;
 };
 
 
