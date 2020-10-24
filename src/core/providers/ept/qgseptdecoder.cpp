@@ -150,6 +150,7 @@ QVector<qint32> QgsEptDecoder::decompressZStandard( const QString &filename, int
   Q_UNUSED( filename )
   Q_UNUSED( pointRecordSize )
   Q_ASSERT( false );
+  return QVector<qint32>();
 }
 
 #endif // defined(HAVE_ZSTD)
@@ -191,6 +192,7 @@ QVector<qint32> QgsEptDecoder::decompressLaz( const QString &filename )
   //TODO graceful return and error message
   Q_UNUSED( filename )
   Q_ASSERT( false );
+  return QVector<qint32>();
 }
 #endif
 
