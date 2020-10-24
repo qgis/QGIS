@@ -351,9 +351,12 @@ IF(WITH_CORE)
   MESSAGE(STATUS "Found zlib: ${ZLIB_LIBRARIES}")
 
   FIND_PACKAGE(ZSTD) # for decompression of point clouds
+  SET(HAVE_ZSTD FALSE)
   IF (ZSTD_FOUND)
     SET(HAVE_ZSTD TRUE)  # used in qgsconfig.h
   ENDIF (ZSTD_FOUND)
+
+  SET(HAVE_LAZPERF FALSE)
   FIND_PACKAGE(LazPerf) # for decompression of point clouds
   IF (LazPerf_FOUND)
     SET(HAVE_LAZPERF TRUE)  # used in qgsconfig.h
