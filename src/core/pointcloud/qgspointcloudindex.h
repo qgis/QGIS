@@ -115,6 +115,7 @@ class CORE_EXPORT QgsPointCloudDataBounds
     qint32 mXMin, mYMin, mZMin, mXMax, mYMax, mZMax;
 };
 
+
 /**
  * \ingroup core
  *
@@ -191,7 +192,7 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     QgsRectangle mExtent;  //!< 2D extent of data
     double mZMin = 0, mZMax = 0;   //!< Vertical extent of data
 
-    QHash<IndexedPointCloudNode, int> mHierarchy; //!< data hierarchy
+    QHash<IndexedPointCloudNode, int> mHierarchy; //!< Data hierarchy
     QgsVector3D mScale; //!< Scale of our int32 coordinates compared to CRS coords
     QgsVector3D mOffset; //!< Offset of our int32 coordinates compared to CRS coords
     QgsPointCloudDataBounds mRootBounds;  //!< Bounds of the root node's cube (in int32 coordinates)
