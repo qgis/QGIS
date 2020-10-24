@@ -84,4 +84,18 @@ QList<QgsDataItemProvider *> QgsEptProviderMetadata::dataItemProviders() const
   return providers;
 }
 
+QVariantMap QgsEptProviderMetadata::decodeUri( const QString &uri )
+{
+  const QString path = uri;
+  QVariantMap uriComponents;
+  uriComponents.insert( QStringLiteral( "path" ), path );
+  return uriComponents;
+}
+
+QString QgsEptProviderMetadata::encodeUri( const QVariantMap &parts )
+{
+  const QString path = parts.value( QStringLiteral( "path" ) ).toString();
+  return path;
+}
+
 ///@endcond

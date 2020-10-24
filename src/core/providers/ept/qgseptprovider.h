@@ -63,6 +63,8 @@ class QgsEptProviderMetadata : public QgsProviderMetadata
     QgsEptProviderMetadata();
     QgsEptProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QList< QgsDataItemProvider * > dataItemProviders() const override;
+    QString encodeUri( const QVariantMap &parts ) override;
+    QVariantMap decodeUri( const QString &uri ) override;
 };
 
 ///@endcond
