@@ -61,7 +61,7 @@ bool QgsEptPointCloudIndex::load( const QString &fileName )
   if ( hierarchyType != "json" )
     return false;
 
-  mSpan = doc["span"].toInt();
+  mSpan = result.value( QLatin1String( "span" ) ).toInt();
 
   // WKT
   QJsonObject srs = result.value( QLatin1String( "srs" ) ).toObject();
