@@ -255,12 +255,12 @@ gzip ChangeLog
       %{configure_with_sha} \
       .
 
-make %{?_smp_mflags}
+%cmake_build
 
 %install
 # Necessary for the test suite
 #export LD_LIBRARY_PATH=%{_builddir}%{name}-%{version}/output/%{_lib}
-make install DESTDIR=%{buildroot}
+%cmake_install
 
 # Install MIME type definitions
 install -d %{buildroot}%{_datadir}/mime/packages
