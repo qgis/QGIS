@@ -29,19 +29,11 @@ QgsPointCloudLayer::QgsPointCloudLayer( const QString &path,
                                         const QgsPointCloudLayer::LayerOptions &options )
   : QgsMapLayer( QgsMapLayerType::PointCloudLayer, baseName, path )
 {
-  Q_UNUSED( options )
-  bool ok = false;
   if ( !path.isEmpty() && !providerLib.isEmpty() )
   {
     QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
-    QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
-    if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
-    {
-      flags |= QgsDataProvider::FlagTrustDataSource;
-    }
-    ok = loadDataSource( providerLib, providerOptions, flags );
+    setDataSource( path, baseName, providerLib, providerOptions, options.loadDefaultStyle );
   }
-  setValid( ok );
 }
 
 QgsPointCloudLayer::~QgsPointCloudLayer() = default;
@@ -80,17 +72,15 @@ bool QgsPointCloudLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
 {
   // create provider
   QDomNode pkeyNode = layerNode.namedItem( QStringLiteral( "provider" ) );
-  QString providerKey = pkeyNode.toElement().text();
-  QgsDataProvider::ProviderOptions providerOptions { context.transformContext() };
-  QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
-  if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
+  mProviderKey = pkeyNode.toElement().text();
+
+  if ( !( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) )
   {
-    flags |= QgsDataProvider::FlagTrustDataSource;
+    QgsDataProvider::ProviderOptions providerOptions { context.transformContext() };
+    setDataSource( mDataSource, mLayerName, mProviderKey, providerOptions, false );
   }
-  // TODO: support QgsMapLayer::FlagDontResolveLayers ?
-  bool ok = loadDataSource( providerKey, providerOptions, flags );
-  setValid( ok );
-  if ( !ok )
+
+  if ( !isValid() )
   {
     return false;
   }
@@ -156,17 +146,30 @@ QString QgsPointCloudLayer::loadDefaultStyle( bool &resultFlag )
   return QString();
 }
 
-
-bool QgsPointCloudLayer::loadDataSource( const QString &providerLib, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag )
 {
-  QString dataSource = mDataSource;
-  mProviderKey = providerLib;
+  Q_UNUSED( loadDefaultStyleFlag )
 
-  mDataProvider.reset( qobject_cast<QgsPointCloudDataProvider *>( QgsProviderRegistry::instance()->createProvider( providerLib, dataSource, options, flags ) ) );
+  if ( mDataProvider )
+    disconnect( mDataProvider.get(), &QgsPointCloudDataProvider::dataChanged, this, &QgsPointCloudLayer::dataChanged );
+
+  setName( baseName );
+  mProviderKey = provider;
+  mDataSource = dataSource;
+
+  QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags();
+  if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
+  {
+    flags |= QgsDataProvider::FlagTrustDataSource;
+  }
+
+  mDataProvider.reset( qobject_cast<QgsPointCloudDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, dataSource, options, flags ) ) );
   if ( !mDataProvider )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Unable to get point cloud data provider" ), 2 );
-    return false;
+    QgsDebugMsg( QStringLiteral( "Unable to get point cloud data provider" ) );
+    setValid( false );
+    emit dataSourceChanged();
+    return;
   }
 
   mDataProvider->setParent( this );
@@ -175,13 +178,15 @@ bool QgsPointCloudLayer::loadDataSource( const QString &providerLib, const QgsDa
   setValid( mDataProvider->isValid() );
   if ( !isValid() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Invalid point cloud provider plugin %1" ).arg( QString( mDataSource.toUtf8() ) ), 2 );
-    return false;
+    QgsDebugMsg( QStringLiteral( "Invalid point cloud provider plugin %1" ).arg( QString( mDataSource.toUtf8() ) ) );
+    emit dataSourceChanged();
+    return;
   }
 
   setCrs( mDataProvider->crs() );
 
   connect( mDataProvider.get(), &QgsPointCloudDataProvider::dataChanged, this, &QgsPointCloudLayer::dataChanged );
 
-  return true;
+  emit dataSourceChanged();
+  triggerRepaint();
 }
