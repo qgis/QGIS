@@ -39,6 +39,8 @@ Constructor for LayerOptions with optional ``transformContext``.
 
       QgsCoordinateTransformContext transformContext;
 
+      bool loadDefaultStyle;
+
       bool skipCrsValidation;
     };
 
@@ -82,6 +84,8 @@ QgsPointCloudLayer cannot be copied.
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );
 
     virtual QString loadDefaultStyle( bool &resultFlag /Out/ );
+
+    virtual void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false );
 
 
   private:

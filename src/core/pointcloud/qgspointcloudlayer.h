@@ -54,7 +54,13 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
         : transformContext( transformContext )
       {}
 
+      /**
+       * Coordinate transform context
+       */
       QgsCoordinateTransformContext transformContext;
+
+      //! Set to TRUE if the default layer style should be loaded
+      bool loadDefaultStyle = true;
 
       /**
        * Controls whether the layer is allowed to have an invalid/unknown CRS.
@@ -105,13 +111,10 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
 
     void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
     QString loadDefaultStyle( bool &resultFlag SIP_OUT ) override;
+    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false ) override;
 
   private:
-    bool loadDataSource( const QString &providerLib, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags );
 
-    /**
-     * Returns TRUE if the provider is in read-only mode
-     */
     bool isReadOnly() const override {return true;}
 
 #ifdef SIP_RUN
