@@ -147,6 +147,8 @@ QVector<qint32> QgsEptDecoder::decompressZStandard( const QString &filename, int
 QVector<qint32> QgsEptDecoder::decompressZStandard( const QString &filename, int pointRecordSize )
 {
   //TODO graceful error
+  Q_UNUSED( filename )
+  Q_UNUSED( pointRecordSize )
   Q_ASSERT( false );
 }
 
@@ -187,6 +189,7 @@ QVector<qint32> QgsEptDecoder::decompressLaz( const QString &filename )
 QVector<qint32> QgsEptDecoder::decompressLaz( const QString &filename )
 {
   //TODO graceful return and error message
+  Q_UNUSED( filename )
   Q_ASSERT( false );
 }
 #endif
