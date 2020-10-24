@@ -45,7 +45,7 @@ class CORE_EXPORT QgsPointCloudRendererConfig
     QgsPointCloudRendererConfig();
     //! Copy constructor
     QgsPointCloudRendererConfig( const QgsPointCloudRendererConfig &other );
-    //! Assigment contructor
+    //! Assignment constructor
     QgsPointCloudRendererConfig &operator= ( const QgsPointCloudRendererConfig &other );
 
     //! Returns z min
@@ -59,7 +59,7 @@ class CORE_EXPORT QgsPointCloudRendererConfig
     //! Sets z max
     void setZMax( double value );
 
-    //! Retuns pen width
+    //! Returns pen width
     int penWidth() const;
 
     //! Sets pen width
