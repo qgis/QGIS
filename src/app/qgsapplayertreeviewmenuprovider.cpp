@@ -43,6 +43,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsxmlutils.h"
 #include "qgsmessagebar.h"
+#include "qgspointcloudlayer.h"
 
 
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView *view, QgsMapCanvas *canvas )
