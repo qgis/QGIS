@@ -94,7 +94,7 @@ Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *par
 
   const Qgs3DMapSettings &map = terrain()->map3D();
   QgsChunkNodeId nodeId = mNode->tileId();
-  QgsRectangle extent = map.terrainGenerator()->tilingScheme().tileToExtent( nodeId.x, nodeId.y, nodeId.z );
+  QgsRectangle extent = map.terrainGenerator()->tilingScheme().tileToExtent( nodeId );
   double x0 = extent.xMinimum() - map.origin().x();
   double y0 = extent.yMinimum() - map.origin().y();
   double side = extent.width();
@@ -215,7 +215,7 @@ int QgsDemHeightMapGenerator::render( const QgsChunkNodeId &nodeId )
   QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, QStringLiteral( "3D" ), QStringLiteral( "DEM" ), nodeId.text() );
 
   // extend the rect by half-pixel on each side? to get the values in "corners"
-  QgsRectangle extent = mTilingScheme.tileToExtent( nodeId.x, nodeId.y, nodeId.z );
+  QgsRectangle extent = mTilingScheme.tileToExtent( nodeId );
   float mapUnitsPerPixel = extent.width() / mResolution;
   extent.grow( mapUnitsPerPixel / 2 );
   // but make sure not to go beyond the full extent (returns invalid values)

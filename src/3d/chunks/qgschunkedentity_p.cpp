@@ -70,14 +70,15 @@ static float screenSpaceError( QgsChunkNode *node, const QgsChunkedEntity::Scene
   return sse;
 }
 
-QgsChunkedEntity::QgsChunkedEntity( const QgsAABB &rootBbox, float rootError, float tau, int maxLevel, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, Qt3DCore::QNode *parent )
+QgsChunkedEntity::QgsChunkedEntity( QgsChunkNode::Type type, const QgsAABB &rootBbox, float rootError, float tau, int maxLevel, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
   , mTau( tau )
   , mMaxLevel( maxLevel )
   , mChunkLoaderFactory( loaderFactory )
   , mOwnsFactory( ownsFactory )
 {
-  mRootNode = new QgsChunkNode( QgsChunkNodeId( 0, 0, 0 ), rootBbox, rootError );
+  QgsChunkNodeId rootNodeId( 0, 0, 0, type == QgsChunkNode::Quadtree ? -1 : 0 );
+  mRootNode = new QgsChunkNode( type, rootNodeId, rootBbox, rootError );
   mChunkLoaderQueue = new QgsChunkList;
   mReplacementQueue = new QgsChunkList;
 }
@@ -269,7 +270,8 @@ void QgsChunkedEntity::update( QgsChunkNode *node, const SceneState &state )
     // error is not acceptable and children are ready to be used - recursive descent
 
     QgsChunkNode *const *children = node->children();
-    for ( int i = 0; i < 4; ++i )
+    int childCount = node->type() == QgsChunkNode::Quadtree ? 4 : 8;
+    for ( int i = 0; i < childCount; ++i )
       update( children[i], state );
   }
   else
@@ -281,7 +283,8 @@ void QgsChunkedEntity::update( QgsChunkNode *node, const SceneState &state )
     if ( node->level() < mMaxLevel )
     {
       QgsChunkNode *const *children = node->children();
-      for ( int i = 0; i < 4; ++i )
+      int childCount = node->type() == QgsChunkNode::Quadtree ? 4 : 8;
+      for ( int i = 0; i < childCount; ++i )
         requestResidency( children[i] );
     }
   }

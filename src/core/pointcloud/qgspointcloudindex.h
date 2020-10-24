@@ -79,7 +79,7 @@ class CORE_EXPORT IndexedPointCloudNode
 };
 
 //! Hash function for indexed nodes
-uint qHash( const IndexedPointCloudNode &id );
+CORE_EXPORT uint qHash( const IndexedPointCloudNode &id );
 
 /**
  * \ingroup core
@@ -147,6 +147,8 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     //! Returns root node of the index
     IndexedPointCloudNode root() { return IndexedPointCloudNode( 0, 0, 0, 0 ); }
 
+    bool hasNode( const IndexedPointCloudNode &n ) const { return mHierarchy.contains( n ); }
+
     //! Traverses tree and returns all nodes in specified depth
     QList<IndexedPointCloudNode> traverseTree( const QgsRectangle &extent, IndexedPointCloudNode n, int maxDepth = 3 );
 
@@ -186,10 +188,13 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     double zMax() const { return mZMax; }
 
     //! Returns bounds of particular node
-    QgsPointCloudDataBounds nodeBounds( const IndexedPointCloudNode &n );
+    QgsPointCloudDataBounds nodeBounds( const IndexedPointCloudNode &n ) const;
 
     //! Returns node extent in map coordinates
-    QgsRectangle nodeMapExtent( const IndexedPointCloudNode &n );
+    QgsRectangle nodeMapExtent( const IndexedPointCloudNode &n ) const;
+
+    //! Returns node's error in map units (used to determine in whether the node has enough detail for the current view)
+    float nodeError( const IndexedPointCloudNode &n ) const;
 
     //! Returns scale
     QgsVector3D scale() const;

@@ -22,8 +22,9 @@
 
 ///@cond PRIVATE
 
-QgsChunkNode::QgsChunkNode( const QgsChunkNodeId &nodeId, const QgsAABB &bbox, float error, QgsChunkNode *parent )
-  : mBbox( bbox )
+QgsChunkNode::QgsChunkNode( Type type, const QgsChunkNodeId &nodeId, const QgsAABB &bbox, float error, QgsChunkNode *parent )
+  : mType( type )
+  , mBbox( bbox )
   , mError( error )
   , mNodeId( nodeId )
   , mParent( parent )
@@ -35,7 +36,8 @@ QgsChunkNode::QgsChunkNode( const QgsChunkNodeId &nodeId, const QgsAABB &bbox, f
   , mUpdaterFactory( nullptr )
   , mUpdater( nullptr )
 {
-  for ( int i = 0; i < 4; ++i )
+  int childCount = mType == Quadtree ? 4 : 8;
+  for ( int i = 0; i < childCount; ++i )
     mChildren[i] = nullptr;
 }
 
@@ -48,13 +50,16 @@ QgsChunkNode::~QgsChunkNode()
   Q_ASSERT( !mEntity ); // should be deleted when removed from replacement queue
   Q_ASSERT( !mUpdater );
   Q_ASSERT( !mUpdaterFactory );
-  for ( int i = 0; i < 4; ++i )
+
+  int childCount = mType == Quadtree ? 4 : 8;
+  for ( int i = 0; i < childCount; ++i )
     delete mChildren[i];
 }
 
 bool QgsChunkNode::allChildChunksResident( QTime currentTime ) const
 {
-  for ( int i = 0; i < 4; ++i )
+  int childCount = mType == Quadtree ? 4 : 8;
+  for ( int i = 0; i < childCount; ++i )
   {
     if ( !mChildren[i] )
       return false;  // not even a skeleton
@@ -70,21 +75,32 @@ bool QgsChunkNode::allChildChunksResident( QTime currentTime ) const
 void QgsChunkNode::ensureAllChildrenExist()
 {
   float childError = mError / 2;
-  float xc = mBbox.xCenter(), zc = mBbox.zCenter();
-  float ymin = mBbox.yMin;
-  float ymax = mBbox.yMax;
+  float xc = mBbox.xCenter(), yc = mBbox.yCenter(), zc = mBbox.zCenter();
 
-  if ( !mChildren[0] )
-    mChildren[0] = new QgsChunkNode( QgsChunkNodeId( mNodeId.x * 2 + 0, mNodeId.y * 2 + 1, mNodeId.z + 1 ), QgsAABB( mBbox.xMin, ymin, mBbox.zMin, xc, ymax, zc ), childError, this );
+  int childCount = mType == Quadtree ? 4 : 8;
+  for ( int i = 0; i < childCount; ++i )
+  {
+    if ( mChildren[i] )
+      continue;
 
-  if ( !mChildren[1] )
-    mChildren[1] = new QgsChunkNode( QgsChunkNodeId( mNodeId.x * 2 + 0, mNodeId.y * 2 + 0, mNodeId.z + 1 ), QgsAABB( mBbox.xMin, ymin, zc, xc, ymax, mBbox.zMax ), childError, this );
-
-  if ( !mChildren[2] )
-    mChildren[2] = new QgsChunkNode( QgsChunkNodeId( mNodeId.x * 2 + 1, mNodeId.y * 2 + 1, mNodeId.z + 1 ), QgsAABB( xc, ymin, mBbox.zMin, mBbox.xMax, ymax, zc ), childError, this );
-
-  if ( !mChildren[3] )
-    mChildren[3] = new QgsChunkNode( QgsChunkNodeId( mNodeId.x * 2 + 1, mNodeId.y * 2 + 0, mNodeId.z + 1 ), QgsAABB( xc, ymin, zc, mBbox.xMax, ymax, mBbox.zMax ), childError, this );
+    int dx = i & 1, dy = !!( i & 2 ), dz = !!( i & 4 );
+    QgsChunkNodeId childId( mNodeId.d + 1, mNodeId.x * 2 + dx, mNodeId.y * 2 + dy, mType == Quadtree ? -1 : mNodeId.z * 2 + dz );
+    // the Y and Z coordinates below are intentionally flipped, because
+    // in chunk node IDs the X,Y axes define horizontal plane,
+    // while in our 3D scene the X,Z axes define the horizontal plane
+    float chXMin = dx ? xc : mBbox.xMin;
+    float chXMax = dx ? mBbox.xMax : xc;
+    float chZMin = dy ? zc : mBbox.zMin;
+    float chZMax = dy ? mBbox.zMax : zc;
+    float chYMin = mBbox.yMin;
+    float chYMax = mBbox.yMax;
+    if ( mType == Octree )
+    {
+      chYMin = dz ? yc : mBbox.yMin;
+      chYMax = dz ? mBbox.yMax : yc;
+    }
+    mChildren[i] = new QgsChunkNode( mType, childId, QgsAABB( chXMin, chYMin, chZMin, chXMax, chYMax, chZMax ), childError, this );
+  }
 }
 
 int QgsChunkNode::level() const
@@ -104,7 +120,8 @@ QList<QgsChunkNode *> QgsChunkNode::descendants()
   QList<QgsChunkNode *> lst;
   lst << this;
 
-  for ( int i = 0; i < 4; ++i )
+  int childCount = mType == Quadtree ? 4 : 8;
+  for ( int i = 0; i < childCount; ++i )
   {
     if ( mChildren[i] )
       lst << mChildren[i]->descendants();

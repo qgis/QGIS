@@ -152,7 +152,8 @@ QgsChunkLoader *QgsVectorLayerChunkLoaderFactory::createChunkLoader( QgsChunkNod
 
 
 QgsVectorLayerChunkedEntity::QgsVectorLayerChunkedEntity( QgsVectorLayer *vl, double zMin, double zMax, const QgsVectorLayer3DTilingSettings &tilingSettings, QgsAbstract3DSymbol *symbol, const Qgs3DMapSettings &map )
-  : QgsChunkedEntity( Qgs3DUtils::layerToWorldExtent( vl->extent(), zMin, zMax, vl->crs(), map.origin(), map.crs(), map.transformContext() ),
+  : QgsChunkedEntity( QgsChunkNode::Quadtree,
+                      Qgs3DUtils::layerToWorldExtent( vl->extent(), zMin, zMax, vl->crs(), map.origin(), map.crs(), map.transformContext() ),
                       -1, // rootError (negative error means that the node does not contain anything)
                       -1, // max. allowed screen error (negative tau means that we need to go until leaves are reached)
                       tilingSettings.zoomLevelsCount() - 1,
