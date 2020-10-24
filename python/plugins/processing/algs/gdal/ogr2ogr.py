@@ -37,7 +37,7 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 class ogr2ogr(GdalAlgorithm):
     INPUT = 'INPUT'
     OPTIONS = 'OPTIONS'
-    KEEP_LAYERS = 'LAYER'
+    KEEP_LAYERS = 'KEEP_LAYERS'
     OUTPUT = 'OUTPUT'
 
     def __init__(self):
