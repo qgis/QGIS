@@ -140,6 +140,7 @@ QString QgsPointCloudLayer::loadDefaultStyle( bool &resultFlag )
 bool QgsPointCloudLayer::loadDataSource( const QString &providerLib, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
   QString dataSource = mDataSource;
+  mProviderKey = providerLib;
 
   mDataProvider.reset( qobject_cast<QgsPointCloudDataProvider *>( QgsProviderRegistry::instance()->createProvider( providerLib, dataSource, options, flags ) ) );
   if ( !mDataProvider )
