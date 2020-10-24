@@ -25,6 +25,7 @@ import os
 
 from qgis.core import (QgsProcessing,
                        QgsProcessingException,
+                       QgsProcessingParameterBoolean,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterString,
@@ -36,6 +37,7 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 class ogr2ogr(GdalAlgorithm):
     INPUT = 'INPUT'
     OPTIONS = 'OPTIONS'
+    LAYER = 'LAYER'
     OUTPUT = 'OUTPUT'
 
     def __init__(self):
@@ -52,6 +54,13 @@ class ogr2ogr(GdalAlgorithm):
                                                      optional=True)
         options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(options_param)
+
+        options_param = QgsProcessingParameterBoolean(self.LAYER,
+                                                     self.tr('Keep all Layers'),
+                                                     defaultValue=False)
+        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(options_param)
+
 
         self.addParameter(QgsProcessingParameterVectorDestination(self.OUTPUT,
                                                                   self.tr('Converted')))
@@ -91,6 +100,8 @@ class ogr2ogr(GdalAlgorithm):
 
         arguments.append(output)
         arguments.append(ogrLayer)
-        arguments.append(layerName)
+        if not self.parameterAsBoolean(parameters, self.LAYER, context):
+            arguments.append(layerName)
+
 
         return ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
