@@ -56,11 +56,10 @@ class ogr2ogr(GdalAlgorithm):
         self.addParameter(options_param)
 
         options_param = QgsProcessingParameterBoolean(self.LAYER,
-                                                     self.tr('Keep all Layers'),
-                                                     defaultValue=False)
+                                                      self.tr('Keep all Layers'),
+                                                      defaultValue=False)
         options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(options_param)
-
 
         self.addParameter(QgsProcessingParameterVectorDestination(self.OUTPUT,
                                                                   self.tr('Converted')))
@@ -102,6 +101,5 @@ class ogr2ogr(GdalAlgorithm):
         arguments.append(ogrLayer)
         if not self.parameterAsBoolean(parameters, self.LAYER, context):
             arguments.append(layerName)
-
 
         return ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
