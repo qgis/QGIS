@@ -112,9 +112,7 @@
 #include <cpl_conv.h> // for setting gdal options
 #include <sqlite3.h>
 
-#if PROJ_VERSION_MAJOR>=6
 #include <proj.h>
-#endif
 
 
 #define CONN_POOL_MAX_CONCURRENT_CONNS      4
@@ -334,7 +332,6 @@ void QgsApplication::init( QString profileFolder )
   }
   *sSystemEnvVars() = systemEnvVarMap;
 
-#if PROJ_VERSION_MAJOR>=6
   // append local user-writable folder as a proj search path
   QStringList currentProjSearchPaths = QgsProjUtils::searchPaths();
   currentProjSearchPaths.append( qgisSettingsDirPath() + QStringLiteral( "proj" ) );
@@ -358,7 +355,6 @@ void QgsApplication::init( QString profileFolder )
     CPLFree( newPaths[i] );
   }
   delete [] newPaths;
-#endif // PROJ_VERSION_MAJOR>=6
 
   // allow Qt to search for Qt plugins (e.g. sqldrivers) in our plugin directory
   QCoreApplication::addLibraryPath( pluginPath() );
@@ -1019,19 +1015,11 @@ QString QgsApplication::srsDatabaseFilePath()
 {
   if ( ABISYM( mRunningFromBuildDir ) )
   {
-#if PROJ_VERSION_MAJOR>=6
     QString tempCopy = QDir::tempPath() + "/srs6.db";
-#else
-    QString tempCopy = QDir::tempPath() + "/srs.db";
-#endif
 
     if ( !QFile( tempCopy ).exists() )
     {
-#if PROJ_VERSION_MAJOR>=6
       QFile f( buildSourcePath() + "/resources/srs6.db" );
-#else
-      QFile f( buildSourcePath() + "/resources/srs.db" );
-#endif
       if ( !f.copy( tempCopy ) )
       {
         qFatal( "Could not create temporary copy" );

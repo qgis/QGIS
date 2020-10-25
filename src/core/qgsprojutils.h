@@ -29,11 +29,9 @@
 #include <QThreadStorage>
 #endif
 
-#if PROJ_VERSION_MAJOR>=6
 #ifndef SIP_RUN
 struct PJconsts;
 typedef struct PJconsts PJ;
-#endif
 #endif
 
 /**
@@ -70,8 +68,6 @@ class CORE_EXPORT QgsProjUtils
       FlagMatchBoundCrsToUnderlyingSourceCrs = 1 << 0, //!< Allow matching a BoundCRS object to its underlying SourceCRS
     };
     Q_DECLARE_FLAGS( IdentifyFlags, IdentifyFlag )
-
-#if PROJ_VERSION_MAJOR >= 6
 
     /**
      * Destroys Proj PJ objects.
@@ -139,17 +135,12 @@ class CORE_EXPORT QgsProjUtils
     static QStringList nonAvailableGrids( const QString &projDef );
 #endif
 #endif
-#endif
 };
 
 #ifndef SIP_RUN
 
-#if PROJ_VERSION_MAJOR>=6
 struct projCtx_t;
 typedef struct projCtx_t PJ_CONTEXT;
-#else
-typedef void PJ_CONTEXT;
-#endif
 
 /**
  * \class QgsProjContext

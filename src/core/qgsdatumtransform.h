@@ -25,11 +25,9 @@
 
 class QgsCoordinateReferenceSystem;
 
-#if PROJ_VERSION_MAJOR>=6
 #ifndef SIP_RUN
 struct PJconsts;
 typedef struct PJconsts PJ;
-#endif
 #endif
 
 /**
@@ -318,7 +316,6 @@ class CORE_EXPORT QgsDatumTransform
     Q_DECL_DEPRECATED static QgsDatumTransform::TransformInfo datumTransformInfo( int datumTransformId ) SIP_DEPRECATED;
 
 #ifndef SIP_RUN
-#if PROJ_VERSION_MAJOR >= 6
 
     /**
      * Returns the transform details for a Proj coordinate operation \a op.
@@ -327,7 +324,6 @@ class CORE_EXPORT QgsDatumTransform
      * \since QGIS 3.8
      */
     static QgsDatumTransform::TransformDetails transformDetailsFromPj( PJ *op );
-#endif
 #endif
 
   private:

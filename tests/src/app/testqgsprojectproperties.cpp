@@ -103,7 +103,6 @@ void TestQgsProjectProperties::testEllipsoidChange()
   pp.reset();
   QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "NONE" ) );
 
-#if PROJ_VERSION_MAJOR>=6
   QgsProject::instance()->setEllipsoid( QStringLiteral( "ESRI:107900" ) );
   pp = qgis::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
   pp->apply();
@@ -121,27 +120,6 @@ void TestQgsProjectProperties::testEllipsoidChange()
   pp->apply();
   pp.reset();
   QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "EPSG:7005" ) );
-
-#else
-  QgsProject::instance()->setEllipsoid( QStringLiteral( "bessel" ) );
-  pp = qgis::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
-  pp->apply();
-  pp.reset();
-  QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "bessel" ) );
-
-  QgsProject::instance()->setEllipsoid( QStringLiteral( "IGNF:ELG052" ) );
-  pp = qgis::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
-  pp->apply();
-  pp.reset();
-  QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "IGNF:ELG052" ) );
-
-  QgsProject::instance()->setEllipsoid( QStringLiteral( "IGNF:ELG037" ) );
-  pp = qgis::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
-  pp->apply();
-  pp.reset();
-  QCOMPARE( QgsProject::instance()->ellipsoid(), QStringLiteral( "IGNF:ELG037" ) );
-
-#endif
 
   QgsProject::instance()->setEllipsoid( QStringLiteral( "NONE" ) );
   pp = qgis::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
