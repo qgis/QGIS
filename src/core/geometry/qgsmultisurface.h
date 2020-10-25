@@ -102,7 +102,7 @@ class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
      * \since QGIS 3.0
      */
-    inline const QgsMultiSurface *cast( const QgsAbstractGeometry *geom ) const
+    inline static const QgsMultiSurface *cast( const QgsAbstractGeometry *geom )
     {
       if ( !geom )
         return nullptr;

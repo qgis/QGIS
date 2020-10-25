@@ -107,7 +107,7 @@ class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
      * \since QGIS 3.0
      */
-    inline const QgsMultiPolygon *cast( const QgsAbstractGeometry *geom ) const
+    inline static const QgsMultiPolygon *cast( const QgsAbstractGeometry *geom )
     {
       if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiPolygon )
         return static_cast<const QgsMultiPolygon *>( geom );
