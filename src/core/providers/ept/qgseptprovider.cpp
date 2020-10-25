@@ -19,6 +19,8 @@
 #include "qgseptprovider.h"
 #include "qgseptpointcloudindex.h"
 #include "qgseptdataitems.h"
+#include "qgsruntimeprofiler.h"
+#include "qgsapplication.h"
 
 ///@cond PRIVATE
 
@@ -32,6 +34,10 @@ QgsEptProvider::QgsEptProvider(
   : QgsPointCloudDataProvider( uri, options, flags )
   , mIndex( new QgsEptPointCloudIndex )
 {
+  std::unique_ptr< QgsScopedRuntimeProfile > profile;
+  if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
+    profile = qgis::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
+
   mIsValid = mIndex->load( uri );
 }
 
