@@ -294,8 +294,11 @@ void TestQgsMapToolAddFeatureLine::testNoTracing()
   QCOMPARE( utils.existingFeatureIds().count(), 1 );
 
   utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseMove( 5, 5 );
   utils.mouseClick( 3, 2, Qt::LeftButton );
+  utils.mouseMove( 5, 5 );
   utils.mouseClick( 4, 2, Qt::LeftButton );
+  utils.mouseMove( 5, 5 );
   utils.mouseClick( 4, 2, Qt::RightButton );
 
   newFid = utils.newFeatureId( oldFids );
