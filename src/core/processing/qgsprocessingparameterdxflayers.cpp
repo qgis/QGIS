@@ -37,40 +37,89 @@ bool QgsProcessingParameterDxfLayers::checkValueIsAcceptable( const QVariant &in
   if ( !input.isValid() )
     return mFlags & FlagOptional;
 
-  if ( input.type() != QVariant::List )
-    return false;
-
-  const QVariantList layerList = input.toList();
-  if ( layerList.isEmpty() )
-    return false;
-
-  for ( const QVariant &variantLayer : layerList )
+  if ( qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( input ) ) )
   {
-    if ( variantLayer.type() != QVariant::Map )
-      return false;
-
-    QVariantMap layerMap = variantLayer.toMap();
-
-    if ( !layerMap.contains( QStringLiteral( "layer" ) ) || !layerMap.contains( QStringLiteral( "attributeIndex" ) ) )
-      return false;
-
-    if ( !context )
-      continue;  // when called without context, we will skip checking whether the layer can be resolved
-
-    QgsMapLayer *mapLayer = QgsProcessingUtils::mapLayerFromString( layerMap.value( QStringLiteral( "layer" ) ).toString(), *context );
-    if ( !mapLayer || mapLayer->type() != QgsMapLayerType::VectorLayer )
-      return false;
-
-    QgsVectorLayer *vectorLayer = static_cast<QgsVectorLayer *>( mapLayer );
-
-    if ( !vectorLayer )
-      return false;
-
-    if ( layerMap.value( QStringLiteral( "attributeIndex" ) ).toInt() >= vectorLayer->fields().count() )
-      return false;
+    return true;
   }
 
-  return true;
+  if ( input.type() == QVariant::String )
+  {
+    if ( input.toString().isEmpty() )
+      return mFlags & FlagOptional;
+
+    if ( !context )
+      return true;
+
+    QgsMapLayer *mapLayer = QgsProcessingUtils::mapLayerFromString( input.toString(), *context );
+    return mapLayer && ( mapLayer->type() == QgsMapLayerType::VectorLayer );
+  }
+  else if ( input.type() == QVariant::List )
+  {
+    if ( input.toList().isEmpty() )
+      return mFlags & FlagOptional;;
+
+    const QVariantList layerList = input.toList();
+    for ( const QVariant &variantLayer : layerList )
+    {
+      if ( qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( variantLayer ) ) )
+        continue;
+
+      if ( variantLayer.type() == QVariant::String )
+      {
+        if ( !context )
+          return true;
+
+        QgsMapLayer *mapLayer = QgsProcessingUtils::mapLayerFromString( variantLayer.toString(), *context );
+        if ( !mapLayer || mapLayer->type() != QgsMapLayerType::VectorLayer )
+          return false;
+      }
+      else if ( variantLayer.type() == QVariant::Map )
+      {
+        QVariantMap layerMap = variantLayer.toMap();
+
+        if ( !layerMap.contains( QStringLiteral( "layer" ) ) && !layerMap.contains( QStringLiteral( "attributeIndex" ) ) )
+          return false;
+
+        if ( !context )
+          return true;
+
+        QgsMapLayer *mapLayer = QgsProcessingUtils::mapLayerFromString( layerMap.value( QStringLiteral( "layer" ) ).toString(), *context );
+        if ( !mapLayer || mapLayer->type() != QgsMapLayerType::VectorLayer )
+          return false;
+
+        QgsVectorLayer *vectorLayer = static_cast<QgsVectorLayer *>( mapLayer );
+
+        if ( !vectorLayer )
+          return false;
+
+        if ( layerMap.value( QStringLiteral( "attributeIndex" ) ).toInt() >= vectorLayer->fields().count() )
+          return false;
+      }
+      else
+      {
+        return false;
+      }
+    }
+    return true;
+  }
+  else if ( input.type() == QVariant::StringList )
+  {
+    const auto constToStringList = input.toStringList();
+    if ( constToStringList.isEmpty() )
+      return mFlags & FlagOptional;
+
+    if ( !context )
+      return true;
+
+    for ( const QString &v : constToStringList )
+    {
+      if ( !QgsProcessingUtils::mapLayerFromString( v, *context ) )
+        return false;
+    }
+    return true;
+  }
+
+  return false;
 }
 
 QString QgsProcessingParameterDxfLayers::valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const

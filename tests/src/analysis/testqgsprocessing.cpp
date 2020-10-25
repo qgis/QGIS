@@ -8378,8 +8378,20 @@ void TestQgsProcessing::parameterDxfLayers()
 
   std::unique_ptr< QgsProcessingParameterDxfLayers > def( new QgsProcessingParameterDxfLayers( "dxf input layer" ) );
   QVERIFY( !def->checkValueIsAcceptable( 1 ) );
-  QVERIFY( !def->checkValueIsAcceptable( "test" ) );
+  QVERIFY( def->checkValueIsAcceptable( "test" ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant::fromValue( vectorLayer ) ) );
+
+  // should also be OK
+  QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp" ) );
+  QVERIFY( def->checkValueIsAcceptable( QStringList() << "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariantList() << "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp" ) );
+  // ... unless we use context, when the check that the layer actually exists is performed
+  QVERIFY( !def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp", &context ) );
+  QVERIFY( !def->checkValueIsAcceptable( QStringList() << "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp", &context ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() << "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp", &context ) );
+
   QVariantList layerList;
   QVERIFY( !def->checkValueIsAcceptable( layerList ) );
   QVariantMap layerMap;

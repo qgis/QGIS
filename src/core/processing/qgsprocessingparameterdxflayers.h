@@ -32,6 +32,9 @@
  *   'attributeIndex': int
  * }
  *
+ * Also it can accept lists (either string lists or QgsVectorLayer list)
+ * as well as individual layer object or string representing layer source.
+ *
  * Static functions parametersAsLayers(), variantMapAsLayer(),
  * layerAsVariantMap() provide conversion between QgsDxfExport::DxfLayer
  * representation and QVariant representation.
