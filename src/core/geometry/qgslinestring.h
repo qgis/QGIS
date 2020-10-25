@@ -680,7 +680,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
      * \since QGIS 3.0
      */
-    inline const QgsLineString *cast( const QgsAbstractGeometry *geom ) const
+    inline static const QgsLineString *cast( const QgsAbstractGeometry *geom )
     {
       if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::LineString )
         return static_cast<const QgsLineString *>( geom );

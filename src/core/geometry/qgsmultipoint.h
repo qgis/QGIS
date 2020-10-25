@@ -104,7 +104,7 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
      * \since QGIS 3.0
      */
-    inline const QgsMultiPoint *cast( const QgsAbstractGeometry *geom ) const
+    inline static const QgsMultiPoint *cast( const QgsAbstractGeometry *geom )
     {
       if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiPoint )
         return static_cast<const QgsMultiPoint *>( geom );

@@ -86,7 +86,7 @@ class CORE_EXPORT QgsPolygon: public QgsCurvePolygon
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
      * \since QGIS 3.0
      */
-    inline const QgsPolygon *cast( const QgsAbstractGeometry *geom ) const
+    inline static const QgsPolygon *cast( const QgsAbstractGeometry *geom )
     {
       if ( !geom )
         return nullptr;
