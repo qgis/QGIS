@@ -238,8 +238,8 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     /**
      * Returns the count of levels of detail of the mesh simplification
      *
-     * \since QGIS 3.18
      * \note Not available in Python bindings
+     * \since QGIS 3.18
      */
     int triangularMeshLevelOfDetailCount() const SIP_SKIP;
 
@@ -250,8 +250,8 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      *
      * \param lodIndex the level od detail index
      *
-     * \since QGIS 3.18
      * \note Not available in Python bindings
+     * \since QGIS 3.18
      */
     QgsTriangularMesh *triangularMeshByLodIndex( int lodIndex ) const SIP_SKIP;
 
