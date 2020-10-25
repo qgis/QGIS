@@ -66,7 +66,7 @@ class translate(GdalAlgorithm):
 
         self.addParameter(QgsProcessingParameterRasterLayer(
             self.INPUT, self.tr('Input layer')))
-        self.addParameter(QgsPRocessingParameterEnum(self.COMPRESSOR,
+        self.addParameter(QgsProcessingParameterEnum(self.COMPRESSOR,
                                                      self.tr(
                                                          'Compression method to use'),
                                                      self.COMPRESSION,
@@ -192,49 +192,49 @@ class translate(GdalAlgorithm):
 
         compression = self.COMPRESSOR[self.parameterAsEnum(
             parameters, self.COMPRESSION, context)]
-        arguments.append('-co '+'{}={}'.format('COMPRESS', compression))
+        arguments.append('-co {} = {}'.format('COMPRESS', compression))
 
         quality = self.parameterAsInteger(
-            parameters, self.QUALITY, context)/100.0
+            parameters, self.QUALITY, context) / 100.0
 
         if 'DEFLATE' in compression:
             qualArg = '-ZLEVEL'
             if compression == 'LERC_DEFLATE':
-                quality = int(quality*12)
+                quality = int(quality * 12)
             else:
-                quality = int(quality*9)
+                quality = int(quality * 9)
             pred = True
         elif compression == 'JPG':
-            quality = int(quality*100)
+            quality = int(quality * 100)
             qualArg = '-JPEG_QUALITY'
             jpgtables = self.parameterAsInteger(
                 parameters, self.JPEGTABLESMODE, context)
             arguments.append(
-                '-co '+'{}={}'.format('JPEGTABLESMODE', jpgtables))
+                '-co {} = {}'.format('JPEGTABLESMODE', jpgtables))
         elif compression == 'WEBP':
             qualArg = '-WEBP_LEVEL'
-            quality = int(quality*100)
+            quality = int(quality * 100)
         elif 'ZSTD' in compression:
             qualArg = '-ZSTD_LEVEL'
-            quality = int(quality*22)
+            quality = int(quality * 22)
             pred = True
         elif compression == 'LZW':
             pred = True
 
         if qualArg:
-            arguments.append('-co '+'{}={}'.format(qualArg, max(quality, 1)))
+            arguments.append('-co {} = {}'.format(qualArg, max(quality, 1)))
 
         if pred:
-            arguments.append('-co '+'{}={}'.format('PREDICTOR', predictor))
+            arguments.append('-co {} = {}'.format('PREDICTOR', predictor))
 
         threads = self.parameterAsInteger(
             parameters, self.NUM_THREADS, context)
-        arguments.append('-co '+'{}={}'.format('NUM_THREADS', threads))
+        arguments.append('-co {} = {}'.format('NUM_THREADS', threads))
 
         if self.parameterAsBoolean(parameters, self.SPARSE, context):
-            arguments.append('-co '+'{}={}'.format('SPARSE_OK', 'TRUE'))
+            arguments.append('-co {} = {}'.format('SPARSE_OK', 'TRUE'))
 
-        arguments.append('-ot ' + 'BIGTIFF=IF_SAFER')
+        arguments.append('-ot BIGTIFF = IF_SAFER')
 
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
