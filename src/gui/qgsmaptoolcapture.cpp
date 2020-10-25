@@ -592,10 +592,12 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
             mSnappingMatches.append( match );
           }
         }
+        mCaptureLastPoint = mapPoint;
         mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, mDigitizingType, firstCapturedMapPoint() );
       }
       else if ( mCaptureCurve.numPoints() == 0 )
       {
+        mCaptureLastPoint = mapPoint;
         mCaptureCurve.addVertex( layerPoint );
         mSnappingMatches.append( match );
       }
@@ -608,7 +610,6 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
       }
 
       mTempRubberBand->addPoint( mapPoint );
-      mCaptureLastPoint = mapPoint;
     }
     else
     {
