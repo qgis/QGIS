@@ -147,6 +147,7 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     //! Returns root node of the index
     IndexedPointCloudNode root() { return IndexedPointCloudNode( 0, 0, 0, 0 ); }
 
+    //! Returns whether the octree contain given node
     bool hasNode( const IndexedPointCloudNode &n ) const { return mHierarchy.contains( n ); }
 
     //! Traverses tree and returns all nodes in specified depth
