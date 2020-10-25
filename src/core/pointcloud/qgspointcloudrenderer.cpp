@@ -97,12 +97,9 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
   // TODO: use config from layer
   mConfig.setPenWidth( context.convertToPainterUnits( 1, QgsUnitTypes::RenderUnit::RenderMillimeters ) );
   // good range for 26850_12580.laz
-  mConfig.setZMin( 400 );
-  mConfig.setZMax( 600 );
-  // good range for Trencin castle
-  //mConfig.zMin = 150;
-  //mConfig.zMax = 350;
-  mConfig.setColorRamp( QgsStyle::defaultStyle()->colorRamp( "Viridis" ) );
+  mConfig.setZMin( layer->customProperty( QStringLiteral( "pcMin" ), 400 ).toInt() );
+  mConfig.setZMax( layer->customProperty( QStringLiteral( "pcMax" ), 600 ).toInt() );
+  mConfig.setColorRamp( QgsStyle::defaultStyle()->colorRamp( layer->customProperty( QStringLiteral( "pcRamp" ), QStringLiteral( "Viridis" ) ).toString() ) );
 }
 
 static QList<IndexedPointCloudNode> _traverseTree( QgsPointCloudIndex *pc, const QgsRectangle &extent, IndexedPointCloudNode n, int maxDepth )
