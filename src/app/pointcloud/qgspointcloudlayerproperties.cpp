@@ -47,26 +47,6 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
   // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
   initOptionsBase( false );
 
-#ifdef WITH_QTWEBKIT
-  // Setup information tab
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-  const int horizontalDpi = qApp->desktop()->screen()->logicalDpiX();
-#else
-  const int horizontalDpi = logicalDpiX();
-#endif
-
-  // Adjust zoom: text is ok, but HTML seems rather big at least on Linux/KDE
-  if ( horizontalDpi > 96 )
-  {
-    mMetadataViewer->setZoomFactor( mMetadataViewer->zoomFactor() * 0.9 );
-  }
-  mMetadataViewer->page()->setLinkDelegationPolicy( QWebPage::LinkDelegationPolicy::DelegateAllLinks );
-  connect( mMetadataViewer->page(), &QWebPage::linkClicked, this, &QgsPointCloudLayerProperties::urlClicked );
-  mMetadataViewer->page()->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
-  mMetadataViewer->page()->settings()->setAttribute( QWebSettings::JavascriptEnabled, true );
-
-#endif
   mOptsPage_Information->setContentsMargins( 0, 0, 0, 0 );
 
   QVBoxLayout *layout = new QVBoxLayout( metadataFrame );
@@ -139,10 +119,14 @@ void QgsPointCloudLayerProperties::syncToLayer()
   /*
    * Information Tab
    */
-  const QString myStyle = QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType::WebBrowser );
-  // Inject the stylesheet
-  const QString html { mLayer->htmlMetadata().replace( QLatin1String( "<head>" ), QStringLiteral( R"raw(<head><style type="text/css">%1</style>)raw" ) ).arg( myStyle ) };
-  mMetadataViewer->setHtml( html );
+  QString myStyle = QgsApplication::reportStyleSheet();
+  myStyle.append( QStringLiteral( "body { margin: 10px; }\n " ) );
+  mInformationTextBrowser->clear();
+  mInformationTextBrowser->document()->setDefaultStyleSheet( myStyle );
+  mInformationTextBrowser->setHtml( mLayer->htmlMetadata() );
+  mInformationTextBrowser->setOpenLinks( false );
+  connect( mInformationTextBrowser, &QTextBrowser::anchorClicked, this, &QgsPointCloudLayerProperties::urlClicked );
+
 }
 
 
