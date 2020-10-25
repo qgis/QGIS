@@ -20,7 +20,6 @@
 
 ///@cond PRIVATE
 
-
 QString QgsDxfExportAlgorithm::name() const
 {
   return QStringLiteral( "dxfexport" );
@@ -135,3 +134,5 @@ QVariantMap QgsDxfExportAlgorithm::processAlgorithm( const QVariantMap &paramete
   outputs.insert( QStringLiteral( "OUTPUT" ), outputFile );
   return outputs;
 }
+
+///@endcond
