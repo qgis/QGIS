@@ -2,11 +2,11 @@
 
 """
 ***************************************************************************
-    translate.py
+    qgsgdalcompress.py
     ---------------------
-    Date                 : August 2012
-    Copyright            : (C) 2012 by Victor Olaya
-    Email                : volayaf at gmail dot com
+    Date                 : October 2020
+    Copyright            : (C) 2020 by Alex RL
+    Email                : roya0045 at github dot com
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -17,9 +17,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = 'Alex RL'
+__date__ = 'October 2020'
+__copyright__ = '(C) 2020, Alex RL'
 
 import os
 
@@ -42,11 +42,12 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 class translate(GdalAlgorithm):
     INPUT = 'INPUT'
-    TARGET_CRS = 'TARGET_CRS'
     COMPRESSION = 'COMPRESSION'
-    NODATA = 'NODATA'
+    NUM_THREADS = 'NUM_THREADS'
+    PREDICTOR = 'PREDICTOR'
+    SPARSE = 'SPARSE'
     QUALITY = 'QUALITY'
-    COPY_SUBDATASETS = 'COPY_SUBDATASETS'
+    JPEGTABLESMODE = 'JPEGTABLESMODE'
     OPTIONS = 'OPTIONS'
     EXTRA = 'EXTRA'
     DATA_TYPE = 'DATA_TYPE'
@@ -62,44 +63,51 @@ class translate(GdalAlgorithm):
 		
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
         self.addParameter(QgsPRocessingParameterEnum(self.COMPRESSOR,
-        self.tr('Compression method to use'), self.COMPRESSION))
-        self.addParameter(QgsProcessingParameterCrs(self.TARGET_CRS,
-                                                    self.tr('Override the projection for the output file'),
-                                                    defaultValue=None,
-                                                    optional=True))
+                                                     self.tr('Compression method to use'),
+                                                     self.COMPRESSION,
+                                                     allowMultiple=False,
+                                                     defaultValue=3))
+
         self.addParameter(QgsProcessingParameterNumber(self.NUM_THREADS,
                                                        self.tr('Number of thread to use for compression'),
                                                        type=QgsProcessingParameterNumber.Integer,
                                                        defaultValue=-1,minValue=-1,maxValue = (int)(os.popen('grep -c cores /proc/cpuinfo').read()),
                                                        optional=True))
+
         self.addParameter(QgsProcessingParameterNumber(self.PREDICTOR,
                                                        self.tr('Sets the LZW, DEFLATE and ZSTD compression.'),
                                                        type=QgsProcessingParameterNumber.Integer,
                                                        defaultValue=1,minValue=1,maxValue =3,
                                                        optional=True))
-        self.addParameter(QgsProcessingParameterBoolean(self.SPARSE,
-                                                        self.tr('Copy all subdatasets of this file to individual output files'),
-                                                        defaultValue=False))
+
+        sparse=QgsProcessingParameterBoolean(self.SPARSE,
+                                             self.tr('Make output sparse (save space, possibly not supported by other reader)'),
+                                             defaultValue=False)
+        sparse.setFlags(sparse.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(sparse)
+
         self.addParameter(QgsProcessingParameterNumber(self.QUALITY,
                                                        self.tr('Control Quality/compression, 100 is best quality, 1 is most compression, default is 75'),
                                                        type=QgsProcessingParameterNumber.Integer,
                                                        defaultValue=75,minValue=1,maxValue = 100,
                                                        optional=True))
-        self.addParameter(QgsProcessingParameterNumber(self.JPEGTABLESMODE,
-                                                       self.tr('Assign a specified nodata value to output bands'),
+
+        tables=QgsProcessingParameterNumber(self.JPEGTABLESMODE,
+                                                       self.tr('Configure JPEG quantisation'),
                                                        type=QgsProcessingParameterNumber.Integer,
                                                        defaultValue=0,minValue=0,maxValue = 3,
-                                                       optional=True))
-        self.addParameter(QgsProcessingParameterNumber(self.ZLEVEL,
-                                                       self.tr('Level of compression when using DEFLATE '),
-                                                       type=QgsProcessingParameterNumber.Integer,
-                                                       defaultValue=75,minValue=1,maxValue = 100,
-                                                       optional=True))
-        self.addParameter(QgsProcessingParameterNumber(self.ZSTDLEVEL,
-                                                       self.tr('Assign a specified nodata value to output bands'),
-                                                       type=QgsProcessingParameterNumber.Integer,
-                                                       defaultValue=75,minValue=1,maxValue = 100,
-                                                       optional=True))
+                                                       optional=True)
+        tables.setFlags(tables.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(tables)
+
+        dataType_param = QgsProcessingParameterEnum(self.DATA_TYPE,
+                                                    self.tr('Output data type'),
+                                                    self.TYPES,
+                                                    allowMultiple=False,
+                                                    defaultValue=0)
+        dataType_param.setFlags(dataType_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(dataType_param)
+
         options_param = QgsProcessingParameterString(self.OPTIONS,
                                                      self.tr('Additional creation options'),
                                                      defaultValue='',
@@ -117,22 +125,14 @@ class translate(GdalAlgorithm):
         extra_param.setFlags(extra_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(extra_param)
 
-        dataType_param = QgsProcessingParameterEnum(self.DATA_TYPE,
-                                                    self.tr('Output data type'),
-                                                    self.TYPES,
-                                                    allowMultiple=False,
-                                                    defaultValue=0)
-        dataType_param.setFlags(dataType_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
-        self.addParameter(dataType_param)
-
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT,
-                                                                  self.tr('Converted')))
+                                                                  self.tr('Compressed')))
 
     def name(self):
-        return 'translate'
+        return 'compress'
 
     def displayName(self):
-        return self.tr('Translate (convert format)')
+        return self.tr('Creates a compressed tiff of a raster')
 
     def group(self):
         return self.tr('Raster conversion')
@@ -144,67 +144,72 @@ class translate(GdalAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'translate.png'))
 
     def commandName(self):
-        return 'gdal_translate'
+        return 'gdal_compress'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         qualArg = None
+        pred=False
+
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if inLayer is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, out)
-        if self.NODATA in parameters and parameters[self.NODATA] is not None:
-            nodata = self.parameterAsDouble(parameters, self.NODATA, context)
-        else:
-            nodata = None
 
         arguments = []
+        arguments.append('-of GTiff')
 
-        crs = self.parameterAsCrs(parameters, self.TARGET_CRS, context)
-        if crs.isValid():
-            arguments.append('-a_srs')
-            arguments.append(GdalUtils.gdal_crs_string(crs))
+        data_type = self.parameterAsEnum(parameters, self.DATA_TYPE, context)
+        if data_type:
+            arguments.append('-ot ' + self.TYPES[data_type])
 
-        if nodata is not None:
-            arguments.append('-a_nodata')
-            arguments.append(nodata)
-			
-        predictor = self.parameterAsInteger( parameters, self.PREDICTOR,context)        
-        compression = self.parameterAsEnum(parameters, self.COMPRESSION,context)
+        arguments.append('-strict')
+
+
+        predictor = self.parameterAsInteger( parameters, self.PREDICTOR,context)    
+
+        compression = self.COMPRESSOR[self.parameterAsEnum(parameters, self.COMPRESSION,context)]
+        arguments.append('-co '+'{}={}'.format('COMPRESS',compression))
+
         quality = self.parameterAsInteger( parameters, self.QUALITY,context)/100.0
+
 		if 'DEFLATE' in compression :
 			qualArg='-ZLEVEL'
             if compression == 'LERC_DEFLATE':
                 quality = int(quality*12)
             else:
                 quality = int(quality*9)
+            pred = True
 		elif compression =='JPG':
 			quality=int(quality*100)
             qualArg='-JPEG_QUALITY'
+            jpgtables=self.parameterAsInteger(parameters,self.JPEGTABLESMODE,context)
+            arguments.append('-co '+'{}={}'.format('JPEGTABLESMODE',jpgtables))
 		elif compression =='WEBP':
 			qualArg = '-WEBP_LEVEL'
             quality=int(quality*100)
 		elif 'ZSTD' in compression:
 			qualArg='-ZSTD_LEVEL'
             quality = int(quality*22)
+            pred=True
 		elif compression = 'LZW':
-			pass
-        
-        quality = max(quality,1)
+			pred=True
 
         if qualArg:
-            arguments.append('-co '+'{}={}'.format(qualArg,quality))
+            arguments.append('-co '+'{}={}'.format(qualArg,max(quality,1))
+        
+        if pred:
+            arguments.append('-co '+'{}={}'.format('PREDICTOR',predictor)
 
-        if self.parameterAsBoolean(parameters, self.COPY_SUBDATASETS, context):
-            arguments.append('-sds')
+        threads=self.parameterAsInteger(parameters,self.NUM_THREADS,context)
+        arguments.append('-co '+'{}={}'.format('NUM_THREADS',threads))
 
-        data_type = self.parameterAsEnum(parameters, self.DATA_TYPE, context)
-        if data_type:
-            arguments.append('-ot ' + self.TYPES[data_type])
+        if self.parameterAsBoolean(parameters, self.SPARSE, context):
+            arguments.append('-co '+'{}={}'.format('SPARSE_OK','TRUE'))
 
-        arguments.append('-of')
-        arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
+
+        arguments.append('-ot ' +'BIGTIFF=IF_SAFER')
 
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
