@@ -167,7 +167,7 @@
           <number>0</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
-          <layout class="QVBoxLayout" name="verticalLayout_20">
+          <layout class="QVBoxLayout" name="verticalLayout_4">
            <property name="leftMargin">
             <number>0</number>
            </property>
@@ -181,7 +181,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QgsWebView" name="mMetadataViewer" native="true"/>
+            <widget class="QTextBrowser" name="mInformationTextBrowser"/>
            </item>
           </layout>
          </widget>
@@ -264,12 +264,6 @@
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qgsfilterlineedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsWebView</class>
-   <extends>QWidget</extends>
-   <header>qgswebview.h</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
