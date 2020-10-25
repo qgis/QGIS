@@ -155,12 +155,44 @@ QString QgsProcessingParameterDxfLayers::asPythonString( QgsProcessing::PythonOu
 QList<QgsDxfExport::DxfLayer> QgsProcessingParameterDxfLayers::parameterAsLayers( const QVariant &layersVariant, QgsProcessingContext &context )
 {
   QList<QgsDxfExport::DxfLayer> layers;
-  const QVariantList layersVariantList = layersVariant.toList();
-  for ( const QVariant &layerItem : layersVariantList )
+
+  if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( layersVariant ) ) )
   {
-    QVariantMap layerVariantMap = layerItem.toMap();
-    layers << variantMapAsLayer( layerVariantMap, context );
+    layers << QgsDxfExport::DxfLayer( layer );
   }
+
+  if ( layersVariant.type() == QVariant::String )
+  {
+    QgsMapLayer *mapLayer = QgsProcessingUtils::mapLayerFromString( layersVariant.toString(), context );
+    layers << QgsDxfExport::DxfLayer( static_cast<QgsVectorLayer *>( mapLayer ) );
+  }
+  else if ( layersVariant.type() == QVariant::List )
+  {
+    const QVariantList layersVariantList = layersVariant.toList();
+    for ( const QVariant &layerItem : layersVariantList )
+    {
+      if ( layerItem.type() == QVariant::Map )
+      {
+        QVariantMap layerVariantMap = layerItem.toMap();
+        layers << variantMapAsLayer( layerVariantMap, context );
+      }
+      else if ( layerItem.type() == QVariant::String )
+      {
+        QgsMapLayer *mapLayer = QgsProcessingUtils::mapLayerFromString( layerItem.toString(), context );
+        layers << QgsDxfExport::DxfLayer( static_cast<QgsVectorLayer *>( mapLayer ) );
+      }
+    }
+  }
+  else if ( layersVariant.type() == QVariant::StringList )
+  {
+    const auto layersStringList = layersVariant.toStringList();
+    for ( const QString &layerItem : layersStringList )
+    {
+      QgsMapLayer *mapLayer = QgsProcessingUtils::mapLayerFromString( layerItem, context );
+      layers << QgsDxfExport::DxfLayer( static_cast<QgsVectorLayer *>( mapLayer ) );
+    }
+  }
+
   return layers;
 }
 

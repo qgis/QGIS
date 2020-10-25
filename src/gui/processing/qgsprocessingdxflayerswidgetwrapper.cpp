@@ -24,6 +24,8 @@
 
 #include "qgspanelwidget.h"
 #include "qgsprocessingcontext.h"
+#include "qgsprocessingparameters.h"
+#include "qgsprocessingoutputs.h"
 #include "qgsprocessingparameterdxflayers.h"
 
 /// @cond private
@@ -308,12 +310,23 @@ QVariant QgsProcessingDxfLayersWidgetWrapper::widgetValue() const
 
 QStringList QgsProcessingDxfLayersWidgetWrapper::compatibleParameterTypes() const
 {
-  return QStringList();
+  return QStringList()
+         << QgsProcessingParameterMultipleLayers::typeName()
+         << QgsProcessingParameterMapLayer::typeName()
+         << QgsProcessingParameterVectorLayer::typeName()
+         << QgsProcessingParameterFeatureSource::typeName()
+         << QgsProcessingParameterFile::typeName()
+         << QgsProcessingParameterString::typeName();
 }
 
 QStringList QgsProcessingDxfLayersWidgetWrapper::compatibleOutputTypes() const
 {
-  return QStringList();
+  return QStringList()
+         << QgsProcessingOutputString::typeName()
+         << QgsProcessingOutputMapLayer::typeName()
+         << QgsProcessingOutputVectorLayer::typeName()
+         << QgsProcessingOutputMultipleLayers::typeName()
+         << QgsProcessingOutputFile::typeName();
 }
 
 /// @endcond
