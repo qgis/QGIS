@@ -2561,22 +2561,4 @@ tests:
             angle:
               precision: 2
 
-  - algorithm: native:dxfexport
-    name: Test DXF export
-    params:
-      CRS: EPSG:4326
-      ENCODING: 0
-      FORCE_2D: false
-      LAYERS:
-      - attributeIndex: -1
-        layer: /home/alex/devel/qgis/python/plugins/processing/tests/testdata/points.gml
-      MTEXT: true
-      SYMBOLOGY_MODE: 0
-      SYMBOLOGY_SCALE: 1000000.0
-      USE_LAYER_TITLE: false
-    results:
-      OUTPUT:
-        name: expected/dxfexport.dxf
-        type: file
-
 # See ../README.md for a description of the file format
