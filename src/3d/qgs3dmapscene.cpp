@@ -492,8 +492,11 @@ void Qgs3DMapScene::createTerrainDeferred()
 {
   double tile0width = mMap.terrainGenerator()->extent().width();
   int maxZoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, mMap.mapTileResolution(), mMap.maxTerrainGroundError() );
+  QgsAABB rootBbox = mMap.terrainGenerator()->rootChunkBbox( mMap );
+  float rootError = mMap.terrainGenerator()->rootChunkError( mMap );
+  mMap.terrainGenerator()->setupQuadtree( rootBbox, rootError, maxZoomLevel );
 
-  mTerrain = new QgsTerrainEntity( maxZoomLevel, mMap );
+  mTerrain = new QgsTerrainEntity( mMap );
   //mTerrain->setEnabled(false);
   mTerrain->setParent( this );
 

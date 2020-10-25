@@ -57,11 +57,8 @@ class TerrainMapUpdateJobFactory : public QgsChunkQueueJobFactory
 // -----------
 
 
-QgsTerrainEntity::QgsTerrainEntity( int maxLevel, const Qgs3DMapSettings &map, Qt3DCore::QNode *parent )
-  : QgsChunkedEntity( QgsChunkNode::Quadtree,
-                      map.terrainGenerator()->rootChunkBbox( map ),
-                      map.terrainGenerator()->rootChunkError( map ),
-                      map.maxTerrainScreenError(), maxLevel, map.terrainGenerator(), false, parent )
+QgsTerrainEntity::QgsTerrainEntity( const Qgs3DMapSettings &map, Qt3DCore::QNode *parent )
+  : QgsChunkedEntity( map.maxTerrainScreenError(), map.terrainGenerator(), false, parent )
   , mMap( map )
 {
   map.terrainGenerator()->setTerrain( this );

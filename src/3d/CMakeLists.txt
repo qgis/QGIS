@@ -43,6 +43,7 @@ SET(QGIS_3D_SRCS
   chunks/qgschunkboundsentity_p.cpp
   chunks/qgschunkedentity_p.cpp
   chunks/qgschunklist_p.cpp
+  chunks/qgschunkloader_p.cpp
   chunks/qgschunknode_p.cpp
   chunks/qgschunkqueuejob_p.cpp
 

@@ -50,11 +50,11 @@ class QgsFeature3DHandler;
  *
  * \since QGIS 3.12
  */
-class QgsVectorLayerChunkLoaderFactory : public QgsChunkLoaderFactory
+class QgsVectorLayerChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
 {
   public:
     //! Constructs the factory
-    QgsVectorLayerChunkLoaderFactory( const Qgs3DMapSettings &map, QgsVectorLayer *vl, QgsAbstract3DSymbol *symbol, int leafLevel );
+    QgsVectorLayerChunkLoaderFactory( const Qgs3DMapSettings &map, QgsVectorLayer *vl, QgsAbstract3DSymbol *symbol, int leafLevel, double zMin, double zMax );
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
     virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;

@@ -147,12 +147,14 @@ Qt3DCore::QEntity *QgsRuleBasedChunkLoader::createEntity( Qt3DCore::QEntity *par
 ///////////////
 
 
-QgsRuleBasedChunkLoaderFactory::QgsRuleBasedChunkLoaderFactory( const Qgs3DMapSettings &map, QgsVectorLayer *vl, QgsRuleBased3DRenderer::Rule *rootRule, int leafLevel )
+QgsRuleBasedChunkLoaderFactory::QgsRuleBasedChunkLoaderFactory( const Qgs3DMapSettings &map, QgsVectorLayer *vl, QgsRuleBased3DRenderer::Rule *rootRule, int leafLevel, double zMin, double zMax )
   : mMap( map )
   , mLayer( vl )
   , mRootRule( rootRule->clone() )
   , mLeafLevel( leafLevel )
 {
+  QgsAABB rootBbox = Qgs3DUtils::layerToWorldExtent( vl->extent(), zMin, zMax, vl->crs(), map.origin(), map.crs(), map.transformContext() );
+  setupQuadtree( rootBbox, -1, leafLevel );  // negative root error means that the node does not contain anything
 }
 
 QgsRuleBasedChunkLoaderFactory::~QgsRuleBasedChunkLoaderFactory() = default;
@@ -166,12 +168,8 @@ QgsChunkLoader *QgsRuleBasedChunkLoaderFactory::createChunkLoader( QgsChunkNode 
 ///////////////
 
 QgsRuleBasedChunkedEntity::QgsRuleBasedChunkedEntity( QgsVectorLayer *vl, double zMin, double zMax, const QgsVectorLayer3DTilingSettings &tilingSettings, QgsRuleBased3DRenderer::Rule *rootRule, const Qgs3DMapSettings &map )
-  : QgsChunkedEntity( QgsChunkNode::Quadtree,
-                      Qgs3DUtils::layerToWorldExtent( vl->extent(), zMin, zMax, vl->crs(), map.origin(), map.crs(), map.transformContext() ),
-                      -1, // rootError (negative error means that the node does not contain anything)
-                      -1, // max. allowed screen error (negative tau means that we need to go until leaves are reached)
-                      tilingSettings.zoomLevelsCount() - 1,
-                      new QgsRuleBasedChunkLoaderFactory( map, vl, rootRule, tilingSettings.zoomLevelsCount() - 1 ), true )
+  : QgsChunkedEntity( -1, // max. allowed screen error (negative tau means that we need to go until leaves are reached)
+                      new QgsRuleBasedChunkLoaderFactory( map, vl, rootRule, tilingSettings.zoomLevelsCount() - 1, zMin, zMax ), true )
 {
   setShowBoundingBoxes( tilingSettings.showBoundingBoxes() );
 }

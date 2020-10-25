@@ -201,16 +201,9 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
   QgsChunkNodeId nodeId = node->tileId();
   IndexedPointCloudNode pcNode( nodeId.d, nodeId.x, nodeId.y, nodeId.z );
 
-  if ( !pc->hasNode( pcNode ) )
-  {
-    qDebug() << "child not exists" << pcNode.toString();
-    QTimer::singleShot( 0, this, &QgsPointCloudLayerChunkLoader::finished );
-    return;
-  }
+  Q_ASSERT( pc->hasNode( pcNode ) );
 
-  qDebug() << "creating entity!";
-
-  //const Qgs3DMapSettings &map = mFactory->mMap;
+  qDebug() << "loading entity" << node->tileId().text();
 
   QgsPointCloud3DSymbolHandler *handler = new QgsPointCloud3DSymbolHandler;
   mHandler.reset( handler );
@@ -222,7 +215,6 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
   {
     QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "PC chunk load" ) );
 
-    qDebug() << "loading " << pcNode.toString();
     if ( mCanceled )
     {
       qDebug() << "canceled";
@@ -257,10 +249,7 @@ Qt3DCore::QEntity *QgsPointCloudLayerChunkLoader::createEntity( Qt3DCore::QEntit
   QgsPointCloudIndex *pc = mFactory->mPointCloudIndex;
   QgsChunkNodeId nodeId = mNode->tileId();
   IndexedPointCloudNode pcNode( nodeId.d, nodeId.x, nodeId.y, nodeId.z );
-  if ( !pc->hasNode( pcNode ) )
-  {
-    return new Qt3DCore::QEntity( parent );  // dummy entity
-  }
+  Q_ASSERT( pc->hasNode( pcNode ) );
 
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );
   mHandler->finalize( entity, mContext );
@@ -271,18 +260,57 @@ Qt3DCore::QEntity *QgsPointCloudLayerChunkLoader::createEntity( Qt3DCore::QEntit
 ///////////////
 
 
-QgsPointCloudLayerChunkLoaderFactory::QgsPointCloudLayerChunkLoaderFactory( const Qgs3DMapSettings &map, QgsPointCloudIndex *pc, int leafLevel )
+QgsPointCloudLayerChunkLoaderFactory::QgsPointCloudLayerChunkLoaderFactory( const Qgs3DMapSettings &map, QgsPointCloudIndex *pc )
   : mMap( map )
   , mPointCloudIndex( pc )
-  , mLeafLevel( leafLevel )
 {
 }
 
 QgsChunkLoader *QgsPointCloudLayerChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
 {
+  QgsChunkNodeId id = node->tileId();
+  Q_ASSERT( mPointCloudIndex->hasNode( IndexedPointCloudNode( id.d, id.x, id.y, id.z ) ) );
   return new QgsPointCloudLayerChunkLoader( this, node );
 }
 
+QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset, QgsVector3D scale, const Qgs3DMapSettings &map );
+
+QgsChunkNode *QgsPointCloudLayerChunkLoaderFactory::createRootNode() const
+{
+  QgsAABB bbox = nodeBoundsToAABB( mPointCloudIndex->nodeBounds( IndexedPointCloudNode( 0, 0, 0, 0 ) ), mPointCloudIndex->offset(), mPointCloudIndex->scale(), mMap );
+  float error = mPointCloudIndex->nodeError( IndexedPointCloudNode( 0, 0, 0, 0 ) );
+  return new QgsChunkNode( QgsChunkNodeId( 0, 0, 0, 0 ), bbox, error );
+}
+
+QVector<QgsChunkNode *> QgsPointCloudLayerChunkLoaderFactory::createChildren( QgsChunkNode *node ) const
+{
+  QVector<QgsChunkNode *> children;
+  QgsChunkNodeId nodeId = node->tileId();
+  QgsAABB bbox = node->bbox();
+  float childError = node->error() / 2;
+  float xc = bbox.xCenter(), yc = bbox.yCenter(), zc = bbox.zCenter();
+
+  for ( int i = 0; i < 8; ++i )
+  {
+    int dx = i & 1, dy = !!( i & 2 ), dz = !!( i & 4 );
+    QgsChunkNodeId childId( nodeId.d + 1, nodeId.x * 2 + dx, nodeId.y * 2 + dy, nodeId.z * 2 + dz );
+
+    if ( !mPointCloudIndex->hasNode( IndexedPointCloudNode( childId.d, childId.x, childId.y, childId.z ) ) )
+      continue;
+
+    // the Y and Z coordinates below are intentionally flipped, because
+    // in chunk node IDs the X,Y axes define horizontal plane,
+    // while in our 3D scene the X,Z axes define the horizontal plane
+    float chXMin = dx ? xc : bbox.xMin;
+    float chXMax = dx ? bbox.xMax : xc;
+    float chZMin = dy ? zc : bbox.zMin;
+    float chZMax = dy ? bbox.zMax : zc;
+    float chYMin = dz ? yc : bbox.yMin;
+    float chYMax = dz ? bbox.yMax : yc;
+    children << new QgsChunkNode( childId, QgsAABB( chXMin, chYMin, chZMin, chXMax, chYMax, chZMax ), childError, node );
+  }
+  return children;
+}
 
 ///////////////
 
@@ -299,13 +327,10 @@ QgsAABB nodeBoundsToAABB( QgsPointCloudDataBounds nodeBounds, QgsVector3D offset
   return rootBbox;
 }
 
+
 QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( QgsPointCloudIndex *pc, const Qgs3DMapSettings &map )
-  : QgsChunkedEntity( QgsChunkNode::Octree,
-                      nodeBoundsToAABB( pc->nodeBounds( IndexedPointCloudNode( 0, 0, 0, 0 ) ), pc->offset(), pc->scale(), map ),
-                      pc->nodeError( IndexedPointCloudNode( 0, 0, 0, 0 ) ), // rootError
-                      5, // max. allowed screen error (in pixels)  -- // TODO
-                      20, // max. number of levels  (TODO)
-                      new QgsPointCloudLayerChunkLoaderFactory( map, pc, 20 ), true )
+  : QgsChunkedEntity( 5, // max. allowed screen error (in pixels)  -- // TODO
+                      new QgsPointCloudLayerChunkLoaderFactory( map, pc ), true )
 {
   setShowBoundingBoxes( true );
 }

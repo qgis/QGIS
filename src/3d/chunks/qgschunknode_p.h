@@ -87,14 +87,8 @@ class QgsChunkNode
 {
   public:
 
-    enum Type
-    {
-      Quadtree,   //!< Tree where each node has up to 4 children, splitting along X and Y axes
-      Octree,     //!< Tree where each node has up to 8 children, splitting along all axes (X, Y and Z)
-    };
-
     //! constructs a skeleton chunk
-    QgsChunkNode( Type type, const QgsChunkNodeId &nodeId, const QgsAABB &bbox, float error, QgsChunkNode *parent = nullptr );
+    QgsChunkNode( const QgsChunkNodeId &nodeId, const QgsAABB &bbox, float error, QgsChunkNode *parent = nullptr );
 
     ~QgsChunkNode();
 
@@ -134,12 +128,12 @@ class QgsChunkNode
     QgsChunkNodeId tileId() const { return mNodeId; }
     //! Returns pointer to the parent node. Parent is NULLPTR in the root node
     QgsChunkNode *parent() const { return mParent; }
+    //! Returns number of children of the node (returns -1 if the node has not yet been populated with populateChildren())
+    int childCount() const { return mChildCount; }
     //! Returns array of the four children. Children may be NULLPTR if they were not created yet
     QgsChunkNode *const *children() const { return mChildren; }
     //! Returns current state of the node
     State state() const { return mState; }
-    //! Returns type of the tree (quadtree or octree)
-    Type type() const { return mType; }
 
     //! Returns node's entry in the loader queue. Not NULLPTR only when in QueuedForLoad / QueuedForUpdate state
     QgsChunkListEntry *loaderQueueEntry() const { return mLoaderQueueEntry; }
@@ -155,8 +149,8 @@ class QgsChunkNode
     //! Returns TRUE if all child chunks are available and thus this node could be swapped to the child nodes
     bool allChildChunksResident( QTime currentTime ) const;
 
-    //! make sure that all child nodes are at least skeleton nodes
-    void ensureAllChildrenExist();
+    //! Sets child nodes of this node. Takes ownership of all objects. Must be only called once.
+    void populateChildren( const QVector<QgsChunkNode *> &children );
 
     //! how deep is the node in the tree (zero means root node, every level adds one)
     int level() const;
@@ -210,7 +204,6 @@ class QgsChunkNode
     bool hasData() const { return mHasData; }
 
   private:
-    Type mType;      //!< Type of the tree this node belongs to
     QgsAABB mBbox;      //!< Bounding box in world coordinates
     float mError;    //!< Error of the node in world coordinates (negative error means that chunk at this level has no data, but there may be children that do)
 
@@ -218,6 +211,7 @@ class QgsChunkNode
 
     QgsChunkNode *mParent;        //!< TODO: should be shared pointer
     QgsChunkNode *mChildren[8];   //!< TODO: should be weak pointers. May be nullptr if not created yet or removed already
+    int mChildCount = -1;         //! Number of children (-1 == not yet populated)
 
     State mState;  //!< State of the node
 

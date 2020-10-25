@@ -70,15 +70,13 @@ static float screenSpaceError( QgsChunkNode *node, const QgsChunkedEntity::Scene
   return sse;
 }
 
-QgsChunkedEntity::QgsChunkedEntity( QgsChunkNode::Type type, const QgsAABB &rootBbox, float rootError, float tau, int maxLevel, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, Qt3DCore::QNode *parent )
+QgsChunkedEntity::QgsChunkedEntity( float tau, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
   , mTau( tau )
-  , mMaxLevel( maxLevel )
   , mChunkLoaderFactory( loaderFactory )
   , mOwnsFactory( ownsFactory )
 {
-  QgsChunkNodeId rootNodeId( 0, 0, 0, type == QgsChunkNode::Quadtree ? -1 : 0 );
-  mRootNode = new QgsChunkNode( type, rootNodeId, rootBbox, rootError );
+  mRootNode = loaderFactory->createRootNode();
   mChunkLoaderQueue = new QgsChunkList;
   mReplacementQueue = new QgsChunkList;
 }
@@ -245,7 +243,11 @@ void QgsChunkedEntity::update( QgsChunkNode *node, const SceneState &state )
     return;
   }
 
-  node->ensureAllChildrenExist();
+  // ensure we have child nodes (at least skeletons) available, if any
+  if ( node->childCount() == -1 )
+  {
+    node->populateChildren( mChunkLoaderFactory->createChildren( node ) );
+  }
 
   // make sure all nodes leading to children are always loaded
   // so that zooming out does not create issues
@@ -270,8 +272,7 @@ void QgsChunkedEntity::update( QgsChunkNode *node, const SceneState &state )
     // error is not acceptable and children are ready to be used - recursive descent
 
     QgsChunkNode *const *children = node->children();
-    int childCount = node->type() == QgsChunkNode::Quadtree ? 4 : 8;
-    for ( int i = 0; i < childCount; ++i )
+    for ( int i = 0; i < node->childCount(); ++i )
       update( children[i], state );
   }
   else
@@ -280,13 +281,9 @@ void QgsChunkedEntity::update( QgsChunkNode *node, const SceneState &state )
 
     mActiveNodes << node;
 
-    if ( node->level() < mMaxLevel )
-    {
-      QgsChunkNode *const *children = node->children();
-      int childCount = node->type() == QgsChunkNode::Quadtree ? 4 : 8;
-      for ( int i = 0; i < childCount; ++i )
-        requestResidency( children[i] );
-    }
+    QgsChunkNode *const *children = node->children();
+    for ( int i = 0; i < node->childCount(); ++i )
+      requestResidency( children[i] );
   }
 }
 
