@@ -112,14 +112,15 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
 {
   public:
     //! Constructs the factory
-    QgsPointCloudLayerChunkLoaderFactory( const Qgs3DMapSettings &map, QgsPointCloudIndex *pc, int leafLevel );
+    QgsPointCloudLayerChunkLoaderFactory( const Qgs3DMapSettings &map, QgsPointCloudIndex *pc );
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
     virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
+    virtual QgsChunkNode *createRootNode() const override;
+    virtual QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
 
     const Qgs3DMapSettings &mMap;
     QgsPointCloudIndex *mPointCloudIndex;
-    int mLeafLevel;
 };
 
 
