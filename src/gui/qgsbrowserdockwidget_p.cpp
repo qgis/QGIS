@@ -221,7 +221,9 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
     case QgsMapLayerType::PointCloudLayer:
     {
       QgsDebugMsgLevel( QStringLiteral( "creating point cloud layer" ), 2 );
-      mLayer = qgis::make_unique< QgsPointCloudLayer >( layerItem->uri(), layerItem->name() );
+      QgsPointCloudLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+      options.skipCrsValidation = true;
+      mLayer = qgis::make_unique< QgsPointCloudLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
       break;
     }
 
