@@ -71,7 +71,6 @@ void QgsDxfExportAlgorithm::initAlgorithm( const QVariantMap & )
 QVariantMap QgsDxfExportAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QgsMapSettings mapSettings;
-  mapSettings.setDestinationCrs( context.project()->crs() );
   mapSettings.setTransformContext( context.transformContext() );
 
   QList<QgsVectorLayer *> mapLayers;

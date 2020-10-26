@@ -18,6 +18,7 @@
 
 #define SIP_NO_FILE
 
+#include "qgsprocessingcontext.h"
 #include "qgsprocessingwidgetwrapper.h"
 #include "qgsprocessingmultipleselectiondialog.h"
 #include "qgsdxfexport.h"
@@ -40,6 +41,7 @@ class GUI_EXPORT QgsProcessingDxfLayerDetailsWidget : public QgsPanelWidget, pri
 
   private:
     QgsVectorLayer *mLayer = nullptr;
+    QgsProcessingContext mContext;
 };
 
 
@@ -66,6 +68,7 @@ class GUI_EXPORT QgsProcessingDxfLayersPanelWidget : public QgsProcessingMultipl
     QString titleForLayer( const QgsDxfExport::DxfLayer &layer );
 
     QgsProject *mProject = nullptr;
+    QgsProcessingContext mContext;
 };
 
 

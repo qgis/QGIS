@@ -23,7 +23,6 @@
 #include <QToolButton>
 
 #include "qgspanelwidget.h"
-#include "qgsprocessingcontext.h"
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingoutputs.h"
 #include "qgsprocessingparameterdxflayers.h"
@@ -40,10 +39,9 @@ QgsProcessingDxfLayerDetailsWidget::QgsProcessingDxfLayerDetailsWidget( const QV
 
   mFieldsComboBox->setAllowEmptyFieldName( true );
 
-  QgsProcessingContext context;
-  context.setProject( project );
+  mContext.setProject( project );
 
-  QgsDxfExport::DxfLayer layer = QgsProcessingParameterDxfLayers::variantMapAsLayer( value.toMap(), context );
+  QgsDxfExport::DxfLayer layer = QgsProcessingParameterDxfLayers::variantMapAsLayer( value.toMap(), mContext );
   mLayer = layer.layer();
 
   if ( !mLayer )
@@ -81,14 +79,13 @@ QgsProcessingDxfLayersPanelWidget::QgsProcessingDxfLayersPanelWidget(
   buttonBox()->addButton( configureLayerButton, QDialogButtonBox::ActionRole );
 
   // populate the list: first layers already selected, then layers from project not yet selected
-  QgsProcessingContext context;
-  context.setProject( project );
+  mContext.setProject( project );
 
   QSet<const QgsVectorLayer *> seenVectorLayers;
   const QVariantList valueList = value.toList();
   for ( const QVariant &v : valueList )
   {
-    QgsDxfExport::DxfLayer layer = QgsProcessingParameterDxfLayers::variantMapAsLayer( v.toMap(), context );
+    QgsDxfExport::DxfLayer layer = QgsProcessingParameterDxfLayers::variantMapAsLayer( v.toMap(), mContext );
     if ( !layer.layer() )
       continue;  // skip any invalid layers
 
@@ -155,10 +152,9 @@ void QgsProcessingDxfLayersPanelWidget::configureLayer()
 
 void QgsProcessingDxfLayersPanelWidget::setItemValue( QStandardItem *item, const QVariant &value )
 {
-  QgsProcessingContext context;
-  context.setProject( mProject );
+  mContext.setProject( mProject );
 
-  QgsDxfExport::DxfLayer layer = QgsProcessingParameterDxfLayers::variantMapAsLayer( value.toMap(), context );
+  QgsDxfExport::DxfLayer layer = QgsProcessingParameterDxfLayers::variantMapAsLayer( value.toMap(), mContext );
 
   item->setText( titleForLayer( layer ) );
   item->setData( value, Qt::UserRole );
