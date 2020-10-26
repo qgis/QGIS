@@ -333,6 +333,7 @@ QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( QgsPointCloudI
   : QgsChunkedEntity( 5, // max. allowed screen error (in pixels)  -- // TODO
                       new QgsPointCloudLayerChunkLoaderFactory( map, pc ), true )
 {
+  setUsingAdditiveStrategy( true );
   setShowBoundingBoxes( true );
 }
 

@@ -100,6 +100,16 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
     //! Returns whether object picking is currently enabled
     bool hasPickingEnabled() const { return mPickingEnabled; }
 
+    //! Sets whether additive strategy is enabled - see usingAditiveStrategy()
+    void setUsingAdditiveStrategy( bool additive ) { mAdditiveStrategy = additive; }
+
+    /**
+     * Returns whether additive strategy is enabled.
+     * With additive strategy enabled, also all parent nodes are added to active nodes.
+     * This is desired when child nodes add more detailed data rather than just replace coarser data in parents.
+     */
+    bool usingAditiveStrategy() const { return mAdditiveStrategy; }
+
   protected:
     //! Cancels the background job that is currently in progress
     void cancelActiveJob( QgsChunkQueueJob *job );
@@ -173,6 +183,12 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
 
     //! If picking is enabled, QObjectPicker objects will be assigned to chunks and pickedObject() signals fired on mouse click
     bool mPickingEnabled = false;
+
+    /**
+     * With additive strategy enabled, also all parent nodes are added to active nodes.
+     * This is desired when child nodes add more detailed data rather than just replace coarser data in parents.
+     */
+    bool mAdditiveStrategy = false;
 
     bool mIsValid = true;
 };
