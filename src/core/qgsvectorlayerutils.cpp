@@ -42,6 +42,7 @@
 #include "qgsstyle.h"
 #include "qgsauxiliarystorage.h"
 
+
 QgsFeatureIterator QgsVectorLayerUtils::getValuesIterator( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly )
 {
   std::unique_ptr<QgsExpression> expression;
@@ -622,7 +623,7 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
   return result;
 }
 
-QgsFeature QgsVectorLayerUtils::duplicateFeature( QgsVectorLayer *layer, const QgsFeature &feature, QgsProject *project, int depth, QgsDuplicateFeatureContext &duplicateFeatureContext )
+QgsFeature QgsVectorLayerUtils::duplicateFeature( QgsVectorLayer *layer, const QgsFeature &feature, QgsProject *project, QgsDuplicateFeatureContext &duplicateFeatureContext, const int maxDepth, int depth, QList<QgsVectorLayer *> referencedLayersBranch )
 {
   if ( !layer )
     return QgsFeature();
@@ -639,12 +640,16 @@ QgsFeature QgsVectorLayerUtils::duplicateFeature( QgsVectorLayer *layer, const Q
 
   const QList<QgsRelation> relations = project->relationManager()->referencedRelations( layer );
 
+  const int effectiveMaxDepth = maxDepth > 0 ? maxDepth : 100;
+
   for ( const QgsRelation &relation : relations )
   {
     //check if composition (and not association)
-    if ( relation.strength() == QgsRelation::Composition && depth < 1 )
+    if ( relation.strength() == QgsRelation::Composition && !referencedLayersBranch.contains( relation.referencedLayer() ) && depth < effectiveMaxDepth )
     {
       depth++;
+      referencedLayersBranch << layer;
+
       //get features connected over this relation
       QgsFeatureIterator relatedFeaturesIt = relation.getRelatedFeatures( feature );
       QgsFeatureIds childFeatureIds;
@@ -660,7 +665,7 @@ QgsFeature QgsVectorLayerUtils::duplicateFeature( QgsVectorLayer *layer, const Q
           childFeature.setAttribute( fieldPair.first, newFeature.attribute( fieldPair.second ) );
         }
         //call the function for the child
-        childFeatureIds.insert( duplicateFeature( relation.referencingLayer(), childFeature, project, depth, duplicateFeatureContext ).id() );
+        childFeatureIds.insert( duplicateFeature( relation.referencingLayer(), childFeature, project, duplicateFeatureContext, maxDepth, depth, referencedLayersBranch ).id() );
       }
 
       //store for feedback
@@ -827,7 +832,10 @@ QgsFeatureIds QgsVectorLayerUtils::QgsDuplicateFeatureContext::duplicatedFeature
 
 void QgsVectorLayerUtils::QgsDuplicateFeatureContext::setDuplicatedFeatures( QgsVectorLayer *layer, const QgsFeatureIds &ids )
 {
-  mDuplicatedFeatures.insert( layer, ids );
+  if ( mDuplicatedFeatures.contains( layer ) )
+    mDuplicatedFeatures[layer] += ids;
+  else
+    mDuplicatedFeatures.insert( layer, ids );
 }
 /*
 QMap<QgsVectorLayer *, QgsFeatureIds>  QgsVectorLayerUtils::QgsDuplicateFeatureContext::duplicateFeatureContext() const
