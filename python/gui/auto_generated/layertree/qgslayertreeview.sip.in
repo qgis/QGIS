@@ -29,8 +29,6 @@ hidden layers and  text filtering.
     QgsLayerTreeProxyModel( QgsLayerTreeModel *treeModel, QObject *parent );
 %Docstring
 Constructs QgsLayerTreeProxyModel with source model ``treeModel`` and a ``parent``
-@param treeModel
-@param parent
 %End
 
     void setFilterText( const QString &filterText = QString() );

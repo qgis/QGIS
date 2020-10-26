@@ -51,8 +51,6 @@ class GUI_EXPORT QgsLayerTreeProxyModel : public QSortFilterProxyModel
 
     /**
      * Constructs QgsLayerTreeProxyModel with source model \a treeModel and a \a parent
-     * @param treeModel
-     * @param parent
      */
     QgsLayerTreeProxyModel( QgsLayerTreeModel *treeModel, QObject *parent );
 
