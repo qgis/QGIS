@@ -52,6 +52,7 @@
 #include "qgsprocessingparameteraggregate.h"
 #include "qgsprocessingparametertininputlayers.h"
 #include "qgsprocessingparameterdxflayers.h"
+#include "qgsdxfexport.h"
 
 class DummyAlgorithm : public QgsProcessingAlgorithm
 {
@@ -8416,6 +8417,17 @@ void TestQgsProcessing::parameterDxfLayers()
 
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterDxfLayers('dxf input layer', '')" ) );
+
+  QgsDxfExport::DxfLayer dxfLayer( vectorLayer );
+  QList<QgsDxfExport::DxfLayer> dxfList = def->parameterAsLayers( QVariant( vectorLayer->source() ), context );
+  QCOMPARE( dxfList.at( 0 ).layer()->source(), dxfLayer.layer()->source() );
+  QCOMPARE( dxfList.at( 0 ).layerOutputAttributeIndex(), dxfLayer.layerOutputAttributeIndex() );
+  dxfList = def->parameterAsLayers( QVariant( QStringList() << vectorLayer->source() ), context );
+  QCOMPARE( dxfList.at( 0 ).layer()->source(), dxfLayer.layer()->source() );
+  QCOMPARE( dxfList.at( 0 ).layerOutputAttributeIndex(), dxfLayer.layerOutputAttributeIndex() );
+  dxfList = def->parameterAsLayers( layerList, context );
+  QCOMPARE( dxfList.at( 0 ).layer()->source(), dxfLayer.layer()->source() );
+  QCOMPARE( dxfList.at( 0 ).layerOutputAttributeIndex(), dxfLayer.layerOutputAttributeIndex() );
 }
 
 void TestQgsProcessing::checkParamValues()
