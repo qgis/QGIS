@@ -118,15 +118,15 @@ QVariantMap QgsDxfExportAlgorithm::processAlgorithm( const QVariantMap &paramete
       break;
 
     case QgsDxfExport::ExportResult::DeviceNotWritableError:
-      feedback->reportError( QObject::tr( "DXF export failed, device is not writable" ), true );
+      throw QgsProcessingException( QObject::tr( "DXF export failed, device is not writable" ) );
       break;
 
     case QgsDxfExport::ExportResult::InvalidDeviceError:
-      feedback->reportError( QObject::tr( "DXF export failed, the device is invalid" ), true );
+      throw QgsProcessingException( QObject::tr( "DXF export failed, the device is invalid" ) );
       break;
 
     case QgsDxfExport::ExportResult::EmptyExtentError:
-      feedback->reportError( QObject::tr( "DXF export failed, the extent could not be determined" ), true );
+      throw QgsProcessingException( QObject::tr( "DXF export failed, the extent could not be determined" ) );
       break;
   }
 
