@@ -249,7 +249,13 @@ void QgsOfflineEditing::synchronize()
     QString remoteSource = layer->customProperty( CUSTOM_PROPERTY_REMOTE_SOURCE, "" ).toString();
     QString remoteProvider = layer->customProperty( CUSTOM_PROPERTY_REMOTE_PROVIDER, "" ).toString();
     QString remoteName = layer->name();
+<<<<<<< HEAD
     remoteName.remove( QRegExp( " \\(offline\\)$" ) );
+=======
+    QString remoteNameSuffix = layer->customProperty( CUSTOM_PROPERTY_LAYERNAME_SUFFIX, " (offline)" ).toString();
+    if ( remoteName.endsWith( remoteNameSuffix ) )
+      remoteName.chop( remoteNameSuffix.size() );
+>>>>>>> da8c41a57d... only remove suffix when it's on the end
     const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
     QgsVectorLayer *remoteLayer = new QgsVectorLayer( remoteSource, remoteName, remoteProvider, options );
     if ( remoteLayer->isValid() )
