@@ -75,7 +75,7 @@ class _3D_EXPORT QgsAABB
     //! Returns a list of pairs of vertices (useful for display of bounding boxes)
     QList<QVector3D> verticesForLines() const;
 
-    //! Return text representation of the bounding box
+    //! Returns text representation of the bounding box
     QString toString() const;
 
     float xMin = 0.0f;
