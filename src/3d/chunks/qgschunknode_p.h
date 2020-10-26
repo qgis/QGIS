@@ -75,7 +75,7 @@ struct QgsChunkNodeId
 
   bool operator!=( const QgsChunkNodeId &other ) const
   {
-    return !(*this == other );
+    return !( *this == other );
   }
 };
 
