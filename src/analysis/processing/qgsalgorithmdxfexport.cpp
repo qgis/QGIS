@@ -106,7 +106,7 @@ QVariantMap QgsDxfExportAlgorithm::processAlgorithm( const QVariantMap &paramete
   dxfExport.setForce2d( force2D );
 
   QgsDxfExport::Flags flags = QgsDxfExport::Flags();
-  if ( useMText )
+  if ( !useMText )
     flags = flags | QgsDxfExport::FlagNoMText;
   dxfExport.setFlags( flags );
 
