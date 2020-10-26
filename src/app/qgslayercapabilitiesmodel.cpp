@@ -134,7 +134,7 @@ QVariant QgsLayerCapabilitiesModel::headerData( int section, Qt::Orientation ori
         case RequiredColumn:
           return tr( "Layers which are protected from inadvertent removal from the project." );
         case HiddenColumn:
-          return tr( "Layers which not shown in the legend." );
+          return tr( "Layers which are not shown in the legend." );
         default:
           return QVariant();
       }
