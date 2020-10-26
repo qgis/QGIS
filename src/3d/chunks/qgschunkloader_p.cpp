@@ -17,7 +17,7 @@
 
 #include "qgschunknode_p.h"
 #include <QVector>
-
+///@cond PRIVATE
 
 QgsQuadtreeChunkLoaderFactory::QgsQuadtreeChunkLoaderFactory() = default;
 
@@ -64,3 +64,5 @@ QVector<QgsChunkNode *> QgsQuadtreeChunkLoaderFactory::createChildren( QgsChunkN
   }
   return children;
 }
+
+/// @endcond
