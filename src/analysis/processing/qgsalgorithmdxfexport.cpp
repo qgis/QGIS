@@ -27,12 +27,12 @@ QString QgsDxfExportAlgorithm::name() const
 
 QString QgsDxfExportAlgorithm::displayName() const
 {
-  return QObject::tr( "Export DXF" );
+  return QObject::tr( "Export layers to DXF" );
 }
 
 QStringList QgsDxfExportAlgorithm::tags() const
 {
-  return QObject::tr( "layer,export,dxf,cad" ).split( ',' );
+  return QObject::tr( "layer,export,dxf,cad,dwg" ).split( ',' );
 }
 
 QString QgsDxfExportAlgorithm::group() const
@@ -58,13 +58,13 @@ QgsDxfExportAlgorithm *QgsDxfExportAlgorithm::createInstance() const
 void QgsDxfExportAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterDxfLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ) ) );
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "SYMBOLOGY_MODE" ), QObject::tr( "Symbology mode" ), QStringList() << QObject::tr( "No symbology" ) << QObject::tr( "Feature symbology" ) << QObject::tr( "Symbol layer symbology" ), false, 0 ) );
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "SYMBOLOGY_MODE" ), QObject::tr( "Symbology mode" ), QStringList() << QObject::tr( "No Symbology" ) << QObject::tr( "Feature Symbology" ) << QObject::tr( "Symbol Layer Symbology" ), false, 0 ) );
   addParameter( new QgsProcessingParameterScale( QStringLiteral( "SYMBOLOGY_SCALE" ), QObject::tr( "Symbology scale" ), 1000000 ) );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "ENCODING" ), QObject::tr( "Encoding" ), QgsDxfExport::encodings() ) );
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "CRS" ), QStringLiteral( "EPSG:4326" ) ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "USE_LAYER_TITLE" ), QObject::tr( "Use layer title as name" ), false ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "FORCE_2D" ), QObject::tr( "Force 2D output" ),  false ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "MTEXT" ), QObject::tr( "Export labels as MTEXT element" ),  true ) );
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "MTEXT" ), QObject::tr( "Export labels as MTEXT elements" ),  true ) );
   addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "DXF" ), QObject::tr( "DXF Files" ) + " (*.dxf *.DXF)" ) );
 }
 
