@@ -95,5 +95,5 @@ QList<QVector3D> QgsAABB::verticesForLines() const
 
 QString QgsAABB::toString() const
 {
-  return QString( "X %1 - %2  Y %3 - %4  Z %5 - %6" ).arg( xMin ).arg( xMax ).arg( yMin ).arg( yMax ).arg( zMin ).arg( zMax );
+  return QStringLiteral( "X %1 - %2  Y %3 - %4  Z %5 - %6" ).arg( xMin ).arg( xMax ).arg( yMin ).arg( yMax ).arg( zMin ).arg( zMax );
 }
