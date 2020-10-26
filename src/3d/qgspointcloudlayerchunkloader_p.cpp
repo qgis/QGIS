@@ -303,8 +303,9 @@ QVector<QgsChunkNode *> QgsPointCloudLayerChunkLoaderFactory::createChildren( Qg
     // while in our 3D scene the X,Z axes define the horizontal plane
     float chXMin = dx ? xc : bbox.xMin;
     float chXMax = dx ? bbox.xMax : xc;
-    float chZMin = dy ? zc : bbox.zMin;
-    float chZMax = dy ? bbox.zMax : zc;
+    // Z axis: values are increasing to the south
+    float chZMin = !dy ? zc : bbox.zMin;
+    float chZMax = !dy ? bbox.zMax : zc;
     float chYMin = dz ? yc : bbox.yMin;
     float chYMax = dz ? bbox.yMax : yc;
     children << new QgsChunkNode( childId, QgsAABB( chXMin, chYMin, chZMin, chXMax, chYMax, chZMax ), childError, node );
