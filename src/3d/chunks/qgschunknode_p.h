@@ -67,6 +67,16 @@ struct QgsChunkNodeId
     else
       return QStringLiteral( "%1/%2/%3/%4" ).arg( d ).arg( x ).arg( y ).arg( z );   // octree
   }
+
+  bool operator==( const QgsChunkNodeId &other ) const
+  {
+    return d == other.d && x == other.x && y == other.y && z == other.z;
+  }
+
+  bool operator!=( const QgsChunkNodeId &other ) const
+  {
+    return !(*this == other );
+  }
 };
 
 /**
