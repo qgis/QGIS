@@ -52,11 +52,11 @@ QSqlDatabase QgsMssqlConnection::getDatabase( const QString &service, const QStr
   else
     connectionName = service;
 
-  const QString threadSafeConnectionName = dbConnectionName( connectionName );
-
   // while everything we use from QSqlDatabase here is thread safe, we need to ensure
   // that the connection cleanup on thread finalization happens in a predictable order
   QMutexLocker locker( &sMutex );
+
+  const QString threadSafeConnectionName = dbConnectionName( connectionName );
 
   if ( !QSqlDatabase::contains( threadSafeConnectionName ) )
   {
@@ -74,10 +74,10 @@ QSqlDatabase QgsMssqlConnection::getDatabase( const QString &service, const QStr
       // and a subsequent call to QSqlDatabase::database with the same thread address (yep it happens, actually a lot)
       // triggers a condition in QSqlDatabase which detects the nullptr private thread data and returns an invalid database instead.
       // QSqlDatabase::removeDatabase is thread safe, so this is ok to do.
-      QObject::connect( QThread::currentThread(), &QThread::finished, QThread::currentThread(), [connectionName]
+      QObject::connect( QThread::currentThread(), &QThread::finished, QThread::currentThread(), [threadSafeConnectionName]
       {
         QMutexLocker locker( &sMutex );
-        QSqlDatabase::removeDatabase( connectionName );
+        QSqlDatabase::removeDatabase( threadSafeConnectionName );
       }, Qt::DirectConnection );
     }
   }
