@@ -29,10 +29,6 @@ Static functions :py:func:`~parametersAsLayers`, :py:func:`~variantMapAsLayer`,
 :py:func:`~layerAsVariantMap` provide conversion between QgsDxfExport.DxfLayer
 representation and QVariant representation.
 
-.. note::
-
-   This class is not a part of public API.
-
 .. versionadded:: 3.18
 %End
 
@@ -45,7 +41,7 @@ representation and QVariant representation.
 Constructor for QgsProcessingParameterDxfLayers.
 %End
 
-    virtual QgsProcessingParameterDefinition *clone() const;
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
     virtual QString type() const;
 
@@ -105,6 +101,7 @@ Parameter type definition for QgsProcessingParameterDxfLayers.
 
     virtual QStringList acceptedPythonTypes() const;
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

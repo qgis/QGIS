@@ -40,7 +40,6 @@
  * representation and QVariant representation.
  *
  * \ingroup core
- * \note This class is not a part of public API.
  * \since QGIS 3.18
  */
 class CORE_EXPORT QgsProcessingParameterDxfLayers : public QgsProcessingParameterDefinition
@@ -49,7 +48,7 @@ class CORE_EXPORT QgsProcessingParameterDxfLayers : public QgsProcessingParamete
     //! Constructor for QgsProcessingParameterDxfLayers.
     QgsProcessingParameterDxfLayers( const QString &name, const QString &description = QString() );
 
-    QgsProcessingParameterDefinition *clone() const override;
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override;
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
@@ -65,6 +64,7 @@ class CORE_EXPORT QgsProcessingParameterDxfLayers : public QgsProcessingParamete
     static QVariantMap layerAsVariantMap( const QgsDxfExport::DxfLayer &layer );
 };
 
+///@cond PRIVATE
 
 /**
  * Parameter type definition for QgsProcessingParameterDxfLayers.
@@ -111,5 +111,7 @@ class CORE_EXPORT QgsProcessingParameterTypeDxfLayers : public QgsProcessingPara
       return QStringList() << QObject::tr( "list[dict]: list of input layers as dictionaries, see QgsProcessingParameterDxfLayers docs" );
     }
 };
+
+///@endcond
 
 #endif // QGSPROCESSINGPARAMETERDXFLAYERS_H
