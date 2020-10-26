@@ -271,6 +271,14 @@ void QgsChunkedEntity::update( QgsChunkNode *node, const SceneState &state )
   {
     // error is not acceptable and children are ready to be used - recursive descent
 
+    if ( mAdditiveStrategy )
+    {
+      // With additive strategy enabled, also all parent nodes are added to active nodes.
+      // This is desired when child nodes add more detailed data rather than just replace
+      // coarser data in parents. We use this e.g. with point cloud data.
+      mActiveNodes << node;
+    }
+
     QgsChunkNode *const *children = node->children();
     for ( int i = 0; i < node->childCount(); ++i )
       update( children[i], state );
