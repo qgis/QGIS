@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>325</width>
-    <height>623</height>
+    <height>678</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,14 +35,14 @@
       <item row="2" column="0">
        <widget class="QLabel" name="mLabelLod">
         <property name="text">
-         <string>Level Of Details</string>
+         <string>Level of detail</string>
         </property>
        </widget>
       </item>
       <item row="1" column="0" colspan="3">
        <widget class="QGroupBox" name="mGroupBoxWireframe">
         <property name="title">
-         <string>Show Wireframe</string>
+         <string>Show wireframe</string>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -51,10 +51,17 @@
          <bool>false</bool>
         </property>
         <layout class="QGridLayout" name="gridLayout_2">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_9">
+           <property name="text">
+            <string>Line width</string>
+           </property>
+          </widget>
+         </item>
          <item row="0" column="1">
           <widget class="QgsDoubleSpinBox" name="mSpinBoxWireframeLineWidth">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -67,20 +74,20 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
-          <widget class="QgsColorButton" name="mColorButtonWireframe"/>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_9">
-           <property name="text">
-            <string>Line width</string>
-           </property>
-          </widget>
-         </item>
          <item row="1" column="0">
           <widget class="QLabel" name="label_10">
            <property name="text">
             <string>Color</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QgsColorButton" name="mColorButtonWireframe">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
            </property>
           </widget>
          </item>
@@ -90,7 +97,7 @@
       <item row="0" column="0" colspan="3">
        <widget class="QCheckBox" name="mChkSmoothTriangles">
         <property name="text">
-         <string>Smooth Triangles</string>
+         <string>Smooth triangles</string>
         </property>
        </widget>
       </item>
@@ -113,7 +120,7 @@
       <item row="0" column="0">
        <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>Vertical Scale</string>
+         <string>Vertical scale</string>
         </property>
        </widget>
       </item>
@@ -136,7 +143,7 @@
       <item row="1" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Dataset Group For Vertical Value</string>
+         <string>Dataset group for vertical value</string>
         </property>
        </widget>
       </item>
@@ -165,7 +172,7 @@
          </size>
         </property>
         <property name="text">
-         <string>Dataset Value Relative To Vertices Z Value</string>
+         <string>Dataset value relative to vertices Z value</string>
         </property>
        </widget>
       </item>
@@ -178,61 +185,6 @@
       <string>Rendering Color Settings</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_6">
-      <item row="0" column="1">
-       <widget class="QComboBox" name="mComboBoxTextureType">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" colspan="2">
-       <widget class="QWidget" name="mMeshSingleColorWidget" native="true">
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item>
-          <widget class="QLabel" name="label_6">
-           <property name="text">
-            <string>Mesh Color</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QgsColorButton" name="mMeshSingleColorButton">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_5">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Rendering Style</string>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="0" colspan="2">
        <widget class="QGroupBox" name="mGroupBoxColorRampShader">
         <property name="title">
@@ -324,8 +276,14 @@
       </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label_5">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
-         <string>Rendering Style</string>
+         <string>Rendering style</string>
         </property>
        </widget>
       </item>
@@ -347,12 +305,18 @@
          <item>
           <widget class="QLabel" name="label_6">
            <property name="text">
-            <string>Mesh Color</string>
+            <string>Mesh color</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QgsColorButton" name="mMeshSingleColorButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string/>
            </property>
@@ -361,13 +325,23 @@
         </layout>
        </widget>
       </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="mComboBoxTextureType">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
    <item>
     <widget class="QgsCollapsibleGroupBox" name="mGroupBoxArrowsSettings">
      <property name="title">
-      <string>Arrows Settings</string>
+      <string>Show Arrows</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
@@ -376,7 +350,7 @@
       <item row="0" column="2">
        <widget class="QLabel" name="label_8">
         <property name="text">
-         <string>Map Units</string>
+         <string>Map units</string>
         </property>
        </widget>
       </item>
@@ -402,14 +376,14 @@
       <item row="0" column="0">
        <widget class="QLabel" name="label_3">
         <property name="text">
-         <string>Arrows Spacing</string>
+         <string>Arrow spacing</string>
         </property>
        </widget>
       </item>
       <item row="2" column="0">
        <widget class="QCheckBox" name="mArrowsFixedSizeCheckBox">
         <property name="text">
-         <string>Fixed Size</string>
+         <string>Fixed size</string>
         </property>
        </widget>
       </item>
