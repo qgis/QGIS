@@ -148,8 +148,6 @@ void QgsPointCloudLayer::setTransformContext( const QgsCoordinateTransformContex
 
 void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag )
 {
-  Q_UNUSED( loadDefaultStyleFlag )
-
   if ( mDataProvider )
     disconnect( mDataProvider.get(), &QgsPointCloudDataProvider::dataChanged, this, &QgsPointCloudLayer::dataChanged );
 
@@ -184,6 +182,12 @@ void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString
   }
 
   setCrs( mDataProvider->crs() );
+
+  if ( loadDefaultStyleFlag )
+  {
+    bool defaultLoadedFlag = false;
+    loadDefaultStyle( defaultLoadedFlag );
+  }
 
   connect( mDataProvider.get(), &QgsPointCloudDataProvider::dataChanged, this, &QgsPointCloudLayer::dataChanged );
 
