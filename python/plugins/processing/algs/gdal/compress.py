@@ -66,10 +66,10 @@ class compress(GdalAlgorithm):
 
         self.addParameter(QgsProcessingParameterRasterLayer(
             self.INPUT, self.tr('Input layer')))
-        self.addParameter(QgsProcessingParameterEnum(self.COMPRESSOR,
+        self.addParameter(QgsProcessingParameterEnum(self.COMPRESSION,
                                                      self.tr(
                                                          'Compression method to use'),
-                                                     self.COMPRESSION,
+                                                     options=self.COMPRESSOR,
                                                      allowMultiple=False,
                                                      defaultValue=3))
 
@@ -78,8 +78,7 @@ class compress(GdalAlgorithm):
                                                            'Number of thread to use for compression'),
                                                        type=QgsProcessingParameterNumber.Integer,
                                                        defaultValue=-1, minValue=-1,
-                                                       maxValue=(int)(
-                                                           os.popen('grep -c cores /proc/cpuinfo').read()),
+                                                       maxValue=16,
                                                        optional=True))
 
         self.addParameter(QgsProcessingParameterNumber(self.PREDICTOR,
@@ -117,24 +116,12 @@ class compress(GdalAlgorithm):
         dataType_param = QgsProcessingParameterEnum(self.DATA_TYPE,
                                                     self.tr(
                                                         'Output data type'),
-                                                    self.TYPES,
+                                                    options=self.TYPES,
                                                     allowMultiple=False,
                                                     defaultValue=0)
         dataType_param.setFlags(dataType_param.flags(
         ) | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(dataType_param)
-
-        options_param = QgsProcessingParameterString(self.OPTIONS,
-                                                     self.tr(
-                                                         'Additional creation options'),
-                                                     defaultValue='',
-                                                     optional=True)
-        options_param.setFlags(options_param.flags() |
-                               QgsProcessingParameterDefinition.FlagAdvanced)
-        options_param.setMetadata({
-            'widget_wrapper': {
-                'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
-        self.addParameter(options_param)
 
         extra_param = QgsProcessingParameterString(self.EXTRA,
                                                    self.tr(
@@ -164,7 +151,7 @@ class compress(GdalAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'translate.png'))
 
     def commandName(self):
-        return 'gdal_compress'
+        return 'gdal_translate'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         qualArg = None
@@ -236,9 +223,7 @@ class compress(GdalAlgorithm):
 
         arguments.append('-ot BIGTIFF = IF_SAFER')
 
-        options = self.parameterAsString(parameters, self.OPTIONS, context)
-        if options:
-            arguments.extend(GdalUtils.parseCreationOptions(options))
+        arguments = GdalUtils.parseCreationOptions(arguments)
 
         if self.EXTRA in parameters and parameters[self.EXTRA] not in (None, ''):
             extra = self.parameterAsString(parameters, self.EXTRA, context)
