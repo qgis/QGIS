@@ -110,7 +110,6 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer
                          StyleCategories categories = AllStyleCategories ) const override;
 
     void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
-    QString loadDefaultStyle( bool &resultFlag SIP_OUT ) override;
     void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false ) override;
     QString htmlMetadata() const override;
 
