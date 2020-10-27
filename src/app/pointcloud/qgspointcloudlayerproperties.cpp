@@ -102,6 +102,12 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
 void QgsPointCloudLayerProperties::apply()
 {
   mMetadataWidget->acceptMetadata();
+
+  // TODO -- move to proper widget classes!
+  mLayer->setCustomProperty( QStringLiteral( "pcMin" ), mMinZSpin->value() );
+  mLayer->setCustomProperty( QStringLiteral( "pcMax" ), mMaxZSpin->value() );
+  mLayer->setCustomProperty( QStringLiteral( "pcRamp" ), mBtnColorRamp->colorRampName().isEmpty() ? QStringLiteral( "Viridis" ) : mBtnColorRamp->colorRampName() );
+  mLayer->triggerRepaint();
 }
 
 void QgsPointCloudLayerProperties::onCancel()
@@ -131,6 +137,11 @@ void QgsPointCloudLayerProperties::syncToLayer()
   mInformationTextBrowser->setOpenLinks( false );
   connect( mInformationTextBrowser, &QTextBrowser::anchorClicked, this, &QgsPointCloudLayerProperties::urlClicked );
 
+  // TODO -- move to proper widget classes!
+  mMinZSpin->setValue( mLayer->customProperty( QStringLiteral( "pcMin" ), 400 ).toInt() );
+  mMaxZSpin->setValue( mLayer->customProperty( QStringLiteral( "pcMax" ), 600 ).toInt() );
+  mBtnColorRamp->setColorRampFromName( mLayer->customProperty( QStringLiteral( "pcRamp" ), QStringLiteral( "Viridis" ) ).toString() );
+  mBtnColorRamp->setColorRampName( mLayer->customProperty( QStringLiteral( "pcRamp" ), QStringLiteral( "Viridis" ) ).toString() );
 }
 
 
