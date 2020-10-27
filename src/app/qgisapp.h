@@ -1914,7 +1914,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * Enable a color blindness (tritanopia) preview mode on the map canvas
-     * \since QGIS 3.17
+     * \since QGIS 3.18
     */
     void activateTritanopePreview();
 
