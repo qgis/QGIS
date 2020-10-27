@@ -41,7 +41,7 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class translate(GdalAlgorithm):
+class compress(GdalAlgorithm):
     INPUT = 'INPUT'
     COMPRESSION = 'COMPRESSION'
     NUM_THREADS = 'NUM_THREADS'
