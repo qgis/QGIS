@@ -89,6 +89,7 @@ from .OgrToPostGis import OgrToPostGis
 from .ogr2ogrtopostgislist import Ogr2OgrToPostGisList
 from .OneSideBuffer import OneSideBuffer
 from .PointsAlongLines import PointsAlongLines
+from.compress import compress
 
 # from .ogr2ogrtabletopostgislist import Ogr2OgrTableToPostGisList
 
@@ -148,6 +149,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             ClipRasterByExtent(),
             ClipRasterByMask(),
             ColorRelief(),
+            compress(),
             contour(),
             contour_polygon(),
             Datasources2Vrt(),
