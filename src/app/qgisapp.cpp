@@ -5786,12 +5786,8 @@ QgsPointCloudLayer *QgisApp::addPointCloudLayerPrivate( const QString &uri, cons
     return nullptr;
   }
   bool ok = false;
-  QString error = layer->loadDefaultStyle( ok );
-  if ( !ok )
-    visibleMessageBar()->pushMessage( tr( "Error loading style" ), error, Qgis::Warning, messageTimeout() );
-  error = layer->loadDefaultMetadata( ok );
-  if ( !ok )
-    visibleMessageBar()->pushMessage( tr( "Error loading layer metadata" ), error, Qgis::Warning, messageTimeout() );
+  layer->loadDefaultStyle( ok );
+  layer->loadDefaultMetadata( ok );
 
   QgsProject::instance()->addMapLayer( layer.get() );
   activateDeactivateLayerRelatedActions( activeLayer() );
