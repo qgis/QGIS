@@ -104,18 +104,26 @@ bool QgsPointCloud3DSymbolHandler::prepare( const Qgs3DRenderContext &context )
 
 void QgsPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const Qgs3DRenderContext &context )
 {
-  const QVector<qint32> data = pc->nodePositionDataAsInt32( n );
-  const QVector<char> classes = pc->nodeClassesDataAsChar( n );
+  QgsPointCloudAttributeCollection request;
+  request.push_back( QgsPointCloudAttribute( QStringLiteral( "position" ), 3 * 4 ) );
+  request.push_back( QgsPointCloudAttribute( QStringLiteral( "classification" ), 1 ) );
+  std::unique_ptr<QgsPointCloudBlock> block( pc->nodeData( n, request ) );
+  if ( !block )
+    return;
+
+  const char *ptr = block->data();
+  int count = block->pointCount();
+  int recordSize = request.pointRecordSize();
+
   const QgsVector3D scale = pc->scale();
   const QgsVector3D offset = pc->offset();
 
-  const qint32 *ptr = data.constData();
-  int count = data.count() / 3;
   for ( int i = 0; i < count; ++i )
   {
-    qint32 ix = ptr[i * 3 + 0];
-    qint32 iy = ptr[i * 3 + 1];
-    qint32 iz = ptr[i * 3 + 2];
+    qint32 ix = *( qint32 * )( ptr + i * recordSize + 0 );
+    qint32 iy = *( qint32 * )( ptr + i * recordSize + 4 );
+    qint32 iz = *( qint32 * )( ptr + i * recordSize + 8 );
+    char cls = *( char * )( ptr + i * recordSize + 12 );
 
     double x = offset.x() + scale.x() * ix;
     double y = offset.y() + scale.y() * iy;
@@ -123,8 +131,8 @@ void QgsPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const In
     QVector3D point( x, y, z );
     QgsVector3D p = context.map().mapToWorldCoordinates( point );
     outNormal.positions.push_back( QVector3D( p.x(), p.y(), p.z() ) );
+    outNormal.classes.push_back( cls );
   }
-  outNormal.classes.append( classes );
 }
 
 void QgsPointCloud3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context )

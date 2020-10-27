@@ -22,6 +22,8 @@
 
 #include <QFile>
 #include <iostream>
+#include <memory>
+#include <QDataStream>
 
 #if defined ( HAVE_ZSTD )
 #include <zstd.h>
@@ -34,52 +36,39 @@
 
 ///@cond PRIVATE
 
-QVector<qint32> QgsEptDecoder::decompressBinary( const QString &filename, int pointRecordSize )
+QgsPointCloudBlock *QgsEptDecoder::decompressBinary( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes )
 {
   Q_ASSERT( QFile::exists( filename ) );
+
+  int pointRecordSize = attributes.pointRecordSize( );
 
   QFile f( filename );
   bool r = f.open( QIODevice::ReadOnly );
   Q_ASSERT( r );
 
+  QByteArray data;
+  QDataStream stream( &data, QIODevice::WriteOnly );
+
   int count = f.size() / pointRecordSize;
-  QVector<qint32> data( count * 3 );
   for ( int i = 0; i < count; ++i )
   {
     QByteArray bytes = f.read( pointRecordSize );
-    // WHY??? X,Y,Z are int32 values stored as doubles
-    double *bytesD = ( double * ) bytes.constData();
-    // TODO: we should respect the schema (offset and data type of X,Y,Z)
-    data[i * 3 + 0] = ( bytesD[0] );
-    data[i * 3 + 1] = ( bytesD[1] );
-    data[i * 3 + 2] = ( bytesD[2] );
-  }
-  return data;
-}
+    char *s = bytes.data();
 
-QVector<char> QgsEptDecoder::decompressBinaryClasses( const QString &filename, int pointRecordSize )
-{
-  Q_ASSERT( QFile::exists( filename ) );
-
-  QFile f( filename );
-  bool r = f.open( QIODevice::ReadOnly );
-  Q_ASSERT( r );
-
-  int count = f.size() / pointRecordSize;
-  QVector<char> classes( count );
-  for ( int i = 0; i < count; ++i )
-  {
-    QByteArray bytes = f.read( pointRecordSize );
-
-    // qint32 x = *(double*)(ptData);
-    // qint32 y = *(double*)(ptData+8);
-    // qint32 z = *(double*)(ptData+16);
+    qint32 x = *( double * )( s );
+    qint32 y = *( double * )( s + 8 );
+    qint32 z = *( double * )( s + 16 );
     char cls = bytes[30];
-    // vertices.push_back( Point3D( x, y, z ) );
-    classes[i] = cls;
+
+    stream << x << y << z << cls;
+
     //++count;
   }
-  return classes;
+  return new QgsPointCloudBlock(
+           count,
+           requestedAttributes,
+           data
+         );
 }
 
 /* *************************************************************************************** */
@@ -114,7 +103,7 @@ QByteArray decompressZtdStream( const QByteArray &dataCompressed )
   return dataUncompressed;
 }
 
-QVector<qint32> QgsEptDecoder::decompressZStandard( const QString &filename, int pointRecordSize )
+QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes )
 {
   Q_ASSERT( QFile::exists( filename ) );
 
@@ -125,32 +114,43 @@ QVector<qint32> QgsEptDecoder::decompressZStandard( const QString &filename, int
   QByteArray dataCompressed = f.readAll();
   QByteArray dataUncompressed = decompressZtdStream( dataCompressed );
 
+  int pointRecordSize = attributes.pointRecordSize( );
   // from here it's the same as "binary"
 
   int count = dataUncompressed.size() / pointRecordSize;
 
-  QVector<qint32> data( count * 3 );
+  QByteArray data;
+  QDataStream stream( &data, QIODevice::WriteOnly );
+
   const char *ptr = dataUncompressed.constData();
   for ( int i = 0; i < count; ++i )
   {
     // WHY??? X,Y,Z are int32 values stored as doubles
-    double *bytesD = ( double * )( ptr + pointRecordSize * i );
+    // double *bytesD = ( double * )( ptr + pointRecordSize * i );
     // TODO: we should respect the schema (offset and data type of X,Y,Z)
-    data[i * 3 + 0] = ( bytesD[0] );
-    data[i * 3 + 1] = ( bytesD[1] );
-    data[i * 3 + 2] = ( bytesD[2] );
+
+    // TODO type based on requested attributes
+    qint32 x = *( double * )( ptr + pointRecordSize * i );
+    qint32 y = *( double * )( ptr + pointRecordSize * i + 8 );
+    qint32 z = *( double * )( ptr + pointRecordSize * i + 16 );
+    char cls = *( char * )( ptr + pointRecordSize * i + 30 );
+
+    stream << x << y << z << cls;
   }
-  return data;
+  return new QgsPointCloudBlock(
+           count,
+           requestedAttributes,
+           data
+         );
 }
 
 #else // defined(HAVE_ZSTD)
-QVector<qint32> QgsEptDecoder::decompressZStandard( const QString &filename, int pointRecordSize )
+QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes )
 {
-  //TODO graceful error
   Q_UNUSED( filename )
-  Q_UNUSED( pointRecordSize )
-  Q_ASSERT( false );
-  return QVector<qint32>();
+  Q_UNUSED( attributes )
+  Q_UNUSED( requestedAttributes )
+  return nullptr;
 }
 
 #endif // defined(HAVE_ZSTD)
@@ -158,8 +158,12 @@ QVector<qint32> QgsEptDecoder::decompressZStandard( const QString &filename, int
 /* *************************************************************************************** */
 
 #if defined ( HAVE_LAZPERF )
-QVector<qint32> QgsEptDecoder::decompressLaz( const QString &filename )
+QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
+                                                  const QgsPointCloudAttributeCollection &attributes,
+                                                  const QgsPointCloudAttributeCollection &requestedAttributes )
 {
+  Q_UNUSED(attributes)
+
   std::ifstream file( filename.toLatin1().constData(), std::ios::binary );
   Q_ASSERT( file.good() );
 
@@ -170,29 +174,35 @@ QVector<qint32> QgsEptDecoder::decompressLaz( const QString &filename )
   size_t count = f.get_header().point_count;
   char buf[256]; // a buffer large enough to hold our point
 
-  QVector<qint32> data( count * 3 );
+  QByteArray data;
+  QDataStream stream( &data, QIODevice::WriteOnly );
 
   for ( size_t i = 0 ; i < count ; i ++ )
   {
     f.readPoint( buf ); // read the point out
     laszip::formats::las::point10 p = laszip::formats::packers<laszip::formats::las::point10>::unpack( buf );
-
-    data[i * 3 + 0] = p.x ;
-    data[i * 3 + 1] = p.y ;
-    data[i * 3 + 2] = p.z ;
+    qint32 x = p.x ;
+    qint32 y = p.y ;
+    qint32 z = p.z ;
+    char cls = p.classification;
+    stream << x << y << z << cls;
   }
   float t = common::since( start );
   std::cout << "LAZ-PERF Read through the points in " << t << " seconds." << std::endl;
-  return data;
+  return new QgsPointCloudBlock(
+           count,
+           requestedAttributes,
+           data
+         );
 }
 
 #else // defined ( HAVE_LAZPERF )
-QVector<qint32> QgsEptDecoder::decompressLaz( const QString &filename )
+QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes )
 {
-  //TODO graceful return and error message
   Q_UNUSED( filename )
-  Q_ASSERT( false );
-  return QVector<qint32>();
+  Q_UNUSED( attributes )
+  Q_UNUSED( requestedAttributes )
+  return nullptr;
 }
 #endif
 

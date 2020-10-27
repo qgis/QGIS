@@ -43,15 +43,13 @@ class QgsEptPointCloudIndex: public QgsPointCloudIndex
 
     bool load( const QString &fileName ) override;
 
-    QVector<qint32> nodePositionDataAsInt32( const IndexedPointCloudNode &n ) override;
-    QVector<char> nodeClassesDataAsChar( const IndexedPointCloudNode &n ) override;
+    QgsPointCloudBlock *nodeData( const IndexedPointCloudNode &n, const QgsPointCloudAttributeCollection &requestedAttributes ) override;
 
     QgsCoordinateReferenceSystem crs() const;
   private:
     QString mDataType;
     QString mDirectory;
     QString mWkt;
-    int mPointRecordSize = 0;  //!< Size of one point record in bytes (only relevant for "binary" and "zstandard" data type)
 };
 
 ///@endcond

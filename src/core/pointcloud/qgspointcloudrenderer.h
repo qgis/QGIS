@@ -111,7 +111,7 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
     int nodesDrawn = 0;
     int pointsDrawn = 0;
 
-    void drawData( QPainter *painter, const QVector<qint32> &data, const QgsPointCloudRendererConfig &config );
+    void drawData( QPainter *painter, const QgsPointCloudBlock *data, const QgsPointCloudRendererConfig &config );
 };
 #endif
 

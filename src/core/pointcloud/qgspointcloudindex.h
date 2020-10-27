@@ -29,6 +29,7 @@
 #include "qgsrectangle.h"
 #include "qgsvector3d.h"
 #include "qgis_sip.h"
+#include "qgspointcloudblock.h"
 
 #define SIP_NO_FILE
 
@@ -156,29 +157,20 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     //! Returns all children of node
     QList<IndexedPointCloudNode> children( const IndexedPointCloudNode &n );
 
-    //! Returns node positions, needs to be scaled and offset applied to get coordinates
-    virtual QVector<qint32> nodePositionDataAsInt32( const IndexedPointCloudNode &n ) = 0;
+    //! Returns all attributes that are stored in the file
+    QgsPointCloudAttributeCollection attributes() const;
 
     /**
-     Loads classes data
-
-    Standard LIDAR classes:
-      0 Created, never classified
-      1 Unclassified
-      2 Ground
-      3 Low Vegetation
-      4 Medium Vegetation
-      5 High Vegetation
-      6 Building
-      7 Low Point (noise)
-      8 Model Key-point (mass point)
-      9 Water
-      10 Reserved for ASPRS Definition
-      11 Reserved for ASPRS Definition
-      12 Overlap Points
-      13-31 Reserved for ASPRS Definition
-    */
-    virtual QVector<char> nodeClassesDataAsChar( const IndexedPointCloudNode &n ) = 0;
+     * Returns node data block
+     *
+     * e.g. positions (needs to be scaled and offset applied to get coordinates) or
+     * classification, intensity or custom attributes
+     *
+     * It is caller responsibility to free the block.
+     *
+     * May return nullptr in case the node is not present or any other problem with loading
+     */
+    virtual QgsPointCloudBlock *nodeData( const IndexedPointCloudNode &n, const QgsPointCloudAttributeCollection &requestedAttributes ) = 0;
 
     //! Returns extent of the data
     QgsRectangle extent() const { return mExtent; }
@@ -204,6 +196,8 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     QgsVector3D offset() const;
 
   protected: //TODO private
+    void setAttributes( const QgsPointCloudAttributeCollection &attributes );
+
     QgsRectangle mExtent;  //!< 2D extent of data
     double mZMin = 0, mZMax = 0;   //!< Vertical extent of data
 
@@ -211,7 +205,7 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     QgsVector3D mScale; //!< Scale of our int32 coordinates compared to CRS coords
     QgsVector3D mOffset; //!< Offset of our int32 coordinates compared to CRS coords
     QgsPointCloudDataBounds mRootBounds;  //!< Bounds of the root node's cube (in int32 coordinates)
-
+    QgsPointCloudAttributeCollection mAttributes; //! All native attributes stored in the file
     int mSpan;  //!< Number of points in one direction in a single node
 };
 

@@ -81,8 +81,9 @@ bool QgsEptPointCloudIndex::load( const QString &fileName )
   mZMax = bounds_conforming[5].toDouble();
 
   QJsonArray schemaArray = result.value( QLatin1String( "schema" ) ).toArray();
+  QgsPointCloudAttributeCollection attributes;
 
-  mPointRecordSize = 0;
+
   for ( QJsonValue schemaItem : schemaArray )
   {
     QJsonObject schemaObj = schemaItem.toObject();
@@ -90,7 +91,21 @@ bool QgsEptPointCloudIndex::load( const QString &fileName )
     QString type = schemaObj.value( QLatin1String( "type" ) ).toString();
 
     int size = schemaObj.value( QLatin1String( "size" ) ).toInt();
-    mPointRecordSize += size;
+
+    // Lets group xyz together...
+    // TODO group colour and so on
+    if ( name == QLatin1String( "X" ) )
+    {
+      // There seems to be a bug in Entwine: https://github.com/connormanning/entwine/issues/240
+      // point records for X,Y,Z seem to be written as 64-bit doubles even if schema says they are 32-bit ints
+      attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "position" ), ( size + 4 ) * 3 ) );
+    }
+    else if (
+      name != QLatin1String( "Y" ) && name != QLatin1String( "Z" )
+    )
+    {
+      attributes.push_back( QgsPointCloudAttribute( name, size ) );
+    }
 
     float scale = 1.f;
     if ( schemaObj.contains( "scale" ) )
@@ -117,10 +132,7 @@ bool QgsEptPointCloudIndex::load( const QString &fileName )
     }
     // TODO: can parse also stats: "count", "minimum", "maximum", "mean", "stddev", "variance"
   }
-
-  // There seems to be a bug in Entwine: https://github.com/connormanning/entwine/issues/240
-  // point records for X,Y,Z seem to be written as 64-bit doubles even if schema says they are 32-bit ints
-  mPointRecordSize += 3 * 4;
+  setAttributes( attributes );
 
   // save mRootBounds
 
@@ -172,66 +184,39 @@ bool QgsEptPointCloudIndex::load( const QString &fileName )
   return true;
 }
 
-QVector<qint32> QgsEptPointCloudIndex::nodePositionDataAsInt32( const IndexedPointCloudNode &n )
+QgsPointCloudBlock *QgsEptPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudAttributeCollection &requestedAttributes )
 {
-  Q_ASSERT( mHierarchy.contains( n ) );
+  if ( !mHierarchy.contains( n ) )
+    return nullptr;
+
   if ( mDataType == "binary" )
   {
     QString filename = QString( "%1/ept-data/%2.bin" ).arg( mDirectory ).arg( n.toString() );
     Q_ASSERT( QFile::exists( filename ) );
-    return QgsEptDecoder::decompressBinary( filename, mPointRecordSize );
+    return QgsEptDecoder::decompressBinary( filename, attributes(), requestedAttributes );
   }
   else if ( mDataType == "zstandard" )
   {
     QString filename = QString( "%1/ept-data/%2.zst" ).arg( mDirectory ).arg( n.toString() );
     Q_ASSERT( QFile::exists( filename ) );
-    return QgsEptDecoder::decompressZStandard( filename, mPointRecordSize );
+    return QgsEptDecoder::decompressZStandard( filename, attributes(), requestedAttributes );
   }
   else if ( mDataType == "laszip" )
   {
     QString filename = QString( "%1/ept-data/%2.laz" ).arg( mDirectory ).arg( n.toString() );
     Q_ASSERT( QFile::exists( filename ) );
-    return QgsEptDecoder::decompressLaz( filename );
+    return QgsEptDecoder::decompressLaz( filename, attributes(), requestedAttributes );
   }
   else
   {
-    Q_ASSERT( false );  // unsupported
+    return nullptr;  // unsupported
   }
-  return QVector<qint32>();
+  return nullptr;
 }
 
 QgsCoordinateReferenceSystem QgsEptPointCloudIndex::crs() const
 {
   return QgsCoordinateReferenceSystem::fromWkt( mWkt );
-}
-
-QVector<char> QgsEptPointCloudIndex::nodeClassesDataAsChar( const IndexedPointCloudNode &n )
-{
-  Q_ASSERT( mHierarchy.contains( n ) );
-  // int count = mHierarchy[n];
-
-  if ( mDataType == "binary" )
-  {
-    // TODO: ugly me... reading same file twice :vomit:
-    QString filename = QString( "%1/ept-data/%2.bin" ).arg( mDirectory ).arg( n.toString() );
-    Q_ASSERT( QFile::exists( filename ) );
-    return QgsEptDecoder::decompressBinaryClasses( filename, mPointRecordSize );
-  }
-  else if ( mDataType == "zstandard" )
-  {
-    //TODO
-    Q_ASSERT( false );
-  }
-  else if ( mDataType == "laszip" )
-  {
-    //TODO
-    Q_ASSERT( false );
-  }
-  else
-  {
-    Q_ASSERT( false );  // unsupported
-  }
-  return QVector<char>();
 }
 
 ///@endcond
