@@ -56,6 +56,7 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizin
 
   QgsVectorLayer::LayerOptions layerOptions;
   layerOptions.skipCrsValidation = true;
+  layerOptions.loadDefaultStyle = false;
   mExtraSnapLayer = new QgsVectorLayer( QStringLiteral( "LineString?crs=" ), QStringLiteral( "extra snap" ), QStringLiteral( "memory" ), layerOptions );
   mExtraSnapLayer->startEditing();
   QgsFeature f;
