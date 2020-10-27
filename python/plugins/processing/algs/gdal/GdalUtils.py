@@ -217,11 +217,12 @@ class GdalUtils:
 
     @staticmethod
     def escapeAndJoin(strList):
+        escChars = [' ', '&', '(', ')']
         joined = ''
         for s in strList:
             if not isinstance(s, str):
                 s = str(s)
-            if s and s[0] != '-' and (' ' in s or '&' in s):
+            if s and s[0] != '-' and any(c in s for c in escChars):
                 escaped = '"' + s.replace('\\', '\\\\').replace('"', '\\"') \
                           + '"'
             else:
