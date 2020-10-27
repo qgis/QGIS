@@ -124,7 +124,7 @@ QRgb QgsPreviewEffect::simulateColorBlindness( QRgb &originalColor, QgsPreviewEf
 
 void QgsPreviewEffect::simulateGrayscale( int &r, int &g, int &b, int &red, int &green, int &blue )
 {
-  r = ( 0.299 * red ) + ( 0.587 * green ) + ( 0.114 * blue );
+  r = ( 0.2126 * red ) + ( 0.7152 * green ) + ( 0.0722 * blue );
   g = r;
   b = r;
 }
