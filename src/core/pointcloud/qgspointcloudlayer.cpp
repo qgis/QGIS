@@ -120,11 +120,23 @@ bool QgsPointCloudLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
 
 bool QgsPointCloudLayer::readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
 {
-  Q_UNUSED( errorMessage )
-
   QDomElement elem = node.toElement();
 
   readCommonStyle( elem, context, categories );
+
+  // hack for now !!
+  if ( categories.testFlag( Symbology ) )
+  {
+    const QDomElement elemRenderer = elem.firstChildElement( QStringLiteral( "renderer" ) );
+    if ( elemRenderer.isNull() )
+    {
+      errorMessage = tr( "Missing <renderer> tag" );
+      //  return false;
+    }
+    setCustomProperty( QStringLiteral( "pcMin" ), elemRenderer.attribute( QStringLiteral( "pcMin" ), QStringLiteral( "400" ) ).toInt() );
+    setCustomProperty( QStringLiteral( "pcMax" ), elemRenderer.attribute( QStringLiteral( "pcMax" ), QStringLiteral( "600" ) ).toInt() );
+    setCustomProperty( QStringLiteral( "pcRamp" ), elemRenderer.attribute( QStringLiteral( "pcRamp" ), QStringLiteral( "Viridis" ) ) );
+  }
 
   return true;
 }
@@ -133,10 +145,20 @@ bool QgsPointCloudLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
     const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
   Q_UNUSED( errorMessage )
-  Q_UNUSED( context )
-  Q_UNUSED( categories )
-  Q_UNUSED( node )
-  Q_UNUSED( doc )
+
+  QDomElement elem = node.toElement();
+  writeCommonStyle( elem, doc, context, categories );
+
+  // hack for now !!
+  if ( categories.testFlag( Symbology ) )
+  {
+    QDomElement elemRenderer = doc.createElement( QStringLiteral( "renderer" ) );
+    elemRenderer.setAttribute( QStringLiteral( "pcMin" ), customProperty( QStringLiteral( "pcMin" ), 400 ).toInt() );
+    elemRenderer.setAttribute( QStringLiteral( "pcMax" ), customProperty( QStringLiteral( "pcMax" ), 600 ).toInt() );
+    elemRenderer.setAttribute( QStringLiteral( "pcRamp" ), customProperty( QStringLiteral( "pcRamp" ),  QStringLiteral( "Viridis" ) ).toString() );
+    elem.appendChild( elemRenderer );
+  }
+
   return false;
 }
 
