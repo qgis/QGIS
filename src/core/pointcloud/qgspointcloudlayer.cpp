@@ -159,7 +159,7 @@ bool QgsPointCloudLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
     elem.appendChild( elemRenderer );
   }
 
-  return false;
+  return true;
 }
 
 void QgsPointCloudLayer::setTransformContext( const QgsCoordinateTransformContext &transformContext )
