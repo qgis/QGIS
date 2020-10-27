@@ -146,12 +146,6 @@ void QgsPointCloudLayer::setTransformContext( const QgsCoordinateTransformContex
     mDataProvider->setTransformContext( transformContext );
 }
 
-QString QgsPointCloudLayer::loadDefaultStyle( bool &resultFlag )
-{
-  Q_UNUSED( resultFlag )
-  return QString();
-}
-
 void QgsPointCloudLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag )
 {
   Q_UNUSED( loadDefaultStyleFlag )
