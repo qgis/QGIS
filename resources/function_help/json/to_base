@@ -1,0 +1,15 @@
+
+{
+  "name": "to_base",
+  "type": "function",
+  "groups": ["Conversions"],
+  "description": "Convert an integer value to a string representation in a different base or number system. Binary is base 2, octal base 8, and hexadecimal base 16.",
+  "arguments": [
+    {"arg":"value", "description": "A decimal value to encode to a new base"},
+    {"arg":"base", "description": "The base number system. Values must be between and including 2 through 36"}],
+  "examples": [
+    {"expression":"to_base(456, 16)", "returns":"'1C8'" },
+    {"expression":"to_base(456, 8)", "returns":"'710'" },
+    {"expression":"to_base(456, 2)", "returns":"'111001000'" }
+  ]
+}

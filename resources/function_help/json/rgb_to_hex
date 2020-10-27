@@ -1,0 +1,12 @@
+{
+  "name": "rgb_to_hex",
+  "type": "function",
+  "groups": ["Color"],
+  "description": "Returns a hex string representation of a color based on its red, green, blue, and optional alpha components. The output is either '#RRGGBB' or '#RRGGBBAA' where RR, GG, BB, and AA are the red, green, blue and alpha components.",
+  "arguments": [ {"arg":"red","description":"red component as an integer value from 0 to 255"},
+                 {"arg":"green","description":"green component as an integer value from 0 to 255"},
+                 {"arg":"blue","description":"blue component as an integer value from 0 to 255"},
+                 {"arg":"alpha","optional":true,"description":"alpha component as an integer value from 0 to 255"}],
+  "examples": [ { "expression":"rgb_to_hex(255,127,0)", "returns":"'#FF7F00'"} ]
+}
+

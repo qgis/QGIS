@@ -4539,6 +4539,28 @@ static QVariant fcnColorRgb( const QVariantList &values, const QgsExpressionCont
   return QStringLiteral( "%1,%2,%3" ).arg( color.red() ).arg( color.green() ).arg( color.blue() );
 }
 
+static QVariant fcnRgbToHex(const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction *)
+{
+	int red = QgsExpressionUtils::getNativeIntValue(values.at(0), parent);
+	int green = QgsExpressionUtils::getNativeIntValue(values.at(1), parent);
+	int blue = QgsExpressionUtils::getNativeIntValue(values.at(2), parent);
+	if (red < 0 || red > 255 || green < 0 || green > 255 || blue < 0 || blue > 255) {
+		parent->setEvalErrorString(QObject::tr("Invalid RGB values %1:%2:%3").arg(red).arg(green).arg(blue));
+		return QVariant();
+	}
+	if (values.at(3).isValid()) {
+        int alpha = QgsExpressionUtils::getNativeIntValue(values.at(3), parent);
+		if (alpha < 0 || alpha > 255)
+		{
+			parent->setEvalErrorString(QObject::tr("Invalid alpha value %1").arg(alpha));
+			return QVariant();
+		}
+		
+		return QVariant(QLatin1Char('#') + QString::number((qulonglong)(red << 24) | (green << 16) | (blue << 8) | alpha | 0x100000000, 16).right(8));
+	}
+	return QVariant(QLatin1Char('#') + QString::number((ulong)(red << 16) | (green << 8) | blue | 0x1000000, 16).right(6).toUpper());
+}
+
 static QVariant fcnTry( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsExpressionNode *node = QgsExpressionUtils::getNode( values.at( 0 ), parent );
@@ -5740,6 +5762,20 @@ static QVariant fcnFromBase64( const QVariantList &values, const QgsExpressionCo
   return QVariant( decoded );
 }
 
+static QVariant fcnToBase(const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction *)
+{
+	qlonglong value = QgsExpressionUtils::getIntValue(values.at(0), parent);
+	int base = QgsExpressionUtils::getIntValue(values.at(1), parent);
+	if (value < 0) {
+		value = -value;
+	}
+	if (base < 2 || base > 36) {
+		parent->setEvalErrorString(QObject::tr("The base value must be between 2 and 36"));
+		return QVariant();
+	}
+	return QVariant(QString::number(value, base).toUpper());
+}
+
 typedef bool ( QgsGeometry::*RelationFunction )( const QgsGeometry &geometry ) const;
 
 static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const RelationFunction &relationFunction, bool invert = false, double bboxGrow = 0, bool isNearestFunc = false )
@@ -6277,6 +6313,11 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "blue" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "alpha" ) ),
                                             fncColorRgba, QStringLiteral( "Color" ) )
+		<< new QgsStaticExpressionFunction(QStringLiteral("rgb_to_hex"), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter(QStringLiteral("red"))
+											<< QgsExpressionFunction::Parameter(QStringLiteral("green"))
+											<< QgsExpressionFunction::Parameter(QStringLiteral("blue"))
+											<< QgsExpressionFunction::Parameter(QStringLiteral("alpha"), true, QVariant()),
+											fcnRgbToHex, QStringLiteral("Color"))
         << new QgsStaticExpressionFunction( QStringLiteral( "ramp_color" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "ramp_name" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ),
                                             fcnRampColor, QStringLiteral( "Color" ) )
@@ -6354,6 +6395,10 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             fcnToBase64, QStringLiteral( "Conversions" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "from_base64" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ),
                                             fcnFromBase64, QStringLiteral( "Conversions" ) )
+
+		// general base conversions
+		<< new QgsStaticExpressionFunction(QStringLiteral("to_base"), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter(QStringLiteral("value")) << QgsExpressionFunction::Parameter(QStringLiteral("base")),
+				fcnToBase, QStringLiteral("Conversions"))
 
         // deprecated stuff - hidden from users
         << new QgsStaticExpressionFunction( QStringLiteral( "$scale" ), QgsExpressionFunction::ParameterList(), fcnMapScale, QStringLiteral( "deprecated" ) );
