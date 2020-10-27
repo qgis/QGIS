@@ -2638,10 +2638,10 @@ Acts on the currently active layer only.</string>
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Simulate Fax (Mono)</string>
+    <string>Simulate Monochrome</string>
    </property>
    <property name="toolTip">
-    <string>Simulate Fax (Mono)</string>
+    <string>Simulate Monochrome</string>
    </property>
   </action>
   <action name="mActionPreviewModeGrayscale">
@@ -2649,10 +2649,10 @@ Acts on the currently active layer only.</string>
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Simulate Achromatopsia Color Blindness and Photocopy (Grayscale)</string>
+    <string>Simulate Achromatopsia Color Blindness (Grayscale)</string>
    </property>
    <property name="toolTip">
-    <string>Simulate Achromatopsia Color Blindness and Photocopy (Grayscale)</string>
+    <string>Simulate Achromatopsia Color Blindness (Grayscale)</string>
    </property>
   </action>
   <action name="mActionPreviewProtanope">

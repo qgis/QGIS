@@ -1091,7 +1091,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Simulate Fax (&amp;Mono)</string>
+    <string>Simulate Monochrome</string>
    </property>
   </action>
   <action name="mActionPreviewModeGrayscale">
@@ -1099,7 +1099,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Simulate Achromatopsia Color Blindness and Photocopy (&amp;Grayscale)</string>
+    <string>Simulate Achromatopsia Color Blindness (&amp;Grayscale)</string>
    </property>
   </action>
   <action name="mActionPreviewProtanope">
