@@ -12900,7 +12900,27 @@ QgsVectorLayer *QgisApp::addVectorLayerPrivate( const QString &vectorLayerPath, 
   QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
   // Default style is loaded later in this method
   options.loadDefaultStyle = false;
-  QgsVectorLayer *layer = new QgsVectorLayer( vectorLayerPath, baseName, providerKey, options );
+
+  QVariantMap uriElements = QgsProviderRegistry::instance()->decodeUri( providerKey, vectorLayerPath );
+  // eg: QMap(("layerId", QVariant(Invalid))("layerName", QVariant(QString, "countries"))("path", QVariant(QString, "inbuilt:/data/world_map.gpkg")))
+  QgsVectorLayer *layer;
+  if ( uriElements.contains( "path" ) && uriElements.value( "path" ).toString().startsWith( QLatin1String( "inbuilt:" ) ) )
+  {
+    QString resourcePath;
+    QgsPathResolver resolver = QgsPathResolver( baseName );
+    if ( uriElements.contains( "layerName" ) )
+    {
+      resourcePath = resolver.readPath( uriElements.value( "path" ).toString() ) + "|layername=" + uriElements.value( "layerName" ).toString();
+    }
+    /*else{
+        resourcePath = resolver.readPath(path);  // mmm vectorLayerPath is const.... should remove the layerid= part??
+    }*/
+    layer = new QgsVectorLayer( resourcePath, baseName, providerKey, options );
+  }
+  else
+  {
+    layer = new QgsVectorLayer( vectorLayerPath, baseName, providerKey, options );
+  }
 
   if ( authok && layer->isValid() )
   {
