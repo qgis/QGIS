@@ -116,6 +116,8 @@ class QgsShadowRenderingFrameGraph
     void addTexturePreviewOverlay( Qt3DRender::QTexture2D *texture, const QPointF &centerNDC, const QSizeF &size, QVector<Qt3DRender::QParameter *> additionalShaderParameters = QVector<Qt3DRender::QParameter *>() );
     //! Sets shadow rendering to use a directional light
     void setupDirectionalLight( const QgsDirectionalLightSettings &light, float maximumShadowRenderingDistance );
+    //! Sets eye dome lighting shading related settings
+    void setupEyeDomeLighting( bool enabled, double strength );
   private:
     Qt3DRender::QRenderSurfaceSelector *mRenderSurfaceSelector = nullptr;
     Qt3DRender::QViewport *mMainViewPort = nullptr;
@@ -152,6 +154,9 @@ class QgsShadowRenderingFrameGraph
     bool mShadowRenderingEnabled = false;
     float mShadowBias = 0.00001f;
     int mShadowMapResolution = 2048;
+
+    bool mEyeDomeLightingEnabled = false;
+    double mEyeDomeLightingStrength = 1000.0f;
 
     Qt3DRender::QLayerFilter *mShadowSceneEntitiesFilter = nullptr;
     Qt3DRender::QRenderStateSet *mShadowRenderStateSet = nullptr;

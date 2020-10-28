@@ -28,6 +28,9 @@ uniform float nearPlane;
 uniform int renderShadows;
 uniform float shadowBias;
 
+uniform int edlEnabled;
+uniform float edlStrength;
+
 in vec2 texCoord;
 
 out vec4 fragColor;
@@ -69,6 +72,26 @@ float CalcShadowFactor(vec4 LightSpacePos)
   return shadow / (2 * k + 1) / (2 * k + 1);
 }
 
+float edlFactor(vec2 coords)
+{
+  vec2 texelSize = 2.0 / textureSize(shadowTexture, 0);
+  vec2 neighbours[4] = vec2[4](vec2(-1.0f, 0.0f), vec2(1.0f, 0.0f), vec2(0.0f, -1.0f), vec2(0.0f, 1.0f));
+  float factor = 0.0f;
+  float centerDepth = texture(depthTexture, coords).r;
+  for (int i = 0; i < 4; i++)
+  {
+    vec2 neighbourCoords = coords + texelSize * neighbours[i];
+    float neighbourDepth = texture(depthTexture, neighbourCoords).r;
+    neighbourDepth = (neighbourDepth == 1.0) ? 0.0 : neighbourDepth;
+    if (neighbourDepth != 0.0f)
+    {
+      if (centerDepth == 0.0f) factor += 100.0f;
+      else factor += max(0, centerDepth - neighbourDepth);
+    }
+  }
+  return factor / 4.0f;
+}
+
 void main()
 {
   vec3 worldPosition = WorldPosFromDepth(texture(depthTexture, texCoord).r);
@@ -81,5 +104,10 @@ void main()
   } else {
     float visibilityFactor = CalcShadowFactor(positionInLightSpace);
     fragColor = vec4(visibilityFactor * color, 1.0f);
+  }
+  if (edlEnabled != 0)
+  {
+    float shade = exp(-edlFactor(texCoord) * 300.0 * edlStrength);
+    fragColor = vec4(fragColor.rgb * shade, fragColor.a);
   }
 }

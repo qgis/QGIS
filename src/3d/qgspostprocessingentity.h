@@ -48,6 +48,10 @@ class QgsPostprocessingEntity : public Qt3DCore::QEntity
     void setShadowRenderingEnabled( bool enabled );
     //! Sets the shadow bias value
     void setShadowBias( float shadowBias );
+    //! Sets whether eye dome lighting is enabled
+    void setEyeDomeLightingEnabled( bool enabled );
+    //! Sets the eye dome lighting strength
+    void setEyeDomeLightingStrength( double strength );
   private:
     Qt3DRender::QMaterial *mMaterial = nullptr;
     Qt3DRender::QEffect *mEffect = nullptr;
@@ -74,6 +78,8 @@ class QgsPostprocessingEntity : public Qt3DCore::QEntity
 
     Qt3DRender::QParameter *mRenderShadowsParameter = nullptr;
     Qt3DRender::QParameter *mShadowBiasParameter = nullptr;
+    Qt3DRender::QParameter *mEyeDomeShadingEnabledParameter = nullptr;
+    Qt3DRender::QParameter *mEyeDomeShadingStrengthParameter = nullptr;
 };
 
 #endif // QGSPOSTPROCESSINGENTITY_H

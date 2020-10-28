@@ -124,6 +124,11 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsShadowRenderingFrameGraph *
   mShadowBiasParameter = new Qt3DRender::QParameter( "shadowBias", QVariant::fromValue( 0.00001f ) );
   mMaterial->addParameter( mShadowBiasParameter );
 
+  mEyeDomeShadingEnabledParameter = new Qt3DRender::QParameter( "edlEnabled", QVariant::fromValue( 0 ) );
+  mEyeDomeShadingStrengthParameter = new Qt3DRender::QParameter( "edlStrength", QVariant::fromValue( 1000.0f ) );
+  mMaterial->addParameter( mEyeDomeShadingEnabledParameter );
+  mMaterial->addParameter( mEyeDomeShadingStrengthParameter );
+
   mLightPosition = new Qt3DRender::QParameter( "lightPosition", QVariant::fromValue( QVector3D() ) );
   mLightDirection = new Qt3DRender::QParameter( "lightDirection", QVariant::fromValue( QVector3D() ) );
 
@@ -179,4 +184,14 @@ void QgsPostprocessingEntity::setShadowRenderingEnabled( bool enabled )
 void QgsPostprocessingEntity::setShadowBias( float shadowBias )
 {
   mShadowBiasParameter->setValue( QVariant::fromValue( shadowBias ) );
+}
+
+void QgsPostprocessingEntity::setEyeDomeLightingEnabled( bool enabled )
+{
+  mEyeDomeShadingEnabledParameter->setValue( QVariant::fromValue( enabled ? 1 : 0 ) );
+}
+
+void QgsPostprocessingEntity::setEyeDomeLightingStrength( double strength )
+{
+  mEyeDomeShadingStrengthParameter->setValue( QVariant::fromValue( strength ) );
 }

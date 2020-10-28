@@ -415,6 +415,24 @@ Sets whether to display labels on terrain tiles
 Returns whether to display labels on terrain tiles
 %End
 
+    void setEyeDomeLightingEnabled( bool enabled );
+%Docstring
+Sets whether eye dome lighting will be used
+%End
+    bool eyeDomeLightingEnabled() const;
+%Docstring
+Returns whether eye dome lighting is used
+%End
+
+    void setEyeDomeLightingStrength( double strength );
+%Docstring
+Sets the eye dome lighting strength value
+%End
+    double eyeDomeLightingStrength() const;
+%Docstring
+Returns the eye dome lighting strength value
+%End
+
     QList<QgsPointLightSettings> pointLights() const;
 %Docstring
 Returns list of point lights defined in the scene
@@ -599,6 +617,20 @@ Emitted when the flag whether light source origins are shown has changed.
     void showLabelsChanged();
 %Docstring
 Emitted when the flag whether labels are displayed on terrain tiles has changed
+%End
+
+    void eyeDomeLightingEnabledChanged();
+%Docstring
+Emitted when the flag whether eye dome lighting is used has changed
+
+.. versionadded:: 3.18
+%End
+
+    void eyeDomeLightingStrengthChanged();
+%Docstring
+Emitted when the eye dome lighting stength has changed
+
+.. versionadded:: 3.18
 %End
 
     void pointLightsChanged();

@@ -341,3 +341,11 @@ void QgsShadowRenderingFrameGraph::setFrustumCullingEnabled( bool enabled )
   else
     mFrustumCulling->setParent( ( Qt3DCore::QNode * )nullptr );
 }
+
+void QgsShadowRenderingFrameGraph::setupEyeDomeLighting( bool enabled, double strength )
+{
+  mEyeDomeLightingEnabled = enabled;
+  mEyeDomeLightingStrength = strength;
+  mPostprocessingEntity->setEyeDomeLightingEnabled( enabled );
+  mPostprocessingEntity->setEyeDomeLightingStrength( strength );
+}

@@ -237,6 +237,10 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   QDomElement elemShadows = elem.firstChildElement( QStringLiteral( "shadow-rendering" ) );
   mShadowSettings.readXml( elemShadows, context );
 
+  QDomElement elemEyeDomeLighting = elem.firstChildElement( QStringLiteral( "eye-dome-lighting" ) );
+  mEyeDomeLightingEnabled = elemEyeDomeLighting.attribute( "enabled", QStringLiteral( "0" ) ).toInt();
+  mEyeDomeLightingStrength = elemEyeDomeLighting.attribute( "eye-dome-lighting-strength", QStringLiteral( "1000.0" ) ).toDouble();
+
   QDomElement elemDebug = elem.firstChildElement( QStringLiteral( "debug" ) );
   mShowTerrainBoundingBoxes = elemDebug.attribute( QStringLiteral( "bounding-boxes" ), QStringLiteral( "0" ) ).toInt();
   mShowTerrainTileInfo = elemDebug.attribute( QStringLiteral( "terrain-tile-info" ), QStringLiteral( "0" ) ).toInt();
@@ -349,6 +353,11 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemDebug.setAttribute( QStringLiteral( "camera-view-center" ), mShowCameraViewCenter ? 1 : 0 );
   elemDebug.setAttribute( QStringLiteral( "show-light-sources" ), mShowLightSources ? 1 : 0 );
   elem.appendChild( elemDebug );
+
+  QDomElement elemEyeDomeLighting = doc.createElement( QStringLiteral( "eye-dome-lighting" ) );
+  elemEyeDomeLighting.setAttribute( "enabled", mEyeDomeLightingEnabled ? 1 : 0 );
+  elemEyeDomeLighting.setAttribute( "eye-dome-lighting-strength", mEyeDomeLightingStrength );
+  elem.appendChild( elemEyeDomeLighting );
 
   QDomElement elemTemporalRange = doc.createElement( QStringLiteral( "temporal-range" ) );
   elemTemporalRange.setAttribute( QStringLiteral( "start" ), temporalRange().begin().toString( Qt::ISODate ) );
@@ -629,6 +638,23 @@ void Qgs3DMapSettings::setShowLabels( bool enabled )
 
   mShowLabels = enabled;
   emit showLabelsChanged();
+}
+
+void Qgs3DMapSettings::setEyeDomeLightingEnabled( bool enabled )
+{
+  if ( mEyeDomeLightingEnabled == enabled )
+    return;
+  mEyeDomeLightingEnabled = enabled;
+  emit eyeDomeLightingEnabledChanged();
+}
+
+void Qgs3DMapSettings::setEyeDomeLightingStrength( double strength )
+{
+  if ( mEyeDomeLightingStrength == strength )
+    return;
+  qDebug() << "Qgs3DMapSettings::setEyeDomeLightingStrength";
+  mEyeDomeLightingStrength = strength;
+  emit eyeDomeLightingStrengthChanged();
 }
 
 void Qgs3DMapSettings::setPointLights( const QList<QgsPointLightSettings> &pointLights )
