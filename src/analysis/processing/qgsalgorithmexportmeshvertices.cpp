@@ -22,6 +22,8 @@
 #include "qgsmeshlayerutils.h"
 #include "qgsmeshlayertemporalproperties.h"
 
+///@cond PRIVATE
+
 QString QgsExportMeshVerticesAlgorithm::group() const
 {
   return QObject::tr( "Mesh" );
@@ -289,13 +291,10 @@ QVariantMap QgsExportMeshVerticesAlgorithm::processAlgorithm( const QVariantMap 
 
   const QString fileName = parameterAsFile( parameters, QStringLiteral( "OUTPUT_LAYER" ), context );
 
-//  context.addLayerToLoadOnCompletion( fileName, QgsProcessingContext::LayerDetails( QObject::tr( "Mesh Vertices" ),
-//                                      context.project(),
-//                                      QStringLiteral( "OUTPUT_LAYER" ),
-//                                      QgsProcessingUtils::LayerHint::Vector ) );
-
   QVariantMap ret;
   ret[QStringLiteral( "OUTPUT" )] = identifier;
 
   return ret;
 }
+
+///@endcond PRIVATE

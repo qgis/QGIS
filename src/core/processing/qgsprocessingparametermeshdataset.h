@@ -116,10 +116,10 @@ class CORE_EXPORT QgsProcessingParameterTypeMeshDatasetGroups : public QgsProces
 
 /**
  * A parameter for processing algorithms that need a list of mesh dataset index from time parameter
- * A valid value for this parameter is a map (QVariantMap) with in this form
- * -"type" : the type of time settings "current-canvas-time", "defined-date-time", "dataset-time-step" or "none" if all the dataset groups are static
- * -"value" : nothing if type is "current-canvas-time", QDateTime if "defined-date-time"
- * or, for "dataset_time_step",  list of two int representing the dataset index that is the reference for the time step
+ * A valid value for this parameter is a map (QVariantMap) with in this form:
+ *
+ * - "type" : the type of time settings "current-canvas-time", "defined-date-time", "dataset-time-step" or "none" if all the dataset groups are static
+ * - "value" : nothing if type is "current-canvas-time", QDateTime if "defined-date-time" or, for "dataset_time_step",  list of two int representing the dataset index that is the reference for the time step
  *
  * \note This parameter is dependent on a mesh layer parameter (\see QgsProcessingParameterMeshLayer)
  * and on mesh datast group parameter (\see QgsProcessingParameterMeshDatasetGroups)

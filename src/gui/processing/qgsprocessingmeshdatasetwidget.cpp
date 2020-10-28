@@ -27,6 +27,8 @@
 #include <QToolButton>
 #include <QVBoxLayout>
 
+/// @cond PRIVATE
+
 QgsProcessingMeshDatasetGroupsWidget::QgsProcessingMeshDatasetGroupsWidget( QWidget *parent, const QgsProcessingParameterMeshDatasetGroups *param )
   : QWidget( parent ),
     mParam( param )
@@ -562,3 +564,5 @@ void QgsProcessingMeshDatasetTimeWidget::buildValue()
 
   updateWidget();
 }
+
+///@endcond
