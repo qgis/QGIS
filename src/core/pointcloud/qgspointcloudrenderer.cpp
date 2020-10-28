@@ -23,6 +23,8 @@
 #include "qgspointcloudindex.h"
 #include "qgsstyle.h"
 #include "qgscolorramp.h"
+#include "qgspointcloudrequest.h"
+#include "qgspointcloudattribute.h"
 
 ///@cond PRIVATE
 QgsPointCloudRendererConfig::QgsPointCloudRendererConfig() = default;
@@ -137,9 +139,11 @@ bool QgsPointCloudLayerRenderer::render()
       qDebug() << "canceled";
       break;
     }
-    QgsPointCloudAttributeCollection request;
-    request.push_back( QgsPointCloudAttribute( QStringLiteral( "position" ), 3 * 4 ) );
-    request.push_back( QgsPointCloudAttribute( QStringLiteral( "classification" ), 1 ) );
+    QgsPointCloudAttributeCollection attributes;
+    attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "position" ), 3 * 4 ) );
+    attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "classification" ), 1 ) );
+    QgsPointCloudRequest request;
+    request.setAttributes( attributes );
     std::unique_ptr<QgsPointCloudBlock> block( pc->nodeData( n, request ) );
     drawData( painter, block.get(), mConfig );
   }

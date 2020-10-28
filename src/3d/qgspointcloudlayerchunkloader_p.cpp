@@ -28,6 +28,8 @@
 
 #include "qgsapplication.h"
 #include "qgs3dsymbolregistry.h"
+#include "qgspointcloudattribute.h"
+#include "qgspointcloudrequest.h"
 
 #include <QtConcurrent>
 #include <Qt3DRender/QAttribute>
@@ -104,16 +106,19 @@ bool QgsPointCloud3DSymbolHandler::prepare( const Qgs3DRenderContext &context )
 
 void QgsPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const Qgs3DRenderContext &context )
 {
-  QgsPointCloudAttributeCollection request;
-  request.push_back( QgsPointCloudAttribute( QStringLiteral( "position" ), 3 * 4 ) );
-  request.push_back( QgsPointCloudAttribute( QStringLiteral( "classification" ), 1 ) );
+  QgsPointCloudAttributeCollection attributes;
+  attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "position" ), 3 * 4 ) );
+  attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "classification" ), 1 ) );
+  QgsPointCloudRequest request;
+  request.setAttributes(attributes);
+
   std::unique_ptr<QgsPointCloudBlock> block( pc->nodeData( n, request ) );
   if ( !block )
     return;
 
   const char *ptr = block->data();
   int count = block->pointCount();
-  int recordSize = request.pointRecordSize();
+  int recordSize = attributes.pointRecordSize();
 
   const QgsVector3D scale = pc->scale();
   const QgsVector3D offset = pc->offset();

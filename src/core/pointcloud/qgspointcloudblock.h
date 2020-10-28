@@ -27,56 +27,7 @@
 
 #define SIP_NO_FILE
 
-/**
- * \ingroup core
- *
- * Attribute for point cloud data
- * pair of name and size in bytes
- */
-class CORE_EXPORT QgsPointCloudAttribute
-{
-  public:
-    //! Ctor
-    QgsPointCloudAttribute( const QString &name, int size );
-
-    //! Returns name of the attribute
-    QString name() const;
-
-    //! Returns size of the attribute in bytes
-    int size() const;
-
-  private:
-    QString mName;
-    int mSize;
-};
-
-/**
- * \ingroup core
- *
- * Collection of point cloud attributes
- */
-class CORE_EXPORT QgsPointCloudAttributeCollection
-{
-  public:
-    //! Ctor
-    QgsPointCloudAttributeCollection();
-    //! Ctor with given attributes
-    QgsPointCloudAttributeCollection( const QVector<QgsPointCloudAttribute> &attributes );
-    //! Adds extra attribute
-    void push_back( const QgsPointCloudAttribute &attribute );
-
-    //! Returns all attributes
-    QVector<QgsPointCloudAttribute> attributes() const;
-
-    //! Returns -1 if no such attribute exists
-    int offset( const QString &attributeName, const QgsPointCloudAttribute *foundAttribute ) const;
-
-    //! Returns total size of record
-    int pointRecordSize() const { return mSize; }
-  private:
-    int mSize = 0;
-    QVector<QgsPointCloudAttribute> mAttributes;
-};
+#include "qgspointcloudattribute.h"
 
 /**
  * \ingroup core

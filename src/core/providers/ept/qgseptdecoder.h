@@ -22,6 +22,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgspointcloudblock.h"
+#include "qgspointcloudattribute.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE

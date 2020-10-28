@@ -17,57 +17,8 @@
 
 #include "qgis.h"
 #include "qgspointcloudblock.h"
+#include "qgspointcloudattribute.h"
 
-QgsPointCloudAttribute::QgsPointCloudAttribute( const QString &name, int size )
-  : mName( name )
-  , mSize( size )
-{
-}
-
-QgsPointCloudAttributeCollection::QgsPointCloudAttributeCollection() = default;
-
-QgsPointCloudAttributeCollection::QgsPointCloudAttributeCollection( const QVector<QgsPointCloudAttribute> &attributes )
-  : mAttributes( attributes )
-{
-  for ( const QgsPointCloudAttribute &attr : mAttributes )
-  {
-    mSize += attr.size();
-  }
-
-}
-
-void QgsPointCloudAttributeCollection::push_back( const QgsPointCloudAttribute &attribute )
-{
-  mAttributes.push_back( attribute );
-  mSize += attribute.size();
-}
-
-QVector<QgsPointCloudAttribute> QgsPointCloudAttributeCollection::attributes() const
-{
-  return mAttributes;
-}
-
-int QgsPointCloudAttributeCollection::offset( const QString &attributeName, const QgsPointCloudAttribute *foundAttribute ) const
-{
-
-  int off = 0;
-
-  for ( const QgsPointCloudAttribute &attr : mAttributes )
-  {
-    if ( attr.name() == attributeName )
-    {
-      foundAttribute = &attr;
-      return off;
-    }
-    else
-    {
-      off += attr.size();
-    }
-  }
-
-  // not found
-  return -1;
-}
 
 QgsPointCloudBlock::QgsPointCloudBlock(
   int count,
@@ -95,16 +46,4 @@ int QgsPointCloudBlock::pointCount() const
 QgsPointCloudAttributeCollection QgsPointCloudBlock::attributes() const
 {
   return mAttributes;
-}
-
-
-
-QString QgsPointCloudAttribute::name() const
-{
-  return mName;
-}
-
-int QgsPointCloudAttribute::size() const
-{
-  return mSize;
 }

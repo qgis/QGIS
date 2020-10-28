@@ -33,6 +33,8 @@
 
 #define SIP_NO_FILE
 
+class QgsPointCloudRequest;
+class QgsPointCloudAttributeCollection;
 
 /**
  * \ingroup core
@@ -170,7 +172,7 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
      *
      * May return nullptr in case the node is not present or any other problem with loading
      */
-    virtual QgsPointCloudBlock *nodeData( const IndexedPointCloudNode &n, const QgsPointCloudAttributeCollection &requestedAttributes ) = 0;
+    virtual QgsPointCloudBlock *nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) = 0;
 
     //! Returns extent of the data
     QgsRectangle extent() const { return mExtent; }

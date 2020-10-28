@@ -27,6 +27,8 @@
 
 #include "qgseptdecoder.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgspointcloudrequest.h"
+#include "qgspointcloudattribute.h"
 
 ///@cond PRIVATE
 
@@ -184,7 +186,7 @@ bool QgsEptPointCloudIndex::load( const QString &fileName )
   return true;
 }
 
-QgsPointCloudBlock *QgsEptPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudAttributeCollection &requestedAttributes )
+QgsPointCloudBlock *QgsEptPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
 {
   if ( !mHierarchy.contains( n ) )
     return nullptr;
@@ -192,26 +194,22 @@ QgsPointCloudBlock *QgsEptPointCloudIndex::nodeData( const IndexedPointCloudNode
   if ( mDataType == "binary" )
   {
     QString filename = QString( "%1/ept-data/%2.bin" ).arg( mDirectory ).arg( n.toString() );
-    Q_ASSERT( QFile::exists( filename ) );
-    return QgsEptDecoder::decompressBinary( filename, attributes(), requestedAttributes );
+    return QgsEptDecoder::decompressBinary( filename, attributes(), request.attributes() );
   }
   else if ( mDataType == "zstandard" )
   {
     QString filename = QString( "%1/ept-data/%2.zst" ).arg( mDirectory ).arg( n.toString() );
-    Q_ASSERT( QFile::exists( filename ) );
-    return QgsEptDecoder::decompressZStandard( filename, attributes(), requestedAttributes );
+    return QgsEptDecoder::decompressZStandard( filename, attributes(), request.attributes() );
   }
   else if ( mDataType == "laszip" )
   {
     QString filename = QString( "%1/ept-data/%2.laz" ).arg( mDirectory ).arg( n.toString() );
-    Q_ASSERT( QFile::exists( filename ) );
-    return QgsEptDecoder::decompressLaz( filename, attributes(), requestedAttributes );
+    return QgsEptDecoder::decompressLaz( filename, attributes(), request.attributes() );
   }
   else
   {
     return nullptr;  // unsupported
   }
-  return nullptr;
 }
 
 QgsCoordinateReferenceSystem QgsEptPointCloudIndex::crs() const
