@@ -198,6 +198,7 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     QgsVector3D offset() const;
 
   protected: //TODO private
+    //! Sets native attributes of the data
     void setAttributes( const QgsPointCloudAttributeCollection &attributes );
 
     QgsRectangle mExtent;  //!< 2D extent of data

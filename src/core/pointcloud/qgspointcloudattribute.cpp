@@ -47,17 +47,19 @@ QVector<QgsPointCloudAttribute> QgsPointCloudAttributeCollection::attributes() c
   return mAttributes;
 }
 
-int QgsPointCloudAttributeCollection::offset( const QString &attributeName, const QgsPointCloudAttribute *foundAttribute ) const
+bool QgsPointCloudAttributeCollection::offset( const QString &attributeName, int &offset, int &size ) const
 {
 
   int off = 0;
 
-  for ( const QgsPointCloudAttribute &attr : mAttributes )
+  for ( int i = 0; i < mAttributes.size(); ++i )
   {
+    const QgsPointCloudAttribute &attr = mAttributes.at( i );
     if ( attr.name() == attributeName )
     {
-      foundAttribute = &attr;
-      return off;
+      offset = off;
+      size = attr.size();
+      return false;
     }
     else
     {
@@ -66,7 +68,7 @@ int QgsPointCloudAttributeCollection::offset( const QString &attributeName, cons
   }
 
   // not found
-  return -1;
+  return true;
 }
 
 QString QgsPointCloudAttribute::name() const

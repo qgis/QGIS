@@ -141,7 +141,7 @@ bool QgsPointCloudLayerRenderer::render()
     }
     QgsPointCloudAttributeCollection attributes;
     attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "position" ), 3 * 4 ) );
-    attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "classification" ), 1 ) );
+    attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Classification" ), 1 ) );
     QgsPointCloudRequest request;
     request.setAttributes( attributes );
     std::unique_ptr<QgsPointCloudBlock> block( pc->nodeData( n, request ) );

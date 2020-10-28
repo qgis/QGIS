@@ -95,7 +95,7 @@ bool QgsEptPointCloudIndex::load( const QString &fileName )
     int size = schemaObj.value( QLatin1String( "size" ) ).toInt();
 
     // Lets group xyz together...
-    // TODO group colour and so on
+    // TODO group color and so on
     if ( name == QLatin1String( "X" ) )
     {
       // There seems to be a bug in Entwine: https://github.com/connormanning/entwine/issues/240

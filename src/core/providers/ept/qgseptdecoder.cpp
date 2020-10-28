@@ -144,15 +144,14 @@ QgsPointCloudBlock *_decompressBinary( const QByteArray &dataUncompressed, const
     const QVector<QgsPointCloudAttribute> requestedAttributesVector = requestedAttributes.attributes();
     for ( const QgsPointCloudAttribute &requestedAttribute : requestedAttributesVector )
     {
-      QgsPointCloudAttribute *foundAttribute = nullptr;
-      int inputOffset = attributes.offset( requestedAttribute.name(), foundAttribute );
-      // invalid request
-      if ( inputOffset < 0 || !foundAttribute )
+      int inputAttributeSize;
+      int inputAttributeOffset;
+      if ( attributes.offset( requestedAttribute.name(), inputAttributeOffset, inputAttributeSize ) )
+      {
         return nullptr;
+      }
 
-      Q_ASSERT( requestedAttribute.name() == foundAttribute->name() );
-
-      _serialize( data, i * requestedPointRecordSize + outputOffset, requestedAttribute.size(), s, foundAttribute->size(), i * pointRecordSize + inputOffset );
+      _serialize( data, i * requestedPointRecordSize + outputOffset, requestedAttribute.size(), s, inputAttributeSize, i * pointRecordSize + inputAttributeOffset );
 
       outputOffset += requestedAttribute.size();
     }
@@ -245,6 +244,8 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
     const QgsPointCloudAttributeCollection &attributes,
     const QgsPointCloudAttributeCollection &requestedAttributes )
 {
+  Q_UNUSED( attributes )
+
   std::ifstream file( filename.toLatin1().constData(), std::ios::binary );
   if ( ! file.good() )
     return nullptr;

@@ -33,6 +33,8 @@
  * \ingroup core
  *
  * Point cloud data request
+ *
+ * \since QGIS 3.18
  */
 class CORE_EXPORT QgsPointCloudRequest
 {

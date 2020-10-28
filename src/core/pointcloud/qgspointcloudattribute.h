@@ -32,6 +32,8 @@
  *
  * Attribute for point cloud data
  * pair of name and size in bytes
+ *
+ * \since QGIS 3.18
  */
 class CORE_EXPORT QgsPointCloudAttribute
 {
@@ -54,6 +56,8 @@ class CORE_EXPORT QgsPointCloudAttribute
  * \ingroup core
  *
  * Collection of point cloud attributes
+ *
+ * \since QGIS 3.18
  */
 class CORE_EXPORT QgsPointCloudAttributeCollection
 {
@@ -68,8 +72,8 @@ class CORE_EXPORT QgsPointCloudAttributeCollection
     //! Returns all attributes
     QVector<QgsPointCloudAttribute> attributes() const;
 
-    //! Returns -1 if no such attribute exists
-    int offset( const QString &attributeName, const QgsPointCloudAttribute *foundAttribute ) const;
+    //! Returns true for error
+    bool offset( const QString &attributeName, int &offset, int &size ) const;
 
     //! Returns total size of record
     int pointRecordSize() const { return mSize; }
