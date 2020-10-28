@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgspointcloudblock.cpp
+                         qgspointcloudattribute.cpp
                          -----------------------
     begin                : October 2020
     copyright            : (C) 2020 by Peter Petrik
