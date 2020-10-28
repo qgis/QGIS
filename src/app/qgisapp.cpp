@@ -12902,25 +12902,13 @@ QgsVectorLayer *QgisApp::addVectorLayerPrivate( const QString &vectorLayerPath, 
   options.loadDefaultStyle = false;
 
   QVariantMap uriElements = QgsProviderRegistry::instance()->decodeUri( providerKey, vectorLayerPath );
-  // eg: QMap(("layerId", QVariant(Invalid))("layerName", QVariant(QString, "countries"))("path", QVariant(QString, "inbuilt:/data/world_map.gpkg")))
-  QgsVectorLayer *layer;
-  if ( uriElements.contains( "path" ) && uriElements.value( "path" ).toString().startsWith( QLatin1String( "inbuilt:" ) ) )
+  if ( uriElements.contains( QStringLiteral( "path" ) ) )
   {
-    QString resourcePath;
-    QgsPathResolver resolver = QgsPathResolver( baseName );
-    if ( uriElements.contains( "layerName" ) )
-    {
-      resourcePath = resolver.readPath( uriElements.value( "path" ).toString() ) + "|layername=" + uriElements.value( "layerName" ).toString();
-    }
-    /*else{
-        resourcePath = resolver.readPath(path);  // mmm vectorLayerPath is const.... should remove the layerid= part??
-    }*/
-    layer = new QgsVectorLayer( resourcePath, baseName, providerKey, options );
+    // run layer path through QgsPathResolver so that all inbuilt paths and other localised paths are correctly expanded
+    uriElements[ QStringLiteral( "path" ) ] = QgsPathResolver().readPath( uriElements.value( QStringLiteral( "path" ) ).toString() );
   }
-  else
-  {
-    layer = new QgsVectorLayer( vectorLayerPath, baseName, providerKey, options );
-  }
+  const QString updatedUri = QgsProviderRegistry::instance()->encodeUri( providerKey, uriElements );
+  QgsVectorLayer *layer = new QgsVectorLayer( updatedUri, baseName, providerKey, options );
 
   if ( authok && layer->isValid() )
   {
