@@ -2358,6 +2358,14 @@ class TestQgsGeometry(unittest.TestCase):
 
     def testReshape(self):
         """ Test geometry reshaping """
+
+        # no overlap
+        g = QgsGeometry.fromWkt('LineString (0 0, 5 0, 5 1, 6 1, 6 0, 7 0)')
+        self.assertEqual(g.reshapeGeometry(QgsLineString([QgsPoint(4, 2), QgsPoint(7, 2)])), 0)
+        expWkt = 'LineString (0 0, 5 0, 5 1, 6 1, 6 0, 7 0)'
+        wkt = g.asWkt()
+        self.assertTrue(compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
+
         g = QgsGeometry.fromWkt('Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
         g.reshapeGeometry(QgsLineString([QgsPoint(0, 1.5), QgsPoint(1.5, 0)]))
         expWkt = 'Polygon ((0.5 1, 0 1, 0 0, 1 0, 1 0.5, 0.5 1))'
@@ -2407,6 +2415,26 @@ class TestQgsGeometry(unittest.TestCase):
         expWkt = 'LineString (-1 0, 0 0, 5 0, 5 1, 10 1, 10 2)'
         wkt = g.asWkt()
         assert compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+
+        # reshape where reshape line exactly overlaps some portions of geometry
+        g = QgsGeometry.fromWkt('LineString (0 0, 5 0, 5 1, 6 1, 6 0, 7 0)')
+        self.assertEqual(g.reshapeGeometry(QgsLineString([QgsPoint(2, 0), QgsPoint(6, 0)])), 0)
+        expWkt = 'LineString (0 0, 2 0, 5 0, 6 0, 7 0)'
+        wkt = g.asWkt()
+        self.assertTrue(compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
+
+        g = QgsGeometry.fromWkt('LineString (0 0, 5 0, 5 1, 6 1, 6 0, 7 0)')
+        self.assertEqual(g.reshapeGeometry(QgsLineString([QgsPoint(5, 0), QgsPoint(7, 0)])), 0)
+        expWkt = 'LineString (0 0, 5 0, 6 0, 7 0)'
+        wkt = g.asWkt()
+        self.assertTrue(compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
+
+        # reshape line overlaps at both start and end
+        g = QgsGeometry.fromWkt('LineString (0 0, 5 0, 5 1, 6 1, 6 0, 7 0)')
+        self.assertEqual(g.reshapeGeometry(QgsLineString([QgsPoint(4, 0), QgsPoint(7, 0)])), 0)
+        expWkt = 'LineString (0 0, 4 0, 5 0, 6 0, 7 0)'
+        wkt = g.asWkt()
+        self.assertTrue(compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
 
     def testConvertToMultiType(self):
         """ Test converting geometries to multi type """
