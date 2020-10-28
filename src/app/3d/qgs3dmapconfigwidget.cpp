@@ -161,6 +161,10 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   connect( widgetLights, &QgsLightsWidget::lightsRemoved, this, &Qgs3DMapConfigWidget::validate );
 
   groupShadowRendering->setChecked( map->shadowSettings().renderShadows() );
+
+  edlGroupBox->setChecked( map->eyeDomeLightingEnabled() );
+  edlStrengthSpinBox->setValue( map->eyeDomeLightingStrength() );
+  connect( edlStrengthSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), mMap, &Qgs3DMapSettings::setEyeDomeLightingStrength );
 }
 
 Qgs3DMapConfigWidget::~Qgs3DMapConfigWidget()
@@ -286,6 +290,9 @@ void Qgs3DMapConfigWidget::apply()
   QgsShadowSettings shadowSettings = mShadowSetiingsWidget->toShadowSettings();
   shadowSettings.setRenderShadows( groupShadowRendering->isChecked() );
   mMap->setShadowSettings( shadowSettings );
+
+  mMap->setEyeDomeLightingEnabled( edlGroupBox->isChecked() );
+  mMap->setEyeDomeLightingStrength( edlStrengthSpinBox->value() );
 }
 
 void Qgs3DMapConfigWidget::onTerrainTypeChanged()

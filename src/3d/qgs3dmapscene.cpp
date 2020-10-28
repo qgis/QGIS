@@ -131,6 +131,8 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   connect( &map, &Qgs3DMapSettings::renderersChanged, this, &Qgs3DMapScene::onRenderersChanged );
   connect( &map, &Qgs3DMapSettings::skyboxSettingsChanged, this, &Qgs3DMapScene::onSkyboxSettingsChanged );
   connect( &map, &Qgs3DMapSettings::shadowSettingsChanged, this, &Qgs3DMapScene::onShadowSettingsChanged );
+  connect( &map, &Qgs3DMapSettings::eyeDomeLightingEnabled, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
+  connect( &map, &Qgs3DMapSettings::eyeDomeLightingStrengthChanged, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
 
   connect( QgsApplication::instance()->sourceCache(), &QgsSourceCache::remoteSourceFetched, this, [ = ]( const QString & url )
   {
@@ -960,6 +962,19 @@ void Qgs3DMapScene::onShadowSettingsChanged()
   }
   else
     shadowRenderingFrameGraph->setShadowRenderingEnabled( false );
+}
+
+void Qgs3DMapScene::onEyeDomeShadingSettingsChanged()
+{
+  qDebug() << __FUNCTION__;
+  QgsWindow3DEngine *windowEngine = dynamic_cast<QgsWindow3DEngine *>( mEngine );
+  if ( windowEngine == nullptr )
+    return;
+  QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = windowEngine->shadowRenderingFrameGraph();
+
+  bool edlEnabled = mMap.eyeDomeLightingEnabled();
+  double edlStrength = mMap.eyeDomeLightingStrength();
+  shadowRenderingFrameGraph->setupEyeDomeLighting( edlEnabled, edlStrength );
 }
 
 void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )

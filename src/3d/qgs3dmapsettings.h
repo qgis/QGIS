@@ -362,6 +362,16 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     //! Returns whether to display labels on terrain tiles
     bool showLabels() const { return mShowLabels; }
 
+    //! Sets whether eye dome lighting will be used
+    void setEyeDomeLightingEnabled( bool enabled );
+    //! Returns whether eye dome lighting is used
+    bool eyeDomeLightingEnabled() const { return mEyeDomeLightingEnabled; }
+
+    //! Sets the eye dome lighting strength value
+    void setEyeDomeLightingStrength( double strength );
+    //! Returns the eye dome lighting strength value
+    double eyeDomeLightingStrength() const { return mEyeDomeLightingStrength; }
+
     /**
      * Returns list of point lights defined in the scene
      * \since QGIS 3.6
@@ -527,6 +537,18 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void showLabelsChanged();
 
     /**
+     * Emitted when the flag whether eye dome lighting is used has changed
+     * \since QGIS 3.18
+     */
+    void eyeDomeLightingEnabledChanged();
+
+    /**
+     * Emitted when the eye dome lighting stength has changed
+     * \since QGIS 3.18
+     */
+    void eyeDomeLightingStrengthChanged();
+
+    /**
      * Emitted when the list of point lights changes
      * \since QGIS 3.6
      */
@@ -595,6 +617,9 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     bool mIsSkyboxEnabled = false;  //!< Whether the skybox is enabled
     QgsSkyboxSettings mSkyboxSettings; //!< Skybox related configuration
     QgsShadowSettings mShadowSettings; //!< Shadow rendering related settings
+
+    bool mEyeDomeLightingEnabled = false;
+    double mEyeDomeLightingStrength = 1000.0f;
 };
 
 
