@@ -24,6 +24,7 @@ tests:
       INPUT:
         name: dem.tif
         type: raster
+      OVERCRS: false
       NODATA: 0.0
       OPTIONS: ''
       PROJWIN: 18.673038221977773,18.699957975064194,45.782253906735804,45.80350236352593
@@ -39,6 +40,7 @@ tests:
       INPUT:
         name: dem.tif
         type: raster
+      OVERCRS: false
       NODATA: 0.0
       OPTIONS: ''
       PROJWIN: 18.674136950224096,18.70011285383855,45.78239420868433,45.80342583519035
