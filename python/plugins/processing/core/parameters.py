@@ -205,6 +205,8 @@ def getParameterFromString(s, context=''):
                     params[5] = True if params[5].lower() == 'true' else False
                 if len(params) > 6:
                     params[6] = True if params[6].lower() == 'true' else False
+                if len(params) > 7:
+                    params[7] = True if params[7].lower() == 'true' else False
             elif clazz == QgsProcessingParameterFile:
                 if len(params) > 2:
                     try:
