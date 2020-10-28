@@ -21,11 +21,19 @@
 
 #include <QColor>
 #include <Qt3DRender/qmaterial.h>
+#include "qgspropertycollection.h"
 
 class QDomElement;
 class QgsReadWriteContext;
 class QgsLineMaterial;
+class QgsExpressionContext;
 
+#ifndef SIP_RUN
+namespace Qt3DRender
+{
+  class QGeometry;
+}
+#endif //SIP_RUN
 
 /**
  * Material rendering techniques
@@ -146,10 +154,10 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
     virtual QgsAbstractMaterialSettings *clone() const = 0 SIP_FACTORY;
 
     //! Reads settings from a DOM \a element
-    virtual void readXml( const QDomElement &element, const QgsReadWriteContext &context ) = 0;
+    virtual void readXml( const QDomElement &element, const QgsReadWriteContext & );
 
     //! Writes settings to a DOM \a element
-    virtual void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const = 0;
+    virtual void writeXml( QDomElement &element, const QgsReadWriteContext & ) const;
 
 #ifndef SIP_RUN
 
@@ -170,8 +178,66 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
      * Adds parameters from the material to a destination \a effect.
      */
     virtual void addParametersToEffect( Qt3DRender::QEffect *effect ) const = 0;
+
+    //! Data definable properties.
+    enum Property
+    {
+      Diffuse, //!< Diffuse color
+      Ambient, //!< Ambient color (phong material)
+      Warm, //!< Warm color (gooch material)
+      Cool,//!< Cool color (gooch material)
+      Specular //!< Specular color
+    };
+
+    /**
+     * Returns whether the material is data defined
+     * \since QGIS 3.18
+     */
+    virtual bool isDataDefined() const {return false;}
+
+    /**
+     * Sets the material property collection, used for data defined overrides.
+     * \since QGIS 3.18
+     */
+    void setDataDefinedProperties( const QgsPropertyCollection &collection );
+
+    /**
+    * Returns a the symbol material property collection, used for data defined overrides.
+    * \since QGIS 3.18
+    */
+    QgsPropertyCollection dataDefinedProperties() const;
+
+    /**
+    * Returns a reference to the material properties definition, used for data defined overrides.
+    * \since QGIS 3.18
+    */
+    QgsPropertiesDefinition  &propertiesDefinition() const;
+
+    /**
+     * Applies the data defined bytes, \a dataDefinedBytes, on the \a geometry by filling a specific vertex buffer that will be used by the shader.
+     * \since QGIS 3.18
+     */
+    virtual void applyDataDefinedToGeometry( Qt3DRender::QGeometry *geometry, int vertexCount, const QByteArray &dataDefinedBytes ) const {};
+
+    /**
+     * Returns byte array corresponding to the data defined colors depending of the \a expressionContext,
+     * used to fill the specific vertex buffer used for rendering the geometry
+     * \see applyDataDefinedToGeometry()
+     * \since QGIS 3.18
+     */
+    virtual QByteArray dataDefinedVertexColorsAsByte( const QgsExpressionContext &expressionContext ) const {};
+
+    /**
+     * Returns byte stride of the data defined colors,used to fill the vertex colors data defined buffer for rendering
+     * \since QGIS 3.18
+     */
+    virtual int dataDefinedByteStride() const {return 0;}
 #endif
 
+  private:
+    QgsPropertyCollection mDataDefinedProperties;
+    static QgsPropertiesDefinition sPropertyDefinitions;
+    void initPropertyDefinitions() const;
 };
 
 

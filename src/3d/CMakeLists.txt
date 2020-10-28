@@ -47,6 +47,7 @@ SET(QGIS_3D_SRCS
   chunks/qgschunknode_p.cpp
   chunks/qgschunkqueuejob_p.cpp
 
+  materials/qgsabstractmaterialsettings.cpp
   materials/qgsgoochmaterialsettings.cpp
   materials/qgsmaterialregistry.cpp
   materials/qgsphongmaterialsettings.cpp

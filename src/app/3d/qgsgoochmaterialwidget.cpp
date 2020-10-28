@@ -40,6 +40,10 @@ QgsGoochMaterialWidget::QgsGoochMaterialWidget( QWidget *parent )
   connect( spinShininess, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsGoochMaterialWidget::changed );
   connect( spinAlpha, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsGoochMaterialWidget::changed );
   connect( spinBeta, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsGoochMaterialWidget::changed );
+  connect( mDiffuseDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsGoochMaterialWidget::changed );
+  connect( mWarmDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsGoochMaterialWidget::changed );
+  connect( mCoolDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsGoochMaterialWidget::changed );
+  connect( mSpecularDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsGoochMaterialWidget::changed );
 }
 
 QgsMaterialSettingsWidget *QgsGoochMaterialWidget::create()
@@ -47,7 +51,7 @@ QgsMaterialSettingsWidget *QgsGoochMaterialWidget::create()
   return new QgsGoochMaterialWidget();
 }
 
-void QgsGoochMaterialWidget::setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer * )
+void QgsGoochMaterialWidget::setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer )
 {
   const QgsGoochMaterialSettings *goochMaterial = dynamic_cast< const QgsGoochMaterialSettings * >( settings );
   if ( !goochMaterial )
@@ -59,6 +63,11 @@ void QgsGoochMaterialWidget::setSettings( const QgsAbstractMaterialSettings *set
   spinShininess->setValue( goochMaterial->shininess() );
   spinAlpha->setValue( goochMaterial->alpha() );
   spinBeta->setValue( goochMaterial->beta() );
+
+  mDiffuseDataDefinedButton->init( QgsAbstractMaterialSettings::Diffuse, settings->dataDefinedProperties(), settings->propertiesDefinition(), layer, true );
+  mWarmDataDefinedButton->init( QgsAbstractMaterialSettings::Warm, settings->dataDefinedProperties(), settings->propertiesDefinition(), layer, true );
+  mCoolDataDefinedButton->init( QgsAbstractMaterialSettings::Cool, settings->dataDefinedProperties(), settings->propertiesDefinition(), layer, true );
+  mSpecularDataDefinedButton->init( QgsAbstractMaterialSettings::Specular, settings->dataDefinedProperties(), settings->propertiesDefinition(), layer, true );
 }
 
 QgsAbstractMaterialSettings *QgsGoochMaterialWidget::settings()
@@ -71,5 +80,13 @@ QgsAbstractMaterialSettings *QgsGoochMaterialWidget::settings()
   m->setShininess( spinShininess->value() );
   m->setAlpha( spinAlpha->value() );
   m->setBeta( spinBeta->value() );
+
+  QgsPropertyCollection dataDefinedPropertie;
+  dataDefinedPropertie.setProperty( QgsAbstractMaterialSettings::Diffuse, mDiffuseDataDefinedButton->toProperty() );
+  dataDefinedPropertie.setProperty( QgsAbstractMaterialSettings::Warm, mWarmDataDefinedButton->toProperty() );
+  dataDefinedPropertie.setProperty( QgsAbstractMaterialSettings::Cool, mCoolDataDefinedButton->toProperty() );
+  dataDefinedPropertie.setProperty( QgsAbstractMaterialSettings::Specular, mSpecularDataDefinedButton->toProperty() );
+  m->setDataDefinedProperties( dataDefinedPropertie );
+
   return m.release();
 }

@@ -30,6 +30,9 @@ QgsPhongMaterialWidget::QgsPhongMaterialWidget( QWidget *parent )
   connect( btnAmbient, &QgsColorButton::colorChanged, this, &QgsPhongMaterialWidget::changed );
   connect( btnSpecular, &QgsColorButton::colorChanged, this, &QgsPhongMaterialWidget::changed );
   connect( spinShininess, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPhongMaterialWidget::changed );
+  connect( mAmbientDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsPhongMaterialWidget::changed );
+  connect( mDiffuseDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsPhongMaterialWidget::changed );
+  connect( mSpecularDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsPhongMaterialWidget::changed );
 }
 
 QgsMaterialSettingsWidget *QgsPhongMaterialWidget::create()
@@ -42,11 +45,22 @@ void QgsPhongMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique
   switch ( technique )
   {
     case QgsMaterialSettingsRenderingTechnique::Triangles:
+    {
+      lblDiffuse->setVisible( true );
+      btnDiffuse->setVisible( true );
+      mAmbientDataDefinedButton->setVisible( true );
+      mDiffuseDataDefinedButton->setVisible( true );
+      mSpecularDataDefinedButton->setVisible( true );
+      break;
+    }
     case QgsMaterialSettingsRenderingTechnique::InstancedPoints:
     case QgsMaterialSettingsRenderingTechnique::Points:
     {
       lblDiffuse->setVisible( true );
       btnDiffuse->setVisible( true );
+      mAmbientDataDefinedButton->setVisible( false );
+      mDiffuseDataDefinedButton->setVisible( false );
+      mSpecularDataDefinedButton->setVisible( false );
       break;
     }
 
@@ -54,6 +68,9 @@ void QgsPhongMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique
     {
       lblDiffuse->setVisible( false );
       btnDiffuse->setVisible( false );
+      mAmbientDataDefinedButton->setVisible( false );
+      mDiffuseDataDefinedButton->setVisible( false );
+      mSpecularDataDefinedButton->setVisible( false );
       break;
     }
 
@@ -63,7 +80,7 @@ void QgsPhongMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique
   }
 }
 
-void QgsPhongMaterialWidget::setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer * )
+void QgsPhongMaterialWidget::setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer )
 {
   const QgsPhongMaterialSettings *phongMaterial = dynamic_cast< const QgsPhongMaterialSettings * >( settings );
   if ( !phongMaterial )
@@ -72,6 +89,10 @@ void QgsPhongMaterialWidget::setSettings( const QgsAbstractMaterialSettings *set
   btnAmbient->setColor( phongMaterial->ambient() );
   btnSpecular->setColor( phongMaterial->specular() );
   spinShininess->setValue( phongMaterial->shininess() );
+
+  mDiffuseDataDefinedButton->init( QgsAbstractMaterialSettings::Diffuse, settings->dataDefinedProperties(), settings->propertiesDefinition(), layer, true );
+  mAmbientDataDefinedButton->init( QgsAbstractMaterialSettings::Ambient, settings->dataDefinedProperties(), settings->propertiesDefinition(), layer, true );
+  mSpecularDataDefinedButton->init( QgsAbstractMaterialSettings::Specular, settings->dataDefinedProperties(), settings->propertiesDefinition(), layer, true );
 }
 
 QgsAbstractMaterialSettings *QgsPhongMaterialWidget::settings()
@@ -81,5 +102,13 @@ QgsAbstractMaterialSettings *QgsPhongMaterialWidget::settings()
   m->setAmbient( btnAmbient->color() );
   m->setSpecular( btnSpecular->color() );
   m->setShininess( spinShininess->value() );
+
+  QgsPropertyCollection dataDefinedProperty;
+
+  dataDefinedProperty.setProperty( QgsAbstractMaterialSettings::Diffuse, mDiffuseDataDefinedButton->toProperty() );
+  dataDefinedProperty.setProperty( QgsAbstractMaterialSettings::Ambient, mAmbientDataDefinedButton->toProperty() );
+  dataDefinedProperty.setProperty( QgsAbstractMaterialSettings::Specular, mSpecularDataDefinedButton->toProperty() );
+  m->setDataDefinedProperties( dataDefinedProperty );
+
   return m.release();
 }
