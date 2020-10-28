@@ -80,6 +80,7 @@
 #include "qgsprocessingfeaturesourceoptionswidget.h"
 #include "qgsextentwidget.h"
 #include "qgsrasterbandcombobox.h"
+#include "qgsmeshlayertemporalproperties.h"
 #include "qgsmodelgraphicsscene.h"
 #include "qgsmodelgraphicsview.h"
 #include "qgsmodelcomponentgraphicitem.h"
@@ -91,6 +92,7 @@
 #include "qgsprocessingtininputlayerswidget.h"
 #include "qgsprocessingparameterdxflayers.h"
 #include "qgsprocessingdxflayerswidgetwrapper.h"
+#include "qgsprocessingmeshdatasetwidget.h"
 
 
 class TestParamType : public QgsProcessingParameterDefinition
@@ -254,6 +256,7 @@ class TestProcessingGui : public QObject
     void testFolderOutWrapper();
     void testTinInputLayerWrapper();
     void testDxfLayersWrapper();
+    void testMeshDatasetWrapper();
     void testModelGraphicsView();
 
   private:
@@ -8905,6 +8908,169 @@ void TestProcessingGui::testDxfLayersWrapper()
   QVERIFY( definition.checkValueIsAcceptable( value, &context ) );
   QString valueAsPythonString = definition.valueAsPythonString( value, context );
   QCOMPARE( valueAsPythonString, QStringLiteral( "[{'layer': '%1','attributeIndex': -1}]" ).arg( vectorLayer->source() ) );
+}
+
+void TestProcessingGui::testMeshDatasetWrapper()
+{
+  QgsProcessingParameterMeshLayer layerDefinition( QStringLiteral( "layer" ), QStringLiteral( "layer" ) );
+  QgsProcessingMeshLayerWidgetWrapper layerWrapper( &layerDefinition );
+
+  QgsProcessingParameterMeshDatasetGroups groupsDefinition( QStringLiteral( "groups" ),
+      QStringLiteral( "groups" ),
+      QStringLiteral( "layer" ),
+      QgsMeshDatasetGroupMetadata::DataOnVertices );
+  QgsProcessingMeshDatasetGroupsWidgetWrapper groupsWrapper( &groupsDefinition );
+
+  QgsProcessingParameterMeshDatasetTime timeDefinition( QStringLiteral( "time" ), QStringLiteral( "time" ), QStringLiteral( "layer" ), QStringLiteral( "groups" ) );
+  QgsProcessingMeshDatasetTimeWidgetWrapper timeWrapper( &timeDefinition );
+
+  QList<QgsAbstractProcessingParameterWidgetWrapper *> wrappers;
+  wrappers << &layerWrapper << &groupsWrapper << &timeWrapper;
+
+  QgsProject project;
+  QgsProcessingContext context;
+  context.setProject( &project );
+  QgsProcessingParameterWidgetContext widgetContext;
+  std::unique_ptr<QgsMapCanvas> mapCanvas = qgis::make_unique<QgsMapCanvas>();
+  widgetContext.setMapCanvas( mapCanvas.get() );
+
+  widgetContext.setProject( &project );
+  layerWrapper.setWidgetContext( widgetContext );
+  groupsWrapper.setWidgetContext( widgetContext );
+  timeWrapper.setWidgetContext( widgetContext );
+
+  TestProcessingContextGenerator generator( context );
+  layerWrapper.registerProcessingContextGenerator( &generator );
+  groupsWrapper.registerProcessingContextGenerator( &generator );
+  timeWrapper.registerProcessingContextGenerator( &generator );
+
+
+  QSignalSpy layerSpy( &layerWrapper, &QgsProcessingMeshLayerWidgetWrapper::widgetValueHasChanged );
+  QSignalSpy groupsSpy( &groupsWrapper, &QgsProcessingMeshDatasetGroupsWidgetWrapper::widgetValueHasChanged );
+  QSignalSpy timeSpy( &timeWrapper, &QgsProcessingMeshDatasetTimeWidgetWrapper::widgetValueHasChanged );
+
+  std::unique_ptr<QWidget> layerWidget( layerWrapper.createWrappedWidget( context ) );
+  std::unique_ptr<QWidget> groupWidget( groupsWrapper.createWrappedWidget( context ) );
+  std::unique_ptr<QWidget> timeWidget( timeWrapper.createWrappedWidget( context ) );
+  QgsProcessingMeshDatasetGroupsWidget *datasetGroupWidget = qobject_cast<QgsProcessingMeshDatasetGroupsWidget *>( groupWidget.get() );
+  QgsProcessingMeshDatasetTimeWidget *datasetTimeWidget = qobject_cast<QgsProcessingMeshDatasetTimeWidget *>( timeWidget.get() );
+
+  QVERIFY( layerWidget );
+  QVERIFY( groupWidget );
+  QVERIFY( datasetGroupWidget );
+  QVERIFY( timeWidget );
+
+  groupsWrapper.postInitialize( wrappers );
+  timeWrapper.postInitialize( wrappers );
+
+  QString dataDir = QString( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  dataDir += "/mesh";
+  QString uri( dataDir + "/quad_and_triangle.2dm" );
+  QString meshLayerName = QStringLiteral( "mesh layer" );
+  QgsMeshLayer *layer = new QgsMeshLayer( uri, meshLayerName, QStringLiteral( "mdal" ) );
+  QVERIFY( layer->isValid() );
+  layer->addDatasets( dataDir + "/quad_and_triangle_vertex_scalar.dat" );
+  layer->addDatasets( dataDir + "/quad_and_triangle_vertex_vector.dat" );
+  layer->addDatasets( dataDir + "/quad_and_triangle_els_face_scalar.dat" );
+  layer->addDatasets( dataDir + "/quad_and_triangle_els_face_vector.dat" );
+  QgsMeshRendererSettings settings = layer->rendererSettings();
+  // 1 dataset on vertices and 1 dataset on faces
+  settings.setActiveScalarDatasetGroup( 1 );
+  settings.setActiveVectorDatasetGroup( 4 );
+  layer->setRendererSettings( settings );
+  QCOMPARE( layer->datasetGroupCount(), 5 );
+
+  layerSpy.clear();
+  groupsSpy.clear();
+  timeSpy.clear();
+
+  project.addMapLayer( layer );
+  static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() )->setReferenceTime(
+    QDateTime( QDate( 2020, 01, 01 ), QTime( 0, 0, 0, Qt::UTC ) ), layer->dataProvider()->temporalCapabilities() );
+  layerWrapper.setWidgetValue( meshLayerName, context );
+
+  QCOMPARE( layerSpy.count(), 1 );
+  QCOMPARE( groupsSpy.count(), 1 );
+  QCOMPARE( timeSpy.count(), 1 );
+
+  datasetGroupWidget->selectCurrentActiveDatasetGroup();
+
+  QCOMPARE( layerSpy.count(), 1 );
+  QCOMPARE( groupsSpy.count(), 2 );
+  QCOMPARE( timeSpy.count(), 2 );
+
+  QVariant groupsValue = groupsWrapper.widgetValue();
+  QVERIFY( groupsValue.type() == QVariant::List );
+  QVariantList groupsList = groupsValue.toList();
+  QCOMPARE( groupsList.count(), 1 );
+  QCOMPARE( groupsList.at( 0 ).toInt(), 1 );
+  QString pythonString = groupsDefinition.valueAsPythonString( groupsValue, context );
+  QCOMPARE( pythonString, QStringLiteral( "[1]" ) );
+
+  // 2 datasets on vertices
+  settings = layer->rendererSettings();
+  settings.setActiveVectorDatasetGroup( 2 );
+  layer->setRendererSettings( settings );
+  datasetGroupWidget->selectCurrentActiveDatasetGroup();
+
+  QCOMPARE( layerSpy.count(), 1 );
+  QCOMPARE( groupsSpy.count(), 3 );
+  QCOMPARE( timeSpy.count(), 3 );
+
+  pythonString = groupsDefinition.valueAsPythonString( groupsWrapper.widgetValue(), context );
+  QCOMPARE( pythonString, QStringLiteral( "[1,2]" ) );
+
+  datasetTimeWidget->radioButtonDatasetGroupTimeStep->setChecked( true );
+  QCOMPARE( layerSpy.count(), 1 );
+  QCOMPARE( groupsSpy.count(), 3 );
+  QCOMPARE( timeSpy.count(), 4 );
+
+  QVariant timeValue = timeWrapper.widgetValue();
+  QVERIFY( timeValue.type() == QVariant::Map );
+  QVariantMap timeValueMap = timeValue.toMap();
+  QCOMPARE( timeValueMap[QStringLiteral( "type" )], QStringLiteral( "dataset-time-step" ) );
+  pythonString = timeDefinition.valueAsPythonString( timeWrapper.widgetValue(), context );
+  QCOMPARE( pythonString, QStringLiteral( "{'type': 'dataset-time-step','value': QgsMeshDatasetIndex(1,0)}" ) );
+
+
+  datasetTimeWidget->radioButtonDefinedDateTime->setChecked( true );
+  datasetTimeWidget->dateTimeEdit->setDateTime( QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 1, 0, Qt::UTC ) ) );
+  QCOMPARE( layerSpy.count(), 1 );
+  QCOMPARE( groupsSpy.count(), 3 );
+  QCOMPARE( timeSpy.count(), 6 );
+  pythonString = timeDefinition.valueAsPythonString( timeWrapper.widgetValue(), context );
+  QCOMPARE( pythonString, QStringLiteral( "{'type': 'defined-date-time','value': QDateTime(QDate(2020, 1, 1), QTime(0, 1, 0))}" ) );
+
+  QVERIFY( !datasetTimeWidget->radioButtonCurrentCanvasTime->isEnabled() );
+  mapCanvas->setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2021, 1, 1 ), QTime( 0, 3, 0, Qt::UTC ) ), QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 5, 0, Qt::UTC ) ) ) );
+  QVERIFY( datasetTimeWidget->radioButtonCurrentCanvasTime->isEnabled() );
+
+  datasetTimeWidget->radioButtonCurrentCanvasTime->setChecked( true );
+  QCOMPARE( layerSpy.count(), 1 );
+  QCOMPARE( groupsSpy.count(), 3 );
+  QCOMPARE( timeSpy.count(), 8 );
+  pythonString = timeDefinition.valueAsPythonString( timeWrapper.widgetValue(), context );
+  QCOMPARE( pythonString, QStringLiteral( "{'type': 'current-canvas-time','value': QDateTime(QDate(2021, 1, 1), QTime(0, 3, 0))}" ) );
+
+  // 0 dataset on vertices
+  settings = layer->rendererSettings();
+  settings.setActiveScalarDatasetGroup( -1 );
+  settings.setActiveVectorDatasetGroup( -1 );
+  layer->setRendererSettings( settings );
+  datasetGroupWidget->selectCurrentActiveDatasetGroup();
+  QVERIFY( !datasetTimeWidget->isEnabled() );
+  pythonString = timeDefinition.valueAsPythonString( timeWrapper.widgetValue(), context );
+  QCOMPARE( pythonString, QStringLiteral( "{'type': 'static'}" ) );
+
+  // 1 static dataset on vertices
+  settings = layer->rendererSettings();
+  settings.setActiveScalarDatasetGroup( 0 );
+  settings.setActiveVectorDatasetGroup( -1 );
+  layer->setRendererSettings( settings );
+  datasetGroupWidget->selectCurrentActiveDatasetGroup();
+  QVERIFY( !datasetTimeWidget->isEnabled() );
+  pythonString = timeDefinition.valueAsPythonString( timeWrapper.widgetValue(), context );
+  QCOMPARE( pythonString, QStringLiteral( "{'type': 'static'}" ) );
 }
 
 void TestProcessingGui::testModelGraphicsView()

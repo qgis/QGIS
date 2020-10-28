@@ -1,0 +1,213 @@
+/***************************************************************************
+  qgsprocessingparametermeshdataset.h
+  ---------------------
+  Date                 : October 2020
+  Copyright            : (C) 2020 by Vincent Cloarec
+  Email                : vcloarec at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef QGSPROCESSINGPARAMETERMESHDATASET_H
+#define QGSPROCESSINGPARAMETERMESHDATASET_H
+
+#include "qgsprocessingparameters.h"
+#include "qgsprocessingparametertype.h"
+#include "qgsmeshdataset.h"
+
+/**
+ * A parameter for processing algorithms that need a list of mesh dataset groups
+ * A valid value for this parameter is a list (QVariantList) of dataset groups index in the mesh layer scope
+ *
+ * \note This parameter is dependent on a mesh layer parameter (see QgsProcessingParameterMeshLayer)
+ *
+ * \ingroup core
+ * \since QGIS 3.18
+ */
+class CORE_EXPORT QgsProcessingParameterMeshDatasetGroups : public QgsProcessingParameterDefinition
+{
+  public:
+    /**
+     * Constructor
+     * \param name name of the parameter
+     * \param description description of the paramater
+     * \param meshLayerParameterName name of the associated mesh layer paramater
+     * \param dataType data type supported by the paramater
+     * \param optional whether the parameter is optional
+     */
+    QgsProcessingParameterMeshDatasetGroups( const QString &name,
+        const QString &description = QString(),
+        const QString &meshLayerParameterName = QString(),
+        QgsMeshDatasetGroupMetadata::DataType dataType = QgsMeshDatasetGroupMetadata::DataOnVertices,
+        bool optional = false );
+
+    QgsProcessingParameterDefinition *clone() const override;
+    QString type() const override;
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString asPythonString( QgsProcessing::PythonOutputType outputType ) const override;
+    QStringList dependsOnOtherParameters() const override;
+
+    //! Returns the type name for the parameter class.
+    static QString typeName() { return QStringLiteral( "meshdatasetgroups" ); }
+
+    //! Returns the name of the mesh layer parameter
+    QString meshLayerParameterName() const;
+
+    //! Return the data type supported by the parameter
+    QgsMeshDatasetGroupMetadata::DataType dataType() const {return mDataType;}
+
+  private:
+    QString mMeshLayerParameterName;
+    QgsMeshDatasetGroupMetadata::DataType mDataType = QgsMeshDatasetGroupMetadata::DataOnVertices;
+};
+
+/**
+ * Parameter type definition for QgsProcessingParameterMeshDatasetGroups.
+ *
+ * \ingroup core
+ * \since QGIS 3.18
+ */
+class CORE_EXPORT QgsProcessingParameterTypeMeshDatasetGroups : public QgsProcessingParameterType
+{
+  public:
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterMeshDatasetGroups( name );
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "An input allowing selection dataset groups from a mesh layer" );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Mesh dataset groups" );
+    }
+
+    QString id() const override
+    {
+      return QgsProcessingParameterMeshDatasetGroups::typeName();
+    }
+
+    QString pythonImportString() const override
+    {
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterTypeMeshDatasetGroups" );
+    }
+
+    QString className() const override
+    {
+      return QStringLiteral( "QgsProcessingParameterTypeMeshDatasetGroups" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "list[int]: list of dataset group indexes, see QgsProcessingParameterMeshDatasetGroups docs" );
+    }
+};
+
+
+/**
+ * A parameter for processing algorithms that need a list of mesh dataset index from time parameter
+ * A valid value for this parameter is a map (QVariantMap) with in this form
+ * -"type" : the type of time settings "current-canvas-time", "defined-date-time", "dataset-time-step" or "none" if all the dataset groups are static
+ * -"value" : nothing if type is "current-canvas-time", QDateTime if "defined-date-time"
+ * or, for "dataset_time_step",  list of two int representing the dataset index that is the reference for the time step
+ *
+ * \note This parameter is dependent on a mesh layer parameter (\see QgsProcessingParameterMeshLayer)
+ * and on mesh datast group parameter (\see QgsProcessingParameterMeshDatasetGroups)
+ *
+ * \ingroup core
+ * \since QGIS 3.18
+ */
+class CORE_EXPORT QgsProcessingParameterMeshDatasetTime : public QgsProcessingParameterDefinition
+{
+  public:
+    /**
+     * Constructor
+     * \param name name of the parameter
+     * \param description description of the paramater
+     * \param meshLayerParameterName name of the associated mesh layer paramater (\see QgsProcessingParameterMeshLayer)
+     * \param datasetGroupParameterName name of the associated dataset group paramater (\see QgsProcessingParameterMeshDatasetGroups)
+     * \param optional whether the parameter is optional
+     */
+    QgsProcessingParameterMeshDatasetTime(
+      const QString &name,
+      const QString &description = QString(),
+      const QString &meshLayerParameterName = QString(),
+      const QString &datasetGroupParameterName = QString(),
+      bool optional = false );
+
+    QgsProcessingParameterDefinition *clone() const override;
+    QString type() const override;
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString asPythonString( QgsProcessing::PythonOutputType outputType ) const override;
+    QStringList dependsOnOtherParameters() const override;
+
+    //! Returns the type name for the parameter class.
+    static QString typeName() { return QStringLiteral( "meshdatasettime" ); }
+
+    //! Returns the name of the mesh layer parameter
+    QString meshLayerParameterName() const;
+
+    //! Returns the name of the dataset groups parameter
+    QString datasetGroupParameterName() const;
+
+  private:
+    QString mMeshLayerParameterName;
+    QString mDatasetGroupParameterName;
+};
+
+/**
+ * Parameter type definition for QgsProcessingParameterMeshDatasetTime.
+ *
+ * \ingroup core
+ * \since QGIS 3.18
+ */
+class CORE_EXPORT QgsProcessingParameterTypeMeshDatasetTime: public QgsProcessingParameterType
+{
+  public:
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterMeshDatasetTime( name );
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "An input allowing selection of dataset index from a mesh layer by time setting" );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Mesh dataset time" );
+    }
+
+    QString id() const override
+    {
+      return QgsProcessingParameterMeshDatasetGroups::typeName();
+    }
+
+    QString pythonImportString() const override
+    {
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterTypeMeshDatasetTime" );
+    }
+
+    QString className() const override
+    {
+      return QStringLiteral( "QgsProcessingParameterTypeMeshDatasetTime" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "dict{}: dictionary, see QgsProcessingParameterTypeMeshDatasetTime docs" );
+    }
+};
+
+#endif // QGSPROCESSINGPARAMETERMESHDATASET_H

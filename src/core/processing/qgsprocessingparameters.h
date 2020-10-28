@@ -421,6 +421,10 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterVectorTileWriterLayers;
     else if ( sipCpp->type() == QgsProcessingParameterDxfLayers::typeName() )
       sipType = sipType_QgsProcessingParameterDxfLayers;
+    else if ( sipCpp->type() == QgsProcessingParameterMeshDatasetGroups::typeName() )
+      sipType = sipType_QgsProcessingParameterMeshDatasetGroups;
+    else if ( sipCpp->type() == QgsProcessingParameterMeshDatasetTime::typeName() )
+      sipType = sipType_QgsProcessingParameterMeshDatasetTime;
     else
       sipType = nullptr;
     SIP_END

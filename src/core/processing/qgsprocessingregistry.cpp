@@ -18,6 +18,7 @@
 #include "qgsprocessingregistry.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsprocessingparametertypeimpl.h"
+#include "qgsprocessingparametermeshdataset.h"
 #include "qgsprocessingparametervectortilewriterlayers.h"
 #include "qgsprocessingparametertininputlayers.h"
 #include "qgsprocessingparameterfieldmap.h"
@@ -71,6 +72,8 @@ QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   addParameterType( new QgsProcessingParameterTypeAggregate() );
   addParameterType( new QgsProcessingParameterTypeTinInputLayers() );
   addParameterType( new QgsProcessingParameterTypeDxfLayers() );
+  addParameterType( new QgsProcessingParameterTypeMeshDatasetGroups() );
+  addParameterType( new QgsProcessingParameterTypeMeshDatasetTime() );
 }
 
 QgsProcessingRegistry::~QgsProcessingRegistry()
