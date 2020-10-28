@@ -367,6 +367,17 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                  source + ' ' +
                  outdir + '/check.jpg'])
 
+            # override CRS
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'EXTENT': extent,
+                                        'OVERCRS': True,
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdal_translate',
+                 '-projwin 0.0 0.0 0.0 0.0 -a_srs EPSG:4326 -of JPEG ' +
+                 source + ' ' +
+                 outdir + '/check.jpg'])
+
     def testClipRasterByMask(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
