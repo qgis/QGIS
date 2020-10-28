@@ -32,12 +32,13 @@
 class CORE_EXPORT QgsProcessingParameterMeshDatasetGroups : public QgsProcessingParameterDefinition
 {
   public:
+
     /**
      * Constructor
      * \param name name of the parameter
-     * \param description description of the paramater
-     * \param meshLayerParameterName name of the associated mesh layer paramater
-     * \param dataType data type supported by the paramater
+     * \param description description of the parameter
+     * \param meshLayerParameterName name of the associated mesh layer parameter
+     * \param dataType data type supported by the parameter
      * \param optional whether the parameter is optional
      */
     QgsProcessingParameterMeshDatasetGroups( const QString &name,
@@ -129,12 +130,13 @@ class CORE_EXPORT QgsProcessingParameterTypeMeshDatasetGroups : public QgsProces
 class CORE_EXPORT QgsProcessingParameterMeshDatasetTime : public QgsProcessingParameterDefinition
 {
   public:
+
     /**
      * Constructor
      * \param name name of the parameter
-     * \param description description of the paramater
-     * \param meshLayerParameterName name of the associated mesh layer paramater (\see QgsProcessingParameterMeshLayer)
-     * \param datasetGroupParameterName name of the associated dataset group paramater (\see QgsProcessingParameterMeshDatasetGroups)
+     * \param description description of the parameter
+     * \param meshLayerParameterName name of the associated mesh layer parameter (\see QgsProcessingParameterMeshLayer)
+     * \param datasetGroupParameterName name of the associated dataset group parameter (\see QgsProcessingParameterMeshDatasetGroups)
      * \param optional whether the parameter is optional
      */
     QgsProcessingParameterMeshDatasetTime(

@@ -34,9 +34,9 @@ A valid value for this parameter is a list (QVariantList) of dataset groups inde
 Constructor
 
 :param name: name of the parameter
-:param description: description of the paramater
-:param meshLayerParameterName: name of the associated mesh layer paramater
-:param dataType: data type supported by the paramater
+:param description: description of the parameter
+:param meshLayerParameterName: name of the associated mesh layer parameter
+:param dataType: data type supported by the parameter
 :param optional: whether the parameter is optional
 %End
 
@@ -129,9 +129,9 @@ A valid value for this parameter is a map (QVariantMap) with in this form
 Constructor
 
 :param name: name of the parameter
-:param description: description of the paramater
-:param meshLayerParameterName: name of the associated mesh layer paramater (:py:class:`QgsProcessingParameterMeshLayer`)
-:param datasetGroupParameterName: name of the associated dataset group paramater (:py:class:`QgsProcessingParameterMeshDatasetGroups`)
+:param description: description of the parameter
+:param meshLayerParameterName: name of the associated mesh layer parameter (:py:class:`QgsProcessingParameterMeshLayer`)
+:param datasetGroupParameterName: name of the associated dataset group parameter (:py:class:`QgsProcessingParameterMeshDatasetGroups`)
 :param optional: whether the parameter is optional
 %End
 

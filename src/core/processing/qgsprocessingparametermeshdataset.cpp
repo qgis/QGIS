@@ -15,7 +15,8 @@
 
 #include "qgsprocessingparametermeshdataset.h"
 
-
+/// @cond PRIVATE
+///
 QgsProcessingParameterMeshDatasetGroups::QgsProcessingParameterMeshDatasetGroups( const QString &name,
     const QString &description,
     const QString &meshLayerParameterName,
@@ -196,3 +197,5 @@ QString QgsProcessingParameterMeshDatasetTime::datasetGroupParameterName() const
 {
   return mDatasetGroupParameterName;
 }
+
+/// @endcond PRIVATE

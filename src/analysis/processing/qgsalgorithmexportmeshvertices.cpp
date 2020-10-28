@@ -107,7 +107,7 @@ bool QgsExportMeshVerticesAlgorithm::prepareAlgorithm( const QVariantMap &parame
 {
   QgsMeshLayer *meshLayer = parameterAsMeshLayer( parameters, QStringLiteral( "INPUT_LAYER" ), context );
 
-  if ( !meshLayer && !meshLayer->isValid() )
+  if ( !meshLayer || !meshLayer->isValid() )
     return false;
 
   QgsCoordinateReferenceSystem outputCrs = parameterAsCrs( parameters, QStringLiteral( "CRS_OUTPUT" ), context );
@@ -140,17 +140,17 @@ bool QgsExportMeshVerticesAlgorithm::prepareAlgorithm( const QVariantMap &parame
   if ( !parameterTimeVariant.isValid() || parameterTimeVariant.type() != QVariant::Map )
     return false;
 
-  QVariantMap paramaterTimeMap = parameterTimeVariant.toMap();
-  if ( !paramaterTimeMap.contains( QStringLiteral( "type" ) ) )
+  QVariantMap parameterTimeMap = parameterTimeVariant.toMap();
+  if ( !parameterTimeMap.contains( QStringLiteral( "type" ) ) )
     return false;
 
-  if ( paramaterTimeMap.value( QStringLiteral( "type" ) ) == QStringLiteral( "static" ) )
+  if ( parameterTimeMap.value( QStringLiteral( "type" ) ) == QStringLiteral( "static" ) )
   {
     relativeTime = 0;
   }
-  else if ( paramaterTimeMap.value( QStringLiteral( "type" ) ) == QStringLiteral( "dataset-time-step" ) )
+  else if ( parameterTimeMap.value( QStringLiteral( "type" ) ) == QStringLiteral( "dataset-time-step" ) )
   {
-    QVariant datasetIndexVariant = paramaterTimeMap.value( QStringLiteral( "value" ) );
+    QVariant datasetIndexVariant = parameterTimeMap.value( QStringLiteral( "value" ) );
     if ( datasetGroupIndexVariant.type() != QVariant::List )
       return false;
     QVariantList datasetIndexVariantSplit = datasetIndexVariant.toList();
@@ -161,7 +161,7 @@ bool QgsExportMeshVerticesAlgorithm::prepareAlgorithm( const QVariantMap &parame
   }
   else
   {
-    QVariant dateTimeVariant = paramaterTimeMap.value( QStringLiteral( "value" ) );
+    QVariant dateTimeVariant = parameterTimeMap.value( QStringLiteral( "value" ) );
     if ( dateTimeVariant.type() != QVariant::DateTime )
       return false;
     QDateTime dateTime = dateTimeVariant.toDateTime();
