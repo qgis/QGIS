@@ -23,7 +23,6 @@
 #include <QFile>
 #include <iostream>
 #include <memory>
-#include <QDataStream>
 
 #if defined ( HAVE_ZSTD )
 #include <zstd.h>
@@ -36,39 +35,149 @@
 
 ///@cond PRIVATE
 
-QgsPointCloudBlock *QgsEptDecoder::decompressBinary( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes )
+template <typename T>
+bool _storeTripleToStream( QByteArray &data, int position, int size, T *value )
 {
-  Q_ASSERT( QFile::exists( filename ) );
+  if ( size == 3 * sizeof( qint32 ) )
+  {
+    for ( int i = 0; i < 3; ++i )
+    {
+      qint32 val = qint32( value[i] );
+      data.insert( position + i * sizeof( T ), ( char * )( &val ), sizeof( qint32 ) );
+    }
+  }
+  else if ( size == 3 * sizeof( double ) )
+  {
+    for ( int i = 0; i < 3; ++i )
+    {
+      double val = double( value[i] );
+      data.insert( position + i * sizeof( T ), ( char * )( &val ), sizeof( double ) );
+    }
+  }
+  else
+  {
+    // unsupported
+    return false;
+  }
+  return true;
+}
 
-  int pointRecordSize = attributes.pointRecordSize( );
+template <typename T>
+bool _storeToStream( QByteArray &data, int position, int size, T value )
+{
+  if ( size == sizeof( char ) )
+  {
+    char val = char( value );
+    data[position] = val;
+  }
+  else if ( size == sizeof( qint32 ) )
+  {
+    qint32 val = qint32( value );
+    data.insert( position, ( char * )( &val ), sizeof( qint32 ) );
+  }
+  else if ( size == sizeof( double ) )
+  {
+    double val = double( value );
+    data.insert( position, ( char * )( &val ), sizeof( double ) );
+  }
+  else
+  {
+    // unsupported
+    return false;
+  }
+  return true;
+}
 
-  QFile f( filename );
-  bool r = f.open( QIODevice::ReadOnly );
-  Q_ASSERT( r );
+bool _serialize( QByteArray &data, int outputPosition, int outputSize, const char *input, int inputSize, int inputPosition )
+{
+  if ( inputSize == outputSize )
+  {
+    data.insert( outputPosition, input + inputPosition, inputSize );
+    return true;
+  }
 
-  QByteArray data;
-  QDataStream stream( &data, QIODevice::WriteOnly );
+  if ( inputSize == sizeof( char ) )
+  {
+    char val = *( input + inputPosition );
+    return _storeToStream<char>( data, outputPosition, outputSize, val );
+  }
+  else if ( inputSize == sizeof( qint32 ) )
+  {
+    qint32 val = *( qint32 * )( input + inputPosition );
+    return _storeToStream<qint32>( data, outputPosition, outputSize, val );
+  }
+  else if ( inputSize == sizeof( double ) )
+  {
+    double val = *( double * )( input + inputPosition );
+    return _storeToStream<double>( data, outputPosition, outputSize, val );
+  }
+  else if ( inputSize == 3 * sizeof( qint32 ) )
+  {
+    qint32 *val = ( qint32 * )( input + inputPosition );
+    return _storeTripleToStream<qint32>( data, outputPosition, outputSize, val );
+  }
+  else if ( inputSize == 3 * sizeof( double ) )
+  {
+    double *val = ( double * )( input + inputPosition );
+    return _storeTripleToStream<double>( data, outputPosition, outputSize, val );
+  }
+  else
+  {
+    // unsupported
+    return false;
+  }
+}
 
-  int count = f.size() / pointRecordSize;
+// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+QgsPointCloudBlock *_decompressBinary( const QByteArray &dataUncompressed, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes )
+{
+  const int pointRecordSize = attributes.pointRecordSize( );
+  const int requestedPointRecordSize = requestedAttributes.pointRecordSize();
+  const int count = dataUncompressed.size() / pointRecordSize;
+  QByteArray data( nullptr, requestedPointRecordSize * count );
+  const char *s = dataUncompressed.data();
+
   for ( int i = 0; i < count; ++i )
   {
-    QByteArray bytes = f.read( pointRecordSize );
-    char *s = bytes.data();
+    int outputOffset = 0;
+    const QVector<QgsPointCloudAttribute> requestedAttributesVector = requestedAttributes.attributes();
+    for ( const QgsPointCloudAttribute &requestedAttribute : requestedAttributesVector )
+    {
+      QgsPointCloudAttribute *foundAttribute = nullptr;
+      int inputOffset = attributes.offset( requestedAttribute.name(), foundAttribute );
+      // invalid request
+      if ( inputOffset < 0 || !foundAttribute )
+        return nullptr;
 
-    qint32 x = *( double * )( s );
-    qint32 y = *( double * )( s + 8 );
-    qint32 z = *( double * )( s + 16 );
-    char cls = bytes[30];
+      Q_ASSERT( requestedAttribute.name() == foundAttribute->name() );
 
-    stream << x << y << z << cls;
+      _serialize( data, i * requestedPointRecordSize + outputOffset, requestedAttribute.size(), s, foundAttribute->size(), i * pointRecordSize + inputOffset );
 
-    //++count;
+      outputOffset += requestedAttribute.size();
+    }
   }
   return new QgsPointCloudBlock(
            count,
            requestedAttributes,
            data
          );
+
+}
+
+
+QgsPointCloudBlock *QgsEptDecoder::decompressBinary( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes )
+{
+  if ( ! QFile::exists( filename ) )
+    return nullptr;
+
+  QFile f( filename );
+  bool r = f.open( QIODevice::ReadOnly );
+  if ( !r )
+    return nullptr;
+
+  QByteArray dataUncompressed = f.read( f.size() );
+  return _decompressBinary( dataUncompressed, attributes, requestedAttributes );
 }
 
 /* *************************************************************************************** */
@@ -105,43 +214,17 @@ QByteArray decompressZtdStream( const QByteArray &dataCompressed )
 
 QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes )
 {
-  Q_ASSERT( QFile::exists( filename ) );
+  if ( ! QFile::exists( filename ) )
+    return nullptr;
 
   QFile f( filename );
   bool r = f.open( QIODevice::ReadOnly );
-  Q_ASSERT( r );
+  if ( !r )
+    return nullptr;
 
   QByteArray dataCompressed = f.readAll();
   QByteArray dataUncompressed = decompressZtdStream( dataCompressed );
-
-  int pointRecordSize = attributes.pointRecordSize( );
-  // from here it's the same as "binary"
-
-  int count = dataUncompressed.size() / pointRecordSize;
-
-  QByteArray data;
-  QDataStream stream( &data, QIODevice::WriteOnly );
-
-  const char *ptr = dataUncompressed.constData();
-  for ( int i = 0; i < count; ++i )
-  {
-    // WHY??? X,Y,Z are int32 values stored as doubles
-    // double *bytesD = ( double * )( ptr + pointRecordSize * i );
-    // TODO: we should respect the schema (offset and data type of X,Y,Z)
-
-    // TODO type based on requested attributes
-    qint32 x = *( double * )( ptr + pointRecordSize * i );
-    qint32 y = *( double * )( ptr + pointRecordSize * i + 8 );
-    qint32 z = *( double * )( ptr + pointRecordSize * i + 16 );
-    char cls = *( char * )( ptr + pointRecordSize * i + 30 );
-
-    stream << x << y << z << cls;
-  }
-  return new QgsPointCloudBlock(
-           count,
-           requestedAttributes,
-           data
-         );
+  return _decompressBinary( dataUncompressed, attributes, requestedAttributes );
 }
 
 #else // defined(HAVE_ZSTD)
@@ -159,33 +242,43 @@ QgsPointCloudBlock *QgsEptDecoder::decompressZStandard( const QString &filename,
 
 #if defined ( HAVE_LAZPERF )
 QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
-                                                  const QgsPointCloudAttributeCollection &attributes,
-                                                  const QgsPointCloudAttributeCollection &requestedAttributes )
+    const QgsPointCloudAttributeCollection &attributes,
+    const QgsPointCloudAttributeCollection &requestedAttributes )
 {
-  Q_UNUSED(attributes)
-
   std::ifstream file( filename.toLatin1().constData(), std::ios::binary );
-  Q_ASSERT( file.good() );
+  if ( ! file.good() )
+    return nullptr;
 
   auto start = common::tick();
 
   laszip::io::reader::file f( file );
 
-  size_t count = f.get_header().point_count;
+  const size_t count = f.get_header().point_count;
   char buf[256]; // a buffer large enough to hold our point
 
-  QByteArray data;
-  QDataStream stream( &data, QIODevice::WriteOnly );
+  const int requestedPointRecordSize = requestedAttributes.pointRecordSize();
+  QByteArray data( nullptr, requestedPointRecordSize * count );
 
   for ( size_t i = 0 ; i < count ; i ++ )
   {
     f.readPoint( buf ); // read the point out
     laszip::formats::las::point10 p = laszip::formats::packers<laszip::formats::las::point10>::unpack( buf );
-    qint32 x = p.x ;
-    qint32 y = p.y ;
-    qint32 z = p.z ;
-    char cls = p.classification;
-    stream << x << y << z << cls;
+    int outputOffset = 0;
+    const QVector<QgsPointCloudAttribute> requestedAttributesVector = requestedAttributes.attributes();
+    for ( const QgsPointCloudAttribute &requestedAttribute : requestedAttributesVector )
+    {
+
+      if ( requestedAttribute.name() == QStringLiteral( "position" ) )
+      {
+        QVector<qint32> position = {p.x, p.y, p.z};
+        _storeTripleToStream<qint32>( data, i * requestedPointRecordSize + outputOffset, requestedAttribute.size(), position.data() );
+      }
+      else if ( requestedAttribute.name() == QStringLiteral( "classification" ) )
+      {
+        _storeToStream<char>( data, i * requestedPointRecordSize + outputOffset, requestedAttribute.size(), p.classification );
+      }
+      outputOffset += requestedAttribute.size();
+    }
   }
   float t = common::since( start );
   std::cout << "LAZ-PERF Read through the points in " << t << " seconds." << std::endl;

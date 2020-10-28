@@ -58,14 +58,20 @@ class CORE_EXPORT QgsPointCloudAttribute
 class CORE_EXPORT QgsPointCloudAttributeCollection
 {
   public:
+    //! Ctor
     QgsPointCloudAttributeCollection();
+    //! Ctor with given attributes
     QgsPointCloudAttributeCollection( const QVector<QgsPointCloudAttribute> &attributes );
-
+    //! Adds extra attribute
     void push_back( const QgsPointCloudAttribute &attribute );
 
+    //! Returns all attributes
     QVector<QgsPointCloudAttribute> attributes() const;
 
-    //! Total size of record
+    //! Returns -1 if no such attribute exists
+    int offset( const QString &attributeName, const QgsPointCloudAttribute *foundAttribute ) const;
+
+    //! Returns total size of record
     int pointRecordSize() const { return mSize; }
   private:
     int mSize = 0;

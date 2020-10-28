@@ -47,6 +47,28 @@ QVector<QgsPointCloudAttribute> QgsPointCloudAttributeCollection::attributes() c
   return mAttributes;
 }
 
+int QgsPointCloudAttributeCollection::offset( const QString &attributeName, const QgsPointCloudAttribute *foundAttribute ) const
+{
+
+  int off = 0;
+
+  for ( const QgsPointCloudAttribute &attr : mAttributes )
+  {
+    if ( attr.name() == attributeName )
+    {
+      foundAttribute = &attr;
+      return off;
+    }
+    else
+    {
+      off += attr.size();
+    }
+  }
+
+  // not found
+  return -1;
+}
+
 QgsPointCloudBlock::QgsPointCloudBlock(
   int count,
   const QgsPointCloudAttributeCollection &attributes,
