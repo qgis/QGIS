@@ -549,7 +549,6 @@ In case of error -1 will be returned.
 .. versionadded:: 3.0
 %End
 
-
     QgsPointXY closestVertex( const QgsPointXY &point, int &closestVertexIndex /Out/, int &previousVertexIndex /Out/, int &nextVertexIndex /Out/, double &sqrDist /Out/ ) const;
 %Docstring
 Returns the vertex closest to the given point, the corresponding vertex index, squared distance snap point / target point

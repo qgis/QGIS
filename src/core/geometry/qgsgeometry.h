@@ -624,8 +624,6 @@ class CORE_EXPORT QgsGeometry
      */
     double hausdorffDistanceDensify( const QgsGeometry &geom, double densifyFraction ) const;
 
-    //TODO QGIS 4.0 - rename beforeVertex to previousVertex, afterVertex to nextVertex
-
     /**
      * Returns the vertex closest to the given point, the corresponding vertex index, squared distance snap point / target point
      * and the indices of the vertices before and after the closest vertex.
