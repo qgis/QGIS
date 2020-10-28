@@ -2247,10 +2247,18 @@ namespace QgsWms
         {
           const QDomElement featureNode = featuresNode.at( j ).toElement();
           const QString fid = featureNode.attribute( QStringLiteral( "id" ) );
-          QgsFeatureRequest request { QgsExpression( QgsServerFeatureId::getExpressionFromServerFid( fid, static_cast<QgsVectorDataProvider *>( layer->dataProvider() ) ) )};
-          request.setFlags( QgsFeatureRequest::Flag::NoGeometry );
           QgsFeature feature;
-          vl->getFeatures( request ).nextFeature( feature );
+          const QString expression { QgsServerFeatureId::getExpressionFromServerFid( fid, static_cast<QgsVectorDataProvider *>( layer->dataProvider() ) ) };
+          if ( expression.isEmpty() )
+          {
+            feature = vl->getFeature( fid.toLongLong() );
+          }
+          else
+          {
+            QgsFeatureRequest request { QgsExpression( expression )};
+            request.setFlags( QgsFeatureRequest::Flag::NoGeometry );
+            vl->getFeatures( request ).nextFeature( feature );
+          }
 
           QString wkt;
           if ( withGeometry )
