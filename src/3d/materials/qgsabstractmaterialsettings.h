@@ -217,7 +217,7 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
      * Applies the data defined bytes, \a dataDefinedBytes, on the \a geometry by filling a specific vertex buffer that will be used by the shader.
      * \since QGIS 3.18
      */
-    virtual void applyDataDefinedToGeometry( Qt3DRender::QGeometry *geometry, int vertexCount, const QByteArray &dataDefinedBytes ) const {};
+    virtual void applyDataDefinedToGeometry( Qt3DRender::QGeometry *geometry, int vertexCount, const QByteArray &dataDefinedBytes ) const;
 
     /**
      * Returns byte array corresponding to the data defined colors depending of the \a expressionContext,
@@ -225,7 +225,7 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
      * \see applyDataDefinedToGeometry()
      * \since QGIS 3.18
      */
-    virtual QByteArray dataDefinedVertexColorsAsByte( const QgsExpressionContext &expressionContext ) const {};
+    virtual QByteArray dataDefinedVertexColorsAsByte( const QgsExpressionContext &expressionContext ) const;
 
     /**
      * Returns byte stride of the data defined colors,used to fill the vertex colors data defined buffer for rendering

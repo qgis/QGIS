@@ -45,6 +45,19 @@ QgsPropertiesDefinition &QgsAbstractMaterialSettings::propertiesDefinition() con
   return sPropertyDefinitions;
 }
 
+QByteArray QgsAbstractMaterialSettings::dataDefinedVertexColorsAsByte( const QgsExpressionContext &expressionContext ) const
+{
+  Q_UNUSED( expressionContext )
+  return QByteArray();
+}
+
+void QgsAbstractMaterialSettings::applyDataDefinedToGeometry( Qt3DRender::QGeometry *geometry, int vertexCount, const QByteArray &dataDefinedBytes ) const
+{
+  Q_UNUSED( geometry )
+  Q_UNUSED( vertexCount )
+  Q_UNUSED( dataDefinedBytes )
+}
+
 void QgsAbstractMaterialSettings::initPropertyDefinitions() const
 {
   if ( !sPropertyDefinitions.isEmpty() )
