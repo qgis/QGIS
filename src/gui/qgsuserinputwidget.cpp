@@ -75,14 +75,20 @@ void QgsUserInputWidget::widgetDestroyed( QObject *obj )
   if ( obj->isWidgetType() )
   {
     QWidget *w = qobject_cast<QWidget *>( obj );
-    QMap<QWidget *, QFrame *>::iterator i = mWidgetList.find( w );
-    while ( i != mWidgetList.end() )
+    auto it = mWidgetList.find( w );
+    if ( it != mWidgetList.end() )
     {
+<<<<<<< HEAD
       if ( i.value() )
       {
         i.value()->deleteLater();
+=======
+      if ( QFrame *frame = it.value() )
+      {
+        frame->deleteLater();
+>>>>>>> d8351c0a21... Fix logic in QgsUserInputWidget which incorrectly deletes other
       }
-      i = mWidgetList.erase( i );
+      mWidgetList.erase( it );
     }
   }
   if ( mWidgetList.count() == 0 )
