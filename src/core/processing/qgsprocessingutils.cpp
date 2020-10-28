@@ -176,6 +176,8 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
         return !canUseLayer( qobject_cast< QgsVectorTileLayer * >( layer ) );
       case QgsMapLayerType::AnnotationLayer:
         return true;
+      case QgsMapLayerType::PointCloudLayer:
+        return true;
     }
     return true;
   } ), layers.end() );

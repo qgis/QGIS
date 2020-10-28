@@ -163,6 +163,8 @@ class QgsOgrProvider final: public QgsVectorDataProvider
 
     QString filePath() const { return mFilePath; }
 
+    QString authCfg() const { return mAuthCfg; }
+
     int layerIndex() const { return mLayerIndex; }
 
     QByteArray quotedIdentifier( const QByteArray &field ) const;
@@ -211,6 +213,9 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     //! Commits a transaction
     bool commitTransaction();
 
+    //! Rolls back a transaction
+    bool rollbackTransaction();
+
     //! Does the real job of settings the subset string and adds an argument to disable update capabilities
     bool _setSubsetString( const QString &theSQL, bool updateFeatureCount = true, bool updateCapabilities = true, bool hasExistingRef = true );
 
@@ -251,6 +256,9 @@ class QgsOgrProvider final: public QgsVectorDataProvider
 
     //! path to filename
     QString mFilePath;
+
+    //! Authentication configuration
+    QString mAuthCfg;
 
     //! layer name
     QString mLayerName;

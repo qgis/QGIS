@@ -29,6 +29,12 @@ QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidge
   mColoringMethodComboBox->addItem( tr( "Single Color" ), QgsInterpolatedLineColor::SingleColor );
   mColoringMethodComboBox->addItem( tr( "Color Ramp Shader" ), QgsInterpolatedLineColor::ColorRamp );
 
+  mXSpacingSpinBox->setClearValue( 10.0 );
+  mYSpacingSpinBox->setClearValue( 10.0 );
+  mStreamlinesDensitySpinBox->setClearValue( 15.0 );
+  mTracesParticlesCountSpinBox->setClearValue( 1000 );
+  mTracesMaxLengthSpinBox->setClearValue( 100.0 );
+
   connect( mColorWidget, &QgsColorButton::colorChanged, this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
   connect( mColoringMethodComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::onColoringMethodChanged );
@@ -193,7 +199,8 @@ void QgsMeshRendererVectorSettingsWidget::syncToLayer( )
   const QgsMeshRendererSettings rendererSettings = mMeshLayer->rendererSettings();
   const QgsMeshRendererVectorSettings settings = rendererSettings.vectorSettings( mActiveDatasetGroup );
 
-  mSymbologyGroupBox->setVisible( hasFaces );
+  symbologyLabel->setVisible( hasFaces );
+  mSymbologyVectorComboBox->setVisible( hasFaces );
   mSymbologyVectorComboBox->setCurrentIndex( hasFaces ? settings.symbology() : 0 );
 
   // Arrow settings
@@ -257,7 +264,11 @@ void QgsMeshRendererVectorSettingsWidget::onSymbologyChanged( int currentIndex )
   mTracesGroupBox->setVisible( currentIndex == QgsMeshRendererVectorSettings::Traces );
 
   mDisplayVectorsOnGridGroupBox->setVisible( currentIndex != QgsMeshRendererVectorSettings::Traces );
-  mFilterByMagGroupBox->setVisible( currentIndex != QgsMeshRendererVectorSettings::Traces );
+  filterByMagnitudeLabel->setVisible( currentIndex != QgsMeshRendererVectorSettings::Traces );
+  minimumMagLabel->setVisible( currentIndex != QgsMeshRendererVectorSettings::Traces );
+  mMinMagLineEdit->setVisible( currentIndex != QgsMeshRendererVectorSettings::Traces );
+  maximumMagLabel->setVisible( currentIndex != QgsMeshRendererVectorSettings::Traces );
+  mMaxMagLineEdit->setVisible( currentIndex != QgsMeshRendererVectorSettings::Traces );
 
   mDisplayVectorsOnGridGroupBox->setEnabled(
     currentIndex == QgsMeshRendererVectorSettings::Arrows ||
@@ -278,7 +289,7 @@ void QgsMeshRendererVectorSettingsWidget::onColoringMethodChanged()
 {
   mColorRampShaderGroupBox->setVisible( mColoringMethodComboBox->currentData() == QgsInterpolatedLineColor::ColorRamp );
   mColorWidget->setVisible( mColoringMethodComboBox->currentData() == QgsInterpolatedLineColor::SingleColor );
-  mSimgleColorLabel->setVisible( mColoringMethodComboBox->currentData() == QgsInterpolatedLineColor::SingleColor );
+  mSingleColorLabel->setVisible( mColoringMethodComboBox->currentData() == QgsInterpolatedLineColor::SingleColor );
 
   if ( mColorRampShaderWidget->shader().colorRampItemList().isEmpty() )
     loadColorRampShader();

@@ -490,7 +490,8 @@ Item that represents a layer that can be opened with one of the providers
       Table,
       Plugin,
       Mesh,
-      VectorTile
+      VectorTile,
+      PointCloud
     };
 
 
@@ -589,7 +590,10 @@ Returns icon for mesh layer type
 %Docstring
 Returns icon for vector tile layer
 %End
-
+    static QIcon iconPointCloudLayer();
+%Docstring
+Returns icon for point cloud layer
+%End
     virtual QString layerName() const;
 %Docstring
 
@@ -1002,7 +1006,7 @@ Constructor for QgsFieldsItem, with the specified ``parent`` item.
 
 The ``path`` argument gives the item path in the browser tree. The ``path`` string can take any form,
 but QgsDataItem items pointing to different logical locations should always use a different item ``path``.
-The \connectionUri argument is the connection part of the layer URI that it is used internally to create
+The ``connectionUri`` argument is the connection part of the layer URI that it is used internally to create
 a connection and retrieve fields information.
 The ``providerKey`` string can be used to specify the key for the QgsDataItemProvider that created this item.
 The ``schema`` and ``tableName`` are used to retrieve the layer and field information from the ``connectionUri``.

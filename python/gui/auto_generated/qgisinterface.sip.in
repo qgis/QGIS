@@ -12,7 +12,6 @@
 
 
 
-
 class QgisInterface : QObject
 {
 %Docstring
@@ -448,6 +447,16 @@ Returns the native "Vertex Tool for Active Layer" action.
 .. versionadded:: 3.6
 %End
 
+    virtual QActionGroup *mapToolActionGroup() = 0;
+%Docstring
+Returns the action group for map tools.
+
+Any actions added by plugins for toggling a map tool should also be added to this action
+group so that they behave identically to the native, in-built map tool actions.
+
+.. versionadded:: 3.16
+%End
+
     virtual QAction *actionPan() = 0;
 %Docstring
 Returns the native pan action. Call :py:func:`~QgisInterface.trigger` on it to set the default pan map tool.
@@ -560,6 +569,14 @@ Returns the native Add Vector Tile Layer action.
 
 .. versionadded:: 3.14
 %End
+
+    virtual QAction *actionAddPointCloudLayer() = 0;
+%Docstring
+Returns the native Add Point Cloud Layer action.
+
+.. versionadded:: 3.18
+%End
+
     virtual QAction *actionAddAfsLayer() = 0;
 %Docstring
 Returns the native Add ArcGIS FeatureServer action.
@@ -788,6 +805,13 @@ Adds a mesh layer to the current project.
 Adds a vector tile layer to the current project.
 
 .. versionadded:: 3.14
+%End
+
+    virtual QgsPointCloudLayer *addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey ) = 0;
+%Docstring
+Adds a point cloud layer to the current project.
+
+.. versionadded:: 3.18
 %End
 
     virtual bool addProject( const QString &project ) = 0;
@@ -1256,6 +1280,33 @@ from exiting while a plugin or script has unsaved changes.
 Unregister a previously registered application exit ``blocker``.
 
 .. seealso:: :py:func:`registerApplicationExitBlocker`
+
+.. versionadded:: 3.16
+%End
+
+    virtual void registerMapToolHandler( QgsAbstractMapToolHandler *handler ) = 0;
+%Docstring
+Register a new application map tool ``handler``, which can be used to automatically setup all connections
+and logic required to switch to a custom map tool whenever the state of the QGIS application
+permits.
+
+.. note::
+
+   Ownership of ``handler`` is not transferred, and the handler must
+   be unregistered when plugin is unloaded.
+
+.. seealso:: :py:class:`QgsAbstractMapToolHandler`
+
+.. seealso:: :py:func:`unregisterMapToolHandler`
+
+.. versionadded:: 3.16
+%End
+
+    virtual void unregisterMapToolHandler( QgsAbstractMapToolHandler *handler ) = 0;
+%Docstring
+Unregister a previously registered map tool ``handler``.
+
+.. seealso:: :py:func:`registerMapToolHandler`
 
 .. versionadded:: 3.16
 %End

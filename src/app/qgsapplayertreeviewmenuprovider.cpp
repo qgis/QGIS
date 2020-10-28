@@ -43,6 +43,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsxmlutils.h"
 #include "qgsmessagebar.h"
+#include "qgspointcloudlayer.h"
 
 
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView *view, QgsMapCanvas *canvas )
@@ -145,6 +146,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
       QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+      QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer * >( layer );
 
       if ( layer && layer->isSpatial() )
       {
@@ -270,8 +272,8 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         menu->addAction( tr( "&Filter…" ), QgisApp::instance(), qgis::overload<>::of( &QgisApp::layerSubsetString ) );
       }
 
-      // change data source is only supported for vectors and rasters
-      if ( vlayer || rlayer )
+      // change data source is only supported for vectors and rasters, point clouds
+      if ( vlayer || rlayer || pcLayer )
       {
 
         QAction *a = new QAction( layer->isValid() ? tr( "Change Data Source…" ) : tr( "Repair Data Source…" ), menu );

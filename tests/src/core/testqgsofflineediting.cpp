@@ -52,6 +52,9 @@ class TestQgsOfflineEditing : public QObject
     void init(); // will be called before each testfunction is executed.
     void cleanup(); // will be called after every testfunction.
 
+    void createSpatialiteAndSynchronizeBack_data();
+    void createGeopackageAndSynchronizeBack_data();
+
     void createSpatialiteAndSynchronizeBack();
     void createGeopackageAndSynchronizeBack();
     void removeConstraintsOnDefaultValues();
@@ -113,8 +116,36 @@ void TestQgsOfflineEditing::cleanup()
   dir.remove( offlineDbFile );
 }
 
+void TestQgsOfflineEditing::createSpatialiteAndSynchronizeBack_data()
+{
+  QTest::addColumn<QString>( "suffix_input" );
+  QTest::addColumn<QString>( "suffix_result" );
+
+  QTest::newRow( "no suffix" ) << QString( "no suffix" ) << QStringLiteral( " (offline)" ); //default value expected
+  QTest::newRow( "null suffix" ) << QString() << QString();
+  QTest::newRow( "empty suffix" ) << QStringLiteral( "" ) << QStringLiteral( "" );
+  QTest::newRow( "part of name suffix" ) << QStringLiteral( "point" ) << QStringLiteral( "point" );
+  QTest::newRow( "another suffix" ) << QStringLiteral( "another suffix" ) << QStringLiteral( "another suffix" );
+}
+
+void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack_data()
+{
+  QTest::addColumn<QString>( "suffix_input" );
+  QTest::addColumn<QString>( "suffix_result" );
+
+  QTest::newRow( "no suffix" ) << QStringLiteral( "no suffix" ) << QStringLiteral( " (offline)" ); //default value expected
+  QTest::newRow( "null suffix" ) << QString() << QString();
+  QTest::newRow( "empty suffix" ) << QStringLiteral( "" ) << QStringLiteral( "" );
+  QTest::newRow( "part of name suffix" ) << QStringLiteral( "point" ) << QStringLiteral( "point" );
+  QTest::newRow( "another suffix" ) << QStringLiteral( "another suffix" ) << QStringLiteral( "another suffix" );
+}
+
 void TestQgsOfflineEditing::createSpatialiteAndSynchronizeBack()
 {
+
+  QFETCH( QString, suffix_input );
+  QFETCH( QString, suffix_result );
+
   offlineDbFile = "TestQgsOfflineEditing.sqlite";
   QCOMPARE( mpLayer->name(), QStringLiteral( "points" ) );
   QCOMPARE( mpLayer->featureCount(), numberOfFeatures );
@@ -125,10 +156,15 @@ void TestQgsOfflineEditing::createSpatialiteAndSynchronizeBack()
   layerTreelayer->setCustomProperty( QStringLiteral( "showFeatureCount" ), 1 );
 
   //convert
-  mOfflineEditing->convertToOfflineProject( offlineDataPath, offlineDbFile, layerIds, false, QgsOfflineEditing::SpatiaLite );
+  if ( suffix_input.compare( QStringLiteral( "no suffix" ) ) == 0 )
+    mOfflineEditing->convertToOfflineProject( offlineDataPath, offlineDbFile, layerIds, false, QgsOfflineEditing::SpatiaLite );
+  else
+    mOfflineEditing->convertToOfflineProject( offlineDataPath, offlineDbFile, layerIds, false, QgsOfflineEditing::SpatiaLite, suffix_input );
 
-  mpLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayersByName( QStringLiteral( "points (offline)" ) ).first() );
-  QCOMPARE( mpLayer->name(), QStringLiteral( "points (offline)" ) );
+  QString layerName = QStringLiteral( "points%1" ).arg( suffix_result );
+
+  mpLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayersByName( layerName ).first() );
+  QCOMPARE( mpLayer->name(), layerName );
   QCOMPARE( mpLayer->featureCount(), numberOfFeatures );
   //check LayerTreeNode showFeatureCount property
   layerTreelayer = QgsProject::instance()->layerTreeRoot()->findLayer( mpLayer->id() );
@@ -151,6 +187,9 @@ void TestQgsOfflineEditing::createSpatialiteAndSynchronizeBack()
 
 void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
 {
+  QFETCH( QString, suffix_input );
+  QFETCH( QString, suffix_result );
+
   offlineDbFile = "TestQgsOfflineEditing.gpkg";
   QCOMPARE( mpLayer->name(), QStringLiteral( "points" ) );
   QCOMPARE( mpLayer->featureCount(), numberOfFeatures );
@@ -171,10 +210,14 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
   mpLayer->styleManager()->addStyle( QStringLiteral( "testStyle" ), style );
 
   //convert
-  mOfflineEditing->convertToOfflineProject( offlineDataPath, offlineDbFile, layerIds, false, QgsOfflineEditing::GPKG );
+  if ( suffix_input.compare( QStringLiteral( "no suffix" ) ) == 0 )
+    mOfflineEditing->convertToOfflineProject( offlineDataPath, offlineDbFile, layerIds, false, QgsOfflineEditing::GPKG );
+  else
+    mOfflineEditing->convertToOfflineProject( offlineDataPath, offlineDbFile, layerIds, false, QgsOfflineEditing::GPKG, suffix_input );
 
-  mpLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayersByName( QStringLiteral( "points (offline)" ) ).first() );
-  QCOMPARE( mpLayer->name(), QStringLiteral( "points (offline)" ) );
+  QString layerName = QStringLiteral( "points%1" ).arg( suffix_result );
+  mpLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayersByName( layerName ).first() );
+  QCOMPARE( mpLayer->name(), layerName );
   QCOMPARE( mpLayer->featureCount(), numberOfFeatures );
   //comparing with the number +1 because GPKG created an fid
   QCOMPARE( mpLayer->fields().size(), numberOfFields + 1 );
@@ -231,7 +274,6 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
   mpLayer->dataProvider()->deleteFeatures( idsToClean );
   QCOMPARE( mpLayer->dataProvider()->featureCount(), numberOfFeatures );
 }
-
 
 void TestQgsOfflineEditing::removeConstraintsOnDefaultValues()
 {

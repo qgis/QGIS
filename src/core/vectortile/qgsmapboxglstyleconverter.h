@@ -441,9 +441,9 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
     /**
      * Parses a \a color in one of these supported formats:
      *
-     * - #fff or #ffffff
-     * - hsl(30, 19%, 90%) or hsla(30, 19%, 90%, 0.4)
-     * - rgb(10, 20, 30) or rgba(10, 20, 30, 0.5)
+     * - \c \#fff or \c \#ffffff
+     * - ``hsl(30, 19%, 90%)`` or ``hsla(30, 19%, 90%, 0.4)``
+     * - ``rgb(10, 20, 30)`` or ``rgba(10, 20, 30, 0.5)``
      *
      * Returns an invalid color if the color could not be parsed.
      *

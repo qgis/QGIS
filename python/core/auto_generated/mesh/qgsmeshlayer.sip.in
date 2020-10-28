@@ -193,6 +193,8 @@ Saves datasets group on file with the specified ``driver``
 
 
 
+
+
     void updateTriangularMesh( const QgsCoordinateTransform &transform = QgsCoordinateTransform() );
 %Docstring
 Gets native mesh and updates (creates if it doesn't exist) the base triangular mesh
@@ -361,7 +363,7 @@ See :py:func:`QgsMeshDatasetMetadata.isVector()` to check if the returned value 
 returns invalid block for DataOnFaces and DataOnVertices.
 
 :param index: index of the dataset
-:param valueIndex: index of the value
+:param faceIndex: index of the face
 :param count: number of values to return
 
 .. note::
@@ -387,7 +389,7 @@ returns invalid block for DataOnFaces and DataOnVertices.
 Returns whether the faces are active for particular dataset
 
 :param index: index of the dataset
-:param valueIndex: index of the value
+:param faceIndex: index of the face
 :param count: number of values to return
 
 .. note::
@@ -495,6 +497,7 @@ Returns dataset index from datasets group depending on the time range.
 If the temporal properties is not active, returns invalid dataset index. This method is used for rendering mesh layer.
 
 :param timeRange: the time range
+:param datasetGroupIndex: the index of the dataset group
 
 :return: dataset index
 
@@ -518,6 +521,7 @@ Returns dataset index from datasets group depending on the relative time from th
 Dataset index is valid even the temporal properties is inactive. This method is used for calculation on mesh layer.
 
 :param relativeTime: the relative from the mesh layer reference time
+:param datasetGroupIndex: the index of the dataset group
 
 :return: dataset index
 

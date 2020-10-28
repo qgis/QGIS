@@ -256,6 +256,8 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     void mActionAutoFeatureForm_toggled( bool checked );
 
+    void mActionHideDerivedAttributes_toggled( bool checked );
+
     void mExpandAction_triggered( bool checked ) { Q_UNUSED( checked ) expandAll(); }
     void mCollapseAction_triggered( bool checked ) { Q_UNUSED( checked ) collapseAll(); }
 

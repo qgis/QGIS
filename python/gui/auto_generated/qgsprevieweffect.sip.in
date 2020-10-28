@@ -26,7 +26,8 @@ color blindness modes.
       PreviewGrayscale,
       PreviewMono,
       PreviewProtanope,
-      PreviewDeuteranope
+      PreviewDeuteranope,
+      PreviewTritanope
     };
 
     QgsPreviewEffect( QObject *parent /TransferThis/ );

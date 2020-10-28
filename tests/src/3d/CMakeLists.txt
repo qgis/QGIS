@@ -76,6 +76,8 @@ MACRO (ADD_QGIS_TEST testname testsrc)
   #  INSTALL_RPATH_USE_LINK_PATH true )
 ENDMACRO (ADD_QGIS_TEST)
 
+ADD_SUBDIRECTORY(sandbox)
+
 ADD_QGIS_TEST(3dutilstest testqgs3dutils.cpp)
 ADD_QGIS_TEST(3drenderingtest testqgs3drendering.cpp)
 ADD_QGIS_TEST(layout3dmaptest testqgslayout3dmap.cpp)

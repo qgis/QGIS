@@ -43,6 +43,7 @@ class QgsOgrFeatureSource final: public QgsAbstractFeatureSource
 
   private:
     QString mDataSource;
+    QString mAuthCfg;
     bool mShareSameDatasetAmongLayers;
     QString mLayerName;
     int mLayerIndex;
@@ -71,6 +72,8 @@ class QgsOgrFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<Q
 
     bool rewind() override;
     bool close() override;
+
+    void setInterruptionChecker( QgsFeedback *interruptionChecker ) override;
 
   protected:
     bool checkFeature( gdal::ogr_feature_unique_ptr &fet, QgsFeature &feature ) ;
@@ -102,6 +105,9 @@ class QgsOgrFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<Q
 
     bool mFirstFieldIsFid = false;
     QgsFields mFieldsWithoutFid;
+    QString mAuthCfg;
+
+    QgsFeedback *mInterruptionChecker = nullptr;
 
     /* This flag tells the iterator when to skip all calls that might reset the reading (rewind),
      * to be used when the request is for a single fid or for a list of fids and we are inside

@@ -106,7 +106,7 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
      * \since QGIS 3.0
      */
-    inline const QgsMultiLineString *cast( const QgsAbstractGeometry *geom ) const
+    inline static const QgsMultiLineString *cast( const QgsAbstractGeometry *geom )
     {
       if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiLineString )
         return static_cast<const QgsMultiLineString *>( geom );

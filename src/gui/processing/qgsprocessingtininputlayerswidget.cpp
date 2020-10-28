@@ -17,6 +17,8 @@
 #include "qgsproject.h"
 #include "qgsprocessingcontext.h"
 
+/// @cond PRIVATE
+
 QgsProcessingTinInputLayersWidget::QgsProcessingTinInputLayersWidget( QgsProject *project ):
   mInputLayersModel( project )
 {
@@ -382,3 +384,5 @@ QVariant QgsProcessingTinInputLayersWidgetWrapper::widgetValue() const
   else
     return QVariant();
 }
+
+/// @endcond PRIVATE

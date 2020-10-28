@@ -28,6 +28,7 @@ email                : sherman at mrcc.com
 #include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
+#include "qgscplhttpfetchoverrider.h"
 #include "qgsdataitem.h"
 #include "qgsdataprovider.h"
 #include "qgsfeature.h"
@@ -490,6 +491,18 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
                           mSubsetString,
                           mOgrGeometryTypeFilter,
                           mOpenOptions );
+
+  if ( mFilePath.contains( QLatin1String( "authcfg" ) ) )
+  {
+    QRegularExpression authcfgRe( " authcfg='([^']+)'" );
+    QRegularExpressionMatch match;
+    if ( mFilePath.contains( authcfgRe, &match ) )
+    {
+      mAuthCfg = match.captured( 1 );
+    }
+  }
+  QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
+  QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
 
   open( OpenModeInitial );
 
@@ -1364,6 +1377,9 @@ QgsRectangle QgsOgrProvider::extent() const
 {
   if ( !mExtent )
   {
+    QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
+    QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
+
     mExtent.reset( new OGREnvelope() );
 
     // get the extent_ (envelope) of the layer
@@ -1433,6 +1449,9 @@ QgsRectangle QgsOgrProvider::extent() const
 
 QVariant QgsOgrProvider::defaultValue( int fieldId ) const
 {
+  QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
+  QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
+
   if ( fieldId < 0 || fieldId >= mAttributeFields.count() )
     return QVariant();
 
@@ -1848,6 +1867,9 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
 
 bool QgsOgrProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 {
+  QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
+  QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
+
   if ( !doInitialActionsForEdition() )
     return false;
 
@@ -1866,7 +1888,10 @@ bool QgsOgrProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
   if ( inTransaction )
   {
-    commitTransaction();
+    if ( returnvalue )
+      returnvalue = commitTransaction();
+    else
+      rollbackTransaction();
   }
 
   if ( !syncToDisc() )
@@ -1985,6 +2010,9 @@ bool QgsOgrProvider::addAttributeOGRLevel( const QgsField &field, bool &ignoreEr
 
 bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
 {
+  QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
+  QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
+
   if ( !doInitialActionsForEdition() )
     return false;
 
@@ -2103,6 +2131,9 @@ bool QgsOgrProvider::deleteAttributes( const QgsAttributeIds &attributes )
 
 bool QgsOgrProvider::renameAttributes( const QgsFieldNameMap &renamedAttributes )
 {
+  QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
+  QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
+
   if ( !doInitialActionsForEdition() )
     return false;
 
@@ -2177,9 +2208,23 @@ bool QgsOgrProvider::commitTransaction()
   return true;
 }
 
+
+bool QgsOgrProvider::rollbackTransaction()
+{
+  if ( mOgrLayer->RollbackTransaction() != OGRERR_NONE )
+  {
+    pushError( tr( "OGR error rolling back transaction: %1" ).arg( CPLGetLastErrorMsg() ) );
+    return false;
+  }
+  return true;
+}
+
 bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeatureCount, bool updateCapabilities, bool hasExistingRef )
 {
   QgsCPLErrorHandler handler;
+
+  QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
+  QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
 
   if ( !mOgrOrigLayer )
     return false;
@@ -2293,6 +2338,9 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
 
 bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
+  QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
+  QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
+
   if ( !doInitialActionsForEdition() )
     return false;
 
@@ -2487,7 +2535,10 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 
   if ( inTransaction )
   {
-    if ( ! commitTransaction() ) return false;
+    if ( returnValue )
+      returnValue = commitTransaction();
+    else
+      rollbackTransaction();
   }
 
   if ( mTransaction )
@@ -2503,6 +2554,9 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 
 bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 {
+  QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
+  QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
+
   if ( !doInitialActionsForEdition() )
     return false;
 
@@ -2526,6 +2580,7 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
   }
 #endif
 
+  bool returnvalue = true;
   for ( QgsGeometryMap::const_iterator it = geometry_map.constBegin(); it != geometry_map.constEnd(); ++it )
   {
     gdal::ogr_feature_unique_ptr theOGRFeature( mOgrLayer->GetFeature( FID_TO_NUMBER( it.key() ) ) );
@@ -2581,6 +2636,7 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
     if ( mOgrLayer->SetFeature( theOGRFeature.get() ) != OGRERR_NONE )
     {
       pushError( tr( "OGR error setting feature %1: %2" ).arg( it.key() ).arg( CPLGetLastErrorMsg() ) );
+      returnvalue = false;
       continue;
     }
     mShapefileMayBeCorrupted = true;
@@ -2590,18 +2646,28 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 
   if ( inTransaction )
   {
-    if ( ! commitTransaction() ) return false;
+    if ( returnvalue )
+      returnvalue = commitTransaction();
+    else
+      rollbackTransaction();
   }
 
   if ( mTransaction )
     mTransaction->dirtyLastSavePoint();
 
+  if ( mOgrLayer->SyncToDisk() != OGRERR_NONE )
+  {
+    pushError( tr( "OGR error syncing to disk: %1" ).arg( CPLGetLastErrorMsg() ) );
+  }
   QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ), mShareSameDatasetAmongLayers ) );
-  return syncToDisc();
+  return returnvalue;
 }
 
 bool QgsOgrProvider::createSpatialIndex()
 {
+  QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
+  QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
+
   if ( !mOgrOrigLayer )
     return false;
   if ( !doInitialActionsForEdition() )
@@ -2644,6 +2710,9 @@ QString QgsOgrProvider::createIndexName( QString tableName, QString field )
 
 bool QgsOgrProvider::createAttributeIndex( int field )
 {
+  QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
+  QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
+
   if ( field < 0 || field >= mAttributeFields.count() )
     return false;
 
@@ -2682,6 +2751,9 @@ bool QgsOgrProvider::createAttributeIndex( int field )
 
 bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds &id )
 {
+  QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
+  QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
+
   if ( !doInitialActionsForEdition() )
     return false;
 
@@ -2698,7 +2770,10 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds &id )
 
   if ( inTransaction )
   {
-    if ( ! commitTransaction() ) return false;
+    if ( returnvalue )
+      returnvalue = commitTransaction();
+    else
+      rollbackTransaction();
   }
 
   if ( mTransaction )
@@ -2735,6 +2810,9 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds &id )
 
 bool QgsOgrProvider::deleteFeature( QgsFeatureId id )
 {
+  QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
+  QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
+
   if ( !doInitialActionsForEdition() )
     return false;
 

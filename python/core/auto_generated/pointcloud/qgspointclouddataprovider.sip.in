@@ -1,0 +1,53 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointclouddataprovider.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsPointCloudDataProvider: QgsDataProvider
+{
+%Docstring
+Base class for providing data for QgsPointCloudLayer
+
+Responsible for reading native point cloud data and returning the indexed data.
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgspointclouddataprovider.h"
+%End
+  public:
+    QgsPointCloudDataProvider( const QString &uri,
+                               const QgsDataProvider::ProviderOptions &providerOptions,
+                               QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+%Docstring
+Ctor
+%End
+
+    ~QgsPointCloudDataProvider();
+    virtual QgsRectangle extent() const;
+
+    virtual bool isValid() const;
+
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointclouddataprovider.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -18,6 +18,7 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include <array>
 #include <functional>
+#include <type_traits>
 #include <QString>
 
 #include "qgis_core.h"
@@ -1154,7 +1155,7 @@ struct CORE_EXPORT QgsVertexId
 template <class T>
 inline T qgsgeometry_cast( const QgsAbstractGeometry *geom )
 {
-  return const_cast<T>( reinterpret_cast<T>( 0 )->cast( geom ) );
+  return const_cast<T>( std::remove_pointer<T>::type::cast( geom ) );
 }
 
 #endif

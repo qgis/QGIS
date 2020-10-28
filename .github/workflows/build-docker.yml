@@ -20,7 +20,7 @@ jobs:
 
     strategy:
       matrix:
-        branch: [master, release-3_10, release-3_14]
+        branch: [master, release-3_10, release-3_16]
 
     steps:
       - name: Cache
@@ -111,7 +111,7 @@ jobs:
             "ref": "master",
             "inputs": {"qgis_branch": "__QGIS_VERSION_BRANCH__"}
           }'
-          body=$(sed "s/__QGIS_VERSION_BRANCH__/${TRAVIS_BRANCH}/;" <<< $body)
+          body=$(sed "s/__QGIS_VERSION_BRANCH__/${branch}/;" <<< $body)
           curl -X POST \
             -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: token ${GH_TOKEN}" \

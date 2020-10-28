@@ -52,10 +52,7 @@ class _3D_EXPORT Qgs3DExportObject
     /**
      * \brief Qgs3DExportObject
      * Constructs an export object that will be filled with coordinates later
-     * \param parentName
-     * The name of the parent (Will be useful to define scene hierarchy)
-     * \param parent
-     * The parent QObject (we use this to delete the Qgs3DExportObject instance once the exporter instance is deallocated)
+     * \param name The name of the parent (Will be useful to define scene hierarchy)
      */
     Qgs3DExportObject( const QString &name ) : mName( name ) { }
 

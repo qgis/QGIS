@@ -28,6 +28,13 @@ QgsLimitedRandomColorRampWidget::QgsLimitedRandomColorRampWidget( const QgsLimit
   , mRamp( ramp )
 {
   setupUi( this );
+  spinCount->setClearValue( 10 );
+  spinHue1->setClearValue( 0 );
+  spinHue2->setClearValue( 359 );
+  spinSat1->setClearValue( 100 );
+  spinSat2->setClearValue( 240 );
+  spinVal1->setClearValue( 200 );
+  spinVal2->setClearValue( 240 );
 
   updateUi();
 

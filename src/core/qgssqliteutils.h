@@ -208,8 +208,8 @@ class CORE_EXPORT QgsSqliteUtils
      * are not returned.
      * \note the implementation is the same of GDAL but the test coverage is much
      *       better in GDAL.
-     * \since QGIS 3.14
      * \note not available in Python bindings
+     * \since QGIS 3.14
      */
     static QSet<QString> uniqueFields( sqlite3 *connection, const QString &tableName, QString &errorMessage ) SIP_SKIP;
 
@@ -219,8 +219,8 @@ class CORE_EXPORT QgsSqliteUtils
      * error message in case of errors.
      *
      * \returns the next sequence value or -1 case of errors
-     * \since QGIS 3.14
      * \note not available in Python bindings
+     * \since QGIS 3.14
      */
     static long long nextSequenceValue( sqlite3 *connection, const QString &tableName, QString errorMessage ) SIP_SKIP;
 

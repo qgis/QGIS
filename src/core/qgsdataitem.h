@@ -521,7 +521,8 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
       Table,
       Plugin,    //!< Added in 2.10
       Mesh,      //!< Added in 3.2
-      VectorTile //!< Added in 3.14
+      VectorTile, //!< Added in 3.14
+      PointCloud //!< Added in 3.18
     };
 
     Q_ENUM( LayerType )
@@ -612,7 +613,8 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     static QIcon iconMesh();
     //! Returns icon for vector tile layer
     static QIcon iconVectorTile();
-
+    //! Returns icon for point cloud layer
+    static QIcon iconPointCloudLayer();
     //! \returns the layer name
     virtual QString layerName() const { return name(); }
 };
@@ -984,7 +986,7 @@ class CORE_EXPORT QgsFieldsItem : public QgsDataItem
      *
      * The \a path argument gives the item path in the browser tree. The \a path string can take any form,
      * but QgsDataItem items pointing to different logical locations should always use a different item \a path.
-     * The \connectionUri argument is the connection part of the layer URI that it is used internally to create
+     * The \a connectionUri argument is the connection part of the layer URI that it is used internally to create
      * a connection and retrieve fields information.
      * The \a providerKey string can be used to specify the key for the QgsDataItemProvider that created this item.
      * The \a schema and \a tableName are used to retrieve the layer and field information from the \a connectionUri.

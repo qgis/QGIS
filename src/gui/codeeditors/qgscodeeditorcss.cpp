@@ -73,6 +73,7 @@ void QgsCodeEditorCSS::initializeLexer()
   runPostLexerConfigurationTasks();
 }
 
+///@cond PRIVATE
 //
 // QgsQsciLexerCSS
 //
@@ -90,3 +91,4 @@ QString QgsQsciLexerCSS::description( int style ) const
 
   return QsciLexerCSS::description( style );
 }
+///@endcond PRIVATE

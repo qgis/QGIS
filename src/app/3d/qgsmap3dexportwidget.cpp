@@ -32,6 +32,9 @@ QgsMap3DExportWidget::QgsMap3DExportWidget( Qgs3DMapScene *scene, Qgs3DMapExport
   mExportSettings( exportSettings )
 {
   ui->setupUi( this );
+  ui->terrainResolutionSpinBox->setClearValue( 128 );
+  ui->terrainTextureResolutionSpinBox->setClearValue( 512 );
+  ui->scaleSpinBox->setClearValue( 1.0 );
 
   ui->selectFolderWidget->setStorageMode( QgsFileWidget::StorageMode::GetDirectory );
 

@@ -552,15 +552,15 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * Raises a QgsProviderConnectionException if any errors are encountered.
      * \note the default implementation creates a temporary vector layer, providers may
      * choose to override this method for a greater efficiency.
-     * \since QGIS 3.16
      * \throws QgsProviderConnectionException
+     * \since QGIS 3.16
      */
     virtual QgsFields fields( const QString &schema, const QString &table ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Returns a list of native types supported by the connection.
-     * \since QGIS 3.16
      * \throws QgsProviderConnectionException
+     * \since QGIS 3.16
      */
     virtual QList< QgsVectorDataProvider::NativeType > nativeTypes() const SIP_THROW( QgsProviderConnectionException ) = 0;
 

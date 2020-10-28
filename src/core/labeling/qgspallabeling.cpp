@@ -3580,6 +3580,7 @@ bool QgsPalLabeling::staticWillUseLayer( const QgsMapLayer *layer )
     case QgsMapLayerType::RasterLayer:
     case QgsMapLayerType::PluginLayer:
     case QgsMapLayerType::MeshLayer:
+    case QgsMapLayerType::PointCloudLayer:
     case QgsMapLayerType::AnnotationLayer:
       return false;
   }

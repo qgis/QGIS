@@ -552,14 +552,14 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   {
     mView->setPreviewModeEnabled( false );
   } );
-  connect( mActionPreviewModeGrayscale, &QAction::triggered, this, [ = ]
-  {
-    mView->setPreviewMode( QgsPreviewEffect::PreviewGrayscale );
-    mView->setPreviewModeEnabled( true );
-  } );
   connect( mActionPreviewModeMono, &QAction::triggered, this, [ = ]
   {
     mView->setPreviewMode( QgsPreviewEffect::PreviewMono );
+    mView->setPreviewModeEnabled( true );
+  } );
+  connect( mActionPreviewModeGrayscale, &QAction::triggered, this, [ = ]
+  {
+    mView->setPreviewMode( QgsPreviewEffect::PreviewGrayscale );
     mView->setPreviewModeEnabled( true );
   } );
   connect( mActionPreviewProtanope, &QAction::triggered, this, [ = ]
@@ -572,6 +572,11 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
     mView->setPreviewMode( QgsPreviewEffect::PreviewDeuteranope );
     mView->setPreviewModeEnabled( true );
   } );
+  connect( mActionPreviewTritanope, &QAction::triggered, this, [ = ]
+  {
+    mView->setPreviewMode( QgsPreviewEffect::PreviewTritanope );
+    mView->setPreviewModeEnabled( true );
+  } );
   QActionGroup *previewGroup = new QActionGroup( this );
   previewGroup->setExclusive( true );
   mActionPreviewModeOff->setActionGroup( previewGroup );
@@ -579,6 +584,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mActionPreviewModeMono->setActionGroup( previewGroup );
   mActionPreviewProtanope->setActionGroup( previewGroup );
   mActionPreviewDeuteranope->setActionGroup( previewGroup );
+  mActionPreviewTritanope->setActionGroup( previewGroup );
 
   connect( mActionSaveAsTemplate, &QAction::triggered, this, &QgsLayoutDesignerDialog::saveAsTemplate );
   connect( mActionLoadFromTemplate, &QAction::triggered, this, &QgsLayoutDesignerDialog::addItemsFromTemplate );

@@ -56,6 +56,8 @@
 #include "qgsmeshlayer3drenderer.h"
 #include "qgspoint3dsymbol.h"
 #include "qgsrulebased3drenderer.h"
+#include "qgspointcloudlayer.h"
+#include "qgspointcloudlayer3drenderer.h"
 #include "qgssourcecache.h"
 #include "qgsterrainentity_p.h"
 #include "qgsterraingenerator.h"
@@ -490,8 +492,11 @@ void Qgs3DMapScene::createTerrainDeferred()
 {
   double tile0width = mMap.terrainGenerator()->extent().width();
   int maxZoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, mMap.mapTileResolution(), mMap.maxTerrainGroundError() );
+  QgsAABB rootBbox = mMap.terrainGenerator()->rootChunkBbox( mMap );
+  float rootError = mMap.terrainGenerator()->rootChunkError( mMap );
+  mMap.terrainGenerator()->setupQuadtree( rootBbox, rootError, maxZoomLevel );
 
-  mTerrain = new QgsTerrainEntity( maxZoomLevel, mMap );
+  mTerrain = new QgsTerrainEntity( mMap );
   //mTerrain->setEnabled(false);
   mTerrain->setParent( this );
 
@@ -733,6 +738,11 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
       QgsMesh3DSymbol *sym = meshRenderer->symbol()->clone();
       sym->setMaximumTextureSize( maximumTextureSize() );
       meshRenderer->setSymbol( sym );
+    }
+    else if ( layer->type() == QgsMapLayerType::PointCloudLayer && renderer->type() == QLatin1String( "pointcloud" ) )
+    {
+      QgsPointCloudLayer3DRenderer *pointCloudRenderer = static_cast<QgsPointCloudLayer3DRenderer *>( renderer );
+      pointCloudRenderer->setLayer( static_cast<QgsPointCloudLayer *>( layer ) );
     }
 
     Qt3DCore::QEntity *newEntity = renderer->createEntity( mMap );
@@ -980,6 +990,7 @@ void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
       case QgsMapLayerType::MeshLayer:
       case QgsMapLayerType::VectorTileLayer:
       case QgsMapLayerType::AnnotationLayer:
+      case QgsMapLayerType::PointCloudLayer:
         notParsedLayers.push_back( layer->name() );
         break;
     }

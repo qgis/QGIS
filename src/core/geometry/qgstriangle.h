@@ -445,7 +445,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
      * \since QGIS 3.0
      */
-    inline const QgsTriangle *cast( const QgsAbstractGeometry *geom ) const
+    inline static const QgsTriangle *cast( const QgsAbstractGeometry *geom )
     {
       if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::Triangle )
         return static_cast<const QgsTriangle *>( geom );

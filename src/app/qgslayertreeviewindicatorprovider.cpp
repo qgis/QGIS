@@ -21,6 +21,7 @@
 #include "qgslayertreeview.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
+#include "qgspointcloudlayer.h"
 #include "qgsmeshlayer.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
@@ -99,7 +100,8 @@ void QgsLayerTreeViewIndicatorProvider::onLayerLoaded()
 
   if ( !( qobject_cast<QgsVectorLayer *>( layerNode->layer() ) ||
           qobject_cast<QgsRasterLayer *>( layerNode->layer() ) ||
-          qobject_cast<QgsMeshLayer *>( layerNode->layer() ) ) )
+          qobject_cast<QgsMeshLayer *>( layerNode->layer() ) ||
+          qobject_cast<QgsPointCloudLayer *>( layerNode->layer() ) ) )
     return;
 
   if ( QgsMapLayer *mapLayer = layerNode->layer() )
@@ -123,15 +125,22 @@ void QgsLayerTreeViewIndicatorProvider::onLayerChanged()
 
 void QgsLayerTreeViewIndicatorProvider::connectSignals( QgsMapLayer *layer )
 {
-  if ( !( qobject_cast<QgsVectorLayer *>( layer ) || qobject_cast<QgsRasterLayer *>( layer ) ) )
+  if ( !( qobject_cast<QgsVectorLayer *>( layer )
+          || qobject_cast<QgsRasterLayer *>( layer )
+          || qobject_cast<QgsMeshLayer *>( layer )
+          || qobject_cast<QgsPointCloudLayer *>( layer ) ) )
     return;
+
   QgsMapLayer *mapLayer = layer;
   connect( mapLayer, &QgsMapLayer::dataSourceChanged, this, &QgsLayerTreeViewIndicatorProvider::onLayerChanged );
 }
 
 void QgsLayerTreeViewIndicatorProvider::disconnectSignals( QgsMapLayer *layer )
 {
-  if ( !( qobject_cast<QgsVectorLayer *>( layer ) || qobject_cast<QgsRasterLayer *>( layer ) ) )
+  if ( !( qobject_cast<QgsVectorLayer *>( layer )
+          || qobject_cast<QgsRasterLayer *>( layer )
+          || qobject_cast<QgsMeshLayer *>( layer )
+          || qobject_cast<QgsPointCloudLayer *>( layer ) ) )
     return;
   QgsMapLayer *mapLayer = layer;
   disconnect( mapLayer, &QgsMapLayer::dataSourceChanged, this, &QgsLayerTreeViewIndicatorProvider::onLayerChanged );

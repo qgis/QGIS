@@ -38,25 +38,20 @@ QgsTerrainTileLoader::QgsTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkN
   , mTerrain( terrain )
 {
   const Qgs3DMapSettings &map = mTerrain->map3D();
-  int tx, ty, tz;
 #if 0
+  int tx, ty, tz;
   if ( map.terrainGenerator->type() == TerrainGenerator::QuantizedMesh )
   {
     // TODO: sort out - should not be here
     QuantizedMeshTerrainGenerator *generator = static_cast<QuantizedMeshTerrainGenerator *>( map.terrainGenerator.get() );
     generator->quadTreeTileToBaseTile( node->x, node->y, node->z, tx, ty, tz );
   }
-  else
 #endif
-  {
-    tx = node->tileX();
-    ty = node->tileY();
-    tz = node->tileZ();
-  }
 
-  QgsRectangle extentTerrainCrs = map.terrainGenerator()->tilingScheme().tileToExtent( tx, ty, tz );
+  QgsChunkNodeId nodeId = node->tileId();
+  QgsRectangle extentTerrainCrs = map.terrainGenerator()->tilingScheme().tileToExtent( nodeId );
   mExtentMapCrs = terrain->terrainToMapTransform().transformBoundingBox( extentTerrainCrs );
-  mTileDebugText = QStringLiteral( "%1 | %2 | %3" ).arg( tx ).arg( ty ).arg( tz );
+  mTileDebugText = nodeId.text();
 }
 
 void QgsTerrainTileLoader::loadTexture()

@@ -50,6 +50,7 @@
 #include "qgsapplication.h"
 #include "qgsdataitemguiproviderregistry.h"
 #include "qgsdataitemguiprovider.h"
+#include "qgspointcloudlayer.h"
 
 /// @cond PRIVATE
 
@@ -214,6 +215,15 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
     {
       QgsDebugMsgLevel( QStringLiteral( "creating vector tile layer" ), 2 );
       mLayer = qgis::make_unique< QgsVectorTileLayer >( layerItem->uri(), layerItem->name() );
+      break;
+    }
+
+    case QgsMapLayerType::PointCloudLayer:
+    {
+      QgsDebugMsgLevel( QStringLiteral( "creating point cloud layer" ), 2 );
+      QgsPointCloudLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+      options.skipCrsValidation = true;
+      mLayer = qgis::make_unique< QgsPointCloudLayer >( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
       break;
     }
 

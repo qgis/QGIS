@@ -21,6 +21,7 @@ QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget 
   : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
+  precisionSpinBox->setClearValue( 4 );
 
   minimumSpinBox->setMinimum( std::numeric_limits<int>::lowest() );
   minimumSpinBox->setMaximum( std::numeric_limits<int>::max() );
@@ -32,6 +33,7 @@ QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget 
 
   stepSpinBox->setMaximum( std::numeric_limits<int>::max() );
   stepSpinBox->setValue( 1 );
+  stepSpinBox->setClearValue( 1 );
 
   minimumDoubleSpinBox->setMinimum( std::numeric_limits<double>::lowest() );
   minimumDoubleSpinBox->setMaximum( std::numeric_limits<double>::max() );
@@ -44,6 +46,7 @@ QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget 
   // Use integer here:
   stepDoubleSpinBox->setMaximum( std::numeric_limits<int>::max() );
   stepDoubleSpinBox->setValue( 1 );
+  stepDoubleSpinBox->setClearValue( 1 );
 
 
   QString text;

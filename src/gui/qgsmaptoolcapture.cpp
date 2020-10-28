@@ -40,6 +40,8 @@
 #include <QStatusBar>
 
 
+///@cond PRIVATE
+
 QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode )
   : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
   , mCaptureMode( mode )
@@ -54,6 +56,7 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizin
 
   QgsVectorLayer::LayerOptions layerOptions;
   layerOptions.skipCrsValidation = true;
+  layerOptions.loadDefaultStyle = false;
   mExtraSnapLayer = new QgsVectorLayer( QStringLiteral( "LineString?crs=" ), QStringLiteral( "extra snap" ), QStringLiteral( "memory" ), layerOptions );
   mExtraSnapLayer->startEditing();
   QgsFeature f;
@@ -592,10 +595,12 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
             mSnappingMatches.append( match );
           }
         }
+        mCaptureLastPoint = mapPoint;
         mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, mDigitizingType, firstCapturedMapPoint() );
       }
       else if ( mCaptureCurve.numPoints() == 0 )
       {
+        mCaptureLastPoint = mapPoint;
         mCaptureCurve.addVertex( layerPoint );
         mSnappingMatches.append( match );
       }
@@ -608,7 +613,6 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
       }
 
       mTempRubberBand->addPoint( mapPoint );
-      mCaptureLastPoint = mapPoint;
     }
     else
     {
@@ -1192,3 +1196,5 @@ QgsCurve *QgsMapToolCaptureRubberBand::createCircularString()
   else
     return curve.release();
 }
+
+///@endcond PRIVATE

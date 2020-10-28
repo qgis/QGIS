@@ -67,6 +67,7 @@ The returned coordinates are in painter coordinates for the destination ``contex
 :param regions: list of clip regions which apply to the layer
 :param context: a render context
 :param shouldClip: will be set to ``True`` if the clipping path should be applied
+:param layerType: the layer type to filter
 
 :return: combined painter clipping region for use when rendering maps
 %End

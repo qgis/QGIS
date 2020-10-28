@@ -51,6 +51,7 @@ QgsRenderContext QgsMapCanvasSymbolItem::renderContext( QPainter *painter )
   }
   //context << QgsExpressionContextUtils::layerScope( mLayer );
   context.setFeature( mFeature );
+  context.setFields( mFeature.fields() );
 
   //setup render context
   QgsMapSettings ms = mMapCanvas->mapSettings();

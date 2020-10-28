@@ -37,14 +37,14 @@ class QgsMeshTerrainTileLoader: public QgsTerrainTileLoader
     //! Construct the loader for a node
     QgsMeshTerrainTileLoader( QgsTerrainEntity *terrain,
                               QgsChunkNode *node,
-                              QgsMeshLayer *layer,
+                              const QgsTriangularMesh &triangularMesh,
                               const QgsMesh3DSymbol *symbol );
 
     //! Create the 3D entity and returns it
     Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
   private:
-    QgsMapLayerRef mLayerRef;
+    QgsTriangularMesh mTriangularMesh;
     std::unique_ptr< QgsMesh3DSymbol > mSymbol;
 };
 
@@ -84,13 +84,16 @@ class _3D_EXPORT QgsMeshTerrainGenerator: public QgsTerrainGenerator
     QgsRectangle extent() const override;
     void writeXml( QDomElement &elem ) const override;
     void readXml( const QDomElement &elem ) override;
+    float heightAt( double x, double y, const Qgs3DMapSettings & ) const override;
 
   private:
     QgsMapLayerRef mLayer;
     QgsCoordinateReferenceSystem mCrs;
     QgsCoordinateTransformContext mTransformContext;
     std::unique_ptr< QgsMesh3DSymbol > mSymbol;
+    QgsTriangularMesh mTriangularMesh;
 
+    void updateTriangularMesh();
 };
 
 #endif // QGSMESHTERRAINGENERATOR_H

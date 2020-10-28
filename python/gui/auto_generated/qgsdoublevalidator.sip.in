@@ -14,7 +14,7 @@ class QgsDoubleValidator : QRegularExpressionValidator
 %Docstring
 
 QgsDoubleValidator is a QLineEdit Validator that combines QDoubleValidator
-and QRegularExpressionValidator to allow user to enter double with both
+and QRegularExpressionValidator to allow users to enter doubles with both
 local and C interpretation as a fallback.
 
 .. versionadded:: 3.14
@@ -36,6 +36,8 @@ Constructor for QgsDoubleValidator.
 
 :param bottom: the minimal range limit accepted by the validator
 :param top: the maximal range limit accepted by the validator
+:param parent: parent object
+:param expression: custom regular expression
 %End
 
     QgsDoubleValidator( double bottom, double top, QObject *parent );
@@ -44,6 +46,7 @@ Constructor for QgsDoubleValidator.
 
 :param bottom: the minimal range limit accepted by the validator
 :param top: the maximal range limit accepted by the validator
+:param parent: parent object
 %End
 
     QgsDoubleValidator( double bottom, double top, int decimal, QObject *parent );
@@ -53,6 +56,7 @@ Constructor for QgsDoubleValidator.
 :param bottom: the minimal range limit accepted by the validator
 :param top: the maximal range limit accepted by the validator
 :param decimal: the number of decimal accepted by the validator
+:param parent: parent object
 %End
 
 

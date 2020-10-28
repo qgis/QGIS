@@ -90,7 +90,11 @@ QgsMimeDataUtils::Uri::Uri( QgsMapLayer *layer )
       layerType = QStringLiteral( "mesh" );
       break;
     }
-
+    case QgsMapLayerType::PointCloudLayer:
+    {
+      layerType = QStringLiteral( "pointcloud" );
+      break;
+    }
     case QgsMapLayerType::VectorTileLayer:
     {
       layerType = QStringLiteral( "vector-tile" );

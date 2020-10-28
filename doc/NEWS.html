@@ -5,18 +5,20 @@
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>QGIS News</title>
-  <style type="text/css">
-      code{white-space: pre-wrap;}
-      span.smallcaps{font-variant: small-caps;}
-      span.underline{text-decoration: underline;}
-      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
   </style>
 </head>
 <body>
 <header id="title-block-header">
 <h1 class="title">QGIS News</h1>
 </header>
-<nav id="TOC">
+<nav id="TOC" role="doc-toc">
 <ul>
 <li><a href="#whats-new-in-version-3.12-bucurești">What’s new in Version 3.12 ‘București’?</a></li>
 <li><a href="#whats-new-in-version-3.10-a-coruña">What’s new in Version 3.10 ‘A Coruña’?</a></li>
@@ -1227,22 +1229,22 @@
 </ul>
 <h2 id="providers-and-data-handling">Providers and Data Handling</h2>
 <ul>
-<li>New SQLAnywhere vector provider.</li>
-<li>Table join support.</li>
-<li>Feature form updates:</li>
-<li>Make NULL value string representation configurable.</li>
-<li>Fix feature updates in feature form from attribute table.</li>
-<li>Add support for NULL values in value maps (comboboxes).</li>
-<li>Use layer names instead of ids in drop-down list when loading value maps from layers.</li>
-<li>Support feature form expression fields: line edits on the form which name prefix “expr_” are evaluated. Their value is interpreted as field calculator string and replaced with the calculated value.</li>
-<li>Support searching for NULL in attribute table.</li>
+<li><p>New SQLAnywhere vector provider.</p></li>
+<li><p>Table join support.</p></li>
+<li><p>Feature form updates:</p></li>
+<li><p>Make NULL value string representation configurable.</p></li>
+<li><p>Fix feature updates in feature form from attribute table.</p></li>
+<li><p>Add support for NULL values in value maps (comboboxes).</p></li>
+<li><p>Use layer names instead of ids in drop-down list when loading value maps from layers.</p></li>
+<li><p>Support feature form expression fields: line edits on the form which name prefix “expr_” are evaluated. Their value is interpreted as field calculator string and replaced with the calculated value.</p></li>
+<li><p>Support searching for NULL in attribute table.</p></li>
 <li><p>Attribute editing improvements:</p></li>
-<li>Improved interactive attribute editing in table (adding/deleting features, attribute update).</li>
-<li>Allow adding of geometryless features.</li>
-<li>Fixed attribute undo/redo.</li>
+<li><p>Improved interactive attribute editing in table (adding/deleting features, attribute update).</p></li>
+<li><p>Allow adding of geometryless features.</p></li>
+<li><p>Fixed attribute undo/redo.</p></li>
 <li><p>Improved attribute handling:</p></li>
-<li>Optionally re-use entered attribute values for next digitized feature.</li>
-<li>Allow merging/assigning attribute values to a set of features.-</li>
+<li><p>Optionally re-use entered attribute values for next digitized feature.</p></li>
+<li><p>Allow merging/assigning attribute values to a set of features.-</p></li>
 <li><p>Allow OGR ‘save as’ without attributes (e.g., DGN/DXF).</p></li>
 </ul>
 <h2 id="api-and-developer-centric">Api and Developer Centric</h2>
@@ -1375,13 +1377,13 @@
 </ul>
 <h2 id="api-updates">API Updates</h2>
 <ul>
-<li>QgsDataProvider &amp; QgsMapLayer: add dataChanged() signal, so that a provider can signal that the datasource changed</li>
+<li><p>QgsDataProvider &amp; QgsMapLayer: add dataChanged() signal, so that a provider can signal that the datasource changed</p></li>
 <li><p>Use QNetworkAccessManager instead of QgsHttpTransaction (including caching and dynamic authentication to website and proxies)</p></li>
-<li>Allow opening layer properties from plugins</li>
-<li>Support for custom plugin layers.</li>
-<li>Allow refreshing of plugins programmatically</li>
-<li>Support for custom plugin directories using QGIS_PLUGINPATH environment variables. More paths can be passed, separated by semicolon.</li>
-<li>Legend interface added to retrieve layers in legend order</li>
+<li><p>Allow opening layer properties from plugins</p></li>
+<li><p>Support for custom plugin layers.</p></li>
+<li><p>Allow refreshing of plugins programmatically</p></li>
+<li><p>Support for custom plugin directories using QGIS_PLUGINPATH environment variables. More paths can be passed, separated by semicolon.</p></li>
+<li><p>Legend interface added to retrieve layers in legend order</p></li>
 <li><p>Support more GEOS operators</p></li>
 </ul>
 <h1 id="whats-new-in-version-1.4.0-enceladus">What’s new in Version 1.4.0 ‘Enceladus’?</h1>

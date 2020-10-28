@@ -75,6 +75,7 @@ class TestQgs3DRendering : public QObject
     void testBufferedLineRenderingWidth();
     void testMapTheme();
     void testMesh();
+    void testMeshSimplified();
     void testRuleBasedRenderer();
     void testAnimationExport();
     void testBillboardRendering();
@@ -90,6 +91,8 @@ class TestQgs3DRendering : public QObject
     QgsVectorLayer *mLayerBuildings;
     QgsMeshLayer *mLayerMeshTerrain;
     QgsMeshLayer *mLayerMeshDataset;
+    QgsMeshLayer *mLayerMeshSimplified;
+
 };
 
 //runs before all tests
@@ -144,6 +147,11 @@ void TestQgs3DRendering::initTestCase()
   mLayerMeshDataset->setStaticVectorDatasetIndex( QgsMeshDatasetIndex( 2, 0 ) );
   mProject->addMapLayer( mLayerMeshDataset );
   mProject->addMapLayer( mLayerMeshDataset );
+
+  mLayerMeshSimplified = new QgsMeshLayer( dataDir + "/mesh/trap_steady_05_3D.nc", "mesh", "mdal" );
+  mLayerMeshSimplified->setCrs( mProject->crs() );
+  QVERIFY( mLayerMeshSimplified->isValid() );
+  mProject->addMapLayer( mLayerMeshSimplified );
 
   QgsMesh3DSymbol *symbolMesh3d = new QgsMesh3DSymbol;
   symbolMesh3d->setVerticalDatasetGroupIndex( 0 );
@@ -306,6 +314,7 @@ void TestQgs3DRendering::testTerrainShading()
 
   QgsPointLightSettings defaultLight;
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setIntensity( 0.5 );
   map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
 
   QgsOffscreen3DEngine engine;
@@ -333,8 +342,11 @@ void TestQgs3DRendering::testMeshTerrain()
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
 
   QgsMeshTerrainGenerator *meshTerrain = new QgsMeshTerrainGenerator;
+  meshTerrain->setCrs( mProject->crs(), mProject->transformContext() );
   meshTerrain->setLayer( mLayerMeshTerrain );
   map->setTerrainGenerator( meshTerrain );
+
+  QCOMPARE( meshTerrain->heightAt( 750, 2500, *map ), 500.0 );
 
   QgsOffscreen3DEngine engine;
   Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
@@ -362,6 +374,7 @@ void TestQgs3DRendering::testExtrudedPolygons()
   map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings );
   map->setTerrainLayers( QList<QgsMapLayer *>() << mLayerRgb );
   QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
   map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
 
@@ -414,6 +427,7 @@ void TestQgs3DRendering::testPolygonsEdges()
 
   map->setLayers( QList<QgsMapLayer *>() << layer.get() );
   QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
   map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
 
@@ -514,6 +528,7 @@ void TestQgs3DRendering::testBufferedLineRendering()
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
   map->setLayers( QList<QgsMapLayer *>() << layerLines );
   QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
   map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
 
@@ -560,6 +575,7 @@ void TestQgs3DRendering::testBufferedLineRenderingWidth()
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
   map->setLayers( QList<QgsMapLayer *>() << layerLines );
   QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
   map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
 
@@ -629,6 +645,7 @@ void TestQgs3DRendering::testMesh()
   map->setLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
   map->setTerrainLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
   QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
   map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
 
@@ -649,6 +666,69 @@ void TestQgs3DRendering::testMesh()
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
   QVERIFY( renderCheck( "mesh3d", img, 40 ) );
+}
+
+void TestQgs3DRendering::testMeshSimplified()
+{
+  QgsMeshSimplificationSettings simplificationSettings;
+  simplificationSettings.setEnabled( true );
+  simplificationSettings.setReductionFactor( 3 );
+
+  QgsMeshRendererSettings settings;
+  settings.setActiveScalarDatasetGroup( 16 );
+  settings.setActiveVectorDatasetGroup( 6 );
+  mLayerMeshSimplified->setRendererSettings( settings );
+
+  QgsRectangle fullExtent = mLayerMeshSimplified->extent();
+  mLayerMeshSimplified->setMeshSimplificationSettings( simplificationSettings );
+  mLayerMeshSimplified->temporalProperties()->setIsActive( false );
+  mLayerMeshSimplified->setStaticScalarDatasetIndex( QgsMeshDatasetIndex( 16, 5 ) );
+  mLayerMeshSimplified->setStaticVectorDatasetIndex( QgsMeshDatasetIndex( 6, 5 ) );
+
+  for ( int i = 0; i < 4; ++i )
+  {
+    Qgs3DMapSettings *map = new Qgs3DMapSettings;
+    map->setCrs( mProject->crs() );
+    map->setLayers( QList<QgsMapLayer *>() << mLayerMeshSimplified );
+    map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+
+    QgsMesh3DSymbol *symbolDataset = new QgsMesh3DSymbol;
+    symbolDataset->setVerticalDatasetGroupIndex( 11 );
+    symbolDataset->setVerticalScale( 1 );
+    symbolDataset->setWireframeEnabled( true );
+    symbolDataset->setWireframeLineWidth( 0.1 );
+    symbolDataset->setArrowsEnabled( true );
+    symbolDataset->setArrowsSpacing( 20 );
+    symbolDataset->setSingleMeshColor( Qt::yellow );
+    symbolDataset->setLevelOfDetailIndex( i );
+    QgsMeshLayer3DRenderer *meshDatasetRenderer3d = new QgsMeshLayer3DRenderer( symbolDataset );
+    mLayerMeshSimplified->setRenderer3D( meshDatasetRenderer3d );
+
+    QgsMeshTerrainGenerator *meshTerrain = new QgsMeshTerrainGenerator;
+    meshTerrain->setLayer( mLayerMeshSimplified );
+    QgsMesh3DSymbol *symbol = new QgsMesh3DSymbol;
+    symbol->setWireframeEnabled( true );
+    symbol->setWireframeLineWidth( 0.1 );
+    symbol->setLevelOfDetailIndex( i );
+    meshTerrain->setSymbol( symbol );
+    map->setTerrainGenerator( meshTerrain );
+
+    QgsOffscreen3DEngine engine;
+    Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+    engine.setRootEntity( scene );
+
+    // look from the top
+    scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 1000, 25, 45 );
+
+    // When running the test on Travis, it would initially return empty rendered image.
+    // Capturing the initial image and throwing it away fixes that. Hopefully we will
+    // find a better fix in the future.
+    Qgs3DUtils::captureSceneImage( engine, scene );
+    QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+    QVERIFY( renderCheck( QString( "mesh_simplified_%1" ).arg( i ), img, 40 ) );
+  }
+
 }
 
 void TestQgs3DRendering::testRuleBasedRenderer()
@@ -681,6 +761,7 @@ void TestQgs3DRendering::testRuleBasedRenderer()
   map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings );
 
   QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
   map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
 

@@ -490,6 +490,7 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
 
   spinPrecision->setMinimum( QgsClassificationMethod::MIN_PRECISION );
   spinPrecision->setMaximum( QgsClassificationMethod::MAX_PRECISION );
+  spinPrecision->setClearValue( 4 );
 
   spinGraduatedClasses->setShowClearButton( false );
 

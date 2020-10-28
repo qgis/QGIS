@@ -326,6 +326,22 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
      */
     void setArrowsFixedSize( bool arrowsFixedSize );
 
+    /**
+     * Returns the index of the level of detail of the mesh that is the position of the simplified mesh that will be rendered (0 is the original mesh)
+     * \see QgsMeshSimplificationSettings
+     *
+     * \since QGIS 3.18
+     */
+    int levelOfDetailIndex() const;
+
+    /**
+     * Returns the index of the level of detail of the mesh that is the position of the simplified mesh that will be rendered (0 is the original mesh)
+     * \see QgsMeshSimplificationSettings
+     *
+     * \since QGIS 3.18
+     */
+    void setLevelOfDetailIndex( int lod );
+
   private:
 
     //! how to handle altitude of vector features
@@ -341,6 +357,7 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
     bool mWireframeEnabled = false;
     double mWireframeLineWidth = 1.0;
     QColor mWireframeLineColor = Qt::darkGray;
+    int mLevelOfDetailIndex = 0;
 
     //! Verticals settings
     double mVerticalScale = 1.0;

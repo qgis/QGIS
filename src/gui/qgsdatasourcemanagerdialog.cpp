@@ -189,6 +189,8 @@ void QgsDataSourceManagerDialog::makeConnections( QgsAbstractDataSourceWidget *d
   connect( dlg, &QgsAbstractDataSourceWidget::addMeshLayer, this, &QgsDataSourceManagerDialog::addMeshLayer );
   // Vector tile
   connect( dlg, &QgsAbstractDataSourceWidget::addVectorTileLayer, this, &QgsDataSourceManagerDialog::addVectorTileLayer );
+  // Point Cloud
+  connect( dlg, &QgsAbstractDataSourceWidget::addPointCloudLayer, this, &QgsDataSourceManagerDialog::addPointCloudLayer );
   // Virtual
   connect( dlg, &QgsAbstractDataSourceWidget::replaceVectorLayer,
            this, &QgsDataSourceManagerDialog::replaceSelectedVectorLayer );

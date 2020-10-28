@@ -69,9 +69,59 @@ bool QgsMapToolRotatePointSymbols::layerIsRotatable( QgsMapLayer *ml )
 
 void QgsMapToolRotatePointSymbols::canvasPressEvent( QgsMapMouseEvent *e )
 {
-  mCurrentRotationAttributes.clear();
-  mMarkerSymbol.reset( nullptr );
-  QgsMapToolPointSymbol::canvasPressEvent( e );
+  if ( !mRotating )
+  {
+    if ( e->button() != Qt::LeftButton )
+      return;
+
+    // first click -- starts rotation
+    mCurrentRotationAttributes.clear();
+    mMarkerSymbol.reset( nullptr );
+    QgsMapToolPointSymbol::canvasPressEvent( e );
+  }
+  else
+  {
+    // second click stops it.
+    // only left clicks "save" edits - right clicks discard them
+    if ( e->button() == Qt::LeftButton && mActiveLayer )
+    {
+      mActiveLayer->beginEditCommand( tr( "Rotate symbol" ) );
+      bool rotateSuccess = true;
+
+      //write mCurrentRotationFeature to all rotation attributes of feature (mFeatureNumber)
+      int rotation;
+      if ( mCtrlPressed ) //round to 15 degrees
+      {
+        rotation = roundTo15Degrees( mCurrentRotationFeature );
+      }
+      else
+      {
+        rotation = static_cast<int>( mCurrentRotationFeature );
+      }
+
+      QSet<int>::const_iterator it = mCurrentRotationAttributes.constBegin();
+      for ( ; it != mCurrentRotationAttributes.constEnd(); ++it )
+      {
+        if ( !mActiveLayer->changeAttributeValue( mFeatureNumber, *it, rotation ) )
+        {
+          rotateSuccess = false;
+        }
+      }
+
+      if ( rotateSuccess )
+      {
+        mActiveLayer->endEditCommand();
+      }
+      else
+      {
+        mActiveLayer->destroyEditCommand();
+      }
+      mActiveLayer->triggerRepaint();
+    }
+    mRotating = false;
+    delete mRotationItem;
+    mRotationItem = nullptr;
+  }
 }
 
 void QgsMapToolRotatePointSymbols::canvasPressOnFeature( QgsMapMouseEvent *e, const QgsFeature &feature, const QgsPointXY &snappedPoint )
@@ -156,49 +206,18 @@ void QgsMapToolRotatePointSymbols::canvasMoveEvent( QgsMapMouseEvent *e )
   setPixmapItemRotation( displayValue );
 }
 
-void QgsMapToolRotatePointSymbols::canvasReleaseEvent( QgsMapMouseEvent *e )
+void QgsMapToolRotatePointSymbols::keyPressEvent( QKeyEvent *e )
 {
-  Q_UNUSED( e )
-
-  if ( mRotating && mActiveLayer )
+  if ( mRotating && e && e->key() == Qt::Key_Escape && !e->isAutoRepeat() )
   {
-    mActiveLayer->beginEditCommand( tr( "Rotate symbol" ) );
-    bool rotateSuccess = true;
-
-    //write mCurrentRotationFeature to all rotation attributes of feature (mFeatureNumber)
-    int rotation;
-    if ( mCtrlPressed ) //round to 15 degrees
-    {
-      rotation = roundTo15Degrees( mCurrentRotationFeature );
-    }
-    else
-    {
-      rotation = static_cast<int>( mCurrentRotationFeature );
-    }
-
-    QSet<int>::const_iterator it = mCurrentRotationAttributes.constBegin();
-    for ( ; it != mCurrentRotationAttributes.constEnd(); ++it )
-    {
-      if ( !mActiveLayer->changeAttributeValue( mFeatureNumber, *it, rotation ) )
-      {
-        rotateSuccess = false;
-      }
-    }
-
-    if ( rotateSuccess )
-    {
-      mActiveLayer->endEditCommand();
-    }
-    else
-    {
-      mActiveLayer->destroyEditCommand();
-    }
+    mRotating = false;
+    delete mRotationItem;
+    mRotationItem = nullptr;
   }
-  mRotating = false;
-  delete mRotationItem;
-  mRotationItem = nullptr;
-  if ( mActiveLayer )
-    mActiveLayer->triggerRepaint();
+  else
+  {
+    QgsMapToolPointSymbol::keyPressEvent( e );
+  }
 }
 
 double QgsMapToolRotatePointSymbols::calculateAzimut( QPoint mousePos )
@@ -223,7 +242,7 @@ void QgsMapToolRotatePointSymbols::createPixmapItem( QgsMarkerSymbol *markerSymb
     std::unique_ptr< QgsSymbol > clone( markerSymbol->clone() );
     QgsMarkerSymbol *markerClone = static_cast<QgsMarkerSymbol *>( clone.get() );
     markerClone->setDataDefinedAngle( QgsProperty() );
-    pointImage = markerClone->bigSymbolPreviewImage();
+    pointImage = markerClone->bigSymbolPreviewImage( nullptr, QgsSymbol::PreviewFlags() );
   }
 
   mRotationItem = new QgsPointRotationItem( mCanvas );

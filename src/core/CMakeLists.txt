@@ -196,6 +196,11 @@ SET(QGIS_CORE_SRCS
   providers/ogr/qgsogrdbconnection.cpp
   providers/ogr/qgsogrtransaction.cpp
 
+  providers/ept/qgseptdataitems.cpp
+  providers/ept/qgseptprovider.cpp
+  providers/ept/qgseptdecoder.cpp
+  providers/ept/qgseptpointcloudindex.cpp
+
   scalebar/qgsdoubleboxscalebarrenderer.cpp
   scalebar/qgshollowscalebarrenderer.cpp
   scalebar/qgsnumericscalebarrenderer.cpp
@@ -257,6 +262,7 @@ SET(QGIS_CORE_SRCS
   qgscoordinatetransform_p.cpp
   qgscoordinatetransformcontext.cpp
   qgscoordinateutils.cpp
+  qgscplhttpfetchoverrider.cpp
   qgscredentials.cpp
   qgsdartmeasurement.cpp
   qgsdatabaseschemamodel.cpp
@@ -619,6 +625,11 @@ SET(QGIS_CORE_SRCS
   mesh/qgsmeshcalculator.cpp
   mesh/qgsmeshcalcutils.cpp
   mesh/qgsmeshvirtualdatasetgroup.cpp
+
+  pointcloud/qgspointcloudlayer.cpp
+  pointcloud/qgspointcloudrenderer.cpp
+  pointcloud/qgspointcloudindex.cpp
+  pointcloud/qgspointclouddataprovider.cpp
 
   labeling/qgslabelfeature.cpp
   labeling/qgslabelingengine.cpp
@@ -1289,6 +1300,11 @@ SET(QGIS_CORE_HDRS
   mesh/qgsmeshcalcutils.h
   mesh/qgsmeshvirtualdatasetgroup.h
 
+  pointcloud/qgspointcloudlayer.h
+  pointcloud/qgspointcloudrenderer.h
+  pointcloud/qgspointcloudindex.h
+  pointcloud/qgspointclouddataprovider.h
+
   metadata/qgsabstractmetadatabase.h
   metadata/qgslayermetadata.h
   metadata/qgslayermetadataformatter.h
@@ -1346,6 +1362,10 @@ SET(QGIS_CORE_HDRS
   providers/ogr/qgsogrdbconnection.h
   providers/ogr/qgsogrprovider.h
   providers/ogr/qgsogrtransaction.h
+  providers/ept/qgseptdataitems.h
+  providers/ept/qgseptprovider.h
+  providers/ept/qgseptdecoder.h
+  providers/ept/qgseptpointcloudindex.h
 
   raster/qgsbilinearrasterresampler.h
   raster/qgsbrightnesscontrastfilter.h
@@ -1559,6 +1579,7 @@ INCLUDE_DIRECTORIES(
   locator
   mesh
   metadata
+  pointcloud
   numericformats
   pal
   processing
@@ -1568,6 +1589,7 @@ INCLUDE_DIRECTORIES(
   providers/gdal
   providers/ogr
   providers/meshmemory
+  providers/ept
   raster
   renderer
   scalebar
@@ -1600,6 +1622,17 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${ZLIB_INCLUDE_DIRS}
 )
 
+IF (HAVE_ZSTD)
+  INCLUDE_DIRECTORIES(SYSTEM
+    ${ZSTD_INCLUDE_DIR}
+  )
+ENDIF (HAVE_ZSTD)
+
+IF (HAVE_LAZPERF)
+  INCLUDE_DIRECTORIES(SYSTEM
+    ${LazPerf_INCLUDE_DIR}
+  )
+ENDIF (HAVE_LAZPERF)
 
 IF (HAVE_OPENCL)
     SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
@@ -1737,6 +1770,12 @@ TARGET_LINK_LIBRARIES(qgis_core
   ${Protobuf_LITE_LIBRARY}
   ${ZLIB_LIBRARIES}
 )
+
+IF (HAVE_ZSTD)
+  TARGET_LINK_LIBRARIES(qgis_core
+    ${ZSTD_LIBRARY}
+  )
+ENDIF (HAVE_ZSTD)
 
 IF (FORCE_STATIC_PROVIDERS)
   INCLUDE_DIRECTORIES(

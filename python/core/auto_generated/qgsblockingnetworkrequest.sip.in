@@ -91,6 +91,66 @@ can be retrieved by calling :py:func:`~QgsBlockingNetworkRequest.errorMessage`.
 .. seealso:: :py:func:`get`
 %End
 
+    ErrorCode head( QNetworkRequest &request, bool forceRefresh = false, QgsFeedback *feedback = 0 );
+%Docstring
+Performs a "head" operation on the specified ``request``.
+
+If ``forceRefresh`` is ``False`` then previously cached replies may be used for the request. If
+it is set to ``True`` then a new query is always performed.
+
+If an :py:func:`~QgsBlockingNetworkRequest.authCfg` has been set, then any authentication configuration required will automatically be applied to
+``request``. There is no need to manually apply the authentication to the request prior to calling
+this method.
+
+The optional ``feedback`` argument can be used to abort ongoing requests.
+
+The method will return NoError if the get operation was successful. The contents of the reply can be retrieved
+by calling :py:func:`~QgsBlockingNetworkRequest.reply`.
+
+If an error was encountered then a specific ErrorCode will be returned, and a detailed error message
+can be retrieved by calling :py:func:`~QgsBlockingNetworkRequest.errorMessage`.
+
+.. versionadded:: 3.18
+%End
+
+    ErrorCode put( QNetworkRequest &request, const QByteArray &data, QgsFeedback *feedback = 0 );
+%Docstring
+Performs a "put" operation on the specified ``request``, using the given ``data``.
+
+If an :py:func:`~QgsBlockingNetworkRequest.authCfg` has been set, then any authentication configuration required will automatically be applied to
+``request``. There is no need to manually apply the authentication to the request prior to calling
+this method.
+
+The optional ``feedback`` argument can be used to abort ongoing requests.
+
+The method will return NoError if the get operation was successful. The contents of the reply can be retrieved
+by calling :py:func:`~QgsBlockingNetworkRequest.reply`.
+
+If an error was encountered then a specific ErrorCode will be returned, and a detailed error message
+can be retrieved by calling :py:func:`~QgsBlockingNetworkRequest.errorMessage`.
+
+.. versionadded:: 3.18
+%End
+
+    ErrorCode deleteResource( QNetworkRequest &request, QgsFeedback *feedback = 0 );
+%Docstring
+Performs a "delete" operation on the specified ``request``.
+
+If an :py:func:`~QgsBlockingNetworkRequest.authCfg` has been set, then any authentication configuration required will automatically be applied to
+``request``. There is no need to manually apply the authentication to the request prior to calling
+this method.
+
+The optional ``feedback`` argument can be used to abort ongoing requests.
+
+The method will return NoError if the get operation was successful. The contents of the reply can be retrieved
+by calling :py:func:`~QgsBlockingNetworkRequest.reply`.
+
+If an error was encountered then a specific ErrorCode will be returned, and a detailed error message
+can be retrieved by calling :py:func:`~QgsBlockingNetworkRequest.errorMessage`.
+
+.. versionadded:: 3.18
+%End
+
     QString errorMessage() const;
 %Docstring
 Returns the error message string, after a :py:func:`~QgsBlockingNetworkRequest.get` or :py:func:`~QgsBlockingNetworkRequest.post` request has been made.\

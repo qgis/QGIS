@@ -24,6 +24,8 @@ while QGIS server internal logging is printed to stderr.
  *                                                                         *
  ***************************************************************************/
 
+#include <thread>
+
 //for CMAKE_INSTALL_PREFIX
 #include "qgsconfig.h"
 #include "qgsserver.h"
@@ -49,6 +51,10 @@ while QGIS server internal logging is printed to stderr.
 #include <chrono>
 
 ///@cond PRIVATE
+
+// For the signal exit handler
+QAtomicInt IS_RUNNING = 1;
+
 
 /**
  * The HttpException class represents an HTTP parsing exception.
@@ -105,7 +111,7 @@ int main( int argc, char *argv[] )
   QCoreApplication::setOrganizationName( QgsApplication::QGIS_ORGANIZATION_NAME );
   QCoreApplication::setOrganizationDomain( QgsApplication::QGIS_ORGANIZATION_DOMAIN );
   QCoreApplication::setApplicationName( "QGIS Development Server" );
-  QCoreApplication::setApplicationVersion( "1.0" );
+  QCoreApplication::setApplicationVersion( VERSION );
 
   if ( ! withDisplay )
   {
@@ -135,7 +141,7 @@ int main( int argc, char *argv[] )
   }
 
   QCommandLineParser parser;
-  parser.setApplicationDescription( QObject::tr( "QGIS Development Server" ) );
+  parser.setApplicationDescription( QObject::tr( "QGIS Development Server %1" ).arg( VERSION ) );
   parser.addHelpOption();
   parser.addVersionOption();
   parser.addPositionalArgument( QStringLiteral( "addressAndPort" ),
@@ -239,51 +245,45 @@ int main( int argc, char *argv[] )
     std::cout << QObject::tr( "CTRL+C to exit" ).toStdString() << std::endl;
 #endif
 
-
-    // Starts HTTP loop with a poor man's HTTP parser
-    tcpServer.connect( &tcpServer, &QTcpServer::newConnection, [ & ]
+    // Poor man's synchronous HTTP handler
+    // The reason why this cannot be implemented using signals is that
+    // WMS provider (and probably others) run its own event loop and this
+    // crashes in case the project contains a WMS layer (aka: cascading)
+    auto httpHandler = [ & ]( QTcpSocket * clientConnection )
     {
-      QTcpSocket *clientConnection = tcpServer.nextPendingConnection();
 
       connCounter++;
 
-      QString *incomingData = new QString();
+      //qDebug() << clientConnection << "Active connection" << connCounter;
 
-      //qDebug() << "Active connections: " << connCounter;
-
-      // Lambda disconnect context
-      QObject *context { new QObject };
-
-      // Deletes the connection later
-      auto connectionDeleter = [ =, &connCounter ]()
-      {
-        clientConnection->deleteLater();
-        connCounter--;
-        delete incomingData;
-      };
-
-      // This will delete the connection when disconnected before ready read is called
-      clientConnection->connect( clientConnection, &QAbstractSocket::disconnected, context, connectionDeleter, Qt::QueuedConnection );
+      QString incomingData;
 
       // Incoming connection parser
-      clientConnection->connect( clientConnection, &QIODevice::readyRead, context, [ =, &server, &connCounter ] {
+      while ( IS_RUNNING && clientConnection->state() == QAbstractSocket::SocketState::ConnectedState )
+      {
+
+        if ( ! clientConnection->bytesAvailable() )
+        {
+          qApp->processEvents();
+          continue;
+        }
 
         // Read all incoming data
-        while ( clientConnection->bytesAvailable() > 0 )
+        while ( IS_RUNNING && clientConnection->bytesAvailable() > 0 )
         {
-          incomingData->append( clientConnection->readAll() );
+          incomingData.append( clientConnection->readAll() );
         }
 
         try
         {
           // Parse protocol and URL GET /path HTTP/1.1
-          int firstLinePos { incomingData->indexOf( "\r\n" ) };
+          int firstLinePos { incomingData.indexOf( "\r\n" ) };
           if ( firstLinePos == -1 )
           {
             throw HttpException( QStringLiteral( "HTTP error finding protocol header" ) );
           }
 
-          const QString firstLine { incomingData->left( firstLinePos ) };
+          const QString firstLine { incomingData.left( firstLinePos ) };
           const QStringList firstLinePieces { firstLine.split( ' ' ) };
           if ( firstLinePieces.size() != 3 )
           {
@@ -330,14 +330,14 @@ int main( int argc, char *argv[] )
 
           // Headers
           QgsBufferServerRequest::Headers headers;
-          int endHeadersPos { incomingData->indexOf( "\r\n\r\n" ) };
+          int endHeadersPos { incomingData.indexOf( "\r\n\r\n" ) };
 
           if ( endHeadersPos == -1 )
           {
             throw HttpException( QStringLiteral( "HTTP error finding headers" ) );
           }
 
-          const QStringList httpHeaders { incomingData->mid( firstLinePos + 2, endHeadersPos - firstLinePos ).split( "\r\n" ) };
+          const QStringList httpHeaders { incomingData.mid( firstLinePos + 2, endHeadersPos - firstLinePos ).split( "\r\n" ) };
 
           for ( const auto &headerLine : httpHeaders )
           {
@@ -355,15 +355,13 @@ int main( int argc, char *argv[] )
           {
             bool ok;
             const int contentLength { headers.value( QStringLiteral( "Content-Length" ) ).toInt( &ok ) };
-            if ( ok && contentLength > incomingData->length() - headersSize )
+            if ( ok && contentLength > incomingData.length() - headersSize )
             {
-              return;
+              break;
             }
           }
 
           // At this point we should have read all data:
-          // disconnect the lambdas
-          delete context;
 
           // Build URL from env ...
           QString url { qgetenv( "REQUEST_URI" ) };
@@ -383,7 +381,7 @@ int main( int argc, char *argv[] )
           }
 
           // Inefficient copy :(
-          QByteArray data { incomingData->mid( headersSize ).toUtf8() };
+          QByteArray data { incomingData.mid( headersSize ).toUtf8() };
 
           auto start = std::chrono::steady_clock::now();
 
@@ -394,17 +392,9 @@ int main( int argc, char *argv[] )
 
           // The QGIS server machinery calls processEvents and has internal loop events
           // that might change the connection state
-          if ( clientConnection->state() == QAbstractSocket::SocketState::ConnectedState )
+          if ( clientConnection->state() != QAbstractSocket::SocketState::ConnectedState )
           {
-            clientConnection->connect( clientConnection, &QAbstractSocket::disconnected,
-                                       clientConnection, connectionDeleter, Qt::QueuedConnection );
-          }
-          else
-          {
-            connCounter --;
-            clientConnection->deleteLater();
-            delete incomingData;
-            return;
+            break;
           }
 
           auto elapsedTime { std::chrono::steady_clock::now() - start };
@@ -442,17 +432,9 @@ int main( int argc, char *argv[] )
         catch ( HttpException &ex )
         {
 
-          if ( clientConnection->state() == QAbstractSocket::SocketState::ConnectedState )
+          if ( clientConnection->state() != QAbstractSocket::SocketState::ConnectedState )
           {
-            clientConnection->connect( clientConnection, &QAbstractSocket::disconnected,
-                                       clientConnection, connectionDeleter );
-          }
-          else
-          {
-            connCounter --;
-            clientConnection->deleteLater();
-            delete incomingData;
-            return;
+            break;
           }
 
           // Output stream: send error
@@ -467,12 +449,35 @@ int main( int argc, char *argv[] )
                     .arg( ex.message() ).toStdString() << std::endl;
 
           clientConnection->disconnectFromHost();
+
         }
+      };
 
-      }, Qt::QueuedConnection );
+      clientConnection->deleteLater();
+      connCounter--;
 
+    };
+
+    // Starts HTTP handler loop
+    QTimer::singleShot( 0, [ & ]
+    {
+      while ( IS_RUNNING )
+      {
+        if ( tcpServer.hasPendingConnections() )
+        {
+          QTcpSocket *clientConnection = tcpServer.nextPendingConnection();
+          if ( clientConnection )
+          {
+            httpHandler( clientConnection );
+          }
+        }
+        else
+        {
+          qApp->processEvents( );
+          std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
+        }
+      }
     } );
-
   }
 
   // Exit handlers
@@ -481,7 +486,8 @@ int main( int argc, char *argv[] )
   auto exitHandler = [ ]( int signal )
   {
     std::cout << QStringLiteral( "Signal %1 received: quitting" ).arg( signal ).toStdString() << std::endl;
-    qApp->quit();
+    IS_RUNNING = 0;
+    qApp->quit( );
   };
 
   signal( SIGTERM, exitHandler );

@@ -197,13 +197,14 @@ void TestQgsTemporalNavigationObject::frameSettings()
 
   navigationObject->setFrameDuration( QgsInterval( 1, QgsUnitTypes::TemporalHours ) );
   QCOMPARE( navigationObject->frameDuration(), QgsInterval( 1, QgsUnitTypes::TemporalHours ) );
+  QCOMPARE( temporalRangeSignal.count(), 2 );
 
   QCOMPARE( navigationObject->currentFrameNumber(), 0 );
   QCOMPARE( navigationObject->totalFrameCount(), 5 );
 
   navigationObject->setCurrentFrameNumber( 1 );
   QCOMPARE( navigationObject->currentFrameNumber(), 1 );
-  QCOMPARE( temporalRangeSignal.count(), 2 );
+  QCOMPARE( temporalRangeSignal.count(), 3 );
 
   navigationObject->setFramesPerSecond( 1 );
   QCOMPARE( navigationObject->framesPerSecond(), 1.0 );
@@ -212,6 +213,10 @@ void TestQgsTemporalNavigationObject::frameSettings()
 
   navigationObject->setTemporalRangeCumulative( true );
   QCOMPARE( navigationObject->dateTimeRangeForFrameNumber( 4 ), range );
+
+  navigationObject->setFrameDuration( QgsInterval( 2, QgsUnitTypes::TemporalHours ) );
+  QCOMPARE( navigationObject->currentFrameNumber(), 0 );
+  QCOMPARE( temporalRangeSignal.count(), 4 );
 }
 
 void TestQgsTemporalNavigationObject::expressionContext()

@@ -116,10 +116,11 @@
       <string>Preview Mode</string>
      </property>
      <addaction name="mActionPreviewModeOff"/>
-     <addaction name="mActionPreviewModeGrayscale"/>
      <addaction name="mActionPreviewModeMono"/>
+     <addaction name="mActionPreviewModeGrayscale"/>
      <addaction name="mActionPreviewProtanope"/>
      <addaction name="mActionPreviewDeuteranope"/>
+     <addaction name="mActionPreviewTritanope"/>
     </widget>
     <addaction name="mActionNewMapCanvas"/>
     <addaction name="mActionNew3DMapCanvas"/>
@@ -193,6 +194,7 @@
      <addaction name="mActionAddWfsLayer"/>
      <addaction name="mActionAddAfsLayer"/>
      <addaction name="mActionAddVectorTileLayer"/>
+     <addaction name="mActionAddPointCloudLayer"/>
     </widget>
     <addaction name="mActionDataSourceManager"/>
     <addaction name="mNewLayerMenu"/>
@@ -2631,26 +2633,26 @@ Acts on the currently active layer only.</string>
     <string>Normal Preview Mode</string>
    </property>
   </action>
-  <action name="mActionPreviewModeGrayscale">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Simulate Photocopy (Grayscale)</string>
-   </property>
-   <property name="toolTip">
-    <string>Simulate Photocopy (Grayscale)</string>
-   </property>
-  </action>
   <action name="mActionPreviewModeMono">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Simulate Fax (Mono)</string>
+    <string>Simulate Monochrome</string>
    </property>
    <property name="toolTip">
-    <string>Simulate Fax (Mono)</string>
+    <string>Simulate Monochrome</string>
+   </property>
+  </action>
+  <action name="mActionPreviewModeGrayscale">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Simulate Achromatopsia Color Blindness (Grayscale)</string>
+   </property>
+   <property name="toolTip">
+    <string>Simulate Achromatopsia Color Blindness (Grayscale)</string>
    </property>
   </action>
   <action name="mActionPreviewProtanope">
@@ -2658,10 +2660,10 @@ Acts on the currently active layer only.</string>
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Simulate Color Blindness (Protanope)</string>
+    <string>Simulate Protanopia Color Blindness (No Red)</string>
    </property>
    <property name="toolTip">
-    <string>Simulate Color Blindness (Protanope)</string>
+    <string>Simulate Protanopia Color Blindness (No Red)</string>
    </property>
   </action>
   <action name="mActionPreviewDeuteranope">
@@ -2669,10 +2671,21 @@ Acts on the currently active layer only.</string>
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Simulate Color Blindness (Deuteranope)</string>
+    <string>Simulate Deuteranopia Color Blindness (No Green)</string>
    </property>
    <property name="toolTip">
-    <string>Simulate Color Blindness (Deuteranope)</string>
+    <string>Simulate Deuteranopia Color Blindness (No Green)</string>
+   </property>
+  </action>
+  <action name="mActionPreviewTritanope">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Simulate Tritanopia Color Blindness (No Blue)</string>
+   </property>
+   <property name="toolTip">
+    <string>Simulate Tritanopia Color Blindness (No Blue)</string>
    </property>
   </action>
   <action name="mActionSetLayerScaleVisibility">
@@ -3394,6 +3407,15 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+G</string>
+   </property>
+  </action>
+  <action name="mActionAddPointCloudLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddPointCloudLayer.svg</normaloff>:/images/themes/default/mActionAddPointCloudLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Point Cloud Layer...</string>
    </property>
   </action>
  </widget>

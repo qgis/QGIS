@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="0 0 16 16"
+   version="1.1"
+   id="svg14"
+   sodipodi:docname="mIconPointCloudLayer.svg"
+   inkscape:version="1.0beta2 (2b71d25, 2019-12-03)">
+  <metadata
+     id="metadata18">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     inkscape:document-rotation="0"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="2560"
+     inkscape:window-height="1319"
+     id="namedview16"
+     showgrid="false"
+     inkscape:zoom="13.421875"
+     inkscape:cx="17.893017"
+     inkscape:cy="6.8450475"
+     inkscape:window-x="0"
+     inkscape:window-y="23"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg14" />
+  <defs
+     id="defs10">
+    <linearGradient
+       id="linearGradient921">
+      <stop
+         id="stop915"
+         stop-color="#ffebeb"
+         offset="0" />
+      <stop
+         id="stop917"
+         stop-color="#be0f0f"
+         offset=".516"
+         style="stop-color:#be0f0f;stop-opacity:0.36910987" />
+      <stop
+         id="stop919"
+         stop-color="#280000"
+         offset="1"
+         style="stop-color:#280000;stop-opacity:0" />
+    </linearGradient>
+    <linearGradient
+       id="a">
+      <stop
+         offset="0"
+         stop-color="#ffebeb"
+         id="stop3"
+         style="stop-color:#e00000;stop-opacity:1" />
+      <stop
+         offset=".516"
+         stop-color="#be0f0f"
+         id="stop5" />
+      <stop
+         offset="1"
+         stop-color="#280000"
+         id="stop7" />
+    </linearGradient>
+  </defs>
+  <path
+     d="m 7.8975556,7.5995336 a 0.4097788,0.52153665 0 0 1 -0.00337,0.066742"
+     sodipodi:arc-type="arc"
+     sodipodi:open="true"
+     sodipodi:end="0.12832324"
+     sodipodi:start="0"
+     sodipodi:ry="0.52153665"
+     sodipodi:rx="0.4097788"
+     sodipodi:cy="7.5995336"
+     sodipodi:cx="7.4877768"
+     sodipodi:type="arc"
+     id="path857"
+     style="fill:#e16c2e;stroke:#00c5e2;stroke-width:12.7181;stroke-linecap:round;stroke-linejoin:bevel" />
+</svg>

@@ -16,7 +16,7 @@ SET(CMAKE_LINK_DEPENDS_NO_SHARED ON)
 #############################################################
 # Project and version
 SET(CPACK_PACKAGE_VERSION_MAJOR "3")
-SET(CPACK_PACKAGE_VERSION_MINOR "15")
+SET(CPACK_PACKAGE_VERSION_MINOR "17")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 SET(RELEASE_NAME "Master")
@@ -350,6 +350,18 @@ IF(WITH_CORE)
   FIND_PACKAGE(ZLIB REQUIRED)       # for decompression of vector tiles in MBTiles file
   MESSAGE(STATUS "Found zlib: ${ZLIB_LIBRARIES}")
 
+  FIND_PACKAGE(ZSTD) # for decompression of point clouds
+  SET(HAVE_ZSTD FALSE)
+  IF (ZSTD_FOUND)
+    SET(HAVE_ZSTD TRUE)  # used in qgsconfig.h
+  ENDIF (ZSTD_FOUND)
+
+  SET(HAVE_LAZPERF FALSE)
+  FIND_PACKAGE(LazPerf) # for decompression of point clouds
+  IF (LazPerf_FOUND)
+    SET(HAVE_LAZPERF TRUE)  # used in qgsconfig.h
+  ENDIF (LazPerf_FOUND)
+
   # optional
   IF (WITH_POSTGRESQL)
     FIND_PACKAGE(Postgres) # PostgreSQL provider
@@ -377,6 +389,7 @@ IF(WITH_CORE)
   ELSE (WITH_QTWEBKIT)
     MESSAGE(STATUS "Qt WebKit support DISABLED.")
   ENDIF(WITH_QTWEBKIT)
+
   #############################################################
   # search for Qt5
   SET(QT_MIN_VERSION 5.9.0)

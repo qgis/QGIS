@@ -48,11 +48,11 @@ class QgsFeature3DHandler;
  *
  * \since QGIS 3.12
  */
-class QgsRuleBasedChunkLoaderFactory : public QgsChunkLoaderFactory
+class QgsRuleBasedChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
 {
   public:
     //! Constructs the factory (vl and rootRule must not be null)
-    QgsRuleBasedChunkLoaderFactory( const Qgs3DMapSettings &map, QgsVectorLayer *vl, QgsRuleBased3DRenderer::Rule *rootRule, int leafLevel );
+    QgsRuleBasedChunkLoaderFactory( const Qgs3DMapSettings &map, QgsVectorLayer *vl, QgsRuleBased3DRenderer::Rule *rootRule, int leafLevel, double zMin, double zMax );
     ~QgsRuleBasedChunkLoaderFactory() override;
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.

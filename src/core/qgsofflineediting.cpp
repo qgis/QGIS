@@ -61,6 +61,7 @@ extern "C"
 #define CUSTOM_PROPERTY_REMOTE_PROVIDER "remoteProvider"
 #define CUSTOM_SHOW_FEATURE_COUNT "showFeatureCount"
 #define CUSTOM_PROPERTY_ORIGINAL_LAYERID "remoteLayerId"
+#define CUSTOM_PROPERTY_LAYERNAME_SUFFIX "layerNameSuffix"
 #define PROJECT_ENTRY_SCOPE_OFFLINE "OfflineEditingPlugin"
 #define PROJECT_ENTRY_KEY_OFFLINE_DB_PATH "/OfflineDbPath"
 
@@ -85,7 +86,7 @@ QgsOfflineEditing::QgsOfflineEditing()
  * - remove remote layers
  * - mark as offline project
  */
-bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath, const QString &offlineDbFile, const QStringList &layerIds, bool onlySelected, ContainerType containerType )
+bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath, const QString &offlineDbFile, const QStringList &layerIds, bool onlySelected, ContainerType containerType, const QString &layerNameSuffix )
 {
   if ( layerIds.isEmpty() )
   {
@@ -150,7 +151,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
         if ( vl )
         {
           QString origLayerId = vl->id();
-          QgsVectorLayer *newLayer = copyVectorLayer( vl, database.get(), dbPath, onlySelected, containerType );
+          QgsVectorLayer *newLayer = copyVectorLayer( vl, database.get(), dbPath, onlySelected, containerType, layerNameSuffix );
           if ( newLayer )
           {
             layerIdMapping.insert( origLayerId, newLayer );
@@ -249,7 +250,9 @@ void QgsOfflineEditing::synchronize()
     QString remoteSource = layer->customProperty( CUSTOM_PROPERTY_REMOTE_SOURCE, "" ).toString();
     QString remoteProvider = layer->customProperty( CUSTOM_PROPERTY_REMOTE_PROVIDER, "" ).toString();
     QString remoteName = layer->name();
-    remoteName.remove( QRegExp( " \\(offline\\)$" ) );
+    QString remoteNameSuffix = layer->customProperty( CUSTOM_PROPERTY_LAYERNAME_SUFFIX, " (offline)" ).toString();
+    if ( remoteName.endsWith( remoteNameSuffix ) )
+      remoteName.chop( remoteNameSuffix.size() );
     const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
     QgsVectorLayer *remoteLayer = new QgsVectorLayer( remoteSource, remoteName, remoteProvider, options );
     if ( remoteLayer->isValid() )
@@ -539,7 +542,7 @@ void QgsOfflineEditing::createLoggingTables( sqlite3 *db )
   */
 }
 
-QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlite3 *db, const QString &offlineDbPath, bool onlySelected, ContainerType containerType )
+QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlite3 *db, const QString &offlineDbPath, bool onlySelected, ContainerType containerType, const QString &layerNameSuffix )
 {
   if ( !layer )
     return nullptr;
@@ -664,7 +667,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
                                        tableName, layer->isSpatial() ? "(Geometry)" : "" );
       QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
       newLayer = new QgsVectorLayer( connectionString,
-                                     layer->name() + " (offline)", QStringLiteral( "spatialite" ), options );
+                                     layer->name() + layerNameSuffix, QStringLiteral( "spatialite" ), options );
       break;
     }
     case GPKG:
@@ -768,7 +771,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
 
       QString uri = QStringLiteral( "%1|layername=%2" ).arg( offlineDbPath,  tableName );
       QgsVectorLayer::LayerOptions layerOptions { QgsProject::instance()->transformContext() };
-      newLayer = new QgsVectorLayer( uri, layer->name() + " (offline)", QStringLiteral( "ogr" ), layerOptions );
+      newLayer = new QgsVectorLayer( uri, layer->name() + layerNameSuffix, QStringLiteral( "ogr" ), layerOptions );
       break;
     }
   }
@@ -871,6 +874,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
     newLayer->setCustomProperty( CUSTOM_PROPERTY_REMOTE_SOURCE, layer->source() );
     newLayer->setCustomProperty( CUSTOM_PROPERTY_REMOTE_PROVIDER, layer->providerType() );
     newLayer->setCustomProperty( CUSTOM_PROPERTY_ORIGINAL_LAYERID, layer->id() );
+    newLayer->setCustomProperty( CUSTOM_PROPERTY_LAYERNAME_SUFFIX, layerNameSuffix );
 
     // register this layer with the central layers registry
     QgsProject::instance()->addMapLayers(

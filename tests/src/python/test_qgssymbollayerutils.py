@@ -16,8 +16,16 @@ from qgis.core import (QgsSymbolLayerUtils,
                        QgsMarkerSymbol,
                        QgsArrowSymbolLayer,
                        QgsUnitTypes)
-from qgis.PyQt.QtGui import QColor, QPolygonF
-from qgis.PyQt.QtCore import QSizeF, QPointF
+from qgis.PyQt.QtGui import (
+    QColor,
+    QPolygonF,
+    QImage
+)
+from qgis.PyQt.QtCore import (
+    QSizeF,
+    QPointF,
+    QMimeData
+)
 from qgis.testing import unittest, start_app
 
 start_app()
@@ -325,6 +333,80 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
         self.assertEqual([p for p in line],
                          [QPointF(11.0, 2.0), QPointF(11.0, 12.0), QPointF(111.0, 12.0), QPointF(111.0, 14.0),
                           QPointF(111.0, 15.0)])
+
+    def testColorFromMimeData(self):
+        data = QMimeData()
+        color, has_alpha = QgsSymbolLayerUtils.colorFromMimeData(data)
+        self.assertFalse(color.isValid())
+
+        # color data
+        data.setColorData(QColor(255, 0, 255))
+        color, has_alpha = QgsSymbolLayerUtils.colorFromMimeData(data)
+        self.assertTrue(color.isValid())
+        self.assertEqual(color.name(), '#ff00ff')
+        # should be true regardless of the actual color's opacity -- a QColor object has innate knowledge of the alpha,
+        # so our input color HAS an alpha of 255
+        self.assertTrue(has_alpha)
+        self.assertEqual(color.alpha(), 255)
+
+        data.setColorData(QColor(255, 0, 255, 100))
+        color, has_alpha = QgsSymbolLayerUtils.colorFromMimeData(data)
+        self.assertTrue(color.isValid())
+        self.assertEqual(color.name(), '#ff00ff')
+        self.assertEqual(color.alpha(), 100)
+        self.assertTrue(has_alpha)
+
+        # text data
+        data = QMimeData()
+        data.setText('#ff00ff')
+        color, has_alpha = QgsSymbolLayerUtils.colorFromMimeData(data)
+        self.assertTrue(color.isValid())
+        self.assertEqual(color.name(), '#ff00ff')
+        # should be False -- no alpha was specified
+        self.assertFalse(has_alpha)
+        self.assertEqual(color.alpha(), 255)
+
+        data.setText('#ff00ff66')
+        color, has_alpha = QgsSymbolLayerUtils.colorFromMimeData(data)
+        self.assertTrue(color.isValid())
+        self.assertEqual(color.name(), '#ff00ff')
+        self.assertTrue(has_alpha)
+        self.assertEqual(color.alpha(), 102)
+
+        # "#" is optional
+        data.setText('ff00ff66')
+        color, has_alpha = QgsSymbolLayerUtils.colorFromMimeData(data)
+        self.assertTrue(color.isValid())
+        self.assertEqual(color.name(), '#ff00ff')
+        self.assertTrue(has_alpha)
+        self.assertEqual(color.alpha(), 102)
+
+        data.setText('255,0,255')
+        color, has_alpha = QgsSymbolLayerUtils.colorFromMimeData(data)
+        self.assertTrue(color.isValid())
+        self.assertEqual(color.name(), '#ff00ff')
+        self.assertFalse(has_alpha)
+        self.assertEqual(color.alpha(), 255)
+
+        data.setText('255,0,255,0.5')
+        color, has_alpha = QgsSymbolLayerUtils.colorFromMimeData(data)
+        self.assertTrue(color.isValid())
+        self.assertEqual(color.name(), '#ff00ff')
+        self.assertTrue(has_alpha)
+        self.assertEqual(color.alpha(), 128)
+
+        data.setText('rgba(255,0,255,0.5)')
+        color, has_alpha = QgsSymbolLayerUtils.colorFromMimeData(data)
+        self.assertTrue(color.isValid())
+        self.assertEqual(color.name(), '#ff00ff')
+        self.assertTrue(has_alpha)
+        self.assertEqual(color.alpha(), 128)
+
+        # wrong data type
+        data = QMimeData()
+        data.setImageData(QImage())
+        color, has_alpha = QgsSymbolLayerUtils.colorFromMimeData(data)
+        self.assertFalse(color.isValid())
 
 
 if __name__ == '__main__':

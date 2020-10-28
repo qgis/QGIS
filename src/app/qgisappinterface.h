@@ -71,6 +71,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QgsRasterLayer *addRasterLayer( const QString &url, const QString &baseName, const QString &providerKey ) override;
     QgsMeshLayer *addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) override;
     QgsVectorTileLayer *addVectorTileLayer( const QString &url, const QString &baseName ) override;
+    QgsPointCloudLayer *addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey ) override;
     bool addProject( const QString &projectName ) override;
     bool newProject( bool promptToSaveFlag = false ) override;
     void reloadConnections( ) override;
@@ -152,6 +153,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) override;
     void registerApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) override;
     void unregisterApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) override;
+    void registerMapToolHandler( QgsAbstractMapToolHandler *handler ) override;
+    void unregisterMapToolHandler( QgsAbstractMapToolHandler *handler ) override;
     void registerCustomDropHandler( QgsCustomDropHandler *handler ) override;
     void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) override;
     void registerCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler ) override;
@@ -189,6 +192,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QToolBar *vectorToolBar() override;
     QToolBar *databaseToolBar() override;
     QToolBar *webToolBar() override;
+    QActionGroup *mapToolActionGroup() override;
     QAction *actionNewProject() override;
     QAction *actionOpenProject() override;
     QAction *actionSaveProject() override;
@@ -243,6 +247,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QAction *actionAddWmsLayer() override;
     QAction *actionAddXyzLayer() override;
     QAction *actionAddVectorTileLayer() override;
+    QAction *actionAddPointCloudLayer() override;
     QAction *actionAddAfsLayer() override;
     QAction *actionAddAmsLayer() override;
     QAction *actionCopyLayerStyle() override;

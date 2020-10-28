@@ -80,6 +80,7 @@ class QgsOptions;
 class QgsPluginLayer;
 class QgsPluginLayer;
 class QgsPluginManager;
+class QgsPointCloudLayer;
 class QgsPointXY;
 class QgsPrintLayout;
 class QgsProviderRegistry;
@@ -112,6 +113,7 @@ class QgsHandleBadLayersHandler;
 class QgsNetworkAccessManager;
 class QgsGpsConnection;
 class QgsApplicationExitBlockerInterface;
+class QgsAbstractMapToolHandler;
 
 class QDomDocument;
 class QNetworkReply;
@@ -546,6 +548,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionAddWmsLayer() { return mActionAddWmsLayer; }
     QAction *actionAddXyzLayer() { return mActionAddXyzLayer; }
     QAction *actionAddVectorTileLayer() { return mActionAddVectorTileLayer; }
+    QAction *actionAddPointCloudLayer() { return mActionAddPointCloudLayer; }
     QAction *actionAddWcsLayer() { return mActionAddWcsLayer; }
     QAction *actionAddWfsLayer() { return mActionAddWfsLayer; }
     QAction *actionAddAfsLayer() { return mActionAddAfsLayer; }
@@ -763,6 +766,25 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \see registerApplicationExitBlocker()
     */
     void unregisterApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker );
+
+    /**
+     * Register a new application map tool \a handler, which can be used to automatically setup all connections
+     * and logic required to switch to a custom map tool whenever the state of the QGIS application
+     * permits.
+     *
+     * \note Ownership of \a handler is not transferred, and the handler must
+     *       be unregistered when plugin is unloaded.
+     *
+     * \see QgsAbstractMapToolHandler
+     * \see unregisterMapToolHandler()
+     */
+    void registerMapToolHandler( QgsAbstractMapToolHandler *handler );
+
+    /**
+     * Unregister a previously registered map tool \a handler.
+     * \see registerMapToolHandler()
+    */
+    void unregisterMapToolHandler( QgsAbstractMapToolHandler *handler );
 
     //! Register a new custom drop handler.
     void registerCustomDropHandler( QgsCustomDropHandler *handler );
@@ -1135,6 +1157,15 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \since QGIS 3.14
      */
     QgsVectorTileLayer *addVectorTileLayer( const QString &url, const QString &baseName );
+
+    /**
+     * Adds a vector tile layer directly without prompting user for location
+     * The caller must provide information needed for layer construction
+     * using the \a url and \a baseName. The \a baseName parameter is used
+     * in the Map Legend so it should be formed in a meaningful way.
+     * \since QGIS 3.18
+     */
+    QgsPointCloudLayer *addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey );
 
     /**
      * \brief overloaded version of the private addLayer method that takes a list of
@@ -1858,28 +1889,34 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void disablePreviewMode();
 
     /**
-     * Enable a grayscale preview mode on the map canvas
-     * \since QGIS 2.3
-    */
-    void activateGrayscalePreview();
-
-    /**
      * Enable a monochrome preview mode on the map canvas
      * \since QGIS 2.3
     */
     void activateMonoPreview();
 
     /**
-     * Enable a color blindness (protanope) preview mode on the map canvas
+     * Enable a grayscale preview mode on the map canvas
+     * \since QGIS 2.3
+    */
+    void activateGrayscalePreview();
+
+    /**
+     * Enable a color blindness (protanopia) preview mode on the map canvas
      * \since QGIS 2.3
     */
     void activateProtanopePreview();
 
     /**
-     * Enable a color blindness (deuteranope) preview mode on the map canvas
+     * Enable a color blindness (deuteranopia) preview mode on the map canvas
      * \since QGIS 2.3
     */
     void activateDeuteranopePreview();
+
+    /**
+     * Enable a color blindness (tritanopia) preview mode on the map canvas
+     * \since QGIS 3.18
+    */
+    void activateTritanopePreview();
 
     void toggleFilterLegendByExpression( bool );
     void updateFilterLegend();
@@ -2034,9 +2071,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * This method will open a dialog so the user can select OGR sublayers to load,
-     * and then returns a list of these layers.
+     * and then returns a list of these layers. It will destroy the passed layer
+     * in the process
      */
-    QList< QgsMapLayer * > askUserForOGRSublayers( QgsVectorLayer *layer, const QStringList &subLayers );
+    QList< QgsMapLayer * > askUserForOGRSublayers( QgsVectorLayer *&layerTransferOwnership, const QStringList &subLayers );
 
     /**
      * Add a raster layer to the map (passed in as a ptr).
@@ -2061,6 +2099,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Open a vector tile layer - this is the generic function which takes all parameters
     QgsVectorTileLayer *addVectorTileLayerPrivate( const QString &uri, const QString &baseName, bool guiWarning = true );
+
+    //! Open a point cloyd layer - this is the generic function which takes all parameters
+    QgsPointCloudLayer *addPointCloudLayerPrivate( const QString &uri,
+        const QString &baseName,
+        const QString &providerKey,
+        bool guiWarning = true );
 
     bool addVectorLayersPrivate( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType, bool guiWarning = true );
     QgsVectorLayer *addVectorLayerPrivate( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey, bool guiWarning = true );
@@ -2165,6 +2209,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Configure layer tree view according to the user options from QgsSettings
     void setupLayerTreeViewFromSettings();
+
+    void switchToMapToolViaHandler();
 
     void readSettings();
     void writeSettings();
@@ -2594,6 +2640,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QList<QgsDevToolWidgetFactory * > mDevToolFactories;
 
     QList<QgsApplicationExitBlockerInterface * > mApplicationExitBlockers;
+    QList<QgsAbstractMapToolHandler * > mMapToolHandlers;
 
     QVector<QPointer<QgsCustomDropHandler>> mCustomDropHandlers;
     QVector<QPointer<QgsCustomProjectOpenHandler>> mCustomProjectOpenHandlers;

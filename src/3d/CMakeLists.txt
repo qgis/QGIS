@@ -37,9 +37,13 @@ SET(QGIS_3D_SRCS
   qgspreviewquad.cpp
   qgsshadowsettings.cpp
 
+  qgspointcloudlayer3drenderer.cpp
+  qgspointcloudlayerchunkloader_p.cpp
+
   chunks/qgschunkboundsentity_p.cpp
   chunks/qgschunkedentity_p.cpp
   chunks/qgschunklist_p.cpp
+  chunks/qgschunkloader_p.cpp
   chunks/qgschunknode_p.cpp
   chunks/qgschunkqueuejob_p.cpp
 
@@ -115,6 +119,7 @@ SET(QGIS_3D_HDRS
   qgspostprocessingentity.h
   qgspreviewquad.h
   qgsshadowsettings.h
+  qgspointcloudlayer3drenderer.h
 
   materials/qgsabstractmaterialsettings.h
   materials/qgsgoochmaterialsettings.h
@@ -146,6 +151,7 @@ SET(QGIS_3D_HDRS
 SET(QGIS_3D_PRIVATE_HDRS
   qgsrulebasedchunkloader_p.h
   qgsvectorlayerchunkloader_p.h
+  qgspointcloudlayerchunkloader_p.h
   chunks/qgschunkboundsentity_p.h
   chunks/qgschunkedentity_p.h
   chunks/qgschunklist_p.h
@@ -189,6 +195,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/layout
   ${CMAKE_SOURCE_DIR}/src/core/3d
+  ${CMAKE_SOURCE_DIR}/src/core/pointcloud
   ${CMAKE_SOURCE_DIR}/src/core/textrenderer
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann

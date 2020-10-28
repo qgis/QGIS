@@ -163,6 +163,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgis.h"
 #include "qgisplugin.h"
 #include "qgsabout.h"
+#include "qgsabstractmaptoolhandler.h"
 #include "qgsalignrasterdialog.h"
 #include "qgsappauthrequesthandler.h"
 #include "qgsappbrowserproviders.h"
@@ -278,6 +279,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsmessagebaritem.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerproperties.h"
+#include "qgspointcloudlayer.h"
 #include "qgsmemoryproviderutils.h"
 #include "qgsmimedatautils.h"
 #include "qgsmessagelog.h"
@@ -350,6 +352,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsvectorlayerdigitizingproperties.h"
 #include "qgsvectortilelayer.h"
 #include "qgsvectortilelayerproperties.h"
+#include "qgspointcloudlayerproperties.h"
 #include "qgsmapthemes.h"
 #include "qgsmessagelogviewer.h"
 #include "qgsdataitem.h"
@@ -2092,6 +2095,10 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
     {
       addMeshLayer( uri, u.name, u.providerKey );
     }
+    else if ( u.layerType == QLatin1String( "pointcloud" ) )
+    {
+      addPointCloudLayer( uri, u.name, u.providerKey );
+    }
     else if ( u.layerType == QLatin1String( "vector-tile" ) )
     {
       QgsTemporaryCursorOverride busyCursor( Qt::WaitCursor );
@@ -2414,6 +2421,7 @@ void QgisApp::dataSourceManager( const QString &pageName )
              this, SLOT( addVectorLayers( QStringList const &, QString const &, QString const & ) ) );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addMeshLayer, this, &QgisApp::addMeshLayer );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addVectorTileLayer, this, &QgisApp::addVectorTileLayer );
+    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addPointCloudLayer, this, &QgisApp::addPointCloudLayer );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::showStatusMessage, this, &QgisApp::showStatusMessage );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addDatabaseLayers, this, &QgisApp::addDatabaseLayers );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::replaceSelectedVectorLayer, this, &QgisApp::replaceSelectedVectorLayer );
@@ -2755,6 +2763,7 @@ void QgisApp::createActions()
   connect( mActionAddWmsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "wms" ) ); } );
   connect( mActionAddXyzLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "xyz" ) ); } );
   connect( mActionAddVectorTileLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "vectortile" ) ); } );
+  connect( mActionAddPointCloudLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "ept" ) ); } );
   connect( mActionAddWcsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "wcs" ) ); } );
   connect( mActionAddWfsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "WFS" ) ); } );
   connect( mActionAddAfsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "arcgisfeatureserver" ) ); } );
@@ -3052,10 +3061,11 @@ void QgisApp::createActionGroups()
   QActionGroup *mPreviewGroup = new QActionGroup( this );
   mPreviewGroup->setExclusive( true );
   mActionPreviewModeOff->setActionGroup( mPreviewGroup );
-  mActionPreviewModeGrayscale->setActionGroup( mPreviewGroup );
   mActionPreviewModeMono->setActionGroup( mPreviewGroup );
+  mActionPreviewModeGrayscale->setActionGroup( mPreviewGroup );
   mActionPreviewProtanope->setActionGroup( mPreviewGroup );
   mActionPreviewDeuteranope->setActionGroup( mPreviewGroup );
+  mActionPreviewTritanope->setActionGroup( mPreviewGroup );
 }
 
 void QgisApp::setAppStyleSheet( const QString &stylesheet )
@@ -4293,10 +4303,11 @@ void QgisApp::setupConnections()
 
   // connect preview modes actions
   connect( mActionPreviewModeOff, &QAction::triggered, this, &QgisApp::disablePreviewMode );
-  connect( mActionPreviewModeGrayscale, &QAction::triggered, this, &QgisApp::activateGrayscalePreview );
   connect( mActionPreviewModeMono, &QAction::triggered, this, &QgisApp::activateMonoPreview );
+  connect( mActionPreviewModeGrayscale, &QAction::triggered, this, &QgisApp::activateGrayscalePreview );
   connect( mActionPreviewProtanope, &QAction::triggered, this, &QgisApp::activateProtanopePreview );
   connect( mActionPreviewDeuteranope, &QAction::triggered, this, &QgisApp::activateDeuteranopePreview );
+  connect( mActionPreviewTritanope, &QAction::triggered, this, &QgisApp::activateTritanopePreview );
 
   // setup undo/redo actions
   connect( mUndoWidget, &QgsUndoWidget::undoStackChanged, this, &QgisApp::updateUndoActions );
@@ -5554,10 +5565,7 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layerQStringList, const
       if ( sublayers.count() > 1 )
       {
         addedLayers.append( askUserForOGRSublayers( layer, sublayers ) );
-
-        // The first layer loaded is not useful in that case. The user can select it in
-        // the list if he wants to load it.
-        delete layer;
+        // layer is no longer valid and has been nullified
 
         for ( QgsMapLayer *l : addedLayers )
           askUserForDatumTransform( l->crs(), QgsProject::instance()->crs(), l );
@@ -5704,6 +5712,11 @@ QgsVectorTileLayer *QgisApp::addVectorTileLayer( const QString &url, const QStri
   return addVectorTileLayerPrivate( url, baseName );
 }
 
+QgsPointCloudLayer *QgisApp::addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey )
+{
+  return addPointCloudLayerPrivate( url, baseName, providerKey );
+}
+
 QgsVectorTileLayer *QgisApp::addVectorTileLayerPrivate( const QString &url, const QString &baseName, const bool guiWarning )
 {
   QgsCanvasRefreshBlocker refreshBlocker;
@@ -5739,6 +5752,44 @@ QgsVectorTileLayer *QgisApp::addVectorTileLayerPrivate( const QString &url, cons
   error = layer->loadDefaultMetadata( ok );
   if ( !ok )
     visibleMessageBar()->pushMessage( tr( "Error loading layer metadata" ), error, Qgis::Warning, messageTimeout() );
+
+  QgsProject::instance()->addMapLayer( layer.get() );
+  activateDeactivateLayerRelatedActions( activeLayer() );
+
+  return layer.release();
+}
+
+QgsPointCloudLayer *QgisApp::addPointCloudLayerPrivate( const QString &uri, const QString &baseName, const QString &providerKey, bool guiWarning )
+{
+  QgsCanvasRefreshBlocker refreshBlocker;
+  QgsSettings settings;
+
+  QString base( baseName );
+
+  if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
+  {
+    base = QgsMapLayer::formatLayerName( base );
+  }
+
+  QgsDebugMsgLevel( "completeBaseName: " + base, 2 );
+
+  // create the layer
+  std::unique_ptr<QgsPointCloudLayer> layer( new QgsPointCloudLayer( uri, base, providerKey ) );
+
+  if ( !layer || !layer->isValid() )
+  {
+    if ( guiWarning )
+    {
+      QString msg = tr( "%1 is not a valid or recognized data source." ).arg( uri );
+      visibleMessageBar()->pushMessage( tr( "Invalid Data Source" ), msg, Qgis::Critical, messageTimeout() );
+    }
+
+    // since the layer is bad, stomp on it
+    return nullptr;
+  }
+  bool ok = false;
+  layer->loadDefaultStyle( ok );
+  layer->loadDefaultMetadata( ok );
 
   QgsProject::instance()->addMapLayer( layer.get() );
   activateDeactivateLayerRelatedActions( activeLayer() );
@@ -6053,15 +6104,9 @@ QList< QgsMapLayer * > QgisApp::loadGDALSublayers( const QString &uri, const QSt
 
 // This method is the method that does the real job. If the layer given in
 // parameter is nullptr, then the method tries to act on the activeLayer.
-QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer, const QStringList &sublayers )
+QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *&parentLayer, const QStringList &sublayers )
 {
   QList<QgsMapLayer *> result;
-  if ( !layer )
-  {
-    layer = qobject_cast<QgsVectorLayer *>( activeLayer() );
-    if ( !layer || layer->providerType() != QLatin1String( "ogr" ) )
-      return result;
-  }
 
   QgsSublayersDialog::LayerDefinitionList list;
   QMap< QString, int > mapLayerNameToCount;
@@ -6102,7 +6147,7 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer, con
   // Check if the current layer uri contains the
 
   // We initialize a selection dialog and display it.
-  QgsSublayersDialog chooseSublayersDialog( QgsSublayersDialog::Ogr, QStringLiteral( "ogr" ), this, Qt::WindowFlags(), layer->dataProvider()->dataSourceUri() );
+  QgsSublayersDialog chooseSublayersDialog( QgsSublayersDialog::Ogr, QStringLiteral( "ogr" ), this, Qt::WindowFlags(), parentLayer->dataProvider()->dataSourceUri() );
   chooseSublayersDialog.setShowAddToGroupCheckbox( true );
   chooseSublayersDialog.populateLayerTable( list );
 
@@ -6111,10 +6156,10 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer, con
 
   const bool addToGroup = chooseSublayersDialog.addToGroupCheckbox();
 
-  QString name = layer->name();
+  QString name = parentLayer->name();
 
   auto uriParts = QgsProviderRegistry::instance()->decodeUri(
-                    layer->providerType(), layer->dataProvider()->dataSourceUri() );
+                    parentLayer->providerType(), parentLayer->dataProvider()->dataSourceUri() );
   QString uri( uriParts.value( QStringLiteral( "path" ) ).toString() );
   QStringList openOptions( uriParts.value( QStringLiteral( "openOptions" ) ).toStringList() );
 
@@ -6122,6 +6167,15 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer, con
   // going to load the sublayers.
   QString fileName = QFileInfo( uri ).baseName();
   const auto constSelection = chooseSublayersDialog.selection();
+  const QString providerType = parentLayer->providerType();
+
+  // We delete the parent layer now, to be sure in the GeoPackage case that
+  // when several sublayers are selected, they will use the same GDAL dataset
+  // This is critical to make project transactions work, as in
+  // https://github.com/qgis/QGIS/issues/39431#issuecomment-713460189
+  delete parentLayer;
+  parentLayer = nullptr;
+
   for ( const QgsSublayersDialog::LayerDefinition &def : constSelection )
   {
     QVariantMap newUriParts;
@@ -6147,7 +6201,7 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer, con
     }
 
     QString composedURI = QgsProviderRegistry::instance()->encodeUri(
-                            layer->providerType(), newUriParts );
+                            providerType, newUriParts );
     QgsDebugMsgLevel( "Creating new vector layer using " + composedURI, 2 );
 
     // if user has opted to add sublayers to a group, then we don't need to include the
@@ -6395,7 +6449,7 @@ void QgisApp::fileExit()
   }
 
   QgsCanvasRefreshBlocker refreshBlocker;
-  if ( checkUnsavedLayerEdits() && checkMemoryLayers() && checkExitBlockers() && saveDirty() )
+  if ( checkUnsavedLayerEdits() && checkMemoryLayers() && saveDirty() && checkExitBlockers() )
   {
     closeProject();
     userProfileManager()->setDefaultFromActive();
@@ -7556,12 +7610,19 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
     }
   }
 
+
   CPLPopErrorHandler();
 
   // Try to load as mesh layer after raster & vector
   if ( !ok )
   {
     ok = static_cast< bool >( addMeshLayerPrivate( fileName, fileInfo.completeBaseName(), QStringLiteral( "mdal" ), false ) );
+  }
+
+  // Try to load as point cloud layer after raster & vector & mesh
+  if ( !ok )
+  {
+    ok = static_cast< bool >( addPointCloudLayerPrivate( fileName, fileInfo.completeBaseName(), QStringLiteral( "ept" ), false ) );
   }
 
   if ( !ok )
@@ -7631,16 +7692,16 @@ void QgisApp::disablePreviewMode()
   mMapCanvas->setPreviewModeEnabled( false );
 }
 
-void QgisApp::activateGrayscalePreview()
-{
-  mMapCanvas->setPreviewModeEnabled( true );
-  mMapCanvas->setPreviewMode( QgsPreviewEffect::PreviewGrayscale );
-}
-
 void QgisApp::activateMonoPreview()
 {
   mMapCanvas->setPreviewModeEnabled( true );
   mMapCanvas->setPreviewMode( QgsPreviewEffect::PreviewMono );
+}
+
+void QgisApp::activateGrayscalePreview()
+{
+  mMapCanvas->setPreviewModeEnabled( true );
+  mMapCanvas->setPreviewMode( QgsPreviewEffect::PreviewGrayscale );
 }
 
 void QgisApp::activateProtanopePreview()
@@ -7653,6 +7714,12 @@ void QgisApp::activateDeuteranopePreview()
 {
   mMapCanvas->setPreviewModeEnabled( true );
   mMapCanvas->setPreviewMode( QgsPreviewEffect::PreviewDeuteranope );
+}
+
+void QgisApp::activateTritanopePreview()
+{
+  mMapCanvas->setPreviewModeEnabled( true );
+  mMapCanvas->setPreviewMode( QgsPreviewEffect::PreviewTritanope );
 }
 
 void QgisApp::toggleFilterLegendByExpression( bool checked )
@@ -8792,6 +8859,7 @@ QString QgisApp::saveAsFile( QgsMapLayer *layer, const bool onlySelected, const 
     case QgsMapLayerType::VectorTileLayer:
     case QgsMapLayerType::PluginLayer:
     case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::PointCloudLayer:
       return QString();
   }
   return QString();
@@ -8958,6 +9026,7 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
     case QgsMapLayerType::VectorTileLayer:
     case QgsMapLayerType::AnnotationLayer:
     case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::PointCloudLayer:
       break;
 
   }
@@ -12703,6 +12772,65 @@ void QgisApp::unregisterApplicationExitBlocker( QgsApplicationExitBlockerInterfa
   mApplicationExitBlockers.removeAll( blocker );
 }
 
+void QgisApp::registerMapToolHandler( QgsAbstractMapToolHandler *handler )
+{
+  if ( !handler->action() || !handler->mapTool() )
+  {
+    QgsMessageLog::logMessage( tr( "Map tool handler is not properly constructed" ) );
+    return;
+  }
+
+  mMapToolHandlers << handler;
+
+  // do setup work
+  handler->action()->setCheckable( true );
+  handler->mapTool()->setAction( handler->action() );
+
+  connect( handler->action(), &QAction::triggered, this, &QgisApp::switchToMapToolViaHandler );
+  mMapToolGroup->addAction( handler->action() );
+  QgsAbstractMapToolHandler::Context context;
+  handler->action()->setEnabled( handler->isCompatibleWithLayer( activeLayer(), context ) );
+}
+
+void QgisApp::switchToMapToolViaHandler()
+{
+  QAction *sourceAction = qobject_cast< QAction * >( sender() );
+  if ( !sourceAction )
+    return;
+
+  QgsAbstractMapToolHandler *handler = nullptr;
+  for ( QgsAbstractMapToolHandler *h : qgis::as_const( mMapToolHandlers ) )
+  {
+    if ( h->action() == sourceAction )
+    {
+      handler = h;
+      break;
+    }
+  }
+
+  if ( !handler )
+    return;
+
+  if ( mMapCanvas->mapTool() == handler->mapTool() )
+    return; // nothing to do
+
+  handler->setLayerForTool( activeLayer() );
+  mMapCanvas->setMapTool( handler->mapTool() );
+}
+
+void QgisApp::unregisterMapToolHandler( QgsAbstractMapToolHandler *handler )
+{
+  mMapToolHandlers.removeAll( handler );
+
+  if ( !handler->action() || !handler->mapTool() )
+  {
+    return;
+  }
+
+  mMapToolGroup->removeAction( handler->action() );
+  disconnect( handler->action(), &QAction::triggered, this, &QgisApp::switchToMapToolViaHandler );
+}
+
 QgsMapLayer *QgisApp::activeLayer()
 {
   return mLayerTreeView ? mLayerTreeView->currentLayer() : nullptr;
@@ -12790,10 +12918,8 @@ QgsVectorLayer *QgisApp::addVectorLayerPrivate( const QString &vectorLayerPath, 
     if ( !layerIsSpecified && sublayers.count() > 1 )
     {
       QList< QgsMapLayer * > addedLayers = askUserForOGRSublayers( layer, sublayers );
+      // layer is no longer valid and has been nullified
 
-      // The first layer loaded is not useful in that case. The user can select it in
-      // the list if he wants to load it.
-      delete layer;
       layer = addedLayers.isEmpty() ? nullptr : qobject_cast< QgsVectorLayer * >( addedLayers.at( 0 ) );
       for ( QgsMapLayer *l : addedLayers )
         askUserForDatumTransform( l->crs(), QgsProject::instance()->crs(), l );
@@ -13051,10 +13177,8 @@ void QgisApp::new3DMapCanvas()
     flatTerrain->setExtent( fullExtent );
     map->setTerrainGenerator( flatTerrain );
 
-    QgsPointLightSettings defaultPointLight;
-    defaultPointLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
-    defaultPointLight.setConstantAttenuation( 0 );
-    map->setPointLights( QList<QgsPointLightSettings>() << defaultPointLight );
+    // new scenes default to a single directional light
+    map->setDirectionalLights( QList<QgsDirectionalLightSettings>() << QgsDirectionalLightSettings() );
     map->setOutputDpi( QgsApplication::desktop()->logicalDpiX() );
 
     dock->setMapSettings( map );
@@ -14337,6 +14461,24 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
 
   updateLayerModifiedActions();
 
+  QgsAbstractMapToolHandler::Context context;
+  for ( QgsAbstractMapToolHandler *handler : qgis::as_const( mMapToolHandlers ) )
+  {
+    handler->action()->setEnabled( handler->isCompatibleWithLayer( layer, context ) );
+    if ( handler->mapTool() == mMapCanvas->mapTool() )
+    {
+      if ( !handler->action()->isEnabled() )
+      {
+        mMapCanvas->unsetMapTool( handler->mapTool() );
+        mActionPan->trigger();
+      }
+      else
+      {
+        handler->setLayerForTool( layer );
+      }
+    }
+  }
+
   if ( !layer )
   {
     menuSelect->setEnabled( false );
@@ -14897,6 +15039,71 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       break;
 
     case QgsMapLayerType::VectorTileLayer:
+      mActionLocalHistogramStretch->setEnabled( false );
+      mActionFullHistogramStretch->setEnabled( false );
+      mActionLocalCumulativeCutStretch->setEnabled( false );
+      mActionFullCumulativeCutStretch->setEnabled( false );
+      mActionIncreaseBrightness->setEnabled( false );
+      mActionDecreaseBrightness->setEnabled( false );
+      mActionIncreaseContrast->setEnabled( false );
+      mActionDecreaseContrast->setEnabled( false );
+      mActionIncreaseGamma->setEnabled( false );
+      mActionDecreaseGamma->setEnabled( false );
+      mActionLayerSubsetString->setEnabled( false );
+      mActionFeatureAction->setEnabled( false );
+      mActionSelectFeatures->setEnabled( false );
+      mActionSelectPolygon->setEnabled( false );
+      mActionSelectFreehand->setEnabled( false );
+      mActionSelectRadius->setEnabled( false );
+      mActionZoomActualSize->setEnabled( false );
+      mActionZoomToLayer->setEnabled( true );
+      mActionZoomToSelected->setEnabled( false );
+      mActionOpenTable->setEnabled( false );
+      mActionSelectAll->setEnabled( false );
+      mActionReselect->setEnabled( false );
+      mActionInvertSelection->setEnabled( false );
+      mActionSelectByExpression->setEnabled( false );
+      mActionSelectByForm->setEnabled( false );
+      mActionOpenFieldCalc->setEnabled( false );
+      mActionToggleEditing->setEnabled( false );
+      mActionToggleEditing->setChecked( false );
+      mActionSaveLayerEdits->setEnabled( false );
+      mUndoDock->widget()->setEnabled( false );
+      mActionUndo->setEnabled( false );
+      mActionRedo->setEnabled( false );
+      mActionSaveLayerDefinition->setEnabled( true );
+      mActionLayerSaveAs->setEnabled( false );
+      mActionAddFeature->setEnabled( false );
+      mActionCircularStringCurvePoint->setEnabled( false );
+      mActionCircularStringRadius->setEnabled( false );
+      mActionDeleteSelected->setEnabled( false );
+      mActionAddRing->setEnabled( false );
+      mActionFillRing->setEnabled( false );
+      mActionAddPart->setEnabled( false );
+      mActionVertexTool->setEnabled( false );
+      mActionVertexToolActiveLayer->setEnabled( false );
+      mActionMoveFeature->setEnabled( false );
+      mActionMoveFeatureCopy->setEnabled( false );
+      mActionRotateFeature->setEnabled( false );
+      mActionOffsetCurve->setEnabled( false );
+      mActionCopyFeatures->setEnabled( false );
+      mActionCutFeatures->setEnabled( false );
+      mActionPasteFeatures->setEnabled( false );
+      mActionRotatePointSymbols->setEnabled( false );
+      mActionOffsetPointSymbol->setEnabled( false );
+      mActionDeletePart->setEnabled( false );
+      mActionDeleteRing->setEnabled( false );
+      mActionSimplifyFeature->setEnabled( false );
+      mActionReshapeFeatures->setEnabled( false );
+      mActionSplitFeatures->setEnabled( false );
+      mActionSplitParts->setEnabled( false );
+      mActionLabeling->setEnabled( false );
+      mActionDiagramProperties->setEnabled( false );
+      mActionIdentify->setEnabled( true );
+      enableDigitizeWithCurveAction( false );
+      break;
+
+    case QgsMapLayerType::PointCloudLayer:
       mActionLocalHistogramStretch->setEnabled( false );
       mActionFullHistogramStretch->setEnabled( false );
       mActionLocalCumulativeCutStretch->setEnabled( false );
@@ -15953,6 +16160,22 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
       break;
     }
 
+    case QgsMapLayerType::PointCloudLayer:
+    {
+      QgsPointCloudLayerProperties pointCloudLayerPropertiesDialog( qobject_cast<QgsPointCloudLayer *>( mapLayer ), mMapCanvas, visibleMessageBar(), this );
+      if ( !page.isEmpty() )
+        pointCloudLayerPropertiesDialog.setCurrentPage( page );
+
+      mMapStyleWidget->blockUpdates( true );
+      if ( pointCloudLayerPropertiesDialog.exec() )
+      {
+        activateDeactivateLayerRelatedActions( mapLayer );
+        mMapStyleWidget->updateCurrentWidgetLayer();
+      }
+      mMapStyleWidget->blockUpdates( false ); // delete since dialog cannot be reused without updating code
+      break;
+    }
+
     case QgsMapLayerType::PluginLayer:
     {
       QgsPluginLayer *pl = qobject_cast<QgsPluginLayer *>( mapLayer );
@@ -16404,7 +16627,7 @@ QgsFeature QgisApp::duplicateFeatures( QgsMapLayer *mlayer, const QgsFeature &fe
   {
     QgsVectorLayerUtils::QgsDuplicateFeatureContext duplicateFeatureContext;
 
-    QgsVectorLayerUtils::duplicateFeature( layer, f, QgsProject::instance(), 0, duplicateFeatureContext );
+    QgsVectorLayerUtils::duplicateFeature( layer, f, QgsProject::instance(), duplicateFeatureContext );
     featureCount += 1;
 
     const auto duplicatedFeatureContextLayers = duplicateFeatureContext.layers();
@@ -16455,7 +16678,7 @@ QgsFeature QgisApp::duplicateFeatureDigitized( QgsMapLayer *mlayer, const QgsFea
 
     QgsFeature newFeature = feature;
     newFeature.setGeometry( digitizedFeature.geometry() );
-    QgsVectorLayerUtils::duplicateFeature( layer, newFeature, QgsProject::instance(), 0, duplicateFeatureContext );
+    QgsVectorLayerUtils::duplicateFeature( layer, newFeature, QgsProject::instance(), duplicateFeatureContext );
 
     QString childrenInfo;
     const auto duplicateFeatureContextLayers = duplicateFeatureContext.layers();

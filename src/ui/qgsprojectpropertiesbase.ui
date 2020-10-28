@@ -2626,7 +2626,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QgsSpinBox" name="mWMTSMinScaleLineEdit">
+                     <widget class="QgsSpinBox" name="mWMTSMinScaleSpinBox">
                       <property name="minimum">
                        <number>1</number>
                       </property>
@@ -3278,7 +3278,7 @@
   <tabstop>mMaxWidthLineEdit</tabstop>
   <tabstop>mMaxHeightLineEdit</tabstop>
   <tabstop>mWMSImageQualitySpinBox</tabstop>
-  <tabstop>mWMTSMinScaleLineEdit</tabstop>
+  <tabstop>mWMTSMinScaleSpinBox</tabstop>
   <tabstop>mWMTSUrlLineEdit</tabstop>
   <tabstop>twWFSLayers</tabstop>
   <tabstop>pbnWFSLayersSelectAll</tabstop>

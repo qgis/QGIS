@@ -288,7 +288,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
 
     for ( QgsVectorLayer *vl : mExtraSnapLayers )
     {
-      QgsPointLocator *loc = locatorForLayer( vl );
+      QgsPointLocator *loc = locatorForLayerUsingStrategy( vl, pointMap, tolerance );
       _updateBestMatch( bestMatch, pointMap, loc, type, tolerance, filter, false );
       if ( mSnappingConfig.intersectionSnapping() )
         edges << loc->edgesInRect( pointMap, tolerance );
@@ -357,7 +357,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
 
     for ( QgsVectorLayer *vl : mExtraSnapLayers )
     {
-      QgsPointLocator *loc = locatorForLayer( vl );
+      QgsPointLocator *loc = locatorForLayerUsingStrategy( vl, pointMap, maxTolerance );
       _updateBestMatch( bestMatch, pointMap, loc, maxTypes, maxTolerance, filter, false );
       if ( mSnappingConfig.intersectionSnapping() )
         edges << loc->edgesInRect( pointMap, maxTolerance );
@@ -399,7 +399,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
 
     for ( QgsVectorLayer *vl : mExtraSnapLayers )
     {
-      QgsPointLocator *loc = locatorForLayer( vl );
+      QgsPointLocator *loc = locatorForLayerUsingStrategy( vl, pointMap, tolerance );
       _updateBestMatch( bestMatch, pointMap, loc, type, tolerance, filter, false );
       if ( mSnappingConfig.intersectionSnapping() )
         edges << loc->edgesInRect( pointMap, tolerance );

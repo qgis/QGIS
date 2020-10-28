@@ -81,6 +81,7 @@ class CORE_EXPORT QgsMeshDriverMetadata
      * \param name name/key of the driver
      * \param description short description of the driver
      * \param capabilities driver's capabilities
+     * \param writeDatasetOnFileSuffix suffix used to write datasets on file
      */
     QgsMeshDriverMetadata( const QString &name,
                            const QString &description,

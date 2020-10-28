@@ -33,6 +33,7 @@ QgsMapLayerStyleCategoriesModel::QgsMapLayerStyleCategoriesModel( QgsMapLayerTyp
     case QgsMapLayerType::AnnotationLayer:
     case QgsMapLayerType::PluginLayer:
     case QgsMapLayerType::MeshLayer:
+    case QgsMapLayerType::PointCloudLayer:
       // not yet handled by the model
       break;
   }

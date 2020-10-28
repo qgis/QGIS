@@ -205,11 +205,14 @@ class CORE_EXPORT QgsVectorLayerUtils
      * Duplicates a feature and it's children (one level deep). It calls CreateFeature, so
      * default values and constraints (e.g., unique constraints) will automatically be handled.
      * The duplicated feature will be automatically inserted into the layer.
-     * \a depth the higher this number the deeper the level - With depth > 0 the children of the feature are not duplicated
      * \a duplicateFeatureContext stores all the layers and the featureids of the duplicated features (incl. children)
+     * \a maxDepth the maximum depth to duplicate children in relations, 0 is unlimited depth (in any case, limited to 100)
+     * \a depth the current depth, not exposed in Python
+     * \a referencedLayersBranch the current branch of layers across the relations, not exposed in Python, taken by copy not reference, used to avoid infinite loop
      * \since QGIS 3.0
      */
-    static QgsFeature duplicateFeature( QgsVectorLayer *layer, const QgsFeature &feature, QgsProject *project, int depth, QgsDuplicateFeatureContext &duplicateFeatureContext SIP_OUT );
+    static QgsFeature duplicateFeature( QgsVectorLayer *layer, const QgsFeature &feature, QgsProject *project, QgsDuplicateFeatureContext &duplicateFeatureContext SIP_OUT, const int maxDepth = 0, int depth SIP_PYARGREMOVE = 0, QList<QgsVectorLayer *> referencedLayersBranch SIP_PYARGREMOVE = QList<QgsVectorLayer *>() );
+
 
     /**
      * Gets the feature source from a QgsVectorLayer pointer.

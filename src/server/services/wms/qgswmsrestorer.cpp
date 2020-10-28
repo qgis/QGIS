@@ -62,6 +62,7 @@ QgsLayerRestorer::QgsLayerRestorer( const QList<QgsMapLayer *> &layers )
       case QgsMapLayerType::VectorTileLayer:
       case QgsMapLayerType::PluginLayer:
       case QgsMapLayerType::AnnotationLayer:
+      case QgsMapLayerType::PointCloudLayer:
         break;
     }
 
@@ -114,6 +115,7 @@ QgsLayerRestorer::~QgsLayerRestorer()
       case QgsMapLayerType::VectorTileLayer:
       case QgsMapLayerType::PluginLayer:
       case QgsMapLayerType::AnnotationLayer:
+      case QgsMapLayerType::PointCloudLayer:
         break;
     }
   }

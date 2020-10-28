@@ -10,6 +10,7 @@
 %Include auto_generated/qgsdirectionallightsettings.sip
 %Include auto_generated/qgsrulebased3drenderer.sip
 %Include auto_generated/qgsvectorlayer3drenderer.sip
+%Include auto_generated/qgspointcloudlayer3drenderer.sip
 %Include auto_generated/materials/qgsabstractmaterialsettings.sip
 %Include auto_generated/materials/qgsgoochmaterialsettings.sip
 %Include auto_generated/materials/qgsmaterialregistry.sip

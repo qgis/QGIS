@@ -259,6 +259,24 @@ QgsTriangularMesh *QgsMeshLayer::triangularMesh( double minimumTriangleSize ) co
     return nullptr;
 }
 
+int QgsMeshLayer::triangularMeshLevelOfDetailCount() const SIP_SKIP
+{
+  return mTriangularMeshes.size();
+}
+
+QgsTriangularMesh *QgsMeshLayer::triangularMeshByLodIndex( int lodIndex ) const SIP_SKIP
+{
+  if ( mTriangularMeshes.empty() )
+    return nullptr;
+  if ( lodIndex < 0 )
+    return mTriangularMeshes.front().get();
+
+  if ( lodIndex >= int( mTriangularMeshes.size() ) )
+    return mTriangularMeshes.back().get();
+
+  return mTriangularMeshes.at( lodIndex ).get();
+}
+
 void  QgsMeshLayer::updateTriangularMesh( const QgsCoordinateTransform &transform )
 {
   // Native mesh
@@ -277,6 +295,8 @@ void  QgsMeshLayer::updateTriangularMesh( const QgsCoordinateTransform &transfor
 
   if ( mTriangularMeshes[0].get()->update( mNativeMesh.get(), transform ) )
     mTriangularMeshes.resize( 1 ); //if the base triangular mesh is effectivly updated, remove simplified meshes
+
+  createSimplifiedMeshes();
 }
 
 QgsMeshLayerRendererCache *QgsMeshLayer::rendererCache()

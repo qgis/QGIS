@@ -35,6 +35,7 @@
 #include "qgsmaplayer.h"
 #include "qgsstyle.h"
 #include "qgsvectorlayer.h"
+#include "qgspointcloudlayer.h"
 #include "qgsvectortilelayer.h"
 #include "qgsvectortilebasiclabelingwidget.h"
 #include "qgsvectortilebasicrendererwidget.h"
@@ -56,6 +57,8 @@
 #ifdef HAVE_3D
 #include "qgsvectorlayer3drendererwidget.h"
 #include "qgsmeshlayer3drendererwidget.h"
+
+#include "qgspointcloudlayer3drenderer.h" // TODO remove
 #endif
 
 
@@ -105,7 +108,8 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBa
                            | QgsMapLayerProxyModel::Filter::RasterLayer
                            | QgsMapLayerProxyModel::Filter::PluginLayer
                            | QgsMapLayerProxyModel::Filter::MeshLayer
-                           | QgsMapLayerProxyModel::Filter::VectorTileLayer );
+                           | QgsMapLayerProxyModel::Filter::VectorTileLayer
+                           | QgsMapLayerProxyModel::Filter::PointCloudLayer );
 
   mStackedWidget->setCurrentIndex( 0 );
 }
@@ -141,6 +145,18 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
 {
   if ( layer == mCurrentLayer )
     return;
+
+#ifdef HAVE_3D
+  QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( layer );
+  if ( pcLayer )
+  {
+    //TODO remove this ugly hack!
+    QgsPointCloudLayer3DRenderer *r = new QgsPointCloudLayer3DRenderer();
+    r->setLayer( pcLayer );
+    r->resolveReferences( *QgsProject::instance() );
+    pcLayer->setRenderer3D( r );
+  }
+#endif
 
   // when current layer is changed, apply the main panel stack to allow it to gracefully clean up
   mWidgetStack->acceptAllPanels();
@@ -247,6 +263,11 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
       labelItem->setData( Qt::UserRole, VectorLabeling );
       labelItem->setToolTip( tr( "Labels" ) );
       mOptionsListWidget->addItem( labelItem );
+      break;
+    }
+
+    case QgsMapLayerType::PointCloudLayer:
+    {
       break;
     }
 
@@ -653,6 +674,16 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
         break;
       }
 
+      case QgsMapLayerType::PointCloudLayer:
+      {
+        QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( mCurrentLayer );
+        ( void )pcLayer;
+
+        //TODO
+        mStackedWidget->setCurrentIndex( mNotSupportedPage );
+        break;
+      }
+
       case QgsMapLayerType::PluginLayer:
       case QgsMapLayerType::AnnotationLayer:
       {
@@ -782,6 +813,9 @@ bool QgsLayerStyleManagerWidgetFactory::supportsLayer( QgsMapLayer *layer ) cons
       return true;
 
     case QgsMapLayerType::VectorTileLayer:
+      return false;  // TODO
+
+    case QgsMapLayerType::PointCloudLayer:
       return false;  // TODO
 
     case QgsMapLayerType::PluginLayer:

@@ -17,8 +17,12 @@
 #include <QToolButton>
 #include <QObject>
 
+#include "qgis.h"
+
+Q_NOWARN_DEPRECATED_PUSH
 #include "qwt_compass.h"
 #include "qwt_dial_needle.h"
+Q_NOWARN_DEPRECATED_POP
 
 #include "qgsapplication.h"
 

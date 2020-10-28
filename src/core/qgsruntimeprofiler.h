@@ -209,8 +209,8 @@ class CORE_EXPORT QgsRuntimeProfiler : public QAbstractItemModel
 
     /**
      * \brief Start a profile event with the given name.
-     * \param name The name of the profile event. Will have the name of
-     * the active group appended after ending.
+     * The \a name of the profile event. Will have the name of
+     * the active \a group appended after ending.
      */
     void start( const QString &name, const QString &group = "startup" );
 

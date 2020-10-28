@@ -728,6 +728,7 @@ void QgsExpression::initVariableHelp()
   //layer variables
   sVariableHelpTexts()->insert( QStringLiteral( "layer_name" ), QCoreApplication::translate( "variable_help", "Name of current layer." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "layer_id" ), QCoreApplication::translate( "variable_help", "ID of current layer." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "layer_crs" ), QCoreApplication::translate( "variable_help", "CRS Authority ID of current layer." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "layer" ), QCoreApplication::translate( "variable_help", "The current layer." ) );
 
   //composition variables

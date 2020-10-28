@@ -45,6 +45,7 @@ class QgsChunkQueueJobFactory;
 #include <QTime>
 
 #include "qgsfeatureid.h"
+#include "qgschunknode_p.h"
 
 namespace Qt3DRender
 {
@@ -62,7 +63,7 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
     Q_OBJECT
   public:
     //! Constructs a chunked entity
-    QgsChunkedEntity( const QgsAABB &rootBbox, float rootError, float mTau, int mMaxLevel, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, Qt3DCore::QNode *parent = nullptr );
+    QgsChunkedEntity( float tau, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, Qt3DCore::QNode *parent = nullptr );
     ~QgsChunkedEntity() override;
 
     //! Records some bits about the scene (context for update() method)
@@ -98,6 +99,16 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
     void setPickingEnabled( bool enabled );
     //! Returns whether object picking is currently enabled
     bool hasPickingEnabled() const { return mPickingEnabled; }
+
+    //! Sets whether additive strategy is enabled - see usingAditiveStrategy()
+    void setUsingAdditiveStrategy( bool additive ) { mAdditiveStrategy = additive; }
+
+    /**
+     * Returns whether additive strategy is enabled.
+     * With additive strategy enabled, also all parent nodes are added to active nodes.
+     * This is desired when child nodes add more detailed data rather than just replace coarser data in parents.
+     */
+    bool usingAditiveStrategy() const { return mAdditiveStrategy; }
 
   protected:
     //! Cancels the background job that is currently in progress
@@ -144,8 +155,6 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
      * it reaches leafs.
      */
     float mTau;
-    //! maximum allowed depth of quad tree
-    int mMaxLevel;
     //! factory that creates loaders for individual chunk nodes
     QgsChunkLoaderFactory *mChunkLoaderFactory = nullptr;
     //! True if entity owns the factory
@@ -174,6 +183,12 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
 
     //! If picking is enabled, QObjectPicker objects will be assigned to chunks and pickedObject() signals fired on mouse click
     bool mPickingEnabled = false;
+
+    /**
+     * With additive strategy enabled, also all parent nodes are added to active nodes.
+     * This is desired when child nodes add more detailed data rather than just replace coarser data in parents.
+     */
+    bool mAdditiveStrategy = false;
 
     bool mIsValid = true;
 };

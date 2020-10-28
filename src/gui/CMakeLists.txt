@@ -345,6 +345,10 @@ SET(QGIS_GUI_SRCS
   providers/ogr/qgsogritemguiprovider.cpp
   providers/ogr/qgsgeopackageprojectstorageguiprovider.cpp
 
+  providers/ept/qgseptsourceselect.cpp
+  providers/ept/qgseptproviderguimetadata.cpp
+  providers/ept/qgseptdataitemguiprovider.cpp
+
   tableeditor/qgstableeditordialog.cpp
   tableeditor/qgstableeditorformattingwidget.cpp
   tableeditor/qgstableeditorwidget.cpp
@@ -359,6 +363,7 @@ SET(QGIS_GUI_SRCS
 
   qgisinterface.cpp
   qgs3dsymbolwidget.cpp
+  qgsabstractmaptoolhandler.cpp
   qgsactionmenu.cpp
   qgsaddattrdialog.cpp
   qgsaddtaborgroup.cpp
@@ -589,6 +594,7 @@ SET(QGIS_GUI_HDRS
 
   qgs3dsymbolwidget.h
   qgsabstractdatasourcewidget.h
+  qgsabstractmaptoolhandler.h
   qgsactionmenu.h
   qgsaddattrdialog.h
   qgsaddtaborgroup.h
@@ -1096,6 +1102,10 @@ SET(QGIS_GUI_HDRS
   providers/ogr/qgsogritemguiprovider.h
   providers/ogr/qgsogrsourceselect.h
 
+  providers/ept/qgseptsourceselect.h
+  providers/ept/qgseptproviderguimetadata.h
+  providers/ept/qgseptdataitemguiprovider.h
+
   raster/qgscolorrampshaderwidget.h
   raster/qgshillshaderendererwidget.h
   raster/qgsmultibandcolorrendererwidget.h
@@ -1294,6 +1304,8 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/processing/models
   ${CMAKE_SOURCE_DIR}/src/gui/providers/gdal
   ${CMAKE_SOURCE_DIR}/src/gui/providers/ogr
+  ${CMAKE_SOURCE_DIR}/src/gui/providers/ept
+  ${CMAKE_SOURCE_DIR}/src/gui/pointcloud
   ${CMAKE_SOURCE_DIR}/src/gui/raster
   ${CMAKE_SOURCE_DIR}/src/gui/vector
   ${CMAKE_SOURCE_DIR}/src/gui/vectortile
@@ -1314,6 +1326,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/processing/models
   ${CMAKE_SOURCE_DIR}/src/core/mesh
+  ${CMAKE_SOURCE_DIR}/src/core/pointcloud
   ${CMAKE_SOURCE_DIR}/src/core/pal
   ${CMAKE_SOURCE_DIR}/src/core/providers/memory
   ${CMAKE_SOURCE_DIR}/src/core/providers/gdal

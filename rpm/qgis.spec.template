@@ -255,12 +255,12 @@ gzip ChangeLog
       %{configure_with_sha} \
       .
 
-make %{?_smp_mflags}
+%cmake_build
 
 %install
 # Necessary for the test suite
 #export LD_LIBRARY_PATH=%{_builddir}%{name}-%{version}/output/%{_lib}
-make install DESTDIR=%{buildroot}
+%cmake_install
 
 # Install MIME type definitions
 install -d %{buildroot}%{_datadir}/mime/packages
@@ -275,34 +275,6 @@ rm -f %{buildroot}%{_libexecdir}/%{name}/admin.sld
 rm -f %{buildroot}%{_datadir}/%{name}/doc/INSTALL*
 
 %find_lang %{name} --with-qt
-
-# TODO: Remove all %%post, %%posttrans and %%postun after F28 EoL
-# Ref: https://fedoraproject.org/wiki/Changes/RemoveObsoleteScriptlets
-%post
-/sbin/ldconfig
-touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
-touch --no-create %{_datadir}/mime/packages &> /dev/null || :
-
-%postun
-/sbin/ldconfig
-if [ $1 -eq 0 ] ; then
-    touch --no-create %{_datadir}/icons/hicolor &>/dev/null
-    gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
-    touch --no-create %{_datadir}/mime/packages &> /dev/null || :
-    update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
-fi
-
-%posttrans
-gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
-update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
-
-%post grass -p /sbin/ldconfig
-
-%postun grass -p /sbin/ldconfig
-
-%post -n python3-qgis -p /sbin/ldconfig
-
-%postun -n python3-qgis -p /sbin/ldconfig
 
 %files -f %{name}.lang
 %doc BUGS NEWS.md Exception_to_GPL_for_Qt.txt ChangeLog.gz

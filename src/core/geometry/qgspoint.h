@@ -549,7 +549,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
      * \since QGIS 3.0
      */
-    inline const QgsPoint *cast( const QgsAbstractGeometry *geom ) const
+    inline static const QgsPoint *cast( const QgsAbstractGeometry *geom )
     {
       if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::Point )
         return static_cast<const QgsPoint *>( geom );

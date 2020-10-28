@@ -23,6 +23,47 @@
 #include "qgspointlightsettings.h"
 #include "qgsdirectionallightsettings.h"
 
+class QgsLightsModel : public QAbstractListModel
+{
+    Q_OBJECT
+  public:
+
+    enum LightType
+    {
+      Point,
+      Directional
+    };
+
+    enum Role
+    {
+      LightTypeRole = Qt::UserRole,
+      LightListIndex,
+    };
+
+    explicit QgsLightsModel( QObject *parent = nullptr );
+
+    int rowCount( const QModelIndex &parent ) const override;
+    QVariant data( const QModelIndex &index, int role ) const override;
+    bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
+
+    void setPointLights( const QList<QgsPointLightSettings> &lights );
+    void setDirectionalLights( const QList<QgsDirectionalLightSettings> &lights );
+
+    QList<QgsPointLightSettings> pointLights() const;
+    QList<QgsDirectionalLightSettings> directionalLights() const;
+
+    void setPointLightSettings( int index, const QgsPointLightSettings &light );
+    void setDirectionalLightSettings( int index, const QgsDirectionalLightSettings &light );
+
+    QModelIndex addPointLight( const QgsPointLightSettings &light );
+    QModelIndex addDirectionalLight( const QgsDirectionalLightSettings &light );
+
+  private:
+
+    QList<QgsPointLightSettings> mPointLights;
+    QList<QgsDirectionalLightSettings> mDirectionalLights;
+};
+
 /**
  * Widget for configuration of lights in 3D map scene
  * \since QGIS 3.6
@@ -32,38 +73,39 @@ class QgsLightsWidget : public QWidget, private Ui::QgsLightsWidget
     Q_OBJECT
   public:
     explicit QgsLightsWidget( QWidget *parent = nullptr );
-    ~QgsLightsWidget() override;
 
-    void setPointLights( const QList<QgsPointLightSettings> &pointLights );
-    void setDirectionalLights( const QList<QgsDirectionalLightSettings> &directionalLights );
+    void setLights( const QList<QgsPointLightSettings> &pointLights,
+                    const QList<QgsDirectionalLightSettings> &directionalLights );
 
     QList<QgsPointLightSettings> pointLights();
     QList<QgsDirectionalLightSettings> directionalLights();
 
   signals:
     void directionalLightsCountChanged( int count );
+    void lightsRemoved();
+    void lightsAdded();
+
   private slots:
-    void onCurrentLightChanged( int index );
+    void selectedLightChanged( const QItemSelection &selected, const QItemSelection &deselected );
     void updateCurrentLightParameters();
     void onAddLight();
     void onRemoveLight();
 
-    void onCurrentDirectionalLightChanged( int index );
     void updateCurrentDirectionalLightParameters();
     void onAddDirectionalLight();
-    void onRemoveDirectionalLight();
     void setAzimuthAltitude();
     void onDirectionChange();
   private:
-    void updateLightsList();
-    void updateDirectionalLightsList();
+
+    void showSettingsForPointLight( const QgsPointLightSettings &settings );
+    void showSettingsForDirectionalLight( const QgsDirectionalLightSettings &settings );
 
   private:
-    QList<QgsPointLightSettings> mPointLights;
-    QList<QgsDirectionalLightSettings> mDirectionalLights;
     double mDirectionX = 0;
     double mDirectionY = -1;
     double mDirectionZ = 0;
+    QgsLightsModel *mLightsModel = nullptr;
 };
+
 
 #endif // QGSLIGHTSWIDGET_H

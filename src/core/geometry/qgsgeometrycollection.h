@@ -247,7 +247,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
      * \since QGIS 3.0
      */
-    inline const QgsGeometryCollection *cast( const QgsAbstractGeometry *geom ) const
+    inline static const QgsGeometryCollection *cast( const QgsAbstractGeometry *geom )
     {
       if ( geom && QgsWkbTypes::isMultiType( geom->wkbType() ) )
         return static_cast<const QgsGeometryCollection *>( geom );

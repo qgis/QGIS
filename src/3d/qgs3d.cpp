@@ -25,6 +25,7 @@
 #include "qgsrulebased3drenderer.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "qgsmeshlayer3drenderer.h"
+#include "qgspointcloudlayer3drenderer.h"
 #include "qgs3dsymbolregistry.h"
 #include "qgspoint3dsymbol.h"
 #include "qgsline3dsymbol.h"
@@ -60,6 +61,7 @@ void Qgs3D::initialize()
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsVectorLayer3DRendererMetadata );
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsRuleBased3DRendererMetadata );
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsMeshLayer3DRendererMetadata );
+  QgsApplication::renderer3DRegistry()->addRenderer( new QgsPointCloudLayer3DRendererMetadata );
 
   QgsApplication::symbol3DRegistry()->addSymbolType( new Qgs3DSymbolMetadata( QStringLiteral( "point" ), QObject::tr( "Point" ),
       &QgsPoint3DSymbol::create, nullptr, Qgs3DSymbolImpl::handlerForPoint3DSymbol ) );

@@ -178,6 +178,12 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
         errored = true;
         break;
 
+      case QgsMapLayerType::PointCloudLayer:
+        //not supported
+        feedback->pushDebugInfo( QObject::tr( "Packaging point cloud layers is not supported." ) );
+        errored = true;
+        break;
+
       case QgsMapLayerType::VectorTileLayer:
         //not supported
         feedback->pushDebugInfo( QObject::tr( "Packaging vector tile layers is not supported." ) );

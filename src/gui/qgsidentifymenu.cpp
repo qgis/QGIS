@@ -133,6 +133,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::exec( const QList<Qgs
       case QgsMapLayerType::PluginLayer:
       case QgsMapLayerType::AnnotationLayer:
       case QgsMapLayerType::MeshLayer:
+      case QgsMapLayerType::PointCloudLayer:
         break;
     }
   }

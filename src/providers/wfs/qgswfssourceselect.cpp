@@ -460,14 +460,15 @@ void QgsWFSSourceSelect::connectToServer()
 
   QgsWfsConnection connection( cmbConnections->currentText() );
 
-  mVersion = QgsWFSDataSourceURI( connection.uri().uri() ).version();
+  const QString uri = connection.uri().uri( false );
+  mVersion = QgsWFSDataSourceURI( uri ).version();
   if ( mVersion == QLatin1String( "OGC_API_FEATURES" ) )
   {
     startOapifLandingPageRequest();
   }
   else
   {
-    mCapabilities.reset( new QgsWfsCapabilities( connection.uri().uri() ) );
+    mCapabilities.reset( new QgsWfsCapabilities( uri ) );
     connect( mCapabilities.get(), &QgsWfsCapabilities::gotCapabilities, this, &QgsWFSSourceSelect::capabilitiesReplyFinished );
     const bool synchronous = false;
     const bool forceRefresh = true;

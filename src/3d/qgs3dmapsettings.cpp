@@ -22,6 +22,7 @@
 #include "qgsonlineterraingenerator.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "qgsmeshlayer3drenderer.h"
+#include "qgspointcloudlayer3drenderer.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -215,6 +216,10 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
     else if ( type == QLatin1String( "mesh" ) )
     {
       renderer = new QgsMeshLayer3DRenderer;
+    }
+    else if ( type == QLatin1String( "pointcloud" ) )
+    {
+      renderer = new QgsPointCloudLayer3DRenderer;
     }
 
     if ( renderer )

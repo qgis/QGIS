@@ -114,7 +114,7 @@ def execute_in_place_run(alg, parameters, context=None, feedback=None, raise_exc
     # the feedback
     try:
         if active_layer is None:
-            raise QgsProcessingException(tr("There is not active layer."))
+            raise QgsProcessingException(tr("There is no active layer."))
 
         if not isinstance(active_layer, QgsVectorLayer):
             raise QgsProcessingException(tr("Active layer is not a vector layer."))

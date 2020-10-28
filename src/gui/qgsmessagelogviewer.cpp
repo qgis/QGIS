@@ -82,6 +82,19 @@ void QgsMessageLogViewer::showContextMenuForTabBar( QPoint point )
          );
   mTabBarContextMenu->addAction( actionCloseOtherTabs );
 
+  QAction *actionCloseAllTabs = new QAction( tr( "Close All Tabs" ), mTabBarContextMenu );
+  actionCloseAllTabs->setEnabled( tabWidget->tabBar()->count() > 0 );
+  connect( actionCloseAllTabs, &QAction::triggered, this, [this]
+  {
+    int i;
+    for ( i = tabWidget->tabBar()->count() - 1; i >= 0; i-- )
+    {
+      closeTab( i );
+    }
+  }
+         );
+  mTabBarContextMenu->addAction( actionCloseAllTabs );
+
   mTabBarContextMenu->exec( tabWidget->tabBar()->mapToGlobal( point ) );
 }
 
@@ -154,14 +167,18 @@ void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag
   cleanedMessage = cleanedMessage.prepend( prefix ).replace( '\n', QLatin1String( "<br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;" ) );
   w->appendHtml( cleanedMessage );
   w->verticalScrollBar()->setValue( w->verticalScrollBar()->maximum() );
+  tabWidget->show();
+  emptyLabel->hide();
 }
 
 void QgsMessageLogViewer::closeTab( int index )
 {
-  if ( tabWidget->count() == 1 )
-    qobject_cast<QPlainTextEdit *>( tabWidget->widget( 0 ) )->clear();
-  else
-    tabWidget->removeTab( index );
+  tabWidget->removeTab( index );
+  if ( tabWidget->count() == 0 )
+  {
+    tabWidget->hide();
+    emptyLabel->show();
+  }
 }
 
 bool QgsMessageLogViewer::eventFilter( QObject *object, QEvent *event )

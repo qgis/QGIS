@@ -915,22 +915,6 @@ tests:
         name: expected/field_calculator_points.gml
         type: vector
 
-  - algorithm: native:fieldcalculator
-    name: Test field calculator points (new API)
-    params:
-      FIELD_LENGTH: 10
-      FIELD_PRECISION: 3
-      FIELD_TYPE: 0
-      FORMULA: "\"id2\" *2"
-      INPUT:
-        name: points.gml
-        type: vector
-      NEW_FIELD_NAME: test
-    results:
-      OUTPUT:
-        name: expected/field_calculator_points.gml
-        type: vector
-
   - algorithm: qgis:advancedpythonfieldcalculator
     name: Test advanced python calculator
     params:

@@ -771,6 +771,13 @@ void QgsGeoreferencerMainWindow::extentsChangedQGisCanvas()
   }
 }
 
+void QgsGeoreferencerMainWindow::updateCanvasRotation()
+{
+  double degrees = mRotationEdit->value();
+  mCanvas->setRotation( degrees );
+  mCanvas->refresh();
+}
+
 // Canvas info slots (copy/pasted from QGIS :) )
 void QgsGeoreferencerMainWindow::showMouseCoords( const QgsPointXY &p )
 {
@@ -1069,6 +1076,26 @@ QLabel *QgsGeoreferencerMainWindow::createBaseLabelStatus()
 
 void QgsGeoreferencerMainWindow::createStatusBar()
 {
+  // add a widget to show/set current rotation
+  mRotationLabel = createBaseLabelStatus();
+  mRotationLabel->setObjectName( QStringLiteral( "mRotationLabel" ) );
+  mRotationLabel->setText( tr( "Rotation" ) );
+  mRotationLabel->setToolTip( tr( "Current clockwise map rotation in degrees" ) );
+  statusBar()->addPermanentWidget( mRotationLabel, 0 );
+
+  mRotationEdit = new QgsDoubleSpinBox( statusBar() );
+  mRotationEdit->setObjectName( QStringLiteral( "mRotationEdit" ) );
+  mRotationEdit->setClearValue( 0.0 );
+  mRotationEdit->setKeyboardTracking( false );
+  mRotationEdit->setMaximumWidth( 120 );
+  mRotationEdit->setDecimals( 1 );
+  mRotationEdit->setRange( -360.0, 360.0 );
+  mRotationEdit->setWrapping( true );
+  mRotationEdit->setSingleStep( 5.0 );
+  mRotationEdit->setSuffix( tr( " °" ) );
+  mRotationEdit->setToolTip( tr( "Current clockwise map rotation in degrees" ) );
+  statusBar()->addPermanentWidget( mRotationEdit, 0 );
+
   mTransformParamLabel = createBaseLabelStatus();
   mTransformParamLabel->setText( tr( "Transform: " ) + convertTransformEnumToString( mTransformParam ) );
   mTransformParamLabel->setToolTip( tr( "Current transform parametrisation" ) );
@@ -1098,6 +1125,9 @@ void QgsGeoreferencerMainWindow::setupConnections()
 
   // Connect extents changed - Use for need add again Raster
   connect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsGeoreferencerMainWindow::extentsChanged );
+
+  // Connect mapCanvas rotation widget
+  connect( mRotationEdit, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsGeoreferencerMainWindow::updateCanvasRotation );
 }
 
 void QgsGeoreferencerMainWindow::removeOldLayer()
@@ -1111,6 +1141,7 @@ void QgsGeoreferencerMainWindow::removeOldLayer()
   }
   mCanvas->setLayers( QList<QgsMapLayer *>() );
   mCanvas->clearCache();
+  mRotationEdit->clear();
   mCanvas->refresh();
 }
 

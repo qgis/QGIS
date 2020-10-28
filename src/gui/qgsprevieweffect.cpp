@@ -54,31 +54,16 @@ void QgsPreviewEffect::draw( QPainter *painter )
 
   switch ( mMode )
   {
-    case QgsPreviewEffect::PreviewGrayscale:
-    {
-      QRgb *line = nullptr;
-
-      for ( int y = 0; y < image.height(); y++ )
-      {
-        line = ( QRgb * )image.scanLine( y );
-        for ( int x = 0; x < image.width(); x++ )
-        {
-          int gray = 0.21 * qRed( line[x] ) + 0.72 * qGreen( line[x] ) + 0.07 * qBlue( line[x] );
-          line[x] = qRgb( gray, gray, gray );
-        }
-      }
-
-      painter->drawImage( offset, image );
-      break;
-    }
     case QgsPreviewEffect::PreviewMono:
     {
       QImage bwImage = image.convertToFormat( QImage::Format_Mono );
       painter->drawImage( offset, bwImage );
       break;
     }
+    case QgsPreviewEffect::PreviewGrayscale:
     case QgsPreviewEffect::PreviewProtanope:
     case QgsPreviewEffect::PreviewDeuteranope:
+    case QgsPreviewEffect::PreviewTritanope:
     {
       QRgb *line = nullptr;
 
@@ -104,49 +89,63 @@ QRgb QgsPreviewEffect::simulateColorBlindness( QRgb &originalColor, QgsPreviewEf
   int green = qGreen( originalColor );
   int blue = qBlue( originalColor );
 
-  //convert RGB to LMS color space
-  // (http://vision.psychol.cam.ac.uk/jdmollon/papers/colourmaps.pdf p245, equation 4) #spellok
-  double L = ( 17.8824 * red ) + ( 43.5161 * green ) + ( 4.11935 * blue );
-  double M = ( 3.45565 * red ) + ( 27.1554 * green ) + ( 3.86714 * blue );
-  double S = ( 0.0299566 * red ) + ( 0.184309 * green ) + ( 1.46709 * blue );
+  int r = red;
+  int g = green;
+  int b = blue;
 
   //simulate color blindness
+  //matrix values taken from Machado et al. (2009), https://doi.org/10.1109/TVCG.2009.113:
+  //https://www.inf.ufrgs.br/~oliveira/pubs_files/CVD_Simulation/CVD_Simulation.html
   switch ( mode )
   {
+    case PreviewGrayscale:
+      simulateGrayscale( r, g, b, red, green, blue );
+      break;
     case PreviewProtanope:
-      simulateProtanopeLMS( L, M, S );
+      simulateProtanope( r, g, b, red, green, blue );
       break;
     case PreviewDeuteranope:
-      simulateDeuteranopeLMS( L, M, S );
+      simulateDeuteranope( r, g, b, red, green, blue );
+      break;
+    case PreviewTritanope:
+      simulateTritanope( r, g, b, red, green, blue );
       break;
     default:
       break;
   }
 
-  //convert LMS back to RGB color space
-  //(http://vision.psychol.cam.ac.uk/jdmollon/papers/colourmaps.pdf p248, equation 6) #spellok
-  red = ( 0.080944 * L ) + ( -0.130504 * M ) + ( 0.116721 * S );
-  green = ( -0.0102485 * L ) + ( 0.0540194 * M ) + ( -0.113615 * S );
-  blue = ( -0.000365294 * L ) + ( -0.00412163 * M ) + ( 0.693513 * S );
-
   //restrict values to 0-255
-  red = std::max( std::min( 255, red ), 0 );
-  green = std::max( std::min( 255, green ), 0 );
-  blue = std::max( std::min( 255, blue ), 0 );
+  r = std::max( std::min( 255, r ), 0 );
+  g = std::max( std::min( 255, g ), 0 );
+  b = std::max( std::min( 255, b ), 0 );
 
-  return qRgb( red, green, blue );
+  return qRgb( r, g, b );
 }
 
-void QgsPreviewEffect::simulateProtanopeLMS( double &L, double &M, double &S )
+void QgsPreviewEffect::simulateGrayscale( int &r, int &g, int &b, int &red, int &green, int &blue )
 {
-  //adjust L component to simulate vision of Protanope
-  //(http://vision.psychol.cam.ac.uk/jdmollon/papers/colourmaps.pdf p248, equation 5) #spellok
-  L = ( 2.02344 * M ) + ( -2.52581 * S );
+  r = ( 0.2126 * red ) + ( 0.7152 * green ) + ( 0.0722 * blue );
+  g = r;
+  b = r;
 }
 
-void QgsPreviewEffect::simulateDeuteranopeLMS( double &L, double &M, double &S )
+void QgsPreviewEffect::simulateProtanope( int &r, int &g, int &b, int &red, int &green, int &blue )
 {
-  //adjust M component to simulate vision of Deuteranope
-  //(http://vision.psychol.cam.ac.uk/jdmollon/papers/colourmaps.pdf p248, equation 5) #spellok
-  M = ( 0.494207 * L ) + ( 1.24827 * S );
+  r = ( 0.152286 * red ) + ( 1.052583 * green ) + ( -0.204868 * blue );
+  g = ( 0.114503 * red ) + ( 0.786281 * green ) + ( 0.099216 * blue );
+  b = ( -0.003882 * red ) + ( -0.048116 * green ) + ( 1.051998 * blue );
+}
+
+void QgsPreviewEffect::simulateDeuteranope( int &r, int &g, int &b, int &red, int &green, int &blue )
+{
+  r = ( 0.367322 * red ) + ( 0.860646 * green ) + ( -0.227968 * blue );
+  g = ( 0.280085 * red ) + ( 0.672501 * green ) + ( 0.047413 * blue );
+  b = ( -0.011820 * red ) + ( 0.042940 * green ) + ( 0.968881 * blue );
+}
+
+void QgsPreviewEffect::simulateTritanope( int &r, int &g, int &b, int &red, int &green, int &blue )
+{
+  r = ( 1.255528 * red ) + ( -0.076749 * green ) + ( -0.178779 * blue );
+  g = ( -0.078411 * red ) + ( 0.930809 * green ) + ( 0.147602 * blue );
+  b = ( 0.004733 * red ) + ( 0.691367 * green ) + ( 0.303900 * blue );
 }
