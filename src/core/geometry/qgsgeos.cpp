@@ -2491,8 +2491,10 @@ geos::unique_ptr QgsGeos::reshapeLine( const GEOSGeometry *line, const GEOSGeome
     geos::unique_ptr intersectGeom( GEOSIntersection_r( geosinit()->ctxt, line, reshapeLineGeos ) );
     if ( intersectGeom )
     {
-      atLeastTwoIntersections = ( GEOSGeomTypeId_r( geosinit()->ctxt, intersectGeom.get() ) == GEOS_MULTIPOINT
-                                  && GEOSGetNumGeometries_r( geosinit()->ctxt, intersectGeom.get() ) > 1 );
+      const int geomType = GEOSGeomTypeId_r( geosinit()->ctxt, intersectGeom.get() );
+      atLeastTwoIntersections = ( geomType == GEOS_MULTIPOINT && GEOSGetNumGeometries_r( geosinit()->ctxt, intersectGeom.get() ) > 1 )
+                                || ( geomType == GEOS_GEOMETRYCOLLECTION && GEOSGetNumGeometries_r( geosinit()->ctxt, intersectGeom.get() ) > 0 ) // a collection implies at least two points!
+                                || ( geomType == GEOS_MULTILINESTRING && GEOSGetNumGeometries_r( geosinit()->ctxt, intersectGeom.get() ) > 0 );
       // one point is enough when extending line at its endpoint
       if ( GEOSGeomTypeId_r( geosinit()->ctxt, intersectGeom.get() ) == GEOS_POINT )
       {
