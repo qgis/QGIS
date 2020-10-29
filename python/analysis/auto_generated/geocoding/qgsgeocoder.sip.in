@@ -46,7 +46,7 @@ Geocodes a ``feature``.
 
 If implemented by the geocoder (i.e. :py:func:`~QgsGeocoderInterface.flags` returns the QgsGeocoderInterface.Flag.GeocodesFeatures flag), a list of matching results will be returned.
 
-The optional ``feedback`` argument can be used to provider cancelation support.
+The optional ``feedback`` argument can be used to provider cancellation support.
 %End
 
     virtual QgsFields appendedFields() const;
@@ -73,7 +73,7 @@ Geocodes a ``string``.
 
 If implemented by the geocoder (i.e. :py:func:`~QgsGeocoderInterface.flags` returns the QgsGeocoderInterface.Flag.GeocodesStrings flag), a list of matching results will be returned.
 
-The optional ``feedback`` argument can be used to provider cancelation support.
+The optional ``feedback`` argument can be used to provider cancellation support.
 %End
 
 };
