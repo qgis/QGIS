@@ -17,12 +17,14 @@
 
 #include "qgseptdecoder.h"
 #include "qgseptpointcloudindex.h"
+#include "qgspointcloudattribute.h"
 #include "qgsvector3d.h"
 #include "qgsconfig.h"
 
 #include <QFile>
 #include <iostream>
 #include <memory>
+#include <cstring>
 
 #if defined ( HAVE_ZSTD )
 #include <zstd.h>
@@ -36,96 +38,83 @@
 ///@cond PRIVATE
 
 template <typename T>
-bool _storeTripleToStream( QByteArray &data, int position, int size, T *value )
+bool _storeToStream( QByteArray &data, size_t position, QgsPointCloudAttribute::DataType type, T value )
 {
-  if ( size == 3 * sizeof( qint32 ) )
+  char *s = data.data();
+  switch ( type )
   {
-    for ( int i = 0; i < 3; ++i )
+    case QgsPointCloudAttribute::Char:
     {
-      qint32 val = qint32( value[i] );
-      data.insert( position + i * sizeof( T ), ( char * )( &val ), sizeof( qint32 ) );
+      char val = char( value );
+      s[position] = val;
+      break;
+    }
+    case QgsPointCloudAttribute::Short:
+    {
+      short val = short( value );
+      memcpy( s + position, ( char * )( &val ), sizeof( short ) );
+      break;
+    }
+    case QgsPointCloudAttribute::Float:
+    {
+      float val = float( value );
+      memcpy( s + position, ( char * )( &val ),  sizeof( float ) );
+      break;
+    }
+    case QgsPointCloudAttribute::Int32:
+    {
+      qint32 val = qint32( value );
+      memcpy( s + position, ( char * )( &val ), sizeof( qint32 ) );
+      break;
+    }
+    case QgsPointCloudAttribute::Double:
+    {
+      double val = double( value );
+      memcpy( s + position, ( char * )( &val ), sizeof( double ) );
+      break;
     }
   }
-  else if ( size == 3 * sizeof( double ) )
-  {
-    for ( int i = 0; i < 3; ++i )
-    {
-      double val = double( value[i] );
-      data.insert( position + i * sizeof( T ), ( char * )( &val ), sizeof( double ) );
-    }
-  }
-  else
-  {
-    // unsupported
-    return false;
-  }
+
   return true;
 }
 
-template <typename T>
-bool _storeToStream( QByteArray &data, int position, int size, T value )
+bool _serialize( QByteArray &data, size_t outputPosition, const QgsPointCloudAttribute &outputAttribute, const char *input, const QgsPointCloudAttribute &inputAttribute, size_t inputPosition )
 {
-  if ( size == sizeof( char ) )
+  if ( outputAttribute.type() == inputAttribute.type() )
   {
-    char val = char( value );
-    data[position] = val;
-  }
-  else if ( size == sizeof( qint32 ) )
-  {
-    qint32 val = qint32( value );
-    data.insert( position, ( char * )( &val ), sizeof( qint32 ) );
-  }
-  else if ( size == sizeof( double ) )
-  {
-    double val = double( value );
-    data.insert( position, ( char * )( &val ), sizeof( double ) );
-  }
-  else
-  {
-    // unsupported
-    return false;
-  }
-  return true;
-}
-
-bool _serialize( QByteArray &data, int outputPosition, int outputSize, const char *input, int inputSize, int inputPosition )
-{
-  if ( inputSize == outputSize )
-  {
-    data.insert( outputPosition, input + inputPosition, inputSize );
+    memcpy( data.data() + outputPosition, input + inputPosition, inputAttribute.size() );
     return true;
   }
 
-  if ( inputSize == sizeof( char ) )
+  switch ( inputAttribute.type() )
   {
-    char val = *( input + inputPosition );
-    return _storeToStream<char>( data, outputPosition, outputSize, val );
+    case QgsPointCloudAttribute::Char:
+    {
+      char val = *( input + inputPosition );
+      return _storeToStream<char>( data, outputPosition, outputAttribute.type(), val );
+    }
+    case QgsPointCloudAttribute::Short:
+    {
+      short val = *( short * )( input + inputPosition );
+      return _storeToStream<short>( data, outputPosition, outputAttribute.type(), val );
+    }
+    case QgsPointCloudAttribute::Float:
+    {
+      float val = *( float * )( input + inputPosition );
+      return _storeToStream<float>( data, outputPosition, outputAttribute.type(), val );
+    }
+    case QgsPointCloudAttribute::Int32:
+    {
+      qint32 val = *( qint32 * )( input + inputPosition );
+      return _storeToStream<qint32>( data, outputPosition, outputAttribute.type(), val );
+    }
+    case QgsPointCloudAttribute::Double:
+    {
+      double val = *( double * )( input + inputPosition );
+      return _storeToStream<double>( data, outputPosition, outputAttribute.type(), val );
+    }
   }
-  else if ( inputSize == sizeof( qint32 ) )
-  {
-    qint32 val = *( qint32 * )( input + inputPosition );
-    return _storeToStream<qint32>( data, outputPosition, outputSize, val );
-  }
-  else if ( inputSize == sizeof( double ) )
-  {
-    double val = *( double * )( input + inputPosition );
-    return _storeToStream<double>( data, outputPosition, outputSize, val );
-  }
-  else if ( inputSize == 3 * sizeof( qint32 ) )
-  {
-    qint32 *val = ( qint32 * )( input + inputPosition );
-    return _storeTripleToStream<qint32>( data, outputPosition, outputSize, val );
-  }
-  else if ( inputSize == 3 * sizeof( double ) )
-  {
-    double *val = ( double * )( input + inputPosition );
-    return _storeTripleToStream<double>( data, outputPosition, outputSize, val );
-  }
-  else
-  {
-    // unsupported
-    return false;
-  }
+  return true;
 }
 
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -135,23 +124,24 @@ QgsPointCloudBlock *_decompressBinary( const QByteArray &dataUncompressed, const
   const int pointRecordSize = attributes.pointRecordSize( );
   const int requestedPointRecordSize = requestedAttributes.pointRecordSize();
   const int count = dataUncompressed.size() / pointRecordSize;
-  QByteArray data( nullptr, requestedPointRecordSize * count );
+  QByteArray data;
+  data.resize( requestedPointRecordSize * count );
   const char *s = dataUncompressed.data();
 
   for ( int i = 0; i < count; ++i )
   {
-    int outputOffset = 0;
+    size_t outputOffset = 0;
     const QVector<QgsPointCloudAttribute> requestedAttributesVector = requestedAttributes.attributes();
     for ( const QgsPointCloudAttribute &requestedAttribute : requestedAttributesVector )
     {
-      int inputAttributeSize;
       int inputAttributeOffset;
-      if ( attributes.offset( requestedAttribute.name(), inputAttributeOffset, inputAttributeSize ) )
+      const QgsPointCloudAttribute *inputAttribute = attributes.find( requestedAttribute.name(), inputAttributeOffset );
+      if ( !inputAttribute )
       {
         return nullptr;
       }
 
-      _serialize( data, i * requestedPointRecordSize + outputOffset, requestedAttribute.size(), s, inputAttributeSize, i * pointRecordSize + inputAttributeOffset );
+      _serialize( data, i * requestedPointRecordSize + outputOffset, requestedAttribute, s, *inputAttribute, i * pointRecordSize + inputAttributeOffset );
 
       outputOffset += requestedAttribute.size();
     }
@@ -257,8 +247,9 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
   const size_t count = f.get_header().point_count;
   char buf[256]; // a buffer large enough to hold our point
 
-  const int requestedPointRecordSize = requestedAttributes.pointRecordSize();
-  QByteArray data( nullptr, requestedPointRecordSize * count );
+  const size_t requestedPointRecordSize = requestedAttributes.pointRecordSize();
+  QByteArray data;
+  data.resize( requestedPointRecordSize * count );
 
   for ( size_t i = 0 ; i < count ; i ++ )
   {
@@ -269,14 +260,21 @@ QgsPointCloudBlock *QgsEptDecoder::decompressLaz( const QString &filename,
     for ( const QgsPointCloudAttribute &requestedAttribute : requestedAttributesVector )
     {
 
-      if ( requestedAttribute.name() == QStringLiteral( "position" ) )
+      if ( requestedAttribute.name() == QStringLiteral( "X" ) )
       {
-        QVector<qint32> position = {p.x, p.y, p.z};
-        _storeTripleToStream<qint32>( data, i * requestedPointRecordSize + outputOffset, requestedAttribute.size(), position.data() );
+        _storeToStream<qint32>( data, i * requestedPointRecordSize + outputOffset, requestedAttribute.type(), p.x );
       }
-      else if ( requestedAttribute.name() == QStringLiteral( "classification" ) )
+      else if ( requestedAttribute.name() == QStringLiteral( "Y" ) )
       {
-        _storeToStream<char>( data, i * requestedPointRecordSize + outputOffset, requestedAttribute.size(), p.classification );
+        _storeToStream<qint32>( data, i * requestedPointRecordSize + outputOffset, requestedAttribute.type(), p.y );
+      }
+      else if ( requestedAttribute.name() == QStringLiteral( "Z" ) )
+      {
+        _storeToStream<qint32>( data, i * requestedPointRecordSize + outputOffset, requestedAttribute.type(), p.z );
+      }
+      else if ( requestedAttribute.name() == QStringLiteral( "Classification" ) )
+      {
+        _storeToStream<char>( data, i * requestedPointRecordSize + outputOffset, requestedAttribute.type(), p.classification );
       }
       outputOffset += requestedAttribute.size();
     }

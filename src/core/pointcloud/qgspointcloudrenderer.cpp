@@ -140,8 +140,10 @@ bool QgsPointCloudLayerRenderer::render()
       break;
     }
     QgsPointCloudAttributeCollection attributes;
-    attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "position" ), 3 * 4 ) );
-    attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Classification" ), 1 ) );
+    attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "X" ), QgsPointCloudAttribute::Int32 ) );
+    attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Y" ), QgsPointCloudAttribute::Int32 ) );
+    attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Z" ), QgsPointCloudAttribute::Int32 ) );
+    attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Classification" ), QgsPointCloudAttribute::Char ) );
     QgsPointCloudRequest request;
     request.setAttributes( attributes );
     std::unique_ptr<QgsPointCloudBlock> block( pc->nodeData( n, request ) );

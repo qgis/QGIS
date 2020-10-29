@@ -20,11 +20,51 @@
 
 QgsPointCloudAttribute::QgsPointCloudAttribute() = default;
 
-QgsPointCloudAttribute::QgsPointCloudAttribute( const QString &name, int size )
+QgsPointCloudAttribute::QgsPointCloudAttribute( const QString &name, DataType type )
   : mName( name )
-  , mSize( size )
+  , mType( type )
 {
+  updateSize();
 }
+
+QString QgsPointCloudAttribute::name() const
+{
+  return mName;
+}
+
+size_t QgsPointCloudAttribute::size() const
+{
+  return mSize;
+}
+
+QgsPointCloudAttribute::DataType QgsPointCloudAttribute::type() const
+{
+  return mType;
+}
+
+void QgsPointCloudAttribute::updateSize()
+{
+  switch ( mType )
+  {
+    case DataType::Char:
+      mSize = 1;
+      break;
+    case DataType::Short:
+      mSize = 2;
+      break;
+    case DataType::Float:
+      mSize = 4;
+      break;
+    case DataType::Int32:
+      mSize = 4;
+      break;
+    case DataType::Double:
+      mSize = 8;
+      break;
+  }
+}
+
+// //////////////////
 
 QgsPointCloudAttributeCollection::QgsPointCloudAttributeCollection() = default;
 
@@ -33,8 +73,8 @@ QgsPointCloudAttributeCollection::QgsPointCloudAttributeCollection( const QVecto
 {
   for ( int i = 0; i < mAttributes.size(); ++i )
   {
-    const QgsPointCloudAttribute &attr = mAttributes.at( i );
-    mSize += attr.size();
+    const QgsPointCloudAttribute &attribute = mAttributes.at( i );
+    mSize += attribute.size();
   }
 
 }
@@ -50,7 +90,7 @@ QVector<QgsPointCloudAttribute> QgsPointCloudAttributeCollection::attributes() c
   return mAttributes;
 }
 
-bool QgsPointCloudAttributeCollection::offset( const QString &attributeName, int &offset, int &size ) const
+const QgsPointCloudAttribute *QgsPointCloudAttributeCollection::find( const QString &attributeName, int &offset ) const
 {
 
   int off = 0;
@@ -61,8 +101,7 @@ bool QgsPointCloudAttributeCollection::offset( const QString &attributeName, int
     if ( attr.name() == attributeName )
     {
       offset = off;
-      size = attr.size();
-      return false;
+      return &attr;
     }
     else
     {
@@ -71,25 +110,5 @@ bool QgsPointCloudAttributeCollection::offset( const QString &attributeName, int
   }
 
   // not found
-  return true;
-}
-
-QString QgsPointCloudAttribute::name() const
-{
-  return mName;
-}
-
-int QgsPointCloudAttribute::size() const
-{
-  return mSize;
-}
-
-void QgsPointCloudAttribute::setName( const QString &name )
-{
-  mName = name;
-}
-
-void QgsPointCloudAttribute::setSize( int size )
-{
-  mSize = size;
+  return nullptr;
 }

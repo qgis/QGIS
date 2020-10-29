@@ -20,10 +20,8 @@
 
 #include "qgis.h"
 #include "qgis_core.h"
-#include <QPair>
 #include <QString>
 #include <QVector>
-#include <QByteArray>
 
 #define SIP_NO_FILE
 
@@ -38,26 +36,36 @@
 class CORE_EXPORT QgsPointCloudAttribute
 {
   public:
+    //! Systems of unit measurement
+    enum DataType
+    {
+      Char, //!< Char 1 byte
+      Short, //!< Short int 2 bytes
+      Int32, //!< Int32 4 bytes
+      Float, //!< Float 4 bytes
+      Double, //!< Double 8 bytes
+    };
+
     //! Ctor
     QgsPointCloudAttribute();
     //! Ctor
-    QgsPointCloudAttribute( const QString &name, int size );
+    QgsPointCloudAttribute( const QString &name, DataType type );
 
     //! Returns name of the attribute
     QString name() const;
 
     //! Returns size of the attribute in bytes
-    int size() const;
+    size_t size() const;
 
-    //! Sets the name
-    void setName( const QString &name );
-
-    //! Sets the size in bytes
-    void setSize( int size );
+    //! Returns the data type
+    DataType type() const;
 
   private:
+    void updateSize();
+
     QString mName;
-    int mSize;
+    size_t mSize = 0;
+    DataType mType;
 };
 
 /**
@@ -80,11 +88,16 @@ class CORE_EXPORT QgsPointCloudAttributeCollection
     //! Returns all attributes
     QVector<QgsPointCloudAttribute> attributes() const;
 
-    //! Returns true for error
-    bool offset( const QString &attributeName, int &offset, int &size ) const;
+    /**
+     * Finds the attribute with the name
+     *
+     * Returns nullptr if not found
+     */
+    const QgsPointCloudAttribute *find( const QString &attributeName, int &offset ) const;
 
     //! Returns total size of record
     int pointRecordSize() const { return mSize; }
+
   private:
     int mSize = 0;
     QVector<QgsPointCloudAttribute> mAttributes;
