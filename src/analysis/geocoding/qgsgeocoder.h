@@ -58,7 +58,7 @@ class ANALYSIS_EXPORT QgsGeocoderInterface
      *
      * If implemented by the geocoder (i.e. flags() returns the QgsGeocoderInterface::Flag::GeocodesFeatures flag), a list of matching results will be returned.
      *
-     * The optional \a feedback argument can be used to provider cancelation support.
+     * The optional \a feedback argument can be used to provider cancellation support.
      */
     virtual QList< QgsGeocoderResult > geocodeFeature( const QgsFeature &feature, const QgsGeocoderContext &context, QgsFeedback *feedback = nullptr ) const;
 
@@ -85,7 +85,7 @@ class ANALYSIS_EXPORT QgsGeocoderInterface
      *
      * If implemented by the geocoder (i.e. flags() returns the QgsGeocoderInterface::Flag::GeocodesStrings flag), a list of matching results will be returned.
      *
-     * The optional \a feedback argument can be used to provider cancelation support.
+     * The optional \a feedback argument can be used to provider cancellation support.
      */
     virtual QList< QgsGeocoderResult > geocodeString( const QString &string, const QgsGeocoderContext &context, QgsFeedback *feedback = nullptr ) const;
 
