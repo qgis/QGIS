@@ -50,9 +50,9 @@ QgsProcessingMeshDatasetGroupsWidget::QgsProcessingMeshDatasetGroupsWidget( QWid
 
   mToolButton->setPopupMode( QToolButton::InstantPopup );
   QMenu *toolButtonMenu = new QMenu( this );
-  connect( toolButtonMenu->addAction( tr( "Current active dataset group" ) ),
+  connect( toolButtonMenu->addAction( tr( "Current Active Dataset Group" ) ),
            &QAction::triggered, this, &QgsProcessingMeshDatasetGroupsWidget::selectCurrentActiveDatasetGroup );
-  connect( toolButtonMenu->addAction( tr( "Select in available dataset groups" ) ),
+  connect( toolButtonMenu->addAction( tr( "Select in Available Dataset Groups" ) ),
            &QAction::triggered, this, &QgsProcessingMeshDatasetGroupsWidget::showDialog );
 
   mToolButton->setMenu( toolButtonMenu );
@@ -211,6 +211,7 @@ void QgsProcessingMeshDatasetGroupsWidgetWrapper::setMeshLayerWrapperValue( cons
   if ( mProcessingContextGenerator )
     context = mProcessingContextGenerator->processingContext();
 
+  bool needLayerOwnership = !context;
   if ( !context )
   {
     tmpContext = qgis::make_unique< QgsProcessingContext >();
@@ -218,6 +219,15 @@ void QgsProcessingMeshDatasetGroupsWidgetWrapper::setMeshLayerWrapperValue( cons
   }
 
   QgsMeshLayer *meshLayer = QgsProcessingParameters::parameterAsMeshLayer( wrapper->parameterDefinition(), wrapper->parameterValue(), *context );
+  if ( needLayerOwnership )
+  {
+    mTemporarytMeshLayer.reset( qobject_cast< QgsMeshLayer * >( context->takeResultLayer( meshLayer->id() ) ) );
+    meshLayer = mTemporarytMeshLayer.get();
+  }
+  else
+  {
+    // don't need ownership of this layer - it wasn't owned by temporary context (so e.g. is owned by the project or cotext in context generator)
+  }
 
   if ( mWidget )
     mWidget->setMeshLayer( meshLayer );
@@ -236,6 +246,7 @@ QWidget *QgsProcessingMeshDatasetGroupsWidgetWrapper::createWidget() SIP_FACTORY
 
 void QgsProcessingMeshDatasetGroupsWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
 {
+  Q_UNUSED( context );
   if ( mWidget )
     mWidget->setValue( value );
 }
@@ -316,6 +327,7 @@ void QgsProcessingMeshDatasetTimeWidgetWrapper::setMeshLayerWrapperValue( const 
   if ( mProcessingContextGenerator )
     context = mProcessingContextGenerator->processingContext();
 
+  bool needLayerOwnership = !context;
   if ( !context )
   {
     tmpContext = qgis::make_unique< QgsProcessingContext >();
@@ -323,6 +335,15 @@ void QgsProcessingMeshDatasetTimeWidgetWrapper::setMeshLayerWrapperValue( const 
   }
 
   QgsMeshLayer *meshLayer = QgsProcessingParameters::parameterAsMeshLayer( wrapper->parameterDefinition(), wrapper->parameterValue(), *context );
+  if ( needLayerOwnership )
+  {
+    mTemporarytMeshLayer.reset( qobject_cast< QgsMeshLayer * >( context->takeResultLayer( meshLayer->id() ) ) );
+    meshLayer = mTemporarytMeshLayer.get();
+  }
+  else
+  {
+    // don't need ownership of this layer - it wasn't owned by temporary context (so e.g. is owned by the project or cotext in context generator)
+  }
 
   if ( mWidget )
     mWidget->setMeshLayer( meshLayer );
@@ -368,6 +389,7 @@ QWidget *QgsProcessingMeshDatasetTimeWidgetWrapper::createWidget()
 
 void QgsProcessingMeshDatasetTimeWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
 {
+  Q_UNUSED( context );
   if ( mWidget )
     mWidget->setValue( value );
 }
@@ -450,7 +472,7 @@ void QgsProcessingMeshDatasetTimeWidget::setValue( const QVariant &value )
     radioButtonDefinedDateTime->setChecked( true );
     whileBlocking( dateTimeEdit )->setDate( mValue.value( QStringLiteral( "value" ) ).toDate() );
   }
-  else if ( type == QStringLiteral( "current-canvas-time" ) )
+  else if ( type == QStringLiteral( "current-context-time" ) )
   {
     whileBlocking( radioButtonCurrentCanvasTime )->setChecked( true );
   }
@@ -556,8 +578,7 @@ void QgsProcessingMeshDatasetTimeWidget::buildValue()
   }
   else if ( radioButtonCurrentCanvasTime->isChecked() && mCanvas )
   {
-    mValue[QStringLiteral( "type" )] = QStringLiteral( "current-canvas-time" );
-    mValue[QStringLiteral( "value" )] = mCanvas->mapSettings().temporalRange().begin();
+    mValue[QStringLiteral( "type" )] = QStringLiteral( "current-context-time" );
   }
 
   emit changed();

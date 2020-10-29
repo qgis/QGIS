@@ -19,7 +19,7 @@
      <item>
       <widget class="QRadioButton" name="radioButtonCurrentCanvasTime">
        <property name="text">
-        <string>Current Canvas Time</string>
+        <string>Current canvas time</string>
        </property>
        <property name="checked">
         <bool>true</bool>
@@ -29,7 +29,7 @@
      <item>
       <widget class="QRadioButton" name="radioButtonDefinedDateTime">
        <property name="text">
-        <string>Defined Date/Time</string>
+        <string>Defined date/time</string>
        </property>
        <property name="checked">
         <bool>false</bool>
@@ -39,7 +39,7 @@
      <item>
       <widget class="QRadioButton" name="radioButtonDatasetGroupTimeStep">
        <property name="text">
-        <string>Dataset Group Time Step</string>
+        <string>Dataset group time step</string>
        </property>
       </widget>
      </item>
@@ -61,7 +61,7 @@
    <item>
     <widget class="QLabel" name="labelCurrentCanvasTime">
      <property name="text">
-      <string>Current Canvas Time</string>
+      <string>Current canvas time</string>
      </property>
     </widget>
    </item>

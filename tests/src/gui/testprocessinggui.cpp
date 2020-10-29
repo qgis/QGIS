@@ -9006,6 +9006,7 @@ void TestProcessingGui::testMeshDatasetWrapper()
   QCOMPARE( groupsList.at( 0 ).toInt(), 1 );
   QString pythonString = groupsDefinition.valueAsPythonString( groupsValue, context );
   QCOMPARE( pythonString, QStringLiteral( "[1]" ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( groupsValue ), QList<int>( {1} ) );
 
   // 2 datasets on vertices
   settings = layer->rendererSettings();
@@ -9019,6 +9020,7 @@ void TestProcessingGui::testMeshDatasetWrapper()
 
   pythonString = groupsDefinition.valueAsPythonString( groupsWrapper.widgetValue(), context );
   QCOMPARE( pythonString, QStringLiteral( "[1,2]" ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( groupsWrapper.widgetValue() ), QList<int>() << 1 << 2 );
 
   datasetTimeWidget->radioButtonDatasetGroupTimeStep->setChecked( true );
   QCOMPARE( layerSpy.count(), 1 );
@@ -9031,15 +9033,19 @@ void TestProcessingGui::testMeshDatasetWrapper()
   QCOMPARE( timeValueMap[QStringLiteral( "type" )], QStringLiteral( "dataset-time-step" ) );
   pythonString = timeDefinition.valueAsPythonString( timeWrapper.widgetValue(), context );
   QCOMPARE( pythonString, QStringLiteral( "{'type': 'dataset-time-step','value': QgsMeshDatasetIndex(1,0)}" ) );
-
+  QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( timeWrapper.widgetValue() ), QStringLiteral( "dataset-time-step" ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetTime::timeValueAsDatasetIndex( timeWrapper.widgetValue() ), QgsMeshDatasetIndex( 1, 0 ) );
 
   datasetTimeWidget->radioButtonDefinedDateTime->setChecked( true );
-  datasetTimeWidget->dateTimeEdit->setDateTime( QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 1, 0, Qt::UTC ) ) );
+  QDateTime dateTime = QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 1, 0, Qt::UTC ), Qt::UTC );
+  datasetTimeWidget->dateTimeEdit->setDateTime( dateTime );
   QCOMPARE( layerSpy.count(), 1 );
   QCOMPARE( groupsSpy.count(), 3 );
   QCOMPARE( timeSpy.count(), 6 );
   pythonString = timeDefinition.valueAsPythonString( timeWrapper.widgetValue(), context );
   QCOMPARE( pythonString, QStringLiteral( "{'type': 'defined-date-time','value': QDateTime(QDate(2020, 1, 1), QTime(0, 1, 0))}" ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( timeWrapper.widgetValue() ), QStringLiteral( "defined-date-time" ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetTime::timeValueAsDefinedDateTime( timeWrapper.widgetValue() ), dateTime );
 
   QVERIFY( !datasetTimeWidget->radioButtonCurrentCanvasTime->isEnabled() );
   mapCanvas->setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2021, 1, 1 ), QTime( 0, 3, 0, Qt::UTC ) ), QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 5, 0, Qt::UTC ) ) ) );
@@ -9050,7 +9056,8 @@ void TestProcessingGui::testMeshDatasetWrapper()
   QCOMPARE( groupsSpy.count(), 3 );
   QCOMPARE( timeSpy.count(), 8 );
   pythonString = timeDefinition.valueAsPythonString( timeWrapper.widgetValue(), context );
-  QCOMPARE( pythonString, QStringLiteral( "{'type': 'current-canvas-time','value': QDateTime(QDate(2021, 1, 1), QTime(0, 3, 0))}" ) );
+  QCOMPARE( pythonString, QStringLiteral( "{'type': 'current-context-time'}" ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( timeWrapper.widgetValue() ), QStringLiteral( "current-context-time" ) );
 
   // 0 dataset on vertices
   settings = layer->rendererSettings();
@@ -9061,6 +9068,7 @@ void TestProcessingGui::testMeshDatasetWrapper()
   QVERIFY( !datasetTimeWidget->isEnabled() );
   pythonString = timeDefinition.valueAsPythonString( timeWrapper.widgetValue(), context );
   QCOMPARE( pythonString, QStringLiteral( "{'type': 'static'}" ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( timeWrapper.widgetValue() ), QStringLiteral( "static" ) );
 
   // 1 static dataset on vertices
   settings = layer->rendererSettings();
@@ -9071,6 +9079,7 @@ void TestProcessingGui::testMeshDatasetWrapper()
   QVERIFY( !datasetTimeWidget->isEnabled() );
   pythonString = timeDefinition.valueAsPythonString( timeWrapper.widgetValue(), context );
   QCOMPARE( pythonString, QStringLiteral( "{'type': 'static'}" ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( timeWrapper.widgetValue() ), QStringLiteral( "static" ) );
 }
 
 void TestProcessingGui::testModelGraphicsView()

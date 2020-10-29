@@ -603,6 +603,18 @@ QString QgsProcessingUtils::variantToPythonLiteral( const QVariant &value )
       return parts.join( ',' ).prepend( '{' ).append( '}' );
     }
 
+    case QVariant::DateTime:
+    {
+      const QDateTime dateTime = value.toDateTime();
+      return QStringLiteral( "QDateTime(QDate(%1, %2, %3), QTime(%4, %5, %6))" )
+             .arg( dateTime.date().year() )
+             .arg( dateTime.date().month() )
+             .arg( dateTime.date().day() )
+             .arg( dateTime.time().hour() )
+             .arg( dateTime.time().minute() )
+             .arg( dateTime.time().second() );
+    }
+
     default:
       break;
   }

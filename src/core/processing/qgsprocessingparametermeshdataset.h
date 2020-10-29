@@ -23,6 +23,7 @@
 /**
  * A parameter for processing algorithms that need a list of mesh dataset groups
  * A valid value for this parameter is a list (QVariantList) of dataset groups index in the mesh layer scope
+ * Dataset group index can be evaluated with the method valueAsDatasetGroup()
  *
  * \note This parameter is dependent on a mesh layer parameter (see QgsProcessingParameterMeshLayer)
  *
@@ -47,7 +48,7 @@ class CORE_EXPORT QgsProcessingParameterMeshDatasetGroups : public QgsProcessing
         QgsMeshDatasetGroupMetadata::DataType dataType = QgsMeshDatasetGroupMetadata::DataOnVertices,
         bool optional = false );
 
-    QgsProcessingParameterDefinition *clone() const override;
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override;
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
@@ -60,12 +61,17 @@ class CORE_EXPORT QgsProcessingParameterMeshDatasetGroups : public QgsProcessing
     //! Returns the name of the mesh layer parameter
     QString meshLayerParameterName() const;
 
-    //! Return the data type supported by the parameter
+    //! Returns the data type supported by the parameter
     QgsMeshDatasetGroupMetadata::DataType dataType() const {return mDataType;}
+
+    //! Returns the \a value as a list if dataset group indexes
+    static QList<int> valueAsDatasetGroup( const QVariant &value );
 
   private:
     QString mMeshLayerParameterName;
     QgsMeshDatasetGroupMetadata::DataType mDataType = QgsMeshDatasetGroupMetadata::DataOnVertices;
+
+    static bool valueIsAcceptable( const QVariant &input );
 };
 
 /**
@@ -118,8 +124,8 @@ class CORE_EXPORT QgsProcessingParameterTypeMeshDatasetGroups : public QgsProces
  * A parameter for processing algorithms that need a list of mesh dataset index from time parameter
  * A valid value for this parameter is a map (QVariantMap) with in this form:
  *
- * - "type" : the type of time settings "current-canvas-time", "defined-date-time", "dataset-time-step" or "none" if all the dataset groups are static
- * - "value" : nothing if type is "current-canvas-time", QDateTime if "defined-date-time" or, for "dataset_time_step",  list of two int representing the dataset index that is the reference for the time step
+ * - "type" : the type of time settings "current-context-time", "defined-date-time", "dataset-time-step" or "none" if all the dataset groups are static
+ * - "value" : nothing if type is "static" or "current-context-time", QDateTime if "defined-date-time" or, for "dataset_time_step",  list of two int representing the dataset index that is the reference for the time step
  *
  * \note This parameter is dependent on a mesh layer parameter (\see QgsProcessingParameterMeshLayer)
  * and on mesh datast group parameter (\see QgsProcessingParameterMeshDatasetGroups)
@@ -146,7 +152,7 @@ class CORE_EXPORT QgsProcessingParameterMeshDatasetTime : public QgsProcessingPa
       const QString &datasetGroupParameterName = QString(),
       bool optional = false );
 
-    QgsProcessingParameterDefinition *clone() const override;
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override;
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
@@ -162,10 +168,38 @@ class CORE_EXPORT QgsProcessingParameterMeshDatasetTime : public QgsProcessingPa
     //! Returns the name of the dataset groups parameter
     QString datasetGroupParameterName() const;
 
+    /**
+     * Returns the \a dataset value time type as a string :
+     * current-context-time : the time is store in the processing context (e.g. current canvas time), in this case the value does not contain any time value
+     * defined-date-time : absolute time of type QDateTime
+     * dataset-time-step : a time step of existing dataset, in this case the time takes the form of a QMeshDatasetIndex with value to the corresponding dataset index
+     * static : dataset groups are all static, in this case the value does not contain any time value
+     */
+    static QString valueAsTimeType( const QVariant &value );
+
+    /**
+     * Returns the \a value as a QgsMeshDatasetIndex if the value has "dataset-time-step" type.
+     * If the value has the wrong type return an invalid dataset index
+     *
+     * \see valueAsTimeType()
+     */
+    static QgsMeshDatasetIndex timeValueAsDatasetIndex( const QVariant &value );
+
+    /**
+     * Returns the \a value as a QDateTime if the value has "defined-date-time" type.
+     * If the value has the wrong type return an invalid QDatetime
+     *
+     * \see valueAsTimeType()
+     */
+    static QDateTime timeValueAsDefinedDateTime( const QVariant &value );
+
   private:
     QString mMeshLayerParameterName;
     QString mDatasetGroupParameterName;
+
+    static bool valueIsAcceptable( const QVariant &input );
 };
+
 
 /**
  * Parameter type definition for QgsProcessingParameterMeshDatasetTime.
@@ -193,7 +227,7 @@ class CORE_EXPORT QgsProcessingParameterTypeMeshDatasetTime: public QgsProcessin
 
     QString id() const override
     {
-      return QgsProcessingParameterMeshDatasetGroups::typeName();
+      return QgsProcessingParameterMeshDatasetTime::typeName();
     }
 
     QString pythonImportString() const override
@@ -211,5 +245,6 @@ class CORE_EXPORT QgsProcessingParameterTypeMeshDatasetTime: public QgsProcessin
       return QStringList() << QObject::tr( "dict{}: dictionary, see QgsProcessingParameterTypeMeshDatasetTime docs" );
     }
 };
+
 
 #endif // QGSPROCESSINGPARAMETERMESHDATASET_H

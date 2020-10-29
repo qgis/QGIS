@@ -4817,7 +4817,7 @@ void TestQgsProcessingAlgs::exportMeshVertices()
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT_LAYER" ), "mesh layer" );
+  parameters.insert( QStringLiteral( "INPUT" ), "mesh layer" );
 
   QVariantList datasetGroup;
   datasetGroup << 1 << 2;
@@ -4830,7 +4830,7 @@ void TestQgsProcessingAlgs::exportMeshVertices()
   datasetTime[QStringLiteral( "value" )] = datasetIndex;
   parameters.insert( QStringLiteral( "DATASET_TIME" ), datasetTime );
 
-  parameters.insert( QStringLiteral( "OUTPUT_LAYER" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
   parameters.insert( QStringLiteral( "VECTOR_OPTION" ), 2 );
 
   std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();

@@ -36,7 +36,7 @@ QString QgsExportMeshVerticesAlgorithm::groupId() const
 
 QString QgsExportMeshVerticesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Export mesh's vertices to a point vector layer with dataset values on vertices as attribute values" );
+  return QObject::tr( "Exports a mesh layer's vertices to a point vector layer, with the dataset values on vertices as attribute values" );
 }
 
 QString QgsExportMeshVerticesAlgorithm::name() const
@@ -46,7 +46,7 @@ QString QgsExportMeshVerticesAlgorithm::name() const
 
 QString QgsExportMeshVerticesAlgorithm::displayName() const
 {
-  return QObject::tr( "Export Mesh Vertices" );
+  return QObject::tr( "Export mesh vertices" );
 }
 
 QgsProcessingAlgorithm *QgsExportMeshVerticesAlgorithm::createInstance() const
@@ -58,19 +58,19 @@ void QgsExportMeshVerticesAlgorithm::initAlgorithm( const QVariantMap &configura
 {
   Q_UNUSED( configuration );
 
-  addParameter( new QgsProcessingParameterMeshLayer( QStringLiteral( "INPUT_LAYER" ), QObject::tr( "Input Mesh Layer" ) ) );
+  addParameter( new QgsProcessingParameterMeshLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input Mesh Layer" ) ) );
 
 
   addParameter( new QgsProcessingParameterMeshDatasetGroups(
                   QStringLiteral( "DATASET_GROUPS" ),
                   QObject::tr( "Dataset Groups" ),
-                  QStringLiteral( "INPUT_LAYER" ),
+                  QStringLiteral( "INPUT" ),
                   QgsMeshDatasetGroupMetadata::DataOnVertices ) );
 
   addParameter( new QgsProcessingParameterMeshDatasetTime(
                   QStringLiteral( "DATASET_TIME" ),
                   QObject::tr( "Dataset Time" ),
-                  QStringLiteral( "INPUT_LAYER" ),
+                  QStringLiteral( "INPUT" ),
                   QStringLiteral( "DATASET_GROUPS" ) ) );
 
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS_OUTPUT" ), QObject::tr( "Output Coordinate System" ), QVariant(), true ) );
@@ -80,16 +80,17 @@ void QgsExportMeshVerticesAlgorithm::initAlgorithm( const QVariantMap &configura
                       << QObject::tr( "Polar (magnitude,degree)" )
                       << QObject::tr( "Cartesian and Polar" );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "VECTOR_OPTION" ), QObject::tr( "Export Vector Option" ), exportVectorOptions, false, 0 ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT_LAYER" ), QObject::tr( "Output Vector Layer" ), QgsProcessing::TypeVectorPoint ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output Vector Layer" ), QgsProcessing::TypeVectorPoint ) );
 }
 
 static QVector<double> vectorValue( const QgsMeshDatasetValue &value, int exportOption )
 {
-  QVector<double> ret;
+  QVector<double> ret( exportOption == 2 ? 4 : 2 );
+
   if ( exportOption == 0 || exportOption == 2 )
   {
-    ret.append( value.x() );
-    ret.append( value.y() );
+    ret[0] = value.x();
+    ret[1] = value.y();
   }
   if ( exportOption == 1 || exportOption == 2 )
   {
@@ -99,15 +100,24 @@ static QVector<double> vectorValue( const QgsMeshDatasetValue &value, int export
     double direction = ( asin( x / magnitude ) ) / M_PI * 180;
     if ( y < 0 )
       direction = 180 - direction;
-    ret.append( magnitude );
-    ret.append( direction );
+
+    if ( exportOption == 1 )
+    {
+      ret[0] = magnitude;
+      ret[1] = direction;
+    }
+    if ( exportOption == 2 )
+    {
+      ret[2] = magnitude;
+      ret[3] = direction;
+    }
   }
   return ret;
 }
 
 bool QgsExportMeshVerticesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QgsMeshLayer *meshLayer = parameterAsMeshLayer( parameters, QStringLiteral( "INPUT_LAYER" ), context );
+  QgsMeshLayer *meshLayer = parameterAsMeshLayer( parameters, QStringLiteral( "INPUT" ), context );
 
   if ( !meshLayer || !meshLayer->isValid() )
     return false;
@@ -119,60 +129,43 @@ bool QgsExportMeshVerticesAlgorithm::prepareAlgorithm( const QVariantMap &parame
 
   mNativeMesh = *meshLayer->nativeMesh();
 
-  QVariant datasetGroupIndexVariant = parameters[QStringLiteral( "DATASET_GROUPS" )];
-
-  if ( datasetGroupIndexVariant.type() != QVariant::List )
-    return false;
-
-  QVariantList datasetGroupsList = datasetGroupIndexVariant.toList();
+  QList<int> datasetGroups =
+    QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( parameters.value( QStringLiteral( "DATASET_GROUPS" ) ) );
 
   if ( feedback )
   {
-    if ( feedback->isCanceled() )
-      return false;
-    feedback->setProgress( 0 );
     feedback->setProgressText( QObject::tr( "Preparing data" ) );
   }
 
   QDateTime layerReferenceTime = static_cast<QgsMeshLayerTemporalProperties *>( meshLayer->temporalProperties() )->referenceTime();
 
   //! Extract the date time used to export dataset values under a relative time
-  QgsInterval relativeTime;
+  QgsInterval relativeTime( 0 );
   QVariant parameterTimeVariant = parameters.value( QStringLiteral( "DATASET_TIME" ) );
-  if ( !parameterTimeVariant.isValid() || parameterTimeVariant.type() != QVariant::Map )
-    return false;
 
-  QVariantMap parameterTimeMap = parameterTimeVariant.toMap();
-  if ( !parameterTimeMap.contains( QStringLiteral( "type" ) ) )
-    return false;
+  QString timeType = QgsProcessingParameterMeshDatasetTime::valueAsTimeType( parameterTimeVariant );
 
-  if ( parameterTimeMap.value( QStringLiteral( "type" ) ) == QStringLiteral( "static" ) )
+  if ( timeType == QStringLiteral( "dataset-time-step" ) )
   {
-    relativeTime = 0;
-  }
-  else if ( parameterTimeMap.value( QStringLiteral( "type" ) ) == QStringLiteral( "dataset-time-step" ) )
-  {
-    QVariant datasetIndexVariant = parameterTimeMap.value( QStringLiteral( "value" ) );
-    if ( datasetGroupIndexVariant.type() != QVariant::List )
-      return false;
-    QVariantList datasetIndexVariantSplit = datasetIndexVariant.toList();
-    if ( datasetIndexVariantSplit.count() != 2 )
-      return false;
-    QgsMeshDatasetIndex datasetIndex( datasetIndexVariantSplit.at( 0 ).toInt(), datasetIndexVariantSplit.at( 1 ).toInt() );
+    QgsMeshDatasetIndex datasetIndex = QgsProcessingParameterMeshDatasetTime::timeValueAsDatasetIndex( parameterTimeVariant );
     relativeTime = meshLayer->datasetRelativeTime( datasetIndex );
   }
-  else
+  else if ( timeType == QStringLiteral( "defined-date-time" ) )
   {
-    QVariant dateTimeVariant = parameterTimeMap.value( QStringLiteral( "value" ) );
-    if ( dateTimeVariant.type() != QVariant::DateTime )
-      return false;
-    QDateTime dateTime = dateTimeVariant.toDateTime();
-    relativeTime = QgsInterval( layerReferenceTime.secsTo( dateTime ) );
+    QDateTime dateTime = QgsProcessingParameterMeshDatasetTime::timeValueAsDefinedDateTime( parameterTimeVariant );
+    if ( dateTime.isValid() )
+      relativeTime = QgsInterval( layerReferenceTime.secsTo( dateTime ) );
+  }
+  else if ( timeType == QStringLiteral( "current-context-time" ) )
+  {
+    QDateTime dateTime = context.currentTimeRange().begin();
+    if ( dateTime.isValid() )
+      relativeTime = QgsInterval( layerReferenceTime.secsTo( dateTime ) );
   }
 
-  for ( int i = 0; i < datasetGroupsList.count(); ++i )
+  for ( int i = 0; i < datasetGroups.count(); ++i )
   {
-    int  groupIndex = datasetGroupsList.at( i ).toInt();
+    int  groupIndex = datasetGroups.at( i );
     QgsMeshDatasetIndex datasetIndex = meshLayer->datasetIndexAtRelativeTime( relativeTime, groupIndex );
 
     DataGroup dataGroup;
@@ -183,10 +176,7 @@ bool QgsExportMeshVerticesAlgorithm::prepareAlgorithm( const QVariantMap &parame
 
     mDataPerGroup.append( dataGroup );
     if ( feedback )
-    {
-      if ( feedback->isCanceled() )
-        feedback->setProgress( 100 * i / datasetGroupsList.count() );
-    }
+      feedback->setProgress( 100 * i / datasetGroups.count() );
   }
 
   mExportVectorOption = parameterAsInt( parameters, QStringLiteral( "VECTOR_OPTION" ), context );
@@ -212,14 +202,14 @@ QVariantMap QgsExportMeshVerticesAlgorithm::processAlgorithm( const QVariantMap 
     {
       if ( mExportVectorOption == 0 or mExportVectorOption == 2 )
       {
-        fields.append( QString( "%1_x" ).arg( dataGroup.metadata.name() ) );
-        fields.append( QString( "%1_y" ).arg( dataGroup.metadata.name() ) );
+        fields.append( QStringLiteral( "%1_x" ).arg( dataGroup.metadata.name() ) );
+        fields.append( QStringLiteral( "%1_y" ).arg( dataGroup.metadata.name() ) );
       }
 
       if ( mExportVectorOption == 1 or mExportVectorOption == 2 )
       {
-        fields.append( QString( "%1_mag" ).arg( dataGroup.metadata.name() ) );
-        fields.append( QString( "%1_dir" ).arg( dataGroup.metadata.name() ) );
+        fields.append( QStringLiteral( "%1_mag" ).arg( dataGroup.metadata.name() ) );
+        fields.append( QStringLiteral( "%1_dir" ).arg( dataGroup.metadata.name() ) );
       }
     }
     else
@@ -229,7 +219,7 @@ QVariantMap QgsExportMeshVerticesAlgorithm::processAlgorithm( const QVariantMap 
   QgsCoordinateReferenceSystem outputCrs = parameterAsCrs( parameters, QStringLiteral( "CRS_OUTPUT" ), context );
   QString identifier;
   QgsFeatureSink *sink = parameterAsSink( parameters,
-                                          QStringLiteral( "OUTPUT_LAYER" ),
+                                          QStringLiteral( "OUTPUT" ),
                                           context,
                                           identifier,
                                           fields,
@@ -275,6 +265,7 @@ QVariantMap QgsExportMeshVerticesAlgorithm::processAlgorithm( const QVariantMap 
     catch ( QgsCsException &e )
     {
       geom = QgsGeometry( new QgsPoint( mNativeMesh.vertex( i ) ) );
+      feedback->reportError( QObject::tr( "Could not transform point to destination CRS" ) );
     }
     feat.setGeometry( geom );
     feat.setAttributes( attributes );
@@ -289,7 +280,7 @@ QVariantMap QgsExportMeshVerticesAlgorithm::processAlgorithm( const QVariantMap 
     }
   }
 
-  const QString fileName = parameterAsFile( parameters, QStringLiteral( "OUTPUT_LAYER" ), context );
+  const QString fileName = parameterAsFile( parameters, QStringLiteral( "OUTPUT" ), context );
 
   QVariantMap ret;
   ret[QStringLiteral( "OUTPUT" )] = identifier;

@@ -46,8 +46,8 @@ class GUI_EXPORT QgsProcessingMeshDatasetGroupsWidget : public QWidget
     const QgsProcessingParameterMeshDatasetGroups *mParam = nullptr;
     QVariantList mValue;
 
-    QLineEdit *mLineEdit = nullptr;
-    QToolButton *mToolButton = nullptr;
+    QPointer<QLineEdit> mLineEdit = nullptr;
+    QPointer<QToolButton> mToolButton = nullptr;
     QgsMeshLayer *mMeshLayer = nullptr;
 
     QStringList datasetGroupsNames();
@@ -81,6 +81,7 @@ class GUI_EXPORT QgsProcessingMeshDatasetGroupsWidgetWrapper  : public QgsAbstra
 
   private:
     QgsProcessingMeshDatasetGroupsWidget *mWidget = nullptr;
+    std::unique_ptr<QgsMeshLayer> mTemporarytMeshLayer;
 
     friend class TestProcessingGui;
 };
@@ -152,7 +153,7 @@ class GUI_EXPORT QgsProcessingMeshDatasetTimeWidgetWrapper  : public QgsAbstract
 
   private:
     QgsProcessingMeshDatasetTimeWidget *mWidget = nullptr;
-
+    std::unique_ptr<QgsMeshLayer> mTemporarytMeshLayer;
     friend class TestProcessingGui;
 };
 
