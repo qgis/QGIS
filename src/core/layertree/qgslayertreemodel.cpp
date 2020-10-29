@@ -847,7 +847,6 @@ void QgsLayerTreeModel::layerFlagsChanged()
     return;
 
   const QModelIndex index = node2index( nodeLayer );
-  Q_ASSERT( checkIndex( index ) );
   emit dataChanged( index, index );
 }
 
