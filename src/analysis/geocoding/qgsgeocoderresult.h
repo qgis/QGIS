@@ -35,7 +35,7 @@
  * of optional additionalAttributes() which may contain information such as the
  * accuracy of the geocoding result.
  *
- * \since QGIS 3.16
+ * \since QGIS 3.18
 */
 class ANALYSIS_EXPORT QgsGeocoderResult
 {
