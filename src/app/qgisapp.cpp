@@ -12900,7 +12900,15 @@ QgsVectorLayer *QgisApp::addVectorLayerPrivate( const QString &vectorLayerPath, 
   QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
   // Default style is loaded later in this method
   options.loadDefaultStyle = false;
-  QgsVectorLayer *layer = new QgsVectorLayer( vectorLayerPath, baseName, providerKey, options );
+
+  QVariantMap uriElements = QgsProviderRegistry::instance()->decodeUri( providerKey, vectorLayerPath );
+  if ( uriElements.contains( QStringLiteral( "path" ) ) )
+  {
+    // run layer path through QgsPathResolver so that all inbuilt paths and other localised paths are correctly expanded
+    uriElements[ QStringLiteral( "path" ) ] = QgsPathResolver().readPath( uriElements.value( QStringLiteral( "path" ) ).toString() );
+  }
+  const QString updatedUri = QgsProviderRegistry::instance()->encodeUri( providerKey, uriElements );
+  QgsVectorLayer *layer = new QgsVectorLayer( updatedUri, baseName, providerKey, options );
 
   if ( authok && layer->isValid() )
   {
