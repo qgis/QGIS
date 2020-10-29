@@ -83,3 +83,13 @@ int QgsPointCloudAttribute::size() const
 {
   return mSize;
 }
+
+void QgsPointCloudAttribute::setName(const QString& name)
+{
+  mName = name;
+}
+
+void QgsPointCloudAttribute::setSize(int size)
+{
+  mSize = size;
+}
