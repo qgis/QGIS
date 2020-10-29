@@ -190,19 +190,13 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
     };
 
     /**
-     * Returns whether the material is data defined
-     * \since QGIS 3.18
-     */
-    virtual bool isDataDefined() const {return false;}
-
-    /**
      * Sets the material property collection, used for data defined overrides.
      * \since QGIS 3.18
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection );
 
     /**
-    * Returns a the symbol material property collection, used for data defined overrides.
+    * Returns the symbol material property collection, used for data defined overrides.
     * \since QGIS 3.18
     */
     QgsPropertyCollection dataDefinedProperties() const;
@@ -211,7 +205,7 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
     * Returns a reference to the material properties definition, used for data defined overrides.
     * \since QGIS 3.18
     */
-    QgsPropertiesDefinition  &propertiesDefinition() const;
+    const QgsPropertiesDefinition  &propertyDefinition() const;
 
     /**
      * Applies the data defined bytes, \a dataDefinedBytes, on the \a geometry by filling a specific vertex buffer that will be used by the shader.

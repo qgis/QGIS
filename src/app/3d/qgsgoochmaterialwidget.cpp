@@ -64,10 +64,10 @@ void QgsGoochMaterialWidget::setSettings( const QgsAbstractMaterialSettings *set
   spinAlpha->setValue( goochMaterial->alpha() );
   spinBeta->setValue( goochMaterial->beta() );
 
-  mDiffuseDataDefinedButton->init( QgsAbstractMaterialSettings::Diffuse, settings->dataDefinedProperties(), settings->propertiesDefinition(), layer, true );
-  mWarmDataDefinedButton->init( QgsAbstractMaterialSettings::Warm, settings->dataDefinedProperties(), settings->propertiesDefinition(), layer, true );
-  mCoolDataDefinedButton->init( QgsAbstractMaterialSettings::Cool, settings->dataDefinedProperties(), settings->propertiesDefinition(), layer, true );
-  mSpecularDataDefinedButton->init( QgsAbstractMaterialSettings::Specular, settings->dataDefinedProperties(), settings->propertiesDefinition(), layer, true );
+  mDiffuseDataDefinedButton->init( QgsAbstractMaterialSettings::Diffuse, settings->dataDefinedProperties(), settings->propertyDefinition(), layer, true );
+  mWarmDataDefinedButton->init( QgsAbstractMaterialSettings::Warm, settings->dataDefinedProperties(), settings->propertyDefinition(), layer, true );
+  mCoolDataDefinedButton->init( QgsAbstractMaterialSettings::Cool, settings->dataDefinedProperties(), settings->propertyDefinition(), layer, true );
+  mSpecularDataDefinedButton->init( QgsAbstractMaterialSettings::Specular, settings->dataDefinedProperties(), settings->propertyDefinition(), layer, true );
 }
 
 QgsAbstractMaterialSettings *QgsGoochMaterialWidget::settings()
@@ -81,12 +81,12 @@ QgsAbstractMaterialSettings *QgsGoochMaterialWidget::settings()
   m->setAlpha( spinAlpha->value() );
   m->setBeta( spinBeta->value() );
 
-  QgsPropertyCollection dataDefinedPropertie;
-  dataDefinedPropertie.setProperty( QgsAbstractMaterialSettings::Diffuse, mDiffuseDataDefinedButton->toProperty() );
-  dataDefinedPropertie.setProperty( QgsAbstractMaterialSettings::Warm, mWarmDataDefinedButton->toProperty() );
-  dataDefinedPropertie.setProperty( QgsAbstractMaterialSettings::Cool, mCoolDataDefinedButton->toProperty() );
-  dataDefinedPropertie.setProperty( QgsAbstractMaterialSettings::Specular, mSpecularDataDefinedButton->toProperty() );
-  m->setDataDefinedProperties( dataDefinedPropertie );
+  QgsPropertyCollection dataDefinedProperties;
+  dataDefinedProperties.setProperty( QgsAbstractMaterialSettings::Diffuse, mDiffuseDataDefinedButton->toProperty() );
+  dataDefinedProperties.setProperty( QgsAbstractMaterialSettings::Warm, mWarmDataDefinedButton->toProperty() );
+  dataDefinedProperties.setProperty( QgsAbstractMaterialSettings::Cool, mCoolDataDefinedButton->toProperty() );
+  dataDefinedProperties.setProperty( QgsAbstractMaterialSettings::Specular, mSpecularDataDefinedButton->toProperty() );
+  m->setDataDefinedProperties( dataDefinedProperties );
 
   return m.release();
 }

@@ -91,7 +91,7 @@ Qt3DRender::QMaterial *QgsPhongMaterialSettings::toMaterial( QgsMaterialSettings
     case QgsMaterialSettingsRenderingTechnique::Points:
     case QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture:
     {
-      if ( isDataDefined() )
+      if ( dataDefinedProperties().hasActiveProperties() )
         return dataDefinedMaterial();
 
       Qt3DExtras::QPhongMaterial *material  = new Qt3DExtras::QPhongMaterial;
@@ -166,13 +166,6 @@ QByteArray QgsPhongMaterialSettings::dataDefinedVertexColorsAsByte( const QgsExp
   *fptr++ =  static_cast<unsigned char>( specular.blue() );
 
   return array;
-}
-
-bool QgsPhongMaterialSettings::isDataDefined() const
-{
-  return dataDefinedProperties().isActive( Ambient ) ||
-         dataDefinedProperties().isActive( Diffuse ) ||
-         dataDefinedProperties().isActive( Specular );
 }
 
 int QgsPhongMaterialSettings::dataDefinedByteStride() const {return 9 * sizeof( unsigned char );}

@@ -95,7 +95,7 @@ Qt3DRender::QMaterial *QgsGoochMaterialSettings::toMaterial( QgsMaterialSettings
     case QgsMaterialSettingsRenderingTechnique::Triangles:
     case QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture:
     {
-      if ( isDataDefined() )
+      if ( dataDefinedProperties().hasActiveProperties() )
         return dataDefinedMaterial();
 
       Qt3DExtras::QGoochMaterial *material  = new Qt3DExtras::QGoochMaterial;
@@ -163,14 +163,6 @@ QByteArray QgsGoochMaterialSettings::dataDefinedVertexColorsAsByte( const QgsExp
 int QgsGoochMaterialSettings::dataDefinedByteStride() const
 {
   return 12 * sizeof( unsigned char );
-}
-
-bool QgsGoochMaterialSettings::isDataDefined() const
-{
-  return dataDefinedProperties().isActive( Diffuse ) ||
-         dataDefinedProperties().isActive( Warm ) ||
-         dataDefinedProperties().isActive( Cool ) ||
-         dataDefinedProperties().isActive( Specular );
 }
 
 void QgsGoochMaterialSettings::applyDataDefinedToGeometry( Qt3DRender::QGeometry *geometry, int vertexCount, const QByteArray &data ) const

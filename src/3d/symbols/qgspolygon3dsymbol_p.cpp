@@ -145,7 +145,7 @@ void QgsPolygon3DSymbolHandler::processPolygon( QgsPolygon *polyClone, QgsFeatur
   out.tessellator->addPolygon( *polyClone, extrusionHeight );
   delete polyClone;
 
-  if ( mSymbol->material()->isDataDefined() )
+  if ( mSymbol->material()->dataDefinedProperties().hasActiveProperties() )
     processMaterialDatadefined( out.tessellator->dataVerticesCount() - oldVerticesCount, context.expressionContext(), out );
 }
 
@@ -261,7 +261,7 @@ void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs
   QgsTessellatedPolygonGeometry *geometry = new QgsTessellatedPolygonGeometry( true, mSymbol->invertNormals(), mSymbol->addBackFaces(),
       texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates() );
   geometry->setData( data, nVerts, out.triangleIndexFids, out.triangleIndexStartingIndices );
-  if ( mSymbol->material()->isDataDefined() )
+  if ( mSymbol->material()->dataDefinedProperties().hasActiveProperties() )
     mSymbol->material()->applyDataDefinedToGeometry( geometry, nVerts, out.materialDataDefined );
 
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
