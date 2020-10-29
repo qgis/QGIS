@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransformcontext.h"
 
 /**
  * \class QgsLocatorContext
@@ -50,6 +51,14 @@ class CORE_EXPORT QgsLocatorContext
      * \see targetExtent
      */
     QgsCoordinateReferenceSystem targetExtentCrs;
+
+    /**
+     * Coordinate transform context, to use whenever performing coordinate transformations inside
+     * a locator.
+     *
+     * \since QGIS 3.16
+     */
+    QgsCoordinateTransformContext transformContext;
 
     /**
      * Will be TRUE if search is being conducted using a filter prefix.
