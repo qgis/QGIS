@@ -157,46 +157,49 @@ Qt::ItemFlags QgsLayerCapabilitiesModel::flags( const QModelIndex &idx ) const
   }
   else
   {
-    if ( idx.column() == IdentifiableColumn )
+    switch ( idx.column() )
     {
-      if ( layer->isSpatial() )
+      case IdentifiableColumn:
+      {
+        if ( layer->isSpatial() )
+        {
+          return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
+        }
+        else
+        {
+          return Qt::ItemFlags();
+        }
+      }
+      case ReadOnlyColumn:
+      {
+        if ( layer->type() == QgsMapLayerType::VectorLayer )
+        {
+          return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
+        }
+        else
+        {
+          return Qt::ItemFlags();
+        }
+      }
+      case SearchableColumn:
+      {
+        if ( layer->type() == QgsMapLayerType::VectorLayer )
+        {
+          return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
+        }
+        else
+        {
+          return Qt::ItemFlags();
+        }
+      }
+      case RequiredColumn:
       {
         return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
       }
-      else
-      {
-        return Qt::ItemFlags();
-      }
-    }
-    else if ( idx.column() == ReadOnlyColumn )
-    {
-      if ( layer->type() == QgsMapLayerType::VectorLayer )
+      case HiddenColumn:
       {
         return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
       }
-      else
-      {
-        return Qt::ItemFlags();
-      }
-    }
-    else if ( idx.column() == SearchableColumn )
-    {
-      if ( layer->type() == QgsMapLayerType::VectorLayer )
-      {
-        return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
-      }
-      else
-      {
-        return Qt::ItemFlags();
-      }
-    }
-    else if ( idx.column() == RequiredColumn )
-    {
-      return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
-    }
-    else if ( idx.column() == HiddenColumn )
-    {
-      return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
     }
   }
   return Qt::ItemFlags();
