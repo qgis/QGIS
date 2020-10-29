@@ -31,7 +31,7 @@ class QgsGeocoderContext;
  * QgsGeocoderInterface implementations are able to take either a QgsFeature or a free-form string
  * and calculate the corresponding geometry of the feature.
  *
- * \since QGIS 3.16
+ * \since QGIS 3.18
 */
 class ANALYSIS_EXPORT QgsGeocoderInterface
 {

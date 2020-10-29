@@ -26,7 +26,7 @@
  * \ingroup analysis
  * Encapsulates the context of a geocoding operation.
  *
- * \since QGIS 3.16
+ * \since QGIS 3.18
 */
 class ANALYSIS_EXPORT QgsGeocoderContext
 {
@@ -60,7 +60,7 @@ class ANALYSIS_EXPORT QgsGeocoderContext
      *
      * The area of interest can be a polygon geometry, in which case it represents the extent
      * to use for filtering candidate results, or a point geometry, in which case it represents
-     * a "target point" for prioritising closer results.
+     * a "target point" for prioritizing closer results.
      *
      * The coordinate reference system for the area of interest can be retrieved via
      * areaOfInterestCrs().
@@ -76,7 +76,7 @@ class ANALYSIS_EXPORT QgsGeocoderContext
      *
      * The area of interest can be a polygon geometry, in which case it represents the extent
      * to use for filtering candidate results, or a point geometry, in which case it represents
-     * a "target point" for prioritising closer results.
+     * a "target point" for prioritizing closer results.
      *
      * The coordinate reference system for the area of interest can be set via
      * setAreaOfInterestCrs().

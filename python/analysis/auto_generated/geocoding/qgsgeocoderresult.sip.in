@@ -24,7 +24,7 @@ Valid geocoding results will have a :py:func:`~geometry` and :py:func:`~crs`, al
 of optional :py:func:`~additionalAttributes` which may contain information such as the
 accuracy of the geocoding result.
 
-.. versionadded:: 3.16
+.. versionadded:: 3.18
 %End
 
 %TypeHeaderCode
