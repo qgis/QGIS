@@ -145,20 +145,19 @@ QVariant QgsLayerCapabilitiesModel::headerData( int section, Qt::Orientation ori
 
 Qt::ItemFlags QgsLayerCapabilitiesModel::flags( const QModelIndex &idx ) const
 {
-  if ( idx.column() == LayerColumn )
-  {
-    return Qt::ItemIsEnabled;
-  }
-
   QgsMapLayer *layer = mapLayer( idx );
-  if ( !layer )
+  if ( !layer && idx.column() != LayerColumn )
   {
     return Qt::NoItemFlags;
   }
   else
   {
-    switch ( idx.column() )
+    switch ( static_cast<Columns>( idx.column() ) )
     {
+      case LayerColumn:
+      {
+        return Qt::ItemIsEnabled;
+      }
       case IdentifiableColumn:
       {
         if ( layer->isSpatial() )
