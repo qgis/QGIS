@@ -18,6 +18,8 @@
 #include "qgis.h"
 #include "qgspointcloudattribute.h"
 
+QgsPointCloudAttribute::QgsPointCloudAttribute() = default;
+
 QgsPointCloudAttribute::QgsPointCloudAttribute( const QString &name, int size )
   : mName( name )
   , mSize( size )

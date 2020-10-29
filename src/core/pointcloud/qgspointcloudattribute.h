@@ -39,6 +39,8 @@ class CORE_EXPORT QgsPointCloudAttribute
 {
   public:
     //! Ctor
+    QgsPointCloudAttribute();
+    //! Ctor
     QgsPointCloudAttribute( const QString &name, int size );
 
     //! Returns name of the attribute
@@ -46,6 +48,12 @@ class CORE_EXPORT QgsPointCloudAttribute
 
     //! Returns size of the attribute in bytes
     int size() const;
+
+    //! Sets the name
+    void setName( const QString &name );
+
+    //! Sets the size in bytes
+    void setSize( int size );
 
   private:
     QString mName;
