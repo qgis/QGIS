@@ -16,19 +16,19 @@
 #ifndef QGSGEOCODERCONTEXT_H
 #define QGSGEOCODERCONTEXT_H
 
-#include "qgis_analysis.h"
+#include "qgis_core.h"
 
 #include "qgscoordinatetransformcontext.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgeometry.h"
 
 /**
- * \ingroup analysis
+ * \ingroup core
  * Encapsulates the context of a geocoding operation.
  *
  * \since QGIS 3.18
 */
-class ANALYSIS_EXPORT QgsGeocoderContext
+class CORE_EXPORT QgsGeocoderContext
 {
 
   public:

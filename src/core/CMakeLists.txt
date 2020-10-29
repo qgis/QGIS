@@ -31,6 +31,10 @@ SET(QGIS_CORE_SRCS
   classification/qgsclassificationstandarddeviation.cpp
   classification/qgsclassificationlogarithmic.cpp
 
+  geocoding/qgsgeocoder.cpp
+  geocoding/qgsgeocodercontext.cpp
+  geocoding/qgsgeocoderresult.cpp
+
   gps/qgsgpsconnection.cpp
   gps/qgsgpsconnectionregistry.cpp
   gps/qgsgpsdconnection.cpp
@@ -1146,6 +1150,10 @@ SET(QGIS_CORE_HDRS
   geocms/geonode/qgsgeonodeconnection.h
   geocms/geonode/qgsgeonoderequest.h
 
+  geocoding/qgsgeocoder.h
+  geocoding/qgsgeocodercontext.h
+  geocoding/qgsgeocoderresult.h
+
   geometry/qgsabstractgeometry.h
   geometry/qgsbox3d.h
   geometry/qgscircle.h
@@ -1573,6 +1581,7 @@ INCLUDE_DIRECTORIES(
   geometry
   geocms
   geocms/geonode
+  geocoding
   labeling
   layertree
   layout

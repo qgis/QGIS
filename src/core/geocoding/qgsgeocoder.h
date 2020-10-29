@@ -16,7 +16,7 @@
 #ifndef QGSGEOCODER_H
 #define QGSGEOCODER_H
 
-#include "qgis_analysis.h"
+#include "qgis_core.h"
 #include "qgsgeocoderresult.h"
 #include "qgsgeometry.h"
 #include "qgsfields.h"
@@ -25,7 +25,7 @@ class QgsFeature;
 class QgsGeocoderContext;
 
 /**
- * \ingroup analysis
+ * \ingroup core
  * Interface for geocoders.
  *
  * QgsGeocoderInterface implementations are able to take either a QgsFeature or a free-form string
@@ -33,7 +33,7 @@ class QgsGeocoderContext;
  *
  * \since QGIS 3.18
 */
-class ANALYSIS_EXPORT QgsGeocoderInterface
+class CORE_EXPORT QgsGeocoderInterface
 {
 
   public:

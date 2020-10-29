@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/analysis/geocoding/qgsgeocoderresult.h                           *
+ * src/core/geocoding/qgsgeocoderresult.h                               *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -117,7 +117,7 @@ which may be added to features being geocoded.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/analysis/geocoding/qgsgeocoderresult.h                           *
+ * src/core/geocoding/qgsgeocoderresult.h                               *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/analysis/geocoding/qgsgeocodercontext.h                          *
+ * src/core/geocoding/qgsgeocodercontext.h                              *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -102,7 +102,7 @@ geographic area where geocoding results are desired.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/analysis/geocoding/qgsgeocodercontext.h                          *
+ * src/core/geocoding/qgsgeocodercontext.h                              *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
