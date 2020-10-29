@@ -29,8 +29,9 @@ QgsPointCloudAttributeCollection::QgsPointCloudAttributeCollection() = default;
 QgsPointCloudAttributeCollection::QgsPointCloudAttributeCollection( const QVector<QgsPointCloudAttribute> &attributes )
   : mAttributes( attributes )
 {
-  for ( const QgsPointCloudAttribute &attr : mAttributes )
+  for ( int i = 0; i < mAttributes.size(); ++i )
   {
+    const QgsPointCloudAttribute &attr = mAttributes.at( i );
     mSize += attr.size();
   }
 
