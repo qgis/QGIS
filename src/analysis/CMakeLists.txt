@@ -4,10 +4,6 @@
 SET(QGIS_ANALYSIS_SRCS
   qgsanalysis.cpp
 
-  geocoding/qgsgeocoder.cpp
-  geocoding/qgsgeocodercontext.cpp
-  geocoding/qgsgeocoderresult.cpp
-
   interpolation/qgsgridfilewriter.cpp
   interpolation/qgsidwinterpolator.cpp
   interpolation/qgsinterpolator.cpp
@@ -284,10 +280,6 @@ SET(QGIS_ANALYSIS_SRCS
 SET(QGIS_ANALYSIS_HDRS
   qgsanalysis.h
 
-  geocoding/qgsgeocoder.h
-  geocoding/qgsgeocodercontext.h
-  geocoding/qgsgeocoderresult.h
-
   interpolation/Bezier3D.h
   interpolation/CloughTocherInterpolator.h
   interpolation/qgsdualedgetriangulation.h
@@ -421,6 +413,7 @@ ENDIF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/
+  ${CMAKE_SOURCE_DIR}/src/core/geocoding
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/labeling
   ${CMAKE_SOURCE_DIR}/src/core/processing
@@ -442,7 +435,6 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/analysis
   interpolation
   network
-  geocoding
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${SPATIALINDEX_INCLUDE_DIR} # before GEOS for case-insensitive filesystems

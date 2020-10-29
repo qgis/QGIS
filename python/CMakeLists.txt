@@ -113,6 +113,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/geocms
   ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
+  ${CMAKE_SOURCE_DIR}/src/core/geocoding
   ${CMAKE_SOURCE_DIR}/src/core/gps
   ${CMAKE_SOURCE_DIR}/src/core/labeling
   ${CMAKE_SOURCE_DIR}/src/core/layertree
@@ -312,7 +313,6 @@ ENDIF (WITH_SERVER AND WITH_SERVER_PLUGINS)
 IF(WITH_ANALYSIS)
   INCLUDE_DIRECTORIES(BEFORE
     ${CMAKE_SOURCE_DIR}/src/analysis
-    ${CMAKE_SOURCE_DIR}/src/analysis/geocoding
     ${CMAKE_SOURCE_DIR}/src/analysis/processing
     ${CMAKE_SOURCE_DIR}/src/analysis/vector
     ${CMAKE_SOURCE_DIR}/src/analysis/vector/geometry_checker
@@ -327,7 +327,6 @@ IF(WITH_ANALYSIS)
     ${CMAKE_BINARY_DIR}/src/analysis/raster
     ${CMAKE_BINARY_DIR}/src/analysis/network
     ${CMAKE_BINARY_DIR}/src/analysis/interpolation
-    ${CMAKE_BINARY_DIR}/src/analysis/geocoding
   )
 
   # analysis module

@@ -16,14 +16,14 @@
 #ifndef QGSGEOCODERRESULT_H
 #define QGSGEOCODERRESULT_H
 
-#include "qgis_analysis.h"
+#include "qgis_core.h"
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgeometry.h"
 
 
 /**
- * \ingroup analysis
+ * \ingroup core
  * Represents a matching result from a geocoder search.
  *
  * QgsGeocoderResult objects may represent valid matches, or an invalid
@@ -37,7 +37,7 @@
  *
  * \since QGIS 3.18
 */
-class ANALYSIS_EXPORT QgsGeocoderResult
+class CORE_EXPORT QgsGeocoderResult
 {
 
   public:
