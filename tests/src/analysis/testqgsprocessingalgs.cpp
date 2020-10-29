@@ -4845,7 +4845,7 @@ void TestQgsProcessingAlgs::exportMeshVertices()
   QVERIFY( resultLayer );
   QVERIFY( resultLayer->isValid() );
   QVERIFY( resultLayer->geometryType() == QgsWkbTypes::PointGeometry );
-  QCOMPARE( resultLayer->featureCount(), 5 );
+  QCOMPARE( resultLayer->featureCount(), 5l );
   QgsAttributeList attributeList = resultLayer->attributeList();
   QCOMPARE( resultLayer->fields().count(), 5 );
   QCOMPARE( resultLayer->fields().at( 0 ).name(), QStringLiteral( "VertexScalarDataset" ) );

@@ -9032,7 +9032,7 @@ void TestProcessingGui::testMeshDatasetWrapper()
   QVariant timeValue = timeWrapper.widgetValue();
   QVERIFY( timeValue.type() == QVariant::Map );
   QVariantMap timeValueMap = timeValue.toMap();
-  QCOMPARE( timeValueMap[QStringLiteral( "type" )], QStringLiteral( "dataset-time-step" ) );
+  QCOMPARE( timeValueMap[QStringLiteral( "type" )].toString(), QStringLiteral( "dataset-time-step" ) );
   pythonString = timeDefinition.valueAsPythonString( timeWrapper.widgetValue(), context );
   QCOMPARE( pythonString, QStringLiteral( "{'type': 'dataset-time-step','value': QgsMeshDatasetIndex(1,0)}" ) );
   QVERIFY( timeDefinition.checkValueIsAcceptable( timeValue ) );

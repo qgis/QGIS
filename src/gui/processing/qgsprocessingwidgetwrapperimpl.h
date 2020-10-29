@@ -1465,7 +1465,6 @@ class GUI_EXPORT QgsProcessingDateTimeWidgetWrapper : public QgsAbstractProcessi
     QVariant widgetValue() const override;
 
     QStringList compatibleParameterTypes() const override;
-
     QStringList compatibleOutputTypes() const override;
     QString modelerExpressionFormatString() const override;
 
