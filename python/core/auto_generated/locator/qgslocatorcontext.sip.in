@@ -31,6 +31,8 @@ Constructor for QgsLocatorContext.
 
     QgsCoordinateReferenceSystem targetExtentCrs;
 
+    QgsCoordinateTransformContext transformContext;
+
     bool usingPrefix;
 
 };
