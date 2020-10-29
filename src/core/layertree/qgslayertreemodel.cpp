@@ -566,13 +566,7 @@ QModelIndex QgsLayerTreeModel::currentIndex() const
 
 void QgsLayerTreeModel::setCurrentIndex( const QModelIndex &currentIndex )
 {
-  QModelIndex oldIndex = mCurrentIndex;
   mCurrentIndex = currentIndex;
-
-  if ( oldIndex.isValid() )
-    emit dataChanged( oldIndex, oldIndex );
-  if ( currentIndex.isValid() )
-    emit dataChanged( currentIndex, currentIndex );
 }
 
 
@@ -852,9 +846,9 @@ void QgsLayerTreeModel::layerFlagsChanged()
   if ( !nodeLayer )
     return;
 
-  QModelIndex index = node2index( nodeLayer );
+  const QModelIndex index = node2index( nodeLayer );
+  Q_ASSERT( checkIndex( index ) );
   emit dataChanged( index, index );
-
 }
 
 void QgsLayerTreeModel::layerNeedsUpdate()

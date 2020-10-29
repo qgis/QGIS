@@ -112,7 +112,7 @@ This can be used to set filters controlling which layers are shown in the view.
 
     QgsLayerTreeNode *index2node( const QModelIndex &index ) const;
 %Docstring
-Returns layer tree node for given tree index. Returns root node for invalid index.
+Returns layer tree node for given proxy model tree ``index``. Returns root node for invalid index.
 Returns ``None`` if index does not refer to a layer tree node (e.g. it is a legend node)
 
 Unlike :py:func:`QgsLayerTreeModel.index2Node()`, calling this method correctly accounts
@@ -123,7 +123,7 @@ for mapping the view indexes through the view's proxy model to the source model.
 
     QModelIndex node2index( QgsLayerTreeNode *node ) const;
 %Docstring
-Returns index for a given node. If the node does not belong to the layer tree, the result is undefined
+Returns proxy model index for a given node. If the node does not belong to the layer tree, the result is undefined
 
 Unlike :py:func:`QgsLayerTreeModel.node2index()`, calling this method correctly accounts
 for mapping the view indexes through the view's proxy model to the source model.
@@ -131,9 +131,18 @@ for mapping the view indexes through the view's proxy model to the source model.
 .. versionadded:: 3.18
 %End
 
+
+    QModelIndex node2sourceIndex( QgsLayerTreeNode *node ) const;
+%Docstring
+Returns source model index for a given node. If the node does not belong to the layer tree, the result is undefined
+
+.. versionadded:: 3.18
+%End
+
+
     QgsLayerTreeModelLegendNode *index2legendNode( const QModelIndex &index ) const;
 %Docstring
-Returns legend node for given index. Returns ``None`` for invalid index
+Returns legend node for given proxy model tree ``index``. Returns ``None`` for invalid index
 
 Unlike :py:func:`QgsLayerTreeModel.index2legendNode()`, calling this method correctly accounts
 for mapping the view indexes through the view's proxy model to the source model.
@@ -143,11 +152,19 @@ for mapping the view indexes through the view's proxy model to the source model.
 
     QModelIndex legendNode2index( QgsLayerTreeModelLegendNode *legendNode );
 %Docstring
-Returns index for a given legend node. If the legend node does not belong to the layer tree, the result is undefined.
+Returns proxy model index for a given legend node. If the legend node does not belong to the layer tree, the result is undefined.
 If the legend node is belongs to the tree but it is filtered out, invalid model index is returned.
 
 Unlike :py:func:`QgsLayerTreeModel.legendNode2index()`, calling this method correctly accounts
 for mapping the view indexes through the view's proxy model to the source model.
+
+.. versionadded:: 3.18
+%End
+
+    QModelIndex legendNode2sourceIndex( QgsLayerTreeModelLegendNode *legendNode );
+%Docstring
+Returns index for a given legend node. If the legend node does not belong to the layer tree, the result is undefined.
+If the legend node is belongs to the tree but it is filtered out, invalid model index is returned.
 
 .. versionadded:: 3.18
 %End

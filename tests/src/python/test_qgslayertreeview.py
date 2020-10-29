@@ -125,12 +125,15 @@ class TestQgsLayerTreeView(unittest.TestCase):
 
         # show in overview action
         view.setCurrentLayer(self.layer)
-        self.assertEqual(view.currentNode().customProperty('overview', 0), False)
+        self.assertEqual(
+            view.currentNode().customProperty('overview', 0), False)
         show_in_overview = actions.actionShowInOverview()
         show_in_overview.trigger()
-        self.assertEqual(view.currentNode().customProperty('overview', 0), True)
+        self.assertEqual(
+            view.currentNode().customProperty('overview', 0), True)
         show_in_overview.trigger()
-        self.assertEqual(view.currentNode().customProperty('overview', 0), False)
+        self.assertEqual(
+            view.currentNode().customProperty('overview', 0), False)
 
     def testMoveOutOfGroupActionLayer(self):
         """Test move out of group action on layer"""
@@ -173,11 +176,13 @@ class TestQgsLayerTreeView(unittest.TestCase):
         if USE_MODEL_TESTER:
             proxy_tester = QAbstractItemModelTester(view.model())
         actions = QgsLayerTreeViewDefaultActions(view)
-        self.assertEqual(self.project.layerTreeRoot().layerOrder(), [self.layer, self.layer2, self.layer3])
+        self.assertEqual(self.project.layerTreeRoot().layerOrder(), [
+                         self.layer, self.layer2, self.layer3])
         view.setCurrentLayer(self.layer3)
         movetotop = actions.actionMoveToTop()
         movetotop.trigger()
-        self.assertEqual(self.project.layerTreeRoot().layerOrder(), [self.layer3, self.layer, self.layer2])
+        self.assertEqual(self.project.layerTreeRoot().layerOrder(), [
+                         self.layer3, self.layer, self.layer2])
 
     def testMoveToTopActionGroup(self):
         """Test move to top action on group"""
@@ -292,11 +297,13 @@ class TestQgsLayerTreeView(unittest.TestCase):
         if USE_MODEL_TESTER:
             proxy_tester = QAbstractItemModelTester(view.model())
         actions = QgsLayerTreeViewDefaultActions(view)
-        self.assertEqual(self.project.layerTreeRoot().layerOrder(), [self.layer, self.layer2, self.layer3])
+        self.assertEqual(self.project.layerTreeRoot().layerOrder(), [
+                         self.layer, self.layer2, self.layer3])
         view.setCurrentLayer(self.layer)
         movetobottom = actions.actionMoveToBottom()
         movetobottom.trigger()
-        self.assertEqual(self.project.layerTreeRoot().layerOrder(), [self.layer2, self.layer3, self.layer])
+        self.assertEqual(self.project.layerTreeRoot().layerOrder(), [
+                         self.layer2, self.layer3, self.layer])
 
     def testMoveToBottomActionGroup(self):
         """Test move to bottom action on group"""
@@ -409,18 +416,25 @@ class TestQgsLayerTreeView(unittest.TestCase):
         view.setModel(self.model)
         if USE_MODEL_TESTER:
             proxy_tester = QAbstractItemModelTester(view.model())
-        self.project.layerTreeRoot().findLayer(self.layer).setItemVisibilityChecked(True)
-        self.project.layerTreeRoot().findLayer(self.layer2).setItemVisibilityChecked(True)
-        self.assertTrue(self.project.layerTreeRoot().findLayer(self.layer).itemVisibilityChecked())
-        self.assertTrue(self.project.layerTreeRoot().findLayer(self.layer2).itemVisibilityChecked())
+        self.project.layerTreeRoot().findLayer(
+            self.layer).setItemVisibilityChecked(True)
+        self.project.layerTreeRoot().findLayer(
+            self.layer2).setItemVisibilityChecked(True)
+        self.assertTrue(self.project.layerTreeRoot().findLayer(
+            self.layer).itemVisibilityChecked())
+        self.assertTrue(self.project.layerTreeRoot().findLayer(
+            self.layer2).itemVisibilityChecked())
 
         view.setLayerVisible(None, True)
         view.setLayerVisible(self.layer, True)
-        self.assertTrue(self.project.layerTreeRoot().findLayer(self.layer).itemVisibilityChecked())
+        self.assertTrue(self.project.layerTreeRoot().findLayer(
+            self.layer).itemVisibilityChecked())
         view.setLayerVisible(self.layer2, False)
-        self.assertFalse(self.project.layerTreeRoot().findLayer(self.layer2).itemVisibilityChecked())
+        self.assertFalse(self.project.layerTreeRoot().findLayer(
+            self.layer2).itemVisibilityChecked())
         view.setLayerVisible(self.layer2, True)
-        self.assertTrue(self.project.layerTreeRoot().findLayer(self.layer2).itemVisibilityChecked())
+        self.assertTrue(self.project.layerTreeRoot().findLayer(
+            self.layer2).itemVisibilityChecked())
 
     def testProxyModel(self):
         """Test proxy model filtering and hidden layers"""
@@ -447,7 +461,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
 
         self.assertEqual(proxy_items, ['layer1', 'layer2', 'layer3'])
 
-        self.layer.setFlags(self.layer.Hidden)
+        self.layer3.setFlags(self.layer.Hidden)
         self.assertEqual(tree_model.rowCount(), 3)
         self.assertEqual(proxy_model.rowCount(), 2)
 
@@ -455,7 +469,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
         for r in range(proxy_model.rowCount()):
             proxy_items.append(proxy_model.data(proxy_model.index(r, 0)))
 
-        self.assertEqual(proxy_items, ['layer2', 'layer3'])
+        self.assertEqual(proxy_items, ['layer1', 'layer2'])
 
         view.setShowHidden(True)
 
@@ -475,7 +489,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
         for r in range(proxy_model.rowCount()):
             proxy_items.append(proxy_model.data(proxy_model.index(r, 0)))
 
-        self.assertEqual(proxy_items, ['layer2', 'layer3'])
+        self.assertEqual(proxy_items, ['layer1', 'layer2'])
 
         # Test filters
         proxy_model.setFilterText('layer2')
@@ -487,6 +501,42 @@ class TestQgsLayerTreeView(unittest.TestCase):
             proxy_items.append(proxy_model.data(proxy_model.index(r, 0)))
 
         self.assertEqual(proxy_items, ['layer2'])
+
+    def testProxyModelCurrentIndex(self):
+        """Test a crash spotted out while developing the proxy model"""
+
+        view = QgsLayerTreeView()
+        view.setModel(self.model)
+        if USE_MODEL_TESTER:
+            proxy_tester = QAbstractItemModelTester(view.model())
+
+        view.setCurrentLayer(self.layer3)
+        self.layer3.setFlags(self.layer.Hidden)
+
+    def testNode2IndexMethods(self):
+        """Test node2index and node2sourceIndex"""
+
+        view = QgsLayerTreeView()
+        view.setModel(self.model)
+        if USE_MODEL_TESTER:
+            proxy_tester = QAbstractItemModelTester(view.model())
+        tree_model = view.layerTreeModel()
+        proxy_model = view.proxyModel()
+
+        proxy_index = proxy_model.index(1, 0)
+        self.assertTrue(proxy_model.checkIndex(proxy_index))
+        node2 = view.index2node(proxy_index)
+        self.assertEqual(node2.name(), 'layer2')
+
+        proxy_layer2_index = view.node2index(node2)
+        self.assertTrue(proxy_model.checkIndex(proxy_layer2_index))
+        self.assertEqual(proxy_layer2_index, view.node2index(node2))
+
+        source_index = tree_model.index(1, 0)
+        self.assertTrue(tree_model.checkIndex(source_index))
+        tree_layer2_index = view.node2sourceIndex(node2)
+        self.assertTrue(tree_model.checkIndex(tree_layer2_index))
+        self.assertEqual(tree_layer2_index, view.node2sourceIndex(node2))
 
 
 if __name__ == '__main__':

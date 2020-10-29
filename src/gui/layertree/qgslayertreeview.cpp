@@ -284,16 +284,25 @@ void QgsLayerTreeView::onCurrentChanged()
     return;
 
   // update the current index in model (the item will be underlined)
-  QModelIndex nodeLayerIndex;
+  QModelIndex proxyModelNodeLayerIndex;
   if ( layerCurrent )
   {
     QgsLayerTreeLayer *nodeLayer = layerTreeModel()->rootGroup()->findLayer( layerCurrentID );
     if ( nodeLayer )
-      nodeLayerIndex = layerTreeModel()->node2index( nodeLayer );
+      proxyModelNodeLayerIndex = node2index( nodeLayer );
   }
-  layerTreeModel()->setCurrentIndex( nodeLayerIndex );
 
-  mCurrentLayerID = layerCurrentID;
+  if ( ! proxyModelNodeLayerIndex.isValid() )
+  {
+    mCurrentLayerID = QString();
+    layerTreeModel()->setCurrentIndex( QModelIndex() );
+  }
+  else
+  {
+    mCurrentLayerID = layerCurrentID;
+    layerTreeModel()->setCurrentIndex( mProxyModel->mapToSource( proxyModelNodeLayerIndex ) );
+  }
+
   emit currentLayerChanged( layerCurrent );
 }
 
@@ -645,7 +654,12 @@ QgsLayerTreeNode *QgsLayerTreeView::index2node( const QModelIndex &index ) const
 
 QModelIndex QgsLayerTreeView::node2index( QgsLayerTreeNode *node ) const
 {
-  return mProxyModel->mapFromSource( layerTreeModel()->node2index( node ) );
+  return mProxyModel->mapFromSource( node2sourceIndex( node ) );
+}
+
+QModelIndex QgsLayerTreeView::node2sourceIndex( QgsLayerTreeNode *node ) const
+{
+  return layerTreeModel()->node2index( node );
 }
 
 QgsLayerTreeModelLegendNode *QgsLayerTreeView::index2legendNode( const QModelIndex &index ) const
@@ -655,7 +669,12 @@ QgsLayerTreeModelLegendNode *QgsLayerTreeView::index2legendNode( const QModelInd
 
 QModelIndex QgsLayerTreeView::legendNode2index( QgsLayerTreeModelLegendNode *legendNode )
 {
-  return mProxyModel->mapFromSource( layerTreeModel()->legendNode2index( legendNode ) );
+  return mProxyModel->mapFromSource( legendNode2sourceIndex( legendNode ) );
+}
+
+QModelIndex QgsLayerTreeView::legendNode2sourceIndex( QgsLayerTreeModelLegendNode *legendNode )
+{
+  return layerTreeModel()->legendNode2index( legendNode );
 }
 
 QgsLayerTreeProxyModel::QgsLayerTreeProxyModel( QgsLayerTreeModel *treeModel, QObject *parent )
