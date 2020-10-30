@@ -50,7 +50,7 @@ class CORE_EXPORT QgsGeocoderResult
     /**
      * Constructor for a valid QgsGeocoderResult, with the specified \a geometry and \a crs.
      */
-    QgsGeocoderResult( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs );
+    QgsGeocoderResult( const QString &identifier, const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs );
 
     /**
      * Returns TRUE if the result is a valid result.
@@ -63,6 +63,11 @@ class CORE_EXPORT QgsGeocoderResult
      * Returns the error string, if the result is invalid.
      */
     QString error() const { return mErrorString; }
+
+    /**
+     * Returns the identifier string for the result.
+     */
+    QString identifier() const { return mIdentifier; }
 
     /**
      * Returns the resultant geometry resulting from the geocoding operation.
@@ -125,6 +130,7 @@ class CORE_EXPORT QgsGeocoderResult
     bool mIsValid = false;
     QString mErrorString;
 
+    QString mIdentifier;
     QgsGeometry mGeometry;
     QgsCoordinateReferenceSystem mCrs;
     QVariantMap mAdditionalAttributes;

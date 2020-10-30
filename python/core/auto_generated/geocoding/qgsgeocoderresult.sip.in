@@ -37,7 +37,7 @@ accuracy of the geocoding result.
 Creates an invalid error result, with the specified ``errorMessage`` string.
 %End
 
-    QgsGeocoderResult( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs );
+    QgsGeocoderResult( const QString &identifier, const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs );
 %Docstring
 Constructor for a valid QgsGeocoderResult, with the specified ``geometry`` and ``crs``.
 %End
@@ -52,6 +52,11 @@ If the result is invalid, the error message can be retrieved by calling :py:func
     QString error() const;
 %Docstring
 Returns the error string, if the result is invalid.
+%End
+
+    QString identifier() const;
+%Docstring
+Returns the identifier string for the result.
 %End
 
     QgsGeometry geometry() const;

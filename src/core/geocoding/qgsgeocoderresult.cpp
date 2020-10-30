@@ -23,8 +23,9 @@ QgsGeocoderResult QgsGeocoderResult::errorResult( const QString &errorMessage )
   return result;
 }
 
-QgsGeocoderResult::QgsGeocoderResult( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs )
+QgsGeocoderResult::QgsGeocoderResult( const QString &identifier, const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs )
   : mIsValid( true )
+  , mIdentifier( identifier )
   , mGeometry( geometry )
   , mCrs( crs )
 {}

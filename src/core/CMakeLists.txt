@@ -31,6 +31,7 @@ SET(QGIS_CORE_SRCS
   classification/qgsclassificationstandarddeviation.cpp
   classification/qgsclassificationlogarithmic.cpp
 
+  geocoding/qgsabstractgeocoderlocatorfilter.cpp
   geocoding/qgsgeocoder.cpp
   geocoding/qgsgeocodercontext.cpp
   geocoding/qgsgeocoderresult.cpp
@@ -1153,6 +1154,7 @@ SET(QGIS_CORE_HDRS
   geocms/geonode/qgsgeonodeconnection.h
   geocms/geonode/qgsgeonoderequest.h
 
+  geocoding/qgsabstractgeocoderlocatorfilter.h
   geocoding/qgsgeocoder.h
   geocoding/qgsgeocodercontext.h
   geocoding/qgsgeocoderresult.h
