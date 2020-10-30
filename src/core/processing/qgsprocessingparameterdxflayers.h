@@ -64,6 +64,7 @@ class CORE_EXPORT QgsProcessingParameterDxfLayers : public QgsProcessingParamete
     static QVariantMap layerAsVariantMap( const QgsDxfExport::DxfLayer &layer );
 };
 
+#ifndef SIP_RUN
 ///@cond PRIVATE
 
 /**
@@ -121,5 +122,6 @@ class CORE_EXPORT QgsProcessingParameterTypeDxfLayers : public QgsProcessingPara
 };
 
 ///@endcond
+#endif
 
 #endif // QGSPROCESSINGPARAMETERDXFLAYERS_H

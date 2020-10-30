@@ -226,6 +226,7 @@ their acceptable ranges, defaults, etc.
 %End
 %TypeHeaderCode
 #include "qgsprocessingparameteraggregate.h"
+#include "qgsprocessingparameterdxflayers.h"
 #include "qgsprocessingparameterfieldmap.h"
 #include "qgsprocessingparametertininputlayers.h"
 #include "qgsprocessingparametervectortilewriterlayers.h"
