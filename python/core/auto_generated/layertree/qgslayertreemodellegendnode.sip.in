@@ -38,7 +38,19 @@ and customized look.
     enum LegendNodeRoles
     {
       RuleKeyRole,
-      ParentRuleKeyRole
+      ParentRuleKeyRole,
+      NodeTypeRole,
+    };
+
+    enum NodeTypes
+    {
+      SimpleLegend,
+      SymbolLegend,
+      RasterSymbolLegend,
+      ImageLegend,
+      WmsLegend,
+      DataDefinedSizeLegend,
+      EmbeddedWidget,
     };
 
     QgsLayerTreeLayer *layerNode() const;
