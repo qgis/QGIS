@@ -511,6 +511,10 @@ QVariant QgsSymbolLegendNode::data( int role ) const
   {
     return mItem.parentRuleKey();
   }
+  else if ( role == QgsLayerTreeModelLegendNode::NodeTypeRole )
+  {
+    return QgsLayerTreeModelLegendNode::SymbolLegend;
+  }
 
   return QVariant();
 }
@@ -851,6 +855,8 @@ QVariant QgsSimpleLegendNode::data( int role ) const
     return mIcon;
   else if ( role == RuleKeyRole && !mKey.isEmpty() )
     return mKey;
+  else if ( role == QgsLayerTreeModelLegendNode::NodeTypeRole )
+    return QgsLayerTreeModelLegendNode::SimpleLegend;
   else
     return QVariant();
 }
@@ -873,6 +879,10 @@ QVariant QgsImageLegendNode::data( int role ) const
   else if ( role == Qt::SizeHintRole )
   {
     return mImage.size();
+  }
+  else if ( role == QgsLayerTreeModelLegendNode::NodeTypeRole )
+  {
+    return QgsLayerTreeModelLegendNode::ImageLegend;
   }
   return QVariant();
 }
@@ -931,9 +941,14 @@ QVariant QgsRasterSymbolLegendNode::data( int role ) const
     return QIcon( pix );
   }
   else if ( role == Qt::DisplayRole || role == Qt::EditRole )
+  {
     return mUserLabel.isEmpty() ? mLabel : mUserLabel;
-  else
-    return QVariant();
+  }
+  else if ( role == QgsLayerTreeModelLegendNode::NodeTypeRole )
+  {
+    return QgsLayerTreeModelLegendNode::RasterSymbolLegend;
+  }
+  return QVariant();
 }
 
 
@@ -1085,6 +1100,10 @@ QVariant QgsWmsLegendNode::data( int role ) const
   {
     return getLegendGraphic().size();
   }
+  else if ( role == QgsLayerTreeModelLegendNode::NodeTypeRole )
+  {
+    return QgsLayerTreeModelLegendNode::WmsLegend;
+  }
   return QVariant();
 }
 
@@ -1220,6 +1239,10 @@ QVariant QgsDataDefinedSizeLegendNode::data( int role ) const
   {
     cacheImage();
     return mImage.size();
+  }
+  else if ( role == QgsLayerTreeModelLegendNode::NodeTypeRole )
+  {
+    return QgsLayerTreeModelLegendNode::DataDefinedSizeLegend;
   }
   return QVariant();
 }

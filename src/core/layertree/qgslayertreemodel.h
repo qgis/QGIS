@@ -500,6 +500,8 @@ class EmbeddedWidgetLegendNode : public QgsLayerTreeModelLegendNode
     {
       if ( role == RuleKeyRole )
         return mRuleKey;
+      else if ( role == QgsLayerTreeModelLegendNode::NodeTypeRole )
+        return QgsLayerTreeModelLegendNode::EmbeddedWidget;
       return QVariant();
     }
 

@@ -60,10 +60,24 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 #endif
   public:
 
+    //! Legend node data roles
     enum LegendNodeRoles
     {
-      RuleKeyRole = Qt::UserRole,     //!< Rule key of the node (QString)
-      ParentRuleKeyRole               //!< Rule key of the parent legend node - for legends with tree hierarchy (QString). Added in 2.8
+      RuleKeyRole = Qt::UserRole, //!< Rule key of the node (QString)
+      ParentRuleKeyRole, //!< Rule key of the parent legend node - for legends with tree hierarchy (QString). Added in 2.8
+      NodeTypeRole, //!< Type of node. Added in 3.16
+    };
+
+    //! Types of legend nodes
+    enum NodeTypes
+    {
+      SimpleLegend, //!< Simple label with icon legend node type
+      SymbolLegend, //!< Vector symbol legend node type
+      RasterSymbolLegend, //!< Raster symbol legend node type
+      ImageLegend, //!< Raster image legend node type
+      WmsLegend, //!< WMS legend node type
+      DataDefinedSizeLegend, //!< Marker symbol legend node type
+      EmbeddedWidget, //!< Embedded widget placeholder node type
     };
 
     //! Returns pointer to the parent layer node
@@ -277,6 +291,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     QSizeF mUserSize;
     bool mColumnBreakBeforeNode = false;
 };
+Q_DECLARE_METATYPE( QgsLayerTreeModelLegendNode::NodeTypes )
 
 #include "qgslegendsymbolitem.h"
 #include "qgstextformat.h"
