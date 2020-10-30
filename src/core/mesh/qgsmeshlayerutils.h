@@ -277,7 +277,7 @@ class CORE_EXPORT QgsMeshLayerUtils
       const QgsMeshRendererScalarSettings::DataResamplingMethod method = QgsMeshRendererScalarSettings::NeighbourAverage );
 
     /**
-     * Calculates magnitude values ont vertices from the given QgsMeshDataBlock.
+     * Calculates magnitude values on vertices from the given QgsMeshDataBlock.
      * If the values are defined on faces, the values are interpolated with the given method
      * This method is thread safe.
      * \param nativeMesh the native mesh
