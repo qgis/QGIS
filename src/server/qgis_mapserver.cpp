@@ -206,7 +206,6 @@ class HttpHandlerWorker: public QThread
 
           if ( ! clientConnection->bytesAvailable() )
           {
-            qApp->processEvents();
             continue;
           }
 
@@ -379,8 +378,20 @@ void responseHandler( Request *requestPtr )
   const auto &response { request->response };
   const auto &clientConnection { request->clientConnection };
 
+  if ( clientConnection->state() != QAbstractSocket::SocketState::ConnectedState )
+  {
+    std::cout << QStringLiteral( "Connection reset by peer" ).toStdString() << std::endl;
+    clientConnection->deleteLater();
+    return;
+  }
+
   // Output stream
-  clientConnection->write( QStringLiteral( "HTTP/1.0 %1 %2\r\n" ).arg( response.statusCode() ).arg( knownStatuses.value( response.statusCode(), QStringLiteral( "Unknown response code" ) ) ).toUtf8() );
+  if ( clientConnection->write( QStringLiteral( "HTTP/1.0 %1 %2\r\n" ).arg( response.statusCode() ).arg( knownStatuses.value( response.statusCode(), QStringLiteral( "Unknown response code" ) ) ).toUtf8() ) < 0 )
+  {
+    std::cout << QStringLiteral( "Cannot write to output socket" ).toStdString() << std::endl;
+    clientConnection->deleteLater();
+    return;
+  }
   clientConnection->write( QStringLiteral( "Server: QGIS\r\n" ).toUtf8() );
   const auto responseHeaders { response.headers() };
   for ( auto it = responseHeaders.constBegin(); it != responseHeaders.constEnd(); ++it )
@@ -560,7 +571,7 @@ int main( int argc, char *argv[] )
       REQUEST_QUEUE_MUTEX.unlock();
     } );
 
-    serverWorker.connect( &serverWorker, &ServerWorker::responseReady, &responseHandler );
+    serverWorker.connect( &serverWorker, &ServerWorker::responseReady, QThread::currentThread(), responseHandler );
     // Exit handlers
 #ifndef Q_OS_WIN
 
