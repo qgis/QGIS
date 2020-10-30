@@ -105,12 +105,12 @@ class CORE_EXPORT QgsProcessingParameterTypeMeshDatasetGroups : public QgsProces
 
     QString pythonImportString() const override
     {
-      return QStringLiteral( "from qgis.core import QgsProcessingParameterTypeMeshDatasetGroups" );
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterMeshDatasetGroups" );
     }
 
     QString className() const override
     {
-      return QStringLiteral( "QgsProcessingParameterTypeMeshDatasetGroups" );
+      return QStringLiteral( "QgsProcessingParameterMeshDatasetGroups" );
     }
 
     QStringList acceptedPythonTypes() const override
@@ -232,17 +232,17 @@ class CORE_EXPORT QgsProcessingParameterTypeMeshDatasetTime: public QgsProcessin
 
     QString pythonImportString() const override
     {
-      return QStringLiteral( "from qgis.core import QgsProcessingParameterTypeMeshDatasetTime" );
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterMeshDatasetTime" );
     }
 
     QString className() const override
     {
-      return QStringLiteral( "QgsProcessingParameterTypeMeshDatasetTime" );
+      return QStringLiteral( "QgsProcessingParameterMeshDatasetTime" );
     }
 
     QStringList acceptedPythonTypes() const override
     {
-      return QStringList() << QObject::tr( "dict{}: dictionary, see QgsProcessingParameterTypeMeshDatasetTime docs" );
+      return QStringList() << QObject::tr( "dict{}: dictionary, see QgsProcessingParameterMeshDatasetTime docs" );
     }
 };
 

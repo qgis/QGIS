@@ -110,10 +110,10 @@ void QgsProcessingMeshDatasetGroupsWidget::showDialog()
     QgsProcessingMultipleSelectionPanelWidget *widget = new QgsProcessingMultipleSelectionPanelWidget( availableOptions, mValue );
     widget->setPanelTitle( tr( "Dataset Groups Available" ) );
 
-    widget->setValueFormatter( [datasetGroupsIndexes, options]( const QVariant & v ) -> QString
+    widget->setValueFormatter( [availableOptions, options]( const QVariant & v ) -> QString
     {
       const int index = v.toInt();
-      const int pos = datasetGroupsIndexes.indexOf( index );
+      const int pos = availableOptions.indexOf( index );
       return ( pos >= 0 && pos < options.size() ) ? options.at( pos ) : QString();
     } );
 
