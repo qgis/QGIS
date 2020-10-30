@@ -524,18 +524,14 @@ class TestQgsLayerTreeView(unittest.TestCase):
         proxy_model = view.proxyModel()
 
         proxy_index = proxy_model.index(1, 0)
-        self.assertTrue(proxy_model.checkIndex(proxy_index))
         node2 = view.index2node(proxy_index)
         self.assertEqual(node2.name(), 'layer2')
 
         proxy_layer2_index = view.node2index(node2)
-        self.assertTrue(proxy_model.checkIndex(proxy_layer2_index))
         self.assertEqual(proxy_layer2_index, view.node2index(node2))
 
         source_index = tree_model.index(1, 0)
-        self.assertTrue(tree_model.checkIndex(source_index))
         tree_layer2_index = view.node2sourceIndex(node2)
-        self.assertTrue(tree_model.checkIndex(tree_layer2_index))
         self.assertEqual(tree_layer2_index, view.node2sourceIndex(node2))
 
 
