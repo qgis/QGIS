@@ -15,6 +15,7 @@
 %Include auto_generated/network/qgsnetworkspeedstrategy.sip
 %Include auto_generated/network/qgsnetworkstrategy.sip
 %Include auto_generated/network/qgsvectorlayerdirector.sip
+%Include auto_generated/processing/qgsalgorithmbatchgeocode.sip
 %Include auto_generated/processing/qgsnativealgorithms.sip
 %Include auto_generated/raster/qgsalignraster.sip
 %Include auto_generated/raster/qgsaspectfilter.sip
