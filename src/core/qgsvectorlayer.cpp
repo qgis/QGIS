@@ -2363,8 +2363,10 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
         for ( int i = 0; i < attributeNodeList.size(); ++i )
         {
           QString fieldName = attributeNodeList.at( i ).toElement().text();
-          int index = mFields.indexFromName( fieldName );
-          setFieldConfigurationFlag( index, config.second, true );
+          if ( !mFieldConfigurationFlags.contains( fieldName ) )
+            mFieldConfigurationFlags[fieldName] = config.second;
+          else
+            mFieldConfigurationFlags[fieldName].setFlag( config.second, true );
         }
       }
     }
