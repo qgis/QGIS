@@ -90,9 +90,9 @@ void QgsPhongMaterialWidget::setSettings( const QgsAbstractMaterialSettings *set
   btnSpecular->setColor( phongMaterial->specular() );
   spinShininess->setValue( phongMaterial->shininess() );
 
-  mDiffuseDataDefinedButton->init( QgsAbstractMaterialSettings::Diffuse, settings->dataDefinedProperties(), settings->propertyDefinition(), layer, true );
-  mAmbientDataDefinedButton->init( QgsAbstractMaterialSettings::Ambient, settings->dataDefinedProperties(), settings->propertyDefinition(), layer, true );
-  mSpecularDataDefinedButton->init( QgsAbstractMaterialSettings::Specular, settings->dataDefinedProperties(), settings->propertyDefinition(), layer, true );
+  mDiffuseDataDefinedButton->init( QgsAbstractMaterialSettings::Diffuse, settings->dataDefinedProperties(), settings->propertyDefinitions(), layer, true );
+  mAmbientDataDefinedButton->init( QgsAbstractMaterialSettings::Ambient, settings->dataDefinedProperties(), settings->propertyDefinitions(), layer, true );
+  mSpecularDataDefinedButton->init( QgsAbstractMaterialSettings::Specular, settings->dataDefinedProperties(), settings->propertyDefinitions(), layer, true );
 }
 
 QgsAbstractMaterialSettings *QgsPhongMaterialWidget::settings()

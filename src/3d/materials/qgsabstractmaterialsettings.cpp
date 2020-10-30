@@ -21,13 +21,13 @@ void QgsAbstractMaterialSettings::readXml( const QDomElement &element, const Qgs
 {
   QDomElement elemDataDefinedProperties = element.firstChildElement( QStringLiteral( "data-defined-properties" ) );
   if ( !elemDataDefinedProperties.isNull() )
-    mDataDefinedProperties.readXml( elemDataDefinedProperties, propertyDefinition() );
+    mDataDefinedProperties.readXml( elemDataDefinedProperties, propertyDefinitions() );
 }
 
 void QgsAbstractMaterialSettings::writeXml( QDomElement &element, const QgsReadWriteContext & ) const
 {
   QDomElement elemDataDefinedProperties = element.ownerDocument().createElement( QStringLiteral( "data-defined-properties" ) );
-  mDataDefinedProperties.writeXml( elemDataDefinedProperties, propertyDefinition() );
+  mDataDefinedProperties.writeXml( elemDataDefinedProperties, propertyDefinitions() );
   element.appendChild( elemDataDefinedProperties );
 }
 
@@ -38,7 +38,7 @@ void QgsAbstractMaterialSettings::setDataDefinedProperties( const QgsPropertyCol
 
 QgsPropertyCollection QgsAbstractMaterialSettings::dataDefinedProperties() const {return mDataDefinedProperties;}
 
-const QgsPropertiesDefinition &QgsAbstractMaterialSettings::propertyDefinition() const
+const QgsPropertiesDefinition &QgsAbstractMaterialSettings::propertyDefinitions() const
 {
   if ( sPropertyDefinitions.isEmpty() )
     initPropertyDefinitions();

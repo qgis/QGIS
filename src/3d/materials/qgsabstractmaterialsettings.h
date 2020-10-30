@@ -205,7 +205,7 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
     * Returns a reference to the material properties definition, used for data defined overrides.
     * \since QGIS 3.18
     */
-    const QgsPropertiesDefinition  &propertyDefinition() const;
+    const QgsPropertiesDefinition  &propertyDefinitions() const;
 
     /**
      * Applies the data defined bytes, \a dataDefinedBytes, on the \a geometry by filling a specific vertex buffer that will be used by the shader.
