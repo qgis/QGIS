@@ -331,6 +331,12 @@ class CORE_EXPORT QgsProcessingParameterDefinition
 {
 
 #ifdef SIP_RUN
+    % TypeHeaderCode
+#include "qgsprocessingparameteraggregate.h"
+#include "qgsprocessingparameterfieldmap.h"
+#include "qgsprocessingparametertininputlayers.h"
+#include "qgsprocessingparametervectortilewriterlayers.h"
+    % End
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( sipCpp->type() == QgsProcessingParameterBoolean::typeName() )
       sipType = sipType_QgsProcessingParameterBoolean;

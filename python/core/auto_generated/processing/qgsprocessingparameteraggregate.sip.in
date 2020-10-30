@@ -67,39 +67,6 @@ Sets the ``name`` of the parent layer parameter. Use an empty string if this is 
 };
 
 
-
-class QgsProcessingParameterTypeAggregate : QgsProcessingParameterType
-{
-%Docstring
-Parameter type definition for QgsProcessingParameterAggregate.
-
-.. note::
-
-   This class is not a part of public API.
-
-.. versionadded:: 3.14
-%End
-
-%TypeHeaderCode
-#include "qgsprocessingparameteraggregate.h"
-%End
-  public:
-    virtual QgsProcessingParameterDefinition *create( const QString &name ) const /Factory/;
-
-    virtual QString description() const;
-
-    virtual QString name() const;
-
-    virtual QString id() const;
-
-    virtual QString pythonImportString() const;
-
-    virtual QString className() const;
-
-    virtual QStringList acceptedPythonTypes() const;
-};
-
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

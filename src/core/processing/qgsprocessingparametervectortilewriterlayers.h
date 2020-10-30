@@ -65,6 +65,7 @@ class CORE_EXPORT QgsProcessingParameterVectorTileWriterLayers : public QgsProce
 
 };
 
+#ifndef SIP_RUN
 ///@cond PRIVATE
 
 /**
@@ -114,5 +115,6 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorTileWriterLayers : public QgsP
 };
 
 ///@endcond
+#endif
 
 #endif // QGSPROCESSINGPARAMETERVECTORTILEWRITERLAYERS_H

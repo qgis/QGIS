@@ -63,6 +63,7 @@ class CORE_EXPORT QgsProcessingParameterFieldMapping : public QgsProcessingParam
 
 };
 
+#ifndef SIP_RUN
 ///@cond PRIVATE
 
 /**
@@ -112,5 +113,6 @@ class CORE_EXPORT QgsProcessingParameterTypeFieldMapping : public QgsProcessingP
 };
 
 ///@endcond
+#endif
 
 #endif // QGSPROCESSINGPARAMETERFIELDMAP_H
