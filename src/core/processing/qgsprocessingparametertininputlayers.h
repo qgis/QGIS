@@ -65,6 +65,7 @@ class CORE_EXPORT QgsProcessingParameterTinInputLayers: public QgsProcessingPara
     static QString typeName() { return QStringLiteral( "tininputlayers" ); }
 };
 
+#ifndef SIP_RUN
 ///@cond PRIVATE
 
 /**
@@ -114,5 +115,6 @@ class CORE_EXPORT QgsProcessingParameterTypeTinInputLayers : public QgsProcessin
 };
 
 ///@endcond
+#endif
 
 #endif // QGSPROCESSINGPARAMETERTININPUTLAYERS_H

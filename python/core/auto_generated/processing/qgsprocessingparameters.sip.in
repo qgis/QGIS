@@ -224,6 +224,12 @@ their acceptable ranges, defaults, etc.
 %TypeHeaderCode
 #include "qgsprocessingparameters.h"
 %End
+%TypeHeaderCode
+#include "qgsprocessingparameteraggregate.h"
+#include "qgsprocessingparameterfieldmap.h"
+#include "qgsprocessingparametertininputlayers.h"
+#include "qgsprocessingparametervectortilewriterlayers.h"
+%End
 %ConvertToSubClassCode
     if ( sipCpp->type() == QgsProcessingParameterBoolean::typeName() )
       sipType = sipType_QgsProcessingParameterBoolean;
