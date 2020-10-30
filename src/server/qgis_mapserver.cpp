@@ -66,7 +66,13 @@ QMutex REQUEST_QUEUE_MUTEX;
 QString ipAddress;
 QString serverPort;
 
-struct Request
+struct IncomingRequest
+{
+  QString *incomingData;
+  QTcpSocket *clientConnection;
+};
+
+struct ProcessedRequest
 {
   QString httpHeader;
   QgsBufferServerRequest request;
@@ -75,8 +81,8 @@ struct Request
   std::chrono::steady_clock::time_point startTime;
 };
 
-QQueue<QTcpSocket *> REQUEST_QUEUE;
-QQueue<Request *> SERVER_QUEUE;
+QQueue<IncomingRequest *> REQUEST_QUEUE;
+QQueue<ProcessedRequest *> SERVER_QUEUE;
 
 const QMap<int, QString> knownStatuses
 {
@@ -127,7 +133,6 @@ class HttpException: public std::exception
 
 };
 
-
 class ServerWorker: public QThread
 {
     Q_OBJECT
@@ -163,216 +168,17 @@ class ServerWorker: public QThread
 
   signals:
 
-    void responseReady( Request *request );
+    void responseReady( ProcessedRequest *request );
 
   private:
 
     QgsServer *mServer;
 };
 
-
-class HttpHandlerWorker: public QThread
-{
-    Q_OBJECT
-
-  public:
-
-    HttpHandlerWorker( ) = default;
-
-    void run( )
-    {
-
-      while ( IS_RUNNING )
-      {
-
-        REQUEST_QUEUE_MUTEX.lock();
-
-        while ( REQUEST_QUEUE.size() == 0 )
-        {
-          REQUEST_WAIT_CONDITION.wait( &REQUEST_QUEUE_MUTEX );
-        }
-
-        auto clientConnection = REQUEST_QUEUE.dequeue();
-
-        REQUEST_QUEUE_MUTEX.unlock();
-
-        // Process request
-        QString incomingData;
-
-        while ( IS_RUNNING && clientConnection->state() == QAbstractSocket::SocketState::ConnectedState )
-        {
-
-          auto start = std::chrono::steady_clock::now();
-
-          if ( ! clientConnection->bytesAvailable() )
-          {
-            continue;
-          }
-
-          // Read all incoming data
-          while ( IS_RUNNING && clientConnection->bytesAvailable() > 0 )
-          {
-            incomingData.append( clientConnection->readAll() );
-          }
-
-          try
-          {
-            // Parse protocol and URL GET /path HTTP/1.1
-            int firstLinePos { incomingData.indexOf( "\r\n" ) };
-            if ( firstLinePos == -1 )
-            {
-              throw HttpException( QStringLiteral( "HTTP error finding protocol header" ) );
-            }
-
-            const QString firstLine { incomingData.left( firstLinePos ) };
-            const QStringList firstLinePieces { firstLine.split( ' ' ) };
-            if ( firstLinePieces.size() != 3 )
-            {
-              throw HttpException( QStringLiteral( "HTTP error splitting protocol header" ) );
-            }
-
-            const QString methodString { firstLinePieces.at( 0 ) };
-
-            QgsServerRequest::Method method;
-            if ( methodString == "GET" )
-            {
-              method = QgsServerRequest::Method::GetMethod;
-            }
-            else if ( methodString == "POST" )
-            {
-              method = QgsServerRequest::Method::PostMethod;
-            }
-            else if ( methodString == "HEAD" )
-            {
-              method = QgsServerRequest::Method::HeadMethod;
-            }
-            else if ( methodString == "PUT" )
-            {
-              method = QgsServerRequest::Method::PutMethod;
-            }
-            else if ( methodString == "PATCH" )
-            {
-              method = QgsServerRequest::Method::PatchMethod;
-            }
-            else if ( methodString == "DELETE" )
-            {
-              method = QgsServerRequest::Method::DeleteMethod;
-            }
-            else
-            {
-              throw HttpException( QStringLiteral( "HTTP error unsupported method: %1" ).arg( methodString ) );
-            }
-
-            const QString protocol { firstLinePieces.at( 2 )};
-            if ( protocol != QLatin1String( "HTTP/1.0" ) && protocol != QLatin1String( "HTTP/1.1" ) )
-            {
-              throw HttpException( QStringLiteral( "HTTP error unsupported protocol: %1" ).arg( protocol ) );
-            }
-
-            // Headers
-            QgsBufferServerRequest::Headers headers;
-            int endHeadersPos { incomingData.indexOf( "\r\n\r\n" ) };
-
-            if ( endHeadersPos == -1 )
-            {
-              throw HttpException( QStringLiteral( "HTTP error finding headers" ) );
-            }
-
-            const QStringList httpHeaders { incomingData.mid( firstLinePos + 2, endHeadersPos - firstLinePos ).split( "\r\n" ) };
-
-            for ( const auto &headerLine : httpHeaders )
-            {
-              const int headerColonPos { headerLine.indexOf( ':' ) };
-              if ( headerColonPos > 0 )
-              {
-                headers.insert( headerLine.left( headerColonPos ), headerLine.mid( headerColonPos + 2 ) );
-              }
-            }
-
-            const int headersSize { endHeadersPos + 4 };
-
-            // Check for content length and if we have got all data
-            if ( headers.contains( QStringLiteral( "Content-Length" ) ) )
-            {
-              bool ok;
-              const int contentLength { headers.value( QStringLiteral( "Content-Length" ) ).toInt( &ok ) };
-              if ( ok && contentLength > incomingData.length() - headersSize )
-              {
-                break;
-              }
-            }
-
-            // At this point we should have read all data:
-
-            // Build URL from env ...
-            QString url { qgetenv( "REQUEST_URI" ) };
-            // ... or from server ip/port and request path
-            if ( url.isEmpty() )
-            {
-              const QString path { firstLinePieces.at( 1 )};
-              // Take Host header if defined
-              if ( headers.contains( QStringLiteral( "Host" ) ) )
-              {
-                url = QStringLiteral( "http://%1%2" ).arg( headers.value( QStringLiteral( "Host" ) ) ).arg( path );
-              }
-              else
-              {
-                url = QStringLiteral( "http://%1:%2%3" ).arg( ipAddress ).arg( serverPort ).arg( path );
-              }
-            }
-
-            // Inefficient copy :(
-            QByteArray data { incomingData.mid( headersSize ).toUtf8() };
-
-            auto request = new Request
-            {
-              firstLinePieces.join( ' ' ),
-              { url, method, headers, &data },
-              {},
-              clientConnection,
-              start
-            } ;
-
-            // Send it to the queue
-            SERVER_QUEUE_MUTEX.lock();
-            SERVER_QUEUE.enqueue( request );
-            SERVER_QUEUE_MUTEX.unlock();
-            SERVER_WAIT_CONDITION.wakeOne();
-
-          }
-          catch ( HttpException &ex )
-          {
-
-            if ( clientConnection->state() != QAbstractSocket::SocketState::ConnectedState )
-            {
-              break;
-            }
-
-            // Output stream: send error
-            clientConnection->write( QStringLiteral( "HTTP/1.0 %1 %2\r\n" ).arg( 500 ).arg( knownStatuses.value( 500 ) ).toUtf8() );
-            clientConnection->write( QStringLiteral( "Server: QGIS\r\n" ).toUtf8() );
-            clientConnection->write( "\r\n" );
-            clientConnection->write( ex.message().toUtf8() );
-
-            std::cout << QStringLiteral( "%1 [%2] \"%3\" - - 500" )
-                      .arg( clientConnection->peerAddress().toString() )
-                      .arg( QDateTime::currentDateTime().toString() )
-                      .arg( ex.message() ).toStdString() << std::endl;
-
-            clientConnection->disconnectFromHost();
-            clientConnection->deleteLater();
-          }
-        }
-      };
-
-    }
-};
-
-
-void responseHandler( Request *requestPtr )
+void responseHandler( ProcessedRequest *requestPtr )
 {
 
-  std::unique_ptr<Request> request { requestPtr };
+  std::unique_ptr<ProcessedRequest> request { requestPtr };
   auto elapsedTime { std::chrono::steady_clock::now() - request->startTime };
 
   const auto &response { request->response };
@@ -381,17 +187,16 @@ void responseHandler( Request *requestPtr )
   if ( clientConnection->state() != QAbstractSocket::SocketState::ConnectedState )
   {
     std::cout << QStringLiteral( "Connection reset by peer" ).toStdString() << std::endl;
-    clientConnection->deleteLater();
     return;
   }
 
   // Output stream
-  if ( clientConnection->write( QStringLiteral( "HTTP/1.0 %1 %2\r\n" ).arg( response.statusCode() ).arg( knownStatuses.value( response.statusCode(), QStringLiteral( "Unknown response code" ) ) ).toUtf8() ) < 0 )
+  if ( -1 == clientConnection->write( QStringLiteral( "HTTP/1.0 %1 %2\r\n" ).arg( response.statusCode() ).arg( knownStatuses.value( response.statusCode(), QStringLiteral( "Unknown response code" ) ) ).toUtf8() ) )
   {
     std::cout << QStringLiteral( "Cannot write to output socket" ).toStdString() << std::endl;
-    clientConnection->deleteLater();
     return;
   }
+
   clientConnection->write( QStringLiteral( "Server: QGIS\r\n" ).toUtf8() );
   const auto responseHeaders { response.headers() };
   for ( auto it = responseHeaders.constBegin(); it != responseHeaders.constEnd(); ++it )
@@ -414,7 +219,7 @@ void responseHandler( Request *requestPtr )
             << std::endl;
 
   clientConnection->disconnectFromHost();
-  clientConnection->deleteLater();
+
 };
 
 int main( int argc, char *argv[] )
@@ -555,23 +360,199 @@ int main( int argc, char *argv[] )
     server.initPython();
 #endif
 
-    // Start threads
-    HttpHandlerWorker httpHandlerWorker;
-    httpHandlerWorker.start( );
-
+    // Start thread
     ServerWorker serverWorker( &server );
     serverWorker.start();
+    serverWorker.connect( &serverWorker, &ServerWorker::responseReady, QThread::currentThread(), responseHandler );
 
+    QAtomicInt connCounter { 0 };
+
+    // Starts HTTP loop with a poor man's HTTP parser
     tcpServer.connect( &tcpServer, &QTcpServer::newConnection, [ & ]
     {
       QTcpSocket *clientConnection = tcpServer.nextPendingConnection();
-      REQUEST_QUEUE_MUTEX.lock();
-      REQUEST_QUEUE.enqueue( clientConnection );
-      REQUEST_WAIT_CONDITION.wakeOne();
-      REQUEST_QUEUE_MUTEX.unlock();
+
+      connCounter++;
+
+      qDebug() << "Active connections: " << connCounter;
+
+      QString *incomingData = new QString();
+
+      // Lambda disconnect context
+      QObject *context { new QObject };
+
+      // Deletes the connection later
+      auto connectionDeleter = [ =, &connCounter ]()
+      {
+        clientConnection->deleteLater();
+        connCounter--;
+        delete incomingData;
+      };
+
+      // This will delete the connection
+      clientConnection->connect( clientConnection, &QAbstractSocket::disconnected, clientConnection, connectionDeleter, Qt::QueuedConnection );
+
+      // Incoming connection parser
+      clientConnection->connect( clientConnection, &QIODevice::readyRead, context, [ = ] {
+
+        // Read all incoming data
+        while ( clientConnection->bytesAvailable() > 0 )
+        {
+          incomingData->append( clientConnection->readAll() );
+        }
+
+        try
+        {
+          // Parse protocol and URL GET /path HTTP/1.1
+          int firstLinePos { incomingData->indexOf( "\r\n" ) };
+          if ( firstLinePos == -1 )
+          {
+            throw HttpException( QStringLiteral( "HTTP error finding protocol header" ) );
+          }
+
+          const QString firstLine { incomingData->left( firstLinePos ) };
+          const QStringList firstLinePieces { firstLine.split( ' ' ) };
+          if ( firstLinePieces.size() != 3 )
+          {
+            throw HttpException( QStringLiteral( "HTTP error splitting protocol header" ) );
+          }
+
+          const QString methodString { firstLinePieces.at( 0 ) };
+
+          QgsServerRequest::Method method;
+          if ( methodString == "GET" )
+          {
+            method = QgsServerRequest::Method::GetMethod;
+          }
+          else if ( methodString == "POST" )
+          {
+            method = QgsServerRequest::Method::PostMethod;
+          }
+          else if ( methodString == "HEAD" )
+          {
+            method = QgsServerRequest::Method::HeadMethod;
+          }
+          else if ( methodString == "PUT" )
+          {
+            method = QgsServerRequest::Method::PutMethod;
+          }
+          else if ( methodString == "PATCH" )
+          {
+            method = QgsServerRequest::Method::PatchMethod;
+          }
+          else if ( methodString == "DELETE" )
+          {
+            method = QgsServerRequest::Method::DeleteMethod;
+          }
+          else
+          {
+            throw HttpException( QStringLiteral( "HTTP error unsupported method: %1" ).arg( methodString ) );
+          }
+
+          const QString protocol { firstLinePieces.at( 2 )};
+          if ( protocol != QStringLiteral( "HTTP/1.0" ) && protocol != QStringLiteral( "HTTP/1.1" ) )
+          {
+            throw HttpException( QStringLiteral( "HTTP error unsupported protocol: %1" ).arg( protocol ) );
+          }
+
+          // Headers
+          QgsBufferServerRequest::Headers headers;
+          int endHeadersPos { incomingData->indexOf( "\r\n\r\n" ) };
+
+          if ( endHeadersPos == -1 )
+          {
+            throw HttpException( QStringLiteral( "HTTP error finding headers" ) );
+          }
+
+          const QStringList httpHeaders { incomingData->mid( firstLinePos + 2, endHeadersPos - firstLinePos ).split( "\r\n" ) };
+
+          for ( const auto &headerLine : httpHeaders )
+          {
+            const int headerColonPos { headerLine.indexOf( ':' ) };
+            if ( headerColonPos > 0 )
+            {
+              headers.insert( headerLine.left( headerColonPos ), headerLine.mid( headerColonPos + 2 ) );
+            }
+          }
+
+          const int headersSize { endHeadersPos + 4 };
+
+          // Check for content length and if we have got all data
+          if ( headers.contains( QStringLiteral( "Content-Length" ) ) )
+          {
+            bool ok;
+            const int contentLength { headers.value( QStringLiteral( "Content-Length" ) ).toInt( &ok ) };
+            if ( ok && contentLength > incomingData->length() - headersSize )
+            {
+              return;
+            }
+          }
+
+          // At this point we should have read all data:
+          // disconnect the lambdas
+          delete context;
+
+          // Build URL from env ...
+          QString url { qgetenv( "REQUEST_URI" ) };
+          // ... or from server ip/port and request path
+          if ( url.isEmpty() )
+          {
+            const QString path { firstLinePieces.at( 1 )};
+            // Take Host header if defined
+            if ( headers.contains( QStringLiteral( "Host" ) ) )
+            {
+              url = QStringLiteral( "http://%1%2" ).arg( headers.value( QStringLiteral( "Host" ) ) ).arg( path );
+            }
+            else
+            {
+              url = QStringLiteral( "http://%1:%2%3" ).arg( ipAddress ).arg( port ).arg( path );
+            }
+          }
+
+          // Inefficient copy :(
+          QByteArray data { incomingData->mid( headersSize ).toUtf8() };
+
+          if ( !incomingData->isEmpty() && clientConnection->state() == QAbstractSocket::SocketState::ConnectedState )
+          {
+            auto processedRequest = new ProcessedRequest
+            {
+              firstLinePieces.join( ' ' ),
+              { url, method, headers, &data },
+              {},
+              clientConnection,
+              std::chrono::steady_clock::now()
+            } ;
+            SERVER_QUEUE_MUTEX.lock();
+            SERVER_QUEUE.enqueue( processedRequest );
+            SERVER_WAIT_CONDITION.wakeOne();
+            SERVER_QUEUE_MUTEX.unlock();
+          }
+        }
+        catch ( HttpException &ex )
+        {
+
+          if ( clientConnection->state() == QAbstractSocket::SocketState::ConnectedState )
+          {
+
+
+            // Output stream: send error
+            clientConnection->write( QStringLiteral( "HTTP/1.0 %1 %2\r\n" ).arg( 500 ).arg( knownStatuses.value( 500 ) ).toUtf8() );
+            clientConnection->write( QStringLiteral( "Server: QGIS\r\n" ).toUtf8() );
+            clientConnection->write( "\r\n" );
+            clientConnection->write( ex.message().toUtf8() );
+
+            std::cout << QStringLiteral( "%1 [%2] \"%3\" - - 500" )
+                      .arg( clientConnection->peerAddress().toString() )
+                      .arg( QDateTime::currentDateTime().toString() )
+                      .arg( ex.message() ).toStdString() << std::endl;
+
+            clientConnection->disconnectFromHost();
+          }
+        }
+      } );
     } );
 
-    serverWorker.connect( &serverWorker, &ServerWorker::responseReady, QThread::currentThread(), responseHandler );
+
     // Exit handlers
 #ifndef Q_OS_WIN
 
@@ -595,8 +576,6 @@ int main( int argc, char *argv[] )
     // Wait for threads
     serverWorker.exit();
     serverWorker.wait();
-    httpHandlerWorker.exit();
-    httpHandlerWorker.wait();
     app.exitQgis();
 
     return 0;
