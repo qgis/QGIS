@@ -444,7 +444,7 @@ class BatchPanel(QgsPanelWidget, WIDGET):
         self.alg = alg
         self.parent = parent
 
-        self.btnAdd.clicked.connect(self.addRow)
+        self.btnAdd.clicked.connect(lambda: self.addRow(1))
         self.btnRemove.clicked.connect(self.removeRows)
         self.btnOpen.clicked.connect(self.load)
         self.btnSave.clicked.connect(self.save)
