@@ -1427,7 +1427,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Emitted when a custom property of the layer has been changed or removed.
      *
-     * \since QGIS 3.16
+     * \since QGIS 3.18
      */
     void customPropertyChanged( const QString &key );
 
