@@ -134,15 +134,11 @@ class ServerWorker: public QThread
 
   public:
 
-    ServerWorker( ) = default;
+    ServerWorker( QgsServer *server ): mServer( server ) {};
 
     void run( )
     {
-      QgsServer server;
 
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-      server.initPython();
-#endif
       while ( IS_RUNNING )
       {
 
@@ -159,7 +155,7 @@ class ServerWorker: public QThread
 
         request->response.clear();
 
-        server.handleRequest( request->request, request->response );
+        mServer->handleRequest( request->request, request->response );
 
         emit responseReady( request );
       }
@@ -168,6 +164,10 @@ class ServerWorker: public QThread
   signals:
 
     void responseReady( Request *request );
+
+  private:
+
+    QgsServer *mServer;
 };
 
 
@@ -538,11 +538,17 @@ int main( int argc, char *argv[] )
     std::cout << QObject::tr( "CTRL+C to exit" ).toStdString() << std::endl;
 #endif
 
-   // Start threads
+    QgsServer server;
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    server.initPython();
+#endif
+
+    // Start threads
     HttpHandlerWorker httpHandlerWorker;
     httpHandlerWorker.start( );
 
-    ServerWorker serverWorker;
+    ServerWorker serverWorker( &server );
     serverWorker.start();
 
     tcpServer.connect( &tcpServer, &QTcpServer::newConnection, [ & ]
