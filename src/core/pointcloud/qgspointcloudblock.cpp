@@ -1,6 +1,6 @@
 /***************************************************************************
-                         qgspointcloudindex.h
-                         --------------------
+                         qgspointcloudblock.cpp
+                         -----------------------
     begin                : October 2020
     copyright            : (C) 2020 by Peter Petrik
     email                : zilolv at gmail dot com
@@ -15,43 +15,35 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSEPTPOINTCLOUDINDEX_H
-#define QGSEPTPOINTCLOUDINDEX_H
-
-#include <QObject>
-#include <QString>
-#include <QHash>
-#include <QStringList>
-#include <QVector>
-#include <QList>
-
-#include "qgspointcloudindex.h"
+#include "qgis.h"
+#include "qgspointcloudblock.h"
 #include "qgspointcloudattribute.h"
-#include "qgis_sip.h"
 
-///@cond PRIVATE
-#define SIP_NO_FILE
 
-class QgsCoordinateReferenceSystem;
-
-class QgsEptPointCloudIndex: public QgsPointCloudIndex
+QgsPointCloudBlock::QgsPointCloudBlock(
+  int count,
+  const QgsPointCloudAttributeCollection &attributes,
+  const QByteArray &data
+)
+  : mPointCount( count )
+  , mAttributes( attributes )
+  , mStorage( data )
 {
-    Q_OBJECT
-  public:
+}
 
-    explicit QgsEptPointCloudIndex();
-    ~QgsEptPointCloudIndex();
+QgsPointCloudBlock::~QgsPointCloudBlock() = default;
 
-    bool load( const QString &fileName ) override;
+const char *QgsPointCloudBlock::data() const
+{
+  return mStorage.data();
+}
 
-    QgsPointCloudBlock *nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
+int QgsPointCloudBlock::pointCount() const
+{
+  return mPointCount;
+}
 
-    QgsCoordinateReferenceSystem crs() const;
-  private:
-    QString mDataType;
-    QString mDirectory;
-    QString mWkt;
-};
-
-///@endcond
-#endif // QGSEPTPOINTCLOUDINDEX_H
+QgsPointCloudAttributeCollection QgsPointCloudBlock::attributes() const
+{
+  return mAttributes;
+}

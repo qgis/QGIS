@@ -27,6 +27,8 @@
 
 #include "qgseptdecoder.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgspointcloudrequest.h"
+#include "qgspointcloudattribute.h"
 
 ///@cond PRIVATE
 
@@ -81,8 +83,9 @@ bool QgsEptPointCloudIndex::load( const QString &fileName )
   mZMax = bounds_conforming[5].toDouble();
 
   QJsonArray schemaArray = result.value( QLatin1String( "schema" ) ).toArray();
+  QgsPointCloudAttributeCollection attributes;
 
-  mPointRecordSize = 0;
+
   for ( QJsonValue schemaItem : schemaArray )
   {
     QJsonObject schemaObj = schemaItem.toObject();
@@ -90,7 +93,44 @@ bool QgsEptPointCloudIndex::load( const QString &fileName )
     QString type = schemaObj.value( QLatin1String( "type" ) ).toString();
 
     int size = schemaObj.value( QLatin1String( "size" ) ).toInt();
-    mPointRecordSize += size;
+
+    if ( name == QLatin1String( "X" )  ||
+         name == QLatin1String( "Y" ) ||
+         name == QLatin1String( "Z" )
+       )
+    {
+      // There seems to be a bug in Entwine: https://github.com/connormanning/entwine/issues/240
+      // point records for X,Y,Z seem to be written as 64-bit doubles even if schema says they are 32-bit ints
+      attributes.push_back( QgsPointCloudAttribute( name, QgsPointCloudAttribute::Double ) );
+    }
+    else
+    {
+      if ( type == QStringLiteral( "float" ) && ( size == 4 ) )
+      {
+        attributes.push_back( QgsPointCloudAttribute( name, QgsPointCloudAttribute::Float ) );
+      }
+      else if ( type == QStringLiteral( "float" ) && ( size == 8 ) )
+      {
+        attributes.push_back( QgsPointCloudAttribute( name, QgsPointCloudAttribute::Double ) );
+      }
+      else if ( size == 1 )
+      {
+        attributes.push_back( QgsPointCloudAttribute( name, QgsPointCloudAttribute::Char ) );
+      }
+      else if ( size == 2 )
+      {
+        attributes.push_back( QgsPointCloudAttribute( name, QgsPointCloudAttribute::Short ) );
+      }
+      else if ( size == 4 )
+      {
+        attributes.push_back( QgsPointCloudAttribute( name, QgsPointCloudAttribute::Int32 ) );
+      }
+      else
+      {
+        // unknown attribute type
+        return false;
+      }
+    }
 
     float scale = 1.f;
     if ( schemaObj.contains( "scale" ) )
@@ -117,10 +157,7 @@ bool QgsEptPointCloudIndex::load( const QString &fileName )
     }
     // TODO: can parse also stats: "count", "minimum", "maximum", "mean", "stddev", "variance"
   }
-
-  // There seems to be a bug in Entwine: https://github.com/connormanning/entwine/issues/240
-  // point records for X,Y,Z seem to be written as 64-bit doubles even if schema says they are 32-bit ints
-  mPointRecordSize += 3 * 4;
+  setAttributes( attributes );
 
   // save mRootBounds
 
@@ -172,66 +209,35 @@ bool QgsEptPointCloudIndex::load( const QString &fileName )
   return true;
 }
 
-QVector<qint32> QgsEptPointCloudIndex::nodePositionDataAsInt32( const IndexedPointCloudNode &n )
+QgsPointCloudBlock *QgsEptPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
 {
-  Q_ASSERT( mHierarchy.contains( n ) );
+  if ( !mHierarchy.contains( n ) )
+    return nullptr;
+
   if ( mDataType == "binary" )
   {
     QString filename = QString( "%1/ept-data/%2.bin" ).arg( mDirectory ).arg( n.toString() );
-    Q_ASSERT( QFile::exists( filename ) );
-    return QgsEptDecoder::decompressBinary( filename, mPointRecordSize );
+    return QgsEptDecoder::decompressBinary( filename, attributes(), request.attributes() );
   }
   else if ( mDataType == "zstandard" )
   {
     QString filename = QString( "%1/ept-data/%2.zst" ).arg( mDirectory ).arg( n.toString() );
-    Q_ASSERT( QFile::exists( filename ) );
-    return QgsEptDecoder::decompressZStandard( filename, mPointRecordSize );
+    return QgsEptDecoder::decompressZStandard( filename, attributes(), request.attributes() );
   }
   else if ( mDataType == "laszip" )
   {
     QString filename = QString( "%1/ept-data/%2.laz" ).arg( mDirectory ).arg( n.toString() );
-    Q_ASSERT( QFile::exists( filename ) );
-    return QgsEptDecoder::decompressLaz( filename );
+    return QgsEptDecoder::decompressLaz( filename, attributes(), request.attributes() );
   }
   else
   {
-    Q_ASSERT( false );  // unsupported
+    return nullptr;  // unsupported
   }
-  return QVector<qint32>();
 }
 
 QgsCoordinateReferenceSystem QgsEptPointCloudIndex::crs() const
 {
   return QgsCoordinateReferenceSystem::fromWkt( mWkt );
-}
-
-QVector<char> QgsEptPointCloudIndex::nodeClassesDataAsChar( const IndexedPointCloudNode &n )
-{
-  Q_ASSERT( mHierarchy.contains( n ) );
-  // int count = mHierarchy[n];
-
-  if ( mDataType == "binary" )
-  {
-    // TODO: ugly me... reading same file twice :vomit:
-    QString filename = QString( "%1/ept-data/%2.bin" ).arg( mDirectory ).arg( n.toString() );
-    Q_ASSERT( QFile::exists( filename ) );
-    return QgsEptDecoder::decompressBinaryClasses( filename, mPointRecordSize );
-  }
-  else if ( mDataType == "zstandard" )
-  {
-    //TODO
-    Q_ASSERT( false );
-  }
-  else if ( mDataType == "laszip" )
-  {
-    //TODO
-    Q_ASSERT( false );
-  }
-  else
-  {
-    Q_ASSERT( false );  // unsupported
-  }
-  return QVector<char>();
 }
 
 ///@endcond

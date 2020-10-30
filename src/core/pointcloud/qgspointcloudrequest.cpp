@@ -1,6 +1,6 @@
 /***************************************************************************
-                         qgspointcloudindex.h
-                         --------------------
+                         qgspointcloudrequest.cpp
+                         -----------------------
     begin                : October 2020
     copyright            : (C) 2020 by Peter Petrik
     email                : zilolv at gmail dot com
@@ -15,43 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSEPTPOINTCLOUDINDEX_H
-#define QGSEPTPOINTCLOUDINDEX_H
-
-#include <QObject>
-#include <QString>
-#include <QHash>
-#include <QStringList>
-#include <QVector>
-#include <QList>
-
-#include "qgspointcloudindex.h"
+#include "qgis.h"
+#include "qgspointcloudrequest.h"
 #include "qgspointcloudattribute.h"
-#include "qgis_sip.h"
 
-///@cond PRIVATE
-#define SIP_NO_FILE
+QgsPointCloudRequest::QgsPointCloudRequest() = default;
 
-class QgsCoordinateReferenceSystem;
-
-class QgsEptPointCloudIndex: public QgsPointCloudIndex
+QgsPointCloudAttributeCollection QgsPointCloudRequest::attributes() const
 {
-    Q_OBJECT
-  public:
+  return mAttributes;
+}
 
-    explicit QgsEptPointCloudIndex();
-    ~QgsEptPointCloudIndex();
-
-    bool load( const QString &fileName ) override;
-
-    QgsPointCloudBlock *nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
-
-    QgsCoordinateReferenceSystem crs() const;
-  private:
-    QString mDataType;
-    QString mDirectory;
-    QString mWkt;
-};
-
-///@endcond
-#endif // QGSEPTPOINTCLOUDINDEX_H
+void QgsPointCloudRequest::setAttributes( const QgsPointCloudAttributeCollection &attributes )
+{
+  mAttributes = attributes;
+}

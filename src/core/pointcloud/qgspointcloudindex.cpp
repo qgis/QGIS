@@ -187,6 +187,11 @@ QList<IndexedPointCloudNode> QgsPointCloudIndex::children( const IndexedPointClo
   return lst;
 }
 
+QgsPointCloudAttributeCollection QgsPointCloudIndex::attributes() const
+{
+  return mAttributes;
+}
+
 QgsPointCloudDataBounds QgsPointCloudIndex::nodeBounds( const IndexedPointCloudNode &n ) const
 {
   qint32 xMin = -999999999, yMin = -999999999, zMin = -999999999;
@@ -225,4 +230,9 @@ QgsVector3D QgsPointCloudIndex::scale() const
 QgsVector3D QgsPointCloudIndex::offset() const
 {
   return mOffset;
+}
+
+void QgsPointCloudIndex::setAttributes( const QgsPointCloudAttributeCollection &attributes )
+{
+  mAttributes = attributes;
 }

@@ -23,6 +23,8 @@
 #include "qgspointcloudindex.h"
 #include "qgsstyle.h"
 #include "qgscolorramp.h"
+#include "qgspointcloudrequest.h"
+#include "qgspointcloudattribute.h"
 
 ///@cond PRIVATE
 QgsPointCloudRendererConfig::QgsPointCloudRendererConfig() = default;
@@ -137,7 +139,15 @@ bool QgsPointCloudLayerRenderer::render()
       qDebug() << "canceled";
       break;
     }
-    drawData( painter, pc->nodePositionDataAsInt32( n ), mConfig );
+    QgsPointCloudAttributeCollection attributes;
+    attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "X" ), QgsPointCloudAttribute::Int32 ) );
+    attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Y" ), QgsPointCloudAttribute::Int32 ) );
+    attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Z" ), QgsPointCloudAttribute::Int32 ) );
+    attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Classification" ), QgsPointCloudAttribute::Char ) );
+    QgsPointCloudRequest request;
+    request.setAttributes( attributes );
+    std::unique_ptr<QgsPointCloudBlock> block( pc->nodeData( n, request ) );
+    drawData( painter, block.get(), mConfig );
   }
 
   qDebug() << "totals:" << nodesDrawn << "nodes | " << pointsDrawn << " points | " << t.elapsed() << "ms";
@@ -150,8 +160,11 @@ bool QgsPointCloudLayerRenderer::render()
 
 QgsPointCloudLayerRenderer::~QgsPointCloudLayerRenderer() = default;
 
-void QgsPointCloudLayerRenderer::drawData( QPainter *painter, const QVector<qint32> &data, const QgsPointCloudRendererConfig &config )
+void QgsPointCloudLayerRenderer::drawData( QPainter *painter, const QgsPointCloudBlock *data, const QgsPointCloudRendererConfig &config )
 {
+  if ( !data )
+    return;
+
   const QgsMapToPixel mapToPixel = renderContext()->mapToPixel();
   const QgsVector3D scale = mLayer->dataProvider()->index()->scale();
   const QgsVector3D offset = mLayer->dataProvider()->index()->offset();
@@ -163,13 +176,19 @@ void QgsPointCloudLayerRenderer::drawData( QPainter *painter, const QVector<qint
   pen.setCapStyle( Qt::FlatCap );
   //pen.setJoinStyle( Qt::MiterJoin );
 
-  const qint32 *ptr = data.constData();
-  int count = data.count() / 3;
+  const char *ptr = data->data();
+  int count = data->pointCount();
+  const QgsPointCloudAttributeCollection request = data->attributes();
+  int recordSize = request.pointRecordSize();
+
   for ( int i = 0; i < count; ++i )
   {
-    qint32 ix = ptr[i * 3 + 0];
-    qint32 iy = ptr[i * 3 + 1];
-    qint32 iz = ptr[i * 3 + 2];
+    // TODO generic based on reques
+    qint32 ix = *( qint32 * )( ptr + i * recordSize + 0 );
+    qint32 iy = *( qint32 * )( ptr + i * recordSize + 4 );
+    qint32 iz = *( qint32 * )( ptr + i * recordSize + 8 );
+    char cls = *( char * )( ptr + i * recordSize + 12 );
+    Q_UNUSED( cls );
 
     double x = offset.x() + scale.x() * ix;
     double y = offset.y() + scale.y() * iy;

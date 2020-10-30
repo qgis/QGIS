@@ -1,6 +1,6 @@
 /***************************************************************************
-                         qgspointcloudindex.h
-                         --------------------
+                         qgspointcloudrequest.h
+                         ---------------------
     begin                : October 2020
     copyright            : (C) 2020 by Peter Petrik
     email                : zilolv at gmail dot com
@@ -15,43 +15,41 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSEPTPOINTCLOUDINDEX_H
-#define QGSEPTPOINTCLOUDINDEX_H
+#ifndef QGSPOINTCLOUDREQUEST_H
+#define QGSPOINTCLOUDREQUEST_H
 
-#include <QObject>
+#include "qgis.h"
+#include "qgis_core.h"
+#include <QPair>
 #include <QString>
-#include <QHash>
-#include <QStringList>
 #include <QVector>
-#include <QList>
+#include <QByteArray>
 
-#include "qgspointcloudindex.h"
-#include "qgspointcloudattribute.h"
-#include "qgis_sip.h"
-
-///@cond PRIVATE
 #define SIP_NO_FILE
 
-class QgsCoordinateReferenceSystem;
+#include "qgspointcloudattribute.h"
 
-class QgsEptPointCloudIndex: public QgsPointCloudIndex
+/**
+ * \ingroup core
+ *
+ * Point cloud data request
+ *
+ * \since QGIS 3.18
+ */
+class CORE_EXPORT QgsPointCloudRequest
 {
-    Q_OBJECT
   public:
+    //! Ctor
+    QgsPointCloudRequest();
 
-    explicit QgsEptPointCloudIndex();
-    ~QgsEptPointCloudIndex();
+    //! Returns attributes
+    QgsPointCloudAttributeCollection attributes() const;
 
-    bool load( const QString &fileName ) override;
+    //! Set attributes filter in the request
+    void setAttributes( const QgsPointCloudAttributeCollection &attributes );
 
-    QgsPointCloudBlock *nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
-
-    QgsCoordinateReferenceSystem crs() const;
   private:
-    QString mDataType;
-    QString mDirectory;
-    QString mWkt;
+    QgsPointCloudAttributeCollection mAttributes;
 };
 
-///@endcond
-#endif // QGSEPTPOINTCLOUDINDEX_H
+#endif // QGSPOINTCLOUDREQUEST_H
