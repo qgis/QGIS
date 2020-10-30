@@ -24,10 +24,8 @@ endbold=$(tput sgr0)
 ###########
 pushd /root/QGIS > /dev/null
 mkdir -p build
-
 pushd build > /dev/null
 
-echo "travis_fold:start:cmake"
 echo "${bold}Running cmake...${endbold}"
 
 export CC=/usr/lib/ccache/clang
@@ -71,48 +69,23 @@ cmake \
  -DQT5_3DEXTRA_LIBRARY="/usr/lib/x86_64-linux-gnu/libQt53DExtras.so" \
  -DQT5_3DEXTRA_INCLUDE_DIR="/root/QGIS/external/qt3dextra-headers" \
  -DCMAKE_PREFIX_PATH="/root/QGIS/external/qt3dextra-headers/cmake" \
+ -DQt53DExtras_DIR="/root/QGIS/external/qt3dextra-headers/cmake/Qt53DExtras" \
  ..
-echo "travis_fold:end:cmake"
 
 #######
 # Build
 #######
-# Calculate the timeout for building.
-# The tests should be aborted before travis times out, in order to allow uploading
-# the ccache and therefore speedup subsequent e builds.
-#
-# Travis will kill the job after approx 150 minutes, we subtract 5 minutes for
-# uploading and subtract the bootstrapping time from that.
-# Hopefully clocks are in sync :)
-
-CURRENT_TIME=$(date +%s)
-TIMEOUT=$((( TRAVIS_AVAILABLE_TIME - TRAVIS_UPLOAD_TIME ) * 60 - CURRENT_TIME + TRAVIS_TIMESTAMP))
-TIMEOUT=$(( TIMEOUT < 300 ? 300 : TIMEOUT ))
-echo "Timeout: ${TIMEOUT}s (started at ${TRAVIS_TIMESTAMP}, current: ${CURRENT_TIME})"
-
-# echo "travis_fold:start:ninja-build.1"
 echo "${bold}Building QGIS...${endbold}"
-timeout ${TIMEOUT}s ${CTEST_BUILD_COMMAND}
-# echo "travis_fold:end:ninja-build.1"
-rv=$?
+${CTEST_BUILD_COMMAND}
 
 ########################
 # Show ccache statistics
 ########################
-echo "travis_fold:start:ccache.stats"
 echo "ccache statistics"
 ccache -s
-echo "travis_fold:end:ccache.stats"
 
 popd > /dev/null # build
 popd > /dev/null # /root/QGIS
 
 [ -r /tmp/ctest-important.log ] && cat /tmp/ctest-important.log || true
 
-############################
-# Exit with error if timeout
-############################
-if [ $rv -eq 124 ] ; then
-    printf '\n\n${bold}Build and test timeout. Please restart the build for meaningful results.${endbold}\n'
-    exit #$rv
-fi

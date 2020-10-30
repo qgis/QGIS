@@ -1,7 +1,7 @@
-FROM      ubuntu:18.04
+FROM      ubuntu:20.04
 MAINTAINER Denis Rouzaud <denis@opengis.ch>
 
-LABEL Description="Docker container with QGIS dependencies" Vendor="QGIS.org" Version="1.1"
+LABEL Description="Docker container with QGIS dependencies" Vendor="QGIS.org" Version="1.0"
 
 # && echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list \
 # && echo "deb-src http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list \
@@ -11,8 +11,7 @@ LABEL Description="Docker container with QGIS dependencies" Vendor="QGIS.org" Ve
 RUN  apt-get update \
   && apt-get install -y software-properties-common \
   && apt-get update \
-  && DEBIAN_FRONTEND=noninteractive \
-  apt-get install -y \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     apt-transport-https \
     bison \
     ca-certificates \
@@ -35,9 +34,9 @@ RUN  apt-get update \
     libgsl-dev \
     libpq-dev \
     libproj-dev \
-    libprotobuf-dev \
     libqca-qt5-2-dev \
     libqca-qt5-2-plugins \
+    libqt53dextras5 \
     libqt53drender5 \
     libqt5concurrent5 \
     libqt5opengl5-dev \
@@ -78,12 +77,10 @@ RUN  apt-get update \
     python3-owslib \
     python3-pip \
     python3-psycopg2 \
-    python3-pyproj \
     python3-pyqt5 \
     python3-pyqt5.qsci \
     python3-pyqt5.qtsql \
     python3-pyqt5.qtsvg \
-    python3-pyqt5.qtwebkit \
     python3-sip \
     python3-sip-dev \
     python3-termcolor \
@@ -96,7 +93,6 @@ RUN  apt-get update \
     qt5keychain-dev \
     qtbase5-dev \
     qtdeclarative5-dev-tools \
-    qtdeclarative5-qtquick2-plugin \
     qtpositioning5-dev \
     qttools5-dev \
     qttools5-dev-tools \
@@ -114,7 +110,6 @@ RUN  apt-get update \
     opencl-headers \
     ocl-icd-libopencl1 \
     ocl-icd-opencl-dev \
-    expect \
   && pip3 install \
     psycopg2 \
     numpy \
@@ -158,9 +153,9 @@ ENV PATH="/usr/sap/hdbclient:${PATH}"
 
 # MSSQL: client side
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
-RUN curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list | tee /etc/apt/sources.list.d/msprod.list
+RUN curl https://packages.microsoft.com/config/ubuntu/19.04/prod.list | tee /etc/apt/sources.list.d/msprod.list
 RUN apt-get update
-RUN ACCEPT_EULA=Y apt-get install -y msodbcsql17 mssql-tools
+RUN ACCEPT_EULA=Y apt-get install -y --allow-unauthenticated msodbcsql17 mssql-tools
 
 # Avoid sqlcmd termination due to locale -- see https://github.com/Microsoft/mssql-docker/issues/163
 RUN echo "nb_NO.UTF-8 UTF-8" > /etc/locale.gen
