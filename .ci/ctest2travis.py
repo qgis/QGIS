@@ -80,7 +80,7 @@ for line in p.stdout:
         updated_line = '{title}\n{line}'.format(title=colored('Running tests...', 'yellow', attrs=['bold']),
                                                 line=updated_line)
 
-    elif re.match('Test project /home/travis/build/qgis/QGIS/build', updated_line):
+    elif re.match('Test project /home/runner/QGIS/QGIS/build', updated_line):
         end_fold()  # tag=build
         start_test_fold()
 

@@ -2,8 +2,8 @@ version: '3'
 services:
   postgres:
     build:
-      dockerfile: Dockerfile-postgis
-      context: ../../../tests/testdata
+      dockerfile: ../tests/testdata/Dockerfile-postgis
+      context: ../tests/testdata
     environment:
       - ALLOW_IP_RANGE="172.18.0.0/16"
 # The following files are added in Dockerfile-postgis
@@ -32,7 +32,7 @@ services:
     tty: true
     image: qgis_image
     volumes:
-      - ${TRAVIS_BUILD_DIR}:/root/QGIS
+      - ${GH_WORKSPACE}:/root/QGIS
     links:
       - postgres
       - oracle
