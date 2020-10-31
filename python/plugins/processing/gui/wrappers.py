@@ -804,7 +804,7 @@ class MultipleLayerWidgetWrapper(WidgetWrapper):
                                                                         False)
                 return [options[i] if isinstance(i, int) else i for i in self.widget.selectedoptions]
         elif self.dialogType == DIALOG_BATCH:
-            return self.widget.value()
+            return self.widget.getValue()
         else:
             options = self._getOptions()
             values = [options[i] if isinstance(i, int) else QgsProcessingModelChildParameterSource.fromStaticValue(i)
