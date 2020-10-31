@@ -412,7 +412,7 @@ Architecture: all
 Section: python
 Depends:
  gdal-bin,
-#eoan buster# python-gdal,
+#buster# python-gdal,
  python3-gdal,
  python3-matplotlib,
  libqgis-customwidgets (>= ${source:Version}),
@@ -421,7 +421,7 @@ Depends:
 Breaks: python-qgis-common (<< ${source:Version})
 Replaces: python-qgis-common (<< ${source:Version})
 Suggests:
-#eoan focal buster sid# otb-qgis,
+#focal groovy buster sid# otb-qgis,
  saga
 Description: Python bindings to QGIS - architecture-independent files
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
