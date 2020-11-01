@@ -16,6 +16,8 @@
 #ifndef QGSPROCESSINGMESHDATASETWIDGET_H
 #define QGSPROCESSINGMESHDATASETWIDGET_H
 
+#include <QAction>
+
 #include "qgsprocessingwidgetwrapperimpl.h"
 #include "qgsprocessingparametermeshdataset.h"
 
@@ -31,7 +33,12 @@ class GUI_EXPORT QgsProcessingMeshDatasetGroupsWidget : public QWidget
   public:
     QgsProcessingMeshDatasetGroupsWidget( QWidget *parent = nullptr, const QgsProcessingParameterMeshDatasetGroups *param = nullptr );
 
-    void setMeshLayer( QgsMeshLayer *layer );
+    /**
+     * Set the mesh layer for populate the dataset group names,
+     * if \a layerFromProject is false, the layer will not stay referenced in the instance of this object but
+     * all that is needed is stored in the instance
+     */
+    void setMeshLayer( QgsMeshLayer *layer, bool layerFromProject = false );
     void setValue( const QVariant &value );
     QVariant value() const;
 
@@ -48,7 +55,10 @@ class GUI_EXPORT QgsProcessingMeshDatasetGroupsWidget : public QWidget
 
     QPointer<QLineEdit> mLineEdit = nullptr;
     QPointer<QToolButton> mToolButton = nullptr;
+    QPointer<QAction> mActionCurrentActiveDatasetGroups = nullptr;
+    QPointer<QAction> mActionAvailableDatasetGroups = nullptr;
     QgsMeshLayer *mMeshLayer = nullptr;
+    QMap<int, QString> mDatasetGroupsNames; //used to store the dataet groups name if layer is not referenced
 
     QStringList datasetGroupsNames();
     void updateSummaryText();
@@ -95,14 +105,19 @@ class GUI_EXPORT QgsProcessingMeshDatasetTimeWidget : public QWidget, private Ui
                                         const QgsProcessingParameterMeshDatasetTime *param = nullptr,
                                         const QgsProcessingParameterWidgetContext &context =  QgsProcessingParameterWidgetContext() );
 
-    void setMeshLayer( QgsMeshLayer *layer );
+    /**
+     * Set the mesh layer for populate the time steps,
+     * if \a layerFromProject is false, the layer will not stay referenced in the instance of this object but
+     * all that is needed is stored in the instance
+     */
+    void setMeshLayer( QgsMeshLayer *layer, bool layerFromProject = false );
     void setDatasetGroupIndexes( const QList<int> datasetGroupIndexes );
 
     void setValue( const QVariant &value );
     QVariant value() const;
 
   public slots:
-    void buildValue();
+    void updateValue();
 
   signals:
     void changed();
@@ -116,15 +131,21 @@ class GUI_EXPORT QgsProcessingMeshDatasetTimeWidget : public QWidget, private Ui
     QToolButton *mToolButton = nullptr;
     QgsMeshLayer *mMeshLayer = nullptr;
     QList<int> mDatasetGroupIndexes;
+    QDateTime mReferenceTime;
 
+    void populateTimeSteps();
     bool hasTemporalDataset() const;
-    void populateTimeStep();
+    //! Populates diretly the time steps combo box with the referenced layer, used if layer comes from project
+    void populateTimeStepsFromLayer();
+    //! Stores the dataset time steps to use them later depending of chosen dataset groups (setDatasetGroupIndexes()), used if layer does not come from project
+    void storeTimeStepsFromLayer( QgsMeshLayer *layer );
+    QMap<int, QList<qint64>> mDatasetTimeSteps; //used if layer does not come from project
 
     void updateWidget();
+    void buildValue();
 
     friend class TestProcessingGui;
 };
-
 
 class GUI_EXPORT QgsProcessingMeshDatasetTimeWidgetWrapper  : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
 {

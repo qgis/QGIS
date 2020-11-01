@@ -17,6 +17,7 @@
 #include "qgsdatetimeedit.h"
 #include "qgsprocessingmultipleselectiondialog.h"
 #include "qgsmeshlayer.h"
+#include "qgsmeshlayerutils.h"
 #include "qgsmeshlayertemporalproperties.h"
 #include "qgspanelwidget.h"
 #include "qgsmapcanvas.h"
@@ -50,19 +51,44 @@ QgsProcessingMeshDatasetGroupsWidget::QgsProcessingMeshDatasetGroupsWidget( QWid
 
   mToolButton->setPopupMode( QToolButton::InstantPopup );
   QMenu *toolButtonMenu = new QMenu( this );
-  connect( toolButtonMenu->addAction( tr( "Current Active Dataset Group" ) ),
+  mActionCurrentActiveDatasetGroups = toolButtonMenu->addAction( tr( "Current Active Dataset Group" ) );
+  connect( mActionCurrentActiveDatasetGroups,
            &QAction::triggered, this, &QgsProcessingMeshDatasetGroupsWidget::selectCurrentActiveDatasetGroup );
-  connect( toolButtonMenu->addAction( tr( "Select in Available Dataset Groups" ) ),
-           &QAction::triggered, this, &QgsProcessingMeshDatasetGroupsWidget::showDialog );
+
+  mActionAvailableDatasetGroups = toolButtonMenu->addAction( tr( "Select in Available Dataset Groups" ) );
+  connect( mActionAvailableDatasetGroups, &QAction::triggered, this, &QgsProcessingMeshDatasetGroupsWidget::showDialog );
 
   mToolButton->setMenu( toolButtonMenu );
 }
 
-void QgsProcessingMeshDatasetGroupsWidget::setMeshLayer( QgsMeshLayer *layer )
+void QgsProcessingMeshDatasetGroupsWidget::setMeshLayer( QgsMeshLayer *layer, bool layerFromProject )
 {
+  mActionCurrentActiveDatasetGroups->setEnabled( layer && layerFromProject );
+  mActionAvailableDatasetGroups->setEnabled( layer );
+
   if ( mMeshLayer == layer )
     return;
-  mMeshLayer = layer;
+
+  mDatasetGroupsNames.clear();
+
+  if ( layerFromProject )
+    mMeshLayer = layer;
+  else
+  {
+    mMeshLayer = nullptr;
+    if ( layer )
+    {
+      QList<int> datasetGroupsIndexes = layer->datasetGroupsIndexes();
+      for ( int i : datasetGroupsIndexes )
+      {
+        QgsMeshDatasetGroupMetadata meta = layer->datasetGroupMetadata( i );
+        if ( meta.dataType() == mParam->dataType() )
+        {
+          mDatasetGroupsNames[i] = meta.name();
+        }
+      }
+    }
+  }
   mValue.clear();
   updateSummaryText();
   emit changed();
@@ -101,6 +127,14 @@ void QgsProcessingMeshDatasetGroupsWidget::showDialog()
         options.append( meta.name() );
       }
 
+    }
+  }
+  else
+  {
+    for ( int i : mDatasetGroupsNames.keys() )
+    {
+      availableOptions.append( i );
+      options.append( mDatasetGroupsNames.value( i ) );
     }
   }
 
@@ -205,32 +239,30 @@ void QgsProcessingMeshDatasetGroupsWidgetWrapper::postInitialize( const QList<Qg
 
 void QgsProcessingMeshDatasetGroupsWidgetWrapper::setMeshLayerWrapperValue( const QgsAbstractProcessingParameterWidgetWrapper *wrapper )
 {
+  if ( ! mWidget )
+    return;
+
   // evaluate value to layer
   QgsProcessingContext *context = nullptr;
-  std::unique_ptr< QgsProcessingContext > tmpContext;
   if ( mProcessingContextGenerator )
     context = mProcessingContextGenerator->processingContext();
 
-  bool needLayerOwnership = !context;
+  bool layerFromProject;
+  QgsMeshLayer *meshLayer;
   if ( !context )
   {
-    tmpContext = qgis::make_unique< QgsProcessingContext >();
-    context = tmpContext.get();
-  }
-
-  QgsMeshLayer *meshLayer = QgsProcessingParameters::parameterAsMeshLayer( wrapper->parameterDefinition(), wrapper->parameterValue(), *context );
-  if ( needLayerOwnership )
-  {
-    mTemporarytMeshLayer.reset( qobject_cast< QgsMeshLayer * >( context->takeResultLayer( meshLayer->id() ) ) );
-    meshLayer = mTemporarytMeshLayer.get();
+    QgsProcessingContext dummyContext;
+    meshLayer = QgsProcessingParameters::parameterAsMeshLayer( wrapper->parameterDefinition(), wrapper->parameterValue(), dummyContext );
+    layerFromProject = false;
   }
   else
   {
-    // don't need ownership of this layer - it wasn't owned by temporary context (so e.g. is owned by the project or cotext in context generator)
+    meshLayer = QgsProcessingParameters::parameterAsMeshLayer( wrapper->parameterDefinition(), wrapper->parameterValue(), *context );
+    layerFromProject = context->project() && context->project()->layerStore()->layers<QgsMeshLayer *>().contains( meshLayer );
   }
 
   if ( mWidget )
-    mWidget->setMeshLayer( meshLayer );
+    mWidget->setMeshLayer( meshLayer, layerFromProject );
 }
 
 QWidget *QgsProcessingMeshDatasetGroupsWidgetWrapper::createWidget() SIP_FACTORY
@@ -323,31 +355,24 @@ void QgsProcessingMeshDatasetTimeWidgetWrapper::setMeshLayerWrapperValue( const 
 
   // evaluate value to layer
   QgsProcessingContext *context = nullptr;
-  std::unique_ptr< QgsProcessingContext > tmpContext;
   if ( mProcessingContextGenerator )
     context = mProcessingContextGenerator->processingContext();
 
-  bool needLayerOwnership = !context;
+  bool layerFromProject;
+  QgsMeshLayer *meshLayer;
   if ( !context )
   {
-    tmpContext = qgis::make_unique< QgsProcessingContext >();
-    context = tmpContext.get();
-  }
-
-  QgsMeshLayer *meshLayer = QgsProcessingParameters::parameterAsMeshLayer( wrapper->parameterDefinition(), wrapper->parameterValue(), *context );
-  if ( needLayerOwnership )
-  {
-    mTemporarytMeshLayer.reset( qobject_cast< QgsMeshLayer * >( context->takeResultLayer( meshLayer->id() ) ) );
-    meshLayer = mTemporarytMeshLayer.get();
+    QgsProcessingContext dummyContext;
+    meshLayer = QgsProcessingParameters::parameterAsMeshLayer( wrapper->parameterDefinition(), wrapper->parameterValue(), dummyContext );
+    layerFromProject = false;
   }
   else
   {
-    // don't need ownership of this layer - it wasn't owned by temporary context (so e.g. is owned by the project or cotext in context generator)
+    meshLayer = QgsProcessingParameters::parameterAsMeshLayer( wrapper->parameterDefinition(), wrapper->parameterValue(), *context );
+    layerFromProject = context->project() && context->project()->layerStore()->layers<QgsMeshLayer *>().contains( meshLayer );
   }
 
-  if ( mWidget )
-    mWidget->setMeshLayer( meshLayer );
-
+  mWidget->setMeshLayer( meshLayer, layerFromProject );
 }
 
 void QgsProcessingMeshDatasetTimeWidgetWrapper::setDatasetGroupIndexesWrapperValue( const QgsAbstractProcessingParameterWidgetWrapper *wrapper )
@@ -377,7 +402,7 @@ QWidget *QgsProcessingMeshDatasetTimeWidgetWrapper::createWidget()
   QgsMapCanvas *canvas = widgetContext().mapCanvas();
   if ( canvas )
   {
-    connect( canvas, &QgsMapCanvas::temporalRangeChanged, mWidget, &QgsProcessingMeshDatasetTimeWidget::buildValue );
+    connect( canvas, &QgsMapCanvas::temporalRangeChanged, mWidget, &QgsProcessingMeshDatasetTimeWidget::updateValue );
   }
   connect( mWidget, &QgsProcessingMeshDatasetTimeWidget::changed, this, [ = ]
   {
@@ -413,26 +438,37 @@ QgsProcessingMeshDatasetTimeWidget::QgsProcessingMeshDatasetTimeWidget( QWidget 
 
   mCanvas = context.mapCanvas();
 
-  connect( radioButtonCurrentCanvasTime, &QRadioButton::toggled, [this]( bool isChecked ) {if ( isChecked ) this->buildValue();} );
-  connect( radioButtonDefinedDateTime, &QRadioButton::toggled, [this]( bool isChecked ) {if ( isChecked ) this->buildValue();} );
-  connect( radioButtonDatasetGroupTimeStep, &QRadioButton::toggled, [this]( bool isChecked ) {if ( isChecked ) this->buildValue();} );
-  connect( dateTimeEdit, &QgsDateTimeEdit::dateTimeChanged, this, &QgsProcessingMeshDatasetTimeWidget::buildValue );
+  connect( radioButtonCurrentCanvasTime, &QRadioButton::toggled, [this]( bool isChecked ) {if ( isChecked ) this->updateValue();} );
+  connect( radioButtonDefinedDateTime, &QRadioButton::toggled, [this]( bool isChecked ) {if ( isChecked ) this->updateValue();} );
+  connect( radioButtonDatasetGroupTimeStep, &QRadioButton::toggled, [this]( bool isChecked ) {if ( isChecked ) this->updateValue();} );
+  connect( dateTimeEdit, &QgsDateTimeEdit::dateTimeChanged, this, &QgsProcessingMeshDatasetTimeWidget::updateValue );
   connect( comboBoxDatasetTimeStep, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
-           this, &QgsProcessingMeshDatasetTimeWidget::buildValue );
+           this, &QgsProcessingMeshDatasetTimeWidget::updateValue );
 
   updateWidget();
 }
 
-void QgsProcessingMeshDatasetTimeWidget::setMeshLayer( QgsMeshLayer *layer )
+void QgsProcessingMeshDatasetTimeWidget::setMeshLayer( QgsMeshLayer *layer, bool layerFromProject )
 {
   if ( mMeshLayer == layer )
     return;
-  mMeshLayer = layer;
-  if ( mMeshLayer )
-    whileBlocking( dateTimeEdit )->setDateTime( static_cast<QgsMeshLayerTemporalProperties *>( mMeshLayer->temporalProperties() )->referenceTime() );
 
-  buildValue();
-  updateWidget();
+  if ( layerFromProject )
+  {
+    mMeshLayer = layer;
+    mReferenceTime = static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() )->referenceTime();
+  }
+  else
+  {
+    mMeshLayer = nullptr;
+    mReferenceTime = layer->dataProvider()->temporalCapabilities()->referenceTime();
+    storeTimeStepsFromLayer( layer );
+  }
+
+  if ( mReferenceTime.isValid() )
+    whileBlocking( dateTimeEdit )->setDateTime( mReferenceTime );
+
+  updateValue();
 }
 
 void QgsProcessingMeshDatasetTimeWidget::setDatasetGroupIndexes( const QList<int> datasetGroupIndexes )
@@ -440,9 +476,8 @@ void QgsProcessingMeshDatasetTimeWidget::setDatasetGroupIndexes( const QList<int
   if ( datasetGroupIndexes == mDatasetGroupIndexes )
     return;
   mDatasetGroupIndexes = datasetGroupIndexes;
-  populateTimeStep();
-  updateWidget();
-  buildValue();
+  populateTimeSteps();
+  updateValue();
 }
 
 void QgsProcessingMeshDatasetTimeWidget::setValue( const QVariant &value )
@@ -493,7 +528,7 @@ void QgsProcessingMeshDatasetTimeWidget::updateWidget()
 
   if ( mCanvas != nullptr  && mCanvas->mapSettings().isTemporal() )
   {
-    whileBlocking( radioButtonCurrentCanvasTime )->setEnabled( true );
+    whileBlocking( radioButtonCurrentCanvasTime )->setEnabled( true && mReferenceTime.isValid() );
     labelCurrentCanvasTime->setText( mCanvas->mapSettings().temporalRange().begin().toString( "yyyy-MM-dd HH:mm:ss" ) );
   }
   else
@@ -503,6 +538,11 @@ void QgsProcessingMeshDatasetTimeWidget::updateWidget()
       whileBlocking( radioButtonDefinedDateTime )->setChecked( true );
   }
 
+  if ( ! mReferenceTime.isValid() )
+    whileBlocking( radioButtonDatasetGroupTimeStep )->setChecked( true );
+
+  whileBlocking( radioButtonDefinedDateTime )->setEnabled( mReferenceTime.isValid() );
+
   dateTimeEdit->setVisible( radioButtonDefinedDateTime->isChecked() && !isStatic );
   labelCurrentCanvasTime->setVisible( radioButtonCurrentCanvasTime->isChecked() && !isStatic );
   comboBoxDatasetTimeStep->setVisible( radioButtonDatasetGroupTimeStep->isChecked() && !isStatic );
@@ -510,19 +550,53 @@ void QgsProcessingMeshDatasetTimeWidget::updateWidget()
 
 bool QgsProcessingMeshDatasetTimeWidget::hasTemporalDataset() const
 {
-  if ( !mMeshLayer )
-    return false;
-
   for ( int index : mDatasetGroupIndexes )
   {
-    if ( mMeshLayer->datasetGroupMetadata( index ).isTemporal() )
+    if ( mMeshLayer && mMeshLayer->datasetGroupMetadata( index ).isTemporal() )
+      return true;
+    else if ( mDatasetTimeSteps.contains( index ) )
       return true;
   }
 
   return false;
 }
 
-void QgsProcessingMeshDatasetTimeWidget::populateTimeStep()
+
+void QgsProcessingMeshDatasetTimeWidget::populateTimeSteps()
+{
+  if ( mMeshLayer )
+  {
+    populateTimeStepsFromLayer();
+    return;
+  }
+
+  QMap<quint64, QgsMeshDatasetIndex> timeStep;
+  for ( int groupIndex : mDatasetGroupIndexes )
+  {
+    if ( !mDatasetTimeSteps.contains( groupIndex ) )
+      continue;
+    const QList<qint64> relativeTimeSteps = mDatasetTimeSteps.value( groupIndex );
+    for ( int index = 0; index < relativeTimeSteps.count(); ++index )
+    {
+      QgsMeshDatasetIndex datasetIndex( groupIndex, index );
+      if ( timeStep.contains( relativeTimeSteps.at( index ) ) )
+        continue;
+      timeStep[relativeTimeSteps.at( index )] = datasetIndex;
+    }
+  }
+
+  for ( qint64 key : timeStep.keys() )
+  {
+    QString stringTime = QgsMeshLayerUtils::formatTime( key / 1000 / 3600, mReferenceTime, QgsMeshTimeSettings() );
+    QVariantList data;
+    const QgsMeshDatasetIndex &index = timeStep.value( key );
+    data << index.group() << index.dataset();
+    whileBlocking( comboBoxDatasetTimeStep )->addItem( stringTime, data );
+  }
+
+}
+
+void QgsProcessingMeshDatasetTimeWidget::populateTimeStepsFromLayer()
 {
   whileBlocking( comboBoxDatasetTimeStep )->clear();
 
@@ -544,7 +618,6 @@ void QgsProcessingMeshDatasetTimeWidget::populateTimeStep()
       if ( timeStep.contains( relativeTime ) )
         continue;
       timeStep[relativeTime] = datasetIndex;
-
     }
   }
 
@@ -555,6 +628,26 @@ void QgsProcessingMeshDatasetTimeWidget::populateTimeStep()
     const QgsMeshDatasetIndex &index = timeStep.value( key );
     data << index.group() << index.dataset();
     whileBlocking( comboBoxDatasetTimeStep )->addItem( stringTime, data );
+  }
+}
+
+void QgsProcessingMeshDatasetTimeWidget::storeTimeStepsFromLayer( QgsMeshLayer *layer )
+{
+  mDatasetTimeSteps.clear();
+  if ( !layer )
+    return;
+  QList<int> datasetGroupsList = layer->datasetGroupsIndexes();
+  for ( int groupIndex : datasetGroupsList )
+  {
+    QgsMeshDatasetGroupMetadata meta = layer->datasetGroupMetadata( groupIndex );
+    if ( !meta.isTemporal() )
+      continue;
+    int datasetCount = layer->datasetCount( groupIndex );
+    QList<qint64> relativeTimeSteps;
+    relativeTimeSteps.reserve( datasetCount );
+    for ( int index = 0; index < datasetCount; ++index )
+      relativeTimeSteps.append( layer->datasetRelativeTimeInMilliseconds( QgsMeshDatasetIndex( groupIndex, index ) ) );
+    mDatasetTimeSteps[groupIndex] = relativeTimeSteps;
   }
 }
 
@@ -582,8 +675,12 @@ void QgsProcessingMeshDatasetTimeWidget::buildValue()
   }
 
   emit changed();
+}
 
+void QgsProcessingMeshDatasetTimeWidget::updateValue()
+{
   updateWidget();
+  buildValue();
 }
 
 ///@endcond

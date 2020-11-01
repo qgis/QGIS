@@ -257,6 +257,8 @@ class TestProcessingGui : public QObject
     void testTinInputLayerWrapper();
     void testDxfLayersWrapper();
     void testMeshDatasetWrapper();
+    void testMeshDatasetWrapperLayerInProject();
+    void testMeshDatasetWrapperLayerOutsideProject();
     void testModelGraphicsView();
 
   private:
@@ -8984,20 +8986,46 @@ void TestProcessingGui::testMeshDatasetWrapper()
   groupsSpy.clear();
   timeSpy.clear();
 
-  project.addMapLayer( layer );
-  static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() )->setReferenceTime(
-    QDateTime( QDate( 2020, 01, 01 ), QTime( 0, 0, 0, Qt::UTC ) ), layer->dataProvider()->temporalCapabilities() );
-  layerWrapper.setWidgetValue( meshLayerName, context );
+  // without layer in the project
+  QString meshOutOfProject( dataDir + "/trap_steady_05_3D.nc" );
+  layerWrapper.setWidgetValue( meshOutOfProject, context );
 
   QCOMPARE( layerSpy.count(), 1 );
   QCOMPARE( groupsSpy.count(), 1 );
   QCOMPARE( timeSpy.count(), 1 );
 
+  QVERIFY( datasetTimeWidget->radioButtonDatasetGroupTimeStep->isChecked() );
+
+  QVariantList groups;
+  groups << 0;
+  groupsWrapper.setWidgetValue( groups, context );
+  QVERIFY( groupsDefinition.checkValueIsAcceptable( groupsWrapper.widgetValue() ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( groupsWrapper.widgetValue() ), QList<int>() << 0 );
+  QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( timeWrapper.widgetValue() ), QStringLiteral( "static" ) );
+
+  QCOMPARE( layerSpy.count(), 1 );
+  QCOMPARE( groupsSpy.count(), 2 );
+  QCOMPARE( timeSpy.count(), 3 );
+
+  // with layer in the project
+  layerSpy.clear();
+  groupsSpy.clear();
+  timeSpy.clear();
+
+  project.addMapLayer( layer );
+  static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() )->setReferenceTime(
+    QDateTime( QDate( 2020, 01, 01 ), QTime( 0, 0, 0 ), Qt::UTC ), layer->dataProvider()->temporalCapabilities() );
+  layerWrapper.setWidgetValue( meshLayerName, context );
+
+  QCOMPARE( layerSpy.count(), 1 );
+  QCOMPARE( groupsSpy.count(), 1 );
+  QCOMPARE( timeSpy.count(), 2 );
+
   datasetGroupWidget->selectCurrentActiveDatasetGroup();
 
   QCOMPARE( layerSpy.count(), 1 );
   QCOMPARE( groupsSpy.count(), 2 );
-  QCOMPARE( timeSpy.count(), 2 );
+  QCOMPARE( timeSpy.count(), 3 );
 
   QVariant groupsValue = groupsWrapper.widgetValue();
   QVERIFY( groupsValue.type() == QVariant::List );
@@ -9017,7 +9045,7 @@ void TestProcessingGui::testMeshDatasetWrapper()
 
   QCOMPARE( layerSpy.count(), 1 );
   QCOMPARE( groupsSpy.count(), 3 );
-  QCOMPARE( timeSpy.count(), 3 );
+  QCOMPARE( timeSpy.count(), 4 );
 
   pythonString = groupsDefinition.valueAsPythonString( groupsWrapper.widgetValue(), context );
   QCOMPARE( pythonString, QStringLiteral( "[1,2]" ) );
@@ -9027,7 +9055,7 @@ void TestProcessingGui::testMeshDatasetWrapper()
   datasetTimeWidget->radioButtonDatasetGroupTimeStep->setChecked( true );
   QCOMPARE( layerSpy.count(), 1 );
   QCOMPARE( groupsSpy.count(), 3 );
-  QCOMPARE( timeSpy.count(), 4 );
+  QCOMPARE( timeSpy.count(), 4 ); //radioButtonDatasetGroupTimeStep already checked
 
   QVariant timeValue = timeWrapper.widgetValue();
   QVERIFY( timeValue.type() == QVariant::Map );
@@ -9040,7 +9068,7 @@ void TestProcessingGui::testMeshDatasetWrapper()
   QVERIFY( QgsProcessingParameterMeshDatasetTime::timeValueAsDatasetIndex( timeValue ) == QgsMeshDatasetIndex( 1, 0 ) );
 
   datasetTimeWidget->radioButtonDefinedDateTime->setChecked( true );
-  QDateTime dateTime = QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 1, 0, Qt::UTC ), Qt::UTC );
+  QDateTime dateTime = QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 1, 0 ), Qt::UTC );
   datasetTimeWidget->dateTimeEdit->setDateTime( dateTime );
   QCOMPARE( layerSpy.count(), 1 );
   QCOMPARE( groupsSpy.count(), 3 );
@@ -9052,7 +9080,7 @@ void TestProcessingGui::testMeshDatasetWrapper()
   QCOMPARE( QgsProcessingParameterMeshDatasetTime::timeValueAsDefinedDateTime( timeWrapper.widgetValue() ), dateTime );
 
   QVERIFY( !datasetTimeWidget->radioButtonCurrentCanvasTime->isEnabled() );
-  mapCanvas->setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2021, 1, 1 ), QTime( 0, 3, 0, Qt::UTC ) ), QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 5, 0, Qt::UTC ) ) ) );
+  mapCanvas->setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2021, 1, 1 ), QTime( 0, 3, 0 ), Qt::UTC ), QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 5, 0 ), Qt::UTC ) ) );
   QVERIFY( datasetTimeWidget->radioButtonCurrentCanvasTime->isEnabled() );
 
   datasetTimeWidget->radioButtonCurrentCanvasTime->setChecked( true );
@@ -9087,6 +9115,106 @@ void TestProcessingGui::testMeshDatasetWrapper()
   QCOMPARE( pythonString, QStringLiteral( "{'type': 'static'}" ) );
   QVERIFY( timeDefinition.checkValueIsAcceptable( timeWrapper.widgetValue() ) );
   QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( timeWrapper.widgetValue() ), QStringLiteral( "static" ) );
+}
+
+void TestProcessingGui::testMeshDatasetWrapperLayerOutsideProject()
+{
+  QgsProcessingParameterMeshLayer layerDefinition( QStringLiteral( "layer" ), QStringLiteral( "layer" ) );
+  QgsProcessingMeshLayerWidgetWrapper layerWrapper( &layerDefinition );
+
+  QgsProcessingParameterMeshDatasetGroups groupsDefinition( QStringLiteral( "groups" ),
+      QStringLiteral( "groups" ),
+      QStringLiteral( "layer" ),
+      QgsMeshDatasetGroupMetadata::DataOnFaces );
+  QgsProcessingMeshDatasetGroupsWidgetWrapper groupsWrapper( &groupsDefinition );
+
+  QgsProcessingParameterMeshDatasetTime timeDefinition( QStringLiteral( "time" ), QStringLiteral( "time" ), QStringLiteral( "layer" ), QStringLiteral( "groups" ) );
+  QgsProcessingMeshDatasetTimeWidgetWrapper timeWrapper( &timeDefinition );
+
+  QList<QgsAbstractProcessingParameterWidgetWrapper *> wrappers;
+  wrappers << &layerWrapper << &groupsWrapper << &timeWrapper;
+
+  QgsProject project;
+  QgsProcessingContext context;
+  context.setProject( &project );
+  QgsProcessingParameterWidgetContext widgetContext;
+  std::unique_ptr<QgsMapCanvas> mapCanvas = qgis::make_unique<QgsMapCanvas>();
+  widgetContext.setMapCanvas( mapCanvas.get() );
+
+  widgetContext.setProject( &project );
+  layerWrapper.setWidgetContext( widgetContext );
+  groupsWrapper.setWidgetContext( widgetContext );
+  timeWrapper.setWidgetContext( widgetContext );
+
+  TestProcessingContextGenerator generator( context );
+  layerWrapper.registerProcessingContextGenerator( &generator );
+  groupsWrapper.registerProcessingContextGenerator( &generator );
+  timeWrapper.registerProcessingContextGenerator( &generator );
+
+  QSignalSpy layerSpy( &layerWrapper, &QgsProcessingMeshLayerWidgetWrapper::widgetValueHasChanged );
+  QSignalSpy groupsSpy( &groupsWrapper, &QgsProcessingMeshDatasetGroupsWidgetWrapper::widgetValueHasChanged );
+  QSignalSpy timeSpy( &timeWrapper, &QgsProcessingMeshDatasetTimeWidgetWrapper::widgetValueHasChanged );
+
+  std::unique_ptr<QWidget> layerWidget( layerWrapper.createWrappedWidget( context ) );
+  std::unique_ptr<QWidget> groupWidget( groupsWrapper.createWrappedWidget( context ) );
+  std::unique_ptr<QWidget> timeWidget( timeWrapper.createWrappedWidget( context ) );
+  QgsProcessingMeshDatasetGroupsWidget *datasetGroupWidget = qobject_cast<QgsProcessingMeshDatasetGroupsWidget *>( groupWidget.get() );
+  QgsProcessingMeshDatasetTimeWidget *datasetTimeWidget = qobject_cast<QgsProcessingMeshDatasetTimeWidget *>( timeWidget.get() );
+
+  QVERIFY( layerWidget );
+  QVERIFY( groupWidget );
+  QVERIFY( datasetGroupWidget );
+  QVERIFY( timeWidget );
+
+  groupsWrapper.postInitialize( wrappers );
+  timeWrapper.postInitialize( wrappers );
+
+  layerSpy.clear();
+  groupsSpy.clear();
+  timeSpy.clear();
+
+  QString dataDir = QString( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  QString meshOutOfProject( dataDir + "/mesh/trap_steady_05_3D.nc" );
+  layerWrapper.setWidgetValue( meshOutOfProject, context );
+
+  QCOMPARE( layerSpy.count(), 1 );
+  QCOMPARE( groupsSpy.count(), 1 );
+  QCOMPARE( timeSpy.count(), 1 );
+
+  QVariantList groups;
+  groups << 0;
+  groupsWrapper.setWidgetValue( groups, context );
+  QCOMPARE( layerSpy.count(), 1 );
+  QCOMPARE( groupsSpy.count(), 2 );
+  QCOMPARE( timeSpy.count(), 3 );
+  QVERIFY( groupsDefinition.checkValueIsAcceptable( groupsWrapper.widgetValue() ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( groupsWrapper.widgetValue() ), QList<int>() << 0 );
+  QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( timeWrapper.widgetValue() ), QStringLiteral( "static" ) );
+  QVERIFY( !datasetTimeWidget->isEnabled() );
+
+  groups << 11;
+  groupsWrapper.setWidgetValue( groups, context );
+  QCOMPARE( layerSpy.count(), 1 );
+  QCOMPARE( groupsSpy.count(), 3 );
+  QCOMPARE( timeSpy.count(), 5 );
+  QVERIFY( datasetTimeWidget->isEnabled() );
+  QVERIFY( groupsDefinition.checkValueIsAcceptable( groupsWrapper.widgetValue() ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( groupsWrapper.widgetValue() ), QList<int>() << 0 << 11 );
+  QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( timeWrapper.widgetValue() ), QStringLiteral( "dataset-time-step" ) );
+  QVERIFY( QgsProcessingParameterMeshDatasetTime::timeValueAsDatasetIndex( timeWrapper.widgetValue() ) == QgsMeshDatasetIndex( 11, 0 ) );
+
+  QVERIFY( datasetTimeWidget->radioButtonDefinedDateTime->isEnabled() );
+  QVERIFY( !datasetTimeWidget->radioButtonCurrentCanvasTime->isEnabled() );
+
+  datasetTimeWidget->radioButtonDefinedDateTime->setChecked( true );
+  QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( timeWrapper.widgetValue() ), QStringLiteral( "defined-date-time" ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetTime::timeValueAsDefinedDateTime( timeWrapper.widgetValue() ),
+            QDateTime( QDate( 1990, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+
+
+  mapCanvas->setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2021, 1, 1 ), QTime( 0, 3, 0 ), Qt::UTC ), QDateTime( QDate( 2020, 1, 1 ), QTime( 0, 5, 0 ), Qt::UTC ) ) );
+  QVERIFY( datasetTimeWidget->radioButtonCurrentCanvasTime->isEnabled() );
+
 }
 
 void TestProcessingGui::testModelGraphicsView()
