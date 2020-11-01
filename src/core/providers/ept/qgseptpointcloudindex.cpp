@@ -94,42 +94,30 @@ bool QgsEptPointCloudIndex::load( const QString &fileName )
 
     int size = schemaObj.value( QLatin1String( "size" ) ).toInt();
 
-    if ( name == QLatin1String( "X" )  ||
-         name == QLatin1String( "Y" ) ||
-         name == QLatin1String( "Z" )
-       )
+    if ( type == QStringLiteral( "float" ) && ( size == 4 ) )
     {
-      // There seems to be a bug in Entwine: https://github.com/connormanning/entwine/issues/240
-      // point records for X,Y,Z seem to be written as 64-bit doubles even if schema says they are 32-bit ints
+      attributes.push_back( QgsPointCloudAttribute( name, QgsPointCloudAttribute::Float ) );
+    }
+    else if ( type == QStringLiteral( "float" ) && ( size == 8 ) )
+    {
       attributes.push_back( QgsPointCloudAttribute( name, QgsPointCloudAttribute::Double ) );
+    }
+    else if ( size == 1 )
+    {
+      attributes.push_back( QgsPointCloudAttribute( name, QgsPointCloudAttribute::Char ) );
+    }
+    else if ( size == 2 )
+    {
+      attributes.push_back( QgsPointCloudAttribute( name, QgsPointCloudAttribute::Short ) );
+    }
+    else if ( size == 4 )
+    {
+      attributes.push_back( QgsPointCloudAttribute( name, QgsPointCloudAttribute::Int32 ) );
     }
     else
     {
-      if ( type == QStringLiteral( "float" ) && ( size == 4 ) )
-      {
-        attributes.push_back( QgsPointCloudAttribute( name, QgsPointCloudAttribute::Float ) );
-      }
-      else if ( type == QStringLiteral( "float" ) && ( size == 8 ) )
-      {
-        attributes.push_back( QgsPointCloudAttribute( name, QgsPointCloudAttribute::Double ) );
-      }
-      else if ( size == 1 )
-      {
-        attributes.push_back( QgsPointCloudAttribute( name, QgsPointCloudAttribute::Char ) );
-      }
-      else if ( size == 2 )
-      {
-        attributes.push_back( QgsPointCloudAttribute( name, QgsPointCloudAttribute::Short ) );
-      }
-      else if ( size == 4 )
-      {
-        attributes.push_back( QgsPointCloudAttribute( name, QgsPointCloudAttribute::Int32 ) );
-      }
-      else
-      {
-        // unknown attribute type
-        return false;
-      }
+      // unknown attribute type
+      return false;
     }
 
     float scale = 1.f;
