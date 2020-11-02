@@ -78,6 +78,7 @@ my $translators= {
 	'pt_PT' => 'Giovanni Manghi, Joana Simões, Duarte Carreira, Alexandre Neto, Pedro Pereira, Pedro Palheiro, Nelson Silva, Ricardo Sena, Leandro Infantini, João Gaspar, José Macau',
 	'ro' => 'Sorin Călinică, Tudor Bărăscu, Georgiana Ioanovici, Alex Bădescu, Lonut Losifescu-Enescu, Bogdan Pacurar',
 	'ru' => 'Alexander Bruy, Artem Popov',
+  'sc' => 'Valerio Pinna',
 	'sk' => 'Lubos Balazovic, Jana Kormanikova, Ivan Mincik',
 	'sl' => 'Jože Detečnik, Dejan Gregor, Jaka Kranjc',
 	'sq' => '',
