@@ -184,6 +184,11 @@ void PointSet::invalidateGeos()
   GEOSPreparedGeom_destroy_r( geosctxt, mPreparedGeom );
   mOwnsGeom = false;
   mGeos = nullptr;
+  if ( mGeosPreparedBoundary )
+  {
+    GEOSPreparedGeom_destroy_r( geosctxt, mGeosPreparedBoundary );
+    mGeosPreparedBoundary = nullptr;
+  }
   mPreparedGeom = nullptr;
   mLength = -1;
   mArea = -1;
@@ -199,6 +204,12 @@ PointSet::~PointSet()
     mGeos = nullptr;
   }
   GEOSPreparedGeom_destroy_r( geosctxt, mPreparedGeom );
+
+  if ( mGeosPreparedBoundary )
+  {
+    GEOSPreparedGeom_destroy_r( geosctxt, mGeosPreparedBoundary );
+    mGeosPreparedBoundary = nullptr;
+  }
 
   deleteCoords();
 
@@ -807,16 +818,35 @@ double PointSet::minDistanceToPoint( double px, double py, double *rx, double *r
 #endif
     int type = GEOSGeomTypeId_r( geosctxt, mGeos );
     const GEOSGeometry *extRing = nullptr;
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=9
+    const GEOSPreparedGeometry *preparedExtRing = nullptr;
+#endif
+
     if ( type != GEOS_POLYGON )
     {
       extRing = mGeos;
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=9
+      preparedExtRing = preparedGeom();
+#endif
     }
     else
     {
       //for polygons, we want distance to exterior ring (not an interior point)
       extRing = GEOSGetExteriorRing_r( geosctxt, mGeos );
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=9
+      if ( ! mGeosPreparedBoundary )
+      {
+        mGeosPreparedBoundary = GEOSPrepare_r( geosctxt, extRing );
+      }
+      preparedExtRing = mGeosPreparedBoundary;
+#endif
     }
+
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=9
+    geos::coord_sequence_unique_ptr nearestCoord( GEOSPreparedNearestPoints_r( geosctxt, preparedExtRing, geosPt.get() ) );
+#else
     geos::coord_sequence_unique_ptr nearestCoord( GEOSNearestPoints_r( geosctxt, extRing, geosPt.get() ) );
+#endif
     double nx;
     double ny;
 #if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8

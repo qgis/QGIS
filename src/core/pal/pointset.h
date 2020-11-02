@@ -233,6 +233,7 @@ namespace pal
 
     private:
 
+      mutable const GEOSPreparedGeometry *mGeosPreparedBoundary = nullptr;
       mutable const GEOSPreparedGeometry *mPreparedGeom = nullptr;
 
       PointSet &operator= ( const PointSet & ) = delete;
