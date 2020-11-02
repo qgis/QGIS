@@ -41,7 +41,7 @@ QString QgsProcessingParameterMeshDatasetGroups::type() const
 bool QgsProcessingParameterMeshDatasetGroups::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
 {
   Q_UNUSED( context );
-  return valueIsAcceptable( input );
+  return valueIsAcceptable( input, mFlags & FlagOptional );
 }
 
 QString QgsProcessingParameterMeshDatasetGroups::valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const
@@ -93,7 +93,10 @@ QString QgsProcessingParameterMeshDatasetGroups::asPythonString( QgsProcessing::
 
 QStringList QgsProcessingParameterMeshDatasetGroups::dependsOnOtherParameters() const
 {
-  return QStringList() << mMeshLayerParameterName;
+  if ( mMeshLayerParameterName.isEmpty() )
+    return QStringList();
+  else
+    return QStringList() << mMeshLayerParameterName;
 }
 
 QString QgsProcessingParameterMeshDatasetGroups::meshLayerParameterName() const
@@ -103,7 +106,7 @@ QString QgsProcessingParameterMeshDatasetGroups::meshLayerParameterName() const
 
 QList<int> QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( const QVariant &value )
 {
-  if ( !valueIsAcceptable( value ) )
+  if ( !valueIsAcceptable( value, true ) )
     return QList<int>();
   QVariantList list = value.toList();
   QList<int> ret;
@@ -113,14 +116,17 @@ QList<int> QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( const Q
   return ret;
 }
 
-bool QgsProcessingParameterMeshDatasetGroups::valueIsAcceptable( const QVariant &input )
+bool QgsProcessingParameterMeshDatasetGroups::valueIsAcceptable( const QVariant &input, bool allowEmpty )
 {
   if ( !input.isValid() )
-    return false;
+    return allowEmpty;
 
   if ( input.type() != QVariant::List )
     return false;
   const QVariantList list = input.toList();
+
+  if ( !allowEmpty && list.isEmpty() )
+    return false;
 
   for ( const QVariant &var : list )
     if ( var.type() != QVariant::Int )
@@ -129,13 +135,11 @@ bool QgsProcessingParameterMeshDatasetGroups::valueIsAcceptable( const QVariant 
   return true;
 }
 
-QgsProcessingParameterMeshDatasetTime::QgsProcessingParameterMeshDatasetTime(
-  const QString &name,
-  const QString &description,
-  const QString &meshLayerParameterName,
-  const QString &datasetGroupParameterName,
-  bool optional )
-  : QgsProcessingParameterDefinition( name, description, QVariant(), optional )
+QgsProcessingParameterMeshDatasetTime::QgsProcessingParameterMeshDatasetTime( const QString &name,
+    const QString &description,
+    const QString &meshLayerParameterName,
+    const QString &datasetGroupParameterName )
+  : QgsProcessingParameterDefinition( name, description, QVariant() )
   , mMeshLayerParameterName( meshLayerParameterName )
   , mDatasetGroupParameterName( datasetGroupParameterName )
 {
@@ -155,7 +159,7 @@ QString QgsProcessingParameterMeshDatasetTime::type() const
 bool QgsProcessingParameterMeshDatasetTime::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context ) const
 {
   Q_UNUSED( context );
-  return valueIsAcceptable( input );
+  return valueIsAcceptable( input, mFlags & FlagOptional );
 }
 
 QString QgsProcessingParameterMeshDatasetTime::valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const
@@ -203,7 +207,14 @@ QString QgsProcessingParameterMeshDatasetTime::asPythonString( QgsProcessing::Py
 
 QStringList QgsProcessingParameterMeshDatasetTime::dependsOnOtherParameters() const
 {
-  return QStringList() << mMeshLayerParameterName << mDatasetGroupParameterName;
+  QStringList otherParameters;
+  if ( !mMeshLayerParameterName.isEmpty() )
+    otherParameters << mMeshLayerParameterName;
+
+  if ( !mDatasetGroupParameterName.isEmpty() )
+    otherParameters << mMeshLayerParameterName << mDatasetGroupParameterName;
+
+  return otherParameters;
 }
 
 QString QgsProcessingParameterMeshDatasetTime::meshLayerParameterName() const
@@ -218,7 +229,7 @@ QString QgsProcessingParameterMeshDatasetTime::datasetGroupParameterName() const
 
 QString QgsProcessingParameterMeshDatasetTime::valueAsTimeType( const QVariant &value )
 {
-  if ( !valueIsAcceptable( value ) )
+  if ( !valueIsAcceptable( value, false ) )
     return QString();
 
   return value.toMap().value( QStringLiteral( "type" ) ).toString();
@@ -226,7 +237,7 @@ QString QgsProcessingParameterMeshDatasetTime::valueAsTimeType( const QVariant &
 
 QgsMeshDatasetIndex QgsProcessingParameterMeshDatasetTime::timeValueAsDatasetIndex( const QVariant &value )
 {
-  if ( !valueIsAcceptable( value ) && valueAsTimeType( value ) != QStringLiteral( "dataset-time-step" ) )
+  if ( !valueIsAcceptable( value, false ) || valueAsTimeType( value ) != QStringLiteral( "dataset-time-step" ) )
     return QgsMeshDatasetIndex( -1, -1 );
 
   QVariantList list = value.toMap().value( QStringLiteral( "value" ) ).toList();
@@ -235,16 +246,16 @@ QgsMeshDatasetIndex QgsProcessingParameterMeshDatasetTime::timeValueAsDatasetInd
 
 QDateTime QgsProcessingParameterMeshDatasetTime::timeValueAsDefinedDateTime( const QVariant &value )
 {
-  if ( !valueIsAcceptable( value ) && valueAsTimeType( value ) != QStringLiteral( "defined-date-time" ) )
+  if ( !valueIsAcceptable( value, false ) && valueAsTimeType( value ) != QStringLiteral( "defined-date-time" ) )
     return QDateTime();
 
   return value.toMap().value( QStringLiteral( "value" ) ).toDateTime();
 }
 
-bool QgsProcessingParameterMeshDatasetTime::valueIsAcceptable( const QVariant &input )
+bool QgsProcessingParameterMeshDatasetTime::valueIsAcceptable( const QVariant &input, bool allowEmpty )
 {
   if ( !input.isValid() )
-    return false;
+    return allowEmpty;
 
   if ( input.type() != QVariant::Map )
     return false;

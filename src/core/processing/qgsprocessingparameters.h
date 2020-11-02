@@ -337,6 +337,7 @@ class CORE_EXPORT QgsProcessingParameterDefinition
 #include "qgsprocessingparameterfieldmap.h"
 #include "qgsprocessingparametertininputlayers.h"
 #include "qgsprocessingparametervectortilewriterlayers.h"
+#include "qgsprocessingparametermeshdataset.h"
     % End
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( sipCpp->type() == QgsProcessingParameterBoolean::typeName() )

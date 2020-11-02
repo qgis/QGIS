@@ -50,7 +50,7 @@ Constructor
 
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
-    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType ) const;
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
 
     virtual QStringList dependsOnOtherParameters() const;
 
@@ -75,33 +75,6 @@ Returns the data type supported by the parameter
 Returns the ``value`` as a list if dataset group indexes
 %End
 
-};
-
-class QgsProcessingParameterTypeMeshDatasetGroups : QgsProcessingParameterType
-{
-%Docstring
-Parameter type definition for QgsProcessingParameterMeshDatasetGroups.
-
-.. versionadded:: 3.18
-%End
-
-%TypeHeaderCode
-#include "qgsprocessingparametermeshdataset.h"
-%End
-  public:
-    virtual QgsProcessingParameterDefinition *create( const QString &name ) const /Factory/;
-
-    virtual QString description() const;
-
-    virtual QString name() const;
-
-    virtual QString id() const;
-
-    virtual QString pythonImportString() const;
-
-    virtual QString className() const;
-
-    virtual QStringList acceptedPythonTypes() const;
 };
 
 
@@ -131,8 +104,7 @@ A valid value for this parameter is a map (QVariantMap) with in this form:
       const QString &name,
       const QString &description = QString(),
       const QString &meshLayerParameterName = QString(),
-      const QString &datasetGroupParameterName = QString(),
-      bool optional = false );
+      const QString &datasetGroupParameterName = QString() );
 %Docstring
 Constructor
 
@@ -140,7 +112,6 @@ Constructor
 :param description: description of the parameter
 :param meshLayerParameterName: name of the associated mesh layer parameter (:py:class:`QgsProcessingParameterMeshLayer`)
 :param datasetGroupParameterName: name of the associated dataset group parameter (:py:class:`QgsProcessingParameterMeshDatasetGroups`)
-:param optional: whether the parameter is optional
 %End
 
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
@@ -151,7 +122,7 @@ Constructor
 
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
-    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType ) const;
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
 
     virtual QStringList dependsOnOtherParameters() const;
 
@@ -198,33 +169,6 @@ If the value has the wrong type return an invalid QDatetime
 
 };
 
-
-class QgsProcessingParameterTypeMeshDatasetTime: QgsProcessingParameterType
-{
-%Docstring
-Parameter type definition for QgsProcessingParameterMeshDatasetTime.
-
-.. versionadded:: 3.18
-%End
-
-%TypeHeaderCode
-#include "qgsprocessingparametermeshdataset.h"
-%End
-  public:
-    virtual QgsProcessingParameterDefinition *create( const QString &name ) const /Factory/;
-
-    virtual QString description() const;
-
-    virtual QString name() const;
-
-    virtual QString id() const;
-
-    virtual QString pythonImportString() const;
-
-    virtual QString className() const;
-
-    virtual QStringList acceptedPythonTypes() const;
-};
 
 
 /************************************************************************

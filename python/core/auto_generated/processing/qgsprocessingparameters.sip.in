@@ -230,6 +230,7 @@ their acceptable ranges, defaults, etc.
 #include "qgsprocessingparameterfieldmap.h"
 #include "qgsprocessingparametertininputlayers.h"
 #include "qgsprocessingparametervectortilewriterlayers.h"
+#include "qgsprocessingparametermeshdataset.h"
 %End
 %ConvertToSubClassCode
     if ( sipCpp->type() == QgsProcessingParameterBoolean::typeName() )

@@ -256,7 +256,6 @@ class TestProcessingGui : public QObject
     void testFolderOutWrapper();
     void testTinInputLayerWrapper();
     void testDxfLayersWrapper();
-    void testMeshDatasetWrapper();
     void testMeshDatasetWrapperLayerInProject();
     void testMeshDatasetWrapperLayerOutsideProject();
     void testModelGraphicsView();
@@ -8912,7 +8911,7 @@ void TestProcessingGui::testDxfLayersWrapper()
   QCOMPARE( valueAsPythonString, QStringLiteral( "[{'layer': '%1','attributeIndex': -1}]" ).arg( vectorLayer->source() ) );
 }
 
-void TestProcessingGui::testMeshDatasetWrapper()
+void TestProcessingGui::testMeshDatasetWrapperLayerInProject()
 {
   QgsProcessingParameterMeshLayer layerDefinition( QStringLiteral( "layer" ), QStringLiteral( "layer" ) );
   QgsProcessingMeshLayerWidgetWrapper layerWrapper( &layerDefinition );

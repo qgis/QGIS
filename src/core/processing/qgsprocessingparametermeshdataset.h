@@ -52,7 +52,7 @@ class CORE_EXPORT QgsProcessingParameterMeshDatasetGroups : public QgsProcessing
     QString type() const override;
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
-    QString asPythonString( QgsProcessing::PythonOutputType outputType ) const override;
+    QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
     QStringList dependsOnOtherParameters() const override;
 
     //! Returns the type name for the parameter class.
@@ -71,8 +71,11 @@ class CORE_EXPORT QgsProcessingParameterMeshDatasetGroups : public QgsProcessing
     QString mMeshLayerParameterName;
     QgsMeshDatasetGroupMetadata::DataType mDataType = QgsMeshDatasetGroupMetadata::DataOnVertices;
 
-    static bool valueIsAcceptable( const QVariant &input );
+    static bool valueIsAcceptable( const QVariant &input, bool allowEmpty );
 };
+
+#ifndef SIP_RUN
+///@cond PRIVATE
 
 /**
  * Parameter type definition for QgsProcessingParameterMeshDatasetGroups.
@@ -119,6 +122,8 @@ class CORE_EXPORT QgsProcessingParameterTypeMeshDatasetGroups : public QgsProces
     }
 };
 
+///@endcond
+#endif //SIP_RUN
 
 /**
  * A parameter for processing algorithms that need a list of mesh dataset index from time parameter
@@ -143,20 +148,18 @@ class CORE_EXPORT QgsProcessingParameterMeshDatasetTime : public QgsProcessingPa
      * \param description description of the parameter
      * \param meshLayerParameterName name of the associated mesh layer parameter (\see QgsProcessingParameterMeshLayer)
      * \param datasetGroupParameterName name of the associated dataset group parameter (\see QgsProcessingParameterMeshDatasetGroups)
-     * \param optional whether the parameter is optional
      */
     QgsProcessingParameterMeshDatasetTime(
       const QString &name,
       const QString &description = QString(),
       const QString &meshLayerParameterName = QString(),
-      const QString &datasetGroupParameterName = QString(),
-      bool optional = false );
+      const QString &datasetGroupParameterName = QString() );
 
     QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override;
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
-    QString asPythonString( QgsProcessing::PythonOutputType outputType ) const override;
+    QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
     QStringList dependsOnOtherParameters() const override;
 
     //! Returns the type name for the parameter class.
@@ -197,9 +200,11 @@ class CORE_EXPORT QgsProcessingParameterMeshDatasetTime : public QgsProcessingPa
     QString mMeshLayerParameterName;
     QString mDatasetGroupParameterName;
 
-    static bool valueIsAcceptable( const QVariant &input );
+    static bool valueIsAcceptable( const QVariant &input, bool allowEmpty );
 };
 
+#ifndef SIP_RUN
+///@cond PRIVATE
 
 /**
  * Parameter type definition for QgsProcessingParameterMeshDatasetTime.
@@ -245,6 +250,9 @@ class CORE_EXPORT QgsProcessingParameterTypeMeshDatasetTime: public QgsProcessin
       return QStringList() << QObject::tr( "dict{}: dictionary, see QgsProcessingParameterMeshDatasetTime docs" );
     }
 };
+
+///@endcond
+#endif //SIP_RUN
 
 
 #endif // QGSPROCESSINGPARAMETERMESHDATASET_H
