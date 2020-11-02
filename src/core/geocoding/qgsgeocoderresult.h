@@ -149,6 +149,38 @@ class CORE_EXPORT QgsGeocoderResult
      */
     void setAdditionalAttributes( const QVariantMap &attributes ) { mAdditionalAttributes = attributes; }
 
+    /**
+     * Returns the optional group value for the result.
+     *
+     * The group can be used to categorize results into different groups, e.g. by appropriate administrative region.
+     *
+     * \see setGroup()
+     */
+    QString group() const;
+
+    /**
+     * Sets the optional \a group value for the result.
+     *
+     * The \a group can be used to categorize results into different groups, e.g. by appropriate administrative region.
+     *
+     * \see group()
+     */
+    void setGroup( const QString &group );
+
+    /**
+     * Returns the optional description for the result.
+     *
+     * \see setDescription()
+     */
+    QString description() const;
+
+    /**
+     * Sets an optional \a description for the result.
+     *
+     * \see description()
+     */
+    void setDescription( const QString &description );
+
   private:
 
     QgsGeocoderResult() = default;
@@ -157,6 +189,8 @@ class CORE_EXPORT QgsGeocoderResult
     QString mErrorString;
 
     QString mIdentifier;
+    QString mDescription;
+    QString mGroup;
     QgsGeometry mGeometry;
     QgsCoordinateReferenceSystem mCrs;
     QgsRectangle mViewport;

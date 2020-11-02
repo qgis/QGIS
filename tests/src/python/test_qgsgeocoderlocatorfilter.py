@@ -53,6 +53,8 @@ class TestGeocoder(QgsGeocoderInterface):
             result1 = QgsGeocoderResult('res 1', QgsGeometry.fromPointXY(QgsPointXY(11, 12)),
                                         QgsCoordinateReferenceSystem('EPSG:4326'))
             result1.setAdditionalAttributes({'b': 123, 'c': 'xyz'})
+            result1.setDescription('desc')
+            result1.setGroup('group')
             result2 = QgsGeocoderResult('res 2', QgsGeometry.fromPointXY(QgsPointXY(13, 14)),
                                         QgsCoordinateReferenceSystem('EPSG:3857'))
             result2.setAdditionalAttributes({'d': 456})
@@ -96,6 +98,8 @@ class TestQgsGeocoderLocatorFilter(unittest.TestCase):
         self.assertEqual(geocode_result.crs().authid(), 'EPSG:4326')
         self.assertEqual(geocode_result.additionalAttributes(), {'b': 123, 'c': 'xyz'})
         self.assertTrue(geocode_result.viewport().isNull())
+        self.assertFalse(geocode_result.description())
+        self.assertFalse(geocode_result.group())
 
         # two possible results
         filter.fetchResults('b', context, feedback)
@@ -109,6 +113,8 @@ class TestQgsGeocoderLocatorFilter(unittest.TestCase):
         self.assertEqual(geocode_result.crs().authid(), 'EPSG:4326')
         self.assertEqual(geocode_result.additionalAttributes(), {'b': 123, 'c': 'xyz'})
         self.assertTrue(geocode_result.viewport().isNull())
+        self.assertEqual(geocode_result.description(), 'desc')
+        self.assertEqual(geocode_result.group(), 'group')
         self.assertEqual(res2.displayString, 'res 2')
         geocode_result = filter.locatorResultToGeocoderResult(res2)
         self.assertEqual(geocode_result.identifier(), 'res 2')
@@ -116,6 +122,8 @@ class TestQgsGeocoderLocatorFilter(unittest.TestCase):
         self.assertEqual(geocode_result.crs().authid(), 'EPSG:3857')
         self.assertEqual(geocode_result.additionalAttributes(), {'d': 456})
         self.assertEqual(geocode_result.viewport(), QgsRectangle(1, 2, 3, 4))
+        self.assertFalse(geocode_result.description())
+        self.assertFalse(geocode_result.group())
 
 
 if __name__ == '__main__':

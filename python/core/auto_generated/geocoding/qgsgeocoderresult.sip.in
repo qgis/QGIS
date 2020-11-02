@@ -143,6 +143,38 @@ which may be added to features being geocoded.
 .. seealso:: :py:func:`additionalAttributes`
 %End
 
+    QString group() const;
+%Docstring
+Returns the optional group value for the result.
+
+The group can be used to categorize results into different groups, e.g. by appropriate administrative region.
+
+.. seealso:: :py:func:`setGroup`
+%End
+
+    void setGroup( const QString &group );
+%Docstring
+Sets the optional ``group`` value for the result.
+
+The ``group`` can be used to categorize results into different groups, e.g. by appropriate administrative region.
+
+.. seealso:: :py:func:`group`
+%End
+
+    QString description() const;
+%Docstring
+Returns the optional description for the result.
+
+.. seealso:: :py:func:`setDescription`
+%End
+
+    void setDescription( const QString &description );
+%Docstring
+Sets an optional ``description`` for the result.
+
+.. seealso:: :py:func:`description`
+%End
+
 };
 
 /************************************************************************
