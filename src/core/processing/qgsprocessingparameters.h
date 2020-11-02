@@ -333,6 +333,7 @@ class CORE_EXPORT QgsProcessingParameterDefinition
 #ifdef SIP_RUN
     % TypeHeaderCode
 #include "qgsprocessingparameteraggregate.h"
+#include "qgsprocessingparameterdxflayers.h"
 #include "qgsprocessingparameterfieldmap.h"
 #include "qgsprocessingparametertininputlayers.h"
 #include "qgsprocessingparametervectortilewriterlayers.h"
@@ -418,6 +419,8 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterTinInputLayers;
     else if ( sipCpp->type() == QgsProcessingParameterVectorTileWriterLayers::typeName() )
       sipType = sipType_QgsProcessingParameterVectorTileWriterLayers;
+    else if ( sipCpp->type() == QgsProcessingParameterDxfLayers::typeName() )
+      sipType = sipType_QgsProcessingParameterDxfLayers;
     else
       sipType = nullptr;
     SIP_END

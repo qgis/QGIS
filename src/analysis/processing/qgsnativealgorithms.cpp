@@ -51,6 +51,7 @@
 #include "qgsalgorithmdrape.h"
 #include "qgsalgorithmdropgeometry.h"
 #include "qgsalgorithmdropmzvalues.h"
+#include "qgsalgorithmdxfexport.h"
 #include "qgsalgorithmexecutepostgisquery.h"
 #include "qgsalgorithmexecutespatialitequery.h"
 #include "qgsalgorithmexecutespatialitequeryregistered.h"
@@ -276,6 +277,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsDrapeToZAlgorithm() );
   addAlgorithm( new QgsDropGeometryAlgorithm() );
   addAlgorithm( new QgsDropMZValuesAlgorithm() );
+  addAlgorithm( new QgsDxfExportAlgorithm() );
   addAlgorithm( new QgsExecutePostgisQueryAlgorithm() );
   addAlgorithm( new QgsExecuteRegisteredSpatialiteQueryAlgorithm() );
   addAlgorithm( new QgsExecuteSpatialiteQueryAlgorithm() );
