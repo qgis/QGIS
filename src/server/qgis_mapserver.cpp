@@ -55,13 +55,6 @@ while QGIS server internal logging is printed to stderr.
 // For the signal exit handler
 QAtomicInt IS_RUNNING = 1;
 
-// Request sync
-//QWaitCondition SERVER_WAIT_CONDITION;
-//QMutex SERVER_MUTEX;
-// Server sync
-//QWaitCondition REQUEST_WAIT_CONDITION;
-//QMutex REQUEST_QUEUE_MUTEX;
-
 QString ipAddress;
 QString serverPort;
 
@@ -315,17 +308,14 @@ class TcpServerWorker: public QObject
                 } ;
                 REQUEST_QUEUE_MUTEX.lock();
                 REQUEST_QUEUE.enqueue( requestContext );
-                REQUEST_WAIT_CONDITION.notify_one();
                 REQUEST_QUEUE_MUTEX.unlock();
+                REQUEST_WAIT_CONDITION.notify_one();
               }
             }
             catch ( HttpException &ex )
             {
-
               if ( clientConnection->state() == QAbstractSocket::SocketState::ConnectedState )
               {
-
-
                 // Output stream: send error
                 clientConnection->write( QStringLiteral( "HTTP/1.0 %1 %2\r\n" ).arg( 500 ).arg( knownStatuses.value( 500 ) ).toUtf8() );
                 clientConnection->write( QStringLiteral( "Server: QGIS\r\n" ).toUtf8() );
@@ -342,7 +332,6 @@ class TcpServerWorker: public QObject
             }
           } );
         } );
-
       }
     }
 
