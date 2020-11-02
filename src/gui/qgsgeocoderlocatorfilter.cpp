@@ -34,10 +34,19 @@ void QgsGeocoderLocatorFilter::handleGeocodeResult( const QgsGeocoderResult &res
 {
   QgsCoordinateTransform ct( result.crs(), mCanvas->mapSettings().destinationCrs(), mCanvas->mapSettings().transformContext() );
   QgsGeometry g = result.geometry();
+  const QgsRectangle viewport = result.viewport();
   try
   {
-    g.transform( ct );
-    QgsRectangle bounds = g.boundingBox();
+    QgsRectangle bounds;
+    if ( viewport.isNull() )
+    {
+      g.transform( ct );
+      bounds = g.boundingBox();
+    }
+    else
+    {
+      bounds = ct.transformBoundingBox( viewport );
+    }
     mCanvas->zoomToFeatureExtent( bounds );
 
     mCanvas->flashGeometries( QList< QgsGeometry >() << g );

@@ -243,6 +243,18 @@ QgsGeocoderResult QgsGoogleMapsGeocoder::jsonToResult( const QVariantMap &json )
     }
   }
 
+  if ( geometry.contains( QStringLiteral( "viewport" ) ) )
+  {
+    const QVariantMap viewport = geometry.value( QStringLiteral( "viewport" ) ).toMap();
+    const QVariantMap northEast = viewport.value( QStringLiteral( "northeast" ) ).toMap();
+    const QVariantMap southWest = viewport.value( QStringLiteral( "southwest" ) ).toMap();
+    res.setViewport( QgsRectangle( southWest.value( QStringLiteral( "lng" ) ).toDouble(),
+                                   southWest.value( QStringLiteral( "lat" ) ).toDouble(),
+                                   northEast.value( QStringLiteral( "lng" ) ).toDouble(),
+                                   northEast.value( QStringLiteral( "lat" ) ).toDouble()
+                                 ) );
+  }
+
   res.setAdditionalAttributes( attributes );
   return res;
 }
