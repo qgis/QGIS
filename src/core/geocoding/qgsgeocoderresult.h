@@ -108,6 +108,32 @@ class CORE_EXPORT QgsGeocoderResult
     void setCrs( const QgsCoordinateReferenceSystem &crs ) { mCrs = crs; }
 
     /**
+     * Returns the suggested viewport for the result, which reflects a recommended
+     * map extent for displaying the result.
+     *
+     * This is an optional property, and will return a null rectangle if a recommended viewport
+     * is not available (or not appropriate).
+     *
+     * The viewport CRS will match the CRS of geometry(), and can be retrieved via the crs() method.
+     *
+     * \see setViewport()
+     */
+    QgsRectangle viewport() const { return mViewport; }
+
+    /**
+     * Sets the suggested \a viewport for the result, which reflects a recommended
+     * map extent for displaying the result.
+     *
+     * This is an optional property, and can be set to a null rectangle if a recommended viewport
+     * is not available (or not appropriate).
+     *
+     * The viewport CRS must match the CRS of geometry()d.
+     *
+     * \see viewport()
+     */
+    void setViewport( const QgsRectangle &viewport ) { mViewport = viewport; }
+
+    /**
      * Contains additional attributes generated during the geocode,
      * which may be added to features being geocoded.
      *
@@ -133,6 +159,7 @@ class CORE_EXPORT QgsGeocoderResult
     QString mIdentifier;
     QgsGeometry mGeometry;
     QgsCoordinateReferenceSystem mCrs;
+    QgsRectangle mViewport;
     QVariantMap mAdditionalAttributes;
 
 };

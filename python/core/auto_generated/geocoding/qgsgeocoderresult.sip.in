@@ -101,6 +101,32 @@ Sets the coordinate reference system for the calculated :py:func:`~QgsGeocoderRe
 .. seealso:: :py:func:`geometry`
 %End
 
+    QgsRectangle viewport() const;
+%Docstring
+Returns the suggested viewport for the result, which reflects a recommended
+map extent for displaying the result.
+
+This is an optional property, and will return a null rectangle if a recommended viewport
+is not available (or not appropriate).
+
+The viewport CRS will match the CRS of :py:func:`~QgsGeocoderResult.geometry`, and can be retrieved via the :py:func:`~QgsGeocoderResult.crs` method.
+
+.. seealso:: :py:func:`setViewport`
+%End
+
+    void setViewport( const QgsRectangle &viewport );
+%Docstring
+Sets the suggested ``viewport`` for the result, which reflects a recommended
+map extent for displaying the result.
+
+This is an optional property, and can be set to a null rectangle if a recommended viewport
+is not available (or not appropriate).
+
+The viewport CRS must match the CRS of geometry()d.
+
+.. seealso:: :py:func:`viewport`
+%End
+
     QVariantMap additionalAttributes() const;
 %Docstring
 Contains additional attributes generated during the geocode,

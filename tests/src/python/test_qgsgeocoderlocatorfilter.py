@@ -22,7 +22,8 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsLocatorContext,
     QgsFeedback,
-    QgsGeocoderContext
+    QgsGeocoderContext,
+    QgsRectangle
 )
 from qgis.gui import (
     QgsMapCanvas,
@@ -55,6 +56,7 @@ class TestGeocoder(QgsGeocoderInterface):
             result2 = QgsGeocoderResult('res 2', QgsGeometry.fromPointXY(QgsPointXY(13, 14)),
                                         QgsCoordinateReferenceSystem('EPSG:3857'))
             result2.setAdditionalAttributes({'d': 456})
+            result2.setViewport(QgsRectangle(1, 2, 3, 4))
             return [result1, result2]
 
         return []
@@ -93,6 +95,7 @@ class TestQgsGeocoderLocatorFilter(unittest.TestCase):
         self.assertEqual(geocode_result.geometry().asWkt(), 'Point (1 2)')
         self.assertEqual(geocode_result.crs().authid(), 'EPSG:4326')
         self.assertEqual(geocode_result.additionalAttributes(), {'b': 123, 'c': 'xyz'})
+        self.assertTrue(geocode_result.viewport().isNull())
 
         # two possible results
         filter.fetchResults('b', context, feedback)
@@ -105,12 +108,14 @@ class TestQgsGeocoderLocatorFilter(unittest.TestCase):
         self.assertEqual(geocode_result.geometry().asWkt(), 'Point (11 12)')
         self.assertEqual(geocode_result.crs().authid(), 'EPSG:4326')
         self.assertEqual(geocode_result.additionalAttributes(), {'b': 123, 'c': 'xyz'})
+        self.assertTrue(geocode_result.viewport().isNull())
         self.assertEqual(res2.displayString, 'res 2')
         geocode_result = filter.locatorResultToGeocoderResult(res2)
         self.assertEqual(geocode_result.identifier(), 'res 2')
         self.assertEqual(geocode_result.geometry().asWkt(), 'Point (13 14)')
         self.assertEqual(geocode_result.crs().authid(), 'EPSG:3857')
         self.assertEqual(geocode_result.additionalAttributes(), {'d': 456})
+        self.assertEqual(geocode_result.viewport(), QgsRectangle(1, 2, 3, 4))
 
 
 if __name__ == '__main__':

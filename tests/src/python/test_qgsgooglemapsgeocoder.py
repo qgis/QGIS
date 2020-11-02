@@ -144,6 +144,16 @@ class TestQgsGeocoderLocatorFilter(unittest.TestCase):
                     "lng": -83.55521200000001
                 },
                 "location_type": "APPROXIMATE",
+                "viewport": {
+                    "northeast": {
+                        "lat": 42.1,
+                        "lng": -87.7
+                    },
+                    "southwest": {
+                        "lat": 42.0,
+                        "lng": -87.7
+                    }
+                }
             },
             "place_id": "ChIJeU4e_C2HO4gRRcM6RZ_IPHw",
             "types": ["locality", "political"]
@@ -159,6 +169,7 @@ class TestQgsGeocoderLocatorFilter(unittest.TestCase):
                                                       'locality': 'Mountain View', 'location_type': 'APPROXIMATE',
                                                       'place_id': 'ChIJeU4e_C2HO4gRRcM6RZ_IPHw', 'postal_code': '94043',
                                                       'route': 'Amphitheatre Pkwy', 'street_number': '1600'})
+        self.assertEqual(res.viewport(), QgsRectangle(-87.7, 42, -87.7, 42.1))
 
     def test_geocode(self):
         geocoder = QgsGoogleMapsGeocoder('my key')
