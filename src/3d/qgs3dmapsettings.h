@@ -548,7 +548,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void eyeDomeLightingEnabledChanged();
 
     /**
-     * Emitted when the eye dome lighting stength has changed
+     * Emitted when the eye dome lighting strength has changed
      * \since QGIS 3.18
      */
     void eyeDomeLightingStrengthChanged();
