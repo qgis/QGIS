@@ -170,6 +170,7 @@ class TestQgsGeocoderLocatorFilter(unittest.TestCase):
                                                       'place_id': 'ChIJeU4e_C2HO4gRRcM6RZ_IPHw', 'postal_code': '94043',
                                                       'route': 'Amphitheatre Pkwy', 'street_number': '1600'})
         self.assertEqual(res.viewport(), QgsRectangle(-87.7, 42, -87.7, 42.1))
+        self.assertEqual(res.group(), 'California')
 
     def test_geocode(self):
         geocoder = QgsGoogleMapsGeocoder('my key')

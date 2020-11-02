@@ -239,7 +239,11 @@ QgsGeocoderResult QgsGoogleMapsGeocoder::jsonToResult( const QVariantMap &json )
           } )
     {
       if ( types.contains( t ) )
+      {
         attributes.insert( t, componentMap.value( QStringLiteral( "long_name" ) ).toString() );
+        if ( t == QLatin1String( "administrative_area_level_1" ) )
+          res.setGroup( componentMap.value( QStringLiteral( "long_name" ) ).toString() );
+      }
     }
   }
 

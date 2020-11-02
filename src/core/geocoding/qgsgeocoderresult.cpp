@@ -29,3 +29,23 @@ QgsGeocoderResult::QgsGeocoderResult( const QString &identifier, const QgsGeomet
   , mGeometry( geometry )
   , mCrs( crs )
 {}
+
+QString QgsGeocoderResult::group() const
+{
+  return mGroup;
+}
+
+void QgsGeocoderResult::setGroup( const QString &group )
+{
+  mGroup = group;
+}
+
+QString QgsGeocoderResult::description() const
+{
+  return mDescription;
+}
+
+void QgsGeocoderResult::setDescription( const QString &description )
+{
+  mDescription = description;
+}

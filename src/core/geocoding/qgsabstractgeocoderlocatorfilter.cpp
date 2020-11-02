@@ -77,6 +77,8 @@ QgsGeocoderResult QgsAbstractGeocoderLocatorFilter::locatorResultToGeocoderResul
                                    attrs.value( QStringLiteral( "crs" ) ).value< QgsCoordinateReferenceSystem >() );
   geocodeResult.setAdditionalAttributes( attrs.value( QStringLiteral( "attributes" ) ).toMap() );
   geocodeResult.setViewport( attrs.value( QStringLiteral( "viewport" ) ).value< QgsRectangle >() );
+  geocodeResult.setDescription( result.description );
+  geocodeResult.setGroup( result.group );
   return geocodeResult;
 }
 
@@ -88,6 +90,9 @@ QgsLocatorResult QgsAbstractGeocoderLocatorFilter::geocoderResultToLocatorResult
   attrs.insert( QStringLiteral( "viewport" ), result.viewport() );
   attrs.insert( QStringLiteral( "crs" ), result.crs() );
   attrs.insert( QStringLiteral( "attributes" ), result.additionalAttributes() );
-  return QgsLocatorResult( this, result.identifier(), attrs );
+  QgsLocatorResult res( this, result.identifier(), attrs );
+  res.description = result.description();
+  res.group = result.group();
+  return res;
 }
 
