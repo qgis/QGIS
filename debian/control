@@ -450,6 +450,7 @@ Depends:
  qgis-providers (= ${binary:Version}),
  ${shlibs:Depends},
  ${misc:Depends}
+Recommends: qt5-image-formats-plugins
 Conflicts: qgis-mapserver
 Provides: qgis-mapserver
 Replaces: qgis-mapserver
