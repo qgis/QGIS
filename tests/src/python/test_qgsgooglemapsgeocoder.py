@@ -59,6 +59,21 @@ class TestQgsGeocoderLocatorFilter(unittest.TestCase):
         QgsSettings().clear()
         # shutil.rmtree(cls.basetestpath, True)
 
+    def test_basic(self):
+        """
+        Basic tests
+        """
+        geocoder = QgsGoogleMapsGeocoder('my key')
+        self.assertEqual(geocoder.apiKey(), 'my key')
+        geocoder.setApiKey('ggggg')
+        self.assertEqual(geocoder.apiKey(), 'ggggg')
+
+        self.assertFalse(geocoder.region())
+        geocoder.setRegion('xx')
+        self.assertEqual(geocoder.region(), 'xx')
+
+        self.assertEqual(geocoder.requestUrl('20 green st, twaddlingham').toString(), 'https://maps.googleapis.com/maps/api/geocode/json?region=xx&sensor=false&address=20 green st, twaddlingham&key=ggggg')
+
     def test_url(self):
         geocoder = QgsGoogleMapsGeocoder('my key')
         geocoder.setEndpoint(self.endpoint)
