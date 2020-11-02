@@ -405,8 +405,8 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefined()
   QgsProperty diffuseColor;
   QgsProperty ambientColor;
   QgsProperty specularColor;
-  diffuseColor.setExpressionString( QStringLiteral( "'blue'" ) );
-  ambientColor.setExpressionString( QStringLiteral( "'red'" ) );
+  diffuseColor.setExpressionString( QStringLiteral( "color_rgb( 120*(\"ogc_fid\"%3),125,0)" ) );
+  ambientColor.setExpressionString( QStringLiteral( "color_rgb( 120,(\"ogc_fid\"%2)*255,0)" ) );
   specularColor.setExpressionString( QStringLiteral( "'yellow'" ) );
   propertyColection.setProperty( QgsAbstractMaterialSettings::Diffuse, diffuseColor );
   propertyColection.setProperty( QgsAbstractMaterialSettings::Ambient, ambientColor );
