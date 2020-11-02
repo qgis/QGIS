@@ -152,6 +152,7 @@ namespace QgsWms
         saveFormat = "JPEG";
         break;
       case WEBP:
+        result = img;
         contentType = QStringLiteral( "image/webp" );
         saveFormat = QStringLiteral( "WEBP" );
         break;
