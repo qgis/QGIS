@@ -477,7 +477,8 @@ CoordinateItemDelegate::CoordinateItemDelegate( QObject *parent )
 
 QString CoordinateItemDelegate::displayText( const QVariant &value, const QLocale &locale ) const
 {
-  return locale.toString( value.toDouble(), 'f', 4 );
+  int dp = QgsProject::instance()->readNumEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DecimalPlaces" ), 4 );
+  return locale.toString( value.toDouble(), 'f', dp );
 }
 
 QWidget *CoordinateItemDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &index ) const
@@ -504,6 +505,7 @@ void CoordinateItemDelegate::setEditorData( QWidget *editor, const QModelIndex &
   QLineEdit *lineEdit = qobject_cast<QLineEdit *>( editor );
   if ( lineEdit && index.isValid() )
   {
-    lineEdit->setText( QLocale().toString( index.data( ).toDouble( ), 'f', 4 ) );
+    int dp = QgsProject::instance()->readNumEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DecimalPlaces" ), 4 );
+    lineEdit->setText( QLocale().toString( index.data( ).toDouble( ), 'f', dp ) );
   }
 }
