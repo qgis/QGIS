@@ -637,7 +637,7 @@ Emitted when the flag whether eye dome lighting is used has changed
 
     void eyeDomeLightingStrengthChanged();
 %Docstring
-Emitted when the eye dome lighting stength has changed
+Emitted when the eye dome lighting strength has changed
 
 .. versionadded:: 3.18
 %End
