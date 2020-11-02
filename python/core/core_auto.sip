@@ -316,6 +316,7 @@
 %Include auto_generated/geocoding/qgsgeocoder.sip
 %Include auto_generated/geocoding/qgsgeocodercontext.sip
 %Include auto_generated/geocoding/qgsgeocoderresult.sip
+%Include auto_generated/geocoding/qgsgooglemapsgeocoder.sip
 %Include auto_generated/geometry/qgsabstractgeometry.sip
 %Include auto_generated/geometry/qgsbox3d.sip
 %Include auto_generated/geometry/qgscircle.sip

@@ -35,6 +35,7 @@ SET(QGIS_CORE_SRCS
   geocoding/qgsgeocoder.cpp
   geocoding/qgsgeocodercontext.cpp
   geocoding/qgsgeocoderresult.cpp
+  geocoding/qgsgooglemapsgeocoder.cpp
 
   gps/qgsgpsconnection.cpp
   gps/qgsgpsconnectionregistry.cpp
@@ -1159,6 +1160,7 @@ SET(QGIS_CORE_HDRS
   geocoding/qgsgeocoder.h
   geocoding/qgsgeocodercontext.h
   geocoding/qgsgeocoderresult.h
+  geocoding/qgsgooglemapsgeocoder.h
 
   geometry/qgsabstractgeometry.h
   geometry/qgsbox3d.h
