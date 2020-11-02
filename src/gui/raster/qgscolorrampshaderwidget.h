@@ -21,7 +21,6 @@
 #include "qgis_sip.h"
 #include "qgscolorrampshader.h"
 #include "qgsrasterrenderer.h"
-#include "qgscolorschemelist.h"
 #include "ui_qgscolorrampshaderwidgetbase.h"
 #include "qgis_gui.h"
 #include "qgsrasterrendererwidget.h"
@@ -147,9 +146,6 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
     void setLineEditValue( QLineEdit *lineEdit, double value );
     double lineEditValue( const QLineEdit *lineEdit ) const;
     void resetClassifyButton();
-
-    QgsColorSwatchDelegate *mSwatchDelegate = nullptr;
-
     double mMin = std::numeric_limits<double>::quiet_NaN();
     double mMax = std::numeric_limits<double>::quiet_NaN();
 

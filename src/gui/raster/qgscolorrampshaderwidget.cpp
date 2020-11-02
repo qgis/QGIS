@@ -64,8 +64,10 @@ QgsColorRampShaderWidget::QgsColorRampShaderWidget( QWidget *parent )
   contextMenu->addAction( tr( "Change Color…" ), this, SLOT( changeColor() ) );
   contextMenu->addAction( tr( "Change Opacity…" ), this, SLOT( changeOpacity() ) );
 
-  mSwatchDelegate = new QgsColorSwatchDelegate( this );
-  mColormapTreeWidget->setItemDelegateForColumn( ColorColumn, mSwatchDelegate );
+  QgsColorSwatchDelegate *swatchDelegate = new QgsColorSwatchDelegate( this );
+  mColormapTreeWidget->setItemDelegateForColumn( ColorColumn, swatchDelegate );
+
+
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   mColormapTreeWidget->setColumnWidth( ColorColumn, Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 6.6 );
