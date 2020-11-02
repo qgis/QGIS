@@ -131,8 +131,9 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   connect( &map, &Qgs3DMapSettings::renderersChanged, this, &Qgs3DMapScene::onRenderersChanged );
   connect( &map, &Qgs3DMapSettings::skyboxSettingsChanged, this, &Qgs3DMapScene::onSkyboxSettingsChanged );
   connect( &map, &Qgs3DMapSettings::shadowSettingsChanged, this, &Qgs3DMapScene::onShadowSettingsChanged );
-  connect( &map, &Qgs3DMapSettings::eyeDomeLightingEnabled, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
+  connect( &map, &Qgs3DMapSettings::eyeDomeLightingEnabledChanged, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
   connect( &map, &Qgs3DMapSettings::eyeDomeLightingStrengthChanged, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
+  connect( &map, &Qgs3DMapSettings::eyeDomeLightingDistanceChanged, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
 
   connect( QgsApplication::instance()->sourceCache(), &QgsSourceCache::remoteSourceFetched, this, [ = ]( const QString & url )
   {
@@ -216,6 +217,8 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
 
   // force initial update of chunked entities
   onCameraChanged();
+  // force initial update of eye dome shadng
+  onEyeDomeShadingSettingsChanged();
 }
 
 void Qgs3DMapScene::viewZoomFull()
@@ -966,7 +969,6 @@ void Qgs3DMapScene::onShadowSettingsChanged()
 
 void Qgs3DMapScene::onEyeDomeShadingSettingsChanged()
 {
-  qDebug() << __FUNCTION__;
   QgsWindow3DEngine *windowEngine = dynamic_cast<QgsWindow3DEngine *>( mEngine );
   if ( windowEngine == nullptr )
     return;
@@ -974,7 +976,8 @@ void Qgs3DMapScene::onEyeDomeShadingSettingsChanged()
 
   bool edlEnabled = mMap.eyeDomeLightingEnabled();
   double edlStrength = mMap.eyeDomeLightingStrength();
-  shadowRenderingFrameGraph->setupEyeDomeLighting( edlEnabled, edlStrength );
+  double edlDistance = mMap.eyeDomeLightingDistance();
+  shadowRenderingFrameGraph->setupEyeDomeLighting( edlEnabled, edlStrength, edlDistance );
 }
 
 void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )

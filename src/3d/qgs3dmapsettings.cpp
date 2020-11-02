@@ -240,6 +240,7 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   QDomElement elemEyeDomeLighting = elem.firstChildElement( QStringLiteral( "eye-dome-lighting" ) );
   mEyeDomeLightingEnabled = elemEyeDomeLighting.attribute( "enabled", QStringLiteral( "0" ) ).toInt();
   mEyeDomeLightingStrength = elemEyeDomeLighting.attribute( "eye-dome-lighting-strength", QStringLiteral( "1000.0" ) ).toDouble();
+  mEyeDomeLightingDistance = elemEyeDomeLighting.attribute( "eye-dome-lighting-distance", QStringLiteral( "1" ) ).toInt();
 
   QDomElement elemDebug = elem.firstChildElement( QStringLiteral( "debug" ) );
   mShowTerrainBoundingBoxes = elemDebug.attribute( QStringLiteral( "bounding-boxes" ), QStringLiteral( "0" ) ).toInt();
@@ -357,6 +358,7 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   QDomElement elemEyeDomeLighting = doc.createElement( QStringLiteral( "eye-dome-lighting" ) );
   elemEyeDomeLighting.setAttribute( "enabled", mEyeDomeLightingEnabled ? 1 : 0 );
   elemEyeDomeLighting.setAttribute( "eye-dome-lighting-strength", mEyeDomeLightingStrength );
+  elemEyeDomeLighting.setAttribute( "eye-dome-lighting-distance", mEyeDomeLightingDistance );
   elem.appendChild( elemEyeDomeLighting );
 
   QDomElement elemTemporalRange = doc.createElement( QStringLiteral( "temporal-range" ) );
@@ -652,9 +654,16 @@ void Qgs3DMapSettings::setEyeDomeLightingStrength( double strength )
 {
   if ( mEyeDomeLightingStrength == strength )
     return;
-  qDebug() << "Qgs3DMapSettings::setEyeDomeLightingStrength";
   mEyeDomeLightingStrength = strength;
   emit eyeDomeLightingStrengthChanged();
+}
+
+void Qgs3DMapSettings::setEyeDomeLightingDistance( int distance )
+{
+  if ( mEyeDomeLightingDistance == distance )
+    return;
+  mEyeDomeLightingDistance = distance;
+  emit eyeDomeLightingDistanceChanged();
 }
 
 void Qgs3DMapSettings::setPointLights( const QList<QgsPointLightSettings> &pointLights )

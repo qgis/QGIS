@@ -433,6 +433,15 @@ Sets the eye dome lighting strength value
 Returns the eye dome lighting strength value
 %End
 
+    void setEyeDomeLightingDistance( int distance );
+%Docstring
+Sets the eye dome lighting distance value (contributes to the contrast of the image)
+%End
+    int eyeDomeLightingDistance() const;
+%Docstring
+Returns the eye dome lighting distance value (contributes to the contrast of the image)
+%End
+
     QList<QgsPointLightSettings> pointLights() const;
 %Docstring
 Returns list of point lights defined in the scene
@@ -629,6 +638,13 @@ Emitted when the flag whether eye dome lighting is used has changed
     void eyeDomeLightingStrengthChanged();
 %Docstring
 Emitted when the eye dome lighting stength has changed
+
+.. versionadded:: 3.18
+%End
+
+    void eyeDomeLightingDistanceChanged();
+%Docstring
+Emitted when the eye dome lighting distance has changed
 
 .. versionadded:: 3.18
 %End

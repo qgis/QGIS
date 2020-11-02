@@ -52,6 +52,8 @@ class QgsPostprocessingEntity : public Qt3DCore::QEntity
     void setEyeDomeLightingEnabled( bool enabled );
     //! Sets the eye dome lighting strength
     void setEyeDomeLightingStrength( double strength );
+    //! Sets the eye dome lighting distance (contributes to the contrast of the image)
+    void setEyeDomeLightingDistance( double distance );
   private:
     Qt3DRender::QMaterial *mMaterial = nullptr;
     Qt3DRender::QEffect *mEffect = nullptr;
@@ -78,8 +80,9 @@ class QgsPostprocessingEntity : public Qt3DCore::QEntity
 
     Qt3DRender::QParameter *mRenderShadowsParameter = nullptr;
     Qt3DRender::QParameter *mShadowBiasParameter = nullptr;
-    Qt3DRender::QParameter *mEyeDomeShadingEnabledParameter = nullptr;
-    Qt3DRender::QParameter *mEyeDomeShadingStrengthParameter = nullptr;
+    Qt3DRender::QParameter *mEyeDomeLightingEnabledParameter = nullptr;
+    Qt3DRender::QParameter *mEyeDomeLightingStrengthParameter = nullptr;
+    Qt3DRender::QParameter *mEyeDomeLightingDistanceParameter = nullptr;
 };
 
 #endif // QGSPOSTPROCESSINGENTITY_H

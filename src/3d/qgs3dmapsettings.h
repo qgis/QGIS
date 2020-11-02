@@ -372,6 +372,11 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     //! Returns the eye dome lighting strength value
     double eyeDomeLightingStrength() const { return mEyeDomeLightingStrength; }
 
+    //! Sets the eye dome lighting distance value (contributes to the contrast of the image)
+    void setEyeDomeLightingDistance( int distance );
+    //! Returns the eye dome lighting distance value (contributes to the contrast of the image)
+    int eyeDomeLightingDistance() const { return mEyeDomeLightingDistance; }
+
     /**
      * Returns list of point lights defined in the scene
      * \since QGIS 3.6
@@ -549,6 +554,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void eyeDomeLightingStrengthChanged();
 
     /**
+     * Emitted when the eye dome lighting distance has changed
+     * \since QGIS 3.18
+     */
+    void eyeDomeLightingDistanceChanged();
+
+    /**
      * Emitted when the list of point lights changes
      * \since QGIS 3.6
      */
@@ -620,6 +631,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
 
     bool mEyeDomeLightingEnabled = false;
     double mEyeDomeLightingStrength = 1000.0f;
+    int mEyeDomeLightingDistance = 1;
 };
 
 

@@ -124,10 +124,12 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsShadowRenderingFrameGraph *
   mShadowBiasParameter = new Qt3DRender::QParameter( "shadowBias", QVariant::fromValue( 0.00001f ) );
   mMaterial->addParameter( mShadowBiasParameter );
 
-  mEyeDomeShadingEnabledParameter = new Qt3DRender::QParameter( "edlEnabled", QVariant::fromValue( 0 ) );
-  mEyeDomeShadingStrengthParameter = new Qt3DRender::QParameter( "edlStrength", QVariant::fromValue( 1000.0f ) );
-  mMaterial->addParameter( mEyeDomeShadingEnabledParameter );
-  mMaterial->addParameter( mEyeDomeShadingStrengthParameter );
+  mEyeDomeLightingEnabledParameter = new Qt3DRender::QParameter( "edlEnabled", QVariant::fromValue( 0 ) );
+  mEyeDomeLightingStrengthParameter = new Qt3DRender::QParameter( "edlStrength", QVariant::fromValue( 1000.0f ) );
+  mEyeDomeLightingDistanceParameter = new Qt3DRender::QParameter( "edlDistance", QVariant::fromValue( 2.0f ) );
+  mMaterial->addParameter( mEyeDomeLightingEnabledParameter );
+  mMaterial->addParameter( mEyeDomeLightingStrengthParameter );
+  mMaterial->addParameter( mEyeDomeLightingDistanceParameter );
 
   mLightPosition = new Qt3DRender::QParameter( "lightPosition", QVariant::fromValue( QVector3D() ) );
   mLightDirection = new Qt3DRender::QParameter( "lightDirection", QVariant::fromValue( QVector3D() ) );
@@ -188,10 +190,15 @@ void QgsPostprocessingEntity::setShadowBias( float shadowBias )
 
 void QgsPostprocessingEntity::setEyeDomeLightingEnabled( bool enabled )
 {
-  mEyeDomeShadingEnabledParameter->setValue( QVariant::fromValue( enabled ? 1 : 0 ) );
+  mEyeDomeLightingEnabledParameter->setValue( QVariant::fromValue( enabled ? 1 : 0 ) );
 }
 
 void QgsPostprocessingEntity::setEyeDomeLightingStrength( double strength )
 {
-  mEyeDomeShadingStrengthParameter->setValue( QVariant::fromValue( strength ) );
+  mEyeDomeLightingStrengthParameter->setValue( QVariant::fromValue( strength ) );
+}
+
+void QgsPostprocessingEntity::setEyeDomeLightingDistance( double distance )
+{
+  mEyeDomeLightingDistanceParameter->setValue( QVariant::fromValue( distance ) );
 }
