@@ -102,8 +102,7 @@ Depends:
  ${misc:Depends},
  python3-qgis (= ${binary:Version}),
  qgis-providers (= ${binary:Version}),
- qgis-common (= ${source:Version}),
- qt5-image-formats-plugins
+ qgis-common (= ${source:Version})
 Recommends:
  qgis-plugin-grass
 Suggests: gpsbabel
@@ -123,6 +122,7 @@ Depends:
  libjs-jquery,
  libjs-leaflet,
  qml-module-qtcharts,
+ qt5-image-formats-plugins,
  ${misc:Depends}
 Description: QGIS - architecture-independent data
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
