@@ -393,7 +393,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>77</width>
+                <width>98</width>
                 <height>43</height>
                </rect>
               </property>
@@ -477,8 +477,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>699</width>
-                <height>604</height>
+                <width>133</width>
+                <height>43</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutShadow">
@@ -829,6 +829,23 @@
                       <widget class="QLabel" name="label">
                        <property name="text">
                         <string>Eye dome lighting strength</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="label_2">
+                       <property name="text">
+                        <string>Eye dome lighting distance</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QSpinBox" name="edlDistanceSpinBox">
+                       <property name="minimum">
+                        <number>1</number>
+                       </property>
+                       <property name="maximum">
+                        <number>20</number>
                        </property>
                       </widget>
                      </item>

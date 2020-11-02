@@ -30,6 +30,7 @@ uniform float shadowBias;
 
 uniform int edlEnabled;
 uniform float edlStrength;
+uniform float edlDistance;
 
 in vec2 texCoord;
 
@@ -46,6 +47,14 @@ vec3 WorldPosFromDepth(float depth) {
     worldSpacePosition /= worldSpacePosition.w;
 
     return worldSpacePosition.xyz;
+}
+
+vec4 EyeCoordsFromDepth(vec2 textureCoord, float depth) {
+    float z = depth * 2.0 - 1.0;
+
+    vec4 clipSpacePosition = vec4(textureCoord * 2.0 - 1.0, z, 1.0);
+    vec4 viewSpacePosition = invertedCameraProj * clipSpacePosition;
+    return viewSpacePosition;
 }
 
 float CalcShadowFactor(vec4 LightSpacePos)
@@ -75,17 +84,17 @@ float CalcShadowFactor(vec4 LightSpacePos)
 float edlFactor(vec2 coords)
 {
   vec2 texelSize = 2.0 / textureSize(shadowTexture, 0);
-  vec2 neighbours[4] = vec2[4](vec2(-1.0f, 0.0f), vec2(1.0f, 0.0f), vec2(0.0f, -1.0f), vec2(0.0f, 1.0f));
+  vec2 neighbours[4] = vec2[4](vec2(-1.0f, 0.0f), vec2(1.0f, 0.0f), vec2(0.0f, -1.0f), vec2(0.0f, 1.0f) );
   float factor = 0.0f;
   float centerDepth = texture(depthTexture, coords).r;
   for (int i = 0; i < 4; i++)
   {
-    vec2 neighbourCoords = coords + texelSize * neighbours[i];
-    float neighbourDepth = texture(depthTexture, neighbourCoords).r;
+    vec2 neighbourCoords = coords + edlDistance * texelSize * neighbours[i];
+    float neighbourDepth = texture2D(depthTexture, neighbourCoords).r;
     neighbourDepth = (neighbourDepth == 1.0) ? 0.0 : neighbourDepth;
     if (neighbourDepth != 0.0f)
     {
-      if (centerDepth == 0.0f) factor += 100.0f;
+      if (centerDepth == 0.0f) factor += 1.0f;
       else factor += max(0, centerDepth - neighbourDepth);
     }
   }
@@ -107,7 +116,7 @@ void main()
   }
   if (edlEnabled != 0)
   {
-    float shade = exp(-edlFactor(texCoord) * 300.0 * edlStrength);
+    float shade = exp(-edlFactor(texCoord) * edlStrength);
     fragColor = vec4(fragColor.rgb * shade, fragColor.a);
   }
 }

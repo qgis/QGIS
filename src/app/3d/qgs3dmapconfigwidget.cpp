@@ -164,7 +164,9 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
 
   edlGroupBox->setChecked( map->eyeDomeLightingEnabled() );
   edlStrengthSpinBox->setValue( map->eyeDomeLightingStrength() );
+  edlDistanceSpinBox->setValue( map->eyeDomeLightingDistance() );
   connect( edlStrengthSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), mMap, &Qgs3DMapSettings::setEyeDomeLightingStrength );
+  connect( edlDistanceSpinBox, qgis::overload<int>::of( &QSpinBox::valueChanged ), mMap, &Qgs3DMapSettings::setEyeDomeLightingDistance );
 }
 
 Qgs3DMapConfigWidget::~Qgs3DMapConfigWidget()
@@ -293,6 +295,7 @@ void Qgs3DMapConfigWidget::apply()
 
   mMap->setEyeDomeLightingEnabled( edlGroupBox->isChecked() );
   mMap->setEyeDomeLightingStrength( edlStrengthSpinBox->value() );
+  mMap->setEyeDomeLightingDistance( edlDistanceSpinBox->value() );
 }
 
 void Qgs3DMapConfigWidget::onTerrainTypeChanged()
