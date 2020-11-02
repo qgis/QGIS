@@ -251,3 +251,23 @@ void QgsGoogleMapsGeocoder::setEndpoint( const QString &endpoint )
 {
   mEndpoint = endpoint;
 }
+
+QString QgsGoogleMapsGeocoder::apiKey() const
+{
+  return mApiKey;
+}
+
+void QgsGoogleMapsGeocoder::setApiKey( const QString &apiKey )
+{
+  mApiKey = apiKey;
+}
+
+QString QgsGoogleMapsGeocoder::region() const
+{
+  return mRegion;
+}
+
+void QgsGoogleMapsGeocoder::setRegion( const QString &region )
+{
+  mRegion = region;
+}

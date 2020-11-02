@@ -72,6 +72,39 @@ class CORE_EXPORT QgsGoogleMapsGeocoder : public QgsGeocoderInterface
      */
     void setEndpoint( const QString &endpoint );
 
+    /**
+     * Returns the API key which will be used when accessing the Google Maps API.
+     *
+     * \see setApiKey()
+     */
+    QString apiKey() const;
+
+    /**
+     * Sets the API \a key to use when accessing the Google Maps API.
+     *
+     * All use of this geocoder will be associated with the specified key for Google's billing purposes!
+     *
+     * \see apiKey()
+     */
+    void setApiKey( const QString &key );
+
+    /**
+     * Returns the optional region bias which will be used to prioritize results in a certain region.
+     *
+     * \see setRegion()
+     */
+    QString region() const;
+
+    /**
+     * Sets the optional \a region bias which will be used to prioritize results in a certain region.
+     *
+     * The \a region argument must be set to a two letter country code top-level domain value,
+     * e.g. "gb" for Great Britain.
+     *
+     * \see region()
+     */
+    void setRegion( const QString &region );
+
   private:
 
     QString mApiKey;
