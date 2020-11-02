@@ -2577,7 +2577,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! A class that facilitates tracing of features
     QgsMapCanvasTracer *mTracer = nullptr;
 
-    QAction *mActionFilterLegend = nullptr;
+    QToolButton *mFilterLegendToolButton = nullptr;
+    QAction *mFilterLegendByMapContentAction = nullptr;
+    QAction *mFilterLegendToggleHiddenLayersAction = nullptr;
     QAction *mActionStyleDock = nullptr;
 
     QgsLegendFilterButton *mLegendExpressionFilterButton = nullptr;
