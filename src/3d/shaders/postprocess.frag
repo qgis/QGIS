@@ -30,7 +30,7 @@ uniform float shadowBias;
 
 uniform int edlEnabled;
 uniform float edlStrength;
-uniform float edlDistance;
+uniform int edlDistance;
 
 in vec2 texCoord;
 

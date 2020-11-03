@@ -53,7 +53,7 @@ class QgsPostprocessingEntity : public Qt3DCore::QEntity
     //! Sets the eye dome lighting strength
     void setEyeDomeLightingStrength( double strength );
     //! Sets the eye dome lighting distance (contributes to the contrast of the image)
-    void setEyeDomeLightingDistance( double distance );
+    void setEyeDomeLightingDistance( int distance );
   private:
     Qt3DRender::QMaterial *mMaterial = nullptr;
     Qt3DRender::QEffect *mEffect = nullptr;

@@ -362,17 +362,29 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     //! Returns whether to display labels on terrain tiles
     bool showLabels() const { return mShowLabels; }
 
-    //! Sets whether eye dome lighting will be used
+    /**
+    * Sets whether eye dome lighting will be used
+    * \see eyeDomeLightingEnabled()
+    * \since QGIS 3.18
+    */
     void setEyeDomeLightingEnabled( bool enabled );
     //! Returns whether eye dome lighting is used
     bool eyeDomeLightingEnabled() const { return mEyeDomeLightingEnabled; }
 
-    //! Sets the eye dome lighting strength value
+    /**
+     * Sets the eye dome lighting strength value
+     * \see eyeDomeLightingStrength()
+     * \since QGIS 3.18
+     */
     void setEyeDomeLightingStrength( double strength );
     //! Returns the eye dome lighting strength value
     double eyeDomeLightingStrength() const { return mEyeDomeLightingStrength; }
 
-    //! Sets the eye dome lighting distance value (contributes to the contrast of the image)
+    /**
+     * Sets the eye dome lighting distance value (contributes to the contrast of the image
+     * \see eyeDomeLightingDistance()
+     * \since QGIS 3.18
+     */
     void setEyeDomeLightingDistance( int distance );
     //! Returns the eye dome lighting distance value (contributes to the contrast of the image)
     int eyeDomeLightingDistance() const { return mEyeDomeLightingDistance; }
@@ -630,7 +642,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     QgsShadowSettings mShadowSettings; //!< Shadow rendering related settings
 
     bool mEyeDomeLightingEnabled = false;
-    double mEyeDomeLightingStrength = 1000.0f;
+    double mEyeDomeLightingStrength = 1000.0;
     int mEyeDomeLightingDistance = 1;
 };
 
