@@ -93,8 +93,6 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     QString mSchemaName;
     //! SQL statement used to limit the features retrieved (subset string)
     QString mSqlWhereClause;
-    //! Rectangle that contains the extent (bounding box) of the layer
-    mutable QgsRectangle mExtent;
     //! Use estimated metadata. Uses fast table counts, geometry type and extent determination
     bool mUseEstimatedMetadata = true;
     //! Error information
@@ -233,6 +231,8 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     };
 
     QStringList parseUriKey( const QString &key );
+
+    bool checkExtent();
 
   public:
 };

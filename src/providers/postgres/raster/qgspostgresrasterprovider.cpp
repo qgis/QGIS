@@ -131,7 +131,6 @@ QgsPostgresRasterProvider::QgsPostgresRasterProvider( const QgsPostgresRasterPro
   , mRasterColumn( other.mRasterColumn )
   , mSchemaName( other.mSchemaName )
   , mSqlWhereClause( other.mSqlWhereClause )
-  , mExtent( other.mExtent )
   , mUseEstimatedMetadata( other.mUseEstimatedMetadata )
   , mDataTypes( other.mDataTypes )
   , mDataSizes( other.mDataSizes )
@@ -1147,6 +1146,11 @@ bool QgsPostgresRasterProvider::init()
         // is tiled?
         mIsTiled = ( mWidth != mTileWidth ) || ( mHeight != mTileHeight );
 
+        if ( ! checkExtent() )
+        {
+          return false;
+        }
+
         // Detect overviews
         findOverviews();
         return initFieldsAndTemporal( );
@@ -1368,6 +1372,12 @@ bool QgsPostgresRasterProvider::init()
                                QStringLiteral( "PostGIS" ), Qgis::Critical );
     return false;
   }
+
+  if ( ! checkExtent() )
+  {
+    return false;
+  }
+
   return initFieldsAndTemporal( );
 }
 
@@ -1907,6 +1917,23 @@ QStringList QgsPostgresRasterProvider::parseUriKey( const QString &key )
   }
 
   return cols;
+}
+
+bool QgsPostgresRasterProvider::checkExtent()
+{
+  // Last check for extent and crs (see GH #39779 crash)
+  if ( ! mCrs.bounds().isEmpty() )
+  {
+    const QgsCoordinateTransform transformer { mCrs, QgsCoordinateReferenceSystem( 4326 ), transformContext() };
+    const QgsRectangle transformedExtent { transformer.transform( mExtent ) };
+    if ( ! mCrs.bounds().contains( transformedExtent ) )
+    {
+      QgsMessageLog::logMessage( tr( "The extent is outside the CRS bounds" ),
+                                 QStringLiteral( "PostGIS" ), Qgis::Critical );
+      return false;
+    }
+  }
+  return true;
 }
 
 QgsPostgresProvider::Relkind QgsPostgresRasterProvider::relkind() const
