@@ -999,9 +999,13 @@ QString QgsMdalProviderMetadata::filters( FilterType type )
       QgsMdalProvider::fileMeshFilters( fileMeshFiltersString, fileMeshDatasetFiltersString );
       return fileMeshDatasetFiltersString;
     }
-    default:
+
+    case QgsProviderMetadata::FilterType::FilterRaster:
+    case QgsProviderMetadata::FilterType::FilterVector:
+    case QgsProviderMetadata::FilterType::FilterPointCloud:
       return QString();
   }
+  return QString();
 }
 
 QList<QgsMeshDriverMetadata> QgsMdalProviderMetadata::meshDriversMetadata()

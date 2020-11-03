@@ -215,10 +215,11 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      */
     enum class FilterType
     {
-      FilterVector = 1,
-      FilterRaster,
-      FilterMesh,
-      FilterMeshDataset
+      FilterVector = 1, //!< Vector layers
+      FilterRaster, //!< Raster layers
+      FilterMesh, //!< Mesh layers
+      FilterMeshDataset, //!< Mesh datasets
+      FilterPointCloud, //!< Point clouds
     };
 
     /**

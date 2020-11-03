@@ -163,7 +163,8 @@ Cleanup the provider
       FilterVector,
       FilterRaster,
       FilterMesh,
-      FilterMeshDataset
+      FilterMeshDataset,
+      FilterPointCloud,
     };
 
     virtual QString filters( FilterType type );

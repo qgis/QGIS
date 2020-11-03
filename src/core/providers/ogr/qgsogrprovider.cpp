@@ -7157,9 +7157,14 @@ QString QgsOgrProviderMetadata::filters( FilterType type )
   {
     case QgsProviderMetadata::FilterType::FilterVector:
       return QgsOgrProviderUtils::fileVectorFilters();
-    default:
+
+    case QgsProviderMetadata::FilterType::FilterRaster:
+    case QgsProviderMetadata::FilterType::FilterMesh:
+    case QgsProviderMetadata::FilterType::FilterMeshDataset:
+    case QgsProviderMetadata::FilterType::FilterPointCloud:
       return QString();
   }
+  return QString();
 }
 
 
