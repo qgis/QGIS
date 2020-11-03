@@ -341,6 +341,22 @@ fileMeshFilters to a string, which is then returned.
 .. versionadded:: 3.6
 %End
 
+    QString filePointCloudFilters() const;
+%Docstring
+Returns a file filter string for supported point clouds.
+
+Returns a string suitable for a QFileDialog of point cloud file formats
+supported by all data providers.
+
+.. seealso:: :py:func:`fileMeshFilters`
+
+.. seealso:: :py:func:`fileRasterFilters`
+
+.. seealso:: :py:func:`fileVectorFilters`
+
+.. versionadded:: 3.18
+%End
+
     QString databaseDrivers() const;
 %Docstring
 Returns a string containing the available database drivers

@@ -292,6 +292,15 @@ void QgsProviderRegistry::init()
       QgsDebugMsgLevel( QStringLiteral( "Checking %1: ...loaded OK (%2 file dataset filters)" ).arg( key ).arg( mMeshDatasetFileFilters.split( ";;" ).count() ), 2 );
     }
 
+    // now get point cloud file filters, if any
+    const QString filePointCloudFilters = meta->filters( QgsProviderMetadata::FilterType::FilterPointCloud );
+    if ( !filePointCloudFilters.isEmpty() )
+    {
+      QgsDebugMsgLevel( "point cloud filters: " + filePointCloudFilters, 2 );
+      mPointCloudFileFilters += filePointCloudFilters;
+      QgsDebugMsgLevel( QStringLiteral( "Checking %1: ...loaded OK (%2 file filters)" ).arg( key ).arg( filePointCloudFilters.split( ";;" ).count() ), 2 );
+    }
+
     // call initProvider() - allows provider to register its services to QGIS
     meta->initProvider();
   }
@@ -700,6 +709,11 @@ QString QgsProviderRegistry::fileMeshFilters() const
 QString QgsProviderRegistry::fileMeshDatasetFilters() const
 {
   return mMeshDatasetFileFilters;
+}
+
+QString QgsProviderRegistry::filePointCloudFilters() const
+{
+  return mPointCloudFileFilters;
 }
 
 QString QgsProviderRegistry::databaseDrivers() const

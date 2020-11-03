@@ -340,6 +340,20 @@ class CORE_EXPORT QgsProviderRegistry
      */
     QString fileMeshDatasetFilters() const;
 
+    /**
+     * Returns a file filter string for supported point clouds.
+     *
+     * Returns a string suitable for a QFileDialog of point cloud file formats
+     * supported by all data providers.
+     *
+     * \see fileMeshFilters()
+     * \see fileRasterFilters()
+     * \see fileVectorFilters()
+     *
+     * \since QGIS 3.18
+     */
+    QString filePointCloudFilters() const;
+
     //! Returns a string containing the available database drivers
     QString databaseDrivers() const;
     //! Returns a string containing the available directory drivers
@@ -405,6 +419,11 @@ class CORE_EXPORT QgsProviderRegistry
      * File filter string for raster files
      */
     QString mMeshDatasetFileFilters;
+
+    /**
+     * File filter string for point cloud files
+     */
+    QString mPointCloudFileFilters;
 
     /**
      * Available database drivers string for vector databases

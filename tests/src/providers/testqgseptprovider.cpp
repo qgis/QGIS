@@ -82,6 +82,9 @@ void TestQgsEptProvider::filters()
 
   QCOMPARE( metadata->filters( QgsProviderMetadata::FilterType::FilterPointCloud ), QStringLiteral( "Entwine Point Clouds (ept.json EPT.JSON)" ) );
   QCOMPARE( metadata->filters( QgsProviderMetadata::FilterType::FilterVector ), QString() );
+
+  const QString registryPointCloudFilters = QgsProviderRegistry::instance()->filePointCloudFilters();
+  QVERIFY( registryPointCloudFilters.contains( "(ept.json EPT.JSON)" ) );
 }
 
 
