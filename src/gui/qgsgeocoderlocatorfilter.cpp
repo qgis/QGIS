@@ -38,9 +38,9 @@ void QgsGeocoderLocatorFilter::handleGeocodeResult( const QgsGeocoderResult &res
   try
   {
     QgsRectangle bounds;
+    g.transform( ct );
     if ( viewport.isNull() )
     {
-      g.transform( ct );
       bounds = g.boundingBox();
     }
     else
