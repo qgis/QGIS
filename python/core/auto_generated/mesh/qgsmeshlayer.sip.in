@@ -257,7 +257,7 @@ Returns the extra dataset groups count handle by the layer
 
     QList<int> datasetGroupsIndexes() const;
 %Docstring
-Returns the list of indexes of dataset groups count handled by the layer
+Returns the list of indexes of dataset groups handled by the layer
 
 .. note::
 

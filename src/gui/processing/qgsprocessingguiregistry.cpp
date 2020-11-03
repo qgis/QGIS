@@ -24,6 +24,7 @@
 #include "qgsprocessingdxflayerswidgetwrapper.h"
 #include "qgsprocessingwidgetwrapperimpl.h"
 #include "qgsprocessingtininputlayerswidget.h"
+#include "qgsprocessingmeshdatasetwidget.h"
 #include "qgsprocessingparameters.h"
 #include "qgis.h"
 #include "qgslogger.h"
@@ -75,6 +76,8 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingAggregateWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingTinInputLayersWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingDxfLayersWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingMeshDatasetGroupsWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingMeshDatasetTimeWidgetWrapper() );
 }
 
 QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()

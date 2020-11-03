@@ -149,6 +149,7 @@ class TestQgsProcessingAlgs: public QObject
     void exportAtlasLayoutPng();
 
     void tinMeshCreation();
+    void exportMeshVertices();
 
   private:
 
@@ -227,6 +228,19 @@ void TestQgsProcessingAlgs::initTestCase()
   QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mPolygonLayer );
   QVERIFY( mPolygonLayer->isValid() );
+
+  //add a mesh layer
+  QString uri( dataDir + "/mesh/quad_and_triangle.2dm" );
+  QString meshLayerName = QStringLiteral( "mesh layer" );
+  QgsMeshLayer *meshLayer = new QgsMeshLayer( uri, meshLayerName, QStringLiteral( "mdal" ) );
+  // Register the layer with the registry
+  QgsProject::instance()->addMapLayer( meshLayer );
+  QVERIFY( meshLayer->isValid() );
+  meshLayer->addDatasets( dataDir + "/mesh/quad_and_triangle_vertex_scalar.dat" );
+  meshLayer->addDatasets( dataDir + "/mesh/quad_and_triangle_vertex_vector.dat" );
+  meshLayer->addDatasets( dataDir + "/mesh/quad_and_triangle_els_face_scalar.dat" );
+  meshLayer->addDatasets( dataDir + "/mesh/quad_and_triangle_els_face_vector.dat" );
+  QCOMPARE( meshLayer->datasetGroupCount(), 5 );
 }
 
 void TestQgsProcessingAlgs::cleanupTestCase()
@@ -4795,6 +4809,89 @@ void TestQgsProcessingAlgs::tinMeshCreation()
   meshLayer.updateTriangularMesh();
   QVERIFY( qgsDoubleNear( meshLayer.datasetValue( QgsMeshDatasetIndex( 0, 0 ), QgsPointXY( -103.0, 39.0 ) ).scalar(), 20.0, 0.001 ) );
   QVERIFY( qgsDoubleNear( meshLayer.datasetValue( QgsMeshDatasetIndex( 0, 0 ), QgsPointXY( -86.0, 35.0 ) ).scalar(), 1.855, 0.001 ) ) ;
+}
+
+void TestQgsProcessingAlgs::exportMeshVertices()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:exportmeshvertices" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), "mesh layer" );
+
+  QVariantList datasetGroup;
+  datasetGroup << 1 << 2;
+  parameters.insert( QStringLiteral( "DATASET_GROUPS" ), datasetGroup );
+
+  QVariantMap datasetTime;
+  datasetTime[QStringLiteral( "type" )] = QStringLiteral( "dataset-time-step" );
+  QVariantList datasetIndex;
+  datasetIndex << 1 << 1;
+  datasetTime[QStringLiteral( "value" )] = datasetIndex;
+  parameters.insert( QStringLiteral( "DATASET_TIME" ), datasetTime );
+
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( QStringLiteral( "VECTOR_OPTION" ), 2 );
+
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( QgsProject::instance() );
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  bool ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QgsVectorLayer *resultLayer = qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  QVERIFY( resultLayer );
+  QVERIFY( resultLayer->isValid() );
+  QVERIFY( resultLayer->geometryType() == QgsWkbTypes::PointGeometry );
+  QCOMPARE( resultLayer->featureCount(), 5l );
+  QgsAttributeList attributeList = resultLayer->attributeList();
+  QCOMPARE( resultLayer->fields().count(), 5 );
+  QCOMPARE( resultLayer->fields().at( 0 ).name(), QStringLiteral( "VertexScalarDataset" ) );
+  QCOMPARE( resultLayer->fields().at( 1 ).name(), QStringLiteral( "VertexVectorDataset_x" ) );
+  QCOMPARE( resultLayer->fields().at( 2 ).name(), QStringLiteral( "VertexVectorDataset_y" ) );
+  QCOMPARE( resultLayer->fields().at( 3 ).name(), QStringLiteral( "VertexVectorDataset_mag" ) );
+  QCOMPARE( resultLayer->fields().at( 4 ).name(), QStringLiteral( "VertexVectorDataset_dir" ) );
+
+  QgsFeatureIterator featIt = resultLayer->getFeatures();
+  QgsFeature feat;
+  featIt.nextFeature( feat );
+  QCOMPARE( QStringLiteral( "PointZ (1000 2000 20)" ), feat.geometry().asWkt() );
+  QCOMPARE( feat.attributes().at( 0 ).toDouble(), 2.0 );
+  QCOMPARE( feat.attributes().at( 1 ).toDouble(), 2.0 );
+  QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.0 );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 3 ).toDouble(), 2.828, 2 ) );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 45.0, 2 ) );
+
+  featIt.nextFeature( feat );
+  QCOMPARE( QStringLiteral( "PointZ (2000 2000 30)" ), feat.geometry().asWkt() );
+  QCOMPARE( feat.attributes().at( 0 ).toDouble(), 3.0 );
+  QCOMPARE( feat.attributes().at( 1 ).toDouble(), 3.0 );
+  QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.0 );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 3 ).toDouble(), 3.605, 2 ) );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 56.3099, 2 ) );
+  featIt.nextFeature( feat );
+  QCOMPARE( QStringLiteral( "PointZ (3000 2000 40)" ), feat.geometry().asWkt() );
+  QCOMPARE( feat.attributes().at( 0 ).toDouble(), 4.0 );
+  QCOMPARE( feat.attributes().at( 1 ).toDouble(), 4.0 );
+  QCOMPARE( feat.attributes().at( 2 ).toDouble(), 3.0 );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 3 ).toDouble(), 5.0, 2 ) );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 53.130, 2 ) );
+  featIt.nextFeature( feat );
+  QCOMPARE( QStringLiteral( "PointZ (2000 3000 50)" ), feat.geometry().asWkt() );
+  QCOMPARE( feat.attributes().at( 0 ).toDouble(), 3.0 );
+  QCOMPARE( feat.attributes().at( 1 ).toDouble(), 3.0 );
+  QCOMPARE( feat.attributes().at( 2 ).toDouble(), 3.0 );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 3 ).toDouble(), 4.242, 2 ) );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 45, 2 ) );
+  featIt.nextFeature( feat );
+  QCOMPARE( QStringLiteral( "PointZ (1000 3000 10)" ), feat.geometry().asWkt() );
+  QCOMPARE( feat.attributes().at( 0 ).toDouble(), 2.0 );
+  QCOMPARE( feat.attributes().at( 1 ).toDouble(), 2.0 );
+  QCOMPARE( feat.attributes().at( 2 ).toDouble(), -1.0 );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 3 ).toDouble(), 2.236, 2 ) );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 116.565, 2 ) );
 }
 
 bool TestQgsProcessingAlgs::imageCheck( const QString &testName, const QString &renderedImage )

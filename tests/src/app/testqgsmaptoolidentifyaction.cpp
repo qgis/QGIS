@@ -668,7 +668,7 @@ void TestQgsMapToolIdentifyAction::identifyMesh()
   QCOMPARE( results[0].mAttributes[ QStringLiteral( "Scalar Value" )], QStringLiteral( "42" ) );
   QCOMPARE( results[0].mDerivedAttributes[QStringLiteral( "Source" )], mesh );
 
-  QCOMPARE( results[1].mDerivedAttributes[ QStringLiteral( "Time Step" )], QStringLiteral( "01.01.1950 00:00:00" ) );
+  QCOMPARE( results[1].mDerivedAttributes[ QStringLiteral( "Time Step" )], QStringLiteral( "1950-01-01 00:00:00" ) );
 
   QCOMPARE( results[1].mLabel, QStringLiteral( "VertexVectorDataset" ) );
   QCOMPARE( results[1].mDerivedAttributes[QStringLiteral( "Source" )], vectorDs );

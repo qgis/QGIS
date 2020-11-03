@@ -230,6 +230,7 @@ their acceptable ranges, defaults, etc.
 #include "qgsprocessingparameterfieldmap.h"
 #include "qgsprocessingparametertininputlayers.h"
 #include "qgsprocessingparametervectortilewriterlayers.h"
+#include "qgsprocessingparametermeshdataset.h"
 %End
 %ConvertToSubClassCode
     if ( sipCpp->type() == QgsProcessingParameterBoolean::typeName() )
@@ -314,6 +315,10 @@ their acceptable ranges, defaults, etc.
       sipType = sipType_QgsProcessingParameterVectorTileWriterLayers;
     else if ( sipCpp->type() == QgsProcessingParameterDxfLayers::typeName() )
       sipType = sipType_QgsProcessingParameterDxfLayers;
+    else if ( sipCpp->type() == QgsProcessingParameterMeshDatasetGroups::typeName() )
+      sipType = sipType_QgsProcessingParameterMeshDatasetGroups;
+    else if ( sipCpp->type() == QgsProcessingParameterMeshDatasetTime::typeName() )
+      sipType = sipType_QgsProcessingParameterMeshDatasetTime;
     else
       sipType = nullptr;
 %End
