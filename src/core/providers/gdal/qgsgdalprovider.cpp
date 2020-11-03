@@ -3341,9 +3341,14 @@ QString QgsGdalProviderMetadata::filters( FilterType type )
       buildSupportedRasterFileFilterAndExtensions( fileFiltersString, exts, wildcards );
       return fileFiltersString;
     }
-    default:
+
+    case QgsProviderMetadata::FilterType::FilterVector:
+    case QgsProviderMetadata::FilterType::FilterMesh:
+    case QgsProviderMetadata::FilterType::FilterMeshDataset:
+    case QgsProviderMetadata::FilterType::FilterPointCloud:
       return QString();
   }
+  return QString();
 }
 
 QString QgsGdalProvider::validateCreationOptions( const QStringList &createOptions, const QString &format )
