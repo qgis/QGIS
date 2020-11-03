@@ -117,7 +117,7 @@ class QgsShadowRenderingFrameGraph
     //! Sets shadow rendering to use a directional light
     void setupDirectionalLight( const QgsDirectionalLightSettings &light, float maximumShadowRenderingDistance );
     //! Sets eye dome lighting shading related settings
-    void setupEyeDomeLighting( bool enabled, double strength, double distance );
+    void setupEyeDomeLighting( bool enabled, double strength, int distance );
   private:
     Qt3DRender::QRenderSurfaceSelector *mRenderSurfaceSelector = nullptr;
     Qt3DRender::QViewport *mMainViewPort = nullptr;
@@ -156,8 +156,8 @@ class QgsShadowRenderingFrameGraph
     int mShadowMapResolution = 2048;
 
     bool mEyeDomeLightingEnabled = false;
-    double mEyeDomeLightingStrength = 1000.0f;
-    double mEyeDomeLightingDistance = 1.0f;
+    double mEyeDomeLightingStrength = 1000.0;
+    int mEyeDomeLightingDistance = 1;
 
     Qt3DRender::QLayerFilter *mShadowSceneEntitiesFilter = nullptr;
     Qt3DRender::QRenderStateSet *mShadowRenderStateSet = nullptr;

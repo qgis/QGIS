@@ -418,6 +418,10 @@ Returns whether to display labels on terrain tiles
     void setEyeDomeLightingEnabled( bool enabled );
 %Docstring
 Sets whether eye dome lighting will be used
+
+.. seealso:: :py:func:`eyeDomeLightingEnabled`
+
+.. versionadded:: 3.18
 %End
     bool eyeDomeLightingEnabled() const;
 %Docstring
@@ -427,6 +431,10 @@ Returns whether eye dome lighting is used
     void setEyeDomeLightingStrength( double strength );
 %Docstring
 Sets the eye dome lighting strength value
+
+.. seealso:: :py:func:`eyeDomeLightingStrength`
+
+.. versionadded:: 3.18
 %End
     double eyeDomeLightingStrength() const;
 %Docstring
@@ -435,7 +443,11 @@ Returns the eye dome lighting strength value
 
     void setEyeDomeLightingDistance( int distance );
 %Docstring
-Sets the eye dome lighting distance value (contributes to the contrast of the image)
+Sets the eye dome lighting distance value (contributes to the contrast of the image
+
+.. seealso:: :py:func:`eyeDomeLightingDistance`
+
+.. versionadded:: 3.18
 %End
     int eyeDomeLightingDistance() const;
 %Docstring

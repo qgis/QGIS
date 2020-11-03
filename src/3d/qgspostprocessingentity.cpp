@@ -198,7 +198,7 @@ void QgsPostprocessingEntity::setEyeDomeLightingStrength( double strength )
   mEyeDomeLightingStrengthParameter->setValue( QVariant::fromValue( strength ) );
 }
 
-void QgsPostprocessingEntity::setEyeDomeLightingDistance( double distance )
+void QgsPostprocessingEntity::setEyeDomeLightingDistance( int distance )
 {
   mEyeDomeLightingDistanceParameter->setValue( QVariant::fromValue( distance ) );
 }
