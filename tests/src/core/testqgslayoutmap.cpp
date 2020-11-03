@@ -1931,7 +1931,7 @@ void TestQgsLayoutMap::testTemporal()
 {
   QgsLayout l( QgsProject::instance( ) );
   QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
-  QDateTime begin( QDate( 2020, 01, 01 ), QTime( 10, 0, 0, Qt::UTC ) );
+  QDateTime begin( QDate( 2020, 01, 01 ), QTime( 10, 0, 0 ), Qt::UTC );
   QDateTime end = begin.addSecs( 3600 );
 
   QgsMapSettings settings = map->mapSettings( map->extent(), QSize( 512, 512 ), 72, false );
