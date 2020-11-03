@@ -42,7 +42,7 @@ matrix:
       env:
         - TRAVIS_CONFIG=linux
         - CCACHE_DIR=${HOME}/.ccache_testing
-        - DOCKER_TAG=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && echo $TRAVIS_BRANCH | sed 's/master/latest/' || echo "latest" )-focal
+        - DOCKER_TAG=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && echo $TRAVIS_BRANCH | sed 's/master/latest/' || echo "latest" )_focal
         - DOCKER_BUILD_DEPS_FILE=qgis3-build-deps-focal.dockerfile
         # Label ID can be found here https://api.github.com/repos/qgis/QGIS/labels
         - RUN_FLAKY_TESTS=$(.ci/travis/scripts/pr_has_label.py $TRAVIS_PULL_REQUEST 1271248184)
