@@ -8916,10 +8916,11 @@ void TestProcessingGui::testMeshDatasetWrapperLayerInProject()
   QgsProcessingParameterMeshLayer layerDefinition( QStringLiteral( "layer" ), QStringLiteral( "layer" ) );
   QgsProcessingMeshLayerWidgetWrapper layerWrapper( &layerDefinition );
 
+  QList<QgsMeshDatasetGroupMetadata::DataType> supportedDataType( {QgsMeshDatasetGroupMetadata::DataOnVertices} );
   QgsProcessingParameterMeshDatasetGroups groupsDefinition( QStringLiteral( "groups" ),
       QStringLiteral( "groups" ),
       QStringLiteral( "layer" ),
-      QgsMeshDatasetGroupMetadata::DataOnVertices );
+      supportedDataType );
   QgsProcessingMeshDatasetGroupsWidgetWrapper groupsWrapper( &groupsDefinition );
 
   QgsProcessingParameterMeshDatasetTime timeDefinition( QStringLiteral( "time" ), QStringLiteral( "time" ), QStringLiteral( "layer" ), QStringLiteral( "groups" ) );
@@ -9121,10 +9122,12 @@ void TestProcessingGui::testMeshDatasetWrapperLayerOutsideProject()
   QgsProcessingParameterMeshLayer layerDefinition( QStringLiteral( "layer" ), QStringLiteral( "layer" ) );
   QgsProcessingMeshLayerWidgetWrapper layerWrapper( &layerDefinition );
 
+  QList< QgsMeshDatasetGroupMetadata::DataType> supportedData;
+  supportedData << QgsMeshDatasetGroupMetadata::DataOnFaces;
   QgsProcessingParameterMeshDatasetGroups groupsDefinition( QStringLiteral( "groups" ),
       QStringLiteral( "groups" ),
       QStringLiteral( "layer" ),
-      QgsMeshDatasetGroupMetadata::DataOnFaces );
+      supportedData );
   QgsProcessingMeshDatasetGroupsWidgetWrapper groupsWrapper( &groupsDefinition );
 
   QgsProcessingParameterMeshDatasetTime timeDefinition( QStringLiteral( "time" ), QStringLiteral( "time" ), QStringLiteral( "layer" ), QStringLiteral( "groups" ) );

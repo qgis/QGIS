@@ -72,7 +72,7 @@ void QgsExportMeshOnElement::initAlgorithm( const QVariantMap &configuration )
                   QStringLiteral( "DATASET_GROUPS" ),
                   QObject::tr( "Dataset Groups" ),
                   QStringLiteral( "INPUT" ),
-                  dataType() ) );
+                  supportedDataType() ) );
 
   addParameter( new QgsProcessingParameterMeshDatasetTime(
                   QStringLiteral( "DATASET_TIME" ),
@@ -170,16 +170,15 @@ bool QgsExportMeshOnElement::prepareAlgorithm( const QVariantMap &parameters, Qg
       relativeTime = QgsInterval( layerReferenceTime.secsTo( dateTime ) );
   }
 
-  switch ( dataType() )
+  switch ( meshElementType() )
   {
-    case QgsMeshDatasetGroupMetadata::DataOnVolumes:
-    case QgsMeshDatasetGroupMetadata::DataOnFaces:
+    case QgsMesh::Face:
       mElementCount = mNativeMesh.faceCount();
       break;
-    case QgsMeshDatasetGroupMetadata::DataOnVertices:
+    case QgsMesh::Vertex:
       mElementCount = mNativeMesh.vertexCount();
       break;
-    case QgsMeshDatasetGroupMetadata::DataOnEdges:
+    case QgsMesh::Edge:
       mElementCount = mNativeMesh.edgeCount();
       break;
   }

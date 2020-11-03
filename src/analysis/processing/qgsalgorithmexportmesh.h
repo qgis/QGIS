@@ -41,10 +41,11 @@ class QgsExportMeshOnElement : public QgsProcessingAlgorithm
 
   private:
 
-    virtual QgsMeshDatasetGroupMetadata::DataType dataType() const = 0;
+    virtual QList<QgsMeshDatasetGroupMetadata::DataType> supportedDataType() const = 0;
     virtual QgsProcessing::SourceType sinkType() const = 0;
     virtual QgsWkbTypes::Type sinkGeometryType() const = 0;
     virtual QgsGeometry meshElement( int index ) const = 0;
+    virtual QgsMesh::ElementType meshElementType() const = 0;
 
     struct DataGroup
     {
@@ -70,9 +71,13 @@ class QgsExportMeshVerticesAlgorithm : public QgsExportMeshOnElement
 
   private:
     QgsWkbTypes::Type sinkGeometryType() const override {return QgsWkbTypes::PointZ;}
-    QgsMeshDatasetGroupMetadata::DataType dataType() const override {return QgsMeshDatasetGroupMetadata::DataOnVertices;}
+    QList<QgsMeshDatasetGroupMetadata::DataType> supportedDataType() const override
+    {
+      return QList<QgsMeshDatasetGroupMetadata::DataType>( {QgsMeshDatasetGroupMetadata::DataOnVertices} );
+    }
     QgsProcessing::SourceType sinkType() const override {return QgsProcessing::TypeVectorPoint;}
     QgsGeometry meshElement( int index ) const override;
+    QgsMesh::ElementType meshElementType()const override {return QgsMesh::Vertex;}
 };
 
 class QgsExportMeshFacesAlgorithm : public QgsExportMeshOnElement
@@ -87,9 +92,13 @@ class QgsExportMeshFacesAlgorithm : public QgsExportMeshOnElement
 
   private:
     QgsWkbTypes::Type sinkGeometryType() const override {return QgsWkbTypes::PolygonZ;}
-    QgsMeshDatasetGroupMetadata::DataType dataType() const override {return QgsMeshDatasetGroupMetadata::DataOnFaces;}
+    QList<QgsMeshDatasetGroupMetadata::DataType> supportedDataType() const override
+    {
+      return QList<QgsMeshDatasetGroupMetadata::DataType>( {QgsMeshDatasetGroupMetadata::DataOnFaces} );
+    }
     QgsProcessing::SourceType sinkType() const override {return QgsProcessing::TypeVectorPolygon;}
     QgsGeometry meshElement( int index ) const override;
+    QgsMesh::ElementType meshElementType()const override {return QgsMesh::Face;}
 };
 
 class QgsExportMeshEdgesAlgorithm : public QgsExportMeshOnElement
@@ -104,9 +113,13 @@ class QgsExportMeshEdgesAlgorithm : public QgsExportMeshOnElement
 
   private:
     QgsWkbTypes::Type sinkGeometryType() const override {return QgsWkbTypes::LineStringZ;}
-    QgsMeshDatasetGroupMetadata::DataType dataType() const override {return QgsMeshDatasetGroupMetadata::DataOnEdges;}
+    QList<QgsMeshDatasetGroupMetadata::DataType> supportedDataType() const override
+    {
+      return QList<QgsMeshDatasetGroupMetadata::DataType>( {QgsMeshDatasetGroupMetadata::DataOnEdges} );
+    }
     QgsProcessing::SourceType sinkType() const override {return QgsProcessing::TypeVectorLine;}
     QgsGeometry meshElement( int index ) const override;
+    QgsMesh::ElementType meshElementType()const override {return QgsMesh::Edge;}
 };
 
 ///@endcond PRIVATE

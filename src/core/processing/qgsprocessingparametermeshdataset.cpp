@@ -20,17 +20,17 @@
 QgsProcessingParameterMeshDatasetGroups::QgsProcessingParameterMeshDatasetGroups( const QString &name,
     const QString &description,
     const QString &meshLayerParameterName,
-    const QgsMeshDatasetGroupMetadata::DataType dataType,
+    const QList<QgsMeshDatasetGroupMetadata::DataType> supportedDataType,
     bool optional ):
   QgsProcessingParameterDefinition( name, description, QVariant(), optional, QString() ),
   mMeshLayerParameterName( meshLayerParameterName ),
-  mDataType( dataType )
+  mSupportedDataType( supportedDataType )
 {
 }
 
 QgsProcessingParameterDefinition *QgsProcessingParameterMeshDatasetGroups::clone() const
 {
-  return new QgsProcessingParameterMeshDatasetGroups( name(), description(), mMeshLayerParameterName, mDataType );
+  return new QgsProcessingParameterMeshDatasetGroups( name(), description(), mMeshLayerParameterName, mSupportedDataType );
 }
 
 QString QgsProcessingParameterMeshDatasetGroups::type() const
@@ -66,20 +66,20 @@ QString QgsProcessingParameterMeshDatasetGroups::asPythonString( QgsProcessing::
       if ( !mMeshLayerParameterName.isEmpty() )
         code += QStringLiteral( ", meshLayerParameterName=%1" ).arg( QgsProcessingUtils::stringToPythonLiteral( mMeshLayerParameterName ) );
 
-      switch ( mDataType )
+      QStringList dt;
+      if ( mSupportedDataType.contains( QgsMeshDatasetGroupMetadata::DataOnFaces ) )
+        dt.append( QStringLiteral( "QgsMeshDatasetGroupMetadata.DataOnFaces" ) );
+      if ( mSupportedDataType.contains( QgsMeshDatasetGroupMetadata::DataOnVertices ) )
+        dt.append( QStringLiteral( "QgsMeshDatasetGroupMetadata.DataOnVertices" ) );
+      if ( mSupportedDataType.contains( QgsMeshDatasetGroupMetadata::DataOnVolumes ) )
+        dt.append( QStringLiteral( "QgsMeshDatasetGroupMetadata.DataOnVolumes" ) );
+      if ( mSupportedDataType.contains( QgsMeshDatasetGroupMetadata::DataOnEdges ) )
+        dt.append( QStringLiteral( "QgsMeshDatasetGroupMetadata.DataOnEdges" ) );
+      if ( !dt.isEmpty() )
       {
-        case QgsMeshDatasetGroupMetadata::DataOnFaces:
-          code += QStringLiteral( ", dataType=QgsMeshDatasetGroupMetadata.DataOnFaces" );
-          break;
-        case QgsMeshDatasetGroupMetadata::DataOnVertices:
-          code += QStringLiteral( ", dataType=QgsMeshDatasetGroupMetadata.DataOnVertices" );
-          break;
-        case QgsMeshDatasetGroupMetadata::DataOnVolumes:
-          code += QStringLiteral( ", dataType=QgsMeshDatasetGroupMetadata.DataOnVolumes" );
-          break;
-        case QgsMeshDatasetGroupMetadata::DataOnEdges:
-          code += QStringLiteral( ", dataType=QgsMeshDatasetGroupMetadata.DataOnEdges" );
-          break;
+        code += QStringLiteral( ", dataType=(" );
+        code += dt.join( ',' );
+        code += ')';
       }
 
       if ( mFlags & FlagOptional )
@@ -102,6 +102,11 @@ QStringList QgsProcessingParameterMeshDatasetGroups::dependsOnOtherParameters() 
 QString QgsProcessingParameterMeshDatasetGroups::meshLayerParameterName() const
 {
   return mMeshLayerParameterName;
+}
+
+bool QgsProcessingParameterMeshDatasetGroups::isDataTypeSupported( const QgsMeshDatasetGroupMetadata::DataType &dataType ) const
+{
+  return mSupportedDataType.contains( dataType );
 }
 
 QList<int> QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( const QVariant &value )
