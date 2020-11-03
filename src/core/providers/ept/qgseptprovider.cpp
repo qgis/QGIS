@@ -98,6 +98,22 @@ QVariantMap QgsEptProviderMetadata::decodeUri( const QString &uri )
   return uriComponents;
 }
 
+QString QgsEptProviderMetadata::filters( QgsProviderMetadata::FilterType type )
+{
+  switch ( type )
+  {
+    case QgsProviderMetadata::FilterType::FilterVector:
+    case QgsProviderMetadata::FilterType::FilterRaster:
+    case QgsProviderMetadata::FilterType::FilterMesh:
+    case QgsProviderMetadata::FilterType::FilterMeshDataset:
+      return QString();
+
+    case QgsProviderMetadata::FilterType::FilterPointCloud:
+      return QObject::tr( "Entwine Point Clouds" ) + QStringLiteral( " (ept.json EPT.JSON)" );
+  }
+  return QString();
+}
+
 QString QgsEptProviderMetadata::encodeUri( const QVariantMap &parts )
 {
   const QString path = parts.value( QStringLiteral( "path" ) ).toString();

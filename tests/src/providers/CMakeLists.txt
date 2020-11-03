@@ -13,6 +13,8 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/mesh
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/pal
+  ${CMAKE_SOURCE_DIR}/src/core/pointcloud
+  ${CMAKE_SOURCE_DIR}/src/core/providers/ept
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/effects
@@ -22,6 +24,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/providers/arcgisrest
   ${CMAKE_SOURCE_DIR}/src/providers/mdal
   ${CMAKE_SOURCE_DIR}/src/providers/ogr
+  ${CMAKE_SOURCE_DIR}/src/providers/ept
   ${CMAKE_SOURCE_DIR}/src/test
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann
@@ -103,6 +106,7 @@ ADD_QGIS_TEST(postgresconntest testqgspostgresconn.cpp)
 TARGET_LINK_LIBRARIES(qgis_postgresconntest postgresprovider_a qgis_core)
 
 IF (NOT FORCE_STATIC_PROVIDERS)
+  ADD_QGIS_TEST(eptprovidertest testqgseptprovider.cpp)
   ADD_QGIS_TEST(mdalprovidertest testqgsmdalprovider.cpp)
 ENDIF (NOT FORCE_STATIC_PROVIDERS)
 
