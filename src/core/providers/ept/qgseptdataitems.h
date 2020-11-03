@@ -38,11 +38,18 @@ class CORE_EXPORT QgsEptLayerItem : public QgsLayerItem
 class QgsEptDataItemProvider : public QgsDataItemProvider
 {
   public:
+
+    QgsEptDataItemProvider();
+
     QString name() override;
 
     int capabilities() const override;
 
     QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
+
+  private:
+
+    QString mFileFilter;
 };
 
 ///@endcond
