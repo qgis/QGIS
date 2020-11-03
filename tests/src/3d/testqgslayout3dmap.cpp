@@ -127,7 +127,7 @@ void TestQgsLayout3DMap::testBasic()
 
   QVERIFY( !map->isTemporal() );
 
-  QDateTime begin( QDate( 2020, 01, 01 ), QTime( 10, 0, 0, Qt::UTC ) );
+  QDateTime begin( QDate( 2020, 01, 01 ), QTime( 10, 0, 0 ), Qt::UTC );
   QDateTime end = begin.addSecs( 3600 );
   map3dItem->setTemporalRange( QgsDateTimeRange( begin, end ) );
 
