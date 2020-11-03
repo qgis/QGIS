@@ -23,6 +23,8 @@
 #include "qgsprocessingalgorithm.h"
 #include "qgsmeshdataset.h"
 #include "qgsmeshdataprovider.h"
+#include "qgstriangularmesh.h"
+#include "qgsmeshrenderersettings.h"
 
 ///@cond PRIVATE
 
@@ -41,7 +43,7 @@ class QgsExportMeshOnElement : public QgsProcessingAlgorithm
 
   private:
 
-    virtual QList<QgsMeshDatasetGroupMetadata::DataType> supportedDataType() const = 0;
+    virtual QSet<QgsMeshDatasetGroupMetadata::DataType> supportedDataType() const = 0;
     virtual QgsProcessing::SourceType sinkType() const = 0;
     virtual QgsWkbTypes::Type sinkGeometryType() const = 0;
     virtual QgsGeometry meshElement( int index ) const = 0;
@@ -71,9 +73,9 @@ class QgsExportMeshVerticesAlgorithm : public QgsExportMeshOnElement
 
   private:
     QgsWkbTypes::Type sinkGeometryType() const override {return QgsWkbTypes::PointZ;}
-    QList<QgsMeshDatasetGroupMetadata::DataType> supportedDataType() const override
+    QSet<QgsMeshDatasetGroupMetadata::DataType> supportedDataType() const override
     {
-      return QList<QgsMeshDatasetGroupMetadata::DataType>( {QgsMeshDatasetGroupMetadata::DataOnVertices} );
+      return QSet<QgsMeshDatasetGroupMetadata::DataType>( {QgsMeshDatasetGroupMetadata::DataOnVertices} );
     }
     QgsProcessing::SourceType sinkType() const override {return QgsProcessing::TypeVectorPoint;}
     QgsGeometry meshElement( int index ) const override;
@@ -92,9 +94,9 @@ class QgsExportMeshFacesAlgorithm : public QgsExportMeshOnElement
 
   private:
     QgsWkbTypes::Type sinkGeometryType() const override {return QgsWkbTypes::PolygonZ;}
-    QList<QgsMeshDatasetGroupMetadata::DataType> supportedDataType() const override
+    QSet<QgsMeshDatasetGroupMetadata::DataType> supportedDataType() const override
     {
-      return QList<QgsMeshDatasetGroupMetadata::DataType>( {QgsMeshDatasetGroupMetadata::DataOnFaces} );
+      return QSet<QgsMeshDatasetGroupMetadata::DataType>( {QgsMeshDatasetGroupMetadata::DataOnFaces} );
     }
     QgsProcessing::SourceType sinkType() const override {return QgsProcessing::TypeVectorPolygon;}
     QgsGeometry meshElement( int index ) const override;
@@ -113,13 +115,49 @@ class QgsExportMeshEdgesAlgorithm : public QgsExportMeshOnElement
 
   private:
     QgsWkbTypes::Type sinkGeometryType() const override {return QgsWkbTypes::LineStringZ;}
-    QList<QgsMeshDatasetGroupMetadata::DataType> supportedDataType() const override
+    QSet<QgsMeshDatasetGroupMetadata::DataType> supportedDataType() const override
     {
-      return QList<QgsMeshDatasetGroupMetadata::DataType>( {QgsMeshDatasetGroupMetadata::DataOnEdges} );
+      return QSet<QgsMeshDatasetGroupMetadata::DataType>( {QgsMeshDatasetGroupMetadata::DataOnEdges} );
     }
     QgsProcessing::SourceType sinkType() const override {return QgsProcessing::TypeVectorLine;}
     QgsGeometry meshElement( int index ) const override;
     QgsMesh::ElementType meshElementType()const override {return QgsMesh::Edge;}
+};
+
+
+class QgsExportMeshOnGrid : public QgsProcessingAlgorithm
+{
+
+  public:
+    QString name() const override;
+    QString displayName() const override;
+    QString group() const override;
+    QString groupId() const override;
+    QString shortHelpString() const override;
+
+  protected:
+    QgsProcessingAlgorithm *createInstance() const override;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+
+    QSet<QgsMeshDatasetGroupMetadata::DataType> supportedDataType();
+
+    QgsTriangularMesh mTriangularMesh;
+    struct DataGroup
+    {
+      QgsMeshDatasetGroupMetadata metadata;
+      QgsMeshDataBlock datasetValues;
+      QgsMeshDataBlock activeFaces;
+      QgsMesh3dDataBlock dataset3dStakedValue; //will be filled only if data are 3d stacked
+    };
+
+    QList<DataGroup> mDataPerGroup;
+    QgsCoordinateTransform mTransform;
+    int mExportVectorOption = 2;
+    QgsMeshRendererSettings mLayerRendererSettings;
 };
 
 ///@endcond PRIVATE

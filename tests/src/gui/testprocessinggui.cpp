@@ -8916,7 +8916,7 @@ void TestProcessingGui::testMeshDatasetWrapperLayerInProject()
   QgsProcessingParameterMeshLayer layerDefinition( QStringLiteral( "layer" ), QStringLiteral( "layer" ) );
   QgsProcessingMeshLayerWidgetWrapper layerWrapper( &layerDefinition );
 
-  QList<QgsMeshDatasetGroupMetadata::DataType> supportedDataType( {QgsMeshDatasetGroupMetadata::DataOnVertices} );
+  QSet<QgsMeshDatasetGroupMetadata::DataType> supportedDataType( {QgsMeshDatasetGroupMetadata::DataOnVertices} );
   QgsProcessingParameterMeshDatasetGroups groupsDefinition( QStringLiteral( "groups" ),
       QStringLiteral( "groups" ),
       QStringLiteral( "layer" ),
@@ -8945,7 +8945,6 @@ void TestProcessingGui::testMeshDatasetWrapperLayerInProject()
   layerWrapper.registerProcessingContextGenerator( &generator );
   groupsWrapper.registerProcessingContextGenerator( &generator );
   timeWrapper.registerProcessingContextGenerator( &generator );
-
 
   QSignalSpy layerSpy( &layerWrapper, &QgsProcessingMeshLayerWidgetWrapper::widgetValueHasChanged );
   QSignalSpy groupsSpy( &groupsWrapper, &QgsProcessingMeshDatasetGroupsWidgetWrapper::widgetValueHasChanged );
@@ -9122,12 +9121,11 @@ void TestProcessingGui::testMeshDatasetWrapperLayerOutsideProject()
   QgsProcessingParameterMeshLayer layerDefinition( QStringLiteral( "layer" ), QStringLiteral( "layer" ) );
   QgsProcessingMeshLayerWidgetWrapper layerWrapper( &layerDefinition );
 
-  QList< QgsMeshDatasetGroupMetadata::DataType> supportedData;
-  supportedData << QgsMeshDatasetGroupMetadata::DataOnFaces;
+  QSet<QgsMeshDatasetGroupMetadata::DataType> supportedDataType( {QgsMeshDatasetGroupMetadata::DataOnFaces} );
   QgsProcessingParameterMeshDatasetGroups groupsDefinition( QStringLiteral( "groups" ),
       QStringLiteral( "groups" ),
       QStringLiteral( "layer" ),
-      supportedData );
+      supportedDataType );
   QgsProcessingMeshDatasetGroupsWidgetWrapper groupsWrapper( &groupsDefinition );
 
   QgsProcessingParameterMeshDatasetTime timeDefinition( QStringLiteral( "time" ), QStringLiteral( "time" ), QStringLiteral( "layer" ), QStringLiteral( "groups" ) );

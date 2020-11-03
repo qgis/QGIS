@@ -152,6 +152,7 @@ class TestQgsProcessingAlgs: public QObject
     void exportMeshVertices();
     void exportMeshFaces();
     void exportMeshEdges();
+    void exportMeshOnGrid();
 
   private:
 
@@ -5037,6 +5038,73 @@ void TestQgsProcessingAlgs::exportMeshEdges()
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 4.0 );
   QVERIFY( qgsDoubleNearSig( feat.attributes().at( 3 ).toDouble(), 5.656, 2 ) );
   QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 45.0, 2 ) );
+}
+
+void TestQgsProcessingAlgs::exportMeshOnGrid()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:exportmeshongrid" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QString dataDir = QString( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  QString meshUri( dataDir + "/mesh/trap_steady_05_3D.nc" );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), meshUri );
+
+  QVariantList datasetGroup;
+  for ( int i = 0; i < 12; ++i )
+    datasetGroup.append( i );
+  parameters.insert( QStringLiteral( "DATASET_GROUPS" ), datasetGroup );
+
+  QVariantMap datasetTime;
+  datasetTime[QStringLiteral( "type" )] = QStringLiteral( "dataset-time-step" );
+  QVariantList datasetIndex;
+  datasetIndex << 1 << 1;
+  datasetTime[QStringLiteral( "value" )] = datasetIndex;
+  parameters.insert( QStringLiteral( "DATASET_TIME" ), datasetTime );
+
+  parameters.insert( QStringLiteral( "GRID_SPACING" ), 25.0 );
+
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( QStringLiteral( "VECTOR_OPTION" ), 2 );
+
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( QgsProject::instance() );
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  bool ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QgsVectorLayer *resultLayer = qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  QVERIFY( resultLayer );
+  QVERIFY( resultLayer->isValid() );
+  QVERIFY( resultLayer->geometryType() == QgsWkbTypes::PointGeometry );
+  QCOMPARE( resultLayer->featureCount(), 205l );
+  QgsAttributeList attributeList = resultLayer->attributeList();
+  QCOMPARE( resultLayer->fields().count(), 21 );
+  QStringList fieldsName;
+  fieldsName << QStringLiteral( "Bed Elevation" ) << QStringLiteral( "temperature" ) << QStringLiteral( "temperature/Maximums" )
+             << QStringLiteral( "temperature/Minimums" ) << QStringLiteral( "temperature/Time at Maximums" ) << QStringLiteral( "temperature/Time at Minimums" )
+             << QStringLiteral( "velocity_x" ) << QStringLiteral( "velocity_y" ) << QStringLiteral( "velocity_mag" ) << QStringLiteral( "velocity_dir" )
+             << QStringLiteral( "velocity/Maximums_x" ) << QStringLiteral( "velocity/Maximums_y" ) << QStringLiteral( "velocity/Maximums_mag" ) << QStringLiteral( "velocity/Maximums_dir" )
+             << QStringLiteral( "velocity/Minimums_x" ) << QStringLiteral( "velocity/Minimums_y" ) << QStringLiteral( "velocity/Minimums_mag" ) << QStringLiteral( "velocity/Minimums_dir" )
+             << QStringLiteral( "velocity/Time at Maximums" ) << QStringLiteral( "velocity/Time at Minimums" ) << QStringLiteral( "water depth" );
+
+  for ( int i = 0; i < fieldsName.count(); ++i )
+    QCOMPARE( fieldsName.at( i ), resultLayer->fields().at( i ).name() );
+
+  QgsFeatureIterator featIt = resultLayer->getFeatures();
+  QgsFeature feat;
+  for ( int i = 0; i < 8; ++i )
+    featIt.nextFeature( feat );
+  QCOMPARE( QStringLiteral( "Point (25 50)" ), feat.geometry().asWkt() );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 0 ).toDouble(), -5.025, 2 ) );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 1 ).toDouble(), 1.424, 2 ) );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 2 ).toDouble(), 5.00, 2 ) );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 3 ).toDouble(), 1.32e-36, 2 ) );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 0.02776, 2 ) );
+
 }
 
 bool TestQgsProcessingAlgs::imageCheck( const QString &testName, const QString &renderedImage )

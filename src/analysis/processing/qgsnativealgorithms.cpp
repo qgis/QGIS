@@ -287,6 +287,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsExportMeshVerticesAlgorithm );
   addAlgorithm( new QgsExportMeshFacesAlgorithm );
   addAlgorithm( new QgsExportMeshEdgesAlgorithm );
+  addAlgorithm( new QgsExportMeshOnGrid );
   addAlgorithm( new QgsExtendLinesAlgorithm() );
   addAlgorithm( new QgsExtentFromLayerAlgorithm() );
   addAlgorithm( new QgsExtentToLayerAlgorithm() );

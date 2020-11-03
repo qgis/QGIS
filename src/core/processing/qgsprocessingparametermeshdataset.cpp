@@ -20,7 +20,7 @@
 QgsProcessingParameterMeshDatasetGroups::QgsProcessingParameterMeshDatasetGroups( const QString &name,
     const QString &description,
     const QString &meshLayerParameterName,
-    const QList<QgsMeshDatasetGroupMetadata::DataType> supportedDataType,
+    const QSet<QgsMeshDatasetGroupMetadata::DataType> supportedDataType,
     bool optional ):
   QgsProcessingParameterDefinition( name, description, QVariant(), optional, QString() ),
   mMeshLayerParameterName( meshLayerParameterName ),
@@ -77,9 +77,9 @@ QString QgsProcessingParameterMeshDatasetGroups::asPythonString( QgsProcessing::
         dt.append( QStringLiteral( "QgsMeshDatasetGroupMetadata.DataOnEdges" ) );
       if ( !dt.isEmpty() )
       {
-        code += QStringLiteral( ", dataType=(" );
+        code += QStringLiteral( ", dataType=[" );
         code += dt.join( ',' );
-        code += ')';
+        code += ']';
       }
 
       if ( mFlags & FlagOptional )

@@ -8023,7 +8023,10 @@ void TestQgsProcessing::parameterMeshDatasetGroups()
   QgsProject project;
   context.setProject( &project );
 
-  std::unique_ptr< QgsProcessingParameterMeshDatasetGroups> def( new QgsProcessingParameterMeshDatasetGroups( QStringLiteral( "dataset groups" ), QStringLiteral( "groups" ) ) );
+  QSet<QgsMeshDatasetGroupMetadata::DataType> supportedData;
+  supportedData << QgsMeshDatasetGroupMetadata::DataOnVertices;
+  std::unique_ptr< QgsProcessingParameterMeshDatasetGroups> def(
+    new QgsProcessingParameterMeshDatasetGroups( QStringLiteral( "dataset groups" ), QStringLiteral( "groups" ), QString(), supportedData ) );
 
   QVERIFY( def->type() == QStringLiteral( "meshdatasetgroups" ) );
   QVERIFY( def->isDataTypeSupported( QgsMeshDatasetGroupMetadata::DataOnVertices ) );
@@ -8048,10 +8051,9 @@ void TestQgsProcessing::parameterMeshDatasetGroups()
   QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( groupsList ), QList<int>() << 0 << 5 );
 
   QString pythonCode = def->asPythonString();
-  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMeshDatasetGroups('dataset groups', 'groups', dataType=QgsMeshDatasetGroupMetadata.DataOnVertices)" ) );
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMeshDatasetGroups('dataset groups', 'groups', dataType=[QgsMeshDatasetGroupMetadata.DataOnVertices])" ) );
 
   // optional, layer parameter and data on faces
-  QList<QgsMeshDatasetGroupMetadata::DataType> supportedData;
   supportedData << QgsMeshDatasetGroupMetadata::DataOnFaces;
   def.reset( new QgsProcessingParameterMeshDatasetGroups(
                QStringLiteral( "dataset groups" ),
@@ -8082,7 +8084,7 @@ void TestQgsProcessing::parameterMeshDatasetGroups()
   QCOMPARE( def->meshLayerParameterName(), QStringLiteral( "layer parameter" ) );
 
   pythonCode = def->asPythonString();
-  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMeshDatasetGroups('dataset groups', 'groups', meshLayerParameterName='layer parameter', dataType=QgsMeshDatasetGroupMetadata.DataOnFaces, optional=True)" ) );
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMeshDatasetGroups('dataset groups', 'groups', meshLayerParameterName='layer parameter', dataType=[QgsMeshDatasetGroupMetadata.DataOnFaces,QgsMeshDatasetGroupMetadata.DataOnVertices], optional=True)" ) );
 }
 
 void TestQgsProcessing::parameterMeshDatasetTime()

@@ -39,13 +39,13 @@ class CORE_EXPORT QgsProcessingParameterMeshDatasetGroups : public QgsProcessing
      * \param name name of the parameter
      * \param description description of the parameter
      * \param meshLayerParameterName name of the associated mesh layer parameter
-     * \param dataType data type supported by the parameter
+     * \param supportedDataType a set of data types supported by the parameter
      * \param optional whether the parameter is optional
      */
     QgsProcessingParameterMeshDatasetGroups( const QString &name,
         const QString &description = QString(),
         const QString &meshLayerParameterName = QString(),
-        QList<QgsMeshDatasetGroupMetadata::DataType> supportedDataType = QList<QgsMeshDatasetGroupMetadata::DataType>(),
+        QSet<QgsMeshDatasetGroupMetadata::DataType> supportedDataType = QSet<QgsMeshDatasetGroupMetadata::DataType>(),
         bool optional = false );
 
     QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsProcessingParameterMeshDatasetGroups : public QgsProcessing
 
   private:
     QString mMeshLayerParameterName;
-    QList<QgsMeshDatasetGroupMetadata::DataType> mSupportedDataType;
+    QSet<QgsMeshDatasetGroupMetadata::DataType> mSupportedDataType;
 
     static bool valueIsAcceptable( const QVariant &input, bool allowEmpty );
 };
