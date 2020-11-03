@@ -31,6 +31,34 @@ class TestQgsFileUtils(unittest.TestCase):
         self.assertEqual(QgsFileUtils.extensionsFromFilter('PNG Files (*.PNG)'), ['PNG'])
         self.assertEqual(QgsFileUtils.extensionsFromFilter('Geotiff Files (*.tiff *.tif)'), ['tiff', 'tif'])
 
+    def testFileMatchesFilter(self):
+        self.assertFalse(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', ''))
+        self.assertFalse(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', 'bad'))
+        self.assertFalse(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', '*'))
+        self.assertFalse(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', '*.'))
+        self.assertFalse(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', 'Tiff files'))
+        self.assertFalse(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', '(*.)'))
+        self.assertTrue(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', '(*.*)'))
+        self.assertFalse(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', 'PNG Files (*.png)'))
+        self.assertTrue(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', 'Tif  Files (*.tif)'))
+        self.assertFalse(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', 'PNG Files (*.PNG)'))
+        self.assertFalse(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', 'Tif  Files (*.TIF)'))
+        self.assertTrue(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', 'Geotiff Files (*.tiff *.tif)'))
+        self.assertTrue(QgsFileUtils.fileMatchesFilter('/home/me/test.tiff', 'Geotiff Files (*.tiff *.tif)'))
+        self.assertTrue(QgsFileUtils.fileMatchesFilter('/home/me/test.TIFF', 'Geotiff Files (*.tiff *.tif *.TIFF)'))
+        self.assertFalse(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', 'PNG Files (*.png);;BMP Files (*.bmp)'))
+        self.assertTrue(QgsFileUtils.fileMatchesFilter('/home/me/test.bmp', 'PNG Files (*.png);;BMP Files (*.bmp)'))
+        self.assertTrue(QgsFileUtils.fileMatchesFilter('/home/me/test.png', 'PNG Files (*.png);;BMP Files (*.bmp)'))
+        self.assertFalse(QgsFileUtils.fileMatchesFilter('/home/me/test.png', 'EPT files (ept.json)'))
+        self.assertTrue(QgsFileUtils.fileMatchesFilter('/home/me/ept.json', 'EPT files (ept.json)'))
+        self.assertTrue(QgsFileUtils.fileMatchesFilter('/home/me/ept.json', 'EPT files (ept.json EPT.JSON)'))
+        self.assertTrue(QgsFileUtils.fileMatchesFilter('/home/me/EPT.JSON', 'EPT files (ept.json EPT.JSON)'))
+        self.assertTrue(QgsFileUtils.fileMatchesFilter('/home/me/ept.json', 'EPT files (ept.json);;Entwine files (entwine.json)'))
+        self.assertTrue(
+            QgsFileUtils.fileMatchesFilter('/home/me/entwine.json', 'EPT files (ept.json);;Entwine files (entwine.json)'))
+        self.assertFalse(
+            QgsFileUtils.fileMatchesFilter('/home/me/ep.json', 'EPT files (ept.json);;Entwine files (entwine.json)'))
+
     def testEnsureFileNameHasExtension(self):
         self.assertEqual(QgsFileUtils.ensureFileNameHasExtension('', ['']), '')
         self.assertEqual(QgsFileUtils.ensureFileNameHasExtension('', []), '')
