@@ -33,7 +33,6 @@
 #include <functional>
 #include "qgsvectorlayerexporter.h"
 #include "qgsabstractproviderconnection.h"
-#include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsfields.h"
 #include "qgsexception.h"
 
@@ -43,6 +42,8 @@ class QgsTransaction;
 
 class QgsRasterDataProvider;
 class QgsMeshDataProvider;
+class QgsAbstractDatabaseProviderConnection;
+
 struct QgsMesh;
 
 /**

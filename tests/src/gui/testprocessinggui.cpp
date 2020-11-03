@@ -93,6 +93,7 @@
 #include "qgsprocessingparameterdxflayers.h"
 #include "qgsprocessingdxflayerswidgetwrapper.h"
 #include "qgsprocessingmeshdatasetwidget.h"
+#include "qgsabstractdatabaseproviderconnection.h"
 
 
 class TestParamType : public QgsProcessingParameterDefinition

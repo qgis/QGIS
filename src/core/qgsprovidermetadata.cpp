@@ -20,6 +20,7 @@
 #include "qgsdataprovider.h"
 #include "qgsmaplayer.h"
 #include "qgsexception.h"
+#include "qgsabstractdatabaseproviderconnection.h"
 
 QgsProviderMetadata::QgsProviderMetadata( QString const &key,
     QString const &description,
