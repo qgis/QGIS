@@ -391,7 +391,6 @@ QgsGeometry QgsExportMeshEdgesAlgorithm::meshElement( int index ) const
   return QgsGeometry( new QgsLineString( vertices ) );
 }
 
-///@endcond PRIVATE
 
 QString QgsExportMeshOnGrid::name() const {return QStringLiteral( "exportmeshongrid" );}
 
@@ -670,3 +669,5 @@ QSet<QgsMeshDatasetGroupMetadata::DataType> QgsExportMeshOnGrid::supportedDataTy
     QgsMeshDatasetGroupMetadata::DataOnFaces,
     QgsMeshDatasetGroupMetadata::DataOnVolumes} );
 }
+
+///@endcond PRIVATE
