@@ -29,13 +29,3 @@ QgsPointCloudDataProvider::QgsPointCloudDataProvider(
 
 QgsPointCloudDataProvider::~QgsPointCloudDataProvider() = default;
 
-
-QgsRectangle QgsPointCloudDataProvider::extent() const
-{
-  return index()->extent();
-}
-
-bool QgsPointCloudDataProvider::isValid() const
-{
-  return mIsValid;
-}

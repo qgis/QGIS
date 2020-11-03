@@ -36,11 +36,6 @@ Ctor
 %End
 
     ~QgsPointCloudDataProvider();
-    virtual QgsRectangle extent() const;
-
-    virtual bool isValid() const;
-
-
 
 };
 

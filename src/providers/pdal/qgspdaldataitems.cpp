@@ -1,9 +1,9 @@
 /***************************************************************************
-                         qgseptdataitems.cpp
+                         qgspdaldataitems.cpp
                          --------------------
-    begin                : October 2020
-    copyright            : (C) 2020 by Peter Petrik
-    email                : zilolv at gmail dot com
+  Date                 : November 2020
+  Copyright            : (C) 2020 by Peter Petrik
+  Email                : zilolv at gmail dot com
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,70 +15,65 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgseptdataitems.h"
+#include "qgspdaldataitems.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
-#include "qgsfileutils.h"
 
 #include <QFileInfo>
 #include <mutex>
 
-///@cond PRIVATE
-
-QgsEptLayerItem::QgsEptLayerItem( QgsDataItem *parent,
-                                  const QString &name, const QString &path, const QString &uri )
-  : QgsLayerItem( parent, name, path, uri, QgsLayerItem::PointCloud, QStringLiteral( "ept" ) )
+QgsPdalLayerItem::QgsPdalLayerItem( QgsDataItem *parent,
+                                    const QString &name, const QString &path, const QString &uri )
+  : QgsLayerItem( parent, name, path, uri, QgsLayerItem::PointCloud, QStringLiteral( "pdal" ) )
 {
   mToolTip = uri;
-  mIconName = QStringLiteral( "mIconEntwineLayer.svg" );
+  mIconName = QStringLiteral( "mIconPdalLayer.svg" );
   setState( Populated );
 }
 
-QString QgsEptLayerItem::layerName() const
+QString QgsPdalLayerItem::layerName() const
 {
   QFileInfo info( name() );
   return info.completeBaseName();
 }
 
 // ---------------------------------------------------------------------------
-QgsEptDataItemProvider::QgsEptDataItemProvider()
+QgsPdalDataItemProvider::QgsPdalDataItemProvider():
+  QgsDataItemProvider()
 {
-  QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ept" ) );
-  mFileFilter = metadata->filters( QgsProviderMetadata::FilterType::FilterPointCloud );
 }
 
-QString QgsEptDataItemProvider::name()
+QString QgsPdalDataItemProvider::name()
 {
-  return QStringLiteral( "ept" );
+  return QStringLiteral( "pdal" );
 }
 
-int QgsEptDataItemProvider::capabilities() const
+int QgsPdalDataItemProvider::capabilities() const
 {
   return QgsDataProvider::File;
 }
 
-QgsDataItem *QgsEptDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
+QgsDataItem *QgsPdalDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
   if ( path.isEmpty() )
     return nullptr;
 
   QgsDebugMsgLevel( "thePath = " + path, 2 );
 
-  const QFileInfo info( path );
+  // get suffix, removing .gz if present
+  QFileInfo info( path );
+  info.setFile( path );
 
   // allow only normal files
   if ( !info.isFile() )
     return nullptr;
 
   // Filter files by extension
-  if ( !QgsFileUtils::fileMatchesFilter( path, mFileFilter ) )
+  // TODO get file filter list from PDAL library
+  if ( !path.endsWith( QStringLiteral( "laz" ) ) )
     return nullptr;
 
-  QString name = info.dir().dirName();
+  QString name = info.baseName() + QStringLiteral( ".laz" );
 
-  return new QgsEptLayerItem( parentItem, name, path, path );
+  return new QgsPdalLayerItem( parentItem, name, path, path );
 }
-
-///@endcond
