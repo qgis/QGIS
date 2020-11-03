@@ -118,25 +118,25 @@ class TestQgsFileUtils(unittest.TestCase):
         files = QgsFileUtils.findFile(filename, nest, 1, 13)
         self.assertEqual(len(files), 0)
         # side nest
-        open(os.path.join(side_nest, filename), 'w+')
-        files = QgsFileUtils.findFile(os.path.join(base_folder, filename))
-        self.assertEqual(files[0], os.path.join(side_nest, filename).replace(os.sep, '/'))
+        with open(os.path.join(side_nest, filename), 'w+'):
+            files = QgsFileUtils.findFile(os.path.join(base_folder, filename))
+            self.assertEqual(files[0], os.path.join(side_nest, filename).replace(os.sep, '/'))
         # side + side nest  =  2
-        open(os.path.join(side_fold, filename), 'w+')
-        files = QgsFileUtils.findFile(filename, base_folder, 3, 4)
-        self.assertEqual(len(files), 2)
+        with open(os.path.join(side_fold, filename), 'w+'):
+            files = QgsFileUtils.findFile(filename, base_folder, 3, 4)
+            self.assertEqual(len(files), 2)
         # up
-        open(os.path.join(temp_folder, filename), 'w+')
-        files = QgsFileUtils.findFile(filename, base_folder, 3, 4)
-        self.assertEqual(files[0], os.path.join(temp_folder, filename).replace(os.sep, '/'))
+        with open(os.path.join(temp_folder, filename), 'w+'):
+            files = QgsFileUtils.findFile(filename, base_folder, 3, 4)
+            self.assertEqual(files[0], os.path.join(temp_folder, filename).replace(os.sep, '/'))
         # nest
-        open(os.path.join(nest, filename), 'w+')
-        files = QgsFileUtils.findFile(os.path.join(base_folder, filename))
-        self.assertEqual(files[0], os.path.join(nest, filename).replace(os.sep, '/'))
+        with open(os.path.join(nest, filename), 'w+'):
+            files = QgsFileUtils.findFile(os.path.join(base_folder, filename))
+            self.assertEqual(files[0], os.path.join(nest, filename).replace(os.sep, '/'))
         # base level
-        open(os.path.join(base_folder, filename), 'w+')
-        files = QgsFileUtils.findFile(filename, base_folder, 2, 4)
-        self.assertEqual(files[0], os.path.join(base_folder, filename).replace(os.sep, '/'))
+        with open(os.path.join(base_folder, filename), 'w+'):
+            files = QgsFileUtils.findFile(filename, base_folder, 2, 4)
+            self.assertEqual(files[0], os.path.join(base_folder, filename).replace(os.sep, '/'))
         # invalid path, too deep
         files = QgsFileUtils.findFile(filename, os.path.join(nest, 'nest2'), 2, 4)
         self.assertEqual(files[0], os.path.join(nest, filename).replace(os.sep, '/'))
