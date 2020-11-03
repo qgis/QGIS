@@ -44,6 +44,8 @@ class TestQgsEptProvider : public QObject
     void cleanup() {}// will be called after every testfunction.
 
     void filters();
+    void encodeUri();
+    void decodeUri();
 
   private:
     QString mTestDataDir;
@@ -85,6 +87,25 @@ void TestQgsEptProvider::filters()
 
   const QString registryPointCloudFilters = QgsProviderRegistry::instance()->filePointCloudFilters();
   QVERIFY( registryPointCloudFilters.contains( "(ept.json EPT.JSON)" ) );
+}
+
+void TestQgsEptProvider::encodeUri()
+{
+  QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ept" ) );
+  QVERIFY( metadata );
+
+  QVariantMap parts;
+  parts.insert( QStringLiteral( "path" ), QStringLiteral( "/home/point_clouds/ept.json" ) );
+  QCOMPARE( metadata->encodeUri( parts ), QStringLiteral( "/home/point_clouds/ept.json" ) );
+}
+
+void TestQgsEptProvider::decodeUri()
+{
+  QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ept" ) );
+  QVERIFY( metadata );
+
+  const QVariantMap parts = metadata->decodeUri( QStringLiteral( "/home/point_clouds/ept.json" ) );
+  QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QStringLiteral( "/home/point_clouds/ept.json" ) );
 }
 
 
