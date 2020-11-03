@@ -39,13 +39,13 @@ class CORE_EXPORT QgsProcessingParameterMeshDatasetGroups : public QgsProcessing
      * \param name name of the parameter
      * \param description description of the parameter
      * \param meshLayerParameterName name of the associated mesh layer parameter
-     * \param supportedDataType a set of data types supported by the parameter
+     * \param supportedDataType a set of int  for supported data type by the parameter, 0: on faces, 1: on vertices, 2: on volumes, 3: on edges
      * \param optional whether the parameter is optional
      */
     QgsProcessingParameterMeshDatasetGroups( const QString &name,
         const QString &description = QString(),
         const QString &meshLayerParameterName = QString(),
-        QSet<QgsMeshDatasetGroupMetadata::DataType> supportedDataType = QSet<QgsMeshDatasetGroupMetadata::DataType>(),
+        QSet<int> supportedDataType = QSet<int>(),
         bool optional = false );
 
     QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
@@ -62,14 +62,14 @@ class CORE_EXPORT QgsProcessingParameterMeshDatasetGroups : public QgsProcessing
     QString meshLayerParameterName() const;
 
     //! Returns whether the data type is supported by the parameter
-    bool isDataTypeSupported( const QgsMeshDatasetGroupMetadata::DataType &dataType ) const;
+    bool isDataTypeSupported( QgsMeshDatasetGroupMetadata::DataType dataType ) const;
 
     //! Returns the \a value as a list if dataset group indexes
     static QList<int> valueAsDatasetGroup( const QVariant &value );
 
   private:
     QString mMeshLayerParameterName;
-    QSet<QgsMeshDatasetGroupMetadata::DataType> mSupportedDataType;
+    QSet<int> mSupportedDataType;
 
     static bool valueIsAcceptable( const QVariant &input, bool allowEmpty );
 };

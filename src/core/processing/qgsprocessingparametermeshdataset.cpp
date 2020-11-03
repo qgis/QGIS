@@ -20,7 +20,7 @@
 QgsProcessingParameterMeshDatasetGroups::QgsProcessingParameterMeshDatasetGroups( const QString &name,
     const QString &description,
     const QString &meshLayerParameterName,
-    const QSet<QgsMeshDatasetGroupMetadata::DataType> supportedDataType,
+    const QSet<int> supportedDataType,
     bool optional ):
   QgsProcessingParameterDefinition( name, description, QVariant(), optional, QString() ),
   mMeshLayerParameterName( meshLayerParameterName ),
@@ -104,7 +104,7 @@ QString QgsProcessingParameterMeshDatasetGroups::meshLayerParameterName() const
   return mMeshLayerParameterName;
 }
 
-bool QgsProcessingParameterMeshDatasetGroups::isDataTypeSupported( const QgsMeshDatasetGroupMetadata::DataType &dataType ) const
+bool QgsProcessingParameterMeshDatasetGroups::isDataTypeSupported( QgsMeshDatasetGroupMetadata::DataType dataType ) const
 {
   return mSupportedDataType.contains( dataType );
 }

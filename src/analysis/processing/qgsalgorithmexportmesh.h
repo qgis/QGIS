@@ -43,7 +43,7 @@ class QgsExportMeshOnElement : public QgsProcessingAlgorithm
 
   private:
 
-    virtual QSet<QgsMeshDatasetGroupMetadata::DataType> supportedDataType() const = 0;
+    virtual QSet<int> supportedDataType() const = 0;
     virtual QgsProcessing::SourceType sinkType() const = 0;
     virtual QgsWkbTypes::Type sinkGeometryType() const = 0;
     virtual QgsGeometry meshElement( int index ) const = 0;
@@ -73,9 +73,9 @@ class QgsExportMeshVerticesAlgorithm : public QgsExportMeshOnElement
 
   private:
     QgsWkbTypes::Type sinkGeometryType() const override {return QgsWkbTypes::PointZ;}
-    QSet<QgsMeshDatasetGroupMetadata::DataType> supportedDataType() const override
+    QSet<int> supportedDataType() const override
     {
-      return QSet<QgsMeshDatasetGroupMetadata::DataType>( {QgsMeshDatasetGroupMetadata::DataOnVertices} );
+      return QSet<int>( {QgsMeshDatasetGroupMetadata::DataOnVertices} );
     }
     QgsProcessing::SourceType sinkType() const override {return QgsProcessing::TypeVectorPoint;}
     QgsGeometry meshElement( int index ) const override;
@@ -94,9 +94,9 @@ class QgsExportMeshFacesAlgorithm : public QgsExportMeshOnElement
 
   private:
     QgsWkbTypes::Type sinkGeometryType() const override {return QgsWkbTypes::PolygonZ;}
-    QSet<QgsMeshDatasetGroupMetadata::DataType> supportedDataType() const override
+    QSet<int> supportedDataType() const override
     {
-      return QSet<QgsMeshDatasetGroupMetadata::DataType>( {QgsMeshDatasetGroupMetadata::DataOnFaces} );
+      return QSet<int>( {QgsMeshDatasetGroupMetadata::DataOnFaces} );
     }
     QgsProcessing::SourceType sinkType() const override {return QgsProcessing::TypeVectorPolygon;}
     QgsGeometry meshElement( int index ) const override;
@@ -115,9 +115,9 @@ class QgsExportMeshEdgesAlgorithm : public QgsExportMeshOnElement
 
   private:
     QgsWkbTypes::Type sinkGeometryType() const override {return QgsWkbTypes::LineStringZ;}
-    QSet<QgsMeshDatasetGroupMetadata::DataType> supportedDataType() const override
+    QSet<int> supportedDataType() const override
     {
-      return QSet<QgsMeshDatasetGroupMetadata::DataType>( {QgsMeshDatasetGroupMetadata::DataOnEdges} );
+      return QSet<int>( {QgsMeshDatasetGroupMetadata::DataOnEdges} );
     }
     QgsProcessing::SourceType sinkType() const override {return QgsProcessing::TypeVectorLine;}
     QgsGeometry meshElement( int index ) const override;
@@ -143,7 +143,7 @@ class QgsExportMeshOnGrid : public QgsProcessingAlgorithm
 
   private:
 
-    QSet<QgsMeshDatasetGroupMetadata::DataType> supportedDataType();
+    QSet<int> supportedDataType();
 
     QgsTriangularMesh mTriangularMesh;
     struct DataGroup

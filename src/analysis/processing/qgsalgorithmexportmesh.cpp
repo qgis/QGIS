@@ -145,29 +145,29 @@ void QgsExportMeshOnElement::initAlgorithm( const QVariantMap &configuration )
 {
   Q_UNUSED( configuration );
 
-  addParameter( new QgsProcessingParameterMeshLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input Mesh Layer" ) ) );
+  addParameter( new QgsProcessingParameterMeshLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input mesh layer" ) ) );
 
 
   addParameter( new QgsProcessingParameterMeshDatasetGroups(
                   QStringLiteral( "DATASET_GROUPS" ),
-                  QObject::tr( "Dataset Groups" ),
+                  QObject::tr( "Dataset groups" ),
                   QStringLiteral( "INPUT" ),
                   supportedDataType(), true ) );
 
   addParameter( new QgsProcessingParameterMeshDatasetTime(
                   QStringLiteral( "DATASET_TIME" ),
-                  QObject::tr( "Dataset Time" ),
+                  QObject::tr( "Dataset time" ),
                   QStringLiteral( "INPUT" ),
                   QStringLiteral( "DATASET_GROUPS" ) ) );
 
-  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS_OUTPUT" ), QObject::tr( "Output Coordinate System" ), QVariant(), true ) );
+  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS_OUTPUT" ), QObject::tr( "Output coordinate system" ), QVariant(), true ) );
 
   QStringList exportVectorOptions;
   exportVectorOptions << QObject::tr( "Cartesian (x,y)" )
                       << QObject::tr( "Polar (magnitude,degree)" )
-                      << QObject::tr( "Cartesian and Polar" );
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "VECTOR_OPTION" ), QObject::tr( "Export Vector Option" ), exportVectorOptions, false, 0 ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output Vector Layer" ), sinkType() ) );
+                      << QObject::tr( "Cartesian and polar" );
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "VECTOR_OPTION" ), QObject::tr( "Export vector option" ), exportVectorOptions, false, 0 ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output vector layer" ), sinkType() ) );
 }
 
 bool QgsExportMeshOnElement::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -323,8 +323,6 @@ QVariantMap QgsExportMeshOnElement::processAlgorithm( const QVariantMap &paramet
     }
   }
 
-  const QString fileName = parameterAsFile( parameters, QStringLiteral( "OUTPUT" ), context );
-
   QVariantMap ret;
   ret[QStringLiteral( "OUTPUT" )] = identifier;
 
@@ -420,13 +418,13 @@ void QgsExportMeshOnGrid::initAlgorithm( const QVariantMap &configuration )
 
   addParameter( new QgsProcessingParameterMeshDatasetGroups(
                   QStringLiteral( "DATASET_GROUPS" ),
-                  QObject::tr( "Dataset Groups" ),
+                  QObject::tr( "Dataset groups" ),
                   QStringLiteral( "INPUT" ),
                   supportedDataType() ) );
 
   addParameter( new QgsProcessingParameterMeshDatasetTime(
                   QStringLiteral( "DATASET_TIME" ),
-                  QObject::tr( "Dataset Time" ),
+                  QObject::tr( "Dataset time" ),
                   QStringLiteral( "INPUT" ),
                   QStringLiteral( "DATASET_GROUPS" ) ) );
 
@@ -434,14 +432,14 @@ void QgsExportMeshOnGrid::initAlgorithm( const QVariantMap &configuration )
 
   addParameter( new QgsProcessingParameterDistance( QStringLiteral( "GRID_SPACING" ), QObject::tr( "Grid spacing" ), 10, QStringLiteral( "INPUT" ), false ) );
 
-  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS_OUTPUT" ), QObject::tr( "Output Coordinate System" ), QVariant(), true ) );
+  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS_OUTPUT" ), QObject::tr( "Output coordinate system" ), QVariant(), true ) );
 
   QStringList exportVectorOptions;
   exportVectorOptions << QObject::tr( "Cartesian (x,y)" )
                       << QObject::tr( "Polar (magnitude,degree)" )
-                      << QObject::tr( "Cartesian and Polar" );
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "VECTOR_OPTION" ), QObject::tr( "Export Vector Option" ), exportVectorOptions, false, 0 ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output Vector Layer" ), QgsProcessing::TypeVectorPoint ) );
+                      << QObject::tr( "Cartesian and polar" );
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "VECTOR_OPTION" ), QObject::tr( "Export vector option" ), exportVectorOptions, false, 0 ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output vector layer" ), QgsProcessing::TypeVectorPoint ) );
 }
 
 bool QgsExportMeshOnGrid::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -661,9 +659,9 @@ QVariantMap QgsExportMeshOnGrid::processAlgorithm( const QVariantMap &parameters
   return ret;
 }
 
-QSet<QgsMeshDatasetGroupMetadata::DataType> QgsExportMeshOnGrid::supportedDataType()
+QSet<int> QgsExportMeshOnGrid::supportedDataType()
 {
-  return QSet<QgsMeshDatasetGroupMetadata::DataType>(
+  return QSet<int>(
   {
     QgsMeshDatasetGroupMetadata::DataOnVertices,
     QgsMeshDatasetGroupMetadata::DataOnFaces,

@@ -8023,7 +8023,7 @@ void TestQgsProcessing::parameterMeshDatasetGroups()
   QgsProject project;
   context.setProject( &project );
 
-  QSet<QgsMeshDatasetGroupMetadata::DataType> supportedData;
+  QSet<int> supportedData;
   supportedData << QgsMeshDatasetGroupMetadata::DataOnVertices;
   std::unique_ptr< QgsProcessingParameterMeshDatasetGroups> def(
     new QgsProcessingParameterMeshDatasetGroups( QStringLiteral( "dataset groups" ), QStringLiteral( "groups" ), QString(), supportedData ) );
