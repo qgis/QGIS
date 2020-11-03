@@ -88,7 +88,7 @@ class CORE_EXPORT QgsProviderRegistry
     //! Means of accessing canonical single instance
     static QgsProviderRegistry *instance( const QString &pluginPath = QString() );
 
-    virtual ~QgsProviderRegistry();
+    ~QgsProviderRegistry();
 
     /**
      * Returns path for the library of the provider.
@@ -147,7 +147,7 @@ class CORE_EXPORT QgsProviderRegistry
      * \see createProvider()
      * \since QGIS 3.10
      */
-    virtual QgsRasterDataProvider *createRasterDataProvider(
+    QgsRasterDataProvider *createRasterDataProvider(
       const QString &providerKey,
       const QString &uri,
       const QString &format,
@@ -295,7 +295,7 @@ class CORE_EXPORT QgsProviderRegistry
      *
      * It'd be nice to eventually be raster/vector neutral.
      */
-    virtual QString fileVectorFilters() const;
+    QString fileVectorFilters() const;
 
     /**
      * Returns raster file filter string
@@ -308,7 +308,7 @@ class CORE_EXPORT QgsProviderRegistry
      *
      * \note This replaces QgsRasterLayer::buildSupportedRasterFileFilter()
      */
-    virtual QString fileRasterFilters() const;
+    QString fileRasterFilters() const;
 
     /**
      * Returns mesh file filter string
@@ -323,7 +323,7 @@ class CORE_EXPORT QgsProviderRegistry
      *
      * \since QGIS 3.6
      */
-    virtual QString fileMeshFilters() const;
+    QString fileMeshFilters() const;
 
     /**
      * Returns mesh's dataset file filter string
@@ -338,14 +338,14 @@ class CORE_EXPORT QgsProviderRegistry
      *
      * \since QGIS 3.6
      */
-    virtual QString fileMeshDatasetFilters() const;
+    QString fileMeshDatasetFilters() const;
 
     //! Returns a string containing the available database drivers
-    virtual QString databaseDrivers() const;
+    QString databaseDrivers() const;
     //! Returns a string containing the available directory drivers
-    virtual QString directoryDrivers() const;
+    QString directoryDrivers() const;
     //! Returns a string containing the available protocol drivers
-    virtual QString protocolDrivers() const;
+    QString protocolDrivers() const;
 
     /**
      * \deprecated since QGIS 3.10 - does nothing - use QgsGui::providerGuiRegistry()

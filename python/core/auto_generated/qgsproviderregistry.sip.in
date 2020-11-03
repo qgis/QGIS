@@ -49,7 +49,7 @@ ogr and postgres.
 Means of accessing canonical single instance
 %End
 
-    virtual ~QgsProviderRegistry();
+    ~QgsProviderRegistry();
 
  QString library( const QString &providerKey ) const /Deprecated/;
 %Docstring
@@ -107,7 +107,7 @@ Returns the provider capabilities
 %End
 
 
-    virtual QgsRasterDataProvider *createRasterDataProvider(
+    QgsRasterDataProvider *createRasterDataProvider(
       const QString &providerKey,
       const QString &uri,
       const QString &format,
@@ -281,7 +281,7 @@ Returns list of available providers by their keys
 Returns metadata of the provider or ``None`` if not found
 %End
 
-    virtual QString fileVectorFilters() const;
+    QString fileVectorFilters() const;
 %Docstring
 Returns vector file filter string
 
@@ -296,7 +296,7 @@ fileVectorFilters to a string, which is then returned.
 It'd be nice to eventually be raster/vector neutral.
 %End
 
-    virtual QString fileRasterFilters() const;
+    QString fileRasterFilters() const;
 %Docstring
 Returns raster file filter string
 
@@ -311,7 +311,7 @@ buildSupportedRasterFileFilter to a string, which is then returned.
    This replaces :py:func:`QgsRasterLayer.buildSupportedRasterFileFilter()`
 %End
 
-    virtual QString fileMeshFilters() const;
+    QString fileMeshFilters() const;
 %Docstring
 Returns mesh file filter string
 
@@ -326,7 +326,7 @@ fileMeshFilters to a string, which is then returned.
 .. versionadded:: 3.6
 %End
 
-    virtual QString fileMeshDatasetFilters() const;
+    QString fileMeshDatasetFilters() const;
 %Docstring
 Returns mesh's dataset file filter string
 
@@ -341,15 +341,15 @@ fileMeshFilters to a string, which is then returned.
 .. versionadded:: 3.6
 %End
 
-    virtual QString databaseDrivers() const;
+    QString databaseDrivers() const;
 %Docstring
 Returns a string containing the available database drivers
 %End
-    virtual QString directoryDrivers() const;
+    QString directoryDrivers() const;
 %Docstring
 Returns a string containing the available directory drivers
 %End
-    virtual QString protocolDrivers() const;
+    QString protocolDrivers() const;
 %Docstring
 Returns a string containing the available protocol drivers
 %End
