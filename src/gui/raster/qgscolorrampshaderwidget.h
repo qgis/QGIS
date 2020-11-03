@@ -18,6 +18,8 @@
 #ifndef QGSCOLORRAMPSHADERWIDGET_H
 #define QGSCOLORRAMPSHADERWIDGET_H
 
+#include <QStyledItemDelegate>
+
 #include "qgis_sip.h"
 #include "qgscolorrampshader.h"
 #include "qgsrasterrenderer.h"
@@ -26,6 +28,39 @@
 #include "qgsrasterrendererwidget.h"
 
 class QgsRasterDataProvider;
+
+
+#ifndef SIP_RUN
+///@cond PRIVATE
+
+/**
+ * QgsLocaleAwareNumericLineEditDelegate class provides a QLineEdit editor
+ * for QgsColorRampShaderWidget value columns, it accepts localized numeric inputs
+ * and displays the proper number of decimals according to the raster band data type.
+ */
+class QgsLocaleAwareNumericLineEditDelegate: public QStyledItemDelegate
+{
+
+    Q_OBJECT
+
+  public:
+
+    QgsLocaleAwareNumericLineEditDelegate( Qgis::DataType dataType, QWidget *parent = nullptr );
+
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+
+    // QAbstractItemDelegate interface
+  public:
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
+
+  private:
+
+    Qgis::DataType mDataType;
+
+};
+///@endcond
+#endif
 
 /**
  * \ingroup gui
@@ -77,6 +112,9 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
 
     //! Sets widget state from the color ramp shader
     void setFromShader( const QgsColorRampShader &colorRampShader );
+
+    //! Item data role to store the unmodified double value of the item entry
+    static int VALUE_ROLE;
 
   signals:
     //! Color ramp tree has changed
@@ -146,6 +184,12 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
     void setLineEditValue( QLineEdit *lineEdit, double value );
     double lineEditValue( const QLineEdit *lineEdit ) const;
     void resetClassifyButton();
+
+#ifdef QGISDEBUG
+    //! Dump all the classes for debugging purposes
+    void dumpClasses();
+#endif
+
     double mMin = std::numeric_limits<double>::quiet_NaN();
     double mMax = std::numeric_limits<double>::quiet_NaN();
 
@@ -153,6 +197,7 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
     QgsRasterDataProvider *mRasterDataProvider = nullptr;
     int mBand = -1;
     QgsRectangle mExtent;
+
 
 };
 

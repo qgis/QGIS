@@ -32,6 +32,7 @@
 #include "qgsrasterrendererutils.h"
 #include "qgsfileutils.h"
 #include "qgsguiutils.h"
+#include "qgsdoublevalidator.h"
 
 #include <QCursor>
 #include <QPushButton>
@@ -41,6 +42,9 @@
 #include <QMessageBox>
 #include <QTextStream>
 #include <QTreeView>
+
+
+int QgsColorRampShaderWidget::VALUE_ROLE = Qt::ItemDataRole::UserRole + 1;
 
 QgsColorRampShaderWidget::QgsColorRampShaderWidget( QWidget *parent )
   : QWidget( parent )
@@ -66,8 +70,6 @@ QgsColorRampShaderWidget::QgsColorRampShaderWidget( QWidget *parent )
 
   QgsColorSwatchDelegate *swatchDelegate = new QgsColorSwatchDelegate( this );
   mColormapTreeWidget->setItemDelegateForColumn( ColorColumn, swatchDelegate );
-
-
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   mColormapTreeWidget->setColumnWidth( ColorColumn, Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 6.6 );
@@ -130,6 +132,7 @@ void QgsColorRampShaderWidget::setRasterBand( int band )
   {
     const int maxDigits { QgsGuiUtils::significantDigits( mRasterDataProvider->dataType( mBand ) ) };
     mLabelPrecisionSpinBox->setMaximum( maxDigits );
+    mColormapTreeWidget->setItemDelegateForColumn( ValueColumn, new QgsLocaleAwareNumericLineEditDelegate( mRasterDataProvider->dataType( mBand ), this ) );
   }
 }
 
@@ -157,8 +160,8 @@ QgsColorRampShader QgsColorRampShaderWidget::shader() const
       continue;
     }
     QgsColorRampShader::ColorRampItem newColorRampItem;
-    newColorRampItem.value = QLocale().toDouble( currentItem->text( ValueColumn ) );
-    newColorRampItem.color = currentItem->data( ColorColumn, Qt::EditRole ).value<QColor>();
+    newColorRampItem.value = currentItem->data( ValueColumn, VALUE_ROLE ).toDouble();
+    newColorRampItem.color = currentItem->data( ColorColumn, Qt::ItemDataRole::EditRole ).value<QColor>();
     newColorRampItem.label = currentItem->text( LabelColumn );
     colorRampItems.append( newColorRampItem );
   }
@@ -175,6 +178,11 @@ QgsColorRampShader QgsColorRampShaderWidget::shader() const
 
 void QgsColorRampShaderWidget::autoLabel()
 {
+
+#ifdef QGISDEBUG
+  dumpClasses();
+#endif
+
   QgsColorRampShader::Type interpolation = static_cast< QgsColorRampShader::Type >( mColorInterpolationComboBox->currentData().toInt() );
   bool discrete = interpolation == QgsColorRampShader::Discrete;
   QString unit = mUnitLineEdit->text();
@@ -183,14 +191,47 @@ void QgsColorRampShaderWidget::autoLabel()
 
   auto applyPrecision = [ = ]( const QString & value )
   {
-    double val { QLocale().toDouble( value ) };
-    if ( mLabelPrecisionSpinBox->value() <  0 )
+    Qgis::DataType dataType { mRasterDataProvider ? mRasterDataProvider->dataType( mBand ) : Qgis::DataType::Float64 };
+    switch ( dataType )
     {
-      const double factor = std::pow( 10, - mLabelPrecisionSpinBox->value() );
-      val = static_cast<qlonglong>( val / factor ) * factor;
-      return QLocale().toString( val, 'f', 0 );
+      case Qgis::DataType::Int16:
+      case Qgis::DataType::UInt16:
+      case Qgis::DataType::Int32:
+      case Qgis::DataType::UInt32:
+      case Qgis::DataType::Byte:
+      case Qgis::DataType::CInt16:
+      case Qgis::DataType::CInt32:
+      case Qgis::DataType::ARGB32:
+      case Qgis::DataType::ARGB32_Premultiplied:
+      {
+        return QLocale().toString( QLocale().toLongLong( value ) );
+      }
+      case Qgis::DataType::Float32:
+      case Qgis::DataType::CFloat32:
+      {
+        double val { value.toFloat( ) };
+        if ( mLabelPrecisionSpinBox->value() <  0 )
+        {
+          const double factor = std::pow( 10, - mLabelPrecisionSpinBox->value() );
+          val = static_cast<qlonglong>( val / factor ) * factor;
+          return QLocale().toString( val, 'f', 0 );
+        }
+        return QLocale().toString( val, 'f', mLabelPrecisionSpinBox->value() );
+      }
+      case Qgis::DataType::Float64:
+      case Qgis::DataType::CFloat64:
+      case Qgis::DataType::UnknownDataType:
+      {
+        double val { value.toDouble( ) };
+        if ( mLabelPrecisionSpinBox->value() <  0 )
+        {
+          const double factor = std::pow( 10, - mLabelPrecisionSpinBox->value() );
+          val = static_cast<qlonglong>( val / factor ) * factor;
+          return QLocale().toString( val, 'f', 0 );
+        }
+        return QLocale().toString( val, 'f', mLabelPrecisionSpinBox->value() );
+      }
     }
-    return QLocale().toString( val, 'f', mLabelPrecisionSpinBox->value() );
   };
 
   QTreeWidgetItem *currentItem = nullptr;
@@ -207,20 +248,20 @@ void QgsColorRampShaderWidget::autoLabel()
     {
       if ( i == 0 )
       {
-        label = "<= " + applyPrecision( currentItem->text( ValueColumn ) ) + unit;
+        label = "<= " + applyPrecision( currentItem->data( ValueColumn, VALUE_ROLE ).toString() ) + unit;
       }
-      else if ( QLocale().toDouble( currentItem->text( ValueColumn ) ) == std::numeric_limits<double>::infinity() )
+      else if ( currentItem->data( ValueColumn, VALUE_ROLE ).toDouble( ) == std::numeric_limits<double>::infinity() )
       {
-        label = "> " + applyPrecision( mColormapTreeWidget->topLevelItem( i - 1 )->text( ValueColumn ) ) + unit;
+        label = "> " + applyPrecision( mColormapTreeWidget->topLevelItem( i - 1 )->data( ValueColumn, VALUE_ROLE ).toString() ) + unit;
       }
       else
       {
-        label = applyPrecision( mColormapTreeWidget->topLevelItem( i - 1 )->text( ValueColumn ) ) + " - " + applyPrecision( currentItem->text( ValueColumn ) ) + unit;
+        label = applyPrecision( mColormapTreeWidget->topLevelItem( i - 1 )->data( ValueColumn, VALUE_ROLE ).toString() ) + " - " + applyPrecision( currentItem->data( ValueColumn, VALUE_ROLE ).toString() ) + unit;
       }
     }
     else
     {
-      label = applyPrecision( currentItem->text( ValueColumn ) ) + unit;
+      label = applyPrecision( currentItem->data( ValueColumn, VALUE_ROLE ).toString() ) + unit;
     }
 
     if ( currentItem->text( LabelColumn ).isEmpty() || currentItem->text( LabelColumn ) == label || currentItem->foreground( LabelColumn ).color() == QColor( Qt::gray ) )
@@ -254,7 +295,7 @@ void QgsColorRampShaderWidget::setUnitFromLabels()
       {
         label = "<= " + currentItem->text( ValueColumn );
       }
-      else if ( currentItem->text( ValueColumn ).toDouble() == std::numeric_limits<double>::infinity() )
+      else if ( currentItem->data( ValueColumn, VALUE_ROLE ).toDouble() == std::numeric_limits<double>::infinity() )
       {
         label = "> " + mColormapTreeWidget->topLevelItem( i - 1 )->text( ValueColumn );
       }
@@ -294,11 +335,25 @@ void QgsColorRampShaderWidget::setUnitFromLabels()
   }
 }
 
+#ifdef QGISDEBUG
+void QgsColorRampShaderWidget::dumpClasses()
+{
+  for ( int row = 0; row < mColormapTreeWidget->model()->rowCount(); ++row )
+  {
+    const auto labelData { mColormapTreeWidget->model()->itemData( mColormapTreeWidget->model()->index( row, LabelColumn ) ) };
+    const auto valueData { mColormapTreeWidget->model()->itemData( mColormapTreeWidget->model()->index( row, ValueColumn ) ) };
+    qDebug() << "Class" << row << ":" <<  labelData[ Qt::ItemDataRole::DisplayRole ] << valueData[ Qt::ItemDataRole::DisplayRole ] << valueData[ VALUE_ROLE ];
+  }
+}
+#endif
+
 void QgsColorRampShaderWidget::mAddEntryButton_clicked()
 {
   QgsTreeWidgetItemObject *newItem = new QgsTreeWidgetItemObject( mColormapTreeWidget );
   newItem->setText( ValueColumn, QStringLiteral( "0" ) );
-  newItem->setData( ColorColumn, Qt::EditRole, QColor( Qt::magenta ) );
+  newItem->setData( ValueColumn, VALUE_ROLE, 0 );
+  newItem->setSortData( ValueColumn, 0 );
+  newItem->setData( ColorColumn, Qt::ItemDataRole::EditRole, QColor( Qt::magenta ) );
   newItem->setText( LabelColumn, QString() );
   newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
   connect( newItem, &QgsTreeWidgetItemObject::itemEdited,
@@ -358,8 +413,10 @@ void QgsColorRampShaderWidget::classify()
   for ( ; it != colorRampItemList.end(); ++it )
   {
     QgsTreeWidgetItemObject *newItem = new QgsTreeWidgetItemObject( mColormapTreeWidget );
+    newItem->setSortData( ValueColumn, it->value );
     newItem->setText( ValueColumn, QLocale().toString( it->value, 'g', 15 ) );
-    newItem->setData( ColorColumn, Qt::EditRole, it->color );
+    newItem->setData( ValueColumn, VALUE_ROLE, it->value );
+    newItem->setData( ColorColumn, Qt::ItemDataRole::EditRole, it->color );
     newItem->setText( LabelColumn, QString() ); // Labels will be populated in autoLabel()
     newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
     connect( newItem, &QgsTreeWidgetItemObject::itemEdited,
@@ -426,9 +483,9 @@ void QgsColorRampShaderWidget::applyColorRamp()
         continue;
       }
 
-      double value = QLocale().toDouble( currentItem->text( ValueColumn ) );
+      double value = currentItem->data( ValueColumn, VALUE_ROLE ).toDouble( );
       double position = ( value - min ) / ( max - min );
-      whileBlocking( static_cast<QgsTreeWidgetItemObject *>( currentItem ) )->setData( ColorColumn, Qt::EditRole, ramp->color( position ) );
+      whileBlocking( static_cast<QgsTreeWidgetItemObject *>( currentItem ) )->setData( ColorColumn, Qt::ItemDataRole::EditRole, ramp->color( position ) );
     }
 
     emit widgetChanged();
@@ -446,13 +503,20 @@ void QgsColorRampShaderWidget::populateColormapTreeWidget( const QList<QgsColorR
   for ( ; it != colorRampItems.constEnd(); ++it )
   {
     QgsTreeWidgetItemObject *newItem = new QgsTreeWidgetItemObject( mColormapTreeWidget );
+    newItem->setSortData( ValueColumn, it->value );
     newItem->setText( ValueColumn, QLocale().toString( it->value, 'g', 15 ) );
-    newItem->setData( ColorColumn, Qt::EditRole, it->color );
+    newItem->setData( ValueColumn, VALUE_ROLE, it->value );
+    newItem->setData( ColorColumn, Qt::ItemDataRole::EditRole, it->color );
     newItem->setText( LabelColumn, it->label );
     newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
     connect( newItem, &QgsTreeWidgetItemObject::itemEdited,
              this, &QgsColorRampShaderWidget::mColormapTreeWidget_itemEdited );
   }
+
+#ifdef QGISDEBUG
+  dumpClasses();
+#endif
+
   setUnitFromLabels();
 }
 
@@ -534,8 +598,8 @@ void QgsColorRampShaderWidget::mExportToFileButton_clicked()
     }
 
     QgsColorRampShader::ColorRampItem item;
-    item.value = QLocale().toDouble( currentItem->text( ValueColumn ) );
-    item.color = currentItem->data( ColorColumn, Qt::EditRole ).value<QColor>();
+    item.value = currentItem->data( ValueColumn, VALUE_ROLE ).toDouble( );
+    item.color = currentItem->data( ColorColumn, Qt::ItemDataRole::EditRole ).value<QColor>();
     item.label = currentItem->text( LabelColumn );
     colorRampItems << item;
   }
@@ -690,10 +754,19 @@ bool QgsColorRampShaderWidget::colormapMinMax( double &min, double &max ) const
     return false;
   }
 
-  min = QLocale().toDouble( item->text( ValueColumn ) );
-  item = mColormapTreeWidget->topLevelItem( mColormapTreeWidget->topLevelItemCount() - 1 );
-  max = QLocale().toDouble( item->text( ValueColumn ) );
-
+  // If using discrete, the first and last items contain the upper and lower
+  // values of the first and last classes, we don't want these values but real min/max
+  if ( ! std::isnan( mMin ) && ! std::isnan( mMax ) && static_cast< QgsColorRampShader::Type >( mColorInterpolationComboBox->currentData().toInt() ) == QgsColorRampShader::Type::Discrete )
+  {
+    min = mMin;
+    max = mMax;
+  }
+  else
+  {
+    min = item->data( ValueColumn, VALUE_ROLE ).toDouble();
+    item = mColormapTreeWidget->topLevelItem( mColormapTreeWidget->topLevelItemCount() - 1 );
+    max = item->data( ValueColumn, VALUE_ROLE ).toDouble();
+  }
   return true;
 }
 
@@ -732,7 +805,7 @@ void QgsColorRampShaderWidget::changeColor()
   }
   QTreeWidgetItem *firstItem = itemList.first();
 
-  QColor currentColor = firstItem->data( ColorColumn, Qt::EditRole ).value<QColor>();
+  QColor currentColor = firstItem->data( ColorColumn, Qt::ItemDataRole::EditRole ).value<QColor>();
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( qobject_cast< QWidget * >( parent() ) );
   if ( panel && panel->dockMode() )
   {
@@ -743,7 +816,7 @@ void QgsColorRampShaderWidget::changeColor()
     {
       for ( QTreeWidgetItem *item : qgis::as_const( itemList ) )
       {
-        item->setData( ColorColumn, Qt::EditRole, newColor );
+        item->setData( ColorColumn, Qt::ItemDataRole::EditRole, newColor );
       }
 
       loadMinimumMaximumFromTree();
@@ -759,7 +832,7 @@ void QgsColorRampShaderWidget::changeColor()
     {
       for ( QTreeWidgetItem *item : qgis::as_const( itemList ) )
       {
-        item->setData( ColorColumn, Qt::EditRole, newColor );
+        item->setData( ColorColumn, Qt::ItemDataRole::EditRole, newColor );
       }
 
       loadMinimumMaximumFromTree();
@@ -779,7 +852,7 @@ void QgsColorRampShaderWidget::changeOpacity()
   QTreeWidgetItem *firstItem = itemList.first();
 
   bool ok;
-  double oldOpacity = firstItem->data( ColorColumn, Qt::EditRole ).value<QColor>().alpha() / 255 * 100;
+  double oldOpacity = firstItem->data( ColorColumn, Qt::ItemDataRole::EditRole ).value<QColor>().alpha() / 255 * 100;
   double opacity = QInputDialog::getDouble( this, tr( "Opacity" ), tr( "Change color opacity [%]" ), oldOpacity, 0.0, 100.0, 0, &ok );
   if ( ok )
   {
@@ -787,12 +860,81 @@ void QgsColorRampShaderWidget::changeOpacity()
     const auto constItemList = itemList;
     for ( QTreeWidgetItem *item : constItemList )
     {
-      QColor newColor = item->data( ColorColumn, Qt::EditRole ).value<QColor>();
+      QColor newColor = item->data( ColorColumn, Qt::ItemDataRole::EditRole ).value<QColor>();
       newColor.setAlpha( newOpacity );
-      item->setData( ColorColumn, Qt::EditRole, newColor );
+      item->setData( ColorColumn, Qt::ItemDataRole::EditRole, newColor );
     }
 
     loadMinimumMaximumFromTree();
     emit widgetChanged();
   }
 }
+
+QgsLocaleAwareNumericLineEditDelegate::QgsLocaleAwareNumericLineEditDelegate( Qgis::DataType dataType, QWidget *parent )
+  : QStyledItemDelegate( parent )
+  , mDataType( dataType )
+{
+}
+
+QWidget *QgsLocaleAwareNumericLineEditDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+  Q_UNUSED( option )
+  Q_UNUSED( index )
+  auto editor = new QLineEdit{ parent };
+  return editor;
+}
+
+void QgsLocaleAwareNumericLineEditDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
+{
+  QLineEdit *lineEdit { qobject_cast<QLineEdit *>( editor ) };
+  if ( ! lineEdit )
+  {
+    QStyledItemDelegate::setEditorData( editor, index );
+  }
+
+  const QVariant value { index.data( QgsColorRampShaderWidget::VALUE_ROLE ) };
+
+  switch ( mDataType )
+  {
+    case Qgis::DataType::Int16:
+    case Qgis::DataType::UInt16:
+    case Qgis::DataType::Int32:
+    case Qgis::DataType::UInt32:
+    case Qgis::DataType::Byte:
+    case Qgis::DataType::CInt16:
+    case Qgis::DataType::CInt32:
+    case Qgis::DataType::ARGB32:
+    case Qgis::DataType::ARGB32_Premultiplied:
+    {
+      lineEdit->setText( QLocale().toString( value.toLongLong() ) );
+      break;
+    }
+    case Qgis::DataType::Float32:
+    case Qgis::DataType::CFloat32:
+    {
+      float val { value.toFloat( ) };
+      lineEdit->setText( QgsGuiUtils::displayValueWithMaximumDecimals( mDataType, val ) );
+      break;
+    }
+    case Qgis::DataType::Float64:
+    case Qgis::DataType::CFloat64:
+    case Qgis::DataType::UnknownDataType:
+    {
+      lineEdit->setText( QgsGuiUtils::displayValueWithMaximumDecimals( mDataType, value.toDouble( ) ) );
+      break;
+    }
+  }
+}
+
+void QgsLocaleAwareNumericLineEditDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
+{
+  QLineEdit *lineEdit { qobject_cast<QLineEdit *>( editor ) };
+  if ( ! editor )
+  {
+    QStyledItemDelegate::setModelData( editor, model, index );
+  }
+  const double value { QgsDoubleValidator::toDouble( lineEdit->text() ) };
+  model->setData( index, value, QgsColorRampShaderWidget::VALUE_ROLE );
+  model->setData( index, QgsGuiUtils::displayValueWithMaximumDecimals( mDataType, value ), Qt::ItemDataRole::DisplayRole );
+}
+
