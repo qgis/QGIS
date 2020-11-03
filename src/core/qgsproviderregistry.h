@@ -283,56 +283,51 @@ class CORE_EXPORT QgsProviderRegistry
     QgsProviderMetadata *providerMetadata( const QString &providerKey ) const;
 
     /**
-     * Returns vector file filter string
+     * Returns a file filter string for supported vector files.
      *
      * Returns a string suitable for a QFileDialog of vector file formats
      * supported by all data providers.
      *
-     * This walks through all data providers appending calls to their
-     * fileVectorFilters to a string, which is then returned.
-     *
-     * \note
-     *
-     * It'd be nice to eventually be raster/vector neutral.
+     * \see fileRasterFilters()
+     * \see fileMeshFilters()
+     * \see filePointCloudFilters()
      */
     QString fileVectorFilters() const;
 
     /**
-     * Returns raster file filter string
+     * Returns a file filter string for supported raster files.
      *
      * Returns a string suitable for a QFileDialog of raster file formats
      * supported by all data providers.
      *
-     * This walks through all data providers appending calls to their
-     * buildSupportedRasterFileFilter to a string, which is then returned.
-     *
      * \note This replaces QgsRasterLayer::buildSupportedRasterFileFilter()
+     *
+     * \see fileVectorFilters()
+     * \see fileMeshFilters()
+     * \see filePointCloudFilters()
      */
     QString fileRasterFilters() const;
 
     /**
-     * Returns mesh file filter string
+     * Returns a file filter string for supported mesh files.
      *
      * Returns a string suitable for a QFileDialog of mesh file formats
      * supported by all data providers.
      *
-     * This walks through all data providers appending calls to their
-     * fileMeshFilters to a string, which is then returned.
-     *
      * \see fileMeshDatasetFilters()
+     * \see fileRasterFilters()
+     * \see fileVectorFilters()
+     * \see filePointCloudFilters()
      *
      * \since QGIS 3.6
      */
     QString fileMeshFilters() const;
 
     /**
-     * Returns mesh's dataset file filter string
+     * Returns a file filter string for supported mesh dataset files.
      *
      * Returns a string suitable for a QFileDialog of mesh datasets file formats
      * supported by all data providers.
-     *
-     * This walks through all data providers appending calls to their
-     * fileMeshFilters to a string, which is then returned.
      *
      * \see fileMeshFilters()
      *

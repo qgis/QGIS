@@ -283,58 +283,60 @@ Returns metadata of the provider or ``None`` if not found
 
     QString fileVectorFilters() const;
 %Docstring
-Returns vector file filter string
+Returns a file filter string for supported vector files.
 
 Returns a string suitable for a QFileDialog of vector file formats
 supported by all data providers.
 
-This walks through all data providers appending calls to their
-fileVectorFilters to a string, which is then returned.
+.. seealso:: :py:func:`fileRasterFilters`
 
-\note
+.. seealso:: :py:func:`fileMeshFilters`
 
-It'd be nice to eventually be raster/vector neutral.
+.. seealso:: :py:func:`filePointCloudFilters`
 %End
 
     QString fileRasterFilters() const;
 %Docstring
-Returns raster file filter string
+Returns a file filter string for supported raster files.
 
 Returns a string suitable for a QFileDialog of raster file formats
 supported by all data providers.
 
-This walks through all data providers appending calls to their
-buildSupportedRasterFileFilter to a string, which is then returned.
-
 .. note::
 
    This replaces :py:func:`QgsRasterLayer.buildSupportedRasterFileFilter()`
+
+.. seealso:: :py:func:`fileVectorFilters`
+
+.. seealso:: :py:func:`fileMeshFilters`
+
+.. seealso:: :py:func:`filePointCloudFilters`
 %End
 
     QString fileMeshFilters() const;
 %Docstring
-Returns mesh file filter string
+Returns a file filter string for supported mesh files.
 
 Returns a string suitable for a QFileDialog of mesh file formats
 supported by all data providers.
 
-This walks through all data providers appending calls to their
-fileMeshFilters to a string, which is then returned.
-
 .. seealso:: :py:func:`fileMeshDatasetFilters`
+
+.. seealso:: :py:func:`fileRasterFilters`
+
+.. seealso:: :py:func:`fileVectorFilters`
+
+.. seealso:: :py:func:`filePointCloudFilters`
 
 .. versionadded:: 3.6
 %End
 
     QString fileMeshDatasetFilters() const;
 %Docstring
-Returns mesh's dataset file filter string
+Returns a file filter string for supported mesh dataset files.
 
 Returns a string suitable for a QFileDialog of mesh datasets file formats
 supported by all data providers.
-
-This walks through all data providers appending calls to their
-fileMeshFilters to a string, which is then returned.
 
 .. seealso:: :py:func:`fileMeshFilters`
 
