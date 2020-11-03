@@ -72,6 +72,7 @@ tests/testdata/raster/band1_float32_noct_epsg4326.tif.aux.xml
 tests/testdata/raster/band1_int16_noct_epsg4326.tif.aux.xml
 tests/testdata/raster/band3_float32_noct_epsg4326.tif.aux.xml
 tests/testdata/raster/band3_int16_noct_epsg4326.tif.aux.xml
+tests/testdata/control_images/*/*.aux.xml
 python/plugins/processing/tests/testdata/custom/grass7/*.aux.xml
 python/plugins/processing/tests/testdata/custom/*.aux.xml
 python/plugins/processing/tests/testdata/*.aux.xml
