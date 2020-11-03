@@ -21,7 +21,7 @@ static std::pair<std::string, std::string> metadataFromClassification( const MDA
   std::pair<std::string, std::string> classificationMeta;
   classificationMeta.first = "classification";
   std::string classification;
-  for ( const auto boundValues : classes )
+  for ( const auto &boundValues : classes )
   {
     if ( boundValues.first != NC_FILL_DOUBLE )
       classification.append( MDAL::doubleToString( boundValues.first ) );
