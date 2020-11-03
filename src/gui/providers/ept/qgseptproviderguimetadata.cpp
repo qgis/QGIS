@@ -27,10 +27,10 @@ class QgsEptSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
 
-    QString providerKey() const override { return QStringLiteral( "pointcloud" ); }
-    QString text() const override { return QObject::tr( "Point Cloud" ); }
+    QString providerKey() const override { return QStringLiteral( "ept" ); }
+    QString text() const override { return QObject::tr( "EPT Point Cloud" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 25; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddPointCloudLayer.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddEntwineLayer.svg" ) ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsEptSourceSelect( parent, fl, widgetMode );
@@ -38,7 +38,7 @@ class QgsEptSourceSelectProvider : public QgsSourceSelectProvider
 };
 
 QgsEptProviderGuiMetadata::QgsEptProviderGuiMetadata()
-  : QgsProviderGuiMetadata( QStringLiteral( "etp" ) )
+  : QgsProviderGuiMetadata( QStringLiteral( "ept" ) )
 {
 }
 

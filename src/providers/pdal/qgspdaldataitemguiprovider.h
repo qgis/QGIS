@@ -1,12 +1,10 @@
 /***************************************************************************
-                         qgseptdataitemguiprovider.h
-                         --------------------
-    begin                : October 2020
-    copyright            : (C) 2020 by Peter Petrik
-    email                : zilolv at gmail dot com
- ***************************************************************************/
-
-/***************************************************************************
+  qgspdaldataitemguiprovider.h
+  --------------------------------------
+  Date                 : November 2020
+  Copyright            : (C) 2020 by Peter Petrik
+  Email                : zilolv at gmail dot com
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -15,26 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSEPTDATAITEMGUIPROVIDER_H
-#define QGSEPTDATAITEMGUIPROVIDER_H
-
-///@cond PRIVATE
-#define SIP_NO_FILE
+#ifndef QGSPDALDATAITEMGUIPROVIDER_H
+#define QGSPDALDATAITEMGUIPROVIDER_H
 
 #include "qgsdataitemguiprovider.h"
 
 
-class QgsEptDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
+class QgsPdalDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
     Q_OBJECT
   public:
 
-    QString name() override { return QStringLiteral( "ept" ); }
+    QString name() override { return QStringLiteral( "pdal" ); }
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu,
                               const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 };
 
-///@endcond
-
-#endif // QGSEPTDATAITEMGUIPROVIDER_H
+#endif // QGSPDALDATAITEMGUIPROVIDER_H

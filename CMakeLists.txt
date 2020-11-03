@@ -237,6 +237,11 @@ IF(WITH_CORE)
     SET(ORACLE_LIBDIR "" CACHE STRING "Path to OCI libraries")
   ENDIF(WITH_ORACLE)
 
+  SET (WITH_PDAL FALSE CACHE BOOL "Determines whether PDAL support should be built")
+  IF(WITH_PDAL)
+    SET(HAVE_PDAL TRUE)
+  ENDIF(WITH_PDAL)
+
   #BUILD WITH QtMobility by default on android only. Other platform can force it
   IF (ANDROID)
       SET (DEFAULT_WITH_QTMOBILITY TRUE)
@@ -389,6 +394,10 @@ IF(WITH_CORE)
   ELSE (WITH_QTWEBKIT)
     MESSAGE(STATUS "Qt WebKit support DISABLED.")
   ENDIF(WITH_QTWEBKIT)
+
+  IF (WITH_PDAL)
+    FIND_PACKAGE(PDAL) # PDAL provider
+  ENDIF (WITH_PDAL)
 
   #############################################################
   # search for Qt5

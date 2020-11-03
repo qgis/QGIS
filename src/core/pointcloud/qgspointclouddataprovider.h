@@ -44,18 +44,15 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
                                QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     ~QgsPointCloudDataProvider() override;
-    QgsRectangle extent() const override;
-    bool isValid() const override;
 
     /**
      * Returns the point cloud index associated with the provider.
      *
+     * Can be nullptr (e.g. the index is being created)
+     *
      * \note Not available in Python bindings
      */
     virtual QgsPointCloudIndex *index() const SIP_SKIP {return nullptr;}
-
-  private:
-    bool mIsValid = false;
 };
 
 #endif // QGSMESHDATAPROVIDER_H

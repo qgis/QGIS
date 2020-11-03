@@ -240,6 +240,8 @@
         <file>themes/default/mActionAddXyzLayer.svg</file>
         <file>themes/default/mActionAddVectorTileLayer.svg</file>
         <file>themes/default/mActionAddPointCloudLayer.svg</file>
+        <file>themes/default/mActionAddPdalLayer.svg</file>
+        <file>themes/default/mActionAddEntwineLayer.svg</file>
         <file>themes/default/mActionAddGeonodeLayer.svg</file>
         <file>themes/default/mActionAddDelimitedTextLayer.svg</file>
         <file>themes/default/mActionAddVirtualLayer.svg</file>
@@ -538,6 +540,8 @@
         <file>themes/default/mIconVector.svg</file>
         <file>themes/default/mIconVectorTileLayer.svg</file>
         <file>themes/default/mIconPointCloudLayer.svg</file>
+	<file>themes/default/mIconEntwineLayer.svg</file>
+        <file>themes/default/mIconPdalLayer.svg</file>
         <file>themes/default/mIconVirtualLayer.svg</file>
         <file>themes/default/mIconWcs.svg</file>
         <file>themes/default/mIconWfs.svg</file>

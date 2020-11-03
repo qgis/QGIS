@@ -56,7 +56,7 @@ QgsRectangle QgsPointCloudLayer::extent() const
   if ( !mDataProvider )
     return QgsRectangle();
 
-  return mDataProvider->index()->extent();
+  return mDataProvider->extent();
 }
 
 QgsMapLayerRenderer *QgsPointCloudLayer::createMapRenderer( QgsRenderContext &rendererContext )

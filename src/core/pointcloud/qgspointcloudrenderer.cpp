@@ -113,6 +113,8 @@ bool QgsPointCloudLayerRenderer::render()
 {
   // TODO cache!?
   QgsPointCloudIndex *pc = mLayer->dataProvider()->index();
+  if ( !pc )
+    return false;
 
   QgsRenderContext &context = *renderContext();
 
@@ -162,6 +164,9 @@ QgsPointCloudLayerRenderer::~QgsPointCloudLayerRenderer() = default;
 
 void QgsPointCloudLayerRenderer::drawData( QPainter *painter, const QgsPointCloudBlock *data, const QgsPointCloudRendererConfig &config )
 {
+  Q_ASSERT( mLayer->dataProvider() );
+  Q_ASSERT( mLayer->dataProvider()->index() );
+
   if ( !data )
     return;
 

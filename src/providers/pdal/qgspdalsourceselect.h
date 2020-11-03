@@ -1,9 +1,9 @@
 /***************************************************************************
-                         qgseptsourceselect.h
-                         --------------------
-    begin                : October 2020
-    copyright            : (C) 2020 by Peter Petrik
-    email                : zilolv at gmail dot com
+  qgspdalsourceselect.h
+  -------------------
+  Date                 : November 2020
+  Copyright            : (C) 2020 by Peter Petrik
+  Email                : zilolv at gmail dot com
  ***************************************************************************/
 
 /***************************************************************************
@@ -14,31 +14,25 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSEPTSOURCESELECT_H
-#define QGSEPTSOURCESELECT_H
+#ifndef QGSPDALSOURCESELECT_H
+#define QGSPDALSOURCESELECT_H
 
-///@cond PRIVATE
-#include "qgis_sip.h"
-#define SIP_NO_FILE
-
-#include "ui_qgseptsourceselectbase.h"
+#include "ui_qgspdalsourceselectbase.h"
 #include "qgsabstractdatasourcewidget.h"
 #include "qgis_gui.h"
 
 
 /**
- * \class QgsEptSourceSelect
- * \brief Dialog to select EPT point cloud supported sources
+ * Dialog to select PDAL supported point cloud sources
  */
-class QgsEptSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsEptSourceSelectBase
+class QgsPdalSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsPdalSourceSelectBase
 {
     Q_OBJECT
 
   public:
     //! Constructor
-    QgsEptSourceSelect( QWidget *parent = nullptr,
-                        Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
-                        QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    QgsPdalSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
+                         QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
   public slots:
     //! Determines the tables the user selected and closes the dialog
@@ -49,6 +43,4 @@ class QgsEptSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsEp
 
 };
 
-///@endcond
-///
-#endif // QGSEPTSOURCESELECT_H
+#endif // QGSPDALSOURCESELECT_H
