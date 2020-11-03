@@ -15,21 +15,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsalgorithmexportmeshvertices.h"
+#include "qgsalgorithmexportmesh.h"
 #include "qgsprocessingparametermeshdataset.h"
 #include "qgsmeshdataset.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerutils.h"
 #include "qgsmeshlayertemporalproperties.h"
+#include "qgspolygon.h"
+#include "qgslinestring.h"
 
 ///@cond PRIVATE
 
-QString QgsExportMeshVerticesAlgorithm::group() const
+QString QgsExportMeshOnElement::group() const
 {
   return QObject::tr( "Mesh" );
 }
 
-QString QgsExportMeshVerticesAlgorithm::groupId() const
+QString QgsExportMeshOnElement::groupId() const
 {
   return QStringLiteral( "mesh" );
 }
@@ -54,7 +56,12 @@ QgsProcessingAlgorithm *QgsExportMeshVerticesAlgorithm::createInstance() const
   return new QgsExportMeshVerticesAlgorithm();
 }
 
-void QgsExportMeshVerticesAlgorithm::initAlgorithm( const QVariantMap &configuration )
+QgsGeometry QgsExportMeshVerticesAlgorithm::meshElement( int index ) const
+{
+  return QgsGeometry( new QgsPoint( mNativeMesh.vertex( index ) ) );
+}
+
+void QgsExportMeshOnElement::initAlgorithm( const QVariantMap &configuration )
 {
   Q_UNUSED( configuration );
 
@@ -63,24 +70,24 @@ void QgsExportMeshVerticesAlgorithm::initAlgorithm( const QVariantMap &configura
 
   addParameter( new QgsProcessingParameterMeshDatasetGroups(
                   QStringLiteral( "DATASET_GROUPS" ),
-                  QObject::tr( "Dataset groups" ),
+                  QObject::tr( "Dataset Groups" ),
                   QStringLiteral( "INPUT" ),
-                  QgsMeshDatasetGroupMetadata::DataOnVertices ) );
+                  dataType() ) );
 
   addParameter( new QgsProcessingParameterMeshDatasetTime(
                   QStringLiteral( "DATASET_TIME" ),
-                  QObject::tr( "Dataset time" ),
+                  QObject::tr( "Dataset Time" ),
                   QStringLiteral( "INPUT" ),
                   QStringLiteral( "DATASET_GROUPS" ) ) );
 
-  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS_OUTPUT" ), QObject::tr( "Output coordinate system" ), QVariant(), true ) );
+  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS_OUTPUT" ), QObject::tr( "Output Coordinate System" ), QVariant(), true ) );
 
   QStringList exportVectorOptions;
   exportVectorOptions << QObject::tr( "Cartesian (x,y)" )
                       << QObject::tr( "Polar (magnitude,degree)" )
                       << QObject::tr( "Cartesian and Polar" );
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "VECTOR_OPTION" ), QObject::tr( "Export vector option" ), exportVectorOptions, false, 0 ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output vector layer" ), QgsProcessing::TypeVectorPoint ) );
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "VECTOR_OPTION" ), QObject::tr( "Export Vector Option" ), exportVectorOptions, false, 0 ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output Vector Layer" ), sinkType() ) );
 }
 
 static QVector<double> vectorValue( const QgsMeshDatasetValue &value, int exportOption )
@@ -115,7 +122,7 @@ static QVector<double> vectorValue( const QgsMeshDatasetValue &value, int export
   return ret;
 }
 
-bool QgsExportMeshVerticesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+bool QgsExportMeshOnElement::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QgsMeshLayer *meshLayer = parameterAsMeshLayer( parameters, QStringLiteral( "INPUT" ), context );
 
@@ -163,6 +170,20 @@ bool QgsExportMeshVerticesAlgorithm::prepareAlgorithm( const QVariantMap &parame
       relativeTime = QgsInterval( layerReferenceTime.secsTo( dateTime ) );
   }
 
+  switch ( dataType() )
+  {
+    case QgsMeshDatasetGroupMetadata::DataOnVolumes:
+    case QgsMeshDatasetGroupMetadata::DataOnFaces:
+      mElementCount = mNativeMesh.faceCount();
+      break;
+    case QgsMeshDatasetGroupMetadata::DataOnVertices:
+      mElementCount = mNativeMesh.vertexCount();
+      break;
+    case QgsMeshDatasetGroupMetadata::DataOnEdges:
+      mElementCount = mNativeMesh.edgeCount();
+      break;
+  }
+
   for ( int i = 0; i < datasetGroups.count(); ++i )
   {
     int  groupIndex = datasetGroups.at( i );
@@ -170,9 +191,7 @@ bool QgsExportMeshVerticesAlgorithm::prepareAlgorithm( const QVariantMap &parame
 
     DataGroup dataGroup;
     dataGroup.metadata = meshLayer->datasetGroupMetadata( datasetIndex );
-    int dataCount = dataGroup.metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices ? mNativeMesh.vertexCount() : mNativeMesh.faceCount();
-    dataGroup.datasetValues = meshLayer->datasetValues( datasetIndex, 0, dataCount );
-    dataGroup.activeFaceFlagValues = meshLayer->areFacesActive( datasetIndex, 0, mNativeMesh.faceCount() );
+    dataGroup.datasetValues = meshLayer->datasetValues( datasetIndex, 0, mElementCount );
 
     mDataPerGroup.append( dataGroup );
     if ( feedback )
@@ -184,7 +203,7 @@ bool QgsExportMeshVerticesAlgorithm::prepareAlgorithm( const QVariantMap &parame
   return true;
 }
 
-QVariantMap QgsExportMeshVerticesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QVariantMap QgsExportMeshOnElement::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   if ( feedback )
   {
@@ -223,7 +242,7 @@ QVariantMap QgsExportMeshVerticesAlgorithm::processAlgorithm( const QVariantMap 
                                           context,
                                           identifier,
                                           fields,
-                                          QgsWkbTypes::PointZ,
+                                          sinkGeometryType(),
                                           outputCrs );
   if ( !sink )
     return QVariantMap();
@@ -236,8 +255,7 @@ QVariantMap QgsExportMeshVerticesAlgorithm::processAlgorithm( const QVariantMap 
     feedback->setProgressText( QObject::tr( "Creating points for each vertices" ) );
   }
 
-  int verticesCount = mNativeMesh.vertexCount();
-  for ( int i = 0; i < verticesCount; ++i )
+  for ( int i = 0; i < mElementCount; ++i )
   {
     QgsAttributes attributes;
     for ( const DataGroup &dataGroup : mDataPerGroup )
@@ -257,14 +275,14 @@ QVariantMap QgsExportMeshVerticesAlgorithm::processAlgorithm( const QVariantMap 
     }
 
     QgsFeature feat;
-    QgsGeometry geom( new QgsPoint( mNativeMesh.vertex( i ) ) );
+    QgsGeometry geom = meshElement( i );
     try
     {
       geom.transform( mTransform );
     }
     catch ( QgsCsException &e )
     {
-      geom = QgsGeometry( new QgsPoint( mNativeMesh.vertex( i ) ) );
+      geom = meshElement( i );
       feedback->reportError( QObject::tr( "Could not transform point to destination CRS" ) );
     }
     feat.setGeometry( geom );
@@ -276,7 +294,7 @@ QVariantMap QgsExportMeshVerticesAlgorithm::processAlgorithm( const QVariantMap 
     {
       if ( feedback->isCanceled() )
         return QVariantMap();
-      feedback->setProgress( 100 * i / verticesCount );
+      feedback->setProgress( 100 * i / mElementCount );
     }
   }
 
@@ -286,6 +304,66 @@ QVariantMap QgsExportMeshVerticesAlgorithm::processAlgorithm( const QVariantMap 
   ret[QStringLiteral( "OUTPUT" )] = identifier;
 
   return ret;
+}
+
+QString QgsExportMeshFacesAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "Exports a mesh layer's faces to a polygon vector layer, with the dataset values on faces as attribute values" );
+}
+
+QString QgsExportMeshFacesAlgorithm::name() const
+{
+  return QStringLiteral( "exportmeshfaces" );
+}
+
+QString QgsExportMeshFacesAlgorithm::displayName() const
+{
+  return QObject::tr( "Export mesh faces" );
+}
+
+QgsProcessingAlgorithm *QgsExportMeshFacesAlgorithm::createInstance() const
+{
+  return new QgsExportMeshFacesAlgorithm();
+}
+
+QgsGeometry QgsExportMeshFacesAlgorithm::meshElement( int index ) const
+{
+  const QgsMeshFace &face = mNativeMesh.face( index );
+  QVector<QgsPoint> vertices( face.size() );
+  for ( int i = 0; i < face.size(); ++i )
+    vertices[i] = mNativeMesh.vertex( face.at( i ) );
+  std::unique_ptr<QgsPolygon> polygon = qgis::make_unique<QgsPolygon>();
+  polygon->setExteriorRing( new QgsLineString( vertices ) );
+  return QgsGeometry( polygon.release() );
+}
+
+QString QgsExportMeshEdgesAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "Exports a mesh layer's edges to a polygon vector layer, with the dataset values on edges as attribute values" );
+}
+
+QString QgsExportMeshEdgesAlgorithm::name() const
+{
+  return QStringLiteral( "exportmeshedges" );
+}
+
+QString QgsExportMeshEdgesAlgorithm::displayName() const
+{
+  return QObject::tr( "Export mesh edges" );
+}
+
+QgsProcessingAlgorithm *QgsExportMeshEdgesAlgorithm::createInstance() const
+{
+  return new QgsExportMeshEdgesAlgorithm();
+}
+
+QgsGeometry QgsExportMeshEdgesAlgorithm::meshElement( int index ) const
+{
+  const QgsMeshEdge &edge = mNativeMesh.edge( index );
+  QVector<QgsPoint> vertices( 2 );
+  vertices[0] = mNativeMesh.vertex( edge.first );
+  vertices[1] = mNativeMesh.vertex( edge.second );
+  return QgsGeometry( new QgsLineString( vertices ) );
 }
 
 ///@endcond PRIVATE
