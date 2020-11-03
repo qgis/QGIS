@@ -18,6 +18,9 @@
 #include "qgseptdataitems.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgsproviderregistry.h"
+#include "qgsprovidermetadata.h"
+#include "qgsfileutils.h"
 
 #include <QFileInfo>
 #include <mutex>
@@ -39,6 +42,12 @@ QString QgsEptLayerItem::layerName() const
 }
 
 // ---------------------------------------------------------------------------
+QgsEptDataItemProvider::QgsEptDataItemProvider()
+{
+  QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ept" ) );
+  mFileFilter = metadata->filters( QgsProviderMetadata::FilterType::FilterPointCloud );
+}
+
 QString QgsEptDataItemProvider::name()
 {
   return QStringLiteral( "ept" );
@@ -56,16 +65,14 @@ QgsDataItem *QgsEptDataItemProvider::createDataItem( const QString &path, QgsDat
 
   QgsDebugMsgLevel( "thePath = " + path, 2 );
 
-  // get suffix, removing .gz if present
-  QFileInfo info( path );
-  info.setFile( path );
+  const QFileInfo info( path );
 
   // allow only normal files
   if ( !info.isFile() )
     return nullptr;
 
   // Filter files by extension
-  if ( !path.endsWith( QStringLiteral( "ept.json" ) ) )
+  if ( !QgsFileUtils::fileMatchesFilter( path, mFileFilter ) )
     return nullptr;
 
   QString name = info.dir().dirName();
