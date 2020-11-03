@@ -870,6 +870,8 @@ void QgsColorRampShaderWidget::changeOpacity()
   }
 }
 
+
+///@cond PRIVATE
 QgsLocaleAwareNumericLineEditDelegate::QgsLocaleAwareNumericLineEditDelegate( Qgis::DataType dataType, QWidget *parent )
   : QStyledItemDelegate( parent )
   , mDataType( dataType )
@@ -937,4 +939,4 @@ void QgsLocaleAwareNumericLineEditDelegate::setModelData( QWidget *editor, QAbst
   model->setData( index, value, QgsColorRampShaderWidget::VALUE_ROLE );
   model->setData( index, QgsGuiUtils::displayValueWithMaximumDecimals( mDataType, value ), Qt::ItemDataRole::DisplayRole );
 }
-
+///@endcond
