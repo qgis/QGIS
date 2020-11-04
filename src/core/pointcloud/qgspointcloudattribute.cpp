@@ -27,21 +27,6 @@ QgsPointCloudAttribute::QgsPointCloudAttribute( const QString &name, DataType ty
   updateSize();
 }
 
-QString QgsPointCloudAttribute::name() const
-{
-  return mName;
-}
-
-size_t QgsPointCloudAttribute::size() const
-{
-  return mSize;
-}
-
-QgsPointCloudAttribute::DataType QgsPointCloudAttribute::type() const
-{
-  return mType;
-}
-
 void QgsPointCloudAttribute::updateSize()
 {
   switch ( mType )
