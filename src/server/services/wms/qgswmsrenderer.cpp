@@ -2246,8 +2246,19 @@ namespace QgsWms
         for ( int j = 0; j < featuresNode.size(); ++j )
         {
           const QDomElement featureNode = featuresNode.at( j ).toElement();
-          const QgsFeatureId fid = featureNode.attribute( QStringLiteral( "id" ) ).toLongLong();
-          QgsFeature feature = QgsFeature( vl->getFeature( fid ) );
+          const QString fid = featureNode.attribute( QStringLiteral( "id" ) );
+          QgsFeature feature;
+          const QString expression { QgsServerFeatureId::getExpressionFromServerFid( fid, static_cast<QgsVectorDataProvider *>( layer->dataProvider() ) ) };
+          if ( expression.isEmpty() )
+          {
+            feature = vl->getFeature( fid.toLongLong() );
+          }
+          else
+          {
+            QgsFeatureRequest request { QgsExpression( expression )};
+            request.setFlags( QgsFeatureRequest::Flag::NoGeometry );
+            vl->getFeatures( request ).nextFeature( feature );
+          }
 
           QString wkt;
           if ( withGeometry )

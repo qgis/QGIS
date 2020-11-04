@@ -64,32 +64,6 @@ Returns the type name for the parameter class.
 %End
 };
 
-class QgsProcessingParameterTypeTinInputLayers : QgsProcessingParameterType
-{
-%Docstring
-Parameter type definition for QgsProcessingParameterTinInputLayers.
-
-.. versionadded:: 3.16
-%End
-
-%TypeHeaderCode
-#include "qgsprocessingparametertininputlayers.h"
-%End
-  public:
-    virtual QgsProcessingParameterDefinition *create( const QString &name ) const /Factory/;
-
-    virtual QString description() const;
-
-    virtual QString name() const;
-
-    virtual QString id() const;
-
-    virtual QString pythonImportString() const;
-
-    virtual QString className() const;
-
-    virtual QStringList acceptedPythonTypes() const;
-};
 
 /************************************************************************
  * This file has been generated automatically from                      *

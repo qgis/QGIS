@@ -123,7 +123,6 @@ QgsDateTimeRange QgsMeshDataProviderTemporalCapabilities::timeExtent( const QDat
     if ( !groupReference.isValid() ) //the dataset group has not a valid reference time -->take global reference
       groupReference = mGlobalReferenceDateTime;
 
-
     if ( !groupReference.isValid() )
       groupReference = reference;
 

@@ -549,8 +549,7 @@ In case of error -1 will be returned.
 .. versionadded:: 3.0
 %End
 
-
-    QgsPointXY closestVertex( const QgsPointXY &point, int &atVertex /Out/, int &beforeVertex /Out/, int &afterVertex /Out/, double &sqrDist /Out/ ) const;
+    QgsPointXY closestVertex( const QgsPointXY &point, int &closestVertexIndex /Out/, int &previousVertexIndex /Out/, int &nextVertexIndex /Out/, double &sqrDist /Out/ ) const;
 %Docstring
 Returns the vertex closest to the given point, the corresponding vertex index, squared distance snap point / target point
 and the indices of the vertices before and after the closest vertex.
@@ -558,9 +557,9 @@ and the indices of the vertices before and after the closest vertex.
 :param point: point to search for
 
 :return: - closest point in geometry. If not found (empty geometry), returns null point and sqrDist is negative.
-         - atVertex: will be set to the vertex index of the closest found vertex
-         - beforeVertex: will be set to the vertex index of the previous vertex from the closest one. Will be set to -1 if not present.
-         - afterVertex: will be set to the vertex index of the next vertex after the closest one. Will be set to -1 if not present.
+         - closestVertexIndex: will be set to the vertex index of the closest found vertex
+         - previousVertexIndex: will be set to the vertex index of the previous vertex from the closest one. Will be set to -1 if not present.
+         - nextVertexIndex: will be set to the vertex index of the next vertex after the closest one. Will be set to -1 if not present.
          - sqrDist: will be set to the square distance between the closest vertex and the specified point
 %End
 
@@ -685,7 +684,7 @@ ring and item (first number is index 0))
 
     QgsGeometry nearestPoint( const QgsGeometry &other ) const;
 %Docstring
-Returns the nearest point on this geometry to another geometry.
+Returns the nearest (closest) point on this geometry to another geometry.
 
 .. seealso:: :py:func:`shortestLine`
 
@@ -717,7 +716,7 @@ Searches for the closest vertex in this geometry to the given point.
          - atVertex: Receives index of the closest vertex
 %End
 
-    double closestSegmentWithContext( const QgsPointXY &point, QgsPointXY &minDistPoint /Out/, int &afterVertex /Out/, int *leftOf /Out/ = 0, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
+    double closestSegmentWithContext( const QgsPointXY &point, QgsPointXY &minDistPoint /Out/, int &nextVertexIndex /Out/, int *leftOrRightOfSegment /Out/ = 0, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
 %Docstring
 Searches for the closest segment of geometry to the given point
 
@@ -726,8 +725,8 @@ Searches for the closest segment of geometry to the given point
 
 :return: - The squared Cartesian distance is also returned in sqrDist, negative number on error
          - minDistPoint: Receives the nearest point on the segment
-         - afterVertex: Receives index of the vertex after the closest segment. The vertex before the closest segment is always afterVertex - 1
-         - leftOf: Out: Returns if the point lies on the left of left side of the geometry ( < 0 means left, > 0 means right, 0 indicates that the test was unsuccessful, e.g. for a point exactly on the line)
+         - nextVertexIndex: Receives index of the next vertex after the closest segment. The vertex before the closest segment is always nextVertexIndex - 1
+         - leftOrRightOfSegment: Out: Returns if the point is located on the left or right side of the geometry ( < 0 means left, > 0 means right, 0 indicates that the test was unsuccessful, e.g. for a point exactly on the line)
 %End
 
     OperationResult addRing( const QVector<QgsPointXY> &ring );

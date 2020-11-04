@@ -20,7 +20,6 @@
 
 #include "qgsdataitem.h"
 #include "qgsdataitemprovider.h"
-#include "qgsprovidermetadata.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -38,11 +37,18 @@ class CORE_EXPORT QgsEptLayerItem : public QgsLayerItem
 class QgsEptDataItemProvider : public QgsDataItemProvider
 {
   public:
+
+    QgsEptDataItemProvider();
+
     QString name() override;
 
     int capabilities() const override;
 
     QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
+
+  private:
+
+    QString mFileFilter;
 };
 
 ///@endcond

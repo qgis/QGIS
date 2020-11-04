@@ -20,6 +20,7 @@
 #include "qgsdataprovider.h"
 #include "qgsmaplayer.h"
 #include "qgsexception.h"
+#include "qgsabstractdatabaseproviderconnection.h"
 
 QgsProviderMetadata::QgsProviderMetadata( QString const &key,
     QString const &description,
@@ -78,6 +79,11 @@ QString QgsProviderMetadata::filters( FilterType )
 QList<QgsMeshDriverMetadata> QgsProviderMetadata::meshDriversMetadata()
 {
   return QList<QgsMeshDriverMetadata>();
+}
+
+int QgsProviderMetadata::priorityForUri( const QString & )
+{
+  return 0;
 }
 
 QgsDataProvider *QgsProviderMetadata::createProvider( const QString &uri,

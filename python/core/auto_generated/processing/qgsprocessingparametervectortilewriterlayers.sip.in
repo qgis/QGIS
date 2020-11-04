@@ -28,10 +28,6 @@ A valid value for this parameter is a list (QVariantList), where each item is a 
 Static functions :py:func:`~parametersAsLayers`, :py:func:`~variantMapAsLayer`, :py:func:`~layerAsVariantMap` provide conversion between
 QgsVectorTileWriter.Layer representation and QVariant representation.
 
-.. note::
-
-   This class is not a part of public API.
-
 .. versionadded:: 3.14
 %End
 
@@ -73,38 +69,6 @@ Converts a QVariant value (a QVariantMap) to a single input layer
 Converts a single input layer to QVariant representation (a QVariantMap)
 %End
 
-};
-
-
-class QgsProcessingParameterTypeVectorTileWriterLayers : QgsProcessingParameterType
-{
-%Docstring
-Parameter type definition for QgsProcessingParameterVectorTileWriterLayers.
-
-.. note::
-
-   This class is not a part of public API.
-
-.. versionadded:: 3.14
-%End
-
-%TypeHeaderCode
-#include "qgsprocessingparametervectortilewriterlayers.h"
-%End
-  public:
-    virtual QgsProcessingParameterDefinition *create( const QString &name ) const /Factory/;
-
-    virtual QString description() const;
-
-    virtual QString name() const;
-
-    virtual QString id() const;
-
-    virtual QString pythonImportString() const;
-
-    virtual QString className() const;
-
-    virtual QStringList acceptedPythonTypes() const;
 };
 
 

@@ -349,7 +349,7 @@ class TestGdalAlgorithms(unittest.TestCase):
                              '+proj=utm +zone=36 +south      +a=600000 +b=70000       +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')
 
     def testEscapeAndJoin(self):
-        self.assertEqual(GdalUtils.escapeAndJoin([1, "a", "a b", "a&b"]), '1 a "a b" "a&b"')
+        self.assertEqual(GdalUtils.escapeAndJoin([1, "a", "a b", "a&b", "a(b)"]), '1 a "a b" "a&b" "a(b)"')
 
 
 if __name__ == '__main__':

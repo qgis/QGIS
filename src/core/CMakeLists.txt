@@ -31,6 +31,12 @@ SET(QGIS_CORE_SRCS
   classification/qgsclassificationstandarddeviation.cpp
   classification/qgsclassificationlogarithmic.cpp
 
+  geocoding/qgsabstractgeocoderlocatorfilter.cpp
+  geocoding/qgsgeocoder.cpp
+  geocoding/qgsgeocodercontext.cpp
+  geocoding/qgsgeocoderresult.cpp
+  geocoding/qgsgooglemapsgeocoder.cpp
+
   gps/qgsgpsconnection.cpp
   gps/qgsgpsconnectionregistry.cpp
   gps/qgsgpsdconnection.cpp
@@ -156,7 +162,9 @@ SET(QGIS_CORE_SRCS
   processing/qgsprocessingfeedback.cpp
   processing/qgsprocessingoutputs.cpp
   processing/qgsprocessingparameteraggregate.cpp
+  processing/qgsprocessingparameterdxflayers.cpp
   processing/qgsprocessingparameterfieldmap.cpp
+  processing/qgsprocessingparametermeshdataset.cpp
   processing/qgsprocessingparameters.cpp
   processing/qgsprocessingparametertininputlayers.cpp
   processing/qgsprocessingparametertype.cpp
@@ -626,6 +634,9 @@ SET(QGIS_CORE_SRCS
   mesh/qgsmeshcalcutils.cpp
   mesh/qgsmeshvirtualdatasetgroup.cpp
 
+  pointcloud/qgspointcloudattribute.cpp
+  pointcloud/qgspointcloudrequest.cpp
+  pointcloud/qgspointcloudblock.cpp
   pointcloud/qgspointcloudlayer.cpp
   pointcloud/qgspointcloudrenderer.cpp
   pointcloud/qgspointcloudindex.cpp
@@ -1146,6 +1157,12 @@ SET(QGIS_CORE_HDRS
   geocms/geonode/qgsgeonodeconnection.h
   geocms/geonode/qgsgeonoderequest.h
 
+  geocoding/qgsabstractgeocoderlocatorfilter.h
+  geocoding/qgsgeocoder.h
+  geocoding/qgsgeocodercontext.h
+  geocoding/qgsgeocoderresult.h
+  geocoding/qgsgooglemapsgeocoder.h
+
   geometry/qgsabstractgeometry.h
   geometry/qgsbox3d.h
   geometry/qgscircle.h
@@ -1300,6 +1317,9 @@ SET(QGIS_CORE_HDRS
   mesh/qgsmeshcalcutils.h
   mesh/qgsmeshvirtualdatasetgroup.h
 
+  pointcloud/qgspointcloudattribute.h
+  pointcloud/qgspointcloudrequest.h
+  pointcloud/qgspointcloudblock.h
   pointcloud/qgspointcloudlayer.h
   pointcloud/qgspointcloudrenderer.h
   pointcloud/qgspointcloudindex.h
@@ -1337,7 +1357,9 @@ SET(QGIS_CORE_HDRS
   processing/qgsprocessingfeedback.h
   processing/qgsprocessingoutputs.h
   processing/qgsprocessingparameteraggregate.h
+  processing/qgsprocessingparameterdxflayers.h
   processing/qgsprocessingparameterfieldmap.h
+  processing/qgsprocessingparametermeshdataset.h
   processing/qgsprocessingparameters.h
   processing/qgsprocessingparametertininputlayers.h
   processing/qgsprocessingparametertype.h
@@ -1573,6 +1595,7 @@ INCLUDE_DIRECTORIES(
   geometry
   geocms
   geocms/geonode
+  geocoding
   labeling
   layertree
   layout

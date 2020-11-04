@@ -128,6 +128,16 @@ QgsMapLayer *QgsProcessingContext::takeResultLayer( const QString &id )
   return tempLayerStore.takeMapLayer( tempLayerStore.mapLayer( id ) );
 }
 
+QgsDateTimeRange QgsProcessingContext::currentTimeRange() const
+{
+  return mCurrentTimeRange;
+}
+
+void QgsProcessingContext::setCurrentTimeRange( const QgsDateTimeRange &currentTimeRange )
+{
+  mCurrentTimeRange = currentTimeRange;
+}
+
 QString QgsProcessingContext::ellipsoid() const
 {
   return mEllipsoid;

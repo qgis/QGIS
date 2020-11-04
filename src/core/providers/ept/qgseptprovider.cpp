@@ -90,12 +90,38 @@ QList<QgsDataItemProvider *> QgsEptProviderMetadata::dataItemProviders() const
   return providers;
 }
 
+int QgsEptProviderMetadata::priorityForUri( const QString &uri )
+{
+  const QVariantMap parts = decodeUri( uri );
+  QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
+  if ( fi.fileName().compare( QLatin1String( "ept.json" ), Qt::CaseInsensitive ) == 0 )
+    return 100;
+
+  return 0;
+}
+
 QVariantMap QgsEptProviderMetadata::decodeUri( const QString &uri )
 {
   const QString path = uri;
   QVariantMap uriComponents;
   uriComponents.insert( QStringLiteral( "path" ), path );
   return uriComponents;
+}
+
+QString QgsEptProviderMetadata::filters( QgsProviderMetadata::FilterType type )
+{
+  switch ( type )
+  {
+    case QgsProviderMetadata::FilterType::FilterVector:
+    case QgsProviderMetadata::FilterType::FilterRaster:
+    case QgsProviderMetadata::FilterType::FilterMesh:
+    case QgsProviderMetadata::FilterType::FilterMeshDataset:
+      return QString();
+
+    case QgsProviderMetadata::FilterType::FilterPointCloud:
+      return QObject::tr( "Entwine Point Clouds" ) + QStringLiteral( " (ept.json EPT.JSON)" );
+  }
+  return QString();
 }
 
 QString QgsEptProviderMetadata::encodeUri( const QVariantMap &parts )

@@ -27,7 +27,7 @@ QgsEptSourceSelect::QgsEptSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   setupButtons( buttonBox );
 
   mFileWidget->setDialogTitle( tr( "Open EPT Point Cloud Supported Dataset" ) );
-  mFileWidget->setFilter( QgsProviderRegistry::instance()->fileMeshFilters() );
+  mFileWidget->setFilter( QgsProviderRegistry::instance()->filePointCloudFilters() );
   mFileWidget->setStorageMode( QgsFileWidget::GetMultipleFiles );
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
   {

@@ -91,7 +91,7 @@ class CORE_EXPORT QgsLocatorResult
       * \note This should be translated.
       * \since QGIS 3.2
       */
-    QString group = QString();
+    QString group;
 
     /**
      * The ResultAction stores basic information for additional

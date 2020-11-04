@@ -253,7 +253,7 @@ int QgsQuickFeaturesListModel::rowFromAttribute( const int role, const QVariant 
   return -1;
 }
 
-int QgsQuickFeaturesListModel::keyFromAttribute( const int role, const QVariant &value ) const
+QVariant QgsQuickFeaturesListModel::keyFromAttribute( const int role, const QVariant &value ) const
 {
   for ( int i = 0; i < mFeatures.count(); ++i )
   {
@@ -261,10 +261,10 @@ int QgsQuickFeaturesListModel::keyFromAttribute( const int role, const QVariant 
     if ( d == value )
     {
       QVariant key = data( index( i, 0 ), KeyColumn );
-      return key.toInt();
+      return key;
     }
   }
-  return -1;
+  return QVariant();
 }
 
 QgsQuickFeatureLayerPair QgsQuickFeaturesListModel::featureLayerPair( const int &featureId )

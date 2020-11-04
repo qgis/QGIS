@@ -217,6 +217,22 @@ class CORE_EXPORT QgsProcessingContext
     void setAreaUnit( QgsUnitTypes::AreaUnit areaUnit );
 
     /**
+     * Returns the current time range to use for temporal operations.
+     *
+     * \see setCurrentTimeRange()
+     * \since QGIS 3.18
+     */
+    QgsDateTimeRange currentTimeRange() const;
+
+    /**
+     * Sets the \a current time range to use for temporal operations.
+     *
+     * \see currentTimeRange()
+     * \since QGIS 3.18
+     */
+    void setCurrentTimeRange( const QgsDateTimeRange &currentTimeRange );
+
+    /**
      * Returns a reference to the layer store used for storing temporary layers during
      * algorithm execution.
      */
@@ -618,6 +634,8 @@ class CORE_EXPORT QgsProcessingContext
     QString mEllipsoid;
     QgsUnitTypes::DistanceUnit mDistanceUnit = QgsUnitTypes::DistanceUnknownUnit;
     QgsUnitTypes::AreaUnit mAreaUnit = QgsUnitTypes::AreaUnknownUnit;
+
+    QgsDateTimeRange mCurrentTimeRange;
 
     //! Temporary project owned by the context, used for storing temporarily loaded map layers
     QgsMapLayerStore tempLayerStore;

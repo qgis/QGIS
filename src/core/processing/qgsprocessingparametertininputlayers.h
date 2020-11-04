@@ -65,10 +65,14 @@ class CORE_EXPORT QgsProcessingParameterTinInputLayers: public QgsProcessingPara
     static QString typeName() { return QStringLiteral( "tininputlayers" ); }
 };
 
+#ifndef SIP_RUN
+///@cond PRIVATE
+
 /**
  * Parameter type definition for QgsProcessingParameterTinInputLayers.
  *
  * \ingroup core
+ * \note This class is not a part of public API.
  * \since QGIS 3.16
  */
 class CORE_EXPORT QgsProcessingParameterTypeTinInputLayers : public QgsProcessingParameterType
@@ -109,5 +113,8 @@ class CORE_EXPORT QgsProcessingParameterTypeTinInputLayers : public QgsProcessin
       return QStringList() << QObject::tr( "list[dict]: list of input layers as dictionaries, see QgsProcessingParameterTinInputLayers docs" );
     }
 };
+
+///@endcond
+#endif
 
 #endif // QGSPROCESSINGPARAMETERTININPUTLAYERS_H

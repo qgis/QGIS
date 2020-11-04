@@ -417,7 +417,7 @@ int main( int argc, char *argv[] )
           clientConnection->write( body );
 
           // 10.185.248.71 [09/Jan/2015:19:12:06 +0000] 808840 <time> "GET / HTTP/1.1" 500"
-          std::cout << QStringLiteral( "%1 [%2] %3 %4ms \"%5\" %6" )
+          std::cout << QStringLiteral( "\033[1;92m%1 [%2] %3 %4ms \"%5\" %6\033[0m" )
                     .arg( clientConnection->peerAddress().toString(),
                           QDateTime::currentDateTime().toString(),
                           QString::number( body.size() ),
@@ -443,7 +443,7 @@ int main( int argc, char *argv[] )
           clientConnection->write( "\r\n" );
           clientConnection->write( ex.message().toUtf8() );
 
-          std::cout << QStringLiteral( "%1 [%2] \"%3\" - - 500" )
+          std::cout << QStringLiteral( "\033[1;31m%1 [%2] \"%3\" - - 500\033[0m" )
                     .arg( clientConnection->peerAddress().toString() )
                     .arg( QDateTime::currentDateTime().toString() )
                     .arg( ex.message() ).toStdString() << std::endl;

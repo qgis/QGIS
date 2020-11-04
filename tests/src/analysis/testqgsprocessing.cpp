@@ -51,6 +51,9 @@
 #include "qgsprocessingparameterfieldmap.h"
 #include "qgsprocessingparameteraggregate.h"
 #include "qgsprocessingparametertininputlayers.h"
+#include "qgsprocessingparameterdxflayers.h"
+#include "qgsprocessingparametermeshdataset.h"
+#include "qgsdxfexport.h"
 
 class DummyAlgorithm : public QgsProcessingAlgorithm
 {
@@ -603,6 +606,9 @@ class TestQgsProcessing: public QObject
     void parameterFieldMapping();
     void parameterAggregate();
     void parameterTinInputLayers();
+    void parameterMeshDatasetGroups();
+    void parameterMeshDatasetTime();
+    void parameterDxfLayers();
     void checkParamValues();
     void combineLayerExtent();
     void processingFeatureSource();
@@ -8011,6 +8017,144 @@ void TestQgsProcessing::parameterTinInputLayers()
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterTinInputLayers('tin input layer', '')" ) );
 }
 
+void TestQgsProcessing::parameterMeshDatasetGroups()
+{
+  QgsProcessingContext context;
+  QgsProject project;
+  context.setProject( &project );
+
+  QSet<int> supportedData;
+  supportedData << QgsMeshDatasetGroupMetadata::DataOnVertices;
+  std::unique_ptr< QgsProcessingParameterMeshDatasetGroups> def(
+    new QgsProcessingParameterMeshDatasetGroups( QStringLiteral( "dataset groups" ), QStringLiteral( "groups" ), QString(), supportedData ) );
+
+  QVERIFY( def->type() == QStringLiteral( "meshdatasetgroups" ) );
+  QVERIFY( def->isDataTypeSupported( QgsMeshDatasetGroupMetadata::DataOnVertices ) );
+  QVERIFY( !def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( !def->checkValueIsAcceptable( 1.0 ) );
+  QVERIFY( !def->checkValueIsAcceptable( "test" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QStringList() << "a" << "b" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() << "a" << "b" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+  QVariantList groupsList;
+  QVERIFY( !def->checkValueIsAcceptable( groupsList ) );
+  groupsList.append( 0 );
+  QVERIFY( def->checkValueIsAcceptable( groupsList ) );
+  groupsList.append( 5 );
+  QVERIFY( def->checkValueIsAcceptable( groupsList ) );
+
+  QVERIFY( def->dependsOnOtherParameters().isEmpty() );
+
+  QString valueAsPythonString = def->valueAsPythonString( groupsList, context );
+  QCOMPARE( valueAsPythonString, QStringLiteral( "[0,5]" ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( groupsList ), QList<int>() << 0 << 5 );
+
+  QString pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMeshDatasetGroups('dataset groups', 'groups', dataType=[QgsMeshDatasetGroupMetadata.DataOnVertices])" ) );
+
+  // optional, layer parameter and data on faces
+  supportedData << QgsMeshDatasetGroupMetadata::DataOnFaces;
+  def.reset( new QgsProcessingParameterMeshDatasetGroups(
+               QStringLiteral( "dataset groups" ),
+               QStringLiteral( "groups" ),
+               QStringLiteral( "layer parameter" ),
+               supportedData, true ) );
+  QVERIFY( def->isDataTypeSupported( QgsMeshDatasetGroupMetadata::DataOnFaces ) );
+  QVERIFY( !def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( !def->checkValueIsAcceptable( 1.0 ) );
+  QVERIFY( !def->checkValueIsAcceptable( "test" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QStringList() << "a" << "b" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() << "a" << "b" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
+  groupsList = QVariantList();
+  QVERIFY( def->checkValueIsAcceptable( groupsList ) );
+  groupsList.append( 2 );
+  QVERIFY( def->checkValueIsAcceptable( groupsList ) );
+  groupsList.append( 6 );
+  QVERIFY( def->checkValueIsAcceptable( groupsList ) );
+
+  valueAsPythonString = def->valueAsPythonString( groupsList, context );
+  QCOMPARE( valueAsPythonString, QStringLiteral( "[2,6]" ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( groupsList ), QList<int>() << 2 << 6 );
+
+  QVERIFY( !def->dependsOnOtherParameters().isEmpty() );
+  QCOMPARE( def->meshLayerParameterName(), QStringLiteral( "layer parameter" ) );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMeshDatasetGroups('dataset groups', 'groups', meshLayerParameterName='layer parameter', dataType=[QgsMeshDatasetGroupMetadata.DataOnFaces,QgsMeshDatasetGroupMetadata.DataOnVertices], optional=True)" ) );
+}
+
+void TestQgsProcessing::parameterMeshDatasetTime()
+{
+  QgsProcessingContext context;
+  QgsProject project;
+  context.setProject( &project );
+
+  std::unique_ptr< QgsProcessingParameterMeshDatasetTime> def( new QgsProcessingParameterMeshDatasetTime( QStringLiteral( "dataset groups" ), QStringLiteral( "groups" ) ) );
+  QVERIFY( def->type() == QStringLiteral( "meshdatasettime" ) );
+  QVERIFY( !def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( !def->checkValueIsAcceptable( 1.0 ) );
+  QVERIFY( !def->checkValueIsAcceptable( "test" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QStringList() << "a" << "b" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() << "a" << "b" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+
+  QVariantMap value;
+  value[QStringLiteral( "test" )] = QStringLiteral( "test" );
+  QVERIFY( !def->checkValueIsAcceptable( value ) );
+
+  value.clear();
+  value[QStringLiteral( "type" )] = QStringLiteral( "test" );
+  QVERIFY( !def->checkValueIsAcceptable( value ) );
+
+  value[QStringLiteral( "type" )] = QStringLiteral( "static" );
+  QVERIFY( def->checkValueIsAcceptable( value ) );
+  QCOMPARE( def->valueAsPythonString( value, context ), QStringLiteral( "{'type': 'static'}" ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( value ), QStringLiteral( "static" ) );
+
+
+  value[QStringLiteral( "type" )] = QStringLiteral( "current-context-time" );
+  QVERIFY( def->checkValueIsAcceptable( value ) );
+  QCOMPARE( def->valueAsPythonString( value, context ), QStringLiteral( "{'type': 'current-context-time'}" ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( value ), QStringLiteral( "current-context-time" ) );
+
+  value[QStringLiteral( "type" )] = QStringLiteral( "defined-date-time" );
+  QVERIFY( !def->checkValueIsAcceptable( value ) );
+  value[QStringLiteral( "value" )] = QDateTime( QDate( 2123, 1, 2 ), QTime( 1, 2, 3 ) );
+  QVERIFY( def->checkValueIsAcceptable( value ) );
+  QCOMPARE( def->valueAsPythonString( value, context ), QStringLiteral( "{'type': 'defined-date-time','value': QDateTime(QDate(2123, 1, 2), QTime(1, 2, 3))}" ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( value ), QStringLiteral( "defined-date-time" ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetTime::timeValueAsDefinedDateTime( value ), QDateTime( QDate( 2123, 1, 2 ), QTime( 1, 2, 3 ) ) );
+  QVERIFY( !QgsProcessingParameterMeshDatasetTime::timeValueAsDatasetIndex( value ).isValid() );
+
+  value.clear();
+  value[QStringLiteral( "type" )] = QStringLiteral( "dataset-time-step" );
+  QVERIFY( !def->checkValueIsAcceptable( value ) );
+  value[QStringLiteral( "value" )] = QVariantList() << 1 << 5;
+  QVERIFY( def->checkValueIsAcceptable( value ) );
+  QCOMPARE( def->valueAsPythonString( value, context ), QStringLiteral( "{'type': 'dataset-time-step','value': QgsMeshDatasetIndex(1,5)}" ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( value ), QStringLiteral( "dataset-time-step" ) );
+  QVERIFY( !QgsProcessingParameterMeshDatasetTime::timeValueAsDefinedDateTime( value ).isValid() );
+  QVERIFY( QgsProcessingParameterMeshDatasetTime::timeValueAsDatasetIndex( value ) == QgsMeshDatasetIndex( 1, 5 ) );
+
+  QString pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMeshDatasetTime('dataset groups', 'groups')" ) );
+
+  QVERIFY( def->dependsOnOtherParameters().isEmpty() );
+
+  def.reset( new QgsProcessingParameterMeshDatasetTime( QStringLiteral( "dataset groups" ), QStringLiteral( "groups" ), QStringLiteral( "layer parameter" ), QStringLiteral( "dataset group parameter" ) ) );
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMeshDatasetTime('dataset groups', 'groups', meshLayerParameterName='layer parameter', datasetGroupParameterName='dataset group parameter')" ) );
+
+  QVERIFY( !def->dependsOnOtherParameters().isEmpty() );
+  QCOMPARE( def->meshLayerParameterName(), QStringLiteral( "layer parameter" ) );
+  QCOMPARE( def->datasetGroupParameterName(), QStringLiteral( "dataset group parameter" ) );
+}
+
 void TestQgsProcessing::parameterDateTime()
 {
   QgsProcessingContext context;
@@ -8362,6 +8506,69 @@ void TestQgsProcessing::parameterDateTime()
   QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
   QCOMPARE( fromCode->flags(), def->flags() );
   QVERIFY( !fromCode->defaultValue().isValid() );
+}
+
+void TestQgsProcessing::parameterDxfLayers()
+{
+  QgsProcessingContext context;
+  QgsProject project;
+  context.setProject( &project );
+  QgsVectorLayer *vectorLayer = new QgsVectorLayer( QStringLiteral( "Point" ),
+      QStringLiteral( "PointLayer" ),
+      QStringLiteral( "memory" ) );
+  project.addMapLayer( vectorLayer );
+
+  std::unique_ptr< QgsProcessingParameterDxfLayers > def( new QgsProcessingParameterDxfLayers( "dxf input layer" ) );
+  QVERIFY( !def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( def->checkValueIsAcceptable( "test" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant::fromValue( vectorLayer ) ) );
+
+  // should also be OK
+  QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp" ) );
+  QVERIFY( def->checkValueIsAcceptable( QStringList() << "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariantList() << "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp" ) );
+  // ... unless we use context, when the check that the layer actually exists is performed
+  QVERIFY( !def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp", &context ) );
+  QVERIFY( !def->checkValueIsAcceptable( QStringList() << "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp", &context ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() << "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp", &context ) );
+
+  QVariantList layerList;
+  QVERIFY( !def->checkValueIsAcceptable( layerList ) );
+  QVariantMap layerMap;
+  layerList.append( layerMap );
+  QVERIFY( !def->checkValueIsAcceptable( layerList ) );
+  layerMap["layer"] = "layerName";
+  layerMap["attributeIndex"] = -1;
+  layerList[0] = layerMap;
+  QVERIFY( def->checkValueIsAcceptable( layerList ) );
+  QVERIFY( !def->checkValueIsAcceptable( layerList, &context ) ); //no corresponding layer in the context's project
+  layerMap["layer"] = "PointLayer";
+  layerMap["attributeIndex"] = 1; //change for invalid attribute index
+  layerList[0] = layerMap;
+  QVERIFY( !def->checkValueIsAcceptable( layerList, &context ) );
+
+  layerMap["attributeIndex"] = -1;
+  layerList[0] = layerMap;
+  QVERIFY( def->checkValueIsAcceptable( layerList, &context ) );
+
+  QString valueAsPythonString = def->valueAsPythonString( layerList, context );
+  QCOMPARE( valueAsPythonString, QStringLiteral( "[{'layer': '%1','attributeIndex': -1}]" ).arg( vectorLayer->source() ) );
+
+  QString pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterDxfLayers('dxf input layer', '')" ) );
+
+  QgsDxfExport::DxfLayer dxfLayer( vectorLayer );
+  QList<QgsDxfExport::DxfLayer> dxfList = def->parameterAsLayers( QVariant( vectorLayer->source() ), context );
+  QCOMPARE( dxfList.at( 0 ).layer()->source(), dxfLayer.layer()->source() );
+  QCOMPARE( dxfList.at( 0 ).layerOutputAttributeIndex(), dxfLayer.layerOutputAttributeIndex() );
+  dxfList = def->parameterAsLayers( QVariant( QStringList() << vectorLayer->source() ), context );
+  QCOMPARE( dxfList.at( 0 ).layer()->source(), dxfLayer.layer()->source() );
+  QCOMPARE( dxfList.at( 0 ).layerOutputAttributeIndex(), dxfLayer.layerOutputAttributeIndex() );
+  dxfList = def->parameterAsLayers( layerList, context );
+  QCOMPARE( dxfList.at( 0 ).layer()->source(), dxfLayer.layer()->source() );
+  QCOMPARE( dxfList.at( 0 ).layerOutputAttributeIndex(), dxfLayer.layerOutputAttributeIndex() );
 }
 
 void TestQgsProcessing::checkParamValues()
@@ -11094,6 +11301,7 @@ void TestQgsProcessing::variantToPythonLiteral()
   QCOMPARE( QgsProcessingUtils::variantToPythonLiteral( QStringLiteral( "a 'string'" ) ), QStringLiteral( "'a \\'string\\''" ) );
   QCOMPARE( QgsProcessingUtils::variantToPythonLiteral( QStringLiteral( "a \"string\"" ) ), QStringLiteral( "'a \\\"string\\\"'" ) );
   QCOMPARE( QgsProcessingUtils::variantToPythonLiteral( QStringLiteral( "a \n str\tin\\g" ) ), QStringLiteral( "'a \\n str\\tin\\\\g'" ) );
+  QCOMPARE( QgsProcessingUtils::variantToPythonLiteral( QDateTime( QDate( 2345, 1, 2 ), QTime( 6, 57, 58 ) ) ), QStringLiteral( "QDateTime(QDate(2345, 1, 2), QTime(6, 57, 58))" ) );
   QVariantMap map;
   map.insert( QStringLiteral( "list" ), QVariantList() << 1 << 2 << "a" );
   map.insert( QStringLiteral( "another" ), 4 );
@@ -11109,6 +11317,8 @@ void TestQgsProcessing::stringToPythonLiteral()
   QCOMPARE( QgsProcessingUtils::stringToPythonLiteral( QStringLiteral( "a \"string\"" ) ), QStringLiteral( "'a \\\"string\\\"'" ) );
   QCOMPARE( QgsProcessingUtils::stringToPythonLiteral( QStringLiteral( "a \n str\tin\\g" ) ), QStringLiteral( "'a \\n str\\tin\\\\g'" ) );
 }
+
+
 
 void TestQgsProcessing::defaultExtensionsForProvider()
 {

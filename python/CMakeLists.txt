@@ -113,6 +113,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/geocms
   ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
+  ${CMAKE_SOURCE_DIR}/src/core/geocoding
   ${CMAKE_SOURCE_DIR}/src/core/gps
   ${CMAKE_SOURCE_DIR}/src/core/labeling
   ${CMAKE_SOURCE_DIR}/src/core/layertree
@@ -319,7 +320,6 @@ IF(WITH_ANALYSIS)
     ${CMAKE_SOURCE_DIR}/src/analysis/raster
     ${CMAKE_SOURCE_DIR}/src/analysis/network
     ${CMAKE_SOURCE_DIR}/src/analysis/interpolation
-    ${CMAKE_SOURCE_DIR}/src/analysis/openstreetmap
 
     ${CMAKE_BINARY_DIR}/src/analysis/processing
     ${CMAKE_BINARY_DIR}/src/analysis/vector
@@ -327,7 +327,6 @@ IF(WITH_ANALYSIS)
     ${CMAKE_BINARY_DIR}/src/analysis/raster
     ${CMAKE_BINARY_DIR}/src/analysis/network
     ${CMAKE_BINARY_DIR}/src/analysis/interpolation
-    ${CMAKE_BINARY_DIR}/src/analysis/openstreetmap
   )
 
   # analysis module

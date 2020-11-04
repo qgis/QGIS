@@ -327,7 +327,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     int extraDatasetGroupCount() const;
 
     /**
-     * Returns the list of indexes of dataset groups count handled by the layer
+     * Returns the list of indexes of dataset groups handled by the layer
      *
      * \note indexes are used to distinguish all the dataset groups handled by the layer (from dataprovider, extra dataset group,...)
      * In the layer scope, those indexes can be different from the data provider indexes.

@@ -292,6 +292,15 @@ void QgsProviderRegistry::init()
       QgsDebugMsgLevel( QStringLiteral( "Checking %1: ...loaded OK (%2 file dataset filters)" ).arg( key ).arg( mMeshDatasetFileFilters.split( ";;" ).count() ), 2 );
     }
 
+    // now get point cloud file filters, if any
+    const QString filePointCloudFilters = meta->filters( QgsProviderMetadata::FilterType::FilterPointCloud );
+    if ( !filePointCloudFilters.isEmpty() )
+    {
+      QgsDebugMsgLevel( "point cloud filters: " + filePointCloudFilters, 2 );
+      mPointCloudFileFilters += filePointCloudFilters;
+      QgsDebugMsgLevel( QStringLiteral( "Checking %1: ...loaded OK (%2 file filters)" ).arg( key ).arg( filePointCloudFilters.split( ";;" ).count() ), 2 );
+    }
+
     // call initProvider() - allows provider to register its services to QGIS
     meta->initProvider();
   }
@@ -702,6 +711,11 @@ QString QgsProviderRegistry::fileMeshDatasetFilters() const
   return mMeshDatasetFileFilters;
 }
 
+QString QgsProviderRegistry::filePointCloudFilters() const
+{
+  return mPointCloudFileFilters;
+}
+
 QString QgsProviderRegistry::databaseDrivers() const
 {
   return mDatabaseDrivers;
@@ -730,4 +744,20 @@ QStringList QgsProviderRegistry::providerList() const
 QgsProviderMetadata *QgsProviderRegistry::providerMetadata( const QString &providerKey ) const
 {
   return findMetadata_( mProviders, providerKey );
+}
+
+QgsProviderMetadata *QgsProviderRegistry::preferredProviderForUri( const QString &uri ) const
+{
+  QgsProviderMetadata *res = nullptr;
+  int maxPriority = 0;
+  for ( auto it = mProviders.begin(); it != mProviders.end(); ++it )
+  {
+    const int thisProviderPriority = it->second->priorityForUri( uri );
+    if ( thisProviderPriority > maxPriority )
+    {
+      maxPriority = thisProviderPriority;
+      res = it->second;
+    }
+  }
+  return res;
 }

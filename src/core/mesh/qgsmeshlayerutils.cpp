@@ -345,17 +345,27 @@ QVector<double> QgsMeshLayerUtils::interpolateFromFacesData(
 {
   assert( nativeMesh );
   Q_UNUSED( method );
-  assert( method == QgsMeshRendererScalarSettings::NeighbourAverage );
+
 
   // assuming that native vertex count = triangular vertex count
   assert( nativeMesh->vertices.size() == triangularMesh->vertices().size() );
-  int vertexCount = triangularMesh->vertices().size();
+
+  return interpolateFromFacesData( valuesOnFaces, *nativeMesh, active, method );
+}
+
+QVector<double> QgsMeshLayerUtils::interpolateFromFacesData( const QVector<double> &valuesOnFaces,
+    const QgsMesh &nativeMesh,
+    QgsMeshDataBlock *active,
+    QgsMeshRendererScalarSettings::DataResamplingMethod method )
+{
+  int vertexCount = nativeMesh.vertexCount();
+  assert( method == QgsMeshRendererScalarSettings::NeighbourAverage );
 
   QVector<double> res( vertexCount, 0.0 );
   // for face datasets do simple average of the valid values of all faces that contains this vertex
   QVector<int> count( vertexCount, 0 );
 
-  for ( int i = 0; i < nativeMesh->faces.size(); ++i )
+  for ( int i = 0; i < nativeMesh.faceCount(); ++i )
   {
     if ( !active || active->active( i ) )
     {
@@ -363,7 +373,7 @@ QVector<double> QgsMeshLayerUtils::interpolateFromFacesData(
       if ( !std::isnan( val ) )
       {
         // assign for all vertices
-        const QgsMeshFace &face = nativeMesh->faces.at( i );
+        const QgsMeshFace &face = nativeMesh.faces.at( i );
         for ( int j = 0; j < face.size(); ++j )
         {
           int vertexIndex = face[j];
@@ -449,9 +459,21 @@ QVector<double> QgsMeshLayerUtils::calculateMagnitudeOnVertices( const QgsMeshLa
                             0,
                             datacount );
 
-  if ( vals.isValid() )
+  return calculateMagnitudeOnVertices( *nativeMesh, metadata, vals, *activeFaceFlagValues, method );
+}
+
+QVector<double> QgsMeshLayerUtils::calculateMagnitudeOnVertices( const QgsMesh &nativeMesh,
+    const QgsMeshDatasetGroupMetadata &groupMetadata,
+    const QgsMeshDataBlock &datasetValues,
+    QgsMeshDataBlock &activeFaceFlagValues,
+    const QgsMeshRendererScalarSettings::DataResamplingMethod method )
+{
+  QVector<double> ret;
+  bool scalarDataOnVertices = groupMetadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
+
+  if ( datasetValues.isValid() )
   {
-    ret = QgsMeshLayerUtils::calculateMagnitudes( vals );
+    ret = QgsMeshLayerUtils::calculateMagnitudes( datasetValues );
 
     if ( !scalarDataOnVertices )
     {
@@ -459,8 +481,7 @@ QVector<double> QgsMeshLayerUtils::calculateMagnitudeOnVertices( const QgsMeshLa
       ret = QgsMeshLayerUtils::interpolateFromFacesData(
               ret,
               nativeMesh,
-              triangularMesh,
-              activeFaceFlagValues,
+              &activeFaceFlagValues,
               method );
     }
   }

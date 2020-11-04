@@ -62,6 +62,26 @@ Returns ``True`` if the a search is currently running
 Triggers the result at given ``index`` and with optional ``actionId`` if an additional action was triggered
 %End
 
+    QgsCoordinateTransformContext transformContext() const;
+%Docstring
+Returns the coordinate transform context, which should be used whenever the
+locator constructs a coordinate transform.
+
+.. seealso:: :py:func:`setTransformContext`
+
+.. versionadded:: 3.18
+%End
+
+    void setTransformContext( const QgsCoordinateTransformContext &context );
+%Docstring
+Sets the coordinate transform ``context``, which should be used whenever the
+locator constructs a coordinate transform.
+
+.. seealso:: :py:func:`transformContext`
+
+.. versionadded:: 3.18
+%End
+
   signals:
     void resultAdded();
 %Docstring

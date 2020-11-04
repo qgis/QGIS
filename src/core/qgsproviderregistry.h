@@ -88,7 +88,7 @@ class CORE_EXPORT QgsProviderRegistry
     //! Means of accessing canonical single instance
     static QgsProviderRegistry *instance( const QString &pluginPath = QString() );
 
-    virtual ~QgsProviderRegistry();
+    ~QgsProviderRegistry();
 
     /**
      * Returns path for the library of the provider.
@@ -147,7 +147,7 @@ class CORE_EXPORT QgsProviderRegistry
      * \see createProvider()
      * \since QGIS 3.10
      */
-    virtual QgsRasterDataProvider *createRasterDataProvider(
+    QgsRasterDataProvider *createRasterDataProvider(
       const QString &providerKey,
       const QString &uri,
       const QString &format,
@@ -283,69 +283,96 @@ class CORE_EXPORT QgsProviderRegistry
     QgsProviderMetadata *providerMetadata( const QString &providerKey ) const;
 
     /**
-     * Returns vector file filter string
+     * Returns the metadata for the preferred provider for opening the specified \a uri.
+     *
+     * The preferred provider is determined by comparing the priority returned by
+     * QgsProviderMetadata::priorityForUri() for all registered providers, and selecting
+     * the provider with the largest non-zero priority.
+     *
+     * A NULLPTR may be returned, which indicates that no providers are available which
+     * returned a non-zero priority for the specified URI.
+     *
+     * In the case that multiple providers returned the same priority for the URI then
+     * either of these providers will be returned. In this case the QgsProviderMetadata::priorityForUri()
+     * implementation for the providers should be refined to avoid ties.
+     *
+     * \since QGIS 3.18
+     */
+    QgsProviderMetadata *preferredProviderForUri( const QString &uri ) const;
+
+    /**
+     * Returns a file filter string for supported vector files.
      *
      * Returns a string suitable for a QFileDialog of vector file formats
      * supported by all data providers.
      *
-     * This walks through all data providers appending calls to their
-     * fileVectorFilters to a string, which is then returned.
-     *
-     * \note
-     *
-     * It'd be nice to eventually be raster/vector neutral.
+     * \see fileRasterFilters()
+     * \see fileMeshFilters()
+     * \see filePointCloudFilters()
      */
-    virtual QString fileVectorFilters() const;
+    QString fileVectorFilters() const;
 
     /**
-     * Returns raster file filter string
+     * Returns a file filter string for supported raster files.
      *
      * Returns a string suitable for a QFileDialog of raster file formats
      * supported by all data providers.
      *
-     * This walks through all data providers appending calls to their
-     * buildSupportedRasterFileFilter to a string, which is then returned.
-     *
      * \note This replaces QgsRasterLayer::buildSupportedRasterFileFilter()
+     *
+     * \see fileVectorFilters()
+     * \see fileMeshFilters()
+     * \see filePointCloudFilters()
      */
-    virtual QString fileRasterFilters() const;
+    QString fileRasterFilters() const;
 
     /**
-     * Returns mesh file filter string
+     * Returns a file filter string for supported mesh files.
      *
      * Returns a string suitable for a QFileDialog of mesh file formats
      * supported by all data providers.
      *
-     * This walks through all data providers appending calls to their
-     * fileMeshFilters to a string, which is then returned.
-     *
      * \see fileMeshDatasetFilters()
+     * \see fileRasterFilters()
+     * \see fileVectorFilters()
+     * \see filePointCloudFilters()
      *
      * \since QGIS 3.6
      */
-    virtual QString fileMeshFilters() const;
+    QString fileMeshFilters() const;
 
     /**
-     * Returns mesh's dataset file filter string
+     * Returns a file filter string for supported mesh dataset files.
      *
      * Returns a string suitable for a QFileDialog of mesh datasets file formats
      * supported by all data providers.
-     *
-     * This walks through all data providers appending calls to their
-     * fileMeshFilters to a string, which is then returned.
      *
      * \see fileMeshFilters()
      *
      * \since QGIS 3.6
      */
-    virtual QString fileMeshDatasetFilters() const;
+    QString fileMeshDatasetFilters() const;
+
+    /**
+     * Returns a file filter string for supported point clouds.
+     *
+     * Returns a string suitable for a QFileDialog of point cloud file formats
+     * supported by all data providers.
+     *
+     * \see fileMeshFilters()
+     * \see fileRasterFilters()
+     * \see fileVectorFilters()
+     *
+     * \since QGIS 3.18
+     */
+    QString filePointCloudFilters() const;
 
     //! Returns a string containing the available database drivers
-    virtual QString databaseDrivers() const;
+    QString databaseDrivers() const;
     //! Returns a string containing the available directory drivers
-    virtual QString directoryDrivers() const;
+    QString directoryDrivers() const;
     //! Returns a string containing the available protocol drivers
-    virtual QString protocolDrivers() const;
+    QString protocolDrivers() const;
 
     /**
      * \deprecated since QGIS 3.10 - does nothing - use QgsGui::providerGuiRegistry()
@@ -405,6 +432,11 @@ class CORE_EXPORT QgsProviderRegistry
      * File filter string for raster files
      */
     QString mMeshDatasetFileFilters;
+
+    /**
+     * File filter string for point cloud files
+     */
+    QString mPointCloudFileFilters;
 
     /**
      * Available database drivers string for vector databases

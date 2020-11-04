@@ -30,7 +30,6 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dmapcanvas.h"
 
-
 void initCanvas3D( Qgs3DMapCanvas *canvas )
 {
   QgsLayerTree *root = QgsProject::instance()->layerTreeRoot();

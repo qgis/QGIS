@@ -773,7 +773,7 @@ QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::parameters(
                                         10 };
   limit.setCustomValidator( [ = ]( const QgsServerApiContext &, QVariant & value ) -> bool
   {
-    return value >= 0 && value <= maxLimit;   // TODO: make this configurable!
+    return value.toInt() >= 0 && value.toInt() <= maxLimit;   // TODO: make this configurable!
   } );
   params.push_back( limit );
 

@@ -149,6 +149,10 @@ class TestQgsProcessingAlgs: public QObject
     void exportAtlasLayoutPng();
 
     void tinMeshCreation();
+    void exportMeshVertices();
+    void exportMeshFaces();
+    void exportMeshEdges();
+    void exportMeshOnGrid();
 
   private:
 
@@ -227,6 +231,30 @@ void TestQgsProcessingAlgs::initTestCase()
   QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mPolygonLayer );
   QVERIFY( mPolygonLayer->isValid() );
+
+  //add a mesh layer
+  QString uri( dataDir + "/mesh/quad_and_triangle.2dm" );
+  QString meshLayerName = QStringLiteral( "mesh layer" );
+  QgsMeshLayer *meshLayer = new QgsMeshLayer( uri, meshLayerName, QStringLiteral( "mdal" ) );
+  // Register the layer with the registry
+  QgsProject::instance()->addMapLayer( meshLayer );
+  QVERIFY( meshLayer->isValid() );
+  meshLayer->addDatasets( dataDir + "/mesh/quad_and_triangle_vertex_scalar.dat" );
+  meshLayer->addDatasets( dataDir + "/mesh/quad_and_triangle_vertex_vector.dat" );
+  meshLayer->addDatasets( dataDir + "/mesh/quad_and_triangle_els_face_scalar.dat" );
+  meshLayer->addDatasets( dataDir + "/mesh/quad_and_triangle_els_face_vector.dat" );
+  QCOMPARE( meshLayer->datasetGroupCount(), 5 );
+
+  //add a 1D mesh layer
+  QString uri1d( dataDir + "/mesh/lines.2dm" );
+  QString meshLayer1dName = QStringLiteral( "mesh layer 1D" );
+  QgsMeshLayer *meshLayer1d = new QgsMeshLayer( uri1d, meshLayer1dName, QStringLiteral( "mdal" ) );
+  // Register the layer with the registry
+  QgsProject::instance()->addMapLayer( meshLayer1d );
+  QVERIFY( meshLayer1d->isValid() );
+  meshLayer1d->addDatasets( dataDir + "/mesh/lines_els_scalar.dat" );
+  meshLayer1d->addDatasets( dataDir + "/mesh/lines_els_vector.dat" );
+  QCOMPARE( meshLayer1d->datasetGroupCount(), 3 );
 }
 
 void TestQgsProcessingAlgs::cleanupTestCase()
@@ -4795,6 +4823,288 @@ void TestQgsProcessingAlgs::tinMeshCreation()
   meshLayer.updateTriangularMesh();
   QVERIFY( qgsDoubleNear( meshLayer.datasetValue( QgsMeshDatasetIndex( 0, 0 ), QgsPointXY( -103.0, 39.0 ) ).scalar(), 20.0, 0.001 ) );
   QVERIFY( qgsDoubleNear( meshLayer.datasetValue( QgsMeshDatasetIndex( 0, 0 ), QgsPointXY( -86.0, 35.0 ) ).scalar(), 1.855, 0.001 ) ) ;
+}
+
+void TestQgsProcessingAlgs::exportMeshVertices()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:exportmeshvertices" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), "mesh layer" );
+
+  QVariantList datasetGroup;
+  datasetGroup << 1 << 2;
+  parameters.insert( QStringLiteral( "DATASET_GROUPS" ), datasetGroup );
+
+  QVariantMap datasetTime;
+  datasetTime[QStringLiteral( "type" )] = QStringLiteral( "dataset-time-step" );
+  QVariantList datasetIndex;
+  datasetIndex << 1 << 1;
+  datasetTime[QStringLiteral( "value" )] = datasetIndex;
+  parameters.insert( QStringLiteral( "DATASET_TIME" ), datasetTime );
+
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( QStringLiteral( "VECTOR_OPTION" ), 2 );
+
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( QgsProject::instance() );
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  bool ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QgsVectorLayer *resultLayer = qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  QVERIFY( resultLayer );
+  QVERIFY( resultLayer->isValid() );
+  QVERIFY( resultLayer->geometryType() == QgsWkbTypes::PointGeometry );
+  QCOMPARE( resultLayer->featureCount(), 5l );
+  QgsAttributeList attributeList = resultLayer->attributeList();
+  QCOMPARE( resultLayer->fields().count(), 5 );
+  QCOMPARE( resultLayer->fields().at( 0 ).name(), QStringLiteral( "VertexScalarDataset" ) );
+  QCOMPARE( resultLayer->fields().at( 1 ).name(), QStringLiteral( "VertexVectorDataset_x" ) );
+  QCOMPARE( resultLayer->fields().at( 2 ).name(), QStringLiteral( "VertexVectorDataset_y" ) );
+  QCOMPARE( resultLayer->fields().at( 3 ).name(), QStringLiteral( "VertexVectorDataset_mag" ) );
+  QCOMPARE( resultLayer->fields().at( 4 ).name(), QStringLiteral( "VertexVectorDataset_dir" ) );
+
+  QgsFeatureIterator featIt = resultLayer->getFeatures();
+  QgsFeature feat;
+  featIt.nextFeature( feat );
+  QCOMPARE( QStringLiteral( "PointZ (1000 2000 20)" ), feat.geometry().asWkt() );
+  QCOMPARE( feat.attributes().at( 0 ).toDouble(), 2.0 );
+  QCOMPARE( feat.attributes().at( 1 ).toDouble(), 2.0 );
+  QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.0 );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 3 ).toDouble(), 2.828, 2 ) );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 45.0, 2 ) );
+
+  featIt.nextFeature( feat );
+  QCOMPARE( QStringLiteral( "PointZ (2000 2000 30)" ), feat.geometry().asWkt() );
+  QCOMPARE( feat.attributes().at( 0 ).toDouble(), 3.0 );
+  QCOMPARE( feat.attributes().at( 1 ).toDouble(), 3.0 );
+  QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.0 );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 3 ).toDouble(), 3.605, 2 ) );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 56.3099, 2 ) );
+  featIt.nextFeature( feat );
+  QCOMPARE( QStringLiteral( "PointZ (3000 2000 40)" ), feat.geometry().asWkt() );
+  QCOMPARE( feat.attributes().at( 0 ).toDouble(), 4.0 );
+  QCOMPARE( feat.attributes().at( 1 ).toDouble(), 4.0 );
+  QCOMPARE( feat.attributes().at( 2 ).toDouble(), 3.0 );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 3 ).toDouble(), 5.0, 2 ) );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 53.130, 2 ) );
+  featIt.nextFeature( feat );
+  QCOMPARE( QStringLiteral( "PointZ (2000 3000 50)" ), feat.geometry().asWkt() );
+  QCOMPARE( feat.attributes().at( 0 ).toDouble(), 3.0 );
+  QCOMPARE( feat.attributes().at( 1 ).toDouble(), 3.0 );
+  QCOMPARE( feat.attributes().at( 2 ).toDouble(), 3.0 );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 3 ).toDouble(), 4.242, 2 ) );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 45, 2 ) );
+  featIt.nextFeature( feat );
+  QCOMPARE( QStringLiteral( "PointZ (1000 3000 10)" ), feat.geometry().asWkt() );
+  QCOMPARE( feat.attributes().at( 0 ).toDouble(), 2.0 );
+  QCOMPARE( feat.attributes().at( 1 ).toDouble(), 2.0 );
+  QCOMPARE( feat.attributes().at( 2 ).toDouble(), -1.0 );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 3 ).toDouble(), 2.236, 2 ) );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 116.565, 2 ) );
+}
+
+void TestQgsProcessingAlgs::exportMeshFaces()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:exportmeshfaces" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), "mesh layer" );
+
+  QVariantList datasetGroup;
+  datasetGroup << 3 << 4;
+  parameters.insert( QStringLiteral( "DATASET_GROUPS" ), datasetGroup );
+
+  QVariantMap datasetTime;
+  datasetTime[QStringLiteral( "type" )] = QStringLiteral( "dataset-time-step" );
+  QVariantList datasetIndex;
+  datasetIndex << 1 << 1;
+  datasetTime[QStringLiteral( "value" )] = datasetIndex;
+  parameters.insert( QStringLiteral( "DATASET_TIME" ), datasetTime );
+
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( QStringLiteral( "VECTOR_OPTION" ), 2 );
+
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( QgsProject::instance() );
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  bool ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QgsVectorLayer *resultLayer = qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  QVERIFY( resultLayer );
+  QVERIFY( resultLayer->isValid() );
+  QVERIFY( resultLayer->geometryType() == QgsWkbTypes::PolygonGeometry );
+  QCOMPARE( resultLayer->featureCount(), 2l );
+  QgsAttributeList attributeList = resultLayer->attributeList();
+  QCOMPARE( resultLayer->fields().count(), 5 );
+  QCOMPARE( resultLayer->fields().at( 0 ).name(), QStringLiteral( "FaceScalarDataset" ) );
+  QCOMPARE( resultLayer->fields().at( 1 ).name(), QStringLiteral( "FaceVectorDataset_x" ) );
+  QCOMPARE( resultLayer->fields().at( 2 ).name(), QStringLiteral( "FaceVectorDataset_y" ) );
+  QCOMPARE( resultLayer->fields().at( 3 ).name(), QStringLiteral( "FaceVectorDataset_mag" ) );
+  QCOMPARE( resultLayer->fields().at( 4 ).name(), QStringLiteral( "FaceVectorDataset_dir" ) );
+
+  QgsFeatureIterator featIt = resultLayer->getFeatures();
+  QgsFeature feat;
+  featIt.nextFeature( feat );
+  QCOMPARE( QStringLiteral( "PolygonZ ((1000 2000 20, 2000 2000 30, 2000 3000 50, 1000 3000 10, 1000 2000 20))" ), feat.geometry().asWkt() );
+  QCOMPARE( feat.attributes().at( 0 ).toDouble(), 2.0 );
+  QCOMPARE( feat.attributes().at( 1 ).toDouble(), 2.0 );
+  QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.0 );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 3 ).toDouble(), 2.828, 2 ) );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 45.0, 2 ) );
+
+  featIt.nextFeature( feat );
+  QCOMPARE( QStringLiteral( "PolygonZ ((2000 2000 30, 3000 2000 40, 2000 3000 50, 2000 2000 30))" ), feat.geometry().asWkt() );
+  QCOMPARE( feat.attributes().at( 0 ).toDouble(), 3.0 );
+  QCOMPARE( feat.attributes().at( 1 ).toDouble(), 3.0 );
+  QCOMPARE( feat.attributes().at( 2 ).toDouble(), 3.0 );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 3 ).toDouble(), 4.242, 2 ) );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 45.0, 2 ) );
+}
+
+void TestQgsProcessingAlgs::exportMeshEdges()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:exportmeshedges" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), "mesh layer 1D" );
+
+  QVariantList datasetGroup;
+  datasetGroup << 1 << 2;
+  parameters.insert( QStringLiteral( "DATASET_GROUPS" ), datasetGroup );
+
+  QVariantMap datasetTime;
+  datasetTime[QStringLiteral( "type" )] = QStringLiteral( "dataset-time-step" );
+  QVariantList datasetIndex;
+  datasetIndex << 1 << 1;
+  datasetTime[QStringLiteral( "value" )] = datasetIndex;
+  parameters.insert( QStringLiteral( "DATASET_TIME" ), datasetTime );
+
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( QStringLiteral( "VECTOR_OPTION" ), 2 );
+
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( QgsProject::instance() );
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  bool ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QgsVectorLayer *resultLayer = qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  QVERIFY( resultLayer );
+  QVERIFY( resultLayer->isValid() );
+  QVERIFY( resultLayer->geometryType() == QgsWkbTypes::LineGeometry );
+  QCOMPARE( resultLayer->featureCount(), 3l );
+  QgsAttributeList attributeList = resultLayer->attributeList();
+  QCOMPARE( resultLayer->fields().count(), 5 );
+  QCOMPARE( resultLayer->fields().at( 0 ).name(), QStringLiteral( "EdgeScalarDataset" ) );
+  QCOMPARE( resultLayer->fields().at( 1 ).name(), QStringLiteral( "EdgeVectorDataset_x" ) );
+  QCOMPARE( resultLayer->fields().at( 2 ).name(), QStringLiteral( "EdgeVectorDataset_y" ) );
+  QCOMPARE( resultLayer->fields().at( 3 ).name(), QStringLiteral( "EdgeVectorDataset_mag" ) );
+  QCOMPARE( resultLayer->fields().at( 4 ).name(), QStringLiteral( "EdgeVectorDataset_dir" ) );
+
+  QgsFeatureIterator featIt = resultLayer->getFeatures();
+  QgsFeature feat;
+  featIt.nextFeature( feat );
+  QCOMPARE( QStringLiteral( "LineStringZ (1000 2000 20, 2000 2000 30)" ), feat.geometry().asWkt() );
+  QCOMPARE( feat.attributes().at( 0 ).toDouble(), 2.0 );
+  QCOMPARE( feat.attributes().at( 1 ).toDouble(), 2.0 );
+  QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.0 );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 3 ).toDouble(), 2.828, 2 ) );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 45.0, 2 ) );
+
+  featIt.nextFeature( feat );
+  QCOMPARE( QStringLiteral( "LineStringZ (2000 2000 30, 3000 2000 40)" ), feat.geometry().asWkt() );
+  QCOMPARE( feat.attributes().at( 0 ).toDouble(), 3.0 );
+  QCOMPARE( feat.attributes().at( 1 ).toDouble(), 3.0 );
+  QCOMPARE( feat.attributes().at( 2 ).toDouble(), 3.0 );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 3 ).toDouble(), 4.242, 2 ) );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 45.0, 2 ) );
+
+  featIt.nextFeature( feat );
+  QCOMPARE( QStringLiteral( "LineStringZ (3000 2000 40, 2000 3000 50)" ), feat.geometry().asWkt() );
+  QCOMPARE( feat.attributes().at( 0 ).toDouble(), 4.0 );
+  QCOMPARE( feat.attributes().at( 1 ).toDouble(), 4.0 );
+  QCOMPARE( feat.attributes().at( 2 ).toDouble(), 4.0 );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 3 ).toDouble(), 5.656, 2 ) );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 45.0, 2 ) );
+}
+
+void TestQgsProcessingAlgs::exportMeshOnGrid()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:exportmeshongrid" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QString dataDir = QString( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  QString meshUri( dataDir + "/mesh/trap_steady_05_3D.nc" );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), meshUri );
+
+  QVariantList datasetGroup;
+  for ( int i = 0; i < 12; ++i )
+    datasetGroup.append( i );
+  parameters.insert( QStringLiteral( "DATASET_GROUPS" ), datasetGroup );
+
+  QVariantMap datasetTime;
+  datasetTime[QStringLiteral( "type" )] = QStringLiteral( "dataset-time-step" );
+  QVariantList datasetIndex;
+  datasetIndex << 1 << 1;
+  datasetTime[QStringLiteral( "value" )] = datasetIndex;
+  parameters.insert( QStringLiteral( "DATASET_TIME" ), datasetTime );
+
+  parameters.insert( QStringLiteral( "GRID_SPACING" ), 25.0 );
+
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  parameters.insert( QStringLiteral( "VECTOR_OPTION" ), 2 );
+
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( QgsProject::instance() );
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  bool ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QgsVectorLayer *resultLayer = qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) );
+  QVERIFY( resultLayer );
+  QVERIFY( resultLayer->isValid() );
+  QVERIFY( resultLayer->geometryType() == QgsWkbTypes::PointGeometry );
+  QCOMPARE( resultLayer->featureCount(), 205l );
+  QgsAttributeList attributeList = resultLayer->attributeList();
+  QCOMPARE( resultLayer->fields().count(), 21 );
+  QStringList fieldsName;
+  fieldsName << QStringLiteral( "Bed Elevation" ) << QStringLiteral( "temperature" ) << QStringLiteral( "temperature/Maximums" )
+             << QStringLiteral( "temperature/Minimums" ) << QStringLiteral( "temperature/Time at Maximums" ) << QStringLiteral( "temperature/Time at Minimums" )
+             << QStringLiteral( "velocity_x" ) << QStringLiteral( "velocity_y" ) << QStringLiteral( "velocity_mag" ) << QStringLiteral( "velocity_dir" )
+             << QStringLiteral( "velocity/Maximums_x" ) << QStringLiteral( "velocity/Maximums_y" ) << QStringLiteral( "velocity/Maximums_mag" ) << QStringLiteral( "velocity/Maximums_dir" )
+             << QStringLiteral( "velocity/Minimums_x" ) << QStringLiteral( "velocity/Minimums_y" ) << QStringLiteral( "velocity/Minimums_mag" ) << QStringLiteral( "velocity/Minimums_dir" )
+             << QStringLiteral( "velocity/Time at Maximums" ) << QStringLiteral( "velocity/Time at Minimums" ) << QStringLiteral( "water depth" );
+
+  for ( int i = 0; i < fieldsName.count(); ++i )
+    QCOMPARE( fieldsName.at( i ), resultLayer->fields().at( i ).name() );
+
+  QgsFeatureIterator featIt = resultLayer->getFeatures();
+  QgsFeature feat;
+  for ( int i = 0; i < 8; ++i )
+    featIt.nextFeature( feat );
+  QCOMPARE( QStringLiteral( "Point (25 50)" ), feat.geometry().asWkt() );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 0 ).toDouble(), -5.025, 2 ) );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 1 ).toDouble(), 1.424, 2 ) );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 2 ).toDouble(), 5.00, 2 ) );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 3 ).toDouble(), 1.32e-36, 2 ) );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 0.02776, 2 ) );
+
 }
 
 bool TestQgsProcessingAlgs::imageCheck( const QString &testName, const QString &renderedImage )

@@ -56,6 +56,38 @@ QStringList QgsFileUtils::extensionsFromFilter( const QString &filter )
   return extensions;
 }
 
+bool QgsFileUtils::fileMatchesFilter( const QString &fileName, const QString &filter )
+{
+  QFileInfo fi( fileName );
+  const QString name = fi.fileName();
+  const QStringList parts = filter.split( QStringLiteral( ";;" ) );
+  for ( const QString &part : parts )
+  {
+    const QRegularExpression globPatternsRx( QStringLiteral( ".*\\((.*?)\\)$" ) );
+    const QRegularExpressionMatch matches = globPatternsRx.match( part );
+    if ( matches.hasMatch() )
+    {
+      const QStringList globPatterns = matches.captured( 1 ).split( ' ' );
+      for ( const QString &glob : globPatterns )
+      {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
+        const QString re = QRegularExpression::wildcardToRegularExpression( glob );
+
+        const QRegularExpression globRx( re );
+        if ( globRx.match( name ).hasMatch() )
+          return true;
+#else
+        QRegExp rx( glob );
+        rx.setPatternSyntax( QRegExp::Wildcard );
+        if ( rx.indexIn( name ) != -1 )
+          return true;
+#endif
+      }
+    }
+  }
+  return false;
+}
+
 QString QgsFileUtils::ensureFileNameHasExtension( const QString &f, const QStringList &extensions )
 {
   if ( extensions.empty() || f.isEmpty() )

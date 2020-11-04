@@ -13,6 +13,7 @@
 
 
 
+
 class QgsMeshDriverMetadata
 {
 %Docstring
@@ -163,7 +164,8 @@ Cleanup the provider
       FilterVector,
       FilterRaster,
       FilterMesh,
-      FilterMeshDataset
+      FilterMeshDataset,
+      FilterPointCloud,
     };
 
     virtual QString filters( FilterType type );
@@ -180,6 +182,19 @@ Suitable for use in a QFileDialog.getOpenFileNames() call.
 Builds the list of available mesh drivers metadata
 
 .. versionadded:: 3.12
+%End
+
+    virtual int priorityForUri( const QString &uri );
+%Docstring
+Returns an integer representing the priority which this provider should have when opening
+a dataset with the specified ``uri``.
+
+A larger priority means that the provider should be selected over others with a lower
+priority for the same URI.
+
+The default implementation returns 0 for all URIs.
+
+.. versionadded:: 3.18
 %End
 
     virtual QgsDataProvider *createProvider( const QString &uri,
@@ -442,6 +457,12 @@ Stores the connection in the settings
 :raises :: py:class:`QgsProviderConnectionException`
 
 .. versionadded:: 3.10
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsProviderMetadata: %1>" ).arg( sipCpp->key() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
   signals:

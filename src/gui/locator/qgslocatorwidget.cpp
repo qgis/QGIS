@@ -114,6 +114,12 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
   } );
   connect( mMenu, &QMenu::aboutToShow, this, &QgsLocatorWidget::configMenuAboutToShow );
 
+  mModelBridge->setTransformContext( QgsProject::instance()->transformContext() );
+  connect( QgsProject::instance(), &QgsProject::transformContextChanged,
+           this, [ = ]
+  {
+    mModelBridge->setTransformContext( QgsProject::instance()->transformContext() );
+  } );
 }
 
 QgsLocator *QgsLocatorWidget::locator()

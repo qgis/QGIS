@@ -199,7 +199,7 @@ void QgsTemporalNavigationObject::setFrameDuration( QgsInterval frameDuration )
   // forcing an update of our views
   QgsDateTimeRange range = dateTimeRangeForFrameNumber( mCurrentFrameNumber );
 
-  if ( !mBlockUpdateTemporalRangeSignal )
+  if ( !mBlockUpdateTemporalRangeSignal && mNavigationMode != NavigationOff )
     emit updateTemporalRange( range );
 }
 

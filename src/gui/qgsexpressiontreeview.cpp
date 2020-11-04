@@ -650,7 +650,7 @@ void QgsExpressionTreeView::loadExpressionsFromJson( const QJsonDocument &expres
   settings.beginGroup( QStringLiteral( "user" ), QgsSettings::Section::Expressions );
   mUserExpressionLabels = settings.childGroups();
 
-  for ( const QJsonValue &expressionValue : expressionsObject["expressions"].toArray() )
+  for ( const QJsonValue && expressionValue : expressionsObject["expressions"].toArray() )
   {
     // validate the type of the array element, can be anything
     if ( ! expressionValue.isObject() )

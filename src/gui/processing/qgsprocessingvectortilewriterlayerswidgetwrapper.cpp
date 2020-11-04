@@ -24,7 +24,6 @@
 
 #include "qgspanelwidget.h"
 
-#include "qgsprocessingcontext.h"
 #include "qgsvectortilewriter.h"
 
 #include "qgsprocessingparametervectortilewriterlayers.h"
@@ -39,10 +38,9 @@ QgsProcessingVectorTileWriteLayerDetailsWidget::QgsProcessingVectorTileWriteLaye
 {
   setupUi( this );
 
-  QgsProcessingContext context;
-  context.setProject( project );
+  mContext.setProject( project );
 
-  QgsVectorTileWriter::Layer layer = QgsProcessingParameterVectorTileWriterLayers::variantMapAsLayer( value.toMap(), context );
+  QgsVectorTileWriter::Layer layer = QgsProcessingParameterVectorTileWriterLayers::variantMapAsLayer( value.toMap(), mContext );
   mLayer = layer.layer();
 
   if ( !mLayer )
@@ -99,15 +97,13 @@ QgsProcessingVectorTileWriterLayersPanelWidget::QgsProcessingVectorTileWriterLay
   buttonBox()->addButton( copyLayerButton, QDialogButtonBox::ActionRole );
 
   // populate the list: first layers already selected, then layers from project not yet selected
-
-  QgsProcessingContext context;
-  context.setProject( project );
+  mContext.setProject( project );
 
   QSet<const QgsVectorLayer *> seenVectorLayers;
   const QVariantList valueList = value.toList();
   for ( const QVariant &v : valueList )
   {
-    QgsVectorTileWriter::Layer layer = QgsProcessingParameterVectorTileWriterLayers::variantMapAsLayer( v.toMap(), context );
+    QgsVectorTileWriter::Layer layer = QgsProcessingParameterVectorTileWriterLayers::variantMapAsLayer( v.toMap(), mContext );
     if ( !layer.layer() )
       continue;  // skip any invalid layers
 
@@ -130,7 +126,6 @@ QgsProcessingVectorTileWriterLayersPanelWidget::QgsProcessingVectorTileWriterLay
     addOption( vm, title, false );
   }
 }
-
 
 void QgsProcessingVectorTileWriterLayersPanelWidget::configureLayer()
 {
@@ -172,7 +167,6 @@ void QgsProcessingVectorTileWriterLayersPanelWidget::configureLayer()
       setItemValue( item, widget->value() );
     }
   }
-
 }
 
 void QgsProcessingVectorTileWriterLayersPanelWidget::copyLayer()
@@ -191,10 +185,9 @@ void QgsProcessingVectorTileWriterLayersPanelWidget::copyLayer()
 
 void QgsProcessingVectorTileWriterLayersPanelWidget::setItemValue( QStandardItem *item, const QVariant &value )
 {
-  QgsProcessingContext context;
-  context.setProject( mProject );
+  mContext.setProject( mProject );
 
-  QgsVectorTileWriter::Layer layer = QgsProcessingParameterVectorTileWriterLayers::variantMapAsLayer( value.toMap(), context );
+  QgsVectorTileWriter::Layer layer = QgsProcessingParameterVectorTileWriterLayers::variantMapAsLayer( value.toMap(), mContext );
 
   item->setText( titleForLayer( layer ) );
   item->setData( value, Qt::UserRole );

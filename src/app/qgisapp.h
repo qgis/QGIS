@@ -2100,7 +2100,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Open a vector tile layer - this is the generic function which takes all parameters
     QgsVectorTileLayer *addVectorTileLayerPrivate( const QString &uri, const QString &baseName, bool guiWarning = true );
 
-    //! Open a point cloyd layer - this is the generic function which takes all parameters
+    //! Open a point cloud layer - this is the generic function which takes all parameters
     QgsPointCloudLayer *addPointCloudLayerPrivate( const QString &uri,
         const QString &baseName,
         const QString &providerKey,

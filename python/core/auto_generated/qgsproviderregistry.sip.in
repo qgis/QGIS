@@ -49,7 +49,7 @@ ogr and postgres.
 Means of accessing canonical single instance
 %End
 
-    virtual ~QgsProviderRegistry();
+    ~QgsProviderRegistry();
 
  QString library( const QString &providerKey ) const /Deprecated/;
 %Docstring
@@ -107,7 +107,7 @@ Returns the provider capabilities
 %End
 
 
-    virtual QgsRasterDataProvider *createRasterDataProvider(
+    QgsRasterDataProvider *createRasterDataProvider(
       const QString &providerKey,
       const QString &uri,
       const QString &format,
@@ -281,75 +281,111 @@ Returns list of available providers by their keys
 Returns metadata of the provider or ``None`` if not found
 %End
 
-    virtual QString fileVectorFilters() const;
+    QgsProviderMetadata *preferredProviderForUri( const QString &uri ) const;
 %Docstring
-Returns vector file filter string
+Returns the metadata for the preferred provider for opening the specified ``uri``.
+
+The preferred provider is determined by comparing the priority returned by
+:py:func:`QgsProviderMetadata.priorityForUri()` for all registered providers, and selecting
+the provider with the largest non-zero priority.
+
+A ``None`` may be returned, which indicates that no providers are available which
+returned a non-zero priority for the specified URI.
+
+In the case that multiple providers returned the same priority for the URI then
+either of these providers will be returned. In this case the :py:func:`QgsProviderMetadata.priorityForUri()`
+implementation for the providers should be refined to avoid ties.
+
+.. versionadded:: 3.18
+%End
+
+    QString fileVectorFilters() const;
+%Docstring
+Returns a file filter string for supported vector files.
 
 Returns a string suitable for a QFileDialog of vector file formats
 supported by all data providers.
 
-This walks through all data providers appending calls to their
-fileVectorFilters to a string, which is then returned.
+.. seealso:: :py:func:`fileRasterFilters`
 
-\note
+.. seealso:: :py:func:`fileMeshFilters`
 
-It'd be nice to eventually be raster/vector neutral.
+.. seealso:: :py:func:`filePointCloudFilters`
 %End
 
-    virtual QString fileRasterFilters() const;
+    QString fileRasterFilters() const;
 %Docstring
-Returns raster file filter string
+Returns a file filter string for supported raster files.
 
 Returns a string suitable for a QFileDialog of raster file formats
 supported by all data providers.
 
-This walks through all data providers appending calls to their
-buildSupportedRasterFileFilter to a string, which is then returned.
-
 .. note::
 
    This replaces :py:func:`QgsRasterLayer.buildSupportedRasterFileFilter()`
+
+.. seealso:: :py:func:`fileVectorFilters`
+
+.. seealso:: :py:func:`fileMeshFilters`
+
+.. seealso:: :py:func:`filePointCloudFilters`
 %End
 
-    virtual QString fileMeshFilters() const;
+    QString fileMeshFilters() const;
 %Docstring
-Returns mesh file filter string
+Returns a file filter string for supported mesh files.
 
 Returns a string suitable for a QFileDialog of mesh file formats
 supported by all data providers.
 
-This walks through all data providers appending calls to their
-fileMeshFilters to a string, which is then returned.
-
 .. seealso:: :py:func:`fileMeshDatasetFilters`
+
+.. seealso:: :py:func:`fileRasterFilters`
+
+.. seealso:: :py:func:`fileVectorFilters`
+
+.. seealso:: :py:func:`filePointCloudFilters`
 
 .. versionadded:: 3.6
 %End
 
-    virtual QString fileMeshDatasetFilters() const;
+    QString fileMeshDatasetFilters() const;
 %Docstring
-Returns mesh's dataset file filter string
+Returns a file filter string for supported mesh dataset files.
 
 Returns a string suitable for a QFileDialog of mesh datasets file formats
 supported by all data providers.
-
-This walks through all data providers appending calls to their
-fileMeshFilters to a string, which is then returned.
 
 .. seealso:: :py:func:`fileMeshFilters`
 
 .. versionadded:: 3.6
 %End
 
-    virtual QString databaseDrivers() const;
+    QString filePointCloudFilters() const;
+%Docstring
+Returns a file filter string for supported point clouds.
+
+Returns a string suitable for a QFileDialog of point cloud file formats
+supported by all data providers.
+
+.. seealso:: :py:func:`fileMeshFilters`
+
+.. seealso:: :py:func:`fileRasterFilters`
+
+.. seealso:: :py:func:`fileVectorFilters`
+
+.. versionadded:: 3.18
+%End
+
+    QString databaseDrivers() const;
 %Docstring
 Returns a string containing the available database drivers
 %End
-    virtual QString directoryDrivers() const;
+    QString directoryDrivers() const;
 %Docstring
 Returns a string containing the available directory drivers
 %End
-    virtual QString protocolDrivers() const;
+    QString protocolDrivers() const;
 %Docstring
 Returns a string containing the available protocol drivers
 %End

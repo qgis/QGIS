@@ -21,21 +21,19 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgspointcloudblock.h"
+#include "qgspointcloudattribute.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
-#include <QVector>
 #include <QString>
 
 namespace QgsEptDecoder
 {
-  // These two should be really merged to one function ....
-  QVector<qint32> decompressBinary( const QString &filename, int pointRecordSize );
-  QVector<char> decompressBinaryClasses( const QString &filename, int pointRecordSize );
-
-  QVector<qint32> decompressZStandard( const QString &filename, int pointRecordSize );
-  QVector<qint32> decompressLaz( const QString &filename );
+  QgsPointCloudBlock *decompressBinary( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes );
+  QgsPointCloudBlock *decompressZStandard( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes );
+  QgsPointCloudBlock *decompressLaz( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes );
 };
 
 ///@endcond

@@ -112,7 +112,7 @@ class QUICK_EXPORT QgsQuickFeaturesListModel : public QAbstractListModel
      * \return KeyColumn role for found feature, returns -1 if no feature is found. If more features
      * match requested role and value, KeyColumn for first is returned.
      */
-    Q_INVOKABLE int keyFromAttribute( const int role, const QVariant &value ) const;
+    Q_INVOKABLE QVariant keyFromAttribute( const int role, const QVariant &value ) const;
 
     //! Returns maximum amount of features that can be queried from layer
     int featuresLimit() const;

@@ -23,7 +23,6 @@
 #include "qgisapp.h"
 #include "qgsmapmouseevent.h"
 
-
 QgsMapToolReshape::QgsMapToolReshape( QgsMapCanvas *canvas )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine )
 {
@@ -128,7 +127,13 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
   QgsLineString reshapeLineString( pts );
 
   //query all the features that intersect bounding box of capture line
-  QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( bbox ).setNoAttributes() );
+  QgsFeatureRequest req = QgsFeatureRequest().setFilterRect( bbox ).setNoAttributes();
+
+  if ( vlayer->selectedFeatureCount() > 0 )
+    req.setFilterFids( vlayer->selectedFeatureIds() );
+
+  QgsFeatureIterator fit = vlayer->getFeatures( req );
+
   QgsFeature f;
   int reshapeReturn;
   bool reshapeDone = false;
