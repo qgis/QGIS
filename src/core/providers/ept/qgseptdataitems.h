@@ -20,7 +20,6 @@
 
 #include "qgsdataitem.h"
 #include "qgsdataitemprovider.h"
-#include "qgsprovidermetadata.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE

@@ -283,6 +283,24 @@ class CORE_EXPORT QgsProviderRegistry
     QgsProviderMetadata *providerMetadata( const QString &providerKey ) const;
 
     /**
+     * Returns the metadata for the preferred provider for opening the specified \a uri.
+     *
+     * The preferred provider is determined by comparing the priority returned by
+     * QgsProviderMetadata::priorityForUri() for all registered providers, and selecting
+     * the provider with the largest non-zero priority.
+     *
+     * A NULLPTR may be returned, which indicates that no providers are available which
+     * returned a non-zero priority for the specified URI.
+     *
+     * In the case that multiple providers returned the same priority for the URI then
+     * either of these providers will be returned. In this case the QgsProviderMetadata::priorityForUri()
+     * implementation for the providers should be refined to avoid ties.
+     *
+     * \since QGIS 3.18
+     */
+    QgsProviderMetadata *preferredProviderForUri( const QString &uri ) const;
+
+    /**
      * Returns a file filter string for supported vector files.
      *
      * Returns a string suitable for a QFileDialog of vector file formats

@@ -240,6 +240,19 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
     virtual QList<QgsMeshDriverMetadata> meshDriversMetadata();
 
     /**
+     * Returns an integer representing the priority which this provider should have when opening
+     * a dataset with the specified \a uri.
+     *
+     * A larger priority means that the provider should be selected over others with a lower
+     * priority for the same URI.
+     *
+     * The default implementation returns 0 for all URIs.
+     *
+     * \since QGIS 3.18
+     */
+    virtual int priorityForUri( const QString &uri );
+
+    /**
      * Class factory to return a pointer to a newly created QgsDataProvider object
      *
      * \param uri the datasource uri

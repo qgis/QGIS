@@ -745,3 +745,19 @@ QgsProviderMetadata *QgsProviderRegistry::providerMetadata( const QString &provi
 {
   return findMetadata_( mProviders, providerKey );
 }
+
+QgsProviderMetadata *QgsProviderRegistry::preferredProviderForUri( const QString &uri ) const
+{
+  QgsProviderMetadata *res = nullptr;
+  int maxPriority = 0;
+  for ( auto it = mProviders.begin(); it != mProviders.end(); ++it )
+  {
+    const int thisProviderPriority = it->second->priorityForUri( uri );
+    if ( thisProviderPriority > maxPriority )
+    {
+      maxPriority = thisProviderPriority;
+      res = it->second;
+    }
+  }
+  return res;
+}

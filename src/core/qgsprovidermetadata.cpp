@@ -81,6 +81,11 @@ QList<QgsMeshDriverMetadata> QgsProviderMetadata::meshDriversMetadata()
   return QList<QgsMeshDriverMetadata>();
 }
 
+int QgsProviderMetadata::priorityForUri( const QString & )
+{
+  return 0;
+}
+
 QgsDataProvider *QgsProviderMetadata::createProvider( const QString &uri,
     const QgsDataProvider::ProviderOptions &options,
     QgsDataProvider::ReadFlags flags )
