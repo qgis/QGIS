@@ -41,6 +41,8 @@ class QgsPdalDataItemProvider : public QgsDataItemProvider
     int capabilities() const override;
 
     QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
+  private:
+    QString mFileFilter;
 };
 
 #endif // QGSPDALDATAITEMS_H
