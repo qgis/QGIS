@@ -69,18 +69,17 @@ void QgsPointCloudAttribute::updateSize()
 QgsPointCloudAttributeCollection::QgsPointCloudAttributeCollection() = default;
 
 QgsPointCloudAttributeCollection::QgsPointCloudAttributeCollection( const QVector<QgsPointCloudAttribute> &attributes )
-  : mAttributes( attributes )
 {
-  for ( int i = 0; i < mAttributes.size(); ++i )
+  mAttributes.reserve( attributes.size() );
+  for ( const QgsPointCloudAttribute &attribute : attributes )
   {
-    const QgsPointCloudAttribute &attribute = mAttributes.at( i );
-    mSize += attribute.size();
+    push_back( attribute );
   }
-
 }
 
 void QgsPointCloudAttributeCollection::push_back( const QgsPointCloudAttribute &attribute )
 {
+  mCachedAttributes.insert( attribute.name(), CachedAttributeData( mAttributes.size(), mSize ) );
   mAttributes.push_back( attribute );
   mSize += attribute.size();
 }
@@ -92,21 +91,11 @@ QVector<QgsPointCloudAttribute> QgsPointCloudAttributeCollection::attributes() c
 
 const QgsPointCloudAttribute *QgsPointCloudAttributeCollection::find( const QString &attributeName, int &offset ) const
 {
-
-  int off = 0;
-
-  for ( int i = 0; i < mAttributes.size(); ++i )
+  auto it = mCachedAttributes.constFind( attributeName );
+  if ( it != mCachedAttributes.constEnd() )
   {
-    const QgsPointCloudAttribute &attr = mAttributes.at( i );
-    if ( attr.name() == attributeName )
-    {
-      offset = off;
-      return &attr;
-    }
-    else
-    {
-      off += attr.size();
-    }
+    offset = it->offset;
+    return &mAttributes.at( it->index );
   }
 
   // not found
