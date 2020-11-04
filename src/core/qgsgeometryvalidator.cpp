@@ -41,7 +41,7 @@ void QgsGeometryValidator::stop()
   mStop = true;
 }
 
-void QgsGeometryValidator::checkRingIntersections( int p0, int i0, const QgsLineString *ring0, int p1, int i1, const QgsLineString *ring1 )
+void QgsGeometryValidator::checkRingIntersections( int partIndex0, int ringIndex0, const QgsLineString *ring0, int partIndex1, int ringIndex1, const QgsLineString *ring1 )
 {
   for ( int i = 0; !mStop && i < ring0->numPoints() - 1; i++ )
   {
@@ -65,14 +65,13 @@ void QgsGeometryValidator::checkRingIntersections( int p0, int i0, const QgsLine
         {
           d = -distLine2Point( ring1XAtj, ring1YAtj, w.perpVector(), sX, sY );
           if ( d > 0 && d < w.length() &&
-               ring0[i + 1] != ring1[j + 1] && ring0[i + 1] != ring1[j] &&
-               ring0[i + 0] != ring1[j + 1] && ring0[i + 0] != ring1[j] )
+               ring0->pointN( i + 1 ) != ring1->pointN( j + 1 ) && ring0->pointN( i + 1 ) != ring1->pointN( j ) &&
+               ring0->pointN( i + 0 ) != ring1->pointN( j + 1 ) && ring0->pointN( i + 0 ) != ring1->pointN( j ) )
           {
-            QString msg = QObject::tr( "segment %1 of ring %2 of polygon %3 intersects segment %4 of ring %5 of polygon %6 at %7, %8" )
-                          .arg( i0 ).arg( i ).arg( p0 )
-                          .arg( i1 ).arg( j ).arg( p1 )
-                          .arg( sX ).arg( sY );
-            QgsDebugMsg( msg );
+            const QString msg = QObject::tr( "segment %1 of ring %2 of polygon %3 intersects segment %4 of ring %5 of polygon %6 at %7, %8" )
+                                .arg( i ).arg( ringIndex0 ).arg( partIndex0 )
+                                .arg( j ).arg( ringIndex1 ).arg( partIndex1 )
+                                .arg( sX ).arg( sY );
             emit errorFound( QgsGeometry::Error( msg, QgsPointXY( sX, sY ) ) );
             mErrorCount++;
           }
@@ -214,14 +213,14 @@ void QgsGeometryValidator::validatePolyline( int i, const QgsLineString *line, b
   }
 }
 
-void QgsGeometryValidator::validatePolygon( int idx, const QgsPolygon *polygon )
+void QgsGeometryValidator::validatePolygon( int partIndex, const QgsPolygon *polygon )
 {
   // check if holes are inside polygon
   for ( int i = 0; !mStop && i < polygon->numInteriorRings(); ++i )
   {
     if ( !ringInRing( static_cast< const QgsLineString * >( polygon->interiorRing( i ) ), static_cast< const QgsLineString * >( polygon->exteriorRing() ) ) )
     {
-      QString msg = QObject::tr( "ring %1 of polygon %2 not in exterior ring" ).arg( i + 1 ).arg( idx );
+      QString msg = QObject::tr( "ring %1 of polygon %2 not in exterior ring" ).arg( i + 1 ).arg( partIndex );
       QgsDebugMsg( msg );
       emit errorFound( QgsGeometry::Error( msg ) );
       mErrorCount++;
@@ -233,8 +232,8 @@ void QgsGeometryValidator::validatePolygon( int idx, const QgsPolygon *polygon )
   {
     for ( int j = i + 1; !mStop && j < polygon->numInteriorRings(); j++ )
     {
-      checkRingIntersections( idx, i + 1, qgsgeometry_cast< QgsLineString * >( polygon->interiorRing( i ) ),
-                              idx, j + 1, qgsgeometry_cast< QgsLineString * >( polygon->interiorRing( j ) ) );
+      checkRingIntersections( partIndex, i + 1, qgsgeometry_cast< QgsLineString * >( polygon->interiorRing( i ) ),
+                              partIndex, j + 1, qgsgeometry_cast< QgsLineString * >( polygon->interiorRing( j ) ) );
     }
   }
 
