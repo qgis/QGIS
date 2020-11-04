@@ -101,6 +101,18 @@ class CORE_EXPORT QgsPointCloudAttributeCollection
   private:
     int mSize = 0;
     QVector<QgsPointCloudAttribute> mAttributes;
+
+    struct CachedAttributeData
+    {
+      int index;
+      int offset;
+      CachedAttributeData( int index, int offset )
+        : index( index )
+        , offset( offset )
+      {}
+    };
+
+    QMap< QString, CachedAttributeData > mCachedAttributes;
 };
 
 #endif // QGSPOINTCLOUDATTRIBUTE_H
