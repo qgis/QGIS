@@ -220,7 +220,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
       FilterRaster, //!< Raster layers
       FilterMesh, //!< Mesh layers
       FilterMeshDataset, //!< Mesh datasets
-      FilterPointCloud, //!< Point clouds
+      FilterPointCloud, //!< Point clouds (since QGIS 3.18)
     };
 
     /**
