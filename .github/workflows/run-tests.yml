@@ -74,7 +74,7 @@ jobs:
 
       - name: run unit tests
         run: |
-          docker-compose -f .docker/docker-compose.travis.yml run qgis-deps /root/QGIS/.docker/docker-qgis-test.sh
+          docker-compose -f .docker/docker-compose-testing.yml run qgis-deps /root/QGIS/.docker/docker-qgis-test.sh
 
       - name: QGIS runners
         run: |
