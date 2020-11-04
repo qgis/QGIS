@@ -64,17 +64,23 @@ export QGIS_ORACLETEST_DBNAME="${ORACLE_HOST}/XEPDB1"
 export QGIS_ORACLETEST_DB="host=${QGIS_ORACLETEST_DBNAME} port=1521 user='QGIS' password='qgis'"
 
 echo "Wait a moment while loading Oracle database."
+COUNT=0
 while ! echo exit | sqlplus -L SYSTEM/adminpass@$QGIS_ORACLETEST_DBNAME &> /dev/null
 do
   printf "🙏"
-  sleep 1
+  sleep 3
+  if [[ $(( COUNT++ )) -eq 100 ]]; then
+    break
+  fi
 done
-echo " done 👀"
-
-pushd /root/QGIS > /dev/null
-/root/QGIS/tests/testdata/provider/testdata_oracle.sh $ORACLE_HOST
-popd > /dev/null # /root/QGIS
-
+if [[ ${COUNT} -eq 101 ]]; then
+  echo "timeout, no oracle, no 🙏"
+else
+  echo " done 👀"
+  pushd /root/QGIS > /dev/null
+  /root/QGIS/tests/testdata/provider/testdata_oracle.sh $ORACLE_HOST
+  popd > /dev/null # /root/QGIS
+fi
 # this is proving very flaky:
 
 ##############################
