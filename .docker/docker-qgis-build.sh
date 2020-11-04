@@ -34,7 +34,7 @@ export CXX=/usr/lib/ccache/clang++
 cmake \
  -GNinja \
  -DUSE_CCACHE=OFF \
- -DWITH_QUICK=ON \
+ -DWITH_QUICK=OFF \
  -DWITH_3D=ON \
  -DWITH_STAGED_PLUGINS=ON \
  -DWITH_GRASS=OFF \
