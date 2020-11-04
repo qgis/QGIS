@@ -22,6 +22,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/numericformats
   ${CMAKE_SOURCE_DIR}/src/core/pal
+  ${CMAKE_SOURCE_DIR}/src/core/pointcloud
   ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/processing/models
   ${CMAKE_SOURCE_DIR}/src/core/providers/gdal
@@ -201,6 +202,7 @@ SET(TESTS
  testqgspointlocator.cpp
  testqgspointpatternfillsymbol.cpp
  testqgspoint.cpp
+ testqgspointcloudattribute.cpp
  testqgsproject.cpp
  testqgsprojectstorage.cpp
  testqgsprojutils.cpp
