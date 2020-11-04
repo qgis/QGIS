@@ -27,7 +27,6 @@ QgsPdalLayerItem::QgsPdalLayerItem( QgsDataItem *parent,
   : QgsLayerItem( parent, name, path, uri, QgsLayerItem::PointCloud, QStringLiteral( "pdal" ) )
 {
   mToolTip = uri;
-  mIconName = QStringLiteral( "mIconPdalLayer.svg" );
   setState( Populated );
 }
 
@@ -60,9 +59,7 @@ QgsDataItem *QgsPdalDataItemProvider::createDataItem( const QString &path, QgsDa
 
   QgsDebugMsgLevel( "thePath = " + path, 2 );
 
-  // get suffix, removing .gz if present
   QFileInfo info( path );
-  info.setFile( path );
 
   // allow only normal files
   if ( !info.isFile() )
@@ -73,7 +70,7 @@ QgsDataItem *QgsPdalDataItemProvider::createDataItem( const QString &path, QgsDa
   if ( !path.endsWith( QStringLiteral( "laz" ) ) )
     return nullptr;
 
-  QString name = info.baseName() + QStringLiteral( ".laz" );
+  const QString name = info.fileName();
 
   return new QgsPdalLayerItem( parentItem, name, path, path );
 }
