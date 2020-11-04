@@ -281,6 +281,24 @@ Returns list of available providers by their keys
 Returns metadata of the provider or ``None`` if not found
 %End
 
+    QgsProviderMetadata *preferredProviderForUri( const QString &uri ) const;
+%Docstring
+Returns the metadata for the preferred provider for opening the specified ``uri``.
+
+The preferred provider is determined by comparing the priority returned by
+:py:func:`QgsProviderMetadata.priorityForUri()` for all registered providers, and selecting
+the provider with the largest non-zero priority.
+
+A ``None`` may be returned, which indicates that no providers are available which
+returned a non-zero priority for the specified URI.
+
+In the case that multiple providers returned the same priority for the URI then
+either of these providers will be returned. In this case the :py:func:`QgsProviderMetadata.priorityForUri()`
+implementation for the providers should be refined to avoid ties.
+
+.. versionadded:: 3.18
+%End
+
     QString fileVectorFilters() const;
 %Docstring
 Returns a file filter string for supported vector files.

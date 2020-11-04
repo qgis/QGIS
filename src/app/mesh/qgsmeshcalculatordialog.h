@@ -20,7 +20,6 @@
 
 #include "ui_qgsmeshcalculatordialogbase.h"
 #include "qgsmeshcalculator.h"
-#include "qgsprovidermetadata.h"
 #include "qgshelp.h"
 #include "qgis_app.h"
 
