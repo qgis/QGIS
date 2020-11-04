@@ -14,6 +14,60 @@
    <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="4" column="0">
+    <widget class="QLabel" name="lblShininess">
+     <property name="text">
+      <string>Shininess</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="lblAmbient_2">
+     <property name="text">
+      <string>Cool</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="lblDiffuse">
+     <property name="text">
+      <string>Diffuse</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QgsDoubleSpinBox" name="spinAlpha">
+     <property name="maximum">
+      <double>1000.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.100000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="lblSpecular">
+     <property name="text">
+      <string>Specular</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QgsColorButton" name="btnDiffuse">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>120</width>
+       <height>0</height>
+      </size>
+     </property>
+    </widget>
+   </item>
    <item row="4" column="1">
     <widget class="QgsDoubleSpinBox" name="spinShininess">
      <property name="minimum">
@@ -27,33 +81,10 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="lblSpecular">
+   <item row="5" column="0">
+    <widget class="QLabel" name="lblShininess_2">
      <property name="text">
-      <string>Specular</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="lblDiffuse">
-     <property name="text">
-      <string>Diffuse</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QgsColorButton" name="btnWarm">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>120</width>
-       <height>0</height>
-      </size>
+      <string>Alpha</string>
      </property>
     </widget>
    </item>
@@ -73,22 +104,41 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="lblShininess_2">
-     <property name="text">
-      <string>Alpha</string>
+   <item row="6" column="1">
+    <widget class="QgsDoubleSpinBox" name="spinBeta">
+     <property name="maximum">
+      <double>1000.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.100000000000000</double>
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="lblShininess">
+   <item row="6" column="0">
+    <widget class="QLabel" name="lblShininess_3">
      <property name="text">
-      <string>Shininess</string>
+      <string>Beta</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="QgsColorButton" name="btnDiffuse">
+   <item row="3" column="1">
+    <widget class="QgsColorButton" name="btnSpecular">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>120</width>
+       <height>0</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QgsColorButton" name="btnWarm">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -110,53 +160,31 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
-    <widget class="QgsColorButton" name="btnSpecular">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>120</width>
-       <height>0</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="lblAmbient_2">
+   <item row="0" column="2">
+    <widget class="QgsPropertyOverrideButton" name="mDiffuseDataDefinedButton">
      <property name="text">
-      <string>Cool</string>
+      <string>...</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="0">
-    <widget class="QLabel" name="lblShininess_3">
+   <item row="1" column="2">
+    <widget class="QgsPropertyOverrideButton" name="mWarmDataDefinedButton">
      <property name="text">
-      <string>Beta</string>
+      <string>...</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="1">
-    <widget class="QgsDoubleSpinBox" name="spinAlpha">
-     <property name="maximum">
-      <double>1000.000000000000000</double>
-     </property>
-     <property name="singleStep">
-      <double>0.100000000000000</double>
+   <item row="2" column="2">
+    <widget class="QgsPropertyOverrideButton" name="mCoolDataDefinedButton">
+     <property name="text">
+      <string>...</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="1">
-    <widget class="QgsDoubleSpinBox" name="spinBeta">
-     <property name="maximum">
-      <double>1000.000000000000000</double>
-     </property>
-     <property name="singleStep">
-      <double>0.100000000000000</double>
+   <item row="3" column="2">
+    <widget class="QgsPropertyOverrideButton" name="mSpecularDataDefinedButton">
+     <property name="text">
+      <string>...</string>
      </property>
     </widget>
    </item>
@@ -173,6 +201,11 @@
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

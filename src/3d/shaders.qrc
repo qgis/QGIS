@@ -21,5 +21,9 @@
         <file>shaders/postprocess.vert</file>
         <file>shaders/preview.vert</file>
         <file>shaders/preview.frag</file>
+        <file>shaders/phongDataDefined.vert</file>
+        <file>shaders/phongDataDefined.frag</file>
+        <file>shaders/goochDataDefined.frag</file>
+        <file>shaders/goochDataDefined.vert</file>
     </qresource>
 </RCC>

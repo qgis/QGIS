@@ -82,5 +82,7 @@ ADD_QGIS_TEST(3dutilstest testqgs3dutils.cpp)
 ADD_QGIS_TEST(3drenderingtest testqgs3drendering.cpp)
 ADD_QGIS_TEST(layout3dmaptest testqgslayout3dmap.cpp)
 ADD_QGIS_TEST(materialregistrytest testqgsmaterialregistry.cpp)
+ADD_QGIS_TEST(3dmaterialtest testqgs3dmaterial.cpp)
 ADD_QGIS_TEST(tessellatortest testqgstessellator.cpp)
 ADD_QGIS_TEST(3dsymbolregistrytest testqgs3dsymbolregistry.cpp)
+

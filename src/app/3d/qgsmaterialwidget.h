@@ -51,6 +51,7 @@ class QgsMaterialWidget : public QWidget, private Ui::MaterialWidgetBase
 
   private:
     void updateMaterialWidget();
+    QgsVectorLayer *mLayer = nullptr;
 
     std::unique_ptr< QgsAbstractMaterialSettings > mCurrentSettings;
     QgsMaterialSettingsRenderingTechnique mTechnique;

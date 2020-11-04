@@ -63,7 +63,7 @@ float QgsPhongTexturedMaterialSettings::textureRotation() const
   return mTextureRotation;
 }
 
-void QgsPhongTexturedMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext & )
+void QgsPhongTexturedMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   mAmbient = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "ambient" ), QStringLiteral( "25,25,25" ) ) );
   mSpecular = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "specular" ), QStringLiteral( "255,255,255" ) ) );
@@ -71,9 +71,11 @@ void QgsPhongTexturedMaterialSettings::readXml( const QDomElement &elem, const Q
   mDiffuseTexturePath = elem.attribute( QStringLiteral( "diffuse_texture_path" ), QString() );
   mTextureScale = elem.attribute( QStringLiteral( "texture_scale" ), QString( "1.0" ) ).toFloat();
   mTextureRotation = elem.attribute( QStringLiteral( "texture-rotation" ), QString( "0.0" ) ).toFloat();
+
+  QgsAbstractMaterialSettings::readXml( elem, context );
 }
 
-void QgsPhongTexturedMaterialSettings::writeXml( QDomElement &elem, const QgsReadWriteContext & ) const
+void QgsPhongTexturedMaterialSettings::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
   elem.setAttribute( QStringLiteral( "ambient" ), QgsSymbolLayerUtils::encodeColor( mAmbient ) );
   elem.setAttribute( QStringLiteral( "specular" ), QgsSymbolLayerUtils::encodeColor( mSpecular ) );
@@ -81,6 +83,8 @@ void QgsPhongTexturedMaterialSettings::writeXml( QDomElement &elem, const QgsRea
   elem.setAttribute( QStringLiteral( "diffuse_texture_path" ), mDiffuseTexturePath );
   elem.setAttribute( QStringLiteral( "texture_scale" ), mTextureScale );
   elem.setAttribute( QStringLiteral( "texture-rotation" ), mTextureRotation );
+
+  QgsAbstractMaterialSettings::writeXml( elem, context );
 }
 
 ///@cond PRIVATE

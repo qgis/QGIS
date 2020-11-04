@@ -69,6 +69,7 @@ class TestQgs3DRendering : public QObject
     void testTerrainShading();
     void testMeshTerrain();
     void testExtrudedPolygons();
+    void testExtrudedPolygonsDataDefined();
     void testPolygonsEdges();
     void testLineRendering();
     void testBufferedLineRendering();
@@ -396,6 +397,59 @@ void TestQgs3DRendering::testExtrudedPolygons()
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
   QVERIFY( renderCheck( "polygon3d_extrusion", img, 40 ) );
+}
+
+void TestQgs3DRendering::testExtrudedPolygonsDataDefined()
+{
+  QgsPropertyCollection propertyColection;
+  QgsProperty diffuseColor;
+  QgsProperty ambientColor;
+  QgsProperty specularColor;
+  diffuseColor.setExpressionString( QStringLiteral( "color_rgb( 120*(\"ogc_fid\"%3),125,0)" ) );
+  ambientColor.setExpressionString( QStringLiteral( "color_rgb( 120,(\"ogc_fid\"%2)*255,0)" ) );
+  specularColor.setExpressionString( QStringLiteral( "'yellow'" ) );
+  propertyColection.setProperty( QgsAbstractMaterialSettings::Diffuse, diffuseColor );
+  propertyColection.setProperty( QgsAbstractMaterialSettings::Ambient, ambientColor );
+  propertyColection.setProperty( QgsAbstractMaterialSettings::Specular, specularColor );
+  QgsPhongMaterialSettings material;
+  material.setDataDefinedProperties( propertyColection );
+  material.setAmbient( Qt::red );
+  QgsPolygon3DSymbol *symbol3d = new QgsPolygon3DSymbol;
+  symbol3d->setMaterial( material.clone() );
+  symbol3d->setExtrusionHeight( 10.f );
+  QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
+  mLayerBuildings->setRenderer3D( renderer3d );
+
+  QgsRectangle fullExtent = mLayerDtm->extent();
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerBuildings );
+  map->setTerrainLayers( QList<QgsMapLayer *>() << mLayerRgb );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
+  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs() );
+  flatTerrain->setExtent( fullExtent );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 250 ), 500, 45, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QVERIFY( renderCheck( "polygon3d_extrusion_data_defined", img, 40 ) );
 }
 
 void TestQgs3DRendering::testPolygonsEdges()

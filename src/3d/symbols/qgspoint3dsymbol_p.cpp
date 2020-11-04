@@ -70,7 +70,7 @@ class QgsInstancedPoint3DSymbolHandler : public QgsFeature3DHandler
       , mSelectedIds( selectedIds ) {}
 
     bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames ) override;
-    void processFeature( QgsFeature &feature, const Qgs3DRenderContext &context ) override;
+    void processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context ) override;
     void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
 
   private:
@@ -105,7 +105,7 @@ bool QgsInstancedPoint3DSymbolHandler::prepare( const Qgs3DRenderContext &contex
   return true;
 }
 
-void QgsInstancedPoint3DSymbolHandler::processFeature( QgsFeature &feature, const Qgs3DRenderContext &context )
+void QgsInstancedPoint3DSymbolHandler::processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context )
 {
   PointData &out = mSelectedIds.contains( feature.id() ) ? outSelected : outNormal;
 
@@ -347,7 +347,7 @@ class QgsModelPoint3DSymbolHandler : public QgsFeature3DHandler
       , mSelectedIds( selectedIds ) {}
 
     bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames ) override;
-    void processFeature( QgsFeature &feature, const Qgs3DRenderContext &context ) override;
+    void processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context ) override;
     void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
 
   private:
@@ -381,7 +381,7 @@ bool QgsModelPoint3DSymbolHandler::prepare( const Qgs3DRenderContext &context, Q
   return true;
 }
 
-void QgsModelPoint3DSymbolHandler::processFeature( QgsFeature &feature, const Qgs3DRenderContext &context )
+void QgsModelPoint3DSymbolHandler::processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context )
 {
   PointData &out = mSelectedIds.contains( feature.id() ) ? outSelected : outNormal;
 
@@ -507,7 +507,7 @@ class QgsPoint3DBillboardSymbolHandler : public QgsFeature3DHandler
       , mSelectedIds( selectedIds ) {}
 
     bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames ) override;
-    void processFeature( QgsFeature &feature, const Qgs3DRenderContext &context ) override;
+    void processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context ) override;
     void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
 
   private:
@@ -537,7 +537,7 @@ bool QgsPoint3DBillboardSymbolHandler::prepare( const Qgs3DRenderContext &contex
   return true;
 }
 
-void QgsPoint3DBillboardSymbolHandler::processFeature( QgsFeature &feature, const Qgs3DRenderContext &context )
+void QgsPoint3DBillboardSymbolHandler::processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context )
 {
   PointData &out = mSelectedIds.contains( feature.id() ) ? outSelected : outNormal;
 
