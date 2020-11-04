@@ -30,7 +30,7 @@ Dataset group index can be evaluated with the method :py:func:`~valueAsDatasetGr
     QgsProcessingParameterMeshDatasetGroups( const QString &name,
         const QString &description = QString(),
         const QString &meshLayerParameterName = QString(),
-        QgsMeshDatasetGroupMetadata::DataType dataType = QgsMeshDatasetGroupMetadata::DataOnVertices,
+        QSet<int> supportedDataType = QSet<int>(),
         bool optional = false );
 %Docstring
 Constructor
@@ -38,7 +38,7 @@ Constructor
 :param name: name of the parameter
 :param description: description of the parameter
 :param meshLayerParameterName: name of the associated mesh layer parameter
-:param dataType: data type supported by the parameter
+:param supportedDataType: a set of QgsMeshDatasetGroupMetadata.DataType values for data types supported by the parameter
 :param optional: whether the parameter is optional
 %End
 
@@ -65,9 +65,9 @@ Returns the type name for the parameter class.
 Returns the name of the mesh layer parameter
 %End
 
-    QgsMeshDatasetGroupMetadata::DataType dataType() const;
+    bool isDataTypeSupported( QgsMeshDatasetGroupMetadata::DataType dataType ) const;
 %Docstring
-Returns the data type supported by the parameter
+Returns whether the data type is supported by the parameter
 %End
 
     static QList<int> valueAsDatasetGroup( const QVariant &value );

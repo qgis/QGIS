@@ -82,7 +82,7 @@ void QgsProcessingMeshDatasetGroupsWidget::setMeshLayer( QgsMeshLayer *layer, bo
       for ( int i : datasetGroupsIndexes )
       {
         QgsMeshDatasetGroupMetadata meta = layer->datasetGroupMetadata( i );
-        if ( meta.dataType() == mParam->dataType() )
+        if ( mParam->isDataTypeSupported( meta.dataType() ) )
         {
           mDatasetGroupsNames[i] = meta.name();
         }
@@ -121,7 +121,7 @@ void QgsProcessingMeshDatasetGroupsWidget::showDialog()
     for ( int i : datasetGroupsIndexes )
     {
       QgsMeshDatasetGroupMetadata meta = mMeshLayer->datasetGroupMetadata( i );
-      if ( meta.dataType() == mParam->dataType() )
+      if ( mParam->isDataTypeSupported( meta.dataType() ) )
       {
         availableOptions.append( i );
         options.append( meta.name() );
@@ -183,11 +183,11 @@ void QgsProcessingMeshDatasetGroupsWidget::selectCurrentActiveDatasetGroup()
     int scalarDatasetGroup = mMeshLayer->rendererSettings().activeScalarDatasetGroup();
     int vectorDatasetGroup = mMeshLayer->rendererSettings().activeVectorDatasetGroup();
 
-    if ( scalarDatasetGroup >= 0 && mMeshLayer->datasetGroupMetadata( scalarDatasetGroup ).dataType() == mParam->dataType() )
+    if ( scalarDatasetGroup >= 0 && mParam->isDataTypeSupported( mMeshLayer->datasetGroupMetadata( scalarDatasetGroup ).dataType() ) )
       options.append( scalarDatasetGroup );
 
     if ( vectorDatasetGroup >= 0
-         && mMeshLayer->datasetGroupMetadata( vectorDatasetGroup ).dataType() == mParam->dataType()
+         && mParam->isDataTypeSupported( mMeshLayer->datasetGroupMetadata( vectorDatasetGroup ).dataType() )
          && vectorDatasetGroup != scalarDatasetGroup )
       options.append( vectorDatasetGroup );
   }
