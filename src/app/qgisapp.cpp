@@ -11530,23 +11530,24 @@ void QgisApp::projectTemporalRangeChanged()
 
     if ( currentLayer->dataProvider() )
     {
-      QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata(
-                                        currentLayer->providerType() );
-
-      QVariantMap uri = metadata->decodeUri( currentLayer->dataProvider()->dataSourceUri() );
-
-      if ( uri.contains( QStringLiteral( "temporalSource" ) ) &&
-           uri.value( QStringLiteral( "temporalSource" ) ).toString() == QLatin1String( "project" ) )
+      if ( QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata(
+                                             currentLayer->providerType() ) )
       {
-        QgsDateTimeRange range = QgsProject::instance()->timeSettings()->temporalRange();
-        if ( range.begin().isValid() && range.end().isValid() )
+        QVariantMap uri = metadata->decodeUri( currentLayer->dataProvider()->dataSourceUri() );
+
+        if ( uri.contains( QStringLiteral( "temporalSource" ) ) &&
+             uri.value( QStringLiteral( "temporalSource" ) ).toString() == QLatin1String( "project" ) )
         {
-          QString time = range.begin().toString( Qt::ISODateWithMs ) + '/' +
-                         range.end().toString( Qt::ISODateWithMs );
+          QgsDateTimeRange range = QgsProject::instance()->timeSettings()->temporalRange();
+          if ( range.begin().isValid() && range.end().isValid() )
+          {
+            QString time = range.begin().toString( Qt::ISODateWithMs ) + '/' +
+                           range.end().toString( Qt::ISODateWithMs );
 
-          uri[ QStringLiteral( "time" ) ] = time;
+            uri[ QStringLiteral( "time" ) ] = time;
 
-          currentLayer->setDataSource( metadata->encodeUri( uri ), currentLayer->name(), currentLayer->providerType(), QgsDataProvider::ProviderOptions() );
+            currentLayer->setDataSource( metadata->encodeUri( uri ), currentLayer->name(), currentLayer->providerType(), QgsDataProvider::ProviderOptions() );
+          }
         }
       }
     }
