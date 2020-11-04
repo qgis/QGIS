@@ -52,13 +52,13 @@ class CORE_EXPORT QgsPointCloudAttribute
     QgsPointCloudAttribute( const QString &name, DataType type );
 
     //! Returns name of the attribute
-    QString name() const;
+    QString name() const { return mName; }
 
     //! Returns size of the attribute in bytes
-    size_t size() const;
+    size_t size() const { return mSize; }
 
     //! Returns the data type
-    DataType type() const;
+    DataType type() const { return mType; }
 
   private:
     void updateSize();
