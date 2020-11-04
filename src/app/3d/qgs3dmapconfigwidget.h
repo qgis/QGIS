@@ -48,6 +48,9 @@ class Qgs3DMapConfigWidget : public QWidget, private Ui::Map3DConfigWidget
     void onTerrainLayerChanged();
     void updateMaxZoomLevel();
 
+    void debugShadowMapChanged( bool enabled, int corner, double size );
+    void debugDepthMapChanged( bool enabled, int corner, double size );
+
     void validate();
 
   private:
@@ -57,6 +60,12 @@ class Qgs3DMapConfigWidget : public QWidget, private Ui::Map3DConfigWidget
     QgsMesh3dSymbolWidget *mMeshSymbolWidget = nullptr;
     QgsSkyboxRenderingSettingsWidget *mSkyboxSettingsWidget = nullptr;
     QgsShadowRenderingSettingsWidget *mShadowSetiingsWidget = nullptr;
+    bool mDebugShadowMapEnabled = false;
+    int mDebugShadowMapCorner = 0;
+    double mDebugShadowMapSize = 0.1;
+    bool mDebugDepthMapEnabled = false;
+    int mDebugDepthMapCorner = 0;
+    double mDebugDepthMapSize = 0.1;
 };
 
 #endif // QGS3DMAPCONFIGWIDGET_H
