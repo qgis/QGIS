@@ -446,6 +446,12 @@ Stores the connection in the settings
 .. versionadded:: 3.10
 %End
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsProviderMetadata: %1>" ).arg( sipCpp->key() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
   signals:
 
     void connectionCreated( const QString &name );
