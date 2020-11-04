@@ -379,6 +379,16 @@ void Qgs3DMapConfigWidget::updateMaxZoomLevel()
   labelZoomLevels->setText( QStringLiteral( "0 - %1" ).arg( zoomLevel ) );
 }
 
+
+void Qgs3DMapConfigWidget::debugShadowMapChanged( bool enabled, int corner, double size )
+{
+
+}
+void Qgs3DMapConfigWidget::debugDepthMapChanged( bool enabled, int corner, double size )
+{
+
+}
+
 void Qgs3DMapConfigWidget::validate()
 {
   mMessageBar->clearWidgets();

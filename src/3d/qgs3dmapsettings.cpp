@@ -704,3 +704,8 @@ void Qgs3DMapSettings::setShadowSettings( const QgsShadowSettings &shadowSetting
   mShadowSettings = shadowSettings;
   emit shadowSettingsChanged();
 }
+
+void Qgs3DMapSettings::setDebugShadowMapSettings( bool enabled, int corner, double size )
+{
+
+}

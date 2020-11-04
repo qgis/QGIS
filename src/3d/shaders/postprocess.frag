@@ -73,7 +73,7 @@ float CalcShadowFactor(vec4 LightSpacePos)
   {
     for(int y = -k; y <= k; ++y)
     {
-      float pcfDepth = texture(shadowTexture, UVCoords + vec2(x, y) * texelSize).r;
+      float pcfDepth = texture2D(shadowTexture, UVCoords + vec2(x, y) * texelSize).r;
       shadow += z - shadowBias >= pcfDepth ? 0.5 : 1.0;
     }
   }
@@ -81,12 +81,19 @@ float CalcShadowFactor(vec4 LightSpacePos)
   return shadow / (2 * k + 1) / (2 * k + 1);
 }
 
+float linearizeDepth(float depth)
+{
+  float ndc = depth * 2.0 - 1.0;
+  return (2.0 * nearPlane * farPlane) / (farPlane + nearPlane - ndc * (farPlane - nearPlane));
+}
+
 float edlFactor(vec2 coords)
 {
-  vec2 texelSize = 2.0 / textureSize(shadowTexture, 0);
+  vec2 texelSize = 2.0 / textureSize(depthTexture, 0);
   vec2 neighbours[4] = vec2[4](vec2(-1.0f, 0.0f), vec2(1.0f, 0.0f), vec2(0.0f, -1.0f), vec2(0.0f, 1.0f) );
   float factor = 0.0f;
-  float centerDepth = texture(depthTexture, coords).r;
+  float centerDepth = texture2D(depthTexture, coords).r;
+  return linearizeDepth(centerDepth) / farPlane;
   for (int i = 0; i < 4; i++)
   {
     vec2 neighbourCoords = coords + edlDistance * texelSize * neighbours[i];
@@ -103,10 +110,10 @@ float edlFactor(vec2 coords)
 
 void main()
 {
-  vec3 worldPosition = WorldPosFromDepth(texture(depthTexture, texCoord).r);
+  vec3 worldPosition = WorldPosFromDepth(texture2D(depthTexture, texCoord).r);
   vec4 positionInLightSpace = projectionMatrix * viewMatrix * vec4(worldPosition, 1.0f);
   positionInLightSpace /= positionInLightSpace.w;
-  vec3 color = texture(colorTexture, texCoord).rgb;
+  vec3 color = texture2D(colorTexture, texCoord).rgb;
   // if shadow rendering is disabled or the pixel is outside the shadow rendering distance don't render shadows
   if (renderShadows == 0 || worldPosition.x > shadowMaxX || worldPosition.x < shadowMinX || worldPosition.z > shadowMaxZ || worldPosition.z < shadowMinZ) {
     fragColor = vec4(color.rgb, 1.0f);
@@ -116,7 +123,8 @@ void main()
   }
   if (edlEnabled != 0)
   {
-    float shade = exp(-edlFactor(texCoord) * edlStrength);
-    fragColor = vec4(fragColor.rgb * shade, fragColor.a);
+//    float shade = exp(-edlFactor(texCoord) * edlStrength);
+    float f = edlFactor(texCoord);
+    fragColor = vec4(f, f, f, 1.0f);//vec4(fragColor.rgb * shade, fragColor.a);
   }
 }

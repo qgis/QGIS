@@ -390,6 +390,15 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     int eyeDomeLightingDistance() const { return mEyeDomeLightingDistance; }
 
     /**
+     * Sets the debugging settings of the shadowmap
+     * \since QGIS 3.18
+     * \see
+     */
+    void setDebugShadowMapSettings( bool enabled, int corner, double size );
+
+//    bool debugShadowMapEnabled() { return  }
+
+    /**
      * Returns list of point lights defined in the scene
      * \since QGIS 3.6
      */
@@ -644,6 +653,14 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     bool mEyeDomeLightingEnabled = false;
     double mEyeDomeLightingStrength = 1000.0;
     int mEyeDomeLightingDistance = 1;
+
+    bool mDebugShadowMapEnabled = false;
+    int mDebugShadowMapCorner = 0;
+    double mDebugShadowMapSize = 0.1;
+
+    bool mDebugDepthMapEnabled = false;
+    int mDebugDepthMapCorner = 0;
+    double mDebugDepthMapSize = 0.1;
 };
 
 

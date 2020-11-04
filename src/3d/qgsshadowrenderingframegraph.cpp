@@ -192,6 +192,8 @@ QgsShadowRenderingFrameGraph::QgsShadowRenderingFrameGraph( QWindow *window, Qt3
   // textures preview pass
   Qt3DRender::QFrameGraphNode *previewPass = constructTexturesPreviewPass();
   previewPass->setParent( mMainViewPort );
+
+  this->addTexturePreviewOverlay( mForwardDepthTexture, QPointF( 0.8f, 0.8f ), QSizeF( 0.2f, 0.2f ) );
 }
 
 void QgsShadowRenderingFrameGraph::addTexturePreviewOverlay( Qt3DRender::QTexture2D *texture, const QPointF &centerNDC, const QSizeF &size, QVector<Qt3DRender::QParameter *> additionalShaderParameters )
@@ -199,6 +201,7 @@ void QgsShadowRenderingFrameGraph::addTexturePreviewOverlay( Qt3DRender::QTextur
   QgsPreviewQuad *previewQuad = new QgsPreviewQuad( texture, centerNDC, size, additionalShaderParameters );
   previewQuad->addComponent( mPreviewLayer );
   previewQuad->setParent( mRootEntity );
+  mPreviewQuads.push_back( previewQuad );
 }
 
 QVector3D WorldPosFromDepth( QMatrix4x4 projMatrixInv, QMatrix4x4 viewMatrixInv, float texCoordX, float texCoordY, float depth )

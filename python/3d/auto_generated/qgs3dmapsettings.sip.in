@@ -454,6 +454,15 @@ Sets the eye dome lighting distance value (contributes to the contrast of the im
 Returns the eye dome lighting distance value (contributes to the contrast of the image)
 %End
 
+    void setDebugShadowMapSettings( bool enabled, int corner, double size );
+%Docstring
+Sets the debugging settings of the shadowmap
+
+.. versionadded:: 3.18
+\see
+%End
+
+
     QList<QgsPointLightSettings> pointLights() const;
 %Docstring
 Returns list of point lights defined in the scene
