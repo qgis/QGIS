@@ -59,8 +59,8 @@ cmake \
  -DWITH_SERVER=ON \
  -DWITH_ORACLE=ON \
  -DENABLE_ORACLETEST=ON \
- -DORACLE_INCLUDEDIR="/instantclient_19_3/sdk/include/" \
- -DORACLE_LIBDIR="/instantclient_19_3/" \
+ -DORACLE_INCLUDEDIR="/instantclient_19_9/sdk/include/" \
+ -DORACLE_LIBDIR="/instantclient_19_9/" \
  -DDISABLE_DEPRECATED=ON \
  -DPYTHON_TEST_WRAPPER="timeout -sSIGSEGV 55s"\
  -DCXX_EXTRA_FLAGS="${CLANG_WARNINGS}" \
