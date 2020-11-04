@@ -22,7 +22,7 @@
 #include "qgsdataitemprovider.h"
 #include "qgsprovidermetadata.h"
 
-class CORE_EXPORT QgsPdalLayerItem : public QgsLayerItem
+class QgsPdalLayerItem : public QgsLayerItem
 {
     Q_OBJECT
   public:

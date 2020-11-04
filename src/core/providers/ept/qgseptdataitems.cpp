@@ -32,7 +32,6 @@ QgsEptLayerItem::QgsEptLayerItem( QgsDataItem *parent,
   : QgsLayerItem( parent, name, path, uri, QgsLayerItem::PointCloud, QStringLiteral( "ept" ) )
 {
   mToolTip = uri;
-  mIconName = QStringLiteral( "mIconEntwineLayer.svg" );
   setState( Populated );
 }
 
