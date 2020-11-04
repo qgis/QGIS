@@ -130,21 +130,36 @@ QgsPointCloudBlock *_decompressBinary( const QByteArray &dataUncompressed, const
 
   const QVector<QgsPointCloudAttribute> requestedAttributesVector = requestedAttributes.attributes();
 
+  // calculate input attributes and offsets once in advance
+  std::vector< int > attributeOffsets;
+  std::vector< const QgsPointCloudAttribute *> inputAttributes;
+  attributeOffsets.reserve( requestedAttributesVector.size() );
+  inputAttributes.reserve( requestedAttributesVector.size() );
+  for ( const QgsPointCloudAttribute &requestedAttribute : requestedAttributesVector )
+  {
+    int inputAttributeOffset;
+    const QgsPointCloudAttribute *inputAttribute = attributes.find( requestedAttribute.name(), inputAttributeOffset );
+    if ( !inputAttribute )
+    {
+      return nullptr;
+    }
+    attributeOffsets.emplace_back( inputAttributeOffset );
+    inputAttributes.emplace_back( inputAttribute );
+  }
+
+  // now loop through points
   for ( int i = 0; i < count; ++i )
   {
     size_t outputOffset = 0;
+    auto inputAttributeOffset = attributeOffsets.begin();
+    auto inputAttribute = inputAttributes.begin();
     for ( const QgsPointCloudAttribute &requestedAttribute : requestedAttributesVector )
     {
-      int inputAttributeOffset;
-      const QgsPointCloudAttribute *inputAttribute = attributes.find( requestedAttribute.name(), inputAttributeOffset );
-      if ( !inputAttribute )
-      {
-        return nullptr;
-      }
-
-      _serialize( data, i * requestedPointRecordSize + outputOffset, requestedAttribute, s, *inputAttribute, i * pointRecordSize + inputAttributeOffset );
+      _serialize( data, i * requestedPointRecordSize + outputOffset, requestedAttribute, s, *( *inputAttribute ), i * pointRecordSize + *inputAttributeOffset );
 
       outputOffset += requestedAttribute.size();
+      inputAttributeOffset++;
+      inputAttribute++;
     }
   }
   return new QgsPointCloudBlock(
