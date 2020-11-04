@@ -95,7 +95,7 @@ class _3D_EXPORT QgsShadowSettings
 
   private:
     bool mRenderShadows = false;
-    int mSelectedDirectionalLight = -1;
+    int mSelectedDirectionalLight = 0;
     double mMaximumShadowRenderingDistance = 500.0;
     double mShadowBias = 0.00001;
     int mShadowMapResolution = 2048;
