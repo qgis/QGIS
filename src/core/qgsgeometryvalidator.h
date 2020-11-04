@@ -71,8 +71,8 @@ class CORE_EXPORT QgsGeometryValidator : public QThread
 
   private:
     void validatePolyline( int i, const QgsLineString *line, bool ring = false );
-    void validatePolygon( int i, const QgsPolygon *polygon );
-    void checkRingIntersections( int p0, int i0, const QgsLineString *ring0, int p1, int i1, const QgsLineString *ring1 );
+    void validatePolygon( int partIndex, const QgsPolygon *polygon );
+    void checkRingIntersections( int partIndex0, int ringIndex0, const QgsLineString *ring0, int partIndex1, int ringIndex1, const QgsLineString *ring1 );
     double distLine2Point( double px, double py, QgsVector v, double qX, double qY );
     bool intersectLines( double px, double py, QgsVector v, double qx, double qy, QgsVector w, double &sX, double &sY );
     bool ringInRing( const QgsLineString *inside, const QgsLineString *outside );
