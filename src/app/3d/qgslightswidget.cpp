@@ -201,6 +201,7 @@ void QgsLightsWidget::onAddDirectionalLight()
   const QModelIndex newIndex = mLightsModel->addDirectionalLight( QgsDirectionalLightSettings() );
   mLightsListView->selectionModel()->select( newIndex, QItemSelectionModel::ClearAndSelect );
   emit lightsAdded();
+  emit directionalLightsCountChanged( mLightsModel->directionalLights().size() );
 }
 
 void QgsLightsWidget::onRemoveLight()

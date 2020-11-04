@@ -56,7 +56,7 @@ void QgsShadowRenderingSettingsWidget::onDirectionalLightsCountChanged( int newC
   while ( usedDirectionalLightComboBox->count() > newCount )
     usedDirectionalLightComboBox->removeItem( usedDirectionalLightComboBox->count() - 1 );
   if ( previousItemIndex < 0 || previousItemIndex >= usedDirectionalLightComboBox->count() )
-    usedDirectionalLightComboBox->setCurrentIndex( -1 );
+    usedDirectionalLightComboBox->setCurrentIndex( 0 );
   else
     usedDirectionalLightComboBox->setCurrentIndex( previousItemIndex );
 }
