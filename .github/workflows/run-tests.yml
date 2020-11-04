@@ -30,7 +30,7 @@ jobs:
     env:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      GH_WORKSPACE: ${{ github.workspace }}
+      GH_WORKSPACE: ${{ github.workspace }} # used in docker compose
 
     runs-on: ubuntu-latest
     steps:
@@ -40,7 +40,6 @@ jobs:
       - name: Set vars
         env:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
-          GITHUB_BASE_REF: ${{ github.base_ref }}
           GITHUB_REF: ${{ github.ref }}
         run: |
           DOCKER_TAG=$( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo ${GITHUB_BASE_REF} || echo ${GITHUB_REF##*/} )
@@ -63,10 +62,33 @@ jobs:
           docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
           docker push "qgis/qgis3-build-deps:${DOCKER_TAG}"
 
+      - name: Prepare build cache for pull request
+        uses: actions/cache@v2
+        if: github.event_name == 'pull_request'
+        with:
+          path: /home/runner/QGIS/.ccache
+          key: build-ccache-${{ github.head_ref }}
+          # The head_ref or source branch of the pull request in a workflow run.
+          # The base_ref or target branch of the pull request in a workflow run.
+          restore-keys: |
+            build-ccache-${{ github.base_ref }}
+            build-ccache-master
+
+      - name: Prepare build cache for branch/tag
+        uses: actions/cache@v2
+        if: github.event_name != 'pull_request'
+        with:
+          path: /home/runner/QGIS/.ccache
+          # The branch or tag ref that triggered the workflow run. For branches this in the format refs/heads/<branch_name>, and for tags it is refs/tags/<tag_name>
+          key: build-ccache-${{ github.ref }}
+          restore-keys: |
+            build-ccache-master
+
       - name: Compile QGIS
         run: |
           docker run -t --name qgis_container \
                      -v $(pwd):/root/QGIS \
+                     -v /home/runner/QGIS/.ccache:/root/.ccache \
                      --env-file .docker/docker-variables.env \
                      qgis/qgis3-build-deps:${DOCKER_TAG} \
                      /root/QGIS/.docker/docker-qgis-build.sh
