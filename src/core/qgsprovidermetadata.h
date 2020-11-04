@@ -483,6 +483,14 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      */
     virtual void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name ) SIP_THROW( QgsProviderConnectionException );
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsProviderMetadata: %1>" ).arg( sipCpp->key() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
   signals:
 
     /**

@@ -19,7 +19,7 @@ from qgis.core import QgsGeometry, QgsPoint, QgsPointXY, QgsCircle, QgsCircularS
     QgsMimeDataUtils, QgsVector, QgsVector3D, QgsVectorLayer, QgsReferencedPointXY, QgsReferencedRectangle,\
     QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsProject, QgsClassificationRange, QgsBookmark, \
     QgsLayoutMeasurement, QgsLayoutPoint, QgsLayoutSize, QgsUnitTypes, QgsConditionalStyle, QgsTableCell, QgsProperty, \
-    QgsVertexId, QgsReferencedGeometry
+    QgsVertexId, QgsReferencedGeometry, QgsProviderRegistry
 
 start_app()
 
@@ -253,6 +253,9 @@ class TestPython__repr__(unittest.TestCase):
         self.assertEqual(v.__repr__(), '<QgsVertexId: 1,2,3>')
         v = QgsVertexId(1, 2, 3, _type=QgsVertexId.CurveVertex)
         self.assertEqual(v.__repr__(), '<QgsVertexId: 1,2,3 CurveVertex>')
+
+    def testProviderMetadata(self):
+        self.assertEqual(QgsProviderRegistry.instance().providerMetadata('ogr').__repr__(), '<QgsProviderMetadata: ogr>')
 
 
 if __name__ == "__main__":
