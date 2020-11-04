@@ -83,6 +83,31 @@ class TestQgsGeometryValidator(unittest.TestCase):
         self.assertEqual(spy[2][0].where(), QgsPointXY(1, 1))
         self.assertEqual(spy[2][0].what(), 'line 1 contains 3 duplicate nodes starting at vertex 1')
 
+    def test_ring_intersections(self):
+        # no intersections
+        g = QgsGeometry.fromWkt("Polygon ((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 5 1, 1 9, 1 1), (6 9, 2 9, 6 1, 6 9))")
+
+        validator = QgsGeometryValidator(g)
+        spy = QSignalSpy(validator.errorFound)
+        validator.run()
+
+        self.assertEqual(len(spy), 0)
+
+        # two interior rings intersecting
+        g = QgsGeometry.fromWkt("Polygon ((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 5 1, 1 9, 1 1), (2 2, 5 2, 2 9, 2 2))")
+
+        validator = QgsGeometryValidator(g)
+        spy = QSignalSpy(validator.errorFound)
+        validator.run()
+
+        self.assertEqual(len(spy), 2)
+
+        self.assertEqual(spy[0][0].where(), QgsPointXY(4.5, 2))
+        self.assertEqual(spy[0][0].what(), 'segment 1 of ring 1 of polygon 0 intersects segment 0 of ring 2 of polygon 0 at 4.5, 2')
+
+        self.assertEqual(spy[1][0].where(), QgsPointXY(2, 7))
+        self.assertEqual(spy[1][0].what(), 'segment 1 of ring 1 of polygon 0 intersects segment 2 of ring 2 of polygon 0 at 2, 7')
+
 
 if __name__ == '__main__':
     unittest.main()
