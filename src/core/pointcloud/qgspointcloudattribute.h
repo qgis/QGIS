@@ -96,17 +96,17 @@ class CORE_EXPORT QgsPointCloudAttributeCollection
     const QgsPointCloudAttribute *find( const QString &attributeName, int &offset ) const;
 
     //! Returns total size of record
-    int pointRecordSize() const { return mSize; }
+    std::size_t pointRecordSize() const { return mSize; }
 
   private:
-    int mSize = 0;
+    std::size_t mSize = 0;
     QVector<QgsPointCloudAttribute> mAttributes;
 
     struct CachedAttributeData
     {
       int index;
-      int offset;
-      CachedAttributeData( int index, int offset )
+      std::size_t offset;
+      CachedAttributeData( int index, std::size_t offset )
         : index( index )
         , offset( offset )
       {}

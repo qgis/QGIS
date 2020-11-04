@@ -119,7 +119,7 @@ void QgsPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const In
 
   const char *ptr = block->data();
   int count = block->pointCount();
-  int recordSize = attributes.pointRecordSize();
+  const std::size_t recordSize = attributes.pointRecordSize();
 
   const QgsVector3D scale = pc->scale();
   const QgsVector3D offset = pc->offset();

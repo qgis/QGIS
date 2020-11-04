@@ -179,7 +179,7 @@ void QgsPointCloudLayerRenderer::drawData( QPainter *painter, const QgsPointClou
   const char *ptr = data->data();
   int count = data->pointCount();
   const QgsPointCloudAttributeCollection request = data->attributes();
-  int recordSize = request.pointRecordSize();
+  const std::size_t recordSize = request.pointRecordSize();
 
   for ( int i = 0; i < count; ++i )
   {
