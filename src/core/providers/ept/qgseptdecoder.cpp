@@ -121,8 +121,8 @@ bool _serialize( char *data, size_t outputPosition, QgsPointCloudAttribute::Data
 
 QgsPointCloudBlock *_decompressBinary( const QByteArray &dataUncompressed, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes )
 {
-  const int pointRecordSize = attributes.pointRecordSize( );
-  const int requestedPointRecordSize = requestedAttributes.pointRecordSize();
+  const std::size_t pointRecordSize = attributes.pointRecordSize( );
+  const std::size_t requestedPointRecordSize = requestedAttributes.pointRecordSize();
   const int count = dataUncompressed.size() / pointRecordSize;
   QByteArray data;
   data.resize( requestedPointRecordSize * count );
