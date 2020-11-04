@@ -18,9 +18,11 @@
 #include "qgspdaldataitems.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgsfileutils.h"
+#include "qgsproviderregistry.h"
+#include "qgsprovidermetadata.h"
 
 #include <QFileInfo>
-#include <mutex>
 
 QgsPdalLayerItem::QgsPdalLayerItem( QgsDataItem *parent,
                                     const QString &name, const QString &path, const QString &uri )
@@ -40,6 +42,8 @@ QString QgsPdalLayerItem::layerName() const
 QgsPdalDataItemProvider::QgsPdalDataItemProvider():
   QgsDataItemProvider()
 {
+  QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "pdal" ) );
+  mFileFilter = metadata->filters( QgsProviderMetadata::FilterType::FilterPointCloud );
 }
 
 QString QgsPdalDataItemProvider::name()
@@ -66,8 +70,7 @@ QgsDataItem *QgsPdalDataItemProvider::createDataItem( const QString &path, QgsDa
     return nullptr;
 
   // Filter files by extension
-  // TODO get file filter list from PDAL library
-  if ( !path.endsWith( QStringLiteral( "laz" ) ) )
+  if ( !QgsFileUtils::fileMatchesFilter( path, mFileFilter ) )
     return nullptr;
 
   const QString name = info.fileName();

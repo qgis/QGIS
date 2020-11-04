@@ -28,7 +28,7 @@ QgsPdalSourceSelect::QgsPdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   setupButtons( buttonBox );
 
   mFileWidget->setDialogTitle( tr( "Open PDAL Supported Point Cloud Dataset(s)" ) );
-  mFileWidget->setFilter( QgsProviderRegistry::instance()->fileMeshFilters() );
+  mFileWidget->setFilter( QgsProviderRegistry::instance()->filePointCloudFilters() );
   mFileWidget->setStorageMode( QgsFileWidget::GetMultipleFiles );
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
   {
@@ -42,13 +42,13 @@ void QgsPdalSourceSelect::addButtonClicked()
   if ( mPath.isEmpty() )
   {
     QMessageBox::information( this,
-                              tr( "Add mesh layer" ),
+                              tr( "Add point cloud layer" ),
                               tr( "No layers selected." ) );
     return;
   }
 
   for ( const QString &path : QgsFileWidget::splitFilePaths( mPath ) )
   {
-    emit addMeshLayer( path, QFileInfo( path ).baseName(), QStringLiteral( "mdal" ) );
+    emit addPointCloudLayer( path, QFileInfo( path ).baseName(), QStringLiteral( "pdal" ) );
   }
 }

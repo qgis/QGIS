@@ -79,13 +79,10 @@ bool QgsPdalProvider::load( const QString &uri )
   pdal::Option las_opt( "filename", uri.toStdString() );
   pdal::Options las_opts;
   las_opts.add( las_opt );
-  pdal::PointTable table;
   pdal::LasReader las_reader;
   las_reader.setOptions( las_opts );
+  pdal::PointTable table;
   las_reader.prepare( table );
-  pdal::PointViewSet point_view_set = las_reader.execute( table );
-  pdal::PointViewPtr point_view = *point_view_set.begin();
-  pdal::Dimension::IdList dims = point_view->dims();
   pdal::LasHeader las_header = las_reader.header();
 
   // extent
@@ -137,6 +134,23 @@ QVariantMap QgsPdalProviderMetadata::decodeUri( const QString &uri )
   QVariantMap uriComponents;
   uriComponents.insert( QStringLiteral( "path" ), path );
   return uriComponents;
+}
+
+QString QgsPdalProviderMetadata::filters( QgsProviderMetadata::FilterType type )
+{
+  switch ( type )
+  {
+    case QgsProviderMetadata::FilterType::FilterVector:
+    case QgsProviderMetadata::FilterType::FilterRaster:
+    case QgsProviderMetadata::FilterType::FilterMesh:
+    case QgsProviderMetadata::FilterType::FilterMeshDataset:
+      return QString();
+
+    case QgsProviderMetadata::FilterType::FilterPointCloud:
+      // TODO get the available/supported filters from PDAL library
+      return QObject::tr( "PDAL Point Clouds" ) + QStringLiteral( " (*.laz *.las)" );
+  }
+  return QString();
 }
 
 QString QgsPdalProviderMetadata::encodeUri( const QVariantMap &parts )
