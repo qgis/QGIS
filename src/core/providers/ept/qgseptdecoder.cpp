@@ -128,10 +128,11 @@ QgsPointCloudBlock *_decompressBinary( const QByteArray &dataUncompressed, const
   data.resize( requestedPointRecordSize * count );
   const char *s = dataUncompressed.data();
 
+  const QVector<QgsPointCloudAttribute> requestedAttributesVector = requestedAttributes.attributes();
+
   for ( int i = 0; i < count; ++i )
   {
     size_t outputOffset = 0;
-    const QVector<QgsPointCloudAttribute> requestedAttributesVector = requestedAttributes.attributes();
     for ( const QgsPointCloudAttribute &requestedAttribute : requestedAttributesVector )
     {
       int inputAttributeOffset;
