@@ -68,11 +68,10 @@ void QgsGeometryValidator::checkRingIntersections( int partIndex0, int ringIndex
                ring0->pointN( i + 1 ) != ring1->pointN( j + 1 ) && ring0->pointN( i + 1 ) != ring1->pointN( j ) &&
                ring0->pointN( i + 0 ) != ring1->pointN( j + 1 ) && ring0->pointN( i + 0 ) != ring1->pointN( j ) )
           {
-            QString msg = QObject::tr( "segment %1 of ring %2 of polygon %3 intersects segment %4 of ring %5 of polygon %6 at %7, %8" )
-                          .arg( i ).arg( ringIndex0 ).arg( partIndex0 )
-                          .arg( j ).arg( ringIndex1 ).arg( partIndex1 )
-                          .arg( sX ).arg( sY );
-            QgsDebugMsg( msg );
+            const QString msg = QObject::tr( "segment %1 of ring %2 of polygon %3 intersects segment %4 of ring %5 of polygon %6 at %7, %8" )
+                                .arg( i ).arg( ringIndex0 ).arg( partIndex0 )
+                                .arg( j ).arg( ringIndex1 ).arg( partIndex1 )
+                                .arg( sX ).arg( sY );
             emit errorFound( QgsGeometry::Error( msg, QgsPointXY( sX, sY ) ) );
             mErrorCount++;
           }
