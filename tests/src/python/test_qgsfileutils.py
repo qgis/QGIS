@@ -37,7 +37,6 @@ class TestQgsFileUtils(unittest.TestCase):
         self.assertFalse(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', '*'))
         self.assertFalse(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', '*.'))
         self.assertFalse(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', 'Tiff files'))
-        self.assertFalse(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', '(*.)'))
         self.assertTrue(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', '(*.*)'))
         self.assertFalse(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', 'PNG Files (*.png)'))
         self.assertTrue(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', 'Tif  Files (*.tif)'))
