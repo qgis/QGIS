@@ -34,13 +34,13 @@ static QgsFields createFields( const QList<QgsMeshDatasetGroupMetadata> &groupMe
   {
     if ( meta.isVector() )
     {
-      if ( vectorOption == 0 or vectorOption == 2 )
+      if ( vectorOption == 0 || vectorOption == 2 )
       {
         fields.append( QStringLiteral( "%1_x" ).arg( meta.name() ) );
         fields.append( QStringLiteral( "%1_y" ).arg( meta.name() ) );
       }
 
-      if ( vectorOption == 1 or vectorOption == 2 )
+      if ( vectorOption == 1 || vectorOption == 2 )
       {
         fields.append( QStringLiteral( "%1_mag" ).arg( meta.name() ) );
         fields.append( QStringLiteral( "%1_dir" ).arg( meta.name() ) );
