@@ -90,6 +90,16 @@ QList<QgsDataItemProvider *> QgsEptProviderMetadata::dataItemProviders() const
   return providers;
 }
 
+int QgsEptProviderMetadata::priorityForUri( const QString &uri )
+{
+  const QVariantMap parts = decodeUri( uri );
+  QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
+  if ( fi.fileName().compare( QLatin1String( "ept.json" ), Qt::CaseInsensitive ) == 0 )
+    return 100;
+
+  return 0;
+}
+
 QVariantMap QgsEptProviderMetadata::decodeUri( const QString &uri )
 {
   const QString path = uri;

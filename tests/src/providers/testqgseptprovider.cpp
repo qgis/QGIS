@@ -46,6 +46,7 @@ class TestQgsEptProvider : public QObject
     void filters();
     void encodeUri();
     void decodeUri();
+    void preferredUri();
 
   private:
     QString mTestDataDir;
@@ -106,6 +107,13 @@ void TestQgsEptProvider::decodeUri()
 
   const QVariantMap parts = metadata->decodeUri( QStringLiteral( "/home/point_clouds/ept.json" ) );
   QCOMPARE( parts.value( QStringLiteral( "path" ) ).toString(), QStringLiteral( "/home/point_clouds/ept.json" ) );
+}
+
+void TestQgsEptProvider::preferredUri()
+{
+  // test that EPT is the preferred provider for ept.json uris
+  QCOMPARE( QgsProviderRegistry::instance()->preferredProviderForUri( QStringLiteral( "/home/test/ept.json" ) )->key(), QStringLiteral( "ept" ) );
+  QCOMPARE( QgsProviderRegistry::instance()->preferredProviderForUri( QStringLiteral( "/home/test/EPT.JSON" ) )->key(), QStringLiteral( "ept" ) );
 }
 
 
