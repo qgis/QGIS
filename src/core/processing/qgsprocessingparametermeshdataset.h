@@ -39,7 +39,7 @@ class CORE_EXPORT QgsProcessingParameterMeshDatasetGroups : public QgsProcessing
      * \param name name of the parameter
      * \param description description of the parameter
      * \param meshLayerParameterName name of the associated mesh layer parameter
-     * \param supportedDataType a set of int  for supported data type by the parameter, 0: on faces, 1: on vertices, 2: on volumes, 3: on edges
+     * \param supportedDataType a set of QgsMeshDatasetGroupMetadata::DataType values for data types supported by the parameter
      * \param optional whether the parameter is optional
      */
     QgsProcessingParameterMeshDatasetGroups( const QString &name,

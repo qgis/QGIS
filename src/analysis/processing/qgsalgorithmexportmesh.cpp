@@ -165,7 +165,7 @@ void QgsExportMeshOnElement::initAlgorithm( const QVariantMap &configuration )
   QStringList exportVectorOptions;
   exportVectorOptions << QObject::tr( "Cartesian (x,y)" )
                       << QObject::tr( "Polar (magnitude,degree)" )
-                      << QObject::tr( "Cartesian and polar" );
+                      << QObject::tr( "Cartesian and Polar" );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "VECTOR_OPTION" ), QObject::tr( "Export vector option" ), exportVectorOptions, false, 0 ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output vector layer" ), sinkType() ) );
 }
@@ -437,7 +437,7 @@ void QgsExportMeshOnGrid::initAlgorithm( const QVariantMap &configuration )
   QStringList exportVectorOptions;
   exportVectorOptions << QObject::tr( "Cartesian (x,y)" )
                       << QObject::tr( "Polar (magnitude,degree)" )
-                      << QObject::tr( "Cartesian and polar" );
+                      << QObject::tr( "Cartesian and Polar" );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "VECTOR_OPTION" ), QObject::tr( "Export vector option" ), exportVectorOptions, false, 0 ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output vector layer" ), QgsProcessing::TypeVectorPoint ) );
 }
