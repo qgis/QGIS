@@ -28,39 +28,7 @@
 #include "qgsrasterrendererwidget.h"
 
 class QgsRasterDataProvider;
-
-
-#ifndef SIP_RUN
-///@cond PRIVATE
-
-/**
- * QgsLocaleAwareNumericLineEditDelegate class provides a QLineEdit editor
- * for QgsColorRampShaderWidget value columns, it accepts localized numeric inputs
- * and displays the proper number of decimals according to the raster band data type.
- */
-class QgsLocaleAwareNumericLineEditDelegate: public QStyledItemDelegate
-{
-
-    Q_OBJECT
-
-  public:
-
-    QgsLocaleAwareNumericLineEditDelegate( Qgis::DataType dataType, QWidget *parent = nullptr );
-
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
-
-    // QAbstractItemDelegate interface
-  public:
-    void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
-    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
-
-  private:
-
-    Qgis::DataType mDataType;
-
-};
-///@endcond
-#endif
+class QgsLocaleAwareNumericLineEditDelegate;
 
 /**
  * \ingroup gui
@@ -112,9 +80,6 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
 
     //! Sets widget state from the color ramp shader
     void setFromShader( const QgsColorRampShader &colorRampShader );
-
-    //! Item data role to store the unmodified double value of the item entry
-    static int VALUE_ROLE;
 
   signals:
     //! Color ramp tree has changed
@@ -197,6 +162,7 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
     QgsRasterDataProvider *mRasterDataProvider = nullptr;
     int mBand = -1;
     QgsRectangle mExtent;
+    QgsLocaleAwareNumericLineEditDelegate *mValueDelegate = nullptr;
 
 
 };
