@@ -197,6 +197,26 @@ The default implementation returns 0 for all URIs.
 .. versionadded:: 3.18
 %End
 
+    virtual bool uriIsBlocklisted( const QString &uri ) const;
+%Docstring
+Returns ``True`` if the specified ``uri`` is known by this provider to be something which should
+be blocklisted from the QGIS interface, e.g. an internal detail only.
+
+Specifically, this method can be utilised by the browser panel to hide noisy internal details
+by returning ``True`` for URIs which are known to be sidecar files only, such as ".aux.xml" files
+or ".shp.xml" files, or the "ept-build.json" files which sit alongside Entwine "ept.json" point
+cloud sources.
+
+The default method returns ``False`` for all URIs.
+
+.. warning::
+
+   Returning ``True`` from an implementation of this method indicates that ALL providers should
+   ignore the specified ``uri``, not just the provider associated with this metadata!
+
+.. versionadded:: 3.18
+%End
+
     virtual QgsDataProvider *createProvider( const QString &uri,
         const QgsDataProvider::ProviderOptions &options,
         QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) /Factory/;

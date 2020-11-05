@@ -319,6 +319,21 @@ handle the URI.
 .. versionadded:: 3.18
 %End
 
+    bool uriIsBlocklisted( const QString &uri ) const;
+%Docstring
+Returns ``True`` if the specified ``uri`` is known by any registered provider to be something which should
+be blocklisted from the QGIS interface, e.g. an internal detail only.
+
+Specifically, this method can be utilised by the browser panel to hide noisy internal details
+for URIs which are known to be sidecar files only, such as ".aux.xml" files or ".shp.xml" files,
+or the "ept-build.json" files which sit alongside Entwine "ept.json" point cloud sources.
+
+This method tests whether any of the registered providers return ``True`` for the their
+:py:func:`QgsProviderMetadata.uriIsBlocklisted()` implementation for the specified URI.
+
+.. versionadded:: 3.18
+%End
+
     QString fileVectorFilters() const;
 %Docstring
 Returns a file filter string for supported vector files.

@@ -66,6 +66,15 @@ class TestQgsProviderRegistry(unittest.TestCase):
         self.assertFalse(QgsProviderRegistry.instance().shouldDeferUriForOtherProviders('/home/nyall/ept.json', 'ept'))
         self.assertFalse(QgsProviderRegistry.instance().shouldDeferUriForOtherProviders('/home/nyall/my.json', 'ogr'))
 
+    def testUriIsBlocklisted(self):
+        self.assertFalse(QgsProviderRegistry.instance().uriIsBlocklisted('/home/nyall/me.tif'))
+        self.assertFalse(QgsProviderRegistry.instance().uriIsBlocklisted('/home/nyall/me.shp'))
+
+        # internal details only -- we should be hiding these uris!
+        self.assertTrue(QgsProviderRegistry.instance().uriIsBlocklisted('/home/nyall/me.shp.xml'))
+        self.assertTrue(QgsProviderRegistry.instance().uriIsBlocklisted('/home/nyall/me.aux.xml'))
+        self.assertTrue(QgsProviderRegistry.instance().uriIsBlocklisted('/home/nyall/me.tif.xml'))
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -772,3 +772,13 @@ bool QgsProviderRegistry::shouldDeferUriForOtherProviders( const QString &uri, c
 
   return !providers.contains( QgsProviderRegistry::instance()->providerMetadata( providerKey ) );
 }
+
+bool QgsProviderRegistry::uriIsBlocklisted( const QString &uri ) const
+{
+  for ( auto it = mProviders.begin(); it != mProviders.end(); ++it )
+  {
+    if ( it->second->uriIsBlocklisted( uri ) )
+      return true;
+  }
+  return false;
+}
