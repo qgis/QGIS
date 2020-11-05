@@ -75,7 +75,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
     // TODO: update drawing order
   }
-  else if ( QgsLayerTreeNode *node = mView->layerTreeModel()->index2node( idx ) )
+  else if ( QgsLayerTreeNode *node = mView->index2node( idx ) )
   {
     // layer or group selected
     if ( QgsLayerTree::isGroup( node ) )
@@ -616,7 +616,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         menu->addAction( tr( "&Properties…" ), QgisApp::instance(), &QgisApp::layerProperties );
     }
   }
-  else if ( QgsLayerTreeModelLegendNode *node = mView->layerTreeModel()->index2legendNode( idx ) )
+  else if ( QgsLayerTreeModelLegendNode *node = mView->index2legendNode( idx ) )
   {
     if ( QgsSymbolLegendNode *symbolNode = qobject_cast< QgsSymbolLegendNode * >( node ) )
     {

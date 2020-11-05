@@ -569,13 +569,7 @@ QModelIndex QgsLayerTreeModel::currentIndex() const
 
 void QgsLayerTreeModel::setCurrentIndex( const QModelIndex &currentIndex )
 {
-  QModelIndex oldIndex = mCurrentIndex;
   mCurrentIndex = currentIndex;
-
-  if ( oldIndex.isValid() )
-    emit dataChanged( oldIndex, oldIndex );
-  if ( currentIndex.isValid() )
-    emit dataChanged( currentIndex, currentIndex );
 }
 
 
@@ -842,6 +836,23 @@ void QgsLayerTreeModel::layerLegendChanged()
   refreshLayerLegend( nodeLayer );
 }
 
+void QgsLayerTreeModel::layerFlagsChanged()
+{
+  if ( !mRootNode )
+    return;
+
+  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() );
+  if ( !layer )
+    return;
+
+  QgsLayerTreeLayer *nodeLayer = mRootNode->findLayer( layer->id() );
+  if ( !nodeLayer )
+    return;
+
+  const QModelIndex index = node2index( nodeLayer );
+  emit dataChanged( index, index );
+}
+
 void QgsLayerTreeModel::layerNeedsUpdate()
 {
   QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() );
@@ -910,6 +921,7 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer *nodeLayer )
 
   QgsMapLayer *layer = nodeLayer->layer();
   connect( layer, &QgsMapLayer::legendChanged, this, &QgsLayerTreeModel::layerLegendChanged, Qt::UniqueConnection );
+  connect( layer, &QgsMapLayer::flagsChanged, this, &QgsLayerTreeModel::layerFlagsChanged, Qt::UniqueConnection );
 
   if ( layer->type() == QgsMapLayerType::VectorLayer )
   {
@@ -921,6 +933,8 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer *nodeLayer )
     connect( vl, &QgsVectorLayer::editingStopped, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
     connect( vl, &QgsVectorLayer::layerModified, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
   }
+
+  emit dataChanged( node2index( nodeLayer ), node2index( nodeLayer ) );
 }
 
 // try to find out if the layer ID is present in the tree multiple times

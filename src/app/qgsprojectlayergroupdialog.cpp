@@ -89,11 +89,10 @@ QgsProjectLayerGroupDialog::~QgsProjectLayerGroupDialog()
 QStringList QgsProjectLayerGroupDialog::selectedGroups() const
 {
   QStringList groups;
-  QgsLayerTreeModel *model = mTreeView->layerTreeModel();
   const auto constSelectedIndexes = mTreeView->selectionModel()->selectedIndexes();
   for ( const QModelIndex &index : constSelectedIndexes )
   {
-    QgsLayerTreeNode *node = model->index2node( index );
+    QgsLayerTreeNode *node = mTreeView->index2node( index );
     if ( QgsLayerTree::isGroup( node ) )
       groups << QgsLayerTree::toGroup( node )->name();
   }
@@ -103,11 +102,10 @@ QStringList QgsProjectLayerGroupDialog::selectedGroups() const
 QStringList QgsProjectLayerGroupDialog::selectedLayerIds() const
 {
   QStringList layerIds;
-  QgsLayerTreeModel *model = mTreeView->layerTreeModel();
   const auto constSelectedIndexes = mTreeView->selectionModel()->selectedIndexes();
   for ( const QModelIndex &index : constSelectedIndexes )
   {
-    QgsLayerTreeNode *node = model->index2node( index );
+    QgsLayerTreeNode *node = mTreeView->index2node( index );
     if ( QgsLayerTree::isLayer( node ) )
       layerIds << QgsLayerTree::toLayer( node )->layerId();
   }
@@ -117,11 +115,10 @@ QStringList QgsProjectLayerGroupDialog::selectedLayerIds() const
 QStringList QgsProjectLayerGroupDialog::selectedLayerNames() const
 {
   QStringList layerNames;
-  QgsLayerTreeModel *model = mTreeView->layerTreeModel();
   const auto constSelectedIndexes = mTreeView->selectionModel()->selectedIndexes();
   for ( const QModelIndex &index : constSelectedIndexes )
   {
-    QgsLayerTreeNode *node = model->index2node( index );
+    QgsLayerTreeNode *node = mTreeView->index2node( index );
     if ( QgsLayerTree::isLayer( node ) )
       layerNames << QgsLayerTree::toLayer( node )->name();
   }
@@ -135,7 +132,7 @@ QString QgsProjectLayerGroupDialog::selectedProjectFile() const
 
 bool QgsProjectLayerGroupDialog::isValid() const
 {
-  return nullptr != mTreeView->layerTreeModel();
+  return static_cast< bool >( mTreeView->layerTreeModel() );
 }
 
 void QgsProjectLayerGroupDialog::changeProjectFile()

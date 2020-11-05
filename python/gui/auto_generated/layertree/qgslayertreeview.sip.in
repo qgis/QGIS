@@ -10,6 +10,50 @@
 
 
 
+
+class QgsLayerTreeProxyModel : QSortFilterProxyModel
+{
+%Docstring
+
+The QgsLayerTreeProxyModel class is a proxy model for QgsLayerTreeModel, supports
+private layers and text filtering.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgslayertreeview.h"
+%End
+  public:
+
+    QgsLayerTreeProxyModel( QgsLayerTreeModel *treeModel, QObject *parent );
+%Docstring
+Constructs QgsLayerTreeProxyModel with source model ``treeModel`` and a ``parent``
+%End
+
+    void setFilterText( const QString &filterText = QString() );
+%Docstring
+Sets filter to ``filterText``.
+%End
+
+    bool showPrivateLayers() const;
+%Docstring
+Returns if private layers are shown.
+%End
+
+    void setShowPrivateLayers( bool showPrivate );
+%Docstring
+Determines if private layers are shown.
+%End
+
+  protected:
+
+    virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
+
+
+};
+
+
 class QgsLayerTreeView : QTreeView
 {
 %Docstring
@@ -55,6 +99,74 @@ Overridden :py:func:`~QgsLayerTreeView.setModel` from base class. Only QgsLayerT
     QgsLayerTreeModel *layerTreeModel() const;
 %Docstring
 Gets access to the model casted to :py:class:`QgsLayerTreeModel`
+%End
+
+    QgsLayerTreeProxyModel *proxyModel() const;
+%Docstring
+Returns the proxy model used by the view.
+
+This can be used to set filters controlling which layers are shown in the view.
+
+.. versionadded:: 3.18
+%End
+
+    QgsLayerTreeNode *index2node( const QModelIndex &index ) const;
+%Docstring
+Returns layer tree node for given proxy model tree ``index``. Returns root node for invalid index.
+Returns ``None`` if index does not refer to a layer tree node (e.g. it is a legend node)
+
+Unlike :py:func:`QgsLayerTreeModel.index2Node()`, calling this method correctly accounts
+for mapping the view indexes through the view's proxy model to the source model.
+
+.. versionadded:: 3.18
+%End
+
+    QModelIndex node2index( QgsLayerTreeNode *node ) const;
+%Docstring
+Returns proxy model index for a given node. If the node does not belong to the layer tree, the result is undefined
+
+Unlike :py:func:`QgsLayerTreeModel.node2index()`, calling this method correctly accounts
+for mapping the view indexes through the view's proxy model to the source model.
+
+.. versionadded:: 3.18
+%End
+
+
+    QModelIndex node2sourceIndex( QgsLayerTreeNode *node ) const;
+%Docstring
+Returns source model index for a given node. If the node does not belong to the layer tree, the result is undefined
+
+.. versionadded:: 3.18
+%End
+
+
+    QgsLayerTreeModelLegendNode *index2legendNode( const QModelIndex &index ) const;
+%Docstring
+Returns legend node for given proxy model tree ``index``. Returns ``None`` for invalid index
+
+Unlike :py:func:`QgsLayerTreeModel.index2legendNode()`, calling this method correctly accounts
+for mapping the view indexes through the view's proxy model to the source model.
+
+.. versionadded:: 3.18
+%End
+
+    QModelIndex legendNode2index( QgsLayerTreeModelLegendNode *legendNode );
+%Docstring
+Returns proxy model index for a given legend node. If the legend node does not belong to the layer tree, the result is undefined.
+If the legend node is belongs to the tree but it is filtered out, invalid model index is returned.
+
+Unlike :py:func:`QgsLayerTreeModel.legendNode2index()`, calling this method correctly accounts
+for mapping the view indexes through the view's proxy model to the source model.
+
+.. versionadded:: 3.18
+%End
+
+    QModelIndex legendNode2sourceIndex( QgsLayerTreeModelLegendNode *legendNode );
+%Docstring
+Returns index for a given legend node. If the legend node does not belong to the layer tree, the result is undefined.
+If the legend node is belongs to the tree but it is filtered out, invalid model index is returned.
+
+.. versionadded:: 3.18
 %End
 
     QgsLayerTreeViewDefaultActions *defaultActions();
@@ -219,6 +331,20 @@ Set width of contextual menu mark, at right of layer node items.
 Set the message bar to display messages from the layer tree
 
 .. versionadded:: 3.14
+%End
+
+    void setShowPrivateLayers( bool showPrivate );
+%Docstring
+Set the show private layers to ``showPrivate``
+
+.. versionadded:: 3.18
+%End
+
+    bool showPrivateLayers( );
+%Docstring
+Returns the show private layers status
+
+.. versionadded:: 3.18
 %End
 
   signals:

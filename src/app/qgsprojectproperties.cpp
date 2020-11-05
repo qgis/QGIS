@@ -1167,10 +1167,12 @@ void QgsProjectProperties::apply()
     QgsProject::instance()->viewSettings()->setUseProjectScales( false );
   }
 
+  bool isDirty = false;
   const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
   for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
   {
     QgsMapLayer *layer = it.value();
+    QgsMapLayer::LayerFlags oldFlags = layer->flags();
     QgsMapLayer::LayerFlags flags = layer->flags();
 
     if ( mLayerCapabilitiesModel->identifiable( layer ) )
@@ -1188,6 +1190,11 @@ void QgsProjectProperties::apply()
     else
       flags &= ~QgsMapLayer::Searchable;
 
+    if ( mLayerCapabilitiesModel->privateLayer( layer ) )
+      flags |= QgsMapLayer::Private;
+    else
+      flags &= ~QgsMapLayer::Private;
+
     layer->setFlags( flags );
 
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
@@ -1196,6 +1203,16 @@ void QgsProjectProperties::apply()
       // read only is for vector layers only for now
       vl->setReadOnly( mLayerCapabilitiesModel->readOnly( vl ) );
     }
+
+    if ( oldFlags != flags )
+    {
+      isDirty = true;
+    }
+  }
+
+  if ( isDirty )
+  {
+    QgsProject::instance()->setDirty( true );
   }
 
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSServiceCapabilities" ), QStringLiteral( "/" ), grpOWSServiceCapabilities->isChecked() );

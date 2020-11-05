@@ -4772,12 +4772,23 @@ void QgisApp::initLayerTreeView()
   btnVisibilityPresets->setPopupMode( QToolButton::InstantPopup );
   btnVisibilityPresets->setMenu( QgsMapThemes::instance()->menu() );
 
-  // filter legend action
-  mActionFilterLegend = new QAction( tr( "Filter Legend by Map Content" ), this );
-  mActionFilterLegend->setCheckable( true );
-  mActionFilterLegend->setToolTip( tr( "Filter Legend by Map Content" ) );
-  mActionFilterLegend->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFilter2.svg" ) ) );
-  connect( mActionFilterLegend, &QAction::toggled, this, &QgisApp::updateFilterLegend );
+  // filter legend actions
+  mFilterLegendToolButton = new QToolButton( this );
+  mFilterLegendToolButton->setAutoRaise( true );
+  mFilterLegendToolButton->setToolTip( tr( "Filter Legend by Map Content" ) );
+  mFilterLegendToolButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFilter2.svg" ) ) );
+  mFilterLegendToolButton->setPopupMode( QToolButton::InstantPopup );
+  QMenu *filterLegendMenu = new QMenu( this );
+  mFilterLegendToolButton->setMenu( filterLegendMenu );
+  mFilterLegendByMapContentAction = new QAction( tr( "Filter Legend by Map Content" ), this );
+  mFilterLegendByMapContentAction->setCheckable( true );
+  connect( mFilterLegendByMapContentAction, &QAction::toggled, this, &QgisApp::updateFilterLegend );
+  filterLegendMenu->addAction( mFilterLegendByMapContentAction );
+
+  mFilterLegendToggleShowPrivateLayersAction = new QAction( tr( "Show Private Layers" ), this );
+  mFilterLegendToggleShowPrivateLayersAction->setCheckable( true );
+  connect( mFilterLegendToggleShowPrivateLayersAction, &QAction::toggled, this, [ = ]( bool showPrivateLayers ) { layerTreeView()->setShowPrivateLayers( showPrivateLayers ); } );
+  filterLegendMenu->addAction( mFilterLegendToggleShowPrivateLayersAction );
 
   mLegendExpressionFilterButton = new QgsLegendFilterButton( this );
   mLegendExpressionFilterButton->setToolTip( tr( "Filter legend by expression" ) );
@@ -4805,7 +4816,7 @@ void QgisApp::initLayerTreeView()
   toolbar->addAction( mActionStyleDock );
   toolbar->addAction( actionAddGroup );
   toolbar->addWidget( btnVisibilityPresets );
-  toolbar->addAction( mActionFilterLegend );
+  toolbar->addWidget( mFilterLegendToolButton );
   toolbar->addWidget( mLegendExpressionFilterButton );
   toolbar->addAction( actionExpandAll );
   toolbar->addAction( actionCollapseAll );
@@ -4916,7 +4927,7 @@ void QgisApp::autoSelectAddedLayer( QList<QgsMapLayer *> layers )
     if ( !nodeLayer )
       return;
 
-    QModelIndex index = mLayerTreeView->layerTreeModel()->node2index( nodeLayer );
+    QModelIndex index = mLayerTreeView->node2index( nodeLayer );
     mLayerTreeView->setCurrentIndex( index );
   }
 }
@@ -7115,7 +7126,7 @@ bool QgisApp::addProject( const QString &projectFile )
     mMapCanvas->updateScale();
     QgsDebugMsgLevel( QStringLiteral( "Scale restored..." ), 3 );
 
-    mActionFilterLegend->setChecked( QgsProject::instance()->readBoolEntry( QStringLiteral( "Legend" ), QStringLiteral( "filterByMap" ) ) );
+    mFilterLegendByMapContentAction->setChecked( QgsProject::instance()->readBoolEntry( QStringLiteral( "Legend" ), QStringLiteral( "filterByMap" ) ) );
 
     // Select the first layer
     if ( mLayerTreeView->layerTreeModel()->rootGroup()->findLayers().count() > 0 )
@@ -7740,10 +7751,10 @@ void QgisApp::toggleFilterLegendByExpression( bool checked )
 void QgisApp::updateFilterLegend()
 {
   bool hasExpressions = mLegendExpressionFilterButton->isChecked() && QgsLayerTreeUtils::hasLegendFilterExpression( *mLayerTreeView->layerTreeModel()->rootGroup() );
-  if ( mActionFilterLegend->isChecked() || hasExpressions )
+  if ( mFilterLegendByMapContentAction->isChecked() || hasExpressions )
   {
     layerTreeView()->layerTreeModel()->setLegendFilter( &mMapCanvas->mapSettings(),
-        /* useExtent */ mActionFilterLegend->isChecked(),
+        /* useExtent */ mFilterLegendByMapContentAction->isChecked(),
         /* polygon */ QgsGeometry(),
         hasExpressions );
   }
@@ -11647,8 +11658,43 @@ void QgisApp::removeLayer()
   }
 
   bool shiftHeld = QApplication::queryKeyboardModifiers().testFlag( Qt::ShiftModifier );
-  //display a warning
-  if ( !shiftHeld && promptConfirmation && QMessageBox::warning( this, tr( "Remove layers and groups" ), tr( "Remove %n legend entries?", "number of legend items to remove", selectedNodes.count() ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+
+  // Check if there are any hidden layer elements and display a confirmation dialog
+  QStringList hiddenLayerNames;
+  auto harvest = [ &hiddenLayerNames ]( const QgsLayerTreeNode * parent )
+  {
+    const auto cChildren { parent->children() };
+    for ( const auto &c : cChildren )
+    {
+      if ( QgsLayerTree::isLayer( c ) )
+      {
+        const auto treeLayer { QgsLayerTree::toLayer( c ) };
+        if ( treeLayer->layer() && treeLayer->layer()->flags().testFlag( QgsMapLayer::LayerFlag::Private ) )
+        {
+          hiddenLayerNames.push_back( treeLayer->layer()->name( ) );
+        }
+      }
+    }
+  };
+
+  for ( const auto &n : qgis::as_const( selectedNodes ) )
+  {
+    harvest( n );
+  }
+
+  QString message { tr( "Remove %n legend entries?", "number of legend items to remove", selectedNodes.count() ) };
+  if ( ! hiddenLayerNames.isEmpty() )
+  {
+    if ( hiddenLayerNames.count( ) > 10 )
+    {
+      const int layerCount { hiddenLayerNames.count( ) };
+      hiddenLayerNames = hiddenLayerNames.mid( 0, 10 );
+      hiddenLayerNames.push_back( tr( "(%n more hidden layers)",  "number of hidden layers not shown", layerCount - 10 ) );
+    }
+    message.append( tr( "The following hidden layers will be removed:\n%1" ).arg( hiddenLayerNames.join( '\n' ) ) );
+  }
+
+  if ( !shiftHeld && promptConfirmation && QMessageBox::warning( this, tr( "Remove layers and groups" ), message, QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return;
   }
@@ -13439,7 +13485,7 @@ void QgisApp::closeProject()
 
   mLegendExpressionFilterButton->setExpressionText( QString() );
   mLegendExpressionFilterButton->setChecked( false );
-  mActionFilterLegend->setChecked( false );
+  mFilterLegendByMapContentAction->setChecked( false );
 
   closeAdditionalMapCanvases();
   closeAdditional3DMapCanvases();

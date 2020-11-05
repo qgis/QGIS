@@ -101,7 +101,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::DisplayRole:
           return tr( "Layer Configuration" );
         case Qt::ToolTipRole:
-          return tr( "Identifiable, removable, searchable, display expression, read-only" );
+          return tr( "Identifiable, removable, searchable, display expression, read-only, hidden" );
         case Qt::DecorationRole:
           return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/system.svg" ) );
       }

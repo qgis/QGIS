@@ -51,7 +51,7 @@ void QgsLayerTreeViewBadLayerIndicatorProvider::reportLayerError( const QString 
 
 void QgsLayerTreeViewBadLayerIndicatorProvider::onIndicatorClicked( const QModelIndex &index )
 {
-  QgsLayerTreeNode *node = mLayerTreeView->layerTreeModel()->index2node( index );
+  QgsLayerTreeNode *node = mLayerTreeView->index2node( index );
   if ( !QgsLayerTree::isLayer( node ) )
     return;
 

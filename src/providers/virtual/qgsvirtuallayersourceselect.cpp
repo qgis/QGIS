@@ -264,7 +264,8 @@ void QgsVirtualLayerSourceSelect::updateLayersList()
 
   if ( mTreeView )
   {
-    QgsLayerTreeModel *model = qobject_cast<QgsLayerTreeModel *>( mTreeView->model() );
+    QgsLayerTreeProxyModel *proxyModel = qobject_cast<QgsLayerTreeProxyModel *>( mTreeView->model( ) );
+    QgsLayerTreeModel *model = qobject_cast<QgsLayerTreeModel *>( proxyModel->sourceModel() );
     const auto constFindLayers = model->rootGroup()->findLayers();
     for ( QgsLayerTreeLayer *layer : constFindLayers )
     {
