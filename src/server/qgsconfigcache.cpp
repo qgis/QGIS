@@ -43,7 +43,11 @@ const QgsProject *QgsConfigCache::project( const QString &path, QgsServerSetting
 {
   if ( ! mProjectCache[ path ] )
   {
+
     std::unique_ptr<QgsProject> prj( new QgsProject() );
+
+    // This is required by virtual layers that call QgsProject::instance() inside the constructor :(
+    QgsProject::setInstance( prj.get() );
 
     QgsStoreBadLayerInfo *badLayerHandler = new QgsStoreBadLayerInfo();
     prj->setBadLayerHandler( badLayerHandler );
@@ -114,7 +118,6 @@ const QgsProject *QgsConfigCache::project( const QString &path, QgsServerSetting
     }
   }
   return mProjectCache[ path ];
-
 }
 
 QDomDocument *QgsConfigCache::xmlDocument( const QString &filePath )
