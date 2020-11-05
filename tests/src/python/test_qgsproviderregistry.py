@@ -73,6 +73,10 @@ class TestQgsProviderRegistry(unittest.TestCase):
         # internal details only -- we should be hiding these uris!
         self.assertTrue(QgsProviderRegistry.instance().uriIsBlocklisted('/home/nyall/me.shp.xml'))
         self.assertTrue(QgsProviderRegistry.instance().uriIsBlocklisted('/home/nyall/me.aux.xml'))
+        self.assertTrue(QgsProviderRegistry.instance().uriIsBlocklisted('/home/nyall/me.AUX.XML'))
+        self.assertTrue(QgsProviderRegistry.instance().uriIsBlocklisted('/home/nyall/me.tif.aux.xml'))
+        self.assertTrue(QgsProviderRegistry.instance().uriIsBlocklisted('/home/nyall/me.tif.AUX.XML'))
+        self.assertTrue(QgsProviderRegistry.instance().uriIsBlocklisted('/home/nyall/me.png.aux.xml'))
         self.assertTrue(QgsProviderRegistry.instance().uriIsBlocklisted('/home/nyall/me.tif.xml'))
 
 

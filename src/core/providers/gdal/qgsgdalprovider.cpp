@@ -2367,7 +2367,7 @@ bool QgsGdalProviderMetadata::uriIsBlocklisted( const QString &uri ) const
   const QString suffix = fi.completeSuffix();
 
   // internal details only
-  if ( suffix.compare( QLatin1String( "aux.xml" ), Qt::CaseInsensitive ) == 0 )
+  if ( suffix.compare( QLatin1String( "aux.xml" ), Qt::CaseInsensitive ) == 0 || suffix.endsWith( QLatin1String( ".aux.xml" ), Qt::CaseInsensitive ) )
     return true;
   if ( suffix.compare( QLatin1String( "tif.xml" ), Qt::CaseInsensitive ) == 0 )
     return true;
