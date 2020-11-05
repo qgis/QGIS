@@ -67,8 +67,6 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRende
   mForwardDepthTexture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
   mForwardDepthTexture->wrapMode()->setX( Qt3DRender::QTextureWrapMode::ClampToEdge );
   mForwardDepthTexture->wrapMode()->setY( Qt3DRender::QTextureWrapMode::ClampToEdge );
-  mForwardDepthTexture->setComparisonFunction( Qt3DRender::QTexture2D::ComparisonFunction::CompareLessEqual );
-  mForwardDepthTexture->setComparisonMode( Qt3DRender::QTexture2D::ComparisonMode::CompareRefToTexture );
 
   mForwardRenderTarget = new Qt3DRender::QRenderTarget;
   mForwardRenderTargetDepthOutput = new Qt3DRender::QRenderTargetOutput;
