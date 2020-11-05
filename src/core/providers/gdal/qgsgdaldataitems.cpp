@@ -154,6 +154,10 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
     return nullptr;
   }
 
+  // hide blocklisted URIs, such as .aux.xml files
+  if ( QgsProviderRegistry::instance()->uriIsBlocklisted( path ) )
+    return nullptr;
+
   QgsDebugMsgLevel( "thePath = " + path, 2 );
 
   // zip settings + info
@@ -219,19 +223,6 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
     QgsDebugMsgLevel( QStringLiteral( "extensions: " ) + sExtensions.join( ' ' ), 2 );
     QgsDebugMsgLevel( QStringLiteral( "wildcards: " ) + sWildcards.join( ' ' ), 2 );
   } );
-
-  // skip *.aux.xml files (GDAL auxiliary metadata files),
-  // *.shp.xml files (ESRI metadata) and *.tif.xml files (TIFF metadata)
-  // unless that extension is in the list (*.xml might be though)
-  if ( path.endsWith( QLatin1String( ".aux.xml" ), Qt::CaseInsensitive ) &&
-       !sExtensions.contains( QStringLiteral( "aux.xml" ) ) )
-    return nullptr;
-  if ( path.endsWith( QLatin1String( ".shp.xml" ), Qt::CaseInsensitive ) &&
-       !sExtensions.contains( QStringLiteral( "shp.xml" ) ) )
-    return nullptr;
-  if ( path.endsWith( QLatin1String( ".tif.xml" ), Qt::CaseInsensitive ) &&
-       !sExtensions.contains( QStringLiteral( "tif.xml" ) ) )
-    return nullptr;
 
   // skip QGIS style xml files
   if ( path.endsWith( QLatin1String( ".xml" ), Qt::CaseInsensitive ) &&
