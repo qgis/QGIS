@@ -746,18 +746,29 @@ QgsProviderMetadata *QgsProviderRegistry::providerMetadata( const QString &provi
   return findMetadata_( mProviders, providerKey );
 }
 
-QgsProviderMetadata *QgsProviderRegistry::preferredProviderForUri( const QString &uri ) const
+QList< QgsProviderMetadata * > QgsProviderRegistry::preferredProvidersForUri( const QString &uri ) const
 {
-  QgsProviderMetadata *res = nullptr;
+  QList< QgsProviderMetadata * > res;
   int maxPriority = 0;
   for ( auto it = mProviders.begin(); it != mProviders.end(); ++it )
   {
     const int thisProviderPriority = it->second->priorityForUri( uri );
     if ( thisProviderPriority > maxPriority )
     {
+      res.clear();
       maxPriority = thisProviderPriority;
-      res = it->second;
     }
+    if ( thisProviderPriority == maxPriority )
+      res.append( it->second );
   }
   return res;
+}
+
+bool QgsProviderRegistry::shouldDeferUriForOtherProviders( const QString &uri, const QString &providerKey ) const
+{
+  const QList< QgsProviderMetadata * > providers = preferredProvidersForUri( uri );
+  if ( providers.empty() )
+    return false;
+
+  return !providers.contains( QgsProviderRegistry::instance()->providerMetadata( providerKey ) );
 }

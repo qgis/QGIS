@@ -283,22 +283,40 @@ class CORE_EXPORT QgsProviderRegistry
     QgsProviderMetadata *providerMetadata( const QString &providerKey ) const;
 
     /**
-     * Returns the metadata for the preferred provider for opening the specified \a uri.
+     * Returns the metadata for the preferred provider(s) for opening the specified \a uri.
      *
      * The preferred provider is determined by comparing the priority returned by
      * QgsProviderMetadata::priorityForUri() for all registered providers, and selecting
      * the provider with the largest non-zero priority.
      *
-     * A NULLPTR may be returned, which indicates that no providers are available which
+     * An empty list may be returned, which indicates that no providers are available which
      * returned a non-zero priority for the specified URI.
      *
      * In the case that multiple providers returned the same priority for the URI then
-     * either of these providers will be returned. In this case the QgsProviderMetadata::priorityForUri()
-     * implementation for the providers should be refined to avoid ties.
+     * all of these providers will be returned.
      *
+     * \see shouldDeferUriForOtherProviders()
      * \since QGIS 3.18
      */
-    QgsProviderMetadata *preferredProviderForUri( const QString &uri ) const;
+    QList< QgsProviderMetadata *> preferredProvidersForUri( const QString &uri ) const;
+
+    /**
+     * Returns TRUE if the provider with matching \a providerKey should defer handling of
+     * the specified \a uri to another provider.
+     *
+     * This method tests whether any providers are listed as the preferred provider for \a uri
+     * (see preferredProvidersForUri()), and if so tests whether the specified provider is
+     * included in that preferred providers list. Returns TRUE only if the specified provider
+     * is calculated as one of the preferred providers for the URI.
+     *
+     * In the case that there is no registered preferred provider for the URI then FALSE will be
+     * returned, and the provider must use another metric to determine whether it should
+     * handle the URI.
+     *
+     * \see preferredProvidersForUri()
+     * \since QGIS 3.18
+     */
+    bool shouldDeferUriForOtherProviders( const QString &uri, const QString &providerKey ) const;
 
     /**
      * Returns a file filter string for supported vector files.

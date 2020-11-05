@@ -112,8 +112,11 @@ void TestQgsEptProvider::decodeUri()
 void TestQgsEptProvider::preferredUri()
 {
   // test that EPT is the preferred provider for ept.json uris
-  QCOMPARE( QgsProviderRegistry::instance()->preferredProviderForUri( QStringLiteral( "/home/test/ept.json" ) )->key(), QStringLiteral( "ept" ) );
-  QCOMPARE( QgsProviderRegistry::instance()->preferredProviderForUri( QStringLiteral( "/home/test/EPT.JSON" ) )->key(), QStringLiteral( "ept" ) );
+  QCOMPARE( QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( "/home/test/ept.json" ) ), QList< QgsProviderMetadata * >() << QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ept" ) ) );
+  QCOMPARE( QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( "/home/test/EPT.JSON" ) ), QList< QgsProviderMetadata * >() << QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ept" ) ) );
+
+  QVERIFY( !QgsProviderRegistry::instance()->shouldDeferUriForOtherProviders( QStringLiteral( "/home/test/ept.json" ), QStringLiteral( "ept" ) ) );
+  QVERIFY( QgsProviderRegistry::instance()->shouldDeferUriForOtherProviders( QStringLiteral( "/home/test/ept.json" ), QStringLiteral( "ogr" ) ) );
 }
 
 
