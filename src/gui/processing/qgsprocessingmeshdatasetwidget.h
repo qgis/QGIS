@@ -20,6 +20,7 @@
 
 #include "qgsprocessingwidgetwrapperimpl.h"
 #include "qgsprocessingparametermeshdataset.h"
+#include "qgsmeshlayer.h"
 
 #include "ui_qgsprocessingmeshdatasettimewidget.h"
 
