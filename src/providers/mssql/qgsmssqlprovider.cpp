@@ -2651,7 +2651,7 @@ QString QgsMssqlProviderMetadata::getStyleById( const QString &uri, QString styl
   return style;
 }
 
-QVariantMap QgsMssqlProviderMetadata::decodeUri( const QString &uri )
+QVariantMap QgsMssqlProviderMetadata::decodeUri( const QString &uri ) const
 {
   const QgsDataSourceUri dsUri { uri };
   QVariantMap uriParts;
@@ -2720,7 +2720,7 @@ QVariantMap QgsMssqlProviderMetadata::decodeUri( const QString &uri )
   return uriParts;
 }
 
-QString QgsMssqlProviderMetadata::encodeUri( const QVariantMap &parts )
+QString QgsMssqlProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   QgsDataSourceUri dsUri;
   if ( parts.contains( QStringLiteral( "dbname" ) ) )

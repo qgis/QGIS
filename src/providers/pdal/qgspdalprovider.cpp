@@ -128,7 +128,7 @@ QList<QgsDataItemProvider *> QgsPdalProviderMetadata::dataItemProviders() const
   return providers;
 }
 
-QVariantMap QgsPdalProviderMetadata::decodeUri( const QString &uri )
+QVariantMap QgsPdalProviderMetadata::decodeUri( const QString &uri ) const
 {
   const QString path = uri;
   QVariantMap uriComponents;
@@ -153,7 +153,7 @@ QString QgsPdalProviderMetadata::filters( QgsProviderMetadata::FilterType type )
   return QString();
 }
 
-QString QgsPdalProviderMetadata::encodeUri( const QVariantMap &parts )
+QString QgsPdalProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   const QString path = parts.value( QStringLiteral( "path" ) ).toString();
   return path;

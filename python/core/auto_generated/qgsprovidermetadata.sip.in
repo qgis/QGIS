@@ -184,7 +184,7 @@ Builds the list of available mesh drivers metadata
 .. versionadded:: 3.12
 %End
 
-    virtual int priorityForUri( const QString &uri );
+    virtual int priorityForUri( const QString &uri ) const;
 %Docstring
 Returns an integer representing the priority which this provider should have when opening
 a dataset with the specified ``uri``.
@@ -262,7 +262,7 @@ Returns pyramid resampling methods available for provider
 .. versionadded:: 3.10
 %End
 
-    virtual QVariantMap decodeUri( const QString &uri );
+    virtual QVariantMap decodeUri( const QString &uri ) const;
 %Docstring
 Breaks a provider data source URI into its component paths (e.g. file path, layer name).
 
@@ -286,7 +286,7 @@ Breaks a provider data source URI into its component paths (e.g. file path, laye
 .. versionadded:: 3.10
 %End
 
-    virtual QString encodeUri( const QVariantMap &parts );
+    virtual QString encodeUri( const QVariantMap &parts ) const;
 %Docstring
 Reassembles a provider data source URI from its component paths (e.g. file path, layer name).
 

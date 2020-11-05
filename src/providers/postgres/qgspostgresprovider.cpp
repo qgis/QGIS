@@ -5710,7 +5710,7 @@ QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 #endif
 
 
-QVariantMap QgsPostgresProviderMetadata::decodeUri( const QString &uri )
+QVariantMap QgsPostgresProviderMetadata::decodeUri( const QString &uri ) const
 {
   const QgsDataSourceUri dsUri { uri };
   QVariantMap uriParts;
@@ -5759,7 +5759,7 @@ QVariantMap QgsPostgresProviderMetadata::decodeUri( const QString &uri )
 }
 
 
-QString QgsPostgresProviderMetadata::encodeUri( const QVariantMap &parts )
+QString QgsPostgresProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   QgsDataSourceUri dsUri;
   if ( parts.contains( QStringLiteral( "dbname" ) ) )

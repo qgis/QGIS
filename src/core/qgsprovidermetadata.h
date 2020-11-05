@@ -250,7 +250,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      *
      * \since QGIS 3.18
      */
-    virtual int priorityForUri( const QString &uri );
+    virtual int priorityForUri( const QString &uri ) const;
 
     /**
      * Class factory to return a pointer to a newly created QgsDataProvider object
@@ -347,7 +347,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * \note this function may not be supported by all providers, an empty map will be returned in such case
      * \since QGIS 3.10
      */
-    virtual QVariantMap decodeUri( const QString &uri );
+    virtual QVariantMap decodeUri( const QString &uri ) const;
 
     /**
      * Reassembles a provider data source URI from its component paths (e.g. file path, layer name).
@@ -357,7 +357,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * \see decodeUri()
      * \since QGIS 3.12
      */
-    virtual QString encodeUri( const QVariantMap &parts );
+    virtual QString encodeUri( const QVariantMap &parts ) const;
 
     /**
      * Returns data item providers. Caller is responsible for ownership of the item providers

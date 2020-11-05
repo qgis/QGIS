@@ -539,7 +539,7 @@ QgsPostgresRasterProviderMetadata::QgsPostgresRasterProviderMetadata()
 
 }
 
-QVariantMap QgsPostgresRasterProviderMetadata::decodeUri( const QString &uri )
+QVariantMap QgsPostgresRasterProviderMetadata::decodeUri( const QString &uri ) const
 {
   const QgsDataSourceUri dsUri { uri };
   QVariantMap decoded;
@@ -625,7 +625,7 @@ QVariantMap QgsPostgresRasterProviderMetadata::decodeUri( const QString &uri )
 }
 
 
-QString QgsPostgresRasterProviderMetadata::encodeUri( const QVariantMap &parts )
+QString QgsPostgresRasterProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   QgsDataSourceUri dsUri;
   if ( parts.contains( QStringLiteral( "dbname" ) ) )

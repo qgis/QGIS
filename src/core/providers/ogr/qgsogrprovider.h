@@ -751,8 +751,8 @@ class QgsOgrProviderMetadata final: public QgsProviderMetadata
     void cleanupProvider() override;
     QList< QgsDataItemProvider * > dataItemProviders() const override;
     QgsOgrProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
-    QVariantMap decodeUri( const QString &uri ) override;
-    QString encodeUri( const QVariantMap &parts ) override;
+    QVariantMap decodeUri( const QString &uri ) const override;
+    QString encodeUri( const QVariantMap &parts ) const override;
     QString filters( FilterType type ) override;
     QgsVectorLayerExporter::ExportError createEmptyLayer(
       const QString &uri,

@@ -1260,14 +1260,14 @@ QString  QgsDelimitedTextProvider::description() const
   return TEXT_PROVIDER_DESCRIPTION;
 }
 
-QVariantMap QgsDelimitedTextProviderMetadata::decodeUri( const QString &uri )
+QVariantMap QgsDelimitedTextProviderMetadata::decodeUri( const QString &uri ) const
 {
   QVariantMap components;
   components.insert( QStringLiteral( "path" ), QUrl( uri ).toLocalFile() );
   return components;
 }
 
-QString QgsDelimitedTextProviderMetadata::encodeUri( const QVariantMap &parts )
+QString QgsDelimitedTextProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   return QStringLiteral( "file://%1" ).arg( parts.value( QStringLiteral( "path" ) ).toString() );
 }

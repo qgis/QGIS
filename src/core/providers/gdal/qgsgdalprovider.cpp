@@ -2319,7 +2319,7 @@ QStringList QgsGdalProvider::subLayers() const
   return mSubLayers;
 }
 
-QVariantMap QgsGdalProviderMetadata::decodeUri( const QString &uri )
+QVariantMap QgsGdalProviderMetadata::decodeUri( const QString &uri ) const
 {
   QString path = uri;
   QString layerName;
@@ -2350,7 +2350,7 @@ QVariantMap QgsGdalProviderMetadata::decodeUri( const QString &uri )
   return uriComponents;
 }
 
-QString QgsGdalProviderMetadata::encodeUri( const QVariantMap &parts )
+QString QgsGdalProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   QString path = parts.value( QStringLiteral( "path" ) ).toString();
   QString layerName = parts.value( QStringLiteral( "layerName" ) ).toString();

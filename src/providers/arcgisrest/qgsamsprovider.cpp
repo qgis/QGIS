@@ -1258,7 +1258,7 @@ QgsAmsProvider *QgsAmsProviderMetadata::createProvider( const QString &uri, cons
   return new QgsAmsProvider( uri, options, flags );
 }
 
-QVariantMap QgsAmsProviderMetadata::decodeUri( const QString &uri )
+QVariantMap QgsAmsProviderMetadata::decodeUri( const QString &uri ) const
 {
   QgsDataSourceUri dsUri = QgsDataSourceUri( uri );
 
@@ -1267,7 +1267,7 @@ QVariantMap QgsAmsProviderMetadata::decodeUri( const QString &uri )
   return components;
 }
 
-QString QgsAmsProviderMetadata::encodeUri( const QVariantMap &parts )
+QString QgsAmsProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   QgsDataSourceUri dsUri;
   dsUri.setParam( QStringLiteral( "url" ), parts.value( QStringLiteral( "url" ) ).toString() );

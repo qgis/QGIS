@@ -5853,7 +5853,7 @@ void QgsSpatiaLiteProvider::invalidateConnections( const QString &connection )
   QgsSpatiaLiteConnPool::instance()->invalidateConnections( connection );
 }
 
-QVariantMap QgsSpatiaLiteProviderMetadata::decodeUri( const QString &uri )
+QVariantMap QgsSpatiaLiteProviderMetadata::decodeUri( const QString &uri ) const
 {
   QgsDataSourceUri dsUri = QgsDataSourceUri( uri );
 
@@ -5871,7 +5871,7 @@ QgsSpatiaLiteProvider *QgsSpatiaLiteProviderMetadata::createProvider(
   return new QgsSpatiaLiteProvider( uri, options, flags );
 }
 
-QString QgsSpatiaLiteProviderMetadata::encodeUri( const QVariantMap &parts )
+QString QgsSpatiaLiteProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   QgsDataSourceUri dsUri;
   dsUri.setDatabase( parts.value( QStringLiteral( "path" ) ).toString() );
