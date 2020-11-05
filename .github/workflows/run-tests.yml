@@ -41,13 +41,17 @@ jobs:
         env:
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_REF: ${{ github.ref }}
+          GITHUB_PR_NUMBER: ${{github.event.number}}
         run: |
           DOCKER_TAG=$( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo ${GITHUB_BASE_REF} || echo ${GITHUB_REF##*/} )
+          CTEST_BUILD_NAME=$( [[ ${GITHUB_EVENT_NAME} =~ ^pull_request$ ]] && echo PR ${GITHUB_PR_NUMBER} || echo ${GITHUB_REF##*/} )" (${GITHUB_SHA})"
           echo "DOCKER_TAG=${DOCKER_TAG}" >> $GITHUB_ENV
+          echo "CTEST_BUILD_NAME=${CTEST_BUILD_NAME}" >> $GITHUB_ENV
 
       - name: Print vars
         run: |
           echo DOCKER_TAG: ${DOCKER_TAG}
+          echo CTEST_BUILD_NAME: ${CTEST_BUILD_NAME}
 
       - name: Build deps
         run: |
