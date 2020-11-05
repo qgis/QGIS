@@ -61,6 +61,11 @@ class TestQgsProviderRegistry(unittest.TestCase):
 
         self.assertIsNone(QgsProviderRegistry.instance().createProvider('asdasdasdasdasd', ''))
 
+    def testShouldDeferUriForOtherProviders(self):
+        self.assertTrue(QgsProviderRegistry.instance().shouldDeferUriForOtherProviders('/home/nyall/ept.json', 'ogr'))
+        self.assertFalse(QgsProviderRegistry.instance().shouldDeferUriForOtherProviders('/home/nyall/ept.json', 'ept'))
+        self.assertFalse(QgsProviderRegistry.instance().shouldDeferUriForOtherProviders('/home/nyall/my.json', 'ogr'))
+
 
 if __name__ == '__main__':
     unittest.main()

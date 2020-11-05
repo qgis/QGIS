@@ -281,20 +281,40 @@ Returns list of available providers by their keys
 Returns metadata of the provider or ``None`` if not found
 %End
 
-    QgsProviderMetadata *preferredProviderForUri( const QString &uri ) const;
+    QList< QgsProviderMetadata *> preferredProvidersForUri( const QString &uri ) const;
 %Docstring
-Returns the metadata for the preferred provider for opening the specified ``uri``.
+Returns the metadata for the preferred provider(s) for opening the specified ``uri``.
 
 The preferred provider is determined by comparing the priority returned by
 :py:func:`QgsProviderMetadata.priorityForUri()` for all registered providers, and selecting
 the provider with the largest non-zero priority.
 
-A ``None`` may be returned, which indicates that no providers are available which
+An empty list may be returned, which indicates that no providers are available which
 returned a non-zero priority for the specified URI.
 
 In the case that multiple providers returned the same priority for the URI then
-either of these providers will be returned. In this case the :py:func:`QgsProviderMetadata.priorityForUri()`
-implementation for the providers should be refined to avoid ties.
+all of these providers will be returned.
+
+.. seealso:: :py:func:`shouldDeferUriForOtherProviders`
+
+.. versionadded:: 3.18
+%End
+
+    bool shouldDeferUriForOtherProviders( const QString &uri, const QString &providerKey ) const;
+%Docstring
+Returns ``True`` if the provider with matching ``providerKey`` should defer handling of
+the specified ``uri`` to another provider.
+
+This method tests whether any providers are listed as the preferred provider for ``uri``
+(see :py:func:`~QgsProviderRegistry.preferredProvidersForUri`), and if so tests whether the specified provider is
+included in that preferred providers list. Returns ``True`` only if the specified provider
+is calculated as one of the preferred providers for the URI.
+
+In the case that there is no registered preferred provider for the URI then ``False`` will be
+returned, and the provider must use another metric to determine whether it should
+handle the URI.
+
+.. seealso:: :py:func:`preferredProvidersForUri`
 
 .. versionadded:: 3.18
 %End
