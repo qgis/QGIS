@@ -319,6 +319,21 @@ class CORE_EXPORT QgsProviderRegistry
     bool shouldDeferUriForOtherProviders( const QString &uri, const QString &providerKey ) const;
 
     /**
+     * Returns TRUE if the specified \a uri is known by any registered provider to be something which should
+     * be blocklisted from the QGIS interface, e.g. an internal detail only.
+     *
+     * Specifically, this method can be utilised by the browser panel to hide noisy internal details
+     * for URIs which are known to be sidecar files only, such as ".aux.xml" files or ".shp.xml" files,
+     * or the "ept-build.json" files which sit alongside Entwine "ept.json" point cloud sources.
+     *
+     * This method tests whether any of the registered providers return TRUE for the their
+     * QgsProviderMetadata::uriIsBlocklisted() implementation for the specified URI.
+     *
+     * \since QGIS 3.18
+     */
+    bool uriIsBlocklisted( const QString &uri ) const;
+
+    /**
      * Returns a file filter string for supported vector files.
      *
      * Returns a string suitable for a QFileDialog of vector file formats

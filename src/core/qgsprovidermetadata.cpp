@@ -86,6 +86,11 @@ int QgsProviderMetadata::priorityForUri( const QString & ) const
   return 0;
 }
 
+bool QgsProviderMetadata::uriIsBlocklisted( const QString & ) const
+{
+  return false;
+}
+
 QgsDataProvider *QgsProviderMetadata::createProvider( const QString &uri,
     const QgsDataProvider::ProviderOptions &options,
     QgsDataProvider::ReadFlags flags )

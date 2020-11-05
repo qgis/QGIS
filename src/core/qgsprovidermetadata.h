@@ -253,6 +253,24 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
     virtual int priorityForUri( const QString &uri ) const;
 
     /**
+     * Returns TRUE if the specified \a uri is known by this provider to be something which should
+     * be blocklisted from the QGIS interface, e.g. an internal detail only.
+     *
+     * Specifically, this method can be utilised by the browser panel to hide noisy internal details
+     * by returning TRUE for URIs which are known to be sidecar files only, such as ".aux.xml" files
+     * or ".shp.xml" files, or the "ept-build.json" files which sit alongside Entwine "ept.json" point
+     * cloud sources.
+     *
+     * The default method returns FALSE for all URIs.
+     *
+     * \warning Returning TRUE from an implementation of this method indicates that ALL providers should
+     * ignore the specified \a uri, not just the provider associated with this metadata!
+     *
+     * \since QGIS 3.18
+     */
+    virtual bool uriIsBlocklisted( const QString &uri ) const;
+
+    /**
      * Class factory to return a pointer to a newly created QgsDataProvider object
      *
      * \param uri the datasource uri
