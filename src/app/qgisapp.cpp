@@ -409,6 +409,10 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include <proj_api.h>
 #endif
 
+#ifdef HAVE_PDAL
+#include <pdal/pdal.hpp>
+#endif
+
 //
 // Other includes
 //
@@ -5314,6 +5318,12 @@ void QgisApp::about()
     versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Running against SQLite" ), sqlite3_libversion() );
 
     versionString += QLatin1String( "</tr><tr>" );
+
+#ifdef HAVE_PDAL
+    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Compiled against PDAL" ), PDAL_VERSION );
+    versionString += QStringLiteral( "<td>%1</td><td>%2</td>" ).arg( tr( "Running against PDAL" ) ).arg( QString::fromStdString( pdal::Config::fullVersionString() ) );
+    versionString += QLatin1String( "</tr><tr>" );
+#endif
 
     versionString += QStringLiteral( "<td>%1</td><td>" ).arg( tr( "PostgreSQL Client Version" ) );
 #ifdef HAVE_POSTGRESQL

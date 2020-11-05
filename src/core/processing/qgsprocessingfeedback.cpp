@@ -26,6 +26,10 @@
 #include <proj_api.h>
 #endif
 
+#ifdef HAVE_PDAL
+#include <pdal/pdal.hpp>
+#endif
+
 QgsProcessingFeedback::QgsProcessingFeedback( bool logFeedback )
   : mLogFeedback( logFeedback )
 {
@@ -98,6 +102,11 @@ void QgsProcessingFeedback::pushVersionInfo( const QgsProcessingProvider *provid
 #else
   pushDebugInfo( tr( "PROJ version: %1" ).arg( PJ_VERSION ) );
 #endif
+
+#ifdef HAVE_PDAL
+  pushDebugInfo( tr( "PDAL version: %1" ).arg( QString::fromStdString( pdal::Config::fullVersionString() ) ) );
+#endif
+
   if ( provider && !provider->versionInfo().isEmpty() )
   {
     pushDebugInfo( tr( "%1 version: %2" ).arg( provider->name(), provider->versionInfo() ) );
