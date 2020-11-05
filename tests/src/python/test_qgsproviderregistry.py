@@ -79,6 +79,16 @@ class TestQgsProviderRegistry(unittest.TestCase):
         self.assertTrue(QgsProviderRegistry.instance().uriIsBlocklisted('/home/nyall/me.png.aux.xml'))
         self.assertTrue(QgsProviderRegistry.instance().uriIsBlocklisted('/home/nyall/me.tif.xml'))
 
+    def testFilePointCloudFilters(self):
+        parts = QgsProviderRegistry.instance().filePointCloudFilters().split(';;')
+        self.assertTrue(parts[0].startswith('All Supported Files ('))
+        all_filter = parts[0][21:-1]
+        self.assertIn('ept.json', all_filter.split(' '))
+        self.assertIn('EPT.JSON', all_filter.split(' '))
+
+        self.assertEqual(parts[1], 'All Files (*.*)')
+        self.assertIn('Entwine Point Clouds (ept.json EPT.JSON)', parts)
+
 
 if __name__ == '__main__':
     unittest.main()
