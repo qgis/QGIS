@@ -458,9 +458,9 @@ Returns the eye dome lighting distance value (contributes to the contrast of the
 %Docstring
 Sets the debugging settings of the shadow map
 
-.. versionadded:: 3.18
-
 .. seealso:: :py:func:`debugShadowMapEnabled`
+
+.. versionadded:: 3.18
 %End
     bool debugShadowMapEnabled() const;
 %Docstring
@@ -479,9 +479,9 @@ Returns the size of the shadow map preview
 %Docstring
 Sets the debugging settings of the depth map
 
-.. versionadded:: 3.18
-
 .. seealso:: :py:func:`debugDepthMapEnabled`
+
+.. versionadded:: 3.18
 %End
     bool debugDepthMapEnabled() const;
 %Docstring
