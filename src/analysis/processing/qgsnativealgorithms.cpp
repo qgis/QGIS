@@ -287,7 +287,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsExportMeshVerticesAlgorithm );
   addAlgorithm( new QgsExportMeshFacesAlgorithm );
   addAlgorithm( new QgsExportMeshEdgesAlgorithm );
-  addAlgorithm( new QgsExportMeshOnGrid );
+  addAlgorithm( new QgsExportMeshOnGridAlgorithm );
   addAlgorithm( new QgsExtendLinesAlgorithm() );
   addAlgorithm( new QgsExtentFromLayerAlgorithm() );
   addAlgorithm( new QgsExtentToLayerAlgorithm() );
@@ -341,6 +341,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsMeanCoordinatesAlgorithm() );
   addAlgorithm( new QgsMergeLinesAlgorithm() );
   addAlgorithm( new QgsMergeVectorAlgorithm() );
+  addAlgorithm( new QgsMeshRasterizeAlgorithm );
   addAlgorithm( new QgsMinimumEnclosingCircleAlgorithm() );
   addAlgorithm( new QgsMultipartToSinglepartAlgorithm() );
   addAlgorithm( new QgsMultiRingConstantBufferAlgorithm() );

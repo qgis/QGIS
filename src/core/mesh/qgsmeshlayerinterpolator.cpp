@@ -241,3 +241,44 @@ QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
 
   return interpolator.block( 0, extent, widthPixel, heightPixel, feedback );
 }
+
+QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
+  const QgsTriangularMesh &triangularMesh,
+  const QgsMeshDataBlock &datasetValues,
+  const QgsMeshDataBlock &activeFlags,
+  const QgsMeshDatasetGroupMetadata::DataType dataType,
+  const QgsCoordinateTransform &transform,
+  double mapUnitsPerPixel,
+  const QgsRectangle &extent,
+  QgsRasterBlockFeedback *feedback )
+{
+
+  int widthPixel = static_cast<int>( extent.width() / mapUnitsPerPixel );
+  int heightPixel = static_cast<int>( extent.height() / mapUnitsPerPixel );
+
+  const QgsPointXY center = extent.center();
+  QgsMapToPixel mapToPixel( mapUnitsPerPixel,
+                            center.x(),
+                            center.y(),
+                            widthPixel,
+                            heightPixel,
+                            0 );
+
+  QgsRenderContext renderContext;
+  renderContext.setCoordinateTransform( transform );
+  renderContext.setMapToPixel( mapToPixel );
+  renderContext.setExtent( extent );
+
+  QVector<double> magnitudes = QgsMeshLayerUtils::calculateMagnitudes( datasetValues );
+
+  QgsMeshLayerInterpolator interpolator(
+    triangularMesh,
+    magnitudes,
+    activeFlags,
+    dataType,
+    renderContext,
+    QSize( widthPixel, heightPixel )
+  );
+
+  return interpolator.block( 0, extent, widthPixel, heightPixel, feedback );
+}
