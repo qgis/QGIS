@@ -329,14 +329,14 @@ double QgsRasterAnalysisUtils::meanFromCellValues( std::vector<double> cellValue
 double QgsRasterAnalysisUtils::medianFromCellValues( std::vector<double> cellValues, int stackSize )
 {
   std::sort( cellValues.begin(), cellValues.end() );
-  int medianElementIdx = stackSize / 2;
-  if ( stackSize % 2 == 0 )
+  bool even = ( stackSize % 2 ) < 1;
+  if ( even )
   {
-    return ( cellValues[medianElementIdx] + cellValues[medianElementIdx + 1] ) / 2.0;
+    return ( cellValues[stackSize / 2 - 1] + cellValues[stackSize / 2] ) / 2.0;
   }
-  else
+  else //odd
   {
-    return cellValues[medianElementIdx];
+    return cellValues[( stackSize + 1 ) / 2 - 1];
   }
 }
 
