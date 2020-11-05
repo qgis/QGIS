@@ -53,6 +53,13 @@ jobs:
           echo DOCKER_TAG: ${DOCKER_TAG}
           echo CTEST_BUILD_NAME: ${CTEST_BUILD_NAME}
 
+      - name: Increase Docker base image size
+        # https://stackoverflow.com/questions/50140939/increase-docker-container-size-from-default-10gb-on-rhel7
+        run: |
+          sudo rm /etc/docker/daemon.json
+          echo '{"storage-opt": [ "dm.basesize=50G" ]}' | sudo tee /etc/docker/daemon.json
+          sudo service docker restart
+
       - name: Build deps
         run: |
           pushd .docker
