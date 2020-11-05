@@ -24,6 +24,7 @@
 #include <QImageWriter>
 #include <QFontDialog>
 #include <QApplication>
+#include <QRegularExpression>
 
 
 namespace QgsGuiUtils
