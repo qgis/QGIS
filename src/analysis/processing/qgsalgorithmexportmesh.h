@@ -194,6 +194,53 @@ class QgsMeshRasterizeAlgorithm : public QgsProcessingAlgorithm
     QgsMeshRendererSettings mLayerRendererSettings;
 };
 
+class QgsMeshContoursAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+    QString name() const override;
+    QString displayName() const override;
+    QString group() const override;
+    QString groupId() const override;
+    QString shortHelpString() const override;
+
+  protected:
+    QgsProcessingAlgorithm *createInstance() const override;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+
+    QSet<int> supportedDataType()
+    {
+      return QSet<int>(
+      {
+        QgsMeshDatasetGroupMetadata::DataOnVertices,
+        QgsMeshDatasetGroupMetadata::DataOnFaces,
+        QgsMeshDatasetGroupMetadata::DataOnVolumes} );
+    }
+
+    QgsTriangularMesh mTriangularMesh;
+    QgsMesh mNativeMesh;
+    QVector<double> mLevels;
+
+    struct DataGroup
+    {
+      QgsMeshDatasetGroupMetadata metadata;
+      QgsMeshDataBlock datasetValues;
+      QgsMeshDataBlock activeFaces;
+      QgsMesh3dDataBlock dataset3dStakedValue; //will be filled only if data are 3d stacked
+    };
+
+    QList<DataGroup> mDataPerGroup;
+    QgsCoordinateTransform mTransform;
+    QgsMeshRendererSettings mLayerRendererSettings;
+    QString mDateTimeString;
+
+};
+
+
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMEXPORTMESH_H
