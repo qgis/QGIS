@@ -153,11 +153,8 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     //! Returns whether the octree contain given node
     bool hasNode( const IndexedPointCloudNode &n ) const { return mHierarchy.contains( n ); }
 
-    //! Traverses tree and returns all nodes in specified depth
-    QList<IndexedPointCloudNode> traverseTree( const QgsRectangle &extent, IndexedPointCloudNode n, int maxDepth = 3 );
-
     //! Returns all children of node
-    QList<IndexedPointCloudNode> children( const IndexedPointCloudNode &n );
+    QList<IndexedPointCloudNode> nodeChildren( const IndexedPointCloudNode &n ) const;
 
     //! Returns all attributes that are stored in the file
     QgsPointCloudAttributeCollection attributes() const;

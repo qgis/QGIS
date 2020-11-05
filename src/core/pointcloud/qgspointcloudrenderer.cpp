@@ -87,26 +87,28 @@ void QgsPointCloudRendererConfig::setColorRamp( const QgsColorRamp *value )
   mColorRamp.reset( value->clone() );
 }
 
+float QgsPointCloudRendererConfig::maximumScreenError() const
+{
+  return mMaximumScreenError;
+}
+
 ///@endcond
 
 QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
   , mLayer( layer )
 {
-  // TODO: we must not keep pointer to mLayer (it's dangerous) - we must copy anything we need for rendering
-  // or use some locking to prevent read/write from multiple threads
-
   // TODO: use config from layer
   mConfig.setPenWidth( context.convertToPainterUnits( 1, QgsUnitTypes::RenderUnit::RenderMillimeters ) );
   // good range for 26850_12580.laz
   mConfig.setZMin( layer->customProperty( QStringLiteral( "pcMin" ), 400 ).toInt() );
   mConfig.setZMax( layer->customProperty( QStringLiteral( "pcMax" ), 600 ).toInt() );
   mConfig.setColorRamp( QgsStyle::defaultStyle()->colorRamp( layer->customProperty( QStringLiteral( "pcRamp" ), QStringLiteral( "Viridis" ) ).toString() ) );
-}
 
-static QList<IndexedPointCloudNode> _traverseTree( QgsPointCloudIndex *pc, const QgsRectangle &extent, IndexedPointCloudNode n, int maxDepth )
-{
-  return pc->traverseTree( extent, n, maxDepth );
+  // TODO: we must not keep pointer to mLayer (it's dangerous) - we must copy anything we need for rendering
+  // or use some locking to prevent read/write from multiple threads
+  if ( !mLayer || !mLayer->dataProvider() || !mLayer->dataProvider()->index() )
+    return;
 }
 
 bool QgsPointCloudLayerRenderer::render()
@@ -129,12 +131,20 @@ bool QgsPointCloudLayerRenderer::render()
   QElapsedTimer t;
   t.start();
 
-  // TODO: set depth based on map units per pixel
-  int depth = 3;
-  QList<IndexedPointCloudNode> nodes = _traverseTree( pc, context.mapExtent(), pc->root(), depth );
+  const IndexedPointCloudNode root = pc->root();
+  float maximumError = mConfig.maximumScreenError(); // in pixels
+  float rootError = pc->nodeError( root ); // in map coords
+  double mapUnitsPerPixel = context.mapToPixel().mapUnitsPerPixel();
+  if ( ( rootError < 0.0 ) || ( mapUnitsPerPixel < 0.0 ) || ( maximumError < 0.0 ) )
+  {
+    qDebug() << "invalid screen error";
+    return false;
+  }
+  float rootErrorPixels = rootError / mapUnitsPerPixel; // in pixels
+  const QList<IndexedPointCloudNode> nodes = traverseTree( pc, context, pc->root(), maximumError, rootErrorPixels );
 
   // drawing
-  for ( auto n : nodes )
+  for ( const IndexedPointCloudNode &n : nodes )
   {
     if ( context.renderingStopped() )
     {
@@ -159,6 +169,37 @@ bool QgsPointCloudLayerRenderer::render()
   return true;
 }
 
+QList<IndexedPointCloudNode> QgsPointCloudLayerRenderer::traverseTree( const QgsPointCloudIndex *pc,
+    const QgsRenderContext &context,
+    IndexedPointCloudNode n,
+    float maxErrorPixels,
+    float nodeErrorPixels )
+{
+  QList<IndexedPointCloudNode> nodes;
+
+  if ( context.renderingStopped() )
+  {
+    qDebug() << "canceled";
+    return nodes;
+  }
+
+  if ( !context.mapExtent().intersects( pc->nodeMapExtent( n ) ) )
+    return nodes;
+
+  nodes.append( n );
+
+  float childrenErrorPixels = nodeErrorPixels / 2.0f;
+  if ( childrenErrorPixels < maxErrorPixels )
+    return nodes;
+
+  const QList<IndexedPointCloudNode> children = pc->nodeChildren( n );
+  for ( const IndexedPointCloudNode &nn : children )
+  {
+    nodes += traverseTree( pc, context, nn, maxErrorPixels, childrenErrorPixels );
+  }
+
+  return nodes;
+}
 
 QgsPointCloudLayerRenderer::~QgsPointCloudLayerRenderer() = default;
 

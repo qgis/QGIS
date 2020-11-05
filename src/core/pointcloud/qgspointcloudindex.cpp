@@ -150,25 +150,7 @@ QgsPointCloudIndex::QgsPointCloudIndex() = default;
 
 QgsPointCloudIndex::~QgsPointCloudIndex() = default;
 
-QList<IndexedPointCloudNode> QgsPointCloudIndex::traverseTree( const QgsRectangle &extent, IndexedPointCloudNode n, int maxDepth )
-{
-  QList<IndexedPointCloudNode> nodes;
-
-  if ( !extent.intersects( nodeMapExtent( n ) ) )
-    return nodes;
-
-  nodes.append( n );
-
-  for ( auto nn : children( n ) )
-  {
-    if ( maxDepth > 0 )
-      nodes += traverseTree( extent, nn, maxDepth - 1 );
-  }
-
-  return nodes;
-}
-
-QList<IndexedPointCloudNode> QgsPointCloudIndex::children( const IndexedPointCloudNode &n )
+QList<IndexedPointCloudNode> QgsPointCloudIndex::nodeChildren( const IndexedPointCloudNode &n ) const
 {
   Q_ASSERT( mHierarchy.contains( n ) );
   QList<IndexedPointCloudNode> lst;
