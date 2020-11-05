@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmexportmesh.h"
 #include "qgsprocessingparametermeshdataset.h"
+#include "qgsmeshcontours.h"
 #include "qgsmeshdataset.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerutils.h"
@@ -404,7 +405,7 @@ QString QgsExportMeshOnGridAlgorithm::shortHelpString() const
 {
   return QObject::tr( "Exports mesh layer's dataset values to a gridded point vector layer, with the dataset values on this point as attribute values.\n"
                       "For data on volume (3D stacked dataset values), the exported dataset values are averaged on faces using the method defined in the mesh layer properties (default is Multi level averaging method).\n"
-                      "1D meshes are not supported" );
+                      "1D meshes are not supported." );
 }
 
 QgsProcessingAlgorithm *QgsExportMeshOnGridAlgorithm::createInstance() const
@@ -692,7 +693,9 @@ QString QgsMeshRasterizeAlgorithm::groupId() const
 
 QString QgsMeshRasterizeAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Create a raster layer from a mesh dataset" );
+  return QObject::tr( "Create a raster layer from a mesh dataset.\n"
+                      "For data on volume (3D stacked dataset values), the exported dataset values are averaged on faces using the method defined in the mesh layer properties (default is Multi level averaging method).\n"
+                      "1D meshes are not supported." );
 }
 
 QgsProcessingAlgorithm *QgsMeshRasterizeAlgorithm::createInstance() const
@@ -892,6 +895,327 @@ QSet<int> QgsMeshRasterizeAlgorithm::supportedDataType()
     QgsMeshDatasetGroupMetadata::DataOnVertices,
     QgsMeshDatasetGroupMetadata::DataOnFaces,
     QgsMeshDatasetGroupMetadata::DataOnVolumes} );
+}
+
+QString QgsMeshContoursAlgorithm::name() const
+{
+  return QStringLiteral( "meshcontours" );
+}
+
+QString QgsMeshContoursAlgorithm::displayName() const
+{
+  return QObject::tr( "Export contours" );
+}
+
+QString QgsMeshContoursAlgorithm::group() const
+{
+  return QObject::tr( "Mesh" );
+}
+
+QString QgsMeshContoursAlgorithm::groupId() const
+{
+  return QStringLiteral( "mesh" );
+}
+
+QString QgsMeshContoursAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "Creates contours as vector layer from mesh scalar dataset" );
+}
+
+QgsProcessingAlgorithm *QgsMeshContoursAlgorithm::createInstance() const
+{
+  return new QgsMeshContoursAlgorithm();
+}
+
+void QgsMeshContoursAlgorithm::initAlgorithm( const QVariantMap &configuration )
+{
+  Q_UNUSED( configuration );
+
+  addParameter( new QgsProcessingParameterMeshLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input Mesh Layer" ) ) );
+
+  addParameter( new QgsProcessingParameterMeshDatasetGroups(
+                  QStringLiteral( "DATASET_GROUPS" ),
+                  QObject::tr( "Dataset groups" ),
+                  QStringLiteral( "INPUT" ),
+                  supportedDataType() ) );
+
+  addParameter( new QgsProcessingParameterMeshDatasetTime(
+                  QStringLiteral( "DATASET_TIME" ),
+                  QObject::tr( "Dataset time" ),
+                  QStringLiteral( "INPUT" ),
+                  QStringLiteral( "DATASET_GROUPS" ) ) );
+
+  addParameter( new QgsProcessingParameterNumber(
+                  QStringLiteral( "INCREMENT" ), QObject::tr( "Increment between contour levels" ), QgsProcessingParameterNumber::Double, QVariant(), true ) );
+
+  addParameter( new QgsProcessingParameterNumber(
+                  QStringLiteral( "MINIMUM" ), QObject::tr( "Minimum contour level" ), QgsProcessingParameterNumber::Double, QVariant(), true ) );
+  addParameter( new QgsProcessingParameterNumber(
+                  QStringLiteral( "MAXIMUM" ), QObject::tr( "Maximum contour level" ), QgsProcessingParameterNumber::Double, QVariant(), true ) );
+
+  addParameter( new QgsProcessingParameterString(
+                  QStringLiteral( "CONTOUR_LEVEL_LIST" ), QObject::tr( "List of contours level" ), QVariant(), false, true ) );
+
+  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS_OUTPUT" ), QObject::tr( "Output coordinate system" ), QVariant(), true ) );
+
+
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT_LINES" ), QObject::tr( "Exported contour lines" ), QgsProcessing::TypeVectorLine ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT_POLYGONS" ), QObject::tr( "Exported contour polygons" ), QgsProcessing::TypeVectorPolygon ) );
+}
+
+bool QgsMeshContoursAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  QgsMeshLayer *meshLayer = parameterAsMeshLayer( parameters, QStringLiteral( "INPUT" ), context );
+
+  if ( !meshLayer || !meshLayer->isValid() )
+    return false;
+
+  QgsCoordinateReferenceSystem outputCrs = parameterAsCrs( parameters, QStringLiteral( "CRS_OUTPUT" ), context );
+  if ( !outputCrs.isValid() )
+    outputCrs = meshLayer->crs();
+  mTransform = QgsCoordinateTransform( meshLayer->crs(), outputCrs, context.transformContext() );
+  if ( !meshLayer->nativeMesh() )
+    meshLayer->updateTriangularMesh( mTransform ); //necessary to load the native mesh
+
+  mTriangularMesh = *meshLayer->triangularMesh();
+  mNativeMesh = *meshLayer->nativeMesh();
+
+  // Prepare levels
+  mLevels.clear();
+  // Fisrt, try with the levels list
+  QString levelsString = parameterAsString( parameters, QStringLiteral( "CONTOUR_LEVEL_LIST" ), context );
+  if ( ! levelsString.isEmpty() )
+  {
+    QStringList levelStringList = levelsString.split( ',' );
+    if ( !levelStringList.isEmpty() )
+    {
+      for ( const QString &stringVal : levelStringList )
+      {
+        bool ok;
+        double val = stringVal.toDouble( &ok );
+        if ( ok )
+          mLevels.append( val );
+        else
+          throw QgsProcessingException( QObject::tr( "Invalid format for level values, must be numbers separated with comma" ) );
+
+        if ( mLevels.count() >= 2 )
+          if ( mLevels.last() <= mLevels.at( mLevels.count() - 2 ) )
+            throw QgsProcessingException( QObject::tr( "Invalid format for level values, must be different numbers and in increasing order" ) );
+      }
+    }
+  }
+
+  if ( mLevels.isEmpty() )
+  {
+    double minimum = parameterAsDouble( parameters, QStringLiteral( "MINIMUM" ), context );
+    double maximum = parameterAsDouble( parameters, QStringLiteral( "MAXIMUM" ), context );
+    double interval = parameterAsDouble( parameters, QStringLiteral( "INCREMENT" ), context );
+
+    if ( interval <= 0 )
+      throw QgsProcessingException( QObject::tr( "Invalid interval value, must be greater than zero" ) );
+
+    if ( minimum >= maximum )
+      throw QgsProcessingException( QObject::tr( "Invalid minimum and maximum values, minimum must be lesser than maximum" ) );
+
+    if ( interval > ( maximum - minimum ) )
+      throw QgsProcessingException( QObject::tr( "Invalid minimum, maximum and inerval values, difference between minimum and maximum must be greater or equal than interval" ) );
+
+    int intervalCount = ( maximum - minimum ) / interval;
+
+    mLevels.reserve( intervalCount );
+    for ( int i = 0; i < intervalCount; ++i )
+    {
+      mLevels.append( minimum + i * interval );
+    }
+  }
+
+  // Prepare data
+  QList<int> datasetGroups =
+    QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( parameters.value( QStringLiteral( "DATASET_GROUPS" ) ) );
+
+  if ( feedback )
+  {
+    feedback->setProgressText( QObject::tr( "Preparing data" ) );
+  }
+
+  QDateTime layerReferenceTime = static_cast<QgsMeshLayerTemporalProperties *>( meshLayer->temporalProperties() )->referenceTime();
+
+  //! Extract the date time used to export dataset values under a relative time
+  QgsInterval relativeTime( 0 );
+  QVariant parameterTimeVariant = parameters.value( QStringLiteral( "DATASET_TIME" ) );
+
+  QString timeType = QgsProcessingParameterMeshDatasetTime::valueAsTimeType( parameterTimeVariant );
+
+  if ( timeType == QStringLiteral( "dataset-time-step" ) )
+  {
+    QgsMeshDatasetIndex datasetIndex = QgsProcessingParameterMeshDatasetTime::timeValueAsDatasetIndex( parameterTimeVariant );
+    relativeTime = meshLayer->datasetRelativeTime( datasetIndex );
+  }
+  else if ( timeType == QStringLiteral( "defined-date-time" ) )
+  {
+    QDateTime dateTime = QgsProcessingParameterMeshDatasetTime::timeValueAsDefinedDateTime( parameterTimeVariant );
+    if ( dateTime.isValid() )
+      relativeTime = QgsInterval( layerReferenceTime.secsTo( dateTime ) );
+  }
+  else if ( timeType == QStringLiteral( "current-context-time" ) )
+  {
+    QDateTime dateTime = context.currentTimeRange().begin();
+    if ( dateTime.isValid() )
+      relativeTime = QgsInterval( layerReferenceTime.secsTo( dateTime ) );
+  }
+
+  mDateTimeString = meshLayer->formatTime( relativeTime.hours() );
+
+  for ( int i = 0; i < datasetGroups.count(); ++i )
+  {
+    int  groupIndex = datasetGroups.at( i );
+    QgsMeshDatasetIndex datasetIndex = meshLayer->datasetIndexAtRelativeTime( relativeTime, groupIndex );
+
+    DataGroup dataGroup;
+    dataGroup.metadata = meshLayer->datasetGroupMetadata( datasetIndex );
+    if ( supportedDataType().contains( dataGroup.metadata.dataType() ) )
+    {
+      int valueCount = dataGroup.metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices ?
+                       mTriangularMesh.vertices().count() : mNativeMesh.faceCount();
+      dataGroup.datasetValues = meshLayer->datasetValues( datasetIndex, 0, valueCount );
+      dataGroup.activeFaces = meshLayer->areFacesActive( datasetIndex, 0, mNativeMesh.faceCount() );
+      if ( dataGroup.metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVolumes )
+      {
+        dataGroup.dataset3dStakedValue = meshLayer->dataset3dValues( datasetIndex, 0, valueCount );
+      }
+      mDataPerGroup.append( dataGroup );
+    }
+    if ( feedback )
+      feedback->setProgress( 100 * i / datasetGroups.count() );
+  }
+
+  mLayerRendererSettings = meshLayer->rendererSettings();
+
+  return true;
+}
+
+QVariantMap QgsMeshContoursAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+
+  //First, if present, average 3D staked dataset value to 2D face value
+  const QgsMesh3dAveragingMethod *avgMethod = mLayerRendererSettings.averagingMethod();
+  for ( DataGroup &dataGroup : mDataPerGroup )
+  {
+    if ( dataGroup.dataset3dStakedValue.isValid() )
+      dataGroup.datasetValues = avgMethod->calculate( dataGroup.dataset3dStakedValue );
+  }
+
+  // Create vector layers
+  QgsFields polygonFields;
+  QgsFields lineFields;
+  polygonFields.append( QObject::tr( "group" ) );
+  polygonFields.append( QObject::tr( "time" ) );
+  polygonFields.append( QObject::tr( "min_value" ) );
+  polygonFields.append( QObject::tr( "max_value" ) );
+  lineFields.append( QObject::tr( "group" ) );
+  lineFields.append( QObject::tr( "time" ) );
+  lineFields.append( QObject::tr( "value" ) );
+
+  QgsCoordinateReferenceSystem outputCrs = parameterAsCrs( parameters, QStringLiteral( "CRS_OUTPUT" ), context );
+
+  QString lineIdentifier;
+  QString polygonIdentifier;
+  QgsFeatureSink *sinkPolygons = parameterAsSink( parameters,
+                                 QStringLiteral( "OUTPUT_POLYGONS" ),
+                                 context,
+                                 polygonIdentifier,
+                                 polygonFields,
+                                 QgsWkbTypes::PolygonZ,
+                                 outputCrs );
+  QgsFeatureSink *sinkLines = parameterAsSink( parameters,
+                              QStringLiteral( "OUTPUT_LINES" ),
+                              context,
+                              lineIdentifier,
+                              lineFields,
+                              QgsWkbTypes::LineStringZ,
+                              outputCrs );
+
+  if ( !sinkLines || !sinkPolygons )
+    return QVariantMap();
+
+
+  for ( int i = 0; i < mDataPerGroup.count(); ++i )
+  {
+    DataGroup dataGroup = mDataPerGroup.at( i );
+    bool scalarDataOnVertices = dataGroup.metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
+    int count =  scalarDataOnVertices ? mNativeMesh.vertices.count() : mNativeMesh.faces.count();
+
+    QVector<double> values;
+    if ( dataGroup.datasetValues.isValid() )
+    {
+      // vals could be scalar or vectors, for contour rendering we want always magnitude
+      values = QgsMeshLayerUtils::calculateMagnitudes( dataGroup.datasetValues );
+    }
+    else
+    {
+      values = QVector<double>( count, std::numeric_limits<double>::quiet_NaN() );
+    }
+
+    if ( ( !scalarDataOnVertices ) )
+    {
+      values = QgsMeshLayerUtils::interpolateFromFacesData(
+                 values,
+                 mNativeMesh,
+                 &dataGroup.activeFaces,
+                 QgsMeshRendererScalarSettings::NeighbourAverage
+               );
+    }
+
+    QgsMeshContours contoursExported( mTriangularMesh, mNativeMesh, values, dataGroup.activeFaces );
+
+    QgsAttributes firstAttributes;
+    firstAttributes.append( dataGroup.metadata.name() );
+    firstAttributes.append( mDateTimeString );
+
+    for ( double level : mLevels )
+    {
+      QgsGeometry line = contoursExported.exportLines( level, feedback );
+      if ( line.isEmpty() )
+        continue;
+      QgsAttributes lineAttributes = firstAttributes;
+      lineAttributes.append( level );
+
+      QgsFeature lineFeat;
+      lineFeat.setGeometry( line );
+      lineFeat.setAttributes( lineAttributes );
+
+      sinkLines->addFeature( lineFeat );
+
+    }
+
+    for ( int l = 0; l < mLevels.count() - 1; ++l )
+    {
+      QgsGeometry polygon = contoursExported.exportPolygons( mLevels.at( l ), mLevels.at( l + 1 ), feedback );
+      if ( polygon.isEmpty() )
+        continue;
+      QgsAttributes polygonAttributes = firstAttributes;
+      polygonAttributes.append( mLevels.at( l ) );
+      polygonAttributes.append( mLevels.at( l + 1 ) );
+
+      QgsFeature polygonFeature;
+      polygonFeature.setGeometry( polygon );
+      polygonFeature.setAttributes( polygonAttributes );
+      sinkPolygons->addFeature( polygonFeature );
+    }
+
+    if ( feedback )
+    {
+      if ( feedback->isCanceled() )
+        return QVariantMap();
+      feedback->setProgress( 100 * i / mDataPerGroup.count() );
+    }
+  }
+
+  QVariantMap ret;
+  ret[QStringLiteral( "OUTPUT_LINES" )] = lineIdentifier;
+  ret[QStringLiteral( "OUTPUT_POLYGONS" )] = polygonIdentifier;
+
+  return ret;
 }
 
 ///@endcond PRIVATE
