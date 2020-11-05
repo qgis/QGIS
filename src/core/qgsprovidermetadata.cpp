@@ -81,7 +81,7 @@ QList<QgsMeshDriverMetadata> QgsProviderMetadata::meshDriversMetadata()
   return QList<QgsMeshDriverMetadata>();
 }
 
-int QgsProviderMetadata::priorityForUri( const QString & )
+int QgsProviderMetadata::priorityForUri( const QString & ) const
 {
   return 0;
 }
@@ -131,12 +131,12 @@ bool QgsProviderMetadata::boolParameter( const QVariantMap &uri, const QString &
   return defaultValue;
 }
 
-QVariantMap QgsProviderMetadata::decodeUri( const QString & )
+QVariantMap QgsProviderMetadata::decodeUri( const QString & ) const
 {
   return QVariantMap();
 }
 
-QString QgsProviderMetadata::encodeUri( const QVariantMap & )
+QString QgsProviderMetadata::encodeUri( const QVariantMap & ) const
 {
   return QString();
 }

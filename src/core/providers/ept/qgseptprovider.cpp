@@ -90,7 +90,7 @@ QList<QgsDataItemProvider *> QgsEptProviderMetadata::dataItemProviders() const
   return providers;
 }
 
-int QgsEptProviderMetadata::priorityForUri( const QString &uri )
+int QgsEptProviderMetadata::priorityForUri( const QString &uri ) const
 {
   const QVariantMap parts = decodeUri( uri );
   QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
@@ -100,7 +100,7 @@ int QgsEptProviderMetadata::priorityForUri( const QString &uri )
   return 0;
 }
 
-QVariantMap QgsEptProviderMetadata::decodeUri( const QString &uri )
+QVariantMap QgsEptProviderMetadata::decodeUri( const QString &uri ) const
 {
   const QString path = uri;
   QVariantMap uriComponents;
@@ -124,7 +124,7 @@ QString QgsEptProviderMetadata::filters( QgsProviderMetadata::FilterType type )
   return QString();
 }
 
-QString QgsEptProviderMetadata::encodeUri( const QVariantMap &parts )
+QString QgsEptProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   const QString path = parts.value( QStringLiteral( "path" ) ).toString();
   return path;

@@ -3559,7 +3559,7 @@ QString createFilters( const QString &type )
   }
 }
 
-QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri )
+QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri ) const
 {
   QString path = uri;
   QString layerName;
@@ -3668,7 +3668,7 @@ QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri )
   return uriComponents;
 }
 
-QString QgsOgrProviderMetadata::encodeUri( const QVariantMap &parts )
+QString QgsOgrProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   const QString path = parts.value( QStringLiteral( "path" ) ).toString();
   const QString layerName = parts.value( QStringLiteral( "layerName" ) ).toString();

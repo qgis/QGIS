@@ -4633,7 +4633,7 @@ QList<QgsDataItemProvider *> QgsWmsProviderMetadata::dataItemProviders() const
   return providers;
 }
 
-QVariantMap QgsWmsProviderMetadata::decodeUri( const QString &uri )
+QVariantMap QgsWmsProviderMetadata::decodeUri( const QString &uri ) const
 {
   const QUrlQuery query { uri };
   const auto constItems { query.queryItems() };
@@ -4645,7 +4645,7 @@ QVariantMap QgsWmsProviderMetadata::decodeUri( const QString &uri )
   return decoded;
 }
 
-QString QgsWmsProviderMetadata::encodeUri( const QVariantMap &parts )
+QString QgsWmsProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   QUrlQuery query;
   QList<QPair<QString, QString> > items;

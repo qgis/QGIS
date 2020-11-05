@@ -143,8 +143,8 @@ class QgsMdalProviderMetadata: public QgsProviderMetadata
                          const QString uri,
                          const QString &driverName,
                          const QgsCoordinateReferenceSystem &crs ) const override;
-    QVariantMap decodeUri( const QString &uri ) override;
-    QString encodeUri( const QVariantMap &parts ) override;
+    QVariantMap decodeUri( const QString &uri ) const override;
+    QString encodeUri( const QVariantMap &parts ) const override;
 };
 
 #endif //QGSMDALPROVIDER_H
