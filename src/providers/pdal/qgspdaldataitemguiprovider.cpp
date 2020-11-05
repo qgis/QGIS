@@ -18,7 +18,6 @@
 #include "qgsmanageconnectionsdialog.h"
 #include "qgspdaldataitems.h"
 #include "qgspdalprovider.h"
-#include "qgspdalsourceselect.h"
 
 #include <QFileDialog>
 #include <QInputDialog>

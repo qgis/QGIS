@@ -16,14 +16,12 @@ IF (WITH_GUI)
     ${PDAL_SRCS}
     qgspdalprovidergui.cpp
     qgspdaldataitemguiprovider.cpp
-    qgspdalsourceselect.cpp
   )
 
   SET(PDAL_HDRS
     ${PDAL_HDRS}
     qgspdalprovidergui.h
     qgspdaldataitemguiprovider.h
-    qgspdalsourceselect.h
   )
 ENDIF ()
 

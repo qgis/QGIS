@@ -1,9 +1,9 @@
 /***************************************************************************
-  qgspdalsourceselect.cpp
-  -----------------------
-  Date                 : November 2020
-  Copyright            : (C) 2020 by Peter Petrik
-  Email                : zilolv at gmail dot com
+                         qgspointcloudsourceselect.cpp
+                         --------------------
+    begin                : October 2020
+    copyright            : (C) 2020 by Peter Petrik
+    email                : zilolv at gmail dot com
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,17 +17,17 @@
 
 #include <QMessageBox>
 
-#include "qgspdalsourceselect.h"
+#include "qgspointcloudsourceselect.h"
 #include "qgsproviderregistry.h"
-#include "ogr/qgsogrhelperfunctions.h"
+#include "qgsprovidermetadata.h"
 
-QgsPdalSourceSelect::QgsPdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ):
+QgsPointCloudSourceSelect::QgsPointCloudSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ):
   QgsAbstractDataSourceWidget( parent, fl, widgetMode )
 {
   setupUi( this );
   setupButtons( buttonBox );
 
-  mFileWidget->setDialogTitle( tr( "Open PDAL Supported Point Cloud Dataset(s)" ) );
+  mFileWidget->setDialogTitle( tr( "Open Point Cloud Dataset" ) );
   mFileWidget->setFilter( QgsProviderRegistry::instance()->filePointCloudFilters() );
   mFileWidget->setStorageMode( QgsFileWidget::GetMultipleFiles );
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
@@ -37,18 +37,25 @@ QgsPdalSourceSelect::QgsPdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   } );
 }
 
-void QgsPdalSourceSelect::addButtonClicked()
+void QgsPointCloudSourceSelect::addButtonClicked()
 {
   if ( mPath.isEmpty() )
   {
     QMessageBox::information( this,
-                              tr( "Add point cloud layer" ),
+                              tr( "Add Point Cloud Layers" ),
                               tr( "No layers selected." ) );
     return;
   }
 
   for ( const QString &path : QgsFileWidget::splitFilePaths( mPath ) )
   {
-    emit addPointCloudLayer( path, QFileInfo( path ).baseName(), QStringLiteral( "pdal" ) );
+    // auto determine preferred provider for each path
+
+    const QList< QgsProviderMetadata * > preferredProviders = QgsProviderRegistry::instance()->preferredProvidersForUri( mPath );
+    // maybe we should raise an assert if preferredProviders size is 0 or >1? Play it safe for now...
+    if ( preferredProviders.empty() )
+      continue;
+
+    emit addPointCloudLayer( path, QFileInfo( path ).baseName(), preferredProviders.at( 0 )->key() ) ;
   }
 }
