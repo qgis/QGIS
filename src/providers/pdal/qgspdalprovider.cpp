@@ -146,6 +146,16 @@ QVariantMap QgsPdalProviderMetadata::decodeUri( const QString &uri ) const
   return uriComponents;
 }
 
+int QgsPdalProviderMetadata::priorityForUri( const QString &uri ) const
+{
+  const QVariantMap parts = decodeUri( uri );
+  QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
+  if ( fi.suffix().compare( QLatin1String( "las" ), Qt::CaseInsensitive ) == 0 || fi.suffix().compare( QLatin1String( "laz" ), Qt::CaseInsensitive ) == 0 )
+    return 100;
+
+  return 0;
+}
+
 QString QgsPdalProviderMetadata::filters( QgsProviderMetadata::FilterType type )
 {
   switch ( type )
