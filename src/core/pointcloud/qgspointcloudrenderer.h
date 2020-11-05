@@ -71,10 +71,14 @@ class CORE_EXPORT QgsPointCloudRendererConfig
     //! Sets color ramp
     void setColorRamp( const QgsColorRamp *value );
 
+    //! Returns maximum allowed screen error in pixels
+    float maximumScreenError() const;
+
   private:
     double mZMin = 0, mZMax = 0;
     int mPenWidth = 1;
     std::unique_ptr<QgsColorRamp> mColorRamp;
+    float mMaximumScreenError = 5;
 };
 
 ///@endcond
@@ -100,6 +104,10 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
     bool render() override;
 
   private:
+
+    //! Traverses tree and returns all nodes in specified depth
+    QList<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, const QgsRenderContext &context, IndexedPointCloudNode n, float maxErrorPixels, float nodeErrorPixels );
+
     QgsPointCloudLayer *mLayer = nullptr;
 
     QgsPointCloudRendererConfig mConfig;
