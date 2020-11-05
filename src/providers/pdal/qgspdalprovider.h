@@ -60,6 +60,7 @@ class QgsPdalProviderMetadata : public QgsProviderMetadata
     QList< QgsDataItemProvider * > dataItemProviders() const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     QVariantMap decodeUri( const QString &uri ) const override;
+    int priorityForUri( const QString &uri ) const override;
     QString filters( FilterType type ) override;
 };
 
