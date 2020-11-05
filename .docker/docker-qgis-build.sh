@@ -6,7 +6,8 @@ set -e
 # Setup ccache
 ##############
 export CCACHE_TEMPDIR=/tmp
-ccache -M 1.2G
+# Github workflow cache max size is 2.0, but ccache data get compressed (roughly 1/5?)
+ccache -M 2.0G
 
 # Temporarily uncomment to debug ccache issues
 # export CCACHE_LOGFILE=/tmp/cache.debug
