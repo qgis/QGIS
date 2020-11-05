@@ -398,6 +398,9 @@ IF(WITH_CORE)
   IF (WITH_PDAL)
     FIND_PACKAGE(PDAL) # PDAL provider
   ENDIF (WITH_PDAL)
+  IF (PDAL_FOUND)
+    SET(HAVE_PDAL TRUE)  # used in qgsconfig.h
+  ENDIF (PDAL_FOUND)
 
   #############################################################
   # search for Qt5
