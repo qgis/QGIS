@@ -31,6 +31,21 @@ class TestQgsFileUtils(unittest.TestCase):
         self.assertEqual(QgsFileUtils.extensionsFromFilter('PNG Files (*.PNG)'), ['PNG'])
         self.assertEqual(QgsFileUtils.extensionsFromFilter('Geotiff Files (*.tiff *.tif)'), ['tiff', 'tif'])
 
+    def testWildcardsFromFilter(self):
+        self.assertEqual(QgsFileUtils.wildcardsFromFilter(''), '')
+        self.assertEqual(QgsFileUtils.wildcardsFromFilter('bad'), '')
+        self.assertEqual(QgsFileUtils.wildcardsFromFilter('*'), '')
+        self.assertEqual(QgsFileUtils.wildcardsFromFilter('*.'), '')
+        self.assertEqual(QgsFileUtils.wildcardsFromFilter('Tiff files'), '')
+        self.assertEqual(QgsFileUtils.wildcardsFromFilter('(*.*)'), '*.*')
+        self.assertEqual(QgsFileUtils.wildcardsFromFilter('PNG Files (*.png)'), '*.png')
+        self.assertEqual(QgsFileUtils.wildcardsFromFilter('Tif  Files (*.tif)'), '*.tif')
+        self.assertEqual(QgsFileUtils.wildcardsFromFilter('PNG Files (*.PNG)'), '*.PNG')
+        self.assertEqual(QgsFileUtils.wildcardsFromFilter('Geotiff Files (*.tiff *.tif)'), '*.tiff *.tif')
+        self.assertEqual(QgsFileUtils.wildcardsFromFilter('Geotiff Files (*.tiff *.tif *.TIFF)'), '*.tiff *.tif *.TIFF')
+        self.assertEqual(QgsFileUtils.wildcardsFromFilter('EPT files (ept.json)'), 'ept.json')
+        self.assertEqual(QgsFileUtils.wildcardsFromFilter('EPT files (ept.json EPT.JSON)'), 'ept.json EPT.JSON')
+
     def testFileMatchesFilter(self):
         self.assertFalse(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', ''))
         self.assertFalse(QgsFileUtils.fileMatchesFilter('/home/me/test.tif', 'bad'))

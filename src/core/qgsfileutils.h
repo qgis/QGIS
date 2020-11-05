@@ -47,6 +47,14 @@ class CORE_EXPORT QgsFileUtils
     static QStringList extensionsFromFilter( const QString &filter );
 
     /**
+     * Giiven a \a filter string like "GeoTIFF Files (*.tiff *.tif)", extracts
+     * the wildcard portion of this filter (i.e. "*.tiff *.tif").
+     *
+     * \since QGIS 3.18
+     */
+    static QString wildcardsFromFilter( const QString &filter );
+
+    /**
      * Returns TRUE if the given \a fileName matches a file \a filter string.
      *
      * E.g a filter of "GeoTIFF Files (*.tiff *.tif)" would return TRUE for a \a fileName
