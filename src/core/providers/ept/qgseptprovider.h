@@ -64,6 +64,7 @@ class QgsEptProviderMetadata : public QgsProviderMetadata
     QgsEptProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QList< QgsDataItemProvider * > dataItemProviders() const override;
     int priorityForUri( const QString &uri ) const override;
+    bool uriIsBlocklisted( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString filters( FilterType type ) override;

@@ -47,6 +47,7 @@ class TestQgsEptProvider : public QObject
     void encodeUri();
     void decodeUri();
     void preferredUri();
+    void uriIsBlocklisted();
 
   private:
     QString mTestDataDir;
@@ -117,6 +118,12 @@ void TestQgsEptProvider::preferredUri()
 
   QVERIFY( !QgsProviderRegistry::instance()->shouldDeferUriForOtherProviders( QStringLiteral( "/home/test/ept.json" ), QStringLiteral( "ept" ) ) );
   QVERIFY( QgsProviderRegistry::instance()->shouldDeferUriForOtherProviders( QStringLiteral( "/home/test/ept.json" ), QStringLiteral( "ogr" ) ) );
+}
+
+void TestQgsEptProvider::uriIsBlocklisted()
+{
+  QVERIFY( !QgsProviderRegistry::instance()->uriIsBlocklisted( QStringLiteral( "/home/nyall/ept.json" ) ) );
+  QVERIFY( QgsProviderRegistry::instance()->uriIsBlocklisted( QStringLiteral( "/home/nyall/ept-build.json" ) ) );
 }
 
 
