@@ -125,7 +125,7 @@ class QgsExportMeshEdgesAlgorithm : public QgsExportMeshOnElement
 };
 
 
-class QgsExportMeshOnGrid : public QgsProcessingAlgorithm
+class QgsExportMeshOnGridAlgorithm : public QgsProcessingAlgorithm
 {
 
   public:
@@ -157,6 +157,58 @@ class QgsExportMeshOnGrid : public QgsProcessingAlgorithm
     QList<DataGroup> mDataPerGroup;
     QgsCoordinateTransform mTransform;
     int mExportVectorOption = 2;
+    QgsMeshRendererSettings mLayerRendererSettings;
+};
+
+class QgsMeshRasterizeAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+    QString name() const override
+    {
+      return QStringLiteral( "meshrasterize" );
+    }
+    QString displayName() const override
+    {
+      return QObject::tr( "Rasterize mesh dataset" );
+    }
+    QString group() const override
+    {
+      return QObject::tr( "Mesh" );
+    }
+    QString groupId() const override
+    {
+      return QStringLiteral( "mesh" );
+    }
+    QString shortHelpString() const override
+    {
+      return QObject::tr( "Create a raster layer from a mesh dataset" );
+    }
+
+  protected:
+    QgsProcessingAlgorithm *createInstance() const override
+    {
+      return new QgsMeshRasterizeAlgorithm();
+    }
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+
+    QSet<int> supportedDataType();
+
+    QgsTriangularMesh mTriangularMesh;
+    struct DataGroup
+    {
+      QgsMeshDatasetGroupMetadata metadata;
+      QgsMeshDataBlock datasetValues;
+      QgsMeshDataBlock activeFaces;
+      QgsMesh3dDataBlock dataset3dStakedValue; //will be filled only if data are 3d stacked
+    };
+
+    QList<DataGroup> mDataPerGroup;
+    QgsCoordinateTransform mTransform;
     QgsMeshRendererSettings mLayerRendererSettings;
 };
 

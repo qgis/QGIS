@@ -111,6 +111,29 @@ namespace QgsMeshUtils
     const QgsRectangle &extent,
     QgsRasterBlockFeedback *feedback = nullptr
   ) SIP_FACTORY;
+
+
+  /**
+   * Exports mesh layer's dataset values as raster block
+   *
+   * The function always fetches native mesh and dataset data
+   * from data provider and calculates triangular mesh
+   *
+   * \param
+   * \returns raster block with Float::64 values. NULLPTR on error
+   *
+   * \since QGIS 3.18
+   */
+  CORE_EXPORT QgsRasterBlock *exportRasterBlock(
+    const QgsTriangularMesh &triangularMesh,
+    const QgsMeshDataBlock &datasetValues,
+    const QgsMeshDataBlock &activeFlags,
+    const QgsMeshDatasetGroupMetadata::DataType dataType,
+    const QgsCoordinateTransform &transform,
+    double mapUnitsPerPixel,
+    const QgsRectangle &extent,
+    QgsRasterBlockFeedback *feedback = nullptr
+  ) SIP_FACTORY;
 };
 
 #endif // QGSMESHLAYERINTERPOLATOR_H
