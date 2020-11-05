@@ -100,6 +100,21 @@ int QgsEptProviderMetadata::priorityForUri( const QString &uri ) const
   return 0;
 }
 
+bool QgsEptProviderMetadata::uriIsBlocklisted( const QString &uri ) const
+{
+  const QVariantMap parts = decodeUri( uri );
+  if ( !parts.contains( QStringLiteral( "path" ) ) )
+    return false;
+
+  QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
+
+  // internal details only
+  if ( fi.fileName().compare( QLatin1String( "ept-build.json" ), Qt::CaseInsensitive ) == 0 )
+    return true;
+
+  return false;
+}
+
 QVariantMap QgsEptProviderMetadata::decodeUri( const QString &uri ) const
 {
   const QString path = uri;
