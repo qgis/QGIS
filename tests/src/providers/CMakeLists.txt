@@ -110,6 +110,11 @@ IF (NOT FORCE_STATIC_PROVIDERS)
   ADD_QGIS_TEST(mdalprovidertest testqgsmdalprovider.cpp)
 ENDIF (NOT FORCE_STATIC_PROVIDERS)
 
+IF (WITH_PDAL)
+  ADD_QGIS_TEST(pdalprovidertest testqgspdalprovider.cpp)
+  TARGET_LINK_LIBRARIES(qgis_pdalprovidertest pdalprovider_a qgis_core)
+ENDIF(WITH_PDAL)
+
 #############################################################
 # WCS public servers test:
 # No need to test on all platforms

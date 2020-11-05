@@ -55,10 +55,21 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${PDAL_INCLUDE_DIR}
 )
 
-# static library
 ADD_LIBRARY (pdalprovider MODULE ${PDAL_SRCS} ${PDAL_HDRS})
 TARGET_LINK_LIBRARIES (pdalprovider
   ${PDAL_LIBRARIES}
+)
+
+# static library
+ADD_LIBRARY (pdalprovider_a STATIC ${PDAL_SRCS} ${PDAL_HDRS})
+TARGET_LINK_LIBRARIES (pdalprovider_a
+  ${PDAL_LIBRARIES}
+  ${Qt5Xml_LIBRARIES}
+  ${Qt5Core_LIBRARIES}
+  ${Qt5Svg_LIBRARIES}
+  ${Qt5Network_LIBRARIES}
+  ${Qt5Sql_LIBRARIES}
+  ${Qt5Concurrent_LIBRARIES}
 )
 
 IF (WITH_GUI)
