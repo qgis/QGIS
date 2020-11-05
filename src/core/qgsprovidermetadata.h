@@ -256,7 +256,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * Returns TRUE if the specified \a uri is known by this provider to be something which should
      * be blocklisted from the QGIS interface, e.g. an internal detail only.
      *
-     * Specifically, this method can be utilised by the browser panel to hide noisy internal details
+     * Specifically, this method can be utilized by the browser panel to hide noisy internal details
      * by returning TRUE for URIs which are known to be sidecar files only, such as ".aux.xml" files
      * or ".shp.xml" files, or the "ept-build.json" files which sit alongside Entwine "ept.json" point
      * cloud sources.
