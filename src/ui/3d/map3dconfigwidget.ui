@@ -210,8 +210,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>699</width>
-                <height>604</height>
+                <width>239</width>
+                <height>251</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutTerrain">
@@ -398,8 +398,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>699</width>
-                <height>604</height>
+                <width>77</width>
+                <height>43</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutLight">
@@ -482,8 +482,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>699</width>
-                <height>604</height>
+                <width>133</width>
+                <height>43</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutShadow">
@@ -572,8 +572,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>699</width>
-                <height>604</height>
+                <width>153</width>
+                <height>126</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutCameraSkybox">
@@ -672,8 +672,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>699</width>
-                <height>604</height>
+                <width>283</width>
+                <height>418</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutAdvanced">
@@ -903,7 +903,7 @@
                  </property>
                  <layout class="QGridLayout" name="gridLayout_8">
                   <item row="0" column="0">
-                   <widget class="QGroupBox" name="mShadowMapDebugGroupBox">
+                   <widget class="QGroupBox" name="mDebugShadowMapGroupBox">
                     <property name="title">
                      <string>Debug shadow map</string>
                     </property>
@@ -948,7 +948,7 @@
                    </widget>
                   </item>
                   <item row="1" column="0">
-                   <widget class="QGroupBox" name="mDepthMapDebugGroupBox">
+                   <widget class="QGroupBox" name="mDebugDepthMapGroupBox">
                     <property name="title">
                      <string>Debug depth map</string>
                     </property>

@@ -165,8 +165,27 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   edlGroupBox->setChecked( map->eyeDomeLightingEnabled() );
   edlStrengthSpinBox->setValue( map->eyeDomeLightingStrength() );
   edlDistanceSpinBox->setValue( map->eyeDomeLightingDistance() );
-  connect( edlStrengthSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), mMap, &Qgs3DMapSettings::setEyeDomeLightingStrength );
-  connect( edlDistanceSpinBox, qgis::overload<int>::of( &QSpinBox::valueChanged ), mMap, &Qgs3DMapSettings::setEyeDomeLightingDistance );
+
+  mDebugShadowMapCornerComboBox->addItem( QStringLiteral( "Top Right" ) );
+  mDebugShadowMapCornerComboBox->addItem( QStringLiteral( "Top Left" ) );
+  mDebugShadowMapCornerComboBox->addItem( QStringLiteral( "Bottom Left" ) );
+  mDebugShadowMapCornerComboBox->addItem( QStringLiteral( "Bottom Right" ) );
+
+  mDebugDepthMapCornerComboBox->addItem( QStringLiteral( "Top Right" ) );
+  mDebugDepthMapCornerComboBox->addItem( QStringLiteral( "Top Left" ) );
+  mDebugDepthMapCornerComboBox->addItem( QStringLiteral( "Bottom Left" ) );
+  mDebugDepthMapCornerComboBox->addItem( QStringLiteral( "Bottom Right" ) );
+
+//  mDebugShadowMapCornerComboBox->setCurrentText( QStringLiteral( "Top Left" ) );
+//  mDebugDepthMapCornerComboBox->setCurrentText( QStringLiteral( "Top Right" ) );
+
+  mDebugShadowMapGroupBox->setChecked( map->debugShadowMapEnabled() );
+  mDebugShadowMapCornerComboBox->setCurrentText( map->debugShadowMapCorner() );
+  mDebugShadowMapSizeSpinBox->setValue( map->debugShadowMapSize() );
+
+  mDebugDepthMapGroupBox->setChecked( map->debugDepthMapEnabled() );
+  mDebugDepthMapCornerComboBox->setCurrentText( map->debugDepthMapCorner() );
+  mDebugDepthMapSizeSpinBox->setValue( map->debugDepthMapSize() );
 }
 
 Qgs3DMapConfigWidget::~Qgs3DMapConfigWidget()
@@ -296,6 +315,9 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setEyeDomeLightingEnabled( edlGroupBox->isChecked() );
   mMap->setEyeDomeLightingStrength( edlStrengthSpinBox->value() );
   mMap->setEyeDomeLightingDistance( edlDistanceSpinBox->value() );
+
+  mMap->setDebugDepthMapSettings( mDebugDepthMapGroupBox->isChecked(), mDebugDepthMapCornerComboBox->currentText(), mDebugDepthMapSizeSpinBox->value() );
+  mMap->setDebugShadowMapSettings( mDebugShadowMapGroupBox->isChecked(), mDebugShadowMapCornerComboBox->currentText(), mDebugShadowMapSizeSpinBox->value() );
 }
 
 void Qgs3DMapConfigWidget::onTerrainTypeChanged()
@@ -377,16 +399,6 @@ void Qgs3DMapConfigWidget::updateMaxZoomLevel()
   double tile0width = std::max( te.width(), te.height() );
   int zoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, spinMapResolution->value(), spinGroundError->value() );
   labelZoomLevels->setText( QStringLiteral( "0 - %1" ).arg( zoomLevel ) );
-}
-
-
-void Qgs3DMapConfigWidget::debugShadowMapChanged( bool enabled, int corner, double size )
-{
-
-}
-void Qgs3DMapConfigWidget::debugDepthMapChanged( bool enabled, int corner, double size )
-{
-
 }
 
 void Qgs3DMapConfigWidget::validate()

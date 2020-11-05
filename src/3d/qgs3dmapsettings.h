@@ -390,13 +390,30 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     int eyeDomeLightingDistance() const { return mEyeDomeLightingDistance; }
 
     /**
-     * Sets the debugging settings of the shadowmap
+     * Sets the debugging settings of the shadow map
      * \since QGIS 3.18
-     * \see
+     * \see debugShadowMapEnabled() debugShadowMapCorner() debugShadowMapSize()
      */
-    void setDebugShadowMapSettings( bool enabled, int corner, double size );
+    void setDebugShadowMapSettings( bool enabled, const QString &corner, double size );
+    //! Returns whether the shadow map debugging is enabled
+    bool debugShadowMapEnabled() const { return mDebugShadowMapEnabled; }
+    //! Returns the corner where the shadow map preview is displayed
+    QString debugShadowMapCorner() const { return mDebugShadowMapCorner; }
+    //! Returns the size of the shadow map preview
+    double debugShadowMapSize() const { return mDebugShadowMapSize; }
 
-//    bool debugShadowMapEnabled() { return  }
+    /**
+     * Sets the debugging settings of the depth map
+     * \since QGIS 3.18
+     * \see debugDepthMapEnabled() debugDepthMapCorner() debugDepthMapSize()
+     */
+    void setDebugDepthMapSettings( bool enabled, const QString &corner, double size );
+    //! Returns whether the shadow map debugging is enabled
+    bool debugDepthMapEnabled() const { return mDebugDepthMapEnabled; }
+    //! Returns the corner where the shadow map preview is displayed
+    QString debugDepthMapCorner() const { return mDebugDepthMapCorner; }
+    //! Returns the size of the shadow map preview
+    double debugDepthMapSize() const { return mDebugDepthMapSize; }
 
     /**
      * Returns list of point lights defined in the scene
@@ -581,6 +598,18 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void eyeDomeLightingDistanceChanged();
 
     /**
+     * Emitted when shadow map debugging has changed
+     * \since QGIS 3.18
+     */
+    void debugShadowMapSettingsChanged();
+
+    /**
+     * Emitted when depth map debugging has changed
+     * \since QGIS 3.18
+     */
+    void debugDepthMapSettingsChanged();
+
+    /**
      * Emitted when the list of point lights changes
      * \since QGIS 3.6
      */
@@ -655,12 +684,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     int mEyeDomeLightingDistance = 1;
 
     bool mDebugShadowMapEnabled = false;
-    int mDebugShadowMapCorner = 0;
-    double mDebugShadowMapSize = 0.1;
+    QString mDebugShadowMapCorner = "Top Left";
+    double mDebugShadowMapSize = 0.2;
 
     bool mDebugDepthMapEnabled = false;
-    int mDebugDepthMapCorner = 0;
-    double mDebugDepthMapSize = 0.1;
+    QString mDebugDepthMapCorner = "Top Right";
+    double mDebugDepthMapSize = 0.2;
 };
 
 

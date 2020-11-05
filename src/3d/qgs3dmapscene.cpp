@@ -134,6 +134,8 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   connect( &map, &Qgs3DMapSettings::eyeDomeLightingEnabledChanged, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
   connect( &map, &Qgs3DMapSettings::eyeDomeLightingStrengthChanged, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
   connect( &map, &Qgs3DMapSettings::eyeDomeLightingDistanceChanged, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
+  connect( &map, &Qgs3DMapSettings::debugShadowMapSettingsChanged, this, &Qgs3DMapScene::onDebugShadowMapSettingsChanged );
+  connect( &map, &Qgs3DMapSettings::debugDepthMapSettingsChanged, this, &Qgs3DMapScene::onDebugDepthMapSettingsChanged );
 
   connect( QgsApplication::instance()->sourceCache(), &QgsSourceCache::remoteSourceFetched, this, [ = ]( const QString & url )
   {
@@ -219,6 +221,9 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   onCameraChanged();
   // force initial update of eye dome shadng
   onEyeDomeShadingSettingsChanged();
+  // force initial update of debugging setting of preview quads
+  onDebugShadowMapSettingsChanged();
+  onDebugDepthMapSettingsChanged();
 }
 
 void Qgs3DMapScene::viewZoomFull()
@@ -965,6 +970,24 @@ void Qgs3DMapScene::onShadowSettingsChanged()
   }
   else
     shadowRenderingFrameGraph->setShadowRenderingEnabled( false );
+}
+
+void Qgs3DMapScene::onDebugShadowMapSettingsChanged()
+{
+  QgsWindow3DEngine *windowEngine = dynamic_cast<QgsWindow3DEngine *>( mEngine );
+  if ( windowEngine == nullptr )
+    return;
+  QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = windowEngine->shadowRenderingFrameGraph();
+  shadowRenderingFrameGraph->setupShadowMapDebugging( mMap.debugShadowMapEnabled(), mMap.debugShadowMapCorner(), mMap.debugShadowMapSize() );
+}
+
+void Qgs3DMapScene::onDebugDepthMapSettingsChanged()
+{
+  QgsWindow3DEngine *windowEngine = dynamic_cast<QgsWindow3DEngine *>( mEngine );
+  if ( windowEngine == nullptr )
+    return;
+  QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = windowEngine->shadowRenderingFrameGraph();
+  shadowRenderingFrameGraph->setupDepthMapDebugging( mMap.debugDepthMapEnabled(), mMap.debugDepthMapCorner(), mMap.debugDepthMapSize() );
 }
 
 void Qgs3DMapScene::onEyeDomeShadingSettingsChanged()

@@ -454,14 +454,47 @@ Sets the eye dome lighting distance value (contributes to the contrast of the im
 Returns the eye dome lighting distance value (contributes to the contrast of the image)
 %End
 
-    void setDebugShadowMapSettings( bool enabled, int corner, double size );
+    void setDebugShadowMapSettings( bool enabled, const QString &corner, double size );
 %Docstring
-Sets the debugging settings of the shadowmap
+Sets the debugging settings of the shadow map
 
 .. versionadded:: 3.18
-\see
+
+.. seealso:: :py:func:`debugShadowMapEnabled`
+%End
+    bool debugShadowMapEnabled() const;
+%Docstring
+Returns whether the shadow map debugging is enabled
+%End
+    QString debugShadowMapCorner() const;
+%Docstring
+Returns the corner where the shadow map preview is displayed
+%End
+    double debugShadowMapSize() const;
+%Docstring
+Returns the size of the shadow map preview
 %End
 
+    void setDebugDepthMapSettings( bool enabled, const QString &corner, double size );
+%Docstring
+Sets the debugging settings of the depth map
+
+.. versionadded:: 3.18
+
+.. seealso:: :py:func:`debugDepthMapEnabled`
+%End
+    bool debugDepthMapEnabled() const;
+%Docstring
+Returns whether the shadow map debugging is enabled
+%End
+    QString debugDepthMapCorner() const;
+%Docstring
+Returns the corner where the shadow map preview is displayed
+%End
+    double debugDepthMapSize() const;
+%Docstring
+Returns the size of the shadow map preview
+%End
 
     QList<QgsPointLightSettings> pointLights() const;
 %Docstring
@@ -666,6 +699,20 @@ Emitted when the eye dome lighting strength has changed
     void eyeDomeLightingDistanceChanged();
 %Docstring
 Emitted when the eye dome lighting distance has changed
+
+.. versionadded:: 3.18
+%End
+
+    void debugShadowMapSettingsChanged();
+%Docstring
+Emitted when shadow map debugging has changed
+
+.. versionadded:: 3.18
+%End
+
+    void debugDepthMapSettingsChanged();
+%Docstring
+Emitted when depth map debugging has changed
 
 .. versionadded:: 3.18
 %End

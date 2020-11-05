@@ -35,6 +35,8 @@ class QgsPreviewQuadMaterial : public Qt3DRender::QMaterial
   public:
     //! Constructor
     QgsPreviewQuadMaterial( Qt3DRender::QAbstractTexture *texture, const QMatrix4x4 &modelMatrix, QVector<Qt3DRender::QParameter *> additionalShaderParameters = QVector<Qt3DRender::QParameter *>(), QNode *parent = nullptr );
+
+    void setModelMatrix( const QMatrix4x4 &modelMatrix );
   private:
     Qt3DRender::QEffect *mEffect = nullptr;
     Qt3DRender::QParameter *mTextureParameter = nullptr;
@@ -62,6 +64,8 @@ class QgsPreviewQuad : public Qt3DCore::QEntity
      * \param parent The parent of the quad
      */
     QgsPreviewQuad( Qt3DRender::QAbstractTexture *texture, const QPointF &centerNDC, const QSizeF &size, QVector<Qt3DRender::QParameter *> additionalShaderParameters = QVector<Qt3DRender::QParameter *>(), Qt3DCore::QEntity *parent = nullptr );
+
+    void setViewPort( const QPointF &centerNDC, const QSizeF &size );
   private:
     QgsPreviewQuadMaterial *mMaterial = nullptr;
 };

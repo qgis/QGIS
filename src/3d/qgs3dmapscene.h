@@ -145,6 +145,8 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void onSkyboxSettingsChanged();
     void onShadowSettingsChanged();
     void onEyeDomeShadingSettingsChanged();
+    void onDebugShadowMapSettingsChanged();
+    void onDebugDepthMapSettingsChanged();
 
   private:
     void addLayerEntity( QgsMapLayer *layer );

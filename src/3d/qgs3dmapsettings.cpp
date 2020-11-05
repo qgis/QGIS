@@ -242,6 +242,15 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   mEyeDomeLightingStrength = elemEyeDomeLighting.attribute( "eye-dome-lighting-strength", QStringLiteral( "1000.0" ) ).toDouble();
   mEyeDomeLightingDistance = elemEyeDomeLighting.attribute( "eye-dome-lighting-distance", QStringLiteral( "1" ) ).toInt();
 
+  QDomElement elemDebugSettings = elem.firstChildElement( QStringLiteral( "debug-settings" ) );
+  mDebugShadowMapEnabled = elemDebugSettings.attribute( QStringLiteral( "shadowmap-enabled" ), QStringLiteral( "0" ) ).toInt();
+  mDebugShadowMapCorner = elemDebugSettings.attribute( QStringLiteral( "shadowmap-corner" ), QStringLiteral( "Top Left" ) );
+  mDebugShadowMapSize = elemDebugSettings.attribute( QStringLiteral( "shadowmap-size" ), QStringLiteral( "0.2" ) ).toDouble();
+
+  mDebugDepthMapEnabled = elemDebugSettings.attribute( QStringLiteral( "depthmap-enabled" ), QStringLiteral( "0" ) ).toInt();
+  mDebugDepthMapCorner = elemDebugSettings.attribute( QStringLiteral( "depthmap-corner" ), QStringLiteral( "Top Right" ) );
+  mDebugDepthMapSize = elemDebugSettings.attribute( QStringLiteral( "depthmap-size" ), QStringLiteral( "0.2" ) ).toDouble();
+
   QDomElement elemDebug = elem.firstChildElement( QStringLiteral( "debug" ) );
   mShowTerrainBoundingBoxes = elemDebug.attribute( QStringLiteral( "bounding-boxes" ), QStringLiteral( "0" ) ).toInt();
   mShowTerrainTileInfo = elemDebug.attribute( QStringLiteral( "terrain-tile-info" ), QStringLiteral( "0" ) ).toInt();
@@ -360,6 +369,16 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemEyeDomeLighting.setAttribute( "eye-dome-lighting-strength", mEyeDomeLightingStrength );
   elemEyeDomeLighting.setAttribute( "eye-dome-lighting-distance", mEyeDomeLightingDistance );
   elem.appendChild( elemEyeDomeLighting );
+
+
+  QDomElement elemDebugSettings = doc.createElement( QStringLiteral( "debug-settings" ) );
+  elemDebugSettings.setAttribute( QStringLiteral( "shadowmap-enabled" ), mDebugShadowMapEnabled );
+  elemDebugSettings.setAttribute( QStringLiteral( "shadowmap-corner" ), mDebugShadowMapCorner );
+  elemDebugSettings.setAttribute( QStringLiteral( "shadowmap-size" ), mDebugShadowMapSize );
+  elemDebugSettings.setAttribute( QStringLiteral( "depthmap-enabled" ), mDebugDepthMapEnabled );
+  elemDebugSettings.setAttribute( QStringLiteral( "depthmap-corner" ), mDebugDepthMapCorner );
+  elemDebugSettings.setAttribute( QStringLiteral( "depthmap-size" ), mDebugDepthMapSize );
+  elem.appendChild( elemDebugSettings );
 
   QDomElement elemTemporalRange = doc.createElement( QStringLiteral( "temporal-range" ) );
   elemTemporalRange.setAttribute( QStringLiteral( "start" ), temporalRange().begin().toString( Qt::ISODate ) );
@@ -705,7 +724,18 @@ void Qgs3DMapSettings::setShadowSettings( const QgsShadowSettings &shadowSetting
   emit shadowSettingsChanged();
 }
 
-void Qgs3DMapSettings::setDebugShadowMapSettings( bool enabled, int corner, double size )
+void Qgs3DMapSettings::setDebugShadowMapSettings( bool enabled, const QString &corner, double size )
 {
+  mDebugShadowMapEnabled = enabled;
+  mDebugShadowMapCorner = corner;
+  mDebugShadowMapSize = size;
+  emit debugShadowMapSettingsChanged();
+}
 
+void Qgs3DMapSettings::setDebugDepthMapSettings( bool enabled, const QString &corner, double size )
+{
+  mDebugDepthMapEnabled = enabled;
+  mDebugDepthMapCorner = corner;
+  mDebugDepthMapSize = size;
+  emit debugDepthMapSettingsChanged();
 }
