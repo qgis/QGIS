@@ -127,13 +127,13 @@ void QgsColorRampShaderWidget::setRasterDataProvider( QgsRasterDataProvider *dp 
 void QgsColorRampShaderWidget::setRasterBand( int band )
 {
   mBand = band;
+  // Assume double by default
+  Qgis::DataType dataType { ( mRasterDataProvider &&mBand > 0 ) ? mRasterDataProvider->dataType( mBand ) : Qgis::DataType::Float64 };
+
   // Set the maximum number of digits in the precision spin box
-  if ( mRasterDataProvider )
-  {
-    const int maxDigits { QgsGuiUtils::significantDigits( mRasterDataProvider->dataType( mBand ) ) };
-    mLabelPrecisionSpinBox->setMaximum( maxDigits );
-    mValueDelegate->setDataType( mRasterDataProvider->dataType( mBand ) );
-  }
+  const int maxDigits { QgsGuiUtils::significantDigits( dataType ) };
+  mLabelPrecisionSpinBox->setMaximum( maxDigits );
+  mValueDelegate->setDataType( dataType );
 }
 
 void QgsColorRampShaderWidget::setExtent( const QgsRectangle &extent )
