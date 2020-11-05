@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmtinmeshcreation.h
+                         qgsalgorithmexportmesh.h
                          ---------------------------
     begin                : October 2020
     copyright            : (C) 2020 by Vincent Cloarec
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSALGORITHMEXPORTMESHVERTICES_H
-#define QGSALGORITHMEXPORTMESHVERTICES_H
+#ifndef QGSALGORITHMEXPORTMESH_H
+#define QGSALGORITHMEXPORTMESH_H
 
 #define SIP_NO_FILE
 
@@ -164,32 +164,14 @@ class QgsMeshRasterizeAlgorithm : public QgsProcessingAlgorithm
 {
 
   public:
-    QString name() const override
-    {
-      return QStringLiteral( "meshrasterize" );
-    }
-    QString displayName() const override
-    {
-      return QObject::tr( "Rasterize mesh dataset" );
-    }
-    QString group() const override
-    {
-      return QObject::tr( "Mesh" );
-    }
-    QString groupId() const override
-    {
-      return QStringLiteral( "mesh" );
-    }
-    QString shortHelpString() const override
-    {
-      return QObject::tr( "Create a raster layer from a mesh dataset" );
-    }
+    QString name() const override;
+    QString displayName() const override;
+    QString group() const override;
+    QString groupId() const override;
+    QString shortHelpString() const override;
 
   protected:
-    QgsProcessingAlgorithm *createInstance() const override
-    {
-      return new QgsMeshRasterizeAlgorithm();
-    }
+    QgsProcessingAlgorithm *createInstance() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
@@ -214,4 +196,4 @@ class QgsMeshRasterizeAlgorithm : public QgsProcessingAlgorithm
 
 ///@endcond PRIVATE
 
-#endif // QGSALGORITHMEXPORTMESHVERTICES_H
+#endif // QGSALGORITHMEXPORTMESH_H

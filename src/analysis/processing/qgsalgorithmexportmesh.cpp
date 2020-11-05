@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmtinmeshcreation.h
+                         qgsalgorithmexportmesh.cpp
                          ---------------------------
     begin                : October 2020
     copyright            : (C) 2020 by Vincent Cloarec
@@ -670,7 +670,35 @@ QSet<int> QgsExportMeshOnGridAlgorithm::supportedDataType()
     QgsMeshDatasetGroupMetadata::DataOnVolumes} );
 }
 
-///@endcond PRIVATE
+QString QgsMeshRasterizeAlgorithm::name() const
+{
+  return QStringLiteral( "meshrasterize" );
+}
+
+QString QgsMeshRasterizeAlgorithm::displayName() const
+{
+  return QObject::tr( "Rasterize mesh dataset" );
+}
+
+QString QgsMeshRasterizeAlgorithm::group() const
+{
+  return QObject::tr( "Mesh" );
+}
+
+QString QgsMeshRasterizeAlgorithm::groupId() const
+{
+  return QStringLiteral( "mesh" );
+}
+
+QString QgsMeshRasterizeAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "Create a raster layer from a mesh dataset" );
+}
+
+QgsProcessingAlgorithm *QgsMeshRasterizeAlgorithm::createInstance() const
+{
+  return new QgsMeshRasterizeAlgorithm();
+}
 
 void QgsMeshRasterizeAlgorithm::initAlgorithm( const QVariantMap &configuration )
 {
@@ -773,6 +801,8 @@ bool QgsMeshRasterizeAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
       feedback->setProgress( 100 * i / datasetGroups.count() );
   }
 
+  mLayerRendererSettings = meshLayer->rendererSettings();
+
   return true;
 }
 
@@ -797,11 +827,13 @@ QVariantMap QgsMeshRasterizeAlgorithm::processAlgorithm( const QVariantMap &para
   // create raster
   double pixelSize = parameterAsDouble( parameters, QStringLiteral( "PIXEL_SIZE" ), context );
   QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context );
+  if ( extent.isEmpty() )
+    extent = mTriangularMesh.extent();
 
   int width = extent.width() / pixelSize;
   int height = extent.height() / pixelSize;
 
-  QString fileName = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT" ), context );
+  QString fileName = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   QFileInfo fileInfo( fileName );
   QString outputFormat = QgsRasterFileWriter::driverForExtension( fileInfo.suffix() );
   QgsRasterFileWriter rasterFileWriter( fileName );
@@ -861,3 +893,5 @@ QSet<int> QgsMeshRasterizeAlgorithm::supportedDataType()
     QgsMeshDatasetGroupMetadata::DataOnFaces,
     QgsMeshDatasetGroupMetadata::DataOnVolumes} );
 }
+
+///@endcond PRIVATE

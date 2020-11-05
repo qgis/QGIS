@@ -153,6 +153,7 @@ class TestQgsProcessingAlgs: public QObject
     void exportMeshFaces();
     void exportMeshEdges();
     void exportMeshOnGrid();
+    void rasterizeMesh();
 
   private:
 
@@ -5117,6 +5118,72 @@ void TestQgsProcessingAlgs::exportMeshOnGrid()
   QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 0.02776, 2 ) );
 
 }
+
+void TestQgsProcessingAlgs::rasterizeMesh()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:meshrasterize" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), "mesh layer" );
+
+  QVariantList datasetGroup;
+  datasetGroup << 1 << 2 << 3;
+  parameters.insert( QStringLiteral( "DATASET_GROUPS" ), datasetGroup );
+
+  QVariantMap datasetTime;
+  datasetTime[QStringLiteral( "type" )] = QStringLiteral( "dataset-time-step" );
+  QVariantList datasetIndex;
+  datasetIndex << 1 << 1;
+  datasetTime[QStringLiteral( "value" )] = datasetIndex;
+  parameters.insert( QStringLiteral( "DATASET_TIME" ), datasetTime );
+
+  parameters.insert( QStringLiteral( "PIXEL_SIZE" ), 200.0 );
+
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( QgsProject::instance() );
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  bool ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  std::unique_ptr<QgsRasterLayer> outputRaster = qgis::make_unique< QgsRasterLayer >( results.value( QStringLiteral( "OUTPUT" ) ).toString(), "output", "gdal" );
+  QVERIFY( outputRaster );
+  QVERIFY( outputRaster->isValid() );
+  QgsRasterDataProvider *outputProvider = outputRaster->dataProvider();
+
+  QCOMPARE( outputProvider->bandCount(), 3 );
+  QCOMPARE( outputProvider->xSize(), 10 );
+  QCOMPARE( outputProvider->ySize(), 5 );
+
+  std::unique_ptr<QgsRasterBlock> outputBlock_1( outputProvider->block( 1, outputRaster->extent(), 10, 5 ) );
+  std::unique_ptr<QgsRasterBlock> outputBlock_2( outputProvider->block( 2, outputRaster->extent(), 10, 5 ) );
+  std::unique_ptr<QgsRasterBlock> outputBlock_3( outputProvider->block( 3, outputRaster->extent(), 10, 5 ) );
+
+  // load expected result
+  QString dataDir = QString( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  std::unique_ptr<QgsRasterLayer> expectedRaster = qgis::make_unique< QgsRasterLayer >( dataDir + "/mesh/rasterized_mesh.tif", "expected", "gdal" );
+  QVERIFY( expectedRaster );
+  QVERIFY( expectedRaster->isValid() );
+  QgsRasterDataProvider *expectedProvider = outputRaster->dataProvider();
+  std::unique_ptr<QgsRasterBlock> expectedBlock_1( expectedProvider->block( 1, expectedRaster->extent(), 10, 5 ) );
+  std::unique_ptr<QgsRasterBlock> expectedBlock_2( expectedProvider->block( 2, expectedRaster->extent(), 10, 5 ) );
+  std::unique_ptr<QgsRasterBlock> expectedBlock_3( expectedProvider->block( 3, expectedRaster->extent(), 10, 5 ) );
+
+  for ( int ix = 0; ix < 10; ++ix )
+  {
+    for ( int iy = 0; iy < 5; ++iy )
+    {
+      QCOMPARE( outputBlock_1->value( iy, ix ), expectedBlock_1->value( iy, ix ) );
+      QCOMPARE( outputBlock_2->value( iy, ix ), expectedBlock_2->value( iy, ix ) );
+      QCOMPARE( outputBlock_3->value( iy, ix ), expectedBlock_3->value( iy, ix ) );
+    }
+  }
+}
+
 
 bool TestQgsProcessingAlgs::imageCheck( const QString &testName, const QString &renderedImage )
 {
