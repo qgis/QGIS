@@ -297,6 +297,8 @@ void QgsProviderRegistry::init()
     if ( !filePointCloudFilters.isEmpty() )
     {
       QgsDebugMsgLevel( "point cloud filters: " + filePointCloudFilters, 2 );
+      if ( !mPointCloudFileFilters.isEmpty() && !mPointCloudFileFilters.endsWith( QLatin1String( ";;" ) ) )
+        mPointCloudFileFilters += QStringLiteral( ";;" );
       mPointCloudFileFilters += filePointCloudFilters;
       QgsDebugMsgLevel( QStringLiteral( "Checking %1: ...loaded OK (%2 file filters)" ).arg( key ).arg( filePointCloudFilters.split( ";;" ).count() ), 2 );
     }
