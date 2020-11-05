@@ -185,7 +185,6 @@ QgsShadowRenderingFrameGraph::QgsShadowRenderingFrameGraph( QWindow *window, Qt3
   Qt3DRender::QFrameGraphNode *postprocessingPass = constructPostprocessingPass();
   postprocessingPass->setParent( mLightCameraSelector );
 
-
   mPostprocessingEntity = new QgsPostprocessingEntity( this, mRootEntity );
   mPostprocessingEntity->addComponent( mPostprocessPassLayer );
 
@@ -193,15 +192,21 @@ QgsShadowRenderingFrameGraph::QgsShadowRenderingFrameGraph( QWindow *window, Qt3
   Qt3DRender::QFrameGraphNode *previewPass = constructTexturesPreviewPass();
   previewPass->setParent( mMainViewPort );
 
-  this->addTexturePreviewOverlay( mForwardDepthTexture, QPointF( 0.8f, 0.8f ), QSizeF( 0.2f, 0.2f ) );
+
+  mDebugDepthMapPreviewQuad = this->addTexturePreviewOverlay( mForwardDepthTexture, QPointF( 0.8f, 0.8f ), QSizeF( 0.2f, 0.2f ) );
+  mDebugShadowMapPreviewQuad = this->addTexturePreviewOverlay( mShadowMapTexture, QPointF( -0.8f, -0.8f ), QSizeF( 0.2f, 0.2f ) );
+  mDebugDepthMapPreviewQuad->setEnabled( false );
+  mDebugShadowMapPreviewQuad->setEnabled( false );
+//  this->addTexturePreviewOverlay( mForwardDepthTexture, QPointF( 0.8f, 0.8f ), QSizeF( 0.2f, 0.2f ) );
 }
 
-void QgsShadowRenderingFrameGraph::addTexturePreviewOverlay( Qt3DRender::QTexture2D *texture, const QPointF &centerNDC, const QSizeF &size, QVector<Qt3DRender::QParameter *> additionalShaderParameters )
+QgsPreviewQuad *QgsShadowRenderingFrameGraph::addTexturePreviewOverlay( Qt3DRender::QTexture2D *texture, const QPointF &centerNDC, const QSizeF &size, QVector<Qt3DRender::QParameter *> additionalShaderParameters )
 {
   QgsPreviewQuad *previewQuad = new QgsPreviewQuad( texture, centerNDC, size, additionalShaderParameters );
   previewQuad->addComponent( mPreviewLayer );
   previewQuad->setParent( mRootEntity );
   mPreviewQuads.push_back( previewQuad );
+  return previewQuad;
 }
 
 QVector3D WorldPosFromDepth( QMatrix4x4 projMatrixInv, QMatrix4x4 viewMatrixInv, float texCoordX, float texCoordY, float depth )
@@ -353,4 +358,36 @@ void QgsShadowRenderingFrameGraph::setupEyeDomeLighting( bool enabled, double st
   mPostprocessingEntity->setEyeDomeLightingEnabled( enabled );
   mPostprocessingEntity->setEyeDomeLightingStrength( strength );
   mPostprocessingEntity->setEyeDomeLightingDistance( distance );
+}
+
+void QgsShadowRenderingFrameGraph::setupShadowMapDebugging( bool enabled, const QString &corner, double size )
+{
+  mDebugShadowMapPreviewQuad->setEnabled( enabled );
+  if ( enabled )
+  {
+    if ( corner == QStringLiteral( "Top Right" ) )
+      mDebugShadowMapPreviewQuad->setViewPort( QPointF( 1.0f - size, 1.0f - size ), QSizeF( size, size ) );
+    else if ( corner == QStringLiteral( "Bottom Right" ) )
+      mDebugShadowMapPreviewQuad->setViewPort( QPointF( 1.0f - size, -1.0f + size ), QSizeF( size, size ) );
+    else if ( corner == QStringLiteral( "Top Left" ) )
+      mDebugShadowMapPreviewQuad->setViewPort( QPointF( -1.0f + size, 1.0f - size ), QSizeF( size, size ) );
+    else if ( corner == QStringLiteral( "Bottom Left" ) )
+      mDebugShadowMapPreviewQuad->setViewPort( QPointF( -1.0f + size, -1.0f + size ), QSizeF( size, size ) );
+  }
+}
+
+void QgsShadowRenderingFrameGraph::setupDepthMapDebugging( bool enabled, const QString &corner, double size )
+{
+  mDebugDepthMapPreviewQuad->setEnabled( enabled );
+  if ( enabled )
+  {
+    if ( corner == QStringLiteral( "Top Right" ) )
+      mDebugDepthMapPreviewQuad->setViewPort( QPointF( 1.0f - size, 1.0f - size ), QSizeF( size, size ) );
+    else if ( corner == QStringLiteral( "Bottom Right" ) )
+      mDebugDepthMapPreviewQuad->setViewPort( QPointF( 1.0f - size, -1.0f + size ), QSizeF( size, size ) );
+    else if ( corner == QStringLiteral( "Top Left" ) )
+      mDebugDepthMapPreviewQuad->setViewPort( QPointF( -1.0f + size, 1.0f - size ), QSizeF( size, size ) );
+    else if ( corner == QStringLiteral( "Bottom Left" ) )
+      mDebugDepthMapPreviewQuad->setViewPort( QPointF( -1.0f + size, -1.0f + size ), QSizeF( size, size ) );
+  }
 }

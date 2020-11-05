@@ -71,6 +71,15 @@ QgsPreviewQuad::QgsPreviewQuad( Qt3DRender::QAbstractTexture *texture,
   addComponent( mMaterial );
 }
 
+void QgsPreviewQuad::setViewPort( const QPointF &centerNDC, const QSizeF &size )
+{
+  QMatrix4x4 modelMatrix;
+  modelMatrix.setToIdentity();
+  modelMatrix.translate( centerNDC.x(), centerNDC.y() );
+  modelMatrix.scale( size.width(), size.height() );
+  mMaterial->setModelMatrix( modelMatrix );
+}
+
 QgsPreviewQuadMaterial::QgsPreviewQuadMaterial( Qt3DRender::QAbstractTexture *texture, const QMatrix4x4 &modelMatrix, QVector<Qt3DRender::QParameter *> additionalShaderParameters, QNode *parent )
   : Qt3DRender::QMaterial( parent )
 {
@@ -103,3 +112,7 @@ QgsPreviewQuadMaterial::QgsPreviewQuadMaterial( Qt3DRender::QAbstractTexture *te
   setEffect( mEffect );
 }
 
+void QgsPreviewQuadMaterial::setModelMatrix( const QMatrix4x4 &modelMatrix )
+{
+  mTextureTransformParameter->setValue( modelMatrix );
+}

@@ -113,11 +113,16 @@ class QgsShadowRenderingFrameGraph
     //! Sets the clear color of the scene (background color)
     void setClearColor( const QColor &clearColor );
     //! Adds an preview entity that shows a texture in real time for debugging purposes
-    void addTexturePreviewOverlay( Qt3DRender::QTexture2D *texture, const QPointF &centerNDC, const QSizeF &size, QVector<Qt3DRender::QParameter *> additionalShaderParameters = QVector<Qt3DRender::QParameter *>() );
+    QgsPreviewQuad *addTexturePreviewOverlay( Qt3DRender::QTexture2D *texture, const QPointF &centerNDC, const QSizeF &size, QVector<Qt3DRender::QParameter *> additionalShaderParameters = QVector<Qt3DRender::QParameter *>() );
     //! Sets shadow rendering to use a directional light
     void setupDirectionalLight( const QgsDirectionalLightSettings &light, float maximumShadowRenderingDistance );
     //! Sets eye dome lighting shading related settings
     void setupEyeDomeLighting( bool enabled, double strength, int distance );
+    //! Sets the shadow map debugging view port
+    void setupShadowMapDebugging( bool enabled, const QString &corner, double size );
+    //! Sets the depth map debugging view port
+    void setupDepthMapDebugging( bool enabled, const QString &corner, double size );
+
   private:
     Qt3DRender::QRenderSurfaceSelector *mRenderSurfaceSelector = nullptr;
     Qt3DRender::QViewport *mMainViewPort = nullptr;
@@ -158,6 +163,9 @@ class QgsShadowRenderingFrameGraph
     bool mEyeDomeLightingEnabled = false;
     double mEyeDomeLightingStrength = 1000.0;
     int mEyeDomeLightingDistance = 1;
+
+    QgsPreviewQuad *mDebugShadowMapPreviewQuad = nullptr;
+    QgsPreviewQuad *mDebugDepthMapPreviewQuad = nullptr;
 
     Qt3DRender::QLayerFilter *mShadowSceneEntitiesFilter = nullptr;
     Qt3DRender::QRenderStateSet *mShadowRenderStateSet = nullptr;
