@@ -15,27 +15,8 @@
 
 #include "qgsapplication.h"
 #include "qgsproviderguimetadata.h"
-#include "qgssourceselectprovider.h"
 
 #include "qgspdalprovider.h"
-#include "qgspdalsourceselect.h"
-
-
-//! Provider for pdal source select
-class QgsPdalSourceSelectProvider : public QgsSourceSelectProvider
-{
-  public:
-
-    QString providerKey() const override { return QStringLiteral( "pdal" ); }
-    QString text() const override { return QObject::tr( "PDAL Point Clouds" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 22; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddPdalLayer.svg" ) ); }
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget,
-        QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
-    {
-      return new QgsPdalSourceSelect( parent, fl, widgetMode );
-    }
-};
 
 
 class QgsPdalProviderGuiMetadata: public QgsProviderGuiMetadata
@@ -44,13 +25,6 @@ class QgsPdalProviderGuiMetadata: public QgsProviderGuiMetadata
     QgsPdalProviderGuiMetadata()
       : QgsProviderGuiMetadata( QStringLiteral( "pdal" ) )
     {
-    }
-
-    QList<QgsSourceSelectProvider *> sourceSelectProviders() override
-    {
-      QList<QgsSourceSelectProvider *> providers;
-      providers << new QgsPdalSourceSelectProvider;
-      return providers;
     }
 };
 

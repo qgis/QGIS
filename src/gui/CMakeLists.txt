@@ -347,7 +347,7 @@ SET(QGIS_GUI_SRCS
   providers/ogr/qgsogritemguiprovider.cpp
   providers/ogr/qgsgeopackageprojectstorageguiprovider.cpp
 
-  providers/ept/qgseptsourceselect.cpp
+  providers/ept/qgspointcloudsourceselect.cpp
   providers/ept/qgseptproviderguimetadata.cpp
   providers/ept/qgseptdataitemguiprovider.cpp
 
@@ -1108,7 +1108,7 @@ SET(QGIS_GUI_HDRS
   providers/ogr/qgsogritemguiprovider.h
   providers/ogr/qgsogrsourceselect.h
 
-  providers/ept/qgseptsourceselect.h
+  providers/ept/qgspointcloudsourceselect.h
   providers/ept/qgseptproviderguimetadata.h
   providers/ept/qgseptdataitemguiprovider.h
 

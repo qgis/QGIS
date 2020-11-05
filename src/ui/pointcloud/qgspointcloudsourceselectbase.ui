@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsEptSourceSelectBase</class>
- <widget class="QDialog" name="QgsEptSourceSelectBase">
+ <class>QgsPointCloudSourceSelectBase</class>
+ <widget class="QDialog" name="QgsPointCloudSourceSelectBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -41,7 +41,7 @@
         <item>
          <widget class="QLabel" name="label">
           <property name="text">
-           <string>EPT Point cloud dataset</string>
+           <string>Point cloud dataset</string>
           </property>
          </widget>
         </item>
@@ -91,7 +91,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>QgsEptSourceSelectBase</receiver>
+   <receiver>QgsPointCloudSourceSelectBase</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
