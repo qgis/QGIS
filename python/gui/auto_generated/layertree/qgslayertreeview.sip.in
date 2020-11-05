@@ -16,7 +16,7 @@ class QgsLayerTreeProxyModel : QSortFilterProxyModel
 %Docstring
 
 The QgsLayerTreeProxyModel class is a proxy model for QgsLayerTreeModel, supports
-hidden layers and  text filtering.
+private layers and text filtering.
 
 .. versionadded:: 3.18
 %End
@@ -36,14 +36,14 @@ Constructs QgsLayerTreeProxyModel with source model ``treeModel`` and a ``parent
 Sets filter to ``filterText``.
 %End
 
-    bool showHidden() const;
+    bool showPrivateLayers() const;
 %Docstring
-Returns if hidden layers are shown.
+Returns if private layers are shown.
 %End
 
-    void setShowHidden( bool showHidden );
+    void setShowPrivateLayers( bool showPrivate );
 %Docstring
-Determines if hidden layers are shown.
+Determines if private layers are shown.
 %End
 
   protected:
@@ -333,16 +333,16 @@ Set the message bar to display messages from the layer tree
 .. versionadded:: 3.14
 %End
 
-    void setShowHidden( bool showHidden );
+    void setShowPrivateLayers( bool showPrivate );
 %Docstring
-Set the show hidden layers to ``showHidden``
+Set the show private layers to ``showPrivate``
 
 .. versionadded:: 3.18
 %End
 
-    bool showHidden( );
+    bool showPrivateLayers( );
 %Docstring
-Returns the show hidden status
+Returns the show private layers status
 
 .. versionadded:: 3.18
 %End

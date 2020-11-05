@@ -1190,10 +1190,10 @@ void QgsProjectProperties::apply()
     else
       flags &= ~QgsMapLayer::Searchable;
 
-    if ( mLayerCapabilitiesModel->hidden( layer ) )
-      flags |= QgsMapLayer::Hidden;
+    if ( mLayerCapabilitiesModel->privateLayer( layer ) )
+      flags |= QgsMapLayer::Private;
     else
-      flags &= ~QgsMapLayer::Hidden;
+      flags &= ~QgsMapLayer::Private;
 
     layer->setFlags( flags );
 

@@ -39,7 +39,7 @@ class QgsLayerTreeFilterProxyModel;
  * \ingroup gui
  *
  * The QgsLayerTreeProxyModel class is a proxy model for QgsLayerTreeModel, supports
- * hidden layers and  text filtering.
+ * private layers and text filtering.
  *
  * \since QGIS 3.18
  */
@@ -60,14 +60,14 @@ class GUI_EXPORT QgsLayerTreeProxyModel : public QSortFilterProxyModel
     void setFilterText( const QString &filterText = QString() );
 
     /**
-     * Returns if hidden layers are shown.
+     * Returns if private layers are shown.
      */
-    bool showHidden() const;
+    bool showPrivateLayers() const;
 
     /**
-     * Determines if hidden layers are shown.
+     * Determines if private layers are shown.
      */
-    void setShowHidden( bool showHidden );
+    void setShowPrivateLayers( bool showPrivate );
 
   protected:
 
@@ -79,7 +79,7 @@ class GUI_EXPORT QgsLayerTreeProxyModel : public QSortFilterProxyModel
 
     QgsLayerTreeModel *mLayerTreeModel = nullptr;
     QString mFilterText;
-    bool mShowHidden = false;
+    bool mShowPrivateLayers = false;
 };
 
 
@@ -334,16 +334,16 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     void setMessageBar( QgsMessageBar *messageBar );
 
     /**
-     * Set the show hidden layers to \a showHidden
+     * Set the show private layers to \a showPrivate
      * \since QGIS 3.18
      */
-    void setShowHidden( bool showHidden );
+    void setShowPrivateLayers( bool showPrivate );
 
     /**
-     * Returns the show hidden status
+     * Returns the show private layers status
      * \since QGIS 3.18
      */
-    bool showHidden( );
+    bool showPrivateLayers( );
 
   signals:
     //! Emitted when a current layer is changed
@@ -401,7 +401,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 
     QgsMessageBar *mMessageBar = nullptr;
 
-    bool mShowHidden = false;
+    bool mShowPrivateLayers = false;
 
     // friend so it can access viewOptions() method and mLastReleaseMousePos without making them public
     friend class QgsLayerTreeViewItemDelegate;

@@ -95,7 +95,7 @@ void QgsLayerTreeView::setModel( QAbstractItemModel *model )
          );
 
   mProxyModel = new QgsLayerTreeProxyModel( treeModel, this );
-  mProxyModel->setShowHidden( mShowHidden );
+  mProxyModel->setShowPrivateLayers( mShowPrivateLayers );
   QTreeView::setModel( mProxyModel );
 
   connect( treeModel->rootGroup(), &QgsLayerTreeNode::expandedChanged, this, &QgsLayerTreeView::onExpandedChanged );
@@ -546,15 +546,15 @@ void QgsLayerTreeView::setMessageBar( QgsMessageBar *messageBar )
          );
 }
 
-void QgsLayerTreeView::setShowHidden( bool showHidden )
+void QgsLayerTreeView::setShowPrivateLayers( bool showPrivate )
 {
-  mShowHidden = showHidden;
-  mProxyModel->setShowHidden( showHidden );
+  mShowPrivateLayers = showPrivate;
+  mProxyModel->setShowPrivateLayers( showPrivate );
 }
 
-bool QgsLayerTreeView::showHidden()
+bool QgsLayerTreeView::showPrivateLayers()
 {
-  return mShowHidden;
+  return mShowPrivateLayers;
 }
 
 void QgsLayerTreeView::mouseReleaseEvent( QMouseEvent *event )
@@ -715,7 +715,7 @@ bool QgsLayerTreeProxyModel::nodeShown( QgsLayerTreeNode *node ) const
       return true;
     if ( !mFilterText.isEmpty() && !layer->name().contains( mFilterText, Qt::CaseInsensitive ) )
       return false;
-    if ( ! mShowHidden && layer->flags().testFlag( QgsMapLayer::LayerFlag::Hidden ) )
+    if ( ! mShowPrivateLayers && layer->flags().testFlag( QgsMapLayer::LayerFlag::Private ) )
     {
       return false;
     }
@@ -723,13 +723,13 @@ bool QgsLayerTreeProxyModel::nodeShown( QgsLayerTreeNode *node ) const
   }
 }
 
-bool QgsLayerTreeProxyModel::showHidden() const
+bool QgsLayerTreeProxyModel::showPrivateLayers() const
 {
-  return mShowHidden;
+  return mShowPrivateLayers;
 }
 
-void QgsLayerTreeProxyModel::setShowHidden( bool showHidden )
+void QgsLayerTreeProxyModel::setShowPrivateLayers( bool showPrivate )
 {
-  mShowHidden = showHidden;
+  mShowPrivateLayers = showPrivate;
   invalidateFilter();
 }

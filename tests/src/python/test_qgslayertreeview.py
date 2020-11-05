@@ -437,7 +437,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
             self.layer2).itemVisibilityChecked())
 
     def testProxyModel(self):
-        """Test proxy model filtering and hidden layers"""
+        """Test proxy model filtering and private layers"""
 
         view = QgsLayerTreeView()
         view.setModel(self.model)
@@ -461,7 +461,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
 
         self.assertEqual(proxy_items, ['layer1', 'layer2', 'layer3'])
 
-        self.layer3.setFlags(self.layer.Hidden)
+        self.layer3.setFlags(self.layer.Private)
         self.assertEqual(tree_model.rowCount(), 3)
         self.assertEqual(proxy_model.rowCount(), 2)
 
@@ -471,7 +471,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
 
         self.assertEqual(proxy_items, ['layer1', 'layer2'])
 
-        view.setShowHidden(True)
+        view.setShowPrivateLayers(True)
 
         self.assertEqual(proxy_model.rowCount(), 3)
 
@@ -481,7 +481,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
 
         self.assertEqual(proxy_items, ['layer1', 'layer2', 'layer3'])
 
-        view.setShowHidden(False)
+        view.setShowPrivateLayers(False)
 
         self.assertEqual(proxy_model.rowCount(), 2)
 
@@ -511,7 +511,7 @@ class TestQgsLayerTreeView(unittest.TestCase):
             proxy_tester = QAbstractItemModelTester(view.model())
 
         view.setCurrentLayer(self.layer3)
-        self.layer3.setFlags(self.layer.Hidden)
+        self.layer3.setFlags(self.layer.Private)
 
     def testNode2IndexMethods(self):
         """Test node2index and node2sourceIndex"""

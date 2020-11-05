@@ -4774,10 +4774,10 @@ void QgisApp::initLayerTreeView()
   connect( mFilterLegendByMapContentAction, &QAction::toggled, this, &QgisApp::updateFilterLegend );
   filterLegendMenu->addAction( mFilterLegendByMapContentAction );
 
-  mFilterLegendToggleHiddenLayersAction = new QAction( tr( "Show Hidden Layers" ), this );
-  mFilterLegendToggleHiddenLayersAction->setCheckable( true );
-  connect( mFilterLegendToggleHiddenLayersAction, &QAction::toggled, this, [ = ]( bool showHidden ) { layerTreeView()->setShowHidden( showHidden ); } );
-  filterLegendMenu->addAction( mFilterLegendToggleHiddenLayersAction );
+  mFilterLegendToggleShowPrivateLayersAction = new QAction( tr( "Show Private Layers" ), this );
+  mFilterLegendToggleShowPrivateLayersAction->setCheckable( true );
+  connect( mFilterLegendToggleShowPrivateLayersAction, &QAction::toggled, this, [ = ]( bool showPrivateLayers ) { layerTreeView()->setShowPrivateLayers( showPrivateLayers ); } );
+  filterLegendMenu->addAction( mFilterLegendToggleShowPrivateLayersAction );
 
   mLegendExpressionFilterButton = new QgsLegendFilterButton( this );
   mLegendExpressionFilterButton->setToolTip( tr( "Filter legend by expression" ) );
@@ -11599,7 +11599,7 @@ void QgisApp::removeLayer()
       if ( QgsLayerTree::isLayer( c ) )
       {
         const auto treeLayer { QgsLayerTree::toLayer( c ) };
-        if ( treeLayer->layer() && treeLayer->layer()->flags().testFlag( QgsMapLayer::LayerFlag::Hidden ) )
+        if ( treeLayer->layer() && treeLayer->layer()->flags().testFlag( QgsMapLayer::LayerFlag::Private ) )
         {
           hiddenLayerNames.push_back( treeLayer->layer()->name( ) );
         }

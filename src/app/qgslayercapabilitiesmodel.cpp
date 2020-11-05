@@ -32,7 +32,7 @@ QgsLayerCapabilitiesModel::QgsLayerCapabilitiesModel( QgsProject *project, QObje
     mSearchableLayers.insert( it.value(), it.value()->type() == QgsMapLayerType::VectorLayer && it.value()->flags().testFlag( QgsMapLayer::Searchable ) );
     mIdentifiableLayers.insert( it.value(), it.value()->flags().testFlag( QgsMapLayer::Identifiable ) );
     mRemovableLayers.insert( it.value(), it.value()->flags().testFlag( QgsMapLayer::Removable ) );
-    mHiddenLayers.insert( it.value(), it.value()->flags().testFlag( QgsMapLayer::Hidden ) );
+    mPrivateLayers.insert( it.value(), it.value()->flags().testFlag( QgsMapLayer::Private ) );
   }
 }
 
@@ -77,9 +77,9 @@ bool QgsLayerCapabilitiesModel::removable( QgsMapLayer *layer ) const
   return mRemovableLayers.value( layer, true );
 }
 
-bool QgsLayerCapabilitiesModel::hidden( QgsMapLayer *layer ) const
+bool QgsLayerCapabilitiesModel::privateLayer( QgsMapLayer *layer ) const
 {
-  return mHiddenLayers.value( layer, true );
+  return mPrivateLayers.value( layer, true );
 }
 
 bool QgsLayerCapabilitiesModel::readOnly( QgsMapLayer *layer ) const
@@ -116,8 +116,8 @@ QVariant QgsLayerCapabilitiesModel::headerData( int section, Qt::Orientation ori
           return tr( "Searchable" );
         case RequiredColumn:
           return tr( "Required" );
-        case HiddenColumn:
-          return tr( "Hidden" );
+        case PrivateColumn:
+          return tr( "Private" );
         default:
           return QVariant();
       }
@@ -133,7 +133,7 @@ QVariant QgsLayerCapabilitiesModel::headerData( int section, Qt::Orientation ori
           return QVariant();
         case RequiredColumn:
           return tr( "Layers which are protected from inadvertent removal from the project." );
-        case HiddenColumn:
+        case PrivateColumn:
           return tr( "Layers which are not shown in the legend." );
         default:
           return QVariant();
@@ -195,7 +195,7 @@ Qt::ItemFlags QgsLayerCapabilitiesModel::flags( const QModelIndex &idx ) const
       {
         return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
       }
-      case HiddenColumn:
+      case PrivateColumn:
       {
         return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable;
       }
@@ -295,8 +295,8 @@ QVariant QgsLayerCapabilitiesModel::data( const QModelIndex &idx, int role ) con
         case RequiredColumn:
           return !mRemovableLayers.value( layer, true ) ? trueValue : falseValue;
 
-        case HiddenColumn:
-          return mHiddenLayers.value( layer, false ) ? trueValue : falseValue;
+        case PrivateColumn:
+          return mPrivateLayers.value( layer, false ) ? trueValue : falseValue;
       }
     }
   }
@@ -368,12 +368,12 @@ bool QgsLayerCapabilitiesModel::setData( const QModelIndex &index, const QVarian
           }
           break;
         }
-        case HiddenColumn:
+        case PrivateColumn:
         {
-          const bool hidden = value == Qt::Checked;
-          if ( hidden != mHiddenLayers.value( layer, false ) )
+          const bool isPrivate = value == Qt::Checked;
+          if ( isPrivate != mPrivateLayers.value( layer, false ) )
           {
-            mHiddenLayers.insert( layer, hidden );
+            mPrivateLayers.insert( layer, isPrivate );
             emit dataChanged( index, index );
             return true;
           }
