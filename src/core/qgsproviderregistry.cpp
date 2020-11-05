@@ -38,6 +38,7 @@
 #include "providers/meshmemory/qgsmeshmemorydataprovider.h"
 #include "providers/ept/qgseptprovider.h"
 #include "qgsruntimeprofiler.h"
+#include "qgsfileutils.h"
 
 #ifdef HAVE_STATIC_PROVIDERS
 #include "qgswmsprovider.h"
@@ -250,6 +251,9 @@ void QgsProviderRegistry::init()
 #endif
   QgsDebugMsg( QStringLiteral( "Loaded %1 providers (%2) " ).arg( mProviders.size() ).arg( providerList().join( ';' ) ) );
 
+  QStringList pointCloudWildcards;
+  QStringList pointCloudFilters;
+
   // now initialize all providers
   for ( Providers::const_iterator it = mProviders.begin(); it != mProviders.end(); ++it )
   {
@@ -297,15 +301,26 @@ void QgsProviderRegistry::init()
     if ( !filePointCloudFilters.isEmpty() )
     {
       QgsDebugMsgLevel( "point cloud filters: " + filePointCloudFilters, 2 );
-      if ( !mPointCloudFileFilters.isEmpty() && !mPointCloudFileFilters.endsWith( QLatin1String( ";;" ) ) )
-        mPointCloudFileFilters += QStringLiteral( ";;" );
-      mPointCloudFileFilters += filePointCloudFilters;
-      QgsDebugMsgLevel( QStringLiteral( "Checking %1: ...loaded OK (%2 file filters)" ).arg( key ).arg( filePointCloudFilters.split( ";;" ).count() ), 2 );
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+      const QStringList filters = filePointCloudFilters.split( QStringLiteral( ";;" ), QString::SkipEmptyParts );
+#else
+      const QStringList filters = filePointCloudFilters.split( QStringLiteral( ";;" ), Qt::SkipEmptyParts );
+#endif
+      for ( const QString &filter : filters )
+      {
+        pointCloudFilters.append( filter );
+        pointCloudWildcards.append( QgsFileUtils::wildcardsFromFilter( filter ).split( ' ' ) );
+      }
     }
 
     // call initProvider() - allows provider to register its services to QGIS
     meta->initProvider();
   }
+
+  pointCloudFilters.insert( 0, QObject::tr( "All Supported Files" ) + QStringLiteral( " (%1)" ).arg( pointCloudWildcards.join( ' ' ) ) );
+  pointCloudFilters.insert( 1, QObject::tr( "All Files" ) + QStringLiteral( " (*.*)" ) );
+  mPointCloudFileFilters = pointCloudFilters.join( QStringLiteral( ";;" ) );
 
   // load database drivers (only OGR)
   mDatabaseDrivers = QgsOgrProviderUtils::databaseDrivers();
