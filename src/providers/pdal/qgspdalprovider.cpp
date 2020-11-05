@@ -20,6 +20,8 @@
 #include "qgspdaldataitems.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsapplication.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
 
 #include <pdal/io/LasReader.hpp>
 #include <pdal/io/LasHeader.hpp>
@@ -76,39 +78,47 @@ QgsPointCloudIndex *QgsPdalProvider::index() const
 
 bool QgsPdalProvider::load( const QString &uri )
 {
-  pdal::Option las_opt( "filename", uri.toStdString() );
-  pdal::Options las_opts;
-  las_opts.add( las_opt );
-  pdal::LasReader las_reader;
-  las_reader.setOptions( las_opts );
-  pdal::PointTable table;
-  las_reader.prepare( table );
-  pdal::LasHeader las_header = las_reader.header();
+  try
+  {
+    pdal::Option las_opt( "filename", uri.toStdString() );
+    pdal::Options las_opts;
+    las_opts.add( las_opt );
+    pdal::LasReader las_reader;
+    las_reader.setOptions( las_opts );
+    pdal::PointTable table;
+    las_reader.prepare( table );
+    pdal::LasHeader las_header = las_reader.header();
 
-  // extent
-  /*
-  double scale_x = las_header.scaleX();
-  double scale_y = las_header.scaleY();
-  double scale_z = las_header.scaleZ();
+    // extent
+    /*
+    double scale_x = las_header.scaleX();
+    double scale_y = las_header.scaleY();
+    double scale_z = las_header.scaleZ();
 
-  double offset_x = las_header.offsetX();
-  double offset_y = las_header.offsetY();
-  double offset_z = las_header.offsetZ();
-  */
+    double offset_x = las_header.offsetX();
+    double offset_y = las_header.offsetY();
+    double offset_z = las_header.offsetZ();
+    */
 
-  double xmin = las_header.minX();
-  double xmax = las_header.maxX();
-  double ymin = las_header.minY();
-  double ymax = las_header.maxY();
-  mExtent = QgsRectangle( xmin, ymin, xmax, ymax );
+    double xmin = las_header.minX();
+    double xmax = las_header.maxX();
+    double ymin = las_header.minY();
+    double ymax = las_header.maxY();
+    mExtent = QgsRectangle( xmin, ymin, xmax, ymax );
 
-  // unsigned int nFeatures = las_header.pointCount();
+    // unsigned int nFeatures = las_header.pointCount();
 
-  // projection
-  QString wkt = QString::fromStdString( las_reader.getSpatialReference().getWKT() );
-  mCrs = QgsCoordinateReferenceSystem::fromWkt( wkt );
-
-  return true;
+    // projection
+    QString wkt = QString::fromStdString( las_reader.getSpatialReference().getWKT() );
+    mCrs = QgsCoordinateReferenceSystem::fromWkt( wkt );
+    return true;
+  }
+  catch ( pdal::pdal_error &error )
+  {
+    QgsDebugMsg( QStringLiteral( "Error loading PDAL data source %1" ).arg( error.what() ) );
+    QgsMessageLog::logMessage( tr( "Data source is invalid (%1)" ).arg( error.what() ), QStringLiteral( "PDAL" ) );
+    return false;
+  }
 }
 
 QgsPdalProviderMetadata::QgsPdalProviderMetadata():
