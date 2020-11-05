@@ -41,7 +41,7 @@ containing "tiff", "tif". The initial '.' is stripped off the extension.
 
     static QString wildcardsFromFilter( const QString &filter );
 %Docstring
-Giiven a ``filter`` string like "GeoTIFF Files (*.tiff *.tif)", extracts
+Given a ``filter`` string like "GeoTIFF Files (*.tiff *.tif)", extracts
 the wildcard portion of this filter (i.e. "*.tiff *.tif").
 
 .. versionadded:: 3.18
