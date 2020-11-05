@@ -484,6 +484,15 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
   if ( path.isEmpty() )
     return nullptr;
 
+  // if another provider has preference for this path, let it win. This allows us to hide known files
+  // more strongly associated with another provider from showing duplicate entries for the ogr provider.
+  // e.g. in particular this hides "ept.json" files from showing as a non-functional ogr data item, and
+  // instead ONLY shows them as the functional EPT point cloud provider items
+  if ( QgsProviderRegistry::instance()->shouldDeferUriForOtherProviders( path, QStringLiteral( "ogr" ) ) )
+  {
+    return nullptr;
+  }
+
   QgsDebugMsgLevel( "thePath: " + path, 2 );
 
   // zip settings + info
