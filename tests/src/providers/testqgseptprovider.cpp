@@ -28,6 +28,7 @@
 #include "qgsapplication.h"
 #include "qgsproviderregistry.h"
 #include "qgseptprovider.h"
+#include "qgspointcloudlayer.h"
 
 /**
  * \ingroup UnitTests
@@ -49,6 +50,8 @@ class TestQgsEptProvider : public QObject
     void preferredUri();
     void layerTypesForUri();
     void uriIsBlocklisted();
+    void brokenPath();
+    void validLayer();
 
   private:
     QString mTestDataDir;
@@ -144,6 +147,25 @@ void TestQgsEptProvider::uriIsBlocklisted()
 {
   QVERIFY( !QgsProviderRegistry::instance()->uriIsBlocklisted( QStringLiteral( "/home/nyall/ept.json" ) ) );
   QVERIFY( QgsProviderRegistry::instance()->uriIsBlocklisted( QStringLiteral( "/home/nyall/ept-build.json" ) ) );
+}
+
+void TestQgsEptProvider::brokenPath()
+{
+  // test loading a bad layer URI
+  std::unique_ptr< QgsPointCloudLayer > layer = qgis::make_unique< QgsPointCloudLayer >( QStringLiteral( "not valid" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
+  QVERIFY( !layer->isValid() );
+}
+
+void TestQgsEptProvider::validLayer()
+{
+  std::unique_ptr< QgsPointCloudLayer > layer = qgis::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/entwine/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
+  QVERIFY( layer->isValid() );
+
+  QCOMPARE( layer->crs().authid(), QStringLiteral( "EPSG:28356" ) );
+  QGSCOMPARENEAR( layer->extent().xMinimum(), 498061.0, 0.1 );
+  QGSCOMPARENEAR( layer->extent().yMinimum(), 7050992.0, 0.1 );
+  QGSCOMPARENEAR( layer->extent().xMaximum(), 498068.0, 0.1 );
+  QGSCOMPARENEAR( layer->extent().yMaximum(), 7050998.0, 0.1 );
 }
 
 
