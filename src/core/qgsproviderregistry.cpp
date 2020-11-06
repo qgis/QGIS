@@ -324,9 +324,12 @@ void QgsProviderRegistry::init()
     meta->initProvider();
   }
 
-  pointCloudFilters.insert( 0, QObject::tr( "All Supported Files" ) + QStringLiteral( " (%1)" ).arg( pointCloudWildcards.join( ' ' ) ) );
-  pointCloudFilters.insert( 1, QObject::tr( "All Files" ) + QStringLiteral( " (*.*)" ) );
-  mPointCloudFileFilters = pointCloudFilters.join( QStringLiteral( ";;" ) );
+  if ( !pointCloudFilters.empty() )
+  {
+    pointCloudFilters.insert( 0, QObject::tr( "All Supported Files" ) + QStringLiteral( " (%1)" ).arg( pointCloudWildcards.join( ' ' ) ) );
+    pointCloudFilters.insert( 1, QObject::tr( "All Files" ) + QStringLiteral( " (*.*)" ) );
+    mPointCloudFileFilters = pointCloudFilters.join( QStringLiteral( ";;" ) );
+  }
 
   // load database drivers (only OGR)
   mDatabaseDrivers = QgsOgrProviderUtils::databaseDrivers();
