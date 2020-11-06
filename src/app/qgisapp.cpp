@@ -7559,8 +7559,33 @@ void QgisApp::openProject( const QString &fileName )
 
 bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
 {
-  QFileInfo fileInfo( fileName );
-  bool ok( false );
+  bool ok = false;
+  const QFileInfo fileInfo( fileName );
+
+  // highest priority = delegate to provider registry to handle
+  const QList< QgsProviderRegistry::ProviderCandidateDetails > candidateProviders = QgsProviderRegistry::instance()->preferredProvidersForUri( fileName );
+  if ( candidateProviders.size() == 1 && candidateProviders.at( 0 ).layerTypes().size() == 1 )
+  {
+    // one good candidate provider and possible layer type -- that makes things nice and easy!
+    switch ( candidateProviders.at( 0 ).layerTypes().at( 0 ) )
+    {
+      case QgsMapLayerType::VectorLayer:
+      case QgsMapLayerType::RasterLayer:
+      case QgsMapLayerType::MeshLayer:
+      case QgsMapLayerType::AnnotationLayer:
+      case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::VectorTileLayer:
+        // not supported here yet!
+        break;
+
+      case QgsMapLayerType::PointCloudLayer:
+        ok = static_cast< bool >( addPointCloudLayerPrivate( fileName, fileInfo.completeBaseName(), candidateProviders.at( 0 ).metadata()->key(), false ) );
+        break;
+    }
+  }
+
+  if ( ok )
+    return true;
 
   CPLPushErrorHandler( CPLQuietErrorHandler );
 
@@ -7638,12 +7663,6 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
   if ( !ok )
   {
     ok = static_cast< bool >( addMeshLayerPrivate( fileName, fileInfo.completeBaseName(), QStringLiteral( "mdal" ), false ) );
-  }
-
-  // Try to load as point cloud layer after raster & vector & mesh
-  if ( !ok )
-  {
-    ok = static_cast< bool >( addPointCloudLayerPrivate( fileName, fileInfo.completeBaseName(), QStringLiteral( "ept" ), false ) );
   }
 
   if ( !ok )
