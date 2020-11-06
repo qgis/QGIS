@@ -62,27 +62,28 @@ Item {
     }
 
     Component.onCompleted: {
-        vrModel.setupValueRelation( config )
-        currentIndex = vrModel.rowFromAttribute( QgsQuick.FeaturesListModel.KeyColumn, value )
+      vrModel.setupValueRelation( config )
+      currentIndex = vrModel.rowFromAttribute( QgsQuick.FeaturesListModel.KeyColumn, value )
     }
 
     onPressedChanged: {
       if( pressed )
       {
-        customWidget.valueRelationOpened( fieldItem, vrModel )
         pressed = false // we close combobox and let custom handler react, it can open combobox via openCombobox()
+        customWidget.valueRelationOpened( fieldItem, vrModel )
       }
     }
 
     // Called when user makes selection in the combo box
     onItemClicked: {
-        currentIndex = vrModel.rowFromAttribute( QgsQuick.FeaturesListModel.FeatureId, index )
-        valueChanged( vrModel.keyFromAttribute( QgsQuick.FeaturesListModel.FeatureId, index ), false )
+      currentIndex = vrModel.rowFromAttribute( QgsQuick.FeaturesListModel.FeatureId, index )
+      valueChanged( vrModel.keyFromAttribute( QgsQuick.FeaturesListModel.FeatureId, index ), false )
     }
 
     // Called when the same form is used for a different feature
     onCurrentEditorValueChanged: {
-        currentIndex = vrModel.rowFromAttribute( QgsQuick.FeaturesListModel.KeyColumn, value );
+      currentIndex = vrModel.rowFromAttribute( QgsQuick.FeaturesListModel.KeyColumn, value )
+      vrModel.currentFeature = featurePair.feature
     }
   }
 }
