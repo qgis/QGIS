@@ -180,9 +180,6 @@ QVariant QgsImportPhotosAlgorithm::extractOrientationFromMetadata( const QVarian
       case 8:
         orientation = 270;
         break;
-      default:
-        orientation = 270;
-        break;
     }
 
   }
