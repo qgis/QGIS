@@ -472,7 +472,10 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     mutable QPixmap mPixmap; // cached symbol preview
     QString mLabel;
     bool mSymbolUsesMapUnits;
+
     QSize mIconSize;
+    double mSymbolMinimumSize = 0.5;
+    double mSymbolMaximumSize = 20.0;
 
     QString mTextOnSymbolLabel;
     QgsTextFormat mTextOnSymbolTextFormat;

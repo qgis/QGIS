@@ -27,6 +27,7 @@
 #include <qgslayertreemodel.h>
 #include <qgslayertreemodellegendnode.h>
 #include <qgslayertreeutils.h>
+#include <qgssettings.h>
 #include "qgslegendsettings.h"
 
 class TestQgsLayerTree : public QObject
@@ -42,6 +43,7 @@ class TestQgsLayerTree : public QObject
     void testCheckStateHiearchical();
     void testCheckStateMutuallyExclusive();
     void testCheckStateMutuallyExclusiveEdgeCases();
+    void testRestrictedSymbolSize();
     void testShowHideAllSymbolNodes();
     void testFindLegendNode();
     void testLegendSymbolCategorized();
@@ -83,6 +85,10 @@ void TestQgsLayerTree::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
+
+  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
+  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
+  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
 
   mRoot = new QgsLayerTreeGroup();
   mRoot->addGroup( QStringLiteral( "grp1" ) );
@@ -289,6 +295,46 @@ void TestQgsLayerTree::testCheckStateMutuallyExclusiveEdgeCases()
   QCOMPARE( QgsLayerTree::toGroup( root3->children().at( 0 ) )->isVisible(), true );
   QCOMPARE( root3->isVisible(), true );
   delete root3;
+}
+
+void TestQgsLayerTree::testRestrictedSymbolSize()
+{
+  QgsSettings settings;
+  settings.setValue( "/qgis/legendsymbolMaximumSize", 15.0 );
+
+  //new memory layer
+  QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QVERIFY( vl->isValid() );
+
+  QgsProject project;
+  project.addMapLayer( vl );
+
+  QgsMarkerSymbol *symbol = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
+  symbol->setSize( 500.0 );
+  symbol->setSizeUnit( QgsUnitTypes::RenderMapUnits );
+
+  //create a categorized renderer for layer
+  QgsCategorizedSymbolRenderer *renderer = new QgsCategorizedSymbolRenderer();
+  renderer->setClassAttribute( QStringLiteral( "col1" ) );
+  renderer->setSourceSymbol( symbol->clone() );
+  renderer->addCategory( QgsRendererCategory( "a", symbol->clone(), QStringLiteral( "a" ) ) );
+  renderer->addCategory( QgsRendererCategory( "b", symbol->clone(), QStringLiteral( "b" ) ) );
+  vl->setRenderer( renderer );
+
+  //create legend with symbology nodes for categorized renderer
+  QgsLayerTree *root = new QgsLayerTree();
+  QgsLayerTreeLayer *n = new QgsLayerTreeLayer( vl );
+  root->addChildNode( n );
+  QgsLayerTreeModel *m = new QgsLayerTreeModel( root, nullptr );
+  m->setLegendMapViewData( 10, 96, 10 );
+
+  QList<QgsLayerTreeModelLegendNode *> nodes = m->layerLegendNodes( n );
+  QSize minimumSize = static_cast< QgsSymbolLegendNode *>( nodes.at( 0 ) )->minimumIconSize();
+  QCOMPARE( minimumSize.width(), 52 );
+
+  //cleanup
+  delete m;
+  delete root;
 }
 
 void TestQgsLayerTree::testShowHideAllSymbolNodes()
