@@ -217,7 +217,7 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
 
   Q_ASSERT( pc->hasNode( pcNode ) );
 
-  qDebug() << "loading entity" << node->tileId().text();
+  QgsDebugMsgLevel( QStringLiteral( "loading entity %1" ).arg( node->tileId().text() ), 2 );
 
   QgsPointCloud3DSymbolHandler *handler = new QgsPointCloud3DSymbolHandler;
   mHandler.reset( handler );
@@ -231,7 +231,7 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
 
     if ( mCanceled )
     {
-      qDebug() << "canceled";
+      QgsDebugMsgLevel( QStringLiteral( "canceled" ), 2 );
       return;
     }
     mHandler->processNode( pc, pcNode, mContext );

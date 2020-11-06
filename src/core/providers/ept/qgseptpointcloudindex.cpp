@@ -29,6 +29,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgspointcloudrequest.h"
 #include "qgspointcloudattribute.h"
+#include "qgslogger.h"
 
 ///@cond PRIVATE
 
@@ -168,10 +169,10 @@ bool QgsEptPointCloudIndex::load( const QString &fileName )
 
 
   double dx = xmax - xmin, dy = ymax - ymin, dz = zmax - zmin;
-  qDebug() << "lvl0 node size in CRS units:" << dx << dy << dz;   // all dims should be the same
-  qDebug() << "res at lvl0" << dx / mSpan;
-  qDebug() << "res at lvl1" << dx / mSpan / 2;
-  qDebug() << "res at lvl2" << dx / mSpan / 4 << "with node size" << dx / 4;
+  QgsDebugMsgLevel( QStringLiteral( "lvl0 node size in CRS units: %1 %2 %3" ).arg( dx ).arg( dy ).arg( dz ), 2 );    // all dims should be the same
+  QgsDebugMsgLevel( QStringLiteral( "res at lvl0 %1" ).arg( dx / mSpan ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "res at lvl1 %1" ).arg( dx / mSpan / 2 ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "res at lvl2 %1 with node size %2" ).arg( dx / mSpan / 4 ).arg( dx / 4 ), 2 );
 
   // load hierarchy
 
