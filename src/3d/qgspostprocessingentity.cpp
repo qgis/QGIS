@@ -124,8 +124,8 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsShadowRenderingFrameGraph *
   mShadowBiasParameter = new Qt3DRender::QParameter( "shadowBias", QVariant::fromValue( 0.00001f ) );
   mMaterial->addParameter( mShadowBiasParameter );
 
-  mLightPosition = new Qt3DRender::QParameter( "lightPosition", QVariant::fromValue( QVector3D() ) );
-  mLightDirection = new Qt3DRender::QParameter( "lightDirection", QVariant::fromValue( QVector3D() ) );
+  mLightPosition = new Qt3DRender::QParameter( "lightPosition", QVariant::fromValue( QVector3D() ), this );
+  mLightDirection = new Qt3DRender::QParameter( "lightDirection", QVariant::fromValue( QVector3D() ), this );
 
   mEffect = new Qt3DRender::QEffect( this );
   Qt3DRender::QTechnique *technique = new Qt3DRender::QTechnique( this );

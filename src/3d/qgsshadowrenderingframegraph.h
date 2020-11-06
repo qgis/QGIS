@@ -53,7 +53,7 @@ class QgsPreviewQuad;
  *
  * \since QGIS 3.16
  */
-class QgsShadowRenderingFrameGraph
+class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
 {
   public:
     //! Constructor
