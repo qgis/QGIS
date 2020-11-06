@@ -394,11 +394,11 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * \see debugShadowMapEnabled() debugShadowMapCorner() debugShadowMapSize()
      * \since QGIS 3.18
      */
-    void setDebugShadowMapSettings( bool enabled, const QString &corner, double size );
+    void setDebugShadowMapSettings( bool enabled, Qt::Corner corner, double size );
     //! Returns whether the shadow map debugging is enabled
     bool debugShadowMapEnabled() const { return mDebugShadowMapEnabled; }
     //! Returns the corner where the shadow map preview is displayed
-    QString debugShadowMapCorner() const { return mDebugShadowMapCorner; }
+    Qt::Corner debugShadowMapCorner() const { return mDebugShadowMapCorner; }
     //! Returns the size of the shadow map preview
     double debugShadowMapSize() const { return mDebugShadowMapSize; }
 
@@ -407,11 +407,11 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * \see debugDepthMapEnabled() debugDepthMapCorner() debugDepthMapSize()
      * \since QGIS 3.18
      */
-    void setDebugDepthMapSettings( bool enabled, const QString &corner, double size );
+    void setDebugDepthMapSettings( bool enabled, Qt::Corner corner, double size );
     //! Returns whether the shadow map debugging is enabled
     bool debugDepthMapEnabled() const { return mDebugDepthMapEnabled; }
     //! Returns the corner where the shadow map preview is displayed
-    QString debugDepthMapCorner() const { return mDebugDepthMapCorner; }
+    Qt::Corner debugDepthMapCorner() const { return mDebugDepthMapCorner; }
     //! Returns the size of the shadow map preview
     double debugDepthMapSize() const { return mDebugDepthMapSize; }
 
@@ -684,11 +684,11 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     int mEyeDomeLightingDistance = 1;
 
     bool mDebugShadowMapEnabled = false;
-    QString mDebugShadowMapCorner = "Top Left";
+    Qt::Corner mDebugShadowMapCorner = Qt::Corner::TopLeftCorner;
     double mDebugShadowMapSize = 0.2;
 
     bool mDebugDepthMapEnabled = false;
-    QString mDebugDepthMapCorner = "Top Right";
+    Qt::Corner mDebugDepthMapCorner = Qt::Corner::TopRightCorner;
     double mDebugDepthMapSize = 0.2;
 };
 

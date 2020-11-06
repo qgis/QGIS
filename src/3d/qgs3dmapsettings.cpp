@@ -244,11 +244,11 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
 
   QDomElement elemDebugSettings = elem.firstChildElement( QStringLiteral( "debug-settings" ) );
   mDebugShadowMapEnabled = elemDebugSettings.attribute( QStringLiteral( "shadowmap-enabled" ), QStringLiteral( "0" ) ).toInt();
-  mDebugShadowMapCorner = elemDebugSettings.attribute( QStringLiteral( "shadowmap-corner" ), QStringLiteral( "Top Left" ) );
+  mDebugShadowMapCorner = static_cast<Qt::Corner>( elemDebugSettings.attribute( QStringLiteral( "shadowmap-corner" ), "0" ).toInt() );
   mDebugShadowMapSize = elemDebugSettings.attribute( QStringLiteral( "shadowmap-size" ), QStringLiteral( "0.2" ) ).toDouble();
 
   mDebugDepthMapEnabled = elemDebugSettings.attribute( QStringLiteral( "depthmap-enabled" ), QStringLiteral( "0" ) ).toInt();
-  mDebugDepthMapCorner = elemDebugSettings.attribute( QStringLiteral( "depthmap-corner" ), QStringLiteral( "Top Right" ) );
+  mDebugDepthMapCorner = static_cast<Qt::Corner>( elemDebugSettings.attribute( QStringLiteral( "depthmap-corner" ), QStringLiteral( "1" ) ).toInt() );
   mDebugDepthMapSize = elemDebugSettings.attribute( QStringLiteral( "depthmap-size" ), QStringLiteral( "0.2" ) ).toDouble();
 
   QDomElement elemDebug = elem.firstChildElement( QStringLiteral( "debug" ) );
@@ -724,7 +724,7 @@ void Qgs3DMapSettings::setShadowSettings( const QgsShadowSettings &shadowSetting
   emit shadowSettingsChanged();
 }
 
-void Qgs3DMapSettings::setDebugShadowMapSettings( bool enabled, const QString &corner, double size )
+void Qgs3DMapSettings::setDebugShadowMapSettings( bool enabled, Qt::Corner corner, double size )
 {
   mDebugShadowMapEnabled = enabled;
   mDebugShadowMapCorner = corner;
@@ -732,7 +732,7 @@ void Qgs3DMapSettings::setDebugShadowMapSettings( bool enabled, const QString &c
   emit debugShadowMapSettingsChanged();
 }
 
-void Qgs3DMapSettings::setDebugDepthMapSettings( bool enabled, const QString &corner, double size )
+void Qgs3DMapSettings::setDebugDepthMapSettings( bool enabled, Qt::Corner corner, double size )
 {
   mDebugDepthMapEnabled = enabled;
   mDebugDepthMapCorner = corner;

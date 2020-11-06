@@ -166,25 +166,23 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   edlStrengthSpinBox->setValue( map->eyeDomeLightingStrength() );
   edlDistanceSpinBox->setValue( map->eyeDomeLightingDistance() );
 
-  mDebugShadowMapCornerComboBox->addItem( QStringLiteral( "Top Right" ) );
-  mDebugShadowMapCornerComboBox->addItem( QStringLiteral( "Top Left" ) );
-  mDebugShadowMapCornerComboBox->addItem( QStringLiteral( "Bottom Left" ) );
-  mDebugShadowMapCornerComboBox->addItem( QStringLiteral( "Bottom Right" ) );
+  mDebugShadowMapCornerComboBox->addItem( tr( "Top Left" ) );
+  mDebugShadowMapCornerComboBox->addItem( tr( "Top Right" ) );
+  mDebugShadowMapCornerComboBox->addItem( tr( "Bottom Left" ) );
+  mDebugShadowMapCornerComboBox->addItem( tr( "Bottom Right" ) );
 
-  mDebugDepthMapCornerComboBox->addItem( QStringLiteral( "Top Right" ) );
-  mDebugDepthMapCornerComboBox->addItem( QStringLiteral( "Top Left" ) );
-  mDebugDepthMapCornerComboBox->addItem( QStringLiteral( "Bottom Left" ) );
-  mDebugDepthMapCornerComboBox->addItem( QStringLiteral( "Bottom Right" ) );
-
-//  mDebugShadowMapCornerComboBox->setCurrentText( QStringLiteral( "Top Left" ) );
-//  mDebugDepthMapCornerComboBox->setCurrentText( QStringLiteral( "Top Right" ) );
+  mDebugDepthMapCornerComboBox->addItem( tr( "Top Left" ) );
+  mDebugDepthMapCornerComboBox->addItem( tr( "Top Right" ) );
+  mDebugDepthMapCornerComboBox->addItem( tr( "Bottom Left" ) );
+  mDebugDepthMapCornerComboBox->addItem( tr( "Bottom Right" ) );
 
   mDebugShadowMapGroupBox->setChecked( map->debugShadowMapEnabled() );
-  mDebugShadowMapCornerComboBox->setCurrentText( map->debugShadowMapCorner() );
+
+  mDebugShadowMapCornerComboBox->setCurrentIndex( static_cast<int>( map->debugShadowMapCorner() ) );
   mDebugShadowMapSizeSpinBox->setValue( map->debugShadowMapSize() );
 
   mDebugDepthMapGroupBox->setChecked( map->debugDepthMapEnabled() );
-  mDebugDepthMapCornerComboBox->setCurrentText( map->debugDepthMapCorner() );
+  mDebugDepthMapCornerComboBox->setCurrentIndex( static_cast<int>( map->debugDepthMapCorner() ) );
   mDebugDepthMapSizeSpinBox->setValue( map->debugDepthMapSize() );
 }
 
@@ -316,8 +314,8 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setEyeDomeLightingStrength( edlStrengthSpinBox->value() );
   mMap->setEyeDomeLightingDistance( edlDistanceSpinBox->value() );
 
-  mMap->setDebugDepthMapSettings( mDebugDepthMapGroupBox->isChecked(), mDebugDepthMapCornerComboBox->currentText(), mDebugDepthMapSizeSpinBox->value() );
-  mMap->setDebugShadowMapSettings( mDebugShadowMapGroupBox->isChecked(), mDebugShadowMapCornerComboBox->currentText(), mDebugShadowMapSizeSpinBox->value() );
+  mMap->setDebugDepthMapSettings( mDebugDepthMapGroupBox->isChecked(), static_cast<Qt::Corner>( mDebugDepthMapCornerComboBox->currentIndex() ), mDebugDepthMapSizeSpinBox->value() );
+  mMap->setDebugShadowMapSettings( mDebugShadowMapGroupBox->isChecked(), static_cast<Qt::Corner>( mDebugShadowMapCornerComboBox->currentIndex() ), mDebugShadowMapSizeSpinBox->value() );
 }
 
 void Qgs3DMapConfigWidget::onTerrainTypeChanged()
