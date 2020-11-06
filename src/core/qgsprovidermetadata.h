@@ -267,9 +267,25 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      *
      * The default implementation returns 0 for all URIs.
      *
+     * \warning Not all providers implement this functionality. Check whether capabilities() returns the
+     * ProviderMetadataCapability::PriorityForUri to determine whether a specific provider metadata object
+     * supports this method.
+     *
      * \since QGIS 3.18
      */
     virtual int priorityForUri( const QString &uri ) const;
+
+    /**
+     * Returns a list of valid layer types which the provider can be used with when
+     * opening the specified \a uri.
+     *
+     * \warning Not all providers implement this functionality. Check whether capabilities() returns the
+     * ProviderMetadataCapability::LayerTypesForUri to determine whether a specific provider metadata object
+     * supports this method.
+     *
+     * \since QGIS 3.18
+     */
+    virtual QList< QgsMapLayerType > validLayerTypesForUri( const QString &uri ) const;
 
     /**
      * Returns TRUE if the specified \a uri is known by this provider to be something which should
@@ -605,6 +621,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
     QMap<QString, QgsAbstractProviderConnection *> mProviderConnections;
 
 /// @endcond
+
 #endif
 
   private:

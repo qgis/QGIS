@@ -62,6 +62,7 @@ class QgsPdalProviderMetadata : public QgsProviderMetadata
     QString encodeUri( const QVariantMap &parts ) const override;
     QVariantMap decodeUri( const QString &uri ) const override;
     int priorityForUri( const QString &uri ) const override;
+    QList< QgsMapLayerType > validLayerTypesForUri( const QString &uri ) const override;
     QString filters( FilterType type ) override;
 };
 

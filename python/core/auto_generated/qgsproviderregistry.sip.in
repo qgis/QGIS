@@ -281,9 +281,41 @@ Returns list of available providers by their keys
 Returns metadata of the provider or ``None`` if not found
 %End
 
-    QList< QgsProviderMetadata *> preferredProvidersForUri( const QString &uri ) const;
+    class ProviderCandidateDetails
+{
 %Docstring
-Returns the metadata for the preferred provider(s) for opening the specified ``uri``.
+
+Contains information pertaining to a candidate provider.
+
+.. versionadded:: 3.18
+%End
+
+%TypeHeaderCode
+#include "qgsproviderregistry.h"
+%End
+      public:
+
+        ProviderCandidateDetails( QgsProviderMetadata *metadata, const QList< QgsMapLayerType > &layerTypes );
+%Docstring
+Constructor for ProviderCandidateDetails, with the specified provider ``metadata`` and valid candidate ``layerTypes``.
+%End
+
+        QgsProviderMetadata *metadata() const;
+%Docstring
+Returns the candidate provider metadata.
+%End
+
+        QList<QgsMapLayerType> layerTypes() const;
+%Docstring
+Returns a list of map layer types which are valid options for opening the
+target using this candidate provider.
+%End
+
+    };
+
+    QList< QgsProviderRegistry::ProviderCandidateDetails > preferredProvidersForUri( const QString &uri ) const;
+%Docstring
+Returns the details for the preferred provider(s) for opening the specified ``uri``.
 
 The preferred provider is determined by comparing the priority returned by
 :py:func:`QgsProviderMetadata.priorityForUri()` for all registered providers, and selecting
