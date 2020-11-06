@@ -459,7 +459,7 @@ QString QgsAfsProviderMetadata::encodeUri( const QVariantMap &parts )
   {
     dsUri.setAuthConfigId( parts.value( QStringLiteral( "authcfg" ) ).toString() );
   }
-  return dsUri.uri();
+  return dsUri.uri( false );
 }
 
 QgsAfsProvider *QgsAfsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
