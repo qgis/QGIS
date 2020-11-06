@@ -1212,7 +1212,7 @@ QVariantMap QgsMeshExportCrossSection::processAlgorithm( const QVariantMap &para
 
   QgsProcessingFeatureSource *featureSource = parameterAsSource( parameters, QStringLiteral( "INPUT_LINE" ), context );
   if ( !featureSource )
-    return QVariantMap();
+    throw QgsProcessingException( QObject::tr( "Input lines vector layer required" ) );
 
   QgsCoordinateTransform transform( featureSource->sourceCrs(), mMeshLayerCrs, context.transformContext() );
 
@@ -1247,7 +1247,7 @@ QVariantMap QgsMeshExportCrossSection::processAlgorithm( const QVariantMap &para
     if ( line.isEmpty() )
       continue;
     double offset = 0;
-    while ( offset < line.length() )
+    while ( offset <= line.length() )
     {
       if ( feedback->isCanceled() )
         return QVariantMap();
