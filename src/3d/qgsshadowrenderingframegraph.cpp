@@ -144,6 +144,7 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructPostprocessi
 }
 
 QgsShadowRenderingFrameGraph::QgsShadowRenderingFrameGraph( QWindow *window, Qt3DRender::QCamera *mainCamera, Qt3DCore::QEntity *root )
+  : Qt3DCore::QEntity( root )
 {
   mRootEntity = root;
   mMainCamera = mainCamera;
