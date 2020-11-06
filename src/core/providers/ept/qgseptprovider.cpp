@@ -145,4 +145,10 @@ QString QgsEptProviderMetadata::encodeUri( const QVariantMap &parts ) const
   return path;
 }
 
+QgsProviderMetadata::ProviderMetadataCapabilities QgsEptProviderMetadata::capabilities() const
+{
+  return ProviderMetadataCapability::LayerTypesForUri
+         | ProviderMetadataCapability::PriorityForUri;
+}
 ///@endcond
+

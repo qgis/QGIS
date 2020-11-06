@@ -142,6 +142,18 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
   public:
 
     /**
+     * Indicates capabilities of the provider metadata implementation.
+     *
+     * \since QGIS 3.18
+     */
+    enum ProviderMetadataCapability
+    {
+      PriorityForUri = 1 << 0, //!< Indicates that the metadata can calculate a priority for a URI
+      LayerTypesForUri = 1 << 1, //!< Indicates that the metadata can determine valid layer types for a URI
+    };
+    Q_DECLARE_FLAGS( ProviderMetadataCapabilities, ProviderMetadataCapability )
+
+    /**
      * Typedef for data provider creation function.
      * \since QGIS 3.0
      */
@@ -179,6 +191,13 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * This is used to provide a descriptive list of available data providers.
      */
     QString description() const;
+
+    /**
+     * Returns the provider metadata capabilities.
+     *
+     * \since QGIS 3.18
+     */
+    virtual QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const;
 
     /**
      * This returns the library file name
@@ -603,5 +622,8 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
     CreateDataProviderFunction mCreateFunction = nullptr;
 
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProviderMetadata::ProviderMetadataCapabilities )
+
 
 #endif //QGSPROVIDERMETADATA_H

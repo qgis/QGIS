@@ -51,6 +51,11 @@ QString QgsProviderMetadata::description() const
   return mDescription;
 }
 
+QgsProviderMetadata::ProviderMetadataCapabilities QgsProviderMetadata::capabilities() const
+{
+  return QgsProviderMetadata::ProviderMetadataCapabilities();
+}
+
 QString QgsProviderMetadata::library() const
 {
   return mLibrary;
