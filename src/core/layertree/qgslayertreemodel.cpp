@@ -549,9 +549,20 @@ void QgsLayerTreeModel::refreshLayerLegend( QgsLayerTreeLayer *nodeLayer )
   int oldNodeCount = rowCount( idx );
   if ( oldNodeCount > 0 )
   {
+    if ( mRemoveRowsNestedLevel > 0 )
+    {
+      endRemoveRows();
+      mRemoveRowsNestedLevel--;
+      Q_ASSERT( mRemoveRowsNestedLevel == 0 );
+    }
+
     beginRemoveRows( idx, 0, oldNodeCount - 1 );
+    mRemoveRowsNestedLevel++;
+
     removeLegendFromLayer( nodeLayer );
     endRemoveRows();
+    mRemoveRowsNestedLevel--;
+    Q_ASSERT( mRemoveRowsNestedLevel == 0 );
   }
 
   addLegendToLayer( nodeLayer );
@@ -724,7 +735,14 @@ int QgsLayerTreeModel::scaleIconSize( int standardSize )
 void QgsLayerTreeModel::nodeWillAddChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo )
 {
   Q_ASSERT( node );
+  if ( mInsertRowsNestedLevel > 0 )
+  {
+    endInsertRows();
+    mInsertRowsNestedLevel--;
+    Q_ASSERT( mInsertRowsNestedLevel == 0 );
+  }
   beginInsertRows( node2index( node ), indexFrom, indexTo );
+  mInsertRowsNestedLevel++;
 }
 
 static QList<QgsLayerTreeLayer *> _layerNodesInSubtree( QgsLayerTreeNode *node, int indexFrom, int indexTo )
@@ -747,6 +765,8 @@ void QgsLayerTreeModel::nodeAddedChildren( QgsLayerTreeNode *node, int indexFrom
   Q_ASSERT( node );
 
   endInsertRows();
+  mInsertRowsNestedLevel--;
+  Q_ASSERT( mInsertRowsNestedLevel == 0 );
 
   const auto subNodes = _layerNodesInSubtree( node, indexFrom, indexTo );
   for ( QgsLayerTreeLayer *newLayerNode : subNodes )
@@ -757,7 +777,14 @@ void QgsLayerTreeModel::nodeWillRemoveChildren( QgsLayerTreeNode *node, int inde
 {
   Q_ASSERT( node );
 
+  if ( mRemoveRowsNestedLevel > 0 )
+  {
+    endRemoveRows();
+    mRemoveRowsNestedLevel--;
+    Q_ASSERT( mRemoveRowsNestedLevel == 0 );
+  }
   beginRemoveRows( node2index( node ), indexFrom, indexTo );
+  mRemoveRowsNestedLevel++;
 
   // disconnect from layers and remove their legend
   const auto subNodes = _layerNodesInSubtree( node, indexFrom, indexTo );
@@ -768,6 +795,8 @@ void QgsLayerTreeModel::nodeWillRemoveChildren( QgsLayerTreeNode *node, int inde
 void QgsLayerTreeModel::nodeRemovedChildren()
 {
   endRemoveRows();
+  mRemoveRowsNestedLevel--;
+  Q_ASSERT( mRemoveRowsNestedLevel == 0 );
 }
 
 void QgsLayerTreeModel::nodeVisibilityChanged( QgsLayerTreeNode *node )
@@ -1349,7 +1378,16 @@ void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer *nodeL )
   int count = legendTree ? legendTree->children[nullptr].count() : filteredLstNew.count();
 
   if ( !filteredLstNew.isEmpty() )
+  {
+    if ( mInsertRowsNestedLevel > 0 )
+    {
+      endInsertRows();
+      mInsertRowsNestedLevel--;
+      Q_ASSERT( mInsertRowsNestedLevel == 0 );
+    }
     beginInsertRows( node2index( nodeL ), 0, count - 1 );
+    mInsertRowsNestedLevel++;
+  }
 
   LayerLegendData data;
   data.originalNodes = lstNew;
@@ -1360,7 +1398,11 @@ void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer *nodeL )
   mLegend[nodeL] = data;
 
   if ( !filteredLstNew.isEmpty() )
+  {
     endInsertRows();
+    mInsertRowsNestedLevel--;
+    Q_ASSERT( mInsertRowsNestedLevel == 0 );
+  }
 
   // invalidate map based data even if the data is not map-based to make sure
   // the symbol sizes are computed at least once
